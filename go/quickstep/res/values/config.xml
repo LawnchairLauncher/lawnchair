@@ -16,8 +16,6 @@
 <resources>
     <!-- The component to receive app sharing Intents -->
     <string name="app_sharing_component" translatable="false"/>
-    <!-- The package to receive Listen, Translate, and Search Intents -->
-    <string name="niu_actions_package" translatable="false"/>
 
     <!-- Feature Flags -->
     <bool name="enable_niu_actions">true</bool>

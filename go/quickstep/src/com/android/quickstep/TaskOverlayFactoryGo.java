@@ -21,6 +21,7 @@ import static com.android.quickstep.views.OverviewActionsView.DISABLED_ROTATED;
 
 import android.annotation.SuppressLint;
 import android.app.assist.AssistContent;
+import android.content.ActivityNotFoundException;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
@@ -29,10 +30,10 @@ import android.os.SystemClock;
 import android.os.UserManager;
 import android.provider.Settings;
 import android.text.TextUtils;
+import android.util.Log;
 
 import androidx.annotation.VisibleForTesting;
 
-import com.android.launcher3.R;
 import com.android.quickstep.util.AssistContentRequester;
 import com.android.quickstep.views.OverviewActionsView;
 import com.android.quickstep.views.TaskThumbnailView;
@@ -90,9 +91,7 @@ public final class TaskOverlayFactoryGo extends TaskOverlayFactory {
         public void initOverlay(Task task, ThumbnailData thumbnail, Matrix matrix,
                 boolean rotated) {
             getActionsView().updateDisabledFlags(DISABLED_NO_THUMBNAIL, thumbnail == null);
-            mNIUPackageName =
-                    mApplicationContext.getString(R.string.niu_actions_package);
-
+            checkSettings();
             if (thumbnail == null || TextUtils.isEmpty(mNIUPackageName)) {
                 return;
             }
@@ -105,7 +104,6 @@ public final class TaskOverlayFactoryGo extends TaskOverlayFactory {
             getActionsView().setCallbacks(new OverlayUICallbacksGoImpl(isAllowedByPolicy, task));
             mTaskPackageName = task.key.getPackageName();
 
-            checkPermissions();
             if (!mAssistPermissionsEnabled) {
                 return;
             }
@@ -137,7 +135,11 @@ public final class TaskOverlayFactoryGo extends TaskOverlayFactory {
                 mImageApi.shareAsDataWithExplicitIntent(/* crop */ null, intent);
             } else {
                 intent.putExtra(ACTIONS_ERROR_CODE, ERROR_PERMISSIONS);
-                mApplicationContext.startActivity(intent);
+                try {
+                    mApplicationContext.startActivity(intent);
+                } catch (ActivityNotFoundException e) {
+                    Log.e(TAG, "No activity found to receive permission error intent");
+                }
             }
         }
 
@@ -160,13 +162,17 @@ public final class TaskOverlayFactoryGo extends TaskOverlayFactory {
          * Checks whether the Assistant has screen context permissions
          */
         @VisibleForTesting
-        public void checkPermissions() {
+        public void checkSettings() {
             ContentResolver contentResolver = mApplicationContext.getContentResolver();
             boolean structureEnabled = Settings.Secure.getInt(contentResolver,
                     Settings.Secure.ASSIST_STRUCTURE_ENABLED, 1) != 0;
             boolean screenshotEnabled = Settings.Secure.getInt(contentResolver,
                     Settings.Secure.ASSIST_SCREENSHOT_ENABLED, 1) != 0;
             mAssistPermissionsEnabled = structureEnabled && screenshotEnabled;
+
+            String assistantPackage =
+                    Settings.Secure.getString(contentResolver, Settings.Secure.ASSISTANT);
+            mNIUPackageName = assistantPackage.split("/", 2)[0];
         }
 
         protected class OverlayUICallbacksGoImpl extends OverlayUICallbacksImpl
