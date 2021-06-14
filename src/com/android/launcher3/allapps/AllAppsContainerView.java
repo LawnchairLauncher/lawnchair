@@ -23,7 +23,6 @@ import static com.android.launcher3.model.BgDataModel.Callbacks.FLAG_QUIET_MODE_
 
 import android.animation.ValueAnimator;
 import android.content.Context;
-import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -494,15 +493,6 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
         }
     }
 
-    @Override
-    protected void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        View overlay = mAH[AdapterHolder.WORK].getOverlayView();
-        int v = newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE ? GONE : VISIBLE;
-        overlay.findViewById(R.id.work_apps_paused_title).setVisibility(v);
-        overlay.findViewById(R.id.work_apps_paused_content).setVisibility(v);
-    }
-
     private void replaceRVContainer(boolean showTabs) {
         for (int i = 0; i < mAH.length; i++) {
             if (mAH[i].recyclerView != null) {
@@ -543,9 +533,6 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
             mWorkModeSwitch.setWorkTabVisible(currentActivePage == AdapterHolder.WORK
                     && mAllAppsStore.hasModelFlag(
                     FLAG_HAS_SHORTCUT_PERMISSION | FLAG_QUIET_MODE_CHANGE_PERMISSION));
-        }
-        if (mSearchUiManager != null && mSearchUiManager.getEditText() != null) {
-            mSearchUiManager.getEditText().hideKeyboard();
         }
     }
 
@@ -704,7 +691,9 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
         mHeaderPaint.setColor(mHeaderColor);
         mHeaderPaint.setAlpha((int) (getAlpha() * Color.alpha(mHeaderColor)));
         if (mHeaderPaint.getColor() != mScrimColor && mHeaderPaint.getColor() != 0) {
-            canvas.drawRect(0, 0, getWidth(), mSearchContainer.getTop() + getTranslationY(),
+            int bottom = mUsingTabs && mHeader.mHeaderCollapsed ? mHeader.getVisibleBottomBound()
+                    : mSearchContainer.getBottom();
+            canvas.drawRect(0, 0, getWidth(), bottom + getTranslationY(),
                     mHeaderPaint);
         }
     }
@@ -780,13 +769,6 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
             verticalFadingEdge = enabled;
             mAH[AdapterHolder.MAIN].recyclerView.setVerticalFadingEdgeEnabled(!mUsingTabs
                     && verticalFadingEdge);
-        }
-
-        private View getOverlayView() {
-            if (mOverlay == null) {
-                mOverlay = mLauncher.getLayoutInflater().inflate(R.layout.work_apps_paused, null);
-            }
-            return mOverlay;
         }
     }
 

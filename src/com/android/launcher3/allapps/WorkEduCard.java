@@ -21,7 +21,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.LinearLayout;
+import android.widget.FrameLayout;
 
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
@@ -29,7 +29,7 @@ import com.android.launcher3.R;
 /**
  * Work profile toggle switch shown at the bottom of AllApps work tab
  */
-public class WorkEduCard extends LinearLayout implements View.OnClickListener,
+public class WorkEduCard extends FrameLayout implements View.OnClickListener,
         Animation.AnimationListener {
 
     private final Launcher mLauncher;
@@ -52,11 +52,24 @@ public class WorkEduCard extends LinearLayout implements View.OnClickListener,
         mDismissAnim.setAnimationListener(this);
     }
 
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        mDismissAnim.reset();
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        mDismissAnim.cancel();
+    }
 
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
         findViewById(R.id.action_btn).setOnClickListener(this);
+        MarginLayoutParams lp = ((MarginLayoutParams) findViewById(R.id.wrapper).getLayoutParams());
+        lp.width = mLauncher.getAppsView().getActiveRecyclerView().getTabWidth();
     }
 
     @Override
