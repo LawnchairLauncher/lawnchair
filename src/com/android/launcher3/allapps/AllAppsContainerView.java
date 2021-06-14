@@ -21,6 +21,8 @@ import static com.android.launcher3.model.BgDataModel.Callbacks.FLAG_HAS_SHORTCU
 import static com.android.launcher3.model.BgDataModel.Callbacks.FLAG_QUIET_MODE_CHANGE_PERMISSION;
 import static com.android.launcher3.model.BgDataModel.Callbacks.FLAG_QUIET_MODE_ENABLED;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.res.Configuration;
@@ -82,10 +84,7 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
         ScrimView.ScrimDrawingController {
 
     public static final float PULL_MULTIPLIER = .02f;
-    public static final float FLING_VELOCITY_MULTIPLIER = 2000f;
-
-    // Starts the springs after at least 25% of the animation has passed.
-    public static final float FLING_ANIMATION_THRESHOLD = 0.25f;
+    public static final float FLING_VELOCITY_MULTIPLIER = 1200f;
 
     private final Paint mHeaderPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
@@ -658,20 +657,18 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
     /**
      * Adds an update listener to {@param animator} that adds springs to the animation.
      */
-    public void addSpringFromFlingUpdateListener(ValueAnimator animator, float velocity) {
-        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            boolean shouldSpring = true;
-
+    public void addSpringFromFlingUpdateListener(ValueAnimator animator,
+            float velocity /* release velocity */,
+            float progress /* portion of the distance to travel*/) {
+        animator.addListener(new AnimatorListenerAdapter() {
             @Override
-            public void onAnimationUpdate(ValueAnimator valueAnimator) {
-                if (shouldSpring
-                        && valueAnimator.getAnimatedFraction() >= FLING_ANIMATION_THRESHOLD) {
-                    absorbSwipeUpVelocity(Math.max(100, Math.abs(
-                            Math.round(velocity * FLING_VELOCITY_MULTIPLIER))));
-                    // calculate the velocity of using the not user controlled interpolator
-                    // of when the container reach the end.
-                    shouldSpring = false;
-                }
+            public void onAnimationStart(Animator animator) {
+                float distance = (float) ((1 - progress) * getHeight()); // px
+                float settleVelocity = Math.min(0, distance
+                        / (AllAppsTransitionController.INTERP_COEFF * animator.getDuration())
+                        + velocity);
+                absorbSwipeUpVelocity(Math.max(1000, Math.abs(
+                        Math.round(settleVelocity * FLING_VELOCITY_MULTIPLIER))));
             }
         });
     }
