@@ -42,7 +42,7 @@
       <item quantity="other"><xliff:g id="SHORTCUTS_COUNT_1">%1$d</xliff:g> lasterbide</item>
       <item quantity="one"><xliff:g id="SHORTCUTS_COUNT_0">%1$d</xliff:g> lasterbide</item>
     </plurals>
-    <string name="widgets_and_shortcuts_count" msgid="7209136747878365116">"<xliff:g id="WIDGETS_COUNT">%1$s</xliff:g>: <xliff:g id="SHORTCUTS_COUNT">%2$s</xliff:g>"</string>
+    <string name="widgets_and_shortcuts_count" msgid="7209136747878365116">"<xliff:g id="WIDGETS_COUNT">%1$s</xliff:g>, <xliff:g id="SHORTCUTS_COUNT">%2$s</xliff:g>"</string>
     <string name="widget_button_text" msgid="2880537293434387943">"Widgetak"</string>
     <string name="widgets_full_sheet_search_bar_hint" msgid="8484659090860596457">"Bilatu"</string>
     <string name="widgets_full_sheet_cancel_button_description" msgid="5766167035728653605">"Garbitu bilaketa-koadroko testua"</string>
@@ -52,8 +52,10 @@
     <string name="widgets_full_sheet_work_tab" msgid="3767150027110633765">"Lanekoak"</string>
     <string name="widget_category_conversations" msgid="8894438636213590446">"Elkarrizketak"</string>
     <string name="widget_education_header" msgid="4874760613775913787">"Informazio erabilgarria beti eskura"</string>
-    <string name="widget_education_content" msgid="745542879510751525">"Aplikazioa ireki beharrik gabe informazioa zuzenean jasotzeko, gehitu widgetak hasierako pantailan"</string>
+    <string name="widget_education_content" msgid="745542879510751525">"Aplikaziorik ireki beharrik gabe informazioa zuzenean jasotzeko, gehitu widgetak hasierako pantailan"</string>
+    <string name="reconfigurable_widget_education_tip" msgid="6336962690888067057">"Sakatu hau widgeten ezarpenak aldatzeko"</string>
     <string name="widget_education_close_button" msgid="8676165703104836580">"Ados"</string>
+    <string name="widget_reconfigure_button_content_description" msgid="8811472721881205250">"Aldatu widgeten ezarpenak"</string>
     <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"Bilatu aplikazioetan"</string>
     <string name="all_apps_loading_message" msgid="5813968043155271636">"Aplikazioak kargatzen…"</string>
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"Ez da aurkitu \"<xliff:g id="QUERY">%1$s</xliff:g>\" bilaketaren emaitzarik"</string>
@@ -154,18 +156,16 @@
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"Pertsonalak"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"Lanekoak"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"Laneko profila"</string>
-    <string name="work_profile_edu_personal_apps" msgid="4155536355149317441">"Datu pertsonalak ez daude laneko aplikazioetan, eta ezin dira haien bidez ikusi"</string>
-    <string name="work_profile_edu_work_apps" msgid="237051938268703058">"IKT saileko administratzaileak laneko aplikazioak eta datuak ikus ditzake"</string>
-    <string name="work_profile_edu_next" msgid="8783418929296503629">"Hurrengoa"</string>
+    <!-- no translation found for work_profile_edu_work_apps (7895468576497746520) -->
+    <skip />
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"Ados"</string>
-    <string name="work_apps_paused_title" msgid="2389865654362803723">"Laneko profila pausatuta dago"</string>
-    <string name="work_apps_paused_body" msgid="4209084728264328628">"Laneko aplikazioek ezin dute jakinarazpenik bidali, bateria erabili edo kokapena atzitu"</string>
-    <string name="work_apps_paused_content_description" msgid="4473292417145736203">"Laneko profila pausatuta dago. Laneko aplikazioek ezin dute jakinarazpenik bidali, bateria erabili edo kokapena atzitu."</string>
+    <string name="work_apps_paused_title" msgid="3007471013401118920">"Laneko aplikazioak desaktibatuta daude"</string>
+    <string name="work_apps_paused_body" msgid="261634750995824906">"Laneko aplikazioek ezin dute jakinarazpenik bidali, bateria erabili edo kokapena atzitu"</string>
+    <string name="work_apps_paused_content_description" msgid="5149623040804051095">"Laneko aplikazioak desaktibatuta daude. Hori dela eta, ezin dute jakinarazpenik bidali, bateria erabili edo kokapena atzitu."</string>
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"Laneko aplikazioek bereizgarriak dituzte, eta IKT saileko administratzaileak ikus ditzake"</string>
     <string name="work_apps_paused_edu_accept" msgid="6377476824357318532">"Ados"</string>
-    <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"Pausatu laneko aplikazioak"</string>
-    <string name="work_apps_enable_btn_text" msgid="82111102541971856">"Aktibatu"</string>
+    <string name="work_apps_pause_btn_text" msgid="1921059713673767460">"Desaktibatu laneko aplikazioak"</string>
+    <string name="work_apps_enable_btn_text" msgid="1156432622148413741">"Aktibatu laneko aplikazioak"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"Iragazi"</string>
-    <string name="work_switch_tip" msgid="808075064383839144">"Pausatu laneko aplikazioak eta jakinarazpenak"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"Huts egin du: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
 </resources>

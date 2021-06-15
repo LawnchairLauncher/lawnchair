@@ -53,7 +53,11 @@
     <string name="widget_category_conversations" msgid="8894438636213590446">"વાતચીતો"</string>
     <string name="widget_education_header" msgid="4874760613775913787">"ઉપયોગી માહિતી તમારી આંગળીના ટેરવે"</string>
     <string name="widget_education_content" msgid="745542879510751525">"ઍપને ખોલ્યા વિના માહિતી મેળવવા માટે, તમે તમારી હોમ સ્ક્રીન પર વિજેટ ઉમેરી શકો છો"</string>
+    <!-- no translation found for reconfigurable_widget_education_tip (6336962690888067057) -->
+    <skip />
     <string name="widget_education_close_button" msgid="8676165703104836580">"સમજાઈ ગયું"</string>
+    <!-- no translation found for widget_reconfigure_button_content_description (8811472721881205250) -->
+    <skip />
     <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"શોધ ઍપ્લિકેશનો"</string>
     <string name="all_apps_loading_message" msgid="5813968043155271636">"ઍપ્લિકેશનો લોડ કરી રહ્યું છે…"</string>
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"\"<xliff:g id="QUERY">%1$s</xliff:g>\"થી મેળ ખાતી કોઈ ઍપ્લિકેશનો મળી નથી"</string>
@@ -113,7 +117,7 @@
     <string name="title_change_settings" msgid="1376365968844349552">"સેટિંગ્સ બદલો"</string>
     <string name="notification_dots_service_title" msgid="4284221181793592871">"નોટિફિકેશન માટેના ચિહ્ન બતાવો"</string>
     <string name="auto_add_shortcuts_label" msgid="3698776050751790653">"ઍપના આઇકન હોમ સ્ક્રીન પર ઉમેરો"</string>
-    <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"નવી ઍપ્લિકેશનો માટે"</string>
+    <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"નવી ઍપ માટે"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"અજાણ્યો"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"દૂર કરો"</string>
     <string name="abandoned_search" msgid="891119232568284442">"શોધો"</string>
@@ -154,18 +158,16 @@
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"મનગમતી ઍપ"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"ઑફિસની ઍપ"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"ઑફિસની પ્રોફાઇલ"</string>
-    <string name="work_profile_edu_personal_apps" msgid="4155536355149317441">"વ્યક્તિગત ડેટા ઑફિસ માટેની ઍપથી અલગ અને છુપાવીને રાખેલો છે"</string>
-    <string name="work_profile_edu_work_apps" msgid="237051938268703058">"ઑફિસ માટેની ઍપ અને ડેટા તમારા IT વ્યવસ્થાપકને દેખાય છે"</string>
-    <string name="work_profile_edu_next" msgid="8783418929296503629">"આગળ"</string>
+    <!-- no translation found for work_profile_edu_work_apps (7895468576497746520) -->
+    <skip />
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"સમજાઈ ગયું"</string>
-    <string name="work_apps_paused_title" msgid="2389865654362803723">"ઑફિસની પ્રોફાઇલ થોભાવી છે"</string>
-    <string name="work_apps_paused_body" msgid="4209084728264328628">"ઑફિસ માટેની ઍપ તમને નોટિફિકેશન મોકલી શકતી નથી, તમારી બૅટરી વાપરી શકતી નથી કે તમારું સ્થાન ઍક્સેસ કરી શકતી નથી"</string>
-    <string name="work_apps_paused_content_description" msgid="4473292417145736203">"ઑફિસની પ્રોફાઇલ થોભાવી છે. ઑફિસ માટેની ઍપ તમને નોટિફિકેશન મોકલી શકતી નથી, તમારી બૅટરી વાપરી શકતી નથી કે તમારું સ્થાન ઍક્સેસ કરી શકતી નથી"</string>
+    <string name="work_apps_paused_title" msgid="3007471013401118920">"ઑફિસ માટેની ઍપ બંધ છે"</string>
+    <string name="work_apps_paused_body" msgid="261634750995824906">"ઑફિસ માટેની તમારી ઍપ તમને નોટિફિકેશન મોકલી શકતી નથી, તમારી બૅટરી વાપરી શકતી નથી કે તમારું સ્થાન ઍક્સેસ કરી શકતી નથી"</string>
+    <string name="work_apps_paused_content_description" msgid="5149623040804051095">"ઑફિસ માટેની ઍપ બંધ છે. ઑફિસ માટેની તમારી ઍપ તમને નોટિફિકેશન મોકલી શકતી નથી, તમારી બૅટરી વાપરી શકતી નથી કે તમારું સ્થાન ઍક્સેસ કરી શકતી નથી"</string>
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"ઑફિસની ઍપને બૅજ આપેલા હોય છે અને તમારા IT વ્યવસ્થાપક તેમને જોઈ શકે છે"</string>
     <string name="work_apps_paused_edu_accept" msgid="6377476824357318532">"સમજાઈ ગયું"</string>
-    <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"ઑફિસની ઍપ થોભાવો"</string>
-    <string name="work_apps_enable_btn_text" msgid="82111102541971856">"ચાલુ કરો"</string>
+    <string name="work_apps_pause_btn_text" msgid="1921059713673767460">"ઑફિસ માટેની ઍપ બંધ કરો"</string>
+    <string name="work_apps_enable_btn_text" msgid="1156432622148413741">"ઑફિસ માટેની ઍપ ચાલુ કરો"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"ફિલ્ટર કરો"</string>
-    <string name="work_switch_tip" msgid="808075064383839144">"ઑફિસ માટેની ઍપ અને નોટિફિકેશન થોભાવો"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"નિષ્ફળ: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
 </resources>

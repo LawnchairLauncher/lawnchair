@@ -48,12 +48,14 @@
     <string name="widgets_full_sheet_cancel_button_description" msgid="5766167035728653605">"Kustuta otsingukastis olev tekst"</string>
     <string name="no_widgets_available" msgid="9140948620298620513">"Ühtki vidinat pole saadaval"</string>
     <string name="no_search_results" msgid="6518732304311458580">"Otsingutulemused puuduvad"</string>
-    <string name="widgets_full_sheet_personal_tab" msgid="2743540105607120182">"Isiklik"</string>
+    <string name="widgets_full_sheet_personal_tab" msgid="2743540105607120182">"Isiklikud"</string>
     <string name="widgets_full_sheet_work_tab" msgid="3767150027110633765">"Töö"</string>
     <string name="widget_category_conversations" msgid="8894438636213590446">"Vestlused"</string>
     <string name="widget_education_header" msgid="4874760613775913787">"Kasulik teave on teie käeulatuses"</string>
     <string name="widget_education_content" msgid="745542879510751525">"Teabe saamiseks rakendusi avamata võite oma avakuvale lisada vidinaid"</string>
+    <string name="reconfigurable_widget_education_tip" msgid="6336962690888067057">"Puudutage vidina seadete muutmiseks"</string>
     <string name="widget_education_close_button" msgid="8676165703104836580">"Selge"</string>
+    <string name="widget_reconfigure_button_content_description" msgid="8811472721881205250">"Vidina seadete muutmine"</string>
     <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"Otsige rakendusi"</string>
     <string name="all_apps_loading_message" msgid="5813968043155271636">"Rakenduste laadimine …"</string>
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"Päringule „<xliff:g id="QUERY">%1$s</xliff:g>” ei vastanud ükski rakendus"</string>
@@ -62,7 +64,7 @@
     <string name="notifications_header" msgid="1404149926117359025">"Märguanded"</string>
     <string name="long_press_shortcut_to_add" msgid="5405328730817637737">"Otsetee teisaldamiseks puudutage ja hoidke all."</string>
     <string name="long_accessible_way_to_add_shortcut" msgid="2199537273817090740">"Otsetee teisaldamiseks või kohandatud toimingute kasutamiseks topeltpuudutage ja hoidke all."</string>
-    <string name="out_of_space" msgid="4691004494942118364">"Sellel avaekraanil pole enam ruumi."</string>
+    <string name="out_of_space" msgid="4691004494942118364">"Sellel avakuval pole enam ruumi."</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"Salves Lemmikud pole rohkem ruumi"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"Rakenduste loend"</string>
     <string name="all_apps_button_personal_label" msgid="1315764287305224468">"Isiklike rakenduste loend"</string>
@@ -154,18 +156,16 @@
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"Isiklik"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"Töö"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"Tööprofiil"</string>
-    <string name="work_profile_edu_personal_apps" msgid="4155536355149317441">"Isiklikke andmeid hoitakse töörakendustest eraldi"</string>
-    <string name="work_profile_edu_work_apps" msgid="237051938268703058">"Teie IT-administraator näeb töörakendusi ja -andmeid"</string>
-    <string name="work_profile_edu_next" msgid="8783418929296503629">"Järgmine"</string>
+    <!-- no translation found for work_profile_edu_work_apps (7895468576497746520) -->
+    <skip />
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"Selge"</string>
-    <string name="work_apps_paused_title" msgid="2389865654362803723">"Tööprofiil on peatatud"</string>
-    <string name="work_apps_paused_body" msgid="4209084728264328628">"Töörakendused ei saa teile märguandeid saata, akut kasutada ega teie asukohale juurde pääseda"</string>
-    <string name="work_apps_paused_content_description" msgid="4473292417145736203">"Tööprofiil on peatatud. Töörakendused ei saa teile märguandeid saata, akut kasutada ega teie asukohale juurde pääseda"</string>
+    <string name="work_apps_paused_title" msgid="3007471013401118920">"Töörakendused on välja lülitatud"</string>
+    <string name="work_apps_paused_body" msgid="261634750995824906">"Töörakendused ei saa teile märguandeid saata, akut kasutada ega teie asukohale juurde pääseda"</string>
+    <string name="work_apps_paused_content_description" msgid="5149623040804051095">"Töörakendused on välja lülitatud. Töörakendused ei saa teile märguandeid saata, akut kasutada ega teie asukohale juurde pääseda."</string>
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"Töörakendustel on märk ja need on teie IT-administraatorile nähtavad"</string>
     <string name="work_apps_paused_edu_accept" msgid="6377476824357318532">"Selge"</string>
-    <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"Peata töörakendused"</string>
-    <string name="work_apps_enable_btn_text" msgid="82111102541971856">"Lülita sisse"</string>
+    <string name="work_apps_pause_btn_text" msgid="1921059713673767460">"Lülita töörakendused välja"</string>
+    <string name="work_apps_enable_btn_text" msgid="1156432622148413741">"Lülita töörakendused sisse"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"Filter"</string>
-    <string name="work_switch_tip" msgid="808075064383839144">"Peatage töörakendused ja märguanded"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"Nurjus: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
 </resources>
