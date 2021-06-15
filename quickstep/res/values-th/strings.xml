@@ -42,7 +42,7 @@
     <string name="hotseat_auto_enrolled" msgid="522100018967146807">"แอปที่ใช้มากที่สุดจะปรากฎที่นี่และจะเปลี่ยนไปตามการใช้งานประจำ"</string>
     <string name="hotseat_tip_no_empty_slots" msgid="1325212677738179185">"ลากแอปออกจากแถวล่างเพื่อดูแอปแนะนำ"</string>
     <string name="hotseat_tip_gaps_filled" msgid="3035673010274223538">"เพิ่มคำแนะนำเกี่ยวกับแอปในพื้นที่ว่างแล้ว"</string>
-    <string name="hotsaet_tip_prediction_enabled" msgid="2233554377501347650">"เปิดใช้คำแนะนำเกี่ยวกับแอปแล้ว"</string>
+    <string name="hotsaet_tip_prediction_enabled" msgid="2233554377501347650">"เปิดใช้แอปแนะนำแล้ว"</string>
     <string name="hotsaet_tip_prediction_disabled" msgid="1506426298884658491">"ปิดใช้คำแนะนำเกี่ยวกับแอปอยู่"</string>
     <string name="hotseat_prediction_content_description" msgid="4582028296938078419">"แอปที่คาดว่าจะใช้: <xliff:g id="TITLE">%1$s</xliff:g>"</string>
     <string name="back_gesture_feedback_swipe_too_far_from_left_edge" msgid="340972404868601012">"ตรวจสอบว่าปัดจากขอบด้านซ้ายสุด"</string>

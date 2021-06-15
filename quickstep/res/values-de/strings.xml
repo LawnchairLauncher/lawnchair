@@ -24,7 +24,7 @@
     <string name="recents_empty_message" msgid="7040467240571714191">"Keine kürzlich verwendeten Elemente"</string>
     <string name="accessibility_app_usage_settings" msgid="6312864233673544149">"Einstellungen zur App-Nutzung"</string>
     <string name="recents_clear_all" msgid="5328176793634888831">"Alle Apps schließen"</string>
-    <string name="accessibility_recent_apps" msgid="4058661986695117371">"Zuletzt aktive Apps"</string>
+    <string name="accessibility_recent_apps" msgid="4058661986695117371">"Kürzlich geöffnete Apps"</string>
     <string name="task_contents_description_with_remaining_time" msgid="4479688746574672685">"<xliff:g id="TASK_DESCRIPTION">%1$s</xliff:g>, <xliff:g id="REMAINING_TIME">%2$s</xliff:g>"</string>
     <string name="shorter_duration_less_than_one_minute" msgid="4722015666335015336">"&lt; 1 Min."</string>
     <string name="time_left_for_app" msgid="3111996412933644358">"Heute noch <xliff:g id="TIME">%1$s</xliff:g>"</string>
@@ -42,7 +42,7 @@
     <string name="hotseat_auto_enrolled" msgid="522100018967146807">"Hier erscheinen die meistverwendeten Apps. Die Angaben können sich je nach deiner gewöhnlichen Nutzung ändern"</string>
     <string name="hotseat_tip_no_empty_slots" msgid="1325212677738179185">"Ziehe Apps aus der unteren Reihe heraus, um Vorschläge für Apps zu erhalten"</string>
     <string name="hotseat_tip_gaps_filled" msgid="3035673010274223538">"App-Vorschläge in freiem Bereich hinzugefügt"</string>
-    <string name="hotsaet_tip_prediction_enabled" msgid="2233554377501347650">"Funktion \"App-Vorschläge\" aktiviert"</string>
+    <string name="hotsaet_tip_prediction_enabled" msgid="2233554377501347650">"Funktion „App-Vorschläge“ aktiviert"</string>
     <string name="hotsaet_tip_prediction_disabled" msgid="1506426298884658491">"Funktion \"App-Vorschläge\" deaktiviert"</string>
     <string name="hotseat_prediction_content_description" msgid="4582028296938078419">"Vorgeschlagene App: <xliff:g id="TITLE">%1$s</xliff:g>"</string>
     <string name="back_gesture_feedback_swipe_too_far_from_left_edge" msgid="340972404868601012">"Wische vom äußersten linken Bildschirmrand."</string>
