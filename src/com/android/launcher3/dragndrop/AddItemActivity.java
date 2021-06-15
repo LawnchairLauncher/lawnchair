@@ -125,7 +125,6 @@ public class AddItemActivity extends BaseActivity
                 WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
         mDragLayer = findViewById(R.id.add_item_drag_layer);
         mDragLayer.recreateControllers();
-        mDragLayer.setInsets(mDeviceProfile.getInsets());
         mWidgetCell = findViewById(R.id.widget_cell);
 
         if (mRequest.getRequestType() == PinItemRequest.REQUEST_TYPE_SHORTCUT) {
@@ -322,7 +321,7 @@ public class AddItemActivity extends BaseActivity
     @Override
     public void onBackPressed() {
         logCommand(LAUNCHER_ADD_EXTERNAL_ITEM_BACK);
-        super.onBackPressed();
+        mSlideInView.close(/* animate= */ true);
     }
 
     @Override
