@@ -31,6 +31,7 @@ public class TaskbarControllers {
     public final RotationButtonController rotationButtonController;
     public final TaskbarDragLayerController taskbarDragLayerController;
     public final TaskbarViewController taskbarViewController;
+    public final TaskbarKeyguardController taskbarKeyguardController;
 
     /** Do not store this controller, as it may change at runtime. */
     @NonNull public TaskbarUIController uiController = TaskbarUIController.DEFAULT;
@@ -41,7 +42,8 @@ public class TaskbarControllers {
             NavbarButtonsViewController navbarButtonsViewController,
             RotationButtonController rotationButtonController,
             TaskbarDragLayerController taskbarDragLayerController,
-            TaskbarViewController taskbarViewController) {
+            TaskbarViewController taskbarViewController,
+            TaskbarKeyguardController taskbarKeyguardController) {
         this.taskbarActivityContext = taskbarActivityContext;
         this.taskbarDragController = taskbarDragController;
         this.navButtonController = navButtonController;
@@ -49,6 +51,7 @@ public class TaskbarControllers {
         this.rotationButtonController = rotationButtonController;
         this.taskbarDragLayerController = taskbarDragLayerController;
         this.taskbarViewController = taskbarViewController;
+        this.taskbarKeyguardController = taskbarKeyguardController;
     }
 
     /**
@@ -63,6 +66,7 @@ public class TaskbarControllers {
         }
         taskbarDragLayerController.init(this);
         taskbarViewController.init(this);
+        taskbarKeyguardController.init(navbarButtonsViewController);
     }
 
     /**
@@ -72,5 +76,6 @@ public class TaskbarControllers {
         uiController.onDestroy();
         rotationButtonController.onDestroy();
         taskbarDragLayerController.onDestroy();
+        taskbarKeyguardController.onDestroy();
     }
 }

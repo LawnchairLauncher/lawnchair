@@ -22,6 +22,7 @@ import static com.android.launcher3.taskbar.TaskbarNavButtonController.BUTTON_HO
 import static com.android.launcher3.taskbar.TaskbarNavButtonController.BUTTON_IME_SWITCH;
 import static com.android.launcher3.taskbar.TaskbarNavButtonController.BUTTON_RECENTS;
 import static com.android.launcher3.taskbar.TaskbarViewController.ALPHA_INDEX_IME;
+import static com.android.launcher3.taskbar.TaskbarViewController.ALPHA_INDEX_KEYGUARD;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_A11Y_BUTTON_CLICKABLE;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_A11Y_BUTTON_LONG_CLICKABLE;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_IME_SHOWING;
@@ -65,6 +66,8 @@ public class NavbarButtonsViewController {
     private static final int FLAG_IME_VISIBLE = 1 << 1;
     private static final int FLAG_ROTATION_BUTTON_VISIBLE = 1 << 2;
     private static final int FLAG_A11Y_VISIBLE = 1 << 3;
+    private static final int FLAG_ONLY_BACK_FOR_BOUNCER_VISIBLE = 1 << 4;
+    private static final int FLAG_KEYGUARD_VISIBLE = 1 << 5;
 
     private static final int MASK_IME_SWITCHER_VISIBLE = FLAG_SWITCHER_SUPPORTED | FLAG_IME_VISIBLE;
 
@@ -114,6 +117,10 @@ public class NavbarButtonsViewController {
                     mControllers.taskbarViewController.getTaskbarIconAlpha()
                             .getProperty(ALPHA_INDEX_IME),
                     flags -> (flags & FLAG_IME_VISIBLE) == 0, MultiValueAlpha.VALUE, 1, 0));
+            mPropertyHolders.add(new StatePropertyHolder(
+                    mControllers.taskbarViewController.getTaskbarIconAlpha()
+                            .getProperty(ALPHA_INDEX_KEYGUARD),
+                    flags -> (flags & FLAG_KEYGUARD_VISIBLE) == 0, MultiValueAlpha.VALUE, 1, 0));
 
             // Rotation button
             RotationButton rotationButton = new RotationButtonImpl(addButton(mEndContainer));
@@ -136,16 +143,21 @@ public class NavbarButtonsViewController {
         mPropertyHolders.add(new StatePropertyHolder(backButton,
                 flags -> (flags & FLAG_IME_VISIBLE) == 0, View.ROTATION, 0,
                 Utilities.isRtl(mContext.getResources()) ? 90 : -90));
+        mPropertyHolders.add(new StatePropertyHolder(backButton,
+                flags -> (flags & FLAG_KEYGUARD_VISIBLE) == 0 ||
+                        (flags & FLAG_ONLY_BACK_FOR_BOUNCER_VISIBLE) != 0));
 
         // home and recents buttons
         View homeButton = addButton(R.drawable.ic_sysbar_home, BUTTON_HOME, startContainer,
                 navButtonController);
         mPropertyHolders.add(new StatePropertyHolder(homeButton,
-                flags -> (flags & FLAG_IME_VISIBLE) == 0));
+                flags -> (flags & FLAG_IME_VISIBLE) == 0 &&
+                        (flags & FLAG_KEYGUARD_VISIBLE) == 0));
         View recentsButton = addButton(R.drawable.ic_sysbar_recent, BUTTON_RECENTS,
                 startContainer, navButtonController);
         mPropertyHolders.add(new StatePropertyHolder(recentsButton,
-                flags -> (flags & FLAG_IME_VISIBLE) == 0));
+                flags -> (flags & FLAG_IME_VISIBLE) == 0 &&
+                        (flags & FLAG_KEYGUARD_VISIBLE) == 0));
 
         // IME switcher
         View imeSwitcherButton = addButton(R.drawable.ic_ime_switcher, BUTTON_IME_SWITCH,
@@ -180,6 +192,22 @@ public class NavbarButtonsViewController {
         updateStateForFlag(FLAG_SWITCHER_SUPPORTED, isImeSwitcherShowing);
         updateStateForFlag(FLAG_A11Y_VISIBLE, a11yVisible);
         mA11yButton.setLongClickable(a11yLongClickable);
+        applyState();
+    }
+
+    /**
+     * Should be called when we need to show back button for bouncer
+     */
+    public void setBackForBouncer(boolean isBouncerVisible) {
+        updateStateForFlag(FLAG_ONLY_BACK_FOR_BOUNCER_VISIBLE, isBouncerVisible);
+        applyState();
+    }
+
+    /**
+     * Slightly misnamed, but should be called when only keyguard OR AOD is showing
+     */
+    public void setKeyguardVisible(boolean isKeyguardVisible) {
+        updateStateForFlag(FLAG_KEYGUARD_VISIBLE, isKeyguardVisible);
         applyState();
     }
 
