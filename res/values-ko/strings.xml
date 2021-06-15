@@ -53,7 +53,9 @@
     <string name="widget_category_conversations" msgid="8894438636213590446">"대화"</string>
     <string name="widget_education_header" msgid="4874760613775913787">"빠르게 유용한 정보 확인"</string>
     <string name="widget_education_content" msgid="745542879510751525">"앱을 열지 않고 정보를 확인하려면 홈 화면에 위젯을 추가하세요."</string>
+    <string name="reconfigurable_widget_education_tip" msgid="6336962690888067057">"탭하여 위젯 설정 변경"</string>
     <string name="widget_education_close_button" msgid="8676165703104836580">"확인"</string>
+    <string name="widget_reconfigure_button_content_description" msgid="8811472721881205250">"위젯 설정 변경"</string>
     <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"앱 검색"</string>
     <string name="all_apps_loading_message" msgid="5813968043155271636">"앱 로드 중…"</string>
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"\'<xliff:g id="QUERY">%1$s</xliff:g>\'과(와) 일치하는 앱이 없습니다."</string>
@@ -154,18 +156,16 @@
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"개인"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"직장"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"직장 프로필"</string>
-    <string name="work_profile_edu_personal_apps" msgid="4155536355149317441">"개인 정보는 직장 앱에서 분리되어 숨겨짐"</string>
-    <string name="work_profile_edu_work_apps" msgid="237051938268703058">"직장 앱 및 데이터가 IT 관리자에게 표시됨"</string>
-    <string name="work_profile_edu_next" msgid="8783418929296503629">"다음"</string>
+    <!-- no translation found for work_profile_edu_work_apps (7895468576497746520) -->
+    <skip />
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"확인"</string>
-    <string name="work_apps_paused_title" msgid="2389865654362803723">"직장 프로필이 일시중지됨"</string>
-    <string name="work_apps_paused_body" msgid="4209084728264328628">"직장 앱에서 알림을 보내거나 배터리를 사용하거나 내 위치 정보에 액세스할 수 없습니다."</string>
-    <string name="work_apps_paused_content_description" msgid="4473292417145736203">"직장 프로필이 일시중지되었습니다. 직장 앱에서 알림을 보내거나 배터리를 사용하거나 내 위치 정보에 액세스할 수 없습니다."</string>
+    <string name="work_apps_paused_title" msgid="3007471013401118920">"직장 앱이 꺼져 있음"</string>
+    <string name="work_apps_paused_body" msgid="261634750995824906">"직장 앱에서 알림을 보내거나 배터리를 사용하거나 위치 정보에 액세스할 수 없습니다."</string>
+    <string name="work_apps_paused_content_description" msgid="5149623040804051095">"직장 앱이 꺼져 있습니다. 직장 앱에서 알림을 보내거나 배터리를 사용하거나 위치 정보에 액세스할 수 없습니다."</string>
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"직장 앱에는 배지가 있으며, IT 관리자는 직장 앱을 확인할 수 있습니다."</string>
     <string name="work_apps_paused_edu_accept" msgid="6377476824357318532">"확인"</string>
-    <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"직장 앱 일시중지"</string>
-    <string name="work_apps_enable_btn_text" msgid="82111102541971856">"사용 설정"</string>
+    <string name="work_apps_pause_btn_text" msgid="1921059713673767460">"직장 앱 사용 중지"</string>
+    <string name="work_apps_enable_btn_text" msgid="1156432622148413741">"직장 앱 사용 설정"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"필터"</string>
-    <string name="work_switch_tip" msgid="808075064383839144">"직장 앱 및 알림 일시중지"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"실패: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
 </resources>

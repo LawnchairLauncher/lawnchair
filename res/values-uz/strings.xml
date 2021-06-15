@@ -53,7 +53,9 @@
     <string name="widget_category_conversations" msgid="8894438636213590446">"Suhbatlar"</string>
     <string name="widget_education_header" msgid="4874760613775913787">"Barcha foydali axborot koʻz oldingizda"</string>
     <string name="widget_education_content" msgid="745542879510751525">"Ilovalarni ochmasdan axborot olish uchun vidjetlarni bosh ekranga qoʻshishingiz mumkin"</string>
+    <string name="reconfigurable_widget_education_tip" msgid="6336962690888067057">"Vidjet sozlamalarini oʻzgartirish uchun bosing"</string>
     <string name="widget_education_close_button" msgid="8676165703104836580">"OK"</string>
+    <string name="widget_reconfigure_button_content_description" msgid="8811472721881205250">"Vidjet sozlamalarini oʻzgartirish"</string>
     <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"Ilovalarni qidirish"</string>
     <string name="all_apps_loading_message" msgid="5813968043155271636">"Ilovalar yuklanmoqda…"</string>
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"“<xliff:g id="QUERY">%1$s</xliff:g>” bilan mos hech qanday ilova topilmadi"</string>
@@ -62,7 +64,7 @@
     <string name="notifications_header" msgid="1404149926117359025">"Bildirishnomalar"</string>
     <string name="long_press_shortcut_to_add" msgid="5405328730817637737">"Yorliqni bosib turgan holatda suring."</string>
     <string name="long_accessible_way_to_add_shortcut" msgid="2199537273817090740">"Ikki marta bosing va yorliqni bosib turgan holatda suring yoki maxsus amaldan foydalaning."</string>
-    <string name="out_of_space" msgid="4691004494942118364">"Uy ekranida bitta ham xona yo‘q."</string>
+    <string name="out_of_space" msgid="4691004494942118364">"Bosh ekranda joy qolmadi."</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"Ajratilganlarda birorta ham xona yo‘q"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"Ilovalar ro‘yxati"</string>
     <string name="all_apps_button_personal_label" msgid="1315764287305224468">"Shaxsiy ilovalar ro‘yxati"</string>
@@ -127,7 +129,7 @@
     <string name="action_add_to_workspace" msgid="8902165848117513641">"Bosh ekranga chiqarish"</string>
     <string name="action_move_here" msgid="2170188780612570250">"Obyektni bu yerga ko‘chirish"</string>
     <string name="item_added_to_workspace" msgid="4211073925752213539">"Obyekt bosh ekranga qo‘shildi"</string>
-    <string name="item_removed" msgid="851119963877842327">"Obyekt o‘chirib tashlandi"</string>
+    <string name="item_removed" msgid="851119963877842327">"Element olib tashlandi"</string>
     <string name="undo" msgid="4151576204245173321">"Qaytarish"</string>
     <string name="action_move" msgid="4339390619886385032">"Obyektni ko‘chirib o‘tkazish"</string>
     <string name="move_to_empty_cell" msgid="2833711483015685619">"<xliff:g id="NUMBER_0">%1$s</xliff:g> <xliff:g id="NUMBER_1">%2$s</xliff:g> katakka olish"</string>
@@ -154,18 +156,16 @@
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"Shaxsiy"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"Ish"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"Ish profili"</string>
-    <string name="work_profile_edu_personal_apps" msgid="4155536355149317441">"Shaxsiy maʼlumotlar ishga oid ilovalardan alohida va berkitilgan"</string>
-    <string name="work_profile_edu_work_apps" msgid="237051938268703058">"Administratoringiz ishga oid ilovalar va maʼlumotlarni koʻra oladi"</string>
-    <string name="work_profile_edu_next" msgid="8783418929296503629">"Keyingisi"</string>
+    <!-- no translation found for work_profile_edu_work_apps (7895468576497746520) -->
+    <skip />
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"OK"</string>
-    <string name="work_apps_paused_title" msgid="2389865654362803723">"Ish profili pauzada"</string>
-    <string name="work_apps_paused_body" msgid="4209084728264328628">"Ishga oid ilovalar batareya sarfi haqida bildirishnomalar yubora olmaydi va joylashuv axborotidan foydalana olmaydi"</string>
-    <string name="work_apps_paused_content_description" msgid="4473292417145736203">"Ish profili pauzada. Ishga oid ilovalar batareya sarfi haqida bildirishnomalar yubora olmaydi va joylashuv axborotidan foydalana olmaydi"</string>
+    <string name="work_apps_paused_title" msgid="3007471013401118920">"Ishga oid ilovalar faolsizlantirilgan"</string>
+    <string name="work_apps_paused_body" msgid="261634750995824906">"Ishga oid ilovalar batareya sarfi haqida bildirishnomalar yubora olmaydi va joylashuv axborotidan foydalana olmaydi"</string>
+    <string name="work_apps_paused_content_description" msgid="5149623040804051095">"Ishga oid ilovalar faolsizlantirilgan. Ular batareya sarfi haqida bildirishnomalar yubora olmaydi va joylashuv axborotidan foydalana olmaydi"</string>
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"Ishga oid ilovalar qadalgan va IT administratoringizga koʻrinadi"</string>
     <string name="work_apps_paused_edu_accept" msgid="6377476824357318532">"OK"</string>
-    <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"Ishga oid ilovalarni pauza qilish"</string>
-    <string name="work_apps_enable_btn_text" msgid="82111102541971856">"Yoqish"</string>
+    <string name="work_apps_pause_btn_text" msgid="1921059713673767460">"Ishga oid ilovalarni faolsizlantirish"</string>
+    <string name="work_apps_enable_btn_text" msgid="1156432622148413741">"Ishga oid ilovalarni yoqish"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"Saralash"</string>
-    <string name="work_switch_tip" msgid="808075064383839144">"Ishga oid ilova va bildirishnomalarni pauza qilish"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"Xato: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
 </resources>
