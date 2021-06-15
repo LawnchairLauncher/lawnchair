@@ -48,12 +48,14 @@
     <string name="widgets_full_sheet_cancel_button_description" msgid="5766167035728653605">"Borra el texto del cuadro de búsqueda"</string>
     <string name="no_widgets_available" msgid="9140948620298620513">"No hay widgets disponibles"</string>
     <string name="no_search_results" msgid="6518732304311458580">"La búsqueda no arrojó resultados"</string>
-    <string name="widgets_full_sheet_personal_tab" msgid="2743540105607120182">"Personal"</string>
+    <string name="widgets_full_sheet_personal_tab" msgid="2743540105607120182">"Personales"</string>
     <string name="widgets_full_sheet_work_tab" msgid="3767150027110633765">"Trabajo"</string>
     <string name="widget_category_conversations" msgid="8894438636213590446">"Conversaciones"</string>
     <string name="widget_education_header" msgid="4874760613775913787">"Información útil a tu alcance"</string>
     <string name="widget_education_content" msgid="745542879510751525">"Para recibir información de apps sin abrirlas, puedes agregar widgets a la pantalla principal"</string>
+    <string name="reconfigurable_widget_education_tip" msgid="6336962690888067057">"Presiona para cambiar la configuración del widget"</string>
     <string name="widget_education_close_button" msgid="8676165703104836580">"Entendido"</string>
+    <string name="widget_reconfigure_button_content_description" msgid="8811472721881205250">"Cambiar la configuración del widget"</string>
     <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"Buscar apps"</string>
     <string name="all_apps_loading_message" msgid="5813968043155271636">"Cargando apps…"</string>
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"No hay apps que coincidan con \"<xliff:g id="QUERY">%1$s</xliff:g>\""</string>
@@ -154,18 +156,16 @@
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"Personales"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"De trabajo"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"Perfil de trabajo"</string>
-    <string name="work_profile_edu_personal_apps" msgid="4155536355149317441">"Los datos personales están separados y ocultos de las apps de trabajo"</string>
-    <string name="work_profile_edu_work_apps" msgid="237051938268703058">"El administrador de TI puede ver las apps de trabajo y los datos"</string>
-    <string name="work_profile_edu_next" msgid="8783418929296503629">"Siguiente"</string>
+    <!-- no translation found for work_profile_edu_work_apps (7895468576497746520) -->
+    <skip />
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"Entendido"</string>
-    <string name="work_apps_paused_title" msgid="2389865654362803723">"El perfil de trabajo está en pausa"</string>
-    <string name="work_apps_paused_body" msgid="4209084728264328628">"Las apps de trabajo no pueden enviarte notificaciones, usar la batería ni acceder a tu ubicación"</string>
-    <string name="work_apps_paused_content_description" msgid="4473292417145736203">"El perfil de trabajo está en pausa. Las apps de trabajo no pueden enviarte notificaciones, usar la batería ni acceder a tu ubicación"</string>
+    <string name="work_apps_paused_title" msgid="3007471013401118920">"Las apps de trabajo están desactivadas"</string>
+    <string name="work_apps_paused_body" msgid="261634750995824906">"Las apps de trabajo no pueden enviarte notificaciones, usar la batería ni acceder a tu ubicación"</string>
+    <string name="work_apps_paused_content_description" msgid="5149623040804051095">"Las apps de trabajo están desactivadas y, por ende, no pueden enviarte notificaciones, usar la batería ni acceder a tu ubicación"</string>
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"Las apps de trabajo tienen una insignia y el administrador de IT las puede ver"</string>
     <string name="work_apps_paused_edu_accept" msgid="6377476824357318532">"Entendido"</string>
-    <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"Detener apps de trabajo"</string>
-    <string name="work_apps_enable_btn_text" msgid="82111102541971856">"Activar"</string>
+    <string name="work_apps_pause_btn_text" msgid="1921059713673767460">"Desactivar las apps de trabajo"</string>
+    <string name="work_apps_enable_btn_text" msgid="1156432622148413741">"Activar las apps de trabajo"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"Filtro"</string>
-    <string name="work_switch_tip" msgid="808075064383839144">"Pon en pausa las apps de trabajo y las notificaciones"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"Error: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
 </resources>
