@@ -105,6 +105,7 @@ fun TopBarSurface(floating: Boolean, content: @Composable () -> Unit) {
         color.animateTo(if (floating) floatingColor else normalColor)
     }
     val shadowAlpha by animateFloatAsState(if (floating) 1f else 0f)
+
     Column(
         modifier = Modifier
             .navigationBarsPadding(bottom = false)
@@ -139,12 +140,11 @@ fun topBarColors(): Pair<Color, Color> {
 }
 
 @Composable
-fun backIcon(): ImageVector {
-    return if (LocalLayoutDirection.current == LayoutDirection.Ltr) {
+fun backIcon(): ImageVector =
+    if (LocalLayoutDirection.current == LayoutDirection.Ltr) {
         Icons.Rounded.ArrowBack
     } else {
         Icons.Rounded.ArrowForward
     }
-}
 
 val topBarSize = 56.dp
