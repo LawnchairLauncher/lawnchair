@@ -1079,7 +1079,13 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
                 // Making sure mAllAppsSessionLogId is not null to avoid double logging.
                 && mAllAppsSessionLogId != null) {
             getAppsView().getSearchUiManager().resetSearch();
-            getStatsLogManager().logger().log(LAUNCHER_ALLAPPS_EXIT);
+            getStatsLogManager().logger()
+                    .withContainerInfo(LauncherAtom.ContainerInfo.newBuilder()
+                            .setWorkspace(
+                                    LauncherAtom.WorkspaceContainer.newBuilder()
+                                            .setPageIndex(getWorkspace().getCurrentPage()))
+                            .build())
+                    .log(LAUNCHER_ALLAPPS_EXIT);
             mAllAppsSessionLogId = null;
         }
     }
