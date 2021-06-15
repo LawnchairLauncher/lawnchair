@@ -93,7 +93,7 @@ public class TaskbarDragLayerController {
          */
         public void updateInsetsTouchability(InsetsInfo insetsInfo) {
             insetsInfo.touchableRegion.setEmpty();
-            if (mActivity.canShowNavButtons()) {
+            if (mActivity.isThreeButtonNav()) {
                 // Always have nav buttons be touchable
                 mControllers.navbarButtonsViewController.addVisibleButtonsRegion(
                         mTaskbarDragLayer, insetsInfo.touchableRegion);
