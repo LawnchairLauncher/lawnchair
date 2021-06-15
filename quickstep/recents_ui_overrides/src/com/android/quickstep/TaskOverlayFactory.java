@@ -147,10 +147,10 @@ public class TaskOverlayFactory implements ResourceBasedOverride {
         public void initOverlay(Task task, ThumbnailData thumbnail, Matrix matrix,
                 boolean rotated) {
             getActionsView().updateDisabledFlags(DISABLED_NO_THUMBNAIL, thumbnail == null);
+            final boolean isAllowedByPolicy = mThumbnailView.isRealSnapshot();
 
             if (thumbnail != null) {
                 getActionsView().updateDisabledFlags(DISABLED_ROTATED, rotated);
-                final boolean isAllowedByPolicy = thumbnail.isRealSnapshot;
 
                 getActionsView().setCallbacks(new OverlayUICallbacks() {
                     @Override
