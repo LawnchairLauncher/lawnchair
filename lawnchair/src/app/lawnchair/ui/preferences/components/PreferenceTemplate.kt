@@ -28,7 +28,6 @@ fun PreferenceTemplate(height: Dp, showDivider: Boolean = true, content: @Compos
     Column(
         modifier = Modifier
             .height(if (showDivider) height + 1.dp else height)
-            .fillMaxWidth()
     ) {
         Box(
             modifier = Modifier
@@ -37,6 +36,8 @@ fun PreferenceTemplate(height: Dp, showDivider: Boolean = true, content: @Compos
         ) {
             content()
         }
-        if (showDivider) Divider(modifier = Modifier.padding(start = 16.dp, end = 16.dp))
+        if (showDivider) {
+            Divider(modifier = Modifier.padding(horizontal = 16.dp))
+        }
     }
 }
