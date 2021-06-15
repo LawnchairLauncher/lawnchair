@@ -473,7 +473,13 @@ public class StatsLogManager implements ResourceBasedOverride {
         LAUNCHER_WIDGET_RESIZE_COMPLETED(824),
 
         @UiEvent(doc = "User reconfigured a widget on their home screen.")
-        LAUNCHER_WIDGET_RECONFIGURED(821)
+        LAUNCHER_WIDGET_RECONFIGURED(821),
+
+        @UiEvent(doc = "User enabled themed icons option in wallpaper & style settings.")
+        LAUNCHER_THEMED_ICON_ENABLED(836),
+
+        @UiEvent(doc = "User disabled themed icons option in wallpaper & style settings.")
+        LAUNCHER_THEMED_ICON_DISABLED(837)
         ;
 
         // ADD MORE

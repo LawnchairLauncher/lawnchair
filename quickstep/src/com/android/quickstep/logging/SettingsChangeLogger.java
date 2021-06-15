@@ -27,8 +27,11 @@ import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCH
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_HOME_SCREEN_SUGGESTIONS_ENABLED;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_NOTIFICATION_DOT_DISABLED;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_NOTIFICATION_DOT_ENABLED;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_THEMED_ICON_DISABLED;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_THEMED_ICON_ENABLED;
 import static com.android.launcher3.model.QuickstepModelDelegate.LAST_PREDICTION_ENABLED_STATE;
 import static com.android.launcher3.util.SettingsCache.NOTIFICATION_BADGING_URI;
+import static com.android.launcher3.util.Themes.KEY_THEMED_ICONS;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -40,6 +43,7 @@ import android.util.Xml;
 
 import com.android.launcher3.AutoInstallsLayout;
 import com.android.launcher3.R;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.logging.InstanceIdSequence;
 import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.logging.StatsLogManager.StatsLogger;
@@ -170,6 +174,13 @@ public class SettingsChangeLogger implements
         if (gridSizeChangedEvent != null) {
             logger.log(gridSizeChangedEvent);
         }
+
+        if (FeatureFlags.ENABLE_THEMED_ICONS.get()) {
+            logger.log(prefs.getBoolean(KEY_THEMED_ICONS, false)
+                    ? LAUNCHER_THEMED_ICON_ENABLED
+                    : LAUNCHER_THEMED_ICON_DISABLED);
+        }
+
         mLoggablePrefs.forEach((key, lp) -> logger.log(() ->
                 prefs.getBoolean(key, lp.defaultValue) ? lp.eventIdOn : lp.eventIdOff));
     }
