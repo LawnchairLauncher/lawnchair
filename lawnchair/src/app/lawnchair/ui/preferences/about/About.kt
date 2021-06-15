@@ -140,8 +140,8 @@ fun NavGraphBuilder.aboutGraph(route: String) {
 @Composable
 fun About() {
     val context = LocalContext.current
-
     pageMeta.provide(Meta(title = stringResource(id = R.string.about_label)))
+
     PreferenceLayout(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -152,9 +152,7 @@ fun About() {
             modifier = Modifier
                 .width(96.dp)
                 .height(96.dp)
-                .clip(
-                    CircleShape
-                )
+                .clip(CircleShape)
         )
         Spacer(modifier = Modifier.requiredHeight(16.dp))
         Text(
@@ -172,7 +170,7 @@ fun About() {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(start = 16.dp, end = 16.dp)
+                .padding(horizontal = 16.dp)
         ) {
             LawnchairLink(
                 iconResId = R.drawable.ic_new_releases,
@@ -222,18 +220,25 @@ fun About() {
             }
         }
         PreferenceGroup {
-            ClickablePreference(label = stringResource(id = R.string.acknowledgements), onClick = {
-                val intent = Intent(context, OssLicensesMenuActivity::class.java)
-                OssLicensesMenuActivity.setActivityTitle(context.getString(R.string.acknowledgements))
-                context.startActivity(intent)
-            })
-            ClickablePreference(label = stringResource(id = R.string.translate), showDivider = false, onClick = {
-                val webpage = Uri.parse("https://lawnchair.crowdin.com")
-                val intent = Intent(Intent.ACTION_VIEW, webpage)
-                if (intent.resolveActivity(context.packageManager) != null) {
+            ClickablePreference(
+                label = stringResource(id = R.string.acknowledgements),
+                onClick = {
+                    val intent = Intent(context, OssLicensesMenuActivity::class.java)
+                    OssLicensesMenuActivity.setActivityTitle(context.getString(R.string.acknowledgements))
                     context.startActivity(intent)
                 }
-            })
+            )
+            ClickablePreference(
+                label = stringResource(id = R.string.translate),
+                showDivider = false,
+                onClick = {
+                    val webpage = Uri.parse("https://lawnchair.crowdin.com")
+                    val intent = Intent(Intent.ACTION_VIEW, webpage)
+                    if (intent.resolveActivity(context.packageManager) != null) {
+                        context.startActivity(intent)
+                    }
+                }
+            )
         }
     }
 }
