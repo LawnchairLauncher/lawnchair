@@ -15,11 +15,6 @@
  */
 package com.android.launcher3.taskbar;
 
-import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
-import static com.android.launcher3.LauncherAnimUtils.VIEW_TRANSLATE_X;
-import static com.android.launcher3.LauncherAnimUtils.VIEW_TRANSLATE_Y;
-import static com.android.launcher3.anim.Interpolators.LINEAR;
-
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Canvas;
@@ -34,10 +29,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.android.launcher3.BubbleTextView;
-import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Insettable;
 import com.android.launcher3.R;
-import com.android.launcher3.anim.PropertySetter;
 import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.model.data.FolderInfo;
 import com.android.launcher3.model.data.ItemInfo;
@@ -105,51 +98,6 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
         mIconLongClickListener = mControllerCallbacks.getOnLongClickListener();
     }
 
-    /**
-     * Aligns the icons in the taskbar to that of Launcher.
-     */
-    public void alignIconsWithLauncher(DeviceProfile launcherDp, PropertySetter setter) {
-        Rect hotseatPadding = launcherDp.getHotseatLayoutPadding(getContext());
-        float scaleUp = ((float) launcherDp.iconSizePx)
-                / mActivityContext.getDeviceProfile().iconSizePx;
-        int hotseatCellSize =
-                (launcherDp.availableWidthPx - hotseatPadding.left - hotseatPadding.right)
-                        / launcherDp.numShownHotseatIcons;
-
-        int offsetY = launcherDp.getTaskbarOffsetY();
-        setter.setFloat(this, VIEW_TRANSLATE_Y, -offsetY, LINEAR);
-        mActivityContext.setTaskbarWindowHeight(
-                mActivityContext.getDeviceProfile().taskbarSize + offsetY);
-
-        int count = getChildCount();
-        for (int i = 0; i < count; i++) {
-            View child = getChildAt(i);
-            ItemInfo info = (ItemInfo) child.getTag();
-            setter.setFloat(child, SCALE_PROPERTY, scaleUp, LINEAR);
-
-            float childCenter = (child.getLeft() + child.getRight()) / 2;
-            float hotseatIconCenter = hotseatPadding.left + hotseatCellSize * info.screenId
-                    + hotseatCellSize / 2;
-            setter.setFloat(child, VIEW_TRANSLATE_X, hotseatIconCenter - childCenter, LINEAR);
-        }
-    }
-
-    /**
-     * Aligns the icons in the taskbar to that of Launcher.
-     * @return a callback to be executed at the end of the setter
-     */
-    public Runnable resetIconPosition(PropertySetter setter) {
-        int count = getChildCount();
-        for (int i = 0; i < count; i++) {
-            View child = getChildAt(i);
-            setter.setFloat(child, SCALE_PROPERTY, 1, LINEAR);
-            setter.setFloat(child, VIEW_TRANSLATE_X, 0, LINEAR);
-        }
-        setter.setFloat(this, VIEW_TRANSLATE_Y, 0, LINEAR);
-        return () -> mActivityContext.setTaskbarWindowHeight(
-                mActivityContext.getDeviceProfile().taskbarSize);
-    }
-
     private void removeAndRecycle(View view) {
         removeView(view);
         view.setOnClickListener(null);
@@ -195,6 +143,7 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
                     // so if the info changes we need to reinflate. This should only happen if a new
                     // folder is dragged to the position that another folder previously existed.
                     removeAndRecycle(hotseatView);
+                    hotseatView = null;
                 } else {
                     // View found
                     break;

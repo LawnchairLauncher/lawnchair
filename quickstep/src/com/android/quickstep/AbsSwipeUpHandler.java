@@ -1107,7 +1107,8 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
                     mActivityRestartListener);
 
             mParallelRunningAnim = mActivityInterface.getParallelAnimationToLauncher(
-                    mGestureState.getEndTarget(), duration);
+                    mGestureState.getEndTarget(), duration,
+                    mTaskAnimationManager.getCurrentCallbacks());
             if (mParallelRunningAnim != null) {
                 mParallelRunningAnim.start();
             }
