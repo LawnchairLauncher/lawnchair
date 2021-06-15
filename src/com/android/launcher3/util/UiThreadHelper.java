@@ -25,11 +25,9 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.view.View;
-import android.view.WindowInsets;
 import android.view.inputmethod.InputMethodManager;
 
 import com.android.launcher3.Launcher;
-import com.android.launcher3.Utilities;
 import com.android.launcher3.views.ActivityContext;
 
 /**
@@ -48,14 +46,6 @@ public class UiThreadHelper {
     @SuppressLint("NewApi")
     public static void hideKeyboardAsync(ActivityContext activityContext, IBinder token) {
         View root = activityContext.getDragLayer();
-        if (Utilities.ATLEAST_R) {
-            WindowInsets rootInsets = root.getRootWindowInsets();
-            boolean isImeShown = rootInsets != null && rootInsets.isVisible(
-                    WindowInsets.Type.ime());
-            if (!isImeShown) {
-                return;
-            }
-        }
 
         Message.obtain(HANDLER.get(root.getContext()),
                 MSG_HIDE_KEYBOARD, token).sendToTarget();
