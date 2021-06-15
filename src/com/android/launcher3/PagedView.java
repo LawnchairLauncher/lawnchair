@@ -17,6 +17,7 @@
 package com.android.launcher3;
 
 import static androidx.annotation.VisibleForTesting.PACKAGE_PRIVATE;
+
 import static com.android.launcher3.anim.Interpolators.SCROLL;
 import static com.android.launcher3.compat.AccessibilityManagerCompat.isAccessibilityEnabled;
 import static com.android.launcher3.compat.AccessibilityManagerCompat.isObservedEventType;

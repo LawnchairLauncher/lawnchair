@@ -117,6 +117,11 @@ public class BgDataModel {
     public int lastBindId = 0;
 
     /**
+     * Value that indicates if left widget panel is shown or not.
+     */
+    public boolean isLeftPanelShown = false;
+
+    /**
      * Clears all the data
      */
     public synchronized void clear() {
@@ -140,6 +145,14 @@ public class BgDataModel {
         }
         if (FeatureFlags.QSB_ON_FIRST_SCREEN || screenSet.isEmpty()) {
             screenSet.add(Workspace.FIRST_SCREEN_ID);
+        }
+
+        if (isLeftPanelShown) {
+            // We should add it even though there are no items on it.
+            screenSet.add(Workspace.LEFT_PANEL_ID);
+        } else {
+            // We should NOT add it even though there are items on it.
+            screenSet.remove(Workspace.LEFT_PANEL_ID);
         }
         return screenSet.getArray();
     }

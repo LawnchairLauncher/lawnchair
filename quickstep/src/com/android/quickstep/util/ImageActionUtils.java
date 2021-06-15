@@ -26,6 +26,7 @@ import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 import android.app.Activity;
 import android.app.ActivityOptions;
 import android.app.prediction.AppTarget;
+import android.content.ActivityNotFoundException;
 import android.content.ClipData;
 import android.content.ClipDescription;
 import android.content.ComponentName;
@@ -68,6 +69,7 @@ public class ImageActionUtils {
     private static final long FILE_LIFE = 1000L /*ms*/ * 60L /*s*/ * 60L /*m*/ * 24L /*h*/;
     private static final String SUB_FOLDER = "Overview";
     private static final String BASE_NAME = "overview_image_";
+    private static final String TAG = "ImageActionUtils";
 
     /**
      * Saves screenshot to location determine by SystemUiProxy
@@ -154,11 +156,15 @@ public class ImageActionUtils {
             Intent intent, BiFunction<Uri, Intent, Intent[]> uriToIntentMap, String tag) {
         Intent[] intents = uriToIntentMap.apply(getImageUri(bitmap, crop, context, tag), intent);
 
-        // Work around b/159412574
-        if (intents.length == 1) {
-            context.startActivity(intents[0]);
-        } else {
-            context.startActivities(intents);
+        try {
+            // Work around b/159412574
+            if (intents.length == 1) {
+                context.startActivity(intents[0]);
+            } else {
+                context.startActivities(intents);
+            }
+        } catch (ActivityNotFoundException e) {
+            Log.e(TAG, "No activity found to receive image intent");
         }
     }
 
