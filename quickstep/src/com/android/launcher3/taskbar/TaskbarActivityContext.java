@@ -56,6 +56,7 @@ import com.android.launcher3.touch.ItemClickHandler;
 import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.util.TraceHelper;
+import com.android.launcher3.util.ViewCache;
 import com.android.launcher3.views.ActivityContext;
 import com.android.quickstep.SysUINavigationMode;
 import com.android.quickstep.SysUINavigationMode.Mode;
@@ -88,6 +89,7 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
     private int mLastRequestedNonFullscreenHeight;
 
     private final SysUINavigationMode.Mode mNavMode;
+    private final ViewCache mViewCache = new ViewCache();
 
     private final boolean mIsSafeModeEnabled;
 
@@ -185,6 +187,11 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
     @Override
     public TaskbarDragController getDragController() {
         return mControllers.taskbarDragController;
+    }
+
+    @Override
+    public ViewCache getViewCache() {
+        return mViewCache;
     }
 
     /**
