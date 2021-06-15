@@ -26,8 +26,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import app.lawnchair.util.smartBorder
 
-@ExperimentalAnimationApi
 @Composable
+@ExperimentalAnimationApi
 fun PreferenceGroup(
     heading: String? = null,
     isFirstChild: Boolean = false,
@@ -38,7 +38,7 @@ fun PreferenceGroup(
     PreferenceGroupHeading(heading, isFirstChild)
     Column(
         modifier = Modifier
-            .padding(start = 16.dp, end = 16.dp)
+            .padding(horizontal = 16.dp)
             .smartBorder(
                 1.dp,
                 color = MaterialTheme.colors.onBackground.copy(alpha = 0.12F),
@@ -66,7 +66,7 @@ fun PreferenceGroupHeading(heading: String? = null, isFirstChild: Boolean) {
         Column(
             modifier = Modifier
                 .height(48.dp)
-                .padding(start = 32.dp, end = 32.dp)
+                .padding(horizontal = 32.dp)
                 .fillMaxWidth(),
             verticalArrangement = Arrangement.Center
         ) {
@@ -84,8 +84,8 @@ fun PreferenceGroupHeading(heading: String? = null, isFirstChild: Boolean) {
     }
 }
 
-@ExperimentalAnimationApi
 @Composable
+@ExperimentalAnimationApi
 fun PreferenceGroupDescription(description: String? = null, showDescription: Boolean = true) {
     description?.let {
         AnimatedVisibility(
