@@ -75,7 +75,7 @@
     </plurals>
     <string name="hotseat_qsb_label">Qidiruv panelini ko‘rsatish</string>
     <string name="dt2s_admin_hint_title">Administrator ruxsatlarini talab qilish</string>
-    <string name="dt2s_admin_hint">Ikki marta bosish orqali uxlash uchun Lawnchairni qurilma administratori sifatida o‘rnating. “Sozlamalarni ochish”ga teging, so‘ngra “Qurilma administrator ilovasini faollashtirish”.</string>
+    <string name="dt2s_admin_hint">Ikki marta bosish orqali uxlash uchun Lawnchairni qurilma administratori sifatida o‘rnating. “Sozlamalarni ochish”ga teging, so‘ngra “Qurilma administrator ilovasini faollashtirish.”</string>
     <string name="dt2s_admin_warning">Kutish uchun ikki marta bosish o‘chiriladi.</string>
     <string name="dt2s_a11y_hint_title">Maxsus xizmatni yoqish</string>
     <string name="dt2s_a11y_hint">Ikki marta teginish orqali uxlash uchun Lawnchair maxsus xizmatni yoqing. “Sozlamalarni ochish” ga teging, so\'ng “Lawnchair” ni tanlang va “Lawnchairdan foydalanish” ni yoqing.</string>
