@@ -132,9 +132,10 @@ fun TopBarSurface(floating: Boolean, content: @Composable () -> Unit) {
 @Composable
 fun topBarColors(): Pair<Color, Color> {
     val elevationOverlay = LocalElevationOverlay.current
+    val backgroundColor = MaterialTheme.colors.background
     val surfaceColor = MaterialTheme.colors.surface
     val floatingColor = elevationOverlay?.apply(surfaceColor, 4.dp) ?: surfaceColor
-    return Pair(surfaceColor.copy(alpha = 0.9f), floatingColor.copy(alpha = 0.9f))
+    return Pair(backgroundColor.copy(alpha = 0.9f), floatingColor.copy(alpha = 0.9f))
 }
 
 @Composable
