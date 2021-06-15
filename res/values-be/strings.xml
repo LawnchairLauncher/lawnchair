@@ -57,7 +57,9 @@
     <string name="widget_category_conversations" msgid="8894438636213590446">"Размовы"</string>
     <string name="widget_education_header" msgid="4874760613775913787">"Карысная інфармацыя ў вас пад рукой"</string>
     <string name="widget_education_content" msgid="745542879510751525">"Каб не адкрываць праграмы для прагляду патрэбнай інфармацыі, дадайце віджэты на галоўны экран"</string>
+    <string name="reconfigurable_widget_education_tip" msgid="6336962690888067057">"Націсніце, каб змяніць налады віджэта"</string>
     <string name="widget_education_close_button" msgid="8676165703104836580">"Зразумела"</string>
+    <string name="widget_reconfigure_button_content_description" msgid="8811472721881205250">"Змяніць налады віджэта"</string>
     <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"Пошук праграм"</string>
     <string name="all_apps_loading_message" msgid="5813968043155271636">"Праграмы загружаюцца…"</string>
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"Праграм, якія адпавядаюць запыту \"<xliff:g id="QUERY">%1$s</xliff:g>\", не знойдзена"</string>
@@ -160,18 +162,16 @@
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"Асабістыя"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"Працоўныя"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"Працоўны профіль"</string>
-    <string name="work_profile_edu_personal_apps" msgid="4155536355149317441">"Асабістыя даныя схаваны і паказваюцца адасоблена ад працоўных праграм"</string>
-    <string name="work_profile_edu_work_apps" msgid="237051938268703058">"Ваш IТ-адміністратар мае доступ да працоўных праграм і іх даных"</string>
-    <string name="work_profile_edu_next" msgid="8783418929296503629">"Далей"</string>
+    <!-- no translation found for work_profile_edu_work_apps (7895468576497746520) -->
+    <skip />
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"Зразумела"</string>
-    <string name="work_apps_paused_title" msgid="2389865654362803723">"Працоўны профіль прыпынены"</string>
-    <string name="work_apps_paused_body" msgid="4209084728264328628">"Працоўныя праграмы не могуць адпраўляць вам апавяшчэнні, выкарыстоўваць акумулятар або атрымліваць доступ да даных пра ваша месцазнаходжанне"</string>
-    <string name="work_apps_paused_content_description" msgid="4473292417145736203">"Працоўны профіль прыпынены. Працоўныя праграмы не могуць адпраўляць вам апавяшчэнні, выкарыстоўваць акумулятар або атрымліваць доступ да даных пра ваша месцазнаходжанне"</string>
+    <string name="work_apps_paused_title" msgid="3007471013401118920">"Працоўныя праграмы выключаны"</string>
+    <string name="work_apps_paused_body" msgid="261634750995824906">"Працоўныя праграмы не могуць адпраўляць вам апавяшчэнні, выкарыстоўваць акумулятар або атрымліваць доступ да даных пра ваша месцазнаходжанне"</string>
+    <string name="work_apps_paused_content_description" msgid="5149623040804051095">"Працоўныя праграмы выключаны. Яны не могуць адпраўляць вам апавяшчэнні, выкарыстоўваць акумулятар або атрымліваць доступ да вашага месцазнаходжання"</string>
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"Працоўныя праграмы маюць значкі і бачныя IT-адміністратару"</string>
     <string name="work_apps_paused_edu_accept" msgid="6377476824357318532">"Зразумела"</string>
-    <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"Прыпыніць працоўныя праграмы"</string>
-    <string name="work_apps_enable_btn_text" msgid="82111102541971856">"Уключыць"</string>
+    <string name="work_apps_pause_btn_text" msgid="1921059713673767460">"Выключыць працоўныя праграмы"</string>
+    <string name="work_apps_enable_btn_text" msgid="1156432622148413741">"Уключыць працоўныя праграмы"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"Фільтр"</string>
-    <string name="work_switch_tip" msgid="808075064383839144">"Прыпыніць працоўныя праграмы і апавяшчэнні"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"Не ўдалося: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
 </resources>

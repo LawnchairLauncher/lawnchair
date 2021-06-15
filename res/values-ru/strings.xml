@@ -57,7 +57,9 @@
     <string name="widget_category_conversations" msgid="8894438636213590446">"Разговоры"</string>
     <string name="widget_education_header" msgid="4874760613775913787">"Вся нужная информация перед глазами"</string>
     <string name="widget_education_content" msgid="745542879510751525">"Чтобы не открывать приложения каждый раз, когда нужна информация, добавьте виджеты на главный экран."</string>
+    <string name="reconfigurable_widget_education_tip" msgid="6336962690888067057">"Нажмите, чтобы изменить настройки виджета"</string>
     <string name="widget_education_close_button" msgid="8676165703104836580">"ОК"</string>
+    <string name="widget_reconfigure_button_content_description" msgid="8811472721881205250">"Изменить настройки виджета"</string>
     <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"Поиск приложений"</string>
     <string name="all_apps_loading_message" msgid="5813968043155271636">"Загрузка приложений…"</string>
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"По запросу \"<xliff:g id="QUERY">%1$s</xliff:g>\" ничего не найдено"</string>
@@ -66,7 +68,7 @@
     <string name="notifications_header" msgid="1404149926117359025">"Уведомления"</string>
     <string name="long_press_shortcut_to_add" msgid="5405328730817637737">"Нажмите и удерживайте для переноса ярлыка."</string>
     <string name="long_accessible_way_to_add_shortcut" msgid="2199537273817090740">"Чтобы использовать специальные действия или перенести ярлык, нажмите на него дважды и удерживайте."</string>
-    <string name="out_of_space" msgid="4691004494942118364">"На этом экране все занято"</string>
+    <string name="out_of_space" msgid="4691004494942118364">"На этом экране нет свободного места."</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"В разделе \"Избранное\" больше нет места"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"Список приложений"</string>
     <string name="all_apps_button_personal_label" msgid="1315764287305224468">"Открыть список личных приложений"</string>
@@ -133,7 +135,7 @@
     <string name="action_add_to_workspace" msgid="8902165848117513641">"Добавить на главный экран"</string>
     <string name="action_move_here" msgid="2170188780612570250">"Переместить элемент сюда"</string>
     <string name="item_added_to_workspace" msgid="4211073925752213539">"Элемент добавлен на главный экран"</string>
-    <string name="item_removed" msgid="851119963877842327">"Элемент удален."</string>
+    <string name="item_removed" msgid="851119963877842327">"Объект удален."</string>
     <string name="undo" msgid="4151576204245173321">"Отменить"</string>
     <string name="action_move" msgid="4339390619886385032">"Переместить элемент"</string>
     <string name="move_to_empty_cell" msgid="2833711483015685619">"Переместить в ячейку <xliff:g id="NUMBER_0">%1$s</xliff:g> <xliff:g id="NUMBER_1">%2$s</xliff:g>"</string>
@@ -160,18 +162,16 @@
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"Личные"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"Рабочие"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"Рабочий профиль"</string>
-    <string name="work_profile_edu_personal_apps" msgid="4155536355149317441">"Личные данные скрыты от рабочих приложений и недоступны им."</string>
-    <string name="work_profile_edu_work_apps" msgid="237051938268703058">"Рабочие приложения и их данные видны системному администратору."</string>
-    <string name="work_profile_edu_next" msgid="8783418929296503629">"Далее"</string>
+    <!-- no translation found for work_profile_edu_work_apps (7895468576497746520) -->
+    <skip />
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"ОК"</string>
-    <string name="work_apps_paused_title" msgid="2389865654362803723">"Рабочий профиль приостановлен"</string>
-    <string name="work_apps_paused_body" msgid="4209084728264328628">"Рабочие приложения не могут отправлять уведомления, расходовать заряд батареи и получать доступ к данным о вашем местоположении."</string>
-    <string name="work_apps_paused_content_description" msgid="4473292417145736203">"Рабочий профиль приостановлен. Рабочие приложения не могут отправлять уведомления, расходовать заряд батареи и получать доступ к данным о вашем местоположении."</string>
+    <string name="work_apps_paused_title" msgid="3007471013401118920">"Рабочие приложения отключены"</string>
+    <string name="work_apps_paused_body" msgid="261634750995824906">"Рабочие приложения не могут отправлять уведомления, расходовать заряд батареи и получать доступ к данным о вашем местоположении."</string>
+    <string name="work_apps_paused_content_description" msgid="5149623040804051095">"Рабочие приложения отключены. Они не могут отправлять уведомления, расходовать заряд батареи и получать доступ к вашему местоположению."</string>
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"У рабочих приложений есть специальная пометка. Они видны системному администратору."</string>
     <string name="work_apps_paused_edu_accept" msgid="6377476824357318532">"ОК"</string>
-    <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"Приостановить рабочие приложения"</string>
-    <string name="work_apps_enable_btn_text" msgid="82111102541971856">"Включить"</string>
+    <string name="work_apps_pause_btn_text" msgid="1921059713673767460">"Отключить рабочие приложения"</string>
+    <string name="work_apps_enable_btn_text" msgid="1156432622148413741">"Включить рабочие приложения"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"Фильтр"</string>
-    <string name="work_switch_tip" msgid="808075064383839144">"Приостановить рабочие приложения и уведомления от них"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"Не удалось выполнить действие (<xliff:g id="WHAT">%1$s</xliff:g>)."</string>
 </resources>

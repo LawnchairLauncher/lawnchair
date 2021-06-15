@@ -53,7 +53,9 @@
     <string name="widget_category_conversations" msgid="8894438636213590446">"ውይይቶች"</string>
     <string name="widget_education_header" msgid="4874760613775913787">"በጣቶችዎ ጫፎች ላይ ጠቃሚ መረጃ"</string>
     <string name="widget_education_content" msgid="745542879510751525">"መተግበሪያዎችን ሳይከፍቱ መረጃ ለማግኘት በመነሻ ማያ ገጽዎ ላይ ምግብሮችን ማከል ይችላሉ"</string>
+    <string name="reconfigurable_widget_education_tip" msgid="6336962690888067057">"የምግብር ቅንብሮችን ለመለወጥ መታ ያድርጉ"</string>
     <string name="widget_education_close_button" msgid="8676165703104836580">"ገባኝ"</string>
+    <string name="widget_reconfigure_button_content_description" msgid="8811472721881205250">"የምግብር ቅንብሮችን ይለውጡ"</string>
     <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"መተግበሪያዎችን ፈልግ"</string>
     <string name="all_apps_loading_message" msgid="5813968043155271636">"መተግበሪያዎችን በመጫን ላይ…"</string>
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"ከ«<xliff:g id="QUERY">%1$s</xliff:g>» ጋር የሚዛመዱ ምንም መተግበሪያዎች አልተገኙም"</string>
@@ -154,18 +156,16 @@
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"የግል"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"ሥራ"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"የሥራ መገለጫ"</string>
-    <string name="work_profile_edu_personal_apps" msgid="4155536355149317441">"የግል ውሂብ የተለየ እና ከሥራ መተግበሪያዎች የተደበቀ ነው"</string>
-    <string name="work_profile_edu_work_apps" msgid="237051938268703058">"የስራ መተግበሪያዎች እና ውሂብ የተለዩ እና ከሥራ መተግበሪያዎች የተደበቁ ናቸው"</string>
-    <string name="work_profile_edu_next" msgid="8783418929296503629">"ቀጣይ"</string>
+    <!-- no translation found for work_profile_edu_work_apps (7895468576497746520) -->
+    <skip />
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"ገባኝ"</string>
-    <string name="work_apps_paused_title" msgid="2389865654362803723">"የሥራ መገለጫ ባለበት ቆሟል"</string>
-    <string name="work_apps_paused_body" msgid="4209084728264328628">"የስራ መተግበሪያዎች ማሳወቂያዎችን ወደ እርስዎ መላክ፣ ባትሪዎን መጠቀም ወይም አካባቢዎ ዘንድ መድረስ አይችሉም"</string>
-    <string name="work_apps_paused_content_description" msgid="4473292417145736203">"የሥራ መገለጫ ባለበት ቆሟል። የስራ መተግበሪያዎች ማሳወቂያዎችን ወደ እርስዎ መላክ፣ ባትሪዎን መጠቀም ወይም አካባቢዎ ዘንድ መድረስ አይችሉም"</string>
+    <string name="work_apps_paused_title" msgid="3007471013401118920">"የሥራ መተግበሪያዎች ጠፍተዋል"</string>
+    <string name="work_apps_paused_body" msgid="261634750995824906">"የስራ መተግበሪያዎችዎ ማሳወቂያዎችን ሊልክልዎ፣ ባትሪዎን መጠቀም ወይም አካባቢዎን መድረስ አይችሉም"</string>
+    <string name="work_apps_paused_content_description" msgid="5149623040804051095">"የሥራ መተግበሪያዎች ጠፍተዋል። የስራ መተግበሪያዎችዎ ማሳወቂያዎችን ሊልክልዎ፣ ባትሪዎን መጠቀም ወይም አካባቢዎን መድረስ አይችሉም"</string>
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"የሥራ መተግበሪያዎች ባጅ የተደረገባቸው ሲሆን ለእርስዎ IT ቡድን ታይ ናቸው"</string>
     <string name="work_apps_paused_edu_accept" msgid="6377476824357318532">"ገባኝ"</string>
-    <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"የሥራ መተግበሪያዎችን ባሉበት አቁም"</string>
-    <string name="work_apps_enable_btn_text" msgid="82111102541971856">"አብራ"</string>
+    <string name="work_apps_pause_btn_text" msgid="1921059713673767460">"የሥራ መተግበሪያዎችን ያጥፉ"</string>
+    <string name="work_apps_enable_btn_text" msgid="1156432622148413741">"የሥራ መተግበሪያዎችን ያብሩ"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"አጣራ"</string>
-    <string name="work_switch_tip" msgid="808075064383839144">"የስራ መተግበሪያዎችን እና ማሳወቂያዎችን ባሉበት ያቁሙ"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"አልተሳካም፦ <xliff:g id="WHAT">%1$s</xliff:g>"</string>
 </resources>

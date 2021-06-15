@@ -53,7 +53,9 @@
     <string name="widget_category_conversations" msgid="8894438636213590446">"Conversas"</string>
     <string name="widget_education_header" msgid="4874760613775913787">"Informações úteis à sua disposição"</string>
     <string name="widget_education_content" msgid="745542879510751525">"Para obter informações sem abrir apps, pode adicionar widgets ao seu ecrã principal"</string>
+    <string name="reconfigurable_widget_education_tip" msgid="6336962690888067057">"Toque para alterar as definições do widget"</string>
     <string name="widget_education_close_button" msgid="8676165703104836580">"OK"</string>
+    <string name="widget_reconfigure_button_content_description" msgid="8811472721881205250">"Alterar definições do widget"</string>
     <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"Pesquisar aplicações"</string>
     <string name="all_apps_loading_message" msgid="5813968043155271636">"A carregar aplicações…"</string>
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"Nenhuma app correspondente a \"<xliff:g id="QUERY">%1$s</xliff:g>\""</string>
@@ -100,7 +102,7 @@
     <string name="folder_name_format_exact" msgid="8626242716117004803">"Pasta: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> itens"</string>
     <string name="folder_name_format_overflow" msgid="4270108890534995199">"Pasta: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> ou mais itens"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"Imagens de fundo"</string>
-    <string name="styles_wallpaper_button_text" msgid="8216961355289236794">"Imagem de fundo e estilo"</string>
+    <string name="styles_wallpaper_button_text" msgid="8216961355289236794">"Imagem fundo/estilo"</string>
     <string name="settings_button_text" msgid="8873672322605444408">"Definições de início"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"Desativada pelo gestor"</string>
     <string name="allow_rotation_title" msgid="7728578836261442095">"Permitir rotação do ecrã principal"</string>
@@ -154,18 +156,16 @@
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"Pessoal"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"Trabalho"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"Perfil de trabalho"</string>
-    <string name="work_profile_edu_personal_apps" msgid="4155536355149317441">"Os dados pessoais são separados e ocultos das apps de trabalho"</string>
-    <string name="work_profile_edu_work_apps" msgid="237051938268703058">"Os dados e apps de trabalho estão visíveis para o seu administrador de TI"</string>
-    <string name="work_profile_edu_next" msgid="8783418929296503629">"Seguinte"</string>
+    <!-- no translation found for work_profile_edu_work_apps (7895468576497746520) -->
+    <skip />
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"OK"</string>
-    <string name="work_apps_paused_title" msgid="2389865654362803723">"Perfil de trabalho em pausa"</string>
-    <string name="work_apps_paused_body" msgid="4209084728264328628">"As apps de trabalho não podem enviar-lhe notificações, utilizar a sua bateria ou aceder à sua localização"</string>
-    <string name="work_apps_paused_content_description" msgid="4473292417145736203">"O perfil de trabalho está em pausa. As apps de trabalho não podem enviar-lhe notificações, utilizar a sua bateria ou aceder à sua localização"</string>
+    <string name="work_apps_paused_title" msgid="3007471013401118920">"As apps de trabalho estão desativadas"</string>
+    <string name="work_apps_paused_body" msgid="261634750995824906">"As apps de trabalho não podem enviar-lhe notificações, utilizar a bateria ou aceder à sua localização"</string>
+    <string name="work_apps_paused_content_description" msgid="5149623040804051095">"As apps de trabalho estão desativadas. As apps de trabalho não podem enviar-lhe notificações, utilizar a bateria ou aceder à sua localização"</string>
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"As apps de trabalho têm um emblema e estão visíveis para o seu administrador de TI"</string>
     <string name="work_apps_paused_edu_accept" msgid="6377476824357318532">"OK"</string>
-    <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"Colocar apps de trabalho em pausa"</string>
-    <string name="work_apps_enable_btn_text" msgid="82111102541971856">"Ativar"</string>
+    <string name="work_apps_pause_btn_text" msgid="1921059713673767460">"Desativar apps de trabalho"</string>
+    <string name="work_apps_enable_btn_text" msgid="1156432622148413741">"Ativar apps de trabalho"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"Filtrar"</string>
-    <string name="work_switch_tip" msgid="808075064383839144">"Coloque as apps de trabalho e as notificações em pausa"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"Falhou: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
 </resources>
