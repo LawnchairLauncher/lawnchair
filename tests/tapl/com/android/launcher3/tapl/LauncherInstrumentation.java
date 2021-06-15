@@ -1450,4 +1450,33 @@ public final class LauncherInstrumentation {
             return null;
         }
     }
+
+    float getWindowCornerRadius() {
+        final Resources resources = getResources();
+        if (!supportsRoundedCornersOnWindows(resources)) {
+            return 0f;
+        }
+
+        // Radius that should be used in case top or bottom aren't defined.
+        float defaultRadius = ResourceUtils.getDimenByName("rounded_corner_radius", resources, 0);
+
+        float topRadius = ResourceUtils.getDimenByName("rounded_corner_radius_top", resources, 0);
+        if (topRadius == 0f) {
+            topRadius = defaultRadius;
+        }
+        float bottomRadius = ResourceUtils.getDimenByName(
+                "rounded_corner_radius_bottom", resources, 0);
+        if (bottomRadius == 0f) {
+            bottomRadius = defaultRadius;
+        }
+
+        // Always use the smallest radius to make sure the rounded corners will
+        // completely cover the display.
+        return Math.min(topRadius, bottomRadius);
+    }
+
+    private static boolean supportsRoundedCornersOnWindows(Resources resources) {
+        return ResourceUtils.getBoolByName(
+                "config_supportsRoundedCornersOnWindows", resources, false);
+    }
 }
