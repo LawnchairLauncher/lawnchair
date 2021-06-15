@@ -74,6 +74,8 @@ public class AppsDividerView extends View implements StateListener<LauncherState
 
     private boolean mIsScrolledOut = false;
 
+    private final int[] mDividerSize;
+
     public AppsDividerView(Context context) {
         this(context, null);
     }
@@ -87,8 +89,10 @@ public class AppsDividerView extends View implements StateListener<LauncherState
         mLauncher = Launcher.getLauncher(context);
 
         boolean isMainColorDark = Themes.getAttrBoolean(context, R.attr.isMainColorDark);
-        mPaint.setStrokeWidth(
-                getResources().getDimensionPixelSize(R.dimen.all_apps_divider_height));
+        mDividerSize = new int[]{
+                getResources().getDimensionPixelSize(R.dimen.all_apps_divider_width),
+                getResources().getDimensionPixelSize(R.dimen.all_apps_divider_height)
+        };
 
         mStrokeColor = ContextCompat.getColor(context, isMainColorDark
                 ? R.color.all_apps_prediction_row_separator_dark
@@ -187,11 +191,11 @@ public class AppsDividerView extends View implements StateListener<LauncherState
     @Override
     protected void onDraw(Canvas canvas) {
         if (mDividerType == DividerType.LINE) {
-            int side = getResources().getDimensionPixelSize(R.dimen.dynamic_grid_edge_margin);
-            int y = getHeight() - (getPaddingBottom() / 2);
-            int x1 = getPaddingLeft() + side;
-            int x2 = getWidth() - getPaddingRight() - side;
-            canvas.drawLine(x1, y, x2, y, mPaint);
+            int l = (getWidth() - getPaddingLeft() - mDividerSize[0]) / 2;
+            int t = getHeight() - (getPaddingBottom() / 2);
+            int radius = mDividerSize[1];
+            canvas.drawRoundRect(l, t, l + mDividerSize[0], t + mDividerSize[1], radius, radius,
+                    mPaint);
         } else if (mDividerType == DividerType.ALL_APPS_LABEL) {
             Layout textLayout = getAllAppsLabelLayout();
             int x = getWidth() / 2 - textLayout.getWidth() / 2;
