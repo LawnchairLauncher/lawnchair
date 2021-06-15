@@ -21,7 +21,7 @@ message = f'''<b>🔨 {overview_link_tag} to <code>lawnchair:{branch}</code>:</b
 for commit in reversed(commits):
     commit_message = commit.message.split('\n')[0]
     commit_link = f'https://github.com/{github_repository}/commit/{commit.hexsha}'
-    commit_link_tag = f'<a href="{commit_link}"><code>{repository.git.rev_parse(commit.hexsha, short=7)}</code></a>'
+    commit_link_tag = f'<a href="{commit_link}">{repository.git.rev_parse(commit.hexsha, short=7)}</a>'
     encoded_message = html.escape(commit_message)
     message += f'\n• {commit_link_tag}: {encoded_message}'
 
