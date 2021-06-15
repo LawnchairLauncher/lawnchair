@@ -18,6 +18,9 @@ package com.android.launcher3;
 
 import static android.view.MotionEvent.ACTION_DOWN;
 
+import static com.android.launcher3.CellLayout.FOLDER;
+import static com.android.launcher3.CellLayout.WORKSPACE;
+
 import android.app.WallpaperManager;
 import android.content.Context;
 import android.graphics.Rect;
@@ -124,21 +127,27 @@ public class ShortcutAndWidgetContainer extends ViewGroup implements FolderIcon.
 
     public void measureChild(View child) {
         CellLayout.LayoutParams lp = (CellLayout.LayoutParams) child.getLayoutParams();
-        final DeviceProfile profile = mActivity.getDeviceProfile();
+        final DeviceProfile dp = mActivity.getDeviceProfile();
 
         if (child instanceof LauncherAppWidgetHostView) {
-            ((LauncherAppWidgetHostView) child).getWidgetInset(profile, mTempRect);
+            ((LauncherAppWidgetHostView) child).getWidgetInset(dp, mTempRect);
             lp.setup(mCellWidth, mCellHeight, invertLayoutHorizontally(), mCountX, mCountY,
-                    profile.appWidgetScale.x, profile.appWidgetScale.y, mBorderSpacing, mTempRect);
+                    dp.appWidgetScale.x, dp.appWidgetScale.y, mBorderSpacing, mTempRect);
         } else {
             lp.setup(mCellWidth, mCellHeight, invertLayoutHorizontally(), mCountX, mCountY,
                     mBorderSpacing, null);
             // Center the icon/folder
             int cHeight = getCellContentHeight();
             int cellPaddingY = (int) Math.max(0, ((lp.height - cHeight) / 2f));
-            int cellPaddingX = mContainerType == CellLayout.WORKSPACE
-                    ? profile.workspaceCellPaddingXPx
-                    : (int) (profile.edgeMarginPx / 2f);
+
+            // No need to add padding when cell layout border spacing is present.
+            boolean noPadding = (dp.cellLayoutBorderSpacingPx > 0 && mContainerType == WORKSPACE)
+                    || (dp.folderCellLayoutBorderSpacingPx > 0 && mContainerType == FOLDER);
+            int cellPaddingX = noPadding
+                    ? 0
+                    : mContainerType == WORKSPACE
+                            ? dp.workspaceCellPaddingXPx
+                            : (int) (dp.edgeMarginPx / 2f);
             child.setPadding(cellPaddingX, cellPaddingY, cellPaddingX, 0);
         }
         int childWidthMeasureSpec = MeasureSpec.makeMeasureSpec(lp.width, MeasureSpec.EXACTLY);

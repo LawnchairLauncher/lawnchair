@@ -33,6 +33,7 @@ import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.KeyguardManagerCompat;
 import com.android.systemui.shared.system.TaskStackChangeListener;
+import com.android.systemui.shared.system.TaskStackChangeListeners;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -66,7 +67,7 @@ public class RecentTasksList extends TaskStackChangeListener {
         mKeyguardManager = keyguardManager;
         mChangeId = 1;
         mActivityManagerWrapper = activityManagerWrapper;
-        mActivityManagerWrapper.registerTaskStackListener(this);
+        TaskStackChangeListeners.getInstance().registerTaskStackListener(this);
     }
 
     @VisibleForTesting
