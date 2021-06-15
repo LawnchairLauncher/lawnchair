@@ -190,8 +190,6 @@ public class AllAppsRecyclerView extends BaseRecyclerView {
             case SCROLL_STATE_DRAGGING:
                 mgr.logger().sendToInteractionJankMonitor(
                         LAUNCHER_ALLAPPS_VERTICAL_SWIPE_BEGIN, this);
-                hideKeyboardAsync(ActivityContext.lookupContext(getContext()),
-                        getApplicationWindowToken());
                 break;
             case SCROLL_STATE_IDLE:
                 mgr.logger().sendToInteractionJankMonitor(
@@ -207,6 +205,8 @@ public class AllAppsRecyclerView extends BaseRecyclerView {
                 && mEmptySearchBackground != null && mEmptySearchBackground.getAlpha() > 0) {
             mEmptySearchBackground.setHotspot(e.getX(), e.getY());
         }
+        hideKeyboardAsync(ActivityContext.lookupContext(getContext()),
+                getApplicationWindowToken());
         return result;
     }
 

@@ -28,13 +28,14 @@
         android:padding="16dp"
         android:background="@drawable/arrow_toast_rounded_background"
         android:elevation="2dp"
+        android:outlineProvider="none"
         android:textColor="@color/arrow_tip_view_content"
         android:textSize="14sp"/>
 
     <View
         android:id="@+id/arrow"
         android:elevation="2dp"
+        android:outlineProvider="none"
         android:layout_width="@dimen/arrow_toast_arrow_width"
-        android:layout_height="8dp"
-        android:layout_marginTop="-2dp"/>
+        android:layout_height="10dp"/>
 </merge>

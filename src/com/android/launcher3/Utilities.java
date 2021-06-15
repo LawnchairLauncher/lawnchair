@@ -397,6 +397,13 @@ public final class Utilities {
         return mapRange(interpolator.getInterpolation(progress), toMin, toMax);
     }
 
+    /** Bounds t between a lower and upper bound and maps the result to a range. */
+    public static float mapBoundToRange(float t, float lowerBound, float upperBound,
+            float toMin, float toMax, Interpolator interpolator) {
+        return mapToRange(boundToRange(t, lowerBound, upperBound), lowerBound, upperBound,
+                toMin, toMax, interpolator);
+    }
+
     public static float getProgress(float current, float min, float max) {
         return Math.abs(current - min) / Math.abs(max - min);
     }

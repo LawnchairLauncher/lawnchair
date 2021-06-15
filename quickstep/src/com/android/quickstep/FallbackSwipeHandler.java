@@ -129,7 +129,8 @@ public class FallbackSwipeHandler extends
 
     @Override
     protected HomeAnimationFactory createHomeAnimationFactory(ArrayList<IBinder> launchCookies,
-            long duration, boolean isTargetTranslucent) {
+            long duration, boolean isTargetTranslucent, boolean appCanEnterPip,
+            RemoteAnimationTargetCompat runningTaskTarget) {
         mActiveAnimationFactory = new FallbackHomeAnimationFactory(duration);
         ActivityOptions options = ActivityOptions.makeCustomAnimation(mContext, 0, 0);
         Intent intent = new Intent(mGestureState.getHomeIntent());

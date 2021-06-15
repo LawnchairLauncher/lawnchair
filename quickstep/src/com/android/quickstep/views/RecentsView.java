@@ -2198,7 +2198,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                 .setDampingRatio(rp.getFloat(R.dimen.dismiss_task_trans_y_damping_ratio))
                 .setStiffness(rp.getFloat(R.dimen.dismiss_task_trans_y_stiffness));
         FloatProperty<TaskView> dismissingTaskViewTranslate =
-                taskView.getSecondaryDissmissTranslationProperty();;
+                taskView.getSecondaryDissmissTranslationProperty();
         // TODO(b/186800707) translate entire grid size distance
         int translateDistance = mOrientationHandler.getSecondaryDimension(taskView);
         int positiveNegativeFactor = mOrientationHandler.getSecondaryTranslationDirectionFactor();
@@ -2231,7 +2231,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         anim.add(ObjectAnimator.ofFloat(taskView, dismissingTaskViewTranslate,
                 positiveNegativeFactor * translateDistance * 2).setDuration(duration), LINEAR, sp);
 
-        if (LIVE_TILE.get() && taskView.isRunningTask()) {
+        if (LIVE_TILE.get() && mEnableDrawingLiveTile && taskView.isRunningTask()) {
             anim.addOnFrameCallback(() -> {
                 mLiveTileTaskViewSimulator.taskSecondaryTranslation.value =
                         mOrientationHandler.getSecondaryValue(
@@ -2311,6 +2311,15 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                     anim.setFloat(child, translationProperty, scrollDiff, clampToProgress(LINEAR,
                             Utilities.boundToRange(INITIAL_DISMISS_TRANSLATION_INTERPOLATION_OFFSET
                                     + additionalDismissDuration, 0f, 1f), 1));
+                    if (LIVE_TILE.get() && mEnableDrawingLiveTile && child instanceof TaskView
+                            && ((TaskView) child).isRunningTask()) {
+                        anim.addOnFrameCallback(() -> {
+                            mLiveTileTaskViewSimulator.taskPrimaryTranslation.value =
+                                    mOrientationHandler.getPrimaryValue(child.getTranslationX(),
+                                            child.getTranslationY());
+                            redrawLiveTile();
+                        });
+                    }
                     needsCurveUpdates = true;
                 }
             } else if (child instanceof TaskView) {
@@ -2348,7 +2357,8 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             public void accept(Boolean success) {
                 if (LIVE_TILE.get() && mEnableDrawingLiveTile && taskView.isRunningTask()
                         && success) {
-                    finishRecentsAnimation(true /* toHome */, () -> onEnd(success));
+                    finishRecentsAnimation(true /* toRecents */, false /* shouldPip */,
+                            () -> onEnd(success));
                 } else {
                     onEnd(success);
                 }
@@ -2359,7 +2369,8 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                 if (success) {
                     if (shouldRemoveTask) {
                         if (taskView.getTask() != null) {
-                            switchToScreenshotAndFinishAnimationToRecents(() -> {
+                            finishRecentsAnimation(true /* toRecents */, false /* shouldPip */,
+                                    () -> {
                                 UI_HELPER_EXECUTOR.getHandler().postDelayed(() ->
                                         ActivityManagerWrapper.getInstance().removeTask(
                                                 taskView.getTask().key.id),
@@ -2391,6 +2402,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                         startHome();
                     } else {
                         snapToPageImmediately(pageToSnapTo);
+                        dispatchScrollChanged();
                         // Grid got messed up, reapply.
                         updateGridProperties(true);
                         if (showAsGrid() && getFocusedTaskView() == null
@@ -2468,7 +2480,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         mPendingAnimation.addEndListener(isSuccess -> {
             if (isSuccess) {
                 // Remove all the task views now
-                switchToScreenshotAndFinishAnimationToRecents(() -> {
+                finishRecentsAnimation(true /* toRecents */, false /* shouldPip */, () -> {
                     UI_HELPER_EXECUTOR.getHandler().postDelayed(
                             ActivityManagerWrapper.getInstance()::removeAllRecentTasks,
                             REMOVE_TASK_WAIT_FOR_APP_STOP_MS);
@@ -2629,7 +2641,9 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     protected void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         if (LIVE_TILE.get() && mEnableDrawingLiveTile && newConfig.orientation != mOrientation) {
-            switchToScreenshotAndFinishAnimationToRecents(this::updateRecentsRotation);
+            switchToScreenshot(
+                    () -> finishRecentsAnimation(true /* toRecents */, false /* showPip */,
+                            this::updateRecentsRotation));
             mEnableDrawingLiveTile = false;
         } else {
             updateRecentsRotation();
@@ -3622,10 +3636,6 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         }
     }
 
-    public void switchToScreenshotAndFinishAnimationToRecents(Runnable onFinishRunnable) {
-        switchToScreenshot(() -> finishRecentsAnimation(true /* toRecents */, onFinishRunnable));
-    }
-
     /**
      * Switch the current running task view to static snapshot mode,
      * capturing the snapshot at the same time.
@@ -3842,5 +3852,11 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         int baseColor = Themes.getAttrColor(context, R.attr.overviewScrimColor);
         // The Black blending is temporary until we have the proper color token.
         return ColorUtils.blendARGB(Color.BLACK, baseColor, 0.25f);
+    }
+
+    /** Get the RecentsAnimationController */
+    @Nullable
+    public RecentsAnimationController getRecentsAnimationController() {
+        return mRecentsAnimationController;
     }
 }

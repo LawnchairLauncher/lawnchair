@@ -22,7 +22,6 @@ import static com.android.launcher3.testing.TestProtocol.SPRING_LOADED_STATE_ORD
 
 import static junit.framework.TestCase.assertTrue;
 
-import android.content.res.Resources;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.os.SystemClock;
@@ -61,34 +60,6 @@ public final class Workspace extends Home {
         mHotseat = launcher.waitForLauncherObject("hotseat");
     }
 
-    private static boolean supportsRoundedCornersOnWindows(Resources resources) {
-        return ResourceUtils.getBoolByName(
-                "config_supportsRoundedCornersOnWindows", resources, false);
-    }
-
-    private static float getWindowCornerRadius(Resources resources) {
-        if (!supportsRoundedCornersOnWindows(resources)) {
-            return 0f;
-        }
-
-        // Radius that should be used in case top or bottom aren't defined.
-        float defaultRadius = ResourceUtils.getDimenByName("rounded_corner_radius", resources, 0);
-
-        float topRadius = ResourceUtils.getDimenByName("rounded_corner_radius_top", resources, 0);
-        if (topRadius == 0f) {
-            topRadius = defaultRadius;
-        }
-        float bottomRadius = ResourceUtils.getDimenByName(
-                "rounded_corner_radius_bottom", resources, 0);
-        if (bottomRadius == 0f) {
-            bottomRadius = defaultRadius;
-        }
-
-        // Always use the smallest radius to make sure the rounded corners will
-        // completely cover the display.
-        return Math.min(topRadius, bottomRadius);
-    }
-
     /**
      * Swipes up to All Apps.
      *
@@ -103,8 +74,7 @@ public final class Workspace extends Home {
             final int deviceHeight = mLauncher.getDevice().getDisplayHeight();
             final int bottomGestureMargin = ResourceUtils.getNavbarSize(
                     ResourceUtils.NAVBAR_BOTTOM_GESTURE_SIZE, mLauncher.getResources());
-            final int windowCornerRadius = (int) Math.ceil(getWindowCornerRadius(
-                    mLauncher.getResources()));
+            final int windowCornerRadius = (int) Math.ceil(mLauncher.getWindowCornerRadius());
             final int startY = deviceHeight - Math.max(bottomGestureMargin, windowCornerRadius) - 1;
             final int swipeHeight = mLauncher.getTestInfo(
                     TestProtocol.REQUEST_HOME_TO_ALL_APPS_SWIPE_HEIGHT).
@@ -179,7 +149,7 @@ public final class Workspace extends Home {
                             getHotseatAppIcon("Chrome"),
                             new Point(mLauncher.getDevice().getDisplayWidth(),
                                     mLauncher.getVisibleBounds(workspace).centerY()),
-                            "deep_shortcuts_container",
+                            "popup_container",
                             false,
                             false,
                             () -> mLauncher.expectEvent(

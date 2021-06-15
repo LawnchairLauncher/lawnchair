@@ -23,18 +23,22 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
+import android.graphics.Insets;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.os.Build;
 import android.util.AttributeSet;
 import android.util.Property;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
+import android.view.WindowInsets;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.launcher3.BaseRecyclerView;
@@ -51,6 +55,7 @@ import java.util.List;
  */
 public class RecyclerViewFastScroller extends View {
 
+    private static final int FASTSCROLL_THRESHOLD_MILLIS = 200;
     private static final int SCROLL_DELTA_THRESHOLD_DP = 4;
     private static final Rect sTempRect = new Rect();
 
@@ -101,6 +106,7 @@ public class RecyclerViewFastScroller extends View {
     private final boolean mCanThumbDetach;
     private boolean mIgnoreDragGesture;
     private boolean mIsRecyclerViewFirstChildInParent = true;
+    private long mDownTimeStampMillis;
 
     // This is the offset from the top of the scrollbar when the user first starts touching.  To
     // prevent jumping, this offset is applied as the user scrolls.
@@ -112,6 +118,7 @@ public class RecyclerViewFastScroller extends View {
     private TextView mPopupView;
     private boolean mPopupVisible;
     private String mPopupSectionName;
+    private Insets mSystemGestureInsets;
 
     protected BaseRecyclerView mRv;
     private RecyclerView.OnScrollListener mOnScrollListener;
@@ -237,6 +244,7 @@ public class RecyclerViewFastScroller extends View {
                 // Keep track of the down positions
                 mDownX = x;
                 mDownY = mLastY = y;
+                mDownTimeStampMillis = ev.getDownTime();
 
                 if ((Math.abs(mDy) < mDeltaThreshold &&
                         mRv.getScrollState() != RecyclerView.SCROLL_STATE_IDLE)) {
@@ -246,22 +254,27 @@ public class RecyclerViewFastScroller extends View {
                 }
                 if (isNearThumb(x, y)) {
                     mTouchOffsetY = mDownY - mThumbOffsetY;
-                } else if (mRv.supportsFastScrolling()
-                        && isNearScrollBar(mDownX)) {
-                    calcTouchOffsetAndPrepToFastScroll(mDownY, mLastY);
-                    updateFastScrollSectionNameAndThumbOffset(y);
                 }
                 break;
             case MotionEvent.ACTION_MOVE:
                 mLastY = y;
+                int absDeltaY = Math.abs(y - mDownY);
+                int absDeltaX = Math.abs(x - mDownX);
 
                 // Check if we should start scrolling, but ignore this fastscroll gesture if we have
                 // exceeded some fixed movement
-                mIgnoreDragGesture |= Math.abs(y - mDownY) > mConfig.getScaledPagingTouchSlop();
-                if (!mIsDragging && !mIgnoreDragGesture && mRv.supportsFastScrolling() &&
-                        isNearThumb(mDownX, mLastY) &&
-                        Math.abs(y - mDownY) > mConfig.getScaledTouchSlop()) {
-                    calcTouchOffsetAndPrepToFastScroll(mDownY, mLastY);
+                mIgnoreDragGesture |= absDeltaY > mConfig.getScaledPagingTouchSlop();
+
+                if (!mIsDragging && !mIgnoreDragGesture && mRv.supportsFastScrolling()) {
+                    // condition #1: triggering thumb is distance, angle based
+                    if ((isNearThumb(mDownX, mLastY)
+                            && absDeltaY > mConfig.getScaledPagingTouchSlop()
+                            && absDeltaY > absDeltaX)
+                            // condition#2: Fastscroll function is now time based
+                            || (isNearScrollBar(mDownX) && ev.getEventTime() - mDownTimeStampMillis
+                                    > FASTSCROLL_THRESHOLD_MILLIS)) {
+                        calcTouchOffsetAndPrepToFastScroll(mDownY, mLastY);
+                    }
                 }
                 if (mIsDragging) {
                     updateFastScrollSectionNameAndThumbOffset(y);
@@ -328,10 +341,25 @@ public class RecyclerViewFastScroller extends View {
         canvas.drawRoundRect(mThumbBounds, r, r, mThumbPaint);
         if (Utilities.ATLEAST_Q) {
             mThumbBounds.roundOut(SYSTEM_GESTURE_EXCLUSION_RECT.get(0));
+            // swiping very close to the thumb area (not just within it's bound)
+            // will also prevent back gesture
             SYSTEM_GESTURE_EXCLUSION_RECT.get(0).offset(mThumbDrawOffset.x, mThumbDrawOffset.y);
+            if (Utilities.ATLEAST_Q && mSystemGestureInsets != null) {
+                SYSTEM_GESTURE_EXCLUSION_RECT.get(0).left =
+                        SYSTEM_GESTURE_EXCLUSION_RECT.get(0).right - mSystemGestureInsets.right;
+            }
             setSystemGestureExclusionRects(SYSTEM_GESTURE_EXCLUSION_RECT);
         }
         canvas.restoreToCount(saveCount);
+    }
+
+    @Override
+    @RequiresApi(Build.VERSION_CODES.Q)
+    public WindowInsets onApplyWindowInsets(WindowInsets insets) {
+        if (Utilities.ATLEAST_Q) {
+            mSystemGestureInsets = insets.getSystemGestureInsets();
+        }
+        return super.onApplyWindowInsets(insets);
     }
 
     private float getScrollThumbRadius() {

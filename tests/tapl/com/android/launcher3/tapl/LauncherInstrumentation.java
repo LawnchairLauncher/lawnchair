@@ -155,7 +155,7 @@ public final class LauncherInstrumentation {
     private static final String APPS_RES_ID = "apps_view";
     private static final String OVERVIEW_RES_ID = "overview_panel";
     private static final String WIDGETS_RES_ID = "primary_widgets_list_view";
-    private static final String CONTEXT_MENU_RES_ID = "deep_shortcuts_container";
+    private static final String CONTEXT_MENU_RES_ID = "popup_container";
     public static final int WAIT_TIME_MS = 60000;
     private static final String SYSTEMUI_PACKAGE = "com.android.systemui";
     private static final String ANDROID_PACKAGE = "android";
@@ -1248,6 +1248,13 @@ public final class LauncherInstrumentation {
         }
 
         final MotionEvent event = getMotionEvent(downTime, currentTime, action, point.x, point.y);
+        // b/190748682
+        switch (action) {
+            case MotionEvent.ACTION_DOWN:
+            case MotionEvent.ACTION_UP:
+                log("b/190748682: injecting " + event);
+                break;
+        }
         assertTrue("injectInputEvent failed",
                 mInstrumentation.getUiAutomation().injectInputEvent(event, true, false));
         event.recycle();
@@ -1442,5 +1449,34 @@ public final class LauncherInstrumentation {
             fail(t.toString());
             return null;
         }
+    }
+
+    float getWindowCornerRadius() {
+        final Resources resources = getResources();
+        if (!supportsRoundedCornersOnWindows(resources)) {
+            return 0f;
+        }
+
+        // Radius that should be used in case top or bottom aren't defined.
+        float defaultRadius = ResourceUtils.getDimenByName("rounded_corner_radius", resources, 0);
+
+        float topRadius = ResourceUtils.getDimenByName("rounded_corner_radius_top", resources, 0);
+        if (topRadius == 0f) {
+            topRadius = defaultRadius;
+        }
+        float bottomRadius = ResourceUtils.getDimenByName(
+                "rounded_corner_radius_bottom", resources, 0);
+        if (bottomRadius == 0f) {
+            bottomRadius = defaultRadius;
+        }
+
+        // Always use the smallest radius to make sure the rounded corners will
+        // completely cover the display.
+        return Math.min(topRadius, bottomRadius);
+    }
+
+    private static boolean supportsRoundedCornersOnWindows(Resources resources) {
+        return ResourceUtils.getBoolByName(
+                "config_supportsRoundedCornersOnWindows", resources, false);
     }
 }

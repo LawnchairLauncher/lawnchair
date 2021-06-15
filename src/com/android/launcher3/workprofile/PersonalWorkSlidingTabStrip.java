@@ -59,7 +59,8 @@ public class PersonalWorkSlidingTabStrip extends LinearLayout implements PageInd
                 R.dimen.all_apps_header_pill_corner_radius);
 
         mSelectedIndicatorPaint = new Paint();
-        mSelectedIndicatorPaint.setColor(context.getColor(R.color.all_apps_tab_bg));
+        mSelectedIndicatorPaint.setColor(
+                context.getColor(R.color.all_apps_tab_background_selected));
 
         mIsRtl = Utilities.isRtl(getResources());
     }
@@ -126,6 +127,7 @@ public class PersonalWorkSlidingTabStrip extends LinearLayout implements PageInd
     @Override
     public void setActiveMarker(int activePage) {
         updateTabTextColor(activePage);
+        updateIndicatorPosition(activePage);
         if (mOnActivePageChangedListener != null && mLastActivePage != activePage) {
             mOnActivePageChangedListener.onActivePageChanged(activePage);
         }

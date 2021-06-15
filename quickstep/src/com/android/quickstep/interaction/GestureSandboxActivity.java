@@ -29,8 +29,6 @@ import androidx.fragment.app.FragmentActivity;
 import com.android.launcher3.R;
 import com.android.quickstep.interaction.TutorialController.TutorialType;
 
-import java.util.ArrayDeque;
-import java.util.Deque;
 import java.util.List;
 
 /** Shows the gesture interactive sandbox in full screen mode. */
@@ -39,8 +37,9 @@ public class GestureSandboxActivity extends FragmentActivity {
     private static final String LOG_TAG = "GestureSandboxActivity";
 
     private static final String KEY_TUTORIAL_STEPS = "tutorial_steps";
+    private static final String KEY_CURRENT_STEP = "current_step";
 
-    private Deque<TutorialType> mTutorialSteps;
+    private TutorialType[] mTutorialSteps;
     private TutorialType mCurrentTutorialStep;
     private TutorialFragment mFragment;
 
@@ -55,9 +54,7 @@ public class GestureSandboxActivity extends FragmentActivity {
 
         Bundle args = savedInstanceState == null ? getIntent().getExtras() : savedInstanceState;
         mTutorialSteps = getTutorialSteps(args);
-        mCurrentStep = 1;
-        mNumSteps = mTutorialSteps.size();
-        mCurrentTutorialStep = mTutorialSteps.pop();
+        mCurrentTutorialStep = mTutorialSteps[mCurrentStep - 1];
         mFragment = TutorialFragment.newInstance(mCurrentTutorialStep);
         getSupportFragmentManager().beginTransaction()
                 .add(R.id.gesture_tutorial_fragment_container, mFragment)
@@ -88,12 +85,13 @@ public class GestureSandboxActivity extends FragmentActivity {
     @Override
     protected void onSaveInstanceState(@NonNull Bundle savedInstanceState) {
         savedInstanceState.putStringArray(KEY_TUTORIAL_STEPS, getTutorialStepNames());
+        savedInstanceState.putInt(KEY_CURRENT_STEP, mCurrentStep);
         super.onSaveInstanceState(savedInstanceState);
     }
 
     /** Returns true iff there aren't anymore tutorial types to display to the user. */
     public boolean isTutorialComplete() {
-        return mTutorialSteps.isEmpty();
+        return mCurrentStep >= mNumSteps;
     }
 
     public int getCurrentStep() {
@@ -121,7 +119,7 @@ public class GestureSandboxActivity extends FragmentActivity {
             mFragment.closeTutorial();
             return;
         }
-        mCurrentTutorialStep = mTutorialSteps.pop();
+        mCurrentTutorialStep = mTutorialSteps[mCurrentStep];
         mFragment = TutorialFragment.newInstance(mCurrentTutorialStep);
         getSupportFragmentManager().beginTransaction()
             .replace(R.id.gesture_tutorial_fragment_container, mFragment)
@@ -131,10 +129,9 @@ public class GestureSandboxActivity extends FragmentActivity {
     }
 
     private String[] getTutorialStepNames() {
-        String[] tutorialStepNames = new String[mTutorialSteps.size() + 1];
+        String[] tutorialStepNames = new String[mTutorialSteps.length];
 
-        int i = 1;
-        tutorialStepNames[0] = mCurrentTutorialStep.name();
+        int i = 0;
         for (TutorialType tutorialStep : mTutorialSteps) {
             tutorialStepNames[i++] = tutorialStep.name();
         }
@@ -142,24 +139,27 @@ public class GestureSandboxActivity extends FragmentActivity {
         return tutorialStepNames;
     }
 
-    private Deque<TutorialType> getTutorialSteps(Bundle extras) {
-        Deque<TutorialType> defaultSteps = new ArrayDeque<>();
-        defaultSteps.push(TutorialType.RIGHT_EDGE_BACK_NAVIGATION);
+    private TutorialType[] getTutorialSteps(Bundle extras) {
+        TutorialType[] defaultSteps = new TutorialType[] {TutorialType.LEFT_EDGE_BACK_NAVIGATION};
 
         if (extras == null || !extras.containsKey(KEY_TUTORIAL_STEPS)) {
             return defaultSteps;
         }
 
         String[] tutorialStepNames = extras.getStringArray(KEY_TUTORIAL_STEPS);
+        int currentStep = extras.getInt(KEY_CURRENT_STEP, -1);
 
         if (tutorialStepNames == null) {
             return defaultSteps;
         }
 
-        Deque<TutorialType> tutorialSteps = new ArrayDeque<>();
-        for (String tutorialStepName : tutorialStepNames) {
-            tutorialSteps.addLast(TutorialType.valueOf(tutorialStepName));
+        TutorialType[] tutorialSteps = new TutorialType[tutorialStepNames.length];
+        for (int i = 0; i < tutorialStepNames.length; i++) {
+            tutorialSteps[i] = TutorialType.valueOf(tutorialStepNames[i]);
         }
+
+        mCurrentStep = Math.max(currentStep, 1);
+        mNumSteps = tutorialSteps.length;
 
         return tutorialSteps;
     }

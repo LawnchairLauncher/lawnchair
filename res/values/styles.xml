@@ -47,10 +47,10 @@
         <item name="workspaceKeyShadowColor">#89000000</item>
         <item name="workspaceStatusBarScrim">@drawable/workspace_bg</item>
         <item name="widgetsTheme">@style/WidgetContainerTheme</item>
-        <item name="folderDotColor">?android:attr/colorPrimary</item>
-        <item name="folderFillColor">?android:attr/colorBackgroundFloating</item>
+        <item name="folderDotColor">@color/folder_dot_color</item>
+        <item name="folderFillColor">@color/folder_background_light</item>
         <item name="folderIconBorderColor">?android:attr/colorPrimary</item>
-        <item name="folderTextColor">?android:attr/textColorPrimary</item>
+        <item name="folderTextColor">@color/workspace_text_color_dark</item>
         <item name="isFolderDarkText">true</item>
         <item name="folderHintColor">@color/folder_hint_text_color_dark</item>
         <item name="loadingIconColor">#CCFFFFFF</item>
@@ -71,10 +71,10 @@
     </style>
 
     <style name="LauncherTheme.DarkMainColor" parent="@style/LauncherTheme">
-        <item name="folderFillColor">?android:attr/colorBackgroundFloating</item>
-        <item name="folderTextColor">?attr/workspaceTextColor</item>
-        <item name="isFolderDarkText">?attr/isWorkspaceDarkText</item>
-        <item name="folderHintColor">@color/folder_hint_text_color_dark</item>
+        <item name="folderFillColor">@color/folder_background_dark</item>
+        <item name="folderTextColor">@color/workspace_text_color_light</item>
+        <item name="isFolderDarkText">false</item>
+        <item name="folderHintColor">@color/folder_hint_text_color_light</item>
         <item name="disabledIconAlpha">.254</item>
 
     </style>
@@ -86,10 +86,10 @@
         <item name="workspaceKeyShadowColor">@android:color/transparent</item>
         <item name="isWorkspaceDarkText">true</item>
         <item name="workspaceStatusBarScrim">@null</item>
-        <item name="folderDotColor">#FF464646</item>
-        <item name="folderFillColor">?android:attr/colorBackgroundFloating</item>
+        <item name="folderDotColor">@color/folder_dot_color</item>
+        <item name="folderFillColor">@color/folder_background_light</item>
         <item name="folderIconBorderColor">#FF80868B</item>
-        <item name="folderTextColor">?attr/workspaceTextColor</item>
+        <item name="folderTextColor">@color/workspace_text_color_dark</item>
         <item name="isFolderDarkText">true</item>
         <item name="folderHintColor">@color/folder_hint_text_color_dark</item>
     </style>
@@ -108,10 +108,10 @@
         <item name="popupColorSecondary">@color/popup_color_secondary_dark</item>
         <item name="popupColorTertiary">@color/popup_color_tertiary_dark</item>
         <item name="widgetsTheme">@style/WidgetContainerTheme.Dark</item>
-        <item name="folderDotColor">?android:attr/colorPrimary</item>
-        <item name="folderFillColor">?android:attr/colorBackgroundFloating</item>
+        <item name="folderDotColor">@color/folder_dot_color</item>
+        <item name="folderFillColor">@color/folder_background_dark</item>
         <item name="folderIconBorderColor">?android:attr/colorPrimary</item>
-        <item name="folderTextColor">?android:attr/textColorPrimary</item>
+        <item name="folderTextColor">@color/workspace_text_color_light</item>
         <item name="isFolderDarkText">false</item>
         <item name="folderHintColor">@color/folder_hint_text_color_light</item>
         <item name="isMainColorDark">true</item>
@@ -123,8 +123,8 @@
     </style>
 
     <style name="LauncherTheme.Dark.DarkMainColor" parent="@style/LauncherTheme.Dark">
-        <item name="folderFillColor">?android:attr/colorBackgroundFloating</item>
-        <item name="folderTextColor">@android:color/white</item>
+        <item name="folderFillColor">@color/folder_background_dark</item>
+        <item name="folderTextColor">@color/workspace_text_color_light</item>
         <item name="isFolderDarkText">false</item>
         <item name="folderHintColor">@color/folder_hint_text_color_light</item>
         <item name="disabledIconAlpha">.54</item>
@@ -132,16 +132,16 @@
 
     <style name="LauncherTheme.Dark.DarkText" parent="@style/LauncherTheme.Dark">
         <item name="android:colorControlHighlight">#19212121</item>
-        <item name="folderFillColor">?android:attr/colorBackgroundFloating</item>
-        <item name="folderTextColor">?attr/workspaceTextColor</item>
-        <item name="isFolderDarkText">?attr/isWorkspaceDarkText</item>
-        <item name="folderHintColor">@color/folder_hint_text_color_dark</item>
+        <item name="folderFillColor">@color/folder_background_light</item>
         <item name="workspaceTextColor">@color/workspace_text_color_dark</item>
         <item name="workspaceShadowColor">@android:color/transparent</item>
         <item name="workspaceAmbientShadowColor">@android:color/transparent</item>
         <item name="workspaceKeyShadowColor">@android:color/transparent</item>
         <item name="isWorkspaceDarkText">true</item>
         <item name="workspaceStatusBarScrim">@null</item>
+        <item name="folderTextColor">@color/workspace_text_color_dark</item>
+        <item name="isFolderDarkText">true</item>
+        <item name="folderHintColor">@color/folder_hint_text_color_dark</item>
     </style>
 
     <!-- A derivative project can extend these themes to customize the application theme without

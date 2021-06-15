@@ -249,7 +249,7 @@ public final class TaskViewUtils {
                             ANIMATION_NAV_FADE_IN_DURATION, NAV_FADE_IN_INTERPOLATOR);
 
                     @Override
-                    public void onUpdate(float percent) {
+                    public void onUpdate(float percent, boolean initOnly) {
                         final SurfaceParams.Builder navBuilder =
                                 new SurfaceParams.Builder(navBarTarget.leash);
                         if (mNavFadeIn.value > mNavFadeIn.getStartValue()) {
@@ -263,6 +263,14 @@ public final class TaskViewUtils {
                         finalParams.applySurfaceParams(navBuilder.build());
                     }
                 });
+            } else if (inLiveTileMode) {
+                // There is no transition animation for app launch from recent in live tile mode so
+                // we have to trigger the navigation bar animation from system here.
+                final RecentsAnimationController controller =
+                        recentsView.getRecentsAnimationController();
+                if (controller != null) {
+                    controller.animateNavigationBarToApp(RECENTS_LAUNCH_DURATION);
+                }
             }
             topMostSimulator = tsv;
         }

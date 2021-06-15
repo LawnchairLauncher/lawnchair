@@ -79,10 +79,7 @@ import java.util.function.IntConsumer;
  *        directly (ex: new LinearLayout)
  *    Using ExtendedMockito: Mocking static methods from platform classes (loaded in zygote) makes
  *        the main thread extremely slow and untestable
- *
- * Suppressed until b/141579810 is resolved
  */
-@Suppress
 @LargeTest
 @RunWith(AndroidJUnit4.class)
 public class ViewInflationDuringSwipeUp extends AbstractQuickStepTest {
@@ -137,6 +134,7 @@ public class ViewInflationDuringSwipeUp extends AbstractQuickStepTest {
 
     @Test
     @NavigationModeSwitch(mode = ZERO_BUTTON)
+    @Suppress // until b/190729479 is fixed
     public void testSwipeUpFromApp_widget_update() {
         String stubText = "Some random stub text";
 
@@ -149,6 +147,7 @@ public class ViewInflationDuringSwipeUp extends AbstractQuickStepTest {
 
     @Test
     @NavigationModeSwitch(mode = ZERO_BUTTON)
+    @Suppress // until b/190729479 is fixed
     public void testSwipeUp_with_list_widgets() {
         SimpleViewsFactory viewFactory = new SimpleViewsFactory();
         viewFactory.viewCount = 1;
@@ -188,6 +187,11 @@ public class ViewInflationDuringSwipeUp extends AbstractQuickStepTest {
             LauncherSettings.Settings.call(mResolver,
                     LauncherSettings.Settings.METHOD_CLEAR_EMPTY_DB_FLAG);
             LauncherAppWidgetProviderInfo info = TestViewHelpers.findWidgetProvider(this, false);
+            // Make sure the widget is big enough to show a list of items
+            info.minSpanX = 2;
+            info.minSpanY = 2;
+            info.spanX = 2;
+            info.spanY = 2;
             LauncherAppWidgetInfo item = createWidgetInfo(info, getTargetContext(), true);
 
             addItemToScreen(item);

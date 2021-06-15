@@ -6,9 +6,9 @@ public class ClippedFolderIconLayoutRule {
     private static final int MIN_NUM_ITEMS_IN_PREVIEW = 2;
 
     private static final float MIN_SCALE = 0.44f;
-    private static final float MAX_SCALE = 0.54f;
-    private static final float MAX_RADIUS_DILATION = 0.10f;
-    private static final float ITEM_RADIUS_SCALE_FACTOR = 1.2f;
+    private static final float MAX_SCALE = 0.51f;
+    private static final float MAX_RADIUS_DILATION = 0.1f;
+    private static final float ITEM_RADIUS_SCALE_FACTOR = 1.15f;
 
     public static final int EXIT_INDEX = -2;
     public static final int ENTER_INDEX = -3;

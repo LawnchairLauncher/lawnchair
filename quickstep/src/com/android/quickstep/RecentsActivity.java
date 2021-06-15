@@ -214,7 +214,8 @@ public final class RecentsActivity extends StatefulActivity<RecentsState> {
             AnimatorSet anim = composeRecentsLaunchAnimator(taskView, appTargets,
                     wallpaperTargets, nonAppTargets);
             anim.addListener(resetStateListener());
-            result.setAnimation(anim, RecentsActivity.this, onEndCallback::executeAllAndDestroy);
+            result.setAnimation(anim, RecentsActivity.this, onEndCallback::executeAllAndDestroy,
+                    true /* skipFirstFrame */);
         };
 
         final LauncherAnimationRunner wrapper = new WrappedLauncherAnimationRunner<>(
@@ -353,7 +354,8 @@ public final class RecentsActivity extends StatefulActivity<RecentsState> {
     public void startHome() {
         if (LIVE_TILE.get()) {
             RecentsView recentsView = getOverviewPanel();
-            recentsView.switchToScreenshotAndFinishAnimationToRecents(this::startHomeInternal);
+            recentsView.switchToScreenshot(() -> recentsView.finishRecentsAnimation(true,
+                    this::startHomeInternal));
         } else {
             startHomeInternal();
         }
@@ -385,7 +387,8 @@ public final class RecentsActivity extends StatefulActivity<RecentsState> {
         anim.play(controller.getAnimationPlayer());
         anim.setDuration(HOME_APPEAR_DURATION);
         result.setAnimation(anim, this,
-                () -> getStateManager().goToState(RecentsState.HOME, false));
+                () -> getStateManager().goToState(RecentsState.HOME, false),
+                true /* skipFirstFrame */);
     }
 
     @Override

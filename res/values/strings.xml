@@ -105,8 +105,17 @@
     <!-- Dialog text. This dialog lets a user know how they can use widgets on their phone.
          [CHAR_LIMIT=NONE] -->
     <string name="widget_education_content">To get info without opening apps, you can add widgets to your Home screen</string>
+
+    <!-- Text on an educational tip on widget informing users that they can change widget settings.
+         [CHAR_LIMIT=NONE] -->
+    <string name="reconfigurable_widget_education_tip">Tap to change widget settings</string>
+
     <!-- Text on the button that closes the education dialog about widgets. [CHAR_LIMIT=50] -->
     <string name="widget_education_close_button">Got it</string>
+
+    <!-- Spoken text for screen readers. This text is for an icon that lets the user change a
+         widget's settings. [CHAR_LIMIT=50] -->
+    <string name="widget_reconfigure_button_content_description">Change widget settings</string>
 
     <!-- All Apps -->
     <!-- Search bar text in the apps view. [CHAR_LIMIT=50] -->
@@ -379,36 +388,29 @@
 
     <!-- This string is in the work profile tab when a user has All Apps open on their phone. This is a label for a toggle to turn the work profile on and off. "Work profile" means a separate profile on a user's phone that's specifically for their work apps and managed by their company. "Work" is used as an adjective.-->
     <string name="work_profile_toggle_label">Work profile</string>
-    <!--- User onboarding title for personal apps -->
-    <string name="work_profile_edu_personal_apps">Personal data is separate &amp; hidden from work apps</string>
     <!--- User onboarding title for work profile apps -->
-    <string name="work_profile_edu_work_apps">Work apps &amp; data are visible to your IT admin</string>
-    <!-- Action label to proceed to the next work profile edu section-->
-    <string name="work_profile_edu_next">Next</string>
+    <string name="work_profile_edu_work_apps">Work apps are badged and visible to your IT admin</string>
     <!-- Action label to finish work profile edu-->
     <string name="work_profile_edu_accept">Got it</string>
 
     <!--- heading shown when user opens work apps tab while work apps are paused -->
-    <string name="work_apps_paused_title">Work profile is paused</string>
+    <string name="work_apps_paused_title">Work apps are off</string>
     <!--- body shown when user opens work apps tab while work apps are paused -->
-    <string name="work_apps_paused_body">Work apps can’t send you notifications, use your battery, or access your location</string>
+    <string name="work_apps_paused_body">Your work apps can’t send you notifications, use your battery, or access your location</string>
     <!-- content description for paused work apps list -->
-    <string name="work_apps_paused_content_description">Work profile is paused. Work apps can’t send you notifications, use your battery, or access your location</string>
+    <string name="work_apps_paused_content_description">Work apps are off. Your work apps can’t send you notifications, use your battery, or access your location</string>
     <!-- string shown in educational banner about work profile -->
     <string name="work_apps_paused_edu_banner">Work apps are badged and visible to your IT admin</string>
     <!-- button string shown to dismiss work tab education -->
     <string name="work_apps_paused_edu_accept">Got it</string>
 
     <!-- button string shown pause work profile -->
-    <string name="work_apps_pause_btn_text">Pause work apps</string>
+    <string name="work_apps_pause_btn_text">Turn off work apps</string>
     <!-- button string shown enable work profile -->
-    <string name="work_apps_enable_btn_text">Turn on</string>
+    <string name="work_apps_enable_btn_text">Turn on work apps</string>
 
     <!-- A hint shown in launcher settings develop options filter box -->
     <string name="developer_options_filter_hint">Filter</string>
-
-    <!-- A tip shown pointing at work toggle -->
-    <string name="work_switch_tip">Pause work apps and notifications</string>
 
     <!-- Failed action error message: e.g. Failed: Pause -->
     <string name="remote_action_failed">Failed: <xliff:g id="what" example="Pause">%1$s</xliff:g></string>
