@@ -20,7 +20,6 @@ import static com.android.launcher3.anim.Interpolators.FAST_OUT_SLOW_IN;
 
 import android.animation.PropertyValuesHolder;
 import android.content.Context;
-import android.content.res.Configuration;
 import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.util.IntProperty;
@@ -71,10 +70,9 @@ public class WidgetsBottomSheet extends BaseWidgetSheet implements Insettable {
     private static final long EDUCATION_TIP_DELAY_MS = 300;
 
     private ItemInfo mOriginalItemInfo;
-    private Rect mInsets;
+    private final Rect mInsets;
     private final int mMaxTableHeight;
     private int mMaxHorizontalSpan = 4;
-    private Configuration mCurrentConfiguration;
 
     private final OnLayoutChangeListener mLayoutChangeListenerToShowTips =
             new OnLayoutChangeListener() {
@@ -113,20 +111,38 @@ public class WidgetsBottomSheet extends BaseWidgetSheet implements Insettable {
         super(context, attrs, defStyleAttr);
         setWillNotDraw(false);
         mInsets = new Rect();
-        mContent = this;
         DeviceProfile deviceProfile = mActivityContext.getDeviceProfile();
         // Set the max table height to 2 / 3 of the grid height so that the bottom picker won't
         // take over the entire view vertically.
         mMaxTableHeight = deviceProfile.inv.numRows * 2 / 3  * deviceProfile.cellHeightPx;
-        mCurrentConfiguration = new Configuration(getResources().getConfiguration());
         if (!hasSeenEducationTip()) {
             addOnLayoutChangeListener(mLayoutChangeListenerToShowTips);
         }
     }
 
     @Override
+    protected void onFinishInflate() {
+        super.onFinishInflate();
+        mContent = findViewById(R.id.widgets_bottom_sheet);
+    }
+
+    @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        DeviceProfile deviceProfile = mActivityContext.getDeviceProfile();
+        int widthUsed;
+        if (mInsets.bottom > 0) {
+            widthUsed = mInsets.left + mInsets.right;
+        } else {
+            Rect padding = deviceProfile.workspacePadding;
+            widthUsed = Math.max(padding.left + padding.right,
+                    2 * (mInsets.left + mInsets.right));
+        }
+
+        int heightUsed = mInsets.top + deviceProfile.edgeMarginPx;
+        measureChildWithMargins(mContent, widthMeasureSpec,
+                widthUsed, heightMeasureSpec, heightUsed);
+        setMeasuredDimension(MeasureSpec.getSize(widthMeasureSpec),
+                MeasureSpec.getSize(heightMeasureSpec));
 
         int paddingPx = 2 * getResources().getDimensionPixelOffset(
                 R.dimen.widget_cell_horizontal_padding);
@@ -142,7 +158,15 @@ public class WidgetsBottomSheet extends BaseWidgetSheet implements Insettable {
 
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
-        super.onLayout(changed, l, t, r, b);
+        int width = r - l;
+        int height = b - t;
+
+        // Content is laid out as center bottom aligned.
+        int contentWidth = mContent.getMeasuredWidth();
+        int contentLeft = (width - contentWidth - mInsets.left - mInsets.right) / 2 + mInsets.left;
+        mContent.layout(contentLeft, height - mContent.getMeasuredHeight(),
+                contentLeft + contentWidth, height);
+
         setTranslationShift(mTranslationShift);
 
         // Ensure the scroll view height is not larger than mMaxTableHeight, which is a value
@@ -241,20 +265,14 @@ public class WidgetsBottomSheet extends BaseWidgetSheet implements Insettable {
 
     @Override
     public void setInsets(Rect insets) {
-        // Extend behind left, right, and bottom insets.
-        int leftInset = insets.left - mInsets.left;
-        int rightInset = insets.right - mInsets.right;
-        int bottomInset = insets.bottom - mInsets.bottom;
         mInsets.set(insets);
-        setPadding(leftInset, getPaddingTop(), rightInset, bottomInset);
-    }
-
-    @Override
-    protected void onConfigurationChanged(Configuration newConfig) {
-        if (mCurrentConfiguration.orientation != newConfig.orientation) {
-            mInsets.setEmpty();
+        mContent.setPadding(mContent.getPaddingStart(),
+                mContent.getPaddingTop(), mContent.getPaddingEnd(), insets.bottom);
+        if (insets.bottom > 0) {
+            setupNavBarColor();
+        } else {
+            clearNavBarColor();
         }
-        mCurrentConfiguration.updateFrom(newConfig);
     }
 
     @Override
