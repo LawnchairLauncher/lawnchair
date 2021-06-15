@@ -190,11 +190,11 @@
     <!-- Widgets: -->
     <skip />    
 
-    <!-- Text to show user in place of a gadget when we can't display it properly -->
-    <string name="gadget_error_text">Problem loading widget</string>
+    <!-- Error text that lets a user know that the widget can't load. -->
+    <string name="gadget_error_text">Can\'t load widget</string>
 
-    <!-- Text to show user in place of a gadget when it is not yet initialized. -->
-    <string name="gadget_setup_text">Setup</string>
+    <!-- Instructional text to encourage a user to finish setting up the widget. -->
+    <string name="gadget_setup_text">Tap to finish setup</string>
 
     <!-- Text to inform the user that they can't uninstall a system application -->
     <string name="uninstall_system_app_text">This is a system app and can\'t be uninstalled.</string>
