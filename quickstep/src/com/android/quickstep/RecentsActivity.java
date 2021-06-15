@@ -141,7 +141,7 @@ public final class RecentsActivity extends StatefulActivity<RecentsState> {
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        ACTIVITY_TRACKER.handleNewIntent(this, intent);
+        ACTIVITY_TRACKER.handleNewIntent(this);
     }
 
     /**
