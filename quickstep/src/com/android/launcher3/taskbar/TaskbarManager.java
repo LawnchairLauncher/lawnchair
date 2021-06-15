@@ -136,10 +136,6 @@ public class TaskbarManager implements DisplayController.DisplayInfoChangeListen
         onSysuiFlagsChangedInternal(mSysuiStateFlags, true /* forceUpdate */);
     }
 
-    /**
-     * See {@link com.android.systemui.shared.system.QuickStepContract.SystemUiStateFlags}
-     * @param systemUiStateFlags The latest SystemUiStateFlags
-     */
     public void onSystemUiFlagsChanged(int systemUiStateFlags) {
         onSysuiFlagsChangedInternal(systemUiStateFlags, false /* forceUpdate */);
     }
@@ -157,9 +153,9 @@ public class TaskbarManager implements DisplayController.DisplayInfoChangeListen
         }
     }
 
-    public void disable(int displayId, int state1, int state2, boolean animate) {
+    public void disableNavBarElements(int displayId, int state1, int state2, boolean animate) {
         if (mTaskbarActivityContext != null) {
-            mTaskbarActivityContext.disable(displayId, state1, state2, animate);
+            mTaskbarActivityContext.disableNavBarElements(displayId, state1, state2, animate);
         }
     }
 
