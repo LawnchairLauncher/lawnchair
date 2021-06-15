@@ -79,7 +79,7 @@ public class FolderAnimationManager {
     private final TimeInterpolator mLargeFolderPreviewItemOpenInterpolator;
     private final TimeInterpolator mLargeFolderPreviewItemCloseInterpolator;
 
-    private final PreviewItemDrawingParams mTmpParams = new PreviewItemDrawingParams(0, 0, 0, 0);
+    private final PreviewItemDrawingParams mTmpParams = new PreviewItemDrawingParams(0, 0, 0);
     private final FolderGridOrganizer mPreviewVerifier;
 
     private ObjectAnimator mBgColorAnimator;

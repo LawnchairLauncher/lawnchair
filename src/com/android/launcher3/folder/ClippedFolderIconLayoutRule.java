@@ -34,7 +34,6 @@ public class ClippedFolderIconLayoutRule {
         float totalScale = scaleForItem(curNumItems);
         float transX;
         float transY;
-        float overlayAlpha = 0;
 
         if (index == EXIT_INDEX) {
             // 0 1 * <-- Exit position (row 0, col 2)
@@ -55,10 +54,9 @@ public class ClippedFolderIconLayoutRule {
         transY = mTmpPoint[1];
 
         if (params == null) {
-            params = new PreviewItemDrawingParams(transX, transY, totalScale, overlayAlpha);
+            params = new PreviewItemDrawingParams(transX, transY, totalScale);
         } else {
             params.update(transX, transY, totalScale);
-            params.overlayAlpha = overlayAlpha;
         }
         return params;
     }
