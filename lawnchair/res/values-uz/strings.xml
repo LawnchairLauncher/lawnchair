@@ -15,7 +15,7 @@
   ~ limitations under the License.
   -->
 <resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="icon_pack">Ikonlar to‘plami</string>
+    <string name="icon_pack">Belgilar to‘plami</string>
     <string name="settings">Sozlamalar</string>
     <string name="home_screen_label">Asosiy ekran</string>
     <string name="home_screen_description">Ozuqa, bir qarashda, panjara, ikonlar</string>
@@ -70,8 +70,8 @@
     <string name="hidden_apps_label">Yashirin ilovalar</string>
     <string name="hidden_apps_label_with_count">Yashirin ilovalar (%1$d)</string>
     <plurals name="apps_count">
-        <item quantity="one">%1$d Ilovalar</item>
-        <item quantity="other">%1$d Apps</item>
+        <item quantity="one">%1$d Ilova</item>
+        <item quantity="other">%1$d Ilovalar</item>
     </plurals>
     <string name="hotseat_qsb_label">Qidiruv panelini ko‘rsatish</string>
     <string name="dt2s_admin_hint_title">Administrator ruxsatlarini talab qilish</string>
@@ -82,17 +82,17 @@
     <string name="dt2s_warning_open_settings">Sozlamalarni ochish</string>
     <string name="minus_one_enable">Tasmani ko‘rsatish</string>
     <string name="minus_one_unavailable">Tasma o‘rnatilmagan.</string>
-    <string name="fuzzy_search_title">Fuzzy Search</string>
-    <string name="fuzzy_search_desc">Approximate matching for app searches.</string>
-    <string name="theme_label">Theme</string>
-    <string name="theme_light">Light</string>
-    <string name="theme_dark">Dark</string>
-    <string name="theme_system_default">Follow System</string>
-    <string name="theme_follow_wallpaper">Match Wallpaper</string>
-    <string name="quickstep_label">Recents</string>
-    <string name="clear_all_as_action_label">Show “Clear all” at bottom</string>
-    <string name="window_corner_radius_label">Corner radius</string>
-    <string name="override_window_corner_radius_label">Custom corner radius</string>
-    <string name="override_window_corner_radius_description">If the default doesn\'t match your screen</string>
-    <string name="system_icons">System Icons</string>
+    <string name="fuzzy_search_title">Loyqa qidiruv</string>
+    <string name="fuzzy_search_desc">Ilovalarni qidirish uchun taxminiy moslik.</string>
+    <string name="theme_label">Mavzu</string>
+    <string name="theme_light">Yorug‘lik</string>
+    <string name="theme_dark">Qorong‘i</string>
+    <string name="theme_system_default">Tizimni kuzatib borish</string>
+    <string name="theme_follow_wallpaper">Mos fon rasmi</string>
+    <string name="quickstep_label">Oxirgilar</string>
+    <string name="clear_all_as_action_label">Pastda “Hammasini tozalash” ni ko‘rsating</string>
+    <string name="window_corner_radius_label">Burchak radiusi</string>
+    <string name="override_window_corner_radius_label">Maxsus burchak radiusi</string>
+    <string name="override_window_corner_radius_description">Agar sukut ekraningizga mos kelmasa</string>
+    <string name="system_icons">Tizim belgilari</string>
 </resources>
