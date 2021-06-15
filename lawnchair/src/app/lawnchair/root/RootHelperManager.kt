@@ -14,7 +14,6 @@ import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
 class RootHelperManager(private val context: Context) {
-
     private val prefs = PreferenceManager.getInstance(context)
     private var rootHelper: IRootHelper? = null
     private val connectionListeners = CopyOnWriteArraySet<Runnable>()
@@ -33,11 +32,9 @@ class RootHelperManager(private val context: Context) {
     @Throws(RootNotAvailableException::class)
     suspend fun getService(): IRootHelper {
         prefs.autoLaunchRoot.set(isAvailable)
-        if (!isAvailable) throw RootNotAvailableException()
 
-        if (rootHelper != null) {
-            return rootHelper!!
-        }
+        if (!isAvailable) throw RootNotAvailableException()
+        if (rootHelper != null) return rootHelper!!
 
         val intent = Intent(context, RootHelper::class.java)
         RootService.bind(intent, connection)
