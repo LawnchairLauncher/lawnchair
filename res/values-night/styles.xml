@@ -20,5 +20,6 @@
 <resources>
     <style name="AddItemActivityTheme" parent="@android:style/Theme.Translucent.NoTitleBar">
         <item name="widgetsTheme">@style/WidgetContainerTheme.Dark</item>
+        <item name="android:windowTranslucentStatus">true</item>
     </style>
 </resources>
