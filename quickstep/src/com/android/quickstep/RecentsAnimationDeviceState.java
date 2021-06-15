@@ -15,6 +15,8 @@
  */
 package com.android.quickstep;
 
+import static android.app.WindowConfiguration.ACTIVITY_TYPE_UNDEFINED;
+import static android.app.WindowConfiguration.WINDOWING_MODE_PINNED;
 import static android.content.Intent.ACTION_USER_UNLOCKED;
 
 import static com.android.launcher3.util.DisplayController.CHANGE_ALL;
@@ -41,6 +43,7 @@ import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_S
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_STATUS_BAR_KEYGUARD_SHOWING_OCCLUDED;
 
 import android.app.ActivityManager;
+import android.app.ActivityTaskManager;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -50,6 +53,7 @@ import android.content.res.Resources;
 import android.graphics.Region;
 import android.net.Uri;
 import android.os.Process;
+import android.os.RemoteException;
 import android.os.SystemProperties;
 import android.os.UserManager;
 import android.provider.Settings;
@@ -75,6 +79,8 @@ import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.QuickStepContract;
 import com.android.systemui.shared.system.QuickStepContract.SystemUiStateFlags;
 import com.android.systemui.shared.system.SystemGestureExclusionListenerCompat;
+import com.android.systemui.shared.system.TaskStackChangeListener;
+import com.android.systemui.shared.system.TaskStackChangeListeners;
 
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -96,6 +102,8 @@ public class RecentsAnimationDeviceState implements
     private final DisplayController mDisplayController;
     private final int mDisplayId;
     private final RotationTouchHelper mRotationTouchHelper;
+    private final TaskStackChangeListener mPipListener;
+    private final List<ComponentName> mGestureBlockedActivities;
 
     private final ArrayList<Runnable> mOnDestroyActions = new ArrayList<>();
 
@@ -106,9 +114,11 @@ public class RecentsAnimationDeviceState implements
     private final Region mDeferredGestureRegion = new Region();
     private boolean mAssistantAvailable;
     private float mAssistantVisibility;
+    private boolean mIsUserSetupComplete;
     private boolean mIsOneHandedModeEnabled;
     private boolean mIsSwipeToNotificationEnabled;
     private final boolean mIsOneHandedModeSupported;
+    private boolean mPipIsActive;
 
     private boolean mIsUserUnlocked;
     private final ArrayList<Runnable> mUserUnlockedActions = new ArrayList<>();
@@ -124,10 +134,6 @@ public class RecentsAnimationDeviceState implements
 
     private Region mExclusionRegion;
     private SystemGestureExclusionListenerCompat mExclusionListener;
-
-    private final List<ComponentName> mGestureBlockedActivities;
-
-    private boolean mIsUserSetupComplete;
 
     public RecentsAnimationDeviceState(Context context) {
         this(context, false);
@@ -204,7 +210,6 @@ public class RecentsAnimationDeviceState implements
             mIsOneHandedModeEnabled = false;
         }
 
-
         Uri swipeBottomNotificationUri =
                 Settings.Secure.getUriFor(ONE_HANDED_SWIPE_BOTTOM_TO_NOTIFICATION_ENABLED);
         SettingsCache.OnChangeListener onChangeListener =
@@ -220,6 +225,27 @@ public class RecentsAnimationDeviceState implements
             settingsCache.register(setupCompleteUri, userSetupChangeListener);
             runOnDestroy(() -> settingsCache.unregister(setupCompleteUri, userSetupChangeListener));
         }
+
+        try {
+            mPipIsActive = ActivityTaskManager.getService().getRootTaskInfo(
+                    WINDOWING_MODE_PINNED, ACTIVITY_TYPE_UNDEFINED) != null;
+        } catch (RemoteException e) {
+            // Do nothing
+        }
+        mPipListener = new TaskStackChangeListener() {
+            @Override
+            public void onActivityPinned(String packageName, int userId, int taskId, int stackId) {
+                mPipIsActive = true;
+            }
+
+            @Override
+            public void onActivityUnpinned() {
+                mPipIsActive = false;
+            }
+        };
+        TaskStackChangeListeners.getInstance().registerTaskStackListener(mPipListener);
+        runOnDestroy(() ->
+                TaskStackChangeListeners.getInstance().unregisterTaskStackListener(mPipListener));
     }
 
     private void runOnDestroy(Runnable action) {
@@ -579,6 +605,10 @@ public class RecentsAnimationDeviceState implements
         return mIsSwipeToNotificationEnabled;
     }
 
+    public boolean isPipActive() {
+        return mPipIsActive;
+    }
+
     public RotationTouchHelper getRotationTouchHelper() {
         return mRotationTouchHelper;
     }
@@ -596,6 +626,7 @@ public class RecentsAnimationDeviceState implements
         pw.println("  isOneHandedModeEnabled=" + mIsOneHandedModeEnabled);
         pw.println("  isSwipeToNotificationEnabled=" + mIsSwipeToNotificationEnabled);
         pw.println("  deferredGestureRegion=" + mDeferredGestureRegion);
+        pw.println("  pipIsActive=" + mPipIsActive);
         mRotationTouchHelper.dump(pw);
     }
 }
