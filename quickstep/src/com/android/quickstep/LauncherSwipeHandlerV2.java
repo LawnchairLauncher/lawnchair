@@ -191,6 +191,12 @@ public class LauncherSwipeHandlerV2 extends
         return new FloatingViewHomeAnimationFactory(floatingWidgetView) {
 
             @Override
+            @Nullable
+            protected View getViewIgnoredInWorkspaceRevealAnimation() {
+                return hostView;
+            }
+
+            @Override
             public RectF getWindowTargetRect() {
                 super.getWindowTargetRect();
                 return backgroundLocation;
@@ -387,6 +393,16 @@ public class LauncherSwipeHandlerV2 extends
     }
 
     private class LauncherHomeAnimationFactory extends HomeAnimationFactory {
+
+        /**
+         * Returns a view which should be excluded from the Workspace animation, or null if there
+         * is no view to exclude.
+         */
+        @Nullable
+        protected View getViewIgnoredInWorkspaceRevealAnimation() {
+            return null;
+        }
+
         @NonNull
         @Override
         public AnimatorPlaybackController createActivityAnimationToHome() {
@@ -400,7 +416,8 @@ public class LauncherSwipeHandlerV2 extends
         @Override
         public void playAtomicAnimation(float velocity) {
             if (!PROTOTYPE_APP_CLOSE.get()) {
-                new StaggeredWorkspaceAnim(mActivity, velocity, true /* animateOverviewScrim */)
+                new StaggeredWorkspaceAnim(mActivity, velocity, true /* animateOverviewScrim */,
+                        getViewIgnoredInWorkspaceRevealAnimation())
                         .start();
             } else if (shouldPlayAtomicWorkspaceReveal()) {
                 new WorkspaceRevealAnim(mActivity, true).start();
