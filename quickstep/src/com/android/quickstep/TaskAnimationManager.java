@@ -39,6 +39,7 @@ import com.android.systemui.shared.system.ActivityOptionsCompat;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 import com.android.systemui.shared.system.RemoteTransitionCompat;
 import com.android.systemui.shared.system.TaskStackChangeListener;
+import com.android.systemui.shared.system.TaskStackChangeListeners;
 
 public class TaskAnimationManager implements RecentsAnimationCallbacks.RecentsAnimationListener {
     public static final boolean ENABLE_SHELL_TRANSITIONS =
@@ -58,7 +59,7 @@ public class TaskAnimationManager implements RecentsAnimationCallbacks.RecentsAn
         public void onActivityRestartAttempt(ActivityManager.RunningTaskInfo task,
                 boolean homeTaskVisible, boolean clearedTask, boolean wasVisible) {
             if (mLastGestureState == null) {
-                ActivityManagerWrapper.getInstance().unregisterTaskStackListener(
+                TaskStackChangeListeners.getInstance().unregisterTaskStackListener(
                         mLiveTileRestartListener);
                 return;
             }
@@ -68,7 +69,7 @@ public class TaskAnimationManager implements RecentsAnimationCallbacks.RecentsAn
                 RecentsView recentsView = activityInterface.getCreatedActivity().getOverviewPanel();
                 if (recentsView != null) {
                     recentsView.launchSideTaskInLiveTileModeForRestartedApp(task.taskId);
-                    ActivityManagerWrapper.getInstance().unregisterTaskStackListener(
+                    TaskStackChangeListeners.getInstance().unregisterTaskStackListener(
                             mLiveTileRestartListener);
                 }
             }
@@ -197,7 +198,7 @@ public class TaskAnimationManager implements RecentsAnimationCallbacks.RecentsAn
     }
 
     public void enableLiveTileRestartListener() {
-        ActivityManagerWrapper.getInstance().registerTaskStackListener(mLiveTileRestartListener);
+        TaskStackChangeListeners.getInstance().registerTaskStackListener(mLiveTileRestartListener);
     }
 
     /**
@@ -241,7 +242,7 @@ public class TaskAnimationManager implements RecentsAnimationCallbacks.RecentsAn
             mLiveTileCleanUpHandler.run();
             mLiveTileCleanUpHandler = null;
         }
-        ActivityManagerWrapper.getInstance().unregisterTaskStackListener(mLiveTileRestartListener);
+        TaskStackChangeListeners.getInstance().unregisterTaskStackListener(mLiveTileRestartListener);
 
         // Release all the target leashes
         if (mTargets != null) {

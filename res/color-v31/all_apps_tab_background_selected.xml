@@ -1,5 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?><!--
-     Copyright (C) 2021 The Android Open Source Project
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (C) 2021 The Android Open Source Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -13,13 +13,6 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-    <item
-        android:top="@dimen/all_apps_tabs_vertical_padding"
-        android:bottom="@dimen/all_apps_tabs_vertical_padding">
-        <shape android:shape="rectangle">
-            <solid android:color="@color/all_apps_tabs_background" />
-            <corners android:radius="@dimen/all_apps_header_pill_corner_radius" />
-        </shape>
-    </item>
-</layer-list>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:color="@android:color/system_accent1_100"/>
+</selector>
