@@ -78,10 +78,10 @@
     <string name="dt2s_admin_hint">Ikki marta bosish orqali uxlash uchun Lawnchairni qurilma administratori sifatida o‘rnating. “Sozlamalarni ochish”ga teging, so‘ngra “Qurilma administrator ilovasini faollashtirish”.</string>
     <string name="dt2s_admin_warning">Kutish uchun ikki marta bosish o‘chiriladi.</string>
     <string name="dt2s_a11y_hint_title">Maxsus xizmatni yoqish</string>
-    <string name="dt2s_a11y_hint">To use Double-Tap to Sleep, turn on the Lawnchair accessibility service. Tap “Open Settings,” then select “Lawnchair” and turn on “Use Lawnchair.”</string>
-    <string name="dt2s_warning_open_settings">Open Settings</string>
-    <string name="minus_one_enable">Show Feed</string>
-    <string name="minus_one_unavailable">No feed installed.</string>
+    <string name="dt2s_a11y_hint">Ikki marta teginish orqali uxlash uchun Lawnchair maxsus xizmatni yoqing. “Sozlamalarni ochish” ga teging, so\'ng “Lawnchair” ni tanlang va “Lawnchairdan foydalanish” ni yoqing.</string>
+    <string name="dt2s_warning_open_settings">Sozlamalarni ochish</string>
+    <string name="minus_one_enable">Tasmani ko‘rsatish</string>
+    <string name="minus_one_unavailable">Tasma o‘rnatilmagan.</string>
     <string name="fuzzy_search_title">Fuzzy Search</string>
     <string name="fuzzy_search_desc">Approximate matching for app searches.</string>
     <string name="theme_label">Theme</string>
