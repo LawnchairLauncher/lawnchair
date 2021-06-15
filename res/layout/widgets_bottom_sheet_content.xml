@@ -14,32 +14,40 @@
      limitations under the License.
 -->
 <merge xmlns:android="http://schemas.android.com/apk/res/android">
-    <View
-        android:id="@+id/collapse_handle"
-        android:layout_width="48dp"
-        android:layout_height="2dp"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginBottom="16dp"
-        android:visibility="gone"
-        android:background="?android:attr/textColorSecondary"/>
-    <TextView
-        style="@style/TextHeadline"
-        android:id="@+id/title"
+    <LinearLayout
+        android:id="@+id/widgets_bottom_sheet"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
-        android:textColor="?android:attr/textColorPrimary"
-        android:textSize="24sp"/>
-
-    <ScrollView
-        android:id="@+id/widgets_table_scroll_view"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:fadeScrollbars="false"
-        android:layout_marginVertical="16dp">
-        <include layout="@layout/widgets_table_container"
+        android:background="@drawable/widgets_bottom_sheet_background"
+        android:paddingTop="16dp"
+        android:orientation="vertical">
+        <View
+            android:id="@+id/collapse_handle"
+            android:layout_width="48dp"
+            android:layout_height="2dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="16dp"
+            android:visibility="gone"
+            android:background="?android:attr/textColorSecondary"/>
+        <TextView
+            style="@style/TextHeadline"
+            android:id="@+id/title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal" />
-    </ScrollView>
+            android:gravity="center_horizontal"
+            android:textColor="?android:attr/textColorPrimary"
+            android:textSize="24sp"/>
+
+        <ScrollView
+            android:id="@+id/widgets_table_scroll_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fadeScrollbars="false"
+            android:layout_marginVertical="16dp">
+            <include layout="@layout/widgets_table_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal" />
+        </ScrollView>
+    </LinearLayout>
 </merge>
