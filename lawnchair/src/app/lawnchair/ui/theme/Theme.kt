@@ -46,10 +46,8 @@ fun LawnchairTheme(
     darkTheme: Boolean = isSelectedThemeDark(),
     content: @Composable () -> Unit
 ) {
-    val colors = getColors(darkTheme)
-
     MaterialTheme(
-        colors = colors,
+        colors = getColors(darkTheme),
         typography = Typography,
         shapes = Shapes,
         content = content
@@ -57,13 +55,13 @@ fun LawnchairTheme(
 }
 
 @Composable
-fun getColors(darkTheme: Boolean): Colors {
-    if (Utilities.ATLEAST_S) {
+fun getColors(darkTheme: Boolean): Colors = when {
+    Utilities.ATLEAST_S -> {
         if (darkTheme) {
             val accent = colorResource(id = androidColorId(name = "system_accent1_100"))
             val surface = colorResource(id = androidColorId(name = "system_neutral1_800"))
             val background = colorResource(id = androidColorId(name = "system_neutral1_900"))
-            return darkColors(
+            darkColors(
                 primary = accent,
                 secondary = accent,
                 background = background,
@@ -73,20 +71,16 @@ fun getColors(darkTheme: Boolean): Colors {
             val accent = colorResource(id = androidColorId(name = "system_accent1_600"))
             val surface = colorResource(id = androidColorId(name = "system_neutral1_100"))
             val background = colorResource(id = androidColorId(name = "system_neutral1_50"))
-            return lightColors(
+            lightColors(
                 primary = accent,
                 secondary = accent,
                 background = background,
                 surface = surface
             )
         }
-    } else {
-        return if (darkTheme) {
-            DarkColorPalette
-        } else {
-            LightColorPalette
-        }
     }
+    darkTheme -> DarkColorPalette
+    else -> LightColorPalette
 }
 
 @Composable
@@ -100,21 +94,18 @@ fun isSelectedThemeDark(): Boolean {
 }
 
 @Composable
-fun isAutoThemeDark(): Boolean {
-    return when {
-        Utilities.ATLEAST_Q -> isSystemInDarkTheme()
-        else -> isWallpaperDark()
-    }
-}
+fun isAutoThemeDark(): Boolean = if (Utilities.ATLEAST_Q) isSystemInDarkTheme() else isWallpaperDark()
 
 @Composable
 fun isWallpaperDark(): Boolean {
     val wallpaperColorInfo = WallpaperColorInfo.INSTANCE[LocalContext.current]
     var isDark by remember { mutableStateOf(wallpaperColorInfo.isDark) }
+
     DisposableEffect(wallpaperColorInfo) {
         val listener = WallpaperColorInfo.OnChangeListener { isDark = it.isDark }
         wallpaperColorInfo.addOnChangeListener(listener)
         onDispose { wallpaperColorInfo.removeOnChangeListener(listener) }
     }
+
     return isDark
 }
