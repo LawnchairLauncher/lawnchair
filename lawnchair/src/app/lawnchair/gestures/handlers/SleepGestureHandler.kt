@@ -33,18 +33,20 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.lifecycleScope
+import app.lawnchair.LawnchairLauncher
 import app.lawnchair.gestures.GestureHandler
-import app.lawnchair.launcher
 import app.lawnchair.lawnchairApp
+import app.lawnchair.root.RootHelper
+import app.lawnchair.root.RootHelperManager
 import app.lawnchair.ui.AlertBottomSheetContent
 import app.lawnchair.ui.preferences.components.BottomSheetState
 import app.lawnchair.views.showBottomSheet
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
-import com.google.accompanist.insets.navigationBarsPadding
 import kotlinx.coroutines.launch
 
-class SleepGestureHandler(private val context: Context) : GestureHandler() {
+class SleepGestureHandler(private val launcher: LawnchairLauncher) : GestureHandler() {
 
     override fun onTrigger() {
         method?.sleep()
@@ -52,28 +54,40 @@ class SleepGestureHandler(private val context: Context) : GestureHandler() {
 
     private val method: SleepMethod? by lazy {
         listOf(
-            SleepMethodPieAccessibility(context),
-            SleepMethodDeviceAdmin(context)
+            SleepMethodRoot(launcher),
+            SleepMethodPieAccessibility(launcher),
+            SleepMethodDeviceAdmin(launcher)
         ).firstOrNull { it.supported }
     }
 
-    abstract class SleepMethod(protected val context: Context) {
+    abstract class SleepMethod(protected val launcher: LawnchairLauncher) {
         abstract val supported: Boolean
         abstract fun sleep()
     }
 }
 
-class SleepMethodPieAccessibility(context: Context) : SleepGestureHandler.SleepMethod(context) {
+class SleepMethodRoot(launcher: LawnchairLauncher) : SleepGestureHandler.SleepMethod(launcher) {
+    override val supported get() = RootHelperManager.isAvailable
+    private val rootHelperManager = RootHelperManager.INSTANCE.get(launcher)
+
+    override fun sleep() {
+        launcher.lifecycleScope.launch {
+            rootHelperManager.getService().goToSleep()
+        }
+    }
+}
+
+class SleepMethodPieAccessibility(launcher: LawnchairLauncher) : SleepGestureHandler.SleepMethod(launcher) {
     override val supported = Utilities.ATLEAST_P
 
     @ExperimentalMaterialApi
     @TargetApi(Build.VERSION_CODES.P)
     override fun sleep() {
-        val app = context.lawnchairApp
+        val app = launcher.lawnchairApp
         if (!app.isAccessibilityServiceBound()) {
             val intent = Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            context.launcher.showBottomSheet { state ->
+            launcher.showBottomSheet { state ->
                 ServiceWarningDialog(
                     title = R.string.dt2s_a11y_hint_title,
                     description = R.string.dt2s_a11y_hint,
@@ -83,21 +97,21 @@ class SleepMethodPieAccessibility(context: Context) : SleepGestureHandler.SleepM
             }
             return
         }
-        context.lawnchairApp.performGlobalAction(AccessibilityService.GLOBAL_ACTION_LOCK_SCREEN)
+        launcher.lawnchairApp.performGlobalAction(AccessibilityService.GLOBAL_ACTION_LOCK_SCREEN)
     }
 }
 
-class SleepMethodDeviceAdmin(context: Context) : SleepGestureHandler.SleepMethod(context) {
+class SleepMethodDeviceAdmin(launcher: LawnchairLauncher) : SleepGestureHandler.SleepMethod(launcher) {
     override val supported = true
 
     @ExperimentalMaterialApi
     override fun sleep() {
-        val devicePolicyManager = context.getSystemService(Context.DEVICE_POLICY_SERVICE) as DevicePolicyManager
-        if (!devicePolicyManager.isAdminActive(ComponentName(context, SleepDeviceAdmin::class.java))) {
+        val devicePolicyManager = launcher.getSystemService(Context.DEVICE_POLICY_SERVICE) as DevicePolicyManager
+        if (!devicePolicyManager.isAdminActive(ComponentName(launcher, SleepDeviceAdmin::class.java))) {
             val intent = Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN)
-            intent.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, ComponentName(context, SleepDeviceAdmin::class.java))
-            intent.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION, context.getString(R.string.dt2s_admin_hint))
-            context.launcher.showBottomSheet { state ->
+            intent.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, ComponentName(launcher, SleepDeviceAdmin::class.java))
+            intent.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION, launcher.getString(R.string.dt2s_admin_hint))
+            launcher.showBottomSheet { state ->
                 ServiceWarningDialog(
                     title = R.string.dt2s_admin_hint_title,
                     description = R.string.dt2s_admin_hint,

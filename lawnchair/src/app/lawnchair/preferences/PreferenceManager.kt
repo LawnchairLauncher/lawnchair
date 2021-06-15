@@ -83,6 +83,7 @@ class PreferenceManager private constructor(private val context: Context) : Base
     val clearAllAsAction = BoolPref("pref_clearAllAsAction", false)
     val overrideWindowCornerRadius = BoolPref("pref_overrideWindowCornerRadius", false, recreate)
     val windowCornerRadius = FloatPref("pref_windowCornerRadius", 1f, recreate)
+    val autoLaunchRoot = BoolPref("pref_autoLaunchRoot", false)
 
     init {
         sp.registerOnSharedPreferenceChangeListener(this)

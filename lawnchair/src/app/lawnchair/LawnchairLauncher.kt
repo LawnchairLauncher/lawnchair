@@ -20,10 +20,7 @@ import android.content.Context
 import android.os.Bundle
 import androidx.activity.OnBackPressedDispatcher
 import androidx.activity.OnBackPressedDispatcherOwner
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.LifecycleRegistry
-import androidx.lifecycle.ViewTreeLifecycleOwner
+import androidx.lifecycle.*
 import androidx.savedstate.SavedStateRegistry
 import androidx.savedstate.SavedStateRegistryController
 import androidx.savedstate.SavedStateRegistryOwner
@@ -31,6 +28,8 @@ import androidx.savedstate.ViewTreeSavedStateRegistryOwner
 import app.lawnchair.gestures.GestureController
 import app.lawnchair.nexuslauncher.OverlayCallbackImpl
 import app.lawnchair.preferences.PreferenceManager
+import app.lawnchair.root.RootHelperManager
+import app.lawnchair.root.RootNotAvailableException
 import app.lawnchair.util.restartLauncher
 import com.android.launcher3.BaseActivity
 import com.android.launcher3.LauncherAppState
@@ -38,6 +37,7 @@ import com.android.launcher3.LauncherRootView
 import com.android.launcher3.R
 import com.android.launcher3.uioverrides.QuickstepLauncher
 import com.android.systemui.plugins.shared.LauncherOverlayManager
+import kotlinx.coroutines.launch
 
 open class LawnchairLauncher : QuickstepLauncher(), LifecycleOwner,
     SavedStateRegistryOwner, OnBackPressedDispatcherOwner {
@@ -67,6 +67,17 @@ open class LawnchairLauncher : QuickstepLauncher(), LifecycleOwner,
         super.onCreate(savedInstanceState)
         lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_CREATE)
         subscribePreferences()
+
+        val prefs = PreferenceManager.getInstance(this)
+        if (prefs.autoLaunchRoot.get()) {
+            lifecycleScope.launch {
+                try {
+                    RootHelperManager.INSTANCE.get(this@LawnchairLauncher).getService()
+                } catch (e: RootNotAvailableException) {
+                    // do nothing
+                }
+            }
+        }
     }
 
     override fun onStart() {
