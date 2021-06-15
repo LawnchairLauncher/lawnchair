@@ -27,6 +27,7 @@ public class TaskbarViewController {
     public static final int ALPHA_INDEX_HOME = 0;
     public static final int ALPHA_INDEX_LAUNCHER_STATE = 1;
     public static final int ALPHA_INDEX_IME = 2;
+    public static final int ALPHA_INDEX_KEYGUARD = 3;
 
     private final TaskbarActivityContext mActivity;
     private final TaskbarView mTaskbarView;
@@ -38,7 +39,7 @@ public class TaskbarViewController {
     public TaskbarViewController(TaskbarActivityContext activity, TaskbarView taskbarView) {
         mActivity = activity;
         mTaskbarView = taskbarView;
-        mTaskbarIconAlpha = new MultiValueAlpha(mTaskbarView, 3);
+        mTaskbarIconAlpha = new MultiValueAlpha(mTaskbarView, 4);
         mTaskbarIconAlpha.setUpdateVisibility(true);
     }
 
