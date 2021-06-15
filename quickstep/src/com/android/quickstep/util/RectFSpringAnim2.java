@@ -280,7 +280,7 @@ public class RectFSpringAnim2 extends RectFSpringAnim {
             }
 
             @Override
-            public void onUpdate(float percent) {}
+            public void onUpdate(float percent, boolean initOnly) {}
         };
     }
 
