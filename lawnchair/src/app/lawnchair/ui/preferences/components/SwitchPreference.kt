@@ -36,21 +36,23 @@ fun SwitchPreference(
     description: String? = null,
     enabled: Boolean = true,
     showDivider: Boolean = true
-) =
+) {
     // TODO: Wrap overflowing text instead of using an ellipsis.
     PreferenceTemplate(height = if (description != null) 72.dp else 52.dp, showDivider = showDivider) {
         Row(
+            verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
                 .clickable(enabled) { adapter.onChange(!adapter.state.value) }
                 .fillMaxHeight()
                 .fillMaxWidth()
-                .padding(start = 16.dp, end = 16.dp),
-            verticalAlignment = Alignment.CenterVertically,
+                .padding(horizontal = 16.dp)
         ) {
             Column(
                 modifier = Modifier
                     .weight(1f)
-                    .addIf(!enabled) { alpha(ContentAlpha.disabled) }
+                    .addIf(!enabled) {
+                        alpha(ContentAlpha.disabled)
+                    }
             ) {
                 Text(
                     text = label,
@@ -82,3 +84,4 @@ fun SwitchPreference(
             )
         }
     }
+}
