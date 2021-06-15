@@ -87,8 +87,8 @@ fun getColors(darkTheme: Boolean): Colors = when {
 fun isSelectedThemeDark(): Boolean {
     val themeChoice by preferenceManager().launcherTheme.observeAsState()
     return when (themeChoice) {
-        ThemeChoice.light -> false
-        ThemeChoice.dark -> true
+        ThemeChoice.LIGHT -> false
+        ThemeChoice.DARK -> true
         else -> isAutoThemeDark()
     }
 }
