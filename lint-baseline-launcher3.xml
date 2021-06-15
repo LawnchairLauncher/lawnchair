@@ -3,6 +3,17 @@
 
     <issue
         id="NewApi"
+        message="Call requires API level 28 (current min is 26): `android.os.UserManager#requestQuietModeEnabled`"
+        errorLine1="            showConfirm |= !userManager.requestQuietModeEnabled(!toState, userProfile);"
+        errorLine2="                                        ~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="packages/apps/Launcher3/src/com/android/launcher3/allapps/WorkModeSwitch.java"
+            line="110"
+            column="41"/>
+    </issue>
+
+    <issue
+        id="NewApi"
         message="Call requires API level R (current min is 26): `android.view.View#getWindowInsetsController`"
         errorLine1="        getWindowInsetsController().hide(WindowInsets.Type.ime());"
         errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~~~">
