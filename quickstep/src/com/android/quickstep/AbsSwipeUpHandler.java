@@ -45,8 +45,6 @@ import static com.android.quickstep.GestureState.STATE_END_TARGET_SET;
 import static com.android.quickstep.GestureState.STATE_RECENTS_SCROLLING_FINISHED;
 import static com.android.quickstep.MultiStateCallback.DEBUG_STATES;
 import static com.android.quickstep.util.NavigationModeFeatureFlag.LIVE_TILE;
-import static com.android.quickstep.util.SwipePipToHomeAnimator.FRACTION_END;
-import static com.android.quickstep.util.SwipePipToHomeAnimator.FRACTION_START;
 import static com.android.quickstep.views.RecentsView.UPDATE_SYSUI_FLAGS_THRESHOLD;
 import static com.android.systemui.shared.system.ActivityManagerWrapper.CLOSE_SYSTEM_WINDOWS_REASON_RECENTS;
 import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.ACTIVITY_TYPE_HOME;
@@ -248,7 +246,6 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
 
     private final Runnable mOnDeferredActivityLaunch = this::onDeferredActivityLaunch;
 
-    private static final long SWIPE_PIP_TO_HOME_DURATION = 425;
     private SwipePipToHomeAnimator mSwipePipToHomeAnimator;
     protected boolean mIsSwipingPipToHome;
 
@@ -1127,17 +1124,14 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
                     createHomeAnimationFactory(cookies, duration, isTranslucent, appCanEnterPip,
                             runningTaskTarget);
             mIsSwipingPipToHome = homeAnimFactory.supportSwipePipToHome() && appCanEnterPip;
+            final RectFSpringAnim windowAnim;
             if (mIsSwipingPipToHome) {
-                mSwipePipToHomeAnimator = getSwipePipToHomeAnimator(
+                mSwipePipToHomeAnimator = createWindowAnimationToPip(
                         homeAnimFactory, runningTaskTarget, start);
-                mSwipePipToHomeAnimator.setDuration(SWIPE_PIP_TO_HOME_DURATION);
-                mSwipePipToHomeAnimator.setInterpolator(interpolator);
-                mSwipePipToHomeAnimator.setFloatValues(FRACTION_START, FRACTION_END);
-                mSwipePipToHomeAnimator.start();
-                mRunningWindowAnim = RunningWindowAnim.wrap(mSwipePipToHomeAnimator);
+                windowAnim = mSwipePipToHomeAnimator;
             } else {
                 mSwipePipToHomeAnimator = null;
-                RectFSpringAnim windowAnim = createWindowAnimationToHome(start, homeAnimFactory);
+                windowAnim = createWindowAnimationToHome(start, homeAnimFactory);
                 windowAnim.addAnimatorListener(new AnimationSuccessListener() {
                     @Override
                     public void onAnimationSuccess(Animator animator) {
@@ -1151,9 +1145,9 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
                         mGestureState.setState(STATE_END_TARGET_ANIMATION_FINISHED);
                     }
                 });
-                windowAnim.start(mContext, velocityPxPerMs);
-                mRunningWindowAnim = RunningWindowAnim.wrap(windowAnim);
             }
+            windowAnim.start(mContext, velocityPxPerMs);
+            mRunningWindowAnim = RunningWindowAnim.wrap(windowAnim);
             homeAnimFactory.setSwipeVelocity(velocityPxPerMs.y);
             homeAnimFactory.playAtomicAnimation(velocityPxPerMs.y);
             mLauncherTransitionController = null;
@@ -1209,7 +1203,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
         }
     }
 
-    private SwipePipToHomeAnimator getSwipePipToHomeAnimator(HomeAnimationFactory homeAnimFactory,
+    private SwipePipToHomeAnimator createWindowAnimationToPip(HomeAnimationFactory homeAnimFactory,
             RemoteAnimationTargetCompat runningTaskTarget, float startProgress) {
         // Directly animate the app to PiP (picture-in-picture) mode
         final ActivityManager.RunningTaskInfo taskInfo = mGestureState.getRunningTask();
@@ -1222,16 +1216,15 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
                         runningTaskTarget.taskInfo.pictureInPictureParams,
                         homeRotation,
                         mDp.hotseatBarSizePx);
-        final Rect startBounds = new Rect();
-        updateProgressForStartRect(new Matrix(), startProgress).round(startBounds);
         final SwipePipToHomeAnimator swipePipToHomeAnimator = new SwipePipToHomeAnimator(
+                mContext,
                 runningTaskTarget.taskId,
                 taskInfo.topActivity,
                 runningTaskTarget.leash.getSurfaceControl(),
                 TaskInfoCompat.getPipSourceRectHint(
                         runningTaskTarget.taskInfo.pictureInPictureParams),
                 TaskInfoCompat.getWindowConfigurationBounds(taskInfo),
-                startBounds,
+                updateProgressForStartRect(new Matrix(), startProgress),
                 destinationBounds,
                 mRecentsView.getPipCornerRadius(),
                 mRecentsView);
@@ -1243,7 +1236,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
         }
         AnimatorPlaybackController activityAnimationToHome =
                 homeAnimFactory.createActivityAnimationToHome();
-        swipePipToHomeAnimator.addListener(new AnimatorListenerAdapter() {
+        swipePipToHomeAnimator.addAnimatorListener(new AnimatorListenerAdapter() {
             private boolean mHasAnimationEnded;
             @Override
             public void onAnimationStart(Animator animation) {
