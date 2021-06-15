@@ -53,7 +53,9 @@
     <string name="widget_category_conversations" msgid="8894438636213590446">"Mazungumzo"</string>
     <string name="widget_education_header" msgid="4874760613775913787">"Maelezo muhimu mahali popote ulipo"</string>
     <string name="widget_education_content" msgid="745542879510751525">"Ili upate maelezo bila kufungua programu, unaweza kuweka wijeti kwenye Skrini yako ya kwanza"</string>
+    <string name="reconfigurable_widget_education_tip" msgid="6336962690888067057">"Gusa ili ubadilishe mipangilio ya wijeti"</string>
     <string name="widget_education_close_button" msgid="8676165703104836580">"Nimeelewa"</string>
+    <string name="widget_reconfigure_button_content_description" msgid="8811472721881205250">"Badilisha mipangilio ya wijeti"</string>
     <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"Tafuta programu"</string>
     <string name="all_apps_loading_message" msgid="5813968043155271636">"Inapakia programu..."</string>
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"Haikupata programu zozote zinazolingana na \"<xliff:g id="QUERY">%1$s</xliff:g>\""</string>
@@ -154,18 +156,16 @@
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"Binafsi"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"Kazini"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"Wasifu wa kazini"</string>
-    <string name="work_profile_edu_personal_apps" msgid="4155536355149317441">"Data binafsi iko kando na haionyeshwi kwenye programu za kazini"</string>
-    <string name="work_profile_edu_work_apps" msgid="237051938268703058">"Programu na data ya kazini huonekana kwa msimamizi wako wa TEHAMA"</string>
-    <string name="work_profile_edu_next" msgid="8783418929296503629">"Endelea"</string>
+    <!-- no translation found for work_profile_edu_work_apps (7895468576497746520) -->
+    <skip />
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"Nimeelewa"</string>
-    <string name="work_apps_paused_title" msgid="2389865654362803723">"Wasifu wa kazini umesimamishwa"</string>
-    <string name="work_apps_paused_body" msgid="4209084728264328628">"Programu za kazini haziwezi kukutumia arifa, kutumia betri yako au kufikia maelezo ya mahali ulipo"</string>
-    <string name="work_apps_paused_content_description" msgid="4473292417145736203">"Wasifu wa kazini umesimamishwa. Programu za kazini haziwezi kukutumia arifa, kutumia betri yako au kufikia maelezo ya mahali ulipo"</string>
+    <string name="work_apps_paused_title" msgid="3007471013401118920">"Programu za kazini zimezimwa"</string>
+    <string name="work_apps_paused_body" msgid="261634750995824906">"Programu zako za kazini haziwezi kukutumia arifa, kutumia betri yako au kufikia maelezo ya mahali ulipo"</string>
+    <string name="work_apps_paused_content_description" msgid="5149623040804051095">"Programu za kazini zimezimwa. Programu zako za kazini haziwezi kukutumia arifa, kutumia betri yako au kufikia maelezo ya mahali ulipo"</string>
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"Programu za kazini zina beji na zinaonekana kwa msimamizi wako wa TEHAMA"</string>
     <string name="work_apps_paused_edu_accept" msgid="6377476824357318532">"Nimeelewa"</string>
-    <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"Simamisha programu za kazini"</string>
-    <string name="work_apps_enable_btn_text" msgid="82111102541971856">"Washa"</string>
+    <string name="work_apps_pause_btn_text" msgid="1921059713673767460">"Zima programu za kazini"</string>
+    <string name="work_apps_enable_btn_text" msgid="1156432622148413741">"Washa programu za kazini"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"Kichujio"</string>
-    <string name="work_switch_tip" msgid="808075064383839144">"Simamisha arifa na programu za kazini"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"Hitilafu: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
 </resources>
