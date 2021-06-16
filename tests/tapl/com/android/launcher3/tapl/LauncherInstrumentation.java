@@ -39,6 +39,7 @@ import android.graphics.Point;
 import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.DeadObjectException;
 import android.os.Parcelable;
 import android.os.RemoteException;
 import android.os.SystemClock;
@@ -269,6 +270,9 @@ public final class LauncherInstrumentation {
         try (ContentProviderClient client = getContext().getContentResolver()
                 .acquireContentProviderClient(mTestProviderUri)) {
             return client.call(request, null, null);
+        } catch (DeadObjectException e) {
+            fail("Launcher crashed");
+            return null;
         } catch (RemoteException e) {
             throw new RuntimeException(e);
         }
