@@ -34,6 +34,7 @@ import static com.android.launcher3.anim.Interpolators.DEACCEL_1_5;
 import static com.android.launcher3.anim.Interpolators.DEACCEL_1_7;
 import static com.android.launcher3.anim.Interpolators.EXAGGERATED_EASE;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
+import static com.android.launcher3.config.FeatureFlags.ENABLE_SCRIM_FOR_APP_LAUNCH;
 import static com.android.launcher3.config.FeatureFlags.KEYGUARD_ANIMATION;
 import static com.android.launcher3.config.FeatureFlags.SEPARATE_RECENTS_ACTIVITY;
 import static com.android.launcher3.dragndrop.DragLayer.ALPHA_INDEX_TRANSITIONS;
@@ -508,20 +509,23 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
                 launcherAnimator.play(scaleAnim);
             });
 
-            int scrimColor = Themes.getAttrColor(mLauncher, R.attr.overviewScrimColor);
-            int scrimColorTrans = ColorUtils.setAlphaComponent(scrimColor, 0);
-            int[] colors = isAppOpening
-                    ? new int[] {scrimColorTrans, scrimColor}
-                    : new int[] {scrimColor, scrimColorTrans};
-            ScrimView scrimView = mLauncher.getScrimView();
-            if (scrimView.getBackground() instanceof ColorDrawable) {
-                scrimView.setBackgroundColor(colors[0]);
+            final boolean scrimEnabled = ENABLE_SCRIM_FOR_APP_LAUNCH.get();
+            if (scrimEnabled) {
+                int scrimColor = Themes.getAttrColor(mLauncher, R.attr.overviewScrimColor);
+                int scrimColorTrans = ColorUtils.setAlphaComponent(scrimColor, 0);
+                int[] colors = isAppOpening
+                        ? new int[]{scrimColorTrans, scrimColor}
+                        : new int[]{scrimColor, scrimColorTrans};
+                ScrimView scrimView = mLauncher.getScrimView();
+                if (scrimView.getBackground() instanceof ColorDrawable) {
+                    scrimView.setBackgroundColor(colors[0]);
 
-                ObjectAnimator scrim = ObjectAnimator.ofArgb(scrimView, VIEW_BACKGROUND_COLOR,
-                        colors);
-                scrim.setDuration(CONTENT_SCRIM_DURATION);
-                scrim.setInterpolator(DEACCEL_1_5);
-                launcherAnimator.play(scrim);
+                    ObjectAnimator scrim = ObjectAnimator.ofArgb(scrimView, VIEW_BACKGROUND_COLOR,
+                            colors);
+                    scrim.setDuration(CONTENT_SCRIM_DURATION);
+                    scrim.setInterpolator(DEACCEL_1_5);
+                    launcherAnimator.play(scrim);
+                }
             }
 
             // Pause page indicator animations as they lead to layer trashing.
@@ -532,7 +536,9 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
                     SCALE_PROPERTY.set(view, 1f);
                     view.setLayerType(View.LAYER_TYPE_NONE, null);
                 });
-                scrimView.setBackgroundColor(Color.TRANSPARENT);
+                if (scrimEnabled) {
+                    mLauncher.getScrimView().setBackgroundColor(Color.TRANSPARENT);
+                }
                 mLauncher.getWorkspace().getPageIndicator().skipAnimationsToEnd();
             };
         }
