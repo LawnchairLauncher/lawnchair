@@ -93,6 +93,12 @@ public class TaskbarDragLayerController {
          */
         public void updateInsetsTouchability(InsetsInfo insetsInfo) {
             insetsInfo.touchableRegion.setEmpty();
+            if (mActivity.canShowNavButtons()) {
+                // Always have nav buttons be touchable
+                mControllers.navbarButtonsViewController.addVisibleButtonsRegion(
+                        mTaskbarDragLayer, insetsInfo.touchableRegion);
+            }
+
             if (mTaskbarDragLayer.getAlpha() < AlphaUpdateListener.ALPHA_CUTOFF_THRESHOLD) {
                 // Let touches pass through us.
                 insetsInfo.setTouchableInsets(TOUCHABLE_INSETS_REGION);
@@ -105,8 +111,6 @@ public class TaskbarDragLayerController {
                 // Buttons are visible, take over the full taskbar area
                 insetsInfo.setTouchableInsets(TOUCHABLE_INSETS_FRAME);
             } else {
-                mControllers.navbarButtonsViewController.addVisibleButtonsRegion(
-                        mTaskbarDragLayer, insetsInfo.touchableRegion);
                 insetsInfo.setTouchableInsets(TOUCHABLE_INSETS_REGION);
             }
         }
