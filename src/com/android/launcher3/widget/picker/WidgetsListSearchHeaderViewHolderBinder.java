@@ -31,13 +31,16 @@ public final class WidgetsListSearchHeaderViewHolderBinder implements
         ViewHolderBinder<WidgetsListSearchHeaderEntry, WidgetsListSearchHeaderHolder> {
     private final LayoutInflater mLayoutInflater;
     private final OnHeaderClickListener mOnHeaderClickListener;
+    private final WidgetsListDrawableFactory mListDrawableFactory;
     private final WidgetsListAdapter mWidgetsListAdapter;
 
     public WidgetsListSearchHeaderViewHolderBinder(LayoutInflater layoutInflater,
             OnHeaderClickListener onHeaderClickListener,
+            WidgetsListDrawableFactory listDrawableFactory,
             WidgetsListAdapter listAdapter) {
         mLayoutInflater = layoutInflater;
         mOnHeaderClickListener = onHeaderClickListener;
+        mListDrawableFactory = listDrawableFactory;
         mWidgetsListAdapter = listAdapter;
     }
 
@@ -45,7 +48,7 @@ public final class WidgetsListSearchHeaderViewHolderBinder implements
     public WidgetsListSearchHeaderHolder newViewHolder(ViewGroup parent) {
         WidgetsListHeader header = (WidgetsListHeader) mLayoutInflater.inflate(
                 R.layout.widgets_list_row_header, parent, false);
-
+        header.setBackground(mListDrawableFactory.createHeaderBackgroundDrawable());
         return new WidgetsListSearchHeaderHolder(header);
     }
 
@@ -53,12 +56,13 @@ public final class WidgetsListSearchHeaderViewHolderBinder implements
     public void bindViewHolder(WidgetsListSearchHeaderHolder viewHolder,
             WidgetsListSearchHeaderEntry data, int position) {
         WidgetsListHeader widgetsListHeader = viewHolder.mWidgetsListHeader;
-        widgetsListHeader.updateListBackground(
-                /* isFirst= */ position == 0,
-                /* isLast= */ position == mWidgetsListAdapter.getItemCount() - 1,
-                /* isExpanded= */ data.isWidgetListShown());
         widgetsListHeader.applyFromItemInfoWithIcon(data);
         widgetsListHeader.setExpanded(data.isWidgetListShown());
+        widgetsListHeader.setListDrawableState(
+                WidgetsListDrawableState.obtain(
+                        /* isFirst= */ position == 0,
+                        /* isLast= */ position == mWidgetsListAdapter.getItemCount() - 1,
+                        /* isExpanded= */ data.isWidgetListShown()));
         widgetsListHeader.setOnExpandChangeListener(isExpanded ->
                 mOnHeaderClickListener.onHeaderClicked(isExpanded,
                         new PackageUserKey(data.mPkgItem.packageName, data.mPkgItem.user)));

@@ -1080,7 +1080,13 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
                 // Making sure mAllAppsSessionLogId is not null to avoid double logging.
                 && mAllAppsSessionLogId != null) {
             getAppsView().getSearchUiManager().resetSearch();
-            getStatsLogManager().logger().log(LAUNCHER_ALLAPPS_EXIT);
+            getStatsLogManager().logger()
+                    .withContainerInfo(LauncherAtom.ContainerInfo.newBuilder()
+                            .setWorkspace(
+                                    LauncherAtom.WorkspaceContainer.newBuilder()
+                                            .setPageIndex(getWorkspace().getCurrentPage()))
+                            .build())
+                    .log(LAUNCHER_ALLAPPS_EXIT);
             mAllAppsSessionLogId = null;
         }
     }
@@ -1472,7 +1478,7 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
         boolean shouldMoveToDefaultScreen = alreadyOnHome && isInState(NORMAL)
                 && AbstractFloatingView.getTopOpenView(this) == null;
         boolean isActionMain = Intent.ACTION_MAIN.equals(intent.getAction());
-        boolean internalStateHandled = ACTIVITY_TRACKER.handleNewIntent(this, intent);
+        boolean internalStateHandled = ACTIVITY_TRACKER.handleNewIntent(this);
         hideKeyboard();
         if (isActionMain) {
             if (!internalStateHandled) {

@@ -53,7 +53,9 @@
     <string name="widget_category_conversations" msgid="8894438636213590446">"Samtaler"</string>
     <string name="widget_education_header" msgid="4874760613775913787">"Nyttige oplysninger lige ved hånden"</string>
     <string name="widget_education_content" msgid="745542879510751525">"Hvis du vil have oplysninger uden at åbne apps, kan du føje widgets til din startskærm"</string>
+    <string name="reconfigurable_widget_education_tip" msgid="6336962690888067057">"Tryk for at ændre widgetindstillinger"</string>
     <string name="widget_education_close_button" msgid="8676165703104836580">"OK"</string>
+    <string name="widget_reconfigure_button_content_description" msgid="8811472721881205250">"Skift widgetindstillinger"</string>
     <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"Søg efter apps"</string>
     <string name="all_apps_loading_message" msgid="5813968043155271636">"Indlæser apps…"</string>
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"Der blev ikke fundet nogen apps, som matcher \"<xliff:g id="QUERY">%1$s</xliff:g>\""</string>
@@ -101,11 +103,11 @@
     <string name="folder_name_format_overflow" msgid="4270108890534995199">"Mappe: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> eller flere elementer"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"Baggrunde"</string>
     <string name="styles_wallpaper_button_text" msgid="8216961355289236794">"Baggrund og stil"</string>
-    <string name="settings_button_text" msgid="8873672322605444408">"Indstillinger for startskærm"</string>
+    <string name="settings_button_text" msgid="8873672322605444408">"Indst. for startskærm"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"Deaktiveret af din administrator"</string>
     <string name="allow_rotation_title" msgid="7728578836261442095">"Tillad rotation af startskærmen"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"Når telefonen roteres"</string>
-    <string name="notification_dots_title" msgid="9062440428204120317">"Notifikationscirkler"</string>
+    <string name="notification_dots_title" msgid="9062440428204120317">"Notifikationsprikker"</string>
     <string name="notification_dots_desc_on" msgid="1679848116452218908">"Til"</string>
     <string name="notification_dots_desc_off" msgid="1760796511504341095">"Fra"</string>
     <string name="title_missing_notification_access" msgid="7503287056163941064">"Kræver adgang til notifikationer"</string>
@@ -154,18 +156,16 @@
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"Personlige"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"Arbejde"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"Arbejdsprofil"</string>
-    <string name="work_profile_edu_personal_apps" msgid="4155536355149317441">"Personlige data er adskilt og skjult fra arbejdsapps"</string>
-    <string name="work_profile_edu_work_apps" msgid="237051938268703058">"Arbejdsapps og -data er synlige for din it-administrator"</string>
-    <string name="work_profile_edu_next" msgid="8783418929296503629">"Næste"</string>
+    <!-- no translation found for work_profile_edu_work_apps (7895468576497746520) -->
+    <skip />
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"OK"</string>
-    <string name="work_apps_paused_title" msgid="2389865654362803723">"Arbejdsprofilen er sat på pause"</string>
-    <string name="work_apps_paused_body" msgid="4209084728264328628">"Arbejdsapps kan ikke sende dig notifikationer, bruge dit batteri eller få adgang til din placering"</string>
-    <string name="work_apps_paused_content_description" msgid="4473292417145736203">"Arbejdsprofilen er sat på pause. Arbejdsapps kan ikke sende dig notifikationer, bruge dit batteri eller få adgang til din placering"</string>
+    <string name="work_apps_paused_title" msgid="3007471013401118920">"Arbejdsapps er deaktiveret"</string>
+    <string name="work_apps_paused_body" msgid="261634750995824906">"Arbejdsapps kan ikke sende dig notifikationer, bruge dit batteri eller få adgang til din lokation"</string>
+    <string name="work_apps_paused_content_description" msgid="5149623040804051095">"Arbejdsapps er deaktiveret. Dine arbejdsapps kan ikke sende dig notifikationer, bruge dit batteri eller få adgang til din lokation"</string>
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"Arbejdsapps har badges og kan ses af din it-administrator"</string>
     <string name="work_apps_paused_edu_accept" msgid="6377476824357318532">"OK"</string>
-    <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"Sæt arbejdsapps på pause"</string>
-    <string name="work_apps_enable_btn_text" msgid="82111102541971856">"Aktivér"</string>
+    <string name="work_apps_pause_btn_text" msgid="1921059713673767460">"Deaktiver arbejdsapps"</string>
+    <string name="work_apps_enable_btn_text" msgid="1156432622148413741">"Aktivér arbejdsapps"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"Filter"</string>
-    <string name="work_switch_tip" msgid="808075064383839144">"Sæt arbejdsapps og notifikationer på pause"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"Mislykket: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
 </resources>

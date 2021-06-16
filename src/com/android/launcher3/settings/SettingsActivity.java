@@ -113,6 +113,12 @@ public class SettingsActivity extends FragmentActivity
         Utilities.getPrefs(getApplicationContext()).registerOnSharedPreferenceChangeListener(this);
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+        finish();
+    }
+
     /**
      * Obtains the preference fragment to instantiate in this activity.
      *

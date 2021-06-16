@@ -60,9 +60,6 @@ public final class WidgetsListHeader extends LinearLayout implements ItemInfoUpd
     @Nullable private Drawable mIconDrawable;
     private final int mIconSize;
     private final int mBottomMarginSize;
-    private final float mTopBottomCornerRadius;
-    private final float mMiddleCornerRadius;
-    private final float mJoinedCornerRadius;
 
     private ImageView mAppIcon;
     private TextView mTitle;
@@ -70,6 +67,7 @@ public final class WidgetsListHeader extends LinearLayout implements ItemInfoUpd
 
     private CheckBox mExpandToggle;
     private boolean mIsExpanded = false;
+    @Nullable private WidgetsListDrawableState mListDrawableState;
 
     public WidgetsListHeader(Context context) {
         this(context, /* attrs= */ null);
@@ -90,12 +88,6 @@ public final class WidgetsListHeader extends LinearLayout implements ItemInfoUpd
                 grid.iconSizePx);
         mBottomMarginSize =
                 getResources().getDimensionPixelSize(R.dimen.widget_list_entry_bottom_margin);
-        mTopBottomCornerRadius =
-                getResources().getDimension(R.dimen.widget_list_top_bottom_corner_radius);
-        mMiddleCornerRadius =
-                getResources().getDimension(R.dimen.widget_list_content_corner_radius);
-        mJoinedCornerRadius =
-                getResources().getDimension(R.dimen.widget_list_content_joined_corner_radius);
     }
 
     @Override
@@ -161,6 +153,14 @@ public final class WidgetsListHeader extends LinearLayout implements ItemInfoUpd
             layoutParams.bottomMargin = bottomMargin;
             setLayoutParams(layoutParams);
         }
+    }
+
+    /** Sets the {@link WidgetsListDrawableState} and refreshes the background drawable. */
+    @UiThread
+    public void setListDrawableState(WidgetsListDrawableState state) {
+        if (state == mListDrawableState) return;
+        this.mListDrawableState = state;
+        refreshDrawableState();
     }
 
     /** Apply app icon, labels and tag using a generic {@link WidgetsListHeaderEntry}. */
@@ -263,20 +263,6 @@ public final class WidgetsListHeader extends LinearLayout implements ItemInfoUpd
         verifyHighRes();
     }
 
-    /** Updates the list to have a background drawable with the appropriate corner radii. */
-    @UiThread
-    public void updateListBackground(boolean isFirst, boolean isLast, boolean isExpanded) {
-        float topRadius = isFirst ? mTopBottomCornerRadius : mMiddleCornerRadius;
-        float bottomRadius = isLast
-                ? mTopBottomCornerRadius
-                : isExpanded
-                        ? mJoinedCornerRadius
-                        : mMiddleCornerRadius;
-        setBackground(
-                WidgetsListDrawables.createListBackgroundDrawable(
-                        getContext(), topRadius, bottomRadius));
-    }
-
     private void setTitles(WidgetsListSearchHeaderEntry entry) {
         mTitle.setText(entry.mPkgItem.title);
 
@@ -298,6 +284,17 @@ public final class WidgetsListHeader extends LinearLayout implements ItemInfoUpd
 
             mEnableIconUpdateAnimation = false;
         }
+    }
+
+    @Override
+    protected int[] onCreateDrawableState(int extraSpace) {
+        if (mListDrawableState == null) return super.onCreateDrawableState(extraSpace);
+        // Augment the state set from the super implementation with the custom states from
+        // mListDrawableState.
+        int[] drawableState =
+                super.onCreateDrawableState(extraSpace + mListDrawableState.mStateSet.length);
+        mergeDrawableStates(drawableState, mListDrawableState.mStateSet);
+        return drawableState;
     }
 
     /** Verifies that the current icon is high-res otherwise posts a request to load the icon. */
