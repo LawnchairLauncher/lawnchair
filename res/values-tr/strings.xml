@@ -53,7 +53,9 @@
     <string name="widget_category_conversations" msgid="8894438636213590446">"Görüşmeler"</string>
     <string name="widget_education_header" msgid="4874760613775913787">"Faydalı bilgiler parmaklarınızın ucunda"</string>
     <string name="widget_education_content" msgid="745542879510751525">"Uygulamaları açmadan bilgi almak için Ana ekranınıza widget\'lar ekleyebilirsiniz"</string>
+    <string name="reconfigurable_widget_education_tip" msgid="6336962690888067057">"Widget ayarlarını değiştirmek için dokunun"</string>
     <string name="widget_education_close_button" msgid="8676165703104836580">"Anladım"</string>
+    <string name="widget_reconfigure_button_content_description" msgid="8811472721881205250">"Widget ayarlarını değiştir"</string>
     <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"Uygulamalarda ara"</string>
     <string name="all_apps_loading_message" msgid="5813968043155271636">"Uygulamalar yükleniyor…"</string>
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"\"<xliff:g id="QUERY">%1$s</xliff:g>\" ile eşleşen uygulama bulunamadı"</string>
@@ -112,7 +114,7 @@
     <string name="msg_missing_notification_access" msgid="281113995110910548">"Bildirim Noktaları\'nı göstermek için <xliff:g id="NAME">%1$s</xliff:g> uygulamasının bildirimlerini açın"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"Ayarları değiştir"</string>
     <string name="notification_dots_service_title" msgid="4284221181793592871">"Bildirim noktalarını göster"</string>
-    <string name="auto_add_shortcuts_label" msgid="3698776050751790653">"Uygulama simgelerini Ana ekrana ekleyin"</string>
+    <string name="auto_add_shortcuts_label" msgid="3698776050751790653">"Uygulama simgelerini Ana ekrana ekle"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"Yeni uygulamalar için"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"Bilinmiyor"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"Kaldır"</string>
@@ -154,18 +156,16 @@
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"Kişisel"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"İş"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"İş profili"</string>
-    <string name="work_profile_edu_personal_apps" msgid="4155536355149317441">"Kişisel veriler ayrı olup iş uygulamalarından gizlenir"</string>
-    <string name="work_profile_edu_work_apps" msgid="237051938268703058">"BT yöneticiniz iş uygulamalarını ve verilerini görebilir"</string>
-    <string name="work_profile_edu_next" msgid="8783418929296503629">"İleri"</string>
+    <!-- no translation found for work_profile_edu_work_apps (7895468576497746520) -->
+    <skip />
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"Anladım"</string>
-    <string name="work_apps_paused_title" msgid="2389865654362803723">"İş profili duraklatıldı"</string>
-    <string name="work_apps_paused_body" msgid="4209084728264328628">"İş uygulamaları size bildirim gönderemez, pilinizi kullanamaz veya konum bilginize erişemez"</string>
-    <string name="work_apps_paused_content_description" msgid="4473292417145736203">"İş profili duraklatıldı. İş uygulamaları size bildirim gönderemez, pilinizi kullanamaz veya konum bilginize erişemez"</string>
+    <string name="work_apps_paused_title" msgid="3007471013401118920">"İş uygulamaları kapalı"</string>
+    <string name="work_apps_paused_body" msgid="261634750995824906">"İş uygulamaları size bildirim gönderemez, pilinizi kullanamaz veya konum bilginize erişemez"</string>
+    <string name="work_apps_paused_content_description" msgid="5149623040804051095">"İş uygulamaları kapalı. İş uygulamalarınız size bildirim gönderemez, pilinizi kullanamaz veya konum bilginize erişemez"</string>
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"İş uygulamaları rozetle işaretlenmiş olup BT yöneticisi tarafından görülebilir"</string>
     <string name="work_apps_paused_edu_accept" msgid="6377476824357318532">"Anladım"</string>
-    <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"İş uygulamalarını duraklat"</string>
-    <string name="work_apps_enable_btn_text" msgid="82111102541971856">"Aç"</string>
+    <string name="work_apps_pause_btn_text" msgid="1921059713673767460">"İş uygulamalarını kapat"</string>
+    <string name="work_apps_enable_btn_text" msgid="1156432622148413741">"İş uygulamalarını aç"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"Filtre"</string>
-    <string name="work_switch_tip" msgid="808075064383839144">"İş uygulamalarını ve bildirimlerini duraklatın"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"Başarısız: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
 </resources>

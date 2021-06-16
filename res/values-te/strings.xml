@@ -48,12 +48,16 @@
     <string name="widgets_full_sheet_cancel_button_description" msgid="5766167035728653605">"సెర్చ్ బాక్స్ నుండి టెక్స్ట్‌ను క్లియర్ చేయి"</string>
     <string name="no_widgets_available" msgid="9140948620298620513">"విడ్జెట్‌లు అందుబాటులో లేవు"</string>
     <string name="no_search_results" msgid="6518732304311458580">"సెర్చ్ ఫలితాలు లేవు"</string>
-    <string name="widgets_full_sheet_personal_tab" msgid="2743540105607120182">"వ్యక్తిగతం"</string>
+    <string name="widgets_full_sheet_personal_tab" msgid="2743540105607120182">"వ్యక్తిగత గ్యాడ్జెట్స్"</string>
     <string name="widgets_full_sheet_work_tab" msgid="3767150027110633765">"ఆఫీస్"</string>
     <string name="widget_category_conversations" msgid="8894438636213590446">"సంభాషణలు"</string>
     <string name="widget_education_header" msgid="4874760613775913787">"మీ చేతివేళ్ల మీద ఉపయోగకరమైన సమాచారం"</string>
     <string name="widget_education_content" msgid="745542879510751525">"యాప్‌లను తెరవకుండా సమాచారం పొందడానికి, మీరు మీ మొదటి స్క్రీన్‌కు విడ్జెట్‌లను జోడించవచ్చు"</string>
+    <!-- no translation found for reconfigurable_widget_education_tip (6336962690888067057) -->
+    <skip />
     <string name="widget_education_close_button" msgid="8676165703104836580">"అర్థమైంది"</string>
+    <!-- no translation found for widget_reconfigure_button_content_description (8811472721881205250) -->
+    <skip />
     <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"అప్లికేషన్‌లను శోధించండి"</string>
     <string name="all_apps_loading_message" msgid="5813968043155271636">"అప్లికేషన్‌లను లోడ్ చేస్తోంది…"</string>
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"\"<xliff:g id="QUERY">%1$s</xliff:g>\"కి సరిపోలే అప్లికేషన్‌లేవీ కనుగొనబడలేదు"</string>
@@ -101,9 +105,9 @@
     <string name="folder_name_format_overflow" msgid="4270108890534995199">"ఫోల్డర్: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> లేదా అంతకంటే ఎక్కువ ఐటెమ్‌లు"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"వాల్‌పేపర్‌లు"</string>
     <string name="styles_wallpaper_button_text" msgid="8216961355289236794">"వాల్‌పేపర్ &amp; స్టయిల్"</string>
-    <string name="settings_button_text" msgid="8873672322605444408">"హోమ్ సెట్టింగ్‌లు"</string>
+    <string name="settings_button_text" msgid="8873672322605444408">"మొదటి స్క్రీన్ సెట్టింగ్‌లు"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"మీ నిర్వాహకులు నిలిపివేసారు"</string>
-    <string name="allow_rotation_title" msgid="7728578836261442095">"హోమ్ స్క్రీన్ రొటేషన్‌ను అనుమతించండి"</string>
+    <string name="allow_rotation_title" msgid="7728578836261442095">"మొదటి స్క్రీన్ రొటేషన్‌ను అనుమతించండి"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"ఫోన్‌‌ను తిప్పినప్పుడు"</string>
     <string name="notification_dots_title" msgid="9062440428204120317">"నోటిఫికేషన్ డాట్‌లు"</string>
     <string name="notification_dots_desc_on" msgid="1679848116452218908">"ఆన్"</string>
@@ -112,7 +116,7 @@
     <string name="msg_missing_notification_access" msgid="281113995110910548">"నోటిఫికేషన్ డాట్‌లను చూపించడానికి <xliff:g id="NAME">%1$s</xliff:g>కు యాప్ నోటిఫికేషన్‌లను ఆన్ చేయండి"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"సెట్టింగ్‌లను మార్చు"</string>
     <string name="notification_dots_service_title" msgid="4284221181793592871">"నోటిఫికేషన్ డాట్‌లను చూపు"</string>
-    <string name="auto_add_shortcuts_label" msgid="3698776050751790653">"యాప్ చిహ్నాలను హోమ్ స్క్రీన్‌కు జోడించు"</string>
+    <string name="auto_add_shortcuts_label" msgid="3698776050751790653">"యాప్ చిహ్నాలను మొదటి స్క్రీన్‌కు జోడించు"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"కొత్త యాప్‌ల కోసం"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"తెలియదు"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"తీసివేయి"</string>
@@ -127,7 +131,7 @@
     <string name="action_add_to_workspace" msgid="8902165848117513641">"హోమ్ స్క్రీన్‌కు జోడించండి"</string>
     <string name="action_move_here" msgid="2170188780612570250">"అంశాన్ని ఇక్కడికి తరలించు"</string>
     <string name="item_added_to_workspace" msgid="4211073925752213539">"అంశం హోమ్‌స్క్రీన్‌కి జోడించబడింది"</string>
-    <string name="item_removed" msgid="851119963877842327">"అంశం తీసివేయబడింది"</string>
+    <string name="item_removed" msgid="851119963877842327">"ఐటెమ్ తీసివేయబడింది"</string>
     <string name="undo" msgid="4151576204245173321">"చర్య రద్దు"</string>
     <string name="action_move" msgid="4339390619886385032">"అంశాన్ని తరలించు"</string>
     <string name="move_to_empty_cell" msgid="2833711483015685619">"అడ్డు వరుస <xliff:g id="NUMBER_0">%1$s</xliff:g> నిలువు వరుస <xliff:g id="NUMBER_1">%2$s</xliff:g>కి తరలించు"</string>
@@ -154,18 +158,16 @@
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"వ్యక్తిగతం"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"కార్యాలయం"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"కార్యాలయ ప్రొఫైల్"</string>
-    <string name="work_profile_edu_personal_apps" msgid="4155536355149317441">"వ్యక్తిగత డేటా అనేది విడిగా &amp; ఆఫీస్ యాప్‌లకు యాక్సెస్ లేకుండా, దాచబడి ఉంటుంది"</string>
-    <string name="work_profile_edu_work_apps" msgid="237051938268703058">"ఆఫీస్ యాప్‌లు &amp; డేటా మీ IT అడ్మిన్‌కు కనిపిస్తాయి"</string>
-    <string name="work_profile_edu_next" msgid="8783418929296503629">"తర్వాత"</string>
+    <!-- no translation found for work_profile_edu_work_apps (7895468576497746520) -->
+    <skip />
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"అర్థమైంది"</string>
-    <string name="work_apps_paused_title" msgid="2389865654362803723">"ఆఫీస్ ప్రొఫైల్ పాజ్ చేయబడింది"</string>
-    <string name="work_apps_paused_body" msgid="4209084728264328628">"మీకు నోటిఫికేషన్‌లు పంపడం, మీ బ్యాటరీని ఉపయోగించడం, లేదా మీ లొకేషన్‌ను యాక్సెస్ చేయడం \'వర్క్ యాప్\'‌లకు సాధ్యపడదు"</string>
-    <string name="work_apps_paused_content_description" msgid="4473292417145736203">"వర్క్ ప్రొఫైల్ పాజ్ చేయబడింది. మీకు నోటిఫికేషన్‌లు పంపడం, మీ బ్యాటరీని ఉపయోగించడం, లేదా మీ లొకేషన్‌ను యాక్సెస్ చేయడం \'వర్క్ యాప్\'‌లకు సాధ్యపడదు"</string>
+    <string name="work_apps_paused_title" msgid="3007471013401118920">"వర్క్ యాప్‌లు ఆఫ్‌లో ఉన్నాయి"</string>
+    <string name="work_apps_paused_body" msgid="261634750995824906">"మీకు నోటిఫికేషన్‌లు పంపడం, మీ బ్యాటరీని ఉపయోగించడం, లేదా మీ లొకేషన్‌ను యాక్సెస్ చేయడం మీ వర్క్ యాప్‌లకు సాధ్యపడదు"</string>
+    <string name="work_apps_paused_content_description" msgid="5149623040804051095">"వర్క్ యాప్‌లు ఆఫ్‌లో ఉన్నాయి. మీకు నోటిఫికేషన్‌లు పంపడం, మీ బ్యాటరీని ఉపయోగించడం, లేదా మీ లొకేషన్‌ను యాక్సెస్ చేయడం మీ వర్క్ యాప్‌లకు సాధ్యపడదు"</string>
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"వర్క్ యాప్‌లు బ్యాడ్జ్ చేయబడ్డాయి, మీ IT అడ్మిన్‌కి కనిపిస్తాయి"</string>
     <string name="work_apps_paused_edu_accept" msgid="6377476824357318532">"అర్థమైంది"</string>
-    <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"వర్క్ యాప్‌లను పాజ్ చేయి"</string>
-    <string name="work_apps_enable_btn_text" msgid="82111102541971856">"ఆన్ చేయి"</string>
+    <string name="work_apps_pause_btn_text" msgid="1921059713673767460">"వర్క్ యాప్‌లను ఆఫ్ చేయి"</string>
+    <string name="work_apps_enable_btn_text" msgid="1156432622148413741">"వర్క్ యాప్‌లను ఆన్ చేయి"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"ఫిల్టర్ చేయి"</string>
-    <string name="work_switch_tip" msgid="808075064383839144">"ఆఫీస్ యాప్‌లు, నోటిఫికేషన్‌లను పాజ్ చేయండి"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"విఫలమైంది: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
 </resources>

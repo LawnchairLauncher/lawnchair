@@ -173,7 +173,7 @@ public class AllAppsEduView extends AbstractFloatingView {
             FloatProp mGradientAlpha = new FloatProp(0, 255, firstPart, secondPart * 0.3f, LINEAR);
 
             @Override
-            public void onUpdate(float progress) {
+            public void onUpdate(float progress, boolean initOnly) {
                 temp.set(circleBoundsOg);
                 temp.offset(0, (int) -mDeltaY.value);
                 Utilities.scaleRectAboutCenter(temp, mCircleScale.value);

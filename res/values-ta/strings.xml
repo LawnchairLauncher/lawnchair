@@ -53,7 +53,9 @@
     <string name="widget_category_conversations" msgid="8894438636213590446">"உரையாடல்கள்"</string>
     <string name="widget_education_header" msgid="4874760613775913787">"விரல்நுனியில் பயனுள்ள தகவல்களைப் பெறுங்கள்"</string>
     <string name="widget_education_content" msgid="745542879510751525">"ஆப்ஸைத் திறக்காமல் தகவல்களைப் பெற, முகப்புத் திரையில் விட்ஜெட்டுகளைச் சேர்க்கலாம்"</string>
+    <string name="reconfigurable_widget_education_tip" msgid="6336962690888067057">"விட்ஜெட் அமைப்புகளை மாற்றத் தட்டவும்"</string>
     <string name="widget_education_close_button" msgid="8676165703104836580">"சரி"</string>
+    <string name="widget_reconfigure_button_content_description" msgid="8811472721881205250">"விட்ஜெட் அமைப்புகளை மாற்றும்"</string>
     <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"பயன்பாடுகளில் தேடுக"</string>
     <string name="all_apps_loading_message" msgid="5813968043155271636">"ஆப்ஸை ஏற்றுகிறது…"</string>
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"\"<xliff:g id="QUERY">%1$s</xliff:g>\" உடன் பொருந்தும் ஆப்ஸ் இல்லை"</string>
@@ -154,18 +156,16 @@
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"தனிப்பட்டவை"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"பணி"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"பணிக் கணக்கு"</string>
-    <string name="work_profile_edu_personal_apps" msgid="4155536355149317441">"தனிப்பட்ட தரவு பணி ஆப்ஸுடன் சேர்ந்ததல்ல என்பதோடு பணி ஆப்ஸில் இருந்து அவை மறைக்கப்பட்டிருக்கும்"</string>
-    <string name="work_profile_edu_work_apps" msgid="237051938268703058">"பணி ஆப்ஸையும் தரவையும் உங்கள் IT நிர்வாகியால் பார்க்க முடியும்"</string>
-    <string name="work_profile_edu_next" msgid="8783418929296503629">"அடுத்து"</string>
+    <!-- no translation found for work_profile_edu_work_apps (7895468576497746520) -->
+    <skip />
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"முடிந்தது"</string>
-    <string name="work_apps_paused_title" msgid="2389865654362803723">"பணிக் கணக்கு இடைநிறுத்தப்பட்டது"</string>
-    <string name="work_apps_paused_body" msgid="4209084728264328628">"பணி ஆப்ஸால் அறிவிப்புகளை அனுப்பவோ பேட்டரியைப் பயன்படுத்தவோ இருப்பிடத்தை அணுகவோ முடியாது"</string>
-    <string name="work_apps_paused_content_description" msgid="4473292417145736203">"பணிக் கணக்கு இடைநிறுத்தப்பட்டது. பணி ஆப்ஸால் அறிவிப்புகளை அனுப்பவோ பேட்டரியைப் பயன்படுத்தவோ இருப்பிடத்தை அணுகவோ முடியாது"</string>
+    <string name="work_apps_paused_title" msgid="3007471013401118920">"பணி ஆப்ஸ் முடக்கப்பட்டுள்ளன"</string>
+    <string name="work_apps_paused_body" msgid="261634750995824906">"பணி ஆப்ஸால் உங்களுக்கு அறிவிப்புகளை அனுப்பவோ பேட்டரியைப் பயன்படுத்தவோ உங்கள் இருப்பிடத்தை அணுகவோ முடியாது"</string>
+    <string name="work_apps_paused_content_description" msgid="5149623040804051095">"பணி ஆப்ஸ் முடக்கப்பட்டுள்ளன. அவற்றால் உங்களுக்கு அறிவிப்புகளை அனுப்பவோ பேட்டரியைப் பயன்படுத்தவோ உங்கள் இருப்பிடத்தை அணுகவோ முடியாது"</string>
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"பணி ஆப்ஸ் பேட்ஜ் குறியிடப்பட்டுள்ளன. மேலும் உங்கள் IT நிர்வாகியால் அவற்றைப் பார்க்க முடியும்"</string>
     <string name="work_apps_paused_edu_accept" msgid="6377476824357318532">"சரி"</string>
-    <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"பணி ஆப்ஸை இடைநிறுத்து"</string>
-    <string name="work_apps_enable_btn_text" msgid="82111102541971856">"இயக்கு"</string>
+    <string name="work_apps_pause_btn_text" msgid="1921059713673767460">"பணி ஆப்ஸை முடக்கு"</string>
+    <string name="work_apps_enable_btn_text" msgid="1156432622148413741">"பணி ஆப்ஸை இயக்கு"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"வடிப்பான்"</string>
-    <string name="work_switch_tip" msgid="808075064383839144">"பணி தொடர்பான ஆப்ஸையும் அறிவிப்புகளையும் இடைநிறுத்தும்"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"தோல்வி: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
 </resources>

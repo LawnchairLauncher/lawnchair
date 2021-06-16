@@ -51,11 +51,12 @@
     <string name="widgets_full_sheet_personal_tab" msgid="2743540105607120182">"ਨਿੱਜੀ"</string>
     <string name="widgets_full_sheet_work_tab" msgid="3767150027110633765">"ਕਾਰਜ-ਸਥਾਨ"</string>
     <string name="widget_category_conversations" msgid="8894438636213590446">"ਗੱਲਾਂਬਾਤਾਂ"</string>
-    <!-- no translation found for widget_education_header (4874760613775913787) -->
+    <string name="widget_education_header" msgid="4874760613775913787">"ਤੁਹਾਡੀਆਂ ਉਂਗਲਾਂ \'ਤੇ ਲਾਹੇਵੰਦ ਜਾਣਕਾਰੀ"</string>
+    <string name="widget_education_content" msgid="745542879510751525">"ਐਪਾਂ ਨੂੰ ਖੋਲ੍ਹੇ ਬਿਨਾਂ ਜਾਣਕਾਰੀ ਪ੍ਰਾਪਤ ਕਰਨ ਲਈ, ਤੁਸੀਂ ਆਪਣੀ ਹੋਮ ਸਕ੍ਰੀਨ \'ਤੇ ਵਿਜੇਟ ਸ਼ਾਮਲ ਕਰ ਸਕਦੇ ਹੋ"</string>
+    <!-- no translation found for reconfigurable_widget_education_tip (6336962690888067057) -->
     <skip />
-    <!-- no translation found for widget_education_content (745542879510751525) -->
-    <skip />
-    <!-- no translation found for widget_education_close_button (8676165703104836580) -->
+    <string name="widget_education_close_button" msgid="8676165703104836580">"ਸਮਝ ਲਿਆ"</string>
+    <!-- no translation found for widget_reconfigure_button_content_description (8811472721881205250) -->
     <skip />
     <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"ਐਪਾਂ ਖੋਜੋ"</string>
     <string name="all_apps_loading_message" msgid="5813968043155271636">"ਐਪਾਂ ਨੂੰ ਲੋਡ ਕੀਤਾ ਜਾ ਰਿਹਾ ਹੈ..."</string>
@@ -65,7 +66,7 @@
     <string name="notifications_header" msgid="1404149926117359025">"ਸੂਚਨਾਵਾਂ"</string>
     <string name="long_press_shortcut_to_add" msgid="5405328730817637737">"ਕਿਸੇ ਸ਼ਾਰਟਕੱਟ ਨੂੰ ਲਿਜਾਉਣ ਲਈ ਸਪੱਰਸ਼ ਕਰਕੇ ਦਬਾਈ ਰੱਖੋ।"</string>
     <string name="long_accessible_way_to_add_shortcut" msgid="2199537273817090740">"ਕਿਸੇ ਸ਼ਾਰਟਕੱਟ ਨੂੰ ਲਿਜਾਉਣ ਲਈ ਡਬਲ ਟੈਪ ਕਰਕੇ ਦਬਾਈ ਰੱਖੋ ਜਾਂ ਵਿਉਂਤੀਆਂ ਕਾਰਵਾਈਆਂ ਵਰਤੋ।"</string>
-    <string name="out_of_space" msgid="4691004494942118364">"ਇਸ ਹੋਮ ਸਕ੍ਰੀਨ ਲਈ ਹੋਰ ਖਾਲੀ ਸਥਾਨ ਨਹੀਂ ਹੈ।"</string>
+    <string name="out_of_space" msgid="4691004494942118364">"ਇਸ ਹੋਮ ਸਕ੍ਰੀਨ \'ਤੇ ਹੋਰ ਖਾਲੀ ਥਾਂ ਨਹੀਂ ਹੈ।"</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"ਮਨਪਸੰਦ ਟ੍ਰੇ ਵਿੱਚ ਹੋਰ ਖਾਲੀ ਸਥਾਨ ਨਹੀਂ।"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"ਐਪ ਸੂਚੀ"</string>
     <string name="all_apps_button_personal_label" msgid="1315764287305224468">"ਨਿੱਜੀ ਐਪਾਂ ਦੀ ਸੂਚੀ"</string>
@@ -155,20 +156,18 @@
     <string name="accessibility_close" msgid="2277148124685870734">"ਬੰਦ ਕਰੋ"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"ਸੂਚਨਾ ਖਾਰਜ ਕੀਤੀ ਗਈ"</string>
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"ਨਿੱਜੀ"</string>
-    <string name="all_apps_work_tab" msgid="4884822796154055118">"ਕਾਰਜ-ਸਥਾਨ"</string>
+    <string name="all_apps_work_tab" msgid="4884822796154055118">"ਕੰਮ ਸੰਬੰਧੀ"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"ਕਾਰਜ ਪ੍ਰੋਫਾਈਲ"</string>
-    <string name="work_profile_edu_personal_apps" msgid="4155536355149317441">"ਨਿੱਜੀ ਡਾਟਾ ਕੰਮ ਸੰਬੰਧੀ ਐਪਾਂ ਤੋਂ ਵੱਖ ਅਤੇ ਲੁਕਾਇਆ ਹੋਇਆ ਹੈ"</string>
-    <string name="work_profile_edu_work_apps" msgid="237051938268703058">"ਕੰਮ ਸੰਬੰਧੀ ਐਪਾਂ ਅਤੇ ਡਾਟਾ ਤੁਹਾਡੇ ਆਈ.ਟੀ. ਪ੍ਰਸ਼ਾਸਕ ਨੂੰ ਦਿਖਣਯੋਗ ਹੈ"</string>
-    <string name="work_profile_edu_next" msgid="8783418929296503629">"ਅੱਗੇ"</string>
+    <!-- no translation found for work_profile_edu_work_apps (7895468576497746520) -->
+    <skip />
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"ਸਮਝ ਲਿਆ"</string>
-    <string name="work_apps_paused_title" msgid="2389865654362803723">"ਕਾਰਜ ਪ੍ਰੋਫਾਈਲ ਨੂੰ ਰੋਕਿਆ ਗਿਆ ਹੈ"</string>
-    <string name="work_apps_paused_body" msgid="4209084728264328628">"ਕੰਮ ਸੰਬੰਧੀ ਐਪਾਂ ਤੁਹਾਨੂੰ ਸੂਚਨਾਵਾਂ ਨਹੀਂ ਭੇਜ ਸਕਦੀਆਂ, ਤੁਹਾਡੀ ਬੈਟਰੀ ਨਹੀਂ ਵਰਤ ਸਕਦੀਆਂ ਜਾਂ ਤੁਹਾਡੇ ਟਿਕਾਣੇ ਤੱਕ ਪਹੁੰਚ ਨਹੀਂ ਕਰ ਸਕਦੀਆਂ"</string>
-    <string name="work_apps_paused_content_description" msgid="4473292417145736203">"ਕਾਰਜ ਪ੍ਰੋਫਾਈਲ ਨੂੰ ਰੋਕਿਆ ਗਿਆ ਹੈ। ਕੰਮ ਸੰਬੰਧੀ ਐਪਾਂ ਤੁਹਾਨੂੰ ਸੂਚਨਾਵਾਂ ਨਹੀਂ ਭੇਜ ਸਕਦੀਆਂ, ਤੁਹਾਡੀ ਬੈਟਰੀ ਨਹੀਂ ਵਰਤ ਸਕਦੀਆਂ ਜਾਂ ਤੁਹਾਡੇ ਟਿਕਾਣੇ ਤੱਕ ਪਹੁੰਚ ਨਹੀਂ ਕਰ ਸਕਦੀਆਂ"</string>
+    <string name="work_apps_paused_title" msgid="3007471013401118920">"ਕੰਮ ਸੰਬੰਧੀ ਐਪਾਂ ਬੰਦ ਹਨ"</string>
+    <string name="work_apps_paused_body" msgid="261634750995824906">"ਤੁਹਾਡੀਆਂ ਕੰਮ ਸੰਬੰਧੀ ਐਪਾਂ ਤੁਹਾਨੂੰ ਸੂਚਨਾਵਾਂ ਨਹੀਂ ਭੇਜ ਸਕਦੀਆਂ, ਤੁਹਾਡੀ ਬੈਟਰੀ ਨਹੀਂ ਵਰਤ ਸਕਦੀਆਂ ਜਾਂ ਤੁਹਾਡੇ ਟਿਕਾਣੇ ਤੱਕ ਪਹੁੰਚ ਨਹੀਂ ਕਰ ਸਕਦੀਆਂ"</string>
+    <string name="work_apps_paused_content_description" msgid="5149623040804051095">"ਕੰਮ ਸੰਬੰਧੀ ਐਪਾਂ ਬੰਦ ਹਨ। ਤੁਹਾਡੀਆਂ ਕੰਮ ਸੰਬੰਧੀ ਐਪਾਂ ਤੁਹਾਨੂੰ ਸੂਚਨਾਵਾਂ ਨਹੀਂ ਭੇਜ ਸਕਦੀਆਂ, ਤੁਹਾਡੀ ਬੈਟਰੀ ਨਹੀਂ ਵਰਤ ਸਕਦੀਆਂ ਜਾਂ ਤੁਹਾਡੇ ਟਿਕਾਣੇ ਤੱਕ ਪਹੁੰਚ ਨਹੀਂ ਕਰ ਸਕਦੀਆਂ"</string>
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"ਕੰਮ ਸੰਬੰਧੀ ਐਪਾਂ ਨੂੰ ਬੈਜ ਕੀਤਾ ਜਾਂਦਾ ਹੈ ਅਤੇ ਇਹ ਤੁਹਾਡੇ ਆਈ.ਟੀ. ਪ੍ਰਸ਼ਾਸਕ ਨੂੰ ਦਿਸਣਗੀਆਂ"</string>
     <string name="work_apps_paused_edu_accept" msgid="6377476824357318532">"ਸਮਝ ਲਿਆ"</string>
-    <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"ਕੰਮ ਸੰਬੰਧੀ ਐਪ ਰੋਕੋ"</string>
-    <string name="work_apps_enable_btn_text" msgid="82111102541971856">"ਚਾਲੂ ਕਰੋ"</string>
+    <string name="work_apps_pause_btn_text" msgid="1921059713673767460">"ਕੰਮ ਸੰਬੰਧੀ ਐਪਾਂ ਬੰਦ ਕਰੋ"</string>
+    <string name="work_apps_enable_btn_text" msgid="1156432622148413741">"ਕੰਮ ਸੰਬੰਧੀ ਐਪਾਂ ਚਾਲੂ ਕਰੋ"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"ਫਿਲਟਰ"</string>
-    <string name="work_switch_tip" msgid="808075064383839144">"ਕੰਮ ਸੰਬੰਧੀ ਐਪਾਂ ਅਤੇ ਸੂਚਨਾਵਾਂ ਨੂੰ ਰੋਕੋ"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"ਇਹ ਕਾਰਵਾਈ ਅਸਫਲ ਹੋਈ: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
 </resources>
