@@ -15,8 +15,10 @@
  */
 package com.android.launcher3.widget.picker;
 
+import static com.android.launcher3.widget.picker.WidgetsListDrawableState.LAST;
+import static com.android.launcher3.widget.picker.WidgetsListDrawableState.MIDDLE;
+
 import android.content.Context;
-import android.content.res.Resources;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -51,10 +53,8 @@ public final class WidgetsListTableViewHolderBinder
     private final OnClickListener mIconClickListener;
     private final OnLongClickListener mIconLongClickListener;
     private final WidgetPreviewLoader mWidgetPreviewLoader;
+    private final WidgetsListDrawableFactory mListDrawableFactory;
     private final WidgetsListAdapter mWidgetsListAdapter;
-    private final float mTopBottomCornerRadius;
-    private final float mMiddleCornerRadius;
-    private final float mJoinedCornerRadius;
     private boolean mApplyBitmapDeferred = false;
 
     public WidgetsListTableViewHolderBinder(
@@ -63,19 +63,14 @@ public final class WidgetsListTableViewHolderBinder
             OnClickListener iconClickListener,
             OnLongClickListener iconLongClickListener,
             WidgetPreviewLoader widgetPreviewLoader,
+            WidgetsListDrawableFactory listDrawableFactory,
             WidgetsListAdapter listAdapter) {
         mLayoutInflater = layoutInflater;
         mIconClickListener = iconClickListener;
         mIconLongClickListener = iconLongClickListener;
         mWidgetPreviewLoader = widgetPreviewLoader;
+        mListDrawableFactory = listDrawableFactory;
         mWidgetsListAdapter = listAdapter;
-        Resources resources = context.getResources();
-        mTopBottomCornerRadius =
-                resources.getDimension(R.dimen.widget_list_top_bottom_corner_radius);
-        mMiddleCornerRadius =
-                resources.getDimension(R.dimen.widget_list_content_corner_radius);
-        mJoinedCornerRadius =
-                resources.getDimension(R.dimen.widget_list_content_joined_corner_radius);
     }
 
     /**
@@ -97,28 +92,25 @@ public final class WidgetsListTableViewHolderBinder
             Log.v(TAG, "\nonCreateViewHolder");
         }
 
-        ViewGroup container = (ViewGroup) mLayoutInflater.inflate(
-                R.layout.widgets_table_container, parent, false);
-        return new WidgetsRowViewHolder(container);
+        WidgetsRowViewHolder viewHolder =
+                new WidgetsRowViewHolder(mLayoutInflater.inflate(
+                        R.layout.widgets_table_container, parent, false));
+        viewHolder.mTableContainer.setBackgroundDrawable(
+                mListDrawableFactory.createContentBackgroundDrawable());
+        return viewHolder;
     }
 
     @Override
     public void bindViewHolder(WidgetsRowViewHolder holder, WidgetsListContentEntry entry,
             int position) {
-        TableLayout table = holder.mTableContainer;
+        WidgetsListTableView table = holder.mTableContainer;
         if (DEBUG) {
             Log.d(TAG, String.format("onBindViewHolder [widget#=%d, table.getChildCount=%d]",
                     entry.mWidgets.size(), table.getChildCount()));
         }
 
-        // The content is always joined to an expanded header above.
-        float topRadius = mJoinedCornerRadius;
-        float bottomRadius = position == mWidgetsListAdapter.getItemCount() - 1
-                ? mTopBottomCornerRadius
-                : mMiddleCornerRadius;
-        table.setBackgroundDrawable(
-                WidgetsListDrawables.createListBackgroundDrawable(
-                        holder.itemView.getContext(), topRadius, bottomRadius));
+        table.setListDrawableState(
+                position == mWidgetsListAdapter.getItemCount() - 1 ? LAST : MIDDLE);
 
         List<ArrayList<WidgetItem>> widgetItemsTable =
                 WidgetsTableUtils.groupWidgetItemsIntoTable(entry.mWidgets, mMaxSpansPerRow);

@@ -118,6 +118,7 @@ public final class WidgetsListTableViewHolderBinderTest {
                 mOnIconClickListener,
                 mOnLongClickListener,
                 mWidgetPreviewLoader,
+                new WidgetsListDrawableFactory(mTestActivity),
                 widgetsListAdapter);
     }
 
