@@ -132,7 +132,6 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
     private ScrimView mScrimView;
     private int mHeaderColor;
 
-
     public AllAppsContainerView(Context context) {
         this(context, null);
     }
@@ -570,6 +569,10 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
 
     public View getContentView() {
         return mViewPager == null ? getActiveRecyclerView() : mViewPager;
+    }
+
+    public int getCurrentPage() {
+        return mViewPager != null ? mViewPager.getCurrentPage() : AdapterHolder.MAIN;
     }
 
     /**

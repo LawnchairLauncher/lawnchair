@@ -18,6 +18,7 @@ package com.android.launcher3.allapps;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 
 import android.content.Context;
+import android.graphics.Insets;
 import android.graphics.Rect;
 import android.os.Build;
 import android.os.Process;
@@ -26,12 +27,15 @@ import android.os.UserManager;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowInsets;
 import android.widget.Button;
 
+import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 
 import com.android.launcher3.Insettable;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.anim.KeyboardInsetAnimationCallback;
 import com.android.launcher3.pm.UserCache;
 
 /**
@@ -41,6 +45,10 @@ public class WorkModeSwitch extends Button implements Insettable, View.OnClickLi
 
     private Rect mInsets = new Rect();
     private boolean mWorkEnabled;
+
+
+    @Nullable
+    private KeyboardInsetAnimationCallback mKeyboardInsetAnimationCallback;
 
     public WorkModeSwitch(Context context) {
         this(context, null, 0);
@@ -58,6 +66,10 @@ public class WorkModeSwitch extends Button implements Insettable, View.OnClickLi
     protected void onFinishInflate() {
         super.onFinishInflate();
         setOnClickListener(this);
+        if (Utilities.ATLEAST_R) {
+            mKeyboardInsetAnimationCallback = new KeyboardInsetAnimationCallback(this);
+            setWindowInsetsAnimationCallback(mKeyboardInsetAnimationCallback);
+        }
     }
 
     @Override
@@ -116,5 +128,17 @@ public class WorkModeSwitch extends Button implements Insettable, View.OnClickLi
             showConfirm |= !userManager.requestQuietModeEnabled(!enabled, userProfile);
         }
         return showConfirm;
+    }
+
+    @Override
+    public WindowInsets onApplyWindowInsets(WindowInsets insets) {
+        if (Utilities.ATLEAST_R) {
+            setTranslationY(0);
+            if (insets.isVisible(WindowInsets.Type.ime())) {
+                Insets keyboardInsets = insets.getInsets(WindowInsets.Type.ime());
+                setTranslationY(mInsets.bottom - keyboardInsets.bottom);
+            }
+        }
+        return insets;
     }
 }
