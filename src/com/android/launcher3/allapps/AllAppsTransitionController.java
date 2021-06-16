@@ -57,6 +57,8 @@ import com.android.launcher3.views.ScrimView;
  */
 public class AllAppsTransitionController
         implements StateHandler<LauncherState>, OnDeviceProfileChangeListener {
+    // This constant should match the second derivative of the animator interpolator.
+    public static final float INTERP_COEFF = 1.7f;
     private static final float CONTENT_VISIBLE_MAX_THRESHOLD = 0.5f;
 
     public static final FloatProperty<AllAppsTransitionController> ALL_APPS_PROGRESS =
