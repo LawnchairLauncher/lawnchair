@@ -492,7 +492,7 @@ public final class LauncherInstrumentation {
         }
     }
 
-    private void fail(String message) {
+    void fail(String message) {
         checkForAnomaly();
         Assert.fail(formatSystemHealthMessage(formatErrorWithEvents(
                 "http://go/tapl test failure:\nSummary: " + getContextDescription()
@@ -1445,6 +1445,9 @@ public final class LauncherInstrumentation {
     Rect getVisibleBounds(UiObject2 object) {
         try {
             return object.getVisibleBounds();
+        } catch (StaleObjectException e) {
+            fail("Object " + object + " disappeared from screen");
+            return null;
         } catch (Throwable t) {
             fail(t.toString());
             return null;
