@@ -15,19 +15,29 @@
  */
 package com.android.launcher3.taskbar;
 
+import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
+import static com.android.launcher3.LauncherAnimUtils.VIEW_TRANSLATE_X;
+import static com.android.launcher3.LauncherAnimUtils.VIEW_TRANSLATE_Y;
+import static com.android.launcher3.anim.Interpolators.LINEAR;
+
+import android.graphics.Rect;
 import android.view.View;
 
+import com.android.launcher3.DeviceProfile;
+import com.android.launcher3.anim.AnimatorPlaybackController;
+import com.android.launcher3.anim.PendingAnimation;
+import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.util.MultiValueAlpha;
 
 /**
  * Handles properties/data collection, then passes the results to TaskbarView to render.
  */
 public class TaskbarViewController {
+    private static final Runnable NO_OP = () -> { };
 
     public static final int ALPHA_INDEX_HOME = 0;
-    public static final int ALPHA_INDEX_LAUNCHER_STATE = 1;
-    public static final int ALPHA_INDEX_IME = 2;
-    public static final int ALPHA_INDEX_KEYGUARD = 3;
+    public static final int ALPHA_INDEX_IME = 1;
+    public static final int ALPHA_INDEX_KEYGUARD = 2;
 
     private final TaskbarActivityContext mActivity;
     private final TaskbarView mTaskbarView;
@@ -36,10 +46,15 @@ public class TaskbarViewController {
     // Initialized in init.
     private TaskbarControllers mControllers;
 
+    // Animation to align icons with Launcher, created lazily. This allows the controller to be
+    // active only during the animation and does not need to worry about layout changes.
+    private AnimatorPlaybackController mIconAlignControllerLazy = null;
+    private Runnable mOnControllerPreCreateCallback = NO_OP;
+
     public TaskbarViewController(TaskbarActivityContext activity, TaskbarView taskbarView) {
         mActivity = activity;
         mTaskbarView = taskbarView;
-        mTaskbarIconAlpha = new MultiValueAlpha(mTaskbarView, 4);
+        mTaskbarIconAlpha = new MultiValueAlpha(mTaskbarView, 3);
         mTaskbarIconAlpha.setUpdateVisibility(true);
     }
 
@@ -69,6 +84,60 @@ public class TaskbarViewController {
      */
     public void setClickAndLongClickListenersForIcon(View icon) {
         mTaskbarView.setClickAndLongClickListenersForIcon(icon);
+    }
+
+    /**
+     * Sets the taskbar icon alignment relative to Launcher hotseat icons
+     * @param alignmentRatio [0, 1]
+     *                       0 => not aligned
+     *                       1 => fully aligned
+     */
+    public void setLauncherIconAlignment(float alignmentRatio, DeviceProfile launcherDp) {
+        if (mIconAlignControllerLazy == null) {
+            mIconAlignControllerLazy = createIconAlignmentController(launcherDp);
+        }
+        mIconAlignControllerLazy.setPlayFraction(alignmentRatio);
+        if (alignmentRatio <= 0 || alignmentRatio >= 1) {
+            // Cleanup lazy controller so that it is created again in next animation
+            mIconAlignControllerLazy = null;
+        }
+    }
+
+    /**
+     * Creates an animation for aligning the taskbar icons with the provided Launcher device profile
+     */
+    private AnimatorPlaybackController createIconAlignmentController(DeviceProfile launcherDp) {
+        mOnControllerPreCreateCallback.run();
+        PendingAnimation setter = new PendingAnimation(100);
+        Rect hotseatPadding = launcherDp.getHotseatLayoutPadding(mActivity);
+        float scaleUp = ((float) launcherDp.iconSizePx) / mActivity.getDeviceProfile().iconSizePx;
+        int hotseatCellSize =
+                (launcherDp.availableWidthPx - hotseatPadding.left - hotseatPadding.right)
+                        / launcherDp.numShownHotseatIcons;
+
+        int offsetY = launcherDp.getTaskbarOffsetY();
+        setter.setFloat(mTaskbarView, VIEW_TRANSLATE_Y, -offsetY, LINEAR);
+
+        int collapsedHeight = mActivity.getDeviceProfile().taskbarSize;
+        int expandedHeight = collapsedHeight + offsetY;
+        setter.addOnFrameListener(anim -> mActivity.setTaskbarWindowHeight(
+                anim.getAnimatedFraction() > 0 ? expandedHeight : collapsedHeight));
+
+        int count = mTaskbarView.getChildCount();
+        for (int i = 0; i < count; i++) {
+            View child = mTaskbarView.getChildAt(i);
+            ItemInfo info = (ItemInfo) child.getTag();
+            setter.setFloat(child, SCALE_PROPERTY, scaleUp, LINEAR);
+
+            float childCenter = (child.getLeft() + child.getRight()) / 2;
+            float hotseatIconCenter = hotseatPadding.left + hotseatCellSize * info.screenId
+                    + hotseatCellSize / 2;
+            setter.setFloat(child, VIEW_TRANSLATE_X, hotseatIconCenter - childCenter, LINEAR);
+        }
+
+        AnimatorPlaybackController controller = setter.createPlaybackController();
+        mOnControllerPreCreateCallback = () -> controller.setPlayFraction(0);
+        return controller;
     }
 
     /**

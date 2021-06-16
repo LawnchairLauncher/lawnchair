@@ -28,6 +28,7 @@ import android.os.Bundle;
 import android.os.SystemProperties;
 import android.util.Log;
 
+import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
 
 import com.android.launcher3.Utilities;
@@ -259,6 +260,11 @@ public class TaskAnimationManager implements RecentsAnimationCallbacks.RecentsAn
         mTargets = null;
         mLastGestureState = null;
         mLastAppearedTaskTarget = null;
+    }
+
+    @Nullable
+    public RecentsAnimationCallbacks getCurrentCallbacks() {
+        return mCallbacks;
     }
 
     public void dump() {

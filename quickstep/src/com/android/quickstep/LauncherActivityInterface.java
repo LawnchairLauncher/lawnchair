@@ -284,14 +284,15 @@ public final class LauncherActivityInterface extends
 
     @Override
     public @Nullable Animator getParallelAnimationToLauncher(GestureEndTarget endTarget,
-            long duration) {
+            long duration, RecentsAnimationCallbacks callbacks) {
         LauncherTaskbarUIController uiController = getTaskbarController();
-        Animator superAnimator = super.getParallelAnimationToLauncher(endTarget, duration);
-        if (uiController == null) {
+        Animator superAnimator = super.getParallelAnimationToLauncher(
+                endTarget, duration, callbacks);
+        if (uiController == null || callbacks == null) {
             return superAnimator;
         }
         LauncherState toState = stateFromGestureEndTarget(endTarget);
-        Animator taskbarAnimator = uiController.createAnimToLauncher(toState, duration);
+        Animator taskbarAnimator = uiController.createAnimToLauncher(toState, callbacks, duration);
         if (superAnimator == null) {
             return taskbarAnimator;
         } else {
