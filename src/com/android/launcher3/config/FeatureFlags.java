@@ -220,6 +220,10 @@ public final class FeatureFlags {
             "ENABLE_TWO_PANEL_HOME", true,
             "Uses two panel on home screen. Only applicable on large screen devices.");
 
+    public static final BooleanFlag ENABLE_SCRIM_FOR_APP_LAUNCH = getDebugFlag(
+            "ENABLE_SCRIM_FOR_APP_LAUNCH", false,
+            "Enables scrim during app launch animation.");
+
     public static final BooleanFlag ENABLE_SPLIT_SELECT = getDebugFlag(
             "ENABLE_SPLIT_SELECT", false, "Uses new split screen selection overview UI");
 
