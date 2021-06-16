@@ -293,7 +293,7 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
         try {
             final AppIconMenu menu = allApps.
                     getAppIcon(APP_NAME).
-                    openMenu();
+                    openDeepShortcutMenu();
 
             executeOnLauncher(
                     launcher -> assertTrue("Launcher internal state didn't switch to Showing Menu",
@@ -341,7 +341,7 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
         try {
             final AppIconMenu menu = allApps
                     .getAppIcon(APP_NAME)
-                    .openMenu();
+                    .openDeepShortcutMenu();
             final AppIconMenuItem menuItem0 = menu.getMenuItem(0);
             final AppIconMenuItem menuItem2 = menu.getMenuItem(2);
 
