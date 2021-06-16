@@ -192,7 +192,7 @@ public class QuickstepLauncher extends BaseQuickstepLauncher {
     @Override
     public Stream<SystemShortcut.Factory> getSupportedShortcuts() {
         return Stream.concat(
-                super.getSupportedShortcuts(), Stream.of(mHotseatPredictionController));
+                Stream.of(mHotseatPredictionController), super.getSupportedShortcuts());
     }
 
     /**
