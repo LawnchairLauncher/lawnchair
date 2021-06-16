@@ -15,8 +15,7 @@
  */
 package com.android.launcher3.widget.picker;
 
-import android.view.ViewGroup;
-import android.widget.TableLayout;
+import android.view.View;
 
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
@@ -25,9 +24,9 @@ import com.android.launcher3.R;
 /** A {@link ViewHolder} for showing widgets of an app in the full widget picker. */
 public final class WidgetsRowViewHolder extends ViewHolder {
 
-    public final TableLayout mTableContainer;
+    public final WidgetsListTableView mTableContainer;
 
-    public WidgetsRowViewHolder(ViewGroup v) {
+    public WidgetsRowViewHolder(View v) {
         super(v);
 
         mTableContainer = v.findViewById(R.id.widgets_table);
