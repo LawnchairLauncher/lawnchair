@@ -336,8 +336,6 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
         if (animateView != null && mActivity instanceof Launcher) {
             final Launcher launcher = (Launcher) mActivity;
             DragLayer dragLayer = launcher.getDragLayer();
-            Rect from = new Rect();
-            dragLayer.getViewRectRelativeToSelf(animateView, from);
             Rect to = finalRect;
             if (to == null) {
                 to = new Rect();
@@ -402,9 +400,9 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
                 finalScale *= containerScale;
             }
 
-            dragLayer.animateView(animateView, from, to, finalAlpha,
-                    1, 1, finalScale, finalScale, DROP_IN_ANIMATION_DURATION,
-                    Interpolators.DEACCEL_2, Interpolators.ACCEL_2,
+            dragLayer.animateView(animateView, to, finalAlpha,
+                    finalScale, finalScale, DROP_IN_ANIMATION_DURATION,
+                    Interpolators.DEACCEL_2,
                     null, DragLayer.ANIMATION_END_DISAPPEAR, null);
 
             mFolder.hideItem(item);
