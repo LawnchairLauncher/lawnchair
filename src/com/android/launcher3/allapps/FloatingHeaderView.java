@@ -72,8 +72,13 @@ public class FloatingHeaderView extends LinearLayout implements
                     }
 
                     int current = -mCurrentRV.getCurrentScrollY();
+                    boolean headerCollapsed = mHeaderCollapsed;
                     moved(current);
                     applyVerticalMove();
+                    if (headerCollapsed != mHeaderCollapsed) {
+                        AllAppsContainerView parent = (AllAppsContainerView) getParent();
+                        parent.invalidateHeader();
+                    }
                 }
             };
 
@@ -219,6 +224,8 @@ public class FloatingHeaderView extends LinearLayout implements
 
         mTabsHidden = tabsHidden;
         mTabLayout.setVisibility(tabsHidden ? View.GONE : View.VISIBLE);
+        mTabLayout.getLayoutParams().width =
+                mAH[AllAppsContainerView.AdapterHolder.MAIN].recyclerView.getTabWidth();
         mMainRV = setupRV(mMainRV, mAH[AllAppsContainerView.AdapterHolder.MAIN].recyclerView);
         mWorkRV = setupRV(mWorkRV, mAH[AllAppsContainerView.AdapterHolder.WORK].recyclerView);
         mParent = (ViewGroup) mMainRV.getParent();
@@ -428,6 +435,13 @@ public class FloatingHeaderView extends LinearLayout implements
             }
         }
         return null;
+    }
+
+    /**
+     * Returns visible height of FloatingHeaderView contents
+     */
+    public int getVisibleBottomBound() {
+        return getBottom() + mTranslationY;
     }
 }
 
