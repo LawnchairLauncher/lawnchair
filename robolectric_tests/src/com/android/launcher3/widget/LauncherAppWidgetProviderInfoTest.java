@@ -36,6 +36,10 @@ import org.mockito.MockitoAnnotations;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 @RunWith(RobolectricTestRunner.class)
 public final class LauncherAppWidgetProviderInfoTest {
 
@@ -234,10 +238,11 @@ public final class LauncherAppWidgetProviderInfoTest {
         Mockito.when(profile.getCellSize()).thenReturn(new Point(CELL_SIZE, CELL_SIZE));
 
         InvariantDeviceProfile idp = new InvariantDeviceProfile();
-        idp.supportedProfiles.add(profile);
+        List<DeviceProfile> supportedProfiles = new ArrayList<>(idp.supportedProfiles);
+        supportedProfiles.add(profile);
+        idp.supportedProfiles = Collections.unmodifiableList(supportedProfiles);
         idp.numColumns = NUM_OF_COLS;
         idp.numRows = NUM_OF_ROWS;
         return idp;
     }
-
 }
