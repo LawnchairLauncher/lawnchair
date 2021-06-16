@@ -53,7 +53,9 @@
     <string name="widget_category_conversations" msgid="8894438636213590446">"Perbualan"</string>
     <string name="widget_education_header" msgid="4874760613775913787">"Maklumat berguna di hujung jari anda"</string>
     <string name="widget_education_content" msgid="745542879510751525">"Untuk mendapatkan maklumat tanpa membuka apl, anda boleh menambahkan widget pada skrin Utama anda"</string>
+    <string name="reconfigurable_widget_education_tip" msgid="6336962690888067057">"Ketik untuk menukar tetapan widget"</string>
     <string name="widget_education_close_button" msgid="8676165703104836580">"OK"</string>
+    <string name="widget_reconfigure_button_content_description" msgid="8811472721881205250">"Tukar tetapan widget"</string>
     <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"Cari apl"</string>
     <string name="all_apps_loading_message" msgid="5813968043155271636">"Memuatkan apl…"</string>
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"Tiada apl yang ditemui sepadan dengan \"<xliff:g id="QUERY">%1$s</xliff:g>\""</string>
@@ -154,18 +156,16 @@
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"Peribadi"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"Kerja"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"Profil kerja"</string>
-    <string name="work_profile_edu_personal_apps" msgid="4155536355149317441">"Data peribadi adalah berasingan &amp; disembunyikan daripada apl kerja"</string>
-    <string name="work_profile_edu_work_apps" msgid="237051938268703058">"Apl &amp; data kerja kelihatan kepada pentadbir IT anda"</string>
-    <string name="work_profile_edu_next" msgid="8783418929296503629">"Seterusnya"</string>
+    <!-- no translation found for work_profile_edu_work_apps (7895468576497746520) -->
+    <skip />
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"OK"</string>
-    <string name="work_apps_paused_title" msgid="2389865654362803723">"Profil kerja dijeda"</string>
-    <string name="work_apps_paused_body" msgid="4209084728264328628">"Apl kerja tidak boleh menghantar pemberitahuan kepada anda, menggunakan bateri anda atau mengakses lokasi anda"</string>
-    <string name="work_apps_paused_content_description" msgid="4473292417145736203">"Profil kerja dijeda. Apl kerja tidak boleh menghantar pemberitahuan kepada anda, menggunakan bateri anda atau mengakses lokasi anda"</string>
+    <string name="work_apps_paused_title" msgid="3007471013401118920">"Apl kerja dimatikan"</string>
+    <string name="work_apps_paused_body" msgid="261634750995824906">"Apl kerja anda tidak boleh menghantar pemberitahuan kepada anda, menggunakan bateri anda atau mengakses lokasi anda"</string>
+    <string name="work_apps_paused_content_description" msgid="5149623040804051095">"Apl kerja dimatikan. Apl kerja anda tidak boleh menghantar pemberitahuan kepada anda, menggunakan bateri anda atau mengakses lokasi anda"</string>
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"Apl kerja mempunyai lencana dan kelihatan kepada pentadbir IT anda"</string>
     <string name="work_apps_paused_edu_accept" msgid="6377476824357318532">"OK"</string>
-    <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"Jeda apl kerja"</string>
-    <string name="work_apps_enable_btn_text" msgid="82111102541971856">"Hidupkan"</string>
+    <string name="work_apps_pause_btn_text" msgid="1921059713673767460">"Matikan apl kerja"</string>
+    <string name="work_apps_enable_btn_text" msgid="1156432622148413741">"Hidupkan apl kerja"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"Tapis"</string>
-    <string name="work_switch_tip" msgid="808075064383839144">"Jeda apl kerja dan pemberitahuan"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"Gagal: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
 </resources>

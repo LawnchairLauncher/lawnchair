@@ -53,7 +53,11 @@
     <string name="widget_category_conversations" msgid="8894438636213590446">"संभाषणे"</string>
     <string name="widget_education_header" msgid="4874760613775913787">"तुमच्यासाठी सहज उपलब्ध असलेली माहिती"</string>
     <string name="widget_education_content" msgid="745542879510751525">"ॲप्स न उघडता माहिती मिळवण्यासाठी, तुम्ही तुमच्या होम स्क्रीनवर विजेट जोडू शकता"</string>
+    <!-- no translation found for reconfigurable_widget_education_tip (6336962690888067057) -->
+    <skip />
     <string name="widget_education_close_button" msgid="8676165703104836580">"समजले"</string>
+    <!-- no translation found for widget_reconfigure_button_content_description (8811472721881205250) -->
+    <skip />
     <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"अ‍ॅप्स शोधा"</string>
     <string name="all_apps_loading_message" msgid="5813968043155271636">"अ‍ॅप्स लोड करत आहे…"</string>
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"\"<xliff:g id="QUERY">%1$s</xliff:g>\" शी जुळणारे कोणतेही अ‍ॅप्स आढळले नाहीत"</string>
@@ -154,18 +158,21 @@
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"वैयक्तिक"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"कार्यालय"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"कार्य प्रोफाइल"</string>
-    <string name="work_profile_edu_personal_apps" msgid="4155536355149317441">"वैयक्तिक डेटा वेगळा असतो आणि तो ऑफिस अ‍ॅप्सपासून लपवलेला असतो"</string>
-    <string name="work_profile_edu_work_apps" msgid="237051938268703058">"कार्य अ‍ॅप्स आणि डेटा तुमच्या अ‍ॅडमिनला दृश्यमान असतो"</string>
-    <string name="work_profile_edu_next" msgid="8783418929296503629">"पुढील"</string>
+    <!-- no translation found for work_profile_edu_work_apps (7895468576497746520) -->
+    <skip />
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"समजले"</string>
-    <string name="work_apps_paused_title" msgid="2389865654362803723">"कार्य प्रोफाइल थांबवली आहे"</string>
-    <string name="work_apps_paused_body" msgid="4209084728264328628">"Work apps तुम्हाला सूचना पाठवू शकत नाहीत, तुमची बॅटरी वापरू शकत नाहीत किंवा तुमचे स्थान अ‍ॅक्सेस करू शकत नाहीत"</string>
-    <string name="work_apps_paused_content_description" msgid="4473292417145736203">"कार्य प्रोफाइल थांबवली आहे. Work apps तुम्हाला सूचना पाठवू शकत नाहीत, तुमची बॅटरी वापरू शकत नाहीत किंवा तुमचे स्थान अ‍ॅक्सेस करू शकत नाहीत"</string>
+    <!-- no translation found for work_apps_paused_title (3007471013401118920) -->
+    <skip />
+    <!-- no translation found for work_apps_paused_body (261634750995824906) -->
+    <skip />
+    <!-- no translation found for work_apps_paused_content_description (5149623040804051095) -->
+    <skip />
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"Work apps ही बॅज केलेली असून तुमच्या IT ॲडमिनला दृश्यमान आहेत"</string>
     <string name="work_apps_paused_edu_accept" msgid="6377476824357318532">"समजले"</string>
-    <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"Work apps थांबवा"</string>
-    <string name="work_apps_enable_btn_text" msgid="82111102541971856">"सुरू करा"</string>
+    <!-- no translation found for work_apps_pause_btn_text (1921059713673767460) -->
+    <skip />
+    <!-- no translation found for work_apps_enable_btn_text (1156432622148413741) -->
+    <skip />
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"फिल्टर"</string>
-    <string name="work_switch_tip" msgid="808075064383839144">"कार्य अ‍ॅप्स आणि सूचना थांबवा"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"हे करता आले नाही: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
 </resources>

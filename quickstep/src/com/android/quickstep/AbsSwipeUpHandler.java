@@ -349,6 +349,13 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
         }
 
         if (mActivity != null) {
+            if (mStateCallback.hasStates(STATE_GESTURE_COMPLETED)) {
+                // If the activity has restarted between setting the page scroll settling callback
+                // and actually receiving the callback, just mark the gesture completed
+                mGestureState.setState(STATE_RECENTS_SCROLLING_FINISHED);
+                return true;
+            }
+
             // The launcher may have been recreated as a result of device rotation.
             int oldState = mStateCallback.getState() & ~LAUNCHER_UI_STATES;
             initStateCallbacks();
@@ -1717,13 +1724,12 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
 
     /**
      * Registers a callback to run when the activity is ready.
-     * @param intent The intent that will be used to start the activity if it doesn't exist already.
      */
-    public void initWhenReady(Intent intent) {
+    public void initWhenReady() {
         // Preload the plan
         RecentsModel.INSTANCE.get(mContext).getTasks(null);
 
-        mActivityInitListener.register(intent);
+        mActivityInitListener.register();
     }
 
     /**

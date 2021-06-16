@@ -57,7 +57,7 @@ public class DefaultSearchAdapterProvider extends SearchAdapterProvider {
     }
 
     @Override
-    public boolean isSearchView(int viewType) {
+    public boolean isViewSupported(int viewType) {
         return false;
     }
 
