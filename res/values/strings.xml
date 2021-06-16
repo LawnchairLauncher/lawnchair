@@ -389,7 +389,7 @@
     <!-- This string is in the work profile tab when a user has All Apps open on their phone. This is a label for a toggle to turn the work profile on and off. "Work profile" means a separate profile on a user's phone that's specifically for their work apps and managed by their company. "Work" is used as an adjective.-->
     <string name="work_profile_toggle_label">Work profile</string>
     <!--- User onboarding title for work profile apps -->
-    <string name="work_profile_edu_work_apps">Work apps are badged andare visible to your IT admin</string>
+    <string name="work_profile_edu_work_apps">Work apps are badged and visible to your IT admin</string>
     <!-- Action label to finish work profile edu-->
     <string name="work_profile_edu_accept">Got it</string>
 

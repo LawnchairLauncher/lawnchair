@@ -249,7 +249,7 @@ public final class TaskViewUtils {
                             ANIMATION_NAV_FADE_IN_DURATION, NAV_FADE_IN_INTERPOLATOR);
 
                     @Override
-                    public void onUpdate(float percent) {
+                    public void onUpdate(float percent, boolean initOnly) {
                         final SurfaceParams.Builder navBuilder =
                                 new SurfaceParams.Builder(navBarTarget.leash);
                         if (mNavFadeIn.value > mNavFadeIn.getStartValue()) {
