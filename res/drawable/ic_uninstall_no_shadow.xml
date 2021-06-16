@@ -16,8 +16,8 @@
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
         android:width="20dp"
         android:height="20dp"
-        android:viewportWidth="20.0"
-        android:viewportHeight="20.0"
+        android:viewportWidth="24.0"
+        android:viewportHeight="24.0"
         android:tint="?android:attr/textColorPrimary" >
     <path
         android:fillColor="@android:color/white"
