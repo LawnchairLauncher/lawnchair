@@ -21,6 +21,7 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import com.android.launcher3.BaseActivity;
+import com.android.launcher3.Launcher;
 import com.android.launcher3.uioverrides.QuickstepLauncher;
 import com.android.launcher3.util.ActivityTracker;
 
@@ -37,7 +38,8 @@ public class HotseatEduActivity extends Activity {
                 .addCategory(Intent.CATEGORY_HOME)
                 .setPackage(getPackageName())
                 .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        new HotseatActivityTracker<>().addToIntent(homeIntent);
+
+        Launcher.ACTIVITY_TRACKER.registerCallback(new HotseatActivityTracker());
         startActivity(homeIntent);
         finish();
     }

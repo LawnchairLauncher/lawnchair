@@ -298,16 +298,16 @@ public class SwipePipToHomeAnimator extends ValueAnimator {
         final float degree, positionX, positionY;
         if (mFromRotation == Surface.ROTATION_90) {
             degree = -90 * fraction;
-            positionX = fraction * (mDestinationBoundsTransformed.left - mAppBounds.left)
-                    + mAppBounds.left;
-            positionY = fraction * (mDestinationBoundsTransformed.bottom - mAppBounds.top)
-                    + mAppBounds.top;
+            positionX = fraction * (mDestinationBoundsTransformed.left - mStartBounds.left)
+                    + mStartBounds.left;
+            positionY = fraction * (mDestinationBoundsTransformed.bottom - mStartBounds.top)
+                    + mStartBounds.top;
         } else {
             degree = 90 * fraction;
-            positionX = fraction * (mDestinationBoundsTransformed.right - mAppBounds.left)
-                    + mAppBounds.left;
-            positionY = fraction * (mDestinationBoundsTransformed.top - mAppBounds.top)
-                    + mAppBounds.top;
+            positionX = fraction * (mDestinationBoundsTransformed.right - mStartBounds.left)
+                    + mStartBounds.left;
+            positionY = fraction * (mDestinationBoundsTransformed.top - mStartBounds.top)
+                    + mStartBounds.top;
         }
         return new RotatedPosition(degree, positionX, positionY);
     }

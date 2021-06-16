@@ -32,6 +32,8 @@ import android.animation.ValueAnimator;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.Nullable;
+
 import com.android.launcher3.BaseQuickstepLauncher;
 import com.android.launcher3.CellLayout;
 import com.android.launcher3.DeviceProfile;
@@ -68,15 +70,18 @@ public class StaggeredWorkspaceAnim {
     private final float mSpringTransY;
 
     private final AnimatorSet mAnimators = new AnimatorSet();
+    private final @Nullable View mIgnoredView;
 
-    public StaggeredWorkspaceAnim(Launcher launcher, float velocity, boolean animateOverviewScrim) {
-        this(launcher, velocity, animateOverviewScrim, true);
+    public StaggeredWorkspaceAnim(Launcher launcher, float velocity, boolean animateOverviewScrim,
+            @Nullable View ignoredView) {
+        this(launcher, velocity, animateOverviewScrim, ignoredView, true);
     }
 
     public StaggeredWorkspaceAnim(Launcher launcher, float velocity, boolean animateOverviewScrim,
-            boolean staggerWorkspace) {
+            @Nullable View ignoredView, boolean staggerWorkspace) {
         prepareToAnimate(launcher, animateOverviewScrim);
 
+        mIgnoredView = ignoredView;
         mVelocity = velocity;
 
         // Scale the translationY based on the initial velocity to better sync the workspace items
@@ -224,6 +229,7 @@ public class StaggeredWorkspaceAnim {
      * @param totalRows Total number of rows.
      */
     private void addStaggeredAnimationForView(View v, int row, int totalRows) {
+        if (mIgnoredView != null && mIgnoredView == v) return;
         // Invert the rows, because we stagger starting from the bottom of the screen.
         int invertedRow = totalRows - row;
         // Add 1 to the inverted row so that the bottom most row has a start delay.
