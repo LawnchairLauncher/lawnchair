@@ -31,7 +31,6 @@ import android.widget.Button;
 import androidx.annotation.RequiresApi;
 
 import com.android.launcher3.Insettable;
-import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.pm.UserCache;
 
@@ -79,7 +78,9 @@ public class WorkModeSwitch extends Button implements Insettable, View.OnClickLi
         clearAnimation();
         if (workTabVisible) {
             setEnabled(true);
-            setVisibility(VISIBLE);
+            if (mWorkEnabled) {
+                setVisibility(VISIBLE);
+            }
             setAlpha(0);
             animate().alpha(1).start();
         } else {
@@ -91,7 +92,7 @@ public class WorkModeSwitch extends Button implements Insettable, View.OnClickLi
     public void onClick(View view) {
         if (Utilities.ATLEAST_P) {
             setEnabled(false);
-            UI_HELPER_EXECUTOR.post(() -> setToState(!mWorkEnabled));
+            UI_HELPER_EXECUTOR.post(() -> setWorkProfileEnabled(getContext(), false));
         }
     }
 
@@ -101,20 +102,18 @@ public class WorkModeSwitch extends Button implements Insettable, View.OnClickLi
     public void updateCurrentState(boolean active) {
         mWorkEnabled = active;
         setEnabled(true);
-        setCompoundDrawablesRelativeWithIntrinsicBounds(
-                active ? R.drawable.ic_corp_off : R.drawable.ic_corp, 0, 0, 0);
-        setText(active ? R.string.work_apps_pause_btn_text : R.string.work_apps_enable_btn_text);
+        setVisibility(active ? VISIBLE : GONE);
     }
 
     @RequiresApi(Build.VERSION_CODES.P)
-    protected Boolean setToState(boolean toState) {
-        UserManager userManager = getContext().getSystemService(UserManager.class);
+    public static Boolean setWorkProfileEnabled(Context context, boolean enabled) {
+        UserManager userManager = context.getSystemService(UserManager.class);
         boolean showConfirm = false;
-        for (UserHandle userProfile : UserCache.INSTANCE.get(getContext()).getUserProfiles()) {
+        for (UserHandle userProfile : UserCache.INSTANCE.get(context).getUserProfiles()) {
             if (Process.myUserHandle().equals(userProfile)) {
                 continue;
             }
-            showConfirm |= !userManager.requestQuietModeEnabled(!toState, userProfile);
+            showConfirm |= !userManager.requestQuietModeEnabled(!enabled, userProfile);
         }
         return showConfirm;
     }
