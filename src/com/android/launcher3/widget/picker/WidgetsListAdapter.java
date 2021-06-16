@@ -103,18 +103,25 @@ public class WidgetsListAdapter extends Adapter<ViewHolder> implements OnHeaderC
             OnClickListener iconClickListener, OnLongClickListener iconLongClickListener) {
         mLauncher = Launcher.getLauncher(context);
         mDiffReporter = new WidgetsDiffReporter(iconCache, this);
+        WidgetsListDrawableFactory listDrawableFactory = new WidgetsListDrawableFactory(context);
         mWidgetsListTableViewHolderBinder = new WidgetsListTableViewHolderBinder(context,
                 layoutInflater, iconClickListener, iconLongClickListener,
-                widgetPreviewLoader, /* listAdapter= */ this);
+                widgetPreviewLoader, listDrawableFactory, /* listAdapter= */ this);
         mViewHolderBinders.put(VIEW_TYPE_WIDGETS_LIST, mWidgetsListTableViewHolderBinder);
         mViewHolderBinders.put(
                 VIEW_TYPE_WIDGETS_HEADER,
                 new WidgetsListHeaderViewHolderBinder(
-                        layoutInflater, /* onHeaderClickListener= */this, /* listAdapter= */ this));
+                        layoutInflater,
+                        /* onHeaderClickListener= */ this,
+                        listDrawableFactory,
+                        /* listAdapter= */ this));
         mViewHolderBinders.put(
                 VIEW_TYPE_WIDGETS_SEARCH_HEADER,
                 new WidgetsListSearchHeaderViewHolderBinder(
-                        layoutInflater, /*onHeaderClickListener=*/ this, /* listAdapter= */ this));
+                        layoutInflater,
+                        /* onHeaderClickListener= */ this,
+                        listDrawableFactory,
+                        /* listAdapter= */ this));
     }
 
     @Override

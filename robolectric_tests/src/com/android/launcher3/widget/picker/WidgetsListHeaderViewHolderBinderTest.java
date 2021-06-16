@@ -107,7 +107,10 @@ public final class WidgetsListHeaderViewHolderBinderTest {
                 /* iconClickListener= */ view -> {},
                 /* iconLongClickListener= */ view -> false);
         mViewHolderBinder = new WidgetsListHeaderViewHolderBinder(
-                LayoutInflater.from(mTestActivity), mOnHeaderClickListener, widgetsListAdapter);
+                LayoutInflater.from(mTestActivity),
+                mOnHeaderClickListener,
+                new WidgetsListDrawableFactory(mTestActivity),
+                widgetsListAdapter);
     }
 
     @After
