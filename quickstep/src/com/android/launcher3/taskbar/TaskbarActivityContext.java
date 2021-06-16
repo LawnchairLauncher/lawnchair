@@ -17,7 +17,6 @@ package com.android.launcher3.taskbar;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_ALWAYS;
-import static android.view.WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
 import static android.view.WindowManager.LayoutParams.TYPE_NAVIGATION_BAR_PANEL;
 
 import static com.android.systemui.shared.system.WindowManagerWrapper.ITYPE_BOTTOM_TAPPABLE_ELEMENT;
@@ -93,6 +92,7 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
     private final ViewCache mViewCache = new ViewCache();
 
     private final boolean mIsSafeModeEnabled;
+    private boolean mIsDestroyed = false;
 
     public TaskbarActivityContext(Context windowContext, DeviceProfile dp,
             TaskbarNavButtonController buttonController) {
@@ -208,6 +208,7 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
      * Called when this instance of taskbar is no longer needed
      */
     public void onDestroy() {
+        mIsDestroyed = true;
         setUIController(TaskbarUIController.DEFAULT);
         mControllers.onDestroy();
         mWindowManager.removeViewImmediate(mDragLayer);
@@ -252,7 +253,7 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
      * Updates the TaskbarContainer height (pass deviceProfile.taskbarSize to reset).
      */
     public void setTaskbarWindowHeight(int height) {
-        if (mWindowLayoutParams.height == height) {
+        if (mWindowLayoutParams.height == height || mIsDestroyed) {
             return;
         }
         if (height != MATCH_PARENT) {
