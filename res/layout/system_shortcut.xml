@@ -45,6 +45,6 @@
         android:layout_height="@dimen/system_shortcut_icon_size"
         android:layout_marginStart="@dimen/system_shortcut_margin_start"
         android:layout_gravity="start|center_vertical"
-        android:backgroundTint="?android:attr/textColorTertiary"/>
+        android:backgroundTint="?android:attr/textColorPrimary"/>
 
 </com.android.launcher3.shortcuts.DeepShortcutView>
