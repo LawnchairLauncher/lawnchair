@@ -84,6 +84,7 @@ import com.android.launcher3.util.MainThreadInitializedObject;
 import com.android.launcher3.views.ActivityContext;
 import com.android.launcher3.views.BaseDragLayer;
 import com.android.launcher3.widget.LauncherAppWidgetProviderInfo;
+import com.android.launcher3.widget.NavigableAppWidgetHostView;
 import com.android.launcher3.widget.custom.CustomWidgetManager;
 
 import java.util.ArrayList;
@@ -353,7 +354,12 @@ public class LauncherPreviewRenderer extends ContextWrapper
 
     private void inflateAndAddWidgets(
             LauncherAppWidgetInfo info, LauncherAppWidgetProviderInfo providerInfo) {
-        AppWidgetHostView view = new AppWidgetHostView(mContext);
+        AppWidgetHostView view = new NavigableAppWidgetHostView(this) {
+            @Override
+            protected boolean shouldAllowDirectClick() {
+                return false;
+            }
+        };
         view.setAppWidget(-1, providerInfo);
         view.updateAppWidget(null);
         view.setTag(info);
