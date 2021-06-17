@@ -121,19 +121,11 @@ public abstract class ButtonDropTarget extends TextView
     }
 
     protected void setDrawable(int resId) {
-        mDrawable = getContext().getDrawable(resId).mutate();
-        mDrawable.setBounds(0, 0, mDrawableSize, mDrawableSize);
-        setDrawable(mDrawable);
-    }
-
-    private void setDrawable(Drawable drawable) {
         // We do not set the drawable in the xml as that inflates two drawables corresponding to
         // drawableLeft and drawableStart.
-        if (mTextVisible) {
-            setCompoundDrawablesRelative(drawable, null, null, null);
-        } else {
-            setCompoundDrawablesRelative(null, drawable, null, null);
-        }
+        mDrawable = getContext().getDrawable(resId).mutate();
+        mDrawable.setBounds(0, 0, mDrawableSize, mDrawableSize);
+        setCompoundDrawablesRelative(mDrawable, null, null, null);
     }
 
     public void setDropTargetBar(DropTargetBar dropTargetBar) {
@@ -331,7 +323,7 @@ public abstract class ButtonDropTarget extends TextView
         if (mTextVisible != isVisible || !TextUtils.equals(newText, getText())) {
             mTextVisible = isVisible;
             setText(newText);
-            setDrawable(mDrawable);
+            setCompoundDrawablesRelative(mDrawable, null, null, null);
         }
     }
 
