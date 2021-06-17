@@ -136,6 +136,11 @@ public class OverviewCommandHelper {
         }
     }
 
+    public boolean isOverviewVisible() {
+        BaseActivityInterface activityInterface =
+                mOverviewComponentObserver.getActivityInterface();
+        return activityInterface.getVisibleRecentsView() != null;
+    }
     /**
      * Executes the task and returns true if next task can be executed. If false, then the next
      * task is deferred until {@link #scheduleNextTask} is called
@@ -184,9 +189,7 @@ public class OverviewCommandHelper {
                 .newHandler(gestureState, cmd.createTime);
         interactionHandler.setGestureEndCallback(
                 () -> onTransitionComplete(cmd, interactionHandler));
-
-        Intent intent = new Intent(interactionHandler.getLaunchIntent());
-        interactionHandler.initWhenReady(intent);
+        interactionHandler.initWhenReady();
 
         RecentsAnimationListener recentAnimListener = new RecentsAnimationListener() {
             @Override
@@ -212,6 +215,7 @@ public class OverviewCommandHelper {
             cmd.mActiveCallbacks.addListener(recentAnimListener);
             mTaskAnimationManager.notifyRecentsAnimationState(recentAnimListener);
         } else {
+            Intent intent = new Intent(interactionHandler.getLaunchIntent());
             intent.putExtra(INTENT_EXTRA_LOG_TRACE_ID, gestureState.getGestureId());
             cmd.mActiveCallbacks = mTaskAnimationManager.startRecentsAnimation(
                     gestureState, intent, interactionHandler);

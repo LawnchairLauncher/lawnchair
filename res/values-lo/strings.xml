@@ -53,7 +53,9 @@
     <string name="widget_category_conversations" msgid="8894438636213590446">"ການສົນທະນາ"</string>
     <string name="widget_education_header" msgid="4874760613775913787">"ຂໍ້ມູນທີ່ເປັນປະໂຫຍດຢູ່ປາຍນິ້ວຂອງທ່ານ"</string>
     <string name="widget_education_content" msgid="745542879510751525">"ເພື່ອຮັບຂໍ້ມູນໂດຍບໍ່ຕ້ອງເປີດແອັບ, ທ່ານສາມາດເພີ່ມວິດເຈັດໃສ່ໂຮມສະກຣີນຂອງທ່ານໄດ້"</string>
+    <string name="reconfigurable_widget_education_tip" msgid="6336962690888067057">"ແຕະເພື່ອປ່ຽນການຕັ້ງຄ່າວິດເຈັດ"</string>
     <string name="widget_education_close_button" msgid="8676165703104836580">"ເຂົ້າໃຈແລ້ວ"</string>
+    <string name="widget_reconfigure_button_content_description" msgid="8811472721881205250">"ປ່ຽນການຕັ້ງຄ່າວິດເຈັດ"</string>
     <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"ຊອກຫາແອັບ"</string>
     <string name="all_apps_loading_message" msgid="5813968043155271636">"ກໍາລັງໂຫຼດແອັບ…"</string>
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"ບໍ່ພົບແອັບທີ່ກົງກັບ \"<xliff:g id="QUERY">%1$s</xliff:g>\""</string>
@@ -62,7 +64,7 @@
     <string name="notifications_header" msgid="1404149926117359025">"ການແຈ້ງເຕືອນ"</string>
     <string name="long_press_shortcut_to_add" msgid="5405328730817637737">"ແຕະຄ້າງໄວ້ເພື່ອຍ້າຍທາງລັດ."</string>
     <string name="long_accessible_way_to_add_shortcut" msgid="2199537273817090740">"ແຕະສອງເທື່ອຄ້າງໄວ້ເພື່ອຍ້າຍທາງລັດ ຫຼື ໃຊ້ຄຳສັ່ງກຳນົດເອງ."</string>
-    <string name="out_of_space" msgid="4691004494942118364">"ບໍ່ມີຫ້ອງເຫຼືອໃນໜ້າຈໍຫຼັກນີ້."</string>
+    <string name="out_of_space" msgid="4691004494942118364">"ບໍ່ມີບ່ອນຫວ່າງໃນໜ້ານີ້."</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"ບໍ່ມີບ່ອນຫວ່າງໃນຖາດສຳລັບເກັບສິ່ງທີ່ໃຊ້ເປັນປະຈຳ"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"ລາຍຊື່ແອັບ"</string>
     <string name="all_apps_button_personal_label" msgid="1315764287305224468">"ລາຍຊື່ແອັບສ່ວນຕົວ"</string>
@@ -154,18 +156,16 @@
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"ສ່ວນຕົວ"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"ວຽກ"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"ໂປຣໄຟລ໌ບ່ອນເຮັດວຽກ"</string>
-    <string name="work_profile_edu_personal_apps" msgid="4155536355149317441">"ຂໍ້ມູນສ່ວນຕົວຈະຖືກແຍກອອກ ແລະ ເຊື່ອງໄວ້ຈາກແອັບວຽກ"</string>
-    <string name="work_profile_edu_work_apps" msgid="237051938268703058">"ແອັບ ແລະ ຂໍ້ມູນວຽກຈະສະແດງໃຫ້ຜູ້ເບິ່ງແຍງໄອທີຂອງທ່ານເຫັນ"</string>
-    <string name="work_profile_edu_next" msgid="8783418929296503629">"ຕໍ່ໄປ"</string>
+    <!-- no translation found for work_profile_edu_work_apps (7895468576497746520) -->
+    <skip />
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"ເຂົ້າໃຈແລ້ວ"</string>
-    <string name="work_apps_paused_title" msgid="2389865654362803723">"ຢຸດໂປຣໄຟລ໌ວຽກໄວ້ຊົ່ວຄາວແລ້ວ"</string>
-    <string name="work_apps_paused_body" msgid="4209084728264328628">"ແອັບບ່ອນເຮັດວຽກຈະບໍ່ສາມາດສົ່ງການແຈ້ງເຕືອນຫາທ່ານ, ໃຊ້ແບັດເຕີຣີຂອງທ່ານ ຫຼື ເຂົ້າເຖິງສະຖານທີ່ຂອງທ່ານໄດ້"</string>
-    <string name="work_apps_paused_content_description" msgid="4473292417145736203">"ຢຸດໂປຣໄຟລ໌ບ່ອນເຮັດວຽກໄວ້ຊົ່ວຄາວແລ້ວ. ແອັບບ່ອນເຮັດວຽກຈະບໍ່ສາມາດສົ່ງການແຈ້ງເຕືອນຫາທ່ານ, ໃຊ້ແບັດເຕີຣີຂອງທ່ານ ຫຼື ເຂົ້າເຖິງສະຖານທີ່ຂອງທ່ານໄດ້"</string>
+    <string name="work_apps_paused_title" msgid="3007471013401118920">"ແອັບບ່ອນເຮັດວຽກຖືກປິດໄວ້ຢູ່"</string>
+    <string name="work_apps_paused_body" msgid="261634750995824906">"ແອັບບ່ອນເຮັດວຽກຂອງທ່ານຈະບໍ່ສາມາດສົ່ງການແຈ້ງເຕືອນຫາທ່ານ, ໃຊ້ແບັດເຕີຣີຂອງທ່ານ ຫຼື ເຂົ້າເຖິງສະຖານທີ່ຂອງທ່ານໄດ້"</string>
+    <string name="work_apps_paused_content_description" msgid="5149623040804051095">"ແອັບບ່ອນເຮັດວຽກຖືກປິດໄວ້ຢູ່. ແອັບບ່ອນເຮັດວຽກຂອງທ່ານຈະບໍ່ສາມາດສົ່ງການແຈ້ງເຕືອນໃຫ້ທ່ານ, ໃຊ້ແບັດເຕີຣີຂອງທ່ານ ຫຼື ເຂົ້າເຖິງສະຖານທີ່ຂອງທ່ານໄດ້"</string>
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"ແອັບບ່ອນເຮັດວຽກແມ່ນຖືກຕິດປ້າຍ ແລະ ສະແດງໃຫ້ຜູ້ເບິ່ງແຍງໄອທີຂອງທ່ານເຫັນ"</string>
     <string name="work_apps_paused_edu_accept" msgid="6377476824357318532">"ເຂົ້າໃຈແລ້ວ"</string>
-    <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"ຢຸດແອັບບ່ອນເຮັດວຽກຊົ່ວຄາວ"</string>
-    <string name="work_apps_enable_btn_text" msgid="82111102541971856">"ເປີດໃຊ້"</string>
+    <string name="work_apps_pause_btn_text" msgid="1921059713673767460">"ປິດການໃຊ້ແອັບບ່ອນເຮັດວຽກ"</string>
+    <string name="work_apps_enable_btn_text" msgid="1156432622148413741">"ເປີດໃຊ້ແອັບບ່ອນເຮັດວຽກ"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"ກັ່ນຕອງ"</string>
-    <string name="work_switch_tip" msgid="808075064383839144">"ຢຸດແອັບວຽກ ແລະ ການແຈ້ງເຕືອນໄວ້ຊົ່ວຄາວ"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"ບໍ່ສຳເລັດ: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
 </resources>

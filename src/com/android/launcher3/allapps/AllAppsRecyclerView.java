@@ -447,4 +447,14 @@ public class AllAppsRecyclerView extends BaseRecyclerView {
     public boolean hasOverlappingRendering() {
         return false;
     }
+
+    /**
+     * Returns distance between left and right app icons
+     */
+    public int getTabWidth() {
+        DeviceProfile grid = BaseDraggingActivity.fromContext(getContext()).getDeviceProfile();
+        int totalWidth = (grid.availableWidthPx - getPaddingLeft() - getPaddingRight());
+        int iconPadding = totalWidth / grid.numShownAllAppsColumns - grid.allAppsIconSizePx;
+        return totalWidth - iconPadding;
+    }
 }

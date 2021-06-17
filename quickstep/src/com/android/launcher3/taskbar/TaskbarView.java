@@ -103,9 +103,6 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
         mControllerCallbacks = callbacks;
         mIconClickListener = mControllerCallbacks.getOnClickListener();
         mIconLongClickListener = mControllerCallbacks.getOnLongClickListener();
-
-        int numHotseatIcons = mActivityContext.getDeviceProfile().numShownHotseatIcons;
-        updateHotseatItems(new ItemInfo[numHotseatIcons]);
     }
 
     /**
@@ -127,13 +124,11 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
         int count = getChildCount();
         for (int i = 0; i < count; i++) {
             View child = getChildAt(i);
-            if (child.getVisibility() != VISIBLE) {
-                continue;
-            }
+            ItemInfo info = (ItemInfo) child.getTag();
             setter.setFloat(child, SCALE_PROPERTY, scaleUp, LINEAR);
 
             float childCenter = (child.getLeft() + child.getRight()) / 2;
-            float hotseatIconCenter = hotseatPadding.left + hotseatCellSize * (i)
+            float hotseatIconCenter = hotseatPadding.left + hotseatCellSize * info.screenId
                     + hotseatCellSize / 2;
             setter.setFloat(child, VIEW_TRANSLATE_X, hotseatIconCenter - childCenter, LINEAR);
         }
@@ -155,34 +150,58 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
                 mActivityContext.getDeviceProfile().taskbarSize);
     }
 
+    private void removeAndRecycle(View view) {
+        removeView(view);
+        view.setOnClickListener(null);
+        view.setOnLongClickListener(null);
+        if (!(view.getTag() instanceof FolderInfo)) {
+            mActivityContext.getViewCache().recycleView(view.getSourceLayoutResId(), view);
+        }
+        view.setTag(null);
+    }
+
     /**
      * Inflates/binds the Hotseat views to show in the Taskbar given their ItemInfos.
      */
     protected void updateHotseatItems(ItemInfo[] hotseatItemInfos) {
+        int nextViewIndex = 0;
+
         for (int i = 0; i < hotseatItemInfos.length; i++) {
             ItemInfo hotseatItemInfo = hotseatItemInfos[i];
-            View hotseatView = getChildAt(i);
+            if (hotseatItemInfo == null) {
+                continue;
+            }
 
             // Replace any Hotseat views with the appropriate type if it's not already that type.
             final int expectedLayoutResId;
             boolean isFolder = false;
-            boolean needsReinflate = false;
-            if (hotseatItemInfo != null && hotseatItemInfo.isPredictedItem()) {
+            if (hotseatItemInfo.isPredictedItem()) {
                 expectedLayoutResId = R.layout.taskbar_predicted_app_icon;
             } else if (hotseatItemInfo instanceof FolderInfo) {
                 expectedLayoutResId = R.layout.folder_icon;
                 isFolder = true;
-                // Unlike for BubbleTextView, we can't reapply a new FolderInfo after inflation, so
-                // if the info changes we need to reinflate. This should only happen if a new folder
-                // is dragged to the position that another folder previously existed.
-                needsReinflate = hotseatView != null && hotseatView.getTag() != hotseatItemInfo;
             } else {
                 expectedLayoutResId = R.layout.taskbar_app_icon;
             }
-            if (hotseatView == null
-                    || hotseatView.getSourceLayoutResId() != expectedLayoutResId
-                    || needsReinflate) {
-                removeView(hotseatView);
+
+            View hotseatView = null;
+            while (nextViewIndex < getChildCount()) {
+                hotseatView = getChildAt(nextViewIndex);
+
+                // see if the view can be reused
+                if ((hotseatView.getSourceLayoutResId() != expectedLayoutResId)
+                        || (isFolder && (hotseatView.getTag() != hotseatItemInfo))) {
+                    // Unlike for BubbleTextView, we can't reapply a new FolderInfo after inflation,
+                    // so if the info changes we need to reinflate. This should only happen if a new
+                    // folder is dragged to the position that another folder previously existed.
+                    removeAndRecycle(hotseatView);
+                } else {
+                    // View found
+                    break;
+                }
+            }
+
+            if (hotseatView == null) {
                 if (isFolder) {
                     FolderInfo folderInfo = (FolderInfo) hotseatItemInfo;
                     FolderIcon folderIcon = FolderIcon.inflateFolderAndIcon(expectedLayoutResId,
@@ -194,7 +213,7 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
                 }
                 LayoutParams lp = new LayoutParams(mIconTouchSize, mIconTouchSize);
                 hotseatView.setPadding(mItemPadding, mItemPadding, mItemPadding, mItemPadding);
-                addView(hotseatView, i, lp);
+                addView(hotseatView, nextViewIndex, lp);
             }
 
             // Apply the Hotseat ItemInfos, or hide the view if there is none for a given index.
@@ -202,15 +221,13 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
                     && hotseatItemInfo instanceof WorkspaceItemInfo) {
                 ((BubbleTextView) hotseatView).applyFromWorkspaceItem(
                         (WorkspaceItemInfo) hotseatItemInfo);
-                setClickAndLongClickListenersForIcon(hotseatView);
-            } else if (isFolder) {
-                setClickAndLongClickListenersForIcon(hotseatView);
-            } else {
-                hotseatView.setOnClickListener(null);
-                hotseatView.setOnLongClickListener(null);
-                hotseatView.setTag(null);
             }
-            hotseatView.setVisibility(hotseatView.getTag() != null ? VISIBLE : INVISIBLE);
+            setClickAndLongClickListenersForIcon(hotseatView);
+            nextViewIndex++;
+        }
+        // Remove remaining views
+        while (nextViewIndex < getChildCount()) {
+            removeAndRecycle(getChildAt(nextViewIndex));
         }
     }
 
@@ -225,15 +242,7 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         int count = getChildCount();
-        // Find total visible children
-        int visibleChildren = 0;
-        for (int i = 0; i < count; i++) {
-            if (getChildAt(i).getVisibility() == VISIBLE) {
-                visibleChildren++;
-            }
-        }
-
-        int spaceNeeded = visibleChildren * (mItemMarginLeftRight * 2 + mIconTouchSize);
+        int spaceNeeded = count * (mItemMarginLeftRight * 2 + mIconTouchSize);
         int iconStart = (right - left - spaceNeeded) / 2;
         int startOffset = ApiWrapper.getHotseatStartOffset(getContext());
         if (startOffset > iconStart) {
@@ -246,12 +255,10 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
         mIconLayoutBounds.bottom = mIconLayoutBounds.top + mIconTouchSize;
         for (int i = 0; i < count; i++) {
             View child = getChildAt(i);
-            if (child.getVisibility() == VISIBLE) {
-                iconStart += mItemMarginLeftRight;
-                int iconEnd = iconStart + mIconTouchSize;
-                child.layout(iconStart, mIconLayoutBounds.top, iconEnd, mIconLayoutBounds.bottom);
-                iconStart = iconEnd + mItemMarginLeftRight;
-            }
+            iconStart += mItemMarginLeftRight;
+            int iconEnd = iconStart + mIconTouchSize;
+            child.layout(iconStart, mIconLayoutBounds.top, iconEnd, mIconLayoutBounds.bottom);
+            iconStart = iconEnd + mItemMarginLeftRight;
         }
         mIconLayoutBounds.right = iconStart;
     }
@@ -307,7 +314,7 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
     }
 
     private View inflate(@LayoutRes int layoutResId) {
-        return mActivityContext.getLayoutInflater().inflate(layoutResId, this, false);
+        return mActivityContext.getViewCache().getView(layoutResId, mActivityContext, this);
     }
 
     @Override

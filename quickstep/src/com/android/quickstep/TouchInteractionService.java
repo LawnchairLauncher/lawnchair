@@ -274,7 +274,7 @@ public class TouchInteractionService extends Service implements PluginListener<O
         @Override
         public void disable(int displayId, int state1, int state2, boolean animate) {
             executeForTaskbarManager(() -> mTaskbarManager
-                    .disable(displayId, state1, state2, animate));
+                    .disableNavBarElements(displayId, state1, state2, animate));
         }
 
         @Override

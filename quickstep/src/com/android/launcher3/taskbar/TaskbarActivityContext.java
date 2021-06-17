@@ -18,6 +18,7 @@ package com.android.launcher3.taskbar;
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_ALWAYS;
 import static android.view.WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
+import static android.view.WindowManager.LayoutParams.TYPE_NAVIGATION_BAR_PANEL;
 
 import static com.android.systemui.shared.system.WindowManagerWrapper.ITYPE_BOTTOM_TAPPABLE_ELEMENT;
 import static com.android.systemui.shared.system.WindowManagerWrapper.ITYPE_EXTRA_NAVIGATION_BAR;
@@ -56,6 +57,7 @@ import com.android.launcher3.touch.ItemClickHandler;
 import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.util.TraceHelper;
+import com.android.launcher3.util.ViewCache;
 import com.android.launcher3.views.ActivityContext;
 import com.android.quickstep.SysUINavigationMode;
 import com.android.quickstep.SysUINavigationMode.Mode;
@@ -88,6 +90,7 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
     private int mLastRequestedNonFullscreenHeight;
 
     private final SysUINavigationMode.Mode mNavMode;
+    private final ViewCache mViewCache = new ViewCache();
 
     private final boolean mIsSafeModeEnabled;
 
@@ -121,7 +124,8 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
                 new RotationButtonController(this, R.color.popup_color_primary_light,
                         R.color.popup_color_primary_light),
                 new TaskbarDragLayerController(this, mDragLayer),
-                new TaskbarViewController(this, taskbarView));
+                new TaskbarViewController(this, taskbarView),
+                new TaskbarKeyguardController(this));
 
         Display display = windowContext.getDisplay();
         Context c = display.getDisplayId() == Display.DEFAULT_DISPLAY
@@ -135,7 +139,7 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
         mWindowLayoutParams = new WindowManager.LayoutParams(
                 MATCH_PARENT,
                 mLastRequestedNonFullscreenHeight,
-                TYPE_APPLICATION_OVERLAY,
+                TYPE_NAVIGATION_BAR_PANEL,
                 WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
                 PixelFormat.TRANSLUCENT);
         mWindowLayoutParams.setTitle(WINDOW_TITLE);
@@ -144,7 +148,6 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
         mWindowLayoutParams.setFitInsetsTypes(0);
         mWindowLayoutParams.softInputMode = WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING;
         mWindowLayoutParams.layoutInDisplayCutoutMode = LAYOUT_IN_DISPLAY_CUTOUT_MODE_ALWAYS;
-        mWindowLayoutParams.setSystemApplicationOverlay(true);
 
         WindowManagerWrapper wmWrapper = WindowManagerWrapper.getInstance();
         wmWrapper.setProvidesInsetsTypes(
@@ -187,6 +190,11 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
         return mControllers.taskbarDragController;
     }
 
+    @Override
+    public ViewCache getViewCache() {
+        return mViewCache;
+    }
+
     /**
      * Sets a new data-source for this taskbar instance
      */
@@ -213,17 +221,19 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
                 systemUiStateFlags, forceUpdate);
         mControllers.taskbarViewController.setImeIsVisible(
                 mControllers.navbarButtonsViewController.isImeVisible());
+        mControllers.taskbarKeyguardController.updateStateForSysuiFlags(systemUiStateFlags);
     }
 
     public void onRotationProposal(int rotation, boolean isValid) {
         mControllers.rotationButtonController.onRotationProposal(rotation, isValid);
     }
 
-    public void disable(int displayId, int state1, int state2, boolean animate) {
+    public void disableNavBarElements(int displayId, int state1, int state2, boolean animate) {
         if (displayId != getDisplayId()) {
             return;
         }
         mControllers.rotationButtonController.onDisable2FlagChanged(state2);
+        mControllers.taskbarKeyguardController.disableNavbarElements(state1, state2);
     }
 
     public void onSystemBarAttributesChanged(int displayId, int behavior) {

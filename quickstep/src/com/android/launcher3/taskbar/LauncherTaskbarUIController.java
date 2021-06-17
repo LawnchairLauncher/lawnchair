@@ -55,6 +55,7 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
     private AlphaProperty mIconAlphaForHome;
     private @Nullable Animator mAnimator;
     private boolean mIsAnimatingToLauncher;
+    private TaskbarKeyguardController mKeyguardController;
 
     public LauncherTaskbarUIController(
             BaseQuickstepLauncher launcher, TaskbarActivityContext context) {
@@ -81,6 +82,7 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
         mHotseatController.init();
         setTaskbarViewVisible(!mLauncher.hasBeenResumed());
         mLauncher.setTaskbarUIController(this);
+        mKeyguardController = taskbarControllers.taskbarKeyguardController;
     }
 
     @Override
@@ -117,6 +119,15 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
      * Should be called from onResume() and onPause(), and animates the Taskbar accordingly.
      */
     public void onLauncherResumedOrPaused(boolean isResumed) {
+        if (mKeyguardController.isScreenOff()) {
+            if (!isResumed) {
+                return;
+            } else {
+                // Resuming implicitly means device unlocked
+                mKeyguardController.setScreenOn();
+            }
+        }
+
         long duration = QuickstepTransitionManager.CONTENT_ALPHA_DURATION;
         if (mAnimator != null) {
             mAnimator.cancel();

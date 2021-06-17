@@ -43,7 +43,7 @@
       <item quantity="one"><xliff:g id="SHORTCUTS_COUNT_0">%1$d</xliff:g> കുറുക്കുവഴി</item>
     </plurals>
     <string name="widgets_and_shortcuts_count" msgid="7209136747878365116">"<xliff:g id="WIDGETS_COUNT">%1$s</xliff:g>, <xliff:g id="SHORTCUTS_COUNT">%2$s</xliff:g>"</string>
-    <string name="widget_button_text" msgid="2880537293434387943">"വിഡ്ജെറ്റുകൾ"</string>
+    <string name="widget_button_text" msgid="2880537293434387943">"വിജറ്റുകൾ"</string>
     <string name="widgets_full_sheet_search_bar_hint" msgid="8484659090860596457">"തിരയൽ"</string>
     <string name="widgets_full_sheet_cancel_button_description" msgid="5766167035728653605">"സെർച്ച് ബോക്‌സിൽ നിന്ന് ടെക്‌സ്‌റ്റ് മായ്‌ക്കുക"</string>
     <string name="no_widgets_available" msgid="9140948620298620513">"ഒരു വിജറ്റുകളും ലഭ്യമല്ല"</string>
@@ -53,7 +53,9 @@
     <string name="widget_category_conversations" msgid="8894438636213590446">"സംഭാഷണങ്ങൾ"</string>
     <string name="widget_education_header" msgid="4874760613775913787">"ഉപകാരപ്രദമായ വിവരങ്ങൾ നിങ്ങളുടെ വിരൽത്തുമ്പിൽ"</string>
     <string name="widget_education_content" msgid="745542879510751525">"ആപ്പുകൾ തുറക്കാതെ വിവരങ്ങൾ ലഭിക്കാൻ, നിങ്ങൾക്ക് ഹോം സ്ക്രീനിലേക്ക് വിജറ്റുകൾ ചേർക്കാം"</string>
+    <string name="reconfigurable_widget_education_tip" msgid="6336962690888067057">"വിജറ്റ് ക്രമീകരണം മാറ്റാൻ ടാപ്പ് ചെയ്യുക"</string>
     <string name="widget_education_close_button" msgid="8676165703104836580">"മനസ്സിലായി"</string>
+    <string name="widget_reconfigure_button_content_description" msgid="8811472721881205250">"വിജറ്റ് ക്രമീകരണം മാറ്റുക"</string>
     <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"ആപ്പുകൾ തിരയുക"</string>
     <string name="all_apps_loading_message" msgid="5813968043155271636">"ആപ്പുകൾ ലോഡുചെയ്യുന്നു..."</string>
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"\"<xliff:g id="QUERY">%1$s</xliff:g>\" എന്നതുമായി പൊരുത്തപ്പെടുന്ന ആപ്പുകളൊന്നും കണ്ടെത്തിയില്ല"</string>
@@ -112,7 +114,7 @@
     <string name="msg_missing_notification_access" msgid="281113995110910548">"അറിയിപ്പ് ഡോട്ടുകൾ കാണിക്കുന്നതിന്, <xliff:g id="NAME">%1$s</xliff:g> എന്നയാളിനായുള്ള ആപ്പ് അറിയിപ്പുകൾ ഓണാക്കുക"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"ക്രമീകരണം മാറ്റുക"</string>
     <string name="notification_dots_service_title" msgid="4284221181793592871">"അറിയിപ്പ് ഡോട്ടുകൾ കാണിക്കുക"</string>
-    <string name="auto_add_shortcuts_label" msgid="3698776050751790653">"ഹോം സ്‌ക്രീനിൽ ആപ്പ് ഐക്കണുകൾ ചേർക്കൂ"</string>
+    <string name="auto_add_shortcuts_label" msgid="3698776050751790653">"ഹോം സ്‌ക്രീനിൽ ആപ്പ് ഐക്കണുകൾ ചേർക്കുക"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"പുതിയ ആപ്പുകൾക്ക്"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"അജ്ഞാതം"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"നീക്കംചെയ്യുക"</string>
@@ -152,20 +154,18 @@
     <string name="accessibility_close" msgid="2277148124685870734">"അടയ്ക്കൂ"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"അറിയിപ്പ് നിരസിച്ചു"</string>
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"വ്യക്തിപരം"</string>
-    <string name="all_apps_work_tab" msgid="4884822796154055118">"ജോലി"</string>
+    <string name="all_apps_work_tab" msgid="4884822796154055118">"ഔദ്യോഗികം"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"ഔദ്യോഗിക പ്രൊഫൈൽ"</string>
-    <string name="work_profile_edu_personal_apps" msgid="4155536355149317441">"ഔദ്യോഗിക ആപ്പുകളിൽ നിന്ന് വ്യക്തിപരമായ ഡാറ്റ വേർതിരിച്ച് മറച്ചിരിക്കുന്നു"</string>
-    <string name="work_profile_edu_work_apps" msgid="237051938268703058">"ഔദ്യോഗിക ആപ്പുകളും ഡാറ്റയും നിങ്ങളുടെ ഐടി അഡ്‌മിന് ദൃശ്യമാണ്"</string>
-    <string name="work_profile_edu_next" msgid="8783418929296503629">"അടുത്തത്"</string>
+    <!-- no translation found for work_profile_edu_work_apps (7895468576497746520) -->
+    <skip />
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"മനസ്സിലായി"</string>
-    <string name="work_apps_paused_title" msgid="2389865654362803723">"ഔദ്യോഗിക പ്രൊഫൈൽ തൽക്കാലം നിർത്തിയിരിക്കുന്നു"</string>
-    <string name="work_apps_paused_body" msgid="4209084728264328628">"നിങ്ങൾക്ക് അറിയിപ്പുകൾ അയയ്ക്കാനോ ബാറ്ററി ഉപയോഗിക്കാനോ ലൊക്കേഷൻ ആക്‌സസ് ചെയ്യാനോ ഔദ്യോഗിക ആപ്പുകൾക്ക് കഴിയില്ല"</string>
-    <string name="work_apps_paused_content_description" msgid="4473292417145736203">"ഔദ്യോഗിക പ്രൊഫൈൽ താൽക്കാലികമായി നിർത്തിയിരിക്കുന്നു. നിങ്ങൾക്ക് അറിയിപ്പുകൾ അയയ്ക്കാനോ ബാറ്ററി ഉപയോഗിക്കാനോ ലൊക്കേഷൻ ആക്‌സസ് ചെയ്യാനോ ഔദ്യോഗിക ആപ്പുകൾക്ക് കഴിയില്ല"</string>
+    <string name="work_apps_paused_title" msgid="3007471013401118920">"ഔദ്യോഗിക ആപ്പുകൾ ഓഫാണ്"</string>
+    <string name="work_apps_paused_body" msgid="261634750995824906">"നിങ്ങൾക്ക് അറിയിപ്പുകൾ അയയ്ക്കാനോ ബാറ്ററി ഉപയോഗിക്കാനോ ലൊക്കേഷൻ ആക്‌സസ് ചെയ്യാനോ നിങ്ങളുടെ ഔദ്യോഗിക ആപ്പുകൾക്ക് കഴിയില്ല"</string>
+    <string name="work_apps_paused_content_description" msgid="5149623040804051095">"ഔദ്യോഗിക ആപ്പുകൾ ഓഫാണ്. നിങ്ങൾക്ക് അറിയിപ്പുകൾ അയയ്ക്കാനോ ബാറ്ററി ഉപയോഗിക്കാനോ ലൊക്കേഷൻ ആക്‌സസ് ചെയ്യാനോ നിങ്ങളുടെ ഔദ്യോഗിക ആപ്പുകൾക്ക് കഴിയില്ല"</string>
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"ഔദ്യോഗിക ആപ്പുകൾക്ക് ബാഡ്‌ജ് നൽകിയിരിക്കുന്നു, അവ നിങ്ങളുടെ ഐടി അഡ്‌മിന് കാണാനും കഴിയും"</string>
     <string name="work_apps_paused_edu_accept" msgid="6377476824357318532">"മനസ്സിലായി"</string>
-    <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"ഔദ്യോഗിക ആപ്പുകൾ താൽക്കാലികമായി നിർത്തുക"</string>
-    <string name="work_apps_enable_btn_text" msgid="82111102541971856">"ഓണാക്കുക"</string>
+    <string name="work_apps_pause_btn_text" msgid="1921059713673767460">"ഔദ്യോഗിക ആപ്പുകൾ ഓഫാക്കുക"</string>
+    <string name="work_apps_enable_btn_text" msgid="1156432622148413741">"ഔദ്യോഗിക ആപ്പുകൾ ഓണാക്കുക"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"ഫിൽട്ടർ ചെയ്യുക"</string>
-    <string name="work_switch_tip" msgid="808075064383839144">"ഔദ്യോഗിക ആപ്പുകളും അറിയിപ്പുകളും താൽക്കാലികമായി നിർത്തുക"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"പരാജയപ്പെട്ടു: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
 </resources>
