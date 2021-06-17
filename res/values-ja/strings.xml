@@ -82,8 +82,10 @@
     <string name="permlab_write_settings" msgid="3574213698004620587">"ホームの設定とショートカットの書き込み"</string>
     <string name="permdesc_write_settings" msgid="5440712911516509985">"ホームの設定とショートカットの変更をアプリに許可します。"</string>
     <string name="msg_no_phone_permission" msgid="9208659281529857371">"「<xliff:g id="APP_NAME">%1$s</xliff:g>」から電話をかけることはできません"</string>
-    <string name="gadget_error_text" msgid="6081085226050792095">"ウィジェットを表示できません"</string>
-    <string name="gadget_setup_text" msgid="8274003207686040488">"セットアップ"</string>
+    <!-- no translation found for gadget_error_text (740356548025791839) -->
+    <skip />
+    <!-- no translation found for gadget_setup_text (1745356155479272374) -->
+    <skip />
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"このシステムアプリはアンインストールできません。"</string>
     <string name="folder_hint_text" msgid="5174843001373488816">"名前の編集"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"「<xliff:g id="APP_NAME">%1$s</xliff:g>」は無効です"</string>
@@ -156,8 +158,7 @@
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"個人用"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"仕事用"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"仕事用プロファイル"</string>
-    <!-- no translation found for work_profile_edu_work_apps (7895468576497746520) -->
-    <skip />
+    <string name="work_profile_edu_work_apps" msgid="7895468576497746520">"仕事用アプリはバッジが付き、IT 管理者に公開されます"</string>
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"OK"</string>
     <string name="work_apps_paused_title" msgid="3007471013401118920">"仕事用アプリは OFF になっています"</string>
     <string name="work_apps_paused_body" msgid="261634750995824906">"仕事用アプリは、通知の送信、バッテリーの使用、位置情報の取得を行えません"</string>

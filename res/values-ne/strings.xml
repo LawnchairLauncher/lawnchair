@@ -53,11 +53,9 @@
     <string name="widget_category_conversations" msgid="8894438636213590446">"वार्तालापहरू"</string>
     <string name="widget_education_header" msgid="4874760613775913787">"उपयोगी जानकारी सजिलै प्राप्त गर्नुहोस्"</string>
     <string name="widget_education_content" msgid="745542879510751525">"एपहरू नखोलिकनै तिनका बारेमा जानकारी प्राप्त गर्न तपाईं आफ्नो होम स्क्रिनमा विजेटहरू हाल्न सक्नुहुन्छ"</string>
-    <!-- no translation found for reconfigurable_widget_education_tip (6336962690888067057) -->
-    <skip />
+    <string name="reconfigurable_widget_education_tip" msgid="6336962690888067057">"विजेटका सेटिङ बदल्न ट्याप गर्नुहोस्"</string>
     <string name="widget_education_close_button" msgid="8676165703104836580">"बुझेँ"</string>
-    <!-- no translation found for widget_reconfigure_button_content_description (8811472721881205250) -->
-    <skip />
+    <string name="widget_reconfigure_button_content_description" msgid="8811472721881205250">"विजेटका सेटिङ बदल्नुहोस्"</string>
     <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"खोजसम्बन्धी एपहरू"</string>
     <string name="all_apps_loading_message" msgid="5813968043155271636">"एपहरू लोड गर्दै…"</string>
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"\"<xliff:g id="QUERY">%1$s</xliff:g>\" सँग मिल्दो कुनै एप भेटिएन"</string>
@@ -84,8 +82,10 @@
     <string name="permlab_write_settings" msgid="3574213698004620587">"गृह सेटिङहरू र सर्टकटहरू लेख्नुहोस्"</string>
     <string name="permdesc_write_settings" msgid="5440712911516509985">"गृहमा एउटा एपलाई सेटिङ र सर्टकट बदल्न अनुमति दिनुहोस्।"</string>
     <string name="msg_no_phone_permission" msgid="9208659281529857371">"<xliff:g id="APP_NAME">%1$s</xliff:g> ले फोन कलहरू गर्न अनुमति छैन"</string>
-    <string name="gadget_error_text" msgid="6081085226050792095">"समस्या लोडिङ गर्ने विजेट"</string>
-    <string name="gadget_setup_text" msgid="8274003207686040488">"सेटअप"</string>
+    <!-- no translation found for gadget_error_text (740356548025791839) -->
+    <skip />
+    <!-- no translation found for gadget_setup_text (1745356155479272374) -->
+    <skip />
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"यो प्रणाली एप हो र यसलाई स्थापना रद्द गर्न सकिँदैन।"</string>
     <string name="folder_hint_text" msgid="5174843001373488816">"नाम सम्पादन गर्नुहोस्"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"असक्षम पारिएको <xliff:g id="APP_NAME">%1$s</xliff:g>"</string>
@@ -158,8 +158,7 @@
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"व्यक्तिगत"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"कार्यसम्बन्धी"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"कार्य प्रोफाइल"</string>
-    <!-- no translation found for work_profile_edu_work_apps (7895468576497746520) -->
-    <skip />
+    <string name="work_profile_edu_work_apps" msgid="7895468576497746520">"कामसम्बन्धी एपहरूमा ब्याज अङ्कित हुन्छ र तपाईंका IT एड्मिन ती एप हेर्न सक्छन्"</string>
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"बुझेँ"</string>
     <string name="work_apps_paused_title" msgid="3007471013401118920">"कामसम्बन्धी एपहरू अफ गरिएका छन्"</string>
     <string name="work_apps_paused_body" msgid="261634750995824906">"तपाईंका कामसम्बन्धी एपहरूले तपाईंलाई सूचना पठाउन, तपाईंको डिभाइसको ब्याट्री प्रयोग गर्न वा तपाईंको लोकेसन हेर्न सक्दैनन्"</string>

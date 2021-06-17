@@ -82,8 +82,10 @@
     <string name="permlab_write_settings" msgid="3574213698004620587">"গৃহ ছেটিং আৰু শ্বৰ্টকাটবোৰ লিখিব পাৰে"</string>
     <string name="permdesc_write_settings" msgid="5440712911516509985">"এপটোক গৃহ পৃষ্ঠাত ছেটিং আৰু শ্বৰ্টকাটসমূহ সলনি কৰাৰ অনুমতি দিয়ে।"</string>
     <string name="msg_no_phone_permission" msgid="9208659281529857371">"<xliff:g id="APP_NAME">%1$s</xliff:g>ক ফ\'ন কলবোৰ কৰাৰ অনুমতি দিয়া হোৱা নাই"</string>
-    <string name="gadget_error_text" msgid="6081085226050792095">"ৱিজেট ল\'ড কৰাত সমস্য়া"</string>
-    <string name="gadget_setup_text" msgid="8274003207686040488">"ছেটআপ কৰক"</string>
+    <!-- no translation found for gadget_error_text (740356548025791839) -->
+    <skip />
+    <!-- no translation found for gadget_setup_text (1745356155479272374) -->
+    <skip />
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"এইটো এটা ছিষ্টেম এপ আৰু ইয়াক আনইনষ্টল কৰিব নোৱৰি"</string>
     <string name="folder_hint_text" msgid="5174843001373488816">"নাম সম্পাদনা কৰক"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"<xliff:g id="APP_NAME">%1$s</xliff:g> অক্ষম কৰা হ’ল"</string>
@@ -156,8 +158,7 @@
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"ব্যক্তিগত"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"কৰ্মস্থান"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"কৰ্মস্থানৰ প্ৰ\'ফাইল"</string>
-    <!-- no translation found for work_profile_edu_work_apps (7895468576497746520) -->
-    <skip />
+    <string name="work_profile_edu_work_apps" msgid="7895468576497746520">"কৰ্মস্থানৰ এপ্‌সমূহ প্ৰতীকেৰে চিহ্নিত কৰা হয় আৰু সেইবোৰ আপোনাৰ আইটি প্ৰশাসকৰ বাবে দৃশ্যমান হয়"</string>
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"বুজি পালোঁ"</string>
     <string name="work_apps_paused_title" msgid="3007471013401118920">"কৰ্মস্থানৰ এপ্‌সমূহ অফ হৈ আছে"</string>
     <string name="work_apps_paused_body" msgid="261634750995824906">"আপোনাৰ কৰ্মস্থানৰ এপ্‌সমূহে আপোনালৈ জাননী পঠিয়াব, আপোনাৰ বেটাৰী ব্যৱহাৰ কৰিব অথবা আপোনাৰ অৱস্থান এক্সেছ কৰিব নোৱাৰে"</string>

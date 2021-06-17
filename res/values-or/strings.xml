@@ -82,8 +82,10 @@
     <string name="permlab_write_settings" msgid="3574213698004620587">"ହୋମ୍‌ ସେଟିଙ୍ଗ ଏବଂ ଶର୍ଟକଟ୍‌ ଲେଖନ୍ତୁ"</string>
     <string name="permdesc_write_settings" msgid="5440712911516509985">"ହୋମରେ ସେଟିଙ୍ଗ ଏବଂ ଶର୍ଟକଟ୍‌ ପରିବର୍ତ୍ତନ କରିବାକୁ ଆପକୁ ଅନୁମତି ଦିଏ।"</string>
     <string name="msg_no_phone_permission" msgid="9208659281529857371">"ଫୋନ୍‌ କଲ୍‌ କରିବାକୁ <xliff:g id="APP_NAME">%1$s</xliff:g>କୁ ଅନୁମତି ଦିଆଯାଇ ନାହିଁ"</string>
-    <string name="gadget_error_text" msgid="6081085226050792095">"ୱିଜେଟ୍‌ ଲୋଡ୍‌ ହେବାରେ ସମସ୍ୟା ଅଛି"</string>
-    <string name="gadget_setup_text" msgid="8274003207686040488">"ସେଟ୍ ଅପ୍ କରନ୍ତୁ"</string>
+    <!-- no translation found for gadget_error_text (740356548025791839) -->
+    <skip />
+    <!-- no translation found for gadget_setup_text (1745356155479272374) -->
+    <skip />
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"ଏହା ଏକ ସିଷ୍ଟମ୍‌ ଆପ୍‌ ଅଟେ ଏବଂ ଏହା ଅନଇନଷ୍ଟଲ୍‌ କରାଯାଇ ପାରିବ ନାହିଁ।"</string>
     <string name="folder_hint_text" msgid="5174843001373488816">"ନାମ ସମ୍ପାଦନ କରନ୍ତୁ"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"<xliff:g id="APP_NAME">%1$s</xliff:g> ଅକ୍ଷମ କରାଗଲା"</string>
