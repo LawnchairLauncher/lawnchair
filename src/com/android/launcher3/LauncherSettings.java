@@ -75,6 +75,37 @@ public class LauncherSettings {
         public static final int ITEM_TYPE_SHORTCUT = 1;
 
         /**
+         * The favorite is a user created folder
+         */
+        public static final int ITEM_TYPE_FOLDER = 2;
+
+        /**
+         * The favorite is a widget
+         */
+        public static final int ITEM_TYPE_APPWIDGET = 4;
+
+        /**
+         * The favorite is a custom widget provided by the launcher
+         */
+        public static final int ITEM_TYPE_CUSTOM_APPWIDGET = 5;
+
+        /**
+         * The gesture is an application created deep shortcut
+         */
+        public static final int ITEM_TYPE_DEEP_SHORTCUT = 6;
+
+        /**
+         * Type of the item is recents task.
+         * TODO(hyunyoungs): move constants not related to Favorites DB to a better location.
+         */
+        public static final int ITEM_TYPE_TASK = 7;
+
+        /**
+         * The item is QSB
+         */
+        public static final int ITEM_TYPE_QSB = 8;
+
+        /**
          * The icon package name in Intent.ShortcutIconResource
          * <P>Type: TEXT</P>
          */
@@ -121,6 +152,12 @@ public class LauncherSettings {
                 + LauncherProvider.AUTHORITY + "/" + TABLE_NAME);
 
         /**
+         * The content:// style URL for "favorites_bakup" table
+         */
+        public static final Uri BACKUP_CONTENT_URI = Uri.parse("content://"
+                + LauncherProvider.AUTHORITY + "/" + BACKUP_TABLE_NAME);
+
+        /**
          * The content:// style URL for "favorites_preview" table
          */
         public static final Uri PREVIEW_CONTENT_URI = Uri.parse("content://"
@@ -156,6 +193,7 @@ public class LauncherSettings {
         public static final int CONTAINER_DESKTOP = -100;
         public static final int CONTAINER_HOTSEAT = -101;
         public static final int CONTAINER_PREDICTION = -102;
+        public static final int CONTAINER_WIDGETS_PREDICTION = -111;
         public static final int CONTAINER_HOTSEAT_PREDICTION = -103;
         public static final int CONTAINER_ALL_APPS = -104;
         public static final int CONTAINER_WIDGETS_TRAY = -105;
@@ -164,6 +202,10 @@ public class LauncherSettings {
         public static final int CONTAINER_SHORTCUTS = -107;
         public static final int CONTAINER_SETTINGS = -108;
         public static final int CONTAINER_TASKSWITCHER = -109;
+        public static final int CONTAINER_QSB = -110;
+
+        // Represents any of the extended containers implemented in non-AOSP variants.
+        public static final int EXTENDED_CONTAINERS = -200;
 
         public static final String containerToString(int container) {
             switch (container) {
@@ -186,6 +228,8 @@ public class LauncherSettings {
                 case ITEM_TYPE_APPWIDGET: return "WIDGET";
                 case ITEM_TYPE_CUSTOM_APPWIDGET: return "CUSTOMWIDGET";
                 case ITEM_TYPE_DEEP_SHORTCUT: return "DEEPSHORTCUT";
+                case ITEM_TYPE_TASK: return "TASK";
+                case ITEM_TYPE_QSB: return "QSB";
                 default: return String.valueOf(type);
             }
         }
@@ -229,32 +273,6 @@ public class LauncherSettings {
          * </P>
          */
         public static final String PROFILE_ID = "profileId";
-
-        /**
-         * The favorite is a user created folder
-         */
-        public static final int ITEM_TYPE_FOLDER = 2;
-
-        /**
-         * The favorite is a widget
-         */
-        public static final int ITEM_TYPE_APPWIDGET = 4;
-
-        /**
-         * The favorite is a custom widget provided by the launcher
-         */
-        public static final int ITEM_TYPE_CUSTOM_APPWIDGET = 5;
-
-        /**
-         * The gesture is an application created deep shortcut
-         */
-        public static final int ITEM_TYPE_DEEP_SHORTCUT = 6;
-
-        /**
-         * Type of the item is recents task.
-         * TODO(hyunyoungs): move constants not related to Favorites DB to a better location.
-         */
-        public static final int ITEM_TYPE_TASK = 7;
 
         /**
          * The appWidgetId of the widget
@@ -354,14 +372,22 @@ public class LauncherSettings {
 
         public static final String METHOD_PREP_FOR_PREVIEW = "prep_for_preview";
 
+        public static final String METHOD_SWITCH_DATABASE = "switch_database";
+
         public static final String EXTRA_VALUE = "value";
 
+        public static final String EXTRA_DB_NAME = "db_name";
+
         public static Bundle call(ContentResolver cr, String method) {
-            return call(cr, method, null);
+            return call(cr, method, null /* arg */);
         }
 
         public static Bundle call(ContentResolver cr, String method, String arg) {
-            return cr.call(CONTENT_URI, method, arg, null);
+            return call(cr, method, arg, null /* extras */);
+        }
+
+        public static Bundle call(ContentResolver cr, String method, String arg, Bundle extras) {
+            return cr.call(CONTENT_URI, method, arg, extras);
         }
     }
 }

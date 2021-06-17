@@ -15,6 +15,7 @@
  */
 package com.android.launcher3.anim;
 
+import static com.android.launcher3.LauncherAnimUtils.VIEW_BACKGROUND_COLOR;
 import static com.android.launcher3.anim.AnimatorPlaybackController.addAnimationHoldersRecur;
 
 import android.animation.Animator;
@@ -23,6 +24,7 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
+import android.graphics.drawable.ColorDrawable;
 import android.util.FloatProperty;
 import android.util.IntProperty;
 import android.view.View;
@@ -42,8 +44,6 @@ import java.util.function.Consumer;
  * TODO: Find a better name
  */
 public class PendingAnimation implements PropertySetter {
-
-    private final ArrayList<Consumer<EndState>> mEndListeners = new ArrayList<>();
 
     private final ArrayList<Holder> mAnimHolders = new ArrayList<>();
     private final AnimatorSet mAnim;
@@ -73,13 +73,6 @@ public class PendingAnimation implements PropertySetter {
         addAnimationHoldersRecur(a, mDuration, springProperty, mAnimHolders);
     }
 
-    public void finish(boolean isSuccess, int logAction) {
-        for (Consumer<EndState> listeners : mEndListeners) {
-            listeners.accept(new EndState(isSuccess, logAction));
-        }
-        mEndListeners.clear();
-    }
-
     @Override
     public void setViewAlpha(View view, float alpha, TimeInterpolator interpolator) {
         if (view == null || view.getAlpha() == alpha) {
@@ -87,6 +80,17 @@ public class PendingAnimation implements PropertySetter {
         }
         ObjectAnimator anim = ObjectAnimator.ofFloat(view, View.ALPHA, alpha);
         anim.addListener(new AlphaUpdateListener(view));
+        anim.setInterpolator(interpolator);
+        add(anim);
+    }
+
+    @Override
+    public void setViewBackgroundColor(View view, int color, TimeInterpolator interpolator) {
+        if (view == null || (view.getBackground() instanceof ColorDrawable
+                && ((ColorDrawable) view.getBackground()).getColor() == color)) {
+            return;
+        }
+        ObjectAnimator anim = ObjectAnimator.ofArgb(view, VIEW_BACKGROUND_COLOR, color);
         anim.setInterpolator(interpolator);
         add(anim);
     }
@@ -124,11 +128,18 @@ public class PendingAnimation implements PropertySetter {
      * Adds a callback to be run on every frame of the animation
      */
     public void addOnFrameCallback(Runnable runnable) {
+        addOnFrameListener(anim -> runnable.run());
+    }
+
+    /**
+     * Adds a listener to be run on every frame of the animation
+     */
+    public void addOnFrameListener(ValueAnimator.AnimatorUpdateListener listener) {
         if (mProgressAnimator == null) {
             mProgressAnimator = ValueAnimator.ofFloat(0, 1);
         }
 
-        mProgressAnimator.addUpdateListener(anim -> runnable.run());
+        mProgressAnimator.addUpdateListener(listener);
     }
 
     /**
@@ -149,7 +160,7 @@ public class PendingAnimation implements PropertySetter {
             mProgressAnimator = null;
         }
         if (mAnimHolders.isEmpty()) {
-            // Add a dummy animation to that the duration is respected
+            // Add a placeholder animation to that the duration is respected
             add(ValueAnimator.ofFloat(0, 1).setDuration(mDuration));
         }
         return mAnim;
@@ -163,21 +174,12 @@ public class PendingAnimation implements PropertySetter {
     }
 
     /**
-     * Add a listener of receiving the end state.
-     * Note that the listeners are called as a result of calling {@link #finish(boolean, int)}
-     * and not automatically
+     * Add a listener of receiving the success/failure callback in the end.
      */
-    public void addEndListener(Consumer<EndState> listener) {
-        mEndListeners.add(listener);
-    }
-
-    public static class EndState {
-        public boolean isSuccess;
-        public int logAction;
-
-        public EndState(boolean isSuccess, int logAction) {
-            this.isSuccess = isSuccess;
-            this.logAction = logAction;
+    public void addEndListener(Consumer<Boolean> listener) {
+        if (mProgressAnimator == null) {
+            mProgressAnimator = ValueAnimator.ofFloat(0, 1);
         }
+        mProgressAnimator.addListener(AnimatorListeners.forEndCallback(listener));
     }
 }

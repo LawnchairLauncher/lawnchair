@@ -21,21 +21,18 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
-import android.graphics.Rect;
 import android.graphics.RectF;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.CancellationSignal;
 import android.os.Process;
 import android.os.UserHandle;
-import android.util.ArrayMap;
 import android.util.Log;
 import android.util.LongSparseArray;
 import android.util.Pair;
+import android.util.Size;
 
 import androidx.annotation.Nullable;
-import androidx.annotation.UiThread;
 
 import com.android.launcher3.icons.GraphicsUtils;
 import com.android.launcher3.icons.IconCache;
@@ -50,8 +47,10 @@ import com.android.launcher3.util.PackageUserKey;
 import com.android.launcher3.util.Preconditions;
 import com.android.launcher3.util.SQLiteCacheHelper;
 import com.android.launcher3.util.Thunk;
+import com.android.launcher3.widget.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.widget.WidgetCell;
 import com.android.launcher3.widget.WidgetManagerHelper;
+import com.android.launcher3.widget.util.WidgetSizes;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -81,59 +80,11 @@ public class WidgetPreviewLoader {
     private final UserCache mUserCache;
     private final CacheDb mDb;
 
-    private final UserHandle mMyUser = Process.myUserHandle();
-    private final ArrayMap<UserHandle, Bitmap> mUserBadges = new ArrayMap<>();
-
     public WidgetPreviewLoader(Context context, IconCache iconCache) {
         mContext = context;
         mIconCache = iconCache;
         mUserCache = UserCache.INSTANCE.get(context);
         mDb = new CacheDb(context);
-    }
-
-    /**
-     * Returns a drawable that can be used as a badge for the user or null.
-     */
-    @UiThread
-    public Drawable getBadgeForUser(UserHandle user, int badgeSize) {
-        if (mMyUser.equals(user)) {
-            return null;
-        }
-
-        Bitmap badgeBitmap = getUserBadge(user, badgeSize);
-        FastBitmapDrawable d = new FastBitmapDrawable(badgeBitmap);
-        d.setFilterBitmap(true);
-        d.setBounds(0, 0, badgeBitmap.getWidth(), badgeBitmap.getHeight());
-        return d;
-    }
-
-    private Bitmap getUserBadge(UserHandle user, int badgeSize) {
-        synchronized (mUserBadges) {
-            Bitmap badgeBitmap = mUserBadges.get(user);
-            if (badgeBitmap != null) {
-                return badgeBitmap;
-            }
-
-            final Resources res = mContext.getResources();
-            badgeBitmap = Bitmap.createBitmap(badgeSize, badgeSize, Bitmap.Config.ARGB_8888);
-
-            Drawable drawable = mContext.getPackageManager().getUserBadgedDrawableForDensity(
-                    new BitmapDrawable(res, badgeBitmap), user,
-                    new Rect(0, 0, badgeSize, badgeSize),
-                    0);
-            if (drawable instanceof BitmapDrawable) {
-                badgeBitmap = ((BitmapDrawable) drawable).getBitmap();
-            } else {
-                badgeBitmap.eraseColor(Color.TRANSPARENT);
-                Canvas c = new Canvas(badgeBitmap);
-                drawable.setBounds(0, 0, badgeSize, badgeSize);
-                drawable.draw(c);
-                c.setBitmap(null);
-            }
-
-            mUserBadges.put(user, badgeBitmap);
-            return badgeBitmap;
-        }
     }
 
     /**
@@ -413,9 +364,9 @@ public class WidgetPreviewLoader {
             previewHeight = drawable.getIntrinsicHeight();
         } else {
             DeviceProfile dp = launcher.getDeviceProfile();
-            int tileSize = Math.min(dp.cellWidthPx, dp.cellHeightPx);
-            previewWidth = tileSize * spanX;
-            previewHeight = tileSize * spanY;
+            Size widgetSize = WidgetSizes.getWidgetSizePx(dp, spanX, spanY);
+            previewWidth = widgetSize.getWidth();
+            previewHeight = widgetSize.getHeight();
         }
 
         // Scale to fit width only - let the widget preview be clipped in the
@@ -432,33 +383,49 @@ public class WidgetPreviewLoader {
             previewHeight = Math.max((int)(scale * previewHeight), 1);
         }
 
-        // If a bitmap is passed in, we use it; otherwise, we create a bitmap of the right size
         final Canvas c = new Canvas();
         if (preview == null) {
+            // If no bitmap was provided, then allocate a new one with the right size.
             preview = Bitmap.createBitmap(previewWidth, previewHeight, Config.ARGB_8888);
             c.setBitmap(preview);
         } else {
-            // We use the preview bitmap height to determine where the badge will be drawn in the
-            // UI. If its larger than what we need, resize the preview bitmap so that there are
-            // no transparent pixels between the preview and the badge.
-            if (preview.getHeight() > previewHeight) {
-                preview.reconfigure(preview.getWidth(), previewHeight, preview.getConfig());
+            // If a bitmap was passed in, attempt to reconfigure the bitmap to the same dimensions
+            // as the preview.
+            try {
+                preview.reconfigure(previewWidth, previewHeight, preview.getConfig());
+            } catch (IllegalArgumentException e) {
+                // This occurs if the preview can't be reconfigured for any reason. In this case,
+                // allocate a new bitmap with the right size.
+                preview = Bitmap.createBitmap(previewWidth, previewHeight, Config.ARGB_8888);
             }
-            // Reusing bitmap. Clear it.
+
             c.setBitmap(preview);
             c.drawColor(0, PorterDuff.Mode.CLEAR);
         }
 
         // Draw the scaled preview into the final bitmap
-        int x = (preview.getWidth() - previewWidth) / 2;
         if (widgetPreviewExists) {
-            drawable.setBounds(x, 0, x + previewWidth, previewHeight);
+            drawable.setBounds(0, 0, previewWidth, previewHeight);
             drawable.draw(c);
         } else {
-            RectF boxRect = drawBoxWithShadow(c, previewWidth, previewHeight);
+            RectF boxRect;
 
             // Draw horizontal and vertical lines to represent individual columns.
             final Paint p = new Paint(Paint.ANTI_ALIAS_FLAG);
+
+            if (Utilities.ATLEAST_S) {
+                boxRect = new RectF(/* left= */ 0, /* top= */ 0, /* right= */
+                        previewWidth, /* bottom= */ previewHeight);
+
+                p.setStyle(Paint.Style.FILL);
+                p.setColor(Color.WHITE);
+                float roundedCorner = mContext.getResources().getDimension(
+                        android.R.dimen.system_app_widget_background_radius);
+                c.drawRoundRect(boxRect, roundedCorner, roundedCorner, p);
+            } else {
+                boxRect = drawBoxWithShadow(c, previewWidth, previewHeight);
+            }
+
             p.setStyle(Paint.Style.STROKE);
             p.setStrokeWidth(mContext.getResources()
                     .getDimension(R.dimen.widget_preview_cell_divider_width));
@@ -539,20 +506,17 @@ public class WidgetPreviewLoader {
             c.setBitmap(preview);
             c.drawColor(0, PorterDuff.Mode.CLEAR);
         }
-        RectF boxRect = drawBoxWithShadow(c, size, size);
+
+        drawBoxWithShadow(c, size, size);
 
         LauncherIcons li = LauncherIcons.obtain(mContext);
-        Bitmap icon = li.createBadgedIconBitmap(
+        Drawable icon = li.createBadgedIconBitmap(
                 mutateOnMainThread(info.getFullResIcon(mIconCache)),
-                Process.myUserHandle(), 0).icon;
+                Process.myUserHandle(), 0).newIcon(launcher);
         li.recycle();
 
-        Rect src = new Rect(0, 0, icon.getWidth(), icon.getHeight());
-
-        boxRect.set(0, 0, iconSize, iconSize);
-        boxRect.offset(padding, padding);
-        c.drawBitmap(icon, src, boxRect,
-                new Paint(Paint.ANTI_ALIAS_FLAG | Paint.FILTER_BITMAP_FLAG));
+        icon.setBounds(padding, padding, padding + iconSize, padding + iconSize);
+        icon.draw(c);
         c.setBitmap(null);
         return preview;
     }
@@ -601,6 +565,7 @@ public class WidgetPreviewLoader {
         @Thunk long[] mVersions;
         @Thunk Bitmap mBitmapToRecycle;
 
+        @Nullable private Bitmap mUnusedPreviewBitmap;
         private boolean mSaveToDB = false;
 
         PreviewLoadTask(WidgetCacheKey key, WidgetItem info, int previewWidth,
@@ -661,6 +626,11 @@ public class WidgetPreviewLoader {
                 Pair<Bitmap, Boolean> pair = generatePreview(mActivity, mInfo, unusedBitmap,
                         mPreviewWidth, mPreviewHeight);
                 preview = pair.first;
+
+                if (preview != unusedBitmap) {
+                    mUnusedPreviewBitmap = unusedBitmap;
+                }
+
                 this.mSaveToDB = pair.second;
             }
             return preview;
@@ -675,6 +645,14 @@ public class WidgetPreviewLoader {
                 MODEL_EXECUTOR.post(new Runnable() {
                     @Override
                     public void run() {
+                        if (mUnusedPreviewBitmap != null) {
+                            // If we didn't end up using the bitmap, it can be added back into the
+                            // recycled set.
+                            synchronized (mUnusedBitmaps) {
+                                mUnusedBitmaps.add(mUnusedPreviewBitmap);
+                            }
+                        }
+
                         if (!isCancelled() && mSaveToDB) {
                             // If we are still using this preview, then write it to the DB and then
                             // let the normal clear mechanism recycle the bitmap

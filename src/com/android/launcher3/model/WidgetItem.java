@@ -4,11 +4,11 @@ import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 
 import com.android.launcher3.InvariantDeviceProfile;
-import com.android.launcher3.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.pm.ShortcutConfigActivityInfo;
 import com.android.launcher3.util.ComponentKey;
+import com.android.launcher3.widget.LauncherAppWidgetProviderInfo;
 
 /**
  * An wrapper over various items displayed in a widget picker,
@@ -42,5 +42,21 @@ public class WidgetItem extends ComponentKey {
         widgetInfo = null;
         activityInfo = info;
         spanX = spanY = 1;
+    }
+
+    /**
+     * Returns {@code true} if this {@link WidgetItem} has the same type as the given
+     * {@code otherItem}.
+     *
+     * For example, both items are widgets or both items are shortcuts.
+     */
+    public boolean hasSameType(WidgetItem otherItem) {
+        if (widgetInfo != null && otherItem.widgetInfo != null) {
+            return true;
+        }
+        if (activityInfo != null && otherItem.activityInfo != null) {
+            return true;
+        }
+        return false;
     }
 }

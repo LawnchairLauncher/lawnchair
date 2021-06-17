@@ -18,13 +18,17 @@ package com.android.launcher3.notification;
 
 import static com.android.launcher3.touch.SingleAxisSwipeDetector.HORIZONTAL;
 
+import android.animation.AnimatorSet;
 import android.app.Notification;
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.Outline;
 import android.graphics.Rect;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.ViewGroup.MarginLayoutParams;
+import android.view.ViewOutlineProvider;
 import android.widget.TextView;
 
 import com.android.launcher3.R;
@@ -43,7 +47,8 @@ public class NotificationItemView {
     private static final Rect sTempRect = new Rect();
 
     private final Context mContext;
-    private final PopupContainerWithArrow mContainer;
+    private final PopupContainerWithArrow mPopupContainer;
+    private final ViewGroup mRootView;
 
     private final TextView mHeaderText;
     private final TextView mHeaderCount;
@@ -53,7 +58,6 @@ public class NotificationItemView {
     private final View mIconView;
 
     private final View mHeader;
-    private final View mDivider;
 
     private View mGutter;
 
@@ -61,8 +65,9 @@ public class NotificationItemView {
     private boolean mAnimatingNextIcon;
     private int mNotificationHeaderTextColor = Notification.COLOR_DEFAULT;
 
-    public NotificationItemView(PopupContainerWithArrow container) {
-        mContainer = container;
+    public NotificationItemView(PopupContainerWithArrow container, ViewGroup rootView) {
+        mPopupContainer = container;
+        mRootView = rootView;
         mContext = container.getContext();
 
         mHeaderText = container.findViewById(R.id.notification_text);
@@ -72,17 +77,34 @@ public class NotificationItemView {
         mIconView = container.findViewById(R.id.popup_item_icon);
 
         mHeader = container.findViewById(R.id.header);
-        mDivider = container.findViewById(R.id.divider);
 
         mSwipeDetector = new SingleAxisSwipeDetector(mContext, mMainView, HORIZONTAL);
         mSwipeDetector.setDetectableScrollConditions(SingleAxisSwipeDetector.DIRECTION_BOTH, false);
         mMainView.setSwipeDetector(mSwipeDetector);
         mFooter.setContainer(this);
+
+        float radius = Themes.getDialogCornerRadius(mContext);
+        rootView.setClipToOutline(true);
+        rootView.setOutlineProvider(new ViewOutlineProvider() {
+            @Override
+            public void getOutline(View view, Outline outline) {
+                outline.setRoundRect(0, 0, view.getWidth(), view.getHeight(), radius);
+            }
+        });
+    }
+
+    /**
+     * Animates the background color to a new color.
+     * @param color The color to change to.
+     * @param animatorSetOut The AnimatorSet where we add the color animator to.
+     */
+    public void updateBackgroundColor(int color, AnimatorSet animatorSetOut) {
+        mMainView.updateBackgroundColor(color, animatorSetOut);
     }
 
     public void addGutter() {
         if (mGutter == null) {
-            mGutter = mContainer.inflateAndAdd(R.layout.notification_gutter, mContainer);
+            mGutter = mPopupContainer.inflateAndAdd(R.layout.notification_gutter, mRootView);
         }
     }
 
@@ -94,9 +116,8 @@ public class NotificationItemView {
     }
 
     public void removeFooter() {
-        if (mContainer.indexOfChild(mFooter) >= 0) {
-            mContainer.removeView(mFooter);
-            mContainer.removeView(mDivider);
+        if (mRootView.indexOfChild(mFooter) >= 0) {
+            mRootView.removeView(mFooter);
         }
     }
 
@@ -108,16 +129,15 @@ public class NotificationItemView {
     }
 
     public void removeAllViews() {
-        mContainer.removeView(mMainView);
-        mContainer.removeView(mHeader);
+        mRootView.removeView(mMainView);
+        mRootView.removeView(mHeader);
 
-        if (mContainer.indexOfChild(mFooter) >= 0) {
-            mContainer.removeView(mFooter);
-            mContainer.removeView(mDivider);
+        if (mRootView.indexOfChild(mFooter) >= 0) {
+            mRootView.removeView(mFooter);
         }
 
         if (mGutter != null) {
-            mContainer.removeView(mGutter);
+            mRootView.removeView(mGutter);
         }
     }
 
@@ -136,11 +156,11 @@ public class NotificationItemView {
 
     public boolean onInterceptTouchEvent(MotionEvent ev) {
         if (ev.getAction() == MotionEvent.ACTION_DOWN) {
-            sTempRect.set(mMainView.getLeft(), mMainView.getTop(),
-                    mMainView.getRight(), mMainView.getBottom());
+            sTempRect.set(mRootView.getLeft(), mRootView.getTop(),
+                    mRootView.getRight(), mRootView.getBottom());
             mIgnoreTouch = !sTempRect.contains((int) ev.getX(), (int) ev.getY());
             if (!mIgnoreTouch) {
-                mContainer.getParent().requestDisallowInterceptTouchEvent(true);
+                mPopupContainer.getParent().requestDisallowInterceptTouchEvent(true);
             }
         }
         if (mIgnoreTouch) {

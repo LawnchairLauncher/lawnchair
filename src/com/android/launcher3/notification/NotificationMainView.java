@@ -17,12 +17,16 @@
 package com.android.launcher3.notification;
 
 import static com.android.launcher3.anim.Interpolators.scrollInterpolatorForVelocity;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_NOTIFICATION_DISMISSED;
 
 import android.animation.Animator;
+import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.RippleDrawable;
 import android.os.Build;
@@ -41,7 +45,6 @@ import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.touch.BaseSwipeDetector;
 import com.android.launcher3.touch.OverScroll;
 import com.android.launcher3.touch.SingleAxisSwipeDetector;
-import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.util.Themes;
 
 /**
@@ -78,6 +81,9 @@ public class NotificationMainView extends FrameLayout implements SingleAxisSwipe
 
     private SingleAxisSwipeDetector mSwipeDetector;
 
+    private final ColorDrawable mColorDrawable;
+    private final RippleDrawable mRippleDrawable;
+
     public NotificationMainView(Context context) {
         this(context, null, 0);
     }
@@ -90,6 +96,10 @@ public class NotificationMainView extends FrameLayout implements SingleAxisSwipe
         super(context, attrs, defStyle);
 
         mContentTranslateAnimator = ObjectAnimator.ofFloat(this, CONTENT_TRANSLATION, 0);
+        mColorDrawable = new ColorDrawable(Color.TRANSPARENT);
+        mRippleDrawable = new RippleDrawable(ColorStateList.valueOf(
+                Themes.getAttrColor(getContext(), android.R.attr.colorControlHighlight)),
+                mColorDrawable, null);
     }
 
     @Override
@@ -97,15 +107,37 @@ public class NotificationMainView extends FrameLayout implements SingleAxisSwipe
         super.onFinishInflate();
 
         mTextAndBackground = findViewById(R.id.text_and_background);
-        ColorDrawable colorBackground = (ColorDrawable) mTextAndBackground.getBackground();
-        mBackgroundColor = colorBackground.getColor();
-        RippleDrawable rippleBackground = new RippleDrawable(ColorStateList.valueOf(
-                Themes.getAttrColor(getContext(), android.R.attr.colorControlHighlight)),
-                colorBackground, null);
-        mTextAndBackground.setBackground(rippleBackground);
         mTitleView = mTextAndBackground.findViewById(R.id.title);
         mTextView = mTextAndBackground.findViewById(R.id.text);
         mIconView = findViewById(R.id.popup_item_icon);
+
+        ColorDrawable colorBackground = (ColorDrawable) mTextAndBackground.getBackground();
+        updateBackgroundColor(colorBackground.getColor());
+    }
+
+    private void updateBackgroundColor(int color) {
+        mBackgroundColor = color;
+        mColorDrawable.setColor(color);
+        mTextAndBackground.setBackground(mRippleDrawable);
+        if (mNotificationInfo != null) {
+            mIconView.setBackground(mNotificationInfo.getIconForBackground(getContext(),
+                    mBackgroundColor));
+        }
+    }
+
+    /**
+     * Animates the background color to a new color.
+     * @param color The color to change to.
+     * @param animatorSetOut The AnimatorSet where we add the color animator to.
+     */
+    public void updateBackgroundColor(int color, AnimatorSet animatorSetOut) {
+        int oldColor = mBackgroundColor;
+        ValueAnimator colors = ValueAnimator.ofArgb(oldColor, color);
+        colors.addUpdateListener(valueAnimator -> {
+            int newColor = (int) valueAnimator.getAnimatedValue();
+            updateBackgroundColor(newColor);
+        });
+        animatorSetOut.play(colors);
     }
 
     public void setSwipeDetector(SingleAxisSwipeDetector swipeDetector) {
@@ -137,7 +169,7 @@ public class NotificationMainView extends FrameLayout implements SingleAxisSwipe
             setOnClickListener(mNotificationInfo);
         }
         setContentTranslation(0);
-        // Add a dummy ItemInfo so that logging populates the correct container and item types
+        // Add a stub ItemInfo so that logging populates the correct container and item types
         // instead of DEFAULT_CONTAINERTYPE and DEFAULT_ITEMTYPE, respectively.
         setTag(NOTIFICATION_ITEM_INFO);
         if (animate) {
@@ -168,10 +200,7 @@ public class NotificationMainView extends FrameLayout implements SingleAxisSwipe
         Launcher launcher = Launcher.getLauncher(getContext());
         launcher.getPopupDataProvider().cancelNotification(
                 mNotificationInfo.notificationKey);
-        launcher.getUserEventDispatcher().logActionOnItem(
-                LauncherLogProto.Action.Touch.SWIPE,
-                LauncherLogProto.Action.Direction.RIGHT, // Assume all swipes are right for logging.
-                LauncherLogProto.ItemType.NOTIFICATION);
+        launcher.getStatsLogManager().logger().log(LAUNCHER_NOTIFICATION_DISMISSED);
     }
 
     // SingleAxisSwipeDetector.Listener's

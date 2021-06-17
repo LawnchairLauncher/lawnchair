@@ -21,19 +21,18 @@ import static com.android.launcher3.LauncherState.ALL_APPS;
 import static com.android.launcher3.LauncherState.HINT_STATE;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.OVERVIEW;
-import static com.android.launcher3.config.FeatureFlags.ENABLE_OVERVIEW_ACTIONS;
 import static com.android.quickstep.SysUINavigationMode.Mode.NO_BUTTON;
-import static com.android.quickstep.SysUINavigationMode.removeShelfFromOverview;
 
 import android.content.SharedPreferences;
 
-import com.android.launcher3.BaseQuickstepLauncher;
 import com.android.launcher3.LauncherState;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.hybridhotseat.HotseatPredictionController;
 import com.android.launcher3.statemanager.StateManager;
 import com.android.launcher3.statemanager.StateManager.StateListener;
+import com.android.launcher3.uioverrides.QuickstepLauncher;
 import com.android.launcher3.util.OnboardingPrefs;
 import com.android.quickstep.SysUINavigationMode;
 import com.android.quickstep.views.AllAppsEduView;
@@ -41,9 +40,9 @@ import com.android.quickstep.views.AllAppsEduView;
 /**
  * Extends {@link OnboardingPrefs} for quickstep-specific onboarding data.
  */
-public class QuickstepOnboardingPrefs extends OnboardingPrefs<BaseQuickstepLauncher> {
+public class QuickstepOnboardingPrefs extends OnboardingPrefs<QuickstepLauncher> {
 
-    public QuickstepOnboardingPrefs(BaseQuickstepLauncher launcher, SharedPreferences sharedPrefs) {
+    public QuickstepOnboardingPrefs(QuickstepLauncher launcher, SharedPreferences sharedPrefs) {
         super(launcher, sharedPrefs);
 
         StateManager<LauncherState> stateManager = launcher.getStateManager();
@@ -65,44 +64,8 @@ public class QuickstepOnboardingPrefs extends OnboardingPrefs<BaseQuickstepLaunc
             });
         }
 
-        boolean shelfBounceSeen = getBoolean(SHELF_BOUNCE_SEEN);
-        if (!shelfBounceSeen && ENABLE_OVERVIEW_ACTIONS.get()
-                && removeShelfFromOverview(launcher)) {
-            // There's no shelf in overview, so don't bounce it (can't get to all apps anyway).
-            shelfBounceSeen = true;
-            mSharedPrefs.edit().putBoolean(SHELF_BOUNCE_SEEN, shelfBounceSeen).apply();
-        }
-        if (!shelfBounceSeen) {
-            stateManager.addStateListener(new StateListener<LauncherState>() {
-                @Override
-                public void onStateTransitionComplete(LauncherState finalState) {
-                    LauncherState prevState = stateManager.getLastState();
-
-                    if ((finalState == ALL_APPS && prevState == OVERVIEW) ||
-                            hasReachedMaxCount(SHELF_BOUNCE_COUNT)) {
-                        mSharedPrefs.edit().putBoolean(SHELF_BOUNCE_SEEN, true).apply();
-                        stateManager.removeStateListener(this);
-                    }
-                }
-            });
-        }
-
-        if (!hasReachedMaxCount(ALL_APPS_COUNT)) {
-            stateManager.addStateListener(new StateListener<LauncherState>() {
-                @Override
-                public void onStateTransitionComplete(LauncherState finalState) {
-                    if (finalState == ALL_APPS) {
-                        if (incrementEventCount(ALL_APPS_COUNT)) {
-                            stateManager.removeStateListener(this);
-                            mLauncher.getScrimView().updateDragHandleVisibility();
-                        }
-                    }
-                }
-            });
-        }
-
-        if (FeatureFlags.ENABLE_HYBRID_HOTSEAT.get() && !hasReachedMaxCount(
-                HOTSEAT_DISCOVERY_TIP_COUNT)) {
+        if (!Utilities.IS_RUNNING_IN_TEST_HARNESS
+                && !hasReachedMaxCount(HOTSEAT_DISCOVERY_TIP_COUNT)) {
             stateManager.addStateListener(new StateListener<LauncherState>() {
                 boolean mFromAllApps = false;
 
