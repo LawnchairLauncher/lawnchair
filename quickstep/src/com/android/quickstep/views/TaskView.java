@@ -337,6 +337,7 @@ public class TaskView extends FrameLayout implements Reusable {
     private float mFullscreenProgress;
     private float mGridProgress;
     private float mNonGridScale = 1;
+    private float mDismissScale = 1;
     private final FullscreenDrawParams mCurrentFullscreenParams;
     private final StatefulActivity mActivity;
 
@@ -916,9 +917,6 @@ public class TaskView extends FrameLayout implements Reusable {
         if (mActivity.getDeviceProfile().isTablet && FeatureFlags.ENABLE_OVERVIEW_GRID.get()) {
             setPivotX(getLayoutDirection() == LAYOUT_DIRECTION_RTL ? 0 : right - left);
             setPivotY(mSnapshotView.getTop());
-            mSnapshotView.setPivotX(
-                    getLayoutDirection() == LAYOUT_DIRECTION_RTL ? 0 : right - left);
-            mSnapshotView.setPivotY(0);
         } else {
             setPivotX((right - left) * 0.5f);
             setPivotY(mSnapshotView.getTop() + mSnapshotView.getHeight() * 0.5f);
@@ -950,8 +948,8 @@ public class TaskView extends FrameLayout implements Reusable {
     }
 
     private void setSnapshotScale(float dismissScale) {
-        mSnapshotView.setScaleX(dismissScale);
-        mSnapshotView.setScaleY(dismissScale);
+        mDismissScale = dismissScale;
+        applyScale();
     }
 
     /**
@@ -969,6 +967,7 @@ public class TaskView extends FrameLayout implements Reusable {
     private void applyScale() {
         float scale = 1;
         scale *= getPersistentScale();
+        scale *= mDismissScale;
         setScaleX(scale);
         setScaleY(scale);
     }
