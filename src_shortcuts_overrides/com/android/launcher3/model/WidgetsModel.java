@@ -15,6 +15,7 @@ import android.os.UserHandle;
 import android.util.Log;
 
 import androidx.annotation.Nullable;
+import androidx.collection.ArrayMap;
 
 import com.android.launcher3.AppFilter;
 import com.android.launcher3.InvariantDeviceProfile;
@@ -37,6 +38,7 @@ import com.android.launcher3.widget.picker.WidgetsDiffReporter;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -158,34 +160,29 @@ public class WidgetsModel {
             Log.d(TAG, "addWidgetsAndShortcuts, widgetsShortcuts#=" + rawWidgetsShortcuts.size());
         }
 
-        // Temporary list for {@link PackageItemInfos} to avoid having to go through
+        // Temporary cache for {@link PackageItemInfos} to avoid having to go through
         // {@link mPackageItemInfos} to locate the key to be used for {@link #mWidgetsList}
-        HashMap<WidgetPackageOrCategoryKey, PackageItemInfo> tmpPackageItemInfos = new HashMap<>();
+        PackageItemInfoCache packageItemInfoCache = new PackageItemInfoCache();
 
-        // Clear the lists only if this is an update on all widgets and shortcuts. If packageUser
-        // isn't null, only updates the shortcuts and widgets for the app represented in
-        // packageUser.
         if (packageUser == null) {
+            // Clear the list if this is an update on all widgets and shortcuts.
             mWidgetsList.clear();
+        } else {
+            // Otherwise, only clear the widgets and shortcuts for the changed package.
+            mWidgetsList.remove(
+                    packageItemInfoCache.getOrCreate(new WidgetPackageOrCategoryKey(packageUser)));
         }
+
         // add and update.
         mWidgetsList.putAll(rawWidgetsShortcuts.stream()
                 .filter(new WidgetValidityCheck(app))
-                .collect(Collectors.groupingBy(item -> {
-                    WidgetPackageOrCategoryKey packageUserKey = getWidgetPackageOrCategoryKey(item);
-                    PackageItemInfo pInfo = tmpPackageItemInfos.get(packageUserKey);
-                    if (pInfo == null) {
-                        pInfo = new PackageItemInfo(item.componentName.getPackageName(),
-                                packageUserKey.mCategory);
-                        pInfo.user = item.user;
-                        tmpPackageItemInfos.put(packageUserKey,  pInfo);
-                    }
-                    return pInfo;
-                })));
+                .collect(Collectors.groupingBy(item ->
+                        packageItemInfoCache.getOrCreate(getWidgetPackageOrCategoryKey(item))
+                )));
 
         // Update each package entry
         IconCache iconCache = app.getIconCache();
-        for (PackageItemInfo p : tmpPackageItemInfos.values()) {
+        for (PackageItemInfo p : packageItemInfoCache.values()) {
             iconCache.getTitleAndIconForApp(p, true /* userLowResIcon */);
         }
     }
@@ -289,6 +286,10 @@ public class WidgetsModel {
         public final UserHandle mUser;
         private final int mHashCode;
 
+        WidgetPackageOrCategoryKey(PackageUserKey key) {
+            this(key.mPackageName, key.mUser);
+        }
+
         WidgetPackageOrCategoryKey(String packageName, UserHandle user) {
             this(packageName,  PackageItemInfo.NO_CATEGORY, user);
         }
@@ -308,6 +309,24 @@ public class WidgetsModel {
         @Override
         public int hashCode() {
             return mHashCode;
+        }
+    }
+
+    private static final class PackageItemInfoCache {
+        private final Map<WidgetPackageOrCategoryKey, PackageItemInfo> mMap = new ArrayMap<>();
+
+        PackageItemInfo getOrCreate(WidgetPackageOrCategoryKey key) {
+            PackageItemInfo pInfo = mMap.get(key);
+            if (pInfo == null) {
+                pInfo = new PackageItemInfo(key.mPackage, key.mCategory);
+                pInfo.user = key.mUser;
+                mMap.put(key,  pInfo);
+            }
+            return pInfo;
+        }
+
+        Collection<PackageItemInfo> values() {
+            return mMap.values();
         }
     }
 }
