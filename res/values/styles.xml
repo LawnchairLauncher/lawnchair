@@ -266,9 +266,8 @@
 
     <!-- Drop targets -->
     <style name="DropTargetButtonBase" parent="@android:style/TextAppearance.DeviceDefault">
-        <item name="android:drawablePadding">7.5dp</item>
-        <item name="android:paddingLeft">16dp</item>
-        <item name="android:paddingRight">16dp</item>
+        <item name="android:drawablePadding">8dp</item>
+        <item name="android:padding">16dp</item>
         <item name="android:textColor">?android:attr/textColorPrimary</item>
         <item name="android:textSize">@dimen/drop_target_text_size</item>
         <item name="android:singleLine">true</item>
