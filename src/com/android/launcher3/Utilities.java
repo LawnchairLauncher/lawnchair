@@ -122,7 +122,8 @@ public final class Utilities {
 
     public static final boolean ATLEAST_R = Build.VERSION.SDK_INT >= Build.VERSION_CODES.R;
 
-    public static final boolean ATLEAST_S = BuildCompat.isAtLeastS();
+    public static final boolean ATLEAST_S = BuildCompat.isAtLeastS()
+            || Build.VERSION.SDK_INT >= Build.VERSION_CODES.S;
 
     /**
      * Set on a motion event dispatched from the nav bar. See {@link MotionEvent#setEdgeFlags(int)}.
