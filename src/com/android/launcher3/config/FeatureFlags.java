@@ -99,6 +99,9 @@ public final class FeatureFlags {
     public static final BooleanFlag ENABLE_DEVICE_SEARCH = new DeviceFlag(
             "ENABLE_DEVICE_SEARCH", true, "Allows on device search in all apps");
 
+    public static final BooleanFlag IME_STICKY_SNACKBAR_EDU = getDebugFlag(
+            "IME_STICKY_SNACKBAR_EDU", true, "Show sticky IME edu in AllApps");
+
     public static final BooleanFlag ENABLE_PEOPLE_TILE_PREVIEW = getDebugFlag(
             "ENABLE_PEOPLE_TILE_PREVIEW", false,
             "Experimental: Shows conversation shortcuts on home screen as search results");
