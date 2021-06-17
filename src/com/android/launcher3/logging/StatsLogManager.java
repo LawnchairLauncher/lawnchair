@@ -479,7 +479,13 @@ public class StatsLogManager implements ResourceBasedOverride {
         LAUNCHER_THEMED_ICON_ENABLED(836),
 
         @UiEvent(doc = "User disabled themed icons option in wallpaper & style settings.")
-        LAUNCHER_THEMED_ICON_DISABLED(837)
+        LAUNCHER_THEMED_ICON_DISABLED(837),
+
+        @UiEvent(doc = "User tapped on 'Turn on work apps' button in all apps window.")
+        LAUNCHER_TURN_ON_WORK_APPS_TAP(838),
+
+        @UiEvent(doc = "User tapped on 'Turn off work apps' button in all apps window.")
+        LAUNCHER_TURN_OFF_WORK_APPS_TAP(839)
         ;
 
         // ADD MORE

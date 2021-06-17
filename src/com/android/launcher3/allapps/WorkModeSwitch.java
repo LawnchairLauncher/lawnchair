@@ -15,6 +15,7 @@
  */
 package com.android.launcher3.allapps;
 
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TURN_OFF_WORK_APPS_TAP;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 
 import android.content.Context;
@@ -31,6 +32,7 @@ import android.widget.Button;
 import androidx.annotation.RequiresApi;
 
 import com.android.launcher3.Insettable;
+import com.android.launcher3.Launcher;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.pm.UserCache;
 
@@ -92,6 +94,8 @@ public class WorkModeSwitch extends Button implements Insettable, View.OnClickLi
     public void onClick(View view) {
         if (Utilities.ATLEAST_P) {
             setEnabled(false);
+            Launcher.fromContext(getContext()).getStatsLogManager().logger().log(
+                    LAUNCHER_TURN_OFF_WORK_APPS_TAP);
             UI_HELPER_EXECUTOR.post(() -> setWorkProfileEnabled(getContext(), false));
         }
     }
