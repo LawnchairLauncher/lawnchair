@@ -114,6 +114,7 @@ public class ViewInflationDuringSwipeUp extends AbstractQuickStepTest {
 
     @Test
     @NavigationModeSwitch(mode = ZERO_BUTTON)
+    @Suppress // until b/190618549 is fixed
     public void testSwipeUpFromApp() throws Exception {
         try {
             // Go to overview once so that all views are initialized and cached
