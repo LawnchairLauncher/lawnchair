@@ -212,7 +212,8 @@ public class PackageUpdatedTask extends BaseModelUpdateTask {
                         }
 
                         if (si.isPromise() && isNewApkAvailable) {
-                            boolean isTargetValid = true;
+                            boolean isTargetValid = !cn.getClassName().equals(
+                                    IconCache.EMPTY_CLASS_NAME);
                             if (si.itemType == Favorites.ITEM_TYPE_DEEP_SHORTCUT) {
                                 List<ShortcutInfo> shortcut =
                                         new ShortcutRequest(context, mUser)
@@ -225,7 +226,7 @@ public class PackageUpdatedTask extends BaseModelUpdateTask {
                                     si.updateFromDeepShortcutInfo(shortcut.get(0), context);
                                     infoUpdated = true;
                                 }
-                            } else if (!cn.getClassName().equals(IconCache.EMPTY_CLASS_NAME)) {
+                            } else if (isTargetValid) {
                                 isTargetValid = context.getSystemService(LauncherApps.class)
                                         .isActivityEnabled(cn, mUser);
                             }
