@@ -422,8 +422,8 @@ public abstract class BaseQuickstepLauncher extends Launcher
 
     @Override
     public Stream<SystemShortcut.Factory> getSupportedShortcuts() {
-        return Stream.concat(super.getSupportedShortcuts(),
-                Stream.of(WellbeingModel.SHORTCUT_FACTORY));
+        return Stream.concat(Stream.of(WellbeingModel.SHORTCUT_FACTORY),
+                super.getSupportedShortcuts());
     }
 
     @Override

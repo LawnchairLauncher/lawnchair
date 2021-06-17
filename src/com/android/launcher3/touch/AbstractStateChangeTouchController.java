@@ -335,12 +335,10 @@ public abstract class AbstractStateChangeTouchController
         mCurrentAnimation.dispatchOnStart();
         if (targetState == LauncherState.ALL_APPS && !UNSTABLE_SPRINGS.get()) {
             if (mAllAppsOvershootStarted) {
-
                 mLauncher.getAppsView().onRelease();
                 mAllAppsOvershootStarted = false;
-
             } else {
-                mLauncher.getAppsView().addSpringFromFlingUpdateListener(anim, velocity);
+                mLauncher.getAppsView().addSpringFromFlingUpdateListener(anim, velocity, progress);
             }
         }
         anim.start();
