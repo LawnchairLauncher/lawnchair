@@ -130,8 +130,9 @@ public class AddWorkspaceItemsTask extends BaseModelUpdateTask {
                             packageName);
 
                     if (!packageInstaller.verifySessionInfo(sessionInfo)) {
-                        FileLog.d(LOG, "Item info failed session info verification: "
-                                + workspaceInfo);
+                        FileLog.d(LOG, "Item info failed session info verification. "
+                                + "Skipping : " + workspaceInfo);
+                        continue;
                     }
 
                     List<LauncherActivityInfo> activities = launcherApps

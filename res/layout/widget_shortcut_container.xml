@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Copyright (C) 2021 The Android Open Source Project
+<!-- Copyright (C) 2017 The Android Open Source Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -13,10 +13,15 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<com.android.launcher3.widget.picker.WidgetsListTableView
+
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/widgets_table"
+    android:id="@+id/system_shortcut_full"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginHorizontal="16dp"
-    android:layout_marginBottom="@dimen/widget_list_entry_bottom_margin"/>
+    android:layout_height="@dimen/system_shortcut_header_height"
+    android:orientation="horizontal"
+    android:gravity="end|center_vertical"
+    android:elevation="@dimen/deep_shortcuts_elevation"
+    android:tag="@string/popup_container_iterate_children"
+    android:clipToPadding="true">
+</LinearLayout>
