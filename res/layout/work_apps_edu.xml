@@ -47,7 +47,8 @@
             android:textColor="?attr/workProfileOverlayTextColor"
             android:text="@string/work_profile_edu_accept"
             android:textAlignment="center"
-            android:background="@drawable/work_card_btn"
+            android:background="@drawable/rounded_action_button"
+
             android:textSize="14sp" />
     </LinearLayout>
 </com.android.launcher3.allapps.WorkEduCard>
