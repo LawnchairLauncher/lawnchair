@@ -260,7 +260,7 @@ public class PreviewItemManager {
             params.remove(params.size() - 1);
         }
         while (items.size() > params.size()) {
-            params.add(new PreviewItemDrawingParams(0, 0, 0, 0));
+            params.add(new PreviewItemDrawingParams(0, 0, 0));
         }
 
         int numItemsInFirstPagePreview = page == 0 ? items.size() : MAX_NUM_ITEMS_IN_PREVIEW;

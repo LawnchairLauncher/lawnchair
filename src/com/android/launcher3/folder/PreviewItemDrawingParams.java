@@ -27,17 +27,15 @@ class PreviewItemDrawingParams {
     float transX;
     float transY;
     float scale;
-    float overlayAlpha;
     public FolderPreviewItemAnim anim;
     public boolean hidden;
     public Drawable drawable;
     public WorkspaceItemInfo item;
 
-    PreviewItemDrawingParams(float transX, float transY, float scale, float overlayAlpha) {
+    PreviewItemDrawingParams(float transX, float transY, float scale) {
         this.transX = transX;
         this.transY = transY;
         this.scale = scale;
-        this.overlayAlpha = overlayAlpha;
     }
 
     public void update(float transX, float transY, float scale) {
