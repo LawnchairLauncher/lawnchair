@@ -108,8 +108,6 @@ public class SpringRelativeLayout extends RelativeLayout {
             switch (direction) {
                 case DIRECTION_TOP:
                     return new EdgeEffectProxy(getContext(), mEdgeGlowTop);
-                case DIRECTION_BOTTOM:
-                    return new EdgeEffectProxy(getContext(), mEdgeGlowBottom);
             }
             return super.createEdgeEffect(view, direction);
         }
