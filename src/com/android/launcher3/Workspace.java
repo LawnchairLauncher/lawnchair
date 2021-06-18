@@ -2791,6 +2791,10 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
                 removeWorkspaceItem(mDragInfo.cell);
             }
         } else if (mDragInfo != null) {
+            // When drag is cancelled, reattach content view back to its original parent.
+            if (mDragInfo.cell instanceof LauncherAppWidgetHostView) {
+                d.dragView.detachContentView(/* reattachToPreviousParent= */ true);
+            }
             final CellLayout cellLayout = mLauncher.getCellLayout(
                     mDragInfo.container, mDragInfo.screenId);
             if (cellLayout != null) {

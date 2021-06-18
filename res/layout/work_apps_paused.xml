@@ -48,6 +48,6 @@
         android:textColor="?attr/workProfileOverlayTextColor"
         android:text="@string/work_apps_enable_btn_text"
         android:textAlignment="center"
-        android:background="@drawable/work_card_btn"
+        android:background="@drawable/rounded_action_button"
         android:textSize="14sp" />
 </com.android.launcher3.allapps.WorkPausedCard>

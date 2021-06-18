@@ -25,7 +25,6 @@
     android:background="@drawable/work_apps_toggle_background"
     android:drawablePadding="16dp"
     android:drawableStart="@drawable/ic_corp_off"
-    android:elevation="10dp"
     android:layout_marginBottom="@dimen/work_fab_margin"
     android:layout_marginEnd="@dimen/work_fab_margin"
     android:text="@string/work_apps_pause_btn_text" />
