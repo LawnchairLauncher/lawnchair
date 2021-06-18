@@ -63,7 +63,8 @@ fun GeneralPreferences() {
                 LocalPreferenceInteractor.current.getIconPacks()
                     .find { it.packageName == preferenceManager().iconPackPackage.get() }?.name
             )
-            ThemePreference(showDivider = false)
+            ThemePreference()
+            AccentColorPreference(showDivider = false)
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val wrapAdaptiveIcons = prefs.wrapAdaptiveIcons.observeAsState()
