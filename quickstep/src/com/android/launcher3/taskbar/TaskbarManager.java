@@ -26,7 +26,7 @@ import android.content.Context;
 import android.hardware.display.DisplayManager;
 import android.view.Display;
 
-import androidx.annotation.Nullable;
+import androidx.annotation.NonNull;
 
 import com.android.launcher3.BaseQuickstepLauncher;
 import com.android.launcher3.DeviceProfile;
@@ -103,14 +103,25 @@ public class TaskbarManager implements DisplayController.DisplayInfoChangeListen
     }
 
     /**
-     * Sets or clears a launcher to act as taskbar callback
+     * Sets a launcher to act as taskbar callback
      */
-    public void setLauncher(@Nullable BaseQuickstepLauncher launcher) {
+    public void setLauncher(@NonNull BaseQuickstepLauncher launcher) {
         mLauncher = launcher;
         if (mTaskbarActivityContext != null) {
-            mTaskbarActivityContext.setUIController(mLauncher == null
-                    ? TaskbarUIController.DEFAULT
-                    : new LauncherTaskbarUIController(launcher, mTaskbarActivityContext));
+            mTaskbarActivityContext.setUIController(
+                    new LauncherTaskbarUIController(launcher, mTaskbarActivityContext));
+        }
+    }
+
+    /**
+     * Clears a previously set Launcher
+     */
+    public void clearLauncher(@NonNull BaseQuickstepLauncher launcher) {
+        if (mLauncher == launcher) {
+            mLauncher = null;
+            if (mTaskbarActivityContext != null) {
+                mTaskbarActivityContext.setUIController(TaskbarUIController.DEFAULT);
+            }
         }
     }
 
