@@ -185,8 +185,12 @@ public final class Widgets extends LauncherInstrumentation.VisibleContainer {
                     targetAppSelector);
             if (headerTitle != null) {
                 // If we find the header and it has not been expanded, let's click it to see the
-                // widgets list.
-                if (!hasHeaderExpanded) {
+                // widgets list. Note that we wait until the header is out of the gesture region at
+                // the bottom of the screen, because tapping there in Launcher3 causes NexusLauncher
+                // to briefly appear to handle the gesture, which can break our test.
+                boolean isHeaderOutOfGestureRegion = headerTitle.getVisibleCenter().y
+                        < mLauncher.getBottomGestureStartOnScreen();
+                if (!hasHeaderExpanded && isHeaderOutOfGestureRegion) {
                     log("Header has not been expanded. Click to expand.");
                     hasHeaderExpanded = true;
                     mLauncher.clickLauncherObject(headerTitle);
