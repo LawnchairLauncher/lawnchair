@@ -19,7 +19,6 @@ package com.android.launcher3.widget;
 import static com.android.launcher3.Utilities.ATLEAST_S;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
@@ -44,7 +43,6 @@ import com.android.launcher3.BaseActivity;
 import com.android.launcher3.CheckLongPressHelper;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
-import com.android.launcher3.WidgetPreviewLoader;
 import com.android.launcher3.icons.FastBitmapDrawable;
 import com.android.launcher3.icons.RoundDrawableWrapper;
 import com.android.launcher3.model.WidgetItem;
@@ -222,21 +220,18 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
             return;
         }
 
-        if (ATLEAST_S
-                && mRemoteViewsPreview == null
-                && item.widgetInfo != null
-                && item.widgetInfo.previewLayout != Resources.ID_NULL) {
-            mAppWidgetHostViewPreview = new LauncherAppWidgetHostView(getContext());
-            LauncherAppWidgetProviderInfo launcherAppWidgetProviderInfo =
-                    LauncherAppWidgetProviderInfo.fromProviderInfo(getContext(),
-                            item.widgetInfo.clone());
-            // A hack to force the initial layout to be the preview layout since there is no API for
-            // rendering a preview layout for work profile apps yet. For non-work profile layout, a
-            // proper solution is to use RemoteViews(PackageName, LayoutId).
-            launcherAppWidgetProviderInfo.initialLayout = item.widgetInfo.previewLayout;
-            setAppWidgetHostViewPreview(mAppWidgetHostViewPreview,
-                    launcherAppWidgetProviderInfo, /* remoteViews= */ null);
-        }
+        if (!item.hasPreviewLayout()) return;
+
+        mAppWidgetHostViewPreview = new LauncherAppWidgetHostView(getContext());
+        LauncherAppWidgetProviderInfo launcherAppWidgetProviderInfo =
+                LauncherAppWidgetProviderInfo.fromProviderInfo(getContext(),
+                        item.widgetInfo.clone());
+        // A hack to force the initial layout to be the preview layout since there is no API for
+        // rendering a preview layout for work profile apps yet. For non-work profile layout, a
+        // proper solution is to use RemoteViews(PackageName, LayoutId).
+        launcherAppWidgetProviderInfo.initialLayout = item.widgetInfo.previewLayout;
+        setAppWidgetHostViewPreview(mAppWidgetHostViewPreview,
+                launcherAppWidgetProviderInfo, /* remoteViews= */ null);
     }
 
     private void setAppWidgetHostViewPreview(
@@ -344,22 +339,25 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
         if (mActiveRequest != null) {
             return;
         }
-        mActiveRequest = mWidgetPreviewLoader.getPreview(mItem, mPreviewWidth, mPreviewHeight,
-                this);
+        mActiveRequest = mWidgetPreviewLoader.loadPreview(
+                BaseActivity.fromContext(getContext()), mItem,
+                new Size(mPreviewWidth, mPreviewHeight),
+                this::applyPreview);
     }
 
     /** Sets the widget preview image size in number of cells. */
-    public void setPreviewSize(int spanX, int spanY) {
-        setPreviewSize(spanX, spanY, 1f);
+    public Size setPreviewSize(int spanX, int spanY) {
+        return setPreviewSize(spanX, spanY, 1f);
     }
 
     /** Sets the widget preview image size, in number of cells, and preview scale. */
-    public void setPreviewSize(int spanX, int spanY, float previewScale) {
+    public Size setPreviewSize(int spanX, int spanY, float previewScale) {
         DeviceProfile deviceProfile = mActivity.getDeviceProfile();
         Size widgetSize = WidgetSizes.getWidgetSizePx(deviceProfile, spanX, spanY);
         mPreviewWidth = widgetSize.getWidth();
         mPreviewHeight = widgetSize.getHeight();
         mPreviewScale = previewScale;
+        return widgetSize;
     }
 
     @Override
