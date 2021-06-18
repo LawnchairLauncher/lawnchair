@@ -346,7 +346,8 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
      * an optional additional animation with the same duration.
      */
     public @Nullable Animator getParallelAnimationToLauncher(
-            GestureState.GestureEndTarget endTarget, long duration) {
+            GestureState.GestureEndTarget endTarget, long duration,
+            RecentsAnimationCallbacks callbacks) {
         if (endTarget == RECENTS) {
             ACTIVITY_TYPE activity = getCreatedActivity();
             if (activity == null) {

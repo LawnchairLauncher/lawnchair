@@ -48,7 +48,7 @@
     <dimen name="workspace_page_indicator_overlap_workspace">0dp</dimen>
 
 <!-- Drop target bar -->
-    <dimen name="dynamic_grid_drop_target_size">48dp</dimen>
+    <dimen name="dynamic_grid_drop_target_size">52dp</dimen>
     <dimen name="drop_target_vertical_gap">20dp</dimen>
 
 <!-- App Widget resize frame -->
@@ -98,7 +98,7 @@
     <dimen name="all_apps_header_tab_height">48dp</dimen>
     <dimen name="all_apps_tabs_indicator_height">2dp</dimen>
     <dimen name="all_apps_header_top_padding">36dp</dimen>
-    <dimen name="all_apps_header_bottom_padding">16dp</dimen>
+    <dimen name="all_apps_header_bottom_padding">6dp</dimen>
     <dimen name="all_apps_work_profile_tab_footer_top_padding">16dp</dimen>
     <dimen name="all_apps_work_profile_tab_footer_bottom_padding">20dp</dimen>
     <dimen name="all_apps_tabs_vertical_padding">6dp</dimen>
@@ -120,10 +120,15 @@
 <!-- Floating action button inside work tab to toggle work profile -->
     <dimen name="work_fab_height">48dp</dimen>
     <dimen name="work_fab_radius">24dp</dimen>
-    <dimen name="work_fab_margin">18dp</dimen>
+    <dimen name="work_fab_margin">16dp</dimen>
     <dimen name="work_profile_footer_padding">20dp</dimen>
     <dimen name="work_profile_footer_text_size">16sp</dimen>
     <dimen name="work_edu_card_margin">16dp</dimen>
+
+    <!-- rounded button shown inside card views, and snack bars  -->
+    <dimen name="rounded_button_height">32dp</dimen>
+    <dimen name="rounded_button_radius">16dp</dimen>
+    <dimen name="rounded_button_padding">8dp</dimen>
 
 
     <!-- Widget tray -->

@@ -1107,7 +1107,8 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
                     mActivityRestartListener);
 
             mParallelRunningAnim = mActivityInterface.getParallelAnimationToLauncher(
-                    mGestureState.getEndTarget(), duration);
+                    mGestureState.getEndTarget(), duration,
+                    mTaskAnimationManager.getCurrentCallbacks());
             if (mParallelRunningAnim != null) {
                 mParallelRunningAnim.start();
             }
@@ -1381,11 +1382,17 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
 
     /**
      * Cancels any running animation so that the active target can be overriden by a new swipe
-     * handle (in case of quick switch).
+     * handler (in case of quick switch).
      */
     private void cancelCurrentAnimation() {
         mCanceled = true;
         mCurrentShift.cancelAnimation();
+
+        // Cleanup when switching handlers
+        mInputConsumerProxy.unregisterCallback();
+        mActivityInitListener.unregister();
+        ActivityManagerWrapper.getInstance().unregisterTaskStackListener(mActivityRestartListener);
+        mTaskSnapshot = null;
     }
 
     private void invalidateHandler() {

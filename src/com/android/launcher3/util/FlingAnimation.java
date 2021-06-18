@@ -1,12 +1,14 @@
 package com.android.launcher3.util;
 
 import static com.android.launcher3.LauncherState.NORMAL;
+import static com.android.launcher3.anim.AnimatorListeners.forEndCallback;
 
 import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
 import android.animation.ValueAnimator.AnimatorUpdateListener;
 import android.graphics.PointF;
 import android.graphics.Rect;
+import android.graphics.RectF;
 import android.view.animation.AnimationUtils;
 import android.view.animation.DecelerateInterpolator;
 
@@ -35,7 +37,7 @@ public class FlingAnimation implements AnimatorUpdateListener, Runnable {
     protected final float mUX, mUY;
 
     protected Rect mIconRect;
-    protected Rect mFrom;
+    protected RectF mFrom;
     protected int mDuration;
     protected float mAnimationTimeFraction;
 
@@ -55,17 +57,17 @@ public class FlingAnimation implements AnimatorUpdateListener, Runnable {
     @Override
     public void run() {
         mIconRect = mDropTarget.getIconRect(mDragObject);
+        mDragObject.dragView.cancelAnimation();
+        mDragObject.dragView.requestLayout();
 
         // Initiate from
-        mFrom = new Rect();
-        mDragLayer.getViewRectRelativeToSelf(mDragObject.dragView, mFrom);
-        float scale = mDragObject.dragView.getScaleX();
-        float xOffset = ((scale - 1f) * mDragObject.dragView.getMeasuredWidth()) / 2f;
-        float yOffset = ((scale - 1f) * mDragObject.dragView.getMeasuredHeight()) / 2f;
-        mFrom.left += xOffset;
-        mFrom.right -= xOffset;
-        mFrom.top += yOffset;
-        mFrom.bottom -= yOffset;
+        Rect from = new Rect();
+        mDragLayer.getViewRectRelativeToSelf(mDragObject.dragView, from);
+
+        mFrom = new RectF(from);
+        mFrom.inset(
+                ((1 - mDragObject.dragView.getScaleX()) * from.width()) / 2f,
+                ((1 - mDragObject.dragView.getScaleY()) * from.height()) / 2f);
         mDuration = Math.abs(mUY) > Math.abs(mUX) ? initFlingUpDuration() : initFlingLeftDuration();
 
         mAnimationTimeFraction = ((float) mDuration) / (mDuration + DRAG_END_DELAY);
@@ -95,17 +97,15 @@ public class FlingAnimation implements AnimatorUpdateListener, Runnable {
             }
         };
 
-        Runnable onAnimationEndRunnable = new Runnable() {
-            @Override
-            public void run() {
-                mLauncher.getStateManager().goToState(NORMAL);
-                mDropTarget.completeDrop(mDragObject);
-            }
-        };
-
         mDropTarget.onDrop(mDragObject, mDragOptions);
-        mDragLayer.animateView(mDragObject.dragView, this, duration, tInterpolator,
-                onAnimationEndRunnable, DragLayer.ANIMATION_END_DISAPPEAR, null);
+        ValueAnimator anim = ValueAnimator.ofFloat(0, 1);
+        anim.setDuration(duration).setInterpolator(tInterpolator);
+        anim.addUpdateListener(this);
+        anim.addListener(forEndCallback(() -> {
+            mLauncher.getStateManager().goToState(NORMAL);
+            mDropTarget.completeDrop(mDragObject);
+        }));
+        mDragLayer.playDropAnimation(mDragObject.dragView, anim, DragLayer.ANIMATION_END_DISAPPEAR);
     }
 
     /**
@@ -129,7 +129,7 @@ public class FlingAnimation implements AnimatorUpdateListener, Runnable {
         }
         double t = (-mUY - Math.sqrt(d)) / mAY;
 
-        float sX = -mFrom.exactCenterX() + mIconRect.exactCenterX();
+        float sX = -mFrom.centerX() + mIconRect.exactCenterX();
 
         // Find horizontal acceleration such that: u*t + a*t*t/2 = s
         mAX = (float) ((sX - t * mUX) * 2 / (t * t));
@@ -157,7 +157,7 @@ public class FlingAnimation implements AnimatorUpdateListener, Runnable {
         }
         double t = (-mUX - Math.sqrt(d)) / mAX;
 
-        float sY = -mFrom.exactCenterY() + mIconRect.exactCenterY();
+        float sY = -mFrom.centerY() + mIconRect.exactCenterY();
 
         // Find vertical acceleration such that: u*t + a*t*t/2 = s
         mAY = (float) ((sY - t * mUY) * 2 / (t * t));
