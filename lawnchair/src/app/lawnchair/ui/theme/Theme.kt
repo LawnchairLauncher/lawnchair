@@ -16,7 +16,6 @@
 
 package app.lawnchair.ui.theme
 
-import android.content.Context
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material.Colors
 import androidx.compose.material.MaterialTheme
@@ -31,10 +30,8 @@ import app.lawnchair.preferences.observeAsState
 import app.lawnchair.preferences.preferenceManager
 import app.lawnchair.ui.preferences.components.ThemeChoice
 import app.lawnchair.util.androidColorId
-import com.android.launcher3.R
 import com.android.launcher3.Utilities
 import com.android.launcher3.uioverrides.WallpaperColorInfo
-import com.android.launcher3.util.Themes
 
 @Composable
 fun LawnchairTheme(
