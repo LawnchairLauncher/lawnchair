@@ -81,7 +81,7 @@
     <string name="dt2s_a11y_hint">Pour utiliser la veille sur double tape, activez le service d\'accessibilité Lawnchair. Appuyez sur \"Ouvrir paramètres\", sélectionnez ensuite “Lawnchair” et activez “Utiliser Lawnchair”</string>
     <string name="dt2s_warning_open_settings">Ouvrir les paramètres</string>
     <string name="minus_one_enable">Afficher le Feed</string>
-    <string name="minus_one_unavailable">Feed is not available</string>
+    <string name="minus_one_unavailable">Aucun fil installé.</string>
     <string name="fuzzy_search_title">Recherche approximative</string>
     <string name="fuzzy_search_desc">Correspondance approximative pour les recherches d\'applications.</string>
     <string name="theme_label">Thème</string>
@@ -95,4 +95,6 @@
     <string name="override_window_corner_radius_label">Custom corner radius</string>
     <string name="override_window_corner_radius_description">If the default doesn\'t match your screen</string>
     <string name="system_icons">System Icons</string>
+    <string name="accent_color">Accent Color</string>
+    <string name="done">Done</string>
 </resources>
