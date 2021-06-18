@@ -18,10 +18,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences.preferenceManager
-import app.lawnchair.ui.util.systemAccentColor
+import app.lawnchair.ui.theme.getDefaultAccentColor
 import com.android.launcher3.R
 import com.google.accompanist.insets.navigationBarsPadding
-import com.google.accompanist.insets.systemBarsPadding
 import kotlinx.coroutines.launch
 
 @Composable
@@ -32,9 +31,10 @@ fun AccentColorPreference(showDivider: Boolean) {
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
     var accentColor by preferenceManager().accentColor.getAdapter()
+    val defaultAccentColor = context.getDefaultAccentColor(false)
 
     val presets = listOf(
-        context.systemAccentColor,
+        defaultAccentColor,
         0xFFF44336.toInt(),
         0xFF673AB7.toInt(),
         0xFF2196F3.toInt(),
@@ -43,7 +43,7 @@ fun AccentColorPreference(showDivider: Boolean) {
     )
 
     fun applyAccentColor(newColor: Int) {
-        accentColor = if (newColor == context.systemAccentColor) 0 else newColor
+        accentColor = if (newColor == defaultAccentColor) 0 else newColor
     }
 
     PreferenceTemplate(height = 52.dp, showDivider = showDivider) {
@@ -63,7 +63,7 @@ fun AccentColorPreference(showDivider: Boolean) {
     }
 
     BottomSheet(sheetState = sheetState) {
-        val initialNewAccentColor = if (accentColor == 0) context.systemAccentColor else accentColor
+        val initialNewAccentColor = if (accentColor == 0) defaultAccentColor else accentColor
         var newAccentColor by remember { mutableStateOf(initialNewAccentColor) }
 
         Column(modifier = Modifier.navigationBarsPadding()) {

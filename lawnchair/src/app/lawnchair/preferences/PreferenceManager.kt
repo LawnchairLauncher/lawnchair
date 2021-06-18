@@ -84,7 +84,7 @@ class PreferenceManager private constructor(private val context: Context) : Base
     val overrideWindowCornerRadius = BoolPref("pref_overrideWindowCornerRadius", false, recreate)
     val windowCornerRadius = FloatPref("pref_windowCornerRadius", 1f, recreate)
     val autoLaunchRoot = BoolPref("pref_autoLaunchRoot", false)
-    val accentColor = IntPref("pref_accentColor", 0, scheduleRestart)
+    val accentColor = IntPref("pref_accentColor", 0, recreate)
 
     init {
         sp.registerOnSharedPreferenceChangeListener(this)

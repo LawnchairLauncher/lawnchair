@@ -31,6 +31,7 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.uioverrides.WallpaperColorInfo;
 
 import app.lawnchair.preferences.PreferenceManager;
+import app.lawnchair.ui.theme.ColorKt;
 
 /**
  * Various utility methods associated with theming.
@@ -94,7 +95,7 @@ public class Themes {
     }
 
     public static int getColorAccent(Context context) {
-        return getAttrColor(context, android.R.attr.colorAccent);
+        return ColorKt.getAccentColor(context);
     }
 
     public static int getAttrColor(Context context, int attr) {

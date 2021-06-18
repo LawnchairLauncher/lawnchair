@@ -28,6 +28,7 @@ import com.android.launcher3.anim.PropertySetter
 import com.android.launcher3.graphics.TintedDrawableSpan
 import com.android.launcher3.qsb.QsbContainerView
 import com.android.launcher3.util.ComponentKey
+import com.android.launcher3.util.Themes
 import com.android.launcher3.views.ActivityContext
 import java.util.*
 import kotlin.math.round
@@ -59,6 +60,7 @@ class AllAppsHotseatQsb @JvmOverloads constructor(context: Context, attrs: Attri
         spanned.setSpan(TintedDrawableSpan(context, R.drawable.ic_allapps_search),
                 0, 1, Spannable.SPAN_EXCLUSIVE_INCLUSIVE)
         mFallbackSearchView.hint = spanned
+        mFallbackSearchView.setHintTextColor(Themes.getColorAccent(context))
     }
 
     override fun onAttachedToWindow() {

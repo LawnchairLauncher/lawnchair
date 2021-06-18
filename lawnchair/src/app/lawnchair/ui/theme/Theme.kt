@@ -26,6 +26,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
+import app.lawnchair.preferences.PreferenceManager
 import app.lawnchair.preferences.observeAsState
 import app.lawnchair.preferences.preferenceManager
 import app.lawnchair.ui.preferences.components.ThemeChoice
@@ -51,7 +52,9 @@ fun LawnchairTheme(
 @Composable
 fun getColors(darkTheme: Boolean): Colors {
     val context = LocalContext.current
-    val accentColor = remember(darkTheme) { Color(context.getAccentColor(darkTheme)) }
+    val prefs = PreferenceManager.getInstance(context)
+    val customColor = prefs.accentColor.observeAsState().value
+    val accentColor = remember(darkTheme, customColor) { Color(context.getAccentColor(darkTheme)) }
     return when {
         Utilities.ATLEAST_S -> {
             if (darkTheme) {
