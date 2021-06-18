@@ -105,7 +105,7 @@ public class NavbarButtonsViewController {
             return true;
         };
 
-        if (mContext.canShowNavButtons()) {
+        if (mContext.isThreeButtonNav()) {
             initButtons(mStartContainer, mEndContainer, mControllers.navButtonController);
 
             // Animate taskbar background when IME shows
