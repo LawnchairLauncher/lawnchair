@@ -40,7 +40,7 @@ fun AlertBottomSheetContent(
             }
         }
         if (content != null) {
-            Box(modifier = Modifier.padding(top = 16.dp)) {
+            Box(modifier = Modifier.padding(top = if (title != null || text != null) 16.dp else 0.dp)) {
                 content()
             }
         }
