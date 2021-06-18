@@ -94,6 +94,7 @@ public final class TestProtocol {
     public static final String REQUEST_GET_TEST_EVENTS = "get-test-events";
     public static final String REQUEST_STOP_EVENT_LOGGING = "stop-event-logging";
     public static final String REQUEST_CLEAR_DATA = "clear-data";
+    public static final String REQUEST_IS_TABLET = "is-tablet";
 
     public static boolean sDebugTracing = false;
     public static final String REQUEST_ENABLE_DEBUG_TRACING = "enable-debug-tracing";
