@@ -95,4 +95,6 @@
     <string name="override_window_corner_radius_label">Maxsus burchak radiusi</string>
     <string name="override_window_corner_radius_description">Agar sukut ekraningizga mos kelmasa</string>
     <string name="system_icons">Tizim belgilari</string>
+    <string name="accent_color">Accent Color</string>
+    <string name="done">Done</string>
 </resources>
