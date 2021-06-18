@@ -95,4 +95,6 @@
     <string name="override_window_corner_radius_label">Benutzerdefinierter Eckradius</string>
     <string name="override_window_corner_radius_description">Wenn die Standardeinstellung nicht mit dem Bildschirm übereinstimmt</string>
     <string name="system_icons">System-Symbole</string>
+    <string name="accent_color">Accent Color</string>
+    <string name="done">Done</string>
 </resources>
