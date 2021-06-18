@@ -95,4 +95,6 @@
     <string name="override_window_corner_radius_label">Brugerdefineret hjørne radius</string>
     <string name="override_window_corner_radius_description">Hvis standarden ikke matcher din skærm</string>
     <string name="system_icons">System Ikoner</string>
+    <string name="accent_color">Accent Color</string>
+    <string name="done">Done</string>
 </resources>
