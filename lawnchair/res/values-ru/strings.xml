@@ -97,4 +97,6 @@
     <string name="override_window_corner_radius_label">Задать радиус скругления</string>
     <string name="override_window_corner_radius_description">Если стандартное не соответствует вашему экрану</string>
     <string name="system_icons">Системные иконки</string>
+    <string name="accent_color">Accent Color</string>
+    <string name="done">Done</string>
 </resources>
