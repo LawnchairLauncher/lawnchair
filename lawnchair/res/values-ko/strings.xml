@@ -94,4 +94,6 @@
     <string name="override_window_corner_radius_label">Custom corner radius</string>
     <string name="override_window_corner_radius_description">If the default doesn\'t match your screen</string>
     <string name="system_icons">System Icons</string>
+    <string name="accent_color">Accent Color</string>
+    <string name="done">Done</string>
 </resources>
