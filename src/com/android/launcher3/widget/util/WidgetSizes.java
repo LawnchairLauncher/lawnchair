@@ -99,13 +99,11 @@ public final class WidgetSizes {
      */
     public static Bundle getWidgetSizeOptions(Context context, ComponentName provider, int spanX,
             int spanY) {
-        boolean shouldInsetWidgets =
-                LauncherAppState.getIDP(context).getDeviceProfile(context).shouldInsetWidgets();
         ArrayList<SizeF> sizes = getWidgetSizes(context, spanX, spanY);
         Rect padding = getDefaultPaddingForWidget(context, provider, null);
         float density = context.getResources().getDisplayMetrics().density;
-        float xPaddingDips = shouldInsetWidgets ? (padding.left + padding.right) / density : 0;
-        float yPaddingDips = shouldInsetWidgets ? (padding.top + padding.bottom) / density : 0;
+        float xPaddingDips = (padding.left + padding.right) / density;
+        float yPaddingDips = (padding.top + padding.bottom) / density;
 
         ArrayList<SizeF> paddedSizes = sizes.stream()
                 .map(size -> new SizeF(
