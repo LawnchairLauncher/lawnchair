@@ -99,6 +99,9 @@ public final class FeatureFlags {
     public static final BooleanFlag ENABLE_DEVICE_SEARCH = new DeviceFlag(
             "ENABLE_DEVICE_SEARCH", true, "Allows on device search in all apps");
 
+    public static final BooleanFlag IME_STICKY_SNACKBAR_EDU = getDebugFlag(
+            "IME_STICKY_SNACKBAR_EDU", true, "Show sticky IME edu in AllApps");
+
     public static final BooleanFlag ENABLE_PEOPLE_TILE_PREVIEW = getDebugFlag(
             "ENABLE_PEOPLE_TILE_PREVIEW", false,
             "Experimental: Shows conversation shortcuts on home screen as search results");
@@ -219,6 +222,10 @@ public final class FeatureFlags {
     public static final BooleanFlag ENABLE_TWO_PANEL_HOME = getDebugFlag(
             "ENABLE_TWO_PANEL_HOME", false,
             "Uses two panel on home screen. Only applicable on large screen devices.");
+
+    public static final BooleanFlag ENABLE_SCRIM_FOR_APP_LAUNCH = getDebugFlag(
+            "ENABLE_SCRIM_FOR_APP_LAUNCH", false,
+            "Enables scrim during app launch animation.");
 
     public static final BooleanFlag ENABLE_SPLIT_SELECT = getDebugFlag(
             "ENABLE_SPLIT_SELECT", false, "Uses new split screen selection overview UI");
