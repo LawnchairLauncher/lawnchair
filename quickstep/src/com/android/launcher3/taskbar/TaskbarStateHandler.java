@@ -18,28 +18,21 @@ package com.android.launcher3.taskbar;
 import static com.android.launcher3.LauncherState.TASKBAR;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 
-import androidx.annotation.Nullable;
-
 import com.android.launcher3.BaseQuickstepLauncher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.anim.PropertySetter;
 import com.android.launcher3.statemanager.StateManager;
 import com.android.launcher3.states.StateAnimationConfig;
-import com.android.launcher3.util.MultiValueAlpha;
 import com.android.quickstep.AnimatedFloat;
 import com.android.quickstep.SystemUiProxy;
 
 /**
- * StateHandler to animate Taskbar according to Launcher's state machine. Does nothing if Taskbar
- * isn't present (i.e. {@link #setAnimationController} is never called).
+ * StateHandler to animate Taskbar according to Launcher's state machine.
  */
 public class TaskbarStateHandler implements StateManager.StateHandler<LauncherState> {
 
     private final BaseQuickstepLauncher mLauncher;
-
-    // Contains Taskbar-related properties we should aniamte. If null, don't do anything.
-    private @Nullable MultiValueAlpha.AlphaProperty mTaskbarAlpha = null;
 
     private AnimatedFloat mNavbarButtonAlpha = new AnimatedFloat(this::updateNavbarButtonAlpha);
 
@@ -47,16 +40,11 @@ public class TaskbarStateHandler implements StateManager.StateHandler<LauncherSt
         mLauncher = launcher;
     }
 
-    public void setAnimationController(MultiValueAlpha.AlphaProperty taskbarAlpha) {
-        mTaskbarAlpha = taskbarAlpha;
-        // Reapply state.
-        setState(mLauncher.getStateManager().getState());
-        updateNavbarButtonAlpha();
-    }
-
     @Override
     public void setState(LauncherState state) {
         setState(state, PropertySetter.NO_ANIM_PROPERTY_SETTER);
+        // Force update the alpha in case it was not initialized properly
+        updateNavbarButtonAlpha();
     }
 
     @Override
@@ -69,12 +57,7 @@ public class TaskbarStateHandler implements StateManager.StateHandler<LauncherSt
      * Sets the provided state
      */
     public void setState(LauncherState toState, PropertySetter setter) {
-        if (mTaskbarAlpha == null) {
-            return;
-        }
-
         boolean isTaskbarVisible = (toState.getVisibleElements(mLauncher) & TASKBAR) != 0;
-        setter.setFloat(mTaskbarAlpha, MultiValueAlpha.VALUE, isTaskbarVisible ? 1f : 0f, LINEAR);
         // Make the nav bar visible in states that taskbar isn't visible.
         // TODO: We should draw our own handle instead of showing the nav bar.
         float navbarButtonAlpha = isTaskbarVisible ? 0f : 1f;

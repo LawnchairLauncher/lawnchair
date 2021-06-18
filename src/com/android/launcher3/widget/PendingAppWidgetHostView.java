@@ -97,9 +97,9 @@ public class PendingAppWidgetHostView extends LauncherAppWidgetHostView
 
     @Override
     public void updateAppWidget(RemoteViews remoteViews) {
-        super.updateAppWidget(remoteViews);
         WidgetManagerHelper widgetManagerHelper = new WidgetManagerHelper(getContext());
         if (widgetManagerHelper.isAppWidgetRestored(mInfo.appWidgetId)) {
+            super.updateAppWidget(remoteViews);
             reInflate();
         }
     }
@@ -149,7 +149,7 @@ public class PendingAppWidgetHostView extends LauncherAppWidgetHostView
             // The view displays three modes,
             //   1) App icon in the center
             //   2) Preload icon in the center
-            //   3) Setup icon in the center and app icon in the top right corner.
+            //   3) App icon in the center with a setup icon on the top left corner.
             if (mDisabledForSafeMode) {
                 FastBitmapDrawable disabledIcon = info.newIcon(getContext());
                 disabledIcon.setIsDisabled(true);

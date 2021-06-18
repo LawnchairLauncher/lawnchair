@@ -113,7 +113,7 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
     FolderGridOrganizer mPreviewVerifier;
     ClippedFolderIconLayoutRule mPreviewLayoutRule;
     private PreviewItemManager mPreviewItemManager;
-    private PreviewItemDrawingParams mTmpParams = new PreviewItemDrawingParams(0, 0, 0, 0);
+    private PreviewItemDrawingParams mTmpParams = new PreviewItemDrawingParams(0, 0, 0);
     private List<WorkspaceItemInfo> mCurrentPreviewItems = new ArrayList<>();
 
     boolean mAnimating = false;
@@ -336,8 +336,6 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
         if (animateView != null && mActivity instanceof Launcher) {
             final Launcher launcher = (Launcher) mActivity;
             DragLayer dragLayer = launcher.getDragLayer();
-            Rect from = new Rect();
-            dragLayer.getViewRectRelativeToSelf(animateView, from);
             Rect to = finalRect;
             if (to == null) {
                 to = new Rect();
@@ -391,7 +389,7 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
             to.offset(center[0] - animateView.getMeasuredWidth() / 2,
                     center[1] - animateView.getMeasuredHeight() / 2);
 
-            float finalAlpha = index < MAX_NUM_ITEMS_IN_PREVIEW ? 0.5f : 0f;
+            float finalAlpha = index < MAX_NUM_ITEMS_IN_PREVIEW ? 1f : 0f;
 
             float finalScale = scale * scaleRelativeToDragLayer;
 
@@ -402,15 +400,19 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
                 finalScale *= containerScale;
             }
 
-            dragLayer.animateView(animateView, from, to, finalAlpha,
-                    1, 1, finalScale, finalScale, DROP_IN_ANIMATION_DURATION,
-                    Interpolators.DEACCEL_2, Interpolators.ACCEL_2,
-                    null, DragLayer.ANIMATION_END_DISAPPEAR, null);
+            final int finalIndex = index;
+            dragLayer.animateView(animateView, to, finalAlpha,
+                    finalScale, finalScale, DROP_IN_ANIMATION_DURATION,
+                    Interpolators.DEACCEL_2,
+                    () -> {
+                        mPreviewItemManager.hidePreviewItem(finalIndex, false);
+                        mFolder.showItem(item);
+                    }, 
+                    DragLayer.ANIMATION_END_DISAPPEAR, null);
 
             mFolder.hideItem(item);
 
             if (!itemAdded) mPreviewItemManager.hidePreviewItem(index, true);
-            final int finalIndex = index;
 
             FolderNameInfos nameInfos = new FolderNameInfos();
             if (FeatureFlags.FOLDER_NAME_SUGGEST.get()) {
@@ -430,8 +432,6 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
     private void showFinalView(int finalIndex, final WorkspaceItemInfo item,
             FolderNameInfos nameInfos, InstanceId instanceId) {
         postDelayed(() -> {
-            mPreviewItemManager.hidePreviewItem(finalIndex, false);
-            mFolder.showItem(item);
             setLabelSuggestion(nameInfos, instanceId);
             invalidate();
         }, DROP_IN_ANIMATION_DURATION);

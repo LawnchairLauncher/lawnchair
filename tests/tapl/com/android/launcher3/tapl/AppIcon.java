@@ -51,6 +51,16 @@ public final class AppIcon extends Launchable {
         }
     }
 
+    /**
+     * Long-clicks the icon to open its menu, and looks at the deep shortcuts container only.
+     */
+    public AppIconMenu openDeepShortcutMenu() {
+        try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck()) {
+            return new AppIconMenu(mLauncher, mLauncher.clickAndGet(
+                    mObject, "deep_shortcuts_container", LONG_CLICK_EVENT));
+        }
+    }
+
     @Override
     protected void addExpectedEventsForLongClick() {
         mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN, LONG_CLICK_EVENT);

@@ -2732,9 +2732,6 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
     public void animateWidgetDrop(ItemInfo info, CellLayout cellLayout, final DragView dragView,
             final Runnable onCompleteRunnable, int animationType, final View finalView,
             boolean external) {
-        Rect from = new Rect();
-        mLauncher.getDragLayer().getViewRectRelativeToSelf(dragView, from);
-
         int[] finalPos = new int[2];
         float scaleXY[] = new float[2];
         boolean scalePreview = !(info instanceof PendingAddShortcutInfo);
@@ -2778,8 +2775,8 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
                     }
                 }
             };
-            dragLayer.animateViewIntoPosition(dragView, from.left, from.top, finalPos[0],
-                    finalPos[1], 1, 1, 1, scaleXY[0], scaleXY[1], onComplete, endStyle,
+            dragLayer.animateViewIntoPosition(dragView, finalPos[0],
+                    finalPos[1], 1, scaleXY[0], scaleXY[1], onComplete, endStyle,
                     duration, this);
         }
     }
@@ -2838,6 +2835,10 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
                 removeWorkspaceItem(mDragInfo.cell);
             }
         } else if (mDragInfo != null) {
+            // When drag is cancelled, reattach content view back to its original parent.
+            if (mDragInfo.cell instanceof LauncherAppWidgetHostView) {
+                d.dragView.detachContentView(/* reattachToPreviousParent= */ true);
+            }
             final CellLayout cellLayout = mLauncher.getCellLayout(
                     mDragInfo.container, mDragInfo.screenId);
             if (cellLayout != null) {
