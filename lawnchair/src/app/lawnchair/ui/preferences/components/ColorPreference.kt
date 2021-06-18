@@ -1,6 +1,7 @@
 package app.lawnchair.ui.preferences.components
 
 import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -12,11 +13,18 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.drawscope.DrawScope
+import androidx.compose.ui.graphics.drawscope.rotate
+import androidx.compose.ui.graphics.painter.ColorPainter
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import app.lawnchair.preferences.PreferenceAdapter
 import app.lawnchair.ui.theme.lightenColor
+import app.lawnchair.ui.util.addIf
 import com.android.launcher3.R
 import com.google.accompanist.insets.navigationBarsPadding
 import kotlinx.coroutines.launch
@@ -121,19 +129,37 @@ fun <T> ColorSwatch(
     modifier: Modifier = Modifier,
     isSelected: Boolean
 ) {
+    val lightColor = Color(entry.lightColor())
+    val darkColor = Color(entry.darkColor())
     Box(
         modifier = modifier
             .aspectRatio(1F)
             .clip(CircleShape)
-            .background(color = Color(entry.lightColor()))
+            .addIf(lightColor == darkColor) { background(lightColor) }
             .clickable { onClick() },
         contentAlignment = Alignment.Center
     ) {
+        if (lightColor != darkColor) {
+            Image(painter = ColorSwatchPainter(lightColor, darkColor), contentDescription = "")
+        }
         AnimatedCheck(
             visible = isSelected,
             tint = Color.White
         )
     }
+}
+
+class ColorSwatchPainter(private val lightColor: Color, private val darkColor: Color) : Painter() {
+
+    override fun DrawScope.onDraw() {
+        val size = drawContext.size
+        rotate(45f) {
+            drawRect(lightColor, size = Size(size.width / 2, size.height))
+            drawRect(darkColor, topLeft = Offset(size.width / 2, 0f))
+        }
+    }
+
+    override val intrinsicSize = Size.Unspecified
 }
 
 open class ColorPreferenceEntry<T>(
