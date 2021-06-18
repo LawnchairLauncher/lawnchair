@@ -177,7 +177,7 @@ public class WidgetsDiffReporter {
      */
     private boolean hasHeaderUpdated(WidgetsListBaseEntry curRow, WidgetsListBaseEntry newRow) {
         if (newRow instanceof WidgetsListHeaderEntry && curRow instanceof WidgetsListHeaderEntry) {
-            return ((WidgetsListHeaderEntry) newRow).hasEntryUpdated() || !curRow.equals(newRow);
+            return !curRow.equals(newRow);
         }
         if (newRow instanceof WidgetsListSearchHeaderEntry
                 && curRow instanceof WidgetsListSearchHeaderEntry) {
