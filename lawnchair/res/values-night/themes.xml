@@ -2,13 +2,14 @@
 
 <resources xmlns:tools="http://schemas.android.com/tools">
     <style name="Theme.Lawnchair" parent="Base.Theme.Lawnchair">
-        <item name="android:colorBackground">@color/black_900</item>
+        <item name="android:colorBackground">#ff121212</item>
         <item name="android:windowLightStatusBar" tools:targetApi="m">false</item>
         <item name="android:windowLightNavigationBar" tools:ignore="NewApi">false</item>
     </style>
 
     <style name="Theme.Acknowledgements" parent="Base.Theme.Acknowledgements">
-        <item name="android:colorBackground">@color/black_900</item>
+        <item name="android:colorBackground">#ff121212</item>
+        <item name="colorPrimary">#ff282828</item>
         <item name="android:windowLightStatusBar" tools:targetApi="m">false</item>
         <item name="android:windowLightNavigationBar" tools:ignore="NewApi">false</item>
     </style>
