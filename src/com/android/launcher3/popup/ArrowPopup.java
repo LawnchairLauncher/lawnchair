@@ -252,9 +252,9 @@ public abstract class ArrowPopup<T extends StatefulActivity<LauncherState>>
                         view.setBackgroundResource(R.drawable.single_item_primary);
                     } else if (totalVisibleShortcuts > 1) {
                         if (numVisibleShortcut == 0) {
-                            view.setBackground(mRoundedTop);
+                            view.setBackground(mRoundedTop.getConstantState().newDrawable());
                         } else if (numVisibleShortcut == (totalVisibleShortcuts - 1)) {
-                            view.setBackground(mRoundedBottom);
+                            view.setBackground(mRoundedBottom.getConstantState().newDrawable());
                         } else {
                             view.setBackgroundResource(R.drawable.middle_item_primary);
                         }
