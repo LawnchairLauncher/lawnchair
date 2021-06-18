@@ -95,4 +95,6 @@
     <string name="override_window_corner_radius_label">Sariling corner radius</string>
     <string name="override_window_corner_radius_description">Kung ang default ay hindi umaangkop sa iyong screen</string>
     <string name="system_icons">Icons ng System</string>
+    <string name="accent_color">Accent Color</string>
+    <string name="done">Done</string>
 </resources>
