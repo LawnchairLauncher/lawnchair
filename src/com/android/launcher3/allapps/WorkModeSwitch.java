@@ -67,6 +67,7 @@ public class WorkModeSwitch extends Button implements Insettable, View.OnClickLi
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
+        setSelected(true);
         setOnClickListener(this);
         if (Utilities.ATLEAST_R) {
             mKeyboardInsetAnimationCallback = new KeyboardInsetAnimationCallback(this);

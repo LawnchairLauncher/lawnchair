@@ -31,6 +31,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
+import android.os.Bundle;
 import android.os.Parcelable;
 import android.os.Process;
 import android.text.Selection;
@@ -81,6 +82,8 @@ import com.android.launcher3.workprofile.PersonalWorkSlidingTabStrip.OnActivePag
 public class AllAppsContainerView extends SpringRelativeLayout implements DragSource,
         Insettable, OnDeviceProfileChangeListener, OnActivePageChangedListener,
         ScrimView.ScrimDrawingController {
+
+    private static final String BUNDLE_KEY_CURRENT_PAGE = "launcher.allapps.current_page";
 
     public static final float PULL_MULTIPLIER = .02f;
     public static final float FLING_VELOCITY_MULTIPLIER = 1200f;
@@ -181,6 +184,23 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
         } catch (Exception e) {
             Log.e("AllAppsContainerView", "restoreInstanceState viewId = 0", e);
         }
+        Bundle state = (Bundle) sparseArray.get(R.id.work_tab_state_id, null);
+        if (state != null) {
+            int currentPage = state.getInt(BUNDLE_KEY_CURRENT_PAGE, 0);
+            if (currentPage != 0) {
+                rebindAdapters(true);
+                mViewPager.setCurrentPage(currentPage);
+            }
+        }
+    }
+
+
+    @Override
+    protected void dispatchSaveInstanceState(SparseArray<Parcelable> container) {
+        super.dispatchSaveInstanceState(container);
+        Bundle state = new Bundle();
+        state.putInt(BUNDLE_KEY_CURRENT_PAGE, getCurrentPage());
+        container.put(R.id.work_tab_state_id, state);
     }
 
     /**
@@ -231,7 +251,9 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
 
     private void resetWorkProfile() {
         boolean isEnabled = !mAllAppsStore.hasModelFlag(FLAG_QUIET_MODE_ENABLED);
-        mWorkModeSwitch.updateCurrentState(isEnabled);
+        if (mWorkModeSwitch != null) {
+            mWorkModeSwitch.updateCurrentState(isEnabled);
+        }
         mWorkAdapterProvider.updateCurrentState(isEnabled);
         mAH[AdapterHolder.WORK].applyPadding();
     }
