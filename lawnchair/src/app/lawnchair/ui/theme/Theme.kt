@@ -16,30 +16,24 @@
 
 package app.lawnchair.ui.theme
 
+import android.content.Context
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material.Colors
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors
 import androidx.compose.runtime.*
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import app.lawnchair.preferences.observeAsState
 import app.lawnchair.preferences.preferenceManager
 import app.lawnchair.ui.preferences.components.ThemeChoice
 import app.lawnchair.util.androidColorId
+import com.android.launcher3.R
 import com.android.launcher3.Utilities
 import com.android.launcher3.uioverrides.WallpaperColorInfo
-
-private val DarkColorPalette = darkColors(
-    primary = Blue600,
-    secondary = Blue600
-)
-
-private val LightColorPalette = lightColors(
-    primary = Blue800,
-    secondary = Blue800
-)
+import com.android.launcher3.util.Themes
 
 @Composable
 fun LawnchairTheme(
@@ -55,32 +49,49 @@ fun LawnchairTheme(
 }
 
 @Composable
-fun getColors(darkTheme: Boolean): Colors = when {
-    Utilities.ATLEAST_S -> {
-        if (darkTheme) {
-            val accent = colorResource(id = androidColorId(name = "system_accent1_100"))
-            val surface = colorResource(id = androidColorId(name = "system_neutral1_800"))
-            val background = colorResource(id = androidColorId(name = "system_neutral1_900"))
-            darkColors(
-                primary = accent,
-                secondary = accent,
-                background = background,
-                surface = surface
-            )
-        } else {
-            val accent = colorResource(id = androidColorId(name = "system_accent1_600"))
-            val surface = colorResource(id = androidColorId(name = "system_neutral1_100"))
-            val background = colorResource(id = androidColorId(name = "system_neutral1_50"))
-            lightColors(
-                primary = accent,
-                secondary = accent,
-                background = background,
-                surface = surface
-            )
+fun getColors(darkTheme: Boolean): Colors {
+    val context = LocalContext.current
+    val accentColor = remember(darkTheme) { Color(context.getAccentColor(darkTheme)) }
+    return when {
+        Utilities.ATLEAST_S -> {
+            if (darkTheme) {
+                val surface = colorResource(id = androidColorId(name = "system_neutral1_800"))
+                val background = colorResource(id = androidColorId(name = "system_neutral1_900"))
+                darkColors(
+                    primary = accentColor,
+                    secondary = accentColor,
+                    background = background,
+                    surface = surface
+                )
+            } else {
+                val surface = colorResource(id = androidColorId(name = "system_neutral1_100"))
+                val background = colorResource(id = androidColorId(name = "system_neutral1_50"))
+                lightColors(
+                    primary = accentColor,
+                    secondary = accentColor,
+                    background = background,
+                    surface = surface
+                )
+            }
         }
+        darkTheme -> darkColors(primary = accentColor, secondary = accentColor)
+        else -> lightColors(primary = accentColor, secondary = accentColor)
     }
-    darkTheme -> DarkColorPalette
-    else -> LightColorPalette
+}
+
+@Suppress("DEPRECATION") // use Resources.getColor(int) directly because we don't need the theme
+@JvmOverloads
+fun Context.getAccentColor(darkTheme: Boolean = Themes.getAttrBoolean(this, R.attr.isMainColorDark)): Int {
+    val res = resources
+    return when {
+        Utilities.ATLEAST_S -> {
+            val colorName = if (darkTheme) "system_accent1_100" else "system_accent1_600"
+            val colorId = res.getIdentifier(colorName, "color", "android")
+            res.getColor(colorId)
+        }
+        darkTheme -> res.getColor(R.color.primary_200)
+        else -> res.getColor(R.color.primary_500)
+    }
 }
 
 @Composable
