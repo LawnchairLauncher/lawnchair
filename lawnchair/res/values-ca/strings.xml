@@ -95,4 +95,6 @@
     <string name="override_window_corner_radius_label">Radi de les cantonades personalitzat</string>
     <string name="override_window_corner_radius_description">Si el valor per defecte no s\'ajusta a la teva pantalla</string>
     <string name="system_icons">Icones del Sistema</string>
+    <string name="accent_color">Accent Color</string>
+    <string name="done">Done</string>
 </resources>
