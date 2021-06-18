@@ -157,7 +157,7 @@ open class LawnchairLauncher : QuickstepLauncher(), LifecycleOwner,
     }
 
     fun recreateIfNotScheduled() {
-        if (sRestartFlags != 0) {
+        if (sRestartFlags == 0) {
             recreate()
         }
     }
