@@ -79,21 +79,6 @@ fun getColors(darkTheme: Boolean): Colors {
     }
 }
 
-@Suppress("DEPRECATION") // use Resources.getColor(int) directly because we don't need the theme
-@JvmOverloads
-fun Context.getAccentColor(darkTheme: Boolean = Themes.getAttrBoolean(this, R.attr.isMainColorDark)): Int {
-    val res = resources
-    return when {
-        Utilities.ATLEAST_S -> {
-            val colorName = if (darkTheme) "system_accent1_100" else "system_accent1_600"
-            val colorId = res.getIdentifier(colorName, "color", "android")
-            res.getColor(colorId)
-        }
-        darkTheme -> res.getColor(R.color.primary_200)
-        else -> res.getColor(R.color.primary_500)
-    }
-}
-
 @Composable
 fun isSelectedThemeDark(): Boolean {
     val themeChoice by preferenceManager().launcherTheme.observeAsState()
