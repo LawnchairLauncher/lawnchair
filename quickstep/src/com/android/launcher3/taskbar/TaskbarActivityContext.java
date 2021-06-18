@@ -161,8 +161,8 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
         mWindowManager.addView(mDragLayer, mWindowLayoutParams);
     }
 
-    public boolean canShowNavButtons() {
-        return ENABLE_THREE_BUTTON_TASKBAR && mNavMode == Mode.THREE_BUTTONS;
+    public boolean isThreeButtonNav() {
+        return mNavMode == Mode.THREE_BUTTONS;
     }
 
     @Override
@@ -215,7 +215,7 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
     }
 
     public void updateSysuiStateFlags(int systemUiStateFlags, boolean forceUpdate) {
-        if (!canShowNavButtons()) {
+        if (!isThreeButtonNav()) {
             return;
         }
         mControllers.navbarButtonsViewController.updateStateForSysuiFlags(
