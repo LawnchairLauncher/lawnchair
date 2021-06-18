@@ -136,11 +136,6 @@ public class OverviewCommandHelper {
         }
     }
 
-    public boolean isOverviewVisible() {
-        BaseActivityInterface activityInterface =
-                mOverviewComponentObserver.getActivityInterface();
-        return activityInterface.getVisibleRecentsView() != null;
-    }
     /**
      * Executes the task and returns true if next task can be executed. If false, then the next
      * task is deferred until {@link #scheduleNextTask} is called

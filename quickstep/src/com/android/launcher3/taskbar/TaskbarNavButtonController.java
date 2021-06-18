@@ -94,10 +94,7 @@ public class TaskbarNavButtonController {
     }
 
     private void navigateToOverview() {
-        int commandType = mService.getOverviewCommandHelper().isOverviewVisible() ?
-                OverviewCommandHelper.TYPE_TOGGLE :
-                OverviewCommandHelper.TYPE_SHOW;
-        mService.getOverviewCommandHelper().addCommand(commandType);
+        mService.getOverviewCommandHelper().addCommand(OverviewCommandHelper.TYPE_TOGGLE);
     }
 
     private void executeBack() {
