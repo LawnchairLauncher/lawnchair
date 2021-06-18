@@ -53,11 +53,9 @@
     <string name="widget_category_conversations" msgid="8894438636213590446">"సంభాషణలు"</string>
     <string name="widget_education_header" msgid="4874760613775913787">"మీ చేతివేళ్ల మీద ఉపయోగకరమైన సమాచారం"</string>
     <string name="widget_education_content" msgid="745542879510751525">"యాప్‌లను తెరవకుండా సమాచారం పొందడానికి, మీరు మీ మొదటి స్క్రీన్‌కు విడ్జెట్‌లను జోడించవచ్చు"</string>
-    <!-- no translation found for reconfigurable_widget_education_tip (6336962690888067057) -->
-    <skip />
+    <string name="reconfigurable_widget_education_tip" msgid="6336962690888067057">"విడ్జెట్ సెట్టింగ్‌లను మార్చడానికి ట్యాప్ చేయండి"</string>
     <string name="widget_education_close_button" msgid="8676165703104836580">"అర్థమైంది"</string>
-    <!-- no translation found for widget_reconfigure_button_content_description (8811472721881205250) -->
-    <skip />
+    <string name="widget_reconfigure_button_content_description" msgid="8811472721881205250">"విడ్జెట్ సెట్టింగ్‌లను మార్చండి"</string>
     <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"అప్లికేషన్‌లను శోధించండి"</string>
     <string name="all_apps_loading_message" msgid="5813968043155271636">"అప్లికేషన్‌లను లోడ్ చేస్తోంది…"</string>
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"\"<xliff:g id="QUERY">%1$s</xliff:g>\"కి సరిపోలే అప్లికేషన్‌లేవీ కనుగొనబడలేదు"</string>
@@ -84,8 +82,10 @@
     <string name="permlab_write_settings" msgid="3574213698004620587">"హోమ్ సెట్టింగ్‌లు మరియు సత్వరమార్గాలను వ్రాయడం"</string>
     <string name="permdesc_write_settings" msgid="5440712911516509985">"హోమ్‌లో సెట్టింగ్‌లు మరియు సత్వరమార్గాలను మార్చడానికి యాప్‌ను అనుమతిస్తుంది."</string>
     <string name="msg_no_phone_permission" msgid="9208659281529857371">"ఫోన్ కాల్‌లను చేసేందుకు <xliff:g id="APP_NAME">%1$s</xliff:g>కి అనుమతి లేదు"</string>
-    <string name="gadget_error_text" msgid="6081085226050792095">"విడ్జెట్‌ను లోడ్ చేయడంలో సమస్య"</string>
-    <string name="gadget_setup_text" msgid="8274003207686040488">"సెటప్ చేయి"</string>
+    <!-- no translation found for gadget_error_text (740356548025791839) -->
+    <skip />
+    <!-- no translation found for gadget_setup_text (1745356155479272374) -->
+    <skip />
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"ఇది సిస్టమ్ యాప్ మరియు దీన్ని అన్‌ఇన్‌స్టాల్ చేయడం సాధ్యపడదు."</string>
     <string name="folder_hint_text" msgid="5174843001373488816">"పేరును ఎడిట్ చేయండి"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"<xliff:g id="APP_NAME">%1$s</xliff:g> నిలిపివేయబడింది"</string>

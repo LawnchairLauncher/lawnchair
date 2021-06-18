@@ -84,8 +84,10 @@
     <string name="permlab_write_settings" msgid="3574213698004620587">"уписивање подешавања и пречица на почетном екрану"</string>
     <string name="permdesc_write_settings" msgid="5440712911516509985">"Дозвољава апликацији да мења подешавања и пречице на почетном екрану."</string>
     <string name="msg_no_phone_permission" msgid="9208659281529857371">"<xliff:g id="APP_NAME">%1$s</xliff:g> нема дозволу за упућивање телефонских позива"</string>
-    <string name="gadget_error_text" msgid="6081085226050792095">"Проблем при учитавању виџета"</string>
-    <string name="gadget_setup_text" msgid="8274003207686040488">"Подешавање"</string>
+    <!-- no translation found for gadget_error_text (740356548025791839) -->
+    <skip />
+    <!-- no translation found for gadget_setup_text (1745356155479272374) -->
+    <skip />
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"Ово је системска апликација и не може да се деинсталира."</string>
     <string name="folder_hint_text" msgid="5174843001373488816">"Измените назив"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"Апликација <xliff:g id="APP_NAME">%1$s</xliff:g> је онемогућена"</string>
@@ -159,8 +161,7 @@
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"Личне"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"Пословне"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"Пословни профил"</string>
-    <!-- no translation found for work_profile_edu_work_apps (7895468576497746520) -->
-    <skip />
+    <string name="work_profile_edu_work_apps" msgid="7895468576497746520">"Пословне апликације су означене значком и ИТ администратор може да их види"</string>
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"Важи"</string>
     <string name="work_apps_paused_title" msgid="3007471013401118920">"Пословне апликације су искључене"</string>
     <string name="work_apps_paused_body" msgid="261634750995824906">"Пословне апликације не могу да вам шаљу обавештења, користе батерију нити приступају локацији"</string>
