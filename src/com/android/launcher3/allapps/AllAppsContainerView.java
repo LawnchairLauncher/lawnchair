@@ -255,7 +255,6 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
             mWorkModeSwitch.updateCurrentState(isEnabled);
         }
         mWorkAdapterProvider.updateCurrentState(isEnabled);
-        mAH[AdapterHolder.WORK].applyPadding();
     }
 
     private void hideInput() {
@@ -509,7 +508,10 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
                     R.layout.work_mode_fab, this, false);
             this.addView(mWorkModeSwitch);
             mWorkModeSwitch.setInsets(mInsets);
-            mWorkModeSwitch.post(this::resetWorkProfile);
+            mWorkModeSwitch.post(() -> {
+                mAH[AdapterHolder.WORK].applyPadding();
+                resetWorkProfile();
+            });
         }
     }
 
@@ -633,6 +635,7 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
             mSearchModeWhileUsingTabs = true;
             rebindAdapters(false); // hide tabs
         }
+        mHeader.setCollapsed(true);
     }
 
     public void onClearSearchResult() {
@@ -715,7 +718,7 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
         if (mHeaderPaint.getColor() != mScrimColor && mHeaderPaint.getColor() != 0) {
             int bottom = mUsingTabs && mHeader.mHeaderCollapsed ? mHeader.getVisibleBottomBound()
                     : mSearchContainer.getBottom();
-            canvas.drawRect(0, 0, getWidth(), bottom + getTranslationY(),
+            canvas.drawRect(0, 0, canvas.getWidth(), bottom + getTranslationY(),
                     mHeaderPaint);
         }
     }
@@ -783,7 +786,6 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
                 int bottomOffset = mWorkModeSwitch != null && mIsWork ? switchH : 0;
                 recyclerView.setPadding(padding.left, padding.top, padding.right,
                         padding.bottom + bottomOffset);
-                recyclerView.scrollToTop();
             }
         }
 

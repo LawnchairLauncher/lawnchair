@@ -394,7 +394,7 @@
     <string name="work_profile_edu_accept">Got it</string>
 
     <!--- heading shown when user opens work apps tab while work apps are paused -->
-    <string name="work_apps_paused_title">Work apps are off</string>
+    <string name="work_apps_paused_title">Work apps are paused</string>
     <!--- body shown when user opens work apps tab while work apps are paused -->
     <string name="work_apps_paused_body">Your work apps can’t send you notifications, use your battery, or access your location</string>
     <!-- content description for paused work apps list -->
