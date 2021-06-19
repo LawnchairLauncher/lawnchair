@@ -158,8 +158,7 @@
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"ਨਿੱਜੀ"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"ਕੰਮ ਸੰਬੰਧੀ"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"ਕਾਰਜ ਪ੍ਰੋਫਾਈਲ"</string>
-    <!-- no translation found for work_profile_edu_work_apps (7895468576497746520) -->
-    <skip />
+    <string name="work_profile_edu_work_apps" msgid="7895468576497746520">"ਕੰਮ ਸੰਬੰਧੀ ਐਪਾਂ ਨੂੰ ਬੈਜ ਕੀਤਾ ਜਾਂਦਾ ਹੈ ਅਤੇ ਇਹ ਤੁਹਾਡੇ ਆਈ.ਟੀ. ਪ੍ਰਸ਼ਾਸਕ ਨੂੰ ਦਿਸਣਗੀਆਂ"</string>
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"ਸਮਝ ਲਿਆ"</string>
     <string name="work_apps_paused_title" msgid="3007471013401118920">"ਕੰਮ ਸੰਬੰਧੀ ਐਪਾਂ ਬੰਦ ਹਨ"</string>
     <string name="work_apps_paused_body" msgid="261634750995824906">"ਤੁਹਾਡੀਆਂ ਕੰਮ ਸੰਬੰਧੀ ਐਪਾਂ ਤੁਹਾਨੂੰ ਸੂਚਨਾਵਾਂ ਨਹੀਂ ਭੇਜ ਸਕਦੀਆਂ, ਤੁਹਾਡੀ ਬੈਟਰੀ ਨਹੀਂ ਵਰਤ ਸਕਦੀਆਂ ਜਾਂ ਤੁਹਾਡੇ ਟਿਕਾਣੇ ਤੱਕ ਪਹੁੰਚ ਨਹੀਂ ਕਰ ਸਕਦੀਆਂ"</string>
