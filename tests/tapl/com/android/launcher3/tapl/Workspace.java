@@ -63,7 +63,7 @@ public final class Workspace extends Home {
     /**
      * Swipes up to All Apps.
      *
-     * @return the App Apps object.
+     * @return the All Apps object.
      */
     @NonNull
     public AllApps switchToAllApps() {
