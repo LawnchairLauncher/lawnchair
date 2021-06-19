@@ -39,6 +39,7 @@
         <item name="popupColorPrimary">@color/popup_color_primary_light</item>
         <item name="popupColorSecondary">@color/popup_color_secondary_light</item>
         <item name="popupColorTertiary">@color/popup_color_tertiary_light</item>
+        <item name="popupNotificationDotColor">@color/popup_notification_dot_light</item>
         <item name="isMainColorDark">false</item>
         <item name="isWorkspaceDarkText">false</item>
         <item name="workspaceTextColor">@color/workspace_text_color_light</item>
@@ -107,6 +108,7 @@
         <item name="popupColorPrimary">@color/popup_color_primary_dark</item>
         <item name="popupColorSecondary">@color/popup_color_secondary_dark</item>
         <item name="popupColorTertiary">@color/popup_color_tertiary_dark</item>
+        <item name="popupNotificationDotColor">@color/popup_notification_dot_dark</item>
         <item name="widgetsTheme">@style/WidgetContainerTheme.Dark</item>
         <item name="folderDotColor">@color/folder_dot_color</item>
         <item name="folderFillColor">@color/folder_background_dark</item>

@@ -82,10 +82,8 @@
     <string name="permlab_write_settings" msgid="3574213698004620587">"gravar configurações e atalhos da tela inicial"</string>
     <string name="permdesc_write_settings" msgid="5440712911516509985">"Permite que o app altere as configurações e os atalhos na tela inicial."</string>
     <string name="msg_no_phone_permission" msgid="9208659281529857371">"<xliff:g id="APP_NAME">%1$s</xliff:g> não tem permissão para fazer chamadas"</string>
-    <!-- no translation found for gadget_error_text (740356548025791839) -->
-    <skip />
-    <!-- no translation found for gadget_setup_text (1745356155479272374) -->
-    <skip />
+    <string name="gadget_error_text" msgid="740356548025791839">"Não é possível carregar o widget"</string>
+    <string name="gadget_setup_text" msgid="1745356155479272374">"Toque para concluir a configuração"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"Este é um app do sistema e não pode ser desinstalado."</string>
     <string name="folder_hint_text" msgid="5174843001373488816">"Editar nome"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"<xliff:g id="APP_NAME">%1$s</xliff:g> desativado"</string>
