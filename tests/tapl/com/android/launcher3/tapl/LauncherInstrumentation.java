@@ -283,6 +283,11 @@ public final class LauncherInstrumentation {
                 .getParcelable(TestProtocol.TEST_INFO_RESPONSE_FIELD);
     }
 
+    public boolean isTablet() {
+        return getTestInfo(TestProtocol.REQUEST_IS_TABLET)
+                .getBoolean(TestProtocol.TEST_INFO_RESPONSE_FIELD);
+    }
+
     void setActiveContainer(VisibleContainer container) {
         sActiveContainer = new WeakReference<>(container);
     }
@@ -554,27 +559,33 @@ public final class LauncherInstrumentation {
     public String getNavigationModeMismatchError(boolean waitForCorrectState) {
         final int waitTime = waitForCorrectState ? WAIT_TIME_MS : 0;
         final NavigationModel navigationModel = getNavigationModel();
-
+        String resPackage = getNavigationButtonResPackage();
         if (navigationModel == NavigationModel.THREE_BUTTON) {
-            if (!mDevice.wait(Until.hasObject(By.res(SYSTEMUI_PACKAGE, "recent_apps")), waitTime)) {
+            if (!mDevice.wait(Until.hasObject(By.res(resPackage, "recent_apps")), waitTime)) {
                 return "Recents button not present in 3-button mode";
             }
         } else {
-            if (!mDevice.wait(Until.gone(By.res(SYSTEMUI_PACKAGE, "recent_apps")), waitTime)) {
+            if (!mDevice.wait(Until.gone(By.res(resPackage, "recent_apps")), waitTime)) {
                 return "Recents button is present in non-3-button mode";
             }
         }
 
         if (navigationModel == NavigationModel.ZERO_BUTTON) {
-            if (!mDevice.wait(Until.gone(By.res(SYSTEMUI_PACKAGE, "home")), waitTime)) {
+            if (!mDevice.wait(Until.gone(By.res(resPackage, "home")), waitTime)) {
                 return "Home button is present in gestural mode";
             }
         } else {
-            if (!mDevice.wait(Until.hasObject(By.res(SYSTEMUI_PACKAGE, "home")), waitTime)) {
+            if (!mDevice.wait(Until.hasObject(By.res(resPackage, "home")), waitTime)) {
                 return "Home button not present in non-gestural mode";
             }
         }
         return null;
+    }
+
+    private String getNavigationButtonResPackage() {
+        return isTablet() && getNavigationModel() == NavigationModel.THREE_BUTTON ?
+                getLauncherPackageName() :
+                SYSTEMUI_PACKAGE;
     }
 
     private UiObject2 verifyContainerType(ContainerType containerType) {
@@ -741,7 +752,7 @@ public final class LauncherInstrumentation {
                     }
 
                     runToState(
-                            waitForSystemUiObject("home")::click,
+                            waitForNavigationUiObject("home")::click,
                             NORMAL_STATE_ORDINAL,
                             !hasLauncherObject(WORKSPACE_RES_ID)
                                     && (hasLauncherObject(APPS_RES_ID)
@@ -888,6 +899,15 @@ public final class LauncherInstrumentation {
         final UiObject2 object = mDevice.wait(
                 Until.findObject(By.res(SYSTEMUI_PACKAGE, resId)), WAIT_TIME_MS);
         assertNotNull("Can't find a systemui object with id: " + resId, object);
+        return object;
+    }
+
+    @NonNull
+    UiObject2 waitForNavigationUiObject(String resId) {
+        String resPackage = getNavigationButtonResPackage();
+        final UiObject2 object = mDevice.wait(
+                Until.findObject(By.res(resPackage, resId)), WAIT_TIME_MS);
+        assertNotNull("Can't find a navigation UI object with id: " + resId, object);
         return object;
     }
 

@@ -136,7 +136,7 @@ public class Background extends LauncherInstrumentation.VisibleContainer {
             case THREE_BUTTON:
                 mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN, SQUARE_BUTTON_EVENT);
                 mLauncher.runToState(
-                        () -> mLauncher.waitForSystemUiObject("recent_apps").click(),
+                        () -> mLauncher.waitForNavigationUiObject("recent_apps").click(),
                         OVERVIEW_STATE_ORDINAL);
                 break;
         }
@@ -224,7 +224,7 @@ public class Background extends LauncherInstrumentation.VisibleContainer {
 
                 case THREE_BUTTON:
                     // Double press the recents button.
-                    UiObject2 recentsButton = mLauncher.waitForSystemUiObject("recent_apps");
+                    UiObject2 recentsButton = mLauncher.waitForNavigationUiObject("recent_apps");
                     mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN, SQUARE_BUTTON_EVENT);
                     mLauncher.runToState(() -> recentsButton.click(), OVERVIEW_STATE_ORDINAL);
                     mLauncher.getOverview();
