@@ -191,9 +191,10 @@ public class OptionsPopupView extends ArrowPopup
     public static boolean startSettings(View view) {
         TestLogging.recordEvent(TestProtocol.SEQUENCE_MAIN, "start: startSettings");
         Launcher launcher = Launcher.getLauncher(view.getContext());
-        launcher.startActivity(new Intent(Intent.ACTION_APPLICATION_PREFERENCES)
+        Intent intent = new Intent(Intent.ACTION_APPLICATION_PREFERENCES)
                 .setPackage(launcher.getPackageName())
-                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        launcher.startActivitySafely(view, intent, dummyInfo(intent), null);
         return true;
     }
 
