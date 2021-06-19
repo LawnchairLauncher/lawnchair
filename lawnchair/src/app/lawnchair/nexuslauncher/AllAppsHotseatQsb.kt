@@ -2,7 +2,7 @@ package app.lawnchair.nexuslauncher
 
 import android.content.Context
 import android.content.res.Resources
-import android.graphics.Rect
+import android.graphics.*
 import android.text.Selection
 import android.text.Spannable
 import android.text.SpannableString
@@ -17,6 +17,7 @@ import android.widget.FrameLayout
 import androidx.recyclerview.widget.RecyclerView
 import app.lawnchair.allapps.LawnchairAppSearchAlgorithm
 import app.lawnchair.preferences.PreferenceManager
+import app.lawnchair.util.setCursorColor
 import com.android.launcher3.*
 import com.android.launcher3.allapps.AllAppsContainerView
 import com.android.launcher3.allapps.AllAppsStore
@@ -56,11 +57,13 @@ class AllAppsHotseatQsb @JvmOverloads constructor(context: Context, attrs: Attri
         super.onFinishInflate()
         mFallbackSearchView = findViewById(R.id.fallback_search_view)
         mSearchWrapperView = findViewById(R.id.search_wrapper_view)
+        val accentColor = Themes.getColorAccent(context)
         val spanned = SpannableString("  " + mFallbackSearchView.hint)
         spanned.setSpan(TintedDrawableSpan(context, R.drawable.ic_allapps_search),
                 0, 1, Spannable.SPAN_EXCLUSIVE_INCLUSIVE)
         mFallbackSearchView.hint = spanned
-        mFallbackSearchView.setHintTextColor(Themes.getColorAccent(context))
+        mFallbackSearchView.setHintTextColor(accentColor)
+        mFallbackSearchView.setCursorColor(accentColor)
     }
 
     override fun onAttachedToWindow() {
