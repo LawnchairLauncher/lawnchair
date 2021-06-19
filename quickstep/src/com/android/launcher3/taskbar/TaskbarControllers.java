@@ -61,7 +61,7 @@ public class TaskbarControllers {
      */
     public void init() {
         navbarButtonsViewController.init(this);
-        if (taskbarActivityContext.canShowNavButtons()) {
+        if (taskbarActivityContext.isThreeButtonNav()) {
             rotationButtonController.init();
         }
         taskbarDragLayerController.init(this);

@@ -1,7 +1,11 @@
 package com.android.launcher3.model;
 
+import static com.android.launcher3.Utilities.ATLEAST_S;
+
+import android.annotation.SuppressLint;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.Utilities;
@@ -58,5 +62,16 @@ public class WidgetItem extends ComponentKey {
             return true;
         }
         return false;
+    }
+
+    /** Returns whether this {@link WidgetItem} has a preview layout that can be used. */
+    @SuppressLint("NewApi") // Already added API check.
+    public boolean hasPreviewLayout() {
+        return ATLEAST_S && widgetInfo != null && widgetInfo.previewLayout != Resources.ID_NULL;
+    }
+
+    /** Returns whether this {@link WidgetItem} is for a shortcut rather than an app widget. */
+    public boolean isShortcut() {
+        return activityInfo != null;
     }
 }

@@ -26,6 +26,7 @@ import static com.android.launcher3.model.ModelUtils.sortWorkspaceItemsSpatially
 
 import android.annotation.TargetApi;
 import android.app.Fragment;
+import android.appwidget.AppWidgetHost;
 import android.appwidget.AppWidgetHostView;
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.Context;
@@ -83,6 +84,8 @@ import com.android.launcher3.util.IntSet;
 import com.android.launcher3.util.MainThreadInitializedObject;
 import com.android.launcher3.views.ActivityContext;
 import com.android.launcher3.views.BaseDragLayer;
+import com.android.launcher3.widget.BaseLauncherAppWidgetHostView;
+import com.android.launcher3.widget.LauncherAppWidgetHost;
 import com.android.launcher3.widget.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.widget.NavigableAppWidgetHostView;
 import com.android.launcher3.widget.custom.CustomWidgetManager;
@@ -202,6 +205,7 @@ public class LauncherPreviewRenderer extends ContextWrapper
     private final InsettableFrameLayout mRootView;
     private final Hotseat mHotseat;
     private final CellLayout mWorkspace;
+    private final AppWidgetHost mAppWidgetHost;
 
     public LauncherPreviewRenderer(Context context, InvariantDeviceProfile idp) {
         super(context);
@@ -255,6 +259,10 @@ public class LauncherPreviewRenderer extends ContextWrapper
                 mDp.workspacePadding.top,
                 mDp.workspacePadding.right + mDp.cellLayoutPaddingLeftRightPx,
                 mDp.workspacePadding.bottom);
+
+        mAppWidgetHost = FeatureFlags.WIDGETS_IN_LAUNCHER_PREVIEW.get()
+                ? new LauncherPreviewAppWidgetHost(context)
+                : null;
     }
 
     /** Populate preview and render it. */
@@ -354,14 +362,20 @@ public class LauncherPreviewRenderer extends ContextWrapper
 
     private void inflateAndAddWidgets(
             LauncherAppWidgetInfo info, LauncherAppWidgetProviderInfo providerInfo) {
-        AppWidgetHostView view = new NavigableAppWidgetHostView(this) {
-            @Override
-            protected boolean shouldAllowDirectClick() {
-                return false;
-            }
-        };
-        view.setAppWidget(-1, providerInfo);
-        view.updateAppWidget(null);
+        AppWidgetHostView view;
+        if (FeatureFlags.WIDGETS_IN_LAUNCHER_PREVIEW.get()) {
+            view = mAppWidgetHost.createView(mContext, info.appWidgetId, providerInfo);
+        } else {
+            view = new NavigableAppWidgetHostView(this) {
+                @Override
+                protected boolean shouldAllowDirectClick() {
+                    return false;
+                }
+            };
+            view.setAppWidget(-1, providerInfo);
+            view.updateAppWidget(null);
+        }
+
         view.setTag(info);
         addInScreenFromBind(view, info);
     }
@@ -476,5 +490,32 @@ public class LauncherPreviewRenderer extends ContextWrapper
     private static void measureView(View view, int width, int height) {
         view.measure(makeMeasureSpec(width, EXACTLY), makeMeasureSpec(height, EXACTLY));
         view.layout(0, 0, width, height);
+    }
+
+    private class LauncherPreviewAppWidgetHost extends AppWidgetHost {
+
+        private LauncherPreviewAppWidgetHost(Context context) {
+            super(context, LauncherAppWidgetHost.APPWIDGET_HOST_ID);
+        }
+
+        @Override
+        protected AppWidgetHostView onCreateView(
+                Context context,
+                int appWidgetId,
+                AppWidgetProviderInfo appWidget) {
+            return new LauncherPreviewAppWidgetHostView(LauncherPreviewRenderer.this);
+        }
+    }
+
+    private static class LauncherPreviewAppWidgetHostView extends BaseLauncherAppWidgetHostView {
+
+        private LauncherPreviewAppWidgetHostView(Context context) {
+            super(context);
+        }
+
+        @Override
+        protected boolean shouldAllowDirectClick() {
+            return false;
+        }
     }
 }

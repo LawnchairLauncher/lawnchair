@@ -90,12 +90,17 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
         mHotseatController.init();
         mLauncher.setTaskbarUIController(this);
         mKeyguardController = taskbarControllers.taskbarKeyguardController;
+
         onLauncherResumedOrPaused(mLauncher.hasBeenResumed());
         mIconAlignmentForResumedState.finishAnimation();
+        onIconAlignmentRatioChanged();
     }
 
     @Override
     protected void onDestroy() {
+        mIconAlignmentForResumedState.finishAnimation();
+        mIconAlignmentForGestureState.finishAnimation();
+
         mHotseatController.cleanup();
         setTaskbarViewVisible(true);
         mLauncher.getHotseat().setIconsAlpha(1f);
