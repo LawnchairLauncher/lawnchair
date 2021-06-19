@@ -254,9 +254,8 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
         mFolderName.forceDisableSuggestions(true);
 
         @ColorInt int accentColor = Themes.getColorAccent(mFolderName.getContext());
-        EditTextExtensions editTextExtensions = EditTextExtensions.INSTANCE;
-        editTextExtensions.setCursorColor(mFolderName, accentColor);
-        editTextExtensions.setTextSelectHandleColor(mFolderName, accentColor);
+        EditTextExtensions.setCursorColor(mFolderName, accentColor);
+        EditTextExtensions.setTextSelectHandleColor(mFolderName, accentColor);
 
         if (Utilities.ATLEAST_OREO) {
             mFolderName.setHighlightColor(
