@@ -46,8 +46,8 @@ public class LauncherInitListener extends ActivityInitListener<Launcher> {
     @Override
     public boolean handleInit(Launcher launcher, boolean alreadyOnHome) {
         if (mRemoteAnimationProvider != null) {
-            QuickstepAppTransitionManagerImpl appTransitionManager =
-                    (QuickstepAppTransitionManagerImpl) launcher.getAppTransitionManager();
+            QuickstepTransitionManager appTransitionManager =
+                    ((BaseQuickstepLauncher) launcher).getAppTransitionManager();
 
             // Set a one-time animation provider. After the first call, this will get cleared.
             // TODO: Probably also check the intended target id.

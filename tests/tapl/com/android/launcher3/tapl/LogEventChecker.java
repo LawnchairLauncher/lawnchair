@@ -57,6 +57,8 @@ public class LogEventChecker {
         while (true) {
             rawEvents = mLauncher.getTestInfo(TestProtocol.REQUEST_GET_TEST_EVENTS)
                     .getStringArrayList(TestProtocol.TEST_INFO_RESPONSE_FIELD);
+            if (rawEvents == null) return null;
+
             final int expectedCount = mExpectedEvents.entrySet()
                     .stream().mapToInt(e -> e.getValue().size()).sum();
             if (rawEvents.size() >= expectedCount
@@ -83,6 +85,7 @@ public class LogEventChecker {
 
     String verify(long waitForExpectedCountMs, boolean successfulGesture) {
         final ListMap<String> actualEvents = finishSync(waitForExpectedCountMs);
+        if (actualEvents == null) return "null event sequences because launcher likely died";
 
         final StringBuilder sb = new StringBuilder();
         boolean hasMismatches = false;
@@ -91,8 +94,7 @@ public class LogEventChecker {
 
             List<String> actual = new ArrayList<>(actualEvents.getNonNull(sequence));
             final int mismatchPosition = getMismatchPosition(expectedEvents.getValue(), actual);
-            hasMismatches = hasMismatches
-                    || mismatchPosition != -1 && !ignoreMistatch(successfulGesture, sequence);
+            hasMismatches = hasMismatches || mismatchPosition != -1;
             formatSequenceWithMismatch(
                     sb,
                     sequence,
@@ -103,8 +105,7 @@ public class LogEventChecker {
         // Check for unexpected event sequences in the actual data.
         for (String actualNamedSequence : actualEvents.keySet()) {
             if (!mExpectedEvents.containsKey(actualNamedSequence)) {
-                hasMismatches = hasMismatches
-                        || !ignoreMistatch(successfulGesture, actualNamedSequence);
+                hasMismatches = true;
                 formatSequenceWithMismatch(
                         sb,
                         actualNamedSequence,
@@ -114,14 +115,7 @@ public class LogEventChecker {
             }
         }
 
-        return hasMismatches ? "mismatching events: " + sb.toString() : null;
-    }
-
-    // Workaround for b/154157191
-    private static boolean ignoreMistatch(boolean successfulGesture, String sequence) {
-        // b/156287114
-        return false;
-//        return TestProtocol.SEQUENCE_TIS.equals(sequence) && successfulGesture;
+        return hasMismatches ? "Mismatching events: " + sb.toString() : null;
     }
 
     // If the list of actual events matches the list of expected events, returns -1, otherwise
