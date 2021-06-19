@@ -53,6 +53,9 @@
     <color name="popup_color_secondary_dark">#202124</color>
     <color name="popup_color_tertiary_dark">#757575</color> <!-- Gray 600 -->
 
+    <color name="popup_notification_dot_light">#FFF</color>
+    <color name="popup_notification_dot_dark">#757575</color>
+
     <color name="workspace_text_color_light">#FFF</color>
     <color name="workspace_text_color_dark">#FF000000</color>
 
