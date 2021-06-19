@@ -23,6 +23,8 @@ import android.view.inputmethod.InputMethodManager;
 
 import androidx.annotation.IntDef;
 
+import com.android.launcher3.testing.TestLogging;
+import com.android.launcher3.testing.TestProtocol;
 import com.android.quickstep.OverviewCommandHelper;
 import com.android.quickstep.SystemUiProxy;
 import com.android.quickstep.TouchInteractionService;
@@ -94,6 +96,7 @@ public class TaskbarNavButtonController {
     }
 
     private void navigateToOverview() {
+        TestLogging.recordEvent(TestProtocol.SEQUENCE_MAIN, "onOverviewToggle");
         mService.getOverviewCommandHelper().addCommand(OverviewCommandHelper.TYPE_TOGGLE);
     }
 
