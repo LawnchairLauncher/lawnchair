@@ -82,10 +82,8 @@
     <string name="permlab_write_settings" msgid="3574213698004620587">"escribir configuración y accesos directos de la pantalla principal"</string>
     <string name="permdesc_write_settings" msgid="5440712911516509985">"Permite que la aplicación cambie la configuración y los accesos directos de la pantalla principal."</string>
     <string name="msg_no_phone_permission" msgid="9208659281529857371">"<xliff:g id="APP_NAME">%1$s</xliff:g> no puede realizar llamadas telefónicas"</string>
-    <!-- no translation found for gadget_error_text (740356548025791839) -->
-    <skip />
-    <!-- no translation found for gadget_setup_text (1745356155479272374) -->
-    <skip />
+    <string name="gadget_error_text" msgid="740356548025791839">"No se puede cargar el widget"</string>
+    <string name="gadget_setup_text" msgid="1745356155479272374">"Presiona para finalizar la configuración"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"Esta es una aplicación del sistema y no se puede desinstalar."</string>
     <string name="folder_hint_text" msgid="5174843001373488816">"Editar nombre"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"Se inhabilitó <xliff:g id="APP_NAME">%1$s</xliff:g>"</string>

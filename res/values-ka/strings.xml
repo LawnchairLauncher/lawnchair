@@ -82,10 +82,8 @@
     <string name="permlab_write_settings" msgid="3574213698004620587">"მთავარი ეკრანის პარამეტრებისა და მალსახმობების ჩაწერა"</string>
     <string name="permdesc_write_settings" msgid="5440712911516509985">"აპისთვის მთავარი ეკრანის პარამეტრებისა და მალსახმობების შეცვლის უფლების მიცემა."</string>
     <string name="msg_no_phone_permission" msgid="9208659281529857371">"<xliff:g id="APP_NAME">%1$s</xliff:g>-ს არ აქვს სატელეფონო ზარების განხორციელების უფლება"</string>
-    <!-- no translation found for gadget_error_text (740356548025791839) -->
-    <skip />
-    <!-- no translation found for gadget_setup_text (1745356155479272374) -->
-    <skip />
+    <string name="gadget_error_text" msgid="740356548025791839">"ვიჯეტის ჩატვირთვა ვერ ხერხდება"</string>
+    <string name="gadget_setup_text" msgid="1745356155479272374">"შეეხეთ დაყენების დასასრულებლად"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"ეს სისტემური აპია და მისი წაშლა შეუძლებელია."</string>
     <string name="folder_hint_text" msgid="5174843001373488816">"სახელის რედაქტირება"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"<xliff:g id="APP_NAME">%1$s</xliff:g> გაითიშა"</string>
