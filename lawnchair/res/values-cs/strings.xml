@@ -71,7 +71,7 @@
     <string name="hidden_apps_label_with_count">Skryté aplikace (%1$d)</string>
     <plurals name="apps_count">
         <item quantity="one">%1$d Aplikace</item>
-        <item quantity="few">%1$d Apps</item>
+        <item quantity="few">%1$d Aplikace</item>
         <item quantity="many">%1$d Aplikace</item>
         <item quantity="other">%1$d Aplikace</item>
     </plurals>
@@ -90,13 +90,13 @@
     <string name="theme_light">Světlé</string>
     <string name="theme_dark">Tmavé</string>
     <string name="theme_system_default">Jako systémové</string>
-    <string name="theme_follow_wallpaper">Match Wallpaper</string>
-    <string name="quickstep_label">Recents</string>
-    <string name="clear_all_as_action_label">Show “Clear all” at bottom</string>
-    <string name="window_corner_radius_label">Corner radius</string>
-    <string name="override_window_corner_radius_label">Custom corner radius</string>
-    <string name="override_window_corner_radius_description">If the default doesn\'t match your screen</string>
-    <string name="system_icons">System Icons</string>
-    <string name="accent_color">Accent Color</string>
-    <string name="done">Done</string>
+    <string name="theme_follow_wallpaper">Vybráno z tapety</string>
+    <string name="quickstep_label">Předešlé</string>
+    <string name="clear_all_as_action_label">Zobrazit \"Vymazat vše\" na spodu</string>
+    <string name="window_corner_radius_label">Poloměr rohu</string>
+    <string name="override_window_corner_radius_label">Vlastní poloměr rohu</string>
+    <string name="override_window_corner_radius_description">Je-li výchozí nastavení nekompatibilní s displayem</string>
+    <string name="system_icons">Systémové Ikony</string>
+    <string name="accent_color">Barva odstínu</string>
+    <string name="done">Hotovo</string>
 </resources>
