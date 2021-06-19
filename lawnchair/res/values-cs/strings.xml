@@ -86,10 +86,10 @@
     <string name="minus_one_unavailable">Není nainstalován žádný kanál.</string>
     <string name="fuzzy_search_title">Fuzzy hledání</string>
     <string name="fuzzy_search_desc">Přibližné vyhledávání aplikací.</string>
-    <string name="theme_label">Theme</string>
-    <string name="theme_light">Light</string>
-    <string name="theme_dark">Dark</string>
-    <string name="theme_system_default">Follow System</string>
+    <string name="theme_label">Motiv</string>
+    <string name="theme_light">Světlé</string>
+    <string name="theme_dark">Tmavé</string>
+    <string name="theme_system_default">Jako systémové</string>
     <string name="theme_follow_wallpaper">Match Wallpaper</string>
     <string name="quickstep_label">Recents</string>
     <string name="clear_all_as_action_label">Show “Clear all” at bottom</string>
