@@ -36,6 +36,7 @@
     <attr name="iconOnlyShortcutColor" format="color" />
     <attr name="eduHalfSheetBGColor" format="color" />
     <attr name="overviewScrimColor" format="color" />
+    <attr name="popupNotificationDotColor" format="color" />
 
     <attr name="folderDotColor" format="color" />
     <attr name="folderFillColor" format="color" />
