@@ -16,9 +16,6 @@
 
 package com.android.launcher3.widget;
 
-import static com.android.launcher3.Utilities.getBoundsForViewInDragLayer;
-import static com.android.launcher3.Utilities.setRect;
-
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.Context;
 import android.content.res.Configuration;
@@ -51,6 +48,7 @@ import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.dragndrop.DragLayer;
+import com.android.launcher3.keyboard.ViewGroupFocusHelper;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.LauncherAppWidgetInfo;
 import com.android.launcher3.util.Executors;
@@ -102,7 +100,6 @@ public class LauncherAppWidgetHostView extends NavigableAppWidgetHostView
     private final Rect mCurrentWidgetSize = new Rect();
     private final Rect mWidgetSizeAtDrag = new Rect();
 
-    private final float[] mTmpFloatArray = new float[4];
     private final RectF mTempRectF = new RectF();
     private final Rect mEnforcedRectangle = new Rect();
     private final float mEnforcedCornerRadius;
@@ -117,6 +114,7 @@ public class LauncherAppWidgetHostView extends NavigableAppWidgetHostView
         }
     };
     private final Object mUpdateLock = new Object();
+    private final ViewGroupFocusHelper mDragLayerRelativeCoordinateHelper;
     private long mDeferUpdatesUntilMillis = 0;
     private RemoteViews mMostRecentRemoteViews;
 
@@ -137,6 +135,7 @@ public class LauncherAppWidgetHostView extends NavigableAppWidgetHostView
         mColorExtractor.setListener(this);
 
         mEnforcedCornerRadius = RoundedCornerEnforcement.computeEnforcedRadius(getContext());
+        mDragLayerRelativeCoordinateHelper = new ViewGroupFocusHelper(mLauncher.getDragLayer());
     }
 
     @Override
@@ -325,15 +324,9 @@ public class LauncherAppWidgetHostView extends NavigableAppWidgetHostView
 
         mIsScrollable = checkScrollableRecursively(this);
         if (!mIsInDragMode && getTag() instanceof LauncherAppWidgetInfo) {
-            mCurrentWidgetSize.left = left;
-            mCurrentWidgetSize.right = right;
-            mCurrentWidgetSize.top = top;
-            mCurrentWidgetSize.bottom = bottom;
 
             LauncherAppWidgetInfo info = (LauncherAppWidgetInfo) getTag();
-            getBoundsForViewInDragLayer(mLauncher.getDragLayer(), (View) getParent(),
-                    mCurrentWidgetSize, true, mTmpFloatArray, mTempRectF);
-            setRect(mTempRectF, mCurrentWidgetSize);
+            mDragLayerRelativeCoordinateHelper.viewToRect(this, mCurrentWidgetSize);
             updateColorExtraction(mCurrentWidgetSize,
                     mWorkspace.getPageIndexForScreenId(info.screenId));
         }
@@ -358,7 +351,6 @@ public class LauncherAppWidgetHostView extends NavigableAppWidgetHostView
         mIsInDragMode = false;
         mDragListener = null;
         mWidgetSizeAtDrag.setEmpty();
-        requestLayout();
     }
 
     /**

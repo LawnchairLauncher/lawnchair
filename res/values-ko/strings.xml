@@ -82,8 +82,10 @@
     <string name="permlab_write_settings" msgid="3574213698004620587">"홈 설정 및 바로가기 쓰기"</string>
     <string name="permdesc_write_settings" msgid="5440712911516509985">"앱이 홈에 있는 설정 및 바로가기를 변경할 수 있도록 합니다."</string>
     <string name="msg_no_phone_permission" msgid="9208659281529857371">"<xliff:g id="APP_NAME">%1$s</xliff:g>에서 전화를 걸 수 없습니다."</string>
-    <string name="gadget_error_text" msgid="6081085226050792095">"위젯을 로드하는 중 문제가 발생했습니다."</string>
-    <string name="gadget_setup_text" msgid="8274003207686040488">"설정"</string>
+    <!-- no translation found for gadget_error_text (740356548025791839) -->
+    <skip />
+    <!-- no translation found for gadget_setup_text (1745356155479272374) -->
+    <skip />
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"시스템 앱은 제거할 수 없습니다."</string>
     <string name="folder_hint_text" msgid="5174843001373488816">"이름 수정"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"<xliff:g id="APP_NAME">%1$s</xliff:g> 사용 안함"</string>
@@ -156,8 +158,7 @@
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"개인"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"직장"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"직장 프로필"</string>
-    <!-- no translation found for work_profile_edu_work_apps (7895468576497746520) -->
-    <skip />
+    <string name="work_profile_edu_work_apps" msgid="7895468576497746520">"직장 앱에는 배지가 있으며, IT 관리자는 직장 앱을 확인할 수 있습니다"</string>
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"확인"</string>
     <string name="work_apps_paused_title" msgid="3007471013401118920">"직장 앱이 꺼져 있음"</string>
     <string name="work_apps_paused_body" msgid="261634750995824906">"직장 앱에서 알림을 보내거나 배터리를 사용하거나 위치 정보에 액세스할 수 없습니다."</string>
