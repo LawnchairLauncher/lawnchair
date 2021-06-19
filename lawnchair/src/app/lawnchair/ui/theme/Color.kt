@@ -24,16 +24,10 @@ fun lightenColor(@ColorInt color: Int): Int {
     return ColorUtils.HSLToColor(outHsl)
 }
 
-@Suppress("DEPRECATION") // use Resources.getColor(int) directly because we don't need the theme
 fun Context.getDefaultAccentColor(darkTheme: Boolean): Int {
-    val res = resources
+    val colorScheme = ColorSchemeCache.INSTANCE.get(this).defaultColorScheme
     return when {
-        Utilities.ATLEAST_S -> {
-            val colorName = if (darkTheme) "system_accent1_100" else "system_accent1_600"
-            val colorId = res.getIdentifier(colorName, "color", "android")
-            res.getColor(colorId)
-        }
-        darkTheme -> res.getColor(R.color.primary_200)
-        else -> res.getColor(R.color.primary_500)
+        darkTheme -> colorScheme.primaryDark.toSrgb().quantize8()
+        else -> colorScheme.primary.toSrgb().quantize8()
     }
 }
