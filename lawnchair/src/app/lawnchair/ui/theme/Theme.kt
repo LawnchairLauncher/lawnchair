@@ -32,6 +32,8 @@ import app.lawnchair.ui.preferences.components.ThemeChoice
 import app.lawnchair.util.androidColorId
 import com.android.launcher3.Utilities
 import com.android.launcher3.uioverrides.WallpaperColorInfo
+import dev.kdrag0n.android12ext.monet.theme.DynamicColorScheme
+import dev.kdrag0n.android12ext.monet.theme.TargetColors
 
 @Composable
 fun LawnchairTheme(
@@ -51,12 +53,14 @@ fun getColors(darkTheme: Boolean): Colors {
     val context = LocalContext.current
     val prefs = PreferenceManager.getInstance(context)
     val customColor = prefs.accentColor.observeAsState().value
-    val accentColor = remember(darkTheme, customColor) { Color(context.getAccentColor(darkTheme)) }
+    val rawAccentColor = remember(darkTheme, customColor) { context.getAccentColor(darkTheme) }
+    val accentColor = Color(rawAccentColor)
+    val colorScheme = remember(rawAccentColor) { DynamicColorScheme(TargetColors(), rawAccentColor) }
     return when {
         Utilities.ATLEAST_S -> {
             if (darkTheme) {
-                val surface = colorResource(id = androidColorId(name = "system_neutral1_800"))
                 val background = colorResource(id = androidColorId(name = "system_neutral1_900"))
+                val surface = colorResource(id = androidColorId(name = "system_neutral1_800"))
                 darkColors(
                     primary = accentColor,
                     secondary = accentColor,
@@ -64,8 +68,8 @@ fun getColors(darkTheme: Boolean): Colors {
                     surface = surface
                 )
             } else {
-                val surface = colorResource(id = androidColorId(name = "system_neutral1_100"))
                 val background = colorResource(id = androidColorId(name = "system_neutral1_50"))
+                val surface = colorResource(id = androidColorId(name = "system_neutral1_100"))
                 lightColors(
                     primary = accentColor,
                     secondary = accentColor,
@@ -74,8 +78,18 @@ fun getColors(darkTheme: Boolean): Colors {
                 )
             }
         }
-        darkTheme -> darkColors(primary = accentColor, secondary = accentColor)
-        else -> lightColors(primary = accentColor, secondary = accentColor)
+        darkTheme -> darkColors(
+            primary = accentColor,
+            secondary = accentColor,
+            background = colorScheme.neutral1[900]!!.toComposeColor(),
+            surface = colorScheme.neutral1[800]!!.toComposeColor()
+        )
+        else -> lightColors(
+            primary = accentColor,
+            secondary = accentColor,
+            background = colorScheme.neutral1[50]!!.toComposeColor(),
+            surface = colorScheme.neutral1[100]!!.toComposeColor()
+        )
     }
 }
 
