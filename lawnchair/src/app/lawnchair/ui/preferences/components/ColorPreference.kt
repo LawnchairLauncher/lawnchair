@@ -3,10 +3,8 @@ package app.lawnchair.ui.preferences.components
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.animateDpAsState
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.*
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
@@ -138,14 +136,19 @@ fun <T> ColorSwatch(
     Box(modifier = modifier
         .aspectRatio(1F)
         .height(IntrinsicSize.Min)
-        .width(IntrinsicSize.Min)) {
+        .width(IntrinsicSize.Min)
+        .clickable(
+            onClick = onClick,
+            indication = null,
+            interactionSource = remember { MutableInteractionSource() }
+        )
+    ) {
         Box(
             contentAlignment = Alignment.Center,
             modifier = Modifier
                 .padding(6.dp)
                 .clip(CircleShape)
                 .addIf(lightColor == darkColor) { background(lightColor) }
-                .clickable { onClick() }
         ) {
             if (lightColor != darkColor) {
                 Image(painter = ColorSwatchPainter(lightColor, darkColor), contentDescription = "", modifier = Modifier.clip(
