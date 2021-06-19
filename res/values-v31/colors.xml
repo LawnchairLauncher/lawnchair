@@ -25,6 +25,9 @@
     <color name="popup_color_secondary_dark">@android:color/system_neutral1_900</color>
     <color name="popup_color_tertiary_dark">@android:color/system_neutral2_700</color>
 
+    <color name="popup_notification_dot_light">@android:color/system_accent1_100</color>
+    <color name="popup_notification_dot_dark">@android:color/system_accent2_600</color>
+
     <color name="workspace_text_color_light">@android:color/system_neutral1_0</color>
     <color name="workspace_text_color_dark">@android:color/system_neutral1_1000</color>
 

@@ -38,13 +38,14 @@ import android.widget.TextView;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.R;
-import com.android.launcher3.WidgetPreviewLoader;
 import com.android.launcher3.icons.BitmapInfo;
 import com.android.launcher3.icons.ComponentWithLabel;
 import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.model.WidgetItem;
 import com.android.launcher3.model.data.PackageItemInfo;
 import com.android.launcher3.testing.TestActivity;
+import com.android.launcher3.widget.CachingWidgetPreviewLoader;
+import com.android.launcher3.widget.DatabaseWidgetPreviewLoader;
 import com.android.launcher3.widget.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.widget.WidgetCell;
 import com.android.launcher3.widget.model.WidgetsListContentEntry;
@@ -85,7 +86,7 @@ public final class WidgetsListTableViewHolderBinderTest {
     @Mock
     private IconCache mIconCache;
     @Mock
-    private WidgetPreviewLoader mWidgetPreviewLoader;
+    private DatabaseWidgetPreviewLoader mWidgetPreviewLoader;
     @Mock
     private DeviceProfile mDeviceProfile;
 
@@ -113,11 +114,10 @@ public final class WidgetsListTableViewHolderBinderTest {
                 /* iconClickListener= */ view -> {},
                 /* iconLongClickListener= */ view -> false);
         mViewHolderBinder = new WidgetsListTableViewHolderBinder(
-                mContext,
                 LayoutInflater.from(mTestActivity),
                 mOnIconClickListener,
                 mOnLongClickListener,
-                mWidgetPreviewLoader,
+                new CachingWidgetPreviewLoader(mWidgetPreviewLoader),
                 new WidgetsListDrawableFactory(mTestActivity),
                 widgetsListAdapter);
     }

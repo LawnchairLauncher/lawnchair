@@ -18,7 +18,13 @@ package com.android.launcher3.shortcuts;
 
 import android.content.Context;
 import android.content.pm.ShortcutInfo;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.graphics.Point;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
+import android.graphics.drawable.RippleDrawable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
@@ -30,15 +36,19 @@ import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.popup.PopupContainerWithArrow;
+import com.android.launcher3.util.Themes;
 import com.android.launcher3.views.BubbleTextHolder;
 
 /**
- * A {@link android.widget.FrameLayout} that contains a {@link DeepShortcutView}.
- * This lets us animate the DeepShortcutView (icon and text) separately from the background.
+ * A {@link android.widget.FrameLayout} that contains an icon and a {@link BubbleTextView} for text.
+ * This lets us animate the child BubbleTextView's background (transparent ripple) separately from
+ * the {@link DeepShortcutView} background color.
  */
 public class DeepShortcutView extends FrameLayout implements BubbleTextHolder {
 
     private static final Point sTempPoint = new Point();
+
+    private final Drawable mTransparentDrawable = new ColorDrawable(Color.TRANSPARENT);
 
     private BubbleTextView mBubbleText;
     private View mIconView;
@@ -63,6 +73,43 @@ public class DeepShortcutView extends FrameLayout implements BubbleTextHolder {
         super.onFinishInflate();
         mBubbleText = findViewById(R.id.bubble_text);
         mIconView = findViewById(R.id.icon);
+        tryUpdateTextBackground();
+    }
+
+    @Override
+    public void setBackground(Drawable background) {
+        super.setBackground(background);
+        tryUpdateTextBackground();
+    }
+
+    @Override
+    public void setBackgroundResource(int resid) {
+        super.setBackgroundResource(resid);
+        tryUpdateTextBackground();
+    }
+
+    /**
+     * Updates the text background to match the shape of this background (when applicable).
+     */
+    private void tryUpdateTextBackground() {
+        if (!(getBackground() instanceof GradientDrawable) || mBubbleText == null) {
+            return;
+        }
+        GradientDrawable background = (GradientDrawable) getBackground();
+
+        int color = Themes.getAttrColor(getContext(), android.R.attr.colorControlHighlight);
+        GradientDrawable backgroundMask = new GradientDrawable();
+        backgroundMask.setColor(color);
+        backgroundMask.setShape(GradientDrawable.RECTANGLE);
+        if (background.getCornerRadii() != null) {
+            backgroundMask.setCornerRadii(background.getCornerRadii());
+        } else {
+            backgroundMask.setCornerRadius(background.getCornerRadius());
+        }
+
+        RippleDrawable drawable = new RippleDrawable(ColorStateList.valueOf(color),
+                mTransparentDrawable, backgroundMask);
+        mBubbleText.setBackground(drawable);
     }
 
     @Override

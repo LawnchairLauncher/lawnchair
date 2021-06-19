@@ -98,11 +98,11 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
 
     @Override
     protected void onDestroy() {
+        onLauncherResumedOrPaused(false);
         mIconAlignmentForResumedState.finishAnimation();
         mIconAlignmentForGestureState.finishAnimation();
 
         mHotseatController.cleanup();
-        setTaskbarViewVisible(true);
         mLauncher.getHotseat().setIconsAlpha(1f);
         mLauncher.setTaskbarUIController(null);
     }
