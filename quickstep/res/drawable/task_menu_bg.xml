@@ -14,25 +14,8 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:gravity="bottom">
-        <!-- Shadow -->
-        <shape>
-            <gradient android:angle="270"
-                android:endColor="@android:color/transparent"
-                android:startColor="#26000000" />
-            <size android:height="@dimen/task_card_menu_shadow_height" />
-        </shape>
-    </item>
-    <item android:bottom="@dimen/task_card_menu_shadow_height">
-        <!-- Background -->
-        <shape>
-            <corners
-                android:topLeftRadius="?android:attr/dialogCornerRadius"
-                android:topRightRadius="?android:attr/dialogCornerRadius"
-                android:bottomLeftRadius="0dp"
-                android:bottomRightRadius="0dp" />
-            <solid android:color="?attr/popupColorPrimary" />
-        </shape>
-    </item>
-</layer-list>
+
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <solid android:color="@android:color/transparent"/>
+    <corners android:radius="@dimen/task_menu_corner_radius"/>
+</shape>

@@ -16,16 +16,11 @@
 
 package com.android.launcher3.testing;
 
-import static android.graphics.Bitmap.Config.ARGB_8888;
-
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.os.Binder;
 import android.os.Bundle;
-import android.os.Debug;
 import android.system.Os;
 import android.view.View;
 
@@ -106,39 +101,14 @@ public class DebugTestInformationHandler extends TestInformationHandler {
                 return response;
             }
 
-            case TestProtocol.REQUEST_TOTAL_PSS_KB: {
+            case TestProtocol.REQUEST_FORCE_GC: {
                 runGcAndFinalizersSync();
-                Debug.MemoryInfo mem = new Debug.MemoryInfo();
-                Debug.getMemoryInfo(mem);
-                response.putInt(TestProtocol.TEST_INFO_RESPONSE_FIELD, mem.getTotalPss());
-                return response;
-            }
-
-            case TestProtocol.REQUEST_JAVA_LEAK: {
-                if (sLeaks == null) sLeaks = new LinkedList();
-
-                // Allocate and dirty the memory.
-                final int leakSize = 1024 * 1024;
-                final byte[] bytes = new byte[leakSize];
-                for (int i = 0; i < leakSize; i += 239) {
-                    bytes[i] = (byte) (i % 256);
-                }
-                sLeaks.add(bytes);
-                return response;
-            }
-
-            case TestProtocol.REQUEST_NATIVE_LEAK: {
-                if (sLeaks == null) sLeaks = new LinkedList();
-
-                // Allocate and dirty a bitmap.
-                final Bitmap bitmap = Bitmap.createBitmap(512, 512, ARGB_8888);
-                bitmap.eraseColor(Color.RED);
-                sLeaks.add(bitmap);
                 return response;
             }
 
             case TestProtocol.REQUEST_VIEW_LEAK: {
                 if (sLeaks == null) sLeaks = new LinkedList();
+                sLeaks.add(new View(mContext));
                 sLeaks.add(new View(mContext));
                 return response;
             }
@@ -164,6 +134,12 @@ public class DebugTestInformationHandler extends TestInformationHandler {
             }
 
             case TestProtocol.REQUEST_GET_TEST_EVENTS: {
+                if (sEvents == null) {
+                    // sEvents can be null if Launcher died and restarted after
+                    // REQUEST_START_EVENT_LOGGING.
+                    return response;
+                }
+
                 synchronized (sEvents) {
                     response.putStringArrayList(
                             TestProtocol.TEST_INFO_RESPONSE_FIELD, new ArrayList<>(sEvents));

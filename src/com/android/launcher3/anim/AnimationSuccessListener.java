@@ -40,24 +40,4 @@ public abstract class AnimationSuccessListener extends AnimatorListenerAdapter {
 
     public abstract void onAnimationSuccess(Animator animator);
 
-    /**
-     * Returns an AnimationSuccessListener which runs the provided action on success
-     */
-    public static AnimationSuccessListener forRunnable(Runnable r) {
-        return new RunnableSuccessListener(r);
-    }
-
-    private static class RunnableSuccessListener extends AnimationSuccessListener {
-
-        private final Runnable mRunnable;
-
-        private RunnableSuccessListener(Runnable r) {
-            mRunnable = r;
-        }
-
-        @Override
-        public void onAnimationSuccess(Animator animator) {
-            mRunnable.run();
-        }
-    }
 }

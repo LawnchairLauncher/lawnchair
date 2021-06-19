@@ -16,10 +16,11 @@
 
 package com.android.launcher3.dragndrop;
 
-import static com.android.launcher3.logging.LoggerUtils.newCommandAction;
-import static com.android.launcher3.logging.LoggerUtils.newContainerTarget;
-import static com.android.launcher3.logging.LoggerUtils.newItemTarget;
-import static com.android.launcher3.logging.LoggerUtils.newLauncherEvent;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ADD_EXTERNAL_ITEM_BACK;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ADD_EXTERNAL_ITEM_CANCELLED;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ADD_EXTERNAL_ITEM_DRAGGED;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ADD_EXTERNAL_ITEM_PLACED_AUTOMATICALLY;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ADD_EXTERNAL_ITEM_START;
 import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
 
 import android.annotation.TargetApi;
@@ -29,6 +30,7 @@ import android.content.ClipData;
 import android.content.ClipDescription;
 import android.content.Intent;
 import android.content.pm.LauncherApps.PinItemRequest;
+import android.content.res.Configuration;
 import android.graphics.Canvas;
 import android.graphics.Point;
 import android.graphics.PointF;
@@ -41,31 +43,41 @@ import android.view.View;
 import android.view.View.DragShadowBuilder;
 import android.view.View.OnLongClickListener;
 import android.view.View.OnTouchListener;
+import android.view.WindowManager;
+import android.widget.TextView;
 
 import com.android.launcher3.BaseActivity;
-import com.android.launcher3.InstallShortcutReceiver;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
-import com.android.launcher3.LauncherAppWidgetHost;
-import com.android.launcher3.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.R;
+import com.android.launcher3.logging.StatsLogManager;
+import com.android.launcher3.model.ItemInstallQueue;
 import com.android.launcher3.model.WidgetItem;
+import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.pm.PinRequestHelper;
-import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
-import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
-import com.android.launcher3.util.InstantAppResolver;
+import com.android.launcher3.util.SystemUiController;
+import com.android.launcher3.views.AbstractSlideInView;
 import com.android.launcher3.views.BaseDragLayer;
+import com.android.launcher3.widget.AddItemWidgetsBottomSheet;
+import com.android.launcher3.widget.LauncherAppWidgetHost;
+import com.android.launcher3.widget.LauncherAppWidgetProviderInfo;
+import com.android.launcher3.widget.NavigableAppWidgetHostView;
 import com.android.launcher3.widget.PendingAddShortcutInfo;
 import com.android.launcher3.widget.PendingAddWidgetInfo;
-import com.android.launcher3.widget.WidgetHostViewLoader;
+import com.android.launcher3.widget.WidgetCell;
+import com.android.launcher3.widget.WidgetCellPreview;
 import com.android.launcher3.widget.WidgetImageView;
 import com.android.launcher3.widget.WidgetManagerHelper;
 
 import java.util.function.Supplier;
 
+/**
+ * Activity to show pin widget dialog.
+ */
 @TargetApi(Build.VERSION_CODES.O)
-public class AddItemActivity extends BaseActivity implements OnLongClickListener, OnTouchListener {
+public class AddItemActivity extends BaseActivity
+        implements OnLongClickListener, OnTouchListener, AbstractSlideInView.OnCloseListener {
 
     private static final int SHADOW_SIZE = 10;
 
@@ -77,8 +89,10 @@ public class AddItemActivity extends BaseActivity implements OnLongClickListener
     private PinItemRequest mRequest;
     private LauncherAppState mApp;
     private InvariantDeviceProfile mIdp;
+    private BaseDragLayer<AddItemActivity> mDragLayer;
+    private AddItemWidgetsBottomSheet mSlideInView;
 
-    private LivePreviewWidgetCell mWidgetCell;
+    private WidgetCell mWidgetCell;
 
     // Widget request specific options.
     private LauncherAppWidgetHost mAppWidgetHost;
@@ -87,7 +101,6 @@ public class AddItemActivity extends BaseActivity implements OnLongClickListener
     private Bundle mWidgetOptions;
 
     private boolean mFinishOnPause = false;
-    private InstantAppResolver mInstantAppResolver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,13 +114,17 @@ public class AddItemActivity extends BaseActivity implements OnLongClickListener
 
         mApp = LauncherAppState.getInstance(this);
         mIdp = mApp.getInvariantDeviceProfile();
-        mInstantAppResolver = InstantAppResolver.newInstance(this);
 
         // Use the application context to get the device profile, as in multiwindow-mode, the
         // confirmation activity might be rotated.
         mDeviceProfile = mIdp.getDeviceProfile(getApplicationContext());
 
         setContentView(R.layout.add_item_confirmation_activity);
+        // Set flag to allow activity to draw over navigation and status bar.
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
+                WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
+        mDragLayer = findViewById(R.id.add_item_drag_layer);
+        mDragLayer.recreateControllers();
         mWidgetCell = findViewById(R.id.widget_cell);
 
         if (mRequest.getRequestType() == PinItemRequest.REQUEST_TYPE_SHORTCUT) {
@@ -119,14 +136,24 @@ public class AddItemActivity extends BaseActivity implements OnLongClickListener
             }
         }
 
-        mWidgetCell.setOnTouchListener(this);
-        mWidgetCell.setOnLongClickListener(this);
+        WidgetCellPreview previewContainer = mWidgetCell.findViewById(
+                R.id.widget_preview_container);
+        previewContainer.setOnTouchListener(this);
+        previewContainer.setOnLongClickListener(this);
 
         // savedInstanceState is null when the activity is created the first time (i.e., avoids
         // duplicate logging during rotation)
         if (savedInstanceState == null) {
-            logCommand(Action.Command.ENTRY);
+            logCommand(LAUNCHER_ADD_EXTERNAL_ITEM_START);
         }
+
+        TextView widgetAppName = findViewById(R.id.widget_appName);
+        widgetAppName.setText(getApplicationInfo().labelRes);
+
+        mSlideInView = findViewById(R.id.add_item_bottom_sheet);
+        mSlideInView.addOnCloseListener(this);
+        mSlideInView.show();
+        setupNavBarColor();
     }
 
     @Override
@@ -139,20 +166,31 @@ public class AddItemActivity extends BaseActivity implements OnLongClickListener
     public boolean onLongClick(View view) {
         // Find the position of the preview relative to the touch location.
         WidgetImageView img = mWidgetCell.getWidgetView();
+        NavigableAppWidgetHostView appWidgetHostView = mWidgetCell.getAppWidgetHostViewPreview();
 
         // If the ImageView doesn't have a drawable yet, the widget preview hasn't been loaded and
         // we abort the drag.
-        if (img.getBitmap() == null) {
+        if (img.getDrawable() == null && appWidgetHostView == null) {
             return false;
         }
 
-        Rect bounds = img.getBitmapBounds();
-        bounds.offset(img.getLeft() - (int) mLastTouchPos.x, img.getTop() - (int) mLastTouchPos.y);
-
+        final Rect bounds;
         // Start home and pass the draw request params
-        PinItemDragListener listener = new PinItemDragListener(mRequest, bounds,
-                img.getBitmap().getWidth(), img.getWidth());
-
+        final PinItemDragListener listener;
+        if (appWidgetHostView != null) {
+            bounds = new Rect();
+            appWidgetHostView.getSourceVisualDragBounds(bounds);
+            bounds.offset(appWidgetHostView.getLeft() - (int) mLastTouchPos.x,
+                    appWidgetHostView.getTop() - (int) mLastTouchPos.y);
+            listener = new PinItemDragListener(mRequest, bounds,
+                    appWidgetHostView.getMeasuredWidth(), appWidgetHostView.getMeasuredWidth());
+        } else {
+            bounds = img.getBitmapBounds();
+            bounds.offset(img.getLeft() - (int) mLastTouchPos.x,
+                    img.getTop() - (int) mLastTouchPos.y);
+            listener = new PinItemDragListener(mRequest, bounds,
+                    img.getDrawable().getIntrinsicWidth(), img.getWidth());
+        }
 
         // Start a system drag and drop. We use a transparent bitmap as preview for system drag
         // as the preview is handled internally by launcher.
@@ -174,10 +212,11 @@ public class AddItemActivity extends BaseActivity implements OnLongClickListener
                         .addCategory(Intent.CATEGORY_HOME)
                         .setPackage(getPackageName())
                         .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        Launcher.ACTIVITY_TRACKER.runCallbackWhenActivityExists(listener, homeIntent);
+        Launcher.ACTIVITY_TRACKER.registerCallback(listener);
         startActivity(homeIntent,
                 ActivityOptions.makeCustomAnimation(this, 0, android.R.anim.fade_out)
                         .toBundle());
+        logCommand(LAUNCHER_ADD_EXTERNAL_ITEM_DRAGGED);
         mFinishOnPause = true;
         return false;
     }
@@ -205,7 +244,7 @@ public class AddItemActivity extends BaseActivity implements OnLongClickListener
             // Cannot add widget
             return false;
         }
-        mWidgetCell.setPreview(PinItemDragListener.getPreview(mRequest));
+        mWidgetCell.setRemoteViewsPreview(PinItemDragListener.getPreview(mRequest));
 
         mAppWidgetManager = new WidgetManagerHelper(this);
         mAppWidgetHost = new LauncherAppWidgetHost(this);
@@ -213,7 +252,7 @@ public class AddItemActivity extends BaseActivity implements OnLongClickListener
         PendingAddWidgetInfo pendingInfo = new PendingAddWidgetInfo(widgetInfo);
         pendingInfo.spanX = Math.min(mIdp.numColumns, widgetInfo.spanX);
         pendingInfo.spanY = Math.min(mIdp.numRows, widgetInfo.spanY);
-        mWidgetOptions = WidgetHostViewLoader.getDefaultOptionsForWidget(this, pendingInfo);
+        mWidgetOptions = pendingInfo.getDefaultSizeOptions(this);
         mWidgetCell.getWidgetView().setTag(pendingInfo);
 
         applyWidgetItemAsync(() -> new WidgetItem(widgetInfo, mIdp, mApp.getIconCache()));
@@ -229,6 +268,7 @@ public class AddItemActivity extends BaseActivity implements OnLongClickListener
 
             @Override
             protected void onPostExecute(WidgetItem item) {
+                mWidgetCell.setPreviewSize(item.spanX, item.spanY);
                 mWidgetCell.applyFromCellItem(item, mApp.getWidgetCache());
                 mWidgetCell.ensurePreview();
             }
@@ -240,8 +280,8 @@ public class AddItemActivity extends BaseActivity implements OnLongClickListener
      * Called when the cancel button is clicked.
      */
     public void onCancelClick(View v) {
-        logCommand(Action.Command.CANCEL);
-        finish();
+        logCommand(LAUNCHER_ADD_EXTERNAL_ITEM_CANCELLED);
+        mSlideInView.close(/* animate= */ true);
     }
 
     /**
@@ -249,10 +289,10 @@ public class AddItemActivity extends BaseActivity implements OnLongClickListener
      */
     public void onPlaceAutomaticallyClick(View v) {
         if (mRequest.getRequestType() == PinItemRequest.REQUEST_TYPE_SHORTCUT) {
-            InstallShortcutReceiver.queueShortcut(mRequest.getShortcutInfo(), this);
-            logCommand(Action.Command.CONFIRM);
+            ItemInstallQueue.INSTANCE.get(this).queueItem(mRequest.getShortcutInfo());
+            logCommand(LAUNCHER_ADD_EXTERNAL_ITEM_PLACED_AUTOMATICALLY);
             mRequest.accept();
-            finish();
+            mSlideInView.close(/* animate= */ true);
             return;
         }
 
@@ -270,17 +310,18 @@ public class AddItemActivity extends BaseActivity implements OnLongClickListener
     }
 
     private void acceptWidget(int widgetId) {
-        InstallShortcutReceiver.queueWidget(mRequest.getAppWidgetProviderInfo(this), widgetId, this);
+        ItemInstallQueue.INSTANCE.get(this)
+                .queueItem(mRequest.getAppWidgetProviderInfo(this), widgetId);
         mWidgetOptions.putInt(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId);
         mRequest.accept(mWidgetOptions);
-        logCommand(Action.Command.CONFIRM);
-        finish();
+        logCommand(LAUNCHER_ADD_EXTERNAL_ITEM_PLACED_AUTOMATICALLY);
+        mSlideInView.close(/* animate= */ true);
     }
 
     @Override
     public void onBackPressed() {
-        logCommand(Action.Command.BACK);
-        super.onBackPressed();
+        logCommand(LAUNCHER_ADD_EXTERNAL_ITEM_BACK);
+        mSlideInView.close(/* animate= */ true);
     }
 
     @Override
@@ -316,13 +357,25 @@ public class AddItemActivity extends BaseActivity implements OnLongClickListener
 
     @Override
     public BaseDragLayer getDragLayer() {
-        throw new UnsupportedOperationException();
+        return mDragLayer;
     }
 
-    private void logCommand(int command) {
-        getUserEventDispatcher().dispatchUserEvent(newLauncherEvent(
-                newCommandAction(command),
-                newItemTarget(mWidgetCell.getWidgetView(), mInstantAppResolver),
-                newContainerTarget(ContainerType.PINITEM)), null);
+    @Override
+    public void onSlideInViewClosed() {
+        finish();
+    }
+
+    protected void setupNavBarColor() {
+        boolean isSheetDark = (getApplicationContext().getResources().getConfiguration().uiMode
+                & Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES;
+        getSystemUiController().updateUiState(
+                SystemUiController.UI_STATE_BASE_WINDOW,
+                isSheetDark ? SystemUiController.FLAG_DARK_NAV : SystemUiController.FLAG_LIGHT_NAV);
+    }
+
+    private void logCommand(StatsLogManager.EventEnum command) {
+        getStatsLogManager().logger()
+                .withItemInfo((ItemInfo) mWidgetCell.getWidgetView().getTag())
+                .log(command);
     }
 }
