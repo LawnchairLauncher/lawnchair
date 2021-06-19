@@ -1,8 +1,11 @@
 package app.lawnchair.ui.preferences.components
 
+import androidx.compose.animation.Crossfade
 import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
@@ -16,6 +19,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.rotate
 import androidx.compose.ui.graphics.painter.Painter
@@ -91,7 +95,7 @@ fun <T> ColorPreference(
                     style = MaterialTheme.typography.h6
                 )
             }
-            Row(modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)) {
+            Row(modifier = Modifier.padding(horizontal = 10.dp, vertical = 8.dp)) {
                 entries.forEachIndexed { index, it ->
                     ColorSwatch(
                         entry = it,
@@ -99,7 +103,7 @@ fun <T> ColorPreference(
                         modifier = Modifier.weight(1F),
                         isSelected = it.value == newColor
                     )
-                    if (index != entries.lastIndex) Spacer(modifier = Modifier.requiredWidth(12.dp))
+                    if (index != entries.lastIndex) Spacer(modifier = Modifier.requiredWidth(8.dp))
                 }
             }
             Button(
@@ -130,21 +134,39 @@ fun <T> ColorSwatch(
 ) {
     val lightColor = Color(entry.lightColor())
     val darkColor = Color(entry.darkColor())
-    Box(
-        modifier = modifier
-            .aspectRatio(1F)
-            .clip(CircleShape)
-            .addIf(lightColor == darkColor) { background(lightColor) }
-            .clickable { onClick() },
-        contentAlignment = Alignment.Center
-    ) {
-        if (lightColor != darkColor) {
-            Image(painter = ColorSwatchPainter(lightColor, darkColor), contentDescription = "")
+
+    Box(modifier = modifier
+        .aspectRatio(1F)
+        .height(IntrinsicSize.Min)
+        .width(IntrinsicSize.Min)) {
+        Box(
+            contentAlignment = Alignment.Center,
+            modifier = Modifier
+                .padding(6.dp)
+                .clip(CircleShape)
+                .addIf(lightColor == darkColor) { background(lightColor) }
+                .clickable { onClick() }
+        ) {
+            if (lightColor != darkColor) {
+                Image(painter = ColorSwatchPainter(lightColor, darkColor), contentDescription = "", modifier = Modifier.clip(
+                    CircleShape))
+            }
         }
-        AnimatedCheck(
-            visible = isSelected,
-            tint = Color.White
-        )
+        Crossfade(targetState = isSelected) {
+            if (it) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .border(
+                            2.dp,
+                            MaterialTheme.colors.onSurface
+                                .copy(alpha = 0.12f)
+                                .compositeOver(MaterialTheme.colors.surface),
+                            CircleShape
+                        )
+                )
+            }
+        }
     }
 }
 
