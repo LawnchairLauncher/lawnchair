@@ -11,3 +11,13 @@ fun ExtendedEditText.setCursorColor(@ColorInt color: Int) {
         this.textCursorDrawable?.colorFilter = BlendModeColorFilter(color, BlendMode.SRC)
     }
 }
+
+fun ExtendedEditText.setTextSelectHandleColor(@ColorInt color: Int) {
+    if (Utilities.ATLEAST_Q) {
+        this.apply {
+            listOf(textSelectHandle, textSelectHandleLeft, textSelectHandleRight).forEach {
+                it?.colorFilter = BlendModeColorFilter(color, BlendMode.SRC_IN)
+            }
+        }
+    }
+}
