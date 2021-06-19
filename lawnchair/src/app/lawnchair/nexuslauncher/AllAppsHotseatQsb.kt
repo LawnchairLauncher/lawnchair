@@ -2,7 +2,7 @@ package app.lawnchair.nexuslauncher
 
 import android.content.Context
 import android.content.res.Resources
-import android.graphics.*
+import android.graphics.Rect
 import android.text.Selection
 import android.text.Spannable
 import android.text.SpannableString
@@ -22,8 +22,8 @@ import androidx.core.graphics.red
 import androidx.recyclerview.widget.RecyclerView
 import app.lawnchair.allapps.LawnchairAppSearchAlgorithm
 import app.lawnchair.preferences.PreferenceManager
-import app.lawnchair.util.setCursorColor
-import app.lawnchair.util.setTextSelectHandleColor
+import app.lawnchair.util.EditTextExtensions.setCursorColor
+import app.lawnchair.util.EditTextExtensions.setTextSelectHandleColor
 import com.android.launcher3.*
 import com.android.launcher3.allapps.AllAppsContainerView
 import com.android.launcher3.allapps.AllAppsStore
