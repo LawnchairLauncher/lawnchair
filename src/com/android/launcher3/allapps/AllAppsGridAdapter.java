@@ -46,6 +46,7 @@ import com.android.launcher3.allapps.AlphabeticalAppsList.AdapterItem;
 import com.android.launcher3.model.AppLaunchTracker;
 import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.util.PackageManagerHelper;
+import com.android.launcher3.util.Themes;
 
 import java.util.List;
 
@@ -283,6 +284,8 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
                         parent, false);
                 searchMarketView.setOnClickListener(v -> mLauncher.startActivitySafely(
                         v, mMarketSearchIntent, null, AppLaunchTracker.CONTAINER_SEARCH));
+                ((TextView) searchMarketView.findViewById(R.id.search_market_text))
+                        .setTextColor(Themes.getColorAccent(parent.getContext()));
                 return new ViewHolder(searchMarketView);
             case VIEW_TYPE_ALL_APPS_DIVIDER:
                 return new ViewHolder(mLayoutInflater.inflate(
