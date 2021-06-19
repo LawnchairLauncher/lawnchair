@@ -159,9 +159,7 @@ fun <T> ColorSwatch(
                         .fillMaxSize()
                         .border(
                             2.dp,
-                            MaterialTheme.colors.onSurface
-                                .copy(alpha = 0.12f)
-                                .compositeOver(MaterialTheme.colors.surface),
+                            MaterialTheme.colors.primary,
                             CircleShape
                         )
                 )
