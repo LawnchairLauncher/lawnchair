@@ -35,7 +35,6 @@ import android.annotation.SuppressLint;
 import android.appwidget.AppWidgetHostView;
 import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Path;
 import android.graphics.Rect;
 import android.text.InputType;
@@ -55,7 +54,7 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.TextView;
 
 import androidx.annotation.ColorInt;
-import androidx.core.graphics.ColorKt;
+import androidx.core.graphics.ColorUtils;
 
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.Alarm;
@@ -258,14 +257,7 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
         EditTextExtensions.setTextSelectHandleColor(mFolderName, accentColor);
 
         if (Utilities.ATLEAST_OREO) {
-            mFolderName.setHighlightColor(
-                    Color.argb(
-                            0.32F,
-                            (float) ColorKt.getRed(accentColor) / 255,
-                            (float) ColorKt.getGreen(accentColor) / 255,
-                            (float) ColorKt.getBlue(accentColor) / 255
-                    )
-            );
+            mFolderName.setHighlightColor(ColorUtils.setAlphaComponent(accentColor, 82));
         }
 
         mFooter = findViewById(R.id.folder_footer);

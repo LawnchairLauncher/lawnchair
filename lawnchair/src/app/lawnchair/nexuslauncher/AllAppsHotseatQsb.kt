@@ -2,7 +2,6 @@ package app.lawnchair.nexuslauncher
 
 import android.content.Context
 import android.content.res.Resources
-import android.graphics.Color
 import android.graphics.Rect
 import android.text.Selection
 import android.text.Spannable
@@ -15,9 +14,7 @@ import android.view.View
 import android.view.animation.Interpolator
 import android.widget.EditText
 import android.widget.FrameLayout
-import androidx.core.graphics.blue
-import androidx.core.graphics.green
-import androidx.core.graphics.red
+import androidx.core.graphics.ColorUtils
 import androidx.recyclerview.widget.RecyclerView
 import app.lawnchair.allapps.LawnchairAppSearchAlgorithm
 import app.lawnchair.preferences.PreferenceManager
@@ -74,12 +71,7 @@ class AllAppsHotseatQsb @JvmOverloads constructor(context: Context, attrs: Attri
             setTextSelectHandleColor(accentColor)
 
             if (Utilities.ATLEAST_OREO) {
-                highlightColor = Color.argb(
-                    0.32F,
-                    accentColor.red.toFloat() / 255,
-                    accentColor.green.toFloat() / 255,
-                    accentColor.blue.toFloat() / 255
-                )
+                highlightColor = ColorUtils.setAlphaComponent(accentColor, 82)
             }
         }
     }
