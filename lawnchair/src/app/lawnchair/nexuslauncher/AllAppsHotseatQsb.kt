@@ -2,6 +2,7 @@ package app.lawnchair.nexuslauncher
 
 import android.content.Context
 import android.content.res.Resources
+import android.graphics.Color
 import android.graphics.Rect
 import android.text.Selection
 import android.text.Spannable
@@ -14,8 +15,6 @@ import android.view.View
 import android.view.animation.Interpolator
 import android.widget.EditText
 import android.widget.FrameLayout
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.toArgb
 import androidx.core.graphics.blue
 import androidx.core.graphics.green
 import androidx.core.graphics.red
@@ -73,12 +72,15 @@ class AllAppsHotseatQsb @JvmOverloads constructor(context: Context, attrs: Attri
             setHintTextColor(accentColor)
             setCursorColor(accentColor)
             setTextSelectHandleColor(accentColor)
-            highlightColor = Color(
-                red = accentColor.red.toFloat() / 255,
-                green = accentColor.green.toFloat() / 255,
-                blue = accentColor.blue.toFloat() / 255,
-                alpha = 0.32F
-            ).toArgb()
+
+            if (Utilities.ATLEAST_OREO) {
+                highlightColor = Color.argb(
+                    0.32F,
+                    accentColor.red.toFloat() / 255,
+                    accentColor.green.toFloat() / 255,
+                    accentColor.blue.toFloat() / 255
+                )
+            }
         }
     }
 
