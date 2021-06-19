@@ -1,12 +1,13 @@
 package dev.kdrag0n.android12ext.monet.theme
 
+import app.lawnchair.ui.theme.lightenColor
 import dev.kdrag0n.android12ext.monet.colors.Color
 import dev.kdrag0n.android12ext.monet.colors.Oklab.Companion.toOklab
 import dev.kdrag0n.android12ext.monet.colors.Oklch
 import dev.kdrag0n.android12ext.monet.colors.Oklch.Companion.toOklch
 import dev.kdrag0n.android12ext.monet.colors.Srgb
 
-class DynamicColorScheme(
+open class DynamicColorScheme(
     targetColors: ColorScheme,
     primaryRgb8: Int,
     chromaMultiplier: Double = 1.0,
@@ -42,6 +43,9 @@ class DynamicColorScheme(
             lch.copy(h = lch.h + ACCENT3_HUE_SHIFT_DEGREES)
         }
     }
+
+    override val primary = Srgb(primaryRgb8)
+    override val primaryDark = Srgb(lightenColor(primaryRgb8))
 
     private fun transformQuantizedColors(
         colors: Map<Int, Color>,

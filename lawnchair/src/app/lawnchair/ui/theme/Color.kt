@@ -3,19 +3,16 @@ package app.lawnchair.ui.theme
 import android.content.Context
 import androidx.annotation.ColorInt
 import androidx.core.graphics.ColorUtils
-import app.lawnchair.preferences.PreferenceManager
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
 import com.android.launcher3.util.Themes
 
 @JvmOverloads
 fun Context.getAccentColor(darkTheme: Boolean = Themes.getAttrBoolean(this, R.attr.isMainColorDark)): Int {
-    val prefs = PreferenceManager.getInstance(this)
-    val customColor = prefs.accentColor.get()
+    val colorScheme = ColorSchemeCache.INSTANCE.get(this).current
     return when {
-        customColor == 0 -> getDefaultAccentColor(darkTheme)
-        darkTheme -> lightenColor(customColor)
-        else -> customColor
+        darkTheme -> colorScheme.primaryDark.toSrgb().quantize8()
+        else -> colorScheme.primary.toSrgb().quantize8()
     }
 }
 

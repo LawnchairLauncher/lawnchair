@@ -15,4 +15,7 @@ abstract class ColorScheme {
         get() = listOf(neutral1, neutral2)
     val accentColors: List<Map<Int, Color>>
         get() = listOf(accent1, accent2, accent3)
+
+    open val primary get() = accent1[600]!!
+    open val primaryDark get() = accent1[100]!!
 }

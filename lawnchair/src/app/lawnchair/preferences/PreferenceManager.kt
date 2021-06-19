@@ -20,6 +20,7 @@ import android.content.Context
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import app.lawnchair.LawnchairLauncher
+import app.lawnchair.ui.theme.ColorSchemeCache
 import com.android.launcher3.InvariantDeviceProfile
 import com.android.launcher3.LauncherAppState
 import com.android.launcher3.model.GridSizeMigrationTaskV2
@@ -84,7 +85,10 @@ class PreferenceManager private constructor(private val context: Context) : Base
     val overrideWindowCornerRadius = BoolPref("pref_overrideWindowCornerRadius", false, recreate)
     val windowCornerRadius = FloatPref("pref_windowCornerRadius", 1f, recreate)
     val autoLaunchRoot = BoolPref("pref_autoLaunchRoot", false)
-    val accentColor = IntPref("pref_accentColor", 0, recreate)
+    val accentColor = IntPref("pref_accentColor", 0) {
+        ColorSchemeCache.INSTANCE.get(context).reloadColorScheme()
+        recreate()
+    }
 
     init {
         sp.registerOnSharedPreferenceChangeListener(this)
