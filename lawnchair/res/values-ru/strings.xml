@@ -18,7 +18,7 @@
     <string name="icon_pack">Набор иконок</string>
     <string name="settings">Настройки</string>
     <string name="home_screen_label">Домашний экран</string>
-    <string name="home_screen_description">Новости, Виджет \"Самое главное\", Иконки</string>
+    <string name="home_screen_description">Новости, Виджет \"Самое главное\", Сетка, Иконки</string>
     <string name="general_label">Общие</string>
     <string name="general_description">Значки уведомлений, Набор иконок</string>
     <string name="home_screen_rotation_label">Поворачивать домашний экран</string>
