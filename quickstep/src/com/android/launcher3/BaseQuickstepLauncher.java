@@ -132,7 +132,7 @@ public abstract class BaseQuickstepLauncher extends Launcher
 
         unbindService(mTisBinderConnection);
         if (mTaskbarManager != null) {
-            mTaskbarManager.setLauncher(null);
+            mTaskbarManager.clearLauncher(this);
         }
         super.onDestroy();
     }

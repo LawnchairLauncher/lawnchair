@@ -117,6 +117,10 @@ public class TestInformationHandler implements ResourceBasedOverride {
                 TestProtocol.sDisableSensorRotation = true;
                 return response;
 
+            case TestProtocol.REQUEST_IS_TABLET:
+                response.putBoolean(TestProtocol.TEST_INFO_RESPONSE_FIELD, mDeviceProfile.isTablet);
+                return response;
+
             default:
                 return null;
         }

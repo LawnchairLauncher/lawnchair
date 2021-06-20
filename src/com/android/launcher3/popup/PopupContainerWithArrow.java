@@ -138,14 +138,6 @@ public class PopupContainerWithArrow<T extends StatefulActivity<LauncherState>>
     }
 
     @Override
-    public boolean onTouchEvent(MotionEvent ev) {
-        if (mNotificationItemView != null) {
-            return mNotificationItemView.onTouchEvent(ev) || super.onTouchEvent(ev);
-        }
-        return super.onTouchEvent(ev);
-    }
-
-    @Override
     protected boolean isOfType(int type) {
         return (type & TYPE_ACTION_POPUP) != 0;
     }
@@ -272,12 +264,6 @@ public class PopupContainerWithArrow<T extends StatefulActivity<LauncherState>>
             }
             View.inflate(getContext(), R.layout.notification_content, mNotificationContainer);
             mNotificationItemView = new NotificationItemView(this, mNotificationContainer);
-            if (mNumNotifications == 1) {
-                mNotificationItemView.removeFooter();
-            }
-            else {
-                mNotificationItemView.setFooterWidth(containerWidth);
-            }
             updateNotificationHeader();
         }
         int viewsToFlip = getChildCount();
@@ -462,8 +448,7 @@ public class PopupContainerWithArrow<T extends StatefulActivity<LauncherState>>
         ItemInfoWithIcon itemInfo = (ItemInfoWithIcon) mOriginalIcon.getTag();
         DotInfo dotInfo = mLauncher.getDotInfoForItem(itemInfo);
         if (mNotificationItemView != null && dotInfo != null) {
-            mNotificationItemView.updateHeader(
-                    dotInfo.getNotificationCount(), itemInfo.bitmap.color);
+            mNotificationItemView.updateHeader(dotInfo.getNotificationCount());
         }
     }
 
