@@ -97,4 +97,5 @@
     <string name="system_icons">Icones del Sistema</string>
     <string name="accent_color">Color de l\'ombra</string>
     <string name="done">Feta</string>
+    <string name="loading">Loading…</string>
 </resources>
