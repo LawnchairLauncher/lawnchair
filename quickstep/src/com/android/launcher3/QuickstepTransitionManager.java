@@ -497,8 +497,6 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
                     view -> viewsToAnimate.add(((CellLayout) view).getShortcutsAndWidgets()));
 
             viewsToAnimate.add(mLauncher.getHotseat());
-            // Add QSB
-            viewsToAnimate.add(mLauncher.findViewById(R.id.search_container_all_apps));
 
             viewsToAnimate.forEach(view -> {
                 view.setLayerType(View.LAYER_TYPE_HARDWARE, null);
