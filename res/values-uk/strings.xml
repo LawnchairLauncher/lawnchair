@@ -86,8 +86,8 @@
     <string name="permlab_write_settings" msgid="3574213698004620587">"записувати налаштування та ярлики головного екрана"</string>
     <string name="permdesc_write_settings" msgid="5440712911516509985">"Дозволяє програмі змінювати налаштування та ярлики на головному екрані."</string>
     <string name="msg_no_phone_permission" msgid="9208659281529857371">"Додаток <xliff:g id="APP_NAME">%1$s</xliff:g> не має дозволу телефонувати"</string>
-    <string name="gadget_error_text" msgid="6081085226050792095">"Проблема із завантаженням віджета"</string>
-    <string name="gadget_setup_text" msgid="8274003207686040488">"Налаштування"</string>
+    <string name="gadget_error_text" msgid="740356548025791839">"Не вдається завантажити віджет"</string>
+    <string name="gadget_setup_text" msgid="1745356155479272374">"Торкніться, щоб завершити налаштування"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"Це системна програма, її неможливо видалити."</string>
     <string name="folder_hint_text" msgid="5174843001373488816">"Редагувати назву"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"<xliff:g id="APP_NAME">%1$s</xliff:g> вимкнено"</string>
@@ -162,8 +162,7 @@
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"Особисті додатки"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"Робочі додатки"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"Робочий профіль"</string>
-    <!-- no translation found for work_profile_edu_work_apps (7895468576497746520) -->
-    <skip />
+    <string name="work_profile_edu_work_apps" msgid="7895468576497746520">"Робочі додатки відповідно позначені й видимі системному адміністратору"</string>
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"OK"</string>
     <string name="work_apps_paused_title" msgid="3007471013401118920">"Робочі додатки вимкнено"</string>
     <string name="work_apps_paused_body" msgid="261634750995824906">"Ваші робочі додатки не можуть надсилати сповіщення, використовувати заряд акумулятора й отримувати доступ до геоданих"</string>

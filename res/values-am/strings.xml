@@ -82,8 +82,10 @@
     <string name="permlab_write_settings" msgid="3574213698004620587">"የመነሻ ቅንብሮችን እና አቋራጮችን ይጽፋል"</string>
     <string name="permdesc_write_settings" msgid="5440712911516509985">"መተግብሪያው ቅንብሮችን እና አቋራጮችን በመነሻ ውስጥ እንዲቀይራቸው ያስችለዋል።"</string>
     <string name="msg_no_phone_permission" msgid="9208659281529857371">"<xliff:g id="APP_NAME">%1$s</xliff:g> የስልክ ጥሪዎችን ለማድረግ አልተፈቀደለትም"</string>
-    <string name="gadget_error_text" msgid="6081085226050792095">"ፍርግም የመጫን ችግር"</string>
-    <string name="gadget_setup_text" msgid="8274003207686040488">"ማዋቀሪያ"</string>
+    <!-- no translation found for gadget_error_text (740356548025791839) -->
+    <skip />
+    <!-- no translation found for gadget_setup_text (1745356155479272374) -->
+    <skip />
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"ይህ የስርዓት መተግበሪያ ነው እና ማራገፍ አይቻልም።"</string>
     <string name="folder_hint_text" msgid="5174843001373488816">"ስም ያርትዑ"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"<xliff:g id="APP_NAME">%1$s</xliff:g> ተሰናክሏል"</string>
@@ -156,8 +158,7 @@
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"የግል"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"ሥራ"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"የሥራ መገለጫ"</string>
-    <!-- no translation found for work_profile_edu_work_apps (7895468576497746520) -->
-    <skip />
+    <string name="work_profile_edu_work_apps" msgid="7895468576497746520">"የሥራ መተግበሪያዎች ባጅ የተደረገባቸው እና ለእርስዎ የአይቲ አስተዳዳሪ የሚታዩ ናቸው"</string>
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"ገባኝ"</string>
     <string name="work_apps_paused_title" msgid="3007471013401118920">"የሥራ መተግበሪያዎች ጠፍተዋል"</string>
     <string name="work_apps_paused_body" msgid="261634750995824906">"የስራ መተግበሪያዎችዎ ማሳወቂያዎችን ሊልክልዎ፣ ባትሪዎን መጠቀም ወይም አካባቢዎን መድረስ አይችሉም"</string>

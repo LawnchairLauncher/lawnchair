@@ -82,8 +82,8 @@
     <string name="permlab_write_settings" msgid="3574213698004620587">"gravar configurações e atalhos da tela inicial"</string>
     <string name="permdesc_write_settings" msgid="5440712911516509985">"Permite que o app altere as configurações e os atalhos na tela inicial."</string>
     <string name="msg_no_phone_permission" msgid="9208659281529857371">"<xliff:g id="APP_NAME">%1$s</xliff:g> não tem permissão para fazer chamadas"</string>
-    <string name="gadget_error_text" msgid="6081085226050792095">"Problema ao carregar o widget"</string>
-    <string name="gadget_setup_text" msgid="8274003207686040488">"Configuração"</string>
+    <string name="gadget_error_text" msgid="740356548025791839">"Não é possível carregar o widget"</string>
+    <string name="gadget_setup_text" msgid="1745356155479272374">"Toque para concluir a configuração"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"Este é um app do sistema e não pode ser desinstalado."</string>
     <string name="folder_hint_text" msgid="5174843001373488816">"Editar nome"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"<xliff:g id="APP_NAME">%1$s</xliff:g> desativado"</string>
@@ -156,8 +156,7 @@
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"Pessoais"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"Trabalho"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"Perfil de trabalho"</string>
-    <!-- no translation found for work_profile_edu_work_apps (7895468576497746520) -->
-    <skip />
+    <string name="work_profile_edu_work_apps" msgid="7895468576497746520">"Os apps de trabalho têm um ícone e ficam visíveis para o administrador de TI"</string>
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"Ok"</string>
     <string name="work_apps_paused_title" msgid="3007471013401118920">"Os apps de trabalho estão desativados"</string>
     <string name="work_apps_paused_body" msgid="261634750995824906">"Os apps de trabalho não podem enviar notificações, usar a bateria nem acessar o local"</string>
