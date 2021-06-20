@@ -26,6 +26,8 @@ import android.graphics.drawable.Drawable;
 import android.view.ContextThemeWrapper;
 import android.view.Gravity;
 
+import androidx.annotation.ColorInt;
+
 import com.android.launcher3.LauncherAnimUtils;
 import com.android.launcher3.R;
 import com.android.launcher3.util.Themes;
@@ -68,6 +70,10 @@ public class AllAppsBackgroundDrawable extends Drawable {
             return mAlpha;
         }
 
+        public void setTint(@ColorInt int tint) {
+            mImage.setTint(tint);
+        }
+
         public void updateBounds(Rect bounds) {
             int width = mImage.getIntrinsicWidth();
             int height = mImage.getIntrinsicHeight();
@@ -93,6 +99,8 @@ public class AllAppsBackgroundDrawable extends Drawable {
 
     protected final TransformedImageDrawable mHand;
     protected final TransformedImageDrawable[] mIcons;
+    protected final TransformedImageDrawable mBag;
+    protected final TransformedImageDrawable mBagShadow;
     private final int mWidth;
     private final int mHeight;
 
@@ -109,6 +117,10 @@ public class AllAppsBackgroundDrawable extends Drawable {
                         : R.style.AllAppsEmptySearchBackground);
         mHand = new TransformedImageDrawable(context, R.drawable.ic_all_apps_bg_hand,
                 0.575f, 0.f, Gravity.CENTER_HORIZONTAL);
+        mBag = new TransformedImageDrawable(context, R.drawable.ic_all_apps_bg_bag,
+                0.46f, 0.04f, Gravity.CENTER_HORIZONTAL);
+        mBagShadow = new TransformedImageDrawable(context, R.drawable.ic_all_apps_bg_bag,
+                0.4635f, 0.044f, Gravity.CENTER_HORIZONTAL);
         mIcons = new TransformedImageDrawable[4];
         mIcons[0] = new TransformedImageDrawable(context, R.drawable.ic_all_apps_bg_icon_1,
                 0.375f, 0, Gravity.CENTER_HORIZONTAL);
@@ -118,6 +130,10 @@ public class AllAppsBackgroundDrawable extends Drawable {
                 0.475f, 0.26f, Gravity.CENTER_HORIZONTAL);
         mIcons[3] = new TransformedImageDrawable(context, R.drawable.ic_all_apps_bg_icon_4,
                 0.7f, 0.125f, Gravity.CENTER_HORIZONTAL);
+
+        @ColorInt int accentColor = Themes.getColorAccent(context);
+        mBag.setTint(accentColor);
+        mBagShadow.setTint(0x1A000000);
     }
 
     /**
@@ -157,6 +173,8 @@ public class AllAppsBackgroundDrawable extends Drawable {
 
     @Override
     public void draw(Canvas canvas) {
+        mBagShadow.draw(canvas);
+        mBag.draw(canvas);
         mHand.draw(canvas);
         for (int i = 0; i < mIcons.length; i++) {
             mIcons[i].draw(canvas);
@@ -166,6 +184,8 @@ public class AllAppsBackgroundDrawable extends Drawable {
     @Override
     protected void onBoundsChange(Rect bounds) {
         super.onBoundsChange(bounds);
+        mBagShadow.updateBounds(bounds);
+        mBag.updateBounds(bounds);
         mHand.updateBounds(bounds);
         for (int i = 0; i < mIcons.length; i++) {
             mIcons[i].updateBounds(bounds);
@@ -175,6 +195,8 @@ public class AllAppsBackgroundDrawable extends Drawable {
 
     @Override
     public void setAlpha(int alpha) {
+        mBagShadow.setAlpha(alpha);
+        mBag.setAlpha(alpha);
         mHand.setAlpha(alpha);
         for (int i = 0; i < mIcons.length; i++) {
             mIcons[i].setAlpha(alpha);
