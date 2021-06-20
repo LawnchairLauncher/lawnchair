@@ -33,7 +33,7 @@
     <string name="app_drawer_columns">Kolumny szuflady aplikacji</string>
     <string name="dock_icons">Ikony docka</string>
     <string name="max_folder_columns">Maks. liczba kolumn folderu</string>
-    <string name="max_folder_rows">Maks. wierszy folderu</string>
+    <string name="max_folder_rows">Maks. liczba wierszy folderu</string>
     <string name="home_screen_columns">Kolumny ekranu głównego</string>
     <string name="grid">Siatka</string>
     <string name="home_screen_rows">Wiersze ekranu głównego</string>
@@ -48,9 +48,9 @@
     <string name="support">Wsparcie</string>
     <string name="acknowledgements">Podziękowania</string>
     <string name="devops">UstDev</string>
-    <string name="quickswitch_maintenance">Opiekun QuickSwitch</string>
+    <string name="quickswitch_maintenance">Zarządzanie QuickSwitch</string>
     <string name="all_apps_search_bar_hint">Szukaj aplikacji</string>
-    <string name="settings_button_text">Ustawienia strony głównej</string>
+    <string name="settings_button_text">Ustawienia Ekranu Głównego</string>
     <string name="development">Rozwój</string>
     <string name="app_info_drop_target_label">Informacje o aplikacji</string>
     <string name="item_removed">Element usunięty.</string>
@@ -59,7 +59,7 @@
     <string name="background_lightness_label">Jasność tła</string>
     <string name="adaptive_icons">Ikony adaptacyjne</string>
     <string name="adaptive_icon_background_description">Użyj 100% jasności tła dla białego.</string>
-    <string name="auto_adaptive_icons_label">Utwórz ikony adaptacyjne</string>
+    <string name="auto_adaptive_icons_label">Ikony Autoadaptacyjne</string>
     <string name="auto_adaptive_icons_description">Dla wszystkich ikon nieadaptacyjnych.</string>
     <string name="support_and_pr">Wsparcie &amp; PR</string>
     <string name="workspace_dt2s">Dotknij dwukrotnie, aby uśpić</string>
@@ -76,7 +76,7 @@
         <item quantity="other">%1$d aplikacji</item>
     </plurals>
     <string name="hotseat_qsb_label">Pokaż pasek wyszukiwania</string>
-    <string name="dt2s_admin_hint_title">Admin permission required</string>
+    <string name="dt2s_admin_hint_title">Wymagane uprawnienia administratora</string>
     <string name="dt2s_admin_hint">To use Double Tap to Sleep, grant the Admin permission.</string>
     <string name="dt2s_admin_warning">Double Tap to Sleep will be disabled.</string>
     <string name="dt2s_a11y_hint_title">Accessibility service required</string>
@@ -97,6 +97,6 @@
     <string name="override_window_corner_radius_label">Niestandardowy promień narożnika</string>
     <string name="override_window_corner_radius_description">Jeśli domyślny nie pasuje do Twojego ekranu</string>
     <string name="system_icons">Ikony systemowe</string>
-    <string name="accent_color">Accent Color</string>
-    <string name="done">Done</string>
+    <string name="accent_color">Kolor Akcentujący</string>
+    <string name="done">Gotowe</string>
 </resources>
