@@ -82,8 +82,10 @@
     <string name="permlab_write_settings" msgid="3574213698004620587">"نوشتن تنظیمات و میان‌برهای صفحه اصلی"</string>
     <string name="permdesc_write_settings" msgid="5440712911516509985">"به برنامه اجازه می‌دهد تنظیمات و میان‌برها را در صفحه اصلی تغییر دهد."</string>
     <string name="msg_no_phone_permission" msgid="9208659281529857371">"<xliff:g id="APP_NAME">%1$s</xliff:g> مجاز نیست تماس تلفنی برقرار کند"</string>
-    <string name="gadget_error_text" msgid="6081085226050792095">"مشکل در بارگیری ابزارک"</string>
-    <string name="gadget_setup_text" msgid="8274003207686040488">"تنظیم"</string>
+    <!-- no translation found for gadget_error_text (740356548025791839) -->
+    <skip />
+    <!-- no translation found for gadget_setup_text (1745356155479272374) -->
+    <skip />
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"این برنامه سیستمی است و حذف نصب نمی‌شود."</string>
     <string name="folder_hint_text" msgid="5174843001373488816">"ویرایش نام"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"<xliff:g id="APP_NAME">%1$s</xliff:g> غیرفعال شد"</string>
@@ -156,8 +158,7 @@
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"شخصی"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"کاری"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"نمایه کاری"</string>
-    <!-- no translation found for work_profile_edu_work_apps (7895468576497746520) -->
-    <skip />
+    <string name="work_profile_edu_work_apps" msgid="7895468576497746520">"برنامه‌های کاری دارای نشان هستند و سرپرست سیستم می‌تواند آن‌ها را ببیند"</string>
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"متوجه‌ام"</string>
     <string name="work_apps_paused_title" msgid="3007471013401118920">"برنامه‌های کاری خاموش است"</string>
     <string name="work_apps_paused_body" msgid="261634750995824906">"برنامه‌های کاری نمی‌توانند برای شما اعلان ارسال کنند، از باتری استفاده کنند، یا به مکانتان دسترسی داشته باشند"</string>

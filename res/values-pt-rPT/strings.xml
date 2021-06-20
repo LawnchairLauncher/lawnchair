@@ -82,8 +82,8 @@
     <string name="permlab_write_settings" msgid="3574213698004620587">"escrever definições e atalhos do Ecrã principal"</string>
     <string name="permdesc_write_settings" msgid="5440712911516509985">"Permite à app alterar as definições e os atalhos no Ecrã Principal."</string>
     <string name="msg_no_phone_permission" msgid="9208659281529857371">"O <xliff:g id="APP_NAME">%1$s</xliff:g> não tem autorização para efetuar chamadas telefónicas"</string>
-    <string name="gadget_error_text" msgid="6081085226050792095">"Problema ao carregar o widget"</string>
-    <string name="gadget_setup_text" msgid="8274003207686040488">"Configuração"</string>
+    <string name="gadget_error_text" msgid="740356548025791839">"Não é possível carregar o widget"</string>
+    <string name="gadget_setup_text" msgid="1745356155479272374">"Toque para concluir a configuração"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"É uma app de sistema e não pode ser desinstalada."</string>
     <string name="folder_hint_text" msgid="5174843001373488816">"Edite o nome"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"<xliff:g id="APP_NAME">%1$s</xliff:g> desativado"</string>
@@ -156,8 +156,7 @@
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"Pessoal"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"Trabalho"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"Perfil de trabalho"</string>
-    <!-- no translation found for work_profile_edu_work_apps (7895468576497746520) -->
-    <skip />
+    <string name="work_profile_edu_work_apps" msgid="7895468576497746520">"As apps de trabalho têm um emblema e estão visíveis para o seu administrador de TI"</string>
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"OK"</string>
     <string name="work_apps_paused_title" msgid="3007471013401118920">"As apps de trabalho estão desativadas"</string>
     <string name="work_apps_paused_body" msgid="261634750995824906">"As apps de trabalho não podem enviar-lhe notificações, utilizar a bateria ou aceder à sua localização"</string>

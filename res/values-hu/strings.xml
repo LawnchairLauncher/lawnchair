@@ -82,8 +82,10 @@
     <string name="permlab_write_settings" msgid="3574213698004620587">"Főoldal beállításainak és parancsikonjainak írása"</string>
     <string name="permdesc_write_settings" msgid="5440712911516509985">"Lehetővé teszi az alkalmazás számára, hogy módosítsa a kezdőképernyő beállításait és parancsikonjait."</string>
     <string name="msg_no_phone_permission" msgid="9208659281529857371">"A(z) <xliff:g id="APP_NAME">%1$s</xliff:g> nem kezdeményezhet telefonhívásokat"</string>
-    <string name="gadget_error_text" msgid="6081085226050792095">"Probléma történt a modul betöltésekor"</string>
-    <string name="gadget_setup_text" msgid="8274003207686040488">"Beállítás"</string>
+    <!-- no translation found for gadget_error_text (740356548025791839) -->
+    <skip />
+    <!-- no translation found for gadget_setup_text (1745356155479272374) -->
+    <skip />
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"Ez egy rendszeralkalmazás, és nem lehet eltávolítani."</string>
     <string name="folder_hint_text" msgid="5174843001373488816">"Név módosítása"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"A(z) <xliff:g id="APP_NAME">%1$s</xliff:g> letiltva"</string>
@@ -156,8 +158,7 @@
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"Személyes"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"Munkahelyi"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"Munkaprofil"</string>
-    <!-- no translation found for work_profile_edu_work_apps (7895468576497746520) -->
-    <skip />
+    <string name="work_profile_edu_work_apps" msgid="7895468576497746520">"A munkahelyi alkalmazások jelvénnyel vannak megjelölve, és láthatók a rendszergazda számára"</string>
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"Értem"</string>
     <string name="work_apps_paused_title" msgid="3007471013401118920">"A munkahelyi alkalmazások ki vannak kapcsolva"</string>
     <string name="work_apps_paused_body" msgid="261634750995824906">"A munkahelyi alkalmazások nem küldhetnek értesítéseket, nem használhatják az akkumulátort, és nem férhetnek hozzá az Ön tartózkodási helyéhez."</string>
