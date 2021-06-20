@@ -99,4 +99,5 @@
     <string name="system_icons">Systémové Ikony</string>
     <string name="accent_color">Barva odstínu</string>
     <string name="done">Hotovo</string>
+    <string name="loading">Loading…</string>
 </resources>
