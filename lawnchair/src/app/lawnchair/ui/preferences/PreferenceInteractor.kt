@@ -17,9 +17,12 @@
 package app.lawnchair.ui.preferences
 
 import androidx.compose.runtime.State
+import app.lawnchair.ui.preferences.about.licenses.License
+import java.util.*
 
 interface PreferenceInteractor {
     val notificationDotsEnabled: State<Boolean>
+    val licenses: State<List<License>?>
 
     fun getIconPacks(): List<IconPackInfo>
 }

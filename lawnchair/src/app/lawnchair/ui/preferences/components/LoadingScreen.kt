@@ -44,3 +44,10 @@ fun LoadingScreen(isLoading: Boolean, content: @Composable () -> Unit) {
         }
     }
 }
+
+@Composable
+fun <T> LoadingScreen(obj: T?, content: @Composable (T) -> Unit) {
+    LoadingScreen(isLoading = obj == null) {
+        content(obj!!)
+    }
+}

@@ -251,7 +251,6 @@ allprojects {
 }
 
 dependencies {
-    implementation 'com.google.android.gms:play-services-oss-licenses:17.0.0'
     implementation "androidx.dynamicanimation:dynamicanimation:${ANDROID_X_VERSION}"
     implementation "androidx.recyclerview:recyclerview:${ANDROID_X_VERSION}"
     implementation "androidx.preference:preference-ktx:${ANDROID_X_VERSION}"

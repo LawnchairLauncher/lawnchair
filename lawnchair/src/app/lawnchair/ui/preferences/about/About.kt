@@ -35,14 +35,16 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavGraphBuilder
 import app.lawnchair.preferences.getFormattedVersionName
+import app.lawnchair.ui.preferences.about.licenses.licensesGraph
 import app.lawnchair.ui.preferences.components.ClickablePreference
+import app.lawnchair.ui.preferences.components.NavigationActionPreference
 import app.lawnchair.ui.preferences.components.PreferenceGroup
 import app.lawnchair.ui.preferences.components.PreferenceLayout
 import app.lawnchair.ui.preferences.preferenceGraph
+import app.lawnchair.ui.preferences.subRoute
 import app.lawnchair.util.Meta
 import app.lawnchair.util.pageMeta
 import com.android.launcher3.R
-import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
 
 class TeamMember(val name: String, @StringRes val descriptionRes: Int, val photoUrl: String, val socialUrl: String)
 
@@ -131,9 +133,15 @@ val supportAndPr = listOf(
     )
 )
 
+object AboutRoutes {
+    const val LICENSES = "licenses"
+}
+
 @ExperimentalAnimationApi
 fun NavGraphBuilder.aboutGraph(route: String) {
-    preferenceGraph(route, { About() })
+    preferenceGraph(route, { About() }) { subRoute ->
+        licensesGraph(route = subRoute(AboutRoutes.LICENSES))
+    }
 }
 
 @ExperimentalAnimationApi
@@ -220,13 +228,9 @@ fun About() {
             }
         }
         PreferenceGroup {
-            ClickablePreference(
+            NavigationActionPreference(
                 label = stringResource(id = R.string.acknowledgements),
-                onClick = {
-                    val intent = Intent(context, OssLicensesMenuActivity::class.java)
-                    OssLicensesMenuActivity.setActivityTitle(context.getString(R.string.acknowledgements))
-                    context.startActivity(intent)
-                }
+                destination = subRoute(name = AboutRoutes.LICENSES)
             )
             ClickablePreference(
                 label = stringResource(id = R.string.translate),

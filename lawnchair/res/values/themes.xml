@@ -17,16 +17,4 @@
         <item name="android:navigationBarColor" tools:ignore="NewApi">?android:attr/colorBackground</item>
         <item name="android:windowLightNavigationBar" tools:ignore="NewApi">true</item>
     </style>
-
-    <style name="Theme.Acknowledgements" parent="Base.Theme.Acknowledgements">
-        <item name="android:colorBackground">@color/white_50</item>
-    </style>
-
-    <style name="Base.Theme.Acknowledgements" parent="Theme.AppCompat.DayNight">
-        <item name="colorPrimary">?android:attr/colorBackground</item>
-        <item name="android:statusBarColor" tools:ignore="NewApi">?attr/colorPrimary</item>
-        <item name="android:windowLightStatusBar" tools:ignore="NewApi">true</item>
-        <item name="android:navigationBarColor" tools:ignore="NewApi">?android:attr/colorBackground</item>
-        <item name="android:windowLightNavigationBar" tools:ignore="NewApi">true</item>
-    </style>
 </resources>
