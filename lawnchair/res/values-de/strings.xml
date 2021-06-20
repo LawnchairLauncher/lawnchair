@@ -97,4 +97,5 @@
     <string name="system_icons">System-Symbole</string>
     <string name="accent_color">Akzentfarbe</string>
     <string name="done">Erledigt</string>
+    <string name="loading">Loading…</string>
 </resources>
