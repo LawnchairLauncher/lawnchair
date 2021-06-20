@@ -82,8 +82,8 @@
     <string name="permlab_write_settings" msgid="3574213698004620587">"write Home settings and shortcuts"</string>
     <string name="permdesc_write_settings" msgid="5440712911516509985">"Allows the app to change the settings and shortcuts in Home."</string>
     <string name="msg_no_phone_permission" msgid="9208659281529857371">"<xliff:g id="APP_NAME">%1$s</xliff:g> is not allowed to make phone calls"</string>
-    <string name="gadget_error_text" msgid="6081085226050792095">"Problem loading widget"</string>
-    <string name="gadget_setup_text" msgid="8274003207686040488">"Setup"</string>
+    <string name="gadget_error_text" msgid="740356548025791839">"Can\'t load widget"</string>
+    <string name="gadget_setup_text" msgid="1745356155479272374">"Tap to finish setup"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"This is a system app and can\'t be uninstalled."</string>
     <string name="folder_hint_text" msgid="5174843001373488816">"Edit Name"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"Disabled <xliff:g id="APP_NAME">%1$s</xliff:g>"</string>
@@ -156,8 +156,7 @@
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"Personal"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"Work"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"Work profile"</string>
-    <!-- no translation found for work_profile_edu_work_apps (7895468576497746520) -->
-    <skip />
+    <string name="work_profile_edu_work_apps" msgid="7895468576497746520">"Work apps are badged and visible to your IT admin"</string>
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"OK"</string>
     <string name="work_apps_paused_title" msgid="3007471013401118920">"Work apps are off"</string>
     <string name="work_apps_paused_body" msgid="261634750995824906">"Your work apps can’t send you notifications, use your battery or access your location"</string>
