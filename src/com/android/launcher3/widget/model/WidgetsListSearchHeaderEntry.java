@@ -21,34 +21,26 @@ import com.android.launcher3.model.data.PackageItemInfo;
 import java.util.List;
 
 /** An information holder for an app which has widgets or/and shortcuts, to be shown in search. */
-public final class WidgetsListSearchHeaderEntry extends WidgetsListBaseEntry {
+public final class WidgetsListSearchHeaderEntry extends WidgetsListBaseEntry
+        implements WidgetsListBaseEntry.Header<WidgetsListSearchHeaderEntry> {
 
-    private boolean mIsWidgetListShown = false;
-    private boolean mHasEntryUpdated = false;
+    private final boolean mIsWidgetListShown;
 
     public WidgetsListSearchHeaderEntry(PackageItemInfo pkgItem, String titleSectionName,
             List<WidgetItem> items) {
-        super(pkgItem, titleSectionName, items);
+        this(pkgItem, titleSectionName, items, /* isWidgetListShown= */ false);
     }
 
-    /** Sets if the widgets list associated with this header is shown. */
-    public void setIsWidgetListShown(boolean isWidgetListShown) {
-        if (mIsWidgetListShown != isWidgetListShown) {
-            this.mIsWidgetListShown = isWidgetListShown;
-            mHasEntryUpdated = true;
-        } else {
-            mHasEntryUpdated = false;
-        }
+    private WidgetsListSearchHeaderEntry(PackageItemInfo pkgItem, String titleSectionName,
+            List<WidgetItem> items, boolean isWidgetListShown) {
+        super(pkgItem, titleSectionName, items);
+        mIsWidgetListShown = isWidgetListShown;
     }
 
     /** Returns {@code true} if the widgets list associated with this header is shown. */
+    @Override
     public boolean isWidgetListShown() {
         return mIsWidgetListShown;
-    }
-
-    /** Returns {@code true} if this entry has been updated due to user interactions. */
-    public boolean hasEntryUpdated() {
-        return mHasEntryUpdated;
     }
 
     @Override
@@ -67,6 +59,18 @@ public final class WidgetsListSearchHeaderEntry extends WidgetsListBaseEntry {
         if (!(obj instanceof WidgetsListSearchHeaderEntry)) return false;
         WidgetsListSearchHeaderEntry otherEntry = (WidgetsListSearchHeaderEntry) obj;
         return mWidgets.equals(otherEntry.mWidgets) && mPkgItem.equals(otherEntry.mPkgItem)
-                && mTitleSectionName.equals(otherEntry.mTitleSectionName);
+                && mTitleSectionName.equals(otherEntry.mTitleSectionName)
+                && mIsWidgetListShown == otherEntry.mIsWidgetListShown;
+    }
+
+    /** Returns a copy of this {@link WidgetsListSearchHeaderEntry} with the widget list shown. */
+    @Override
+    public WidgetsListSearchHeaderEntry withWidgetListShown() {
+        if (mIsWidgetListShown) return this;
+        return new WidgetsListSearchHeaderEntry(
+                mPkgItem,
+                mTitleSectionName,
+                mWidgets,
+                /* isWidgetListShown= */ true);
     }
 }

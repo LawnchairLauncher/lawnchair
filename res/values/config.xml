@@ -76,6 +76,9 @@
     <!-- View IDs to store item highlight information -->
     <item type="id" name="view_unhighlight_background" />
 
+    <!-- view ID used to restore work tab state -->
+    <item type="id" name="work_tab_state_id" />
+
     <!-- Menu id for feature flags -->
     <item type="id" name="menu_apply_flags" />
 

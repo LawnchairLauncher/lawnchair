@@ -120,10 +120,15 @@
 <!-- Floating action button inside work tab to toggle work profile -->
     <dimen name="work_fab_height">48dp</dimen>
     <dimen name="work_fab_radius">24dp</dimen>
-    <dimen name="work_fab_margin">18dp</dimen>
+    <dimen name="work_fab_margin">16dp</dimen>
     <dimen name="work_profile_footer_padding">20dp</dimen>
     <dimen name="work_profile_footer_text_size">16sp</dimen>
     <dimen name="work_edu_card_margin">16dp</dimen>
+
+    <!-- rounded button shown inside card views, and snack bars  -->
+    <dimen name="rounded_button_height">32dp</dimen>
+    <dimen name="rounded_button_radius">16dp</dimen>
+    <dimen name="rounded_button_padding">8dp</dimen>
 
 
     <!-- Widget tray -->
@@ -254,28 +259,19 @@
 
 <!-- Notifications -->
     <dimen name="bg_round_rect_radius">8dp</dimen>
-    <dimen name="notification_padding_start">16dp</dimen>
-    <dimen name="notification_padding_end">12dp</dimen>
-    <!-- notification_padding_end + (icon_size - footer_icon_size) / 2 -->
-    <dimen name="notification_footer_icon_row_padding">15dp</dimen>
-    <dimen name="notification_header_height">36dp</dimen>
-    <dimen name="notification_main_height">84dp</dimen>
-    <dimen name="notification_footer_height">32dp</dimen>
-    <!-- How much space to keep as padding for the last notification when the footer collapses -->
-    <dimen name="notification_empty_footer_height">6dp</dimen>
-    <dimen name="notification_header_text_size">13sp</dimen>
+    <dimen name="notification_padding">16dp</dimen>
+    <dimen name="notification_padding_top">18dp</dimen>
+    <dimen name="notification_header_text_size">14sp</dimen>
     <dimen name="notification_header_count_text_size">12sp</dimen>
-    <dimen name="notification_main_title_size">16sp</dimen>
+    <dimen name="notification_main_title_size">14sp</dimen>
     <dimen name="notification_main_text_size">14sp</dimen>
-    <dimen name="notification_icon_size">24dp</dimen>
-    <dimen name="notification_footer_icon_size">18dp</dimen>
-    <!-- notification_icon_size + notification_padding_end + 16dp padding between icon and text -->
-    <dimen name="notification_main_text_padding_end">52dp</dimen>
+    <dimen name="notification_circle_icon_size">24dp</dimen>
+    <dimen name="notification_icon_size">32dp</dimen>
+    <!-- Space between edge and icon and icon and text -->
+    <dimen name="notification_icon_padding">12dp</dimen>
+    <!-- notification_icon_padding + notification_icon_size + notification_icon_padding -->
+    <dimen name="notification_main_text_padding_start">56dp</dimen>
     <dimen name="horizontal_ellipsis_size">18dp</dimen>
-    <!-- arrow_horizontal_offset_start - (ellipsis_size - arrow_width) / 2 -->
-    <dimen name="horizontal_ellipsis_offset">19dp</dimen>
-    <dimen name="popup_item_divider_height">0.5dp</dimen>
-    <dimen name="swipe_helper_falsing_threshold">70dp</dimen>
 
 <!-- Overview -->
     <dimen name="options_menu_icon_size">24dp</dimen>

@@ -207,10 +207,9 @@ public final class WidgetsDiffReporterTest {
         // GIVEN the current list has app headers [A, B, E content].
         ArrayList<WidgetsListBaseEntry> currentList = new ArrayList<>(
                 List.of(mHeaderA, mHeaderB, mContentE));
-        // GIVEN the new list has app headers [A, B, E content].
-        List<WidgetsListBaseEntry> newList = List.of(mHeaderA, mHeaderB, mContentE);
-        // GIVEN the user has interacted with B.
-        mHeaderB.setIsWidgetListShown(true);
+        // GIVEN the new list has app headers [A, B, E content] and the user has interacted with B.
+        List<WidgetsListBaseEntry> newList =
+                List.of(mHeaderA, mHeaderB.withWidgetListShown(), mContentE);
 
         // WHEN computing the list difference.
         mWidgetsDiffReporter.process(currentList, newList, COMPARATOR);
