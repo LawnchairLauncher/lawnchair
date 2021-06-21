@@ -33,10 +33,10 @@
     <string name="app_drawer_columns">Sloupce seznamu aplikací</string>
     <string name="dock_icons">Ikony doku</string>
     <string name="max_folder_columns">Maximální počet sloupců složek</string>
-    <string name="max_folder_rows">Maximální počet sloupců složek</string>
+    <string name="max_folder_rows">Maximální počet řádků složek</string>
     <string name="home_screen_columns">Sloupce domovské obrazovky</string>
     <string name="grid">Mřížka</string>
-    <string name="home_screen_rows">Sloupce domovské obrazovky</string>
+    <string name="home_screen_rows">Řádky domovské obrazovky</string>
     <string name="icons">Ikony</string>
     <string name="icon_size">Velikost ikon</string>
     <string name="label_size">Velikost popisku</string>
@@ -99,5 +99,5 @@
     <string name="system_icons">Systémové Ikony</string>
     <string name="accent_color">Barva odstínu</string>
     <string name="done">Hotovo</string>
-    <string name="loading">Loading…</string>
+    <string name="loading">Načítání…</string>
 </resources>
