@@ -447,13 +447,14 @@ public class TaskThumbnailView extends View implements PluginListener<OverviewSc
     }
 
     /**
-     * Returns whether the snapshot is real.
+     * Returns whether the snapshot is real. If the device is locked for the user of the task,
+     * the snapshot used will be an app-theme generated snapshot instead of a real snapshot.
      */
     public boolean isRealSnapshot() {
         if (mThumbnailData == null) {
             return false;
         }
-        return mThumbnailData.isRealSnapshot;
+        return mThumbnailData.isRealSnapshot && !mTask.isLocked;
     }
 
     /**

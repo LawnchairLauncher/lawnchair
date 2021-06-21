@@ -73,7 +73,6 @@ import android.text.StaticLayout;
 import android.text.TextPaint;
 import android.util.AttributeSet;
 import android.util.FloatProperty;
-import android.util.Property;
 import android.util.SparseBooleanArray;
 import android.view.HapticFeedbackConstants;
 import android.view.KeyEvent;
@@ -1488,7 +1487,9 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
                 }
                 int scrollDiff = newScroll[i] - oldScroll[i] + offset;
                 if (scrollDiff != 0) {
-                    Property translationProperty = mOrientationHandler.getPrimaryViewTranslate();
+                    FloatProperty translationProperty = child instanceof TaskView
+                            ? ((TaskView) child).getPrimaryFillDismissGapTranslationProperty()
+                            : mOrientationHandler.getPrimaryViewTranslate();
 
                     ResourceProvider rp = DynamicResource.provider(mActivity);
                     SpringProperty sp = new SpringProperty(SpringProperty.FLAG_CAN_SPRING_ON_END)
@@ -1883,7 +1884,11 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
                             ? modalLeftOffsetSize
                             : modalRightOffsetSize;
             float totalTranslation = translation + modalTranslation;
-            mOrientationHandler.getPrimaryViewTranslate().set(getChildAt(i),
+            View child = getChildAt(i);
+            FloatProperty translationProperty = child instanceof TaskView
+                    ? ((TaskView) child).getPrimaryTaskOffsetTranslationProperty()
+                    : mOrientationHandler.getPrimaryViewTranslate();
+            translationProperty.set(child,
                     totalTranslation * mOrientationHandler.getPrimaryTranslationDirectionFactor());
         }
         updateCurveProperties();
