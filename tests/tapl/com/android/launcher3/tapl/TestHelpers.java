@@ -27,6 +27,11 @@ import android.content.pm.ActivityInfo;
 import android.content.pm.ResolveInfo;
 import android.content.res.Resources;
 import android.os.DropBoxManager;
+import android.os.SystemClock;
+import android.util.Log;
+
+import androidx.test.uiautomator.SearchCondition;
+import androidx.test.uiautomator.UiDevice;
 
 import org.junit.Assert;
 
@@ -35,6 +40,7 @@ import java.util.List;
 
 public class TestHelpers {
 
+    private static final String TAG = "Tapl";
     private static Boolean sIsInLauncherProcess;
 
     public static boolean isInLauncherProcess() {
@@ -153,5 +159,13 @@ public class TestHelpers {
         } catch (Exception e) {
             return null;
         }
+    }
+
+    public static <R> R wait(SearchCondition<R> condition, long timeout) {
+        Log.d(TAG,
+                "TestHelpers.wait, condition=" + timeout + ", time=" + SystemClock.uptimeMillis());
+        final R result = UiDevice.getInstance(getInstrumentation()).wait(condition, timeout);
+        Log.d(TAG, "TestHelpers.wait, result=" + result + ", time=" + SystemClock.uptimeMillis());
+        return result;
     }
 }

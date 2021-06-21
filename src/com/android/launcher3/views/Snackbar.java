@@ -167,11 +167,6 @@ public class Snackbar extends AbstractFloatingView {
     }
 
     @Override
-    public void logActionCommand(int command) {
-        // TODO
-    }
-
-    @Override
     protected boolean isOfType(int type) {
         return (type & TYPE_SNACKBAR) != 0;
     }

@@ -12,11 +12,10 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.android.launcher3.allapps.WorkPausedCard xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="?attr/allAppsScrimColor"
-    android:padding="48dp"
+    android:layout_height="wrap_content"
+    android:padding="@dimen/work_edu_card_margin"
     android:orientation="vertical"
     android:gravity="center">
 
@@ -39,5 +38,16 @@
         android:textColor="?attr/workProfileOverlayTextColor"
         android:text="@string/work_apps_paused_body"
         android:textAlignment="center"
+        android:layout_marginBottom="8dp"
         android:textSize="16sp" />
-</LinearLayout>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/enable_work_apps"
+        android:textColor="?attr/workProfileOverlayTextColor"
+        android:text="@string/work_apps_enable_btn_text"
+        android:textAlignment="center"
+        android:background="@drawable/rounded_action_button"
+        android:textSize="14sp" />
+</com.android.launcher3.allapps.WorkPausedCard>
