@@ -248,7 +248,7 @@ public final class FeatureFlags {
             "Enables scrim over wallpaper for text protection.");
 
     public static final BooleanFlag WIDGETS_IN_LAUNCHER_PREVIEW = getDebugFlag(
-            "WIDGETS_IN_LAUNCHER_PREVIEW", false,
+            "WIDGETS_IN_LAUNCHER_PREVIEW", true,
             "Enables widgets in Launcher preview for the Wallpaper app.");
 
     public static void initialize(Context context) {
