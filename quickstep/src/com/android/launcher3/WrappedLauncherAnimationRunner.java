@@ -58,6 +58,8 @@ public class WrappedLauncherAnimationRunner<R extends WrappedAnimationRunnerImpl
         if (animationRunnerImpl != null) {
             animationRunnerImpl.onCreateAnimation(transit, appTargets, wallpaperTargets,
                     nonAppTargets, result);
+        } else {
+            result.setAnimation(null, null);
         }
     }
 }
