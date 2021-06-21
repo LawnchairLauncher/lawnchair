@@ -15,6 +15,7 @@
 -->
 <com.android.launcher3.taskbar.TaskbarDragLayer
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/taskbar_container"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
@@ -39,6 +40,7 @@
             android:id="@+id/start_nav_buttons"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
+            android:orientation="horizontal"
             android:paddingLeft="@dimen/taskbar_nav_buttons_spacing"
             android:paddingRight="@dimen/taskbar_nav_buttons_spacing"
             android:gravity="center_vertical"
@@ -53,5 +55,15 @@
             android:gravity="center_vertical"
             android:layout_gravity="end"/>
     </FrameLayout>
+
+    <View
+        android:id="@+id/stashed_handle"
+        tools:comment1="The actual size and shape will be set as a ViewOutlineProvider at runtime"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:comment2="TODO: Tint dynamically"
+        android:background="?android:attr/textColorPrimary"
+        android:clipToOutline="true"
+        android:layout_gravity="bottom"/>
 
 </com.android.launcher3.taskbar.TaskbarDragLayer>

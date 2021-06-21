@@ -95,6 +95,7 @@ import com.android.quickstep.inputconsumers.OverviewWithoutFocusInputConsumer;
 import com.android.quickstep.inputconsumers.ResetGestureInputConsumer;
 import com.android.quickstep.inputconsumers.ScreenPinnedInputConsumer;
 import com.android.quickstep.inputconsumers.SysUiOverlayInputConsumer;
+import com.android.quickstep.inputconsumers.TaskbarStashInputConsumer;
 import com.android.quickstep.util.ActiveGestureLog;
 import com.android.quickstep.util.AssistantUtilities;
 import com.android.quickstep.util.ProtoTracer;
@@ -671,6 +672,14 @@ public class TouchInteractionService extends Service implements PluginListener<O
             if (mDeviceState.canTriggerAssistantAction(event, newGestureState.getRunningTask())) {
                 base = new AssistantInputConsumer(this, newGestureState, base, mInputMonitorCompat,
                         mDeviceState, event);
+            }
+
+            // If Taskbar is present, we listen for long press to unstash it.
+            BaseActivityInterface activityInterface = newGestureState.getActivityInterface();
+            StatefulActivity activity = activityInterface.getCreatedActivity();
+            if (activity != null && activity.getDeviceProfile().isTaskbarPresent) {
+                base = new TaskbarStashInputConsumer(this, base, mInputMonitorCompat,
+                        activityInterface);
             }
 
             if (FeatureFlags.ENABLE_QUICK_CAPTURE_GESTURE.get()) {

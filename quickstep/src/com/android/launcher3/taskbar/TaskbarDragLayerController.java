@@ -39,6 +39,8 @@ public class TaskbarDragLayerController {
     // Alpha properties for taskbar background.
     private final AnimatedFloat mBgTaskbar = new AnimatedFloat(this::updateBackgroundAlpha);
     private final AnimatedFloat mBgNavbar = new AnimatedFloat(this::updateBackgroundAlpha);
+    // Translation property for taskbar background.
+    private final AnimatedFloat mBgOffset = new AnimatedFloat(this::updateBackgroundOffset);
 
     // Initialized in init.
     private TaskbarControllers mControllers;
@@ -78,8 +80,16 @@ public class TaskbarDragLayerController {
         return mBgNavbar;
     }
 
+    public AnimatedFloat getTaskbarBackgroundOffset() {
+        return mBgOffset;
+    }
+
     private void updateBackgroundAlpha() {
         mTaskbarDragLayer.setTaskbarBackgroundAlpha(Math.max(mBgNavbar.value, mBgTaskbar.value));
+    }
+
+    private void updateBackgroundOffset() {
+        mTaskbarDragLayer.setTaskbarBackgroundOffset(mBgOffset.value);
     }
 
     /**
