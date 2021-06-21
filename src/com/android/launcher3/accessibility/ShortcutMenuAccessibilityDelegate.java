@@ -17,10 +17,10 @@
 package com.android.launcher3.accessibility;
 
 import static com.android.launcher3.LauncherState.NORMAL;
+import static com.android.launcher3.anim.AnimatorListeners.forSuccessCallback;
 
+import android.view.KeyEvent;
 import android.view.View;
-import android.view.accessibility.AccessibilityNodeInfo;
-import android.view.accessibility.AccessibilityNodeInfo.AccessibilityAction;
 
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.Launcher;
@@ -31,7 +31,8 @@ import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.notification.NotificationMainView;
 import com.android.launcher3.shortcuts.DeepShortcutView;
 
-import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Extension of {@link LauncherAccessibilityDelegate} with actions specific to shortcuts in
@@ -43,23 +44,23 @@ public class ShortcutMenuAccessibilityDelegate extends LauncherAccessibilityDele
 
     public ShortcutMenuAccessibilityDelegate(Launcher launcher) {
         super(launcher);
-        mActions.put(DISMISS_NOTIFICATION, new AccessibilityAction(DISMISS_NOTIFICATION,
-                launcher.getText(R.string.action_dismiss_notification)));
+        mActions.put(DISMISS_NOTIFICATION, new LauncherAction(DISMISS_NOTIFICATION,
+                R.string.action_dismiss_notification, KeyEvent.KEYCODE_X));
     }
 
     @Override
-    public void addSupportedActions(View host, AccessibilityNodeInfo info, boolean fromKeyboard) {
+    protected void getSupportedActions(View host, ItemInfo item, List<LauncherAction> out) {
         if ((host.getParent() instanceof DeepShortcutView)) {
-            info.addAction(mActions.get(ADD_TO_WORKSPACE));
+            out.add(mActions.get(ADD_TO_WORKSPACE));
         } else if (host instanceof NotificationMainView) {
             if (((NotificationMainView) host).canChildBeDismissed()) {
-                info.addAction(mActions.get(DISMISS_NOTIFICATION));
+                out.add(mActions.get(DISMISS_NOTIFICATION));
             }
         }
     }
 
     @Override
-    public boolean performAction(View host, ItemInfo item, int action) {
+    protected boolean performAction(View host, ItemInfo item, int action, boolean fromKeyboard) {
         if (action == ADD_TO_WORKSPACE) {
             if (!(host.getParent() instanceof DeepShortcutView)) {
                 return false;
@@ -67,21 +68,14 @@ public class ShortcutMenuAccessibilityDelegate extends LauncherAccessibilityDele
             final WorkspaceItemInfo info = ((DeepShortcutView) host.getParent()).getFinalInfo();
             final int[] coordinates = new int[2];
             final int screenId = findSpaceOnWorkspace(item, coordinates);
-            Runnable onComplete = new Runnable() {
-                @Override
-                public void run() {
-                    mLauncher.getModelWriter().addItemToDatabase(info,
-                            LauncherSettings.Favorites.CONTAINER_DESKTOP,
-                            screenId, coordinates[0], coordinates[1]);
-                    ArrayList<ItemInfo> itemList = new ArrayList<>();
-                    itemList.add(info);
-                    mLauncher.bindItems(itemList, true);
-                    AbstractFloatingView.closeAllOpenViews(mLauncher);
-                    announceConfirmation(R.string.item_added_to_workspace);
-                }
-            };
-
-            mLauncher.getStateManager().goToState(NORMAL, true, onComplete);
+            mLauncher.getStateManager().goToState(NORMAL, true, forSuccessCallback(() -> {
+                mLauncher.getModelWriter().addItemToDatabase(info,
+                        LauncherSettings.Favorites.CONTAINER_DESKTOP,
+                        screenId, coordinates[0], coordinates[1]);
+                mLauncher.bindItems(Collections.singletonList(info), true);
+                AbstractFloatingView.closeAllOpenViews(mLauncher);
+                announceConfirmation(R.string.item_added_to_workspace);
+            }));
             return true;
         } else if (action == DISMISS_NOTIFICATION) {
             if (!(host instanceof NotificationMainView)) {

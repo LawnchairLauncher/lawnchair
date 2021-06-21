@@ -129,7 +129,7 @@ public class Partner {
                     "dimen", getPackageName());
             if (resId > 0) {
                 int px = getResources().getDimensionPixelSize(resId);
-                iconSize = Utilities.dpiFromPx(px, dm);
+                iconSize = Utilities.dpiFromPx((float) px, dm.densityDpi);
             }
         } catch (Resources.NotFoundException ex) {
             Log.e(TAG, "Invalid Partner grid resource!", ex);

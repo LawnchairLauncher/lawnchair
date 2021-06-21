@@ -17,9 +17,7 @@
 package com.android.launcher3.widget;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
@@ -27,7 +25,6 @@ import android.util.AttributeSet;
 import android.view.View;
 
 import com.android.launcher3.R;
-import com.android.launcher3.Utilities;
 
 /**
  * View that draws a bitmap horizontally centered. If the image width is greater than the view
@@ -35,12 +32,10 @@ import com.android.launcher3.Utilities;
  */
 public class WidgetImageView extends View {
 
-    private final Paint mPaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.FILTER_BITMAP_FLAG);
     private final RectF mDstRectF = new RectF();
     private final int mBadgeMargin;
 
-    private Bitmap mBitmap;
-    private Drawable mBadge;
+    private Drawable mDrawable;
 
     public WidgetImageView(Context context) {
         this(context, null);
@@ -57,26 +52,22 @@ public class WidgetImageView extends View {
                 .getDimensionPixelSize(R.dimen.profile_badge_margin);
     }
 
-    public void setBitmap(Bitmap bitmap, Drawable badge) {
-        mBitmap = bitmap;
-        mBadge = badge;
+    /** Set the drawable to use for this view. */
+    public void setDrawable(Drawable drawable) {
+        mDrawable = drawable;
         invalidate();
     }
 
-    public Bitmap getBitmap() {
-        return mBitmap;
+    public Drawable getDrawable() {
+        return mDrawable;
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
-        if (mBitmap != null) {
+        if (mDrawable != null) {
             updateDstRectF();
-            canvas.drawBitmap(mBitmap, null, mDstRectF, mPaint);
-
-            // Only draw the badge if a preview was drawn.
-            if (mBadge != null) {
-                mBadge.draw(canvas);
-            }
+            mDrawable.setBounds(getBitmapBounds());
+            mDrawable.draw(canvas);
         }
     }
 
@@ -91,11 +82,11 @@ public class WidgetImageView extends View {
     private void updateDstRectF() {
         float myWidth = getWidth();
         float myHeight = getHeight();
-        float bitmapWidth = mBitmap.getWidth();
+        float bitmapWidth = mDrawable.getIntrinsicWidth();
 
         final float scale = bitmapWidth > myWidth ? myWidth / bitmapWidth : 1;
         float scaledWidth = bitmapWidth * scale;
-        float scaledHeight = mBitmap.getHeight() * scale;
+        float scaledHeight = mDrawable.getIntrinsicHeight() * scale;
 
         mDstRectF.left = (myWidth - scaledWidth) / 2;
         mDstRectF.right = (myWidth + scaledWidth) / 2;
@@ -106,17 +97,6 @@ public class WidgetImageView extends View {
         } else {
             mDstRectF.top = (myHeight - scaledHeight) / 2;
             mDstRectF.bottom = (myHeight + scaledHeight) / 2;
-        }
-
-        if (mBadge != null) {
-            Rect bounds = mBadge.getBounds();
-            int left = Utilities.boundToRange(
-                    (int) (mDstRectF.right + mBadgeMargin - bounds.width()),
-                    mBadgeMargin, getWidth() - bounds.width());
-            int top = Utilities.boundToRange(
-                    (int) (mDstRectF.bottom + mBadgeMargin - bounds.height()),
-                    mBadgeMargin, getHeight() - bounds.height());
-            mBadge.setBounds(left, top, bounds.width() + left, bounds.height() + top);
         }
     }
 

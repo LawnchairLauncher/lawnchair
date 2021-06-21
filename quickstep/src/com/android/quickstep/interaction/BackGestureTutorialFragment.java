@@ -18,14 +18,31 @@ package com.android.quickstep.interaction;
 import android.view.MotionEvent;
 import android.view.View;
 
+import androidx.annotation.Nullable;
+
 import com.android.launcher3.R;
 import com.android.quickstep.interaction.TutorialController.TutorialType;
 
 /** Shows the Back gesture interactive tutorial. */
 public class BackGestureTutorialFragment extends TutorialFragment {
+    @Nullable
     @Override
-    int getHandAnimationResId() {
-        return R.drawable.back_gesture;
+    Integer getFeedbackVideoResId(boolean forDarkMode) {
+        return mTutorialType == TutorialType.RIGHT_EDGE_BACK_NAVIGATION
+                ? (forDarkMode
+                        ? R.drawable.gesture_tutorial_motion_back_right_dark_mode
+                        : R.drawable.gesture_tutorial_motion_back_right_light_mode)
+                : (forDarkMode
+                        ? R.drawable.gesture_tutorial_motion_back_left_dark_mode
+                        : R.drawable.gesture_tutorial_motion_back_left_light_mode);
+    }
+
+    @Nullable
+    @Override
+    Integer getGestureVideoResId() {
+        return mTutorialType == TutorialType.RIGHT_EDGE_BACK_NAVIGATION
+                ? R.drawable.gesture_tutorial_loop_back_right
+                : R.drawable.gesture_tutorial_loop_back_left;
     }
 
     @Override

@@ -28,7 +28,7 @@ import java.util.regex.Pattern;
 
 public class AddToHomeScreenPrompt {
     private static final Pattern ADD_AUTOMATICALLY =
-            Pattern.compile("^Add automatically$", CASE_INSENSITIVE);
+            Pattern.compile("^Add to Home screen$", CASE_INSENSITIVE);
     private final LauncherInstrumentation mLauncher;
     private final UiObject2 mWidgetCell;
 
