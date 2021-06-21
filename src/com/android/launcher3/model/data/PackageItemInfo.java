@@ -16,27 +16,47 @@
 
 package com.android.launcher3.model.data;
 
+import androidx.annotation.IntDef;
+
 import com.android.launcher3.LauncherSettings;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.util.Objects;
 
 /**
  * Represents a {@link Package} in the widget tray section.
  */
 public class PackageItemInfo extends ItemInfoWithIcon {
+    @Retention(RetentionPolicy.SOURCE)
+    @IntDef({NO_CATEGORY, CONVERSATIONS})
+    public @interface Category{}
+    /** The package is not categorized in the widget tray. */
+    public static final int NO_CATEGORY = 0;
+    /** The package is categorized to conversations widget in the widget tray. */
+    public static final int CONVERSATIONS = 1;
 
     /**
      * Package name of the {@link PackageItemInfo}.
      */
-    public String packageName;
+    public final String packageName;
+
+    /** Represents a widget category shown in the widget tray section. */
+    @Category public final int category;
 
     public PackageItemInfo(String packageName) {
+        this(packageName, NO_CATEGORY);
+    }
+
+    public PackageItemInfo(String packageName, @Category int category) {
         this.packageName = packageName;
+        this.category = category;
         this.itemType = LauncherSettings.Favorites.ITEM_TYPE_NON_ACTIONABLE;
     }
 
     public PackageItemInfo(PackageItemInfo copy) {
         this.packageName = copy.packageName;
+        this.category = copy.category;
         this.itemType = LauncherSettings.Favorites.ITEM_TYPE_NON_ACTIONABLE;
     }
 
@@ -60,6 +80,6 @@ public class PackageItemInfo extends ItemInfoWithIcon {
 
     @Override
     public int hashCode() {
-        return Objects.hash(packageName);
+        return Objects.hash(packageName, user);
     }
 }

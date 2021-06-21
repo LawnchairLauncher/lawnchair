@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- Copyright (C) 2016 The Android Open Source Project
+<?xml version="1.0" encoding="utf-8"?><!-- Copyright (C) 2016 The Android Open Source Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -16,8 +15,7 @@
 <!-- The top and bottom paddings are defined in this container, but since we want
      the list view to span the full width (for touch interception purposes), we
      will bake the left/right padding into that view's background itself. -->
-<com.android.launcher3.allapps.LauncherAllAppsContainerView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<com.android.launcher3.allapps.LauncherAllAppsContainerView xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/apps_view"
     android:theme="?attr/allAppsTheme"
     android:layout_width="match_parent"
@@ -38,43 +36,15 @@
         android:layout_below="@id/search_container_all_apps"
         android:clipToPadding="false"
         android:paddingTop="@dimen/all_apps_header_top_padding"
+        android:paddingBottom="@dimen/all_apps_header_bottom_padding"
         android:orientation="vertical" >
 
         <include layout="@layout/floating_header_content" />
 
-        <com.android.launcher3.allapps.PersonalWorkSlidingTabStrip
-            android:id="@+id/tabs"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/all_apps_header_tab_height"
-            android:layout_marginLeft="@dimen/all_apps_tabs_side_padding"
-            android:layout_marginRight="@dimen/all_apps_tabs_side_padding"
-            android:orientation="horizontal"
-            style="@style/TextHeadline">
-
-            <Button
-                android:id="@+id/tab_personal"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="?android:attr/selectableItemBackground"
-                android:text="@string/all_apps_personal_tab"
-                android:textColor="@color/all_apps_tab_text"
-                android:textSize="14sp" />
-
-            <Button
-                android:id="@+id/tab_work"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="?android:attr/selectableItemBackground"
-                android:text="@string/all_apps_work_tab"
-                android:textColor="@color/all_apps_tab_text"
-                android:textSize="14sp" />
-        </com.android.launcher3.allapps.PersonalWorkSlidingTabStrip>
+        <include layout="@layout/all_apps_personal_work_tabs" />
     </com.android.launcher3.allapps.FloatingHeaderView>
 
     <include
-        android:id="@id/search_container_all_apps"
         layout="@layout/search_container_all_apps"/>
 
     <include layout="@layout/all_apps_fast_scroller" />

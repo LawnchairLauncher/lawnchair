@@ -22,7 +22,6 @@ import android.app.ActivityOptions;
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.content.Context;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.Icon;
 import android.os.Bundle;
@@ -86,9 +85,8 @@ public class NotificationInfo implements View.OnClickListener {
             mIsIconLarge = true;
         }
         if (mIconDrawable == null) {
-            mIconDrawable = new BitmapDrawable(context.getResources(), LauncherAppState
-                    .getInstance(context).getIconCache()
-                    .getDefaultIcon(statusBarNotification.getUser()).icon);
+            mIconDrawable = LauncherAppState.getInstance(context).getIconCache()
+                    .getDefaultIcon(statusBarNotification.getUser()).newIcon(context);
         }
         intent = notification.contentIntent;
         autoCancel = (notification.flags & Notification.FLAG_AUTO_CANCEL) != 0;
@@ -106,7 +104,6 @@ public class NotificationInfo implements View.OnClickListener {
                 view, 0, 0, view.getWidth(), view.getHeight()).toBundle();
         try {
             intent.send(null, 0, null, null, null, null, activityOptions);
-            launcher.getUserEventDispatcher().logNotificationLaunch(view, intent);
             launcher.getStatsLogManager().logger().withItemInfo(mItemInfo)
                     .log(LAUNCHER_NOTIFICATION_LAUNCH_TAP);
         } catch (PendingIntent.CanceledException e) {

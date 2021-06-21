@@ -15,12 +15,13 @@
 -->
 <com.android.launcher3.widget.WidgetCell
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
+    android:layout_width="0dp"
     android:layout_height="wrap_content"
+    android:paddingHorizontal="@dimen/widget_cell_horizontal_padding"
+    android:paddingVertical="@dimen/widget_cell_vertical_padding"
     android:layout_weight="1"
     android:orientation="vertical"
     android:focusable="true"
-    android:background="?android:attr/colorPrimaryDark"
     android:gravity="center_horizontal">
 
     <include layout="@layout/widget_cell_content"  />
