@@ -60,7 +60,7 @@ public final class WidgetsListSearchHeaderEntry extends WidgetsListBaseEntry
         WidgetsListSearchHeaderEntry otherEntry = (WidgetsListSearchHeaderEntry) obj;
         return mWidgets.equals(otherEntry.mWidgets) && mPkgItem.equals(otherEntry.mPkgItem)
                 && mTitleSectionName.equals(otherEntry.mTitleSectionName)
-                && mIsWidgetListShown;
+                && mIsWidgetListShown == otherEntry.mIsWidgetListShown;
     }
 
     /** Returns a copy of this {@link WidgetsListSearchHeaderEntry} with the widget list shown. */
