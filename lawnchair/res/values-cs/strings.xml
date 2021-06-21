@@ -46,9 +46,9 @@
     <string name="about_label">O aplikaci</string>
     <string name="news">Novinky</string>
     <string name="support">Podpora</string>
-    <string name="acknowledgements">Poděkování</string>
+    <string name="acknowledgements">Uznání</string>
     <string name="devops">Devops</string>
-    <string name="quickswitch_maintenance">Nastavení Quickswitch</string>
+    <string name="quickswitch_maintenance">Nastavení QuickSwitch</string>
     <string name="all_apps_search_bar_hint">Vyhledat aplikace</string>
     <string name="settings_button_text">Nastavení domovské stránky</string>
     <string name="development">Vývoj</string>
