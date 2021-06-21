@@ -23,7 +23,6 @@ import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
-import android.view.MotionEvent;
 import android.widget.Toast;
 
 import com.android.launcher3.BubbleTextView;
@@ -106,12 +105,12 @@ public class DeepShortcutTextView extends BubbleTextView {
     }
 
     @Override
-    public boolean onTouchEvent(MotionEvent ev) {
-        if (ev.getAction() == MotionEvent.ACTION_DOWN) {
-            // Show toast if user touches the drag handle (long clicks still start the drag).
-            mShowInstructionToast = mDragHandleBounds.contains((int) ev.getX(), (int) ev.getY());
-        }
-        return super.onTouchEvent(ev);
+    protected boolean shouldIgnoreTouchDown(float x, float y) {
+        // Show toast if user touches the drag handle (long clicks still start the drag).
+        mShowInstructionToast = mDragHandleBounds.contains((int) x, (int) y);
+
+        // assume the whole view as clickable
+        return false;
     }
 
     @Override
@@ -131,6 +130,12 @@ public class DeepShortcutTextView extends BubbleTextView {
         }
 
         mLoadingStatePlaceholder.draw(canvas);
+    }
+
+    @Override
+    protected void drawDotIfNecessary(Canvas canvas) {
+        // This view (with the text label to the side of the icon) is not designed for a dot to be
+        // drawn on top of it, so never draw one even if a notification for this shortcut exists.
     }
 
     private void showLoadingState(boolean loading) {

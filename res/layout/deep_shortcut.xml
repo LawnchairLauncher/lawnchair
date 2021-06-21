@@ -19,6 +19,8 @@
     xmlns:launcher="http://schemas.android.com/apk/res-auto"
     android:layout_width="@dimen/bg_popup_item_width"
     android:layout_height="@dimen/bg_popup_item_height"
+    android:elevation="@dimen/deep_shortcuts_elevation"
+    android:background="@drawable/middle_item_primary"
     android:theme="@style/PopupItem" >
 
     <com.android.launcher3.shortcuts.DeepShortcutTextView
@@ -31,6 +33,8 @@
         android:paddingEnd="@dimen/popup_padding_end"
         android:drawableEnd="@drawable/ic_drag_handle"
         android:drawablePadding="@dimen/deep_shortcut_drawable_padding"
+        android:singleLine="true"
+        android:ellipsize="end"
         android:textSize="14sp"
         android:textColor="?android:attr/textColorPrimary"
         launcher:layoutHorizontal="true"
@@ -44,13 +48,5 @@
         android:layout_marginStart="@dimen/popup_padding_start"
         android:layout_gravity="start|center_vertical"
         android:background="@drawable/ic_deepshortcut_placeholder"/>
-
-    <View
-        android:id="@+id/divider"
-        android:layout_width="@dimen/deep_shortcuts_divider_width"
-        android:layout_height="@dimen/popup_item_divider_height"
-        android:layout_gravity="end|bottom"
-        android:visibility="gone"
-        android:background="?attr/popupColorTertiary" />
 
 </com.android.launcher3.shortcuts.DeepShortcutView>

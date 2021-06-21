@@ -18,16 +18,10 @@ package com.android.quickstep.interaction;
 import android.view.MotionEvent;
 import android.view.View;
 
-import com.android.launcher3.R;
 import com.android.quickstep.interaction.TutorialController.TutorialType;
 
 /** Shows the Home gesture interactive tutorial. */
 public class AssistantGestureTutorialFragment extends TutorialFragment {
-    @Override
-    int getHandAnimationResId() {
-        return R.drawable.assistant_gesture;
-    }
-
     @Override
     TutorialController createController(TutorialType type) {
         return new AssistantGestureTutorialController(this, type);

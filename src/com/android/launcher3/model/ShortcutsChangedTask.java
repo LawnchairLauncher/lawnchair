@@ -21,16 +21,17 @@ import android.os.UserHandle;
 
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherSettings;
-import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.shortcuts.ShortcutKey;
 import com.android.launcher3.shortcuts.ShortcutRequest;
 import com.android.launcher3.util.ItemInfoMatcher;
-import com.android.launcher3.util.MultiHashMap;
+import com.android.launcher3.util.PackageManagerHelper;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Handles changes due to shortcut manager updates (deep shortcut changes)
@@ -54,54 +55,61 @@ public class ShortcutsChangedTask extends BaseModelUpdateTask {
     public void execute(LauncherAppState app, BgDataModel dataModel, AllAppsList apps) {
         final Context context = app.getContext();
         // Find WorkspaceItemInfo's that have changed on the workspace.
-        HashSet<ShortcutKey> removedKeys = new HashSet<>();
-        MultiHashMap<ShortcutKey, WorkspaceItemInfo> keyToShortcutInfo = new MultiHashMap<>();
-        HashSet<String> allIds = new HashSet<>();
+        ArrayList<WorkspaceItemInfo> matchingWorkspaceItems = new ArrayList<>();
 
-        for (ItemInfo itemInfo : dataModel.itemsIdMap) {
-            if (itemInfo.itemType == LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT) {
-                WorkspaceItemInfo si = (WorkspaceItemInfo) itemInfo;
-                if (mPackageName.equals(si.getIntent().getPackage()) && si.user.equals(mUser)) {
-                    keyToShortcutInfo.addToList(ShortcutKey.fromItemInfo(si), si);
-                    allIds.add(si.getDeepShortcutId());
+        synchronized (dataModel) {
+            dataModel.forAllWorkspaceItemInfos(mUser, si -> {
+                if ((si.itemType == LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT)
+                        && mPackageName.equals(si.getIntent().getPackage())) {
+                    matchingWorkspaceItems.add(si);
                 }
-            }
+            });
         }
 
-        final ArrayList<WorkspaceItemInfo> updatedWorkspaceItemInfos = new ArrayList<>();
-        if (!keyToShortcutInfo.isEmpty()) {
+        if (!matchingWorkspaceItems.isEmpty()) {
+            if (mShortcuts.isEmpty()) {
+                // Verify that the app is indeed installed.
+                if (!new PackageManagerHelper(app.getContext())
+                        .isAppInstalled(mPackageName, mUser)) {
+                    // App is not installed, ignoring package events
+                    return;
+                }
+            }
             // Update the workspace to reflect the changes to updated shortcuts residing on it.
+            List<String> allLauncherKnownIds = matchingWorkspaceItems.stream()
+                    .map(WorkspaceItemInfo::getDeepShortcutId)
+                    .distinct()
+                    .collect(Collectors.toList());
             List<ShortcutInfo> shortcuts = new ShortcutRequest(context, mUser)
-                    .forPackage(mPackageName, new ArrayList<>(allIds))
+                    .forPackage(mPackageName, allLauncherKnownIds)
                     .query(ShortcutRequest.ALL);
+
+            Set<String> nonPinnedIds = new HashSet<>(allLauncherKnownIds);
+            ArrayList<WorkspaceItemInfo> updatedWorkspaceItemInfos = new ArrayList<>();
             for (ShortcutInfo fullDetails : shortcuts) {
-                ShortcutKey key = ShortcutKey.fromInfo(fullDetails);
-                List<WorkspaceItemInfo> workspaceItemInfos = keyToShortcutInfo.remove(key);
                 if (!fullDetails.isPinned()) {
-                    // The shortcut was previously pinned but is no longer, so remove it from
-                    // the workspace and our pinned shortcut counts.
-                    // Note that we put this check here, after querying for full details,
-                    // because there's a possible race condition between pinning and
-                    // receiving this callback.
-                    removedKeys.add(key);
                     continue;
                 }
-                for (final WorkspaceItemInfo workspaceItemInfo : workspaceItemInfos) {
-                    workspaceItemInfo.updateFromDeepShortcutInfo(fullDetails, context);
-                    app.getIconCache().getShortcutIcon(workspaceItemInfo, fullDetails);
-                    updatedWorkspaceItemInfos.add(workspaceItemInfo);
-                }
+
+                String sid = fullDetails.getId();
+                nonPinnedIds.remove(sid);
+                matchingWorkspaceItems
+                        .stream()
+                        .filter(itemInfo -> sid.equals(itemInfo.getDeepShortcutId()))
+                        .forEach(workspaceItemInfo -> {
+                            workspaceItemInfo.updateFromDeepShortcutInfo(fullDetails, context);
+                            app.getIconCache().getShortcutIcon(workspaceItemInfo, fullDetails);
+                            updatedWorkspaceItemInfos.add(workspaceItemInfo);
+                        });
             }
-        }
 
-        // If there are still entries in keyToShortcutInfo, that means that
-        // the corresponding shortcuts weren't passed in onShortcutsChanged(). This
-        // means they were cleared, so we remove and unpin them now.
-        removedKeys.addAll(keyToShortcutInfo.keySet());
-
-        bindUpdatedWorkspaceItems(updatedWorkspaceItemInfos);
-        if (!keyToShortcutInfo.isEmpty()) {
-            deleteAndBindComponentsRemoved(ItemInfoMatcher.ofShortcutKeys(removedKeys));
+            bindUpdatedWorkspaceItems(updatedWorkspaceItemInfos);
+            if (!nonPinnedIds.isEmpty()) {
+                deleteAndBindComponentsRemoved(ItemInfoMatcher.ofShortcutKeys(
+                        nonPinnedIds.stream()
+                                .map(id -> new ShortcutKey(mPackageName, mUser, id))
+                                .collect(Collectors.toSet())));
+            }
         }
 
         if (mUpdateIdMap) {
