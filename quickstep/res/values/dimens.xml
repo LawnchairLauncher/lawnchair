@@ -153,4 +153,7 @@
     <dimen name="taskbar_folder_margin">16dp</dimen>
     <dimen name="taskbar_nav_buttons_spacing">16dp</dimen>
     <dimen name="taskbar_nav_buttons_size">48dp</dimen>
+    <dimen name="taskbar_stashed_size">24dp</dimen>
+    <dimen name="taskbar_stashed_handle_width">220dp</dimen>
+    <dimen name="taskbar_stashed_handle_height">6dp</dimen>
 </resources>

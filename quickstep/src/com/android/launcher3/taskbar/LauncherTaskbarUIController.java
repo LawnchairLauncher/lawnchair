@@ -50,21 +50,23 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
     private final TaskbarHotseatController mHotseatController;
 
     private final TaskbarActivityContext mContext;
-    final TaskbarDragLayer mTaskbarDragLayer;
-    final TaskbarView mTaskbarView;
+    private final TaskbarDragLayer mTaskbarDragLayer;
+    private final TaskbarView mTaskbarView;
 
     private final AnimatedFloat mIconAlignmentForResumedState =
             new AnimatedFloat(this::onIconAlignmentRatioChanged);
     private final AnimatedFloat mIconAlignmentForGestureState =
             new AnimatedFloat(this::onIconAlignmentRatioChanged);
 
+    // Initialized in init.
+    private TaskbarControllers mControllers;
     private AnimatedFloat mTaskbarBackgroundAlpha;
     private AlphaProperty mIconAlphaForHome;
-    private boolean mIsAnimatingToLauncher;
+    private boolean mIsAnimatingToLauncherViaResume;
+    private boolean mIsAnimatingToLauncherViaGesture;
     private TaskbarKeyguardController mKeyguardController;
 
     private LauncherState mTargetStateOverride = null;
-    private TaskbarControllers mControllers;
 
     public LauncherTaskbarUIController(
             BaseQuickstepLauncher launcher, TaskbarActivityContext context) {
@@ -80,12 +82,13 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
 
     @Override
     protected void init(TaskbarControllers taskbarControllers) {
-        mTaskbarBackgroundAlpha = taskbarControllers.taskbarDragLayerController
-                .getTaskbarBackgroundAlpha();
-        MultiValueAlpha taskbarIconAlpha = taskbarControllers.taskbarViewController
-                .getTaskbarIconAlpha();
-        mIconAlphaForHome = taskbarIconAlpha.getProperty(ALPHA_INDEX_HOME);
         mControllers = taskbarControllers;
+
+        mTaskbarBackgroundAlpha = mControllers.taskbarDragLayerController
+                .getTaskbarBackgroundAlpha();
+
+        MultiValueAlpha taskbarIconAlpha = mControllers.taskbarViewController.getTaskbarIconAlpha();
+        mIconAlphaForHome = taskbarIconAlpha.getProperty(ALPHA_INDEX_HOME);
 
         mHotseatController.init();
         mLauncher.setTaskbarUIController(this);
@@ -109,19 +112,17 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
 
     @Override
     protected boolean isTaskbarTouchable() {
-        return !mIsAnimatingToLauncher && mTargetStateOverride == null;
+        return !isAnimatingToLauncher() && !mControllers.taskbarStashController.isStashed();
+    }
+
+    private boolean isAnimatingToLauncher() {
+        return mIsAnimatingToLauncherViaResume || mIsAnimatingToLauncherViaGesture;
     }
 
     @Override
     protected void updateContentInsets(Rect outContentInsets) {
-        // TaskbarDragLayer provides insets to other apps based on contentInsets. These
-        // insets should stay consistent even if we expand TaskbarDragLayer's bounds, e.g.
-        // to show a floating view like Folder. Thus, we set the contentInsets to be where
-        // mTaskbarView is, since its position never changes and insets rather than overlays.
-        outContentInsets.left = mTaskbarView.getLeft();
-        outContentInsets.top = mTaskbarView.getTop();
-        outContentInsets.right = mTaskbarDragLayer.getWidth() - mTaskbarView.getRight();
-        outContentInsets.bottom = mTaskbarDragLayer.getHeight() - mTaskbarView.getBottom();
+        int contentHeight = mControllers.taskbarStashController.getContentHeight();
+        outContentInsets.top = mTaskbarDragLayer.getHeight() - contentHeight;
     }
 
     /**
@@ -137,13 +138,20 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
             }
         }
 
+        long duration = QuickstepTransitionManager.CONTENT_ALPHA_DURATION;
         ObjectAnimator anim = mIconAlignmentForResumedState.animateToValue(
                 getCurrentIconAlignmentRatio(), isResumed ? 1 : 0)
-                .setDuration(QuickstepTransitionManager.CONTENT_ALPHA_DURATION);
+                .setDuration(duration);
 
-        anim.addListener(AnimatorListeners.forEndCallback(() -> mIsAnimatingToLauncher = false));
+        anim.addListener(AnimatorListeners.forEndCallback(
+                () -> mIsAnimatingToLauncherViaResume = false));
         anim.start();
-        mIsAnimatingToLauncher = isResumed;
+        mIsAnimatingToLauncherViaResume = isResumed;
+
+        if (!isResumed) {
+            TaskbarStashController stashController = mControllers.taskbarStashController;
+            stashController.animateToIsStashed(stashController.isStashedInApp(), duration);
+        }
     }
 
     /**
@@ -155,36 +163,48 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
     public Animator createAnimToLauncher(@NonNull LauncherState toState,
             @NonNull RecentsAnimationCallbacks callbacks,
             long duration) {
+        TaskbarStashController stashController = mControllers.taskbarStashController;
         ObjectAnimator animator = mIconAlignmentForGestureState
-                .animateToValue(mIconAlignmentForGestureState.value, 1)
+                .animateToValue(1)
                 .setDuration(duration);
         animator.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
                 mTargetStateOverride = null;
+                animator.removeListener(this);
             }
 
             @Override
             public void onAnimationStart(Animator animation) {
                 mTargetStateOverride = toState;
+                mIsAnimatingToLauncherViaGesture = true;
+                // TODO: base this on launcher state
+                stashController.animateToIsStashed(false, duration);
             }
         });
         callbacks.addListener(new RecentsAnimationListener() {
             @Override
             public void onRecentsAnimationCanceled(ThumbnailData thumbnailData) {
-                endGestureStateOverride();
+                endGestureStateOverride(true);
             }
 
             @Override
             public void onRecentsAnimationFinished(RecentsAnimationController controller) {
-                endGestureStateOverride();
+                endGestureStateOverride(!controller.getFinishTargetIsLauncher());
             }
 
-            private void endGestureStateOverride() {
+            private void endGestureStateOverride(boolean finishedToApp) {
                 callbacks.removeListener(this);
+                mIsAnimatingToLauncherViaGesture = false;
+
                 mIconAlignmentForGestureState
-                        .animateToValue(mIconAlignmentForGestureState.value, 0)
+                        .animateToValue(0)
                         .start();
+
+                if (finishedToApp) {
+                    // We only need this for the exiting live tile case.
+                    stashController.animateToIsStashed(stashController.isStashedInApp());
+                }
             }
         });
         return animator;
@@ -213,6 +233,11 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
             mLauncher.getHotseat().setIconsAlpha(1);
             mIconAlphaForHome.setValue(1 - alignment);
         }
+    }
+
+    @Override
+    public boolean onLongPressToUnstashTaskbar() {
+        return mControllers.taskbarStashController.onLongPressToUnstashTaskbar();
     }
 
     /**

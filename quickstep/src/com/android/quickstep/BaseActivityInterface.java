@@ -364,6 +364,14 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
     }
 
     /**
+     * Called when we detect a long press in the nav region before passing the gesture slop.
+     * @return Whether taskbar handled the long press, and thus should cancel the gesture.
+     */
+    public boolean onLongPressToUnstashTaskbar() {
+        return false;
+    }
+
+    /**
      * Returns the color of the scrim behind overview when at rest in this state.
      * Return {@link Color#TRANSPARENT} for no scrim.
      */
