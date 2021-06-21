@@ -82,8 +82,10 @@
     <string name="permlab_write_settings" msgid="3574213698004620587">"මුල් පිටු සැකසීම් සහ කෙටිමං ලියන්න"</string>
     <string name="permdesc_write_settings" msgid="5440712911516509985">"මුල් පිටුවේ සැකසීම් සහ කෙටිමං ඉවත් කිරීමට යෙදුමට අවසර දෙයි."</string>
     <string name="msg_no_phone_permission" msgid="9208659281529857371">"<xliff:g id="APP_NAME">%1$s</xliff:g> හට දුරකථන ඇමතුම් සිදු කිරීමට ඉඩ නොදේ"</string>
-    <string name="gadget_error_text" msgid="6081085226050792095">"ගැටලු පූරණ විජට් එක"</string>
-    <string name="gadget_setup_text" msgid="8274003207686040488">"ස්ථාපනය කරන්න"</string>
+    <!-- no translation found for gadget_error_text (740356548025791839) -->
+    <skip />
+    <!-- no translation found for gadget_setup_text (1745356155479272374) -->
+    <skip />
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"මෙය පද්ධති යෙදුමක් වන අතර අස්ථාපනය කළ නොහැක."</string>
     <string name="folder_hint_text" msgid="5174843001373488816">"නම සංස්කරණය කරන්න"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"<xliff:g id="APP_NAME">%1$s</xliff:g> අබල කෙරිණි"</string>
@@ -156,8 +158,7 @@
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"පුද්ගලික"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"කාර්යාලය"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"කාර්යාල පැතිකඩ"</string>
-    <!-- no translation found for work_profile_edu_work_apps (7895468576497746520) -->
-    <skip />
+    <string name="work_profile_edu_work_apps" msgid="7895468576497746520">"කාර්යාල යෙදුම්වලට ලාංඡන යොදා ඇති අතර ඔබගේ IT පරිපාලකට දෘශ්‍යමාන වේ"</string>
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"තේරුණා"</string>
     <string name="work_apps_paused_title" msgid="3007471013401118920">"කාර්යාල යෙදුම් ක්‍රියාවිරහිතයි"</string>
     <string name="work_apps_paused_body" msgid="261634750995824906">"ඔබගේ කාර්යාල යෙදුම්වලට ඔබට දැනුම්දීම් එවීමට, ඔබගේ බැටරිය භාවිත කිරීමට හෝ ඔබගේ ස්ථානයට ප්‍රවේශ වීමට නොහැකිය"</string>

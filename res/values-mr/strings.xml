@@ -53,11 +53,9 @@
     <string name="widget_category_conversations" msgid="8894438636213590446">"संभाषणे"</string>
     <string name="widget_education_header" msgid="4874760613775913787">"तुमच्यासाठी सहज उपलब्ध असलेली माहिती"</string>
     <string name="widget_education_content" msgid="745542879510751525">"ॲप्स न उघडता माहिती मिळवण्यासाठी, तुम्ही तुमच्या होम स्क्रीनवर विजेट जोडू शकता"</string>
-    <!-- no translation found for reconfigurable_widget_education_tip (6336962690888067057) -->
-    <skip />
+    <string name="reconfigurable_widget_education_tip" msgid="6336962690888067057">"विजेट सेटिंग्ज बदलण्यासाठी टॅप करा"</string>
     <string name="widget_education_close_button" msgid="8676165703104836580">"समजले"</string>
-    <!-- no translation found for widget_reconfigure_button_content_description (8811472721881205250) -->
-    <skip />
+    <string name="widget_reconfigure_button_content_description" msgid="8811472721881205250">"विजेट सेटिंग्ज बदला"</string>
     <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"अ‍ॅप्स शोधा"</string>
     <string name="all_apps_loading_message" msgid="5813968043155271636">"अ‍ॅप्स लोड करत आहे…"</string>
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"\"<xliff:g id="QUERY">%1$s</xliff:g>\" शी जुळणारे कोणतेही अ‍ॅप्स आढळले नाहीत"</string>
@@ -84,8 +82,10 @@
     <string name="permlab_write_settings" msgid="3574213698004620587">"होम सेटिंग्ज आणि शॉर्टकट लिहा"</string>
     <string name="permdesc_write_settings" msgid="5440712911516509985">"मुख्यपृष्ठातील सेटिंग्ज आणि शॉर्टकट बदलण्यास अ‍ॅप ला अनुमती देते."</string>
     <string name="msg_no_phone_permission" msgid="9208659281529857371">"<xliff:g id="APP_NAME">%1$s</xliff:g> ला फोन कॉल करण्याची अनुमती नाही"</string>
-    <string name="gadget_error_text" msgid="6081085226050792095">"विजेट लोड करण्यात समस्या"</string>
-    <string name="gadget_setup_text" msgid="8274003207686040488">"सेटअप"</string>
+    <!-- no translation found for gadget_error_text (740356548025791839) -->
+    <skip />
+    <!-- no translation found for gadget_setup_text (1745356155479272374) -->
+    <skip />
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"हा सिस्टम अ‍ॅप आहे आणि अनइंस्टॉल केला जाऊ शकत नाही."</string>
     <string name="folder_hint_text" msgid="5174843001373488816">"नाव संपादित करा"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"<xliff:g id="APP_NAME">%1$s</xliff:g> अक्षम केला आहे"</string>
@@ -158,21 +158,15 @@
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"वैयक्तिक"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"कार्यालय"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"कार्य प्रोफाइल"</string>
-    <!-- no translation found for work_profile_edu_work_apps (7895468576497746520) -->
-    <skip />
+    <string name="work_profile_edu_work_apps" msgid="7895468576497746520">"कामाशी संबंधित ॲप्स ही बॅज केलेली असून तुमच्या IT ॲडमिनला दृश्यमान आहेत"</string>
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"समजले"</string>
-    <!-- no translation found for work_apps_paused_title (3007471013401118920) -->
-    <skip />
-    <!-- no translation found for work_apps_paused_body (261634750995824906) -->
-    <skip />
-    <!-- no translation found for work_apps_paused_content_description (5149623040804051095) -->
-    <skip />
+    <string name="work_apps_paused_title" msgid="3007471013401118920">"कामाशी संबंधित ॲप्स बंद आहेत"</string>
+    <string name="work_apps_paused_body" msgid="261634750995824906">"तुमचे कामाशी संबंधित ॲप्स तुम्हाला सूचना पाठवू शकत नाहीत, तुमची बॅटरी वापरू शकत नाहीत किंवा तुमचे स्थान अ‍ॅक्सेस करू शकत नाहीत"</string>
+    <string name="work_apps_paused_content_description" msgid="5149623040804051095">"कामाशी संबंधित ॲप्स बंद आहेत. तुमचे कामाशी संबंधित ॲप्स तुम्हाला सूचना पाठवू शकत नाहीत, तुमची बॅटरी वापरू शकत नाहीत किंवा तुमचे स्थान अ‍ॅक्सेस करू शकत नाहीत"</string>
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"Work apps ही बॅज केलेली असून तुमच्या IT ॲडमिनला दृश्यमान आहेत"</string>
     <string name="work_apps_paused_edu_accept" msgid="6377476824357318532">"समजले"</string>
-    <!-- no translation found for work_apps_pause_btn_text (1921059713673767460) -->
-    <skip />
-    <!-- no translation found for work_apps_enable_btn_text (1156432622148413741) -->
-    <skip />
+    <string name="work_apps_pause_btn_text" msgid="1921059713673767460">"कामाशी संबंधित ॲप्स बंद करा"</string>
+    <string name="work_apps_enable_btn_text" msgid="1156432622148413741">"कामाशी संबंधित ॲप्स सुरू करा"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"फिल्टर"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"हे करता आले नाही: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
 </resources>
