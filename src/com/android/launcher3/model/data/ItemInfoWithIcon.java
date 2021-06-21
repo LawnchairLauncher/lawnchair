@@ -16,7 +16,16 @@
 
 package com.android.launcher3.model.data;
 
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
+
+import androidx.annotation.Nullable;
+
 import com.android.launcher3.icons.BitmapInfo;
+import com.android.launcher3.icons.FastBitmapDrawable;
+import com.android.launcher3.pm.PackageInstallInfo;
+import com.android.launcher3.util.PackageManagerHelper;
 
 /**
  * Represents an ItemInfo which also holds an icon.
@@ -88,17 +97,42 @@ public abstract class ItemInfoWithIcon extends ItemInfo {
     public static final int FLAG_ICON_BADGED = 1 << 9;
 
     /**
+     * The icon is being installed. If {@link WorkspaceItemInfo#FLAG_RESTORED_ICON} or
+     * {@link WorkspaceItemInfo#FLAG_AUTOINSTALL_ICON} is set, then the icon is either being
+     * installed or is in a broken state.
+     */
+    public static final int FLAG_INSTALL_SESSION_ACTIVE = 1 << 10;
+
+    /**
+     * This icon is still being downloaded.
+     */
+    public static final int FLAG_INCREMENTAL_DOWNLOAD_ACTIVE = 1 << 11;
+
+    public static final int FLAG_SHOW_DOWNLOAD_PROGRESS_MASK = FLAG_INSTALL_SESSION_ACTIVE
+            | FLAG_INCREMENTAL_DOWNLOAD_ACTIVE;
+
+    /**
      * Status associated with the system state of the underlying item. This is calculated every
      * time a new info is created and not persisted on the disk.
      */
     public int runtimeStatusFlags = 0;
+
+    /**
+     * The download progress of the package that this shortcut represents. For legacy apps, this
+     * will always be the installation progress. For apps that support incremental downloads, this
+     * will only match be the installation progress until the app is installed, then this will the
+     * total download progress.
+     */
+    private int mProgressLevel = 100;
 
     protected ItemInfoWithIcon() { }
 
     protected ItemInfoWithIcon(ItemInfoWithIcon info) {
         super(info);
         bitmap = info.bitmap;
+        mProgressLevel = info.mProgressLevel;
         runtimeStatusFlags = info.runtimeStatusFlags;
+        user = info.user;
     }
 
     @Override
@@ -114,7 +148,91 @@ public abstract class ItemInfoWithIcon extends ItemInfo {
     }
 
     /**
+     * Returns whether the app this shortcut represents is able to be started. For legacy apps,
+     * this returns whether it is fully installed. For apps that support incremental downloads,
+     * this returns whether the app is either fully downloaded or has installed and is downloading
+     * incrementally.
+     */
+    public boolean isAppStartable() {
+        return ((runtimeStatusFlags & FLAG_INSTALL_SESSION_ACTIVE) == 0)
+                && (((runtimeStatusFlags & FLAG_INCREMENTAL_DOWNLOAD_ACTIVE) != 0)
+                    || mProgressLevel == 100);
+    }
+
+    /**
+     * Returns the download progress for the app this shortcut represents. If this app is not yet
+     * installed or does not support incremental downloads, this will return the installation
+     * progress.
+     */
+    public int getProgressLevel() {
+        if ((runtimeStatusFlags & FLAG_SHOW_DOWNLOAD_PROGRESS_MASK) != 0) {
+            return mProgressLevel;
+        }
+        return 100;
+    }
+
+    /**
+     * Sets the download progress for the app this shortcut represents. If this app is not yet
+     * installed or does not support incremental downloads, this will set
+     * {@code FLAG_INSTALL_SESSION_ACTIVE}. If this app is downloading incrementally, this will
+     * set {@code FLAG_INCREMENTAL_DOWNLOAD_ACTIVE}. Otherwise, this will remove both flags.
+     */
+    public void setProgressLevel(PackageInstallInfo installInfo) {
+        setProgressLevel(installInfo.progress, installInfo.state);
+    }
+
+    /**
+     * Sets the download progress for the app this shortcut represents.
+     */
+    public void setProgressLevel(int progress, int status) {
+        if (status == PackageInstallInfo.STATUS_INSTALLING) {
+            mProgressLevel = progress;
+            runtimeStatusFlags = progress < 100
+                    ? runtimeStatusFlags | FLAG_INSTALL_SESSION_ACTIVE
+                    : runtimeStatusFlags & ~FLAG_INSTALL_SESSION_ACTIVE;
+        } else if (status == PackageInstallInfo.STATUS_INSTALLED_DOWNLOADING) {
+            mProgressLevel = progress;
+            runtimeStatusFlags = runtimeStatusFlags & ~FLAG_INSTALL_SESSION_ACTIVE;
+            runtimeStatusFlags = progress < 100
+                    ? runtimeStatusFlags | FLAG_INCREMENTAL_DOWNLOAD_ACTIVE
+                    : runtimeStatusFlags & ~FLAG_INCREMENTAL_DOWNLOAD_ACTIVE;
+        } else {
+            mProgressLevel = status == PackageInstallInfo.STATUS_INSTALLED ? 100 : 0;
+            runtimeStatusFlags &= ~FLAG_INSTALL_SESSION_ACTIVE;
+            runtimeStatusFlags &= ~FLAG_INCREMENTAL_DOWNLOAD_ACTIVE;
+        }
+    }
+
+    /** Creates an intent to that launches the app store at this app's page. */
+    @Nullable
+    public Intent getMarketIntent(Context context) {
+        ComponentName componentName = getTargetComponent();
+
+        return componentName != null
+                ? new PackageManagerHelper(context).getMarketIntent(componentName.getPackageName())
+                : null;
+    }
+
+    /**
      * @return a copy of this
      */
     public abstract ItemInfoWithIcon clone();
+
+
+    /**
+     * Returns a FastBitmapDrawable with the icon.
+     */
+    public FastBitmapDrawable newIcon(Context context) {
+        return newIcon(context, false);
+    }
+
+    /**
+     * Returns a FastBitmapDrawable with the icon and context theme applied
+     */
+    public FastBitmapDrawable newIcon(Context context, boolean applyTheme) {
+        FastBitmapDrawable drawable = applyTheme
+                ? bitmap.newThemedIcon(context) : bitmap.newIcon(context);
+        drawable.setIsDisabled(isDisabled());
+        return drawable;
+    }
 }

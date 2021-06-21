@@ -18,7 +18,6 @@ package com.android.quickstep.interaction;
 import static com.android.quickstep.interaction.TutorialController.TutorialType.ASSISTANT_COMPLETE;
 
 import android.graphics.PointF;
-import android.view.View;
 
 import com.android.launcher3.R;
 import com.android.quickstep.interaction.EdgeBackGestureHandler.BackGestureResult;
@@ -30,38 +29,6 @@ final class AssistantGestureTutorialController extends TutorialController {
     AssistantGestureTutorialController(AssistantGestureTutorialFragment fragment,
                                        TutorialType tutorialType) {
         super(fragment, tutorialType);
-    }
-
-    @Override
-    Integer getTitleStringId() {
-        switch (mTutorialType) {
-            case ASSISTANT:
-                return R.string.assistant_gesture_tutorial_playground_title;
-            case ASSISTANT_COMPLETE:
-                return R.string.gesture_tutorial_confirm_title;
-        }
-        return null;
-    }
-
-    @Override
-    Integer getSubtitleStringId() {
-        if (mTutorialType == TutorialType.ASSISTANT) {
-            return R.string.assistant_gesture_tutorial_playground_subtitle;
-        }
-        return null;
-    }
-
-    @Override
-    Integer getActionButtonStringId() {
-        if (mTutorialType == ASSISTANT_COMPLETE) {
-            return R.string.gesture_tutorial_action_button_label_done;
-        }
-        return null;
-    }
-
-    @Override
-    void onActionButtonClicked(View button) {
-        mTutorialFragment.closeTutorial();
     }
 
     @Override
@@ -101,10 +68,9 @@ final class AssistantGestureTutorialController extends TutorialController {
                         showFeedback(R.string.assistant_gesture_feedback_swipe_too_far_from_corner);
                         break;
                     case ASSISTANT_COMPLETED:
-                        hideFeedback();
-                        hideHandCoachingAnimation();
-                        showRippleEffect(
-                                () -> mTutorialFragment.changeController(ASSISTANT_COMPLETE));
+                        hideFeedback(true);
+                        showRippleEffect(null);
+                        showFeedback(R.string.assistant_gesture_tutorial_playground_subtitle);
                         break;
                     case ASSISTANT_NOT_STARTED_BAD_ANGLE:
                         showFeedback(R.string.assistant_gesture_feedback_swipe_not_diagonal);

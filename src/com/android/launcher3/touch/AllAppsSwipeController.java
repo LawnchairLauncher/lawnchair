@@ -23,15 +23,11 @@ import android.view.MotionEvent;
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
-import com.android.launcher3.states.StateAnimationConfig.AnimationFlags;
-import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 
 /**
  * TouchController to switch between NORMAL and ALL_APPS state.
  */
 public class AllAppsSwipeController extends AbstractStateChangeTouchController {
-
-    private MotionEvent mTouchDownEvent;
 
     public AllAppsSwipeController(Launcher l) {
         super(l, SingleAxisSwipeDetector.VERTICAL);
@@ -39,9 +35,6 @@ public class AllAppsSwipeController extends AbstractStateChangeTouchController {
 
     @Override
     protected boolean canInterceptTouch(MotionEvent ev) {
-        if (ev.getAction() == MotionEvent.ACTION_DOWN) {
-            mTouchDownEvent = ev;
-        }
         if (mCurrentAnimation != null) {
             // If we are already animating from a previous state, we can intercept.
             return true;
@@ -70,17 +63,11 @@ public class AllAppsSwipeController extends AbstractStateChangeTouchController {
     }
 
     @Override
-    protected int getLogContainerTypeForNormalState(MotionEvent ev) {
-        return mLauncher.getDragLayer().isEventOverView(mLauncher.getHotseat(), mTouchDownEvent)
-                ? ContainerType.HOTSEAT : ContainerType.WORKSPACE;
-    }
-
-    @Override
-    protected float initCurrentAnimation(@AnimationFlags int animComponents) {
+    protected float initCurrentAnimation() {
         float range = getShiftRange();
         long maxAccuracy = (long) (2 * range);
         mCurrentAnimation = mLauncher.getStateManager()
-                .createAnimationToNewWorkspace(mToState, maxAccuracy, animComponents);
+                .createAnimationToNewWorkspace(mToState, maxAccuracy);
         float startVerticalShift = mFromState.getVerticalProgress(mLauncher) * range;
         float endVerticalShift = mToState.getVerticalProgress(mLauncher) * range;
         float totalShift = endVerticalShift - startVerticalShift;

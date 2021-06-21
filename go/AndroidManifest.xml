@@ -24,6 +24,8 @@
 
     <uses-sdk android:targetSdkVersion="29" android:minSdkVersion="25"/>
 
+    <uses-permission android:name="android.permission.GET_TOP_ACTIVITY_INFO" />
+
     <application
         android:backupAgent="com.android.launcher3.LauncherBackupAgent"
         android:fullBackupOnly="true"
@@ -46,6 +48,12 @@
             tools:node="replace" >
         </activity>
 
+        <service
+            android:name="com.android.launcher3.notification.NotificationListener"
+            android:label="@string/notification_dots_service_title"
+            android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE"
+            android:enabled="false"
+            tools:node="replace" />
     </application>
 
 </manifest>

@@ -30,8 +30,10 @@ import android.view.accessibility.AccessibilityEvent;
 import android.widget.LinearLayout;
 
 import com.android.launcher3.DeviceProfile;
-import com.android.launcher3.PagedView;
-import com.android.launcher3.util.OverScroller;
+import com.android.launcher3.util.SplitConfigurationOptions.SplitPositionOption;
+import com.android.launcher3.util.SplitConfigurationOptions.StagePosition;
+
+import java.util.List;
 
 /**
  * Abstraction layer to separate horizontal and vertical specific implementations
@@ -39,6 +41,10 @@ import com.android.launcher3.util.OverScroller;
  * simple as choosing the correct X and Y analogous methods.
  */
 public interface PagedOrientationHandler {
+
+    int SPLIT_TRANSLATE_PRIMARY_POSITIVE = 0;
+    int SPLIT_TRANSLATE_PRIMARY_NEGATIVE = 1;
+    int SPLIT_TRANSLATE_SECONDARY_NEGATIVE = 2;
 
     PagedOrientationHandler PORTRAIT = new PortraitPagedViewHandler();
     PagedOrientationHandler LANDSCAPE = new LandscapePagedViewHandler();
@@ -57,15 +63,25 @@ public interface PagedOrientationHandler {
 
     <T> void set(T target, Int2DAction<T> action, int param);
     <T> void set(T target, Float2DAction<T> action, float param);
+    <T> void setSecondary(T target, Float2DAction<T> action, float param);
     float getPrimaryDirection(MotionEvent event, int pointerIndex);
     float getPrimaryVelocity(VelocityTracker velocityTracker, int pointerId);
     int getMeasuredSize(View view);
+    int getPrimarySize(View view);
     float getPrimarySize(RectF rect);
-    int getClearAllScrollOffset(View view, boolean isRtl);
+    float getStart(RectF rect);
+    float getEnd(RectF rect);
+    int getClearAllSidePadding(View view, boolean isRtl);
     int getSecondaryDimension(View view);
     FloatProperty<View> getPrimaryViewTranslate();
     FloatProperty<View> getSecondaryViewTranslate();
-    void setPrimaryAndResetSecondaryTranslate(View view, float translation);
+
+    /**
+     * @param splitPosition The position where the view to be split will go
+     * @return {@link #SPLIT_TRANSLATE_*} constants to indicate which direction the
+     * dismissal should happen
+     */
+    int getSplitTaskViewDismissDirection(SplitPositionOption splitPosition, DeviceProfile dp);
     int getPrimaryScroll(View view);
     float getPrimaryScale(View view);
     int getChildStart(View view);
@@ -73,42 +89,73 @@ public interface PagedOrientationHandler {
     int getCenterForPage(View view, Rect insets);
     int getScrollOffsetStart(View view, Rect insets);
     int getScrollOffsetEnd(View view, Rect insets);
-    SingleAxisSwipeDetector.Direction getOppositeSwipeDirection();
-    int getTaskDismissDirectionFactor();
-    int getTaskDragDisplacementFactor(boolean isRtl);
+    int getPrimaryTranslationDirectionFactor();
+    int getSecondaryTranslationDirectionFactor();
+    int getSplitTranslationDirectionFactor(@StagePosition int stagePosition);
+    int getSplitAnimationTranslation(int translationOffset, DeviceProfile dp);
     ChildBounds getChildBounds(View child, int childStart, int pageCenter, boolean layoutChild);
     void setMaxScroll(AccessibilityEvent event, int maxScroll);
     boolean getRecentsRtlSetting(Resources resources);
     float getDegreesRotated();
     int getRotation();
+
+    <T> T getPrimaryValue(T x, T y);
+    <T> T getSecondaryValue(T x, T y);
+
     int getPrimaryValue(int x, int y);
     int getSecondaryValue(int x, int y);
-    void delegateScrollTo(PagedView pagedView, int secondaryScroll, int primaryScroll);
-    /** Uses {@params pagedView}.getScroll[X|Y]() method for the secondary amount*/
-    void delegateScrollTo(PagedView pagedView, int primaryScroll);
-    void delegateScrollBy(PagedView pagedView, int unboundedScroll, int x, int y);
-    void scrollerStartScroll(OverScroller scroller, int newPosition);
-    void getCurveProperties(PagedView view, Rect insets, CurveProperties out);
-    boolean isGoingUp(float displacement, boolean isRtl);
+
+    float getPrimaryValue(float x, float y);
+    float getSecondaryValue(float x, float y);
+
     boolean isLayoutNaturalToLauncher();
-    float getTaskMenuX(float x, View thumbnailView);
-    float getTaskMenuY(float y, View thumbnailView);
+    FloatProperty getSplitSelectTaskOffset(FloatProperty primary, FloatProperty secondary,
+            DeviceProfile deviceProfile);
+    int getDistanceToBottomOfRect(DeviceProfile dp, Rect rect);
+    List<SplitPositionOption> getSplitPositionOptions(DeviceProfile dp);
+
+    // Overview TaskMenuView methods
+    float getTaskMenuX(float x, View thumbnailView, int overScroll);
+    float getTaskMenuY(float y, View thumbnailView, int overScroll);
     int getTaskMenuWidth(View view);
-    int getTaskMenuLayoutOrientation(LinearLayout taskMenuLayout);
-    void setLayoutParamsForTaskMenuOptionItem(LinearLayout.LayoutParams lp);
+    /**
+     * Sets linear layout orientation for {@link com.android.launcher3.popup.SystemShortcut} items
+     * inside task menu view.
+     */
+    void setTaskOptionsMenuLayoutOrientation(DeviceProfile deviceProfile,
+            LinearLayout taskMenuLayout);
+    /**
+     * Sets layout param attributes for {@link com.android.launcher3.popup.SystemShortcut} child
+     * views inside task menu view.
+     */
+    void setLayoutParamsForTaskMenuOptionItem(LinearLayout.LayoutParams lp,
+            LinearLayout viewGroup, DeviceProfile deviceProfile);
+    /**
+     * Adjusts margins for the entire task menu view itself, which comprises of both app title and
+     * shortcut options.
+     */
+    void setTaskMenuAroundTaskView(LinearLayout taskView, float margin);
+    /**
+     * Since the task menu layout is manually positioned on top of recents view, this method returns
+     * additional adjustments to the positioning based on fake land/seascape
+     */
+    PointF getAdditionalInsetForTaskMenu(float margin);
+
+    // The following are only used by TaskViewTouchHandler.
+    /** @return Either VERTICAL or HORIZONTAL. */
+    SingleAxisSwipeDetector.Direction getUpDownSwipeDirection();
+    /** @return Given {@link #getUpDownSwipeDirection()}, whether POSITIVE or NEGATIVE is up. */
+    int getUpDirection(boolean isRtl);
+    /** @return Whether the displacement is going towards the top of the screen. */
+    boolean isGoingUp(float displacement, boolean isRtl);
+    /** @return Either 1 or -1, a factor to multiply by so the animation goes the correct way. */
+    int getTaskDragDisplacementFactor(boolean isRtl);
 
     /**
      * Maps the velocity from the coordinate plane of the foreground app to that
      * of Launcher's (which now will always be portrait)
      */
     void adjustFloatingIconStartVelocity(PointF velocity);
-
-    class CurveProperties {
-        public int scroll;
-        public int halfPageSize;
-        public int screenCenter;
-        public int halfScreenSize;
-    }
 
     class ChildBounds {
 
