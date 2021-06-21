@@ -33,4 +33,8 @@ public class TaskbarUIController {
     }
 
     protected void updateContentInsets(Rect outContentInsets) { }
+
+    protected boolean onLongPressToUnstashTaskbar() {
+        return false;
+    }
 }

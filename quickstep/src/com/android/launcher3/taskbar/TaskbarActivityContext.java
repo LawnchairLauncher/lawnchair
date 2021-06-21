@@ -115,6 +115,7 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
                 R.layout.taskbar, null, false);
         TaskbarView taskbarView = mDragLayer.findViewById(R.id.taskbar_view);
         FrameLayout navButtonsView = mDragLayer.findViewById(R.id.navbuttons_view);
+        View stashedHandleView = mDragLayer.findViewById(R.id.stashed_handle);
 
         // Construct controllers.
         mControllers = new TaskbarControllers(this,
@@ -125,7 +126,9 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
                         R.color.popup_color_primary_light),
                 new TaskbarDragLayerController(this, mDragLayer),
                 new TaskbarViewController(this, taskbarView),
-                new TaskbarKeyguardController(this));
+                new TaskbarKeyguardController(this),
+                new StashedHandleViewController(this, stashedHandleView),
+                new TaskbarStashController(this));
 
         Display display = windowContext.getDisplay();
         Context c = display.getDisplayId() == Display.DEFAULT_DISPLAY
