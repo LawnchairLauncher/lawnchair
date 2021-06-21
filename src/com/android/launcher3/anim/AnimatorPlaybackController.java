@@ -278,12 +278,19 @@ public class AnimatorPlaybackController implements ValueAnimator.AnimatorUpdateL
         }
     }
 
-    public void dispatchOnStart() {
+    public AnimatorPlaybackController dispatchOnStart() {
         callListenerCommandRecursively(mAnim, AnimatorListener::onAnimationStart);
+        return this;
     }
 
-    public void dispatchOnCancel() {
+    public AnimatorPlaybackController dispatchOnCancel() {
         callListenerCommandRecursively(mAnim, AnimatorListener::onAnimationCancel);
+        return this;
+    }
+
+    public AnimatorPlaybackController dispatchOnEnd() {
+        callListenerCommandRecursively(mAnim, AnimatorListener::onAnimationEnd);
+        return this;
     }
 
     public void dispatchSetInterpolator(TimeInterpolator interpolator) {
@@ -328,7 +335,7 @@ public class AnimatorPlaybackController implements ValueAnimator.AnimatorUpdateL
         public void onAnimationSuccess(Animator animator) {
             // We wait for the spring (if any) to finish running before completing the end callback.
             if (!mDispatched) {
-                callListenerCommandRecursively(mAnim, AnimatorListener::onAnimationEnd);
+                dispatchOnEnd();
                 if (mEndAction != null) {
                     mEndAction.run();
                 }
