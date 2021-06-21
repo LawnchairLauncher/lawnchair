@@ -49,7 +49,6 @@ public final class WidgetsListTableViewHolderBinder
     private static final boolean DEBUG = false;
     private static final String TAG = "WidgetsListRowViewHolderBinder";
 
-    private int mMaxSpansPerRow = 4;
     private final LayoutInflater mLayoutInflater;
     private final OnClickListener mIconClickListener;
     private final OnLongClickListener mIconLongClickListener;
@@ -82,10 +81,6 @@ public final class WidgetsListTableViewHolderBinder
         mApplyBitmapDeferred = applyBitmapDeferred;
     }
 
-    public void setMaxSpansPerRow(int maxSpansPerRow) {
-        mMaxSpansPerRow = maxSpansPerRow;
-    }
-
     @Override
     public WidgetsRowViewHolder newViewHolder(ViewGroup parent) {
         if (DEBUG) {
@@ -113,7 +108,8 @@ public final class WidgetsListTableViewHolderBinder
                 position == mWidgetsListAdapter.getItemCount() - 1 ? LAST : MIDDLE);
 
         List<ArrayList<WidgetItem>> widgetItemsTable =
-                WidgetsTableUtils.groupWidgetItemsIntoTable(entry.mWidgets, mMaxSpansPerRow);
+                WidgetsTableUtils.groupWidgetItemsIntoTable(
+                        entry.mWidgets, entry.getMaxSpanSizeInCells());
         recycleTableBeforeBinding(table, widgetItemsTable);
         // Bind the widget items.
         for (int i = 0; i < widgetItemsTable.size(); i++) {
