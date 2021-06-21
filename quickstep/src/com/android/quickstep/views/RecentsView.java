@@ -2236,7 +2236,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     public PendingAnimation createTaskDismissAnimation(TaskView dismissedTaskView,
             boolean animateTaskView, boolean shouldRemoveTask, long duration) {
         if (mPendingAnimation != null) {
-            mPendingAnimation.createPlaybackController().dispatchOnCancel();
+            mPendingAnimation.createPlaybackController().dispatchOnCancel().dispatchOnEnd();
         }
         PendingAnimation anim = new PendingAnimation(duration);
 
