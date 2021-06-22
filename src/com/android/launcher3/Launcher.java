@@ -118,6 +118,7 @@ import com.android.launcher3.allapps.AllAppsContainerView;
 import com.android.launcher3.allapps.AllAppsStore;
 import com.android.launcher3.allapps.AllAppsTransitionController;
 import com.android.launcher3.allapps.DiscoveryBounce;
+import com.android.launcher3.anim.AnimatorListeners;
 import com.android.launcher3.anim.PropertyListBuilder;
 import com.android.launcher3.compat.AccessibilityManagerCompat;
 import com.android.launcher3.config.FeatureFlags;
@@ -175,6 +176,7 @@ import com.android.launcher3.util.OnboardingPrefs;
 import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.util.PackageUserKey;
 import com.android.launcher3.util.PendingRequestArgs;
+import com.android.launcher3.util.RunnableList;
 import com.android.launcher3.util.SafeCloseable;
 import com.android.launcher3.util.SystemUiController;
 import com.android.launcher3.util.Themes;
@@ -2061,7 +2063,7 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
     @Override
     public void clearPendingBinds() {
         if (mPendingExecutor != null) {
-            mPendingExecutor.markCompleted();
+            mPendingExecutor.cancel();
             mPendingExecutor = null;
 
             // We might have set this flag previously and forgot to clear it.
@@ -2502,25 +2504,6 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
         return info;
     }
 
-    public void onPagesBoundSynchronously(IntSet pages) {
-        mSynchronouslyBoundPages = pages;
-        mWorkspace.setCurrentPage(pages.getArray().get(0));
-        mPagesToBindSynchronously = new IntSet();
-    }
-
-    @Override
-    public void executeOnNextDraw(ViewOnDrawExecutor executor) {
-        clearPendingBinds();
-        mPendingExecutor = executor;
-        if (!isInState(ALL_APPS)) {
-            mAppsView.getAppsStore().enableDeferUpdates(AllAppsStore.DEFER_UPDATES_NEXT_DRAW);
-            mPendingExecutor.execute(() -> mAppsView.getAppsStore().disableDeferUpdates(
-                    AllAppsStore.DEFER_UPDATES_NEXT_DRAW));
-        }
-
-        executor.attachTo(this);
-    }
-
     public void clearPendingExecutor(ViewOnDrawExecutor executor) {
         if (mPendingExecutor == executor) {
             mPendingExecutor = null;
@@ -2528,22 +2511,31 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
     }
 
     @Override
-    public void finishFirstPageBind(final ViewOnDrawExecutor executor) {
+    public void onInitialBindComplete(IntSet boundPages, RunnableList pendingTasks) {
+        mSynchronouslyBoundPages = boundPages;
+        if (!boundPages.isEmpty()) {
+            mWorkspace.setCurrentPage(boundPages.getArray().get(0));
+        }
+        mPagesToBindSynchronously = new IntSet();
+
+        clearPendingBinds();
+        ViewOnDrawExecutor executor = new ViewOnDrawExecutor(pendingTasks);
+        mPendingExecutor = executor;
+        if (!isInState(ALL_APPS)) {
+            mAppsView.getAppsStore().enableDeferUpdates(AllAppsStore.DEFER_UPDATES_NEXT_DRAW);
+            pendingTasks.add(() -> mAppsView.getAppsStore().disableDeferUpdates(
+                    AllAppsStore.DEFER_UPDATES_NEXT_DRAW));
+        }
+
         AlphaProperty property = mDragLayer.getAlphaProperty(ALPHA_INDEX_LAUNCHER_LOAD);
         if (property.getValue() < 1) {
             ObjectAnimator anim = ObjectAnimator.ofFloat(property, MultiValueAlpha.VALUE, 1);
-            if (executor != null) {
-                anim.addListener(new AnimatorListenerAdapter() {
-                    @Override
-                    public void onAnimationEnd(Animator animation) {
-                        executor.onLoadAnimationCompleted();
-                    }
-                });
-            }
+            anim.addListener(AnimatorListeners.forEndCallback(executor::onLoadAnimationCompleted));
             anim.start();
-        } else if (executor != null) {
+        } else {
             executor.onLoadAnimationCompleted();
         }
+        executor.attachTo(this);
     }
 
     /**
