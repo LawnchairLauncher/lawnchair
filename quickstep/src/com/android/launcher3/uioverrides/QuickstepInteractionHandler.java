@@ -56,7 +56,7 @@ class QuickstepInteractionHandler implements RemoteViews.InteractionHandler {
         }
         Pair<Intent, ActivityOptions> options = remoteResponse.getLaunchOptions(view);
         ActivityOptionsWrapper activityOptions = mLauncher.getAppTransitionManager()
-                .getActivityLaunchOptions(mLauncher, hostView);
+                .getActivityLaunchOptions(hostView);
         if (Utilities.ATLEAST_S && !pendingIntent.isActivity()) {
             // In the event this pending intent eventually launches an activity, i.e. a trampoline,
             // use the Quickstep transition animation.
