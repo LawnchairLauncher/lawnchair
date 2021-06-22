@@ -95,6 +95,7 @@ import com.android.quickstep.inputconsumers.OverviewWithoutFocusInputConsumer;
 import com.android.quickstep.inputconsumers.ResetGestureInputConsumer;
 import com.android.quickstep.inputconsumers.ScreenPinnedInputConsumer;
 import com.android.quickstep.inputconsumers.SysUiOverlayInputConsumer;
+import com.android.quickstep.inputconsumers.TaskbarStashInputConsumer;
 import com.android.quickstep.util.ActiveGestureLog;
 import com.android.quickstep.util.AssistantUtilities;
 import com.android.quickstep.util.ProtoTracer;
@@ -673,6 +674,14 @@ public class TouchInteractionService extends Service implements PluginListener<O
                         mDeviceState, event);
             }
 
+            // If Taskbar is present, we listen for long press to unstash it.
+            BaseActivityInterface activityInterface = newGestureState.getActivityInterface();
+            StatefulActivity activity = activityInterface.getCreatedActivity();
+            if (activity != null && activity.getDeviceProfile().isTaskbarPresent) {
+                base = new TaskbarStashInputConsumer(this, base, mInputMonitorCompat,
+                        activityInterface);
+            }
+
             if (FeatureFlags.ENABLE_QUICK_CAPTURE_GESTURE.get()) {
                 OverscrollPlugin plugin = null;
                 if (FeatureFlags.FORCE_LOCAL_OVERSCROLL_PLUGIN.get()) {
@@ -832,7 +841,13 @@ public class TouchInteractionService extends Service implements PluginListener<O
     }
 
     private void reset() {
-        mConsumer = mUncheckedConsumer = mResetGestureInputConsumer;
+        if (mResetGestureInputConsumer != null) {
+            mConsumer = mUncheckedConsumer = mResetGestureInputConsumer;
+        } else {
+            // mResetGestureInputConsumer isn't initialized until onUserUnlocked(), so reset to
+            // NO_OP until then (we never want these to be null).
+            mConsumer = mUncheckedConsumer = InputConsumer.NO_OP;
+        }
         mGestureState = DEFAULT_STATE;
         // By default, use batching of the input events, but check receiver before using in the rare
         // case that the monitor was disposed before the swipe settled

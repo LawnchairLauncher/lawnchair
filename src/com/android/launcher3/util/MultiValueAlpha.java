@@ -16,6 +16,8 @@
 
 package com.android.launcher3.util;
 
+import android.animation.Animator;
+import android.animation.ObjectAnimator;
 import android.util.FloatProperty;
 import android.view.View;
 
@@ -120,6 +122,13 @@ public class MultiValueAlpha {
         @Override
         public String toString() {
             return Float.toString(mValue);
+        }
+
+        /**
+         * Creates and returns an Animator from the current value to the given value.
+         */
+        public Animator animateToValue(float value) {
+            return ObjectAnimator.ofFloat(this, VALUE, value);
         }
     }
 }
