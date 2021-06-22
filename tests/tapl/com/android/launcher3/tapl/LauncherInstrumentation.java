@@ -504,7 +504,7 @@ public final class LauncherInstrumentation {
     void fail(String message) {
         checkForAnomaly();
         Assert.fail(formatSystemHealthMessage(formatErrorWithEvents(
-                "http://go/tapl test failure:\nSummary: " + getContextDescription()
+                "http://go/tapl test failure:\nContext: " + getContextDescription()
                         + " - visible state is " + getVisibleStateMessage()
                         + ";\nDetails: " + message, true)));
     }
