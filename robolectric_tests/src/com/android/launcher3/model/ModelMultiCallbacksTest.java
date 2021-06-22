@@ -35,7 +35,7 @@ import com.android.launcher3.util.IntSet;
 import com.android.launcher3.util.LauncherLayoutBuilder;
 import com.android.launcher3.util.LauncherModelHelper;
 import com.android.launcher3.util.LooperExecutor;
-import com.android.launcher3.util.ViewOnDrawExecutor;
+import com.android.launcher3.util.RunnableList;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -106,14 +106,14 @@ public class ModelMultiCallbacksTest {
         // No effect on callbacks when removing an callback
         mModelHelper.getModel().removeCallbacks(cb2);
         waitForLoaderAndTempMainThread();
-        assertNull(cb1.mDeferredExecutor);
-        assertNull(cb2.mDeferredExecutor);
+        assertNull(cb1.mPendingTasks);
+        assertNull(cb2.mPendingTasks);
 
         // Reloading only loads registered callbacks
         mModelHelper.getModel().startLoader();
         waitForLoaderAndTempMainThread();
         cb1.verifySynchronouslyBound(3);
-        assertNull(cb2.mDeferredExecutor);
+        assertNull(cb2.mPendingTasks);
     }
 
     @Test
@@ -180,19 +180,15 @@ public class ModelMultiCallbacksTest {
         final List<ItemInfo> mItems = new ArrayList<>();
         IntSet mPageToBindSync = IntSet.wrap(0);
         IntSet mPageBoundSync = new IntSet();
-        ViewOnDrawExecutor mDeferredExecutor;
+        RunnableList mPendingTasks;
         AppInfo[] mAppInfos;
 
         MyCallbacks() { }
 
         @Override
-        public void onPagesBoundSynchronously(IntSet pages) {
-            mPageBoundSync = pages;
-        }
-
-        @Override
-        public void executeOnNextDraw(ViewOnDrawExecutor executor) {
-            mDeferredExecutor = executor;
+        public void onInitialBindComplete(IntSet boundPages, RunnableList pendingTasks) {
+            mPageBoundSync = boundPages;
+            mPendingTasks = pendingTasks;
         }
 
         @Override
@@ -213,19 +209,19 @@ public class ModelMultiCallbacksTest {
         public void reset() {
             mItems.clear();
             mPageBoundSync = new IntSet();
-            mDeferredExecutor = null;
+            mPendingTasks = null;
             mAppInfos = null;
         }
 
         public void verifySynchronouslyBound(int totalItems) {
             // Verify that the requested page is bound synchronously
-            assertEquals(mPageBoundSync, mPageToBindSync);
+            assertEquals(mPageToBindSync, mPageBoundSync);
             assertEquals(mItems.size(), 1);
-            assertEquals(mItems.get(0).screenId, mPageBoundSync);
-            assertNotNull(mDeferredExecutor);
+            assertEquals(IntSet.wrap(mItems.get(0).screenId), mPageBoundSync);
+            assertNotNull(mPendingTasks);
 
             // Verify that all other pages are bound properly
-            mDeferredExecutor.runAllTasks();
+            mPendingTasks.executeAllAndDestroy();
             assertEquals(mItems.size(), totalItems);
         }
 

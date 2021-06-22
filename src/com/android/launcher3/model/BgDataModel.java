@@ -49,7 +49,7 @@ import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.IntSet;
 import com.android.launcher3.util.IntSparseArrayMap;
 import com.android.launcher3.util.ItemInfoMatcher;
-import com.android.launcher3.util.ViewOnDrawExecutor;
+import com.android.launcher3.util.RunnableList;
 import com.android.launcher3.widget.model.WidgetsListBaseEntry;
 
 import java.io.FileDescriptor;
@@ -462,35 +462,41 @@ public class BgDataModel {
          * Returns an IntSet of page numbers to bind first, synchronously if possible
          * or an empty IntSet
          */
-        IntSet getPagesToBindSynchronously();
-        void clearPendingBinds();
-        void startBinding();
-        void bindItems(List<ItemInfo> shortcuts, boolean forceAnimateIcons);
-        void bindScreens(IntArray orderedScreenIds);
-        void finishFirstPageBind(ViewOnDrawExecutor executor);
-        void finishBindingItems(IntSet pagesBoundFirst);
-        void preAddApps();
-        void bindAppsAdded(IntArray newScreens,
-                ArrayList<ItemInfo> addNotAnimated, ArrayList<ItemInfo> addAnimated);
+        default IntSet getPagesToBindSynchronously() {
+            return new IntSet();
+        }
+
+        default void clearPendingBinds() { }
+        default void startBinding() { }
+
+        default void bindItems(List<ItemInfo> shortcuts, boolean forceAnimateIcons) { }
+        default void bindScreens(IntArray orderedScreenIds) { }
+        default void finishBindingItems(IntSet pagesBoundFirst) { }
+        default void preAddApps() { }
+        default void bindAppsAdded(IntArray newScreens,
+                ArrayList<ItemInfo> addNotAnimated, ArrayList<ItemInfo> addAnimated) { }
 
         /**
          * Binds updated incremental download progress
          */
-        void bindIncrementalDownloadProgressUpdated(AppInfo app);
-        void bindWorkspaceItemsChanged(List<WorkspaceItemInfo> updated);
-        void bindWidgetsRestored(ArrayList<LauncherAppWidgetInfo> widgets);
-        void bindRestoreItemsChange(HashSet<ItemInfo> updates);
-        void bindWorkspaceComponentsRemoved(ItemInfoMatcher matcher);
-        void bindAllWidgets(List<WidgetsListBaseEntry> widgets);
-        void onPagesBoundSynchronously(IntSet pages);
-        void executeOnNextDraw(ViewOnDrawExecutor executor);
-        void bindDeepShortcutMap(HashMap<ComponentKey, Integer> deepShortcutMap);
+        default void bindIncrementalDownloadProgressUpdated(AppInfo app) { }
+        default void bindWorkspaceItemsChanged(List<WorkspaceItemInfo> updated) { }
+        default void bindWidgetsRestored(ArrayList<LauncherAppWidgetInfo> widgets) { }
+        default void bindRestoreItemsChange(HashSet<ItemInfo> updates) { }
+        default void bindWorkspaceComponentsRemoved(ItemInfoMatcher matcher) { }
+        default void bindAllWidgets(List<WidgetsListBaseEntry> widgets) { }
+
+        default void onInitialBindComplete(IntSet boundPages, RunnableList pendingTasks) {
+            pendingTasks.executeAllAndDestroy();
+        }
+
+        default void bindDeepShortcutMap(HashMap<ComponentKey, Integer> deepShortcutMap) { }
 
         /**
          * Binds extra item provided any external source
          */
         default void bindExtraContainerItems(FixedContainerItems item) { }
 
-        void bindAllApplications(AppInfo[] apps, int flags);
+        default void bindAllApplications(AppInfo[] apps, int flags) { }
     }
 }
