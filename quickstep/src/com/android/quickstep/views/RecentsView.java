@@ -392,8 +392,6 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
 
     private final TaskOverlayFactory mTaskOverlayFactory;
 
-    private int mOrientation;
-
     protected boolean mDisallowScrollToClearAll;
     private boolean mOverlayEnabled;
     protected boolean mFreezeViewVisibility;
@@ -588,7 +586,6 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                 .getDimensionPixelSize(R.dimen.recents_fast_fling_velocity);
         mModel = RecentsModel.INSTANCE.get(context);
         mIdp = InvariantDeviceProfile.INSTANCE.get(context);
-        mOrientation = getResources().getConfiguration().orientation;
 
         mClearAllButton = (ClearAllButton) LayoutInflater.from(context)
                 .inflate(R.layout.overview_clear_all_button, this, false);
@@ -2640,15 +2637,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     @Override
     protected void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        if (LIVE_TILE.get() && mEnableDrawingLiveTile && newConfig.orientation != mOrientation) {
-            switchToScreenshot(
-                    () -> finishRecentsAnimation(true /* toRecents */, false /* showPip */,
-                            this::updateRecentsRotation));
-            mEnableDrawingLiveTile = false;
-        } else {
-            updateRecentsRotation();
-        }
-        mOrientation = newConfig.orientation;
+        updateRecentsRotation();
     }
 
     /**
@@ -3404,14 +3393,24 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             if (onFinishComplete != null) {
                 onFinishComplete.run();
             }
-            // After we finish the recents animation, the current task id should be correctly
-            // reset so that when the task is launched from Overview later, it goes through the
-            // flow of starting a new task instead of finishing recents animation to app. A
-            // typical example of this is (1) user swipes up from app to Overview (2) user
-            // taps on QSB (3) user goes back to Overview and launch the most recent task.
-            setCurrentTask(-1);
-            mRecentsAnimationController = null;
+            onRecentsAnimationComplete();
         }, sendUserLeaveHint);
+    }
+
+    /**
+     * Called when a running recents animation has finished or canceled.
+     */
+    public void onRecentsAnimationComplete() {
+        // At this point, the recents animation is not running and if the animation was canceled
+        // by a display rotation then reset this state to show the screenshot
+        setRunningTaskViewShowScreenshot(true);
+        // After we finish the recents animation, the current task id should be correctly
+        // reset so that when the task is launched from Overview later, it goes through the
+        // flow of starting a new task instead of finishing recents animation to app. A
+        // typical example of this is (1) user swipes up from app to Overview (2) user
+        // taps on QSB (3) user goes back to Overview and launch the most recent task.
+        setCurrentTask(-1);
+        mRecentsAnimationController = null;
     }
 
     public void setDisallowScrollToClearAll(boolean disallowScrollToClearAll) {
