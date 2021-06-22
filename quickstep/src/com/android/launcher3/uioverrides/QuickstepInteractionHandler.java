@@ -26,6 +26,7 @@ import android.util.Log;
 import android.util.Pair;
 import android.view.View;
 import android.widget.RemoteViews;
+import android.window.SplashScreen;
 
 import com.android.launcher3.Utilities;
 import com.android.launcher3.logging.StatsLogManager;
@@ -70,6 +71,7 @@ class QuickstepInteractionHandler implements RemoteViews.InteractionHandler {
             }
         }
         activityOptions.options.setPendingIntentLaunchFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        activityOptions.options.setSplashscreenStyle(SplashScreen.SPLASH_SCREEN_STYLE_ICON);
         Object itemInfo = hostView.getTag();
         if (itemInfo instanceof ItemInfo) {
             mLauncher.addLaunchCookie((ItemInfo) itemInfo, activityOptions.options);
