@@ -874,7 +874,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             anim.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
-                    finishRecentsAnimation(true /* toRecents */, null);
+                    finishRecentsAnimation(false /* toRecents */, null);
                 }
             });
         } else {
