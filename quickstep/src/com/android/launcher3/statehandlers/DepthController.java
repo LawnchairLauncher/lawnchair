@@ -161,14 +161,14 @@ public class DepthController implements StateHandler<LauncherState>,
         if (mSurface != surface) {
             mSurface = surface;
             if (surface != null) {
-                dispatchTransactionSurface(mDepth);
+                dispatchTransactionSurface();
             }
         }
     }
 
     @Override
     public void setState(LauncherState toState) {
-        if (mSurface == null || mIgnoreStateChangesDuringMultiWindowAnimation) {
+        if (mIgnoreStateChangesDuringMultiWindowAnimation) {
             return;
         }
 
@@ -176,7 +176,7 @@ public class DepthController implements StateHandler<LauncherState>,
         if (Float.compare(mDepth, toDepth) != 0) {
             setDepth(toDepth);
         } else if (toState == LauncherState.OVERVIEW) {
-            dispatchTransactionSurface(mDepth);
+            dispatchTransactionSurface();
         }
     }
 
@@ -202,35 +202,30 @@ public class DepthController implements StateHandler<LauncherState>,
         if (Float.compare(mDepth, depthF) == 0) {
             return;
         }
-        if (dispatchTransactionSurface(depthF)) {
-            mDepth = depthF;
-        }
+        mDepth = depthF;
+        dispatchTransactionSurface();
     }
 
-    private boolean dispatchTransactionSurface(float depth) {
+    private void dispatchTransactionSurface() {
         boolean supportsBlur = BlurUtils.supportsBlursOnWindows();
-        if (supportsBlur && (mSurface == null || !mSurface.isValid())) {
-            return false;
-        }
         ensureDependencies();
         IBinder windowToken = mLauncher.getRootView().getWindowToken();
         if (windowToken != null) {
-            mWallpaperManager.setWallpaperZoomOut(windowToken, depth);
+            mWallpaperManager.setWallpaperZoomOut(windowToken, mDepth);
         }
 
-        if (supportsBlur) {
+        if (supportsBlur && (mSurface != null && mSurface.isValid())) {
             // We cannot mark the window as opaque in overview because there will be an app window
             // below the launcher layer, and we need to draw it -- without blurs.
             boolean isOverview = mLauncher.isInState(LauncherState.OVERVIEW);
             boolean opaque = mLauncher.getScrimView().isFullyOpaque() && !isOverview;
 
-            int blur = opaque || isOverview ? 0 : (int) (depth * mMaxBlurRadius);
+            int blur = opaque || isOverview ? 0 : (int) (mDepth * mMaxBlurRadius);
             new SurfaceControl.Transaction()
                     .setBackgroundBlurRadius(mSurface, blur)
                     .setOpaque(mSurface, opaque)
                     .apply();
         }
-        return true;
     }
 
     @Override
