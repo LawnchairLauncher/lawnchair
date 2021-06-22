@@ -39,6 +39,7 @@
         <item name="popupColorPrimary">@color/popup_color_primary_light</item>
         <item name="popupColorSecondary">@color/popup_color_secondary_light</item>
         <item name="popupColorTertiary">@color/popup_color_tertiary_light</item>
+        <item name="popupNotificationDotColor">@color/popup_notification_dot_light</item>
         <item name="isMainColorDark">false</item>
         <item name="isWorkspaceDarkText">false</item>
         <item name="workspaceTextColor">@color/workspace_text_color_light</item>
@@ -107,6 +108,7 @@
         <item name="popupColorPrimary">@color/popup_color_primary_dark</item>
         <item name="popupColorSecondary">@color/popup_color_secondary_dark</item>
         <item name="popupColorTertiary">@color/popup_color_tertiary_dark</item>
+        <item name="popupNotificationDotColor">@color/popup_notification_dot_dark</item>
         <item name="widgetsTheme">@style/WidgetContainerTheme.Dark</item>
         <item name="folderDotColor">@color/folder_dot_color</item>
         <item name="folderFillColor">@color/folder_background_dark</item>
@@ -214,7 +216,9 @@
         <item name="disabledIconAlpha">.54</item>
     </style>
 
-    <style name="BaseIconUnBounded" parent="@android:style/TextAppearance.DeviceDefault.DialogWindowTitle">
+    <style name="BaseIconRoot" parent="@android:style/TextAppearance.DeviceDefault.DialogWindowTitle"/>
+
+    <style name="BaseIconUnBounded" parent="BaseIconRoot">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">match_parent</item>
         <item name="android:layout_gravity">center</item>
@@ -264,9 +268,8 @@
 
     <!-- Drop targets -->
     <style name="DropTargetButtonBase" parent="@android:style/TextAppearance.DeviceDefault">
-        <item name="android:drawablePadding">7.5dp</item>
-        <item name="android:paddingLeft">16dp</item>
-        <item name="android:paddingRight">16dp</item>
+        <item name="android:drawablePadding">8dp</item>
+        <item name="android:padding">16dp</item>
         <item name="android:textColor">?android:attr/textColorPrimary</item>
         <item name="android:textSize">@dimen/drop_target_text_size</item>
         <item name="android:singleLine">true</item>
@@ -276,7 +279,7 @@
 
     <style name="DropTargetButton" parent="DropTargetButtonBase" />
 
-    <style name="TextHeadline" parent="@android:style/TextAppearance.DeviceDefault" />
+    <style name="TextHeadline" parent="@android:style/TextAppearance.DeviceDefault.DialogWindowTitle" />
 
     <style name="PrimaryHeadline" parent="@android:style/TextAppearance.DeviceDefault.DialogWindowTitle"/>
 

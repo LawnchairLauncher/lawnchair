@@ -82,8 +82,8 @@
     <string name="permlab_write_settings" msgid="3574213698004620587">"instellingen en snelkoppelingen op startscherm zetten"</string>
     <string name="permdesc_write_settings" msgid="5440712911516509985">"De app toestaan de instellingen en snelkoppelingen op de homepage te wijzigen."</string>
     <string name="msg_no_phone_permission" msgid="9208659281529857371">"<xliff:g id="APP_NAME">%1$s</xliff:g> mag niet bellen"</string>
-    <string name="gadget_error_text" msgid="6081085226050792095">"Probleem bij het laden van widget"</string>
-    <string name="gadget_setup_text" msgid="8274003207686040488">"Configuratie"</string>
+    <string name="gadget_error_text" msgid="740356548025791839">"Kan widget niet laden"</string>
+    <string name="gadget_setup_text" msgid="1745356155479272374">"Tik om het instellen af te ronden"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"Dit is een systeemapp die niet kan worden verwijderd."</string>
     <string name="folder_hint_text" msgid="5174843001373488816">"Naam bewerken"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"<xliff:g id="APP_NAME">%1$s</xliff:g> staat uit"</string>
@@ -156,8 +156,7 @@
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"Privé"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"Werk"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"Werkprofiel"</string>
-    <!-- no translation found for work_profile_edu_work_apps (7895468576497746520) -->
-    <skip />
+    <string name="work_profile_edu_work_apps" msgid="7895468576497746520">"Werk-apps hebben badges en zijn zichtbaar voor je IT-beheerder"</string>
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"OK"</string>
     <string name="work_apps_paused_title" msgid="3007471013401118920">"Werk-apps staan uit"</string>
     <string name="work_apps_paused_body" msgid="261634750995824906">"Je werk-apps kunnen je geen meldingen sturen, je batterij niet gebruiken en geen toegang krijgen tot je locatie"</string>

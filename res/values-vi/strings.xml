@@ -82,8 +82,10 @@
     <string name="permlab_write_settings" msgid="3574213698004620587">"ghi cài đặt và lối tắt trên Màn hình chính"</string>
     <string name="permdesc_write_settings" msgid="5440712911516509985">"Cho phép ứng dụng thay đổi cài đặt và lối tắt trên Màn hình chính."</string>
     <string name="msg_no_phone_permission" msgid="9208659281529857371">"<xliff:g id="APP_NAME">%1$s</xliff:g> không được phép thực hiện cuộc gọi điện thoại"</string>
-    <string name="gadget_error_text" msgid="6081085226050792095">"Sự cố khi tải tiện ích"</string>
-    <string name="gadget_setup_text" msgid="8274003207686040488">"Thiết lập"</string>
+    <!-- no translation found for gadget_error_text (740356548025791839) -->
+    <skip />
+    <!-- no translation found for gadget_setup_text (1745356155479272374) -->
+    <skip />
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"Đây là ứng dụng hệ thống và không thể gỡ cài đặt."</string>
     <string name="folder_hint_text" msgid="5174843001373488816">"Chỉnh sửa tên"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"Đã vô hiệu hóa <xliff:g id="APP_NAME">%1$s</xliff:g>"</string>
@@ -156,8 +158,7 @@
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"Cá nhân"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"Công việc"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"Hồ sơ công việc"</string>
-    <!-- no translation found for work_profile_edu_work_apps (7895468576497746520) -->
-    <skip />
+    <string name="work_profile_edu_work_apps" msgid="7895468576497746520">"Các ứng dụng công việc được gắn huy hiệu và quản trị viên CNTT sẽ nhìn thấy các ứng dụng này"</string>
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"OK"</string>
     <string name="work_apps_paused_title" msgid="3007471013401118920">"Ứng dụng công việc đang tắt"</string>
     <string name="work_apps_paused_body" msgid="261634750995824906">"Các ứng dụng công việc không thể gửi thông báo cho bạn, sử dụng pin hoặc truy cập thông tin vị trí của bạn"</string>

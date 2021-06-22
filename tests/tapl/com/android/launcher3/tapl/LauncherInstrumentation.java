@@ -39,6 +39,7 @@ import android.graphics.Point;
 import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.DeadObjectException;
 import android.os.Parcelable;
 import android.os.RemoteException;
 import android.os.SystemClock;
@@ -269,6 +270,9 @@ public final class LauncherInstrumentation {
         try (ContentProviderClient client = getContext().getContentResolver()
                 .acquireContentProviderClient(mTestProviderUri)) {
             return client.call(request, null, null);
+        } catch (DeadObjectException e) {
+            fail("Launcher crashed");
+            return null;
         } catch (RemoteException e) {
             throw new RuntimeException(e);
         }
@@ -492,7 +496,7 @@ public final class LauncherInstrumentation {
         }
     }
 
-    private void fail(String message) {
+    void fail(String message) {
         checkForAnomaly();
         Assert.fail(formatSystemHealthMessage(formatErrorWithEvents(
                 "http://go/tapl test failure:\nSummary: " + getContextDescription()
@@ -1445,6 +1449,9 @@ public final class LauncherInstrumentation {
     Rect getVisibleBounds(UiObject2 object) {
         try {
             return object.getVisibleBounds();
+        } catch (StaleObjectException e) {
+            fail("Object " + object + " disappeared from screen");
+            return null;
         } catch (Throwable t) {
             fail(t.toString());
             return null;

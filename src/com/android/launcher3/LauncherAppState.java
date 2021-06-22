@@ -48,6 +48,7 @@ import com.android.launcher3.util.SafeCloseable;
 import com.android.launcher3.util.SettingsCache;
 import com.android.launcher3.util.SimpleBroadcastReceiver;
 import com.android.launcher3.util.Themes;
+import com.android.launcher3.widget.DatabaseWidgetPreviewLoader;
 import com.android.launcher3.widget.custom.CustomWidgetManager;
 
 public class LauncherAppState {
@@ -63,7 +64,7 @@ public class LauncherAppState {
     private final LauncherModel mModel;
     private final IconProvider mIconProvider;
     private final IconCache mIconCache;
-    private final WidgetPreviewLoader mWidgetCache;
+    private final DatabaseWidgetPreviewLoader mWidgetCache;
     private final InvariantDeviceProfile mInvariantDeviceProfile;
     private final RunnableList mOnTerminateCallback = new RunnableList();
 
@@ -138,7 +139,7 @@ public class LauncherAppState {
         mIconProvider =  new IconProvider(context, Themes.isThemedIconEnabled(context));
         mIconCache = new IconCache(mContext, mInvariantDeviceProfile,
                 iconCacheFileName, mIconProvider);
-        mWidgetCache = new WidgetPreviewLoader(mContext, mIconCache);
+        mWidgetCache = new DatabaseWidgetPreviewLoader(mContext, mIconCache);
         mModel = new LauncherModel(context, this, mIconCache, new AppFilter(mContext));
         mOnTerminateCallback.add(mIconCache::close);
     }
@@ -180,7 +181,7 @@ public class LauncherAppState {
         return mModel;
     }
 
-    public WidgetPreviewLoader getWidgetCache() {
+    public DatabaseWidgetPreviewLoader getWidgetCache() {
         return mWidgetCache;
     }
 

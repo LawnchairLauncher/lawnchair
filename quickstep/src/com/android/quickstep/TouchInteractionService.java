@@ -813,7 +813,13 @@ public class TouchInteractionService extends Service implements PluginListener<O
     }
 
     private void reset() {
-        mConsumer = mUncheckedConsumer = mResetGestureInputConsumer;
+        if (mResetGestureInputConsumer != null) {
+            mConsumer = mUncheckedConsumer = mResetGestureInputConsumer;
+        } else {
+            // mResetGestureInputConsumer isn't initialized until onUserUnlocked(), so reset to
+            // NO_OP until then (we never want these to be null).
+            mConsumer = mUncheckedConsumer = InputConsumer.NO_OP;
+        }
         mGestureState = DEFAULT_STATE;
         // By default, use batching of the input events, but check receiver before using in the rare
         // case that the monitor was disposed before the swipe settled

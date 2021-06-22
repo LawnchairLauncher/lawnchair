@@ -53,11 +53,9 @@
     <string name="widget_category_conversations" msgid="8894438636213590446">"ಸಂವಾದಗಳು"</string>
     <string name="widget_education_header" msgid="4874760613775913787">"ನಿಮ್ಮ ಬೆರಳ ತುದಿಯಲ್ಲಿ ಉಪಯುಕ್ತ ಮಾಹಿತಿ"</string>
     <string name="widget_education_content" msgid="745542879510751525">"ಆ್ಯಪ್‌ಗಳನ್ನು ತೆರೆಯದೆಯೇ ಮಾಹಿತಿಯನ್ನು ಪಡೆಯಲು, ನಿಮ್ಮ ಹೋಮ್ ಸ್ಕ್ರೀನ್‌ನಲ್ಲಿ ನೀವು ವಿಜೆಟ್‌ಗಳನ್ನು ಸೇರಿಸಬಹುದು"</string>
-    <!-- no translation found for reconfigurable_widget_education_tip (6336962690888067057) -->
-    <skip />
+    <string name="reconfigurable_widget_education_tip" msgid="6336962690888067057">"ವಿಜೆಟ್ ಸೆಟ್ಟಿಂಗ್‌ಗಳನ್ನು ಬದಲಾಯಿಸಲು ಟ್ಯಾಪ್ ಮಾಡಿ"</string>
     <string name="widget_education_close_button" msgid="8676165703104836580">"ಅರ್ಥವಾಯಿತು"</string>
-    <!-- no translation found for widget_reconfigure_button_content_description (8811472721881205250) -->
-    <skip />
+    <string name="widget_reconfigure_button_content_description" msgid="8811472721881205250">"ವಿಜೆಟ್ ಸೆಟ್ಟಿಂಗ್‌ಗಳನ್ನು ಬದಲಾಯಿಸಿ"</string>
     <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"ಅಪ್ಲಿಕೇಶನ್‌ಗಳನ್ನು ಹುಡುಕಿ"</string>
     <string name="all_apps_loading_message" msgid="5813968043155271636">"ಅಪ್ಲಿಕೇಶನ್‌ಗಳನ್ನು ಲೋಡ್ ಮಾಡಲಾಗುತ್ತಿದೆ..."</string>
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"\"<xliff:g id="QUERY">%1$s</xliff:g>\" ಹೊಂದಿಕೆಯ ಯಾವುದೇ ಅಪ್ಲಿಕೇಶನ್‌ಗಳು ಕಂಡುಬಂದಿಲ್ಲ"</string>
@@ -84,8 +82,10 @@
     <string name="permlab_write_settings" msgid="3574213698004620587">"ಮುಖಪುಟದ ಸೆಟ್ಟಿಂಗ್‌ಗಳು ಮತ್ತು ಶಾರ್ಟ್‌ಕಟ್‌ಗಳನ್ನು ಬರೆಯಿರಿ"</string>
     <string name="permdesc_write_settings" msgid="5440712911516509985">"ಮುಖಪುಟದಲ್ಲಿ ಸೆಟ್ಟಿಂಗ್‌ಗಳು ಮತ್ತು ಶಾರ್ಟ್‌ಕಟ್‌ಗಳನ್ನು ಬದಲಾಯಿಸಲು ಅಪ್ಲಿಕೇಶನ್‌ಗೆ ಅನುಮತಿ ನೀಡುತ್ತದೆ."</string>
     <string name="msg_no_phone_permission" msgid="9208659281529857371">"ಫೋನ್ ಕರೆಗಳನ್ನು ಮಾಡಲು <xliff:g id="APP_NAME">%1$s</xliff:g> ಅಪ್ಲಿಕೇಶನ್‌‌ಗೆ ಅನುಮತಿಸಲಾಗುವುದಿಲ್ಲ"</string>
-    <string name="gadget_error_text" msgid="6081085226050792095">"ವಿಜೆಟ್ ಲೋಡ್‌ ಮಾಡುವಲ್ಲಿ ಸಮಸ್ಯೆ"</string>
-    <string name="gadget_setup_text" msgid="8274003207686040488">"ಸೆಟಪ್"</string>
+    <!-- no translation found for gadget_error_text (740356548025791839) -->
+    <skip />
+    <!-- no translation found for gadget_setup_text (1745356155479272374) -->
+    <skip />
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"ಇದೊಂದು ಅಪ್ಲಿಕೇಶನ್ ಆಗಿದೆ ಮತ್ತು ಅಸ್ಥಾಪಿಸಲು ಸಾಧ್ಯವಿಲ್ಲ."</string>
     <string name="folder_hint_text" msgid="5174843001373488816">"ಹೆಸರನ್ನು ಎಡಿಟ್ ಮಾಡಿ"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"<xliff:g id="APP_NAME">%1$s</xliff:g> ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಲಾಗಿದೆ"</string>
@@ -158,8 +158,7 @@
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"ವೈಯಕ್ತಿಕ"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"ಕೆಲಸ"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"ಕೆಲಸದ ಪ್ರೊಫೈಲ್"</string>
-    <!-- no translation found for work_profile_edu_work_apps (7895468576497746520) -->
-    <skip />
+    <string name="work_profile_edu_work_apps" msgid="7895468576497746520">"ಕೆಲಸಕ್ಕೆ ಸಂಬಂಧಿಸಿದ ಆ್ಯಪ್‌ಗಳನ್ನು ಬ್ಯಾಡ್ಜ್ ಮಾಡಲಾಗಿದೆ ಮತ್ತು ಅವುಗಳು ನಿಮ್ಮ IT ನಿರ್ವಾಹಕರಿಗೆ ಗೋಚರಿಸುತ್ತವೆ"</string>
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"ಸರಿ"</string>
     <string name="work_apps_paused_title" msgid="3007471013401118920">"ಕೆಲಸಕ್ಕೆ ಸಂಬಂಧಿಸಿದ ಆ್ಯಪ್‌ಗಳು ಆಫ್ ಆಗಿವೆ"</string>
     <string name="work_apps_paused_body" msgid="261634750995824906">"ನಿಮ್ಮ ಕೆಲಸಕ್ಕೆ ಸಂಬಂಧಿಸಿದ ಆ್ಯಪ್‌ಗಳಿಗೆ ನಿಮಗೆ ಅಧಿಸೂಚನೆಗಳನ್ನು ಕಳುಹಿಸಲು, ನಿಮ್ಮ ಬ್ಯಾಟರಿಯನ್ನು ಬಳಸಲು ಅಥವಾ ನಿಮ್ಮ ಸ್ಥಳವನ್ನು ಪ್ರವೇಶಿಸಲು ಸಾಧ್ಯವಿಲ್ಲ"</string>
