@@ -17,8 +17,8 @@ package com.android.launcher3.taskbar;
 
 import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
 import static com.android.launcher3.LauncherAnimUtils.VIEW_TRANSLATE_X;
-import static com.android.launcher3.LauncherAnimUtils.VIEW_TRANSLATE_Y;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
+import static com.android.quickstep.AnimatedFloat.VALUE;
 
 import android.graphics.Rect;
 import android.view.View;
@@ -28,6 +28,7 @@ import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.util.MultiValueAlpha;
+import com.android.quickstep.AnimatedFloat;
 
 /**
  * Handles properties/data collection, then passes the results to TaskbarView to render.
@@ -38,10 +39,16 @@ public class TaskbarViewController {
     public static final int ALPHA_INDEX_HOME = 0;
     public static final int ALPHA_INDEX_IME = 1;
     public static final int ALPHA_INDEX_KEYGUARD = 2;
+    public static final int ALPHA_INDEX_STASH = 3;
 
     private final TaskbarActivityContext mActivity;
     private final TaskbarView mTaskbarView;
     private final MultiValueAlpha mTaskbarIconAlpha;
+    private final AnimatedFloat mTaskbarIconScaleForStash = new AnimatedFloat(this::updateScale);
+    private final AnimatedFloat mTaskbarIconTranslationYForHome = new AnimatedFloat(
+            this::updateTranslationY);
+    private final AnimatedFloat mTaskbarIconTranslationYForStash = new AnimatedFloat(
+            this::updateTranslationY);
 
     // Initialized in init.
     private TaskbarControllers mControllers;
@@ -54,7 +61,7 @@ public class TaskbarViewController {
     public TaskbarViewController(TaskbarActivityContext activity, TaskbarView taskbarView) {
         mActivity = activity;
         mTaskbarView = taskbarView;
-        mTaskbarIconAlpha = new MultiValueAlpha(mTaskbarView, 3);
+        mTaskbarIconAlpha = new MultiValueAlpha(mTaskbarView, 4);
         mTaskbarIconAlpha.setUpdateVisibility(true);
     }
 
@@ -62,6 +69,8 @@ public class TaskbarViewController {
         mControllers = controllers;
         mTaskbarView.init(new TaskbarViewCallbacks());
         mTaskbarView.getLayoutParams().height = mActivity.getDeviceProfile().taskbarSize;
+
+        mTaskbarIconScaleForStash.updateValue(1f);
     }
 
     public boolean areIconsVisible() {
@@ -84,6 +93,32 @@ public class TaskbarViewController {
      */
     public void setClickAndLongClickListenersForIcon(View icon) {
         mTaskbarView.setClickAndLongClickListenersForIcon(icon);
+    }
+
+    public Rect getIconLayoutBounds() {
+        return mTaskbarView.getIconLayoutBounds();
+    }
+
+    public AnimatedFloat getTaskbarIconScaleForStash() {
+        return mTaskbarIconScaleForStash;
+    }
+
+    public AnimatedFloat getTaskbarIconTranslationYForStash() {
+        return mTaskbarIconTranslationYForStash;
+    }
+
+    /**
+     * Applies scale properties for the entire TaskbarView (rather than individual icons).
+     */
+    private void updateScale() {
+        float scale = mTaskbarIconScaleForStash.value;
+        mTaskbarView.setScaleX(scale);
+        mTaskbarView.setScaleY(scale);
+    }
+
+    private void updateTranslationY() {
+        mTaskbarView.setTranslationY(mTaskbarIconTranslationYForHome.value
+                + mTaskbarIconTranslationYForStash.value);
     }
 
     /**
@@ -116,7 +151,7 @@ public class TaskbarViewController {
                         / launcherDp.numShownHotseatIcons;
 
         int offsetY = launcherDp.getTaskbarOffsetY();
-        setter.setFloat(mTaskbarView, VIEW_TRANSLATE_Y, -offsetY, LINEAR);
+        setter.setFloat(mTaskbarIconTranslationYForHome, VALUE, -offsetY, LINEAR);
 
         int collapsedHeight = mActivity.getDeviceProfile().taskbarSize;
         int expandedHeight = collapsedHeight + offsetY;
@@ -144,12 +179,16 @@ public class TaskbarViewController {
      * Callbacks for {@link TaskbarView} to interact with its controller.
      */
     public class TaskbarViewCallbacks {
-        public View.OnClickListener getOnClickListener() {
+        public View.OnClickListener getIconOnClickListener() {
             return mActivity::onTaskbarIconClicked;
         }
 
-        public View.OnLongClickListener getOnLongClickListener() {
+        public View.OnLongClickListener getIconOnLongClickListener() {
             return mControllers.taskbarDragController::startDragOnLongClick;
+        }
+
+        public View.OnLongClickListener getBackgroundOnLongClickListener() {
+            return view -> mControllers.taskbarStashController.updateAndAnimateIsStashedInApp(true);
         }
     }
 }

@@ -18,6 +18,7 @@ package com.android.launcher3.widget.picker;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_WIDGETSTRAY_APP_EXPANDED;
 
 import android.content.Context;
+import android.graphics.Rect;
 import android.os.Process;
 import android.util.Log;
 import android.util.Size;
@@ -34,6 +35,7 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.RecyclerView.Adapter;
+import androidx.recyclerview.widget.RecyclerView.LayoutParams;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
 import com.android.launcher3.BaseActivity;
@@ -107,7 +109,8 @@ public class WidgetsListAdapter extends Adapter<ViewHolder> implements OnHeaderC
     @Nullable private Predicate<WidgetsListBaseEntry> mFilter = null;
     @Nullable private RecyclerView mRecyclerView;
     @Nullable private PackageUserKey mPendingClickHeader;
-    private int mShortcutPreviewPadding;
+    private final int mShortcutPreviewPadding;
+    private final int mSpacingBetweenEntries;
 
     private final WidgetPreviewLoadedCallback mPreviewLoadedCallback =
             ignored -> updateVisibleEntries();
@@ -141,11 +144,28 @@ public class WidgetsListAdapter extends Adapter<ViewHolder> implements OnHeaderC
         mShortcutPreviewPadding =
                 2 * context.getResources()
                         .getDimensionPixelSize(R.dimen.widget_preview_shortcut_padding);
+        mSpacingBetweenEntries =
+                context.getResources().getDimensionPixelSize(R.dimen.widget_list_entry_spacing);
     }
 
     @Override
     public void onAttachedToRecyclerView(@NonNull RecyclerView recyclerView) {
         mRecyclerView = recyclerView;
+
+        mRecyclerView.addItemDecoration(new RecyclerView.ItemDecoration() {
+            @Override
+            public void getItemOffsets(
+                    @NonNull Rect outRect,
+                    @NonNull View view,
+                    @NonNull RecyclerView parent,
+                    @NonNull RecyclerView.State state) {
+                super.getItemOffsets(outRect, view, parent, state);
+                int position = ((LayoutParams) view.getLayoutParams()).getViewLayoutPosition();
+                boolean isHeader =
+                        view.getTag(R.id.tag_widget_entry) instanceof WidgetsListBaseEntry.Header;
+                outRect.top += position > 0 && isHeader ? mSpacingBetweenEntries : 0;
+            }
+        });
     }
 
     @Override
@@ -329,7 +349,9 @@ public class WidgetsListAdapter extends Adapter<ViewHolder> implements OnHeaderC
     @Override
     public void onBindViewHolder(ViewHolder holder, int pos) {
         ViewHolderBinder viewHolderBinder = mViewHolderBinders.get(getItemViewType(pos));
+        WidgetsListBaseEntry entry = mVisibleEntries.get(pos);
         viewHolderBinder.bindViewHolder(holder, mVisibleEntries.get(pos), pos);
+        holder.itemView.setTag(R.id.tag_widget_entry, entry);
     }
 
     @Override

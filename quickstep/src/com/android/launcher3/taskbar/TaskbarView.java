@@ -94,8 +94,10 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
 
     protected void init(TaskbarViewController.TaskbarViewCallbacks callbacks) {
         mControllerCallbacks = callbacks;
-        mIconClickListener = mControllerCallbacks.getOnClickListener();
-        mIconLongClickListener = mControllerCallbacks.getOnLongClickListener();
+        mIconClickListener = mControllerCallbacks.getIconOnClickListener();
+        mIconLongClickListener = mControllerCallbacks.getIconOnLongClickListener();
+
+        setOnLongClickListener(mControllerCallbacks.getBackgroundOnLongClickListener());
     }
 
     private void removeAndRecycle(View view) {
@@ -233,6 +235,10 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
         int xInOurCoordinates = (int) ev.getX() - mTempOutLocation[0];
         int yInOurCoorindates = (int) ev.getY() - mTempOutLocation[1];
         return isShown() && mIconLayoutBounds.contains(xInOurCoordinates, yInOurCoorindates);
+    }
+
+    public Rect getIconLayoutBounds() {
+        return mIconLayoutBounds;
     }
 
     // FolderIconParent implemented methods.
