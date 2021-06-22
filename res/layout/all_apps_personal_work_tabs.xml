@@ -14,12 +14,12 @@
   ~ limitations under the License.
 -->
 
-<com.android.launcher3.workprofile.PersonalWorkSlidingTabStrip xmlns:android="http://schemas.android.com/apk/res/android"
+<com.android.launcher3.workprofile.PersonalWorkSlidingTabStrip
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/tabs"
-    android:layout_width="@dimen/all_apps_header_pills_width"
+    android:layout_width="match_parent"
     android:layout_height="@dimen/all_apps_header_pill_height"
     android:layout_gravity="center_horizontal"
-    android:background="@drawable/all_apps_tabs_background"
     android:orientation="horizontal"
     style="@style/TextHeadline">
 
@@ -27,19 +27,25 @@
         android:id="@+id/tab_personal"
         android:layout_width="0dp"
         android:layout_height="match_parent"
+        android:layout_marginEnd="@dimen/all_apps_tabs_button_horizontal_padding"
+        android:layout_marginVertical="@dimen/all_apps_tabs_vertical_padding"
         android:layout_weight="1"
-        android:background="@drawable/personal_work_tabs_ripple"
+        android:background="@drawable/all_apps_tabs_background"
         android:text="@string/all_apps_personal_tab"
         android:textColor="@color/all_apps_tab_text"
-        android:textSize="14sp" />
+        android:textSize="14sp"
+        style="?android:attr/borderlessButtonStyle" />
 
     <Button
         android:id="@+id/tab_work"
         android:layout_width="0dp"
         android:layout_height="match_parent"
+        android:layout_marginStart="@dimen/all_apps_tabs_button_horizontal_padding"
+        android:layout_marginVertical="@dimen/all_apps_tabs_vertical_padding"
         android:layout_weight="1"
-        android:background="@drawable/personal_work_tabs_ripple"
+        android:background="@drawable/all_apps_tabs_background"
         android:text="@string/all_apps_work_tab"
         android:textColor="@color/all_apps_tab_text"
-        android:textSize="14sp" />
+        android:textSize="14sp"
+        style="?android:attr/borderlessButtonStyle" />
 </com.android.launcher3.workprofile.PersonalWorkSlidingTabStrip>
