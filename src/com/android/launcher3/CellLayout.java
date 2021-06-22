@@ -684,9 +684,6 @@ public class CellLayout extends ViewGroup {
         if (child instanceof BubbleTextView) {
             BubbleTextView bubbleChild = (BubbleTextView) child;
             bubbleChild.setTextVisibility(mContainerType != HOTSEAT);
-            if (mActivity.getDeviceProfile().isScalableGrid) {
-                bubbleChild.setCenterVertically(mContainerType != HOTSEAT);
-            }
         }
 
         child.setScaleX(mChildScale);
