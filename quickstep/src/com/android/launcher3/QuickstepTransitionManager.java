@@ -79,6 +79,7 @@ import androidx.annotation.Nullable;
 import androidx.core.graphics.ColorUtils;
 
 import com.android.launcher3.DeviceProfile.OnDeviceProfileChangeListener;
+import com.android.launcher3.LauncherAnimationRunner.RemoteAnimationFactory;
 import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.icons.FastBitmapDrawable;
@@ -197,11 +198,11 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
 
     private RemoteAnimationProvider mRemoteAnimationProvider;
     // Strong refs to runners which are cleared when the launcher activity is destroyed
-    private WrappedAnimationRunnerImpl mWallpaperOpenRunner;
-    private WrappedAnimationRunnerImpl mAppLaunchRunner;
-    private WrappedAnimationRunnerImpl mKeyguardGoingAwayRunner;
+    private RemoteAnimationFactory mWallpaperOpenRunner;
+    private RemoteAnimationFactory mAppLaunchRunner;
+    private RemoteAnimationFactory mKeyguardGoingAwayRunner;
 
-    private WrappedAnimationRunnerImpl mWallpaperOpenTransitionRunner;
+    private RemoteAnimationFactory mWallpaperOpenTransitionRunner;
     private RemoteTransitionCompat mLauncherOpenTransition;
 
     private final AnimatorListenerAdapter mForceInvisibleListener = new AnimatorListenerAdapter() {
@@ -257,11 +258,11 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
      * @return ActivityOptions with remote animations that controls how the window of the opening
      *         targets are displayed.
      */
-    public ActivityOptionsWrapper getActivityLaunchOptions(Launcher launcher, View v) {
+    public ActivityOptionsWrapper getActivityLaunchOptions(View v) {
         boolean fromRecents = isLaunchingFromRecents(v, null /* targets */);
         RunnableList onEndCallback = new RunnableList();
-        mAppLaunchRunner = new AppLaunchAnimationRunner(mHandler, v, onEndCallback);
-        RemoteAnimationRunnerCompat runner = new WrappedLauncherAnimationRunner<>(
+        mAppLaunchRunner = new AppLaunchAnimationRunner(v, onEndCallback);
+        RemoteAnimationRunnerCompat runner = new LauncherAnimationRunner(
                 mHandler, mAppLaunchRunner, true /* startAtFrontOfQueue */);
 
         // Note that this duration is a guess as we do not know if the animation will be a
@@ -1006,7 +1007,7 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
             definition.addRemoteAnimation(WindowManagerWrapper.TRANSIT_WALLPAPER_OPEN,
                     WindowManagerWrapper.ACTIVITY_TYPE_STANDARD,
                     new RemoteAnimationAdapterCompat(
-                            new WrappedLauncherAnimationRunner<>(mHandler, mWallpaperOpenRunner,
+                            new LauncherAnimationRunner(mHandler, mWallpaperOpenRunner,
                                     false /* startAtFrontOfQueue */),
                             CLOSING_TRANSITION_DURATION_MS, 0 /* statusBarTransitionDelay */));
 
@@ -1015,7 +1016,7 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
                 definition.addRemoteAnimation(
                         WindowManagerWrapper.TRANSIT_KEYGUARD_GOING_AWAY_ON_WALLPAPER,
                         new RemoteAnimationAdapterCompat(
-                                new WrappedLauncherAnimationRunner<>(
+                                new LauncherAnimationRunner(
                                         mHandler, mKeyguardGoingAwayRunner,
                                         true /* startAtFrontOfQueue */),
                                 CLOSING_TRANSITION_DURATION_MS, 0 /* statusBarTransitionDelay */));
@@ -1035,7 +1036,7 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
         if (hasControlRemoteAppTransitionPermission()) {
             mWallpaperOpenTransitionRunner = createWallpaperOpenRunner(false /* fromUnlock */);
             mLauncherOpenTransition = RemoteAnimationAdapterCompat.buildRemoteTransition(
-                    new WrappedLauncherAnimationRunner<>(mHandler, mWallpaperOpenTransitionRunner,
+                    new LauncherAnimationRunner(mHandler, mWallpaperOpenTransitionRunner,
                             false /* startAtFrontOfQueue */));
             mLauncherOpenTransition.addHomeOpenCheck();
             SystemUiProxy.INSTANCE.getNoCreate().registerRemoteTransition(mLauncherOpenTransition);
@@ -1093,7 +1094,7 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
      * @return Runner that plays when user goes to Launcher
      *         ie. pressing home, swiping up from nav bar.
      */
-    WrappedAnimationRunnerImpl createWallpaperOpenRunner(boolean fromUnlock) {
+    RemoteAnimationFactory createWallpaperOpenRunner(boolean fromUnlock) {
         return new WallpaperOpenLauncherAnimationRunner(mHandler, fromUnlock);
     }
 
@@ -1243,7 +1244,7 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
     /**
      * Remote animation runner for animation from the app to Launcher, including recents.
      */
-    protected class WallpaperOpenLauncherAnimationRunner implements WrappedAnimationRunnerImpl {
+    protected class WallpaperOpenLauncherAnimationRunner implements RemoteAnimationFactory {
 
         private final Handler mHandler;
         private final boolean mFromUnlock;
@@ -1331,17 +1332,12 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
     /**
      * Remote animation runner for animation to launch an app.
      */
-    private class AppLaunchAnimationRunner implements WrappedAnimationRunnerImpl {
+    private class AppLaunchAnimationRunner implements RemoteAnimationFactory {
 
-        private static final String TRANSITION_LAUNCH_FROM_RECENTS = "transition:LaunchFromRecents";
-        private static final String TRANSITION_LAUNCH_FROM_ICON = "transition:LaunchFromIcon";
-
-        private final Handler mHandler;
         private final View mV;
         private final RunnableList mOnEndCallback;
 
-        AppLaunchAnimationRunner(Handler handler, View v, RunnableList onEndCallback) {
-            mHandler = handler;
+        AppLaunchAnimationRunner(View v, RunnableList onEndCallback) {
             mV = v;
             mOnEndCallback = onEndCallback;
         }
@@ -1384,6 +1380,11 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
 
             result.setAnimation(anim, mLauncher, mOnEndCallback::executeAllAndDestroy,
                     skipFirstFrame);
+        }
+
+        @Override
+        public void onAnimationCancelled() {
+            mOnEndCallback.executeAllAndDestroy();
         }
     }
 
