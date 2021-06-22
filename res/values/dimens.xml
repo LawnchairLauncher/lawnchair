@@ -93,14 +93,14 @@
     <dimen name="all_apps_background_canvas_width">700dp</dimen>
     <dimen name="all_apps_background_canvas_height">475dp</dimen>
     <dimen name="all_apps_header_pill_height">48dp</dimen>
-    <dimen name="all_apps_header_pill_corner_radius">18dp</dimen>
-    <dimen name="all_apps_header_pills_width">348dp</dimen>
+    <dimen name="all_apps_header_pill_corner_radius">12dp</dimen>
     <dimen name="all_apps_header_tab_height">48dp</dimen>
     <dimen name="all_apps_tabs_indicator_height">2dp</dimen>
     <dimen name="all_apps_header_top_padding">36dp</dimen>
     <dimen name="all_apps_header_bottom_padding">6dp</dimen>
     <dimen name="all_apps_work_profile_tab_footer_top_padding">16dp</dimen>
     <dimen name="all_apps_work_profile_tab_footer_bottom_padding">20dp</dimen>
+    <dimen name="all_apps_tabs_button_horizontal_padding">4dp</dimen>
     <dimen name="all_apps_tabs_vertical_padding">6dp</dimen>
     <dimen name="all_apps_divider_height">2dp</dimen>
     <dimen name="all_apps_divider_width">128dp</dimen>
@@ -136,6 +136,11 @@
     <dimen name="widget_cell_horizontal_padding">16dp</dimen>
     <dimen name="widget_cell_font_size">14sp</dimen>
 
+    <dimen name="widget_tabs_button_horizontal_padding">4dp</dimen>
+    <dimen name="widget_tabs_horizontal_margin">32dp</dimen>
+    <dimen name="widget_apps_header_pill_height">48dp</dimen>
+    <dimen name="widget_apps_tabs_vertical_padding">6dp</dimen>
+
     <dimen name="recommended_widgets_table_vertical_padding">8dp</dimen>
 
     <!-- Bottom margin for the search and recommended widgets container without work profile -->
@@ -148,6 +153,7 @@
 
     <dimen name="widget_list_header_view_vertical_padding">20dp</dimen>
     <dimen name="widget_list_entry_spacing">2dp</dimen>
+    <dimen name="widget_list_horizontal_margin">16dp</dimen>
 
     <dimen name="widget_preview_shadow_blur">0.5dp</dimen>
     <dimen name="widget_preview_key_shadow_distance">1dp</dimen>
