@@ -151,6 +151,7 @@ public class StatsLogCompatManager extends StatsLogManager {
         private Optional<ToState> mToState = Optional.empty();
         private Optional<String> mEditText = Optional.empty();
         private SliceItem mSliceItem;
+        private LauncherAtom.Slice mSlice;
 
         StatsCompatLogger(Context context) {
             mContext = context;
@@ -193,7 +194,7 @@ public class StatsLogCompatManager extends StatsLogManager {
         @Override
         public StatsLogger withContainerInfo(ContainerInfo containerInfo) {
             checkState(mItemInfo == DEFAULT_ITEM_INFO,
-                        "ItemInfo and ContainerInfo are mutual exclusive; cannot log both.");
+                    "ItemInfo and ContainerInfo are mutual exclusive; cannot log both.");
             this.mContainerInfo = Optional.of(containerInfo);
             return this;
         }
@@ -218,9 +219,21 @@ public class StatsLogCompatManager extends StatsLogManager {
 
         @Override
         public StatsLogger withSliceItem(@NonNull SliceItem sliceItem) {
+            checkState(mItemInfo == DEFAULT_ITEM_INFO && mSlice == null,
+                    "ItemInfo, Slice and SliceItem are mutual exclusive; cannot set more than one"
+                            + " of them.");
             this.mSliceItem = checkNotNull(sliceItem, "expected valid sliceItem but received null");
-            checkState(mItemInfo == DEFAULT_ITEM_INFO,
-                    "ItemInfo and SliceItem are mutual exclusive; cannot log both.");
+            return this;
+        }
+
+        @Override
+        public StatsLogger withSlice(LauncherAtom.Slice slice) {
+            checkState(mItemInfo == DEFAULT_ITEM_INFO && mSliceItem == null,
+                    "ItemInfo, Slice and SliceItem are mutual exclusive; cannot set more than one"
+                            + " of them.");
+            checkNotNull(slice, "expected valid slice but received null");
+            checkNotNull(slice.getUri(), "expected valid slice uri but received null");
+            this.mSlice = slice;
             return this;
         }
 
@@ -231,13 +244,16 @@ public class StatsLogCompatManager extends StatsLogManager {
             }
             LauncherAppState appState = LauncherAppState.getInstanceNoCreate();
 
-            if (mSliceItem != null) {
+            if (mSlice == null && mSliceItem != null) {
+                mSlice = LauncherAtom.Slice.newBuilder().setUri(
+                        mSliceItem.getSlice().getUri().toString()).build();
+            }
+
+            if (mSlice != null) {
                 Executors.MODEL_EXECUTOR.execute(
                         () -> {
                             LauncherAtom.ItemInfo.Builder itemInfoBuilder =
-                                    LauncherAtom.ItemInfo.newBuilder().setSlice(
-                                            LauncherAtom.Slice.newBuilder().setUri(
-                                                    mSliceItem.getSlice().getUri().toString()));
+                                    LauncherAtom.ItemInfo.newBuilder().setSlice(mSlice);
                             mContainerInfo.ifPresent(itemInfoBuilder::setContainerInfo);
                             write(event, applyOverwrites(itemInfoBuilder.build()));
                         });
