@@ -16,7 +16,6 @@
 -->
 <resources>
     <!-- Attributes used for Overview theming -->
-    <attr name="overviewBackgroundColor" format="color" />
     <attr name="overviewButtonTextColor" format="color" />
     <attr name="overviewButtonIconColor" format="color" />
     <attr name="overviewButtonBackgroundColor" format="color" />
