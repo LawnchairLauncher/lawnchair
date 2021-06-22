@@ -174,8 +174,6 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
         folder.setFolderIcon(icon);
         folder.bind(folderInfo);
         icon.setFolder(folder);
-        icon.mBackground.paddingY = icon.isInHotseat()
-                ? 0 : activityContext.getDeviceProfile().cellYPaddingPx;
         return icon;
     }
 
@@ -217,7 +215,6 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
 
         icon.setAccessibilityDelegate(activity.getAccessibilityDelegate());
 
-        icon.mBackground.paddingY = icon.isInHotseat() ? 0 : grid.cellYPaddingPx;
         icon.mPreviewVerifier = new FolderGridOrganizer(activity.getDeviceProfile().inv);
         icon.mPreviewVerifier.setFolderInfo(folderInfo);
         icon.updatePreviewItems(false);
@@ -580,7 +577,6 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
     public void setFolderBackground(PreviewBackground bg) {
         mBackground = bg;
         mBackground.setInvalidateDelegate(this);
-        mBackground.paddingY = isInHotseat() ? 0 : mActivity.getDeviceProfile().cellYPaddingPx;
     }
 
     @Override
@@ -628,7 +624,6 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
         if (!mForceHideDot && ((mDotInfo != null && mDotInfo.hasDot()) || mDotScale > 0)) {
             Rect iconBounds = mDotParams.iconBounds;
             BubbleTextView.getIconBounds(this, iconBounds, mActivity.getDeviceProfile().iconSizePx);
-            iconBounds.offset(0, mBackground.paddingY);
             float iconScale = (float) mBackground.previewSize / iconBounds.width();
             Utilities.scaleRectAboutCenter(iconBounds, iconScale);
 
