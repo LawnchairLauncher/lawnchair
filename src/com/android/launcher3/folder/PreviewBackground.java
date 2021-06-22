@@ -77,7 +77,6 @@ public class PreviewBackground extends CellLayout.DelegatedCellDrawing {
     int previewSize;
     int basePreviewOffsetX;
     int basePreviewOffsetY;
-    int paddingY;
 
     private CellLayout mDrawingDelegate;
 
@@ -161,7 +160,7 @@ public class PreviewBackground extends CellLayout.DelegatedCellDrawing {
         previewSize = grid.folderIconSizePx;
 
         basePreviewOffsetX = (availableSpaceX - previewSize) / 2;
-        basePreviewOffsetY = paddingY + topPadding + grid.folderIconOffsetYPx;
+        basePreviewOffsetY = topPadding + grid.folderIconOffsetYPx;
 
         // Stroke width is 1dp
         mStrokeWidth = context.getResources().getDisplayMetrics().density;
