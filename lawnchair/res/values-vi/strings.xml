@@ -18,7 +18,7 @@
     <string name="icon_pack">Gói Biểu tượng</string>
     <string name="settings">Cài đặt</string>
     <string name="home_screen_label">Màn hình Chính</string>
-    <string name="home_screen_description">Bảng tin, At a Glance, Lưới, Biểu tượng</string>
+    <string name="home_screen_description">Bảng tin, Lướt xem, Lưới, Biểu tượng</string>
     <string name="general_label">Chung</string>
     <string name="general_description">Dấu chấm Thông báo, Gói Biểu tượng</string>
     <string name="home_screen_rotation_label">Xoay Màn hình Chính</string>
@@ -31,7 +31,7 @@
     <string name="folders_label">Thư mục</string>
     <string name="folders_description">Số Hàng và Cột</string>
     <string name="app_drawer_columns">Cột Ngăn Ứng dụng</string>
-    <string name="dock_icons">Biểu tượng Dock</string>
+    <string name="dock_icons">Biểu tượng Giá đỡ</string>
     <string name="max_folder_columns">Số Cột Tối đa trong Thư mục</string>
     <string name="max_folder_rows">Số Hàng Tối đa trong Thư mục</string>
     <string name="home_screen_columns">Số Cột Màn hình Chính</string>
@@ -39,7 +39,7 @@
     <string name="home_screen_rows">Số Hàng Màn hình Chính</string>
     <string name="icons">Biểu tượng</string>
     <string name="icon_size">Kích thước Biểu tượng</string>
-    <string name="label_size">Kích thước Nhãn</string>
+    <string name="label_size">Kích thước Tên ứng dụng</string>
     <string name="allow_empty_pages_label">Cho phép Trang Trống</string>
     <string name="notification_dots">Dấu chấm Thông báo</string>
     <string name="smartspace_preferences">Tùy chỉnh</string>
@@ -62,8 +62,8 @@
     <string name="auto_adaptive_icons_label">Biểu tượng Thích ứng Tự động</string>
     <string name="auto_adaptive_icons_description">Cho mọi biểu tượng Không thích ứng.</string>
     <string name="support_and_pr">Hỗ trợ &amp; PR</string>
-    <string name="workspace_dt2s">Chạm Đúp để Tắt màn hình</string>
-    <string name="smart_space_enable">Hiện Widget At a Glance</string>
+    <string name="workspace_dt2s">Nhấp đôi để Tắt màn hình</string>
+    <string name="smart_space_enable">Hiện Tiện ích Mới đây</string>
     <string name="design_and_development">Thiết kế &amp; Phát triển</string>
     <string name="translate">Dịch thuật</string>
     <string name="product">Sản phẩm</string>
@@ -72,18 +72,18 @@
     <plurals name="apps_count">
         <item quantity="other">%1$d Ứng dụng</item>
     </plurals>
-    <string name="hotseat_qsb_label">Hiện thanh tìm kiếm</string>
-    <string name="dt2s_admin_hint_title">Cần cấp quyền quản trị</string>
+    <string name="hotseat_qsb_label">Hiện Thanh Tìm kiếm</string>
+    <string name="dt2s_admin_hint_title">Cần cấp Quyền Quản trị</string>
     <string name="dt2s_admin_hint">To use Double Tap to Sleep, grant the Admin permission.</string>
-    <string name="dt2s_admin_warning">Double Tap to Sleep will be disabled.</string>
-    <string name="dt2s_a11y_hint_title">Accessibility service required</string>
-    <string name="dt2s_a11y_hint">To use Double Tap to Sleep, enable the accessibility service.</string>
+    <string name="dt2s_admin_warning">Nhấp đôi để tắt màn hình sẽ được tắt.</string>
+    <string name="dt2s_a11y_hint_title">Bật Dịch vụ Trợ năng</string>
+    <string name="dt2s_a11y_hint">Để sử dụng Nhấp đôi để tắt màn hình, cần bặt dịch vụ Trợ năng Lawnchair. Chạm \"Mở Cài đặt\", sau đó chọn \"Lawnchair\" và bật nó</string>
     <string name="dt2s_warning_open_settings">Mở Cài đặt</string>
     <string name="minus_one_enable">Hiện Bảng tin</string>
-    <string name="minus_one_unavailable">Feed is not available</string>
+    <string name="minus_one_unavailable">Bản tin hiện không khả dụng.</string>
     <string name="fuzzy_search_title">Tìm kiếm Mờ</string>
-    <string name="fuzzy_search_desc">Cho kết quả tìm kiếm ứng dụng xấp xỉ khớp.</string>
-    <string name="theme_label">Chủ đề</string>
+    <string name="fuzzy_search_desc">Cho kết quả tìm kiếm ứng dụng gần đúng.</string>
+    <string name="theme_label">Giao diện</string>
     <string name="theme_light">Sáng</string>
     <string name="theme_dark">Tối</string>
     <string name="theme_system_default">Theo hệ thống</string>
