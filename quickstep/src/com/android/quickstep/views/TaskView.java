@@ -1531,6 +1531,7 @@ public class TaskView extends FrameLayout implements Reusable {
         private final float mCornerRadius;
         private final float mWindowCornerRadius;
 
+        public float mFullscreenProgress;
         public RectF mCurrentDrawnInsets = new RectF();
         public float mCurrentDrawnCornerRadius;
         /** The current scale we apply to the thumbnail to adjust for new left/right insets. */
@@ -1548,6 +1549,8 @@ public class TaskView extends FrameLayout implements Reusable {
          */
         public void setProgress(float fullscreenProgress, float parentScale, float taskViewScale,
                 int previewWidth, DeviceProfile dp, PreviewPositionHelper pph) {
+            mFullscreenProgress = fullscreenProgress;
+
             RectF insets = pph.getInsetsToDrawInFullscreen(dp);
 
             float currentInsetsLeft = insets.left * fullscreenProgress;
