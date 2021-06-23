@@ -24,6 +24,7 @@
 
     <!--  Task Menu View  -->
     <dimen name="task_menu_corner_radius">22dp</dimen>
+    <dimen name="task_menu_item_corner_radius">4dp</dimen>
     <dimen name="overview_proactive_row_height">48dp</dimen>
     <dimen name="overview_proactive_row_bottom_margin">16dp</dimen>
 
