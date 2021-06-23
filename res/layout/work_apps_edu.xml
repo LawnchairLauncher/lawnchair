@@ -42,7 +42,7 @@
 
         <Button
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/rounded_button_height"
             android:id="@+id/action_btn"
             android:textColor="?attr/workProfileOverlayTextColor"
             android:text="@string/work_profile_edu_accept"
