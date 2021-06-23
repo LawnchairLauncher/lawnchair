@@ -717,6 +717,10 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
                     : mSearchContainer.getBottom();
             canvas.drawRect(0, 0, getWidth(), bottom + getTranslationY(),
                     mHeaderPaint);
+
+            if (FeatureFlags.ENABLE_DEVICE_SEARCH.get() && getTranslationY() == 0) {
+                mSearchUiManager.getEditText().setBackground(null);
+            }
         }
     }
 
@@ -805,6 +809,9 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
             getSearchView().setBackgroundColor(viewBG);
             getFloatingHeaderView().setHeaderColor(viewBG);
             invalidateHeader();
+            if (scrolledOffset == 0 && mSearchUiManager.getEditText() != null) {
+                mSearchUiManager.getEditText().show();
+            }
         }
     }
 

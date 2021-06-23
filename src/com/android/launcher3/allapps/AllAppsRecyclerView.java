@@ -188,6 +188,7 @@ public class AllAppsRecyclerView extends BaseRecyclerView {
         StatsLogManager mgr = BaseDraggingActivity.fromContext(getContext()).getStatsLogManager();
         switch (state) {
             case SCROLL_STATE_DRAGGING:
+                requestFocus();
                 mgr.logger().sendToInteractionJankMonitor(
                         LAUNCHER_ALLAPPS_VERTICAL_SWIPE_BEGIN, this);
                 break;
