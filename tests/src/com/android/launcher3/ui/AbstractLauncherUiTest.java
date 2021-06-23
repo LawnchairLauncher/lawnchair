@@ -229,7 +229,7 @@ public abstract class AbstractLauncherUiTest {
 
     protected TestRule getRulesInsideActivityMonitor() {
         final RuleChain inner = RuleChain.outerRule(new PortraitLandscapeRunner(this))
-                .around(new FailureWatcher(mDevice));
+                .around(new FailureWatcher(mDevice, mLauncher));
 
         return TestHelpers.isInLauncherProcess()
                 ? RuleChain.outerRule(ShellCommandRule.setDefaultLauncher())
@@ -310,7 +310,6 @@ public abstract class AbstractLauncherUiTest {
                 assertEquals("Launcher crashed, pid mismatch:",
                         mLauncherPid, mLauncher.getPid().intValue());
             }
-            checkDetectedLeaks(mLauncher);
         } finally {
             mLauncher.onTestFinish();
         }
@@ -618,5 +617,6 @@ public abstract class AbstractLauncherUiTest {
                 isResumed);
     }
 
-    protected void onLauncherActivityClose(Launcher launcher) { }
+    protected void onLauncherActivityClose(Launcher launcher) {
+    }
 }
