@@ -81,7 +81,7 @@ public class LauncherUIHelper {
         doLayout(launcher);
         ViewOnDrawExecutor executor = ReflectionHelpers.getField(launcher, "mPendingExecutor");
         if (executor != null) {
-            executor.runAllTasks();
+            executor.markCompleted();
         }
         return launcher;
     }

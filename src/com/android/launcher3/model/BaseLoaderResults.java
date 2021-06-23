@@ -18,7 +18,9 @@ package com.android.launcher3.model;
 
 import static com.android.launcher3.model.ModelUtils.filterCurrentWorkspaceItems;
 import static com.android.launcher3.model.ModelUtils.sortWorkspaceItemsSpatially;
+import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
 
+import android.os.Process;
 import android.util.Log;
 
 import com.android.launcher3.InvariantDeviceProfile;
@@ -33,7 +35,7 @@ import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.IntSet;
 import com.android.launcher3.util.LooperExecutor;
 import com.android.launcher3.util.LooperIdleLock;
-import com.android.launcher3.util.ViewOnDrawExecutor;
+import com.android.launcher3.util.RunnableList;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -175,7 +177,6 @@ public abstract class BaseLoaderResults {
                 currentScreenIndices = screenIndices;
             }
 
-            final boolean validFirstPage = !currentScreenIndices.isEmpty();
 
             IntSet currentScreenIds  = new IntSet();
             currentScreenIndices.forEach(
@@ -204,40 +205,25 @@ public abstract class BaseLoaderResults {
             // Bind workspace screens
             executeCallbacksTask(c -> c.bindScreens(mOrderedScreenIds), mUiExecutor);
 
-            Executor mainExecutor = mUiExecutor;
             // Load items on the current page.
-            bindWorkspaceItems(currentWorkspaceItems, mainExecutor);
-            bindAppWidgets(currentAppWidgets, mainExecutor);
+            bindWorkspaceItems(currentWorkspaceItems, mUiExecutor);
+            bindAppWidgets(currentAppWidgets, mUiExecutor);
             mExtraItems.forEach(item ->
-                    executeCallbacksTask(c -> c.bindExtraContainerItems(item), mainExecutor));
+                    executeCallbacksTask(c -> c.bindExtraContainerItems(item), mUiExecutor));
 
-            // In case of validFirstPage, only bind the first screen, and defer binding the
-            // remaining screens after first onDraw (and an optional the fade animation whichever
-            // happens later).
-            // This ensures that the first screen is immediately visible (eg. during rotation)
-            // In case of !validFirstPage, bind all pages one after other.
+            RunnableList pendingTasks = new RunnableList();
+            Executor pendingExecutor = pendingTasks::add;
+            bindWorkspaceItems(otherWorkspaceItems, pendingExecutor);
+            bindAppWidgets(otherAppWidgets, pendingExecutor);
+            executeCallbacksTask(c -> c.finishBindingItems(currentScreenIndices), pendingExecutor);
+            pendingExecutor.execute(
+                    () -> MODEL_EXECUTOR.setThreadPriority(Process.THREAD_PRIORITY_DEFAULT));
 
-            final Executor deferredExecutor =
-                    validFirstPage ? new ViewOnDrawExecutor() : mainExecutor;
-
-            executeCallbacksTask(c -> c.finishFirstPageBind(
-                    validFirstPage ? (ViewOnDrawExecutor) deferredExecutor : null), mainExecutor);
-
-            bindWorkspaceItems(otherWorkspaceItems, deferredExecutor);
-            bindAppWidgets(otherAppWidgets, deferredExecutor);
-            // Tell the workspace that we're done binding items
-            executeCallbacksTask(c -> c.finishBindingItems(currentScreenIndices), deferredExecutor);
-
-            if (validFirstPage) {
-                executeCallbacksTask(c -> {
-                    // We are loading synchronously, which means, some of the pages will be
-                    // bound after first draw. Inform the mCallbacks that page binding is
-                    // not complete, and schedule the remaining pages.
-                    c.onPagesBoundSynchronously(currentScreenIndices);
-                    c.executeOnNextDraw((ViewOnDrawExecutor) deferredExecutor);
-
-                }, mUiExecutor);
-            }
+            executeCallbacksTask(
+                    c -> {
+                        MODEL_EXECUTOR.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND);
+                        c.onInitialBindComplete(currentScreenIndices, pendingTasks);
+                    }, mUiExecutor);
         }
 
         private void bindWorkspaceItems(
