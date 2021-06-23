@@ -160,8 +160,11 @@ public class LauncherAppWidgetProviderInfo extends AppWidgetProviderInfo
             }
         }
 
-        this.minSpanX = minSpanX;
-        this.minSpanY = minSpanY;
+        // If minSpanX/Y > spanX/Y, ignore the minSpanX/Y to match the behavior described in
+        // minResizeWidth & minResizeHeight Android documentation. See
+        // https://developer.android.com/reference/android/appwidget/AppWidgetProviderInfo
+        this.minSpanX = Math.min(spanX, minSpanX);
+        this.minSpanY = Math.min(spanY, minSpanY);
         this.maxSpanX = maxSpanX;
         this.maxSpanY = maxSpanY;
         this.mIsMinSizeFulfilled = Math.min(spanX, minSpanX) <= idp.numColumns

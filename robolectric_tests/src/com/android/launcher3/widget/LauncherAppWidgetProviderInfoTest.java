@@ -122,6 +122,8 @@ public final class LauncherAppWidgetProviderInfoTest {
     @Test
     public void initSpans_minResizeWidthSmallerThanCellWidth_shouldInitializeMinSpansToOne() {
         LauncherAppWidgetProviderInfo info = new LauncherAppWidgetProviderInfo();
+        info.minWidth = 100;
+        info.minHeight = 100;
         info.minResizeWidth = 20;
         info.minResizeHeight = 20;
         InvariantDeviceProfile idp = createIDP();
@@ -135,6 +137,8 @@ public final class LauncherAppWidgetProviderInfoTest {
     @Test
     public void initSpans_minResizeWidthLargerThanCellWidth_shouldInitializeMinSpans() {
         LauncherAppWidgetProviderInfo info = new LauncherAppWidgetProviderInfo();
+        info.minWidth = 100;
+        info.minHeight = 100;
         info.minResizeWidth = 80;
         info.minResizeHeight = 80;
         InvariantDeviceProfile idp = createIDP();
@@ -157,6 +161,8 @@ public final class LauncherAppWidgetProviderInfoTest {
         Mockito.when(dp.shouldInsetWidgets()).thenReturn(true);
 
         LauncherAppWidgetProviderInfo info = new LauncherAppWidgetProviderInfo();
+        info.minWidth = CELL_SIZE * 3;
+        info.minHeight = CELL_SIZE * 3;
         info.minResizeWidth = CELL_SIZE * 2 + maxPadding;
         info.minResizeHeight = CELL_SIZE * 2 + maxPadding;
 
@@ -177,6 +183,8 @@ public final class LauncherAppWidgetProviderInfoTest {
         dp.cellLayoutBorderSpacingPx = maxPadding - 1;
         Mockito.when(dp.shouldInsetWidgets()).thenReturn(false);
         LauncherAppWidgetProviderInfo info = new LauncherAppWidgetProviderInfo();
+        info.minWidth = CELL_SIZE * 3;
+        info.minHeight = CELL_SIZE * 3;
         info.minResizeWidth = CELL_SIZE * 2 + maxPadding;
         info.minResizeHeight = CELL_SIZE * 2 + maxPadding;
 
@@ -184,6 +192,22 @@ public final class LauncherAppWidgetProviderInfoTest {
 
         assertThat(info.minSpanX).isEqualTo(3);
         assertThat(info.minSpanY).isEqualTo(3);
+    }
+
+    @Test
+    public void
+            initSpans_minResizeWidthHeightLargerThanMinWidth_shouldUseMinWidthHeightAsMinSpans() {
+        LauncherAppWidgetProviderInfo info = new LauncherAppWidgetProviderInfo();
+        info.minWidth = 20;
+        info.minHeight = 20;
+        info.minResizeWidth = 80;
+        info.minResizeHeight = 80;
+        InvariantDeviceProfile idp = createIDP();
+
+        info.initSpans(mContext, idp);
+
+        assertThat(info.minSpanX).isEqualTo(1);
+        assertThat(info.minSpanY).isEqualTo(1);
     }
 
     @Test
