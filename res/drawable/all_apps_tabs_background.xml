@@ -13,13 +13,27 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+<selector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:enterFadeDuration="500">
     <item
-        android:top="@dimen/all_apps_tabs_vertical_padding"
-        android:bottom="@dimen/all_apps_tabs_vertical_padding">
+        android:id="@+id/unselected"
+        android:state_selected="false">
+        <ripple android:color="@color/all_apps_tab_background_selected">
+            <item>
+                <shape android:shape="rectangle">
+                    <corners android:radius="@dimen/all_apps_header_pill_corner_radius" />
+                    <solid android:color="@color/all_apps_tabs_background" />
+                </shape>
+            </item>
+        </ripple>
+    </item>
+
+    <item
+        android:id="@+id/selected"
+        android:state_selected="true">
         <shape android:shape="rectangle">
-            <solid android:color="@color/all_apps_tabs_background" />
             <corners android:radius="@dimen/all_apps_header_pill_corner_radius" />
+            <solid android:color="@color/all_apps_tab_background_selected" />
         </shape>
     </item>
-</layer-list>
+</selector>
