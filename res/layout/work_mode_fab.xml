@@ -13,6 +13,7 @@
      limitations under the License.
 -->
 <com.android.launcher3.allapps.WorkModeSwitch xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/TextHeadline"
     android:id="@+id/work_mode_toggle"
     android:layout_alignParentBottom="true"
     android:layout_alignParentEnd="true"
@@ -22,6 +23,7 @@
     android:includeFontPadding="false"
     android:drawableTint="@color/all_apps_tab_text"
     android:textColor="@color/all_apps_tab_text"
+    android:textSize="14sp"
     android:background="@drawable/work_apps_toggle_background"
     android:drawablePadding="16dp"
     android:drawableStart="@drawable/ic_corp_off"
