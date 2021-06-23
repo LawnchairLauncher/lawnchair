@@ -23,6 +23,7 @@ import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.shortcuts.ShortcutKey;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -88,5 +89,14 @@ public interface ItemInfoMatcher {
      */
     static ItemInfoMatcher ofItemIds(IntSet ids) {
         return (info, cn) -> ids.contains(info.id);
+    }
+
+    /**
+     * Returns a matcher for items with provided items
+     */
+    static ItemInfoMatcher ofItems(Collection<? extends ItemInfo> items) {
+        IntSet ids = new IntSet();
+        items.forEach(item -> ids.add(item.id));
+        return ofItemIds(ids);
     }
 }

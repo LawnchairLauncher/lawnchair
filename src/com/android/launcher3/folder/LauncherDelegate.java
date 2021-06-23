@@ -93,7 +93,7 @@ public class LauncherDelegate {
         }
     }
 
-    void replaceFolderWithFinalItem(Folder folder) {
+    boolean replaceFolderWithFinalItem(Folder folder) {
         // Add the last remaining child to the workspace in place of the folder
         Runnable onCompleteRunnable = new Runnable() {
             @Override
@@ -147,6 +147,7 @@ public class LauncherDelegate {
         } else {
             onCompleteRunnable.run();
         }
+        return true;
     }
 
 
@@ -191,7 +192,7 @@ public class LauncherDelegate {
         ModelWriter getModelWriter() {
             if (mWriter == null) {
                 mWriter = LauncherAppState.getInstance((Context) mContext).getModel()
-                        .getWriter(false, false);
+                        .getWriter(false, false, null);
             }
             return mWriter;
         }
@@ -205,7 +206,9 @@ public class LauncherDelegate {
         }
 
         @Override
-        void replaceFolderWithFinalItem(Folder folder) { }
+        boolean replaceFolderWithFinalItem(Folder folder) {
+            return false;
+        }
 
         @Override
         boolean interceptOutsideTouch(MotionEvent ev, BaseDragLayer dl, Folder folder) {

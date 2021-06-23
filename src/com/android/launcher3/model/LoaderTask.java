@@ -210,7 +210,7 @@ public class LoaderTask implements Runnable {
             }
 
             verifyNotStopped();
-            mResults.bindWorkspace();
+            mResults.bindWorkspace(true /* incrementBindId */);
             logASplit(logger, "bindWorkspace");
 
             mModelDelegate.workspaceLoadComplete();
