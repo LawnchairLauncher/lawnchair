@@ -63,6 +63,7 @@ import android.animation.ValueAnimator;
 import android.annotation.TargetApi;
 import android.app.ActivityManager.RunningTaskInfo;
 import android.content.Context;
+import android.content.LocusId;
 import android.content.res.Configuration;
 import android.graphics.BlendMode;
 import android.graphics.Canvas;
@@ -75,6 +76,7 @@ import android.graphics.RectF;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.UserHandle;
 import android.text.Layout;
 import android.text.StaticLayout;
@@ -943,6 +945,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                 cancelSplitSelect(false);
             }
         }
+        updateLocusId();
     }
 
     /**
@@ -3858,5 +3861,20 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     @Nullable
     public RecentsAnimationController getRecentsAnimationController() {
         return mRecentsAnimationController;
+    }
+
+    /** Update the current activity locus id to show the enabled state of Overview */
+    public void updateLocusId() {
+        String locusId = "Overview";
+
+        if (mOverviewStateEnabled && mActivity.isStarted()) {
+            locusId += "|ENABLED";
+        } else {
+            locusId += "|DISABLED";
+        }
+
+        final LocusId id = new LocusId(locusId);
+        // Set locus context is a binder call, don't want it to happen during a transition
+        UI_HELPER_EXECUTOR.post(() -> mActivity.setLocusContext(id, Bundle.EMPTY));
     }
 }
