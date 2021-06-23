@@ -86,7 +86,7 @@ public class QuickstepAtomicAnimationFactory extends
             StateAnimationConfig config) {
         RecentsView overview = mActivity.getOverviewPanel();
         if (toState == NORMAL && fromState == OVERVIEW) {
-            config.setInterpolator(ANIM_OVERVIEW_ACTIONS_FADE, DEACCEL);
+            config.setInterpolator(ANIM_OVERVIEW_ACTIONS_FADE, clampToProgress(LINEAR, 0, 0.25f));
             config.setInterpolator(ANIM_SCRIM_FADE, LINEAR);
             config.setInterpolator(ANIM_WORKSPACE_SCALE, DEACCEL);
             config.setInterpolator(ANIM_WORKSPACE_FADE, ACCEL);

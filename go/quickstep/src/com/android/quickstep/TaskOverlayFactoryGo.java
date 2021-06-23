@@ -51,7 +51,8 @@ public final class TaskOverlayFactoryGo extends TaskOverlayFactory {
     public static final String ACTIONS_URL = "niu_actions_app_url";
     public static final String ACTIONS_APP_PACKAGE = "niu_actions_app_package";
     public static final String ACTIONS_ERROR_CODE = "niu_actions_app_error_code";
-    public static final int ERROR_PERMISSIONS = 1;
+    public static final int ERROR_PERMISSIONS_STRUCTURE = 1;
+    public static final int ERROR_PERMISSIONS_SCREENSHOT = 2;
     private static final String TAG = "TaskOverlayFactoryGo";
 
     private AssistContentRequester mContentRequester;
@@ -75,7 +76,8 @@ public final class TaskOverlayFactoryGo extends TaskOverlayFactory {
         private String mNIUPackageName;
         private String mTaskPackageName;
         private String mWebUrl;
-        private boolean mAssistPermissionsEnabled;
+        private boolean mAssistStructurePermitted;
+        private boolean mAssistScreenshotPermitted;
         private AssistContentRequester mFactoryContentRequester;
 
         private TaskOverlayGo(TaskThumbnailView taskThumbnailView,
@@ -104,7 +106,7 @@ public final class TaskOverlayFactoryGo extends TaskOverlayFactory {
             getActionsView().setCallbacks(new OverlayUICallbacksGoImpl(isAllowedByPolicy, task));
             mTaskPackageName = task.key.getPackageName();
 
-            if (!mAssistPermissionsEnabled) {
+            if (!mAssistStructurePermitted || !mAssistScreenshotPermitted) {
                 return;
             }
 
@@ -131,10 +133,14 @@ public final class TaskOverlayFactoryGo extends TaskOverlayFactory {
         private void sendNIUIntent(String actionType) {
             Intent intent = createNIUIntent(actionType);
             // Only add and send the image if the appropriate permissions are held
-            if (mAssistPermissionsEnabled) {
+            if (mAssistStructurePermitted && mAssistScreenshotPermitted) {
                 mImageApi.shareAsDataWithExplicitIntent(/* crop */ null, intent);
             } else {
-                intent.putExtra(ACTIONS_ERROR_CODE, ERROR_PERMISSIONS);
+                // If both permissions are disabled, the structure error code takes priority
+                // The user must enable that one before they can enable screenshots
+                int code = mAssistStructurePermitted ? ERROR_PERMISSIONS_SCREENSHOT
+                        : ERROR_PERMISSIONS_STRUCTURE;
+                intent.putExtra(ACTIONS_ERROR_CODE, code);
                 try {
                     mApplicationContext.startActivity(intent);
                 } catch (ActivityNotFoundException e) {
@@ -164,11 +170,10 @@ public final class TaskOverlayFactoryGo extends TaskOverlayFactory {
         @VisibleForTesting
         public void checkSettings() {
             ContentResolver contentResolver = mApplicationContext.getContentResolver();
-            boolean structureEnabled = Settings.Secure.getInt(contentResolver,
+            mAssistStructurePermitted = Settings.Secure.getInt(contentResolver,
                     Settings.Secure.ASSIST_STRUCTURE_ENABLED, 1) != 0;
-            boolean screenshotEnabled = Settings.Secure.getInt(contentResolver,
+            mAssistScreenshotPermitted = Settings.Secure.getInt(contentResolver,
                     Settings.Secure.ASSIST_SCREENSHOT_ENABLED, 1) != 0;
-            mAssistPermissionsEnabled = structureEnabled && screenshotEnabled;
 
             String assistantPackage =
                     Settings.Secure.getString(contentResolver, Settings.Secure.ASSISTANT);
