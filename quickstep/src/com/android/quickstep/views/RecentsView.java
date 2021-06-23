@@ -2421,12 +2421,12 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                 if (success) {
                     if (shouldRemoveTask) {
                         if (dismissedTaskView.getTask() != null) {
-                            finishRecentsAnimation(true /* toRecents */, false /* shouldPip */,
-                                    () -> {
-                                UI_HELPER_EXECUTOR.getHandler().postDelayed(() ->
-                                        ActivityManagerWrapper.getInstance().removeTask(
-                                                dismissedTaskId), REMOVE_TASK_WAIT_FOR_APP_STOP_MS);
-                            });
+                            if (LIVE_TILE.get() && dismissedTaskView.isRunningTask()) {
+                                finishRecentsAnimation(true /* toRecents */, false /* shouldPip */,
+                                        () -> removeTaskInternal(dismissedTaskId));
+                            } else {
+                                removeTaskInternal(dismissedTaskId);
+                            }
                             mActivity.getStatsLogManager().logger()
                                     .withItemInfo(dismissedTaskView.getItemInfo())
                                     .log(LAUNCHER_TASK_DISMISS_SWIPE_UP);
@@ -2470,6 +2470,12 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             }
         });
         return anim;
+    }
+
+    private void removeTaskInternal(int dismissedTaskId) {
+        UI_HELPER_EXECUTOR.getHandler().postDelayed(
+                () -> ActivityManagerWrapper.getInstance().removeTask(dismissedTaskId),
+                REMOVE_TASK_WAIT_FOR_APP_STOP_MS);
     }
 
     /**
