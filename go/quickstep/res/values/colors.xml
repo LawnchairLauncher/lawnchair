@@ -16,10 +16,8 @@
 -->
 <resources>
     <!-- Overview -->
-    <color name="go_overview_background_color">#DADADA</color>
-    <color name="go_overview_background_color_dark">#000000</color>
     <color name="go_overview_text_color">#3C4043</color>
     <color name="go_overview_text_color_dark">#F8F9FA</color>
     <color name="go_overview_button_color">#70FFFFFF</color>
-    <color name="go_overview_button_color_dark">#303030</color>
+    <color name="go_overview_button_color_dark">#474747</color>
 </resources>
