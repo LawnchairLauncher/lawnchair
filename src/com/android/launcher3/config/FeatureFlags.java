@@ -78,6 +78,9 @@ public final class FeatureFlags {
     public static final BooleanFlag UNSTABLE_SPRINGS = getDebugFlag(
             "UNSTABLE_SPRINGS", false, "Enable unstable springs for quickstep animations");
 
+    public static final BooleanFlag ENABLE_LOCAL_COLOR_POPUPS = getDebugFlag(
+            "ENABLE_LOCAL_COLOR_POPUPS", false, "Enable local color extraction for popups.");
+
     public static final BooleanFlag KEYGUARD_ANIMATION = getDebugFlag(
             "KEYGUARD_ANIMATION", false, "Enable animation for keyguard going away on wallpaper");
 
