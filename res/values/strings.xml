@@ -85,12 +85,12 @@
     <!-- Spoken text for screen readers. This text lets a user know that the button is used to clear
          the text that the user entered in the search box. [CHAR_LIMIT=none] -->
     <string name="widgets_full_sheet_cancel_button_description">Clear text from search box</string>
-    <!-- Text shown when there is no widgets shown in the popup view showing all available widgets
-         installed on the device. [CHAR_LIMIT=none] -->
-    <string name="no_widgets_available">No widgets available</string>
-    <!-- Text shown when there are no matching widget search results for user's search query.
+    <!-- Text shown when there are no widgets or shortcuts that can be added to the device.
          [CHAR_LIMIT=none] -->
-    <string name="no_search_results">No search results</string>
+    <string name="no_widgets_available">Widgets and shortcuts aren\'t available</string>
+    <!-- Text shown when there are no matching widget or shortcut search results for user's search
+         query. [CHAR_LIMIT=none] -->
+    <string name="no_search_results">No widgets or shortcuts found</string>
     <!-- Tab label. A user can tap this tab to access their personal widgets. [CHAR_LIMIT=25] -->
     <string name="widgets_full_sheet_personal_tab">Personal</string>
     <!-- Tab label. A user can tap this tab to access their work widgets. [CHAR_LIMIT=25] -->
