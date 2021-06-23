@@ -68,7 +68,7 @@ public class Background extends LauncherInstrumentation.VisibleContainer {
     }
 
     protected boolean zeroButtonToOverviewGestureStartsInLauncher() {
-        return false;
+        return mLauncher.isTablet();
     }
 
     protected void goToOverviewUnchecked() {
