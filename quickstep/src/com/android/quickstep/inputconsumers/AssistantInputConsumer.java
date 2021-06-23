@@ -26,6 +26,8 @@ import static android.view.MotionEvent.ACTION_UP;
 
 import static com.android.launcher3.Utilities.squaredHypot;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.res.Resources;
@@ -198,6 +200,14 @@ public class AssistantInputConsumer extends DelegateInputConsumer {
                     animator.addUpdateListener(valueAnimator -> {
                         float progress = (float) valueAnimator.getAnimatedValue();
                         SystemUiProxy.INSTANCE.get(mContext).onAssistantProgress(progress);
+                    });
+                    // Ensure that we always send a zero at the end to clear the invocation state.
+                    animator.addListener(new AnimatorListenerAdapter() {
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            super.onAnimationEnd(animation);
+                            SystemUiProxy.INSTANCE.get(mContext).onAssistantProgress(0f);
+                        }
                     });
                     animator.setInterpolator(Interpolators.DEACCEL_2);
                     animator.start();

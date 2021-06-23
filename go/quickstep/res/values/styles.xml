@@ -17,14 +17,12 @@
 <resources>
     <!-- App themes -->
     <style name="AppTheme" parent="@style/LauncherTheme">
-        <item name="overviewBackgroundColor">@color/go_overview_background_color</item>
         <item name="overviewButtonTextColor">@color/go_overview_text_color</item>
         <item name="overviewButtonIconColor">@color/go_overview_text_color</item>
         <item name="overviewButtonBackgroundColor">@color/go_overview_button_color</item>
     </style>
 
     <style name="AppTheme.Dark" parent="@style/LauncherTheme.Dark">
-        <item name="overviewBackgroundColor">@color/go_overview_background_color_dark</item>
         <item name="overviewButtonTextColor">@color/go_overview_text_color_dark</item>
         <item name="overviewButtonIconColor">@color/go_overview_text_color_dark</item>
         <item name="overviewButtonBackgroundColor">@color/go_overview_button_color_dark</item>
