@@ -96,6 +96,9 @@ public class ExtendedEditText extends EditText {
         }
     }
 
+    // inherited class can override to change the appearance of the edit text.
+    public void show() {}
+
     public void showKeyboard() {
         mShowImeAfterFirstLayout = !showSoftInput();
     }
