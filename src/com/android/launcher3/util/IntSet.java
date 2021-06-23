@@ -101,6 +101,15 @@ public class IntSet implements Iterable<Integer> {
         return wrap(IntArray.wrap(array));
     }
 
+    /**
+     * Returns an IntSet with the given values.
+     */
+    public static IntSet wrap(Iterable<Integer> iterable) {
+        IntSet set = new IntSet();
+        iterable.forEach(set::add);
+        return set;
+    }
+
     @Override
     public Iterator<Integer> iterator() {
         return mArray.iterator();

@@ -38,11 +38,13 @@ import android.view.animation.AccelerateDecelerateInterpolator;
 import androidx.annotation.UiThread;
 import androidx.annotation.WorkerThread;
 
+import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.Workspace;
 import com.android.launcher3.graphics.LauncherPreviewRenderer.PreviewContext;
 import com.android.launcher3.model.BgDataModel;
 import com.android.launcher3.model.GridSizeMigrationTask;
@@ -163,11 +165,17 @@ public class PreviewSurfaceRenderer {
 
                 @Override
                 public void run() {
+                    DeviceProfile deviceProfile = mIdp.getDeviceProfile(mContext);
+                    String query = (deviceProfile.isTwoPanels ? LauncherSettings.Favorites.SCREEN
+                            + " = " + Workspace.LEFT_PANEL_ID + " or " : "")
+                            + LauncherSettings.Favorites.SCREEN + " = " + Workspace.FIRST_SCREEN_ID
+                            + " or " + LauncherSettings.Favorites.CONTAINER + " = "
+                            + LauncherSettings.Favorites.CONTAINER_HOTSEAT;
                     loadWorkspace(new ArrayList<>(), LauncherSettings.Favorites.PREVIEW_CONTENT_URI,
-                            LauncherSettings.Favorites.SCREEN + " = 0 or "
-                                    + LauncherSettings.Favorites.CONTAINER + " = "
-                                    + LauncherSettings.Favorites.CONTAINER_HOTSEAT);
+                            query);
+
                     MAIN_EXECUTOR.execute(() -> {
+                        mBgDataModel.isLeftPanelShown = deviceProfile.isTwoPanels;
                         renderView(previewContext, mBgDataModel, mWidgetProvidersMap);
                         mOnDestroyCallbacks.add(previewContext::onDestroy);
                     });
