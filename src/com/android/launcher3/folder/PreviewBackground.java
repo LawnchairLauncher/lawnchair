@@ -50,6 +50,9 @@ import com.android.launcher3.views.ActivityContext;
  */
 public class PreviewBackground extends CellLayout.DelegatedCellDrawing {
 
+    private static final boolean DRAW_SHADOW = false;
+    private static final boolean DRAW_STROKE = false;
+
     private static final int CONSUMPTION_ANIMATION_DURATION = 100;
 
     private final PorterDuffXfermode mShadowPorterDuffXfermode
@@ -86,8 +89,8 @@ public class PreviewBackground extends CellLayout.DelegatedCellDrawing {
     private static final float ACCEPT_COLOR_MULTIPLIER = 1.5f;
 
     // Expressed on a scale from 0 to 255.
-    private static final int BG_OPACITY = 160;
-    private static final int MAX_BG_OPACITY = 225;
+    private static final int BG_OPACITY = 255;
+    private static final int MAX_BG_OPACITY = 255;
     private static final int SHADOW_OPACITY = 40;
 
     private ValueAnimator mScaleAnimator;
@@ -162,13 +165,15 @@ public class PreviewBackground extends CellLayout.DelegatedCellDrawing {
         // Stroke width is 1dp
         mStrokeWidth = context.getResources().getDisplayMetrics().density;
 
-        float radius = getScaledRadius();
-        float shadowRadius = radius + mStrokeWidth;
-        int shadowColor = Color.argb(SHADOW_OPACITY, 0, 0, 0);
-        mShadowShader = new RadialGradient(0, 0, 1,
-                new int[] {shadowColor, Color.TRANSPARENT},
-                new float[] {radius / shadowRadius, 1},
-                Shader.TileMode.CLAMP);
+        if (DRAW_SHADOW) {
+            float radius = getScaledRadius();
+            float shadowRadius = radius + mStrokeWidth;
+            int shadowColor = Color.argb(SHADOW_OPACITY, 0, 0, 0);
+            mShadowShader = new RadialGradient(0, 0, 1,
+                    new int[]{shadowColor, Color.TRANSPARENT},
+                    new float[]{radius / shadowRadius, 1},
+                    Shader.TileMode.CLAMP);
+        }
 
         invalidate();
     }
@@ -238,6 +243,9 @@ public class PreviewBackground extends CellLayout.DelegatedCellDrawing {
     }
 
     public void drawShadow(Canvas canvas) {
+        if (!DRAW_SHADOW) {
+            return;
+        }
         if (mShadowShader == null) {
             return;
         }
@@ -276,6 +284,9 @@ public class PreviewBackground extends CellLayout.DelegatedCellDrawing {
     }
 
     public void fadeInBackgroundShadow() {
+        if (!DRAW_SHADOW) {
+            return;
+        }
         if (mShadowAnimator != null) {
             mShadowAnimator.cancel();
         }
@@ -292,6 +303,10 @@ public class PreviewBackground extends CellLayout.DelegatedCellDrawing {
     }
 
     public void animateBackgroundStroke() {
+        if (!DRAW_STROKE) {
+            return;
+        }
+
         if (mStrokeAlphaAnimator != null) {
             mStrokeAlphaAnimator.cancel();
         }
@@ -308,6 +323,9 @@ public class PreviewBackground extends CellLayout.DelegatedCellDrawing {
     }
 
     public void drawBackgroundStroke(Canvas canvas) {
+        if (!DRAW_STROKE) {
+            return;
+        }
         mPaint.setColor(setColorAlphaBound(mStrokeColor, mStrokeAlpha));
         mPaint.setStyle(Paint.Style.STROKE);
         mPaint.setStrokeWidth(mStrokeWidth);
@@ -352,7 +370,7 @@ public class PreviewBackground extends CellLayout.DelegatedCellDrawing {
         }
 
         mDrawingDelegate = null;
-        isClipping = true;
+        isClipping = false;
         invalidate();
     }
 

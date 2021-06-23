@@ -23,20 +23,19 @@ import com.android.launcher3.model.data.WorkspaceItemInfo;
  * Manages the parameters used to draw a Folder preview item.
  */
 class PreviewItemDrawingParams {
+    float index;
     float transX;
     float transY;
     float scale;
-    float overlayAlpha;
     public FolderPreviewItemAnim anim;
     public boolean hidden;
     public Drawable drawable;
     public WorkspaceItemInfo item;
 
-    PreviewItemDrawingParams(float transX, float transY, float scale, float overlayAlpha) {
+    PreviewItemDrawingParams(float transX, float transY, float scale) {
         this.transX = transX;
         this.transY = transY;
         this.scale = scale;
-        this.overlayAlpha = overlayAlpha;
     }
 
     public void update(float transX, float transY, float scale) {

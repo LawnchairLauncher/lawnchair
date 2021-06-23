@@ -44,7 +44,7 @@ public class RestoreDbTaskTest {
     @Test
     public void testMigrateProfileId() throws Exception {
         SQLiteDatabase db = new MyDatabaseHelper(42).getWritableDatabase();
-        // Add some dummy data
+        // Add some mock data
         for (int i = 0; i < 5; i++) {
             ContentValues values = new ContentValues();
             values.put(Favorites._ID, i);
@@ -64,7 +64,7 @@ public class RestoreDbTaskTest {
     @Test
     public void testChangeDefaultColumn() throws Exception {
         SQLiteDatabase db = new MyDatabaseHelper(42).getWritableDatabase();
-        // Add some dummy data
+        // Add some mock data
         for (int i = 0; i < 5; i++) {
             ContentValues values = new ContentValues();
             values.put(Favorites._ID, i);

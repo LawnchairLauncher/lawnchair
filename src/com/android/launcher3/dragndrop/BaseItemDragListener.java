@@ -34,7 +34,6 @@ import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.DragSource;
 import com.android.launcher3.DropTarget.DragObject;
 import com.android.launcher3.Launcher;
-import com.android.launcher3.R;
 import com.android.launcher3.util.ActivityTracker.SchedulerCallback;
 import com.android.launcher3.widget.PendingItemDragHelper;
 
@@ -143,15 +142,13 @@ public abstract class BaseItemDragListener implements View.OnDragListener, DragS
         // the dragLayer alpha to 0 to have a nice fade-in animation. But that will prevent the
         // dragView from being visible. Instead just skip the fade-in animation here.
         mLauncher.getDragLayer().setAlpha(1);
-
-        dragObject.dragView.setColor(
-                mLauncher.getResources().getColor(R.color.delete_target_hover_tint));
+        dragObject.dragView.setAlpha(.5f);
     }
 
     @Override
     public void onPreDragEnd(DragObject dragObject, boolean dragStarted) {
         if (dragStarted) {
-            dragObject.dragView.setColor(0);
+            dragObject.dragView.setAlpha(1f);
         }
     }
 

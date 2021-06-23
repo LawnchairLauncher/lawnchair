@@ -15,6 +15,7 @@ public class LauncherFiles {
     private static final String XML = ".xml";
 
     public static final String LAUNCHER_DB = "launcher.db";
+    public static final String LAUNCHER_4_BY_5_DB = "launcher_4_by_5.db";
     public static final String LAUNCHER_4_BY_4_DB = "launcher_4_by_4.db";
     public static final String LAUNCHER_3_BY_3_DB = "launcher_3_by_3.db";
     public static final String LAUNCHER_2_BY_2_DB = "launcher_2_by_2.db";
@@ -30,6 +31,7 @@ public class LauncherFiles {
 
     public static final List<String> ALL_FILES = Collections.unmodifiableList(Arrays.asList(
             LAUNCHER_DB,
+            LAUNCHER_4_BY_5_DB,
             LAUNCHER_4_BY_4_DB,
             LAUNCHER_3_BY_3_DB,
             LAUNCHER_2_BY_2_DB,

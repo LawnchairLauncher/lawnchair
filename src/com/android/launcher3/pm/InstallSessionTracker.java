@@ -24,8 +24,11 @@ import android.content.pm.PackageInstaller.SessionInfo;
 import android.os.UserHandle;
 import android.util.SparseArray;
 
+import androidx.annotation.WorkerThread;
+
 import com.android.launcher3.util.PackageUserKey;
 
+@WorkerThread
 public class InstallSessionTracker extends PackageInstaller.SessionCallback {
 
     // Lazily initialized

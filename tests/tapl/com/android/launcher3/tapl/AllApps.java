@@ -25,9 +25,9 @@ import androidx.annotation.NonNull;
 import androidx.test.uiautomator.By;
 import androidx.test.uiautomator.BySelector;
 import androidx.test.uiautomator.Direction;
+import androidx.test.uiautomator.StaleObjectException;
 import androidx.test.uiautomator.UiObject2;
 
-import com.android.launcher3.ResourceUtils;
 import com.android.launcher3.testing.TestProtocol;
 
 import java.util.stream.Collectors;
@@ -62,7 +62,13 @@ public class AllApps extends LauncherInstrumentation.VisibleContainer {
 
     private boolean hasClickableIcon(UiObject2 allAppsContainer, UiObject2 appListRecycler,
             BySelector appIconSelector, int displayBottom) {
-        final UiObject2 icon = appListRecycler.findObject(appIconSelector);
+        final UiObject2 icon;
+        try {
+            icon = appListRecycler.findObject(appIconSelector);
+        } catch (StaleObjectException e) {
+            mLauncher.fail("All apps recycler disappeared from screen");
+            return false;
+        }
         if (icon == null) {
             LauncherInstrumentation.log("hasClickableIcon: icon not visible");
             return false;
@@ -108,26 +114,24 @@ public class AllApps extends LauncherInstrumentation.VisibleContainer {
                     "apps_list_view");
             final UiObject2 searchBox = getSearchBox(allAppsContainer);
 
-            int bottomGestureMargin = ResourceUtils.getNavbarSize(
-                    ResourceUtils.NAVBAR_BOTTOM_GESTURE_SIZE, mLauncher.getResources()) + 1;
-            int deviceHeight = mLauncher.getDevice().getDisplayHeight();
-            int displayBottom = deviceHeight - bottomGestureMargin;
+            int deviceHeight = mLauncher.getRealDisplaySize().y;
+            int bottomGestureStartOnScreen = mLauncher.getBottomGestureStartOnScreen();
             final BySelector appIconSelector = AppIcon.getAppIconSelector(appName, mLauncher);
             if (!hasClickableIcon(allAppsContainer, appListRecycler, appIconSelector,
-                    displayBottom)) {
+                    bottomGestureStartOnScreen)) {
                 scrollBackToBeginning();
                 int attempts = 0;
                 int scroll = getAllAppsScroll();
                 try (LauncherInstrumentation.Closable c1 = mLauncher.addContextLayer("scrolled")) {
                     while (!hasClickableIcon(allAppsContainer, appListRecycler, appIconSelector,
-                            displayBottom)) {
+                            bottomGestureStartOnScreen)) {
                         mLauncher.scrollToLastVisibleRow(
                                 allAppsContainer,
                                 mLauncher.getObjectsInContainer(allAppsContainer, "icon")
                                         .stream()
                                         .filter(icon ->
-                                                        mLauncher.getVisibleBounds(icon).bottom
-                                                        <= displayBottom)
+                                                mLauncher.getVisibleBounds(icon).top
+                                                        < bottomGestureStartOnScreen)
                                         .collect(Collectors.toList()),
                                 mLauncher.getVisibleBounds(searchBox).bottom
                                         - mLauncher.getVisibleBounds(allAppsContainer).top);
