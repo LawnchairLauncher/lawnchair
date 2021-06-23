@@ -29,12 +29,8 @@ public class BackGestureTutorialFragment extends TutorialFragment {
     @Override
     Integer getFeedbackVideoResId(boolean forDarkMode) {
         return mTutorialType == TutorialType.RIGHT_EDGE_BACK_NAVIGATION
-                ? (forDarkMode
-                        ? R.drawable.gesture_tutorial_motion_back_right_dark_mode
-                        : R.drawable.gesture_tutorial_motion_back_right_light_mode)
-                : (forDarkMode
-                        ? R.drawable.gesture_tutorial_motion_back_left_dark_mode
-                        : R.drawable.gesture_tutorial_motion_back_left_light_mode);
+                ? R.drawable.gesture_tutorial_motion_back_right
+                : R.drawable.gesture_tutorial_motion_back_left;
     }
 
     @Nullable
