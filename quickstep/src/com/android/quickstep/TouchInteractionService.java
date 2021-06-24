@@ -64,6 +64,7 @@ import android.view.Surface;
 import android.view.accessibility.AccessibilityManager;
 
 import androidx.annotation.BinderThread;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
 import androidx.annotation.WorkerThread;
@@ -303,10 +304,10 @@ public class TouchInteractionService extends Service implements PluginListener<O
     private RecentsAnimationDeviceState mDeviceState;
     private TaskAnimationManager mTaskAnimationManager;
 
-    private InputConsumer mUncheckedConsumer = InputConsumer.NO_OP;
-    private InputConsumer mConsumer = InputConsumer.NO_OP;
+    private @NonNull InputConsumer mUncheckedConsumer = InputConsumer.NO_OP;
+    private @NonNull InputConsumer mConsumer = InputConsumer.NO_OP;
     private Choreographer mMainChoreographer;
-    private InputConsumer mResetGestureInputConsumer;
+    private @Nullable ResetGestureInputConsumer mResetGestureInputConsumer;
     private GestureState mGestureState = DEFAULT_STATE;
 
     private InputMonitorCompat mInputMonitorCompat;
@@ -635,7 +636,7 @@ public class TouchInteractionService extends Service implements PluginListener<O
                 // launched while device is locked even after exiting direct boot mode (e.g. camera).
                 return createDeviceLockedInputConsumer(newGestureState);
             } else {
-                return mResetGestureInputConsumer;
+                return getDefaultInputConsumer();
             }
         }
 
@@ -644,7 +645,7 @@ public class TouchInteractionService extends Service implements PluginListener<O
         InputConsumer base = canStartSystemGesture
                 || previousGestureState.isRecentsAnimationRunning()
                         ? newBaseConsumer(previousGestureState, newGestureState, event)
-                        : mResetGestureInputConsumer;
+                        : getDefaultInputConsumer();
         if (mDeviceState.isGesturalNavMode()) {
             handleOrientationSetup(base);
         }
@@ -698,7 +699,7 @@ public class TouchInteractionService extends Service implements PluginListener<O
             }
         } else {
             if (mDeviceState.isScreenPinningActive()) {
-                base = mResetGestureInputConsumer;
+                base = getDefaultInputConsumer();
             }
 
             if (mDeviceState.canTriggerOneHandedAction(event)) {
@@ -740,14 +741,14 @@ public class TouchInteractionService extends Service implements PluginListener<O
             return createOverviewInputConsumer(
                     previousGestureState, gestureState, event, forceOverviewInputConsumer);
         } else if (gestureState.getRunningTask() == null) {
-            return mResetGestureInputConsumer;
+            return getDefaultInputConsumer();
         } else if (previousGestureState.isRunningAnimationToLauncher()
                 || gestureState.getActivityInterface().isResumed()
                 || forceOverviewInputConsumer) {
             return createOverviewInputConsumer(
                     previousGestureState, gestureState, event, forceOverviewInputConsumer);
         } else if (mDeviceState.isGestureBlockedActivity(gestureState.getRunningTask())) {
-            return mResetGestureInputConsumer;
+            return getDefaultInputConsumer();
         } else {
             return createOtherActivityInputConsumer(gestureState, event);
         }
@@ -775,7 +776,7 @@ public class TouchInteractionService extends Service implements PluginListener<O
             return new DeviceLockedInputConsumer(this, mDeviceState, mTaskAnimationManager,
                     gestureState, mInputMonitorCompat);
         } else {
-            return mResetGestureInputConsumer;
+            return getDefaultInputConsumer();
         }
     }
 
@@ -784,7 +785,7 @@ public class TouchInteractionService extends Service implements PluginListener<O
             boolean forceOverviewInputConsumer) {
         StatefulActivity activity = gestureState.getActivityInterface().getCreatedActivity();
         if (activity == null) {
-            return mResetGestureInputConsumer;
+            return getDefaultInputConsumer();
         }
 
         if (activity.getRootView().hasWindowFocus()
@@ -813,18 +814,25 @@ public class TouchInteractionService extends Service implements PluginListener<O
     }
 
     private void reset() {
-        if (mResetGestureInputConsumer != null) {
-            mConsumer = mUncheckedConsumer = mResetGestureInputConsumer;
-        } else {
-            // mResetGestureInputConsumer isn't initialized until onUserUnlocked(), so reset to
-            // NO_OP until then (we never want these to be null).
-            mConsumer = mUncheckedConsumer = InputConsumer.NO_OP;
-        }
+        mConsumer = mUncheckedConsumer = getDefaultInputConsumer();
         mGestureState = DEFAULT_STATE;
         // By default, use batching of the input events, but check receiver before using in the rare
         // case that the monitor was disposed before the swipe settled
         if (mInputEventReceiver != null) {
             mInputEventReceiver.setBatchingEnabled(true);
+        }
+    }
+
+    /**
+     * Returns the {@link ResetGestureInputConsumer} if user is unlocked, else NO_OP.
+     */
+    private @NonNull InputConsumer getDefaultInputConsumer() {
+        if (mResetGestureInputConsumer != null) {
+            return mResetGestureInputConsumer;
+        } else {
+            // mResetGestureInputConsumer isn't initialized until onUserUnlocked(), so reset to
+            // NO_OP until then (we never want these to be null).
+            return InputConsumer.NO_OP;
         }
     }
 
