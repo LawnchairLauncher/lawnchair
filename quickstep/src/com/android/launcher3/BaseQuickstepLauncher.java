@@ -21,6 +21,7 @@ import static com.android.launcher3.LauncherState.FLAG_HIDE_BACK_BUTTON;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.NO_OFFSET;
 import static com.android.launcher3.model.data.ItemInfo.NO_MATCHING_ID;
+import static com.android.launcher3.util.DisplayController.CHANGE_ACTIVE_SCREEN;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 import static com.android.quickstep.SysUINavigationMode.Mode.TWO_BUTTONS;
 import static com.android.quickstep.util.NavigationModeFeatureFlag.LIVE_TILE;
@@ -30,6 +31,7 @@ import android.animation.AnimatorSet;
 import android.animation.ValueAnimator;
 import android.app.ActivityOptions;
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.ServiceConnection;
@@ -56,6 +58,7 @@ import com.android.launcher3.taskbar.TaskbarManager;
 import com.android.launcher3.taskbar.TaskbarStateHandler;
 import com.android.launcher3.uioverrides.RecentsViewStateController;
 import com.android.launcher3.util.ActivityOptionsWrapper;
+import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.IntSet;
 import com.android.launcher3.util.ObjectWrapper;
 import com.android.launcher3.util.UiThreadHelper;
@@ -473,5 +476,16 @@ public abstract class BaseQuickstepLauncher extends Launcher
 
     public void setHintUserWillBeActive() {
         addActivityFlags(ACTIVITY_STATE_USER_WILL_BE_ACTIVE);
+    }
+
+    @Override
+    public void onDisplayInfoChanged(Context context, DisplayController.Info info, int flags) {
+        super.onDisplayInfoChanged(context, info, flags);
+        // When changing screens with live tile active, finish the recents animation to close
+        // overview as it should be an interim state
+        if ((flags & CHANGE_ACTIVE_SCREEN) != 0 && LIVE_TILE.get()) {
+            RecentsView recentsView = getOverviewPanel();
+            recentsView.finishRecentsAnimation(/* toRecents= */ true, null);
+        }
     }
 }
