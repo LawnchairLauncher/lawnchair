@@ -1265,7 +1265,9 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
 
     private void updateOrientationHandler() {
         // Handle orientation changes.
+        PagedOrientationHandler oldOrientationHandler = mOrientationHandler;
         mOrientationHandler = mOrientationState.getOrientationHandler();
+
         mIsRtl = mOrientationHandler.getRecentsRtlSetting(getResources());
         setLayoutDirection(mIsRtl
                 ? View.LAYOUT_DIRECTION_RTL
@@ -1274,7 +1276,12 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                 ? View.LAYOUT_DIRECTION_LTR
                 : View.LAYOUT_DIRECTION_RTL);
         mClearAllButton.setRotation(mOrientationHandler.getDegreesRotated());
-        mActivity.getDragLayer().recreateControllers();
+
+        if (!mOrientationHandler.equals(oldOrientationHandler)) {
+            // Changed orientations, update controllers so they intercept accordingly.
+            mActivity.getDragLayer().recreateControllers();
+        }
+
         boolean isInLandscape = mOrientationState.getTouchRotation() != ROTATION_0
                 || mOrientationState.getRecentsActivityRotation() != ROTATION_0;
         mActionsView.updateHiddenFlags(HIDDEN_NON_ZERO_ROTATION,
