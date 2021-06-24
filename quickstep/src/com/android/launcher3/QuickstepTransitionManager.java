@@ -71,6 +71,7 @@ import android.util.Size;
 import android.view.SurfaceControl;
 import android.view.View;
 import android.view.ViewRootImpl;
+import android.view.ViewTreeObserver;
 import android.view.animation.Interpolator;
 import android.view.animation.PathInterpolator;
 
@@ -255,7 +256,7 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
 
     /**
      * @return ActivityOptions with remote animations that controls how the window of the opening
-     *         targets are displayed.
+     * targets are displayed.
      */
     public ActivityOptionsWrapper getActivityLaunchOptions(Launcher launcher, View v) {
         boolean fromRecents = isLaunchingFromRecents(v, null /* targets */);
@@ -284,7 +285,7 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
      * may not always be correct as we may resolve the opening app to a task when the animation
      * starts.
      *
-     * @param v the view to launch from
+     * @param v       the view to launch from
      * @param targets apps that are opening/closing
      * @return true if the app is launching from recents, false if it most likely is not
      */
@@ -297,9 +298,9 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
     /**
      * Composes the animations for a launch from the recents list.
      *
-     * @param anim the animator set to add to
-     * @param v the launching view
-     * @param appTargets the apps that are opening/closing
+     * @param anim            the animator set to add to
+     * @param v               the launching view
+     * @param appTargets      the apps that are opening/closing
      * @param launcherClosing true if the launcher app is closing
      */
     protected void composeRecentsLaunchAnimator(@NonNull AnimatorSet anim, @NonNull View v,
@@ -326,9 +327,9 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
     /**
      * Compose the animations for a launch from the app icon.
      *
-     * @param anim the animation to add to
-     * @param v the launching view with the icon
-     * @param appTargets the list of opening/closing apps
+     * @param anim            the animation to add to
+     * @param v               the launching view with the icon
+     * @param appTargets      the list of opening/closing apps
      * @param launcherClosing true if launcher is closing
      */
     private void composeIconLaunchAnimator(@NonNull AnimatorSet anim, @NonNull View v,
@@ -366,7 +367,8 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
                 public void onAnimationStart(Animator animation) {
                     mLauncher.addOnResumeCallback(() ->
                             ObjectAnimator.ofFloat(mLauncher.getDepthController(), DEPTH,
-                            mLauncher.getStateManager().getState().getDepth(mLauncher)).start());
+                                    mLauncher.getStateManager().getState().getDepth(
+                                            mLauncher)).start());
                 }
             });
         }
@@ -443,7 +445,7 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
      *
      * @param isAppOpening True when this is called when an app is opening.
      *                     False when this is called when an app is closing.
-     * @param startDelay Start delay duration.
+     * @param startDelay   Start delay duration.
      */
     private Pair<AnimatorSet, Runnable> getLauncherContentAnimator(boolean isAppOpening,
             int startDelay) {
@@ -451,12 +453,12 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
         Runnable endListener;
 
         float[] alphas = isAppOpening
-                ? new float[] {1, 0}
-                : new float[] {0, 1};
+                ? new float[]{1, 0}
+                : new float[]{0, 1};
 
         float[] scales = isAppOpening
-                ? new float[] {1, mContentScale}
-                : new float[] {mContentScale, 1};
+                ? new float[]{1, mContentScale}
+                : new float[]{mContentScale, 1};
 
         if (mLauncher.isInState(ALL_APPS)) {
             // All Apps in portrait mode is full screen, so we only animate AllAppsContainerView.
@@ -550,7 +552,7 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
     /**
      * Compose recents view alpha and translation Y animation when launcher opens/closes apps.
      *
-     * @param anim the animator set to add to
+     * @param anim   the animator set to add to
      * @param alphas the alphas to animate to over time
      * @param scales the scale values to animator to over time
      * @return listener to run when the animation ends
@@ -703,7 +705,7 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
 
                 float scaledCropWidth = windowCropWidth * scale;
                 float scaledCropHeight = windowCropHeight * scale;
-                float offsetX  = (scaledCropWidth - iconWidth) / 2;
+                float offsetX = (scaledCropWidth - iconWidth) / 2;
                 float offsetY = (scaledCropHeight - iconHeight) / 2;
 
                 // Calculate the window position to match the icon position.
@@ -1085,7 +1087,7 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
 
     /**
      * @return Runner that plays when user goes to Launcher
-     *         ie. pressing home, swiping up from nav bar.
+     * ie. pressing home, swiping up from nav bar.
      */
     WrappedAnimationRunnerImpl createWallpaperOpenRunner(boolean fromUnlock) {
         return new WallpaperOpenLauncherAnimationRunner(mHandler, fromUnlock);
@@ -1217,7 +1219,24 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
         anim.addListener(new AnimationSuccessListener() {
             @Override
             public void onAnimationStart(Animator animation) {
-                InteractionJankMonitorWrapper.begin(mDragLayer, cuj);
+                mDragLayer.getViewTreeObserver().addOnDrawListener(
+                        new ViewTreeObserver.OnDrawListener() {
+                            boolean mHandled = false;
+
+                            @Override
+                            public void onDraw() {
+                                if (mHandled) {
+                                    return;
+                                }
+                                mHandled = true;
+
+                                InteractionJankMonitorWrapper.begin(mDragLayer, cuj);
+
+                                mDragLayer.post(() ->
+                                        mDragLayer.getViewTreeObserver().removeOnDrawListener(
+                                                this));
+                            }
+                        });
                 super.onAnimationStart(animation);
             }
 
