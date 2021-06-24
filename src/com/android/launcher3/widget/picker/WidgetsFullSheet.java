@@ -323,7 +323,6 @@ public class WidgetsFullSheet extends BaseWidgetSheet
             clearNavBarColor();
         }
 
-        ((TopRoundedCornerView) mContent).setNavBarScrimHeight(mInsets.bottom);
         requestLayout();
     }
 
