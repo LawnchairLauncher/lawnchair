@@ -230,6 +230,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
 
     // Used to control launcher components throughout the swipe gesture.
     private AnimatorControllerWithResistance mLauncherTransitionController;
+    private boolean mHasEndedLauncherTransition;
 
     private AnimationFactory mAnimationFactory = (t) -> { };
 
@@ -603,11 +604,11 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
 
     /**
      * We don't want to change mLauncherTransitionController if mGestureState.getEndTarget() == HOME
-     * (it has its own animation).
+     * (it has its own animation) or if we explicitly ended the controller already.
      * @return Whether we can create the launcher controller or update its progress.
      */
     private boolean canCreateNewOrUpdateExistingLauncherTransitionController() {
-        return mGestureState.getEndTarget() != HOME;
+        return mGestureState.getEndTarget() != HOME && !mHasEndedLauncherTransition;
     }
 
     @Override
@@ -1421,6 +1422,8 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
     }
 
     private void endLauncherTransitionController() {
+        mHasEndedLauncherTransition = true;
+
         if (mLauncherTransitionController != null) {
             // End the animation, but stay at the same visual progress.
             mLauncherTransitionController.getNormalController().dispatchSetInterpolator(
