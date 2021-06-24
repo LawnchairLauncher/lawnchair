@@ -134,6 +134,12 @@ public class Background extends LauncherInstrumentation.VisibleContainer {
             }
 
             case THREE_BUTTON:
+                if (mLauncher.isTablet()) {
+                    mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN,
+                            LauncherInstrumentation.EVENT_TOUCH_DOWN);
+                    mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN,
+                            LauncherInstrumentation.EVENT_TOUCH_UP);
+                }
                 mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN, SQUARE_BUTTON_EVENT);
                 mLauncher.runToState(
                         () -> mLauncher.waitForNavigationUiObject("recent_apps").click(),
@@ -225,9 +231,21 @@ public class Background extends LauncherInstrumentation.VisibleContainer {
                 case THREE_BUTTON:
                     // Double press the recents button.
                     UiObject2 recentsButton = mLauncher.waitForNavigationUiObject("recent_apps");
+                    if (mLauncher.isTablet()) {
+                        mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN,
+                                LauncherInstrumentation.EVENT_TOUCH_DOWN);
+                        mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN,
+                                LauncherInstrumentation.EVENT_TOUCH_UP);
+                    }
                     mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN, SQUARE_BUTTON_EVENT);
                     mLauncher.runToState(() -> recentsButton.click(), OVERVIEW_STATE_ORDINAL);
                     mLauncher.getOverview();
+                    if (mLauncher.isTablet()) {
+                        mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN,
+                                LauncherInstrumentation.EVENT_TOUCH_DOWN);
+                        mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN,
+                                LauncherInstrumentation.EVENT_TOUCH_UP);
+                    }
                     mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN, SQUARE_BUTTON_EVENT);
                     mLauncher.executeAndWaitForEvent(
                             () -> recentsButton.click(),

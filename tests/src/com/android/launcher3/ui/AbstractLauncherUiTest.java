@@ -127,6 +127,9 @@ public abstract class AbstractLauncherUiTest {
     }
 
     public static void checkDetectedLeaks(LauncherInstrumentation launcher) {
+        // TODO(b/191449914): Temporarily disable leak detection on tablets until bug is resolved.
+        if (launcher.isTablet()) return;
+
         if (sActivityLeakReported) return;
 
         if (sStrictmodeDetectedActivityLeak != null) {
