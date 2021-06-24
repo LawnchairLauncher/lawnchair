@@ -22,6 +22,8 @@ import android.util.FloatProperty;
 import android.view.Gravity;
 import android.widget.FrameLayout;
 
+import androidx.annotation.Nullable;
+
 import com.android.quickstep.util.SplitSelectStateController;
 
 public class SplitPlaceholderView extends FrameLayout {
@@ -53,6 +55,11 @@ public class SplitPlaceholderView extends FrameLayout {
 
     public SplitSelectStateController getSplitController() {
         return mSplitController;
+    }
+
+    @Nullable
+    public IconView getIcon() {
+        return mIcon;
     }
 
     public void setIcon(IconView icon) {

@@ -381,6 +381,21 @@ public final class Utilities {
     }
 
     /**
+     * Similar to {@link #scaleRectAboutCenter(Rect, float)} except this allows different scales
+     * for X and Y
+     */
+    public static void scaleRectFAboutCenter(RectF r, float scaleX, float scaleY) {
+        float px = r.centerX();
+        float py = r.centerY();
+        r.offset(-px, -py);
+        r.left = r.left * scaleX;
+        r.top = r.top * scaleY;
+        r.right = r.right * scaleX;
+        r.bottom = r.bottom * scaleY;
+        r.offset(px, py);
+    }
+
+    /**
      * Maps t from one range to another range.
      * @param t The value to map.
      * @param fromMin The lower bound of the range that t is being mapped from.

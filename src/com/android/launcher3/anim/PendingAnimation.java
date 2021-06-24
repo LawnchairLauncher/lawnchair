@@ -56,6 +56,10 @@ public class PendingAnimation implements PropertySetter {
         mAnim = new AnimatorSet();
     }
 
+    public long getDuration() {
+        return mDuration;
+    }
+
     /**
      * Utility method to sent an interpolator on an animation and add it to the list
      */

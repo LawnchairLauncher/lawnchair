@@ -271,12 +271,10 @@ public abstract class BaseQuickstepLauncher extends Launcher
 
         SysUINavigationMode.INSTANCE.get(this).updateMode();
         mActionsView = findViewById(R.id.overview_actions_view);
-        mSplitPlaceholderView = findViewById(R.id.split_placeholder);
         RecentsView overviewPanel = (RecentsView) getOverviewPanel();
-        mSplitPlaceholderView.init(
-                new SplitSelectStateController(mHandler, SystemUiProxy.INSTANCE.get(this))
-        );
-        overviewPanel.init(mActionsView, mSplitPlaceholderView);
+        SplitSelectStateController controller =
+                new SplitSelectStateController(mHandler, SystemUiProxy.INSTANCE.get(this));
+        overviewPanel.init(mActionsView, controller);
         mActionsView.setDp(getDeviceProfile());
         mActionsView.updateVerticalMargin(SysUINavigationMode.getMode(this));
 
