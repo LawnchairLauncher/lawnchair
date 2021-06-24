@@ -32,7 +32,8 @@ fun SystemUi() {
         // dark icons if we're in light theme
         systemUiController.setSystemBarsColor(
             color = Color.Transparent,
-            darkIcons = useDarkIcons
+            darkIcons = useDarkIcons,
+            isNavigationBarContrastEnforced = false
         )
     }
 }
