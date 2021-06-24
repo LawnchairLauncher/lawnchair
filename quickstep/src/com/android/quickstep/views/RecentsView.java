@@ -63,6 +63,7 @@ import android.animation.ValueAnimator;
 import android.annotation.TargetApi;
 import android.app.ActivityManager.RunningTaskInfo;
 import android.content.Context;
+import android.content.LocusId;
 import android.content.res.Configuration;
 import android.graphics.BlendMode;
 import android.graphics.Canvas;
@@ -75,6 +76,7 @@ import android.graphics.RectF;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.UserHandle;
 import android.text.Layout;
 import android.text.StaticLayout;
@@ -943,6 +945,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                 cancelSplitSelect(false);
             }
         }
+        updateLocusId();
     }
 
     /**
@@ -1248,7 +1251,9 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
 
     private void updateOrientationHandler() {
         // Handle orientation changes.
+        PagedOrientationHandler oldOrientationHandler = mOrientationHandler;
         mOrientationHandler = mOrientationState.getOrientationHandler();
+
         mIsRtl = mOrientationHandler.getRecentsRtlSetting(getResources());
         setLayoutDirection(mIsRtl
                 ? View.LAYOUT_DIRECTION_RTL
@@ -1257,7 +1262,12 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                 ? View.LAYOUT_DIRECTION_LTR
                 : View.LAYOUT_DIRECTION_RTL);
         mClearAllButton.setRotation(mOrientationHandler.getDegreesRotated());
-        mActivity.getDragLayer().recreateControllers();
+
+        if (!mOrientationHandler.equals(oldOrientationHandler)) {
+            // Changed orientations, update controllers so they intercept accordingly.
+            mActivity.getDragLayer().recreateControllers();
+        }
+
         boolean isInLandscape = mOrientationState.getTouchRotation() != ROTATION_0
                 || mOrientationState.getRecentsActivityRotation() != ROTATION_0;
         mActionsView.updateHiddenFlags(HIDDEN_NON_ZERO_ROTATION,
@@ -2369,13 +2379,12 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                 if (success) {
                     if (shouldRemoveTask) {
                         if (taskView.getTask() != null) {
-                            finishRecentsAnimation(true /* toRecents */, false /* shouldPip */,
-                                    () -> {
-                                UI_HELPER_EXECUTOR.getHandler().postDelayed(() ->
-                                        ActivityManagerWrapper.getInstance().removeTask(
-                                                taskView.getTask().key.id),
-                                        REMOVE_TASK_WAIT_FOR_APP_STOP_MS);
-                            });
+                            if (LIVE_TILE.get() && taskView.isRunningTask()) {
+                                finishRecentsAnimation(true /* toRecents */, false /* shouldPip */,
+                                        () -> removeTaskInternal(taskView));
+                            } else {
+                                removeTaskInternal(taskView);
+                            }
                             mActivity.getStatsLogManager().logger()
                                     .withItemInfo(taskView.getItemInfo())
                                     .log(LAUNCHER_TASK_DISMISS_SWIPE_UP);
@@ -2419,6 +2428,13 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             }
         });
         return anim;
+    }
+
+    private void removeTaskInternal(TaskView taskView) {
+        UI_HELPER_EXECUTOR.getHandler().postDelayed(() ->
+                        ActivityManagerWrapper.getInstance().removeTask(
+                                taskView.getTask().key.id),
+                REMOVE_TASK_WAIT_FOR_APP_STOP_MS);
     }
 
     /**
@@ -3858,5 +3874,20 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     @Nullable
     public RecentsAnimationController getRecentsAnimationController() {
         return mRecentsAnimationController;
+    }
+
+    /** Update the current activity locus id to show the enabled state of Overview */
+    public void updateLocusId() {
+        String locusId = "Overview";
+
+        if (mOverviewStateEnabled && mActivity.isStarted()) {
+            locusId += "|ENABLED";
+        } else {
+            locusId += "|DISABLED";
+        }
+
+        final LocusId id = new LocusId(locusId);
+        // Set locus context is a binder call, don't want it to happen during a transition
+        UI_HELPER_EXECUTOR.post(() -> mActivity.setLocusContext(id, Bundle.EMPTY));
     }
 }

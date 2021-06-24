@@ -26,8 +26,6 @@
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowShowWallpaper">true</item>
-        <item name="folderTextColor">?attr/workspaceTextColor</item>
-        <item name="isFolderDarkText">?attr/isWorkspaceDarkText</item>
         <item name="android:windowLayoutInDisplayCutoutMode">always</item>
         <item name="android:enforceStatusBarContrast">false</item>
         <item name="android:enforceNavigationBarContrast">false</item>

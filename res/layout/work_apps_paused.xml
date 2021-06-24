@@ -17,7 +17,7 @@
     android:layout_height="wrap_content"
     android:padding="@dimen/work_edu_card_margin"
     android:orientation="vertical"
-    android:gravity="center">
+    android:gravity="center_horizontal">
 
     <TextView
         style="@style/PrimaryHeadline"
@@ -25,8 +25,7 @@
         android:id="@+id/work_apps_paused_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginTop="40dp"
         android:text="@string/work_apps_paused_title"
         android:textAlignment="center"
         android:textSize="20sp" />
@@ -38,12 +37,13 @@
         android:textColor="?attr/workProfileOverlayTextColor"
         android:text="@string/work_apps_paused_body"
         android:textAlignment="center"
-        android:layout_marginBottom="8dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="24dp"
         android:textSize="16sp" />
 
     <Button
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/rounded_button_height"
         android:id="@+id/enable_work_apps"
         android:textColor="?attr/workProfileOverlayTextColor"
         android:text="@string/work_apps_enable_btn_text"
