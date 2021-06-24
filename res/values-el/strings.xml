@@ -46,8 +46,8 @@
     <string name="widget_button_text" msgid="2880537293434387943">"Γραφικά στοιχεία"</string>
     <string name="widgets_full_sheet_search_bar_hint" msgid="8484659090860596457">"Αναζήτηση"</string>
     <string name="widgets_full_sheet_cancel_button_description" msgid="5766167035728653605">"Διαγραφή κειμένου από το πλαίσιο αναζήτησης"</string>
-    <string name="no_widgets_available" msgid="9140948620298620513">"Δεν υπάρχουν διαθέσιμα γραφικά στοιχεία"</string>
-    <string name="no_search_results" msgid="6518732304311458580">"Κανένα αποτέλεσμα αναζήτησης"</string>
+    <string name="no_widgets_available" msgid="4337693382501046170">"Δεν υπάρχουν διαθέσιμα γραφικά στοιχεία και συντομεύσεις."</string>
+    <string name="no_search_results" msgid="3787956167293097509">"Δεν βρέθηκαν γραφικά στοιχεία ή συντομεύσεις."</string>
     <string name="widgets_full_sheet_personal_tab" msgid="2743540105607120182">"Προσωπικά"</string>
     <string name="widgets_full_sheet_work_tab" msgid="3767150027110633765">"Εργασίας"</string>
     <string name="widget_category_conversations" msgid="8894438636213590446">"Συζητήσεις"</string>
@@ -64,7 +64,8 @@
     <string name="notifications_header" msgid="1404149926117359025">"Ειδοποιήσεις"</string>
     <string name="long_press_shortcut_to_add" msgid="5405328730817637737">"Πατήστε παρατεταμένα για μετακίνηση συντόμευσης."</string>
     <string name="long_accessible_way_to_add_shortcut" msgid="2199537273817090740">"Πατήστε δύο φορές παρατεταμένα για μετακίνηση συντόμευσης ή χρήση προσαρμοσμένων ενεργειών."</string>
-    <string name="out_of_space" msgid="4691004494942118364">"Δεν υπάρχει χώρος σε αυτήν την αρχική οθόνη."</string>
+    <!-- no translation found for out_of_space (6692471482459245734) -->
+    <skip />
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"Δεν υπάρχει επιπλέον χώρος στην περιοχή Αγαπημένα"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"Λίστα εφαρμογών"</string>
     <string name="all_apps_button_personal_label" msgid="1315764287305224468">"Λίστα προσωπικών εφαρμογών"</string>
@@ -158,7 +159,7 @@
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"Προφίλ εργασίας"</string>
     <string name="work_profile_edu_work_apps" msgid="7895468576497746520">"Οι εφαρμογές εργασιών φέρουν σήμα και είναι ορατές στον διαχειριστή IT σας"</string>
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"Το κατάλαβα"</string>
-    <string name="work_apps_paused_title" msgid="3007471013401118920">"Οι εφαρμογές εργασιών είναι απενεργοποιημένες"</string>
+    <string name="work_apps_paused_title" msgid="3040901117349444598">"Οι εφαρμογές εργασίας τέθηκαν σε παύση."</string>
     <string name="work_apps_paused_body" msgid="261634750995824906">"Οι εφαρμογές εργασιών δεν έχουν τη δυνατότητα αποστολής ειδοποιήσεων, χρήσης της μπαταρίας ή πρόσβασης στην τοποθεσία σας"</string>
     <string name="work_apps_paused_content_description" msgid="5149623040804051095">"Οι εφαρμογές εργασιών είναι απενεργοποιημένες. Οι εφαρμογές εργασιών δεν έχουν τη δυνατότητα αποστολής ειδοποιήσεων, χρήσης της μπαταρίας ή πρόσβασης στην τοποθεσία σας"</string>
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"Οι εφαρμογές εργασιών φέρουν σήμα και είναι ορατές στον διαχειριστή IT σας"</string>

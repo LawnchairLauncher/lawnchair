@@ -46,8 +46,8 @@
     <string name="widget_button_text" msgid="2880537293434387943">"Wijeti"</string>
     <string name="widgets_full_sheet_search_bar_hint" msgid="8484659090860596457">"Tafuta"</string>
     <string name="widgets_full_sheet_cancel_button_description" msgid="5766167035728653605">"Futa maandishi kwenye kisanduku cha kutafutia"</string>
-    <string name="no_widgets_available" msgid="9140948620298620513">"Hamna wijeti zinazopatikana"</string>
-    <string name="no_search_results" msgid="6518732304311458580">"Hamna matokeo ya utafutaji"</string>
+    <string name="no_widgets_available" msgid="4337693382501046170">"Wijeti na njia za mkato hazipatikani"</string>
+    <string name="no_search_results" msgid="3787956167293097509">"Hakuna wijeti wala njia za mkato zilizopatikana"</string>
     <string name="widgets_full_sheet_personal_tab" msgid="2743540105607120182">"Binafsi"</string>
     <string name="widgets_full_sheet_work_tab" msgid="3767150027110633765">"Kazini"</string>
     <string name="widget_category_conversations" msgid="8894438636213590446">"Mazungumzo"</string>
@@ -64,7 +64,8 @@
     <string name="notifications_header" msgid="1404149926117359025">"Arifa"</string>
     <string name="long_press_shortcut_to_add" msgid="5405328730817637737">"Gusa na ushikilie ili usogeze njia ya mkato."</string>
     <string name="long_accessible_way_to_add_shortcut" msgid="2199537273817090740">"Gusa mara mbili na ushikilie ili usogeze njia ya mkato au utumie vitendo maalum."</string>
-    <string name="out_of_space" msgid="4691004494942118364">"Hakuna nafasi katika skrini hii ya Mwanzo."</string>
+    <!-- no translation found for out_of_space (6692471482459245734) -->
+    <skip />
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"Hakuna nafasi zaidi katika treya ya Vipendeleo"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"Orodha ya programu"</string>
     <string name="all_apps_button_personal_label" msgid="1315764287305224468">"Orodha ya programu za binafsi"</string>
@@ -82,10 +83,8 @@
     <string name="permlab_write_settings" msgid="3574213698004620587">"andika mipangilio ya skrini ya Mwanzo na njia za mkato"</string>
     <string name="permdesc_write_settings" msgid="5440712911516509985">"Huruhusu programu kubadilisha mipangilio na njia za mkato katika skrini ya Mwanzo."</string>
     <string name="msg_no_phone_permission" msgid="9208659281529857371">"<xliff:g id="APP_NAME">%1$s</xliff:g> hairuhusiwi kupiga simu"</string>
-    <!-- no translation found for gadget_error_text (740356548025791839) -->
-    <skip />
-    <!-- no translation found for gadget_setup_text (1745356155479272374) -->
-    <skip />
+    <string name="gadget_error_text" msgid="740356548025791839">"Imeshindwa kupakia wijeti"</string>
+    <string name="gadget_setup_text" msgid="1745356155479272374">"Gusa ili umalize kuweka mipangilio"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"Hii ni programu ya mfumo na haiwezi kuondolewa."</string>
     <string name="folder_hint_text" msgid="5174843001373488816">"Badilisha Jina"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"<xliff:g id="APP_NAME">%1$s</xliff:g> imezimwa"</string>
@@ -160,7 +159,7 @@
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"Wasifu wa kazini"</string>
     <string name="work_profile_edu_work_apps" msgid="7895468576497746520">"Programu za kazini zina beji na zinaonekana kwa msimamizi wako wa TEHAMA"</string>
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"Nimeelewa"</string>
-    <string name="work_apps_paused_title" msgid="3007471013401118920">"Programu za kazini zimezimwa"</string>
+    <string name="work_apps_paused_title" msgid="3040901117349444598">"Programu za kazini zimesimamishwa"</string>
     <string name="work_apps_paused_body" msgid="261634750995824906">"Programu zako za kazini haziwezi kukutumia arifa, kutumia betri yako au kufikia maelezo ya mahali ulipo"</string>
     <string name="work_apps_paused_content_description" msgid="5149623040804051095">"Programu za kazini zimezimwa. Programu zako za kazini haziwezi kukutumia arifa, kutumia betri yako au kufikia maelezo ya mahali ulipo"</string>
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"Programu za kazini zina beji na zinaonekana kwa msimamizi wako wa TEHAMA"</string>
