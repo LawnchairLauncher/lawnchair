@@ -206,8 +206,14 @@ public class Hotseat extends CellLayout implements Insettable {
         int freeSpace = dp.isTaskbarPresent
                 ? dp.workspacePadding.bottom
                 : dp.hotseatBarSizePx - dp.hotseatCellHeightPx - mQsbHeight;
-        return (int) (freeSpace * QSB_CENTER_FACTOR)
-                + (dp.isTaskbarPresent ? dp.taskbarSize : dp.getInsets().bottom);
+
+        if (dp.isScalableGrid && dp.qsbBottomMarginPx <= freeSpace) {
+            return dp.qsbBottomMarginPx;
+        } else {
+            return (int) (freeSpace * QSB_CENTER_FACTOR) + (dp.isTaskbarPresent
+                    ? dp.taskbarSize
+                    : dp.getInsets().bottom);
+        }
     }
 
     /**
