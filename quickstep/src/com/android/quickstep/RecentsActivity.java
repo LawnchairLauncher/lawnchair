@@ -268,6 +268,7 @@ public final class RecentsActivity extends StatefulActivity<RecentsState> {
         // onActivityStart callback.
         mFallbackRecentsView.setContentAlpha(1);
         super.onStart();
+        mFallbackRecentsView.updateLocusId();
     }
 
     @Override
@@ -276,6 +277,7 @@ public final class RecentsActivity extends StatefulActivity<RecentsState> {
 
         // Workaround for b/78520668, explicitly trim memory once UI is hidden
         onTrimMemory(TRIM_MEMORY_UI_HIDDEN);
+        mFallbackRecentsView.updateLocusId();
     }
 
     @Override
