@@ -23,6 +23,7 @@ import android.content.Context;
 import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.util.IntProperty;
+import android.util.Log;
 import android.util.Pair;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -34,6 +35,8 @@ import android.widget.ScrollView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
+
+import androidx.annotation.GuardedBy;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Insettable;
@@ -51,6 +54,7 @@ import java.util.List;
  * Bottom sheet for the "Widgets" system shortcut in the long-press popup.
  */
 public class WidgetsBottomSheet extends BaseWidgetSheet implements Insettable {
+    private static final String TAG = "WidgetsBottomSheet";
 
     private static final IntProperty<View> PADDING_BOTTOM =
             new IntProperty<View>("paddingBottom") {
@@ -128,6 +132,32 @@ public class WidgetsBottomSheet extends BaseWidgetSheet implements Insettable {
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        if (doMeasure(widthMeasureSpec, heightMeasureSpec)) {
+            boolean hasUpdated = doMeasure(widthMeasureSpec, heightMeasureSpec);
+            if (hasUpdated) {
+                Log.w(TAG, "WidgetsBottomSheet dimension has been updated after a 2nd"
+                        + " measurement.");
+            }
+        }
+    }
+
+    /**
+     * Measures the dimension of this view and its children.
+     *
+     * <p>This function takes account of the following during measurement:
+     * <ol>
+     *     <li>status bar and system navigation bar insets</li>
+     *     <li>
+     *         number of spans that can fit in a row. This affects the number of widgets that can
+     *         fit in a row.
+     *     </li>
+     * </ol>
+     *
+     * @return {@code true} if the width or height of this view or its children have changed after
+     *          the measurement. Otherwise, returns {@code false}.
+     */
+    @GuardedBy("MainThread")
+    private boolean doMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         DeviceProfile deviceProfile = mActivityContext.getDeviceProfile();
         int widthUsed;
         if (mInsets.bottom > 0) {
@@ -153,7 +183,9 @@ public class WidgetsBottomSheet extends BaseWidgetSheet implements Insettable {
             // Ensure the table layout is showing widgets in the right column after measure.
             mMaxHorizontalSpan = maxHorizontalSpan;
             onWidgetsBound();
+            return true;
         }
+        return false;
     }
 
     @Override
