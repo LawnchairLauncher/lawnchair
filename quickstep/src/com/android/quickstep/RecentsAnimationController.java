@@ -156,6 +156,14 @@ public class RecentsAnimationController {
     }
 
     /**
+     * @see IRecentsAnimationController#cleanupScreenshot()
+     */
+    @UiThread
+    public void cleanupScreenshot() {
+        UI_HELPER_EXECUTOR.execute(() -> mController.cleanupScreenshot());
+    }
+
+    /**
      * @see RecentsAnimationControllerCompat#detachNavigationBarFromApp
      */
     @UiThread
@@ -169,6 +177,14 @@ public class RecentsAnimationController {
     @UiThread
     public void animateNavigationBarToApp(long duration) {
         UI_HELPER_EXECUTOR.execute(() -> mController.animateNavigationBarToApp(duration));
+    }
+
+    /**
+     * @see IRecentsAnimationController#setWillFinishToHome(boolean)
+     */
+    @UiThread
+    public void setWillFinishToHome(boolean willFinishToHome) {
+        UI_HELPER_EXECUTOR.execute(() -> mController.setWillFinishToHome(willFinishToHome));
     }
 
     /**
