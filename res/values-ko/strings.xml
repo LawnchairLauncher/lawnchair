@@ -46,8 +46,8 @@
     <string name="widget_button_text" msgid="2880537293434387943">"위젯"</string>
     <string name="widgets_full_sheet_search_bar_hint" msgid="8484659090860596457">"검색"</string>
     <string name="widgets_full_sheet_cancel_button_description" msgid="5766167035728653605">"검색창에서 텍스트 지우기"</string>
-    <string name="no_widgets_available" msgid="9140948620298620513">"사용 가능한 위젯 없음"</string>
-    <string name="no_search_results" msgid="6518732304311458580">"검색결과 없음"</string>
+    <string name="no_widgets_available" msgid="4337693382501046170">"위젯이나 바로가기를 사용할 수 없습니다."</string>
+    <string name="no_search_results" msgid="3787956167293097509">"위젯이나 바로가기가 없습니다."</string>
     <string name="widgets_full_sheet_personal_tab" msgid="2743540105607120182">"개인 위젯"</string>
     <string name="widgets_full_sheet_work_tab" msgid="3767150027110633765">"직장 위젯"</string>
     <string name="widget_category_conversations" msgid="8894438636213590446">"대화"</string>
@@ -64,7 +64,8 @@
     <string name="notifications_header" msgid="1404149926117359025">"알림"</string>
     <string name="long_press_shortcut_to_add" msgid="5405328730817637737">"길게 터치하여 바로가기를 이동하세요."</string>
     <string name="long_accessible_way_to_add_shortcut" msgid="2199537273817090740">"두 번 탭한 다음 길게 터치하여 바로가기를 이동하거나 맞춤 작업을 사용하세요."</string>
-    <string name="out_of_space" msgid="4691004494942118364">"홈 화면에 더 이상 공간이 없습니다."</string>
+    <!-- no translation found for out_of_space (6692471482459245734) -->
+    <skip />
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"즐겨찾기 트레이에 더 이상 공간이 없습니다."</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"앱 목록"</string>
     <string name="all_apps_button_personal_label" msgid="1315764287305224468">"개인 앱 목록"</string>
@@ -82,10 +83,8 @@
     <string name="permlab_write_settings" msgid="3574213698004620587">"홈 설정 및 바로가기 쓰기"</string>
     <string name="permdesc_write_settings" msgid="5440712911516509985">"앱이 홈에 있는 설정 및 바로가기를 변경할 수 있도록 합니다."</string>
     <string name="msg_no_phone_permission" msgid="9208659281529857371">"<xliff:g id="APP_NAME">%1$s</xliff:g>에서 전화를 걸 수 없습니다."</string>
-    <!-- no translation found for gadget_error_text (740356548025791839) -->
-    <skip />
-    <!-- no translation found for gadget_setup_text (1745356155479272374) -->
-    <skip />
+    <string name="gadget_error_text" msgid="740356548025791839">"위젯을 로드할 수 없습니다."</string>
+    <string name="gadget_setup_text" msgid="1745356155479272374">"탭하여 설정을 완료하세요."</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"시스템 앱은 제거할 수 없습니다."</string>
     <string name="folder_hint_text" msgid="5174843001373488816">"이름 수정"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"<xliff:g id="APP_NAME">%1$s</xliff:g> 사용 안함"</string>
@@ -160,7 +159,7 @@
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"직장 프로필"</string>
     <string name="work_profile_edu_work_apps" msgid="7895468576497746520">"직장 앱에는 배지가 있으며, IT 관리자는 직장 앱을 확인할 수 있습니다"</string>
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"확인"</string>
-    <string name="work_apps_paused_title" msgid="3007471013401118920">"직장 앱이 꺼져 있음"</string>
+    <string name="work_apps_paused_title" msgid="3040901117349444598">"직장 앱이 일시중지됨"</string>
     <string name="work_apps_paused_body" msgid="261634750995824906">"직장 앱에서 알림을 보내거나 배터리를 사용하거나 위치 정보에 액세스할 수 없습니다."</string>
     <string name="work_apps_paused_content_description" msgid="5149623040804051095">"직장 앱이 꺼져 있습니다. 직장 앱에서 알림을 보내거나 배터리를 사용하거나 위치 정보에 액세스할 수 없습니다."</string>
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"직장 앱에는 배지가 있으며, IT 관리자는 직장 앱을 확인할 수 있습니다."</string>

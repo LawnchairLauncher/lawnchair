@@ -46,8 +46,8 @@
     <string name="widget_button_text" msgid="2880537293434387943">"Widgets"</string>
     <string name="widgets_full_sheet_search_bar_hint" msgid="8484659090860596457">"Pesquisa"</string>
     <string name="widgets_full_sheet_cancel_button_description" msgid="5766167035728653605">"Limpar texto da caixa de pesquisa"</string>
-    <string name="no_widgets_available" msgid="9140948620298620513">"Nenhum widget disponível"</string>
-    <string name="no_search_results" msgid="6518732304311458580">"Nenhum resultado de pesquisa"</string>
+    <string name="no_widgets_available" msgid="4337693382501046170">"Nenhum widget ou atalho disponível"</string>
+    <string name="no_search_results" msgid="3787956167293097509">"Nenhum widget ou atalho encontrado"</string>
     <string name="widgets_full_sheet_personal_tab" msgid="2743540105607120182">"Pessoais"</string>
     <string name="widgets_full_sheet_work_tab" msgid="3767150027110633765">"Trabalho"</string>
     <string name="widget_category_conversations" msgid="8894438636213590446">"Conversas"</string>
@@ -64,7 +64,8 @@
     <string name="notifications_header" msgid="1404149926117359025">"Notificações"</string>
     <string name="long_press_shortcut_to_add" msgid="5405328730817637737">"Toque e mantenha a tela pressionada para mover um atalho."</string>
     <string name="long_accessible_way_to_add_shortcut" msgid="2199537273817090740">"Toque duas vezes e mantenha a tela pressionada para mover um atalho ou usar ações personalizadas."</string>
-    <string name="out_of_space" msgid="4691004494942118364">"Não há mais espaço na tela inicial."</string>
+    <!-- no translation found for out_of_space (6692471482459245734) -->
+    <skip />
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"Sem espaço na bandeja de favoritos"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"Lista de apps"</string>
     <string name="all_apps_button_personal_label" msgid="1315764287305224468">"Lista de apps pessoais"</string>
@@ -158,7 +159,7 @@
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"Perfil de trabalho"</string>
     <string name="work_profile_edu_work_apps" msgid="7895468576497746520">"Os apps de trabalho têm um ícone e ficam visíveis para o administrador de TI"</string>
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"Ok"</string>
-    <string name="work_apps_paused_title" msgid="3007471013401118920">"Os apps de trabalho estão desativados"</string>
+    <string name="work_apps_paused_title" msgid="3040901117349444598">"Os apps de trabalho foram pausados"</string>
     <string name="work_apps_paused_body" msgid="261634750995824906">"Os apps de trabalho não podem enviar notificações, usar a bateria nem acessar o local"</string>
     <string name="work_apps_paused_content_description" msgid="5149623040804051095">"Os apps de trabalho estão desativados. Eles não podem enviar notificações, usar a bateria nem acessar o local"</string>
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"Os apps de trabalho têm um ícone e ficam visíveis para o administrador de TI"</string>
