@@ -132,6 +132,12 @@ public class OptionsPopupView extends ArrowPopup
 
     public static OptionsPopupView show(
             Launcher launcher, RectF targetRect, List<OptionItem> items, boolean shouldAddArrow) {
+        return show(launcher, targetRect, items, shouldAddArrow, 0 /* width */);
+    }
+
+    public static OptionsPopupView show(
+            Launcher launcher, RectF targetRect, List<OptionItem> items, boolean shouldAddArrow,
+            int width) {
         OptionsPopupView popup = (OptionsPopupView) launcher.getLayoutInflater()
                 .inflate(R.layout.longpress_options_menu, launcher.getDragLayer(), false);
         popup.mTargetRect = targetRect;
@@ -140,6 +146,9 @@ public class OptionsPopupView extends ArrowPopup
         for (OptionItem item : items) {
             DeepShortcutView view =
                     (DeepShortcutView) popup.inflateAndAdd(R.layout.system_shortcut, popup);
+            if (width > 0) {
+                view.getLayoutParams().width = width;
+            }
             view.getIconView().setBackgroundDrawable(item.icon);
             view.getBubbleText().setText(item.label);
             view.setOnClickListener(popup);

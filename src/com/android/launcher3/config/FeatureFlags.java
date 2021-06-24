@@ -78,6 +78,9 @@ public final class FeatureFlags {
     public static final BooleanFlag UNSTABLE_SPRINGS = getDebugFlag(
             "UNSTABLE_SPRINGS", false, "Enable unstable springs for quickstep animations");
 
+    public static final BooleanFlag ENABLE_LOCAL_COLOR_POPUPS = getDebugFlag(
+            "ENABLE_LOCAL_COLOR_POPUPS", false, "Enable local color extraction for popups.");
+
     public static final BooleanFlag KEYGUARD_ANIMATION = getDebugFlag(
             "KEYGUARD_ANIMATION", false, "Enable animation for keyguard going away on wallpaper");
 
@@ -248,7 +251,7 @@ public final class FeatureFlags {
             "Enables scrim over wallpaper for text protection.");
 
     public static final BooleanFlag WIDGETS_IN_LAUNCHER_PREVIEW = getDebugFlag(
-            "WIDGETS_IN_LAUNCHER_PREVIEW", false,
+            "WIDGETS_IN_LAUNCHER_PREVIEW", true,
             "Enables widgets in Launcher preview for the Wallpaper app.");
 
     public static void initialize(Context context) {

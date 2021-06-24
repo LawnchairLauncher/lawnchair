@@ -6,6 +6,9 @@ import android.util.Log;
 
 import androidx.test.uiautomator.UiDevice;
 
+import com.android.launcher3.tapl.LauncherInstrumentation;
+import com.android.launcher3.ui.AbstractLauncherUiTest;
+
 import org.junit.rules.TestWatcher;
 import org.junit.runner.Description;
 
@@ -16,9 +19,11 @@ import java.io.IOException;
 public class FailureWatcher extends TestWatcher {
     private static final String TAG = "FailureWatcher";
     final private UiDevice mDevice;
+    private final LauncherInstrumentation mLauncher;
 
-    public FailureWatcher(UiDevice device) {
+    public FailureWatcher(UiDevice device, LauncherInstrumentation launcher) {
         mDevice = device;
+        mLauncher = launcher;
     }
 
     private static void dumpViewHierarchy(UiDevice device) {
@@ -33,6 +38,12 @@ public class FailureWatcher extends TestWatcher {
         } catch (IOException e) {
             Log.e(TAG, "error dumping XML to logcat", e);
         }
+    }
+
+    @Override
+    protected void succeeded(Description description) {
+        super.succeeded(description);
+        AbstractLauncherUiTest.checkDetectedLeaks(mLauncher);
     }
 
     @Override
