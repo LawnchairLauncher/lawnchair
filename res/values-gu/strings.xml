@@ -46,8 +46,10 @@
     <string name="widget_button_text" msgid="2880537293434387943">"વિજેટ્સ"</string>
     <string name="widgets_full_sheet_search_bar_hint" msgid="8484659090860596457">"શોધ"</string>
     <string name="widgets_full_sheet_cancel_button_description" msgid="5766167035728653605">"શોધ બૉક્સમાંથી ટેક્સ્ટ સાફ કરો"</string>
-    <string name="no_widgets_available" msgid="9140948620298620513">"કોઈ વિજેટ ઉપલબ્ધ નથી"</string>
-    <string name="no_search_results" msgid="6518732304311458580">"કોઈ શોધ પરિણામો નથી"</string>
+    <!-- no translation found for no_widgets_available (4337693382501046170) -->
+    <skip />
+    <!-- no translation found for no_search_results (3787956167293097509) -->
+    <skip />
     <string name="widgets_full_sheet_personal_tab" msgid="2743540105607120182">"વ્યક્તિગત"</string>
     <string name="widgets_full_sheet_work_tab" msgid="3767150027110633765">"ઑફિસ"</string>
     <string name="widget_category_conversations" msgid="8894438636213590446">"વાતચીતો"</string>
@@ -64,7 +66,8 @@
     <string name="notifications_header" msgid="1404149926117359025">"નોટિફિકેશન"</string>
     <string name="long_press_shortcut_to_add" msgid="5405328730817637737">"શૉર્ટકટ ખસેડવા ટચ કરીને થોડી વાર દબાવી રાખો."</string>
     <string name="long_accessible_way_to_add_shortcut" msgid="2199537273817090740">"શૉર્ટકટ ખસેડવા બે વાર ટૅપ કરીને દબાવી રાખો અથવા કસ્ટમ ક્રિયાઓનો ઉપયોગ કરો."</string>
-    <string name="out_of_space" msgid="4691004494942118364">"આ હોમ સ્ક્રીન પર વધુ જગ્યા નથી."</string>
+    <!-- no translation found for out_of_space (6692471482459245734) -->
+    <skip />
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"મનપસંદ ટ્રે પર વધુ જગ્યા નથી"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"ઍપ્લિકેશનોની સૂચિ"</string>
     <string name="all_apps_button_personal_label" msgid="1315764287305224468">"વ્યક્તિગત ઍપની સૂચિ"</string>
@@ -75,17 +78,15 @@
     <string name="install_drop_target_label" msgid="2539096853673231757">"ઇન્સ્ટૉલ કરો"</string>
     <string name="dismiss_prediction_label" msgid="3357562989568808658">"ઍપ સૂચવશો નહીં"</string>
     <string name="pin_prediction" msgid="4196423321649756498">"પૂર્વાનુમાનને પિન કરો"</string>
-    <string name="permlab_install_shortcut" msgid="5632423390354674437">"શોર્ટકટ્સ ઇન્સ્ટોલ કરો"</string>
+    <string name="permlab_install_shortcut" msgid="5632423390354674437">"શૉર્ટકટ ઇન્સ્ટૉલ કરો"</string>
     <string name="permdesc_install_shortcut" msgid="923466509822011139">"એપ્લિકેશનને વપરાશકર્તા હસ્તક્ષેપ વગર શોર્ટકટ્સ ઉમેરવાની મંજૂરી આપે છે."</string>
     <string name="permlab_read_settings" msgid="1941457408239617576">"હોમ સેટિંગ્સ અને શોર્ટકટ્સ વાંચો"</string>
     <string name="permdesc_read_settings" msgid="5833423719057558387">"એપ્લિકેશનને હોમમાં સેટિંગ્સ અને શોર્ટકટ્સ વાંચવાની મંજૂરી આપે છે."</string>
     <string name="permlab_write_settings" msgid="3574213698004620587">"હોમ સેટિંગ્સ અને શોર્ટકટ્સ લખો"</string>
     <string name="permdesc_write_settings" msgid="5440712911516509985">"એપ્લિકેશનને હોમમાં સેટિંગ્સ અને શોર્ટકટ્સ બદલવાની મંજૂરી આપે છે."</string>
     <string name="msg_no_phone_permission" msgid="9208659281529857371">"<xliff:g id="APP_NAME">%1$s</xliff:g> ને ફોન કૉલ્સ કરવાની મંજૂરી નથી"</string>
-    <!-- no translation found for gadget_error_text (740356548025791839) -->
-    <skip />
-    <!-- no translation found for gadget_setup_text (1745356155479272374) -->
-    <skip />
+    <string name="gadget_error_text" msgid="740356548025791839">"વિજેટ લોડ કરી શકાતું નથી"</string>
+    <string name="gadget_setup_text" msgid="1745356155479272374">"સેટઅપ પૂર્ણ કરવા માટે ટૅપ કરો"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"આ એક સિસ્ટમ ઍપ્લિકેશન છે અને અનઇન્સ્ટોલ કરી શકાતી નથી."</string>
     <string name="folder_hint_text" msgid="5174843001373488816">"નામમાં ફેરફાર કરો"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"<xliff:g id="APP_NAME">%1$s</xliff:g> અક્ષમ કરી"</string>
@@ -158,10 +159,9 @@
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"મનગમતી ઍપ"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"ઑફિસની ઍપ"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"ઑફિસની પ્રોફાઇલ"</string>
-    <!-- no translation found for work_profile_edu_work_apps (7895468576497746520) -->
-    <skip />
+    <string name="work_profile_edu_work_apps" msgid="7895468576497746520">"ઑફિસની ઍપને બૅજ આપેલા હોય છે અને તમારા IT વ્યવસ્થાપક તેમને જોઈ શકે છે"</string>
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"સમજાઈ ગયું"</string>
-    <string name="work_apps_paused_title" msgid="3007471013401118920">"ઑફિસ માટેની ઍપ બંધ છે"</string>
+    <string name="work_apps_paused_title" msgid="3040901117349444598">"ઑફિસ માટેની ઍપ થોભાવવામાં આવેલ છે"</string>
     <string name="work_apps_paused_body" msgid="261634750995824906">"ઑફિસ માટેની તમારી ઍપ તમને નોટિફિકેશન મોકલી શકતી નથી, તમારી બૅટરી વાપરી શકતી નથી કે તમારું સ્થાન ઍક્સેસ કરી શકતી નથી"</string>
     <string name="work_apps_paused_content_description" msgid="5149623040804051095">"ઑફિસ માટેની ઍપ બંધ છે. ઑફિસ માટેની તમારી ઍપ તમને નોટિફિકેશન મોકલી શકતી નથી, તમારી બૅટરી વાપરી શકતી નથી કે તમારું સ્થાન ઍક્સેસ કરી શકતી નથી"</string>
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"ઑફિસની ઍપને બૅજ આપેલા હોય છે અને તમારા IT વ્યવસ્થાપક તેમને જોઈ શકે છે"</string>
