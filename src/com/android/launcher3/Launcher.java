@@ -1079,7 +1079,7 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
         if (ALL_APPS.equals(mPrevLauncherState) && !ALL_APPS.equals(state)
                 // Making sure mAllAppsSessionLogId is not null to avoid double logging.
                 && mAllAppsSessionLogId != null) {
-            getAppsView().getSearchUiManager().resetSearch();
+            getAppsView().reset(false);
             getStatsLogManager().logger()
                     .withContainerInfo(LauncherAtom.ContainerInfo.newBuilder()
                             .setWorkspace(
