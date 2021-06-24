@@ -42,6 +42,7 @@ import static com.android.quickstep.GestureState.GestureEndTarget.NEW_TASK;
 import static com.android.quickstep.GestureState.GestureEndTarget.RECENTS;
 import static com.android.quickstep.GestureState.STATE_END_TARGET_ANIMATION_FINISHED;
 import static com.android.quickstep.GestureState.STATE_END_TARGET_SET;
+import static com.android.quickstep.GestureState.STATE_RECENTS_ANIMATION_CANCELED;
 import static com.android.quickstep.GestureState.STATE_RECENTS_SCROLLING_FINISHED;
 import static com.android.quickstep.MultiStateCallback.DEBUG_STATES;
 import static com.android.quickstep.util.NavigationModeFeatureFlag.LIVE_TILE;
@@ -378,6 +379,17 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
             activity.runOnceOnStart(this::onLauncherStart);
         }
 
+        // Set up a entire animation lifecycle callback to notify the current recents view when
+        // the animation is canceled
+        mGestureState.runOnceAtState(STATE_RECENTS_ANIMATION_CANCELED, () -> {
+                ThumbnailData snapshot = mGestureState.getRecentsAnimationCanceledSnapshot();
+                if (snapshot != null) {
+                    RecentsModel.INSTANCE.get(mContext).onTaskSnapshotChanged(
+                            mRecentsView.getRunningTaskId(), snapshot);
+                    mRecentsView.onRecentsAnimationComplete();
+                }
+            });
+
         setupRecentsViewUi();
         linkRecentsViewScroll();
 
@@ -671,6 +683,9 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
             mRecentsAnimationController.setUseLauncherSystemBarFlags(swipeUpThresholdPassed
                     ||  (quickswitchThresholdPassed && centermostTaskFlags != 0));
             mRecentsAnimationController.setSplitScreenMinimized(swipeUpThresholdPassed);
+            // Provide a hint to WM the direction that we will be settling in case the animation
+            // needs to be canceled
+            mRecentsAnimationController.setWillFinishToHome(swipeUpThresholdPassed);
 
             if (swipeUpThresholdPassed) {
                 mActivity.getSystemUiController().updateUiState(UI_STATE_FULLSCREEN_TASK, 0);
@@ -1468,9 +1483,6 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
             final boolean refreshView = !LIVE_TILE.get() /* refreshView */;
             boolean finishTransitionPosted = false;
             if (mRecentsAnimationController != null) {
-                if (LIVE_TILE.get()) {
-                    mRecentsAnimationController.getController().setWillFinishToHome(true);
-                }
                 // Update the screenshot of the task
                 if (mTaskSnapshot == null) {
                     UI_HELPER_EXECUTOR.execute(() -> {
