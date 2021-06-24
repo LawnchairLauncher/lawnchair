@@ -573,4 +573,15 @@
             column="42"/>
     </issue>
 
+    <issue
+        id="NewApi"
+        message="Call requires API level 31 (current min is 26): `android.appwidget.AppWidgetHostView#setColorResources`"
+        errorLine1="                setColorResources(mWallpaperColorResources);"
+        errorLine2="                ~~~~~~~~~~~~~~~~~">
+        <location
+            file="packages/apps/Launcher3/src/com/android/launcher3/graphics/LauncherPreviewRenderer.java"
+            line="528"
+            column="17"/>
+    </issue>
+
 </issues>

@@ -26,6 +26,7 @@ message ExtendedContainers {
 
   oneof Container{
     DeviceSearchResultContainer device_search_result_container = 1;
+    CorrectedDeviceSearchResultContainer corrected_device_search_result_container = 2;
   }
 }
 
@@ -33,3 +34,9 @@ message ExtendedContainers {
 message DeviceSearchResultContainer{
   optional int32 query_length = 1;
 }
+
+// Represents on-device search result container with results from spell-corrected query.
+message CorrectedDeviceSearchResultContainer{
+  optional int32 query_length = 1;
+}
+

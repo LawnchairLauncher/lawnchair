@@ -75,4 +75,9 @@ public final class AppIcon extends Launchable {
     protected void expectActivityStartEvents() {
         mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN, LauncherInstrumentation.EVENT_START);
     }
+
+    @Override
+    protected String launchableType() {
+        return "app icon";
+    }
 }
