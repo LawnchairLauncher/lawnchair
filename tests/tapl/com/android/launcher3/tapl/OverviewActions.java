@@ -64,6 +64,7 @@ public class OverviewActions {
                      "want to click screenshot button and exit screenshot ui")) {
             UiObject2 screenshot = mLauncher.waitForObjectInContainer(mOverviewActions,
                     "action_screenshot");
+
             mLauncher.clickLauncherObject(screenshot);
             try (LauncherInstrumentation.Closable c1 = mLauncher.addContextLayer(
                     "clicked screenshot button")) {
