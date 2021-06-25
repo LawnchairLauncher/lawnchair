@@ -101,6 +101,6 @@
     <string name="done">Gotowe</string>
     <string name="loading">Ładuję…</string>
     <string name="system">System</string>
-    <string name="custom">Custom</string>
-    <string name="custom_color">Custom Color</string>
+    <string name="custom">Niestandardowy</string>
+    <string name="custom_color">Niestandardowy Kolor</string>
 </resources>
