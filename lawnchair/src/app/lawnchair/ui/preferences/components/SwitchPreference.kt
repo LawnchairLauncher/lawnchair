@@ -38,7 +38,10 @@ fun SwitchPreference(
     showDivider: Boolean = true
 ) {
     // TODO: Wrap overflowing text instead of using an ellipsis.
-    PreferenceTemplate(height = if (description != null) 72.dp else 52.dp, showDivider = showDivider) {
+    PreferenceTemplate(
+        height = if (description != null) 72.dp else 52.dp,
+        showDivider = showDivider
+    ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
