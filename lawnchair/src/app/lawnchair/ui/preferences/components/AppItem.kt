@@ -17,22 +17,14 @@
 package app.lawnchair.ui.preferences.components
 
 import android.graphics.Bitmap
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Check
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.unit.dp
 import app.lawnchair.util.App
@@ -87,24 +79,6 @@ fun AppItem(
             )
             Spacer(modifier = Modifier.weight(1f))
             content?.invoke(this)
-        }
-    }
-}
-
-@ExperimentalAnimationApi
-@Composable
-fun AnimatedCheck(visible: Boolean, tint: Color = MaterialTheme.colors.primary) {
-    Box(modifier = Modifier.size(24.dp, 24.dp)) {
-        AnimatedVisibility(
-            visible = visible,
-            enter = fadeIn(),
-            exit = fadeOut()
-        ) {
-            Icon(
-                imageVector = Icons.Rounded.Check,
-                contentDescription = null,
-                tint = tint
-            )
         }
     }
 }
