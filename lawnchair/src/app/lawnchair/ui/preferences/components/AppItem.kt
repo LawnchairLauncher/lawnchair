@@ -40,8 +40,8 @@ fun AppItem(
         label = app.info.label.toString(),
         icon = app.icon,
         onClick = { onClick(app) },
-        showDivider,
-        content
+        showDivider = showDivider,
+        content = content
     )
 }
 
@@ -65,8 +65,8 @@ fun AppItem(
                 .padding(start = 16.dp, end = 16.dp)
         ) {
             Image(
-                icon.asImageBitmap(),
-                null,
+                bitmap = icon.asImageBitmap(),
+                contentDescription = null,
                 modifier = Modifier
                     .width(32.dp)
                     .height(32.dp)
