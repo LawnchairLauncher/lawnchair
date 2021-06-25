@@ -83,7 +83,7 @@
     <string name="allset_description" msgid="6350320429953234580">"Telefondan istifadəyə başlamağa hazırsınız"</string>
     <string name="allset_navigation_settings" msgid="417773244979225071"><annotation id="link">"Əlçatımlıq üzrə naviqasiya ayarları"</annotation></string>
     <string name="action_share" msgid="2648470652637092375">"Paylaşın"</string>
-    <string name="action_screenshot" msgid="8171125848358142917">"Ekran şəkli"</string>
+    <string name="action_screenshot" msgid="8171125848358142917">"Skrinşot"</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"Bu əməliyyata tətbiq və ya təşkilatınız tərəfindən icazə verilmir"</string>
     <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"Naviqasiya dərsliyi ötürülsün?"</string>
     <string name="skip_tutorial_dialog_subtitle" msgid="544063326241955662">"Bunu sonra <xliff:g id="NAME">%1$s</xliff:g> tətbiqində tapa bilərsiniz"</string>

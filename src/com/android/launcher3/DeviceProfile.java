@@ -162,6 +162,9 @@ public class DeviceProfile {
     public final int hotseatBarSidePaddingEndPx;
     public final int hotseatQsbHeight;
 
+    public final float qsbBottomMarginOriginalPx;
+    public int qsbBottomMarginPx;
+
     // All apps
     public int allAppsOpenVerticalTranslate;
     public int allAppsCellHeightPx;
@@ -336,6 +339,10 @@ public class DeviceProfile {
                 res.getDimensionPixelSize(R.dimen.dynamic_grid_hotseat_extra_vertical_size);
         updateHotseatIconSize(pxFromDp(inv.iconSize, mMetrics, 1f));
 
+        qsbBottomMarginOriginalPx = isScalableGrid
+                ? res.getDimensionPixelSize(R.dimen.scalable_grid_qsb_bottom_margin)
+                : 0;
+
         overviewTaskMarginPx = res.getDimensionPixelSize(R.dimen.overview_task_margin);
         overviewTaskIconSizePx =
                 isTablet && FeatureFlags.ENABLE_OVERVIEW_GRID.get() ? res.getDimensionPixelSize(
@@ -364,6 +371,8 @@ public class DeviceProfile {
             extraHotseatBottomPadding = Math.round(paddingHotseatBottom * iconScale);
 
             hotseatBarSizePx += extraHotseatBottomPadding;
+
+            qsbBottomMarginPx = Math.round(qsbBottomMarginOriginalPx * iconScale);
         } else if (!isVerticalBarLayout() && isPhone && isTallDevice) {
             // We increase the hotseat size when there is extra space.
             // ie. For a display with a large aspect ratio, we can keep the icons on the workspace
@@ -810,8 +819,13 @@ public class DeviceProfile {
         int freeSpace = isTaskbarPresent
                 ? workspacePadding.bottom
                 : hotseatBarSizePx - hotseatCellHeightPx - hotseatQsbHeight;
-        return (int) (freeSpace * QSB_CENTER_FACTOR)
+
+        if (isScalableGrid && qsbBottomMarginPx <= freeSpace) {
+            return qsbBottomMarginPx;
+        } else {
+            return (int) (freeSpace * QSB_CENTER_FACTOR)
                 + (isTaskbarPresent ? taskbarSize : getInsets().bottom);
+        }
     }
 
     /**

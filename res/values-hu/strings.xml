@@ -46,8 +46,8 @@
     <string name="widget_button_text" msgid="2880537293434387943">"Modulok"</string>
     <string name="widgets_full_sheet_search_bar_hint" msgid="8484659090860596457">"Keresés"</string>
     <string name="widgets_full_sheet_cancel_button_description" msgid="5766167035728653605">"Keresőmezőben lévő szöveg törlése"</string>
-    <string name="no_widgets_available" msgid="9140948620298620513">"Nincs rendelkezésre álló modul"</string>
-    <string name="no_search_results" msgid="6518732304311458580">"Nincsenek keresési találatok"</string>
+    <string name="no_widgets_available" msgid="4337693382501046170">"A modulok és parancsikonok nem állnak rendelkezésre"</string>
+    <string name="no_search_results" msgid="3787956167293097509">"Nem található modul vagy parancsikon"</string>
     <string name="widgets_full_sheet_personal_tab" msgid="2743540105607120182">"Személyes"</string>
     <string name="widgets_full_sheet_work_tab" msgid="3767150027110633765">"Munka"</string>
     <string name="widget_category_conversations" msgid="8894438636213590446">"Beszélgetések"</string>
@@ -64,7 +64,8 @@
     <string name="notifications_header" msgid="1404149926117359025">"Értesítések"</string>
     <string name="long_press_shortcut_to_add" msgid="5405328730817637737">"Tartsa lenyomva a parancsikont az áthelyezéshez."</string>
     <string name="long_accessible_way_to_add_shortcut" msgid="2199537273817090740">"Parancsikon áthelyezéséhez koppintson duplán, és tartsa nyomva az ujját, vagy használjon egyéni műveleteket."</string>
-    <string name="out_of_space" msgid="4691004494942118364">"Nincs több hely ezen a kezdőképernyőn."</string>
+    <!-- no translation found for out_of_space (6692471482459245734) -->
+    <skip />
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"Nincs több hely a Kedvencek tálcán"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"Alkalmazások listája"</string>
     <string name="all_apps_button_personal_label" msgid="1315764287305224468">"Személyes alkalmazások listája"</string>
@@ -82,10 +83,8 @@
     <string name="permlab_write_settings" msgid="3574213698004620587">"Főoldal beállításainak és parancsikonjainak írása"</string>
     <string name="permdesc_write_settings" msgid="5440712911516509985">"Lehetővé teszi az alkalmazás számára, hogy módosítsa a kezdőképernyő beállításait és parancsikonjait."</string>
     <string name="msg_no_phone_permission" msgid="9208659281529857371">"A(z) <xliff:g id="APP_NAME">%1$s</xliff:g> nem kezdeményezhet telefonhívásokat"</string>
-    <!-- no translation found for gadget_error_text (740356548025791839) -->
-    <skip />
-    <!-- no translation found for gadget_setup_text (1745356155479272374) -->
-    <skip />
+    <string name="gadget_error_text" msgid="740356548025791839">"Nem tölthető le a modul"</string>
+    <string name="gadget_setup_text" msgid="1745356155479272374">"Koppintson a beállítás befejezéséhez"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"Ez egy rendszeralkalmazás, és nem lehet eltávolítani."</string>
     <string name="folder_hint_text" msgid="5174843001373488816">"Név módosítása"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"A(z) <xliff:g id="APP_NAME">%1$s</xliff:g> letiltva"</string>
@@ -160,7 +159,7 @@
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"Munkaprofil"</string>
     <string name="work_profile_edu_work_apps" msgid="7895468576497746520">"A munkahelyi alkalmazások jelvénnyel vannak megjelölve, és láthatók a rendszergazda számára"</string>
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"Értem"</string>
-    <string name="work_apps_paused_title" msgid="3007471013401118920">"A munkahelyi alkalmazások ki vannak kapcsolva"</string>
+    <string name="work_apps_paused_title" msgid="3040901117349444598">"A munkahelyi alkalmazások szüneteltetve vannak"</string>
     <string name="work_apps_paused_body" msgid="261634750995824906">"A munkahelyi alkalmazások nem küldhetnek értesítéseket, nem használhatják az akkumulátort, és nem férhetnek hozzá az Ön tartózkodási helyéhez."</string>
     <string name="work_apps_paused_content_description" msgid="5149623040804051095">"A munkahelyi alkalmazások ki vannak kapcsolva, nem küldhetnek értesítéseket, nem használhatják az akkumulátort, és nem férhetnek hozzá az Ön tartózkodási helyéhez"</string>
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"A munkahelyi alkalmazások jelvénnyel vannak megjelölve, és láthatók a rendszergazda számára"</string>
