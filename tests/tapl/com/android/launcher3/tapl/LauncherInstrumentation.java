@@ -97,8 +97,8 @@ public final class LauncherInstrumentation {
     private static final int ZERO_BUTTON_STEPS_FROM_BACKGROUND_TO_HOME = 20;
     private static final int GESTURE_STEP_MS = 16;
 
-    private static final Pattern EVENT_TOUCH_DOWN = getTouchEventPattern("ACTION_DOWN");
-    private static final Pattern EVENT_TOUCH_UP = getTouchEventPattern("ACTION_UP");
+    static final Pattern EVENT_TOUCH_DOWN = getTouchEventPattern("ACTION_DOWN");
+    static final Pattern EVENT_TOUCH_UP = getTouchEventPattern("ACTION_UP");
     private static final Pattern EVENT_TOUCH_CANCEL = getTouchEventPattern("ACTION_CANCEL");
     private static final Pattern EVENT_PILFER_POINTERS = Pattern.compile("pilferPointers");
     static final Pattern EVENT_START = Pattern.compile("start:");
@@ -749,6 +749,10 @@ public final class LauncherInstrumentation {
                     if (!isLauncher3() && getNavigationModel() == NavigationModel.TWO_BUTTON) {
                         expectEvent(TestProtocol.SEQUENCE_TIS, EVENT_TOUCH_DOWN_TIS);
                         expectEvent(TestProtocol.SEQUENCE_TIS, EVENT_TOUCH_UP_TIS);
+                    }
+                    if (isTablet()) {
+                        expectEvent(TestProtocol.SEQUENCE_MAIN, EVENT_TOUCH_DOWN);
+                        expectEvent(TestProtocol.SEQUENCE_MAIN, EVENT_TOUCH_UP);
                     }
 
                     runToState(
