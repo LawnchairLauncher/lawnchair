@@ -19,6 +19,7 @@ package app.lawnchair.ui.preferences.components
 import androidx.compose.animation.Animatable
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -61,6 +62,8 @@ fun TopBar() = pageMeta.consume { state ->
     val navController = LocalNavController.current
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
+    val backArrowVisible = currentRoute != Routes.PREFERENCES && currentRoute != null
+    val labelPaddingStart by animateDpAsState(targetValue = if (backArrowVisible) 8.dp else 16.dp)
 
     TopBarSurface(floating = state.topBarFloating) {
         Row(
@@ -69,7 +72,7 @@ fun TopBar() = pageMeta.consume { state ->
                 .fillMaxWidth()
                 .height(topBarSize)
         ) {
-            AnimatedVisibility(visible = currentRoute != Routes.PREFERENCES && currentRoute != null) {
+            AnimatedVisibility(visible = backArrowVisible) {
                 Box(
                     contentAlignment = Alignment.Center,
                     modifier = Modifier
@@ -89,7 +92,7 @@ fun TopBar() = pageMeta.consume { state ->
             Text(
                 text = state.title,
                 style = MaterialTheme.typography.h6,
-                modifier = Modifier.padding(start = 16.dp, end = 24.dp),
+                modifier = Modifier.padding(start = labelPaddingStart, end = 24.dp),
                 color = MaterialTheme.colors.onSurface,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
