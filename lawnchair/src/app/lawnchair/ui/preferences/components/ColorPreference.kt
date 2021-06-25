@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import app.lawnchair.preferences.PreferenceAdapter
 import app.lawnchair.ui.theme.getSystemAccent
 import app.lawnchair.ui.theme.lightenColor
+import app.lawnchair.util.backHandler
 import com.android.launcher3.R
 import com.google.accompanist.insets.navigationBarsPadding
 import kotlinx.coroutines.launch
@@ -84,6 +85,9 @@ fun ColorPreference(
                 onBackArrowClick = { selectingCustomColor = false }
             )
             if (selectingCustomColor) {
+                backHandler {
+                    selectingCustomColor = false
+                }
                 ColorSwatchGrid(
                     presets = presets,
                     onColorSwatchClicked = { customColor = it },
