@@ -25,10 +25,10 @@ fun Context.getAccentColor(darkTheme: Boolean = Themes.getAttrBoolean(this, R.at
 @ColorInt
 fun lightenColor(@ColorInt color: Int): Int {
     var newColor = color
+    val outHsl = floatArrayOf(0f, 0f, 0f)
+    ColorUtils.colorToHSL(color, outHsl)
 
     while (ColorUtils.calculateContrast(newColor, 0xFF000000.toInt()) < 6.5) {
-        val outHsl = floatArrayOf(0f, 0f, 0f)
-        ColorUtils.colorToHSL(newColor, outHsl)
         outHsl[2] += 0.05F
         newColor = ColorUtils.HSLToColor(outHsl)
     }
