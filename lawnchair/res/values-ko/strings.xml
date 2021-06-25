@@ -97,4 +97,7 @@
     <string name="accent_color">강조 색상</string>
     <string name="done">완료</string>
     <string name="loading">Loading…</string>
+    <string name="system">System</string>
+    <string name="custom">Custom</string>
+    <string name="custom_color">Custom Color</string>
 </resources>
