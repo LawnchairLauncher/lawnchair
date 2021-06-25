@@ -16,6 +16,7 @@
 
 package app.lawnchair.ui.theme
 
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material.Colors
 import androidx.compose.material.MaterialTheme
@@ -51,7 +52,13 @@ fun getColors(darkTheme: Boolean): Colors {
     val context = LocalContext.current
     val prefs = PreferenceManager.getInstance(context)
     val customColor = prefs.accentColor.observeAsState().value
-    val accentColor = remember(darkTheme, customColor) { Color(context.getAccentColor(darkTheme)) }
+    val useSystemAccent = prefs.useSystemAccent.observeAsState().value
+    val accentColor by animateColorAsState(targetValue = remember(darkTheme, customColor, useSystemAccent) {
+        Color(
+            context.getAccentColor(darkTheme)
+        )
+    })
+
     return when {
         Utilities.ATLEAST_S -> {
             if (darkTheme) {

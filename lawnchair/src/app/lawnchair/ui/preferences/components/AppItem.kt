@@ -94,15 +94,17 @@ fun AppItem(
 @ExperimentalAnimationApi
 @Composable
 fun AnimatedCheck(visible: Boolean, tint: Color = MaterialTheme.colors.primary) {
-    AnimatedVisibility(
-        visible = visible,
-        enter = fadeIn(),
-        exit = fadeOut()
-    ) {
-        Icon(
-            imageVector = Icons.Rounded.Check,
-            contentDescription = null,
-            tint = tint
-        )
+    Box(modifier = Modifier.size(24.dp, 24.dp)) {
+        AnimatedVisibility(
+            visible = visible,
+            enter = fadeIn(),
+            exit = fadeOut()
+        ) {
+            Icon(
+                imageVector = Icons.Rounded.Check,
+                contentDescription = null,
+                tint = tint
+            )
+        }
     }
 }
