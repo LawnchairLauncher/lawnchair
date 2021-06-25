@@ -46,8 +46,8 @@
     <string name="widget_button_text" msgid="2880537293434387943">"Græjur"</string>
     <string name="widgets_full_sheet_search_bar_hint" msgid="8484659090860596457">"Leit"</string>
     <string name="widgets_full_sheet_cancel_button_description" msgid="5766167035728653605">"Hreinsa texta úr leitarreit"</string>
-    <string name="no_widgets_available" msgid="9140948620298620513">"Engar græjur í boði"</string>
-    <string name="no_search_results" msgid="6518732304311458580">"Engar leitarniðurstöður"</string>
+    <string name="no_widgets_available" msgid="4337693382501046170">"Græjur og flýtileiðir eru ekki í boði"</string>
+    <string name="no_search_results" msgid="3787956167293097509">"Engar græjur eða flýtileiðir fundust"</string>
     <string name="widgets_full_sheet_personal_tab" msgid="2743540105607120182">"Persónulegt"</string>
     <string name="widgets_full_sheet_work_tab" msgid="3767150027110633765">"Vinna"</string>
     <string name="widget_category_conversations" msgid="8894438636213590446">"Samtöl"</string>
@@ -64,7 +64,8 @@
     <string name="notifications_header" msgid="1404149926117359025">"Tilkynningar"</string>
     <string name="long_press_shortcut_to_add" msgid="5405328730817637737">"Haltu fingri á flýtileið til að færa hana."</string>
     <string name="long_accessible_way_to_add_shortcut" msgid="2199537273817090740">"Ýttu tvisvar og haltu fingri á flýtileið til að færa hana eða notaðu sérsniðnar aðgerðir."</string>
-    <string name="out_of_space" msgid="4691004494942118364">"Ekki meira pláss á þessum heimaskjá."</string>
+    <!-- no translation found for out_of_space (6692471482459245734) -->
+    <skip />
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"Ekki meira pláss í bakka fyrir uppáhald"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"Forritalisti"</string>
     <string name="all_apps_button_personal_label" msgid="1315764287305224468">"Listi yfir eigin forrit"</string>
@@ -82,10 +83,8 @@
     <string name="permlab_write_settings" msgid="3574213698004620587">"skrifa stillingar og flýtileiðir heimaskjás"</string>
     <string name="permdesc_write_settings" msgid="5440712911516509985">"Leyfir forriti að breyta stillingum og flýtileiðum heimaskjás."</string>
     <string name="msg_no_phone_permission" msgid="9208659281529857371">"<xliff:g id="APP_NAME">%1$s</xliff:g> hefur ekki leyfi til að hringja símtöl"</string>
-    <!-- no translation found for gadget_error_text (740356548025791839) -->
-    <skip />
-    <!-- no translation found for gadget_setup_text (1745356155479272374) -->
-    <skip />
+    <string name="gadget_error_text" msgid="740356548025791839">"Ekki hægt að hlaða græju"</string>
+    <string name="gadget_setup_text" msgid="1745356155479272374">"Ýttu til að ljúka við uppsetningu"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"Þetta er kerfisforrit sem ekki er hægt að fjarlægja."</string>
     <string name="folder_hint_text" msgid="5174843001373488816">"Breyta nafni"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"Óvirkt <xliff:g id="APP_NAME">%1$s</xliff:g>"</string>
@@ -160,7 +159,7 @@
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"Vinnusnið"</string>
     <string name="work_profile_edu_work_apps" msgid="7895468576497746520">"Vinnuforrit eru merkt og kerfisstjórinn getur séð þau"</string>
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"Ég skil"</string>
-    <string name="work_apps_paused_title" msgid="3007471013401118920">"Slökkt er á vinnuforritum"</string>
+    <string name="work_apps_paused_title" msgid="3040901117349444598">"Hlé gert á vinnuforritum"</string>
     <string name="work_apps_paused_body" msgid="261634750995824906">"Vinnuforrit geta ekki sent þér tilkynningar, notað rafhlöðuorku eða fengið aðgang að staðsetningu þinni"</string>
     <string name="work_apps_paused_content_description" msgid="5149623040804051095">"Slökkt er á vinnuforritum. Vinnuforrit geta ekki sent þér tilkynningar, notað rafhlöðuorku eða fengið aðgang að staðsetningu þinni"</string>
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"Vinnuforrit eru merkt og kerfisstjórinn getur séð þau"</string>

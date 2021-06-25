@@ -46,9 +46,9 @@
     <string name="widget_button_text" msgid="2880537293434387943">"Moduler"</string>
     <string name="widgets_full_sheet_search_bar_hint" msgid="8484659090860596457">"Søk"</string>
     <string name="widgets_full_sheet_cancel_button_description" msgid="5766167035728653605">"Tøm tekst fra søkefeltet"</string>
-    <string name="no_widgets_available" msgid="9140948620298620513">"Ingen moduler er tilgjengelige"</string>
-    <string name="no_search_results" msgid="6518732304311458580">"Ingen søkeresultater"</string>
-    <string name="widgets_full_sheet_personal_tab" msgid="2743540105607120182">"Personlig"</string>
+    <string name="no_widgets_available" msgid="4337693382501046170">"Moduler og snarveier er ikke tilgjengelige"</string>
+    <string name="no_search_results" msgid="3787956167293097509">"Fant ingen moduler eller snarveier"</string>
+    <string name="widgets_full_sheet_personal_tab" msgid="2743540105607120182">"Personlige"</string>
     <string name="widgets_full_sheet_work_tab" msgid="3767150027110633765">"Jobb"</string>
     <string name="widget_category_conversations" msgid="8894438636213590446">"Samtaler"</string>
     <string name="widget_education_header" msgid="4874760613775913787">"Lett tilgjengelig nyttig informasjon"</string>
@@ -64,7 +64,8 @@
     <string name="notifications_header" msgid="1404149926117359025">"Varsler"</string>
     <string name="long_press_shortcut_to_add" msgid="5405328730817637737">"Trykk og hold for å flytte en snarvei."</string>
     <string name="long_accessible_way_to_add_shortcut" msgid="2199537273817090740">"Dobbelttrykk og hold for å flytte en snarvei eller bruke tilpassede handlinger."</string>
-    <string name="out_of_space" msgid="4691004494942118364">"Denne startsiden er full."</string>
+    <!-- no translation found for out_of_space (6692471482459245734) -->
+    <skip />
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"Favoritter-skuffen er full"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"App-liste"</string>
     <string name="all_apps_button_personal_label" msgid="1315764287305224468">"Personlige apper-liste"</string>
@@ -82,10 +83,8 @@
     <string name="permlab_write_settings" msgid="3574213698004620587">"angi startsideinnstillinger og -snarveier"</string>
     <string name="permdesc_write_settings" msgid="5440712911516509985">"Lar appen endre innstillingene og snarveiene på startsiden."</string>
     <string name="msg_no_phone_permission" msgid="9208659281529857371">"<xliff:g id="APP_NAME">%1$s</xliff:g> har ikke tillatelse til å ringe"</string>
-    <!-- no translation found for gadget_error_text (740356548025791839) -->
-    <skip />
-    <!-- no translation found for gadget_setup_text (1745356155479272374) -->
-    <skip />
+    <string name="gadget_error_text" msgid="740356548025791839">"Kan ikke laste inn modulen"</string>
+    <string name="gadget_setup_text" msgid="1745356155479272374">"Trykk for å fullføre konfigureringen"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"Dette er en systemapp som ikke kan avinstalleres."</string>
     <string name="folder_hint_text" msgid="5174843001373488816">"Rediger navn"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"Slo av <xliff:g id="APP_NAME">%1$s</xliff:g>"</string>
@@ -160,7 +159,7 @@
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"Jobbprofil"</string>
     <string name="work_profile_edu_work_apps" msgid="7895468576497746520">"Jobbapper er merket og synlige for IT-administratoren din"</string>
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"Greit"</string>
-    <string name="work_apps_paused_title" msgid="3007471013401118920">"Jobbapper er av"</string>
+    <string name="work_apps_paused_title" msgid="3040901117349444598">"Jobbapper er satt på pause"</string>
     <string name="work_apps_paused_body" msgid="261634750995824906">"Jobbapper kan ikke sende deg varsler, bruke batteriet eller få tilgang til posisjonen din"</string>
     <string name="work_apps_paused_content_description" msgid="5149623040804051095">"Jobbapper er av. De kan ikke sende deg varsler, bruke batteriet eller få tilgang til posisjonen din"</string>
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"Jobbapper er merket og synlige for IT-administratoren din"</string>
