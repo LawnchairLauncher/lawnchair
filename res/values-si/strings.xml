@@ -46,8 +46,8 @@
     <string name="widget_button_text" msgid="2880537293434387943">"විජට්"</string>
     <string name="widgets_full_sheet_search_bar_hint" msgid="8484659090860596457">"සෙවීම"</string>
     <string name="widgets_full_sheet_cancel_button_description" msgid="5766167035728653605">"සෙවීම් කොටුවෙන් පෙළ හිස් කරන්න"</string>
-    <string name="no_widgets_available" msgid="9140948620298620513">"ලබා ගත හැකි විජට් නැත"</string>
-    <string name="no_search_results" msgid="6518732304311458580">"සෙවීම් ප්‍රතිඵල නැත"</string>
+    <string name="no_widgets_available" msgid="4337693382501046170">"විජට් සහ කෙටි මං ලබා ගත නොහැකිය"</string>
+    <string name="no_search_results" msgid="3787956167293097509">"විජට් හෝ කෙටි මං හමු නොවීය"</string>
     <string name="widgets_full_sheet_personal_tab" msgid="2743540105607120182">"පුද්ගලික"</string>
     <string name="widgets_full_sheet_work_tab" msgid="3767150027110633765">"කාර්යාලය"</string>
     <string name="widget_category_conversations" msgid="8894438636213590446">"සංවාද"</string>
@@ -64,7 +64,8 @@
     <string name="notifications_header" msgid="1404149926117359025">"දැනුම්දීම්"</string>
     <string name="long_press_shortcut_to_add" msgid="5405328730817637737">"කෙටි මගක් ගෙන යාමට ස්පර්ශ කර අල්ලාගෙන සිටින්න."</string>
     <string name="long_accessible_way_to_add_shortcut" msgid="2199537273817090740">"කෙටි මගක් ගෙන යාමට හෝ අභිරුචි ක්‍රියා භාවිත කිරීමට දෙවරක් තට්ටු කර අල්ලා ගෙන සිටින්න."</string>
-    <string name="out_of_space" msgid="4691004494942118364">"මෙම මුල් පිටු තිරය මත තවත් අවසර නැත."</string>
+    <!-- no translation found for out_of_space (6692471482459245734) -->
+    <skip />
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"ප්‍රියතම දෑ ඇති තැටියේ තවත් ඉඩ නොමැත"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"යෙදුම් ලැයිස්තුව"</string>
     <string name="all_apps_button_personal_label" msgid="1315764287305224468">"පෞද්ගලික යෙදුම් ලැයිස්තුව"</string>
@@ -82,10 +83,8 @@
     <string name="permlab_write_settings" msgid="3574213698004620587">"මුල් පිටු සැකසීම් සහ කෙටිමං ලියන්න"</string>
     <string name="permdesc_write_settings" msgid="5440712911516509985">"මුල් පිටුවේ සැකසීම් සහ කෙටිමං ඉවත් කිරීමට යෙදුමට අවසර දෙයි."</string>
     <string name="msg_no_phone_permission" msgid="9208659281529857371">"<xliff:g id="APP_NAME">%1$s</xliff:g> හට දුරකථන ඇමතුම් සිදු කිරීමට ඉඩ නොදේ"</string>
-    <!-- no translation found for gadget_error_text (740356548025791839) -->
-    <skip />
-    <!-- no translation found for gadget_setup_text (1745356155479272374) -->
-    <skip />
+    <string name="gadget_error_text" msgid="740356548025791839">"විජට් පූරණය කළ නොහැකිය"</string>
+    <string name="gadget_setup_text" msgid="1745356155479272374">"පිහිටුවීම අවසන් කිරීමට තට්ටු කරන්න"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"මෙය පද්ධති යෙදුමක් වන අතර අස්ථාපනය කළ නොහැක."</string>
     <string name="folder_hint_text" msgid="5174843001373488816">"නම සංස්කරණය කරන්න"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"<xliff:g id="APP_NAME">%1$s</xliff:g> අබල කෙරිණි"</string>
@@ -160,7 +159,7 @@
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"කාර්යාල පැතිකඩ"</string>
     <string name="work_profile_edu_work_apps" msgid="7895468576497746520">"කාර්යාල යෙදුම්වලට ලාංඡන යොදා ඇති අතර ඔබගේ IT පරිපාලකට දෘශ්‍යමාන වේ"</string>
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"තේරුණා"</string>
-    <string name="work_apps_paused_title" msgid="3007471013401118920">"කාර්යාල යෙදුම් ක්‍රියාවිරහිතයි"</string>
+    <string name="work_apps_paused_title" msgid="3040901117349444598">"කාර්යාල යෙදුම් විරාම කර ඇත"</string>
     <string name="work_apps_paused_body" msgid="261634750995824906">"ඔබගේ කාර්යාල යෙදුම්වලට ඔබට දැනුම්දීම් එවීමට, ඔබගේ බැටරිය භාවිත කිරීමට හෝ ඔබගේ ස්ථානයට ප්‍රවේශ වීමට නොහැකිය"</string>
     <string name="work_apps_paused_content_description" msgid="5149623040804051095">"කාර්යාල යෙදුම් ක්‍රියාවිරහිතයි. ඔබගේ කාර්යාල යෙදුම්වලට ඔබට දැනුම්දීම් එවීමට, ඔබගේ බැටරිය භාවිත කිරීමට හෝ ඔබගේ ස්ථානයට ප්‍රවේශ වීමට නොහැකිය"</string>
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"කාර්යාල යෙදුම්වලට ලාංඡන යොදා ඇති අතර ඔබගේ IT පරිපාලකට දෘශ්‍යමාන වේ"</string>

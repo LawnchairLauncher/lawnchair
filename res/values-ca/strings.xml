@@ -46,8 +46,8 @@
     <string name="widget_button_text" msgid="2880537293434387943">"Widgets"</string>
     <string name="widgets_full_sheet_search_bar_hint" msgid="8484659090860596457">"Cerca"</string>
     <string name="widgets_full_sheet_cancel_button_description" msgid="5766167035728653605">"Esborra el text del quadre de cerca"</string>
-    <string name="no_widgets_available" msgid="9140948620298620513">"No hi ha widgets disponibles"</string>
-    <string name="no_search_results" msgid="6518732304311458580">"No hi ha cap resultat de la cerca"</string>
+    <string name="no_widgets_available" msgid="4337693382501046170">"No hi ha widgets ni dreceres disponibles"</string>
+    <string name="no_search_results" msgid="3787956167293097509">"No s\'ha trobat cap widget ni drecera"</string>
     <string name="widgets_full_sheet_personal_tab" msgid="2743540105607120182">"Personal"</string>
     <string name="widgets_full_sheet_work_tab" msgid="3767150027110633765">"Treball"</string>
     <string name="widget_category_conversations" msgid="8894438636213590446">"Converses"</string>
@@ -64,7 +64,8 @@
     <string name="notifications_header" msgid="1404149926117359025">"Notificacions"</string>
     <string name="long_press_shortcut_to_add" msgid="5405328730817637737">"Fes doble toc i mantén premut per moure una drecera."</string>
     <string name="long_accessible_way_to_add_shortcut" msgid="2199537273817090740">"Fes doble toc i mantén premut per moure una drecera o per utilitzar accions personalitzades."</string>
-    <string name="out_of_space" msgid="4691004494942118364">"Ja no queda espai en aquesta pantalla d\'inici."</string>
+    <!-- no translation found for out_of_space (6692471482459245734) -->
+    <skip />
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"No hi ha més espai a la safata Preferits."</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"Llista d\'aplicacions"</string>
     <string name="all_apps_button_personal_label" msgid="1315764287305224468">"Llista d\'aplicacions personals"</string>
@@ -82,10 +83,8 @@
     <string name="permlab_write_settings" msgid="3574213698004620587">"escriu la configuració i les dreceres de la pantalla d\'inici"</string>
     <string name="permdesc_write_settings" msgid="5440712911516509985">"Permet que l\'aplicació canviï la configuració i les dreceres de la pantalla d\'inici."</string>
     <string name="msg_no_phone_permission" msgid="9208659281529857371">"<xliff:g id="APP_NAME">%1$s</xliff:g> no té permís per fer trucades telefòniques"</string>
-    <!-- no translation found for gadget_error_text (740356548025791839) -->
-    <skip />
-    <!-- no translation found for gadget_setup_text (1745356155479272374) -->
-    <skip />
+    <string name="gadget_error_text" msgid="740356548025791839">"No es pot carregar el widget"</string>
+    <string name="gadget_setup_text" msgid="1745356155479272374">"Toca per finalitzar la configuració"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"Aquesta aplicació és una aplicació del sistema i no es pot desinstal·lar."</string>
     <string name="folder_hint_text" msgid="5174843001373488816">"Edita el nom"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"S\'ha desactivat <xliff:g id="APP_NAME">%1$s</xliff:g>"</string>
@@ -160,7 +159,7 @@
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"Perfil de treball"</string>
     <string name="work_profile_edu_work_apps" msgid="7895468576497746520">"Les aplicacions de treball tenen una insígnia i són visibles per al teu administrador de TI"</string>
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"Entesos"</string>
-    <string name="work_apps_paused_title" msgid="3007471013401118920">"Les aplicacions de treball estan desactivades"</string>
+    <string name="work_apps_paused_title" msgid="3040901117349444598">"Les aplicacions de treball s\'han posat en pausa"</string>
     <string name="work_apps_paused_body" msgid="261634750995824906">"Les aplicacions de treball no poden enviar-te notificacions, consumir bateria ni accedir a la teva ubicació"</string>
     <string name="work_apps_paused_content_description" msgid="5149623040804051095">"Les aplicacions de treball estan desactivades: no poden enviar-te notificacions, consumir bateria ni accedir a la teva ubicació"</string>
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"Les aplicacions de treball tenen una insígnia i són visibles per al teu administrador de TI"</string>

@@ -46,8 +46,8 @@
     <string name="widget_button_text" msgid="2880537293434387943">"ធាតុ​ក្រាហ្វិក"</string>
     <string name="widgets_full_sheet_search_bar_hint" msgid="8484659090860596457">"ស្វែងរក"</string>
     <string name="widgets_full_sheet_cancel_button_description" msgid="5766167035728653605">"សម្អាត​ពាក្យឬឃ្លា​ចេញពី​ប្រអប់ស្វែងរក"</string>
-    <string name="no_widgets_available" msgid="9140948620298620513">"គ្មាន​ធាតុក្រាហ្វិក​ទេ"</string>
-    <string name="no_search_results" msgid="6518732304311458580">"គ្មាន​លទ្ធផល​ស្វែងរក​ទេ"</string>
+    <string name="no_widgets_available" msgid="4337693382501046170">"មិនមាន​ធាតុក្រាហ្វិក និងផ្លូវកាត់​បានទេ"</string>
+    <string name="no_search_results" msgid="3787956167293097509">"រកមិនឃើញ​ធាតុក្រាហ្វិក ឬផ្លូវកាត់​ទេ"</string>
     <string name="widgets_full_sheet_personal_tab" msgid="2743540105607120182">"ផ្ទាល់ខ្លួន"</string>
     <string name="widgets_full_sheet_work_tab" msgid="3767150027110633765">"ការងារ"</string>
     <string name="widget_category_conversations" msgid="8894438636213590446">"ការសន្ទនា"</string>
@@ -64,7 +64,8 @@
     <string name="notifications_header" msgid="1404149926117359025">"ការ​ជូនដំណឹង"</string>
     <string name="long_press_shortcut_to_add" msgid="5405328730817637737">"ចុចឱ្យជាប់​ដើម្បីផ្លាស់ទី​ផ្លូវកាត់​។"</string>
     <string name="long_accessible_way_to_add_shortcut" msgid="2199537273817090740">"ចុចពីរដង រួចសង្កត់ឱ្យជាប់ ដើម្បីផ្លាស់ទី​ផ្លូវកាត់ ឬប្រើ​សកម្មភាព​តាមបំណង​។"</string>
-    <string name="out_of_space" msgid="4691004494942118364">"គ្មាន​កន្លែង​នៅ​លើ​អេក្រង់​ដើម​នេះ​ទៀត​ទេ។"</string>
+    <!-- no translation found for out_of_space (6692471482459245734) -->
+    <skip />
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"គ្មាន​បន្ទប់​​ក្នុង​ថាស​និយម​ប្រើ"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"បញ្ជីកម្មវិធី"</string>
     <string name="all_apps_button_personal_label" msgid="1315764287305224468">"បញ្ជី​កម្មវិធី​ផ្ទាល់ខ្លួន"</string>
@@ -82,10 +83,8 @@
     <string name="permlab_write_settings" msgid="3574213698004620587">"សរសេរ​ការ​កំណត់ ​និង​ផ្លូវកាត់​​លើ​អេក្រង់​ដើម"</string>
     <string name="permdesc_write_settings" msgid="5440712911516509985">"អនុញ្ញាត​ឲ្យ​កម្មវិធី​ប្ដូរ​ការ​កំណត់ និង​ផ្លូវ​កាត់​ក្នុង​អេក្រង់​ដើម។"</string>
     <string name="msg_no_phone_permission" msgid="9208659281529857371">"<xliff:g id="APP_NAME">%1$s</xliff:g> មិនត្រូវបានអនុញ្ញាតឲ្យធ្វើការហៅទូរស័ព្ទទេ"</string>
-    <!-- no translation found for gadget_error_text (740356548025791839) -->
-    <skip />
-    <!-- no translation found for gadget_setup_text (1745356155479272374) -->
-    <skip />
+    <string name="gadget_error_text" msgid="740356548025791839">"មិនអាចផ្ទុក​ធាតុក្រាហ្វិក​បានទេ"</string>
+    <string name="gadget_setup_text" msgid="1745356155479272374">"ចុច​ដើម្បី​បញ្ចប់​ការរៀបចំ"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"នេះ​​​ជា​កម្មវិធី​ប្រព័ន្ធ មិន​អាច​លុប​បាន​ទេ។"</string>
     <string name="folder_hint_text" msgid="5174843001373488816">"កែ​ឈ្មោះ"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"បានបិទដំណើរការ <xliff:g id="APP_NAME">%1$s</xliff:g>"</string>
@@ -160,7 +159,7 @@
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"កម្រងព័ត៌មានការងារ"</string>
     <string name="work_profile_edu_work_apps" msgid="7895468576497746520">"កម្មវិធីការងារ​ត្រូវបានដាក់​គ្រឿងសម្គាល់ ហើយ​អ្នកគ្រប់គ្រង​ផ្នែកព័ត៌មានវិទ្យា​របស់អ្នក​អាចមើលឃើញ"</string>
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"យល់ហើយ"</string>
-    <string name="work_apps_paused_title" msgid="3007471013401118920">"កម្មវិធីការងារ​ត្រូវបានបិទ"</string>
+    <string name="work_apps_paused_title" msgid="3040901117349444598">"កម្មវិធី​ការងារ​ត្រូវបានផ្អាក"</string>
     <string name="work_apps_paused_body" msgid="261634750995824906">"កម្មវិធី​ការងារ​របស់អ្នក​មិនអាចផ្ញើ​ការជូនដំណឹង​ទៅអ្នក ប្រើប្រាស់ថ្ម​របស់អ្នក ឬ​ចូលប្រើ​ទីតាំង​របស់អ្នក​បានទេ"</string>
     <string name="work_apps_paused_content_description" msgid="5149623040804051095">"កម្មវិធីការងារ​ត្រូវបានបិទ។ កម្មវិធីការងារ​របស់អ្នកមិនអាចផ្ញើ​ការជូនដំណឹង​ទៅអ្នក ប្រើប្រាស់ថ្ម​របស់អ្នក ឬ​ចូលប្រើ​ទីតាំង​របស់អ្នក​បានទេ"</string>
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"កម្មវិធីការងារ​ត្រូវបានដាក់​គ្រឿងសម្គាល់ ហើយ​អ្នកគ្រប់គ្រង​ផ្នែកព័ត៌មានវិទ្យា​របស់អ្នក​អាចមើលឃើញ"</string>

@@ -50,8 +50,8 @@
     <string name="widget_button_text" msgid="2880537293434387943">"Віджети"</string>
     <string name="widgets_full_sheet_search_bar_hint" msgid="8484659090860596457">"Пошук"</string>
     <string name="widgets_full_sheet_cancel_button_description" msgid="5766167035728653605">"Очистити текст у полі пошуку"</string>
-    <string name="no_widgets_available" msgid="9140948620298620513">"Немає доступних віджетів"</string>
-    <string name="no_search_results" msgid="6518732304311458580">"Нічого не знайдено"</string>
+    <string name="no_widgets_available" msgid="4337693382501046170">"Віджети та ярлики недоступні"</string>
+    <string name="no_search_results" msgid="3787956167293097509">"Не знайдено віджетів чи ярликів"</string>
     <string name="widgets_full_sheet_personal_tab" msgid="2743540105607120182">"Особисті"</string>
     <string name="widgets_full_sheet_work_tab" msgid="3767150027110633765">"Робочі"</string>
     <string name="widget_category_conversations" msgid="8894438636213590446">"Розмови"</string>
@@ -68,7 +68,8 @@
     <string name="notifications_header" msgid="1404149926117359025">"Сповіщення"</string>
     <string name="long_press_shortcut_to_add" msgid="5405328730817637737">"Натисніть і втримуйте, щоб перемістити ярлик."</string>
     <string name="long_accessible_way_to_add_shortcut" msgid="2199537273817090740">"Двічі натисніть і втримуйте ярлик, щоб перемістити його або виконати інші дії."</string>
-    <string name="out_of_space" msgid="4691004494942118364">"На цьому головному екрані більше немає місця."</string>
+    <!-- no translation found for out_of_space (6692471482459245734) -->
+    <skip />
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"В області \"Вибране\" немає місця"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"Список додатків"</string>
     <string name="all_apps_button_personal_label" msgid="1315764287305224468">"Список особистих додатків"</string>
@@ -164,7 +165,7 @@
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"Робочий профіль"</string>
     <string name="work_profile_edu_work_apps" msgid="7895468576497746520">"Робочі додатки відповідно позначені й видимі системному адміністратору"</string>
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"OK"</string>
-    <string name="work_apps_paused_title" msgid="3007471013401118920">"Робочі додатки вимкнено"</string>
+    <string name="work_apps_paused_title" msgid="3040901117349444598">"Робочі додатки призупинено"</string>
     <string name="work_apps_paused_body" msgid="261634750995824906">"Ваші робочі додатки не можуть надсилати сповіщення, використовувати заряд акумулятора й отримувати доступ до геоданих"</string>
     <string name="work_apps_paused_content_description" msgid="5149623040804051095">"Робочі додатки вимкнено. Вони не можуть надсилати сповіщення, використовувати заряд акумулятора й отримувати доступ до геоданих."</string>
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"Робочі додатки відповідно позначені й видимі системному адміністратору"</string>

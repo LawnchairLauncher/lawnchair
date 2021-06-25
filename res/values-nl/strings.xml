@@ -46,8 +46,8 @@
     <string name="widget_button_text" msgid="2880537293434387943">"Widgets"</string>
     <string name="widgets_full_sheet_search_bar_hint" msgid="8484659090860596457">"Zoeken"</string>
     <string name="widgets_full_sheet_cancel_button_description" msgid="5766167035728653605">"Tekst in zoekvak wissen"</string>
-    <string name="no_widgets_available" msgid="9140948620298620513">"Geen widgets beschikbaar"</string>
-    <string name="no_search_results" msgid="6518732304311458580">"Geen zoekresultaten"</string>
+    <string name="no_widgets_available" msgid="4337693382501046170">"Widgets en snelkoppelingen zijn niet beschikbaar"</string>
+    <string name="no_search_results" msgid="3787956167293097509">"Geen widgets of snelkoppelingen gevonden"</string>
     <string name="widgets_full_sheet_personal_tab" msgid="2743540105607120182">"Persoonlijk"</string>
     <string name="widgets_full_sheet_work_tab" msgid="3767150027110633765">"Werk"</string>
     <string name="widget_category_conversations" msgid="8894438636213590446">"Gesprekken"</string>
@@ -64,7 +64,8 @@
     <string name="notifications_header" msgid="1404149926117359025">"Meldingen"</string>
     <string name="long_press_shortcut_to_add" msgid="5405328730817637737">"Tik en houd vast om een snelkoppeling te verplaatsen."</string>
     <string name="long_accessible_way_to_add_shortcut" msgid="2199537273817090740">"Dubbeltik en houd vast om een snelkoppeling te verplaatsen of aangepaste acties te gebruiken."</string>
-    <string name="out_of_space" msgid="4691004494942118364">"Er is geen ruimte meer op dit startscherm."</string>
+    <!-- no translation found for out_of_space (6692471482459245734) -->
+    <skip />
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"Geen ruimte meer in het vak \'Favorieten\'"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"Lijst met apps"</string>
     <string name="all_apps_button_personal_label" msgid="1315764287305224468">"Lijst met persoonlijke apps"</string>
@@ -158,7 +159,7 @@
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"Werkprofiel"</string>
     <string name="work_profile_edu_work_apps" msgid="7895468576497746520">"Werk-apps hebben badges en zijn zichtbaar voor je IT-beheerder"</string>
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"OK"</string>
-    <string name="work_apps_paused_title" msgid="3007471013401118920">"Werk-apps staan uit"</string>
+    <string name="work_apps_paused_title" msgid="3040901117349444598">"Werk-apps zijn onderbroken"</string>
     <string name="work_apps_paused_body" msgid="261634750995824906">"Je werk-apps kunnen je geen meldingen sturen, je batterij niet gebruiken en geen toegang krijgen tot je locatie"</string>
     <string name="work_apps_paused_content_description" msgid="5149623040804051095">"Werk-apps staan uit. Je werk-apps kunnen je geen meldingen sturen, je batterij niet gebruiken en geen toegang krijgen tot je locatie."</string>
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"Werk-apps hebben badges en zijn zichtbaar voor je IT-beheerder"</string>
