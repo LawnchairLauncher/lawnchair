@@ -57,7 +57,8 @@
         <item name="workProfileOverlayTextColor">#FF212121</item>
         <item name="eduHalfSheetBGColor">?android:attr/colorAccent</item>
         <item name="disabledIconAlpha">.54</item>
-        <item name="gridColor">?android:attr/colorAccent</item>
+        <item name="workspaceAccentColor">@color/workspace_accent_color_light</item>
+        <item name="dropTargetHoverTextColor">@color/workspace_text_color_light</item>
         <item name="overviewScrimColor">@color/overview_scrim</item>
 
         <item name="android:windowTranslucentStatus">false</item>
@@ -71,6 +72,8 @@
 
     <style name="LauncherTheme.DarkMainColor" parent="@style/LauncherTheme">
         <item name="disabledIconAlpha">.254</item>
+        <item name="workspaceAccentColor">@color/workspace_accent_color_dark</item>
+        <item name="dropTargetHoverTextColor">@color/workspace_text_color_dark</item>
 
     </style>
 
@@ -250,7 +253,7 @@
     <style name="DropTargetButtonBase" parent="@android:style/TextAppearance.DeviceDefault">
         <item name="android:drawablePadding">8dp</item>
         <item name="android:padding">16dp</item>
-        <item name="android:textColor">?android:attr/textColorPrimary</item>
+        <item name="android:textColor">@color/drop_target_text</item>
         <item name="android:textSize">@dimen/drop_target_text_size</item>
         <item name="android:singleLine">true</item>
         <item name="android:ellipsize">end</item>
