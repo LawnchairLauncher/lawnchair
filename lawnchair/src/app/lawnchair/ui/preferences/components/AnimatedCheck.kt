@@ -1,6 +1,7 @@
 package app.lawnchair.ui.preferences.components
 
-import androidx.compose.animation.*
+import androidx.compose.animation.Crossfade
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.Icon
@@ -14,8 +15,11 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 @ExperimentalAnimationApi
-fun AnimatedCheck(visible: Boolean, tint: Color = MaterialTheme.colors.primary) {
-    Box(modifier = Modifier.size(24.dp, 24.dp)) {
+fun AnimatedCheck(
+    visible: Boolean,
+    tint: Color = MaterialTheme.colors.primary
+) {
+    Box(modifier = Modifier.size(24.dp)) {
         Crossfade(targetState = visible) {
             if (it) {
                 Icon(
