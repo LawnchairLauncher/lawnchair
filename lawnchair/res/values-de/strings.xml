@@ -98,4 +98,7 @@
     <string name="accent_color">Akzentfarbe</string>
     <string name="done">Erledigt</string>
     <string name="loading">Laden…</string>
+    <string name="system">System</string>
+    <string name="custom">Custom</string>
+    <string name="custom_color">Custom Color</string>
 </resources>
