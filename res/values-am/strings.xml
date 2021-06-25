@@ -46,8 +46,8 @@
     <string name="widget_button_text" msgid="2880537293434387943">"ፍርግሞች"</string>
     <string name="widgets_full_sheet_search_bar_hint" msgid="8484659090860596457">"ፍለጋ"</string>
     <string name="widgets_full_sheet_cancel_button_description" msgid="5766167035728653605">"ጽሁፍን ከፍለጋ ሳጥን አጽዳ"</string>
-    <string name="no_widgets_available" msgid="9140948620298620513">"ምግብሮች አይገኙም"</string>
-    <string name="no_search_results" msgid="6518732304311458580">"ምንም የፍለጋ ውጤቶች የሉም"</string>
+    <string name="no_widgets_available" msgid="4337693382501046170">"መግብሮች እና አቋራጮች አይገኙም"</string>
+    <string name="no_search_results" msgid="3787956167293097509">"ምንም መግብሮች ወይም አቋራጮች አልተገኙም"</string>
     <string name="widgets_full_sheet_personal_tab" msgid="2743540105607120182">"የግል"</string>
     <string name="widgets_full_sheet_work_tab" msgid="3767150027110633765">"ስራ"</string>
     <string name="widget_category_conversations" msgid="8894438636213590446">"ውይይቶች"</string>
@@ -64,7 +64,8 @@
     <string name="notifications_header" msgid="1404149926117359025">"ማሳወቂያዎች"</string>
     <string name="long_press_shortcut_to_add" msgid="5405328730817637737">"አቋራጭን ለማንቀሳቀስ ይንኩ እና ይያዙ"</string>
     <string name="long_accessible_way_to_add_shortcut" msgid="2199537273817090740">"አቋራጭን ለማንቀሳቀስ ወይም ብጁ እርምጃዎችን ለመጠቀም ሁለቴ መታ ያድርጉ እና ይያዙ።"</string>
-    <string name="out_of_space" msgid="4691004494942118364">"በዚህ መነሻ ማያ ገጽ ላይ ምንም ቦታ የለም።"</string>
+    <!-- no translation found for out_of_space (6692471482459245734) -->
+    <skip />
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"በተወዳጆች መሣቢያ ውስጥ ተጨማሪ ቦታ የለም"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"የመተግበሪያዎች ዝርዝር"</string>
     <string name="all_apps_button_personal_label" msgid="1315764287305224468">"የግል መተግበሪያዎች ዝርዝር"</string>
@@ -82,10 +83,8 @@
     <string name="permlab_write_settings" msgid="3574213698004620587">"የመነሻ ቅንብሮችን እና አቋራጮችን ይጽፋል"</string>
     <string name="permdesc_write_settings" msgid="5440712911516509985">"መተግብሪያው ቅንብሮችን እና አቋራጮችን በመነሻ ውስጥ እንዲቀይራቸው ያስችለዋል።"</string>
     <string name="msg_no_phone_permission" msgid="9208659281529857371">"<xliff:g id="APP_NAME">%1$s</xliff:g> የስልክ ጥሪዎችን ለማድረግ አልተፈቀደለትም"</string>
-    <!-- no translation found for gadget_error_text (740356548025791839) -->
-    <skip />
-    <!-- no translation found for gadget_setup_text (1745356155479272374) -->
-    <skip />
+    <string name="gadget_error_text" msgid="740356548025791839">"ምግብርን መጫን አልተቻለም"</string>
+    <string name="gadget_setup_text" msgid="1745356155479272374">"ማዋቀርን ለመጨረስ መታ ያድርጉ"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"ይህ የስርዓት መተግበሪያ ነው እና ማራገፍ አይቻልም።"</string>
     <string name="folder_hint_text" msgid="5174843001373488816">"ስም ያርትዑ"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"<xliff:g id="APP_NAME">%1$s</xliff:g> ተሰናክሏል"</string>
@@ -160,7 +159,7 @@
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"የሥራ መገለጫ"</string>
     <string name="work_profile_edu_work_apps" msgid="7895468576497746520">"የሥራ መተግበሪያዎች ባጅ የተደረገባቸው እና ለእርስዎ የአይቲ አስተዳዳሪ የሚታዩ ናቸው"</string>
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"ገባኝ"</string>
-    <string name="work_apps_paused_title" msgid="3007471013401118920">"የሥራ መተግበሪያዎች ጠፍተዋል"</string>
+    <string name="work_apps_paused_title" msgid="3040901117349444598">"የስራ መተግበሪያዎች ባሉበት ቆመዋል"</string>
     <string name="work_apps_paused_body" msgid="261634750995824906">"የስራ መተግበሪያዎችዎ ማሳወቂያዎችን ሊልክልዎ፣ ባትሪዎን መጠቀም ወይም አካባቢዎን መድረስ አይችሉም"</string>
     <string name="work_apps_paused_content_description" msgid="5149623040804051095">"የሥራ መተግበሪያዎች ጠፍተዋል። የስራ መተግበሪያዎችዎ ማሳወቂያዎችን ሊልክልዎ፣ ባትሪዎን መጠቀም ወይም አካባቢዎን መድረስ አይችሉም"</string>
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"የሥራ መተግበሪያዎች ባጅ የተደረገባቸው ሲሆን ለእርስዎ IT ቡድን ታይ ናቸው"</string>

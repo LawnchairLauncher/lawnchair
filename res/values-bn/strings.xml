@@ -46,8 +46,10 @@
     <string name="widget_button_text" msgid="2880537293434387943">"উইজেট"</string>
     <string name="widgets_full_sheet_search_bar_hint" msgid="8484659090860596457">"সার্চ করুন"</string>
     <string name="widgets_full_sheet_cancel_button_description" msgid="5766167035728653605">"সার্চ বক্স থেকে টেক্সট মুছুন"</string>
-    <string name="no_widgets_available" msgid="9140948620298620513">"কোনও উইজেট ফলাফল নেই"</string>
-    <string name="no_search_results" msgid="6518732304311458580">"কোনও সার্চ ফলাফল নেই"</string>
+    <!-- no translation found for no_widgets_available (4337693382501046170) -->
+    <skip />
+    <!-- no translation found for no_search_results (3787956167293097509) -->
+    <skip />
     <string name="widgets_full_sheet_personal_tab" msgid="2743540105607120182">"ব্যক্তিগত"</string>
     <string name="widgets_full_sheet_work_tab" msgid="3767150027110633765">"অফিস"</string>
     <string name="widget_category_conversations" msgid="8894438636213590446">"কথোপকথন"</string>
@@ -64,7 +66,8 @@
     <string name="notifications_header" msgid="1404149926117359025">"বিজ্ঞপ্তি"</string>
     <string name="long_press_shortcut_to_add" msgid="5405328730817637737">"একটি শর্টকাট সরাতে টাচ করে ধরে রাখুন।"</string>
     <string name="long_accessible_way_to_add_shortcut" msgid="2199537273817090740">"একটি শর্টকাট সরাতে বা কাস্টম অ্যাকশন ব্যবহার করতে ডবল ট্যাপ করে ধরে রাখুন।"</string>
-    <string name="out_of_space" msgid="4691004494942118364">"এই হোম স্ক্রীনে আর কোনো জায়গা নেই৷"</string>
+    <!-- no translation found for out_of_space (6692471482459245734) -->
+    <skip />
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"পছন্দসই ট্রে-তে আর কোনো জায়গা নেই"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"অ্যাপ্লিকেশানগুলির তালিকা"</string>
     <string name="all_apps_button_personal_label" msgid="1315764287305224468">"ব্যক্তিগত অ্যাপের তালিকা"</string>
@@ -82,10 +85,8 @@
     <string name="permlab_write_settings" msgid="3574213698004620587">"হোম সেটিংস এবং শর্টকাটগুলি লেখে"</string>
     <string name="permdesc_write_settings" msgid="5440712911516509985">"হোমে অ্যাপ্লিকেশানটিকে সেটিংস এবং শর্টকাটগুলি পরিবর্তন করতে দেয়৷"</string>
     <string name="msg_no_phone_permission" msgid="9208659281529857371">"ফোন কলগুলি করার জন্য <xliff:g id="APP_NAME">%1$s</xliff:g> এর অনুমতি নেই"</string>
-    <!-- no translation found for gadget_error_text (740356548025791839) -->
-    <skip />
-    <!-- no translation found for gadget_setup_text (1745356155479272374) -->
-    <skip />
+    <string name="gadget_error_text" msgid="740356548025791839">"উইজেট লোড করা যাচ্ছে না"</string>
+    <string name="gadget_setup_text" msgid="1745356155479272374">"সেটআপ সম্পূর্ণ করতে ট্যাপ করুন"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"এটি একটি সিস্টেম অ্যাপ্লিকেশান এবং আনইনস্টল করা যাবে না৷"</string>
     <string name="folder_hint_text" msgid="5174843001373488816">"নাম এডিট করুন"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"<xliff:g id="APP_NAME">%1$s</xliff:g> অক্ষম করা হয়েছে"</string>
@@ -158,10 +159,9 @@
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"ব্যক্তিগত"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"অফিস"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"অফিসের প্রোফাইল"</string>
-    <!-- no translation found for work_profile_edu_work_apps (7895468576497746520) -->
-    <skip />
+    <string name="work_profile_edu_work_apps" msgid="7895468576497746520">"অফিসের অ্যাপে ব্যাজ যোগ করা হয়েছে এবং আপনার আইটি অ্যাডমিন সেটি দেখতে পাবেন"</string>
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"বুঝেছি"</string>
-    <string name="work_apps_paused_title" msgid="3007471013401118920">"অফিসের অ্যাপ বন্ধ আছে"</string>
+    <string name="work_apps_paused_title" msgid="3040901117349444598">"অফিসের অ্যাপ বন্ধ করা আছে"</string>
     <string name="work_apps_paused_body" msgid="261634750995824906">"অফিসের অ্যাপ আপনাকে নোটিফিকেশন পাঠাতে পারবে না। এছাড়া, ব্যাটারি ব্যবহার করতে বা লোকেশন অ্যাক্সেস করতে পারবে না"</string>
     <string name="work_apps_paused_content_description" msgid="5149623040804051095">"অফিসের অ্যাপ বন্ধ আছে। আপনার অফিসের অ্যাপ আপনাকে বিজ্ঞপ্তি পাঠাতে, ব্যাটারি ব্যবহার করতে বা লোকেশন অ্যাক্সেস করতে পারবে না"</string>
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"অফিসের অ্যাপে ব্যাজ যোগ করা হয়েছে এবং আপনার আইটি অ্যাডমিন সেটি দেখতে পাবেন"</string>

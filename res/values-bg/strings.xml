@@ -46,8 +46,8 @@
     <string name="widget_button_text" msgid="2880537293434387943">"Приспособления"</string>
     <string name="widgets_full_sheet_search_bar_hint" msgid="8484659090860596457">"Търсене"</string>
     <string name="widgets_full_sheet_cancel_button_description" msgid="5766167035728653605">"Изчистване на текста от полето за търсене"</string>
-    <string name="no_widgets_available" msgid="9140948620298620513">"Няма налични приспособления"</string>
-    <string name="no_search_results" msgid="6518732304311458580">"Няма резултати от търсенето"</string>
+    <string name="no_widgets_available" msgid="4337693382501046170">"Няма налице преки пътища и приспособления"</string>
+    <string name="no_search_results" msgid="3787956167293097509">"Няма открити преки пътища или приспособления"</string>
     <string name="widgets_full_sheet_personal_tab" msgid="2743540105607120182">"Лични"</string>
     <string name="widgets_full_sheet_work_tab" msgid="3767150027110633765">"Служебни"</string>
     <string name="widget_category_conversations" msgid="8894438636213590446">"Разговори"</string>
@@ -64,7 +64,8 @@
     <string name="notifications_header" msgid="1404149926117359025">"Известия"</string>
     <string name="long_press_shortcut_to_add" msgid="5405328730817637737">"Докоснете и задръжте за преместване на пряк път."</string>
     <string name="long_accessible_way_to_add_shortcut" msgid="2199537273817090740">"Докоснете двукратно и задръжте за преместване на пряк път или използвайте персонализирани действия."</string>
-    <string name="out_of_space" msgid="4691004494942118364">"На този начален екран няма повече място."</string>
+    <!-- no translation found for out_of_space (6692471482459245734) -->
+    <skip />
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"Няма повече място в областта с любимите"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"Списък с приложения"</string>
     <string name="all_apps_button_personal_label" msgid="1315764287305224468">"Списък с лични приложения"</string>
@@ -82,10 +83,8 @@
     <string name="permlab_write_settings" msgid="3574213698004620587">"запис на настройките и преките пътища в Начало"</string>
     <string name="permdesc_write_settings" msgid="5440712911516509985">"Разрешава на приложението да променя настройките и преките пътища в Начало."</string>
     <string name="msg_no_phone_permission" msgid="9208659281529857371">"<xliff:g id="APP_NAME">%1$s</xliff:g> няма разрешение да извършва телефонни обаждания"</string>
-    <!-- no translation found for gadget_error_text (740356548025791839) -->
-    <skip />
-    <!-- no translation found for gadget_setup_text (1745356155479272374) -->
-    <skip />
+    <string name="gadget_error_text" msgid="740356548025791839">"Приспособлението не може да се зареди"</string>
+    <string name="gadget_setup_text" msgid="1745356155479272374">"Докоснете, за да завършите настройването"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"Това е системно приложение и не може да се деинсталира."</string>
     <string name="folder_hint_text" msgid="5174843001373488816">"Редактиране на името"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"Деактивирахте <xliff:g id="APP_NAME">%1$s</xliff:g>"</string>
@@ -160,7 +159,7 @@
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"Служебен потребителски профил"</string>
     <string name="work_profile_edu_work_apps" msgid="7895468576497746520">"Служебните приложения са означени със значка и са видими за системния администратор"</string>
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"Разбрах"</string>
-    <string name="work_apps_paused_title" msgid="3007471013401118920">"Служебните ви приложения са изключени"</string>
+    <string name="work_apps_paused_title" msgid="3040901117349444598">"Служебните приложения са поставени на пауза"</string>
     <string name="work_apps_paused_body" msgid="261634750995824906">"Служебните ви приложения не могат да ви изпращат известия, да използват батерията или да осъществяват достъп до местоположението ви"</string>
     <string name="work_apps_paused_content_description" msgid="5149623040804051095">"Служебните ви приложения са изключени. Те не могат да ви изпращат известия, да използват батерията или да осъществяват достъп до местоположението ви"</string>
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"Служебните приложения са означени със значка и са видими за системния администратор"</string>
