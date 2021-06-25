@@ -1,6 +1,8 @@
 package app.lawnchair.ui.theme
 
 import android.content.Context
+import android.graphics.Color
+import android.text.TextUtils
 import android.util.TypedValue
 import android.view.ContextThemeWrapper
 import androidx.annotation.ColorInt
@@ -44,6 +46,18 @@ fun Context.getSystemAccent(darkTheme: Boolean): Int {
         val colorId = res.getIdentifier(colorName, "color", "android")
         res.getColor(colorId)
     } else {
+        var propertyValue = Utilities.getSystemProperty("persist.sys.theme.accentcolor", "")
+        if (!TextUtils.isEmpty(propertyValue)) {
+            if (!propertyValue.startsWith('#')) {
+                propertyValue = "#$propertyValue"
+            }
+            try {
+                return Color.parseColor(propertyValue)
+            } catch (e: IllegalArgumentException) {
+                // do nothing
+            }
+        }
+
         val typedValue = TypedValue()
         val theme = if (darkTheme) android.R.style.Theme_DeviceDefault else android.R.style.Theme_DeviceDefault_Light
         val contextWrapper = ContextThemeWrapper(this, theme)
