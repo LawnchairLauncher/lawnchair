@@ -45,8 +45,8 @@ fun Context.getSystemAccent(darkTheme: Boolean): Int {
         res.getColor(colorId)
     } else {
         val typedValue = TypedValue()
-        val contextWrapper = ContextThemeWrapper(this, R.style.AppTheme)
+        val contextWrapper = ContextThemeWrapper(this, android.R.style.Theme_DeviceDefault_DayNight)
         contextWrapper.theme.resolveAttribute(android.R.attr.colorAccent, typedValue, true)
-        if (darkTheme) lightenColor(typedValue.data) else typedValue.data
+        typedValue.data
     }
 }
