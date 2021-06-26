@@ -46,8 +46,8 @@
     <string name="widget_button_text" msgid="2880537293434387943">"小工具"</string>
     <string name="widgets_full_sheet_search_bar_hint" msgid="8484659090860596457">"搜尋"</string>
     <string name="widgets_full_sheet_cancel_button_description" msgid="5766167035728653605">"清除搜尋框中的文字"</string>
-    <string name="no_widgets_available" msgid="9140948620298620513">"沒有可用的小工具"</string>
-    <string name="no_search_results" msgid="6518732304311458580">"沒有相符的搜尋結果"</string>
+    <string name="no_widgets_available" msgid="4337693382501046170">"無法使用小工具和捷徑"</string>
+    <string name="no_search_results" msgid="3787956167293097509">"找不到小工具或捷徑"</string>
     <string name="widgets_full_sheet_personal_tab" msgid="2743540105607120182">"個人"</string>
     <string name="widgets_full_sheet_work_tab" msgid="3767150027110633765">"工作"</string>
     <string name="widget_category_conversations" msgid="8894438636213590446">"對話"</string>
@@ -64,7 +64,8 @@
     <string name="notifications_header" msgid="1404149926117359025">"通知"</string>
     <string name="long_press_shortcut_to_add" msgid="5405328730817637737">"輕觸並按住即可移動捷徑。"</string>
     <string name="long_accessible_way_to_add_shortcut" msgid="2199537273817090740">"㩒兩下之後㩒住，就可以郁捷徑或者用自訂操作。"</string>
-    <string name="out_of_space" msgid="4691004494942118364">"主畫面已無空間。"</string>
+    <!-- no translation found for out_of_space (6692471482459245734) -->
+    <skip />
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"我的收藏寄存區沒有足夠空間"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"應用程式清單"</string>
     <string name="all_apps_button_personal_label" msgid="1315764287305224468">"個人應用程式清單"</string>
@@ -82,10 +83,8 @@
     <string name="permlab_write_settings" msgid="3574213698004620587">"寫入主畫面的設定和捷徑"</string>
     <string name="permdesc_write_settings" msgid="5440712911516509985">"允許應用程式更改主畫面中的設定和捷徑。"</string>
     <string name="msg_no_phone_permission" msgid="9208659281529857371">"不允許 <xliff:g id="APP_NAME">%1$s</xliff:g> 撥打電話"</string>
-    <!-- no translation found for gadget_error_text (740356548025791839) -->
-    <skip />
-    <!-- no translation found for gadget_setup_text (1745356155479272374) -->
-    <skip />
+    <string name="gadget_error_text" msgid="740356548025791839">"無法載入小工具"</string>
+    <string name="gadget_setup_text" msgid="1745356155479272374">"輕按即可完成設定"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"這是系統應用程式，無法將其解除安裝。"</string>
     <string name="folder_hint_text" msgid="5174843001373488816">"編輯名稱"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"「<xliff:g id="APP_NAME">%1$s</xliff:g>」已停用"</string>
@@ -160,7 +159,7 @@
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"工作設定檔"</string>
     <string name="work_profile_edu_work_apps" msgid="7895468576497746520">"工作應用程式會加上標誌，且你的 IT 管理員可以看到這類應用程式"</string>
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"知道了"</string>
-    <string name="work_apps_paused_title" msgid="3007471013401118920">"工作應用程式已關閉"</string>
+    <string name="work_apps_paused_title" msgid="3040901117349444598">"已暫停工作應用程式"</string>
     <string name="work_apps_paused_body" msgid="261634750995824906">"工作應用程式無法向您傳送通知、使用電池或存取位置"</string>
     <string name="work_apps_paused_content_description" msgid="5149623040804051095">"工作應用程式已關閉。工作應用程式無法向您傳送通知、使用電池或存取位置"</string>
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"IT 管理員可看到工作應用程式和相關標誌"</string>

@@ -41,6 +41,7 @@
 
     <!-- Scalable Grid -->
     <dimen name="scalable_grid_left_right_margin">22dp</dimen>
+    <dimen name="scalable_grid_qsb_bottom_margin">42dp</dimen>
 
     <!-- Workspace page indicator -->
     <dimen name="workspace_page_indicator_height">24dp</dimen>

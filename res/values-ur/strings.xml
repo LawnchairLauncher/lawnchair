@@ -46,8 +46,10 @@
     <string name="widget_button_text" msgid="2880537293434387943">"ویجیٹس"</string>
     <string name="widgets_full_sheet_search_bar_hint" msgid="8484659090860596457">"تلاش کریں"</string>
     <string name="widgets_full_sheet_cancel_button_description" msgid="5766167035728653605">"تلاش کے خانے سے ٹیکسٹ صاف کریں"</string>
-    <string name="no_widgets_available" msgid="9140948620298620513">"کوئی ویجیٹ دستیاب نہیں ہے"</string>
-    <string name="no_search_results" msgid="6518732304311458580">"تلاش کا کوئی نتیجہ نہیں ہے"</string>
+    <!-- no translation found for no_widgets_available (4337693382501046170) -->
+    <skip />
+    <!-- no translation found for no_search_results (3787956167293097509) -->
+    <skip />
     <string name="widgets_full_sheet_personal_tab" msgid="2743540105607120182">"ذاتی"</string>
     <string name="widgets_full_sheet_work_tab" msgid="3767150027110633765">"دفتری ویجیٹس"</string>
     <string name="widget_category_conversations" msgid="8894438636213590446">"گفتگوئیں"</string>
@@ -64,7 +66,8 @@
     <string name="notifications_header" msgid="1404149926117359025">"اطلاعات"</string>
     <string name="long_press_shortcut_to_add" msgid="5405328730817637737">"شارٹ کٹ منتقل کرنے کیلیے ٹچ کریں اور پکڑ کر رکھیں۔"</string>
     <string name="long_accessible_way_to_add_shortcut" msgid="2199537273817090740">"شارٹ کٹ کو منتقل کرنے یا حسب ضرورت کارروائیاں استعمال کرنے کے لیے دوبار تھپتھپائیں اور پکڑ کر رکھیں۔"</string>
-    <string name="out_of_space" msgid="4691004494942118364">"اس ہوم اسکرین پر مزید کوئی گنجائش نہیں ہے۔"</string>
+    <!-- no translation found for out_of_space (6692471482459245734) -->
+    <skip />
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"پسندیدہ ٹرے میں مزید کوئی گنجائش نہیں ہے"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"ایپس کی فہرست"</string>
     <string name="all_apps_button_personal_label" msgid="1315764287305224468">"ذاتی ایپس کی فہرست"</string>
@@ -82,10 +85,8 @@
     <string name="permlab_write_settings" msgid="3574213698004620587">"ہوم ترتیبات اور شارٹ کٹس کو لکھیں"</string>
     <string name="permdesc_write_settings" msgid="5440712911516509985">"ایپ کو ہوم میں ترتیبات اور شارٹ کٹس کو تبدیل کرنے کی اجازت دیتا ہے۔"</string>
     <string name="msg_no_phone_permission" msgid="9208659281529857371">"<xliff:g id="APP_NAME">%1$s</xliff:g> کو فون کالیں کرنے کی اجازت نہیں ہے"</string>
-    <!-- no translation found for gadget_error_text (740356548025791839) -->
-    <skip />
-    <!-- no translation found for gadget_setup_text (1745356155479272374) -->
-    <skip />
+    <string name="gadget_error_text" msgid="740356548025791839">"ویجیٹ لوڈ نہیں کیا جا سکتا"</string>
+    <string name="gadget_setup_text" msgid="1745356155479272374">"سیٹ اپ مکمل کرنے کے لیے تھپتھپائیں"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"یہ ایک سسٹم ایپ ہے اور اسے اَن انسٹال نہیں کیا جا سکتا ہے۔"</string>
     <string name="folder_hint_text" msgid="5174843001373488816">"نام میں ترمیم کریں"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"<xliff:g id="APP_NAME">%1$s</xliff:g> غیر فعال ہے"</string>
@@ -160,7 +161,7 @@
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"دفتری پروفائل"</string>
     <string name="work_profile_edu_work_apps" msgid="7895468576497746520">"‏ورک ایپس پر بَیج لگایا گیا ہے اور آپ کا IT منتظم اسے دیکھ سکتا ہے"</string>
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"سمجھ آ گئی"</string>
-    <string name="work_apps_paused_title" msgid="3007471013401118920">"ورک ایپس آف ہیں"</string>
+    <string name="work_apps_paused_title" msgid="3040901117349444598">"ورک ایپس موقوف ہیں"</string>
     <string name="work_apps_paused_body" msgid="261634750995824906">"آپ کی ورک ایپس آپ کو اطلاعات نہیں بھیج سکتیں، آپ کی بیٹری کا استعمال یا آپ کے مقام تک رسائی حاصل نہیں کر سکتی ہیں"</string>
     <string name="work_apps_paused_content_description" msgid="5149623040804051095">"ورک ایپس آف ہیں۔ آپ کی ورک ایپس آپ کو اطلاعات نہیں بھیج سکتیں، آپ کی بیٹری استعمال یا آپ کے مقام تک رسائی حاصل نہیں کر سکتی ہیں"</string>
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"‏ورک ایپس پر بَیج لگایا ہے اور آپ کا IT منتظم انہیں دیکھ سکتا ہے"</string>

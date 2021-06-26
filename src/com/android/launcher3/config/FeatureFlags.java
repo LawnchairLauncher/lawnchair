@@ -102,6 +102,10 @@ public final class FeatureFlags {
     public static final BooleanFlag ENABLE_DEVICE_SEARCH = new DeviceFlag(
             "ENABLE_DEVICE_SEARCH", true, "Allows on device search in all apps");
 
+    public static final BooleanFlag ENABLE_DEVICE_SEARCH_PERFORMANCE_LOGGING = new DeviceFlag(
+            "ENABLE_DEVICE_SEARCH_PERFORMANCE_LOGGING", true,
+            "Allows on device search in all apps logging");
+
     public static final BooleanFlag IME_STICKY_SNACKBAR_EDU = getDebugFlag(
             "IME_STICKY_SNACKBAR_EDU", true, "Show sticky IME edu in AllApps");
 

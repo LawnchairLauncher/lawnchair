@@ -46,8 +46,8 @@
     <string name="widget_button_text" msgid="2880537293434387943">"ৱিজেটসমূহ"</string>
     <string name="widgets_full_sheet_search_bar_hint" msgid="8484659090860596457">"সন্ধান"</string>
     <string name="widgets_full_sheet_cancel_button_description" msgid="5766167035728653605">"সন্ধান বাকচত থকা পাঠ মচক"</string>
-    <string name="no_widgets_available" msgid="9140948620298620513">"কোনো ৱিজেট নাই"</string>
-    <string name="no_search_results" msgid="6518732304311458580">"সন্ধানৰ কোনো ফলাফল নাই"</string>
+    <string name="no_widgets_available" msgid="4337693382501046170">"ৱিজেট আৰু শ্বৰ্টকাট উপলব্ধ নহয়"</string>
+    <string name="no_search_results" msgid="3787956167293097509">"কোনো ৱিজেট আৰু শ্বৰ্টকাট পোৱা নগ’ল"</string>
     <string name="widgets_full_sheet_personal_tab" msgid="2743540105607120182">"ব্যক্তিগত"</string>
     <string name="widgets_full_sheet_work_tab" msgid="3767150027110633765">"কৰ্মস্থান"</string>
     <string name="widget_category_conversations" msgid="8894438636213590446">"বাৰ্তালাপ"</string>
@@ -64,7 +64,8 @@
     <string name="notifications_header" msgid="1404149926117359025">"জাননীসমূহ"</string>
     <string name="long_press_shortcut_to_add" msgid="5405328730817637737">"শ্বৰ্টকাট স্থানান্তৰ কৰিবলৈ দুবাৰ টিপি ধৰি ৰাখক।"</string>
     <string name="long_accessible_way_to_add_shortcut" msgid="2199537273817090740">"কোনো শ্বৰ্টকাট স্থানান্তৰ কৰিবলৈ দুবাৰ টিপি ধৰি ৰাখক অথবা কাষ্টম কাৰ্য ব্যৱহাৰ কৰক।"</string>
-    <string name="out_of_space" msgid="4691004494942118364">"এই গৃহ স্ক্ৰীণত আৰু বেছি ঠাই নাই।"</string>
+    <!-- no translation found for out_of_space (6692471482459245734) -->
+    <skip />
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"পছন্দৰ ট্ৰে\'ত আৰু বেছি ঠাই নাই"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"এপৰ সূচী"</string>
     <string name="all_apps_button_personal_label" msgid="1315764287305224468">"ব্যক্তিগত এপৰ তালিকা"</string>
@@ -82,10 +83,8 @@
     <string name="permlab_write_settings" msgid="3574213698004620587">"গৃহ ছেটিং আৰু শ্বৰ্টকাটবোৰ লিখিব পাৰে"</string>
     <string name="permdesc_write_settings" msgid="5440712911516509985">"এপটোক গৃহ পৃষ্ঠাত ছেটিং আৰু শ্বৰ্টকাটসমূহ সলনি কৰাৰ অনুমতি দিয়ে।"</string>
     <string name="msg_no_phone_permission" msgid="9208659281529857371">"<xliff:g id="APP_NAME">%1$s</xliff:g>ক ফ\'ন কলবোৰ কৰাৰ অনুমতি দিয়া হোৱা নাই"</string>
-    <!-- no translation found for gadget_error_text (740356548025791839) -->
-    <skip />
-    <!-- no translation found for gadget_setup_text (1745356155479272374) -->
-    <skip />
+    <string name="gadget_error_text" msgid="740356548025791839">"ৱিজেট ল’ড কৰিব নোৱাৰি"</string>
+    <string name="gadget_setup_text" msgid="1745356155479272374">"ছেটআপ সমাপ্ত কৰিবলৈ টিপক"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"এইটো এটা ছিষ্টেম এপ আৰু ইয়াক আনইনষ্টল কৰিব নোৱৰি"</string>
     <string name="folder_hint_text" msgid="5174843001373488816">"নাম সম্পাদনা কৰক"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"<xliff:g id="APP_NAME">%1$s</xliff:g> অক্ষম কৰা হ’ল"</string>
@@ -160,7 +159,7 @@
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"কৰ্মস্থানৰ প্ৰ\'ফাইল"</string>
     <string name="work_profile_edu_work_apps" msgid="7895468576497746520">"কৰ্মস্থানৰ এপ্‌সমূহ প্ৰতীকেৰে চিহ্নিত কৰা হয় আৰু সেইবোৰ আপোনাৰ আইটি প্ৰশাসকৰ বাবে দৃশ্যমান হয়"</string>
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"বুজি পালোঁ"</string>
-    <string name="work_apps_paused_title" msgid="3007471013401118920">"কৰ্মস্থানৰ এপ্‌সমূহ অফ হৈ আছে"</string>
+    <string name="work_apps_paused_title" msgid="3040901117349444598">"কাম সম্পর্কীয় এপ্‌সমূহ পজ হৈ আছে"</string>
     <string name="work_apps_paused_body" msgid="261634750995824906">"আপোনাৰ কৰ্মস্থানৰ এপ্‌সমূহে আপোনালৈ জাননী পঠিয়াব, আপোনাৰ বেটাৰী ব্যৱহাৰ কৰিব অথবা আপোনাৰ অৱস্থান এক্সেছ কৰিব নোৱাৰে"</string>
     <string name="work_apps_paused_content_description" msgid="5149623040804051095">"কৰ্মস্থানৰ এপ্‌সমূহ অফ হৈ আছে। আপোনাৰ কৰ্মস্থানৰ এপ্‌সমূহে আপোনালৈ জাননী পঠিয়াব, আপোনাৰ বেটাৰী ব্যৱহাৰ কৰিব অথবা আপোনাৰ অৱস্থান এক্সেছ কৰিব নোৱাৰে"</string>
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"কর্মস্থানৰ এপ্‌সমূহ প্ৰতীকেৰে চিহ্নিত কৰা হয় আৰু সেইবোৰ আপোনাৰ আইটি প্ৰশাসকৰ বাবে দৃশ্যমান হয়"</string>
