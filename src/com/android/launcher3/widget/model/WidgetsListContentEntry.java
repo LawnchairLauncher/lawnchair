@@ -26,14 +26,39 @@ import java.util.List;
  */
 public final class WidgetsListContentEntry extends WidgetsListBaseEntry {
 
+    private final int mMaxSpanSizeInCells;
+
+    /**
+     * Constructor for {@link WidgetsListContentEntry}.
+     *
+     * @param pkgItem package info associated with the entry
+     * @param titleSectionName title section name associated with the entry.
+     * @param items list of widgets for the package.
+     */
     public WidgetsListContentEntry(PackageItemInfo pkgItem, String titleSectionName,
             List<WidgetItem> items) {
+        this(pkgItem, titleSectionName, items, /* maxSpanSizeInCells= */ 0);
+    }
+
+    /**
+     * Constructor for {@link WidgetsListContentEntry}.
+     *
+     * @param pkgItem package info associated with the entry
+     * @param titleSectionName title section name associated with the entry.
+     * @param items list of widgets for the package.
+     * @param maxSpanSizeInCells the max horizontal span in cells that is allowed for grouping more
+     *                           than one widgets in a table row.
+     */
+    public WidgetsListContentEntry(PackageItemInfo pkgItem, String titleSectionName,
+            List<WidgetItem> items, int maxSpanSizeInCells) {
         super(pkgItem, titleSectionName, items);
+        mMaxSpanSizeInCells = maxSpanSizeInCells;
     }
 
     @Override
     public String toString() {
-        return "Content:" + mPkgItem.packageName + ":" + mWidgets.size();
+        return "Content:" + mPkgItem.packageName + ":" + mWidgets.size() + " maxSpanSizeInCells: "
+                + mMaxSpanSizeInCells;
     }
 
     @Override
@@ -42,11 +67,36 @@ public final class WidgetsListContentEntry extends WidgetsListBaseEntry {
         return RANK_WIDGETS_LIST_CONTENT;
     }
 
+    /**
+     * Returns a copy of this {@link WidgetsListContentEntry} with updated
+     * {@param maxSpanSizeInCells}.
+     *
+     * @param maxSpanSizeInCells the maximum horizontal span in cells that is allowed for grouping
+     *                           more than one widgets in a table row.
+     */
+    public WidgetsListContentEntry withMaxSpanSize(int maxSpanSizeInCells) {
+        if (mMaxSpanSizeInCells == maxSpanSizeInCells) return this;
+        return new WidgetsListContentEntry(
+                mPkgItem,
+                mTitleSectionName,
+                mWidgets,
+                /* maxSpanSizeInCells= */ maxSpanSizeInCells);
+    }
+
+    /**
+     * Returns the max horizontal span size in cells that is allowed for grouping more than one
+     * widget in a table row.
+     */
+    public int getMaxSpanSizeInCells() {
+        return mMaxSpanSizeInCells;
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (!(obj instanceof WidgetsListContentEntry)) return false;
         WidgetsListContentEntry otherEntry = (WidgetsListContentEntry) obj;
         return mWidgets.equals(otherEntry.mWidgets) && mPkgItem.equals(otherEntry.mPkgItem)
-                && mTitleSectionName.equals(otherEntry.mTitleSectionName);
+                && mTitleSectionName.equals(otherEntry.mTitleSectionName)
+                && mMaxSpanSizeInCells == otherEntry.mMaxSpanSizeInCells;
     }
 }

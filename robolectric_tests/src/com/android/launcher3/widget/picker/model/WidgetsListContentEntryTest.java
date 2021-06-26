@@ -49,8 +49,10 @@ import java.util.Map;
 
 @RunWith(RobolectricTestRunner.class)
 public final class WidgetsListContentEntryTest {
-    private static final String PACKAGE_NAME = "com.google.test";
-    private final PackageItemInfo mPackageItemInfo = new PackageItemInfo(PACKAGE_NAME);
+    private static final String PACKAGE_NAME = "com.android.test";
+    private static final String PACKAGE_NAME_2 = "com.android.test2";
+    private final PackageItemInfo mPackageItemInfo1 = new PackageItemInfo(PACKAGE_NAME);
+    private final PackageItemInfo mPackageItemInfo2 = new PackageItemInfo(PACKAGE_NAME_2);
     private final ComponentName mWidget1 = ComponentName.createRelative(PACKAGE_NAME, ".mWidget1");
     private final ComponentName mWidget2 = ComponentName.createRelative(PACKAGE_NAME, ".mWidget2");
     private final ComponentName mWidget3 = ComponentName.createRelative(PACKAGE_NAME, ".mWidget3");
@@ -91,7 +93,7 @@ public final class WidgetsListContentEntryTest {
         WidgetItem widgetItem3 = createWidgetItem(mWidget3, /* spanX= */ 2, /* spanY= */ 3);
 
         // WHEN creates a WidgetsListRowEntry with the unsorted widgets.
-        WidgetsListContentEntry widgetsListRowEntry = new WidgetsListContentEntry(mPackageItemInfo,
+        WidgetsListContentEntry widgetsListRowEntry = new WidgetsListContentEntry(mPackageItemInfo1,
                 /* titleSectionName= */ "T",
                 List.of(widgetItem1, widgetItem2, widgetItem3));
 
@@ -100,7 +102,7 @@ public final class WidgetsListContentEntryTest {
                 .containsExactly(widgetItem3, widgetItem1, widgetItem2)
                 .inOrder();
         assertThat(widgetsListRowEntry.mTitleSectionName).isEqualTo("T");
-        assertThat(widgetsListRowEntry.mPkgItem).isEqualTo(mPackageItemInfo);
+        assertThat(widgetsListRowEntry.mPkgItem).isEqualTo(mPackageItemInfo1);
     }
 
     @Test
@@ -114,7 +116,7 @@ public final class WidgetsListContentEntryTest {
         WidgetItem widgetItem3 = createWidgetItem(mWidget1, /* spanX= */ 2, /* spanY= */ 2);
 
         // WHEN creates a WidgetsListRowEntry with the unsorted widgets.
-        WidgetsListContentEntry widgetsListRowEntry = new WidgetsListContentEntry(mPackageItemInfo,
+        WidgetsListContentEntry widgetsListRowEntry = new WidgetsListContentEntry(mPackageItemInfo1,
                 /* titleSectionName= */ "T",
                 List.of(widgetItem1, widgetItem2, widgetItem3));
 
@@ -124,7 +126,7 @@ public final class WidgetsListContentEntryTest {
                 .containsExactly(widgetItem2, widgetItem3, widgetItem1)
                 .inOrder();
         assertThat(widgetsListRowEntry.mTitleSectionName).isEqualTo("T");
-        assertThat(widgetsListRowEntry.mPkgItem).isEqualTo(mPackageItemInfo);
+        assertThat(widgetsListRowEntry.mPkgItem).isEqualTo(mPackageItemInfo1);
     }
 
     @Test
@@ -140,7 +142,7 @@ public final class WidgetsListContentEntryTest {
         WidgetItem widgetItem4 = createWidgetItem(mWidget3, /* spanX= */ 2, /* spanY= */ 2);
 
         // WHEN creates a WidgetsListRowEntry with the unsorted widgets.
-        WidgetsListContentEntry widgetsListRowEntry = new WidgetsListContentEntry(mPackageItemInfo,
+        WidgetsListContentEntry widgetsListRowEntry = new WidgetsListContentEntry(mPackageItemInfo1,
                 /* titleSectionName= */ "T",
                 List.of(widgetItem1, widgetItem2, widgetItem3, widgetItem4));
 
@@ -151,8 +153,95 @@ public final class WidgetsListContentEntryTest {
                 .containsExactly(widgetItem4, widgetItem2, widgetItem1, widgetItem3)
                 .inOrder();
         assertThat(widgetsListRowEntry.mTitleSectionName).isEqualTo("T");
-        assertThat(widgetsListRowEntry.mPkgItem).isEqualTo(mPackageItemInfo);
+        assertThat(widgetsListRowEntry.mPkgItem).isEqualTo(mPackageItemInfo1);
     }
+
+    @Test
+    public void equals_entriesWithDifferentPackageItemInfo_returnFalse() {
+        WidgetItem widgetItem1 = createWidgetItem(mWidget1, /* spanX= */ 2, /* spanY= */ 3);
+        WidgetsListContentEntry widgetsListRowEntry1 = new WidgetsListContentEntry(
+                mPackageItemInfo1,
+                /* titleSectionName= */ "T",
+                List.of(widgetItem1),
+                /* maxSpanSizeInCells= */ 3);
+        WidgetsListContentEntry widgetsListRowEntry2 = new WidgetsListContentEntry(
+                mPackageItemInfo2,
+                /* titleSectionName= */ "T",
+                List.of(widgetItem1),
+                /* maxSpanSizeInCells= */ 3);
+
+        assertThat(widgetsListRowEntry1.equals(widgetsListRowEntry2)).isFalse();
+    }
+
+    @Test
+    public void equals_entriesWithDifferentTitleSectionName_returnFalse() {
+        WidgetItem widgetItem1 = createWidgetItem(mWidget1, /* spanX= */ 2, /* spanY= */ 3);
+        WidgetsListContentEntry widgetsListRowEntry1 = new WidgetsListContentEntry(
+                mPackageItemInfo1,
+                /* titleSectionName= */ "T",
+                List.of(widgetItem1),
+                /* maxSpanSizeInCells= */ 3);
+        WidgetsListContentEntry widgetsListRowEntry2 = new WidgetsListContentEntry(
+                mPackageItemInfo1,
+                /* titleSectionName= */ "S",
+                List.of(widgetItem1),
+                /* maxSpanSizeInCells= */ 3);
+
+        assertThat(widgetsListRowEntry1.equals(widgetsListRowEntry2)).isFalse();
+    }
+
+    @Test
+    public void equals_entriesWithDifferentWidgetsList_returnFalse() {
+        WidgetItem widgetItem1 = createWidgetItem(mWidget1, /* spanX= */ 2, /* spanY= */ 3);
+        WidgetItem widgetItem2 = createWidgetItem(mWidget2, /* spanX= */ 2, /* spanY= */ 3);
+        WidgetsListContentEntry widgetsListRowEntry1 = new WidgetsListContentEntry(
+                mPackageItemInfo1,
+                /* titleSectionName= */ "T",
+                List.of(widgetItem1),
+                /* maxSpanSizeInCells= */ 3);
+        WidgetsListContentEntry widgetsListRowEntry2 = new WidgetsListContentEntry(
+                mPackageItemInfo1,
+                /* titleSectionName= */ "T",
+                List.of(widgetItem2),
+                /* maxSpanSizeInCells= */ 3);
+
+        assertThat(widgetsListRowEntry1.equals(widgetsListRowEntry2)).isFalse();
+    }
+
+    @Test
+    public void equals_entriesWithDifferentMaxSpanSize_returnFalse() {
+        WidgetItem widgetItem1 = createWidgetItem(mWidget1, /* spanX= */ 2, /* spanY= */ 3);
+        WidgetsListContentEntry widgetsListRowEntry1 = new WidgetsListContentEntry(
+                mPackageItemInfo1,
+                /* titleSectionName= */ "T",
+                List.of(widgetItem1),
+                /* maxSpanSizeInCells= */ 3);
+        WidgetsListContentEntry widgetsListRowEntry2 = new WidgetsListContentEntry(
+                mPackageItemInfo1,
+                /* titleSectionName= */ "T",
+                List.of(widgetItem1),
+                /* maxSpanSizeInCells= */ 2);
+
+        assertThat(widgetsListRowEntry1.equals(widgetsListRowEntry2)).isFalse();
+    }
+
+    @Test
+    public void equals_entriesWithSameContents_returnTrue() {
+        WidgetItem widgetItem1 = createWidgetItem(mWidget1, /* spanX= */ 2, /* spanY= */ 3);
+        WidgetsListContentEntry widgetsListRowEntry1 = new WidgetsListContentEntry(
+                mPackageItemInfo1,
+                /* titleSectionName= */ "T",
+                List.of(widgetItem1),
+                /* maxSpanSizeInCells= */ 3);
+        WidgetsListContentEntry widgetsListRowEntry2 = new WidgetsListContentEntry(
+                mPackageItemInfo1,
+                /* titleSectionName= */ "T",
+                List.of(widgetItem1),
+                /* maxSpanSizeInCells= */ 3);
+
+        assertThat(widgetsListRowEntry1.equals(widgetsListRowEntry2)).isTrue();
+    }
+
 
     private WidgetItem createWidgetItem(ComponentName componentName, int spanX, int spanY) {
         String label = mWidgetsToLabels.get(componentName);
