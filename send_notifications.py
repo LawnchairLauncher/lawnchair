@@ -68,5 +68,5 @@ for commit in reversed(commits):
 send_message_to_ci_channel(message=message)
 send_silent_message_to_team_group(message=message)
 
-with open(os.listdir(artifact_directory)[0], 'rb') as apk:
+with open(f'{artifact_directory}/{os.listdir(artifact_directory)[0]}', 'rb') as apk:
     send_document_to_ci_channel(document=apk)
