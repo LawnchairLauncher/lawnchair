@@ -2349,30 +2349,32 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
 
         try {
             final LauncherAppWidgetProviderInfo appWidgetInfo;
-            String reason = "";
+            String removalReason = "";
 
             if (item.hasRestoreFlag(LauncherAppWidgetInfo.FLAG_PROVIDER_NOT_READY)) {
                 // If the provider is not ready, bind as a pending widget.
                 appWidgetInfo = null;
-                reason = "the provider not ready.";
+                removalReason = "the provider isn't ready.";
             } else if (item.hasRestoreFlag(LauncherAppWidgetInfo.FLAG_ID_NOT_VALID)) {
                 // The widget id is not valid. Try to find the widget based on the provider info.
                 appWidgetInfo = mAppWidgetManager.findProvider(item.providerName, item.user);
                 if (appWidgetInfo == null) {
                     if (WidgetsModel.GO_DISABLE_WIDGETS) {
-                        reason = "widgets are disabled on go device.";
+                        removalReason = "widgets are disabled on go device.";
                     } else {
-                        reason = "WidgetManagerHelper cannot find a provider from provider info.";
+                        removalReason =
+                                "WidgetManagerHelper cannot find a provider from provider info.";
                     }
                 }
             } else {
                 appWidgetInfo = mAppWidgetManager.getLauncherAppWidgetInfo(item.appWidgetId);
                 if (appWidgetInfo == null) {
                     if (item.appWidgetId <= LauncherAppWidgetInfo.CUSTOM_WIDGET_ID) {
-                        reason = "CustomWidgetManager cannot find provider from that widget id .";
+                        removalReason =
+                                "CustomWidgetManager cannot find provider from that widget id.";
                     } else {
-                        reason = "AppWidgetManager cannot find provider for that widget id."
-                                + " It could be due to AppWidgetService is not available, or the"
+                        removalReason = "AppWidgetManager cannot find provider for that widget id."
+                                + " It could be because AppWidgetService is not available, or the"
                                 + " appWidgetId has not been bound to a the provider yet, or you"
                                 + " don't have access to that appWidgetId.";
                     }
@@ -2385,7 +2387,7 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
                 if (appWidgetInfo == null) {
                     FileLog.d(TAG, "Removing restored widget: id=" + item.appWidgetId
                             + " belongs to component " + item.providerName + " user " + item.user
-                            + ", as the provider is null and " + reason);
+                            + ", as the provider is null and " + removalReason);
                     getModelWriter().deleteItemFromDatabase(item);
                     return null;
                 }
