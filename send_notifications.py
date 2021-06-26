@@ -20,7 +20,7 @@ def send_message_to_ci_channel(message):
         'disable_web_page_preview': 'true'
     }
     requests.post(
-        post = f'https://api.telegram.org/bot{telegram_ci_bot_token}/sendMessage',
+        url = f'https://api.telegram.org/bot{telegram_ci_bot_token}/sendMessage',
         data = data
     )
 
@@ -32,7 +32,7 @@ def send_document_to_ci_channel(document):
         'document': document
     }
     requests.post(
-        post = f'https://api.telegram.org/bot{telegram_ci_bot_token}/sendDocument',
+        url = f'https://api.telegram.org/bot{telegram_ci_bot_token}/sendDocument',
         data = data,
         files = files
     )
@@ -46,7 +46,7 @@ def send_silent_message_to_team_group(message):
         'disable_notification': 'true'
     }
     requests.post(
-        post = f'https://api.telegram.org/bot{telegram_ci_bot_token}/sendMessage',
+        url = f'https://api.telegram.org/bot{telegram_ci_bot_token}/sendMessage',
         data = data
     )
 
