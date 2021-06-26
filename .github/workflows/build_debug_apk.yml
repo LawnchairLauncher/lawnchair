@@ -77,6 +77,6 @@ jobs:
           GITHUB_EVENT_BEFORE: ${{ github.event.before }}
           TELEGRAM_CI_BOT_TOKEN: ${{ secrets.TELEGRAM_CI_BOT_TOKEN }}
           TELEGRAM_CI_CHANNEL_ID: ${{ secrets.TELEGRAM_CI_CHANNEL_ID }}
-          TELEGAM_TEAM_GROUP_ID: ${{ secrets.NOTIFY_CHANNEL_ID }}
+          TELEGRAM_TEAM_GROUP_ID: ${{ secrets.NOTIFY_CHANNEL_ID }}
           ARTIFACT_DIRECTORY: artifacts/debug-apk
           GITHUB_REF: ${{ github.ref }}
