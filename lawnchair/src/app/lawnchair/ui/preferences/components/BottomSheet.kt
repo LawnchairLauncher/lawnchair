@@ -22,7 +22,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun BottomSheet(
     sheetState: BottomSheetState = rememberBottomSheetState(initialValue = ModalBottomSheetValue.Hidden),
-    scrimColor: Color = ModalBottomSheetDefaults.scrimColor,
+    scrimColor: Color = BottomSheetDefaults.scrimColor,
     sheetContent: @Composable () -> Unit,
 ) {
     val currentSheetContent by rememberUpdatedState(sheetContent)
@@ -163,4 +163,14 @@ class BottomSheetState(
             }
         )
     }
+}
+
+object BottomSheetDefaults {
+    val scrimColor: Color
+        @Composable
+        get() = if (MaterialTheme.colors.isLight) {
+            MaterialTheme.colors.onBackground.copy(alpha = 0.32F)
+        } else {
+            MaterialTheme.colors.background.copy(alpha = 0.32F)
+        }
 }
