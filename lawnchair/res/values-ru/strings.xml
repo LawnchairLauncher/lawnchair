@@ -100,7 +100,7 @@
     <string name="accent_color">Цветовой акцент</string>
     <string name="done">Готово</string>
     <string name="loading">Загрузка…</string>
-    <string name="system">System</string>
-    <string name="custom">Custom</string>
-    <string name="custom_color">Custom Color</string>
+    <string name="system">Система</string>
+    <string name="custom">Настраиваемый</string>
+    <string name="custom_color">Пользовательский цвет</string>
 </resources>
