@@ -99,6 +99,6 @@
     <string name="done">Tamam</string>
     <string name="loading">Yükleniyor…</string>
     <string name="system">Sistem</string>
-    <string name="custom">Custom</string>
-    <string name="custom_color">Custom Color</string>
+    <string name="custom">Özel</string>
+    <string name="custom_color">Özel Renk</string>
 </resources>
