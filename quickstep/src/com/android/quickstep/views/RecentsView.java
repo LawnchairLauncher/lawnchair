@@ -142,6 +142,7 @@ import com.android.quickstep.RecentsAnimationController;
 import com.android.quickstep.RecentsAnimationTargets;
 import com.android.quickstep.RecentsModel;
 import com.android.quickstep.RecentsModel.TaskVisualsChangeListener;
+import com.android.quickstep.RemoteAnimationTargets;
 import com.android.quickstep.SystemUiProxy;
 import com.android.quickstep.TaskOverlayFactory;
 import com.android.quickstep.TaskThumbnailCache;
@@ -394,8 +395,6 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
 
     private final TaskOverlayFactory mTaskOverlayFactory;
 
-    private int mOrientation;
-
     protected boolean mDisallowScrollToClearAll;
     private boolean mOverlayEnabled;
     protected boolean mFreezeViewVisibility;
@@ -590,7 +589,6 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                 .getDimensionPixelSize(R.dimen.recents_fast_fling_velocity);
         mModel = RecentsModel.INSTANCE.get(context);
         mIdp = InvariantDeviceProfile.INSTANCE.get(context);
-        mOrientation = getResources().getConfiguration().orientation;
 
         mClearAllButton = (ClearAllButton) LayoutInflater.from(context)
                 .inflate(R.layout.overview_clear_all_button, this, false);
@@ -847,11 +845,13 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     public void launchSideTaskInLiveTileModeForRestartedApp(int taskId) {
         if (mRunningTaskId != -1 && mRunningTaskId == taskId &&
                 getLiveTileParams().getTargetSet().findTask(taskId) != null) {
-            launchSideTaskInLiveTileMode(taskId, getLiveTileParams().getTargetSet().apps);
+            RemoteAnimationTargets targets = getLiveTileParams().getTargetSet();
+            launchSideTaskInLiveTileMode(taskId, targets.apps, targets.wallpapers, targets.nonApps);
         }
     }
 
-    public void launchSideTaskInLiveTileMode(int taskId, RemoteAnimationTargetCompat[] apps) {
+    public void launchSideTaskInLiveTileMode(int taskId, RemoteAnimationTargetCompat[] apps,
+            RemoteAnimationTargetCompat[] wallpaper, RemoteAnimationTargetCompat[] nonApps) {
         AnimatorSet anim = new AnimatorSet();
         TaskView taskView = getTaskView(taskId);
         if (taskView == null || !isTaskViewVisible(taskView)) {
@@ -880,11 +880,8 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                 }
             });
         } else {
-            TaskViewUtils.composeRecentsLaunchAnimator(
-                    anim, taskView, apps,
-                    mLiveTileParams.getTargetSet().wallpapers,
-                    mLiveTileParams.getTargetSet().nonApps, true /* launcherClosing */,
-                    mActivity.getStateManager(), this,
+            TaskViewUtils.composeRecentsLaunchAnimator(anim, taskView, apps, wallpaper, nonApps,
+                    true /* launcherClosing */, mActivity.getStateManager(), this,
                     getDepthController());
         }
         anim.start();
@@ -1251,9 +1248,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
 
     private void updateOrientationHandler() {
         // Handle orientation changes.
-        PagedOrientationHandler oldOrientationHandler = mOrientationHandler;
         mOrientationHandler = mOrientationState.getOrientationHandler();
-
         mIsRtl = mOrientationHandler.getRecentsRtlSetting(getResources());
         setLayoutDirection(mIsRtl
                 ? View.LAYOUT_DIRECTION_RTL
@@ -1262,12 +1257,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                 ? View.LAYOUT_DIRECTION_LTR
                 : View.LAYOUT_DIRECTION_RTL);
         mClearAllButton.setRotation(mOrientationHandler.getDegreesRotated());
-
-        if (!mOrientationHandler.equals(oldOrientationHandler)) {
-            // Changed orientations, update controllers so they intercept accordingly.
-            mActivity.getDragLayer().recreateControllers();
-        }
-
+        mActivity.getDragLayer().recreateControllers();
         boolean isInLandscape = mOrientationState.getTouchRotation() != ROTATION_0
                 || mOrientationState.getRecentsActivityRotation() != ROTATION_0;
         mActionsView.updateHiddenFlags(HIDDEN_NON_ZERO_ROTATION,
@@ -2656,15 +2646,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     @Override
     protected void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        if (LIVE_TILE.get() && mEnableDrawingLiveTile && newConfig.orientation != mOrientation) {
-            switchToScreenshot(
-                    () -> finishRecentsAnimation(true /* toRecents */, false /* showPip */,
-                            this::updateRecentsRotation));
-            mEnableDrawingLiveTile = false;
-        } else {
-            updateRecentsRotation();
-        }
-        mOrientation = newConfig.orientation;
+        updateRecentsRotation();
     }
 
     /**
@@ -3420,14 +3402,24 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             if (onFinishComplete != null) {
                 onFinishComplete.run();
             }
-            // After we finish the recents animation, the current task id should be correctly
-            // reset so that when the task is launched from Overview later, it goes through the
-            // flow of starting a new task instead of finishing recents animation to app. A
-            // typical example of this is (1) user swipes up from app to Overview (2) user
-            // taps on QSB (3) user goes back to Overview and launch the most recent task.
-            setCurrentTask(-1);
-            mRecentsAnimationController = null;
+            onRecentsAnimationComplete();
         }, sendUserLeaveHint);
+    }
+
+    /**
+     * Called when a running recents animation has finished or canceled.
+     */
+    public void onRecentsAnimationComplete() {
+        // At this point, the recents animation is not running and if the animation was canceled
+        // by a display rotation then reset this state to show the screenshot
+        setRunningTaskViewShowScreenshot(true);
+        // After we finish the recents animation, the current task id should be correctly
+        // reset so that when the task is launched from Overview later, it goes through the
+        // flow of starting a new task instead of finishing recents animation to app. A
+        // typical example of this is (1) user swipes up from app to Overview (2) user
+        // taps on QSB (3) user goes back to Overview and launch the most recent task.
+        setCurrentTask(-1);
+        mRecentsAnimationController = null;
     }
 
     public void setDisallowScrollToClearAll(boolean disallowScrollToClearAll) {

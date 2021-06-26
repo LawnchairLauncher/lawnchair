@@ -46,8 +46,8 @@
     <string name="widget_button_text" msgid="2880537293434387943">"ವಿಜೆಟ್‌ಗಳು"</string>
     <string name="widgets_full_sheet_search_bar_hint" msgid="8484659090860596457">"ಹುಡುಕಿ"</string>
     <string name="widgets_full_sheet_cancel_button_description" msgid="5766167035728653605">"ಹುಡುಕಾಟ ಪೆಟ್ಟಿಗೆಯಿಂದ ಪಠ್ಯವನ್ನು ತೆರವುಗೊಳಿಸಿ"</string>
-    <string name="no_widgets_available" msgid="9140948620298620513">"ಯಾವುದೇ ವಿಜೆಟ್‌ಗಳು ಲಭ್ಯವಿಲ್ಲ"</string>
-    <string name="no_search_results" msgid="6518732304311458580">"ಯಾವುದೇ ಹುಡುಕಾಟ ಫಲಿತಾಂಶಗಳಿಲ್ಲ"</string>
+    <string name="no_widgets_available" msgid="4337693382501046170">"ವಿಜೆಟ್‌ಗಳು ಮತ್ತು ಶಾರ್ಟ್‌ಕಟ್‌ಗಳು ಲಭ್ಯವಿಲ್ಲ"</string>
+    <string name="no_search_results" msgid="3787956167293097509">"ಯಾವುದೇ ವಿಜೆಟ್‌ಗಳು ಅಥವಾ ಶಾರ್ಟ್‌ಕಟ್‌ಗಳು ಕಂಡುಬಂದಿಲ್ಲ"</string>
     <string name="widgets_full_sheet_personal_tab" msgid="2743540105607120182">"ವೈಯಕ್ತಿಕ"</string>
     <string name="widgets_full_sheet_work_tab" msgid="3767150027110633765">"ಕೆಲಸ"</string>
     <string name="widget_category_conversations" msgid="8894438636213590446">"ಸಂವಾದಗಳು"</string>
@@ -64,7 +64,8 @@
     <string name="notifications_header" msgid="1404149926117359025">"ಅಧಿಸೂಚನೆಗಳು"</string>
     <string name="long_press_shortcut_to_add" msgid="5405328730817637737">"ಶಾರ್ಟ್‌ಕಟ್ ಸರಿಸಲು ಸ್ಪರ್ಶಿಸಿ ಮತ್ತು ಹಿಡಿದುಕೊಳ್ಳಿ."</string>
     <string name="long_accessible_way_to_add_shortcut" msgid="2199537273817090740">"ಶಾರ್ಟ್‌ಕಟ್ ಸರಿಸಲು ಅಥವಾ ಕಸ್ಟಮ್ ಕ್ರಿಯೆಗಳನ್ನು ಬಳಸಲು ಡಬಲ್-ಟ್ಯಾಪ್ ಮಾಡಿ ಮತ್ತು ಹಿಡಿದುಕೊಳ್ಳಿ."</string>
-    <string name="out_of_space" msgid="4691004494942118364">"ಈ ಮುಖಪುಟದ ಪರದೆಯಲ್ಲಿ ಹೆಚ್ಚು ಸ್ಥಳಾವಕಾಶವಿಲ್ಲ."</string>
+    <!-- no translation found for out_of_space (6692471482459245734) -->
+    <skip />
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"ಮೆಚ್ಚಿನವುಗಳ ಟ್ರೇನಲ್ಲಿ ಹೆಚ್ಚಿನ ಸ್ಥಳಾವಕಾಶವಿಲ್ಲ"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"ಅಪ್ಲಿಕೇಶನ್‌ಗಳ ಪಟ್ಟಿ"</string>
     <string name="all_apps_button_personal_label" msgid="1315764287305224468">"ವೈಯಕ್ತಿಕ ಅಪ್ಲಿಕೇಶನ್‌ಗಳ ಪಟ್ಟಿ"</string>
@@ -82,10 +83,8 @@
     <string name="permlab_write_settings" msgid="3574213698004620587">"ಮುಖಪುಟದ ಸೆಟ್ಟಿಂಗ್‌ಗಳು ಮತ್ತು ಶಾರ್ಟ್‌ಕಟ್‌ಗಳನ್ನು ಬರೆಯಿರಿ"</string>
     <string name="permdesc_write_settings" msgid="5440712911516509985">"ಮುಖಪುಟದಲ್ಲಿ ಸೆಟ್ಟಿಂಗ್‌ಗಳು ಮತ್ತು ಶಾರ್ಟ್‌ಕಟ್‌ಗಳನ್ನು ಬದಲಾಯಿಸಲು ಅಪ್ಲಿಕೇಶನ್‌ಗೆ ಅನುಮತಿ ನೀಡುತ್ತದೆ."</string>
     <string name="msg_no_phone_permission" msgid="9208659281529857371">"ಫೋನ್ ಕರೆಗಳನ್ನು ಮಾಡಲು <xliff:g id="APP_NAME">%1$s</xliff:g> ಅಪ್ಲಿಕೇಶನ್‌‌ಗೆ ಅನುಮತಿಸಲಾಗುವುದಿಲ್ಲ"</string>
-    <!-- no translation found for gadget_error_text (740356548025791839) -->
-    <skip />
-    <!-- no translation found for gadget_setup_text (1745356155479272374) -->
-    <skip />
+    <string name="gadget_error_text" msgid="740356548025791839">"ವಿಜೆಟ್ ಅನ್ನು ಲೋಡ್ ಮಾಡಲು ಸಾಧ್ಯವಿಲ್ಲ"</string>
+    <string name="gadget_setup_text" msgid="1745356155479272374">"ಸೆಟಪ್ ಪೂರ್ಣಗೊಳಿಸಲು ಟ್ಯಾಪ್ ಮಾಡಿ"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"ಇದೊಂದು ಅಪ್ಲಿಕೇಶನ್ ಆಗಿದೆ ಮತ್ತು ಅಸ್ಥಾಪಿಸಲು ಸಾಧ್ಯವಿಲ್ಲ."</string>
     <string name="folder_hint_text" msgid="5174843001373488816">"ಹೆಸರನ್ನು ಎಡಿಟ್ ಮಾಡಿ"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"<xliff:g id="APP_NAME">%1$s</xliff:g> ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಲಾಗಿದೆ"</string>
@@ -160,7 +159,7 @@
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"ಕೆಲಸದ ಪ್ರೊಫೈಲ್"</string>
     <string name="work_profile_edu_work_apps" msgid="7895468576497746520">"ಕೆಲಸಕ್ಕೆ ಸಂಬಂಧಿಸಿದ ಆ್ಯಪ್‌ಗಳನ್ನು ಬ್ಯಾಡ್ಜ್ ಮಾಡಲಾಗಿದೆ ಮತ್ತು ಅವುಗಳು ನಿಮ್ಮ IT ನಿರ್ವಾಹಕರಿಗೆ ಗೋಚರಿಸುತ್ತವೆ"</string>
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"ಸರಿ"</string>
-    <string name="work_apps_paused_title" msgid="3007471013401118920">"ಕೆಲಸಕ್ಕೆ ಸಂಬಂಧಿಸಿದ ಆ್ಯಪ್‌ಗಳು ಆಫ್ ಆಗಿವೆ"</string>
+    <string name="work_apps_paused_title" msgid="3040901117349444598">"ಉದ್ಯೋಗದ ಆ್ಯಪ್‌ಗಳನ್ನು ವಿರಾಮಗೊಲಿಸಲಾಗಿದೆ"</string>
     <string name="work_apps_paused_body" msgid="261634750995824906">"ನಿಮ್ಮ ಕೆಲಸಕ್ಕೆ ಸಂಬಂಧಿಸಿದ ಆ್ಯಪ್‌ಗಳಿಗೆ ನಿಮಗೆ ಅಧಿಸೂಚನೆಗಳನ್ನು ಕಳುಹಿಸಲು, ನಿಮ್ಮ ಬ್ಯಾಟರಿಯನ್ನು ಬಳಸಲು ಅಥವಾ ನಿಮ್ಮ ಸ್ಥಳವನ್ನು ಪ್ರವೇಶಿಸಲು ಸಾಧ್ಯವಿಲ್ಲ"</string>
     <string name="work_apps_paused_content_description" msgid="5149623040804051095">"ಕೆಲಸಕ್ಕೆ ಸಂಬಂಧಿಸಿದ ಆ್ಯಪ್‌ಗಳು ಆಫ್ ಆಗಿವೆ. ನಿಮ್ಮ ಕೆಲಸಕ್ಕೆ ಸಂಬಂಧಿಸಿದ ಆ್ಯಪ್‌ಗಳು ನಿಮಗೆ ಅಧಿಸೂಚನೆಗಳನ್ನು ಕಳುಹಿಸಲು, ನಿಮ್ಮ ಬ್ಯಾಟರಿಯನ್ನು ಬಳಸಲು ಅಥವಾ ನಿಮ್ಮ ಸ್ಥಳವನ್ನು ಪ್ರವೇಶಿಸಲು ಸಾಧ್ಯವಿಲ್ಲ"</string>
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"ಕೆಲಸಕ್ಕೆ ಸಂಬಂಧಿಸಿದ ಆ್ಯಪ್‌ಗಳು ಬ್ಯಾಡ್ಜ್ ಮಾಡಲಾಗಿದೆ ಮತ್ತು ನಿಮ್ಮ IT ನಿರ್ವಾಹಕರಿಗೆ ಗೋಚರಿಸುತ್ತದೆ"</string>
