@@ -164,13 +164,13 @@ fun ColorSwatchGrid(
                         isSelected = entry.value == customColor
                     )
                     if (index != columnCount - 1) {
-                        Spacer(modifier = Modifier.requiredWidth(8.dp))
+                        Spacer(modifier = Modifier.requiredWidth(12.dp))
                     }
                 }
             }
 
             if (rowNo != rowCount) {
-                Spacer(modifier = Modifier.requiredHeight(8.dp))
+                Spacer(modifier = Modifier.requiredHeight(12.dp))
             }
         }
     }
