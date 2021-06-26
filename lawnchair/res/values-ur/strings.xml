@@ -44,7 +44,7 @@
     <string name="notification_dots">Notification Dots</string>
     <string name="smartspace_preferences">Preferences</string>
     <string name="about_label">About</string>
-    <string name="news">News</string>
+    <string name="news">خبر</string>
     <string name="support">Support</string>
     <string name="acknowledgements">Acknowledgements</string>
     <string name="devops">DevOps</string>
@@ -76,7 +76,7 @@
     <string name="hotseat_qsb_label">Show Search Bar</string>
     <string name="dt2s_admin_hint_title">ایڈمن اجازت درکار ہے</string>
     <string name="dt2s_admin_hint">دو بار دوبا کیر سولانے کے لئے، ایڈمن کی اجازت دیں۔</string>
-    <string name="dt2s_admin_warning">دو بار دوبا کر سولانا غیر فعال ہو جائے گا۔</string>
+    <string name="dt2s_admin_warning">دو بار دوبا کر سولانا غیر فعال ہو جائے گا۔.</string>
     <string name="dt2s_a11y_hint_title">رسائی کی خدمت درکار ہے</string>
     <string name="dt2s_a11y_hint">دو بار دوبا کر سولانے کے استعمال کے لیے قابل رسائی خدمت کو قابل بنائیں۔</string>
     <string name="dt2s_warning_open_settings">Open Settings</string>
@@ -85,8 +85,8 @@
     <string name="fuzzy_search_title">Fuzzy Search</string>
     <string name="fuzzy_search_desc">Approximate matching for app searches.</string>
     <string name="theme_label">Theme</string>
-    <string name="theme_light">Light</string>
-    <string name="theme_dark">Dark</string>
+    <string name="theme_light">روشن</string>
+    <string name="theme_dark">اندھیرا</string>
     <string name="theme_system_default">Follow System</string>
     <string name="theme_follow_wallpaper">Match Wallpaper</string>
     <string name="quickstep_label">Recents</string>
