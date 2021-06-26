@@ -63,12 +63,9 @@ jobs:
         with:
           python-version: '3.x'
       - name: Install Python packages
-        uses: BSFishy/pip-action@v1
-        with:
-          packages: |
-            gitpython
-            requests
-            fnmatch
+        run: |
+          python -m pip install --upgrade pip
+          pip install gitpython requests
       - name: Download artifact
         uses: actions/download-artifact@v2
         with:
