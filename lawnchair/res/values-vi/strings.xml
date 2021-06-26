@@ -31,7 +31,7 @@
     <string name="folders_label">Thư mục</string>
     <string name="folders_description">Số Hàng và Cột</string>
     <string name="app_drawer_columns">Cột Ngăn Ứng dụng</string>
-    <string name="dock_icons">Biểu tượng Giá đỡ</string>
+    <string name="dock_icons">Biểu tượng Dock</string>
     <string name="max_folder_columns">Số Cột Tối đa trong Thư mục</string>
     <string name="max_folder_rows">Số Hàng Tối đa trong Thư mục</string>
     <string name="home_screen_columns">Số Cột Màn hình Chính</string>
@@ -62,7 +62,7 @@
     <string name="auto_adaptive_icons_label">Biểu tượng Thích ứng Tự động</string>
     <string name="auto_adaptive_icons_description">Cho mọi biểu tượng Không thích ứng.</string>
     <string name="support_and_pr">Hỗ trợ &amp; PR</string>
-    <string name="workspace_dt2s">Nhấp đôi để Tắt màn hình</string>
+    <string name="workspace_dt2s">Chạm Đúp để Tắt màn hình</string>
     <string name="smart_space_enable">Hiện Tiện ích Mới đây</string>
     <string name="design_and_development">Thiết kế &amp; Phát triển</string>
     <string name="translate">Dịch thuật</string>
@@ -97,7 +97,7 @@
     <string name="accent_color">Màu Chủ đạo</string>
     <string name="done">Xong</string>
     <string name="loading">Đang tải…</string>
-    <string name="system">System</string>
-    <string name="custom">Custom</string>
-    <string name="custom_color">Custom Color</string>
+    <string name="system">Hệ thống</string>
+    <string name="custom">Tùy chỉnh</string>
+    <string name="custom_color">Màu Tùy chỉnh</string>
 </resources>
