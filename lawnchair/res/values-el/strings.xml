@@ -31,7 +31,7 @@
     <string name="folders_label">Φάκελοι</string>
     <string name="folders_description">Αριθμός Γραμμών και Στηλών</string>
     <string name="app_drawer_columns">Στήλες Συρταριού Εφαρμογών</string>
-    <string name="dock_icons">Dock Icons</string>
+    <string name="dock_icons">Eικονίδια Dock</string>
     <string name="max_folder_columns">Max. Folder Columns</string>
     <string name="max_folder_rows">Max. Folder Rows</string>
     <string name="home_screen_columns">Home Screen Columns</string>
