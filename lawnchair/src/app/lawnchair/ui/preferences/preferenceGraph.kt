@@ -33,6 +33,4 @@ inline fun NavGraphBuilder.root(crossinline content: @Composable () -> Unit) {
 val LocalRoute = compositionLocalOf { "" }
 
 @Composable
-fun subRoute(name: String): String {
-    return "${LocalRoute.current}/$name"
-}
+fun subRoute(name: String) = "${LocalRoute.current}/$name"
