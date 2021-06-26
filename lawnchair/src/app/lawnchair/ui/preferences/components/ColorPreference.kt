@@ -4,7 +4,6 @@ import androidx.annotation.ColorInt
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -188,20 +187,11 @@ fun TopBar(
         modifier = Modifier.height(56.dp)
     ) {
         AnimatedVisibility(visible = showBackArrow) {
-            Box(
-                contentAlignment = Alignment.Center,
-                modifier = Modifier
-                    .padding(start = 8.dp)
-                    .size(height = 40.dp, width = 40.dp)
-                    .clip(CircleShape)
-                    .clickable(onClick = onBackArrowClick)
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_back),
-                    contentDescription = null,
-                    tint = MaterialTheme.colors.onSurface
-                )
-            }
+            ClickableIcon(
+                painter = painterResource(id = R.drawable.ic_back),
+                onClick = onBackArrowClick,
+                tint = MaterialTheme.colors.onSurface
+            )
         }
         Text(
             text = label,
@@ -259,19 +249,11 @@ fun ModeRow(
                     )
                 }
                 if (onEditClick != null) {
-                    Box(
-                        contentAlignment = Alignment.Center,
-                        modifier = Modifier
-                            .size(height = 40.dp, width = 40.dp)
-                            .clip(CircleShape)
-                            .clickable(onClick = onEditClick)
-                    ) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.ic_edit),
-                            contentDescription = null,
-                            tint = MaterialTheme.colors.primary
-                        )
-                    }
+                    ClickableIcon(
+                        painter = painterResource(id = R.drawable.ic_edit),
+                        tint = MaterialTheme.colors.primary,
+                        onClick = onEditClick
+                    )
                 }
             }
             if (showDivider) {

@@ -22,11 +22,8 @@ import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.Icon
 import androidx.compose.material.LocalElevationOverlay
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
@@ -40,7 +37,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -73,21 +69,11 @@ fun TopBar() = pageMeta.consume { state ->
                 .height(topBarSize)
         ) {
             AnimatedVisibility(visible = backArrowVisible) {
-                Box(
-                    contentAlignment = Alignment.Center,
-                    modifier = Modifier
-                        .padding(start = 8.dp)
-                        .height(40.dp)
-                        .width(40.dp)
-                        .clip(CircleShape)
-                        .clickable { navController.popBackStack() }
-                ) {
-                    Icon(
-                        imageVector = backIcon(),
-                        contentDescription = null,
-                        tint = MaterialTheme.colors.onBackground
-                    )
-                }
+                ClickableIcon(
+                    imageVector = backIcon(),
+                    tint = MaterialTheme.colors.onBackground,
+                    onClick = { navController.popBackStack() }
+                )
             }
             Text(
                 text = state.title,
