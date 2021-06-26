@@ -81,7 +81,7 @@
     <string name="dt2s_a11y_hint">دو بار دوبا کر سولانے کے استعمال کے لیے قابل رسائی خدمت کو قابل بنائیں۔</string>
     <string name="dt2s_warning_open_settings">Open Settings</string>
     <string name="minus_one_enable">Show Feed</string>
-    <string name="minus_one_unavailable">فیڈ دستیاب نہیں ہے</string>
+    <string name="minus_one_unavailable">فیڈ دستیاب نہیں ہے.</string>
     <string name="fuzzy_search_title">Fuzzy Search</string>
     <string name="fuzzy_search_desc">Approximate matching for app searches.</string>
     <string name="theme_label">Theme</string>
