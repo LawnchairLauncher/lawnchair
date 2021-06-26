@@ -77,7 +77,7 @@
     <string name="dt2s_admin_hint">To use Double Tap to Sleep, grant the Admin permission.</string>
     <string name="dt2s_admin_warning">Nhấp đôi để tắt màn hình sẽ được tắt.</string>
     <string name="dt2s_a11y_hint_title">Bật Dịch vụ Trợ năng</string>
-    <string name="dt2s_a11y_hint">Để sử dụng Nhấp đôi để tắt màn hình, cần bặt dịch vụ Trợ năng Lawnchair. Chạm \"Mở Cài đặt\", sau đó chọn \"Lawnchair\" và bật nó</string>
+    <string name="dt2s_a11y_hint">Để sử dụng Chạm Đúp để Tắt màn hình, cần bật dịch vụ Trợ năng Lawnchair. Chạm \"Mở Cài đặt\", sau đó chọn \"Lawnchair\" và bật \"Sử dụng Lawnchair.\"</string>
     <string name="dt2s_warning_open_settings">Mở Cài đặt</string>
     <string name="minus_one_enable">Hiện Bảng tin</string>
     <string name="minus_one_unavailable">Bản tin hiện không khả dụng.</string>
