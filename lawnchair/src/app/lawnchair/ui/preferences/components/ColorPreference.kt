@@ -5,6 +5,7 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -271,9 +272,10 @@ fun ColorSwatch(
     modifier: Modifier = Modifier,
     isSelected: Boolean
 ) {
-    val swatchPadding by animateDpAsState(targetValue = if (isSelected) 2.dp else 3.dp)
-    val ringPadding by animateDpAsState(targetValue = if (isSelected) 5.dp else 0.dp)
+    val swatchPadding by animateDpAsState(targetValue = if (isSelected) 6.dp else 0.dp, animationSpec = tween())
+    val ringWidth by animateDpAsState(targetValue = if (isSelected) 3.dp else 0.dp, animationSpec = tween())
     val darkTheme = !MaterialTheme.colors.isLight
+    val color = if (darkTheme) preset.darkColor() else preset.lightColor()
 
     Box(
         modifier = modifier
@@ -282,23 +284,18 @@ fun ColorSwatch(
             .width(IntrinsicSize.Min)
     ) {
         Box(
-            modifier = modifier
+            modifier = Modifier
                 .padding(swatchPadding)
                 .fillMaxSize()
                 .clip(CircleShape)
-                .background(Color(if (darkTheme) preset.darkColor() else preset.lightColor()))
+                .background(Color(color))
                 .clickable(onClick = onClick)
         )
-        Crossfade(targetState = isSelected) {
-            if (it) {
-                Box(
-                    modifier = Modifier
-                        .padding(ringPadding)
-                        .fillMaxSize()
-                        .border(3.dp, MaterialTheme.colors.surface, CircleShape)
-                )
-            }
-        }
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .border(ringWidth, Color(color), CircleShape)
+        )
     }
 }
 
