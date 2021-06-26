@@ -64,8 +64,7 @@
     <string name="notifications_header" msgid="1404149926117359025">"Билдирмелер"</string>
     <string name="long_press_shortcut_to_add" msgid="5405328730817637737">"Ыкчам баскычты жылдыруу үчүн коё бербей басып туруңуз."</string>
     <string name="long_accessible_way_to_add_shortcut" msgid="2199537273817090740">"Ыкчам баскычты жылдыруу үчүн эки жолу таптап, кармап туруңуз же ыңгайлаштырылган аракеттерди колдонуңуз."</string>
-    <!-- no translation found for out_of_space (6692471482459245734) -->
-    <skip />
+    <string name="out_of_space" msgid="6692471482459245734">"Башкы экранда бош орун жок"</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"Тандамалдар тайпасында орун калган жок"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"Колдонмолор тизмеси"</string>
     <string name="all_apps_button_personal_label" msgid="1315764287305224468">"Жеке колдономолордун тизмеси"</string>
