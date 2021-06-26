@@ -272,8 +272,8 @@ fun ColorSwatch(
     modifier: Modifier = Modifier,
     isSelected: Boolean
 ) {
-    val swatchPadding by animateDpAsState(targetValue = if (isSelected) 6.dp else 0.dp, animationSpec = tween())
-    val ringWidth by animateDpAsState(targetValue = if (isSelected) 3.dp else 0.dp, animationSpec = tween())
+    val swatchPadding by animateDpAsState(targetValue = if (isSelected) 6.dp else 1.dp)
+    val ringWidth by animateDpAsState(targetValue = if (isSelected) 3.dp else 0.dp)
     val darkTheme = !MaterialTheme.colors.isLight
     val color = if (darkTheme) preset.darkColor() else preset.lightColor()
 
