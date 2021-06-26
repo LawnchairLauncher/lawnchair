@@ -141,6 +141,7 @@ import com.android.quickstep.RecentsAnimationController;
 import com.android.quickstep.RecentsAnimationTargets;
 import com.android.quickstep.RecentsModel;
 import com.android.quickstep.RecentsModel.TaskVisualsChangeListener;
+import com.android.quickstep.RemoteAnimationTargets;
 import com.android.quickstep.SystemUiProxy;
 import com.android.quickstep.TaskOverlayFactory;
 import com.android.quickstep.TaskThumbnailCache;
@@ -853,11 +854,13 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     public void launchSideTaskInLiveTileModeForRestartedApp(int taskId) {
         if (mRunningTaskId != -1 && mRunningTaskId == taskId &&
                 getLiveTileParams().getTargetSet().findTask(taskId) != null) {
-            launchSideTaskInLiveTileMode(taskId, getLiveTileParams().getTargetSet().apps);
+            RemoteAnimationTargets targets = getLiveTileParams().getTargetSet();
+            launchSideTaskInLiveTileMode(taskId, targets.apps, targets.wallpapers, targets.nonApps);
         }
     }
 
-    public void launchSideTaskInLiveTileMode(int taskId, RemoteAnimationTargetCompat[] apps) {
+    public void launchSideTaskInLiveTileMode(int taskId, RemoteAnimationTargetCompat[] apps,
+            RemoteAnimationTargetCompat[] wallpaper, RemoteAnimationTargetCompat[] nonApps) {
         AnimatorSet anim = new AnimatorSet();
         TaskView taskView = getTaskView(taskId);
         if (taskView == null || !isTaskViewVisible(taskView)) {
@@ -886,11 +889,8 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                 }
             });
         } else {
-            TaskViewUtils.composeRecentsLaunchAnimator(
-                    anim, taskView, apps,
-                    mLiveTileParams.getTargetSet().wallpapers,
-                    mLiveTileParams.getTargetSet().nonApps, true /* launcherClosing */,
-                    mActivity.getStateManager(), this,
+            TaskViewUtils.composeRecentsLaunchAnimator(anim, taskView, apps, wallpaper, nonApps,
+                    true /* launcherClosing */, mActivity.getStateManager(), this,
                     getDepthController());
         }
         anim.start();

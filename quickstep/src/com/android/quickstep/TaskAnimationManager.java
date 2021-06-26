@@ -147,7 +147,9 @@ public class TaskAnimationManager implements RecentsAnimationCallbacks.RecentsAn
                     if (recentsView != null) {
                         RemoteAnimationTargetCompat[] apps = new RemoteAnimationTargetCompat[1];
                         apps[0] = appearedTaskTarget;
-                        recentsView.launchSideTaskInLiveTileMode(appearedTaskTarget.taskId, apps);
+                        recentsView.launchSideTaskInLiveTileMode(appearedTaskTarget.taskId, apps,
+                                new RemoteAnimationTargetCompat[0] /* wallpaper */,
+                                new RemoteAnimationTargetCompat[0] /* nonApps */);
                         return;
                     }
                 }
