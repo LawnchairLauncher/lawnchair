@@ -53,6 +53,13 @@
     <color name="popup_color_secondary_dark">#202124</color>
     <color name="popup_color_tertiary_dark">#757575</color> <!-- Gray 600 -->
 
+    <color name="popup_shade_first_light">#F9F9F9</color>
+    <color name="popup_shade_second_light">#F1F1F1</color>
+    <color name="popup_shade_third_light">#E2E2E2</color>
+    <color name="popup_shade_first_dark">#303030</color>
+    <color name="popup_shade_second_dark">#262626</color>
+    <color name="popup_shade_third_dark">#1B1B1B</color>
+
     <color name="popup_notification_dot_light">#FFF</color>
     <color name="popup_notification_dot_dark">#757575</color>
 
@@ -62,8 +69,8 @@
     <color name="folder_hint_text_color_light">#FFF</color>
     <color name="folder_hint_text_color_dark">#FF000000</color>
 
-    <color name="folder_background_light">#FFFFFF</color>
-    <color name="folder_background_dark">#FF3C4043</color>
+    <color name="folder_background_light">#F9F9F9</color>
+    <color name="folder_background_dark">#464746</color>
 
     <color name="folder_dot_color">?attr/colorPrimary</color>
 
@@ -73,4 +80,7 @@
 
     <color name="wallpaper_popup_scrim">?android:attr/colorAccent</color>
     <color name="wallpaper_scrim_color">#0D878787</color>
+
+    <color name="workspace_accent_color_light">#ff254e47</color>
+    <color name="workspace_accent_color_dark">#ff9cfff2</color>
 </resources>
