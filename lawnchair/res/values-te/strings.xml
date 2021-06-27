@@ -18,11 +18,11 @@
     <string name="icon_pack">అయ్ కాన్</string>
     <string name="settings">సెట్టింగ్స్</string>
     <string name="home_screen_label">హోమ్ స్రీన్ లేబల్</string>
-    <string name="home_screen_description">Feed, At a Glance, Grid, Icons</string>
-    <string name="general_label">General</string>
-    <string name="general_description">Notification Dots, Icon Pack</string>
-    <string name="home_screen_rotation_label">Home Screen Rotation</string>
-    <string name="home_screen_rotaton_description">When device is rotated.</string>
+    <string name="home_screen_description">ఫీడ్, ఒక చూపులో, గ్రిడ్, చిహ్నాలు</string>
+    <string name="general_label">జనరల్</string>
+    <string name="general_description">నోటిఫికేషన్ చుక్కలు, ఐకాన్ ప్యాక్</string>
+    <string name="home_screen_rotation_label">హోమ్ స్క్రీన్ భ్రమణం</string>
+    <string name="home_screen_rotaton_description">పరికరం తిప్పబడినప్పుడు.</string>
     <string name="auto_add_shortcuts_label">Add New Apps to Home Screen</string>
     <string name="dock_label">Dock</string>
     <string name="dock_description">Search Bar, Icon Count</string>
