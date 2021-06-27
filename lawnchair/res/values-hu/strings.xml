@@ -95,7 +95,7 @@
     <string name="override_window_corner_radius_label">Egyedi sarok sugár</string>
     <string name="override_window_corner_radius_description">Amennyiben az alapértelmezett nem egyezik a képernyőjével</string>
     <string name="system_icons">Rendszerikonok</string>
-    <string name="accent_color">Accent Color</string>
+    <string name="accent_color">Kiemelő szín</string>
     <string name="done">Kész</string>
     <string name="loading">Betöltés…</string>
     <string name="system">Rendszer</string>
