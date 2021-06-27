@@ -20,20 +20,26 @@ import android.content.Context
 import android.content.SharedPreferences
 import com.android.launcher3.InvariantDeviceProfile
 import com.android.launcher3.Utilities
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.util.concurrent.CopyOnWriteArraySet
 
 abstract class BasePreferenceManager(context: Context) : SharedPreferences.OnSharedPreferenceChangeListener {
     val sp: SharedPreferences = Utilities.getPrefs(context)
     val prefsMap = mutableMapOf<String, BasePref<*>>()
+    private val coroutineScope = CoroutineScope(Dispatchers.IO)
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String) {
         prefsMap[key]?.onSharedPreferenceChange()
     }
 
-    private inline fun editSp(block: SharedPreferences.Editor.() -> Unit) {
-        with(sp.edit()) {
-            block(this)
-            apply()
+    private inline fun editSp(crossinline block: SharedPreferences.Editor.() -> Unit) {
+        coroutineScope.launch {
+            with(sp.edit()) {
+                block(this)
+                apply()
+            }
         }
     }
 
