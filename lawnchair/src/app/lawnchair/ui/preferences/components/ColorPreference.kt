@@ -2,6 +2,7 @@ package app.lawnchair.ui.preferences.components
 
 import androidx.annotation.ColorInt
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.Crossfade
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.background
@@ -18,6 +19,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import app.lawnchair.preferences.PreferenceAdapter
 import app.lawnchair.ui.theme.getSystemAccent
@@ -159,16 +161,18 @@ fun ColorSwatchGrid(
                         preset = entry,
                         onClick = { onColorSwatchClicked(entry.value) },
                         modifier = Modifier.weight(1F),
-                        isSelected = entry.value == customColor
+                        isSelected = entry.value == customColor,
+                        ringColor = MaterialTheme.colors.surface,
+                        elevation = ModalBottomSheetDefaults.Elevation
                     )
                     if (index != columnCount - 1) {
-                        Spacer(modifier = Modifier.requiredWidth(12.dp))
+                        Spacer(modifier = Modifier.requiredWidth(8.dp))
                     }
                 }
             }
 
             if (rowNo != rowCount) {
-                Spacer(modifier = Modifier.requiredHeight(12.dp))
+                Spacer(modifier = Modifier.requiredHeight(8.dp))
             }
         }
     }
@@ -268,12 +272,21 @@ fun ColorSwatch(
     preset: ColorPreferencePreset,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    isSelected: Boolean
+    isSelected: Boolean,
+    ringColor: Color,
+    elevation: Dp
 ) {
-    val swatchPadding by animateDpAsState(targetValue = if (isSelected) 6.dp else 1.dp)
-    val ringWidth by animateDpAsState(targetValue = if (isSelected) 3.dp else 0.dp)
+    val swatchPadding by animateDpAsState(targetValue = if (isSelected) 2.dp else 3.dp)
+    val ringPadding by animateDpAsState(targetValue = if (isSelected) 5.dp else 0.dp)
     val darkTheme = !MaterialTheme.colors.isLight
     val color = if (darkTheme) preset.darkColor() else preset.lightColor()
+    val elevationOverlay = LocalElevationOverlay.current
+    val absoluteElevation = LocalAbsoluteElevation.current + elevation
+    val ringColorWithOverlay = if (ringColor == MaterialTheme.colors.surface && elevationOverlay != null) {
+        elevationOverlay.apply(ringColor, absoluteElevation)
+    } else {
+        ringColor
+    }
 
     Box(
         modifier = modifier
@@ -289,11 +302,16 @@ fun ColorSwatch(
                 .background(Color(color))
                 .clickable(onClick = onClick)
         )
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .border(ringWidth, Color(color), CircleShape)
-        )
+        Crossfade(targetState = isSelected) {
+            if (it) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(ringPadding)
+                        .border(3.dp, ringColorWithOverlay, CircleShape)
+                )
+            }
+        }
     }
 }
 
