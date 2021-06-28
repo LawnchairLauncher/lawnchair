@@ -983,6 +983,9 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
             backgroundRadiusAnim.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
+                    // Reset depth at the end of the launch animation, so the wallpaper won't be
+                    // zoomed out if an app crashes.
+                    DEPTH.setValue(depthController, 0f);
                     depthController.setSurface(null);
                     if (dimLayer != null) {
                         new SurfaceControl.Transaction()
