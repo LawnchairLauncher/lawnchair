@@ -21,14 +21,20 @@ import android.util.AttributeSet;
 import android.view.View;
 
 import androidx.annotation.Nullable;
+import androidx.annotation.Px;
 
 import com.android.launcher3.R;
+import com.android.launcher3.views.ArrowTipView;
 import com.android.quickstep.TaskOverlayFactoryGo.OverlayUICallbacksGo;
+import com.android.quickstep.util.RecentsOrientedState;
 
 /**
  * View for showing Go-specific action buttons in Overview
  */
-public final class GoOverviewActionsView extends OverviewActionsView<OverlayUICallbacksGo> {
+public class GoOverviewActionsView extends OverviewActionsView<OverlayUICallbacksGo> {
+
+    private ArrowTipView mArrowTipView;
+
     public GoOverviewActionsView(Context context) {
         this(context, null);
     }
@@ -70,6 +76,48 @@ public final class GoOverviewActionsView extends OverviewActionsView<OverlayUICa
             mCallbacks.onTranslate();
         } else if (id == R.id.action_search) {
             mCallbacks.onSearch();
+        }
+    }
+
+    /**
+     * Shows Tooltip for action icons
+     */
+    private void showToolTip(int viewId, int textResourceId) {
+        int[] location = new int[2];
+        @Px int topMargin = getResources().getDimensionPixelSize(R.dimen.tooltip_top_margin);
+        findViewById(viewId).getLocationOnScreen(location);
+        mArrowTipView = new ArrowTipView(getContext(),  /* isPointingUp= */ false)
+            .showAtLocation(getResources().getString(textResourceId),
+                /* arrowXCoord= */ location[0] + findViewById(viewId).getWidth() / 2,
+                /* yCoord= */ location[1] - topMargin);
+
+        mArrowTipView.bringToFront();
+    }
+
+    /**
+     * Shows Tooltip for listen action icon
+     */
+    public void showListenToolTip() {
+        showToolTip(/* viewId= */ R.id.action_listen,
+                /* textResourceId= */ R.string.tooltip_listen);
+    }
+
+    /**
+     * Shows Tooltip for translate action icon
+     */
+    public void showTranslateToolTip() {
+        showToolTip(/* viewId= */ R.id.action_translate,
+                /* textResourceId= */ R.string.tooltip_translate);
+    }
+
+    /**
+     * Called when device orientation is changed
+     */
+    public void updateOrientationState(RecentsOrientedState orientedState) {
+        // dismiss tooltip
+        boolean canLauncherRotate = orientedState.canRecentsActivityRotate();
+        if (mArrowTipView != null && !canLauncherRotate) {
+            mArrowTipView.close(/* animate= */ false);
         }
     }
 }
