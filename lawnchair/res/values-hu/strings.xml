@@ -26,7 +26,7 @@
     <string name="auto_add_shortcuts_label">Új alkalmazások hozzáadása a kezdőképernyőhöz</string>
     <string name="dock_label">Dokk</string>
     <string name="dock_description">Kereső sáv, ikonok száma</string>
-    <string name="app_drawer_label">Alkalmazástár</string>
+    <string name="app_drawer_label">Alkalmazás szekrény</string>
     <string name="app_drawer_description">Rejtett alkalmazások, oszlopok száma, ikonok</string>
     <string name="folders_label">Mappák</string>
     <string name="folders_description">Sorok és oszlopok száma</string>
@@ -67,18 +67,18 @@
     <string name="design_and_development">Dizájn &amp; Fejlesztés</string>
     <string name="translate">Fordítás</string>
     <string name="product">Termék</string>
-    <string name="hidden_apps_label">Elrejtett alk.</string>
+    <string name="hidden_apps_label">Elrejtett alkalmazások</string>
     <string name="hidden_apps_label_with_count">Elrejtett alkalmazások(%1$d)</string>
     <plurals name="apps_count">
         <item quantity="one">%1$d alkalmazás</item>
-        <item quantity="other">%1$d alkalmazások</item>
+        <item quantity="other">%1$d Alkalmazások</item>
     </plurals>
     <string name="hotseat_qsb_label">Keresési sáv megjelenítése</string>
     <string name="dt2s_admin_hint_title">Eszközadminisztrátor engedély szükséges</string>
     <string name="dt2s_admin_hint">A dupla koppintásos altatáshoz engedélyezze az Eszközadminisztrátor jogusultságot.</string>
     <string name="dt2s_admin_warning">Dupla koppintásos alvás ki lesz kapcsolva.</string>
     <string name="dt2s_a11y_hint_title">Kisegíthető-lehetőségek szolgáltatás szükséges</string>
-    <string name="dt2s_a11y_hint">A dupla koppintásos alvás bekapcsolásához kapcsolja be a szolgáltatást.</string>
+    <string name="dt2s_a11y_hint">A dupla koppintásos alvás bekapcsolásához kapcsold be a szolgáltatást. Kattincs a \"Beállítások Megnyitása,\" majd válaszd ki a \"Lawnchair\" és kapcsold be \"Lawnchair Használata.\"</string>
     <string name="dt2s_warning_open_settings">Beállítások megnyitása</string>
     <string name="minus_one_enable">Hírfolyam megjelenítése</string>
     <string name="minus_one_unavailable">Feed is not available</string>
