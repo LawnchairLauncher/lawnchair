@@ -76,7 +76,10 @@ fun HiddenAppsPreferences() {
             hiddenApps = newSet
         }
         PreferenceLayoutLazyColumn {
-            preferenceGroupItems(apps, isFirstChild = true) { index, app ->
+            preferenceGroupItems(
+                items = apps,
+                isFirstChild = true
+            ) { index, app ->
                 AppItem(
                     app = app,
                     onClick = toggleHiddenApp,
@@ -93,9 +96,8 @@ fun HiddenAppsPreferences() {
 fun hiddenAppsCount(): Int = preferenceManager().hiddenAppSet.getState().value.size
 
 @Composable
-fun hiddenAppsComparator(hiddenApps: Set<String>): Comparator<App> {
-    return remember {
+fun hiddenAppsComparator(hiddenApps: Set<String>): Comparator<App> =
+    remember {
         comparing<App, Int> { if (hiddenApps.contains(it.key.toString())) 0 else 1 }
             .thenComparing<String> { it.info.label.toString().lowercase(Locale.getDefault()) }
     }
-}
