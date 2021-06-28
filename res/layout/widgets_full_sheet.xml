@@ -33,6 +33,8 @@
             android:layout_height="match_parent"
             android:gravity="center"
             android:visibility="gone"
+            android:fontFamily="sans-serif-medium"
+            android:textSize="20sp"
             tools:text="No widgets available" />
 
         <!-- Fast scroller popup -->

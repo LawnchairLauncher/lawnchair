@@ -140,6 +140,7 @@ import com.android.launcher3.model.BgDataModel.Callbacks;
 import com.android.launcher3.model.ItemInstallQueue;
 import com.android.launcher3.model.ModelUtils;
 import com.android.launcher3.model.ModelWriter;
+import com.android.launcher3.model.WidgetsModel;
 import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.FolderInfo;
 import com.android.launcher3.model.data.ItemInfo;
@@ -1079,7 +1080,7 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
         if (ALL_APPS.equals(mPrevLauncherState) && !ALL_APPS.equals(state)
                 // Making sure mAllAppsSessionLogId is not null to avoid double logging.
                 && mAllAppsSessionLogId != null) {
-            getAppsView().getSearchUiManager().resetSearch();
+            getAppsView().reset(false);
             getStatsLogManager().logger()
                     .withContainerInfo(LauncherAtom.ContainerInfo.newBuilder()
                             .setWorkspace(
@@ -2329,24 +2330,45 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
 
         try {
             final LauncherAppWidgetProviderInfo appWidgetInfo;
+            String removalReason = "";
 
             if (item.hasRestoreFlag(LauncherAppWidgetInfo.FLAG_PROVIDER_NOT_READY)) {
                 // If the provider is not ready, bind as a pending widget.
                 appWidgetInfo = null;
+                removalReason = "the provider isn't ready.";
             } else if (item.hasRestoreFlag(LauncherAppWidgetInfo.FLAG_ID_NOT_VALID)) {
                 // The widget id is not valid. Try to find the widget based on the provider info.
                 appWidgetInfo = mAppWidgetManager.findProvider(item.providerName, item.user);
+                if (appWidgetInfo == null) {
+                    if (WidgetsModel.GO_DISABLE_WIDGETS) {
+                        removalReason = "widgets are disabled on go device.";
+                    } else {
+                        removalReason =
+                                "WidgetManagerHelper cannot find a provider from provider info.";
+                    }
+                }
             } else {
                 appWidgetInfo = mAppWidgetManager.getLauncherAppWidgetInfo(item.appWidgetId);
+                if (appWidgetInfo == null) {
+                    if (item.appWidgetId <= LauncherAppWidgetInfo.CUSTOM_WIDGET_ID) {
+                        removalReason =
+                                "CustomWidgetManager cannot find provider from that widget id.";
+                    } else {
+                        removalReason = "AppWidgetManager cannot find provider for that widget id."
+                                + " It could be because AppWidgetService is not available, or the"
+                                + " appWidgetId has not been bound to a the provider yet, or you"
+                                + " don't have access to that appWidgetId.";
+                    }
+                }
             }
 
             // If the provider is ready, but the width is not yet restored, try to restore it.
             if (!item.hasRestoreFlag(LauncherAppWidgetInfo.FLAG_PROVIDER_NOT_READY)
                     && (item.restoreStatus != LauncherAppWidgetInfo.RESTORE_COMPLETED)) {
                 if (appWidgetInfo == null) {
-                    Log.d(TAG, "Removing restored widget: id=" + item.appWidgetId
-                            + " belongs to component " + item.providerName
-                            + ", as the provider is null");
+                    FileLog.d(TAG, "Removing restored widget: id=" + item.appWidgetId
+                            + " belongs to component " + item.providerName + " user " + item.user
+                            + ", as the provider is null and " + removalReason);
                     getModelWriter().deleteItemFromDatabase(item);
                     return null;
                 }

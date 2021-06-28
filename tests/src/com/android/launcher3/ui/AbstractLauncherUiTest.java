@@ -65,6 +65,7 @@ import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.util.Wait;
 import com.android.launcher3.util.rule.FailureWatcher;
 import com.android.launcher3.util.rule.LauncherActivityRule;
+import com.android.launcher3.util.rule.ScreenRecordRule;
 import com.android.launcher3.util.rule.ShellCommandRule;
 import com.android.launcher3.util.rule.TestStabilityRule;
 
@@ -204,6 +205,9 @@ public abstract class AbstractLauncherUiTest {
     public ShellCommandRule mDisableHeadsUpNotification =
             ShellCommandRule.disableHeadsUpNotification();
 
+    @Rule
+    public ScreenRecordRule mScreenRecordRule = new ScreenRecordRule();
+
     protected void clearPackageData(String pkg) throws IOException, InterruptedException {
         final CountDownLatch count = new CountDownLatch(2);
         final BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
@@ -229,7 +233,7 @@ public abstract class AbstractLauncherUiTest {
 
     protected TestRule getRulesInsideActivityMonitor() {
         final RuleChain inner = RuleChain.outerRule(new PortraitLandscapeRunner(this))
-                .around(new FailureWatcher(mDevice));
+                .around(new FailureWatcher(mDevice, mLauncher));
 
         return TestHelpers.isInLauncherProcess()
                 ? RuleChain.outerRule(ShellCommandRule.setDefaultLauncher())
@@ -310,7 +314,6 @@ public abstract class AbstractLauncherUiTest {
                 assertEquals("Launcher crashed, pid mismatch:",
                         mLauncherPid, mLauncher.getPid().intValue());
             }
-            checkDetectedLeaks(mLauncher);
         } finally {
             mLauncher.onTestFinish();
         }
@@ -618,5 +621,6 @@ public abstract class AbstractLauncherUiTest {
                 isResumed);
     }
 
-    protected void onLauncherActivityClose(Launcher launcher) { }
+    protected void onLauncherActivityClose(Launcher launcher) {
+    }
 }

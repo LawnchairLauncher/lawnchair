@@ -41,9 +41,8 @@ import com.android.launcher3.BaseQuickstepLauncher;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.InsettableFrameLayout;
 import com.android.launcher3.LauncherAnimationRunner;
+import com.android.launcher3.LauncherAnimationRunner.RemoteAnimationFactory;
 import com.android.launcher3.R;
-import com.android.launcher3.WrappedAnimationRunnerImpl;
-import com.android.launcher3.WrappedLauncherAnimationRunner;
 import com.android.launcher3.util.SplitConfigurationOptions.SplitPositionOption;
 import com.android.quickstep.SystemUiProxy;
 import com.android.quickstep.TaskAnimationManager;
@@ -101,14 +100,14 @@ public class SplitSelectStateController {
             return;
         }
         // Assume initial mInitialTaskId is for top/left part of screen
-        WrappedAnimationRunnerImpl initialSplitRunnerWrapped =  new SplitLaunchAnimationRunner(
+        RemoteAnimationFactory initialSplitRunnerWrapped =  new SplitLaunchAnimationRunner(
                 mInitialTaskView, 0);
-        WrappedAnimationRunnerImpl secondarySplitRunnerWrapped =  new SplitLaunchAnimationRunner(
+        RemoteAnimationFactory secondarySplitRunnerWrapped =  new SplitLaunchAnimationRunner(
                 taskView, 1);
-        RemoteAnimationRunnerCompat initialSplitRunner = new WrappedLauncherAnimationRunner(
+        RemoteAnimationRunnerCompat initialSplitRunner = new LauncherAnimationRunner(
                 new Handler(Looper.getMainLooper()), initialSplitRunnerWrapped,
                 true /* startAtFrontOfQueue */);
-        RemoteAnimationRunnerCompat secondarySplitRunner = new WrappedLauncherAnimationRunner(
+        RemoteAnimationRunnerCompat secondarySplitRunner = new LauncherAnimationRunner(
                 new Handler(Looper.getMainLooper()), secondarySplitRunnerWrapped,
                 true /* startAtFrontOfQueue */);
         ActivityOptions initialOptions = ActivityOptionsCompat.makeRemoteAnimation(
@@ -192,7 +191,7 @@ public class SplitSelectStateController {
      * LEGACY
      * Remote animation runner for animation to launch an app.
      */
-    private class SplitLaunchAnimationRunner implements WrappedAnimationRunnerImpl {
+    private class SplitLaunchAnimationRunner implements RemoteAnimationFactory {
 
         private final TaskView mV;
         private final int mTargetState;

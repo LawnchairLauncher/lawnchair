@@ -60,6 +60,10 @@ public class LauncherAppWidgetHost extends AppWidgetHost {
     private static final int FLAG_ACTIVITY_RESUMED = 1 << 3;
     private static final int FLAGS_SHOULD_LISTEN =
             FLAG_STATE_IS_NORMAL | FLAG_ACTIVITY_STARTED | FLAG_ACTIVITY_RESUMED;
+    // TODO(b/191735836): Replace with ActivityOptions.KEY_SPLASH_SCREEN_STYLE when un-hidden
+    private static final String KEY_SPLASH_SCREEN_STYLE = "android.activity.splashScreenStyle";
+    // TODO(b/191735836): Replace with SplashScreen.SPLASH_SCREEN_STYLE_EMPTY when un-hidden
+    private static final int SPLASH_SCREEN_STYLE_EMPTY = 0;
 
     public static final int APPWIDGET_HOST_ID = 1024;
 
@@ -329,7 +333,9 @@ public class LauncherAppWidgetHost extends AppWidgetHost {
         if (view == null) return null;
         Object tag = view.getTag();
         if (!(tag instanceof ItemInfo)) return null;
-        return activity.getActivityLaunchOptions(view, (ItemInfo) tag).toBundle();
+        Bundle bundle = activity.getActivityLaunchOptions(view, (ItemInfo) tag).toBundle();
+        bundle.putInt(KEY_SPLASH_SCREEN_STYLE, SPLASH_SCREEN_STYLE_EMPTY);
+        return bundle;
     }
 
     private void sendActionCancelled(final BaseActivity activity, final int requestCode) {

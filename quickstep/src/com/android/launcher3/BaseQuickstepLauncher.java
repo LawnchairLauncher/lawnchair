@@ -430,7 +430,7 @@ public abstract class BaseQuickstepLauncher extends Launcher
     public ActivityOptionsWrapper getActivityLaunchOptions(View v, @Nullable ItemInfo item) {
         ActivityOptionsWrapper activityOptions =
                 mAppTransitionManager.hasControlRemoteAppTransitionPermission()
-                        ? mAppTransitionManager.getActivityLaunchOptions(this, v)
+                        ? mAppTransitionManager.getActivityLaunchOptions(v)
                         : super.getActivityLaunchOptions(v, item);
         if (mLastTouchUpTime > 0) {
             ActivityOptionsCompat.setLauncherSourceInfo(

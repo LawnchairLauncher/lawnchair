@@ -149,13 +149,17 @@ public class DeviceProfile {
     // Hotseat
     public final int numShownHotseatIcons;
     public int hotseatCellHeightPx;
+    private final int hotseatExtraVerticalSize;
     // In portrait: size = height, in landscape: size = width
     public int hotseatBarSizePx;
     public final int hotseatBarTopPaddingPx;
-    public int hotseatBarBottomPaddingPx;
+    public final int hotseatBarBottomPaddingPx;
     // Start is the side next to the nav bar, end is the side next to the workspace
     public final int hotseatBarSidePaddingStartPx;
     public final int hotseatBarSidePaddingEndPx;
+
+    public final float qsbBottomMarginOriginalPx;
+    public int qsbBottomMarginPx;
 
     // All apps
     public int allAppsOpenVerticalTranslate;
@@ -326,13 +330,13 @@ public class DeviceProfile {
                 res.getDimensionPixelSize(R.dimen.dynamic_grid_hotseat_side_padding);
         // Add a bit of space between nav bar and hotseat in vertical bar layout.
         hotseatBarSidePaddingStartPx = isVerticalBarLayout() ? workspacePageIndicatorHeight : 0;
-        int hotseatExtraVerticalSize =
+        hotseatExtraVerticalSize =
                 res.getDimensionPixelSize(R.dimen.dynamic_grid_hotseat_extra_vertical_size);
-        hotseatBarSizePx = pxFromDp(inv.iconSize, mMetrics, 1f)
-                + (isVerticalBarLayout()
-                ? (hotseatBarSidePaddingStartPx + hotseatBarSidePaddingEndPx)
-                : (hotseatBarTopPaddingPx + hotseatBarBottomPaddingPx
-                        + (isScalableGrid ? 0 : hotseatExtraVerticalSize)));
+        updateHotseatIconSize(pxFromDp(inv.iconSize, mMetrics, 1f));
+
+        qsbBottomMarginOriginalPx = isScalableGrid
+                ? res.getDimensionPixelSize(R.dimen.scalable_grid_qsb_bottom_margin)
+                : 0;
 
         overviewTaskMarginPx = res.getDimensionPixelSize(R.dimen.overview_task_margin);
         overviewTaskIconSizePx =
@@ -362,7 +366,8 @@ public class DeviceProfile {
             extraHotseatBottomPadding = Math.round(paddingHotseatBottom * iconScale);
 
             hotseatBarSizePx += extraHotseatBottomPadding;
-            hotseatBarBottomPaddingPx += extraHotseatBottomPadding;
+
+            qsbBottomMarginPx = Math.round(qsbBottomMarginOriginalPx * iconScale);
         } else if (!isVerticalBarLayout() && isPhone && isTallDevice) {
             // We increase the hotseat size when there is extra space.
             // ie. For a display with a large aspect ratio, we can keep the icons on the workspace
@@ -371,7 +376,6 @@ public class DeviceProfile {
             int extraSpace = getCellSize().y - iconSizePx - iconDrawablePaddingPx * 2
                     - workspacePageIndicatorHeight;
             hotseatBarSizePx += extraSpace;
-            hotseatBarBottomPaddingPx += extraSpace;
 
             // Recalculate the available dimensions using the new hotseat size.
             updateAvailableDimensions(res);
@@ -386,6 +390,17 @@ public class DeviceProfile {
         mDotRendererWorkSpace = new DotRenderer(iconSizePx, dotPath, DEFAULT_DOT_SIZE);
         mDotRendererAllApps = iconSizePx == allAppsIconSizePx ? mDotRendererWorkSpace :
                 new DotRenderer(allAppsIconSizePx, dotPath, DEFAULT_DOT_SIZE);
+    }
+
+    private void updateHotseatIconSize(int hotseatIconSizePx) {
+        hotseatCellHeightPx = hotseatIconSizePx;
+        if (isVerticalBarLayout()) {
+            hotseatBarSizePx = hotseatIconSizePx + hotseatBarSidePaddingStartPx
+                    + hotseatBarSidePaddingEndPx;
+        } else {
+            hotseatBarSizePx = hotseatIconSizePx + hotseatBarTopPaddingPx
+                    + hotseatBarBottomPaddingPx + (isScalableGrid ? 0 : hotseatExtraVerticalSize);
+        }
     }
 
     private void setCellLayoutBorderSpacing(int borderSpacing) {
@@ -573,11 +588,7 @@ public class DeviceProfile {
         }
 
         // Hotseat
-        if (isVerticalLayout) {
-            hotseatBarSizePx = iconSizePx + hotseatBarSidePaddingStartPx
-                    + hotseatBarSidePaddingEndPx;
-        }
-        hotseatCellHeightPx = iconSizePx;
+        updateHotseatIconSize(iconSizePx);
 
         if (!isVerticalLayout) {
             int expectedWorkspaceHeight = availableHeightPx - hotseatBarSizePx
@@ -763,7 +774,8 @@ public class DeviceProfile {
                     hotseatBarTopPaddingPx,
                     hotseatAdjustment + workspacePadding.right + cellLayoutPaddingLeftRightPx
                             + mInsets.right,
-                    hotseatBarBottomPaddingPx + mInsets.bottom + cellLayoutBottomPaddingPx);
+                    hotseatBarSizePx - hotseatCellHeightPx - hotseatBarTopPaddingPx
+                            + cellLayoutBottomPaddingPx + mInsets.bottom);
         }
         return mHotseatPadding;
     }

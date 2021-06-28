@@ -63,6 +63,7 @@ import android.animation.ValueAnimator;
 import android.annotation.TargetApi;
 import android.app.ActivityManager.RunningTaskInfo;
 import android.content.Context;
+import android.content.LocusId;
 import android.content.res.Configuration;
 import android.graphics.BlendMode;
 import android.graphics.Canvas;
@@ -75,6 +76,7 @@ import android.graphics.RectF;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.UserHandle;
 import android.text.Layout;
 import android.text.StaticLayout;
@@ -140,6 +142,7 @@ import com.android.quickstep.RecentsAnimationController;
 import com.android.quickstep.RecentsAnimationTargets;
 import com.android.quickstep.RecentsModel;
 import com.android.quickstep.RecentsModel.TaskVisualsChangeListener;
+import com.android.quickstep.RemoteAnimationTargets;
 import com.android.quickstep.SystemUiProxy;
 import com.android.quickstep.TaskOverlayFactory;
 import com.android.quickstep.TaskThumbnailCache;
@@ -392,8 +395,6 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
 
     private final TaskOverlayFactory mTaskOverlayFactory;
 
-    private int mOrientation;
-
     protected boolean mDisallowScrollToClearAll;
     private boolean mOverlayEnabled;
     protected boolean mFreezeViewVisibility;
@@ -588,7 +589,6 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                 .getDimensionPixelSize(R.dimen.recents_fast_fling_velocity);
         mModel = RecentsModel.INSTANCE.get(context);
         mIdp = InvariantDeviceProfile.INSTANCE.get(context);
-        mOrientation = getResources().getConfiguration().orientation;
 
         mClearAllButton = (ClearAllButton) LayoutInflater.from(context)
                 .inflate(R.layout.overview_clear_all_button, this, false);
@@ -845,11 +845,13 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     public void launchSideTaskInLiveTileModeForRestartedApp(int taskId) {
         if (mRunningTaskId != -1 && mRunningTaskId == taskId &&
                 getLiveTileParams().getTargetSet().findTask(taskId) != null) {
-            launchSideTaskInLiveTileMode(taskId, getLiveTileParams().getTargetSet().apps);
+            RemoteAnimationTargets targets = getLiveTileParams().getTargetSet();
+            launchSideTaskInLiveTileMode(taskId, targets.apps, targets.wallpapers, targets.nonApps);
         }
     }
 
-    public void launchSideTaskInLiveTileMode(int taskId, RemoteAnimationTargetCompat[] apps) {
+    public void launchSideTaskInLiveTileMode(int taskId, RemoteAnimationTargetCompat[] apps,
+            RemoteAnimationTargetCompat[] wallpaper, RemoteAnimationTargetCompat[] nonApps) {
         AnimatorSet anim = new AnimatorSet();
         TaskView taskView = getTaskView(taskId);
         if (taskView == null || !isTaskViewVisible(taskView)) {
@@ -874,15 +876,12 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             anim.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
-                    finishRecentsAnimation(true /* toRecents */, null);
+                    finishRecentsAnimation(false /* toRecents */, null);
                 }
             });
         } else {
-            TaskViewUtils.composeRecentsLaunchAnimator(
-                    anim, taskView, apps,
-                    mLiveTileParams.getTargetSet().wallpapers,
-                    mLiveTileParams.getTargetSet().nonApps, true /* launcherClosing */,
-                    mActivity.getStateManager(), this,
+            TaskViewUtils.composeRecentsLaunchAnimator(anim, taskView, apps, wallpaper, nonApps,
+                    true /* launcherClosing */, mActivity.getStateManager(), this,
                     getDepthController());
         }
         anim.start();
@@ -943,6 +942,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                 cancelSplitSelect(false);
             }
         }
+        updateLocusId();
     }
 
     /**
@@ -2369,13 +2369,12 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                 if (success) {
                     if (shouldRemoveTask) {
                         if (taskView.getTask() != null) {
-                            finishRecentsAnimation(true /* toRecents */, false /* shouldPip */,
-                                    () -> {
-                                UI_HELPER_EXECUTOR.getHandler().postDelayed(() ->
-                                        ActivityManagerWrapper.getInstance().removeTask(
-                                                taskView.getTask().key.id),
-                                        REMOVE_TASK_WAIT_FOR_APP_STOP_MS);
-                            });
+                            if (LIVE_TILE.get() && taskView.isRunningTask()) {
+                                finishRecentsAnimation(true /* toRecents */, false /* shouldPip */,
+                                        () -> removeTaskInternal(taskView));
+                            } else {
+                                removeTaskInternal(taskView);
+                            }
                             mActivity.getStatsLogManager().logger()
                                     .withItemInfo(taskView.getItemInfo())
                                     .log(LAUNCHER_TASK_DISMISS_SWIPE_UP);
@@ -2419,6 +2418,13 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             }
         });
         return anim;
+    }
+
+    private void removeTaskInternal(TaskView taskView) {
+        UI_HELPER_EXECUTOR.getHandler().postDelayed(() ->
+                        ActivityManagerWrapper.getInstance().removeTask(
+                                taskView.getTask().key.id),
+                REMOVE_TASK_WAIT_FOR_APP_STOP_MS);
     }
 
     /**
@@ -2640,15 +2646,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     @Override
     protected void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        if (LIVE_TILE.get() && mEnableDrawingLiveTile && newConfig.orientation != mOrientation) {
-            switchToScreenshot(
-                    () -> finishRecentsAnimation(true /* toRecents */, false /* showPip */,
-                            this::updateRecentsRotation));
-            mEnableDrawingLiveTile = false;
-        } else {
-            updateRecentsRotation();
-        }
-        mOrientation = newConfig.orientation;
+        updateRecentsRotation();
     }
 
     /**
@@ -3404,14 +3402,24 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             if (onFinishComplete != null) {
                 onFinishComplete.run();
             }
-            // After we finish the recents animation, the current task id should be correctly
-            // reset so that when the task is launched from Overview later, it goes through the
-            // flow of starting a new task instead of finishing recents animation to app. A
-            // typical example of this is (1) user swipes up from app to Overview (2) user
-            // taps on QSB (3) user goes back to Overview and launch the most recent task.
-            setCurrentTask(-1);
-            mRecentsAnimationController = null;
+            onRecentsAnimationComplete();
         }, sendUserLeaveHint);
+    }
+
+    /**
+     * Called when a running recents animation has finished or canceled.
+     */
+    public void onRecentsAnimationComplete() {
+        // At this point, the recents animation is not running and if the animation was canceled
+        // by a display rotation then reset this state to show the screenshot
+        setRunningTaskViewShowScreenshot(true);
+        // After we finish the recents animation, the current task id should be correctly
+        // reset so that when the task is launched from Overview later, it goes through the
+        // flow of starting a new task instead of finishing recents animation to app. A
+        // typical example of this is (1) user swipes up from app to Overview (2) user
+        // taps on QSB (3) user goes back to Overview and launch the most recent task.
+        setCurrentTask(-1);
+        mRecentsAnimationController = null;
     }
 
     public void setDisallowScrollToClearAll(boolean disallowScrollToClearAll) {
@@ -3858,5 +3866,20 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     @Nullable
     public RecentsAnimationController getRecentsAnimationController() {
         return mRecentsAnimationController;
+    }
+
+    /** Update the current activity locus id to show the enabled state of Overview */
+    public void updateLocusId() {
+        String locusId = "Overview";
+
+        if (mOverviewStateEnabled && mActivity.isStarted()) {
+            locusId += "|ENABLED";
+        } else {
+            locusId += "|DISABLED";
+        }
+
+        final LocusId id = new LocusId(locusId);
+        // Set locus context is a binder call, don't want it to happen during a transition
+        UI_HELPER_EXECUTOR.post(() -> mActivity.setLocusContext(id, Bundle.EMPTY));
     }
 }

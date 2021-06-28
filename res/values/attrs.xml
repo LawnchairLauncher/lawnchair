@@ -25,6 +25,9 @@
     <attr name="popupColorPrimary" format="color" />
     <attr name="popupColorSecondary" format="color" />
     <attr name="popupColorTertiary" format="color" />
+    <attr name="popupShadeFirst" format="color" />
+    <attr name="popupShadeSecond" format="color" />
+    <attr name="popupShadeThird" format="color" />
     <attr name="isMainColorDark" format="boolean" />
     <attr name="isWorkspaceDarkText" format="boolean" />
     <attr name="workspaceTextColor" format="color" />
@@ -46,7 +49,8 @@
     <attr name="folderHintColor" format="color" />
     <attr name="isFolderDarkText" format="boolean" />
     <attr name="workProfileOverlayTextColor" format="color" />
-    <attr name="gridColor" format="color" />
+    <attr name="workspaceAccentColor" format="color" />
+    <attr name="dropTargetHoverTextColor" format="color" />
 
     <!-- BubbleTextView specific attributes. -->
     <declare-styleable name="BubbleTextView">

@@ -554,7 +554,13 @@ public class TaskView extends FrameLayout implements Reusable {
 
             mIsClickableAsLiveTile = false;
             RecentsView recentsView = getRecentsView();
-            RemoteAnimationTargets targets = recentsView.getLiveTileParams().getTargetSet();
+            final RemoteAnimationTargets targets = recentsView.getLiveTileParams().getTargetSet();
+            if (targets == null) {
+                // If the recents animation is cancelled somehow between the parent if block and
+                // here, try to launch the task as a non live tile task.
+                launcherNonLiveTileTask();
+                return;
+            }
 
             AnimatorSet anim = new AnimatorSet();
             TaskViewUtils.composeRecentsLaunchAnimator(
@@ -576,15 +582,19 @@ public class TaskView extends FrameLayout implements Reusable {
             });
             anim.start();
         } else {
-            if (mActivity.isInState(OVERVIEW_SPLIT_SELECT)) {
-                // User tapped to select second split screen app
-                getRecentsView().confirmSplitSelect(this);
-            } else {
-                launchTaskAnimated();
-            }
+            launcherNonLiveTileTask();
         }
         mActivity.getStatsLogManager().logger().withItemInfo(getItemInfo())
                 .log(LAUNCHER_TASK_LAUNCH_TAP);
+    }
+
+    private void launcherNonLiveTileTask() {
+        if (mActivity.isInState(OVERVIEW_SPLIT_SELECT)) {
+            // User tapped to select second split screen app
+            getRecentsView().confirmSplitSelect(this);
+        } else {
+            launchTaskAnimated();
+        }
     }
 
     /**
