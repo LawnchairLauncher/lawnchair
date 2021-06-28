@@ -64,8 +64,7 @@
     <string name="notifications_header" msgid="1404149926117359025">"အကြောင်းကြားချက်များ"</string>
     <string name="long_press_shortcut_to_add" msgid="5405328730817637737">"ဖြတ်လမ်းလင့်ခ်ကို ရွှေ့ရန် နှစ်ချက်တို့ပြီး ဖိထားပါ။"</string>
     <string name="long_accessible_way_to_add_shortcut" msgid="2199537273817090740">"ဖြတ်လမ်းလင့်ခ်ကို ရွှေ့ရန် (သို့) စိတ်ကြိုက်လုပ်ဆောင်ချက်များကို သုံးရန် နှစ်ချက်တို့ပြီး ဖိထားပါ။"</string>
-    <!-- no translation found for out_of_space (6692471482459245734) -->
-    <skip />
+    <string name="out_of_space" msgid="6692471482459245734">"ဤပင်မစာမျက်နှာတွင် နေရာလွတ် မရှိတော့ပါ"</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"အနှစ်သက်ဆုံးများ ထားရာတွင် နေရာလွတ် မကျန်တော့ပါ"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"အက်ပ်စာရင်း"</string>
     <string name="all_apps_button_personal_label" msgid="1315764287305224468">"တစ်ကိုယ်ရေသုံး အက်ပ်စာရင်း"</string>
