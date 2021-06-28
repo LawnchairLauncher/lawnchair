@@ -926,6 +926,16 @@ public final class LauncherInstrumentation {
         }
     }
 
+    void waitForObjectEnabled(UiObject2 object, String waitReason) {
+        try {
+            assertTrue("Timed out waiting for object to be enabled for " + waitReason + " "
+                    + object.getResourceName(),
+                    object.wait(Until.enabled(true), WAIT_TIME_MS));
+        } catch (StaleObjectException e) {
+            fail("The object disappeared from screen");
+        }
+    }
+
     @NonNull
     UiObject2 waitForObjectInContainer(UiObject2 container, BySelector selector) {
         try {
@@ -1072,6 +1082,7 @@ public final class LauncherInstrumentation {
     }
 
     void clickLauncherObject(UiObject2 object) {
+        waitForObjectEnabled(object, "clickLauncherObject");
         expectEvent(TestProtocol.SEQUENCE_MAIN, LauncherInstrumentation.EVENT_TOUCH_DOWN);
         expectEvent(TestProtocol.SEQUENCE_MAIN, LauncherInstrumentation.EVENT_TOUCH_UP);
         if (!isLauncher3() && getNavigationModel() != NavigationModel.THREE_BUTTON) {
