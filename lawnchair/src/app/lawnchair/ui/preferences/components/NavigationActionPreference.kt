@@ -34,7 +34,10 @@ fun NavigationActionPreference(
 ) {
     val navController = LocalNavController.current
 
-    PreferenceTemplate(height = if (subtitle != null) 72.dp else 52.dp, showDivider = showDivider) {
+    PreferenceTemplate(
+        height = if (subtitle != null) 72.dp else 52.dp,
+        showDivider = showDivider
+    ) {
         Column(
             verticalArrangement = Arrangement.Center,
             modifier = Modifier
