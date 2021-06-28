@@ -108,7 +108,8 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
     private boolean mTopBorderActive;
     private boolean mBottomBorderActive;
 
-    private int mResizeMode;
+    private boolean mHorizontalResizeActive;
+    private boolean mVerticalResizeActive;
 
     private int mRunningHInc;
     private int mRunningVInc;
@@ -207,7 +208,6 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
         mWidgetView.addOnAttachStateChangeListener(mWidgetViewAttachStateChangeListener);
         LauncherAppWidgetProviderInfo info = (LauncherAppWidgetProviderInfo)
                 widgetView.getAppWidgetInfo();
-        mResizeMode = info.resizeMode;
         mDragLayer = dragLayer;
 
         mMinHSpan = info.minSpanX;
@@ -218,10 +218,17 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
         mWidgetPadding = getDefaultPaddingForWidget(getContext(),
                 widgetView.getAppWidgetInfo().provider, null);
 
-        if (mResizeMode == AppWidgetProviderInfo.RESIZE_HORIZONTAL) {
+        // Only show resize handles for the directions in which resizing is possible.
+        InvariantDeviceProfile idp = LauncherAppState.getIDP(cellLayout.getContext());
+        mVerticalResizeActive = (info.resizeMode & AppWidgetProviderInfo.RESIZE_VERTICAL) != 0
+                && mMinVSpan < idp.numRows && mMaxVSpan > 1;
+        if (!mVerticalResizeActive) {
             mDragHandles[INDEX_TOP].setVisibility(GONE);
             mDragHandles[INDEX_BOTTOM].setVisibility(GONE);
-        } else if (mResizeMode == AppWidgetProviderInfo.RESIZE_VERTICAL) {
+        }
+        mHorizontalResizeActive = (info.resizeMode & AppWidgetProviderInfo.RESIZE_HORIZONTAL) != 0
+                && mMinHSpan < idp.numColumns && mMaxHSpan > 1;
+        if (!mHorizontalResizeActive) {
             mDragHandles[INDEX_LEFT].setVisibility(GONE);
             mDragHandles[INDEX_RIGHT].setVisibility(GONE);
         }
@@ -270,14 +277,12 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
     }
 
     public boolean beginResizeIfPointInRegion(int x, int y) {
-        boolean horizontalActive = (mResizeMode & AppWidgetProviderInfo.RESIZE_HORIZONTAL) != 0;
-        boolean verticalActive = (mResizeMode & AppWidgetProviderInfo.RESIZE_VERTICAL) != 0;
-
-        mLeftBorderActive = (x < mTouchTargetWidth) && horizontalActive;
-        mRightBorderActive = (x > getWidth() - mTouchTargetWidth) && horizontalActive;
-        mTopBorderActive = (y < mTouchTargetWidth + mTopTouchRegionAdjustment) && verticalActive;
+        mLeftBorderActive = (x < mTouchTargetWidth) && mHorizontalResizeActive;
+        mRightBorderActive = (x > getWidth() - mTouchTargetWidth) && mHorizontalResizeActive;
+        mTopBorderActive = (y < mTouchTargetWidth + mTopTouchRegionAdjustment)
+                && mVerticalResizeActive;
         mBottomBorderActive = (y > getHeight() - mTouchTargetWidth + mBottomTouchRegionAdjustment)
-                && verticalActive;
+                && mVerticalResizeActive;
 
         boolean anyBordersActive = mLeftBorderActive || mRightBorderActive
                 || mTopBorderActive || mBottomBorderActive;
