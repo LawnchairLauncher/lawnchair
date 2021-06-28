@@ -46,10 +46,8 @@
     <string name="widget_button_text" msgid="2880537293434387943">"વિજેટ્સ"</string>
     <string name="widgets_full_sheet_search_bar_hint" msgid="8484659090860596457">"શોધ"</string>
     <string name="widgets_full_sheet_cancel_button_description" msgid="5766167035728653605">"શોધ બૉક્સમાંથી ટેક્સ્ટ સાફ કરો"</string>
-    <!-- no translation found for no_widgets_available (4337693382501046170) -->
-    <skip />
-    <!-- no translation found for no_search_results (3787956167293097509) -->
-    <skip />
+    <string name="no_widgets_available" msgid="4337693382501046170">"વિજેટ અને શૉર્ટકટ ઉપલબ્ધ નથી"</string>
+    <string name="no_search_results" msgid="3787956167293097509">"કોઈ વિજેટ અથવા શૉર્ટકટ મળ્યા નથી"</string>
     <string name="widgets_full_sheet_personal_tab" msgid="2743540105607120182">"વ્યક્તિગત"</string>
     <string name="widgets_full_sheet_work_tab" msgid="3767150027110633765">"ઑફિસ"</string>
     <string name="widget_category_conversations" msgid="8894438636213590446">"વાતચીતો"</string>

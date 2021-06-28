@@ -46,10 +46,8 @@
     <string name="widget_button_text" msgid="2880537293434387943">"విడ్జెట్‌లు"</string>
     <string name="widgets_full_sheet_search_bar_hint" msgid="8484659090860596457">"సెర్చ్ చేయండి"</string>
     <string name="widgets_full_sheet_cancel_button_description" msgid="5766167035728653605">"సెర్చ్ బాక్స్ నుండి టెక్స్ట్‌ను క్లియర్ చేయి"</string>
-    <!-- no translation found for no_widgets_available (4337693382501046170) -->
-    <skip />
-    <!-- no translation found for no_search_results (3787956167293097509) -->
-    <skip />
+    <string name="no_widgets_available" msgid="4337693382501046170">"విడ్జెట్‌లు, షార్ట్‌కట్‌లు అందుబాటులో లేవు"</string>
+    <string name="no_search_results" msgid="3787956167293097509">"విడ్జెట్‌లు లేదా షార్ట్‌కట్‌లు కనుగొనబడలేదు"</string>
     <string name="widgets_full_sheet_personal_tab" msgid="2743540105607120182">"వ్యక్తిగత గ్యాడ్జెట్స్"</string>
     <string name="widgets_full_sheet_work_tab" msgid="3767150027110633765">"ఆఫీస్"</string>
     <string name="widget_category_conversations" msgid="8894438636213590446">"సంభాషణలు"</string>
