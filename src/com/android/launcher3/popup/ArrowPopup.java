@@ -511,8 +511,8 @@ public abstract class ArrowPopup<T extends StatefulActivity<LauncherState>>
                     mArrowOffsetHorizontal, -mArrowOffsetVertical,
                     !mIsAboveIcon, mIsLeftAligned,
                     mArrowColor));
-            // TODO: Remove elevation when arrow is above as it casts a shadow on the container
-            mArrow.setElevation(mIsAboveIcon ? mElevation : 0);
+            setElevation(mElevation);
+            mArrow.setElevation(mElevation);
         }
     }
 
