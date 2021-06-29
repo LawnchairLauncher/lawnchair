@@ -46,6 +46,7 @@ import android.util.AttributeSet;
 import android.util.SparseIntArray;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowInsets;
@@ -532,6 +533,18 @@ public class LauncherPreviewRenderer extends ContextWrapper
         @Override
         protected boolean shouldAllowDirectClick() {
             return false;
+        }
+    }
+
+    /** Root layout for launcher preview that intercepts all touch events. */
+    public static class LauncherPreviewLayout extends InsettableFrameLayout {
+        public LauncherPreviewLayout(Context context, AttributeSet attrs) {
+            super(context, attrs);
+        }
+
+        @Override
+        public boolean onInterceptTouchEvent(MotionEvent ev) {
+            return true;
         }
     }
 }
