@@ -31,11 +31,9 @@
         android:id="@+id/widgets_search_cancel_button"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
-        android:paddingVertical="12dp"
-        android:paddingStart="8dp"
-        android:paddingEnd="12dp"
+        android:padding="12dp"
         android:src="@drawable/ic_gm_close_24"
-        android:background="?android:selectableItemBackground"
+        android:background="@drawable/full_rounded_transparent_ripple"
         android:layout_gravity="center"
         android:contentDescription="@string/widgets_full_sheet_cancel_button_description"
         android:visibility="gone"/>
