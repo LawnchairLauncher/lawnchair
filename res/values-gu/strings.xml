@@ -46,10 +46,8 @@
     <string name="widget_button_text" msgid="2880537293434387943">"વિજેટ્સ"</string>
     <string name="widgets_full_sheet_search_bar_hint" msgid="8484659090860596457">"શોધ"</string>
     <string name="widgets_full_sheet_cancel_button_description" msgid="5766167035728653605">"શોધ બૉક્સમાંથી ટેક્સ્ટ સાફ કરો"</string>
-    <!-- no translation found for no_widgets_available (4337693382501046170) -->
-    <skip />
-    <!-- no translation found for no_search_results (3787956167293097509) -->
-    <skip />
+    <string name="no_widgets_available" msgid="4337693382501046170">"વિજેટ અને શૉર્ટકટ ઉપલબ્ધ નથી"</string>
+    <string name="no_search_results" msgid="3787956167293097509">"કોઈ વિજેટ અથવા શૉર્ટકટ મળ્યા નથી"</string>
     <string name="widgets_full_sheet_personal_tab" msgid="2743540105607120182">"વ્યક્તિગત"</string>
     <string name="widgets_full_sheet_work_tab" msgid="3767150027110633765">"ઑફિસ"</string>
     <string name="widget_category_conversations" msgid="8894438636213590446">"વાતચીતો"</string>
@@ -66,8 +64,7 @@
     <string name="notifications_header" msgid="1404149926117359025">"નોટિફિકેશન"</string>
     <string name="long_press_shortcut_to_add" msgid="5405328730817637737">"શૉર્ટકટ ખસેડવા ટચ કરીને થોડી વાર દબાવી રાખો."</string>
     <string name="long_accessible_way_to_add_shortcut" msgid="2199537273817090740">"શૉર્ટકટ ખસેડવા બે વાર ટૅપ કરીને દબાવી રાખો અથવા કસ્ટમ ક્રિયાઓનો ઉપયોગ કરો."</string>
-    <!-- no translation found for out_of_space (6692471482459245734) -->
-    <skip />
+    <string name="out_of_space" msgid="6692471482459245734">"આ હોમ સ્ક્રીન પર વધુ જગ્યા નથી"</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"મનપસંદ ટ્રે પર વધુ જગ્યા નથી"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"ઍપ્લિકેશનોની સૂચિ"</string>
     <string name="all_apps_button_personal_label" msgid="1315764287305224468">"વ્યક્તિગત ઍપની સૂચિ"</string>

@@ -64,8 +64,7 @@
     <string name="notifications_header" msgid="1404149926117359025">"জাননীসমূহ"</string>
     <string name="long_press_shortcut_to_add" msgid="5405328730817637737">"শ্বৰ্টকাট স্থানান্তৰ কৰিবলৈ দুবাৰ টিপি ধৰি ৰাখক।"</string>
     <string name="long_accessible_way_to_add_shortcut" msgid="2199537273817090740">"কোনো শ্বৰ্টকাট স্থানান্তৰ কৰিবলৈ দুবাৰ টিপি ধৰি ৰাখক অথবা কাষ্টম কাৰ্য ব্যৱহাৰ কৰক।"</string>
-    <!-- no translation found for out_of_space (6692471482459245734) -->
-    <skip />
+    <string name="out_of_space" msgid="6692471482459245734">"এই গৃহ স্ক্ৰীনত খালী ঠাই নাই"</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"পছন্দৰ ট্ৰে\'ত আৰু বেছি ঠাই নাই"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"এপৰ সূচী"</string>
     <string name="all_apps_button_personal_label" msgid="1315764287305224468">"ব্যক্তিগত এপৰ তালিকা"</string>

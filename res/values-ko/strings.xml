@@ -64,8 +64,7 @@
     <string name="notifications_header" msgid="1404149926117359025">"알림"</string>
     <string name="long_press_shortcut_to_add" msgid="5405328730817637737">"길게 터치하여 바로가기를 이동하세요."</string>
     <string name="long_accessible_way_to_add_shortcut" msgid="2199537273817090740">"두 번 탭한 다음 길게 터치하여 바로가기를 이동하거나 맞춤 작업을 사용하세요."</string>
-    <!-- no translation found for out_of_space (6692471482459245734) -->
-    <skip />
+    <string name="out_of_space" msgid="6692471482459245734">"홈 화면에 더 이상 공간이 없습니다."</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"즐겨찾기 트레이에 더 이상 공간이 없습니다."</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"앱 목록"</string>
     <string name="all_apps_button_personal_label" msgid="1315764287305224468">"개인 앱 목록"</string>
