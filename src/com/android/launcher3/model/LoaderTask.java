@@ -75,7 +75,6 @@ import com.android.launcher3.model.data.FolderInfo;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.ItemInfoWithIcon;
 import com.android.launcher3.model.data.LauncherAppWidgetInfo;
-import com.android.launcher3.model.data.PackageItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.pm.InstallSessionHelper;
 import com.android.launcher3.pm.PackageInstallInfo;
@@ -793,8 +792,8 @@ public class LoaderTask implements Runnable {
 
                                 if (appWidgetInfo.restoreStatus !=
                                         LauncherAppWidgetInfo.RESTORE_COMPLETED) {
-                                    String pkg = appWidgetInfo.providerName.getPackageName();
-                                    appWidgetInfo.pendingItemInfo = new PackageItemInfo(pkg);
+                                    appWidgetInfo.pendingItemInfo = WidgetsModel.newPendingItemInfo(
+                                            appWidgetInfo.providerName);
                                     appWidgetInfo.pendingItemInfo.user = appWidgetInfo.user;
                                     mIconCache.getTitleAndIconForApp(
                                             appWidgetInfo.pendingItemInfo, false);
