@@ -638,7 +638,6 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         mLiveTileTaskViewSimulator = new TaskViewSimulator(getContext(), getSizeStrategy());
         mLiveTileTaskViewSimulator.recentsViewScale.value = 1;
         mLiveTileTaskViewSimulator.setOrientationState(mOrientationState);
-        mLiveTileTaskViewSimulator.setDrawsBelowRecents(true);
 
         mTintingColor = getForegroundScrimDimColor(context);
     }
@@ -1206,6 +1205,8 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             mLiveTileTaskViewSimulator.taskSecondaryTranslation.value = 0;
             mLiveTileTaskViewSimulator.fullScreenProgress.value = 0;
             mLiveTileTaskViewSimulator.recentsViewScale.value = 1;
+
+            mLiveTileParams.setTargetAlpha(1);
         }
         if (mRunningTaskTileHidden) {
             setRunningTaskHidden(mRunningTaskTileHidden);
@@ -1591,7 +1592,6 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         }
         setEnableDrawingLiveTile(false);
         mLiveTileParams.setTargetSet(null);
-        mLiveTileTaskViewSimulator.setDrawsBelowRecents(true);
 
         // These are relatively expensive and don't need to be done this frame (RecentsView isn't
         // visible anyway), so defer by a frame to get off the critical path, e.g. app to home.
@@ -2173,6 +2173,10 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         // Use setFloat instead of setViewAlpha as we want to keep the view visible even when it's
         // alpha is set to 0 so that it can be recycled in the view pool properly
         anim.setFloat(taskView, VIEW_ALPHA, 0, clampToProgress(ACCEL, 0, 0.5f));
+        if (LIVE_TILE.get() && taskView.isRunningTask()) {
+            anim.setFloat(mLiveTileParams, TransformParams.TARGET_ALPHA, 0,
+                    clampToProgress(ACCEL, 0, 0.5f));
+        }
         SplitSelectStateController splitController = mSplitPlaceholderView.getSplitController();
 
         ResourceProvider rp = DynamicResource.provider(mActivity);

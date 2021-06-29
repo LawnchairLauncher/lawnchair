@@ -561,13 +561,7 @@ public class TaskView extends FrameLayout implements Reusable {
                     recentsView.getDepthController());
             anim.addListener(new AnimatorListenerAdapter() {
                 @Override
-                public void onAnimationStart(Animator animator) {
-                    recentsView.getLiveTileTaskViewSimulator().setDrawsBelowRecents(false);
-                }
-
-                @Override
                 public void onAnimationEnd(Animator animator) {
-                    recentsView.getLiveTileTaskViewSimulator().setDrawsBelowRecents(true);
                     mIsClickableAsLiveTile = true;
                 }
             });
@@ -731,7 +725,16 @@ public class TaskView extends FrameLayout implements Reusable {
     private void setIcon(Drawable icon) {
         if (icon != null) {
             mIconView.setDrawable(icon);
-            mIconView.setOnClickListener(v -> showTaskMenu());
+            mIconView.setOnClickListener(v -> {
+                if (LIVE_TILE.get() && isRunningTask()) {
+                    RecentsView recentsView = getRecentsView();
+                    recentsView.switchToScreenshot(
+                            () -> recentsView.finishRecentsAnimation(true /* toRecents */,
+                                    this::showTaskMenu));
+                } else {
+                    showTaskMenu();
+                }
+            });
             mIconView.setOnLongClickListener(v -> {
                 requestDisallowInterceptTouchEvent(true);
                 return showTaskMenu();
