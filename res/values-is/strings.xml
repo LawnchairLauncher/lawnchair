@@ -64,8 +64,7 @@
     <string name="notifications_header" msgid="1404149926117359025">"Tilkynningar"</string>
     <string name="long_press_shortcut_to_add" msgid="5405328730817637737">"Haltu fingri á flýtileið til að færa hana."</string>
     <string name="long_accessible_way_to_add_shortcut" msgid="2199537273817090740">"Ýttu tvisvar og haltu fingri á flýtileið til að færa hana eða notaðu sérsniðnar aðgerðir."</string>
-    <!-- no translation found for out_of_space (6692471482459245734) -->
-    <skip />
+    <string name="out_of_space" msgid="6692471482459245734">"Ekkert pláss á þessum heimaskjá"</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"Ekki meira pláss í bakka fyrir uppáhald"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"Forritalisti"</string>
     <string name="all_apps_button_personal_label" msgid="1315764287305224468">"Listi yfir eigin forrit"</string>
