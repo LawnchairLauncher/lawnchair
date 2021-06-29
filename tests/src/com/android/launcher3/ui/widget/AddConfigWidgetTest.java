@@ -102,6 +102,8 @@ public class AddConfigWidgetTest extends AbstractLauncherUiTest {
 
         setResult(acceptConfig);
         if (acceptConfig) {
+            // Dismiss widget resize frame.
+            mDevice.pressHome();
             Wait.atMost("", new WidgetSearchCondition(), DEFAULT_ACTIVITY_TIMEOUT, mLauncher);
             assertNotNull(mAppWidgetManager.getAppWidgetInfo(mWidgetId));
         } else {
