@@ -64,8 +64,7 @@
     <string name="notifications_header" msgid="1404149926117359025">"ការ​ជូនដំណឹង"</string>
     <string name="long_press_shortcut_to_add" msgid="5405328730817637737">"ចុចឱ្យជាប់​ដើម្បីផ្លាស់ទី​ផ្លូវកាត់​។"</string>
     <string name="long_accessible_way_to_add_shortcut" msgid="2199537273817090740">"ចុចពីរដង រួចសង្កត់ឱ្យជាប់ ដើម្បីផ្លាស់ទី​ផ្លូវកាត់ ឬប្រើ​សកម្មភាព​តាមបំណង​។"</string>
-    <!-- no translation found for out_of_space (6692471482459245734) -->
-    <skip />
+    <string name="out_of_space" msgid="6692471482459245734">"គ្មានកន្លែង​នៅលើ​អេក្រង់ដើមនេះទេ"</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"គ្មាន​បន្ទប់​​ក្នុង​ថាស​និយម​ប្រើ"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"បញ្ជីកម្មវិធី"</string>
     <string name="all_apps_button_personal_label" msgid="1315764287305224468">"បញ្ជី​កម្មវិធី​ផ្ទាល់ខ្លួន"</string>
