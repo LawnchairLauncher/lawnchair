@@ -45,8 +45,6 @@ import androidx.annotation.VisibleForTesting;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.android.launcher3.DeviceProfile;
-import com.android.launcher3.Insettable;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.R;
@@ -76,7 +74,7 @@ import java.util.stream.IntStream;
  * Popup for showing the full list of available widgets
  */
 public class WidgetsFullSheet extends BaseWidgetSheet
-        implements Insettable, ProviderChangedListener, OnActivePageChangedListener,
+        implements ProviderChangedListener, OnActivePageChangedListener,
         WidgetsRecyclerView.HeaderViewDimensionsProvider, SearchModeListener {
     private static final String TAG = WidgetsFullSheet.class.getSimpleName();
 
@@ -309,7 +307,7 @@ public class WidgetsFullSheet extends BaseWidgetSheet
 
     @Override
     public void setInsets(Rect insets) {
-        mInsets.set(insets);
+        super.setInsets(insets);
 
         setBottomPadding(mAdapters.get(AdapterHolder.PRIMARY).mWidgetsRecyclerView, insets.bottom);
         setBottomPadding(mAdapters.get(AdapterHolder.SEARCH).mWidgetsRecyclerView, insets.bottom);
@@ -349,24 +347,6 @@ public class WidgetsFullSheet extends BaseWidgetSheet
                 doMeasure(widthMeasureSpec, heightMeasureSpec);
             }
         }
-    }
-
-    private void doMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        DeviceProfile deviceProfile = mActivityContext.getDeviceProfile();
-        int widthUsed;
-        if (mInsets.bottom > 0) {
-            widthUsed = mInsets.left + mInsets.right;
-        } else {
-            Rect padding = deviceProfile.workspacePadding;
-            widthUsed = Math.max(padding.left + padding.right,
-                    2 * (mInsets.left + mInsets.right));
-        }
-
-        int heightUsed = mInsets.top + deviceProfile.edgeMarginPx;
-        measureChildWithMargins(mContent, widthMeasureSpec,
-                widthUsed, heightMeasureSpec, heightUsed);
-        setMeasuredDimension(MeasureSpec.getSize(widthMeasureSpec),
-                MeasureSpec.getSize(heightMeasureSpec));
     }
 
     /** Returns {@code true} if the max spans have been updated. */
