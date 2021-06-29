@@ -66,8 +66,7 @@
     <string name="notifications_header" msgid="1404149926117359025">"Обавештења"</string>
     <string name="long_press_shortcut_to_add" msgid="5405328730817637737">"Двапут додирните и задржите ради померања пречице."</string>
     <string name="long_accessible_way_to_add_shortcut" msgid="2199537273817090740">"Двапут додирните и задржите да бисте померали пречицу или користите прилагођене радње."</string>
-    <!-- no translation found for out_of_space (6692471482459245734) -->
-    <skip />
+    <string name="out_of_space" msgid="6692471482459245734">"Нема простора на овом почетном екрану"</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"Нема више простора на траци Омиљено"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"Листа апликација"</string>
     <string name="all_apps_button_personal_label" msgid="1315764287305224468">"Листа личних апликација"</string>

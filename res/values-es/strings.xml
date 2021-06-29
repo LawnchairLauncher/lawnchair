@@ -64,8 +64,7 @@
     <string name="notifications_header" msgid="1404149926117359025">"Notificaciones"</string>
     <string name="long_press_shortcut_to_add" msgid="5405328730817637737">"Mantén pulsado un acceso directo para moverlo."</string>
     <string name="long_accessible_way_to_add_shortcut" msgid="2199537273817090740">"Toca dos veces y mantén pulsado un acceso directo para moverlo o usar acciones personalizadas."</string>
-    <!-- no translation found for out_of_space (6692471482459245734) -->
-    <skip />
+    <string name="out_of_space" msgid="6692471482459245734">"No queda espacio en la pantalla de inicio"</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"La bandeja de favoritos está completa"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"Lista de aplicaciones"</string>
     <string name="all_apps_button_personal_label" msgid="1315764287305224468">"Lista de aplicaciones personales"</string>
