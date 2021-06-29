@@ -22,7 +22,7 @@ Wanna help us by translating Lawnchair to your own language? Just take a look at
 
 ## Graphics
 
- The official Lawnchair graphics were designed by [Josh Baldassarre](https://www.uplabs.com/jshbldssrr) & [Lumiq Creative](https://lumiqcreative.com). Thanks a lot to those awesome designers!
+ The official Lawnchair graphics were designed by [Josh Baldassarre](https://www.uplabs.com/jshbldssrr) & [Patryk Michalik](https://patrykmichalik.com). Thanks a lot to those awesome designers!
 
 ## Useful links
 
