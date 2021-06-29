@@ -129,6 +129,22 @@ public class WidgetsFullSheet extends BaseWidgetSheet
         }
     };
 
+    private final OnAttachStateChangeListener mBindScrollbarInSearchMode =
+            new OnAttachStateChangeListener() {
+                @Override
+                public void onViewAttachedToWindow(View view) {
+                    WidgetsRecyclerView searchRecyclerView =
+                            mAdapters.get(AdapterHolder.SEARCH).mWidgetsRecyclerView;
+                    if (mIsInSearchMode && searchRecyclerView != null) {
+                        searchRecyclerView.bindFastScrollbar();
+                    }
+                }
+
+                @Override
+                public void onViewDetachedFromWindow(View view) {
+                }
+            };
+
     private final int mTabsHeight;
     private final int mViewPagerTopPadding;
     private final int mSearchAndRecommendationContainerBottomMargin;
@@ -303,6 +319,12 @@ public class WidgetsFullSheet extends BaseWidgetSheet
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         mActivityContext.getAppWidgetHost().removeProviderChangeListener(this);
+        mAdapters.get(AdapterHolder.PRIMARY).mWidgetsRecyclerView
+                .removeOnAttachStateChangeListener(mBindScrollbarInSearchMode);
+        if (mHasWorkProfile) {
+            mAdapters.get(AdapterHolder.WORK).mWidgetsRecyclerView
+                    .removeOnAttachStateChangeListener(mBindScrollbarInSearchMode);
+        }
     }
 
     @Override
@@ -752,6 +774,12 @@ public class WidgetsFullSheet extends BaseWidgetSheet
             mWidgetsRecyclerView.setHeaderViewDimensionsProvider(WidgetsFullSheet.this);
             mWidgetsRecyclerView.setEdgeEffectFactory(
                     ((TopRoundedCornerView) mContent).createEdgeEffectFactory());
+            // Recycler view binds to fast scroller when it is attached to screen. Make sure
+            // search recycler view is bound to fast scroller if user is in search mode at the time
+            // of attachment.
+            if (mAdapterType == PRIMARY || mAdapterType == WORK) {
+                mWidgetsRecyclerView.addOnAttachStateChangeListener(mBindScrollbarInSearchMode);
+            }
             mWidgetsListAdapter.setApplyBitmapDeferred(false, mWidgetsRecyclerView);
             mWidgetsListAdapter.setMaxHorizontalSpansPerRow(mMaxSpansPerRow);
         }
