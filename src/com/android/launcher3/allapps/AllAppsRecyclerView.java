@@ -454,8 +454,8 @@ public class AllAppsRecyclerView extends BaseRecyclerView {
      */
     public int getTabWidth() {
         DeviceProfile grid = BaseDraggingActivity.fromContext(getContext()).getDeviceProfile();
-        int totalWidth = (grid.availableWidthPx - getPaddingLeft() - getPaddingRight());
+        int totalWidth = getMeasuredWidth() - getPaddingLeft() - getPaddingRight();
         int iconPadding = totalWidth / grid.numShownAllAppsColumns - grid.allAppsIconSizePx;
-        return totalWidth - iconPadding;
+        return totalWidth - iconPadding - grid.allAppsIconDrawablePaddingPx;
     }
 }
