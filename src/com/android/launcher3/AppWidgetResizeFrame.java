@@ -262,6 +262,14 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
             }
         }
 
+        CellLayout.LayoutParams lp = (CellLayout.LayoutParams) mWidgetView.getLayoutParams();
+        ItemInfo widgetInfo = (ItemInfo) mWidgetView.getTag();
+        lp.cellX = lp.tmpCellX = widgetInfo.cellX;
+        lp.cellY = lp.tmpCellY = widgetInfo.cellY;
+        lp.cellHSpan = widgetInfo.spanX;
+        lp.cellVSpan = widgetInfo.spanY;
+        lp.isLockedToGrid = true;
+
         // When we create the resize frame, we first mark all cells as unoccupied. The appropriate
         // cells (same if not resized, or different) will be marked as occupied when the resize
         // frame is dismissed.
@@ -270,7 +278,7 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
         mLauncher.getStatsLogManager()
                 .logger()
                 .withInstanceId(logInstanceId)
-                .withItemInfo((ItemInfo) mWidgetView.getTag())
+                .withItemInfo(widgetInfo)
                 .log(LAUNCHER_WIDGET_RESIZE_STARTED);
 
         setOnKeyListener(this);
