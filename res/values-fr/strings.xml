@@ -32,6 +32,8 @@
     <string name="long_accessible_way_to_add" msgid="2733588281439571974">"Appuyez deux fois et maintenez la pression pour déplacer widget ou utiliser actions personnalisées."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d x %2$d"</string>
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"%1$d de largeur et %2$d de hauteur"</string>
+    <!-- no translation found for widget_preview_context_description (9045841361655787574) -->
+    <skip />
     <string name="add_item_request_drag_hint" msgid="5653291305078645405">"Appuyez de manière prolongée sur le widget pour le déplacer sur l\'écran d\'accueil"</string>
     <string name="add_to_home_screen" msgid="8631549138215492708">"Ajouter à l\'écran d\'accueil"</string>
     <plurals name="widgets_count" formatted="false" msgid="656794749266073027">
