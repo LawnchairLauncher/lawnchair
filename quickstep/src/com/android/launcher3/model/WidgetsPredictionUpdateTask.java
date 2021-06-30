@@ -15,6 +15,8 @@
  */
 package com.android.launcher3.model;
 
+import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_WIDGETS_PREDICTION;
+
 import android.app.prediction.AppTarget;
 import android.content.ComponentName;
 import android.text.TextUtils;
@@ -73,7 +75,9 @@ public final class WidgetsPredictionUpdateTask extends BaseModelUpdateTask {
                     if (notAddedWidgets.size() > 0) {
                         // Even an apps have more than one widgets, we only include one widget.
                         fixedContainerItems.items.add(
-                                new PendingAddWidgetInfo(notAddedWidgets.get(0).widgetInfo));
+                                new PendingAddWidgetInfo(
+                                        notAddedWidgets.get(0).widgetInfo,
+                                        CONTAINER_WIDGETS_PREDICTION));
                     }
                 }
             }
@@ -90,7 +94,9 @@ public final class WidgetsPredictionUpdateTask extends BaseModelUpdateTask {
                         new ComponentName(app.getPackageName(), app.getClassName()), app.getUser());
                 if (widgetItems.containsKey(targetWidget)) {
                     fixedContainerItems.items.add(
-                            new PendingAddWidgetInfo(widgetItems.get(targetWidget).widgetInfo));
+                            new PendingAddWidgetInfo(widgetItems.get(
+                                    targetWidget).widgetInfo,
+                                    CONTAINER_WIDGETS_PREDICTION));
                 }
             }
         }
