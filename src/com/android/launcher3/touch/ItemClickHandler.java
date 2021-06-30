@@ -262,19 +262,12 @@ public class ItemClickHandler {
      */
     public static void onClickSearchAction(Launcher launcher, SearchActionItemInfo itemInfo) {
         if (itemInfo.getIntent() != null) {
-            if (itemInfo.hasFlags(SearchActionItemInfo.FLAG_SHOULD_START_FOR_RESULT)) {
-                launcher.startActivityForResult(itemInfo.getIntent(), 0);
-            } else {
-                launcher.startActivity(itemInfo.getIntent());
-            }
+            launcher.startActivity(itemInfo.getIntent());
         } else if (itemInfo.getPendingIntent() != null) {
             try {
                 PendingIntent pendingIntent = itemInfo.getPendingIntent();
                 if (!itemInfo.hasFlags(SearchActionItemInfo.FLAG_SHOULD_START)) {
                     pendingIntent.send();
-                } else if (itemInfo.hasFlags(SearchActionItemInfo.FLAG_SHOULD_START_FOR_RESULT)) {
-                    launcher.startIntentSenderForResult(pendingIntent.getIntentSender(), 0, null, 0,
-                            0, 0);
                 } else {
                     launcher.startIntentSender(pendingIntent.getIntentSender(), null, 0, 0, 0);
                 }

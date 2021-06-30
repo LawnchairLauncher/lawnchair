@@ -64,8 +64,7 @@
     <string name="notifications_header" msgid="1404149926117359025">"Хабарландырулар"</string>
     <string name="long_press_shortcut_to_add" msgid="5405328730817637737">"Таңбашаны жылжыту үшін басып тұрыңыз."</string>
     <string name="long_accessible_way_to_add_shortcut" msgid="2199537273817090740">"Таңбашаны жылжыту үшін екі рет түртіңіз де, ұстап тұрыңыз немесе арнаулы әрекеттерді пайдаланыңыз."</string>
-    <!-- no translation found for out_of_space (6692471482459245734) -->
-    <skip />
+    <string name="out_of_space" msgid="6692471482459245734">"Негізгі экранда бос орын қалмады."</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"Қалаулылар науасында орын қалмады"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"Қолданбалар тізімі"</string>
     <string name="all_apps_button_personal_label" msgid="1315764287305224468">"Жеке қолданбалар тізімі"</string>
