@@ -124,6 +124,8 @@
             android:excludeFromRecents="true"
             android:screenOrientation="portrait"
             android:permission="android.permission.REBOOT"
+            android:theme="@style/AllSetTheme"
+            android:label="@string/allset_title"
             android:exported="true">
             <intent-filter>
                 <action android:name="com.android.quickstep.action.GESTURE_ONBOARDING_ALL_SET"/>
