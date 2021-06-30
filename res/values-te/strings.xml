@@ -64,8 +64,7 @@
     <string name="notifications_header" msgid="1404149926117359025">"నోటిఫికేషన్‌లు"</string>
     <string name="long_press_shortcut_to_add" msgid="5405328730817637737">"షార్ట్‌కట్‌ను తరలించడానికి తాకి &amp; నొక్కి ఉంచు."</string>
     <string name="long_accessible_way_to_add_shortcut" msgid="2199537273817090740">"షార్ట్‌కట్‌ను తరలించడానికి లేదా అనుకూల చర్యలను ఉపయోగించడానికి రెండుసార్లు నొక్కండి &amp; హోల్డ్ చేయండి."</string>
-    <!-- no translation found for out_of_space (6692471482459245734) -->
-    <skip />
+    <string name="out_of_space" msgid="6692471482459245734">"ఈ మొదటి స్క్రీన్‌లో స్థలం లేదు"</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"ఇష్టమైనవి ట్రేలో ఖాళీ లేదు"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"అనువర్తనాల జాబితా"</string>
     <string name="all_apps_button_personal_label" msgid="1315764287305224468">"వ్యక్తిగత యాప్‌ల జాబితా"</string>

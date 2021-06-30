@@ -23,7 +23,6 @@ import android.content.Context;
 import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.util.IntProperty;
-import android.util.Log;
 import android.util.Pair;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -36,10 +35,7 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
-import androidx.annotation.GuardedBy;
-
 import com.android.launcher3.DeviceProfile;
-import com.android.launcher3.Insettable;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.R;
 import com.android.launcher3.anim.PendingAnimation;
@@ -53,7 +49,7 @@ import java.util.List;
 /**
  * Bottom sheet for the "Widgets" system shortcut in the long-press popup.
  */
-public class WidgetsBottomSheet extends BaseWidgetSheet implements Insettable {
+public class WidgetsBottomSheet extends BaseWidgetSheet {
     private static final String TAG = "WidgetsBottomSheet";
 
     private static final IntProperty<View> PADDING_BOTTOM =
@@ -74,7 +70,6 @@ public class WidgetsBottomSheet extends BaseWidgetSheet implements Insettable {
     private static final long EDUCATION_TIP_DELAY_MS = 300;
 
     private ItemInfo mOriginalItemInfo;
-    private final Rect mInsets;
     private final int mMaxTableHeight;
     private int mMaxHorizontalSpan = 4;
 
@@ -114,7 +109,6 @@ public class WidgetsBottomSheet extends BaseWidgetSheet implements Insettable {
     public WidgetsBottomSheet(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         setWillNotDraw(false);
-        mInsets = new Rect();
         DeviceProfile deviceProfile = mActivityContext.getDeviceProfile();
         // Set the max table height to 2 / 3 of the grid height so that the bottom picker won't
         // take over the entire view vertically.
@@ -132,53 +126,20 @@ public class WidgetsBottomSheet extends BaseWidgetSheet implements Insettable {
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        if (doMeasure(widthMeasureSpec, heightMeasureSpec)) {
-            boolean hasUpdated = doMeasure(widthMeasureSpec, heightMeasureSpec);
-            if (hasUpdated) {
-                Log.w(TAG, "WidgetsBottomSheet dimension has been updated after a 2nd"
-                        + " measurement.");
-            }
+        doMeasure(widthMeasureSpec, heightMeasureSpec);
+        if (updateMaxSpansPerRow()) {
+            doMeasure(widthMeasureSpec, heightMeasureSpec);
         }
     }
 
-    /**
-     * Measures the dimension of this view and its children.
-     *
-     * <p>This function takes account of the following during measurement:
-     * <ol>
-     *     <li>status bar and system navigation bar insets</li>
-     *     <li>
-     *         number of spans that can fit in a row. This affects the number of widgets that can
-     *         fit in a row.
-     *     </li>
-     * </ol>
-     *
-     * @return {@code true} if the width or height of this view or its children have changed after
-     *          the measurement. Otherwise, returns {@code false}.
-     */
-    @GuardedBy("MainThread")
-    private boolean doMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        DeviceProfile deviceProfile = mActivityContext.getDeviceProfile();
-        int widthUsed;
-        if (mInsets.bottom > 0) {
-            widthUsed = mInsets.left + mInsets.right;
-        } else {
-            Rect padding = deviceProfile.workspacePadding;
-            widthUsed = Math.max(padding.left + padding.right,
-                    2 * (mInsets.left + mInsets.right));
-        }
-
-        int heightUsed = mInsets.top + deviceProfile.edgeMarginPx;
-        measureChildWithMargins(mContent, widthMeasureSpec,
-                widthUsed, heightMeasureSpec, heightUsed);
-        setMeasuredDimension(MeasureSpec.getSize(widthMeasureSpec),
-                MeasureSpec.getSize(heightMeasureSpec));
+    /** Returns {@code true} if the max spans have been updated. */
+    private boolean updateMaxSpansPerRow() {
+        if (getMeasuredWidth() == 0) return false;
 
         int paddingPx = 2 * getResources().getDimensionPixelOffset(
                 R.dimen.widget_cell_horizontal_padding);
         int maxHorizontalSpan = findViewById(R.id.widgets_table).getMeasuredWidth()
                 / (mActivityContext.getDeviceProfile().cellWidthPx + paddingPx);
-
         if (mMaxHorizontalSpan != maxHorizontalSpan) {
             // Ensure the table layout is showing widgets in the right column after measure.
             mMaxHorizontalSpan = maxHorizontalSpan;
@@ -297,7 +258,8 @@ public class WidgetsBottomSheet extends BaseWidgetSheet implements Insettable {
 
     @Override
     public void setInsets(Rect insets) {
-        mInsets.set(insets);
+        super.setInsets(insets);
+
         mContent.setPadding(mContent.getPaddingStart(),
                 mContent.getPaddingTop(), mContent.getPaddingEnd(), insets.bottom);
         if (insets.bottom > 0) {
