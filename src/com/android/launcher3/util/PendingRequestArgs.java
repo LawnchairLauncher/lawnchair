@@ -20,7 +20,9 @@ import android.content.Intent;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.model.data.ItemInfo;
+import com.android.launcher3.widget.PendingAddWidgetInfo;
 import com.android.launcher3.widget.WidgetAddFlowHandler;
 
 /**
@@ -34,11 +36,13 @@ public class PendingRequestArgs extends ItemInfo implements Parcelable {
     private static final int TYPE_APP_WIDGET = 2;
 
     private final int mArg1;
+    private final int mArg2;
     private final int mObjectType;
     private final Parcelable mObject;
 
     public PendingRequestArgs(ItemInfo info) {
         mArg1 = 0;
+        mArg2 = 0;
         mObjectType = TYPE_NONE;
         mObject = null;
 
@@ -46,7 +50,12 @@ public class PendingRequestArgs extends ItemInfo implements Parcelable {
     }
 
     private PendingRequestArgs(int arg1, int objectType, Parcelable object) {
+        this(arg1, 0, objectType, object);
+    }
+
+    private PendingRequestArgs(int arg1, int arg2, int objectType, Parcelable object) {
         mArg1 = arg1;
+        mArg2 = arg2;
         mObjectType = objectType;
         mObject = object;
     }
@@ -56,6 +65,7 @@ public class PendingRequestArgs extends ItemInfo implements Parcelable {
         user = parcel.readParcelable(null);
 
         mArg1 = parcel.readInt();
+        mArg2 = parcel.readInt();
         mObjectType = parcel.readInt();
         mObject = parcel.readParcelable(getClass().getClassLoader());
     }
@@ -73,6 +83,7 @@ public class PendingRequestArgs extends ItemInfo implements Parcelable {
         dest.writeParcelable(user, flags);
 
         dest.writeInt(mArg1);
+        dest.writeInt(mArg2);
         dest.writeInt(mObjectType);
         dest.writeParcelable(mObject, flags);
     }
@@ -85,6 +96,10 @@ public class PendingRequestArgs extends ItemInfo implements Parcelable {
         return mObjectType == TYPE_APP_WIDGET ? mArg1 : 0;
     }
 
+    public int getWidgetSourceContainer() {
+        return mObjectType == TYPE_APP_WIDGET ? mArg2 : Favorites.CONTAINER_UNKNOWN;
+    }
+
     public Intent getPendingIntent() {
         return mObjectType == TYPE_INTENT ? (Intent) mObject : null;
     }
@@ -95,8 +110,13 @@ public class PendingRequestArgs extends ItemInfo implements Parcelable {
 
     public static PendingRequestArgs forWidgetInfo(
             int appWidgetId, WidgetAddFlowHandler widgetHandler, ItemInfo info) {
+        int sourceContainer = Favorites.CONTAINER_UNKNOWN;
+        if (info instanceof PendingAddWidgetInfo) {
+            sourceContainer = ((PendingAddWidgetInfo) info).sourceContainer;
+        }
         PendingRequestArgs args =
-                new PendingRequestArgs(appWidgetId, TYPE_APP_WIDGET, widgetHandler);
+                new PendingRequestArgs(
+                        appWidgetId, sourceContainer, TYPE_APP_WIDGET, widgetHandler);
         args.copyFrom(info);
         return args;
     }

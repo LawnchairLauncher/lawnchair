@@ -16,6 +16,7 @@
 
 package com.android.launcher3.widget;
 
+import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_BOTTOM_WIDGETS_TRAY;
 import static com.android.launcher3.anim.Interpolators.FAST_OUT_SLOW_IN;
 
 import android.animation.PropertyValuesHolder;
@@ -229,6 +230,7 @@ public class WidgetsBottomSheet extends BaseWidgetSheet {
         previewContainer.setOnClickListener(this);
         previewContainer.setOnLongClickListener(this);
         widget.setAnimatePreview(false);
+        widget.setSourceContainer(CONTAINER_BOTTOM_WIDGETS_TRAY);
 
         parent.addView(widget);
         return widget;
