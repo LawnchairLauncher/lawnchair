@@ -24,11 +24,14 @@ import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
 import android.widget.Toast;
 
+import androidx.annotation.GuardedBy;
 import androidx.annotation.Nullable;
 import androidx.core.view.ViewCompat;
 
+import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.DragSource;
 import com.android.launcher3.DropTarget.DragObject;
+import com.android.launcher3.Insettable;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
@@ -47,10 +50,16 @@ import com.android.launcher3.views.ArrowTipView;
  */
 public abstract class BaseWidgetSheet extends AbstractSlideInView<Launcher>
         implements OnClickListener, OnLongClickListener, DragSource,
-        PopupDataProvider.PopupDataChangeListener {
+        PopupDataProvider.PopupDataChangeListener, Insettable {
+    /**
+     * The maximum scale, [0, 1], of the device screen width that the widgets picker can consume
+     * on large screen devices.
+     */
+    protected static final float MAX_WIDTH_SCALE_FOR_LARGER_SCREEN = 0.8f;
 
     protected static final String KEY_WIDGETS_EDUCATION_TIP_SEEN =
             "launcher.widgets_education_tip_seen";
+    protected final Rect mInsets = new Rect();
 
     /* Touch handling related member variables. */
     private Toast mWidgetInstructionToast;
@@ -103,6 +112,44 @@ public abstract class BaseWidgetSheet extends AbstractSlideInView<Launcher>
             return beginDraggingWidget((WidgetCell) v.getParent());
         }
         return true;
+    }
+
+    @Override
+    public void setInsets(Rect insets) {
+        mInsets.set(insets);
+    }
+
+
+    /**
+     * Measures the dimension of this view and its children by taking system insets, navigation bar,
+     * status bar, into account.
+     */
+    @GuardedBy("MainThread")
+    protected void doMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        DeviceProfile deviceProfile = mActivityContext.getDeviceProfile();
+        int widthUsed;
+        if (mInsets.bottom > 0) {
+            widthUsed = mInsets.left + mInsets.right;
+        } else {
+            Rect padding = deviceProfile.workspacePadding;
+            widthUsed = Math.max(padding.left + padding.right,
+                    2 * (mInsets.left + mInsets.right));
+        }
+
+        if (deviceProfile.isTablet || deviceProfile.isTwoPanels) {
+            // In large screen devices, we restrict the width of the widgets picker to show part of
+            // the home screen. Let's ensure the minimum width used is at least the minimum width
+            // that isn't taken by the widgets picker.
+            int minUsedWidth = (int) (deviceProfile.availableWidthPx
+                    * (1 - MAX_WIDTH_SCALE_FOR_LARGER_SCREEN));
+            widthUsed = Math.max(widthUsed, minUsedWidth);
+        }
+
+        int heightUsed = mInsets.top + deviceProfile.edgeMarginPx;
+        measureChildWithMargins(mContent, widthMeasureSpec,
+                widthUsed, heightMeasureSpec, heightUsed);
+        setMeasuredDimension(MeasureSpec.getSize(widthMeasureSpec),
+                MeasureSpec.getSize(heightMeasureSpec));
     }
 
     private boolean beginDraggingWidget(WidgetCell v) {

@@ -64,8 +64,7 @@
     <string name="notifications_header" msgid="1404149926117359025">"Notificacions"</string>
     <string name="long_press_shortcut_to_add" msgid="5405328730817637737">"Fes doble toc i mantén premut per moure una drecera."</string>
     <string name="long_accessible_way_to_add_shortcut" msgid="2199537273817090740">"Fes doble toc i mantén premut per moure una drecera o per utilitzar accions personalitzades."</string>
-    <!-- no translation found for out_of_space (6692471482459245734) -->
-    <skip />
+    <string name="out_of_space" msgid="6692471482459245734">"No queda espai en aquesta pantalla d\'inici"</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"No hi ha més espai a la safata Preferits."</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"Llista d\'aplicacions"</string>
     <string name="all_apps_button_personal_label" msgid="1315764287305224468">"Llista d\'aplicacions personals"</string>

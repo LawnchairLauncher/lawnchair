@@ -64,8 +64,7 @@
     <string name="notifications_header" msgid="1404149926117359025">"Meldingen"</string>
     <string name="long_press_shortcut_to_add" msgid="5405328730817637737">"Tik en houd vast om een snelkoppeling te verplaatsen."</string>
     <string name="long_accessible_way_to_add_shortcut" msgid="2199537273817090740">"Dubbeltik en houd vast om een snelkoppeling te verplaatsen of aangepaste acties te gebruiken."</string>
-    <!-- no translation found for out_of_space (6692471482459245734) -->
-    <skip />
+    <string name="out_of_space" msgid="6692471482459245734">"Er is geen ruimte op dit startscherm"</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"Geen ruimte meer in het vak \'Favorieten\'"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"Lijst met apps"</string>
     <string name="all_apps_button_personal_label" msgid="1315764287305224468">"Lijst met persoonlijke apps"</string>

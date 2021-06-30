@@ -64,8 +64,7 @@
     <string name="notifications_header" msgid="1404149926117359025">"सूचनाहरू"</string>
     <string name="long_press_shortcut_to_add" msgid="5405328730817637737">"कुनै सर्टकट सार्न डबल ट्याप गरेर छोइराख्नुहोस्।"</string>
     <string name="long_accessible_way_to_add_shortcut" msgid="2199537273817090740">"कुनै सर्टकट सार्न वा आफ्नो रोजाइका कारबाही प्रयोग गर्न डबल ट्याप गरेर छोइराख्नुहोस्।"</string>
-    <!-- no translation found for out_of_space (6692471482459245734) -->
-    <skip />
+    <string name="out_of_space" msgid="6692471482459245734">"यो होम स्क्रिनमा ठाउँ छैन"</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"मन पर्ने ट्रे अब कुनै ठाँउ छैन"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"एपको सूची"</string>
     <string name="all_apps_button_personal_label" msgid="1315764287305224468">"व्यक्तिगत अनुप्रयोगहरूको सूची"</string>
