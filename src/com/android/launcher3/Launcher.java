@@ -1347,6 +1347,40 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
         prepareAppWidget(hostView, launcherInfo);
         mWorkspace.addInScreen(hostView, launcherInfo);
         announceForAccessibility(R.string.item_added_to_workspace);
+
+        // Show the widget resize frame.
+        if (hostView instanceof LauncherAppWidgetHostView) {
+            final LauncherAppWidgetHostView launcherHostView = (LauncherAppWidgetHostView) hostView;
+            CellLayout cellLayout = getCellLayout(launcherInfo.container, launcherInfo.screenId);
+            if (mStateManager.getState() == NORMAL) {
+                // Show resize frame once the widget layout is drawn.
+                View.OnLayoutChangeListener onLayoutChangeListener =
+                        new View.OnLayoutChangeListener() {
+                            @Override
+                            public void onLayoutChange(View view, int left, int top, int right,
+                                    int bottom, int oldLeft, int oldTop, int oldRight,
+                                    int oldBottom) {
+                                AppWidgetResizeFrame.showForWidget(launcherHostView, cellLayout);
+                                launcherHostView.removeOnLayoutChangeListener(this);
+                            }
+                        };
+                launcherHostView.addOnLayoutChangeListener(onLayoutChangeListener);
+                // There is a small chance that the layout was already drawn before the layout
+                // change listener was registered, which means that the resize frame wouldn't be
+                // shown. Directly call requestLayout to force a layout change.
+                launcherHostView.requestLayout();
+            } else {
+                mStateManager.addStateListener(new StateManager.StateListener<LauncherState>() {
+                    @Override
+                    public void onStateTransitionComplete(LauncherState finalState) {
+                        if (mPrevLauncherState == SPRING_LOADED && finalState == NORMAL) {
+                            AppWidgetResizeFrame.showForWidget(launcherHostView, cellLayout);
+                            mStateManager.removeStateListener(this);
+                        }
+                    }
+                });
+            }
+        }
     }
 
     private void prepareAppWidget(AppWidgetHostView hostView, LauncherAppWidgetInfo item) {

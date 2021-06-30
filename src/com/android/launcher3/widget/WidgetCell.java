@@ -180,14 +180,17 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
     public void applyFromCellItem(WidgetItem item, WidgetPreviewLoader loader) {
         applyPreviewOnAppWidgetHostView(item);
 
+        Context context = getContext();
         mItem = item;
         mWidgetName.setText(mItem.label);
-        mWidgetDims.setText(getContext().getString(R.string.widget_dims_format,
+        mWidgetName.setContentDescription(
+                context.getString(R.string.widget_preview_context_description, mItem.label));
+        mWidgetDims.setText(context.getString(R.string.widget_dims_format,
                 mItem.spanX, mItem.spanY));
-        mWidgetDims.setContentDescription(getContext().getString(
+        mWidgetDims.setContentDescription(context.getString(
                 R.string.widget_accessible_dims_format, mItem.spanX, mItem.spanY));
         if (ATLEAST_S && mItem.widgetInfo != null) {
-            CharSequence description = mItem.widgetInfo.loadDescription(getContext());
+            CharSequence description = mItem.widgetInfo.loadDescription(context);
             if (description != null && description.length() > 0) {
                 mWidgetDescription.setText(description);
                 mWidgetDescription.setVisibility(VISIBLE);
@@ -238,6 +241,7 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
             NavigableAppWidgetHostView appWidgetHostViewPreview,
             LauncherAppWidgetProviderInfo providerInfo,
             @Nullable RemoteViews remoteViews) {
+        appWidgetHostViewPreview.setImportantForAccessibility(IMPORTANT_FOR_ACCESSIBILITY_NO);
         appWidgetHostViewPreview.setAppWidget(/* appWidgetId= */ -1, providerInfo);
         Rect padding;
         DeviceProfile deviceProfile = mActivity.getDeviceProfile();
