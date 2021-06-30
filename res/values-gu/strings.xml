@@ -32,6 +32,8 @@
     <string name="long_accessible_way_to_add" msgid="2733588281439571974">"વિજેટ ખસેડવા બે વાર ટૅપ કરીને દબાવી રાખો અથવા કસ્ટમ ક્રિયાઓનો ઉપયોગ કરો."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"%1$d પહોળાઈ X %2$d ઊંચાઈ"</string>
+    <!-- no translation found for widget_preview_context_description (9045841361655787574) -->
+    <skip />
     <string name="add_item_request_drag_hint" msgid="5653291305078645405">"વિજેટને હોમ સ્ક્રીનની આજુબાજુ ખસેડવા માટે, તેને ટચ કરીને થોડીવાર દબાવી રાખો"</string>
     <string name="add_to_home_screen" msgid="8631549138215492708">"હોમ સ્ક્રીન પર ઉમેરો"</string>
     <plurals name="widgets_count" formatted="false" msgid="656794749266073027">

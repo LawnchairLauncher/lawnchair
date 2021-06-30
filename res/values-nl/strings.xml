@@ -32,6 +32,8 @@
     <string name="long_accessible_way_to_add" msgid="2733588281439571974">"Dubbeltik en houd vast om een widget te verplaatsen of aangepaste acties te gebruiken."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"%1$d breed en %2$d hoog"</string>
+    <!-- no translation found for widget_preview_context_description (9045841361655787574) -->
+    <skip />
     <string name="add_item_request_drag_hint" msgid="5653291305078645405">"Houd de widget ingedrukt om deze te verplaatsen op het startscherm"</string>
     <string name="add_to_home_screen" msgid="8631549138215492708">"Toevoegen aan startscherm"</string>
     <plurals name="widgets_count" formatted="false" msgid="656794749266073027">
@@ -160,7 +162,7 @@
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"OK"</string>
     <string name="work_apps_paused_title" msgid="3040901117349444598">"Werk-apps zijn onderbroken"</string>
     <string name="work_apps_paused_body" msgid="261634750995824906">"Je werk-apps kunnen je geen meldingen sturen, je batterij niet gebruiken en geen toegang krijgen tot je locatie"</string>
-    <string name="work_apps_paused_content_description" msgid="5149623040804051095">"Werk-apps staan uit. Je werk-apps kunnen je geen meldingen sturen, je batterij niet gebruiken en geen toegang krijgen tot je locatie."</string>
+    <string name="work_apps_paused_content_description" msgid="5149623040804051095">"Werk-apps staan uit. Je werk-apps kunnen geen meldingen sturen, je batterij niet gebruiken en hebben geen toegang tot je locatie."</string>
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"Werk-apps hebben badges en zijn zichtbaar voor je IT-beheerder"</string>
     <string name="work_apps_paused_edu_accept" msgid="6377476824357318532">"OK"</string>
     <string name="work_apps_pause_btn_text" msgid="1921059713673767460">"Werk-apps uitzetten"</string>
