@@ -471,12 +471,12 @@ public class DragView extends FrameLayout implements StateListener<LauncherState
             mContent.draw(picture.beginRecording(mWidth, mHeight));
             picture.endRecording();
             View view = new View(mLauncher);
-            view.setClipToOutline(mContent.getClipToOutline());
-            view.setOutlineProvider(mContent.getOutlineProvider());
             view.setBackground(new PictureDrawable(picture));
             view.measure(makeMeasureSpec(mWidth, EXACTLY), makeMeasureSpec(mHeight, EXACTLY));
             view.layout(mContent.getLeft(), mContent.getTop(),
                     mContent.getRight(), mContent.getBottom());
+            setClipToOutline(mContent.getClipToOutline());
+            setOutlineProvider(mContent.getOutlineProvider());
             addViewInLayout(view, indexOfChild(mContent), mContent.getLayoutParams(), true);
 
             removeViewInLayout(mContent);
