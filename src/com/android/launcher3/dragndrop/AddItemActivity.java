@@ -16,6 +16,7 @@
 
 package com.android.launcher3.dragndrop;
 
+import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_PIN_WIDGETS;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ADD_EXTERNAL_ITEM_BACK;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ADD_EXTERNAL_ITEM_CANCELLED;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ADD_EXTERNAL_ITEM_DRAGGED;
@@ -249,7 +250,8 @@ public class AddItemActivity extends BaseActivity
         mAppWidgetManager = new WidgetManagerHelper(this);
         mAppWidgetHost = new LauncherAppWidgetHost(this);
 
-        PendingAddWidgetInfo pendingInfo = new PendingAddWidgetInfo(widgetInfo);
+        PendingAddWidgetInfo pendingInfo =
+                new PendingAddWidgetInfo(widgetInfo, CONTAINER_PIN_WIDGETS);
         pendingInfo.spanX = Math.min(mIdp.numColumns, widgetInfo.spanX);
         pendingInfo.spanY = Math.min(mIdp.numRows, widgetInfo.spanY);
         mWidgetOptions = pendingInfo.getDefaultSizeOptions(this);
