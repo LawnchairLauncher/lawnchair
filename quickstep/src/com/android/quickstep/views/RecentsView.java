@@ -1665,7 +1665,6 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         pa.addListener(AnimatorListeners.forSuccessCallback(() -> {
             setLayoutRotation(newRotation, mOrientationState.getDisplayRotation());
             mActivity.getDragLayer().recreateControllers();
-            updateChildTaskOrientations();
             setRecentsChangedOrientation(false).start();
         }));
         pa.start();
