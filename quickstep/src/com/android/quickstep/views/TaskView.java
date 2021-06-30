@@ -821,8 +821,6 @@ public class TaskView extends FrameLayout implements Reusable {
     }
 
     public void animateIconScaleAndDimIntoView() {
-        Log.d("b/186444448", "animateIconScaleAndDimIntoView: startProgress="
-                + mIconScaleAnimStartProgress);
         if (mIconAndDimAnimator != null) {
             mIconAndDimAnimator.cancel();
         }
@@ -832,7 +830,6 @@ public class TaskView extends FrameLayout implements Reusable {
         mIconAndDimAnimator.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
-                Log.d("b/186444448", "animateIconScaleAndDimIntoView: end");
                 mIconAndDimAnimator = null;
             }
         });
