@@ -17,7 +17,6 @@ package com.android.quickstep.util;
 
 import static com.android.launcher3.states.RotationHelper.deltaRotation;
 import static com.android.launcher3.touch.PagedOrientationHandler.MATRIX_POST_TRANSLATE;
-import static com.android.quickstep.util.NavigationModeFeatureFlag.LIVE_TILE;
 import static com.android.quickstep.util.RecentsOrientedState.postDisplayRotation;
 import static com.android.quickstep.util.RecentsOrientedState.preDisplayRotation;
 import static com.android.systemui.shared.system.WindowManagerWrapper.WINDOWING_MODE_FULLSCREEN;
@@ -62,7 +61,6 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
     private final boolean mIsRecentsRtl;
 
     private final Rect mTaskRect = new Rect();
-    private boolean mDrawsBelowRecents;
     private final PointF mPivot = new PointF();
     private DeviceProfile mDp;
 
@@ -161,10 +159,6 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
      */
     public void setScroll(float scroll) {
         recentsViewScroll.value = scroll;
-    }
-
-    public void setDrawsBelowRecents(boolean drawsBelowRecents) {
-        mDrawsBelowRecents = drawsBelowRecents;
     }
 
     /**
@@ -301,12 +295,6 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
         builder.withMatrix(mMatrix)
                 .withWindowCrop(mTmpCropRect)
                 .withCornerRadius(getCurrentCornerRadius());
-
-        if (LIVE_TILE.get() && params.getRecentsSurface() != null) {
-            // When relativeLayer = 0, it reverts the surfaces back to the original order.
-            builder.withRelativeLayerTo(params.getRecentsSurface(),
-                    mDrawsBelowRecents ? Integer.MIN_VALUE : 0);
-        }
     }
 
     /**
