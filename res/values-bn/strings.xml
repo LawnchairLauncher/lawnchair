@@ -32,6 +32,8 @@
     <string name="long_accessible_way_to_add" msgid="2733588281439571974">"একটি উইজেট সরাতে বা কাস্টম অ্যাকশন ব্যবহার করতে ডবল ট্যাপ করে ধরে রাখুন।"</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"%2$d উচ্চতা অনুযায়ী %1$d প্রস্থ"</string>
+    <!-- no translation found for widget_preview_context_description (9045841361655787574) -->
+    <skip />
     <string name="add_item_request_drag_hint" msgid="5653291305078645405">"হোম স্ক্রিনের যেকোনও জায়গায় উইজেটটি নিয়ে যেতে, টাচ করে ধরে থাকুন"</string>
     <string name="add_to_home_screen" msgid="8631549138215492708">"হোম স্ক্রিনে যোগ করুন"</string>
     <plurals name="widgets_count" formatted="false" msgid="656794749266073027">
