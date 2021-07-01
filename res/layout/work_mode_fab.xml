@@ -25,7 +25,7 @@
     android:textColor="@color/all_apps_tab_text"
     android:textSize="14sp"
     android:background="@drawable/work_apps_toggle_background"
-    android:drawablePadding="16dp"
+    android:drawablePadding="8dp"
     android:drawableStart="@drawable/ic_corp_off"
     android:layout_marginBottom="@dimen/work_fab_margin"
     android:layout_marginEnd="@dimen/work_fab_margin"
