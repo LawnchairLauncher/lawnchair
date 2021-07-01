@@ -220,7 +220,7 @@ public class TaskMenuView extends AbstractFloatingView implements OnScrollChange
         menuOptionView.setEnabled(menuOption.isEnabled());
         menuOptionView.setAlpha(menuOption.isEnabled() ? 1 : 0.5f);
         menuOptionView.setOnClickListener(view -> {
-            if (LIVE_TILE.get()) {
+            if (LIVE_TILE.get() && !menuOption.hasFinishRecentsInAction()) {
                 RecentsView recentsView = mTaskView.getRecentsView();
                 recentsView.switchToScreenshot(null,
                         () -> recentsView.finishRecentsAnimation(true /* toRecents */,
