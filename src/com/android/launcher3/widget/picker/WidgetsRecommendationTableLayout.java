@@ -155,8 +155,8 @@ public final class WidgetsRecommendationTableLayout extends TableLayout {
             float rowHeight = 0;
             for (int j = 0; j < widgetItems.size(); j++) {
                 WidgetItem widgetItem = widgetItems.get(j);
-                Size widgetSize = WidgetSizes.getWidgetSizePx(
-                        deviceProfile, widgetItem.spanX, widgetItem.spanY);
+                Size widgetSize = WidgetSizes.getWidgetItemSizePx(getContext(), deviceProfile,
+                        widgetItem);
                 float previewHeight = widgetSize.getHeight() * previewScale;
                 rowHeight = Math.max(rowHeight,
                         previewHeight + mWidgetCellTextViewsHeight + mWidgetCellVerticalPadding);

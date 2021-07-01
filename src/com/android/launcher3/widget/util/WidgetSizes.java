@@ -32,6 +32,7 @@ import androidx.annotation.Nullable;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.LauncherAppState;
+import com.android.launcher3.model.WidgetItem;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -68,6 +69,32 @@ public final class WidgetSizes {
     /** Returns the size, in pixels, a widget of given spans & {@code profile}. */
     public static Size getWidgetSizePx(DeviceProfile profile, int spanX, int spanY) {
         return getWidgetSizePx(profile, spanX, spanY, /* recycledCellSize= */ null);
+    }
+
+    /**
+     * Returns the size, in pixels and removing padding, a widget of given spans & {@code profile}.
+     */
+    public static Size getWidgetPaddedSizePx(Context context, ComponentName component,
+            DeviceProfile profile, int spanX, int spanY) {
+        Size size = getWidgetSizePx(profile, spanX, spanY);
+        if (profile.shouldInsetWidgets()) {
+            return size;
+        }
+        Rect padding = getDefaultPaddingForWidget(context, component, /* padding= */ null);
+        return new Size(size.getWidth() - padding.left - padding.right,
+                size.getHeight() - padding.top - padding.bottom);
+    }
+
+    /**
+     * Returns the size of a WidgetItem.
+     */
+    public static Size getWidgetItemSizePx(Context context, DeviceProfile profile,
+            WidgetItem widgetItem) {
+        if (widgetItem.isShortcut()) {
+            return getWidgetSizePx(profile, widgetItem.spanX, widgetItem.spanY);
+        }
+        return getWidgetPaddedSizePx(context, widgetItem.componentName, profile, widgetItem.spanX,
+                widgetItem.spanY);
     }
 
     private static Size getWidgetSizePx(DeviceProfile profile, int spanX, int spanY,
