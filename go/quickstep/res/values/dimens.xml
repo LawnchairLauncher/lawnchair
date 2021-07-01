@@ -28,4 +28,12 @@
     <dimen name="overview_proactive_row_height">0dp</dimen>
     <dimen name="overview_proactive_row_bottom_margin">24dp</dimen>
     <dimen name="task_corner_radius_override">28dp</dimen>
+
+    <!-- Modal Dialogs -->
+    <dimen name="modal_dialog_width">288dp</dimen>
+    <dimen name="modal_dialog_padding">24dp</dimen>
+    <dimen name="modal_dialog_padding_bottom">8dp</dimen>
+    <dimen name="modal_dialog_vertical_spacer">12dp</dimen>
+    <dimen name="modal_dialog_corner_radius">8dp</dimen>
+    <dimen name="confirmation_dialog_text_height">216dp</dimen>
 </resources>
