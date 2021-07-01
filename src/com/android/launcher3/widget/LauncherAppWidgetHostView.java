@@ -57,7 +57,6 @@ import com.android.launcher3.views.BaseDragLayer.TouchCompleteListener;
 import com.android.launcher3.widget.dragndrop.AppWidgetHostViewDragListener;
 
 import java.util.List;
-import java.util.Optional;
 
 /**
  * {@inheritDoc}
@@ -118,7 +117,8 @@ public class LauncherAppWidgetHostView extends NavigableAppWidgetHostView
     private final ViewGroupFocusHelper mDragLayerRelativeCoordinateHelper;
     private long mDeferUpdatesUntilMillis = 0;
     private RemoteViews mDeferredRemoteViews;
-    private Optional<SparseIntArray> mDeferredColorChange = Optional.empty();
+    private boolean mHasDeferredColorChange = false;
+    private @Nullable SparseIntArray mDeferredColorChange = null;
     private boolean mEnableColorExtraction = true;
 
     public LauncherAppWidgetHostView(Context context) {
@@ -244,18 +244,23 @@ public class LauncherAppWidgetHostView extends NavigableAppWidgetHostView
      */
     public void endDeferringUpdates() {
         RemoteViews remoteViews;
-        Optional<SparseIntArray> deferredColors;
+        SparseIntArray deferredColors;
+        boolean hasDeferredColors;
         synchronized (mUpdateLock) {
             mDeferUpdatesUntilMillis = 0;
             remoteViews = mDeferredRemoteViews;
             mDeferredRemoteViews = null;
             deferredColors = mDeferredColorChange;
-            mDeferredColorChange = Optional.empty();
+            hasDeferredColors = mHasDeferredColorChange;
+            mDeferredColorChange = null;
+            mHasDeferredColorChange = false;
         }
         if (remoteViews != null) {
             updateAppWidget(remoteViews);
         }
-        deferredColors.ifPresent(colors -> onColorsChanged(null /* rectF */, colors));
+        if (hasDeferredColors) {
+            onColorsChanged(null /* rectF */, deferredColors);
+        }
     }
 
     public boolean onInterceptTouchEvent(MotionEvent ev) {
@@ -437,10 +442,12 @@ public class LauncherAppWidgetHostView extends NavigableAppWidgetHostView
     public void onColorsChanged(RectF rectF, SparseIntArray colors) {
         synchronized (mUpdateLock) {
             if (isDeferringUpdates()) {
-                mDeferredColorChange = Optional.ofNullable(colors);
+                mDeferredColorChange = colors;
+                mHasDeferredColorChange = true;
                 return;
             }
-            mDeferredColorChange = Optional.empty();
+            mDeferredColorChange = null;
+            mHasDeferredColorChange = false;
         }
 
         // setColorResources will reapply the view, which must happen in the UI thread.
