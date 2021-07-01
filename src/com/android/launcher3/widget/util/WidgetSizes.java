@@ -17,9 +17,7 @@ package com.android.launcher3.widget.util;
 
 import static android.appwidget.AppWidgetHostView.getDefaultPaddingForWidget;
 
-import static com.android.launcher3.Utilities.ATLEAST_S;
 
-import android.annotation.SuppressLint;
 import android.appwidget.AppWidgetHostView;
 import android.appwidget.AppWidgetManager;
 import android.content.ComponentName;
@@ -37,21 +35,30 @@ import com.android.launcher3.LauncherAppState;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /** A utility class for widget sizes related calculations. */
 public final class WidgetSizes {
 
     /**
      * Returns the list of all possible sizes, in dp, for a widget of given spans on this device.
+     *
+     * <p>The returned sizes already take into account the system padding, and whether it is applied
+     * or not in that specific configuration.
      */
-    public static ArrayList<SizeF> getWidgetSizes(Context context, int spanX, int spanY) {
+    public static ArrayList<SizeF> getWidgetPaddedSizes(Context context, ComponentName provider,
+            int spanX, int spanY) {
+        Rect padding = getDefaultPaddingForWidget(context, provider, /* padding= */ null);
+
         ArrayList<SizeF> sizes = new ArrayList<>(2);
         final float density = context.getResources().getDisplayMetrics().density;
         final Point cellSize = new Point();
 
         for (DeviceProfile profile : LauncherAppState.getIDP(context).supportedProfiles) {
             Size widgetSizePx = getWidgetSizePx(profile, spanX, spanY, cellSize);
+            if (!profile.shouldInsetWidgets()) {
+                widgetSizePx = new Size(widgetSizePx.getWidth() - padding.left - padding.right,
+                        widgetSizePx.getHeight() - padding.top - padding.bottom);
+            }
             sizes.add(new SizeF(widgetSizePx.getWidth() / density,
                     widgetSizePx.getHeight() / density));
         }
@@ -81,17 +88,22 @@ public final class WidgetSizes {
      * <p>On Android S+, it also updates the given {@code widgetView} with a list of sizes derived
      * from {@code spanX}, {@code spanY} in all supported device profiles.
      */
-    @SuppressLint("NewApi") // Already added API check.
     public static void updateWidgetSizeRanges(AppWidgetHostView widgetView, Context context,
             int spanX, int spanY) {
-        List<SizeF> sizes = getWidgetSizes(context, spanX, spanY);
-        if (ATLEAST_S) {
-            widgetView.updateAppWidgetSize(new Bundle(), sizes);
-        } else {
-            Rect bounds = getMinMaxSizes(sizes);
-            widgetView.updateAppWidgetSize(new Bundle(), bounds.left, bounds.top, bounds.right,
-                    bounds.bottom);
+        AppWidgetManager widgetManager = AppWidgetManager.getInstance(context);
+        int widgetId = widgetView.getAppWidgetId();
+        if (widgetId <= 0) {
+            return;
         }
+        Bundle sizeOptions = getWidgetSizeOptions(context, widgetView.getAppWidgetInfo().provider,
+                spanX, spanY);
+        if (sizeOptions.<SizeF>getParcelableArrayList(
+                AppWidgetManager.OPTION_APPWIDGET_SIZES).equals(
+                widgetManager.getAppWidgetOptions(widgetId).<SizeF>getParcelableArrayList(
+                        AppWidgetManager.OPTION_APPWIDGET_SIZES))) {
+            return;
+        }
+        widgetManager.updateAppWidgetOptions(widgetId, sizeOptions);
     }
 
     /**
@@ -99,17 +111,7 @@ public final class WidgetSizes {
      */
     public static Bundle getWidgetSizeOptions(Context context, ComponentName provider, int spanX,
             int spanY) {
-        ArrayList<SizeF> sizes = getWidgetSizes(context, spanX, spanY);
-        Rect padding = getDefaultPaddingForWidget(context, provider, null);
-        float density = context.getResources().getDisplayMetrics().density;
-        float xPaddingDips = (padding.left + padding.right) / density;
-        float yPaddingDips = (padding.top + padding.bottom) / density;
-
-        ArrayList<SizeF> paddedSizes = sizes.stream()
-                .map(size -> new SizeF(
-                        Math.max(0.f, size.getWidth() - xPaddingDips),
-                        Math.max(0.f, size.getHeight() - yPaddingDips)))
-                .collect(Collectors.toCollection(ArrayList::new));
+        ArrayList<SizeF> paddedSizes = getWidgetPaddedSizes(context, provider, spanX, spanY);
 
         Rect rect = getMinMaxSizes(paddedSizes);
         Bundle options = new Bundle();
