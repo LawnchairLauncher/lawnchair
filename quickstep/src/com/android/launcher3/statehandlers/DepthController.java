@@ -24,6 +24,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.os.IBinder;
+import android.os.SystemProperties;
 import android.util.FloatProperty;
 import android.view.CrossWindowBlurListeners;
 import android.view.SurfaceControl;
@@ -117,6 +118,10 @@ public class DepthController implements StateHandler<LauncherState>,
      * @see android.service.wallpaper.WallpaperService.Engine#onZoomChanged(float)
      */
     private float mDepth;
+    /**
+     * If we're launching and app and should not be blurring the screen for performance reasons.
+     */
+    private boolean mBlurDisabledForAppLaunch;
 
     // Workaround for animating the depth when multiwindow mode changes.
     private boolean mIgnoreStateChangesDuringMultiWindowAnimation = false;
@@ -211,6 +216,19 @@ public class DepthController implements StateHandler<LauncherState>,
         }
     }
 
+    /**
+     * If we're launching an app from the home screen.
+     */
+    public void setIsInLaunchTransition(boolean inLaunchTransition) {
+        boolean blurEnabled = SystemProperties.getBoolean("ro.launcher.blur.appLaunch", true);
+        mBlurDisabledForAppLaunch = inLaunchTransition && !blurEnabled;
+        if (!inLaunchTransition) {
+            // Reset depth at the end of the launch animation, so the wallpaper won't be
+            // zoomed out if an app crashes.
+            setDepth(0f);
+        }
+    }
+
     private void setDepth(float depth) {
         depth = Utilities.boundToRange(depth, 0, 1);
         // Round out the depth to dedupe frequent, non-perceptable updates
@@ -238,7 +256,7 @@ public class DepthController implements StateHandler<LauncherState>,
             boolean opaque = mLauncher.getScrimView().isFullyOpaque() && !isOverview;
 
             int blur = opaque || isOverview || !mCrossWindowBlursEnabled
-                    ? 0 : (int) (mDepth * mMaxBlurRadius);
+                    || mBlurDisabledForAppLaunch ? 0 : (int) (mDepth * mMaxBlurRadius);
             new SurfaceControl.Transaction()
                     .setBackgroundBlurRadius(mSurface, blur)
                     .setOpaque(mSurface, opaque)

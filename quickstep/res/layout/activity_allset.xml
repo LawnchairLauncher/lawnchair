@@ -20,8 +20,7 @@
     android:paddingStart="@dimen/allset_page_margin_horizontal"
     android:paddingEnd="@dimen/allset_page_margin_horizontal"
     android:layoutDirection="locale"
-    android:textDirection="locale"
-    android:background="?android:attr/colorBackground">
+    android:textDirection="locale">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -59,13 +58,15 @@
 
     <TextView
         android:id="@+id/navigation_settings"
-        style="@style/TextAppearance.GestureTutorial.Feedback.Subtitle"
-        android:textSize="14sp"
+        style="@style/TextAppearance.GestureTutorial.LinkText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@+id/hint"
-        android:gravity="center_horizontal"
-        android:layout_marginBottom="72dp"/>
+        android:gravity="center"
+        android:layout_marginBottom="72dp"
+        android:minHeight="48dp"
+        android:background="?android:attr/selectableItemBackground"
+        android:text="@string/allset_navigation_settings" />
 
     <TextView
         android:id="@id/hint"

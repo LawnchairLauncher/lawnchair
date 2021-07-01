@@ -130,7 +130,8 @@ public class StatsLogCompatManager extends StatsLogManager {
                 info.getAttribute().getNumber() /* origin */,
                 getCardinality(info) /* cardinality */,
                 info.getWidget().getSpanX(),
-                info.getWidget().getSpanY());
+                info.getWidget().getSpanY(),
+                getFeatures(info));
     }
 
     /**
@@ -365,15 +366,12 @@ public class StatsLogCompatManager extends StatsLogManager {
                     atomInfo.getFolderIcon().getFromLabelState().getNumber() /* fromState */,
                     atomInfo.getFolderIcon().getToLabelState().getNumber() /* toState */,
                     atomInfo.getFolderIcon().getLabelInfo() /* edittext */,
-                    getCardinality(atomInfo) /* cardinality */);
+                    getCardinality(atomInfo) /* cardinality */,
+                    getFeatures(atomInfo) /* features */);
         }
     }
 
     private static int getCardinality(LauncherAtom.ItemInfo info) {
-        // TODO(b/187734511): Implement a unified solution for 1x1 widgets in folders/hotseat.
-        if (info.getItemCase().equals(LauncherAtom.ItemInfo.ItemCase.WIDGET)) {
-            return info.getWidget().getWidgetFeatures();
-        }
         switch (info.getContainerInfo().getContainerCase()) {
             case PREDICTED_HOTSEAT_CONTAINER:
                 return info.getContainerInfo().getPredictedHotseatContainer().getCardinality();
@@ -512,6 +510,13 @@ public class StatsLogCompatManager extends StatsLogManager {
             default:
                 return "INVALID";
         }
+    }
+
+    private static int getFeatures(LauncherAtom.ItemInfo info) {
+        if (info.getItemCase().equals(LauncherAtom.ItemInfo.ItemCase.WIDGET)) {
+            return info.getWidget().getWidgetFeatures();
+        }
+        return 0;
     }
 
 

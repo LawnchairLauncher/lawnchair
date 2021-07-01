@@ -32,6 +32,8 @@
     <string name="long_accessible_way_to_add" msgid="2733588281439571974">"कुनै विजेट सार्न वा आफ्नो रोजाइका कारबाही प्रयोग गर्न डबल ट्याप गरेर छोइराख्नुहोस्।"</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"%1$d चौडाइ गुणा %2$d उचाइ"</string>
+    <!-- no translation found for widget_preview_context_description (9045841361655787574) -->
+    <skip />
     <string name="add_item_request_drag_hint" msgid="5653291305078645405">"यो विजेट होम स्क्रिनमा यताउता सार्न त्यसमा टच एन्ड होल्ड गर्नुहोस्"</string>
     <string name="add_to_home_screen" msgid="8631549138215492708">"होम स्क्रिनमा हाल्नुहोस्"</string>
     <plurals name="widgets_count" formatted="false" msgid="656794749266073027">

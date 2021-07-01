@@ -16,6 +16,7 @@
 
 package com.android.launcher3.widget;
 
+import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_WIDGETS_TRAY;
 import static com.android.launcher3.Utilities.ATLEAST_S;
 
 import android.content.Context;
@@ -99,6 +100,7 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
 
     private RemoteViews mRemoteViewsPreview;
     private NavigableAppWidgetHostView mAppWidgetHostViewPreview;
+    private int mSourceContainer = CONTAINER_WIDGETS_TRAY;
 
     public WidgetCell(Context context) {
         this(context, null);
@@ -177,6 +179,10 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
         mAppWidgetHostViewPreview = null;
     }
 
+    public void setSourceContainer(int sourceContainer) {
+        this.mSourceContainer = sourceContainer;
+    }
+
     public void applyFromCellItem(WidgetItem item, WidgetPreviewLoader loader) {
         applyPreviewOnAppWidgetHostView(item);
 
@@ -205,7 +211,7 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
             mPreviewWidth += mShortcutPreviewPadding;
             mPreviewHeight += mShortcutPreviewPadding;
         } else {
-            setTag(new PendingAddWidgetInfo(item.widgetInfo));
+            setTag(new PendingAddWidgetInfo(item.widgetInfo, mSourceContainer));
         }
     }
 
