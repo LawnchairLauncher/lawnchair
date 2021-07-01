@@ -140,7 +140,8 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
     private final ArrayList<Runnable> mRecentsAnimationStartCallbacks = new ArrayList<>();
     private final OnScrollChangedListener mOnRecentsScrollListener = this::onRecentsViewScroll;
 
-    protected RecentsAnimationController mRecentsAnimationController;
+    // Null if the recents animation hasn't started yet or has been canceled or finished.
+    protected @Nullable RecentsAnimationController mRecentsAnimationController;
     protected RecentsAnimationTargets mRecentsAnimationTargets;
     protected T mActivity;
     protected Q mRecentsView;
@@ -1354,8 +1355,10 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
 
     @UiThread
     private void resumeLastTask() {
-        mRecentsAnimationController.finish(false /* toRecents */, null);
-        ActiveGestureLog.INSTANCE.addLog("finishRecentsAnimation", false);
+        if (mRecentsAnimationController != null) {
+            mRecentsAnimationController.finish(false /* toRecents */, null);
+            ActiveGestureLog.INSTANCE.addLog("finishRecentsAnimation", false);
+        }
         doLogGesture(LAST_TASK, null);
         reset();
     }
@@ -1663,13 +1666,17 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
                         }
                     } else {
                         mActivityInterface.onLaunchTaskFailed();
-                        mRecentsAnimationController.finish(true /* toRecents */, null);
+                        if (mRecentsAnimationController != null) {
+                            mRecentsAnimationController.finish(true /* toRecents */, null);
+                        }
                     }
                 }, true /* freezeTaskList */);
             } else {
                 mActivityInterface.onLaunchTaskFailed();
                 Toast.makeText(mContext, R.string.activity_not_available, LENGTH_SHORT).show();
-                mRecentsAnimationController.finish(true /* toRecents */, null);
+                if (mRecentsAnimationController != null) {
+                    mRecentsAnimationController.finish(true /* toRecents */, null);
+                }
             }
         }
         mCanceled = false;

@@ -32,6 +32,8 @@
     <string name="long_accessible_way_to_add" msgid="2733588281439571974">"విడ్జెట్‌ను తరలించడానికి లేదా అనుకూల చర్యలను ఉపయోగించడానికి రెండుసార్లు నొక్కండి &amp; హోల్డ్ చేయి."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"%1$d వెడల్పు X %2$d ఎత్తు"</string>
+    <!-- no translation found for widget_preview_context_description (9045841361655787574) -->
+    <skip />
     <string name="add_item_request_drag_hint" msgid="5653291305078645405">"ఈ విడ్జెట్‌ను మొదటి స్క్రీన్‌లో కావాల్సిన చోట ఉంచడానికి, దాన్ని తాకి అలాగే నొక్కి పట్టుకోండి"</string>
     <string name="add_to_home_screen" msgid="8631549138215492708">"మొదటి స్క్రీన్‌కు జోడించు"</string>
     <plurals name="widgets_count" formatted="false" msgid="656794749266073027">

@@ -184,16 +184,19 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
         } catch (Exception e) {
             Log.e("AllAppsContainerView", "restoreInstanceState viewId = 0", e);
         }
+
         Bundle state = (Bundle) sparseArray.get(R.id.work_tab_state_id, null);
         if (state != null) {
             int currentPage = state.getInt(BUNDLE_KEY_CURRENT_PAGE, 0);
             if (currentPage != 0) {
-                rebindAdapters(true);
                 mViewPager.setCurrentPage(currentPage);
+                rebindAdapters(true);
+            } else {
+                mSearchUiManager.resetSearch();
             }
         }
-    }
 
+    }
 
     @Override
     protected void dispatchSaveInstanceState(SparseArray<Parcelable> container) {

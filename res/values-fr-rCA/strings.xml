@@ -32,6 +32,8 @@
     <string name="long_accessible_way_to_add" msgid="2733588281439571974">"Touchez 2x un widget et maintenez le doigt dessus pour le déplacer ou utiliser des actions personnalisées."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"%1$d de largeur sur %2$d de hauteur"</string>
+    <!-- no translation found for widget_preview_context_description (9045841361655787574) -->
+    <skip />
     <string name="add_item_request_drag_hint" msgid="5653291305078645405">"Maintenez le doigt sur le widget pour le déplacer sur l\'écran d\'accueil"</string>
     <string name="add_to_home_screen" msgid="8631549138215492708">"Ajouter à l\'écran d\'accueil"</string>
     <plurals name="widgets_count" formatted="false" msgid="656794749266073027">
@@ -64,8 +66,7 @@
     <string name="notifications_header" msgid="1404149926117359025">"Notifications"</string>
     <string name="long_press_shortcut_to_add" msgid="5405328730817637737">"Maintenez le doigt sur un raccourci pour le déplacer."</string>
     <string name="long_accessible_way_to_add_shortcut" msgid="2199537273817090740">"Touchez deux fois un raccourci et maintenez le doigt dessus pour le déplacer ou utiliser des actions personnalisées."</string>
-    <!-- no translation found for out_of_space (6692471482459245734) -->
-    <skip />
+    <string name="out_of_space" msgid="6692471482459245734">"Pas d\'espace libre sur cet écran d\'accueil"</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"Il n\'y a plus d\'espace dans la zone des favoris"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"Liste des applications"</string>
     <string name="all_apps_button_personal_label" msgid="1315764287305224468">"Liste des applications personnelles"</string>
