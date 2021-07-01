@@ -88,6 +88,7 @@ public class TaskOverlayFactory implements ResourceBasedOverride {
             SystemShortcut screenshotShortcut = TaskShortcutFactory.SCREENSHOT
                     .getShortcut(activity, taskView);
             if (screenshotShortcut != null) {
+                screenshotShortcut.setHasFinishRecentsInAction(true);
                 shortcuts.add(screenshotShortcut);
             }
 
@@ -96,6 +97,7 @@ public class TaskOverlayFactory implements ResourceBasedOverride {
                 SystemShortcut modalShortcut = TaskShortcutFactory.MODAL
                         .getShortcut(activity, taskView);
                 if (modalShortcut != null) {
+                    modalShortcut.setHasFinishRecentsInAction(true);
                     shortcuts.add(modalShortcut);
                 }
             }
