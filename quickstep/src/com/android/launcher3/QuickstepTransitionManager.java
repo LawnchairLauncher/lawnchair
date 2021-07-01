@@ -725,7 +725,8 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
                 floatingIconBounds.bottom += offsetY;
 
                 if (initOnly) {
-                    floatingView.update(mIconAlpha.value, 255, floatingIconBounds, percent, 0f,
+                    // For the init pass, we want full alpha since the window is not yet ready.
+                    floatingView.update(1f, 255, floatingIconBounds, percent, 0f,
                             mWindowRadius.value * scale, true /* isOpening */);
                     return;
                 }
