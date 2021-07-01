@@ -447,12 +447,12 @@ public abstract class DragView<T extends Context & ActivityContext> extends Fram
             mContent.draw(picture.beginRecording(mWidth, mHeight));
             picture.endRecording();
             View view = new View(mActivity);
-            view.setClipToOutline(mContent.getClipToOutline());
-            view.setOutlineProvider(mContent.getOutlineProvider());
             view.setBackground(new PictureDrawable(picture));
             view.measure(makeMeasureSpec(mWidth, EXACTLY), makeMeasureSpec(mHeight, EXACTLY));
             view.layout(mContent.getLeft(), mContent.getTop(),
                     mContent.getRight(), mContent.getBottom());
+            setClipToOutline(mContent.getClipToOutline());
+            setOutlineProvider(mContent.getOutlineProvider());
             addViewInLayout(view, indexOfChild(mContent), mContent.getLayoutParams(), true);
 
             removeViewInLayout(mContent);
