@@ -384,10 +384,10 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
         // Set up a entire animation lifecycle callback to notify the current recents view when
         // the animation is canceled
         mGestureState.runOnceAtState(STATE_RECENTS_ANIMATION_CANCELED, () -> {
-                ThumbnailData snapshot = mGestureState.getRecentsAnimationCanceledSnapshot();
+                ThumbnailData snapshot = mGestureState.consumeRecentsAnimationCanceledSnapshot();
                 if (snapshot != null) {
-                    RecentsModel.INSTANCE.get(mContext).onTaskSnapshotChanged(
-                            mRecentsView.getRunningTaskId(), snapshot);
+                    mRecentsView.switchToScreenshot(snapshot,
+                            () -> mRecentsAnimationController.cleanupScreenshot());
                     mRecentsView.onRecentsAnimationComplete();
                 }
             });
