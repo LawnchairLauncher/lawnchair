@@ -119,6 +119,7 @@ public class LauncherAppWidgetHostView extends NavigableAppWidgetHostView
     private long mDeferUpdatesUntilMillis = 0;
     private RemoteViews mDeferredRemoteViews;
     private Optional<SparseIntArray> mDeferredColorChange = Optional.empty();
+    private boolean mEnableColorExtraction = true;
 
     public LauncherAppWidgetHostView(Context context) {
         super(context);
@@ -342,13 +343,7 @@ public class LauncherAppWidgetHostView extends NavigableAppWidgetHostView
         }
 
         mIsScrollable = checkScrollableRecursively(this);
-        if (!mIsInDragMode && getTag() instanceof LauncherAppWidgetInfo) {
-
-            LauncherAppWidgetInfo info = (LauncherAppWidgetInfo) getTag();
-            mDragLayerRelativeCoordinateHelper.viewToRect(this, mCurrentWidgetSize);
-            updateColorExtraction(mCurrentWidgetSize,
-                    mWorkspace.getPageIndexForScreenId(info.screenId));
-        }
+        updateColorExtraction();
 
         enforceRoundedCorners();
     }
@@ -377,6 +372,7 @@ public class LauncherAppWidgetHostView extends NavigableAppWidgetHostView
      * @param pageId The workspace page the widget is on.
      */
     private void updateColorExtraction(Rect rectInDragLayer, int pageId) {
+        if (!mEnableColorExtraction) return;
         mColorExtractor.getExtractedRectForViewRect(mLauncher, pageId, rectInDragLayer, mTempRectF);
 
         if (mTempRectF.isEmpty()) {
@@ -389,6 +385,38 @@ public class LauncherAppWidgetHostView extends NavigableAppWidgetHostView
             mLastLocationRegistered = new RectF(mTempRectF);
             mColorExtractor.addLocation(List.of(mLastLocationRegistered));
         }
+    }
+
+    /**
+     * Update the color extraction, using the current position of the app widget.
+     */
+    private void updateColorExtraction() {
+        if (!mIsInDragMode && getTag() instanceof LauncherAppWidgetInfo) {
+            LauncherAppWidgetInfo info = (LauncherAppWidgetInfo) getTag();
+            mDragLayerRelativeCoordinateHelper.viewToRect(this, mCurrentWidgetSize);
+            updateColorExtraction(mCurrentWidgetSize,
+                    mWorkspace.getPageIndexForScreenId(info.screenId));
+        }
+    }
+
+    /**
+     * Enables the local color extraction.
+     *
+     * @param updateColors If true, this will update the color extraction using the current location
+     *                    of the App Widget.
+     */
+    public void enableColorExtraction(boolean updateColors) {
+        mEnableColorExtraction = true;
+        if (updateColors) {
+            updateColorExtraction();
+        }
+    }
+
+    /**
+     * Disables the local color extraction.
+     */
+    public void disableColorExtraction() {
+        mEnableColorExtraction = false;
     }
 
     // Compare two location rectangles. Locations are always in the [0;1] range.
