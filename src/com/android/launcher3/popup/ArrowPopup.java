@@ -183,12 +183,12 @@ public abstract class ArrowPopup<T extends StatefulActivity<LauncherState>>
 
         if (isAboveAnotherSurface) {
             mColors = new int[] {
-                    getColorStateList(context, R.color.popup_color_first).getDefaultColor()};
+                    getColorStateList(context, R.color.popup_shade_first).getDefaultColor()};
         } else {
             mColors = new int[] {
-                    getColorStateList(context, R.color.popup_color_first).getDefaultColor(),
-                    getColorStateList(context, R.color.popup_color_second).getDefaultColor(),
-                    getColorStateList(context, R.color.popup_color_third).getDefaultColor()};
+                    getColorStateList(context, R.color.popup_shade_first).getDefaultColor(),
+                    getColorStateList(context, R.color.popup_shade_second).getDefaultColor(),
+                    getColorStateList(context, R.color.popup_shade_third).getDefaultColor()};
         }
     }
 
@@ -511,8 +511,8 @@ public abstract class ArrowPopup<T extends StatefulActivity<LauncherState>>
                     mArrowOffsetHorizontal, -mArrowOffsetVertical,
                     !mIsAboveIcon, mIsLeftAligned,
                     mArrowColor));
-            // TODO: Remove elevation when arrow is above as it casts a shadow on the container
-            mArrow.setElevation(mIsAboveIcon ? mElevation : 0);
+            setElevation(mElevation);
+            mArrow.setElevation(mElevation);
         }
     }
 

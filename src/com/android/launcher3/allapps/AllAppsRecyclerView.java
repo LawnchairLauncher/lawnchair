@@ -40,6 +40,7 @@ import com.android.launcher3.BaseRecyclerView;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.R;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.views.ActivityContext;
 import com.android.launcher3.views.RecyclerViewFastScroller;
@@ -166,7 +167,7 @@ public class AllAppsRecyclerView extends BaseRecyclerView {
         // Always scroll the view to the top so the user can see the changed results
         scrollToTop();
 
-        if (mApps.hasNoFilteredResults()) {
+        if (mApps.hasNoFilteredResults() && !FeatureFlags.ENABLE_DEVICE_SEARCH.get()) {
             if (mEmptySearchBackground == null) {
                 mEmptySearchBackground = new AllAppsBackgroundDrawable(getContext());
                 mEmptySearchBackground.setAlpha(0);
@@ -454,8 +455,8 @@ public class AllAppsRecyclerView extends BaseRecyclerView {
      */
     public int getTabWidth() {
         DeviceProfile grid = BaseDraggingActivity.fromContext(getContext()).getDeviceProfile();
-        int totalWidth = (grid.availableWidthPx - getPaddingLeft() - getPaddingRight());
+        int totalWidth = getMeasuredWidth() - getPaddingLeft() - getPaddingRight();
         int iconPadding = totalWidth / grid.numShownAllAppsColumns - grid.allAppsIconSizePx;
-        return totalWidth - iconPadding;
+        return totalWidth - iconPadding - grid.allAppsIconDrawablePaddingPx;
     }
 }
