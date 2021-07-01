@@ -28,18 +28,18 @@
         android:layout_marginTop="40dp"
         android:text="@string/work_apps_paused_title"
         android:textAlignment="center"
-        android:textSize="20sp" />
+        android:textSize="22sp" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/work_apps_paused_content"
-        android:textColor="?attr/workProfileOverlayTextColor"
+        android:textColor="?android:attr/textColorSecondary"
         android:text="@string/work_apps_paused_body"
         android:textAlignment="center"
         android:layout_marginTop="16dp"
         android:layout_marginBottom="24dp"
-        android:textSize="16sp" />
+        android:textSize="14sp" />
 
     <Button
         android:layout_width="wrap_content"
@@ -49,5 +49,7 @@
         android:text="@string/work_apps_enable_btn_text"
         android:textAlignment="center"
         android:background="@drawable/rounded_action_button"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"
         android:textSize="14sp" />
 </com.android.launcher3.allapps.WorkPausedCard>
