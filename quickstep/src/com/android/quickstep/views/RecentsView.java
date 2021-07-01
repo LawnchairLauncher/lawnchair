@@ -1087,6 +1087,12 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             return;
         }
 
+        int currentTaskId = -1;
+        TaskView currentTaskView = getTaskViewAtByAbsoluteIndex(mCurrentPage);
+        if (currentTaskView != null) {
+            currentTaskId = currentTaskView.getTask().key.id;
+        }
+
         // Unload existing visible task data
         unloadVisibleTaskData(TaskView.FLAG_UPDATE_ALL);
 
@@ -1125,6 +1131,11 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                 setCurrentPage(indexOfChild(runningTaskView));
             } else if (getTaskViewCount() > 0) {
                 setCurrentPage(indexOfChild(getTaskViewAt(0)));
+            }
+        } else if (currentTaskId != -1) {
+            currentTaskView = getTaskView(currentTaskId);
+            if (currentTaskView != null) {
+                setCurrentPage(indexOfChild(currentTaskView));
             }
         }
 
