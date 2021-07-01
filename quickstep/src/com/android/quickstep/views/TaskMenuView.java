@@ -16,7 +16,6 @@
 
 package com.android.quickstep.views;
 
-import static com.android.quickstep.util.NavigationModeFeatureFlag.LIVE_TILE;
 import static com.android.quickstep.views.TaskThumbnailView.DIM_ALPHA;
 
 import android.animation.Animator;
@@ -219,17 +218,7 @@ public class TaskMenuView extends AbstractFloatingView implements OnScrollChange
                 menuOptionView, mActivity.getDeviceProfile());
         menuOptionView.setEnabled(menuOption.isEnabled());
         menuOptionView.setAlpha(menuOption.isEnabled() ? 1 : 0.5f);
-        menuOptionView.setOnClickListener(view -> {
-            if (LIVE_TILE.get()) {
-                RecentsView recentsView = mTaskView.getRecentsView();
-                recentsView.switchToScreenshot(null,
-                        () -> recentsView.finishRecentsAnimation(true /* toRecents */,
-                                false /* shouldPip */,
-                                () -> menuOption.onClick(view)));
-            } else {
-                menuOption.onClick(view);
-            }
-        });
+        menuOptionView.setOnClickListener(menuOption::onClick);
         mOptionLayout.addView(menuOptionView);
     }
 
