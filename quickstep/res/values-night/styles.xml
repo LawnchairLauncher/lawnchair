@@ -15,12 +15,13 @@
      limitations under the License.
 -->
 <resources>
-    <!-- Overview -->
-    <color name="go_overview_text_color">#3C4043</color>
-    <color name="go_overview_text_color_dark">#F8F9FA</color>
-    <color name="go_overview_button_color">#70FFFFFF</color>
-    <color name="go_overview_button_color_dark">#474747</color>
-    <!-- Modal Dialogs -->
-    <color name="go_modal_dialog_background">#FFFFFF</color>
-    <color name="go_modal_dialog_background_dark">#424242</color>
+
+    <style name="AllSetTheme" parent="@android:style/Theme.DeviceDefault.NoActionBar">
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:enforceNavigationBarContrast">false</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:windowBackground">#FF000000</item>
+    </style>
+
 </resources>

@@ -61,6 +61,7 @@ import android.content.Intent;
 import android.graphics.Matrix;
 import android.graphics.PointF;
 import android.graphics.Rect;
+import android.graphics.RectF;
 import android.os.Build;
 import android.os.IBinder;
 import android.os.SystemClock;
@@ -140,7 +141,8 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
     private final ArrayList<Runnable> mRecentsAnimationStartCallbacks = new ArrayList<>();
     private final OnScrollChangedListener mOnRecentsScrollListener = this::onRecentsViewScroll;
 
-    protected RecentsAnimationController mRecentsAnimationController;
+    // Null if the recents animation hasn't started yet or has been canceled or finished.
+    protected @Nullable RecentsAnimationController mRecentsAnimationController;
     protected RecentsAnimationTargets mRecentsAnimationTargets;
     protected T mActivity;
     protected Q mRecentsView;
@@ -1232,30 +1234,40 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
         final RecentsOrientedState orientationState = mTaskViewSimulator.getOrientationState();
         final int windowRotation = orientationState.getDisplayRotation();
         final int homeRotation = orientationState.getRecentsActivityRotation();
+
+        final Matrix homeToWindowPositionMap = new Matrix();
+        final RectF startRect = updateProgressForStartRect(homeToWindowPositionMap, startProgress);
+        // Move the startRect to Launcher space as floatingIconView runs in Launcher
+        final Matrix windowToHomePositionMap = new Matrix();
+        homeToWindowPositionMap.invert(windowToHomePositionMap);
+        windowToHomePositionMap.mapRect(startRect);
+
         final Rect destinationBounds = SystemUiProxy.INSTANCE.get(mContext)
                 .startSwipePipToHome(taskInfo.topActivity,
                         TaskInfoCompat.getTopActivityInfo(taskInfo),
                         runningTaskTarget.taskInfo.pictureInPictureParams,
                         homeRotation,
                         mDp.hotseatBarSizePx);
-        final SwipePipToHomeAnimator swipePipToHomeAnimator = new SwipePipToHomeAnimator(
-                mContext,
-                runningTaskTarget.taskId,
-                taskInfo.topActivity,
-                runningTaskTarget.leash.getSurfaceControl(),
-                TaskInfoCompat.getPipSourceRectHint(
-                        runningTaskTarget.taskInfo.pictureInPictureParams),
-                TaskInfoCompat.getWindowConfigurationBounds(taskInfo),
-                updateProgressForStartRect(new Matrix(), startProgress),
-                destinationBounds,
-                mRecentsView.getPipCornerRadius(),
-                mRecentsView);
+        final SwipePipToHomeAnimator.Builder builder = new SwipePipToHomeAnimator.Builder()
+                .setContext(mContext)
+                .setTaskId(runningTaskTarget.taskId)
+                .setComponentName(taskInfo.topActivity)
+                .setLeash(runningTaskTarget.leash.getSurfaceControl())
+                .setSourceRectHint(TaskInfoCompat.getPipSourceRectHint(
+                        runningTaskTarget.taskInfo.pictureInPictureParams))
+                .setAppBounds(TaskInfoCompat.getWindowConfigurationBounds(taskInfo))
+                .setHomeToWindowPositionMap(homeToWindowPositionMap)
+                .setStartBounds(startRect)
+                .setDestinationBounds(destinationBounds)
+                .setCornerRadius(mRecentsView.getPipCornerRadius())
+                .setAttachedView(mRecentsView);
         // We would assume home and app window always in the same rotation While homeRotation
         // is not ROTATION_0 (which implies the rotation is turned on in launcher settings).
         if (homeRotation == ROTATION_0
                 && (windowRotation == ROTATION_90 || windowRotation == ROTATION_270)) {
-            swipePipToHomeAnimator.setFromRotation(mTaskViewSimulator, windowRotation);
+            builder.setFromRotation(mTaskViewSimulator, windowRotation);
         }
+        final SwipePipToHomeAnimator swipePipToHomeAnimator = builder.build();
         AnimatorPlaybackController activityAnimationToHome =
                 homeAnimFactory.createActivityAnimationToHome();
         swipePipToHomeAnimator.addAnimatorListener(new AnimatorListenerAdapter() {
@@ -1282,6 +1294,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
                 mGestureState.setState(STATE_END_TARGET_ANIMATION_FINISHED);
             }
         });
+        setupWindowAnimation(swipePipToHomeAnimator);
         return swipePipToHomeAnimator;
     }
 
@@ -1312,6 +1325,11 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
             HomeAnimationFactory homeAnimationFactory) {
         RectFSpringAnim anim =
                 super.createWindowAnimationToHome(startProgress, homeAnimationFactory);
+        setupWindowAnimation(anim);
+        return anim;
+    }
+
+    private void setupWindowAnimation(RectFSpringAnim anim) {
         anim.addOnUpdateListener((v, r, p) -> {
             updateSysUiFlags(Math.max(p, mCurrentShift.value));
         });
@@ -1329,7 +1347,6 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
         if (mRecentsAnimationTargets != null) {
             mRecentsAnimationTargets.addReleaseCheck(anim);
         }
-        return anim;
     }
 
     public void onConsumerAboutToBeSwitched() {
@@ -1353,8 +1370,10 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
 
     @UiThread
     private void resumeLastTask() {
-        mRecentsAnimationController.finish(false /* toRecents */, null);
-        ActiveGestureLog.INSTANCE.addLog("finishRecentsAnimation", false);
+        if (mRecentsAnimationController != null) {
+            mRecentsAnimationController.finish(false /* toRecents */, null);
+            ActiveGestureLog.INSTANCE.addLog("finishRecentsAnimation", false);
+        }
         doLogGesture(LAST_TASK, null);
         reset();
     }
@@ -1662,13 +1681,17 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
                         }
                     } else {
                         mActivityInterface.onLaunchTaskFailed();
-                        mRecentsAnimationController.finish(true /* toRecents */, null);
+                        if (mRecentsAnimationController != null) {
+                            mRecentsAnimationController.finish(true /* toRecents */, null);
+                        }
                     }
                 }, true /* freezeTaskList */);
             } else {
                 mActivityInterface.onLaunchTaskFailed();
                 Toast.makeText(mContext, R.string.activity_not_available, LENGTH_SHORT).show();
-                mRecentsAnimationController.finish(true /* toRecents */, null);
+                if (mRecentsAnimationController != null) {
+                    mRecentsAnimationController.finish(true /* toRecents */, null);
+                }
             }
         }
         mCanceled = false;

@@ -57,6 +57,7 @@ import com.android.launcher3.views.BaseDragLayer.TouchCompleteListener;
 import com.android.launcher3.widget.dragndrop.AppWidgetHostViewDragListener;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * {@inheritDoc}
@@ -116,7 +117,8 @@ public class LauncherAppWidgetHostView extends NavigableAppWidgetHostView
     private final Object mUpdateLock = new Object();
     private final ViewGroupFocusHelper mDragLayerRelativeCoordinateHelper;
     private long mDeferUpdatesUntilMillis = 0;
-    private RemoteViews mMostRecentRemoteViews;
+    private RemoteViews mDeferredRemoteViews;
+    private Optional<SparseIntArray> mDeferredColorChange = Optional.empty();
 
     public LauncherAppWidgetHostView(Context context) {
         super(context);
@@ -173,8 +175,11 @@ public class LauncherAppWidgetHostView extends NavigableAppWidgetHostView
     @Override
     public void updateAppWidget(RemoteViews remoteViews) {
         synchronized (mUpdateLock) {
-            mMostRecentRemoteViews = remoteViews;
-            if (SystemClock.uptimeMillis() < mDeferUpdatesUntilMillis) return;
+            if (isDeferringUpdates()) {
+                mDeferredRemoteViews = remoteViews;
+                return;
+            }
+            mDeferredRemoteViews = null;
         }
 
         super.updateAppWidget(remoteViews);
@@ -211,10 +216,19 @@ public class LauncherAppWidgetHostView extends NavigableAppWidgetHostView
     }
 
     /**
+     * Returns true if the application of {@link RemoteViews} through {@link #updateAppWidget} and
+     * colors through {@link #onColorsChanged} are currently being deferred.
+     * @see #beginDeferringUpdates()
+     */
+    private boolean isDeferringUpdates() {
+        return SystemClock.uptimeMillis() < mDeferUpdatesUntilMillis;
+    }
+
+    /**
      * Begin deferring the application of any {@link RemoteViews} updates made through
-     * {@link #updateAppWidget(RemoteViews)} until {@link #endDeferringUpdates()} has been called or
-     * the next {@link #updateAppWidget(RemoteViews)} call after {@link #UPDATE_LOCK_TIMEOUT_MILLIS}
-     * have elapsed.
+     * {@link #updateAppWidget} and color changes through {@link #onColorsChanged} until
+     * {@link #endDeferringUpdates()} has been called or the next {@link #updateAppWidget} or
+     * {@link #onColorsChanged} call after {@link #UPDATE_LOCK_TIMEOUT_MILLIS} have elapsed.
      */
     public void beginDeferringUpdates() {
         synchronized (mUpdateLock) {
@@ -224,18 +238,23 @@ public class LauncherAppWidgetHostView extends NavigableAppWidgetHostView
 
     /**
      * Stop deferring the application of {@link RemoteViews} updates made through
-     * {@link #updateAppWidget(RemoteViews)} and apply the most recently received update.
+     * {@link #updateAppWidget} and color changes made through {@link #onColorsChanged} and apply
+     * any deferred updates.
      */
     public void endDeferringUpdates() {
         RemoteViews remoteViews;
+        Optional<SparseIntArray> deferredColors;
         synchronized (mUpdateLock) {
             mDeferUpdatesUntilMillis = 0;
-            remoteViews = mMostRecentRemoteViews;
-            mMostRecentRemoteViews = null;
+            remoteViews = mDeferredRemoteViews;
+            mDeferredRemoteViews = null;
+            deferredColors = mDeferredColorChange;
+            mDeferredColorChange = Optional.empty();
         }
         if (remoteViews != null) {
             updateAppWidget(remoteViews);
         }
+        deferredColors.ifPresent(colors -> onColorsChanged(null /* rectF */, colors));
     }
 
     public boolean onInterceptTouchEvent(MotionEvent ev) {
@@ -388,6 +407,14 @@ public class LauncherAppWidgetHostView extends NavigableAppWidgetHostView
 
     @Override
     public void onColorsChanged(RectF rectF, SparseIntArray colors) {
+        synchronized (mUpdateLock) {
+            if (isDeferringUpdates()) {
+                mDeferredColorChange = Optional.ofNullable(colors);
+                return;
+            }
+            mDeferredColorChange = Optional.empty();
+        }
+
         // setColorResources will reapply the view, which must happen in the UI thread.
         post(() -> setColorResources(colors));
     }
