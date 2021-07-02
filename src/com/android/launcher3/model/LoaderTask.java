@@ -381,6 +381,8 @@ public class LoaderTask implements Runnable {
                         LauncherSettings.Favorites.RANK);
                 final int optionsIndex = c.getColumnIndexOrThrow(
                         LauncherSettings.Favorites.OPTIONS);
+                final int sourceContainerIndex = c.getColumnIndexOrThrow(
+                        LauncherSettings.Favorites.APPWIDGET_SOURCE);
 
                 final LongSparseArray<Boolean> unlockedUsers = new LongSparseArray<>();
 
@@ -748,6 +750,7 @@ public class LoaderTask implements Runnable {
                                 appWidgetInfo.spanY = c.getInt(spanYIndex);
                                 appWidgetInfo.options = c.getInt(optionsIndex);
                                 appWidgetInfo.user = c.user;
+                                appWidgetInfo.sourceContainer = c.getInt(sourceContainerIndex);
 
                                 if (appWidgetInfo.spanX <= 0 || appWidgetInfo.spanY <= 0) {
                                     c.markDeleted("Widget has invalid size: "
