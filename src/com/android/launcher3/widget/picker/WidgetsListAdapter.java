@@ -296,11 +296,8 @@ public class WidgetsListAdapter extends Adapter<ViewHolder> implements OnHeaderC
             for (int i = 0; i < entry.mWidgets.size(); i++) {
                 WidgetItem widgetItem = entry.mWidgets.get(i);
                 DeviceProfile deviceProfile = activity.getDeviceProfile();
-                Size widgetSize =
-                        WidgetSizes.getWidgetSizePx(
-                                deviceProfile,
-                                widgetItem.spanX,
-                                widgetItem.spanY);
+                Size widgetSize = WidgetSizes.getWidgetItemSizePx(mContext, deviceProfile,
+                        widgetItem);
                 if (widgetItem.isShortcut()) {
                     widgetSize =
                             new Size(
