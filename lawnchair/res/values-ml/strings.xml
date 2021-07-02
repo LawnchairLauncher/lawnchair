@@ -42,7 +42,7 @@
     <string name="label_size">Label Size</string>
     <string name="allow_empty_pages_label">Allow Empty Pages</string>
     <string name="notification_dots">Notification Dots</string>
-    <string name="smartspace_preferences">Preferences</string>
+    <string name="smartspace_preferences">മുൻഗണനകൾ</string>
     <string name="about_label">About</string>
     <string name="news">വാര്‍ത്ത</string>
     <string name="support">Support</string>
@@ -52,8 +52,8 @@
     <string name="all_apps_search_bar_hint">Search Apps</string>
     <string name="settings_button_text">Home Settings</string>
     <string name="development">Development</string>
-    <string name="app_info_drop_target_label">App Info</string>
-    <string name="item_removed">Item removed.</string>
+    <string name="app_info_drop_target_label">ആപ്പ് വിവരം</string>
+    <string name="item_removed">ഇനം നീക്കംചെയ്തു.</string>
     <string name="all_apps_no_search_results">No apps found matching “<xliff:g example="Android" id="query">%1$s</xliff:g>”.</string>
     <string name="background_opacity">Background Opacity</string>
     <string name="background_lightness_label">Background Lightness</string>
@@ -71,7 +71,7 @@
     <string name="hidden_apps_label_with_count">Hidden Apps (%1$d)</string>
     <plurals name="apps_count">
         <item quantity="one">%1$d App</item>
-        <item quantity="other">%1$d Apps</item>
+        <item quantity="other">%1$d ആപ്പുകൾ</item>
     </plurals>
     <string name="hotseat_qsb_label">Show Search Bar</string>
     <string name="dt2s_admin_hint_title">Admin Permissions Required</string>
@@ -87,18 +87,18 @@
     <string name="theme_label">Theme</string>
     <string name="theme_light">Light</string>
     <string name="theme_dark">Dark</string>
-    <string name="theme_system_default">Follow System</string>
+    <string name="theme_system_default">സിസ്റ്റതെ പിന്തുടരുക</string>
     <string name="theme_follow_wallpaper">Match Wallpaper</string>
     <string name="quickstep_label">Recents</string>
     <string name="clear_all_as_action_label">Show “Clear all” at bottom</string>
     <string name="window_corner_radius_label">Corner radius</string>
     <string name="override_window_corner_radius_label">Custom corner radius</string>
     <string name="override_window_corner_radius_description">If the default doesn\'t match your screen</string>
-    <string name="system_icons">System Icons</string>
+    <string name="system_icons">സിസ്റ്റം ഐക്കണുകൾ</string>
     <string name="accent_color">Accent Color</string>
     <string name="done">Done</string>
     <string name="loading">Loading…</string>
-    <string name="system">System</string>
+    <string name="system">സിസ്റ്റം</string>
     <string name="custom">Custom</string>
     <string name="custom_color">Custom Color</string>
 </resources>
