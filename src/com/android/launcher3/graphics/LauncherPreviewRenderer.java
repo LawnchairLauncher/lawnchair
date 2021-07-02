@@ -43,6 +43,7 @@ import android.os.Process;
 import android.util.AttributeSet;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowInsets;
@@ -466,5 +467,17 @@ public class LauncherPreviewRenderer extends ContextWrapper
     private static void measureView(View view, int width, int height) {
         view.measure(makeMeasureSpec(width, EXACTLY), makeMeasureSpec(height, EXACTLY));
         view.layout(0, 0, width, height);
+    }
+
+    /** Root layout for launcher preview that intercepts all touch events. */
+    public static class LauncherPreviewLayout extends InsettableFrameLayout {
+        public LauncherPreviewLayout(Context context, AttributeSet attrs) {
+            super(context, attrs);
+        }
+
+        @Override
+        public boolean onInterceptTouchEvent(MotionEvent ev) {
+            return true;
+        }
     }
 }

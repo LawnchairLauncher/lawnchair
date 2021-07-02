@@ -20,20 +20,31 @@ import static com.android.quickstep.views.OverviewActionsView.DISABLED_NO_THUMBN
 import static com.android.quickstep.views.OverviewActionsView.DISABLED_ROTATED;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.app.assist.AssistContent;
 import android.content.ActivityNotFoundException;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.graphics.Matrix;
+import android.graphics.drawable.ColorDrawable;
 import android.os.SystemClock;
 import android.os.UserManager;
 import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.Button;
 
 import androidx.annotation.VisibleForTesting;
 
+import com.android.launcher3.BaseActivity;
+import com.android.launcher3.BaseDraggingActivity;
+import com.android.launcher3.R;
+import com.android.launcher3.Utilities;
 import com.android.quickstep.util.AssistContentRequester;
 import com.android.quickstep.views.OverviewActionsView;
 import com.android.quickstep.views.TaskThumbnailView;
@@ -53,6 +64,7 @@ public final class TaskOverlayFactoryGo extends TaskOverlayFactory {
     public static final String ACTIONS_ERROR_CODE = "niu_actions_app_error_code";
     public static final int ERROR_PERMISSIONS_STRUCTURE = 1;
     public static final int ERROR_PERMISSIONS_SCREENSHOT = 2;
+    private static final String NIU_ACTIONS_CONFIRMED = "launcher_go.niu_actions_confirmed";
     private static final String TAG = "TaskOverlayFactoryGo";
 
     private AssistContentRequester mContentRequester;
@@ -79,6 +91,9 @@ public final class TaskOverlayFactoryGo extends TaskOverlayFactory {
         private boolean mAssistStructurePermitted;
         private boolean mAssistScreenshotPermitted;
         private AssistContentRequester mFactoryContentRequester;
+        private SharedPreferences mSharedPreferences;
+        private String mPreviousAction;
+        private AlertDialog mConfirmationDialog;
 
         private TaskOverlayGo(TaskThumbnailView taskThumbnailView,
                 AssistContentRequester assistContentRequester) {
@@ -92,6 +107,12 @@ public final class TaskOverlayFactoryGo extends TaskOverlayFactory {
         @Override
         public void initOverlay(Task task, ThumbnailData thumbnail, Matrix matrix,
                 boolean rotated) {
+            if (mConfirmationDialog != null && mConfirmationDialog.isShowing()) {
+                // Redraw the dialog in case the layout changed
+                mConfirmationDialog.dismiss();
+                showConfirmationDialog();
+            }
+
             getActionsView().updateDisabledFlags(DISABLED_NO_THUMBNAIL, thumbnail == null);
             checkSettings();
             if (thumbnail == null || TextUtils.isEmpty(mNIUPackageName)) {
@@ -105,6 +126,7 @@ public final class TaskOverlayFactoryGo extends TaskOverlayFactory {
             boolean isAllowedByPolicy = mThumbnailView.isRealSnapshot() && !isManagedProfileTask;
             getActionsView().setCallbacks(new OverlayUICallbacksGoImpl(isAllowedByPolicy, task));
             mTaskPackageName = task.key.getPackageName();
+            mSharedPreferences = Utilities.getPrefs(mApplicationContext);
 
             if (!mAssistStructurePermitted || !mAssistScreenshotPermitted) {
                 return;
@@ -131,6 +153,12 @@ public final class TaskOverlayFactoryGo extends TaskOverlayFactory {
          * Creates and sends an Intent corresponding to the button that was clicked
          */
         private void sendNIUIntent(String actionType) {
+            if (!mSharedPreferences.getBoolean(NIU_ACTIONS_CONFIRMED, false)) {
+                mPreviousAction = actionType;
+                showConfirmationDialog();
+                return;
+            }
+
             Intent intent = createNIUIntent(actionType);
             // Only add and send the image if the appropriate permissions are held
             if (mAssistStructurePermitted && mAssistScreenshotPermitted) {
@@ -217,6 +245,35 @@ public final class TaskOverlayFactoryGo extends TaskOverlayFactory {
         @VisibleForTesting
         public void setImageActionsAPI(ImageActionsApi imageActionsApi) {
             mImageApi = imageActionsApi;
+        }
+
+        private void showConfirmationDialog() {
+            BaseDraggingActivity activity = BaseActivity.fromContext(getActionsView().getContext());
+            LayoutInflater inflater = LayoutInflater.from(activity);
+            View view = inflater.inflate(R.layout.niu_actions_confirmation_dialog, /* root */ null);
+
+            Button acceptButton = view.findViewById(R.id.niu_actions_confirmation_accept);
+            acceptButton.setOnClickListener(this::onNiuActionsConfirmationAccept);
+
+            Button rejectButton = view.findViewById(R.id.niu_actions_confirmation_reject);
+            rejectButton.setOnClickListener(this::onNiuActionsConfirmationReject);
+
+            mConfirmationDialog = new AlertDialog.Builder(activity)
+                    .setView(view)
+                    .create();
+            mConfirmationDialog.getWindow()
+                    .setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            mConfirmationDialog.show();
+        }
+
+        private void onNiuActionsConfirmationAccept(View v) {
+            mConfirmationDialog.dismiss();
+            mSharedPreferences.edit().putBoolean(NIU_ACTIONS_CONFIRMED, true).apply();
+            sendNIUIntent(mPreviousAction);
+        }
+
+        private void onNiuActionsConfirmationReject(View v) {
+            mConfirmationDialog.cancel();
         }
     }
 

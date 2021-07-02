@@ -58,6 +58,8 @@ public class AddWidgetTest extends AbstractLauncherUiTest {
                 openAllWidgets().
                 getWidget(widgetInfo.getLabel(mTargetContext.getPackageManager())).
                 dragToWorkspace(false, false);
+        // Dismiss widget resize frame.
+        mDevice.pressHome();
 
         assertTrue(mActivityMonitor.itemExists(
                 (info, view) -> info instanceof LauncherAppWidgetInfo &&

@@ -269,6 +269,9 @@ public class PreviewItemManager {
             setDrawable(p, items.get(i));
 
             if (!animate) {
+                if (p.anim != null) {
+                    p.anim.cancel();
+                }
                 computePreviewItemDrawingParams(i, numItemsInFirstPagePreview, p);
                 if (mReferenceDrawable == null) {
                     mReferenceDrawable = p.drawable;
