@@ -364,7 +364,9 @@ public class GestureState implements RecentsAnimationCallbacks.RecentsAnimationL
         mStateCallback.setState(STATE_RECENTS_ANIMATION_ENDED);
         if (mRecentsAnimationCanceledSnapshot != null) {
             // Clean up the screenshot to finalize the recents animation cancel
-            mRecentsAnimationController.cleanupScreenshot();
+            if (mRecentsAnimationController != null) {
+                mRecentsAnimationController.cleanupScreenshot();
+            }
             mRecentsAnimationCanceledSnapshot = null;
         }
     }
