@@ -863,10 +863,12 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     }
 
     public void launchSideTaskInLiveTileModeForRestartedApp(int taskId) {
-        if (mRunningTaskId != -1 && mRunningTaskId == taskId &&
-                getLiveTileParams().getTargetSet().findTask(taskId) != null) {
+        if (mRunningTaskId != -1 && mRunningTaskId == taskId) {
             RemoteAnimationTargets targets = getLiveTileParams().getTargetSet();
-            launchSideTaskInLiveTileMode(taskId, targets.apps, targets.wallpapers, targets.nonApps);
+            if (targets != null && targets.findTask(taskId) != null) {
+                launchSideTaskInLiveTileMode(taskId, targets.apps, targets.wallpapers,
+                        targets.nonApps);
+            }
         }
     }
 
