@@ -80,8 +80,12 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
         assertTrue(message, failed);
     }
 
+    private int pagesPerScreen() {
+        return mLauncher.isTablet() ? 2 : 1;
+    }
+
     private boolean isWorkspaceScrollable(Launcher launcher) {
-        return launcher.getWorkspace().getPageCount() > 1;
+        return launcher.getWorkspace().getPageCount() > pagesPerScreen();
     }
 
     private int getCurrentWorkspacePage(Launcher launcher) {
@@ -195,8 +199,9 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
         workspace.ensureWorkspaceIsScrollable();
 
         executeOnLauncher(
-                launcher -> assertEquals("Ensuring workspace scrollable didn't switch to page #1",
-                        1, getCurrentWorkspacePage(launcher)));
+                launcher -> assertEquals(
+                        "Ensuring workspace scrollable didn't switch to next screen",
+                        pagesPerScreen(), getCurrentWorkspacePage(launcher)));
         executeOnLauncher(
                 launcher -> assertTrue("ensureScrollable didn't make workspace scrollable",
                         isWorkspaceScrollable(launcher)));
@@ -212,8 +217,8 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
 
         workspace.flingForward();
         executeOnLauncher(
-                launcher -> assertEquals("Flinging forward didn't switch workspace to page #1",
-                        1, getCurrentWorkspacePage(launcher)));
+                launcher -> assertEquals("Flinging forward didn't switch workspace to next screen",
+                        pagesPerScreen(), getCurrentWorkspacePage(launcher)));
         assertTrue("Launcher internal state is not Home", isInState(() -> LauncherState.NORMAL));
 
         // Test starting a workspace app.
