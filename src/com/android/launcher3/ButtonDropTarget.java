@@ -20,15 +20,12 @@ import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 
 import static com.android.launcher3.LauncherState.NORMAL;
 
-import android.animation.AnimatorSet;
 import android.content.Context;
-import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
-import android.util.Property;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -40,6 +37,7 @@ import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.dragndrop.DragController;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.dragndrop.DragOptions;
+import com.android.launcher3.dragndrop.DragView;
 import com.android.launcher3.model.data.ItemInfo;
 
 /**
@@ -212,18 +210,23 @@ public abstract class ButtonDropTarget extends TextView
             return;
         }
         final DragLayer dragLayer = mLauncher.getDragLayer();
+        final DragView dragView = d.dragView;
         final Rect from = new Rect();
         dragLayer.getViewRectRelativeToSelf(d.dragView, from);
 
         final Rect to = getIconRect(d);
         final float scale = (float) to.width() / from.width();
-        d.dragView.detachContentView(/* reattachToPreviousParent= */ true);
+        dragView.disableColorExtraction();
+        dragView.detachContentView(/* reattachToPreviousParent= */ true);
         mDropTargetBar.deferOnDragEnd();
 
         Runnable onAnimationEndRunnable = () -> {
             completeDrop(d);
             mDropTargetBar.onDragEnd();
             mLauncher.getStateManager().goToState(NORMAL);
+            // Only re-enable updates once the workspace is back to normal, which will be after the
+            // current frame.
+            post(dragView::resumeColorExtraction);
         };
 
         dragLayer.animateView(d.dragView, from, to, scale, 1f, 1f, 0.1f, 0.1f,
