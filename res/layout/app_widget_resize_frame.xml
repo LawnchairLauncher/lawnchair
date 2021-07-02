@@ -41,7 +41,7 @@
             android:layout_gravity="left|center_vertical"
             android:layout_marginLeft="@dimen/widget_handle_margin"
             android:src="@drawable/ic_widget_resize_handle"
-            android:tint="?android:attr/colorAccent" />
+            android:tint="?attr/workspaceAccentColor" />
 
         <!-- Top -->
         <ImageView
@@ -51,7 +51,7 @@
             android:layout_gravity="top|center_horizontal"
             android:layout_marginTop="@dimen/widget_handle_margin"
             android:src="@drawable/ic_widget_resize_handle"
-            android:tint="?android:attr/colorAccent" />
+            android:tint="?attr/workspaceAccentColor" />
 
         <!-- Right -->
         <ImageView
@@ -61,7 +61,7 @@
             android:layout_gravity="right|center_vertical"
             android:layout_marginRight="@dimen/widget_handle_margin"
             android:src="@drawable/ic_widget_resize_handle"
-            android:tint="?android:attr/colorAccent" />
+            android:tint="?attr/workspaceAccentColor" />
 
         <!-- Bottom -->
         <ImageView
@@ -71,7 +71,7 @@
             android:layout_gravity="bottom|center_horizontal"
             android:layout_marginBottom="@dimen/widget_handle_margin"
             android:src="@drawable/ic_widget_resize_handle"
-            android:tint="?android:attr/colorAccent" />
+            android:tint="?attr/workspaceAccentColor" />
 
         <ImageButton
             android:id="@+id/widget_reconfigure_button"
