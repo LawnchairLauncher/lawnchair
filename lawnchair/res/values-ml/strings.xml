@@ -40,8 +40,8 @@
     <string name="icons">Icons</string>
     <string name="icon_size">Icon Size</string>
     <string name="label_size">Label Size</string>
-    <string name="allow_empty_pages_label">Allow Empty Pages</string>
-    <string name="notification_dots">Notification Dots</string>
+    <string name="allow_empty_pages_label">ശൂന്യമായ പേജുകൾ അനുവദിക്കുക</string>
+    <string name="notification_dots">അറിയിപ്പ് ഡോട്ടുകൾ</string>
     <string name="smartspace_preferences">മുൻഗണനകൾ</string>
     <string name="about_label">About</string>
     <string name="news">വാര്‍ത്ത</string>
@@ -49,7 +49,7 @@
     <string name="acknowledgements">Acknowledgements</string>
     <string name="devops">DevOps</string>
     <string name="quickswitch_maintenance">QuickSwitch Maintenance</string>
-    <string name="all_apps_search_bar_hint">Search Apps</string>
+    <string name="all_apps_search_bar_hint">ആപ്പുകൾ തിരയുക</string>
     <string name="settings_button_text">Home Settings</string>
     <string name="development">Development</string>
     <string name="app_info_drop_target_label">ആപ്പ് വിവരം</string>
