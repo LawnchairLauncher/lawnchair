@@ -666,26 +666,30 @@ public final class LauncherInstrumentation {
     }
 
     Parcelable executeAndWaitForLauncherEvent(Runnable command,
-            UiAutomation.AccessibilityEventFilter eventFilter, Supplier<String> message) {
+            UiAutomation.AccessibilityEventFilter eventFilter, Supplier<String> message,
+            String actionName) {
         return executeAndWaitForEvent(
                 command,
                 e -> mLauncherPackage.equals(e.getPackageName()) && eventFilter.accept(e),
-                message);
+                message, actionName);
     }
 
     Parcelable executeAndWaitForEvent(Runnable command,
-            UiAutomation.AccessibilityEventFilter eventFilter, Supplier<String> message) {
-        try {
-            final AccessibilityEvent event =
-                    mInstrumentation.getUiAutomation().executeAndWaitForEvent(
-                            command, eventFilter, WAIT_TIME_MS);
-            assertNotNull("executeAndWaitForEvent returned null (this can't happen)", event);
-            final Parcelable parcelableData = event.getParcelableData();
-            event.recycle();
-            return parcelableData;
-        } catch (TimeoutException e) {
-            fail(message.get());
-            return null;
+            UiAutomation.AccessibilityEventFilter eventFilter, Supplier<String> message,
+            String actionName) {
+        try (LauncherInstrumentation.Closable c = addContextLayer(actionName)) {
+            try {
+                final AccessibilityEvent event =
+                        mInstrumentation.getUiAutomation().executeAndWaitForEvent(
+                                command, eventFilter, WAIT_TIME_MS);
+                assertNotNull("executeAndWaitForEvent returned null (this can't happen)", event);
+                final Parcelable parcelableData = event.getParcelableData();
+                event.recycle();
+                return parcelableData;
+            } catch (TimeoutException e) {
+                fail(message.get());
+                return null;
+            }
         }
     }
 
@@ -731,37 +735,34 @@ public final class LauncherInstrumentation {
                     dumpViewHierarchy();
                     action = "swiping up to home";
 
-                    try (LauncherInstrumentation.Closable c = addContextLayer(action)) {
-                        swipeToState(
-                                displaySize.x / 2, displaySize.y - 1,
-                                displaySize.x / 2, 0,
-                                ZERO_BUTTON_STEPS_FROM_BACKGROUND_TO_HOME, NORMAL_STATE_ORDINAL,
-                                launcherWasVisible
-                                        ? GestureScope.INSIDE_TO_OUTSIDE
-                                        : GestureScope.OUTSIDE_WITH_PILFER);
-                    }
+                    swipeToState(
+                            displaySize.x / 2, displaySize.y - 1,
+                            displaySize.x / 2, 0,
+                            ZERO_BUTTON_STEPS_FROM_BACKGROUND_TO_HOME, NORMAL_STATE_ORDINAL,
+                            launcherWasVisible
+                                    ? GestureScope.INSIDE_TO_OUTSIDE
+                                    : GestureScope.OUTSIDE_WITH_PILFER);
                 }
             } else {
                 log("Hierarchy before clicking home:");
                 dumpViewHierarchy();
                 action = "clicking home button";
-                try (LauncherInstrumentation.Closable c = addContextLayer(action)) {
-                    if (!isLauncher3() && getNavigationModel() == NavigationModel.TWO_BUTTON) {
-                        expectEvent(TestProtocol.SEQUENCE_TIS, EVENT_TOUCH_DOWN_TIS);
-                        expectEvent(TestProtocol.SEQUENCE_TIS, EVENT_TOUCH_UP_TIS);
-                    }
-                    if (isTablet()) {
-                        expectEvent(TestProtocol.SEQUENCE_MAIN, EVENT_TOUCH_DOWN);
-                        expectEvent(TestProtocol.SEQUENCE_MAIN, EVENT_TOUCH_UP);
-                    }
-
-                    runToState(
-                            waitForNavigationUiObject("home")::click,
-                            NORMAL_STATE_ORDINAL,
-                            !hasLauncherObject(WORKSPACE_RES_ID)
-                                    && (hasLauncherObject(APPS_RES_ID)
-                                    || hasLauncherObject(OVERVIEW_RES_ID)));
+                if (!isLauncher3() && getNavigationModel() == NavigationModel.TWO_BUTTON) {
+                    expectEvent(TestProtocol.SEQUENCE_TIS, EVENT_TOUCH_DOWN_TIS);
+                    expectEvent(TestProtocol.SEQUENCE_TIS, EVENT_TOUCH_UP_TIS);
                 }
+                if (isTablet()) {
+                    expectEvent(TestProtocol.SEQUENCE_MAIN, EVENT_TOUCH_DOWN);
+                    expectEvent(TestProtocol.SEQUENCE_MAIN, EVENT_TOUCH_UP);
+                }
+
+                runToState(
+                        waitForNavigationUiObject("home")::click,
+                        NORMAL_STATE_ORDINAL,
+                        !hasLauncherObject(WORKSPACE_RES_ID)
+                                && (hasLauncherObject(APPS_RES_ID)
+                                || hasLauncherObject(OVERVIEW_RES_ID)),
+                        action);
             }
             try (LauncherInstrumentation.Closable c = addContextLayer(
                     "performed action to switch to Home - " + action)) {
@@ -953,7 +954,7 @@ public final class LauncherInstrumentation {
     void waitForObjectEnabled(UiObject2 object, String waitReason) {
         try {
             assertTrue("Timed out waiting for object to be enabled for " + waitReason + " "
-                    + object.getResourceName(),
+                            + object.getResourceName(),
                     object.wait(Until.enabled(true), WAIT_TIME_MS));
         } catch (StaleObjectException e) {
             fail("The object disappeared from screen");
@@ -1056,22 +1057,23 @@ public final class LauncherInstrumentation {
                 + "]";
     }
 
-    void runToState(Runnable command, int expectedState, boolean requireEvent) {
+    void runToState(Runnable command, int expectedState, boolean requireEvent, String actionName) {
         if (requireEvent) {
-            runToState(command, expectedState);
+            runToState(command, expectedState, actionName);
         } else {
             command.run();
         }
     }
 
-    void runToState(Runnable command, int expectedState) {
+    void runToState(Runnable command, int expectedState, String actionName) {
         final List<Integer> actualEvents = new ArrayList<>();
         executeAndWaitForLauncherEvent(
                 command,
                 event -> isSwitchToStateEvent(event, expectedState, actualEvents),
                 () -> "Failed to receive an event for the state change: expected ["
                         + TestProtocol.stateOrdinalToString(expectedState)
-                        + "], actual: " + eventListToString(actualEvents));
+                        + "], actual: " + eventListToString(actualEvents),
+                actionName);
     }
 
     private boolean isSwitchToStateEvent(
@@ -1088,7 +1090,8 @@ public final class LauncherInstrumentation {
             GestureScope gestureScope) {
         runToState(
                 () -> linearGesture(startX, startY, endX, endY, steps, false, gestureScope),
-                expectedState);
+                expectedState,
+                "swiping");
     }
 
     private int getBottomGestureSize() {
@@ -1196,7 +1199,8 @@ public final class LauncherInstrumentation {
                         startX, startY, endX, endY, steps, slowDown, GestureScope.INSIDE),
                 event -> TestProtocol.SCROLL_FINISHED_MESSAGE.equals(event.getClassName()),
                 () -> "Didn't receive a scroll end message: " + startX + ", " + startY
-                        + ", " + endX + ", " + endY);
+                        + ", " + endX + ", " + endY,
+                "scrolling");
     }
 
     // Inject a swipe gesture. Inject exactly 'steps' motion points, incrementing event time by a
