@@ -417,7 +417,8 @@ public class DatabaseWidgetPreviewLoader implements WidgetPreviewLoader {
             previewHeight = drawable.getIntrinsicHeight();
         } else {
             DeviceProfile dp = launcher.getDeviceProfile();
-            Size widgetSize = WidgetSizes.getWidgetSizePx(dp, spanX, spanY);
+            Size widgetSize = WidgetSizes.getWidgetPaddedSizePx(mContext, info.provider, dp, spanX,
+                    spanY);
             previewWidth = widgetSize.getWidth();
             previewHeight = widgetSize.getHeight();
         }
