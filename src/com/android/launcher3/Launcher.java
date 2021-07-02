@@ -1342,6 +1342,12 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
         launcherInfo.minSpanX = itemInfo.minSpanX;
         launcherInfo.minSpanY = itemInfo.minSpanY;
         launcherInfo.user = appWidgetInfo.getProfile();
+        if (itemInfo instanceof PendingAddWidgetInfo) {
+            launcherInfo.sourceContainer = ((PendingAddWidgetInfo) itemInfo).sourceContainer;
+        } else if (itemInfo instanceof PendingRequestArgs) {
+            launcherInfo.sourceContainer =
+                    ((PendingRequestArgs) itemInfo).getWidgetSourceContainer();
+        }
 
         getModelWriter().addItemToDatabase(launcherInfo,
                 itemInfo.container, itemInfo.screenId, itemInfo.cellX, itemInfo.cellY);
@@ -2435,7 +2441,8 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
 
                         // Also try to bind the widget. If the bind fails, the user will be shown
                         // a click to setup UI, which will ask for the bind permission.
-                        PendingAddWidgetInfo pendingInfo = new PendingAddWidgetInfo(appWidgetInfo);
+                        PendingAddWidgetInfo pendingInfo =
+                                new PendingAddWidgetInfo(appWidgetInfo, item.sourceContainer);
                         pendingInfo.spanX = item.spanX;
                         pendingInfo.spanY = item.spanY;
                         pendingInfo.minSpanX = item.minSpanX;

@@ -16,7 +16,6 @@
 
 package com.android.quickstep.views;
 
-import static com.android.quickstep.util.NavigationModeFeatureFlag.LIVE_TILE;
 import static com.android.quickstep.views.TaskThumbnailView.DIM_ALPHA;
 
 import android.animation.Animator;
@@ -59,6 +58,7 @@ public class TaskMenuView extends AbstractFloatingView implements OnScrollChange
 
     private static final int REVEAL_OPEN_DURATION = 150;
     private static final int REVEAL_CLOSE_DURATION = 100;
+    private final float mTaskInsetMargin;
 
     private BaseDraggingActivity mActivity;
     private TextView mTaskName;
@@ -75,6 +75,7 @@ public class TaskMenuView extends AbstractFloatingView implements OnScrollChange
 
         mActivity = BaseDraggingActivity.fromContext(context);
         setClipToOutline(true);
+        mTaskInsetMargin = getResources().getDimension(R.dimen.task_card_margin);
     }
 
     @Override
@@ -124,8 +125,13 @@ public class TaskMenuView extends AbstractFloatingView implements OnScrollChange
 
     private void setPosition(float x, float y, int overscrollShift) {
         PagedOrientationHandler pagedOrientationHandler = mTaskView.getPagedOrientationHandler();
+        // Inset due to margin
+        PointF additionalInset = pagedOrientationHandler
+                .getAdditionalInsetForTaskMenu(mTaskInsetMargin);
         int taskTopMargin = mActivity.getDeviceProfile().overviewTaskThumbnailTopMarginPx;
-        float adjustedY = y + taskTopMargin;
+
+        float adjustedY = y + taskTopMargin - additionalInset.y;
+        float adjustedX = x - additionalInset.x;
         // Changing pivot to make computations easier
         // NOTE: Changing the pivots means the rotated view gets rotated about the new pivots set,
         // which would render the X and Y position set here incorrect
@@ -137,7 +143,8 @@ public class TaskMenuView extends AbstractFloatingView implements OnScrollChange
             setPivotY(0);
         }
         setRotation(pagedOrientationHandler.getDegreesRotated());
-        setX(pagedOrientationHandler.getTaskMenuX(x, mTaskView.getThumbnail(), overscrollShift));
+        setX(pagedOrientationHandler.getTaskMenuX(adjustedX,
+                mTaskView.getThumbnail(), overscrollShift));
         setY(pagedOrientationHandler.getTaskMenuY(
                 adjustedY, mTaskView.getThumbnail(), overscrollShift));
     }
@@ -211,25 +218,14 @@ public class TaskMenuView extends AbstractFloatingView implements OnScrollChange
                 menuOptionView, mActivity.getDeviceProfile());
         menuOptionView.setEnabled(menuOption.isEnabled());
         menuOptionView.setAlpha(menuOption.isEnabled() ? 1 : 0.5f);
-        menuOptionView.setOnClickListener(view -> {
-            if (LIVE_TILE.get()) {
-                RecentsView recentsView = mTaskView.getRecentsView();
-                recentsView.switchToScreenshot(null,
-                        () -> recentsView.finishRecentsAnimation(true /* toRecents */,
-                                false /* shouldPip */,
-                                () -> menuOption.onClick(view)));
-            } else {
-                menuOption.onClick(view);
-            }
-        });
+        menuOptionView.setOnClickListener(menuOption::onClick);
         mOptionLayout.addView(menuOptionView);
     }
 
     private void orientAroundTaskView(TaskView taskView) {
         PagedOrientationHandler orientationHandler = taskView.getPagedOrientationHandler();
         measure(MeasureSpec.UNSPECIFIED, MeasureSpec.UNSPECIFIED);
-        float taskInsetMargin = getResources().getDimension(R.dimen.task_card_margin);
-        orientationHandler.setTaskMenuAroundTaskView(this, taskInsetMargin);
+        orientationHandler.setTaskMenuAroundTaskView(this, mTaskInsetMargin);
         mActivity.getDragLayer().getDescendantRectRelativeToSelf(taskView, sTempRect);
         Rect insets = mActivity.getDragLayer().getInsets();
         BaseDragLayer.LayoutParams params = (BaseDragLayer.LayoutParams) getLayoutParams();
@@ -243,9 +239,6 @@ public class TaskMenuView extends AbstractFloatingView implements OnScrollChange
         setScaleY(taskView.getScaleY());
         orientationHandler.setTaskOptionsMenuLayoutOrientation(
                 mActivity.getDeviceProfile(), mOptionLayout);
-        PointF additionalInset = orientationHandler.getAdditionalInsetForTaskMenu(taskInsetMargin);
-        insets.left += additionalInset.x;
-        insets.top += additionalInset.y;
         setPosition(sTempRect.left - insets.left, sTempRect.top - insets.top, 0);
     }
 

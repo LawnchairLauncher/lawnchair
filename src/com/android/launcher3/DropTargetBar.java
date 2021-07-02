@@ -105,7 +105,8 @@ public class DropTargetBar extends FrameLayout
                         / (2 * (grid.inv.numColumns + 1)))
                         + grid.edgeMarginPx;
             } else {
-                gap = grid.desiredWorkspaceLeftRightMarginPx - grid.inv.defaultWidgetPadding.right;
+                gap = getContext().getResources()
+                        .getDimensionPixelSize(R.dimen.drop_target_bar_margin_horizontal);
             }
             lp.width = grid.availableWidthPx - 2 * gap;
 

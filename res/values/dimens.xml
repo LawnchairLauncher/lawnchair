@@ -121,6 +121,8 @@
 <!-- Floating action button inside work tab to toggle work profile -->
     <dimen name="work_fab_height">48dp</dimen>
     <dimen name="work_fab_radius">24dp</dimen>
+    <dimen name="work_card_padding_horizontal">24dp</dimen>
+    <dimen name="work_card_padding_vertical">32dp</dimen>
     <dimen name="work_fab_margin">16dp</dimen>
     <dimen name="work_profile_footer_padding">20dp</dimen>
     <dimen name="work_profile_footer_text_size">16sp</dimen>
@@ -189,8 +191,9 @@
 <!-- Dragging -->
     <!-- Drag padding to add to the bottom of drop targets -->
     <dimen name="drop_target_drag_padding">14dp</dimen>
-    <dimen name="drop_target_text_size">20sp</dimen>
+    <dimen name="drop_target_text_size">16sp</dimen>
     <dimen name="drop_target_shadow_elevation">2dp</dimen>
+    <dimen name="drop_target_bar_margin_horizontal">4dp</dimen>
 
     <!-- the distance an icon must be dragged before button drop targets accept it -->
     <dimen name="drag_distanceThreshold">30dp</dimen>

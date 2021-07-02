@@ -63,6 +63,7 @@ import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.util.RunnableList;
 import com.android.launcher3.views.ActivityContext;
 import com.android.launcher3.views.BaseDragLayer;
+import com.android.launcher3.widget.LauncherAppWidgetHostView;
 
 /** A custom view for rendering an icon, folder, shortcut or widget during drag-n-drop. */
 public abstract class DragView<T extends Context & ActivityContext> extends FrameLayout {
@@ -447,12 +448,12 @@ public abstract class DragView<T extends Context & ActivityContext> extends Fram
             mContent.draw(picture.beginRecording(mWidth, mHeight));
             picture.endRecording();
             View view = new View(mActivity);
-            view.setClipToOutline(mContent.getClipToOutline());
-            view.setOutlineProvider(mContent.getOutlineProvider());
             view.setBackground(new PictureDrawable(picture));
             view.measure(makeMeasureSpec(mWidth, EXACTLY), makeMeasureSpec(mHeight, EXACTLY));
             view.layout(mContent.getLeft(), mContent.getTop(),
                     mContent.getRight(), mContent.getBottom());
+            setClipToOutline(mContent.getClipToOutline());
+            setOutlineProvider(mContent.getOutlineProvider());
             addViewInLayout(view, indexOfChild(mContent), mContent.getLayoutParams(), true);
 
             removeViewInLayout(mContent);
@@ -463,6 +464,24 @@ public abstract class DragView<T extends Context & ActivityContext> extends Fram
             }
             mContentViewParent = null;
             mContentViewInParentViewIndex = -1;
+        }
+    }
+
+    /**
+     * If the drag view uses color extraction, block it.
+     */
+    public void disableColorExtraction() {
+        if (mContent instanceof LauncherAppWidgetHostView) {
+            ((LauncherAppWidgetHostView) mContent).disableColorExtraction();
+        }
+    }
+
+    /**
+     * If the drag view uses color extraction, restores it.
+     */
+    public void resumeColorExtraction() {
+        if (mContent instanceof LauncherAppWidgetHostView) {
+            ((LauncherAppWidgetHostView) mContent).enableColorExtraction(/* updateColors= */ false);
         }
     }
 
