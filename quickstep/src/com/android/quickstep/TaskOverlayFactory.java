@@ -18,7 +18,7 @@ package com.android.quickstep;
 
 import static android.view.Surface.ROTATION_0;
 
-import static com.android.quickstep.util.NavigationModeFeatureFlag.LIVE_TILE;
+import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
 import static com.android.quickstep.views.OverviewActionsView.DISABLED_NO_THUMBNAIL;
 import static com.android.quickstep.views.OverviewActionsView.DISABLED_ROTATED;
 
@@ -189,7 +189,7 @@ public class TaskOverlayFactory implements ResourceBasedOverride {
          * @param callback callback to run, after switching to screenshot
          */
         public void endLiveTileMode(@NonNull Runnable callback) {
-            if (LIVE_TILE.get()) {
+            if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
                 RecentsView recentsView = mThumbnailView.getTaskView().getRecentsView();
                 recentsView.switchToScreenshot(
                         () -> recentsView.finishRecentsAnimation(true /* toRecents */,
