@@ -18,6 +18,7 @@ package com.android.quickstep.interaction;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.view.Display;
 import android.view.View;
@@ -122,9 +123,9 @@ public class GestureSandboxActivity extends FragmentActivity {
         mCurrentTutorialStep = mTutorialSteps[mCurrentStep];
         mFragment = TutorialFragment.newInstance(mCurrentTutorialStep);
         getSupportFragmentManager().beginTransaction()
-            .replace(R.id.gesture_tutorial_fragment_container, mFragment)
-            .runOnCommit(() -> mFragment.onAttachedToWindow())
-            .commit();
+                .replace(R.id.gesture_tutorial_fragment_container, mFragment)
+                .runOnCommit(() -> mFragment.onAttachedToWindow())
+                .commit();
         mCurrentStep++;
     }
 
@@ -141,21 +142,33 @@ public class GestureSandboxActivity extends FragmentActivity {
 
     private TutorialType[] getTutorialSteps(Bundle extras) {
         TutorialType[] defaultSteps = new TutorialType[] {TutorialType.LEFT_EDGE_BACK_NAVIGATION};
+        mCurrentStep = 1;
+        mNumSteps = 1;
 
         if (extras == null || !extras.containsKey(KEY_TUTORIAL_STEPS)) {
             return defaultSteps;
         }
 
-        String[] tutorialStepNames = extras.getStringArray(KEY_TUTORIAL_STEPS);
+        Object savedSteps = extras.get(KEY_TUTORIAL_STEPS);
         int currentStep = extras.getInt(KEY_CURRENT_STEP, -1);
+        String[] savedStepsNames;
 
-        if (tutorialStepNames == null) {
+        if (savedSteps instanceof String) {
+            savedStepsNames = TextUtils.isEmpty((String) savedSteps)
+                    ? null : ((String) savedSteps).split(",");
+        } else if (savedSteps instanceof String[]) {
+            savedStepsNames = (String[]) savedSteps;
+        } else {
             return defaultSteps;
         }
 
-        TutorialType[] tutorialSteps = new TutorialType[tutorialStepNames.length];
-        for (int i = 0; i < tutorialStepNames.length; i++) {
-            tutorialSteps[i] = TutorialType.valueOf(tutorialStepNames[i]);
+        if (savedStepsNames == null) {
+            return defaultSteps;
+        }
+
+        TutorialType[] tutorialSteps = new TutorialType[savedStepsNames.length];
+        for (int i = 0; i < savedStepsNames.length; i++) {
+            tutorialSteps[i] = TutorialType.valueOf(savedStepsNames[i]);
         }
 
         mCurrentStep = Math.max(currentStep, 1);

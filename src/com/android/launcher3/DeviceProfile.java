@@ -120,6 +120,7 @@ public class DeviceProfile {
     public int iconDrawablePaddingPx;
     public int iconDrawablePaddingOriginalPx;
 
+    public float cellScaleToFit;
     public int cellWidthPx;
     public int cellHeightPx;
     public int workspaceCellPaddingXPx;
@@ -149,13 +150,17 @@ public class DeviceProfile {
     // Hotseat
     public final int numShownHotseatIcons;
     public int hotseatCellHeightPx;
+    private final int hotseatExtraVerticalSize;
     // In portrait: size = height, in landscape: size = width
     public int hotseatBarSizePx;
     public final int hotseatBarTopPaddingPx;
-    public int hotseatBarBottomPaddingPx;
+    public final int hotseatBarBottomPaddingPx;
     // Start is the side next to the nav bar, end is the side next to the workspace
     public final int hotseatBarSidePaddingStartPx;
     public final int hotseatBarSidePaddingEndPx;
+
+    public final float qsbBottomMarginOriginalPx;
+    public int qsbBottomMarginPx;
 
     // All apps
     public int allAppsOpenVerticalTranslate;
@@ -326,13 +331,13 @@ public class DeviceProfile {
                 res.getDimensionPixelSize(R.dimen.dynamic_grid_hotseat_side_padding);
         // Add a bit of space between nav bar and hotseat in vertical bar layout.
         hotseatBarSidePaddingStartPx = isVerticalBarLayout() ? workspacePageIndicatorHeight : 0;
-        int hotseatExtraVerticalSize =
+        hotseatExtraVerticalSize =
                 res.getDimensionPixelSize(R.dimen.dynamic_grid_hotseat_extra_vertical_size);
-        hotseatBarSizePx = pxFromDp(inv.iconSize, mMetrics, 1f)
-                + (isVerticalBarLayout()
-                ? (hotseatBarSidePaddingStartPx + hotseatBarSidePaddingEndPx)
-                : (hotseatBarTopPaddingPx + hotseatBarBottomPaddingPx
-                        + (isScalableGrid ? 0 : hotseatExtraVerticalSize)));
+        updateHotseatIconSize(pxFromDp(inv.iconSize, mMetrics, 1f));
+
+        qsbBottomMarginOriginalPx = isScalableGrid
+                ? res.getDimensionPixelSize(R.dimen.scalable_grid_qsb_bottom_margin)
+                : 0;
 
         overviewTaskMarginPx = res.getDimensionPixelSize(R.dimen.overview_task_margin);
         overviewTaskIconSizePx =
@@ -350,19 +355,20 @@ public class DeviceProfile {
         // Now that we have all of the variables calculated, we can tune certain sizes.
         if (isScalableGrid && inv.devicePaddings != null) {
             // Paddings were created assuming no scaling, so we first unscale the extra space.
-            int unscaledExtraSpace = (int) (extraSpace / iconScale);
+            int unscaledExtraSpace = (int) (extraSpace / cellScaleToFit);
             DevicePadding padding = inv.devicePaddings.getDevicePadding(unscaledExtraSpace);
 
             int paddingWorkspaceTop = padding.getWorkspaceTopPadding(unscaledExtraSpace);
             int paddingWorkspaceBottom = padding.getWorkspaceBottomPadding(unscaledExtraSpace);
             int paddingHotseatBottom = padding.getHotseatBottomPadding(unscaledExtraSpace);
 
-            workspaceTopPadding = Math.round(paddingWorkspaceTop * iconScale);
-            workspaceBottomPadding = Math.round(paddingWorkspaceBottom * iconScale);
-            extraHotseatBottomPadding = Math.round(paddingHotseatBottom * iconScale);
+            workspaceTopPadding = Math.round(paddingWorkspaceTop * cellScaleToFit);
+            workspaceBottomPadding = Math.round(paddingWorkspaceBottom * cellScaleToFit);
+            extraHotseatBottomPadding = Math.round(paddingHotseatBottom * cellScaleToFit);
 
             hotseatBarSizePx += extraHotseatBottomPadding;
-            hotseatBarBottomPaddingPx += extraHotseatBottomPadding;
+
+            qsbBottomMarginPx = Math.round(qsbBottomMarginOriginalPx * cellScaleToFit);
         } else if (!isVerticalBarLayout() && isPhone && isTallDevice) {
             // We increase the hotseat size when there is extra space.
             // ie. For a display with a large aspect ratio, we can keep the icons on the workspace
@@ -371,7 +377,6 @@ public class DeviceProfile {
             int extraSpace = getCellSize().y - iconSizePx - iconDrawablePaddingPx * 2
                     - workspacePageIndicatorHeight;
             hotseatBarSizePx += extraSpace;
-            hotseatBarBottomPaddingPx += extraSpace;
 
             // Recalculate the available dimensions using the new hotseat size.
             updateAvailableDimensions(res);
@@ -386,6 +391,17 @@ public class DeviceProfile {
         mDotRendererWorkSpace = new DotRenderer(iconSizePx, dotPath, DEFAULT_DOT_SIZE);
         mDotRendererAllApps = iconSizePx == allAppsIconSizePx ? mDotRendererWorkSpace :
                 new DotRenderer(allAppsIconSizePx, dotPath, DEFAULT_DOT_SIZE);
+    }
+
+    private void updateHotseatIconSize(int hotseatIconSizePx) {
+        hotseatCellHeightPx = hotseatIconSizePx;
+        if (isVerticalBarLayout()) {
+            hotseatBarSizePx = hotseatIconSizePx + hotseatBarSidePaddingStartPx
+                    + hotseatBarSidePaddingEndPx;
+        } else {
+            hotseatBarSizePx = hotseatIconSizePx + hotseatBarTopPaddingPx
+                    + hotseatBarBottomPaddingPx + (isScalableGrid ? 0 : hotseatExtraVerticalSize);
+        }
     }
 
     private void setCellLayoutBorderSpacing(int borderSpacing) {
@@ -520,15 +536,18 @@ public class DeviceProfile {
      * hotseat sizes, workspaceSpringLoadedShrinkFactor, folderIconSizePx, and folderIconOffsetYPx.
      */
     public void updateIconSize(float scale, Resources res) {
-        iconScale = scale;
+        // Icon scale should never exceed 1, otherwise pixellation may occur.
+        iconScale = Math.min(1f, scale);
+        cellScaleToFit = scale;
+
 
         // Workspace
         final boolean isVerticalLayout = isVerticalBarLayout();
         float invIconSizeDp = isLandscape ? inv.landscapeIconSize : inv.iconSize;
-        iconSizePx = Math.max(1, pxFromDp(invIconSizeDp, mMetrics, scale));
+        iconSizePx = Math.max(1, pxFromDp(invIconSizeDp, mMetrics, iconScale));
         float invIconTextSizeSp = isLandscape ? inv.landscapeIconTextSize : inv.iconTextSize;
-        iconTextSizePx = (int) (pxFromSp(invIconTextSizeSp, mMetrics) * scale);
-        iconDrawablePaddingPx = (int) (iconDrawablePaddingOriginalPx * scale);
+        iconTextSizePx = (int) (pxFromSp(invIconTextSizeSp, mMetrics) * iconScale);
+        iconDrawablePaddingPx = (int) (iconDrawablePaddingOriginalPx * iconScale);
 
         setCellLayoutBorderSpacing((int) (cellLayoutBorderSpacingOriginalPx * scale));
 
@@ -573,11 +592,7 @@ public class DeviceProfile {
         }
 
         // Hotseat
-        if (isVerticalLayout) {
-            hotseatBarSizePx = iconSizePx + hotseatBarSidePaddingStartPx
-                    + hotseatBarSidePaddingEndPx;
-        }
-        hotseatCellHeightPx = iconSizePx;
+        updateHotseatIconSize(iconSizePx);
 
         if (!isVerticalLayout) {
             int expectedWorkspaceHeight = availableHeightPx - hotseatBarSizePx
@@ -763,7 +778,8 @@ public class DeviceProfile {
                     hotseatBarTopPaddingPx,
                     hotseatAdjustment + workspacePadding.right + cellLayoutPaddingLeftRightPx
                             + mInsets.right,
-                    hotseatBarBottomPaddingPx + mInsets.bottom + cellLayoutBottomPaddingPx);
+                    hotseatBarSizePx - hotseatCellHeightPx - hotseatBarTopPaddingPx
+                            + cellLayoutBottomPaddingPx + mInsets.bottom);
         }
         return mHotseatPadding;
     }
@@ -875,6 +891,9 @@ public class DeviceProfile {
         writer.println(prefix + "\tinv.minCellWidth:" + inv.minCellWidth + "dp");
         writer.println(prefix + "\tinv.minCellHeight:" + inv.minCellHeight + "dp");
 
+        writer.println(prefix + "\tinv.numColumns:" + inv.numColumns);
+        writer.println(prefix + "\tinv.numRows:" + inv.numRows);
+
         writer.println(prefix + pxToDpStr("cellWidthPx", cellWidthPx));
         writer.println(prefix + pxToDpStr("cellHeightPx", cellHeightPx));
 
@@ -928,7 +947,8 @@ public class DeviceProfile {
         writer.println(prefix + pxToDpStr("workspacePadding.right", workspacePadding.right));
         writer.println(prefix + pxToDpStr("workspacePadding.bottom", workspacePadding.bottom));
 
-        writer.println(prefix + pxToDpStr("scaleToFit", iconScale));
+        writer.println(prefix + pxToDpStr("iconScale", iconScale));
+        writer.println(prefix + pxToDpStr("cellScaleToFit ", cellScaleToFit));
         writer.println(prefix + pxToDpStr("extraSpace", extraSpace));
 
         if (inv.devicePaddings != null) {

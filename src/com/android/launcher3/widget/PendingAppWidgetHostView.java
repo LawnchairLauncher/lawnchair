@@ -17,6 +17,7 @@
 package com.android.launcher3.widget;
 
 import static com.android.launcher3.graphics.PreloadIconDrawable.newPendingIcon;
+import static com.android.launcher3.model.data.PackageItemInfo.CONVERSATIONS;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -34,6 +35,8 @@ import android.view.ContextThemeWrapper;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.RemoteViews;
+
+import androidx.annotation.Nullable;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
@@ -146,21 +149,32 @@ public class PendingAppWidgetHostView extends LauncherAppWidgetHostView
             mCenterDrawable = null;
         }
         if (info.bitmap.icon != null) {
+            Drawable widgetCategoryIcon = getWidgetCategoryIcon();
             // The view displays three modes,
             //   1) App icon in the center
             //   2) Preload icon in the center
             //   3) App icon in the center with a setup icon on the top left corner.
             if (mDisabledForSafeMode) {
-                FastBitmapDrawable disabledIcon = info.newIcon(getContext());
-                disabledIcon.setIsDisabled(true);
-                mCenterDrawable = disabledIcon;
+                if (widgetCategoryIcon == null) {
+                    FastBitmapDrawable disabledIcon = info.newIcon(getContext());
+                    disabledIcon.setIsDisabled(true);
+                    mCenterDrawable = disabledIcon;
+                } else {
+                    widgetCategoryIcon.setColorFilter(
+                            FastBitmapDrawable.getDisabledFColorFilter(/* disabledAlpha= */ 1f));
+                    mCenterDrawable = widgetCategoryIcon;
+                }
                 mSettingIconDrawable = null;
             } else if (isReadyForClickSetup()) {
-                mCenterDrawable = info.newIcon(getContext());
+                mCenterDrawable = widgetCategoryIcon == null
+                        ? info.newIcon(getContext())
+                        : widgetCategoryIcon;
                 mSettingIconDrawable = getResources().getDrawable(R.drawable.ic_setting).mutate();
                 updateSettingColor(info.bitmap.color);
             } else {
-                mCenterDrawable = newPendingIcon(getContext(), info);
+                mCenterDrawable = widgetCategoryIcon == null
+                        ? newPendingIcon(getContext(), info)
+                        : widgetCategoryIcon;
                 mSettingIconDrawable = null;
                 applyState();
             }
@@ -315,5 +329,20 @@ public class PendingAppWidgetHostView extends LauncherAppWidgetHostView
             canvas.restore();
         }
 
+    }
+
+    /**
+     * Returns the widget category icon for {@link #mInfo}.
+     *
+     * <p>If {@link #mInfo}'s category is {@code PackageItemInfo#NO_CATEGORY} or unknown, returns
+     * {@code null}.
+     */
+    @Nullable
+    private Drawable getWidgetCategoryIcon() {
+        switch (mInfo.pendingItemInfo.category) {
+            case CONVERSATIONS:
+                return getContext().getDrawable(R.drawable.ic_conversations_widget_category);
+        }
+        return null;
     }
 }

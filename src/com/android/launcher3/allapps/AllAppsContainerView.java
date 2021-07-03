@@ -51,7 +51,6 @@ import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 import androidx.annotation.VisibleForTesting;
 import androidx.core.graphics.ColorUtils;
-import androidx.core.os.BuildCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -184,16 +183,19 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
         } catch (Exception e) {
             Log.e("AllAppsContainerView", "restoreInstanceState viewId = 0", e);
         }
+
         Bundle state = (Bundle) sparseArray.get(R.id.work_tab_state_id, null);
         if (state != null) {
             int currentPage = state.getInt(BUNDLE_KEY_CURRENT_PAGE, 0);
-            if (currentPage != 0) {
-                rebindAdapters(true);
+            if (currentPage != 0 && mViewPager != null) {
                 mViewPager.setCurrentPage(currentPage);
+                rebindAdapters(true);
+            } else {
+                reset(true);
             }
         }
-    }
 
+    }
 
     @Override
     protected void dispatchSaveInstanceState(SparseArray<Parcelable> container) {
@@ -255,22 +257,6 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
             mWorkModeSwitch.updateCurrentState(isEnabled);
         }
         mWorkAdapterProvider.updateCurrentState(isEnabled);
-        mAH[AdapterHolder.WORK].applyPadding();
-    }
-
-    private void hideInput() {
-        if (!BuildCompat.isAtLeastR() || !FeatureFlags.ENABLE_DEVICE_SEARCH.get()) return;
-
-        WindowInsets insets = getRootWindowInsets();
-        if (insets == null) return;
-
-        if (insets.isVisible(WindowInsets.Type.ime())) {
-            hideIme();
-        }
-    }
-
-    protected void hideIme() {
-        getWindowInsetsController().hide(WindowInsets.Type.ime());
     }
 
     /**
@@ -288,7 +274,6 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
         }
         if (rv.getScrollbar().getThumbOffsetY() >= 0 &&
                 mLauncher.getDragLayer().isEventOverView(rv.getScrollbar(), ev)) {
-            hideInput();
             return false;
         }
         return rv.shouldContainerScroll(ev, mLauncher.getDragLayer());
@@ -509,7 +494,10 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
                     R.layout.work_mode_fab, this, false);
             this.addView(mWorkModeSwitch);
             mWorkModeSwitch.setInsets(mInsets);
-            mWorkModeSwitch.post(this::resetWorkProfile);
+            mWorkModeSwitch.post(() -> {
+                mAH[AdapterHolder.WORK].applyPadding();
+                resetWorkProfile();
+            });
         }
     }
 
@@ -633,6 +621,7 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
             mSearchModeWhileUsingTabs = true;
             rebindAdapters(false); // hide tabs
         }
+        mHeader.setCollapsed(true);
     }
 
     public void onClearSearchResult() {
@@ -715,8 +704,12 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
         if (mHeaderPaint.getColor() != mScrimColor && mHeaderPaint.getColor() != 0) {
             int bottom = mUsingTabs && mHeader.mHeaderCollapsed ? mHeader.getVisibleBottomBound()
                     : mSearchContainer.getBottom();
-            canvas.drawRect(0, 0, getWidth(), bottom + getTranslationY(),
+            canvas.drawRect(0, 0, canvas.getWidth(), bottom + getTranslationY(),
                     mHeaderPaint);
+
+            if (FeatureFlags.ENABLE_DEVICE_SEARCH.get() && getTranslationY() == 0) {
+                mSearchUiManager.getEditText().setBackground(null);
+            }
         }
     }
 
@@ -783,7 +776,6 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
                 int bottomOffset = mWorkModeSwitch != null && mIsWork ? switchH : 0;
                 recyclerView.setPadding(padding.left, padding.top, padding.right,
                         padding.bottom + bottomOffset);
-                recyclerView.scrollToTop();
             }
         }
 
@@ -805,6 +797,9 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
             getSearchView().setBackgroundColor(viewBG);
             getFloatingHeaderView().setHeaderColor(viewBG);
             invalidateHeader();
+            if (scrolledOffset == 0 && mSearchUiManager.getEditText() != null) {
+                mSearchUiManager.getEditText().show();
+            }
         }
     }
 

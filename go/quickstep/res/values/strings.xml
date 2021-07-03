@@ -11,4 +11,13 @@
     <string name="action_translate">Translate</string>
     <!-- Label for a button that triggers Search on a screenshot of the current app. [CHAR_LIMIT=40] -->
     <string name="action_search">Lens</string>
+    <!-- ******* NIU Actions First-Run Confirmation Dialog ******* -->
+    <!-- Dialog title -->
+    <string name="niu_actions_confirmation_title">Translate or listen to text on screen</string>
+    <!-- Dialog content -->
+    <string name="niu_actions_confirmation_text">Information such as text on your screen, web addresses, and screenshots may be shared with Google.\n\nTo change what information you share, go to <b>Settings > Apps > Default apps > Digital assistant app</b>.</string>
+    <!-- Label for a button that rejects the feature. [CHAR_LIMIT=40] -->
+    <string name="niu_actions_confirmation_no">CANCEL</string>
+    <!-- Label for a button that accepts the feature. [CHAR_LIMIT=40] -->
+    <string name="niu_actions_confirmation_yes">GOT IT</string>
 </resources>

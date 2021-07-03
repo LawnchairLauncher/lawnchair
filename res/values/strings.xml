@@ -55,6 +55,9 @@
     <string name="widget_dims_format">%1$d \u00d7 %2$d</string>
     <!-- Accessibility spoken message format for the dimensions of a widget in the drawer -->
     <string name="widget_accessible_dims_format">%1$d wide by %2$d high</string>
+    <!-- Spoken text for a screen reader. The placeholder text is the widget name.
+         [CHAR_LIMIT=none]-->
+    <string name="widget_preview_context_description"><xliff:g id="widget_name" example="Calendar month view">%1$s</xliff:g> widget</string>
     <!-- Message to tell the user to press and hold a widget/icon to add it to the home screen.
          [CHAR LIMIT=NONE]  -->
     <string name="add_item_request_drag_hint">Touch &amp; hold the widget to move it around the Home screen</string>
@@ -85,12 +88,12 @@
     <!-- Spoken text for screen readers. This text lets a user know that the button is used to clear
          the text that the user entered in the search box. [CHAR_LIMIT=none] -->
     <string name="widgets_full_sheet_cancel_button_description">Clear text from search box</string>
-    <!-- Text shown when there is no widgets shown in the popup view showing all available widgets
-         installed on the device. [CHAR_LIMIT=none] -->
-    <string name="no_widgets_available">No widgets available</string>
-    <!-- Text shown when there are no matching widget search results for user's search query.
+    <!-- Text shown when there are no widgets or shortcuts that can be added to the device.
          [CHAR_LIMIT=none] -->
-    <string name="no_search_results">No search results</string>
+    <string name="no_widgets_available">Widgets and shortcuts aren\'t available</string>
+    <!-- Text shown when there are no matching widget or shortcut search results for user's search
+         query. [CHAR_LIMIT=none] -->
+    <string name="no_search_results">No widgets or shortcuts found</string>
     <!-- Tab label. A user can tap this tab to access their personal widgets. [CHAR_LIMIT=25] -->
     <string name="widgets_full_sheet_personal_tab">Personal</string>
     <!-- Tab label. A user can tap this tab to access their work widgets. [CHAR_LIMIT=25] -->
@@ -140,8 +143,8 @@
     <string name="long_accessible_way_to_add_shortcut">Double-tap &amp; hold to move a shortcut or use custom actions.</string>
 
     <skip />
-    <!-- Error message when user has filled a home screen -->
-    <string name="out_of_space">No more room on this Home screen.</string>
+    <!-- Error message when a user can't add more apps, widgets, or shortcuts to a Home screen. -->
+    <string name="out_of_space">No room on this Home screen</string>
     <!-- Error message when user has filled the hotseat -->
     <string name="hotseat_out_of_space">No more room in the Favorites tray</string>
 
@@ -394,7 +397,7 @@
     <string name="work_profile_edu_accept">Got it</string>
 
     <!--- heading shown when user opens work apps tab while work apps are paused -->
-    <string name="work_apps_paused_title">Work apps are off</string>
+    <string name="work_apps_paused_title">Work apps are paused</string>
     <!--- body shown when user opens work apps tab while work apps are paused -->
     <string name="work_apps_paused_body">Your work apps can’t send you notifications, use your battery, or access your location</string>
     <!-- content description for paused work apps list -->
