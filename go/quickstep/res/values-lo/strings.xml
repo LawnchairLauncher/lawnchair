@@ -5,4 +5,8 @@
     <string name="action_listen" msgid="2370304050784689486">"ຟັງ"</string>
     <string name="action_translate" msgid="8028378961867277746">"ແປພາສາ"</string>
     <string name="action_search" msgid="6269564710943755464">"Lens"</string>
+    <string name="niu_actions_confirmation_title" msgid="3863451714863526143">"ແປພາສາ ຫຼື ຟັງຂໍ້ຄວາມຢູ່ໜ້າຈໍ"</string>
+    <string name="niu_actions_confirmation_text" msgid="2105271481950866089">"ຂໍ້ມູນ ເຊັ່ນ: ຂໍ້ຄວາມຢູ່ໜ້າຈໍຂອງທ່ານ, ທີ່ຢູ່ເວັບ ແລະ ຮູບໜ້າຈໍອາດຖືກແບ່ງປັນໃຫ້ກັບ Google.\n\nເພື່ອປ່ຽນແປງຂໍ້ມູນທີ່ທ່ານແບ່ງປັນ, ໃຫ້ເຂົ້າໄປ "<b>"ການຕັ້ງຄ່າ &gt; ແອັບ &gt; ແອັບເລີ່ມຕົ້ນ &gt; ແອັບຜູ້ຊ່ວຍດິຈິຕອນ"</b>"."</string>
+    <string name="niu_actions_confirmation_no" msgid="6641104944008154587">"ຍົກເລີກ"</string>
+    <string name="niu_actions_confirmation_yes" msgid="3817302060585371994">"ເຂົ້າໃຈແລ້ວ"</string>
 </resources>

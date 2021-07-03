@@ -32,8 +32,7 @@
     <string name="long_accessible_way_to_add" msgid="2733588281439571974">"വിജറ്റ് നീക്കാൻ ഡബിൾ ടാപ്പ് ചെയ്യൂ, ഹോൾഡ് ചെയ്യൂ അല്ലെങ്കിൽ ഇഷ്‌ടാനുസൃത പ്രവർത്തനങ്ങൾ ഉപയോഗിക്കൂ."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"%1$d വീതിയും %2$d ഉയരവും"</string>
-    <!-- no translation found for widget_preview_context_description (9045841361655787574) -->
-    <skip />
+    <string name="widget_preview_context_description" msgid="9045841361655787574">"<xliff:g id="WIDGET_NAME">%1$s</xliff:g> വിജറ്റ്"</string>
     <string name="add_item_request_drag_hint" msgid="5653291305078645405">"ഹോം സ്‌ക്രീനിന് ചുറ്റും വിജറ്റ് നീക്കാൻ അതിൽ സ്‌പർശിച്ച് പിടിക്കുക"</string>
     <string name="add_to_home_screen" msgid="8631549138215492708">"ഹോം സ്‌ക്രീനിലേക്ക് ചേർക്കുക"</string>
     <plurals name="widgets_count" formatted="false" msgid="656794749266073027">
@@ -46,7 +45,7 @@
     </plurals>
     <string name="widgets_and_shortcuts_count" msgid="7209136747878365116">"<xliff:g id="WIDGETS_COUNT">%1$s</xliff:g>, <xliff:g id="SHORTCUTS_COUNT">%2$s</xliff:g>"</string>
     <string name="widget_button_text" msgid="2880537293434387943">"വിജറ്റുകൾ"</string>
-    <string name="widgets_full_sheet_search_bar_hint" msgid="8484659090860596457">"തിരയൽ"</string>
+    <string name="widgets_full_sheet_search_bar_hint" msgid="8484659090860596457">"തിരയുക"</string>
     <string name="widgets_full_sheet_cancel_button_description" msgid="5766167035728653605">"സെർച്ച് ബോക്‌സിൽ നിന്ന് ടെക്‌സ്‌റ്റ് മായ്‌ക്കുക"</string>
     <string name="no_widgets_available" msgid="4337693382501046170">"വിജറ്റുകളും കുറുക്കുവഴികളും ലഭ്യമല്ല"</string>
     <string name="no_search_results" msgid="3787956167293097509">"വിജറ്റുകളോ കുറുക്കുവഴികളോ കണ്ടെത്തിയില്ല"</string>

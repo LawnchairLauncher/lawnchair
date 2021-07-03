@@ -32,8 +32,7 @@
     <string name="long_accessible_way_to_add" msgid="2733588281439571974">"Fes doble toc i mantén premut per moure un widget o per utilitzar accions personalitzades."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"%1$d d\'amplada per %2$d d\'alçada"</string>
-    <!-- no translation found for widget_preview_context_description (9045841361655787574) -->
-    <skip />
+    <string name="widget_preview_context_description" msgid="9045841361655787574">"Widget de <xliff:g id="WIDGET_NAME">%1$s</xliff:g>"</string>
     <string name="add_item_request_drag_hint" msgid="5653291305078645405">"Mantén premut el widget per moure\'l per la pantalla d\'inici"</string>
     <string name="add_to_home_screen" msgid="8631549138215492708">"Afegeix a la pantalla d\'inici"</string>
     <plurals name="widgets_count" formatted="false" msgid="656794749266073027">

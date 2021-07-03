@@ -5,4 +5,12 @@
     <string name="action_listen" msgid="2370304050784689486">"শুনুন"</string>
     <string name="action_translate" msgid="8028378961867277746">"অনুবাদ করুন"</string>
     <string name="action_search" msgid="6269564710943755464">"লেন্স"</string>
+    <!-- no translation found for niu_actions_confirmation_title (3863451714863526143) -->
+    <skip />
+    <!-- no translation found for niu_actions_confirmation_text (2105271481950866089) -->
+    <skip />
+    <!-- no translation found for niu_actions_confirmation_no (6641104944008154587) -->
+    <skip />
+    <!-- no translation found for niu_actions_confirmation_yes (3817302060585371994) -->
+    <skip />
 </resources>
