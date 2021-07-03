@@ -5,4 +5,8 @@
     <string name="action_listen" msgid="2370304050784689486">"শুনক"</string>
     <string name="action_translate" msgid="8028378961867277746">"অনুবাদ কৰক"</string>
     <string name="action_search" msgid="6269564710943755464">"লেন্স"</string>
+    <string name="niu_actions_confirmation_title" msgid="3863451714863526143">"স্ক্ৰীনত থকা পাঠ অনুবাদ কৰক অথবা শুনক"</string>
+    <string name="niu_actions_confirmation_text" msgid="2105271481950866089">"আপোনাৰ স্ক্ৰীনত থকা পাঠ, ৱেব ঠিকনা আৰু স্ক্ৰীনশ্বটৰ দৰে তথ্য Googleৰ সৈতে হয়তো শ্বেয়াৰ কৰা হ’ব।\n\nআপুনি কোনসমুহ তথ্য শ্বেয়াৰ কৰিব সেয়া সলনি কৰিবলৈ, "<b>"ছেটিং &gt; এপ্‌ &gt; ডিফ’ল্ট এপ্‌ &gt; ডিজিটেল সহায়ক এপ"</b>"লৈ যাওক।"</string>
+    <string name="niu_actions_confirmation_no" msgid="6641104944008154587">"বাতিল কৰক"</string>
+    <string name="niu_actions_confirmation_yes" msgid="3817302060585371994">"বুজি পালোঁ"</string>
 </resources>

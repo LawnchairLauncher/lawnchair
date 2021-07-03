@@ -5,4 +5,8 @@
     <string name="action_listen" msgid="2370304050784689486">"Luisteren"</string>
     <string name="action_translate" msgid="8028378961867277746">"Vertalen"</string>
     <string name="action_search" msgid="6269564710943755464">"Lens"</string>
+    <string name="niu_actions_confirmation_title" msgid="3863451714863526143">"Tekst op het scherm vertalen of beluisteren"</string>
+    <string name="niu_actions_confirmation_text" msgid="2105271481950866089">"Informatie zoals tekst op je scherm, webadressen en screenshots kan met Google worden gedeeld.\n\nAls je wilt aanpassen welke informatie je deelt, ga je naar "<b>"Instellingen &gt; Apps &gt; Standaard-apps &gt; Digitale-assistent-app"</b>"."</string>
+    <string name="niu_actions_confirmation_no" msgid="6641104944008154587">"ANNULEREN"</string>
+    <string name="niu_actions_confirmation_yes" msgid="3817302060585371994">"OK"</string>
 </resources>
