@@ -15,11 +15,11 @@
   ~ limitations under the License.
   -->
 <resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="icon_pack">প্রতীক গুচ্ছ,</string>
+    <string name="icon_pack">আইকন প্যাক</string>
     <string name="settings">সেটিংস</string>
     <string name="home_screen_label">মূল পর্দা</string>
-    <string name="home_screen_description">ফিড, এক পলকে, গ্রিড, প্রতীক গুচ্ছ</string>
-    <string name="general_label">মূল</string>
+    <string name="home_screen_description">ফিড, এক পলকে, গ্রিড, আইকন-সমুহ</string>
+    <string name="general_label">সাধারণ</string>
     <string name="general_description">বিজ্ঞাপন বিন্দু, প্রতীক গুচ্ছ</string>
     <string name="home_screen_rotation_label">মূল পেজ ঘূর্ণন</string>
     <string name="home_screen_rotaton_description">যখন ডিভাইস ঘোরানো হয়.</string>
@@ -29,7 +29,7 @@
     <string name="app_drawer_label">অ্যাপ ড্রয়ার</string>
     <string name="app_drawer_description">গোপন অ্যাপস, কলাম গণনা, আইকন-সমুহ</string>
     <string name="folders_label">ফোল্ডার-সমুহ</string>
-    <string name="folders_description">সারি এবং কলাম গণনা</string>
+    <string name="folders_description">সারি এবং কলাম সংখ্যা</string>
     <string name="app_drawer_columns">অ্যাপ ড্রয়ারের কলাম</string>
     <string name="dock_icons">ডকের আইকন-সমুহ</string>
     <string name="max_folder_columns">সর্বাধিক. ফোল্ডারের কলাম-সমুহ</string>
@@ -38,12 +38,12 @@
     <string name="grid">গ্রিড</string>
     <string name="home_screen_rows">মূল পর্দার সারি</string>
     <string name="icons">আইকন-সমুহ</string>
-    <string name="icon_size">আইকনের আয়তন</string>
+    <string name="icon_size">আইকনের আকার</string>
     <string name="label_size">লেবেলের আয়তন</string>
     <string name="allow_empty_pages_label">খালি পৃষ্ঠা থাকার অনুমতি দিন</string>
     <string name="notification_dots">নোটিফিকেশন ডট</string>
     <string name="smartspace_preferences">পছন্দ-সমুহ</string>
-    <string name="about_label">সম্পর্কিত</string>
+    <string name="about_label">সম্পর্কে</string>
     <string name="news">খবর</string>
     <string name="support">সমর্থন</string>
     <string name="acknowledgements">স্বীকৃতি</string>
@@ -62,21 +62,21 @@
     <string name="auto_adaptive_icons_label">অটো অ্যাডাপ্টিভ আইকন</string>
     <string name="auto_adaptive_icons_description">সকল নন-অ্যাডাপ্টিভ আইকনের জন্য.</string>
     <string name="support_and_pr">সমর্থন &amp; পি আর</string>
-    <string name="workspace_dt2s">স্লিপের জন্য ডাবল-ট্যাপ করুন</string>
+    <string name="workspace_dt2s">লক করতে ডাবল-ট্যাপ করুন</string>
     <string name="smart_space_enable">এট এ গ্লান্স উইজেট দেখান</string>
     <string name="design_and_development">ডিজাইন &amp; ডেভেলপমেন্ট</string>
-    <string name="translate">অনুবাদ করা</string>
+    <string name="translate">অনুবাদ করুন</string>
     <string name="product">পণ্য</string>
-    <string name="hidden_apps_label">লোকানো অ্যাপস</string>
-    <string name="hidden_apps_label_with_count">লোকানো অ্যাপস (%1$d)</string>
+    <string name="hidden_apps_label">লুকানো অ্যাপস</string>
+    <string name="hidden_apps_label_with_count">লুকানো অ্যাপস (%1$d)</string>
     <plurals name="apps_count">
-        <item quantity="one">%1$d অ্যাপ</item>
-        <item quantity="other">%1$d অ্যাপস</item>
+        <item quantity="one">%1$dটি অ্যাপ</item>
+        <item quantity="other">%1$dটি অ্যাপস</item>
     </plurals>
     <string name="hotseat_qsb_label">সার্চ বার দেখান</string>
     <string name="dt2s_admin_hint_title">এডমিনের অনুমতি আবশ্যক</string>
     <string name="dt2s_admin_hint">স্লিপের জন্য ডাবল-ট্যাপ ব্যাবহার করার জন্য, লনচেয়ার কে ডিভাইস এডমিন হিসেবে সেট করুন। \"Open Settings\"-এ ট্যাপ করে \"Activate this device admin app.”-এ ট্যাপ করুন।</string>
-    <string name="dt2s_admin_warning">স্লিপের জন্য ডাবল-ট্যাপ বন্ধ হয়ে যাবে.</string>
+    <string name="dt2s_admin_warning">ডাবল-ট্যাপে লক হওয়া বন্ধ হয়ে যাবে.</string>
     <string name="dt2s_a11y_hint_title">অ্যাক্সেসিবিলিটি সার্ভিস চালু করুন</string>
     <string name="dt2s_a11y_hint">স্লিপের জন্য ডাবল-ট্যাপ ব্যাবহার করার জন্য, লনচেয়ারের অ্যাক্সেসিবিলিটি সার্ভিস চালু করুন। \"Open Settings\"-এ ট্যাপ করে, \"Lawnchair\" সিলেক্ট করুন, তারপর \"Use Lawnchair”-এ ট্যাপ করুন।</string>
     <string name="dt2s_warning_open_settings">সেটিংস এ যান</string>
@@ -85,14 +85,14 @@
     <string name="fuzzy_search_title">ফাজি সার্চ</string>
     <string name="fuzzy_search_desc">অ্যাপ্লিকেশন সার্চের জন্য আনুমানিক মিল.</string>
     <string name="theme_label">থিম</string>
-    <string name="theme_light">লাইট</string>
-    <string name="theme_dark">ডার্ক</string>
-    <string name="theme_system_default">সিস্টেম কে অনুসরণ করুন</string>
+    <string name="theme_light">হালকা</string>
+    <string name="theme_dark">গাঢ়</string>
+    <string name="theme_system_default">সিস্টেমকে অনুসরণ করুন</string>
     <string name="theme_follow_wallpaper">ওয়ালপেপার ম্যাচ করুন</string>
-    <string name="quickstep_label">রিসেন্টস</string>
+    <string name="quickstep_label">সাম্প্রতিক</string>
     <string name="clear_all_as_action_label">\"Clear all\" বাটন নিচে দেখান</string>
-    <string name="window_corner_radius_label">কোণের রেডিয়াস</string>
-    <string name="override_window_corner_radius_label">কোণের জন্য কাস্টম রেডিয়াস</string>
+    <string name="window_corner_radius_label">কোণের ব্যাসার্ধ</string>
+    <string name="override_window_corner_radius_label">কোণের জন্য পছন্দসই ব্যাসার্ধ</string>
     <string name="override_window_corner_radius_description">যদি ডিফল্ট আপনার স্ক্রিনের সাথে মেলে না</string>
     <string name="system_icons">সিস্টেম আইকনস</string>
     <string name="accent_color">Accent Color</string>
@@ -100,5 +100,5 @@
     <string name="loading">লোড হচ্ছে…</string>
     <string name="system">সিস্টেম</string>
     <string name="custom">পছন্দসই</string>
-    <string name="custom_color">Custom Color</string>
+    <string name="custom_color">পছন্দসই রং</string>
 </resources>
