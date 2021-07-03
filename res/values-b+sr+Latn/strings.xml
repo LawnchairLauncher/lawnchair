@@ -32,8 +32,7 @@
     <string name="long_accessible_way_to_add" msgid="2733588281439571974">"Dvaput dodirnite i zadržite da biste pomerali vidžet ili koristite prilagođene radnje."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d×%2$d"</string>
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"širina od %1$d i visina od %2$d"</string>
-    <!-- no translation found for widget_preview_context_description (9045841361655787574) -->
-    <skip />
+    <string name="widget_preview_context_description" msgid="9045841361655787574">"<xliff:g id="WIDGET_NAME">%1$s</xliff:g> vidžet"</string>
     <string name="add_item_request_drag_hint" msgid="5653291305078645405">"Dodirnite i zadržite vidžet da biste ga pomerali po početnom ekranu"</string>
     <string name="add_to_home_screen" msgid="8631549138215492708">"Dodaj na početni ekran"</string>
     <plurals name="widgets_count" formatted="false" msgid="656794749266073027">

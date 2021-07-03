@@ -32,8 +32,7 @@
     <string name="long_accessible_way_to_add" msgid="2733588281439571974">"ਵਿਜੇਟ ਲਿਜਾਉਣ ਲਈ ਜਾਂ ਵਿਉਂਂਤੀਆਂ ਕਾਰਵਾਈਆਂ ਵਰਤਣ ਲਈ ਦੋ ਵਾਰ ਟੈਪ ਕਰਕੇ ਦਬਾ ਕੇ ਰੱਖੋ।"</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"%1$d ਚੌੜਾਈ ਅਤੇ %2$d ਲੰਬਾਈ"</string>
-    <!-- no translation found for widget_preview_context_description (9045841361655787574) -->
-    <skip />
+    <string name="widget_preview_context_description" msgid="9045841361655787574">"<xliff:g id="WIDGET_NAME">%1$s</xliff:g> ਵਿਜੇਟ"</string>
     <string name="add_item_request_drag_hint" msgid="5653291305078645405">"ਵਿਜੇਟ ਨੂੰ ਹੋਮ ਸਕ੍ਰੀਨ \'ਤੇ ਇੱਧਰ-ਉੱਧਰ ਲਿਜਾਉਣ ਲਈ ਸਪਰਸ਼ ਕਰਕੇ ਦਬਾਈ ਰੱਖੋ"</string>
     <string name="add_to_home_screen" msgid="8631549138215492708">"ਹੋਮ ਸਕ੍ਰੀਨ \'ਤੇ ਸ਼ਾਮਲ ਕਰੋ"</string>
     <plurals name="widgets_count" formatted="false" msgid="656794749266073027">
@@ -66,8 +65,7 @@
     <string name="notifications_header" msgid="1404149926117359025">"ਸੂਚਨਾਵਾਂ"</string>
     <string name="long_press_shortcut_to_add" msgid="5405328730817637737">"ਕਿਸੇ ਸ਼ਾਰਟਕੱਟ ਨੂੰ ਲਿਜਾਉਣ ਲਈ ਸਪੱਰਸ਼ ਕਰਕੇ ਦਬਾਈ ਰੱਖੋ।"</string>
     <string name="long_accessible_way_to_add_shortcut" msgid="2199537273817090740">"ਕਿਸੇ ਸ਼ਾਰਟਕੱਟ ਨੂੰ ਲਿਜਾਉਣ ਲਈ ਡਬਲ ਟੈਪ ਕਰਕੇ ਦਬਾਈ ਰੱਖੋ ਜਾਂ ਵਿਉਂਤੀਆਂ ਕਾਰਵਾਈਆਂ ਵਰਤੋ।"</string>
-    <!-- no translation found for out_of_space (6692471482459245734) -->
-    <skip />
+    <string name="out_of_space" msgid="6692471482459245734">"ਇਸ ਹੋਮ ਸਕ੍ਰੀਨ \'ਤੇ ਜਗ੍ਹਾ ਨਹੀਂ ਬਚੀ"</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"ਮਨਪਸੰਦ ਟ੍ਰੇ ਵਿੱਚ ਹੋਰ ਖਾਲੀ ਸਥਾਨ ਨਹੀਂ।"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"ਐਪ ਸੂਚੀ"</string>
     <string name="all_apps_button_personal_label" msgid="1315764287305224468">"ਨਿੱਜੀ ਐਪਾਂ ਦੀ ਸੂਚੀ"</string>
