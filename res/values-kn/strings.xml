@@ -32,8 +32,7 @@
     <string name="long_accessible_way_to_add" msgid="2733588281439571974">"ವಿಜೆಟ್ ಸರಿಸಲು ಅಥವಾ ಕಸ್ಟಮ್ ಕ್ರಿಯೆಗಳನ್ನು ಬಳಸಲು ಡಬಲ್-ಟ್ಯಾಪ್ ಮಾಡಿ ಮತ್ತು ಹಿಡಿದುಕೊಳ್ಳಿ."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"%1$d ಅಗಲ ಮತ್ತು %2$d ಎತ್ತರ"</string>
-    <!-- no translation found for widget_preview_context_description (9045841361655787574) -->
-    <skip />
+    <string name="widget_preview_context_description" msgid="9045841361655787574">"<xliff:g id="WIDGET_NAME">%1$s</xliff:g> ವಿಜೆಟ್"</string>
     <string name="add_item_request_drag_hint" msgid="5653291305078645405">"ಮುಖಪುಟದ ಪರದೆ ಸುತ್ತ ವಿಜೆಟ್ ಅನ್ನು ಸರಿಸಲು, ಸ್ಪರ್ಶಿಸಿ ಮತ್ತು ಒತ್ತಿ ಹಿಡಿದುಕೊಳ್ಳಿ"</string>
     <string name="add_to_home_screen" msgid="8631549138215492708">"ಮುಖಪುಟಕ್ಕೆ ಸೇರಿಸಿ"</string>
     <plurals name="widgets_count" formatted="false" msgid="656794749266073027">
@@ -160,7 +159,7 @@
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"ಕೆಲಸದ ಪ್ರೊಫೈಲ್"</string>
     <string name="work_profile_edu_work_apps" msgid="7895468576497746520">"ಕೆಲಸಕ್ಕೆ ಸಂಬಂಧಿಸಿದ ಆ್ಯಪ್‌ಗಳನ್ನು ಬ್ಯಾಡ್ಜ್ ಮಾಡಲಾಗಿದೆ ಮತ್ತು ಅವುಗಳು ನಿಮ್ಮ IT ನಿರ್ವಾಹಕರಿಗೆ ಗೋಚರಿಸುತ್ತವೆ"</string>
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"ಸರಿ"</string>
-    <string name="work_apps_paused_title" msgid="3040901117349444598">"ಉದ್ಯೋಗದ ಆ್ಯಪ್‌ಗಳನ್ನು ವಿರಾಮಗೊಲಿಸಲಾಗಿದೆ"</string>
+    <string name="work_apps_paused_title" msgid="3040901117349444598">"ಕೆಲಸಕ್ಕೆ ಸಂಬಂಧಿಸಿದ ಆ್ಯಪ್‌ಗಳನ್ನು ವಿರಾಮಗೊಳಿಸಲಾಗಿದೆ"</string>
     <string name="work_apps_paused_body" msgid="261634750995824906">"ನಿಮ್ಮ ಕೆಲಸಕ್ಕೆ ಸಂಬಂಧಿಸಿದ ಆ್ಯಪ್‌ಗಳಿಗೆ ನಿಮಗೆ ಅಧಿಸೂಚನೆಗಳನ್ನು ಕಳುಹಿಸಲು, ನಿಮ್ಮ ಬ್ಯಾಟರಿಯನ್ನು ಬಳಸಲು ಅಥವಾ ನಿಮ್ಮ ಸ್ಥಳವನ್ನು ಪ್ರವೇಶಿಸಲು ಸಾಧ್ಯವಿಲ್ಲ"</string>
     <string name="work_apps_paused_content_description" msgid="5149623040804051095">"ಕೆಲಸಕ್ಕೆ ಸಂಬಂಧಿಸಿದ ಆ್ಯಪ್‌ಗಳು ಆಫ್ ಆಗಿವೆ. ನಿಮ್ಮ ಕೆಲಸಕ್ಕೆ ಸಂಬಂಧಿಸಿದ ಆ್ಯಪ್‌ಗಳು ನಿಮಗೆ ಅಧಿಸೂಚನೆಗಳನ್ನು ಕಳುಹಿಸಲು, ನಿಮ್ಮ ಬ್ಯಾಟರಿಯನ್ನು ಬಳಸಲು ಅಥವಾ ನಿಮ್ಮ ಸ್ಥಳವನ್ನು ಪ್ರವೇಶಿಸಲು ಸಾಧ್ಯವಿಲ್ಲ"</string>
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"ಕೆಲಸಕ್ಕೆ ಸಂಬಂಧಿಸಿದ ಆ್ಯಪ್‌ಗಳು ಬ್ಯಾಡ್ಜ್ ಮಾಡಲಾಗಿದೆ ಮತ್ತು ನಿಮ್ಮ IT ನಿರ್ವಾಹಕರಿಗೆ ಗೋಚರಿಸುತ್ತದೆ"</string>
