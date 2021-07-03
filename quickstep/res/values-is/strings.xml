@@ -57,7 +57,7 @@
     <string name="back_left_gesture_intro_title" msgid="5197184481779330065">"Strjúktu frá vinstri til að fara til baka"</string>
     <string name="back_right_gesture_intro_title" msgid="7431951986971898074">"Strjúktu frá hægri til að fara til baka"</string>
     <string name="back_left_gesture_intro_subtitle" msgid="7672761376577628602">"Strjúktu frá vinstri brún að miðju skjásins til að fara aftur á síðasta skjá sem var opinn."</string>
-    <string name="back_right_gesture_intro_subtitle" msgid="2735828029197816509">"Þú getur líka farið á síðasta skjá með því að strjúka frá hægri brún að miðju skjásins. Prófa núna."</string>
+    <string name="back_right_gesture_intro_subtitle" msgid="2735828029197816509">"Þú getur líka farið á síðasta skjá með því að strjúka frá hægri brún að miðju skjásins. Prófaðu núna."</string>
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"Passaðu að strjúka upp frá neðri brún skjásins."</string>
     <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"Passaðu að stoppa ekki áður en þú sleppir."</string>
     <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"Passaðu að strjúka beint upp."</string>

@@ -870,10 +870,12 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     }
 
     public void launchSideTaskInLiveTileModeForRestartedApp(int taskId) {
-        if (mRunningTaskId != -1 && mRunningTaskId == taskId &&
-                getLiveTileParams().getTargetSet().findTask(taskId) != null) {
+        if (mRunningTaskId != -1 && mRunningTaskId == taskId) {
             RemoteAnimationTargets targets = getLiveTileParams().getTargetSet();
-            launchSideTaskInLiveTileMode(taskId, targets.apps, targets.wallpapers, targets.nonApps);
+            if (targets != null && targets.findTask(taskId) != null) {
+                launchSideTaskInLiveTileMode(taskId, targets.apps, targets.wallpapers,
+                        targets.nonApps);
+            }
         }
     }
 
@@ -1298,8 +1300,14 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     }
 
     private void updateOrientationHandler() {
+        updateOrientationHandler(true);
+    }
+
+    private void updateOrientationHandler(boolean forceRecreateDragLayerControllers) {
         // Handle orientation changes.
+        PagedOrientationHandler oldOrientationHandler = mOrientationHandler;
         mOrientationHandler = mOrientationState.getOrientationHandler();
+
         mIsRtl = mOrientationHandler.getRecentsRtlSetting(getResources());
         setLayoutDirection(mIsRtl
                 ? View.LAYOUT_DIRECTION_RTL
@@ -1308,7 +1316,13 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                 ? View.LAYOUT_DIRECTION_LTR
                 : View.LAYOUT_DIRECTION_RTL);
         mClearAllButton.setRotation(mOrientationHandler.getDegreesRotated());
-        mActivity.getDragLayer().recreateControllers();
+
+        if (forceRecreateDragLayerControllers
+                || !mOrientationHandler.equals(oldOrientationHandler)) {
+            // Changed orientations, update controllers so they intercept accordingly.
+            mActivity.getDragLayer().recreateControllers();
+        }
+
         boolean isInLandscape = mOrientationState.getTouchRotation() != ROTATION_0
                 || mOrientationState.getRecentsActivityRotation() != ROTATION_0;
         mActionsView.updateHiddenFlags(HIDDEN_NON_ZERO_ROTATION,
@@ -1636,7 +1650,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             setCurrentPage(0);
             LayoutUtils.setViewEnabled(mActionsView, true);
             if (mOrientationState.setGestureActive(false)) {
-                updateOrientationHandler();
+                updateOrientationHandler(/* forceRecreateDragLayerControllers = */ false);
             }
         });
     }

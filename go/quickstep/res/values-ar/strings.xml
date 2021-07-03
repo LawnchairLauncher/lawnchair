@@ -5,4 +5,8 @@
     <string name="action_listen" msgid="2370304050784689486">"استماع"</string>
     <string name="action_translate" msgid="8028378961867277746">"‏ترجمة Google"</string>
     <string name="action_search" msgid="6269564710943755464">"‏عدسة Google"</string>
+    <string name="niu_actions_confirmation_title" msgid="3863451714863526143">"ترجمة النص الظاهر على الشاشة أو الاستماع إليه"</string>
+    <string name="niu_actions_confirmation_text" msgid="2105271481950866089">"‏قد تتم مشاركة معلومات مثل النص الظاهر على الشاشة وعناوين الويب ولقطات الشاشة مع Google.\n\nلتغيير المعلومات التي تتم مشاركتها، انتقِل إلى "<b>"الإعدادات &gt; التطبيقات &gt; التطبيقات التلقائية &gt; تطبيق المساعد الرقمي"</b>"."</string>
+    <string name="niu_actions_confirmation_no" msgid="6641104944008154587">"إلغاء"</string>
+    <string name="niu_actions_confirmation_yes" msgid="3817302060585371994">"حسنًا"</string>
 </resources>

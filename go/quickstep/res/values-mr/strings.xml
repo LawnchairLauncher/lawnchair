@@ -5,4 +5,8 @@
     <string name="action_listen" msgid="2370304050784689486">"ऐका"</string>
     <string name="action_translate" msgid="8028378961867277746">"भाषांतर करा"</string>
     <string name="action_search" msgid="6269564710943755464">"Lens"</string>
+    <string name="niu_actions_confirmation_title" msgid="3863451714863526143">"स्क्रीनवरील मजकूर भाषांतरित करा किंवा ऐका"</string>
+    <string name="niu_actions_confirmation_text" msgid="2105271481950866089">"तुमच्या स्क्रीनवरील मजकूर, वेब अ‍ॅड्रेस आणि स्क्रीनशॉट यांसारखी माहिती Google सह शेअर केली जाऊ शकते.\n\nतुम्ही कोणती माहिती शेअर करता हे बदलण्यासाठी "<b>"सेटिंग्ज &gt; ॲप्स &gt; डीफॉल्ट ॲप्स &gt; डिजिटल असिस्टंट ॲपवर जा"</b>"."</string>
+    <string name="niu_actions_confirmation_no" msgid="6641104944008154587">"रद्द करा"</string>
+    <string name="niu_actions_confirmation_yes" msgid="3817302060585371994">"समजले"</string>
 </resources>

@@ -55,7 +55,7 @@
     <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="1148198467090405643">"تأكّد من عدم التمرير بالقرب من أسفل الشاشة."</string>
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"لتغيير مستوى حساسية إيماءة الرجوع، انتقِل إلى \"الإعدادات\""</string>
     <string name="back_left_gesture_intro_title" msgid="5197184481779330065">"مرِّر سريعًا من اليمين للرجوع."</string>
-    <string name="back_right_gesture_intro_title" msgid="7431951986971898074">"مرِّر سريعًا من اليسار للرجوع."</string>
+    <string name="back_right_gesture_intro_title" msgid="7431951986971898074">"التمرير سريعًا من اليسار للرجوع"</string>
     <string name="back_left_gesture_intro_subtitle" msgid="7672761376577628602">"للرجوع إلى الشاشة السابقة، مرِّر سريعًا من الحافة اليمنى إلى وسط الشاشة"</string>
     <string name="back_right_gesture_intro_subtitle" msgid="2735828029197816509">"يمكنك أيضًا الرجوع للشاشة السابقة بالتمرير سريعًا من الحافة اليسرى إلى وسط الشاشة. جرِّب ذلك الآن."</string>
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"تأكّد من التمرير سريعًا من الحافة السفلى للشاشة إلى أعلاها."</string>

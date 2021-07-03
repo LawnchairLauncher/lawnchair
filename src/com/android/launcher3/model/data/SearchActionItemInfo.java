@@ -25,7 +25,6 @@ import android.os.UserHandle;
 
 import androidx.annotation.Nullable;
 
-import com.android.launcher3.Utilities;
 import com.android.launcher3.logger.LauncherAtom.ItemInfo;
 import com.android.launcher3.logger.LauncherAtom.SearchActionItem;
 
@@ -35,7 +34,6 @@ import com.android.launcher3.logger.LauncherAtom.SearchActionItem;
 public class SearchActionItemInfo extends ItemInfoWithIcon {
 
     public static final int FLAG_SHOULD_START = 1 << 1;
-    @Deprecated
     public static final int FLAG_SHOULD_START_FOR_RESULT = FLAG_SHOULD_START | 1 << 2;
     public static final int FLAG_BADGE_WITH_PACKAGE = 1 << 3;
     public static final int FLAG_PRIMARY_ICON_FROM_TITLE = 1 << 4;
@@ -91,12 +89,9 @@ public class SearchActionItemInfo extends ItemInfoWithIcon {
      * Setter for mIntent with assertion for null value mPendingIntent
      */
     public void setIntent(Intent intent) {
-        if (mPendingIntent != null && intent != null && Utilities.IS_DEBUG_DEVICE) {
+        if (mPendingIntent != null && intent != null) {
             throw new RuntimeException(
                     "SearchActionItemInfo can only have either an Intent or a PendingIntent");
-        }
-        if (intent != null) {
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         }
         mIntent = intent;
     }
@@ -109,7 +104,7 @@ public class SearchActionItemInfo extends ItemInfoWithIcon {
      * Setter of mPendingIntent with assertion for null value mIntent
      */
     public void setPendingIntent(PendingIntent pendingIntent) {
-        if (mIntent != null && pendingIntent != null && Utilities.IS_DEBUG_DEVICE) {
+        if (mIntent != null && pendingIntent != null) {
             throw new RuntimeException(
                     "SearchActionItemInfo can only have either an Intent or a PendingIntent");
         }
