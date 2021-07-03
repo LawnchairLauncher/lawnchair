@@ -45,7 +45,7 @@
       <item quantity="other"><xliff:g id="SHORTCUTS_COUNT_1">%1$d</xliff:g> શૉર્ટકટ</item>
     </plurals>
     <string name="widgets_and_shortcuts_count" msgid="7209136747878365116">"<xliff:g id="WIDGETS_COUNT">%1$s</xliff:g>, <xliff:g id="SHORTCUTS_COUNT">%2$s</xliff:g>"</string>
-    <string name="widget_button_text" msgid="2880537293434387943">"વિજેટ્સ"</string>
+    <string name="widget_button_text" msgid="2880537293434387943">"વિજેટ"</string>
     <string name="widgets_full_sheet_search_bar_hint" msgid="8484659090860596457">"શોધ"</string>
     <string name="widgets_full_sheet_cancel_button_description" msgid="5766167035728653605">"શોધ બૉક્સમાંથી ટેક્સ્ટ સાફ કરો"</string>
     <string name="no_widgets_available" msgid="4337693382501046170">"વિજેટ અને શૉર્ટકટ ઉપલબ્ધ નથી"</string>

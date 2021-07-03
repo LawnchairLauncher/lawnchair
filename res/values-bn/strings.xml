@@ -32,8 +32,7 @@
     <string name="long_accessible_way_to_add" msgid="2733588281439571974">"একটি উইজেট সরাতে বা কাস্টম অ্যাকশন ব্যবহার করতে ডবল ট্যাপ করে ধরে রাখুন।"</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"%2$d উচ্চতা অনুযায়ী %1$d প্রস্থ"</string>
-    <!-- no translation found for widget_preview_context_description (9045841361655787574) -->
-    <skip />
+    <string name="widget_preview_context_description" msgid="9045841361655787574">"<xliff:g id="WIDGET_NAME">%1$s</xliff:g>টি উইজেট"</string>
     <string name="add_item_request_drag_hint" msgid="5653291305078645405">"হোম স্ক্রিনের যেকোনও জায়গায় উইজেটটি নিয়ে যেতে, টাচ করে ধরে থাকুন"</string>
     <string name="add_to_home_screen" msgid="8631549138215492708">"হোম স্ক্রিনে যোগ করুন"</string>
     <plurals name="widgets_count" formatted="false" msgid="656794749266073027">
@@ -66,8 +65,7 @@
     <string name="notifications_header" msgid="1404149926117359025">"বিজ্ঞপ্তি"</string>
     <string name="long_press_shortcut_to_add" msgid="5405328730817637737">"একটি শর্টকাট সরাতে টাচ করে ধরে রাখুন।"</string>
     <string name="long_accessible_way_to_add_shortcut" msgid="2199537273817090740">"একটি শর্টকাট সরাতে বা কাস্টম অ্যাকশন ব্যবহার করতে ডবল ট্যাপ করে ধরে রাখুন।"</string>
-    <!-- no translation found for out_of_space (6692471482459245734) -->
-    <skip />
+    <string name="out_of_space" msgid="6692471482459245734">"এই হোম স্ক্রিনে আর জায়গা খালি নেই"</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"পছন্দসই ট্রে-তে আর কোনো জায়গা নেই"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"অ্যাপ্লিকেশানগুলির তালিকা"</string>
     <string name="all_apps_button_personal_label" msgid="1315764287305224468">"ব্যক্তিগত অ্যাপের তালিকা"</string>
@@ -161,13 +159,13 @@
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"অফিসের প্রোফাইল"</string>
     <string name="work_profile_edu_work_apps" msgid="7895468576497746520">"অফিসের অ্যাপে ব্যাজ যোগ করা হয়েছে এবং আপনার আইটি অ্যাডমিন সেটি দেখতে পাবেন"</string>
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"বুঝেছি"</string>
-    <string name="work_apps_paused_title" msgid="3040901117349444598">"অফিসের অ্যাপ বন্ধ করা আছে"</string>
+    <string name="work_apps_paused_title" msgid="3040901117349444598">"অফিস অ্যাপ বন্ধ করা আছে"</string>
     <string name="work_apps_paused_body" msgid="261634750995824906">"অফিসের অ্যাপ আপনাকে নোটিফিকেশন পাঠাতে পারবে না। এছাড়া, ব্যাটারি ব্যবহার করতে বা লোকেশন অ্যাক্সেস করতে পারবে না"</string>
     <string name="work_apps_paused_content_description" msgid="5149623040804051095">"অফিসের অ্যাপ বন্ধ আছে। আপনার অফিসের অ্যাপ আপনাকে বিজ্ঞপ্তি পাঠাতে, ব্যাটারি ব্যবহার করতে বা লোকেশন অ্যাক্সেস করতে পারবে না"</string>
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"অফিসের অ্যাপে ব্যাজ যোগ করা হয়েছে এবং আপনার আইটি অ্যাডমিন সেটি দেখতে পাবেন"</string>
     <string name="work_apps_paused_edu_accept" msgid="6377476824357318532">"বুঝেছি"</string>
     <string name="work_apps_pause_btn_text" msgid="1921059713673767460">"অফিসের অ্যাপ বন্ধ করুন"</string>
-    <string name="work_apps_enable_btn_text" msgid="1156432622148413741">"অফিসের অ্যাপ চালু করুন"</string>
+    <string name="work_apps_enable_btn_text" msgid="1156432622148413741">"অফিস অ্যাপ চালু করুন"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"ফিল্টার"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"কাজটি করা যায়নি: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
 </resources>
