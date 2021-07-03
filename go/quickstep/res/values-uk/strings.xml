@@ -5,4 +5,8 @@
     <string name="action_listen" msgid="2370304050784689486">"Слухати"</string>
     <string name="action_translate" msgid="8028378961867277746">"Перекласти"</string>
     <string name="action_search" msgid="6269564710943755464">"Об’єктив"</string>
+    <string name="niu_actions_confirmation_title" msgid="3863451714863526143">"Перекласти або прослухати текст на екрані"</string>
+    <string name="niu_actions_confirmation_text" msgid="2105271481950866089">"Ви можете надсилати на сервери Google інформацію, наприклад текст на екрані, веб-адреси або знімки екрана.\n\nЩоб змінити типи даних, які надсилаються, відкрийте "<b>"Налаштування &gt; Додатки &gt; Додатки за умовчанням &gt; Цифровий помічник"</b>"."</string>
+    <string name="niu_actions_confirmation_no" msgid="6641104944008154587">"СКАСУВАТИ"</string>
+    <string name="niu_actions_confirmation_yes" msgid="3817302060585371994">"OK"</string>
 </resources>

@@ -5,4 +5,8 @@
     <string name="action_listen" msgid="2370304050784689486">"සවන් දෙන්න"</string>
     <string name="action_translate" msgid="8028378961867277746">"පරිවර්තනය කරන්න"</string>
     <string name="action_search" msgid="6269564710943755464">"Lens"</string>
+    <string name="niu_actions_confirmation_title" msgid="3863451714863526143">"තිරය මත පෙළ පරිවර්තනය කරන්න හෝ එයට සවන් දෙන්න"</string>
+    <string name="niu_actions_confirmation_text" msgid="2105271481950866089">"ඔබගේ තිරයේ ඇති පෙළ, වෙබ් ලිපින සහ තිර රූ වැනි තොරතුරු Google සමඟ බෙදා ගත හැකිය.\n\nඔබ බෙදා ගන්නා තොරතුරු වෙනස් කිරීමට, "<b>"සැකසීම් &gt; යෙදුම් &gt; පෙරනිමි යෙදුම් &gt; ඩිජිටල් සහායක යෙදුම"</b>" වෙත යන්න."</string>
+    <string name="niu_actions_confirmation_no" msgid="6641104944008154587">"අවලංගු කරන්න"</string>
+    <string name="niu_actions_confirmation_yes" msgid="3817302060585371994">"තේරුණා"</string>
 </resources>

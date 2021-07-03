@@ -5,4 +5,8 @@
     <string name="action_listen" msgid="2370304050784689486">"ฟัง"</string>
     <string name="action_translate" msgid="8028378961867277746">"แปลภาษา"</string>
     <string name="action_search" msgid="6269564710943755464">"Lens"</string>
+    <string name="niu_actions_confirmation_title" msgid="3863451714863526143">"แปลหรือฟังข้อความบนหน้าจอ"</string>
+    <string name="niu_actions_confirmation_text" msgid="2105271481950866089">"อาจมีการแชร์ข้อมูลอย่างเช่น ข้อความบนหน้าจอ ที่อยู่เว็บ และภาพหน้าจอกับ Google\n\nหากต้องการเปลี่ยนประเภทข้อมูลที่คุณแชร์ ให้ไปที่"<b>"การตั้งค่า &gt; แอป &gt; แอปเริ่มต้น &gt; แอปผู้ช่วยดิจิทัล"</b></string>
+    <string name="niu_actions_confirmation_no" msgid="6641104944008154587">"ยกเลิก"</string>
+    <string name="niu_actions_confirmation_yes" msgid="3817302060585371994">"รับทราบ"</string>
 </resources>
