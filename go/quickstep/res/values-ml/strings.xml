@@ -5,4 +5,8 @@
     <string name="action_listen" msgid="2370304050784689486">"കേൾക്കുക"</string>
     <string name="action_translate" msgid="8028378961867277746">"വിവർത്തനം ചെയ്യുക"</string>
     <string name="action_search" msgid="6269564710943755464">"ലെൻസ്"</string>
+    <string name="niu_actions_confirmation_title" msgid="3863451714863526143">"സ്ക്രീനിലെ ടെക്സ്റ്റ് വിവർത്തനം ചെയ്യുകയോ കേൾക്കുകയോ ചെയ്യുക"</string>
+    <string name="niu_actions_confirmation_text" msgid="2105271481950866089">"നിങ്ങളുടെ സ്ക്രീനിലെ ടെക്സ്റ്റ്, വെബ് വിലാസങ്ങൾ, സ്ക്രീൻഷോട്ടുകൾ എന്നിവ പോലുള്ള വിവരങ്ങൾ Google-മായി പങ്കിട്ടേക്കാം.\n\nനിങ്ങൾ പങ്കിടുന്ന വിവരങ്ങൾ മാറ്റാൻ, "<b>"ക്രമീകരണ &gt; ആപ്പുകൾ &gt; ഡിഫോൾട്ട് ആപ്പുകൾ &gt; ഡിജിറ്റൽ അസിസ്‌റ്റന്റ് ആപ്പ്"</b>" എന്നതിലേക്ക് പോകുക."</string>
+    <string name="niu_actions_confirmation_no" msgid="6641104944008154587">"റദ്ദാക്കുക"</string>
+    <string name="niu_actions_confirmation_yes" msgid="3817302060585371994">"മനസ്സിലായി"</string>
 </resources>

@@ -5,4 +5,8 @@
     <string name="action_listen" msgid="2370304050784689486">"सुनें"</string>
     <string name="action_translate" msgid="8028378961867277746">"अनुवाद करें"</string>
     <string name="action_search" msgid="6269564710943755464">"Google Lens"</string>
+    <string name="niu_actions_confirmation_title" msgid="3863451714863526143">"स्क्रीन पर मौजूद टेक्स्ट का अनुवाद पाएं या उसे सुनें"</string>
+    <string name="niu_actions_confirmation_text" msgid="2105271481950866089">"आपकी स्क्रीन पर मौजूद टेक्स्ट, वेब पते, और स्क्रीनशॉट जैसी जानकारी को Google के साथ शेयर की जा सकती है.\n\nआप Google के साथ किस जानकारी को शेयर करते हैं, इसे कंट्रोल करने के लिए "<b>"सेटिंग &gt; ऐप्लिकेशन &gt; डिफ़ॉल्ट ऐप्लिकेशन &gt; डिजिटल असिस्टेंट ऐप्लिकेशन"</b>" पर जाएं."</string>
+    <string name="niu_actions_confirmation_no" msgid="6641104944008154587">"रद्द करें"</string>
+    <string name="niu_actions_confirmation_yes" msgid="3817302060585371994">"ठीक है"</string>
 </resources>

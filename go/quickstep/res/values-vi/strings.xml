@@ -5,4 +5,8 @@
     <string name="action_listen" msgid="2370304050784689486">"Nghe"</string>
     <string name="action_translate" msgid="8028378961867277746">"Dịch"</string>
     <string name="action_search" msgid="6269564710943755464">"Ống kính"</string>
+    <string name="niu_actions_confirmation_title" msgid="3863451714863526143">"Dịch hoặc nghe văn bản trên màn hình"</string>
+    <string name="niu_actions_confirmation_text" msgid="2105271481950866089">"Những thông tin như văn bản trên màn hình, địa chỉ web và ảnh chụp màn hình có thể được chia sẻ với Google.\n\nĐể thay đổi những thông tin mà bạn chia sẻ, hãy chuyển đến phần "<b>"Cài đặt &gt; Ứng dụng &gt; Ứng dụng mặc định &gt; Ứng dụng trợ lý kỹ thuật số"</b>"."</string>
+    <string name="niu_actions_confirmation_no" msgid="6641104944008154587">"HỦY"</string>
+    <string name="niu_actions_confirmation_yes" msgid="3817302060585371994">"OK"</string>
 </resources>

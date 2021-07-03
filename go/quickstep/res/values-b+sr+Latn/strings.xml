@@ -5,4 +5,8 @@
     <string name="action_listen" msgid="2370304050784689486">"Pusti"</string>
     <string name="action_translate" msgid="8028378961867277746">"Prevedi"</string>
     <string name="action_search" msgid="6269564710943755464">"Objektiv"</string>
+    <string name="niu_actions_confirmation_title" msgid="3863451714863526143">"Prevodite ili slušajte tekst na ekranu"</string>
+    <string name="niu_actions_confirmation_text" msgid="2105271481950866089">"Informacije poput teksta na ekranu, veb-adresa i snimaka ekrana mogu da se dele sa Google-om.\n\nDa biste promenili informacije koje delite, idite u "<b>"Podešavanja &gt; Aplikacije &gt; Podrazumevane aplikacije &gt; Aplikacija digitalnog pomoćnika"</b>"."</string>
+    <string name="niu_actions_confirmation_no" msgid="6641104944008154587">"OTKAŽI"</string>
+    <string name="niu_actions_confirmation_yes" msgid="3817302060585371994">"VAŽI"</string>
 </resources>
