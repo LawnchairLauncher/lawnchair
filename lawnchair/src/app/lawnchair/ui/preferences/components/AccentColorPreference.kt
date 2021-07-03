@@ -12,13 +12,13 @@ import app.lawnchair.ui.theme.LAWNCHAIR_BLUE
 import com.android.launcher3.R
 
 val presetColors = listOf(
-    0xFFF32A2A,
-    0xFFF00F5C,
-    0xFF6838C7,
-    0xFF3D4FC2,
+    0xFFF32020,
+    0xFFF20D69,
+    0xFF7452FF,
+    0xFF2C41C9,
     LAWNCHAIR_BLUE,
     0xFF00BAD6,
-    0xFF00998F,
+    0xFF00A399,
     0xFF47B84F,
     0xFFFFBB00,
     0xFFFF9800,
