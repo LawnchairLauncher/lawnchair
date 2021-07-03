@@ -376,11 +376,14 @@ public class GestureState implements RecentsAnimationCallbacks.RecentsAnimationL
     }
 
     /**
-     * Returns the canceled animation thumbnail data. This call only returns a value while
-     * STATE_RECENTS_ANIMATION_CANCELED state is being set.
+     * Returns and clears the canceled animation thumbnail data. This call only returns a value
+     * while STATE_RECENTS_ANIMATION_CANCELED state is being set, and the caller is responsible for
+     * calling {@link RecentsAnimationController#cleanupScreenshot()}.
      */
-    ThumbnailData getRecentsAnimationCanceledSnapshot() {
-        return mRecentsAnimationCanceledSnapshot;
+    ThumbnailData consumeRecentsAnimationCanceledSnapshot() {
+        ThumbnailData data = mRecentsAnimationCanceledSnapshot;
+        mRecentsAnimationCanceledSnapshot = null;
+        return data;
     }
 
     void setSwipeUpStartTimeMs(long uptimeMs) {

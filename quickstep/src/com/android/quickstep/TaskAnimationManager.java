@@ -15,11 +15,11 @@
  */
 package com.android.quickstep;
 
+import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 import static com.android.quickstep.GestureState.STATE_RECENTS_ANIMATION_INITIALIZED;
 import static com.android.quickstep.GestureState.STATE_RECENTS_ANIMATION_STARTED;
-import static com.android.quickstep.util.NavigationModeFeatureFlag.LIVE_TILE;
 
 import android.app.ActivityManager;
 import android.content.Context;
@@ -65,7 +65,7 @@ public class TaskAnimationManager implements RecentsAnimationCallbacks.RecentsAn
                 return;
             }
             BaseActivityInterface activityInterface = mLastGestureState.getActivityInterface();
-            if (LIVE_TILE.get() && activityInterface.isInLiveTileMode()
+            if (ENABLE_QUICKSTEP_LIVE_TILE.get() && activityInterface.isInLiveTileMode()
                     && activityInterface.getCreatedActivity() != null) {
                 RecentsView recentsView = activityInterface.getCreatedActivity().getOverviewPanel();
                 if (recentsView != null) {
@@ -139,7 +139,7 @@ public class TaskAnimationManager implements RecentsAnimationCallbacks.RecentsAn
             @Override
             public void onTaskAppeared(RemoteAnimationTargetCompat appearedTaskTarget) {
                 BaseActivityInterface activityInterface = mLastGestureState.getActivityInterface();
-                if (LIVE_TILE.get() && activityInterface.isInLiveTileMode()
+                if (ENABLE_QUICKSTEP_LIVE_TILE.get() && activityInterface.isInLiveTileMode()
                         && activityInterface.getCreatedActivity() != null) {
                     RecentsView recentsView =
                             activityInterface.getCreatedActivity().getOverviewPanel();
