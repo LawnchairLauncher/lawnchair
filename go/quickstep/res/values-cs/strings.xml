@@ -5,4 +5,8 @@
     <string name="action_listen" msgid="2370304050784689486">"Poslechnout"</string>
     <string name="action_translate" msgid="8028378961867277746">"Přeložit"</string>
     <string name="action_search" msgid="6269564710943755464">"Lens"</string>
+    <string name="niu_actions_confirmation_title" msgid="3863451714863526143">"Překládejte nebo poslouchejte text na obrazovce"</string>
+    <string name="niu_actions_confirmation_text" msgid="2105271481950866089">"S Googlem mohou být sdílena data, jako je text na obrazovce, webové adresy a snímky obrazovky.\n\nSdílená data můžete upřesnit v "<b>"Nastavení &gt; Aplikace &gt; Výchozí aplikace &gt; Aplikace digitálního asistenta"</b>"."</string>
+    <string name="niu_actions_confirmation_no" msgid="6641104944008154587">"ZRUŠIT"</string>
+    <string name="niu_actions_confirmation_yes" msgid="3817302060585371994">"ROZUMÍM"</string>
 </resources>

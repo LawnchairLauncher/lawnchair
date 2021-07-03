@@ -5,4 +5,8 @@
     <string name="action_listen" msgid="2370304050784689486">"Anhören"</string>
     <string name="action_translate" msgid="8028378961867277746">"Übersetzen"</string>
     <string name="action_search" msgid="6269564710943755464">"Lens"</string>
+    <string name="niu_actions_confirmation_title" msgid="3863451714863526143">"Text auf dem Bildschirm übersetzen oder anhören"</string>
+    <string name="niu_actions_confirmation_text" msgid="2105271481950866089">"Informationen, wie Text auf deinem Bildschirm, Webadressen und Screenshots, werden möglicherweise an Google weitergegeben.\n\nWenn du ändern möchtest, welche Informationen weitergegeben werden, gehe zu "<b>"Einstellungen &gt; Apps &gt; Standard-Apps &gt; App für digitalen Assistenten"</b>"."</string>
+    <string name="niu_actions_confirmation_no" msgid="6641104944008154587">"ABBRECHEN"</string>
+    <string name="niu_actions_confirmation_yes" msgid="3817302060585371994">"OK"</string>
 </resources>

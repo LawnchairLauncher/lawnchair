@@ -5,4 +5,8 @@
     <string name="action_listen" msgid="2370304050784689486">"ស្តាប់"</string>
     <string name="action_translate" msgid="8028378961867277746">"បកប្រែ"</string>
     <string name="action_search" msgid="6269564710943755464">"Lens"</string>
+    <string name="niu_actions_confirmation_title" msgid="3863451714863526143">"បកប្រែ ឬស្ដាប់អត្ថបទ​នៅលើអេក្រង់"</string>
+    <string name="niu_actions_confirmation_text" msgid="2105271481950866089">"ព័ត៌មានដូចជា អត្ថបទនៅលើ​អេក្រង់របស់អ្នក អាសយដ្ឋានទំព័រ និងរូបថតអេក្រង់​​អាចនឹងត្រូវបានចែក​រំលែកជាមួយ Google។\n\nដើម្បីប្ដូរព័ត៌មាន​ដែលអ្នកចែករំលែក សូមចូលទៅកាន់"<b>"ការកំណត់ &gt; កម្មវិធី &gt; កម្មវិធីលំនាំដើម &gt; កម្មវិធីជំនួយការឌីជីថល"</b>"។"</string>
+    <string name="niu_actions_confirmation_no" msgid="6641104944008154587">"បោះបង់"</string>
+    <string name="niu_actions_confirmation_yes" msgid="3817302060585371994">"យល់ហើយ"</string>
 </resources>

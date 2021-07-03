@@ -5,4 +5,8 @@
     <string name="action_listen" msgid="2370304050784689486">"Écouter"</string>
     <string name="action_translate" msgid="8028378961867277746">"Traduire"</string>
     <string name="action_search" msgid="6269564710943755464">"Lens"</string>
+    <string name="niu_actions_confirmation_title" msgid="3863451714863526143">"Traduire ou écouter le texte à l\'écran"</string>
+    <string name="niu_actions_confirmation_text" msgid="2105271481950866089">"Des informations comme le texte sur votre écran, des adresses Web et des captures d\'écran peuvent être partagées avec Google.\n\nPour modifier les types d\'informations que vous partagez, accédez à "<b>"Paramètres &gt; Applis &gt; Applis par défaut &gt; Appli d\'assistant numérique"</b>"."</string>
+    <string name="niu_actions_confirmation_no" msgid="6641104944008154587">"ANNULER"</string>
+    <string name="niu_actions_confirmation_yes" msgid="3817302060585371994">"OK"</string>
 </resources>

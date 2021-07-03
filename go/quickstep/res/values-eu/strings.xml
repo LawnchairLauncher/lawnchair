@@ -5,4 +5,8 @@
     <string name="action_listen" msgid="2370304050784689486">"Entzun"</string>
     <string name="action_translate" msgid="8028378961867277746">"Itzuli"</string>
     <string name="action_search" msgid="6269564710943755464">"Lens"</string>
+    <string name="niu_actions_confirmation_title" msgid="3863451714863526143">"Itzuli edo entzun pantailako testua"</string>
+    <string name="niu_actions_confirmation_text" msgid="2105271481950866089">"Agian pantailako testua, web-helbideak, pantaila-argazkiak eta antzeko informazioa partekatuko duzu Google-rekin.\n\nPartekatzen duzun informazioa aldatzeko, joan hona: "<b>"Ezarpenak &gt; Aplikazioak &gt; Aplikazio lehenetsiak &gt; Laguntzaile digitalaren aplikazioa"</b>"."</string>
+    <string name="niu_actions_confirmation_no" msgid="6641104944008154587">"UTZI"</string>
+    <string name="niu_actions_confirmation_yes" msgid="3817302060585371994">"ADOS"</string>
 </resources>

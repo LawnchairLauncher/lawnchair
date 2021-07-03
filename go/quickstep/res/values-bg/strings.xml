@@ -5,4 +5,8 @@
     <string name="action_listen" msgid="2370304050784689486">"Слушане"</string>
     <string name="action_translate" msgid="8028378961867277746">"Превод"</string>
     <string name="action_search" msgid="6269564710943755464">"Обектив"</string>
+    <string name="niu_actions_confirmation_title" msgid="3863451714863526143">"Превеждане или четене на текста на екрана"</string>
+    <string name="niu_actions_confirmation_text" msgid="2105271481950866089">"Определена информация може да бъде споделена с Google, като например текстът на екрана ви, уеб адресите и екранните снимки.\n\nЗа да промените информацията, която споделяте, отворете "<b>"„Настройки“ &gt; „Приложения“ &gt; „Приложения по подразбиране“ &gt; „Приложение за дигитален асистент“"</b>"."</string>
+    <string name="niu_actions_confirmation_no" msgid="6641104944008154587">"ОТКАЗ"</string>
+    <string name="niu_actions_confirmation_yes" msgid="3817302060585371994">"РАЗБРАХ"</string>
 </resources>

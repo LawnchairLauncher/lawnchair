@@ -5,4 +5,8 @@
     <string name="action_listen" msgid="2370304050784689486">"Lalela"</string>
     <string name="action_translate" msgid="8028378961867277746">"Humusha"</string>
     <string name="action_search" msgid="6269564710943755464">"Ilensi"</string>
+    <string name="niu_actions_confirmation_title" msgid="3863451714863526143">"Humusha noma ulalele umbhalo osesikrinini"</string>
+    <string name="niu_actions_confirmation_text" msgid="2105271481950866089">"Imininingwane efana nombhalo esikrinini sakho, amakheli wewebhu, nezithombe-skrini kungabiwa ne-Google.\n\nUkuze ushintshe ukuthi yiluphi ulwazi olwabayo, yiya kokuthi "<b>"Amasethingi &gt; ama-App &gt; Ama-app azenzakalelayo &gt; Umsizi we-app odijithali"</b>"."</string>
+    <string name="niu_actions_confirmation_no" msgid="6641104944008154587">"KHANSELA"</string>
+    <string name="niu_actions_confirmation_yes" msgid="3817302060585371994">"NGIYITHOLILE"</string>
 </resources>
