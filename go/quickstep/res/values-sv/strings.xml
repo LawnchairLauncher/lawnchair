@@ -5,4 +5,8 @@
     <string name="action_listen" msgid="2370304050784689486">"Lyssna"</string>
     <string name="action_translate" msgid="8028378961867277746">"Översätt"</string>
     <string name="action_search" msgid="6269564710943755464">"Lens"</string>
+    <string name="niu_actions_confirmation_title" msgid="3863451714863526143">"Översätt eller lyssna på texten på skärmen"</string>
+    <string name="niu_actions_confirmation_text" msgid="2105271481950866089">"Information som text på skärmen, webbadresser och skärmbilder kan delas med Google.\n\nFör att ändra vilken information du delar öppnar du "<b>"Inställningar &gt; Appar &gt; Standardappar &gt; Digital assistentapp"</b>"."</string>
+    <string name="niu_actions_confirmation_no" msgid="6641104944008154587">"AVBRYT"</string>
+    <string name="niu_actions_confirmation_yes" msgid="3817302060585371994">"OK"</string>
 </resources>

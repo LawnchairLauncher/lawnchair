@@ -5,4 +5,8 @@
     <string name="action_listen" msgid="2370304050784689486">"Klausyti"</string>
     <string name="action_translate" msgid="8028378961867277746">"Išversti"</string>
     <string name="action_search" msgid="6269564710943755464">"Lens"</string>
+    <string name="niu_actions_confirmation_title" msgid="3863451714863526143">"Ekrane esančio teksto vertimas arba klausymas"</string>
+    <string name="niu_actions_confirmation_text" msgid="2105271481950866089">"Tam tikra informacija, pvz., ekrane esantis tekstas, žiniatinklio adresai ir ekrano kopijos, gali būti bendrinama su „Google“.\n\nJei norite pakeisti, kokia informacija gali būti bendrinama, eikite į "<b>"„Nustatymai“ &gt; „Programos“ &gt; „Numatytosios programos“ &gt; „Skaitmeninio pagelbiklio programa“"</b>"."</string>
+    <string name="niu_actions_confirmation_no" msgid="6641104944008154587">"ATŠAUKTI"</string>
+    <string name="niu_actions_confirmation_yes" msgid="3817302060585371994">"SUPRATAU"</string>
 </resources>

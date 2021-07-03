@@ -5,4 +5,8 @@
     <string name="action_listen" msgid="2370304050784689486">"Tinglash"</string>
     <string name="action_translate" msgid="8028378961867277746">"Tarjima"</string>
     <string name="action_search" msgid="6269564710943755464">"Lens"</string>
+    <string name="niu_actions_confirmation_title" msgid="3863451714863526143">"Ekrandagi matnni tarjima qilish yoki tinglash"</string>
+    <string name="niu_actions_confirmation_text" msgid="2105271481950866089">"Ekraningizdagi matn, veb-manzillar va skrinshot kabilar Googlega yuborilishi mumkin.\n\nQanday maʼlumotlarni ulashishni tanlash uchun "<b>"Sozlamalar &gt; Ilovalar &gt; Standart ilovalar &gt; Raqamli assistent"</b>" ilovasini oching."</string>
+    <string name="niu_actions_confirmation_no" msgid="6641104944008154587">"BEKOR QILISH"</string>
+    <string name="niu_actions_confirmation_yes" msgid="3817302060585371994">"OK"</string>
 </resources>

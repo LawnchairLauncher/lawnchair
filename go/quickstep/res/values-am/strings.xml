@@ -5,4 +5,8 @@
     <string name="action_listen" msgid="2370304050784689486">"ያዳምጡ"</string>
     <string name="action_translate" msgid="8028378961867277746">"ተርጉም"</string>
     <string name="action_search" msgid="6269564710943755464">"ሌንስ"</string>
+    <string name="niu_actions_confirmation_title" msgid="3863451714863526143">"በማያ ገጹ ላይ ጽሑፍን ይተረጉሙ ወይም ያዳምጡ"</string>
+    <string name="niu_actions_confirmation_text" msgid="2105271481950866089">"እንደ በማያ ገጽዎ ላይ ያለ ጽሑፍ፣ የድር አድራሻዎች እና ቅጽበታዊ ገጽ እይታዎች ያሉ መረጃዎች ለGoogle ሊጋሩ ይችላሉ።\n\nምን መረጃ እንደሚያጋሩ ለመቀየር ወደ "<b>"ቅንብሮች &gt; መተግበሪያዎች &gt; ነባሪ መተግበሪያዎች &gt; ዲጂታል ረዳት መተግበሪያ"</b>" ይሂዱ።"</string>
+    <string name="niu_actions_confirmation_no" msgid="6641104944008154587">"ይቅር"</string>
+    <string name="niu_actions_confirmation_yes" msgid="3817302060585371994">"ገባኝ"</string>
 </resources>

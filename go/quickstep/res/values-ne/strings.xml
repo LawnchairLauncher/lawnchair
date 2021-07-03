@@ -5,4 +5,8 @@
     <string name="action_listen" msgid="2370304050784689486">"सुन्नुहोस्"</string>
     <string name="action_translate" msgid="8028378961867277746">"अनुवाद गर्नुहोस्"</string>
     <string name="action_search" msgid="6269564710943755464">"लेन्स"</string>
+    <string name="niu_actions_confirmation_title" msgid="3863451714863526143">"स्क्रिनमा देखिने पाठ अनुवाद गरियोस् वा पढेर सुनाइयोस्"</string>
+    <string name="niu_actions_confirmation_text" msgid="2105271481950866089">"तपाईंको स्क्रिनमा देखिने पाठ, वेब ठेगाना र स्क्रिनसटलगायतका जानकारी Google सँग सेयर गर्न सकिन्छ।\n\nकुन कुन जानकारी सेयर गर्न दिने भन्ने सेटिङ बदल्न "<b>"सेटिङ &gt; एप &gt; डिफल्ट एप &gt; डिजिटल सहायक एप"</b>" मा जानुहोस्।"</string>
+    <string name="niu_actions_confirmation_no" msgid="6641104944008154587">"रद्द गर्नुहोस्"</string>
+    <string name="niu_actions_confirmation_yes" msgid="3817302060585371994">"बुझेँ"</string>
 </resources>
