@@ -180,6 +180,12 @@ public class DepthController implements StateHandler<LauncherState>,
      * Sets the specified app target surface to apply the blur to.
      */
     public void setSurface(SurfaceControl surface) {
+        // Set launcher as the SurfaceControl when we don't need an external target anymore.
+        if (surface == null) {
+            ViewRootImpl viewRootImpl = mLauncher.getDragLayer().getViewRootImpl();
+            surface = viewRootImpl != null ? viewRootImpl.getSurfaceControl() : null;
+        }
+
         if (mSurface != surface) {
             mSurface = surface;
             if (surface != null) {
