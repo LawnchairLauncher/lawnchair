@@ -5,4 +5,8 @@
     <string name="action_listen" msgid="2370304050784689486">"వినండి"</string>
     <string name="action_translate" msgid="8028378961867277746">"అనువదించండి"</string>
     <string name="action_search" msgid="6269564710943755464">"Lens"</string>
+    <string name="niu_actions_confirmation_title" msgid="3863451714863526143">"స్క్రీన్‌పై టెక్స్ట్ అనువదించండి లేదా వినండి"</string>
+    <string name="niu_actions_confirmation_text" msgid="2105271481950866089">"మీ స్క్రీన్‌పై టెక్స్ట్, వెబ్ అడ్రస్‌లు, అలాగే స్క్రీన్‌షాట్‌ల వంటి సమాచారం Googleతో షేర్ చేయడం జరగవచ్చు.\n\nమీరు ఏ సమాచారాన్ని షేర్ చేసుకుంటారో మార్చడానికి "<b>"సెట్టింగ్‌లు &gt; యాప్‌లు &gt; ఆటోమేటిక్ సెట్టింగ్ యాప్‌లు &gt; డిజిటల్ అసిస్టెంట్ యాప్‌ల"</b>"‌కు వెళ్లండి."</string>
+    <string name="niu_actions_confirmation_no" msgid="6641104944008154587">"రద్దు చేయి"</string>
+    <string name="niu_actions_confirmation_yes" msgid="3817302060585371994">"అర్థమైంది"</string>
 </resources>

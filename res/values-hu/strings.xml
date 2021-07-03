@@ -32,8 +32,7 @@
     <string name="long_accessible_way_to_add" msgid="2733588281439571974">"Modul áthelyezéséhez koppintson duplán, tartsa nyomva az ujját, vagy használjon egyéni műveleteket."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"%1$d széles és %2$d magas"</string>
-    <!-- no translation found for widget_preview_context_description (9045841361655787574) -->
-    <skip />
+    <string name="widget_preview_context_description" msgid="9045841361655787574">"<xliff:g id="WIDGET_NAME">%1$s</xliff:g> modul"</string>
     <string name="add_item_request_drag_hint" msgid="5653291305078645405">"Tartsa lenyomva a modult a kezdőképernyőn való mozgatáshoz"</string>
     <string name="add_to_home_screen" msgid="8631549138215492708">"Hozzáadás a kezdőképernyőhöz"</string>
     <plurals name="widgets_count" formatted="false" msgid="656794749266073027">
@@ -161,12 +160,12 @@
     <string name="work_profile_edu_work_apps" msgid="7895468576497746520">"A munkahelyi alkalmazások jelvénnyel vannak megjelölve, és láthatók a rendszergazda számára"</string>
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"Értem"</string>
     <string name="work_apps_paused_title" msgid="3040901117349444598">"A munkahelyi alkalmazások szüneteltetve vannak"</string>
-    <string name="work_apps_paused_body" msgid="261634750995824906">"A munkahelyi alkalmazások nem küldhetnek értesítéseket, nem használhatják az akkumulátort, és nem férhetnek hozzá az Ön tartózkodási helyéhez."</string>
-    <string name="work_apps_paused_content_description" msgid="5149623040804051095">"A munkahelyi alkalmazások ki vannak kapcsolva, nem küldhetnek értesítéseket, nem használhatják az akkumulátort, és nem férhetnek hozzá az Ön tartózkodási helyéhez"</string>
+    <string name="work_apps_paused_body" msgid="261634750995824906">"A munkahelyi alkalmazások nem küldhetnek Önnek értesítéseket, nem használhatják az akkumulátorát, és nem férhetnek hozzá a tartózkodási helyéhez."</string>
+    <string name="work_apps_paused_content_description" msgid="5149623040804051095">"A munkahelyi alkalmazások nem küldhetnek Önnek értesítéseket, nem használhatják az akkumulátorát, és nem férhetnek hozzá a tartózkodási helyéhez"</string>
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"A munkahelyi alkalmazások jelvénnyel vannak megjelölve, és láthatók a rendszergazda számára"</string>
     <string name="work_apps_paused_edu_accept" msgid="6377476824357318532">"Értem"</string>
     <string name="work_apps_pause_btn_text" msgid="1921059713673767460">"Kapcsolja ki a munkahelyi alkalmazásokat"</string>
-    <string name="work_apps_enable_btn_text" msgid="1156432622148413741">"Kapcsolja be a munkahelyi alkalmazásokat"</string>
+    <string name="work_apps_enable_btn_text" msgid="1156432622148413741">"Munkahelyi alkalmazások bekapcsolása"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"Szűrő"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"Sikertelen: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
 </resources>
