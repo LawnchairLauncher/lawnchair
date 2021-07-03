@@ -14,5 +14,6 @@
      limitations under the License.
 -->
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:color="#E2E2E2"/>
+    <item android:color="?workspaceAccentColor" android:state_selected="false" />
+    <item android:color="?dropTargetHoverTextColor" android:state_selected="true" />
 </selector>

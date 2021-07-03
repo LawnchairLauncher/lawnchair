@@ -17,17 +17,17 @@
 <resources>
     <!-- App themes -->
     <style name="AppTheme" parent="@style/LauncherTheme">
-        <item name="overviewBackgroundColor">@color/go_overview_background_color</item>
         <item name="overviewButtonTextColor">@color/go_overview_text_color</item>
         <item name="overviewButtonIconColor">@color/go_overview_text_color</item>
         <item name="overviewButtonBackgroundColor">@color/go_overview_button_color</item>
+        <item name="modalDialogBackground">@color/go_modal_dialog_background</item>
     </style>
 
     <style name="AppTheme.Dark" parent="@style/LauncherTheme.Dark">
-        <item name="overviewBackgroundColor">@color/go_overview_background_color_dark</item>
         <item name="overviewButtonTextColor">@color/go_overview_text_color_dark</item>
         <item name="overviewButtonIconColor">@color/go_overview_text_color_dark</item>
         <item name="overviewButtonBackgroundColor">@color/go_overview_button_color_dark</item>
+        <item name="modalDialogBackground">@color/go_modal_dialog_background_dark</item>
     </style>
 
     <!-- Overview -->
@@ -57,5 +57,34 @@
         <item name="android:layout_width">@dimen/go_overview_button_container_width</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:orientation">vertical</item>
+    </style>
+
+    <!-- Modal Dialogs -->
+    <style name="ModalDialogTitle">
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:textColor">?android:attr/textColorPrimary</item>
+        <item name="android:lineHeight">24dp</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">center_horizontal</item>
+    </style>
+
+    <style name="ModalDialogText">
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">?android:attr/textColorSecondary</item>
+        <item name="android:lineHeight">24dp</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">center_horizontal</item>
+    </style>
+
+    <style name="ModalDialogButton" parent="@style/Widget.AppCompat.Button.Borderless">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">?android:attr/colorAccent</item>
+        <item name="android:lineHeight">20dp</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
     </style>
 </resources>

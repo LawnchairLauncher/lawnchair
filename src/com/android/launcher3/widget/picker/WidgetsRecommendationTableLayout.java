@@ -15,6 +15,8 @@
  */
 package com.android.launcher3.widget.picker;
 
+import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_WIDGETS_PREDICTION;
+
 import android.content.Context;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -132,6 +134,7 @@ public final class WidgetsRecommendationTableLayout extends TableLayout {
         previewContainer.setOnClickListener(mWidgetCellOnClickListener);
         previewContainer.setOnLongClickListener(mWidgetCellOnLongClickListener);
         widget.setAnimatePreview(false);
+        widget.setSourceContainer(CONTAINER_WIDGETS_PREDICTION);
 
         parent.addView(widget);
         return widget;
@@ -152,8 +155,8 @@ public final class WidgetsRecommendationTableLayout extends TableLayout {
             float rowHeight = 0;
             for (int j = 0; j < widgetItems.size(); j++) {
                 WidgetItem widgetItem = widgetItems.get(j);
-                Size widgetSize = WidgetSizes.getWidgetSizePx(
-                        deviceProfile, widgetItem.spanX, widgetItem.spanY);
+                Size widgetSize = WidgetSizes.getWidgetItemSizePx(getContext(), deviceProfile,
+                        widgetItem);
                 float previewHeight = widgetSize.getHeight() * previewScale;
                 rowHeight = Math.max(rowHeight,
                         previewHeight + mWidgetCellTextViewsHeight + mWidgetCellVerticalPadding);

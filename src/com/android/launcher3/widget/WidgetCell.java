@@ -16,6 +16,7 @@
 
 package com.android.launcher3.widget;
 
+import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_WIDGETS_TRAY;
 import static com.android.launcher3.Utilities.ATLEAST_S;
 
 import android.content.Context;
@@ -99,6 +100,7 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
 
     private RemoteViews mRemoteViewsPreview;
     private NavigableAppWidgetHostView mAppWidgetHostViewPreview;
+    private int mSourceContainer = CONTAINER_WIDGETS_TRAY;
 
     public WidgetCell(Context context) {
         this(context, null);
@@ -177,17 +179,24 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
         mAppWidgetHostViewPreview = null;
     }
 
+    public void setSourceContainer(int sourceContainer) {
+        this.mSourceContainer = sourceContainer;
+    }
+
     public void applyFromCellItem(WidgetItem item, WidgetPreviewLoader loader) {
         applyPreviewOnAppWidgetHostView(item);
 
+        Context context = getContext();
         mItem = item;
         mWidgetName.setText(mItem.label);
-        mWidgetDims.setText(getContext().getString(R.string.widget_dims_format,
+        mWidgetName.setContentDescription(
+                context.getString(R.string.widget_preview_context_description, mItem.label));
+        mWidgetDims.setText(context.getString(R.string.widget_dims_format,
                 mItem.spanX, mItem.spanY));
-        mWidgetDims.setContentDescription(getContext().getString(
+        mWidgetDims.setContentDescription(context.getString(
                 R.string.widget_accessible_dims_format, mItem.spanX, mItem.spanY));
         if (ATLEAST_S && mItem.widgetInfo != null) {
-            CharSequence description = mItem.widgetInfo.loadDescription(getContext());
+            CharSequence description = mItem.widgetInfo.loadDescription(context);
             if (description != null && description.length() > 0) {
                 mWidgetDescription.setText(description);
                 mWidgetDescription.setVisibility(VISIBLE);
@@ -202,7 +211,7 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
             mPreviewWidth += mShortcutPreviewPadding;
             mPreviewHeight += mShortcutPreviewPadding;
         } else {
-            setTag(new PendingAddWidgetInfo(item.widgetInfo));
+            setTag(new PendingAddWidgetInfo(item.widgetInfo, mSourceContainer));
         }
     }
 
@@ -238,6 +247,7 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
             NavigableAppWidgetHostView appWidgetHostViewPreview,
             LauncherAppWidgetProviderInfo providerInfo,
             @Nullable RemoteViews remoteViews) {
+        appWidgetHostViewPreview.setImportantForAccessibility(IMPORTANT_FOR_ACCESSIBILITY_NO);
         appWidgetHostViewPreview.setAppWidget(/* appWidgetId= */ -1, providerInfo);
         Rect padding;
         DeviceProfile deviceProfile = mActivity.getDeviceProfile();
@@ -353,7 +363,9 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
     /** Sets the widget preview image size, in number of cells, and preview scale. */
     public Size setPreviewSize(int spanX, int spanY, float previewScale) {
         DeviceProfile deviceProfile = mActivity.getDeviceProfile();
-        Size widgetSize = WidgetSizes.getWidgetSizePx(deviceProfile, spanX, spanY);
+        Size widgetSize =
+                mItem != null ? WidgetSizes.getWidgetItemSizePx(getContext(), deviceProfile, mItem)
+                : WidgetSizes.getWidgetSizePx(deviceProfile, spanX, spanY);
         mPreviewWidth = widgetSize.getWidth();
         mPreviewHeight = widgetSize.getHeight();
         mPreviewScale = previewScale;

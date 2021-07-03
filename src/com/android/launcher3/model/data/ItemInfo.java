@@ -168,6 +168,8 @@ public class ItemInfo {
         cellY = info.cellY;
         spanX = info.spanX;
         spanY = info.spanY;
+        minSpanX = info.minSpanX;
+        minSpanY = info.minSpanY;
         rank = info.rank;
         screenId = info.screenId;
         itemType = info.itemType;

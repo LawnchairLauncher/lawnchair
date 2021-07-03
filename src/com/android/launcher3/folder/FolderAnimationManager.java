@@ -245,9 +245,8 @@ public class FolderAnimationManager {
                 + mDeviceProfile.folderCellHeightPx * 2;
         int page = mIsOpening ? mContent.getCurrentPage() : mContent.getDestinationPage();
         int left = mContent.getPaddingLeft() + page * lp.width;
-        Rect contentStart = new Rect(0, 0, width, height);
-        Rect contentEnd = new Rect(endRect.left + left, endRect.top, endRect.right + left,
-                endRect.bottom);
+        Rect contentStart = new Rect(left, 0, left + width, height);
+        Rect contentEnd = new Rect(left, 0, left + lp.width, lp.height);
         play(a, getShape().createRevealAnimator(
                 mFolder.getContent(), contentStart, contentEnd, finalRadius, !mIsOpening));
 

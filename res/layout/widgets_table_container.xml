@@ -18,5 +18,4 @@
     android:id="@+id/widgets_table"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginHorizontal="16dp"
-    android:layout_marginBottom="@dimen/widget_list_entry_bottom_margin"/>
+    android:layout_marginHorizontal="@dimen/widget_list_horizontal_margin" />

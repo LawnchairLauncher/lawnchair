@@ -24,6 +24,7 @@ import static com.android.launcher3.states.StateAnimationConfig.SKIP_OVERVIEW;
 import static com.android.launcher3.states.StateAnimationConfig.SKIP_SCRIM;
 
 import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.view.View;
@@ -98,6 +99,14 @@ public class WorkspaceRevealAnim {
         alpha.setDuration(DURATION_MS);
         alpha.setInterpolator(Interpolators.DECELERATED_EASE);
         mAnimators.play(alpha);
+
+        mAnimators.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                SCALE_PROPERTY.set(v, 1f);
+                v.setAlpha(1f);
+            }
+        });
     }
 
     /**

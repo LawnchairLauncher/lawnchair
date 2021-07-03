@@ -209,7 +209,7 @@ public class StateManager<STATE_TYPE extends BaseState<STATE_TYPE>> {
 
         // Cancel the current animation. This will reset mState to mCurrentStableState, so store it.
         STATE_TYPE fromState = mState;
-        mConfig.reset();
+        cancelAnimation();
 
         if (!animated) {
             mAtomicAnimationFactory.cancelAllStateElementAnimation();
@@ -303,7 +303,7 @@ public class StateManager<STATE_TYPE extends BaseState<STATE_TYPE>> {
     public AnimatorPlaybackController createAnimationToNewWorkspace(STATE_TYPE state,
             StateAnimationConfig config) {
         config.userControlled = true;
-        mConfig.reset();
+        cancelAnimation();
         config.copyTo(mConfig);
         mConfig.playbackController = createAnimationToNewWorkspaceInternal(state)
                 .createPlaybackController();
@@ -393,6 +393,11 @@ public class StateManager<STATE_TYPE extends BaseState<STATE_TYPE>> {
      */
     public void cancelAnimation() {
         mConfig.reset();
+        // It could happen that a new animation is set as a result of an endListener on the
+        // existing animation.
+        while (mConfig.currentAnimation != null || mConfig.playbackController != null) {
+            mConfig.reset();
+        }
     }
 
     public void setCurrentUserControlledAnimation(AnimatorPlaybackController controller) {
@@ -508,14 +513,19 @@ public class StateManager<STATE_TYPE extends BaseState<STATE_TYPE>> {
          * Cancels the current animation and resets config variables.
          */
         public void reset() {
+            AnimatorSet anim = currentAnimation;
+            AnimatorPlaybackController pc = playbackController;
+
             DEFAULT.copyTo(this);
             targetState = null;
+            currentAnimation = null;
+            playbackController = null;
+            changeId++;
 
-            if (playbackController != null) {
-                playbackController.getAnimationPlayer().cancel();
-                playbackController.dispatchOnCancel();
-            } else if (currentAnimation != null) {
-                AnimatorSet anim = currentAnimation;
+            if (pc != null) {
+                pc.getAnimationPlayer().cancel();
+                pc.dispatchOnCancel().dispatchOnEnd();
+            } else if (anim != null) {
                 anim.setDuration(0);
                 if (!anim.isStarted()) {
                     // If the animation is not started the listeners do not get notified,
@@ -525,10 +535,6 @@ public class StateManager<STATE_TYPE extends BaseState<STATE_TYPE>> {
                 }
                 anim.cancel();
             }
-
-            currentAnimation = null;
-            playbackController = null;
-            changeId++;
         }
 
         @Override
