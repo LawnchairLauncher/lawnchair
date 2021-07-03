@@ -5,4 +5,8 @@
     <string name="action_listen" msgid="2370304050784689486">"Klausīties"</string>
     <string name="action_translate" msgid="8028378961867277746">"Tulkot"</string>
     <string name="action_search" msgid="6269564710943755464">"Lens"</string>
+    <string name="niu_actions_confirmation_title" msgid="3863451714863526143">"Ekrānā redzamā teksta atskaņošana vai tulkošana"</string>
+    <string name="niu_actions_confirmation_text" msgid="2105271481950866089">"Ar uzņēmumu Google var tikt kopīgota noteikta informācija, piemēram, ekrānā redzamais teksts, tīmekļa adreses un ekrānuzņēmumi.\n\nLai mainītu kopīgotās informācijas veidu, atveriet sadaļu "<b>"Iestatījumi &gt; Lietotnes &gt; Noklusējuma lietotnes &gt; Digitālā asistenta lietotne"</b>"."</string>
+    <string name="niu_actions_confirmation_no" msgid="6641104944008154587">"ATCELT"</string>
+    <string name="niu_actions_confirmation_yes" msgid="3817302060585371994">"LABI"</string>
 </resources>

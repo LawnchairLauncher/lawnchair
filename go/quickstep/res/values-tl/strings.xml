@@ -5,4 +5,8 @@
     <string name="action_listen" msgid="2370304050784689486">"Makinig"</string>
     <string name="action_translate" msgid="8028378961867277746">"Isalin"</string>
     <string name="action_search" msgid="6269564710943755464">"Lens"</string>
+    <string name="niu_actions_confirmation_title" msgid="3863451714863526143">"I-translate o pakinggan ang text sa screen"</string>
+    <string name="niu_actions_confirmation_text" msgid="2105271481950866089">"Posibleng ibahagi sa Google ang impormasyong gaya ng text sa iyong screen, mga web address, at screenshot.\n\nPara baguhin kung anong impormasyon ang ibinabahagi mo, pumunta sa "<b>"Mga Setting &gt; Mga App &gt; Mga default na app &gt; Digital assistant app"</b>"."</string>
+    <string name="niu_actions_confirmation_no" msgid="6641104944008154587">"KANSELAHIN"</string>
+    <string name="niu_actions_confirmation_yes" msgid="3817302060585371994">"OK"</string>
 </resources>
