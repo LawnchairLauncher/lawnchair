@@ -57,7 +57,7 @@
     <string name="back_left_gesture_intro_title" msgid="5197184481779330065">"왼쪽에서 스와이프하여 뒤로 돌아가세요"</string>
     <string name="back_right_gesture_intro_title" msgid="7431951986971898074">"돌아가려면 오른쪽에서 스와이프하세요"</string>
     <string name="back_left_gesture_intro_subtitle" msgid="7672761376577628602">"마지막 화면으로 돌아가려면 왼쪽 가장자리에서 화면 중앙으로 스와이프하세요"</string>
-    <string name="back_right_gesture_intro_subtitle" msgid="2735828029197816509">"오른쪽 가장자리에서 화면 중앙으로 스와이프해도 마지막 화면으로 돌아갈 수 있습니다. 지금 동작을 취해 보세요"</string>
+    <string name="back_right_gesture_intro_subtitle" msgid="2735828029197816509">"오른쪽 가장자리에서 화면 중앙으로 스와이프해도 마지막 화면으로 돌아갈 수 있습니다. 지금 동작을 취해 보세요."</string>
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"화면 하단 가장자리에서 위로 스와이프하세요."</string>
     <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"손가락을 떼기 전에 멈추지 않아야 합니다."</string>
     <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"위로 똑바르게 스와이프하세요."</string>
