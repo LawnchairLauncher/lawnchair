@@ -55,7 +55,7 @@
     <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="1148198467090405643">"Veenduge, et te ei pühiks liiga ekraanikuva allosa lähedalt."</string>
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"Tagasiliigutuse tundlikkuse muutmiseks avage menüü Seaded"</string>
     <string name="back_left_gesture_intro_title" msgid="5197184481779330065">"Tagasiliikumiseks pühkige vasakult paremale"</string>
-    <string name="back_right_gesture_intro_title" msgid="7431951986971898074">"Tagasiliikumiseks pühkige paremalt vasakule"</string>
+    <string name="back_right_gesture_intro_title" msgid="7431951986971898074">"Eelmisele kuvale liikumiseks pühkige paremalt vasakule"</string>
     <string name="back_left_gesture_intro_subtitle" msgid="7672761376577628602">"Eelmisele ekraanikuvale naasmiseks pühkige vasakust servast ekraanikuva keskele."</string>
     <string name="back_right_gesture_intro_subtitle" msgid="2735828029197816509">"Eelmisele ekraanikuvale naasmiseks võite ka kuva paremast servast keskele pühkida. Proovige kohe."</string>
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"Pühkige kindlasti ekraanikuva alumisest servast üles."</string>
