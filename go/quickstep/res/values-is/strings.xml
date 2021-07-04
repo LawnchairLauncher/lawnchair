@@ -5,4 +5,8 @@
     <string name="action_listen" msgid="2370304050784689486">"Hlusta"</string>
     <string name="action_translate" msgid="8028378961867277746">"Þýða"</string>
     <string name="action_search" msgid="6269564710943755464">"Linsa"</string>
+    <string name="niu_actions_confirmation_title" msgid="3863451714863526143">"Þýða eða hlusta á texta á skjánum"</string>
+    <string name="niu_actions_confirmation_text" msgid="2105271481950866089">"Mögulegt er að upplýsingum á borð við texta á skjánum, vefslóðum og skjámyndum verði deilt með Google.\n\nTil að breyta því hvaða upplýsingum þú deilir skaltu opna "<b>"Stillingar &gt; Forrit &gt; Sjálfgefin forrit &gt; Forrit stafræns hjálpara"</b>"."</string>
+    <string name="niu_actions_confirmation_no" msgid="6641104944008154587">"HÆTTA VIÐ"</string>
+    <string name="niu_actions_confirmation_yes" msgid="3817302060585371994">"ÉG SKIL"</string>
 </resources>

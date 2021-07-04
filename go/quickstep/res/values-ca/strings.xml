@@ -5,4 +5,8 @@
     <string name="action_listen" msgid="2370304050784689486">"Escolta"</string>
     <string name="action_translate" msgid="8028378961867277746">"Tradueix"</string>
     <string name="action_search" msgid="6269564710943755464">"Lens"</string>
+    <string name="niu_actions_confirmation_title" msgid="3863451714863526143">"Tradueix o escolta el text en pantalla"</string>
+    <string name="niu_actions_confirmation_text" msgid="2105271481950866089">"És possible que determinada informació es comparteixi amb Google, com ara el text en pantalla, les adreces web i les captures de pantalla.\n\nPer canviar quina informació comparteixes, ves a "<b>"Configuració &gt; Aplicacions &gt; Aplicacions predeterminades &gt; Aplicació de l\'assistent digital"</b>"."</string>
+    <string name="niu_actions_confirmation_no" msgid="6641104944008154587">"CANCEL·LA"</string>
+    <string name="niu_actions_confirmation_yes" msgid="3817302060585371994">"ENTESOS"</string>
 </resources>

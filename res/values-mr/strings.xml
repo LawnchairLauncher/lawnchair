@@ -32,8 +32,7 @@
     <string name="long_accessible_way_to_add" msgid="2733588281439571974">"विजेट हलवण्यासाठी किंवा कस्टम कृती वापरण्यासाठी दोनदा टॅप करा आणि धरून ठेवा."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"%1$d रूंद बाय %2$d उंच"</string>
-    <!-- no translation found for widget_preview_context_description (9045841361655787574) -->
-    <skip />
+    <string name="widget_preview_context_description" msgid="9045841361655787574">"<xliff:g id="WIDGET_NAME">%1$s</xliff:g> विजेट"</string>
     <string name="add_item_request_drag_hint" msgid="5653291305078645405">"होम स्क्रीनवर ते हलवण्यासाठी विजेटला स्पर्श करा आणि धरून ठेवा"</string>
     <string name="add_to_home_screen" msgid="8631549138215492708">"होम स्‍क्रीनवर जोडा"</string>
     <plurals name="widgets_count" formatted="false" msgid="656794749266073027">
