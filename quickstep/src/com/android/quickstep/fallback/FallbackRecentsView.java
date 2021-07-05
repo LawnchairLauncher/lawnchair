@@ -26,6 +26,7 @@ import android.app.ActivityManager.RunningTaskInfo;
 import android.content.Context;
 import android.os.Build;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
 
 import androidx.annotation.Nullable;
 
@@ -208,5 +209,12 @@ public class FallbackRecentsView extends RecentsView<RecentsActivity, RecentsSta
             RecentsState state = mActivity.getStateManager().getState();
             setDisallowScrollToClearAll(!state.hasClearAllButton());
         }
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent ev) {
+        boolean result = super.onTouchEvent(ev);
+        // Do not let touch escape to siblings below this view.
+        return result || mActivity.getStateManager().getState().overviewUi();
     }
 }
