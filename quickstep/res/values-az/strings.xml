@@ -45,7 +45,7 @@
     <string name="hotsaet_tip_prediction_enabled" msgid="2233554377501347650">"Tətbiq təklifləri aktivdir"</string>
     <string name="hotsaet_tip_prediction_disabled" msgid="1506426298884658491">"Tətbiq təklifləri deaktivdir"</string>
     <string name="hotseat_prediction_content_description" msgid="4582028296938078419">"Proqnozlaşdırılan tətbiq: <xliff:g id="TITLE">%1$s</xliff:g>"</string>
-    <string name="back_gesture_feedback_swipe_too_far_from_left_edge" msgid="340972404868601012">"Ən sol tərəfdən sürüşdürdüyünüzə əmin olun."</string>
+    <string name="back_gesture_feedback_swipe_too_far_from_left_edge" msgid="340972404868601012">"Ekranın ən kənarından soldan sağa sürüşdürün."</string>
     <string name="back_gesture_feedback_cancelled_left_edge" msgid="6671316150388702530">"Ekranın sol kənarından ortasına sürüşdürüb buraxın."</string>
     <string name="back_gesture_feedback_swipe_too_far_from_right_edge" msgid="4306700023773832353">"Ən sağ tərəfdən sürüşdürdüyünüzə əmin olun."</string>
     <string name="back_gesture_feedback_cancelled_right_edge" msgid="4951916546256902552">"Ekranın sağ kənarından ortasına sürüşdürüb buraxın."</string>
