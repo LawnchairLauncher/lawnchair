@@ -1,30 +1,46 @@
-# Lawnchair
+# Lawnchair 11
 
-![Lawnchair](banner.png)
+[![Build debug APK](https://github.com/LawnchairLauncher/lawnchair/actions/workflows/build_debug_apk.yml/badge.svg)](https://github.com/LawnchairLauncher/lawnchair/actions/workflows/build_debug_apk.yml)
+[![Build release APK](https://github.com/LawnchairLauncher/lawnchair/actions/workflows/build_release_apk.yml/badge.svg)](https://github.com/LawnchairLauncher/lawnchair/actions/workflows/build_release_apk.yml)
+[![Crowdin](https://badges.crowdin.net/e/188ba69d884418987f0b7f1dd55e3a4e/localized.svg)](https://lawnchair.crowdin.com/lawnchair)
 
-Lawnchair is the customizable Pixel Launcher alternative. This Repository contains our full rewrite from scratch (simply known as V11),
-if you were looking for our older V1 sources you can find the archive [here](https://github.com/LawnchairLauncher/Lawnchair-V1).
+Lawnchair is a free, open-source home app for Android. Taking Launcher3 — Android’s default home app — as a starting point, it ports Pixel Launcher features and introduces rich options for customization. This branch houses the codebase of Lawnchair 11, currently in alpha and based on Launcher3 from Android 11. For Lawnchair 9 and 10, see the branches with the `9-` and `10-` prefixes, respectively.
 
-## How to Contribute?
+## Contribute code
 
-If you know Java/Android and have some Kotlin knowledge you should quickly be able to start contributing to Lawnchair.
-Make sure to generally add any new classes/resources to the `lawnchair/` subdirectory and try to make as little changes as necessary directly inside Launcher3 code.
-Kotlin is preferred but we'll accept great contributions in Java as well. We'll happily accept all bug fixes and will most likely also accept your well thought out feature.
+Whether you’ve fixed a bug or introduced a new feature, we welcome pull requests! (If you’d like to make a larger change and check with us first, you can do so via [Lawnchair’s Telegram group chat](https://t.me/lawnchairci).) To help translate Lawnchair 11 instead, please see “[Translate](#translate).”
 
-### Building
+You can use Git to clone this repository:
 
-Alright, I admit it, our build variants are a bit of a mess right now. Make sure to choose one of the variants prefixed `lawnWithQuickstep*`
-from the "Build Variants" menu in Android Studio.
+```
+git clone https://github.com/LawnchairLauncher/lawnchair.git
+```
 
-## Translations
+Lawnchair 11 uses [Jetpack Compose](https://developer.android.com/jetpack/compose); we suggest using a version of Android Studio that supports Compose tooling, such as Arctic Fox (2020.3.1). To build the app, select the `lawnWithQuickstepDebug` build type.
 
-Wanna help us by translating Lawnchair to your own language? Just take a look at [our Crowdin page](https://lawnchair.crowdin.com/lawnchair).
+Here are a few contribution tips:
 
-## Graphics
+- [The `lawnchair` package](https://github.com/LawnchairLauncher/lawnchair/tree/11-dev/lawnchair) houses Lawnchair’s own code, whereas [the `src` package](https://github.com/LawnchairLauncher/lawnchair/tree/11-dev/src) includes a clone of the Launcher3 codebase with modifications. Generally, place new files in the former, keeping changes to the latter to a minimum.
 
- The official Lawnchair graphics were designed by [Josh Baldassarre](https://www.uplabs.com/jshbldssrr) & [Patryk Michalik](https://patrykmichalik.com). Thanks a lot to those awesome designers!
+- You can use either Java or, preferably, Kotlin.
 
-## Useful links
+- Make sure your code is logical and well formatted. If using Kotlin, see [“Coding conventions” in the Kotlin documentation](https://kotlinlang.org/docs/coding-conventions.html).
 
-[Website](https://lawnchair.app) - [Twitter](https://twitter.com/lawnchairapp) - [Telegram](https://t.me/lawnchair) -
-[XDA Thread](https://forum.xda-developers.com/android/apps-games/lawnchair-customizable-pixel-launcher-t3627137) - [APK Mirror](https://www.apkmirror.com/apk/deletescape/lawnchair/)
+- Set `11-dev` as the base branch for pull requests.
+
+## Translate
+
+You can help translate Lawnchair 11 [on Crowdin](https://lawnchair.crowdin.com/lawnchair). Here are a few tips:
+
+- When using quotation marks, insert the symbols specific to the target language, as listed in [this table](https://en.wikipedia.org/wiki/Quotation_mark#Summary_table).
+
+- Lawnchair uses title case for some English UI text. Title case isn’t used in other languages; opt for sentence case instead.
+
+- Some English terminology may have no commonly-used equivalents in other languages. In such cases, use short descriptive phrases — for example, the equivalent of _bottom row_ for _dock_.
+
+## Quick links
+
+- [News](https://t.me/lawnchairci)
+- [Lawnchair on Twitter](https://twitter.com/lawnchairapp)
+- [Website](https://lawnchair.app)
+- [_XDA_ thread](https://forum.xda-developers.com/t/lawnchair-customizable-pixel-launcher.3627137/)
