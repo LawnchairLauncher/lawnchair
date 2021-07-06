@@ -287,28 +287,19 @@ public class AddWorkspaceItemsTask extends BaseModelUpdateTask {
 
         // Find appropriate space for the item.
         int screenId = 0;
-        int[] cordinates = new int[2];
+        int[] coordinates = new int[2];
         boolean found = false;
 
         int screenCount = workspaceScreens.size();
-        // First check the preferred screen.
-        int preferredScreenIndex = workspaceScreens.isEmpty() ? 0 : 1;
-        if (preferredScreenIndex < screenCount) {
-            screenId = workspaceScreens.get(preferredScreenIndex);
-            found = findNextAvailableIconSpaceInScreen(
-                    app, screenItems.get(screenId), cordinates, spanX, spanY);
-        }
-
-        if (!found) {
-            // Search on any of the screens starting from the first screen.
-            for (int screen = 1; screen < screenCount; screen++) {
-                screenId = workspaceScreens.get(screen);
-                if (findNextAvailableIconSpaceInScreen(
-                        app, screenItems.get(screenId), cordinates, spanX, spanY)) {
-                    // We found a space for it
-                    found = true;
-                    break;
-                }
+        int firstScreenToCheck = dataModel.isLeftPanelShown ? 2 : 1;
+        // Search on the screens for empty space
+        for (int screen = firstScreenToCheck; screen < screenCount; screen++) {
+            screenId = workspaceScreens.get(screen);
+            if (findNextAvailableIconSpaceInScreen(
+                    app, screenItems.get(screenId), coordinates, spanX, spanY)) {
+                // We found a space for it
+                found = true;
+                break;
             }
         }
 
@@ -324,11 +315,11 @@ public class AddWorkspaceItemsTask extends BaseModelUpdateTask {
 
             // If we still can't find an empty space, then God help us all!!!
             if (!findNextAvailableIconSpaceInScreen(
-                    app, screenItems.get(screenId), cordinates, spanX, spanY)) {
+                    app, screenItems.get(screenId), coordinates, spanX, spanY)) {
                 throw new RuntimeException("Can't find space to add the item");
             }
         }
-        return new int[] {screenId, cordinates[0], cordinates[1]};
+        return new int[] {screenId, coordinates[0], coordinates[1]};
     }
 
     private boolean findNextAvailableIconSpaceInScreen(
