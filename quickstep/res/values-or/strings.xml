@@ -49,7 +49,7 @@
     <string name="back_gesture_feedback_cancelled_left_edge" msgid="6671316150388702530">"ଆପଣ ସ୍କ୍ରିନର ବାମ ଧାରରୁ ମଝିକୁ ସ୍ୱାଇପ୍ କରି ଛାଡ଼ି ଦେଉଥିବା ସୁନିଶ୍ଚିତ କରନ୍ତୁ।"</string>
     <string name="back_gesture_feedback_swipe_too_far_from_right_edge" msgid="4306700023773832353">"ଆପଣ ଦୂର-ଡାହାଣ ଧାରରୁ ସ୍ୱାଇପ୍ କରୁଥିବା ସୁନିଶ୍ଚିତ କରନ୍ତୁ।"</string>
     <string name="back_gesture_feedback_cancelled_right_edge" msgid="4951916546256902552">"ଆପଣ ସ୍କ୍ରିନର ଡାହାଣ ଧାରରୁ ମଝିକୁ ସ୍ୱାଇପ୍ କରି ଛାଡ଼ି ଦେଉଥିବା ସୁନିଶ୍ଚିତ କରନ୍ତୁ।"</string>
-    <string name="back_gesture_feedback_complete_with_back_right_follow_up" msgid="2100639504811809267">"ପଛକୁ ଫେରିବା ପାଇଁ କିପରି ବାମ ଧାରରୁ ସ୍ୱାଇପ୍ କରିବେ ତାହା ଆପଣ ଜାଣିଲେ।"</string>
+    <string name="back_gesture_feedback_complete_with_back_right_follow_up" msgid="2100639504811809267">"ପଛକୁ ଫେରିବା ପାଇଁ ବାମ ପାର୍ଶ୍ଵରୁ କିପରି ସ୍ୱାଇପ୍ କରିବାକୁ ହେବ ତାହା ଆପଣ ଜାଣିଲେ।"</string>
     <string name="back_gesture_feedback_complete_with_overview_follow_up" msgid="9176400654037014471">"ଆପଣ ଡାହାଣ ଧାରରୁ ସ୍ୱାଇପ୍ କରି ପଛକୁ ଫେରିବା ଜାଣିଲେ। ତା\'ପରେ, ଆପଗୁଡ଼ିକୁ କିପରି ସ୍ୱିଚ୍ କରିବେ ତାହା ଜାଣନ୍ତୁ।"</string>
     <string name="back_gesture_feedback_complete_without_follow_up" msgid="6405649621667113830">"ଆପଣ \'ପଛକୁ ଫେରନ୍ତୁ\' ଜେଶ୍ଚର୍ ସମ୍ପୂର୍ଣ୍ଣ କରିଛନ୍ତି।"</string>
     <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="1148198467090405643">"ଆପଣ ସ୍କ୍ରିନର ତଳଭାଗର ଅତି ନିକଟରୁ ସ୍ୱାଇପ୍ କରୁନଥିବା ସୁନିଶ୍ଚିତ କରନ୍ତୁ।"</string>
