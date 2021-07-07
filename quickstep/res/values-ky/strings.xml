@@ -75,7 +75,7 @@
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"Дапдаяр!"</string>
     <string name="gesture_tutorial_action_button_label_next" msgid="2556263116424738762">"Кийинки"</string>
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"Жөндөөлөр"</string>
-    <string name="gesture_tutorial_try_again" msgid="65962545858556697">"Кайра аракет кылыңыз"</string>
+    <string name="gesture_tutorial_try_again" msgid="65962545858556697">"Кайталап көрүңүз"</string>
     <string name="gesture_tutorial_nice" msgid="2936275692616928280">"Сонун!"</string>
     <string name="gesture_tutorial_step" msgid="1279786122817620968">"Үйрөткүч: <xliff:g id="CURRENT">%1$d</xliff:g>/<xliff:g id="TOTAL">%2$d</xliff:g>"</string>
     <string name="allset_title" msgid="5021126669778966707">"Бүттү!"</string>
@@ -88,5 +88,5 @@
     <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"Жаңсап өтүү үйрөткүчүн өт-рүп жибер-би?"</string>
     <string name="skip_tutorial_dialog_subtitle" msgid="544063326241955662">"Аны кийин <xliff:g id="NAME">%1$s</xliff:g> колдонмосунан табасыз"</string>
     <string name="gesture_tutorial_action_button_label_cancel" msgid="3809842569351264108">"Жокко чыгаруу"</string>
-    <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"Өтк-п жиберүү"</string>
+    <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"Өткрп жиберүү"</string>
 </resources>

@@ -49,13 +49,13 @@
     <string name="back_gesture_feedback_cancelled_left_edge" msgid="6671316150388702530">"Pazite da prijeđete prstom od lijevog ruba do sredine zaslona i podignite prst."</string>
     <string name="back_gesture_feedback_swipe_too_far_from_right_edge" msgid="4306700023773832353">"Pazite da prijeđete prstom od krajnjeg desnog ruba."</string>
     <string name="back_gesture_feedback_cancelled_right_edge" msgid="4951916546256902552">"Pazite da prijeđete prstom od desnog ruba do sredine zaslona i podignite prst."</string>
-    <string name="back_gesture_feedback_complete_with_back_right_follow_up" msgid="2100639504811809267">"Naučili ste kako prijeći prstom slijeva udesno da biste se vratili."</string>
-    <string name="back_gesture_feedback_complete_with_overview_follow_up" msgid="9176400654037014471">"Naučili ste kako prijeći prstom zdesna ulijevo da biste se vratili. Sad saznajte kako promijeniti aplikaciju."</string>
+    <string name="back_gesture_feedback_complete_with_back_right_follow_up" msgid="2100639504811809267">"Naučili ste kako prijeći prstom slijeva da biste se vratili."</string>
+    <string name="back_gesture_feedback_complete_with_overview_follow_up" msgid="9176400654037014471">"Naučili ste kako prijeći prstom zdesna da biste se vratili. Sad saznajte kako promijeniti aplikaciju."</string>
     <string name="back_gesture_feedback_complete_without_follow_up" msgid="6405649621667113830">"Izvršili ste pokret za povratak."</string>
     <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="1148198467090405643">"Pazite da ne prijeđete prstom preblizu dnu zaslona."</string>
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"Osjetljivost pokreta povratka promijenite u postavkama"</string>
     <string name="back_left_gesture_intro_title" msgid="5197184481779330065">"Prijeđite prstom slijeva udesno da biste se vratili"</string>
-    <string name="back_right_gesture_intro_title" msgid="7431951986971898074">"Prijeđite prstom zdesna ulijevo da biste se vratili"</string>
+    <string name="back_right_gesture_intro_title" msgid="7431951986971898074">"Prijeđite prstom zdesna biste se vratili"</string>
     <string name="back_left_gesture_intro_subtitle" msgid="7672761376577628602">"Da biste se vratili na posljednji posjećeni zaslon, prijeđite od lijevog ruba do sredine zaslona."</string>
     <string name="back_right_gesture_intro_subtitle" msgid="2735828029197816509">"Na posljednji se zaslon možete vratiti i prelaskom od desnog ruba do sredine zaslona. Isprobajte odmah."</string>
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"Pazite da prijeđete prstom prema gore od donjeg ruba zaslona."</string>

@@ -55,7 +55,7 @@
     <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="1148198467090405643">"Asegúrate de non pasar o dedo demasiado preto da parte inferior da pantalla."</string>
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"Podes cambiar a sensibilidade do xesto en Configuración"</string>
     <string name="back_left_gesture_intro_title" msgid="5197184481779330065">"Pasa o dedo desde a esquerda para volver"</string>
-    <string name="back_right_gesture_intro_title" msgid="7431951986971898074">"Pasar o dedo desde a dereita para volver á pantalla anterior"</string>
+    <string name="back_right_gesture_intro_title" msgid="7431951986971898074">"Pasa o dedo desde a dereita para volver á pantalla anterior"</string>
     <string name="back_left_gesture_intro_subtitle" msgid="7672761376577628602">"Para volver á última pantalla, pasa o dedo desde o bordo esquerdo ata a metade da pantalla."</string>
     <string name="back_right_gesture_intro_subtitle" msgid="2735828029197816509">"Tamén podes volver pasando o dedo desde o bordo dereito ata a metade da pantalla. Próbao agora."</string>
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"Asegúrate de pasar o dedo cara arriba desde o bordo inferior da pantalla."</string>
