@@ -218,9 +218,6 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
     }
 
     public void updateSysuiStateFlags(int systemUiStateFlags, boolean forceUpdate) {
-        if (!isThreeButtonNav()) {
-            return;
-        }
         mControllers.navbarButtonsViewController.updateStateForSysuiFlags(
                 systemUiStateFlags, forceUpdate);
         mControllers.taskbarViewController.setImeIsVisible(
