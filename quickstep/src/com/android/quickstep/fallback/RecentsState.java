@@ -40,15 +40,16 @@ public class RecentsState implements BaseState<RecentsState> {
     private static final int FLAG_SHOW_AS_GRID = BaseState.getFlag(4);
     private static final int FLAG_SCRIM = BaseState.getFlag(5);
     private static final int FLAG_LIVE_TILE = BaseState.getFlag(6);
+    private static final int FLAG_OVERVIEW_UI = BaseState.getFlag(7);
 
     public static final RecentsState DEFAULT = new RecentsState(0,
             FLAG_CLEAR_ALL_BUTTON | FLAG_OVERVIEW_ACTIONS | FLAG_SHOW_AS_GRID | FLAG_SCRIM
-                    | FLAG_LIVE_TILE);
+                    | FLAG_LIVE_TILE | FLAG_OVERVIEW_UI);
     public static final RecentsState MODAL_TASK = new ModalState(1,
             FLAG_DISABLE_RESTORE | FLAG_CLEAR_ALL_BUTTON | FLAG_OVERVIEW_ACTIONS | FLAG_MODAL
-                    | FLAG_SHOW_AS_GRID | FLAG_SCRIM | FLAG_LIVE_TILE);
+                    | FLAG_SHOW_AS_GRID | FLAG_SCRIM | FLAG_LIVE_TILE | FLAG_OVERVIEW_UI);
     public static final RecentsState BACKGROUND_APP = new BackgroundAppState(2,
-            FLAG_DISABLE_RESTORE | FLAG_NON_INTERACTIVE | FLAG_FULL_SCREEN);
+            FLAG_DISABLE_RESTORE | FLAG_NON_INTERACTIVE | FLAG_FULL_SCREEN | FLAG_OVERVIEW_UI);
     public static final RecentsState HOME = new RecentsState(3, 0);
     public static final RecentsState BG_LAUNCHER = new LauncherState(4, 0);
 
@@ -138,6 +139,13 @@ public class RecentsState implements BaseState<RecentsState> {
 
     private boolean showAsGrid(DeviceProfile deviceProfile) {
         return deviceProfile.isTablet && FeatureFlags.ENABLE_OVERVIEW_GRID.get();
+    }
+
+    /**
+     * True if the state has overview panel visible.
+     */
+    public boolean overviewUi() {
+        return hasFlag(FLAG_OVERVIEW_UI);
     }
 
     private static class ModalState extends RecentsState {
