@@ -266,6 +266,12 @@ public class TaskOverlayFactory implements ResourceBasedOverride {
             return mThumbnailView.getScaledInsets();
         }
 
+        /**
+         * Called when the device rotated.
+         */
+        public void updateOrientationState(RecentsOrientedState state) {
+        }
+
         protected void showBlockedByPolicyMessage() {
             Toast.makeText(
                     mThumbnailView.getContext(),
