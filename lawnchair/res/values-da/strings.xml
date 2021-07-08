@@ -74,10 +74,10 @@
         <item quantity="other">%1$d Apps</item>
     </plurals>
     <string name="hotseat_qsb_label">Vis søgebar</string>
-    <string name="dt2s_admin_hint_title">Admin Permissions Required</string>
+    <string name="dt2s_admin_hint_title">Administratorrettigheder Påkrævet</string>
     <string name="dt2s_admin_hint">To use Double-Tap to Sleep, set Lawnchair as a device admin app. Tap “Open Settings,” then tap “Activate this device admin app.”</string>
-    <string name="dt2s_admin_warning">Double-Tap to Sleep will be turned off.</string>
-    <string name="dt2s_a11y_hint_title">Turn on Accessibility Service</string>
+    <string name="dt2s_admin_warning">Dobbelttryk for at sove vil blive slået fra.</string>
+    <string name="dt2s_a11y_hint_title">Slå tilgængelighedstjeneste til</string>
     <string name="dt2s_a11y_hint">To use Double-Tap to Sleep, turn on the Lawnchair accessibility service. Tap “Open Settings,” then select “Lawnchair” and turn on “Use Lawnchair.”</string>
     <string name="dt2s_warning_open_settings">Åbn Indstillinger</string>
     <string name="minus_one_enable">Vis Feed</string>
