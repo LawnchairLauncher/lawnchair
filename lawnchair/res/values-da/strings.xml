@@ -78,10 +78,10 @@
     <string name="dt2s_admin_hint">To use Double-Tap to Sleep, set Lawnchair as a device admin app. Tap “Open Settings,” then tap “Activate this device admin app.”</string>
     <string name="dt2s_admin_warning">Dobbelttryk for at sove vil blive slået fra.</string>
     <string name="dt2s_a11y_hint_title">Slå tilgængelighedstjeneste til</string>
-    <string name="dt2s_a11y_hint">To use Double-Tap to Sleep, turn on the Lawnchair accessibility service. Tap “Open Settings,” then select “Lawnchair” and turn on “Use Lawnchair.”</string>
+    <string name="dt2s_a11y_hint">For at bruger dobbelttryk for at sove skal du slå tilgængeligheds service for Lawnchair. Tryk \"Åben indstillinger,\" og så vælg \"Lawnchair\" og slå \"Brug Lawnchair.\" til</string>
     <string name="dt2s_warning_open_settings">Åbn Indstillinger</string>
     <string name="minus_one_enable">Vis Feed</string>
-    <string name="minus_one_unavailable">No feed installed.</string>
+    <string name="minus_one_unavailable">Ingen fred installeret.</string>
     <string name="fuzzy_search_title">Relateret søgning</string>
     <string name="fuzzy_search_desc">Anslået matchning for app-søgninger.</string>
     <string name="theme_label">Tema</string>
@@ -99,6 +99,6 @@
     <string name="done">Færdig</string>
     <string name="loading">Indlæser…</string>
     <string name="system">System</string>
-    <string name="custom">Custom</string>
-    <string name="custom_color">Custom Color</string>
+    <string name="custom">Brugerdefineret</string>
+    <string name="custom_color">Brugerdefineret Farve</string>
 </resources>
