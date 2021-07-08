@@ -16,6 +16,8 @@
 
 package com.android.quickstep;
 
+import static android.view.Surface.ROTATION_0;
+
 import static com.android.quickstep.views.OverviewActionsView.DISABLED_NO_THUMBNAIL;
 import static com.android.quickstep.views.OverviewActionsView.DISABLED_ROTATED;
 
@@ -30,6 +32,7 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.drawable.ColorDrawable;
+import android.os.Handler;
 import android.os.SystemClock;
 import android.os.UserManager;
 import android.provider.Settings;
@@ -46,7 +49,8 @@ import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.quickstep.util.AssistContentRequester;
-import com.android.quickstep.views.OverviewActionsView;
+import com.android.quickstep.util.RecentsOrientedState;
+import com.android.quickstep.views.GoOverviewActionsView;
 import com.android.quickstep.views.TaskThumbnailView;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.recents.model.ThumbnailData;
@@ -67,6 +71,9 @@ public final class TaskOverlayFactoryGo extends TaskOverlayFactory {
     private static final String NIU_ACTIONS_CONFIRMED = "launcher_go.niu_actions_confirmed";
     private static final String TAG = "TaskOverlayFactoryGo";
 
+    public static final String LISTEN_TOOL_TIP_SEEN = "launcher.go_listen_tip_seen";
+    public static final String TRANSLATE_TOOL_TIP_SEEN = "launcher.go_translate_tip_seen";
+
     private AssistContentRequester mContentRequester;
 
     public TaskOverlayFactoryGo(Context context) {
@@ -84,7 +91,7 @@ public final class TaskOverlayFactoryGo extends TaskOverlayFactory {
      * Overlay on each task handling Overview Action Buttons.
      * @param <T> The type of View in which the overlay will be placed
      */
-    public static final class TaskOverlayGo<T extends OverviewActionsView> extends TaskOverlay {
+    public static final class TaskOverlayGo<T extends GoOverviewActionsView> extends TaskOverlay {
         private String mNIUPackageName;
         private String mTaskPackageName;
         private String mWebUrl;
@@ -99,6 +106,7 @@ public final class TaskOverlayFactoryGo extends TaskOverlayFactory {
                 AssistContentRequester assistContentRequester) {
             super(taskThumbnailView);
             mFactoryContentRequester = assistContentRequester;
+            mSharedPreferences = Utilities.getPrefs(mApplicationContext);
         }
 
         /**
@@ -134,6 +142,18 @@ public final class TaskOverlayFactoryGo extends TaskOverlayFactory {
 
             int taskId = task.key.id;
             mFactoryContentRequester.requestAssistContent(taskId, this::onAssistContentReceived);
+
+            RecentsOrientedState orientedState =
+                    mThumbnailView.getTaskView().getRecentsView().getPagedViewOrientedState();
+            boolean isInLandscape = orientedState.getDisplayRotation() != ROTATION_0;
+
+            // show tooltips in portrait mode only
+            // TODO: remove If check once b/183714277 is fixed
+            if (!isInLandscape) {
+                new Handler().post(() -> {
+                    showTooltipsIfUnseen();
+                });
+            }
         }
 
         /** Provide Assist Content to the overlay. */
@@ -147,6 +167,12 @@ public final class TaskOverlayFactoryGo extends TaskOverlayFactory {
         public void reset() {
             super.reset();
             mWebUrl = null;
+        }
+
+        @Override
+        public void updateOrientationState(RecentsOrientedState state) {
+            super.updateOrientationState(state);
+            ((GoOverviewActionsView) getActionsView()).updateOrientationState(state);
         }
 
         /**
@@ -274,6 +300,20 @@ public final class TaskOverlayFactoryGo extends TaskOverlayFactory {
 
         private void onNiuActionsConfirmationReject(View v) {
             mConfirmationDialog.cancel();
+        }
+
+        /**
+         * Checks and Shows the tooltip if they are not seen by user
+         * Order of tooltips are translate and then listen
+         */
+        private void showTooltipsIfUnseen() {
+            if (!mSharedPreferences.getBoolean(TRANSLATE_TOOL_TIP_SEEN, false)) {
+                ((GoOverviewActionsView) getActionsView()).showTranslateToolTip();
+                mSharedPreferences.edit().putBoolean(TRANSLATE_TOOL_TIP_SEEN, true).apply();
+            } else if (!mSharedPreferences.getBoolean(LISTEN_TOOL_TIP_SEEN, false)) {
+                ((GoOverviewActionsView) getActionsView()).showListenToolTip();
+                mSharedPreferences.edit().putBoolean(LISTEN_TOOL_TIP_SEEN, true).apply();
+            }
         }
     }
 
