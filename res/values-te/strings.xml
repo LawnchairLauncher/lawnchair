@@ -157,14 +157,14 @@
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"వ్యక్తిగతం"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"వర్క్"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"కార్యాలయ ప్రొఫైల్"</string>
-    <string name="work_profile_edu_work_apps" msgid="7895468576497746520">"వర్క్ యాప్‌లు బ్యాడ్జ్ చేయబడ్డాయి, మీ IT అడ్మిన్‌కు కనిపిస్తాయి"</string>
+    <string name="work_profile_edu_work_apps" msgid="7895468576497746520">"వర్క్ యాప్‌లకు బ్యాడ్జ్ ఉంటుంది, అవి మీ IT అడ్మిన్‌కు కనిపిస్తాయి"</string>
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"అర్థమైంది"</string>
     <string name="work_apps_paused_title" msgid="3040901117349444598">"వర్క్ యాప్‌లు పాజ్ చేయబడ్డాయి"</string>
     <string name="work_apps_paused_body" msgid="261634750995824906">"మీకు నోటిఫికేషన్‌లు పంపడం, మీ బ్యాటరీని ఉపయోగించడం, లేదా మీ లొకేషన్‌ను యాక్సెస్ చేయడం మీ వర్క్ యాప్‌లకు సాధ్యపడదు"</string>
     <string name="work_apps_paused_content_description" msgid="5149623040804051095">"వర్క్ యాప్‌లు ఆఫ్‌లో ఉన్నాయి. మీకు నోటిఫికేషన్‌లు పంపడం, మీ బ్యాటరీని ఉపయోగించడం, లేదా మీ లొకేషన్‌ను యాక్సెస్ చేయడం మీ వర్క్ యాప్‌లకు సాధ్యపడదు"</string>
-    <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"వర్క్ యాప్‌లు బ్యాడ్జ్ చేయబడ్డాయి, మీ IT అడ్మిన్‌కి కనిపిస్తాయి"</string>
+    <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"వర్క్ యాప్‌లకు బ్యాడ్జ్ ఉంటుంది, అవి మీ IT అడ్మిన్‌కు కనిపిస్తాయి"</string>
     <string name="work_apps_paused_edu_accept" msgid="6377476824357318532">"అర్థమైంది"</string>
-    <string name="work_apps_pause_btn_text" msgid="1921059713673767460">"వర్క్ యాప్‌లను ఆఫ్ చేయి"</string>
+    <string name="work_apps_pause_btn_text" msgid="1921059713673767460">"వర్క్ యాప్‌లను ఆఫ్ చేయండి"</string>
     <string name="work_apps_enable_btn_text" msgid="1156432622148413741">"వర్క్ యాప్‌లను ఆన్ చేయి"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"ఫిల్టర్ చేయి"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"విఫలమైంది: <xliff:g id="WHAT">%1$s</xliff:g>"</string>

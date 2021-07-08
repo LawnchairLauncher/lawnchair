@@ -26,6 +26,8 @@ import android.content.Context;
 import android.graphics.Outline;
 import android.graphics.PointF;
 import android.graphics.Rect;
+import android.graphics.drawable.ShapeDrawable;
+import android.graphics.drawable.shapes.RectShape;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.MotionEvent;
@@ -237,6 +239,8 @@ public class TaskMenuView extends AbstractFloatingView implements OnScrollChange
         PagedOrientationHandler orientationHandler = taskView.getPagedOrientationHandler();
         measure(MeasureSpec.UNSPECIFIED, MeasureSpec.UNSPECIFIED);
         orientationHandler.setTaskMenuAroundTaskView(this, mTaskInsetMargin);
+
+        // Get Position
         mActivity.getDragLayer().getDescendantRectRelativeToSelf(taskView, sTempRect);
         Rect insets = mActivity.getDragLayer().getInsets();
         BaseDragLayer.LayoutParams params = (BaseDragLayer.LayoutParams) getLayoutParams();
@@ -248,8 +252,15 @@ public class TaskMenuView extends AbstractFloatingView implements OnScrollChange
         setLayoutParams(params);
         setScaleX(taskView.getScaleX());
         setScaleY(taskView.getScaleY());
+
+        // Set divider spacing
+        ShapeDrawable divider = new ShapeDrawable(new RectShape());
+        divider.getPaint().setColor(getResources().getColor(android.R.color.transparent));
+        int dividerSpacing = (int) getResources().getDimension(R.dimen.task_menu_spacing);
+        mOptionLayout.setShowDividers(SHOW_DIVIDER_MIDDLE);
+
         orientationHandler.setTaskOptionsMenuLayoutOrientation(
-                mActivity.getDeviceProfile(), mOptionLayout);
+                mActivity.getDeviceProfile(), mOptionLayout, dividerSpacing, divider);
         setPosition(sTempRect.left - insets.left, sTempRect.top - insets.top, 0);
     }
 

@@ -83,7 +83,6 @@ import android.text.StaticLayout;
 import android.text.TextPaint;
 import android.util.AttributeSet;
 import android.util.FloatProperty;
-import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.Gravity;
 import android.view.HapticFeedbackConstants;
@@ -1700,7 +1699,6 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
      * {@link #onGestureAnimationStart} and {@link #onGestureAnimationEnd()}.
      */
     public void onSwipeUpAnimationSuccess() {
-        Log.d("b/186444448", "onSwipeUpAnimationSuccess");
         if (getRunningTaskView() != null) {
             animateUpRunningTaskIconScale();
         }
@@ -1774,7 +1772,6 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
      * Called when a gesture from an app has finished, and the animation to the target has ended.
      */
     public void onGestureAnimationEnd() {
-        Log.d("b/186444448", "onGestureEnd");
         mGestureActive = false;
         if (mOrientationState.setGestureActive(false)) {
             updateOrientationHandler();
@@ -1932,8 +1929,6 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     public void animateUpRunningTaskIconScale() {
         mRunningTaskIconScaledDown = false;
         TaskView firstTask = getRunningTaskView();
-        Log.d("b/186444448", "animateUpRunningTaskIconScale: firstTask="
-                + (firstTask != null ? "t:" + firstTask.getTask() : null));
         if (firstTask != null) {
             firstTask.setIconScaleAnimStartProgress(0f);
             firstTask.animateIconScaleAndDimIntoView();

@@ -52,8 +52,8 @@
     <string name="widgets_full_sheet_personal_tab" msgid="2743540105607120182">"Shaxsiy"</string>
     <string name="widgets_full_sheet_work_tab" msgid="3767150027110633765">"Ish"</string>
     <string name="widget_category_conversations" msgid="8894438636213590446">"Suhbatlar"</string>
-    <string name="widget_education_header" msgid="4874760613775913787">"Barcha foydali axborot koʻz oldingizda"</string>
-    <string name="widget_education_content" msgid="745542879510751525">"Ilovalarni ochmasdan axborot olish uchun vidjetlarni bosh ekranga qoʻshishingiz mumkin"</string>
+    <string name="widget_education_header" msgid="4874760613775913787">"Barcha kerakli axborot doim yoningizda"</string>
+    <string name="widget_education_content" msgid="745542879510751525">"Kerakli ilovalarni ochmasdan turib ulardan axborot olish uchun vidjetlarni bosh ekranga chiqaring"</string>
     <string name="reconfigurable_widget_education_tip" msgid="6336962690888067057">"Vidjet sozlamalarini oʻzgartirish uchun bosing"</string>
     <string name="widget_education_close_button" msgid="8676165703104836580">"OK"</string>
     <string name="widget_reconfigure_button_content_description" msgid="8811472721881205250">"Vidjet sozlamalarini oʻzgartirish"</string>
@@ -157,12 +157,12 @@
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"Shaxsiy"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"Ish"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"Ish profili"</string>
-    <string name="work_profile_edu_work_apps" msgid="7895468576497746520">"Ishga oid ilovalar qadalgan va IT administratoringizga koʻrinadi"</string>
+    <string name="work_profile_edu_work_apps" msgid="7895468576497746520">"Ishga oid ilovalarning maxsus belgisi bor hamda ular administratoringizga koʻrinadi"</string>
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"OK"</string>
     <string name="work_apps_paused_title" msgid="3040901117349444598">"Ishga oid ilovalar pauza qilingan"</string>
     <string name="work_apps_paused_body" msgid="261634750995824906">"Ishga oid ilovalar batareya sarfi haqida bildirishnomalar yubora olmaydi va joylashuv axborotidan foydalana olmaydi"</string>
     <string name="work_apps_paused_content_description" msgid="5149623040804051095">"Ishga oid ilovalar faolsizlantirilgan. Ular batareya sarfi haqida bildirishnomalar yubora olmaydi va joylashuv axborotidan foydalana olmaydi"</string>
-    <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"Ishga oid ilovalar qadalgan va IT administratoringizga koʻrinadi"</string>
+    <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"Ishga oid ilovalarning maxsus belgisi bor hamda ular administratoringizga koʻrinadi"</string>
     <string name="work_apps_paused_edu_accept" msgid="6377476824357318532">"OK"</string>
     <string name="work_apps_pause_btn_text" msgid="1921059713673767460">"Ishga oid ilovalarni faolsizlantirish"</string>
     <string name="work_apps_enable_btn_text" msgid="1156432622148413741">"Ishga oid ilovalarni yoqish"</string>

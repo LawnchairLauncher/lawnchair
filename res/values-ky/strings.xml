@@ -28,7 +28,7 @@
     <string name="shortcut_not_available" msgid="2536503539825726397">"Кыска жол жок"</string>
     <string name="home_screen" msgid="5629429142036709174">"Башкы экран"</string>
     <string name="recent_task_option_split_screen" msgid="6690461455618725183">"Экранды бөлүү"</string>
-    <string name="long_press_widget_to_add" msgid="3587712543577675817">"Виджетти жылдыруу үчүн коё бербей басып туруңуз."</string>
+    <string name="long_press_widget_to_add" msgid="3587712543577675817">"Виджетти кое бербей басып туруп жылдырыңыз."</string>
     <string name="long_accessible_way_to_add" msgid="2733588281439571974">"Виджетти жылдыруу үчүн эки жолу таптап, кармап туруңуз же ыңгайлаштырылган аракеттерди колдонуңуз."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"Туурасы: %1$d, бийиктиги: %2$d"</string>
@@ -52,8 +52,8 @@
     <string name="widgets_full_sheet_personal_tab" msgid="2743540105607120182">"Жеке виджеттер"</string>
     <string name="widgets_full_sheet_work_tab" msgid="3767150027110633765">"Жумуш"</string>
     <string name="widget_category_conversations" msgid="8894438636213590446">"Сүйлөшүүлөр"</string>
-    <string name="widget_education_header" msgid="4874760613775913787">"Пайдалуу маалымат манжаңыздын учунда эле турат"</string>
-    <string name="widget_education_content" msgid="745542879510751525">"Колдонмолорду ачпастан керектүү маалыматты алуу үчүн Башкы экранга виджеттерди кошуңуз"</string>
+    <string name="widget_education_header" msgid="4874760613775913787">"Керектүү маалымат манжаңыздын учунда"</string>
+    <string name="widget_education_content" msgid="745542879510751525">"Колдонмолорду ачпастан керектүү маалыматты алуу үчүн башкы экранга виджеттерди кошуңуз"</string>
     <string name="reconfigurable_widget_education_tip" msgid="6336962690888067057">"Виджеттин жөндөөлөрүн өзгөртүү үчүн таптап коюңуз"</string>
     <string name="widget_education_close_button" msgid="8676165703104836580">"Түшүндүм"</string>
     <string name="widget_reconfigure_button_content_description" msgid="8811472721881205250">"Виджеттин жөндөөлөрүн өзгөртүү"</string>
