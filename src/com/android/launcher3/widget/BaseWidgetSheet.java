@@ -55,7 +55,7 @@ public abstract class BaseWidgetSheet extends AbstractSlideInView<Launcher>
      * The maximum scale, [0, 1], of the device screen width that the widgets picker can consume
      * on large screen devices.
      */
-    protected static final float MAX_WIDTH_SCALE_FOR_LARGER_SCREEN = 0.8f;
+    protected static final float MAX_WIDTH_SCALE_FOR_LARGER_SCREEN = 0.89f;
 
     protected static final String KEY_WIDGETS_EDUCATION_TIP_SEEN =
             "launcher.widgets_education_tip_seen";
