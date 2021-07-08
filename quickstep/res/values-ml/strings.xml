@@ -57,7 +57,7 @@
     <string name="back_left_gesture_intro_title" msgid="5197184481779330065">"മടങ്ങാൻ ഇടതുഭാഗത്ത് നിന്ന് സ്വൈപ്പ് ചെയ്യുക"</string>
     <string name="back_right_gesture_intro_title" msgid="7431951986971898074">"മടങ്ങാൻ വലതുഭാഗത്ത് നിന്ന് സ്വൈപ്പ് ചെയ്യുക"</string>
     <string name="back_left_gesture_intro_subtitle" msgid="7672761376577628602">"നിങ്ങളുടെ മുമ്പത്തെ സ്ക്രീനിലേക്ക് മടങ്ങാൻ, സ്ക്രീനിന്റെ ഇടത്തേ അരികിൽ നിന്ന് നടുവിലേക്ക് സ്വൈപ്പ് ചെയ്യുക."</string>
-    <string name="back_right_gesture_intro_subtitle" msgid="2735828029197816509">"സ്ക്രീനിന്റെ വലത്തേ അരികിൽ നിന്ന് നടുവിലേക്ക് സ്വൈപ്പ് ചെയ്തും മുൻ സ്ക്രീനിലെത്താം. ഇതിന് ശ്രമിക്കൂ."</string>
+    <string name="back_right_gesture_intro_subtitle" msgid="2735828029197816509">"സ്ക്രീനിന്റെ വലത്തേ അരികിൽ നിന്ന് നടുവിലേക്ക് സ്വൈപ്പ് ചെയ്തും മുൻ സ്ക്രീനിലെത്താം. ശ്രമിച്ചുനോക്കൂ."</string>
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"സ്‌ക്രീനിന്റെ താഴത്തെ അരികിൽ നിന്ന് മുകളിലേക്ക് സ്വെെപ്പ് ചെയ്യുന്നുണ്ടെന്ന് ഉറപ്പാക്കുക."</string>
     <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"വിടുന്നതിന് മുമ്പ് നിങ്ങൾ താൽക്കാലികമായി നിർത്തുന്നില്ലെന്ന് ഉറപ്പാക്കുക."</string>
     <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"നേരെ മുകളിലേക്ക് സ്വെെപ്പ് ചെയ്യുന്നുണ്ടെന്ന് ഉറപ്പിക്കുക."</string>

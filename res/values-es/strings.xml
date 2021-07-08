@@ -159,8 +159,8 @@
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"Perfil de trabajo"</string>
     <string name="work_profile_edu_work_apps" msgid="7895468576497746520">"Las aplicaciones de trabajo tienen una insignia, y tu administrador de TI las puede ver"</string>
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"Entendido"</string>
-    <string name="work_apps_paused_title" msgid="3040901117349444598">"Se han pausado las aplicaciones de trabajo"</string>
-    <string name="work_apps_paused_body" msgid="261634750995824906">"Tus aplicaciones de trabajo no pueden enviarte notificaciones, consumir batería ni acceder a tu ubicación"</string>
+    <string name="work_apps_paused_title" msgid="3040901117349444598">"Las aplicaciones de trabajo están en pausa"</string>
+    <string name="work_apps_paused_body" msgid="261634750995824906">"Tus aplicaciones de trabajo no pueden enviarte notificaciones, usar batería ni acceder a tu ubicación"</string>
     <string name="work_apps_paused_content_description" msgid="5149623040804051095">"Las aplicaciones de trabajo están desactivadas, por lo que no pueden enviarte notificaciones, consumir batería ni acceder a tu ubicación"</string>
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"Las aplicaciones de trabajo tienen una insignia y tu administrador de TI las puede ver"</string>
     <string name="work_apps_paused_edu_accept" msgid="6377476824357318532">"Entendido"</string>
