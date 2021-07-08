@@ -52,15 +52,15 @@ import java.util.Collections;
 
 @RunWith(RobolectricTestRunner.class)
 public class CachingWidgetPreviewLoaderTest {
-    private static final Size SIZE_10_10 = new Size(10, 10);
-    private static final Size SIZE_20_20 = new Size(20, 20);
+    private final Size SIZE_10_10 = new Size(10, 10);
+    private final Size SIZE_20_20 = new Size(20, 20);
     private static final String TEST_PACKAGE = "com.example.test";
-    private static final ComponentName TEST_PROVIDER =
+    private final ComponentName TEST_PROVIDER =
             new ComponentName(TEST_PACKAGE, ".WidgetProvider");
-    private static final ComponentName TEST_PROVIDER2 =
+    private final ComponentName TEST_PROVIDER2 =
             new ComponentName(TEST_PACKAGE, ".WidgetProvider2");
-    private static final Bitmap BITMAP = Bitmap.createBitmap(10, 10, Bitmap.Config.ARGB_8888);
-    private static final Bitmap BITMAP2 = Bitmap.createBitmap(20, 20, Bitmap.Config.ARGB_8888);
+    private final Bitmap BITMAP = Bitmap.createBitmap(10, 10, Bitmap.Config.ARGB_8888);
+    private final Bitmap BITMAP2 = Bitmap.createBitmap(20, 20, Bitmap.Config.ARGB_8888);
 
 
     @Mock private CancellationSignal mCancellationSignal;
