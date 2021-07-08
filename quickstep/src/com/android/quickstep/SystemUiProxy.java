@@ -33,6 +33,7 @@ import android.os.RemoteException;
 import android.os.UserHandle;
 import android.util.Log;
 import android.view.MotionEvent;
+import android.view.RemoteAnimationAdapter;
 import android.view.SurfaceControl;
 
 import com.android.launcher3.util.MainThreadInitializedObject;
@@ -558,6 +559,22 @@ public class SystemUiProxy implements ISystemUiProxy,
                         sidePosition, remoteTransition.getTransition());
             } catch (RemoteException e) {
                 Log.w(TAG, "Failed call startTask");
+            }
+        }
+    }
+
+    /**
+     * Start multiple tasks in split-screen simultaneously.
+     */
+    public void startTasksWithLegacyTransition(int mainTaskId, Bundle mainOptions, int sideTaskId,
+            Bundle sideOptions, @SplitConfigurationOptions.StagePosition int sidePosition,
+            RemoteAnimationAdapter adapter) {
+        if (mSystemUiProxy != null) {
+            try {
+                mSplitScreen.startTasksWithLegacyTransition(mainTaskId, mainOptions, sideTaskId,
+                        sideOptions, sidePosition, adapter);
+            } catch (RemoteException e) {
+                Log.w(TAG, "Failed call startTasksWithLegacyTransition");
             }
         }
     }
