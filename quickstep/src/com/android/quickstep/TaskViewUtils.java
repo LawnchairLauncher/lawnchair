@@ -15,6 +15,7 @@
  */
 package com.android.quickstep;
 
+import static android.view.WindowManager.LayoutParams.TYPE_DOCK_DIVIDER;
 import static android.view.WindowManager.TRANSIT_OPEN;
 import static android.view.WindowManager.TRANSIT_TO_FRONT;
 
@@ -452,6 +453,10 @@ public final class TaskViewUtils {
         PendingAnimation pa = new PendingAnimation(RECENTS_LAUNCH_DURATION);
         createRecentsWindowAnimator(taskView, skipLauncherChanges, appTargets, wallpaperTargets,
                 nonAppTargets, depthController, pa);
+        if (launcherClosing) {
+            // TODO(b/182592057): differentiate between "restore split" vs "launch fullscreen app"
+            TaskViewUtils.setDividerBarShown(nonAppTargets, true);
+        }
 
         Animator childStateAnimation = null;
         // Found a visible recents task that matches the opening app, lets launch the app from there
@@ -503,5 +508,20 @@ public final class TaskViewUtils {
         // (the ordering of listeners matter in this case).
         stateManager.setCurrentAnimation(anim, childStateAnimation);
         anim.addListener(windowAnimEndListener);
+    }
+
+    static void setDividerBarShown(RemoteAnimationTargetCompat[] nonApps, boolean shown) {
+        // TODO(b/182592057): make this part of the animations instead.
+        if (nonApps != null && nonApps.length > 0) {
+            for (int i = 0; i < nonApps.length; ++i) {
+                final RemoteAnimationTargetCompat targ = nonApps[i];
+                if (targ.windowType == TYPE_DOCK_DIVIDER) {
+                    SurfaceControl.Transaction t = new SurfaceControl.Transaction();
+                    t.setVisibility(targ.leash.getSurfaceControl(), shown);
+                    t.apply();
+                    t.close();
+                }
+            }
+        }
     }
 }
