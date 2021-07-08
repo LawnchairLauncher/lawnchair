@@ -37,7 +37,9 @@ import android.content.IntentSender;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.CancellationSignal;
+import android.os.Handler;
 import android.os.IBinder;
+import android.util.Log;
 import android.view.View;
 import android.window.SplashScreen;
 
@@ -89,6 +91,11 @@ import java.util.stream.Stream;
 public abstract class BaseQuickstepLauncher extends Launcher
         implements NavigationModeChangeListener {
 
+    private static final long BACKOFF_MILLIS = 1000;
+
+    // Max backoff caps at 5 mins
+    private static final long MAX_BACKOFF_MILLIS = 10 * 60 * 1000;
+
     private DepthController mDepthController = new DepthController(this);
     private QuickstepTransitionManager mAppTransitionManager;
 
@@ -108,12 +115,24 @@ public abstract class BaseQuickstepLauncher extends Launcher
         public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
             mTaskbarManager = ((TISBinder) iBinder).getTaskbarManager();
             mTaskbarManager.setLauncher(BaseQuickstepLauncher.this);
+            Log.d(TAG, "TIS service connected");
+            resetServiceBindRetryState();
         }
 
         @Override
         public void onServiceDisconnected(ComponentName componentName) { }
+
+        @Override
+        public void onBindingDied(ComponentName name) {
+            Log.w(TAG, "TIS binding died");
+            internalBindToTIS();
+        }
     };
+
+    private final Runnable mConnectionRunnable = this::internalBindToTIS;
+    private short mConnectionAttempts;
     private final TaskbarStateHandler mTaskbarStateHandler = new TaskbarStateHandler(this);
+    private final Handler mHandler = new Handler();
 
     // Will be updated when dragging from taskbar.
     private @Nullable DragOptions mNextWorkspaceDragOptions = null;
@@ -132,11 +151,11 @@ public abstract class BaseQuickstepLauncher extends Launcher
 
         SysUINavigationMode.INSTANCE.get(this).removeModeChangeListener(this);
 
-
         unbindService(mTisBinderConnection);
         if (mTaskbarManager != null) {
             mTaskbarManager.clearLauncher(this);
         }
+        resetServiceBindRetryState();
         super.onDestroy();
     }
 
@@ -264,8 +283,33 @@ public abstract class BaseQuickstepLauncher extends Launcher
         mAppTransitionManager = new QuickstepTransitionManager(this);
         mAppTransitionManager.registerRemoteAnimations();
 
-        bindService(new Intent(this, TouchInteractionService.class), mTisBinderConnection, 0);
+        internalBindToTIS();
+    }
 
+    /**
+     * Binds {@link #mTisBinderConnection} to {@link TouchInteractionService}. If the binding fails,
+     * attempts to retry via {@link #mConnectionRunnable}
+     */
+    private void internalBindToTIS() {
+        boolean bound = bindService(new Intent(this, TouchInteractionService.class),
+                        mTisBinderConnection, 0);
+        if (bound) {
+            resetServiceBindRetryState();
+            return;
+        }
+
+        Log.w(TAG, "Retrying TIS Binder connection attempt: " + mConnectionAttempts);
+        final long timeoutMs = (long) Math.min(
+                Math.scalb(BACKOFF_MILLIS, mConnectionAttempts), MAX_BACKOFF_MILLIS);
+        mHandler.postDelayed(mConnectionRunnable, timeoutMs);
+        mConnectionAttempts++;
+    }
+
+    private void resetServiceBindRetryState() {
+        if (mHandler.hasCallbacks(mConnectionRunnable)) {
+            mHandler.removeCallbacks(mConnectionRunnable);
+        }
+        mConnectionAttempts = 0;
     }
 
     public void setTaskbarUIController(LauncherTaskbarUIController taskbarUIController) {
