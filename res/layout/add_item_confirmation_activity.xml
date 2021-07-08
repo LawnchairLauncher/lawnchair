@@ -65,12 +65,19 @@
                 android:alpha="0.7"
                 android:importantForAccessibility="no"/>
 
-            <include layout="@layout/widget_cell"
-                android:id="@+id/widget_cell"
+            <ScrollView
+                android:id="@+id/widget_preview_scroll_view"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="1"
-                android:layout_marginVertical="16dp" />
+                android:layout_marginVertical="16dp"
+                android:layout_weight="1">
+
+                <include
+                    android:id="@+id/widget_cell"
+                    layout="@layout/widget_cell"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </ScrollView>
 
             <LinearLayout
                 android:layout_width="match_parent"
