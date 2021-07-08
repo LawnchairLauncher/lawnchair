@@ -363,7 +363,9 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
     /** Sets the widget preview image size, in number of cells, and preview scale. */
     public Size setPreviewSize(int spanX, int spanY, float previewScale) {
         DeviceProfile deviceProfile = mActivity.getDeviceProfile();
-        Size widgetSize = WidgetSizes.getWidgetSizePx(deviceProfile, spanX, spanY);
+        Size widgetSize =
+                mItem != null ? WidgetSizes.getWidgetItemSizePx(getContext(), deviceProfile, mItem)
+                : WidgetSizes.getWidgetSizePx(deviceProfile, spanX, spanY);
         mPreviewWidth = widgetSize.getWidth();
         mPreviewHeight = widgetSize.getHeight();
         mPreviewScale = previewScale;
