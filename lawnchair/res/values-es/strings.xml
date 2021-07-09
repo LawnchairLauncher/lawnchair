@@ -84,11 +84,11 @@
     <string name="minus_one_unavailable">Feed no instalado.</string>
     <string name="fuzzy_search_title">Búsqueda Aproximada</string>
     <string name="fuzzy_search_desc">Coincidencia aproximada para búsqueda de aplicaciones.</string>
-    <string name="theme_label">Temas</string>
+    <string name="theme_label">Tema</string>
     <string name="theme_light">Claro</string>
     <string name="theme_dark">Oscuro</string>
     <string name="theme_system_default">Predeterminado del Sistema</string>
-    <string name="theme_follow_wallpaper">Seguir Fondo</string>
+    <string name="theme_follow_wallpaper">Coincidir Fondo</string>
     <string name="quickstep_label">Recientes</string>
     <string name="clear_all_as_action_label">Mostrar \"Borrar todo\" en la parte inferior</string>
     <string name="window_corner_radius_label">Radio de esquina</string>
