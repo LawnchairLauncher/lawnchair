@@ -18,6 +18,7 @@ package com.android.launcher3.widget;
 
 import static com.android.launcher3.Utilities.ATLEAST_R;
 import static com.android.launcher3.anim.Interpolators.FAST_OUT_SLOW_IN;
+import static com.android.launcher3.widget.BaseWidgetSheet.MAX_WIDTH_SCALE_FOR_LARGER_SCREEN;
 
 import android.animation.PropertyValuesHolder;
 import android.annotation.SuppressLint;
@@ -107,6 +108,15 @@ public class AddItemWidgetsBottomSheet extends AbstractSlideInView<AddItemActivi
             Rect padding = deviceProfile.workspacePadding;
             widthUsed = Math.max(padding.left + padding.right,
                     2 * (mInsets.left + mInsets.right));
+        }
+
+        if (deviceProfile.isTablet || deviceProfile.isTwoPanels) {
+            // In large screen devices, we restrict the width of the widgets picker to show part of
+            // the home screen. Let's ensure the minimum width used is at least the minimum width
+            // that isn't taken by the widgets picker.
+            int minUsedWidth = (int) (deviceProfile.availableWidthPx
+                    * (1 - MAX_WIDTH_SCALE_FOR_LARGER_SCREEN));
+            widthUsed = Math.max(widthUsed, minUsedWidth);
         }
 
         int heightUsed = mInsets.top + deviceProfile.edgeMarginPx;
