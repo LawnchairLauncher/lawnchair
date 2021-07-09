@@ -23,6 +23,7 @@ import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.Rect;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.FrameLayout;
@@ -162,6 +163,8 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
         } else {
             mHiddenFlags &= ~visibilityFlags;
         }
+        Log.v("b/193125090",
+                "updateHiddenFlags - visibilityFlags: " + visibilityFlags + ", enable: " + enable);
         boolean isHidden = mHiddenFlags != 0;
         mMultiValueAlpha.getProperty(INDEX_HIDDEN_FLAGS_ALPHA).setValue(isHidden ? 0 : 1);
     }
@@ -181,6 +184,8 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
             mDisabledFlags &= ~disabledFlags;
         }
         //
+        Log.v("b/193125090",
+                "updateDisabledFlags - disabledFlags: " + disabledFlags + ", enable: " + enable);
         boolean isEnabled = (mDisabledFlags & ~DISABLED_ROTATED) == 0;
         LayoutUtils.setViewEnabled(this, isEnabled);
     }
