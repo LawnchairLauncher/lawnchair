@@ -25,10 +25,12 @@ import android.content.Context;
 import android.graphics.Insets;
 import android.graphics.Rect;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
 import android.view.WindowInsets;
+import android.widget.ScrollView;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
@@ -44,6 +46,7 @@ public class AddItemWidgetsBottomSheet extends AbstractSlideInView<AddItemActivi
     private static final int DEFAULT_CLOSE_DURATION = 200;
 
     private final Rect mInsets;
+    private ScrollView mWidgetPreviewScrollView;
 
     public AddItemWidgetsBottomSheet(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
@@ -65,6 +68,19 @@ public class AddItemWidgetsBottomSheet extends AbstractSlideInView<AddItemActivi
         attachToContainer();
         setOnApplyWindowInsetsListener(this);
         animateOpen();
+    }
+
+    @Override
+    public boolean onControllerInterceptTouchEvent(MotionEvent ev) {
+        if (ev.getAction() == MotionEvent.ACTION_DOWN) {
+            mNoIntercept = false;
+            // Suppress drag to dismiss gesture if the scroll view is being scrolled.
+            if (getPopupContainer().isEventOverView(mWidgetPreviewScrollView, ev)
+                    && mWidgetPreviewScrollView.getScrollY() > 0) {
+                mNoIntercept = true;
+            }
+        }
+        return super.onControllerInterceptTouchEvent(ev);
     }
 
     @Override
@@ -104,6 +120,7 @@ public class AddItemWidgetsBottomSheet extends AbstractSlideInView<AddItemActivi
     protected void onFinishInflate() {
         super.onFinishInflate();
         mContent = findViewById(R.id.add_item_bottom_sheet_content);
+        mWidgetPreviewScrollView = findViewById(R.id.widget_preview_scroll_view);
     }
 
     private void animateOpen() {
