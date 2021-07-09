@@ -65,7 +65,7 @@ import java.util.function.IntConsumer;
  * This class has initial default state assuming the device and foreground app have
  * no ({@link Surface#ROTATION_0} rotation.
  */
-public final class RecentsOrientedState implements
+public class RecentsOrientedState implements
         SharedPreferences.OnSharedPreferenceChangeListener {
 
     private static final String TAG = "RecentsOrientedState";
