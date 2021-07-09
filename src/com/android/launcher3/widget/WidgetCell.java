@@ -177,6 +177,7 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
             mWidgetImageContainer.removeView(mAppWidgetHostViewPreview);
         }
         mAppWidgetHostViewPreview = null;
+        mItem = null;
     }
 
     public void setSourceContainer(int sourceContainer) {
