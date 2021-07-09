@@ -5,4 +5,24 @@
     <string name="action_listen" msgid="2370304050784689486">"Escuchar"</string>
     <string name="action_translate" msgid="8028378961867277746">"Traducir"</string>
     <string name="action_search" msgid="6269564710943755464">"Lens"</string>
+    <!-- no translation found for dialog_acknowledge (2804025517675853172) -->
+    <skip />
+    <!-- no translation found for dialog_cancel (6464336969134856366) -->
+    <skip />
+    <!-- no translation found for dialog_settings (6564397136021186148) -->
+    <skip />
+    <string name="niu_actions_confirmation_title" msgid="3863451714863526143">"Traduce o escucha el texto que aparece en la pantalla"</string>
+    <string name="niu_actions_confirmation_text" msgid="2105271481950866089">"Es posible que se comparta información con Google, como el texto de la pantalla, direcciones web y capturas de pantalla.\n\nPara cambiar la información que se comparte, ve a "<b>"Configuración &gt; Apps &gt; Apps predeterminadas &gt; App de asistente digital"</b>"."</string>
+    <!-- no translation found for assistant_not_selected_title (5017072974603345228) -->
+    <skip />
+    <!-- no translation found for assistant_not_selected_text (3244613673884359276) -->
+    <skip />
+    <!-- no translation found for assistant_not_supported_title (1675788067597484142) -->
+    <skip />
+    <!-- no translation found for assistant_not_supported_text (1708031078549268884) -->
+    <skip />
+    <!-- no translation found for tooltip_listen (7634466447860989102) -->
+    <skip />
+    <!-- no translation found for tooltip_translate (4184845868901542567) -->
+    <skip />
 </resources>

@@ -5,4 +5,24 @@
     <string name="action_listen" msgid="2370304050784689486">"گوش دادن"</string>
     <string name="action_translate" msgid="8028378961867277746">"ترجمه"</string>
     <string name="action_search" msgid="6269564710943755464">"لنز"</string>
+    <!-- no translation found for dialog_acknowledge (2804025517675853172) -->
+    <skip />
+    <!-- no translation found for dialog_cancel (6464336969134856366) -->
+    <skip />
+    <!-- no translation found for dialog_settings (6564397136021186148) -->
+    <skip />
+    <string name="niu_actions_confirmation_title" msgid="3863451714863526143">"ترجمه نوشتار روی صفحه‌نمایش یا گوش دادن به آن"</string>
+    <string name="niu_actions_confirmation_text" msgid="2105271481950866089">"‏ممکن است اطلاعاتی مثل نوشتار روی صفحه‌نمایش، نشانی‌های وب، و نماگرفت‌ها با Google هم‌رسانی شود.\n\nبرای تغییر اطلاعاتی که هم‌رسانی می‌کنید، به "<b>"تنظیمات &lt; برنامه‌ها &lt; برنامه‌های پیش‌فرض &lt; برنامه دستیار دیجیتال"</b>" بروید."</string>
+    <!-- no translation found for assistant_not_selected_title (5017072974603345228) -->
+    <skip />
+    <!-- no translation found for assistant_not_selected_text (3244613673884359276) -->
+    <skip />
+    <!-- no translation found for assistant_not_supported_title (1675788067597484142) -->
+    <skip />
+    <!-- no translation found for assistant_not_supported_text (1708031078549268884) -->
+    <skip />
+    <!-- no translation found for tooltip_listen (7634466447860989102) -->
+    <skip />
+    <!-- no translation found for tooltip_translate (4184845868901542567) -->
+    <skip />
 </resources>

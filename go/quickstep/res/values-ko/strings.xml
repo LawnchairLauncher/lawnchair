@@ -5,4 +5,24 @@
     <string name="action_listen" msgid="2370304050784689486">"듣기"</string>
     <string name="action_translate" msgid="8028378961867277746">"번역"</string>
     <string name="action_search" msgid="6269564710943755464">"렌즈"</string>
+    <!-- no translation found for dialog_acknowledge (2804025517675853172) -->
+    <skip />
+    <!-- no translation found for dialog_cancel (6464336969134856366) -->
+    <skip />
+    <!-- no translation found for dialog_settings (6564397136021186148) -->
+    <skip />
+    <string name="niu_actions_confirmation_title" msgid="3863451714863526143">"화면의 텍스트 번역 또는 듣기"</string>
+    <string name="niu_actions_confirmation_text" msgid="2105271481950866089">"화면의 텍스트, 웹 주소, 스크린샷과 같은 정보가 Google과 공유될 수 있습니다.\n\n공유되는 정보를 변경하려면 "<b>"설정 &gt; 앱 &gt; 기본 앱 &gt; 디지털 어시스턴트 앱"</b>"으로 이동하세요."</string>
+    <!-- no translation found for assistant_not_selected_title (5017072974603345228) -->
+    <skip />
+    <!-- no translation found for assistant_not_selected_text (3244613673884359276) -->
+    <skip />
+    <!-- no translation found for assistant_not_supported_title (1675788067597484142) -->
+    <skip />
+    <!-- no translation found for assistant_not_supported_text (1708031078549268884) -->
+    <skip />
+    <!-- no translation found for tooltip_listen (7634466447860989102) -->
+    <skip />
+    <!-- no translation found for tooltip_translate (4184845868901542567) -->
+    <skip />
 </resources>

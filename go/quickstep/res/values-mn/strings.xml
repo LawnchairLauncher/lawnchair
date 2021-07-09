@@ -5,4 +5,24 @@
     <string name="action_listen" msgid="2370304050784689486">"Сонсох"</string>
     <string name="action_translate" msgid="8028378961867277746">"Орчуулах"</string>
     <string name="action_search" msgid="6269564710943755464">"Дуран"</string>
+    <!-- no translation found for dialog_acknowledge (2804025517675853172) -->
+    <skip />
+    <!-- no translation found for dialog_cancel (6464336969134856366) -->
+    <skip />
+    <!-- no translation found for dialog_settings (6564397136021186148) -->
+    <skip />
+    <string name="niu_actions_confirmation_title" msgid="3863451714863526143">"Дэлгэц дээрх текстийг орчуулах эсвэл сонсох"</string>
+    <string name="niu_actions_confirmation_text" msgid="2105271481950866089">"Таны дэлгэц дээрх текст, веб хаяг, дэлгэцийн агшин зэрэг мэдээллийг Google-тэй хуваалцаж болзошгүй.\n\nТа ямар мэдээлэл хуваалцахаа өөрчлөхийн тулд "<b>"Тохиргоо &gt; Апп &gt; Өгөгдмөл апп &gt; Дижитал туслах апп"</b>" руу очно уу."</string>
+    <!-- no translation found for assistant_not_selected_title (5017072974603345228) -->
+    <skip />
+    <!-- no translation found for assistant_not_selected_text (3244613673884359276) -->
+    <skip />
+    <!-- no translation found for assistant_not_supported_title (1675788067597484142) -->
+    <skip />
+    <!-- no translation found for assistant_not_supported_text (1708031078549268884) -->
+    <skip />
+    <!-- no translation found for tooltip_listen (7634466447860989102) -->
+    <skip />
+    <!-- no translation found for tooltip_translate (4184845868901542567) -->
+    <skip />
 </resources>

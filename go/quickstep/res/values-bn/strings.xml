@@ -5,4 +5,24 @@
     <string name="action_listen" msgid="2370304050784689486">"শুনুন"</string>
     <string name="action_translate" msgid="8028378961867277746">"অনুবাদ করুন"</string>
     <string name="action_search" msgid="6269564710943755464">"লেন্স"</string>
+    <!-- no translation found for dialog_acknowledge (2804025517675853172) -->
+    <skip />
+    <!-- no translation found for dialog_cancel (6464336969134856366) -->
+    <skip />
+    <!-- no translation found for dialog_settings (6564397136021186148) -->
+    <skip />
+    <string name="niu_actions_confirmation_title" msgid="3863451714863526143">"অনুবাদ করুন বা স্ক্রিনে দেখানো টেক্সট শুনুন"</string>
+    <string name="niu_actions_confirmation_text" msgid="2105271481950866089">"আপনার স্ক্রিনে থাকা তথ্য যেমন ওয়েব ঠিকানা এবং স্ক্রিনশট Google-এর সাথে শেয়ার করা হতে পারে।\n\nকোন কোন তথ্য শেয়ার করবেন তা বেছে নিতে, "<b>"সেটিংস &gt; অ্যাপ &gt; ডিফল্ট অ্যাপ &gt; ডিজিটাল অ্যাসিস্ট্যান্ট অ্যাপ"</b>" বিকল্পগুলি বেছে নিন।"</string>
+    <!-- no translation found for assistant_not_selected_title (5017072974603345228) -->
+    <skip />
+    <!-- no translation found for assistant_not_selected_text (3244613673884359276) -->
+    <skip />
+    <!-- no translation found for assistant_not_supported_title (1675788067597484142) -->
+    <skip />
+    <!-- no translation found for assistant_not_supported_text (1708031078549268884) -->
+    <skip />
+    <!-- no translation found for tooltip_listen (7634466447860989102) -->
+    <skip />
+    <!-- no translation found for tooltip_translate (4184845868901542567) -->
+    <skip />
 </resources>

@@ -32,8 +32,7 @@
     <string name="long_accessible_way_to_add" msgid="2733588281439571974">"Fes doble toc i mantén premut per moure un widget o per utilitzar accions personalitzades."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"%1$d d\'amplada per %2$d d\'alçada"</string>
-    <!-- no translation found for widget_preview_context_description (9045841361655787574) -->
-    <skip />
+    <string name="widget_preview_context_description" msgid="9045841361655787574">"Widget de <xliff:g id="WIDGET_NAME">%1$s</xliff:g>"</string>
     <string name="add_item_request_drag_hint" msgid="5653291305078645405">"Mantén premut el widget per moure\'l per la pantalla d\'inici"</string>
     <string name="add_to_home_screen" msgid="8631549138215492708">"Afegeix a la pantalla d\'inici"</string>
     <plurals name="widgets_count" formatted="false" msgid="656794749266073027">
@@ -160,7 +159,7 @@
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"Perfil de treball"</string>
     <string name="work_profile_edu_work_apps" msgid="7895468576497746520">"Les aplicacions de treball tenen una insígnia i són visibles per al teu administrador de TI"</string>
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"Entesos"</string>
-    <string name="work_apps_paused_title" msgid="3040901117349444598">"Les aplicacions de treball s\'han posat en pausa"</string>
+    <string name="work_apps_paused_title" msgid="3040901117349444598">"Les aplicacions de treball estan en pausa"</string>
     <string name="work_apps_paused_body" msgid="261634750995824906">"Les aplicacions de treball no poden enviar-te notificacions, consumir bateria ni accedir a la teva ubicació"</string>
     <string name="work_apps_paused_content_description" msgid="5149623040804051095">"Les aplicacions de treball estan desactivades: no poden enviar-te notificacions, consumir bateria ni accedir a la teva ubicació"</string>
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"Les aplicacions de treball tenen una insígnia i són visibles per al teu administrador de TI"</string>

@@ -5,4 +5,24 @@
     <string name="action_listen" msgid="2370304050784689486">"聆听"</string>
     <string name="action_translate" msgid="8028378961867277746">"翻译"</string>
     <string name="action_search" msgid="6269564710943755464">"智能镜头"</string>
+    <!-- no translation found for dialog_acknowledge (2804025517675853172) -->
+    <skip />
+    <!-- no translation found for dialog_cancel (6464336969134856366) -->
+    <skip />
+    <!-- no translation found for dialog_settings (6564397136021186148) -->
+    <skip />
+    <string name="niu_actions_confirmation_title" msgid="3863451714863526143">"翻译或聆听屏幕上的文字"</string>
+    <string name="niu_actions_confirmation_text" msgid="2105271481950866089">"系统可能会将屏幕上的文字、网址和屏幕截图等信息分享给 Google。\n\n如需更改要分享哪些信息，请依次转到"<b>"设置 &gt; 应用 &gt; 默认应用 &gt; 数字助理应用"</b>"。"</string>
+    <!-- no translation found for assistant_not_selected_title (5017072974603345228) -->
+    <skip />
+    <!-- no translation found for assistant_not_selected_text (3244613673884359276) -->
+    <skip />
+    <!-- no translation found for assistant_not_supported_title (1675788067597484142) -->
+    <skip />
+    <!-- no translation found for assistant_not_supported_text (1708031078549268884) -->
+    <skip />
+    <!-- no translation found for tooltip_listen (7634466447860989102) -->
+    <skip />
+    <!-- no translation found for tooltip_translate (4184845868901542567) -->
+    <skip />
 </resources>

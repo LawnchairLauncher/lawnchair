@@ -32,8 +32,7 @@
     <string name="long_accessible_way_to_add" msgid="2733588281439571974">"Touchez 2x un widget et maintenez le doigt dessus pour le déplacer ou utiliser des actions personnalisées."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"%1$d de largeur sur %2$d de hauteur"</string>
-    <!-- no translation found for widget_preview_context_description (9045841361655787574) -->
-    <skip />
+    <string name="widget_preview_context_description" msgid="9045841361655787574">"Widget <xliff:g id="WIDGET_NAME">%1$s</xliff:g>"</string>
     <string name="add_item_request_drag_hint" msgid="5653291305078645405">"Maintenez le doigt sur le widget pour le déplacer sur l\'écran d\'accueil"</string>
     <string name="add_to_home_screen" msgid="8631549138215492708">"Ajouter à l\'écran d\'accueil"</string>
     <plurals name="widgets_count" formatted="false" msgid="656794749266073027">
@@ -54,7 +53,7 @@
     <string name="widgets_full_sheet_work_tab" msgid="3767150027110633765">"Professionnels"</string>
     <string name="widget_category_conversations" msgid="8894438636213590446">"Conversations"</string>
     <string name="widget_education_header" msgid="4874760613775913787">"Renseignements utiles à portée de main"</string>
-    <string name="widget_education_content" msgid="745542879510751525">"Pour obtenir des renseignements sans ouvrir aucune application, vous pouvez ajouter des widgets à votre écran d\'accueil"</string>
+    <string name="widget_education_content" msgid="745542879510751525">"Pour obtenir des renseignements sans ouvrir d\'application, vous pouvez ajouter des widgets à votre écran d\'accueil"</string>
     <string name="reconfigurable_widget_education_tip" msgid="6336962690888067057">"Touchez pour modifier les paramètres du widget"</string>
     <string name="widget_education_close_button" msgid="8676165703104836580">"OK"</string>
     <string name="widget_reconfigure_button_content_description" msgid="8811472721881205250">"Modifier les paramètres du widget"</string>
