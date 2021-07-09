@@ -76,12 +76,12 @@
             <Button
                 style="@style/ModalDialogButton"
                 android:id="@+id/niu_actions_confirmation_reject"
-                android:text="@string/niu_actions_confirmation_no"/>
+                android:text="@string/dialog_cancel"/>
 
             <Button
                 style="@style/ModalDialogButton"
                 android:id="@+id/niu_actions_confirmation_accept"
-                android:text="@string/niu_actions_confirmation_yes"/>
+                android:text="@string/dialog_acknowledge"/>
         </LinearLayout>
 
     </LinearLayout>
