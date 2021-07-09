@@ -794,6 +794,7 @@ public class TaskView extends FrameLayout implements Reusable {
         mIconView.setRotation(orientationHandler.getDegreesRotated());
         snapshotParams.topMargin = deviceProfile.overviewTaskThumbnailTopMarginPx;
         mSnapshotView.setLayoutParams(snapshotParams);
+        getThumbnail().getTaskOverlay().updateOrientationState(orientationState);
     }
 
     private void setIconAndDimTransitionProgress(float progress, boolean invert) {
