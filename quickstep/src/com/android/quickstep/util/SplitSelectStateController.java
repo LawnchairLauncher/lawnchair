@@ -22,33 +22,26 @@ import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITION_BOTTOM_OR_RIGHT;
 import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITION_TOP_OR_LEFT;
 
-import android.animation.AnimatorSet;
-import android.app.ActivityOptions;
+import android.app.ActivityThread;
 import android.content.res.Resources;
 import android.graphics.Rect;
 import android.os.Handler;
 import android.os.IBinder;
-import android.os.Looper;
-import android.util.Pair;
 import android.view.Gravity;
+import android.view.RemoteAnimationAdapter;
 import android.view.SurfaceControl;
 import android.window.TransitionInfo;
 
 import androidx.annotation.Nullable;
 
-import com.android.launcher3.BaseActivity;
-import com.android.launcher3.BaseQuickstepLauncher;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.InsettableFrameLayout;
-import com.android.launcher3.LauncherAnimationRunner;
-import com.android.launcher3.LauncherAnimationRunner.RemoteAnimationFactory;
 import com.android.launcher3.R;
 import com.android.launcher3.util.SplitConfigurationOptions.SplitPositionOption;
 import com.android.quickstep.SystemUiProxy;
 import com.android.quickstep.TaskAnimationManager;
 import com.android.quickstep.TaskViewUtils;
 import com.android.quickstep.views.TaskView;
-import com.android.systemui.shared.system.ActivityOptionsCompat;
 import com.android.systemui.shared.system.RemoteAnimationAdapterCompat;
 import com.android.systemui.shared.system.RemoteAnimationRunnerCompat;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
@@ -92,37 +85,27 @@ public class SplitSelectStateController {
                     ? new int[]{mInitialTaskView.getTask().key.id, taskView.getTask().key.id}
                     : new int[]{taskView.getTask().key.id, mInitialTaskView.getTask().key.id};
 
-            RemoteSplitLaunchAnimationRunner animationRunner =
-                    new RemoteSplitLaunchAnimationRunner(mInitialTaskView, taskView);
+            RemoteSplitLaunchTransitionRunner animationRunner =
+                    new RemoteSplitLaunchTransitionRunner(mInitialTaskView, taskView);
             mSystemUiProxy.startTasks(taskIds[0], null /* mainOptions */, taskIds[1],
                     null /* sideOptions */, STAGE_POSITION_BOTTOM_OR_RIGHT,
                     new RemoteTransitionCompat(animationRunner, MAIN_EXECUTOR));
-            return;
+        } else {
+            // Assume initial task is for top/left part of screen
+            final int[] taskIds = mInitialPosition.mStagePosition == STAGE_POSITION_TOP_OR_LEFT
+                    ? new int[]{mInitialTaskView.getTask().key.id, taskView.getTask().key.id}
+                    : new int[]{taskView.getTask().key.id, mInitialTaskView.getTask().key.id};
+
+            RemoteSplitLaunchAnimationRunner animationRunner =
+                    new RemoteSplitLaunchAnimationRunner(mInitialTaskView, taskView);
+            final RemoteAnimationAdapter adapter = new RemoteAnimationAdapter(
+                    RemoteAnimationAdapterCompat.wrapRemoteAnimationRunner(animationRunner),
+                    300, 150,
+                    ActivityThread.currentActivityThread().getApplicationThread());
+
+            mSystemUiProxy.startTasksWithLegacyTransition(taskIds[0], null /* mainOptions */,
+                    taskIds[1], null /* sideOptions */, STAGE_POSITION_BOTTOM_OR_RIGHT, adapter);
         }
-        // Assume initial mInitialTaskId is for top/left part of screen
-        RemoteAnimationFactory initialSplitRunnerWrapped =  new SplitLaunchAnimationRunner(
-                mInitialTaskView, 0);
-        RemoteAnimationFactory secondarySplitRunnerWrapped =  new SplitLaunchAnimationRunner(
-                taskView, 1);
-        RemoteAnimationRunnerCompat initialSplitRunner = new LauncherAnimationRunner(
-                new Handler(Looper.getMainLooper()), initialSplitRunnerWrapped,
-                true /* startAtFrontOfQueue */);
-        RemoteAnimationRunnerCompat secondarySplitRunner = new LauncherAnimationRunner(
-                new Handler(Looper.getMainLooper()), secondarySplitRunnerWrapped,
-                true /* startAtFrontOfQueue */);
-        ActivityOptions initialOptions = ActivityOptionsCompat.makeRemoteAnimation(
-                new RemoteAnimationAdapterCompat(initialSplitRunner, 300, 150));
-        ActivityOptions secondaryOptions = ActivityOptionsCompat.makeRemoteAnimation(
-                new RemoteAnimationAdapterCompat(secondarySplitRunner, 300, 150));
-        mSystemUiProxy.startTask(mInitialTaskView.getTask().key.id, mInitialPosition.mStageType,
-                mInitialPosition.mStagePosition,
-                /*null*/ initialOptions.toBundle());
-        Pair<Integer, Integer> compliment = getComplimentaryStageAndPosition(mInitialPosition);
-        mSystemUiProxy.startTask(taskView.getTask().key.id, compliment.first,
-                compliment.second,
-                /*null*/ secondaryOptions.toBundle());
-        // After successful launch, call resetState
-        resetState();
     }
 
     /**
@@ -153,12 +136,12 @@ public class SplitSelectStateController {
     /**
      * Requires Shell Transitions
      */
-    private class RemoteSplitLaunchAnimationRunner implements RemoteTransitionRunner {
+    private class RemoteSplitLaunchTransitionRunner implements RemoteTransitionRunner {
 
         private final TaskView mInitialTaskView;
         private final TaskView mTaskView;
 
-        RemoteSplitLaunchAnimationRunner(TaskView initialTaskView, TaskView taskView) {
+        RemoteSplitLaunchTransitionRunner(TaskView initialTaskView, TaskView taskView) {
             mInitialTaskView = initialTaskView;
             mTaskView = taskView;
         }
@@ -175,47 +158,33 @@ public class SplitSelectStateController {
 
     /**
      * LEGACY
-     * @return the opposite stage and position from the {@param position} provided as first and
-     *         second object, respectively
-     * Ex. If position is has stage = Main and position = Top/Left, this will return
-     * Pair(stage=Side, position=Bottom/Left)
-     */
-    private Pair<Integer, Integer> getComplimentaryStageAndPosition(SplitPositionOption position) {
-        // Right now this is as simple as flipping between 0 and 1
-        int complimentStageType = position.mStageType ^ 1;
-        int complimentStagePosition = position.mStagePosition ^ 1;
-        return new Pair<>(complimentStageType, complimentStagePosition);
-    }
-
-    /**
-     * LEGACY
      * Remote animation runner for animation to launch an app.
      */
-    private class SplitLaunchAnimationRunner implements RemoteAnimationFactory {
+    private class RemoteSplitLaunchAnimationRunner implements RemoteAnimationRunnerCompat {
 
-        private final TaskView mV;
-        private final int mTargetState;
+        private final TaskView mInitialTaskView;
+        private final TaskView mTaskView;
 
-        SplitLaunchAnimationRunner(TaskView v, int targetState) {
-            mV = v;
-            mTargetState = targetState;
+        RemoteSplitLaunchAnimationRunner(TaskView initialTaskView, TaskView taskView) {
+            mInitialTaskView = initialTaskView;
+            mTaskView = taskView;
         }
 
         @Override
-        public void onCreateAnimation(int transit,
-                RemoteAnimationTargetCompat[] appTargets,
-                RemoteAnimationTargetCompat[] wallpaperTargets,
-                RemoteAnimationTargetCompat[] nonAppTargets,
-                LauncherAnimationRunner.AnimationResult result) {
-            AnimatorSet anim = new AnimatorSet();
-            BaseQuickstepLauncher activity = BaseActivity.fromContext(mV.getContext());
-            TaskViewUtils.composeRecentsSplitLaunchAnimatorLegacy(anim, mV,
-                    appTargets, wallpaperTargets, nonAppTargets, true, activity.getStateManager(),
-                    activity.getDepthController(), mTargetState);
-            result.setAnimation(anim, activity);
+        public void onAnimationStart(int transit, RemoteAnimationTargetCompat[] apps,
+                RemoteAnimationTargetCompat[] wallpapers, RemoteAnimationTargetCompat[] nonApps,
+                Runnable finishedCallback) {
+            TaskViewUtils.composeRecentsSplitLaunchAnimatorLegacy(mInitialTaskView, mTaskView, apps,
+                    wallpapers, nonApps, finishedCallback);
+            // After successful launch, call resetState
+            resetState();
+        }
+
+        @Override
+        public void onAnimationCancelled() {
+            resetState();
         }
     }
-
 
     /**
      * To be called if split select was cancelled

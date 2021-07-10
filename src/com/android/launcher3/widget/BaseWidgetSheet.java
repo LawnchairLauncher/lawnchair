@@ -51,11 +51,13 @@ import com.android.launcher3.views.ArrowTipView;
 public abstract class BaseWidgetSheet extends AbstractSlideInView<Launcher>
         implements OnClickListener, OnLongClickListener, DragSource,
         PopupDataProvider.PopupDataChangeListener, Insettable {
+    /** The default number of cells that can fit horizontally in a widget sheet. */
+    protected static final int DEFAULT_MAX_HORIZONTAL_SPANS = 4;
     /**
      * The maximum scale, [0, 1], of the device screen width that the widgets picker can consume
      * on large screen devices.
      */
-    protected static final float MAX_WIDTH_SCALE_FOR_LARGER_SCREEN = 0.8f;
+    protected static final float MAX_WIDTH_SCALE_FOR_LARGER_SCREEN = 0.89f;
 
     protected static final String KEY_WIDGETS_EDUCATION_TIP_SEEN =
             "launcher.widgets_education_tip_seen";
@@ -150,6 +152,17 @@ public abstract class BaseWidgetSheet extends AbstractSlideInView<Launcher>
                 widthUsed, heightMeasureSpec, heightUsed);
         setMeasuredDimension(MeasureSpec.getSize(widthMeasureSpec),
                 MeasureSpec.getSize(heightMeasureSpec));
+    }
+
+    /** Returns the number of cells that can fit horizontally in a given {@code content}. */
+    protected int computeMaxHorizontalSpans(View content, int contentHorizontalPaddingPx) {
+        DeviceProfile deviceProfile = mActivityContext.getDeviceProfile();
+        int availableWidth = content.getMeasuredWidth() - contentHorizontalPaddingPx;
+        Point cellSize = deviceProfile.getCellSize();
+        if (cellSize.x > 0) {
+            return availableWidth / cellSize.x;
+        }
+        return DEFAULT_MAX_HORIZONTAL_SPANS;
     }
 
     private boolean beginDraggingWidget(WidgetCell v) {

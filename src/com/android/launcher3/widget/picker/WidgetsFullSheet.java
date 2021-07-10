@@ -25,6 +25,7 @@ import android.animation.PropertyValuesHolder;
 import android.content.Context;
 import android.content.pm.LauncherApps;
 import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.graphics.Rect;
 import android.os.Process;
 import android.os.UserHandle;
@@ -148,13 +149,13 @@ public class WidgetsFullSheet extends BaseWidgetSheet
     private final int mTabsHeight;
     private final int mViewPagerTopPadding;
     private final int mSearchAndRecommendationContainerBottomMargin;
-    private final int mWidgetCellHorizontalPadding;
+    private final int mWidgetSheetContentHorizontalPadding;
 
     @Nullable private WidgetsRecyclerView mCurrentWidgetsRecyclerView;
     @Nullable private PersonalWorkPagedView mViewPager;
     private boolean mIsInSearchMode;
     private boolean mIsNoWidgetsViewNeeded;
-    private int mMaxSpansPerRow = 4;
+    private int mMaxSpansPerRow = DEFAULT_MAX_HORIZONTAL_SPANS;
     private View mTabsView;
     private TextView mNoWidgetsView;
     private SearchAndRecommendationViewHolder mSearchAndRecommendationViewHolder;
@@ -166,19 +167,20 @@ public class WidgetsFullSheet extends BaseWidgetSheet
         mAdapters.put(AdapterHolder.PRIMARY, new AdapterHolder(AdapterHolder.PRIMARY));
         mAdapters.put(AdapterHolder.WORK, new AdapterHolder(AdapterHolder.WORK));
         mAdapters.put(AdapterHolder.SEARCH, new AdapterHolder(AdapterHolder.SEARCH));
+
+        Resources resources = getResources();
         mTabsHeight = mHasWorkProfile
-                ? getContext().getResources()
-                        .getDimensionPixelSize(R.dimen.all_apps_header_pill_height)
+                ? resources.getDimensionPixelSize(R.dimen.all_apps_header_pill_height)
                 : 0;
         mViewPagerTopPadding = mHasWorkProfile
                 ? getContext().getResources()
                     .getDimensionPixelSize(R.dimen.widget_picker_view_pager_top_padding)
                 : 0;
-        mSearchAndRecommendationContainerBottomMargin = getContext().getResources()
-                .getDimensionPixelSize(mHasWorkProfile
+        mSearchAndRecommendationContainerBottomMargin = resources.getDimensionPixelSize(
+                mHasWorkProfile
                         ? R.dimen.search_and_recommended_widgets_container_small_bottom_margin
                         : R.dimen.search_and_recommended_widgets_container_bottom_margin);
-        mWidgetCellHorizontalPadding = 2 * getResources().getDimensionPixelOffset(
+        mWidgetSheetContentHorizontalPadding = 2 * resources.getDimensionPixelSize(
                 R.dimen.widget_cell_horizontal_padding);
     }
 
@@ -375,11 +377,10 @@ public class WidgetsFullSheet extends BaseWidgetSheet
     private boolean updateMaxSpansPerRow() {
         if (getMeasuredWidth() == 0) return false;
 
-        int previousMaxSpansPerRow = mMaxSpansPerRow;
-        mMaxSpansPerRow = getMeasuredWidth()
-                / (mActivityContext.getDeviceProfile().cellWidthPx + mWidgetCellHorizontalPadding);
-
-        if (previousMaxSpansPerRow != mMaxSpansPerRow) {
+        int maxHorizontalSpans = computeMaxHorizontalSpans(mContent,
+                mWidgetSheetContentHorizontalPadding);
+        if (mMaxSpansPerRow != maxHorizontalSpans) {
+            mMaxSpansPerRow = maxHorizontalSpans;
             mAdapters.get(AdapterHolder.PRIMARY).mWidgetsListAdapter.setMaxHorizontalSpansPerRow(
                     mMaxSpansPerRow);
             mAdapters.get(AdapterHolder.SEARCH).mWidgetsListAdapter.setMaxHorizontalSpansPerRow(

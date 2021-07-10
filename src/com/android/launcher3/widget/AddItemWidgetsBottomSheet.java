@@ -18,6 +18,7 @@ package com.android.launcher3.widget;
 
 import static com.android.launcher3.Utilities.ATLEAST_R;
 import static com.android.launcher3.anim.Interpolators.FAST_OUT_SLOW_IN;
+import static com.android.launcher3.widget.BaseWidgetSheet.MAX_WIDTH_SCALE_FOR_LARGER_SCREEN;
 
 import android.animation.PropertyValuesHolder;
 import android.annotation.SuppressLint;
@@ -25,10 +26,12 @@ import android.content.Context;
 import android.graphics.Insets;
 import android.graphics.Rect;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
 import android.view.WindowInsets;
+import android.widget.ScrollView;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
@@ -44,6 +47,7 @@ public class AddItemWidgetsBottomSheet extends AbstractSlideInView<AddItemActivi
     private static final int DEFAULT_CLOSE_DURATION = 200;
 
     private final Rect mInsets;
+    private ScrollView mWidgetPreviewScrollView;
 
     public AddItemWidgetsBottomSheet(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
@@ -65,6 +69,19 @@ public class AddItemWidgetsBottomSheet extends AbstractSlideInView<AddItemActivi
         attachToContainer();
         setOnApplyWindowInsetsListener(this);
         animateOpen();
+    }
+
+    @Override
+    public boolean onControllerInterceptTouchEvent(MotionEvent ev) {
+        if (ev.getAction() == MotionEvent.ACTION_DOWN) {
+            mNoIntercept = false;
+            // Suppress drag to dismiss gesture if the scroll view is being scrolled.
+            if (getPopupContainer().isEventOverView(mWidgetPreviewScrollView, ev)
+                    && mWidgetPreviewScrollView.getScrollY() > 0) {
+                mNoIntercept = true;
+            }
+        }
+        return super.onControllerInterceptTouchEvent(ev);
     }
 
     @Override
@@ -93,6 +110,15 @@ public class AddItemWidgetsBottomSheet extends AbstractSlideInView<AddItemActivi
                     2 * (mInsets.left + mInsets.right));
         }
 
+        if (deviceProfile.isTablet || deviceProfile.isTwoPanels) {
+            // In large screen devices, we restrict the width of the widgets picker to show part of
+            // the home screen. Let's ensure the minimum width used is at least the minimum width
+            // that isn't taken by the widgets picker.
+            int minUsedWidth = (int) (deviceProfile.availableWidthPx
+                    * (1 - MAX_WIDTH_SCALE_FOR_LARGER_SCREEN));
+            widthUsed = Math.max(widthUsed, minUsedWidth);
+        }
+
         int heightUsed = mInsets.top + deviceProfile.edgeMarginPx;
         measureChildWithMargins(mContent, widthMeasureSpec,
                 widthUsed, heightMeasureSpec, heightUsed);
@@ -104,6 +130,7 @@ public class AddItemWidgetsBottomSheet extends AbstractSlideInView<AddItemActivi
     protected void onFinishInflate() {
         super.onFinishInflate();
         mContent = findViewById(R.id.add_item_bottom_sheet_content);
+        mWidgetPreviewScrollView = findViewById(R.id.widget_preview_scroll_view);
     }
 
     private void animateOpen() {

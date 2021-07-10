@@ -15,6 +15,7 @@
  */
 package com.android.quickstep;
 
+import static android.view.WindowManager.LayoutParams.TYPE_DOCK_DIVIDER;
 import static android.view.WindowManager.TRANSIT_OPEN;
 import static android.view.WindowManager.TRANSIT_TO_FRONT;
 
@@ -405,77 +406,39 @@ public final class TaskViewUtils {
     }
 
     /** Legacy version (until shell transitions are enabled) */
-    public static void composeRecentsSplitLaunchAnimatorLegacy(@NonNull AnimatorSet anim,
+    public static void composeRecentsSplitLaunchAnimatorLegacy(@NonNull TaskView initialView,
             @NonNull TaskView v, @NonNull RemoteAnimationTargetCompat[] appTargets,
             @NonNull RemoteAnimationTargetCompat[] wallpaperTargets,
-            @NonNull RemoteAnimationTargetCompat[] nonAppTargets, boolean launcherClosing,
-            @NonNull StateManager stateManager, @NonNull DepthController depthController,
-            int targetStage) {
-        PendingAnimation out = new PendingAnimation(RECENTS_LAUNCH_DURATION);
-        boolean isRunningTask = v.isRunningTask();
-        TransformParams params = null;
-        TaskViewSimulator tvs = null;
-        RecentsView recentsView = v.getRecentsView();
-        if (ENABLE_QUICKSTEP_LIVE_TILE.get() && isRunningTask) {
-            params = recentsView.getLiveTileParams();
-            tvs = recentsView.getLiveTileTaskViewSimulator();
+            @NonNull RemoteAnimationTargetCompat[] nonAppTargets,
+            @NonNull Runnable finishCallback) {
+
+        final int[] splitRoots = new int[2];
+        for (int i = 0; i < appTargets.length; ++i) {
+            final int taskId = appTargets[i].taskInfo != null ? appTargets[i].taskInfo.taskId : -1;
+            final int mode = appTargets[i].mode;
+            if (taskId == initialView.getTask().key.id || taskId == v.getTask().key.id) {
+                if (mode != MODE_OPENING) {
+                    throw new IllegalStateException(
+                            "Expected task to be opening, but it is " + mode);
+                }
+                splitRoots[taskId == initialView.getTask().key.id ? 0 : 1] = i;
+            }
         }
 
-        boolean inLiveTileMode =
-                ENABLE_QUICKSTEP_LIVE_TILE.get() && recentsView.getRunningTaskIndex() != -1;
-        final RemoteAnimationTargets targets =
-                new RemoteAnimationTargets(appTargets, wallpaperTargets, nonAppTargets,
-                        inLiveTileMode ? MODE_CLOSING : MODE_OPENING);
+        SurfaceControl.Transaction t = new SurfaceControl.Transaction();
 
-        if (params == null) {
-            SurfaceTransactionApplier applier = new SurfaceTransactionApplier(v);
-            targets.addReleaseCheck(applier);
-
-            params = new TransformParams()
-                    .setSyncTransactionApplier(applier)
-                    .setTargetSet(targets);
+        // This is where we should animate the split roots. For now, though, just make them visible.
+        for (int i = 0; i < 2; ++i) {
+            t.show(appTargets[splitRoots[i]].leash.getSurfaceControl());
+            t.setAlpha(appTargets[splitRoots[i]].leash.getSurfaceControl(), 1.f);
         }
 
-        Rect crop = new Rect();
-        Context context = v.getContext();
-        DeviceProfile dp = BaseActivity.fromContext(context).getDeviceProfile();
-        if (tvs == null && targets.apps.length > 0) {
-            tvs = new TaskViewSimulator(recentsView.getContext(), recentsView.getSizeStrategy());
-            tvs.setDp(dp);
+        // This contains the initial state (before animation), so apply this at the beginning of
+        // the animation.
+        t.apply();
 
-            // RecentsView never updates the display rotation until swipe-up so the value may
-            // be stale. Use the display value instead.
-            int displayRotation = DisplayController.INSTANCE.get(recentsView.getContext())
-                    .getInfo().rotation;
-            tvs.getOrientationState().update(displayRotation, displayRotation);
-
-            tvs.setPreview(targets.apps[targets.apps.length - 1]);
-            tvs.fullScreenProgress.value = 0;
-            tvs.recentsViewScale.value = 1;
-//            tvs.setScroll(startScroll);
-
-            // Fade in the task during the initial 20% of the animation
-            out.addFloat(params, TransformParams.TARGET_ALPHA, 0, 1,
-                    clampToProgress(LINEAR, 0, 0.2f));
-        }
-
-        TaskViewSimulator topMostSimulator = null;
-
-        if (tvs != null) {
-            out.setFloat(tvs.fullScreenProgress,
-                    AnimatedFloat.VALUE, 1, TOUCH_RESPONSE_INTERPOLATOR);
-            out.setFloat(tvs.recentsViewScale,
-                    AnimatedFloat.VALUE, tvs.getFullScreenScale(), TOUCH_RESPONSE_INTERPOLATOR);
-            out.setFloat(tvs.recentsViewScroll,
-                    AnimatedFloat.VALUE, 0, TOUCH_RESPONSE_INTERPOLATOR);
-
-            TaskViewSimulator finalTsv = tvs;
-            TransformParams finalParams = params;
-            out.addOnFrameCallback(() -> finalTsv.apply(finalParams));
-            topMostSimulator = tvs;
-        }
-
-        anim.play(out.buildAnim());
+        // Once there is an animation, this should be called AFTER the animation completes.
+        finishCallback.run();
     }
 
     public static void composeRecentsLaunchAnimator(@NonNull AnimatorSet anim, @NonNull View v,
@@ -490,6 +453,10 @@ public final class TaskViewUtils {
         PendingAnimation pa = new PendingAnimation(RECENTS_LAUNCH_DURATION);
         createRecentsWindowAnimator(taskView, skipLauncherChanges, appTargets, wallpaperTargets,
                 nonAppTargets, depthController, pa);
+        if (launcherClosing) {
+            // TODO(b/182592057): differentiate between "restore split" vs "launch fullscreen app"
+            TaskViewUtils.setDividerBarShown(nonAppTargets, true);
+        }
 
         Animator childStateAnimation = null;
         // Found a visible recents task that matches the opening app, lets launch the app from there
@@ -541,5 +508,20 @@ public final class TaskViewUtils {
         // (the ordering of listeners matter in this case).
         stateManager.setCurrentAnimation(anim, childStateAnimation);
         anim.addListener(windowAnimEndListener);
+    }
+
+    static void setDividerBarShown(RemoteAnimationTargetCompat[] nonApps, boolean shown) {
+        // TODO(b/182592057): make this part of the animations instead.
+        if (nonApps != null && nonApps.length > 0) {
+            for (int i = 0; i < nonApps.length; ++i) {
+                final RemoteAnimationTargetCompat targ = nonApps[i];
+                if (targ.windowType == TYPE_DOCK_DIVIDER) {
+                    SurfaceControl.Transaction t = new SurfaceControl.Transaction();
+                    t.setVisibility(targ.leash.getSurfaceControl(), shown);
+                    t.apply();
+                    t.close();
+                }
+            }
+        }
     }
 }

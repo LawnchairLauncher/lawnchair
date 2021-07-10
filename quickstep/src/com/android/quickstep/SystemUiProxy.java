@@ -33,6 +33,8 @@ import android.os.RemoteException;
 import android.os.UserHandle;
 import android.util.Log;
 import android.view.MotionEvent;
+import android.view.RemoteAnimationAdapter;
+import android.view.RemoteAnimationTarget;
 import android.view.SurfaceControl;
 
 import com.android.launcher3.util.MainThreadInitializedObject;
@@ -562,6 +564,22 @@ public class SystemUiProxy implements ISystemUiProxy,
         }
     }
 
+    /**
+     * Start multiple tasks in split-screen simultaneously.
+     */
+    public void startTasksWithLegacyTransition(int mainTaskId, Bundle mainOptions, int sideTaskId,
+            Bundle sideOptions, @SplitConfigurationOptions.StagePosition int sidePosition,
+            RemoteAnimationAdapter adapter) {
+        if (mSystemUiProxy != null) {
+            try {
+                mSplitScreen.startTasksWithLegacyTransition(mainTaskId, mainOptions, sideTaskId,
+                        sideOptions, sidePosition, adapter);
+            } catch (RemoteException e) {
+                Log.w(TAG, "Failed call startTasksWithLegacyTransition");
+            }
+        }
+    }
+
     public void startShortcut(String packageName, String shortcutId, int stage, int position,
             Bundle options, UserHandle user) {
         if (mSplitScreen != null) {
@@ -593,6 +611,24 @@ public class SystemUiProxy implements ISystemUiProxy,
                 Log.w(TAG, "Failed call removeFromSideStage");
             }
         }
+    }
+
+    /**
+     * Call this when going to recents so that shell can set-up and provide appropriate leashes
+     * for animation (eg. DividerBar).
+     *
+     * @param cancel true if recents starting is being cancelled.
+     * @return RemoteAnimationTargets of windows that need to animate but only exist in shell.
+     */
+    public RemoteAnimationTarget[] onGoingToRecentsLegacy(boolean cancel) {
+        if (mSplitScreen != null) {
+            try {
+                return mSplitScreen.onGoingToRecentsLegacy(cancel);
+            } catch (RemoteException e) {
+                Log.w(TAG, "Failed call onGoingToRecentsLegacy");
+            }
+        }
+        return null;
     }
 
     //

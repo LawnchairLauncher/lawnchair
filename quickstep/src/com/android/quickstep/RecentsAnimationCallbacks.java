@@ -19,6 +19,7 @@ import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 
 import android.graphics.Rect;
 import android.util.ArraySet;
+import android.view.RemoteAnimationTarget;
 
 import androidx.annotation.BinderThread;
 import androidx.annotation.UiThread;
@@ -39,6 +40,7 @@ public class RecentsAnimationCallbacks implements
         com.android.systemui.shared.system.RecentsAnimationListener {
 
     private final Set<RecentsAnimationListener> mListeners = new ArraySet<>();
+    private final SystemUiProxy mSystemUiProxy;
     private final boolean mAllowMinimizeSplitScreen;
 
     // TODO(141886704): Remove these references when they are no longer needed
@@ -46,7 +48,9 @@ public class RecentsAnimationCallbacks implements
 
     private boolean mCancelled;
 
-    public RecentsAnimationCallbacks(boolean allowMinimizeSplitScreen) {
+    public RecentsAnimationCallbacks(SystemUiProxy systemUiProxy,
+            boolean allowMinimizeSplitScreen) {
+        mSystemUiProxy = systemUiProxy;
         mAllowMinimizeSplitScreen = allowMinimizeSplitScreen;
     }
 
@@ -89,8 +93,11 @@ public class RecentsAnimationCallbacks implements
             RemoteAnimationTargetCompat[] appTargets,
             RemoteAnimationTargetCompat[] wallpaperTargets,
             Rect homeContentInsets, Rect minimizedHomeBounds) {
+        RemoteAnimationTarget[] nonAppTargets =
+                mSystemUiProxy.onGoingToRecentsLegacy(mCancelled);
         RecentsAnimationTargets targets = new RecentsAnimationTargets(appTargets,
-                wallpaperTargets, homeContentInsets, minimizedHomeBounds);
+                wallpaperTargets, RemoteAnimationTargetCompat.wrap(nonAppTargets),
+                homeContentInsets, minimizedHomeBounds);
         mController = new RecentsAnimationController(animationController,
                 mAllowMinimizeSplitScreen, this::onAnimationFinished);
 

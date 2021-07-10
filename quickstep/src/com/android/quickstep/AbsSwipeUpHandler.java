@@ -387,8 +387,11 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
         mGestureState.runOnceAtState(STATE_RECENTS_ANIMATION_CANCELED, () -> {
                 ThumbnailData snapshot = mGestureState.consumeRecentsAnimationCanceledSnapshot();
                 if (snapshot != null) {
-                    mRecentsView.switchToScreenshot(snapshot,
-                            () -> mRecentsAnimationController.cleanupScreenshot());
+                    mRecentsView.switchToScreenshot(snapshot, () -> {
+                        if (mRecentsAnimationController != null) {
+                            mRecentsAnimationController.cleanupScreenshot();
+                        }
+                    });
                     mRecentsView.onRecentsAnimationComplete();
                 }
             });
@@ -740,6 +743,8 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
             mRecentsAnimationStartCallbacks.clear();
         }
 
+        TaskViewUtils.setDividerBarShown(mRecentsAnimationTargets.nonApps, false);
+
         // Only add the callback to enable the input consumer after we actually have the controller
         mStateCallback.runOnceAtState(STATE_APP_CONTROLLER_RECEIVED | STATE_GESTURE_STARTED,
                 mRecentsAnimationController::enableInputConsumer);
@@ -753,6 +758,8 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
         ActiveGestureLog.INSTANCE.addLog("cancelRecentsAnimation");
         mActivityInitListener.unregister();
         mStateCallback.setStateOnUiThread(STATE_GESTURE_CANCELLED | STATE_HANDLER_INVALIDATED);
+
+        TaskViewUtils.setDividerBarShown(mRecentsAnimationTargets.nonApps, true);
 
         // Defer clearing the controller and the targets until after we've updated the state
         mRecentsAnimationController = null;
@@ -882,6 +889,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
                 break;
             case LAST_TASK:
                 mStateCallback.setState(STATE_RESUME_LAST_TASK);
+                TaskViewUtils.setDividerBarShown(mRecentsAnimationTargets.nonApps, true);
                 break;
         }
         ActiveGestureLog.INSTANCE.addLog("onSettledOnEndTarget " + endTarget);
@@ -1723,6 +1731,9 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
 
     @Override
     public void onRecentsAnimationFinished(RecentsAnimationController controller) {
+        if (!controller.getFinishTargetIsLauncher()) {
+            TaskViewUtils.setDividerBarShown(mRecentsAnimationTargets.nonApps, true);
+        }
         mRecentsAnimationController = null;
         mRecentsAnimationTargets = null;
         if (mRecentsView != null) {
