@@ -54,6 +54,7 @@ import android.animation.Animator.AnimatorListener;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
 import android.graphics.PointF;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.animation.Interpolator;
 
@@ -227,6 +228,8 @@ public class NoButtonQuickSwitchTouchController implements TouchController,
         mRecentsView.setFullscreenProgress(fromState.getOverviewFullscreenProgress());
         mLauncher.getActionsView().getVisibilityAlpha().setValue(
                 (fromState.getVisibleElements(mLauncher) & OVERVIEW_ACTIONS) != 0 ? 1f : 0f);
+        Log.v("b/193125090", "NoButtonQuickSwitchTouchController - setVisibilityAlpha: "
+                + mLauncher.getActionsView().getVisibilityAlpha().getValue());
 
         float[] scaleAndOffset = toState.getOverviewScaleAndOffset(mLauncher);
         // As we drag right, animate the following properties:
