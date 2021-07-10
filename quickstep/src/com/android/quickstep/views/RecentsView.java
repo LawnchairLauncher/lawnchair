@@ -989,7 +989,6 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     @Override
     protected void onPageBeginTransition() {
         super.onPageBeginTransition();
-        Log.d("b/193125090", "Disabling ActionsView due to scrolling");
         mActionsView.updateDisabledFlags(OverviewActionsView.DISABLED_SCROLLING, true);
     }
 
@@ -997,10 +996,8 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     protected void onPageEndTransition() {
         super.onPageEndTransition();
         if (isClearAllHidden()) {
-            Log.d("b/193125090", "Enabling ActionsView due after scrolling");
             mActionsView.updateDisabledFlags(OverviewActionsView.DISABLED_SCROLLING, false);
         } else {
-            Log.d("b/193125090", "Not enabling ActionsView due to ClearAll not hidden");
         }
         if (getNextPage() > 0) {
             setSwipeDownShouldLaunchApp(true);
@@ -1164,7 +1161,6 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         }
         if (mFocusedTaskId == -1 && getTaskViewCount() > 0) {
             mFocusedTaskId = getTaskViewAt(0).getTaskId();
-            Log.d("b/193125090", "applyLoadPlan - mFocusedTaskId: " + mFocusedTaskId);
         }
         updateTaskSize();
 
@@ -1274,6 +1270,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         // Fade out the actions view quickly (0.1 range)
         mActionsView.getFullscreenAlpha().setValue(
                 mapToRange(fullscreenProgress, 0, 0.1f, 1f, 0f, LINEAR));
+        Log.v("b/193125090", "setFullscreenAlpha: " + mActionsView.getFullscreenAlpha().getValue());
     }
 
     private void updateTaskStackListenerState() {
@@ -1481,25 +1478,18 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     }
 
     private void updateActionsViewScrollAlpha() {
-        Log.d("b/193125090", "updateActionsViewScrollAlpha - showAsGrid: " + showAsGrid());
         float scrollAlpha = 1f;
         if (showAsGrid()) {
             TaskView focusedTaskView = getFocusedTaskView();
-            Log.d("b/193125090",
-                    "updateActionsViewScrollAlpha - focusedTaskView: " + focusedTaskView);
             if (focusedTaskView != null) {
                 float scrollDiff = Math.abs(getScrollForPage(indexOfChild(focusedTaskView))
                         - mOrientationHandler.getPrimaryScroll(this));
                 float delta = (mGridSideMargin - scrollDiff) / (float) mGridSideMargin;
                 scrollAlpha = Utilities.boundToRange(delta, 0, 1);
-                Log.d("b/193125090",
-                        "updateActionsViewScrollAlpha - focusedTaskScroll: " + getScrollForPage(
-                                indexOfChild(focusedTaskView)) + ", primaryScroll: "
-                                + mOrientationHandler.getPrimaryScroll(this) + ", mGridSideMargin: "
-                                + mGridSideMargin);
             }
         }
         mActionsView.getScrollAlpha().setValue(scrollAlpha);
+        Log.v("b/193125090", "setScrollAlpha: " + scrollAlpha);
     }
 
     /**
@@ -1924,6 +1914,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     private void animateActionsViewIn() {
         ObjectAnimator anim = ObjectAnimator.ofFloat(
                 mActionsView.getVisibilityAlpha(), MultiValueAlpha.VALUE, 0, 1);
+        Log.v("b/193125090", "animateActionsViewIn - setVisibilityAlpha: " + 1);
         anim.setDuration(TaskView.SCALE_ICON_DURATION);
         anim.start();
     }
@@ -2733,6 +2724,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         mEmptyMessagePaint.setAlpha(alphaInt);
         mEmptyIcon.setAlpha(alphaInt);
         mActionsView.getContentAlpha().setValue(mContentAlpha);
+        Log.v("b/193125090", "setContentAlpha: " + mContentAlpha);
 
         if (alpha > 0) {
             setVisibility(VISIBLE);
@@ -2756,7 +2748,6 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
 
     @Override
     public void setVisibility(int visibility) {
-        Log.d("b/193125090", "setVisibility: " + visibility);
         super.setVisibility(visibility);
         if (mActionsView != null) {
             mActionsView.updateHiddenFlags(HIDDEN_NO_RECENTS, visibility != VISIBLE);
