@@ -157,12 +157,12 @@
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"निजी ऐप"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"काम से जुड़े ऐप"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"वर्क प्रोफ़ाइल"</string>
-    <string name="work_profile_edu_work_apps" msgid="7895468576497746520">"ऑफ़िस के काम से जुड़े ऐप्लिकेशन, बैज किए गए हैं और आईटी एडमिन को दिख रहे हैं"</string>
+    <string name="work_profile_edu_work_apps" msgid="7895468576497746520">"ऑफ़िस के काम से जुड़े ऐप्लिकेशन बैज किए गए हैं और आईटी एडमिन को दिख रहे हैं"</string>
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"ठीक है"</string>
     <string name="work_apps_paused_title" msgid="3040901117349444598">"ऑफ़िस के काम से जुड़े ऐप्लिकेशन रोके गए"</string>
     <string name="work_apps_paused_body" msgid="261634750995824906">"ऑफ़िस के काम से जुड़े आपके ऐप्लिकेशन, आपको सूचनाएं नहीं भेज सकते. साथ ही, आपकी बैटरी का इस्तेमाल या आपकी जगह की जानकारी को ऐक्सेस भी नहीं कर सकते"</string>
     <string name="work_apps_paused_content_description" msgid="5149623040804051095">"ऑफ़िस के काम से जुड़े ऐप्लिकेशन बंद हैं. ये ऐप्लिकेशन, आपको सूचनाएं नहीं भेज सकते. साथ ही, आपकी बैटरी का इस्तेमाल या आपकी जगह की जानकारी को ऐक्सेस भी नहीं कर सकते"</string>
-    <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"ऑफ़िस के काम से जुड़े ऐप्लिकेशन, बैज किए गए हैं और आईटी एडमिन को दिख रहे हैं"</string>
+    <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"ऑफ़िस के काम से जुड़े ऐप्लिकेशन बैज किए गए हैं और आईटी एडमिन को दिख रहे हैं"</string>
     <string name="work_apps_paused_edu_accept" msgid="6377476824357318532">"ठीक है"</string>
     <string name="work_apps_pause_btn_text" msgid="1921059713673767460">"ऑफ़िस के काम से जुड़े ऐप्लिकेशन बंद करें"</string>
     <string name="work_apps_enable_btn_text" msgid="1156432622148413741">"ऑफ़िस के काम से जुड़े ऐप्लिकेशन चालू करें"</string>

@@ -155,17 +155,17 @@
     <string name="accessibility_close" msgid="2277148124685870734">"बंद करा"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"सूचना डिसमिस केली"</string>
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"वैयक्तिक"</string>
-    <string name="all_apps_work_tab" msgid="4884822796154055118">"कार्यालय"</string>
+    <string name="all_apps_work_tab" msgid="4884822796154055118">"कार्य"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"कार्य प्रोफाइल"</string>
     <string name="work_profile_edu_work_apps" msgid="7895468576497746520">"कामाशी संबंधित ॲप्स ही बॅज केलेली असून तुमच्या IT ॲडमिनला दृश्यमान आहेत"</string>
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"समजले"</string>
     <string name="work_apps_paused_title" msgid="3040901117349444598">"कार्य ॲप्स थांबवली आहेत"</string>
-    <string name="work_apps_paused_body" msgid="261634750995824906">"तुमची कामाशी संबंधित ॲप्स तुम्हाला सूचना पाठवू शकत नाहीत, तुमची बॅटरी वापरू शकत नाहीत किंवा तुमचे स्थान अ‍ॅक्सेस करू शकत नाहीत"</string>
+    <string name="work_apps_paused_body" msgid="261634750995824906">"तुमची कार्य ॲप्स तुम्हाला सूचना पाठवू शकत नाहीत, तुमची बॅटरी वापरू शकत नाहीत किंवा तुमचे स्थान अ‍ॅक्सेस करू शकत नाहीत"</string>
     <string name="work_apps_paused_content_description" msgid="5149623040804051095">"कामाशी संबंधित ॲप्स बंद आहेत. तुमचे कामाशी संबंधित ॲप्स तुम्हाला सूचना पाठवू शकत नाहीत, तुमची बॅटरी वापरू शकत नाहीत किंवा तुमचे स्थान अ‍ॅक्सेस करू शकत नाहीत"</string>
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"Work apps ही बॅज केलेली असून तुमच्या IT ॲडमिनला दृश्यमान आहेत"</string>
     <string name="work_apps_paused_edu_accept" msgid="6377476824357318532">"समजले"</string>
     <string name="work_apps_pause_btn_text" msgid="1921059713673767460">"कामाशी संबंधित ॲप्स बंद करा"</string>
-    <string name="work_apps_enable_btn_text" msgid="1156432622148413741">"कामाशी संबंधित ॲप्स सुरू करा"</string>
+    <string name="work_apps_enable_btn_text" msgid="1156432622148413741">"कार्य ॲप्स सुरू करा"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"फिल्टर"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"हे करता आले नाही: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
 </resources>
