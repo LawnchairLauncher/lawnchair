@@ -243,7 +243,7 @@ public final class TaskOverlayFactoryGo extends TaskOverlayFactory {
             @SuppressLint("NewApi")
             public void onListen() {
                 if (mIsAllowedByPolicy) {
-                    sendNIUIntent(ACTION_LISTEN);
+                    endLiveTileMode(() -> sendNIUIntent(ACTION_LISTEN));
                 } else {
                     showBlockedByPolicyMessage();
                 }
@@ -252,7 +252,7 @@ public final class TaskOverlayFactoryGo extends TaskOverlayFactory {
             @SuppressLint("NewApi")
             public void onTranslate() {
                 if (mIsAllowedByPolicy) {
-                    sendNIUIntent(ACTION_TRANSLATE);
+                    endLiveTileMode(() -> sendNIUIntent(ACTION_TRANSLATE));
                 } else {
                     showBlockedByPolicyMessage();
                 }
@@ -261,7 +261,7 @@ public final class TaskOverlayFactoryGo extends TaskOverlayFactory {
             @SuppressLint("NewApi")
             public void onSearch() {
                 if (mIsAllowedByPolicy) {
-                    sendNIUIntent(ACTION_SEARCH);
+                    endLiveTileMode(() -> sendNIUIntent(ACTION_SEARCH));
                 } else {
                     showBlockedByPolicyMessage();
                 }
