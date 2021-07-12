@@ -32,8 +32,6 @@ import static com.android.quickstep.views.RecentsView.TASK_MODALNESS;
 import static com.android.quickstep.views.RecentsView.TASK_SECONDARY_TRANSLATION;
 import static com.android.quickstep.views.TaskView.FLAG_UPDATE_ALL;
 
-import android.util.Log;
-
 import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.anim.PropertySetter;
 import com.android.launcher3.statemanager.StateManager.StateHandler;
@@ -84,8 +82,6 @@ public class FallbackRecentsStateController implements StateHandler<RecentsState
         float overviewButtonAlpha = state.hasOverviewActions() ? 1 : 0;
         setter.setFloat(mActivity.getActionsView().getVisibilityAlpha(),
                 MultiValueAlpha.VALUE, overviewButtonAlpha, LINEAR);
-        Log.v("b/193125090",
-                "FallbackRecentsStateController - setVisibilityAlpha: " + overviewButtonAlpha);
 
         float[] scaleAndOffset = state.getOverviewScaleAndOffset(mActivity);
         setter.setFloat(mRecentsView, RECENTS_SCALE_PROPERTY, scaleAndOffset[0],
