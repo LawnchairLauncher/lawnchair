@@ -31,8 +31,6 @@ import android.graphics.ColorFilter;
 import android.graphics.Insets;
 import android.graphics.Matrix;
 import android.graphics.Paint;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.Shader;
@@ -165,6 +163,7 @@ public class TaskThumbnailView extends View implements PluginListener<OverviewSc
             mBitmapShader = new BitmapShader(bm, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP);
             mPaint.setShader(mBitmapShader);
             updateThumbnailMatrix();
+            refreshOverlay();
         } else {
             mBitmapShader = null;
             mThumbnailData = null;
