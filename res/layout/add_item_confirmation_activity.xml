@@ -88,9 +88,11 @@
                 <Button
                     style="@style/Button.FullRounded.Colored"
                     android:layout_width="wrap_content"
-                    android:layout_height="36dp"
+                    android:layout_height="wrap_content"
                     android:paddingHorizontal="16dp"
                     android:textSize="14sp"
+                    android:maxLines="2"
+                    android:ellipsize="end"
                     android:textColor="@color/button_text"
                     android:text="@android:string/cancel"
                     android:onClick="onCancelClick"/>
@@ -102,9 +104,11 @@
                 <Button
                     style="@style/Button.FullRounded.Colored"
                     android:layout_width="wrap_content"
-                    android:layout_height="36dp"
+                    android:layout_height="wrap_content"
                     android:paddingHorizontal="16dp"
                     android:textSize="14sp"
+                    android:maxLines="2"
+                    android:ellipsize="end"
                     android:textColor="@color/button_text"
                     android:text="@string/add_to_home_screen"
                     android:onClick="onPlaceAutomaticallyClick"/>
