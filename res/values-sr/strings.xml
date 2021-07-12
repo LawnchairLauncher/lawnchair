@@ -28,7 +28,7 @@
     <string name="shortcut_not_available" msgid="2536503539825726397">"Пречица није доступна"</string>
     <string name="home_screen" msgid="5629429142036709174">"Почетни екран"</string>
     <string name="recent_task_option_split_screen" msgid="6690461455618725183">"Подељени екран"</string>
-    <string name="long_press_widget_to_add" msgid="3587712543577675817">"Двапут додирните и задржите ради померања виџета."</string>
+    <string name="long_press_widget_to_add" msgid="3587712543577675817">"Додирните и задржите ради померања виџета."</string>
     <string name="long_accessible_way_to_add" msgid="2733588281439571974">"Двапут додирните и задржите да бисте померали виџет или користите прилагођене радње."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d×%2$d"</string>
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"ширина од %1$d и висина од %2$d"</string>
@@ -65,7 +65,7 @@
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"Претражи још апликација"</string>
     <string name="label_application" msgid="8531721983832654978">"Апликација"</string>
     <string name="notifications_header" msgid="1404149926117359025">"Обавештења"</string>
-    <string name="long_press_shortcut_to_add" msgid="5405328730817637737">"Двапут додирните и задржите ради померања пречице."</string>
+    <string name="long_press_shortcut_to_add" msgid="5405328730817637737">"Додирните и задржите ради померања пречице."</string>
     <string name="long_accessible_way_to_add_shortcut" msgid="2199537273817090740">"Двапут додирните и задржите да бисте померали пречицу или користите прилагођене радње."</string>
     <string name="out_of_space" msgid="6692471482459245734">"Нема простора на овом почетном екрану"</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"Нема више простора на траци Омиљено"</string>
