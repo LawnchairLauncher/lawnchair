@@ -162,9 +162,9 @@
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"Poslovni profil"</string>
     <string name="work_profile_edu_work_apps" msgid="7895468576497746520">"Poslovne su aplikacije označene i vidljive vašem IT administratoru"</string>
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"Shvaćam"</string>
-    <string name="work_apps_paused_title" msgid="3040901117349444598">"Pauzirane su poslovne lokacije"</string>
-    <string name="work_apps_paused_body" msgid="261634750995824906">"Poslovne aplikacije ne mogu vam slati obavijesti, trošiti bateriju niti pristupiti vašoj lokaciji"</string>
-    <string name="work_apps_paused_content_description" msgid="5149623040804051095">"Poslovne aplikacije su isključene. Ne mogu vam slati obavijesti, trošiti bateriju ili pristupiti vašoj lokaciji"</string>
+    <string name="work_apps_paused_title" msgid="3040901117349444598">"Poslovne aplikacije su pauzirane"</string>
+    <string name="work_apps_paused_body" msgid="261634750995824906">"Poslovne aplikacije ne mogu vam slati obavijesti, trošiti bateriju ili pristupati vašoj lokaciji"</string>
+    <string name="work_apps_paused_content_description" msgid="5149623040804051095">"Poslovne aplikacije su isključene. Ne mogu vam slati obavijesti, trošiti bateriju ili pristupati vašoj lokaciji"</string>
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"Poslovne su aplikacije označene i vidljive vašem IT administratoru"</string>
     <string name="work_apps_paused_edu_accept" msgid="6377476824357318532">"Shvaćam"</string>
     <string name="work_apps_pause_btn_text" msgid="1921059713673767460">"Isključite poslovne aplikacije"</string>
