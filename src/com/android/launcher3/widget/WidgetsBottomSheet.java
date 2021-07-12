@@ -199,7 +199,7 @@ public class WidgetsBottomSheet extends BaseWidgetSheet {
             tableRow.setGravity(Gravity.TOP);
             row.forEach(widgetItem -> {
                 WidgetCell widget = addItemCell(tableRow);
-                widget.setPreviewSize(widgetItem.spanX, widgetItem.spanY);
+                widget.setPreviewSize(widgetItem);
                 widget.applyFromCellItem(widgetItem, LauncherAppState.getInstance(mActivityContext)
                         .getWidgetCache());
                 widget.ensurePreview();

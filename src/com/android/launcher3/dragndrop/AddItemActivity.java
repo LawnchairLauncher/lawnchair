@@ -270,7 +270,7 @@ public class AddItemActivity extends BaseActivity
 
             @Override
             protected void onPostExecute(WidgetItem item) {
-                mWidgetCell.setPreviewSize(item.spanX, item.spanY);
+                mWidgetCell.setPreviewSize(item);
                 mWidgetCell.applyFromCellItem(item, mApp.getWidgetCache());
                 mWidgetCell.ensurePreview();
             }
