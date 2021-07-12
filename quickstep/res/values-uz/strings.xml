@@ -45,9 +45,9 @@
     <string name="hotsaet_tip_prediction_enabled" msgid="2233554377501347650">"Ilova tavsiyalari yoqildi"</string>
     <string name="hotsaet_tip_prediction_disabled" msgid="1506426298884658491">"Endi ilova takliflari chiqmaydi"</string>
     <string name="hotseat_prediction_content_description" msgid="4582028296938078419">"Taklif etilgan ilova: <xliff:g id="TITLE">%1$s</xliff:g>"</string>
-    <string name="back_gesture_feedback_swipe_too_far_from_left_edge" msgid="340972404868601012">"Barmoqni chapdagi eng chekkadan suring."</string>
+    <string name="back_gesture_feedback_swipe_too_far_from_left_edge" msgid="340972404868601012">"Ekranning chap chetidan boshlab oʻngga suring."</string>
     <string name="back_gesture_feedback_cancelled_left_edge" msgid="6671316150388702530">"Barmoqni ekranning chap chetidan oʻrtasigacha suring va ekrandan uzing."</string>
-    <string name="back_gesture_feedback_swipe_too_far_from_right_edge" msgid="4306700023773832353">"Barmoqni oʻngdagi eng chekkadan suring."</string>
+    <string name="back_gesture_feedback_swipe_too_far_from_right_edge" msgid="4306700023773832353">"Ekran chetidan boshlab oʻngdan chapga suring"</string>
     <string name="back_gesture_feedback_cancelled_right_edge" msgid="4951916546256902552">"Barmoqni ekranning oʻng chetidan oʻrtasigacha suring va ekrandan uzing."</string>
     <string name="back_gesture_feedback_complete_with_back_right_follow_up" msgid="2100639504811809267">"Ortga qaytish uchun chapdan surishni oʻrgandingiz."</string>
     <string name="back_gesture_feedback_complete_with_overview_follow_up" msgid="9176400654037014471">"Ortga qaytish uchun oʻngdan surishni oʻrgandingiz. Endi ilovalarni almashtirishni oʻrganamiz."</string>
@@ -55,7 +55,7 @@
     <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="1148198467090405643">"Barmoqni ekran pastiga yaqin surmaslikka harakat qiling."</string>
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"Orqaga ishorasi sezuvchanligi Sozlamalardan oʻzgartiriladi"</string>
     <string name="back_left_gesture_intro_title" msgid="5197184481779330065">"Orqaga qaytish uchun chapdan suring"</string>
-    <string name="back_right_gesture_intro_title" msgid="7431951986971898074">"Orqaga qaytish uchun oʻngdan suring"</string>
+    <string name="back_right_gesture_intro_title" msgid="7431951986971898074">"Orqaga qaytish uchun oʻngdan chapga suring"</string>
     <string name="back_left_gesture_intro_subtitle" msgid="7672761376577628602">"Oxirgi ekranga qaytish uchun barmoqni ekranning chap chekkasidan oʻrtasigacha suring."</string>
     <string name="back_right_gesture_intro_subtitle" msgid="2735828029197816509">"Shuningdek, oʻng chetdan ekran oʻrtasiga surish orqali ham oxirgi ekranga qaytish mumkin. Hoziroq sinang."</string>
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"Barmoqni ekranning pastki chetidan yuqoriga suring."</string>
