@@ -30,7 +30,6 @@ import static com.android.quickstep.views.TaskView.FLAG_UPDATE_ALL;
 import android.annotation.TargetApi;
 import android.os.Build;
 import android.util.FloatProperty;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 
@@ -111,8 +110,6 @@ public final class RecentsViewStateController extends
         propertySetter.setFloat(mLauncher.getActionsView().getVisibilityAlpha(),
                 MultiValueAlpha.VALUE, overviewButtonAlpha, config.getInterpolator(
                         ANIM_OVERVIEW_ACTIONS_FADE, LINEAR));
-        Log.v("b/193125090",
-                "RecentsViewStateController - setVisibilityAlpha: " + overviewButtonAlpha);
 
         float splitPlaceholderAlpha = state.areElementsVisible(mLauncher, SPLIT_PLACHOLDER_VIEW) ?
                 0.85f : 0;

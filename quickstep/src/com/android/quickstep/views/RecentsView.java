@@ -82,7 +82,6 @@ import android.text.StaticLayout;
 import android.text.TextPaint;
 import android.util.AttributeSet;
 import android.util.FloatProperty;
-import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.Gravity;
 import android.view.HapticFeedbackConstants;
@@ -1270,7 +1269,6 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         // Fade out the actions view quickly (0.1 range)
         mActionsView.getFullscreenAlpha().setValue(
                 mapToRange(fullscreenProgress, 0, 0.1f, 1f, 0f, LINEAR));
-        Log.v("b/193125090", "setFullscreenAlpha: " + mActionsView.getFullscreenAlpha().getValue());
     }
 
     private void updateTaskStackListenerState() {
@@ -1489,7 +1487,6 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             }
         }
         mActionsView.getScrollAlpha().setValue(scrollAlpha);
-        Log.v("b/193125090", "setScrollAlpha: " + scrollAlpha);
     }
 
     /**
@@ -1914,7 +1911,6 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     private void animateActionsViewIn() {
         ObjectAnimator anim = ObjectAnimator.ofFloat(
                 mActionsView.getVisibilityAlpha(), MultiValueAlpha.VALUE, 0, 1);
-        Log.v("b/193125090", "animateActionsViewIn - setVisibilityAlpha: " + 1);
         anim.setDuration(TaskView.SCALE_ICON_DURATION);
         anim.start();
     }
@@ -2724,7 +2720,6 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         mEmptyMessagePaint.setAlpha(alphaInt);
         mEmptyIcon.setAlpha(alphaInt);
         mActionsView.getContentAlpha().setValue(mContentAlpha);
-        Log.v("b/193125090", "setContentAlpha: " + mContentAlpha);
 
         if (alpha > 0) {
             setVisibility(VISIBLE);
