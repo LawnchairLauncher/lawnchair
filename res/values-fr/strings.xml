@@ -28,7 +28,7 @@
     <string name="shortcut_not_available" msgid="2536503539825726397">"Raccourci non disponible"</string>
     <string name="home_screen" msgid="5629429142036709174">"Accueil"</string>
     <string name="recent_task_option_split_screen" msgid="6690461455618725183">"Écran partagé"</string>
-    <string name="long_press_widget_to_add" msgid="3587712543577675817">"Appuyez de manière prolongée pour déplacer widget."</string>
+    <string name="long_press_widget_to_add" msgid="3587712543577675817">"Appuyez de manière prolongée sur un widget pour le déplacer."</string>
     <string name="long_accessible_way_to_add" msgid="2733588281439571974">"Appuyez deux fois et maintenez la pression pour déplacer widget ou utiliser actions personnalisées."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d x %2$d"</string>
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"%1$d de largeur et %2$d de hauteur"</string>
@@ -48,7 +48,7 @@
     <string name="widgets_full_sheet_search_bar_hint" msgid="8484659090860596457">"Rechercher"</string>
     <string name="widgets_full_sheet_cancel_button_description" msgid="5766167035728653605">"Effacer le texte du champ de recherche"</string>
     <string name="no_widgets_available" msgid="4337693382501046170">"Les widgets et les raccourcis ne sont pas disponibles"</string>
-    <string name="no_search_results" msgid="3787956167293097509">"Aucun widget ni raccourci trouvés"</string>
+    <string name="no_search_results" msgid="3787956167293097509">"Aucun widget ni raccourci trouvé"</string>
     <string name="widgets_full_sheet_personal_tab" msgid="2743540105607120182">"Personnels"</string>
     <string name="widgets_full_sheet_work_tab" msgid="3767150027110633765">"Professionnels"</string>
     <string name="widget_category_conversations" msgid="8894438636213590446">"Conversations"</string>
@@ -65,7 +65,7 @@
     <string name="notifications_header" msgid="1404149926117359025">"Notifications"</string>
     <string name="long_press_shortcut_to_add" msgid="5405328730817637737">"Appuyez de manière prolongée pour déplacer raccourci."</string>
     <string name="long_accessible_way_to_add_shortcut" msgid="2199537273817090740">"Appuyez deux fois et maintenez la pression pour déplacer un raccourci ou utiliser les actions personnalisées."</string>
-    <string name="out_of_space" msgid="6692471482459245734">"Pas d\'espace libre sur cet écran d\'accueil"</string>
+    <string name="out_of_space" msgid="6692471482459245734">"Espace insuffisant sur cet écran d\'accueil"</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"Plus d\'espace disponible dans la zone de favoris."</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"Liste d\'applications"</string>
     <string name="all_apps_button_personal_label" msgid="1315764287305224468">"Liste des applications personnelles"</string>
