@@ -115,7 +115,7 @@ public final class WidgetsRecommendationTableLayout extends TableLayout {
 
             for (WidgetItem widgetItem : widgetItems) {
                 WidgetCell widgetCell = addItemCell(tableRow);
-                widgetCell.setPreviewSize(widgetItem.spanX, widgetItem.spanY, data.mPreviewScale);
+                widgetCell.setPreviewSize(widgetItem, data.mPreviewScale);
                 widgetCell.applyFromCellItem(widgetItem,
                         LauncherAppState.getInstance(getContext()).getWidgetCache());
                 widgetCell.ensurePreview();
