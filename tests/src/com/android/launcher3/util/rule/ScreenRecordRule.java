@@ -62,12 +62,17 @@ public class ScreenRecordRule implements TestRule {
                 ParcelFileDescriptor output =
                         automation.executeShellCommand("screenrecord " + outputFile);
                 String screenRecordPid = device.executeShellCommand("pidof screenrecord");
+                boolean success = false;
                 try {
                     base.evaluate();
+                    success = true;
                 } finally {
                     device.executeShellCommand("kill -INT " + screenRecordPid);
                     Log.e(TAG, "Screenrecord captured at: " + outputFile);
                     output.close();
+                    if (success) {
+                        automation.executeShellCommand("rm " + outputFile);
+                    }
                 }
             }
         };
@@ -78,5 +83,6 @@ public class ScreenRecordRule implements TestRule {
      */
     @Retention(RetentionPolicy.RUNTIME)
     @Target(ElementType.METHOD)
-    public @interface ScreenRecord { }
+    public @interface ScreenRecord {
+    }
 }
