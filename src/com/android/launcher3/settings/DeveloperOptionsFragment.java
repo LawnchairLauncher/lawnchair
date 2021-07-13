@@ -293,8 +293,7 @@ public class DeveloperOptionsFragment extends PreferenceFragmentCompat {
                     "tutorial_steps",
                     new String[] {
                             "HOME_NAVIGATION",
-                            "LEFT_EDGE_BACK_NAVIGATION",
-                            "RIGHT_EDGE_BACK_NAVIGATION",
+                            "BACK_NAVIGATION",
                             "OVERVIEW_NAVIGATION"}));
             return true;
         });
@@ -306,7 +305,7 @@ public class DeveloperOptionsFragment extends PreferenceFragmentCompat {
         launchBackTutorialPreference.setOnPreferenceClickListener(preference -> {
             startActivity(launchSandboxIntent.putExtra(
                     "tutorial_steps",
-                    new String[] {"LEFT_EDGE_BACK_NAVIGATION", "RIGHT_EDGE_BACK_NAVIGATION"}));
+                    new String[] {"BACK_NAVIGATION"}));
             return true;
         });
         sandboxCategory.addPreference(launchBackTutorialPreference);

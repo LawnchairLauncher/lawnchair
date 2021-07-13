@@ -59,6 +59,7 @@ abstract class TutorialController implements BackGestureAttemptCallback,
     private static final int FEEDBACK_ANIMATION_MS = 250;
     private static final int RIPPLE_VISIBLE_MS = 300;
     private static final int GESTURE_ANIMATION_DELAY_MS = 1500;
+    private static final int ADVANCE_TUTORIAL_TIMEOUT_MS = 4000;
 
     final TutorialFragment mTutorialFragment;
     TutorialType mTutorialType;
@@ -220,7 +221,15 @@ abstract class TutorialController implements BackGestureAttemptCallback,
                 mFeedbackView.findViewById(R.id.gesture_tutorial_fragment_feedback_subtitle);
         subtitle.setText(subtitleResId);
         if (isGestureSuccessful) {
-            showActionButton();
+            hideCloseButton();
+            if (mTutorialFragment.isAtFinalStep()) {
+                showActionButton();
+            }
+
+            if (mFeedbackVideoViewCallback != null) {
+                mFeedbackVideoView.removeCallbacks(mFeedbackVideoViewCallback);
+                mFeedbackVideoViewCallback = null;
+            }
         }
         mGestureCompleted = isGestureSuccessful;
 
@@ -248,6 +257,16 @@ abstract class TutorialController implements BackGestureAttemptCallback,
         mFeedbackView.animate()
                 .setDuration(FEEDBACK_ANIMATION_MS)
                 .translationY(0)
+                .withEndAction(() -> {
+                    if (isGestureSuccessful && !mTutorialFragment.isAtFinalStep()) {
+                        if (mFeedbackViewCallback != null) {
+                            mFeedbackView.removeCallbacks(mFeedbackViewCallback);
+                        }
+                        mFeedbackViewCallback = mTutorialFragment::continueTutorial;
+                        mFeedbackView.postDelayed(mFeedbackViewCallback,
+                                ADVANCE_TUTORIAL_TIMEOUT_MS);
+                    }
+                })
                 .start();
         mFeedbackTitleView.postDelayed(mTitleViewCallback, FEEDBACK_ANIMATION_MS);
     }
@@ -352,19 +371,26 @@ abstract class TutorialController implements BackGestureAttemptCallback,
         }
     }
 
-    void hideActionButton() {
+    void hideCloseButton() {
+        mCloseButton.setVisibility(GONE);
+    }
+
+    void showCloseButton() {
         mCloseButton.setVisibility(View.VISIBLE);
         mCloseButton.setTextAppearance(Utilities.isDarkTheme(mContext)
                 ? R.style.TextAppearance_GestureTutorial_Feedback_Subtext
                 : R.style.TextAppearance_GestureTutorial_Feedback_Subtext_Dark);
+    }
 
+    void hideActionButton() {
+        showCloseButton();
         // Invisible to maintain the layout.
         mActionButton.setVisibility(View.INVISIBLE);
         mActionButton.setOnClickListener(null);
     }
 
     void showActionButton() {
-        mCloseButton.setVisibility(GONE);
+        hideCloseButton();
         mActionButton.setVisibility(View.VISIBLE);
         mActionButton.setOnClickListener(this::onActionButtonClicked);
     }
@@ -461,8 +487,7 @@ abstract class TutorialController implements BackGestureAttemptCallback,
 
     /** Denotes the type of the tutorial. */
     enum TutorialType {
-        RIGHT_EDGE_BACK_NAVIGATION,
-        LEFT_EDGE_BACK_NAVIGATION,
+        BACK_NAVIGATION,
         BACK_NAVIGATION_COMPLETE,
         HOME_NAVIGATION,
         HOME_NAVIGATION_COMPLETE,
