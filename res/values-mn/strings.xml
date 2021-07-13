@@ -53,7 +53,7 @@
     <string name="widgets_full_sheet_work_tab" msgid="3767150027110633765">"Ажил"</string>
     <string name="widget_category_conversations" msgid="8894438636213590446">"Харилцан яриа"</string>
     <string name="widget_education_header" msgid="4874760613775913787">"Хэрэгтэй мэдээллээ хурууныхаа үзүүрээр аваарай"</string>
-    <string name="widget_education_content" msgid="745542879510751525">"Аппуудыг нээлгүйгээр мэдээлэл авахын тулд та Үндсэн нүүрэндээ жижиг хэрэгслүүд нэмэх боломжтой"</string>
+    <string name="widget_education_content" msgid="745542879510751525">"Аппуудыг нээлгүйгээр мэдээлэл авахын тулд та Үндсэн нүүрэндээ виджет нэмэх боломжтой"</string>
     <string name="reconfigurable_widget_education_tip" msgid="6336962690888067057">"Жижиг хэрэгслийн тохиргоог өөрчлөхийн тулд товшино уу"</string>
     <string name="widget_education_close_button" msgid="8676165703104836580">"Ойлголоо"</string>
     <string name="widget_reconfigure_button_content_description" msgid="8811472721881205250">"Жижиг хэрэгслийн тохиргоог өөрчлөх"</string>

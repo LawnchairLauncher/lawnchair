@@ -28,7 +28,7 @@
     <string name="shortcut_not_available" msgid="2536503539825726397">"শর্টকাটগুলি অনুপলব্ধ"</string>
     <string name="home_screen" msgid="5629429142036709174">"হোম"</string>
     <string name="recent_task_option_split_screen" msgid="6690461455618725183">"স্প্লিট স্ক্রিন"</string>
-    <string name="long_press_widget_to_add" msgid="3587712543577675817">"একটি উইজেট সরাতে টাচ করে ধরে রাখুন।"</string>
+    <string name="long_press_widget_to_add" msgid="3587712543577675817">"কোনও উইজেট সরাতে সেটি টাচ করে ধরে রাখুন।"</string>
     <string name="long_accessible_way_to_add" msgid="2733588281439571974">"একটি উইজেট সরাতে বা কাস্টম অ্যাকশন ব্যবহার করতে ডবল ট্যাপ করে ধরে রাখুন।"</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"%2$d উচ্চতা অনুযায়ী %1$d প্রস্থ"</string>

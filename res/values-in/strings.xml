@@ -52,7 +52,7 @@
     <string name="widgets_full_sheet_personal_tab" msgid="2743540105607120182">"Pribadi"</string>
     <string name="widgets_full_sheet_work_tab" msgid="3767150027110633765">"Kantor"</string>
     <string name="widget_category_conversations" msgid="8894438636213590446">"Percakapan"</string>
-    <string name="widget_education_header" msgid="4874760613775913787">"Info yang bermanfaat di ujung jari Anda"</string>
+    <string name="widget_education_header" msgid="4874760613775913787">"Info bermanfaat mudah dilihat"</string>
     <string name="widget_education_content" msgid="745542879510751525">"Untuk mendapatkan info tanpa membuka aplikasi, Anda dapat menambahkan widget ke Layar utama"</string>
     <string name="reconfigurable_widget_education_tip" msgid="6336962690888067057">"Ketuk untuk mengubah setelan widget"</string>
     <string name="widget_education_close_button" msgid="8676165703104836580">"Oke"</string>
