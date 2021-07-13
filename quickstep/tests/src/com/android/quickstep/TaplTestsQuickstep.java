@@ -145,12 +145,8 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
                 launcher -> assertEquals("Dismissing a task didn't remove 1 task from Overview",
                         numTasks - 1, getTaskCount(launcher)));
 
-        // Test UIDevice.pressHome, once we are in AllApps.
-        mDevice.pressHome();
-        waitForState("Launcher internal state didn't switch to Home", () -> LauncherState.NORMAL);
-
         // Test dismissing all tasks.
-        mLauncher.getWorkspace().switchToOverview().dismissAllTasks();
+        mLauncher.pressHome().switchToOverview().dismissAllTasks();
         waitForState("Launcher internal state didn't switch to Home", () -> LauncherState.NORMAL);
         executeOnLauncher(
                 launcher -> assertEquals("Still have tasks after dismissing all",
