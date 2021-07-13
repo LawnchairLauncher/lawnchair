@@ -63,6 +63,9 @@
     <string name="add_item_request_drag_hint">Touch &amp; hold the widget to move it around the Home screen</string>
     <!-- Button label to automatically add a widget to home screen [CHAR_LIMIT=50] -->
     <string name="add_to_home_screen">Add to Home screen</string>
+    <!-- Accessibility spoken message announced when a widget gets added to the home screen using a
+         button in a dialog. [CHAR_LIMIT=none] -->
+    <string name="added_to_home_screen_accessibility_text"><xliff:g id="widget_name" example="Calendar month view">%1$s</xliff:g> widget added to home screen</string>
     <!-- Label for showing the number of widgets an app has in the full widgets picker.
          [CHAR_LIMIT=25] -->
     <plurals name="widgets_count">
