@@ -35,6 +35,8 @@
     <string name="widget_preview_context_description" msgid="9045841361655787574">"أداة <xliff:g id="WIDGET_NAME">%1$s</xliff:g>"</string>
     <string name="add_item_request_drag_hint" msgid="5653291305078645405">"يمكنك النقر على الأداة مع الاستمرار لتحريكها على الشاشة الرئيسية."</string>
     <string name="add_to_home_screen" msgid="8631549138215492708">"إضافة إلى الشاشة الرئيسية"</string>
+    <!-- no translation found for added_to_home_screen_accessibility_text (4451545765448884415) -->
+    <skip />
     <plurals name="widgets_count" formatted="false" msgid="656794749266073027">
       <item quantity="zero"><xliff:g id="WIDGETS_COUNT_1">%1$d</xliff:g> أداة</item>
       <item quantity="two">أداتان (<xliff:g id="WIDGETS_COUNT_1">%1$d</xliff:g>)</item>
