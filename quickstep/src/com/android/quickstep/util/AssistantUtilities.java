@@ -23,7 +23,6 @@ import android.content.Intent;
 import android.os.Build;
 
 import com.android.systemui.shared.system.ActivityManagerWrapper;
-import com.android.systemui.shared.system.TaskInfoCompat;
 
 /**
  * Utility class for interacting with the Assistant.
@@ -39,7 +38,7 @@ public final class AssistantUtilities {
     /** Returns true if the given task holds an Assistant activity that is excluded from recents. */
     public static boolean isExcludedAssistant(TaskInfo info) {
         return info != null
-            && TaskInfoCompat.getActivityType(info) == ACTIVITY_TYPE_ASSISTANT
+            && info.configuration.windowConfiguration.getActivityType() == ACTIVITY_TYPE_ASSISTANT
             && (info.baseIntent.getFlags() & Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS) != 0;
     }
 

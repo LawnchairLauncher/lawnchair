@@ -301,6 +301,7 @@ public class SwipePipToHomeAnimator extends RectFSpringAnim {
         private ComponentName mComponentName;
         private SurfaceControl mLeash;
         private Rect mSourceRectHint;
+        private Rect mDisplayCutoutInsets;
         private Rect mAppBounds;
         private Matrix mHomeToWindowPositionMap;
         private RectF mStartBounds;
@@ -366,7 +367,8 @@ public class SwipePipToHomeAnimator extends RectFSpringAnim {
         }
 
         public Builder setFromRotation(TaskViewSimulator taskViewSimulator,
-                @RecentsOrientedState.SurfaceRotation int fromRotation) {
+                @RecentsOrientedState.SurfaceRotation int fromRotation,
+                Rect displayCutoutInsets) {
             if (fromRotation != Surface.ROTATION_90 && fromRotation != Surface.ROTATION_270) {
                 Log.wtf(TAG, "Not a supported rotation, rotation=" + fromRotation);
                 return this;
@@ -381,12 +383,23 @@ public class SwipePipToHomeAnimator extends RectFSpringAnim {
             transformed.round(mDestinationBoundsTransformed);
 
             mFromRotation = fromRotation;
+            if (displayCutoutInsets != null) {
+                mDisplayCutoutInsets = new Rect(displayCutoutInsets);
+            }
             return this;
         }
 
         public SwipePipToHomeAnimator build() {
             if (mDestinationBoundsTransformed.isEmpty()) {
                 mDestinationBoundsTransformed.set(mDestinationBounds);
+            }
+            // adjust the mSourceRectHint / mAppBounds by display cutout if applicable.
+            if (mSourceRectHint != null && mDisplayCutoutInsets != null) {
+                if (mFromRotation == Surface.ROTATION_90) {
+                    mSourceRectHint.offset(mDisplayCutoutInsets.left, mDisplayCutoutInsets.top);
+                } else if (mFromRotation == Surface.ROTATION_270) {
+                    mAppBounds.inset(mDisplayCutoutInsets);
+                }
             }
             return new SwipePipToHomeAnimator(mContext, mTaskId, mComponentName, mLeash,
                     mSourceRectHint, mAppBounds,
