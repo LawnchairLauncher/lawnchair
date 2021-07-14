@@ -176,7 +176,9 @@ public abstract class BaseWidgetSheet extends AbstractSlideInView<Launcher>
         }
 
         PendingItemDragHelper dragHelper = new PendingItemDragHelper(v);
-        dragHelper.setRemoteViewsPreview(v.getRemoteViewsPreview());
+        // RemoteViews are being rendered in AppWidgetHostView in WidgetCell. And thus, the scale of
+        // RemoteViews is equivalent to the AppWidgetHostView scale.
+        dragHelper.setRemoteViewsPreview(v.getRemoteViewsPreview(), v.getAppWidgetHostViewScale());
         dragHelper.setAppWidgetHostViewPreview(v.getAppWidgetHostViewPreview());
 
         if (image.getDrawable() != null) {

@@ -127,6 +127,7 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
 
     private RemoteViews mRemoteViewsPreview;
     private NavigableAppWidgetHostView mAppWidgetHostViewPreview;
+    private float mAppWidgetHostViewScale = 1f;
     private int mSourceContainer = CONTAINER_WIDGETS_TRAY;
 
     public WidgetCell(Context context) {
@@ -177,6 +178,11 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
         return mRemoteViewsPreview;
     }
 
+    /** Returns the app widget host view scale, which is a value between [0f, 1f]. */
+    public float getAppWidgetHostViewScale() {
+        return mAppWidgetHostViewScale;
+    }
+
     /**
      * Called to clear the view and free attached resources. (e.g., {@link Bitmap}
      */
@@ -202,6 +208,7 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
             mWidgetImageContainer.removeView(mAppWidgetHostViewPreview);
         }
         mAppWidgetHostViewPreview = null;
+        mAppWidgetHostViewScale = 1f;
         mItem = null;
     }
 
@@ -364,8 +371,8 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
                 if (shouldScale) {
                     setNoClip(mWidgetImageContainer);
                     setNoClip(mAppWidgetHostViewPreview);
-                    float previewLayoutScale = computeWidgetPreviewScale();
-                    mAppWidgetHostViewPreview.setScaleToFit(previewLayoutScale);
+                    mAppWidgetHostViewScale = computeWidgetPreviewScale();
+                    mAppWidgetHostViewPreview.setScaleToFit(mAppWidgetHostViewScale);
                 }
             }
             FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
