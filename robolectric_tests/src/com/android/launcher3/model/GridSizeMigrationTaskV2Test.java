@@ -131,7 +131,7 @@ public class GridSizeMigrationTaskV2Test {
                 mIdp.numDatabaseHotseatIcons);
         GridSizeMigrationTaskV2 task = new GridSizeMigrationTaskV2(mContext, mDb, srcReader,
                 destReader, mIdp.numDatabaseHotseatIcons, new Point(mIdp.numColumns, mIdp.numRows));
-        task.migrate();
+        task.migrate(mIdp);
 
         // Check hotseat items
         Cursor c = mContext.getContentResolver().query(LauncherSettings.Favorites.CONTENT_URI,
@@ -211,7 +211,7 @@ public class GridSizeMigrationTaskV2Test {
                 mIdp.numDatabaseHotseatIcons);
         GridSizeMigrationTaskV2 task = new GridSizeMigrationTaskV2(mContext, mDb, srcReader,
                 destReader, mIdp.numDatabaseHotseatIcons, new Point(mIdp.numColumns, mIdp.numRows));
-        task.migrate();
+        task.migrate(mIdp);
 
         // Check hotseat items
         Cursor c = mContext.getContentResolver().query(LauncherSettings.Favorites.CONTENT_URI,
@@ -259,7 +259,7 @@ public class GridSizeMigrationTaskV2Test {
                 mIdp.numDatabaseHotseatIcons);
         GridSizeMigrationTaskV2 task = new GridSizeMigrationTaskV2(mContext, mDb, srcReader,
                 destReader, mIdp.numDatabaseHotseatIcons, new Point(mIdp.numColumns, mIdp.numRows));
-        task.migrate();
+        task.migrate(mIdp);
 
         // Check hotseat items
         Cursor c = mContext.getContentResolver().query(LauncherSettings.Favorites.CONTENT_URI,

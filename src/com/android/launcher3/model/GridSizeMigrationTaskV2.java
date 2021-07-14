@@ -41,6 +41,7 @@ import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.Workspace;
 import com.android.launcher3.graphics.LauncherPreviewRenderer;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.pm.InstallSessionHelper;
@@ -183,7 +184,7 @@ public class GridSizeMigrationTaskV2 {
             Point targetSize = new Point(idp.numColumns, idp.numRows);
             GridSizeMigrationTaskV2 task = new GridSizeMigrationTaskV2(context, t.getDb(),
                     srcReader, destReader, idp.numDatabaseHotseatIcons, targetSize);
-            task.migrate();
+            task.migrate(idp);
 
             if (!migrateForPreview) {
                 dropTable(t.getDb(), LauncherSettings.Favorites.TMP_TABLE);
@@ -210,7 +211,7 @@ public class GridSizeMigrationTaskV2 {
     }
 
     @VisibleForTesting
-    protected boolean migrate() {
+    protected boolean migrate(InvariantDeviceProfile idp) {
         if (mHotseatDiff.isEmpty() && mWorkspaceDiff.isEmpty()) {
             return false;
         }
@@ -224,7 +225,17 @@ public class GridSizeMigrationTaskV2 {
         Collections.sort(mWorkspaceDiff);
 
         // Migrate workspace.
+        // First we create a collection of the screens
+        List<Integer> screens = new ArrayList<>();
+        if (idp.getDeviceProfile(mContext).isTwoPanels) {
+            screens.add(Workspace.LEFT_PANEL_ID);
+        }
         for (int screenId = 0; screenId <= mDestReader.mLastScreenId; screenId++) {
+            screens.add(screenId);
+        }
+
+        // Then we place the items on the screens
+        for (int screenId : screens) {
             if (DEBUG) {
                 Log.d(TAG, "Migrating " + screenId);
             }
@@ -236,6 +247,8 @@ public class GridSizeMigrationTaskV2 {
             }
         }
 
+        // In case the new grid is smaller, there might be some leftover items that don't fit on
+        // any of the screens, in this case we add them to new screens until all of them are placed.
         int screenId = mDestReader.mLastScreenId + 1;
         while (!mWorkspaceDiff.isEmpty()) {
             GridPlacementSolution workspaceSolution = new GridPlacementSolution(mDb, mSrcReader,
