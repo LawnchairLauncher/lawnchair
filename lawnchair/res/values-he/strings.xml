@@ -18,13 +18,13 @@
     <string name="icon_pack">חבילת אייקונים</string>
     <string name="settings">הגדרות</string>
     <string name="home_screen_label">מסך בית</string>
-    <string name="home_screen_description">Feed, At a Glance, Grid, Icons</string>
+    <string name="home_screen_description">הזנה, מבט מהיר, רשת, סמלים</string>
     <string name="general_label">כללי</string>
     <string name="general_description">Notification Dots, Icon Pack</string>
     <string name="home_screen_rotation_label">סיבוב מסך בית</string>
     <string name="home_screen_rotaton_description">כאשר המכשיר מסובב.</string>
     <string name="auto_add_shortcuts_label">הוספת אפליקציות חדשות למסך הבית</string>
-    <string name="dock_label">Dock</string>
+    <string name="dock_label">מעגנים</string>
     <string name="dock_description">Search Bar, Icon Count</string>
     <string name="app_drawer_label">App Drawer</string>
     <string name="app_drawer_description">Hidden Apps, Column Count, Icons</string>
