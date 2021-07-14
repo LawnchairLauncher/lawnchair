@@ -16,6 +16,8 @@
 
 package com.android.quickstep.views;
 
+import static android.view.View.GONE;
+
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
@@ -54,11 +56,11 @@ public class GoOverviewActionsView extends OverviewActionsView<OverlayUICallback
         if (getResources().getBoolean(R.bool.enable_niu_actions)) {
             findViewById(R.id.action_listen).setOnClickListener(this);
             findViewById(R.id.action_translate).setOnClickListener(this);
-            findViewById(R.id.action_search).setOnClickListener(this);
         } else {
-            findViewById(R.id.action_listen).setVisibility(View.GONE);
-            findViewById(R.id.action_translate).setVisibility(View.GONE);
-            findViewById(R.id.action_search).setVisibility(View.GONE);
+            findViewById(R.id.layout_listen).setVisibility(GONE);
+            findViewById(R.id.spacer_listen).setVisibility(GONE);
+            findViewById(R.id.layout_translate).setVisibility(GONE);
+            findViewById(R.id.spacer_translate).setVisibility(GONE);
         }
     }
 
