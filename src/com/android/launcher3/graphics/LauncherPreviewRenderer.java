@@ -208,7 +208,7 @@ public class LauncherPreviewRenderer extends ContextWrapper
     private final LayoutInflater mHomeElementInflater;
     private final InsettableFrameLayout mRootView;
     private final Hotseat mHotseat;
-    private final CellLayout mWorkspace;
+    private final Map<Integer, CellLayout> mWorkspaceScreens = new HashMap<>();
     private final AppWidgetHost mAppWidgetHost;
     private final SparseIntArray mWallpaperColorResources;
 
@@ -254,19 +254,31 @@ public class LauncherPreviewRenderer extends ContextWrapper
                 new ContextThemeWrapper(this, R.style.HomeScreenElementTheme));
         mHomeElementInflater.setFactory2(this);
 
+        int layoutRes = mDp.isTwoPanels ? R.layout.launcher_preview_two_panel_layout
+                : R.layout.launcher_preview_layout;
         mRootView = (InsettableFrameLayout) mHomeElementInflater.inflate(
-                R.layout.launcher_preview_layout, null, false);
+                layoutRes, null, false);
         mRootView.setInsets(mInsets);
         measureView(mRootView, mDp.widthPx, mDp.heightPx);
 
         mHotseat = mRootView.findViewById(R.id.hotseat);
         mHotseat.resetLayout(false);
 
-        mWorkspace = mRootView.findViewById(R.id.workspace);
-        mWorkspace.setPadding(mDp.workspacePadding.left + mDp.cellLayoutPaddingLeftRightPx,
+        if (mDp.isTwoPanels) {
+            CellLayout leftPanel = mRootView.findViewById(R.id.workspace_left);
+            leftPanel.setPadding(mDp.workspacePadding.left + mDp.cellLayoutPaddingLeftRightPx,
+                    mDp.workspacePadding.top,
+                    mDp.workspacePadding.right + mDp.cellLayoutPaddingLeftRightPx,
+                    mDp.workspacePadding.bottom);
+            mWorkspaceScreens.put(LEFT_PANEL_ID, leftPanel);
+        }
+
+        CellLayout firstScreen = mRootView.findViewById(R.id.workspace);
+        firstScreen.setPadding(mDp.workspacePadding.left + mDp.cellLayoutPaddingLeftRightPx,
                 mDp.workspacePadding.top,
                 mDp.workspacePadding.right + mDp.cellLayoutPaddingLeftRightPx,
                 mDp.workspacePadding.bottom);
+        mWorkspaceScreens.put(FIRST_SCREEN_ID, firstScreen);
 
         if (FeatureFlags.WIDGETS_IN_LAUNCHER_PREVIEW.get()) {
             mAppWidgetHost = new LauncherPreviewAppWidgetHost(context);
@@ -335,18 +347,20 @@ public class LauncherPreviewRenderer extends ContextWrapper
 
     @Override
     public CellLayout getScreenWithId(int screenId) {
-        return mWorkspace;
+        return mWorkspaceScreens.get(screenId);
     }
 
     private void inflateAndAddIcon(WorkspaceItemInfo info) {
+        CellLayout screen = mWorkspaceScreens.get(info.screenId);
         BubbleTextView icon = (BubbleTextView) mHomeElementInflater.inflate(
-                R.layout.app_icon, mWorkspace, false);
+                R.layout.app_icon, screen, false);
         icon.applyFromWorkspaceItem(info);
         addInScreenFromBind(icon, info);
     }
 
     private void inflateAndAddFolder(FolderInfo info) {
-        FolderIcon folderIcon = FolderIcon.inflateIcon(R.layout.folder_icon, this, mWorkspace,
+        CellLayout screen = mWorkspaceScreens.get(info.screenId);
+        FolderIcon folderIcon = FolderIcon.inflateIcon(R.layout.folder_icon, this, screen,
                 info);
         addInScreenFromBind(folderIcon, info);
     }
@@ -396,7 +410,8 @@ public class LauncherPreviewRenderer extends ContextWrapper
     }
 
     private void inflateAndAddPredictedIcon(WorkspaceItemInfo info) {
-        View view = PredictedAppIconInflater.inflate(mHomeElementInflater, mWorkspace, info);
+        CellLayout screen = mWorkspaceScreens.get(info.screenId);
+        View view = PredictedAppIconInflater.inflate(mHomeElementInflater, screen, info);
         if (view != null) {
             addInScreenFromBind(view, info);
         }
@@ -428,8 +443,7 @@ public class LauncherPreviewRenderer extends ContextWrapper
         ArrayList<LauncherAppWidgetInfo> currentAppWidgets = new ArrayList<>();
         ArrayList<LauncherAppWidgetInfo> otherAppWidgets = new ArrayList<>();
 
-        IntSet currentScreenIds = IntSet.wrap(0);
-        // TODO(b/185508060): support two panel preview.
+        IntSet currentScreenIds = IntSet.wrap(mWorkspaceScreens.keySet());
         filterCurrentWorkspaceItems(currentScreenIds, dataModel.workspaceItems,
                 currentWorkspaceItems, otherWorkspaceItems);
         filterCurrentWorkspaceItems(currentScreenIds, dataModel.appWidgets, currentAppWidgets,
@@ -487,12 +501,13 @@ public class LauncherPreviewRenderer extends ContextWrapper
 
         // Add first page QSB
         if (FeatureFlags.QSB_ON_FIRST_SCREEN) {
+            CellLayout firstScreen = mWorkspaceScreens.get(FIRST_SCREEN_ID);
             View qsb = mHomeElementInflater.inflate(
-                    R.layout.search_container_workspace, mWorkspace, false);
+                    R.layout.search_container_workspace, firstScreen, false);
             CellLayout.LayoutParams lp =
-                    new CellLayout.LayoutParams(0, 0, mWorkspace.getCountX(), 1);
+                    new CellLayout.LayoutParams(0, 0, firstScreen.getCountX(), 1);
             lp.canReorder = false;
-            mWorkspace.addViewToCellLayout(qsb, 0, R.id.search_container_workspace, lp, true);
+            firstScreen.addViewToCellLayout(qsb, 0, R.id.search_container_workspace, lp, true);
         }
 
         measureView(mRootView, mDp.widthPx, mDp.heightPx);
