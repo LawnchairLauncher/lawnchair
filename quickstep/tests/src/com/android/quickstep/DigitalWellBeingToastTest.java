@@ -11,7 +11,6 @@ import static org.junit.Assert.assertTrue;
 import android.app.PendingIntent;
 import android.app.usage.UsageStatsManager;
 import android.content.Intent;
-import android.os.Build;
 
 import androidx.test.filters.LargeTest;
 import androidx.test.runner.AndroidJUnit4;
@@ -34,9 +33,6 @@ public class DigitalWellBeingToastTest extends AbstractQuickStepTest {
 
     @Test
     public void testToast() throws Exception {
-        // b/150303529
-        if (Build.MODEL.contains("Cuttlefish")) return;
-
         startAppFast(CALCULATOR_PACKAGE);
 
         final UsageStatsManager usageStatsManager =

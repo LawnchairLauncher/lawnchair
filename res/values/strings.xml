@@ -36,24 +36,92 @@
     <!-- Message shown when a shortcut is not available. It could have been temporarily disabled and may start working again after some time. -->
     <string name="shortcut_not_available">Shortcut isn\'t available</string>
     <!-- User visible name for the launcher/home screen. [CHAR_LIMIT=30] -->
-    <string name="home_screen">Home screen</string>
-    <!-- Label for showing custom action list of a shortcut or widget. [CHAR_LIMIT=30] -->
-    <string name="custom_actions">Custom actions</string>
+    <string name="home_screen">Home</string>
+
+    <!-- Options for recent tasks -->
+    <!-- Title for an option to enter split screen mode for a given app -->
+    <string name="recent_task_option_split_screen">Split screen</string>
+    <string translatable="false" name="split_screen_position_top">Pin to top</string>
+    <string translatable="false" name="split_screen_position_left">Pin to left</string>
+    <string translatable="false" name="split_screen_position_right">Pin to right</string>
 
     <!-- Widgets -->
     <!-- Message to tell the user to press and hold on a widget to add it [CHAR_LIMIT=50] -->
-    <string name="long_press_widget_to_add">Touch &amp; hold to pick up a widget.</string>
+    <string name="long_press_widget_to_add">Touch &amp; hold to move a widget.</string>
     <!-- Accessibility spoken hint message in widget picker, which allows user to add a widget. Custom action is the label for additional accessibility actions available in this mode [CHAR_LIMIT=100] -->
-    <string name="long_accessible_way_to_add">Double-tap &amp; hold to pick up a widget or use custom actions.</string>
+    <string name="long_accessible_way_to_add">Double-tap &amp; hold to move a widget or use custom actions.</string>
     <!-- The format string for the dimensions of a widget in the drawer -->
     <!-- There is a special version of this format string for Farsi -->
     <string name="widget_dims_format">%1$d \u00d7 %2$d</string>
     <!-- Accessibility spoken message format for the dimensions of a widget in the drawer -->
     <string name="widget_accessible_dims_format">%1$d wide by %2$d high</string>
-    <!-- Message to tell the user to press and hold a widget/icon to add it  -->
-    <string name="add_item_request_drag_hint">Touch &amp; hold to place manually</string>
-    <!-- Button label to automatically add icon on home screen [CHAR_LIMIT=50] -->
-    <string name="place_automatically">Add automatically</string>
+    <!-- Spoken text for a screen reader. The placeholder text is the widget name.
+         [CHAR_LIMIT=none]-->
+    <string name="widget_preview_context_description"><xliff:g id="widget_name" example="Calendar month view">%1$s</xliff:g> widget</string>
+    <!-- Message to tell the user to press and hold a widget/icon to add it to the home screen.
+         [CHAR LIMIT=NONE]  -->
+    <string name="add_item_request_drag_hint">Touch &amp; hold the widget to move it around the Home screen</string>
+    <!-- Button label to automatically add a widget to home screen [CHAR_LIMIT=50] -->
+    <string name="add_to_home_screen">Add to Home screen</string>
+    <!-- Accessibility spoken message announced when a widget gets added to the home screen using a
+         button in a dialog. [CHAR_LIMIT=none] -->
+    <string name="added_to_home_screen_accessibility_text"><xliff:g id="widget_name" example="Calendar month view">%1$s</xliff:g> widget added to home screen</string>
+    <!-- Label for showing the number of widgets an app has in the full widgets picker.
+         [CHAR_LIMIT=25] -->
+    <plurals name="widgets_count">
+        <item quantity="one"><xliff:g id="widgets_count" example="1">%1$d</xliff:g> widget</item>
+        <item quantity="other"><xliff:g id="widgets_count" example="2">%1$d</xliff:g> widgets</item>
+    </plurals>
+    <!-- Label for showing the number of shortcut an app has in the full widgets picker.
+         [CHAR_LIMIT=25] -->
+    <plurals name="shortcuts_count">
+        <item quantity="one"><xliff:g id="shortcuts_count" example="1">%1$d</xliff:g> shortcut</item>
+        <item quantity="other"><xliff:g id="shortcuts_count" example="2">%1$d</xliff:g> shortcuts</item>
+    </plurals>
+    <!-- Label for showing both the number of widgets and shortcuts an app has in the full widgets
+         picker. [CHAR_LIMIT=50] -->
+    <string name="widgets_and_shortcuts_count"><xliff:g id="widgets_count" example="5 widgets">%1$s</xliff:g>, <xliff:g id="shortcuts_count" example="1 shortcut">%2$s</xliff:g></string>
+
+    <!-- Text for both the tile of a popup view, which shows all available widgets installed on
+         the device, and the text of a button, which opens this popup view. [CHAR LIMIT=30]-->
+    <string name="widget_button_text">Widgets</string>
+    <!-- Search bar text shown in the popup view showing all available widgets installed on the
+         device. [CHAR_LIMIT=50] -->
+    <string name="widgets_full_sheet_search_bar_hint">Search</string>
+    <!-- Spoken text for screen readers. This text lets a user know that the button is used to clear
+         the text that the user entered in the search box. [CHAR_LIMIT=none] -->
+    <string name="widgets_full_sheet_cancel_button_description">Clear text from search box</string>
+    <!-- Text shown when there are no widgets or shortcuts that can be added to the device.
+         [CHAR_LIMIT=none] -->
+    <string name="no_widgets_available">Widgets and shortcuts aren\'t available</string>
+    <!-- Text shown when there are no matching widget or shortcut search results for user's search
+         query. [CHAR_LIMIT=none] -->
+    <string name="no_search_results">No widgets or shortcuts found</string>
+    <!-- Tab label. A user can tap this tab to access their personal widgets. [CHAR_LIMIT=25] -->
+    <string name="widgets_full_sheet_personal_tab">Personal</string>
+    <!-- Tab label. A user can tap this tab to access their work widgets. [CHAR_LIMIT=25] -->
+    <string name="widgets_full_sheet_work_tab">Work</string>
+
+    <!-- A widget category label for grouping widgets related to conversations. [CHAR_LIMIT=30] -->
+    <string name="widget_category_conversations">Conversations</string>
+
+    <!-- Title of a dialog. This dialog lets a user know how they can use widgets on their phone.
+         [CHAR_LIMIT=NONE] -->
+    <string name="widget_education_header">Useful info at your fingertips</string>
+    <!-- Dialog text. This dialog lets a user know how they can use widgets on their phone.
+         [CHAR_LIMIT=NONE] -->
+    <string name="widget_education_content">To get info without opening apps, you can add widgets to your Home screen</string>
+
+    <!-- Text on an educational tip on widget informing users that they can change widget settings.
+         [CHAR_LIMIT=NONE] -->
+    <string name="reconfigurable_widget_education_tip">Tap to change widget settings</string>
+
+    <!-- Text on the button that closes the education dialog about widgets. [CHAR_LIMIT=50] -->
+    <string name="widget_education_close_button">Got it</string>
+
+    <!-- Spoken text for screen readers. This text is for an icon that lets the user change a
+         widget's settings. [CHAR_LIMIT=50] -->
+    <string name="widget_reconfigure_button_content_description">Change widget settings</string>
 
     <!-- All Apps -->
     <!-- Search bar text in the apps view. [CHAR_LIMIT=50] -->
@@ -73,13 +141,13 @@
 
     <!-- Drag and drop -->
     <!-- Message to tell the user to press and hold on a shortcut to add it [CHAR_LIMIT=50] -->
-    <string name="long_press_shortcut_to_add">Touch &amp; hold to pick up a shortcut.</string>
+    <string name="long_press_shortcut_to_add">Touch &amp; hold to move a shortcut.</string>
     <!-- Accessibility spoken hint message in deep shortcut menu, which allows user to add a shortcut. Custom action is the label for additional accessibility actions available in this mode [CHAR_LIMIT=200] -->
-    <string name="long_accessible_way_to_add_shortcut">Double-tap &amp; hold to pick up a shortcut or use custom actions.</string>
+    <string name="long_accessible_way_to_add_shortcut">Double-tap &amp; hold to move a shortcut or use custom actions.</string>
 
     <skip />
-    <!-- Error message when user has filled a home screen -->
-    <string name="out_of_space">No more room on this Home screen.</string>
+    <!-- Error message when a user can't add more apps, widgets, or shortcuts to a Home screen. -->
+    <string name="out_of_space">No room on this Home screen</string>
     <!-- Error message when user has filled the hotseat -->
     <string name="hotseat_out_of_space">No more room in the Favorites tray</string>
 
@@ -87,10 +155,6 @@
     <string name="all_apps_button_label">Apps list</string>
     <string name="all_apps_button_personal_label">Personal apps list</string>
     <string name="all_apps_button_work_label">Work apps list</string>
-
-    <!-- Label for button in all applications label to go back home (to the workspace / desktop)
-         for accessibilty (spoken when the button gets focus). -->
-    <string name="all_apps_home_button_label">Home</string>
 
     <!-- Label for remove drop target (from the homescreen only).
          May appear next to uninstall_drop_target_label [CHAR_LIMIT=20] -->
@@ -132,11 +196,11 @@
     <!-- Widgets: -->
     <skip />    
 
-    <!-- Text to show user in place of a gadget when we can't display it properly -->
-    <string name="gadget_error_text">Problem loading widget</string>
+    <!-- Error text that lets a user know that the widget can't load. -->
+    <string name="gadget_error_text">Can\'t load widget</string>
 
-    <!-- Text to show user in place of a gadget when it is not yet initialized. -->
-    <string name="gadget_setup_text">Setup</string>
+    <!-- Instructional text to encourage a user to finish setting up the widget. -->
+    <string name="gadget_setup_text">Tap to finish setup</string>
 
     <!-- Text to inform the user that they can't uninstall a system application -->
     <string name="uninstall_system_app_text">This is a system app and can\'t be uninstalled.</string>
@@ -178,13 +242,11 @@
     <string name="folder_name_format_overflow">Folder: <xliff:g id="name" example="Games">%1$s</xliff:g>, <xliff:g id="size" example="2">%2$d</xliff:g> or more items</string>
 
     <!-- Strings for the customization mode -->
-    <!-- Text for widget add button -->
-    <string name="widget_button_text">Widgets</string>
-    <!-- Text for wallpaper change button -->
+    <!-- Text for wallpaper change button [CHAR LIMIT=30]-->
     <string name="wallpaper_button_text">Wallpapers</string>
-    <!-- Text for wallpaper change button -->
-    <string name="styles_wallpaper_button_text">Styles &amp; wallpapers</string>
-    <!-- Text for settings button [CHAR LIMIT=20]-->
+    <!-- Text for wallpaper change button [CHAR LIMIT=30]-->
+    <string name="styles_wallpaper_button_text">Wallpaper &amp; style</string>
+    <!-- Text for settings button [CHAR LIMIT=30]-->
     <string name="settings_button_text">Home settings</string>
     <!-- Message shown when a feature is disabled by the administrator -->
     <string name="msg_disabled_by_admin">Disabled by your admin</string>
@@ -228,14 +290,14 @@
     <string name="abandoned_promise_explanation">The app for this icon isn\'t installed.
         You can remove it, or search for the app and install it manually.
     </string>
+    <!-- Title for an app which is being installed. -->
+    <string name="app_installing_title"><xliff:g id="name" example="Messenger">%1$s</xliff:g> installing, <xliff:g id="progress" example="30%">%2$s</xliff:g> complete</string>
     <!-- Title for an app which is being downloaded. -->
     <string name="app_downloading_title"><xliff:g id="name" example="Messenger">%1$s</xliff:g> downloading, <xliff:g id="progress" example="30%">%2$s</xliff:g> complete</string>
     <!-- Title for an app whose download has been started. -->
     <string name="app_waiting_download_title"><xliff:g id="name" example="Messenger">%1$s</xliff:g> waiting to install</string>
 
     <!-- Strings for widgets & more in the popup container/bottom sheet -->
-    <!-- Title for a bottom sheet that shows widgets for a particular app -->
-    <string name="widgets_bottom_sheet_title"><xliff:g id="name" example="Messenger">%1$s</xliff:g> widgets</string>
 
     <!-- Accessibility title for the popup containing a list of widgets. [CHAR_LIMIT=50] -->
     <string name="widgets_list">Widgets list</string>
@@ -332,26 +394,29 @@
 
     <!-- This string is in the work profile tab when a user has All Apps open on their phone. This is a label for a toggle to turn the work profile on and off. "Work profile" means a separate profile on a user's phone that's specifically for their work apps and managed by their company. "Work" is used as an adjective.-->
     <string name="work_profile_toggle_label">Work profile</string>
-    <!--- User onboarding title for personal apps -->
-    <string name="work_profile_edu_personal_apps">Personal data is separate &amp; hidden from work apps</string>
     <!--- User onboarding title for work profile apps -->
-    <string name="work_profile_edu_work_apps">Work apps &amp; data are visible to your IT admin</string>
-    <!-- Action label to proceed to the next work profile edu section-->
-    <string name="work_profile_edu_next">Next</string>
+    <string name="work_profile_edu_work_apps">Work apps are badged and visible to your IT admin</string>
     <!-- Action label to finish work profile edu-->
     <string name="work_profile_edu_accept">Got it</string>
 
     <!--- heading shown when user opens work apps tab while work apps are paused -->
-    <string name="work_apps_paused_title">Work profile is paused</string>
+    <string name="work_apps_paused_title">Work apps are paused</string>
     <!--- body shown when user opens work apps tab while work apps are paused -->
-    <string name="work_apps_paused_body">Work apps can\'t send you notifications, use your battery, or access your location</string>
+    <string name="work_apps_paused_body">Your work apps can’t send you notifications, use your battery, or access your location</string>
     <!-- content description for paused work apps list -->
-    <string name="work_apps_paused_content_description">Work profile is paused. Work apps can\’t send you notifications, use your battery, or access your location</string>
+    <string name="work_apps_paused_content_description">Work apps are off. Your work apps can’t send you notifications, use your battery, or access your location</string>
+    <!-- string shown in educational banner about work profile -->
+    <string name="work_apps_paused_edu_banner">Work apps are badged and visible to your IT admin</string>
+    <!-- button string shown to dismiss work tab education -->
+    <string name="work_apps_paused_edu_accept">Got it</string>
 
+    <!-- button string shown pause work profile -->
+    <string name="work_apps_pause_btn_text">Turn off work apps</string>
+    <!-- button string shown enable work profile -->
+    <string name="work_apps_enable_btn_text">Turn on work apps</string>
 
-
-    <!-- A tip shown pointing at work toggle -->
-    <string name="work_switch_tip">Pause work apps and notifications</string>
+    <!-- A hint shown in launcher settings develop options filter box -->
+    <string name="developer_options_filter_hint">Filter</string>
 
     <!-- Failed action error message: e.g. Failed: Pause -->
     <string name="remote_action_failed">Failed: <xliff:g id="what" example="Pause">%1$s</xliff:g></string>

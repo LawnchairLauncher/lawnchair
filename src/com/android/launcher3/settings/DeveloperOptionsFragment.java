@@ -15,7 +15,10 @@
  */
 package com.android.launcher3.settings;
 
+import static android.content.pm.PackageManager.GET_RESOLVED_FILTER;
 import static android.content.pm.PackageManager.MATCH_DISABLED_COMPONENTS;
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
 
 import static com.android.launcher3.uioverrides.plugins.PluginManagerWrapper.PLUGIN_CHANGED;
 import static com.android.launcher3.uioverrides.plugins.PluginManagerWrapper.pluginEnabledKey;
@@ -26,25 +29,29 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
-import android.content.pm.ServiceInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.ArrayMap;
 import android.util.Pair;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceCategory;
 import androidx.preference.PreferenceDataStore;
 import androidx.preference.PreferenceFragmentCompat;
+import androidx.preference.PreferenceGroup;
 import androidx.preference.PreferenceScreen;
 import androidx.preference.PreferenceViewHolder;
 import androidx.preference.SwitchPreference;
@@ -97,6 +104,65 @@ public class DeveloperOptionsFragment extends PreferenceFragmentCompat {
         initFlags();
         loadPluginPrefs();
         maybeAddSandboxCategory();
+
+        if (getActivity() != null) {
+            getActivity().setTitle("Developer Options");
+        }
+    }
+
+    private void filterPreferences(String query, PreferenceGroup pg) {
+        int count = pg.getPreferenceCount();
+        int hidden = 0;
+        for (int i = 0; i < count; i++) {
+            Preference preference = pg.getPreference(i);
+            if (preference instanceof PreferenceGroup) {
+                filterPreferences(query, (PreferenceGroup) preference);
+            } else {
+                String title = preference.getTitle().toString().toLowerCase().replace("_", " ");
+                if (query.isEmpty() || title.contains(query)) {
+                    preference.setVisible(true);
+                } else {
+                    preference.setVisible(false);
+                    hidden++;
+                }
+            }
+        }
+        pg.setVisible(hidden != count);
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        EditText filterBox = view.findViewById(R.id.filter_box);
+        filterBox.setVisibility(VISIBLE);
+        filterBox.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                String query = editable.toString().toLowerCase().replace("_", " ");
+                filterPreferences(query, mPreferenceScreen);
+            }
+        });
+
+        View listView = getListView();
+        final int bottomPadding = listView.getPaddingBottom();
+        listView.setOnApplyWindowInsetsListener((v, insets) -> {
+            v.setPadding(
+                    v.getPaddingLeft(),
+                    v.getPaddingTop(),
+                    v.getPaddingRight(),
+                    bottomPadding + insets.getSystemWindowInsetBottom());
+            return insets.consumeSystemWindowInsets();
+        });
     }
 
     @Override
@@ -161,7 +227,7 @@ public class DeveloperOptionsFragment extends PreferenceFragmentCompat {
 
         Set<String> pluginActions = manager.getPluginActions();
 
-        ArrayMap<Pair<String, String>, ArrayList<Pair<String, ServiceInfo>>> plugins =
+        ArrayMap<Pair<String, String>, ArrayList<Pair<String, ResolveInfo>>> plugins =
                 new ArrayMap<>();
 
         Set<String> pluginPermissionApps = pm.getPackagesHoldingPermissions(
@@ -173,7 +239,7 @@ public class DeveloperOptionsFragment extends PreferenceFragmentCompat {
         for (String action : pluginActions) {
             String name = toName(action);
             List<ResolveInfo> result = pm.queryIntentServices(
-                    new Intent(action), MATCH_DISABLED_COMPONENTS);
+                    new Intent(action), MATCH_DISABLED_COMPONENTS | GET_RESOLVED_FILTER);
             for (ResolveInfo info : result) {
                 String packageName = info.serviceInfo.packageName;
                 if (!pluginPermissionApps.contains(packageName)) {
@@ -184,7 +250,7 @@ public class DeveloperOptionsFragment extends PreferenceFragmentCompat {
                 if (!plugins.containsKey(key)) {
                     plugins.put(key, new ArrayList<>());
                 }
-                plugins.get(key).add(Pair.create(name, info.serviceInfo));
+                plugins.get(key).add(Pair.create(name, info));
             }
         }
 
@@ -192,11 +258,11 @@ public class DeveloperOptionsFragment extends PreferenceFragmentCompat {
         plugins.forEach((key, si) -> {
             String packageName = key.first;
             List<ComponentName> componentNames = si.stream()
-                    .map(p -> new ComponentName(packageName, p.second.name))
+                    .map(p -> new ComponentName(packageName, p.second.serviceInfo.name))
                     .collect(Collectors.toList());
             if (!componentNames.isEmpty()) {
                 SwitchPreference pref = new PluginPreference(
-                        prefContext, si.get(0).second.applicationInfo, enabler, componentNames);
+                        prefContext, si.get(0).second, enabler, componentNames);
                 pref.setSummary("Plugins: "
                         + si.stream().map(p -> p.first).collect(Collectors.joining(", ")));
                 mPluginsCategory.addPreference(pref);
@@ -218,13 +284,28 @@ public class DeveloperOptionsFragment extends PreferenceFragmentCompat {
         }
         PreferenceCategory sandboxCategory = newCategory("Gesture Navigation Sandbox");
         sandboxCategory.setSummary("Learn and practice navigation gestures");
+        Preference launchOnboardingTutorialPreference = new Preference(context);
+        launchOnboardingTutorialPreference.setKey("launchOnboardingTutorial");
+        launchOnboardingTutorialPreference.setTitle("Launch Onboarding Tutorial");
+        launchOnboardingTutorialPreference.setSummary("Learn the basic navigation gestures.");
+        launchOnboardingTutorialPreference.setOnPreferenceClickListener(preference -> {
+            startActivity(launchSandboxIntent.putExtra(
+                    "tutorial_steps",
+                    new String[] {
+                            "HOME_NAVIGATION",
+                            "BACK_NAVIGATION",
+                            "OVERVIEW_NAVIGATION"}));
+            return true;
+        });
+        sandboxCategory.addPreference(launchOnboardingTutorialPreference);
         Preference launchBackTutorialPreference = new Preference(context);
         launchBackTutorialPreference.setKey("launchBackTutorial");
         launchBackTutorialPreference.setTitle("Launch Back Tutorial");
         launchBackTutorialPreference.setSummary("Learn how to use the Back gesture");
         launchBackTutorialPreference.setOnPreferenceClickListener(preference -> {
             startActivity(launchSandboxIntent.putExtra(
-                    "tutorial_type", "RIGHT_EDGE_BACK_NAVIGATION"));
+                    "tutorial_steps",
+                    new String[] {"BACK_NAVIGATION"}));
             return true;
         });
         sandboxCategory.addPreference(launchBackTutorialPreference);
@@ -233,7 +314,9 @@ public class DeveloperOptionsFragment extends PreferenceFragmentCompat {
         launchHomeTutorialPreference.setTitle("Launch Home Tutorial");
         launchHomeTutorialPreference.setSummary("Learn how to use the Home gesture");
         launchHomeTutorialPreference.setOnPreferenceClickListener(preference -> {
-            startActivity(launchSandboxIntent.putExtra("tutorial_type", "HOME_NAVIGATION"));
+            startActivity(launchSandboxIntent.putExtra(
+                    "tutorial_steps",
+                    new String[] {"HOME_NAVIGATION"}));
             return true;
         });
         sandboxCategory.addPreference(launchHomeTutorialPreference);
@@ -242,7 +325,9 @@ public class DeveloperOptionsFragment extends PreferenceFragmentCompat {
         launchOverviewTutorialPreference.setTitle("Launch Overview Tutorial");
         launchOverviewTutorialPreference.setSummary("Learn how to use the Overview gesture");
         launchOverviewTutorialPreference.setOnPreferenceClickListener(preference -> {
-            startActivity(launchSandboxIntent.putExtra("tutorial_type", "OVERVIEW_NAVIGATION"));
+            startActivity(launchSandboxIntent.putExtra(
+                    "tutorial_steps",
+                    new String[] {"OVERVIEW_NAVIGATION"}));
             return true;
         });
         sandboxCategory.addPreference(launchOverviewTutorialPreference);
@@ -251,10 +336,23 @@ public class DeveloperOptionsFragment extends PreferenceFragmentCompat {
         launchAssistantTutorialPreference.setTitle("Launch Assistant Tutorial");
         launchAssistantTutorialPreference.setSummary("Learn how to use the Assistant gesture");
         launchAssistantTutorialPreference.setOnPreferenceClickListener(preference -> {
-            startActivity(launchSandboxIntent.putExtra("tutorial_type", "ASSISTANT"));
+            startActivity(launchSandboxIntent.putExtra(
+                    "tutorial_steps",
+                    new String[] {"ASSISTANT"}));
             return true;
         });
         sandboxCategory.addPreference(launchAssistantTutorialPreference);
+        Preference launchSandboxModeTutorialPreference = new Preference(context);
+        launchSandboxModeTutorialPreference.setKey("launchSandboxMode");
+        launchSandboxModeTutorialPreference.setTitle("Launch Sandbox Mode");
+        launchSandboxModeTutorialPreference.setSummary("Practice navigation gestures");
+        launchSandboxModeTutorialPreference.setOnPreferenceClickListener(preference -> {
+            startActivity(launchSandboxIntent.putExtra(
+                    "tutorial_steps",
+                    new String[] {"SANDBOX_MODE"}));
+            return true;
+        });
+        sandboxCategory.addPreference(launchSandboxModeTutorialPreference);
     }
 
     private String toName(String action) {
@@ -272,21 +370,33 @@ public class DeveloperOptionsFragment extends PreferenceFragmentCompat {
     }
 
     private static class PluginPreference extends SwitchPreference {
-        private final boolean mHasSettings;
-        private final PreferenceDataStore mPluginEnabler;
         private final String mPackageName;
+        private final ResolveInfo mSettingsInfo;
+        private final PreferenceDataStore mPluginEnabler;
         private final List<ComponentName> mComponentNames;
 
-        PluginPreference(Context prefContext, ApplicationInfo info,
+        PluginPreference(Context prefContext, ResolveInfo pluginInfo,
                 PreferenceDataStore pluginEnabler, List<ComponentName> componentNames) {
             super(prefContext);
             PackageManager pm = prefContext.getPackageManager();
-            mHasSettings = pm.resolveActivity(new Intent(ACTION_PLUGIN_SETTINGS)
-                    .setPackage(info.packageName), 0) != null;
-            mPackageName = info.packageName;
-            mComponentNames = componentNames;
+            mPackageName = pluginInfo.serviceInfo.applicationInfo.packageName;
+            Intent settingsIntent = new Intent(ACTION_PLUGIN_SETTINGS).setPackage(mPackageName);
+            // If any Settings activity in app has category filters, set plugin action as category.
+            List<ResolveInfo> settingsInfos =
+                    pm.queryIntentActivities(settingsIntent, GET_RESOLVED_FILTER);
+            if (pluginInfo.filter != null) {
+                for (ResolveInfo settingsInfo : settingsInfos) {
+                    if (settingsInfo.filter != null && settingsInfo.filter.countCategories() > 0) {
+                        settingsIntent.addCategory(pluginInfo.filter.getAction(0));
+                        break;
+                    }
+                }
+            }
+
+            mSettingsInfo = pm.resolveActivity(settingsIntent, 0);
             mPluginEnabler = pluginEnabler;
-            setTitle(info.loadLabel(pm));
+            mComponentNames = componentNames;
+            setTitle(pluginInfo.loadLabel(pm));
             setChecked(isPluginEnabled());
             setWidgetLayoutResource(R.layout.switch_preference_with_settings);
         }
@@ -327,17 +437,14 @@ public class DeveloperOptionsFragment extends PreferenceFragmentCompat {
         @Override
         public void onBindViewHolder(PreferenceViewHolder holder) {
             super.onBindViewHolder(holder);
-            holder.findViewById(R.id.settings).setVisibility(mHasSettings ? View.VISIBLE
-                    : View.GONE);
-            holder.findViewById(R.id.divider).setVisibility(mHasSettings ? View.VISIBLE
-                    : View.GONE);
+            boolean hasSettings = mSettingsInfo != null;
+            holder.findViewById(R.id.settings).setVisibility(hasSettings ? VISIBLE : GONE);
+            holder.findViewById(R.id.divider).setVisibility(hasSettings ? VISIBLE : GONE);
             holder.findViewById(R.id.settings).setOnClickListener(v -> {
-                ResolveInfo result = v.getContext().getPackageManager().resolveActivity(
-                        new Intent(ACTION_PLUGIN_SETTINGS).setPackage(mPackageName), 0);
-                if (result != null) {
+                if (hasSettings) {
                     v.getContext().startActivity(new Intent().setComponent(
-                            new ComponentName(result.activityInfo.packageName,
-                                    result.activityInfo.name)));
+                            new ComponentName(mSettingsInfo.activityInfo.packageName,
+                                    mSettingsInfo.activityInfo.name)));
                 }
             });
             holder.itemView.setOnLongClickListener(v -> {

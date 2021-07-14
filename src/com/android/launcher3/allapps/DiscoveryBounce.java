@@ -17,9 +17,6 @@
 package com.android.launcher3.allapps;
 
 import static com.android.launcher3.LauncherState.NORMAL;
-import static com.android.launcher3.LauncherState.OVERVIEW;
-import static com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType.HOTSEAT;
-import static com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType.PREDICTION;
 
 import android.animation.Animator;
 import android.animation.AnimatorInflater;
@@ -34,7 +31,6 @@ import com.android.launcher3.LauncherState;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.statemanager.StateManager.StateListener;
-import com.android.launcher3.touch.PagedOrientationHandler;
 import com.android.launcher3.util.OnboardingPrefs;
 
 /**
@@ -116,19 +112,14 @@ public class DiscoveryBounce extends AbstractFloatingView {
     }
 
     @Override
-    public void logActionCommand(int command) {
-        // Since this is on-boarding popup, it is not a user controlled action.
-    }
-
-    @Override
     protected boolean isOfType(int type) {
         return (type & TYPE_DISCOVERY_BOUNCE) != 0;
     }
 
-    private void show(int containerType) {
+    private void show() {
         mIsOpen = true;
         mLauncher.getDragLayer().addView(this);
-        mLauncher.getUserEventDispatcher().logActionBounceTip(containerType);
+        // TODO: add WW log for discovery bounce tip show event.
     }
 
     public static void showForHomeIfNeeded(Launcher launcher) {
@@ -151,40 +142,7 @@ public class DiscoveryBounce extends AbstractFloatingView {
         }
         onboardingPrefs.incrementEventCount(OnboardingPrefs.HOME_BOUNCE_COUNT);
 
-        new DiscoveryBounce(launcher, 0).show(HOTSEAT);
-    }
-
-    public static void showForOverviewIfNeeded(Launcher launcher,
-                                               PagedOrientationHandler orientationHandler) {
-        showForOverviewIfNeeded(launcher, true, orientationHandler);
-    }
-
-    private static void showForOverviewIfNeeded(Launcher launcher, boolean withDelay,
-                                                PagedOrientationHandler orientationHandler) {
-        OnboardingPrefs onboardingPrefs = launcher.getOnboardingPrefs();
-        if (!launcher.isInState(OVERVIEW)
-                || !launcher.hasBeenResumed()
-                || launcher.isForceInvisible()
-                || launcher.getDeviceProfile().isVerticalBarLayout()
-                || !orientationHandler.isLayoutNaturalToLauncher()
-                || onboardingPrefs.getBoolean(OnboardingPrefs.SHELF_BOUNCE_SEEN)
-                || launcher.getSystemService(UserManager.class).isDemoUser()
-                || Utilities.IS_RUNNING_IN_TEST_HARNESS) {
-            return;
-        }
-
-        if (withDelay) {
-            new Handler().postDelayed(() -> showForOverviewIfNeeded(launcher, false,
-                    orientationHandler), DELAY_MS);
-            return;
-        } else if (AbstractFloatingView.getTopOpenView(launcher) != null) {
-            // TODO: Move these checks to the top and call this method after invalidate handler.
-            return;
-        }
-        onboardingPrefs.incrementEventCount(OnboardingPrefs.SHELF_BOUNCE_COUNT);
-
-        new DiscoveryBounce(launcher, (1 - OVERVIEW.getVerticalProgress(launcher)))
-                .show(PREDICTION);
+        new DiscoveryBounce(launcher, 0).show();
     }
 
     /**

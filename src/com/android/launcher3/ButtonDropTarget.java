@@ -20,20 +20,12 @@ import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 
 import static com.android.launcher3.LauncherState.NORMAL;
 
-import android.animation.AnimatorSet;
-import android.animation.FloatArrayEvaluator;
-import android.animation.ObjectAnimator;
-import android.animation.ValueAnimator;
 import android.content.Context;
-import android.content.res.ColorStateList;
 import android.content.res.Resources;
-import android.graphics.ColorMatrix;
-import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
-import android.util.Property;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -47,9 +39,6 @@ import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.dragndrop.DragOptions;
 import com.android.launcher3.dragndrop.DragView;
 import com.android.launcher3.model.data.ItemInfo;
-import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
-import com.android.launcher3.util.Themes;
-import com.android.launcher3.util.Thunk;
 
 /**
  * Implements a DropTarget.
@@ -57,22 +46,9 @@ import com.android.launcher3.util.Thunk;
 public abstract class ButtonDropTarget extends TextView
         implements DropTarget, DragController.DragListener, OnClickListener {
 
-    private static final Property<ButtonDropTarget, Integer> TEXT_COLOR =
-            new Property<ButtonDropTarget, Integer>(Integer.TYPE, "textColor") {
-
-                @Override
-                public Integer get(ButtonDropTarget target) {
-                    return target.getTextColor();
-                }
-
-                @Override
-                public void set(ButtonDropTarget target, Integer value) {
-                    target.setTextColor(value);
-                }
-            };
-
     private static final int[] sTempCords = new int[2];
     private static final int DRAG_VIEW_DROP_DURATION = 285;
+    private static final float DRAG_VIEW_HOVER_OVER_OPACITY = 0.65f;
 
     public static final int TOOLTIP_DEFAULT = 0;
     public static final int TOOLTIP_LEFT = 1;
@@ -80,7 +56,6 @@ public abstract class ButtonDropTarget extends TextView
 
     protected final Launcher mLauncher;
 
-    private int mBottomDragPadding;
     protected DropTargetBar mDropTargetBar;
 
     /** Whether this drop target is active for the current drag */
@@ -89,20 +64,15 @@ public abstract class ButtonDropTarget extends TextView
     private boolean mAccessibleDrag;
     /** An item must be dragged at least this many pixels before this drop target is enabled. */
     private final int mDragDistanceThreshold;
-
-    /** The paint applied to the drag view on hover */
-    protected int mHoverColor = 0;
+    /** The size of the drawable shown in the drop target. */
+    private final int mDrawableSize;
 
     protected CharSequence mText;
-    protected ColorStateList mOriginalTextColor;
     protected Drawable mDrawable;
     private boolean mTextVisible = true;
 
     private PopupWindow mToolTip;
     private int mToolTipLocation;
-
-    private AnimatorSet mCurrentColorAnim;
-    @Thunk ColorMatrix mSrcFilter, mDstFilter, mCurrentFilter;
 
     public ButtonDropTarget(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
@@ -113,15 +83,14 @@ public abstract class ButtonDropTarget extends TextView
         mLauncher = Launcher.getLauncher(context);
 
         Resources resources = getResources();
-        mBottomDragPadding = resources.getDimensionPixelSize(R.dimen.drop_target_drag_padding);
         mDragDistanceThreshold = resources.getDimensionPixelSize(R.dimen.drag_distanceThreshold);
+        mDrawableSize = resources.getDimensionPixelSize(R.dimen.drop_target_text_size);
     }
 
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
         mText = getText();
-        mOriginalTextColor = getTextColors();
         setContentDescription(mText);
     }
 
@@ -134,13 +103,10 @@ public abstract class ButtonDropTarget extends TextView
     protected void setDrawable(int resId) {
         // We do not set the drawable in the xml as that inflates two drawables corresponding to
         // drawableLeft and drawableStart.
-        if (mTextVisible) {
-            setCompoundDrawablesRelativeWithIntrinsicBounds(resId, 0, 0, 0);
-            mDrawable = getCompoundDrawablesRelative()[0];
-        } else {
-            setCompoundDrawablesRelativeWithIntrinsicBounds(0, resId, 0, 0);
-            mDrawable = getCompoundDrawablesRelative()[1];
-        }
+        mDrawable = getContext().getDrawable(resId).mutate();
+        mDrawable.setBounds(0, 0, mDrawableSize, mDrawableSize);
+        mDrawable.setTintList(getTextColors());
+        setCompoundDrawablesRelative(mDrawable, null, null, null);
     }
 
     public void setDropTargetBar(DropTargetBar dropTargetBar) {
@@ -178,8 +144,8 @@ public abstract class ButtonDropTarget extends TextView
             mToolTip.showAsDropDown(this, x, y);
         }
 
-        d.dragView.setColor(mHoverColor);
-        animateTextColor(mHoverColor);
+        d.dragView.setAlpha(DRAG_VIEW_HOVER_OVER_OPACITY);
+        setSelected(true);
         if (d.stateAnnouncer != null) {
             d.stateAnnouncer.cancel();
         }
@@ -191,63 +157,21 @@ public abstract class ButtonDropTarget extends TextView
         // Do nothing
     }
 
-    protected void resetHoverColor() {
-        animateTextColor(mOriginalTextColor.getDefaultColor());
-    }
-
-    private void animateTextColor(int targetColor) {
-        if (mCurrentColorAnim != null) {
-            mCurrentColorAnim.cancel();
-        }
-
-        mCurrentColorAnim = new AnimatorSet();
-        mCurrentColorAnim.setDuration(DragView.COLOR_CHANGE_DURATION);
-
-        if (mSrcFilter == null) {
-            mSrcFilter = new ColorMatrix();
-            mDstFilter = new ColorMatrix();
-            mCurrentFilter = new ColorMatrix();
-        }
-
-        int defaultTextColor = mOriginalTextColor.getDefaultColor();
-        Themes.setColorChangeOnMatrix(defaultTextColor, getTextColor(), mSrcFilter);
-        Themes.setColorChangeOnMatrix(defaultTextColor, targetColor, mDstFilter);
-
-        ValueAnimator anim1 = ValueAnimator.ofObject(
-                new FloatArrayEvaluator(mCurrentFilter.getArray()),
-                mSrcFilter.getArray(), mDstFilter.getArray());
-        anim1.addUpdateListener((anim) -> {
-            mDrawable.setColorFilter(new ColorMatrixColorFilter(mCurrentFilter));
-            invalidate();
-        });
-
-        mCurrentColorAnim.play(anim1);
-        mCurrentColorAnim.play(ObjectAnimator.ofArgb(this, TEXT_COLOR, targetColor));
-        mCurrentColorAnim.start();
-    }
-
     @Override
     public final void onDragExit(DragObject d) {
         hideTooltip();
 
         if (!d.dragComplete) {
-            d.dragView.setColor(0);
-            resetHoverColor();
+            d.dragView.setAlpha(1f);
+            setSelected(false);
         } else {
-            // Restore the hover color
-            d.dragView.setColor(mHoverColor);
+            d.dragView.setAlpha(DRAG_VIEW_HOVER_OVER_OPACITY);
         }
     }
 
     @Override
     public void onDragStart(DropTarget.DragObject dragObject, DragOptions options) {
-        mActive = supportsDrop(dragObject.dragInfo);
-        mDrawable.setColorFilter(null);
-        if (mCurrentColorAnim != null) {
-            mCurrentColorAnim.cancel();
-            mCurrentColorAnim = null;
-        }
-        setTextColor(mOriginalTextColor);
+        mActive = !options.isKeyboardDrag && supportsDrop(dragObject.dragInfo);
         setVisibility(mActive ? View.VISIBLE : View.GONE);
 
         mAccessibleDrag = options.isAccessibleDrag;
@@ -273,6 +197,7 @@ public abstract class ButtonDropTarget extends TextView
     public void onDragEnd() {
         mActive = false;
         setOnClickListener(null);
+        setSelected(false);
     }
 
     /**
@@ -285,17 +210,23 @@ public abstract class ButtonDropTarget extends TextView
             return;
         }
         final DragLayer dragLayer = mLauncher.getDragLayer();
+        final DragView dragView = d.dragView;
         final Rect from = new Rect();
         dragLayer.getViewRectRelativeToSelf(d.dragView, from);
 
         final Rect to = getIconRect(d);
         final float scale = (float) to.width() / from.width();
+        dragView.disableColorExtraction();
+        dragView.detachContentView(/* reattachToPreviousParent= */ true);
         mDropTargetBar.deferOnDragEnd();
 
         Runnable onAnimationEndRunnable = () -> {
             completeDrop(d);
             mDropTargetBar.onDragEnd();
             mLauncher.getStateManager().goToState(NORMAL);
+            // Only re-enable updates once the workspace is back to normal, which will be after the
+            // current frame.
+            post(dragView::resumeColorExtraction);
         };
 
         dragLayer.animateView(d.dragView, from, to, scale, 1f, 1f, 0.1f, 0.1f,
@@ -316,7 +247,7 @@ public abstract class ButtonDropTarget extends TextView
     @Override
     public void getHitRectRelativeToDragLayer(android.graphics.Rect outRect) {
         super.getHitRect(outRect);
-        outRect.bottom += mBottomDragPadding;
+        outRect.bottom += mLauncher.getDeviceProfile().dropTargetDragPaddingPx;
 
         sTempCords[0] = sTempCords[1] = 0;
         mLauncher.getDragLayer().getDescendantCoordRelativeToSelf(this, sTempCords);
@@ -366,20 +297,12 @@ public abstract class ButtonDropTarget extends TextView
         mLauncher.getAccessibilityDelegate().handleAccessibleDrop(this, null, null);
     }
 
-    public int getTextColor() {
-        return getTextColors().getDefaultColor();
-    }
-
     public void setTextVisible(boolean isVisible) {
         CharSequence newText = isVisible ? mText : "";
         if (mTextVisible != isVisible || !TextUtils.equals(newText, getText())) {
             mTextVisible = isVisible;
             setText(newText);
-            if (mTextVisible) {
-                setCompoundDrawablesRelativeWithIntrinsicBounds(mDrawable, null, null, null);
-            } else {
-                setCompoundDrawablesRelativeWithIntrinsicBounds(null, mDrawable, null, null);
-            }
+            setCompoundDrawablesRelative(mDrawable, null, null, null);
         }
     }
 
@@ -395,6 +318,4 @@ public abstract class ButtonDropTarget extends TextView
                 TextUtils.TruncateAt.END);
         return !mText.equals(displayedText);
     }
-
-    public abstract Target getDropTargetForLogging();
 }

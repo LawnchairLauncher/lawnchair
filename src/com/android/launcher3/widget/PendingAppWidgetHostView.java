@@ -16,8 +16,8 @@
 
 package com.android.launcher3.widget;
 
-import static com.android.launcher3.FastBitmapDrawable.newIcon;
 import static com.android.launcher3.graphics.PreloadIconDrawable.newPendingIcon;
+import static com.android.launcher3.model.data.PackageItemInfo.CONVERSATIONS;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -29,15 +29,18 @@ import android.os.Bundle;
 import android.text.Layout;
 import android.text.StaticLayout;
 import android.text.TextPaint;
+import android.util.SizeF;
 import android.util.TypedValue;
 import android.view.ContextThemeWrapper;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.RemoteViews;
 
+import androidx.annotation.Nullable;
+
 import com.android.launcher3.DeviceProfile;
-import com.android.launcher3.FastBitmapDrawable;
 import com.android.launcher3.R;
+import com.android.launcher3.icons.FastBitmapDrawable;
 import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.icons.IconCache.ItemInfoUpdateReceiver;
 import com.android.launcher3.model.data.ItemInfoWithIcon;
@@ -46,13 +49,14 @@ import com.android.launcher3.model.data.PackageItemInfo;
 import com.android.launcher3.touch.ItemClickHandler;
 import com.android.launcher3.util.Themes;
 
+import java.util.List;
+
 public class PendingAppWidgetHostView extends LauncherAppWidgetHostView
         implements OnClickListener, ItemInfoUpdateReceiver {
     private static final float SETUP_ICON_SIZE_FACTOR = 2f / 5;
     private static final float MIN_SATUNATION = 0.7f;
 
     private final Rect mRect = new Rect();
-    private View mDefaultView;
     private OnClickListener mClickListener;
     private final LauncherAppWidgetInfo mInfo;
     private final int mStartState;
@@ -96,9 +100,9 @@ public class PendingAppWidgetHostView extends LauncherAppWidgetHostView
 
     @Override
     public void updateAppWidget(RemoteViews remoteViews) {
-        super.updateAppWidget(remoteViews);
         WidgetManagerHelper widgetManagerHelper = new WidgetManagerHelper(getContext());
         if (widgetManagerHelper.isAppWidgetRestored(mInfo.appWidgetId)) {
+            super.updateAppWidget(remoteViews);
             reInflate();
         }
     }
@@ -110,13 +114,17 @@ public class PendingAppWidgetHostView extends LauncherAppWidgetHostView
     }
 
     @Override
+    public void updateAppWidgetSize(Bundle newOptions, List<SizeF> sizes) {
+        // No-op
+    }
+
+    @Override
     protected View getDefaultView() {
-        if (mDefaultView == null) {
-            mDefaultView = mInflater.inflate(R.layout.appwidget_not_ready, this, false);
-            mDefaultView.setOnClickListener(this);
-            applyState();
-        }
-        return mDefaultView;
+        View defaultView = mInflater.inflate(R.layout.appwidget_not_ready, this, false);
+        defaultView.setOnClickListener(this);
+        applyState();
+        invalidate();
+        return defaultView;
     }
 
     @Override
@@ -141,21 +149,32 @@ public class PendingAppWidgetHostView extends LauncherAppWidgetHostView
             mCenterDrawable = null;
         }
         if (info.bitmap.icon != null) {
+            Drawable widgetCategoryIcon = getWidgetCategoryIcon();
             // The view displays three modes,
             //   1) App icon in the center
             //   2) Preload icon in the center
-            //   3) Setup icon in the center and app icon in the top right corner.
+            //   3) App icon in the center with a setup icon on the top left corner.
             if (mDisabledForSafeMode) {
-                FastBitmapDrawable disabledIcon = newIcon(getContext(), info);
-                disabledIcon.setIsDisabled(true);
-                mCenterDrawable = disabledIcon;
+                if (widgetCategoryIcon == null) {
+                    FastBitmapDrawable disabledIcon = info.newIcon(getContext());
+                    disabledIcon.setIsDisabled(true);
+                    mCenterDrawable = disabledIcon;
+                } else {
+                    widgetCategoryIcon.setColorFilter(
+                            FastBitmapDrawable.getDisabledFColorFilter(/* disabledAlpha= */ 1f));
+                    mCenterDrawable = widgetCategoryIcon;
+                }
                 mSettingIconDrawable = null;
             } else if (isReadyForClickSetup()) {
-                mCenterDrawable = newIcon(getContext(), info);
+                mCenterDrawable = widgetCategoryIcon == null
+                        ? info.newIcon(getContext())
+                        : widgetCategoryIcon;
                 mSettingIconDrawable = getResources().getDrawable(R.drawable.ic_setting).mutate();
                 updateSettingColor(info.bitmap.color);
             } else {
-                mCenterDrawable = newPendingIcon(getContext(), info);
+                mCenterDrawable = widgetCategoryIcon == null
+                        ? newPendingIcon(getContext(), info)
+                        : widgetCategoryIcon;
                 mSettingIconDrawable = null;
                 applyState();
             }
@@ -310,5 +329,20 @@ public class PendingAppWidgetHostView extends LauncherAppWidgetHostView
             canvas.restore();
         }
 
+    }
+
+    /**
+     * Returns the widget category icon for {@link #mInfo}.
+     *
+     * <p>If {@link #mInfo}'s category is {@code PackageItemInfo#NO_CATEGORY} or unknown, returns
+     * {@code null}.
+     */
+    @Nullable
+    private Drawable getWidgetCategoryIcon() {
+        switch (mInfo.pendingItemInfo.category) {
+            case CONVERSATIONS:
+                return getContext().getDrawable(R.drawable.ic_conversations_widget_category);
+        }
+        return null;
     }
 }
