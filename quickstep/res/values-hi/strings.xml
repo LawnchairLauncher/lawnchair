@@ -45,19 +45,16 @@
     <string name="hotsaet_tip_prediction_enabled" msgid="2233554377501347650">"सुझाए गए ऐप्लिकेशन की सुविधा चालू है"</string>
     <string name="hotsaet_tip_prediction_disabled" msgid="1506426298884658491">"सुझाए गए ऐप्लिकेशन की सुविधा बंद है"</string>
     <string name="hotseat_prediction_content_description" msgid="4582028296938078419">"सुझाया गया ऐप्लिकेशन: <xliff:g id="TITLE">%1$s</xliff:g>"</string>
-    <string name="back_gesture_feedback_swipe_too_far_from_left_edge" msgid="340972404868601012">"देख लें कि आप स्क्रीन की बाईं तरफ़ के बिल्कुल किनारे से स्वाइप कर रहे हों."</string>
-    <string name="back_gesture_feedback_cancelled_left_edge" msgid="6671316150388702530">"देख लें कि आप स्क्रीन के बाएं किनारे से बीचों-बीच तक स्वाइप कर रहे हों और फिर अपनी उंगली उठा लें."</string>
-    <string name="back_gesture_feedback_swipe_too_far_from_right_edge" msgid="4306700023773832353">"देख लें कि आप स्क्रीन की दाईं तरफ़ के बिल्कुल किनारे से स्वाइप कर रहे हों."</string>
-    <string name="back_gesture_feedback_cancelled_right_edge" msgid="4951916546256902552">"देख लें कि आप स्क्रीन के दाएं किनारे से बीचों-बीच तक स्वाइप कर रहे हों और फिर अपनी उंगली उठा लें."</string>
-    <string name="back_gesture_feedback_complete_with_back_right_follow_up" msgid="2100639504811809267">"आपने स्क्रीन के बाएं किनारे से स्वाइप करके, पिछली स्क्रीन पर वापस जाने का तरीका सीख लिया है."</string>
+    <!-- no translation found for back_gesture_feedback_swipe_too_far_from_edge (1711645592102201538) -->
+    <skip />
+    <!-- no translation found for back_gesture_feedback_cancelled (3274382913290074496) -->
+    <skip />
     <string name="back_gesture_feedback_complete_with_overview_follow_up" msgid="9176400654037014471">"आपने स्क्रीन के दाएं किनारे से स्वाइप करके, पिछली स्क्रीन पर वापस जाने का तरीका सीख लिया है. अब, एक ऐप से दूसरे ऐप पर जाने का तरीका सीखें."</string>
     <string name="back_gesture_feedback_complete_without_follow_up" msgid="6405649621667113830">"आपने पेज पर पीछे ले जाने वाले हाथ के जेस्चर (हाव-भाव) के बारे में जान लिया है."</string>
     <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="1148198467090405643">"देखे लें कि आप स्क्रीन पर बिल्कुल नीचे तक स्वाइप न कर रहे हों."</string>
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"\'सेटिंग\' में जाकर, पीछे जाने के लिए इस्तेमाल होने वाले हाथ के जेस्चर (हाव-भाव) की संवेदनशीलता बदलें"</string>
-    <string name="back_left_gesture_intro_title" msgid="5197184481779330065">"वापस जाने के लिए, स्क्रीन के बाएं किनारे से स्वाइप करें"</string>
-    <string name="back_right_gesture_intro_title" msgid="7431951986971898074">"वापस जाने के लिए, स्क्रीन के दाएं किनारे से स्वाइप करें"</string>
-    <string name="back_left_gesture_intro_subtitle" msgid="7672761376577628602">"पिछली स्क्रीन पर वापस जाने के लिए, स्क्रीन के बाएं किनारे से बीच तक स्वाइप करें."</string>
-    <string name="back_right_gesture_intro_subtitle" msgid="2735828029197816509">"आप स्क्रीन के दाएं किनारे से बीच तक स्वाइप करके भी पिछली स्क्रीन पर जा सकते हैं. इसे अभी आज़माएं."</string>
+    <string name="back_gesture_intro_title" msgid="19551256430224428">"पिछली स्क्रीन पर वापस जाने के लिए स्वाइप करें"</string>
+    <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"पिछली स्क्रीन पर वापस जाने के लिए, स्क्रीन के बाएं या दाएं किनारे से बीचों-बीच तक स्वाइप करें."</string>
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"देख लें कि आप स्क्रीन के निचले किनारे से ऊपर की ओर स्वाइप कर रहे हों."</string>
     <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"देख लें कि आप स्क्रीन से अपनी उंगली उठाने से पहले, इसे कहीं न रोक रहे हों."</string>
     <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"देख लें कि आप ऊपर की ओर बिल्कुल सीधे स्वाइप कर रहे हों."</string>
@@ -71,17 +68,21 @@
     <string name="overview_gesture_feedback_complete_with_follow_up" msgid="3544611727467765026">"आपने हाथ के जेस्चर (हाव-भाव) इस्तेमाल करने सीख लिए हैं. जेस्चर बंद करने के लिए, सेटिंग में जाएं."</string>
     <string name="overview_gesture_feedback_complete_without_follow_up" msgid="3199486203448379152">"आपने एक ऐप्लिकेशन से दूसरे पर जाने के लिए इस्तेमाल होने वाले हाथ के जेस्चर के बारे में जान लिया है."</string>
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"एक ऐप्लिकेशन से दूसरे पर जाने के लिए स्वाइप करें"</string>
-    <string name="overview_gesture_intro_subtitle" msgid="1579517193845186042">"अपनी स्क्रीन पर नीचे से ऊपर की तरफ़ स्वाइप करें, दबाकर रखें, फिर छोड़ दें."</string>
+    <!-- no translation found for overview_gesture_intro_subtitle (4968091015637850859) -->
+    <skip />
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"आप पूरी तरह तैयार हैं"</string>
-    <string name="gesture_tutorial_action_button_label_next" msgid="2556263116424738762">"आगे बढ़ें"</string>
+    <!-- no translation found for gesture_tutorial_action_button_label (6249846312991332122) -->
+    <skip />
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"सेटिंग"</string>
     <string name="gesture_tutorial_try_again" msgid="65962545858556697">"फिर से कोशिश करें"</string>
     <string name="gesture_tutorial_nice" msgid="2936275692616928280">"बहुत बढ़िया!"</string>
     <string name="gesture_tutorial_step" msgid="1279786122817620968">"ट्यूटोरियल <xliff:g id="CURRENT">%1$d</xliff:g>/<xliff:g id="TOTAL">%2$d</xliff:g>"</string>
     <string name="allset_title" msgid="5021126669778966707">"हो गया!"</string>
-    <string name="allset_hint" msgid="459504134589971527">"होम पेज पर जाने के लिए, ऊपर की ओर स्वाइप करें"</string>
+    <!-- no translation found for allset_hint (2384632994739392447) -->
+    <skip />
     <string name="allset_description" msgid="6350320429953234580">"अब आप अपना फ़ोन इस्तेमाल कर सकते हैं"</string>
-    <string name="allset_navigation_settings" msgid="417773244979225071"><annotation id="link">"सुलभता के लिए नेविगेशन सेटिंग"</annotation></string>
+    <!-- no translation found for allset_navigation_settings (4713404605961476027) -->
+    <skip />
     <string name="action_share" msgid="2648470652637092375">"शेयर करें"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"स्क्रीनशॉट लें"</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"ऐप्लिकेशन या आपका संगठन इस कार्रवाई की अनुमति नहीं देता"</string>
