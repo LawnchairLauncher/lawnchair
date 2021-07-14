@@ -1158,7 +1158,9 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             final TaskView taskView = (TaskView) getChildAt(pageIndex);
             taskView.bind(task, mOrientationState);
         }
-        if (mFocusedTaskId == -1 && getTaskViewCount() > 0) {
+
+        // If the list changed, maybe the focused task doesn't exist anymore
+        if (getFocusedTaskView() == null && getTaskViewCount() > 0) {
             mFocusedTaskId = getTaskViewAt(0).getTaskId();
         }
         updateTaskSize();
