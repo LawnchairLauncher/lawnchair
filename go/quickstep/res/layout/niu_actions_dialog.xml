@@ -16,7 +16,8 @@
 
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/niu_actions_confirmation_dialog_layout"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/niu_actions_dialog_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="horizontal"
@@ -41,29 +42,37 @@
 
         <TextView
             style="@style/ModalDialogTitle"
-            android:id="@+id/niu_actions_confirmation_header"
-            android:text="@string/niu_actions_confirmation_title"/>
+            android:id="@+id/niu_actions_dialog_header"/>
 
         <Space
             android:layout_width="0dp"
             android:layout_height="@dimen/modal_dialog_vertical_spacer"/>
 
-        <ScrollView
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="@dimen/confirmation_dialog_text_height">
+            android:layout_height="wrap_content">
 
-            <TextView
-                style="@style/ModalDialogText"
-                android:id="@+id/niu_actions_confirmation_description"
-                android:text="@string/niu_actions_confirmation_text"/>
-        </ScrollView>
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constrainedHeight="true"
+                app:layout_constraintHeight_max="@dimen/modal_dialog_text_height">
+
+                <TextView
+                    style="@style/ModalDialogText"
+                    android:id="@+id/niu_actions_dialog_description"/>
+            </ScrollView>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
 
         <Space
             android:layout_width="0dp"
             android:layout_height="@dimen/modal_dialog_vertical_spacer"/>
 
         <LinearLayout
-            android:id="@+id/niu_actions_confirmation_buttons"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="horizontal">
@@ -75,12 +84,12 @@
 
             <Button
                 style="@style/ModalDialogButton"
-                android:id="@+id/niu_actions_confirmation_reject"
+                android:id="@+id/niu_actions_dialog_button_1"
                 android:text="@string/dialog_cancel"/>
 
             <Button
                 style="@style/ModalDialogButton"
-                android:id="@+id/niu_actions_confirmation_accept"
+                android:id="@+id/niu_actions_dialog_button_2"
                 android:text="@string/dialog_acknowledge"/>
         </LinearLayout>
 
