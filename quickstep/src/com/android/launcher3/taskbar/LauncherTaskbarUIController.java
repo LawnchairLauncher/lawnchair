@@ -37,6 +37,7 @@ import com.android.quickstep.AnimatedFloat;
 import com.android.quickstep.RecentsAnimationCallbacks;
 import com.android.quickstep.RecentsAnimationCallbacks.RecentsAnimationListener;
 import com.android.quickstep.RecentsAnimationController;
+import com.android.quickstep.SystemUiProxy;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 
 
@@ -152,6 +153,8 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
             TaskbarStashController stashController = mControllers.taskbarStashController;
             stashController.animateToIsStashed(stashController.isStashedInApp(), duration);
         }
+        SystemUiProxy.INSTANCE.get(mContext).notifyTaskbarStatus(!isResumed,
+                mControllers.taskbarStashController.isStashedInApp());
     }
 
     /**

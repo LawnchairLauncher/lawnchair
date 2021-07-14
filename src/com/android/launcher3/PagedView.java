@@ -104,10 +104,6 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
 
     @ViewDebug.ExportedProperty(category = "launcher")
     protected int mCurrentPage;
-    // Difference between current scroll position and mCurrentPage's page scroll. Used to maintain
-    // relative scroll position unchanged in updateCurrentPageScroll. Cleared when snapping to a
-    // page.
-    protected int mCurrentPageScrollDiff;
 
     @ViewDebug.ExportedProperty(category = "launcher")
     protected int mNextPage = INVALID_PAGE;
@@ -251,7 +247,7 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
         // If the current page is invalid, just reset the scroll position to zero
         int newPosition = 0;
         if (0 <= mCurrentPage && mCurrentPage < getPageCount()) {
-            newPosition = getScrollForPage(mCurrentPage) + mCurrentPageScrollDiff;
+            newPosition = getScrollForPage(mCurrentPage);
         }
         mOrientationHandler.set(this, VIEW_SCROLL_TO, newPosition);
         mScroller.startScroll(mScroller.getCurrX(), 0, newPosition - mScroller.getCurrX(), 0);
@@ -456,7 +452,6 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
      * to provide custom behavior during animation.
      */
     protected void onPageEndTransition() {
-        mCurrentPageScrollDiff = 0;
         AccessibilityManagerCompat.sendScrollFinishedEventToTest(getContext());
         AccessibilityManagerCompat.sendCustomAccessibilityEvent(getPageAt(mCurrentPage),
                 AccessibilityEvent.TYPE_VIEW_FOCUSED, null);

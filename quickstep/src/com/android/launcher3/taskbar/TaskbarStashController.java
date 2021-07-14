@@ -28,6 +28,7 @@ import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.util.MultiValueAlpha.AlphaProperty;
 import com.android.quickstep.AnimatedFloat;
+import com.android.quickstep.SystemUiProxy;
 
 /**
  * Coordinates between controllers such as TaskbarViewController and StashedHandleViewController to
@@ -104,6 +105,9 @@ public class TaskbarStashController {
 
         mIsStashedInApp = supportsStashing()
                 && mPrefs.getBoolean(SHARED_PREFS_STASHED_KEY, DEFAULT_STASHED_PREF);
+
+        SystemUiProxy.INSTANCE.get(mActivity)
+                .notifyTaskbarStatus(/* visible */ true, /* stashed */ mIsStashedInApp);
     }
 
     /**
@@ -166,6 +170,8 @@ public class TaskbarStashController {
             mPrefs.edit().putBoolean(SHARED_PREFS_STASHED_KEY, mIsStashedInApp).apply();
             boolean isStashed = mIsStashedInApp;
             if (wasStashed != isStashed) {
+                SystemUiProxy.INSTANCE.get(mActivity)
+                        .notifyTaskbarStatus(/* visible */ true, /* stashed */ isStashed);
                 createAnimToIsStashed(isStashed, TASKBAR_STASH_DURATION).start();
                 return true;
             }

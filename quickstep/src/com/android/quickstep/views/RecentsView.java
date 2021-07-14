@@ -2495,14 +2495,11 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                     resetTaskVisuals();
 
                     int pageToSnapTo = mCurrentPage;
-                    if ((dismissedIndex < pageToSnapTo && !showAsGrid)
-                            || pageToSnapTo == taskCount - 1) {
-                        pageToSnapTo -= 1;
+                    if (finalNextFocusedTaskView != null) {
+                        pageToSnapTo = indexOfChild(finalNextFocusedTaskView);
                     }
-                    if (showAsGrid) {
-                        int primaryScroll = mOrientationHandler.getPrimaryScroll(RecentsView.this);
-                        int currentPageScroll = getScrollForPage(pageToSnapTo);
-                        mCurrentPageScrollDiff = primaryScroll - currentPageScroll;
+                    if (dismissedIndex < pageToSnapTo || pageToSnapTo == (taskCount - 1)) {
+                        pageToSnapTo -= 1;
                     }
                     removeViewInLayout(dismissedTaskView);
                     mTopRowIdSet.remove(dismissedTaskId);
@@ -2516,11 +2513,12 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                             mFocusedTaskId = finalNextFocusedTaskView.getTaskId();
                             mTopRowIdSet.remove(mFocusedTaskId);
                             finalNextFocusedTaskView.animateIconScaleAndDimIntoView();
+                            setCurrentPage(pageToSnapTo);
                         }
                         updateTaskSize(true);
                         // Update scroll and snap to page.
                         updateScrollSynchronously();
-                        setCurrentPage(pageToSnapTo);
+                        snapToPageImmediately(pageToSnapTo);
                         dispatchScrollChanged();
                     }
                 }
