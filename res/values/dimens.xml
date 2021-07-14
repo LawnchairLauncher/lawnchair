@@ -122,7 +122,7 @@
     <dimen name="work_fab_height">56dp</dimen>
     <dimen name="work_fab_radius">28dp</dimen>
     <dimen name="work_card_padding_horizontal">24dp</dimen>
-    <dimen name="work_card_padding_vertical">32dp</dimen>
+    <dimen name="work_card_button_height">52dp</dimen>
     <dimen name="work_fab_margin">16dp</dimen>
     <dimen name="work_profile_footer_padding">20dp</dimen>
     <dimen name="work_profile_footer_text_size">16sp</dimen>
@@ -330,4 +330,5 @@
 <!-- Search results related parameters -->
     <dimen name="search_row_icon_size">48dp</dimen>
     <dimen name="search_row_small_icon_size">32dp</dimen>
+    <dimen name="padded_rounded_button_padding">8dp</dimen>
 </resources>

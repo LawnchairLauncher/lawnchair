@@ -35,7 +35,7 @@
     <dimen name="modal_dialog_padding_bottom">8dp</dimen>
     <dimen name="modal_dialog_vertical_spacer">12dp</dimen>
     <dimen name="modal_dialog_corner_radius">8dp</dimen>
-    <dimen name="confirmation_dialog_text_height">216dp</dimen>
+    <dimen name="modal_dialog_text_height">216dp</dimen>
 
     <!-- Tooltip -->
     <dimen name="tooltip_corner_radius">8dp</dimen>

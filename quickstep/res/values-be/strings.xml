@@ -45,19 +45,16 @@
     <string name="hotsaet_tip_prediction_enabled" msgid="2233554377501347650">"Прапановы праграм уключаны"</string>
     <string name="hotsaet_tip_prediction_disabled" msgid="1506426298884658491">"Прапановы праграм выключаны"</string>
     <string name="hotseat_prediction_content_description" msgid="4582028296938078419">"Праграма з падказкі: <xliff:g id="TITLE">%1$s</xliff:g>"</string>
-    <string name="back_gesture_feedback_swipe_too_far_from_left_edge" msgid="340972404868601012">"Пераканайцеся, што вы не праводзіце пальцам занадта далёка ад левага вугла экрана."</string>
-    <string name="back_gesture_feedback_cancelled_left_edge" msgid="6671316150388702530">"Пераканайцеся, што праводзіце пальцам з левага вугла ў цэнтр экрана, а потым адпускаеце."</string>
-    <string name="back_gesture_feedback_swipe_too_far_from_right_edge" msgid="4306700023773832353">"Пераканайцеся, што вы не праводзіце пальцам занадта далёка ад правага вугла экрана."</string>
-    <string name="back_gesture_feedback_cancelled_right_edge" msgid="4951916546256902552">"Пераканайцеся, што праводзіце пальцам з правага вугла ў цэнтр экрана, а потым адпускаеце."</string>
-    <string name="back_gesture_feedback_complete_with_back_right_follow_up" msgid="2100639504811809267">"Вы даведаліся, як праводзіць пальцам злева ўправа для вяртання."</string>
+    <!-- no translation found for back_gesture_feedback_swipe_too_far_from_edge (1711645592102201538) -->
+    <skip />
+    <!-- no translation found for back_gesture_feedback_cancelled (3274382913290074496) -->
+    <skip />
     <string name="back_gesture_feedback_complete_with_overview_follow_up" msgid="9176400654037014471">"Вы даведаліся, як гартаць справа для вяртання. Цяпер даведайцеся, як пераключацца паміж праграмамі."</string>
     <string name="back_gesture_feedback_complete_without_follow_up" msgid="6405649621667113830">"Вы навучыліся рабіць жэст вяртання."</string>
     <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="1148198467090405643">"Пераканайцеся, што вы не праводзіце пальцам занадта блізка да ніжняга краю экрана."</string>
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"Каб змяніць адчувальнасць жэста вяртання, адкрыйце налады"</string>
-    <string name="back_left_gesture_intro_title" msgid="5197184481779330065">"Каб вярнуцца назад, правядзіце пальцам ад левага краю"</string>
-    <string name="back_right_gesture_intro_title" msgid="7431951986971898074">"Каб вярнуцца назад, правядзіце пальцам ад правага краю"</string>
-    <string name="back_left_gesture_intro_subtitle" msgid="7672761376577628602">"Каб вярнуцца на папярэдні экран, правядзіце пальцам ад левага краю ў цэнтр экрана."</string>
-    <string name="back_right_gesture_intro_subtitle" msgid="2735828029197816509">"Для вяртання на папярэдні экран таксама можна правесці ад правага краю ў цэнтр экрана. Паспрабуйце."</string>
+    <string name="back_gesture_intro_title" msgid="19551256430224428">"Правядзіце пальцам, каб вярнуцца"</string>
+    <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"Каб вярнуцца на папярэдні экран, правядзіце пальцам ад левага ці правага краю да цэнтра экрана."</string>
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"Пераканайцеся, што праводзіце пальцам па экране знізу ўверх."</string>
     <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"Пераканайцеся, што не затрымліваецеся перад адпусканнем."</string>
     <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"Пераканайцеся, што праводзіце пальцам вертыкальна."</string>
@@ -71,17 +68,21 @@
     <string name="overview_gesture_feedback_complete_with_follow_up" msgid="3544611727467765026">"Вы навучыліся выкарыстоўваць жэсты. Каб выключыць жэсты, адкрыйце Налады."</string>
     <string name="overview_gesture_feedback_complete_without_follow_up" msgid="3199486203448379152">"Вы навучыліся рабіць жэст пераключэння паміж праграмамі."</string>
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"Правесці пальцам для пераключэння паміж праграмамі"</string>
-    <string name="overview_gesture_intro_subtitle" msgid="1579517193845186042">"Правядзіце па экране знізу ўверх, утрымліваючы палец націснутым, потым адпусціце."</string>
+    <!-- no translation found for overview_gesture_intro_subtitle (4968091015637850859) -->
+    <skip />
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"Гатова"</string>
-    <string name="gesture_tutorial_action_button_label_next" msgid="2556263116424738762">"Далей"</string>
+    <!-- no translation found for gesture_tutorial_action_button_label (6249846312991332122) -->
+    <skip />
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"Налады"</string>
     <string name="gesture_tutorial_try_again" msgid="65962545858556697">"Паўтарыць спробу"</string>
     <string name="gesture_tutorial_nice" msgid="2936275692616928280">"Выдатна!"</string>
     <string name="gesture_tutorial_step" msgid="1279786122817620968">"Дапаможнік <xliff:g id="CURRENT">%1$d</xliff:g>/<xliff:g id="TOTAL">%2$d</xliff:g>"</string>
     <string name="allset_title" msgid="5021126669778966707">"Гатова!"</string>
-    <string name="allset_hint" msgid="459504134589971527">"Каб перайсці на галоўны экран, правядзіце пальцам уверх"</string>
+    <!-- no translation found for allset_hint (2384632994739392447) -->
+    <skip />
     <string name="allset_description" msgid="6350320429953234580">"Вы можаце пачаць карыстанне тэлефонам"</string>
-    <string name="allset_navigation_settings" msgid="417773244979225071"><annotation id="link">"Налады навігацыі для спецыяльных магчымасцей"</annotation></string>
+    <!-- no translation found for allset_navigation_settings (4713404605961476027) -->
+    <skip />
     <string name="action_share" msgid="2648470652637092375">"Абагуліць"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"Здымак экрана"</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"Гэта дзеянне не дазволена праграмай ці вашай арганізацыяй"</string>

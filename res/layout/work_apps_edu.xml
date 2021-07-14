@@ -24,7 +24,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:paddingHorizontal="@dimen/work_card_padding_horizontal"
-        android:paddingVertical="@dimen/work_card_padding_vertical"
+        android:paddingVertical="@dimen/work_card_padding_horizontal"
         android:background="@drawable/work_card"
         android:layout_gravity="center_horizontal"
         android:gravity="center"
@@ -36,14 +36,14 @@
             android:id="@+id/work_apps_paused_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/work_card_padding_vertical"
+            android:layout_marginBottom="@dimen/work_card_padding_horizontal"
             android:text="@string/work_profile_edu_work_apps"
             android:textAlignment="center"
             android:textSize="20sp" />
 
         <Button
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/rounded_button_height"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/work_card_button_height"
             android:id="@+id/action_btn"
             android:textColor="?attr/workProfileOverlayTextColor"
             android:text="@string/work_profile_edu_accept"
