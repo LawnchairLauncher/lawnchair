@@ -209,8 +209,6 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
         mWidgetPreviewLoader = loader;
         if (item.activityInfo != null) {
             setTag(new PendingAddShortcutInfo(item.activityInfo));
-            mPreviewWidth += mShortcutPreviewPadding;
-            mPreviewHeight += mShortcutPreviewPadding;
         } else {
             setTag(new PendingAddWidgetInfo(item.widgetInfo, mSourceContainer));
         }
@@ -357,16 +355,14 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
     }
 
     /** Sets the widget preview image size in number of cells. */
-    public Size setPreviewSize(int spanX, int spanY) {
-        return setPreviewSize(spanX, spanY, 1f);
+    public Size setPreviewSize(WidgetItem widgetItem) {
+        return setPreviewSize(widgetItem, 1f);
     }
 
     /** Sets the widget preview image size, in number of cells, and preview scale. */
-    public Size setPreviewSize(int spanX, int spanY, float previewScale) {
+    public Size setPreviewSize(WidgetItem widgetItem, float previewScale) {
         DeviceProfile deviceProfile = mActivity.getDeviceProfile();
-        Size widgetSize =
-                mItem != null ? WidgetSizes.getWidgetItemSizePx(getContext(), deviceProfile, mItem)
-                : WidgetSizes.getWidgetSizePx(deviceProfile, spanX, spanY);
+        Size widgetSize = WidgetSizes.getWidgetItemSizePx(getContext(), deviceProfile, widgetItem);
         mPreviewWidth = widgetSize.getWidth();
         mPreviewHeight = widgetSize.getHeight();
         mPreviewScale = previewScale;

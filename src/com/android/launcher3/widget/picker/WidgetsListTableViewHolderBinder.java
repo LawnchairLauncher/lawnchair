@@ -120,7 +120,7 @@ public final class WidgetsListTableViewHolderBinder
                 WidgetCell widget = (WidgetCell) row.getChildAt(j);
                 widget.clear();
                 WidgetItem widgetItem = widgetItemsPerRow.get(j);
-                Size previewSize = widget.setPreviewSize(widgetItem.spanX, widgetItem.spanY);
+                Size previewSize = widget.setPreviewSize(widgetItem);
                 widget.applyFromCellItem(widgetItem, mWidgetPreviewLoader);
                 widget.setApplyBitmapDeferred(mApplyBitmapDeferred);
                 Bitmap preview = mWidgetPreviewLoader.getPreview(widgetItem, previewSize);
