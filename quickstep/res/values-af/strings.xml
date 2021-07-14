@@ -45,19 +45,16 @@
     <string name="hotsaet_tip_prediction_enabled" msgid="2233554377501347650">"Programvoorstelle is geaktiveer"</string>
     <string name="hotsaet_tip_prediction_disabled" msgid="1506426298884658491">"Programvoorstelle is gedeaktiveer"</string>
     <string name="hotseat_prediction_content_description" msgid="4582028296938078419">"Voorspelde program: <xliff:g id="TITLE">%1$s</xliff:g>"</string>
-    <string name="back_gesture_feedback_swipe_too_far_from_left_edge" msgid="340972404868601012">"Maak seker dat jy van die rand heel links af swiep."</string>
-    <string name="back_gesture_feedback_cancelled_left_edge" msgid="6671316150388702530">"Maak seker dat jy van die linkerrand na die middel van die skerm swiep en laat los."</string>
-    <string name="back_gesture_feedback_swipe_too_far_from_right_edge" msgid="4306700023773832353">"Maak seker dat jy van die rand heel regs af swiep."</string>
-    <string name="back_gesture_feedback_cancelled_right_edge" msgid="4951916546256902552">"Maak seker dat jy van die regterrand na die middel van die skerm swiep en laat los."</string>
-    <string name="back_gesture_feedback_complete_with_back_right_follow_up" msgid="2100639504811809267">"Jy het geleer hoe om van links af te swiep om terug te gaan."</string>
+    <!-- no translation found for back_gesture_feedback_swipe_too_far_from_edge (1711645592102201538) -->
+    <skip />
+    <!-- no translation found for back_gesture_feedback_cancelled (3274382913290074496) -->
+    <skip />
     <string name="back_gesture_feedback_complete_with_overview_follow_up" msgid="9176400654037014471">"Jy het geleer hoe om van regs af te swiep om terug te gaan. Nou kan jy leer hoe om tussen programme te wissel."</string>
     <string name="back_gesture_feedback_complete_without_follow_up" msgid="6405649621667113830">"Jy het die \"gaan terug\"-gebaar voltooi."</string>
     <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="1148198467090405643">"Maak seker dat jy nie te naby aan die onderkant van die skerm swiep nie."</string>
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"Gaan na Instellings om sensitiwiteit van teruggebaar te verander"</string>
-    <string name="back_left_gesture_intro_title" msgid="5197184481779330065">"Swiep van links af om terug te gaan"</string>
-    <string name="back_right_gesture_intro_title" msgid="7431951986971898074">"Swiep van regs af om terug te gaan"</string>
-    <string name="back_left_gesture_intro_subtitle" msgid="7672761376577628602">"Swiep van links af na middel van skerm om terug te gaan na laaste skerm waarop jy was."</string>
-    <string name="back_right_gesture_intro_subtitle" msgid="2735828029197816509">"Swiep van regs af na middel van skerm om terug te gaan na laaste skerm. Probeer dit nou."</string>
+    <string name="back_gesture_intro_title" msgid="19551256430224428">"Swiep om terug te gaan"</string>
+    <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"Swiep van die linker- of regterrand na die middel van die skerm om na die vorige skerm terug te gaan."</string>
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"Maak seker dat jy van die onderrand van die skerm af opswiep."</string>
     <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"Maak seker jy onderbreek nie voordat jy laat los nie."</string>
     <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"Maak seker jy swiep reguit op."</string>
@@ -71,17 +68,21 @@
     <string name="overview_gesture_feedback_complete_with_follow_up" msgid="3544611727467765026">"Jy het geleer hoe om gebare te gebruik. Gaan na Instellings om gebare af te skakel."</string>
     <string name="overview_gesture_feedback_complete_without_follow_up" msgid="3199486203448379152">"Jy het die \"wissel tussen programme\"-gebaar voltooi."</string>
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"Swiep om tussen programme te wissel"</string>
-    <string name="overview_gesture_intro_subtitle" msgid="1579517193845186042">"Swiep op van die onderkant van jou skerm af, hou en laat los dan."</string>
+    <!-- no translation found for overview_gesture_intro_subtitle (4968091015637850859) -->
+    <skip />
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"Gereed"</string>
-    <string name="gesture_tutorial_action_button_label_next" msgid="2556263116424738762">"Volgende"</string>
+    <!-- no translation found for gesture_tutorial_action_button_label (6249846312991332122) -->
+    <skip />
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"Instellings"</string>
     <string name="gesture_tutorial_try_again" msgid="65962545858556697">"Probeer weer"</string>
     <string name="gesture_tutorial_nice" msgid="2936275692616928280">"Mooi so!"</string>
     <string name="gesture_tutorial_step" msgid="1279786122817620968">"Tutoriaal <xliff:g id="CURRENT">%1$d</xliff:g>/<xliff:g id="TOTAL">%2$d</xliff:g>"</string>
     <string name="allset_title" msgid="5021126669778966707">"Gereed!"</string>
-    <string name="allset_hint" msgid="459504134589971527">"Swiep op om na die tuisskerm toe te gaan"</string>
+    <!-- no translation found for allset_hint (2384632994739392447) -->
+    <skip />
     <string name="allset_description" msgid="6350320429953234580">"Jy is gereed om jou foon te begin gebruik"</string>
-    <string name="allset_navigation_settings" msgid="417773244979225071"><annotation id="link">"Navigasie-instellings vir toeganklikheid"</annotation></string>
+    <!-- no translation found for allset_navigation_settings (4713404605961476027) -->
+    <skip />
     <string name="action_share" msgid="2648470652637092375">"Deel"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"Skermkiekie"</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"Jou organisasie laat nie hierdie program toe nie"</string>
