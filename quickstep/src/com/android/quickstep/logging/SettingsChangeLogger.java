@@ -16,7 +16,7 @@
 
 package com.android.quickstep.logging;
 
-import static com.android.launcher3.InvariantDeviceProfile.KEY_MIGRATION_SRC_HOTSEAT_COUNT;
+import static com.android.launcher3.InvariantDeviceProfile.KEY_MIGRATION_SRC_WORKSPACE_SIZE;
 import static com.android.launcher3.Utilities.getDevicePrefs;
 import static com.android.launcher3.Utilities.getPrefs;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_GRID_SIZE_2;
@@ -43,6 +43,7 @@ import android.util.Xml;
 
 import com.android.launcher3.AutoInstallsLayout;
 import com.android.launcher3.R;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.logging.InstanceIdSequence;
 import com.android.launcher3.logging.StatsLogManager;
@@ -133,7 +134,8 @@ public class SettingsChangeLogger implements
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
-        if (LAST_PREDICTION_ENABLED_STATE.equals(key) || KEY_MIGRATION_SRC_HOTSEAT_COUNT.equals(key)
+        if (LAST_PREDICTION_ENABLED_STATE.equals(key)
+                || KEY_MIGRATION_SRC_WORKSPACE_SIZE.equals(key)
                 || mLoggablePrefs.containsKey(key)) {
             dispatchUserEvent();
         }
@@ -153,23 +155,25 @@ public class SettingsChangeLogger implements
 
         SharedPreferences prefs = getPrefs(mContext);
         StatsLogManager.LauncherEvent gridSizeChangedEvent = null;
-        // TODO(b/184981523): This doesn't work for 2-panel grid, which has 6 hotseat icons
-        switch (prefs.getInt(KEY_MIGRATION_SRC_HOTSEAT_COUNT, -1)) {
-            case 5:
-                gridSizeChangedEvent = LAUNCHER_GRID_SIZE_5;
-                break;
-            case 4:
-                gridSizeChangedEvent = LAUNCHER_GRID_SIZE_4;
-                break;
-            case 3:
-                gridSizeChangedEvent = LAUNCHER_GRID_SIZE_3;
-                break;
-            case 2:
-                gridSizeChangedEvent = LAUNCHER_GRID_SIZE_2;
-                break;
-            default:
-                // Ignore illegal input.
-                break;
+        String workspaceSize = prefs.getString(KEY_MIGRATION_SRC_WORKSPACE_SIZE, null);
+        if (workspaceSize != null) {
+            switch (Utilities.parsePoint(workspaceSize).x) {
+                case 5:
+                    gridSizeChangedEvent = LAUNCHER_GRID_SIZE_5;
+                    break;
+                case 4:
+                    gridSizeChangedEvent = LAUNCHER_GRID_SIZE_4;
+                    break;
+                case 3:
+                    gridSizeChangedEvent = LAUNCHER_GRID_SIZE_3;
+                    break;
+                case 2:
+                    gridSizeChangedEvent = LAUNCHER_GRID_SIZE_2;
+                    break;
+                default:
+                    // Ignore illegal input.
+                    break;
+            }
         }
         if (gridSizeChangedEvent != null) {
             logger.log(gridSizeChangedEvent);

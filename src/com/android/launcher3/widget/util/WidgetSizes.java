@@ -32,6 +32,7 @@ import androidx.annotation.Nullable;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.LauncherAppState;
+import com.android.launcher3.R;
 import com.android.launcher3.model.WidgetItem;
 
 import java.util.ArrayList;
@@ -91,7 +92,9 @@ public final class WidgetSizes {
     public static Size getWidgetItemSizePx(Context context, DeviceProfile profile,
             WidgetItem widgetItem) {
         if (widgetItem.isShortcut()) {
-            return getWidgetSizePx(profile, widgetItem.spanX, widgetItem.spanY);
+            int dimension = profile.allAppsIconSizePx + 2 * context.getResources()
+                    .getDimensionPixelSize(R.dimen.widget_preview_shortcut_padding);
+            return new Size(dimension, dimension);
         }
         return getWidgetPaddedSizePx(context, widgetItem.componentName, profile, widgetItem.spanX,
                 widgetItem.spanY);
