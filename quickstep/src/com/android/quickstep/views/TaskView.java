@@ -794,7 +794,7 @@ public class TaskView extends FrameLayout implements Reusable {
         mIconView.setRotation(orientationHandler.getDegreesRotated());
         snapshotParams.topMargin = deviceProfile.overviewTaskThumbnailTopMarginPx;
         mSnapshotView.setLayoutParams(snapshotParams);
-        getThumbnail().getTaskOverlay().updateOrientationState(orientationState);
+        mSnapshotView.getTaskOverlay().updateOrientationState(orientationState);
     }
 
     private void setIconAndDimTransitionProgress(float progress, boolean invert) {
@@ -958,6 +958,7 @@ public class TaskView extends FrameLayout implements Reusable {
 
     private void setNonGridScale(float nonGridScale) {
         mNonGridScale = nonGridScale;
+        updateCornerRadius();
         applyScale();
     }
 
@@ -1296,16 +1297,19 @@ public class TaskView extends FrameLayout implements Reusable {
         progress = Utilities.boundToRange(progress, 0, 1);
         mFullscreenProgress = progress;
         mIconView.setVisibility(progress < 1 ? VISIBLE : INVISIBLE);
-        getThumbnail().getTaskOverlay().setFullscreenProgress(progress);
+        mSnapshotView.getTaskOverlay().setFullscreenProgress(progress);
 
-        TaskThumbnailView thumbnail = getThumbnail();
-        updateCurrentFullscreenParams(thumbnail.getPreviewPositionHelper());
+        updateCornerRadius();
 
-        thumbnail.setFullscreenParams(mCurrentFullscreenParams);
+        mSnapshotView.setFullscreenParams(mCurrentFullscreenParams);
         mOutlineProvider.updateParams(
                 mCurrentFullscreenParams,
                 mActivity.getDeviceProfile().overviewTaskThumbnailTopMarginPx);
         invalidateOutline();
+    }
+
+    private void updateCornerRadius() {
+        updateCurrentFullscreenParams(mSnapshotView.getPreviewPositionHelper());
     }
 
     void updateCurrentFullscreenParams(PreviewPositionHelper previewPositionHelper) {
@@ -1315,7 +1319,7 @@ public class TaskView extends FrameLayout implements Reusable {
         mCurrentFullscreenParams.setProgress(
                 mFullscreenProgress,
                 getRecentsView().getScaleX(),
-                getScaleX(),
+                mNonGridScale,
                 getWidth(), mActivity.getDeviceProfile(),
                 previewPositionHelper);
     }
