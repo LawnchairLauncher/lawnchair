@@ -35,6 +35,8 @@
     <string name="widget_preview_context_description" msgid="9045841361655787574">"위젯 <xliff:g id="WIDGET_NAME">%1$s</xliff:g>개"</string>
     <string name="add_item_request_drag_hint" msgid="5653291305078645405">"홈 화면에서 위젯을 이동하려면 길게 터치하세요."</string>
     <string name="add_to_home_screen" msgid="8631549138215492708">"홈 화면에 추가"</string>
+    <!-- no translation found for added_to_home_screen_accessibility_text (4451545765448884415) -->
+    <skip />
     <plurals name="widgets_count" formatted="false" msgid="656794749266073027">
       <item quantity="other">위젯 <xliff:g id="WIDGETS_COUNT_1">%1$d</xliff:g>개</item>
       <item quantity="one">위젯 <xliff:g id="WIDGETS_COUNT_0">%1$d</xliff:g>개</item>
@@ -53,7 +55,7 @@
     <string name="widgets_full_sheet_work_tab" msgid="3767150027110633765">"직장 위젯"</string>
     <string name="widget_category_conversations" msgid="8894438636213590446">"대화"</string>
     <string name="widget_education_header" msgid="4874760613775913787">"빠르게 유용한 정보 확인"</string>
-    <string name="widget_education_content" msgid="745542879510751525">"앱을 열지 않고 정보를 확인하려면 홈 화면에 위젯을 추가하세요."</string>
+    <string name="widget_education_content" msgid="745542879510751525">"앱을 열지 않고 정보를 확인하려면​ 홈 화면에 위젯을 추가하세요."</string>
     <string name="reconfigurable_widget_education_tip" msgid="6336962690888067057">"탭하여 위젯 설정 변경"</string>
     <string name="widget_education_close_button" msgid="8676165703104836580">"확인"</string>
     <string name="widget_reconfigure_button_content_description" msgid="8811472721881205250">"위젯 설정 변경"</string>
