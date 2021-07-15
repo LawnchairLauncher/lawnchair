@@ -87,6 +87,7 @@ public class AccessibilityManagerCompat {
         if (accessibilityManager == null) return;
 
         sendEventToTest(accessibilityManager, context, TestProtocol.PAUSE_DETECTED_MESSAGE, null);
+        Log.d(TestProtocol.HOME_TO_OVERVIEW_FLAKY, "sendPauseDetectedEventToTest");
     }
 
     private static void sendEventToTest(
