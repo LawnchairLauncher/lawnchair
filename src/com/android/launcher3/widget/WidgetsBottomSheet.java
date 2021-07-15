@@ -16,6 +16,7 @@
 
 package com.android.launcher3.widget;
 
+import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_BOTTOM_WIDGETS_TRAY;
 import static com.android.launcher3.anim.Interpolators.FAST_OUT_SLOW_IN;
 
 import android.animation.PropertyValuesHolder;
@@ -26,26 +27,31 @@ import android.util.IntProperty;
 import android.util.Pair;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Interpolator;
+import android.widget.ScrollView;
+import android.widget.TableLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
 
-import com.android.launcher3.Insettable;
+import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.R;
-import com.android.launcher3.ResourceUtils;
 import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.model.WidgetItem;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.util.PackageUserKey;
+import com.android.launcher3.widget.util.WidgetsTableUtils;
 
 import java.util.List;
 
 /**
  * Bottom sheet for the "Widgets" system shortcut in the long-press popup.
  */
-public class WidgetsBottomSheet extends BaseWidgetSheet implements Insettable {
+public class WidgetsBottomSheet extends BaseWidgetSheet {
+    private static final String TAG = "WidgetsBottomSheet";
 
     private static final IntProperty<View> PADDING_BOTTOM =
             new IntProperty<View>("paddingBottom") {
@@ -62,8 +68,40 @@ public class WidgetsBottomSheet extends BaseWidgetSheet implements Insettable {
             };
 
     private static final int DEFAULT_CLOSE_DURATION = 200;
+    private static final long EDUCATION_TIP_DELAY_MS = 300;
+
     private ItemInfo mOriginalItemInfo;
-    private Rect mInsets;
+    private final int mMaxTableHeight;
+    private int mMaxHorizontalSpan = 4;
+
+    private final OnLayoutChangeListener mLayoutChangeListenerToShowTips =
+            new OnLayoutChangeListener() {
+                @Override
+                public void onLayoutChange(View v, int left, int top, int right, int bottom,
+                        int oldLeft, int oldTop, int oldRight, int oldBottom) {
+                    if (hasSeenEducationTip()) {
+                        removeOnLayoutChangeListener(this);
+                        return;
+                    }
+                    // Widgets are loaded asynchronously, We are adding a delay because we only want
+                    // to show the tip when the widget preview has finished loading and rendering in
+                    // this view.
+                    removeCallbacks(mShowEducationTipTask);
+                    postDelayed(mShowEducationTipTask, EDUCATION_TIP_DELAY_MS);
+                }
+            };
+
+    private final Runnable mShowEducationTipTask = () -> {
+        if (hasSeenEducationTip()) {
+            removeOnLayoutChangeListener(mLayoutChangeListenerToShowTips);
+            return;
+        }
+        View viewForTip = ((ViewGroup) ((TableLayout) findViewById(R.id.widgets_table))
+                                    .getChildAt(0)).getChildAt(0);
+        if (showEducationTipOnViewIfPossible(viewForTip) != null) {
+            removeOnLayoutChangeListener(mLayoutChangeListenerToShowTips);
+        }
+    };
 
     public WidgetsBottomSheet(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
@@ -72,20 +110,73 @@ public class WidgetsBottomSheet extends BaseWidgetSheet implements Insettable {
     public WidgetsBottomSheet(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         setWillNotDraw(false);
-        mInsets = new Rect();
-        mContent = this;
+        DeviceProfile deviceProfile = mActivityContext.getDeviceProfile();
+        // Set the max table height to 2 / 3 of the grid height so that the bottom picker won't
+        // take over the entire view vertically.
+        mMaxTableHeight = deviceProfile.inv.numRows * 2 / 3  * deviceProfile.cellHeightPx;
+        if (!hasSeenEducationTip()) {
+            addOnLayoutChangeListener(mLayoutChangeListenerToShowTips);
+        }
+    }
+
+    @Override
+    protected void onFinishInflate() {
+        super.onFinishInflate();
+        mContent = findViewById(R.id.widgets_bottom_sheet);
+    }
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        doMeasure(widthMeasureSpec, heightMeasureSpec);
+        if (updateMaxSpansPerRow()) {
+            doMeasure(widthMeasureSpec, heightMeasureSpec);
+        }
+    }
+
+    /** Returns {@code true} if the max spans have been updated. */
+    private boolean updateMaxSpansPerRow() {
+        if (getMeasuredWidth() == 0) return false;
+
+        int paddingPx = 2 * getResources().getDimensionPixelOffset(
+                R.dimen.widget_cell_horizontal_padding);
+        int maxHorizontalSpan = findViewById(R.id.widgets_table).getMeasuredWidth()
+                / (mActivityContext.getDeviceProfile().cellWidthPx + paddingPx);
+        if (mMaxHorizontalSpan != maxHorizontalSpan) {
+            // Ensure the table layout is showing widgets in the right column after measure.
+            mMaxHorizontalSpan = maxHorizontalSpan;
+            onWidgetsBound();
+            return true;
+        }
+        return false;
     }
 
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
-        super.onLayout(changed, l, t, r, b);
+        int width = r - l;
+        int height = b - t;
+
+        // Content is laid out as center bottom aligned.
+        int contentWidth = mContent.getMeasuredWidth();
+        int contentLeft = (width - contentWidth - mInsets.left - mInsets.right) / 2 + mInsets.left;
+        mContent.layout(contentLeft, height - mContent.getMeasuredHeight(),
+                contentLeft + contentWidth, height);
+
         setTranslationShift(mTranslationShift);
+
+        // Ensure the scroll view height is not larger than mMaxTableHeight, which is a value
+        // smaller than the entire screen height.
+        ScrollView widgetsTableScrollView = findViewById(R.id.widgets_table_scroll_view);
+        if (widgetsTableScrollView.getMeasuredHeight() > mMaxTableHeight) {
+            ViewGroup.LayoutParams layoutParams = widgetsTableScrollView.getLayoutParams();
+            layoutParams.height = mMaxTableHeight;
+            widgetsTableScrollView.setLayoutParams(layoutParams);
+            findViewById(R.id.collapse_handle).setVisibility(VISIBLE);
+        }
     }
 
     public void populateAndShow(ItemInfo itemInfo) {
         mOriginalItemInfo = itemInfo;
-        ((TextView) findViewById(R.id.title)).setText(getContext().getString(
-                R.string.widgets_bottom_sheet_title, mOriginalItemInfo.title));
+        ((TextView) findViewById(R.id.title)).setText(mOriginalItemInfo.title);
 
         onWidgetsBound();
         attachToContainer();
@@ -95,53 +186,51 @@ public class WidgetsBottomSheet extends BaseWidgetSheet implements Insettable {
 
     @Override
     public void onWidgetsBound() {
-        List<WidgetItem> widgets = mLauncher.getPopupDataProvider().getWidgetsForPackageUser(
+        List<WidgetItem> widgets = mActivityContext.getPopupDataProvider().getWidgetsForPackageUser(
                 new PackageUserKey(
                         mOriginalItemInfo.getTargetComponent().getPackageName(),
                         mOriginalItemInfo.user));
 
-        ViewGroup widgetRow = findViewById(R.id.widgets);
-        ViewGroup widgetCells = widgetRow.findViewById(R.id.widgets_cell_list);
+        TableLayout widgetsTable = findViewById(R.id.widgets_table);
+        widgetsTable.removeAllViews();
 
-        widgetCells.removeAllViews();
-
-        for (int i = 0; i < widgets.size(); i++) {
-            WidgetCell widget = addItemCell(widgetCells);
-            widget.applyFromCellItem(widgets.get(i), LauncherAppState.getInstance(mLauncher)
-                    .getWidgetCache());
-            widget.ensurePreview();
-            widget.setVisibility(View.VISIBLE);
-            if (i < widgets.size() - 1) {
-                addDivider(widgetCells);
-            }
-        }
-
-        if (widgets.size() == 1) {
-            // If there is only one widget, we want to center it instead of left-align.
-            WidgetsBottomSheet.LayoutParams params = (WidgetsBottomSheet.LayoutParams)
-                    widgetRow.getLayoutParams();
-            params.gravity = Gravity.CENTER_HORIZONTAL;
-        } else {
-            // Otherwise, add an empty view to the start as padding (but still scroll edge to edge).
-            View leftPaddingView = LayoutInflater.from(getContext()).inflate(
-                    R.layout.widget_list_divider, widgetRow, false);
-            leftPaddingView.getLayoutParams().width = ResourceUtils.pxFromDp(
-                    16, getResources().getDisplayMetrics());
-            widgetCells.addView(leftPaddingView, 0);
-        }
+        WidgetsTableUtils.groupWidgetItemsIntoTable(widgets, mMaxHorizontalSpan).forEach(row -> {
+            TableRow tableRow = new TableRow(getContext());
+            tableRow.setGravity(Gravity.TOP);
+            row.forEach(widgetItem -> {
+                WidgetCell widget = addItemCell(tableRow);
+                widget.setPreviewSize(widgetItem);
+                widget.applyFromCellItem(widgetItem, LauncherAppState.getInstance(mActivityContext)
+                        .getWidgetCache());
+                widget.ensurePreview();
+                widget.setVisibility(View.VISIBLE);
+            });
+            widgetsTable.addView(tableRow);
+        });
     }
 
-    private void addDivider(ViewGroup parent) {
-        LayoutInflater.from(getContext()).inflate(R.layout.widget_list_divider, parent, true);
+    @Override
+    public boolean onControllerInterceptTouchEvent(MotionEvent ev) {
+        if (ev.getAction() == MotionEvent.ACTION_DOWN) {
+            mNoIntercept = false;
+            ScrollView scrollView = findViewById(R.id.widgets_table_scroll_view);
+            if (getPopupContainer().isEventOverView(scrollView, ev)
+                    && scrollView.getScrollY() > 0) {
+                mNoIntercept = true;
+            }
+        }
+        return super.onControllerInterceptTouchEvent(ev);
     }
 
     protected WidgetCell addItemCell(ViewGroup parent) {
-        WidgetCell widget = (WidgetCell) LayoutInflater.from(getContext()).inflate(
-                R.layout.widget_cell, parent, false);
+        WidgetCell widget = (WidgetCell) LayoutInflater.from(getContext())
+                .inflate(R.layout.widget_cell, parent, false);
 
-        widget.setOnClickListener(this);
-        widget.setOnLongClickListener(this);
+        View previewContainer = widget.findViewById(R.id.widget_preview_container);
+        previewContainer.setOnClickListener(this);
+        previewContainer.setOnLongClickListener(this);
         widget.setAnimatePreview(false);
+        widget.setSourceContainer(CONTAINER_BOTTOM_WIDGETS_TRAY);
 
         parent.addView(widget);
         return widget;
@@ -171,17 +260,15 @@ public class WidgetsBottomSheet extends BaseWidgetSheet implements Insettable {
 
     @Override
     public void setInsets(Rect insets) {
-        // Extend behind left, right, and bottom insets.
-        int leftInset = insets.left - mInsets.left;
-        int rightInset = insets.right - mInsets.right;
-        int bottomInset = insets.bottom - mInsets.bottom;
-        mInsets.set(insets);
-        setPadding(leftInset, getPaddingTop(), rightInset, bottomInset);
-    }
+        super.setInsets(insets);
 
-    @Override
-    protected int getElementsRowCount() {
-        return 1;
+        mContent.setPadding(mContent.getPaddingStart(),
+                mContent.getPaddingTop(), mContent.getPaddingEnd(), insets.bottom);
+        if (insets.bottom > 0) {
+            setupNavBarColor();
+        } else {
+            clearNavBarColor();
+        }
     }
 
     @Override

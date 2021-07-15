@@ -21,7 +21,8 @@
     android:layout_height="@dimen/system_shortcut_header_height"
     android:orientation="horizontal"
     android:gravity="end|center_vertical"
-    android:background="?attr/popupColorSecondary"
+    android:background="@drawable/single_item_primary"
+    android:elevation="@dimen/deep_shortcuts_elevation"
     android:clipToPadding="true">
 
     <Space android:layout_width="0dp"

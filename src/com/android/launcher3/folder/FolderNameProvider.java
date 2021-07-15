@@ -48,7 +48,7 @@ import java.util.stream.Collectors;
 public class FolderNameProvider implements ResourceBasedOverride {
 
     private static final String TAG = "FolderNameProvider";
-    private static final boolean DEBUG = true;
+    private static final boolean DEBUG = false;
 
     /**
      * IME usually has up to 3 suggest slots. In total, there are 4 suggest slots as the folder

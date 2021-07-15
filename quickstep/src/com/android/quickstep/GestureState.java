@@ -15,6 +15,9 @@
  */
 package com.android.quickstep;
 
+import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_BACKGROUND;
+import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_HOME;
+import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_OVERVIEW;
 import static com.android.quickstep.MultiStateCallback.DEBUG_STATES;
 
 import android.annotation.TargetApi;
@@ -22,8 +25,10 @@ import android.app.ActivityManager;
 import android.content.Intent;
 import android.os.Build;
 
+import com.android.launcher3.statemanager.BaseState;
 import com.android.launcher3.statemanager.StatefulActivity;
-import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
+import com.android.launcher3.tracing.GestureStateProto;
+import com.android.launcher3.tracing.SwipeHandlerProto;
 import com.android.quickstep.util.ActiveGestureLog;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
@@ -44,19 +49,22 @@ public class GestureState implements RecentsAnimationCallbacks.RecentsAnimationL
      * Defines the end targets of a gesture and the associated state.
      */
     public enum GestureEndTarget {
-        HOME(true, ContainerType.WORKSPACE, false),
+        HOME(true, LAUNCHER_STATE_HOME, false, GestureStateProto.GestureEndTarget.HOME),
 
-        RECENTS(true, ContainerType.TASKSWITCHER, true),
+        RECENTS(true, LAUNCHER_STATE_OVERVIEW, true, GestureStateProto.GestureEndTarget.RECENTS),
 
-        NEW_TASK(false, ContainerType.APP, true),
+        NEW_TASK(false, LAUNCHER_STATE_BACKGROUND, true,
+                GestureStateProto.GestureEndTarget.NEW_TASK),
 
-        LAST_TASK(false, ContainerType.APP, true);
+        LAST_TASK(false, LAUNCHER_STATE_BACKGROUND, true,
+                GestureStateProto.GestureEndTarget.LAST_TASK);
 
-        GestureEndTarget(boolean isLauncher, int containerType,
-                boolean recentsAttachedToAppWindow) {
+        GestureEndTarget(boolean isLauncher, int containerType, boolean recentsAttachedToAppWindow,
+                GestureStateProto.GestureEndTarget protoEndTarget) {
             this.isLauncher = isLauncher;
             this.containerType = containerType;
             this.recentsAttachedToAppWindow = recentsAttachedToAppWindow;
+            this.protoEndTarget = protoEndTarget;
         }
 
         /** Whether the target is in the launcher activity. Implicitly, if the end target is going
@@ -66,6 +74,8 @@ public class GestureState implements RecentsAnimationCallbacks.RecentsAnimationL
         public final int containerType;
         /** Whether RecentsView should be attached to the window as we animate to this target */
         public final boolean recentsAttachedToAppWindow;
+        /** The GestureStateProto enum value, used for winscope tracing. See launcher_trace.proto */
+        public final GestureStateProto.GestureEndTarget protoEndTarget;
     }
 
     private static final String TAG = "GestureState";
@@ -132,6 +142,13 @@ public class GestureState implements RecentsAnimationCallbacks.RecentsAnimationL
     private RemoteAnimationTargetCompat mLastAppearedTaskTarget;
     private Set<Integer> mPreviouslyAppearedTaskIds = new HashSet<>();
     private int mLastStartedTaskId = -1;
+    private RecentsAnimationController mRecentsAnimationController;
+    private ThumbnailData mRecentsAnimationCanceledSnapshot;
+
+    /** The time when the swipe up gesture is triggered. */
+    private long mSwipeUpStartTimeMs;
+
+    private boolean mHandlingAtomicEvent;
 
     public GestureState(OverviewComponentObserver componentObserver, int gestureId) {
         mHomeIntent = componentObserver.getHomeIntent();
@@ -201,7 +218,8 @@ public class GestureState implements RecentsAnimationCallbacks.RecentsAnimationL
     /**
      * @return the interface to the activity handing the UI updates for this gesture.
      */
-    public <T extends StatefulActivity<?>> BaseActivityInterface<?, T> getActivityInterface() {
+    public <S extends BaseState<S>,
+            T extends StatefulActivity<S>> BaseActivityInterface<S, T> getActivityInterface() {
         return mActivityInterface;
     }
 
@@ -301,6 +319,22 @@ public class GestureState implements RecentsAnimationCallbacks.RecentsAnimationL
     }
 
     /**
+     * Indicates if the gesture is handling an atomic event like a click and not a
+     * user controlled gesture.
+     */
+    public void setHandlingAtomicEvent(boolean handlingAtomicEvent) {
+        mHandlingAtomicEvent = true;
+    }
+
+    /**
+     * Returns true if the gesture is handling an atomic event like a click and not a
+     * user controlled gesture.
+     */
+    public boolean isHandlingAtomicEvent() {
+        return mHandlingAtomicEvent;
+    }
+
+    /**
      * @return whether the current gesture is still running a recents animation to a state in the
      *         Launcher or Recents activity.
      */
@@ -319,19 +353,47 @@ public class GestureState implements RecentsAnimationCallbacks.RecentsAnimationL
     @Override
     public void onRecentsAnimationStart(RecentsAnimationController controller,
             RecentsAnimationTargets targets) {
+        mRecentsAnimationController = controller;
         mStateCallback.setState(STATE_RECENTS_ANIMATION_STARTED);
     }
 
     @Override
     public void onRecentsAnimationCanceled(ThumbnailData thumbnailData) {
+        mRecentsAnimationCanceledSnapshot = thumbnailData;
         mStateCallback.setState(STATE_RECENTS_ANIMATION_CANCELED);
         mStateCallback.setState(STATE_RECENTS_ANIMATION_ENDED);
+        if (mRecentsAnimationCanceledSnapshot != null) {
+            // Clean up the screenshot to finalize the recents animation cancel
+            if (mRecentsAnimationController != null) {
+                mRecentsAnimationController.cleanupScreenshot();
+            }
+            mRecentsAnimationCanceledSnapshot = null;
+        }
     }
 
     @Override
     public void onRecentsAnimationFinished(RecentsAnimationController controller) {
         mStateCallback.setState(STATE_RECENTS_ANIMATION_FINISHED);
         mStateCallback.setState(STATE_RECENTS_ANIMATION_ENDED);
+    }
+
+    /**
+     * Returns and clears the canceled animation thumbnail data. This call only returns a value
+     * while STATE_RECENTS_ANIMATION_CANCELED state is being set, and the caller is responsible for
+     * calling {@link RecentsAnimationController#cleanupScreenshot()}.
+     */
+    ThumbnailData consumeRecentsAnimationCanceledSnapshot() {
+        ThumbnailData data = mRecentsAnimationCanceledSnapshot;
+        mRecentsAnimationCanceledSnapshot = null;
+        return data;
+    }
+
+    void setSwipeUpStartTimeMs(long uptimeMs) {
+        mSwipeUpStartTimeMs = uptimeMs;
+    }
+
+    long getSwipeUpStartTimeMs() {
+        return mSwipeUpStartTimeMs;
     }
 
     public void dump(PrintWriter pw) {
@@ -342,5 +404,18 @@ public class GestureState implements RecentsAnimationCallbacks.RecentsAnimationL
         pw.println("  lastAppearedTaskTargetId=" + getLastAppearedTaskId());
         pw.println("  lastStartedTaskId=" + mLastStartedTaskId);
         pw.println("  isRecentsAnimationRunning=" + isRecentsAnimationRunning());
+    }
+
+    /**
+     * Used for winscope tracing, see launcher_trace.proto
+     * @see com.android.systemui.shared.tracing.ProtoTraceable#writeToProto
+     * @param swipeHandlerProto The parent of this proto message.
+     */
+    public void writeToProto(SwipeHandlerProto.Builder swipeHandlerProto) {
+        GestureStateProto.Builder gestureStateProto = GestureStateProto.newBuilder();
+        gestureStateProto.setEndTarget(mEndTarget == null
+                ? GestureStateProto.GestureEndTarget.UNSET
+                : mEndTarget.protoEndTarget);
+        swipeHandlerProto.setGestureState(gestureStateProto);
     }
 }
