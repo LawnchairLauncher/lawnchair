@@ -72,14 +72,20 @@ final class FloatingWidgetBackgroundView extends View {
             mForegroundProperties.init(
                     mOriginalForeground.getConstantState().newDrawable().mutate());
             setForeground(mForegroundProperties.mDrawable);
-            mSourceView.setForeground(null);
+            Drawable clipPlaceholder =
+                    mOriginalForeground.getConstantState().newDrawable().mutate();
+            clipPlaceholder.setAlpha(0);
+            mSourceView.setForeground(clipPlaceholder);
         }
         if (isSupportedDrawable(backgroundView.getBackground())) {
             mOriginalBackground = backgroundView.getBackground();
             mBackgroundProperties.init(
                     mOriginalBackground.getConstantState().newDrawable().mutate());
             setBackground(mBackgroundProperties.mDrawable);
-            mSourceView.setBackground(null);
+            Drawable clipPlaceholder =
+                    mOriginalBackground.getConstantState().newDrawable().mutate();
+            clipPlaceholder.setAlpha(0);
+            mSourceView.setBackground(clipPlaceholder);
         } else if (mOriginalForeground == null) {
             mFallbackDrawable.setColor(fallbackBackgroundColor);
             setBackground(mFallbackDrawable);
