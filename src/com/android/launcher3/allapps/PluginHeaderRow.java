@@ -18,14 +18,10 @@ package com.android.launcher3.allapps;
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
 
-import static com.android.launcher3.LauncherAnimUtils.VIEW_ALPHA;
-
 import android.graphics.Rect;
 import android.view.View;
-import android.view.animation.Interpolator;
 
 import com.android.launcher3.DeviceProfile;
-import com.android.launcher3.anim.PropertySetter;
 import com.android.systemui.plugins.AllAppsRow;
 
 /**
@@ -65,13 +61,6 @@ public class PluginHeaderRow implements FloatingHeaderRow {
     }
 
     @Override
-    public void setContentVisibility(boolean hasHeaderExtra, boolean hasAllAppsContent,
-            PropertySetter setter, Interpolator headerFade, Interpolator allAppsFade) {
-        // Don't use setViewAlpha as we want to control the visibility ourselves.
-        setter.setFloat(mView, VIEW_ALPHA, hasAllAppsContent ? 1 : 0, headerFade);
-    }
-
-    @Override
     public void setVerticalScroll(int scroll, boolean isScrolledOut) {
         mView.setVisibility(isScrolledOut ? INVISIBLE : VISIBLE);
         if (!isScrolledOut) {
@@ -82,5 +71,10 @@ public class PluginHeaderRow implements FloatingHeaderRow {
     @Override
     public Class<PluginHeaderRow> getTypeClass() {
         return PluginHeaderRow.class;
+    }
+
+    @Override
+    public View getFocusedChild() {
+        return null;
     }
 }

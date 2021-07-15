@@ -67,12 +67,10 @@
             android:paddingTop="@dimen/all_apps_header_top_padding"
             android:orientation="vertical" >
 
-            <com.android.launcher3.allapps.PersonalWorkSlidingTabStrip
+            <com.android.launcher3.workprofile.PersonalWorkSlidingTabStrip
                 android:id="@+id/tabs"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/all_apps_header_tab_height"
-                android:layout_marginLeft="@dimen/all_apps_tabs_side_padding"
-                android:layout_marginRight="@dimen/all_apps_tabs_side_padding"
+                android:layout_height="@dimen/all_apps_header_pill_height"
                 android:orientation="horizontal"
                 style="@style/TextHeadline">
 
@@ -97,7 +95,7 @@
                     android:textAllCaps="true"
                     android:textColor="@color/all_apps_tab_text"
                     android:textSize="14sp" />
-            </com.android.launcher3.allapps.PersonalWorkSlidingTabStrip>
+            </com.android.launcher3.workprofile.PersonalWorkSlidingTabStrip>
         </com.android.launcher3.allapps.FloatingHeaderView>
 
         <com.android.launcher3.allapps.search.AppsSearchContainerLayout

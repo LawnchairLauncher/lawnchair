@@ -15,5 +15,5 @@
      limitations under the License.
 -->
 <resources>
-    <dimen name="task_card_menu_horizontal_padding">24dp</dimen>
+    <dimen name="overview_task_margin">8dp</dimen>
 </resources>

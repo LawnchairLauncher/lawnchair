@@ -16,7 +16,15 @@
 
 package com.android.quickstep;
 
+import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
+
+import static org.junit.Assert.assertTrue;
+
+import com.android.launcher3.Launcher;
+import com.android.launcher3.tapl.LauncherInstrumentation;
+import com.android.launcher3.tapl.LauncherInstrumentation.ContainerType;
 import com.android.launcher3.ui.AbstractLauncherUiTest;
+import com.android.quickstep.views.RecentsView;
 
 import org.junit.rules.RuleChain;
 import org.junit.rules.TestRule;
@@ -30,5 +38,50 @@ public abstract class AbstractQuickStepTest extends AbstractLauncherUiTest {
         return RuleChain.
                 outerRule(new NavigationModeSwitchRule(mLauncher)).
                 around(super.getRulesInsideActivityMonitor());
+    }
+
+    @Override
+    protected void onLauncherActivityClose(Launcher launcher) {
+        RecentsView recentsView = launcher.getOverviewPanel();
+        if (recentsView != null) {
+            recentsView.finishRecentsAnimation(true, null);
+        }
+    }
+
+    @Override
+    protected void checkLauncherState(Launcher launcher, ContainerType expectedContainerType,
+            boolean isResumed, boolean isStarted) {
+        if (!isInLiveTileMode(launcher, expectedContainerType)) {
+            super.checkLauncherState(launcher, expectedContainerType, isResumed, isStarted);
+        } else {
+            assertTrue("[Live Tile] hasBeenResumed() == isStarted(), hasBeenResumed(): "
+                            + isResumed, isResumed != isStarted);
+        }
+    }
+
+    @Override
+    protected void checkLauncherStateInOverview(Launcher launcher,
+            ContainerType expectedContainerType, boolean isStarted, boolean isResumed) {
+        if (!isInLiveTileMode(launcher, expectedContainerType)) {
+            super.checkLauncherStateInOverview(launcher, expectedContainerType, isStarted,
+                    isResumed);
+        } else {
+            assertTrue(
+                    "[Live Tile] Launcher is not started or has been resumed in state: "
+                            + expectedContainerType,
+                    isStarted && !isResumed);
+        }
+    }
+
+    private boolean isInLiveTileMode(Launcher launcher,
+            LauncherInstrumentation.ContainerType expectedContainerType) {
+        if (!ENABLE_QUICKSTEP_LIVE_TILE.get()
+                || expectedContainerType != LauncherInstrumentation.ContainerType.OVERVIEW) {
+            return false;
+        }
+
+        RecentsView recentsView = launcher.getOverviewPanel();
+        return recentsView.getSizeStrategy().isInLiveTileMode()
+                && recentsView.getRunningTaskId() != -1;
     }
 }

@@ -30,6 +30,7 @@ import android.view.ViewGroup;
 import android.view.accessibility.AccessibilityEvent;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.view.accessibility.AccessibilityEventCompat;
 import androidx.core.view.accessibility.AccessibilityNodeInfoCompat;
@@ -40,17 +41,17 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.R;
-import com.android.launcher3.allapps.AlphabeticalAppsList.AdapterItem;
-import com.android.launcher3.model.AppLaunchTracker;
 import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.util.PackageManagerHelper;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
  * The grid view adapter of all the apps.
  */
-public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.ViewHolder> {
+public class AllAppsGridAdapter extends
+        RecyclerView.Adapter<AllAppsGridAdapter.ViewHolder> {
 
     public static final String TAG = "AppsGridAdapter";
 
@@ -71,6 +72,9 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
     public static final int VIEW_TYPE_MASK_DIVIDER = VIEW_TYPE_ALL_APPS_DIVIDER;
     public static final int VIEW_TYPE_MASK_ICON = VIEW_TYPE_ICON;
 
+
+    private final BaseAdapterProvider[] mAdapterProviders;
+
     /**
      * ViewHolder for each icon.
      */
@@ -78,6 +82,80 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
 
         public ViewHolder(View v) {
             super(v);
+        }
+    }
+
+    /**
+     * Info about a particular adapter item (can be either section or app)
+     */
+    public static class AdapterItem {
+        /** Common properties */
+        // The index of this adapter item in the list
+        public int position;
+        // The type of this item
+        public int viewType;
+
+        /** App-only properties */
+        // The section name of this app.  Note that there can be multiple items with different
+        // sectionNames in the same section
+        public String sectionName = null;
+        // The row that this item shows up on
+        public int rowIndex;
+        // The index of this app in the row
+        public int rowAppIndex;
+        // The associated AppInfo for the app
+        public AppInfo appInfo = null;
+        // The index of this app not including sections
+        public int appIndex = -1;
+        // Search section associated to result
+        public DecorationInfo decorationInfo = null;
+
+        /**
+         * Factory method for AppIcon AdapterItem
+         */
+        public static AdapterItem asApp(int pos, String sectionName, AppInfo appInfo,
+                int appIndex) {
+            AdapterItem item = new AdapterItem();
+            item.viewType = VIEW_TYPE_ICON;
+            item.position = pos;
+            item.sectionName = sectionName;
+            item.appInfo = appInfo;
+            item.appIndex = appIndex;
+            return item;
+        }
+
+        /**
+         * Factory method for empty search results view
+         */
+        public static AdapterItem asEmptySearch(int pos) {
+            AdapterItem item = new AdapterItem();
+            item.viewType = VIEW_TYPE_EMPTY_SEARCH;
+            item.position = pos;
+            return item;
+        }
+
+        /**
+         * Factory method for a dividerView in AllAppsSearch
+         */
+        public static AdapterItem asAllAppsDivider(int pos) {
+            AdapterItem item = new AdapterItem();
+            item.viewType = VIEW_TYPE_ALL_APPS_DIVIDER;
+            item.position = pos;
+            return item;
+        }
+
+        /**
+         * Factory method for a market search button
+         */
+        public static AdapterItem asMarketSearch(int pos) {
+            AdapterItem item = new AdapterItem();
+            item.viewType = VIEW_TYPE_SEARCH_MARKET;
+            item.position = pos;
+            return item;
+        }
+
+        protected boolean isCountedForAccessibility() {
+            return viewType == VIEW_TYPE_ICON || viewType == VIEW_TYPE_SEARCH_MARKET;
         }
     }
 
@@ -161,11 +239,18 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
 
         @Override
         public int getSpanSize(int position) {
-            if (isIconViewType(mApps.getAdapterItems().get(position).viewType)) {
-                return 1;
+            int viewType = mApps.getAdapterItems().get(position).viewType;
+            int totalSpans = mGridLayoutMgr.getSpanCount();
+            if (isIconViewType(viewType)) {
+                return totalSpans / mAppsPerRow;
             } else {
+                BaseAdapterProvider adapterProvider = getAdapterProvider(viewType);
+                if (adapterProvider != null) {
+                    return totalSpans / adapterProvider.getItemsPerRow(viewType, mAppsPerRow);
+                }
+
                 // Section breaks span the full width
-                return mAppsPerRow;
+                return totalSpans;
             }
         }
     }
@@ -189,7 +274,7 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
     private Intent mMarketSearchIntent;
 
     public AllAppsGridAdapter(BaseDraggingActivity launcher, LayoutInflater inflater,
-            AlphabeticalAppsList apps) {
+            AlphabeticalAppsList apps, BaseAdapterProvider[] adapterProviders) {
         Resources res = launcher.getResources();
         mLauncher = launcher;
         mApps = apps;
@@ -201,12 +286,21 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
 
         mOnIconClickListener = launcher.getItemOnClickListener();
 
-        setAppsPerRow(mLauncher.getDeviceProfile().inv.numAllAppsColumns);
+        mAdapterProviders = adapterProviders;
+        setAppsPerRow(mLauncher.getDeviceProfile().numShownAllAppsColumns);
     }
 
     public void setAppsPerRow(int appsPerRow) {
         mAppsPerRow = appsPerRow;
-        mGridLayoutMgr.setSpanCount(mAppsPerRow);
+        int totalSpans = mAppsPerRow;
+        for (BaseAdapterProvider adapterProvider : mAdapterProviders) {
+            for (int itemPerRow : adapterProvider.getSupportedItemsPerRowArray()) {
+                if (totalSpans % itemPerRow != 0) {
+                    totalSpans *= itemPerRow;
+                }
+            }
+        }
+        mGridLayoutMgr.setSpanCount(totalSpans);
     }
 
     /**
@@ -255,11 +349,10 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
             case VIEW_TYPE_ICON:
                 BubbleTextView icon = (BubbleTextView) mLayoutInflater.inflate(
                         R.layout.all_apps_icon, parent, false);
-                icon.setOnClickListener(mOnIconClickListener);
-                icon.setOnLongClickListener(mOnIconLongClickListener);
                 icon.setLongPressTimeoutFactor(1f);
                 icon.setOnFocusChangeListener(mIconFocusListener);
-
+                icon.setOnClickListener(mOnIconClickListener);
+                icon.setOnLongClickListener(mOnIconLongClickListener);
                 // Ensure the all apps icon height matches the workspace icons in portrait mode.
                 icon.getLayoutParams().height = mLauncher.getDeviceProfile().allAppsCellHeightPx;
                 return new ViewHolder(icon);
@@ -270,12 +363,16 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
                 View searchMarketView = mLayoutInflater.inflate(R.layout.all_apps_search_market,
                         parent, false);
                 searchMarketView.setOnClickListener(v -> mLauncher.startActivitySafely(
-                        v, mMarketSearchIntent, null, AppLaunchTracker.CONTAINER_SEARCH));
+                        v, mMarketSearchIntent, null));
                 return new ViewHolder(searchMarketView);
             case VIEW_TYPE_ALL_APPS_DIVIDER:
                 return new ViewHolder(mLayoutInflater.inflate(
                         R.layout.all_apps_divider, parent, false));
             default:
+                BaseAdapterProvider adapterProvider = getAdapterProvider(viewType);
+                if (adapterProvider != null) {
+                    return adapterProvider.onCreateViewHolder(mLayoutInflater, parent, viewType);
+                }
                 throw new RuntimeException("Unexpected view type");
         }
     }
@@ -284,7 +381,8 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
     public void onBindViewHolder(ViewHolder holder, int position) {
         switch (holder.getItemViewType()) {
             case VIEW_TYPE_ICON:
-                AppInfo info = mApps.getAdapterItems().get(position).appInfo;
+                AdapterItem adapterItem = mApps.getAdapterItems().get(position);
+                AppInfo info = adapterItem.appInfo;
                 BubbleTextView icon = (BubbleTextView) holder.itemView;
                 icon.reset();
                 icon.applyFromApplicationInfo(info);
@@ -306,7 +404,17 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
             case VIEW_TYPE_ALL_APPS_DIVIDER:
                 // nothing to do
                 break;
+            default:
+                BaseAdapterProvider adapterProvider = getAdapterProvider(holder.getItemViewType());
+                if (adapterProvider != null) {
+                    adapterProvider.onBindView(holder, position);
+                }
         }
+    }
+
+    @Override
+    public void onViewRecycled(@NonNull ViewHolder holder) {
+        super.onViewRecycled(holder);
     }
 
     @Override
@@ -322,8 +430,14 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
 
     @Override
     public int getItemViewType(int position) {
-        AlphabeticalAppsList.AdapterItem item = mApps.getAdapterItems().get(position);
+        AdapterItem item = mApps.getAdapterItems().get(position);
         return item.viewType;
     }
 
+    @Nullable
+    private BaseAdapterProvider getAdapterProvider(int viewType) {
+        return Arrays.stream(mAdapterProviders).filter(
+                adapterProvider -> adapterProvider.isViewSupported(viewType)).findFirst().orElse(
+                null);
+    }
 }
