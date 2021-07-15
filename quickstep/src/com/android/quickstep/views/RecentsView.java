@@ -949,6 +949,16 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                 && taskEnd <= end);
     }
 
+    /**
+     * Returns true if the task is snapped.
+     *
+     * @param taskIndex the index of the task
+     */
+    public boolean isTaskSnapped(int taskIndex) {
+        return getScrollForPage(taskIndex + mTaskViewStartIndex)
+                == getPagedOrientationHandler().getPrimaryScroll(this);
+    }
+
     public TaskView getTaskView(int taskId) {
         for (int i = 0; i < getTaskViewCount(); i++) {
             TaskView taskView = getTaskViewAt(i);
