@@ -36,6 +36,7 @@ import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.DisplayController.Info;
 import com.android.quickstep.SysUINavigationMode;
 import com.android.quickstep.SysUINavigationMode.Mode;
+import com.android.quickstep.SystemUiProxy;
 import com.android.quickstep.TouchInteractionService;
 
 /**
@@ -127,16 +128,19 @@ public class TaskbarManager implements DisplayController.DisplayInfoChangeListen
 
     private void recreateTaskbar() {
         destroyExistingTaskbar();
-        if (!FeatureFlags.ENABLE_TASKBAR.get()) {
+
+        DeviceProfile dp =
+                mUserUnlocked ? LauncherAppState.getIDP(mContext).getDeviceProfile(mContext) : null;
+
+        boolean isTaskBarEnabled =
+                FeatureFlags.ENABLE_TASKBAR.get() && dp != null && dp.isTaskbarPresent;
+
+        if (!isTaskBarEnabled) {
+            SystemUiProxy.INSTANCE.get(mContext)
+                    .notifyTaskbarStatus(/* visible */ false, /* stashed */ false);
             return;
         }
-        if (!mUserUnlocked) {
-            return;
-        }
-        DeviceProfile dp = LauncherAppState.getIDP(mContext).getDeviceProfile(mContext);
-        if (!dp.isTaskbarPresent) {
-            return;
-        }
+
         mTaskbarActivityContext = new TaskbarActivityContext(
                 mContext, dp.copy(mContext), mNavButtonController);
         mTaskbarActivityContext.init();
