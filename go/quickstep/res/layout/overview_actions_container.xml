@@ -34,6 +34,7 @@
             android:layout_weight="1" />
 
         <LinearLayout
+            android:id="@+id/layout_translate"
             style="@style/GoOverviewActionButtonContainer">
             <ImageButton
                 android:id="@+id/action_translate"
@@ -46,10 +47,12 @@
         </LinearLayout>
 
         <Space
+            android:id="@+id/spacer_translate"
             android:layout_width="@dimen/go_overview_button_container_margin"
             android:layout_height="1dp" />
 
         <LinearLayout
+            android:id="@+id/layout_listen"
             style="@style/GoOverviewActionButtonContainer">
             <ImageButton
                 android:id="@+id/action_listen"
@@ -63,10 +66,12 @@
         </LinearLayout>
 
         <Space
+            android:id="@+id/spacer_listen"
             android:layout_width="@dimen/go_overview_button_container_margin"
             android:layout_height="1dp" />
 
         <LinearLayout
+            android:id="@+id/layout_screenshot"
             style="@style/GoOverviewActionButtonContainer">
             <ImageButton
                 android:id="@+id/action_screenshot"
