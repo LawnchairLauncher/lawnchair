@@ -67,6 +67,7 @@ import androidx.annotation.BinderThread;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
+import androidx.annotation.VisibleForTesting;
 import androidx.annotation.WorkerThread;
 
 import com.android.launcher3.BaseDraggingActivity;
@@ -301,15 +302,24 @@ public class TouchInteractionService extends Service implements PluginListener<O
 
     private static boolean sConnected = false;
     private static boolean sIsInitialized = false;
+    private static TouchInteractionService sInstance;
     private RotationTouchHelper mRotationTouchHelper;
 
     public static boolean isConnected() {
         return sConnected;
     }
 
-
     public static boolean isInitialized() {
         return sIsInitialized;
+    }
+
+    @VisibleForTesting
+    @Nullable
+    public static TaskbarManager getTaskbarManagerForTesting() {
+        if (sInstance == null) {
+            return null;
+        }
+        return sInstance.mTaskbarManager;
     }
 
     private final AbsSwipeUpHandler.Factory mLauncherSwipeHandlerFactory =
@@ -355,6 +365,7 @@ public class TouchInteractionService extends Service implements PluginListener<O
         mDeviceState.runOnUserUnlocked(mTaskbarManager::onUserUnlocked);
         ProtoTracer.INSTANCE.get(this).add(this);
         sConnected = true;
+        sInstance = this;
     }
 
     private void disposeEventHandlers() {
@@ -512,6 +523,7 @@ public class TouchInteractionService extends Service implements PluginListener<O
 
         mTaskbarManager.destroy();
         sConnected = false;
+        sInstance = null;
         super.onDestroy();
     }
 

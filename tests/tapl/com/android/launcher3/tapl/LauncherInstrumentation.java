@@ -746,7 +746,6 @@ public final class LauncherInstrumentation {
                     dumpViewHierarchy();
                     action = "swiping up to home";
 
-                    final boolean launcherIsVisible = isLauncherVisible();
                     swipeToState(
                             displaySize.x / 2, displaySize.y - 1,
                             displaySize.x / 2, 0,
@@ -754,9 +753,6 @@ public final class LauncherInstrumentation {
                             launcherWasVisible
                                     ? GestureScope.INSIDE_TO_OUTSIDE
                                     : GestureScope.OUTSIDE_WITH_PILFER);
-                    // b/193653850: launcherWasVisible is a flaky indicator.
-                    log("launcherWasVisible: " + launcherWasVisible + ", launcherIsVisible: "
-                            + launcherIsVisible);
                 }
             } else {
                 log("Hierarchy before clicking home:");
