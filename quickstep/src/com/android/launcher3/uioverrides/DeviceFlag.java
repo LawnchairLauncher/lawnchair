@@ -60,6 +60,20 @@ public class DeviceFlag extends DebugFlag {
         mListeners.add(r);
     }
 
+    @Override
+    public void removeChangeListener(Runnable r) {
+        if (mListeners == null) {
+            return;
+        }
+        mListeners.remove(r);
+    }
+
+    @Override
+    public boolean get() {
+        // Override this method in order to let Robolectric ShadowDeviceFlag to stub it.
+        return super.get();
+    }
+
     private void registerDeviceConfigChangedListener(Context context) {
         DeviceConfig.addOnPropertiesChangedListener(
                 NAMESPACE_LAUNCHER,

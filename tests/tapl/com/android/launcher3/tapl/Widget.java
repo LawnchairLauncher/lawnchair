@@ -46,4 +46,9 @@ public final class Widget extends Launchable {
     protected void addExpectedEventsForLongClick() {
         mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN, LONG_CLICK_EVENT);
     }
+
+    @Override
+    protected String launchableType() {
+        return "widget";
+    }
 }

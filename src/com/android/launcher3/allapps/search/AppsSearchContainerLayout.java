@@ -31,8 +31,6 @@ import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup.MarginLayoutParams;
-import android.view.animation.Interpolator;
-import android.widget.EditText;
 
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.DeviceProfile;
@@ -40,11 +38,11 @@ import com.android.launcher3.ExtendedEditText;
 import com.android.launcher3.Insettable;
 import com.android.launcher3.R;
 import com.android.launcher3.allapps.AllAppsContainerView;
+import com.android.launcher3.allapps.AllAppsGridAdapter.AdapterItem;
 import com.android.launcher3.allapps.AllAppsStore;
 import com.android.launcher3.allapps.AlphabeticalAppsList;
 import com.android.launcher3.allapps.SearchUiManager;
-import com.android.launcher3.anim.PropertySetter;
-import com.android.launcher3.util.ComponentKey;
+import com.android.launcher3.search.SearchCallback;
 
 import java.util.ArrayList;
 
@@ -52,7 +50,7 @@ import java.util.ArrayList;
  * Layout to contain the All-apps search UI.
  */
 public class AppsSearchContainerLayout extends ExtendedEditText
-        implements SearchUiManager, AllAppsSearchBarController.Callbacks,
+        implements SearchUiManager, SearchCallback<AdapterItem>,
         AllAppsStore.OnUpdateListener, Insettable {
 
     private final BaseDraggingActivity mLauncher;
@@ -107,7 +105,8 @@ public class AppsSearchContainerLayout extends ExtendedEditText
         int rowWidth = myRequestedWidth - mAppsView.getActiveRecyclerView().getPaddingLeft()
                 - mAppsView.getActiveRecyclerView().getPaddingRight();
 
-        int cellWidth = DeviceProfile.calculateCellWidth(rowWidth, dp.inv.numHotseatIcons);
+        int cellWidth = DeviceProfile.calculateCellWidth(rowWidth, dp.cellLayoutBorderSpacingPx,
+                dp.numShownHotseatIcons);
         int iconVisibleSize = Math.round(ICON_VISIBLE_AREA_FACTOR * dp.iconSizePx);
         int iconPadding = cellWidth - iconVisibleSize;
 
@@ -131,11 +130,12 @@ public class AppsSearchContainerLayout extends ExtendedEditText
     }
 
     @Override
-    public void initialize(AllAppsContainerView appsView) {
+    public void initializeSearch(AllAppsContainerView appsView) {
         mApps = appsView.getApps();
         mAppsView = appsView;
         mSearchBarController.initialize(
-                new DefaultAppSearchAlgorithm(mApps.getApps()), this, mLauncher, this);
+                new DefaultAppSearchAlgorithm(mLauncher),
+                this, mLauncher, this);
     }
 
     @Override
@@ -168,17 +168,25 @@ public class AppsSearchContainerLayout extends ExtendedEditText
     }
 
     @Override
-    public void onSearchResult(String query, ArrayList<ComponentKey> apps) {
-        if (apps != null) {
-            mApps.setOrderedFilter(apps);
+    public void onSearchResult(String query, ArrayList<AdapterItem> items) {
+        if (items != null) {
+            mApps.setSearchResults(items);
             notifyResultChanged();
             mAppsView.setLastSearchQuery(query);
         }
     }
 
     @Override
+    public void onAppendSearchResult(String query, ArrayList<AdapterItem> items) {
+        if (items != null) {
+            mApps.appendSearchResults(items);
+            notifyResultChanged();
+        }
+    }
+
+    @Override
     public void clearSearchResult() {
-        if (mApps.setOrderedFilter(null)) {
+        if (mApps.setSearchResults(null)) {
             notifyResultChanged();
         }
 
@@ -201,22 +209,7 @@ public class AppsSearchContainerLayout extends ExtendedEditText
     }
 
     @Override
-    public float getScrollRangeDelta(Rect insets) {
-        if (mLauncher.getDeviceProfile().isVerticalBarLayout()) {
-            return 0;
-        } else {
-            return insets.bottom + insets.top;
-        }
-    }
-
-    @Override
-    public void setContentVisibility(int visibleElements, PropertySetter setter,
-            Interpolator interpolator) {
-        setter.setViewAlpha(this, isQsbVisible(visibleElements) ? 1 : 0, interpolator);
-    }
-
-    @Override
-    public EditText setTextSearchEnabled(boolean isEnabled) {
+    public ExtendedEditText getEditText() {
         return this;
     }
 }

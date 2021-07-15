@@ -21,7 +21,6 @@ import static com.android.launcher3.util.Preconditions.assertNotNull;
 
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
 
 import android.content.Context;
 import android.os.UserManager;
@@ -30,8 +29,6 @@ import android.provider.Settings;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.allapps.AllAppsPagedView;
 import com.android.launcher3.allapps.AllAppsRecyclerView;
-import com.android.launcher3.logging.UserEventDispatcher;
-import com.android.launcher3.shadows.ShadowOverrides;
 import com.android.launcher3.util.LauncherLayoutBuilder;
 import com.android.launcher3.util.LauncherModelHelper;
 
@@ -62,20 +59,15 @@ public class SDWorkModeTest {
     private InvariantDeviceProfile mIdp;
     private LauncherModelHelper mModelHelper;
 
-    private LauncherLayoutBuilder mLayoutBuilder;
-
     @Before
     public void setup() throws Exception {
         mModelHelper = new LauncherModelHelper();
         mTargetContext = RuntimeEnvironment.application;
         mIdp = InvariantDeviceProfile.INSTANCE.get(mTargetContext);
-        ShadowOverrides.setProvider(UserEventDispatcher.class,
-                c -> mock(UserEventDispatcher.class));
         Settings.Global.putFloat(mTargetContext.getContentResolver(),
                 Settings.Global.WINDOW_ANIMATION_SCALE, 0);
 
         mModelHelper.installApp(TEST_PACKAGE);
-        mLayoutBuilder = new LauncherLayoutBuilder();
     }
 
     @Test
@@ -91,7 +83,7 @@ public class SDWorkModeTest {
     public void testAllAppsList_workProfile() throws Exception {
         ShadowUserManager sum = Shadow.extract(mTargetContext.getSystemService(UserManager.class));
         sum.addUser(SYSTEM_USER, "me", FLAG_SYSTEM);
-        sum.addUser(WORK_PROFILE_ID, "work", FLAG_PROFILE);
+        sum.addProfile(SYSTEM_USER, WORK_PROFILE_ID, "work", FLAG_PROFILE);
 
         SecondaryDisplayLauncher launcher = loadLauncher();
         launcher.showAppDrawer(true);

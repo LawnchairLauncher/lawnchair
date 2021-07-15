@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+     Copyright (C) 2021 The Android Open Source Project
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingStart="@dimen/allset_page_margin_horizontal"
+    android:paddingEnd="@dimen/allset_page_margin_horizontal"
+    android:layoutDirection="locale"
+    android:textDirection="locale">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_gravity="start"
+        android:gravity="start"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/allset_title_icon_margin_top"
+            android:src="@drawable/ic_all_set"/>
+
+        <TextView
+            android:id="@+id/title"
+            style="@style/TextAppearance.GestureTutorial.Feedback.Title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/allset_title_margin_top"
+            android:gravity="start"
+            android:text="@string/allset_title"/>
+
+        <TextView
+            android:id="@+id/subtitle"
+            style="@style/TextAppearance.GestureTutorial.Feedback.Subtitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/allset_subtitle_margin_top"
+            android:gravity="start"
+            android:text="@string/allset_description"/>
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/navigation_settings"
+        style="@style/TextAppearance.GestureTutorial.LinkText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/hint"
+        android:gravity="center"
+        android:layout_marginBottom="72dp"
+        android:minHeight="48dp"
+        android:background="?android:attr/selectableItemBackground"
+        android:text="@string/allset_navigation_settings" />
+
+    <TextView
+        android:id="@id/hint"
+        style="@style/TextAppearance.GestureTutorial.Feedback.Subtitle"
+        android:textSize="14sp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/allset_hint_margin_bottom"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:text="@string/allset_hint"/>
+</RelativeLayout>

@@ -30,6 +30,7 @@ import android.view.ViewGroup.LayoutParams;
 import androidx.annotation.Nullable;
 
 import com.android.launcher3.ResourceUtils;
+import com.android.launcher3.Utilities;
 
 /**
  * Utility class to handle edge swipes for back gestures.
@@ -47,9 +48,9 @@ public class EdgeBackGestureHandler implements OnTouchListener {
     private final Point mDisplaySize = new Point();
 
     // The edge width where touch down is allowed
-    private int mEdgeWidth;
+    private final int mEdgeWidth;
     // The bottom gesture area height
-    private int mBottomGestureHeight;
+    private final int mBottomGestureHeight;
     // The slop to distinguish between horizontal and vertical motion
     private final float mTouchSlop;
     // Duration after which we consider the event as longpress.
@@ -97,7 +98,9 @@ public class EdgeBackGestureHandler implements OnTouchListener {
 
         mBottomGestureHeight =
             ResourceUtils.getNavbarSize(ResourceUtils.NAVBAR_BOTTOM_GESTURE_SIZE, res);
-        mEdgeWidth = ResourceUtils.getNavbarSize("config_backGestureInset", res);
+        int systemBackRegion = ResourceUtils.getNavbarSize("config_backGestureInset", res);
+        // System back region is 0 if gesture nav is not currently enabled.
+        mEdgeWidth = systemBackRegion == 0 ? Utilities.dpToPx(18) : systemBackRegion;
     }
 
     void setViewGroupParent(@Nullable ViewGroup parent) {
@@ -141,6 +144,10 @@ public class EdgeBackGestureHandler implements OnTouchListener {
             return true;
         }
         return false;
+    }
+
+    boolean onInterceptTouch(MotionEvent motionEvent) {
+        return isWithinTouchRegion((int) motionEvent.getX(), (int) motionEvent.getY());
     }
 
     private boolean isWithinTouchRegion(int x, int y) {

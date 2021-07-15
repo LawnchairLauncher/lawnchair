@@ -27,7 +27,6 @@ import android.content.pm.ActivityInfo;
 import android.content.pm.LauncherActivityInfo;
 import android.content.pm.LauncherApps;
 import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Process;
@@ -39,13 +38,13 @@ import androidx.annotation.Nullable;
 
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.R;
-import com.android.launcher3.Utilities;
 import com.android.launcher3.icons.ComponentWithLabelAndIcon;
 import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.util.PackageUserKey;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -175,37 +174,23 @@ public abstract class ShortcutConfigActivityInfo implements ComponentWithLabelAn
         List<ShortcutConfigActivityInfo> result = new ArrayList<>();
         UserHandle myUser = Process.myUserHandle();
 
-        if (Utilities.ATLEAST_OREO) {
-            final List<UserHandle> users;
-            final String packageName;
-            if (packageUser == null) {
-                users = UserCache.INSTANCE.get(context).getUserProfiles();
-                packageName = null;
-            } else {
-                users = new ArrayList<>(1);
-                users.add(packageUser.mUser);
-                packageName = packageUser.mPackageName;
-            }
-            LauncherApps launcherApps = context.getSystemService(LauncherApps.class);
-            for (UserHandle user : users) {
-                boolean ignoreTargetSdk = myUser.equals(user);
-                for (LauncherActivityInfo activityInfo :
-                        launcherApps.getShortcutConfigActivityList(packageName, user)) {
-                    if (ignoreTargetSdk || activityInfo.getApplicationInfo().targetSdkVersion
-                            >= Build.VERSION_CODES.O) {
-                        result.add(new ShortcutConfigActivityInfoVO(activityInfo));
-                    }
-                }
-            }
+        final List<UserHandle> users;
+        final String packageName;
+        if (packageUser == null) {
+            users = UserCache.INSTANCE.get(context).getUserProfiles();
+            packageName = null;
         } else {
-            if (packageUser == null || packageUser.mUser.equals(myUser)) {
-                Intent intent = new Intent(Intent.ACTION_CREATE_SHORTCUT);
-                if (packageUser != null) {
-                    intent.setPackage(packageUser.mPackageName);
-                }
-                for (ResolveInfo info :
-                        context.getPackageManager().queryIntentActivities(intent, 0)) {
-                    result.add(new ShortcutConfigActivityInfoVL(info.activityInfo));
+            users = Collections.singletonList(packageUser.mUser);
+            packageName = packageUser.mPackageName;
+        }
+        LauncherApps launcherApps = context.getSystemService(LauncherApps.class);
+        for (UserHandle user : users) {
+            boolean ignoreTargetSdk = myUser.equals(user);
+            for (LauncherActivityInfo activityInfo :
+                    launcherApps.getShortcutConfigActivityList(packageName, user)) {
+                if (ignoreTargetSdk || activityInfo.getApplicationInfo().targetSdkVersion
+                        >= Build.VERSION_CODES.O) {
+                    result.add(new ShortcutConfigActivityInfoVO(activityInfo));
                 }
             }
         }

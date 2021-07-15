@@ -26,8 +26,6 @@ import android.view.ViewConfiguration;
 import androidx.annotation.NonNull;
 import androidx.annotation.VisibleForTesting;
 
-import com.android.launcher3.testing.TestProtocol;
-
 import java.util.LinkedList;
 import java.util.Queue;
 
@@ -174,9 +172,6 @@ public abstract class BaseSwipeDetector {
                 // handle state and listener calls.
                 if (mState != ScrollState.DRAGGING && shouldScrollStart(mDisplacement)) {
                     setState(ScrollState.DRAGGING);
-                }
-                if (TestProtocol.sDebugTracing) {
-                    Log.d(TestProtocol.PAUSE_NOT_DETECTED, "before report dragging");
                 }
                 if (mState == ScrollState.DRAGGING) {
                     reportDragging(ev);

@@ -53,8 +53,6 @@ public class TestStabilityRule implements TestRule {
                     + ")$");
 
     public static final int LOCAL = 0x1;
-    public static final int UNBUNDLED_PRESUBMIT = 0x2;
-    public static final int UNBUNDLED_POSTSUBMIT = 0x4;
     public static final int PLATFORM_PRESUBMIT = 0x8;
     public static final int PLATFORM_POSTSUBMIT = 0x10;
 
@@ -136,14 +134,6 @@ public class TestStabilityRule implements TestRule {
                         platformBuildMatcher.group("postsubmit") != null)) {
             Log.d(TAG, "LOCAL RUN");
             sRunFlavor = LOCAL;
-        } else if (launcherBuildMatcher.group("presubmit") != null
-                && platformBuildMatcher.group("postsubmit") != null) {
-            Log.d(TAG, "UNBUNDLED PRESUBMIT");
-            sRunFlavor = UNBUNDLED_PRESUBMIT;
-        } else if (launcherBuildMatcher.group("postsubmit") != null
-                && platformBuildMatcher.group("postsubmit") != null) {
-            Log.d(TAG, "UNBUNDLED POSTSUBMIT");
-            sRunFlavor = UNBUNDLED_POSTSUBMIT;
         } else if (launcherBuildMatcher.group("platform") != null
                 && platformBuildMatcher.group("presubmit") != null) {
             Log.d(TAG, "PLATFORM PRESUBMIT");

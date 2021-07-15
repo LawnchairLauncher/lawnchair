@@ -79,9 +79,7 @@ public interface DropTarget {
         public DraggableView originalView = null;
 
         /** Used for matching DROP event with its corresponding DRAG event on the server side. */
-        public final InstanceId logInstanceId =
-                new InstanceIdSequence(1 << 20 /*InstanceId.INSTANCE_ID_MAX*/)
-                    .newInstanceId();
+        public final InstanceId logInstanceId = new InstanceIdSequence().newInstanceId();
 
         public DragObject(Context context) {
             if (FeatureFlags.FOLDER_NAME_SUGGEST.get()) {
@@ -112,18 +110,6 @@ public interface DropTarget {
             res[1] = top + dragRegion.height() / 2;
 
             return res;
-        }
-
-
-        /**
-         * This is used to determine if an object is dropped at a different location than it was
-         * dragged from
-         */
-        public boolean isMoved() {
-            return dragInfo.cellX != originalDragInfo.cellX
-                    || dragInfo.cellY != originalDragInfo.cellY
-                    || dragInfo.screenId != originalDragInfo.screenId
-                    || dragInfo.container != originalDragInfo.container;
         }
     }
 
