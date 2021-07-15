@@ -85,5 +85,6 @@ public class TaskbarControllers {
         rotationButtonController.onDestroy();
         taskbarDragLayerController.onDestroy();
         taskbarKeyguardController.onDestroy();
+        taskbarViewController.onDestroy();
     }
 }

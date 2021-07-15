@@ -24,6 +24,7 @@ import android.graphics.Rect;
 import android.view.View;
 
 import com.android.launcher3.DeviceProfile;
+import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.model.data.ItemInfo;
@@ -50,6 +51,8 @@ public class TaskbarViewController {
     private final AnimatedFloat mTaskbarIconTranslationYForStash = new AnimatedFloat(
             this::updateTranslationY);
 
+    private final TaskbarModelCallbacks mModelCallbacks;
+
     // Initialized in init.
     private TaskbarControllers mControllers;
 
@@ -63,6 +66,7 @@ public class TaskbarViewController {
         mTaskbarView = taskbarView;
         mTaskbarIconAlpha = new MultiValueAlpha(mTaskbarView, 4);
         mTaskbarIconAlpha.setUpdateVisibility(true);
+        mModelCallbacks = new TaskbarModelCallbacks(activity, mTaskbarView);
     }
 
     public void init(TaskbarControllers controllers) {
@@ -71,6 +75,11 @@ public class TaskbarViewController {
         mTaskbarView.getLayoutParams().height = mActivity.getDeviceProfile().taskbarSize;
 
         mTaskbarIconScaleForStash.updateValue(1f);
+        LauncherAppState.getInstance(mActivity).getModel().addCallbacksAndLoad(mModelCallbacks);
+    }
+
+    public void onDestroy() {
+        LauncherAppState.getInstance(mActivity).getModel().removeCallbacks(mModelCallbacks);
     }
 
     public boolean areIconsVisible() {
