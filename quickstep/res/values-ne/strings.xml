@@ -45,19 +45,16 @@
     <string name="hotsaet_tip_prediction_enabled" msgid="2233554377501347650">"सिफारिस गरिएका एपहरू देखाउने सुविधा सक्षम पारिएका छन्"</string>
     <string name="hotsaet_tip_prediction_disabled" msgid="1506426298884658491">"सिफारिस गरिएका एपहरू देखाउने सुविधा असक्षम पारिएको छ"</string>
     <string name="hotseat_prediction_content_description" msgid="4582028296938078419">"पूर्वानुमान गरिएको एप: <xliff:g id="TITLE">%1$s</xliff:g>"</string>
-    <string name="back_gesture_feedback_swipe_too_far_from_left_edge" msgid="340972404868601012">"स्क्रिनको सबैभन्दा बायाँ किनाराबाट स्वाइप गर्नुहोस्।"</string>
-    <string name="back_gesture_feedback_cancelled_left_edge" msgid="6671316150388702530">"स्क्रिनको बायाँ किनाराबाट मध्य भागसम्म स्वाइप गर्नुहोस् अनि औँला उठाउनुहोस्।"</string>
-    <string name="back_gesture_feedback_swipe_too_far_from_right_edge" msgid="4306700023773832353">"स्क्रिनको सबैभन्दा दायाँ किनाराबाट स्वाइप गर्नुहोस्।"</string>
-    <string name="back_gesture_feedback_cancelled_right_edge" msgid="4951916546256902552">"स्क्रिनको दायाँ किनाराबाट मध्य भागसम्म स्वाइप गर्नुहोस् अनि औँला उठाउनुहोस्।"</string>
-    <string name="back_gesture_feedback_complete_with_back_right_follow_up" msgid="2100639504811809267">"तपाईंले स्क्रिनको बायाँ किनाराबाट स्वाइप गरेर अघिल्लो स्क्रिनमा फर्कने तरिका सिक्नुभयो।"</string>
+    <!-- no translation found for back_gesture_feedback_swipe_too_far_from_edge (1711645592102201538) -->
+    <skip />
+    <!-- no translation found for back_gesture_feedback_cancelled (3274382913290074496) -->
+    <skip />
     <string name="back_gesture_feedback_complete_with_overview_follow_up" msgid="9176400654037014471">"तपाईंले स्क्रिनको दायाँ किनाराबाट स्वाइप गरेर अघिल्लो स्क्रिनमा फर्कने तरिका सिक्नुभयो। अब एउटा एपबाट अर्को एपमा जाने तरिका सिक्नुहोस्।"</string>
     <string name="back_gesture_feedback_complete_without_follow_up" msgid="6405649621667113830">"तपाईंले \'पछाडि जानुहोस्\' नामक इसारा प्रयोग गर्ने तरिका सिक्नुभयो।"</string>
     <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="1148198467090405643">"स्क्रिनको फेदको धेरै नजिकसम्म स्वाइप नगर्नुहोस्।"</string>
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"\'पछाडि\' नामक इसाराको संवेदनशीलता बदल्न सेटिङमा जानुहोस्"</string>
-    <string name="back_left_gesture_intro_title" msgid="5197184481779330065">"पछाडि जान बायाँ किनाराबाट स्वाइप गर्नुहोस्"</string>
-    <string name="back_right_gesture_intro_title" msgid="7431951986971898074">"पछाडि जान दायाँतिरबाट स्वाइप गर्नुहोस्"</string>
-    <string name="back_left_gesture_intro_subtitle" msgid="7672761376577628602">"यसअघिको स्क्रिनमा फर्कन स्क्रिनको बायाँ किनाराबाट मध्य भागसम्म स्वाइप गर्नुहोस्।"</string>
-    <string name="back_right_gesture_intro_subtitle" msgid="2735828029197816509">"तपाईं स्क्रिनको दायाँ किनाराबाट मध्य भागसम्म स्वाइप गरेर पनि यसअघिको स्क्रिनमा फर्कन सक्नुहुन्छ। अहिले नै यसो गरी हेर्नुहोस्।"</string>
+    <string name="back_gesture_intro_title" msgid="19551256430224428">"पछाडि जान स्वाइप गर्नुहोस्"</string>
+    <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"यसअघिको स्क्रिनमा फर्कन स्क्रिनको बायाँ वा दायाँ किनाराबाट मध्य भागसम्म स्वाइप गर्नुहोस्।"</string>
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"स्क्रिनको फेदबाट माथितिर स्वाइप गर्नुहोस्।"</string>
     <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"औँला उठाउनुअघि नरोकिनुहोस्।"</string>
     <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"सीधै माथितिर स्वाइप गर्नुहोस्।"</string>
@@ -71,17 +68,21 @@
     <string name="overview_gesture_feedback_complete_with_follow_up" msgid="3544611727467765026">"तपाईंले इसाराहरू प्रयोग गर्ने तरिका सिक्नुभयो। इसारा अफ गर्न सेटिङमा जानुहोस्।"</string>
     <string name="overview_gesture_feedback_complete_without_follow_up" msgid="3199486203448379152">"तपाईंले \'एउटा एपबाट अर्को एपमा जानुहोस्\' नामक इसारा प्रयोग गर्ने तरिका सिक्नुभयो।"</string>
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"एउटा एपबाट अर्को एपमा जान स्वाइप गर्नुहोस्"</string>
-    <string name="overview_gesture_intro_subtitle" msgid="1579517193845186042">"स्क्रिनको फेदबाट माथितिर स्वाइप गर्नुहोस्, छोइराख्नुहोस् अनि औँला उठाउनुहोस्।"</string>
+    <!-- no translation found for overview_gesture_intro_subtitle (4968091015637850859) -->
+    <skip />
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"सबै तयार छ"</string>
-    <string name="gesture_tutorial_action_button_label_next" msgid="2556263116424738762">"अर्को"</string>
+    <!-- no translation found for gesture_tutorial_action_button_label (6249846312991332122) -->
+    <skip />
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"सेटिङ"</string>
     <string name="gesture_tutorial_try_again" msgid="65962545858556697">"फेरि प्रयास गर्नुहोस्"</string>
     <string name="gesture_tutorial_nice" msgid="2936275692616928280">"राम्रो!"</string>
     <string name="gesture_tutorial_step" msgid="1279786122817620968">"ट्युटोरियल <xliff:g id="CURRENT">%1$d</xliff:g>/<xliff:g id="TOTAL">%2$d</xliff:g>"</string>
     <string name="allset_title" msgid="5021126669778966707">"सबै तयार भयो!"</string>
-    <string name="allset_hint" msgid="459504134589971527">"होममा जान माथितिर स्वाइप गर्नुहोस्"</string>
+    <!-- no translation found for allset_hint (2384632994739392447) -->
+    <skip />
     <string name="allset_description" msgid="6350320429953234580">"तपाईं आफ्नो फोन चलाउन थाल्न सक्नुहुन्छ"</string>
-    <string name="allset_navigation_settings" msgid="417773244979225071"><annotation id="link">"सर्वसुलभताका लागि नेभिगेसनसम्बन्धी सेटिङ"</annotation></string>
+    <!-- no translation found for allset_navigation_settings (4713404605961476027) -->
+    <skip />
     <string name="action_share" msgid="2648470652637092375">"सेयर गर्नुहोस्"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"स्क्रिनसट"</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"यो एप वा तपाईंको सङ्गठनले यो कारबाही गर्ने अनुमति दिँदैन"</string>

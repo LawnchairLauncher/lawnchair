@@ -35,6 +35,8 @@
     <string name="widget_preview_context_description" msgid="9045841361655787574">"“<xliff:g id="WIDGET_NAME">%1$s</xliff:g>”微件"</string>
     <string name="add_item_request_drag_hint" msgid="5653291305078645405">"轻触并按住该微件即可将其在主屏幕上四处移动"</string>
     <string name="add_to_home_screen" msgid="8631549138215492708">"添加到主屏幕"</string>
+    <!-- no translation found for added_to_home_screen_accessibility_text (4451545765448884415) -->
+    <skip />
     <plurals name="widgets_count" formatted="false" msgid="656794749266073027">
       <item quantity="other"><xliff:g id="WIDGETS_COUNT_1">%1$d</xliff:g> 个微件</item>
       <item quantity="one"><xliff:g id="WIDGETS_COUNT_0">%1$d</xliff:g> 个微件</item>
@@ -109,8 +111,8 @@
     <string name="allow_rotation_title" msgid="7728578836261442095">"允许旋转主屏幕"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"手机旋转时"</string>
     <string name="notification_dots_title" msgid="9062440428204120317">"通知圆点"</string>
-    <string name="notification_dots_desc_on" msgid="1679848116452218908">"开启"</string>
-    <string name="notification_dots_desc_off" msgid="1760796511504341095">"关闭"</string>
+    <string name="notification_dots_desc_on" msgid="1679848116452218908">"已开启"</string>
+    <string name="notification_dots_desc_off" msgid="1760796511504341095">"已关闭"</string>
     <string name="title_missing_notification_access" msgid="7503287056163941064">"需要获取通知使用权"</string>
     <string name="msg_missing_notification_access" msgid="281113995110910548">"要显示通知圆点，请开启<xliff:g id="NAME">%1$s</xliff:g>的应用通知功能"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"更改设置"</string>
