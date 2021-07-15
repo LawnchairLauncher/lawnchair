@@ -83,7 +83,6 @@ import com.android.launcher3.folder.Folder;
 import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.folder.PreviewBackground;
 import com.android.launcher3.graphics.DragPreviewProvider;
-import com.android.launcher3.graphics.PreloadIconDrawable;
 import com.android.launcher3.icons.BitmapRenderer;
 import com.android.launcher3.icons.FastBitmapDrawable;
 import com.android.launcher3.logger.LauncherAtom;
@@ -105,6 +104,7 @@ import com.android.launcher3.util.Executors;
 import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.IntSparseArrayMap;
 import com.android.launcher3.util.ItemInfoMatcher;
+import com.android.launcher3.util.LauncherBindableItemsContainer;
 import com.android.launcher3.util.OverlayEdgeEffect;
 import com.android.launcher3.util.PackageUserKey;
 import com.android.launcher3.util.RunnableList;
@@ -123,7 +123,6 @@ import com.android.systemui.plugins.shared.LauncherOverlayManager.LauncherOverla
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -136,7 +135,7 @@ import java.util.stream.Collectors;
 public class Workspace extends PagedView<WorkspacePageIndicator>
         implements DropTarget, DragSource, View.OnTouchListener,
         DragController.DragListener, Insettable, StateHandler<LauncherState>,
-        WorkspaceLayoutManager {
+        WorkspaceLayoutManager, LauncherBindableItemsContainer {
 
     /** The value that {@link #mTransitionProgress} must be greater than for
      * {@link #transitionStateShouldAllowDrop()} to return true. */
@@ -3009,9 +3008,9 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
      * @param user The user of the app to match.
      */
     public View getFirstMatchForAppClose(int preferredItemId, String packageName, UserHandle user) {
-        final Workspace.ItemOperator preferredItem = (ItemInfo info, View view) ->
+        final ItemOperator preferredItem = (ItemInfo info, View view) ->
                 info != null && info.id == preferredItemId;
-        final Workspace.ItemOperator preferredItemInFolder = (info, view) -> {
+        final ItemOperator preferredItemInFolder = (info, view) -> {
             if (info instanceof FolderInfo) {
                 FolderInfo folderInfo = (FolderInfo) info;
                 for (WorkspaceItemInfo shortcutInfo : folderInfo.contents) {
@@ -3022,14 +3021,14 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
             }
             return false;
         };
-        final Workspace.ItemOperator packageAndUserAndApp = (ItemInfo info, View view) ->
+        final ItemOperator packageAndUserAndApp = (ItemInfo info, View view) ->
                 info != null
                         && info.itemType == ITEM_TYPE_APPLICATION
                         && info.user.equals(user)
                         && info.getTargetComponent() != null
                         && TextUtils.equals(info.getTargetComponent().getPackageName(),
                                 packageName);
-        final Workspace.ItemOperator packageAndUserAndAppInFolder = (info, view) -> {
+        final ItemOperator packageAndUserAndAppInFolder = (info, view) -> {
             if (info instanceof FolderInfo) {
                 FolderInfo folderInfo = (FolderInfo) info;
                 for (WorkspaceItemInfo shortcutInfo : folderInfo.contents) {
@@ -3148,22 +3147,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         stripEmptyScreens();
     }
 
-    public interface ItemOperator {
-        /**
-         * Process the next itemInfo, possibly with side-effect on the next item.
-         *
-         * @param info info for the shortcut
-         * @param view view for the shortcut
-         * @return true if done, false to continue the map
-         */
-        boolean evaluate(ItemInfo info, View view);
-    }
-
-    /**
-     * Map the operator over the shortcuts and widgets, return the first-non-null value.
-     *
-     * @param op the operator to map over the shortcuts
-     */
+    @Override
     public void mapOverItems(ItemOperator op) {
         for (CellLayout layout : getWorkspaceAndHotseatCellLayouts()) {
             if (mapOverCellLayout(layout, op) != null) {
@@ -3187,31 +3171,6 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
             }
         }
         return null;
-    }
-
-    void updateShortcuts(List<WorkspaceItemInfo> shortcuts) {
-        final HashSet<WorkspaceItemInfo> updates = new HashSet<>(shortcuts);
-        ItemOperator op = (info, v) -> {
-            if (v instanceof BubbleTextView && updates.contains(info)) {
-                WorkspaceItemInfo si = (WorkspaceItemInfo) info;
-                BubbleTextView shortcut = (BubbleTextView) v;
-                Drawable oldIcon = shortcut.getIcon();
-                boolean oldPromiseState = (oldIcon instanceof PreloadIconDrawable)
-                        && ((PreloadIconDrawable) oldIcon).hasNotCompleted();
-                shortcut.applyFromWorkspaceItem(si, si.isPromise() != oldPromiseState);
-            } else if (info instanceof FolderInfo && v instanceof FolderIcon) {
-                ((FolderIcon) v).updatePreviewItems(updates::contains);
-            }
-
-            // Iterate all items
-            return false;
-        };
-
-        mapOverItems(op);
-        Folder openFolder = Folder.getOpen(mLauncher);
-        if (openFolder != null) {
-            openFolder.iterateOverItems(op);
-        }
     }
 
     public void updateNotificationDots(Predicate<PackageUserKey> updatedDots) {
@@ -3251,28 +3210,6 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
                 Collections.singleton(packageName), user);
         mLauncher.getModelWriter().deleteItemsFromDatabase(matcher);
         removeItemsByMatcher(matcher);
-    }
-
-    public void updateRestoreItems(final HashSet<ItemInfo> updates) {
-        ItemOperator op = (info, v) -> {
-            if (info instanceof WorkspaceItemInfo && v instanceof BubbleTextView
-                    && updates.contains(info)) {
-                ((BubbleTextView) v).applyLoadingState(false /* promiseStateChanged */);
-            } else if (v instanceof PendingAppWidgetHostView
-                    && info instanceof LauncherAppWidgetInfo
-                    && updates.contains(info)) {
-                ((PendingAppWidgetHostView) v).applyState();
-            } else if (v instanceof FolderIcon && info instanceof FolderInfo) {
-                ((FolderIcon) v).updatePreviewItems(updates::contains);
-            }
-            // process all the shortcuts
-            return false;
-        };
-        mapOverItems(op);
-        Folder folder = Folder.getOpen(mLauncher);
-        if (folder != null) {
-            folder.iterateOverItems(op);
-        }
     }
 
     public void widgetsRestored(final ArrayList<LauncherAppWidgetInfo> changedInfo) {

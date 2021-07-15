@@ -48,7 +48,6 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
 
     private final BaseQuickstepLauncher mLauncher;
     private final TaskbarStateHandler mTaskbarStateHandler;
-    private final TaskbarHotseatController mHotseatController;
 
     private final TaskbarActivityContext mContext;
     private final TaskbarDragLayer mTaskbarDragLayer;
@@ -77,8 +76,6 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
 
         mLauncher = launcher;
         mTaskbarStateHandler = mLauncher.getTaskbarStateHandler();
-        mHotseatController = new TaskbarHotseatController(
-                mLauncher, mTaskbarView::updateHotseatItems);
     }
 
     @Override
@@ -91,7 +88,6 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
         MultiValueAlpha taskbarIconAlpha = mControllers.taskbarViewController.getTaskbarIconAlpha();
         mIconAlphaForHome = taskbarIconAlpha.getProperty(ALPHA_INDEX_HOME);
 
-        mHotseatController.init();
         mLauncher.setTaskbarUIController(this);
         mKeyguardController = taskbarControllers.taskbarKeyguardController;
 
@@ -106,7 +102,6 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
         mIconAlignmentForResumedState.finishAnimation();
         mIconAlignmentForGestureState.finishAnimation();
 
-        mHotseatController.cleanup();
         mLauncher.getHotseat().setIconsAlpha(1f);
         mLauncher.setTaskbarUIController(null);
     }
@@ -241,13 +236,6 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
     @Override
     public boolean onLongPressToUnstashTaskbar() {
         return mControllers.taskbarStashController.onLongPressToUnstashTaskbar();
-    }
-
-    /**
-     * Should be called when one or more items in the Hotseat have changed.
-     */
-    public void onHotseatUpdated() {
-        mHotseatController.onHotseatUpdated();
     }
 
     /**
