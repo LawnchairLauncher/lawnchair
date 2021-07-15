@@ -1111,6 +1111,35 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         }
     }
 
+    /**
+     * Moves the focused task to the front of the carousel in tablets, to minimize animation
+     * required to focus the task in grid.
+     */
+    public void moveFocusedTaskToFront() {
+        if (!(mActivity.getDeviceProfile().isTablet && FeatureFlags.ENABLE_OVERVIEW_GRID.get())) {
+            return;
+        }
+
+        TaskView focusedTaskView = getFocusedTaskView();
+        if (focusedTaskView == null) {
+            return;
+        }
+
+        if (indexOfChild(focusedTaskView) != mCurrentPage) {
+            return;
+        }
+
+        int primaryScroll = mOrientationHandler.getPrimaryScroll(this);
+        int currentPageScroll = getScrollForPage(mCurrentPage);
+        mCurrentPageScrollDiff = primaryScroll - currentPageScroll;
+
+        removeView(focusedTaskView);
+        addView(focusedTaskView, mTaskViewStartIndex);
+        setCurrentPage(0);
+
+        updateGridProperties();
+    }
+
     protected void applyLoadPlan(ArrayList<Task> tasks) {
         if (mPendingAnimation != null) {
             mPendingAnimation.addEndListener(success -> applyLoadPlan(tasks));
