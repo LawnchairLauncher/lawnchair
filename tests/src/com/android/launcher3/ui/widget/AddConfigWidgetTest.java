@@ -28,7 +28,6 @@ import android.view.View;
 import androidx.test.filters.LargeTest;
 import androidx.test.runner.AndroidJUnit4;
 
-import com.android.launcher3.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.LauncherAppWidgetInfo;
@@ -39,6 +38,7 @@ import com.android.launcher3.ui.TestViewHelpers;
 import com.android.launcher3.util.Wait;
 import com.android.launcher3.util.Wait.Condition;
 import com.android.launcher3.util.rule.ShellCommandRule;
+import com.android.launcher3.widget.LauncherAppWidgetProviderInfo;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -92,9 +92,8 @@ public class AddConfigWidgetTest extends AbstractLauncherUiTest {
 
         // Drag widget to homescreen
         WidgetConfigStartupMonitor monitor = new WidgetConfigStartupMonitor();
-        widgets.
-                getWidget(mWidgetInfo.getLabel(mTargetContext.getPackageManager())).
-                dragToWorkspace(true, false);
+        widgets.getWidget(mWidgetInfo.getLabel(mTargetContext.getPackageManager()))
+                .dragToWorkspace(true, false);
         // Widget id for which the config activity was opened
         mWidgetId = monitor.getWidgetId();
 
@@ -103,6 +102,7 @@ public class AddConfigWidgetTest extends AbstractLauncherUiTest {
 
         setResult(acceptConfig);
         if (acceptConfig) {
+            // TODO(b/192655785) Assert widget resize frame is shown and then dismiss it.
             Wait.atMost("", new WidgetSearchCondition(), DEFAULT_ACTIVITY_TIMEOUT, mLauncher);
             assertNotNull(mAppWidgetManager.getAppWidgetInfo(mWidgetId));
         } else {

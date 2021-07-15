@@ -61,6 +61,7 @@ import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.model.DbDowngradeHelper;
+import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.pm.UserCache;
 import com.android.launcher3.provider.LauncherDbUtils;
 import com.android.launcher3.provider.LauncherDbUtils.SQLiteTransaction;
@@ -71,6 +72,7 @@ import com.android.launcher3.util.IntSet;
 import com.android.launcher3.util.NoLocaleSQLiteHelper;
 import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.util.Thunk;
+import com.android.launcher3.widget.LauncherAppWidgetHost;
 
 import org.xmlpull.v1.XmlPullParser;
 
@@ -97,13 +99,15 @@ public class LauncherProvider extends ContentProvider {
      * Represents the schema of the database. Changes in scheme need not be backwards compatible.
      * When increasing the scheme version, ensure that downgrade_schema.json is updated
      */
-    public static final int SCHEMA_VERSION = 28;
+    public static final int SCHEMA_VERSION = 29;
 
     public static final String AUTHORITY = BuildConfig.APPLICATION_ID + ".settings";
+    public static final String KEY_LAYOUT_PROVIDER_AUTHORITY = "KEY_LAYOUT_PROVIDER_AUTHORITY";
 
     static final String EMPTY_DATABASE_CREATED = "EMPTY_DATABASE_CREATED";
 
     protected DatabaseHelper mOpenHelper;
+    protected String mProviderAuthority;
 
     private long mLastRestoreTimestamp = 0L;
 
@@ -186,6 +190,9 @@ public class LauncherProvider extends ContentProvider {
 
         SQLiteDatabase db = mOpenHelper.getWritableDatabase();
         Cursor result = qb.query(db, projection, args.where, args.args, null, null, sortOrder);
+        final Bundle extra = new Bundle();
+        extra.putString(LauncherSettings.Settings.EXTRA_DB_NAME, mOpenHelper.getDatabaseName());
+        result.setExtras(extra);
         result.setNotificationUri(getContext().getContentResolver(), uri);
 
         return result;
@@ -367,7 +374,8 @@ public class LauncherProvider extends ContentProvider {
             case LauncherSettings.Settings.METHOD_WAS_EMPTY_DB_CREATED : {
                 Bundle result = new Bundle();
                 result.putBoolean(LauncherSettings.Settings.EXTRA_VALUE,
-                        Utilities.getPrefs(getContext()).getBoolean(EMPTY_DATABASE_CREATED, false));
+                        Utilities.getPrefs(getContext()).getBoolean(
+                                mOpenHelper.getKey(EMPTY_DATABASE_CREATED), false));
                 return result;
             }
             case LauncherSettings.Settings.METHOD_DELETE_EMPTY_FOLDERS: {
@@ -437,6 +445,7 @@ public class LauncherProvider extends ContentProvider {
                                             getContext(), true /* forMigration */)));
                     return result;
                 }
+                return null;
             }
             case LauncherSettings.Settings.METHOD_PREP_FOR_PREVIEW: {
                 if (MULTI_DB_GRID_MIRATION_ALGO.get()) {
@@ -450,6 +459,23 @@ public class LauncherProvider extends ContentProvider {
                                     () -> mOpenHelper));
                     return result;
                 }
+                return null;
+            }
+            case LauncherSettings.Settings.METHOD_SWITCH_DATABASE: {
+                if (TextUtils.equals(arg, mOpenHelper.getDatabaseName())) return null;
+                final DatabaseHelper helper = mOpenHelper;
+                if (extras == null || !extras.containsKey(KEY_LAYOUT_PROVIDER_AUTHORITY)) {
+                    mProviderAuthority = null;
+                } else {
+                    mProviderAuthority = extras.getString(KEY_LAYOUT_PROVIDER_AUTHORITY);
+                }
+                mOpenHelper = DatabaseHelper.createDatabaseHelper(
+                        getContext(), arg, false /* forMigration */);
+                helper.close();
+                LauncherAppState app = LauncherAppState.getInstanceNoCreate();
+                if (app == null) return null;
+                app.getModel().forceReload();
+                return null;
             }
         }
         return null;
@@ -492,7 +518,8 @@ public class LauncherProvider extends ContentProvider {
     }
 
     private void clearFlagEmptyDbCreated() {
-        Utilities.getPrefs(getContext()).edit().remove(EMPTY_DATABASE_CREATED).commit();
+        Utilities.getPrefs(getContext()).edit()
+                .remove(mOpenHelper.getKey(EMPTY_DATABASE_CREATED)).commit();
     }
 
     /**
@@ -505,7 +532,7 @@ public class LauncherProvider extends ContentProvider {
     synchronized private void loadDefaultFavoritesIfNecessary() {
         SharedPreferences sp = Utilities.getPrefs(getContext());
 
-        if (sp.getBoolean(EMPTY_DATABASE_CREATED, false)) {
+        if (sp.getBoolean(mOpenHelper.getKey(EMPTY_DATABASE_CREATED), false)) {
             Log.d(TAG, "loading default workspace");
 
             AppWidgetHost widgetHost = mOpenHelper.newLauncherWidgetHost();
@@ -553,8 +580,13 @@ public class LauncherProvider extends ContentProvider {
      */
     private AutoInstallsLayout createWorkspaceLoaderFromAppRestriction(AppWidgetHost widgetHost) {
         Context ctx = getContext();
-        String authority = Settings.Secure.getString(ctx.getContentResolver(),
-                "launcher3.layout.provider");
+        final String authority;
+        if (!TextUtils.isEmpty(mProviderAuthority)) {
+            authority = mProviderAuthority;
+        } else {
+            authority = Settings.Secure.getString(ctx.getContentResolver(),
+                    "launcher3.layout.provider");
+        }
         if (TextUtils.isEmpty(authority)) {
             return null;
         }
@@ -587,7 +619,7 @@ public class LauncherProvider extends ContentProvider {
                 .appendQueryParameter("version", "1")
                 .appendQueryParameter("gridWidth", Integer.toString(grid.numColumns))
                 .appendQueryParameter("gridHeight", Integer.toString(grid.numRows))
-                .appendQueryParameter("hotseatSize", Integer.toString(grid.numHotseatIcons))
+                .appendQueryParameter("hotseatSize", Integer.toString(grid.numDatabaseHotseatIcons))
                 .build();
     }
 
@@ -694,11 +726,25 @@ public class LauncherProvider extends ContentProvider {
         }
 
         /**
+         * Re-composite given key in respect to database. If the current db is
+         * {@link LauncherFiles#LAUNCHER_DB}, return the key as-is. Otherwise append the db name to
+         * given key. e.g. consider key="EMPTY_DATABASE_CREATED", dbName="minimal.db", the returning
+         * string will be "EMPTY_DATABASE_CREATED@minimal.db".
+         */
+        String getKey(final String key) {
+            if (TextUtils.equals(getDatabaseName(), LauncherFiles.LAUNCHER_DB)) {
+                return key;
+            }
+            return key + "@" + getDatabaseName();
+        }
+
+        /**
          * Overriden in tests.
          */
         protected void onEmptyDbCreated() {
             // Set the flag for empty DB
-            Utilities.getPrefs(mContext).edit().putBoolean(EMPTY_DATABASE_CREATED, true).commit();
+            Utilities.getPrefs(mContext).edit().putBoolean(getKey(EMPTY_DATABASE_CREATED), true)
+                    .commit();
         }
 
         public long getSerialNumberForUser(UserHandle user) {
@@ -834,9 +880,18 @@ public class LauncherProvider extends ContentProvider {
                     }
                     dropTable(db, "workspaceScreens");
                 }
-                case 28:
+                case 28: {
+                    boolean columnAdded = addIntegerColumn(
+                            db, Favorites.APPWIDGET_SOURCE, Favorites.CONTAINER_UNKNOWN);
+                    if (!columnAdded) {
+                        // Old version remains, which means we wipe old data
+                        break;
+                    }
+                }
+                case 29: {
                     // DB Upgraded successfully
                     return;
+                }
             }
 
             // DB was not upgraded
@@ -872,7 +927,6 @@ public class LauncherProvider extends ContentProvider {
          * Removes widgets which are registered to the Launcher's host, but are not present
          * in our model.
          */
-        @TargetApi(Build.VERSION_CODES.O)
         public void removeGhostWidgets(SQLiteDatabase db) {
             // Get all existing widget ids.
             final AppWidgetHost host = newLauncherWidgetHost();
@@ -1056,11 +1110,20 @@ public class LauncherProvider extends ContentProvider {
      * @return the max _id in the provided table.
      */
     @Thunk static int getMaxId(SQLiteDatabase db, String query, Object... args) {
-        int max = (int) DatabaseUtils.longForQuery(db,
-                String.format(Locale.ENGLISH, query, args),
-                null);
-        if (max < 0) {
-            throw new RuntimeException("Error: could not query max id");
+        int max = 0;
+        try (SQLiteStatement prog = db.compileStatement(
+                String.format(Locale.ENGLISH, query, args))) {
+            max = (int) DatabaseUtils.longForQuery(prog, null);
+            if (max < 0) {
+                throw new RuntimeException("Error: could not query max id");
+            }
+        } catch (IllegalArgumentException exception) {
+            String message = exception.getMessage();
+            if (message.contains("re-open") && message.contains("already-closed")) {
+                // Don't crash trying to end a transaction an an already closed DB. See b/173162852.
+            } else {
+                throw exception;
+            }
         }
         return max;
     }

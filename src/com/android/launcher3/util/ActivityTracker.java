@@ -15,15 +15,14 @@
  */
 package com.android.launcher3.util;
 
-import android.content.Intent;
-import android.os.Bundle;
-import android.os.IBinder;
-
 import androidx.annotation.Nullable;
 
 import com.android.launcher3.BaseActivity;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Helper class to statically track activity creation
@@ -32,8 +31,7 @@ import java.lang.ref.WeakReference;
 public final class ActivityTracker<T extends BaseActivity> {
 
     private WeakReference<T> mCurrentActivity = new WeakReference<>(null);
-
-    private static final String EXTRA_SCHEDULER_CALLBACK = "launcher.scheduler_callback";
+    private CopyOnWriteArrayList<SchedulerCallback<T>> mCallbacks = new CopyOnWriteArrayList<>();
 
     @Nullable
     public <R extends T> R getCreatedActivity() {
@@ -47,44 +45,50 @@ public final class ActivityTracker<T extends BaseActivity> {
     }
 
     /**
-     * Call {@link SchedulerCallback#init(BaseActivity, boolean)} when the activity is ready.
-     * If the activity is already created, this is called immediately, otherwise we add the
-     * callback as an extra on the intent, and will call init() when we get handleIntent().
+     * Call {@link SchedulerCallback#init(BaseActivity, boolean)} when the
+     * activity is ready. If the activity is already created, this is called immediately.
+     *
+     * The tracker maintains a strong ref to the callback, so it is up to the caller to return
+     * {@code false} in the callback OR to unregister the callback explicitly.
+     *
      * @param callback The callback to call init() on when the activity is ready.
-     * @param intent The intent that will be used to initialize the activity, if the activity
-     *               doesn't already exist. We add the callback as an extra on this intent.
      */
-    public void runCallbackWhenActivityExists(SchedulerCallback<T> callback, Intent intent) {
+    public void registerCallback(SchedulerCallback<T> callback) {
         T activity = mCurrentActivity.get();
+        mCallbacks.add(callback);
         if (activity != null) {
-            callback.init(activity, activity.isStarted());
-        } else {
-            callback.addToIntent(intent);
+            if (!callback.init(activity, activity.isStarted())) {
+                unregisterCallback(callback);
+            }
         }
+    }
+
+    /**
+     * Unregisters a registered callback.
+     */
+    public void unregisterCallback(SchedulerCallback<T> callback) {
+        mCallbacks.remove(callback);
     }
 
     public boolean handleCreate(T activity) {
         mCurrentActivity = new WeakReference<>(activity);
-        return handleIntent(activity, activity.getIntent(), false);
+        return handleIntent(activity, false /* alreadyOnHome */);
     }
 
-    public boolean handleNewIntent(T activity, Intent intent) {
-        return handleIntent(activity, intent, activity.isStarted());
+    public boolean handleNewIntent(T activity) {
+        return handleIntent(activity, activity.isStarted());
     }
 
-    private boolean handleIntent(T activity, Intent intent, boolean alreadyOnHome) {
-        if (intent != null && intent.getExtras() != null) {
-            IBinder stateBinder = intent.getExtras().getBinder(EXTRA_SCHEDULER_CALLBACK);
-            if (stateBinder instanceof ObjectWrapper) {
-                SchedulerCallback<T> handler =
-                        ((ObjectWrapper<SchedulerCallback>) stateBinder).get();
-                if (!handler.init(activity, alreadyOnHome)) {
-                    intent.getExtras().remove(EXTRA_SCHEDULER_CALLBACK);
-                }
-                return true;
+    private boolean handleIntent(T activity, boolean alreadyOnHome) {
+        boolean handled = false;
+        for (SchedulerCallback<T> cb : mCallbacks) {
+            if (!cb.init(activity, alreadyOnHome)) {
+                // Callback doesn't want any more updates
+                unregisterCallback(cb);
             }
+            handled = true;
         }
-        return false;
+        return handled;
     }
 
     public interface SchedulerCallback<T extends BaseActivity> {
@@ -95,17 +99,5 @@ public final class ActivityTracker<T extends BaseActivity> {
          * @return Whether to continue receiving callbacks (i.e. if the activity is recreated).
          */
         boolean init(T activity, boolean alreadyOnHome);
-
-        /**
-         * Adds this callback as an extra on the intent, so we can retrieve it in handleIntent() and
-         * call {@link #init}. The intent should be used to start the activity after calling this
-         * method in order for us to get handleIntent().
-         */
-        default Intent addToIntent(Intent intent) {
-            Bundle extras = new Bundle();
-            extras.putBinder(EXTRA_SCHEDULER_CALLBACK, ObjectWrapper.wrap(this));
-            intent.putExtras(extras);
-            return intent;
-        }
     }
 }

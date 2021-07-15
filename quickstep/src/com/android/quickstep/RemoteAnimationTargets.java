@@ -15,6 +15,10 @@
  */
 package com.android.quickstep;
 
+import static android.view.WindowManager.LayoutParams.TYPE_NAVIGATION_BAR;
+
+import static com.android.quickstep.TaskAnimationManager.ENABLE_SHELL_TRANSITIONS;
+
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 
 import java.util.ArrayList;
@@ -30,13 +34,15 @@ public class RemoteAnimationTargets {
     public final RemoteAnimationTargetCompat[] unfilteredApps;
     public final RemoteAnimationTargetCompat[] apps;
     public final RemoteAnimationTargetCompat[] wallpapers;
+    public final RemoteAnimationTargetCompat[] nonApps;
     public final int targetMode;
     public final boolean hasRecents;
 
     private boolean mReleased = false;
 
     public RemoteAnimationTargets(RemoteAnimationTargetCompat[] apps,
-            RemoteAnimationTargetCompat[] wallpapers, int targetMode) {
+            RemoteAnimationTargetCompat[] wallpapers, RemoteAnimationTargetCompat[] nonApps,
+            int targetMode) {
         ArrayList<RemoteAnimationTargetCompat> filteredApps = new ArrayList<>();
         boolean hasRecents = false;
         if (apps != null) {
@@ -55,6 +61,7 @@ public class RemoteAnimationTargets {
         this.wallpapers = wallpapers;
         this.targetMode = targetMode;
         this.hasRecents = hasRecents;
+        this.nonApps = nonApps;
     }
 
     public RemoteAnimationTargetCompat findTask(int taskId) {
@@ -64,6 +71,29 @@ public class RemoteAnimationTargets {
             }
         }
         return null;
+    }
+
+    /**
+     * Gets the navigation bar remote animation target if exists.
+     */
+    public RemoteAnimationTargetCompat getNavBarRemoteAnimationTarget() {
+        for (RemoteAnimationTargetCompat target : nonApps) {
+            if (target.windowType == TYPE_NAVIGATION_BAR) {
+                return target;
+            }
+        }
+        return null;
+    }
+
+    /** Returns the first opening app target. */
+    public RemoteAnimationTargetCompat getFirstAppTarget() {
+        return apps.length > 0 ? apps[0] : null;
+    }
+
+    /** Returns the task id of the first opening app target, or -1 if none is found. */
+    public int getFirstAppTargetTaskId() {
+        RemoteAnimationTargetCompat target = getFirstAppTarget();
+        return target == null ? -1 : target.taskId;
     }
 
     public boolean isAnimatingHome() {
@@ -80,6 +110,10 @@ public class RemoteAnimationTargets {
     }
 
     public void release() {
+        if (ENABLE_SHELL_TRANSITIONS) {
+            mReleaseChecks.clear();
+            return;
+        }
         if (mReleased) {
             return;
         }
@@ -96,6 +130,9 @@ public class RemoteAnimationTargets {
             target.release();
         }
         for (RemoteAnimationTargetCompat target : wallpapers) {
+            target.release();
+        }
+        for (RemoteAnimationTargetCompat target : nonApps) {
             target.release();
         }
     }

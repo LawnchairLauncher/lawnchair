@@ -15,19 +15,23 @@
  */
 package com.android.launcher3.allapps;
 
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ALLAPPS_SWIPE_TO_PERSONAL_TAB;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ALLAPPS_SWIPE_TO_WORK_TAB;
+
 import android.content.Context;
 import android.util.AttributeSet;
-import android.view.MotionEvent;
 
+import com.android.launcher3.Launcher;
 import com.android.launcher3.PagedView;
+import com.android.launcher3.workprofile.PersonalWorkPagedView;
 
-public class AllAppsPagedView extends PagedView<PersonalWorkSlidingTabStrip> {
+/**
+ *  A {@link PagedView} for showing different views for the personal and work profile respectively
+ *  in the {@link AllAppsContainerView}.
+ */
+public class AllAppsPagedView extends PersonalWorkPagedView {
 
-  final static float START_DAMPING_TOUCH_SLOP_ANGLE = (float) Math.PI / 6;
-  final static float MAX_SWIPE_ANGLE = (float) Math.PI / 3;
-  final static float TOUCH_SLOP_DAMPING_FACTOR = 4;
-
-  public AllAppsPagedView(Context context) {
+    public AllAppsPagedView(Context context) {
         this(context, null);
     }
 
@@ -40,50 +44,14 @@ public class AllAppsPagedView extends PagedView<PersonalWorkSlidingTabStrip> {
     }
 
     @Override
-    protected String getCurrentPageDescription() {
-        // Not necessary, tab-bar already has two tabs with their own descriptions.
-        return "";
-    }
-
-    @Override
-    protected void onScrollChanged(int l, int t, int oldl, int oldt) {
-        super.onScrollChanged(l, t, oldl, oldt);
-        mPageIndicator.setScroll(l, mMaxScroll);
-    }
-
-    @Override
-    protected void determineScrollingStart(MotionEvent ev) {
-        float absDeltaX = Math.abs(ev.getX() - getDownMotionX());
-        float absDeltaY = Math.abs(ev.getY() - getDownMotionY());
-
-        if (Float.compare(absDeltaX, 0f) == 0) return;
-
-        float slope = absDeltaY / absDeltaX;
-        float theta = (float) Math.atan(slope);
-
-        if (absDeltaX > mTouchSlop || absDeltaY > mTouchSlop) {
-            cancelCurrentPageLongPress();
+    protected boolean snapToPageWithVelocity(int whichPage, int velocity) {
+        boolean resp = super.snapToPageWithVelocity(whichPage, velocity);
+        if (resp && whichPage != mCurrentPage) {
+            Launcher.getLauncher(getContext()).getStatsLogManager().logger()
+                    .log(mCurrentPage < whichPage
+                            ? LAUNCHER_ALLAPPS_SWIPE_TO_WORK_TAB
+                            : LAUNCHER_ALLAPPS_SWIPE_TO_PERSONAL_TAB);
         }
-
-        if (theta > MAX_SWIPE_ANGLE) {
-            return;
-        } else if (theta > START_DAMPING_TOUCH_SLOP_ANGLE) {
-            theta -= START_DAMPING_TOUCH_SLOP_ANGLE;
-            float extraRatio = (float)
-                    Math.sqrt((theta / (MAX_SWIPE_ANGLE - START_DAMPING_TOUCH_SLOP_ANGLE)));
-            super.determineScrollingStart(ev, 1 + TOUCH_SLOP_DAMPING_FACTOR * extraRatio);
-        } else {
-            super.determineScrollingStart(ev);
-        }
-    }
-
-    @Override
-    public boolean hasOverlappingRendering() {
-        return false;
-    }
-
-    @Override
-    protected boolean canScroll(float absVScroll, float absHScroll) {
-        return (absHScroll > absVScroll) && super.canScroll(absVScroll, absHScroll);
+        return resp;
     }
 }

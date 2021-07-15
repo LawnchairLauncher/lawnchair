@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.android.launcher3.widget.picker.search.LauncherWidgetsSearchBar
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/widgets_search_bar"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:layout_marginTop="24dp"
+    android:layout_marginHorizontal="@dimen/widget_list_horizontal_margin"
+    android:background="@drawable/bg_widgets_searchbox">
+
+    <com.android.launcher3.ExtendedEditText
+        android:id="@+id/widgets_search_bar_edit_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingVertical="12dp"
+        android:paddingStart="12dp"
+        android:paddingEnd="0dp"
+        android:drawablePadding="8dp"
+        android:drawableStart="@drawable/ic_allapps_search"
+        android:background="@null"
+        android:hint="@string/widgets_full_sheet_search_bar_hint"
+        android:maxLines="1"
+        android:layout_weight="1"
+        android:inputType="text"
+        android:imeOptions="actionSearch"
+        android:textColor="?android:attr/textColorPrimary"
+        android:textColorHint="?android:attr/textColorSecondary"/>
+
+    <ImageButton
+        android:id="@+id/widgets_search_cancel_button"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:padding="12dp"
+        android:src="@drawable/ic_gm_close_24"
+        android:background="@drawable/full_rounded_transparent_ripple"
+        android:layout_gravity="center"
+        android:contentDescription="@string/widgets_full_sheet_cancel_button_description"
+        android:visibility="gone"/>
+</com.android.launcher3.widget.picker.search.LauncherWidgetsSearchBar>

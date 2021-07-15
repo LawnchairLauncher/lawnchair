@@ -24,12 +24,11 @@ import android.os.UserHandle;
 
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherModel;
-import com.android.launcher3.util.MultiHashMap;
 import com.android.launcher3.util.PackageManagerHelper;
+import com.android.launcher3.util.PackageUserKey;
 
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Map.Entry;
+import java.util.Set;
 
 /**
  * Helper class to re-query app status when SD-card becomes available.
@@ -42,10 +41,9 @@ public class SdCardAvailableReceiver extends BroadcastReceiver {
 
     private final LauncherModel mModel;
     private final Context mContext;
-    private final MultiHashMap<UserHandle, String> mPackages;
+    private final Set<PackageUserKey> mPackages;
 
-    public SdCardAvailableReceiver(LauncherAppState app,
-            MultiHashMap<UserHandle, String> packages) {
+    public SdCardAvailableReceiver(LauncherAppState app, Set<PackageUserKey> packages) {
         mModel = app.getModel();
         mContext = app.getContext();
         mPackages = packages;
@@ -55,19 +53,17 @@ public class SdCardAvailableReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         final LauncherApps launcherApps = context.getSystemService(LauncherApps.class);
         final PackageManagerHelper pmHelper = new PackageManagerHelper(context);
-        for (Entry<UserHandle, ArrayList<String>> entry : mPackages.entrySet()) {
-            UserHandle user = entry.getKey();
+        for (PackageUserKey puk : mPackages) {
+            UserHandle user = puk.mUser;
 
             final ArrayList<String> packagesRemoved = new ArrayList<>();
             final ArrayList<String> packagesUnavailable = new ArrayList<>();
 
-            for (String pkg : new HashSet<>(entry.getValue())) {
-                if (!launcherApps.isPackageEnabled(pkg, user)) {
-                    if (pmHelper.isAppOnSdcard(pkg, user)) {
-                        packagesUnavailable.add(pkg);
-                    } else {
-                        packagesRemoved.add(pkg);
-                    }
+            if (!launcherApps.isPackageEnabled(puk.mPackageName, user)) {
+                if (pmHelper.isAppOnSdcard(puk.mPackageName, user)) {
+                    packagesUnavailable.add(puk.mPackageName);
+                } else {
+                    packagesRemoved.add(puk.mPackageName);
                 }
             }
             if (!packagesRemoved.isEmpty()) {

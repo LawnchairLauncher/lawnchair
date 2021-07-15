@@ -30,6 +30,10 @@ public class ShortcutKey extends ComponentKey {
         return componentName.getClassName();
     }
 
+    public String getPackageName() {
+        return componentName.getPackageName();
+    }
+
     /**
      * Creates a {@link ShortcutRequest} for this key
      */

@@ -284,8 +284,9 @@ public class ImportDataTask {
             insertOperations.clear();
         }
 
-        IntSparseArrayMap<Object> hotseatItems = GridSizeMigrationTask.removeBrokenHotseatItems(mContext);
-        int myHotseatCount = LauncherAppState.getIDP(mContext).numHotseatIcons;
+        IntSparseArrayMap<Object> hotseatItems = GridSizeMigrationTask
+                .removeBrokenHotseatItems(mContext);
+        int myHotseatCount = LauncherAppState.getIDP(mContext).numDatabaseHotseatIcons;
         if (hotseatItems.size() < myHotseatCount) {
             // Insufficient hotseat items. Add a few more.
             HotseatParserCallback parserCallback = new HotseatParserCallback(

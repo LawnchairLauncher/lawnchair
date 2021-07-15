@@ -16,18 +16,28 @@
 
 package com.android.launcher3.model.data;
 
+import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_ALL_APPS;
+import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_BOTTOM_WIDGETS_TRAY;
+import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_PIN_WIDGETS;
+import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_WIDGETS_PREDICTION;
+import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_WIDGETS_TRAY;
+import static com.android.launcher3.Utilities.ATLEAST_S;
+
 import android.appwidget.AppWidgetHostView;
 import android.content.ComponentName;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.os.Process;
 
 import androidx.annotation.Nullable;
 
-import com.android.launcher3.AppWidgetResizeFrame;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.logger.LauncherAtom;
 import com.android.launcher3.util.ContentWriter;
+import com.android.launcher3.widget.LauncherAppWidgetHostView;
+import com.android.launcher3.widget.LauncherAppWidgetProviderInfo;
+import com.android.launcher3.widget.util.WidgetSizes;
 
 /**
  * Represents a widget (either instantiated or about to be) in the Launcher.
@@ -82,6 +92,18 @@ public class LauncherAppWidgetInfo extends ItemInfo {
     public static final int CUSTOM_WIDGET_ID = -100;
 
     /**
+     * Flags for recording all the features that a widget has enabled.
+     * @see widgetFeatures
+     */
+    public static final int FEATURE_RECONFIGURABLE = 1;
+    public static final int FEATURE_OPTIONAL_CONFIGURATION = 1 << 1;
+    public static final int FEATURE_PREVIEW_LAYOUT = 1 << 2;
+    public static final int FEATURE_TARGET_CELL_SIZE = 1 << 3;
+    public static final int FEATURE_MIN_SIZE = 1 << 4;
+    public static final int FEATURE_MAX_SIZE = 1 << 5;
+    public static final int FEATURE_ROUNDED_CORNERS = 1 << 6;
+
+    /**
      * Identifier for this widget when talking with
      * {@link android.appwidget.AppWidgetManager} for updates.
      */
@@ -114,7 +136,18 @@ public class LauncherAppWidgetInfo extends ItemInfo {
      */
     public PackageItemInfo pendingItemInfo;
 
+    /**
+     * Contains a binary representation indicating which widget features are enabled. This value is
+     * -1 if widget features could not be identified.
+     */
+    private int widgetFeatures;
+
     private boolean mHasNotifiedInitialWidgetSizeChanged;
+
+    /**
+     * The container from which this widget was added (e.g. widgets tray, pin widget, search)
+     */
+    public int sourceContainer = LauncherSettings.Favorites.CONTAINER_UNKNOWN;
 
     public LauncherAppWidgetInfo(int appWidgetId, ComponentName providerName) {
         this.appWidgetId = appWidgetId;
@@ -130,9 +163,16 @@ public class LauncherAppWidgetInfo extends ItemInfo {
         // to indicate that they should be calculated based on the layout and minWidth/minHeight
         spanX = -1;
         spanY = -1;
+        widgetFeatures = -1;
         // We only support app widgets on current user.
         user = Process.myUserHandle();
         restoreStatus = RESTORE_COMPLETED;
+    }
+
+    public LauncherAppWidgetInfo(int appWidgetId, ComponentName providerName,
+            LauncherAppWidgetProviderInfo providerInfo, AppWidgetHostView hostView) {
+        this(appWidgetId, providerName);
+        widgetFeatures = computeWidgetFeatures(providerInfo, hostView);
     }
 
     /** Used for testing **/
@@ -157,7 +197,8 @@ public class LauncherAppWidgetInfo extends ItemInfo {
                 .put(LauncherSettings.Favorites.APPWIDGET_PROVIDER, providerName.flattenToString())
                 .put(LauncherSettings.Favorites.RESTORED, restoreStatus)
                 .put(LauncherSettings.Favorites.OPTIONS, options)
-                .put(LauncherSettings.Favorites.INTENT, bindOptions);
+                .put(LauncherSettings.Favorites.INTENT, bindOptions)
+                .put(LauncherSettings.Favorites.APPWIDGET_SOURCE, sourceContainer);
     }
 
     /**
@@ -166,7 +207,7 @@ public class LauncherAppWidgetInfo extends ItemInfo {
      */
     public void onBindAppWidget(Launcher launcher, AppWidgetHostView hostView) {
         if (!mHasNotifiedInitialWidgetSizeChanged) {
-            AppWidgetResizeFrame.updateWidgetSizeRanges(hostView, launcher, spanX, spanY);
+            WidgetSizes.updateWidgetSizeRanges(hostView, launcher, spanX, spanY);
             mHasNotifiedInitialWidgetSizeChanged = true;
         }
     }
@@ -196,12 +237,58 @@ public class LauncherAppWidgetInfo extends ItemInfo {
         return (options & option) != 0;
     }
 
+    @SuppressWarnings("NewApi")
+    private static int computeWidgetFeatures(
+            LauncherAppWidgetProviderInfo providerInfo, AppWidgetHostView hostView) {
+        int widgetFeatures = 0;
+        if (providerInfo.isReconfigurable()) {
+            widgetFeatures |= FEATURE_RECONFIGURABLE;
+        }
+        if (providerInfo.isConfigurationOptional()) {
+            widgetFeatures |= FEATURE_OPTIONAL_CONFIGURATION;
+        }
+        if (ATLEAST_S && providerInfo.previewLayout != Resources.ID_NULL) {
+            widgetFeatures |= FEATURE_PREVIEW_LAYOUT;
+        }
+        if (ATLEAST_S && providerInfo.targetCellWidth > 0 || providerInfo.targetCellHeight > 0) {
+            widgetFeatures |= FEATURE_TARGET_CELL_SIZE;
+        }
+        if (providerInfo.minResizeWidth > 0 || providerInfo.minResizeHeight > 0) {
+            widgetFeatures |= FEATURE_MIN_SIZE;
+        }
+        if (ATLEAST_S && providerInfo.maxResizeWidth > 0 || providerInfo.maxResizeHeight > 0) {
+            widgetFeatures |= FEATURE_MAX_SIZE;
+        }
+        if (hostView instanceof LauncherAppWidgetHostView &&
+                ((LauncherAppWidgetHostView) hostView).hasEnforcedCornerRadius()) {
+            widgetFeatures |= FEATURE_ROUNDED_CORNERS;
+        }
+        return widgetFeatures;
+    }
+
+    public static LauncherAtom.Attribute getAttribute(int container) {
+        switch (container) {
+            case CONTAINER_WIDGETS_TRAY:
+                return LauncherAtom.Attribute.WIDGETS;
+            case CONTAINER_BOTTOM_WIDGETS_TRAY:
+                return LauncherAtom.Attribute.WIDGETS_BOTTOM_TRAY;
+            case CONTAINER_PIN_WIDGETS:
+                return LauncherAtom.Attribute.PINITEM;
+            case CONTAINER_WIDGETS_PREDICTION:
+                return LauncherAtom.Attribute.WIDGETS_TRAY_PREDICTION;
+            case CONTAINER_ALL_APPS:
+                return LauncherAtom.Attribute.ALL_APPS_SEARCH_RESULT_WIDGETS;
+            default:
+                return LauncherAtom.Attribute.UNKNOWN;
+        }
+    }
+
     @Override
-    public void setItemBuilder(LauncherAtom.ItemInfo.Builder builder) {
-        builder.setWidget(LauncherAtom.Widget.newBuilder()
-                .setSpanX(spanX)
-                .setSpanY(spanY)
-                .setComponentName(providerName.toString())
-                .setPackageName(providerName.getPackageName()));
+    public LauncherAtom.ItemInfo buildProto(FolderInfo folderInfo) {
+        LauncherAtom.ItemInfo info = super.buildProto(folderInfo);
+        return info.toBuilder()
+                .setWidget(info.getWidget().toBuilder().setWidgetFeatures(widgetFeatures))
+                .setAttribute(getAttribute(sourceContainer))
+                .build();
     }
 }

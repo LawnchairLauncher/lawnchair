@@ -17,6 +17,7 @@
 package com.android.launcher3.widget;
 
 import android.appwidget.AppWidgetHostView;
+import android.appwidget.AppWidgetProviderInfo;
 import android.content.Context;
 import android.graphics.PointF;
 import android.graphics.Rect;
@@ -25,8 +26,11 @@ import android.view.View;
 import android.view.ViewDebug;
 import android.view.ViewGroup;
 
+import com.android.launcher3.BaseActivity;
+import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Reorderable;
 import com.android.launcher3.dragndrop.DraggableView;
+import com.android.launcher3.views.ActivityContext;
 
 import java.util.ArrayList;
 
@@ -50,11 +54,16 @@ public abstract class NavigableAppWidgetHostView extends AppWidgetHostView
     private final PointF mTranslationForReorderPreview = new PointF(0, 0);
     private float mScaleForReorderBounce = 1f;
 
+    private final Rect mTempRect = new Rect();
+
     @ViewDebug.ExportedProperty(category = "launcher")
     private boolean mChildrenFocused;
 
+    protected final BaseActivity mActivity;
+
     public NavigableAppWidgetHostView(Context context) {
         super(context);
+        mActivity = ActivityContext.lookupContext(context);
     }
 
     @Override
@@ -222,6 +231,25 @@ public abstract class NavigableAppWidgetHostView extends AppWidgetHostView
         int width = (int) (getMeasuredWidth() * mScaleToFit);
         int height = (int) (getMeasuredHeight() * mScaleToFit);
 
-        bounds.set(0, 0 , width, height);
+        getWidgetInset(mActivity.getDeviceProfile(), mTempRect);
+        bounds.set(mTempRect.left, mTempRect.top, width - mTempRect.right,
+                height - mTempRect.bottom);
+    }
+
+    /**
+     * Widgets have padding added by the system. We may choose to inset this padding if the grid
+     * supports it.
+     */
+    public void getWidgetInset(DeviceProfile grid, Rect out) {
+        if (!grid.shouldInsetWidgets()) {
+            out.setEmpty();
+            return;
+        }
+        AppWidgetProviderInfo info = getAppWidgetInfo();
+        if (info == null) {
+            out.set(grid.inv.defaultWidgetPadding);
+        } else {
+            AppWidgetHostView.getDefaultPaddingForWidget(getContext(), info.provider, out);
+        }
     }
 }

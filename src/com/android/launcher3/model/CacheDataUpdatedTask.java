@@ -21,7 +21,6 @@ import android.os.UserHandle;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.icons.IconCache;
-import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 
 import java.util.ArrayList;
@@ -48,23 +47,18 @@ public class CacheDataUpdatedTask extends BaseModelUpdateTask {
     @Override
     public void execute(LauncherAppState app, BgDataModel dataModel, AllAppsList apps) {
         IconCache iconCache = app.getIconCache();
-
-
         ArrayList<WorkspaceItemInfo> updatedShortcuts = new ArrayList<>();
 
         synchronized (dataModel) {
-            for (ItemInfo info : dataModel.itemsIdMap) {
-                if (info instanceof WorkspaceItemInfo && mUser.equals(info.user)) {
-                    WorkspaceItemInfo si = (WorkspaceItemInfo) info;
-                    ComponentName cn = si.getTargetComponent();
-                    if (si.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION
-                            && isValidShortcut(si) && cn != null
-                            && mPackages.contains(cn.getPackageName())) {
-                        iconCache.getTitleAndIcon(si, si.usingLowResIcon());
-                        updatedShortcuts.add(si);
-                    }
+            dataModel.forAllWorkspaceItemInfos(mUser, si -> {
+                ComponentName cn = si.getTargetComponent();
+                if (si.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION
+                        && isValidShortcut(si) && cn != null
+                        && mPackages.contains(cn.getPackageName())) {
+                    iconCache.getTitleAndIcon(si, si.usingLowResIcon());
+                    updatedShortcuts.add(si);
                 }
-            }
+            });
             apps.updateIconsAndLabels(mPackages, mUser);
         }
         bindUpdatedWorkspaceItems(updatedShortcuts);
