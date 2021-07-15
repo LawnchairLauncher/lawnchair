@@ -23,6 +23,8 @@ import static org.robolectric.util.ReflectionHelpers.setField;
 
 import android.os.Handler;
 
+import androidx.annotation.Nullable;
+
 import com.android.launcher3.util.LooperExecutor;
 
 import org.robolectric.annotation.Implementation;
@@ -37,8 +39,13 @@ public class ShadowLooperExecutor {
 
     @RealObject private LooperExecutor mRealExecutor;
 
+    private Handler mOverriddenHandler;
+
     @Implementation
     protected Handler getHandler() {
+        if (mOverriddenHandler != null) {
+            return mOverriddenHandler;
+        }
         Handler handler = directlyOn(mRealExecutor, LooperExecutor.class, "getHandler");
         Thread thread = handler.getLooper().getThread();
         if (!thread.isAlive()) {
@@ -48,5 +55,9 @@ public class ShadowLooperExecutor {
                     new Handler(createAndStartNewLooper(thread.getName())));
         }
         return directlyOn(mRealExecutor, LooperExecutor.class, "getHandler");
+    }
+
+    public void setHandler(@Nullable Handler handler) {
+        mOverriddenHandler = handler;
     }
 }

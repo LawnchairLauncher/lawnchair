@@ -20,15 +20,9 @@ import static android.text.TextUtils.isEmpty;
 
 import static androidx.core.util.Preconditions.checkNotNull;
 
-import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_DESKTOP;
-import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_HOTSEAT;
 import static com.android.launcher3.logger.LauncherAtom.Attribute.EMPTY_LABEL;
 import static com.android.launcher3.logger.LauncherAtom.Attribute.MANUAL_LABEL;
 import static com.android.launcher3.logger.LauncherAtom.Attribute.SUGGESTED_LABEL;
-import static com.android.launcher3.userevent.LauncherLogProto.Target.FromFolderLabelState.FROM_CUSTOM;
-import static com.android.launcher3.userevent.LauncherLogProto.Target.FromFolderLabelState.FROM_EMPTY;
-import static com.android.launcher3.userevent.LauncherLogProto.Target.FromFolderLabelState.FROM_FOLDER_LABEL_STATE_UNSPECIFIED;
-import static com.android.launcher3.userevent.LauncherLogProto.Target.FromFolderLabelState.FROM_SUGGESTED;
 
 import android.os.Process;
 
@@ -40,16 +34,15 @@ import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.folder.FolderNameInfos;
 import com.android.launcher3.logger.LauncherAtom;
 import com.android.launcher3.logger.LauncherAtom.Attribute;
+import com.android.launcher3.logger.LauncherAtom.FolderIcon;
 import com.android.launcher3.logger.LauncherAtom.FromState;
 import com.android.launcher3.logger.LauncherAtom.ToState;
 import com.android.launcher3.model.ModelWriter;
-import com.android.launcher3.userevent.LauncherLogProto;
-import com.android.launcher3.userevent.LauncherLogProto.Target;
-import com.android.launcher3.userevent.LauncherLogProto.Target.FromFolderLabelState;
-import com.android.launcher3.userevent.LauncherLogProto.Target.ToFolderLabelState;
 import com.android.launcher3.util.ContentWriter;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.OptionalInt;
 import java.util.stream.IntStream;
 
@@ -147,9 +140,16 @@ public class FolderInfo extends ItemInfo {
      * @param item
      */
     public void remove(WorkspaceItemInfo item, boolean animate) {
-        contents.remove(item);
+        removeAll(Collections.singletonList(item), animate);
+    }
+
+    /**
+     * Remove all matching app or shortcut. Does not change the DB.
+     */
+    public void removeAll(List<WorkspaceItemInfo> items, boolean animate) {
+        contents.removeAll(items);
         for (int i = 0; i < mListeners.size(); i++) {
-            mListeners.get(i).onRemove(item);
+            mListeners.get(i).onRemove(items);
         }
         itemsChanged(animate);
     }
@@ -176,9 +176,9 @@ public class FolderInfo extends ItemInfo {
     }
 
     public interface FolderListener {
-        public void onAdd(WorkspaceItemInfo item, int rank);
-        public void onRemove(WorkspaceItemInfo item);
-        public void onItemsChanged(boolean animate);
+        void onAdd(WorkspaceItemInfo item, int rank);
+        void onRemove(List<WorkspaceItemInfo> item);
+        void onItemsChanged(boolean animate);
     }
 
     public boolean hasOption(int optionFlag) {
@@ -209,8 +209,13 @@ public class FolderInfo extends ItemInfo {
 
     @Override
     public LauncherAtom.ItemInfo buildProto(FolderInfo fInfo) {
+        FolderIcon.Builder folderIcon = FolderIcon.newBuilder()
+                .setCardinality(contents.size());
+        if (LabelState.SUGGESTED.equals(getLabelState())) {
+            folderIcon.setLabelInfo(title.toString());
+        }
         return getDefaultItemInfoBuilder()
-                .setFolderIcon(LauncherAtom.FolderIcon.newBuilder().setCardinality(contents.size()))
+                .setFolderIcon(folderIcon)
                 .setRank(rank)
                 .setAttribute(getLabelState().mLogAttribute)
                 .setContainerInfo(getContainerInfo())
@@ -358,114 +363,5 @@ public class FolderInfo extends ItemInfo {
                 // fall through
         }
         return LauncherAtom.ToState.TO_STATE_UNSPECIFIED;
-    }
-
-    /**
-     * Returns {@link LauncherLogProto.LauncherEvent} to log current folder label info.
-     *
-     * @deprecated This method is used only for validation purpose and soon will be removed.
-     */
-    @Deprecated
-    public LauncherLogProto.LauncherEvent getFolderLabelStateLauncherEvent(FromState fromState,
-            ToState toState) {
-        return LauncherLogProto.LauncherEvent.newBuilder()
-                .setAction(LauncherLogProto.Action
-                        .newBuilder()
-                        .setType(LauncherLogProto.Action.Type.SOFT_KEYBOARD))
-                .addSrcTarget(Target
-                        .newBuilder()
-                        .setType(Target.Type.ITEM)
-                        .setItemType(LauncherLogProto.ItemType.EDITTEXT)
-                        .setFromFolderLabelState(convertFolderLabelState(fromState))
-                        .setToFolderLabelState(convertFolderLabelState(toState)))
-                .addSrcTarget(Target.newBuilder()
-                        .setType(Target.Type.CONTAINER)
-                        .setContainerType(LauncherLogProto.ContainerType.FOLDER)
-                        .setPageIndex(screenId)
-                        .setGridX(cellX)
-                        .setGridY(cellY)
-                        .setCardinality(contents.size()))
-                .addSrcTarget(newParentContainerTarget())
-                .build();
-    }
-
-    /**
-     * @deprecated This method is used only for validation purpose and soon will be removed.
-     */
-    @Deprecated
-    private Target.Builder newParentContainerTarget() {
-        Target.Builder builder = Target.newBuilder().setType(Target.Type.CONTAINER);
-        switch (container) {
-            case CONTAINER_HOTSEAT:
-                return builder.setContainerType(LauncherLogProto.ContainerType.HOTSEAT);
-            case CONTAINER_DESKTOP:
-                return builder.setContainerType(LauncherLogProto.ContainerType.WORKSPACE);
-            default:
-                throw new AssertionError(String
-                        .format("Expected container to be either %s or %s but found %s.",
-                                CONTAINER_HOTSEAT,
-                                CONTAINER_DESKTOP,
-                                container));
-        }
-    }
-
-    /**
-     * @deprecated This method is used only for validation purpose and soon will be removed.
-     */
-    @Deprecated
-    private static FromFolderLabelState convertFolderLabelState(FromState fromState) {
-        switch (fromState) {
-            case FROM_EMPTY:
-                return FROM_EMPTY;
-            case FROM_SUGGESTED:
-                return FROM_SUGGESTED;
-            case FROM_CUSTOM:
-                return FROM_CUSTOM;
-            default:
-                return FROM_FOLDER_LABEL_STATE_UNSPECIFIED;
-        }
-    }
-
-    /**
-     * @deprecated This method is used only for validation purpose and soon will be removed.
-     */
-    @Deprecated
-    private static ToFolderLabelState convertFolderLabelState(ToState toState) {
-        switch (toState) {
-            case UNCHANGED:
-                return ToFolderLabelState.UNCHANGED;
-            case TO_SUGGESTION0:
-                return ToFolderLabelState.TO_SUGGESTION0_WITH_VALID_PRIMARY;
-            case TO_SUGGESTION1_WITH_VALID_PRIMARY:
-                return ToFolderLabelState.TO_SUGGESTION1_WITH_VALID_PRIMARY;
-            case TO_SUGGESTION1_WITH_EMPTY_PRIMARY:
-                return ToFolderLabelState.TO_SUGGESTION1_WITH_EMPTY_PRIMARY;
-            case TO_SUGGESTION2_WITH_VALID_PRIMARY:
-                return ToFolderLabelState.TO_SUGGESTION2_WITH_VALID_PRIMARY;
-            case TO_SUGGESTION2_WITH_EMPTY_PRIMARY:
-                return ToFolderLabelState.TO_SUGGESTION2_WITH_EMPTY_PRIMARY;
-            case TO_SUGGESTION3_WITH_VALID_PRIMARY:
-                return ToFolderLabelState.TO_SUGGESTION3_WITH_VALID_PRIMARY;
-            case TO_SUGGESTION3_WITH_EMPTY_PRIMARY:
-                return ToFolderLabelState.TO_SUGGESTION3_WITH_EMPTY_PRIMARY;
-            case TO_EMPTY_WITH_VALID_PRIMARY:
-                return ToFolderLabelState.TO_EMPTY_WITH_VALID_PRIMARY;
-            case TO_EMPTY_WITH_VALID_SUGGESTIONS_AND_EMPTY_PRIMARY:
-                return ToFolderLabelState.TO_EMPTY_WITH_VALID_SUGGESTIONS_AND_EMPTY_PRIMARY;
-            case TO_EMPTY_WITH_EMPTY_SUGGESTIONS:
-                return ToFolderLabelState.TO_EMPTY_WITH_EMPTY_SUGGESTIONS;
-            case TO_EMPTY_WITH_SUGGESTIONS_DISABLED:
-                return ToFolderLabelState.TO_EMPTY_WITH_SUGGESTIONS_DISABLED;
-            case TO_CUSTOM_WITH_VALID_PRIMARY:
-                return ToFolderLabelState.TO_CUSTOM_WITH_VALID_PRIMARY;
-            case TO_CUSTOM_WITH_VALID_SUGGESTIONS_AND_EMPTY_PRIMARY:
-                return ToFolderLabelState.TO_CUSTOM_WITH_VALID_SUGGESTIONS_AND_EMPTY_PRIMARY;
-            case TO_CUSTOM_WITH_EMPTY_SUGGESTIONS:
-                return ToFolderLabelState.TO_CUSTOM_WITH_EMPTY_SUGGESTIONS;
-            case TO_CUSTOM_WITH_SUGGESTIONS_DISABLED:
-                return ToFolderLabelState.TO_CUSTOM_WITH_SUGGESTIONS_DISABLED;
-            default:
-                return ToFolderLabelState.TO_FOLDER_LABEL_STATE_UNSPECIFIED;
-        }
     }
 }

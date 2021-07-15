@@ -27,7 +27,7 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * Common overview pane for both Launcher and fallback recents
+ * Common overview panel for both Launcher and fallback recents
  */
 public class BaseOverview extends LauncherInstrumentation.VisibleContainer {
     private static final int FLINGS_FOR_DISMISS_LIMIT = 40;
@@ -134,5 +134,20 @@ public class BaseOverview extends LauncherInstrumentation.VisibleContainer {
      */
     public boolean hasTasks() {
         return getTasks().size() > 0;
+    }
+
+    /**
+     * Gets Overview Actions.
+     *
+     * @return The Overview Actions
+     */
+    @NonNull
+    public OverviewActions getOverviewActions() {
+        try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
+                "want to get overview actions")) {
+            verifyActiveContainer();
+            UiObject2 overviewActions = mLauncher.waitForLauncherObject("action_buttons");
+            return new OverviewActions(overviewActions, mLauncher);
+        }
     }
 }

@@ -35,13 +35,13 @@ import android.app.backup.BackupManager;
 import android.content.pm.PackageInstaller;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Process;
 import android.os.UserHandle;
 import android.os.UserManager;
 
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.provider.RestoreDbTask;
 import com.android.launcher3.shadows.LShadowBackupManager;
-import com.android.launcher3.shadows.LShadowUserManager;
 import com.android.launcher3.util.LauncherModelHelper;
 
 import org.junit.Before;
@@ -51,6 +51,7 @@ import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.LooperMode;
 import org.robolectric.shadow.api.Shadow;
+import org.robolectric.shadows.ShadowUserManager;
 
 /**
  * Tests to verify backup and restore flow.
@@ -64,17 +65,11 @@ public class BackupRestoreTest {
     private static final long OLD_WORK_PROFILE_ID = 11;
     private static final int WORK_PROFILE_ID = 10;
 
-    private static final int SYSTEM_USER = 0;
-    private static final int FLAG_SYSTEM = 0x00000800;
-    private static final int FLAG_PROFILE = 0x00001000;
-
-    private LShadowUserManager mUserManager;
+    private ShadowUserManager mUserManager;
     private BackupManager mBackupManager;
     private LauncherModelHelper mModelHelper;
     private SQLiteDatabase mDb;
     private InvariantDeviceProfile mIdp;
-    private UserHandle mMainProfileUser;
-    private UserHandle mWorkProfileUser;
 
     @Before
     public void setUp() {
@@ -90,17 +85,15 @@ public class BackupRestoreTest {
         final UserManager userManager = RuntimeEnvironment.application.getSystemService(
                 UserManager.class);
         mUserManager = Shadow.extract(userManager);
-        // sign in to primary user
-        mMainProfileUser = mUserManager.addUser(SYSTEM_USER, "me", FLAG_SYSTEM);
         // sign in to work profile
-        mWorkProfileUser = mUserManager.addUser(WORK_PROFILE_ID, "work", FLAG_PROFILE);
+        mUserManager.addUser(WORK_PROFILE_ID, "work", ShadowUserManager.FLAG_MANAGED_PROFILE);
     }
 
     private void setupBackupManager() {
         mBackupManager = new BackupManager(RuntimeEnvironment.application);
         final LShadowBackupManager bm = Shadow.extract(mBackupManager);
-        bm.addProfile(MY_OLD_PROFILE_ID, mMainProfileUser);
-        bm.addProfile(OLD_WORK_PROFILE_ID, mWorkProfileUser);
+        bm.addProfile(MY_OLD_PROFILE_ID, Process.myUserHandle());
+        bm.addProfile(OLD_WORK_PROFILE_ID, UserHandle.of(WORK_PROFILE_ID));
     }
 
     @Test
@@ -134,7 +127,7 @@ public class BackupRestoreTest {
                 { APP_ICON, SHORTCUT, SHORTCUT, NO__ICON},
             }}, 2, OLD_WORK_PROFILE_ID);
         // simulates the creation of backup upon restore
-        new GridBackupTable(RuntimeEnvironment.application, mDb, mIdp.numHotseatIcons,
+        new GridBackupTable(RuntimeEnvironment.application, mDb, mIdp.numDatabaseHotseatIcons,
                 mIdp.numColumns, mIdp.numRows).doBackup(
                         MY_OLD_PROFILE_ID, GridBackupTable.OPTION_REQUIRES_SANITIZATION);
         // reset favorites table

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <appwidget-provider
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:minWidth="180dp"
-    android:minHeight="110dp"
+    android:minWidth="1dp"
+    android:minHeight="1dp"
     android:updatePeriodMillis="86400000"
     android:initialLayout="@layout/test_layout_appwidget_blue"
     android:resizeMode="horizontal|vertical"

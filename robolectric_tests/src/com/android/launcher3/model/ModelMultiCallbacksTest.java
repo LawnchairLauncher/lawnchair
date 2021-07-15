@@ -15,7 +15,7 @@
  */
 package com.android.launcher3.model;
 
-import static com.android.launcher3.util.Executors.createAndStartNewForegroundLooper;
+import static com.android.launcher3.util.Executors.createAndStartNewLooper;
 import static com.android.launcher3.util.LauncherModelHelper.TEST_PACKAGE;
 
 import static org.junit.Assert.assertEquals;
@@ -30,6 +30,7 @@ import com.android.launcher3.PagedView;
 import com.android.launcher3.model.BgDataModel.Callbacks;
 import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.ItemInfo;
+import com.android.launcher3.shadows.ShadowLooperExecutor;
 import com.android.launcher3.util.Executors;
 import com.android.launcher3.util.LauncherLayoutBuilder;
 import com.android.launcher3.util.LauncherModelHelper;
@@ -43,8 +44,8 @@ import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.LooperMode;
 import org.robolectric.annotation.LooperMode.Mode;
+import org.robolectric.shadow.api.Shadow;
 import org.robolectric.shadows.ShadowPackageManager;
-import org.robolectric.util.ReflectionHelpers;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -73,8 +74,9 @@ public class ModelMultiCallbacksTest {
 
         // Since robolectric tests run on main thread, we run the loader-UI calls on a temp thread,
         // so that we can wait appropriately for the loader to complete.
-        mTempMainExecutor = new LooperExecutor(createAndStartNewForegroundLooper("tempMain"));
-        ReflectionHelpers.setField(mModelHelper.getModel(), "mMainExecutor", mTempMainExecutor);
+        mTempMainExecutor = new LooperExecutor(createAndStartNewLooper("tempMain"));
+        ShadowLooperExecutor sle = Shadow.extract(Executors.MAIN_EXECUTOR);
+        sle.setHandler(mTempMainExecutor.getHandler());
     }
 
     @Test

@@ -26,7 +26,7 @@ public class OptionsPopupMenu {
 
     OptionsPopupMenu(LauncherInstrumentation launcher) {
         mLauncher = launcher;
-        mDeepShortcutsContainer = launcher.waitForLauncherObject("deep_shortcuts_container");
+        mDeepShortcutsContainer = launcher.waitForLauncherObject("popup_container");
     }
 
     /**

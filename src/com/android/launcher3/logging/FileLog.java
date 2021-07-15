@@ -10,7 +10,6 @@ import android.util.Pair;
 
 import androidx.annotation.VisibleForTesting;
 
-import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.util.IOUtils;
 
 import java.io.BufferedReader;
@@ -43,7 +42,7 @@ public final class FileLog {
     private static Handler sHandler = null;
     private static File sLogsDirectory = null;
 
-    public static final int LOG_DAYS = FeatureFlags.ENABLE_HYBRID_HOTSEAT.get() ? 10 : 4;
+    public static final int LOG_DAYS = 4;
 
     public static void setDir(File logsDir) {
         if (ENABLED) {
