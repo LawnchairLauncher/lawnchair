@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_sandbox_feedback"
+    android:paddingTop="24dp"
+    android:paddingBottom="24dp"
+    android:paddingStart="16dp"
+    android:paddingEnd="16dp">
+
+    <TextView
+        android:id="@+id/gesture_tutorial_dialog_title"
+        style="@style/TextAppearance.GestureTutorial.Dialog.Title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/skip_tutorial_dialog_title"
+
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <TextView
+        android:id="@+id/gesture_tutorial_dialog_subtitle"
+        style="@style/TextAppearance.GestureTutorial.Dialog.Subtitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/skip_tutorial_dialog_subtitle"
+
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/gesture_tutorial_dialog_title"/>
+
+    <!-- android:stateListAnimator="@null" removes shadow and normal on click behavior (increase
+         of elevation and shadow) which is replaced by ripple effect in android:foreground -->
+    <Button
+        android:id="@+id/gesture_tutorial_dialog_cancel_button"
+        style="@style/TextAppearance.GestureTutorial.CancelButtonLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="46dp"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:background="@drawable/gesture_tutorial_cancel_button_background"
+        android:foreground="?android:attr/selectableItemBackgroundBorderless"
+        android:stateListAnimator="@null"
+        android:text="@string/gesture_tutorial_action_button_label_cancel"
+
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/gesture_tutorial_dialog_subtitle"/>
+
+    <Button
+        android:id="@+id/gesture_tutorial_dialog_confirm_button"
+        style="@style/TextAppearance.GestureTutorial.ButtonLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="46dp"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:background="@drawable/gesture_tutorial_action_button_background"
+        android:foreground="?android:attr/selectableItemBackgroundBorderless"
+        android:stateListAnimator="@null"
+        android:text="@string/gesture_tutorial_action_button_label_skip"
+
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/gesture_tutorial_dialog_subtitle"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -23,7 +23,6 @@ import android.view.MotionEvent;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.statemanager.StateManager.StateListener;
-import com.android.launcher3.views.WorkEduView;
 
 /**
  * AllAppsContainerView with launcher specific callbacks
@@ -70,8 +69,9 @@ public class LauncherAllAppsContainerView extends AllAppsContainerView {
     @Override
     public void setInsets(Rect insets) {
         super.setInsets(insets);
-        mLauncher.getAllAppsController()
-                .setScrollRangeDelta(mSearchUiManager.getScrollRangeDelta(insets));
+        int allAppsStartingPositionY = mLauncher.getDeviceProfile().availableHeightPx
+                - mLauncher.getDeviceProfile().allAppsOpenVerticalTranslate;
+        mLauncher.getAllAppsController().setScrollRangeDelta(allAppsStartingPositionY);
     }
 
     @Override
@@ -83,14 +83,7 @@ public class LauncherAllAppsContainerView extends AllAppsContainerView {
     }
 
     @Override
-    public void onTabChanged(int pos) {
-        super.onTabChanged(pos);
-        if (mUsingTabs) {
-            if (pos == AdapterHolder.WORK) {
-                WorkEduView.showWorkEduIfNeeded(mLauncher);
-            } else {
-                mWorkTabListener = WorkEduView.showEduFlowIfNeeded(mLauncher, mWorkTabListener);
-            }
-        }
+    public void onActivePageChanged(int currentActivePage) {
+        super.onActivePageChanged(currentActivePage);
     }
 }

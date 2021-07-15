@@ -38,7 +38,6 @@ public class MainProcessInitializer implements ResourceBasedOverride {
     protected void init(Context context) {
         FileLog.setDir(context.getApplicationContext().getFilesDir());
         FeatureFlags.initialize(context);
-        SessionCommitReceiver.applyDefaultUserPrefs(context);
         IconShape.init(context);
 
         if (BitmapCreationCheck.ENABLED) {
