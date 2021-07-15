@@ -400,6 +400,18 @@ public class SystemUiProxy implements ISystemUiProxy,
     }
 
     @Override
+    public void notifyTaskbarStatus(boolean visible, boolean stashed) {
+        if (mSystemUiProxy != null) {
+            try {
+                mSystemUiProxy.notifyTaskbarStatus(visible, stashed);
+            } catch (RemoteException e) {
+                Log.w(TAG, "Failed call notifyTaskbarStatus with arg: " +
+                        visible + ", " + stashed, e);
+            }
+        }
+    }
+
+    @Override
     public void handleImageBundleAsScreenshot(Bundle screenImageBundle, Rect locationInScreen,
             Insets visibleInsets, Task.TaskKey task) {
         if (mSystemUiProxy != null) {

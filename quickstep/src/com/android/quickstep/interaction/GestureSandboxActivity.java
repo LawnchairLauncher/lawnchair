@@ -141,7 +141,7 @@ public class GestureSandboxActivity extends FragmentActivity {
     }
 
     private TutorialType[] getTutorialSteps(Bundle extras) {
-        TutorialType[] defaultSteps = new TutorialType[] {TutorialType.LEFT_EDGE_BACK_NAVIGATION};
+        TutorialType[] defaultSteps = new TutorialType[] {TutorialType.BACK_NAVIGATION};
         mCurrentStep = 1;
         mNumSteps = 1;
 

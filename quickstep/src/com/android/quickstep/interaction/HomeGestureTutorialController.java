@@ -82,7 +82,6 @@ final class HomeGestureTutorialController extends SwipeUpGestureTutorialControll
                     case HOME_GESTURE_COMPLETED: {
                         mTutorialFragment.releaseGestureVideoView();
                         animateFakeTaskViewHome(finalVelocity, null);
-                        showActionButton();
                         int subtitleResId = mTutorialFragment.isAtFinalStep()
                                 ? R.string.home_gesture_feedback_complete_without_follow_up
                                 : R.string.home_gesture_feedback_complete_with_follow_up;
