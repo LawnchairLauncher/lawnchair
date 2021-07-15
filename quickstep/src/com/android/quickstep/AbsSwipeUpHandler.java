@@ -1025,9 +1025,6 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
             if (mRecentsView != null) {
                 int nearestPage = mRecentsView.getDestinationPage();
                 boolean isScrolling = false;
-                // Update page scroll before snapping to page to make sure we snapped to the
-                // position calculated with target gesture in mind.
-                mRecentsView.updateScrollSynchronously();
                 if (mRecentsView.getNextPage() != nearestPage) {
                     // We shouldn't really scroll to the next page when swiping up to recents.
                     // Only allow settling on the next page if it's nearest to the center.
@@ -1186,7 +1183,8 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
             mLauncherTransitionController = null;
 
             if (mRecentsView != null) {
-                mRecentsView.onPrepareGestureEndAnimation(null, mGestureState.getEndTarget());
+                mRecentsView.onPrepareGestureEndAnimation(null, mGestureState.getEndTarget(),
+                        mTaskViewSimulator);
             }
         } else {
             AnimatorSet animatorSet = new AnimatorSet();
@@ -1228,7 +1226,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
             animatorSet.play(windowAnim);
             if (mRecentsView != null) {
                 mRecentsView.onPrepareGestureEndAnimation(
-                        animatorSet, mGestureState.getEndTarget());
+                        animatorSet, mGestureState.getEndTarget(), mTaskViewSimulator);
             }
             animatorSet.setDuration(duration).setInterpolator(interpolator);
             animatorSet.start();
