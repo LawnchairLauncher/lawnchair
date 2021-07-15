@@ -148,6 +148,12 @@ public abstract class DragView<T extends Context & ActivityContext> extends Fram
 
         addView(content, new LayoutParams(width, height));
 
+        // If there is already a scale set on the content, we don't want to clip the children.
+        if (content.getScaleX() != 1 || content.getScaleY() != 1) {
+            setClipChildren(false);
+            setClipToPadding(false);
+        }
+
         final float scale = (width + finalScaleDps) / width;
 
         // Set the initial scale to avoid any jumps
