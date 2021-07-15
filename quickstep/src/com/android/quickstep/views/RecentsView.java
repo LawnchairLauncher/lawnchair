@@ -904,8 +904,8 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             TaskViewUtils.composeRecentsLaunchAnimator(anim, taskView, apps, wallpaper, nonApps,
                     true /* launcherClosing */, mActivity.getStateManager(), this,
                     getDepthController());
-            anim.start();
         }
+        anim.start();
     }
 
     private void updateTaskStartIndex(View affectingView) {
