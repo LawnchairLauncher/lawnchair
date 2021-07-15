@@ -40,10 +40,14 @@ public abstract class MultiValueUpdateListener implements ValueAnimator.Animator
             newPercent = prop.mInterpolator.getInterpolation(newPercent);
             prop.value = prop.mEnd * newPercent + prop.mStart * (1 - newPercent);
         }
-        onUpdate(percent);
+        onUpdate(percent, false /* initOnly */);
     }
 
-    public abstract void onUpdate(float percent);
+    /**
+     * @param percent The total animation progress.
+     * @param initOnly When true, only does enough work to initialize the animation.
+     */
+    public abstract void onUpdate(float percent, boolean initOnly);
 
     public final class FloatProp {
 
@@ -63,6 +67,13 @@ public abstract class MultiValueUpdateListener implements ValueAnimator.Animator
             mInterpolator = i;
 
             mAllProperties.add(this);
+        }
+
+        /**
+         * Gets the start value.
+         */
+        public float getStartValue() {
+            return mStart;
         }
     }
 }

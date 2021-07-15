@@ -15,30 +15,48 @@
 -->
 
 <resources>
-
-    <dimen name="task_thumbnail_top_margin">24dp</dimen>
-    <dimen name="task_thumbnail_half_top_margin">12dp</dimen>
     <dimen name="task_thumbnail_icon_size">48dp</dimen>
+    <dimen name="task_thumbnail_icon_size_grid">32dp</dimen>
     <!-- For screens without rounded corners -->
     <dimen name="task_corner_radius_small">2dp</dimen>
+    <!-- For Launchers that want to override the default dialog corner radius -->
+    <dimen name="task_corner_radius_override">-1dp</dimen>
+
+    <!--  Task Menu View  -->
+    <dimen name="task_menu_corner_radius">22dp</dimen>
+    <dimen name="task_menu_item_corner_radius">4dp</dimen>
+    <dimen name="task_menu_spacing">2dp</dimen>
+    <dimen name="overview_proactive_row_height">48dp</dimen>
+    <dimen name="overview_proactive_row_bottom_margin">16dp</dimen>
+
+    <dimen name="overview_minimum_next_prev_size">50dp</dimen>
+    <dimen name="overview_task_margin">16dp</dimen>
 
     <!-- Overrideable in overlay that provides the Overview Actions. -->
-    <dimen name="overview_actions_height">66dp</dimen>
-    <dimen name="overview_actions_bottom_margin_gesture">16dp</dimen>
+    <dimen name="overview_actions_height">48dp</dimen>
+    <dimen name="overview_actions_bottom_margin_gesture">28dp</dimen>
     <dimen name="overview_actions_bottom_margin_three_button">8dp</dimen>
     <dimen name="overview_actions_horizontal_margin">16dp</dimen>
 
-    <dimen name="recents_page_spacing">10dp</dimen>
+    <dimen name="overview_grid_top_margin">77dp</dimen>
+    <dimen name="overview_grid_bottom_margin">90dp</dimen>
+    <dimen name="overview_grid_side_margin">54dp</dimen>
+    <dimen name="overview_grid_row_spacing">42dp</dimen>
+    <dimen name="overview_grid_focus_vertical_margin">90dp</dimen>
+    <dimen name="split_placeholder_size">110dp</dimen>
+
+    <!-- These speeds are in dp/s -->
+    <dimen name="max_task_dismiss_drag_velocity">2.25dp</dimen>
+    <dimen name="default_task_dismiss_drag_velocity">1.5dp</dimen>
+    <dimen name="default_task_dismiss_drag_velocity_grid">1dp</dimen>
+    <dimen name="default_task_dismiss_drag_velocity_grid_focus_task">5dp</dimen>
+
+    <dimen name="recents_page_spacing">16dp</dimen>
     <dimen name="recents_clear_all_deadzone_vertical_margin">70dp</dimen>
-    <dimen name="overview_peek_distance">96dp</dimen>
 
     <!-- The speed in dp/s at which the user needs to be scrolling in recents such that we start
              loading full resolution screenshots. -->
     <dimen name="recents_fast_fling_velocity">600dp</dimen>
-
-    <!-- These velocities are in dp / s -->
-    <dimen name="quickstep_fling_threshold_velocity">500dp</dimen>
-    <dimen name="quickstep_fling_min_velocity">250dp</dimen>
 
     <!-- These speeds are in dp / ms -->
     <dimen name="motion_pause_detector_speed_very_slow">0.0285dp</dimen>
@@ -46,26 +64,24 @@
     <dimen name="motion_pause_detector_speed_somewhat_fast">0.285dp</dimen>
     <dimen name="motion_pause_detector_speed_fast">1.4dp</dimen>
     <dimen name="motion_pause_detector_min_displacement_from_app">36dp</dimen>
+    <dimen name="quickstep_fling_threshold_speed">0.5dp</dimen>
 
     <!-- Launcher app transition -->
-    <dimen name="content_trans_y">50dp</dimen>
-    <dimen name="workspace_trans_y">50dp</dimen>
+    <item name="content_scale" format="float" type="dimen">0.97</item>
     <dimen name="closing_window_trans_y">115dp</dimen>
 
     <dimen name="recents_empty_message_text_size">16sp</dimen>
     <dimen name="recents_empty_message_text_padding">16dp</dimen>
 
+    <dimen name="max_shadow_radius">0dp</dimen>
+
     <!-- Total space (start + end) between the task card and the edge of the screen
          in various configurations -->
-    <dimen name="task_card_vert_space">40dp</dimen>
-    <dimen name="task_card_menu_option_vertical_padding">8dp</dimen>
+    <dimen name="task_card_menu_option_vertical_padding">16dp</dimen>
+    <dimen name="task_menu_vertical_padding">8dp</dimen>
+    <dimen name="task_card_margin">8dp</dimen>
     <dimen name="task_card_menu_shadow_height">3dp</dimen>
-    <dimen name="task_card_menu_horizontal_padding">0dp</dimen>
-    <dimen name="portrait_task_card_horz_space">136dp</dimen>
-    <dimen name="portrait_task_card_horz_space_big_overview">96dp</dimen>
-    <dimen name="portrait_modal_task_card_horz_space">60dp</dimen>
-    <dimen name="landscape_task_card_horz_space">200dp</dimen>
-    <dimen name="multi_window_task_card_horz_space">100dp</dimen>
+    <dimen name="task_menu_option_start_margin">12dp</dimen>
     <!-- Copied from framework resource:
        docked_stack_divider_thickness - 2 * docked_stack_divider_insets -->
     <dimen name="multi_window_task_divider_size">10dp</dimen>
@@ -75,6 +91,10 @@
     <dimen name="gestures_assistant_width">48dp</dimen>
     <dimen name="gestures_assistant_drag_threshold">55dp</dimen>
     <dimen name="gestures_assistant_fling_threshold">55dp</dimen>
+
+    <!-- One-Handed Mode -->
+    <!-- Threshold for draging distance to enable one-handed mode -->
+    <dimen name="gestures_onehanded_drag_threshold">20dp</dimen>
 
     <!-- Distance to move elements when swiping up to go home from launcher -->
     <dimen name="home_pullback_distance">28dp</dimen>
@@ -93,9 +113,48 @@
     <dimen name="gesture_tutorial_feedback_margin_start_end">24dp</dimen>
     <dimen name="gesture_tutorial_button_margin_start_end">18dp</dimen>
 
+    <!-- All Set page -->
+    <dimen name="allset_page_margin_horizontal">40dp</dimen>
+    <dimen name="allset_title_margin_top">24dp</dimen>
+    <dimen name="allset_title_icon_margin_top">32dp</dimen>
+    <dimen name="allset_hint_margin_bottom">52dp</dimen>
+    <dimen name="allset_subtitle_margin_top">24dp</dimen>
+
     <!-- All Apps Education tutorial -->
     <dimen name="swipe_edu_padding">8dp</dimen>
     <dimen name="swipe_edu_circle_size">64dp</dimen>
     <dimen name="swipe_edu_width">80dp</dimen>
     <dimen name="swipe_edu_max_height">184dp</dimen>
+
+    <dimen name="chip_hint_border_width">1dp</dimen>
+    <dimen name="chip_hint_corner_radius">20dp</dimen>
+    <dimen name="chip_hint_outer_padding">20dp</dimen>
+    <dimen name="chip_hint_start_padding">10dp</dimen>
+    <dimen name="chip_hint_end_padding">12dp</dimen>
+    <dimen name="chip_hint_horizontal_margin">20dp</dimen>
+    <dimen name="chip_hint_vertical_offset">16dp</dimen>
+    <dimen name="chip_hint_elevation">2dp</dimen>
+    <dimen name="chip_icon_size">16dp</dimen>
+    <dimen name="chip_text_height">26dp</dimen>
+    <dimen name="chip_text_top_padding">4dp</dimen>
+    <dimen name="chip_text_start_padding">10dp</dimen>
+    <dimen name="chip_text_size">14sp</dimen>
+
+    <dimen name="all_apps_prediction_row_divider_height">17dp</dimen>
+    <dimen name="all_apps_label_top_padding">16dp</dimen>
+    <dimen name="all_apps_label_bottom_padding">8dp</dimen>
+    <dimen name="all_apps_label_text_size">14sp</dimen>
+
+    <!-- Minimum distance to swipe to trigger accessibility gesture -->
+    <dimen name="accessibility_gesture_min_swipe_distance">80dp</dimen>
+
+    <!-- Taskbar -->
+    <dimen name="taskbar_size">60dp</dimen>
+    <dimen name="taskbar_icon_size">44dp</dimen>
+    <dimen name="taskbar_icon_touch_size">48dp</dimen>
+    <dimen name="taskbar_icon_drag_icon_size">54dp</dimen>
+    <!-- Note that this applies to both sides of all icons, so visible space is double this. -->
+    <dimen name="taskbar_icon_spacing">8dp</dimen>
+    <dimen name="taskbar_folder_margin">16dp</dimen>
+    <dimen name="taskbar_nav_buttons_spacing">16dp</dimen>
 </resources>

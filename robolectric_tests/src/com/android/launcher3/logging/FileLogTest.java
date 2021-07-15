@@ -9,8 +9,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
-import org.robolectric.Shadows;
-import org.robolectric.util.Scheduler;
+import org.robolectric.annotation.LooperMode;
+import org.robolectric.annotation.LooperMode.Mode;
 
 import java.io.File;
 import java.io.PrintWriter;
@@ -21,11 +21,10 @@ import java.util.Calendar;
  * Tests for {@link FileLog}
  */
 @RunWith(RobolectricTestRunner.class)
+@LooperMode(Mode.PAUSED)
 public class FileLogTest {
 
     private File mTempDir;
-    private boolean mTestActive;
-
     @Before
     public void setUp() {
         int count = 0;
@@ -35,14 +34,6 @@ public class FileLogTest {
         } while (!mTempDir.mkdir());
 
         FileLog.setDir(mTempDir);
-
-        mTestActive = true;
-        Scheduler scheduler = Shadows.shadowOf(FileLog.getHandler().getLooper()).getScheduler();
-        new Thread(() -> {
-            while (mTestActive) {
-                scheduler.advanceToLastPostedRunnable();
-            }
-        }).start();
     }
 
     @After
@@ -52,8 +43,6 @@ public class FileLogTest {
             new File(mTempDir, "log-" + i).delete();
         }
         mTempDir.delete();
-
-        mTestActive = false;
     }
 
     @Test

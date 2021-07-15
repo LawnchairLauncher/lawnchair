@@ -17,106 +17,130 @@
 ** limitations under the License.
 */
 -->
-<manifest
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    package="com.android.launcher3" >
 
-    <permission
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+     xmlns:tools="http://schemas.android.com/tools"
+     package="com.android.launcher3">
+
+     <permission
         android:name="${packageName}.permission.HOTSEAT_EDU"
         android:permissionGroup="android.permission-group.SYSTEM_TOOLS"
         android:protectionLevel="signatureOrSystem" />
 
-    <uses-permission android:name="android.permission.CONTROL_REMOTE_APP_TRANSITION_ANIMATIONS" />
-    <uses-permission android:name="android.permission.VIBRATE" />
-    <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES" />
+    <uses-permission android:name="android.permission.BROADCAST_CLOSE_SYSTEM_DIALOGS" />
+    <uses-permission android:name="android.permission.CONTROL_REMOTE_APP_TRANSITION_ANIMATIONS"/>
+    <uses-permission android:name="android.permission.VIBRATE"/>
+    <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES"/>
+    <uses-permission android:name="android.permission.START_TASKS_FROM_RECENTS"/>
+    <uses-permission android:name="android.permission.REMOVE_TASKS"/>
+    <uses-permission android:name="android.permission.MANAGE_ACTIVITY_TASKS"/>
+    <uses-permission android:name="android.permission.STATUS_BAR"/>
+    <uses-permission android:name="android.permission.STOP_APP_SWITCHES"/>
+    <uses-permission android:name="android.permission.SET_ORIENTATION"/>
+    <uses-permission android:name="android.permission.READ_FRAME_BUFFER"/>
+    <uses-permission android:name="android.permission.MANAGE_ACCESSIBILITY"/>
+    <uses-permission android:name="android.permission.MONITOR_INPUT"/>
+
     <uses-permission android:name="${packageName}.permission.HOTSEAT_EDU" />
+    <uses-permission android:name="android.permission.SYSTEM_APPLICATION_OVERLAY" />
 
-    <application
-        android:backupAgent="com.android.launcher3.LauncherBackupAgent"
-        android:fullBackupOnly="true"
-        android:fullBackupContent="@xml/backupscheme"
-        android:hardwareAccelerated="true"
-        android:icon="@drawable/ic_launcher_home"
-        android:label="@string/derived_app_name"
-        android:theme="@style/AppTheme"
-        android:largeHeap="@bool/config_largeHeap"
-        android:restoreAnyVersion="true"
-        android:supportsRtl="true" >
+    <application android:backupAgent="com.android.launcher3.LauncherBackupAgent"
+         android:fullBackupOnly="true"
+         android:fullBackupContent="@xml/backupscheme"
+         android:hardwareAccelerated="true"
+         android:icon="@drawable/ic_launcher_home"
+         android:label="@string/derived_app_name"
+         android:theme="@style/AppTheme"
+         android:largeHeap="@bool/config_largeHeap"
+         android:restoreAnyVersion="true"
+         android:supportsRtl="true">
 
-        <service
-            android:name="com.android.quickstep.TouchInteractionService"
-            android:permission="android.permission.STATUS_BAR_SERVICE"
-            android:directBootAware="true" >
+        <service android:name="com.android.quickstep.TouchInteractionService"
+             android:permission="android.permission.STATUS_BAR_SERVICE"
+             android:directBootAware="true"
+             android:exported="true">
             <intent-filter>
-                <action android:name="android.intent.action.QUICKSTEP_SERVICE" />
+                <action android:name="android.intent.action.QUICKSTEP_SERVICE"/>
             </intent-filter>
         </service>
 
         <activity android:name="com.android.quickstep.RecentsActivity"
-            android:excludeFromRecents="true"
-            android:launchMode="singleTask"
-            android:clearTaskOnLaunch="true"
-            android:stateNotNeeded="true"
-            android:theme="@style/LauncherTheme"
-            android:screenOrientation="unspecified"
-            android:configChanges="keyboard|keyboardHidden|mcc|mnc|navigation|orientation|screenSize|screenLayout|smallestScreenSize"
-            android:resizeableActivity="true"
-            android:resumeWhilePausing="true"
-            android:taskAffinity="" />
+             android:excludeFromRecents="true"
+             android:launchMode="singleTask"
+             android:clearTaskOnLaunch="true"
+             android:stateNotNeeded="true"
+             android:theme="@style/LauncherTheme"
+             android:screenOrientation="unspecified"
+             android:configChanges="keyboard|keyboardHidden|mcc|mnc|navigation|orientation|screenSize|screenLayout|smallestScreenSize|density"
+             android:resizeableActivity="true"
+             android:resumeWhilePausing="true"
+             android:taskAffinity=""/>
 
         <!-- Content provider to settings search. The autority should be same as the packageName -->
-        <provider
-            android:name="com.android.quickstep.LauncherSearchIndexablesProvider"
-            android:authorities="${packageName}"
-            android:grantUriPermissions="true"
-            android:multiprocess="true"
-            android:permission="android.permission.READ_SEARCH_INDEXABLES"
-            android:exported="true">
+        <provider android:name="com.android.quickstep.LauncherSearchIndexablesProvider"
+             android:authorities="${packageName}"
+             android:grantUriPermissions="true"
+             android:multiprocess="true"
+             android:permission="android.permission.READ_SEARCH_INDEXABLES"
+             android:exported="true">
             <intent-filter>
-                <action android:name="android.content.action.SEARCH_INDEXABLES_PROVIDER" />
+                <action android:name="android.content.action.SEARCH_INDEXABLES_PROVIDER"/>
             </intent-filter>
         </provider>
 
         <!-- FileProvider used for sharing images. -->
-        <provider
-            android:name="androidx.core.content.FileProvider"
-            android:authorities="${packageName}.overview.fileprovider"
-            android:exported="false"
-            android:grantUriPermissions="true">
-            <meta-data
-                android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/overview_file_provider_paths" />
+        <provider android:name="androidx.core.content.FileProvider"
+             android:authorities="${packageName}.overview.fileprovider"
+             android:exported="false"
+             android:grantUriPermissions="true">
+            <meta-data android:name="android.support.FILE_PROVIDER_PATHS"
+                 android:resource="@xml/overview_file_provider_paths"/>
         </provider>
 
-        <service
-            android:name="com.android.launcher3.uioverrides.dynamicui.WallpaperManagerCompatVL$ColorExtractionService"
-            tools:node="remove" />
+        <activity android:name="com.android.launcher3.proxy.ProxyActivityStarter"
+             android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen"
+             android:launchMode="singleTask"
+             android:clearTaskOnLaunch="true"
+             android:exported="false"/>
 
-        <activity
-            android:name="com.android.launcher3.proxy.ProxyActivityStarter"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen"
-            android:launchMode="singleTask"
-            android:clearTaskOnLaunch="true"
-            android:exported="false" />
-
-        <activity
-            android:name="com.android.quickstep.interaction.GestureSandboxActivity"
+        <activity android:name="com.android.quickstep.interaction.GestureSandboxActivity"
             android:autoRemoveFromRecents="true"
             android:excludeFromRecents="true"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:exported="true">
             <intent-filter>
-                <action android:name="com.android.quickstep.action.GESTURE_SANDBOX" />
-                <category android:name="android.intent.category.DEFAULT" />
+                <action android:name="com.android.quickstep.action.GESTURE_SANDBOX"/>
+                <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </activity>
+
+        <!--
+        Activity following gesture nav onboarding.
+        It's protected by android.permission.REBOOT to ensure that only system apps can start it
+        (setup wizard already has this permission)
+        -->
+        <activity android:name="com.android.quickstep.interaction.AllSetActivity"
+            android:autoRemoveFromRecents="true"
+            android:excludeFromRecents="true"
+            android:screenOrientation="portrait"
+            android:permission="android.permission.REBOOT"
+            android:theme="@style/AllSetTheme"
+            android:label="@string/allset_title"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.android.quickstep.action.GESTURE_ONBOARDING_ALL_SET"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </activity>
+
         <activity
             android:name=".hybridhotseat.HotseatEduActivity"
             android:theme="@android:style/Theme.NoDisplay"
             android:noHistory="true"
             android:launchMode="singleTask"
             android:clearTaskOnLaunch="true"
-            android:permission="${packageName}.permission.HOTSEAT_EDU">
+            android:permission="${packageName}.permission.HOTSEAT_EDU"
+            android:exported="true">
             <intent-filter>
                 <action android:name="com.android.launcher3.action.SHOW_HYBRID_HOTSEAT_EDU"/>
                 <category android:name="android.intent.category.DEFAULT" />

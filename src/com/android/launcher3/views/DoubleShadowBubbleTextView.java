@@ -60,7 +60,7 @@ public class DoubleShadowBubbleTextView extends BubbleTextView {
 
         // We enhance the shadow by drawing the shadow twice
         getPaint().setShadowLayer(mShadowInfo.ambientShadowBlur, 0, 0,
-                setColorAlphaBound(mShadowInfo.ambientShadowColor, alpha));
+                getTextShadowColor(mShadowInfo.ambientShadowColor, alpha));
 
         drawWithoutDot(canvas);
         canvas.save();
@@ -68,8 +68,11 @@ public class DoubleShadowBubbleTextView extends BubbleTextView {
                 getScrollX() + getWidth(),
                 getScrollY() + getHeight());
 
-        getPaint().setShadowLayer(mShadowInfo.keyShadowBlur, 0.0f, mShadowInfo.keyShadowOffset,
-                setColorAlphaBound(mShadowInfo.keyShadowColor, alpha));
+        getPaint().setShadowLayer(
+                mShadowInfo.keyShadowBlur,
+                mShadowInfo.keyShadowOffsetX,
+                mShadowInfo.keyShadowOffsetY,
+                getTextShadowColor(mShadowInfo.keyShadowColor, alpha));
         drawWithoutDot(canvas);
         canvas.restore();
 
@@ -81,7 +84,8 @@ public class DoubleShadowBubbleTextView extends BubbleTextView {
         public final int ambientShadowColor;
 
         public final float keyShadowBlur;
-        public final float keyShadowOffset;
+        public final float keyShadowOffsetX;
+        public final float keyShadowOffsetY;
         public final int keyShadowColor;
 
         public ShadowInfo(Context c, AttributeSet attrs, int defStyle) {
@@ -89,11 +93,13 @@ public class DoubleShadowBubbleTextView extends BubbleTextView {
             TypedArray a = c.obtainStyledAttributes(
                     attrs, R.styleable.ShadowInfo, defStyle, 0);
 
-            ambientShadowBlur = a.getDimension(R.styleable.ShadowInfo_ambientShadowBlur, 0);
+            ambientShadowBlur = a.getDimensionPixelSize(
+                    R.styleable.ShadowInfo_ambientShadowBlur, 0);
             ambientShadowColor = a.getColor(R.styleable.ShadowInfo_ambientShadowColor, 0);
 
-            keyShadowBlur = a.getDimension(R.styleable.ShadowInfo_keyShadowBlur, 0);
-            keyShadowOffset = a.getDimension(R.styleable.ShadowInfo_keyShadowOffset, 0);
+            keyShadowBlur = a.getDimensionPixelSize(R.styleable.ShadowInfo_keyShadowBlur, 0);
+            keyShadowOffsetX = a.getDimensionPixelSize(R.styleable.ShadowInfo_keyShadowOffsetX, 0);
+            keyShadowOffsetY = a.getDimensionPixelSize(R.styleable.ShadowInfo_keyShadowOffsetY, 0);
             keyShadowColor = a.getColor(R.styleable.ShadowInfo_keyShadowColor, 0);
             a.recycle();
         }
@@ -105,17 +111,26 @@ public class DoubleShadowBubbleTextView extends BubbleTextView {
             if (textAlpha == 0 || (keyShadowAlpha == 0 && ambientShadowAlpha == 0)) {
                 textView.getPaint().clearShadowLayer();
                 return true;
-            } else if (ambientShadowAlpha > 0) {
+            } else if (ambientShadowAlpha > 0 && keyShadowAlpha == 0) {
                 textView.getPaint().setShadowLayer(ambientShadowBlur, 0, 0,
-                        setColorAlphaBound(ambientShadowColor, textAlpha));
+                        getTextShadowColor(ambientShadowColor, textAlpha));
                 return true;
-            } else if (keyShadowAlpha > 0) {
-                textView.getPaint().setShadowLayer(keyShadowBlur, 0.0f, keyShadowOffset,
-                        setColorAlphaBound(keyShadowColor, textAlpha));
+            } else if (keyShadowAlpha > 0 && ambientShadowAlpha == 0) {
+                textView.getPaint().setShadowLayer(
+                        keyShadowBlur,
+                        keyShadowOffsetX,
+                        keyShadowOffsetY,
+                        getTextShadowColor(keyShadowColor, textAlpha));
                 return true;
             } else {
                 return false;
             }
         }
+    }
+
+    // Multiplies the alpha of shadowColor by textAlpha.
+    private static int getTextShadowColor(int shadowColor, int textAlpha) {
+        return setColorAlphaBound(shadowColor,
+                Math.round(Color.alpha(shadowColor) * textAlpha / 255f));
     }
 }

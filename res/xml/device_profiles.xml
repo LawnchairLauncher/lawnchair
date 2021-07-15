@@ -116,6 +116,14 @@
             launcher:canBeDefault="true" />
 
         <display-option
+            launcher:name="Large Phone Split Display"
+            launcher:minWidthDps="406"
+            launcher:minHeightDps="694"
+            launcher:iconImageSize="56"
+            launcher:iconTextSize="14.4"
+            launcher:canBeDefault="split_display" />
+
+        <display-option
             launcher:name="Shorter Stubby"
             launcher:minWidthDps="255"
             launcher:minHeightDps="400"

@@ -37,19 +37,14 @@ import android.graphics.drawable.AdaptiveIconDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.util.AttributeSet;
-import android.util.SparseArray;
-import android.util.TypedValue;
 import android.util.Xml;
 import android.view.View;
 import android.view.ViewOutlineProvider;
 
 import com.android.launcher3.R;
-import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.RoundedRectRevealOutlineProvider;
 import com.android.launcher3.icons.GraphicsUtils;
 import com.android.launcher3.icons.IconNormalizer;
-import com.android.launcher3.util.IntArray;
-import com.android.launcher3.util.Themes;
 import com.android.launcher3.views.ClipPathView;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -59,37 +54,21 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import androidx.annotation.Nullable;
-
 /**
  * Abstract representation of the shape of an icon shape
  */
 public abstract class IconShape {
 
     private static IconShape sInstance = new Circle();
-    private static Path sShapePath;
     private static float sNormalizationScale = ICON_VISIBLE_AREA_FACTOR;
-
-    public static final int DEFAULT_PATH_SIZE = 100;
 
     public static IconShape getShape() {
         return sInstance;
     }
 
-    public static Path getShapePath() {
-        if (sShapePath == null) {
-            Path p = new Path();
-            getShape().addToPath(p, 0, 0, DEFAULT_PATH_SIZE * 0.5f);
-            sShapePath = p;
-        }
-        return sShapePath;
-    }
-
     public static float getNormalizationScale() {
         return sNormalizationScale;
     }
-
-    private SparseArray<TypedValue> mAttrs;
 
     public boolean enableShapeDetection(){
         return false;
@@ -102,11 +81,6 @@ public abstract class IconShape {
 
     public abstract <T extends View & ClipPathView> Animator createRevealAnimator(T target,
             Rect startRect, Rect endRect, float endRadius, boolean isReversed);
-
-    @Nullable
-    public TypedValue getAttrValue(int attr) {
-        return mAttrs == null ? null : mAttrs.get(attr);
-    }
 
     /**
      * Abstract shape where the reveal animation is a derivative of a round rect animation
@@ -182,19 +156,43 @@ public abstract class IconShape {
         }
     }
 
-    public static final class Circle extends SimpleRectShape {
+    public static final class Circle extends PathShape {
 
-        @Override
-        public void drawShape(Canvas canvas, float offsetX, float offsetY, float radius, Paint p) {
-            canvas.drawCircle(radius + offsetX, radius + offsetY, radius, p);
+        private final float[] mTempRadii = new float[8];
+
+        protected AnimatorUpdateListener newUpdateListener(Rect startRect, Rect endRect,
+                float endRadius, Path outPath) {
+            float r1 = getStartRadius(startRect);
+
+            float[] startValues = new float[] {
+                    startRect.left, startRect.top, startRect.right, startRect.bottom, r1, r1};
+            float[] endValues = new float[] {
+                    endRect.left, endRect.top, endRect.right, endRect.bottom, endRadius, endRadius};
+
+            FloatArrayEvaluator evaluator = new FloatArrayEvaluator(new float[6]);
+
+            return (anim) -> {
+                float progress = (Float) anim.getAnimatedValue();
+                float[] values = evaluator.evaluate(progress, startValues, endValues);
+                outPath.addRoundRect(
+                        values[0], values[1], values[2], values[3],
+                        getRadiiArray(values[4], values[5]), Path.Direction.CW);
+            };
         }
+
+        private float[] getRadiiArray(float r1, float r2) {
+            mTempRadii[0] = mTempRadii [1] = mTempRadii[2] = mTempRadii[3] =
+                    mTempRadii[6] = mTempRadii[7] = r1;
+            mTempRadii[4] = mTempRadii[5] = r2;
+            return mTempRadii;
+        }
+
 
         @Override
         public void addToPath(Path path, float offsetX, float offsetY, float radius) {
             path.addCircle(radius + offsetX, radius + offsetY, radius, Path.Direction.CW);
         }
 
-        @Override
         protected float getStartRadius(Rect startRect) {
             return startRect.width() / 2f;
         }
@@ -381,9 +379,6 @@ public abstract class IconShape {
      * Initializes the shape which is closest to the {@link AdaptiveIconDrawable}
      */
     public static void init(Context context) {
-        if (!Utilities.ATLEAST_OREO) {
-            return;
-        }
         pickBestShape(context);
     }
 
@@ -414,7 +409,6 @@ public abstract class IconShape {
 
             final int depth = parser.getDepth();
             int[] radiusAttr = new int[] {R.attr.folderIconRadius};
-            IntArray keysToIgnore = new IntArray(0);
 
             while (((type = parser.next()) != XmlPullParser.END_TAG ||
                     parser.getDepth() > depth) && type != XmlPullParser.END_DOCUMENT) {
@@ -425,7 +419,6 @@ public abstract class IconShape {
                     IconShape shape = getShapeDefinition(parser.getName(), a.getFloat(0, 1));
                     a.recycle();
 
-                    shape.mAttrs = Themes.createValueMap(context, attrs, keysToIgnore);
                     result.add(shape);
                 }
             }
@@ -471,8 +464,6 @@ public abstract class IconShape {
         }
 
         // Initialize shape properties
-        drawable.setBounds(0, 0, DEFAULT_PATH_SIZE, DEFAULT_PATH_SIZE);
-        sShapePath = new Path(drawable.getIconMask());
         sNormalizationScale = IconNormalizer.normalizeAdaptiveIcon(drawable, size, null);
     }
 }

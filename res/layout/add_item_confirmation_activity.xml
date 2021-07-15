@@ -16,74 +16,94 @@
 ** limitations under the License.
 */
 -->
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.android.launcher3.dragndrop.AddItemDragLayer
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/add_item_drag_layer"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
-    <ScrollView
+    android:clipChildren="false"
+    android:clipToPadding="false"
+    android:importantForAccessibility="no">
+
+    <com.android.launcher3.widget.AddItemWidgetsBottomSheet
+        android:id="@+id/add_item_bottom_sheet"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:clipToPadding="false">
+        android:layout_height="wrap_content"
+        android:theme="?attr/widgetsTheme"
+        android:layout_gravity="bottom"
+        android:orientation="vertical">
 
         <LinearLayout
+            android:id="@+id/add_item_bottom_sheet_content"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:padding="24dp"
+            android:background="@drawable/add_item_dialog_background"
+            android:orientation="vertical" >
+
+            <TextView
+                style="@style/TextHeadline"
+                android:id="@+id/widget_appName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:textColor="?android:attr/textColorPrimary"
+                android:textSize="24sp"
+                android:ellipsize="end"
+                android:fadingEdge="horizontal"
+                android:singleLine="true"
+                android:maxLines="1" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingBottom="20dp"
-                android:paddingLeft="24dp"
-                android:paddingRight="24dp"
-                android:paddingTop="4dp"
-                android:text="@string/add_item_request_drag_hint" />
+                android:gravity="center_horizontal"
+                android:paddingTop="8dp"
+                android:text="@string/add_item_request_drag_hint"
+                android:textSize="14sp"
+                android:textColor="?android:attr/textColorSecondary"
+                android:alpha="0.7"/>
 
-            <FrameLayout
+            <include layout="@layout/widget_cell"
+                android:id="@+id/widget_cell"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:layout_marginVertical="16dp" />
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="?android:attr/colorPrimaryDark"
-                android:theme="?attr/widgetsTheme">
-
-                <com.android.launcher3.dragndrop.LivePreviewWidgetCell
-                    android:id="@+id/widget_cell"
+                android:gravity="center_vertical|end"
+                android:paddingVertical="8dp"
+                android:orientation="horizontal">
+                <Button
+                    style="@style/Button.FullRounded.Colored"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_weight="1"
-                    android:background="?android:attr/colorPrimaryDark"
-                    android:focusable="true"
-                    android:gravity="center_horizontal"
-                    android:orientation="vertical" >
+                    android:layout_height="36dp"
+                    android:paddingHorizontal="16dp"
+                    android:textSize="14sp"
+                    android:textColor="@color/button_text"
+                    android:text="@android:string/cancel"
+                    android:onClick="onCancelClick"/>
 
-                    <include layout="@layout/widget_cell_content"  />
+                <Space
+                    android:layout_width="8dp"
+                    android:layout_height="wrap_content" />
 
-                </com.android.launcher3.dragndrop.LivePreviewWidgetCell>
-            </FrameLayout>
+                <Button
+                    style="@style/Button.FullRounded.Colored"
+                    android:layout_width="wrap_content"
+                    android:layout_height="36dp"
+                    android:paddingHorizontal="16dp"
+                    android:textSize="14sp"
+                    android:textColor="@color/button_text"
+                    android:text="@string/add_to_home_screen"
+                    android:onClick="onPlaceAutomaticallyClick"/>
+            </LinearLayout>
         </LinearLayout>
-    </ScrollView>
+    </com.android.launcher3.widget.AddItemWidgetsBottomSheet>
 
-    <LinearLayout
-        style="?android:attr/buttonBarStyle"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="end"
-        android:paddingBottom="4dp"
-        android:paddingEnd="12dp"
-        android:paddingStart="12dp"
-        android:paddingTop="4dp" >
-        <Button
-            style="?android:attr/buttonBarButtonStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="onCancelClick"
-            android:text="@android:string/cancel" />
-        <Button
-            style="?android:attr/buttonBarButtonStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="onPlaceAutomaticallyClick"
-            android:text="@string/place_automatically" />
-    </LinearLayout>
-</LinearLayout>
+</com.android.launcher3.dragndrop.AddItemDragLayer>
+
+

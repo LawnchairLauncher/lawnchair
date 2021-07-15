@@ -25,6 +25,7 @@ import android.animation.TimeInterpolator;
 import android.content.Context;
 import android.graphics.Rect;
 import android.util.AttributeSet;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewDebug;
@@ -104,7 +105,8 @@ public class DropTargetBar extends FrameLayout
                         / (2 * (grid.inv.numColumns + 1)))
                         + grid.edgeMarginPx;
             } else {
-                gap = grid.desiredWorkspaceLeftRightMarginPx - grid.inv.defaultWidgetPadding.right;
+                gap = getContext().getResources()
+                        .getDimensionPixelSize(R.dimen.drop_target_bar_margin_horizontal);
             }
             lp.width = grid.availableWidthPx - 2 * gap;
 
@@ -114,6 +116,7 @@ public class DropTargetBar extends FrameLayout
         }
         setLayoutParams(lp);
         for (ButtonDropTarget button : mDropTargets) {
+            button.setTextSize(TypedValue.COMPLEX_UNIT_PX, grid.dropTargetTextSizePx);
             button.setToolTipLocation(tooltipLocation);
         }
     }
@@ -131,7 +134,10 @@ public class DropTargetBar extends FrameLayout
         int width = MeasureSpec.getSize(widthMeasureSpec);
         int height = MeasureSpec.getSize(heightMeasureSpec);
 
-        if (mIsVertical) {
+        int visibleCount = getVisibleButtonsCount();
+        if (visibleCount == 0) {
+            // do nothing
+        } else if (mIsVertical) {
             int widthSpec = MeasureSpec.makeMeasureSpec(width, MeasureSpec.EXACTLY);
             int heightSpec = MeasureSpec.makeMeasureSpec(height, MeasureSpec.AT_MOST);
 
@@ -142,7 +148,6 @@ public class DropTargetBar extends FrameLayout
                 }
             }
         } else {
-            int visibleCount = getVisibleButtonsCount();
             int availableWidth = width / visibleCount;
             boolean textVisible = true;
             for (ButtonDropTarget buttons : mDropTargets) {
@@ -165,7 +170,10 @@ public class DropTargetBar extends FrameLayout
 
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
-        if (mIsVertical) {
+        int visibleCount = getVisibleButtonsCount();
+        if (visibleCount == 0) {
+            // do nothing
+        } else if (mIsVertical) {
             int gap = getResources().getDimensionPixelSize(R.dimen.drop_target_vertical_gap);
             int start = gap;
             int end;
@@ -178,7 +186,6 @@ public class DropTargetBar extends FrameLayout
                 }
             }
         } else {
-            int visibleCount = getVisibleButtonsCount();
             int frameSize = (right - left) / visibleCount;
 
             int start = frameSize / 2;

@@ -26,7 +26,8 @@ import com.android.launcher3.util.ActivityTracker.SchedulerCallback;
 
 import java.util.function.BiPredicate;
 
-public class ActivityInitListener<T extends BaseActivity> implements SchedulerCallback<T> {
+public class ActivityInitListener<T extends BaseActivity> implements
+        SchedulerCallback<T> {
 
     private BiPredicate<T, Boolean> mOnInitListener;
     private final ActivityTracker<T> mActivityTracker;
@@ -47,6 +48,7 @@ public class ActivityInitListener<T extends BaseActivity> implements SchedulerCa
     @Override
     public final boolean init(T activity, boolean alreadyOnHome) {
         if (!mIsRegistered) {
+            // Don't receive any more updates
             return false;
         }
         return handleInit(activity, alreadyOnHome);
@@ -59,18 +61,17 @@ public class ActivityInitListener<T extends BaseActivity> implements SchedulerCa
     /**
      * Registers the activity-created listener. If the activity is already created, then the
      * callback provided in the constructor will be called synchronously.
-     * @param intent The intent that will be used to initialize the activity, if the activity
-     *               doesn't already exist. We add the callback as an extra on this intent.
      */
-    public void register(Intent intent) {
+    public void register() {
         mIsRegistered = true;
-        mActivityTracker.runCallbackWhenActivityExists(this, intent);
+        mActivityTracker.registerCallback(this);
     }
 
     /**
      * After calling this, we won't {@link #init} even when the activity is ready.
      */
     public void unregister() {
+        mActivityTracker.unregisterCallback(this);
         mIsRegistered = false;
         mOnInitListener = null;
     }
@@ -82,9 +83,9 @@ public class ActivityInitListener<T extends BaseActivity> implements SchedulerCa
      */
     public void registerAndStartActivity(Intent intent, RemoteAnimationProvider animProvider,
             Context context, Handler handler, long duration) {
-        mIsRegistered = true;
+        register();
 
         Bundle options = animProvider.toActivityOptions(handler, duration, context).toBundle();
-        context.startActivity(addToIntent(new Intent(intent)), options);
+        context.startActivity(new Intent(intent), options);
     }
 }
