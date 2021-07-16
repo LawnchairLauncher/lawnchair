@@ -396,10 +396,6 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
         default boolean isRecentsAttachedToAppWindow() {
             return false;
         }
-
-        default boolean hasRecentsEverAttachedToAppWindow() {
-            return false;
-        }
     }
 
     class DefaultAnimationFactory implements AnimationFactory {
@@ -409,7 +405,6 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
         private final Consumer<AnimatorControllerWithResistance> mCallback;
 
         private boolean mIsAttachedToWindow;
-        private boolean mHasEverAttachedToWindow;
 
         DefaultAnimationFactory(Consumer<AnimatorControllerWithResistance> callback) {
             mCallback = callback;
@@ -463,9 +458,6 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
             }
             mIsAttachedToWindow = attached;
             RecentsView recentsView = mActivity.getOverviewPanel();
-            if (attached) {
-                mHasEverAttachedToWindow = true;
-            }
             Animator fadeAnim = mActivity.getStateManager()
                     .createStateElementAnimation(INDEX_RECENTS_FADE_ANIM, attached ? 1 : 0);
 
@@ -493,11 +485,6 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
         @Override
         public boolean isRecentsAttachedToAppWindow() {
             return mIsAttachedToWindow;
-        }
-
-        @Override
-        public boolean hasRecentsEverAttachedToAppWindow() {
-            return mHasEverAttachedToWindow;
         }
 
         protected void createBackgroundToOverviewAnim(ACTIVITY_TYPE activity, PendingAnimation pa) {
