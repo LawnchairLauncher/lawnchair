@@ -45,19 +45,14 @@
     <string name="hotsaet_tip_prediction_enabled" msgid="2233554377501347650">"O recurso \"sugestões de apps\" está ativado"</string>
     <string name="hotsaet_tip_prediction_disabled" msgid="1506426298884658491">"O recurso \"sugestões de apps\" está desativado"</string>
     <string name="hotseat_prediction_content_description" msgid="4582028296938078419">"App previsto: <xliff:g id="TITLE">%1$s</xliff:g>"</string>
-    <string name="back_gesture_feedback_swipe_too_far_from_left_edge" msgid="340972404868601012">"Deslize da borda esquerda."</string>
-    <string name="back_gesture_feedback_cancelled_left_edge" msgid="6671316150388702530">"Deslize da borda esquerda até o meio da tela e solte."</string>
-    <string name="back_gesture_feedback_swipe_too_far_from_right_edge" msgid="4306700023773832353">"Deslize da borda direita."</string>
-    <string name="back_gesture_feedback_cancelled_right_edge" msgid="4951916546256902552">"Deslize da borda direita até o meio da tela e solte."</string>
-    <string name="back_gesture_feedback_complete_with_back_right_follow_up" msgid="2100639504811809267">"Você aprendeu a deslizar da esquerda para voltar."</string>
+    <string name="back_gesture_feedback_swipe_too_far_from_edge" msgid="1711645592102201538">"Deslize da borda direita ou esquerda."</string>
+    <string name="back_gesture_feedback_cancelled" msgid="3274382913290074496">"Deslize da borda direita ou esquerda até o meio da tela e solte."</string>
     <string name="back_gesture_feedback_complete_with_overview_follow_up" msgid="9176400654037014471">"Você aprendeu a deslizar da direita para voltar. A seguir, aprenda a trocar de app."</string>
     <string name="back_gesture_feedback_complete_without_follow_up" msgid="6405649621667113830">"Você concluiu o gesto para voltar."</string>
     <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="1148198467090405643">"Não deslize perto demais da parte inferior da tela."</string>
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"Mude a sensibilidade do gesto de voltar nas configurações"</string>
-    <string name="back_left_gesture_intro_title" msgid="5197184481779330065">"Deslize da esquerda para voltar"</string>
-    <string name="back_right_gesture_intro_title" msgid="7431951986971898074">"Deslizar da direita para voltar"</string>
-    <string name="back_left_gesture_intro_subtitle" msgid="7672761376577628602">"Para voltar à tela anterior, deslize da borda esquerda até o meio da tela."</string>
-    <string name="back_right_gesture_intro_subtitle" msgid="2735828029197816509">"Para voltar à tela anterior, deslize da borda direita até o meio da tela. Faça um teste."</string>
+    <string name="back_gesture_intro_title" msgid="19551256430224428">"Deslize para voltar"</string>
+    <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"Para voltar à tela anterior, deslize da borda esquerda ou direita até o meio da tela."</string>
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"Deslize da borda inferior da tela para cima."</string>
     <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"Não pare antes de soltar."</string>
     <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"Deslize para cima."</string>
@@ -71,17 +66,17 @@
     <string name="overview_gesture_feedback_complete_with_follow_up" msgid="3544611727467765026">"Você aprendeu a usar gestos. Para desativá-los, acesse as Configurações."</string>
     <string name="overview_gesture_feedback_complete_without_follow_up" msgid="3199486203448379152">"Você concluiu o gesto para trocar de app."</string>
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"Deslizar para trocar de app"</string>
-    <string name="overview_gesture_intro_subtitle" msgid="1579517193845186042">"Deslize de baixo para cima na tela, mantenha-a pressionada e depois solte."</string>
+    <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"Para mudar de app, deslize de baixo para cima na tela, mantenha-a pressionada por um tempo e solte."</string>
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"Tudo pronto"</string>
-    <string name="gesture_tutorial_action_button_label_next" msgid="2556263116424738762">"Próxima"</string>
+    <string name="gesture_tutorial_action_button_label" msgid="6249846312991332122">"Concluído"</string>
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"Configurações"</string>
     <string name="gesture_tutorial_try_again" msgid="65962545858556697">"Tentar novamente"</string>
     <string name="gesture_tutorial_nice" msgid="2936275692616928280">"Muito bem!"</string>
     <string name="gesture_tutorial_step" msgid="1279786122817620968">"Tutorial <xliff:g id="CURRENT">%1$d</xliff:g>/<xliff:g id="TOTAL">%2$d</xliff:g>"</string>
     <string name="allset_title" msgid="5021126669778966707">"Tudo pronto!"</string>
-    <string name="allset_hint" msgid="459504134589971527">"Deslize para cima para acessar a tela inicial"</string>
+    <string name="allset_hint" msgid="2384632994739392447">"Deslize para cima para acessar a tela inicial"</string>
     <string name="allset_description" msgid="6350320429953234580">"Você já pode começar a usar seu smartphone"</string>
-    <string name="allset_navigation_settings" msgid="417773244979225071"><annotation id="link">"Configurações de navegação para acessibilidade"</annotation></string>
+    <string name="allset_navigation_settings" msgid="4713404605961476027"><annotation id="link">"Configurações de navegação do sistema"</annotation></string>
     <string name="action_share" msgid="2648470652637092375">"Compartilhar"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"Capturar tela"</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"Essa ação não é permitida pelo app ou pela organização"</string>
