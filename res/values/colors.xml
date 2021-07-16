@@ -81,6 +81,6 @@
     <color name="wallpaper_popup_scrim">?android:attr/colorAccent</color>
     <color name="wallpaper_scrim_color">#0D878787</color>
 
-    <color name="workspace_accent_color_light">#ff254e47</color>
-    <color name="workspace_accent_color_dark">#ff9cfff2</color>
+    <color name="workspace_accent_color_light">#ff8df5e3</color>
+    <color name="workspace_accent_color_dark">#ff3d665f</color>
 </resources>
