@@ -680,7 +680,7 @@ public class TouchInteractionService extends Service implements PluginListener<O
             StatefulActivity activity = activityInterface.getCreatedActivity();
             if (activity != null && activity.getDeviceProfile().isTaskbarPresent) {
                 base = new TaskbarStashInputConsumer(this, base, mInputMonitorCompat,
-                        activityInterface);
+                        mTaskbarManager.getCurrentActivityContext());
             }
 
             if (FeatureFlags.ENABLE_QUICK_CAPTURE_GESTURE.get()) {

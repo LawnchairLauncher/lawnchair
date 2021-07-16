@@ -17,14 +17,17 @@ package com.android.launcher3.taskbar;
 
 import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
 import static com.android.launcher3.LauncherAnimUtils.VIEW_TRANSLATE_X;
+import static com.android.launcher3.Utilities.squaredHypot;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.quickstep.AnimatedFloat.VALUE;
 
 import android.graphics.Rect;
+import android.view.MotionEvent;
 import android.view.View;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.LauncherAppState;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.model.data.ItemInfo;
@@ -188,6 +191,11 @@ public class TaskbarViewController {
      * Callbacks for {@link TaskbarView} to interact with its controller.
      */
     public class TaskbarViewCallbacks {
+        private final float mSquaredTouchSlop = Utilities.squaredTouchSlop(mActivity);
+
+        private float mDownX, mDownY;
+        private boolean mCanceledStashHint;
+
         public View.OnClickListener getIconOnClickListener() {
             return mActivity::onTaskbarIconClicked;
         }
@@ -198,6 +206,34 @@ public class TaskbarViewController {
 
         public View.OnLongClickListener getBackgroundOnLongClickListener() {
             return view -> mControllers.taskbarStashController.updateAndAnimateIsStashedInApp(true);
+        }
+
+        public void onTouchEvent(MotionEvent motionEvent) {
+            final float x = motionEvent.getRawX();
+            final float y = motionEvent.getRawY();
+            switch (motionEvent.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+                    mDownX = x;
+                    mDownY = y;
+                    mControllers.taskbarStashController.startStashHint(/* animateForward = */ true);
+                    mCanceledStashHint = false;
+                    break;
+                case MotionEvent.ACTION_MOVE:
+                    if (!mCanceledStashHint
+                            && squaredHypot(mDownX - x, mDownY - y) > mSquaredTouchSlop) {
+                        mControllers.taskbarStashController.startStashHint(
+                                /* animateForward= */ false);
+                        mCanceledStashHint = true;
+                    }
+                    break;
+                case MotionEvent.ACTION_UP:
+                case MotionEvent.ACTION_CANCEL:
+                    if (!mCanceledStashHint) {
+                        mControllers.taskbarStashController.startStashHint(
+                                /* animateForward= */ false);
+                    }
+                    break;
+            }
         }
     }
 }
