@@ -45,19 +45,14 @@
     <string name="hotsaet_tip_prediction_enabled" msgid="2233554377501347650">"अ‍ॅप सूचना सुरू केल्या आहेत"</string>
     <string name="hotsaet_tip_prediction_disabled" msgid="1506426298884658491">"अ‍ॅप सूचना बंद केल्या आहेत"</string>
     <string name="hotseat_prediction_content_description" msgid="4582028296938078419">"पूर्वानुमान केलेले अ‍ॅप: <xliff:g id="TITLE">%1$s</xliff:g>"</string>
-    <string name="back_gesture_feedback_swipe_too_far_from_left_edge" msgid="340972404868601012">"तुम्ही स्क्रीनच्या अगदी डाव्या कडेपासून स्‍वाइप करत आहात याची खात्री करा."</string>
-    <string name="back_gesture_feedback_cancelled_left_edge" msgid="6671316150388702530">"तुम्ही स्क्रीनच्या डाव्या कडेपासून मध्यावर स्‍वाइप करून बोट उचलत आहात याची खात्री करा."</string>
-    <string name="back_gesture_feedback_swipe_too_far_from_right_edge" msgid="4306700023773832353">"तुम्ही स्क्रीनच्या अगदी उजव्या कडेपासून स्‍वाइप करत आहात याची खात्री करा."</string>
-    <string name="back_gesture_feedback_cancelled_right_edge" msgid="4951916546256902552">"तुम्ही स्क्रीनच्या उजव्या कडेपासून मध्यावर स्‍वाइप करून बोट उचलत आहात याची खात्री करा."</string>
-    <string name="back_gesture_feedback_complete_with_back_right_follow_up" msgid="2100639504811809267">"तुम्ही मागे जाण्यासाठी डावीकडून कसे स्‍वाइप करायचे ते जाणून घेतले."</string>
+    <string name="back_gesture_feedback_swipe_too_far_from_edge" msgid="1711645592102201538">"तुम्ही स्क्रीनच्या अगदी उजव्या किंवा अगदी डाव्या कडेला स्‍वाइप केल्याची खात्री करा."</string>
+    <string name="back_gesture_feedback_cancelled" msgid="3274382913290074496">"तुम्ही स्क्रीनच्या उजव्या किंवा डाव्या कडेपासून मध्यभागी स्‍वाइप करून सोडून दिल्याची खात्री करा."</string>
     <string name="back_gesture_feedback_complete_with_overview_follow_up" msgid="9176400654037014471">"मागे जाण्यासाठी उजवीकडून कसे स्‍वाइप करावे ते शिकलात. आता पुढे, ॲप्स कशी स्विच करायची ते जाणून घ्या."</string>
     <string name="back_gesture_feedback_complete_without_follow_up" msgid="6405649621667113830">"तुम्ही गो बॅक जेश्चर पूर्ण केले."</string>
     <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="1148198467090405643">"तुम्ही स्क्रीनच्या तळाच्या अगदी जवळून स्‍वाइप करत नाही याची खात्री करा."</string>
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"बॅक जेश्चरची संवेदनशीलता बदलण्यासाठी, सेटिंग्ज वर जा"</string>
-    <string name="back_left_gesture_intro_title" msgid="5197184481779330065">"मागे जाण्यासाठी डावीकडून स्वाइप करा"</string>
-    <string name="back_right_gesture_intro_title" msgid="7431951986971898074">"मागे जाण्यासाठी उजवीकडून स्वाइप करा"</string>
-    <string name="back_left_gesture_intro_subtitle" msgid="7672761376577628602">"तुम्ही होतात त्या मागील स्क्रीनवर परत जाण्यासाठी, स्क्रीनच्या डाव्या कडेपासून मध्याभागी स्वाइप करा."</string>
-    <string name="back_right_gesture_intro_subtitle" msgid="2735828029197816509">"स्क्रीनच्या उजव्या कडेपासून मध्याभागी स्वाइप करून मागील स्क्रीनवर परतदेखील जाऊ शकता. आता करून पहा."</string>
+    <string name="back_gesture_intro_title" msgid="19551256430224428">"परत जाण्यासाठी स्वाइप करा"</string>
+    <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"मागील स्क्रीनवर परत जाण्यासाठी, स्क्रीनच्या डाव्या किंवा उजव्या कडेपासून मध्यावर स्‍वाइप करा."</string>
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"तुम्ही स्क्रीनच्या तळाच्या कडेपासून वर स्वाइप करत आहात याची खात्री करा."</string>
     <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"तुम्ही स्क्रीनवरून बोट उचलण्यापूर्वी ते थांबवत नाही याची खात्री करा."</string>
     <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"तुम्ही सरळ वर स्वाइप करत आहात याची खात्री करा."</string>
@@ -71,17 +66,17 @@
     <string name="overview_gesture_feedback_complete_with_follow_up" msgid="3544611727467765026">"तुम्ही जेश्चर कसे वापरायचे हे शिकलात. जेश्चर बंद करण्यासाठी, सेटिंग्ज वर जा."</string>
     <string name="overview_gesture_feedback_complete_without_follow_up" msgid="3199486203448379152">"तुम्ही ॲप्स स्विच करण्याचे जेश्चर पूर्ण केले."</string>
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"अ‍ॅप्स स्विच करण्यासाठी स्वाइप करा"</string>
-    <string name="overview_gesture_intro_subtitle" msgid="1579517193845186042">"तुमच्या स्क्रीनच्या तळाकडून वर स्वाइप करा, धरून ठेवा, त्यानंतर बोट उचला."</string>
+    <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"ॲप्सदरम्यान स्विच करण्यासाठी, स्क्रीनच्या तळापासून वर स्वाइप करा, धरून ठेवा, त्यानंतर सोडून द्या."</string>
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"सर्व तयार आहे"</string>
-    <string name="gesture_tutorial_action_button_label_next" msgid="2556263116424738762">"पुढील"</string>
+    <string name="gesture_tutorial_action_button_label" msgid="6249846312991332122">"पूर्ण झाले"</string>
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"सेटिंग्ज"</string>
     <string name="gesture_tutorial_try_again" msgid="65962545858556697">"पुन्हा प्रयत्न करा"</string>
     <string name="gesture_tutorial_nice" msgid="2936275692616928280">"छान!"</string>
     <string name="gesture_tutorial_step" msgid="1279786122817620968">"ट्युटोरियल <xliff:g id="CURRENT">%1$d</xliff:g>/<xliff:g id="TOTAL">%2$d</xliff:g>"</string>
     <string name="allset_title" msgid="5021126669778966707">"सर्व तयार आहे!"</string>
-    <string name="allset_hint" msgid="459504134589971527">"होमवर जाण्यासाठी वरती स्वाइप करा"</string>
+    <string name="allset_hint" msgid="2384632994739392447">"होम वर जाण्यासाठी वरती स्वाइप करा"</string>
     <string name="allset_description" msgid="6350320429953234580">"तुम्ही तुमचा फोन वापरण्यास सुरुवात करू शकता"</string>
-    <string name="allset_navigation_settings" msgid="417773244979225071"><annotation id="link">"अ‍ॅक्सेसिबिलिटीसाठी नेव्हिगेशन सेटिंग्ज"</annotation></string>
+    <string name="allset_navigation_settings" msgid="4713404605961476027"><annotation id="link">"सिस्टम नेव्हिगेशन सेटिंग्ज"</annotation></string>
     <string name="action_share" msgid="2648470652637092375">"शेअर करा"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"स्क्रीनशॉट"</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"अ‍ॅप किंवा तुमच्या संस्थेद्वारे ही क्रिया करण्याची अनुमती नाही"</string>
