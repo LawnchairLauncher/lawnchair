@@ -477,10 +477,6 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
         } else {
             mAH[AdapterHolder.MAIN].setup(findViewById(R.id.apps_list_view), null);
             mAH[AdapterHolder.WORK].recyclerView = null;
-            if (mWorkModeSwitch != null) {
-                ((ViewGroup) mWorkModeSwitch.getParent()).removeView(mWorkModeSwitch);
-                mWorkModeSwitch = null;
-            }
         }
         setupHeader();
 
@@ -532,7 +528,7 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
 
     @Override
     public void onActivePageChanged(int currentActivePage) {
-        mHeader.setMainActive(currentActivePage == 0);
+        mHeader.setMainActive(currentActivePage == AdapterHolder.MAIN);
         if (mAH[currentActivePage].recyclerView != null) {
             mAH[currentActivePage].recyclerView.bindFastScrollbar();
         }
@@ -541,6 +537,14 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
             mWorkModeSwitch.setWorkTabVisible(currentActivePage == AdapterHolder.WORK
                     && mAllAppsStore.hasModelFlag(
                     FLAG_HAS_SHORTCUT_PERMISSION | FLAG_QUIET_MODE_CHANGE_PERMISSION));
+
+            if (currentActivePage == AdapterHolder.WORK) {
+                if (mWorkModeSwitch.getParent() == null) {
+                    addView(mWorkModeSwitch);
+                }
+            } else {
+                removeView(mWorkModeSwitch);
+            }
         }
     }
 
