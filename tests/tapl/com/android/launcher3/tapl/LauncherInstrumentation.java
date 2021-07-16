@@ -505,7 +505,7 @@ public final class LauncherInstrumentation {
         checkForAnomaly();
         Assert.fail(formatSystemHealthMessage(formatErrorWithEvents(
                 "http://go/tapl test failure:\nContext: " + getContextDescription()
-                        + " - visible state is " + getVisibleStateMessage()
+                        + " => resulting visible state is " + getVisibleStateMessage()
                         + ";\nDetails: " + message, true)));
     }
 
@@ -699,7 +699,8 @@ public final class LauncherInstrumentation {
      * @return the Workspace object.
      */
     public Workspace pressHome() {
-        try (LauncherInstrumentation.Closable e = eventsCheck()) {
+        try (LauncherInstrumentation.Closable e = eventsCheck();
+             LauncherInstrumentation.Closable c = addContextLayer("want to switch to home")) {
             waitForLauncherInitialized();
             // Click home, then wait for any accessibility event, then wait until accessibility
             // events stop.
@@ -719,7 +720,7 @@ public final class LauncherInstrumentation {
                             displaySize.x / 2, 0,
                             ZERO_BUTTON_STEPS_FROM_BACKGROUND_TO_HOME,
                             false, GestureScope.INSIDE_TO_OUTSIDE);
-                    try (LauncherInstrumentation.Closable c = addContextLayer(
+                    try (LauncherInstrumentation.Closable c1 = addContextLayer(
                             "Swiped up from context menu to home")) {
                         waitUntilLauncherObjectGone(CONTEXT_MENU_RES_ID);
                         // Swiping up can temporarily bring Nexus Launcher if the current
@@ -735,6 +736,7 @@ public final class LauncherInstrumentation {
                     dumpViewHierarchy();
                     action = "swiping up to home";
 
+                    final boolean launcherIsVisible = isLauncherVisible();
                     swipeToState(
                             displaySize.x / 2, displaySize.y - 1,
                             displaySize.x / 2, 0,
@@ -742,6 +744,9 @@ public final class LauncherInstrumentation {
                             launcherWasVisible
                                     ? GestureScope.INSIDE_TO_OUTSIDE
                                     : GestureScope.OUTSIDE_WITH_PILFER);
+                    // b/193653850: launcherWasVisible is a flaky indicator.
+                    log("launcherWasVisible: " + launcherWasVisible + ", launcherIsVisible: "
+                            + launcherIsVisible);
                 }
             } else {
                 log("Hierarchy before clicking home:");
@@ -764,7 +769,7 @@ public final class LauncherInstrumentation {
                                 || hasLauncherObject(OVERVIEW_RES_ID)),
                         action);
             }
-            try (LauncherInstrumentation.Closable c = addContextLayer(
+            try (LauncherInstrumentation.Closable c1 = addContextLayer(
                     "performed action to switch to Home - " + action)) {
                 return getWorkspace();
             }

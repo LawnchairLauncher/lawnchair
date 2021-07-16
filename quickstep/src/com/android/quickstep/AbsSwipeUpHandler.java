@@ -115,7 +115,6 @@ import com.android.systemui.shared.system.InputConsumerController;
 import com.android.systemui.shared.system.InteractionJankMonitorWrapper;
 import com.android.systemui.shared.system.LatencyTrackerCompat;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
-import com.android.systemui.shared.system.TaskInfoCompat;
 import com.android.systemui.shared.system.TaskStackChangeListener;
 import com.android.systemui.shared.system.TaskStackChangeListeners;
 
@@ -540,7 +539,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
             @Override
             public void onMotionPauseDetected() {
                 mHasMotionEverBeenPaused = true;
-                maybeUpdateRecentsAttachedState();
+                maybeUpdateRecentsAttachedState(true/* animate */, true/* moveFocusedTask */);
                 performHapticFeedback();
             }
 
@@ -551,8 +550,12 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
         };
     }
 
-    public void maybeUpdateRecentsAttachedState() {
+    private void maybeUpdateRecentsAttachedState() {
         maybeUpdateRecentsAttachedState(true /* animate */);
+    }
+
+    private void maybeUpdateRecentsAttachedState(boolean animate) {
+        maybeUpdateRecentsAttachedState(animate, false /* moveFocusedTask */);
     }
 
     /**
@@ -561,8 +564,10 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
      * RecentsView is shown, it will appear to be attached to the window.
      *
      * Note this method has no effect unless the navigation mode is NO_BUTTON.
+     * @param animate whether to animate when attaching RecentsView
+     * @param moveFocusedTask whether to move focused task to front when attaching
      */
-    private void maybeUpdateRecentsAttachedState(boolean animate) {
+    private void maybeUpdateRecentsAttachedState(boolean animate, boolean moveFocusedTask) {
         if (!mDeviceState.isFullyGesturalNavMode() || mRecentsView == null) {
             return;
         }
@@ -580,6 +585,12 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
             recentsAttachedToAppWindow = true;
         } else {
             recentsAttachedToAppWindow = mHasMotionEverBeenPaused || mIsLikelyToStartNewTask;
+        }
+        if (moveFocusedTask && !mAnimationFactory.hasRecentsEverAttachedToAppWindow()
+                && recentsAttachedToAppWindow) {
+            // Only move focused task if RecentsView has never been attached before, to avoid
+            // TaskView jumping to new position as we move the tasks.
+            mRecentsView.moveFocusedTaskToFront();
         }
         mAnimationFactory.setRecentsAttachedToAppWindow(recentsAttachedToAppWindow, animate);
 
@@ -1026,9 +1037,6 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
             if (mRecentsView != null) {
                 int nearestPage = mRecentsView.getDestinationPage();
                 boolean isScrolling = false;
-                // Update page scroll before snapping to page to make sure we snapped to the
-                // position calculated with target gesture in mind.
-                mRecentsView.updateScrollSynchronously();
                 if (mRecentsView.getNextPage() != nearestPage) {
                     // We shouldn't really scroll to the next page when swiping up to recents.
                     // Only allow settling on the next page if it's nearest to the center.
@@ -1110,7 +1118,8 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
         public void onActivityRestartAttempt(ActivityManager.RunningTaskInfo task,
                 boolean homeTaskVisible, boolean clearedTask, boolean wasVisible) {
             if (task.taskId == mGestureState.getRunningTaskId()
-                    && TaskInfoCompat.getActivityType(task) != ACTIVITY_TYPE_HOME) {
+                    && task.configuration.windowConfiguration.getActivityType()
+                    != ACTIVITY_TYPE_HOME) {
                 // Since this is an edge case, just cancel and relaunch with default activity
                 // options (since we don't know if there's an associated app icon to launch from)
                 endRunningWindowAnim(true /* cancel */);
@@ -1152,8 +1161,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
             boolean appCanEnterPip = !mDeviceState.isPipActive()
                     && runningTaskTarget != null
                     && runningTaskTarget.taskInfo.pictureInPictureParams != null
-                    && TaskInfoCompat.isAutoEnterPipEnabled(
-                            runningTaskTarget.taskInfo.pictureInPictureParams);
+                    && runningTaskTarget.taskInfo.pictureInPictureParams.isAutoEnterEnabled();
             HomeAnimationFactory homeAnimFactory =
                     createHomeAnimationFactory(cookies, duration, isTranslucent, appCanEnterPip,
                             runningTaskTarget);
@@ -1187,7 +1195,8 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
             mLauncherTransitionController = null;
 
             if (mRecentsView != null) {
-                mRecentsView.onPrepareGestureEndAnimation(null, mGestureState.getEndTarget());
+                mRecentsView.onPrepareGestureEndAnimation(null, mGestureState.getEndTarget(),
+                        mTaskViewSimulator);
             }
         } else {
             AnimatorSet animatorSet = new AnimatorSet();
@@ -1229,7 +1238,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
             animatorSet.play(windowAnim);
             if (mRecentsView != null) {
                 mRecentsView.onPrepareGestureEndAnimation(
-                        animatorSet, mGestureState.getEndTarget());
+                        animatorSet, mGestureState.getEndTarget(), mTaskViewSimulator);
             }
             animatorSet.setDuration(duration).setInterpolator(interpolator);
             animatorSet.start();
@@ -1254,7 +1263,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
 
         final Rect destinationBounds = SystemUiProxy.INSTANCE.get(mContext)
                 .startSwipePipToHome(taskInfo.topActivity,
-                        TaskInfoCompat.getTopActivityInfo(taskInfo),
+                        taskInfo.topActivityInfo,
                         runningTaskTarget.taskInfo.pictureInPictureParams,
                         homeRotation,
                         mDp.hotseatBarSizePx);
@@ -1263,9 +1272,9 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
                 .setTaskId(runningTaskTarget.taskId)
                 .setComponentName(taskInfo.topActivity)
                 .setLeash(runningTaskTarget.leash.getSurfaceControl())
-                .setSourceRectHint(TaskInfoCompat.getPipSourceRectHint(
-                        runningTaskTarget.taskInfo.pictureInPictureParams))
-                .setAppBounds(TaskInfoCompat.getWindowConfigurationBounds(taskInfo))
+                .setSourceRectHint(
+                        runningTaskTarget.taskInfo.pictureInPictureParams.getSourceRectHint())
+                .setAppBounds(taskInfo.configuration.windowConfiguration.getBounds())
                 .setHomeToWindowPositionMap(homeToWindowPositionMap)
                 .setStartBounds(startRect)
                 .setDestinationBounds(destinationBounds)
@@ -1275,7 +1284,8 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
         // is not ROTATION_0 (which implies the rotation is turned on in launcher settings).
         if (homeRotation == ROTATION_0
                 && (windowRotation == ROTATION_90 || windowRotation == ROTATION_270)) {
-            builder.setFromRotation(mTaskViewSimulator, windowRotation);
+            builder.setFromRotation(mTaskViewSimulator, windowRotation,
+                    taskInfo.displayCutoutInsets);
         }
         final SwipePipToHomeAnimator swipePipToHomeAnimator = builder.build();
         AnimatorPlaybackController activityAnimationToHome =
