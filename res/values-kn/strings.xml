@@ -35,6 +35,7 @@
     <string name="widget_preview_context_description" msgid="9045841361655787574">"<xliff:g id="WIDGET_NAME">%1$s</xliff:g> ವಿಜೆಟ್"</string>
     <string name="add_item_request_drag_hint" msgid="5653291305078645405">"ಮುಖಪುಟದ ಪರದೆ ಸುತ್ತ ವಿಜೆಟ್ ಅನ್ನು ಸರಿಸಲು, ಸ್ಪರ್ಶಿಸಿ ಮತ್ತು ಒತ್ತಿ ಹಿಡಿದುಕೊಳ್ಳಿ"</string>
     <string name="add_to_home_screen" msgid="8631549138215492708">"ಮುಖಪುಟಕ್ಕೆ ಸೇರಿಸಿ"</string>
+    <string name="added_to_home_screen_accessibility_text" msgid="4451545765448884415">"ಹೋಮ್‌ಸ್ಕ್ರೀನ್‌ಗೆ <xliff:g id="WIDGET_NAME">%1$s</xliff:g> ವಿಜೆಟ್ ಅನ್ನು ಸೇರಿಸಲಾಗಿದೆ"</string>
     <plurals name="widgets_count" formatted="false" msgid="656794749266073027">
       <item quantity="one"><xliff:g id="WIDGETS_COUNT_1">%1$d</xliff:g> ವಿಜೆಟ್‌ಗಳು</item>
       <item quantity="other"><xliff:g id="WIDGETS_COUNT_1">%1$d</xliff:g> ವಿಜೆಟ್‌ಗಳು</item>
