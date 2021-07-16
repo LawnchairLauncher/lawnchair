@@ -81,7 +81,7 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
     }
 
     private int pagesPerScreen() {
-        return mLauncher.isTablet() ? 2 : 1;
+        return mLauncher.isTwoPanels() ? 2 : 1;
     }
 
     private boolean isWorkspaceScrollable(Launcher launcher) {
