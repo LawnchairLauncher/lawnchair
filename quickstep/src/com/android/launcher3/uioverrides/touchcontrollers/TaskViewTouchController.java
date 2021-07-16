@@ -34,7 +34,6 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.anim.PendingAnimation;
-import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.touch.BaseSwipeDetector;
 import com.android.launcher3.touch.PagedOrientationHandler;
 import com.android.launcher3.touch.SingleAxisSwipeDetector;
@@ -158,26 +157,21 @@ public abstract class TaskViewTouchController<T extends BaseDraggingActivity>
                         mTaskBeingDragged = view;
                         int upDirection = mRecentsView.getPagedOrientationHandler()
                                 .getUpDirection(mIsRtl);
-                        if (!SysUINavigationMode.getMode(mActivity).hasGestures || (
-                                mActivity.getDeviceProfile().isTablet
-                                        && FeatureFlags.ENABLE_OVERVIEW_GRID.get())) {
-                            // Don't allow swipe down to open if we don't support swipe up
-                            // to enter overview, or when grid layout is enabled.
-                            directionsToDetectScroll = upDirection;
-                            mAllowGoingUp = true;
-                            mAllowGoingDown = false;
-                        } else {
-                            // The task can be dragged up to dismiss it,
-                            // and down to open if it's the current page.
-                            mAllowGoingUp = true;
-                            if (i == mRecentsView.getCurrentPage()) {
-                                mAllowGoingDown = true;
-                                directionsToDetectScroll = DIRECTION_BOTH;
-                            } else {
-                                mAllowGoingDown = false;
-                                directionsToDetectScroll = upDirection;
-                            }
-                        }
+
+                        // The task can be dragged up to dismiss it
+                        mAllowGoingUp = true;
+
+                        // The task can be dragged down to open it if:
+                        // - It's the current page
+                        // - We support gestures to enter overview
+                        // - It's the focused task if in grid view
+                        // - The task is snapped
+                        mAllowGoingDown = i == mRecentsView.getCurrentPage()
+                                && SysUINavigationMode.getMode(mActivity).hasGestures
+                                && (!mRecentsView.showAsGrid() || mTaskBeingDragged.isFocusedTask())
+                                && mRecentsView.isTaskSnapped(i);
+
+                        directionsToDetectScroll = mAllowGoingDown ? DIRECTION_BOTH : upDirection;
                         break;
                     }
                 }
