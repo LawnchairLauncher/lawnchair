@@ -45,19 +45,14 @@
     <string name="hotsaet_tip_prediction_enabled" msgid="2233554377501347650">"යෙදුම් යෝජනා සබලිතයි"</string>
     <string name="hotsaet_tip_prediction_disabled" msgid="1506426298884658491">"යෙදුම් යෝජනා අබල කර ඇත"</string>
     <string name="hotseat_prediction_content_description" msgid="4582028296938078419">"පුරෝකථනය කළ යෙදුම: <xliff:g id="TITLE">%1$s</xliff:g>"</string>
-    <string name="back_gesture_feedback_swipe_too_far_from_left_edge" msgid="340972404868601012">"ඔබ ඈත වම් දාරයෙන් ස්වයිප් කරන බවට සහතික කර ගන්න."</string>
-    <string name="back_gesture_feedback_cancelled_left_edge" msgid="6671316150388702530">"ඔබ වම් දාරයේ සිට තිරයේ මැදට ස්වයිප් කර අත හරින බව සහතික කර ගන්න."</string>
-    <string name="back_gesture_feedback_swipe_too_far_from_right_edge" msgid="4306700023773832353">"ඔබ ඈත දකුණු දාරයෙන් ස්වයිප් කරන බවට සහතික කර ගන්න."</string>
-    <string name="back_gesture_feedback_cancelled_right_edge" msgid="4951916546256902552">"ඔබ දකුණු දාරයේ සිට තිරයේ මැදට ස්වයිප් කර අත හරින බව සහතික කර ගන්න."</string>
-    <string name="back_gesture_feedback_complete_with_back_right_follow_up" msgid="2100639504811809267">"ආපසු යාමට වමේ සිට ස්වයිප් කරන්නේ කෙසේදැයි ඔබ දැන ගත්තේය."</string>
+    <string name="back_gesture_feedback_swipe_too_far_from_edge" msgid="1711645592102201538">"ඔබ ඈත දකුණු හෝ ඈත වම් දාරයේ ස්වයිප් කරන බව සහතික කර ගන්න."</string>
+    <string name="back_gesture_feedback_cancelled" msgid="3274382913290074496">"ඔබ දකුණු හෝ වම් දාරයේ සිට තිරයේ මැදට ස්වයිප් කර අත හරින බව සහතික කර ගන්න."</string>
     <string name="back_gesture_feedback_complete_with_overview_follow_up" msgid="9176400654037014471">"ආපසු යාමට දකුණේ සිට ස්වයිප් කරන්නේ කෙසේදැයි ඔබ දැන ගත්තේය. ඊළඟට, යෙදුම් මාරු කරන ආකාරය දැන ගන්න."</string>
     <string name="back_gesture_feedback_complete_without_follow_up" msgid="6405649621667113830">"ඔබ ආපසු යාමේ ඉංගිතය සම්පූර්ණ කරන ලදි."</string>
     <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="1148198467090405643">"ඔබ තිරයේ පහළට ඉතාම සමීපව ස්වයිප් නොකරන බවට සහතික කර ගන්න."</string>
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"ආපසු ඉංගිතයෙහි සංවේදීතාව වෙනස් කිරීමට, සැකසීම් වෙත යන්න"</string>
-    <string name="back_left_gesture_intro_title" msgid="5197184481779330065">"ආපසු යාමට වමේ සිට ස්වයිප් කරන්න"</string>
-    <string name="back_right_gesture_intro_title" msgid="7431951986971898074">"ආපසු යාමට දකුණින් ස්වයිප් කරන්න"</string>
-    <string name="back_left_gesture_intro_subtitle" msgid="7672761376577628602">"ඔබ සිටි අවසාන තිරයට ආපසු යාමට, වම් මායිමෙන් තිරයේ මැදට ස්වයිප් කරන්න."</string>
-    <string name="back_right_gesture_intro_subtitle" msgid="2735828029197816509">"දකුණු මායිමේ සිට තිරයේ මැදට ස්වයිප් කර අවසාන තිරයට යා හැකිය. දැන් එය උත්සාහ කරන්න."</string>
+    <string name="back_gesture_intro_title" msgid="19551256430224428">"ආපසු යාමට ස්වයිප් කරන්න"</string>
+    <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"අවසාන තිරයට ආපසු යාමට, වම් හෝ දකුණු දාරයෙන් තිරයේ මැදට ස්වයිප් කරන්න."</string>
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"ඔබ තිරයේ පහළ දාරයේ සිට ඉහළට ස්වයිප් කරන බව සහතික කර ගන්න."</string>
     <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"යාමට ඉඩ හැරීමට පෙර ඔබ විරාමයක් නොගන්නා බව සහතික කර ගන්න."</string>
     <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"ඔබ කෙලින්ම ඉහළට ස්වයිප් කරන බව සහතික කර ගන්න."</string>
@@ -71,17 +66,17 @@
     <string name="overview_gesture_feedback_complete_with_follow_up" msgid="3544611727467765026">"ඔබ ඉංගිත භාවිත කරන ආකාරය දැන ගෙන ඇත. ඉංගිත ක්‍රියාවිරහිත කිරීමට, සැකසීම් වෙත යන්න."</string>
     <string name="overview_gesture_feedback_complete_without_follow_up" msgid="3199486203448379152">"ඔබ යෙදුම් මාරු කිරීමේ ඉංගිතය සම්පූර්ණ කර ඇත."</string>
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"යෙදුම් මාරු කිරීමට ස්වයිප් කරන්න"</string>
-    <string name="overview_gesture_intro_subtitle" msgid="1579517193845186042">"ඔබගේ තිරයේ පහළින් උඩට ස්වයිප් කර, අල්ලාගෙන සිට, අනතුරුව මුදා හරින්න."</string>
+    <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"යෙදුම් අතර මාරු වීමට, ඔබගේ තිරයේ පහළම සිට උඩට ස්වයිප් කර, අල්ලාගෙන සිට, අනතුරුව මුදා හරින්න."</string>
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"සියල්ල සකසා ඇත"</string>
-    <string name="gesture_tutorial_action_button_label_next" msgid="2556263116424738762">"ඊළඟ"</string>
+    <string name="gesture_tutorial_action_button_label" msgid="6249846312991332122">"නිමයි"</string>
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"සැකසීම්"</string>
     <string name="gesture_tutorial_try_again" msgid="65962545858556697">"නැවත උත්සාහ කරන්න"</string>
     <string name="gesture_tutorial_nice" msgid="2936275692616928280">"කදිමයි!"</string>
     <string name="gesture_tutorial_step" msgid="1279786122817620968">"නිබන්ධනය <xliff:g id="CURRENT">%1$d</xliff:g>/<xliff:g id="TOTAL">%2$d</xliff:g>"</string>
     <string name="allset_title" msgid="5021126669778966707">"සියල්ල සූදානම්!"</string>
-    <string name="allset_hint" msgid="459504134589971527">"මුල් පිටුවට යාමට ඉහළට ස්වයිප් කරන්න"</string>
+    <string name="allset_hint" msgid="2384632994739392447">"මුල් පිටුවට යාමට ඉහළට ස්වයිප් කරන්න"</string>
     <string name="allset_description" msgid="6350320429953234580">"ඔබ ඔබගේ දුරකථනය භාවිත කිරීම පටන් ගැනීමට සූදානම්"</string>
-    <string name="allset_navigation_settings" msgid="417773244979225071"><annotation id="link">"ප්‍රවේශ්‍යතාව සඳහා සංචාලන සැකසීම්"</annotation></string>
+    <string name="allset_navigation_settings" msgid="4713404605961476027"><annotation id="link">"පද්ධති සංචාලන සැකසීම්"</annotation></string>
     <string name="action_share" msgid="2648470652637092375">"බෙදා ගන්න"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"තිර රුව"</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"මෙම ක්‍රියාව යෙදුම හෝ ඔබේ සංවිධානය මගින් ඉඩ නොදේ"</string>
