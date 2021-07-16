@@ -45,19 +45,14 @@
     <string name="hotsaet_tip_prediction_enabled" msgid="2233554377501347650">"Uygulama önerileri etkinleştirildi"</string>
     <string name="hotsaet_tip_prediction_disabled" msgid="1506426298884658491">"Uygulama önerileri devre dışı bırakıldı"</string>
     <string name="hotseat_prediction_content_description" msgid="4582028296938078419">"Tahmin edilen uygulama: <xliff:g id="TITLE">%1$s</xliff:g>"</string>
-    <string name="back_gesture_feedback_swipe_too_far_from_left_edge" msgid="340972404868601012">"Ekranın en solundan kaydırdığınızdan emin olun."</string>
-    <string name="back_gesture_feedback_cancelled_left_edge" msgid="6671316150388702530">"Sol kenardan ekranın ortasına doğru kaydırıp bıraktığınızdan emin olun."</string>
-    <string name="back_gesture_feedback_swipe_too_far_from_right_edge" msgid="4306700023773832353">"Ekranın en sağından kaydırdığınızdan emin olun."</string>
-    <string name="back_gesture_feedback_cancelled_right_edge" msgid="4951916546256902552">"Sağ kenardan ekranın ortasına doğru kaydırıp bıraktığınızdan emin olun."</string>
-    <string name="back_gesture_feedback_complete_with_back_right_follow_up" msgid="2100639504811809267">"Geri dönmek için soldan kaydırmayı öğrendiniz."</string>
+    <string name="back_gesture_feedback_swipe_too_far_from_edge" msgid="1711645592102201538">"En sağ veya en sol kenardan kaydırdığınızdan emin olun."</string>
+    <string name="back_gesture_feedback_cancelled" msgid="3274382913290074496">"Ekranın sağ veya sol kenarından ortasına doğru sürükleyip bıraktığınızdan emin olun."</string>
     <string name="back_gesture_feedback_complete_with_overview_follow_up" msgid="9176400654037014471">"Geri dönmek için sağdan kaydırmayı öğrendiniz. Sırada uygulamalar arasında geçiş yapma var."</string>
     <string name="back_gesture_feedback_complete_without_follow_up" msgid="6405649621667113830">"Geri dön hareketini tamamladınız."</string>
     <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="1148198467090405643">"Ekranın alt kısmına çok yakın bir şekilde kaydırmadığınızdan emin olun."</string>
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"Geri hareketinin hassasiyetini değiştirmek için Ayarlar\'a gidin"</string>
-    <string name="back_left_gesture_intro_title" msgid="5197184481779330065">"Geri gitmek için soldan kaydırın"</string>
-    <string name="back_right_gesture_intro_title" msgid="7431951986971898074">"Geri gitmek için sağdan kaydırın"</string>
-    <string name="back_left_gesture_intro_subtitle" msgid="7672761376577628602">"Görüntülediğiniz son ekrana dönmek için sol kenardan ekranın ortasına doğru kaydırın."</string>
-    <string name="back_right_gesture_intro_subtitle" msgid="2735828029197816509">"İsterseniz sağ kenardan ekranın ortasına doğru kaydırarak son ekrana dönebilirsiniz. Şimdi deneyin."</string>
+    <string name="back_gesture_intro_title" msgid="19551256430224428">"Geri dönmek için kaydırın"</string>
+    <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"Son ekrana geri gitmek için sol veya sağ kenardan ekranın ortasına doğru kaydırın."</string>
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"Ekranın alt kenarından yukarı kaydırdığınızdan emin olun."</string>
     <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"Bırakmadan önce parmağınızı duraklatmadığınızdan emin olun."</string>
     <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"Düz bir şekilde yukarı kaydırdığınızdan emin olun."</string>
@@ -71,17 +66,17 @@
     <string name="overview_gesture_feedback_complete_with_follow_up" msgid="3544611727467765026">"Hareketleri nasıl kullanacağınızı öğrendiniz. Hareketleri kapatmak için Ayarlar\'a gidin."</string>
     <string name="overview_gesture_feedback_complete_without_follow_up" msgid="3199486203448379152">"Uygulamalar arasında geçiş yapma hareketini tamamladınız."</string>
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"Uygulamalar arasında geçiş yapmak için kaydırma"</string>
-    <string name="overview_gesture_intro_subtitle" msgid="1579517193845186042">"Ekranınızın alt tarafından yukarı doğru kaydırın, tutun ve sonra bırakın."</string>
+    <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"Uygulama değiştirmek için ekranınızın altından yukarı kaydırıp basılı tutun ve sonra bırakın."</string>
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"Hepsi bu kadar"</string>
-    <string name="gesture_tutorial_action_button_label_next" msgid="2556263116424738762">"İleri"</string>
+    <string name="gesture_tutorial_action_button_label" msgid="6249846312991332122">"Bitti"</string>
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"Ayarlar"</string>
     <string name="gesture_tutorial_try_again" msgid="65962545858556697">"Tekrar deneyin"</string>
     <string name="gesture_tutorial_nice" msgid="2936275692616928280">"Güzel!"</string>
     <string name="gesture_tutorial_step" msgid="1279786122817620968">"Eğitim <xliff:g id="CURRENT">%1$d</xliff:g>/<xliff:g id="TOTAL">%2$d</xliff:g>"</string>
     <string name="allset_title" msgid="5021126669778966707">"İşlem tamam!"</string>
-    <string name="allset_hint" msgid="459504134589971527">"Ana ekrana gitmek için yukarı kaydırın"</string>
+    <string name="allset_hint" msgid="2384632994739392447">"Ana ekrana gitmek için yukarı kaydırın"</string>
     <string name="allset_description" msgid="6350320429953234580">"Telefonunuzu kullanmaya hazırsınız"</string>
-    <string name="allset_navigation_settings" msgid="417773244979225071"><annotation id="link">"Erişilebilirlik için gezinme ayarları"</annotation></string>
+    <string name="allset_navigation_settings" msgid="4713404605961476027"><annotation id="link">"Sistem gezinme ayarları"</annotation></string>
     <string name="action_share" msgid="2648470652637092375">"Paylaş"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"Ekran görüntüsü"</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"Uygulamanız veya kuruluşunuz bu işleme izin vermiyor"</string>
