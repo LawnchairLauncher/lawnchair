@@ -539,7 +539,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
             @Override
             public void onMotionPauseDetected() {
                 mHasMotionEverBeenPaused = true;
-                maybeUpdateRecentsAttachedState();
+                maybeUpdateRecentsAttachedState(true/* animate */, true/* moveFocusedTask */);
                 performHapticFeedback();
             }
 
@@ -550,8 +550,12 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
         };
     }
 
-    public void maybeUpdateRecentsAttachedState() {
+    private void maybeUpdateRecentsAttachedState() {
         maybeUpdateRecentsAttachedState(true /* animate */);
+    }
+
+    private void maybeUpdateRecentsAttachedState(boolean animate) {
+        maybeUpdateRecentsAttachedState(animate, false /* moveFocusedTask */);
     }
 
     /**
@@ -560,8 +564,10 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
      * RecentsView is shown, it will appear to be attached to the window.
      *
      * Note this method has no effect unless the navigation mode is NO_BUTTON.
+     * @param animate whether to animate when attaching RecentsView
+     * @param moveFocusedTask whether to move focused task to front when attaching
      */
-    private void maybeUpdateRecentsAttachedState(boolean animate) {
+    private void maybeUpdateRecentsAttachedState(boolean animate, boolean moveFocusedTask) {
         if (!mDeviceState.isFullyGesturalNavMode() || mRecentsView == null) {
             return;
         }
@@ -579,6 +585,12 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
             recentsAttachedToAppWindow = true;
         } else {
             recentsAttachedToAppWindow = mHasMotionEverBeenPaused || mIsLikelyToStartNewTask;
+        }
+        if (moveFocusedTask && !mAnimationFactory.hasRecentsEverAttachedToAppWindow()
+                && recentsAttachedToAppWindow) {
+            // Only move focused task if RecentsView has never been attached before, to avoid
+            // TaskView jumping to new position as we move the tasks.
+            mRecentsView.moveFocusedTaskToFront();
         }
         mAnimationFactory.setRecentsAttachedToAppWindow(recentsAttachedToAppWindow, animate);
 
@@ -1025,9 +1037,6 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
             if (mRecentsView != null) {
                 int nearestPage = mRecentsView.getDestinationPage();
                 boolean isScrolling = false;
-                // Update page scroll before snapping to page to make sure we snapped to the
-                // position calculated with target gesture in mind.
-                mRecentsView.updateScrollSynchronously();
                 if (mRecentsView.getNextPage() != nearestPage) {
                     // We shouldn't really scroll to the next page when swiping up to recents.
                     // Only allow settling on the next page if it's nearest to the center.
@@ -1186,7 +1195,8 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
             mLauncherTransitionController = null;
 
             if (mRecentsView != null) {
-                mRecentsView.onPrepareGestureEndAnimation(null, mGestureState.getEndTarget());
+                mRecentsView.onPrepareGestureEndAnimation(null, mGestureState.getEndTarget(),
+                        mTaskViewSimulator);
             }
         } else {
             AnimatorSet animatorSet = new AnimatorSet();
@@ -1228,7 +1238,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
             animatorSet.play(windowAnim);
             if (mRecentsView != null) {
                 mRecentsView.onPrepareGestureEndAnimation(
-                        animatorSet, mGestureState.getEndTarget());
+                        animatorSet, mGestureState.getEndTarget(), mTaskViewSimulator);
             }
             animatorSet.setDuration(duration).setInterpolator(interpolator);
             animatorSet.start();

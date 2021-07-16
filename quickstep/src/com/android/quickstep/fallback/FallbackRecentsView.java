@@ -36,6 +36,7 @@ import com.android.launcher3.statemanager.StateManager.StateListener;
 import com.android.quickstep.FallbackActivityInterface;
 import com.android.quickstep.GestureState;
 import com.android.quickstep.RecentsActivity;
+import com.android.quickstep.util.TaskViewSimulator;
 import com.android.quickstep.views.OverviewActionsView;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.SplitPlaceholderView;
@@ -89,8 +90,9 @@ public class FallbackRecentsView extends RecentsView<RecentsActivity, RecentsSta
      */
     @Override
     public void onPrepareGestureEndAnimation(
-            @Nullable AnimatorSet animatorSet, GestureState.GestureEndTarget endTarget) {
-        super.onPrepareGestureEndAnimation(animatorSet, endTarget);
+            @Nullable AnimatorSet animatorSet, GestureState.GestureEndTarget endTarget,
+            TaskViewSimulator taskViewSimulator) {
+        super.onPrepareGestureEndAnimation(animatorSet, endTarget, taskViewSimulator);
         if (mHomeTaskInfo != null && endTarget == RECENTS && animatorSet != null) {
             TaskView tv = getTaskView(mHomeTaskInfo.taskId);
             if (tv != null) {
