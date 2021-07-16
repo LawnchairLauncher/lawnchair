@@ -163,7 +163,7 @@ public final class Workspace extends Home {
     }
 
     private boolean isWorkspaceScrollable(UiObject2 workspace) {
-        return workspace.getChildCount() > (mLauncher.isTablet() ? 2 : 1);
+        return workspace.getChildCount() > (mLauncher.isTwoPanels() ? 2 : 1);
     }
 
     @NonNull
