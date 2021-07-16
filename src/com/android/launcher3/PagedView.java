@@ -1087,26 +1087,25 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
 
     protected float getScrollProgress(int screenCenter, View v, int page) {
         final int halfScreenSize = getMeasuredWidth() / 2;
-
         int delta = screenCenter - (getScrollForPage(page) + halfScreenSize);
-        int count = getChildCount();
+        int panelCount = getPanelCount();
+        int pageCount = getChildCount();
 
-        final int totalDistance;
-
-        int adjacentPage = page + 1;
+        int adjacentPage = page + panelCount;
         if ((delta < 0 && !mIsRtl) || (delta > 0 && mIsRtl)) {
-            adjacentPage = page - 1;
+            adjacentPage = page - panelCount;
         }
 
-        if (adjacentPage < 0 || adjacentPage > count - 1) {
-            totalDistance = v.getMeasuredWidth() + mPageSpacing;
+        final int totalDistance;
+        if (adjacentPage < 0 || adjacentPage > pageCount - 1) {
+            totalDistance = (v.getMeasuredWidth() + mPageSpacing) * panelCount;
         } else {
             totalDistance = Math.abs(getScrollForPage(adjacentPage) - getScrollForPage(page));
         }
 
         float scrollProgress = delta / (totalDistance * 1.0f);
         scrollProgress = Math.min(scrollProgress, MAX_SCROLL_PROGRESS);
-        scrollProgress = Math.max(scrollProgress, - MAX_SCROLL_PROGRESS);
+        scrollProgress = Math.max(scrollProgress, -MAX_SCROLL_PROGRESS);
         return scrollProgress;
     }
 
@@ -1649,7 +1648,7 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
 
     public boolean scrollLeft() {
         if (getNextPage() > 0) {
-            snapToPage(getNextPage() - 1);
+            snapToPage(getNextPage() - getPanelCount());
             return true;
         }
         return mAllowOverScroll;
@@ -1657,7 +1656,7 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
 
     public boolean scrollRight() {
         if (getNextPage() < getChildCount() - 1) {
-            snapToPage(getNextPage() + 1);
+            snapToPage(getNextPage() + getPanelCount());
             return true;
         }
         return mAllowOverScroll;
