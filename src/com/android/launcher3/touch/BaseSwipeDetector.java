@@ -17,6 +17,8 @@ package com.android.launcher3.touch;
 
 import static android.view.MotionEvent.INVALID_POINTER_ID;
 
+import static com.android.launcher3.Utilities.IS_RUNNING_IN_TEST_HARNESS;
+
 import android.graphics.PointF;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -41,7 +43,8 @@ import java.util.Queue;
  */
 public abstract class BaseSwipeDetector {
 
-    private static final boolean DBG = false;
+    // b/193440212: Debug swipe gesture in tests.
+    private static final boolean DBG = IS_RUNNING_IN_TEST_HARNESS;
     private static final String TAG = "BaseSwipeDetector";
     private static final float ANIMATION_DURATION = 1200;
     /** The minimum release velocity in pixels per millisecond that triggers fling.*/
