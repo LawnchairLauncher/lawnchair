@@ -45,10 +45,8 @@
     <string name="hotsaet_tip_prediction_enabled" msgid="2233554377501347650">"Sugestiile de aplicații au fost activate"</string>
     <string name="hotsaet_tip_prediction_disabled" msgid="1506426298884658491">"Sugestiile de aplicații au fost dezactivate"</string>
     <string name="hotseat_prediction_content_description" msgid="4582028296938078419">"Aplicația estimată: <xliff:g id="TITLE">%1$s</xliff:g>"</string>
-    <!-- no translation found for back_gesture_feedback_swipe_too_far_from_edge (1711645592102201538) -->
-    <skip />
-    <!-- no translation found for back_gesture_feedback_cancelled (3274382913290074496) -->
-    <skip />
+    <string name="back_gesture_feedback_swipe_too_far_from_edge" msgid="1711645592102201538">"Glisați dinspre marginea dreaptă îndepărtată sau dinspre marginea stângă îndepărtată."</string>
+    <string name="back_gesture_feedback_cancelled" msgid="3274382913290074496">"Glisați dinspre marginea dreaptă sau stângă spre mijlocul ecranului și eliberați."</string>
     <string name="back_gesture_feedback_complete_with_overview_follow_up" msgid="9176400654037014471">"Ați învățat cum să glisați dinspre dreapta pentru a reveni. În continuare, aflați cum să comutați aplicațiile."</string>
     <string name="back_gesture_feedback_complete_without_follow_up" msgid="6405649621667113830">"Ați finalizat gestul „înapoi”."</string>
     <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="1148198467090405643">"Nu glisați prea aproape de partea de jos a ecranului."</string>
@@ -68,21 +66,17 @@
     <string name="overview_gesture_feedback_complete_with_follow_up" msgid="3544611727467765026">"Ați învățat cum să folosiți gesturi. Pentru a dezactiva gesturile, accesați Setările."</string>
     <string name="overview_gesture_feedback_complete_without_follow_up" msgid="3199486203448379152">"Ați finalizat gestul „comutați între aplicații”."</string>
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"Glisați pentru a comuta între aplicații"</string>
-    <!-- no translation found for overview_gesture_intro_subtitle (4968091015637850859) -->
-    <skip />
+    <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"Pentru a comuta între aplicații, glisați în sus din partea de jos a ecranului, așteptați și eliberați"</string>
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"Gata"</string>
-    <!-- no translation found for gesture_tutorial_action_button_label (6249846312991332122) -->
-    <skip />
+    <string name="gesture_tutorial_action_button_label" msgid="6249846312991332122">"Gata"</string>
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"Setări"</string>
     <string name="gesture_tutorial_try_again" msgid="65962545858556697">"Reîncercați"</string>
     <string name="gesture_tutorial_nice" msgid="2936275692616928280">"Bravo!"</string>
     <string name="gesture_tutorial_step" msgid="1279786122817620968">"Tutorialul <xliff:g id="CURRENT">%1$d</xliff:g> / <xliff:g id="TOTAL">%2$d</xliff:g>"</string>
     <string name="allset_title" msgid="5021126669778966707">"Gata!"</string>
-    <!-- no translation found for allset_hint (2384632994739392447) -->
-    <skip />
+    <string name="allset_hint" msgid="2384632994739392447">"Glisați în sus pentru a accesa ecranul de pornire"</string>
     <string name="allset_description" msgid="6350320429953234580">"Sunteți gata să folosiți telefonul"</string>
-    <!-- no translation found for allset_navigation_settings (4713404605961476027) -->
-    <skip />
+    <string name="allset_navigation_settings" msgid="4713404605961476027"><annotation id="link">"Setările de navigare ale sistemului"</annotation></string>
     <string name="action_share" msgid="2648470652637092375">"Distribuiți"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"Captură de ecran"</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"Această acțiune nu este permisă de aplicație sau de organizația dvs."</string>

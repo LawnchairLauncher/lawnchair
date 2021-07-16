@@ -45,10 +45,8 @@
     <string name="hotsaet_tip_prediction_enabled" msgid="2233554377501347650">"ઍપના સુઝાવો ચાલુ છે"</string>
     <string name="hotsaet_tip_prediction_disabled" msgid="1506426298884658491">"ઍપના સુઝાવો બંધ છે"</string>
     <string name="hotseat_prediction_content_description" msgid="4582028296938078419">"પૂર્વાનુમાનિત ઍપ: <xliff:g id="TITLE">%1$s</xliff:g>"</string>
-    <!-- no translation found for back_gesture_feedback_swipe_too_far_from_edge (1711645592102201538) -->
-    <skip />
-    <!-- no translation found for back_gesture_feedback_cancelled (3274382913290074496) -->
-    <skip />
+    <string name="back_gesture_feedback_swipe_too_far_from_edge" msgid="1711645592102201538">"ખાતરી કરો કે તમે એકદમ દૂરની જમણી કે ડાબી કિનારીએથી સ્વાઇપ કરો છો."</string>
+    <string name="back_gesture_feedback_cancelled" msgid="3274382913290074496">"ખાતરી કરો કે તમે જમણી કે ડાબી કિનારીએથી સ્ક્રીનના મધ્ય ભાગ સુધી સ્વાઇપ કરો છો અને આંગળી ઊંચકી લો છો."</string>
     <string name="back_gesture_feedback_complete_with_overview_follow_up" msgid="9176400654037014471">"પાછળ જવા જમણેથી કેવી રીતે સ્વાઇપ કરવું એ તમે શીખી લીધું છે. હવે પછી, ઍપ સ્વિચ કરવાની રીત જાણો."</string>
     <string name="back_gesture_feedback_complete_without_follow_up" msgid="6405649621667113830">"તમે પાછા જવાનો સંકેત પૂર્ણ કર્યો છે."</string>
     <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="1148198467090405643">"ખાતરી કરો કે તમારાથી સ્ક્રીનની એકદમ નીચેની કિનારીની ખૂબ નજીક સુધી સ્વાઇપ ન થઈ જાય."</string>
@@ -68,21 +66,17 @@
     <string name="overview_gesture_feedback_complete_with_follow_up" msgid="3544611727467765026">"સંકેતોનો ઉપયોગ કરવાની રીત વિશે તમે જાણ્યું. સંકેતો બંધ કરવા, સેટિંગમાં જાઓ."</string>
     <string name="overview_gesture_feedback_complete_without_follow_up" msgid="3199486203448379152">"તમે ઍપ સ્વિચ કરવાનો સંકેત પૂર્ણ કર્યો છે."</string>
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"ઍપ સ્વિચ કરવા સ્વાઇપ કરો"</string>
-    <!-- no translation found for overview_gesture_intro_subtitle (4968091015637850859) -->
-    <skip />
+    <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"એક ઍપ પરથી બીજી ઍપ પર સ્વિચ કરવા માટે, તમારી સ્ક્રીનના નીચેના ભાગથી ઉપરની તરફ સ્વાઇપ કરીને, થોડીવાર દબાવી રાખો, પછી છોડી દો."</string>
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"બધું સેટ થઈ ગયું"</string>
-    <!-- no translation found for gesture_tutorial_action_button_label (6249846312991332122) -->
-    <skip />
+    <string name="gesture_tutorial_action_button_label" msgid="6249846312991332122">"થઈ ગયું"</string>
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"સેટિંગ"</string>
     <string name="gesture_tutorial_try_again" msgid="65962545858556697">"ફરી પ્રયાસ કરો"</string>
     <string name="gesture_tutorial_nice" msgid="2936275692616928280">"સરસ!"</string>
     <string name="gesture_tutorial_step" msgid="1279786122817620968">"ટ્યૂટૉરિઅલ <xliff:g id="CURRENT">%1$d</xliff:g>/<xliff:g id="TOTAL">%2$d</xliff:g>"</string>
     <string name="allset_title" msgid="5021126669778966707">"બધું સેટ થઈ ગયું!"</string>
-    <!-- no translation found for allset_hint (2384632994739392447) -->
-    <skip />
+    <string name="allset_hint" msgid="2384632994739392447">"હોમપેજ પર જવા માટે ઉપરની તરફ સ્વાઇપ કરો"</string>
     <string name="allset_description" msgid="6350320429953234580">"તમે તમારા ફોનનો ઉપયોગ કરવા માટે તૈયાર છો"</string>
-    <!-- no translation found for allset_navigation_settings (4713404605961476027) -->
-    <skip />
+    <string name="allset_navigation_settings" msgid="4713404605961476027"><annotation id="link">"સિસ્ટમના નૅવિગેશન સેટિંગ"</annotation></string>
     <string name="action_share" msgid="2648470652637092375">"શેર કરો"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"સ્ક્રીનશૉટ"</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"ઍપ કે તમારી સંસ્થા દ્વારા આ ક્રિયા કરવાની મંજૂરી નથી"</string>
