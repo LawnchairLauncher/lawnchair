@@ -11,7 +11,7 @@
     <string name="niu_actions_confirmation_title" msgid="3863451714863526143">"Itzuli edo entzun pantailako testua"</string>
     <string name="niu_actions_confirmation_text" msgid="2105271481950866089">"Agian pantailako testua, web-helbideak, pantaila-argazkiak eta antzeko informazioa partekatuko duzu Google-rekin.\n\nPartekatzen duzun informazioa aldatzeko, joan hona: "<b>"Ezarpenak &gt; Aplikazioak &gt; Aplikazio lehenetsiak &gt; Laguntzaile digitalaren aplikazioa"</b>"."</string>
     <string name="assistant_not_selected_title" msgid="5017072974603345228">"Hautatu laguntzaile bat eginbidea erabiltzeko"</string>
-    <string name="assistant_not_selected_text" msgid="3244613673884359276">"Pantailako testua entzun edo itzultzeko, hautatu laguntzaile digitalaren aplikazio bat Ezarpenak atalean"</string>
+    <string name="assistant_not_selected_text" msgid="3244613673884359276">"Pantailako testua entzun edo itzultzeko, aukeratu laguntzaile digitalaren aplikazio bat Ezarpenak atalean"</string>
     <string name="assistant_not_supported_title" msgid="1675788067597484142">"Aldatu laguntzailea eginbidea erabiltzeko"</string>
     <string name="assistant_not_supported_text" msgid="1708031078549268884">"Pantailako testua entzun edo itzultzeko, aldatu laguntzaile digitalaren aplikazioa Ezarpenak atalean"</string>
     <string name="tooltip_listen" msgid="7634466447860989102">"Sakatu hau pantailako testua entzuteko"</string>

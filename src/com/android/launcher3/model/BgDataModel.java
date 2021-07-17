@@ -477,6 +477,11 @@ public class BgDataModel {
                 ArrayList<ItemInfo> addNotAnimated, ArrayList<ItemInfo> addAnimated) { }
 
         /**
+         * Called when some persistent property of an item is modified
+         */
+        default void bindItemsModified(List<ItemInfo> items) { }
+
+        /**
          * Binds updated incremental download progress
          */
         default void bindIncrementalDownloadProgressUpdated(AppInfo app) { }

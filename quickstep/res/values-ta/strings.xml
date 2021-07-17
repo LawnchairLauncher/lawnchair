@@ -45,19 +45,14 @@
     <string name="hotsaet_tip_prediction_enabled" msgid="2233554377501347650">"ஆப்ஸ் பரிந்துரைகள் இயக்கப்பட்டுள்ளன"</string>
     <string name="hotsaet_tip_prediction_disabled" msgid="1506426298884658491">"ஆப்ஸ் பரிந்துரைகள் முடக்கப்பட்டுள்ளன"</string>
     <string name="hotseat_prediction_content_description" msgid="4582028296938078419">"கணித்த ஆப்ஸ்: <xliff:g id="TITLE">%1$s</xliff:g>"</string>
-    <string name="back_gesture_feedback_swipe_too_far_from_left_edge" msgid="340972404868601012">"இடது ஓரத்தின் விளிம்பிலிருந்து ஸ்வைப் செய்கிறீர்கள் என்பதை உறுதிசெய்துகொள்ளுங்கள்."</string>
-    <string name="back_gesture_feedback_cancelled_left_edge" msgid="6671316150388702530">"இடது ஓரத்திலிருந்து திரையின் மையப் பகுதிக்கு ஸ்வைப் செய்தபிறகு விடுவிப்பதை உறுதிசெய்துகொள்ளுங்கள்."</string>
-    <string name="back_gesture_feedback_swipe_too_far_from_right_edge" msgid="4306700023773832353">"வலது ஓரத்தின் விளிம்பிலிருந்து ஸ்வைப் செய்கிறீர்கள் என்பதை உறுதிசெய்துகொள்ளுங்கள்."</string>
-    <string name="back_gesture_feedback_cancelled_right_edge" msgid="4951916546256902552">"வலது ஓரத்திலிருந்து திரையின் மையப் பகுதிக்கு ஸ்வைப் செய்தபிறகு விடுவிப்பதை உறுதிசெய்துகொள்ளுங்கள்."</string>
-    <string name="back_gesture_feedback_complete_with_back_right_follow_up" msgid="2100639504811809267">"பின்செல்வதற்கு எப்படி இடதுபுறத்திலிருந்து ஸ்வைப் செய்வதென்று கற்றுக்கொண்டீர்கள்."</string>
+    <string name="back_gesture_feedback_swipe_too_far_from_edge" msgid="1711645592102201538">"வலது அல்லது இடது ஓரத்தின் விளிம்பிலிருந்து ஸ்வைப் செய்வதை உறுதிசெய்க."</string>
+    <string name="back_gesture_feedback_cancelled" msgid="3274382913290074496">"வலது அல்லது இடது ஓரத்திலிருந்து திரையின் மையப் பகுதிக்கு ஸ்வைப் செய்தபிறகு விடுவிப்பதை உறுதிசெய்க."</string>
     <string name="back_gesture_feedback_complete_with_overview_follow_up" msgid="9176400654037014471">"பின்செல்வதற்கு எப்படி வலதுபுறத்திலிருந்து ஸ்வைப் செய்வதென்று கற்றுக்கொண்டீர்கள். அடுத்து ஆப்ஸுக்கிடையே எப்படி மாறுவது என்பதை அறிக."</string>
     <string name="back_gesture_feedback_complete_without_follow_up" msgid="6405649621667113830">"பின்செல் சைகைப் பயிற்சியை முடித்துவிட்டீர்கள்."</string>
     <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="1148198467090405643">"திரையின் கீழ்பகுதிக்கு மிக நெருக்கமாக ஸ்வைப் செய்யவில்லை என்பதை உறுதிசெய்துகொள்ளுங்கள்."</string>
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"பின்செல் சைகையின் உணர்திறனை மாற்ற அமைப்புகளுக்குச் செல்க"</string>
-    <string name="back_left_gesture_intro_title" msgid="5197184481779330065">"பின்செல்வதற்கு இடதுபுறத்திலிருந்து ஸ்வைப் செய்யுங்கள்"</string>
-    <string name="back_right_gesture_intro_title" msgid="7431951986971898074">"பின்செல்வதற்கு வலதுபுறத்திலிருந்து ஸ்வைப் செய்யுங்கள்"</string>
-    <string name="back_left_gesture_intro_subtitle" msgid="7672761376577628602">"முந்தைய திரைக்கு மீண்டும் செல்ல, இடது ஓரத்திலிருந்து திரையின் மையப் பகுதிக்கு ஸ்வைப் செய்யுங்கள்."</string>
-    <string name="back_right_gesture_intro_subtitle" msgid="2735828029197816509">"வலது ஓரத்திலிருந்து திரையின் மையப் பகுதிக்கு ஸ்வைப் செய்தும் முந்தைய திரைக்குச் செல்லலாம். இப்போதே முயலுங்கள்."</string>
+    <string name="back_gesture_intro_title" msgid="19551256430224428">"பின்செல்ல ஸ்வைப் செய்யுங்கள்"</string>
+    <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"முந்தைய திரைக்கு மீண்டும் செல்ல, இடது/வலது ஓரத்திலிருந்து திரையின் மையப் பகுதிக்கு ஸ்வைப் செய்க."</string>
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"திரையின் கீழ் ஓரத்திலிருந்து மேல்நோக்கி ஸ்வைப் செய்வதை உறுதிசெய்துகொள்ளுங்கள்."</string>
     <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"விடுவிப்பதற்கு முன்பாக இடைநிறுத்தவில்லை என்பதை உறுதிசெய்துகொள்ளுங்கள்."</string>
     <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"மேல்நோக்கி நேராக ஸ்வைப் செய்வதை உறுதிசெய்துகொள்ளுங்கள்."</string>
@@ -71,17 +66,17 @@
     <string name="overview_gesture_feedback_complete_with_follow_up" msgid="3544611727467765026">"சைகைகளை எப்படி உபயோகிப்பது என்று கற்றுக்கொண்டீர்கள். சைகைகளை முடக்க அமைப்புகளுக்குச் செல்லுங்கள்."</string>
     <string name="overview_gesture_feedback_complete_without_follow_up" msgid="3199486203448379152">"ஆப்ஸுக்கிடையே மாறும் சைகைப் பயிற்சியை முடித்துவிட்டீர்கள்."</string>
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"ஆப்ஸுக்கிடையே மாற ஸ்வைப் செய்யுங்கள்"</string>
-    <string name="overview_gesture_intro_subtitle" msgid="1579517193845186042">"திரையின் கீழிலிருந்து மேலாக ஸ்வைப் செய்து, சில விநாடிகள் பிடித்திருந்து, பிறகு விரலை எடுங்கள்."</string>
+    <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"ஆப்ஸுக்கு இடையே மாற, திரையின் கீழிலிருந்து மேலாக ஸ்வைப் செய்து, பிடித்திருந்து, பிறகு விடுவிக்கவும்."</string>
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"எல்லாம் தயார்"</string>
-    <string name="gesture_tutorial_action_button_label_next" msgid="2556263116424738762">"அடுத்து"</string>
+    <string name="gesture_tutorial_action_button_label" msgid="6249846312991332122">"முடிந்தது"</string>
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"அமைப்புகள்"</string>
     <string name="gesture_tutorial_try_again" msgid="65962545858556697">"மீண்டும் முயல்க"</string>
     <string name="gesture_tutorial_nice" msgid="2936275692616928280">"அருமை!"</string>
     <string name="gesture_tutorial_step" msgid="1279786122817620968">"பயிற்சி <xliff:g id="CURRENT">%1$d</xliff:g>/<xliff:g id="TOTAL">%2$d</xliff:g>"</string>
     <string name="allset_title" msgid="5021126669778966707">"அனைத்தையும் அமைத்துவிட்டீர்கள்!"</string>
-    <string name="allset_hint" msgid="459504134589971527">"முகப்புக்குச் செல்ல மேல்நோக்கி ஸ்வைப் செய்யுங்கள்"</string>
+    <string name="allset_hint" msgid="2384632994739392447">"முகப்புத் திரைக்குச் செல்ல மேல்நோக்கி ஸ்வைப் செய்யுங்கள்"</string>
     <string name="allset_description" msgid="6350320429953234580">"மொபைலைப் பயன்படுத்தத் தயாராகிவிட்டீர்கள்"</string>
-    <string name="allset_navigation_settings" msgid="417773244979225071"><annotation id="link">"அணுகல்தன்மைக்கான வழிசெலுத்தல் அமைப்புகள்"</annotation></string>
+    <string name="allset_navigation_settings" msgid="4713404605961476027"><annotation id="link">"சிஸ்டம் வழிசெலுத்தல் அமைப்புகள்"</annotation></string>
     <string name="action_share" msgid="2648470652637092375">"பகிர்"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"ஸ்கிரீன்ஷாட்"</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"ஆப்ஸோ உங்கள் நிறுவனமோ இந்த செயலை அனுமதிப்பதில்லை"</string>

@@ -45,19 +45,14 @@
     <string name="hotsaet_tip_prediction_enabled" msgid="2233554377501347650">"Ieteicamās lietotnes ir iespējotas"</string>
     <string name="hotsaet_tip_prediction_disabled" msgid="1506426298884658491">"Ieteicamās lietotnes ir atspējotas"</string>
     <string name="hotseat_prediction_content_description" msgid="4582028296938078419">"Prognozētā lietotne: <xliff:g id="TITLE">%1$s</xliff:g>"</string>
-    <string name="back_gesture_feedback_swipe_too_far_from_left_edge" msgid="340972404868601012">"Jāvelk no pašas kreisās malas."</string>
-    <string name="back_gesture_feedback_cancelled_left_edge" msgid="6671316150388702530">"Jāvelk no ekrāna kreisās malas uz vidu un jāatlaiž."</string>
-    <string name="back_gesture_feedback_swipe_too_far_from_right_edge" msgid="4306700023773832353">"Jāvelk no pašas labās malas."</string>
-    <string name="back_gesture_feedback_cancelled_right_edge" msgid="4951916546256902552">"Jāvelk no ekrāna labās malas uz vidu un jāatlaiž."</string>
-    <string name="back_gesture_feedback_complete_with_back_right_follow_up" msgid="2100639504811809267">"Jūs esat apguvis, kā vilkt no kreisās malas, lai pārietu atpakaļ."</string>
+    <string name="back_gesture_feedback_swipe_too_far_from_edge" msgid="1711645592102201538">"Velciet no pašas labās vai kreisās malas."</string>
+    <string name="back_gesture_feedback_cancelled" msgid="3274382913290074496">"Velciet no ekrāna labās vai kreisās malas uz vidu un atlaidiet."</string>
     <string name="back_gesture_feedback_complete_with_overview_follow_up" msgid="9176400654037014471">"Jūs esat apguvis, kā vilkt no labās malas, lai pārietu atpakaļ. Tagad mācieties pārslēgt lietotnes."</string>
     <string name="back_gesture_feedback_complete_without_follow_up" msgid="6405649621667113830">"Jūs sekmīgi veicāt atgriešanās žestu."</string>
     <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="1148198467090405643">"Nevelciet pārāk tuvu ekrāna apakšdaļai."</string>
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"Atgriešanās žesta jutīguma līmeni varat mainīt iestatījumos."</string>
-    <string name="back_left_gesture_intro_title" msgid="5197184481779330065">"Lai pārietu atpakaļ, velciet no kreisās malas."</string>
-    <string name="back_right_gesture_intro_title" msgid="7431951986971898074">"Lai atgrieztos, velciet no labās malas"</string>
-    <string name="back_left_gesture_intro_subtitle" msgid="7672761376577628602">"Lai pārietu atpakaļ uz pēdējo izmantoto ekrānu, velciet no kreisās malas uz ekrāna vidu."</string>
-    <string name="back_right_gesture_intro_subtitle" msgid="2735828029197816509">"Varat arī pāriet atpakaļ uz pēdējo ekrānu, velkot no labās malas uz ekrāna vidu. Izmēģiniet tūlīt!"</string>
+    <string name="back_gesture_intro_title" msgid="19551256430224428">"Vilkšana, lai atgrieztos"</string>
+    <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"Lai atgrieztos iepriekšējā ekrānā, velciet no kreisās vai labās malas uz ekrāna vidu."</string>
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"Jāvelk augšup no ekrāna apakšmalas."</string>
     <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"Pirms atlaišanas nepārtrauciet kustību."</string>
     <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"Jāvelk tieši uz augšu."</string>
@@ -71,17 +66,17 @@
     <string name="overview_gesture_feedback_complete_with_follow_up" msgid="3544611727467765026">"Jūs esat apguvis žestu izmantošanu. Lai izslēgtu žestus, pārejiet uz sadaļu Iestatījumi."</string>
     <string name="overview_gesture_feedback_complete_without_follow_up" msgid="3199486203448379152">"Jūs sekmīgi veicāt lietotņu pārslēgšanas žestu."</string>
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"Vilkšana, lai pārslēgtu lietotnes"</string>
-    <string name="overview_gesture_intro_subtitle" msgid="1579517193845186042">"Velciet augšup no ekrāna apakšdaļas, turiet un pēc tam atlaidiet."</string>
+    <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"Lai pārslēgtu lietotnes, velciet augšup no ekrāna apakšdaļas, turiet un pēc tam atlaidiet."</string>
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"Gatavs"</string>
-    <string name="gesture_tutorial_action_button_label_next" msgid="2556263116424738762">"Tālāk"</string>
+    <string name="gesture_tutorial_action_button_label" msgid="6249846312991332122">"Gatavs"</string>
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"Iestatījumi"</string>
     <string name="gesture_tutorial_try_again" msgid="65962545858556697">"Mēģināt vēlreiz"</string>
     <string name="gesture_tutorial_nice" msgid="2936275692616928280">"Lieliski!"</string>
     <string name="gesture_tutorial_step" msgid="1279786122817620968">"<xliff:g id="CURRENT">%1$d</xliff:g>. mācību darbība no <xliff:g id="TOTAL">%2$d</xliff:g>"</string>
     <string name="allset_title" msgid="5021126669778966707">"Gatavs!"</string>
-    <string name="allset_hint" msgid="459504134589971527">"Velciet augšup, lai pārietu uz sākuma ekrānu"</string>
+    <string name="allset_hint" msgid="2384632994739392447">"Velciet augšup, lai pārietu uz sākuma ekrānu."</string>
     <string name="allset_description" msgid="6350320429953234580">"Varat sākt izmantot savu tālruni"</string>
-    <string name="allset_navigation_settings" msgid="417773244979225071"><annotation id="link">"Navigācijas iestatījumi pieejamībai"</annotation></string>
+    <string name="allset_navigation_settings" msgid="4713404605961476027"><annotation id="link">"Sistēmas navigācijas iestatījumi"</annotation></string>
     <string name="action_share" msgid="2648470652637092375">"Kopīgot"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"Veikt ekrānuzņēmumu"</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"Lietotne vai jūsu organizācija neatļauj veikt šo darbību."</string>

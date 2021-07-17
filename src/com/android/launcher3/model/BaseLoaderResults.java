@@ -16,6 +16,7 @@
 
 package com.android.launcher3.model;
 
+import static com.android.launcher3.model.ItemInstallQueue.FLAG_LOADER_RUNNING;
 import static com.android.launcher3.model.ModelUtils.filterCurrentWorkspaceItems;
 import static com.android.launcher3.model.ModelUtils.sortWorkspaceItemsSpatially;
 import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
@@ -73,7 +74,7 @@ public abstract class BaseLoaderResults {
     /**
      * Binds all loaded data to actual views on the main thread.
      */
-    public void bindWorkspace() {
+    public void bindWorkspace(boolean incrementBindId) {
         // Save a copy of all the bg-thread collections
         ArrayList<ItemInfo> workspaceItems = new ArrayList<>();
         ArrayList<LauncherAppWidgetInfo> appWidgets = new ArrayList<>();
@@ -85,7 +86,9 @@ public abstract class BaseLoaderResults {
             appWidgets.addAll(mBgDataModel.appWidgets);
             orderedScreenIds.addAll(mBgDataModel.collectWorkspaceScreens());
             mBgDataModel.extraItems.forEach(extraItems::add);
-            mBgDataModel.lastBindId++;
+            if (incrementBindId) {
+                mBgDataModel.lastBindId++;
+            }
             mMyBindingId = mBgDataModel.lastBindId;
         }
 
@@ -217,7 +220,11 @@ public abstract class BaseLoaderResults {
             bindAppWidgets(otherAppWidgets, pendingExecutor);
             executeCallbacksTask(c -> c.finishBindingItems(currentScreenIndices), pendingExecutor);
             pendingExecutor.execute(
-                    () -> MODEL_EXECUTOR.setThreadPriority(Process.THREAD_PRIORITY_DEFAULT));
+                    () -> {
+                        MODEL_EXECUTOR.setThreadPriority(Process.THREAD_PRIORITY_DEFAULT);
+                        ItemInstallQueue.INSTANCE.get(mApp.getContext())
+                                .resumeModelPush(FLAG_LOADER_RUNNING);
+                    });
 
             executeCallbacksTask(
                     c -> {

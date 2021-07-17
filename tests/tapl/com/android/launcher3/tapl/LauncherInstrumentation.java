@@ -288,6 +288,11 @@ public final class LauncherInstrumentation {
                 .getBoolean(TestProtocol.TEST_INFO_RESPONSE_FIELD);
     }
 
+    public boolean isTwoPanels() {
+        return getTestInfo(TestProtocol.REQUEST_IS_TWO_PANELS)
+            .getBoolean(TestProtocol.TEST_INFO_RESPONSE_FIELD);
+    }
+
     void setActiveContainer(VisibleContainer container) {
         sActiveContainer = new WeakReference<>(container);
     }

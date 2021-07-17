@@ -95,6 +95,7 @@ public final class TestProtocol {
     public static final String REQUEST_STOP_EVENT_LOGGING = "stop-event-logging";
     public static final String REQUEST_CLEAR_DATA = "clear-data";
     public static final String REQUEST_IS_TABLET = "is-tablet";
+    public static final String REQUEST_IS_TWO_PANELS = "is-two-panel";
 
     public static boolean sDebugTracing = false;
     public static final String REQUEST_ENABLE_DEBUG_TRACING = "enable-debug-tracing";
@@ -110,4 +111,5 @@ public final class TestProtocol {
     public static final String PERMANENT_DIAG_TAG = "TaplTarget";
     public static final String WORK_PROFILE_REMOVED = "b/159671700";
     public static final String FALLBACK_ACTIVITY_NO_SET = "b/181019015";
+    public static final String HOME_TO_OVERVIEW_FLAKY = "b/193440212";
 }

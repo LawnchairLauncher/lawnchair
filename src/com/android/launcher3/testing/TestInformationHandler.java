@@ -121,6 +121,11 @@ public class TestInformationHandler implements ResourceBasedOverride {
                 response.putBoolean(TestProtocol.TEST_INFO_RESPONSE_FIELD, mDeviceProfile.isTablet);
                 return response;
 
+            case TestProtocol.REQUEST_IS_TWO_PANELS:
+                response.putBoolean(TestProtocol.TEST_INFO_RESPONSE_FIELD,
+                    mDeviceProfile.isTwoPanels);
+                return response;
+
             default:
                 return null;
         }

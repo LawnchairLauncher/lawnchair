@@ -48,7 +48,6 @@ import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCH
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_WIDGET_RECONFIGURED;
 import static com.android.launcher3.model.ItemInstallQueue.FLAG_ACTIVITY_PAUSED;
 import static com.android.launcher3.model.ItemInstallQueue.FLAG_DRAG_AND_DROP;
-import static com.android.launcher3.model.ItemInstallQueue.FLAG_LOADER_RUNNING;
 import static com.android.launcher3.popup.SystemShortcut.APP_INFO;
 import static com.android.launcher3.popup.SystemShortcut.INSTALL;
 import static com.android.launcher3.popup.SystemShortcut.WIDGETS;
@@ -596,7 +595,7 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
         }
 
         onDeviceProfileInitiated();
-        mModelWriter = mModel.getWriter(getDeviceProfile().isVerticalBarLayout(), true);
+        mModelWriter = mModel.getWriter(getDeviceProfile().isVerticalBarLayout(), true, this);
     }
 
     public RotationHelper getRotationHelper() {
@@ -2598,9 +2597,6 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
             mPendingActivityResult = null;
         }
 
-        ItemInstallQueue.INSTANCE.get(this)
-                .resumeModelPush(FLAG_LOADER_RUNNING);
-
         int currentPage = pagesBoundFirst != null && !pagesBoundFirst.isEmpty()
                 ? pagesBoundFirst.getArray().get(0) : PagedView.INVALID_PAGE;
         // When undoing the removal of the last item on a page, return to that page.
@@ -2677,7 +2673,7 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
     @Override
     public void bindWorkspaceItemsChanged(List<WorkspaceItemInfo> updated) {
         if (!updated.isEmpty()) {
-            mWorkspace.updateShortcuts(updated);
+            mWorkspace.updateWorkspaceItems(updated, this);
             PopupContainerWithArrow.dismissInvalidPopup(this);
         }
     }
@@ -2689,7 +2685,7 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
      */
     @Override
     public void bindRestoreItemsChange(HashSet<ItemInfo> updates) {
-        mWorkspace.updateRestoreItems(updates);
+        mWorkspace.updateRestoreItems(updates, this);
     }
 
     /**
