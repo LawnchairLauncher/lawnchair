@@ -2147,7 +2147,7 @@ public class CellLayout extends ViewGroup {
         mShakeAnimators.clear();
     }
 
-    private void commitTempPlacement() {
+    private void commitTempPlacement(View dragView) {
         mTmpOccupied.copyTo(mOccupied);
 
         int screenId = Launcher.cast(mActivity).getWorkspace().getIdForScreen(this);
@@ -2165,7 +2165,7 @@ public class CellLayout extends ViewGroup {
             ItemInfo info = (ItemInfo) child.getTag();
             // We do a null check here because the item info can be null in the case of the
             // AllApps button in the hotseat.
-            if (info != null) {
+            if (info != null && child != dragView) {
                 final boolean requiresDbUpdate = (info.cellX != lp.tmpCellX
                         || info.cellY != lp.tmpCellY || info.spanX != lp.cellHSpan
                         || info.spanY != lp.cellVSpan);
@@ -2327,7 +2327,7 @@ public class CellLayout extends ViewGroup {
             animateItemsToSolution(swapSolution, dragView, commit);
 
             if (commit) {
-                commitTempPlacement();
+                commitTempPlacement(null);
                 completeAndClearReorderPreviewAnimations();
                 setItemPlacementDirty(false);
             } else {
@@ -2421,7 +2421,8 @@ public class CellLayout extends ViewGroup {
 
                 if (!DESTRUCTIVE_REORDER &&
                         (mode == MODE_ON_DROP || mode == MODE_ON_DROP_EXTERNAL)) {
-                    commitTempPlacement();
+                    // Since the temp solution didn't update dragView, don't commit it either
+                    commitTempPlacement(dragView);
                     completeAndClearReorderPreviewAnimations();
                     setItemPlacementDirty(false);
                 } else {
@@ -2877,7 +2878,7 @@ public class CellLayout extends ViewGroup {
                 directionVector, null, false, configuration).isSolution) {
             if (commitConfig) {
                 copySolutionToTempState(configuration, null);
-                commitTempPlacement();
+                commitTempPlacement(null);
                 // undo marking cells occupied since there is actually nothing being placed yet.
                 mOccupied.markCells(0, mCountY - 1, mCountX, 1, false);
             }

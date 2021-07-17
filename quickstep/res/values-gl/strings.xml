@@ -45,19 +45,14 @@
     <string name="hotsaet_tip_prediction_enabled" msgid="2233554377501347650">"As suxestións de aplicacións están activadas"</string>
     <string name="hotsaet_tip_prediction_disabled" msgid="1506426298884658491">"As suxestións de aplicacións están desactivadas"</string>
     <string name="hotseat_prediction_content_description" msgid="4582028296938078419">"Aplicación predita: <xliff:g id="TITLE">%1$s</xliff:g>"</string>
-    <string name="back_gesture_feedback_swipe_too_far_from_left_edge" msgid="340972404868601012">"Asegúrate de pasar o dedo desde o bordo esquerdo máis afastado."</string>
-    <string name="back_gesture_feedback_cancelled_left_edge" msgid="6671316150388702530">"Asegúrate de pasar o dedo desde o bordo esquerdo ata o medio da pantalla e avanza."</string>
-    <string name="back_gesture_feedback_swipe_too_far_from_right_edge" msgid="4306700023773832353">"Asegúrate de pasar o dedo desde o bordo dereito máis afastado."</string>
-    <string name="back_gesture_feedback_cancelled_right_edge" msgid="4951916546256902552">"Asegúrate de pasar o dedo desde o bordo dereito ata o medio da pantalla e avanza."</string>
-    <string name="back_gesture_feedback_complete_with_back_right_follow_up" msgid="2100639504811809267">"Aprendiches a pasar o dedo desde a esquerda para volver á pantalla anterior."</string>
+    <string name="back_gesture_feedback_swipe_too_far_from_edge" msgid="1711645592102201538">"Asegúrate de pasar o dedo desde o bordo dereito ou esquerdo máis afastado."</string>
+    <string name="back_gesture_feedback_cancelled" msgid="3274382913290074496">"Asegúrate de pasar o dedo desde o bordo dereito ou esquerdo ata o medio da pantalla e avanza."</string>
     <string name="back_gesture_feedback_complete_with_overview_follow_up" msgid="9176400654037014471">"Aprendiches a pasar o dedo desde a dereita para volver. Agora, aprende a cambiar de aplicación."</string>
     <string name="back_gesture_feedback_complete_without_follow_up" msgid="6405649621667113830">"Completaches o xesto de volver á última pantalla."</string>
     <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="1148198467090405643">"Asegúrate de non pasar o dedo demasiado preto da parte inferior da pantalla."</string>
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"Podes cambiar a sensibilidade do xesto en Configuración"</string>
-    <string name="back_left_gesture_intro_title" msgid="5197184481779330065">"Pasa o dedo desde a esquerda para volver"</string>
-    <string name="back_right_gesture_intro_title" msgid="7431951986971898074">"Pasa o dedo desde a dereita para volver á pantalla anterior"</string>
-    <string name="back_left_gesture_intro_subtitle" msgid="7672761376577628602">"Para volver á última pantalla, pasa o dedo desde o bordo esquerdo ata a metade da pantalla."</string>
-    <string name="back_right_gesture_intro_subtitle" msgid="2735828029197816509">"Tamén podes volver pasando o dedo desde o bordo dereito ata a metade da pantalla. Próbao agora."</string>
+    <string name="back_gesture_intro_title" msgid="19551256430224428">"Pasar o dedo para volver"</string>
+    <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"Para volver á última pantalla, pasa o dedo cara ao medio desde o bordo dereito ou esquerdo."</string>
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"Asegúrate de pasar o dedo cara arriba desde o bordo inferior da pantalla."</string>
     <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"Asegúrate de non facer unha pausa antes de avanzar."</string>
     <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"Asegúrate de pasar o dedo cara arriba cun movemento vertical."</string>
@@ -71,17 +66,17 @@
     <string name="overview_gesture_feedback_complete_with_follow_up" msgid="3544611727467765026">"Aprendiches a usar os xestos. Para desactivalos, vai a Configuración."</string>
     <string name="overview_gesture_feedback_complete_without_follow_up" msgid="3199486203448379152">"Completaches o xesto para cambiar de aplicación."</string>
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"Pasar o dedo para cambiar de aplicación"</string>
-    <string name="overview_gesture_intro_subtitle" msgid="1579517193845186042">"Pasa o dedo cara arriba desde a parte inferior da pantalla, mantena premida e sepárao."</string>
+    <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"Para cambiar de aplicación, pasa o dedo cara arriba desde abaixo, mantén premido e levanta o dedo."</string>
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"Todo listo"</string>
-    <string name="gesture_tutorial_action_button_label_next" msgid="2556263116424738762">"Seguinte"</string>
+    <string name="gesture_tutorial_action_button_label" msgid="6249846312991332122">"Feito"</string>
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"Configuración"</string>
     <string name="gesture_tutorial_try_again" msgid="65962545858556697">"Téntao de novo"</string>
     <string name="gesture_tutorial_nice" msgid="2936275692616928280">"Excelente!"</string>
     <string name="gesture_tutorial_step" msgid="1279786122817620968">"Titorial <xliff:g id="CURRENT">%1$d</xliff:g>/<xliff:g id="TOTAL">%2$d</xliff:g>"</string>
     <string name="allset_title" msgid="5021126669778966707">"Todo listo"</string>
-    <string name="allset_hint" msgid="459504134589971527">"Pasa o dedo cara arriba para ir á pantalla de inicio"</string>
+    <string name="allset_hint" msgid="2384632994739392447">"Pasa o dedo cara arriba para ir á pantalla de inicio"</string>
     <string name="allset_description" msgid="6350320429953234580">"Todo está listo para comezar a utilizar o teléfono"</string>
-    <string name="allset_navigation_settings" msgid="417773244979225071"><annotation id="link">"Configuración da navegación para a accesibilidade"</annotation></string>
+    <string name="allset_navigation_settings" msgid="4713404605961476027"><annotation id="link">"Configuración da navegación do sistema"</annotation></string>
     <string name="action_share" msgid="2648470652637092375">"Compartir"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"Facer captura"</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"A aplicación ou a túa organización non permite realizar esta acción"</string>

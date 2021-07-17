@@ -35,6 +35,7 @@
     <string name="widget_preview_context_description" msgid="9045841361655787574">"<xliff:g id="WIDGET_NAME">%1$s</xliff:g> വിജറ്റ്"</string>
     <string name="add_item_request_drag_hint" msgid="5653291305078645405">"ഹോം സ്‌ക്രീനിന് ചുറ്റും വിജറ്റ് നീക്കാൻ അതിൽ സ്‌പർശിച്ച് പിടിക്കുക"</string>
     <string name="add_to_home_screen" msgid="8631549138215492708">"ഹോം സ്‌ക്രീനിലേക്ക് ചേർക്കുക"</string>
+    <string name="added_to_home_screen_accessibility_text" msgid="4451545765448884415">"<xliff:g id="WIDGET_NAME">%1$s</xliff:g> വിജറ്റ് ഹോം സ്‌ക്രീനിലേക്ക് ചേർത്തു"</string>
     <plurals name="widgets_count" formatted="false" msgid="656794749266073027">
       <item quantity="other"><xliff:g id="WIDGETS_COUNT_1">%1$d</xliff:g> വിജറ്റുകൾ</item>
       <item quantity="one"><xliff:g id="WIDGETS_COUNT_0">%1$d</xliff:g> വിജറ്റ്</item>

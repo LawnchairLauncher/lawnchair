@@ -28,13 +28,13 @@ import android.view.View;
 import androidx.test.filters.LargeTest;
 import androidx.test.runner.AndroidJUnit4;
 
-import com.android.launcher3.Workspace;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.LauncherAppWidgetInfo;
 import com.android.launcher3.tapl.Widgets;
 import com.android.launcher3.testcomponent.WidgetConfigActivity;
 import com.android.launcher3.ui.AbstractLauncherUiTest;
 import com.android.launcher3.ui.TestViewHelpers;
+import com.android.launcher3.util.LauncherBindableItemsContainer.ItemOperator;
 import com.android.launcher3.util.Wait;
 import com.android.launcher3.util.Wait.Condition;
 import com.android.launcher3.util.rule.ShellCommandRule;
@@ -121,7 +121,7 @@ public class AddConfigWidgetTest extends AbstractLauncherUiTest {
     /**
      * Condition for searching widget id
      */
-    private class WidgetSearchCondition implements Condition, Workspace.ItemOperator {
+    private class WidgetSearchCondition implements Condition, ItemOperator {
 
         @Override
         public boolean isTrue() throws Throwable {

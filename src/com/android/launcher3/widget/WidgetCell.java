@@ -46,6 +46,7 @@ import androidx.annotation.Nullable;
 import com.android.launcher3.BaseActivity;
 import com.android.launcher3.CheckLongPressHelper;
 import com.android.launcher3.DeviceProfile;
+import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.icons.FastBitmapDrawable;
 import com.android.launcher3.icons.RoundDrawableWrapper;
@@ -127,6 +128,7 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
 
     private RemoteViews mRemoteViewsPreview;
     private NavigableAppWidgetHostView mAppWidgetHostViewPreview;
+    private float mAppWidgetHostViewScale = 1f;
     private int mSourceContainer = CONTAINER_WIDGETS_TRAY;
 
     public WidgetCell(Context context) {
@@ -177,6 +179,11 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
         return mRemoteViewsPreview;
     }
 
+    /** Returns the app widget host view scale, which is a value between [0f, 1f]. */
+    public float getAppWidgetHostViewScale() {
+        return mAppWidgetHostViewScale;
+    }
+
     /**
      * Called to clear the view and free attached resources. (e.g., {@link Bitmap}
      */
@@ -202,6 +209,7 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
             mWidgetImageContainer.removeView(mAppWidgetHostViewPreview);
         }
         mAppWidgetHostViewPreview = null;
+        mAppWidgetHostViewScale = 1f;
         mItem = null;
     }
 
@@ -242,12 +250,7 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
 
     private void applyPreviewOnAppWidgetHostView(WidgetItem item) {
         if (mRemoteViewsPreview != null) {
-            mAppWidgetHostViewPreview = new NavigableAppWidgetHostView(getContext()) {
-                @Override
-                protected boolean shouldAllowDirectClick() {
-                    return false;
-                }
-            };
+            mAppWidgetHostViewPreview = createAppWidgetHostView(getContext());
             setAppWidgetHostViewPreview(mAppWidgetHostViewPreview, item.widgetInfo,
                     mRemoteViewsPreview);
             return;
@@ -255,10 +258,15 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
 
         if (!item.hasPreviewLayout()) return;
 
-        mAppWidgetHostViewPreview = new LauncherAppWidgetHostView(getContext());
+        Context context = getContext();
+        // If the context is a Launcher activity, DragView will show mAppWidgetHostViewPreview as
+        // a preview during drag & drop. And thus, we should use LauncherAppWidgetHostView, which
+        // supports applying local color extraction during drag & drop.
+        mAppWidgetHostViewPreview = isLauncherContext(context)
+                ? new LauncherAppWidgetHostView(context)
+                : createAppWidgetHostView(context);
         LauncherAppWidgetProviderInfo launcherAppWidgetProviderInfo =
-                LauncherAppWidgetProviderInfo.fromProviderInfo(getContext(),
-                        item.widgetInfo.clone());
+                LauncherAppWidgetProviderInfo.fromProviderInfo(context, item.widgetInfo.clone());
         // A hack to force the initial layout to be the preview layout since there is no API for
         // rendering a preview layout for work profile apps yet. For non-work profile layout, a
         // proper solution is to use RemoteViews(PackageName, LayoutId).
@@ -364,8 +372,8 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
                 if (shouldScale) {
                     setNoClip(mWidgetImageContainer);
                     setNoClip(mAppWidgetHostViewPreview);
-                    float previewLayoutScale = computeWidgetPreviewScale();
-                    mAppWidgetHostViewPreview.setScaleToFit(previewLayoutScale);
+                    mAppWidgetHostViewScale = computeWidgetPreviewScale();
+                    mAppWidgetHostViewPreview.setScaleToFit(mAppWidgetHostViewScale);
                 }
             }
             FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
@@ -429,6 +437,24 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
             return getTag().toString();
         }
         return "";
+    }
+
+    private static NavigableAppWidgetHostView createAppWidgetHostView(Context context) {
+        return new NavigableAppWidgetHostView(context) {
+            @Override
+            protected boolean shouldAllowDirectClick() {
+                return false;
+            }
+        };
+    }
+
+    private static boolean isLauncherContext(Context context) {
+        try {
+            Launcher.getLauncher(context);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     @Override

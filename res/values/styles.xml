@@ -61,7 +61,7 @@
         <item name="eduHalfSheetBGColor">?android:attr/colorAccent</item>
         <item name="disabledIconAlpha">.54</item>
         <item name="workspaceAccentColor">@color/workspace_accent_color_light</item>
-        <item name="dropTargetHoverTextColor">@color/workspace_text_color_light</item>
+        <item name="dropTargetHoverTextColor">@color/workspace_text_color_dark</item>
         <item name="overviewScrimColor">@color/overview_scrim</item>
 
         <item name="android:windowTranslucentStatus">false</item>
@@ -75,8 +75,6 @@
 
     <style name="LauncherTheme.DarkMainColor" parent="@style/LauncherTheme">
         <item name="disabledIconAlpha">.254</item>
-        <item name="workspaceAccentColor">@color/workspace_accent_color_dark</item>
-        <item name="dropTargetHoverTextColor">@color/workspace_text_color_dark</item>
 
     </style>
 
@@ -87,6 +85,8 @@
         <item name="workspaceKeyShadowColor">@android:color/transparent</item>
         <item name="isWorkspaceDarkText">true</item>
         <item name="workspaceStatusBarScrim">@null</item>
+        <item name="workspaceAccentColor">@color/workspace_accent_color_dark</item>
+        <item name="dropTargetHoverTextColor">@color/workspace_text_color_light</item>
     </style>
 
     <style name="LauncherTheme.Dark" parent="@style/LauncherTheme">
@@ -133,6 +133,8 @@
         <item name="workspaceKeyShadowColor">@android:color/transparent</item>
         <item name="isWorkspaceDarkText">true</item>
         <item name="workspaceStatusBarScrim">@null</item>
+        <item name="workspaceAccentColor">@color/workspace_accent_color_dark</item>
+        <item name="dropTargetHoverTextColor">@color/workspace_text_color_light</item>
     </style>
 
     <!-- A derivative project can extend these themes to customize the application theme without

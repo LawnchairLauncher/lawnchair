@@ -295,7 +295,7 @@ public final class FeatureFlags {
     public static class BooleanFlag {
 
         public final String key;
-        public boolean defaultValue;
+        public final boolean defaultValue;
 
         public BooleanFlag(String key, boolean defaultValue) {
             this.key = key;
@@ -314,16 +314,12 @@ public final class FeatureFlags {
         protected StringBuilder appendProps(StringBuilder src) {
             return src.append(key).append(", defaultValue=").append(defaultValue);
         }
-
-        public void addChangeListener(Context context, Runnable r) { }
-
-        public void removeChangeListener(Runnable r) {}
     }
 
     public static class DebugFlag extends BooleanFlag {
 
         public final String description;
-        private boolean mCurrentValue;
+        protected boolean mCurrentValue;
 
         public DebugFlag(String key, boolean defaultValue, String description) {
             super(key, defaultValue);
