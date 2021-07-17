@@ -21,6 +21,8 @@ import static android.view.Surface.ROTATION_0;
 import static com.android.quickstep.views.OverviewActionsView.DISABLED_NO_THUMBNAIL;
 import static com.android.quickstep.views.OverviewActionsView.DISABLED_ROTATED;
 
+import static java.lang.annotation.RetentionPolicy.SOURCE;
+
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.assist.AssistContent;
@@ -32,6 +34,7 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.drawable.ColorDrawable;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.SystemClock;
 import android.os.UserManager;
@@ -41,7 +44,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
+import androidx.annotation.IntDef;
 import androidx.annotation.VisibleForTesting;
 
 import com.android.launcher3.BaseActivity;
@@ -54,6 +59,8 @@ import com.android.quickstep.views.GoOverviewActionsView;
 import com.android.quickstep.views.TaskThumbnailView;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.recents.model.ThumbnailData;
+
+import java.lang.annotation.Retention;
 
 /**
  * Go-specific extension of the factory class that adds an overlay to TaskView
@@ -69,10 +76,20 @@ public final class TaskOverlayFactoryGo extends TaskOverlayFactory {
     public static final int ERROR_PERMISSIONS_STRUCTURE = 1;
     public static final int ERROR_PERMISSIONS_SCREENSHOT = 2;
     private static final String NIU_ACTIONS_CONFIRMED = "launcher_go.niu_actions_confirmed";
+    private static final String ASSIST_SETTINGS_ARGS_BUNDLE = ":settings:show_fragment_args";
+    private static final String ASSIST_SETTINGS_ARGS_KEY = ":settings:fragment_args_key";
+    private static final String ASSIST_SETTINGS_PREFERENCE_KEY = "default_assist";
     private static final String TAG = "TaskOverlayFactoryGo";
 
     public static final String LISTEN_TOOL_TIP_SEEN = "launcher.go_listen_tip_seen";
     public static final String TRANSLATE_TOOL_TIP_SEEN = "launcher.go_translate_tip_seen";
+
+    @Retention(SOURCE)
+    @IntDef({PRIVACY_CONFIRMATION, ASSISTANT_NOT_SELECTED, ASSISTANT_NOT_SUPPORTED})
+    private @interface DialogType{}
+    private static final int PRIVACY_CONFIRMATION = 0;
+    private static final int ASSISTANT_NOT_SELECTED = 1;
+    private static final int ASSISTANT_NOT_SUPPORTED = 2;
 
     private AssistContentRequester mContentRequester;
 
@@ -99,8 +116,7 @@ public final class TaskOverlayFactoryGo extends TaskOverlayFactory {
         private boolean mAssistScreenshotPermitted;
         private AssistContentRequester mFactoryContentRequester;
         private SharedPreferences mSharedPreferences;
-        private String mPreviousAction;
-        private AlertDialog mConfirmationDialog;
+        private OverlayDialogGo mDialog;
 
         private TaskOverlayGo(TaskThumbnailView taskThumbnailView,
                 AssistContentRequester assistContentRequester) {
@@ -115,15 +131,14 @@ public final class TaskOverlayFactoryGo extends TaskOverlayFactory {
         @Override
         public void initOverlay(Task task, ThumbnailData thumbnail, Matrix matrix,
                 boolean rotated) {
-            if (mConfirmationDialog != null && mConfirmationDialog.isShowing()) {
+            if (mDialog != null && mDialog.isShowing()) {
                 // Redraw the dialog in case the layout changed
-                mConfirmationDialog.dismiss();
-                showConfirmationDialog();
+                mDialog.dismiss();
+                showDialog(mDialog.getAction(), mDialog.getType());
             }
 
             getActionsView().updateDisabledFlags(DISABLED_NO_THUMBNAIL, thumbnail == null);
-            checkSettings();
-            if (thumbnail == null || TextUtils.isEmpty(mNIUPackageName)) {
+            if (thumbnail == null) {
                 return;
             }
 
@@ -135,8 +150,10 @@ public final class TaskOverlayFactoryGo extends TaskOverlayFactory {
             getActionsView().setCallbacks(new OverlayUICallbacksGoImpl(isAllowedByPolicy, task));
             mTaskPackageName = task.key.getPackageName();
             mSharedPreferences = Utilities.getPrefs(mApplicationContext);
+            checkSettings();
 
-            if (!mAssistStructurePermitted || !mAssistScreenshotPermitted) {
+            if (!mAssistStructurePermitted || !mAssistScreenshotPermitted
+                    || TextUtils.isEmpty(mNIUPackageName)) {
                 return;
             }
 
@@ -179,9 +196,13 @@ public final class TaskOverlayFactoryGo extends TaskOverlayFactory {
          * Creates and sends an Intent corresponding to the button that was clicked
          */
         private void sendNIUIntent(String actionType) {
+            if (TextUtils.isEmpty(mNIUPackageName)) {
+                showDialog(actionType, ASSISTANT_NOT_SELECTED);
+                return;
+            }
+
             if (!mSharedPreferences.getBoolean(NIU_ACTIONS_CONFIRMED, false)) {
-                mPreviousAction = actionType;
-                showConfirmationDialog();
+                showDialog(actionType, PRIVACY_CONFIRMATION);
                 return;
             }
 
@@ -199,6 +220,7 @@ public final class TaskOverlayFactoryGo extends TaskOverlayFactory {
                     mApplicationContext.startActivity(intent);
                 } catch (ActivityNotFoundException e) {
                     Log.e(TAG, "No activity found to receive permission error intent");
+                    showDialog(actionType, ASSISTANT_NOT_SUPPORTED);
                 }
             }
         }
@@ -243,7 +265,7 @@ public final class TaskOverlayFactoryGo extends TaskOverlayFactory {
             @SuppressLint("NewApi")
             public void onListen() {
                 if (mIsAllowedByPolicy) {
-                    sendNIUIntent(ACTION_LISTEN);
+                    endLiveTileMode(() -> sendNIUIntent(ACTION_LISTEN));
                 } else {
                     showBlockedByPolicyMessage();
                 }
@@ -252,7 +274,7 @@ public final class TaskOverlayFactoryGo extends TaskOverlayFactory {
             @SuppressLint("NewApi")
             public void onTranslate() {
                 if (mIsAllowedByPolicy) {
-                    sendNIUIntent(ACTION_TRANSLATE);
+                    endLiveTileMode(() -> sendNIUIntent(ACTION_TRANSLATE));
                 } else {
                     showBlockedByPolicyMessage();
                 }
@@ -261,7 +283,7 @@ public final class TaskOverlayFactoryGo extends TaskOverlayFactory {
             @SuppressLint("NewApi")
             public void onSearch() {
                 if (mIsAllowedByPolicy) {
-                    sendNIUIntent(ACTION_SEARCH);
+                    endLiveTileMode(() -> sendNIUIntent(ACTION_SEARCH));
                 } else {
                     showBlockedByPolicyMessage();
                 }
@@ -273,33 +295,86 @@ public final class TaskOverlayFactoryGo extends TaskOverlayFactory {
             mImageApi = imageActionsApi;
         }
 
-        private void showConfirmationDialog() {
+        // TODO (b/192406446): Test that these dialogs are shown at the appropriate times
+        private void showDialog(String action, @DialogType int type) {
+            switch (type) {
+                case PRIVACY_CONFIRMATION:
+                    showDialog(action, PRIVACY_CONFIRMATION,
+                            R.string.niu_actions_confirmation_title,
+                            R.string.niu_actions_confirmation_text, R.string.dialog_cancel,
+                            this::onDialogClickCancel, R.string.dialog_acknowledge,
+                            this::onNiuActionsConfirmationAccept);
+                    break;
+                case ASSISTANT_NOT_SELECTED:
+                    showDialog(action, ASSISTANT_NOT_SELECTED,
+                            R.string.assistant_not_selected_title,
+                            R.string.assistant_not_selected_text, R.string.dialog_cancel,
+                            this::onDialogClickCancel, R.string.dialog_settings,
+                            this::onDialogClickSettings);
+                    break;
+                case ASSISTANT_NOT_SUPPORTED:
+                    showDialog(action, ASSISTANT_NOT_SUPPORTED,
+                            R.string.assistant_not_supported_title,
+                            R.string.assistant_not_supported_text, R.string.dialog_cancel,
+                            this::onDialogClickCancel, R.string.dialog_settings,
+                            this::onDialogClickSettings);
+                    break;
+                default:
+                    Log.e(TAG, "Unexpected dialog type");
+            }
+        }
+
+        private void showDialog(String action, @DialogType int type, int titleTextID,
+                                int bodyTextID, int button1TextID,
+                                View.OnClickListener button1Callback, int button2TextID,
+                                View.OnClickListener button2Callback) {
             BaseDraggingActivity activity = BaseActivity.fromContext(getActionsView().getContext());
             LayoutInflater inflater = LayoutInflater.from(activity);
-            View view = inflater.inflate(R.layout.niu_actions_confirmation_dialog, /* root */ null);
+            View view = inflater.inflate(R.layout.niu_actions_dialog, /* root */ null);
 
-            Button acceptButton = view.findViewById(R.id.niu_actions_confirmation_accept);
-            acceptButton.setOnClickListener(this::onNiuActionsConfirmationAccept);
+            TextView dialogTitle = view.findViewById(R.id.niu_actions_dialog_header);
+            dialogTitle.setText(titleTextID);
 
-            Button rejectButton = view.findViewById(R.id.niu_actions_confirmation_reject);
-            rejectButton.setOnClickListener(this::onNiuActionsConfirmationReject);
+            TextView dialogBody = view.findViewById(R.id.niu_actions_dialog_description);
+            dialogBody.setText(bodyTextID);
 
-            mConfirmationDialog = new AlertDialog.Builder(activity)
-                    .setView(view)
-                    .create();
-            mConfirmationDialog.getWindow()
-                    .setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-            mConfirmationDialog.show();
+            Button button1 = view.findViewById(R.id.niu_actions_dialog_button_1);
+            button1.setText(button1TextID);
+            button1.setOnClickListener(button1Callback);
+
+            Button button2 = view.findViewById(R.id.niu_actions_dialog_button_2);
+            button2.setText(button2TextID);
+            button2.setOnClickListener(button2Callback);
+
+            mDialog = new OverlayDialogGo(activity, type, action);
+            mDialog.setView(view);
+            mDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            mDialog.show();
         }
 
         private void onNiuActionsConfirmationAccept(View v) {
-            mConfirmationDialog.dismiss();
+            mDialog.dismiss();
             mSharedPreferences.edit().putBoolean(NIU_ACTIONS_CONFIRMED, true).apply();
-            sendNIUIntent(mPreviousAction);
+            sendNIUIntent(mDialog.getAction());
         }
 
-        private void onNiuActionsConfirmationReject(View v) {
-            mConfirmationDialog.cancel();
+        private void onDialogClickCancel(View v) {
+            mDialog.cancel();
+        }
+
+        private void onDialogClickSettings(View v) {
+            mDialog.dismiss();
+
+            Bundle fragmentArgs = new Bundle();
+            fragmentArgs.putString(ASSIST_SETTINGS_ARGS_KEY, ASSIST_SETTINGS_PREFERENCE_KEY);
+            Intent intent = new Intent(Settings.ACTION_VOICE_INPUT_SETTINGS)
+                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                    .putExtra(ASSIST_SETTINGS_ARGS_BUNDLE, fragmentArgs);
+            try {
+                mApplicationContext.startActivity(intent);
+            } catch (ActivityNotFoundException e) {
+                Log.e(TAG, "No activity found to receive assistant settings intent");
+            }
         }
 
         /**
@@ -314,6 +389,24 @@ public final class TaskOverlayFactoryGo extends TaskOverlayFactory {
                 ((GoOverviewActionsView) getActionsView()).showListenToolTip();
                 mSharedPreferences.edit().putBoolean(LISTEN_TOOL_TIP_SEEN, true).apply();
             }
+        }
+    }
+
+    private static final class OverlayDialogGo extends AlertDialog {
+        private final String mAction;
+        private final @DialogType int mType;
+
+        OverlayDialogGo(Context context, @DialogType int type, String action) {
+            super(context);
+            mType = type;
+            mAction = action;
+        }
+
+        public String getAction() {
+            return mAction;
+        }
+        public @DialogType int getType() {
+            return mType;
         }
     }
 

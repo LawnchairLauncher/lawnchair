@@ -62,8 +62,7 @@
                 android:text="@string/add_item_request_drag_hint"
                 android:textSize="14sp"
                 android:textColor="?android:attr/textColorSecondary"
-                android:alpha="0.7"
-                android:importantForAccessibility="no"/>
+                android:alpha="0.7"/>
 
             <include layout="@layout/widget_cell"
                 android:id="@+id/widget_cell"
