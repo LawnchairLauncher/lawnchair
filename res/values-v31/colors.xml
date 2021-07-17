@@ -42,6 +42,6 @@
 
     <color name="folder_dot_color">@android:color/system_accent2_50</color>
 
-    <color name="workspace_accent_color_light">@android:color/system_accent2_700</color>
-    <color name="workspace_accent_color_dark">@android:color/system_accent1_50</color>
+    <color name="workspace_accent_color_light">@android:color/system_accent1_100</color>
+    <color name="workspace_accent_color_dark">@android:color/system_accent2_600</color>
 </resources>
