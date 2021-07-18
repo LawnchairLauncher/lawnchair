@@ -66,7 +66,7 @@
     <string name="overview_gesture_feedback_complete_with_follow_up" msgid="3544611727467765026">"तपाईंले इसाराहरू प्रयोग गर्ने तरिका सिक्नुभयो। इसारा अफ गर्न सेटिङमा जानुहोस्।"</string>
     <string name="overview_gesture_feedback_complete_without_follow_up" msgid="3199486203448379152">"तपाईंले \'एउटा एपबाट अर्को एपमा जानुहोस्\' नामक इसारा प्रयोग गर्ने तरिका सिक्नुभयो।"</string>
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"एउटा एपबाट अर्को एपमा जान स्वाइप गर्नुहोस्"</string>
-    <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"एउटा एपबाट अर्को एपमा जान स्क्रिनको फेदबाट माथितिर स्वाइप गर्नुहोस्, छोइराख्नुहोस् अनि औँला उठाउनु…।"</string>
+    <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"एउटा एपबाट अर्कोमा जान स्क्रिनको फेदबाट माथितिर स्वाइप गर्नुहोस्, छोइराख्नुहोस् अनि औँला उठाउनुहोस्।"</string>
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"सबै तयार छ"</string>
     <string name="gesture_tutorial_action_button_label" msgid="6249846312991332122">"सम्पन्न भयो"</string>
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"सेटिङ"</string>
