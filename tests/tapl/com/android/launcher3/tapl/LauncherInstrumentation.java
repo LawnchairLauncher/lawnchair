@@ -207,6 +207,11 @@ public final class LauncherInstrumentation {
     public LauncherInstrumentation(Instrumentation instrumentation) {
         mInstrumentation = instrumentation;
         mDevice = UiDevice.getInstance(instrumentation);
+        try {
+            mDevice.executeShellCommand("am wait-for-broadcast-idle");
+        } catch (IOException e) {
+            log("Failed to wait for broadcast idle");
+        }
 
         // Launcher should run in test harness so that custom accessibility protocol between
         // Launcher and TAPL is enabled. In-process tests enable this protocol with a direct call
