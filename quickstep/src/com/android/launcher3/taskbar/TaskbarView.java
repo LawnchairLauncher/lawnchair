@@ -194,24 +194,30 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         int count = getChildCount();
         int spaceNeeded = count * (mItemMarginLeftRight * 2 + mIconTouchSize);
-        int iconStart = (right - left - spaceNeeded) / 2;
-        int startOffset = ApiWrapper.getHotseatStartOffset(getContext());
-        if (startOffset > iconStart) {
-            int diff = startOffset - iconStart;
-            iconStart = isLayoutRtl() ? (iconStart - diff) : iconStart + diff;
+        int navSpaceNeeded = ApiWrapper.getHotseatEndOffset(getContext());
+        boolean layoutRtl = isLayoutRtl();
+        int iconEnd = right - (right - left - spaceNeeded) / 2;
+        boolean needMoreSpaceForNav = layoutRtl ?
+                navSpaceNeeded > (iconEnd - spaceNeeded) :
+                iconEnd > (right - navSpaceNeeded);
+        if (needMoreSpaceForNav) {
+            int offset = layoutRtl ?
+                    navSpaceNeeded - (iconEnd - spaceNeeded) :
+                    (right - navSpaceNeeded) - iconEnd;
+            iconEnd += offset;
         }
         // Layout the children
-        mIconLayoutBounds.left = iconStart;
+        mIconLayoutBounds.right = iconEnd;
         mIconLayoutBounds.top = (bottom - top - mIconTouchSize) / 2;
         mIconLayoutBounds.bottom = mIconLayoutBounds.top + mIconTouchSize;
-        for (int i = 0; i < count; i++) {
-            View child = getChildAt(i);
-            iconStart += mItemMarginLeftRight;
-            int iconEnd = iconStart + mIconTouchSize;
+        for (int i = count; i > 0; i--) {
+            View child = getChildAt(i - 1);
+            iconEnd -= mItemMarginLeftRight;
+            int iconStart = iconEnd - mIconTouchSize;
             child.layout(iconStart, mIconLayoutBounds.top, iconEnd, mIconLayoutBounds.bottom);
-            iconStart = iconEnd + mItemMarginLeftRight;
+            iconEnd = iconStart - mItemMarginLeftRight;
         }
-        mIconLayoutBounds.right = iconStart;
+        mIconLayoutBounds.left = iconEnd;
     }
 
     @Override

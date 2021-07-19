@@ -44,9 +44,9 @@ public class ApiWrapper {
     }
 
     /**
-     * Returns the minimum space that should be left empty at the start of hotseat
+     * Returns the minimum space that should be left empty at the end of hotseat
      */
-    public static int getHotseatStartOffset(Context context) {
+    public static int getHotseatEndOffset(Context context) {
         if (SysUINavigationMode.INSTANCE.get(context).getMode() == Mode.THREE_BUTTONS) {
             Resources res = context.getResources();
             return 2 * res.getDimensionPixelSize(R.dimen.taskbar_nav_buttons_spacing)
