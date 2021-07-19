@@ -115,7 +115,6 @@ import com.android.systemui.shared.system.InputConsumerController;
 import com.android.systemui.shared.system.InteractionJankMonitorWrapper;
 import com.android.systemui.shared.system.LatencyTrackerCompat;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
-import com.android.systemui.shared.system.TaskInfoCompat;
 import com.android.systemui.shared.system.TaskStackChangeListener;
 import com.android.systemui.shared.system.TaskStackChangeListeners;
 
@@ -1105,7 +1104,8 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
         public void onActivityRestartAttempt(ActivityManager.RunningTaskInfo task,
                 boolean homeTaskVisible, boolean clearedTask, boolean wasVisible) {
             if (task.taskId == mGestureState.getRunningTaskId()
-                    && TaskInfoCompat.getActivityType(task) != ACTIVITY_TYPE_HOME) {
+                    && task.configuration.windowConfiguration.getActivityType()
+                    != ACTIVITY_TYPE_HOME) {
                 // Since this is an edge case, just cancel and relaunch with default activity
                 // options (since we don't know if there's an associated app icon to launch from)
                 endRunningWindowAnim(true /* cancel */);
@@ -1146,8 +1146,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
             boolean appCanEnterPip = !mDeviceState.isPipActive()
                     && runningTaskTarget != null
                     && runningTaskTarget.taskInfo.pictureInPictureParams != null
-                    && TaskInfoCompat.isAutoEnterPipEnabled(
-                            runningTaskTarget.taskInfo.pictureInPictureParams);
+                    && runningTaskTarget.taskInfo.pictureInPictureParams.isAutoEnterEnabled();
             HomeAnimationFactory homeAnimFactory =
                     createHomeAnimationFactory(cookies, duration, isTranslucent, appCanEnterPip,
                             runningTaskTarget);
@@ -1248,7 +1247,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
 
         final Rect destinationBounds = SystemUiProxy.INSTANCE.get(mContext)
                 .startSwipePipToHome(taskInfo.topActivity,
-                        TaskInfoCompat.getTopActivityInfo(taskInfo),
+                        taskInfo.topActivityInfo,
                         runningTaskTarget.taskInfo.pictureInPictureParams,
                         homeRotation,
                         mDp.hotseatBarSizePx);
@@ -1257,9 +1256,9 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
                 .setTaskId(runningTaskTarget.taskId)
                 .setComponentName(taskInfo.topActivity)
                 .setLeash(runningTaskTarget.leash.getSurfaceControl())
-                .setSourceRectHint(TaskInfoCompat.getPipSourceRectHint(
-                        runningTaskTarget.taskInfo.pictureInPictureParams))
-                .setAppBounds(TaskInfoCompat.getWindowConfigurationBounds(taskInfo))
+                .setSourceRectHint(
+                        runningTaskTarget.taskInfo.pictureInPictureParams.getSourceRectHint())
+                .setAppBounds(taskInfo.configuration.windowConfiguration.getBounds())
                 .setHomeToWindowPositionMap(homeToWindowPositionMap)
                 .setStartBounds(startRect)
                 .setDestinationBounds(destinationBounds)
@@ -1269,7 +1268,8 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
         // is not ROTATION_0 (which implies the rotation is turned on in launcher settings).
         if (homeRotation == ROTATION_0
                 && (windowRotation == ROTATION_90 || windowRotation == ROTATION_270)) {
-            builder.setFromRotation(mTaskViewSimulator, windowRotation);
+            builder.setFromRotation(mTaskViewSimulator, windowRotation,
+                    taskInfo.displayCutoutInsets);
         }
         final SwipePipToHomeAnimator swipePipToHomeAnimator = builder.build();
         AnimatorPlaybackController activityAnimationToHome =
