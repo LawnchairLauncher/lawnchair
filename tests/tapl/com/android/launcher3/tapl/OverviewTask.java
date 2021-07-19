@@ -59,9 +59,14 @@ public final class OverviewTask {
             final Rect taskBounds = mLauncher.getVisibleBounds(mTask);
             final int centerX = taskBounds.centerX();
             final int centerY = taskBounds.centerY();
-            mLauncher.linearGesture(centerX, centerY, centerX, 0, 10, false,
-                    LauncherInstrumentation.GestureScope.INSIDE);
-            mLauncher.waitForIdle();
+            mLauncher.executeAndWaitForLauncherEvent(
+                    () -> mLauncher.linearGesture(centerX, centerY, centerX, 0, 10, false,
+                            LauncherInstrumentation.GestureScope.INSIDE),
+                    event -> TestProtocol.DISMISS_ANIMATION_ENDS_MESSAGE.equals(
+                            event.getClassName()),
+                    () -> "Didn't receive a dismiss animation ends message: " + centerX + ", "
+                            + centerY,
+                    "swiping to dismiss");
         }
     }
 
