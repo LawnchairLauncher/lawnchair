@@ -2599,6 +2599,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     }
 
     protected void onDismissAnimationEnds() {
+        AccessibilityManagerCompat.sendDismissAnimationEndsEventToTest(getContext());
     }
 
     public PendingAnimation createAllTasksDismissAnimation(long duration) {
