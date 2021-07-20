@@ -332,8 +332,8 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
                 scale = Math.min(maxWidth / previewWidth, 1);
             }
             setContainerSize(
-                    Math.round(drawable.getIntrinsicWidth() * scale),
-                    Math.round(drawable.getIntrinsicHeight() * scale));
+                    Math.round(drawable.getIntrinsicWidth() * scale * mPreviewContainerScale),
+                    Math.round(drawable.getIntrinsicHeight() * scale * mPreviewContainerScale));
             mWidgetImage.setDrawable(drawable);
             mWidgetImage.setVisibility(View.VISIBLE);
             if (mAppWidgetHostViewPreview != null) {
