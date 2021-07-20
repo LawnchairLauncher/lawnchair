@@ -114,7 +114,13 @@ public class TaskbarStashController {
      * Returns whether the user can manually stash the taskbar based on the current device state.
      */
     private boolean supportsStashing() {
-        return !mActivity.isThreeButtonNav();
+        return !mActivity.isThreeButtonNav()
+                && (!Utilities.IS_RUNNING_IN_TEST_HARNESS || supportsStashingForTests());
+    }
+
+    private boolean supportsStashingForTests() {
+        // TODO: enable this for tests that specifically check stash/unstash behavior.
+        return false;
     }
 
     /**
