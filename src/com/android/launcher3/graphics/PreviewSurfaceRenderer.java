@@ -209,7 +209,7 @@ public class PreviewSurfaceRenderer {
         if (mDestroyed) {
             return;
         }
-        View view = new LauncherPreviewRenderer(inflationContext, mIdp, mWallpaperColors)
+        View view = new LauncherPreviewRenderer(inflationContext, mIdp)
                 .getRenderedView(dataModel, widgetProviderInfoMap);
         // This aspect scales the view to fit in the surface and centers it
         final float scale = Math.min(mWidth / (float) view.getMeasuredWidth(),
