@@ -332,4 +332,20 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
 
         AbstractFloatingView.closeAllOpenViews(this);
     }
+
+    /**
+     * Called when we detect a long press in the nav region before passing the gesture slop.
+     * @return Whether taskbar handled the long press, and thus should cancel the gesture.
+     */
+    public boolean onLongPressToUnstashTaskbar() {
+        return mControllers.taskbarStashController.onLongPressToUnstashTaskbar();
+    }
+
+    /**
+     * Called when we detect a motion down or up/cancel in the nav region while stashed.
+     * @param animateForward Whether to animate towards the unstashed hint state or back to stashed.
+     */
+    public void startTaskbarUnstashHint(boolean animateForward) {
+        mControllers.taskbarStashController.startUnstashHint(animateForward);
+    }
 }

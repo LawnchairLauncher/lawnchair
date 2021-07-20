@@ -233,11 +233,6 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
         }
     }
 
-    @Override
-    public boolean onLongPressToUnstashTaskbar() {
-        return mControllers.taskbarStashController.onLongPressToUnstashTaskbar();
-    }
-
     /**
      * @param ev MotionEvent in screen coordinates.
      * @return Whether any Taskbar item could handle the given MotionEvent if given the chance.
