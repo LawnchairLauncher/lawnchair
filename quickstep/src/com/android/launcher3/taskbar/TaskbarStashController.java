@@ -23,6 +23,7 @@ import android.animation.AnimatorSet;
 import android.annotation.Nullable;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
+import android.view.ViewConfiguration;
 
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
@@ -45,6 +46,22 @@ public class TaskbarStashController {
      * The scale TaskbarView animates to when being stashed.
      */
     private static final float STASHED_TASKBAR_SCALE = 0.5f;
+
+    /**
+     * How long the hint animation plays, starting on motion down.
+     */
+    private static final long TASKBAR_HINT_STASH_DURATION =
+            ViewConfiguration.DEFAULT_LONG_PRESS_TIMEOUT;
+
+    /**
+     * The scale that TaskbarView animates to when hinting towards the stashed state.
+     */
+    private static final float STASHED_TASKBAR_HINT_SCALE = 0.9f;
+
+    /**
+     * The scale that the stashed handle animates to when hinting towards the unstashed state.
+     */
+    private static final float UNSTASHED_TASKBAR_HANDLE_HINT_SCALE = 1.1f;
 
     /**
      * The SharedPreferences key for whether user has manually stashed the taskbar.
@@ -71,6 +88,7 @@ public class TaskbarStashController {
     private AnimatedFloat mIconTranslationYForStash;
     // Stashed handle properties.
     private AnimatedFloat mTaskbarStashedHandleAlpha;
+    private AnimatedFloat mTaskbarStashedHandleHintScale;
 
     /** Whether the user has manually invoked taskbar stashing, which we persist. */
     private boolean mIsStashedInApp;
@@ -102,6 +120,7 @@ public class TaskbarStashController {
         StashedHandleViewController stashedHandleController =
                 controllers.stashedHandleViewController;
         mTaskbarStashedHandleAlpha = stashedHandleController.getStashedHandleAlpha();
+        mTaskbarStashedHandleHintScale = stashedHandleController.getStashedHandleHintScale();
 
         mIsStashedInApp = supportsStashing()
                 && mPrefs.getBoolean(SHARED_PREFS_STASHED_KEY, DEFAULT_STASHED_PREF);
@@ -246,6 +265,9 @@ public class TaskbarStashController {
         if (stashedHandleRevealAnim != null) {
             fullLengthAnimatorSet.play(stashedHandleRevealAnim);
         }
+        // Return the stashed handle to its default scale in case it was changed as part of the
+        // feedforward hint. Note that the reveal animation above also visually scales it.
+        fullLengthAnimatorSet.play(mTaskbarStashedHandleHintScale.animateToValue(1f));
 
         fullLengthAnimatorSet.setDuration(duration);
         firstHalfAnimatorSet.setDuration((long) (duration * firstHalfDurationScale));
@@ -270,5 +292,37 @@ public class TaskbarStashController {
             }
         });
         return mAnimator;
+    }
+
+    /**
+     * Creates and starts a partial stash animation, hinting at the new state that will trigger when
+     * long press is detected.
+     * @param animateForward Whether we are going towards the new stashed state or returning to the
+     *                       unstashed state.
+     */
+    public void startStashHint(boolean animateForward) {
+        if (isStashed() || !supportsStashing()) {
+            // Already stashed, no need to hint in that direction.
+            return;
+        }
+        mIconScaleForStash.animateToValue(
+                animateForward ? STASHED_TASKBAR_HINT_SCALE : 1)
+                .setDuration(TASKBAR_HINT_STASH_DURATION).start();
+    }
+
+    /**
+     * Creates and starts a partial unstash animation, hinting at the new state that will trigger
+     * when long press is detected.
+     * @param animateForward Whether we are going towards the new unstashed state or returning to
+     *                       the stashed state.
+     */
+    public void startUnstashHint(boolean animateForward) {
+        if (!isStashed()) {
+            // Already unstashed, no need to hint in that direction.
+            return;
+        }
+        mTaskbarStashedHandleHintScale.animateToValue(
+                animateForward ? UNSTASHED_TASKBAR_HANDLE_HINT_SCALE : 1)
+                .setDuration(TASKBAR_HINT_STASH_DURATION).start();
     }
 }
