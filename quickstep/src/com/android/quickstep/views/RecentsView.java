@@ -1792,7 +1792,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                 .displayOverviewTasksAsGrid(mActivity.getDeviceProfile())) {
             TaskView runningTaskView = getRunningTaskView();
             float runningTaskPrimaryGridTranslation = 0;
-            if (indexOfChild(runningTaskView) != getNextPage()) {
+            if (runningTaskView != null && indexOfChild(runningTaskView) != getNextPage()) {
                 // Apply the gird translation to running task unless it's being snapped to.
                 runningTaskPrimaryGridTranslation = mOrientationHandler.getPrimaryValue(
                         runningTaskView.getGridTranslationX(),
