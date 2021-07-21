@@ -165,7 +165,7 @@ public class PreviewSurfaceRenderer {
 
                 @Override
                 public void run() {
-                    DeviceProfile deviceProfile = mIdp.getDeviceProfile(mContext);
+                    DeviceProfile deviceProfile = mIdp.getDeviceProfile(previewContext);
                     String query = (deviceProfile.isTwoPanels ? LauncherSettings.Favorites.SCREEN
                             + " = " + Workspace.LEFT_PANEL_ID + " or " : "")
                             + LauncherSettings.Favorites.SCREEN + " = " + Workspace.FIRST_SCREEN_ID
