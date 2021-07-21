@@ -358,7 +358,7 @@ public class SystemUiProxy implements ISystemUiProxy,
             try {
                 mSystemUiProxy.setSplitScreenMinimized(minimized);
             } catch (RemoteException e) {
-                Log.w(TAG, "Failed call stopScreenPinning", e);
+                Log.w(TAG, "Failed call setSplitScreenMinimized", e);
             }
         }
     }

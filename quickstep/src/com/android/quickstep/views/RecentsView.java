@@ -3090,6 +3090,9 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                 splitController.getLayoutParamsForActivePosition(getResources(),
                         mActivity.getDeviceProfile()));
         mSplitPlaceholderView.setIcon(taskView.getIconView());
+        if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
+            finishRecentsAnimation(true, null);
+        }
     }
 
     public PendingAnimation createSplitSelectInitAnimation() {
