@@ -25,6 +25,7 @@ import static android.view.Surface.ROTATION_90;
 import static com.android.launcher3.states.RotationHelper.ALLOW_ROTATION_PREFERENCE_KEY;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 import static com.android.launcher3.util.SettingsCache.ROTATION_SETTING_URI;
+import static com.android.quickstep.BaseActivityInterface.getTaskDimension;
 
 import static java.lang.annotation.RetentionPolicy.SOURCE;
 
@@ -49,7 +50,6 @@ import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.touch.PagedOrientationHandler;
 import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.SettingsCache;
-import com.android.launcher3.util.WindowBounds;
 import com.android.quickstep.BaseActivityInterface;
 import com.android.quickstep.SystemUiProxy;
 import com.android.quickstep.views.TaskView;
@@ -401,12 +401,7 @@ public class RecentsOrientedState implements
             fullHeight -= insets.top + insets.bottom;
         }
 
-        if (dp.isMultiWindowMode) {
-            WindowBounds bounds = SplitScreenBounds.INSTANCE.getSecondaryWindowBounds(mContext);
-            outPivot.set(bounds.availableSize.x, bounds.availableSize.y);
-        } else {
-            outPivot.set(fullWidth, fullHeight);
-        }
+        getTaskDimension(mContext, dp, outPivot);
         float scale = Math.min(outPivot.x / taskView.width(), outPivot.y / taskView.height());
         // We also scale the preview as part of fullScreenParams, so account for that as well.
         if (fullWidth > 0) {
