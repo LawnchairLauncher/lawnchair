@@ -318,15 +318,6 @@ public final class LauncherActivityInterface extends
     }
 
     @Override
-    public boolean onLongPressToUnstashTaskbar() {
-        LauncherTaskbarUIController taskbarController = getTaskbarController();
-        if (taskbarController == null) {
-            return super.onLongPressToUnstashTaskbar();
-        }
-        return taskbarController.onLongPressToUnstashTaskbar();
-    }
-
-    @Override
     protected int getOverviewScrimColorForState(BaseQuickstepLauncher launcher,
             LauncherState state) {
         return state.getWorkspaceScrimColor(launcher);

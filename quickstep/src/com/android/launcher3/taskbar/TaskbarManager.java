@@ -27,6 +27,7 @@ import android.hardware.display.DisplayManager;
 import android.view.Display;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.android.launcher3.BaseQuickstepLauncher;
 import com.android.launcher3.DeviceProfile;
@@ -187,5 +188,9 @@ public class TaskbarManager implements DisplayController.DisplayInfoChangeListen
         destroyExistingTaskbar();
         mDisplayController.removeChangeListener(this);
         mSysUINavigationMode.removeModeChangeListener(this);
+    }
+
+    public @Nullable TaskbarActivityContext getCurrentActivityContext() {
+        return mTaskbarActivityContext;
     }
 }

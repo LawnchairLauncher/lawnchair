@@ -1542,7 +1542,8 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
      * and unloads the associated task data for tasks that are no longer visible.
      */
     public void loadVisibleTaskData(@TaskView.TaskDataChanges int dataChanges) {
-        if (!mOverviewStateEnabled || mTaskListChangeId == -1) {
+        boolean hasLeftOverview = !mOverviewStateEnabled && mScroller.isFinished();
+        if (hasLeftOverview || mTaskListChangeId == -1) {
             // Skip loading visible task data if we've already left the overview state, or if the
             // task list hasn't been loaded yet (the task views will not reflect the task list)
             return;
@@ -1791,7 +1792,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                 .displayOverviewTasksAsGrid(mActivity.getDeviceProfile())) {
             TaskView runningTaskView = getRunningTaskView();
             float runningTaskPrimaryGridTranslation = 0;
-            if (indexOfChild(runningTaskView) != getNextPage()) {
+            if (runningTaskView != null && indexOfChild(runningTaskView) != getNextPage()) {
                 // Apply the gird translation to running task unless it's being snapped to.
                 runningTaskPrimaryGridTranslation = mOrientationHandler.getPrimaryValue(
                         runningTaskView.getGridTranslationX(),

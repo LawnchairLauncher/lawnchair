@@ -222,6 +222,15 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
         return super.dispatchTouchEvent(ev);
     }
 
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        if (!mTouchEnabled) {
+            return true;
+        }
+        mControllerCallbacks.onTouchEvent(event);
+        return super.onTouchEvent(event);
+    }
+
     public void setTouchesEnabled(boolean touchEnabled) {
         this.mTouchEnabled = touchEnabled;
     }

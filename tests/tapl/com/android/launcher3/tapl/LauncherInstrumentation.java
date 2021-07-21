@@ -207,6 +207,11 @@ public final class LauncherInstrumentation {
     public LauncherInstrumentation(Instrumentation instrumentation) {
         mInstrumentation = instrumentation;
         mDevice = UiDevice.getInstance(instrumentation);
+        try {
+            mDevice.executeShellCommand("am wait-for-broadcast-idle");
+        } catch (IOException e) {
+            log("Failed to wait for broadcast idle");
+        }
 
         // Launcher should run in test harness so that custom accessibility protocol between
         // Launcher and TAPL is enabled. In-process tests enable this protocol with a direct call
@@ -509,9 +514,8 @@ public final class LauncherInstrumentation {
     void fail(String message) {
         checkForAnomaly();
         Assert.fail(formatSystemHealthMessage(formatErrorWithEvents(
-                "http://go/tapl test failure:\nContext: " + getContextDescription()
-                        + " => resulting visible state is " + getVisibleStateMessage()
-                        + ";\nDetails: " + message, true)));
+                "http://go/tapl test failure: " + message + ";\nContext: " + getContextDescription()
+                        + "; now visible state is " + getVisibleStateMessage(), true)));
     }
 
     private String getContextDescription() {
@@ -741,7 +745,6 @@ public final class LauncherInstrumentation {
                     dumpViewHierarchy();
                     action = "swiping up to home";
 
-                    final boolean launcherIsVisible = isLauncherVisible();
                     swipeToState(
                             displaySize.x / 2, displaySize.y - 1,
                             displaySize.x / 2, 0,
@@ -749,9 +752,6 @@ public final class LauncherInstrumentation {
                             launcherWasVisible
                                     ? GestureScope.INSIDE_TO_OUTSIDE
                                     : GestureScope.OUTSIDE_WITH_PILFER);
-                    // b/193653850: launcherWasVisible is a flaky indicator.
-                    log("launcherWasVisible: " + launcherWasVisible + ", launcherIsVisible: "
-                            + launcherIsVisible);
                 }
             } else {
                 log("Hierarchy before clicking home:");
