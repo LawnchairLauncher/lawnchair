@@ -46,7 +46,7 @@
     <string name="hotsaet_tip_prediction_disabled" msgid="1506426298884658491">"सुझाए गए ऐप्लिकेशन की सुविधा बंद है"</string>
     <string name="hotseat_prediction_content_description" msgid="4582028296938078419">"सुझाया गया ऐप्लिकेशन: <xliff:g id="TITLE">%1$s</xliff:g>"</string>
     <string name="back_gesture_feedback_swipe_too_far_from_edge" msgid="1711645592102201538">"पक्का करें कि आप स्क्रीन की दाईं या बाईं ओर के बिल्कुल किनारे से स्वाइप कर रहे हों."</string>
-    <string name="back_gesture_feedback_cancelled" msgid="3274382913290074496">"पक्का करें कि आप स्क्रीन के दाएं या बाएं किनारे से, स्क्रीन के बीच तक स्वाइप करें और फिर अपनी उंगली उठा लें."</string>
+    <string name="back_gesture_feedback_cancelled" msgid="3274382913290074496">"स्क्रीन के दाएं या बाएं किनारे से स्क्रीन के बीच तक स्वाइप करें और अपनी उंगली उठा लें."</string>
     <string name="back_gesture_feedback_complete_with_overview_follow_up" msgid="9176400654037014471">"आपने स्क्रीन के दाएं किनारे से स्वाइप करके, पिछली स्क्रीन पर वापस जाने का तरीका सीख लिया है. अब, एक ऐप से दूसरे ऐप पर जाने का तरीका सीखें."</string>
     <string name="back_gesture_feedback_complete_without_follow_up" msgid="6405649621667113830">"आपने पेज पर पीछे ले जाने वाले हाथ के जेस्चर (हाव-भाव) के बारे में जान लिया है."</string>
     <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="1148198467090405643">"देखे लें कि आप स्क्रीन पर बिल्कुल नीचे तक स्वाइप न कर रहे हों."</string>
