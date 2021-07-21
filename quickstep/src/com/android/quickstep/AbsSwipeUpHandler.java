@@ -212,6 +212,8 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
 
     public static final long RECENTS_ATTACH_DURATION = 300;
 
+    private static final float MAX_QUICK_SWITCH_RECENTS_SCALE_PROGRESS = 0.07f;
+
     /**
      * Used as the page index for logging when we return to the last task at the end of the gesture.
      */
@@ -252,6 +254,9 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
     private SwipePipToHomeAnimator mSwipePipToHomeAnimator;
     protected boolean mIsSwipingPipToHome;
 
+    // Interpolate RecentsView scale from start of quick switch scroll until this scroll threshold
+    private final float mQuickSwitchScaleScrollThreshold;
+
     public AbsSwipeUpHandler(Context context, RecentsAnimationDeviceState deviceState,
             TaskAnimationManager taskAnimationManager, GestureState gestureState,
             long touchTimeMs, boolean continuingLastGesture,
@@ -267,6 +272,8 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
         mTaskAnimationManager = taskAnimationManager;
         mTouchTimeMs = touchTimeMs;
         mContinuingLastGesture = continuingLastGesture;
+        mQuickSwitchScaleScrollThreshold = context.getResources().getDimension(
+                R.dimen.quick_switch_scaling_scroll_threshold);
 
         initAfterSubclassConstructor();
         initStateCallbacks();
@@ -669,7 +676,8 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
                 || !canCreateNewOrUpdateExistingLauncherTransitionController()) {
             return;
         }
-        mLauncherTransitionController.setProgress(mCurrentShift.value, mDragLengthFactor);
+        mLauncherTransitionController.setProgress(
+                Math.max(mCurrentShift.value, getScaleProgressDueToScroll()), mDragLengthFactor);
     }
 
     /**
@@ -1784,7 +1792,9 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
      */
     protected void applyWindowTransform() {
         if (mWindowTransitionController != null) {
-            mWindowTransitionController.setProgress(mCurrentShift.value, mDragLengthFactor);
+            mWindowTransitionController.setProgress(
+                    Math.max(mCurrentShift.value, getScaleProgressDueToScroll()),
+                    mDragLengthFactor);
         }
         // No need to apply any transform if there is ongoing swipe-pip-to-home animator since
         // that animator handles the leash solely.
@@ -1795,6 +1805,35 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
             mTaskViewSimulator.apply(mTransformParams);
         }
         ProtoTracer.INSTANCE.get(mContext).scheduleFrameUpdate();
+    }
+
+    // Scaling of RecentsView during quick switch based on amount of recents scroll
+    private float getScaleProgressDueToScroll() {
+        if (!mActivity.getDeviceProfile().isTablet || mRecentsView == null
+                || !mRecentsViewScrollLinked) {
+            return 0;
+        }
+
+        float scrollOffset = Math.abs(mRecentsView.getScrollOffset(mRecentsView.getCurrentPage()));
+        int maxScrollOffset = mRecentsView.getPagedOrientationHandler().getPrimaryValue(
+                mRecentsView.getLastComputedTaskSize().width(),
+                mRecentsView.getLastComputedTaskSize().height());
+        maxScrollOffset += mRecentsView.getPageSpacing();
+
+        float maxScaleProgress =
+                MAX_QUICK_SWITCH_RECENTS_SCALE_PROGRESS * mRecentsView.getMaxScaleForFullScreen();
+        float scaleProgress = maxScaleProgress;
+
+        if (scrollOffset < mQuickSwitchScaleScrollThreshold) {
+            scaleProgress = Utilities.mapToRange(scrollOffset, 0, mQuickSwitchScaleScrollThreshold,
+                    0, maxScaleProgress, ACCEL_DEACCEL);
+        } else if (scrollOffset > (maxScrollOffset - mQuickSwitchScaleScrollThreshold)) {
+            scaleProgress = Utilities.mapToRange(scrollOffset,
+                    (maxScrollOffset - mQuickSwitchScaleScrollThreshold), maxScrollOffset,
+                    maxScaleProgress, 0, ACCEL_DEACCEL);
+        }
+
+        return scaleProgress;
     }
 
     /**
