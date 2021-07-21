@@ -100,9 +100,12 @@ public class DepthController implements StateHandler<LauncherState>,
                 }
             };
 
-    private final Consumer<Boolean> mCrossWindowBlurListener = (enabled) -> {
-        mCrossWindowBlursEnabled = enabled;
-        dispatchTransactionSurface();
+    private final Consumer<Boolean> mCrossWindowBlurListener = new Consumer<Boolean>() {
+        @Override
+        public void accept(Boolean enabled) {
+            mCrossWindowBlursEnabled = enabled;
+            dispatchTransactionSurface(mDepth);
+        }
     };
 
     private final Launcher mLauncher;
@@ -189,14 +192,14 @@ public class DepthController implements StateHandler<LauncherState>,
         if (mSurface != surface) {
             mSurface = surface;
             if (surface != null) {
-                dispatchTransactionSurface();
+                dispatchTransactionSurface(mDepth);
             }
         }
     }
 
     @Override
     public void setState(LauncherState toState) {
-        if (mIgnoreStateChangesDuringMultiWindowAnimation) {
+        if (mSurface == null || mIgnoreStateChangesDuringMultiWindowAnimation) {
             return;
         }
 
@@ -204,7 +207,7 @@ public class DepthController implements StateHandler<LauncherState>,
         if (Float.compare(mDepth, toDepth) != 0) {
             setDepth(toDepth);
         } else if (toState == LauncherState.OVERVIEW) {
-            dispatchTransactionSurface();
+            dispatchTransactionSurface(mDepth);
         }
     }
 
@@ -243,31 +246,36 @@ public class DepthController implements StateHandler<LauncherState>,
         if (Float.compare(mDepth, depthF) == 0) {
             return;
         }
-        mDepth = depthF;
-        dispatchTransactionSurface();
+        if (dispatchTransactionSurface(depthF)) {
+            mDepth = depthF;
+        }
     }
 
-    private void dispatchTransactionSurface() {
+    private boolean dispatchTransactionSurface(float depth) {
         boolean supportsBlur = BlurUtils.supportsBlursOnWindows();
+        if (supportsBlur && (mSurface == null || !mSurface.isValid())) {
+            return false;
+        }
         ensureDependencies();
         IBinder windowToken = mLauncher.getRootView().getWindowToken();
         if (windowToken != null) {
-            mWallpaperManager.setWallpaperZoomOut(windowToken, mDepth);
+            mWallpaperManager.setWallpaperZoomOut(windowToken, depth);
         }
 
-        if (supportsBlur && (mSurface != null && mSurface.isValid())) {
+        if (supportsBlur) {
             // We cannot mark the window as opaque in overview because there will be an app window
             // below the launcher layer, and we need to draw it -- without blurs.
             boolean isOverview = mLauncher.isInState(LauncherState.OVERVIEW);
             boolean opaque = mLauncher.getScrimView().isFullyOpaque() && !isOverview;
 
             int blur = opaque || isOverview || !mCrossWindowBlursEnabled
-                    || mBlurDisabledForAppLaunch ? 0 : (int) (mDepth * mMaxBlurRadius);
+                    || mBlurDisabledForAppLaunch ? 0 : (int) (depth * mMaxBlurRadius);
             new SurfaceControl.Transaction()
                     .setBackgroundBlurRadius(mSurface, blur)
                     .setOpaque(mSurface, opaque)
                     .apply();
         }
+        return true;
     }
 
     @Override
