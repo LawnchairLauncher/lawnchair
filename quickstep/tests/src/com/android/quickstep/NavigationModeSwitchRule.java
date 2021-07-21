@@ -168,7 +168,7 @@ public class NavigationModeSwitchRule implements TestRule {
 
         Log.d(TAG, "setActiveOverlay: " + overlayPackage + "...");
         UiDevice.getInstance(getInstrumentation()).executeShellCommand(
-                "cmd overlay enable-exclusive " + overlayPackage);
+                "cmd overlay enable-exclusive --category " + overlayPackage);
 
         if (currentSysUiNavigationMode() != expectedMode) {
             final CountDownLatch latch = new CountDownLatch(1);
@@ -188,7 +188,7 @@ public class NavigationModeSwitchRule implements TestRule {
                     SYS_UI_NAVIGATION_MODE.removeModeChangeListener(listener));
 
             Wait.atMost(() -> "Navigation mode didn't change to " + expectedMode,
-                    () -> currentSysUiNavigationMode() == expectedMode, 60000 /* b/148422894 */,
+                    () -> currentSysUiNavigationMode() == expectedMode, WAIT_TIME_MS,
                     launcher);
             // b/139137636
 //            assertTrue(launcher, "Navigation mode didn't change to " + expectedMode,
@@ -200,9 +200,9 @@ public class NavigationModeSwitchRule implements TestRule {
                 () -> launcher.getNavigationModel() == expectedMode, WAIT_TIME_MS, launcher);
 
         Wait.atMost(() -> "Switching nav mode: "
-                        + launcher.getNavigationModeMismatchError(),
-                () -> launcher.getNavigationModeMismatchError() == null,
-                60000 /* b/148422894 */, launcher);
+                        + launcher.getNavigationModeMismatchError(false),
+                () -> launcher.getNavigationModeMismatchError(false) == null,
+                WAIT_TIME_MS, launcher);
         AbstractLauncherUiTest.checkDetectedLeaks(launcher);
         return true;
     }

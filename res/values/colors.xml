@@ -17,7 +17,8 @@
 ** limitations under the License.
 */
 -->
-<resources>
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:androidprv="http://schemas.android.com/apk/prv/res/android">
     <!-- The color tints to apply to the text and drag view when hovering
          over the delete target or the info target -->
     <color name="delete_target_hover_tint">#FFC1C1C1</color>
@@ -35,11 +36,51 @@
 
     <color name="icon_background">#E0E0E0</color> <!-- Gray 300 -->
 
-    <color name="all_apps_bg_hand_fill">#E5E5E5</color>
-    <color name="all_apps_bg_hand_fill_dark">#9AA0A6</color>
-
     <color name="gesture_tutorial_ripple_color">#A0C2F9</color> <!-- Light Blue -->
     <color name="gesture_tutorial_fake_task_view_color">#6DA1FF</color> <!-- Light Blue -->
-    <color name="gesture_tutorial_action_button_label_color">#FFFFFFFF</color>
-    <color name="gesture_tutorial_primary_color">#1A73E8</color> <!-- Blue -->
+    <color name="fake_wallpaper_color_dark_mode">#000000</color> <!-- Black -->
+    <color name="fake_wallpaper_color_light_mode">#f9f9f9</color> <!-- White -->
+    <!-- Must contrast fake_wallpaper_color_dark_mode and fake_wallpaper_color_light_mode -->
+    <color name="gesture_tutorial_fake_previous_task_view_color">#3C4043</color> <!-- Gray -->
+    <color name="gesture_tutorial_action_button_label_color">#FF000000</color>
+    <color name="gesture_tutorial_primary_color">#B7F29F</color> <!-- Light Green -->
+
+    <color name="popup_color_primary_light">#FFF</color>
+    <color name="popup_color_secondary_light">#F1F3F4</color>
+    <color name="popup_color_tertiary_light">#E0E0E0</color> <!-- Gray 300 -->
+    <color name="popup_color_neutral_dark">#3C4043</color> <!-- Gray 800 -->
+    <color name="popup_color_primary_dark">#3C4043</color> <!-- Gray 800 -->
+    <color name="popup_color_secondary_dark">#202124</color>
+    <color name="popup_color_tertiary_dark">#757575</color> <!-- Gray 600 -->
+
+    <color name="popup_shade_first_light">#F9F9F9</color>
+    <color name="popup_shade_second_light">#F1F1F1</color>
+    <color name="popup_shade_third_light">#E2E2E2</color>
+    <color name="popup_shade_first_dark">#303030</color>
+    <color name="popup_shade_second_dark">#262626</color>
+    <color name="popup_shade_third_dark">#1B1B1B</color>
+
+    <color name="popup_notification_dot_light">#FFF</color>
+    <color name="popup_notification_dot_dark">#757575</color>
+
+    <color name="workspace_text_color_light">#FFF</color>
+    <color name="workspace_text_color_dark">#FF000000</color>
+
+    <color name="folder_hint_text_color_light">#FFF</color>
+    <color name="folder_hint_text_color_dark">#FF000000</color>
+
+    <color name="folder_background_light">#F9F9F9</color>
+    <color name="folder_background_dark">#464746</color>
+
+    <color name="folder_dot_color">?attr/colorPrimary</color>
+
+    <color name="text_color_primary_dark">#FFFFFFFF</color>
+    <color name="text_color_secondary_dark">#FFFFFFFF</color>
+    <color name="text_color_tertiary_dark">#CCFFFFFF</color>
+
+    <color name="wallpaper_popup_scrim">?android:attr/colorAccent</color>
+    <color name="wallpaper_scrim_color">#0D878787</color>
+
+    <color name="workspace_accent_color_light">#ff8df5e3</color>
+    <color name="workspace_accent_color_dark">#ff3d665f</color>
 </resources>

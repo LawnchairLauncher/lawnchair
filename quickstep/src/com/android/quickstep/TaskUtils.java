@@ -16,6 +16,8 @@
 
 package com.android.quickstep;
 
+import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
+
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
@@ -27,6 +29,7 @@ import com.android.launcher3.pm.UserCache;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.PackageManagerHelper;
 import com.android.systemui.shared.recents.model.Task;
+import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 
 import java.util.List;
@@ -85,5 +88,13 @@ public final class TaskUtils {
             }
         }
         return false;
+    }
+
+    /**
+     * Requests that the system close any open system windows (including other SystemUI).
+     */
+    public static void closeSystemWindowsAsync(String reason) {
+        UI_HELPER_EXECUTOR.execute(
+                () -> ActivityManagerWrapper.getInstance().closeSystemWindows(reason));
     }
 }

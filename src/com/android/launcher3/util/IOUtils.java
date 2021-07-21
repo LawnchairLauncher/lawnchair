@@ -16,20 +16,19 @@
 
 package com.android.launcher3.util;
 
-import android.content.Context;
+import android.os.FileUtils;
 import android.util.Log;
 
+import com.android.launcher3.Utilities;
 import com.android.launcher3.config.FeatureFlags;
 
 import java.io.ByteArrayOutputStream;
 import java.io.Closeable;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.UUID;
 
 /**
  * Supports various IO utility functions
@@ -52,6 +51,9 @@ public class IOUtils {
     }
 
     public static long copy(InputStream from, OutputStream to) throws IOException {
+        if (Utilities.ATLEAST_Q) {
+            return FileUtils.copy(from, to);
+        }
         byte[] buf = new byte[BUF_SIZE];
         long total = 0;
         int r;
@@ -60,25 +62,6 @@ public class IOUtils {
             total += r;
         }
         return total;
-    }
-
-    /**
-     * Utility method to debug binary data
-     */
-    public static String createTempFile(Context context, byte[] data) {
-        if (!FeatureFlags.IS_STUDIO_BUILD) {
-            throw new IllegalStateException("Method only allowed in development mode");
-        }
-
-        String name = UUID.randomUUID().toString();
-        File file = new File(context.getCacheDir(), name);
-        try (FileOutputStream fo = new FileOutputStream(file)) {
-            fo.write(data);
-            fo.flush();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-        return file.getAbsolutePath();
     }
 
     public static void closeSilently(Closeable c) {

@@ -16,4 +16,16 @@
 <resources>
     <color name="back_arrow_color_light">#FFFFFFFF</color>
     <color name="back_arrow_color_dark">#99000000</color>
+
+    <color name="chip_hint_foreground_color">#fff</color>
+    <color name="chip_scrim_start_color">#39000000</color>
+
+    <color name="all_apps_label_text">#61000000</color>
+    <color name="all_apps_label_text_dark">#61FFFFFF</color>
+    <color name="all_apps_prediction_row_separator">#3c000000</color>
+    <color name="all_apps_prediction_row_separator_dark">#3cffffff</color>
+
+    <!-- Taskbar -->
+    <color name="taskbar_background">#101010</color>
+    <color name="taskbar_icon_selection_ripple">#E0E0E0</color>
 </resources>

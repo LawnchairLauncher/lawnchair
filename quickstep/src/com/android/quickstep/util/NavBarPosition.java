@@ -19,7 +19,7 @@ import static com.android.quickstep.SysUINavigationMode.Mode.NO_BUTTON;
 
 import android.view.Surface;
 
-import com.android.launcher3.util.DefaultDisplay;
+import com.android.launcher3.util.DisplayController.Info;
 import com.android.quickstep.SysUINavigationMode;
 
 /**
@@ -30,7 +30,7 @@ public class NavBarPosition {
     private final SysUINavigationMode.Mode mMode;
     private final int mDisplayRotation;
 
-    public NavBarPosition(SysUINavigationMode.Mode mode, DefaultDisplay.Info info) {
+    public NavBarPosition(SysUINavigationMode.Mode mode, Info info) {
         mMode = mode;
         mDisplayRotation = info.rotation;
     }

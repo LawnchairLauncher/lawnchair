@@ -28,6 +28,12 @@
         android:clipToPadding="false"
         android:importantForAccessibility="no">
 
+        <com.android.launcher3.views.AccessibilityActionsView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:contentDescription="@string/home_screen"
+            />
+
         <!-- The workspace contains 5 screens of cells -->
         <!-- DO NOT CHANGE THE ID -->
         <com.android.launcher3.Workspace
@@ -43,11 +49,6 @@
             android:id="@+id/hotseat"
             layout="@layout/hotseat" />
 
-        <include
-            android:id="@+id/overview_panel"
-            layout="@layout/overview_panel" />
-
-
         <!-- Keep these behind the workspace so that they are not visible when
          we go into AllApps -->
         <com.android.launcher3.pageindicators.WorkspacePageIndicator
@@ -61,15 +62,21 @@
             android:id="@+id/drop_target_bar"
             layout="@layout/drop_target_bar" />
 
-        <include
+        <com.android.launcher3.views.ScrimView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:id="@+id/scrim_view"
-            layout="@layout/scrim_view" />
+            android:background="@android:color/transparent" />
 
         <include
             android:id="@+id/apps_view"
             layout="@layout/all_apps"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
+
+        <include
+            android:id="@+id/overview_panel"
+            layout="@layout/overview_panel" />
 
     </com.android.launcher3.dragndrop.DragLayer>
 

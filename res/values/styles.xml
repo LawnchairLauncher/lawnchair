@@ -26,36 +26,43 @@
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowShowWallpaper">true</item>
-        <item name="folderTextColor">?attr/workspaceTextColor</item>
     </style>
 
     <style name="LauncherTheme" parent="@style/BaseLauncherTheme">
         <item name="android:textColorSecondary">#DE000000</item>
-        <item name="allAppsScrimColor">#FFFFFFFF</item>
-        <item name="allAppsInterimScrimAlpha">46</item>
+        <item name="allAppsScrimColor">?android:attr/colorBackgroundFloating</item>
+        <item name="allappsHeaderProtectionColor">@color/popup_color_tertiary_light</item>
         <item name="allAppsNavBarScrimColor">#66FFFFFF</item>
         <item name="allAppsTheme">@style/AllAppsTheme</item>
-        <item name="popupColorPrimary">#FFF</item>
-        <item name="popupColorSecondary">#F1F3F4</item>
-        <item name="popupColorTertiary">#E0E0E0</item> <!-- Gray 300 -->
+        <item name="popupColorPrimary">@color/popup_color_primary_light</item>
+        <item name="popupColorSecondary">@color/popup_color_secondary_light</item>
+        <item name="popupColorTertiary">@color/popup_color_tertiary_light</item>
+        <item name="popupShadeFirst">@color/popup_shade_first_light</item>
+        <item name="popupShadeSecond">@color/popup_shade_second_light</item>
+        <item name="popupShadeThird">@color/popup_shade_third_light</item>
+        <item name="popupNotificationDotColor">@color/popup_notification_dot_light</item>
         <item name="isMainColorDark">false</item>
         <item name="isWorkspaceDarkText">false</item>
-        <item name="workspaceTextColor">@android:color/white</item>
+        <item name="workspaceTextColor">@color/workspace_text_color_light</item>
         <item name="workspaceShadowColor">#B0000000</item>
-        <item name="workspaceAmbientShadowColor">#33000000</item>
-        <item name="workspaceKeyShadowColor">#44000000</item>
+        <item name="workspaceAmbientShadowColor">#40000000</item>
+        <item name="workspaceKeyShadowColor">#89000000</item>
         <item name="workspaceStatusBarScrim">@drawable/workspace_bg</item>
         <item name="widgetsTheme">@style/WidgetContainerTheme</item>
-        <item name="folderDotColor">?android:attr/colorPrimary</item>
-        <item name="folderFillColor">#CDFFFFFF</item>
+        <item name="folderDotColor">@color/folder_dot_color</item>
+        <item name="folderFillColor">@color/folder_background_light</item>
         <item name="folderIconBorderColor">?android:attr/colorPrimary</item>
-        <item name="folderTextColor">#FF212121</item>
-        <item name="folderHintColor">#89616161</item>
+        <item name="folderTextColor">@color/workspace_text_color_dark</item>
+        <item name="isFolderDarkText">true</item>
+        <item name="folderHintColor">@color/folder_hint_text_color_dark</item>
         <item name="loadingIconColor">#CCFFFFFF</item>
         <item name="iconOnlyShortcutColor">?android:attr/textColorSecondary</item>
         <item name="workProfileOverlayTextColor">#FF212121</item>
         <item name="eduHalfSheetBGColor">?android:attr/colorAccent</item>
         <item name="disabledIconAlpha">.54</item>
+        <item name="workspaceAccentColor">@color/workspace_accent_color_light</item>
+        <item name="dropTargetHoverTextColor">@color/workspace_text_color_dark</item>
+        <item name="overviewScrimColor">@color/overview_scrim</item>
 
         <item name="android:windowTranslucentStatus">false</item>
         <item name="android:windowTranslucentNavigation">false</item>
@@ -67,70 +74,67 @@
     </style>
 
     <style name="LauncherTheme.DarkMainColor" parent="@style/LauncherTheme">
-        <item name="folderFillColor">#FF3C4043</item> <!-- 100% GM2 800 -->
-        <item name="folderTextColor">?attr/workspaceTextColor</item>
         <item name="disabledIconAlpha">.254</item>
 
     </style>
 
     <style name="LauncherTheme.DarkText" parent="@style/LauncherTheme">
-        <item name="workspaceTextColor">#FF212121</item>
-        <item name="allAppsInterimScrimAlpha">128</item>
+        <item name="workspaceTextColor">@color/workspace_text_color_dark</item>
         <item name="workspaceShadowColor">@android:color/transparent</item>
         <item name="workspaceAmbientShadowColor">@android:color/transparent</item>
         <item name="workspaceKeyShadowColor">@android:color/transparent</item>
         <item name="isWorkspaceDarkText">true</item>
         <item name="workspaceStatusBarScrim">@null</item>
-        <item name="folderDotColor">#FF464646</item>
-        <item name="folderFillColor">#CDFFFFFF</item>
-        <item name="folderIconBorderColor">#FF80868B</item>
-        <item name="folderTextColor">?attr/workspaceTextColor</item>
+        <item name="workspaceAccentColor">@color/workspace_accent_color_dark</item>
+        <item name="dropTargetHoverTextColor">@color/workspace_text_color_light</item>
     </style>
 
     <style name="LauncherTheme.Dark" parent="@style/LauncherTheme">
-        <item name="android:textColorPrimary">#FFFFFFFF</item>
-        <item name="android:textColorSecondary">#FFFFFFFF</item>
-        <item name="android:textColorTertiary">#CCFFFFFF</item>
+        <item name="android:textColorPrimary">@color/text_color_primary_dark</item>
+        <item name="android:textColorSecondary">@color/text_color_secondary_dark</item>
+        <item name="android:textColorTertiary">@color/text_color_tertiary_dark</item>
         <item name="android:textColorHint">#A0FFFFFF</item>
-        <item name="android:colorControlHighlight">#A0FFFFFF</item>
+        <item name="android:colorControlHighlight">#19FFFFFF</item>
         <item name="android:colorPrimary">#FF212121</item>
-        <item name="allAppsScrimColor">#FF000000</item>
-        <item name="allAppsInterimScrimAlpha">102</item>
+        <item name="allAppsScrimColor">?android:attr/colorBackgroundFloating</item>
         <item name="allAppsNavBarScrimColor">#80000000</item>
         <item name="allAppsTheme">@style/AllAppsTheme.Dark</item>
-        <item name="popupColorPrimary">#3C4043</item> <!-- Gray 800 -->
-        <item name="popupColorSecondary">#202124</item>
-        <item name="popupColorTertiary">#757575</item> <!-- Gray 600 -->
+        <item name="popupColorPrimary">@color/popup_color_primary_dark</item>
+        <item name="popupColorSecondary">@color/popup_color_secondary_dark</item>
+        <item name="popupColorTertiary">@color/popup_color_tertiary_dark</item>
+        <item name="popupNotificationDotColor">@color/popup_notification_dot_dark</item>
+        <item name="popupShadeFirst">@color/popup_shade_first_dark</item>
+        <item name="popupShadeSecond">@color/popup_shade_second_dark</item>
+        <item name="popupShadeThird">@color/popup_shade_third_dark</item>
         <item name="widgetsTheme">@style/WidgetContainerTheme.Dark</item>
-        <item name="folderDotColor">#FF464646</item>
-        <item name="folderFillColor">#DD3C4043</item> <!-- 87% GM2 800 -->
-        <item name="folderIconBorderColor">#FF80868B</item>
-        <item name="folderTextColor">@android:color/white</item>
-        <item name="folderHintColor">#89CCCCCC</item>
+        <item name="folderDotColor">@color/folder_dot_color</item>
+        <item name="folderFillColor">@color/folder_background_dark</item>
+        <item name="folderIconBorderColor">?android:attr/colorPrimary</item>
+        <item name="folderTextColor">@color/workspace_text_color_light</item>
+        <item name="isFolderDarkText">false</item>
+        <item name="folderHintColor">@color/folder_hint_text_color_light</item>
         <item name="isMainColorDark">true</item>
         <item name="loadingIconColor">#99FFFFFF</item>
         <item name="iconOnlyShortcutColor">#B3FFFFFF</item>
         <item name="workProfileOverlayTextColor">@android:color/white</item>
         <item name="eduHalfSheetBGColor">#DD000000</item>
+        <item name="overviewScrimColor">@color/overview_scrim_dark</item>
     </style>
 
     <style name="LauncherTheme.Dark.DarkMainColor" parent="@style/LauncherTheme.Dark">
-        <item name="folderFillColor">#FF3C4043</item> <!-- 100% GM2 800 -->
-        <item name="folderTextColor">@android:color/white</item>
         <item name="disabledIconAlpha">.54</item>
     </style>
 
     <style name="LauncherTheme.Dark.DarkText" parent="@style/LauncherTheme.Dark">
-        <item name="android:colorControlHighlight">#75212121</item>
-        <item name="allAppsInterimScrimAlpha">25</item>
-        <item name="folderFillColor">#CDFFFFFF</item>
-        <item name="folderTextColor">?attr/workspaceTextColor</item>
-        <item name="workspaceTextColor">#FF212121</item>
+        <item name="android:colorControlHighlight">#19212121</item>
+        <item name="workspaceTextColor">@color/workspace_text_color_dark</item>
         <item name="workspaceShadowColor">@android:color/transparent</item>
         <item name="workspaceAmbientShadowColor">@android:color/transparent</item>
         <item name="workspaceKeyShadowColor">@android:color/transparent</item>
         <item name="isWorkspaceDarkText">true</item>
         <item name="workspaceStatusBarScrim">@null</item>
+        <item name="workspaceAccentColor">@color/workspace_accent_color_dark</item>
+        <item name="dropTargetHoverTextColor">@color/workspace_text_color_light</item>
     </style>
 
     <!-- A derivative project can extend these themes to customize the application theme without
@@ -143,12 +147,19 @@
     <style name="AppTheme.Dark.DarkMainColor" parent="@style/LauncherTheme.Dark.DarkMainColor" />
     <style name="AppTheme.Dark.DarkText" parent="@style/LauncherTheme.Dark.DarkText" />
 
-    <style name="AppItemActivityTheme" parent="@android:style/Theme.Material.Light.Dialog.Alert">
-        <item name="widgetsTheme">@style/WidgetContainerTheme</item>
+    <style name="HomeSettingsTheme" parent="@android:style/Theme.DeviceDefault.Settings">
+        <item name="android:navigationBarColor">?android:colorPrimaryDark</item>
+        <item name="android:windowActionBar">false</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="preferenceTheme">@style/HomeSettingsPreferenceTheme</item>
     </style>
 
-    <style name="HomeSettingsTheme" parent="@android:style/Theme.DeviceDefault.Settings">
-        <item name="android:navigationBarColor">@android:color/transparent</item>
+    <style name="HomeSettingsPreferenceTheme" parent="@style/PreferenceThemeOverlay.v14.Material">
+        <item name="preferenceFragmentCompatStyle">@style/HomeSettingsFragmentCompatStyle</item>
+    </style>
+
+    <style name="HomeSettingsFragmentCompatStyle" parent="@style/PreferenceFragment.Material">
+        <item name="android:layout">@layout/home_settings</item>
     </style>
 
     <!--
@@ -162,14 +173,16 @@
         <item name="android:textColorSecondary">?attr/workspaceTextColor</item>
     </style>
 
-    <!-- Theme for the widget container. Overridden on API 26. -->
+    <!-- Theme for the widget container. -->
     <style name="WidgetContainerTheme" parent="@android:style/Theme.DeviceDefault.Settings">
-        <item name="android:colorEdgeEffect">?android:attr/textColorSecondaryInverse</item>
-        <item name="android:textColorPrimary">?android:attr/textColorPrimaryInverse</item>
-        <item name="android:textColorSecondary">?android:attr/textColorSecondaryInverse</item>
+        <item name="android:colorPrimaryDark">#E8EAED</item>
+        <item name="android:textColorSecondary">?android:attr/textColorPrimary</item>
+        <item name="android:colorEdgeEffect">?android:attr/textColorSecondary</item>
     </style>
-
-    <style name="WidgetContainerTheme.Dark" />
+    <style name="WidgetContainerTheme.Dark" parent="AppTheme.Dark">
+        <item name="android:colorEdgeEffect">?android:attr/textColorSecondary</item>
+        <item name="android:colorPrimaryDark">#616161</item> <!-- Gray 700 -->
+    </style>
 
     <style name="FastScrollerPopup" parent="@android:style/TextAppearance.DeviceDefault.DialogWindowTitle">
         <item name="android:layout_width">wrap_content</item>
@@ -181,7 +194,7 @@
         <item name="android:alpha">0</item>
         <item name="android:elevation">3dp</item>
         <item name="android:saveEnabled">false</item>
-        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textColor">?android:attr/textColorPrimaryInverse</item>
         <item name="android:includeFontPadding">false</item>
         <item name="android:importantForAccessibility">no</item>
     </style>
@@ -194,8 +207,9 @@
         <item name="disabledIconAlpha">.54</item>
     </style>
 
+    <style name="BaseIconRoot" parent="@android:style/TextAppearance.DeviceDefault.DialogWindowTitle"/>
 
-    <style name="BaseIconUnBounded" parent="@android:style/TextAppearance.DeviceDefault">
+    <style name="BaseIconUnBounded" parent="BaseIconRoot">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">match_parent</item>
         <item name="android:layout_gravity">center</item>
@@ -212,15 +226,30 @@
         <item name="android:lines">1</item>
     </style>
 
+    <!-- Base theme for AllApps BubbleTextViews -->
+    <style name="BaseIcon.AllApps" parent="BaseIcon">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:stateListAnimator">@animator/all_apps_fastscroll_icon_anim</item>
+        <item name="android:paddingLeft">@dimen/dynamic_grid_cell_padding_x</item>
+        <item name="android:paddingRight">@dimen/dynamic_grid_cell_padding_x</item>
+    </style>
+
+
     <!-- Icon displayed on the workspace -->
-    <style name="BaseIcon.Workspace" >
+    <style name="BaseIcon.Workspace.Shadows" parent="BaseIcon">
         <item name="android:shadowRadius">2.0</item>
         <item name="android:shadowColor">?attr/workspaceShadowColor</item>
         <item name="ambientShadowColor">?attr/workspaceAmbientShadowColor</item>
-        <item name="ambientShadowBlur">2.5dp</item>
+        <item name="ambientShadowBlur">1.5dp</item>
         <item name="keyShadowColor">?attr/workspaceKeyShadowColor</item>
-        <item name="keyShadowBlur">1dp</item>
-        <item name="keyShadowOffset">.5dp</item>
+        <item name="keyShadowBlur">.5dp</item>
+        <item name="keyShadowOffsetX">.5dp</item>
+        <item name="keyShadowOffsetY">.5dp</item>
+    </style>
+
+    <!-- Intentionally empty so we can override -->
+    <style name="BaseIcon.Workspace" parent="BaseIcon.Workspace.Shadows">
     </style>
 
     <!-- Theme for the popup container -->
@@ -230,34 +259,57 @@
 
     <!-- Drop targets -->
     <style name="DropTargetButtonBase" parent="@android:style/TextAppearance.DeviceDefault">
-        <item name="android:drawablePadding">7.5dp</item>
-        <item name="android:paddingLeft">16dp</item>
-        <item name="android:paddingRight">16dp</item>
-        <item name="android:textColor">?attr/workspaceTextColor</item>
+        <item name="android:drawablePadding">8dp</item>
+        <item name="android:padding">14dp</item>
+        <item name="android:textColor">@color/drop_target_text</item>
         <item name="android:textSize">@dimen/drop_target_text_size</item>
         <item name="android:singleLine">true</item>
         <item name="android:ellipsize">end</item>
-        <item name="android:shadowColor">?attr/workspaceShadowColor</item>
-        <item name="android:shadowDx">0.0</item>
-        <item name="android:shadowDy">1.0</item>
-        <item name="android:shadowRadius">4.0</item>
+        <item name="android:background">@drawable/drop_target_background</item>
     </style>
 
     <style name="DropTargetButton" parent="DropTargetButtonBase" />
 
     <style name="TextHeadline" parent="@android:style/TextAppearance.DeviceDefault.DialogWindowTitle" />
+
     <style name="PrimaryHeadline" parent="@android:style/TextAppearance.DeviceDefault.DialogWindowTitle"/>
 
     <style name="TextTitle" parent="@android:style/TextAppearance.DeviceDefault" />
 
     <style name="AllAppsEmptySearchBackground">
         <item name="android:colorPrimary">#E0E0E0</item>
-        <item name="android:colorControlHighlight">#BDBDBD</item>
+        <item name="android:colorControlHighlight">#19BDBDBD</item>
         <item name="android:colorForeground">@color/all_apps_bg_hand_fill</item>
     </style>
     <style name="AllAppsEmptySearchBackground.Dark">
         <item name="android:colorPrimary">#9AA0A6</item>
-        <item name="android:colorControlHighlight">#DFE1E5</item>
+        <item name="android:colorControlHighlight">#19DFE1E5</item>
         <item name="android:colorForeground">@color/all_apps_bg_hand_fill_dark</item>
+    </style>
+
+    <style name="Button.TopRounded.Bordered" parent="@android:style/Widget.Material.Button">
+        <item name="android:background">@drawable/button_top_rounded_bordered_ripple</item>
+        <item name="android:stateListAnimator">@null</item>
+    </style>
+
+    <style name="Button.BottomRounded.Colored" parent="@android:style/Widget.Material.Button">
+        <item name="android:background">@drawable/button_bottom_rounded_colored_ripple</item>
+        <item name="android:stateListAnimator">@null</item>
+    </style>
+
+    <style name="Button.Rounded.Colored" parent="@android:style/Widget.Material.Button">
+        <item name="android:background">@drawable/button_rounded_colored_ripple</item>
+        <item name="android:stateListAnimator">@null</item>
+    </style>
+
+    <style name="Button.FullRounded.Colored" parent="@android:style/Widget.Material.Button">
+        <item name="android:background">@drawable/full_rounded_colored_ripple</item>
+        <item name="android:stateListAnimator">@null</item>
+    </style>
+
+    <style name="AddItemActivityTheme" parent="@android:style/Theme.Translucent.NoTitleBar">
+        <item name="widgetsTheme">@style/WidgetContainerTheme</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:windowTranslucentStatus">true</item>
     </style>
 </resources>
