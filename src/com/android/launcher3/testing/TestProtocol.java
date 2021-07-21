@@ -24,6 +24,7 @@ public final class TestProtocol {
     public static final String SWITCHED_TO_STATE_MESSAGE = "TAPL_SWITCHED_TO_STATE";
     public static final String SCROLL_FINISHED_MESSAGE = "TAPL_SCROLL_FINISHED";
     public static final String PAUSE_DETECTED_MESSAGE = "TAPL_PAUSE_DETECTED";
+    public static final String DISMISS_ANIMATION_ENDS_MESSAGE = "TAPL_DISMISS_ANIMATION_ENDS";
     public static final int NORMAL_STATE_ORDINAL = 0;
     public static final int SPRING_LOADED_STATE_ORDINAL = 1;
     public static final int OVERVIEW_STATE_ORDINAL = 2;
@@ -111,5 +112,4 @@ public final class TestProtocol {
     public static final String PERMANENT_DIAG_TAG = "TaplTarget";
     public static final String WORK_PROFILE_REMOVED = "b/159671700";
     public static final String FALLBACK_ACTIVITY_NO_SET = "b/181019015";
-    public static final String HOME_TO_OVERVIEW_FLAKY = "b/193440212";
 }

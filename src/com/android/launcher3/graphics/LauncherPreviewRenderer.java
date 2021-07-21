@@ -15,6 +15,7 @@
  */
 package com.android.launcher3.graphics;
 
+import static android.app.WallpaperManager.FLAG_SYSTEM;
 import static android.view.View.MeasureSpec.EXACTLY;
 import static android.view.View.MeasureSpec.makeMeasureSpec;
 import static android.view.View.VISIBLE;
@@ -27,6 +28,7 @@ import static com.android.launcher3.model.ModelUtils.sortWorkspaceItemsSpatially
 import android.annotation.TargetApi;
 import android.app.Fragment;
 import android.app.WallpaperColors;
+import android.app.WallpaperManager;
 import android.appwidget.AppWidgetHost;
 import android.appwidget.AppWidgetHostView;
 import android.appwidget.AppWidgetProviderInfo;
@@ -214,7 +216,7 @@ public class LauncherPreviewRenderer extends ContextWrapper
 
     public LauncherPreviewRenderer(Context context,
             InvariantDeviceProfile idp,
-            WallpaperColors wallpaperColors) {
+            WallpaperColors wallpaperColorsOverride) {
 
         super(context);
         mUiHandler = new Handler(Looper.getMainLooper());
@@ -280,16 +282,18 @@ public class LauncherPreviewRenderer extends ContextWrapper
                 mDp.workspacePadding.bottom);
         mWorkspaceScreens.put(FIRST_SCREEN_ID, firstScreen);
 
-        if (FeatureFlags.WIDGETS_IN_LAUNCHER_PREVIEW.get()) {
-            mAppWidgetHost = new LauncherPreviewAppWidgetHost(context);
-            mWallpaperColorResources =  wallpaperColors != null
-                    ? LocalColorExtractor.newInstance(context)
-                            .generateColorsOverride(wallpaperColors)
-                    : null;
+        if (Utilities.ATLEAST_S) {
+            WallpaperColors wallpaperColors = wallpaperColorsOverride != null
+                    ? wallpaperColorsOverride
+                    : WallpaperManager.getInstance(context).getWallpaperColors(FLAG_SYSTEM);
+            mWallpaperColorResources = LocalColorExtractor.newInstance(context)
+                    .generateColorsOverride(wallpaperColors);
         } else {
-            mAppWidgetHost = null;
             mWallpaperColorResources = null;
         }
+        mAppWidgetHost = FeatureFlags.WIDGETS_IN_LAUNCHER_PREVIEW.get()
+                ? new LauncherPreviewAppWidgetHost(context)
+                : null;
     }
 
     /** Populate preview and render it. */
@@ -403,6 +407,10 @@ public class LauncherPreviewRenderer extends ContextWrapper
             };
             view.setAppWidget(-1, providerInfo);
             view.updateAppWidget(null);
+        }
+
+        if (mWallpaperColorResources != null) {
+            view.setColorResources(mWallpaperColorResources);
         }
 
         view.setTag(info);
@@ -537,12 +545,9 @@ public class LauncherPreviewRenderer extends ContextWrapper
         }
     }
 
-    private class LauncherPreviewAppWidgetHostView extends BaseLauncherAppWidgetHostView {
+    private static class LauncherPreviewAppWidgetHostView extends BaseLauncherAppWidgetHostView {
         private LauncherPreviewAppWidgetHostView(Context context) {
             super(context);
-            if (Utilities.ATLEAST_S && mWallpaperColorResources != null) {
-                setColorResources(mWallpaperColorResources);
-            }
         }
 
         @Override

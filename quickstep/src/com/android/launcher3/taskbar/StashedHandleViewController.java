@@ -40,6 +40,8 @@ public class StashedHandleViewController {
     private final int mStashedHandleHeight;
     private final AnimatedFloat mTaskbarStashedHandleAlpha = new AnimatedFloat(
             this::updateStashedHandleAlpha);
+    private final AnimatedFloat mTaskbarStashedHandleHintScale = new AnimatedFloat(
+            this::updateStashedHandleHintScale);
 
     // Initialized in init.
     private TaskbarControllers mControllers;
@@ -64,6 +66,7 @@ public class StashedHandleViewController {
         mStashedHandleView.getLayoutParams().height = mActivity.getDeviceProfile().taskbarSize;
 
         updateStashedHandleAlpha();
+        mTaskbarStashedHandleHintScale.updateValue(1f);
 
         final int stashedTaskbarHeight = mControllers.taskbarStashController.getStashedHeight();
         mStashedHandleView.setOutlineProvider(new ViewOutlineProvider() {
@@ -80,10 +83,22 @@ public class StashedHandleViewController {
                 outline.setRoundRect(mStashedHandleBounds, mStashedHandleRadius);
             }
         });
+
+        mStashedHandleView.addOnLayoutChangeListener((view, i, i1, i2, i3, i4, i5, i6, i7) -> {
+            final int stashedCenterX = view.getWidth() / 2;
+            final int stashedCenterY = view.getHeight() - stashedTaskbarHeight / 2;
+
+            view.setPivotX(stashedCenterX);
+            view.setPivotY(stashedCenterY);
+        });
     }
 
     public AnimatedFloat getStashedHandleAlpha() {
         return mTaskbarStashedHandleAlpha;
+    }
+
+    public AnimatedFloat getStashedHandleHintScale() {
+        return mTaskbarStashedHandleHintScale;
     }
 
     /**
@@ -104,5 +119,10 @@ public class StashedHandleViewController {
 
     protected void updateStashedHandleAlpha() {
         mStashedHandleView.setAlpha(mTaskbarStashedHandleAlpha.value);
+    }
+
+    protected void updateStashedHandleHintScale() {
+        mStashedHandleView.setScaleX(mTaskbarStashedHandleHintScale.value);
+        mStashedHandleView.setScaleY(mTaskbarStashedHandleHintScale.value);
     }
 }
