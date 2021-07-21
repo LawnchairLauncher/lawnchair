@@ -36,18 +36,27 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom" >
 
+        <FrameLayout
+            android:id="@+id/start_contextual_buttons"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:paddingLeft="@dimen/taskbar_nav_buttons_spacing"
+            android:paddingRight="@dimen/taskbar_nav_buttons_spacing"
+            android:gravity="center_vertical"
+            android:layout_gravity="start"/>
+
         <LinearLayout
-            android:id="@+id/start_nav_buttons"
+            android:id="@+id/end_nav_buttons"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:orientation="horizontal"
             android:paddingLeft="@dimen/taskbar_nav_buttons_spacing"
             android:paddingRight="@dimen/taskbar_nav_buttons_spacing"
             android:gravity="center_vertical"
-            android:layout_gravity="start"/>
+            android:layout_gravity="end"/>
 
         <FrameLayout
-            android:id="@+id/end_nav_buttons"
+            android:id="@+id/end_contextual_buttons"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:paddingLeft="@dimen/taskbar_nav_buttons_spacing"

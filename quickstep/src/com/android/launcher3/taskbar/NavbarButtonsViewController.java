@@ -79,8 +79,10 @@ public class NavbarButtonsViewController {
 
     private final TaskbarActivityContext mContext;
     private final FrameLayout mNavButtonsView;
-    private final ViewGroup mStartContainer;
-    private final ViewGroup mEndContainer;
+    private final ViewGroup mNavButtonContainer;
+    // Used for IME+A11Y buttons
+    private final ViewGroup mEndContextualContainer;
+    private final ViewGroup mStartContextualContainer;
 
     // Initialized in init.
     private TaskbarControllers mControllers;
@@ -91,8 +93,9 @@ public class NavbarButtonsViewController {
     public NavbarButtonsViewController(TaskbarActivityContext context, FrameLayout navButtonsView) {
         mContext = context;
         mNavButtonsView = navButtonsView;
-        mStartContainer = mNavButtonsView.findViewById(R.id.start_nav_buttons);
-        mEndContainer = mNavButtonsView.findViewById(R.id.end_nav_buttons);
+        mNavButtonContainer = mNavButtonsView.findViewById(R.id.end_nav_buttons);
+        mEndContextualContainer = mNavButtonsView.findViewById(R.id.end_contextual_buttons);
+        mStartContextualContainer = mNavButtonsView.findViewById(R.id.start_contextual_buttons);
     }
 
     /**
@@ -114,21 +117,22 @@ public class NavbarButtonsViewController {
 
         // IME switcher
         View imeSwitcherButton = addButton(R.drawable.ic_ime_switcher, BUTTON_IME_SWITCH,
-                mEndContainer, mControllers.navButtonController, R.id.ime_switcher);
+                mEndContextualContainer, mControllers.navButtonController, R.id.ime_switcher);
         mPropertyHolders.add(new StatePropertyHolder(imeSwitcherButton,
                 flags -> ((flags & MASK_IME_SWITCHER_VISIBLE) == MASK_IME_SWITCHER_VISIBLE)
                         && ((flags & FLAG_ROTATION_BUTTON_VISIBLE) == 0)
                         && ((flags & FLAG_A11Y_VISIBLE) == 0)));
 
-        mBackButton = addButton(R.drawable.ic_sysbar_back, BUTTON_BACK,
-                mStartContainer, mControllers.navButtonController, R.id.back);
+        View imeDownButton = addButton(R.drawable.ic_sysbar_back, BUTTON_BACK,
+                mStartContextualContainer, mControllers.navButtonController, R.id.back);
+        imeDownButton.setRotation(Utilities.isRtl(mContext.getResources()) ? 90 : -90);
         // Rotate when Ime visible
-        mPropertyHolders.add(new StatePropertyHolder(mBackButton,
-                flags -> (flags & FLAG_IME_VISIBLE) == 0, View.ROTATION, 0,
-                Utilities.isRtl(mContext.getResources()) ? 90 : -90));
+        mPropertyHolders.add(new StatePropertyHolder(imeDownButton,
+                flags -> (flags & FLAG_IME_VISIBLE) != 0));
 
         if (mContext.isThreeButtonNav()) {
-            initButtons(mStartContainer, mEndContainer, mControllers.navButtonController);
+            initButtons(mNavButtonContainer, mEndContextualContainer,
+                    mControllers.navButtonController);
 
             // Animate taskbar background when IME shows
             mPropertyHolders.add(new StatePropertyHolder(
@@ -142,21 +146,18 @@ public class NavbarButtonsViewController {
 
             // Rotation button
             RotationButton rotationButton = new RotationButtonImpl(
-                    addButton(mEndContainer, R.id.rotate_suggestion));
+                    addButton(mEndContextualContainer, R.id.rotate_suggestion));
             rotationButton.hide();
             mControllers.rotationButtonController.setRotationButton(rotationButton);
         } else {
             mControllers.rotationButtonController.setRotationButton(new RotationButton() {});
-            // Show when IME is visible
-            mPropertyHolders.add(new StatePropertyHolder(mBackButton,
-                    flags -> (flags & FLAG_IME_VISIBLE) != 0));
         }
 
         applyState();
         mPropertyHolders.forEach(StatePropertyHolder::endAnimation);
     }
 
-    private void initButtons(ViewGroup startContainer, ViewGroup endContainer,
+    private void initButtons(ViewGroup navContainer, ViewGroup endContainer,
             TaskbarNavButtonController navButtonController) {
 
         // Hide when keyguard is showing, show when bouncer is showing
@@ -164,14 +165,19 @@ public class NavbarButtonsViewController {
                 flags -> (flags & FLAG_KEYGUARD_VISIBLE) == 0 ||
                         (flags & FLAG_ONLY_BACK_FOR_BOUNCER_VISIBLE) != 0));
 
+        mBackButton = addButton(R.drawable.ic_sysbar_back, BUTTON_BACK,
+                mNavButtonContainer, mControllers.navButtonController, R.id.back);
+        mPropertyHolders.add(new StatePropertyHolder(mBackButton,
+                flags -> (flags & FLAG_IME_VISIBLE) == 0));
+
         // home and recents buttons
-        View homeButton = addButton(R.drawable.ic_sysbar_home, BUTTON_HOME, startContainer,
+        View homeButton = addButton(R.drawable.ic_sysbar_home, BUTTON_HOME, navContainer,
                 navButtonController, R.id.home);
         mPropertyHolders.add(new StatePropertyHolder(homeButton,
                 flags -> (flags & FLAG_IME_VISIBLE) == 0 &&
                         (flags & FLAG_KEYGUARD_VISIBLE) == 0));
         View recentsButton = addButton(R.drawable.ic_sysbar_recent, BUTTON_RECENTS,
-                startContainer, navButtonController, R.id.recent_apps);
+                navContainer, navButtonController, R.id.recent_apps);
         mPropertyHolders.add(new StatePropertyHolder(recentsButton,
                 flags -> (flags & FLAG_IME_VISIBLE) == 0 &&
                         (flags & FLAG_KEYGUARD_VISIBLE) == 0));

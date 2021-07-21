@@ -777,7 +777,7 @@ public class DeviceProfile {
             int taskbarOffset = getTaskbarOffsetY();
             int hotseatTopDiff = hotseatHeight - taskbarSize - taskbarOffset;
 
-            int startOffset = ApiWrapper.getHotseatStartOffset(context);
+            int endOffset = ApiWrapper.getHotseatEndOffset(context);
             int requiredWidth = iconSizePx * numShownHotseatIcons;
 
             Resources res = context.getResources();
@@ -785,16 +785,16 @@ public class DeviceProfile {
             float taskbarIconSpacing = 2 * res.getDimension(R.dimen.taskbar_icon_spacing);
             int maxSize = (int) (requiredWidth
                     * (taskbarIconSize + taskbarIconSpacing) / taskbarIconSize);
-            int hotseatSize = Math.min(maxSize, availableWidthPx - startOffset);
+            int hotseatSize = Math.min(maxSize, availableWidthPx - endOffset);
             int sideSpacing = (availableWidthPx - hotseatSize) / 2;
             mHotseatPadding.set(sideSpacing, hotseatTopDiff, sideSpacing, taskbarOffset);
 
-            if (startOffset > sideSpacing) {
+            if (endOffset > sideSpacing) {
                 int diff = Utilities.isRtl(context.getResources())
-                        ? sideSpacing - startOffset
-                        : startOffset - sideSpacing;
-                mHotseatPadding.left += diff;
-                mHotseatPadding.right -= diff;
+                        ? sideSpacing - endOffset
+                        : endOffset - sideSpacing;
+                mHotseatPadding.left -= diff;
+                mHotseatPadding.right += diff;
             }
         } else {
             // We want the edges of the hotseat to line up with the edges of the workspace, but the
