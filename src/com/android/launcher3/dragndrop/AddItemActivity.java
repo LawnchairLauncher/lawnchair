@@ -192,15 +192,15 @@ public class AddItemActivity extends BaseActivity
             float appWidgetHostViewScale = mWidgetCell.getAppWidgetHostViewScale();
             int xOffset =
                     appWidgetHostView.getLeft() - (int) (mLastTouchPos.x * appWidgetHostViewScale);
-            int yOffset = appWidgetHostView.getTop()
-                    - (int) (mLastTouchPos.y * mWidgetCell.getAppWidgetHostViewScale());
+            int yOffset =
+                    appWidgetHostView.getTop() - (int) (mLastTouchPos.y * appWidgetHostViewScale);
             bounds.offset(xOffset, yOffset);
             listener = new PinItemDragListener(
                     mRequest,
                     bounds,
                     appWidgetHostView.getMeasuredWidth(),
                     appWidgetHostView.getMeasuredWidth(),
-                    appWidgetHostView.getScaleX());
+                    appWidgetHostViewScale);
         } else {
             bounds = img.getBitmapBounds();
             bounds.offset(img.getLeft() - (int) mLastTouchPos.x,

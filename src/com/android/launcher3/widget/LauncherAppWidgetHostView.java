@@ -84,10 +84,8 @@ public class LauncherAppWidgetHostView extends BaseLauncherAppWidgetHostView
     private boolean mIsScrollable;
     private boolean mIsAttachedToWindow;
     private boolean mIsAutoAdvanceRegistered;
-    private boolean mIsInDragMode = false;
     private Runnable mAutoAdvanceRunnable;
     private RectF mLastLocationRegistered = null;
-    @Nullable private AppWidgetHostViewDragListener mDragListener;
 
     // Used to store the widget sizes in drag layer coordinates.
     private final Rect mCurrentWidgetSize = new Rect();
@@ -101,6 +99,14 @@ public class LauncherAppWidgetHostView extends BaseLauncherAppWidgetHostView
     private boolean mHasDeferredColorChange = false;
     private @Nullable SparseIntArray mDeferredColorChange = null;
     private boolean mEnableColorExtraction = true;
+
+    // The following member variables are only used during drag-n-drop.
+    private boolean mIsInDragMode = false;
+    @Nullable private AppWidgetHostViewDragListener mDragListener;
+    /** The drag content width which is only set when the drag content scale is not 1f. */
+    private int mDragContentWidth = 0;
+    /** The drag content height which is only set when the drag content scale is not 1f. */
+    private int mDragContentHeight = 0;
 
     public LauncherAppWidgetHostView(Context context) {
         super(context);
@@ -310,10 +316,28 @@ public class LauncherAppWidgetHostView extends BaseLauncherAppWidgetHostView
         updateColorExtraction();
     }
 
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        if (mIsInDragMode && mDragContentWidth > 0 && mDragContentHeight > 0
+                && getChildCount() == 1) {
+            measureChild(getChildAt(0), MeasureSpec.getSize(mDragContentWidth),
+                    MeasureSpec.getSize(mDragContentHeight));
+        }
+    }
+
     /** Starts the drag mode. */
     public void startDrag(AppWidgetHostViewDragListener dragListener) {
         mIsInDragMode = true;
         mDragListener = dragListener;
+        // In the case of dragging a scaled preview from widgets picker, we should reuse the
+        // previously measured dimension from WidgetCell#measureAndComputeWidgetPreviewScale, which
+        // measures the dimension of a widget preview without its parent's bound before scaling
+        // down.
+        if ((getScaleX() != 1f || getScaleY() != 1f) && getChildCount() == 1) {
+            mDragContentWidth = getChildAt(0).getMeasuredWidth();
+            mDragContentHeight = getChildAt(0).getMeasuredHeight();
+        }
     }
 
     /** Handles a drag event occurred on a workspace page, {@code pageId}. */
@@ -326,6 +350,8 @@ public class LauncherAppWidgetHostView extends BaseLauncherAppWidgetHostView
     public void endDrag() {
         mIsInDragMode = false;
         mDragListener = null;
+        mDragContentWidth = 0;
+        mDragContentHeight = 0;
         mWidgetSizeAtDrag.setEmpty();
     }
 

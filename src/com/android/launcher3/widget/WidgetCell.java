@@ -18,6 +18,7 @@ package com.android.launcher3.widget;
 
 import static android.view.View.MeasureSpec.makeMeasureSpec;
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
+import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_WIDGETS_TRAY;
 import static com.android.launcher3.Utilities.ATLEAST_S;
@@ -372,7 +373,7 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
                 if (shouldScale) {
                     setNoClip(mWidgetImageContainer);
                     setNoClip(mAppWidgetHostViewPreview);
-                    mAppWidgetHostViewScale = computeWidgetPreviewScale();
+                    mAppWidgetHostViewScale = measureAndComputeWidgetPreviewScale();
                     mAppWidgetHostViewPreview.setScaleToFit(mAppWidgetHostViewScale);
                 }
             }
@@ -473,7 +474,7 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
         view.setClipToPadding(false);
     }
 
-    private float computeWidgetPreviewScale() {
+    private float measureAndComputeWidgetPreviewScale() {
         if (mAppWidgetHostViewPreview.getChildCount() != 1) {
             return 1f;
         }
@@ -482,11 +483,24 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
         mAppWidgetHostViewPreview.measure(
                 makeMeasureSpec(MAX_MEASURE_SPEC_DIMENSION, MeasureSpec.UNSPECIFIED),
                 makeMeasureSpec(MAX_MEASURE_SPEC_DIMENSION, MeasureSpec.UNSPECIFIED));
-        int appWidgetContentWidth = mAppWidgetHostViewPreview.getChildAt(0).getMeasuredWidth();
-        int appWidgetContentHeight = mAppWidgetHostViewPreview.getChildAt(0).getMeasuredHeight();
+        View widgetContent = mAppWidgetHostViewPreview.getChildAt(0);
+        int appWidgetContentWidth = widgetContent.getMeasuredWidth();
+        int appWidgetContentHeight = widgetContent.getMeasuredHeight();
         if (appWidgetContentWidth == 0 || appWidgetContentHeight == 0) {
             return 1f;
         }
+
+        // If the width / height of the widget content is set to wrap content, overrides the width /
+        // height with the measured dimension. This avoids incorrect measurement after scaling.
+        FrameLayout.LayoutParams layoutParam =
+                (FrameLayout.LayoutParams) widgetContent.getLayoutParams();
+        if (layoutParam.width == WRAP_CONTENT) {
+            layoutParam.width = widgetContent.getMeasuredWidth();
+        }
+        if (layoutParam.height == WRAP_CONTENT) {
+            layoutParam.height = widgetContent.getMeasuredHeight();
+        }
+        widgetContent.setLayoutParams(layoutParam);
 
         int horizontalPadding = mAppWidgetHostViewPreview.getPaddingStart()
                 + mAppWidgetHostViewPreview.getPaddingEnd();
