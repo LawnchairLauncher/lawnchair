@@ -25,6 +25,7 @@ import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
 
+import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.accessibility.LauncherAccessibilityDelegate;
 import com.android.launcher3.dragndrop.DragOptions;
 import com.android.launcher3.logging.StatsLogManager;
@@ -128,11 +129,21 @@ public class DeleteDropTarget extends ButtonDropTarget {
     public void completeDrop(DragObject d) {
         ItemInfo item = d.dragInfo;
         if (canRemove(item)) {
-            int itemPage = mLauncher.getWorkspace().getCurrentPage();
+            ItemInfo pageItem = item;
+            if (item.container <= 0) {
+                View v = mLauncher.getWorkspace().getHomescreenIconByItemId(item.container);
+                if (v != null) {
+                    pageItem = (ItemInfo) v.getTag();
+                }
+            }
+            IntSet pageIds = pageItem.container == Favorites.CONTAINER_DESKTOP
+                    ? IntSet.wrap(pageItem.screenId)
+                    : mLauncher.getWorkspace().getCurrentPageScreenIds();
+
             onAccessibilityDrop(null, item);
             ModelWriter modelWriter = mLauncher.getModelWriter();
             Runnable onUndoClicked = () -> {
-                mLauncher.setPagesToBindSynchronously(IntSet.wrap(itemPage));
+                mLauncher.setPagesToBindSynchronously(pageIds);
                 modelWriter.abortDelete();
                 mLauncher.getStatsLogManager().logger().log(LAUNCHER_UNDO);
             };

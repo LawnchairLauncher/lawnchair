@@ -121,13 +121,6 @@ public class ModelWriter {
         }
     }
 
-    /**
-     * Sets the value that indicates if left widget panel is shown or not.
-     */
-    public void setLeftPanelShown(boolean value) {
-        mBgDataModel.isLeftPanelShown = value;
-    }
-
     private void checkItemInfoLocked(int itemId, ItemInfo item, StackTraceElement[] stackTrace) {
         ItemInfo modelItem = mBgDataModel.itemsIdMap.get(itemId);
         if (modelItem != null && item != modelItem) {

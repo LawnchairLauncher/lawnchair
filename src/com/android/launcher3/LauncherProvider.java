@@ -61,7 +61,6 @@ import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.model.DbDowngradeHelper;
-import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.pm.UserCache;
 import com.android.launcher3.provider.LauncherDbUtils;
 import com.android.launcher3.provider.LauncherDbUtils.SQLiteTransaction;
@@ -1090,7 +1089,7 @@ public class LauncherProvider extends ContentProvider {
         }
 
         private int initializeMaxScreenId(SQLiteDatabase db) {
-            return getMaxId(db, "SELECT MAX(%1$s) FROM %2$s WHERE %3$s = %4$d",
+            return getMaxId(db, "SELECT MAX(%1$s) FROM %2$s WHERE %3$s = %4$d AND %1$s >= 0",
                     Favorites.SCREEN, Favorites.TABLE_NAME, Favorites.CONTAINER,
                     Favorites.CONTAINER_DESKTOP);
         }
