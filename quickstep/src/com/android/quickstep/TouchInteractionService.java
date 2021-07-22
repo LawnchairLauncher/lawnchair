@@ -564,8 +564,7 @@ public class TouchInteractionService extends Service implements PluginListener<O
                 } else {
                     mUncheckedConsumer = InputConsumer.NO_OP;
                 }
-            } else if (mDeviceState.canTriggerOneHandedAction(event)
-                    && !mDeviceState.isOneHandedModeActive()) {
+            } else if (mDeviceState.canTriggerOneHandedAction(event)) {
                 // Consume gesture event for triggering one handed feature.
                 mUncheckedConsumer = new OneHandedModeInputConsumer(this, mDeviceState,
                         InputConsumer.NO_OP, mInputMonitorCompat);
