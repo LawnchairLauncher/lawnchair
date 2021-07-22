@@ -1821,7 +1821,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
 
     // Scaling of RecentsView during quick switch based on amount of recents scroll
     private float getScaleProgressDueToScroll() {
-        if (!mActivity.getDeviceProfile().isTablet || mRecentsView == null
+        if (mActivity == null || !mActivity.getDeviceProfile().isTablet || mRecentsView == null
                 || !mRecentsViewScrollLinked) {
             return 0;
         }
