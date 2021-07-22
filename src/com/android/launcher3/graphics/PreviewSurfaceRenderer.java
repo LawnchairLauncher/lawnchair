@@ -175,7 +175,6 @@ public class PreviewSurfaceRenderer {
                             query);
 
                     MAIN_EXECUTOR.execute(() -> {
-                        mBgDataModel.isLeftPanelShown = deviceProfile.isTwoPanels;
                         renderView(previewContext, mBgDataModel, mWidgetProvidersMap);
                         mOnDestroyCallbacks.add(previewContext::onDestroy);
                     });
