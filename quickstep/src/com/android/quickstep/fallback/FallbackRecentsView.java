@@ -37,6 +37,7 @@ import com.android.quickstep.FallbackActivityInterface;
 import com.android.quickstep.GestureState;
 import com.android.quickstep.RecentsActivity;
 import com.android.quickstep.util.TaskViewSimulator;
+import com.android.quickstep.util.SplitSelectStateController;
 import com.android.quickstep.views.OverviewActionsView;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.SplitPlaceholderView;
@@ -62,8 +63,8 @@ public class FallbackRecentsView extends RecentsView<RecentsActivity, RecentsSta
     }
 
     @Override
-    public void init(OverviewActionsView actionsView, SplitPlaceholderView splitPlaceholderView) {
-        super.init(actionsView, splitPlaceholderView);
+    public void init(OverviewActionsView actionsView, SplitSelectStateController splitController) {
+        super.init(actionsView, splitController);
         setOverviewStateEnabled(true);
         setOverlayEnabled(true);
     }
@@ -96,7 +97,8 @@ public class FallbackRecentsView extends RecentsView<RecentsActivity, RecentsSta
         if (mHomeTaskInfo != null && endTarget == RECENTS && animatorSet != null) {
             TaskView tv = getTaskView(mHomeTaskInfo.taskId);
             if (tv != null) {
-                PendingAnimation pa = createTaskDismissAnimation(tv, true, false, 150);
+                PendingAnimation pa = createTaskDismissAnimation(tv, true, false, 150,
+                        false /* dismissingForSplitSelection*/);
                 pa.addEndListener(e -> setCurrentTask(-1));
                 AnimatorPlaybackController controller = pa.createPlaybackController();
                 controller.dispatchOnStart();

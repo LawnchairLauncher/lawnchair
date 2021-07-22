@@ -43,7 +43,6 @@
     <dimen name="overview_grid_side_margin">54dp</dimen>
     <dimen name="overview_grid_row_spacing">42dp</dimen>
     <dimen name="overview_grid_focus_vertical_margin">40dp</dimen>
-    <dimen name="split_placeholder_size">110dp</dimen>
 
     <!-- These speeds are in dp/s -->
     <dimen name="max_task_dismiss_drag_velocity">2.25dp</dimen>

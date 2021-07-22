@@ -227,7 +227,8 @@ public abstract class TaskViewTouchController<T extends BaseDraggingActivity>
         if (goingUp) {
             currentInterpolator = Interpolators.LINEAR;
             pa = mRecentsView.createTaskDismissAnimation(mTaskBeingDragged,
-                    true /* animateTaskView */, true /* removeTask */, maxDuration);
+                    true /* animateTaskView */, true /* removeTask */, maxDuration,
+                    false /* dismissingForSplitSelection*/);
 
             mEndDisplacement = -secondaryTaskDimension;
         } else {
