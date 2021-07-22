@@ -16,6 +16,7 @@
 
 package com.android.launcher3.model;
 
+import static com.android.launcher3.WorkspaceLayoutManager.LEFT_PANEL_ID;
 import static com.android.launcher3.config.FeatureFlags.MULTI_DB_GRID_MIRATION_ALGO;
 import static com.android.launcher3.model.BgDataModel.Callbacks.FLAG_HAS_SHORTCUT_PERMISSION;
 import static com.android.launcher3.model.BgDataModel.Callbacks.FLAG_QUIET_MODE_CHANGE_PERMISSION;
@@ -86,6 +87,7 @@ import com.android.launcher3.shortcuts.ShortcutRequest;
 import com.android.launcher3.shortcuts.ShortcutRequest.QueryResult;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.IOUtils;
+import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.IntSet;
 import com.android.launcher3.util.LooperIdleLock;
 import com.android.launcher3.util.PackageManagerHelper;
@@ -175,11 +177,17 @@ public class LoaderTask implements Runnable {
     private void sendFirstScreenActiveInstallsBroadcast() {
         ArrayList<ItemInfo> firstScreenItems = new ArrayList<>();
         ArrayList<ItemInfo> allItems = mBgDataModel.getAllWorkspaceItems();
-        // Screen set is never empty
-        final int firstScreen = mBgDataModel.collectWorkspaceScreens().get(0);
-        // TODO(b/185515153): support two panel home.
 
-        filterCurrentWorkspaceItems(IntSet.wrap(firstScreen), allItems, firstScreenItems,
+        // Screen set is never empty
+        IntArray allScreens = mBgDataModel.collectWorkspaceScreens();
+        final int firstScreen = allScreens.get(0);
+
+        IntSet firstScreens = IntSet.wrap(firstScreen);
+        if (firstScreen == LEFT_PANEL_ID && allScreens.size() >= 2) {
+            firstScreens.add(allScreens.get(1));
+        }
+
+        filterCurrentWorkspaceItems(firstScreens, allItems, firstScreenItems,
                 new ArrayList<>() /* otherScreenItems are ignored */);
         mFirstScreenBroadcast.sendBroadcasts(mApp.getContext(), firstScreenItems);
     }

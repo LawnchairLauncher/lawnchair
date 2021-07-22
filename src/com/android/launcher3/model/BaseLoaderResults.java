@@ -165,25 +165,7 @@ public abstract class BaseLoaderResults {
         }
 
         private void bind() {
-            IntSet currentScreenIndices;
-            {
-                // Create an anonymous scope to calculate currentScreen as it has to be a
-                // final variable.
-                IntSet screenIndices = mCallbacks.getPagesToBindSynchronously();
-                if (screenIndices == null || screenIndices.isEmpty()
-                        || screenIndices.getArray().get(screenIndices.size() - 1)
-                        >= mOrderedScreenIds.size()) {
-                    // There maybe no workspace screens (just hotseat items and an empty page).
-                    // Also we want to prevent IndexOutOfBoundsExceptions.
-                    screenIndices = new IntSet();
-                }
-                currentScreenIndices = screenIndices;
-            }
-
-
-            IntSet currentScreenIds  = new IntSet();
-            currentScreenIndices.forEach(
-                    index -> currentScreenIds.add(mOrderedScreenIds.get(index)));
+            IntSet currentScreenIds = mCallbacks.getPagesToBindSynchronously(mOrderedScreenIds);
 
             // Separate the items that are on the current screen, and all the other remaining items
             ArrayList<ItemInfo> currentWorkspaceItems = new ArrayList<>();
@@ -218,7 +200,7 @@ public abstract class BaseLoaderResults {
             Executor pendingExecutor = pendingTasks::add;
             bindWorkspaceItems(otherWorkspaceItems, pendingExecutor);
             bindAppWidgets(otherAppWidgets, pendingExecutor);
-            executeCallbacksTask(c -> c.finishBindingItems(currentScreenIndices), pendingExecutor);
+            executeCallbacksTask(c -> c.finishBindingItems(currentScreenIds), pendingExecutor);
             pendingExecutor.execute(
                     () -> {
                         MODEL_EXECUTOR.setThreadPriority(Process.THREAD_PRIORITY_DEFAULT);
@@ -229,7 +211,7 @@ public abstract class BaseLoaderResults {
             executeCallbacksTask(
                     c -> {
                         MODEL_EXECUTOR.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND);
-                        c.onInitialBindComplete(currentScreenIndices, pendingTasks);
+                        c.onInitialBindComplete(currentScreenIds, pendingTasks);
                     }, mUiExecutor);
         }
 
