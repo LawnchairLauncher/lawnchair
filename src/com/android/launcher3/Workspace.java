@@ -315,9 +315,19 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         // Increase our bottom insets so we don't overlap with the taskbar.
         mInsets.bottom += grid.nonOverlappingTaskbarInset;
 
-        if (grid.isTwoPanels) {
-            setPageSpacing(0); // we have two pages and we don't want any spacing
+        if (mWorkspaceFadeInAdjacentScreens) {
+            // In landscape mode the page spacing is set to the default.
+            setPageSpacing(grid.edgeMarginPx);
+        } else {
+            // In portrait, we want the pages spaced such that there is no
+            // overhang of the previous / next page into the current page viewport.
+            // We assume symmetrical padding in portrait mode.
+            int maxInsets = Math.max(insets.left, insets.right);
+            int maxPadding = Math.max(grid.edgeMarginPx, padding.left + 1);
+            setPageSpacing(Math.max(maxInsets, maxPadding));
+        }
 
+        if (grid.isTwoPanels) {
             // Add left widget panel if it isn't already there
             if (!mWorkspaceScreens.containsKey(LEFT_PANEL_ID)) {
                 int newCurrentPage = mCurrentPage + 1;
@@ -325,18 +335,6 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
                 setCurrentPage(newCurrentPage);
             }
         } else {
-            if (mWorkspaceFadeInAdjacentScreens) {
-                // In landscape mode the page spacing is set to the default.
-                setPageSpacing(grid.edgeMarginPx);
-            } else {
-                // In portrait, we want the pages spaced such that there is no
-                // overhang of the previous / next page into the current page viewport.
-                // We assume symmetrical padding in portrait mode.
-                int maxInsets = Math.max(insets.left, insets.right);
-                int maxPadding = Math.max(grid.edgeMarginPx, padding.left + 1);
-                setPageSpacing(Math.max(maxInsets, maxPadding));
-            }
-
             // Remove left widget panel if it is present
             if (mWorkspaceScreens.containsKey(LEFT_PANEL_ID)) {
                 int newCurrentPage = mCurrentPage - 1;
