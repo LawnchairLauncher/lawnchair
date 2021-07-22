@@ -40,7 +40,6 @@ import static com.android.launcher3.config.FeatureFlags.SEPARATE_RECENTS_ACTIVIT
 import static com.android.launcher3.dragndrop.DragLayer.ALPHA_INDEX_TRANSITIONS;
 import static com.android.launcher3.statehandlers.DepthController.DEPTH;
 import static com.android.launcher3.util.DisplayController.getSingleFrameMs;
-import static com.android.quickstep.TaskUtils.taskIsATargetWithMode;
 import static com.android.quickstep.TaskViewUtils.findTaskViewToLaunch;
 import static com.android.systemui.shared.system.QuickStepContract.getWindowCornerRadius;
 import static com.android.systemui.shared.system.QuickStepContract.supportsRoundedCornersOnWindows;
@@ -1047,7 +1046,7 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
             mLauncherOpenTransition = RemoteAnimationAdapterCompat.buildRemoteTransition(
                     new LauncherAnimationRunner(mHandler, mWallpaperOpenTransitionRunner,
                             false /* startAtFrontOfQueue */));
-            mLauncherOpenTransition.addHomeOpenCheck();
+            mLauncherOpenTransition.addHomeOpenCheck(mLauncher.getComponentName());
             SystemUiProxy.INSTANCE.getNoCreate().registerRemoteTransition(mLauncherOpenTransition);
         }
     }

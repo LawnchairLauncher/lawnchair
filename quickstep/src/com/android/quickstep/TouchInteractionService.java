@@ -307,7 +307,6 @@ public class TouchInteractionService extends Service implements PluginListener<O
         return sConnected;
     }
 
-
     public static boolean isInitialized() {
         return sIsInitialized;
     }

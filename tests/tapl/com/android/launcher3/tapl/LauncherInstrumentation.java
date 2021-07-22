@@ -514,9 +514,8 @@ public final class LauncherInstrumentation {
     void fail(String message) {
         checkForAnomaly();
         Assert.fail(formatSystemHealthMessage(formatErrorWithEvents(
-                "http://go/tapl test failure:\nContext: " + getContextDescription()
-                        + " => resulting visible state is " + getVisibleStateMessage()
-                        + ";\nDetails: " + message, true)));
+                "http://go/tapl test failure: " + message + ";\nContext: " + getContextDescription()
+                        + "; now visible state is " + getVisibleStateMessage(), true)));
     }
 
     private String getContextDescription() {
@@ -746,17 +745,13 @@ public final class LauncherInstrumentation {
                     dumpViewHierarchy();
                     action = "swiping up to home";
 
-                    final boolean launcherIsVisible = isLauncherVisible();
                     swipeToState(
                             displaySize.x / 2, displaySize.y - 1,
                             displaySize.x / 2, 0,
                             ZERO_BUTTON_STEPS_FROM_BACKGROUND_TO_HOME, NORMAL_STATE_ORDINAL,
-                            launcherWasVisible
+                            launcherWasVisible || isTablet()
                                     ? GestureScope.INSIDE_TO_OUTSIDE
                                     : GestureScope.OUTSIDE_WITH_PILFER);
-                    // b/193653850: launcherWasVisible is a flaky indicator.
-                    log("launcherWasVisible: " + launcherWasVisible + ", launcherIsVisible: "
-                            + launcherIsVisible);
                 }
             } else {
                 log("Hierarchy before clicking home:");

@@ -563,6 +563,10 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
      * removed from recentsView
      */
     private int mSplitHiddenTaskViewIndex;
+    /**
+     * The task to be removed and immediately re-added. Should not be added to task pool.
+     */
+    private TaskView mMovingTaskView;
 
     // Keeps track of the index where the first TaskView should be
     private int mTaskViewStartIndex = 0;
@@ -826,9 +830,12 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     public void onViewRemoved(View child) {
         super.onViewRemoved(child);
 
-        // Clear the task data for the removed child if it was visible unless it's the initial
-        // taskview for entering split screen, we only pretend to dismiss the task
-        if (child instanceof TaskView && child != mSplitHiddenTaskView) {
+        // Clear the task data for the removed child if it was visible unless:
+        // - It's the initial taskview for entering split screen, we only pretend to dismiss the
+        // task
+        // - It's the focused task to be moved to the front, we immediately re-add the task
+        if (child instanceof TaskView && child != mSplitHiddenTaskView
+                && child != mMovingTaskView) {
             TaskView taskView = (TaskView) child;
             mHasVisibleTaskData.delete(taskView.getTaskId());
             mTaskViewPool.recycle(taskView);
@@ -1119,6 +1126,42 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         if (!isModal()) {
             super.determineScrollingStart(ev, touchSlopScale);
         }
+    }
+
+    /**
+     * Moves the focused task to the front of the carousel in tablets, to minimize animation
+     * required to focus the task in grid.
+     */
+    public void moveFocusedTaskToFront() {
+        if (!(mActivity.getDeviceProfile().isTablet && FeatureFlags.ENABLE_OVERVIEW_GRID.get())) {
+            return;
+        }
+
+        TaskView focusedTaskView = getFocusedTaskView();
+        if (focusedTaskView == null) {
+            return;
+        }
+
+        if (indexOfChild(focusedTaskView) != mCurrentPage) {
+            return;
+        }
+
+        if (mCurrentPage == mTaskViewStartIndex) {
+            return;
+        }
+
+        int primaryScroll = mOrientationHandler.getPrimaryScroll(this);
+        int currentPageScroll = getScrollForPage(mCurrentPage);
+        mCurrentPageScrollDiff = primaryScroll - currentPageScroll;
+
+        mMovingTaskView = focusedTaskView;
+        removeView(focusedTaskView);
+        mMovingTaskView = null;
+        focusedTaskView.onRecycle();
+        addView(focusedTaskView, mTaskViewStartIndex);
+        setCurrentPage(mTaskViewStartIndex);
+
+        updateGridProperties();
     }
 
     protected void applyLoadPlan(ArrayList<Task> tasks) {
@@ -1792,7 +1835,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                 .displayOverviewTasksAsGrid(mActivity.getDeviceProfile())) {
             TaskView runningTaskView = getRunningTaskView();
             float runningTaskPrimaryGridTranslation = 0;
-            if (indexOfChild(runningTaskView) != getNextPage()) {
+            if (runningTaskView != null && indexOfChild(runningTaskView) != getNextPage()) {
                 // Apply the gird translation to running task unless it's being snapped to.
                 runningTaskPrimaryGridTranslation = mOrientationHandler.getPrimaryValue(
                         runningTaskView.getGridTranslationX(),
@@ -3090,6 +3133,9 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                 splitController.getLayoutParamsForActivePosition(getResources(),
                         mActivity.getDeviceProfile()));
         mSplitPlaceholderView.setIcon(taskView.getIconView());
+        if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
+            finishRecentsAnimation(true, null);
+        }
     }
 
     public PendingAnimation createSplitSelectInitAnimation() {

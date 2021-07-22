@@ -65,12 +65,12 @@ public abstract class AbstractStateChangeTouchController
     protected LauncherState mToState;
     protected AnimatorPlaybackController mCurrentAnimation;
     protected boolean mGoingBetweenStates = true;
+    // Ratio of transition process [0, 1] to drag displacement (px)
+    protected float mProgressMultiplier;
 
     private boolean mNoIntercept;
     private boolean mIsLogContainerSet;
     private float mStartProgress;
-    // Ratio of transition process [0, 1] to drag displacement (px)
-    private float mProgressMultiplier;
     private float mDisplacementShift;
     private boolean mCanBlockFling;
     private boolean mAllAppsOvershootStarted;
