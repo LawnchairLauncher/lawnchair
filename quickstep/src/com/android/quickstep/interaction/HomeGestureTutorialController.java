@@ -42,8 +42,8 @@ final class HomeGestureTutorialController extends SwipeUpGestureTutorialControll
     }
 
     @Override
-    protected int getMockAppTaskThumbnailResId(boolean forDarkMode) {
-        return forDarkMode ? R.drawable.mock_webpage_dark_mode : R.drawable.mock_webpage_light_mode;
+    protected int getMockAppTaskLayoutResId() {
+        return R.layout.gesture_tutorial_mock_webpage;
     }
 
     @Override

@@ -49,8 +49,8 @@ final class OverviewGestureTutorialController extends SwipeUpGestureTutorialCont
     }
 
     @Override
-    protected int getMockAppTaskThumbnailResId(boolean forDarkMode) {
-        return R.drawable.mock_conversations_list;
+    protected int getMockAppTaskLayoutResId() {
+        return R.layout.gesture_tutorial_mock_conversation_list;
     }
 
     @Override
