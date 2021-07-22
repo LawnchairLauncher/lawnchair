@@ -48,16 +48,16 @@
     <string name="back_gesture_feedback_swipe_too_far_from_edge" msgid="1711645592102201538">"右端または左端からスワイプしてください。"</string>
     <string name="back_gesture_feedback_cancelled" msgid="3274382913290074496">"画面の右端または左端から中央に向かってスワイプし、指を離してください。"</string>
     <string name="back_gesture_feedback_complete_with_overview_follow_up" msgid="9176400654037014471">"右側からスワイプして前の画面に戻る方法を学習しました。次は、アプリを切り替える方法を覚えましょう。"</string>
-    <string name="back_gesture_feedback_complete_without_follow_up" msgid="6405649621667113830">"「戻る」操作を完了しました。"</string>
+    <string name="back_gesture_feedback_complete_without_follow_up" msgid="6405649621667113830">"「戻る」操作を学習しました。"</string>
     <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="1148198467090405643">"スワイプする際は画面の下部に近づきすぎないようにしましょう。"</string>
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"「戻る」操作の感度を変更するには [設定] に移動します"</string>
-    <string name="back_gesture_intro_title" msgid="19551256430224428">"スワイプで戻りましょう"</string>
+    <string name="back_gesture_intro_title" msgid="19551256430224428">"スワイプで戻る"</string>
     <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"直前の画面に戻るには、画面の左端または右端から中央に向かってスワイプします。"</string>
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"画面の下端から上にスワイプしてください。"</string>
     <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"指を離す前にいったん止めないでください。"</string>
     <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"まっすぐ上にスワイプしてください。"</string>
-    <string name="home_gesture_feedback_complete_with_follow_up" msgid="1427872029729605034">"「ホームに戻る」操作を完了しました。次は、前の画面に戻る方法を覚えましょう。"</string>
-    <string name="home_gesture_feedback_complete_without_follow_up" msgid="8049099486868933882">"「ホームに戻る」操作を完了しました。"</string>
+    <string name="home_gesture_feedback_complete_with_follow_up" msgid="1427872029729605034">"「ホームに戻る」操作を学習しました。次は、前の画面に戻る方法を覚えましょう。"</string>
+    <string name="home_gesture_feedback_complete_without_follow_up" msgid="8049099486868933882">"「ホームに戻る」操作を学習しました。"</string>
     <string name="home_gesture_intro_title" msgid="836590312858441830">"スワイプでホームに戻る"</string>
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"画面を下から上にスワイプします。この操作でいつでもホーム画面に戻れます。"</string>
     <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"画面の下端から上にスワイプしてください。"</string>
@@ -65,7 +65,7 @@
     <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"まっすぐ上にスワイプしてから、いったん指を止めてください。"</string>
     <string name="overview_gesture_feedback_complete_with_follow_up" msgid="3544611727467765026">"主な操作方法を覚えました。操作を OFF にするには、設定に移動してください。"</string>
     <string name="overview_gesture_feedback_complete_without_follow_up" msgid="3199486203448379152">"「アプリを切り替える」操作を完了しました。"</string>
-    <string name="overview_gesture_intro_title" msgid="2902054412868489378">"スワイプでアプリを切り替え"</string>
+    <string name="overview_gesture_intro_title" msgid="2902054412868489378">"スワイプでアプリを切り替える"</string>
     <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"アプリを切り替えるには、画面を下から上にスワイプして長押しし、指を離します。"</string>
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"設定完了"</string>
     <string name="gesture_tutorial_action_button_label" msgid="6249846312991332122">"完了"</string>
@@ -81,7 +81,7 @@
     <string name="action_screenshot" msgid="8171125848358142917">"スクリーンショット"</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"この操作はアプリまたは組織で許可されていません"</string>
     <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"操作チュートリアルをスキップしますか？"</string>
-    <string name="skip_tutorial_dialog_subtitle" msgid="544063326241955662">"これは後から <xliff:g id="NAME">%1$s</xliff:g> アプリで確認できます"</string>
+    <string name="skip_tutorial_dialog_subtitle" msgid="544063326241955662">"チュートリアルは後から <xliff:g id="NAME">%1$s</xliff:g> アプリで確認できます"</string>
     <string name="gesture_tutorial_action_button_label_cancel" msgid="3809842569351264108">"キャンセル"</string>
     <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"スキップ"</string>
 </resources>
