@@ -56,6 +56,7 @@ public class SplitSelectStateController {
 
     private final SystemUiProxy mSystemUiProxy;
     private TaskView mInitialTaskView;
+    private TaskView mSecondTaskView;
     private SplitPositionOption mInitialPosition;
     private Rect mInitialBounds;
     private final Handler mHandler;
@@ -79,23 +80,19 @@ public class SplitSelectStateController {
      * To be called after second task selected
      */
     public void setSecondTaskId(TaskView taskView) {
-        if (TaskAnimationManager.ENABLE_SHELL_TRANSITIONS) {
-            // Assume initial task is for top/left part of screen
-            final int[] taskIds = mInitialPosition.mStagePosition == STAGE_POSITION_TOP_OR_LEFT
-                    ? new int[]{mInitialTaskView.getTask().key.id, taskView.getTask().key.id}
-                    : new int[]{taskView.getTask().key.id, mInitialTaskView.getTask().key.id};
+        mSecondTaskView = taskView;
+        // Assume initial task is for top/left part of screen
 
+        final int[] taskIds = mInitialPosition.mStagePosition == STAGE_POSITION_TOP_OR_LEFT
+                ? new int[]{mInitialTaskView.getTask().key.id, taskView.getTask().key.id}
+                : new int[]{taskView.getTask().key.id, mInitialTaskView.getTask().key.id};
+        if (TaskAnimationManager.ENABLE_SHELL_TRANSITIONS) {
             RemoteSplitLaunchTransitionRunner animationRunner =
                     new RemoteSplitLaunchTransitionRunner(mInitialTaskView, taskView);
             mSystemUiProxy.startTasks(taskIds[0], null /* mainOptions */, taskIds[1],
                     null /* sideOptions */, STAGE_POSITION_BOTTOM_OR_RIGHT,
                     new RemoteTransitionCompat(animationRunner, MAIN_EXECUTOR));
         } else {
-            // Assume initial task is for top/left part of screen
-            final int[] taskIds = mInitialPosition.mStagePosition == STAGE_POSITION_TOP_OR_LEFT
-                    ? new int[]{mInitialTaskView.getTask().key.id, taskView.getTask().key.id}
-                    : new int[]{taskView.getTask().key.id, mInitialTaskView.getTask().key.id};
-
             RemoteSplitLaunchAnimationRunner animationRunner =
                     new RemoteSplitLaunchAnimationRunner(mInitialTaskView, taskView);
             final RemoteAnimationAdapter adapter = new RemoteAnimationAdapter(
@@ -191,12 +188,17 @@ public class SplitSelectStateController {
      */
     public void resetState() {
         mInitialTaskView = null;
+        mSecondTaskView = null;
         mInitialPosition = null;
         mInitialBounds = null;
     }
 
+    /**
+     * @return {@code true} if first task has been selected and waiting for the second task to be
+     *         chosen
+     */
     public boolean isSplitSelectActive() {
-        return mInitialTaskView != null;
+        return mInitialTaskView != null && mSecondTaskView == null;
     }
 
     public Rect getInitialBounds() {

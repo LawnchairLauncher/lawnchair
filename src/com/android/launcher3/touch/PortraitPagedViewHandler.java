@@ -24,6 +24,7 @@ import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITIO
 import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_TYPE_MAIN;
 
 import android.content.res.Resources;
+import android.graphics.Matrix;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.RectF;
@@ -46,6 +47,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PortraitPagedViewHandler implements PagedOrientationHandler {
+
+    private final Matrix mTmpMatrix = new Matrix();
+    private final RectF mTmpRectF = new RectF();
 
     @Override
     public <T> T getPrimaryValue(T x, T y) {
@@ -204,6 +208,16 @@ public class PortraitPagedViewHandler implements PagedOrientationHandler {
     @Override
     public int getRotation() {
         return Surface.ROTATION_0;
+    }
+
+    @Override
+    public void setPrimaryScale(View view, float scale) {
+        view.setScaleX(scale);
+    }
+
+    @Override
+    public void setSecondaryScale(View view, float scale) {
+        view.setScaleY(scale);
     }
 
     @Override
@@ -395,6 +409,62 @@ public class PortraitPagedViewHandler implements PagedOrientationHandler {
             }
         }
         return options;
+    }
+
+    @Override
+    public void getInitialSplitPlaceholderBounds(int placeholderHeight, DeviceProfile dp,
+            SplitPositionOption splitPositionOption, Rect out) {
+        int width = dp.widthPx;
+        out.set(0, 0, width, placeholderHeight);
+        if (!dp.isLandscape) {
+            // portrait, phone or tablet - spans width of screen, nothing else to do
+            return;
+        }
+
+        // Now we rotate the portrait rect depending on what side we want pinned
+        boolean pinToRight = splitPositionOption.mStagePosition == STAGE_POSITION_BOTTOM_OR_RIGHT;
+
+        int screenHeight = dp.heightPx;
+        float postRotateScale = (float) screenHeight / width;
+        mTmpMatrix.reset();
+        mTmpMatrix.postRotate(pinToRight ? 90 : 270);
+        mTmpMatrix.postTranslate(pinToRight ? width : 0, pinToRight ? 0 : width);
+        // The placeholder height stays constant after rotation, so we don't change width scale
+        mTmpMatrix.postScale(1, postRotateScale);
+
+        mTmpRectF.set(out);
+        mTmpMatrix.mapRect(mTmpRectF);
+        mTmpRectF.roundOut(out);
+    }
+
+    @Override
+    public void getFinalSplitPlaceholderBounds(int splitDividerSize, DeviceProfile dp,
+            SplitPositionOption initialSplitOption, Rect out1, Rect out2) {
+        int screenHeight = dp.heightPx;
+        int screenWidth = dp.widthPx;
+        out1.set(0, 0, screenWidth, screenHeight / 2 - splitDividerSize);
+        out2.set(0, screenHeight / 2 + splitDividerSize, screenWidth, screenHeight);
+        if (!dp.isLandscape) {
+            // Portrait - the window bounds are always top and bottom half
+            return;
+        }
+
+        // Now we rotate the portrait rect depending on what side we want pinned
+        boolean pinToRight = initialSplitOption.mStagePosition == STAGE_POSITION_BOTTOM_OR_RIGHT;
+        float postRotateScale = (float) screenHeight / screenWidth;
+
+        mTmpMatrix.reset();
+        mTmpMatrix.postRotate(pinToRight ? 90 : 270);
+        mTmpMatrix.postTranslate(pinToRight ? screenHeight : 0, pinToRight ? 0 : screenWidth);
+        mTmpMatrix.postScale(1 / postRotateScale, postRotateScale);
+
+        mTmpRectF.set(out1);
+        mTmpMatrix.mapRect(mTmpRectF);
+        mTmpRectF.roundOut(out1);
+
+        mTmpRectF.set(out2);
+        mTmpMatrix.mapRect(mTmpRectF);
+        mTmpRectF.roundOut(out2);
     }
 
     @Override
