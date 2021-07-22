@@ -212,6 +212,8 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
 
     public static final long RECENTS_ATTACH_DURATION = 300;
 
+    private static final float MAX_QUICK_SWITCH_RECENTS_SCALE_PROGRESS = 0.07f;
+
     /**
      * Used as the page index for logging when we return to the last task at the end of the gesture.
      */
@@ -252,6 +254,9 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
     private SwipePipToHomeAnimator mSwipePipToHomeAnimator;
     protected boolean mIsSwipingPipToHome;
 
+    // Interpolate RecentsView scale from start of quick switch scroll until this scroll threshold
+    private final float mQuickSwitchScaleScrollThreshold;
+
     public AbsSwipeUpHandler(Context context, RecentsAnimationDeviceState deviceState,
             TaskAnimationManager taskAnimationManager, GestureState gestureState,
             long touchTimeMs, boolean continuingLastGesture,
@@ -267,6 +272,8 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
         mTaskAnimationManager = taskAnimationManager;
         mTouchTimeMs = touchTimeMs;
         mContinuingLastGesture = continuingLastGesture;
+        mQuickSwitchScaleScrollThreshold = context.getResources().getDimension(
+                R.dimen.quick_switch_scaling_scroll_threshold);
 
         initAfterSubclassConstructor();
         initStateCallbacks();
@@ -539,7 +546,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
             @Override
             public void onMotionPauseDetected() {
                 mHasMotionEverBeenPaused = true;
-                maybeUpdateRecentsAttachedState();
+                maybeUpdateRecentsAttachedState(true/* animate */, true/* moveFocusedTask */);
                 performHapticFeedback();
             }
 
@@ -550,8 +557,12 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
         };
     }
 
-    public void maybeUpdateRecentsAttachedState() {
+    private void maybeUpdateRecentsAttachedState() {
         maybeUpdateRecentsAttachedState(true /* animate */);
+    }
+
+    private void maybeUpdateRecentsAttachedState(boolean animate) {
+        maybeUpdateRecentsAttachedState(animate, false /* moveFocusedTask */);
     }
 
     /**
@@ -560,8 +571,10 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
      * RecentsView is shown, it will appear to be attached to the window.
      *
      * Note this method has no effect unless the navigation mode is NO_BUTTON.
+     * @param animate whether to animate when attaching RecentsView
+     * @param moveFocusedTask whether to move focused task to front when attaching
      */
-    private void maybeUpdateRecentsAttachedState(boolean animate) {
+    private void maybeUpdateRecentsAttachedState(boolean animate, boolean moveFocusedTask) {
         if (!mDeviceState.isFullyGesturalNavMode() || mRecentsView == null) {
             return;
         }
@@ -579,6 +592,12 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
             recentsAttachedToAppWindow = true;
         } else {
             recentsAttachedToAppWindow = mHasMotionEverBeenPaused || mIsLikelyToStartNewTask;
+        }
+        if (moveFocusedTask && !mAnimationFactory.hasRecentsEverAttachedToAppWindow()
+                && recentsAttachedToAppWindow) {
+            // Only move focused task if RecentsView has never been attached before, to avoid
+            // TaskView jumping to new position as we move the tasks.
+            mRecentsView.moveFocusedTaskToFront();
         }
         mAnimationFactory.setRecentsAttachedToAppWindow(recentsAttachedToAppWindow, animate);
 
@@ -669,7 +688,8 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
                 || !canCreateNewOrUpdateExistingLauncherTransitionController()) {
             return;
         }
-        mLauncherTransitionController.setProgress(mCurrentShift.value, mDragLengthFactor);
+        mLauncherTransitionController.setProgress(
+                Math.max(mCurrentShift.value, getScaleProgressDueToScroll()), mDragLengthFactor);
     }
 
     /**
@@ -1784,7 +1804,9 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
      */
     protected void applyWindowTransform() {
         if (mWindowTransitionController != null) {
-            mWindowTransitionController.setProgress(mCurrentShift.value, mDragLengthFactor);
+            mWindowTransitionController.setProgress(
+                    Math.max(mCurrentShift.value, getScaleProgressDueToScroll()),
+                    mDragLengthFactor);
         }
         // No need to apply any transform if there is ongoing swipe-pip-to-home animator since
         // that animator handles the leash solely.
@@ -1795,6 +1817,35 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
             mTaskViewSimulator.apply(mTransformParams);
         }
         ProtoTracer.INSTANCE.get(mContext).scheduleFrameUpdate();
+    }
+
+    // Scaling of RecentsView during quick switch based on amount of recents scroll
+    private float getScaleProgressDueToScroll() {
+        if (!mActivity.getDeviceProfile().isTablet || mRecentsView == null
+                || !mRecentsViewScrollLinked) {
+            return 0;
+        }
+
+        float scrollOffset = Math.abs(mRecentsView.getScrollOffset(mRecentsView.getCurrentPage()));
+        int maxScrollOffset = mRecentsView.getPagedOrientationHandler().getPrimaryValue(
+                mRecentsView.getLastComputedTaskSize().width(),
+                mRecentsView.getLastComputedTaskSize().height());
+        maxScrollOffset += mRecentsView.getPageSpacing();
+
+        float maxScaleProgress =
+                MAX_QUICK_SWITCH_RECENTS_SCALE_PROGRESS * mRecentsView.getMaxScaleForFullScreen();
+        float scaleProgress = maxScaleProgress;
+
+        if (scrollOffset < mQuickSwitchScaleScrollThreshold) {
+            scaleProgress = Utilities.mapToRange(scrollOffset, 0, mQuickSwitchScaleScrollThreshold,
+                    0, maxScaleProgress, ACCEL_DEACCEL);
+        } else if (scrollOffset > (maxScrollOffset - mQuickSwitchScaleScrollThreshold)) {
+            scaleProgress = Utilities.mapToRange(scrollOffset,
+                    (maxScrollOffset - mQuickSwitchScaleScrollThreshold), maxScrollOffset,
+                    maxScaleProgress, 0, ACCEL_DEACCEL);
+        }
+
+        return scaleProgress;
     }
 
     /**

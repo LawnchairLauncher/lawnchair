@@ -531,6 +531,9 @@ public class TaskView extends FrameLayout implements Reusable {
         if (getTask() == null) {
             return;
         }
+        if (confirmSecondSplitSelectApp()) {
+            return;
+        }
         if (ENABLE_QUICKSTEP_LIVE_TILE.get() && isRunningTask()) {
             if (!mIsClickableAsLiveTile) {
                 return;
@@ -549,7 +552,7 @@ public class TaskView extends FrameLayout implements Reusable {
             if (targets == null) {
                 // If the recents animation is cancelled somehow between the parent if block and
                 // here, try to launch the task as a non live tile task.
-                launcherNonLiveTileTask();
+                launchTaskAnimated();
                 return;
             }
 
@@ -567,19 +570,22 @@ public class TaskView extends FrameLayout implements Reusable {
             });
             anim.start();
         } else {
-            launcherNonLiveTileTask();
+            launchTaskAnimated();
         }
         mActivity.getStatsLogManager().logger().withItemInfo(getItemInfo())
                 .log(LAUNCHER_TASK_LAUNCH_TAP);
     }
 
-    private void launcherNonLiveTileTask() {
-        if (mActivity.isInState(OVERVIEW_SPLIT_SELECT)) {
-            // User tapped to select second split screen app
+    /**
+     * @return {@code true} if user is already in split select mode and this tap was to choose the
+     *         second app. {@code false} otherwise
+     */
+    private boolean confirmSecondSplitSelectApp() {
+        boolean isSelectingSecondSplitApp = mActivity.isInState(OVERVIEW_SPLIT_SELECT);
+        if (isSelectingSecondSplitApp) {
             getRecentsView().confirmSplitSelect(this);
-        } else {
-            launchTaskAnimated();
         }
+        return isSelectingSecondSplitApp;
     }
 
     /**

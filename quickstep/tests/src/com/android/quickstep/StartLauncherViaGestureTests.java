@@ -25,12 +25,7 @@ import androidx.test.filters.LargeTest;
 import androidx.test.runner.AndroidJUnit4;
 
 import com.android.launcher3.Launcher;
-import com.android.launcher3.taskbar.TaskbarActivityContext;
-import com.android.launcher3.taskbar.TaskbarDragLayer;
-import com.android.launcher3.taskbar.TaskbarManager;
-import com.android.launcher3.taskbar.TaskbarView;
 import com.android.launcher3.ui.TaplTestsLauncher3;
-import com.android.launcher3.ui.TestViewHelpers;
 import com.android.launcher3.util.RaceConditionReproducer;
 import com.android.quickstep.NavigationModeSwitchRule.Mode;
 import com.android.quickstep.NavigationModeSwitchRule.NavigationModeSwitch;
@@ -90,7 +85,7 @@ public class StartLauncherViaGestureTests extends AbstractQuickStepTest {
     public void testStressPressHome() {
         for (int i = 0; i < STRESS_REPEAT_COUNT; ++i) {
             // Destroy Launcher activity.
-            destroyLauncherActivityAndWaitForTaskbarVisible();
+            closeLauncherActivity();
 
             // The test action.
             mLauncher.pressHome();
@@ -102,41 +97,12 @@ public class StartLauncherViaGestureTests extends AbstractQuickStepTest {
     public void testStressSwipeToOverview() {
         for (int i = 0; i < STRESS_REPEAT_COUNT; ++i) {
             // Destroy Launcher activity.
-            destroyLauncherActivityAndWaitForTaskbarVisible();
+            closeLauncherActivity();
 
             // The test action.
             mLauncher.getBackground().switchToOverview();
         }
-        destroyLauncherActivityAndWaitForTaskbarVisible();
-        mLauncher.pressHome();
-    }
-
-    private void destroyLauncherActivityAndWaitForTaskbarVisible() {
         closeLauncherActivity();
-
-        // After Launcher is destroyed, calculator app started in setup() will be launched, wait for
-        // taskbar to settle before further interaction if it's a tablet.
-        if (!mLauncher.isTablet()) {
-            return;
-        }
-
-        waitForLauncherCondition(
-                "Taskbar not yet visible", launcher -> {
-                    TaskbarManager taskbarManager =
-                            TouchInteractionService.getTaskbarManagerForTesting();
-                    if (taskbarManager == null) {
-                        return false;
-                    }
-
-                    TaskbarActivityContext taskbarActivityContext =
-                            taskbarManager.getCurrentActivityContext();
-                    if (taskbarActivityContext == null) {
-                        return false;
-                    }
-
-                    TaskbarDragLayer taskbarDragLayer = taskbarActivityContext.getDragLayer();
-                    return TestViewHelpers.findChildView(taskbarDragLayer,
-                            view -> view instanceof TaskbarView && view.isVisibleToUser()) != null;
-                }, DEFAULT_UI_TIMEOUT);
+        mLauncher.pressHome();
     }
 }

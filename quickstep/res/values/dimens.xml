@@ -70,6 +70,8 @@
     <item name="content_scale" format="float" type="dimen">0.97</item>
     <dimen name="closing_window_trans_y">115dp</dimen>
 
+    <dimen name="quick_switch_scaling_scroll_threshold">100dp</dimen>
+
     <dimen name="recents_empty_message_text_size">16sp</dimen>
     <dimen name="recents_empty_message_text_padding">16dp</dimen>
 
