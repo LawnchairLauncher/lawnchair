@@ -184,7 +184,10 @@ public class DeviceProfile {
     public int overviewTaskIconSizePx;
     public int overviewTaskThumbnailTopMarginPx;
     public final int overviewActionsMarginThreeButtonPx;
-    public final int overviewActionsMarginGesturePx;
+    public final int overviewActionsTopMarginGesturePx;
+    public final int overviewActionsBottomMarginGesturePx;
+    public int overviewPageSpacing;
+    public int overviewRowSpacing;
 
     // Widgets
     public final PointF appWidgetScale = new PointF(1.0f, 1.0f);
@@ -350,15 +353,36 @@ public class DeviceProfile {
                 : 0;
 
         overviewShowAsGrid = isTablet && FeatureFlags.ENABLE_OVERVIEW_GRID.get();
-        overviewTaskMarginPx = res.getDimensionPixelSize(R.dimen.overview_task_margin);
-        overviewTaskIconSizePx = overviewShowAsGrid
-                ? res.getDimensionPixelSize(R.dimen.task_thumbnail_icon_size_grid)
-                : res.getDimensionPixelSize(R.dimen.task_thumbnail_icon_size);
+        overviewTaskMarginPx = overviewShowAsGrid
+                ? res.getDimensionPixelSize(R.dimen.overview_task_margin_grid)
+                : res.getDimensionPixelSize(R.dimen.overview_task_margin);
+        overviewTaskIconSizePx = res.getDimensionPixelSize(R.dimen.task_thumbnail_icon_size);
         overviewTaskThumbnailTopMarginPx = overviewTaskIconSizePx + overviewTaskMarginPx * 2;
-        overviewActionsMarginGesturePx = res.getDimensionPixelSize(
-                R.dimen.overview_actions_bottom_margin_gesture);
+        if (overviewShowAsGrid) {
+            if (isLandscape) {
+                overviewActionsTopMarginGesturePx = res.getDimensionPixelSize(
+                        R.dimen.overview_actions_top_margin_gesture_grid_landscape);
+                overviewActionsBottomMarginGesturePx = res.getDimensionPixelSize(
+                        R.dimen.overview_actions_bottom_margin_gesture_grid_landscape);
+            } else {
+                overviewActionsTopMarginGesturePx = res.getDimensionPixelSize(
+                        R.dimen.overview_actions_top_margin_gesture_grid_portrait);
+                overviewActionsBottomMarginGesturePx = res.getDimensionPixelSize(
+                        R.dimen.overview_actions_bottom_margin_gesture_grid_portrait);
+            }
+        } else {
+            overviewActionsTopMarginGesturePx = res.getDimensionPixelSize(
+                    R.dimen.overview_actions_margin_gesture);
+            overviewActionsBottomMarginGesturePx = overviewActionsTopMarginGesturePx;
+        }
         overviewActionsMarginThreeButtonPx = res.getDimensionPixelSize(
-                R.dimen.overview_actions_bottom_margin_three_button);
+                R.dimen.overview_actions_margin_three_button);
+        overviewPageSpacing = overviewShowAsGrid
+                        ? res.getDimensionPixelSize(R.dimen.recents_page_spacing_grid)
+                        : res.getDimensionPixelSize(R.dimen.recents_page_spacing);
+        overviewRowSpacing = isLandscape
+                ? res.getDimensionPixelSize(R.dimen.overview_grid_row_spacing_landscape)
+                : res.getDimensionPixelSize(R.dimen.overview_grid_row_spacing_portrait);
 
         // Calculate all of the remaining variables.
         extraSpace = updateAvailableDimensions(res);
