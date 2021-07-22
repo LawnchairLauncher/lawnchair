@@ -122,13 +122,10 @@ public final class RecentsActivity extends StatefulActivity<RecentsState> {
         mActionsView = findViewById(R.id.overview_actions_view);
         SYSUI_PROGRESS.set(getRootView().getSysUiScrim(), 0f);
 
-        SplitPlaceholderView splitPlaceholderView = findViewById(R.id.split_placeholder);
-        splitPlaceholderView.init(
-                new SplitSelectStateController(mUiHandler, SystemUiProxy.INSTANCE.get(this))
-        );
-
+        SplitSelectStateController controller =
+                new SplitSelectStateController(mHandler, SystemUiProxy.INSTANCE.get(this));
         mDragLayer.recreateControllers();
-        mFallbackRecentsView.init(mActionsView, splitPlaceholderView);
+        mFallbackRecentsView.init(mActionsView, controller);
     }
 
     @Override
