@@ -188,11 +188,11 @@ public abstract class BaseWidgetSheet extends AbstractSlideInView<Launcher>
             dragHelper.startDrag(image.getBitmapBounds(), image.getDrawable().getIntrinsicWidth(),
                     image.getWidth(), new Point(loc[0], loc[1]), this, new DragOptions());
         } else {
-            View preview = v.getAppWidgetHostViewPreview();
+            NavigableAppWidgetHostView preview = v.getAppWidgetHostViewPreview();
             int[] loc = new int[2];
             getPopupContainer().getLocationInDragLayer(preview, loc);
-
-            Rect r = new Rect(0, 0, preview.getWidth(), preview.getHeight());
+            Rect r = new Rect();
+            preview.getWorkspaceVisualDragBounds(r);
             dragHelper.startDrag(r, preview.getMeasuredWidth(), preview.getMeasuredWidth(),
                     new Point(loc[0], loc[1]), this, new DragOptions());
         }
