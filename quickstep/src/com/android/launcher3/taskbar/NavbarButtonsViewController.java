@@ -130,6 +130,15 @@ public class NavbarButtonsViewController {
         mPropertyHolders.add(new StatePropertyHolder(imeDownButton,
                 flags -> (flags & FLAG_IME_VISIBLE) != 0));
 
+        mPropertyHolders.add(new StatePropertyHolder(
+                mControllers.taskbarViewController.getTaskbarIconAlpha()
+                        .getProperty(ALPHA_INDEX_KEYGUARD),
+                flags -> (flags & FLAG_KEYGUARD_VISIBLE) == 0, MultiValueAlpha.VALUE, 1, 0));
+
+        mPropertyHolders.add(new StatePropertyHolder(mControllers.taskbarDragLayerController
+                .getKeyguardBgTaskbar(),
+                flags -> (flags & FLAG_KEYGUARD_VISIBLE) == 0, AnimatedFloat.VALUE, 1, 0));
+
         if (mContext.isThreeButtonNav()) {
             initButtons(mNavButtonContainer, mEndContextualContainer,
                     mControllers.navButtonController);
@@ -137,12 +146,9 @@ public class NavbarButtonsViewController {
             // Animate taskbar background when IME shows
             mPropertyHolders.add(new StatePropertyHolder(
                     mControllers.taskbarDragLayerController.getNavbarBackgroundAlpha(),
-                    flags -> (flags & FLAG_IME_VISIBLE) == 0,
-                    AnimatedFloat.VALUE, 0, 1));
-            mPropertyHolders.add(new StatePropertyHolder(
-                    mControllers.taskbarViewController.getTaskbarIconAlpha()
-                            .getProperty(ALPHA_INDEX_KEYGUARD),
-                    flags -> (flags & FLAG_KEYGUARD_VISIBLE) == 0, MultiValueAlpha.VALUE, 1, 0));
+                    flags -> (flags & FLAG_IME_VISIBLE) != 0 ||
+                            (flags & FLAG_ONLY_BACK_FOR_BOUNCER_VISIBLE) != 0,
+                    AnimatedFloat.VALUE, 1, 0));
 
             // Rotation button
             RotationButton rotationButton = new RotationButtonImpl(
@@ -222,7 +228,7 @@ public class NavbarButtonsViewController {
     }
 
     /**
-     * Slightly misnamed, but should be called when only keyguard OR AOD is showing
+     * Slightly misnamed, but should be called when keyguard OR AOD is showing
      */
     public void setKeyguardVisible(boolean isKeyguardVisible) {
         updateStateForFlag(FLAG_KEYGUARD_VISIBLE, isKeyguardVisible);

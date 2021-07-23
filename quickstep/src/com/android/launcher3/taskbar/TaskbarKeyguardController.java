@@ -57,10 +57,6 @@ public class TaskbarKeyguardController {
         mKeyguardSysuiFlags = interestingKeyguardFlags;
 
         mBouncerShowing = bouncerShowing;
-        if (!mContext.isThreeButtonNav()) {
-            // For gesture nav we don't need to deal with bouncer or showing taskbar when locked
-            return;
-        }
 
         mNavbarButtonsViewController.setKeyguardVisible(keyguardShowing || dozing);
         updateIconsForBouncer();
