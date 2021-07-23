@@ -21,11 +21,11 @@ import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import android.annotation.TargetApi;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
+import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.AdaptiveIconDrawable;
-import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.util.Log;
@@ -129,10 +129,19 @@ public class FolderAdaptiveIcon extends AdaptiveIconDrawable {
                     canvas.restore();
                 });
 
+        Bitmap bgBitmap = BitmapRenderer.createHardwareBitmap(dragViewSize.x, dragViewSize.y,
+                (canvas) -> {
+                    Paint p = new Paint();
+                    p.setColor(bg.getBgColor());
+
+                    canvas.drawCircle(dragViewSize.x / 2f, dragViewSize.y / 2f, bg.getRadius(), p);
+                });
+
         ShiftedBitmapDrawable badge = new ShiftedBitmapDrawable(badgeBmp, 0, 0);
         ShiftedBitmapDrawable foreground = new ShiftedBitmapDrawable(previewBitmap, 0, 0);
+        ShiftedBitmapDrawable background = new ShiftedBitmapDrawable(bgBitmap, 0, 0);
 
-        return new FolderAdaptiveIcon(new ColorDrawable(bg.getBgColor()), foreground, badge, mask);
+        return new FolderAdaptiveIcon(background, foreground, badge, mask);
     }
 
     @Override
