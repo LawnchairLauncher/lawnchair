@@ -42,8 +42,8 @@ public class RecentsState implements BaseState<RecentsState> {
     private static final int FLAG_OVERVIEW_UI = BaseState.getFlag(7);
 
     public static final RecentsState DEFAULT = new RecentsState(0,
-            FLAG_CLEAR_ALL_BUTTON | FLAG_OVERVIEW_ACTIONS | FLAG_SHOW_AS_GRID | FLAG_SCRIM
-                    | FLAG_LIVE_TILE | FLAG_OVERVIEW_UI);
+            FLAG_DISABLE_RESTORE | FLAG_CLEAR_ALL_BUTTON | FLAG_OVERVIEW_ACTIONS | FLAG_SHOW_AS_GRID
+                    | FLAG_SCRIM | FLAG_LIVE_TILE | FLAG_OVERVIEW_UI);
     public static final RecentsState MODAL_TASK = new ModalState(1,
             FLAG_DISABLE_RESTORE | FLAG_CLEAR_ALL_BUTTON | FLAG_OVERVIEW_ACTIONS | FLAG_MODAL
                     | FLAG_SHOW_AS_GRID | FLAG_SCRIM | FLAG_LIVE_TILE | FLAG_OVERVIEW_UI);
