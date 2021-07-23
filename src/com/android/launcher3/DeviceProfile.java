@@ -830,11 +830,11 @@ public class DeviceProfile {
                 ? workspacePadding.bottom
                 : hotseatBarSizePx - hotseatCellHeightPx - hotseatQsbHeight;
 
-        if (isScalableGrid) {
+        if (isScalableGrid && qsbBottomMarginPx > mInsets.bottom) {
             return Math.min(qsbBottomMarginPx, freeSpace);
         }  else {
             return (int) (freeSpace * QSB_CENTER_FACTOR)
-                + (isTaskbarPresent ? taskbarSize : getInsets().bottom);
+                + (isTaskbarPresent ? taskbarSize : mInsets.bottom);
         }
     }
 
