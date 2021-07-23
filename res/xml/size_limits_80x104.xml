@@ -80,10 +80,10 @@
             launcher:b="16dp"/>
         <workspaceBottomPadding
             launcher:a="1"
-            launcher:c="52dp"/>
+            launcher:c="72dp"/>
         <hotseatBottomPadding
             launcher:a="0"
-            launcher:b="36dp"/>
+            launcher:b="56dp"/>
     </device-padding>
 
     <device-padding
@@ -93,10 +93,10 @@
             launcher:b="39dp"/>
         <workspaceBottomPadding
             launcher:a="1"
-            launcher:c="75dp"/>
+            launcher:c="95dp"/>
         <hotseatBottomPadding
             launcher:a="0"
-            launcher:b="36dp"/>
+            launcher:b="56dp"/>
     </device-padding>
 
     <device-padding
