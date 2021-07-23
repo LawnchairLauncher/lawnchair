@@ -22,6 +22,7 @@ import static android.view.WindowManager.LayoutParams.TYPE_APPLICATION;
 import static com.android.launcher3.ResourceUtils.pxFromDp;
 import static com.android.launcher3.Utilities.dpiFromPx;
 import static com.android.launcher3.Utilities.pxFromSp;
+import static com.android.launcher3.folder.ClippedFolderIconLayoutRule.ICON_OVERLAP_FACTOR;
 import static com.android.launcher3.util.WindowManagerCompat.MIN_TABLET_WIDTH;
 
 import android.annotation.SuppressLint;
@@ -399,7 +400,8 @@ public class DeviceProfile {
     }
 
     private void updateHotseatIconSize(int hotseatIconSizePx) {
-        hotseatCellHeightPx = hotseatIconSizePx;
+        // Ensure there is enough space for folder icons, which have a slightly larger radius.
+        hotseatCellHeightPx = (int) Math.ceil(hotseatIconSizePx * ICON_OVERLAP_FACTOR);
         if (isVerticalBarLayout()) {
             hotseatBarSizePx = hotseatIconSizePx + hotseatBarSidePaddingStartPx
                     + hotseatBarSidePaddingEndPx;
@@ -478,7 +480,7 @@ public class DeviceProfile {
         if (workspaceCellPaddingY < iconTextHeight) {
             iconTextSizePx = 0;
             iconDrawablePaddingPx = 0;
-            cellHeightPx = iconSizePx;
+            cellHeightPx = (int) Math.ceil(iconSizePx * ICON_OVERLAP_FACTOR);
             autoResizeAllAppsCells();
         }
     }
@@ -565,7 +567,8 @@ public class DeviceProfile {
             desiredWorkspaceLeftRightMarginPx = (int) (desiredWorkspaceLeftRightOriginalPx * scale);
         } else {
             cellWidthPx = iconSizePx + iconDrawablePaddingPx;
-            cellHeightPx = iconSizePx + iconDrawablePaddingPx
+            cellHeightPx = (int) Math.ceil(iconSizePx * ICON_OVERLAP_FACTOR)
+                    + iconDrawablePaddingPx
                     + Utilities.calculateTextHeight(iconTextSizePx);
             int cellPaddingY = (getCellSize().y - cellHeightPx) / 2;
             if (iconDrawablePaddingPx > cellPaddingY && !isVerticalLayout
@@ -824,9 +827,9 @@ public class DeviceProfile {
                 ? workspacePadding.bottom
                 : hotseatBarSizePx - hotseatCellHeightPx - hotseatQsbHeight;
 
-        if (isScalableGrid && qsbBottomMarginPx <= freeSpace) {
-            return qsbBottomMarginPx;
-        } else {
+        if (isScalableGrid) {
+            return Math.min(qsbBottomMarginPx, freeSpace);
+        }  else {
             return (int) (freeSpace * QSB_CENTER_FACTOR)
                 + (isTaskbarPresent ? taskbarSize : getInsets().bottom);
         }
@@ -899,14 +902,16 @@ public class DeviceProfile {
         return isVerticalBarLayout();
     }
 
-    public int getCellHeight(@ContainerType int containerType) {
+    public int getCellContentHeight(@ContainerType int containerType) {
         switch (containerType) {
             case CellLayout.WORKSPACE:
                 return cellHeightPx;
             case CellLayout.FOLDER:
                 return folderCellHeightPx;
             case CellLayout.HOTSEAT:
-                return hotseatCellHeightPx;
+                // The hotseat is the only container where the cell height is going to be
+                // different from the content within that cell.
+                return iconSizePx;
             default:
                 // ??
                 return 0;

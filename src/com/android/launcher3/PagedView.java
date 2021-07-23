@@ -709,6 +709,7 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
         final int scrollOffsetStart = mOrientationHandler.getScrollOffsetStart(this, mInsets);
         final int scrollOffsetEnd = mOrientationHandler.getScrollOffsetEnd(this, mInsets);
         boolean pageScrollChanged = false;
+        int panelCount = getPanelCount();
 
         for (int i = startIndex, childStart = scrollOffsetStart; i != endIndex; i += delta) {
             final View child = getPageAt(i);
@@ -726,11 +727,15 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
                     pageScrollChanged = true;
                     outPageScrolls[i] = pageScroll;
                 }
-                childStart += primaryDimension + mPageSpacing + getChildGap();
+                childStart += primaryDimension + getChildGap();
+
+                // This makes sure that the space is added after the page, not after each panel
+                if (i % panelCount == panelCount - 1) {
+                    childStart += mPageSpacing;
+                }
             }
         }
 
-        int panelCount = getPanelCount();
         if (panelCount > 1) {
             for (int i = 0; i < childCount; i++) {
                 // In case we have multiple panels, always use left panel's page scroll for all

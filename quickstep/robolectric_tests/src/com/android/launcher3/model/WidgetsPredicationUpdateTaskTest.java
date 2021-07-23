@@ -34,7 +34,6 @@ import android.content.Context;
 import android.os.Process;
 import android.os.UserHandle;
 
-import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.icons.ComponentWithLabel;
@@ -42,7 +41,6 @@ import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.model.BgDataModel.FixedContainerItems;
 import com.android.launcher3.model.QuickstepModelDelegate.PredictorState;
 import com.android.launcher3.shadows.ShadowDeviceFlag;
-import com.android.launcher3.util.IntSet;
 import com.android.launcher3.util.LauncherModelHelper;
 import com.android.launcher3.widget.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.widget.PendingAddWidgetInfo;
@@ -76,7 +74,6 @@ public final class WidgetsPredicationUpdateTaskTest {
     private Context mContext;
     private LauncherModelHelper mModelHelper;
     private UserHandle mUserHandle;
-    private InvariantDeviceProfile mTestProfile;
 
     @Mock
     private IconCache mIconCache;
@@ -92,7 +89,6 @@ public final class WidgetsPredicationUpdateTaskTest {
         mContext = RuntimeEnvironment.application;
         mModelHelper = new LauncherModelHelper();
         mUserHandle = Process.myUserHandle();
-        mTestProfile = new InvariantDeviceProfile();
         // 2 widgets, app4/provider1 & app5/provider1, have already been added to the workspace.
         mModelHelper.initializeData("/widgets_predication_update_task_data.txt");
 
@@ -225,11 +221,6 @@ public final class WidgetsPredicationUpdateTaskTest {
         @Override
         public void bindExtraContainerItems(FixedContainerItems item) {
             mRecommendedWidgets = item;
-        }
-
-        @Override
-        public IntSet getPagesToBindSynchronously() {
-            return IntSet.wrap(0);
         }
     }
 }

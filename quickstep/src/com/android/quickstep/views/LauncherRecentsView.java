@@ -38,6 +38,7 @@ import com.android.launcher3.statemanager.StateManager.StateListener;
 import com.android.launcher3.uioverrides.plugins.PluginManagerWrapper;
 import com.android.launcher3.util.SplitConfigurationOptions;
 import com.android.quickstep.LauncherActivityInterface;
+import com.android.quickstep.util.SplitSelectStateController;
 import com.android.systemui.plugins.PluginListener;
 import com.android.systemui.plugins.RecentsExtraCard;
 
@@ -81,7 +82,8 @@ public class LauncherRecentsView extends RecentsView<BaseQuickstepLauncher, Laun
     }
 
     @Override
-    public void init(OverviewActionsView actionsView, SplitPlaceholderView splitPlaceholderView) {
+    public void init(OverviewActionsView actionsView,
+            SplitSelectStateController splitPlaceholderView) {
         super.init(actionsView, splitPlaceholderView);
         setContentAlpha(0);
     }

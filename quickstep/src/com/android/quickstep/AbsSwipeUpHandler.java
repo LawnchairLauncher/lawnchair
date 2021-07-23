@@ -1254,12 +1254,23 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
         }
     }
 
+    private int calculateWindowRotation(RemoteAnimationTargetCompat runningTaskTarget,
+            RecentsOrientedState orientationState) {
+        if (runningTaskTarget.rotationChange != 0
+                && TaskAnimationManager.ENABLE_SHELL_TRANSITIONS) {
+            return Math.abs(runningTaskTarget.rotationChange) == ROTATION_90
+                    ? ROTATION_270 : ROTATION_90;
+        } else {
+            return orientationState.getDisplayRotation();
+        }
+    }
+
     private SwipePipToHomeAnimator createWindowAnimationToPip(HomeAnimationFactory homeAnimFactory,
             RemoteAnimationTargetCompat runningTaskTarget, float startProgress) {
         // Directly animate the app to PiP (picture-in-picture) mode
         final ActivityManager.RunningTaskInfo taskInfo = mGestureState.getRunningTask();
         final RecentsOrientedState orientationState = mTaskViewSimulator.getOrientationState();
-        final int windowRotation = orientationState.getDisplayRotation();
+        final int windowRotation = calculateWindowRotation(runningTaskTarget, orientationState);
         final int homeRotation = orientationState.getRecentsActivityRotation();
 
         final Matrix homeToWindowPositionMap = new Matrix();
@@ -1821,7 +1832,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
 
     // Scaling of RecentsView during quick switch based on amount of recents scroll
     private float getScaleProgressDueToScroll() {
-        if (!mActivity.getDeviceProfile().isTablet || mRecentsView == null
+        if (mActivity == null || !mActivity.getDeviceProfile().isTablet || mRecentsView == null
                 || !mRecentsViewScrollLinked) {
             return 0;
         }
