@@ -406,12 +406,15 @@ public final class LauncherInstrumentation {
     }
 
     private String getVisiblePackages() {
-        return mDevice.findObjects(getAnyObjectSelector())
+        final String apps = mDevice.findObjects(getAnyObjectSelector())
                 .stream()
                 .map(LauncherInstrumentation::getApplicationPackageSafe)
                 .distinct()
-                .filter(pkg -> pkg != null && !"com.android.systemui".equals(pkg))
+                .filter(pkg -> pkg != null && !SYSTEMUI_PACKAGE.equals(pkg))
                 .collect(Collectors.joining(", "));
+        return !apps.isEmpty()
+                ? "active app: " + apps
+                : "the test doesn't see views from any app, including Launcher";
     }
 
     private static String getApplicationPackageSafe(UiObject2 object) {
