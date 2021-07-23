@@ -93,7 +93,7 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
 
     @Test
     @PortraitLandscape
-    @ScreenRecord //b/191344757
+    @ScreenRecord //b/193440212
     public void testOverview() throws Exception {
         startTestAppsWithCheck();
         // mLauncher.pressHome() also tests an important case of pressing home while in background.
@@ -159,7 +159,6 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
     @Test
     @NavigationModeSwitch
     @PortraitLandscape
-    @ScreenRecord //b/191344757
     public void testOverviewActions() throws Exception {
         // Experimenting for b/165029151:
         final Overview overview = mLauncher.pressHome().switchToOverview();
@@ -185,7 +184,6 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
     @Test
     @NavigationModeSwitch
     @PortraitLandscape
-    @ScreenRecord //b/191344757
     public void testSwitchToOverview() throws Exception {
         assertNotNull("Workspace.switchToOverview() returned null",
                 mLauncher.pressHome().switchToOverview());
@@ -196,7 +194,6 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
     @Test
     @NavigationModeSwitch
     @PortraitLandscape
-    @ScreenRecord //b/191344757
     public void testBackground() throws Exception {
         startAppFast(resolveSystemApp(Intent.CATEGORY_APP_CALCULATOR));
         final Background background = getAndAssertBackground();
@@ -218,7 +215,6 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
 
     @Test
     @PortraitLandscape
-    @ScreenRecord //b/191344757
     public void testAllAppsFromHome() throws Exception {
         // Test opening all apps
         assertNotNull("switchToAllApps() returned null",
