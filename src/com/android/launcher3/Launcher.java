@@ -36,6 +36,7 @@ import static com.android.launcher3.LauncherState.NO_OFFSET;
 import static com.android.launcher3.LauncherState.NO_SCALE;
 import static com.android.launcher3.LauncherState.SPRING_LOADED;
 import static com.android.launcher3.Utilities.postAsyncCallback;
+import static com.android.launcher3.WorkspaceLayoutManager.LEFT_PANEL_ID;
 import static com.android.launcher3.accessibility.LauncherAccessibilityDelegate.getSupportedActions;
 import static com.android.launcher3.dragndrop.DragLayer.ALPHA_INDEX_LAUNCHER_LOAD;
 import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_BACKGROUND;
@@ -259,6 +260,8 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
     private static final String RUNTIME_STATE_PENDING_ACTIVITY_RESULT = "launcher.activity_result";
     // Type: SparseArray<Parcelable>
     private static final String RUNTIME_STATE_WIDGET_PANEL = "launcher.widget_panel";
+    // Type int[]
+    private static final String RUNTIME_STATE_CURRENT_SCREEN_IDS = "launcher.current_screen_ids";
 
     public static final String ON_CREATE_EVT = "Launcher.onCreate";
     public static final String ON_START_EVT = "Launcher.onStart";
@@ -286,8 +289,6 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
 
     private WidgetManagerHelper mAppWidgetManager;
     private LauncherAppWidgetHost mAppWidgetHost;
-
-    private LauncherPageRestoreHelper mPageRestoreHelper;
 
     private final int[] mTmpAddItemCellCoordinates = new int[2];
 
@@ -325,7 +326,7 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
     private PopupDataProvider mPopupDataProvider;
 
     private IntSet mSynchronouslyBoundPages = new IntSet();
-    private IntSet mPagesToBindSynchronously = new IntSet();
+    @NonNull private IntSet mPagesToBindSynchronously = new IntSet();
 
     // We only want to get the SharedPreferences once since it does an FS stat each time we get
     // it from the context.
@@ -460,9 +461,11 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
         restoreState(savedInstanceState);
         mStateManager.reapplyState();
 
-        mPageRestoreHelper = new LauncherPageRestoreHelper(mWorkspace);
         if (savedInstanceState != null) {
-            mPagesToBindSynchronously = mPageRestoreHelper.getPagesToRestore(savedInstanceState);
+            int[] pageIds = savedInstanceState.getIntArray(RUNTIME_STATE_CURRENT_SCREEN_IDS);
+            if (pageIds != null) {
+                mPagesToBindSynchronously = IntSet.wrap(pageIds);
+            }
         }
 
         if (!mModel.addCallbacksAndLoad(this)) {
@@ -1188,7 +1191,6 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
         // Until the workspace is bound, ensure that we keep the wallpaper offset locked to the
         // default state, otherwise we will update to the wrong offsets in RTL
         mWorkspace.lockWallpaperToDefaultPage();
-        mWorkspace.bindAndInitLeftPanel();
         mWorkspace.bindAndInitFirstWorkspaceScreen(null /* recycled qsb */);
         mDragController.addDragListener(mWorkspace);
 
@@ -1586,14 +1588,19 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
     public void onRestoreInstanceState(Bundle state) {
         super.onRestoreInstanceState(state);
         if (mSynchronouslyBoundPages != null) {
-            mSynchronouslyBoundPages.forEach(page -> mWorkspace.restoreInstanceStateForChild(page));
+            mSynchronouslyBoundPages.forEach(screenId -> {
+                int pageIndex = mWorkspace.getPageIndexForScreenId(screenId);
+                if (pageIndex != PagedView.INVALID_PAGE) {
+                    mWorkspace.restoreInstanceStateForChild(pageIndex);
+                }
+            });
         }
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        mPageRestoreHelper.savePagesToRestore(outState);
-
+        outState.putIntArray(RUNTIME_STATE_CURRENT_SCREEN_IDS,
+                mWorkspace.getCurrentPageScreenIds().getArray().toArray());
         outState.putInt(RUNTIME_STATE, mStateManager.getState().ordinal);
 
         AbstractFloatingView widgets = AbstractFloatingView
@@ -2081,18 +2088,42 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
         mPagesToBindSynchronously = pages;
     }
 
-    /**
-     * Implementation of the method from LauncherModel.Callbacks.
-     */
     @Override
-    public IntSet getPagesToBindSynchronously() {
-        if (mPagesToBindSynchronously != null && !mPagesToBindSynchronously.isEmpty()) {
-            return mPagesToBindSynchronously;
-        } else if (mWorkspace != null) {
-            return mWorkspace.getVisiblePageIndices();
+    public IntSet getPagesToBindSynchronously(IntArray orderedScreenIds) {
+        IntSet visibleIds = mPagesToBindSynchronously.isEmpty()
+                ? mWorkspace.getCurrentPageScreenIds() : mPagesToBindSynchronously;
+        IntArray actualIds = new IntArray();
+
+        if (mDeviceProfile.isTwoPanels) {
+            actualIds.add(LEFT_PANEL_ID);
         } else {
-            return new IntSet();
+            visibleIds.remove(LEFT_PANEL_ID);
         }
+        IntSet result = new IntSet();
+        if (visibleIds.isEmpty()) {
+            return result;
+        }
+        for (int id : orderedScreenIds.toArray()) {
+            if (id != LEFT_PANEL_ID) {
+                actualIds.add(id);
+            }
+        }
+        int firstId = visibleIds.getArray().get(0);
+        if (actualIds.contains(firstId)) {
+            result.add(firstId);
+
+            if (mDeviceProfile.isTwoPanels) {
+                int index = actualIds.indexOf(firstId);
+                int nextIndex = ((int) (index / 2)) * 2;
+                if (nextIndex == index) {
+                    nextIndex++;
+                }
+                if (nextIndex < actualIds.size()) {
+                    result.add(actualIds.get(nextIndex));
+                }
+            }
+        }
+        return result;
     }
 
     /**
@@ -2143,7 +2174,7 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
         // Make sure the first screen is at the start if there's no widget panel,
         // or on the second place if the first is the widget panel
         boolean isLeftPanelShown =
-                mWorkspace.mWorkspaceScreens.containsKey(Workspace.LEFT_PANEL_ID);
+                mWorkspace.mWorkspaceScreens.containsKey(LEFT_PANEL_ID);
         int firstScreenPosition = isLeftPanelShown && orderedScreenIds.size() > 1 ? 1 : 0;
 
         if (FeatureFlags.QSB_ON_FIRST_SCREEN &&
@@ -2171,7 +2202,7 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
                 continue;
             }
 
-            if (screenId == Workspace.LEFT_PANEL_ID) {
+            if (screenId == LEFT_PANEL_ID) {
                 // No need to bind the left panel, as its always bound.
                 continue;
             }
@@ -2252,7 +2283,7 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
             }
 
             // Skip if the item is on the left widget panel but the panel is not shown
-            if (item.screenId == Workspace.LEFT_PANEL_ID && !getDeviceProfile().isTwoPanels) {
+            if (item.screenId == LEFT_PANEL_ID && !getDeviceProfile().isTwoPanels) {
                 continue;
             }
 
@@ -2555,9 +2586,6 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
     @Override
     public void onInitialBindComplete(IntSet boundPages, RunnableList pendingTasks) {
         mSynchronouslyBoundPages = boundPages;
-        if (!boundPages.isEmpty()) {
-            mWorkspace.setCurrentPage(boundPages.getArray().get(0));
-        }
         mPagesToBindSynchronously = new IntSet();
 
         clearPendingBinds();
@@ -2598,7 +2626,8 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
         }
 
         int currentPage = pagesBoundFirst != null && !pagesBoundFirst.isEmpty()
-                ? pagesBoundFirst.getArray().get(0) : PagedView.INVALID_PAGE;
+                ? mWorkspace.getPageIndexForScreenId(pagesBoundFirst.getArray().get(0))
+                : PagedView.INVALID_PAGE;
         // When undoing the removal of the last item on a page, return to that page.
         // Since we are just resetting the current page without user interaction,
         // override the previous page so we don't log the page switch.

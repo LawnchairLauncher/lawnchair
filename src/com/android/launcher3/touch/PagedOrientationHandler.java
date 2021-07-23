@@ -99,6 +99,8 @@ public interface PagedOrientationHandler {
     boolean getRecentsRtlSetting(Resources resources);
     float getDegreesRotated();
     int getRotation();
+    void setPrimaryScale(View view, float scale);
+    void setSecondaryScale(View view, float scale);
 
     <T> T getPrimaryValue(T x, T y);
     <T> T getSecondaryValue(T x, T y);
@@ -114,6 +116,22 @@ public interface PagedOrientationHandler {
             DeviceProfile deviceProfile);
     int getDistanceToBottomOfRect(DeviceProfile dp, Rect rect);
     List<SplitPositionOption> getSplitPositionOptions(DeviceProfile dp);
+    /**
+     * @param splitholderSize height of placeholder view in portrait, width in landscape
+     */
+    void getInitialSplitPlaceholderBounds(int splitholderSize, DeviceProfile dp,
+            SplitPositionOption splitPositionOption, Rect out);
+
+    /**
+     * @param splitDividerSize height of split screen drag handle in portrait, width in landscape
+     * @param initialSplitOption the split position option (top/left, bottom/right) of the first
+     *                           task selected for entering split
+     * @param out1 the bounds for where the first selected app will be
+     * @param out2 the bounds for where the second selected app will be, complimentary to
+     *             {@param out1} based on {@param initialSplitOption}
+     */
+    void getFinalSplitPlaceholderBounds(int splitDividerSize, DeviceProfile dp,
+            SplitPositionOption initialSplitOption, Rect out1, Rect out2);
 
     // Overview TaskMenuView methods
     float getTaskMenuX(float x, View thumbnailView, int overScroll);

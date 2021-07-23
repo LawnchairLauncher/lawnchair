@@ -205,6 +205,16 @@ public class LandscapePagedViewHandler implements PagedOrientationHandler {
     }
 
     @Override
+    public void setPrimaryScale(View view, float scale) {
+        view.setScaleY(scale);
+    }
+
+    @Override
+    public void setSecondaryScale(View view, float scale) {
+        view.setScaleX(scale);
+    }
+
+    @Override
     public int getChildStart(View view) {
         return view.getTop();
     }
@@ -350,6 +360,25 @@ public class LandscapePagedViewHandler implements PagedOrientationHandler {
         return Collections.singletonList(new SplitPositionOption(
                 R.drawable.ic_split_screen, R.string.split_screen_position_left,
                 STAGE_POSITION_TOP_OR_LEFT, STAGE_TYPE_MAIN));
+    }
+
+    @Override
+    public void getInitialSplitPlaceholderBounds(int placeholderHeight, DeviceProfile dp,
+            SplitPositionOption splitPositionOption, Rect out) {
+        // In fake land/seascape, the placeholder always needs to go to the "top" of the device,
+        // which is the same bounds as 0 rotation.
+        int width = dp.widthPx;
+        out.set(0, 0, width, placeholderHeight);
+    }
+
+    @Override
+    public void getFinalSplitPlaceholderBounds(int splitDividerSize, DeviceProfile dp,
+            SplitPositionOption initialSplitOption, Rect out1, Rect out2) {
+        // In fake land/seascape, the window bounds are always top and bottom half
+        int screenHeight = dp.heightPx;
+        int screenWidth = dp.widthPx;
+        out1.set(0, 0, screenWidth, screenHeight / 2  - splitDividerSize);
+        out2.set(0, screenHeight / 2  + splitDividerSize, screenWidth, screenHeight);
     }
 
     @Override

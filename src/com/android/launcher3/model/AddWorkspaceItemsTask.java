@@ -15,6 +15,9 @@
  */
 package com.android.launcher3.model;
 
+import static com.android.launcher3.WorkspaceLayoutManager.FIRST_SCREEN_ID;
+import static com.android.launcher3.WorkspaceLayoutManager.LEFT_PANEL_ID;
+
 import android.content.Intent;
 import android.content.pm.LauncherActivityInfo;
 import android.content.pm.LauncherApps;
@@ -27,6 +30,7 @@ import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherModel.CallbackTask;
 import com.android.launcher3.LauncherSettings;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.model.BgDataModel.Callbacks;
 import com.android.launcher3.model.data.AppInfo;
@@ -38,6 +42,7 @@ import com.android.launcher3.pm.InstallSessionHelper;
 import com.android.launcher3.pm.PackageInstallInfo;
 import com.android.launcher3.util.GridOccupancy;
 import com.android.launcher3.util.IntArray;
+import com.android.launcher3.util.IntSet;
 import com.android.launcher3.util.PackageManagerHelper;
 
 import java.util.ArrayList;
@@ -291,11 +296,15 @@ public class AddWorkspaceItemsTask extends BaseModelUpdateTask {
         boolean found = false;
 
         int screenCount = workspaceScreens.size();
-        int firstScreenToCheck = dataModel.isLeftPanelShown ? 2 : 1;
-        // Search on the screens for empty space
-        for (int screen = firstScreenToCheck; screen < screenCount; screen++) {
+        // First check the preferred screen.
+        IntSet screensToExclude = IntSet.wrap(LEFT_PANEL_ID);
+        if (FeatureFlags.QSB_ON_FIRST_SCREEN) {
+            screensToExclude.add(FIRST_SCREEN_ID);
+        }
+
+        for (int screen = 0; screen < screenCount; screen++) {
             screenId = workspaceScreens.get(screen);
-            if (findNextAvailableIconSpaceInScreen(
+            if (!screensToExclude.contains(screenId) && findNextAvailableIconSpaceInScreen(
                     app, screenItems.get(screenId), coordinates, spanX, spanY)) {
                 // We found a space for it
                 found = true;

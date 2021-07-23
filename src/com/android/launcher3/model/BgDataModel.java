@@ -117,11 +117,6 @@ public class BgDataModel {
     public int lastBindId = 0;
 
     /**
-     * Value that indicates if left widget panel is shown or not.
-     */
-    public boolean isLeftPanelShown = false;
-
-    /**
      * Clears all the data
      */
     public synchronized void clear() {
@@ -145,14 +140,6 @@ public class BgDataModel {
         }
         if (FeatureFlags.QSB_ON_FIRST_SCREEN || screenSet.isEmpty()) {
             screenSet.add(Workspace.FIRST_SCREEN_ID);
-        }
-
-        if (isLeftPanelShown) {
-            // We should add it even though there are no items on it.
-            screenSet.add(Workspace.LEFT_PANEL_ID);
-        } else {
-            // We should NOT add it even though there are items on it.
-            screenSet.remove(Workspace.LEFT_PANEL_ID);
         }
         return screenSet.getArray();
     }
@@ -459,10 +446,11 @@ public class BgDataModel {
         int FLAG_QUIET_MODE_CHANGE_PERMISSION = 1 << 2;
 
         /**
-         * Returns an IntSet of page numbers to bind first, synchronously if possible
+         * Returns an IntSet of page ids to bind first, synchronously if possible
          * or an empty IntSet
+         * @param orderedScreenIds All the page ids to be bound
          */
-        default IntSet getPagesToBindSynchronously() {
+        default IntSet getPagesToBindSynchronously(IntArray orderedScreenIds) {
             return new IntSet();
         }
 
