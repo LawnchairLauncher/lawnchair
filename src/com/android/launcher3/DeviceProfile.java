@@ -657,8 +657,11 @@ public class DeviceProfile {
         int textHeight = Utilities.calculateTextHeight(folderChildTextSizePx);
 
         if (isScalableGrid) {
-            folderCellWidthPx = (int) (cellWidthPx * scale);
-            folderCellHeightPx = (int) (cellHeightPx * scale);
+            int minWidth = folderChildIconSizePx + iconDrawablePaddingPx * 2;
+            int minHeight = folderChildIconSizePx + iconDrawablePaddingPx * 2 + textHeight;
+
+            folderCellWidthPx = (int) Math.max(minWidth, cellWidthPx * scale);
+            folderCellHeightPx = (int) Math.max(minHeight, cellHeightPx * scale);
 
             int borderSpacing = (int) (cellLayoutBorderSpacingOriginalPx * scale);
             folderCellLayoutBorderSpacingPx = borderSpacing;
