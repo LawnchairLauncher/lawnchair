@@ -210,6 +210,8 @@ public class DeviceProfile {
 
      // Taskbar
     public boolean isTaskbarPresent;
+    // Whether Taskbar will inset the bottom of apps by taskbarSize.
+    public boolean isTaskbarPresentInApps;
     public int taskbarSize;
     // How much of the bottom inset is due to Taskbar rather than other system elements.
     public int nonOverlappingTaskbarInset;
@@ -1079,6 +1081,7 @@ public class DeviceProfile {
         writer.println(prefix + "\tnumShownHotseatIcons: " + numShownHotseatIcons);
 
         writer.println(prefix + "\tisTaskbarPresent:" + isTaskbarPresent);
+        writer.println(prefix + "\tisTaskbarPresentInApps:" + isTaskbarPresentInApps);
 
         writer.println(prefix + pxToDpStr("taskbarSize", taskbarSize));
         writer.println(prefix + pxToDpStr("nonOverlappingTaskbarInset",

@@ -197,6 +197,7 @@ public class TaskbarStashController {
             if (wasStashed != isStashed) {
                 SystemUiProxy.INSTANCE.get(mActivity)
                         .notifyTaskbarStatus(/* visible */ true, /* stashed */ isStashed);
+                mControllers.uiController.onStashedInAppChanged();
                 createAnimToIsStashed(isStashed, TASKBAR_STASH_DURATION).start();
                 return true;
             }

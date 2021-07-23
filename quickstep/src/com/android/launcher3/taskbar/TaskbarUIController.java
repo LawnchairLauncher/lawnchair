@@ -33,4 +33,6 @@ public class TaskbarUIController {
     }
 
     protected void updateContentInsets(Rect outContentInsets) { }
+
+    protected void onStashedInAppChanged() { }
 }
