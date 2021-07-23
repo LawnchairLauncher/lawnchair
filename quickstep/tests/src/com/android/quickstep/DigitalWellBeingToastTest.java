@@ -16,6 +16,7 @@ import androidx.test.filters.LargeTest;
 import androidx.test.runner.AndroidJUnit4;
 
 import com.android.launcher3.Launcher;
+import com.android.launcher3.util.rule.ScreenRecordRule.ScreenRecord;
 import com.android.quickstep.views.DigitalWellBeingToast;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
@@ -32,6 +33,7 @@ public class DigitalWellBeingToastTest extends AbstractQuickStepTest {
             resolveSystemApp(Intent.CATEGORY_APP_CALCULATOR);
 
     @Test
+    @ScreenRecord //b/193440212
     public void testToast() throws Exception {
         startAppFast(CALCULATOR_PACKAGE);
 
