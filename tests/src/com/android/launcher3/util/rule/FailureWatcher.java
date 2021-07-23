@@ -61,13 +61,23 @@ public class FailureWatcher extends TestWatcher {
             out.putNextEntry(new ZipEntry("visible_windows.zip"));
             dumpCommand("cmd window dump-visible-window-views", out);
             out.closeEntry();
-        } catch (IOException ex) { }
+        } catch (IOException ex) {
+        }
 
         Log.e(TAG, "Failed test " + description.getMethodName()
                 + ",\nscreenshot will be saved to " + sceenshot
                 + ",\nUI dump at: " + hierarchy
                 + " (use go/web-hv to open the dump file)", e);
         device.takeScreenshot(sceenshot);
+
+        // Dump accessibility hierarchy
+        final File accessibilityHierarchyFile = new File(parentFile,
+                "AccessibilityHierarchy-" + description.getMethodName() + ".uix");
+        try {
+            device.dumpWindowHierarchy(accessibilityHierarchyFile);
+        } catch (IOException ex) {
+            Log.e(TAG, "Failed to save accessibility hierarchy", ex);
+        }
     }
 
     private static void dumpStringCommand(String cmd, OutputStream out) throws IOException {
