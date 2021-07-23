@@ -383,6 +383,14 @@ public final class LauncherInstrumentation {
 
             if (hasSystemUiObject("keyguard_status_view")) return "Phone is locked";
 
+            final String visibleApps = mDevice.findObjects(getAnyObjectSelector())
+                    .stream()
+                    .map(LauncherInstrumentation::getApplicationPackageSafe)
+                    .distinct()
+                    .filter(pkg -> pkg != null)
+                    .collect(Collectors.joining(","));
+            if (SYSTEMUI_PACKAGE.equals(visibleApps)) return "Only System UI views are visible";
+
             if (!mDevice.wait(Until.hasObject(getAnyObjectSelector()), WAIT_TIME_MS)) {
                 return "Screen is empty";
             }
