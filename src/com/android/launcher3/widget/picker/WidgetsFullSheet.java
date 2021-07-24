@@ -15,6 +15,8 @@
  */
 package com.android.launcher3.widget.picker;
 
+import static android.view.View.MeasureSpec.makeMeasureSpec;
+
 import static com.android.launcher3.LauncherAnimUtils.VIEW_TRANSLATE_Y;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_WIDGETSTRAY_SEARCHED;
 import static com.android.launcher3.testing.TestProtocol.NORMAL_STATE_ORDINAL;
@@ -519,7 +521,12 @@ public class WidgetsFullSheet extends BaseWidgetSheet
                                 mNoWidgetsView.getText().length(), noWidgetsViewTextBounds);
                 noWidgetsViewHeight = noWidgetsViewTextBounds.height();
             }
-            float maxTableHeight = (mActivityContext.getDeviceProfile().availableHeightPx
+            doMeasure(
+                    makeMeasureSpec(mActivityContext.getDeviceProfile().availableWidthPx,
+                            MeasureSpec.EXACTLY),
+                    makeMeasureSpec(mActivityContext.getDeviceProfile().availableHeightPx,
+                            MeasureSpec.EXACTLY));
+            float maxTableHeight = (mContent.getMeasuredHeight()
                     - mTabsHeight - mViewPagerTopPadding - getHeaderViewHeight()
                     - noWidgetsViewHeight) * RECOMMENDATION_TABLE_HEIGHT_RATIO;
 
