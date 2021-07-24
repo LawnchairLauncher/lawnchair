@@ -79,10 +79,10 @@
     <string name="pin_prediction" msgid="4196423321649756498">"પૂર્વાનુમાનને પિન કરો"</string>
     <string name="permlab_install_shortcut" msgid="5632423390354674437">"શૉર્ટકટ ઇન્સ્ટૉલ કરો"</string>
     <string name="permdesc_install_shortcut" msgid="923466509822011139">"એપ્લિકેશનને વપરાશકર્તા હસ્તક્ષેપ વગર શોર્ટકટ્સ ઉમેરવાની મંજૂરી આપે છે."</string>
-    <string name="permlab_read_settings" msgid="1941457408239617576">"હોમ સેટિંગ્સ અને શોર્ટકટ્સ વાંચો"</string>
-    <string name="permdesc_read_settings" msgid="5833423719057558387">"એપ્લિકેશનને હોમમાં સેટિંગ્સ અને શોર્ટકટ્સ વાંચવાની મંજૂરી આપે છે."</string>
-    <string name="permlab_write_settings" msgid="3574213698004620587">"હોમ સેટિંગ્સ અને શોર્ટકટ્સ લખો"</string>
-    <string name="permdesc_write_settings" msgid="5440712911516509985">"એપ્લિકેશનને હોમમાં સેટિંગ્સ અને શોર્ટકટ્સ બદલવાની મંજૂરી આપે છે."</string>
+    <string name="permlab_read_settings" msgid="1941457408239617576">"હોમ સેટિંગ અને શૉર્ટકટ વાંચો"</string>
+    <string name="permdesc_read_settings" msgid="5833423719057558387">"ઍપને હોમમાં સેટિંગ અને શૉર્ટકટ વાંચવાની મંજૂરી આપે છે."</string>
+    <string name="permlab_write_settings" msgid="3574213698004620587">"હોમ સેટિંગ અને શૉર્ટકટ લખો"</string>
+    <string name="permdesc_write_settings" msgid="5440712911516509985">"ઍપને હોમમાં સેટિંગ અને શૉર્ટકટ બદલવાની મંજૂરી આપે છે."</string>
     <string name="msg_no_phone_permission" msgid="9208659281529857371">"<xliff:g id="APP_NAME">%1$s</xliff:g> ને ફોન કૉલ્સ કરવાની મંજૂરી નથી"</string>
     <string name="gadget_error_text" msgid="740356548025791839">"વિજેટ લોડ કરી શકાતું નથી"</string>
     <string name="gadget_setup_text" msgid="1745356155479272374">"સેટઅપ પૂર્ણ કરવા માટે ટૅપ કરો"</string>
@@ -114,7 +114,7 @@
     <string name="notification_dots_desc_off" msgid="1760796511504341095">"બંધ છે"</string>
     <string name="title_missing_notification_access" msgid="7503287056163941064">"નોટિફિકેશનનો ઍક્સેસની જરૂરી છે"</string>
     <string name="msg_missing_notification_access" msgid="281113995110910548">"નોટિફિકેશન માટેનું ચિહ્ન બતાવવા હેતુ, <xliff:g id="NAME">%1$s</xliff:g> માટેની ઍપ્લિકેશન નોટિફિકેશન ચાલુ કરો"</string>
-    <string name="title_change_settings" msgid="1376365968844349552">"સેટિંગ્સ બદલો"</string>
+    <string name="title_change_settings" msgid="1376365968844349552">"સેટિંગ બદલો"</string>
     <string name="notification_dots_service_title" msgid="4284221181793592871">"નોટિફિકેશન માટેના ચિહ્ન બતાવો"</string>
     <string name="auto_add_shortcuts_label" msgid="3698776050751790653">"ઍપના આઇકન હોમ સ્ક્રીન પર ઉમેરો"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"નવી ઍપ માટે"</string>
