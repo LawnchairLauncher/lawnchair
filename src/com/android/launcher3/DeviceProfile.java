@@ -850,7 +850,7 @@ public class DeviceProfile {
 
         if (isScalableGrid && qsbBottomMarginPx > mInsets.bottom) {
             return Math.min(qsbBottomMarginPx, freeSpace);
-        }  else {
+        } else {
             return (int) (freeSpace * QSB_CENTER_FACTOR)
                 + (isTaskbarPresent ? taskbarSize : mInsets.bottom);
         }
