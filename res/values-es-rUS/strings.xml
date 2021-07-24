@@ -158,12 +158,12 @@
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"Personales"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"De trabajo"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"Perfil de trabajo"</string>
-    <string name="work_profile_edu_work_apps" msgid="7895468576497746520">"Las apps de trabajo tienen una insignia y el administrador de IT las puede ver"</string>
+    <string name="work_profile_edu_work_apps" msgid="7895468576497746520">"Las apps de trabajo tienen una insignia y el administrador de TI las puede ver"</string>
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"Entendido"</string>
     <string name="work_apps_paused_title" msgid="3040901117349444598">"Las apps de trabajo están detenidas"</string>
     <string name="work_apps_paused_body" msgid="261634750995824906">"Las apps de trabajo no pueden enviarte notificaciones, usar la batería ni acceder a tu ubicación"</string>
     <string name="work_apps_paused_content_description" msgid="5149623040804051095">"Las apps de trabajo están desactivadas y, por ende, no pueden enviarte notificaciones, usar la batería ni acceder a tu ubicación"</string>
-    <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"Las apps de trabajo tienen una insignia y el administrador de IT las puede ver"</string>
+    <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"Las apps de trabajo tienen una insignia y el administrador de TI las puede ver"</string>
     <string name="work_apps_paused_edu_accept" msgid="6377476824357318532">"Entendido"</string>
     <string name="work_apps_pause_btn_text" msgid="1921059713673767460">"Desactivar las apps de trabajo"</string>
     <string name="work_apps_enable_btn_text" msgid="1156432622148413741">"Activar las apps de trabajo"</string>
