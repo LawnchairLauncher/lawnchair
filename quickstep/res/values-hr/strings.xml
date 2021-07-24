@@ -65,7 +65,7 @@
     <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"Pazite da prijeđete prstom ravno prema gore, a zatim zastanete."</string>
     <string name="overview_gesture_feedback_complete_with_follow_up" msgid="3544611727467765026">"Naučili ste koristiti pokrete. Pokrete možete isključiti u postavkama."</string>
     <string name="overview_gesture_feedback_complete_without_follow_up" msgid="3199486203448379152">"Izvršili ste pokret za promjenu aplikacije."</string>
-    <string name="overview_gesture_intro_title" msgid="2902054412868489378">"Prijeđite prstom da biste promijenili aplikaciju"</string>
+    <string name="overview_gesture_intro_title" msgid="2902054412868489378">"Povlačenje prstom za promjenu aplikacije"</string>
     <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"Za promjenu aplikacije prijeđite prstom od dna zaslona prema gore, zadržite pritisak pa pustite."</string>
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"Sve je spremno"</string>
     <string name="gesture_tutorial_action_button_label" msgid="6249846312991332122">"Gotovo"</string>
