@@ -51,7 +51,7 @@
     <string name="back_gesture_feedback_complete_without_follow_up" msgid="6405649621667113830">"Ortga qaytish ishorasi darsini tamomladingiz."</string>
     <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="1148198467090405643">"Barmoqni ekran pastiga yaqin surmaslikka harakat qiling."</string>
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"Orqaga ishorasi sezuvchanligi Sozlamalardan oʻzgartiriladi"</string>
-    <string name="back_gesture_intro_title" msgid="19551256430224428">"Ortga qaytish uchun suring"</string>
+    <string name="back_gesture_intro_title" msgid="19551256430224428">"Orqaga qaytish"</string>
     <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"Ortga qaytish uchun barmoqni ekranning yon chekkalaridan oʻrtasigacha suring."</string>
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"Barmoqni ekranning pastki chetidan yuqoriga suring."</string>
     <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"Barmoqni ekrandan pauzasiz qoʻyib uzing."</string>
@@ -65,7 +65,7 @@
     <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"Avval tik tepaga surib, keyin pauza qiling."</string>
     <string name="overview_gesture_feedback_complete_with_follow_up" msgid="3544611727467765026">"Ishoralardan qanday foydalanishni oʻrganib oldingiz. Ishoralarni oʻchirish uchun Sozlamalarga kiring."</string>
     <string name="overview_gesture_feedback_complete_without_follow_up" msgid="3199486203448379152">"Ilovalarni almashtirish darsini tamomladingiz."</string>
-    <string name="overview_gesture_intro_title" msgid="2902054412868489378">"Svayp bilan ilovalarni almashtirish"</string>
+    <string name="overview_gesture_intro_title" msgid="2902054412868489378">"Ilovalar orasida almashish"</string>
     <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"Ilovalarni ochish uchun ekranning pastidan tepaga qarab suring, biroz ushlab turing va qoʻyib yuboring"</string>
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"Tayyor"</string>
     <string name="gesture_tutorial_action_button_label" msgid="6249846312991332122">"Tayyor"</string>
