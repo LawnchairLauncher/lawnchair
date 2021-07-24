@@ -59,7 +59,7 @@
     <string name="home_gesture_feedback_complete_with_follow_up" msgid="1427872029729605034">"Du är klar med rörelsen för att öppna startskärmen. Nu ska du få lära dig hur du går tillbaka."</string>
     <string name="home_gesture_feedback_complete_without_follow_up" msgid="8049099486868933882">"Du är klar med rörelsen för att öppna startskärmen."</string>
     <string name="home_gesture_intro_title" msgid="836590312858441830">"Svep för att öppna startskärmen"</string>
-    <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"Svep uppåt från skärmens nederkant. Du kan alltid återgå startskärmen med den här rörelsen."</string>
+    <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"Svep uppåt från skärmens nederkant. Du kan alltid återgå till startskärmen med den här rörelsen."</string>
     <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"Se till att du sveper från nederkanten på skärmen."</string>
     <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"Testa att trycka längre på fönstret innan du släpper."</string>
     <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"Se till att du sveper rakt uppåt och sedan pausar."</string>
@@ -76,12 +76,12 @@
     <string name="allset_title" msgid="5021126669778966707">"Klart!"</string>
     <string name="allset_hint" msgid="2384632994739392447">"Svep uppåt för att öppna startskärmen"</string>
     <string name="allset_description" msgid="6350320429953234580">"Nu kan du börja använda telefonen"</string>
-    <string name="allset_navigation_settings" msgid="4713404605961476027"><annotation id="link">"Systemnavigeringsinställningarna"</annotation></string>
+    <string name="allset_navigation_settings" msgid="4713404605961476027"><annotation id="link">"Systemnavigeringsinställningar"</annotation></string>
     <string name="action_share" msgid="2648470652637092375">"Dela"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"Skärmbild"</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"Appen eller organisationen tillåter inte den här åtgärden"</string>
     <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"Vill du hoppa över självstudierna?"</string>
-    <string name="skip_tutorial_dialog_subtitle" msgid="544063326241955662">"Du kan hitta det här igen i <xliff:g id="NAME">%1$s</xliff:g>-appen"</string>
+    <string name="skip_tutorial_dialog_subtitle" msgid="544063326241955662">"Du hittar det här igen i <xliff:g id="NAME">%1$s</xliff:g>-appen"</string>
     <string name="gesture_tutorial_action_button_label_cancel" msgid="3809842569351264108">"Avbryt"</string>
     <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"Hoppa över"</string>
 </resources>

@@ -64,7 +64,7 @@
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"Rechercher plus d\'applications"</string>
     <string name="label_application" msgid="8531721983832654978">"Application"</string>
     <string name="notifications_header" msgid="1404149926117359025">"Notifications"</string>
-    <string name="long_press_shortcut_to_add" msgid="5405328730817637737">"Appuyez de manière prolongée pour déplacer raccourci."</string>
+    <string name="long_press_shortcut_to_add" msgid="5405328730817637737">"Appuyez de manière prolongée pour déplacer un raccourci."</string>
     <string name="long_accessible_way_to_add_shortcut" msgid="2199537273817090740">"Appuyez deux fois et maintenez la pression pour déplacer un raccourci ou utiliser les actions personnalisées."</string>
     <string name="out_of_space" msgid="6692471482459245734">"Espace insuffisant sur cet écran d\'accueil"</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"Plus d\'espace disponible dans la zone de favoris."</string>
