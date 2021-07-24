@@ -56,8 +56,8 @@
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"Swipe vanaf de onderrand van het scherm omhoog."</string>
     <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"Pauzeer niet voordat je loslaat."</string>
     <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"Swipe recht omhoog."</string>
-    <string name="home_gesture_feedback_complete_with_follow_up" msgid="1427872029729605034">"Je weet nu hoe je het gebaar Naar startscherm maakt. Ontdek als volgende hoe je kunt teruggaan."</string>
-    <string name="home_gesture_feedback_complete_without_follow_up" msgid="8049099486868933882">"Je weet nu hoe je het gebaar Naar startscherm maakt."</string>
+    <string name="home_gesture_feedback_complete_with_follow_up" msgid="1427872029729605034">"Je weet nu hoe je teruggaat naar het startscherm. Ontdek als volgende hoe je kunt teruggaan."</string>
+    <string name="home_gesture_feedback_complete_without_follow_up" msgid="8049099486868933882">"Je weet nu hoe je teruggaat naar het startscherm."</string>
     <string name="home_gesture_intro_title" msgid="836590312858441830">"Swipe om naar het startscherm te gaan"</string>
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"Swipe omhoog vanaf de onderkant van het scherm. Met dit gebaar ga je altijd naar het startscherm."</string>
     <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"Swipe vanaf de onderrand van het scherm omhoog."</string>

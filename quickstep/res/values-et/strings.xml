@@ -58,14 +58,14 @@
     <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"Pühkige kindlasti otse üles."</string>
     <string name="home_gesture_feedback_complete_with_follow_up" msgid="1427872029729605034">"Tegite avakuvale minemise liigutuse. Järgmisena vaadake, kuidas minna tagasi."</string>
     <string name="home_gesture_feedback_complete_without_follow_up" msgid="8049099486868933882">"Tegite avakuvale minemise liigutuse."</string>
-    <string name="home_gesture_intro_title" msgid="836590312858441830">"Pühkimine avakuvale minemiseks"</string>
+    <string name="home_gesture_intro_title" msgid="836590312858441830">"Pühkige avakuvale minemiseks"</string>
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"Pühkige ekraani alaosast üles. See liigutus viib teid alati tagasi avakuvale."</string>
     <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"Pühkige kindlasti ekraanikuva alumisest servast üles."</string>
     <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"Hoidke sõrme aknal pisut kauem, enne kui vabastate."</string>
     <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"Pühkige kindlasti otse üles, seejärel peatuge."</string>
     <string name="overview_gesture_feedback_complete_with_follow_up" msgid="3544611727467765026">"Õppisite liigutusi kasutama. Liigutuste väljalülitamiseks avage seaded."</string>
     <string name="overview_gesture_feedback_complete_without_follow_up" msgid="3199486203448379152">"Tegite rakenduste vahel vahetamise liigutuse."</string>
-    <string name="overview_gesture_intro_title" msgid="2902054412868489378">"Rakenduste vahel vahetamiseks pühkimine"</string>
+    <string name="overview_gesture_intro_title" msgid="2902054412868489378">"Pühkige rakenduste vahetamiseks"</string>
     <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"Rakenduste vahel vahetamiseks pühkige ekraanikuva alaosast üles, hoidke ja seejärel vabastage."</string>
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"Valmis"</string>
     <string name="gesture_tutorial_action_button_label" msgid="6249846312991332122">"Valmis"</string>
@@ -75,7 +75,7 @@
     <string name="gesture_tutorial_step" msgid="1279786122817620968">"Õpetus <xliff:g id="CURRENT">%1$d</xliff:g>/<xliff:g id="TOTAL">%2$d</xliff:g>"</string>
     <string name="allset_title" msgid="5021126669778966707">"Valmis!"</string>
     <string name="allset_hint" msgid="2384632994739392447">"Avakuvale liikumiseks pühkige üles"</string>
-    <string name="allset_description" msgid="6350320429953234580">"Olete valmis oma telefoni kasutama"</string>
+    <string name="allset_description" msgid="6350320429953234580">"Olete valmis oma telefoni kasutama."</string>
     <string name="allset_navigation_settings" msgid="4713404605961476027"><annotation id="link">"Süsteemi navigeerimisseaded"</annotation></string>
     <string name="action_share" msgid="2648470652637092375">"Jaga"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"Ekraanipilt"</string>

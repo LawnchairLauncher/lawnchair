@@ -56,9 +56,9 @@
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"Glisați în sus dinspre marginea de jos a ecranului."</string>
     <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"Nu întrerupeți gestul înainte de a elibera."</string>
     <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"Glisați direct în sus."</string>
-    <string name="home_gesture_feedback_complete_with_follow_up" msgid="1427872029729605034">"Ați finalizat gestul „înapoi la pagina de pornire”. În continuare, aflați cum să reveniți."</string>
-    <string name="home_gesture_feedback_complete_without_follow_up" msgid="8049099486868933882">"Ați finalizat gestul „înapoi la pagina de pornire”."</string>
-    <string name="home_gesture_intro_title" msgid="836590312858441830">"Glisați pentru a accesa pagina de pornire"</string>
+    <string name="home_gesture_feedback_complete_with_follow_up" msgid="1427872029729605034">"Ați finalizat gestul „accesați ecranul de pornire”. În continuare, aflați cum să reveniți."</string>
+    <string name="home_gesture_feedback_complete_without_follow_up" msgid="8049099486868933882">"Ați finalizat gestul „accesați ecranul de pornire”."</string>
+    <string name="home_gesture_intro_title" msgid="836590312858441830">"Glisați pentru a accesa ecranul de pornire"</string>
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"Glisați în sus din partea de jos a ecranului. Cu acest gest accesați întotdeauna ecranul de pornire."</string>
     <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"Glisați în sus dinspre marginea de jos a ecranului."</string>
     <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"Încercați să țineți fereastra mai mult înainte s-o eliberați."</string>
@@ -66,7 +66,7 @@
     <string name="overview_gesture_feedback_complete_with_follow_up" msgid="3544611727467765026">"Ați învățat cum să folosiți gesturi. Pentru a dezactiva gesturile, accesați Setările."</string>
     <string name="overview_gesture_feedback_complete_without_follow_up" msgid="3199486203448379152">"Ați finalizat gestul „comutați între aplicații”."</string>
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"Glisați pentru a comuta între aplicații"</string>
-    <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"Pentru a comuta între aplicații, glisați în sus din partea de jos a ecranului, așteptați și eliberați"</string>
+    <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"Ca să comutați între aplicații, glisați în sus din partea de jos a ecranului, așteptați și eliberați."</string>
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"Gata"</string>
     <string name="gesture_tutorial_action_button_label" msgid="6249846312991332122">"Gata"</string>
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"Setări"</string>
