@@ -98,13 +98,8 @@ final class OverviewGestureTutorialController extends SwipeUpGestureTutorialCont
                         showFeedback(R.string.overview_gesture_feedback_swipe_too_far_from_edge);
                         break;
                     case OVERVIEW_GESTURE_COMPLETED:
-                        mTutorialFragment.releaseGestureVideoView();
-                        PendingAnimation anim = new PendingAnimation(300);
-                        anim.setFloat(mTaskViewSwipeUpAnimation
-                                .getCurrentShift(), AnimatedFloat.VALUE, 1, ACCEL);
-                        AnimatorSet animset = anim.buildAnim();
-                        animset.start();
-                        mRunningWindowAnim = SwipeUpAnimationLogic.RunningWindowAnim.wrap(animset);
+                        mTutorialFragment.releaseFeedbackAnimation();
+                        animateTaskViewToOverview();
                         onMotionPaused(true /*arbitrary value*/);
                         int subtitleResId = mTutorialFragment.getNumSteps() > 1
                                 && mTutorialFragment.isAtFinalStep()
@@ -125,5 +120,14 @@ final class OverviewGestureTutorialController extends SwipeUpGestureTutorialCont
                 }
                 break;
         }
+    }
+
+    public void animateTaskViewToOverview() {
+        PendingAnimation anim = new PendingAnimation(300);
+        anim.setFloat(mTaskViewSwipeUpAnimation
+                .getCurrentShift(), AnimatedFloat.VALUE, 1, ACCEL);
+        AnimatorSet animset = anim.buildAnim();
+        animset.start();
+        mRunningWindowAnim = SwipeUpAnimationLogic.RunningWindowAnim.wrap(animset);
     }
 }

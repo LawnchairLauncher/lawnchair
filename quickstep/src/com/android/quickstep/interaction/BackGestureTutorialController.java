@@ -79,8 +79,7 @@ final class BackGestureTutorialController extends TutorialController {
         switch (result) {
             case BACK_COMPLETED_FROM_LEFT:
             case BACK_COMPLETED_FROM_RIGHT:
-                mTutorialFragment.releaseGestureVideoView();
-                hideFeedback(true);
+                mTutorialFragment.releaseFeedbackAnimation();
                 updateFakeAppTaskViewLayout(getMockAppTaskPreviousPageLayoutResId());
                 int subtitleResId = mTutorialFragment.isAtFinalStep()
                         ? R.string.back_gesture_feedback_complete_without_follow_up
