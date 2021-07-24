@@ -56,7 +56,7 @@
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"സ്‌ക്രീനിന്റെ താഴത്തെ അരികിൽ നിന്ന് മുകളിലേക്ക് സ്വെെപ്പ് ചെയ്യുന്നുണ്ടെന്ന് ഉറപ്പാക്കുക."</string>
     <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"വിടുന്നതിന് മുമ്പ് നിങ്ങൾ താൽക്കാലികമായി നിർത്തുന്നില്ലെന്ന് ഉറപ്പാക്കുക."</string>
     <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"നേരെ മുകളിലേക്ക് സ്വെെപ്പ് ചെയ്യുന്നുണ്ടെന്ന് ഉറപ്പിക്കുക."</string>
-    <string name="home_gesture_feedback_complete_with_follow_up" msgid="1427872029729605034">"ഹോമിലേക്ക് പോകുക ജെസ്ച്ചർ പൂർത്തിയാക്കി. അടുത്തത്, ഹോമിലേക്ക് എങ്ങനെ പോകാമെന്ന് മനസ്സിലാക്കുക."</string>
+    <string name="home_gesture_feedback_complete_with_follow_up" msgid="1427872029729605034">"ഹോമിലേക്ക് പോകുക ജെസ്ച്ചർ പൂർത്തിയാക്കി. അടുത്തത്, എങ്ങനെ മടങ്ങാമെന്ന് അറിയുക."</string>
     <string name="home_gesture_feedback_complete_without_follow_up" msgid="8049099486868933882">"ഹോമിലേക്ക് പോകുക ജെസ്ച്ചർ നിങ്ങൾ പൂർത്തിയാക്കി."</string>
     <string name="home_gesture_intro_title" msgid="836590312858441830">"ഹോമിലേക്ക് പോകാൻ സ്വെെപ്പ് ചെയ്യുക"</string>
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"സ്‌ക്രീനിന്റെ താഴെ നിന്ന് മുകളിലേക്ക് സ്വൈപ്പ് ചെയ്യൂ. ഈ ജെസ്ച്ചർ എപ്പോഴും ഹോം സ്‌ക്രീനിലേക്ക് നയിക്കുന്നു."</string>
@@ -66,7 +66,7 @@
     <string name="overview_gesture_feedback_complete_with_follow_up" msgid="3544611727467765026">"ജെസ്ച്ചറുകൾ ഉപയോഗിക്കുന്ന രീതി നിങ്ങൾ മനസ്സിലാക്കി. ജെസ്ച്ചറുകൾ ഓഫാക്കാൻ ക്രമീകരണത്തിലേക്ക് പോകുക."</string>
     <string name="overview_gesture_feedback_complete_without_follow_up" msgid="3199486203448379152">"ആപ്പുകൾ തമ്മിൽ മാറുക ജെസ്‌ച്ചർ നിങ്ങൾ പൂർത്തിയാക്കി."</string>
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"ആപ്പുകൾ മാറാൻ സ്വെെപ്പ് ചെയ്യുക"</string>
-    <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"ആപ്പുകൾക്കിടയിൽ മാറാറാൻ സ്‌ക്രീനിന്റെ താഴെ നിന്ന് മുകളിലേക്ക് സ്വൈപ്പ് ചെയ്‌ത് പിടിച്ച ശേഷം വിടുക."</string>
+    <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"ആപ്പുകൾക്കിടയിൽ മാറാൻ സ്‌ക്രീനിന്റെ താഴെ നിന്ന് മുകളിലേക്ക് സ്വൈപ്പ് ചെയ്‌ത് പിടിച്ച ശേഷം വിടുക."</string>
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"എല്ലാം സജ്ജീകരിച്ചു"</string>
     <string name="gesture_tutorial_action_button_label" msgid="6249846312991332122">"പൂർത്തിയായി"</string>
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"ക്രമീകരണം"</string>
