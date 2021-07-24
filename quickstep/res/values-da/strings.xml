@@ -56,7 +56,7 @@
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"Stryg opad fra bunden af skærmen."</string>
     <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"Undlad at holde fingeren stille, indtil du løfter fingeren."</string>
     <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"Stryg lige opad."</string>
-    <string name="home_gesture_feedback_complete_with_follow_up" msgid="1427872029729605034">"Du har fuldført bevægelsen for Gå til startskærmen. Som det næste kan du se, hvordan du går til startskærmen."</string>
+    <string name="home_gesture_feedback_complete_with_follow_up" msgid="1427872029729605034">"Du har fuldført bevægelsen for Gå til startskærmen. Som det næste kan du se, hvordan du går tilbage."</string>
     <string name="home_gesture_feedback_complete_without_follow_up" msgid="8049099486868933882">"Du har fuldført bevægelsen for Gå til startskærmen."</string>
     <string name="home_gesture_intro_title" msgid="836590312858441830">"Stryg for at gå til startskærmen"</string>
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"Stryg opad fra bunden af skærmen. Denne bevægelse åbner altid startskærmen."</string>

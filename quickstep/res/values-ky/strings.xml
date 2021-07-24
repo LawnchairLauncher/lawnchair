@@ -48,23 +48,23 @@
     <string name="back_gesture_feedback_swipe_too_far_from_edge" msgid="1711645592102201538">"Экранды эң четинен оңдон солго же солдон оңго карай сүрүңүз."</string>
     <string name="back_gesture_feedback_cancelled" msgid="3274382913290074496">"Экранды оң же сол жагынан ортосуна карай сүрүп, манжаңызды алыңыз."</string>
     <string name="back_gesture_feedback_complete_with_overview_follow_up" msgid="9176400654037014471">"Артка кайтуу үчүн экранды оңдон солго карай сүрүүнү үйрөндүңүз. Эми колдонмолорду которуштурганды үйрөнүп алыңыз."</string>
-    <string name="back_gesture_feedback_complete_without_follow_up" msgid="6405649621667113830">"\"Артка\" жаңсоосу боюнча үйрөткүчтү бүтүрдүңүз."</string>
+    <string name="back_gesture_feedback_complete_without_follow_up" msgid="6405649621667113830">"\"Артка\" жаңсоосун үйрөндүңүз."</string>
     <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="1148198467090405643">"Манжаңызды экрандын ылдый жагына өтө жакындатпай сүрүңүз."</string>
-    <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"\"Артка\" жаң-нун сезгичтигин өзгөртүү үчүн Жөндөөлөргө өтүңүз"</string>
+    <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"\"Артка\" жаң-нун сезгичтигин өзгөртүү үчүн жөндөөлөргө өтүңүз"</string>
     <string name="back_gesture_intro_title" msgid="19551256430224428">"Артка кайтуу үчүн сүрүңүз"</string>
     <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"Акыркы экранга кайтуу үчүн экранды сол же оң жагынан ортосуна карай сүрүңүз."</string>
-    <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"Экранды ылдыйдан өйдө карай сүрүңүз."</string>
+    <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"Экранды ылдыйдан өйдө сүрүңүз."</string>
     <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"Манжаңызды алганга чейин токтотпоңуз."</string>
-    <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"Экранды өйдө карай сүрүңүз."</string>
-    <string name="home_gesture_feedback_complete_with_follow_up" msgid="1427872029729605034">"\"Башкы бетке өтүү\" жаңсоосу боюнча үйрөткүчтү бүтүрдүңүз. Эми артка кайтууну үйрөнүп алыңыз."</string>
-    <string name="home_gesture_feedback_complete_without_follow_up" msgid="8049099486868933882">"\"Башкы бетке өтүү\" жаңсоосу боюнча үйрөткүчтү бүтүрдүңүз."</string>
+    <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"Экранды өйдө сүрүңүз."</string>
+    <string name="home_gesture_feedback_complete_with_follow_up" msgid="1427872029729605034">"\"Башкы бетке өтүү\" жаңсоосун үйрөндүңүз. Эми артка кайтууну үйрөнүп алыңыз."</string>
+    <string name="home_gesture_feedback_complete_without_follow_up" msgid="8049099486868933882">"\"Башкы бетке өтүү\" жаңсоосун үйрөндүңүз."</string>
     <string name="home_gesture_intro_title" msgid="836590312858441830">"Башкы бетке өтүү үчүн сүрүп коюңуз"</string>
-    <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"Экранды ылдый жагынан өйдө карай сүрүңүз. Бул жаңсоо сизди ар дайым Башкы экранга алып барат."</string>
-    <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"Экранды ылдыйдан өйдө карай сүрүңүз."</string>
+    <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"Экранды ылдый жагынан өйдө сүрүңүз. Бул жаңсоо сизди ар дайым Башкы экранга алып барат."</string>
+    <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"Экранды ылдыйдан өйдө сүрүңүз."</string>
     <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"Манжаңызды алуудан мурун экранда узагыраак кармаңыз."</string>
     <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"Экранды өйдө карай сүрүп, токтоп туруңуз."</string>
-    <string name="overview_gesture_feedback_complete_with_follow_up" msgid="3544611727467765026">"Жаңсоолорду колдонгонду үйрөндүңүз. Жаңсоолорду өчүрүү үчүн Жөндөөлөргө өтүңүз."</string>
-    <string name="overview_gesture_feedback_complete_without_follow_up" msgid="3199486203448379152">"\"Колдонмолорду которуштуруу\" жаңсоосу боюнча үйрөткүчтү бүтүрдүңүз."</string>
+    <string name="overview_gesture_feedback_complete_with_follow_up" msgid="3544611727467765026">"Жаңсоолорду колдонгонду үйрөндүңүз. Жаңсоолорду өчүрүү үчүн жөндөөлөргө өтүңүз."</string>
+    <string name="overview_gesture_feedback_complete_without_follow_up" msgid="3199486203448379152">"\"Колдонмолорду которуштуруу\" жаңсоосун үйрөндүңүз."</string>
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"Колдонмолорду которуштуруу үчүн сүрүңүз"</string>
     <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"Бир колдонмодон экинчисине өтүү үчүн экранды ылдыйдан өйдө карай сүрүп, бир аз коё бербей туруңуз."</string>
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"Дапдаяр!"</string>
@@ -75,12 +75,12 @@
     <string name="gesture_tutorial_step" msgid="1279786122817620968">"Үйрөткүч: <xliff:g id="CURRENT">%1$d</xliff:g>/<xliff:g id="TOTAL">%2$d</xliff:g>"</string>
     <string name="allset_title" msgid="5021126669778966707">"Бүттү!"</string>
     <string name="allset_hint" msgid="2384632994739392447">"Башкы бетке өтүү үчүн экранды өйдө сүрүңүз"</string>
-    <string name="allset_description" msgid="6350320429953234580">"Телефонуңузду колдонуп баштоого даярсыз"</string>
+    <string name="allset_description" msgid="6350320429953234580">"Телефонуңузду колдоно берсеңиз болот"</string>
     <string name="allset_navigation_settings" msgid="4713404605961476027"><annotation id="link">"Өтүү аракетинин тутумдук жөндөөлөрү"</annotation></string>
     <string name="action_share" msgid="2648470652637092375">"Бөлүшүү"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"Скриншот"</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"Бул аракетти аткарууга колдонмо же ишканаңыз тыюу салган"</string>
-    <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"Жаңсап өтүү үйрөткүчүн өт-рүп жибер-би?"</string>
+    <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"Жаңсоолор үйрөткүчүн өткөрүп жибересизби?"</string>
     <string name="skip_tutorial_dialog_subtitle" msgid="544063326241955662">"Аны кийин <xliff:g id="NAME">%1$s</xliff:g> колдонмосунан табасыз"</string>
     <string name="gesture_tutorial_action_button_label_cancel" msgid="3809842569351264108">"Жокко чыгаруу"</string>
     <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"Өткрп жиберүү"</string>
