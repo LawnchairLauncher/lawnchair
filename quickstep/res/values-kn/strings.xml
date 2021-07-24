@@ -63,10 +63,10 @@
     <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"ಸ್ಕ್ರೀನ್‌ನ ಕೆಳಗಿನ ಅಂಚಿನಿಂದ ನೀವು ಸ್ವೈಪ್ ಮಾಡುತ್ತಿದ್ದೀರಿ ಎಂದು ಖಚಿತಪಡಿಸಿಕೊಳ್ಳಿ."</string>
     <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"ಬೆರಳನ್ನು ಮೇಲೆತ್ತುವ ಮೊದಲು ವಿಂಡೋವನ್ನು ಹೆಚ್ಚು ಸಮಯ ಹಿಡಿದಿಡಲು ಪ್ರಯತ್ನಿಸಿ."</string>
     <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"ನೀವು ನೇರವಾಗಿ ಸ್ವೈಪ್ ಮಾಡಿ ಎಂದು ಖಚಿತಪಡಿಸಿಕೊಳ್ಳಿ, ನಂತರ ವಿರಾಮಗೊಳಿಸಿ."</string>
-    <string name="overview_gesture_feedback_complete_with_follow_up" msgid="3544611727467765026">"ಗೆಸ್ಚರ್‌ಗಳನ್ನು ಬಳಕೆಯನ್ನು ನೀವು ತಿಳಿದುಕೊಂಡಿರುವಿರಿ. ಗೆಸ್ಚರ್‌ಗಳನ್ನು ಆಫ್ ಮಾಡಲು, ಸೆಟ್ಟಿಂಗ್‌ಗಳಿಗೆ ಹೋಗಿ."</string>
+    <string name="overview_gesture_feedback_complete_with_follow_up" msgid="3544611727467765026">"ಗೆಶ್ಚರ್‌ಗಳನ್ನು ಬಳಸುವುದು ಹೇಗೆಂದು ನೀವು ತಿಳಿದುಕೊಂಡಿರುವಿರಿ. ಗೆಶ್ಚರ್‌ಗಳನ್ನು ಆಫ್ ಮಾಡಲು, ಸೆಟ್ಟಿಂಗ್‌ಗಳಿಗೆ ಹೋಗಿ."</string>
     <string name="overview_gesture_feedback_complete_without_follow_up" msgid="3199486203448379152">"ನೀವು ಆ್ಯಪ್‌ಗಳನ್ನು ಬದಲಾಯಿಸುವ ಗೆಸ್ಚರ್ ಅನ್ನು ಪೂರ್ಣಗೊಳಿಸಿದ್ದೀರಿ."</string>
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"ಆ್ಯಪ್‌ಗಳನ್ನು ಬದಲಾಯಿಸಲು ಸ್ವೈಪ್ ಮಾಡಿ"</string>
-    <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"ಆ್ಯಪ್‌ಗಳನ್ನು ಬದಲಿಸಲು, ನಿಮ್ಮ ಸ್ಕ್ರೀನ್‌ನ ಕೆಳಭಾಗದಿಂದ ಮೇಲಕ್ಕೆ ಸ್ವೈಪ್ ಮಾಡಿ, ಹೋಲ್ಡ್ ಮಾಡಿ, ನಂತರ ಬಿಟ್ಟುಬಿಡಿ."</string>
+    <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"ಆ್ಯಪ್‌ಗಳ ನಡುವೆ ಬದಲಿಸಲು, ನಿಮ್ಮ ಸ್ಕ್ರೀನ್‌ನ ಕೆಳಭಾಗದಿಂದ ಮೇಲಕ್ಕೆ ಸ್ವೈಪ್ ಮಾಡಿ, ಹಿಡಿದಿಟ್ಟುಕೊಳ್ಳಿ, ನಂತರ ಬಿಟ್ಟುಬಿಡಿ."</string>
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"ಸಂಪೂರ್ಣ ಸಿದ್ಧವಾಗಿದೆ"</string>
     <string name="gesture_tutorial_action_button_label" msgid="6249846312991332122">"ಮುಗಿದಿದೆ"</string>
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"ಸೆಟ್ಟಿಂಗ್‌ಗಳು"</string>

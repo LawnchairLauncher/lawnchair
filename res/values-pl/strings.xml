@@ -68,7 +68,7 @@
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"Wyszukaj więcej aplikacji"</string>
     <string name="label_application" msgid="8531721983832654978">"Aplikacja"</string>
     <string name="notifications_header" msgid="1404149926117359025">"Powiadomienia"</string>
-    <string name="long_press_shortcut_to_add" msgid="5405328730817637737">"Naciśnij i przytrzymaj, aby wybrać skrót."</string>
+    <string name="long_press_shortcut_to_add" msgid="5405328730817637737">"Naciśnij i przytrzymaj, aby przenieść skrót."</string>
     <string name="long_accessible_way_to_add_shortcut" msgid="2199537273817090740">"Naciśnij dwukrotnie i przytrzymaj, aby przenieść skrót lub użyć działań niestandardowych."</string>
     <string name="out_of_space" msgid="6692471482459245734">"Brak miejsca na tym ekranie głównym"</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"Brak miejsca w Ulubionych"</string>
