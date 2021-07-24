@@ -3756,8 +3756,8 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             TaskView taskView = getTaskViewAt(i);
             float scrollDiff = taskView.getScrollAdjustment(showAsFullscreen, showAsGrid);
             int pageScroll = newPageScrolls[i + mTaskViewStartIndex] + (int) scrollDiff;
-            if ((mIsRtl && pageScroll < clearAllScroll)
-                    || (!mIsRtl && pageScroll > clearAllScroll)) {
+            if ((mIsRtl && pageScroll < clearAllScroll + clearAllWidth)
+                    || (!mIsRtl && pageScroll > clearAllScroll - clearAllWidth)) {
                 pageScroll = clearAllScroll + (mIsRtl ? clearAllWidth : -clearAllWidth);
             }
             if (outPageScrolls[i] != pageScroll) {

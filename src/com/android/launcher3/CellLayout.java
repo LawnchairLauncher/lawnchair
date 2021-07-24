@@ -566,9 +566,10 @@ public class CellLayout extends ViewGroup {
                 int spanX = mDragOutlines[i].cellHSpan;
                 int spanY = mDragOutlines[i].cellVSpan;
 
+                // TODO b/194414754 clean this up, reconcile with cellToRect
                 mVisualizeGridRect.set(paddingX, paddingY,
-                        mCellWidth * spanX - paddingX,
-                        mCellHeight * spanY - paddingY);
+                        mCellWidth * spanX + mBorderSpacing * (spanX - 1) - paddingX,
+                        mCellHeight * spanY + mBorderSpacing * (spanY - 1) - paddingY);
 
                 int transX = x * mCellWidth + (x * mBorderSpacing)
                         + getPaddingLeft() + paddingX;
