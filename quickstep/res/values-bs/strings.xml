@@ -56,10 +56,10 @@
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"Trebate prevući prema gore s donjeg ruba ekrana."</string>
     <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"Obratite pažnju da ne zastanete prije puštanja."</string>
     <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"Trebate prevući ravno prema gore."</string>
-    <string name="home_gesture_feedback_complete_with_follow_up" msgid="1427872029729605034">"Završili ste pokret za otvaranje Početnog ekrana. Sljedeće naučite kako se vratiti."</string>
-    <string name="home_gesture_feedback_complete_without_follow_up" msgid="8049099486868933882">"Završili ste pokret za otvaranje Početnog ekrana."</string>
+    <string name="home_gesture_feedback_complete_with_follow_up" msgid="1427872029729605034">"Završili ste pokret za otvaranje početnog ekrana. Sljedeće naučite kako se vratiti."</string>
+    <string name="home_gesture_feedback_complete_without_follow_up" msgid="8049099486868933882">"Završili ste pokret za otvaranje početnog ekrana."</string>
     <string name="home_gesture_intro_title" msgid="836590312858441830">"Prevucite da odete na početni ekran"</string>
-    <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"Prevucite s dna ekrana prema gore. Tim pokretom uvijek idete na Početni ekran."</string>
+    <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"Prevucite s dna ekrana prema gore. Tim pokretom uvijek idete na početni ekran."</string>
     <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"Trebate prevući prema gore s donjeg ruba ekrana."</string>
     <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"Pokušajte zadržati prozor duže prije puštanja."</string>
     <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"Trebate prevući ravno prema gore, a zatim zastati."</string>
