@@ -81,7 +81,7 @@
     <string name="action_screenshot" msgid="8171125848358142917">"Atera pantaila-argazki bat"</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"Aplikazioak edo erakundeak ez du eman ekintza hori gauzatzeko baimena"</string>
     <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"Nabigazio-tutoriala saltatu nahi duzu?"</string>
-    <string name="skip_tutorial_dialog_subtitle" msgid="544063326241955662">"Tutorial hau <xliff:g id="NAME">%1$s</xliff:g> aplikazioan aurki dezakezu geroago"</string>
+    <string name="skip_tutorial_dialog_subtitle" msgid="544063326241955662">"<xliff:g id="NAME">%1$s</xliff:g> aplikazioan dago eskuragarri tutoriala"</string>
     <string name="gesture_tutorial_action_button_label_cancel" msgid="3809842569351264108">"Utzi"</string>
     <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"Saltatu"</string>
 </resources>

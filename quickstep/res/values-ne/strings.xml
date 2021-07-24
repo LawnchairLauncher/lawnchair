@@ -81,7 +81,7 @@
     <string name="action_screenshot" msgid="8171125848358142917">"स्क्रिनसट"</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"यो एप वा तपाईंको सङ्गठनले यो कारबाही गर्ने अनुमति दिँदैन"</string>
     <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"नेभिगेसन ट्युटोरियल स्किप गर्ने हो?"</string>
-    <string name="skip_tutorial_dialog_subtitle" msgid="544063326241955662">"तपाईं पछि <xliff:g id="NAME">%1$s</xliff:g> एपमा गई यो ट्युटोरियल भेट्टाउन सक्नुहुन्छ"</string>
+    <string name="skip_tutorial_dialog_subtitle" msgid="544063326241955662">"तपाईं पछि <xliff:g id="NAME">%1$s</xliff:g> नामक एपमा गई यो ट्युटोरियल भेट्टाउन सक्नुहुन्छ"</string>
     <string name="gesture_tutorial_action_button_label_cancel" msgid="3809842569351264108">"रद्द गर्नुहोस्"</string>
     <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"स्किप गर्नु…"</string>
 </resources>

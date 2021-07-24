@@ -47,25 +47,25 @@
     <string name="hotseat_prediction_content_description" msgid="4582028296938078419">"Przewidywana aplikacja: <xliff:g id="TITLE">%1$s</xliff:g>"</string>
     <string name="back_gesture_feedback_swipe_too_far_from_edge" msgid="1711645592102201538">"Pamiętaj, aby przesuwać palcem od samej prawej lub lewej krawędzi."</string>
     <string name="back_gesture_feedback_cancelled" msgid="3274382913290074496">"Pamiętaj, aby przesuwać palcem od prawej lub lewej krawędzi do środka ekranu i podnieść palec."</string>
-    <string name="back_gesture_feedback_complete_with_overview_follow_up" msgid="9176400654037014471">"Wiesz już, jak przesuwać palcem od prawej strony, aby wrócić. Poćwicz teraz przełączanie aplikacji."</string>
+    <string name="back_gesture_feedback_complete_with_overview_follow_up" msgid="9176400654037014471">"Wiesz już, jak przesuwać palcem, aby przejść wstecz. Poćwicz teraz przełączanie aplikacji."</string>
     <string name="back_gesture_feedback_complete_without_follow_up" msgid="6405649621667113830">"Gest przejścia wstecz został opanowany."</string>
     <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="1148198467090405643">"Pamiętaj, aby nie przesuwać palcem zbyt blisko dolnej części ekranu."</string>
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"Czułość gestu cofania możesz zmienić w Ustawieniach"</string>
-    <string name="back_gesture_intro_title" msgid="19551256430224428">"Przesuwanie palcem, aby przejść wstecz"</string>
+    <string name="back_gesture_intro_title" msgid="19551256430224428">"Przesuń palcem, aby przejść wstecz"</string>
     <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"Aby wrócić do ostatniego ekranu, przesuń palcem od lewej lub prawej krawędzi do środka ekranu."</string>
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"Pamiętaj, aby przesuwać palcem od dolnej krawędzi ekranu."</string>
     <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"Pamiętaj, aby przed podniesieniem palca nie było przerwy."</string>
     <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"Pamiętaj, aby przesuwać palcem prosto do góry."</string>
-    <string name="home_gesture_feedback_complete_with_follow_up" msgid="1427872029729605034">"Gest przechodzenia na ekran główny został opanowany. Poćwicz teraz przechodzenie na ekran główny."</string>
+    <string name="home_gesture_feedback_complete_with_follow_up" msgid="1427872029729605034">"Potrafisz już przejść na ekran główny. Poćwicz teraz powrót do wcześniejszego ekranu."</string>
     <string name="home_gesture_feedback_complete_without_follow_up" msgid="8049099486868933882">"Gest przechodzenia na ekran główny został opanowany."</string>
-    <string name="home_gesture_intro_title" msgid="836590312858441830">"Przesuwanie palcem, aby przejść na ekran główny"</string>
+    <string name="home_gesture_intro_title" msgid="836590312858441830">"Przesuń palcem, aby przejść na ekran główny"</string>
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"Przesuń palcem z dołu ekranu. Ten gest zawsze powoduje przejście na ekran główny."</string>
     <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"Pamiętaj, aby przesuwać palcem od dolnej krawędzi ekranu."</string>
     <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"Przytrzymaj okno dłużej, zanim podniesiesz palec."</string>
     <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"Pamiętaj, aby przesuwać palcem prosto do góry, a potem przerwać ruch."</string>
     <string name="overview_gesture_feedback_complete_with_follow_up" msgid="3544611727467765026">"Wiesz już, jak używać gestów. Aby wyłączyć gesty, przejdź do Ustawień."</string>
     <string name="overview_gesture_feedback_complete_without_follow_up" msgid="3199486203448379152">"Gest przełączania aplikacji został opanowany."</string>
-    <string name="overview_gesture_intro_title" msgid="2902054412868489378">"Przesuwanie palcem, aby przełączać aplikacje"</string>
+    <string name="overview_gesture_intro_title" msgid="2902054412868489378">"Przesuń palcem, aby przełączać aplikacje"</string>
     <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"Aby przełączać się między aplikacjami, przesuń palcem od dołu ekranu, przytrzymaj i puść."</string>
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"Wszystko gotowe"</string>
     <string name="gesture_tutorial_action_button_label" msgid="6249846312991332122">"Gotowe"</string>
