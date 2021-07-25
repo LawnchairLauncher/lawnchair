@@ -51,12 +51,12 @@
     <string name="back_gesture_feedback_complete_without_follow_up" msgid="6405649621667113830">"Geri dön hareketini tamamladınız."</string>
     <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="1148198467090405643">"Ekranın alt kısmına çok yakın bir şekilde kaydırmadığınızdan emin olun."</string>
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"Geri hareketinin hassasiyetini değiştirmek için Ayarlar\'a gidin"</string>
-    <string name="back_gesture_intro_title" msgid="19551256430224428">"Geri dönmek için kaydırın"</string>
+    <string name="back_gesture_intro_title" msgid="19551256430224428">"Geri dönmek için kaydırma"</string>
     <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"Son ekrana geri gitmek için sol veya sağ kenardan ekranın ortasına doğru kaydırın."</string>
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"Ekranın alt kenarından yukarı kaydırdığınızdan emin olun."</string>
     <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"Bırakmadan önce parmağınızı duraklatmadığınızdan emin olun."</string>
     <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"Düz bir şekilde yukarı kaydırdığınızdan emin olun."</string>
-    <string name="home_gesture_feedback_complete_with_follow_up" msgid="1427872029729605034">"Ana ekrana git hareketini tamamladınız. Şimdi ana ekrana nasıl gideceğinizi öğreneceksiniz."</string>
+    <string name="home_gesture_feedback_complete_with_follow_up" msgid="1427872029729605034">"Ana ekrana git hareketini tamamladınız. Şimdi nasıl geri döneceğinizi öğreneceksiniz."</string>
     <string name="home_gesture_feedback_complete_without_follow_up" msgid="8049099486868933882">"Ana ekrana git hareketini tamamladınız."</string>
     <string name="home_gesture_intro_title" msgid="836590312858441830">"Ana ekrana gitmek için kaydırma"</string>
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"Ekranın alt kısmından yukarıya doğru kaydırın. Bu hareket sizi her zaman Ana ekrana götürür."</string>
@@ -66,7 +66,7 @@
     <string name="overview_gesture_feedback_complete_with_follow_up" msgid="3544611727467765026">"Hareketleri nasıl kullanacağınızı öğrendiniz. Hareketleri kapatmak için Ayarlar\'a gidin."</string>
     <string name="overview_gesture_feedback_complete_without_follow_up" msgid="3199486203448379152">"Uygulamalar arasında geçiş yapma hareketini tamamladınız."</string>
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"Uygulamalar arasında geçiş yapmak için kaydırma"</string>
-    <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"Uygulama değiştirmek için ekranınızın altından yukarı kaydırıp basılı tutun ve sonra bırakın."</string>
+    <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"Uygulamalar arasında geçiş yapmak için ekranınızın altından yukarı kaydırıp basılı tutun ve sonra bırakın."</string>
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"Hepsi bu kadar"</string>
     <string name="gesture_tutorial_action_button_label" msgid="6249846312991332122">"Bitti"</string>
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"Ayarlar"</string>

@@ -51,22 +51,22 @@
     <string name="back_gesture_feedback_complete_without_follow_up" msgid="6405649621667113830">"Изпълнихте жеста за връщане назад."</string>
     <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="1148198467090405643">"Не прекарвайте пръст твърде близо до долната част на екрана."</string>
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"Променете чувств. на жеста за връщане назад от настройките"</string>
-    <string name="back_gesture_intro_title" msgid="19551256430224428">"Прекарване на пръст за връщане назад"</string>
+    <string name="back_gesture_intro_title" msgid="19551256430224428">"Жест за връщане назад"</string>
     <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"За да се върнете на предишния екран, прекарайте пръст от левия или десния край на екрана до средата."</string>
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"Трябва да прекарате пръст нагоре от долния край на екрана."</string>
     <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"Не задържайте, преди да вдигнете пръста си."</string>
     <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"Трябва да прекарате пръст право нагоре."</string>
-    <string name="home_gesture_feedback_complete_with_follow_up" msgid="1427872029729605034">"Изпълнихте жеста за преминаване към началния екран. В следващия урок ще научите как се връща назад."</string>
+    <string name="home_gesture_feedback_complete_with_follow_up" msgid="1427872029729605034">"Изпълнихте жеста за преминаване към началния екран. В следващия урок ще научите как да се върнете назад."</string>
     <string name="home_gesture_feedback_complete_without_follow_up" msgid="8049099486868933882">"Изпълнихте жеста за преминаване към началния екран."</string>
-    <string name="home_gesture_intro_title" msgid="836590312858441830">"Прекарване на пръст за преминаване към началния екран"</string>
+    <string name="home_gesture_intro_title" msgid="836590312858441830">"Жест за преминаване към началния екран"</string>
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"Прекарайте пръст нагоре от долната част на екрана. Този жест винаги ще ви отвежда до началния екран."</string>
     <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"Трябва да прекарате пръст нагоре от долния край на екрана."</string>
     <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"Задръжте прозореца по-дълго, преди да вдигнете пръста си."</string>
     <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"Прекарайте пръст право нагоре, след което задръжте."</string>
     <string name="overview_gesture_feedback_complete_with_follow_up" msgid="3544611727467765026">"Научихте как да използвате жестовете. За да ги изключите, отворете настройките."</string>
     <string name="overview_gesture_feedback_complete_without_follow_up" msgid="3199486203448379152">"Изпълнихте жеста за превключване между приложения."</string>
-    <string name="overview_gesture_intro_title" msgid="2902054412868489378">"Прекарване на пръст за превключване между приложенията"</string>
-    <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"За да превкл. между прил., прекарайте пръст нагоре от долната част на екрана, задръжте и освободете"</string>
+    <string name="overview_gesture_intro_title" msgid="2902054412868489378">"Жест за превключване между приложенията"</string>
+    <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"За превключване прекарайте пръст нагоре от долната част на екрана, задръжте и освободете"</string>
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"Готово"</string>
     <string name="gesture_tutorial_action_button_label" msgid="6249846312991332122">"Готово"</string>
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"Настройки"</string>
