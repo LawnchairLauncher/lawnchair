@@ -1139,7 +1139,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
      * required to focus the task in grid.
      */
     public void moveFocusedTaskToFront() {
-        if (!(mActivity.getDeviceProfile().isTablet && FeatureFlags.ENABLE_OVERVIEW_GRID.get())) {
+        if (!mActivity.getDeviceProfile().overviewShowAsGrid) {
             return;
         }
 
@@ -1430,7 +1430,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         if (mActionsView != null) {
             FrameLayout.LayoutParams layoutParams =
                     (FrameLayout.LayoutParams) mActionsView.getLayoutParams();
-            if (dp.isTablet && FeatureFlags.ENABLE_OVERVIEW_GRID.get()) {
+            if (dp.overviewShowAsGrid) {
                 layoutParams.gravity = Gravity.BOTTOM;
                 layoutParams.bottomMargin =
                         dp.heightPx - mInsets.bottom - mLastComputedGridSize.bottom;
@@ -1563,7 +1563,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
 
     @Override
     protected int getDestinationPage(int scaledScroll) {
-        if (!(mActivity.getDeviceProfile().isTablet && FeatureFlags.ENABLE_OVERVIEW_GRID.get())) {
+        if (!mActivity.getDeviceProfile().overviewShowAsGrid) {
             return super.getDestinationPage(scaledScroll);
         }
 

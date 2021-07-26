@@ -77,7 +77,6 @@ import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.Interpolators;
-import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.popup.SystemShortcut;
 import com.android.launcher3.statemanager.StatefulActivity;
@@ -938,7 +937,7 @@ public class TaskView extends FrameLayout implements Reusable {
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
-        if (mActivity.getDeviceProfile().isTablet && FeatureFlags.ENABLE_OVERVIEW_GRID.get()) {
+        if (mActivity.getDeviceProfile().overviewShowAsGrid) {
             setPivotX(getLayoutDirection() == LAYOUT_DIRECTION_RTL ? 0 : right - left);
             setPivotY(mSnapshotView.getTop());
         } else {
@@ -955,11 +954,8 @@ public class TaskView extends FrameLayout implements Reusable {
      * How much to scale down pages near the edge of the screen.
      */
     public static float getEdgeScaleDownFactor(DeviceProfile deviceProfile) {
-        if (deviceProfile.isTablet && FeatureFlags.ENABLE_OVERVIEW_GRID.get()) {
-            return EDGE_SCALE_DOWN_FACTOR_GRID;
-        } else {
-            return EDGE_SCALE_DOWN_FACTOR_CAROUSEL;
-        }
+        return deviceProfile.overviewShowAsGrid ? EDGE_SCALE_DOWN_FACTOR_GRID
+                : EDGE_SCALE_DOWN_FACTOR_CAROUSEL;
     }
 
     private void setNonGridScale(float nonGridScale) {
@@ -1340,7 +1336,7 @@ public class TaskView extends FrameLayout implements Reusable {
         float boxTranslationY;
         int expectedWidth;
         int expectedHeight;
-        if (mActivity.getDeviceProfile().isTablet && FeatureFlags.ENABLE_OVERVIEW_GRID.get()) {
+        if (mActivity.getDeviceProfile().overviewShowAsGrid) {
             final int thumbnailPadding =
                     mActivity.getDeviceProfile().overviewTaskThumbnailTopMarginPx;
             final Rect lastComputedTaskSize = getRecentsView().getLastComputedTaskSize();
