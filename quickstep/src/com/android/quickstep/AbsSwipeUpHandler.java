@@ -1527,6 +1527,8 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
         boolean wasVisible = mWasLauncherAlreadyVisible || mGestureStarted;
         mActivityInterface.onTransitionCancelled(wasVisible, mGestureState.getEndTarget());
 
+        TaskViewUtils.setDividerBarShown(mRecentsAnimationTargets.nonApps, true);
+
         // Leave the pending invisible flag, as it may be used by wallpaper open animation.
         if (mActivity != null) {
             mActivity.clearForceInvisibleFlag(INVISIBLE_BY_STATE_HANDLER);
