@@ -73,7 +73,7 @@
     <string name="gesture_tutorial_try_again" msgid="65962545858556697">"Subukan ulit"</string>
     <string name="gesture_tutorial_nice" msgid="2936275692616928280">"Magaling!"</string>
     <string name="gesture_tutorial_step" msgid="1279786122817620968">"Tutorial <xliff:g id="CURRENT">%1$d</xliff:g>/<xliff:g id="TOTAL">%2$d</xliff:g>"</string>
-    <string name="allset_title" msgid="5021126669778966707">"Handa na lahat!"</string>
+    <string name="allset_title" msgid="5021126669778966707">"Handa na ang lahat!"</string>
     <string name="allset_hint" msgid="2384632994739392447">"Mag-swipe pataas para pumunta sa Home"</string>
     <string name="allset_description" msgid="6350320429953234580">"Handa mo nang simulan ang paggamit sa iyong telepono"</string>
     <string name="allset_navigation_settings" msgid="4713404605961476027"><annotation id="link">"Mga setting ng navigation ng system"</annotation></string>

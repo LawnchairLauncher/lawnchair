@@ -17,13 +17,11 @@ package com.android.quickstep.views;
 
 import static com.android.launcher3.LauncherState.ALL_APPS;
 import static com.android.launcher3.LauncherState.NORMAL;
-import static com.android.launcher3.anim.Interpolators.ACCEL;
+import static com.android.launcher3.Utilities.EDGE_NAV_BAR;
 import static com.android.launcher3.anim.Interpolators.FAST_OUT_SLOW_IN;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.anim.Interpolators.OVERSHOOT_1_7;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ALL_APPS_EDU_SHOWN;
-import static com.android.launcher3.states.StateAnimationConfig.ANIM_ALL_APPS_FADE;
-import static com.android.launcher3.states.StateAnimationConfig.ANIM_SCRIM_FADE;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -35,7 +33,7 @@ import android.graphics.Rect;
 import android.graphics.drawable.GradientDrawable;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
-import android.view.ViewGroup;
+import android.view.View;
 
 import androidx.core.graphics.ColorUtils;
 
@@ -44,25 +42,21 @@ import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.allapps.AllAppsTransitionController;
 import com.android.launcher3.anim.AnimatorPlaybackController;
-import com.android.launcher3.anim.Interpolators;
-import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.dragndrop.DragLayer;
-import com.android.launcher3.states.StateAnimationConfig;
+import com.android.launcher3.uioverrides.touchcontrollers.PortraitStatesTouchController;
 import com.android.launcher3.util.Themes;
 import com.android.quickstep.util.MultiValueUpdateListener;
 
 /**
  * View used to educate the user on how to access All Apps when in No Nav Button navigation mode.
- * Consumes all touches until after the animation is completed and the view is removed.
+ * If the user drags on the view, the animation is overridden so the user can swipe to All Apps or
+ * Home.
  */
 public class AllAppsEduView extends AbstractFloatingView {
 
-    private static final float HINT_PROG_SCRIM_THRESHOLD = 0.06f;
-    private static final float HINT_PROG_CONTENT_THRESHOLD = 0.08f;
-
     private Launcher mLauncher;
+    private AllAppsEduTouchController mTouchController;
 
     private AnimatorSet mAnimation;
 
@@ -73,6 +67,8 @@ public class AllAppsEduView extends AbstractFloatingView {
     private int mPaddingPx;
     private int mWidthPx;
     private int mMaxHeightPx;
+
+    private boolean mCanInterceptTouch;
 
     public AllAppsEduView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -123,8 +119,49 @@ public class AllAppsEduView extends AbstractFloatingView {
         return true;
     }
 
+
+    private boolean shouldInterceptTouch(MotionEvent ev) {
+        if (ev.getAction() == MotionEvent.ACTION_DOWN) {
+            mCanInterceptTouch = (ev.getEdgeFlags() & EDGE_NAV_BAR) == 0;
+        }
+        return mCanInterceptTouch;
+    }
+
+    @Override
+    public boolean onControllerTouchEvent(MotionEvent ev) {
+        if (shouldInterceptTouch(ev)) {
+            mTouchController.onControllerTouchEvent(ev);
+            updateAnimationOnTouchEvent(ev);
+        }
+        return true;
+    }
+
+    private void updateAnimationOnTouchEvent(MotionEvent ev) {
+        if (mAnimation == null) {
+            return;
+        }
+        switch (ev.getActionMasked()) {
+            case MotionEvent.ACTION_DOWN:
+                mAnimation.pause();
+                return;
+            case MotionEvent.ACTION_UP:
+            case MotionEvent.ACTION_CANCEL:
+                mAnimation.resume();
+                return;
+        }
+
+        if (mTouchController.isDraggingOrSettling()) {
+            mAnimation = null;
+            handleClose(false);
+        }
+    }
+
     @Override
     public boolean onControllerInterceptTouchEvent(MotionEvent ev) {
+        if (shouldInterceptTouch(ev)) {
+            mTouchController.onControllerInterceptTouchEvent(ev);
+            updateAnimationOnTouchEvent(ev);
+        }
         return true;
     }
 
@@ -145,23 +182,9 @@ public class AllAppsEduView extends AbstractFloatingView {
         int secondPart = 1200;
         int introDuration = firstPart + secondPart;
 
-        StateAnimationConfig config = new StateAnimationConfig();
-        config.setInterpolator(ANIM_ALL_APPS_FADE, Interpolators.clampToProgress(ACCEL,
-                HINT_PROG_SCRIM_THRESHOLD, HINT_PROG_CONTENT_THRESHOLD));
-        config.setInterpolator(ANIM_SCRIM_FADE,
-                Interpolators.clampToProgress(ACCEL, 0, HINT_PROG_CONTENT_THRESHOLD));
-        config.duration = secondPart;
-        config.userControlled = false;
         AnimatorPlaybackController stateAnimationController =
-                mLauncher.getStateManager().createAnimationToNewWorkspace(ALL_APPS, config);
-        float maxAllAppsProgress = mLauncher.getDeviceProfile().isLandscape ? 0.35f : 0.15f;
-
-        AllAppsTransitionController allAppsController = mLauncher.getAllAppsController();
-        PendingAnimation allAppsAlpha = new PendingAnimation(config.duration);
-        allAppsController.setAlphas(ALL_APPS, config, allAppsAlpha);
-        mLauncher.getWorkspace().getStateTransitionAnimation().setScrim(allAppsAlpha, ALL_APPS,
-                config);
-        mAnimation.play(allAppsAlpha.buildAnim());
+                mTouchController.initAllAppsAnimation();
+        float maxAllAppsProgress = 0.75f;
 
         ValueAnimator intro = ValueAnimator.ofFloat(0, 1f);
         intro.setInterpolator(LINEAR);
@@ -198,6 +221,7 @@ public class AllAppsEduView extends AbstractFloatingView {
                 mGradient.setAlpha(0);
             }
         });
+        mLauncher.getAppsView().setVisibility(View.VISIBLE);
         mAnimation.play(intro);
 
         ValueAnimator closeAllApps = ValueAnimator.ofFloat(maxAllAppsProgress, 0f);
@@ -223,6 +247,7 @@ public class AllAppsEduView extends AbstractFloatingView {
 
     private void init(Launcher launcher) {
         mLauncher = launcher;
+        mTouchController = new AllAppsEduTouchController(mLauncher);
 
         int accentColor = Themes.getColorAccent(launcher);
         mGradient = new GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM,
@@ -250,14 +275,36 @@ public class AllAppsEduView extends AbstractFloatingView {
      */
     public static void show(Launcher launcher) {
         final DragLayer dragLayer = launcher.getDragLayer();
-        ViewGroup parent = (ViewGroup) dragLayer.getParent();
-        AllAppsEduView view = launcher.getViewCache().getView(R.layout.all_apps_edu_view,
-                launcher, parent);
+        AllAppsEduView view = (AllAppsEduView) launcher.getLayoutInflater().inflate(
+                R.layout.all_apps_edu_view, dragLayer, false);
         view.init(launcher);
         launcher.getDragLayer().addView(view);
         launcher.getStatsLogManager().logger().log(LAUNCHER_ALL_APPS_EDU_SHOWN);
 
         view.requestLayout();
         view.playAnimation();
+    }
+
+    private static class AllAppsEduTouchController extends PortraitStatesTouchController {
+
+        private AllAppsEduTouchController(Launcher l) {
+            super(l);
+        }
+
+        @Override
+        protected boolean canInterceptTouch(MotionEvent ev) {
+            return true;
+        }
+
+        private AnimatorPlaybackController initAllAppsAnimation() {
+            mFromState = NORMAL;
+            mToState = ALL_APPS;
+            mProgressMultiplier = initCurrentAnimation();
+            return mCurrentAnimation;
+        }
+
+        private boolean isDraggingOrSettling() {
+            return mDetector.isDraggingOrSettling();
+        }
     }
 }
