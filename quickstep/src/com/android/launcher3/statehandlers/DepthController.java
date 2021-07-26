@@ -125,6 +125,10 @@ public class DepthController implements StateHandler<LauncherState>,
      * If we're launching and app and should not be blurring the screen for performance reasons.
      */
     private boolean mBlurDisabledForAppLaunch;
+    /**
+     * If we requested early wake-up offsets to SurfaceFlinger.
+     */
+    private boolean mInEarlyWakeUp;
 
     // Workaround for animating the depth when multiwindow mode changes.
     private boolean mIgnoreStateChangesDuringMultiWindowAnimation = false;
@@ -270,10 +274,21 @@ public class DepthController implements StateHandler<LauncherState>,
 
             int blur = opaque || isOverview || !mCrossWindowBlursEnabled
                     || mBlurDisabledForAppLaunch ? 0 : (int) (depth * mMaxBlurRadius);
-            new SurfaceControl.Transaction()
+            SurfaceControl.Transaction transaction = new SurfaceControl.Transaction()
                     .setBackgroundBlurRadius(mSurface, blur)
-                    .setOpaque(mSurface, opaque)
-                    .apply();
+                    .setOpaque(mSurface, opaque);
+
+            // Set early wake-up flags when we know we're executing an expensive operation, this way
+            // SurfaceFlinger will adjust its internal offsets to avoid jank.
+            boolean wantsEarlyWakeUp = depth > 0 && depth < 1;
+            if (wantsEarlyWakeUp && !mInEarlyWakeUp) {
+                transaction.setEarlyWakeupStart();
+                mInEarlyWakeUp = true;
+            } else if (!wantsEarlyWakeUp && mInEarlyWakeUp) {
+                transaction.setEarlyWakeupEnd();
+                mInEarlyWakeUp = false;
+            }
+            transaction.apply();
         }
         return true;
     }
