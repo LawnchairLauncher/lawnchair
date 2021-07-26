@@ -166,15 +166,14 @@ public class NavbarButtonsViewController {
     private void initButtons(ViewGroup navContainer, ViewGroup endContainer,
             TaskbarNavButtonController navButtonController) {
 
-        // Hide when keyguard is showing, show when bouncer is showing
-        mPropertyHolders.add(new StatePropertyHolder(mBackButton,
-                flags -> (flags & FLAG_KEYGUARD_VISIBLE) == 0 ||
-                        (flags & FLAG_ONLY_BACK_FOR_BOUNCER_VISIBLE) != 0));
-
         mBackButton = addButton(R.drawable.ic_sysbar_back, BUTTON_BACK,
                 mNavButtonContainer, mControllers.navButtonController, R.id.back);
         mPropertyHolders.add(new StatePropertyHolder(mBackButton,
                 flags -> (flags & FLAG_IME_VISIBLE) == 0));
+        // Hide when keyguard is showing, show when bouncer is showing
+        mPropertyHolders.add(new StatePropertyHolder(mBackButton,
+                flags -> (flags & FLAG_KEYGUARD_VISIBLE) == 0 ||
+                        (flags & FLAG_ONLY_BACK_FOR_BOUNCER_VISIBLE) != 0));
 
         // home and recents buttons
         View homeButton = addButton(R.drawable.ic_sysbar_home, BUTTON_HOME, navContainer,
