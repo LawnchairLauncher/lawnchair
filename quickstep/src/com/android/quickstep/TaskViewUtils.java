@@ -63,7 +63,6 @@ import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.anim.PendingAnimation;
-import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.statehandlers.DepthController;
 import com.android.launcher3.statemanager.StateManager;
@@ -196,7 +195,7 @@ public final class TaskViewUtils {
         int taskIndex = recentsView.indexOfChild(v);
         Context context = v.getContext();
         DeviceProfile dp = BaseActivity.fromContext(context).getDeviceProfile();
-        boolean showAsGrid = dp.isTablet && FeatureFlags.ENABLE_OVERVIEW_GRID.get();
+        boolean showAsGrid = dp.overviewShowAsGrid;
         boolean parallaxCenterAndAdjacentTask =
                 taskIndex != recentsView.getCurrentPage() && !showAsGrid;
         float gridTranslationSecondary = recentsView.getGridTranslationSecondary(taskIndex);
@@ -465,7 +464,7 @@ public final class TaskViewUtils {
         if (launcherClosing) {
             Context context = v.getContext();
             DeviceProfile dp = BaseActivity.fromContext(context).getDeviceProfile();
-            launcherAnim = dp.isTablet && FeatureFlags.ENABLE_OVERVIEW_GRID.get()
+            launcherAnim = dp.overviewShowAsGrid
                     ? ObjectAnimator.ofFloat(recentsView, RecentsView.CONTENT_ALPHA, 0)
                     : recentsView.createAdjacentPageAnimForTaskLaunch(taskView);
             launcherAnim.setInterpolator(Interpolators.TOUCH_RESPONSE_INTERPOLATOR);

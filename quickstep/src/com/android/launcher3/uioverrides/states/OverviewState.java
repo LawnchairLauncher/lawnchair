@@ -28,7 +28,6 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.R;
 import com.android.launcher3.Workspace;
-import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.util.Themes;
 import com.android.quickstep.SysUINavigationMode;
 import com.android.quickstep.util.LayoutUtils;
@@ -104,7 +103,7 @@ public class OverviewState extends LauncherState {
 
     @Override
     public boolean displayOverviewTasksAsGrid(DeviceProfile deviceProfile) {
-        return deviceProfile.isTablet && FeatureFlags.ENABLE_OVERVIEW_GRID.get();
+        return deviceProfile.overviewShowAsGrid;
     }
 
     @Override
