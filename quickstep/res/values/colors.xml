@@ -26,6 +26,6 @@
     <color name="all_apps_prediction_row_separator_dark">#3cffffff</color>
 
     <!-- Taskbar -->
-    <color name="taskbar_background">#101010</color>
+    <color name="taskbar_background">@color/overview_scrim_dark</color>
     <color name="taskbar_icon_selection_ripple">#E0E0E0</color>
 </resources>
