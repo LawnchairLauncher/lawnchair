@@ -23,7 +23,6 @@ import android.graphics.Color;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
-import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.statemanager.BaseState;
 import com.android.launcher3.util.Themes;
 import com.android.quickstep.RecentsActivity;
@@ -134,11 +133,7 @@ public class RecentsState implements BaseState<RecentsState> {
      * For this state, whether tasks should layout as a grid rather than a list.
      */
     public boolean displayOverviewTasksAsGrid(DeviceProfile deviceProfile) {
-        return hasFlag(FLAG_SHOW_AS_GRID) && showAsGrid(deviceProfile);
-    }
-
-    private boolean showAsGrid(DeviceProfile deviceProfile) {
-        return deviceProfile.isTablet && FeatureFlags.ENABLE_OVERVIEW_GRID.get();
+        return hasFlag(FLAG_SHOW_AS_GRID) && deviceProfile.overviewShowAsGrid;
     }
 
     /**
