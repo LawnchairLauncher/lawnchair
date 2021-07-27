@@ -49,6 +49,8 @@ public class AddItemWidgetsBottomSheet extends AbstractSlideInView<AddItemActivi
     private final Rect mInsets;
     private ScrollView mWidgetPreviewScrollView;
 
+    private int mContentHorizontalMarginInPx;
+
     public AddItemWidgetsBottomSheet(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
@@ -56,6 +58,8 @@ public class AddItemWidgetsBottomSheet extends AbstractSlideInView<AddItemActivi
     public AddItemWidgetsBottomSheet(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         mInsets = new Rect();
+        mContentHorizontalMarginInPx = getResources().getDimensionPixelSize(
+                R.dimen.widget_list_horizontal_margin);
     }
 
     /**
@@ -173,6 +177,26 @@ public class AddItemWidgetsBottomSheet extends AbstractSlideInView<AddItemActivi
         }
         mContent.setPadding(mContent.getPaddingStart(),
                 mContent.getPaddingTop(), mContent.getPaddingEnd(), mInsets.bottom);
+
+        int contentHorizontalMarginInPx = getResources().getDimensionPixelSize(
+                R.dimen.widget_list_horizontal_margin);
+        if (contentHorizontalMarginInPx != mContentHorizontalMarginInPx) {
+            setContentHorizontalMargin(findViewById(R.id.widget_appName),
+                    contentHorizontalMarginInPx);
+            setContentHorizontalMargin(findViewById(R.id.widget_drag_instruction),
+                    contentHorizontalMarginInPx);
+            setContentHorizontalMargin(findViewById(R.id.widget_cell), contentHorizontalMarginInPx);
+            setContentHorizontalMargin(findViewById(R.id.actions_container),
+                    contentHorizontalMarginInPx);
+            mContentHorizontalMarginInPx = contentHorizontalMarginInPx;
+        }
         return windowInsets;
+    }
+
+    private static void setContentHorizontalMargin(View view, int contentHorizontalMargin) {
+        ViewGroup.MarginLayoutParams layoutParams =
+                ((ViewGroup.MarginLayoutParams) view.getLayoutParams());
+        layoutParams.setMarginStart(contentHorizontalMargin);
+        layoutParams.setMarginEnd(contentHorizontalMargin);
     }
 }

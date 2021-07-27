@@ -37,7 +37,7 @@
             android:id="@+id/add_item_bottom_sheet_content"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="24dp"
+            android:paddingVertical="24dp"
             android:background="@drawable/add_item_dialog_background"
             android:orientation="vertical" >
 
@@ -46,6 +46,7 @@
                 android:id="@+id/widget_appName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/widget_list_horizontal_margin"
                 android:gravity="center_horizontal"
                 android:textColor="?android:attr/textColorPrimary"
                 android:textSize="24sp"
@@ -55,8 +56,10 @@
                 android:maxLines="1" />
 
             <TextView
+                android:id="@+id/widget_drag_instruction"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/widget_list_horizontal_margin"
                 android:gravity="center_horizontal"
                 android:paddingTop="8dp"
                 android:text="@string/add_item_request_drag_hint"
@@ -75,12 +78,15 @@
                     android:id="@+id/widget_cell"
                     layout="@layout/widget_cell"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/widget_list_horizontal_margin" />
             </ScrollView>
 
             <LinearLayout
+                android:id="@+id/actions_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/widget_list_horizontal_margin"
                 android:gravity="center_vertical|end"
                 android:paddingVertical="8dp"
                 android:orientation="horizontal">

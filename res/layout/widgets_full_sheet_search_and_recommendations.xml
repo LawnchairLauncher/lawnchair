@@ -18,6 +18,7 @@
     android:id="@+id/search_and_recommendations_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginHorizontal="@dimen/widget_list_horizontal_margin"
     android:layout_marginBottom="16dp"
     android:orientation="vertical">
 
@@ -53,7 +54,6 @@
         android:id="@+id/recommended_widget_table"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="@dimen/widget_list_horizontal_margin"
         android:layout_marginTop="8dp"
         android:background="@drawable/widgets_recommendation_background"
         android:paddingVertical="@dimen/recommended_widgets_table_vertical_padding"

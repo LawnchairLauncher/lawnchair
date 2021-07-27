@@ -6,7 +6,6 @@
     android:layout_height="wrap_content"
     android:orientation="horizontal"
     android:layout_marginTop="24dp"
-    android:layout_marginHorizontal="@dimen/widget_list_horizontal_margin"
     android:background="@drawable/bg_widgets_searchbox">
 
     <com.android.launcher3.ExtendedEditText
