@@ -41,9 +41,7 @@ public class TestStabilityRule implements TestRule {
             Pattern.compile("^("
                     + "(?<local>(BuildFromAndroidStudio|"
                     + "([0-9]+|[A-Z])-eng\\.[a-z]+\\.[0-9]+\\.[0-9]+))|"
-                    + "(?<presubmit>([0-9]+|[A-Z])-P[0-9]+)|"
-                    + "(?<postsubmit>([0-9]+|[A-Z])-[0-9]+)|"
-                    + "(?<platform>[0-9]+|[A-Z])"
+                    + "(?<platform>[A-Z][a-z]*)"
                     + ")$");
     private static final Pattern PLATFORM_BUILD =
             Pattern.compile("^("
@@ -56,7 +54,7 @@ public class TestStabilityRule implements TestRule {
     public static final int PLATFORM_PRESUBMIT = 0x8;
     public static final int PLATFORM_POSTSUBMIT = 0x10;
 
-    private static int sRunFlavor = PLATFORM_PRESUBMIT; // b/194528425
+    private static int sRunFlavor;
 
     @Retention(RetentionPolicy.RUNTIME)
     @Target(ElementType.METHOD)
