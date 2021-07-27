@@ -359,6 +359,29 @@ public class WidgetsFullSheet extends BaseWidgetSheet
     }
 
     @Override
+    protected void onContentHorizontalMarginChanged(int contentHorizontalMarginInPx) {
+        setContentViewChildHorizontalMargin(mSearchAndRecommendationViewHolder.mContainer,
+                contentHorizontalMarginInPx);
+        if (mViewPager == null) {
+            setContentViewChildHorizontalMargin(
+                    mAdapters.get(AdapterHolder.PRIMARY).mWidgetsRecyclerView,
+                    contentHorizontalMarginInPx);
+        } else {
+            setContentViewChildHorizontalMargin(mViewPager, contentHorizontalMarginInPx);
+        }
+        setContentViewChildHorizontalMargin(
+                mAdapters.get(AdapterHolder.SEARCH).mWidgetsRecyclerView,
+                contentHorizontalMarginInPx);
+    }
+
+    private static void setContentViewChildHorizontalMargin(View view, int horizontalMarginInPx) {
+        ViewGroup.MarginLayoutParams layoutParams =
+                (ViewGroup.MarginLayoutParams) view.getLayoutParams();
+        layoutParams.setMarginStart(horizontalMarginInPx);
+        layoutParams.setMarginEnd(horizontalMarginInPx);
+    }
+
+    @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         doMeasure(widthMeasureSpec, heightMeasureSpec);
 

@@ -20,6 +20,7 @@
         android:id="@+id/widgets_view_pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginHorizontal="@dimen/widget_list_horizontal_margin"
         android:clipToPadding="false"
         android:paddingTop="@dimen/widget_picker_view_pager_top_padding"
         android:descendantFocusability="afterDescendants"
