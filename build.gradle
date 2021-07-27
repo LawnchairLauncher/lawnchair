@@ -10,7 +10,7 @@ buildscript {
         google()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:7.1.0-alpha02'
+        classpath GRADLE_CLASS_PATH
         classpath PROTOBUF_CLASS_PATH
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath 'com.google.android.gms:oss-licenses-plugin:0.10.4'
@@ -88,6 +88,7 @@ android {
 
     composeOptions {
         kotlinCompilerExtensionVersion = "1.0.0-beta08"
+        kotlinCompilerVersion '1.5.10'
     }
 
     if (keystorePropertiesFile.exists()) {
@@ -153,7 +154,7 @@ android {
         withQuickstep {
             dimension "recents"
 
-            minSdkVersion 28
+            minSdkVersion 25
         }
 
         withoutQuickstep {

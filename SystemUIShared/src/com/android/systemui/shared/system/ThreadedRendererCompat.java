@@ -16,7 +16,11 @@
 
 package com.android.systemui.shared.system;
 
-import android.view.ThreadedRenderer;
+// modify by qianjiahong. 2021/7/26 @{
+//import android.view.ThreadedRenderer;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+//@}
 
 /**
  * @see ThreadedRenderer
@@ -28,6 +32,14 @@ public class ThreadedRendererCompat {
     public static int EGL_CONTEXT_PRIORITY_LOW_IMG = 0x3103;
 
     public static void setContextPriority(int priority) {
-        ThreadedRenderer.setContextPriority(priority);
+        // modify by qianjiahong. 2021/7/26 @{
+        try {
+            Class<?> threadClazz = Class.forName("android.view.ThreadedRenderer");
+            Method method = threadClazz.getMethod("setContextPriority", int.class);
+            method.invoke(null, priority);
+        } catch (ClassNotFoundException | NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
+            e.printStackTrace();
+        }
+        // @｝
     }
 }

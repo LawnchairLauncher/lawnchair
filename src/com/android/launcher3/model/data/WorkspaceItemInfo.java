@@ -16,7 +16,7 @@
 
 package com.android.launcher3.model.data;
 
-import android.app.Person;
+import androidx.core.app.Person;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;

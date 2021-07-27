@@ -16,16 +16,28 @@
 
 package com.android.launcher3.uioverrides;
 
-import android.app.Person;
 import android.content.pm.ShortcutInfo;
 
+import androidx.core.app.Person;
+
 import com.android.launcher3.Utilities;
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 public class ApiWrapper {
 
     public static Person[] getPersons(ShortcutInfo si) {
         if (!Utilities.ATLEAST_Q) return Utilities.EMPTY_PERSON_ARRAY;
-        Person[] persons = si.getPersons();
+//        Person[] persons = si.getPersons();
+        Person[] persons = null;
+        try {
+            Class<?> threadClazz = si.getClass();
+            Method method = threadClazz.getMethod("getPersons");
+            persons = (Person[]) method.invoke(null);
+        } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
+            e.printStackTrace();
+        }
         return persons == null ? Utilities.EMPTY_PERSON_ARRAY : persons;
     }
 }

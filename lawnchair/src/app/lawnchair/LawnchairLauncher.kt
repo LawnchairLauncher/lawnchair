@@ -30,7 +30,6 @@ import app.lawnchair.nexuslauncher.OverlayCallbackImpl
 import app.lawnchair.preferences.PreferenceManager
 import app.lawnchair.root.RootHelperManager
 import app.lawnchair.root.RootNotAvailableException
-import app.lawnchair.util.restartLauncher
 import com.android.launcher3.BaseActivity
 import com.android.launcher3.LauncherAppState
 import com.android.launcher3.LauncherRootView

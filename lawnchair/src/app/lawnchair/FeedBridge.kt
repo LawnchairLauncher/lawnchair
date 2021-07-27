@@ -24,9 +24,9 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Process
 import android.util.Log
+import app.lawnchair.preferences.PreferenceManager
 import app.lawnchair.util.SingletonHolder
 import app.lawnchair.util.ensureOnMainThread
-import app.lawnchair.preferences.PreferenceManager
 import app.lawnchair.util.useApplicationContext
 import com.android.launcher3.BuildConfig
 import com.android.launcher3.R
@@ -111,8 +111,15 @@ class FeedBridge(private val context: Context) {
                     return signingInfo.signingCertificateHistory.any { it.hashCode() == signatureHash }
                 }
                 else -> {
-                    val info = context.packageManager.getPackageInfo(packageName, PackageManager.GET_SIGNATURES)
-                    return if (info.signatures.any { it.hashCode() != signatureHash }) false else info.signatures.isNotEmpty()
+                    // modify by qianjiahong. 2021/7/26 @{
+                    if (Utilities.ATLEAST_P) {
+                        val info = context.packageManager.getPackageInfo(packageName, PackageManager.GET_SIGNING_CERTIFICATES )
+                        return if (info.signingInfo.apkContentsSigners.any { it.hashCode() != signatureHash }) false else info.signingInfo.apkContentsSigners.isNotEmpty()
+                    } else { 
+                    //@}
+                        val info = context.packageManager.getPackageInfo(packageName, PackageManager.GET_SIGNATURES )
+                        return if (info.signatures.any { it.hashCode() != signatureHash }) false else info.signatures.isNotEmpty()
+                    }
                 }
             }
         }
