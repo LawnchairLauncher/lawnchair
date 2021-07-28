@@ -117,6 +117,10 @@ public class DepthController implements StateHandler<LauncherState>,
     private WallpaperManagerCompat mWallpaperManager;
     private SurfaceControl mSurface;
     /**
+     * How visible the -1 overlay is, from 0 to 1.
+     */
+    private float mOverlayScrollProgress;
+    /**
      * Ratio from 0 to 1, where 0 is fully zoomed out, and 1 is zoomed in.
      * @see android.service.wallpaper.WallpaperService.Engine#onZoomChanged(float)
      */
@@ -255,12 +259,24 @@ public class DepthController implements StateHandler<LauncherState>,
         }
     }
 
+    public void onOverlayScrollChanged(float progress) {
+        // Round out the progress to dedupe frequent, non-perceptable updates
+        int progressI = (int) (progress * 256);
+        float progressF = progressI / 256f;
+        if (Float.compare(mOverlayScrollProgress, progressF) == 0) {
+            return;
+        }
+        mOverlayScrollProgress = progressF;
+        dispatchTransactionSurface(mDepth);
+    }
+
     private boolean dispatchTransactionSurface(float depth) {
         boolean supportsBlur = BlurUtils.supportsBlursOnWindows();
         if (supportsBlur && (mSurface == null || !mSurface.isValid())) {
             return false;
         }
         ensureDependencies();
+        depth = Math.max(depth, mOverlayScrollProgress);
         IBinder windowToken = mLauncher.getRootView().getWindowToken();
         if (windowToken != null) {
             mWallpaperManager.setWallpaperZoomOut(windowToken, depth);
