@@ -117,6 +117,24 @@ public class TaskbarDragController extends DragController<TaskbarActivityContext
         dragLayerY += dragRect.top;
 
         DragOptions dragOptions = new DragOptions();
+        dragOptions.preDragCondition = new DragOptions.PreDragCondition() {
+            private DragView mDragView;
+
+            @Override
+            public boolean shouldStartDrag(double distanceDragged) {
+                return mDragView != null && mDragView.isAnimationFinished();
+            }
+
+            @Override
+            public void onPreDragStart(DropTarget.DragObject dragObject) {
+                mDragView = dragObject.dragView;
+            }
+
+            @Override
+            public void onPreDragEnd(DropTarget.DragObject dragObject, boolean dragStarted) {
+                mDragView = null;
+            }
+        };
         // TODO: open popup/pre-drag
         // PopupContainerWithArrow popupContainer = PopupContainerWithArrow.showForIcon(view);
         // if (popupContainer != null) {
@@ -155,6 +173,7 @@ public class TaskbarDragController extends DragController<TaskbarActivityContext
 
         mDragObject = new DropTarget.DragObject(mActivity.getApplicationContext());
         mDragObject.originalView = originalView;
+        mDragObject.deferDragViewCleanupPostAnimation = false;
 
         mIsInPreDrag = mOptions.preDragCondition != null
                 && !mOptions.preDragCondition.shouldStartDrag(0);
