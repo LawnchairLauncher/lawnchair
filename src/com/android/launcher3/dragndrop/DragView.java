@@ -23,6 +23,8 @@ import static com.android.launcher3.LauncherAnimUtils.VIEW_ALPHA;
 import static com.android.launcher3.Utilities.getBadge;
 import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
@@ -94,6 +96,8 @@ public abstract class DragView<T extends Context & ActivityContext> extends Fram
     private boolean mHasDrawn = false;
 
     final ValueAnimator mAnim;
+    // Whether mAnim has started. Unlike mAnim.isStarted(), this is true even after mAnim ends.
+    private boolean mAnimStarted;
 
     private int mLastTouchX;
     private int mLastTouchY;
@@ -169,6 +173,12 @@ public abstract class DragView<T extends Context & ActivityContext> extends Fram
             setScaleY(initialScale + (value * (scale - initialScale)));
             if (!isAttachedToWindow()) {
                 animation.cancel();
+            }
+        });
+        mAnim.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+                mAnimStarted = true;
             }
         });
 
@@ -394,6 +404,10 @@ public abstract class DragView<T extends Context & ActivityContext> extends Fram
         if (mAnim != null && mAnim.isRunning()) {
             mAnim.cancel();
         }
+    }
+
+    public boolean isAnimationFinished() {
+        return mAnimStarted && !mAnim.isRunning();
     }
 
     /**
