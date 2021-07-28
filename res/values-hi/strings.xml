@@ -71,7 +71,7 @@
     <string name="all_apps_button_label" msgid="8130441508702294465">"ऐप्लिकेशन सूची"</string>
     <string name="all_apps_button_personal_label" msgid="1315764287305224468">"निजी ऐप्लिकेशन की सूची"</string>
     <string name="all_apps_button_work_label" msgid="7270707118948892488">"काम से जुड़े ऐप्लिकेशन की सूची"</string>
-    <string name="remove_drop_target_label" msgid="7812859488053230776">"निकालें"</string>
+    <string name="remove_drop_target_label" msgid="7812859488053230776">"हटाएं"</string>
     <string name="uninstall_drop_target_label" msgid="4722034217958379417">"अनइंस्टॉल करें"</string>
     <string name="app_info_drop_target_label" msgid="692894985365717661">"ऐप्लिकेशन की जानकारी"</string>
     <string name="install_drop_target_label" msgid="2539096853673231757">"इंस्‍टॉल करें"</string>
