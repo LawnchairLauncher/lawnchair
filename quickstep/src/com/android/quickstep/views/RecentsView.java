@@ -83,7 +83,6 @@ import android.text.TextPaint;
 import android.util.AttributeSet;
 import android.util.FloatProperty;
 import android.util.SparseBooleanArray;
-import android.view.Gravity;
 import android.view.HapticFeedbackConstants;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -95,7 +94,6 @@ import android.view.ViewTreeObserver.OnScrollChangedListener;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.view.animation.Interpolator;
-import android.widget.FrameLayout;
 import android.widget.ListView;
 import android.widget.OverScroller;
 
@@ -386,7 +384,6 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     protected final ACTIVITY_TYPE mActivity;
     private final float mFastFlingVelocity;
     private final RecentsModel mModel;
-    private final int mRowSpacing;
     private final int mGridSideMargin;
     private final ClearAllButton mClearAllButton;
     private final Rect mClearAllButtonDeadZoneRect = new Rect();
@@ -598,7 +595,6 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     public RecentsView(Context context, AttributeSet attrs, int defStyleAttr,
             BaseActivityInterface sizeStrategy) {
         super(context, attrs, defStyleAttr);
-        setPageSpacing(getResources().getDimensionPixelSize(R.dimen.recents_page_spacing));
         setEnableFreeScroll(true);
         mSizeStrategy = sizeStrategy;
         mActivity = BaseActivity.fromContext(context);
@@ -620,7 +616,6 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
 
         mIsRtl = mOrientationHandler.getRecentsRtlSetting(getResources());
         setLayoutDirection(mIsRtl ? View.LAYOUT_DIRECTION_RTL : View.LAYOUT_DIRECTION_LTR);
-        mRowSpacing = getResources().getDimensionPixelSize(R.dimen.overview_grid_row_spacing);
         mGridSideMargin = getResources().getDimensionPixelSize(R.dimen.overview_grid_side_margin);
         mSquaredTouchSlop = squaredTouchSlop(context);
 
@@ -1351,6 +1346,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         DeviceProfile dp = mActivity.getDeviceProfile();
         setOverviewGridEnabled(
                 mActivity.getStateManager().getState().displayOverviewTasksAsGrid(dp));
+        setPageSpacing(dp.overviewPageSpacing);
 
         // Propagate DeviceProfile change event.
         mLiveTileTaskViewSimulator.setDp(dp);
@@ -1422,32 +1418,10 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         mTaskGridVerticalDiff = mLastComputedGridTaskSize.top - mLastComputedTaskSize.top;
         mTopBottomRowHeightDiff =
                 mLastComputedGridTaskSize.height() + dp.overviewTaskThumbnailTopMarginPx
-                        + mRowSpacing;
+                        + dp.overviewRowSpacing;
 
         // Force TaskView to update size from thumbnail
         updateTaskSize();
-
-        // Update ActionsView position
-        if (mActionsView != null) {
-            FrameLayout.LayoutParams layoutParams =
-                    (FrameLayout.LayoutParams) mActionsView.getLayoutParams();
-            if (dp.overviewShowAsGrid) {
-                layoutParams.gravity = Gravity.BOTTOM;
-                layoutParams.bottomMargin =
-                        dp.heightPx - mInsets.bottom - mLastComputedGridSize.bottom;
-                layoutParams.leftMargin = mLastComputedTaskSize.left;
-                layoutParams.rightMargin = dp.widthPx - mLastComputedTaskSize.right;
-                // When in modal state, remove bottom margin to avoid covering content.
-                mActionsView.setModalTransformY(layoutParams.bottomMargin);
-            } else {
-                layoutParams.gravity = Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM;
-                layoutParams.bottomMargin = 0;
-                layoutParams.leftMargin = 0;
-                layoutParams.rightMargin = 0;
-                mActionsView.setModalTransformY(0);
-            }
-            mActionsView.setLayoutParams(layoutParams);
-        }
     }
 
     /**
@@ -3947,7 +3921,6 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         boolean inPlaceLandscape = !mOrientationState.canRecentsActivityRotate()
                 && mOrientationState.getTouchRotation() != ROTATION_0;
         mActionsView.updateHiddenFlags(HIDDEN_NON_ZERO_ROTATION, modalness < 1 && inPlaceLandscape);
-        mActionsView.setTaskModalness(modalness);
     }
 
     @Nullable
