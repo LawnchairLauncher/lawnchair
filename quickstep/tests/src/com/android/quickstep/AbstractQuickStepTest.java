@@ -82,6 +82,6 @@ public abstract class AbstractQuickStepTest extends AbstractLauncherUiTest {
 
         RecentsView recentsView = launcher.getOverviewPanel();
         return recentsView.getSizeStrategy().isInLiveTileMode()
-                && recentsView.getRunningTaskId() != -1;
+                && recentsView.getRunningTaskViewId() != -1;
     }
 }

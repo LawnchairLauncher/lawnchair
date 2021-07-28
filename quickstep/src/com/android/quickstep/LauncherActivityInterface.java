@@ -189,7 +189,7 @@ public final class LauncherActivityInterface extends
                 launcher != null && launcher.getStateManager().getState().overviewUi
                         ? launcher.getOverviewPanel() : null;
         if (recentsView == null || (!launcher.hasBeenResumed()
-                && recentsView.getRunningTaskId() == -1)) {
+                && recentsView.getRunningTaskViewId() == -1)) {
             // If live tile has ended, return null.
             return null;
         }

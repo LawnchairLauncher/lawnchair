@@ -139,7 +139,7 @@ public final class TaskViewUtils {
 
         // If the opening task id is not currently visible in overview, then fall back to normal app
         // icon launch animation
-        TaskView taskView = recentsView.getTaskView(openingTaskId);
+        TaskView taskView = recentsView.getTaskViewByTaskId(openingTaskId);
         if (taskView == null || !recentsView.isTaskViewVisible(taskView)) {
             return null;
         }
