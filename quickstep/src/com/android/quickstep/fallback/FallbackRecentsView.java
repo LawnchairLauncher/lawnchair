@@ -24,6 +24,7 @@ import android.animation.AnimatorSet;
 import android.annotation.TargetApi;
 import android.app.ActivityManager.RunningTaskInfo;
 import android.content.Context;
+import android.content.res.Configuration;
 import android.os.Build;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
@@ -36,11 +37,10 @@ import com.android.launcher3.statemanager.StateManager.StateListener;
 import com.android.quickstep.FallbackActivityInterface;
 import com.android.quickstep.GestureState;
 import com.android.quickstep.RecentsActivity;
-import com.android.quickstep.util.TaskViewSimulator;
 import com.android.quickstep.util.SplitSelectStateController;
+import com.android.quickstep.util.TaskViewSimulator;
 import com.android.quickstep.views.OverviewActionsView;
 import com.android.quickstep.views.RecentsView;
-import com.android.quickstep.views.SplitPlaceholderView;
 import com.android.quickstep.views.TaskView;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.recents.model.Task.TaskKey;
@@ -184,6 +184,7 @@ public class FallbackRecentsView extends RecentsView<RecentsActivity, RecentsSta
         } else {
             if (mActivity.isInState(RecentsState.MODAL_TASK)) {
                 mActivity.getStateManager().goToState(DEFAULT);
+                resetModalVisuals();
             }
         }
     }
@@ -220,5 +221,13 @@ public class FallbackRecentsView extends RecentsView<RecentsActivity, RecentsSta
         boolean result = super.onTouchEvent(ev);
         // Do not let touch escape to siblings below this view.
         return result || mActivity.getStateManager().getState().overviewUi();
+    }
+
+    @Override
+    protected void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+
+        // Reset modal state if full configuration changes
+        setModalStateEnabled(false);
     }
 }

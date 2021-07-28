@@ -66,8 +66,12 @@ public abstract class BaseWidgetSheet extends AbstractSlideInView<Launcher>
     /* Touch handling related member variables. */
     private Toast mWidgetInstructionToast;
 
+    private int mContentHorizontalMarginInPx;
+
     public BaseWidgetSheet(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        mContentHorizontalMarginInPx = getResources().getDimensionPixelSize(
+                R.dimen.widget_list_horizontal_margin);
     }
 
     protected int getScrimColor(Context context) {
@@ -119,8 +123,16 @@ public abstract class BaseWidgetSheet extends AbstractSlideInView<Launcher>
     @Override
     public void setInsets(Rect insets) {
         mInsets.set(insets);
+        int contentHorizontalMarginInPx = getResources().getDimensionPixelSize(
+                R.dimen.widget_list_horizontal_margin);
+        if (contentHorizontalMarginInPx != mContentHorizontalMarginInPx) {
+            onContentHorizontalMarginChanged(contentHorizontalMarginInPx);
+            mContentHorizontalMarginInPx = contentHorizontalMarginInPx;
+        }
     }
 
+    /** Called when the horizontal margin of the content view has changed. */
+    protected abstract void onContentHorizontalMarginChanged(int contentHorizontalMarginInPx);
 
     /**
      * Measures the dimension of this view and its children by taking system insets, navigation bar,
