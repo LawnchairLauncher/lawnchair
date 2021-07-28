@@ -218,7 +218,8 @@ import java.util.stream.Stream;
  * Default launcher application.
  */
 public class Launcher extends StatefulActivity<LauncherState> implements LauncherExterns,
-        Callbacks, InvariantDeviceProfile.OnIDPChangeListener, PluginListener<OverlayPlugin> {
+        Callbacks, InvariantDeviceProfile.OnIDPChangeListener, PluginListener<OverlayPlugin>,
+        LauncherOverlayCallbacks {
     public static final String TAG = "Launcher";
 
     public static final ActivityTracker<Launcher> ACTIVITY_TRACKER = new ActivityTracker<>();
@@ -619,7 +620,7 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
     @Override
     public void setLauncherOverlay(LauncherOverlay overlay) {
         if (overlay != null) {
-            overlay.setOverlayCallbacks(new LauncherOverlayCallbacksImpl());
+            overlay.setOverlayCallbacks(this);
         }
         mWorkspace.setLauncherOverlay(overlay);
     }
@@ -1123,12 +1124,15 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
         mAppWidgetHost.setActivityResumed(false);
     }
 
-    class LauncherOverlayCallbacksImpl implements LauncherOverlayCallbacks {
-
-        public void onScrollChanged(float progress) {
-            if (mWorkspace != null) {
-                mWorkspace.onOverlayScrollChanged(progress);
-            }
+    /**
+     * {@code LauncherOverlayCallbacks} scroll amount.
+     * Indicates transition progress to -1 screen.
+     * @param progress From 0 to 1.
+     */
+    @Override
+    public void onScrollChanged(float progress) {
+        if (mWorkspace != null) {
+            mWorkspace.onOverlayScrollChanged(progress);
         }
     }
 
