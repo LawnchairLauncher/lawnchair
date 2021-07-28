@@ -14,12 +14,11 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<!-- NOTE! don't add dimensions for margins / gravity to root view in this file, they need to be
-     loaded at runtime. -->
 <com.android.quickstep.views.GoOverviewActionsView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:layout_gravity="center_horizontal|bottom">
 
     <LinearLayout
         android:id="@+id/action_buttons"
