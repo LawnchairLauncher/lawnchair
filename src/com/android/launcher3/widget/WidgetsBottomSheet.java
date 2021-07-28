@@ -70,11 +70,10 @@ public class WidgetsBottomSheet extends BaseWidgetSheet {
     private static final int DEFAULT_CLOSE_DURATION = 200;
     private static final long EDUCATION_TIP_DELAY_MS = 300;
 
-    private final int mWidgetSheetContentHorizontalPadding;
-
     private ItemInfo mOriginalItemInfo;
     private final int mMaxTableHeight;
     private int mMaxHorizontalSpan = DEFAULT_MAX_HORIZONTAL_SPANS;
+    private final int mWidgetCellHorizontalPadding;
 
     private final OnLayoutChangeListener mLayoutChangeListenerToShowTips =
             new OnLayoutChangeListener() {
@@ -119,9 +118,8 @@ public class WidgetsBottomSheet extends BaseWidgetSheet {
         if (!hasSeenEducationTip()) {
             addOnLayoutChangeListener(mLayoutChangeListenerToShowTips);
         }
-
-        mWidgetSheetContentHorizontalPadding = getResources().getDimensionPixelSize(
-                R.dimen.widget_list_horizontal_margin);
+        mWidgetCellHorizontalPadding = getResources().getDimensionPixelSize(
+                R.dimen.widget_cell_horizontal_padding);
     }
 
     @Override
@@ -142,8 +140,7 @@ public class WidgetsBottomSheet extends BaseWidgetSheet {
     private boolean updateMaxSpansPerRow() {
         if (getMeasuredWidth() == 0) return false;
 
-        int maxHorizontalSpan = computeMaxHorizontalSpans(mContent,
-                mWidgetSheetContentHorizontalPadding);
+        int maxHorizontalSpan = computeMaxHorizontalSpans(mContent, mWidgetCellHorizontalPadding);
         if (mMaxHorizontalSpan != maxHorizontalSpan) {
             // Ensure the table layout is showing widgets in the right column after measure.
             mMaxHorizontalSpan = maxHorizontalSpan;
@@ -272,6 +269,14 @@ public class WidgetsBottomSheet extends BaseWidgetSheet {
         } else {
             clearNavBarColor();
         }
+    }
+
+    @Override
+    protected void onContentHorizontalMarginChanged(int contentHorizontalMarginInPx) {
+        ViewGroup.MarginLayoutParams layoutParams =
+                ((ViewGroup.MarginLayoutParams) findViewById(R.id.widgets_table).getLayoutParams());
+        layoutParams.setMarginStart(contentHorizontalMarginInPx);
+        layoutParams.setMarginEnd(contentHorizontalMarginInPx);
     }
 
     @Override

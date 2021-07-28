@@ -227,6 +227,7 @@ public class LauncherRecentsView extends RecentsView<BaseQuickstepLauncher, Laun
         } else {
             if (mActivity.isInState(LauncherState.OVERVIEW_MODAL_TASK)) {
                 mActivity.getStateManager().goToState(LauncherState.OVERVIEW);
+                resetModalVisuals();
             }
         }
     }
@@ -254,9 +255,6 @@ public class LauncherRecentsView extends RecentsView<BaseQuickstepLauncher, Laun
         super.onConfigurationChanged(newConfig);
         // If overview is in modal state when rotate, reset it to overview state without running
         // animation.
-        if (mActivity.isInState(OVERVIEW_MODAL_TASK)) {
-            mActivity.getStateManager().goToState(LauncherState.OVERVIEW, false);
-            resetModalVisuals();
-        }
+        setModalStateEnabled(false);
     }
 }

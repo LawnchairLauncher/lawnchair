@@ -1383,6 +1383,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                 || !mOrientationHandler.equals(oldOrientationHandler)) {
             // Changed orientations, update controllers so they intercept accordingly.
             mActivity.getDragLayer().recreateControllers();
+            setModalStateEnabled(false);
         }
 
         boolean isInLandscape = mOrientationState.getTouchRotation() != ROTATION_0
@@ -1864,7 +1865,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     public void onGestureAnimationEnd() {
         mGestureActive = false;
         if (mOrientationState.setGestureActive(false)) {
-            updateOrientationHandler();
+            updateOrientationHandler(/* forceRecreateDragLayerControllers = */ false);
         }
 
         setEnableFreeScroll(true);

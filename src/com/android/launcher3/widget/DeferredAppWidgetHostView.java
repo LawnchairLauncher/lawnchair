@@ -25,6 +25,7 @@ import android.text.StaticLayout;
 import android.text.TextPaint;
 import android.text.TextUtils;
 import android.util.TypedValue;
+import android.view.View;
 import android.widget.RemoteViews;
 
 import com.android.launcher3.R;
@@ -51,6 +52,11 @@ public class DeferredAppWidgetHostView extends LauncherAppWidgetHostView {
 
     @Override
     public void updateAppWidget(RemoteViews remoteViews) {
+        // Not allowed
+    }
+
+    @Override
+    public void addView(View child) {
         // Not allowed
     }
 
