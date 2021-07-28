@@ -1153,6 +1153,12 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
                     mGestureState.getEndTarget(), duration,
                     mTaskAnimationManager.getCurrentCallbacks());
             if (mParallelRunningAnim != null) {
+                mParallelRunningAnim.addListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        mParallelRunningAnim = null;
+                    }
+                });
                 mParallelRunningAnim.start();
             }
         }
