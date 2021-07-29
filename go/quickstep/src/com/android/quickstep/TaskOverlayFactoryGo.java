@@ -53,6 +53,7 @@ import com.android.launcher3.BaseActivity;
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.views.ArrowTipView;
 import com.android.quickstep.util.AssistContentRequester;
 import com.android.quickstep.util.RecentsOrientedState;
 import com.android.quickstep.views.GoOverviewActionsView;
@@ -117,6 +118,7 @@ public final class TaskOverlayFactoryGo extends TaskOverlayFactory {
         private AssistContentRequester mFactoryContentRequester;
         private SharedPreferences mSharedPreferences;
         private OverlayDialogGo mDialog;
+        private ArrowTipView mArrowTipView;
 
         private TaskOverlayGo(TaskThumbnailView taskThumbnailView,
                 AssistContentRequester assistContentRequester) {
@@ -382,11 +384,14 @@ public final class TaskOverlayFactoryGo extends TaskOverlayFactory {
          * Order of tooltips are translate and then listen
          */
         private void showTooltipsIfUnseen() {
+            if (mArrowTipView != null && mArrowTipView.isOpen()) {
+                return;
+            }
             if (!mSharedPreferences.getBoolean(TRANSLATE_TOOL_TIP_SEEN, false)) {
-                ((GoOverviewActionsView) getActionsView()).showTranslateToolTip();
+                mArrowTipView = ((GoOverviewActionsView) getActionsView()).showTranslateToolTip();
                 mSharedPreferences.edit().putBoolean(TRANSLATE_TOOL_TIP_SEEN, true).apply();
             } else if (!mSharedPreferences.getBoolean(LISTEN_TOOL_TIP_SEEN, false)) {
-                ((GoOverviewActionsView) getActionsView()).showListenToolTip();
+                mArrowTipView = ((GoOverviewActionsView) getActionsView()).showListenToolTip();
                 mSharedPreferences.edit().putBoolean(LISTEN_TOOL_TIP_SEEN, true).apply();
             }
         }

@@ -16,7 +16,6 @@
 
 package com.android.quickstep.views;
 
-import static com.android.launcher3.anim.Interpolators.ACCEL_DEACCEL;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_OVERVIEW_SHARE;
 
 import android.content.Context;
@@ -33,7 +32,6 @@ import androidx.annotation.Nullable;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Insettable;
 import com.android.launcher3.R;
-import com.android.launcher3.Utilities;
 import com.android.launcher3.util.MultiValueAlpha;
 import com.android.launcher3.util.MultiValueAlpha.AlphaProperty;
 import com.android.quickstep.SysUINavigationMode;
@@ -89,9 +87,6 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
     protected int mDisabledFlags;
 
     protected T mCallbacks;
-
-    private float mModalness;
-    private float mModalTransformY;
 
     protected DeviceProfile mDp;
 
@@ -225,29 +220,6 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
         requestLayout();
     }
 
-    /**
-     * The current task is fully modal (modalness = 1) when it is shown on its own in a modal
-     * way. Modalness 0 means the task is shown in context with all the other tasks.
-     */
-    public void setTaskModalness(float modalness) {
-        mModalness = modalness;
-        applyTranslationY();
-    }
-
-    public void setModalTransformY(float modalTransformY) {
-        mModalTransformY = modalTransformY;
-        applyTranslationY();
-    }
-
-    private void applyTranslationY() {
-        setTranslationY(getModalTrans(mModalTransformY));
-    }
-
-    private float getModalTrans(float endTranslation) {
-        float progress = ACCEL_DEACCEL.getInterpolation(mModalness);
-        return Utilities.mapRange(progress, 0, endTranslation);
-    }
-
     /** Get the top margin associated with the action buttons in Overview. */
     public static int getOverviewActionsTopMarginPx(
             SysUINavigationMode.Mode mode, DeviceProfile dp) {
@@ -260,7 +232,7 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
             return dp.overviewActionsMarginThreeButtonPx;
         }
 
-        return dp.overviewActionsMarginGesturePx;
+        return dp.overviewActionsTopMarginGesturePx;
     }
 
     /** Get the bottom margin associated with the action buttons in Overview. */
@@ -276,6 +248,6 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
             return dp.overviewActionsMarginThreeButtonPx + inset;
         }
 
-        return dp.overviewActionsMarginGesturePx + inset;
+        return dp.overviewActionsBottomMarginGesturePx + inset;
     }
 }

@@ -210,14 +210,8 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
             Rect gridRect = new Rect();
             calculateGridSize(context, dp, gridRect);
 
-            int verticalMargin = Math.max(
-                    res.getDimensionPixelSize(R.dimen.overview_grid_focus_vertical_margin),
-                    res.getDimensionPixelSize(R.dimen.overview_actions_height));
-            float taskHeight =
-                    gridRect.height() - verticalMargin * 2 - dp.overviewTaskThumbnailTopMarginPx;
-
             PointF taskDimension = getTaskDimension(context, dp);
-            float scale = taskHeight / taskDimension.y;
+            float scale = gridRect.height() / taskDimension.y;
             int outWidth = Math.round(scale * taskDimension.x);
             int outHeight = Math.round(scale * taskDimension.y);
 
@@ -225,19 +219,9 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
             Gravity.apply(gravity, outWidth, outHeight, gridRect, outRect);
         } else {
             int taskMargin = dp.overviewTaskMarginPx;
-            int proactiveRowAndMargin;
-            if (!TaskView.SHOW_PROACTIVE_ACTIONS || dp.isVerticalBarLayout()) {
-                // In Vertical Bar Layout the proactive row doesn't have its own space, it's inside
-                // the actions row.
-                proactiveRowAndMargin = 0;
-            } else {
-                proactiveRowAndMargin = res.getDimensionPixelSize(
-                        R.dimen.overview_proactive_row_height)
-                        + res.getDimensionPixelSize(R.dimen.overview_proactive_row_bottom_margin);
-            }
             calculateTaskSizeInternal(context, dp,
                     dp.overviewTaskThumbnailTopMarginPx,
-                    proactiveRowAndMargin + getOverviewActionsHeight(context, dp),
+                    getProactiveRowAndMargin(context, dp) + getOverviewActionsHeight(context, dp),
                     res.getDimensionPixelSize(R.dimen.overview_minimum_next_prev_size) + taskMargin,
                     outRect);
         }
@@ -299,13 +283,14 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
      */
     public final void calculateGridSize(Context context, DeviceProfile dp, Rect outRect) {
         Resources res = context.getResources();
-        int topMargin = res.getDimensionPixelSize(R.dimen.overview_grid_top_margin);
-        int bottomMargin = res.getDimensionPixelSize(R.dimen.overview_grid_bottom_margin);
+        Rect insets = dp.getInsets();
+        int topMargin = dp.overviewTaskThumbnailTopMarginPx;
+        int bottomMargin =
+                getProactiveRowAndMargin(context, dp) + getOverviewActionsHeight(context, dp);
         int sideMargin = res.getDimensionPixelSize(R.dimen.overview_grid_side_margin);
 
-        Rect insets = dp.getInsets();
         outRect.set(0, 0, dp.widthPx, dp.heightPx);
-        outRect.inset(Math.max(insets.left, sideMargin), Math.max(insets.top, topMargin),
+        outRect.inset(Math.max(insets.left, sideMargin), insets.top + topMargin,
                 Math.max(insets.right, sideMargin), Math.max(insets.bottom, bottomMargin));
     }
 
@@ -318,8 +303,9 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
         Rect gridRect = new Rect();
         calculateGridSize(context, dp, gridRect);
 
-        int rowSpacing = res.getDimensionPixelSize(R.dimen.overview_grid_row_spacing);
-        float rowHeight = (gridRect.height() - rowSpacing) / 2f;
+        float rowHeight =
+                (gridRect.height() + dp.overviewTaskThumbnailTopMarginPx - dp.overviewRowSpacing)
+                        / 2f;
 
         PointF taskDimension = getTaskDimension(context, dp);
         float scale = (rowHeight - dp.overviewTaskThumbnailTopMarginPx) / taskDimension.y;
@@ -328,7 +314,6 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
 
         int gravity = Gravity.TOP;
         gravity |= orientedState.getRecentsRtlSetting(res) ? Gravity.RIGHT : Gravity.LEFT;
-        gridRect.inset(0, dp.overviewTaskThumbnailTopMarginPx, 0, 0);
         Gravity.apply(gravity, outWidth, outHeight, gridRect, outRect);
     }
 
@@ -342,6 +327,21 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
                 getOverviewActionsHeight(context, dp),
                 dp.overviewTaskMarginPx,
                 outRect);
+    }
+
+    private int getProactiveRowAndMargin(Context context, DeviceProfile dp) {
+        Resources res = context.getResources();
+        int proactiveRowAndMargin;
+        if (!TaskView.SHOW_PROACTIVE_ACTIONS || dp.isVerticalBarLayout()) {
+            // In Vertical Bar Layout the proactive row doesn't have its own space, it's inside
+            // the actions row.
+            proactiveRowAndMargin = 0;
+        } else {
+            proactiveRowAndMargin = res.getDimensionPixelSize(
+                    R.dimen.overview_proactive_row_height)
+                    + res.getDimensionPixelSize(R.dimen.overview_proactive_row_bottom_margin);
+        }
+        return proactiveRowAndMargin;
     }
 
     /** Gets the space that the overview actions will take, including bottom margin. */
