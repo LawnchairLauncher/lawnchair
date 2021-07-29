@@ -19,9 +19,7 @@ package com.android.launcher3.widget;
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.Context;
 import android.content.res.Configuration;
-import android.graphics.Canvas;
 import android.graphics.Rect;
-import android.graphics.RectF;
 import android.os.Handler;
 import android.os.SystemClock;
 import android.util.SparseBooleanArray;
@@ -35,23 +33,17 @@ import android.widget.AdapterView;
 import android.widget.Advanceable;
 import android.widget.RemoteViews;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.android.launcher3.CheckLongPressHelper;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.Workspace;
 import com.android.launcher3.dragndrop.DragLayer;
-import com.android.launcher3.keyboard.ViewGroupFocusHelper;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.LauncherAppWidgetInfo;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.views.BaseDragLayer.TouchCompleteListener;
-import com.android.launcher3.widget.dragndrop.AppWidgetHostViewDragListener;
-
-import java.util.List;
 
 /**
  * {@inheritDoc}
@@ -59,8 +51,6 @@ import java.util.List;
 public class LauncherAppWidgetHostView extends BaseLauncherAppWidgetHostView
         implements TouchCompleteListener, View.OnLongClickListener,
         LocalColorExtractor.Listener {
-
-    private static final String LOG_TAG = "LauncherAppWidgetHostView";
 
     // Related to the auto-advancing of widgets
     private static final long ADVANCE_INTERVAL = 20000;
@@ -71,9 +61,9 @@ public class LauncherAppWidgetHostView extends BaseLauncherAppWidgetHostView
     // Maximum duration for which updates can be deferred.
     private static final long UPDATE_LOCK_TIMEOUT_MILLIS = 1000;
 
+    private final Rect mTempRect = new Rect();
     private final CheckLongPressHelper mLongPressHelper;
     protected final Launcher mLauncher;
-    private final Workspace mWorkspace;
 
     @ViewDebug.ExportedProperty(category = "launcher")
     private boolean mReinflateOnConfigChange;
@@ -85,24 +75,14 @@ public class LauncherAppWidgetHostView extends BaseLauncherAppWidgetHostView
     private boolean mIsAttachedToWindow;
     private boolean mIsAutoAdvanceRegistered;
     private Runnable mAutoAdvanceRunnable;
-    private RectF mLastLocationRegistered = null;
 
-    // Used to store the widget sizes in drag layer coordinates.
-    private final Rect mCurrentWidgetSize = new Rect();
-    private final Rect mWidgetSizeAtDrag = new Rect();
-
-    private final RectF mTempRectF = new RectF();
-    private final Object mUpdateLock = new Object();
-    private final ViewGroupFocusHelper mDragLayerRelativeCoordinateHelper;
     private long mDeferUpdatesUntilMillis = 0;
     private RemoteViews mDeferredRemoteViews;
     private boolean mHasDeferredColorChange = false;
     private @Nullable SparseIntArray mDeferredColorChange = null;
-    private boolean mEnableColorExtraction = true;
 
     // The following member variables are only used during drag-n-drop.
     private boolean mIsInDragMode = false;
-    @Nullable private AppWidgetHostViewDragListener mDragListener;
     /** The drag content width which is only set when the drag content scale is not 1f. */
     private int mDragContentWidth = 0;
     /** The drag content height which is only set when the drag content scale is not 1f. */
@@ -111,7 +91,6 @@ public class LauncherAppWidgetHostView extends BaseLauncherAppWidgetHostView
     public LauncherAppWidgetHostView(Context context) {
         super(context);
         mLauncher = Launcher.getLauncher(context);
-        mWorkspace = mLauncher.getWorkspace();
         mLongPressHelper = new CheckLongPressHelper(this, this);
         setAccessibilityDelegate(mLauncher.getAccessibilityDelegate());
         setBackgroundResource(R.drawable.widget_internal_focus_bg);
@@ -120,9 +99,6 @@ public class LauncherAppWidgetHostView extends BaseLauncherAppWidgetHostView
             setOnLightBackground(true);
         }
         mColorExtractor = LocalColorExtractor.newInstance(getContext());
-        mColorExtractor.setListener(this);
-
-        mDragLayerRelativeCoordinateHelper = new ViewGroupFocusHelper(mLauncher.getDragLayer());
     }
 
     @Override
@@ -131,14 +107,6 @@ public class LauncherAppWidgetHostView extends BaseLauncherAppWidgetHostView
             resetColorResources();
         } else {
             super.setColorResources(colors);
-        }
-    }
-
-    @Override
-    protected void onDraw(Canvas canvas) {
-        super.onDraw(canvas);
-        if (mIsInDragMode && mDragListener != null) {
-            mDragListener.onDragContentChanged();
         }
     }
 
@@ -154,13 +122,11 @@ public class LauncherAppWidgetHostView extends BaseLauncherAppWidgetHostView
 
     @Override
     public void updateAppWidget(RemoteViews remoteViews) {
-        synchronized (mUpdateLock) {
-            if (isDeferringUpdates()) {
-                mDeferredRemoteViews = remoteViews;
-                return;
-            }
-            mDeferredRemoteViews = null;
+        if (isDeferringUpdates()) {
+            mDeferredRemoteViews = remoteViews;
+            return;
         }
+        mDeferredRemoteViews = null;
 
         super.updateAppWidget(remoteViews);
 
@@ -211,9 +177,7 @@ public class LauncherAppWidgetHostView extends BaseLauncherAppWidgetHostView
      * {@link #onColorsChanged} call after {@link #UPDATE_LOCK_TIMEOUT_MILLIS} have elapsed.
      */
     public void beginDeferringUpdates() {
-        synchronized (mUpdateLock) {
-            mDeferUpdatesUntilMillis = SystemClock.uptimeMillis() + UPDATE_LOCK_TIMEOUT_MILLIS;
-        }
+        mDeferUpdatesUntilMillis = SystemClock.uptimeMillis() + UPDATE_LOCK_TIMEOUT_MILLIS;
     }
 
     /**
@@ -225,20 +189,19 @@ public class LauncherAppWidgetHostView extends BaseLauncherAppWidgetHostView
         RemoteViews remoteViews;
         SparseIntArray deferredColors;
         boolean hasDeferredColors;
-        synchronized (mUpdateLock) {
-            mDeferUpdatesUntilMillis = 0;
-            remoteViews = mDeferredRemoteViews;
-            mDeferredRemoteViews = null;
-            deferredColors = mDeferredColorChange;
-            hasDeferredColors = mHasDeferredColorChange;
-            mDeferredColorChange = null;
-            mHasDeferredColorChange = false;
-        }
+        mDeferUpdatesUntilMillis = 0;
+        remoteViews = mDeferredRemoteViews;
+        mDeferredRemoteViews = null;
+        deferredColors = mDeferredColorChange;
+        hasDeferredColors = mHasDeferredColorChange;
+        mDeferredColorChange = null;
+        mHasDeferredColorChange = false;
+
         if (remoteViews != null) {
             updateAppWidget(remoteViews);
         }
         if (hasDeferredColors) {
-            onColorsChanged(null /* rectF */, deferredColors);
+            onColorsChanged(deferredColors);
         }
     }
 
@@ -263,13 +226,9 @@ public class LauncherAppWidgetHostView extends BaseLauncherAppWidgetHostView
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-
         mIsAttachedToWindow = true;
         checkIfAutoAdvance();
-
-        if (mLastLocationRegistered != null) {
-            mColorExtractor.addLocation(List.of(mLastLocationRegistered));
-        }
+        mColorExtractor.setListener(this);
     }
 
     @Override
@@ -280,7 +239,7 @@ public class LauncherAppWidgetHostView extends BaseLauncherAppWidgetHostView
         // state is updated. So isAttachedToWindow() will return true until next frame.
         mIsAttachedToWindow = false;
         checkIfAutoAdvance();
-        mColorExtractor.removeLocations();
+        mColorExtractor.setListener(null);
     }
 
     @Override
@@ -311,9 +270,13 @@ public class LauncherAppWidgetHostView extends BaseLauncherAppWidgetHostView
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
-
         mIsScrollable = checkScrollableRecursively(this);
-        updateColorExtraction();
+
+        if (!mIsInDragMode && getTag() instanceof LauncherAppWidgetInfo) {
+            LauncherAppWidgetInfo info = (LauncherAppWidgetInfo) getTag();
+            mTempRect.set(left, top, right, bottom);
+            mColorExtractor.setWorkspaceLocation(mTempRect, (View) getParent(), info.screenId);
+        }
     }
 
     @Override
@@ -327,9 +290,8 @@ public class LauncherAppWidgetHostView extends BaseLauncherAppWidgetHostView
     }
 
     /** Starts the drag mode. */
-    public void startDrag(AppWidgetHostViewDragListener dragListener) {
+    public void startDrag() {
         mIsInDragMode = true;
-        mDragListener = dragListener;
         // In the case of dragging a scaled preview from widgets picker, we should reuse the
         // previously measured dimension from WidgetCell#measureAndComputeWidgetPreviewScale, which
         // measures the dimension of a widget preview without its parent's bound before scaling
@@ -340,98 +302,30 @@ public class LauncherAppWidgetHostView extends BaseLauncherAppWidgetHostView
         }
     }
 
-    /** Handles a drag event occurred on a workspace page, {@code pageId}. */
-    public void handleDrag(Rect rectInDragLayer, int pageId) {
-        mWidgetSizeAtDrag.set(rectInDragLayer);
-        updateColorExtraction(mWidgetSizeAtDrag, pageId);
+    /** Handles a drag event occurred on a workspace page corresponding to the {@code screenId}. */
+    public void handleDrag(Rect rectInView, View view, int screenId) {
+        if (mIsInDragMode) {
+            mColorExtractor.setWorkspaceLocation(rectInView, view, screenId);
+        }
     }
 
     /** Ends the drag mode. */
     public void endDrag() {
         mIsInDragMode = false;
-        mDragListener = null;
         mDragContentWidth = 0;
         mDragContentHeight = 0;
-        mWidgetSizeAtDrag.setEmpty();
-    }
-
-    /**
-     * @param rectInDragLayer Rect of widget in drag layer coordinates.
-     * @param pageId The workspace page the widget is on.
-     */
-    private void updateColorExtraction(Rect rectInDragLayer, int pageId) {
-        if (!mEnableColorExtraction) return;
-        mColorExtractor.getExtractedRectForViewRect(mLauncher, pageId, rectInDragLayer, mTempRectF);
-
-        if (mTempRectF.isEmpty()) {
-            return;
-        }
-        if (!isSameLocation(mTempRectF, mLastLocationRegistered, /* epsilon= */ 1e-6f)) {
-            if (mLastLocationRegistered != null) {
-                mColorExtractor.removeLocations();
-            }
-            mLastLocationRegistered = new RectF(mTempRectF);
-            mColorExtractor.addLocation(List.of(mLastLocationRegistered));
-        }
-    }
-
-    /**
-     * Update the color extraction, using the current position of the app widget.
-     */
-    private void updateColorExtraction() {
-        if (!mIsInDragMode && getTag() instanceof LauncherAppWidgetInfo) {
-            LauncherAppWidgetInfo info = (LauncherAppWidgetInfo) getTag();
-            mDragLayerRelativeCoordinateHelper.viewToRect(this, mCurrentWidgetSize);
-            updateColorExtraction(mCurrentWidgetSize,
-                    mWorkspace.getPageIndexForScreenId(info.screenId));
-        }
-    }
-
-    /**
-     * Enables the local color extraction.
-     *
-     * @param updateColors If true, this will update the color extraction using the current location
-     *                    of the App Widget.
-     */
-    public void enableColorExtraction(boolean updateColors) {
-        mEnableColorExtraction = true;
-        if (updateColors) {
-            updateColorExtraction();
-        }
-    }
-
-    /**
-     * Disables the local color extraction.
-     */
-    public void disableColorExtraction() {
-        mEnableColorExtraction = false;
-    }
-
-    // Compare two location rectangles. Locations are always in the [0;1] range.
-    private static boolean isSameLocation(@NonNull RectF rect1, @Nullable RectF rect2,
-            float epsilon) {
-        if (rect2 == null) return false;
-        return isSameCoordinate(rect1.left, rect2.left, epsilon)
-                && isSameCoordinate(rect1.right, rect2.right, epsilon)
-                && isSameCoordinate(rect1.top, rect2.top, epsilon)
-                && isSameCoordinate(rect1.bottom, rect2.bottom, epsilon);
-    }
-
-    private static boolean isSameCoordinate(float c1, float c2, float epsilon) {
-        return Math.abs(c1 - c2) < epsilon;
+        requestLayout();
     }
 
     @Override
-    public void onColorsChanged(RectF rectF, SparseIntArray colors) {
-        synchronized (mUpdateLock) {
-            if (isDeferringUpdates()) {
-                mDeferredColorChange = colors;
-                mHasDeferredColorChange = true;
-                return;
-            }
-            mDeferredColorChange = null;
-            mHasDeferredColorChange = false;
+    public void onColorsChanged(SparseIntArray colors) {
+        if (isDeferringUpdates()) {
+            mDeferredColorChange = colors;
+            mHasDeferredColorChange = true;
+            return;
         }
+        mDeferredColorChange = null;
+        mHasDeferredColorChange = false;
 
         // setColorResources will reapply the view, which must happen in the UI thread.
         post(() -> setColorResources(colors));
