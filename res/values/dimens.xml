@@ -325,8 +325,17 @@
     <dimen name="task_thumbnail_icon_size">0dp</dimen>
     <dimen name="task_thumbnail_icon_size_grid">0dp</dimen>
     <dimen name="overview_task_margin">0dp</dimen>
-    <dimen name="overview_actions_bottom_margin_gesture">0dp</dimen>
-    <dimen name="overview_actions_bottom_margin_three_button">0dp</dimen>
+    <dimen name="overview_task_margin_grid">0dp</dimen>
+    <dimen name="overview_actions_margin_gesture">0dp</dimen>
+    <dimen name="overview_actions_top_margin_gesture_grid_portrait">0dp</dimen>
+    <dimen name="overview_actions_bottom_margin_gesture_grid_portrait">0dp</dimen>
+    <dimen name="overview_actions_top_margin_gesture_grid_landscape">0dp</dimen>
+    <dimen name="overview_actions_bottom_margin_gesture_grid_landscape">0dp</dimen>
+    <dimen name="overview_actions_margin_three_button">0dp</dimen>
+    <dimen name="overview_grid_row_spacing_portrait">0dp</dimen>
+    <dimen name="overview_grid_row_spacing_landscape">0dp</dimen>
+    <dimen name="recents_page_spacing">0dp</dimen>
+    <dimen name="recents_page_spacing_grid">0dp</dimen>
     <dimen name="split_placeholder_size">110dp</dimen>
 
 <!-- Workspace grid visualization parameters -->
