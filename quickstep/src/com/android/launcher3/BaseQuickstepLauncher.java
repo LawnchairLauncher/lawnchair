@@ -64,6 +64,7 @@ import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.IntSet;
 import com.android.launcher3.util.ObjectWrapper;
 import com.android.launcher3.util.UiThreadHelper;
+import com.android.quickstep.OverviewCommandHelper;
 import com.android.quickstep.RecentsModel;
 import com.android.quickstep.SysUINavigationMode;
 import com.android.quickstep.SysUINavigationMode.Mode;
@@ -109,6 +110,7 @@ public abstract class BaseQuickstepLauncher extends Launcher
     private OverviewActionsView mActionsView;
 
     private @Nullable TaskbarManager mTaskbarManager;
+    private @Nullable OverviewCommandHelper mOverviewCommandHelper;
     private @Nullable LauncherTaskbarUIController mTaskbarUIController;
     private final ServiceConnection mTisBinderConnection = new ServiceConnection() {
         @Override
@@ -117,6 +119,8 @@ public abstract class BaseQuickstepLauncher extends Launcher
             mTaskbarManager.setLauncher(BaseQuickstepLauncher.this);
             Log.d(TAG, "TIS service connected");
             resetServiceBindRetryState();
+
+            mOverviewCommandHelper = ((TISBinder) iBinder).getOverviewCommandHelper();
         }
 
         @Override
@@ -157,6 +161,15 @@ public abstract class BaseQuickstepLauncher extends Launcher
         }
         resetServiceBindRetryState();
         super.onDestroy();
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+
+        if (mOverviewCommandHelper != null) {
+            mOverviewCommandHelper.clearPendingCommands();
+        }
     }
 
     public QuickstepTransitionManager getAppTransitionManager() {
