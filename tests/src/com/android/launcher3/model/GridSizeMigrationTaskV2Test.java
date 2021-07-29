@@ -30,26 +30,31 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Point;
 import android.os.Process;
+
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+import androidx.test.filters.SmallTest;
 
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.pm.UserCache;
 import com.android.launcher3.util.LauncherModelHelper;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.robolectric.RobolectricTestRunner;
-import org.robolectric.RuntimeEnvironment;
 
+import java.util.HashMap;
 import java.util.HashSet;
 
 /** Unit tests for {@link GridSizeMigrationTaskV2} */
-@RunWith(RobolectricTestRunner.class)
+@SmallTest
+@RunWith(AndroidJUnit4.class)
 public class GridSizeMigrationTaskV2Test {
 
     private LauncherModelHelper mModelHelper;
@@ -73,7 +78,7 @@ public class GridSizeMigrationTaskV2Test {
     @Before
     public void setUp() {
         mModelHelper = new LauncherModelHelper();
-        mContext = RuntimeEnvironment.application;
+        mContext = mModelHelper.sandboxContext;
         mDb = mModelHelper.provider.getDb();
 
         mValidPackages = new HashSet<>();
@@ -98,8 +103,13 @@ public class GridSizeMigrationTaskV2Test {
                 LauncherSettings.Favorites.TMP_TABLE);
     }
 
+    @After
+    public void tearDown() {
+        mModelHelper.destroy();
+    }
+
     @Test
-    public void testMigration() {
+    public void testMigration() throws Exception {
         int[] srcHotseatItems = {
                 mModelHelper.addItem(APP_ICON, 0, HOTSEAT, 0, 0, testPackage1, 1, TMP_CONTENT_URI),
                 mModelHelper.addItem(SHORTCUT, 1, HOTSEAT, 0, 0, testPackage2, 2, TMP_CONTENT_URI),
@@ -134,16 +144,16 @@ public class GridSizeMigrationTaskV2Test {
         // Check hotseat items
         Cursor c = mContext.getContentResolver().query(LauncherSettings.Favorites.CONTENT_URI,
                 new String[]{LauncherSettings.Favorites.SCREEN, LauncherSettings.Favorites.INTENT},
-                "container=" + CONTAINER_HOTSEAT, null, null, null);
+                "container=" + CONTAINER_HOTSEAT, null, LauncherSettings.Favorites.SCREEN, null);
         assertEquals(c.getCount(), mIdp.numDatabaseHotseatIcons);
         int screenIndex = c.getColumnIndex(LauncherSettings.Favorites.SCREEN);
         int intentIndex = c.getColumnIndex(LauncherSettings.Favorites.INTENT);
         c.moveToNext();
-        assertEquals(c.getInt(screenIndex), 1);
-        assertTrue(c.getString(intentIndex).contains(testPackage2));
-        c.moveToNext();
         assertEquals(c.getInt(screenIndex), 0);
         assertTrue(c.getString(intentIndex).contains(testPackage1));
+        c.moveToNext();
+        assertEquals(c.getInt(screenIndex), 1);
+        assertTrue(c.getString(intentIndex).contains(testPackage2));
         c.moveToNext();
         assertEquals(c.getInt(screenIndex), 2);
         assertTrue(c.getString(intentIndex).contains(testPackage3));
@@ -157,35 +167,24 @@ public class GridSizeMigrationTaskV2Test {
                 new String[]{LauncherSettings.Favorites.CELLX, LauncherSettings.Favorites.CELLY,
                         LauncherSettings.Favorites.INTENT},
                 "container=" + CONTAINER_DESKTOP, null, null, null);
-        assertEquals(c.getCount(), 6);
         intentIndex = c.getColumnIndex(LauncherSettings.Favorites.INTENT);
         int cellXIndex = c.getColumnIndex(LauncherSettings.Favorites.CELLX);
         int cellYIndex = c.getColumnIndex(LauncherSettings.Favorites.CELLY);
 
-        c.moveToNext();
-        assertTrue(c.getString(intentIndex).contains(testPackage7));
-        c.moveToNext();
-        assertTrue(c.getString(intentIndex).contains(testPackage6));
-        assertEquals(c.getInt(cellXIndex), 0);
-        assertEquals(c.getInt(cellYIndex), 3);
-        c.moveToNext();
-        assertTrue(c.getString(intentIndex).contains(testPackage10));
-        assertEquals(c.getInt(cellXIndex), 1);
-        assertEquals(c.getInt(cellYIndex), 3);
-        c.moveToNext();
-        assertTrue(c.getString(intentIndex).contains(testPackage5));
-        assertEquals(c.getInt(cellXIndex), 2);
-        assertEquals(c.getInt(cellYIndex), 3);
-        c.moveToNext();
-        assertTrue(c.getString(intentIndex).contains(testPackage9));
-        assertEquals(c.getInt(cellXIndex), 3);
-        assertEquals(c.getInt(cellYIndex), 3);
-        c.moveToNext();
-        assertTrue(c.getString(intentIndex).contains(testPackage8));
-        assertEquals(c.getInt(cellXIndex), 0);
-        assertEquals(c.getInt(cellYIndex), 2);
-
+        HashMap<String, Point> locMap = new HashMap<>();
+        while (c.moveToNext()) {
+            locMap.put(
+                    Intent.parseUri(c.getString(intentIndex), 0).getPackage(),
+                    new Point(c.getInt(cellXIndex), c.getInt(cellYIndex)));
+        }
         c.close();
+
+        assertEquals(locMap.size(), 6);
+        assertEquals(new Point(0, 2), locMap.get(testPackage8));
+        assertEquals(new Point(0, 3), locMap.get(testPackage6));
+        assertEquals(new Point(1, 3), locMap.get(testPackage10));
+        assertEquals(new Point(2, 3), locMap.get(testPackage5));
+        assertEquals(new Point(3, 3), locMap.get(testPackage9));
     }
 
     @Test
@@ -212,7 +211,7 @@ public class GridSizeMigrationTaskV2Test {
         // Check hotseat items
         Cursor c = mContext.getContentResolver().query(LauncherSettings.Favorites.CONTENT_URI,
                 new String[]{LauncherSettings.Favorites.SCREEN, LauncherSettings.Favorites.INTENT},
-                "container=" + CONTAINER_HOTSEAT, null, null, null);
+                "container=" + CONTAINER_HOTSEAT, null, LauncherSettings.Favorites.SCREEN, null);
         assertEquals(c.getCount(), numSrcDatabaseHotseatIcons);
         int screenIndex = c.getColumnIndex(LauncherSettings.Favorites.SCREEN);
         int intentIndex = c.getColumnIndex(LauncherSettings.Favorites.INTENT);
@@ -257,7 +256,7 @@ public class GridSizeMigrationTaskV2Test {
         // Check hotseat items
         Cursor c = mContext.getContentResolver().query(LauncherSettings.Favorites.CONTENT_URI,
                 new String[]{LauncherSettings.Favorites.SCREEN, LauncherSettings.Favorites.INTENT},
-                "container=" + CONTAINER_HOTSEAT, null, null, null);
+                "container=" + CONTAINER_HOTSEAT, null, LauncherSettings.Favorites.SCREEN, null);
         assertEquals(c.getCount(), mIdp.numDatabaseHotseatIcons);
         int screenIndex = c.getColumnIndex(LauncherSettings.Favorites.SCREEN);
         int intentIndex = c.getColumnIndex(LauncherSettings.Favorites.INTENT);
