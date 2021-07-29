@@ -205,10 +205,6 @@ public class PendingItemDragHelper extends DragPreviewProvider {
             draggableView = DraggableView.ofType(DraggableView.DRAGGABLE_ICON);
         }
 
-        // Since we are not going through the workspace for starting the drag, set drag related
-        // information on the workspace before starting the drag.
-        launcher.getWorkspace().prepareDragWithProvider(this);
-
         int dragLayerX = screenPos.x + previewBounds.left
                 + (int) ((scale * previewWidth - previewWidth) / 2);
         int dragLayerY = screenPos.y + previewBounds.top

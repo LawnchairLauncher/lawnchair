@@ -65,7 +65,6 @@ import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.util.RunnableList;
 import com.android.launcher3.views.ActivityContext;
 import com.android.launcher3.views.BaseDragLayer;
-import com.android.launcher3.widget.LauncherAppWidgetHostView;
 
 /** A custom view for rendering an icon, folder, shortcut or widget during drag-n-drop. */
 public abstract class DragView<T extends Context & ActivityContext> extends FrameLayout {
@@ -299,16 +298,6 @@ public abstract class DragView<T extends Context & ActivityContext> extends Fram
         mOnDragStartCallback.executeAllAndDestroy();
     }
 
-    // TODO(b/183609936): This is only for LauncherAppWidgetHostView that is rendered in a drawable.
-    // Once LauncherAppWidgetHostView is directly rendered in this view, removes this method.
-    @Override
-    public void invalidate() {
-        super.invalidate();
-        if (mContent instanceof ImageView) {
-            mContent.invalidate();
-        }
-    }
-
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(makeMeasureSpec(mWidth, EXACTLY), makeMeasureSpec(mHeight, EXACTLY));
@@ -484,24 +473,6 @@ public abstract class DragView<T extends Context & ActivityContext> extends Fram
             }
             mContentViewParent = null;
             mContentViewInParentViewIndex = -1;
-        }
-    }
-
-    /**
-     * If the drag view uses color extraction, block it.
-     */
-    public void disableColorExtraction() {
-        if (mContent instanceof LauncherAppWidgetHostView) {
-            ((LauncherAppWidgetHostView) mContent).disableColorExtraction();
-        }
-    }
-
-    /**
-     * If the drag view uses color extraction, restores it.
-     */
-    public void resumeColorExtraction() {
-        if (mContent instanceof LauncherAppWidgetHostView) {
-            ((LauncherAppWidgetHostView) mContent).enableColorExtraction(/* updateColors= */ false);
         }
     }
 
