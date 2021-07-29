@@ -17,6 +17,7 @@ package com.android.quickstep.views;
 
 import static com.android.launcher3.LauncherState.ALL_APPS;
 import static com.android.launcher3.LauncherState.NORMAL;
+import static com.android.launcher3.Utilities.EDGE_NAV_BAR;
 import static com.android.launcher3.anim.Interpolators.FAST_OUT_SLOW_IN;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.anim.Interpolators.OVERSHOOT_1_7;
@@ -67,6 +68,8 @@ public class AllAppsEduView extends AbstractFloatingView {
     private int mWidthPx;
     private int mMaxHeightPx;
 
+    private boolean mCanInterceptTouch;
+
     public AllAppsEduView(Context context, AttributeSet attrs) {
         super(context, attrs);
         mCircle = (GradientDrawable) context.getDrawable(R.drawable.all_apps_edu_circle);
@@ -116,16 +119,27 @@ public class AllAppsEduView extends AbstractFloatingView {
         return true;
     }
 
+
+    private boolean shouldInterceptTouch(MotionEvent ev) {
+        if (ev.getAction() == MotionEvent.ACTION_DOWN) {
+            mCanInterceptTouch = (ev.getEdgeFlags() & EDGE_NAV_BAR) == 0;
+        }
+        return mCanInterceptTouch;
+    }
+
     @Override
     public boolean onControllerTouchEvent(MotionEvent ev) {
-        mTouchController.onControllerTouchEvent(ev);
-        if (mAnimation != null) {
+        if (shouldInterceptTouch(ev)) {
+            mTouchController.onControllerTouchEvent(ev);
             updateAnimationOnTouchEvent(ev);
         }
-        return super.onControllerTouchEvent(ev);
+        return true;
     }
 
     private void updateAnimationOnTouchEvent(MotionEvent ev) {
+        if (mAnimation == null) {
+            return;
+        }
         switch (ev.getActionMasked()) {
             case MotionEvent.ACTION_DOWN:
                 mAnimation.pause();
@@ -144,7 +158,10 @@ public class AllAppsEduView extends AbstractFloatingView {
 
     @Override
     public boolean onControllerInterceptTouchEvent(MotionEvent ev) {
-        mTouchController.onControllerInterceptTouchEvent(ev);
+        if (shouldInterceptTouch(ev)) {
+            mTouchController.onControllerInterceptTouchEvent(ev);
+            updateAnimationOnTouchEvent(ev);
+        }
         return true;
     }
 
