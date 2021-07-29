@@ -257,7 +257,8 @@ public class DeviceProfile {
         final Resources res = context.getResources();
 
         hotseatQsbHeight = res.getDimensionPixelSize(R.dimen.qsb_widget_height);
-        isTaskbarPresent = isTablet && FeatureFlags.ENABLE_TASKBAR.get();
+        isTaskbarPresent = isTablet && ApiWrapper.TASKBAR_DRAWN_IN_PROCESS
+                && FeatureFlags.ENABLE_TASKBAR.get();
         if (isTaskbarPresent) {
             // Taskbar will be added later, but provides bottom insets that we should subtract
             // from availableHeightPx.
