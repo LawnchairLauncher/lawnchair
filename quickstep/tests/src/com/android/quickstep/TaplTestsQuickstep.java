@@ -93,7 +93,6 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
 
     @Test
     @PortraitLandscape
-    @ScreenRecord //b/193440212
     public void testOverview() throws Exception {
         startTestAppsWithCheck();
         // mLauncher.pressHome() also tests an important case of pressing home while in background.
@@ -159,6 +158,7 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
     @Test
     @NavigationModeSwitch
     @PortraitLandscape
+    @ScreenRecord //b/193125090
     public void testOverviewActions() throws Exception {
         // Experimenting for b/165029151:
         final Overview overview = mLauncher.pressHome().switchToOverview();
