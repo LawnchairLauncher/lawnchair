@@ -18,8 +18,6 @@ package com.android.launcher3.folder;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_FOLDER_CONVERTED_TO_ICON;
 
 import android.content.Context;
-import android.graphics.Rect;
-import android.graphics.RectF;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -38,10 +36,7 @@ import com.android.launcher3.model.data.FolderInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.views.ActivityContext;
 import com.android.launcher3.views.BaseDragLayer;
-import com.android.launcher3.views.BaseDragLayer.LayoutParams;
-import com.android.launcher3.widget.LocalColorExtractor;
 
-import java.util.Arrays;
 import java.util.Optional;
 import java.util.function.Consumer;
 
@@ -51,8 +46,6 @@ import java.util.function.Consumer;
 public class LauncherDelegate {
 
     private final Launcher mLauncher;
-    private final Rect mTempRect = new Rect();
-    private final RectF mTempRectF = new RectF();
 
     private LauncherDelegate(Launcher launcher) {
         mLauncher = launcher;
@@ -82,15 +75,6 @@ public class LauncherDelegate {
     @Nullable
     Launcher getLauncher() {
         return mLauncher;
-    }
-
-    void addRectForColorExtraction(BaseDragLayer.LayoutParams lp, LocalColorExtractor target) {
-        mTempRect.set(lp.x, lp.y, lp.x + lp.width, lp.y + lp.height);
-        target.getExtractedRectForViewRect(mLauncher,
-                mLauncher.getWorkspace().getCurrentPage(), mTempRect, mTempRectF);
-        if (!mTempRectF.isEmpty()) {
-            target.addLocation(Arrays.asList(mTempRectF));
-        }
     }
 
     boolean replaceFolderWithFinalItem(Folder folder) {
@@ -215,9 +199,6 @@ public class LauncherDelegate {
             folder.close(true);
             return true;
         }
-
-        @Override
-        void addRectForColorExtraction(LayoutParams lp, LocalColorExtractor target) { }
     }
 
     static LauncherDelegate from(ActivityContext context) {

@@ -198,7 +198,6 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
     private final int[] mTempXY = new int[2];
     private final float[] mTempFXY = new float[2];
     @Thunk float[] mDragViewVisualCenter = new float[2];
-    private final float[] mTempTouchCoordinates = new float[2];
 
     private SpringLoadedDragController mSpringLoadedDragController;
 
@@ -207,8 +206,6 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
     boolean mChildrenLayersEnabled = true;
 
     private boolean mStripScreensOnPageStopMoving = false;
-
-    private DragPreviewProvider mOutlineProvider = null;
 
     private boolean mWorkspaceFadeInAdjacentScreens;
 
@@ -494,7 +491,6 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         });
 
         mDragInfo = null;
-        mOutlineProvider = null;
         mDragSourceInternal = null;
     }
 
@@ -1333,11 +1329,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
                 position[0], position[1], 0, null);
     }
 
-    public void prepareDragWithProvider(DragPreviewProvider outlineProvider) {
-        mOutlineProvider = outlineProvider;
-    }
-
-    private void onStartStateTransition(LauncherState state) {
+    private void onStartStateTransition() {
         mIsSwitchingState = true;
         mTransitionProgress = 0;
 
@@ -1358,7 +1350,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
      */
     @Override
     public void setState(LauncherState toState) {
-        onStartStateTransition(toState);
+        onStartStateTransition();
         mStateTransitionAnimation.setState(toState);
         onEndStateTransition();
     }
@@ -1369,7 +1361,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
     @Override
     public void setStateWithAnimation(
             LauncherState toState, StateAnimationConfig config, PendingAnimation animation) {
-        StateTransitionListener listener = new StateTransitionListener(toState);
+        StateTransitionListener listener = new StateTransitionListener();
         mStateTransitionAnimation.setStateWithAnimation(toState, config, animation);
 
         // Invalidate the pages now, so that we have the visible pages before the
@@ -1477,8 +1469,6 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
             BubbleTextView icon = (BubbleTextView) child;
             icon.clearPressedBackground();
         }
-
-        mOutlineProvider = previewProvider;
 
         if (draggableView == null && child instanceof DraggableView) {
             draggableView = (DraggableView) child;
@@ -1791,17 +1781,14 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
 
         int snapScreen = -1;
         boolean resizeOnDrop = false;
+        Runnable onCompleteRunnable = null;
         if (d.dragSource != this || mDragInfo == null) {
             final int[] touchXY = new int[] { (int) mDragViewVisualCenter[0],
                     (int) mDragViewVisualCenter[1] };
             onDropExternal(touchXY, dropTargetLayout, d);
         } else {
             final View cell = mDragInfo.cell;
-            final DragView dragView = d.dragView;
             boolean droppedOnOriginalCellDuringTransition = false;
-            Runnable onCompleteRunnable = dragView::resumeColorExtraction;
-
-            dragView.disableColorExtraction();
 
             if (dropTargetLayout != null && !d.cancelled) {
                 // Move internally
@@ -1912,9 +1899,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
                         AppWidgetProviderInfo pInfo = hostView.getAppWidgetInfo();
                         if (pInfo != null && pInfo.resizeMode != AppWidgetProviderInfo.RESIZE_NONE
                                 && !options.isAccessibleDrag) {
-                            final Runnable previousRunnable = onCompleteRunnable;
                             onCompleteRunnable = () -> {
-                                previousRunnable.run();
                                 if (!isPageInTransition()) {
                                     AppWidgetResizeFrame.showForWidget(hostView, cellLayout);
                                 }
@@ -1983,7 +1968,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
             parent.onDropChild(cell);
 
             mLauncher.getStateManager().goToState(NORMAL, SPRING_LOADED_EXIT_DELAY,
-                    forSuccessCallback(onCompleteRunnable));
+                    onCompleteRunnable == null ? null : forSuccessCallback(onCompleteRunnable));
             mStatsLogManager.logger().withItemInfo(d.dragInfo).withInstanceId(d.logInstanceId)
                     .log(LauncherEvent.LAUNCHER_ITEM_DROP_COMPLETED);
         }
@@ -2301,25 +2286,16 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
 
         int nextPage = getNextPage();
         if (layout == null && !isPageInTransition()) {
-            // Check if the item is dragged over currentPage - 1 page
-            mTempTouchCoordinates[0] = Math.min(centerX, d.x);
-            mTempTouchCoordinates[1] = d.y;
-            layout = verifyInsidePage(nextPage + (mIsRtl ? 1 : -1), mTempTouchCoordinates);
+            layout = verifyInsidePage(nextPage + (mIsRtl ? 1 : -1), Math.min(centerX, d.x), d.y);
         }
 
         if (layout == null && !isPageInTransition()) {
-            // Check if the item is dragged over currentPage + 1 page
-            mTempTouchCoordinates[0] = Math.max(centerX, d.x);
-            mTempTouchCoordinates[1] = d.y;
-            layout = verifyInsidePage(nextPage + (mIsRtl ? -1 : 1), mTempTouchCoordinates);
+            layout = verifyInsidePage(nextPage + (mIsRtl ? -1 : 1), Math.max(centerX, d.x), d.y);
         }
 
         // If two panel is enabled, users can also drag items to currentPage + 2
         if (isTwoPanelEnabled() && layout == null && !isPageInTransition()) {
-            // Check if the item is dragged over currentPage + 2 page
-            mTempTouchCoordinates[0] = Math.max(centerX, d.x);
-            mTempTouchCoordinates[1] = d.y;
-            layout = verifyInsidePage(nextPage + (mIsRtl ? -2 : 2), mTempTouchCoordinates);
+            layout = verifyInsidePage(nextPage + (mIsRtl ? -2 : 2), Math.max(centerX, d.x), d.y);
         }
 
         // Always pick the current page.
@@ -2337,12 +2313,11 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
     /**
      * Returns the child CellLayout if the point is inside the page coordinates, null otherwise.
      */
-    private CellLayout verifyInsidePage(int pageNo, float[] touchXy)  {
+    private CellLayout verifyInsidePage(int pageNo, float x, float y) {
         if (pageNo >= 0 && pageNo < getPageCount()) {
             CellLayout cl = (CellLayout) getChildAt(pageNo);
-            mapPointFromSelfToChild(cl, touchXy);
-            if (touchXy[0] >= 0 && touchXy[0] <= cl.getWidth() &&
-                    touchXy[1] >= 0 && touchXy[1] <= cl.getHeight()) {
+            if (x >= cl.getLeft() && x <= cl.getRight()
+                    && y >= cl.getTop() && y <= cl.getBottom()) {
                 // This point is inside the cell layout
                 return cl;
             }
@@ -3341,12 +3316,6 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
     private class StateTransitionListener extends AnimatorListenerAdapter
             implements AnimatorUpdateListener {
 
-        private final LauncherState mToState;
-
-        StateTransitionListener(LauncherState toState) {
-            mToState = toState;
-        }
-
         @Override
         public void onAnimationUpdate(ValueAnimator anim) {
             mTransitionProgress = anim.getAnimatedFraction();
@@ -3354,7 +3323,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
 
         @Override
         public void onAnimationStart(Animator animation) {
-            onStartStateTransition(mToState);
+            onStartStateTransition();
         }
 
         @Override
