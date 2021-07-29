@@ -87,7 +87,6 @@ public class RequestPinItemTest extends AbstractLauncherUiTest {
     }
 
     @Test
-    @ScreenRecord  //b/192005114
     public void testPinWidgetNoConfig_customPreview() throws Throwable {
         // Command to set custom preview
         Intent command = RequestPinItemActivity.getCommandIntent(
