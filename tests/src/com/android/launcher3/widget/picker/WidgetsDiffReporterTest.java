@@ -15,13 +15,16 @@
  */
 package com.android.launcher3.widget.picker;
 
+import static androidx.test.core.app.ApplicationProvider.getApplicationContext;
+
+import static com.android.launcher3.util.WidgetUtils.createAppWidgetProviderInfo;
+
 import static com.google.common.truth.Truth.assertThat;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
-import static org.robolectric.Shadows.shadowOf;
 
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.ComponentName;
@@ -30,6 +33,8 @@ import android.graphics.Bitmap;
 import android.os.UserHandle;
 
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+import androidx.test.filters.SmallTest;
 
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.icons.BitmapInfo;
@@ -48,15 +53,12 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.robolectric.RobolectricTestRunner;
-import org.robolectric.RuntimeEnvironment;
-import org.robolectric.shadows.ShadowPackageManager;
-import org.robolectric.util.ReflectionHelpers;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@RunWith(RobolectricTestRunner.class)
+@SmallTest
+@RunWith(AndroidJUnit4.class)
 public final class WidgetsDiffReporterTest {
     private static final String TEST_PACKAGE_PREFIX = "com.android.test";
     private static final WidgetListBaseRowEntryComparator COMPARATOR =
@@ -87,7 +89,7 @@ public final class WidgetsDiffReporterTest {
                 .getComponent().getPackageName())
                 .when(mIconCache).getTitleNoCache(any());
 
-        mContext = RuntimeEnvironment.application;
+        mContext = getApplicationContext();
         mWidgetsDiffReporter = new WidgetsDiffReporter(mIconCache, mAdapter);
         mHeaderA = createWidgetsHeaderEntry(TEST_PACKAGE_PREFIX + "A",
                 /* appName= */ "A", /* numOfWidgets= */ 3);
@@ -294,14 +296,10 @@ public final class WidgetsDiffReporterTest {
     }
 
     private List<WidgetItem> generateWidgetItems(String packageName, int numOfWidgets) {
-        ShadowPackageManager packageManager = shadowOf(mContext.getPackageManager());
         ArrayList<WidgetItem> widgetItems = new ArrayList<>();
         for (int i = 0; i < numOfWidgets; i++) {
             ComponentName cn = ComponentName.createRelative(packageName, ".SampleWidget" + i);
-            AppWidgetProviderInfo widgetInfo = new AppWidgetProviderInfo();
-            widgetInfo.provider = cn;
-            ReflectionHelpers.setField(widgetInfo, "providerInfo",
-                    packageManager.addReceiverIfNotPresent(cn));
+            AppWidgetProviderInfo widgetInfo = createAppWidgetProviderInfo(cn);
 
             WidgetItem widgetItem = new WidgetItem(
                     LauncherAppWidgetProviderInfo.fromProviderInfo(mContext, widgetInfo),

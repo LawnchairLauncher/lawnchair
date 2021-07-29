@@ -43,7 +43,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.android.launcher3.BaseActivity;
 import com.android.launcher3.CheckLongPressHelper;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
@@ -123,7 +122,7 @@ public class WidgetCell extends LinearLayout {
     protected HandlerRunnable mActiveRequest;
     private boolean mAnimatePreview = true;
 
-    protected final BaseActivity mActivity;
+    protected final ActivityContext mActivity;
     private final CheckLongPressHelper mLongPressHelper;
     private final float mEnforcedCornerRadius;
 
@@ -143,8 +142,8 @@ public class WidgetCell extends LinearLayout {
     public WidgetCell(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
 
-        mActivity = BaseActivity.fromContext(context);
-        mWidgetPreviewLoader = new DatabaseWidgetPreviewLoader(mActivity);
+        mActivity = ActivityContext.lookupContext(context);
+        mWidgetPreviewLoader = new DatabaseWidgetPreviewLoader(context);
         mLongPressHelper = new CheckLongPressHelper(this);
         mLongPressHelper.setLongPressTimeoutFactor(1);
 
