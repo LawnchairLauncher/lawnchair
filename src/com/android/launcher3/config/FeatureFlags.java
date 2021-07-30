@@ -255,6 +255,10 @@ public final class FeatureFlags {
             "WIDGETS_IN_LAUNCHER_PREVIEW", true,
             "Enables widgets in Launcher preview for the Wallpaper app.");
 
+    public static final BooleanFlag QUICK_WALLPAPER_PICKER = getDebugFlag(
+            "QUICK_WALLPAPER_PICKER", false,
+            "Shows quick wallpaper picker in long-press menu");
+
     public static void initialize(Context context) {
         synchronized (sDebugFlags) {
             for (DebugFlag flag : sDebugFlags) {
