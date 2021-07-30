@@ -176,16 +176,6 @@ public class OptionsPopupView extends ArrowPopup
         return launcher.findViewById(R.id.popup_container);
     }
 
-    public static void showDefaultOptions(Launcher launcher, float x, float y) {
-        float halfSize = launcher.getResources().getDimension(R.dimen.options_menu_thumb_size) / 2;
-        if (x < 0 || y < 0) {
-            x = launcher.getDragLayer().getWidth() / 2;
-            y = launcher.getDragLayer().getHeight() / 2;
-        }
-        RectF target = new RectF(x - halfSize, y - halfSize, x + halfSize, y + halfSize);
-        show(launcher, target, getOptions(launcher), false);
-    }
-
     /**
      * Returns the list of supported actions
      */
