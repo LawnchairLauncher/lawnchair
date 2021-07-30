@@ -458,6 +458,10 @@ public class DeviceProfile {
         cellLayoutBorderSpacingPx = isScalableGrid ? borderSpacing : 0;
     }
 
+    public Info getDisplayInfo() {
+        return mInfo;
+    }
+
     /**
      * We inset the widget padding added by the system and instead rely on the border spacing
      * between cells to create reliable consistency between widgets

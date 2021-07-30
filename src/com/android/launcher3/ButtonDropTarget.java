@@ -216,8 +216,7 @@ public abstract class ButtonDropTarget extends TextView
         final DragLayer dragLayer = mLauncher.getDragLayer();
         final DragView dragView = d.dragView;
         final Rect to = getIconRect(d);
-        final float scale = (float) to.width() / d.dragView.getMeasuredWidth();
-        dragView.disableColorExtraction();
+        final float scale = (float) to.width() / dragView.getMeasuredWidth();
         dragView.detachContentView(/* reattachToPreviousParent= */ true);
 
         mDropTargetBar.deferOnDragEnd();
@@ -226,9 +225,6 @@ public abstract class ButtonDropTarget extends TextView
             completeDrop(d);
             mDropTargetBar.onDragEnd();
             mLauncher.getStateManager().goToState(NORMAL);
-            // Only re-enable updates once the workspace is back to normal, which will be after the
-            // current frame.
-            post(dragView::resumeColorExtraction);
         };
 
         dragLayer.animateView(d.dragView, to, scale, 0.1f, 0.1f,

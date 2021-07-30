@@ -16,7 +16,6 @@
 
 package com.android.launcher3;
 
-import static com.android.launcher3.config.FeatureFlags.MULTI_DB_GRID_MIRATION_ALGO;
 import static com.android.launcher3.provider.LauncherDbUtils.copyTable;
 import static com.android.launcher3.provider.LauncherDbUtils.dropTable;
 import static com.android.launcher3.provider.LauncherDbUtils.tableExists;
@@ -433,32 +432,26 @@ public class LauncherProvider extends ContentProvider {
                 return null;
             }
             case LauncherSettings.Settings.METHOD_UPDATE_CURRENT_OPEN_HELPER: {
-                if (MULTI_DB_GRID_MIRATION_ALGO.get()) {
-                    Bundle result = new Bundle();
-                    result.putBoolean(LauncherSettings.Settings.EXTRA_VALUE,
-                            prepForMigration(
-                                    InvariantDeviceProfile.INSTANCE.get(getContext()).dbFile,
-                                    Favorites.TMP_TABLE,
-                                    () -> mOpenHelper,
-                                    () -> DatabaseHelper.createDatabaseHelper(
-                                            getContext(), true /* forMigration */)));
-                    return result;
-                }
-                return null;
+                Bundle result = new Bundle();
+                result.putBoolean(LauncherSettings.Settings.EXTRA_VALUE,
+                        prepForMigration(
+                                InvariantDeviceProfile.INSTANCE.get(getContext()).dbFile,
+                                Favorites.TMP_TABLE,
+                                () -> mOpenHelper,
+                                () -> DatabaseHelper.createDatabaseHelper(
+                                        getContext(), true /* forMigration */)));
+                return result;
             }
             case LauncherSettings.Settings.METHOD_PREP_FOR_PREVIEW: {
-                if (MULTI_DB_GRID_MIRATION_ALGO.get()) {
-                    Bundle result = new Bundle();
-                    result.putBoolean(LauncherSettings.Settings.EXTRA_VALUE,
-                            prepForMigration(
-                                    arg /* dbFile */,
-                                    Favorites.PREVIEW_TABLE_NAME,
-                                    () -> DatabaseHelper.createDatabaseHelper(
-                                            getContext(), arg, true /* forMigration */),
-                                    () -> mOpenHelper));
-                    return result;
-                }
-                return null;
+                Bundle result = new Bundle();
+                result.putBoolean(LauncherSettings.Settings.EXTRA_VALUE,
+                        prepForMigration(
+                                arg /* dbFile */,
+                                Favorites.PREVIEW_TABLE_NAME,
+                                () -> DatabaseHelper.createDatabaseHelper(
+                                        getContext(), arg, true /* forMigration */),
+                                () -> mOpenHelper));
+                return result;
             }
             case LauncherSettings.Settings.METHOD_SWITCH_DATABASE: {
                 if (TextUtils.equals(arg, mOpenHelper.getDatabaseName())) return null;
@@ -654,8 +647,7 @@ public class LauncherProvider extends ContentProvider {
         static DatabaseHelper createDatabaseHelper(Context context, String dbName,
                 boolean forMigration) {
             if (dbName == null) {
-                dbName = MULTI_DB_GRID_MIRATION_ALGO.get() ? InvariantDeviceProfile.INSTANCE.get(
-                        context).dbFile : LauncherFiles.LAUNCHER_DB;
+                dbName = InvariantDeviceProfile.INSTANCE.get(context).dbFile;
             }
             DatabaseHelper databaseHelper = new DatabaseHelper(context, dbName, forMigration);
             // Table creation sometimes fails silently, which leads to a crash loop.
@@ -665,10 +657,6 @@ public class LauncherProvider extends ContentProvider {
                 Log.e(TAG, "Tables are missing after onCreate has been called. Trying to recreate");
                 // This operation is a no-op if the table already exists.
                 databaseHelper.addFavoritesTable(databaseHelper.getWritableDatabase(), true);
-            }
-            if (!MULTI_DB_GRID_MIRATION_ALGO.get()) {
-                databaseHelper.mBackupTableExists = tableExists(
-                        databaseHelper.getReadableDatabase(), Favorites.BACKUP_TABLE_NAME);
             }
             databaseHelper.mHotseatRestoreTableExists = tableExists(
                     databaseHelper.getReadableDatabase(), Favorites.HYBRID_HOTSEAT_BACKUP_TABLE);
@@ -851,11 +839,7 @@ public class LauncherProvider extends ContentProvider {
                 case 25:
                     convertShortcutsToLauncherActivities(db);
                 case 26:
-                    // QSB was moved to the grid. Clear the first row on screen 0.
-                    if (FeatureFlags.QSB_ON_FIRST_SCREEN &&
-                            !LauncherDbUtils.prepareScreenZeroToHostQsb(mContext, db)) {
-                        break;
-                    }
+                    // QSB was moved to the grid. Ignore overlapping items
                 case 27: {
                     // Update the favorites table so that the screen ids are ordered based on
                     // workspace page rank.

@@ -109,6 +109,11 @@ public class OverviewCommandHelper {
         MAIN_EXECUTOR.execute(() -> addCommand(cmd));
     }
 
+    @UiThread
+    public void clearPendingCommands() {
+        mPendingCommands.clear();
+    }
+
     private TaskView getNextTask(RecentsView view) {
         final TaskView runningTaskView = view.getRunningTaskView();
 
