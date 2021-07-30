@@ -402,7 +402,10 @@ public class WidgetsFullSheet extends BaseWidgetSheet
     private boolean updateMaxSpansPerRow() {
         if (getMeasuredWidth() == 0) return false;
 
-        int maxHorizontalSpans = computeMaxHorizontalSpans(mContent,
+        View content = mHasWorkProfile
+                ? mViewPager
+                : mAdapters.get(AdapterHolder.PRIMARY).mWidgetsRecyclerView;
+        int maxHorizontalSpans = computeMaxHorizontalSpans(content,
                 mWidgetSheetContentHorizontalPadding);
         if (mMaxSpansPerRow != maxHorizontalSpans) {
             mMaxSpansPerRow = maxHorizontalSpans;
