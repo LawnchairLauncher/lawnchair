@@ -191,7 +191,7 @@ fun TopBar(
     ) {
         AnimatedVisibility(visible = showBackArrow) {
             ClickableIcon(
-                painter = painterResource(id = R.drawable.ic_back),
+                imageVector = backIcon(),
                 onClick = onBackArrowClick,
                 tint = MaterialTheme.colors.onSurface
             )
