@@ -34,7 +34,6 @@ import androidx.test.uiautomator.By;
 import androidx.test.uiautomator.Direction;
 import androidx.test.uiautomator.UiObject2;
 
-import com.android.launcher3.ResourceUtils;
 import com.android.launcher3.testing.TestProtocol;
 
 import java.util.regex.Pattern;
@@ -72,8 +71,7 @@ public final class Workspace extends Home {
                      mLauncher.addContextLayer("want to switch from workspace to all apps")) {
             verifyActiveContainer();
             final int deviceHeight = mLauncher.getDevice().getDisplayHeight();
-            final int bottomGestureMargin = ResourceUtils.getNavbarSize(
-                    ResourceUtils.NAVBAR_BOTTOM_GESTURE_SIZE, mLauncher.getResources());
+            final int bottomGestureMargin = mLauncher.getBottomGestureSize();
             final int windowCornerRadius = (int) Math.ceil(mLauncher.getWindowCornerRadius());
             final int startY = deviceHeight - Math.max(bottomGestureMargin, windowCornerRadius) - 1;
             final int swipeHeight = mLauncher.getTestInfo(

@@ -728,18 +728,23 @@ public final class LauncherInstrumentation {
             // otherwise waitForIdle may return immediately in case when there was a big enough
             // pause in accessibility events prior to pressing Home.
             final String action;
-            final boolean launcherWasVisible = isLauncherVisible();
             if (getNavigationModel() == NavigationModel.ZERO_BUTTON) {
                 checkForAnomaly();
 
                 final Point displaySize = getRealDisplaySize();
+                boolean gestureStartFromLauncher = isTablet()
+                        ? !isLauncher3() || hasLauncherObject(WORKSPACE_RES_ID)
+                        : isLauncherVisible();
+                GestureScope gestureScope = gestureStartFromLauncher
+                        ? GestureScope.INSIDE_TO_OUTSIDE
+                        : GestureScope.OUTSIDE_WITH_PILFER;
 
                 if (hasLauncherObject(CONTEXT_MENU_RES_ID)) {
                     linearGesture(
                             displaySize.x / 2, displaySize.y - 1,
                             displaySize.x / 2, 0,
                             ZERO_BUTTON_STEPS_FROM_BACKGROUND_TO_HOME,
-                            false, GestureScope.INSIDE_TO_OUTSIDE);
+                            false, gestureScope);
                     try (LauncherInstrumentation.Closable c1 = addContextLayer(
                             "Swiped up from context menu to home")) {
                         waitUntilLauncherObjectGone(CONTEXT_MENU_RES_ID);
@@ -760,9 +765,7 @@ public final class LauncherInstrumentation {
                             displaySize.x / 2, displaySize.y - 1,
                             displaySize.x / 2, 0,
                             ZERO_BUTTON_STEPS_FROM_BACKGROUND_TO_HOME, NORMAL_STATE_ORDINAL,
-                            launcherWasVisible || isTablet()
-                                    ? GestureScope.INSIDE_TO_OUTSIDE
-                                    : GestureScope.OUTSIDE_WITH_PILFER);
+                            gestureScope);
                 }
             } else {
                 log("Hierarchy before clicking home:");
@@ -1115,9 +1118,9 @@ public final class LauncherInstrumentation {
                 "swiping");
     }
 
-    private int getBottomGestureSize() {
-        return ResourceUtils.getNavbarSize(
-                ResourceUtils.NAVBAR_BOTTOM_GESTURE_SIZE, getResources()) + 1;
+    int getBottomGestureSize() {
+        return Math.max(getTargetInsets().bottom, ResourceUtils.getNavbarSize(
+                ResourceUtils.NAVBAR_BOTTOM_GESTURE_SIZE, getResources())) + 1;
     }
 
     int getBottomGestureMarginInContainer(UiObject2 container) {
