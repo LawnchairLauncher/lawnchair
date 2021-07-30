@@ -327,8 +327,6 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
 
         int paddingLeftRight = grid.cellLayoutPaddingLeftRightPx;
         int paddingBottom = grid.cellLayoutBottomPaddingPx;
-        int twoPanelLandscapeSidePadding = paddingLeftRight * 2;
-        int twoPanelPortraitSidePadding = paddingLeftRight / 2;
 
         int panelCount = getPanelCount();
         for (int i = mWorkspaceScreens.size() - 1; i >= 0; i--) {
@@ -336,13 +334,11 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
             int paddingRight = paddingLeftRight;
             if (panelCount > 1) {
                 if (i % panelCount == 0) { // left side panel
-                    paddingLeft = grid.isLandscape ? twoPanelLandscapeSidePadding
-                            : twoPanelPortraitSidePadding;
+                    paddingLeft = paddingLeftRight;
                     paddingRight = 0;
                 } else if (i % panelCount == panelCount - 1) { // right side panel
                     paddingLeft = 0;
-                    paddingRight = grid.isLandscape ? twoPanelLandscapeSidePadding
-                            : twoPanelPortraitSidePadding;
+                    paddingRight = paddingLeftRight;
                 } else { // middle panel
                     paddingLeft = 0;
                     paddingRight = 0;
