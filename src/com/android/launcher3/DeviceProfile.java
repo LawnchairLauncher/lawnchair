@@ -303,8 +303,10 @@ public class DeviceProfile {
                 : res.getDimensionPixelSize(R.dimen.dynamic_grid_cell_layout_padding);
 
         if (isTwoPanels) {
-            cellLayoutPaddingLeftRightPx =
-                    res.getDimensionPixelSize(R.dimen.two_panel_home_side_padding);
+            cellLayoutPaddingLeftRightPx = res.getDimensionPixelSize(
+                    isLandscape
+                            ? R.dimen.two_panels_home_side_padding_landscape
+                            : R.dimen.two_panels_home_side_padding_portrait);
             cellLayoutBottomPaddingPx = 0;
         } else if (isLandscape) {
             cellLayoutPaddingLeftRightPx = 0;
@@ -753,8 +755,14 @@ public class DeviceProfile {
         // Since we are only concerned with the overall padding, layout direction does
         // not matter.
         Point padding = getTotalWorkspacePadding();
-        result.x = calculateCellWidth(availableWidthPx - padding.x
-                - cellLayoutPaddingLeftRightPx * 2, cellLayoutBorderSpacingPx, inv.numColumns);
+        // availableWidthPx is the screen width of the device. In 2 panels mode, each panel should
+        // only have half of the screen width. In addition, there is only cellLayoutPadding in the
+        // left side of the left panel and the right side of the right panel. There is no
+        // cellLayoutPadding in the middle.
+        int screenWidthPx = isTwoPanels
+                ? availableWidthPx / 2 - padding.x - cellLayoutPaddingLeftRightPx
+                : availableWidthPx - padding.x - cellLayoutPaddingLeftRightPx * 2;
+        result.x = calculateCellWidth(screenWidthPx, cellLayoutBorderSpacingPx, inv.numColumns);
         result.y = calculateCellHeight(availableHeightPx - padding.y
                 - cellLayoutBottomPaddingPx, cellLayoutBorderSpacingPx, inv.numRows);
         return result;
