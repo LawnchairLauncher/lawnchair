@@ -29,7 +29,8 @@
     <dimen name="dynamic_grid_cell_layout_padding">5.5dp</dimen>
     <dimen name="dynamic_grid_cell_padding_x">8dp</dimen>
 
-    <dimen name="two_panel_home_side_padding">18dp</dimen>
+    <dimen name="two_panels_home_side_padding_landscape">36dp</dimen>
+    <dimen name="two_panels_home_side_padding_portrait">9dp</dimen>
 
     <!-- Hotseat -->
     <dimen name="dynamic_grid_hotseat_top_padding">8dp</dimen>
