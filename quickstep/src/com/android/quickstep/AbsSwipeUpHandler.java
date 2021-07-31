@@ -1174,6 +1174,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
             boolean isTranslucent = runningTaskTarget != null && runningTaskTarget.isTranslucent;
             boolean appCanEnterPip = !mDeviceState.isPipActive()
                     && runningTaskTarget != null
+                    && runningTaskTarget.allowEnterPip
                     && runningTaskTarget.taskInfo.pictureInPictureParams != null
                     && runningTaskTarget.taskInfo.pictureInPictureParams.isAutoEnterEnabled();
             HomeAnimationFactory homeAnimFactory =
