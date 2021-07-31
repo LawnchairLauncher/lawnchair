@@ -91,6 +91,8 @@ public class DeviceProfile {
 
     private static final float TALL_DEVICE_ASPECT_RATIO_THRESHOLD = 2.0f;
     private static final float TALLER_DEVICE_ASPECT_RATIO_THRESHOLD = 2.15f;
+    private static final float TALL_DEVICE_EXTRA_SPACE_THRESHOLD_DP = 252;
+    private static final float TALL_DEVICE_MORE_EXTRA_SPACE_THRESHOLD_DP = 268;
 
     // To evenly space the icons, increase the left/right margins for tablets in portrait mode.
     private static final int PORTRAIT_TABLET_LEFT_RIGHT_PADDING_MULTIPLIER = 4;
@@ -377,11 +379,17 @@ public class DeviceProfile {
         } else if (!isVerticalBarLayout() && isPhone && isTallDevice) {
             // We increase the hotseat size when there is extra space.
 
-            if (Float.compare(aspectRatio, TALLER_DEVICE_ASPECT_RATIO_THRESHOLD) >= 0) {
-                // For taller devices, we will take a third of the extra space from each row,
+            if (Float.compare(aspectRatio, TALLER_DEVICE_ASPECT_RATIO_THRESHOLD) >= 0
+                    && extraSpace >= Utilities.dpToPx(TALL_DEVICE_EXTRA_SPACE_THRESHOLD_DP)) {
+                // For taller devices, we will take a piece of the extra space from each row,
                 // and add it to the space above and below the hotseat.
+
+                // For devices with more extra space, we take a larger piece from each cell.
+                int piece = extraSpace < Utilities.dpToPx(TALL_DEVICE_MORE_EXTRA_SPACE_THRESHOLD_DP)
+                        ? 5 : 3;
+
                 int extraSpace = ((getCellSize().y - iconSizePx - iconDrawablePaddingPx * 2)
-                        * inv.numRows) / 3;
+                        * inv.numRows) / piece;
 
                 int halfExtraSpace = extraSpace / 2;
                 hotseatBarTopPaddingPx += halfExtraSpace;
