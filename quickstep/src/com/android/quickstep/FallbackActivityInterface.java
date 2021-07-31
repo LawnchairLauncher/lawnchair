@@ -107,10 +107,9 @@ public final class FallbackActivityInterface extends
     public RecentsView getVisibleRecentsView() {
         RecentsActivity activity = getCreatedActivity();
         if (activity != null) {
-            RecentsView recentsView = activity.getOverviewPanel();
-            if (activity.hasBeenResumed() || (ENABLE_QUICKSTEP_LIVE_TILE.get() && isInLiveTileMode()
-                    && recentsView.getRunningTaskId() == -1)) {
-                return recentsView;
+            if (activity.hasBeenResumed()
+                    || (ENABLE_QUICKSTEP_LIVE_TILE.get() && isInLiveTileMode())) {
+                return activity.getOverviewPanel();
             }
         }
         return null;
