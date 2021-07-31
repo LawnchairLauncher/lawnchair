@@ -277,6 +277,10 @@ public class TouchInteractionService extends Service implements PluginListener<O
         public TaskbarManager getTaskbarManager() {
             return mTaskbarManager;
         }
+
+        public OverviewCommandHelper getOverviewCommandHelper() {
+            return mOverviewCommandHelper;
+        }
     }
 
     private static boolean sConnected = false;
