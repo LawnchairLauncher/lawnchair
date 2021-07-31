@@ -80,6 +80,7 @@ import android.content.res.Configuration;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.Rect;
+import android.graphics.RectF;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CancellationSignal;
@@ -2870,11 +2871,24 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
                 if (Utilities.IS_RUNNING_IN_TEST_HARNESS) {
                     Log.d(TestProtocol.PERMANENT_DIAG_TAG, "Opening options popup on key up");
                 }
-                OptionsPopupView.showDefaultOptions(this, -1, -1);
+                showDefaultOptions(-1, -1);
             }
             return true;
         }
         return super.onKeyUp(keyCode, event);
+    }
+
+    /**
+     * Shows the default options popup
+     */
+    public void showDefaultOptions(float x, float y) {
+        float halfSize = getResources().getDimension(R.dimen.options_menu_thumb_size) / 2;
+        if (x < 0 || y < 0) {
+            x = mDragLayer.getWidth() / 2;
+            y = mDragLayer.getHeight() / 2;
+        }
+        RectF target = new RectF(x - halfSize, y - halfSize, x + halfSize, y + halfSize);
+        OptionsPopupView.show(this, target, OptionsPopupView.getOptions(this), false);
     }
 
     @Override

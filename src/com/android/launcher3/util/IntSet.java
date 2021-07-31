@@ -37,6 +37,15 @@ public class IntSet implements Iterable<Integer> {
     }
 
     /**
+     * Appends the specified IntSet's values to the set if they does not exist, then returns the
+     * original set that now also contains the new values.
+     */
+    public IntSet addAll(IntSet other) {
+        other.forEach(this::add);
+        return this;
+    }
+
+    /**
      * Removes the specified value from the set if it exist.
      */
     public void remove(int value) {

@@ -94,6 +94,8 @@ public class DeviceProfile {
 
     private static final float TALL_DEVICE_ASPECT_RATIO_THRESHOLD = 2.0f;
     private static final float TALLER_DEVICE_ASPECT_RATIO_THRESHOLD = 2.15f;
+    private static final float TALL_DEVICE_EXTRA_SPACE_THRESHOLD_DP = 252;
+    private static final float TALL_DEVICE_MORE_EXTRA_SPACE_THRESHOLD_DP = 268;
 
     // To evenly space the icons, increase the left/right margins for tablets in portrait mode.
     private static final int PORTRAIT_TABLET_LEFT_RIGHT_PADDING_MULTIPLIER = 4;
@@ -257,7 +259,8 @@ public class DeviceProfile {
         final Resources res = context.getResources();
 
         hotseatQsbHeight = res.getDimensionPixelSize(R.dimen.qsb_widget_height);
-        isTaskbarPresent = isTablet && FeatureFlags.ENABLE_TASKBAR.get();
+        isTaskbarPresent = isTablet && ApiWrapper.TASKBAR_DRAWN_IN_PROCESS
+                && FeatureFlags.ENABLE_TASKBAR.get();
         if (isTaskbarPresent) {
             // Taskbar will be added later, but provides bottom insets that we should subtract
             // from availableHeightPx.
@@ -302,8 +305,10 @@ public class DeviceProfile {
                 : res.getDimensionPixelSize(R.dimen.dynamic_grid_cell_layout_padding);
 
         if (isTwoPanels) {
-            cellLayoutPaddingLeftRightPx =
-                    res.getDimensionPixelSize(R.dimen.two_panel_home_side_padding);
+            cellLayoutPaddingLeftRightPx = res.getDimensionPixelSize(
+                    isLandscape
+                            ? R.dimen.two_panels_home_side_padding_landscape
+                            : R.dimen.two_panels_home_side_padding_portrait);
             cellLayoutBottomPaddingPx = 0;
         } else if (isLandscape) {
             cellLayoutPaddingLeftRightPx = 0;
@@ -407,11 +412,17 @@ public class DeviceProfile {
         } else if (!isVerticalBarLayout() && isPhone && isTallDevice) {
             // We increase the hotseat size when there is extra space.
 
-            if (Float.compare(aspectRatio, TALLER_DEVICE_ASPECT_RATIO_THRESHOLD) >= 0) {
-                // For taller devices, we will take a third of the extra space from each row,
+            if (Float.compare(aspectRatio, TALLER_DEVICE_ASPECT_RATIO_THRESHOLD) >= 0
+                    && extraSpace >= Utilities.dpToPx(TALL_DEVICE_EXTRA_SPACE_THRESHOLD_DP)) {
+                // For taller devices, we will take a piece of the extra space from each row,
                 // and add it to the space above and below the hotseat.
+
+                // For devices with more extra space, we take a larger piece from each cell.
+                int piece = extraSpace < Utilities.dpToPx(TALL_DEVICE_MORE_EXTRA_SPACE_THRESHOLD_DP)
+                        ? 5 : 3;
+
                 int extraSpace = ((getCellSize().y - iconSizePx - iconDrawablePaddingPx * 2)
-                        * inv.numRows) / 3;
+                        * inv.numRows) / piece;
 
                 int halfExtraSpace = extraSpace / 2;
                 hotseatBarTopPaddingPx += halfExtraSpace;
@@ -752,8 +763,14 @@ public class DeviceProfile {
         // Since we are only concerned with the overall padding, layout direction does
         // not matter.
         Point padding = getTotalWorkspacePadding();
-        result.x = calculateCellWidth(availableWidthPx - padding.x
-                - cellLayoutPaddingLeftRightPx * 2, cellLayoutBorderSpacingPx, inv.numColumns);
+        // availableWidthPx is the screen width of the device. In 2 panels mode, each panel should
+        // only have half of the screen width. In addition, there is only cellLayoutPadding in the
+        // left side of the left panel and the right side of the right panel. There is no
+        // cellLayoutPadding in the middle.
+        int screenWidthPx = isTwoPanels
+                ? availableWidthPx / 2 - padding.x - cellLayoutPaddingLeftRightPx
+                : availableWidthPx - padding.x - cellLayoutPaddingLeftRightPx * 2;
+        result.x = calculateCellWidth(screenWidthPx, cellLayoutBorderSpacingPx, inv.numColumns);
         result.y = calculateCellHeight(availableHeightPx - padding.y
                 - cellLayoutBottomPaddingPx, cellLayoutBorderSpacingPx, inv.numRows);
         return result;
