@@ -99,6 +99,7 @@ public class FallbackRecentsTest {
         mDevice = UiDevice.getInstance(instrumentation);
         mDevice.setOrientationNatural();
         mLauncher = new LauncherInstrumentation();
+        mLauncher.enableDebugTracing();
         // b/143488140
         //mLauncher.enableCheckEventsForSuccessfulGestures();
 
