@@ -33,8 +33,11 @@ import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.os.SystemClock;
+import android.util.Log;
 import android.util.SparseIntArray;
 
+import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.tracing.OverviewComponentObserverProto;
 import com.android.launcher3.tracing.TouchInteractionServiceProto;
 import com.android.launcher3.util.SimpleBroadcastReceiver;
@@ -129,6 +132,16 @@ public final class OverviewComponentObserver {
     private void updateOverviewTargets() {
         ComponentName defaultHome = PackageManagerWrapper.getInstance()
                 .getHomeActivities(new ArrayList<>());
+        if (TestProtocol.sDebugTracing && defaultHome == null) {
+            Log.d(TestProtocol.THIRD_PARTY_LAUNCHER_NOT_SET, "getHomeActivities returned null");
+            while ((defaultHome =
+                    PackageManagerWrapper.getInstance().getHomeActivities(new ArrayList<>()))
+                    == null) {
+                SystemClock.sleep(10);
+            }
+            Log.d(TestProtocol.THIRD_PARTY_LAUNCHER_NOT_SET,
+                    "getHomeActivities returned non-null: " + defaultHome);
+        }
 
         mIsHomeDisabled = mDeviceState.isHomeDisabled();
         mIsDefaultHome = Objects.equals(mMyHomeIntent.getComponent(), defaultHome);
