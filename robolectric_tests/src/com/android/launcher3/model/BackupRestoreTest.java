@@ -76,7 +76,7 @@ public class BackupRestoreTest {
         setupUserManager();
         setupBackupManager();
         mModelHelper = new LauncherModelHelper();
-        RestoreDbTask.setPending(RuntimeEnvironment.application, true);
+        RestoreDbTask.setPending(RuntimeEnvironment.application);
         mDb = mModelHelper.provider.getDb();
         mIdp = InvariantDeviceProfile.INSTANCE.get(RuntimeEnvironment.application);
     }
