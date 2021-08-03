@@ -21,7 +21,7 @@ public class QuickstepTestInformationHandler extends TestInformationHandler {
     }
 
     @Override
-    public Bundle call(String method) {
+    public Bundle call(String method, String arg) {
         final Bundle response = new Bundle();
         switch (method) {
             case TestProtocol.REQUEST_ALL_APPS_TO_OVERVIEW_SWIPE_HEIGHT: {
@@ -66,7 +66,7 @@ public class QuickstepTestInformationHandler extends TestInformationHandler {
             }
         }
 
-        return super.call(method);
+        return super.call(method, arg);
     }
 
     @Override
