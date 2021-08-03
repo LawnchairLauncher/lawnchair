@@ -95,7 +95,7 @@ public class FallbackRecentsView extends RecentsView<RecentsActivity, RecentsSta
             TaskViewSimulator taskViewSimulator) {
         super.onPrepareGestureEndAnimation(animatorSet, endTarget, taskViewSimulator);
         if (mHomeTaskInfo != null && endTarget == RECENTS && animatorSet != null) {
-            TaskView tv = getTaskView(mHomeTaskInfo.taskId);
+            TaskView tv = getTaskViewByTaskId(mHomeTaskInfo.taskId);
             if (tv != null) {
                 PendingAnimation pa = createTaskDismissAnimation(tv, true, false, 150,
                         false /* dismissingForSplitSelection*/);
@@ -117,8 +117,9 @@ public class FallbackRecentsView extends RecentsView<RecentsActivity, RecentsSta
     }
 
     @Override
-    public void setCurrentTask(int runningTaskId) {
-        super.setCurrentTask(runningTaskId);
+    public void setCurrentTask(int runningTaskViewId) {
+        super.setCurrentTask(runningTaskViewId);
+        int runningTaskId = getTaskIdsForRunningTaskView()[0];
         if (mHomeTaskInfo != null && mHomeTaskInfo.taskId != runningTaskId) {
             mHomeTaskInfo = null;
             setRunningTaskHidden(false);
@@ -128,7 +129,7 @@ public class FallbackRecentsView extends RecentsView<RecentsActivity, RecentsSta
     @Nullable
     @Override
     protected TaskView getHomeTaskView() {
-        return mHomeTaskInfo != null ? getTaskView(mHomeTaskInfo.taskId) : null;
+        return mHomeTaskInfo != null ? getTaskViewByTaskId(mHomeTaskInfo.taskId) : null;
     }
 
     @Override
@@ -148,11 +149,12 @@ public class FallbackRecentsView extends RecentsView<RecentsActivity, RecentsSta
         // When quick-switching on 3p-launcher, we add a "stub" tile corresponding to Launcher
         // as well. This tile is never shown as we have setCurrentTaskHidden, but allows use to
         // track the index of the next task appropriately, as if we are switching on any other app.
-        if (mHomeTaskInfo != null && mHomeTaskInfo.taskId == mRunningTaskId && !tasks.isEmpty()) {
+        int runningTaskId = getTaskIdsForRunningTaskView()[0];
+        if (mHomeTaskInfo != null && mHomeTaskInfo.taskId == runningTaskId && !tasks.isEmpty()) {
             // Check if the task list has running task
             boolean found = false;
             for (Task t : tasks) {
-                if (t.key.id == mRunningTaskId) {
+                if (t.key.id == runningTaskId) {
                     found = true;
                     break;
                 }
