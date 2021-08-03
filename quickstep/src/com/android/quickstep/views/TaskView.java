@@ -366,6 +366,9 @@ public class TaskView extends FrameLayout implements Reusable {
     private float mModalness = 0;
     private float mStableAlpha = 1;
 
+    private int mTaskViewId = -1;
+    private final int[] mTaskIdContainer = new int[]{-1, -1};
+
     private boolean mShowScreenshot;
 
     // The current background requests to load the task thumbnail and icon
@@ -399,6 +402,14 @@ public class TaskView extends FrameLayout implements Reusable {
         mOutlineProvider = new TaskOutlineProvider(getContext(), mCurrentFullscreenParams,
                 mActivity.getDeviceProfile().overviewTaskThumbnailTopMarginPx);
         setOutlineProvider(mOutlineProvider);
+    }
+
+    public void setTaskViewId(int id) {
+        this.mTaskViewId = id;
+    }
+
+    public int getTaskViewId() {
+        return mTaskViewId;
     }
 
     /**
@@ -506,6 +517,7 @@ public class TaskView extends FrameLayout implements Reusable {
     public void bind(Task task, RecentsOrientedState orientedState) {
         cancelPendingLoadTasks();
         mTask = task;
+        mTaskIdContainer[0] = mTask.key.id;
         mSnapshotView.bind(task);
         setOrientationState(orientedState);
     }
@@ -514,8 +526,12 @@ public class TaskView extends FrameLayout implements Reusable {
         return mTask;
     }
 
-    public int getTaskId() {
-        return mTask != null && mTask.key != null ? mTask.key.id : -1;
+    /**
+     * @return integer array of two elements to be size consistent with max number of tasks possible
+     *         index 0 will contain the taskId, index 1 will be -1 indicating a null taskID value
+     */
+    public int[] getTaskIds() {
+        return mTaskIdContainer;
     }
 
     public TaskThumbnailView getThumbnail() {
@@ -598,7 +614,8 @@ public class TaskView extends FrameLayout implements Reusable {
             ActivityOptionsWrapper opts =  mActivity.getActivityLaunchOptions(this, null);
             if (ActivityManagerWrapper.getInstance()
                     .startActivityFromRecents(mTask.key, opts.options)) {
-                if (ENABLE_QUICKSTEP_LIVE_TILE.get() && getRecentsView().getRunningTaskId() != -1) {
+                if (ENABLE_QUICKSTEP_LIVE_TILE.get() &&
+                        getRecentsView().getRunningTaskViewId() != -1) {
                     // Return a fresh callback in the live tile case, so that it's not accidentally
                     // triggered by QuickstepTransitionManager.AppLaunchAnimationRunner.
                     RunnableList callbackList = new RunnableList();
