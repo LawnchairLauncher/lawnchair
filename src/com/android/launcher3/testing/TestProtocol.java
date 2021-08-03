@@ -112,4 +112,5 @@ public final class TestProtocol {
     public static final String PERMANENT_DIAG_TAG = "TaplTarget";
     public static final String WORK_PROFILE_REMOVED = "b/159671700";
     public static final String FALLBACK_ACTIVITY_NO_SET = "b/181019015";
+    public static final String THIRD_PARTY_LAUNCHER_NOT_SET = "b/187080582";
 }
