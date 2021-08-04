@@ -26,10 +26,12 @@ import android.widget.FrameLayout;
 import com.android.launcher3.R;
 import com.android.launcher3.util.Themes;
 
+import app.lawnchair.ui.StretchRelativeLayout;
+
 /**
  * View with top rounded corners.
  */
-public class TopRoundedCornerView extends SpringRelativeLayout {
+public class TopRoundedCornerView extends StretchRelativeLayout {
 
     private final RectF mRect = new RectF();
     private final Path mClipPath = new Path();
