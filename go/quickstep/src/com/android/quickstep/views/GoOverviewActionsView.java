@@ -91,7 +91,8 @@ public class GoOverviewActionsView extends OverviewActionsView<OverlayUICallback
         mArrowTipView = new ArrowTipView(getContext(),  /* isPointingUp= */ false)
             .showAtLocation(getResources().getString(textResourceId),
                 /* arrowXCoord= */ location[0] + findViewById(viewId).getWidth() / 2,
-                /* yCoord= */ location[1] - topMargin);
+                /* yCoord= */ location[1] - topMargin,
+                /* shouldAutoClose= */ false);
 
         mArrowTipView.bringToFront();
         return mArrowTipView;
