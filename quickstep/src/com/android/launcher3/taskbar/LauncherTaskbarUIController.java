@@ -35,6 +35,7 @@ import com.android.launcher3.anim.AnimatorListeners;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.util.MultiValueAlpha;
 import com.android.launcher3.util.MultiValueAlpha.AlphaProperty;
+import com.android.launcher3.util.OnboardingPrefs;
 import com.android.quickstep.AnimatedFloat;
 import com.android.quickstep.RecentsAnimationCallbacks;
 import com.android.quickstep.RecentsAnimationCallbacks.RecentsAnimationListener;
@@ -266,9 +267,11 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
      * Starts the taskbar education flow, if the user hasn't seen it yet.
      */
     public void showEdu() {
-        if (!FeatureFlags.ENABLE_TASKBAR_EDU.get()) {
+        if (!FeatureFlags.ENABLE_TASKBAR_EDU.get()
+                || mLauncher.getOnboardingPrefs().getBoolean(OnboardingPrefs.TASKBAR_EDU_SEEN)) {
             return;
         }
+        mLauncher.getOnboardingPrefs().markChecked(OnboardingPrefs.TASKBAR_EDU_SEEN);
 
         mControllers.taskbarEduController.showEdu();
     }
