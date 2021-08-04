@@ -61,11 +61,12 @@ fun SliderPreference(
                     LocalContentAlpha provides ContentAlpha.medium,
                     LocalContentColor provides MaterialTheme.colors.onBackground
                 ) {
+                    val value = snapSliderValue(valueRange.start, sliderValue, step)
                     Text(
                         text = if (showAsPercentage) {
-                            "${(sliderValue * 100).roundToInt()}%"
+                            "${(value * 100).roundToInt()}%"
                         } else {
-                            "${sliderValue.roundToInt()}"
+                            "${value.roundToInt()}"
                         }
                     )
                 }
@@ -96,4 +97,14 @@ fun getSteps(valueRange: ClosedFloatingPointRange<Float>, step: Float): Int {
         throw IllegalArgumentException("value range must be a multiple of step")
     }
     return steps - 1
+}
+
+fun snapSliderValue(start: Float, value: Float, step: Float): Float {
+    if (step == 0f) {
+        return value
+    }
+    val distance = value - start
+    val stepsFromStart = (distance / step).roundToInt()
+    val snappedDistance = stepsFromStart * step
+    return start + snappedDistance
 }
