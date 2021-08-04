@@ -92,10 +92,9 @@
     <string name="theme_system_default">Jako systémové</string>
     <string name="theme_follow_wallpaper">Vybráno z tapety</string>
     <string name="quickstep_label">Předešlé</string>
-    <string name="clear_all_as_action_label">Zobrazit \"Vymazat vše\" na spodu</string>
-    <string name="window_corner_radius_label">Poloměr rohu</string>
-    <string name="override_window_corner_radius_label">Vlastní poloměr rohu</string>
-    <string name="override_window_corner_radius_description">Je-li výchozí nastavení nekompatibilní s displayem</string>
+    <string name="clear_all_as_action_label">Clear All Button at Bottom</string>
+    <string name="window_corner_radius_label">Corner Radius</string>
+    <string name="override_window_corner_radius_label">Custom Corner Radius</string>
     <string name="system_icons">Systémové Ikony</string>
     <string name="accent_color">Barva odstínu</string>
     <string name="done">Hotovo</string>
@@ -103,4 +102,5 @@
     <string name="system">Systém</string>
     <string name="custom">Vlastní</string>
     <string name="custom_color">Vlastní barva</string>
+    <string name="quickstep_description">Clear All Button, Corner Radius</string>
 </resources>
