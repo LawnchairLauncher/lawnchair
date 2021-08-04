@@ -31,6 +31,6 @@ public class LauncherBackupAgent extends BackupAgent {
 
     @Override
     public void onRestoreFinished() {
-        RestoreDbTask.setPending(this, true);
+        RestoreDbTask.setPending(this);
     }
 }
