@@ -353,7 +353,7 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
         } else if (focus == View.FOCUS_RIGHT) {
             nextPage = currentPage + panelCount;
         } else {
-            // no neighbours to those direction
+            // no neighbours to other directions
             return new IntSet();
         }
         nextPage = validateNewPage(nextPage);
@@ -362,12 +362,7 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
             return new IntSet();
         }
 
-        int pageCount = getPageCount();
-        IntSet neighbourIndices = new IntSet();
-        for (int page = nextPage; page < nextPage + panelCount && page < pageCount; page++) {
-            neighbourIndices.add(page);
-        }
-        return neighbourIndices;
+        return getPageIndices(nextPage);
     }
 
     /**
