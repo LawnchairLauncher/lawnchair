@@ -16,6 +16,7 @@
 
 package com.android.launcher3.provider;
 
+import static com.android.launcher3.model.DeviceGridState.TYPE_PHONE;
 import static com.android.launcher3.provider.LauncherDbUtils.dropTable;
 
 import android.app.backup.BackupManager;
@@ -38,6 +39,7 @@ import com.android.launcher3.LauncherProvider.DatabaseHelper;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.logging.FileLog;
+import com.android.launcher3.model.DeviceGridState;
 import com.android.launcher3.model.GridBackupTable;
 import com.android.launcher3.model.data.LauncherAppWidgetInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
@@ -57,7 +59,7 @@ import java.util.Arrays;
 public class RestoreDbTask {
 
     private static final String TAG = "RestoreDbTask";
-    private static final String RESTORE_TASK_PENDING = "restore_task_pending";
+    private static final String RESTORED_DEVICE_TYPE = "restored_task_pending";
 
     private static final String INFO_COLUMN_NAME = "name";
     private static final String INFO_COLUMN_DEFAULT_VALUE = "dflt_value";
@@ -65,13 +67,33 @@ public class RestoreDbTask {
     private static final String APPWIDGET_OLD_IDS = "appwidget_old_ids";
     private static final String APPWIDGET_IDS = "appwidget_ids";
 
-    public static boolean performRestore(Context context, DatabaseHelper helper,
-            BackupManager backupManager) {
+    /**
+     * Tries to restore the backup DB if needed
+     */
+    public static void restoreIfNeeded(Context context, DatabaseHelper helper) {
+        if (!isPending(context)) {
+            return;
+        }
+        if (!performRestore(context, helper)) {
+            helper.createEmptyDB(helper.getWritableDatabase());
+        }
+
+        // Set is pending to false irrespective of the result, so that it doesn't get
+        // executed again.
+        Utilities.getPrefs(context).edit().remove(RESTORED_DEVICE_TYPE).commit();
+    }
+
+    private static boolean performRestore(Context context, DatabaseHelper helper) {
+        if (new DeviceGridState(LauncherAppState.getIDP(context)).getDeviceType()
+                != Utilities.getPrefs(context).getInt(RESTORED_DEVICE_TYPE, TYPE_PHONE)) {
+            // DO not restore if the device types are different
+            return false;
+        }
         SQLiteDatabase db = helper.getWritableDatabase();
         try (SQLiteTransaction t = new SQLiteTransaction(db)) {
             RestoreDbTask task = new RestoreDbTask();
             task.backupWorkspace(context, db);
-            task.sanitizeDB(helper, db, backupManager);
+            task.sanitizeDB(helper, db, new BackupManager(context));
             task.restoreAppWidgetIdsIfExists(context);
             t.commit();
             return true;
@@ -279,12 +301,17 @@ public class RestoreDbTask {
     }
 
     public static boolean isPending(Context context) {
-        return Utilities.getPrefs(context).getBoolean(RESTORE_TASK_PENDING, false);
+        return Utilities.getPrefs(context).contains(RESTORED_DEVICE_TYPE);
     }
 
-    public static void setPending(Context context, boolean isPending) {
-        FileLog.d(TAG, "Restore data received through full backup " + isPending);
-        Utilities.getPrefs(context).edit().putBoolean(RESTORE_TASK_PENDING, isPending).commit();
+    /**
+     * Marks the DB state as pending restoration
+     */
+    public static void setPending(Context context) {
+        FileLog.d(TAG, "Restore data received through full backup ");
+        Utilities.getPrefs(context).edit()
+                .putInt(RESTORED_DEVICE_TYPE, new DeviceGridState(context).getDeviceType())
+                .commit();
     }
 
     private void restoreAppWidgetIdsIfExists(Context context) {
