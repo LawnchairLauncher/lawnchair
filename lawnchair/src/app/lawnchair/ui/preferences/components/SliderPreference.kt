@@ -87,9 +87,7 @@ fun SliderPreference(
 }
 
 fun getSteps(valueRange: ClosedFloatingPointRange<Float>, step: Float): Int {
-    if (step == 0f) {
-        return 0
-    }
+    if (step == 0f) return 0
     val start = valueRange.start
     val end = valueRange.endInclusive
     val steps = ((end - start) / step).toInt()
@@ -100,9 +98,7 @@ fun getSteps(valueRange: ClosedFloatingPointRange<Float>, step: Float): Int {
 }
 
 fun snapSliderValue(start: Float, value: Float, step: Float): Float {
-    if (step == 0f) {
-        return value
-    }
+    if (step == 0f) return value
     val distance = value - start
     val stepsFromStart = (distance / step).roundToInt()
     val snappedDistance = stepsFromStart * step

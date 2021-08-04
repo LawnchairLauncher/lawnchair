@@ -60,9 +60,7 @@ class StretchEdgeEffect(
         private const val MAX_DISTANCE = 0.05f
 
         private val DAMPED_SCROLL = object : FloatPropertyCompat<StretchEdgeEffect>("value") {
-            override fun getValue(obj: StretchEdgeEffect): Float {
-                return obj.dampedScrollShift
-            }
+            override fun getValue(obj: StretchEdgeEffect) = obj.dampedScrollShift
 
             override fun setValue(obj: StretchEdgeEffect, value: Float) {
                 obj.dampedScrollShift = value
@@ -70,17 +68,13 @@ class StretchEdgeEffect(
         }
 
         fun getScale(shift: Float, size: Float): Float {
-            if (shift == 0f) {
-                return 1f
-            }
+            if (shift == 0f) return 1f
             val distance = abs(shift / size).coerceAtMost(MAX_DISTANCE)
             val progress = distance / MAX_DISTANCE
             val interpolatedProgress = SCALE_INTERPOLATOR.getInterpolation(progress)
             return 1f + interpolatedProgress * MAX_DISTANCE
         }
 
-        fun getPivot(shift: Float, size: Float): Float {
-            return if (shift < 0f) size else 0f
-        }
+        fun getPivot(shift: Float, size: Float) = if (shift < 0f) size else 0f
     }
 }

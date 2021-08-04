@@ -51,11 +51,10 @@ private class NestedScrollStretchConnection(
         available: Offset,
         source: NestedScrollSource
     ): Offset {
-        if (isFlinging) return Offset.Zero
-        if (available.y != 0f) {
-            effect.onPull(available.y)
-        } else {
-            effect.onRelease()
+        when {
+            isFlinging -> return Offset.Zero
+            available.y != 0F -> effect.onPull(available.y)
+            else -> effect.onRelease()
         }
         return available
     }
