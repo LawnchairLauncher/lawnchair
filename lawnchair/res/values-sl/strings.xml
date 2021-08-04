@@ -92,10 +92,9 @@
     <string name="theme_system_default">Sledi sistemu</string>
     <string name="theme_follow_wallpaper">Uskladi s ozadjem</string>
     <string name="quickstep_label">Nedavno</string>
-    <string name="clear_all_as_action_label">Prikaži gumb »Počisti vse«</string>
-    <string name="window_corner_radius_label">Polmer robov</string>
-    <string name="override_window_corner_radius_label">Polmer robov po meri</string>
-    <string name="override_window_corner_radius_description">Če se privzeto ne ujema z zaslonom</string>
+    <string name="clear_all_as_action_label">Clear All Button at Bottom</string>
+    <string name="window_corner_radius_label">Corner Radius</string>
+    <string name="override_window_corner_radius_label">Custom Corner Radius</string>
     <string name="system_icons">Sistemske ikone</string>
     <string name="accent_color">Sekundarna barva</string>
     <string name="done">Končano</string>
@@ -103,4 +102,5 @@
     <string name="system">Sistem</string>
     <string name="custom">Po meri</string>
     <string name="custom_color">Barve po meri</string>
+    <string name="quickstep_description">Clear All Button, Corner Radius</string>
 </resources>
