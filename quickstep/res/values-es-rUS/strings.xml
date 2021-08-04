@@ -53,16 +53,16 @@
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"Cambia sensibilidad de gesto \"Atrás\" en Configuración"</string>
     <string name="back_gesture_intro_title" msgid="19551256430224428">"Desliza el dedo para volver"</string>
     <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"Desliza el dedo desde el borde derecho o izquierdo para volver a la última pantalla."</string>
-    <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"Asegúrate de deslizar el dedo hacia arriba desde la borde inferior de la pantalla."</string>
+    <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"Desliza el dedo hacia arriba desde el borde inferior de la pantalla."</string>
     <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"Asegúrate de no detenerte antes de soltarlo."</string>
-    <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"Asegúrate de deslizar el dedo derecho hacia arriba."</string>
+    <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"Desliza el dedo directamente hacia arriba."</string>
     <string name="home_gesture_feedback_complete_with_follow_up" msgid="1427872029729605034">"Completaste el gesto para ir a la página principal. A continuación, obtén información para volver."</string>
     <string name="home_gesture_feedback_complete_without_follow_up" msgid="8049099486868933882">"Completaste el gesto para ir a la página principal."</string>
     <string name="home_gesture_intro_title" msgid="836590312858441830">"Desliza el dedo para ir a la página principal"</string>
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"Desliza el dedo hacia arriba desde la parte inferior de la pantalla. Este gesto te llevará siempre a la pantalla principal."</string>
-    <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"Asegúrate de deslizar el dedo hacia arriba desde la borde inferior de la pantalla."</string>
+    <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"Desliza el dedo hacia arriba desde el borde inferior de la pantalla."</string>
     <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"Prueba mantener presionada la ventana más tiempo antes de soltarla."</string>
-    <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"Asegúrate de deslizar el dedo derecho hacia arriba y, luego, detente."</string>
+    <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"Desliza el dedo directamente hacia arriba y luego detente."</string>
     <string name="overview_gesture_feedback_complete_with_follow_up" msgid="3544611727467765026">"Ya sabes cómo usar los gestos. Para desactivarlos, ve a Configuración."</string>
     <string name="overview_gesture_feedback_complete_without_follow_up" msgid="3199486203448379152">"Completaste el gesto para cambiar de app."</string>
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"Desliza el dedo para cambiar de app"</string>
