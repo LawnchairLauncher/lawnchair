@@ -60,7 +60,7 @@ public class TestInformationProvider extends ContentProvider {
         if (Utilities.IS_RUNNING_IN_TEST_HARNESS) {
             TestInformationHandler handler = TestInformationHandler.newInstance(getContext());
             handler.init(getContext());
-            return handler.call(method);
+            return handler.call(method, arg);
         }
         return null;
     }

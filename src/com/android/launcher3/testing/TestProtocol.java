@@ -98,6 +98,9 @@ public final class TestProtocol {
     public static final String REQUEST_IS_TABLET = "is-tablet";
     public static final String REQUEST_IS_TWO_PANELS = "is-two-panel";
 
+    public static Long sForcePauseTimeout;
+    public static final String REQUEST_SET_FORCE_PAUSE_TIMEOUT = "set-force-pause-timeout";
+
     public static boolean sDebugTracing = false;
     public static final String REQUEST_ENABLE_DEBUG_TRACING = "enable-debug-tracing";
     public static final String REQUEST_DISABLE_DEBUG_TRACING = "disable-debug-tracing";
