@@ -90,9 +90,9 @@
     <string name="theme_system_default">Volg systeem</string>
     <string name="theme_follow_wallpaper">Overeenkomen met achtergrond</string>
     <string name="quickstep_label">Recente apps</string>
-    <string name="clear_all_as_action_label">Clear All Button at Bottom</string>
-    <string name="window_corner_radius_label">Corner Radius</string>
-    <string name="override_window_corner_radius_label">Custom Corner Radius</string>
+    <string name="clear_all_as_action_label">Wis alles knop onderaan</string>
+    <string name="window_corner_radius_label">Hoek radius</string>
+    <string name="override_window_corner_radius_label">Aangepaste hoek radius</string>
     <string name="system_icons">Systeem iconen</string>
     <string name="accent_color">Accent kleur</string>
     <string name="done">Voltooid</string>
@@ -100,5 +100,5 @@
     <string name="system">Systeem</string>
     <string name="custom">Gepersonaliseerd</string>
     <string name="custom_color">Gepersonaliseerde kleur</string>
-    <string name="quickstep_description">Clear All Button, Corner Radius</string>
+    <string name="quickstep_description">Wis alles knop, hoek radius</string>
 </resources>
