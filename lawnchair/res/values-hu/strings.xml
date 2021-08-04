@@ -90,10 +90,9 @@
     <string name="theme_system_default">Rendszer szerinti téma követése</string>
     <string name="theme_follow_wallpaper">Háttérkép szerinti téma</string>
     <string name="quickstep_label">Legutóbbi</string>
-    <string name="clear_all_as_action_label">\"Minden törlése\" mutatása alul</string>
-    <string name="window_corner_radius_label">Sarok sugár</string>
-    <string name="override_window_corner_radius_label">Egyedi sarok sugár</string>
-    <string name="override_window_corner_radius_description">Amennyiben az alapértelmezett nem egyezik a képernyőjével</string>
+    <string name="clear_all_as_action_label">Clear All Button at Bottom</string>
+    <string name="window_corner_radius_label">Corner Radius</string>
+    <string name="override_window_corner_radius_label">Custom Corner Radius</string>
     <string name="system_icons">Rendszerikonok</string>
     <string name="accent_color">Kiemelő szín</string>
     <string name="done">Kész</string>
@@ -101,4 +100,5 @@
     <string name="system">Rendszer</string>
     <string name="custom">Egyedi</string>
     <string name="custom_color">Egyedi szín</string>
+    <string name="quickstep_description">Clear All Button, Corner Radius</string>
 </resources>
