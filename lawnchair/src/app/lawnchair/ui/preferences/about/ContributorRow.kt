@@ -32,7 +32,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import app.lawnchair.ui.preferences.components.PreferenceTemplate
-import com.google.accompanist.glide.rememberGlidePainter
+import coil.compose.rememberImagePainter
 
 @Composable
 fun ContributorRow(name: String, description: String, photoUrl: String, url: String, showDivider: Boolean = true) {
@@ -53,7 +53,12 @@ fun ContributorRow(name: String, description: String, photoUrl: String, url: Str
             verticalAlignment = Alignment.CenterVertically
         ) {
             Image(
-                painter = rememberGlidePainter(request = photoUrl, fadeIn = true),
+                painter = rememberImagePainter(
+                    data = photoUrl,
+                    builder = {
+                        crossfade(true)
+                    }
+                ),
                 contentDescription = null,
                 modifier = Modifier
                     .clip(CircleShape)
