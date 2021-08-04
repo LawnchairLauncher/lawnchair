@@ -44,7 +44,7 @@ fun PreferenceLayout(
     val scrollState = rememberScrollState()
     ProvideTopBarFloatingState(scrolled = scrollState.value > 0)
 
-    NestedScrollSpring {
+    NestedScrollStretch {
         Column(
             verticalArrangement = verticalArrangement,
             horizontalAlignment = horizontalAlignment,
@@ -63,7 +63,7 @@ fun PreferenceLayoutLazyColumn(modifier: Modifier = Modifier, content: LazyListS
     val scrollState = rememberLazyListState()
     ProvideTopBarFloatingState(scrolled = scrollState.firstVisibleItemIndex > 0 || scrollState.firstVisibleItemScrollOffset > 0)
 
-    NestedScrollSpring {
+    NestedScrollStretch {
         LazyColumn(
             modifier = modifier.fillMaxHeight(),
             contentPadding = preferenceLayoutPadding(),
