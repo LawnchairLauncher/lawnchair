@@ -34,8 +34,7 @@ import app.lawnchair.ui.preferences.components.PreferenceLayout
 import app.lawnchair.ui.preferences.components.SystemUi
 import app.lawnchair.ui.preferences.components.TopBar
 import app.lawnchair.ui.util.portal.ProvidePortalNode
-import app.lawnchair.util.Meta
-import app.lawnchair.util.pageMeta
+import app.lawnchair.util.*
 import com.android.launcher3.R
 
 object Routes {
@@ -64,7 +63,7 @@ fun Preferences(interactor: PreferenceInteractor = viewModel<PreferenceViewModel
     val navController = rememberNavController()
 
     SystemUi()
-    ProvidePortalNode {
+    Providers {
         Surface(color = MaterialTheme.colors.background) {
             CompositionLocalProvider(
                 LocalNavController provides navController,
@@ -87,6 +86,15 @@ fun Preferences(interactor: PreferenceInteractor = viewModel<PreferenceViewModel
                 }
                 TopBar()
             }
+        }
+    }
+}
+
+@Composable
+private fun Providers(content: @Composable () -> Unit) {
+    ProvidePortalNode {
+        ProvideLifecycleState {
+            content()
         }
     }
 }

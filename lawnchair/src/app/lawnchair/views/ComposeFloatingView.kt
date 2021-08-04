@@ -22,6 +22,7 @@ import app.lawnchair.ui.preferences.components.rememberBottomSheetState
 import app.lawnchair.ui.theme.LawnchairTheme
 import app.lawnchair.ui.util.portal.PortalNode
 import app.lawnchair.ui.util.portal.PortalNodeView
+import app.lawnchair.util.ProvideLifecycleState
 import com.android.launcher3.AbstractFloatingView
 import com.android.launcher3.Insettable
 import com.android.launcher3.R
@@ -92,7 +93,9 @@ class ComposeFloatingView(context: Context) :
             view.container.setContent {
                 LawnchairTheme {
                     ProvideWindowInsets {
-                        content(view)
+                        ProvideLifecycleState {
+                            content(view)
+                        }
                     }
                 }
             }
