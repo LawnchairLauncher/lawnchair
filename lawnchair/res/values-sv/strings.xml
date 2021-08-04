@@ -90,10 +90,9 @@
     <string name="theme_system_default">Följ systemet</string>
     <string name="theme_follow_wallpaper">Matcha bakgrundsbild</string>
     <string name="quickstep_label">Nyligen</string>
-    <string name="clear_all_as_action_label">Visa \"Rensa alla\" längst ner</string>
-    <string name="window_corner_radius_label">Hörnradie</string>
-    <string name="override_window_corner_radius_label">Anpassad hörnradie</string>
-    <string name="override_window_corner_radius_description">If the default doesn\'t match your screen</string>
+    <string name="clear_all_as_action_label">Clear All Button at Bottom</string>
+    <string name="window_corner_radius_label">Corner Radius</string>
+    <string name="override_window_corner_radius_label">Custom Corner Radius</string>
     <string name="system_icons">Systemikoner</string>
     <string name="accent_color">Accent Color</string>
     <string name="done">Done</string>
@@ -101,4 +100,5 @@
     <string name="system">System</string>
     <string name="custom">Custom</string>
     <string name="custom_color">Custom Color</string>
+    <string name="quickstep_description">Clear All Button, Corner Radius</string>
 </resources>
