@@ -22,7 +22,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.compositionLocalOf
+import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
@@ -48,11 +48,11 @@ object Routes {
     const val QUICKSTEP: String = "quickstep"
 }
 
-val LocalNavController = compositionLocalOf<NavController> {
+val LocalNavController = staticCompositionLocalOf<NavController> {
     error("CompositionLocal LocalNavController not present")
 }
 
-val LocalPreferenceInteractor = compositionLocalOf<PreferenceInteractor> {
+val LocalPreferenceInteractor = staticCompositionLocalOf<PreferenceInteractor> {
     error("CompositionLocal LocalPreferenceInteractor not present")
 }
 

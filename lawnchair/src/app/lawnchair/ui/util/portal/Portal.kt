@@ -19,6 +19,6 @@ fun Portal(portalNode: PortalNode = LocalPortalNode.current, content: @Composabl
     }
 }
 
-val LocalPortalNode = compositionLocalOf<PortalNode> {
+val LocalPortalNode = staticCompositionLocalOf<PortalNode> {
     error("CompositionLocal LocalPortalNode not present")
 }

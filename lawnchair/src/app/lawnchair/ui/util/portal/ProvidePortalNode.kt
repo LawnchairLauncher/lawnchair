@@ -11,9 +11,10 @@ import androidx.compose.ui.viewinterop.AndroidView
 @Composable
 fun ProvidePortalNode(content: @Composable () -> Unit) {
     val views = remember { mutableStateListOf<View>() }
+    val node = remember { PortalNodeImpl(views) }
     Box {
         CompositionLocalProvider(
-            LocalPortalNode provides remember { PortalNodeImpl(views) }
+            LocalPortalNode provides node
         ) {
             content()
         }
