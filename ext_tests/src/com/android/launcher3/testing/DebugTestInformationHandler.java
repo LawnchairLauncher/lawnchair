@@ -80,7 +80,7 @@ public class DebugTestInformationHandler extends TestInformationHandler {
     }
 
     @Override
-    public Bundle call(String method) {
+    public Bundle call(String method, String arg) {
         final Bundle response = new Bundle();
         switch (method) {
             case TestProtocol.REQUEST_APP_LIST_FREEZE_FLAGS: {
@@ -161,7 +161,7 @@ public class DebugTestInformationHandler extends TestInformationHandler {
             }
 
             default:
-                return super.call(method);
+                return super.call(method, arg);
         }
     }
 }
