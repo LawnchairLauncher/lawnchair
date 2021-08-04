@@ -28,6 +28,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import app.lawnchair.ui.preferences.LocalNavController
+import app.lawnchair.ui.preferences.subRoute
 
 @Composable
 fun PreferenceCategory(
@@ -37,11 +38,12 @@ fun PreferenceCategory(
     route: String
 ) {
     val navController = LocalNavController.current
+    val resolvedRoute = subRoute(name = route)
 
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
-            .clickable(onClick = { navController.navigate(route) })
+            .clickable(onClick = { navController.navigate(resolvedRoute) })
             .height(72.dp)
             .padding(horizontal = 16.dp)
             .fillMaxWidth()

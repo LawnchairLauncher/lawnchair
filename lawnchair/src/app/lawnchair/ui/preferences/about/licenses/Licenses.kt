@@ -1,5 +1,6 @@
 package app.lawnchair.ui.preferences.about.licenses
 
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Row
@@ -24,7 +25,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
-import androidx.navigation.compose.composable
 import androidx.navigation.compose.navArgument
 import app.lawnchair.ui.preferences.LocalNavController
 import app.lawnchair.ui.preferences.LocalPreferenceInteractor
@@ -34,7 +34,9 @@ import app.lawnchair.ui.preferences.subRoute
 import app.lawnchair.util.Meta
 import app.lawnchair.util.pageMeta
 import com.android.launcher3.R
+import com.google.accompanist.navigation.animation.composable
 
+@ExperimentalAnimationApi
 fun NavGraphBuilder.licensesGraph(route: String) {
     preferenceGraph(route, { Licenses() }) { subRoute ->
         composable(

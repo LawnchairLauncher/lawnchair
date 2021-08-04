@@ -47,7 +47,6 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.currentBackStackEntryAsState
 import app.lawnchair.ui.preferences.LocalNavController
-import app.lawnchair.ui.preferences.Routes
 import app.lawnchair.util.pageMeta
 import com.google.accompanist.insets.navigationBarsPadding
 import com.google.accompanist.insets.statusBarsPadding
@@ -58,7 +57,7 @@ fun TopBar() = pageMeta.consume { state ->
     val navController = LocalNavController.current
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
-    val backArrowVisible = currentRoute != Routes.PREFERENCES && currentRoute != null
+    val backArrowVisible = currentRoute != null && currentRoute != "/"
     val labelPaddingStart by animateDpAsState(targetValue = if (backArrowVisible) 8.dp else 16.dp)
 
     TopBarSurface(floating = state.topBarFloating) {
