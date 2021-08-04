@@ -81,33 +81,18 @@ class NestedScrollSpringConnection(
         finishScrollWithVelocity(0f)
     }
 
-    override fun onPreScroll(available: Offset, source: NestedScrollSource): Offset {
-        val scrollOffset = available.y
-        if (isFlinging || dampedScrollShift == 0f || dampedScrollShift > 0f == scrollOffset > 0f) {
-            return Offset.Zero
-        }
-        val shiftAmount = abs(dampedScrollShift)
-        val scrollAmount = abs(scrollOffset)
-        return when {
-            shiftAmount > scrollAmount -> {
-                onPull(scrollOffset)
-                Offset(0f, scrollOffset)
-            }
-            shiftAmount < scrollAmount -> {
-                onPull(-dampedScrollShift)
-                Offset(0f, dampedScrollShift)
-            }
-            else -> Offset.Zero
-        }
-    }
-
     override fun onPostScroll(
         consumed: Offset,
         available: Offset,
         source: NestedScrollSource
     ): Offset {
         if (isFlinging) return Offset.Zero
-        onPull(available.y * (VELOCITY_MULTIPLIER / 3f))
+        if (available.y != 0f) {
+            onPull(available.y * (VELOCITY_MULTIPLIER / 3f))
+        } else if (dampedScrollShift != 0f && !springAnim.isRunning) {
+            springAnim.setStartValue(dampedScrollShift)
+            springAnim.start()
+        }
         return available
     }
 
