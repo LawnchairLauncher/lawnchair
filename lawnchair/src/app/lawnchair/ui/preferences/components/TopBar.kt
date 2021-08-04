@@ -17,9 +17,7 @@
 package app.lawnchair.ui.preferences.components
 
 import androidx.compose.animation.Animatable
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -58,7 +56,7 @@ fun TopBar() = pageMeta.consume { state ->
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
     val backArrowVisible = currentRoute != null && currentRoute != "/"
-    val labelPaddingStart by animateDpAsState(targetValue = if (backArrowVisible) 8.dp else 16.dp)
+    val labelPaddingStart = if (backArrowVisible) 8.dp else 16.dp
 
     TopBarSurface(floating = state.topBarFloating) {
         Row(
@@ -67,7 +65,7 @@ fun TopBar() = pageMeta.consume { state ->
                 .fillMaxWidth()
                 .height(topBarSize)
         ) {
-            AnimatedVisibility(visible = backArrowVisible) {
+            if (backArrowVisible) {
                 ClickableIcon(
                     imageVector = backIcon(),
                     tint = MaterialTheme.colors.onBackground,
