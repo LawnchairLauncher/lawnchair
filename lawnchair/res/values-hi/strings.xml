@@ -90,10 +90,9 @@
     <string name="theme_system_default">सिस्टम का पालन करें</string>
     <string name="theme_follow_wallpaper">मैच वॉलपेपर</string>
     <string name="quickstep_label">हाल ही</string>
-    <string name="clear_all_as_action_label">नीचे \"सभी साफ़ करें\" दिखाएं</string>
-    <string name="window_corner_radius_label">कोने का अर्द्ध व्यास</string>
-    <string name="override_window_corner_radius_label">कस्टम कोने का दायरा</string>
-    <string name="override_window_corner_radius_description">यदि डिफ़ॉल्ट आपकी स्क्रीन से मेल नहीं खाता</string>
+    <string name="clear_all_as_action_label">Clear All Button at Bottom</string>
+    <string name="window_corner_radius_label">Corner Radius</string>
+    <string name="override_window_corner_radius_label">Custom Corner Radius</string>
     <string name="system_icons">सिस्टम चिह्न</string>
     <string name="accent_color">लहजे का रंग</string>
     <string name="done">हो गया</string>
@@ -101,4 +100,5 @@
     <string name="system">तंत्र</string>
     <string name="custom">रुचि अनुसार</string>
     <string name="custom_color">रुचिपूर्वक रंग</string>
+    <string name="quickstep_description">Clear All Button, Corner Radius</string>
 </resources>
