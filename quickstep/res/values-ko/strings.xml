@@ -52,14 +52,14 @@
     <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="1148198467090405643">"화면 하단에 지나치게 가까운 곳에서 스와이프하면 안 됩니다."</string>
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"돌아가기 동작의 민감도를 변경하려면 설정으로 이동하세요"</string>
     <string name="back_gesture_intro_title" msgid="19551256430224428">"스와이프하여 돌아가기"</string>
-    <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"마지막 화면으로 돌아가려면 왼쪽 또는 오른쪽 가장자리에서 화면 중앙으로 스와이프하세요"</string>
+    <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"마지막 화면으로 돌아가려면 왼쪽 또는 오른쪽 가장자리에서 화면 중앙으로 스와이프하세요."</string>
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"화면 하단 가장자리에서 위로 스와이프하세요."</string>
     <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"손가락을 떼기 전에 멈추지 않아야 합니다."</string>
     <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"위로 똑바르게 스와이프하세요."</string>
     <string name="home_gesture_feedback_complete_with_follow_up" msgid="1427872029729605034">"홈으로 이동 동작을 완료했습니다. 이번에는 뒤로 돌아가는 방법을 알아보겠습니다."</string>
     <string name="home_gesture_feedback_complete_without_follow_up" msgid="8049099486868933882">"홈으로 이동 동작을 완료했습니다."</string>
     <string name="home_gesture_intro_title" msgid="836590312858441830">"스와이프하여 홈으로 이동"</string>
-    <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"화면 하단에서 위로 스와이프합니다. 이 동작을 사용하면 언제든지 홈 화면으로 이동할 수 있습니다"</string>
+    <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"화면 하단에서 위로 스와이프합니다. 이 동작을 사용하면 언제든지 홈 화면으로 이동할 수 있습니다."</string>
     <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"화면 하단 가장자리에서 위로 스와이프하세요."</string>
     <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"창을 더 오래 누르고 있다가 손가락을 떼 보세요."</string>
     <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"위로 똑바르게 스와이프한 후 잠깐 멈추세요."</string>
