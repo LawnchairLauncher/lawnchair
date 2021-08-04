@@ -92,10 +92,9 @@
     <string name="theme_system_default">Zgodnie z systemem</string>
     <string name="theme_follow_wallpaper">Dopasuj do tapety</string>
     <string name="quickstep_label">Ostatnie aplikacje</string>
-    <string name="clear_all_as_action_label">Pokazuj \"Wyczyść wszystkie\" na dole</string>
-    <string name="window_corner_radius_label">Promień narożnika</string>
-    <string name="override_window_corner_radius_label">Niestandardowy promień narożnika</string>
-    <string name="override_window_corner_radius_description">Jeśli domyślny nie pasuje do Twojego ekranu</string>
+    <string name="clear_all_as_action_label">Clear All Button at Bottom</string>
+    <string name="window_corner_radius_label">Corner Radius</string>
+    <string name="override_window_corner_radius_label">Custom Corner Radius</string>
     <string name="system_icons">Ikony systemowe</string>
     <string name="accent_color">Kolor Akcentujący</string>
     <string name="done">Gotowe</string>
@@ -103,4 +102,5 @@
     <string name="system">System</string>
     <string name="custom">Niestandardowy</string>
     <string name="custom_color">Niestandardowy Kolor</string>
+    <string name="quickstep_description">Clear All Button, Corner Radius</string>
 </resources>
