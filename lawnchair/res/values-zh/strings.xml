@@ -89,9 +89,9 @@
     <string name="theme_system_default">系統設定</string>
     <string name="theme_follow_wallpaper">偵測桌布</string>
     <string name="quickstep_label">最近使用的應用程式</string>
-    <string name="clear_all_as_action_label">Clear All Button at Bottom</string>
-    <string name="window_corner_radius_label">Corner Radius</string>
-    <string name="override_window_corner_radius_label">Custom Corner Radius</string>
+    <string name="clear_all_as_action_label">在底部顯示「清除全部」按鈕</string>
+    <string name="window_corner_radius_label">圓角大小</string>
+    <string name="override_window_corner_radius_label">自訂圓角大小</string>
     <string name="system_icons">系統圖示</string>
     <string name="accent_color">強調色</string>
     <string name="done">完成</string>
@@ -99,5 +99,5 @@
     <string name="system">系統</string>
     <string name="custom">自訂</string>
     <string name="custom_color">自訂色彩</string>
-    <string name="quickstep_description">Clear All Button, Corner Radius</string>
+    <string name="quickstep_description">「清除全部」按鈕、圓角大小</string>
 </resources>
