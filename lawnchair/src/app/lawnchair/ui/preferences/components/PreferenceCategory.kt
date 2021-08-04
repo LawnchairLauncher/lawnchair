@@ -37,20 +37,20 @@ fun PreferenceCategory(
     route: String
 ) {
     val navController = LocalNavController.current
+
     Row(
+        verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
             .clickable(onClick = { navController.navigate(route) })
             .height(72.dp)
-            .padding(start = 16.dp, end = 16.dp)
-            .fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically
+            .padding(horizontal = 16.dp)
+            .fillMaxWidth()
     ) {
         Image(
             painter = painterResource(id = iconResource),
             contentDescription = null,
             modifier = Modifier
-                .width(32.dp)
-                .height(32.dp)
+                .size(32.dp)
         )
         Column(Modifier.padding(start = 16.dp)) {
             Text(
