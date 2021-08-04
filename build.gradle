@@ -1,8 +1,8 @@
 buildscript {
     ext {
         kotlin_version = '1.5.10'
-        compose_version = '1.0.0'
-        accompanist_version = '0.15.0'
+        compose_version = '1.0.1'
+        accompanist_version = '0.16.0'
         libsu_version = '3.1.2'
     }
     repositories {
