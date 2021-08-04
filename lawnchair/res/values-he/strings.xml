@@ -92,10 +92,9 @@
     <string name="theme_system_default">כמו במערכת</string>
     <string name="theme_follow_wallpaper">התאמה לרקע</string>
     <string name="quickstep_label">אחרונים</string>
-    <string name="clear_all_as_action_label">Show “Clear all” at bottom</string>
-    <string name="window_corner_radius_label">רדיוס פינות</string>
-    <string name="override_window_corner_radius_label">רדיוס פינות מותאם</string>
-    <string name="override_window_corner_radius_description">If the default doesn\'t match your screen</string>
+    <string name="clear_all_as_action_label">Clear All Button at Bottom</string>
+    <string name="window_corner_radius_label">Corner Radius</string>
+    <string name="override_window_corner_radius_label">Custom Corner Radius</string>
     <string name="system_icons">סמלי המערכת</string>
     <string name="accent_color">צבע הדגשה</string>
     <string name="done">סיום</string>
@@ -103,4 +102,5 @@
     <string name="system">מערכת</string>
     <string name="custom">התאמה אישית</string>
     <string name="custom_color">צבע בהתאמה אישית</string>
+    <string name="quickstep_description">Clear All Button, Corner Radius</string>
 </resources>
