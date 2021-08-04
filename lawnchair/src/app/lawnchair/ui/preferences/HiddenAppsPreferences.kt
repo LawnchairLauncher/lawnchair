@@ -16,6 +16,7 @@
 
 package app.lawnchair.ui.preferences
 
+import androidx.compose.animation.Crossfade
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -28,12 +29,8 @@ import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences.getState
 import app.lawnchair.preferences.preferenceManager
 import app.lawnchair.ui.preferences.components.*
-import app.lawnchair.util.App
-import app.lawnchair.util.Meta
-import app.lawnchair.util.appsList
-import app.lawnchair.util.pageMeta
+import app.lawnchair.util.*
 import com.android.launcher3.R
-import java.util.*
 import java.util.Comparator.comparing
 
 @ExperimentalAnimationApi
@@ -59,33 +56,41 @@ fun HiddenAppsPreferences() {
         filter = remember { DefaultAppFilter(context) },
         comparator = hiddenAppsComparator(hiddenApps)
     )
-    LoadingScreen(isLoading = !optionalApps.isPresent) {
-        val apps = optionalApps.get()
-        val toggleHiddenApp = { app: App ->
-            val key = app.key.toString()
-            val newSet = apps
-                .filter { hiddenApps.contains(it.key.toString()) }
-                .map { it.key.toString() }
-                .toMutableSet()
-            val isHidden = !hiddenApps.contains(key)
-            if (isHidden) {
-                newSet.add(key)
-            } else {
-                newSet.remove(key)
+    Crossfade(targetState = optionalApps.isPresent) { present ->
+        if (present) {
+            PreferenceLayoutLazyColumn {
+                val apps = optionalApps.get()
+                val toggleHiddenApp = { app: App ->
+                    val key = app.key.toString()
+                    val newSet = apps
+                        .filter { hiddenApps.contains(it.key.toString()) }
+                        .map { it.key.toString() }
+                        .toMutableSet()
+                    val isHidden = !hiddenApps.contains(key)
+                    if (isHidden) {
+                        newSet.add(key)
+                    } else {
+                        newSet.remove(key)
+                    }
+                    hiddenApps = newSet
+                }
+                preferenceGroupItems(
+                    items = apps,
+                    isFirstChild = true
+                ) { index, app ->
+                    AppItem(
+                        app = app,
+                        onClick = toggleHiddenApp,
+                        showDivider = index != apps.lastIndex
+                    ) {
+                        AnimatedCheck(visible = hiddenApps.contains(app.key.toString()))
+                    }
+                }
             }
-            hiddenApps = newSet
-        }
-        PreferenceLayoutLazyColumn {
-            preferenceGroupItems(
-                items = apps,
-                isFirstChild = true
-            ) { index, app ->
-                AppItem(
-                    app = app,
-                    onClick = toggleHiddenApp,
-                    showDivider = index != apps.lastIndex
-                ) {
-                    AnimatedCheck(visible = hiddenApps.contains(app.key.toString()))
+        } else {
+            PreferenceLayoutLazyColumn(enabled = false) {
+                preferenceGroupItems(count = 20, isFirstChild = true) { index ->
+                    AppItemPlaceholder(showDivider = index != 19)
                 }
             }
         }
@@ -99,5 +104,5 @@ fun hiddenAppsCount(): Int = preferenceManager().hiddenAppSet.getState().value.s
 fun hiddenAppsComparator(hiddenApps: Set<String>): Comparator<App> =
     remember {
         comparing<App, Int> { if (hiddenApps.contains(it.key.toString())) 0 else 1 }
-            .thenComparing<String> { it.info.label.toString().lowercase(Locale.getDefault()) }
+            .then(appComparator)
     }

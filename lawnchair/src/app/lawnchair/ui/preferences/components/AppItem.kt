@@ -28,6 +28,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.unit.dp
 import app.lawnchair.util.App
+import com.google.accompanist.placeholder.PlaceholderHighlight
+import com.google.accompanist.placeholder.material.fade
+import com.google.accompanist.placeholder.material.placeholder
 
 @Composable
 fun AppItem(
@@ -37,7 +40,7 @@ fun AppItem(
     content: (@Composable RowScope.() -> Unit)?,
 ) {
     AppItem(
-        label = app.info.label.toString(),
+        label = app.label,
         icon = app.icon,
         onClick = { onClick(app) },
         showDivider = showDivider,
@@ -62,14 +65,12 @@ fun AppItem(
             modifier = Modifier
                 .fillMaxSize()
                 .clickable { onClick() }
-                .padding(start = 16.dp, end = 16.dp)
+                .padding(horizontal = 16.dp)
         ) {
             Image(
                 bitmap = icon.asImageBitmap(),
                 contentDescription = null,
-                modifier = Modifier
-                    .width(32.dp)
-                    .height(32.dp)
+                modifier = Modifier.size(32.dp),
             )
             Text(
                 modifier = Modifier.padding(start = 16.dp),
@@ -79,6 +80,40 @@ fun AppItem(
             )
             Spacer(modifier = Modifier.weight(1f))
             content?.invoke(this)
+        }
+    }
+}
+
+@Composable
+fun AppItemPlaceholder(showDivider: Boolean = true) {
+    PreferenceTemplate(
+        height = 52.dp,
+        showDivider = showDivider,
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(horizontal = 16.dp)
+        ) {
+            Box(
+                modifier = Modifier
+                    .size(32.dp)
+                    .placeholder(
+                        visible = true,
+                        highlight = PlaceholderHighlight.fade(),
+                    )
+            )
+            Box(
+                modifier = Modifier
+                    .width(120.dp)
+                    .height(24.dp)
+                    .padding(start = 16.dp)
+                    .placeholder(
+                        visible = true,
+                        highlight = PlaceholderHighlight.fade(),
+                    )
+            )
         }
     }
 }

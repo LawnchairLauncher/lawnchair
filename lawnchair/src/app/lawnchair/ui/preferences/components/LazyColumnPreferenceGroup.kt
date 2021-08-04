@@ -30,6 +30,21 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.unit.dp
 import app.lawnchair.util.smartBorder
 
+fun LazyListScope.preferenceGroupItems(
+    count: Int,
+    heading: String? = null,
+    isFirstChild: Boolean,
+    key: ((index: Int) -> Any)? = null,
+    itemContent: @Composable LazyItemScope.(index: Int) -> Unit
+) {
+    item { PreferenceGroupHeading(heading, isFirstChild) }
+    items(count, key) {
+        PreferenceGroupItem(cutTop = it > 0, cutBottom = it < count - 1) {
+            itemContent(it)
+        }
+    }
+}
+
 inline fun <T> LazyListScope.preferenceGroupItems(
     items: List<T>,
     heading: String? = null,
@@ -37,11 +52,13 @@ inline fun <T> LazyListScope.preferenceGroupItems(
     noinline key: ((index: Int, item: T) -> Any)? = null,
     crossinline itemContent: @Composable LazyItemScope.(index: Int, item: T) -> Unit
 ) {
-    item { PreferenceGroupHeading(heading, isFirstChild) }
-    items(items.size, if (key != null) { index: Int -> key(index, items[index]) } else null) {
-        PreferenceGroupItem(cutTop = it > 0, cutBottom = it < items.lastIndex) {
-            itemContent(it, items[it])
-        }
+    preferenceGroupItems(
+        items.size,
+        heading,
+        isFirstChild,
+        if (key != null) { index: Int -> key(index, items[index]) } else null
+    ) {
+        itemContent(it, items[it])
     }
 }
 

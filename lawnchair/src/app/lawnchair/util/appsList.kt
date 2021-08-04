@@ -23,6 +23,7 @@ import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.os.Handler
+import android.util.Log
 import androidx.compose.runtime.*
 import androidx.compose.ui.platform.LocalContext
 import com.android.launcher3.AppFilter
@@ -40,7 +41,7 @@ private val appFilter = AppFilter()
 @Composable
 fun appsList(
     filter: AppFilter = appFilter,
-    comparator: Comparator<App> = defaultComparator
+    comparator: Comparator<App> = appComparator
 ): State<Optional<List<App>>> {
     val context = LocalContext.current
     val appsState = remember { mutableStateOf(Optional.empty<List<App>>()) }
@@ -62,8 +63,9 @@ fun appsList(
     return appsState
 }
 
-class App(context: Context, val info: LauncherActivityInfo) {
+class App(context: Context, private val info: LauncherActivityInfo) {
 
+    val label get() = info.label.toString()
     val icon: Bitmap
     val key = ComponentKey(info.componentName, info.user)
 
@@ -74,6 +76,4 @@ class App(context: Context, val info: LauncherActivityInfo) {
     }
 }
 
-private val defaultComparator = comparing<App, String> {
-    it.info.label.toString().lowercase(Locale.getDefault())
-}
+val appComparator: Comparator<App> = comparing { it.label.lowercase(Locale.getDefault()) }

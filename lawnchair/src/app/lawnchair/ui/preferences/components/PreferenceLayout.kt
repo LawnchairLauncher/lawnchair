@@ -16,16 +16,19 @@
 
 package app.lawnchair.ui.preferences.components
 
+import androidx.compose.foundation.MutatePriority
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -34,6 +37,7 @@ import app.lawnchair.util.Meta
 import app.lawnchair.util.pageMeta
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.rememberInsetsPaddingValues
+import kotlinx.coroutines.awaitCancellation
 
 @Composable
 fun PreferenceLayout(
@@ -59,15 +63,27 @@ fun PreferenceLayout(
 }
 
 @Composable
-fun PreferenceLayoutLazyColumn(modifier: Modifier = Modifier, content: LazyListScope.() -> Unit) {
-    val scrollState = rememberLazyListState()
-    ProvideTopBarFloatingState(scrolled = scrollState.firstVisibleItemIndex > 0 || scrollState.firstVisibleItemScrollOffset > 0)
+fun PreferenceLayoutLazyColumn(
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true,
+    state: LazyListState = rememberLazyListState(),
+    content: LazyListScope.() -> Unit
+) {
+    ProvideTopBarFloatingState(scrolled = state.firstVisibleItemIndex > 0 || state.firstVisibleItemScrollOffset > 0)
+
+    if (!enabled) {
+        LaunchedEffect(key1 = null) {
+            state.scroll(scrollPriority = MutatePriority.PreventUserInput) {
+                awaitCancellation()
+            }
+        }
+    }
 
     NestedScrollStretch {
         LazyColumn(
             modifier = modifier.fillMaxHeight(),
             contentPadding = preferenceLayoutPadding(),
-            state = scrollState
+            state = state
         ) {
             content()
         }
