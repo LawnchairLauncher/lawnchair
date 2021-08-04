@@ -60,7 +60,7 @@ fun AppDrawerPreferences() {
             SliderPreference(
                 label = stringResource(id = R.string.background_opacity),
                 adapter = prefs.drawerOpacity.getAdapter(),
-                steps = 2,
+                step = 0.1f,
                 valueRange = 0.7F..1F,
                 showAsPercentage = true,
                 showDivider = false
@@ -70,7 +70,7 @@ fun AppDrawerPreferences() {
             SliderPreference(
                 label = stringResource(id = R.string.app_drawer_columns),
                 adapter = prefs.allAppsColumns.getAdapter(),
-                steps = 3,
+                step = 1f,
                 valueRange = 3.0F..7.0F,
                 showDivider = false
             )
@@ -79,14 +79,14 @@ fun AppDrawerPreferences() {
             SliderPreference(
                 label = stringResource(id = R.string.icon_size),
                 adapter = prefs.allAppsIconSizeFactor.getAdapter(),
-                steps = 9,
+                step = 0.1f,
                 valueRange = 0.5F..1.5F,
                 showAsPercentage = true
             )
             SliderPreference(
                 label = stringResource(id = R.string.label_size),
                 adapter = prefs.allAppsTextSizeFactor.getAdapter(),
-                steps = 9,
+                step = 0.1f,
                 valueRange = 0.5F..1.5F,
                 showAsPercentage = true,
                 showDivider = false

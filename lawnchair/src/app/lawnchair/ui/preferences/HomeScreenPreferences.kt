@@ -71,13 +71,13 @@ fun HomeScreenPreferences() {
             SliderPreference(
                 label = stringResource(id = R.string.home_screen_columns),
                 adapter = prefs.workspaceColumns.getAdapter(),
-                steps = 3,
+                step = 1f,
                 valueRange = 3.0F..7.0F
             )
             SliderPreference(
                 label = stringResource(id = R.string.home_screen_rows),
                 adapter = prefs.workspaceRows.getAdapter(),
-                steps = 3,
+                step = 1f,
                 valueRange = 3.0F..7.0F,
                 showDivider = false
             )
@@ -86,14 +86,14 @@ fun HomeScreenPreferences() {
             SliderPreference(
                 label = stringResource(id = R.string.icon_size),
                 adapter = prefs.iconSizeFactor.getAdapter(),
-                steps = 9,
+                step = 0.1f,
                 valueRange = 0.5F..1.5F,
                 showAsPercentage = true
             )
             SliderPreference(
                 label = stringResource(id = R.string.label_size),
                 adapter = prefs.textSizeFactor.getAdapter(),
-                steps = 9,
+                step = 0.1f,
                 valueRange = 0.5F..1.5F,
                 showAsPercentage = true,
                 showDivider = false

@@ -50,7 +50,7 @@ fun QuickstepPreferences() {
                 SliderPreference(
                     label = stringResource(id = R.string.window_corner_radius_label),
                     adapter = prefs.windowCornerRadius.getAdapter(),
-                    steps = 0,
+                    step = 0f,
                     valueRange = 80f..150f,
                     showDivider = false
                 )

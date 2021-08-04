@@ -30,7 +30,7 @@ fun SliderPreference(
     label: String,
     adapter: PreferenceAdapter<Float>,
     valueRange: ClosedFloatingPointRange<Float>,
-    steps: Int,
+    step: Float,
     showAsPercentage: Boolean = false,
     showDivider: Boolean = true
 ) {
@@ -76,11 +76,24 @@ fun SliderPreference(
                 onValueChange = { newValue -> sliderValue = newValue },
                 onValueChangeFinished = { adapterValue = sliderValue },
                 valueRange = valueRange,
-                steps = steps,
+                steps = getSteps(valueRange, step),
                 modifier = Modifier
                     .height(24.dp)
                     .padding(start = 10.dp, end = 10.dp)
             )
         }
     }
+}
+
+fun getSteps(valueRange: ClosedFloatingPointRange<Float>, step: Float): Int {
+    if (step == 0f) {
+        return 0
+    }
+    val start = valueRange.start
+    val end = valueRange.endInclusive
+    val steps = ((end - start) / step).toInt()
+    if (start + step * steps != end) {
+        throw IllegalArgumentException("value range must be a multiple of step")
+    }
+    return steps - 1
 }

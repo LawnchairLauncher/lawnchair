@@ -44,13 +44,13 @@ fun FolderPreferences() {
             SliderPreference(
                 label = stringResource(id = R.string.max_folder_columns),
                 adapter = prefs.folderColumns.getAdapter(),
-                steps = 2,
+                step = 1f,
                 valueRange = 2.0F..5.0F
             )
             SliderPreference(
                 label = stringResource(id = R.string.max_folder_rows),
                 adapter = prefs.folderRows.getAdapter(),
-                steps = 2,
+                step = 1f,
                 valueRange = 2.0F..5.0F,
                 showDivider = false
             )

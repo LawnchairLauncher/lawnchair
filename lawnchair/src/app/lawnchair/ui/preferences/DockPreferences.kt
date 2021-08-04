@@ -52,7 +52,7 @@ fun DockPreferences() {
             SliderPreference(
                 label = stringResource(id = R.string.dock_icons),
                 adapter = prefs.hotseatColumns.getAdapter(),
-                steps = 3,
+                step = 1f,
                 valueRange = 3.0F..7.0F,
                 showDivider = false
             )
