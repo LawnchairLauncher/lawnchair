@@ -43,22 +43,21 @@ import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
-import androidx.navigation.compose.currentBackStackEntryAsState
 import app.lawnchair.ui.preferences.LocalNavController
-import app.lawnchair.util.pageMeta
 import com.google.accompanist.insets.navigationBarsPadding
 import com.google.accompanist.insets.statusBarsPadding
 
 @ExperimentalAnimationApi
 @Composable
-fun TopBar() = pageMeta.consume { state ->
+fun TopBar(
+    backArrowVisible: Boolean,
+    floating: Boolean,
+    label: String
+) {
     val navController = LocalNavController.current
-    val navBackStackEntry by navController.currentBackStackEntryAsState()
-    val currentRoute = navBackStackEntry?.destination?.route
-    val backArrowVisible = currentRoute != null && currentRoute != "/"
     val labelPaddingStart = if (backArrowVisible) 8.dp else 16.dp
 
-    TopBarSurface(floating = state.topBarFloating) {
+    TopBarSurface(floating = floating) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
@@ -73,7 +72,7 @@ fun TopBar() = pageMeta.consume { state ->
                 )
             }
             Text(
-                text = state.title,
+                text = label,
                 style = MaterialTheme.typography.h6,
                 modifier = Modifier.padding(start = labelPaddingStart, end = 24.dp),
                 color = MaterialTheme.colors.onSurface,

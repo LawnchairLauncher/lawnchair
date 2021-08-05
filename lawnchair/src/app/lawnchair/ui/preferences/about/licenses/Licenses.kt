@@ -32,8 +32,6 @@ import app.lawnchair.ui.preferences.LocalPreferenceInteractor
 import app.lawnchair.ui.preferences.components.*
 import app.lawnchair.ui.preferences.preferenceGraph
 import app.lawnchair.ui.preferences.subRoute
-import app.lawnchair.util.Meta
-import app.lawnchair.util.pageMeta
 import com.android.launcher3.R
 import com.google.accompanist.navigation.animation.composable
 import com.google.accompanist.placeholder.PlaceholderHighlight
@@ -52,13 +50,12 @@ fun NavGraphBuilder.licensesGraph(route: String) {
     }
 }
 
+@ExperimentalAnimationApi
 @Composable
 fun Licenses() {
-    pageMeta.provide(Meta(title = stringResource(id = R.string.acknowledgements)))
-
     val optionalLicenses by LocalPreferenceInteractor.current.licenses
     LoadingScreen(optionalLicenses) { licenses ->
-        PreferenceLayoutLazyColumn {
+        PreferenceLayoutLazyColumn(label = stringResource(id = R.string.acknowledgements)) {
             preferenceGroupItems(licenses, isFirstChild = true) { index, license ->
                 LicenseItem(license = license, index = index, showDivider = index != licenses.lastIndex)
             }
@@ -93,15 +90,17 @@ fun LicenseItem(license: License, index: Int, showDivider: Boolean) {
     }
 }
 
+@ExperimentalAnimationApi
 @Composable
 fun LicensePage(index: Int) {
     val optionalLicenses by LocalPreferenceInteractor.current.licenses
     val license = optionalLicenses?.get(index)
     val dataState = license?.let { loadLicense(license = license) }
     val data = dataState?.value
-    pageMeta.provide(Meta(title = license?.name ?: stringResource(id = R.string.loading)))
 
-    PreferenceLayout {
+    PreferenceLayout(
+        label = license?.name ?: stringResource(id = R.string.loading)
+    ) {
         Crossfade(targetState = data) { it ->
             if (it != null) {
                 val uriHandler = LocalUriHandler.current

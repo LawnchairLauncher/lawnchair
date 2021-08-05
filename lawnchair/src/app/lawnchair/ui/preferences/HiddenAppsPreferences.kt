@@ -49,7 +49,6 @@ fun HiddenAppsPreferences() {
                 stringResource(id = R.string.hidden_apps_label_with_count, this)
             }
         }
-    pageMeta.provide(Meta(title = pageTitle))
     val context = LocalContext.current
     var hiddenApps by preferenceManager().hiddenAppSet.getAdapter()
     val optionalApps by appsList(
@@ -58,7 +57,7 @@ fun HiddenAppsPreferences() {
     )
     Crossfade(targetState = optionalApps.isPresent) { present ->
         if (present) {
-            PreferenceLayoutLazyColumn {
+            PreferenceLayoutLazyColumn(label = pageTitle) {
                 val apps = optionalApps.get()
                 val toggleHiddenApp = { app: App ->
                     val key = app.key.toString()
@@ -88,7 +87,10 @@ fun HiddenAppsPreferences() {
                 }
             }
         } else {
-            PreferenceLayoutLazyColumn(enabled = false) {
+            PreferenceLayoutLazyColumn(
+                enabled = false,
+                label = pageTitle
+            ) {
                 preferenceGroupItems(count = 20, isFirstChild = true) { index ->
                     AppItemPlaceholder(showDivider = index != 19)
                 }

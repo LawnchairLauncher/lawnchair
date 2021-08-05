@@ -25,8 +25,6 @@ import app.lawnchair.preferences.preferenceManager
 import app.lawnchair.ui.preferences.components.PreferenceGroup
 import app.lawnchair.ui.preferences.components.PreferenceLayout
 import app.lawnchair.ui.preferences.components.SliderPreference
-import app.lawnchair.util.Meta
-import app.lawnchair.util.pageMeta
 import com.android.launcher3.R
 
 @ExperimentalAnimationApi
@@ -37,8 +35,7 @@ fun NavGraphBuilder.folderGraph(route: String) {
 @ExperimentalAnimationApi
 @Composable
 fun FolderPreferences() {
-    pageMeta.provide(Meta(title = stringResource(id = R.string.folders_label)))
-    PreferenceLayout {
+    PreferenceLayout(label = stringResource(id = R.string.folders_label)) {
         val prefs = preferenceManager()
         PreferenceGroup(heading = stringResource(id = R.string.grid), isFirstChild = true) {
             SliderPreference(

@@ -28,8 +28,6 @@ import app.lawnchair.ui.preferences.components.PreferenceGroup
 import app.lawnchair.ui.preferences.components.PreferenceLayout
 import app.lawnchair.ui.preferences.components.SliderPreference
 import app.lawnchair.ui.preferences.components.SwitchPreference
-import app.lawnchair.util.Meta
-import app.lawnchair.util.pageMeta
 import com.android.launcher3.R
 
 @ExperimentalAnimationApi
@@ -41,8 +39,7 @@ fun NavGraphBuilder.homeScreenGraph(route: String) {
 @Composable
 fun HomeScreenPreferences() {
     val prefs = preferenceManager()
-    pageMeta.provide(Meta(title = stringResource(id = R.string.home_screen_label)))
-    PreferenceLayout {
+    PreferenceLayout(label = stringResource(id = R.string.home_screen_label)) {
         PreferenceGroup(heading = "General", isFirstChild = true) {
             val feedAvailable = OverlayCallbackImpl.minusOneAvailable(LocalContext.current)
             SwitchPreference(

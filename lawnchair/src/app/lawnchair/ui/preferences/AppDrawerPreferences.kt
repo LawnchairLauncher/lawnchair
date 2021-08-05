@@ -24,8 +24,6 @@ import androidx.navigation.NavGraphBuilder
 import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences.preferenceManager
 import app.lawnchair.ui.preferences.components.*
-import app.lawnchair.util.Meta
-import app.lawnchair.util.pageMeta
 import com.android.launcher3.R
 
 object AppDrawerRoutes {
@@ -44,8 +42,7 @@ fun NavGraphBuilder.appDrawerGraph(route: String) {
 fun AppDrawerPreferences() {
     val prefs = preferenceManager()
     val resources = LocalContext.current.resources
-    pageMeta.provide(Meta(title = stringResource(id = R.string.app_drawer_label)))
-    PreferenceLayout {
+    PreferenceLayout(label = stringResource(id = R.string.app_drawer_label)) {
         PreferenceGroup(heading = stringResource(id = R.string.general_label), isFirstChild = true) {
             NavigationActionPreference(
                 label = stringResource(id = R.string.hidden_apps_label),

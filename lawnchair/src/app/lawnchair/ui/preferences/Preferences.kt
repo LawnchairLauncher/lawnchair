@@ -59,7 +59,6 @@ val LocalPreferenceInteractor = staticCompositionLocalOf<PreferenceInteractor> {
 fun Preferences(interactor: PreferenceInteractor = viewModel<PreferenceViewModel>()) {
     val navController = rememberAnimatedNavController()
     val slideDistance = rememberSlideDistance()
-
     val forwardSpec = materialSharedAxisX(forward = true, slideDistance = slideDistance)
     val backwardSpec = materialSharedAxisX(forward = false, slideDistance = slideDistance)
 
@@ -88,7 +87,6 @@ fun Preferences(interactor: PreferenceInteractor = viewModel<PreferenceViewModel
                         aboutGraph(route = subRoute(Routes.ABOUT))
                     }
                 }
-                TopBar()
             }
         }
     }

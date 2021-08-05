@@ -12,8 +12,6 @@ import app.lawnchair.ui.preferences.components.PreferenceGroup
 import app.lawnchair.ui.preferences.components.PreferenceLayout
 import app.lawnchair.ui.preferences.components.SliderPreference
 import app.lawnchair.ui.preferences.components.SwitchPreference
-import app.lawnchair.util.Meta
-import app.lawnchair.util.pageMeta
 import com.android.launcher3.R
 
 @ExperimentalAnimationApi
@@ -24,9 +22,8 @@ fun NavGraphBuilder.quickstepGraph(route: String) {
 @ExperimentalAnimationApi
 @Composable
 fun QuickstepPreferences() {
-    pageMeta.provide(Meta(title = stringResource(id = R.string.quickstep_label)))
     val prefs = preferenceManager()
-    PreferenceLayout {
+    PreferenceLayout(label = stringResource(id = R.string.quickstep_label)) {
         PreferenceGroup(isFirstChild = true) {
             SwitchPreference(
                 adapter = prefs.clearAllAsAction.getAdapter(),

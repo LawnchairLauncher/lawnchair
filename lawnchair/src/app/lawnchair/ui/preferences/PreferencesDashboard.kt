@@ -1,5 +1,6 @@
 package app.lawnchair.ui.preferences
 
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -7,16 +8,16 @@ import app.lawnchair.LawnchairApp
 import app.lawnchair.preferences.getMajorVersion
 import app.lawnchair.ui.preferences.components.PreferenceCategory
 import app.lawnchair.ui.preferences.components.PreferenceLayout
-import app.lawnchair.util.Meta
-import app.lawnchair.util.pageMeta
 import com.android.launcher3.BuildConfig
 import com.android.launcher3.R
 
+@ExperimentalAnimationApi
 @Composable
 fun PreferencesDashboard() {
-    pageMeta.provide(Meta(title = stringResource(id = R.string.settings)))
-
-    PreferenceLayout {
+    PreferenceLayout(
+        label = stringResource(id = R.string.settings),
+        backArrowVisible = false
+    ) {
         PreferenceCategory(
             label = stringResource(R.string.general_label),
             description = stringResource(R.string.general_description),

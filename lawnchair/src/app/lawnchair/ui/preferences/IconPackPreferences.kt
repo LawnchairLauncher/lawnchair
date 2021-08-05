@@ -29,8 +29,6 @@ import app.lawnchair.ui.preferences.components.AnimatedCheck
 import app.lawnchair.ui.preferences.components.AppItem
 import app.lawnchair.ui.preferences.components.PreferenceLayoutLazyColumn
 import app.lawnchair.ui.preferences.components.preferenceGroupItems
-import app.lawnchair.util.Meta
-import app.lawnchair.util.pageMeta
 import com.android.launcher3.R
 
 data class IconPackInfo(val name: String, val packageName: String, val icon: Drawable)
@@ -46,9 +44,7 @@ fun IconPackPreferences() {
     val interactor = LocalPreferenceInteractor.current
     val iconPacks = remember { interactor.getIconPacks() }
     var iconPackPackage by preferenceManager().iconPackPackage.getAdapter()
-
-    pageMeta.provide(Meta(title = stringResource(id = R.string.icon_pack)))
-    PreferenceLayoutLazyColumn {
+    PreferenceLayoutLazyColumn(label = stringResource(id = R.string.icon_pack)) {
         preferenceGroupItems(iconPacks, isFirstChild = true) { index, iconPack ->
             AppItem(
                 label = iconPack.name,
