@@ -101,4 +101,6 @@
     <string name="custom">Custom</string>
     <string name="custom_color">Custom Color</string>
     <string name="quickstep_description">Clear All Button, Corner Radius</string>
+    <string name="wallpaper_scrolling_label">Wallpaper scrolling</string>
+    <string name="show_sys_ui_scrim">Show Top Shadow</string>
 </resources>
