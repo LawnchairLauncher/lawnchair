@@ -113,7 +113,7 @@ public class IconProvider {
         Drawable d = getIcon(info.getApplicationInfo().packageName, info.getUser(),
                 info, iconDpi, LAI_LOADER);
         if (iconPack != null) {
-            d = iconPack.getIcon(info, d, info.getLabel());
+            d = iconPack.getIcon(info, d);
         }
         return d;
     }

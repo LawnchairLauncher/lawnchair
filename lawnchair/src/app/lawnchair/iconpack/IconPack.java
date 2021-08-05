@@ -29,6 +29,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import app.lawnchair.preferences.PreferenceManager;
+
 public class IconPack {
     /*
     Useful Links:
@@ -78,20 +80,20 @@ public class IconPack {
         }
     }
 
-    public Drawable getIcon(LauncherActivityInfo info, Drawable appIcon, CharSequence appLabel) {
-        return getIcon(info.getComponentName(), appIcon, appLabel);
+    public Drawable getIcon(LauncherActivityInfo info, Drawable appIcon) {
+        return getIcon(info.getComponentName(), appIcon);
     }
 
-    public Drawable getIcon(ActivityInfo info, Drawable appIcon, CharSequence appLabel) {
-        return getIcon(new ComponentName(info.packageName, info.name), appIcon, appLabel);
+    public Drawable getIcon(ActivityInfo info, Drawable appIcon) {
+        return getIcon(new ComponentName(info.packageName, info.name), appIcon);
     }
 
-    public Drawable getIcon(ComponentName name, Drawable appIcon, CharSequence appLabel) {
-        return getDrawable(name.flattenToString(), appIcon, appLabel);
+    public Drawable getIcon(ComponentName name, Drawable appIcon) {
+        return getDrawable(name.flattenToString(), appIcon);
     }
 
-    public Drawable getIcon(String packageName, Drawable appIcon, CharSequence appLabel) {
-        return getDrawable(packageName, appIcon, appLabel);
+    public Drawable getIcon(String packageName, Drawable appIcon) {
+        return getDrawable(packageName, appIcon);
     }
 
     private static Bitmap pad(Bitmap src) {
@@ -129,7 +131,7 @@ public class IconPack {
         return bitmap;
     }
 
-    private Drawable getDrawable(String name, Drawable appIcon, CharSequence appLabel) {
+    private Drawable getDrawable(String name, Drawable appIcon) {
         Drawable d = getDrawableForName(name);
         if (d == null && appIcon != null) {
             d = appIcon;
