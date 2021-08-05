@@ -101,5 +101,5 @@
     <string name="custom_color">自訂色彩</string>
     <string name="quickstep_description">「清除全部」按鈕、圓角大小</string>
     <string name="wallpaper_scrolling_label">Scroll Wallpaper</string>
-    <string name="show_sys_ui_scrim">Show Top Shadow</string>
+    <string name="show_sys_ui_scrim">顯示頂部陰影</string>
 </resources>
