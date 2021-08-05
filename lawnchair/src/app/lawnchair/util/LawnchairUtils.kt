@@ -81,7 +81,7 @@ fun killLauncher() {
 fun getWindowCornerRadius(context: Context): Float {
     val prefs = PreferenceManager.getInstance(context)
     if (prefs.overrideWindowCornerRadius.get()) {
-        return prefs.windowCornerRadius.get()
+        return prefs.windowCornerRadius.get().toFloat()
     }
     return QuickStepContract.getWindowCornerRadius(context.resources)
 }
