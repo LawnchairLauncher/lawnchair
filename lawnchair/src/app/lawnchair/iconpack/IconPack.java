@@ -22,7 +22,10 @@ import androidx.annotation.ColorInt;
 import androidx.core.graphics.ColorUtils;
 import androidx.palette.graphics.Palette;
 
+import org.xmlpull.v1.XmlPullParser;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -35,9 +38,14 @@ public class IconPack {
     http://stackoverflow.com/questions/7205415/getting-resources-of-another-application
     http://stackoverflow.com/questions/3890012/how-to-access-string-resource-from-another-application
      */
+    public static final String ICON_MASK_TAG = "iconmask";
+    public static final String ICON_BACK_TAG = "iconback";
+    public static final String ICON_UPON_TAG = "iconupon";
+    public static final String ICON_SCALE_TAG = "scale";
+
     private String packageName;
     private Context mContext;
-    private Map<String, String> mIconPackResources;
+    private Map<String, String> mIconPackResources = new HashMap<>();
     private List<String> mIconBackStrings;
     private List<Drawable> mIconBackList;
     private Drawable mIconUpon, mIconMask;
@@ -49,18 +57,94 @@ public class IconPack {
         mContext = context;
     }
 
+    void parseAppFilter(String packageName, XmlPullParser parser) throws Exception {
+        List<String> iconBackStrings = new ArrayList<String>();
+
+        while (parser.next() != XmlPullParser.END_DOCUMENT) {
+            if (parser.getEventType() != XmlPullParser.START_TAG) {
+                continue;
+            }
+            String name = parser.getName().toLowerCase();
+            if (name.equals("item")) {
+                String component = parser.getAttributeValue(null, "component");
+                String drawable = parser.getAttributeValue(null, "drawable");
+                // Validate component/drawable exist
+
+                if (TextUtils.isEmpty(component) || TextUtils.isEmpty(drawable)) {
+                    continue;
+                }
+
+                // Validate format/length of component
+                if (!component.startsWith("ComponentInfo{") || !component.endsWith("}")
+                        || component.length() < 16) {
+                    continue;
+                }
+
+                // Sanitize stored value
+                component = component.substring(14, component.length() - 1);
+
+                Map<String, String> iconPackResources = mIconPackResources;
+                if (!component.contains("/")) {
+                    // Package icon reference
+                    iconPackResources.put(component, drawable);
+                } else {
+                    ComponentName componentName = ComponentName.unflattenFromString(component);
+                    if (componentName != null) {
+                        iconPackResources.put(componentName.getPackageName(), drawable);
+                        iconPackResources.put(component, drawable);
+                    }
+                }
+                continue;
+            }
+
+            if (name.equals(ICON_BACK_TAG)) {
+                String icon = parser.getAttributeValue(null, "img");
+                if (icon == null) {
+                    for (int i = 0; i < parser.getAttributeCount(); i++) {
+                        iconBackStrings.add(parser.getAttributeValue(i));
+                    }
+                }
+                continue;
+            }
+
+            if (name.equals(ICON_MASK_TAG) ||
+                    name.equals(ICON_UPON_TAG)) {
+                String icon = parser.getAttributeValue(null, "img");
+                if (icon == null) {
+                    if (parser.getAttributeCount() > 0) {
+                        icon = parser.getAttributeValue(0);
+                    }
+                }
+                mIconPackResources.put(parser.getName().toLowerCase(), icon);
+                continue;
+            }
+
+            if (name.equals(ICON_SCALE_TAG)) {
+                String factor = parser.getAttributeValue(null, "factor");
+                if (factor == null) {
+                    if (parser.getAttributeCount() > 0) {
+                        factor = parser.getAttributeValue(0);
+                    }
+                }
+                mIconPackResources.put(parser.getName().toLowerCase(), factor);
+                continue;
+            }
+        }
+        setIcons(mIconPackResources, iconBackStrings);
+    }
+
     public void setIcons(Map<String, String> iconPackResources, List<String> iconBackStrings) {
         mIconPackResources = iconPackResources;
         mIconBackStrings = iconBackStrings;
-        mIconBackList = new ArrayList<Drawable>();
+        mIconBackList = new ArrayList<>();
         try {
             mLoadedIconPackResource = mContext.getPackageManager().getResourcesForApplication(packageName);
         } catch (PackageManager.NameNotFoundException e) {
             // must never happen cause itys checked already in the provider
             return;
         }
-        mIconMask = getDrawableForName(IconPackProvider.ICON_MASK_TAG);
-        mIconUpon = getDrawableForName(IconPackProvider.ICON_UPON_TAG);
+        mIconMask = getDrawableForName(ICON_MASK_TAG);
+        mIconUpon = getDrawableForName(ICON_UPON_TAG);
         for (int i = 0; i < mIconBackStrings.size(); i++) {
             String backIconString = mIconBackStrings.get(i);
             Drawable backIcon = getDrawableWithName(backIconString);
@@ -68,10 +152,10 @@ public class IconPack {
                 mIconBackList.add(backIcon);
             }
         }
-        String scale = mIconPackResources.get(IconPackProvider.ICON_SCALE_TAG);
+        String scale = mIconPackResources.get(ICON_SCALE_TAG);
         if (scale != null) {
             try {
-                mIconScale = Float.valueOf(scale);
+                mIconScale = Float.parseFloat(scale);
             } catch (NumberFormatException e) {
             }
         }
