@@ -23,7 +23,34 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import app.lawnchair.preferences.PreferenceAdapter
+import app.lawnchair.preferences.rememberTransformAdapter
 import kotlin.math.roundToInt
+
+@Composable
+fun SliderPreference(
+    label: String,
+    adapter: PreferenceAdapter<Int>,
+    valueRange: ClosedRange<Int>,
+    step: Int,
+    showAsPercentage: Boolean = false,
+    showDivider: Boolean = true
+) {
+    val transformedAdapter = rememberTransformAdapter(
+        adapter = adapter,
+        transformGet = { it.toFloat() },
+        transformSet = { it.roundToInt() }
+    )
+    val start = valueRange.start.toFloat()
+    val endInclusive = valueRange.endInclusive.toFloat()
+    SliderPreference(
+        label = label,
+        adapter = transformedAdapter,
+        valueRange = start..endInclusive,
+        step = step.toFloat(),
+        showAsPercentage = showAsPercentage,
+        showDivider = showDivider
+    )
+}
 
 @Composable
 fun SliderPreference(
