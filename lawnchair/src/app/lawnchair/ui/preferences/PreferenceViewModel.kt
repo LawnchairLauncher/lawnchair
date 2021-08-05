@@ -17,36 +17,19 @@
 package app.lawnchair.ui.preferences
 
 import android.app.Application
-import android.content.ComponentName
 import android.content.Intent
 import android.content.pm.ResolveInfo
-import android.provider.Settings
 import androidx.appcompat.content.res.AppCompatResources
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.AndroidViewModel
 import app.lawnchair.ui.preferences.about.licenses.License
 import com.android.launcher3.R
-import com.android.launcher3.notification.NotificationListener
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import java.io.BufferedReader
 import java.io.InputStreamReader
-import java.util.*
-import kotlin.collections.HashMap
 
 class PreferenceViewModel(application: Application) : AndroidViewModel(application), PreferenceInteractor {
-    private val lawnchairNotificationListener = ComponentName(application, NotificationListener::class.java)
-    private val enabledNotificationListeners: String? by lazy {
-        Settings.Secure.getString(
-            application.contentResolver,
-            "enabled_notification_listeners"
-        )
-    }
-
-    override val notificationDotsEnabled: MutableState<Boolean> =
-        mutableStateOf(enabledNotificationListeners?.contains(lawnchairNotificationListener.flattenToString()) == true)
-
     override fun getIconPacks(): List<IconPackInfo> {
         val pm = getApplication<Application>().packageManager
         val iconPacks: MutableMap<String, IconPackInfo> = HashMap()

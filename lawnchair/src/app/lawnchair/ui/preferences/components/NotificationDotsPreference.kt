@@ -18,61 +18,177 @@ package app.lawnchair.ui.preferences.components
 
 import android.content.ComponentName
 import android.content.Intent
+import android.os.Bundle
+import android.provider.Settings
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.foundation.layout.*
+import androidx.compose.material.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.core.os.bundleOf
-import app.lawnchair.ui.preferences.LocalPreferenceInteractor
+import androidx.lifecycle.Lifecycle
+import app.lawnchair.util.lifecycleState
 import com.android.launcher3.R
 import com.android.launcher3.notification.NotificationListener
-import android.provider.Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS as actionNotificationListenerSettings
+import com.android.launcher3.settings.SettingsActivity
+import com.android.launcher3.util.SecureSettingsObserver
 
 @Composable
 fun NotificationDotsPreference() {
     val context = LocalContext.current
-    val extraFragmentArgKey = ":settings:fragment_args_key"
-    val extraShowFragmentArgs = ":settings:show_fragment_args"
-    val interactor = LocalPreferenceInteractor.current
 
-    fun onClick() {
-        val intent = if (interactor.notificationDotsEnabled.value) {
-            Intent("android.settings.NOTIFICATION_SETTINGS")
-                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                .putExtra(extraFragmentArgKey, "notification_badging")
-        } else {
-            val cn = ComponentName(context, NotificationListener::class.java)
-            val showFragmentArgs = bundleOf(extraFragmentArgKey to cn.flattenToString())
-            Intent(actionNotificationListenerSettings)
-                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                .putExtra(extraFragmentArgKey, cn.flattenToString())
-                .putExtra(extraShowFragmentArgs, showFragmentArgs)
-        }
-        context.startActivity(intent)
+    val enabled = notificationDotsEnabled()
+    val serviceEnabled = notificationServiceEnabled()
+
+    val showWarning = enabled && !serviceEnabled
+    val summary = when {
+        showWarning -> R.string.title_missing_notification_access
+        enabled -> R.string.notification_dots_desc_on
+        else -> R.string.notification_dots_desc_off
     }
 
-    PreferenceTemplate(height = 52.dp) {
+    var showDialog by remember { mutableStateOf(false) }
+    if (showDialog) {
+        NotificationAccessConfirmation(onDismissRequest = { showDialog = false })
+    }
+
+    PreferenceTemplate(height = 72.dp) {
         Row(
+            verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
-                .clickable { onClick() }
+                .clickable {
+                    if (showWarning) {
+                        showDialog = true
+                    } else {
+                        val intent = Intent("android.settings.NOTIFICATION_SETTINGS")
+                            .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                            .putExtra(
+                                SettingsActivity.EXTRA_FRAGMENT_ARG_KEY,
+                                "notification_badging"
+                            )
+                        context.startActivity(intent)
+                    }
+                }
                 .fillMaxHeight()
                 .fillMaxWidth()
-                .padding(start = 16.dp, end = 16.dp), verticalAlignment = Alignment.CenterVertically
+                .padding(start = 16.dp, end = 16.dp)
         ) {
-            Text(
-                text = stringResource(id = R.string.notification_dots),
-                style = MaterialTheme.typography.subtitle1,
-                color = MaterialTheme.colors.onBackground
-            )
+            Column(Modifier.weight(1f)) {
+                Text(
+                    text = stringResource(id = R.string.notification_dots),
+                    style = MaterialTheme.typography.subtitle1,
+                    color = MaterialTheme.colors.onBackground
+                )
+                CompositionLocalProvider(
+                    LocalContentAlpha provides ContentAlpha.medium,
+                    LocalContentColor provides MaterialTheme.colors.onBackground
+                ) {
+                    Text(
+                        text = stringResource(id = summary),
+                        style = MaterialTheme.typography.body2
+                    )
+                }
+            }
+            if (showWarning) {
+                Icon(
+                    modifier = Modifier
+                        .padding(8.dp)
+                        .size(24.dp),
+                    painter = painterResource(id = R.drawable.ic_warning),
+                    contentDescription = "",
+                    tint = MaterialTheme.colors.onBackground.copy(alpha = ContentAlpha.medium)
+                )
+            }
         }
     }
+}
+
+@Composable
+fun NotificationAccessConfirmation(onDismissRequest: () -> Unit) {
+    val context = LocalContext.current
+    val elevationOverlay = LocalElevationOverlay.current
+    val surface = MaterialTheme.colors.surface
+    val backgroundColor = elevationOverlay?.apply(surface, 16.dp) ?: surface
+    AlertDialog(
+        onDismissRequest = onDismissRequest,
+        confirmButton = { TextButton(onClick = {
+            onDismissRequest()
+
+            val cn = ComponentName(context, NotificationListener::class.java)
+            val showFragmentArgs = Bundle()
+            showFragmentArgs.putString(
+                SettingsActivity.EXTRA_FRAGMENT_ARG_KEY,
+                cn.flattenToString()
+            )
+
+            val intent = Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS)
+                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                .putExtra(SettingsActivity.EXTRA_FRAGMENT_ARG_KEY, cn.flattenToString())
+                .putExtra(SettingsActivity.EXTRA_SHOW_FRAGMENT_ARGS, showFragmentArgs)
+            context.startActivity(intent)
+        }) {
+            Text(text = stringResource(id = R.string.title_change_settings))
+        } },
+        dismissButton = { TextButton(onClick = onDismissRequest) {
+            Text(text = stringResource(id = android.R.string.cancel))
+        } },
+        title = {
+            Text(text = stringResource(id = R.string.title_missing_notification_access))
+        },
+        text = {
+            val appName = stringResource(id = R.string.derived_app_name)
+            Text(text = stringResource(id = R.string.msg_missing_notification_access, appName))
+        },
+        backgroundColor = backgroundColor
+    )
+}
+
+@Composable
+fun notificationDotsEnabled(): Boolean {
+    val context = LocalContext.current
+    val enabledState = remember { mutableStateOf(false) }
+    val observer = remember {
+        SecureSettingsObserver.newNotificationSettingsObserver(context) { isEnabled ->
+            enabledState.value = isEnabled
+        }.apply { dispatchOnChange() }
+    }
+
+    DisposableEffect(null) {
+        observer.register()
+        onDispose { observer.unregister() }
+    }
+
+    return enabledState.value
+}
+
+@Composable
+fun notificationServiceEnabled(): Boolean {
+    val context = LocalContext.current
+
+    fun isNotificationServiceEnabled(): Boolean {
+        val enabledListeners = Settings.Secure.getString(
+            context.contentResolver,
+            "enabled_notification_listeners"
+        )
+        val myListener = ComponentName(context, NotificationListener::class.java)
+        return enabledListeners != null &&
+                (enabledListeners.contains(myListener.flattenToString()) ||
+                        enabledListeners.contains(myListener.flattenToShortString()))
+    }
+
+    val enabledState = remember { mutableStateOf(isNotificationServiceEnabled()) }
+    val resumed = lifecycleState().isAtLeast(Lifecycle.State.RESUMED)
+
+    if (resumed) {
+        DisposableEffect(null) {
+            enabledState.value = isNotificationServiceEnabled()
+            onDispose {  }
+        }
+    }
+
+    return enabledState.value
 }
