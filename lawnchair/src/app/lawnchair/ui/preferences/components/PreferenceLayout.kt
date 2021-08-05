@@ -24,7 +24,9 @@ import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 
@@ -77,15 +79,13 @@ fun PreferenceLayoutLazyColumn(
 }
 
 @Composable
-fun rememberFloatingState(state: ScrollState): State<Boolean> {
-    return remember(state) {
+fun rememberFloatingState(state: ScrollState) =
+    remember(state) {
         derivedStateOf { state.value > 0 }
     }
-}
 
 @Composable
-fun rememberFloatingState(state: LazyListState): State<Boolean> {
-    return remember(state) {
+fun rememberFloatingState(state: LazyListState) =
+    remember(state) {
         derivedStateOf { state.firstVisibleItemIndex > 0 || state.firstVisibleItemScrollOffset > 0 }
     }
-}
