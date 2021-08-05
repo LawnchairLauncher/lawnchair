@@ -101,4 +101,6 @@
     <string name="custom">Benutzerdefiniert</string>
     <string name="custom_color">Benutzerdefinierte Farbe</string>
     <string name="quickstep_description">Alles entfernen Taste, Eckradius</string>
+    <string name="wallpaper_scrolling_label">Wallpaper scrolling</string>
+    <string name="show_sys_ui_scrim">Show Top Shadow</string>
 </resources>
