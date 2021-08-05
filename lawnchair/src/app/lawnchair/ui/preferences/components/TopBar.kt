@@ -43,6 +43,7 @@ import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
+import androidx.navigation.compose.currentBackStackEntryAsState
 import app.lawnchair.ui.preferences.LocalNavController
 import com.google.accompanist.insets.navigationBarsPadding
 import com.google.accompanist.insets.statusBarsPadding
@@ -56,6 +57,8 @@ fun TopBar(
 ) {
     val navController = LocalNavController.current
     val labelPaddingStart = if (backArrowVisible) 8.dp else 16.dp
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentRoute = navBackStackEntry?.destination?.route
 
     TopBarSurface(floating = floating) {
         Row(
@@ -68,7 +71,7 @@ fun TopBar(
                 ClickableIcon(
                     imageVector = backIcon(),
                     tint = MaterialTheme.colors.onBackground,
-                    onClick = { navController.popBackStack() }
+                    onClick = { if (currentRoute != "/") navController.popBackStack() }
                 )
             }
             Text(
