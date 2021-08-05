@@ -103,6 +103,6 @@
     <string name="custom">Vlastní</string>
     <string name="custom_color">Vlastní barva</string>
     <string name="quickstep_description">Clear All Button, Corner Radius</string>
-    <string name="wallpaper_scrolling_label">Scroll Wallpaper</string>
+    <string name="wallpaper_scrolling_label">Posouvat tapetu</string>
     <string name="show_sys_ui_scrim">Show Top Shadow</string>
 </resources>
