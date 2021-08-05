@@ -19,7 +19,6 @@ package app.lawnchair.preferences
 import androidx.compose.runtime.*
 import androidx.compose.ui.platform.LocalContext
 import com.android.launcher3.InvariantDeviceProfile
-import com.android.launcher3.LauncherAppState
 import kotlin.reflect.KProperty
 
 interface PreferenceAdapter<T> {
@@ -62,17 +61,13 @@ fun BasePreferenceManager.IdpIntPref.getAdapter(): PreferenceAdapter<Int> {
 }
 
 @Composable
-fun <T> PrefEntry<T>.getAdapter(): PreferenceAdapter<T> {
-    return getAdapter(this, ::get, ::set)
-}
+fun <T> PrefEntry<T>.getAdapter() = getAdapter(this, ::get, ::set)
 
 @Composable
 fun <T> PrefEntry<T>.getState() = getAdapter().state
 
 @Composable
-fun <T> PrefEntry<T>.observeAsState(): State<T> {
-    return getAdapter().state
-}
+fun <T> PrefEntry<T>.observeAsState() = getAdapter().state
 
 @Composable
 private fun <P, T> getAdapter(
@@ -89,14 +84,12 @@ private fun <P, T> getAdapter(
 }
 
 @Composable
-fun <T, R>rememberTransformAdapter(
+fun <T, R> rememberTransformAdapter(
     adapter: PreferenceAdapter<T>,
     transformGet: (T) -> R,
     transformSet: (R) -> T
-): PreferenceAdapter<R> {
-    return remember(adapter) {
-        TransformPreferenceAdapter(adapter, transformGet, transformSet)
-    }
+): PreferenceAdapter<R> = remember(adapter) {
+    TransformPreferenceAdapter(adapter, transformGet, transformSet)
 }
 
 private class TransformPreferenceAdapter<T, R>(

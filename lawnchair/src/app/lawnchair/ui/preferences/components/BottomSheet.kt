@@ -82,8 +82,8 @@ fun rememberBottomSheetState(
     initialValue: ModalBottomSheetValue,
     animationSpec: AnimationSpec<Float> = SwipeableDefaults.AnimationSpec,
     confirmStateChange: (ModalBottomSheetValue) -> Boolean = { true }
-): BottomSheetState {
-    return rememberSaveable(
+): BottomSheetState =
+    rememberSaveable(
         saver = BottomSheetState.Saver(
             animationSpec = animationSpec,
             confirmStateChange = confirmStateChange
@@ -91,7 +91,6 @@ fun rememberBottomSheetState(
     ) {
         BottomSheetState(initialValue, animationSpec, confirmStateChange)
     }
-}
 
 @ExperimentalMaterialApi
 class BottomSheetState(

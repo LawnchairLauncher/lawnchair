@@ -113,6 +113,4 @@ class PreferenceManager private constructor(private val context: Context) : Base
 }
 
 @Composable
-fun preferenceManager(): PreferenceManager {
-    return PreferenceManager.getInstance(LocalContext.current)
-}
+fun preferenceManager() = PreferenceManager.getInstance(LocalContext.current)

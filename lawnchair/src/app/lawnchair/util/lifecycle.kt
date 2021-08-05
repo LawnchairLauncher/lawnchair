@@ -10,9 +10,7 @@ private val LocalLifecycleState = compositionLocalOf<Lifecycle.State> {
 }
 
 @Composable
-fun lifecycleState(): Lifecycle.State {
-    return LocalLifecycleState.current
-}
+fun lifecycleState(): Lifecycle.State = LocalLifecycleState.current
 
 @Composable
 fun ProvideLifecycleState(content: @Composable () -> Unit) {
