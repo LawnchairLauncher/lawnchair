@@ -253,7 +253,11 @@ public final class TaskOverlayFactoryGo extends TaskOverlayFactory {
 
             String assistantPackage =
                     Settings.Secure.getString(contentResolver, Settings.Secure.ASSISTANT);
-            mNIUPackageName = assistantPackage.split("/", 2)[0];
+            if (!TextUtils.isEmpty(assistantPackage)) {
+                mNIUPackageName = assistantPackage.split("/", 2)[0];
+            } else {
+                mNIUPackageName = "";
+            }
         }
 
         protected class OverlayUICallbacksGoImpl extends OverlayUICallbacksImpl
