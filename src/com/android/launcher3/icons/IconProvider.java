@@ -27,12 +27,7 @@ import android.content.pm.ActivityInfo;
 import android.content.pm.LauncherActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
 import android.graphics.drawable.AdaptiveIconDrawable;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
@@ -44,8 +39,8 @@ import android.util.Log;
 
 import com.android.launcher3.R;
 import com.android.launcher3.icons.BitmapInfo.Extender;
-import com.android.launcher3.icons.cache.IconPack;
-import com.android.launcher3.icons.cache.IconPackProvider;
+import app.lawnchair.iconpack.IconPack;
+import app.lawnchair.iconpack.IconPackProvider;
 import com.android.launcher3.pm.UserCache;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.SafeCloseable;
@@ -114,8 +109,13 @@ public class IconProvider {
      * Loads the icon for the provided LauncherActivityInfo
      */
     public Drawable getIcon(LauncherActivityInfo info, int iconDpi) {
-        return getIcon(info.getApplicationInfo().packageName, info.getUser(),
+        IconPack iconPack = IconPackProvider.loadAndGetIconPack(mContext);
+        Drawable d = getIcon(info.getApplicationInfo().packageName, info.getUser(),
                 info, iconDpi, LAI_LOADER);
+        if (iconPack != null) {
+            d = iconPack.getIcon(info, d, info.getLabel());
+        }
+        return d;
     }
 
     /**
@@ -137,15 +137,6 @@ public class IconProvider {
             icon = loadClockDrawable(0);
         }
         Drawable ret = icon == null ? loader.apply(obj, param) : icon;
-        IconPack iconPack = IconPackProvider.loadAndGetIconPack(mContext);
-        try {
-            if (iconPack != null) {
-                ret = iconPack.getIcon(packageName, ret, mContext.getPackageManager().getApplicationInfo(packageName, 0).name);
-            }
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-            ret = iconPack.getIcon(packageName, ret, "");
-        }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && !(ret instanceof AdaptiveIconDrawable)) {
             ret = IconPack.wrapAdaptiveIcon(ret, mContext);
         }
