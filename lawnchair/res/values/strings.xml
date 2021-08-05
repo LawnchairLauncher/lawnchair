@@ -108,4 +108,5 @@
     <string name="custom">Custom</string>
     <string name="custom_color">Custom Color</string>
     <string name="quickstep_description">Clear All Button, Corner Radius</string>
+    <string name="hide_sysui_scrim">Hide Top Shadow</string>
 </resources>

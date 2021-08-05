@@ -58,6 +58,8 @@ import com.android.launcher3.util.TouchController;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 
+import app.lawnchair.preferences.PreferenceManager;
+
 /**
  * A viewgroup with utility methods for drag-n-drop and touch interception
  */
@@ -141,6 +143,9 @@ public abstract class BaseDragLayer<T extends Context & ActivityContext>
         mWallpaperManager = context.getSystemService(WallpaperManager.class);
         mWallpapersWithoutSysuiScrims = getResources().getStringArray(
                 R.array.live_wallpapers_remove_sysui_scrims);
+
+        PreferenceManager prefs = PreferenceManager.getInstance(context);
+        prefs.getHideSysuiScrim().subscribeChanges(this, () -> onWallpaperChanged(null));
     }
 
     /**
@@ -601,6 +606,10 @@ public abstract class BaseDragLayer<T extends Context & ActivityContext>
      * checking against a list of live wallpapers that we don't show the scrims on.
      */
     private boolean computeAllowSysuiScrims(@Nullable WallpaperInfo newWallpaperInfo) {
+        PreferenceManager prefs = PreferenceManager.getInstance(getContext());
+        if (prefs.getHideSysuiScrim().get()) {
+            return false;
+        }
         if (newWallpaperInfo == null) {
             // Static wallpapers need scrim unless determined otherwise by wallpaperColors.
             return true;

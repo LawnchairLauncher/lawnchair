@@ -61,6 +61,10 @@ fun HomeScreenPreferences() {
             SwitchPreference(
                 prefs.workspaceDt2s.getAdapter(),
                 label = stringResource(id = R.string.workspace_dt2s),
+            )
+            SwitchPreference(
+                prefs.hideSysuiScrim.getAdapter(),
+                label = stringResource(id = R.string.hide_sysui_scrim),
                 showDivider = false
             )
         }
