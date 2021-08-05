@@ -120,7 +120,7 @@ public class NavBarGestureHandler implements OnTouchListener,
         mAssistantGestureDetector = new GestureDetector(context, new AssistantGestureListener());
         int assistantWidth = resources.getDimensionPixelSize(R.dimen.gestures_assistant_width);
         final float assistantHeight = Math.max(mBottomGestureHeight,
-                QuickStepContract.getWindowCornerRadius(resources));
+                QuickStepContract.getWindowCornerRadius(context));
         mAssistantLeftRegion.bottom = mAssistantRightRegion.bottom = mDisplaySize.y;
         mAssistantLeftRegion.top = mAssistantRightRegion.top = mDisplaySize.y - assistantHeight;
         mAssistantLeftRegion.left = 0;
