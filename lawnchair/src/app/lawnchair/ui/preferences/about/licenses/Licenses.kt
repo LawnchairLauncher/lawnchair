@@ -1,5 +1,6 @@
 package app.lawnchair.ui.preferences.about.licenses
 
+import androidx.compose.animation.Crossfade
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
@@ -35,6 +36,9 @@ import app.lawnchair.util.Meta
 import app.lawnchair.util.pageMeta
 import com.android.launcher3.R
 import com.google.accompanist.navigation.animation.composable
+import com.google.accompanist.placeholder.PlaceholderHighlight
+import com.google.accompanist.placeholder.material.fade
+import com.google.accompanist.placeholder.material.placeholder
 
 @ExperimentalAnimationApi
 fun NavGraphBuilder.licensesGraph(route: String) {
@@ -97,34 +101,49 @@ fun LicensePage(index: Int) {
     val data = dataState?.value
     pageMeta.provide(Meta(title = license?.name ?: stringResource(id = R.string.loading)))
 
-    LoadingScreen(data) {
-        PreferenceLayout {
-            val uriHandler = LocalUriHandler.current
-            val layoutResult = remember { mutableStateOf<TextLayoutResult?>(null) }
-            val pressIndicator = Modifier.pointerInput(Unit) {
-                detectTapGestures { pos ->
-                    layoutResult.value?.let { layoutResult ->
-                        val position = layoutResult.getOffsetForPosition(pos)
-                        val annotation = it.data.getStringAnnotations(position, position).firstOrNull()
-                        if (annotation?.tag == "URL") {
-                            uriHandler.openUri(annotation.item)
+    PreferenceLayout {
+        Crossfade(targetState = data) { it ->
+            if (it != null) {
+                val uriHandler = LocalUriHandler.current
+                val layoutResult = remember { mutableStateOf<TextLayoutResult?>(null) }
+                val pressIndicator = Modifier.pointerInput(Unit) {
+                    detectTapGestures { pos ->
+                        layoutResult.value?.let { layoutResult ->
+                            val position = layoutResult.getOffsetForPosition(pos)
+                            val annotation =
+                                it.data.getStringAnnotations(position, position).firstOrNull()
+                            if (annotation?.tag == "URL") {
+                                uriHandler.openUri(annotation.item)
+                            }
                         }
                     }
                 }
-            }
 
-            Text(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 16.dp)
-                    .then(pressIndicator),
-                text = it.data,
-                fontFamily = FontFamily.Monospace,
-                fontSize = 14.sp,
-                onTextLayout = {
-                    layoutResult.value = it
-                }
-            )
+                Text(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 16.dp)
+                        .then(pressIndicator),
+                    text = it.data,
+                    fontFamily = FontFamily.Monospace,
+                    fontSize = 14.sp,
+                    onTextLayout = {
+                        layoutResult.value = it
+                    }
+                )
+            } else {
+                Text(
+                    modifier = Modifier
+                        .padding(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 16.dp)
+                        .placeholder(
+                            visible = true,
+                            highlight = PlaceholderHighlight.fade(),
+                        ),
+                    text = "a".repeat(license?.length ?: 20),
+                    fontFamily = FontFamily.Monospace,
+                    fontSize = 14.sp
+                )
+            }
         }
     }
 }
