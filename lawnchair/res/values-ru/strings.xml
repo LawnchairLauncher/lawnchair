@@ -18,7 +18,7 @@
     <string name="icon_pack">Набор иконок</string>
     <string name="settings">Настройки</string>
     <string name="home_screen_label">Домашний экран</string>
-    <string name="home_screen_description">Новости, Виджет \"Самое главное\", Сетка, Иконки</string>
+    <string name="home_screen_description">Новости, Виджет \"At a Glance\", Сетка, Иконки</string>
     <string name="general_label">Общие</string>
     <string name="general_description">Значки уведомлений, Набор иконок</string>
     <string name="home_screen_rotation_label">Поворачивать домашний экран</string>
@@ -30,7 +30,7 @@
     <string name="app_drawer_description">Скрытые приложения, Число столбцов, Иконки</string>
     <string name="folders_label">Папки</string>
     <string name="folders_description">Количество строк и столбцов</string>
-    <string name="app_drawer_columns">Столбцы меню приложений</string>
+    <string name="app_drawer_columns">Количество столбцов в меню приложений</string>
     <string name="dock_icons">Иконки в доке</string>
     <string name="max_folder_columns">Макс. количество столбцов в папке</string>
     <string name="max_folder_rows">Макс. количество строк в папке</string>
@@ -71,7 +71,7 @@
     <string name="hidden_apps_label_with_count">Скрытые приложения (%1$d)</string>
     <plurals name="apps_count">
         <item quantity="one">%1$d Приложение</item>
-        <item quantity="few">%1$d Приложения</item>
+        <item quantity="few">%1$d Приложений</item>
         <item quantity="many">%1$d Приложений</item>
         <item quantity="other">%1$d Приложения</item>
     </plurals>
@@ -102,7 +102,7 @@
     <string name="system">Система</string>
     <string name="custom">Настраиваемый</string>
     <string name="custom_color">Пользовательский цвет</string>
-    <string name="quickstep_description">Clear All Button, Corner Radius</string>
-    <string name="wallpaper_scrolling_label">Scroll Wallpaper</string>
-    <string name="show_sys_ui_scrim">Show Top Shadow</string>
+    <string name="quickstep_description">Радиус углов кнопки \"Очистить всё\"</string>
+    <string name="wallpaper_scrolling_label">Прокрутка обоев</string>
+    <string name="show_sys_ui_scrim">Показывать верхнюю тень</string>
 </resources>
