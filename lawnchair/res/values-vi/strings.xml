@@ -100,6 +100,6 @@
     <string name="custom">Tùy chỉnh</string>
     <string name="custom_color">Tuỳ chỉnh màu sắc</string>
     <string name="quickstep_description">Nút xoá tất cả, độ cong của góc</string>
-    <string name="wallpaper_scrolling_label">Wallpaper scrolling</string>
+    <string name="wallpaper_scrolling_label">Scroll Wallpaper</string>
     <string name="show_sys_ui_scrim">Show Top Shadow</string>
 </resources>
