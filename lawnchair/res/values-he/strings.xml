@@ -103,6 +103,6 @@
     <string name="custom">התאמה אישית</string>
     <string name="custom_color">צבע בהתאמה אישית</string>
     <string name="quickstep_description">כפתור ניקוי הכל, רדיוס פינות</string>
-    <string name="wallpaper_scrolling_label">Scroll Wallpaper</string>
+    <string name="wallpaper_scrolling_label">גלילת טפט</string>
     <string name="show_sys_ui_scrim">הצגת הצללה עילית</string>
 </resources>
