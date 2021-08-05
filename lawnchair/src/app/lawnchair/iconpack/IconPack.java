@@ -19,6 +19,7 @@ import android.os.Build;
 import android.text.TextUtils;
 
 import androidx.annotation.ColorInt;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.core.graphics.ColorUtils;
 import androidx.palette.graphics.Palette;
 
@@ -46,6 +47,7 @@ public class IconPack {
     private String packageName;
     private Context mContext;
     private Map<String, String> mIconPackResources = new HashMap<>();
+    private Map<String, String> mCalendarResources = new HashMap<>();
     private List<String> mIconBackStrings;
     private List<Drawable> mIconBackList;
     private Drawable mIconUpon, mIconMask;
@@ -65,9 +67,10 @@ public class IconPack {
                 continue;
             }
             String name = parser.getName().toLowerCase();
-            if (name.equals("item")) {
+            boolean isCalendar = name.equals("calendar");
+            if (isCalendar || name.equals("item")) {
                 String component = parser.getAttributeValue(null, "component");
-                String drawable = parser.getAttributeValue(null, "drawable");
+                String drawable = parser.getAttributeValue(null, isCalendar ? "prefix" : "drawable");
                 // Validate component/drawable exist
 
                 if (TextUtils.isEmpty(component) || TextUtils.isEmpty(drawable)) {
@@ -83,7 +86,7 @@ public class IconPack {
                 // Sanitize stored value
                 component = component.substring(14, component.length() - 1);
 
-                Map<String, String> iconPackResources = mIconPackResources;
+                Map<String, String> iconPackResources = isCalendar ? mCalendarResources : mIconPackResources;
                 if (!component.contains("/")) {
                     // Package icon reference
                     iconPackResources.put(component, drawable);
@@ -133,6 +136,14 @@ public class IconPack {
         setIcons(mIconPackResources, iconBackStrings);
     }
 
+    public boolean isCalendar(String packageName) {
+        return mCalendarResources.containsKey(packageName);
+    }
+
+    public boolean isNormalIcon(String packageName) {
+        return mIconPackResources.containsKey(packageName);
+    }
+
     public void setIcons(Map<String, String> iconPackResources, List<String> iconBackStrings) {
         mIconPackResources = iconPackResources;
         mIconBackStrings = iconBackStrings;
@@ -143,11 +154,11 @@ public class IconPack {
             // must never happen cause itys checked already in the provider
             return;
         }
-        mIconMask = getDrawableForName(ICON_MASK_TAG);
-        mIconUpon = getDrawableForName(ICON_UPON_TAG);
+        mIconMask = getDrawableForName(ICON_MASK_TAG, 0);
+        mIconUpon = getDrawableForName(ICON_UPON_TAG, 0);
         for (int i = 0; i < mIconBackStrings.size(); i++) {
             String backIconString = mIconBackStrings.get(i);
-            Drawable backIcon = getDrawableWithName(backIconString);
+            Drawable backIcon = getDrawableWithName(backIconString, 0);
             if (backIcon != null) {
                 mIconBackList.add(backIcon);
             }
@@ -161,20 +172,29 @@ public class IconPack {
         }
     }
 
-    public Drawable getIcon(LauncherActivityInfo info, Drawable appIcon) {
-        return getIcon(info.getComponentName(), appIcon);
+    public Drawable getIcon(LauncherActivityInfo info, int iconDpi) {
+        return getIcon(info.getComponentName(), iconDpi);
     }
 
-    public Drawable getIcon(ActivityInfo info, Drawable appIcon) {
-        return getIcon(new ComponentName(info.packageName, info.name), appIcon);
+    public Drawable getIcon(ActivityInfo info, int iconDpi) {
+        return getIcon(new ComponentName(info.packageName, info.name), iconDpi);
     }
 
-    public Drawable getIcon(ComponentName name, Drawable appIcon) {
-        return getDrawable(name.flattenToString(), appIcon);
+    public Drawable getIcon(ComponentName name, int iconDpi) {
+        return getDrawable(name.flattenToString(), iconDpi);
     }
 
-    public Drawable getIcon(String packageName, Drawable appIcon) {
-        return getDrawable(packageName, appIcon);
+    public Drawable getIcon(String packageName, int iconDpi) {
+        return getDrawable(packageName, iconDpi);
+    }
+
+    public Drawable getCalendarIcon(String packageName, int iconDpi, int day) {
+        String prefix = mCalendarResources.get(packageName);
+        if (prefix == null) {
+            return null;
+        }
+        String drawableName = prefix + (day + 1);
+        return getDrawableWithName(drawableName, iconDpi);
     }
 
     private static Bitmap pad(Bitmap src) {
@@ -212,12 +232,8 @@ public class IconPack {
         return bitmap;
     }
 
-    private Drawable getDrawable(String name, Drawable appIcon) {
-        Drawable d = getDrawableForName(name);
-        if (d == null && appIcon != null) {
-            d = appIcon;
-        }
-        return wrapAdaptiveIcon(d, mContext);
+    private Drawable getDrawable(String name, int iconDpi) {
+        return getDrawableForName(name, iconDpi);
     }
 
     public static Drawable wrapAdaptiveIcon(Drawable d, Context context) {
@@ -265,21 +281,21 @@ public class IconPack {
         return resId;
     }
 
-    private Drawable getDrawableForName(String name) {
+    private Drawable getDrawableForName(String name, int iconDpi) {
         String item = mIconPackResources.get(name);
         if (!TextUtils.isEmpty(item)) {
             int id = getResourceIdForDrawable(item);
             if (id != 0) {
-                return mLoadedIconPackResource.getDrawable(id);
+                return ResourcesCompat.getDrawableForDensity(mLoadedIconPackResource, id, iconDpi, null);
             }
         }
         return null;
     }
 
-    private Drawable getDrawableWithName(String name) {
-        int id = getResourceIdForDrawable(name);
+    private Drawable getDrawableWithName(String drawableName, int iconDpi) {
+        int id = getResourceIdForDrawable(drawableName);
         if (id != 0) {
-            return mLoadedIconPackResource.getDrawable(id);
+            return ResourcesCompat.getDrawableForDensity(mLoadedIconPackResource, id, iconDpi, null);
         }
         return null;
     }
