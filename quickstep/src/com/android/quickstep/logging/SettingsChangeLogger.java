@@ -16,19 +16,15 @@
 
 package com.android.quickstep.logging;
 
-import static com.android.launcher3.InvariantDeviceProfile.KEY_MIGRATION_SRC_WORKSPACE_SIZE;
 import static com.android.launcher3.Utilities.getDevicePrefs;
 import static com.android.launcher3.Utilities.getPrefs;
-import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_GRID_SIZE_2;
-import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_GRID_SIZE_3;
-import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_GRID_SIZE_4;
-import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_GRID_SIZE_5;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_HOME_SCREEN_SUGGESTIONS_DISABLED;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_HOME_SCREEN_SUGGESTIONS_ENABLED;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_NOTIFICATION_DOT_DISABLED;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_NOTIFICATION_DOT_ENABLED;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_THEMED_ICON_DISABLED;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_THEMED_ICON_ENABLED;
+import static com.android.launcher3.model.DeviceGridState.KEY_WORKSPACE_SIZE;
 import static com.android.launcher3.model.QuickstepModelDelegate.LAST_PREDICTION_ENABLED_STATE;
 import static com.android.launcher3.util.SettingsCache.NOTIFICATION_BADGING_URI;
 import static com.android.launcher3.util.Themes.KEY_THEMED_ICONS;
@@ -43,11 +39,11 @@ import android.util.Xml;
 
 import com.android.launcher3.AutoInstallsLayout;
 import com.android.launcher3.R;
-import com.android.launcher3.Utilities;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.logging.InstanceIdSequence;
 import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.logging.StatsLogManager.StatsLogger;
+import com.android.launcher3.model.DeviceGridState;
 import com.android.launcher3.util.SettingsCache;
 import com.android.quickstep.SysUINavigationMode;
 import com.android.quickstep.SysUINavigationMode.Mode;
@@ -135,7 +131,8 @@ public class SettingsChangeLogger implements
     @Override
     public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
         if (LAST_PREDICTION_ENABLED_STATE.equals(key)
-                || KEY_MIGRATION_SRC_WORKSPACE_SIZE.equals(key)
+                || KEY_WORKSPACE_SIZE.equals(key)
+                || KEY_THEMED_ICONS.equals(key)
                 || mLoggablePrefs.containsKey(key)) {
             dispatchUserEvent();
         }
@@ -153,32 +150,13 @@ public class SettingsChangeLogger implements
                 ? LAUNCHER_HOME_SCREEN_SUGGESTIONS_ENABLED
                 : LAUNCHER_HOME_SCREEN_SUGGESTIONS_DISABLED);
 
-        SharedPreferences prefs = getPrefs(mContext);
-        StatsLogManager.LauncherEvent gridSizeChangedEvent = null;
-        String workspaceSize = prefs.getString(KEY_MIGRATION_SRC_WORKSPACE_SIZE, null);
-        if (workspaceSize != null) {
-            switch (Utilities.parsePoint(workspaceSize).x) {
-                case 5:
-                    gridSizeChangedEvent = LAUNCHER_GRID_SIZE_5;
-                    break;
-                case 4:
-                    gridSizeChangedEvent = LAUNCHER_GRID_SIZE_4;
-                    break;
-                case 3:
-                    gridSizeChangedEvent = LAUNCHER_GRID_SIZE_3;
-                    break;
-                case 2:
-                    gridSizeChangedEvent = LAUNCHER_GRID_SIZE_2;
-                    break;
-                default:
-                    // Ignore illegal input.
-                    break;
-            }
-        }
+        StatsLogManager.LauncherEvent gridSizeChangedEvent =
+                new DeviceGridState(mContext).getWorkspaceSizeEvent();
         if (gridSizeChangedEvent != null) {
             logger.log(gridSizeChangedEvent);
         }
 
+        SharedPreferences prefs = getPrefs(mContext);
         if (FeatureFlags.ENABLE_THEMED_ICONS.get()) {
             logger.log(prefs.getBoolean(KEY_THEMED_ICONS, false)
                     ? LAUNCHER_THEMED_ICON_ENABLED
