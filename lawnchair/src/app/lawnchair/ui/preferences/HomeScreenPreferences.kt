@@ -69,13 +69,13 @@ fun HomeScreenPreferences() {
                 label = stringResource(id = R.string.home_screen_columns),
                 adapter = prefs.workspaceColumns.getAdapter(),
                 step = 1f,
-                valueRange = 3.0F..15.0F
+                valueRange = 3.0F..10.0F
             )
             SliderPreference(
                 label = stringResource(id = R.string.home_screen_rows),
                 adapter = prefs.workspaceRows.getAdapter(),
                 step = 1f,
-                valueRange = 3.0F..15.0F,
+                valueRange = 3.0F..10.0F,
                 showDivider = false
             )
         }
