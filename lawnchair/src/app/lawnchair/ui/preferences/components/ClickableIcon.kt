@@ -17,11 +17,12 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.unit.dp
+import app.lawnchair.ui.util.addIf
 
 @Composable
 fun ClickableIcon(
     painter: Painter,
-    onClick: () -> Unit,
+    onClick: (() -> Unit)?,
     modifier: Modifier = Modifier,
     tint: Color = LocalContentColor.current.copy(alpha = LocalContentAlpha.current)
 ) {
@@ -31,7 +32,9 @@ fun ClickableIcon(
             .padding(start = 8.dp)
             .size(height = 40.dp, width = 40.dp)
             .clip(CircleShape)
-            .clickable(onClick = onClick)
+            .addIf(onClick != null) {
+                clickable(onClick = onClick!!)
+            }
     ) {
         Icon(
             painter = painter,

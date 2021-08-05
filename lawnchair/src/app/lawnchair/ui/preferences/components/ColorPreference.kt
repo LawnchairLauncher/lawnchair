@@ -258,11 +258,25 @@ fun ModeRow(
                     )
                 }
                 if (onEditClick != null) {
-                    ClickableIcon(
-                        painter = painterResource(id = R.drawable.ic_edit),
-                        tint = MaterialTheme.colors.primary,
-                        onClick = onEditClick
-                    )
+                    Crossfade(targetState = selected) {
+                        if (it) {
+                            ClickableIcon(
+                                painter = painterResource(id = R.drawable.ic_edit),
+                                tint = MaterialTheme.colors.primary,
+                                onClick = onEditClick
+                            )
+                        } else {
+                            CompositionLocalProvider(
+                                LocalContentAlpha provides ContentAlpha.disabled,
+                                LocalContentColor provides MaterialTheme.colors.primary
+                            ) {
+                                ClickableIcon(
+                                    painter = painterResource(id = R.drawable.ic_edit),
+                                    onClick = null
+                                )
+                            }
+                        }
+                    }
                 }
             }
             if (showDivider) {
