@@ -18,6 +18,7 @@ package app.lawnchair.ui.preferences
 
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.Checkbox
 import androidx.compose.material.CheckboxDefaults
 import androidx.compose.material.MaterialTheme
@@ -58,50 +59,55 @@ fun HiddenAppsPreferences() {
         filter = remember { DefaultAppFilter(context) },
         comparator = hiddenAppsComparator(hiddenApps)
     )
-    Crossfade(targetState = optionalApps.isPresent) { present ->
-        if (present) {
-            PreferenceLayoutLazyColumn(label = pageTitle) {
-                val apps = optionalApps.get()
-                val toggleHiddenApp = { app: App ->
-                    val key = app.key.toString()
-                    val newSet = apps
-                        .filter { hiddenApps.contains(it.key.toString()) }
-                        .map { it.key.toString() }
-                        .toMutableSet()
-                    val isHidden = !hiddenApps.contains(key)
-                    if (isHidden) {
-                        newSet.add(key)
-                    } else {
-                        newSet.remove(key)
+    val state = rememberLazyListState()
+    PreferenceScaffold(
+        label = pageTitle,
+        floating = rememberFloatingState(state)
+    ) {
+        Crossfade(targetState = optionalApps.isPresent) { present ->
+            if (present) {
+                PreferenceLazyColumn(state = state) {
+                    val apps = optionalApps.get()
+                    val toggleHiddenApp = { app: App ->
+                        val key = app.key.toString()
+                        val newSet = apps
+                            .filter { hiddenApps.contains(it.key.toString()) }
+                            .map { it.key.toString() }
+                            .toMutableSet()
+                        val isHidden = !hiddenApps.contains(key)
+                        if (isHidden) {
+                            newSet.add(key)
+                        } else {
+                            newSet.remove(key)
+                        }
+                        hiddenApps = newSet
                     }
-                    hiddenApps = newSet
-                }
-                preferenceGroupItems(
-                    items = apps,
-                    isFirstChild = true
-                ) { index, app ->
-                    AppItem(
-                        app = app,
-                        onClick = toggleHiddenApp,
-                        showDivider = index != apps.lastIndex
-                    ) {
-                        Checkbox(
-                            checked = hiddenApps.contains(app.key.toString()),
-                            onCheckedChange = null,
-                            colors = CheckboxDefaults.colors(
-                                uncheckedColor = MaterialTheme.colors.onBackground.copy(alpha = 0.48F)
+                    preferenceGroupItems(
+                        items = apps,
+                        isFirstChild = true
+                    ) { index, app ->
+                        AppItem(
+                            app = app,
+                            onClick = toggleHiddenApp,
+                            showDivider = index != apps.lastIndex
+                        ) {
+                            Checkbox(
+                                checked = hiddenApps.contains(app.key.toString()),
+                                onCheckedChange = null,
+                                colors = CheckboxDefaults.colors(
+                                    uncheckedColor = MaterialTheme.colors.onBackground.copy(alpha = 0.48F)
+                                )
                             )
-                        )
+                        }
                     }
                 }
-            }
-        } else {
-            PreferenceLayoutLazyColumn(
-                enabled = false,
-                label = pageTitle
-            ) {
-                preferenceGroupItems(count = 20, isFirstChild = true) { index ->
-                    AppItemPlaceholder(showDivider = index != 19)
+            } else {
+                PreferenceLazyColumn(
+                    enabled = false,
+                ) {
+                    preferenceGroupItems(count = 20, isFirstChild = true) { index ->
+                        AppItemPlaceholder(showDivider = index != 19)
+                    }
                 }
             }
         }
