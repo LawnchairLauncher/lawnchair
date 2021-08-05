@@ -18,7 +18,6 @@ package com.android.launcher3.taskbar;
 
 import static android.view.Display.DEFAULT_DISPLAY;
 
-import android.content.Intent;
 import android.view.inputmethod.InputMethodManager;
 
 import androidx.annotation.IntDef;
@@ -90,9 +89,7 @@ public class TaskbarNavButtonController {
     }
 
     private void navigateHome() {
-        mService.startActivity(new Intent(Intent.ACTION_MAIN)
-                .addCategory(Intent.CATEGORY_HOME)
-                .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+        mService.getOverviewCommandHelper().addCommand(OverviewCommandHelper.TYPE_HOME);
     }
 
     private void navigateToOverview() {
