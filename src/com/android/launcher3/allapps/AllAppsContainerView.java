@@ -385,8 +385,8 @@ public class AllAppsContainerView extends StretchRelativeLayout implements DragS
     }
 
     @Override
-    protected void dispatchDraw(Canvas canvas) {
-        super.dispatchDraw(canvas);
+    public void draw(@NonNull Canvas canvas) {
+        super.draw(canvas);
 
         if (mNavBarScrimHeight > 0) {
             canvas.drawRect(0, getHeight() - mNavBarScrimHeight, getWidth(), getHeight(),
