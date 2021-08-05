@@ -145,7 +145,7 @@ public abstract class BaseDragLayer<T extends Context & ActivityContext>
                 R.array.live_wallpapers_remove_sysui_scrims);
 
         PreferenceManager prefs = PreferenceManager.getInstance(context);
-        prefs.getHideSysuiScrim().subscribeChanges(this, () -> onWallpaperChanged(null));
+        prefs.getShowSysUiScrim().subscribeChanges(this, () -> onWallpaperChanged(null));
     }
 
     /**
@@ -607,7 +607,7 @@ public abstract class BaseDragLayer<T extends Context & ActivityContext>
      */
     private boolean computeAllowSysuiScrims(@Nullable WallpaperInfo newWallpaperInfo) {
         PreferenceManager prefs = PreferenceManager.getInstance(getContext());
-        if (prefs.getHideSysuiScrim().get()) {
+        if (!prefs.getShowSysUiScrim().get()) {
             return false;
         }
         if (newWallpaperInfo == null) {

@@ -88,7 +88,7 @@ class PreferenceManager private constructor(private val context: Context) : Base
     val autoLaunchRoot = BoolPref("pref_autoLaunchRoot", false)
     val useSystemAccent = BoolPref("pref_useSystemAccent", Utilities.ATLEAST_S, recreate)
     val accentColor = IntPref("pref_accentColor", LAWNCHAIR_BLUE.toInt(), recreate)
-    val hideSysuiScrim = BoolPref("pref_hideSysuiScrim", false)
+    val showSysUiScrim = BoolPref("pref_showSysUiScrim", true)
 
     init {
         sp.registerOnSharedPreferenceChangeListener(this)
