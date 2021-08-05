@@ -26,8 +26,6 @@ import app.lawnchair.ui.preferences.components.PreferenceGroup
 import app.lawnchair.ui.preferences.components.PreferenceLayout
 import app.lawnchair.ui.preferences.components.SliderPreference
 import app.lawnchair.ui.preferences.components.SwitchPreference
-import app.lawnchair.util.Meta
-import app.lawnchair.util.pageMeta
 import com.android.launcher3.R
 
 @ExperimentalAnimationApi
@@ -39,8 +37,7 @@ fun NavGraphBuilder.dockGraph(route: String) {
 @Composable
 fun DockPreferences() {
     val prefs = preferenceManager()
-    pageMeta.provide(Meta(title = stringResource(id = R.string.dock_label)))
-    PreferenceLayout {
+    PreferenceLayout(label = stringResource(id = R.string.dock_label)) {
         PreferenceGroup(isFirstChild = true, heading = stringResource(id = R.string.general_label)) {
             SwitchPreference(
                 adapter = prefs.enableHotseatQsb.getAdapter(),
@@ -52,7 +49,7 @@ fun DockPreferences() {
             SliderPreference(
                 label = stringResource(id = R.string.dock_icons),
                 adapter = prefs.hotseatColumns.getAdapter(),
-                steps = 3,
+                step = 1f,
                 valueRange = 3.0F..7.0F,
                 showDivider = false
             )

@@ -27,12 +27,7 @@ import android.content.pm.ActivityInfo;
 import android.content.pm.LauncherActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
 import android.graphics.drawable.AdaptiveIconDrawable;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
@@ -42,10 +37,13 @@ import android.os.UserHandle;
 import android.text.TextUtils;
 import android.util.Log;
 
+import androidx.annotation.Nullable;
+
 import com.android.launcher3.R;
 import com.android.launcher3.icons.BitmapInfo.Extender;
-import com.android.launcher3.icons.cache.IconPack;
-import com.android.launcher3.icons.cache.IconPackProvider;
+import app.lawnchair.iconpack.IconPack;
+import app.lawnchair.iconpack.IconPackProvider;
+
 import com.android.launcher3.pm.UserCache;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.SafeCloseable;
@@ -69,6 +67,9 @@ public class IconProvider {
     // Default value returned if there are problems getting resources.
     private static final int NO_ID = 0;
 
+    private final BiFunction<LauncherActivityInfo, Integer, Drawable> LAI_IP_LOADER =
+            this::loadFromIconPack;
+
     private static final BiFunction<LauncherActivityInfo, Integer, Drawable> LAI_LOADER =
             LauncherActivityInfo::getIcon;
 
@@ -91,11 +92,35 @@ public class IconProvider {
      * is used by caches to check for icon invalidation.
      */
     public String getSystemStateForPackage(String systemState, String packageName) {
-        if (mCalendar != null && mCalendar.getPackageName().equals(packageName)) {
+        if (isCalendarPackage(packageName)) {
             return systemState + SYSTEM_STATE_SEPARATOR + getDay();
         } else {
             return systemState;
         }
+    }
+
+    private boolean isCalendarPackage(String packageName) {
+        IconPack iconPack = IconPackProvider.loadAndGetIconPack(mContext);
+        if (iconPack != null) {
+            if (iconPack.isCalendar(packageName)) {
+                return true;
+            }
+            if (iconPack.isNormalIcon(packageName)) {
+                return false;
+            }
+        }
+        return mCalendar != null && mCalendar.getPackageName().equals(packageName);
+    }
+
+    private boolean isClockPackage(String packageName, UserHandle user) {
+        if (!Process.myUserHandle().equals(user)) {
+            return false;
+        }
+        IconPack iconPack = IconPackProvider.loadAndGetIconPack(mContext);
+        if (iconPack != null) {
+            return iconPack.isClockPackage(packageName);
+        }
+        return mClock != null && mClock.getPackageName().equals(packageName);
     }
 
     /**
@@ -115,7 +140,20 @@ public class IconProvider {
      */
     public Drawable getIcon(LauncherActivityInfo info, int iconDpi) {
         return getIcon(info.getApplicationInfo().packageName, info.getUser(),
-                info, iconDpi, LAI_LOADER);
+                info, iconDpi, LAI_IP_LOADER);
+    }
+
+    @Nullable
+    private Drawable loadFromIconPack(LauncherActivityInfo info, int iconDpi) {
+        Drawable icon = null;
+        IconPack iconPack = IconPackProvider.loadAndGetIconPack(mContext);
+        if (iconPack != null) {
+            icon = iconPack.getIcon(info, iconDpi);
+        }
+        if (icon == null) {
+            icon = LAI_LOADER.apply(info, iconDpi);
+        }
+        return icon;
     }
 
     /**
@@ -129,31 +167,27 @@ public class IconProvider {
     private <T, P> Drawable getIcon(String packageName, UserHandle user, T obj, P param,
             BiFunction<T, P, Drawable> loader) {
         Drawable icon = null;
-        if (mCalendar != null && mCalendar.getPackageName().equals(packageName)) {
-            icon = loadCalendarDrawable(0);
-        } else if (mClock != null
-                && mClock.getPackageName().equals(packageName)
-                && Process.myUserHandle().equals(user)) {
+        if (isCalendarPackage(packageName)) {
+            icon = loadCalendarDrawable(packageName, 0);
+        } else if (isClockPackage(packageName, user)) {
             icon = loadClockDrawable(0);
         }
         Drawable ret = icon == null ? loader.apply(obj, param) : icon;
-        IconPack iconPack = IconPackProvider.loadAndGetIconPack(mContext);
-        try {
-            if (iconPack != null) {
-                ret = iconPack.getIcon(packageName, ret, mContext.getPackageManager().getApplicationInfo(packageName, 0).name);
-            }
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-            ret = iconPack.getIcon(packageName, ret, "");
-        }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && !(ret instanceof AdaptiveIconDrawable)) {
             ret = IconPack.wrapAdaptiveIcon(ret, mContext);
         }
         return ret;
     }
 
-    private Drawable loadCalendarDrawable(int iconDpi) {
+    private Drawable loadCalendarDrawable(String packageName, int iconDpi) {
         PackageManager pm = mContext.getPackageManager();
+        IconPack iconPack = IconPackProvider.loadAndGetIconPack(mContext);
+        if (iconPack != null) {
+            Drawable icon = iconPack.getCalendarIcon(packageName, iconDpi, getDay());
+            if (icon != null) {
+                return icon;
+            }
+        }
         try {
             final Bundle metadata = pm.getActivityInfo(
                     mCalendar,
@@ -179,6 +213,13 @@ public class IconProvider {
     }
 
     protected boolean isClockIcon(ComponentKey key) {
+        if (!Process.myUserHandle().equals(key.user)) {
+            return false;
+        }
+        IconPack iconPack = IconPackProvider.loadAndGetIconPack(mContext);
+        if (iconPack != null) {
+            return iconPack.isClockComponent(key.componentName);
+        }
         return mClock != null && mClock.equals(key.componentName)
                 && Process.myUserHandle().equals(key.user);
     }

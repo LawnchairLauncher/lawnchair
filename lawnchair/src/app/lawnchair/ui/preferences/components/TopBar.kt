@@ -17,9 +17,7 @@
 package app.lawnchair.ui.preferences.components
 
 import androidx.compose.animation.Animatable
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -47,36 +45,37 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.currentBackStackEntryAsState
 import app.lawnchair.ui.preferences.LocalNavController
-import app.lawnchair.ui.preferences.Routes
-import app.lawnchair.util.pageMeta
 import com.google.accompanist.insets.navigationBarsPadding
 import com.google.accompanist.insets.statusBarsPadding
 
 @ExperimentalAnimationApi
 @Composable
-fun TopBar() = pageMeta.consume { state ->
+fun TopBar(
+    backArrowVisible: Boolean,
+    floating: Boolean,
+    label: String
+) {
     val navController = LocalNavController.current
+    val labelPaddingStart = if (backArrowVisible) 8.dp else 16.dp
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
-    val backArrowVisible = currentRoute != Routes.PREFERENCES && currentRoute != null
-    val labelPaddingStart by animateDpAsState(targetValue = if (backArrowVisible) 8.dp else 16.dp)
 
-    TopBarSurface(floating = state.topBarFloating) {
+    TopBarSurface(floating = floating) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
                 .fillMaxWidth()
                 .height(topBarSize)
         ) {
-            AnimatedVisibility(visible = backArrowVisible) {
+            if (backArrowVisible) {
                 ClickableIcon(
                     imageVector = backIcon(),
                     tint = MaterialTheme.colors.onBackground,
-                    onClick = { navController.popBackStack() }
+                    onClick = { if (currentRoute != "/") navController.popBackStack() }
                 )
             }
             Text(
-                text = state.title,
+                text = label,
                 style = MaterialTheme.typography.h6,
                 modifier = Modifier.padding(start = labelPaddingStart, end = 24.dp),
                 color = MaterialTheme.colors.onSurface,

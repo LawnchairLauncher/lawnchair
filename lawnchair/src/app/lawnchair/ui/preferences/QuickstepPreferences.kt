@@ -12,8 +12,6 @@ import app.lawnchair.ui.preferences.components.PreferenceGroup
 import app.lawnchair.ui.preferences.components.PreferenceLayout
 import app.lawnchair.ui.preferences.components.SliderPreference
 import app.lawnchair.ui.preferences.components.SwitchPreference
-import app.lawnchair.util.Meta
-import app.lawnchair.util.pageMeta
 import com.android.launcher3.R
 
 @ExperimentalAnimationApi
@@ -24,9 +22,8 @@ fun NavGraphBuilder.quickstepGraph(route: String) {
 @ExperimentalAnimationApi
 @Composable
 fun QuickstepPreferences() {
-    pageMeta.provide(Meta(title = stringResource(id = R.string.quickstep_label)))
     val prefs = preferenceManager()
-    PreferenceLayout {
+    PreferenceLayout(label = stringResource(id = R.string.quickstep_label)) {
         PreferenceGroup(isFirstChild = true) {
             SwitchPreference(
                 adapter = prefs.clearAllAsAction.getAdapter(),
@@ -39,7 +36,6 @@ fun QuickstepPreferences() {
             SwitchPreference(
                 adapter = prefs.overrideWindowCornerRadius.getAdapter(),
                 label = stringResource(id = R.string.override_window_corner_radius_label),
-                description = stringResource(id = R.string.override_window_corner_radius_description),
                 showDivider = overrideWindowCornerRadius
             )
             AnimatedVisibility(
@@ -50,7 +46,7 @@ fun QuickstepPreferences() {
                 SliderPreference(
                     label = stringResource(id = R.string.window_corner_radius_label),
                     adapter = prefs.windowCornerRadius.getAdapter(),
-                    steps = 0,
+                    step = 0f,
                     valueRange = 80f..150f,
                     showDivider = false
                 )

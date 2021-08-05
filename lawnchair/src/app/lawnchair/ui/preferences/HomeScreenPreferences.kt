@@ -28,8 +28,6 @@ import app.lawnchair.ui.preferences.components.PreferenceGroup
 import app.lawnchair.ui.preferences.components.PreferenceLayout
 import app.lawnchair.ui.preferences.components.SliderPreference
 import app.lawnchair.ui.preferences.components.SwitchPreference
-import app.lawnchair.util.Meta
-import app.lawnchair.util.pageMeta
 import com.android.launcher3.R
 
 @ExperimentalAnimationApi
@@ -41,8 +39,7 @@ fun NavGraphBuilder.homeScreenGraph(route: String) {
 @Composable
 fun HomeScreenPreferences() {
     val prefs = preferenceManager()
-    pageMeta.provide(Meta(title = stringResource(id = R.string.home_screen_label)))
-    PreferenceLayout {
+    PreferenceLayout(label = stringResource(id = R.string.home_screen_label)) {
         PreferenceGroup(heading = "General", isFirstChild = true) {
             val feedAvailable = OverlayCallbackImpl.minusOneAvailable(LocalContext.current)
             SwitchPreference(
@@ -71,13 +68,13 @@ fun HomeScreenPreferences() {
             SliderPreference(
                 label = stringResource(id = R.string.home_screen_columns),
                 adapter = prefs.workspaceColumns.getAdapter(),
-                steps = 11,
+                step = 1f,
                 valueRange = 3.0F..15.0F
             )
             SliderPreference(
                 label = stringResource(id = R.string.home_screen_rows),
                 adapter = prefs.workspaceRows.getAdapter(),
-                steps = 11,
+                step = 1f,
                 valueRange = 3.0F..15.0F,
                 showDivider = false
             )
@@ -86,14 +83,14 @@ fun HomeScreenPreferences() {
             SliderPreference(
                 label = stringResource(id = R.string.icon_size),
                 adapter = prefs.iconSizeFactor.getAdapter(),
-                steps = 9,
+                step = 0.1f,
                 valueRange = 0.5F..1.5F,
                 showAsPercentage = true
             )
             SliderPreference(
                 label = stringResource(id = R.string.label_size),
                 adapter = prefs.textSizeFactor.getAdapter(),
-                steps = 9,
+                step = 0.1f,
                 valueRange = 0.5F..1.5F,
                 showAsPercentage = true,
                 showDivider = false

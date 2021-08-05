@@ -42,8 +42,6 @@ import app.lawnchair.ui.preferences.components.PreferenceGroup
 import app.lawnchair.ui.preferences.components.PreferenceLayout
 import app.lawnchair.ui.preferences.preferenceGraph
 import app.lawnchair.ui.preferences.subRoute
-import app.lawnchair.util.Meta
-import app.lawnchair.util.pageMeta
 import com.android.launcher3.R
 
 class TeamMember(val name: String, @StringRes val descriptionRes: Int, val photoUrl: String, val socialUrl: String)
@@ -148,10 +146,10 @@ fun NavGraphBuilder.aboutGraph(route: String) {
 @Composable
 fun About() {
     val context = LocalContext.current
-    pageMeta.provide(Meta(title = stringResource(id = R.string.about_label)))
 
     PreferenceLayout(
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
+        label = stringResource(id = R.string.about_label)
     ) {
         Spacer(modifier = Modifier.requiredHeight(24.dp))
         Image(

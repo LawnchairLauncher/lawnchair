@@ -20,15 +20,12 @@ import android.os.Build
 import androidx.compose.animation.*
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavGraphBuilder
 import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences.observeAsState
 import app.lawnchair.preferences.preferenceManager
 import app.lawnchair.ui.preferences.components.*
-import app.lawnchair.util.Meta
-import app.lawnchair.util.pageMeta
 import com.android.launcher3.R
 
 object GeneralRoutes {
@@ -48,8 +45,7 @@ fun NavGraphBuilder.generalGraph(route: String) {
 @Composable
 fun GeneralPreferences() {
     val prefs = preferenceManager()
-    pageMeta.provide(Meta(title = stringResource(id = R.string.general_label)))
-    PreferenceLayout {
+    PreferenceLayout(label = stringResource(id = R.string.general_label)) {
         PreferenceGroup(isFirstChild = true) {
             SwitchPreference(
                 adapter = prefs.allowRotation.getAdapter(),
@@ -89,7 +85,7 @@ fun GeneralPreferences() {
                         label = stringResource(id = R.string.background_lightness_label),
                         adapter = prefs.coloredBackgroundLightness.getAdapter(),
                         valueRange = 0F..1F,
-                        steps = 9,
+                        step = 0.1f,
                         showAsPercentage = true,
                         showDivider = false
                     )

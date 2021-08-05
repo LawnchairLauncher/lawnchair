@@ -20,6 +20,7 @@ import android.graphics.Bitmap
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.Divider
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -28,6 +29,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.unit.dp
 import app.lawnchair.util.App
+import com.google.accompanist.placeholder.PlaceholderHighlight
+import com.google.accompanist.placeholder.material.fade
+import com.google.accompanist.placeholder.material.placeholder
 
 @Composable
 fun AppItem(
@@ -37,7 +41,7 @@ fun AppItem(
     content: (@Composable RowScope.() -> Unit)?,
 ) {
     AppItem(
-        label = app.info.label.toString(),
+        label = app.label,
         icon = app.icon,
         onClick = { onClick(app) },
         showDivider = showDivider,
@@ -53,32 +57,72 @@ fun AppItem(
     showDivider: Boolean = true,
     content: (@Composable RowScope.() -> Unit)?,
 ) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier
+            .height(52.dp)
+            .clickable { onClick() }
+            .padding(horizontal = 16.dp)
+    ) {
+        content?.let {
+            it()
+            Spacer(modifier = Modifier.width(16.dp))
+        }
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.weight(1F)
+            ) {
+                Image(
+                    bitmap = icon.asImageBitmap(),
+                    contentDescription = null,
+                    modifier = Modifier.size(30.dp),
+                )
+                Text(
+                    modifier = Modifier.padding(start = 16.dp),
+                    text = label,
+                    style = MaterialTheme.typography.subtitle1,
+                    color = MaterialTheme.colors.onBackground
+                )
+            }
+            if (showDivider) Divider()
+        }
+    }
+}
+
+@Composable
+fun AppItemPlaceholder(showDivider: Boolean = true) {
     PreferenceTemplate(
         height = 52.dp,
-        showDivider = showDivider
+        showDivider = showDivider,
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
                 .fillMaxSize()
-                .clickable { onClick() }
-                .padding(start = 16.dp, end = 16.dp)
+                .padding(horizontal = 16.dp)
         ) {
-            Image(
-                bitmap = icon.asImageBitmap(),
-                contentDescription = null,
+            Box(
                 modifier = Modifier
-                    .width(32.dp)
-                    .height(32.dp)
+                    .size(32.dp)
+                    .placeholder(
+                        visible = true,
+                        highlight = PlaceholderHighlight.fade(),
+                    )
             )
-            Text(
-                modifier = Modifier.padding(start = 16.dp),
-                text = label,
-                style = MaterialTheme.typography.subtitle1,
-                color = MaterialTheme.colors.onBackground
+            Box(
+                modifier = Modifier
+                    .width(120.dp)
+                    .height(24.dp)
+                    .padding(start = 16.dp)
+                    .placeholder(
+                        visible = true,
+                        highlight = PlaceholderHighlight.fade(),
+                    )
             )
-            Spacer(modifier = Modifier.weight(1f))
-            content?.invoke(this)
         }
     }
 }

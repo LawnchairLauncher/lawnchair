@@ -24,7 +24,7 @@ import androidx.compose.ui.unit.dp
 import app.lawnchair.preferences.PreferenceAdapter
 import app.lawnchair.ui.theme.getSystemAccent
 import app.lawnchair.ui.theme.lightenColor
-import app.lawnchair.util.backHandler
+import app.lawnchair.util.BackHandler
 import com.android.launcher3.R
 import com.google.accompanist.insets.navigationBarsPadding
 import kotlinx.coroutines.launch
@@ -69,7 +69,7 @@ fun ColorPreference(
             )
             Box(
                 modifier = Modifier
-                    .size(width = 24.dp, height = 24.dp)
+                    .size(30.dp)
                     .clip(CircleShape)
                     .background(Color(previewColor))
             )
@@ -85,7 +85,7 @@ fun ColorPreference(
                 onBackArrowClick = { selectingCustomColor = false }
             )
             if (selectingCustomColor) {
-                backHandler {
+                BackHandler {
                     selectingCustomColor = false
                 }
                 ColorSwatchGrid(
@@ -225,7 +225,13 @@ fun ModeRow(
             .clickable(onClick = onClick)
             .padding(start = 16.dp, end = 8.dp)
     ) {
-        AnimatedCheck(visible = selected)
+        RadioButton(
+            selected = selected,
+            onClick = null,
+            colors = RadioButtonDefaults.colors(
+                unselectedColor = MaterialTheme.colors.onSurface.copy(alpha = 0.48F)
+            )
+        )
         Column(
             modifier = Modifier
                 .padding(start = 16.dp)
@@ -241,7 +247,7 @@ fun ModeRow(
                 Row(modifier = Modifier.fillMaxHeight(), verticalAlignment = Alignment.CenterVertically) {
                     Box(
                         modifier = Modifier
-                            .size(24.dp, 24.dp)
+                            .size(30.dp)
                             .clip(CircleShape)
                             .background(Color(if (MaterialTheme.colors.isLight) lightThemeColor else darkThemeColor))
                     )
@@ -252,11 +258,25 @@ fun ModeRow(
                     )
                 }
                 if (onEditClick != null) {
-                    ClickableIcon(
-                        painter = painterResource(id = R.drawable.ic_edit),
-                        tint = MaterialTheme.colors.primary,
-                        onClick = onEditClick
-                    )
+                    Crossfade(targetState = selected) {
+                        if (it) {
+                            ClickableIcon(
+                                painter = painterResource(id = R.drawable.ic_edit),
+                                tint = MaterialTheme.colors.primary,
+                                onClick = onEditClick
+                            )
+                        } else {
+                            CompositionLocalProvider(
+                                LocalContentAlpha provides ContentAlpha.disabled,
+                                LocalContentColor provides MaterialTheme.colors.primary
+                            ) {
+                                ClickableIcon(
+                                    painter = painterResource(id = R.drawable.ic_edit),
+                                    onClick = null
+                                )
+                            }
+                        }
+                    }
                 }
             }
             if (showDivider) {

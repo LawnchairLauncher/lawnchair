@@ -613,8 +613,4 @@ public class LauncherModel extends LauncherApps.Callback implements InstallSessi
             return mCallbacksList.toArray(new Callbacks[mCallbacksList.size()]);
         }
     }
-
-    public void clearIconCache() {
-        mIconCache.clearIconCache();
-    }
 }

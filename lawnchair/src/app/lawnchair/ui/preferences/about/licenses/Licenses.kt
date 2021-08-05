@@ -1,5 +1,7 @@
 package app.lawnchair.ui.preferences.about.licenses
 
+import androidx.compose.animation.Crossfade
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Row
@@ -24,17 +26,19 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
-import androidx.navigation.compose.composable
 import androidx.navigation.compose.navArgument
 import app.lawnchair.ui.preferences.LocalNavController
 import app.lawnchair.ui.preferences.LocalPreferenceInteractor
 import app.lawnchair.ui.preferences.components.*
 import app.lawnchair.ui.preferences.preferenceGraph
 import app.lawnchair.ui.preferences.subRoute
-import app.lawnchair.util.Meta
-import app.lawnchair.util.pageMeta
 import com.android.launcher3.R
+import com.google.accompanist.navigation.animation.composable
+import com.google.accompanist.placeholder.PlaceholderHighlight
+import com.google.accompanist.placeholder.material.fade
+import com.google.accompanist.placeholder.material.placeholder
 
+@ExperimentalAnimationApi
 fun NavGraphBuilder.licensesGraph(route: String) {
     preferenceGraph(route, { Licenses() }) { subRoute ->
         composable(
@@ -46,13 +50,12 @@ fun NavGraphBuilder.licensesGraph(route: String) {
     }
 }
 
+@ExperimentalAnimationApi
 @Composable
 fun Licenses() {
-    pageMeta.provide(Meta(title = stringResource(id = R.string.acknowledgements)))
-
     val optionalLicenses by LocalPreferenceInteractor.current.licenses
     LoadingScreen(optionalLicenses) { licenses ->
-        PreferenceLayoutLazyColumn {
+        PreferenceLayoutLazyColumn(label = stringResource(id = R.string.acknowledgements)) {
             preferenceGroupItems(licenses, isFirstChild = true) { index, license ->
                 LicenseItem(license = license, index = index, showDivider = index != licenses.lastIndex)
             }
@@ -87,42 +90,59 @@ fun LicenseItem(license: License, index: Int, showDivider: Boolean) {
     }
 }
 
+@ExperimentalAnimationApi
 @Composable
 fun LicensePage(index: Int) {
     val optionalLicenses by LocalPreferenceInteractor.current.licenses
     val license = optionalLicenses?.get(index)
     val dataState = license?.let { loadLicense(license = license) }
     val data = dataState?.value
-    pageMeta.provide(Meta(title = license?.name ?: stringResource(id = R.string.loading)))
 
-    LoadingScreen(data) {
-        PreferenceLayout {
-            val uriHandler = LocalUriHandler.current
-            val layoutResult = remember { mutableStateOf<TextLayoutResult?>(null) }
-            val pressIndicator = Modifier.pointerInput(Unit) {
-                detectTapGestures { pos ->
-                    layoutResult.value?.let { layoutResult ->
-                        val position = layoutResult.getOffsetForPosition(pos)
-                        val annotation = it.data.getStringAnnotations(position, position).firstOrNull()
-                        if (annotation?.tag == "URL") {
-                            uriHandler.openUri(annotation.item)
+    PreferenceLayout(
+        label = license?.name ?: stringResource(id = R.string.loading)
+    ) {
+        Crossfade(targetState = data) { it ->
+            if (it != null) {
+                val uriHandler = LocalUriHandler.current
+                val layoutResult = remember { mutableStateOf<TextLayoutResult?>(null) }
+                val pressIndicator = Modifier.pointerInput(Unit) {
+                    detectTapGestures { pos ->
+                        layoutResult.value?.let { layoutResult ->
+                            val position = layoutResult.getOffsetForPosition(pos)
+                            val annotation =
+                                it.data.getStringAnnotations(position, position).firstOrNull()
+                            if (annotation?.tag == "URL") {
+                                uriHandler.openUri(annotation.item)
+                            }
                         }
                     }
                 }
-            }
 
-            Text(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 16.dp)
-                    .then(pressIndicator),
-                text = it.data,
-                fontFamily = FontFamily.Monospace,
-                fontSize = 14.sp,
-                onTextLayout = {
-                    layoutResult.value = it
-                }
-            )
+                Text(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 16.dp)
+                        .then(pressIndicator),
+                    text = it.data,
+                    fontFamily = FontFamily.Monospace,
+                    fontSize = 14.sp,
+                    onTextLayout = {
+                        layoutResult.value = it
+                    }
+                )
+            } else {
+                Text(
+                    modifier = Modifier
+                        .padding(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 16.dp)
+                        .placeholder(
+                            visible = true,
+                            highlight = PlaceholderHighlight.fade(),
+                        ),
+                    text = "a".repeat(license?.length ?: 20),
+                    fontFamily = FontFamily.Monospace,
+                    fontSize = 14.sp
+                )
+            }
         }
     }
 }

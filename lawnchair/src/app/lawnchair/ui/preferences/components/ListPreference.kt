@@ -104,7 +104,17 @@ fun <T> ListPreference(
                             selected = item.value == currentValue,
                             onClick = null
                         )
-                        Text(text = item.label())
+                        Column(modifier = Modifier.fillMaxHeight()) {
+                            Box(
+                                contentAlignment = Alignment.CenterStart,
+                                modifier = Modifier.weight(1F)
+                            ) {
+                                Text(text = item.label())
+                            }
+                            if (item != entries.last()) {
+                                Divider()
+                            }
+                        }
                     }
                 }
             }

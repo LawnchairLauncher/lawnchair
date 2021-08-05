@@ -84,7 +84,7 @@ class PreferenceManager private constructor(private val context: Context) : Base
     val launcherTheme = StringPref("pref_launcherTheme", "system")
     val clearAllAsAction = BoolPref("pref_clearAllAsAction", false)
     val overrideWindowCornerRadius = BoolPref("pref_overrideWindowCornerRadius", false, recreate)
-    val windowCornerRadius = FloatPref("pref_windowCornerRadius", 1f, recreate)
+    val windowCornerRadius = FloatPref("pref_windowCornerRadius", 80f, recreate)
     val autoLaunchRoot = BoolPref("pref_autoLaunchRoot", false)
     val useSystemAccent = BoolPref("pref_useSystemAccent", Utilities.ATLEAST_S, recreate)
     val accentColor = IntPref("pref_accentColor", LAWNCHAIR_BLUE.toInt(), recreate)

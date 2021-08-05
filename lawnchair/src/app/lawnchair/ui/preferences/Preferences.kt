@@ -22,24 +22,20 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.compositionLocalOf
-import androidx.compose.ui.res.stringResource
+import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
 import app.lawnchair.ui.preferences.about.aboutGraph
-import app.lawnchair.ui.preferences.components.PreferenceLayout
 import app.lawnchair.ui.preferences.components.SystemUi
 import app.lawnchair.ui.preferences.components.TopBar
 import app.lawnchair.ui.util.portal.ProvidePortalNode
-import app.lawnchair.util.Meta
-import app.lawnchair.util.pageMeta
-import com.android.launcher3.R
+import app.lawnchair.util.ProvideLifecycleState
+import com.google.accompanist.navigation.animation.AnimatedNavHost
+import com.google.accompanist.navigation.animation.rememberAnimatedNavController
+import soup.compose.material.motion.materialSharedAxisX
+import soup.compose.material.motion.rememberSlideDistance
 
 object Routes {
-    const val PREFERENCES: String = "preferences"
     const val GENERAL: String = "general"
     const val ABOUT: String = "about"
     const val HOME_SCREEN: String = "homeScreen"
@@ -49,11 +45,11 @@ object Routes {
     const val QUICKSTEP: String = "quickstep"
 }
 
-val LocalNavController = compositionLocalOf<NavController> {
+val LocalNavController = staticCompositionLocalOf<NavController> {
     error("CompositionLocal LocalNavController not present")
 }
 
-val LocalPreferenceInteractor = compositionLocalOf<PreferenceInteractor> {
+val LocalPreferenceInteractor = staticCompositionLocalOf<PreferenceInteractor> {
     error("CompositionLocal LocalPreferenceInteractor not present")
 }
 
@@ -61,32 +57,46 @@ val LocalPreferenceInteractor = compositionLocalOf<PreferenceInteractor> {
 @ExperimentalAnimationApi
 @Composable
 fun Preferences(interactor: PreferenceInteractor = viewModel<PreferenceViewModel>()) {
-    val navController = rememberNavController()
+    val navController = rememberAnimatedNavController()
+    val slideDistance = rememberSlideDistance()
+    val forwardSpec = materialSharedAxisX(forward = true, slideDistance = slideDistance)
+    val backwardSpec = materialSharedAxisX(forward = false, slideDistance = slideDistance)
 
     SystemUi()
-    ProvidePortalNode {
+    Providers {
         Surface(color = MaterialTheme.colors.background) {
             CompositionLocalProvider(
                 LocalNavController provides navController,
                 LocalPreferenceInteractor provides interactor,
             ) {
-                NavHost(navController = navController, startDestination = "preferences") {
-                    composable(route = Routes.PREFERENCES) {
-                        pageMeta.provide(Meta(title = stringResource(id = R.string.settings)))
-                        PreferenceLayout {
-                            PreferencesDashboard()
-                        }
+                AnimatedNavHost(
+                    navController = navController,
+                    startDestination = "/",
+                    enterTransition = { _, _ -> forwardSpec.enter.transition },
+                    exitTransition = { _, _ -> forwardSpec.exit.transition },
+                    popEnterTransition = { _, _ -> backwardSpec.enter.transition },
+                    popExitTransition = { _, _ -> backwardSpec.exit.transition },
+                ) {
+                    preferenceGraph(route = "/", { PreferencesDashboard() }) { subRoute ->
+                        generalGraph(route = subRoute(Routes.GENERAL))
+                        homeScreenGraph(route = subRoute(Routes.HOME_SCREEN))
+                        dockGraph(route = subRoute(Routes.DOCK))
+                        appDrawerGraph(route = subRoute(Routes.APP_DRAWER))
+                        folderGraph(route = subRoute(Routes.FOLDERS))
+                        quickstepGraph(route = subRoute(Routes.QUICKSTEP))
+                        aboutGraph(route = subRoute(Routes.ABOUT))
                     }
-                    generalGraph(route = Routes.GENERAL)
-                    homeScreenGraph(route = Routes.HOME_SCREEN)
-                    dockGraph(route = Routes.DOCK)
-                    appDrawerGraph(route = Routes.APP_DRAWER)
-                    folderGraph(route = Routes.FOLDERS)
-                    quickstepGraph(route = Routes.QUICKSTEP)
-                    aboutGraph(route = Routes.ABOUT)
                 }
-                TopBar()
             }
+        }
+    }
+}
+
+@Composable
+private fun Providers(content: @Composable () -> Unit) {
+    ProvidePortalNode {
+        ProvideLifecycleState {
+            content()
         }
     }
 }

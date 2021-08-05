@@ -24,8 +24,6 @@ import androidx.navigation.NavGraphBuilder
 import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences.preferenceManager
 import app.lawnchair.ui.preferences.components.*
-import app.lawnchair.util.Meta
-import app.lawnchair.util.pageMeta
 import com.android.launcher3.R
 
 object AppDrawerRoutes {
@@ -44,8 +42,7 @@ fun NavGraphBuilder.appDrawerGraph(route: String) {
 fun AppDrawerPreferences() {
     val prefs = preferenceManager()
     val resources = LocalContext.current.resources
-    pageMeta.provide(Meta(title = stringResource(id = R.string.app_drawer_label)))
-    PreferenceLayout {
+    PreferenceLayout(label = stringResource(id = R.string.app_drawer_label)) {
         PreferenceGroup(heading = stringResource(id = R.string.general_label), isFirstChild = true) {
             NavigationActionPreference(
                 label = stringResource(id = R.string.hidden_apps_label),
@@ -60,7 +57,7 @@ fun AppDrawerPreferences() {
             SliderPreference(
                 label = stringResource(id = R.string.background_opacity),
                 adapter = prefs.drawerOpacity.getAdapter(),
-                steps = 2,
+                step = 0.1f,
                 valueRange = 0.7F..1F,
                 showAsPercentage = true,
                 showDivider = false
@@ -70,7 +67,7 @@ fun AppDrawerPreferences() {
             SliderPreference(
                 label = stringResource(id = R.string.app_drawer_columns),
                 adapter = prefs.allAppsColumns.getAdapter(),
-                steps = 3,
+                step = 1f,
                 valueRange = 3.0F..7.0F,
                 showDivider = false
             )
@@ -79,14 +76,14 @@ fun AppDrawerPreferences() {
             SliderPreference(
                 label = stringResource(id = R.string.icon_size),
                 adapter = prefs.allAppsIconSizeFactor.getAdapter(),
-                steps = 9,
+                step = 0.1f,
                 valueRange = 0.5F..1.5F,
                 showAsPercentage = true
             )
             SliderPreference(
                 label = stringResource(id = R.string.label_size),
                 adapter = prefs.allAppsTextSizeFactor.getAdapter(),
-                steps = 9,
+                step = 0.1f,
                 valueRange = 0.5F..1.5F,
                 showAsPercentage = true,
                 showDivider = false

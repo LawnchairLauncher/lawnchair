@@ -14,7 +14,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.dp
 import app.lawnchair.ui.util.portal.Portal
-import app.lawnchair.util.backHandler
+import app.lawnchair.util.BackHandler
 import com.google.accompanist.insets.LocalWindowInsets
 import kotlinx.coroutines.launch
 
@@ -40,7 +40,7 @@ fun BottomSheet(
                     bottomEnd = CornerSize(0.dp)
                 )
             ) {
-                backHandler {
+                BackHandler {
                     scope.launch { sheetState.onBackPressed() }
                 }
             }
