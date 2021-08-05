@@ -16,12 +16,12 @@ interface PrefEntry<T> {
     fun addListener(listener: PreferenceChangeListener)
     fun removeListener(listener: PreferenceChangeListener)
 
-    fun subscribe(lifecycleOwner: LifecycleOwner, fireOnAttach: Boolean = true, onChange: Consumer<T>) {
-        lifecycleOwner.lifecycle.addObserver(PrefLifecycleObserver(this, fireOnAttach, onChange))
+    fun subscribeChanges(lifecycleOwner: LifecycleOwner, onChange: Runnable) {
+        lifecycleOwner.lifecycle.addObserver(PrefLifecycleObserver(this, onChange))
     }
 
-    fun subscribe(view: View, fireOnAttach: Boolean = true, onChange: Consumer<T>) {
-        val observer = PrefLifecycleObserver(this, fireOnAttach, onChange)
+    fun subscribeChanges(view: View, onChange: Runnable) {
+        val observer = PrefLifecycleObserver(this, onChange)
         view.addOnAttachStateChangeListener(object : View.OnAttachStateChangeListener {
             override fun onViewAttachedToWindow(v: View) {
                 observer.connectListener()
@@ -31,6 +31,20 @@ interface PrefEntry<T> {
                 observer.disconnectListener()
             }
         })
+    }
+
+    fun subscribeValues(lifecycleOwner: LifecycleOwner, onChange: Consumer<T>) {
+        onChange.accept(get())
+        subscribeChanges(lifecycleOwner) {
+            onChange.accept(get())
+        }
+    }
+
+    fun subscribeValues(view: View, onChange: Consumer<T>) {
+        onChange.accept(get())
+        subscribeChanges(view) {
+            onChange.accept(get())
+        }
     }
 
     operator fun getValue(thisObj: Any?, property: KProperty<*>): T = get()

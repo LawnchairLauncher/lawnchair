@@ -52,7 +52,7 @@ open class LawnchairLauncher : QuickstepLauncher(), LifecycleOwner,
 
     private fun subscribePreferences() {
         val preferenceManager = PreferenceManager.getInstance(this)
-        preferenceManager.launcherTheme.subscribe(this) { updateTheme() }
+        preferenceManager.launcherTheme.subscribeChanges(this, ::updateTheme)
     }
 
     override fun setupViews() {
