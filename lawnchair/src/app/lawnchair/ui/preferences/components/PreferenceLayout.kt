@@ -17,53 +17,39 @@
 package app.lawnchair.ui.preferences.components
 
 import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.foundation.MutatePriority
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
-import com.google.accompanist.insets.LocalWindowInsets
-import com.google.accompanist.insets.rememberInsetsPaddingValues
-import kotlinx.coroutines.awaitCancellation
 
 @Composable
 @ExperimentalAnimationApi
 fun PreferenceLayout(
     verticalArrangement: Arrangement.Vertical = Arrangement.Top,
     horizontalAlignment: Alignment.Horizontal = Alignment.Start,
+    scrollState: ScrollState = rememberScrollState(),
     label: String,
     backArrowVisible: Boolean = true,
-    content: @Composable () -> Unit
+    content: @Composable ColumnScope.() -> Unit
 ) {
-    val scrollState = rememberScrollState()
-    NestedScrollStretch {
-        Column(
+    PreferenceScaffold(
+        backArrowVisible = backArrowVisible,
+        floating = rememberFloatingState(scrollState),
+        label = label,
+    ) {
+        PreferenceColumn(
             verticalArrangement = verticalArrangement,
             horizontalAlignment = horizontalAlignment,
-            modifier = Modifier
-                .fillMaxHeight()
-                .verticalScroll(scrollState)
-                .padding(preferenceLayoutPadding())
-        ) {
-            content()
-        }
+            scrollState = scrollState,
+            content = content
+        )
     }
-    TopBar(
-        backArrowVisible = backArrowVisible,
-        floating = scrollState.value > 0,
-        label = label
-    )
 }
 
 @Composable
@@ -76,32 +62,30 @@ fun PreferenceLayoutLazyColumn(
     backArrowVisible: Boolean = true,
     content: LazyListScope.() -> Unit
 ) {
-    if (!enabled) {
-        LaunchedEffect(key1 = null) {
-            state.scroll(scrollPriority = MutatePriority.PreventUserInput) {
-                awaitCancellation()
-            }
-        }
-    }
-    NestedScrollStretch {
-        LazyColumn(
-            modifier = modifier.fillMaxHeight(),
-            contentPadding = preferenceLayoutPadding(),
-            state = state
-        ) {
-            content()
-        }
-    }
-    TopBar(
+    PreferenceScaffold(
         backArrowVisible = backArrowVisible,
-        floating = state.firstVisibleItemIndex > 0 || state.firstVisibleItemScrollOffset > 0,
+        floating = rememberFloatingState(state),
         label = label
-    )
+    ) {
+        PreferenceLazyColumn(
+            modifier = modifier,
+            enabled = enabled,
+            state = state,
+            content = content
+        )
+    }
 }
 
 @Composable
-fun preferenceLayoutPadding() = rememberInsetsPaddingValues(
-    insets = LocalWindowInsets.current.systemBars,
-    additionalTop = topBarSize,
-    additionalBottom = 16.dp
-)
+fun rememberFloatingState(state: ScrollState): State<Boolean> {
+    return remember(state) {
+        derivedStateOf { state.value > 0 }
+    }
+}
+
+@Composable
+fun rememberFloatingState(state: LazyListState): State<Boolean> {
+    return remember(state) {
+        derivedStateOf { state.firstVisibleItemIndex > 0 || state.firstVisibleItemScrollOffset > 0 }
+    }
+}

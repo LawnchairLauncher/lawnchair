@@ -287,6 +287,7 @@ dependencies {
     implementation "androidx.navigation:navigation-compose:2.4.0-alpha06"
     implementation "androidx.palette:palette-ktx:${ANDROID_X_VERSION}"
     implementation "com.google.accompanist:accompanist-insets:$accompanist_version"
+    implementation "com.google.accompanist:accompanist-insets-ui:$accompanist_version"
     implementation "com.google.accompanist:accompanist-navigation-animation:$accompanist_version"
     implementation "com.google.accompanist:accompanist-placeholder-material:$accompanist_version"
     implementation "com.google.accompanist:accompanist-systemuicontroller:$accompanist_version"
