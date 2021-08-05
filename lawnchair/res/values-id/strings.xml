@@ -100,4 +100,6 @@
     <string name="custom">Kustom</string>
     <string name="custom_color">Warna Kustom</string>
     <string name="quickstep_description">Tombol Hapus Semua, Radius Sudut</string>
+    <string name="wallpaper_scrolling_label">Wallpaper scrolling</string>
+    <string name="show_sys_ui_scrim">Show Top Shadow</string>
 </resources>
