@@ -38,14 +38,14 @@ fun AppItem(
     app: App,
     onClick: (app: App) -> Unit,
     showDivider: Boolean = true,
-    content: (@Composable RowScope.() -> Unit)?,
+    widget: (@Composable RowScope.() -> Unit)?,
 ) {
     AppItem(
         label = app.label,
         icon = app.icon,
         onClick = { onClick(app) },
         showDivider = showDivider,
-        content = content
+        widget = widget
     )
 }
 
@@ -55,16 +55,72 @@ fun AppItem(
     icon: Bitmap,
     onClick: () -> Unit,
     showDivider: Boolean = true,
-    content: (@Composable RowScope.() -> Unit)?,
+    widget: (@Composable RowScope.() -> Unit)? = null,
+) {
+    AppItemLayout(
+        modifier = Modifier
+            .clickable(onClick = onClick),
+        showDivider = showDivider,
+        widget = widget
+    ) {
+        Image(
+            bitmap = icon.asImageBitmap(),
+            contentDescription = null,
+            modifier = Modifier.size(30.dp),
+        )
+        Text(
+            modifier = Modifier.padding(start = 16.dp),
+            text = label,
+            style = MaterialTheme.typography.subtitle1,
+            color = MaterialTheme.colors.onBackground
+        )
+    }
+}
+
+@Composable
+fun AppItemPlaceholder(
+    showDivider: Boolean = true,
+    widget: (@Composable RowScope.() -> Unit)? = null,
+) {
+    AppItemLayout(
+        showDivider = showDivider,
+        widget = widget
+    ) {
+        Box(
+            modifier = Modifier
+                .size(32.dp)
+                .placeholder(
+                    visible = true,
+                    highlight = PlaceholderHighlight.fade(),
+                )
+        )
+        Box(
+            modifier = Modifier
+                .width(120.dp)
+                .height(24.dp)
+                .padding(start = 16.dp)
+                .placeholder(
+                    visible = true,
+                    highlight = PlaceholderHighlight.fade(),
+                )
+        )
+    }
+}
+
+@Composable
+private fun AppItemLayout(
+    modifier: Modifier = Modifier,
+    showDivider: Boolean = true,
+    widget: (@Composable RowScope.() -> Unit)? = null,
+    content: @Composable RowScope.() -> Unit,
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier
+        modifier = modifier
             .height(52.dp)
-            .clickable { onClick() }
             .padding(horizontal = 16.dp)
     ) {
-        content?.let {
+        widget?.let {
             it()
             Spacer(modifier = Modifier.width(16.dp))
         }
@@ -74,55 +130,10 @@ fun AppItem(
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.weight(1F)
-            ) {
-                Image(
-                    bitmap = icon.asImageBitmap(),
-                    contentDescription = null,
-                    modifier = Modifier.size(30.dp),
-                )
-                Text(
-                    modifier = Modifier.padding(start = 16.dp),
-                    text = label,
-                    style = MaterialTheme.typography.subtitle1,
-                    color = MaterialTheme.colors.onBackground
-                )
-            }
+                modifier = Modifier.weight(1F),
+                content = content
+            )
             if (showDivider) Divider()
-        }
-    }
-}
-
-@Composable
-fun AppItemPlaceholder(showDivider: Boolean = true) {
-    PreferenceTemplate(
-        height = 52.dp,
-        showDivider = showDivider,
-    ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(horizontal = 16.dp)
-        ) {
-            Box(
-                modifier = Modifier
-                    .size(32.dp)
-                    .placeholder(
-                        visible = true,
-                        highlight = PlaceholderHighlight.fade(),
-                    )
-            )
-            Box(
-                modifier = Modifier
-                    .width(120.dp)
-                    .height(24.dp)
-                    .padding(start = 16.dp)
-                    .placeholder(
-                        visible = true,
-                        highlight = PlaceholderHighlight.fade(),
-                    )
-            )
         }
     }
 }
