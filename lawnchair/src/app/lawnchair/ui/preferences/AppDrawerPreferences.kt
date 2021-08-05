@@ -68,7 +68,7 @@ fun AppDrawerPreferences() {
                 label = stringResource(id = R.string.app_drawer_columns),
                 adapter = prefs.allAppsColumns.getAdapter(),
                 step = 1,
-                valueRange = 3..7,
+                valueRange = 3..10,
                 showDivider = false
             )
         }
