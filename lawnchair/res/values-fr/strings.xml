@@ -101,4 +101,6 @@
     <string name="custom">Personnalisé</string>
     <string name="custom_color">Couleur personnalisée</string>
     <string name="quickstep_description">Bouton \"Tout effacer\", Courbure des coins</string>
+    <string name="wallpaper_scrolling_label">Wallpaper scrolling</string>
+    <string name="show_sys_ui_scrim">Show Top Shadow</string>
 </resources>
