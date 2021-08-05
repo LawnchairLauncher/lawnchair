@@ -94,9 +94,9 @@
     <string name="theme_system_default">اتَّبع النظام</string>
     <string name="theme_follow_wallpaper">طابِق الخلفية</string>
     <string name="quickstep_label">مؤخَرًا</string>
-    <string name="clear_all_as_action_label">Clear All Button at Bottom</string>
-    <string name="window_corner_radius_label">Corner Radius</string>
-    <string name="override_window_corner_radius_label">Custom Corner Radius</string>
+    <string name="clear_all_as_action_label">زر \"مسح الكل\" في القاع</string>
+    <string name="window_corner_radius_label">نصف قطر الزاوية</string>
+    <string name="override_window_corner_radius_label">نصف قطر زاوية مخصّص</string>
     <string name="system_icons">أيقونات النظام</string>
     <string name="accent_color">لون اللمحة</string>
     <string name="done">تمّ</string>
@@ -104,7 +104,7 @@
     <string name="system">نظام</string>
     <string name="custom">تخصيص</string>
     <string name="custom_color">لون مخصص</string>
-    <string name="quickstep_description">Clear All Button, Corner Radius</string>
-    <string name="wallpaper_scrolling_label">Scroll Wallpaper</string>
-    <string name="show_sys_ui_scrim">Show Top Shadow</string>
+    <string name="quickstep_description">نصف قطر زاوية زر \"مسح الكل\"</string>
+    <string name="wallpaper_scrolling_label">تحريك الخلفية</string>
+    <string name="show_sys_ui_scrim">إظهار ظل الأعلى</string>
 </resources>
