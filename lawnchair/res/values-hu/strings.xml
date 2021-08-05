@@ -101,4 +101,6 @@
     <string name="custom">Egyéni</string>
     <string name="custom_color">Egyéni szín</string>
     <string name="quickstep_description">Minden törlése gomb, sarok sugár</string>
+    <string name="wallpaper_scrolling_label">Wallpaper scrolling</string>
+    <string name="show_sys_ui_scrim">Felső árnyék mutatása</string>
 </resources>
