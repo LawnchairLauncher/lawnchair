@@ -18,6 +18,9 @@ package app.lawnchair.ui.preferences
 
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.material.Checkbox
+import androidx.compose.material.CheckboxDefaults
+import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -82,7 +85,13 @@ fun HiddenAppsPreferences() {
                         onClick = toggleHiddenApp,
                         showDivider = index != apps.lastIndex
                     ) {
-                        AnimatedCheck(visible = hiddenApps.contains(app.key.toString()))
+                        Checkbox(
+                            checked = hiddenApps.contains(app.key.toString()),
+                            onCheckedChange = null,
+                            colors = CheckboxDefaults.colors(
+                                uncheckedColor = MaterialTheme.colors.onBackground.copy(alpha = 0.48F)
+                            )
+                        )
                     }
                 }
             }

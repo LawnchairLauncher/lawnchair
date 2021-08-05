@@ -18,6 +18,9 @@ package app.lawnchair.ui.preferences
 
 import android.graphics.drawable.Drawable
 import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.RadioButton
+import androidx.compose.material.RadioButtonDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.res.stringResource
@@ -25,7 +28,6 @@ import androidx.core.graphics.drawable.toBitmap
 import androidx.navigation.NavGraphBuilder
 import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences.preferenceManager
-import app.lawnchair.ui.preferences.components.AnimatedCheck
 import app.lawnchair.ui.preferences.components.AppItem
 import app.lawnchair.ui.preferences.components.PreferenceLayoutLazyColumn
 import app.lawnchair.ui.preferences.components.preferenceGroupItems
@@ -52,7 +54,13 @@ fun IconPackPreferences() {
                 onClick = { iconPackPackage = iconPack.packageName },
                 showDivider = index != iconPacks.lastIndex
             ) {
-                AnimatedCheck(visible = iconPackPackage == iconPack.packageName)
+                RadioButton(
+                    selected = iconPackPackage == iconPack.packageName,
+                    onClick = null,
+                    colors = RadioButtonDefaults.colors(
+                        unselectedColor = MaterialTheme.colors.onBackground.copy(alpha = 0.48F)
+                    )
+                )
             }
         }
     }

@@ -20,6 +20,7 @@ import android.graphics.Bitmap
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.Divider
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -56,30 +57,38 @@ fun AppItem(
     showDivider: Boolean = true,
     content: (@Composable RowScope.() -> Unit)?,
 ) {
-    PreferenceTemplate(
-        height = 52.dp,
-        showDivider = showDivider
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier
+            .height(52.dp)
+            .clickable { onClick() }
+            .padding(horizontal = 16.dp)
     ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
+        content?.let {
+            it()
+            Spacer(modifier = Modifier.width(16.dp))
+        }
+        Column(
             modifier = Modifier
                 .fillMaxSize()
-                .clickable { onClick() }
-                .padding(horizontal = 16.dp)
         ) {
-            Image(
-                bitmap = icon.asImageBitmap(),
-                contentDescription = null,
-                modifier = Modifier.size(32.dp),
-            )
-            Text(
-                modifier = Modifier.padding(start = 16.dp),
-                text = label,
-                style = MaterialTheme.typography.subtitle1,
-                color = MaterialTheme.colors.onBackground
-            )
-            Spacer(modifier = Modifier.weight(1f))
-            content?.invoke(this)
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.weight(1F)
+            ) {
+                Image(
+                    bitmap = icon.asImageBitmap(),
+                    contentDescription = null,
+                    modifier = Modifier.size(30.dp),
+                )
+                Text(
+                    modifier = Modifier.padding(start = 16.dp),
+                    text = label,
+                    style = MaterialTheme.typography.subtitle1,
+                    color = MaterialTheme.colors.onBackground
+                )
+            }
+            if (showDivider) Divider()
         }
     }
 }

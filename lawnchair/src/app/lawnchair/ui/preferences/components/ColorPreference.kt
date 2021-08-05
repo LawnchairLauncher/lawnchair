@@ -69,7 +69,7 @@ fun ColorPreference(
             )
             Box(
                 modifier = Modifier
-                    .size(width = 24.dp, height = 24.dp)
+                    .size(30.dp)
                     .clip(CircleShape)
                     .background(Color(previewColor))
             )
@@ -225,7 +225,13 @@ fun ModeRow(
             .clickable(onClick = onClick)
             .padding(start = 16.dp, end = 8.dp)
     ) {
-        AnimatedCheck(visible = selected)
+        RadioButton(
+            selected = selected,
+            onClick = null,
+            colors = RadioButtonDefaults.colors(
+                unselectedColor = MaterialTheme.colors.onSurface.copy(alpha = 0.48F)
+            )
+        )
         Column(
             modifier = Modifier
                 .padding(start = 16.dp)
@@ -241,7 +247,7 @@ fun ModeRow(
                 Row(modifier = Modifier.fillMaxHeight(), verticalAlignment = Alignment.CenterVertically) {
                     Box(
                         modifier = Modifier
-                            .size(24.dp, 24.dp)
+                            .size(30.dp)
                             .clip(CircleShape)
                             .background(Color(if (MaterialTheme.colors.isLight) lightThemeColor else darkThemeColor))
                     )
