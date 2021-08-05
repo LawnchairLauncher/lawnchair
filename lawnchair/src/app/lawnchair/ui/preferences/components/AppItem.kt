@@ -86,15 +86,15 @@ fun AppItemPlaceholder(
         showDivider = showDivider,
         widget = widget
     ) {
-        Box(
+        Spacer(
             modifier = Modifier
-                .size(32.dp)
+                .size(30.dp)
                 .placeholder(
                     visible = true,
                     highlight = PlaceholderHighlight.fade(),
                 )
         )
-        Box(
+        Spacer(
             modifier = Modifier
                 .width(120.dp)
                 .height(24.dp)

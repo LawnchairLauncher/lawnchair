@@ -87,7 +87,7 @@ fun Modifier.smartBorder(
                     size.height - inset * 2
                 )
                 insetOutline = shape.createOutline(insetSize, layoutDirection, this)
-                insetOutline = cutOutline(insetOutline, borderSize, cutTop, cutBottom)
+                insetOutline = cutOutline(insetOutline, borderSize * 2, cutTop, cutBottom)
                 stroke = Stroke(strokeWidth)
                 pathClip = when (originalOutline) {
                     is Outline.Rectangle -> Path().apply { addRect(originalOutline.rect) }

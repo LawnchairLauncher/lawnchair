@@ -56,7 +56,6 @@ fun TopBar(
     label: String
 ) {
     val navController = LocalNavController.current
-    val labelPaddingStart = if (backArrowVisible) 8.dp else 16.dp
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
 
@@ -66,6 +65,7 @@ fun TopBar(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(topBarSize)
+                .padding(horizontal = 8.dp)
         ) {
             if (backArrowVisible) {
                 ClickableIcon(
@@ -77,7 +77,7 @@ fun TopBar(
             Text(
                 text = label,
                 style = MaterialTheme.typography.h6,
-                modifier = Modifier.padding(start = labelPaddingStart, end = 24.dp),
+                modifier = Modifier.padding(start = 8.dp),
                 color = MaterialTheme.colors.onSurface,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis

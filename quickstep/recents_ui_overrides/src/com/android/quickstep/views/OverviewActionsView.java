@@ -128,7 +128,7 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
         View clearAllSpace = findViewById(R.id.clear_all_space);
 
         PreferenceManager prefs = PreferenceManager.getInstance(getContext());
-        prefs.getClearAllAsAction().subscribe(this, true, enabled -> {
+        prefs.getClearAllAsAction().subscribeValues(this, enabled -> {
             if (enabled) {
                 mClearAllButton.setVisibility(View.VISIBLE);
                 clearAllSpace.setVisibility(View.VISIBLE);

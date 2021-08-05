@@ -29,7 +29,6 @@ fun ClickableIcon(
     Box(
         contentAlignment = Alignment.Center,
         modifier = modifier
-            .padding(start = 8.dp)
             .size(height = 40.dp, width = 40.dp)
             .clip(CircleShape)
             .addIf(onClick != null) {
