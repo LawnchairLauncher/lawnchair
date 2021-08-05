@@ -268,8 +268,8 @@ public class LauncherPreviewRenderer extends ContextWrapper
             WallpaperColors wallpaperColors = wallpaperColorsOverride != null
                     ? wallpaperColorsOverride
                     : WallpaperManager.getInstance(context).getWallpaperColors(FLAG_SYSTEM);
-            mWallpaperColorResources = LocalColorExtractor.newInstance(context)
-                    .generateColorsOverride(wallpaperColors);
+            mWallpaperColorResources = wallpaperColors != null ? LocalColorExtractor.newInstance(
+                    context).generateColorsOverride(wallpaperColors) : null;
         } else {
             mWallpaperColorResources = null;
         }
