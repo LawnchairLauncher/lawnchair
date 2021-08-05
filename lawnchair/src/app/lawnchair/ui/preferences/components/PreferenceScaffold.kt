@@ -7,7 +7,9 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.navigationBarsHeight
+import com.google.accompanist.insets.rememberInsetsPaddingValues
 import com.google.accompanist.insets.ui.Scaffold
 
 @ExperimentalAnimationApi
@@ -31,7 +33,12 @@ fun PreferenceScaffold(
                 Modifier
                     .navigationBarsHeight()
                     .fillMaxWidth())
-        }
+        },
+        contentPadding = rememberInsetsPaddingValues(
+            insets = LocalWindowInsets.current.systemBars,
+            applyTop = false,
+            applyBottom = false
+        )
     ) {
         content(it)
     }
