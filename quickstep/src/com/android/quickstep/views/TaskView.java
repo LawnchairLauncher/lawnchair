@@ -584,6 +584,7 @@ public class TaskView extends FrameLayout implements Reusable {
                 }
             });
             anim.start();
+            recentsView.onTaskLaunchedInLiveTileMode();
         } else {
             launchTaskAnimated();
         }
@@ -614,12 +615,14 @@ public class TaskView extends FrameLayout implements Reusable {
             ActivityOptionsWrapper opts =  mActivity.getActivityLaunchOptions(this, null);
             if (ActivityManagerWrapper.getInstance()
                     .startActivityFromRecents(mTask.key, opts.options)) {
-                if (ENABLE_QUICKSTEP_LIVE_TILE.get() &&
-                        getRecentsView().getRunningTaskViewId() != -1) {
+                RecentsView recentsView = getRecentsView();
+                if (ENABLE_QUICKSTEP_LIVE_TILE.get() && recentsView.getRunningTaskViewId() != -1) {
+                    recentsView.onTaskLaunchedInLiveTileMode();
+
                     // Return a fresh callback in the live tile case, so that it's not accidentally
                     // triggered by QuickstepTransitionManager.AppLaunchAnimationRunner.
                     RunnableList callbackList = new RunnableList();
-                    getRecentsView().addSideTaskLaunchCallback(callbackList);
+                    recentsView.addSideTaskLaunchCallback(callbackList);
                     return callbackList;
                 }
                 return opts.onEndCallback;
