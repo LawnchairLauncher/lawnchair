@@ -1,15 +1,12 @@
 package app.lawnchair.iconpack;
 
-import android.content.Context;
 import android.content.ComponentName;
-import android.content.SharedPreferences;
+import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.text.TextUtils;
 import android.util.ArrayMap;
 import android.widget.Toast;
-
-import com.android.launcher3.icons.Utilities;
 
 import org.xmlpull.v1.XmlPullParser;
 
@@ -17,6 +14,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import app.lawnchair.preferences.PreferenceManager;
 
 public class IconPackProvider {
     private static Map<String, IconPack> iconPacks = new ArrayMap<>();
@@ -33,9 +32,9 @@ public class IconPackProvider {
         return iconPacks.get(packageName).getTotalIcons();
     }
 
-    public static IconPack loadAndGetIconPack(Context context){
-        SharedPreferences prefs = Utilities.getPrefs(context);
-        String packageName = prefs.getString("pref_iconPackPackage", "");
+    public static IconPack loadAndGetIconPack(Context context) {
+        PreferenceManager prefs = PreferenceManager.getInstance(context);
+        String packageName = prefs.getIconPackPackage().get();
         if("".equals(packageName)){
             return null;
         }

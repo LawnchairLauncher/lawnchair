@@ -2,7 +2,6 @@ package app.lawnchair.iconpack;
 
 import android.content.ComponentName;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.pm.LauncherActivityInfo;
 import android.content.pm.PackageManager;
@@ -22,8 +21,6 @@ import android.text.TextUtils;
 import androidx.annotation.ColorInt;
 import androidx.core.graphics.ColorUtils;
 import androidx.palette.graphics.Palette;
-
-import com.android.launcher3.icons.Utilities;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -140,21 +137,21 @@ public class IconPack {
     }
 
     public static Drawable wrapAdaptiveIcon(Drawable d, Context context) {
-        SharedPreferences sharedPrefs = Utilities.getPrefs(context);
+        PreferenceManager prefs = PreferenceManager.getInstance(context);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && !(d instanceof AdaptiveIconDrawable)
-                && sharedPrefs.getBoolean("prefs_wrapAdaptive", false)) {
+                && prefs.getWrapAdaptiveIcons().get()) {
             assert d != null;
             Bitmap b = drawableToBitmap(d);
             // Already running on UI_HELPER, no need to async this.
             Palette p = (new Palette.Builder(b)).generate();
-            ColorDrawable backgroundColor = new ColorDrawable(makeBackgroundColor(p.getDominantColor(Color.WHITE), sharedPrefs));
+            ColorDrawable backgroundColor = new ColorDrawable(makeBackgroundColor(p.getDominantColor(Color.WHITE), prefs));
             d = new AdaptiveIconDrawable(backgroundColor, new BitmapDrawable(pad(b)));
         }
         return d;
     }
 
-    private static @ColorInt int makeBackgroundColor(@ColorInt int dominantColor, SharedPreferences sharedPrefs) {
-        float lightness = sharedPrefs.getFloat("pref_coloredBackgroundLightness", 0.9F);
+    private static @ColorInt int makeBackgroundColor(@ColorInt int dominantColor, PreferenceManager prefs) {
+        float lightness = prefs.getColoredBackgroundLightness().get();
         if (dominantColor != Color.WHITE) {
             float[] outHsl = new float[]{0F, 0F, 0F};
             ColorUtils.colorToHSL(dominantColor, outHsl);
