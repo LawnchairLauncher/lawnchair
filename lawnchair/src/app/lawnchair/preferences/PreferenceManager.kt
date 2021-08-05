@@ -65,6 +65,7 @@ class PreferenceManager private constructor(private val context: Context) : Base
     val folderRows = IdpIntPref("pref_folderRows", { numFolderRows }, reloadGrid)
     val iconSizeFactor = FloatPref("pref_iconSizeFactor", 1F, reloadIcons)
     val textSizeFactor = FloatPref("pref_textSizeFactor", 1F, reloadGrid)
+    val showHomeLabels = BoolPref("pref_showHomeLabels", true, reloadGrid)
     val allAppsIconSizeFactor = FloatPref("pref_allAppsIconSizeFactor", 1F, reloadIcons)
     val allAppsTextSizeFactor = FloatPref("pref_allAppsTextSizeFactor", 1F, reloadGrid)
     val allAppsColumns = IdpIntPref("pref_allAppsColumns", { numAllAppsColumns }, reloadGrid)
