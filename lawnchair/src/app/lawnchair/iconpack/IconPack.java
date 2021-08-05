@@ -6,6 +6,7 @@ import android.content.pm.ActivityInfo;
 import android.content.pm.LauncherActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
+import android.content.res.XmlResourceParser;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -39,15 +40,17 @@ public class IconPack {
     http://stackoverflow.com/questions/7205415/getting-resources-of-another-application
     http://stackoverflow.com/questions/3890012/how-to-access-string-resource-from-another-application
      */
+    public static final String DYNAMIC_CLOCK_TAG = "dynamic-clock";
     public static final String ICON_MASK_TAG = "iconmask";
     public static final String ICON_BACK_TAG = "iconback";
     public static final String ICON_UPON_TAG = "iconupon";
     public static final String ICON_SCALE_TAG = "scale";
 
-    private String packageName;
-    private Context mContext;
-    private Map<String, String> mIconPackResources = new HashMap<>();
-    private Map<String, String> mCalendarResources = new HashMap<>();
+    private final String packageName;
+    private final Context mContext;
+    private final Map<String, String> mIconPackResources = new HashMap<>();
+    private final Map<String, String> mCalendarResources = new HashMap<>();
+    private final Map<String, ClockMetadata> mClockMetas = new HashMap<>();
     private List<String> mIconBackStrings;
     private List<Drawable> mIconBackList;
     private Drawable mIconUpon, mIconMask;
@@ -100,6 +103,22 @@ public class IconPack {
                 continue;
             }
 
+            if (name.equals(DYNAMIC_CLOCK_TAG)) {
+                if (parser instanceof XmlResourceParser) {
+                    XmlResourceParser resParser = (XmlResourceParser) parser;
+                    String drawable = parser.getAttributeValue(null, "drawable");
+                    ClockMetadata meta = new ClockMetadata(
+                            resParser.getAttributeIntValue(null, "hourLayerIndex", -1),
+                            resParser.getAttributeIntValue(null, "minuteLayerIndex", -1),
+                            resParser.getAttributeIntValue(null, "secondLayerIndex", -1),
+                            resParser.getAttributeIntValue(null, "defaultHour", 0),
+                            resParser.getAttributeIntValue(null, "defaultMinute", 0),
+                            resParser.getAttributeIntValue(null, "defaultSecond", 0)
+                    );
+                    mClockMetas.put(drawable, meta);
+                }
+            }
+
             if (name.equals(ICON_BACK_TAG)) {
                 String icon = parser.getAttributeValue(null, "img");
                 if (icon == null) {
@@ -133,7 +152,7 @@ public class IconPack {
                 continue;
             }
         }
-        setIcons(mIconPackResources, iconBackStrings);
+        setIcons(iconBackStrings);
     }
 
     public boolean isCalendar(String packageName) {
@@ -144,8 +163,23 @@ public class IconPack {
         return mIconPackResources.containsKey(packageName);
     }
 
-    public void setIcons(Map<String, String> iconPackResources, List<String> iconBackStrings) {
-        mIconPackResources = iconPackResources;
+    public boolean isClockComponent(ComponentName componentName) {
+        String drawable = mIconPackResources.get(componentName.flattenToString());
+        if (drawable != null) {
+            return mClockMetas.containsKey(drawable);
+        }
+        return false;
+    }
+
+    public boolean isClockPackage(String packageName) {
+        String drawable = mIconPackResources.get(packageName);
+        if (drawable != null) {
+            return mClockMetas.containsKey(drawable);
+        }
+        return false;
+    }
+
+    public void setIcons(List<String> iconBackStrings) {
         mIconBackStrings = iconBackStrings;
         mIconBackList = new ArrayList<>();
         try {
@@ -186,6 +220,14 @@ public class IconPack {
 
     public Drawable getIcon(String packageName, int iconDpi) {
         return getDrawable(packageName, iconDpi);
+    }
+
+    public ClockMetadata getClockMeta(String packageName) {
+        String drawable = mIconPackResources.get(packageName);
+        if (drawable != null) {
+            return mClockMetas.get(drawable);
+        }
+        return null;
     }
 
     public Drawable getCalendarIcon(String packageName, int iconDpi, int day) {

@@ -92,14 +92,14 @@ public class IconProvider {
      * is used by caches to check for icon invalidation.
      */
     public String getSystemStateForPackage(String systemState, String packageName) {
-        if (isCalendar(packageName)) {
+        if (isCalendarPackage(packageName)) {
             return systemState + SYSTEM_STATE_SEPARATOR + getDay();
         } else {
             return systemState;
         }
     }
 
-    private boolean isCalendar(String packageName) {
+    private boolean isCalendarPackage(String packageName) {
         IconPack iconPack = IconPackProvider.loadAndGetIconPack(mContext);
         if (iconPack != null) {
             if (iconPack.isCalendar(packageName)) {
@@ -110,6 +110,17 @@ public class IconProvider {
             }
         }
         return mCalendar != null && mCalendar.getPackageName().equals(packageName);
+    }
+
+    private boolean isClockPackage(String packageName, UserHandle user) {
+        if (!Process.myUserHandle().equals(user)) {
+            return false;
+        }
+        IconPack iconPack = IconPackProvider.loadAndGetIconPack(mContext);
+        if (iconPack != null) {
+            return iconPack.isClockPackage(packageName);
+        }
+        return mClock != null && mClock.getPackageName().equals(packageName);
     }
 
     /**
@@ -156,11 +167,9 @@ public class IconProvider {
     private <T, P> Drawable getIcon(String packageName, UserHandle user, T obj, P param,
             BiFunction<T, P, Drawable> loader) {
         Drawable icon = null;
-        if (isCalendar(packageName)) {
+        if (isCalendarPackage(packageName)) {
             icon = loadCalendarDrawable(packageName, 0);
-        } else if (mClock != null
-                && mClock.getPackageName().equals(packageName)
-                && Process.myUserHandle().equals(user)) {
+        } else if (isClockPackage(packageName, user)) {
             icon = loadClockDrawable(0);
         }
         Drawable ret = icon == null ? loader.apply(obj, param) : icon;
@@ -204,6 +213,13 @@ public class IconProvider {
     }
 
     protected boolean isClockIcon(ComponentKey key) {
+        if (!Process.myUserHandle().equals(key.user)) {
+            return false;
+        }
+        IconPack iconPack = IconPackProvider.loadAndGetIconPack(mContext);
+        if (iconPack != null) {
+            return iconPack.isClockComponent(key.componentName);
+        }
         return mClock != null && mClock.equals(key.componentName)
                 && Process.myUserHandle().equals(key.user);
     }

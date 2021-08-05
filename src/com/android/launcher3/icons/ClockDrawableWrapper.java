@@ -36,6 +36,10 @@ import com.android.launcher3.FastBitmapDrawable;
 import java.util.Calendar;
 import java.util.concurrent.TimeUnit;
 
+import app.lawnchair.iconpack.ClockMetadata;
+import app.lawnchair.iconpack.IconPack;
+import app.lawnchair.iconpack.IconPackProvider;
+
 /**
  * Wrapper over {@link AdaptiveIconDrawable} to intercept icon flattening logic for dynamic
  * clock icons
@@ -96,8 +100,27 @@ public class ClockDrawableWrapper extends AdaptiveIconDrawable implements Bitmap
                 return null;
             }
 
-            Drawable drawable = pm.getResourcesForApplication(appInfo).getDrawableForDensity(
-                    drawableId, iconDpi).mutate();
+            Drawable drawable = null;
+            ClockMetadata meta = null;
+            IconPack iconPack = IconPackProvider.loadAndGetIconPack(context);
+            if (iconPack != null) {
+                drawable = iconPack.getIcon(pkg, iconDpi);
+                meta = iconPack.getClockMeta(pkg);
+            }
+            if (drawable == null) {
+                drawable = pm.getResourcesForApplication(appInfo).getDrawableForDensity(
+                        drawableId, iconDpi).mutate();
+            }
+            if (meta == null) {
+                meta = new ClockMetadata(
+                        metadata.getInt(HOUR_INDEX_METADATA_KEY, INVALID_VALUE),
+                        metadata.getInt(MINUTE_INDEX_METADATA_KEY, INVALID_VALUE),
+                        metadata.getInt(SECOND_INDEX_METADATA_KEY, INVALID_VALUE),
+                        metadata.getInt(DEFAULT_HOUR_METADATA_KEY, INVALID_VALUE),
+                        metadata.getInt(DEFAULT_MINUTE_METADATA_KEY, INVALID_VALUE),
+                        metadata.getInt(DEFAULT_SECOND_METADATA_KEY, INVALID_VALUE)
+                );
+            }
             if (!(drawable instanceof AdaptiveIconDrawable)) {
                 return null;
             }
@@ -109,13 +132,13 @@ public class ClockDrawableWrapper extends AdaptiveIconDrawable implements Bitmap
 
             info.baseDrawableState = drawable.getConstantState();
 
-            info.hourLayerIndex = metadata.getInt(HOUR_INDEX_METADATA_KEY, INVALID_VALUE);
-            info.minuteLayerIndex = metadata.getInt(MINUTE_INDEX_METADATA_KEY, INVALID_VALUE);
-            info.secondLayerIndex = metadata.getInt(SECOND_INDEX_METADATA_KEY, INVALID_VALUE);
+            info.hourLayerIndex = meta.getHourLayerIndex();
+            info.minuteLayerIndex = meta.getMinuteLayerIndex();
+            info.secondLayerIndex = meta.getSecondLayerIndex();
 
-            info.defaultHour = metadata.getInt(DEFAULT_HOUR_METADATA_KEY, 0);
-            info.defaultMinute = metadata.getInt(DEFAULT_MINUTE_METADATA_KEY, 0);
-            info.defaultSecond = metadata.getInt(DEFAULT_SECOND_METADATA_KEY, 0);
+            info.defaultHour = meta.getDefaultHour();
+            info.defaultMinute = meta.getDefaultMinute();
+            info.defaultSecond = meta.getDefaultSecond();
 
             LayerDrawable foreground = (LayerDrawable) wrapper.getForeground();
             int layerCount = foreground.getNumberOfLayers();
