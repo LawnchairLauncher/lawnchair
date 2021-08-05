@@ -16,7 +16,6 @@
 
 package app.lawnchair.ui.preferences
 
-import android.util.Log
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.MaterialTheme
@@ -25,7 +24,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
 import app.lawnchair.ui.preferences.about.aboutGraph
 import app.lawnchair.ui.preferences.components.SystemUi
@@ -65,15 +63,6 @@ fun Preferences(interactor: PreferenceInteractor = viewModel<PreferenceViewModel
     val forwardSpec = materialSharedAxisX(forward = true, slideDistance = slideDistance)
     val backwardSpec = materialSharedAxisX(forward = false, slideDistance = slideDistance)
 
-    val getEnterTransition = { initial: NavBackStackEntry, target: NavBackStackEntry ->
-        val spec = if (isForward(initial, target)) forwardSpec else backwardSpec
-        spec.enter.transition
-    }
-    val getExitTransition = { initial: NavBackStackEntry, target: NavBackStackEntry ->
-        val spec = if (isForward(initial, target)) forwardSpec else backwardSpec
-        spec.exit.transition
-    }
-
     SystemUi()
     Providers {
         Surface(color = MaterialTheme.colors.background) {
@@ -84,10 +73,10 @@ fun Preferences(interactor: PreferenceInteractor = viewModel<PreferenceViewModel
                 AnimatedNavHost(
                     navController = navController,
                     startDestination = "/",
-                    enterTransition = getEnterTransition,
-                    exitTransition = getExitTransition,
-                    popEnterTransition = getEnterTransition,
-                    popExitTransition = getExitTransition,
+                    enterTransition = { _, _ -> forwardSpec.enter.transition },
+                    exitTransition = { _, _ -> forwardSpec.exit.transition },
+                    popEnterTransition = { _, _ -> backwardSpec.enter.transition },
+                    popExitTransition = { _, _ -> backwardSpec.exit.transition },
                 ) {
                     preferenceGraph(route = "/", { PreferencesDashboard() }) { subRoute ->
                         generalGraph(route = subRoute(Routes.GENERAL))
@@ -103,12 +92,6 @@ fun Preferences(interactor: PreferenceInteractor = viewModel<PreferenceViewModel
             }
         }
     }
-}
-
-private fun isForward(initial: NavBackStackEntry, target: NavBackStackEntry): Boolean {
-    val initialRouteLength = initial.destination.route?.split("/")?.size ?: 0
-    val targetRouteLength = target.destination.route?.split("/")?.size ?: 0
-    return targetRouteLength >= initialRouteLength
 }
 
 @Composable
