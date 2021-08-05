@@ -73,6 +73,8 @@
     <color name="folder_background_dark">#464746</color>
 
     <color name="folder_dot_color">?attr/colorPrimary</color>
+    <color name="folder_pagination_color_light">#ff006c5f</color>
+    <color name="folder_pagination_color_dark">#ffbfebe3</color>
 
     <color name="text_color_primary_dark">#FFFFFFFF</color>
     <color name="text_color_secondary_dark">#FFFFFFFF</color>
