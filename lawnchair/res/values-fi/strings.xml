@@ -40,6 +40,7 @@
     <string name="icons">Icons</string>
     <string name="icon_size">Icon Size</string>
     <string name="label_size">Label Size</string>
+    <string name="show_home_labels">Show label</string>
     <string name="allow_empty_pages_label">Allow Empty Pages</string>
     <string name="notification_dots">Notification Dots</string>
     <string name="smartspace_preferences">Preferences</string>
