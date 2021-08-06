@@ -40,6 +40,7 @@
     <string name="icons">Ikoner</string>
     <string name="icon_size">Ikon størrelse</string>
     <string name="label_size">Etiket størrelse</string>
+    <string name="show_home_labels">Show label</string>
     <string name="allow_empty_pages_label">Tillad Tomme Sider</string>
     <string name="notification_dots">Notifikation Prikker</string>
     <string name="smartspace_preferences">Præferencer</string>
