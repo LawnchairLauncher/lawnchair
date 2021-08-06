@@ -40,6 +40,7 @@
     <string name="icons">আইকন-সমুহ</string>
     <string name="icon_size">আইকনের আকার</string>
     <string name="label_size">লেবেলের আয়তন</string>
+    <string name="show_home_labels">Show label</string>
     <string name="allow_empty_pages_label">খালি পৃষ্ঠা থাকার অনুমতি দিন</string>
     <string name="notification_dots">নোটিফিকেশন ডট</string>
     <string name="smartspace_preferences">পছন্দ-সমুহ</string>
