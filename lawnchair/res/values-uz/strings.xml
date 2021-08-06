@@ -40,6 +40,7 @@
     <string name="icons">Belgilar</string>
     <string name="icon_size">Belgi hajmi</string>
     <string name="label_size">Yorliq hajmi</string>
+    <string name="show_home_labels">Show label</string>
     <string name="allow_empty_pages_label">Bo‘sh sahifalarga ruxsat berish</string>
     <string name="notification_dots">Bildirishnoma nuqtalari</string>
     <string name="smartspace_preferences">Afzalliklar</string>
