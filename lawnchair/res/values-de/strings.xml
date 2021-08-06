@@ -103,4 +103,5 @@
     <string name="quickstep_description">Alles entfernen Taste, Eckradius</string>
     <string name="wallpaper_scrolling_label">Hintergrund scrollen</string>
     <string name="show_sys_ui_scrim">Zeige oberen Schatten</string>
+    <string name="pref_hide_statusbar">Hide Status Bar</string>
 </resources>
