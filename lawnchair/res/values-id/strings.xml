@@ -40,6 +40,7 @@
     <string name="icons">Ikon</string>
     <string name="icon_size">Ukuran Ikon</string>
     <string name="label_size">Ukuran Label</string>
+    <string name="show_home_labels">Show label</string>
     <string name="allow_empty_pages_label">Izinkan halaman kosong</string>
     <string name="notification_dots">Bintik Notifikasi</string>
     <string name="smartspace_preferences">preferensi</string>
