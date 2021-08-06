@@ -20,6 +20,8 @@ import android.content.Context
 import android.os.Bundle
 import androidx.activity.OnBackPressedDispatcher
 import androidx.activity.OnBackPressedDispatcherOwner
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import androidx.lifecycle.*
 import androidx.savedstate.SavedStateRegistry
 import androidx.savedstate.SavedStateRegistryController
@@ -30,11 +32,11 @@ import app.lawnchair.nexuslauncher.OverlayCallbackImpl
 import app.lawnchair.preferences.PreferenceManager
 import app.lawnchair.root.RootHelperManager
 import app.lawnchair.root.RootNotAvailableException
-import com.android.launcher3.BaseActivity
-import com.android.launcher3.LauncherAppState
-import com.android.launcher3.LauncherRootView
+import com.android.launcher3.*
 import com.android.launcher3.R
+import com.android.launcher3.statemanager.StateManager
 import com.android.launcher3.uioverrides.QuickstepLauncher
+import com.android.launcher3.uioverrides.states.OverviewState
 import com.android.systemui.plugins.shared.LauncherOverlayManager
 import kotlinx.coroutines.launch
 
@@ -65,6 +67,23 @@ class LawnchairLauncher : QuickstepLauncher(), LifecycleOwner,
                     // do nothing
                 }
             }
+        }
+        if (prefs.hideStatusBar.get()) {
+            val insetsController = WindowInsetsControllerCompat(launcher.window, rootView)
+            insetsController.hide(WindowInsetsCompat.Type.statusBars())
+            launcher.stateManager.addStateListener(object : StateManager.StateListener<LauncherState> {
+                override fun onStateTransitionStart(toState: LauncherState) {
+                    if (toState is OverviewState) {
+                        insetsController.show(WindowInsetsCompat.Type.statusBars())
+                    }
+                }
+
+                override fun onStateTransitionComplete(finalState: LauncherState) {
+                    if (finalState !is OverviewState) {
+                        insetsController.hide(WindowInsetsCompat.Type.statusBars())
+                    }
+                }
+            })
         }
     }
 

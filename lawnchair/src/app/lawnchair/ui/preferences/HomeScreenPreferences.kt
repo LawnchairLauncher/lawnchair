@@ -67,6 +67,10 @@ fun HomeScreenPreferences() {
                 label = stringResource(id = R.string.workspace_dt2s),
             )
             SwitchPreference(
+                prefs.hideStatusBar.getAdapter(),
+                label = stringResource(id = R.string.pref_hide_statusbar),
+            )
+            SwitchPreference(
                 prefs.showSysUiScrim.getAdapter(),
                 label = stringResource(id = R.string.show_sys_ui_scrim),
                 showDivider = false
