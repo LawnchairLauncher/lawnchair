@@ -61,7 +61,7 @@
     <string name="adaptive_icon_background_description">100%-os világosság a háttérben a fehérnél.</string>
     <string name="auto_adaptive_icons_label">Automatikus adaptív ikonok</string>
     <string name="auto_adaptive_icons_description">A nem adaptív ikonok számára.</string>
-    <string name="support_and_pr">Támogatás és PR</string>
+    <string name="support_and_pr">Támogatás &amp; PR</string>
     <string name="workspace_dt2s">Dupla érintés az alváshoz</string>
     <string name="smart_space_enable">Kezdőoldal kisalkalmazás megjelenítése</string>
     <string name="design_and_development">Dizájn és fejlesztés</string>
@@ -103,5 +103,5 @@
     <string name="quickstep_description">Minden törlése gomb, sarok sugár</string>
     <string name="wallpaper_scrolling_label">Háttérkép görgetése</string>
     <string name="show_sys_ui_scrim">Felső árnyék mutatása</string>
-    <string name="pref_hide_statusbar">Hide Status Bar</string>
+    <string name="show_status_bar">Show Status Bar</string>
 </resources>
