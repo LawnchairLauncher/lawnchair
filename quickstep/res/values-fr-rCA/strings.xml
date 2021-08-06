@@ -51,7 +51,7 @@
     <string name="back_gesture_feedback_complete_without_follow_up" msgid="6405649621667113830">"Vous avez appris le geste de retour en arrière."</string>
     <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="1148198467090405643">"Assurez-vous de ne pas balayer trop près du bas de l\'écran."</string>
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"Modifiez la sensibilité du geste de retour dans Paramètres"</string>
-    <string name="back_gesture_intro_title" msgid="19551256430224428">"Balayez l\'écran pour revenir en arrière"</string>
+    <string name="back_gesture_intro_title" msgid="19551256430224428">"Balayer l\'écran pour revenir en arrière"</string>
     <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"Pour revenir à l\'écran précédent, balayez l\'écran de l\'extrémité gauche ou droite vers le centre."</string>
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"Assurez-vous de balayer l\'écran à partir de l\'extrémité inférieure vers le haut."</string>
     <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"Assurez-vous de ne pas interrompre le geste avant de lever le doigt."</string>

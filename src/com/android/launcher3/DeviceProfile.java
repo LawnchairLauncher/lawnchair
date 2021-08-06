@@ -184,6 +184,8 @@ public class DeviceProfile {
     public final boolean overviewShowAsGrid;
     public int overviewTaskMarginPx;
     public int overviewTaskIconSizePx;
+    public int overviewTaskIconDrawableSizePx;
+    public int overviewTaskIconDrawableSizeGridPx;
     public int overviewTaskThumbnailTopMarginPx;
     public final int overviewActionsMarginThreeButtonPx;
     public final int overviewActionsTopMarginGesturePx;
@@ -362,6 +364,10 @@ public class DeviceProfile {
                 ? res.getDimensionPixelSize(R.dimen.overview_task_margin_grid)
                 : res.getDimensionPixelSize(R.dimen.overview_task_margin);
         overviewTaskIconSizePx = res.getDimensionPixelSize(R.dimen.task_thumbnail_icon_size);
+        overviewTaskIconDrawableSizePx =
+                res.getDimensionPixelSize(R.dimen.task_thumbnail_icon_drawable_size);
+        overviewTaskIconDrawableSizeGridPx =
+                res.getDimensionPixelSize(R.dimen.task_thumbnail_icon_drawable_size_grid);
         overviewTaskThumbnailTopMarginPx = overviewTaskIconSizePx + overviewTaskMarginPx * 2;
         if (overviewShowAsGrid) {
             if (isLandscape) {
@@ -419,14 +425,15 @@ public class DeviceProfile {
 
                 // For devices with more extra space, we take a larger piece from each cell.
                 int piece = extraSpace < Utilities.dpToPx(TALL_DEVICE_MORE_EXTRA_SPACE_THRESHOLD_DP)
-                        ? 5 : 3;
+                        ? 7 : 5;
 
                 int extraSpace = ((getCellSize().y - iconSizePx - iconDrawablePaddingPx * 2)
                         * inv.numRows) / piece;
 
-                int halfExtraSpace = extraSpace / 2;
-                hotseatBarTopPaddingPx += halfExtraSpace;
-                hotseatBarSizeExtraSpacePx = halfExtraSpace;
+                workspaceTopPadding = extraSpace / 8;
+                int halfLeftOver = (extraSpace - workspaceTopPadding) / 2;
+                hotseatBarTopPaddingPx += halfLeftOver;
+                hotseatBarSizeExtraSpacePx = halfLeftOver;
             } else {
                 // ie. For a display with a large aspect ratio, we can keep the icons on the
                 // workspace in portrait mode closer together by adding more height to the hotseat.

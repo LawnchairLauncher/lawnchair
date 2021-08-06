@@ -49,20 +49,20 @@
     <string name="back_gesture_feedback_cancelled" msgid="3274382913290074496">"请从右侧或左侧边缘滑动到屏幕中间位置后再松开手指。"</string>
     <string name="back_gesture_feedback_complete_with_overview_follow_up" msgid="9176400654037014471">"您已了解如何使用“从右侧向左滑动”手势返回。接下来了解如何切换应用。"</string>
     <string name="back_gesture_feedback_complete_without_follow_up" msgid="6405649621667113830">"您完成了“返回”手势教程。"</string>
-    <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="1148198467090405643">"滑动时，手的位置不要太靠近屏幕底部。"</string>
+    <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="1148198467090405643">"请确保滑动时手的位置不要太靠近屏幕底部。"</string>
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"如要调节“返回”手势的灵敏度，请转到“设置”"</string>
     <string name="back_gesture_intro_title" msgid="19551256430224428">"滑动即可返回"</string>
     <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"如要返回上一个屏幕，请从左侧或右侧边缘滑动到屏幕中间位置。"</string>
-    <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"请从屏幕底部边缘向上滑动。"</string>
-    <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"在松开手指前请勿停下来。"</string>
-    <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"请向上滑动。"</string>
+    <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"请确保从屏幕底部边缘向上滑动。"</string>
+    <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"松开手指前，请确保不要停下来。"</string>
+    <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"请确保直接向上滑动。"</string>
     <string name="home_gesture_feedback_complete_with_follow_up" msgid="1427872029729605034">"您完成了“转到主屏幕”手势教程。接下来了解如何返回。"</string>
     <string name="home_gesture_feedback_complete_without_follow_up" msgid="8049099486868933882">"您完成了“转到主屏幕”手势教程。"</string>
     <string name="home_gesture_intro_title" msgid="836590312858441830">"上滑可转到主屏幕"</string>
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"从屏幕底部向上滑动。这个手势会一律将您转到主屏幕。"</string>
-    <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"请从屏幕底部边缘向上滑动。"</string>
+    <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"请确保从屏幕底部边缘向上滑动。"</string>
     <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"请尝试按住窗口较长时间，然后再松开手指。"</string>
-    <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"请向上滑动，然后停住。"</string>
+    <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"请确保直接向上滑动，然后停住。"</string>
     <string name="overview_gesture_feedback_complete_with_follow_up" msgid="3544611727467765026">"您已了解如何使用手势了。如要关闭手势，请转到“设置”。"</string>
     <string name="overview_gesture_feedback_complete_without_follow_up" msgid="3199486203448379152">"您完成了“切换应用”手势教程。"</string>
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"滑动即可切换应用"</string>
