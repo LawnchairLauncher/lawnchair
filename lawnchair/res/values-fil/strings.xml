@@ -40,6 +40,7 @@
     <string name="icons">Icons</string>
     <string name="icon_size">Laki ng Icon</string>
     <string name="label_size">Laki ng Label</string>
+    <string name="show_home_labels">Show label</string>
     <string name="allow_empty_pages_label">Payagan ang mga Walang Laman na Pahina</string>
     <string name="notification_dots">Mga Tuldok ng Abiso</string>
     <string name="smartspace_preferences">Mga Kagustuhan</string>
