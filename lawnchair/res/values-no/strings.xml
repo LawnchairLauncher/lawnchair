@@ -40,6 +40,7 @@
     <string name="icons">Ikoner</string>
     <string name="icon_size">Ikonstørrelse</string>
     <string name="label_size">Merkelapp størrelse</string>
+    <string name="show_home_labels">Show label</string>
     <string name="allow_empty_pages_label">Tillat tomme sider</string>
     <string name="notification_dots">Notifikasjons prikker</string>
     <string name="smartspace_preferences">Preferanser</string>
