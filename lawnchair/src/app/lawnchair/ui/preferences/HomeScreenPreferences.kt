@@ -101,6 +101,7 @@ fun HomeScreenPreferences() {
             SwitchPreference(
                 prefs.showHomeLabels.getAdapter(),
                 label = stringResource(id = R.string.show_home_labels),
+                showDivider = showHomeLabels
             )
             AnimatedVisibility(
                 visible = showHomeLabels,
