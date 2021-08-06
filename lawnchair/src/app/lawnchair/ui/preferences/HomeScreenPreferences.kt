@@ -16,13 +16,15 @@
 
 package app.lawnchair.ui.preferences
 
-import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavGraphBuilder
 import app.lawnchair.nexuslauncher.OverlayCallbackImpl
 import app.lawnchair.preferences.getAdapter
+import app.lawnchair.preferences.observeAsState
 import app.lawnchair.preferences.preferenceManager
 import app.lawnchair.ui.preferences.components.PreferenceGroup
 import app.lawnchair.ui.preferences.components.PreferenceLayout
@@ -99,14 +101,26 @@ fun HomeScreenPreferences() {
                 valueRange = 0.5F..1.5F,
                 showAsPercentage = true
             )
-            SliderPreference(
-                label = stringResource(id = R.string.label_size),
-                adapter = prefs.textSizeFactor.getAdapter(),
-                step = 0.1f,
-                valueRange = 0.5F..1.5F,
-                showAsPercentage = true,
-                showDivider = false
+            val showHomeLabels by prefs.showHomeLabels.observeAsState()
+            SwitchPreference(
+                prefs.showHomeLabels.getAdapter(),
+                label = stringResource(id = R.string.show_home_labels),
+                showDivider = showHomeLabels
             )
+            AnimatedVisibility(
+                visible = showHomeLabels,
+                enter = expandVertically() + fadeIn(),
+                exit = shrinkVertically() + fadeOut()
+            ) {
+                SliderPreference(
+                    label = stringResource(id = R.string.label_size),
+                    adapter = prefs.textSizeFactor.getAdapter(),
+                    step = 0.1f,
+                    valueRange = 0.5F..1.5F,
+                    showAsPercentage = true,
+                    showDivider = false
+                )
+            }
         }
     }
 }
