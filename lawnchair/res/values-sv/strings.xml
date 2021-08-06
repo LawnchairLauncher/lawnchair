@@ -40,6 +40,7 @@
     <string name="icons">Ikoner</string>
     <string name="icon_size">Storlek på ikon</string>
     <string name="label_size">Etikettstorlek</string>
+    <string name="show_home_labels">Show label</string>
     <string name="allow_empty_pages_label">Tillåt tomma sidor</string>
     <string name="notification_dots">Notifikationspunkter</string>
     <string name="smartspace_preferences">Inställningar</string>
