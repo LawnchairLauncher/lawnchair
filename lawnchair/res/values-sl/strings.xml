@@ -40,6 +40,7 @@
     <string name="icons">Ikone</string>
     <string name="icon_size">Velikost ikon</string>
     <string name="label_size">Velikost naslovov</string>
+    <string name="show_home_labels">Show label</string>
     <string name="allow_empty_pages_label">Dovoli prazne strani</string>
     <string name="notification_dots">Notifikacijske pike</string>
     <string name="smartspace_preferences">Preference</string>
