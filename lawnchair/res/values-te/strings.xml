@@ -40,6 +40,7 @@
     <string name="icons">చిహ్నాలు</string>
     <string name="icon_size">చిహ్నం పరిమాణం</string>
     <string name="label_size">లేబుల్ పరిమాణం</string>
+    <string name="show_home_labels">Show label</string>
     <string name="allow_empty_pages_label">ఖాళీ పేజీలను అనుమతించు</string>
     <string name="notification_dots">నోటిఫికేషన్ చుక్కలు</string>
     <string name="smartspace_preferences">ప్రాధాన్యతలు</string>
