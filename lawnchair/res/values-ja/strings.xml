@@ -40,6 +40,7 @@
     <string name="icons">アイコン</string>
     <string name="icon_size">アイコンのサイズ</string>
     <string name="label_size">ラベルのサイズ</string>
+    <string name="show_home_labels">Show label</string>
     <string name="allow_empty_pages_label">空のページを許可する</string>
     <string name="notification_dots">通知ドット</string>
     <string name="smartspace_preferences">設定</string>
