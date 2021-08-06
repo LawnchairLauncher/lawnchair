@@ -105,5 +105,5 @@
     <string name="quickstep_description">כפתור ניקוי הכל, רדיוס פינות</string>
     <string name="wallpaper_scrolling_label">גלילת טפט</string>
     <string name="show_sys_ui_scrim">הצגת הצללה עילית</string>
-    <string name="show_status_bar">Show Status Bar</string>
+    <string name="show_status_bar">הצגת שורת מצב</string>
 </resources>
