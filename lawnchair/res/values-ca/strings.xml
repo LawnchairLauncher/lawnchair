@@ -40,6 +40,7 @@
     <string name="icons">Icones</string>
     <string name="icon_size">Mida de les Icones</string>
     <string name="label_size">Mida de les etiquetes</string>
+    <string name="show_home_labels">Show label</string>
     <string name="allow_empty_pages_label">Permet pàgines buides</string>
     <string name="notification_dots">Punts de Notificació</string>
     <string name="smartspace_preferences">Preferències</string>
