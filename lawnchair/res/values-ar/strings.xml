@@ -40,6 +40,7 @@
     <string name="icons">الأيقونات</string>
     <string name="icon_size">حجم الأيقونات</string>
     <string name="label_size">حجم التسمية</string>
+    <string name="show_home_labels">Show label</string>
     <string name="allow_empty_pages_label">السماح بالصفحات الفارغة</string>
     <string name="notification_dots">نقط الإشعارات</string>
     <string name="smartspace_preferences">التفضيلات</string>
