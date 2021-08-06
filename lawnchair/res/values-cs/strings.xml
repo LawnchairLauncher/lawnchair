@@ -40,6 +40,7 @@
     <string name="icons">Ikony</string>
     <string name="icon_size">Velikost ikon</string>
     <string name="label_size">Velikost popisku</string>
+    <string name="show_home_labels">Show label</string>
     <string name="allow_empty_pages_label">Povolit prázdné stránky</string>
     <string name="notification_dots">Tečky oznámení</string>
     <string name="smartspace_preferences">Předvolby</string>
