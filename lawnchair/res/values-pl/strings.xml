@@ -40,6 +40,7 @@
     <string name="icons">Ikony</string>
     <string name="icon_size">Rozmiar ikon</string>
     <string name="label_size">Rozmiar etykiet</string>
+    <string name="show_home_labels">Show label</string>
     <string name="allow_empty_pages_label">Zezwól na puste strony</string>
     <string name="notification_dots">Plakietki powiadomień</string>
     <string name="smartspace_preferences">Ustawienia</string>
