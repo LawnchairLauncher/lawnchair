@@ -40,7 +40,7 @@
     <string name="icons">Ikoner</string>
     <string name="icon_size">Ikon størrelse</string>
     <string name="label_size">Etiket størrelse</string>
-    <string name="show_home_labels">Show label</string>
+    <string name="show_home_labels">Vis etiket</string>
     <string name="allow_empty_pages_label">Tillad Tomme Sider</string>
     <string name="notification_dots">Notifikation Prikker</string>
     <string name="smartspace_preferences">Præferencer</string>
@@ -104,5 +104,5 @@
     <string name="quickstep_description">Ryd alle knap, Hjørne radius</string>
     <string name="wallpaper_scrolling_label">Rul Baggrund</string>
     <string name="show_sys_ui_scrim">Vis skygge ved top</string>
-    <string name="show_status_bar">Show Status Bar</string>
+    <string name="show_status_bar">Vis Statuslinje</string>
 </resources>
