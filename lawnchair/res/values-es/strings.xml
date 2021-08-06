@@ -25,13 +25,13 @@
     <string name="home_screen_rotaton_description">Cuando se rota el dispositivo.</string>
     <string name="auto_add_shortcuts_label">Añadir Nuevas Aplicaciones a la Pantalla de Inicio</string>
     <string name="dock_label">Dock</string>
-    <string name="dock_description">Barra de búsqueda, Número de íconos</string>
+    <string name="dock_description">Barra de búsqueda, Número de iconos</string>
     <string name="app_drawer_label">Cajón de Aplicaciones</string>
     <string name="app_drawer_description">Aplicaciones ocultas, Número de columnas, Iconos</string>
     <string name="folders_label">Carpetas</string>
     <string name="folders_description">Número de Filas y Columnas</string>
     <string name="app_drawer_columns">Columnas de Cajón de Aplicaciones</string>
-    <string name="dock_icons">Íconos del Dock</string>
+    <string name="dock_icons">Iconos del Dock</string>
     <string name="max_folder_columns">Máx. Columnas de Carpetas</string>
     <string name="max_folder_rows">Máx. Filas de Carpetas</string>
     <string name="home_screen_columns">Columnas de Pantalla de Inicio</string>
@@ -78,7 +78,7 @@
     <string name="dt2s_admin_hint">Para usar el doble toque para dormir, establece a Lawnchair como una app de administrador de dispositivos. Toca en \"Abrir configuración\", luego toca \"Activar esta app de administrador de dispositivos.\"</string>
     <string name="dt2s_admin_warning">Se desactivará el doble toque para dormir.</string>
     <string name="dt2s_a11y_hint_title">Activar el Servicio de Accesibilidad</string>
-    <string name="dt2s_a11y_hint">Para usar el doble toque para dormir, activa el servicio de accesibilidad de Lawnchair. Toca en \"Abrir configuración\", luego selecciona \"Lawnchair\" y activa \"Usar Lawnchair.\"</string>
+    <string name="dt2s_a11y_hint">Para usar el doble toque para dormir, activa el servicio de accesibilidad de Lawnchair. Toca en \"Abrir Configuración\", luego selecciona \"Lawnchair\" y activa \"Usar Lawnchair\".</string>
     <string name="dt2s_warning_open_settings">Abrir Configuración</string>
     <string name="minus_one_enable">Mostrar Feed</string>
     <string name="minus_one_unavailable">Feed no instalado.</string>
@@ -91,8 +91,8 @@
     <string name="theme_follow_wallpaper">Coincidir Fondo</string>
     <string name="quickstep_label">Recientes</string>
     <string name="clear_all_as_action_label">Clear All Button at Bottom</string>
-    <string name="window_corner_radius_label">Corner Radius</string>
-    <string name="override_window_corner_radius_label">Custom Corner Radius</string>
+    <string name="window_corner_radius_label">Radio de esquina</string>
+    <string name="override_window_corner_radius_label">Radio de esquina personalizado</string>
     <string name="system_icons">Iconos del sistema</string>
     <string name="accent_color">Color de acento</string>
     <string name="done">Hecho</string>
@@ -101,7 +101,7 @@
     <string name="custom">Personalizado</string>
     <string name="custom_color">Color personalizado</string>
     <string name="quickstep_description">Clear All Button, Corner Radius</string>
-    <string name="wallpaper_scrolling_label">Scroll Wallpaper</string>
-    <string name="show_sys_ui_scrim">Show Top Shadow</string>
-    <string name="show_status_bar">Show Status Bar</string>
+    <string name="wallpaper_scrolling_label">Desplazar fondo</string>
+    <string name="show_sys_ui_scrim">Mostrar sombra superior</string>
+    <string name="show_status_bar">Mostrar Barra de Estado</string>
 </resources>
