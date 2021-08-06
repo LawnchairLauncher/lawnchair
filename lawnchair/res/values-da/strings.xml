@@ -103,4 +103,5 @@
     <string name="quickstep_description">Ryd alle knap, Hjørne radius</string>
     <string name="wallpaper_scrolling_label">Rul Baggrund</string>
     <string name="show_sys_ui_scrim">Vis skygge ved top</string>
+    <string name="pref_hide_statusbar">Hide Status Bar</string>
 </resources>
