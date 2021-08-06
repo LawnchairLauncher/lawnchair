@@ -68,7 +68,7 @@ class LawnchairLauncher : QuickstepLauncher(), LifecycleOwner,
                 }
             }
         }
-        if (prefs.hideStatusBar.get()) {
+        if (!prefs.showStatusBar.get()) {
             val insetsController = WindowInsetsControllerCompat(launcher.window, rootView)
             insetsController.hide(WindowInsetsCompat.Type.statusBars())
             launcher.stateManager.addStateListener(object : StateManager.StateListener<LauncherState> {

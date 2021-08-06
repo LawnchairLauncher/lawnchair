@@ -90,7 +90,7 @@ class PreferenceManager private constructor(private val context: Context) : Base
     val accentColor = IntPref("pref_accentColor", LAWNCHAIR_BLUE.toInt(), recreate)
     val wallpaperScrolling = BoolPref("pref_wallpaperScrolling", true)
     val showSysUiScrim = BoolPref("pref_showSysUiScrim", true)
-    val hideStatusBar = BoolPref("pref_hideStatusBar", false, recreate)
+    val showStatusBar = BoolPref("pref_showStatusBar", true, recreate)
 
     init {
         sp.registerOnSharedPreferenceChangeListener(this)
