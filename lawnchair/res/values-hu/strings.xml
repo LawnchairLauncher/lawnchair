@@ -40,6 +40,7 @@
     <string name="icons">Ikonok</string>
     <string name="icon_size">Ikonméret</string>
     <string name="label_size">Címkeméret</string>
+    <string name="show_home_labels">Show label</string>
     <string name="allow_empty_pages_label">Üres oldalak engedélyezése</string>
     <string name="notification_dots">Értesítési pöttyök</string>
     <string name="smartspace_preferences">Beállítások</string>
