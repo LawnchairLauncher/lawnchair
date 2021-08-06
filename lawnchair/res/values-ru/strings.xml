@@ -105,5 +105,5 @@
     <string name="quickstep_description">Радиус углов кнопки \"Очистить всё\"</string>
     <string name="wallpaper_scrolling_label">Прокрутка обоев</string>
     <string name="show_sys_ui_scrim">Показывать верхнюю тень</string>
-    <string name="pref_hide_statusbar">Hide Status Bar</string>
+    <string name="show_status_bar">Show Status Bar</string>
 </resources>
