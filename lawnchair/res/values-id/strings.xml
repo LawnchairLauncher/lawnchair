@@ -101,6 +101,6 @@
     <string name="custom_color">Warna Kustom</string>
     <string name="quickstep_description">Tombol Hapus Semua, Radius Sudut</string>
     <string name="wallpaper_scrolling_label">Scroll Wallpaper</string>
-    <string name="show_sys_ui_scrim">Show Top Shadow</string>
-    <string name="show_status_bar">Show Status Bar</string>
+    <string name="show_sys_ui_scrim">Tampilkan bayangan atas</string>
+    <string name="show_status_bar">Tampilkan bar status</string>
 </resources>
