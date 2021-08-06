@@ -50,7 +50,7 @@ class LawnchairLauncher : QuickstepLauncher(), LifecycleOwner,
     }
     val gestureController by lazy { GestureController(this) }
     private val defaultOverlay by lazy { OverlayCallbackImpl(this) }
-    private val prefs = PreferenceManager.getInstance(this)
+    private val prefs by lazy { PreferenceManager.getInstance(this) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         savedStateRegistryController.performRestore(savedInstanceState)
