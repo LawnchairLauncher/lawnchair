@@ -40,6 +40,7 @@
     <string name="icons">아이콘</string>
     <string name="icon_size">아이콘 크기</string>
     <string name="label_size">라벨 사이즈</string>
+    <string name="show_home_labels">Show label</string>
     <string name="allow_empty_pages_label">빈 페이지 허용</string>
     <string name="notification_dots">알림 딱지</string>
     <string name="smartspace_preferences">설정</string>
