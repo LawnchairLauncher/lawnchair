@@ -40,6 +40,7 @@
     <string name="icons">Simgeler</string>
     <string name="icon_size">Simge Büyüklüğü</string>
     <string name="label_size">Etiket Büyüklüğü</string>
+    <string name="show_home_labels">Show label</string>
     <string name="allow_empty_pages_label">Boş Sayfalara İzin Ver</string>
     <string name="notification_dots">Bildirim Noktaları</string>
     <string name="smartspace_preferences">Tercihler</string>
