@@ -56,7 +56,7 @@
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"Swipe vanaf de onderrand van het scherm omhoog."</string>
     <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"Pauzeer niet voordat je loslaat."</string>
     <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"Swipe recht omhoog."</string>
-    <string name="home_gesture_feedback_complete_with_follow_up" msgid="1427872029729605034">"Je weet nu hoe je teruggaat naar het startscherm. Ontdek als volgende hoe je kunt teruggaan."</string>
+    <string name="home_gesture_feedback_complete_with_follow_up" msgid="1427872029729605034">"Je weet nu hoe je weer naar het startscherm gaat. Ontdek als volgende hoe je weer teruggaat."</string>
     <string name="home_gesture_feedback_complete_without_follow_up" msgid="8049099486868933882">"Je weet nu hoe je teruggaat naar het startscherm."</string>
     <string name="home_gesture_intro_title" msgid="836590312858441830">"Swipe om naar het startscherm te gaan"</string>
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"Swipe omhoog vanaf de onderkant van het scherm. Met dit gebaar ga je altijd naar het startscherm."</string>
@@ -66,11 +66,11 @@
     <string name="overview_gesture_feedback_complete_with_follow_up" msgid="3544611727467765026">"Je weet nu hoe je gebaren gebruikt. Als je gebaren wilt uitzetten, kun je dat via Instellingen doen."</string>
     <string name="overview_gesture_feedback_complete_without_follow_up" msgid="3199486203448379152">"Je weet nu hoe je het gebaar Schakelen tussen apps maakt."</string>
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"Swipe om tussen apps te schakelen"</string>
-    <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"Swipe omhoog vanaf de onderkant van het scherm, houd vast en laat los om tussen apps te wisselen."</string>
+    <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"Swipe omhoog vanaf de onderkant van het scherm, houd vast en laat los om tussen apps te schakelen."</string>
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"Klaar"</string>
     <string name="gesture_tutorial_action_button_label" msgid="6249846312991332122">"Klaar"</string>
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"Instellingen"</string>
-    <string name="gesture_tutorial_try_again" msgid="65962545858556697">"Opnieuw"</string>
+    <string name="gesture_tutorial_try_again" msgid="65962545858556697">"Probeer opnieuw"</string>
     <string name="gesture_tutorial_nice" msgid="2936275692616928280">"Dat gaat lekker."</string>
     <string name="gesture_tutorial_step" msgid="1279786122817620968">"Tutorial <xliff:g id="CURRENT">%1$d</xliff:g>/<xliff:g id="TOTAL">%2$d</xliff:g>"</string>
     <string name="allset_title" msgid="5021126669778966707">"Klaar"</string>
