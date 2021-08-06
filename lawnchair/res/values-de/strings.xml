@@ -40,6 +40,7 @@
     <string name="icons">Symbole</string>
     <string name="icon_size">Symbolgröße</string>
     <string name="label_size">Labelgröße</string>
+    <string name="show_home_labels">Beschriftung anzeigen</string>
     <string name="allow_empty_pages_label">Leere Seiten erlauben</string>
     <string name="notification_dots">Benachrichtigungspunkte</string>
     <string name="smartspace_preferences">Voreinstellungen</string>
@@ -103,5 +104,5 @@
     <string name="quickstep_description">Alles entfernen Taste, Eckradius</string>
     <string name="wallpaper_scrolling_label">Hintergrund scrollen</string>
     <string name="show_sys_ui_scrim">Zeige oberen Schatten</string>
-    <string name="show_status_bar">Show Status Bar</string>
+    <string name="show_status_bar">Suchleiste anzeigen</string>
 </resources>
