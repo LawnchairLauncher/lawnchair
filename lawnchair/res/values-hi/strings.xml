@@ -40,6 +40,7 @@
     <string name="icons">चिह्न</string>
     <string name="icon_size">चिह्न आकार</string>
     <string name="label_size">नाम आकार</string>
+    <string name="show_home_labels">Show label</string>
     <string name="allow_empty_pages_label">खाली पन्ने की अनुमति दें</string>
     <string name="notification_dots">अधिसूचना बिंदु</string>
     <string name="smartspace_preferences">पसंद</string>
