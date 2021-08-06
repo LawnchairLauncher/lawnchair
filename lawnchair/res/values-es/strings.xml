@@ -88,9 +88,9 @@
     <string name="theme_light">Claro</string>
     <string name="theme_dark">Oscuro</string>
     <string name="theme_system_default">Predeterminado del Sistema</string>
-    <string name="theme_follow_wallpaper">Coincidir Fondo</string>
+    <string name="theme_follow_wallpaper">Coincidir con fondo</string>
     <string name="quickstep_label">Recientes</string>
-    <string name="clear_all_as_action_label">Clear All Button at Bottom</string>
+    <string name="clear_all_as_action_label">Botón \"Borrar todo\" al fondo</string>
     <string name="window_corner_radius_label">Radio de esquina</string>
     <string name="override_window_corner_radius_label">Radio de esquina personalizado</string>
     <string name="system_icons">Iconos del sistema</string>
@@ -100,8 +100,8 @@
     <string name="system">Sistema</string>
     <string name="custom">Personalizado</string>
     <string name="custom_color">Color personalizado</string>
-    <string name="quickstep_description">Clear All Button, Corner Radius</string>
+    <string name="quickstep_description">Botón \"Borrar todo\", Radio de esquina</string>
     <string name="wallpaper_scrolling_label">Desplazar fondo</string>
     <string name="show_sys_ui_scrim">Mostrar sombra superior</string>
-    <string name="show_status_bar">Mostrar Barra de Estado</string>
+    <string name="show_status_bar">Mostrar Barra de estado</string>
 </resources>
