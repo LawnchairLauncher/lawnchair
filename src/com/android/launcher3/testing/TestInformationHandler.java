@@ -130,11 +130,16 @@ public class TestInformationHandler implements ResourceBasedOverride {
 
             case TestProtocol.REQUEST_IS_TWO_PANELS:
                 response.putBoolean(TestProtocol.TEST_INFO_RESPONSE_FIELD,
-                    mDeviceProfile.isTwoPanels);
+                        mDeviceProfile.isTwoPanels);
                 return response;
 
             case TestProtocol.REQUEST_SET_FORCE_PAUSE_TIMEOUT:
                 TestProtocol.sForcePauseTimeout = Long.parseLong(arg);
+                return response;
+
+            case TestProtocol.REQUEST_GET_HAD_NONTEST_EVENTS:
+                response.putBoolean(
+                        TestProtocol.TEST_INFO_RESPONSE_FIELD, TestLogging.sHadEventsNotFromTest);
                 return response;
 
             default:
