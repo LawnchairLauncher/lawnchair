@@ -40,6 +40,7 @@
     <string name="icons">Значки</string>
     <string name="icon_size">Розмір значків</string>
     <string name="label_size">Розмір мітки</string>
+    <string name="show_home_labels">Show label</string>
     <string name="allow_empty_pages_label">Дозволити порожні сторінки</string>
     <string name="notification_dots">Значки сповіщень</string>
     <string name="smartspace_preferences">Налаштування</string>
