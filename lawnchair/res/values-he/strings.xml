@@ -40,6 +40,7 @@
     <string name="icons">סמלים</string>
     <string name="icon_size">גודל סמל</string>
     <string name="label_size">גודל טקסט</string>
+    <string name="show_home_labels">Show label</string>
     <string name="allow_empty_pages_label">התר עמודים ריקים</string>
     <string name="notification_dots">Notification Dots</string>
     <string name="smartspace_preferences">העדפות</string>
