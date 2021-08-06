@@ -40,6 +40,7 @@
     <string name="icons">Biểu tượng</string>
     <string name="icon_size">Kích thước biểu tượng</string>
     <string name="label_size">Kích thước tên ứng dụng</string>
+    <string name="show_home_labels">Show label</string>
     <string name="allow_empty_pages_label">Cho phép trang trống</string>
     <string name="notification_dots">Dấu chấm thông báo</string>
     <string name="smartspace_preferences">Tùy chỉnh</string>
