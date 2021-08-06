@@ -162,7 +162,9 @@ public class TaskThumbnailView extends View implements PluginListener<OverviewSc
             mBitmapShader = new BitmapShader(bm, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP);
             mPaint.setShader(mBitmapShader);
             updateThumbnailMatrix();
-            refreshOverlay();
+            if (mOverlayEnabled) {
+                getTaskOverlay().refreshActionVisibility(mThumbnailData);
+            }
         } else {
             mBitmapShader = null;
             mThumbnailData = null;
