@@ -40,6 +40,7 @@
     <string name="icons">Icone</string>
     <string name="icon_size">Dimensioni icona</string>
     <string name="label_size">Dimensioni etichetta</string>
+    <string name="show_home_labels">Show label</string>
     <string name="allow_empty_pages_label">Consenti pagine vuote</string>
     <string name="notification_dots">Badge di notifica</string>
     <string name="smartspace_preferences">Preferenze</string>
