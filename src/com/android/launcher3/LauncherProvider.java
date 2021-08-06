@@ -151,15 +151,7 @@ public class LauncherProvider extends ContentProvider {
             mOpenHelper = DatabaseHelper.createDatabaseHelper(
                     getContext(), false /* forMigration */);
 
-            if (RestoreDbTask.isPending(getContext())) {
-                if (!RestoreDbTask.performRestore(getContext(), mOpenHelper,
-                        new BackupManager(getContext()))) {
-                    mOpenHelper.createEmptyDB(mOpenHelper.getWritableDatabase());
-                }
-                // Set is pending to false irrespective of the result, so that it doesn't get
-                // executed again.
-                RestoreDbTask.setPending(getContext(), false);
-            }
+            RestoreDbTask.restoreIfNeeded(getContext(), mOpenHelper);
         }
     }
 

@@ -144,7 +144,7 @@ public class TouchInteractionService extends Service implements PluginListener<O
     private static final int SYSTEM_ACTION_ID_ALL_APPS = 14;
 
     public static final boolean ENABLE_PER_WINDOW_INPUT_ROTATION =
-            SystemProperties.getBoolean("persist.debug.per_window_input_rotation", true);
+            SystemProperties.getBoolean("persist.debug.per_window_input_rotation", false);
 
     private int mBackGestureNotificationCounter = -1;
     @Nullable

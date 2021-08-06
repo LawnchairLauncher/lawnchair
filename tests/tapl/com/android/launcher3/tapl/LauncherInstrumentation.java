@@ -96,6 +96,7 @@ public final class LauncherInstrumentation {
     private static final String TAG = "Tapl";
     private static final int ZERO_BUTTON_STEPS_FROM_BACKGROUND_TO_HOME = 20;
     private static final int GESTURE_STEP_MS = 16;
+    private static final long FORCE_PAUSE_TIMEOUT_MS = 700;
 
     static final Pattern EVENT_TOUCH_DOWN = getTouchEventPattern("ACTION_DOWN");
     static final Pattern EVENT_TOUCH_UP = getTouchEventPattern("ACTION_UP");
@@ -105,6 +106,7 @@ public final class LauncherInstrumentation {
 
     static final Pattern EVENT_TOUCH_DOWN_TIS = getTouchEventPatternTIS("ACTION_DOWN");
     static final Pattern EVENT_TOUCH_UP_TIS = getTouchEventPatternTIS("ACTION_UP");
+
     private final String mLauncherPackage;
     private Boolean mIsLauncher3;
     private long mTestStartTime = -1;
@@ -122,8 +124,6 @@ public final class LauncherInstrumentation {
     public enum GestureScope {
         OUTSIDE_WITHOUT_PILFER, OUTSIDE_WITH_PILFER, INSIDE, INSIDE_TO_OUTSIDE
     }
-
-    ;
 
     // Base class for launcher containers.
     static abstract class VisibleContainer {
@@ -272,9 +272,13 @@ public final class LauncherInstrumentation {
     }
 
     Bundle getTestInfo(String request) {
+        return getTestInfo(request, /*arg=*/ null);
+    }
+
+    Bundle getTestInfo(String request, String arg) {
         try (ContentProviderClient client = getContext().getContentResolver()
                 .acquireContentProviderClient(mTestProviderUri)) {
-            return client.call(request, null, null);
+            return client.call(request, arg, null);
         } catch (DeadObjectException e) {
             fail("Launcher crashed");
             return null;
@@ -296,6 +300,10 @@ public final class LauncherInstrumentation {
     public boolean isTwoPanels() {
         return getTestInfo(TestProtocol.REQUEST_IS_TWO_PANELS)
             .getBoolean(TestProtocol.TEST_INFO_RESPONSE_FIELD);
+    }
+
+    private void setForcePauseTimeout(long timeout) {
+        getTestInfo(TestProtocol.REQUEST_SET_FORCE_PAUSE_TIMEOUT, Long.toString(timeout));
     }
 
     void setActiveContainer(VisibleContainer container) {
@@ -730,6 +738,7 @@ public final class LauncherInstrumentation {
             final String action;
             if (getNavigationModel() == NavigationModel.ZERO_BUTTON) {
                 checkForAnomaly();
+                setForcePauseTimeout(FORCE_PAUSE_TIMEOUT_MS);
 
                 final Point displaySize = getRealDisplaySize();
                 boolean gestureStartFromLauncher = isTablet()

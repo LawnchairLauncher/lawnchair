@@ -1353,9 +1353,10 @@ public class TaskView extends FrameLayout implements Reusable {
         float boxTranslationY;
         int expectedWidth;
         int expectedHeight;
-        if (mActivity.getDeviceProfile().overviewShowAsGrid) {
-            final int thumbnailPadding =
-                    mActivity.getDeviceProfile().overviewTaskThumbnailTopMarginPx;
+        int iconDrawableSize;
+        DeviceProfile deviceProfile = mActivity.getDeviceProfile();
+        if (deviceProfile.overviewShowAsGrid) {
+            final int thumbnailPadding = deviceProfile.overviewTaskThumbnailTopMarginPx;
             final Rect lastComputedTaskSize = getRecentsView().getLastComputedTaskSize();
             final int taskWidth = lastComputedTaskSize.width();
             final int taskHeight = lastComputedTaskSize.height();
@@ -1368,11 +1369,13 @@ public class TaskView extends FrameLayout implements Reusable {
                 // that is associated with the original orientation of the focused task.
                 boxWidth = taskWidth;
                 boxHeight = taskHeight;
+                iconDrawableSize = deviceProfile.overviewTaskIconDrawableSizePx;
             } else {
                 // Otherwise task is in grid, and should use lastComputedGridTaskSize.
                 Rect lastComputedGridTaskSize = getRecentsView().getLastComputedGridTaskSize();
                 boxWidth = lastComputedGridTaskSize.width();
                 boxHeight = lastComputedGridTaskSize.height();
+                iconDrawableSize = deviceProfile.overviewTaskIconDrawableSizeGridPx;
             }
 
             // Bound width/height to the box size.
@@ -1389,6 +1392,7 @@ public class TaskView extends FrameLayout implements Reusable {
             boxTranslationY = 0f;
             expectedWidth = ViewGroup.LayoutParams.MATCH_PARENT;
             expectedHeight = ViewGroup.LayoutParams.MATCH_PARENT;
+            iconDrawableSize = deviceProfile.overviewTaskIconDrawableSizePx;
         }
 
         setNonGridScale(nonGridScale);
@@ -1398,6 +1402,7 @@ public class TaskView extends FrameLayout implements Reusable {
             params.height = expectedHeight;
             setLayoutParams(params);
         }
+        mIconView.setDrawableSize(iconDrawableSize, iconDrawableSize);
     }
 
     private float getGridTrans(float endTranslation) {
