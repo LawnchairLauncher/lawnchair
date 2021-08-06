@@ -101,6 +101,6 @@
     <string name="custom">Gepersonaliseerd</string>
     <string name="custom_color">Gepersonaliseerde kleur</string>
     <string name="quickstep_description">Wis alles knop, hoek radius</string>
-    <string name="wallpaper_scrolling_label">Scroll Wallpaper</string>
-    <string name="show_sys_ui_scrim">Show Top Shadow</string>
+    <string name="wallpaper_scrolling_label">Scrollende achtergrond</string>
+    <string name="show_sys_ui_scrim">Toon bovenste schaduw</string>
 </resources>
