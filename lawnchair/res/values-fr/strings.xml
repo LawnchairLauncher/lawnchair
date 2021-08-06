@@ -40,6 +40,7 @@
     <string name="icons">Icônes</string>
     <string name="icon_size">Taille des icônes</string>
     <string name="label_size">Taille du libellé</string>
+    <string name="show_home_labels">Show label</string>
     <string name="allow_empty_pages_label">Autoriser les pages vides</string>
     <string name="notification_dots">Pastilles de notification</string>
     <string name="smartspace_preferences">Préférences</string>
