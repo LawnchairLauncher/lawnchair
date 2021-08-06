@@ -40,7 +40,7 @@
     <string name="icons">Iconen</string>
     <string name="icon_size">Icoon grootte</string>
     <string name="label_size">Label grootte</string>
-    <string name="show_home_labels">Show label</string>
+    <string name="show_home_labels">Label tonen</string>
     <string name="allow_empty_pages_label">Lege pagina\'s toestaan</string>
     <string name="notification_dots">Meldingsstipje</string>
     <string name="smartspace_preferences">Voorkeuren</string>
