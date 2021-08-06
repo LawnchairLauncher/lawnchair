@@ -107,5 +107,5 @@
     <string name="quickstep_description">نصف قطر زاوية زر \"مسح الكل\"</string>
     <string name="wallpaper_scrolling_label">تحريك الخلفية</string>
     <string name="show_sys_ui_scrim">إظهار ظل الأعلى</string>
-    <string name="show_status_bar">Show Status Bar</string>
+    <string name="show_status_bar">إظهار شريط الحالة</string>
 </resources>
