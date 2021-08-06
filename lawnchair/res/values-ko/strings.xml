@@ -102,5 +102,5 @@
     <string name="quickstep_description">모두 닫기 버튼, 가장자리 둥글기</string>
     <string name="wallpaper_scrolling_label">배경화면 움직이기</string>
     <string name="show_sys_ui_scrim">상단 그림자 보이기</string>
-    <string name="pref_hide_statusbar">상태표시줄 숨기기</string>
+    <string name="show_status_bar">Show Status Bar</string>
 </resources>
