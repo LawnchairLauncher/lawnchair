@@ -104,4 +104,5 @@
     <string name="quickstep_description">Clear All Button, Corner Radius</string>
     <string name="wallpaper_scrolling_label">Scroll Wallpaper</string>
     <string name="show_sys_ui_scrim">Show Top Shadow</string>
+    <string name="pref_hide_statusbar">Hide Status Bar</string>
 </resources>
