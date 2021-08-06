@@ -38,7 +38,7 @@ import com.android.launcher3.uioverrides.QuickstepLauncher
 import com.android.systemui.plugins.shared.LauncherOverlayManager
 import kotlinx.coroutines.launch
 
-open class LawnchairLauncher : QuickstepLauncher(), LifecycleOwner,
+class LawnchairLauncher : QuickstepLauncher(), LifecycleOwner,
     SavedStateRegistryOwner, OnBackPressedDispatcherOwner {
 
     private val lifecycleRegistry = LifecycleRegistry(this)
@@ -48,26 +48,15 @@ open class LawnchairLauncher : QuickstepLauncher(), LifecycleOwner,
     }
     val gestureController by lazy { GestureController(this) }
     private val defaultOverlay by lazy { OverlayCallbackImpl(this) }
-
-    private fun subscribePreferences() {
-        val preferenceManager = PreferenceManager.getInstance(this)
-        preferenceManager.launcherTheme.subscribeChanges(this, ::updateTheme)
-    }
-
-    override fun setupViews() {
-        super.setupViews()
-        val launcherRootView = findViewById<LauncherRootView>(R.id.launcher)
-        ViewTreeLifecycleOwner.set(launcherRootView, this)
-        ViewTreeSavedStateRegistryOwner.set(launcherRootView, this)
-    }
+    private val prefs = PreferenceManager.getInstance(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         savedStateRegistryController.performRestore(savedInstanceState)
         super.onCreate(savedInstanceState)
         lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_CREATE)
-        subscribePreferences()
 
-        val prefs = PreferenceManager.getInstance(this)
+        prefs.launcherTheme.subscribeChanges(this, ::updateTheme)
+
         if (prefs.autoLaunchRoot.get()) {
             lifecycleScope.launch {
                 try {
@@ -77,6 +66,13 @@ open class LawnchairLauncher : QuickstepLauncher(), LifecycleOwner,
                 }
             }
         }
+    }
+
+    override fun setupViews() {
+        super.setupViews()
+        val launcherRootView = findViewById<LauncherRootView>(R.id.launcher)
+        ViewTreeLifecycleOwner.set(launcherRootView, this)
+        ViewTreeSavedStateRegistryOwner.set(launcherRootView, this)
     }
 
     override fun onStart() {
