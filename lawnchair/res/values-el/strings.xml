@@ -40,6 +40,7 @@
     <string name="icons">Εικονίδια</string>
     <string name="icon_size">Μέγεθος Εικονιδίων</string>
     <string name="label_size">Μέγεθος Ετικέτας</string>
+    <string name="show_home_labels">Show label</string>
     <string name="allow_empty_pages_label">Επιτρέπονται Κενές Σελίδες</string>
     <string name="notification_dots">Κουκκίδες Ειδοποιήσεων</string>
     <string name="smartspace_preferences">Προτιμήσεις</string>
