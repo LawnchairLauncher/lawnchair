@@ -40,6 +40,7 @@
     <string name="icons">Pictograme</string>
     <string name="icon_size">Mărimea Iconițelor</string>
     <string name="label_size">Mărimea etichetei</string>
+    <string name="show_home_labels">Show label</string>
     <string name="allow_empty_pages_label">Permiteți pagini goale</string>
     <string name="notification_dots">Punctulețe pentru notificări</string>
     <string name="smartspace_preferences">Preferințe</string>
