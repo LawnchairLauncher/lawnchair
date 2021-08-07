@@ -57,7 +57,7 @@ fun Licenses() {
     LoadingScreen(optionalLicenses) { licenses ->
         PreferenceLayoutLazyColumn(label = stringResource(id = R.string.acknowledgements)) {
             preferenceGroupItems(licenses, isFirstChild = true) { index, license ->
-                LicenseItem(license = license, index = index, showDivider = index != licenses.lastIndex)
+                LicenseItem(license = license, index = index, showDivider = index != 0)
             }
         }
     }
