@@ -104,5 +104,5 @@
     <string name="quickstep_description">Wis alles knop, hoek radius</string>
     <string name="wallpaper_scrolling_label">Scrollende achtergrond</string>
     <string name="show_sys_ui_scrim">Toon bovenste schaduw</string>
-    <string name="show_status_bar">Show Status Bar</string>
+    <string name="show_status_bar">Statusbalk weergeven</string>
 </resources>
