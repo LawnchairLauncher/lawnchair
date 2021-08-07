@@ -90,8 +90,8 @@
 
     <!-- Default packages -->
     <string name="wallpaper_picker_package" translatable="false"></string>
-    <string name="calendar_component_name" translatable="false">com.google.android.calendar/com.android.calendar.AllInOneActivity</string>
-    <string name="clock_component_name" translatable="false">com.google.android.deskclock/com.android.deskclock.DeskClock</string>
+    <string name="calendar_component_name" translatable="false"></string>
+    <string name="clock_component_name" translatable="false"></string>
 
     <!-- Accessibility actions -->
     <item type="id" name="action_remove" />

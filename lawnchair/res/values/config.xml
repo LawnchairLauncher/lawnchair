@@ -16,6 +16,7 @@
   -->
 
 <resources>
-    <string name="settings_fragment_name" translatable="false">com.lawnchair.settings.ui.SettingsActivity$LauncherSettingsFragment</string>
     <string name="app_filter_class" translatable="false">app.lawnchair.DefaultAppFilter</string>
+    <string name="calendar_component_name" translatable="false">com.google.android.calendar/com.android.calendar.AllInOneActivity</string>
+    <string name="clock_component_name" translatable="false">com.google.android.deskclock/com.android.deskclock.DeskClock</string>
 </resources>
