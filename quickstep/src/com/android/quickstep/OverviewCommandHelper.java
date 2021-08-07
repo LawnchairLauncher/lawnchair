@@ -49,6 +49,7 @@ public class OverviewCommandHelper {
     public static final int TYPE_SHOW_NEXT_FOCUS = 2;
     public static final int TYPE_HIDE = 3;
     public static final int TYPE_TOGGLE = 4;
+    public static final int TYPE_HOME = 5;
 
     private static final String TRANSITION_NAME = "Transition:toOverview";
 
@@ -154,6 +155,10 @@ public class OverviewCommandHelper {
                 // already hidden
                 return true;
             }
+            if (cmd.type == TYPE_HOME) {
+                mService.startActivity(mOverviewComponentObserver.getHomeIntent());
+                return true;
+            }
         } else {
             switch (cmd.type) {
                 case TYPE_SHOW:
@@ -168,6 +173,9 @@ public class OverviewCommandHelper {
                 }
                 case TYPE_TOGGLE:
                     return launchTask(recents, getNextTask(recents), cmd);
+                case TYPE_HOME:
+                    recents.startHome();
+                    return true;
             }
         }
 
