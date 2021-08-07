@@ -48,6 +48,7 @@ fun AppDrawerPreferences() {
                 label = stringResource(id = R.string.hidden_apps_label),
                 subtitle = resources.getQuantityString(R.plurals.apps_count, hiddenAppsCount(), hiddenAppsCount()),
                 destination = subRoute(name = AppDrawerRoutes.HIDDEN_APPS),
+                showDivider = false
             )
             SwitchPreference(
                 adapter = prefs.useFuzzySearch.getAdapter(),
@@ -60,7 +61,6 @@ fun AppDrawerPreferences() {
                 step = 0.1f,
                 valueRange = 0.7F..1F,
                 showAsPercentage = true,
-                showDivider = false
             )
         }
         PreferenceGroup(heading = stringResource(id = R.string.grid)) {
@@ -78,7 +78,8 @@ fun AppDrawerPreferences() {
                 adapter = prefs.allAppsIconSizeFactor.getAdapter(),
                 step = 0.1f,
                 valueRange = 0.5F..1.5F,
-                showAsPercentage = true
+                showAsPercentage = true,
+                showDivider = false
             )
             SliderPreference(
                 label = stringResource(id = R.string.label_size),
@@ -86,7 +87,6 @@ fun AppDrawerPreferences() {
                 step = 0.1f,
                 valueRange = 0.5F..1.5F,
                 showAsPercentage = true,
-                showDivider = false
             )
         }
     }

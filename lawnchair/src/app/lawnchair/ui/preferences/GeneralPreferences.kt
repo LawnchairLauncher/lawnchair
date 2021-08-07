@@ -50,7 +50,8 @@ fun GeneralPreferences() {
             SwitchPreference(
                 adapter = prefs.allowRotation.getAdapter(),
                 label = stringResource(id = R.string.home_screen_rotation_label),
-                description = stringResource(id = R.string.home_screen_rotaton_description)
+                description = stringResource(id = R.string.home_screen_rotaton_description),
+                showDivider = false
             )
             NotificationDotsPreference()
             NavigationActionPreference(
@@ -61,7 +62,7 @@ fun GeneralPreferences() {
                     .find { it.packageName == preferenceManager().iconPackPackage.get() }?.name
             )
             ThemePreference()
-            AccentColorPreference(showDivider = false)
+            AccentColorPreference()
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val wrapAdaptiveIcons = prefs.wrapAdaptiveIcons.observeAsState()
@@ -74,7 +75,7 @@ fun GeneralPreferences() {
                     adapter = prefs.wrapAdaptiveIcons.getAdapter(),
                     label = stringResource(id = R.string.auto_adaptive_icons_label),
                     description = stringResource(id = R.string.auto_adaptive_icons_description),
-                    showDivider = wrapAdaptiveIcons.value
+                    showDivider = false
                 )
                 AnimatedVisibility(
                     visible = wrapAdaptiveIcons.value,
@@ -86,8 +87,7 @@ fun GeneralPreferences() {
                         adapter = prefs.coloredBackgroundLightness.getAdapter(),
                         valueRange = 0F..1F,
                         step = 0.1f,
-                        showAsPercentage = true,
-                        showDivider = false
+                        showAsPercentage = true
                     )
                 }
             }

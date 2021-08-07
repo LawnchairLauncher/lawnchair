@@ -210,7 +210,7 @@ fun About() {
                     description = stringResource(it.descriptionRes),
                     url = it.socialUrl,
                     photoUrl = it.photoUrl,
-                    showDivider = index != product.size - 1
+                    showDivider = index != 0
                 )
             }
         }
@@ -221,18 +221,18 @@ fun About() {
                     description = stringResource(it.descriptionRes),
                     url = it.socialUrl,
                     photoUrl = it.photoUrl,
-                    showDivider = index != supportAndPr.size - 1
+                    showDivider = index != 0
                 )
             }
         }
         PreferenceGroup {
             NavigationActionPreference(
                 label = stringResource(id = R.string.acknowledgements),
-                destination = subRoute(name = AboutRoutes.LICENSES)
+                destination = subRoute(name = AboutRoutes.LICENSES),
+                showDivider = false,
             )
             ClickablePreference(
                 label = stringResource(id = R.string.translate),
-                showDivider = false,
                 onClick = {
                     val webpage = Uri.parse("https://lawnchair.crowdin.com")
                     val intent = Intent(Intent.ACTION_VIEW, webpage)

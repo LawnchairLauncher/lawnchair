@@ -49,12 +49,11 @@ fun HomeScreenPreferences() {
                 label = stringResource(id = R.string.minus_one_enable),
                 description = if (feedAvailable) null else stringResource(id = R.string.minus_one_unavailable),
                 enabled = feedAvailable,
-                showDivider = true
+                showDivider = false
             )
             SwitchPreference(
                 prefs.addIconToHome.getAdapter(),
                 label = stringResource(id = R.string.auto_add_shortcuts_label),
-                showDivider = true
             )
             SwitchPreference(
                 prefs.smartSpaceEnable.getAdapter(),
@@ -75,7 +74,6 @@ fun HomeScreenPreferences() {
             SwitchPreference(
                 prefs.showSysUiScrim.getAdapter(),
                 label = stringResource(id = R.string.show_sys_ui_scrim),
-                showDivider = false
             )
         }
         PreferenceGroup(heading = stringResource(id = R.string.grid)) {
@@ -83,14 +81,14 @@ fun HomeScreenPreferences() {
                 label = stringResource(id = R.string.home_screen_columns),
                 adapter = prefs.workspaceColumns.getAdapter(),
                 step = 1,
-                valueRange = 3..10
+                valueRange = 3..10,
+                showDivider = false
             )
             SliderPreference(
                 label = stringResource(id = R.string.home_screen_rows),
                 adapter = prefs.workspaceRows.getAdapter(),
                 step = 1,
                 valueRange = 3..10,
-                showDivider = false
             )
         }
         PreferenceGroup(heading = stringResource(id = R.string.icons)) {
@@ -99,16 +97,16 @@ fun HomeScreenPreferences() {
                 adapter = prefs.iconSizeFactor.getAdapter(),
                 step = 0.1f,
                 valueRange = 0.5F..1.5F,
-                showAsPercentage = true
+                showAsPercentage = true,
+                showDivider = false
             )
-            val showHomeLabels by prefs.showHomeLabels.observeAsState()
+            val showHomeLabels = prefs.showHomeLabels.getAdapter()
             SwitchPreference(
-                prefs.showHomeLabels.getAdapter(),
+                showHomeLabels,
                 label = stringResource(id = R.string.show_home_labels),
-                showDivider = showHomeLabels
             )
             AnimatedVisibility(
-                visible = showHomeLabels,
+                visible = showHomeLabels.state.value,
                 enter = expandVertically() + fadeIn(),
                 exit = shrinkVertically() + fadeOut()
             ) {
@@ -118,7 +116,6 @@ fun HomeScreenPreferences() {
                     step = 0.1f,
                     valueRange = 0.5F..1.5F,
                     showAsPercentage = true,
-                    showDivider = false
                 )
             }
         }

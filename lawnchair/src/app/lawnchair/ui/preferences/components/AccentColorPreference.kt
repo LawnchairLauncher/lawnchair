@@ -33,7 +33,7 @@ val presets = presetColors.map {
 @Composable
 @ExperimentalMaterialApi
 @ExperimentalAnimationApi
-fun AccentColorPreference(showDivider: Boolean) {
+fun AccentColorPreference(showDivider: Boolean = true) {
     ColorPreference(
         previewColor = MaterialTheme.colors.primary.toArgb(),
         customColorAdapter = preferenceManager().accentColor.getAdapter(),

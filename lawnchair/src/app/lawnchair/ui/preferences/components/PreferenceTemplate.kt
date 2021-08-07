@@ -25,19 +25,16 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun PreferenceTemplate(height: Dp, showDivider: Boolean = true, content: @Composable () -> Unit) {
-    Column(
-        modifier = Modifier
-            .height(if (showDivider) height + 1.dp else height)
-    ) {
+    Column {
+        if (showDivider) {
+            Divider(modifier = Modifier.padding(horizontal = 16.dp))
+        }
         Box(
             modifier = Modifier
-                .weight(1f)
+                .height(height)
                 .fillMaxWidth()
         ) {
             content()
-        }
-        if (showDivider) {
-            Divider(modifier = Modifier.padding(horizontal = 16.dp))
         }
     }
 }
