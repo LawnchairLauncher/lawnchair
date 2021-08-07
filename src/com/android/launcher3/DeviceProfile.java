@@ -386,14 +386,15 @@ public class DeviceProfile {
 
                 // For devices with more extra space, we take a larger piece from each cell.
                 int piece = extraSpace < Utilities.dpToPx(TALL_DEVICE_MORE_EXTRA_SPACE_THRESHOLD_DP)
-                        ? 5 : 3;
+                        ? 7 : 5;
 
                 int extraSpace = ((getCellSize().y - iconSizePx - iconDrawablePaddingPx * 2)
                         * inv.numRows) / piece;
 
-                int halfExtraSpace = extraSpace / 2;
-                hotseatBarTopPaddingPx += halfExtraSpace;
-                hotseatBarSizeExtraSpacePx = halfExtraSpace;
+                workspaceTopPadding = extraSpace / 8;
+                int halfLeftOver = (extraSpace - workspaceTopPadding) / 2;
+                hotseatBarTopPaddingPx += halfLeftOver;
+                hotseatBarSizeExtraSpacePx = halfLeftOver;
             } else {
                 // ie. For a display with a large aspect ratio, we can keep the icons on the
                 // workspace in portrait mode closer together by adding more height to the hotseat.
