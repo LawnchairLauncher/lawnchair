@@ -65,7 +65,6 @@ fun NotificationDotsPreference() {
                         showDialog = true
                     } else {
                         val intent = Intent("android.settings.NOTIFICATION_SETTINGS")
-                            .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                             .putExtra(
                                 SettingsActivity.EXTRA_FRAGMENT_ARG_KEY,
                                 "notification_badging"
