@@ -24,6 +24,7 @@ import androidx.compose.material.RadioButtonDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.core.graphics.drawable.toBitmap
 import androidx.navigation.NavGraphBuilder
 import app.lawnchair.preferences.getAdapter
@@ -52,7 +53,8 @@ fun IconPackPreferences() {
                 label = iconPack.name,
                 icon = remember(iconPack) { iconPack.icon.toBitmap() },
                 onClick = { iconPackPackage = iconPack.packageName },
-                showDivider = index != iconPacks.lastIndex
+                showDivider = index != 0,
+                widgetSize = 24.dp,
             ) {
                 RadioButton(
                     selected = iconPackPackage == iconPack.packageName,

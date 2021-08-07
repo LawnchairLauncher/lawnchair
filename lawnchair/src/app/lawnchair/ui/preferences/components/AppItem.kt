@@ -20,13 +20,13 @@ import android.graphics.Bitmap
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.Divider
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import app.lawnchair.util.App
 import com.google.accompanist.placeholder.PlaceholderHighlight
@@ -38,14 +38,16 @@ fun AppItem(
     app: App,
     onClick: (app: App) -> Unit,
     showDivider: Boolean = true,
-    widget: (@Composable RowScope.() -> Unit)?,
+    widgetSize: Dp = 0.dp,
+    widget: (@Composable RowScope.() -> Unit)? = null,
 ) {
     AppItem(
         label = app.label,
         icon = app.icon,
         onClick = { onClick(app) },
         showDivider = showDivider,
-        widget = widget
+        widgetSize = widgetSize,
+        widget = widget,
     )
 }
 
@@ -55,13 +57,15 @@ fun AppItem(
     icon: Bitmap,
     onClick: () -> Unit,
     showDivider: Boolean = true,
+    widgetSize: Dp = 0.dp,
     widget: (@Composable RowScope.() -> Unit)? = null,
 ) {
     AppItemLayout(
         modifier = Modifier
             .clickable(onClick = onClick),
         showDivider = showDivider,
-        widget = widget
+        widgetSize = widgetSize,
+        widget = widget,
     ) {
         Image(
             bitmap = icon.asImageBitmap(),
@@ -80,11 +84,13 @@ fun AppItem(
 @Composable
 fun AppItemPlaceholder(
     showDivider: Boolean = true,
+    widgetSize: Dp = 0.dp,
     widget: (@Composable RowScope.() -> Unit)? = null,
 ) {
     AppItemLayout(
         showDivider = showDivider,
-        widget = widget
+        widgetSize = widgetSize,
+        widget = widget,
     ) {
         Spacer(
             modifier = Modifier
@@ -111,29 +117,27 @@ fun AppItemPlaceholder(
 private fun AppItemLayout(
     modifier: Modifier = Modifier,
     showDivider: Boolean = true,
+    widgetSize: Dp = 0.dp,
     widget: (@Composable RowScope.() -> Unit)? = null,
     content: @Composable RowScope.() -> Unit,
 ) {
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = modifier
-            .height(52.dp)
-            .padding(horizontal = 16.dp)
+    PreferenceTemplate(
+        height = 52.dp,
+        showDivider = showDivider,
+        dividerIndent = if (widgetSize != 0.dp) widgetSize + 16.dp else 0.dp
     ) {
-        widget?.let {
-            it()
-            Spacer(modifier = Modifier.width(16.dp))
-        }
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = modifier
+                .fillMaxWidth()
+                .fillMaxHeight()
+                .padding(horizontal = 16.dp)
         ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.weight(1F),
-                content = content
-            )
-            if (showDivider) Divider()
+            widget?.let {
+                it()
+                Spacer(modifier = Modifier.width(16.dp))
+            }
+            content()
         }
     }
 }

@@ -93,7 +93,8 @@ fun HiddenAppsPreferences() {
                         AppItem(
                             app = app,
                             onClick = toggleHiddenApp,
-                            showDivider = index != apps.lastIndex
+                            showDivider = index != 0,
+                            widgetSize = 24.dp,
                         ) {
                             Checkbox(
                                 checked = hiddenApps.contains(app.key.toString()),
@@ -110,7 +111,10 @@ fun HiddenAppsPreferences() {
                     enabled = false,
                 ) {
                     preferenceGroupItems(count = 20, isFirstChild = true) { index ->
-                        AppItemPlaceholder(showDivider = index != 19) {
+                        AppItemPlaceholder(
+                            showDivider = index != 0,
+                            widgetSize = 24.dp,
+                        ) {
                             Spacer(Modifier.width(24.dp))
                         }
                     }
