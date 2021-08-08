@@ -40,7 +40,7 @@
     <string name="icons">סמלים</string>
     <string name="icon_size">גודל סמל</string>
     <string name="label_size">גודל טקסט</string>
-    <string name="show_home_labels">Show Labels</string>
+    <string name="show_home_labels">הצגת תוויות</string>
     <string name="allow_empty_pages_label">התר עמודים ריקים</string>
     <string name="notification_dots">Notification Dots</string>
     <string name="smartspace_preferences">העדפות</string>
@@ -83,7 +83,7 @@
     <string name="dt2s_a11y_hint_title">Accessibility service required</string>
     <string name="dt2s_a11y_hint">To use Double Tap to Sleep, enable the accessibility service.</string>
     <string name="dt2s_warning_open_settings">פתיחת הגדרות</string>
-    <string name="minus_one_enable">Feed</string>
+    <string name="minus_one_enable">פיד</string>
     <string name="minus_one_unavailable">ההזנה אינה מותקנת.</string>
     <string name="fuzzy_search_title">Fuzzy Search</string>
     <string name="fuzzy_search_desc">Approximate matching for app searches.</string>
@@ -105,7 +105,7 @@
     <string name="custom_color">צבע בהתאמה אישית</string>
     <string name="quickstep_description">כפתור ניקוי הכל, רדיוס פינות</string>
     <string name="wallpaper_scrolling_label">גלילת טפט</string>
-    <string name="show_sys_ui_scrim">Top Shadow</string>
-    <string name="show_status_bar">Status Bar</string>
-    <string name="what_to_show">What to Show</string>
+    <string name="show_sys_ui_scrim">הצגת צל</string>
+    <string name="show_status_bar">סרגל מצב</string>
+    <string name="what_to_show">מה להציג</string>
 </resources>
