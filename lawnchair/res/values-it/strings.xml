@@ -40,7 +40,7 @@
     <string name="icons">Icone</string>
     <string name="icon_size">Dimensioni icona</string>
     <string name="label_size">Dimensioni etichetta</string>
-    <string name="show_home_labels">Show label</string>
+    <string name="show_home_labels">Show Labels</string>
     <string name="allow_empty_pages_label">Consenti pagine vuote</string>
     <string name="notification_dots">Badge di notifica</string>
     <string name="smartspace_preferences">Preferenze</string>
@@ -64,7 +64,7 @@
     <string name="auto_adaptive_icons_description">Per tutte le icone non adattive.</string>
     <string name="support_and_pr">Supporto &amp; PR</string>
     <string name="workspace_dt2s">Doppio tocco per bloccare lo schermo</string>
-    <string name="smart_space_enable">Mostra il widget “At a Glance”</string>
+    <string name="smart_space_enable">At a Glance Widget</string>
     <string name="design_and_development">Disegno &amp; Sviluppo</string>
     <string name="translate">Traduci</string>
     <string name="product">Prodotto</string>
@@ -81,7 +81,7 @@
     <string name="dt2s_a11y_hint_title">Servizio di accessibilità richiesto</string>
     <string name="dt2s_a11y_hint">Per utilizzare doppio tocco per bloccare lo schermo, abilita il servizio di accessibilità.</string>
     <string name="dt2s_warning_open_settings">Apri Impostazioni</string>
-    <string name="minus_one_enable">Mostra la feed</string>
+    <string name="minus_one_enable">Feed</string>
     <string name="minus_one_unavailable">Feed is not available</string>
     <string name="fuzzy_search_title">Ricerca approssimativa</string>
     <string name="fuzzy_search_desc">Mostra risultati simili a ciò che hai digitato nella ricerca delle app.</string>
@@ -103,6 +103,7 @@
     <string name="custom_color">Colore Personalizzato</string>
     <string name="quickstep_description">Pulsante \"Cancella tutto\", raggio dell\'angolo</string>
     <string name="wallpaper_scrolling_label">Scroll Wallpaper</string>
-    <string name="show_sys_ui_scrim">Mostra l\'ombra in alto</string>
-    <string name="show_status_bar">Show Status Bar</string>
+    <string name="show_sys_ui_scrim">Top Shadow</string>
+    <string name="show_status_bar">Status Bar</string>
+    <string name="what_to_show">What to Show</string>
 </resources>
