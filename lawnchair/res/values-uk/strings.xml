@@ -40,7 +40,7 @@
     <string name="icons">Значки</string>
     <string name="icon_size">Розмір значків</string>
     <string name="label_size">Розмір мітки</string>
-    <string name="show_home_labels">Show label</string>
+    <string name="show_home_labels">Show Labels</string>
     <string name="allow_empty_pages_label">Дозволити порожні сторінки</string>
     <string name="notification_dots">Значки сповіщень</string>
     <string name="smartspace_preferences">Налаштування</string>
@@ -64,7 +64,7 @@
     <string name="auto_adaptive_icons_description">Для всіх не адаптивних значків.</string>
     <string name="support_and_pr">Підтримка &amp; PR</string>
     <string name="workspace_dt2s">Подвійне натискання для сну</string>
-    <string name="smart_space_enable">Показувати віджет швидкого огляду</string>
+    <string name="smart_space_enable">At a Glance Widget</string>
     <string name="design_and_development">Проектування &amp; Розробка</string>
     <string name="translate">Переклад</string>
     <string name="product">Продукт</string>
@@ -83,7 +83,7 @@
     <string name="dt2s_a11y_hint_title">Увімкнути службу Спеціальних Можливостей</string>
     <string name="dt2s_a11y_hint">To use Double Tap to Sleep, enable the accessibility service.</string>
     <string name="dt2s_warning_open_settings">Відкрити Налаштування</string>
-    <string name="minus_one_enable">Показати Стрічку</string>
+    <string name="minus_one_enable">Feed</string>
     <string name="minus_one_unavailable">Feed is not available</string>
     <string name="fuzzy_search_title">Приблизний Пошук</string>
     <string name="fuzzy_search_desc">Приблизна відповідність для пошуку додатків.</string>
@@ -105,6 +105,7 @@
     <string name="custom_color">Custom Color</string>
     <string name="quickstep_description">Clear All Button, Corner Radius</string>
     <string name="wallpaper_scrolling_label">Scroll Wallpaper</string>
-    <string name="show_sys_ui_scrim">Show Top Shadow</string>
-    <string name="show_status_bar">Show Status Bar</string>
+    <string name="show_sys_ui_scrim">Top Shadow</string>
+    <string name="show_status_bar">Status Bar</string>
+    <string name="what_to_show">What to Show</string>
 </resources>
