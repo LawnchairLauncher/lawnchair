@@ -40,7 +40,7 @@
     <string name="icons">Ikoner</string>
     <string name="icon_size">Storlek på ikon</string>
     <string name="label_size">Etikettstorlek</string>
-    <string name="show_home_labels">Show label</string>
+    <string name="show_home_labels">Show Labels</string>
     <string name="allow_empty_pages_label">Tillåt tomma sidor</string>
     <string name="notification_dots">Notifikationspunkter</string>
     <string name="smartspace_preferences">Inställningar</string>
@@ -64,7 +64,7 @@
     <string name="auto_adaptive_icons_description">För alla icke-adaptiva ikoner.</string>
     <string name="support_and_pr">Stöd &amp; PR</string>
     <string name="workspace_dt2s">Dubbeltryck för att sova</string>
-    <string name="smart_space_enable">Visa \"Vid ett ögonkast\"-widget</string>
+    <string name="smart_space_enable">At a Glance Widget</string>
     <string name="design_and_development">Design &amp; Utveckling</string>
     <string name="translate">Översätt</string>
     <string name="product">Produkt</string>
@@ -81,7 +81,7 @@
     <string name="dt2s_a11y_hint_title">Accessibility service required</string>
     <string name="dt2s_a11y_hint">To use Double Tap to Sleep, enable the accessibility service.</string>
     <string name="dt2s_warning_open_settings">Öppna inställningar</string>
-    <string name="minus_one_enable">Visa Flöde</string>
+    <string name="minus_one_enable">Feed</string>
     <string name="minus_one_unavailable">Inget flöde är installerat.</string>
     <string name="fuzzy_search_title">Fuzzy Search</string>
     <string name="fuzzy_search_desc">Ungefärlig matchning för appsökningar.</string>
@@ -103,6 +103,7 @@
     <string name="custom_color">Custom Color</string>
     <string name="quickstep_description">Clear All Button, Corner Radius</string>
     <string name="wallpaper_scrolling_label">Scroll Wallpaper</string>
-    <string name="show_sys_ui_scrim">Show Top Shadow</string>
-    <string name="show_status_bar">Show Status Bar</string>
+    <string name="show_sys_ui_scrim">Top Shadow</string>
+    <string name="show_status_bar">Status Bar</string>
+    <string name="what_to_show">What to Show</string>
 </resources>
