@@ -40,7 +40,7 @@
     <string name="icons">আইকন-সমুহ</string>
     <string name="icon_size">আইকনের আকার</string>
     <string name="label_size">লেবেলের আয়তন</string>
-    <string name="show_home_labels">Show label</string>
+    <string name="show_home_labels">Show Labels</string>
     <string name="allow_empty_pages_label">খালি পৃষ্ঠা থাকার অনুমতি দিন</string>
     <string name="notification_dots">নোটিফিকেশন ডট</string>
     <string name="smartspace_preferences">পছন্দ-সমুহ</string>
@@ -64,7 +64,7 @@
     <string name="auto_adaptive_icons_description">সকল নন-অ্যাডাপ্টিভ আইকনের জন্য.</string>
     <string name="support_and_pr">সমর্থন &amp; পি আর</string>
     <string name="workspace_dt2s">লক করতে ডাবল-ট্যাপ করুন</string>
-    <string name="smart_space_enable">এট এ গ্লান্স উইজেট দেখান</string>
+    <string name="smart_space_enable">At a Glance Widget</string>
     <string name="design_and_development">ডিজাইন &amp; ডেভেলপমেন্ট</string>
     <string name="translate">অনুবাদ করুন</string>
     <string name="product">পণ্য</string>
@@ -81,7 +81,7 @@
     <string name="dt2s_a11y_hint_title">অ্যাক্সেসিবিলিটি সার্ভিস চালু করুন</string>
     <string name="dt2s_a11y_hint">স্লিপের জন্য ডাবল-ট্যাপ ব্যাবহার করার জন্য, লনচেয়ারের অ্যাক্সেসিবিলিটি সার্ভিস চালু করুন। \"Open Settings\"-এ ট্যাপ করে, \"Lawnchair\" সিলেক্ট করুন, তারপর \"Use Lawnchair”-এ ট্যাপ করুন।</string>
     <string name="dt2s_warning_open_settings">সেটিংস এ যান</string>
-    <string name="minus_one_enable">ফিড দেখান</string>
+    <string name="minus_one_enable">Feed</string>
     <string name="minus_one_unavailable">ফিড ইনস্টল করা হয়নি.</string>
     <string name="fuzzy_search_title">ফাজি সার্চ</string>
     <string name="fuzzy_search_desc">অ্যাপ্লিকেশন সার্চের জন্য আনুমানিক মিল.</string>
@@ -103,6 +103,7 @@
     <string name="custom_color">পছন্দসই রং</string>
     <string name="quickstep_description">Clear All Button, Corner Radius</string>
     <string name="wallpaper_scrolling_label">Scroll Wallpaper</string>
-    <string name="show_sys_ui_scrim">Show Top Shadow</string>
-    <string name="show_status_bar">Show Status Bar</string>
+    <string name="show_sys_ui_scrim">Top Shadow</string>
+    <string name="show_status_bar">Status Bar</string>
+    <string name="what_to_show">What to Show</string>
 </resources>
