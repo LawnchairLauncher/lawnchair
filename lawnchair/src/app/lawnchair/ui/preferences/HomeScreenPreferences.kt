@@ -43,6 +43,20 @@ fun HomeScreenPreferences() {
     val prefs = preferenceManager()
     PreferenceLayout(label = stringResource(id = R.string.home_screen_label)) {
         PreferenceGroup(heading = "General", isFirstChild = true) {
+            SwitchPreference(
+                prefs.addIconToHome.getAdapter(),
+                label = stringResource(id = R.string.auto_add_shortcuts_label),
+            )
+            SwitchPreference(
+                prefs.wallpaperScrolling.getAdapter(),
+                label = stringResource(id = R.string.wallpaper_scrolling_label),
+            )
+            SwitchPreference(
+                prefs.workspaceDt2s.getAdapter(),
+                label = stringResource(id = R.string.workspace_dt2s),
+            )
+        }
+        PreferenceGroup(heading = stringResource(id = R.string.what_to_show)) {
             val feedAvailable = OverlayCallbackImpl.minusOneAvailable(LocalContext.current)
             SwitchPreference(
                 prefs.minusOneEnable.getAdapter(),
@@ -52,20 +66,8 @@ fun HomeScreenPreferences() {
                 showDivider = false
             )
             SwitchPreference(
-                prefs.addIconToHome.getAdapter(),
-                label = stringResource(id = R.string.auto_add_shortcuts_label),
-            )
-            SwitchPreference(
                 prefs.smartSpaceEnable.getAdapter(),
-                label = stringResource(id = R.string.smart_space_enable),
-            )
-            SwitchPreference(
-                prefs.wallpaperScrolling.getAdapter(),
-                label = stringResource(id = R.string.wallpaper_scrolling_label),
-            )
-            SwitchPreference(
-                prefs.workspaceDt2s.getAdapter(),
-                label = stringResource(id = R.string.workspace_dt2s),
+                label = stringResource(id = R.string.smart_space_enable)
             )
             SwitchPreference(
                 prefs.showStatusBar.getAdapter(),
