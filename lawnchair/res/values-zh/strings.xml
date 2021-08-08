@@ -40,7 +40,7 @@
     <string name="icons">图标</string>
     <string name="icon_size">图标大小</string>
     <string name="label_size">标签大小</string>
-    <string name="show_home_labels">显示标签</string>
+    <string name="show_home_labels">Show Labels</string>
     <string name="allow_empty_pages_label">允许空白页</string>
     <string name="notification_dots">通知圆点</string>
     <string name="smartspace_preferences">首选项</string>
@@ -64,7 +64,7 @@
     <string name="auto_adaptive_icons_description">为未适配的图标启用自适应</string>
     <string name="support_and_pr">支持和公关</string>
     <string name="workspace_dt2s">双击息屏</string>
-    <string name="smart_space_enable">显示 At a Glance 小部件</string>
+    <string name="smart_space_enable">At a Glance Widget</string>
     <string name="design_and_development">设计 &amp; 开发</string>
     <string name="translate">翻译</string>
     <string name="product">产品</string>
@@ -80,7 +80,7 @@
     <string name="dt2s_a11y_hint_title">启用无障碍服务</string>
     <string name="dt2s_a11y_hint">若要使用双击息屏，请为Lawnchair 启用无障碍服务。点击\"打开设置\"，然后选择 \"Lawnchair \"并打开\"使用Lawnchair\"。</string>
     <string name="dt2s_warning_open_settings">打开设置</string>
-    <string name="minus_one_enable">显示订阅</string>
+    <string name="minus_one_enable">Feed</string>
     <string name="minus_one_unavailable">未安装订阅源。</string>
     <string name="fuzzy_search_title">模糊搜索</string>
     <string name="fuzzy_search_desc">搜索应用时显示近似结果</string>
@@ -102,6 +102,7 @@
     <string name="custom_color">自定颜色</string>
     <string name="quickstep_description">清除所有按钮，圆角半径</string>
     <string name="wallpaper_scrolling_label">滚动壁纸</string>
-    <string name="show_sys_ui_scrim">显示状态栏阴影</string>
-    <string name="show_status_bar">显示状态栏</string>
+    <string name="show_sys_ui_scrim">Top Shadow</string>
+    <string name="show_status_bar">Status Bar</string>
+    <string name="what_to_show">What to Show</string>
 </resources>
