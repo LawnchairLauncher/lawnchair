@@ -40,7 +40,7 @@
     <string name="icons">Ikoner</string>
     <string name="icon_size">Ikonstørrelse</string>
     <string name="label_size">Merkelapp størrelse</string>
-    <string name="show_home_labels">Show label</string>
+    <string name="show_home_labels">Show Labels</string>
     <string name="allow_empty_pages_label">Tillat tomme sider</string>
     <string name="notification_dots">Notifikasjons prikker</string>
     <string name="smartspace_preferences">Preferanser</string>
@@ -64,7 +64,7 @@
     <string name="auto_adaptive_icons_description">For alle ikke-adaptive ikoner.</string>
     <string name="support_and_pr">Brukerstøtte &amp; PR</string>
     <string name="workspace_dt2s">Dobbeltrykk for å slukke</string>
-    <string name="smart_space_enable">Vis kjapt blikk modulen</string>
+    <string name="smart_space_enable">At a Glance Widget</string>
     <string name="design_and_development">Design- &amp; utvikling</string>
     <string name="translate">Oversett</string>
     <string name="product">Produkt</string>
@@ -81,7 +81,7 @@
     <string name="dt2s_a11y_hint_title">Slå på tilgjengelighetstjeneste</string>
     <string name="dt2s_a11y_hint">For å bruke Double-Trykk til Sleep, slå på Lawnchair tilgjengelighetstjeneste. Trykk på “Åpne innstillinger” og velg “Lawnchair” og slå på “Bruk Lawnchair”</string>
     <string name="dt2s_warning_open_settings">Åpne innstillinger</string>
-    <string name="minus_one_enable">Vis feed</string>
+    <string name="minus_one_enable">Feed</string>
     <string name="minus_one_unavailable">Ingen feed installert.</string>
     <string name="fuzzy_search_title">Uklart søk</string>
     <string name="fuzzy_search_desc">Omtrentlig samsvaring for appsøk.</string>
@@ -103,6 +103,7 @@
     <string name="custom_color">Custom Color</string>
     <string name="quickstep_description">Clear All Button, Corner Radius</string>
     <string name="wallpaper_scrolling_label">Scroll Wallpaper</string>
-    <string name="show_sys_ui_scrim">Show Top Shadow</string>
-    <string name="show_status_bar">Show Status Bar</string>
+    <string name="show_sys_ui_scrim">Top Shadow</string>
+    <string name="show_status_bar">Status Bar</string>
+    <string name="what_to_show">What to Show</string>
 </resources>
