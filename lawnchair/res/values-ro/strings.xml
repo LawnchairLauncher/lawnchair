@@ -40,7 +40,7 @@
     <string name="icons">Pictograme</string>
     <string name="icon_size">Mărimea Iconițelor</string>
     <string name="label_size">Mărimea etichetei</string>
-    <string name="show_home_labels">Show label</string>
+    <string name="show_home_labels">Show Labels</string>
     <string name="allow_empty_pages_label">Permiteți pagini goale</string>
     <string name="notification_dots">Punctulețe pentru notificări</string>
     <string name="smartspace_preferences">Preferințe</string>
@@ -64,7 +64,7 @@
     <string name="auto_adaptive_icons_description">Pentru toate pictogramele non-adaptive.</string>
     <string name="support_and_pr">Asistență &amp; PR</string>
     <string name="workspace_dt2s">Atingere dublă a ecranului pentru oprire</string>
-    <string name="smart_space_enable">Afișați widget-ul At a Glance</string>
+    <string name="smart_space_enable">At a Glance Widget</string>
     <string name="design_and_development">Proiectare &amp; Dezvoltare</string>
     <string name="translate">Traduceți</string>
     <string name="product">Produs</string>
@@ -82,7 +82,7 @@
     <string name="dt2s_a11y_hint_title">Activați serviciul de accesibilitate</string>
     <string name="dt2s_a11y_hint">Pentru a utiliza Dublă-Atingere pentru a opri ecranul, activați serviciul de accesibilitate pentru Lawnchair. Apasă \"Deschide Setările\", apoi selectează \"Lawnchair\" și activează \"Utilizați Lawnchair.\"</string>
     <string name="dt2s_warning_open_settings">Deschide Setările</string>
-    <string name="minus_one_enable">Afișare Flux</string>
+    <string name="minus_one_enable">Feed</string>
     <string name="minus_one_unavailable">Fluxul nu este instalat.</string>
     <string name="fuzzy_search_title">Căutare Neclară</string>
     <string name="fuzzy_search_desc">Potrivire aproximativă pentru căutarea aplicațiilor.</string>
@@ -104,6 +104,7 @@
     <string name="custom_color">Culoare personalizată</string>
     <string name="quickstep_description">Clear All Button, Corner Radius</string>
     <string name="wallpaper_scrolling_label">Scroll Wallpaper</string>
-    <string name="show_sys_ui_scrim">Show Top Shadow</string>
-    <string name="show_status_bar">Show Status Bar</string>
+    <string name="show_sys_ui_scrim">Top Shadow</string>
+    <string name="show_status_bar">Status Bar</string>
+    <string name="what_to_show">What to Show</string>
 </resources>
