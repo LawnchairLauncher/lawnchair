@@ -40,7 +40,7 @@
     <string name="icons">चिह्न</string>
     <string name="icon_size">चिह्न आकार</string>
     <string name="label_size">नाम आकार</string>
-    <string name="show_home_labels">Show label</string>
+    <string name="show_home_labels">Show Labels</string>
     <string name="allow_empty_pages_label">खाली पन्ने की अनुमति दें</string>
     <string name="notification_dots">अधिसूचना बिंदु</string>
     <string name="smartspace_preferences">पसंद</string>
@@ -64,7 +64,7 @@
     <string name="auto_adaptive_icons_description">सभी गैर-अनुकूली आइकन के लिए।</string>
     <string name="support_and_pr">समर्थन &amp; जनसंपर्क</string>
     <string name="workspace_dt2s">सोने के लिए डबल-टैप करें</string>
-    <string name="smart_space_enable">एक नज़र में दिखाएँ विजेट</string>
+    <string name="smart_space_enable">At a Glance Widget</string>
     <string name="design_and_development">अभिकल्प विकास</string>
     <string name="translate">अनुवाद</string>
     <string name="product">उत्पाद</string>
@@ -81,7 +81,7 @@
     <string name="dt2s_a11y_hint_title">एक्सेसिबिलिटी सर्विस चालू करें</string>
     <string name="dt2s_a11y_hint">सोने के लिए डबल-टैप का उपयोग करने के लिए, लॉनचेयर एक्सेसिबिलिटी सेवा चालू करें। \"सेटिंग खोलें\" पर टैप करें, फिर \"लॉनचेयर\" चुनें और \"लॉनचेयर का उपयोग करें\" चालू करें।</string>
     <string name="dt2s_warning_open_settings">सेटिंग्स खोलें</string>
-    <string name="minus_one_enable">फ़ीड दिखाएं</string>
+    <string name="minus_one_enable">Feed</string>
     <string name="minus_one_unavailable">कोई फ़ीड स्थापित नहीं है।</string>
     <string name="fuzzy_search_title">अस्पष्ट खोज</string>
     <string name="fuzzy_search_desc">ऐप खोजों के लिए अनुमानित मिलान।</string>
@@ -103,6 +103,7 @@
     <string name="custom_color">रुचिपूर्वक रंग</string>
     <string name="quickstep_description">Clear All Button, Corner Radius</string>
     <string name="wallpaper_scrolling_label">Scroll Wallpaper</string>
-    <string name="show_sys_ui_scrim">Show Top Shadow</string>
-    <string name="show_status_bar">Show Status Bar</string>
+    <string name="show_sys_ui_scrim">Top Shadow</string>
+    <string name="show_status_bar">Status Bar</string>
+    <string name="what_to_show">What to Show</string>
 </resources>
