@@ -40,7 +40,7 @@
     <string name="icons">Icons</string>
     <string name="icon_size">Laki ng Icon</string>
     <string name="label_size">Laki ng Label</string>
-    <string name="show_home_labels">Show label</string>
+    <string name="show_home_labels">Show Labels</string>
     <string name="allow_empty_pages_label">Payagan ang mga Walang Laman na Pahina</string>
     <string name="notification_dots">Mga Tuldok ng Abiso</string>
     <string name="smartspace_preferences">Mga Kagustuhan</string>
@@ -64,7 +64,7 @@
     <string name="auto_adaptive_icons_description">Para sa lahat ng mga hindi umaangkop na mga icon.</string>
     <string name="support_and_pr">Pagtulong &amp; PR</string>
     <string name="workspace_dt2s">Double-Tap para Magsara ang Device</string>
-    <string name="smart_space_enable">Ipakita ang At a Glance Widget</string>
+    <string name="smart_space_enable">At a Glance Widget</string>
     <string name="design_and_development">Disenyo &amp; Pagbuo</string>
     <string name="translate">Isalin</string>
     <string name="product">Produkto</string>
@@ -81,7 +81,7 @@
     <string name="dt2s_a11y_hint_title">Buksan ang Accessibility Service</string>
     <string name="dt2s_a11y_hint">Upang magamit ang Double-Tap para Mamatay ang Device, buksan ang Lawnchair accessibility service. Pindutin ang \"Open Settings,\" pindutin ang \"Lawnchair\" at buksan ang \"Use Lawnchair.\"</string>
     <string name="dt2s_warning_open_settings">Buksan ang Settings</string>
-    <string name="minus_one_enable">Ipakita ang Feed</string>
+    <string name="minus_one_enable">Feed</string>
     <string name="minus_one_unavailable">Walang feed na naka-install.</string>
     <string name="fuzzy_search_title">Fuzzy Search</string>
     <string name="fuzzy_search_desc">Tinatayang tugma ng app searches.</string>
@@ -103,6 +103,7 @@
     <string name="custom_color">Sariling Kulay</string>
     <string name="quickstep_description">Clear All Button, Corner Radius</string>
     <string name="wallpaper_scrolling_label">Scroll Wallpaper</string>
-    <string name="show_sys_ui_scrim">Show Top Shadow</string>
-    <string name="show_status_bar">Show Status Bar</string>
+    <string name="show_sys_ui_scrim">Top Shadow</string>
+    <string name="show_status_bar">Status Bar</string>
+    <string name="what_to_show">What to Show</string>
 </resources>
