@@ -40,7 +40,7 @@
     <string name="icons">Ikony</string>
     <string name="icon_size">Velikost ikon</string>
     <string name="label_size">Velikost popisku</string>
-    <string name="show_home_labels">Show label</string>
+    <string name="show_home_labels">Show Labels</string>
     <string name="allow_empty_pages_label">Povolit prázdné stránky</string>
     <string name="notification_dots">Tečky oznámení</string>
     <string name="smartspace_preferences">Předvolby</string>
@@ -64,7 +64,7 @@
     <string name="auto_adaptive_icons_description">Pro všechny neadaptivní ikony.</string>
     <string name="support_and_pr">Podpora &amp; PR</string>
     <string name="workspace_dt2s">Uspat dvojitým poklepáním</string>
-    <string name="smart_space_enable">Zobrazit widget na ploše</string>
+    <string name="smart_space_enable">At a Glance Widget</string>
     <string name="design_and_development">Design &amp; Vývoj</string>
     <string name="translate">Přeložit</string>
     <string name="product">Produkt</string>
@@ -83,7 +83,7 @@
     <string name="dt2s_a11y_hint_title">Zapnout službu usnadnění</string>
     <string name="dt2s_a11y_hint">Chcete-li používat funkci uspání dvojitým poklepáním, zapněte službu usnadnění přístupu Lawnchair. Klepněte na „Otevřené nastavení“, pak zvolte „Lawnchair“ a zapněte „Použít Lawnchair“</string>
     <string name="dt2s_warning_open_settings">Otevřít nastavení</string>
-    <string name="minus_one_enable">Zobrazit kanál</string>
+    <string name="minus_one_enable">Feed</string>
     <string name="minus_one_unavailable">Není nainstalován žádný kanál.</string>
     <string name="fuzzy_search_title">Fuzzy hledání</string>
     <string name="fuzzy_search_desc">Přibližné vyhledávání aplikací.</string>
@@ -105,6 +105,7 @@
     <string name="custom_color">Vlastní barva</string>
     <string name="quickstep_description">Tlačítko „Vyčistit vše“, Poloměr rohů</string>
     <string name="wallpaper_scrolling_label">Posouvat tapetu</string>
-    <string name="show_sys_ui_scrim">Zobrazit horní stínování</string>
-    <string name="show_status_bar">Show Status Bar</string>
+    <string name="show_sys_ui_scrim">Top Shadow</string>
+    <string name="show_status_bar">Status Bar</string>
+    <string name="what_to_show">What to Show</string>
 </resources>
