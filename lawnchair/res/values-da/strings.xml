@@ -40,7 +40,7 @@
     <string name="icons">Ikoner</string>
     <string name="icon_size">Ikon størrelse</string>
     <string name="label_size">Etiket størrelse</string>
-    <string name="show_home_labels">Vis etiket</string>
+    <string name="show_home_labels">Show Labels</string>
     <string name="allow_empty_pages_label">Tillad Tomme Sider</string>
     <string name="notification_dots">Notifikation Prikker</string>
     <string name="smartspace_preferences">Præferencer</string>
@@ -64,7 +64,7 @@
     <string name="auto_adaptive_icons_description">For alle ikke-adaptive ikoner.</string>
     <string name="support_and_pr">Støtte &amp; PR</string>
     <string name="workspace_dt2s">Dobbelttryk for at sove</string>
-    <string name="smart_space_enable">Vis At a Glance Widget</string>
+    <string name="smart_space_enable">At a Glance Widget</string>
     <string name="design_and_development">Design &amp; Udvikling</string>
     <string name="translate">Oversæt</string>
     <string name="product">Produkt</string>
@@ -81,7 +81,7 @@
     <string name="dt2s_a11y_hint_title">Slå tilgængelighedstjeneste til</string>
     <string name="dt2s_a11y_hint">For at bruger dobbelttryk for at sove skal du slå tilgængeligheds service for Lawnchair. Tryk \"Åben indstillinger,\" og så vælg \"Lawnchair\" og slå \"Brug Lawnchair.\" til</string>
     <string name="dt2s_warning_open_settings">Åbn Indstillinger</string>
-    <string name="minus_one_enable">Vis Feed</string>
+    <string name="minus_one_enable">Feed</string>
     <string name="minus_one_unavailable">Ingen fred installeret.</string>
     <string name="fuzzy_search_title">Relateret søgning</string>
     <string name="fuzzy_search_desc">Anslået matchning for app-søgninger.</string>
@@ -103,6 +103,7 @@
     <string name="custom_color">Brugerdefineret Farve</string>
     <string name="quickstep_description">Ryd alle knap, Hjørne radius</string>
     <string name="wallpaper_scrolling_label">Rul Baggrund</string>
-    <string name="show_sys_ui_scrim">Vis skygge ved top</string>
-    <string name="show_status_bar">Vis Statuslinje</string>
+    <string name="show_sys_ui_scrim">Top Shadow</string>
+    <string name="show_status_bar">Status Bar</string>
+    <string name="what_to_show">What to Show</string>
 </resources>
