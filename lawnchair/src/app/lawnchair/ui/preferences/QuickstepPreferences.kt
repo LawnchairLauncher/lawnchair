@@ -32,6 +32,7 @@ fun QuickstepPreferences() {
             )
         }
         PreferenceGroup(heading = stringResource(id = R.string.window_corner_radius_label)) {
+            val overrideWindowCornerRadius by prefs.overrideWindowCornerRadius.observeAsState()
             SwitchPreference(
                 adapter = prefs.overrideWindowCornerRadius.getAdapter(),
                 label = stringResource(id = R.string.override_window_corner_radius_label),
