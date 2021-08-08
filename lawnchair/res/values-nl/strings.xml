@@ -40,7 +40,7 @@
     <string name="icons">Iconen</string>
     <string name="icon_size">Icoon grootte</string>
     <string name="label_size">Label grootte</string>
-    <string name="show_home_labels">Label tonen</string>
+    <string name="show_home_labels">Show Labels</string>
     <string name="allow_empty_pages_label">Lege pagina\'s toestaan</string>
     <string name="notification_dots">Meldingsstipje</string>
     <string name="smartspace_preferences">Voorkeuren</string>
@@ -64,7 +64,7 @@
     <string name="auto_adaptive_icons_description">Voor alle niet-adaptieve iconen.</string>
     <string name="support_and_pr">Ondersteuning &amp; PR</string>
     <string name="workspace_dt2s">Dubbel tik om te slapen</string>
-    <string name="smart_space_enable">Toon At a Glance widget</string>
+    <string name="smart_space_enable">At a Glance Widget</string>
     <string name="design_and_development">Ontwerp &amp; ontwikkeling</string>
     <string name="translate">Vertalen</string>
     <string name="product">Product</string>
@@ -81,7 +81,7 @@
     <string name="dt2s_a11y_hint_title">Toegankelijkheid service vereist</string>
     <string name="dt2s_a11y_hint">Schakel de toegankelijkheids service in om dubbeltik om te slapen te gebruiken</string>
     <string name="dt2s_warning_open_settings">Open instellingen</string>
-    <string name="minus_one_enable">Toon feed</string>
+    <string name="minus_one_enable">Feed</string>
     <string name="minus_one_unavailable">Geen feed geïnstalleerd.</string>
     <string name="fuzzy_search_title">Fuzzy zoeken</string>
     <string name="fuzzy_search_desc">Geschatte overeenkomst voor app zoekopdrachten.</string>
@@ -103,6 +103,7 @@
     <string name="custom_color">Gepersonaliseerde kleur</string>
     <string name="quickstep_description">Wis alles knop, hoek radius</string>
     <string name="wallpaper_scrolling_label">Scrollende achtergrond</string>
-    <string name="show_sys_ui_scrim">Toon bovenste schaduw</string>
-    <string name="show_status_bar">Statusbalk weergeven</string>
+    <string name="show_sys_ui_scrim">Top Shadow</string>
+    <string name="show_status_bar">Status Bar</string>
+    <string name="what_to_show">What to Show</string>
 </resources>
