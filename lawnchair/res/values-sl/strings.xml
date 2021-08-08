@@ -40,7 +40,7 @@
     <string name="icons">Ikone</string>
     <string name="icon_size">Velikost ikon</string>
     <string name="label_size">Velikost naslovov</string>
-    <string name="show_home_labels">Show label</string>
+    <string name="show_home_labels">Show Labels</string>
     <string name="allow_empty_pages_label">Dovoli prazne strani</string>
     <string name="notification_dots">Notifikacijske pike</string>
     <string name="smartspace_preferences">Preference</string>
@@ -64,7 +64,7 @@
     <string name="auto_adaptive_icons_description">Za vse neprilagodljive ikone.</string>
     <string name="support_and_pr">Podpirajte &amp; PR</string>
     <string name="workspace_dt2s">Dvakratni dotik za spanje</string>
-    <string name="smart_space_enable">Pokaži \'\'Na pogled\'\' Widget</string>
+    <string name="smart_space_enable">At a Glance Widget</string>
     <string name="design_and_development">Dizajn &amp; Razvoj</string>
     <string name="translate">Prevod</string>
     <string name="product">Produkt</string>
@@ -83,7 +83,7 @@
     <string name="dt2s_a11y_hint_title">Vklopite storitve dostopnosti</string>
     <string name="dt2s_a11y_hint">Za uporabo spanja na dvojni dotik, vklopite Lawnchair storitev dostopnosti. Tapnite na »Odpri nastavitve«, nato izberite »Lawnchair« in vklopite »Use Lawnchair«</string>
     <string name="dt2s_warning_open_settings">Odpri nastavitve</string>
-    <string name="minus_one_enable">Pokaži Feed</string>
+    <string name="minus_one_enable">Feed</string>
     <string name="minus_one_unavailable">Noben feed ni nameščen.</string>
     <string name="fuzzy_search_title">Približno iskanje</string>
     <string name="fuzzy_search_desc">Približno ujemanje za iskanje v aplikacijah.</string>
@@ -105,6 +105,7 @@
     <string name="custom_color">Barve po meri</string>
     <string name="quickstep_description">Clear All Button, Corner Radius</string>
     <string name="wallpaper_scrolling_label">Scroll Wallpaper</string>
-    <string name="show_sys_ui_scrim">Show Top Shadow</string>
-    <string name="show_status_bar">Show Status Bar</string>
+    <string name="show_sys_ui_scrim">Top Shadow</string>
+    <string name="show_status_bar">Status Bar</string>
+    <string name="what_to_show">What to Show</string>
 </resources>
