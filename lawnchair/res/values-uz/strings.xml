@@ -40,7 +40,7 @@
     <string name="icons">Belgilar</string>
     <string name="icon_size">Belgi hajmi</string>
     <string name="label_size">Yorliq hajmi</string>
-    <string name="show_home_labels">Show label</string>
+    <string name="show_home_labels">Show Labels</string>
     <string name="allow_empty_pages_label">Bo‘sh sahifalarga ruxsat berish</string>
     <string name="notification_dots">Bildirishnoma nuqtalari</string>
     <string name="smartspace_preferences">Afzalliklar</string>
@@ -64,7 +64,7 @@
     <string name="auto_adaptive_icons_description">Barcha mos kelmaydigan belgilar uchun.</string>
     <string name="support_and_pr">Qo‘llab-quvvatlash &amp; PR</string>
     <string name="workspace_dt2s">Uxlash uchun ikki marta bosing</string>
-    <string name="smart_space_enable">Bir qarashda vidjetni ko‘rsatish</string>
+    <string name="smart_space_enable">At a Glance Widget</string>
     <string name="design_and_development">Dizayn &amp; Rivojlanish</string>
     <string name="translate">Tarjima</string>
     <string name="product">Mahsulot</string>
@@ -81,7 +81,7 @@
     <string name="dt2s_a11y_hint_title">Maxsus xizmatni yoqish</string>
     <string name="dt2s_a11y_hint">Ikki marta teginish orqali uxlash uchun Lawnchair maxsus xizmatni yoqing. “Sozlamalarni ochish” ga teging, so\'ng “Lawnchair” ni tanlang va “Lawnchairdan foydalanish” ni yoqing.</string>
     <string name="dt2s_warning_open_settings">Sozlamalarni ochish</string>
-    <string name="minus_one_enable">Tasmani ko‘rsatish</string>
+    <string name="minus_one_enable">Feed</string>
     <string name="minus_one_unavailable">Tasma o‘rnatilmagan.</string>
     <string name="fuzzy_search_title">Loyqa qidiruv</string>
     <string name="fuzzy_search_desc">Ilovalarni qidirish uchun taxminiy moslik.</string>
@@ -103,6 +103,7 @@
     <string name="custom_color">Custom Color</string>
     <string name="quickstep_description">Clear All Button, Corner Radius</string>
     <string name="wallpaper_scrolling_label">Scroll Wallpaper</string>
-    <string name="show_sys_ui_scrim">Show Top Shadow</string>
-    <string name="show_status_bar">Show Status Bar</string>
+    <string name="show_sys_ui_scrim">Top Shadow</string>
+    <string name="show_status_bar">Status Bar</string>
+    <string name="what_to_show">What to Show</string>
 </resources>
