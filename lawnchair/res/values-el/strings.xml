@@ -40,7 +40,7 @@
     <string name="icons">Εικονίδια</string>
     <string name="icon_size">Μέγεθος Εικονιδίων</string>
     <string name="label_size">Μέγεθος Ετικέτας</string>
-    <string name="show_home_labels">Show label</string>
+    <string name="show_home_labels">Show Labels</string>
     <string name="allow_empty_pages_label">Επιτρέπονται Κενές Σελίδες</string>
     <string name="notification_dots">Κουκκίδες Ειδοποιήσεων</string>
     <string name="smartspace_preferences">Προτιμήσεις</string>
@@ -64,7 +64,7 @@
     <string name="auto_adaptive_icons_description">Για όλα τα μη προσαρμοζόμενα εικονίδια.</string>
     <string name="support_and_pr">Υποστήριξη &amp; PR</string>
     <string name="workspace_dt2s">Διπλό πάτημα για αναστολή</string>
-    <string name="smart_space_enable">Εμφάνιση At a Glance Widget</string>
+    <string name="smart_space_enable">At a Glance Widget</string>
     <string name="design_and_development">Σχεδιασμός &amp; Ανάπτυξη</string>
     <string name="translate">Μετάφραση</string>
     <string name="product">Προϊόν</string>
@@ -81,7 +81,7 @@
     <string name="dt2s_a11y_hint_title">Accessibility service required</string>
     <string name="dt2s_a11y_hint">To use Double-Tap to Sleep, turn on the Lawnchair accessibility service. Tap “Open Settings,” then select “Lawnchair” and turn on “Use Lawnchair.”</string>
     <string name="dt2s_warning_open_settings">Open Settings</string>
-    <string name="minus_one_enable">Show Feed</string>
+    <string name="minus_one_enable">Feed</string>
     <string name="minus_one_unavailable">No feed installed.</string>
     <string name="fuzzy_search_title">Fuzzy Search</string>
     <string name="fuzzy_search_desc">Approximate matching for app searches.</string>
@@ -103,6 +103,7 @@
     <string name="custom_color">Custom Color</string>
     <string name="quickstep_description">Clear All Button, Corner Radius</string>
     <string name="wallpaper_scrolling_label">Scroll Wallpaper</string>
-    <string name="show_sys_ui_scrim">Show Top Shadow</string>
-    <string name="show_status_bar">Show Status Bar</string>
+    <string name="show_sys_ui_scrim">Top Shadow</string>
+    <string name="show_status_bar">Status Bar</string>
+    <string name="what_to_show">What to Show</string>
 </resources>
