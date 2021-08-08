@@ -40,7 +40,7 @@
     <string name="icons">Иконки</string>
     <string name="icon_size">Размер иконок</string>
     <string name="label_size">Размер подписи</string>
-    <string name="show_home_labels">Show label</string>
+    <string name="show_home_labels">Показать значки</string>
     <string name="allow_empty_pages_label">Разрешить пустые страницы</string>
     <string name="notification_dots">Значки уведомлений</string>
     <string name="smartspace_preferences">Настройки</string>
@@ -106,5 +106,5 @@
     <string name="quickstep_description">Радиус углов кнопки \"Очистить всё\"</string>
     <string name="wallpaper_scrolling_label">Прокрутка обоев</string>
     <string name="show_sys_ui_scrim">Показывать верхнюю тень</string>
-    <string name="show_status_bar">Show Status Bar</string>
+    <string name="show_status_bar">Отображать строку состояния</string>
 </resources>
