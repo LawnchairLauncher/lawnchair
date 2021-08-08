@@ -40,7 +40,7 @@
     <string name="icons">Ikon</string>
     <string name="icon_size">Ukuran Ikon</string>
     <string name="label_size">Ukuran Label</string>
-    <string name="show_home_labels">Show label</string>
+    <string name="show_home_labels">Show Labels</string>
     <string name="allow_empty_pages_label">Izinkan halaman kosong</string>
     <string name="notification_dots">Bintik Notifikasi</string>
     <string name="smartspace_preferences">preferensi</string>
@@ -64,7 +64,7 @@
     <string name="auto_adaptive_icons_description">Untuk semua Ikon Non-Adaptif.</string>
     <string name="support_and_pr">Bantuan &amp; PR</string>
     <string name="workspace_dt2s">Ketuk Ganda untuk Tidur</string>
-    <string name="smart_space_enable">Tampilkan Widget At a Glance</string>
+    <string name="smart_space_enable">At a Glance Widget</string>
     <string name="design_and_development">Desain &amp; Pengembangan</string>
     <string name="translate">Terjemah</string>
     <string name="product">Produk</string>
@@ -80,7 +80,7 @@
     <string name="dt2s_a11y_hint_title">Aktifkan Layanan Aksesibilitas</string>
     <string name="dt2s_a11y_hint">Untuk menggunakan Ketuk Dua Kali untuk Tidur, nyalakan layanan aksesibilitas Lawnchair. Ketuk \"Buka Pengaturan,\" lalu pilih \"Lawnchair\" dan nyalakan \"Gunakan Lawnchair.\"</string>
     <string name="dt2s_warning_open_settings">Buka Pengaturan</string>
-    <string name="minus_one_enable">Tampilkan Umpan</string>
+    <string name="minus_one_enable">Feed</string>
     <string name="minus_one_unavailable">Tidak ada umpan terpasang.</string>
     <string name="fuzzy_search_title">Pencarian Fuzzy</string>
     <string name="fuzzy_search_desc">Perkiraan pencocokan untuk pencarian aplikasi.</string>
@@ -102,6 +102,7 @@
     <string name="custom_color">Warna Kustom</string>
     <string name="quickstep_description">Tombol Hapus Semua, Radius Sudut</string>
     <string name="wallpaper_scrolling_label">Scroll Wallpaper</string>
-    <string name="show_sys_ui_scrim">Tampilkan bayangan atas</string>
-    <string name="show_status_bar">Tampilkan bar status</string>
+    <string name="show_sys_ui_scrim">Top Shadow</string>
+    <string name="show_status_bar">Status Bar</string>
+    <string name="what_to_show">What to Show</string>
 </resources>
