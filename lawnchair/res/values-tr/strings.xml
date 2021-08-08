@@ -40,7 +40,7 @@
     <string name="icons">Simgeler</string>
     <string name="icon_size">Simge Büyüklüğü</string>
     <string name="label_size">Etiket Büyüklüğü</string>
-    <string name="show_home_labels">Show label</string>
+    <string name="show_home_labels">Show Labels</string>
     <string name="allow_empty_pages_label">Boş Sayfalara İzin Ver</string>
     <string name="notification_dots">Bildirim Noktaları</string>
     <string name="smartspace_preferences">Tercihler</string>
@@ -64,7 +64,7 @@
     <string name="auto_adaptive_icons_description">Tüm uyarlanabilir olmayan simgeler için.</string>
     <string name="support_and_pr">Destek &amp; Halkla İlişkiler</string>
     <string name="workspace_dt2s">Ekranı Kapatmak İçin Çift Dokunun</string>
-    <string name="smart_space_enable">Bir Bakışta Widget\'ını Göster</string>
+    <string name="smart_space_enable">At a Glance Widget</string>
     <string name="design_and_development">Tasarım &amp; Geliştirme</string>
     <string name="translate">Çeviri</string>
     <string name="product">Ürün</string>
@@ -81,7 +81,7 @@
     <string name="dt2s_a11y_hint_title">Erişebilirlik servisi gereklidir</string>
     <string name="dt2s_a11y_hint">Ekranı Kapatmak İçin Çift Dokunun\'u kullanabilmek için erişilebilirlik servisini açın.</string>
     <string name="dt2s_warning_open_settings">Ayarları Aç</string>
-    <string name="minus_one_enable">Akışı göster</string>
+    <string name="minus_one_enable">Feed</string>
     <string name="minus_one_unavailable">Akış mevcut değil</string>
     <string name="fuzzy_search_title">Yaklaşık Arama</string>
     <string name="fuzzy_search_desc">Uygulama aramaları için yaklaşık eşleştirme.</string>
@@ -103,6 +103,7 @@
     <string name="custom_color">Özel Renk</string>
     <string name="quickstep_description">Clear All Button, Corner Radius</string>
     <string name="wallpaper_scrolling_label">Scroll Wallpaper</string>
-    <string name="show_sys_ui_scrim">Show Top Shadow</string>
-    <string name="show_status_bar">Show Status Bar</string>
+    <string name="show_sys_ui_scrim">Top Shadow</string>
+    <string name="show_status_bar">Status Bar</string>
+    <string name="what_to_show">What to Show</string>
 </resources>
