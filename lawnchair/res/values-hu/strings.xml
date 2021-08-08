@@ -40,7 +40,7 @@
     <string name="icons">Ikonok</string>
     <string name="icon_size">Ikonméret</string>
     <string name="label_size">Címkeméret</string>
-    <string name="show_home_labels">Show Labels</string>
+    <string name="show_home_labels">Címkék megjelenítése</string>
     <string name="allow_empty_pages_label">Üres oldalak engedélyezése</string>
     <string name="notification_dots">Értesítési pöttyök</string>
     <string name="smartspace_preferences">Beállítások</string>
@@ -64,7 +64,7 @@
     <string name="auto_adaptive_icons_description">A nem adaptív ikonok számára.</string>
     <string name="support_and_pr">Támogatás &amp; PR</string>
     <string name="workspace_dt2s">Dupla érintés az alváshoz</string>
-    <string name="smart_space_enable">At a Glance Widget</string>
+    <string name="smart_space_enable">Kezdőoldal kisalkalmazás megjelenítése</string>
     <string name="design_and_development">Dizájn és fejlesztés</string>
     <string name="translate">Fordítás</string>
     <string name="product">Termék</string>
@@ -81,7 +81,7 @@
     <string name="dt2s_a11y_hint_title">Akadálymentesítési szolgáltatás bekapcsolása</string>
     <string name="dt2s_a11y_hint">A dupla koppintásos alvás bekapcsolásához kapcsolja be a Lawnchair akadálymentesítési szolgáltatást. Koppintson a „Beállítások megnyitása” gombra, majd válassza a „Lawnchair” lehetőséget, és kapcsolja be ezt: „Lawnchair használata\".</string>
     <string name="dt2s_warning_open_settings">Beállítások megnyitása</string>
-    <string name="minus_one_enable">Feed</string>
+    <string name="minus_one_enable">Csatorna</string>
     <string name="minus_one_unavailable">Nincs hírfolyam telepítve.</string>
     <string name="fuzzy_search_title">Közelítő keresés</string>
     <string name="fuzzy_search_desc">Hozzávetőleges egyezés az alkalmazások kereséséhez.</string>
@@ -103,7 +103,7 @@
     <string name="custom_color">Egyéni szín</string>
     <string name="quickstep_description">Minden törlése gomb, sarok sugár</string>
     <string name="wallpaper_scrolling_label">Háttérkép görgetése</string>
-    <string name="show_sys_ui_scrim">Top Shadow</string>
-    <string name="show_status_bar">Status Bar</string>
-    <string name="what_to_show">What to Show</string>
+    <string name="show_sys_ui_scrim">Felső árnyék</string>
+    <string name="show_status_bar">Állapotsor</string>
+    <string name="what_to_show">Mit mutasson</string>
 </resources>
