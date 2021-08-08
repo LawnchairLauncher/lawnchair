@@ -40,7 +40,7 @@
     <string name="icons">Icones</string>
     <string name="icon_size">Mida de les Icones</string>
     <string name="label_size">Mida de les etiquetes</string>
-    <string name="show_home_labels">Show label</string>
+    <string name="show_home_labels">Show Labels</string>
     <string name="allow_empty_pages_label">Permet pàgines buides</string>
     <string name="notification_dots">Punts de Notificació</string>
     <string name="smartspace_preferences">Preferències</string>
@@ -64,7 +64,7 @@
     <string name="auto_adaptive_icons_description">Per a totes les icones no Adaptables.</string>
     <string name="support_and_pr">Suport &amp; RRPP</string>
     <string name="workspace_dt2s">Toca dos cops per apagar la pantalla</string>
-    <string name="smart_space_enable">Mostra el Widget \"D\'una ullada\"</string>
+    <string name="smart_space_enable">At a Glance Widget</string>
     <string name="design_and_development">Disseny &amp; Desenvolupament</string>
     <string name="translate">Tradueix</string>
     <string name="product">Producte</string>
@@ -81,7 +81,7 @@
     <string name="dt2s_a11y_hint_title">Cal activar el Servei d\'Accessibilitat</string>
     <string name="dt2s_a11y_hint">Per a utilitzar \"Toca dos cops per apagar la pantalla\", engega el servei d\'accessibilitat de Lawnchair. Toca \"Obre la Configuració\", selecciona \"Lawnchair\" i activa \"Utilitza Lawnchair.\"</string>
     <string name="dt2s_warning_open_settings">Obre la configuració</string>
-    <string name="minus_one_enable">Mostra el Feed</string>
+    <string name="minus_one_enable">Feed</string>
     <string name="minus_one_unavailable">No hi ha cap Feed instal·lat.</string>
     <string name="fuzzy_search_title">Cerca aproximada</string>
     <string name="fuzzy_search_desc">Aparellament aproximat per a cerques d\'aplicacions.</string>
@@ -103,6 +103,7 @@
     <string name="custom_color">Custom Color</string>
     <string name="quickstep_description">Clear All Button, Corner Radius</string>
     <string name="wallpaper_scrolling_label">Scroll Wallpaper</string>
-    <string name="show_sys_ui_scrim">Show Top Shadow</string>
-    <string name="show_status_bar">Show Status Bar</string>
+    <string name="show_sys_ui_scrim">Top Shadow</string>
+    <string name="show_status_bar">Status Bar</string>
+    <string name="what_to_show">What to Show</string>
 </resources>
