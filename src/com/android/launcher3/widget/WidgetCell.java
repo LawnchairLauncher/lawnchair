@@ -325,10 +325,10 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
             return;
         }
         if (drawable != null) {
+            // Scale down the preview size if it's wider than the cell.
             float scale = 1f;
-            if (getWidth() > 0 && getHeight() > 0) {
-                // Scale down the preview size if it's wider than the cell.
-                float maxWidth = getWidth();
+            if (mTargetPreviewWidth > 0) {
+                float maxWidth = mTargetPreviewWidth;
                 float previewWidth = drawable.getIntrinsicWidth() * mPreviewContainerScale;
                 scale = Math.min(maxWidth / previewWidth, 1);
             }
