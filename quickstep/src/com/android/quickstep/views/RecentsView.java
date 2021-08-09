@@ -1170,7 +1170,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         mMovingTaskView = focusedTaskView;
         removeView(focusedTaskView);
         mMovingTaskView = null;
-        focusedTaskView.onRecycle();
+        focusedTaskView.resetPersistentViewTransforms();
         addView(focusedTaskView, mTaskViewStartIndex);
         setCurrentPage(mTaskViewStartIndex);
 

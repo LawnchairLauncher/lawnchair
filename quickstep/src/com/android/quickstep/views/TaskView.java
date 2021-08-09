@@ -871,6 +871,12 @@ public class TaskView extends FrameLayout implements Reusable {
         setIconAndDimTransitionProgress(iconScale, invert);
     }
 
+    protected void resetPersistentViewTransforms() {
+        mNonGridTranslationX = mNonGridTranslationY =
+                mGridTranslationX = mGridTranslationY = mBoxTranslationY = 0f;
+        resetViewTransforms();
+    }
+
     protected void resetViewTransforms() {
         // fullscreenTranslation and accumulatedTranslation should not be reset, as
         // resetViewTransforms is called during Quickswitch scrolling.
@@ -894,9 +900,7 @@ public class TaskView extends FrameLayout implements Reusable {
 
     @Override
     public void onRecycle() {
-        mNonGridTranslationX = mNonGridTranslationY =
-                mGridTranslationX = mGridTranslationY = mBoxTranslationY = 0f;
-        resetViewTransforms();
+        resetPersistentViewTransforms();
         // Clear any references to the thumbnail (it will be re-read either from the cache or the
         // system on next bind)
         mSnapshotView.setThumbnail(mTask, null);
