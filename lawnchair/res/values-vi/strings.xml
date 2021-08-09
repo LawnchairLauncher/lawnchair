@@ -40,7 +40,7 @@
     <string name="icons">Biểu tượng</string>
     <string name="icon_size">Kích thước biểu tượng</string>
     <string name="label_size">Kích thước tên ứng dụng</string>
-    <string name="show_home_labels">Show Labels</string>
+    <string name="show_home_labels">Hiện Nhãn</string>
     <string name="allow_empty_pages_label">Cho phép trang trống</string>
     <string name="notification_dots">Dấu chấm thông báo</string>
     <string name="smartspace_preferences">Tùy chỉnh</string>
@@ -64,7 +64,7 @@
     <string name="auto_adaptive_icons_description">Cho mọi biểu tượng không thích ứng.</string>
     <string name="support_and_pr">Hỗ trợ &amp; PR</string>
     <string name="workspace_dt2s">Chạm 2 lần để tắt màn hình</string>
-    <string name="smart_space_enable">At a Glance Widget</string>
+    <string name="smart_space_enable">Tiện ích Xem nhanh</string>
     <string name="design_and_development">Thiết kế &amp; Sự phát triển</string>
     <string name="translate">Dịch</string>
     <string name="product">Sản phẩm</string>
@@ -102,7 +102,7 @@
     <string name="custom_color">Tuỳ chỉnh màu sắc</string>
     <string name="quickstep_description">Nút xoá tất cả, độ cong của góc</string>
     <string name="wallpaper_scrolling_label">Scroll Wallpaper</string>
-    <string name="show_sys_ui_scrim">Top Shadow</string>
-    <string name="show_status_bar">Status Bar</string>
-    <string name="what_to_show">What to Show</string>
+    <string name="show_sys_ui_scrim">Bóng đổ phía trên</string>
+    <string name="show_status_bar">Thanh trạng thái</string>
+    <string name="what_to_show">Hiện gì</string>
 </resources>
