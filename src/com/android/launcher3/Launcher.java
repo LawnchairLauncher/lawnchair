@@ -1930,7 +1930,7 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
 
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
-        TestLogging.recordEvent(TestProtocol.SEQUENCE_MAIN, "Key event", event);
+        TestLogging.recordKeyEvent(TestProtocol.SEQUENCE_MAIN, "Key event", event);
         return (event.getKeyCode() == KeyEvent.KEYCODE_HOME) || super.dispatchKeyEvent(event);
     }
 

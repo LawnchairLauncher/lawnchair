@@ -306,6 +306,11 @@ public final class LauncherInstrumentation {
         getTestInfo(TestProtocol.REQUEST_SET_FORCE_PAUSE_TIMEOUT, Long.toString(timeout));
     }
 
+    public boolean hadNontestEvents() {
+        return getTestInfo(TestProtocol.REQUEST_GET_HAD_NONTEST_EVENTS)
+                .getBoolean(TestProtocol.TEST_INFO_RESPONSE_FIELD);
+    }
+
     void setActiveContainer(VisibleContainer container) {
         sActiveContainer = new WeakReference<>(container);
     }

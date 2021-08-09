@@ -13,6 +13,7 @@ import com.android.launcher3.ui.AbstractLauncherUiTest;
 
 import org.junit.rules.TestWatcher;
 import org.junit.runner.Description;
+import org.junit.runners.model.Statement;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -35,6 +36,26 @@ public class FailureWatcher extends TestWatcher {
     protected void succeeded(Description description) {
         super.succeeded(description);
         AbstractLauncherUiTest.checkDetectedLeaks(mLauncher);
+    }
+
+    @Override
+    public Statement apply(Statement base, Description description) {
+        return new Statement() {
+            @Override
+            public void evaluate() throws Throwable {
+                try {
+                    base.evaluate();
+                } finally {
+                    if (mLauncher.hadNontestEvents()) {
+                        throw new AssertionError(
+                                "Launcher received events not sent by the test. This may mean "
+                                        + "that the touch screen of the lab device has sent false"
+                                        + " events. See the logcat for TaplEvents tag and look "
+                                        + "for events with deviceId != -1");
+                    }
+                }
+            }
+        };
     }
 
     @Override

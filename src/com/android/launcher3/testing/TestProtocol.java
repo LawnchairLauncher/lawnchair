@@ -93,6 +93,7 @@ public final class TestProtocol {
     public static final String REQUEST_RECENT_TASKS_LIST = "recent-tasks-list";
     public static final String REQUEST_START_EVENT_LOGGING = "start-event-logging";
     public static final String REQUEST_GET_TEST_EVENTS = "get-test-events";
+    public static final String REQUEST_GET_HAD_NONTEST_EVENTS = "get-had-nontest-events";
     public static final String REQUEST_STOP_EVENT_LOGGING = "stop-event-logging";
     public static final String REQUEST_CLEAR_DATA = "clear-data";
     public static final String REQUEST_IS_TABLET = "is-tablet";
@@ -116,4 +117,5 @@ public final class TestProtocol {
     public static final String WORK_PROFILE_REMOVED = "b/159671700";
     public static final String FALLBACK_ACTIVITY_NO_SET = "b/181019015";
     public static final String THIRD_PARTY_LAUNCHER_NOT_SET = "b/187080582";
+    public static final String MOTION_PAUSE_TIMEOUT = "b/194114179";
 }
