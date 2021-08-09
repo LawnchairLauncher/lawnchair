@@ -42,6 +42,7 @@ import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCH
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASK_DISMISS_SWIPE_UP;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASK_LAUNCH_SWIPE_DOWN;
 import static com.android.launcher3.statehandlers.DepthController.DEPTH;
+import static com.android.launcher3.testing.TestProtocol.TASK_VIEW_ID_CRASH;
 import static com.android.launcher3.touch.PagedOrientationHandler.CANVAS_TRANSLATE;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
@@ -82,6 +83,7 @@ import android.text.StaticLayout;
 import android.text.TextPaint;
 import android.util.AttributeSet;
 import android.util.FloatProperty;
+import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.HapticFeedbackConstants;
 import android.view.KeyEvent;
@@ -1222,6 +1224,9 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         // TODO set these type to array and check all taskIDs? Maybe we can get away w/ only one
         int runningTaskId = getTaskIdsForTaskViewId(mRunningTaskViewId)[0];
         int focusedTaskId = getTaskIdsForTaskViewId(mFocusedTaskViewId)[0];
+        Log.d(TASK_VIEW_ID_CRASH, "runningTaskId beforeBind: " + runningTaskId
+                + " runningTaskViewId: " + mRunningTaskViewId
+                + " forTaskView: " + getTaskViewFromTaskViewId(mRunningTaskViewId));
 
         // Rebind and reset all task views
         for (int i = requiredTaskCount - 1; i >= 0; i--) {
@@ -1246,6 +1251,18 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             // Update mRunningTaskViewId to be the new TaskView that was assigned by binding
             // the full list of tasks to taskViews
             newRunningTaskView = getTaskViewByTaskId(runningTaskId);
+            if (newRunningTaskView == null) {
+                StringBuilder sb = new StringBuilder();
+                for (int i = requiredTaskCount - 1; i >= 0; i--) {
+                    final int pageIndex = requiredTaskCount - i - 1 + mTaskViewStartIndex;
+                    final TaskView taskView = (TaskView) getChildAt(pageIndex);
+                    int taskViewId = taskView.getTaskViewId();
+                    sb.append(" taskViewId: " + taskViewId
+                            + " taskId: " + getTaskIdsForTaskViewId(taskViewId)[0]
+                            + " for taskView: " + taskView + "\n");
+                }
+                Log.d(TASK_VIEW_ID_CRASH, sb.toString());
+            }
             mRunningTaskViewId = newRunningTaskView.getTaskViewId();
         }
 
