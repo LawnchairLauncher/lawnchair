@@ -40,7 +40,7 @@
     <string name="icons">Ikony</string>
     <string name="icon_size">Rozmiar ikon</string>
     <string name="label_size">Rozmiar etykiet</string>
-    <string name="show_home_labels">Show Labels</string>
+    <string name="show_home_labels">Pokaż etykiety</string>
     <string name="allow_empty_pages_label">Zezwól na puste strony</string>
     <string name="notification_dots">Plakietki powiadomień</string>
     <string name="smartspace_preferences">Ustawienia</string>
@@ -105,7 +105,7 @@
     <string name="custom_color">Niestandardowy Kolor</string>
     <string name="quickstep_description">Przycisk \"Wyczyść wszystko\", promień narożnika</string>
     <string name="wallpaper_scrolling_label">Przewiń tapetę</string>
-    <string name="show_sys_ui_scrim">Top Shadow</string>
-    <string name="show_status_bar">Status Bar</string>
-    <string name="what_to_show">What to Show</string>
+    <string name="show_sys_ui_scrim">Górny cień</string>
+    <string name="show_status_bar">Pasek stanu</string>
+    <string name="what_to_show">Co wyświetlić</string>
 </resources>
