@@ -40,7 +40,7 @@
     <string name="icons">Иконки</string>
     <string name="icon_size">Размер иконок</string>
     <string name="label_size">Размер подписи</string>
-    <string name="show_home_labels">Show Labels</string>
+    <string name="show_home_labels">Показывать названия</string>
     <string name="allow_empty_pages_label">Разрешить пустые страницы</string>
     <string name="notification_dots">Значки уведомлений</string>
     <string name="smartspace_preferences">Настройки</string>
@@ -64,7 +64,7 @@
     <string name="auto_adaptive_icons_description">Для всех не адаптивных иконок.</string>
     <string name="support_and_pr">Поддержка и PR</string>
     <string name="workspace_dt2s">Двойной тап для блокировки</string>
-    <string name="smart_space_enable">At a Glance Widget</string>
+    <string name="smart_space_enable">Виджет \"At a Glance\"</string>
     <string name="design_and_development">Дизайн и Разработка</string>
     <string name="translate">Помочь с переводом</string>
     <string name="product">Продукт</string>
@@ -83,7 +83,7 @@
     <string name="dt2s_a11y_hint_title">Требуются спец. возможности</string>
     <string name="dt2s_a11y_hint">Для отключения экрана по двойному тапу, включите спец. возможности. Нажмите \"Открыть настройки\", выберите \"Lawnchair\" и включите \"Использовать Lawnchair.\"</string>
     <string name="dt2s_warning_open_settings">Открыть настройки</string>
-    <string name="minus_one_enable">Feed</string>
+    <string name="minus_one_enable">Лента Google</string>
     <string name="minus_one_unavailable">Лента новостей не установлена.</string>
     <string name="fuzzy_search_title">Поиск по сходству</string>
     <string name="fuzzy_search_desc">Поиск приложений по похожему запросу.</string>
@@ -105,7 +105,7 @@
     <string name="custom_color">Пользовательский цвет</string>
     <string name="quickstep_description">Радиус углов кнопки \"Очистить всё\"</string>
     <string name="wallpaper_scrolling_label">Прокрутка обоев</string>
-    <string name="show_sys_ui_scrim">Top Shadow</string>
-    <string name="show_status_bar">Status Bar</string>
-    <string name="what_to_show">What to Show</string>
+    <string name="show_sys_ui_scrim">Тень под строкой состояния</string>
+    <string name="show_status_bar">Строка состояния</string>
+    <string name="what_to_show">Что показывать</string>
 </resources>
