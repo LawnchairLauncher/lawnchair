@@ -102,14 +102,22 @@ public class TestInformationHandler implements ResourceBasedOverride {
                         l -> WidgetsFullSheet.getWidgetsView(l).getCurrentScrollY());
             }
 
+            case TestProtocol.REQUEST_TARGET_INSETS: {
+                return getUIProperty(Bundle::putParcelable, activity -> {
+                    WindowInsets insets = activity.getWindow()
+                            .getDecorView().getRootWindowInsets();
+                    return Insets.max(
+                            insets.getSystemGestureInsets(),
+                            insets.getSystemWindowInsets());
+                }, this::getCurrentActivity);
+            }
+
             case TestProtocol.REQUEST_WINDOW_INSETS: {
-                return getUIProperty(Bundle::putParcelable, a -> {
-                    WindowInsets insets = a.getWindow()
+                return getUIProperty(Bundle::putParcelable, activity -> {
+                    WindowInsets insets = activity.getWindow()
                             .getDecorView().getRootWindowInsets();
                     return Insets.subtract(
-                            Insets.max(
-                                    insets.getSystemGestureInsets(),
-                                    insets.getSystemWindowInsets()),
+                            insets.getSystemWindowInsets(),
                             Insets.of(0, 0, 0, mDeviceProfile.nonOverlappingTaskbarInset));
                 }, this::getCurrentActivity);
             }
