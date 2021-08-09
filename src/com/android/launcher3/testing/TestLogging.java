@@ -17,6 +17,7 @@
 package com.android.launcher3.testing;
 
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 
 import com.android.launcher3.Utilities;
@@ -25,6 +26,7 @@ import java.util.function.BiConsumer;
 
 public final class TestLogging {
     private static BiConsumer<String, String> sEventConsumer;
+    public static boolean sHadEventsNotFromTest;
 
     private static void recordEventSlow(String sequence, String event) {
         Log.d(TestProtocol.TAPL_EVENTS_TAG, sequence + " / " + event);
@@ -46,9 +48,17 @@ public final class TestLogging {
         }
     }
 
+    public static void recordKeyEvent(String sequence, String message, KeyEvent event) {
+        if (Utilities.IS_RUNNING_IN_TEST_HARNESS) {
+            recordEventSlow(sequence, message + ": " + event);
+            if (event.getDeviceId() != -1) sHadEventsNotFromTest = true;
+        }
+    }
+
     public static void recordMotionEvent(String sequence, String message, MotionEvent event) {
         if (Utilities.IS_RUNNING_IN_TEST_HARNESS && event.getAction() != MotionEvent.ACTION_MOVE) {
             recordEventSlow(sequence, message + ": " + event);
+            if (event.getDeviceId() != -1) sHadEventsNotFromTest = true;
         }
     }
 
