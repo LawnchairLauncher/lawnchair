@@ -288,6 +288,11 @@ public final class LauncherInstrumentation {
     }
 
     Insets getTargetInsets() {
+        return getTestInfo(TestProtocol.REQUEST_TARGET_INSETS)
+                .getParcelable(TestProtocol.TEST_INFO_RESPONSE_FIELD);
+    }
+
+    Insets getWindowInsets() {
         return getTestInfo(TestProtocol.REQUEST_WINDOW_INSETS)
                 .getParcelable(TestProtocol.TEST_INFO_RESPONSE_FIELD);
     }
@@ -304,6 +309,11 @@ public final class LauncherInstrumentation {
 
     private void setForcePauseTimeout(long timeout) {
         getTestInfo(TestProtocol.REQUEST_SET_FORCE_PAUSE_TIMEOUT, Long.toString(timeout));
+    }
+
+    public boolean hadNontestEvents() {
+        return getTestInfo(TestProtocol.REQUEST_GET_HAD_NONTEST_EVENTS)
+                .getBoolean(TestProtocol.TEST_INFO_RESPONSE_FIELD);
     }
 
     void setActiveContainer(VisibleContainer container) {
@@ -1128,7 +1138,7 @@ public final class LauncherInstrumentation {
     }
 
     int getBottomGestureSize() {
-        return Math.max(getTargetInsets().bottom, ResourceUtils.getNavbarSize(
+        return Math.max(getWindowInsets().bottom, ResourceUtils.getNavbarSize(
                 ResourceUtils.NAVBAR_BOTTOM_GESTURE_SIZE, getResources())) + 1;
     }
 
