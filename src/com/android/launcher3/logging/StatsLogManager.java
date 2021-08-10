@@ -486,7 +486,10 @@ public class StatsLogManager implements ResourceBasedOverride {
         LAUNCHER_TURN_ON_WORK_APPS_TAP(838),
 
         @UiEvent(doc = "User tapped on 'Turn off work apps' button in all apps window.")
-        LAUNCHER_TURN_OFF_WORK_APPS_TAP(839)
+        LAUNCHER_TURN_OFF_WORK_APPS_TAP(839),
+
+        @UiEvent(doc = "Launcher item drop failed since there was not enough room on the screen.")
+        LAUNCHER_ITEM_DROP_FAILED_INSUFFICIENT_SPACE(872)
         ;
 
         // ADD MORE
