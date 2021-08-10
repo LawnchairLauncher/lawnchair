@@ -40,7 +40,7 @@
     <string name="icons">Icônes</string>
     <string name="icon_size">Taille des icônes</string>
     <string name="label_size">Taille du libellé</string>
-    <string name="show_home_labels">Show Labels</string>
+    <string name="show_home_labels">Montrer les étiquettes</string>
     <string name="allow_empty_pages_label">Autoriser les pages vides</string>
     <string name="notification_dots">Pastilles de notification</string>
     <string name="smartspace_preferences">Préférences</string>
@@ -64,7 +64,7 @@
     <string name="auto_adaptive_icons_description">Pour toutes les icônes non-adaptatives.</string>
     <string name="support_and_pr">Support &amp; PR</string>
     <string name="workspace_dt2s">Double-Tapez pour mettre en veille</string>
-    <string name="smart_space_enable">At a Glance Widget</string>
+    <string name="smart_space_enable">Widget Coup d’œil</string>
     <string name="design_and_development">Conception &amp; Développement</string>
     <string name="translate">Traduire</string>
     <string name="product">Produit</string>
@@ -81,7 +81,7 @@
     <string name="dt2s_a11y_hint_title">Accessibility service required</string>
     <string name="dt2s_a11y_hint">Pour utiliser la veille sur double tape, activez le service d\'accessibilité Lawnchair. Appuyez sur \"Ouvrir paramètres\", sélectionnez ensuite “Lawnchair” et activez “Utiliser Lawnchair”</string>
     <string name="dt2s_warning_open_settings">Ouvrir les paramètres</string>
-    <string name="minus_one_enable">Feed</string>
+    <string name="minus_one_enable">Fil</string>
     <string name="minus_one_unavailable">Aucun fil installé.</string>
     <string name="fuzzy_search_title">Recherche approximative</string>
     <string name="fuzzy_search_desc">Correspondance approximative pour les recherches d\'applications.</string>
@@ -102,8 +102,8 @@
     <string name="custom">Personnalisé</string>
     <string name="custom_color">Couleur personnalisée</string>
     <string name="quickstep_description">Bouton \"Tout effacer\", Courbure des coins</string>
-    <string name="wallpaper_scrolling_label">Scroll Wallpaper</string>
-    <string name="show_sys_ui_scrim">Top Shadow</string>
-    <string name="show_status_bar">Status Bar</string>
-    <string name="what_to_show">What to Show</string>
+    <string name="wallpaper_scrolling_label">Faire défiler le fond d\'écran</string>
+    <string name="show_sys_ui_scrim">Ombre du haut</string>
+    <string name="show_status_bar">Barre d\'état</string>
+    <string name="what_to_show">Quoi afficher</string>
 </resources>
