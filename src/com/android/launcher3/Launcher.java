@@ -1298,7 +1298,7 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
             }
 
             if (!foundCellSpan) {
-                mWorkspace.onNoCellFound(layout);
+                mWorkspace.onNoCellFound(layout, info, /* logInstanceId= */ null);
                 return;
             }
 

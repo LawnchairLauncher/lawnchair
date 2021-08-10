@@ -16,8 +16,6 @@
 
 package com.android.launcher3;
 
-import static androidx.annotation.VisibleForTesting.PROTECTED;
-
 import static com.android.launcher3.LauncherAnimUtils.SPRING_LOADED_EXIT_DELAY;
 import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_APPLICATION;
 import static com.android.launcher3.LauncherState.ALL_APPS;
@@ -65,7 +63,7 @@ import android.view.ViewTreeObserver;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.Toast;
 
-import androidx.annotation.VisibleForTesting;
+import androidx.annotation.Nullable;
 
 import com.android.launcher3.accessibility.AccessibleDragListenerAdapter;
 import com.android.launcher3.accessibility.WorkspaceAccessibilityHelper;
@@ -86,6 +84,7 @@ import com.android.launcher3.graphics.DragPreviewProvider;
 import com.android.launcher3.icons.BitmapRenderer;
 import com.android.launcher3.icons.FastBitmapDrawable;
 import com.android.launcher3.logger.LauncherAtom;
+import com.android.launcher3.logging.InstanceId;
 import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.logging.StatsLogManager.LauncherEvent;
 import com.android.launcher3.model.data.AppInfo;
@@ -462,7 +461,6 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
     }
 
     @Override
-    @VisibleForTesting(otherwise = PROTECTED)
     public int getPanelCount() {
         return isTwoPanelEnabled() ? 2 : super.getPanelCount();
     }
@@ -1609,7 +1607,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
 
             // Don't accept the drop if there's no room for the item
             if (!foundCell) {
-                onNoCellFound(dropTargetLayout);
+                onNoCellFound(dropTargetLayout, d.dragInfo, d.logInstanceId);
                 return false;
             }
         }
@@ -1911,7 +1909,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
                             lp.cellX, lp.cellY, item.spanX, item.spanY);
                 } else {
                     if (!returnToOriginalCellToPreventShuffling) {
-                        onNoCellFound(dropTargetLayout);
+                        onNoCellFound(dropTargetLayout, d.dragInfo, d.logInstanceId);
                     }
                     if (mDragInfo.cell instanceof LauncherAppWidgetHostView) {
                         d.dragView.detachContentView(/* reattachToPreviousParent= */ true);
@@ -1979,10 +1977,16 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         }
     }
 
-    public void onNoCellFound(View dropTargetLayout) {
+    public void onNoCellFound(
+            View dropTargetLayout, ItemInfo itemInfo, @Nullable InstanceId logInstanceId) {
         int strId = mLauncher.isHotseatLayout(dropTargetLayout)
                 ? R.string.hotseat_out_of_space : R.string.out_of_space;
         Toast.makeText(mLauncher, mLauncher.getString(strId), Toast.LENGTH_SHORT).show();
+        StatsLogManager.StatsLogger logger = mStatsLogManager.logger().withItemInfo(itemInfo);
+        if (logInstanceId != null) {
+            logger = logger.withInstanceId(logInstanceId);
+        }
+        logger.log(LauncherEvent.LAUNCHER_ITEM_DROP_FAILED_INSUFFICIENT_SPACE);
     }
 
     /**

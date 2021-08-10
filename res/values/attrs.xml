@@ -42,6 +42,7 @@
     <attr name="popupNotificationDotColor" format="color" />
 
     <attr name="folderDotColor" format="color" />
+    <attr name="folderPaginationColor" format="color" />
     <attr name="folderFillColor" format="color" />
     <attr name="folderIconRadius" format="float" />
     <attr name="folderIconBorderColor" format="color" />
