@@ -68,7 +68,7 @@
     <string name="long_accessible_way_to_add_shortcut" msgid="2199537273817090740">"షార్ట్‌కట్‌ను తరలించడానికి లేదా అనుకూల చర్యలను ఉపయోగించడానికి రెండుసార్లు నొక్కండి &amp; హోల్డ్ చేయండి."</string>
     <string name="out_of_space" msgid="6692471482459245734">"ఈ మొదటి స్క్రీన్‌లో స్థలం లేదు"</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"ఇష్టమైనవి ట్రేలో ఖాళీ లేదు"</string>
-    <string name="all_apps_button_label" msgid="8130441508702294465">"అనువర్తనాల జాబితా"</string>
+    <string name="all_apps_button_label" msgid="8130441508702294465">"యాప్‌ల జాబితా"</string>
     <string name="all_apps_button_personal_label" msgid="1315764287305224468">"వ్యక్తిగత యాప్‌ల జాబితా"</string>
     <string name="all_apps_button_work_label" msgid="7270707118948892488">"కార్యాలయ యాప్‌ల జాబితా"</string>
     <string name="remove_drop_target_label" msgid="7812859488053230776">"తీసివేయి"</string>
@@ -83,7 +83,7 @@
     <string name="permdesc_read_settings" msgid="5833423719057558387">"హోమ్‌లో సెట్టింగ్‌లు మరియు సత్వరమార్గాలను చదవడానికి యాప్‌ను అనుమతిస్తుంది."</string>
     <string name="permlab_write_settings" msgid="3574213698004620587">"హోమ్ సెట్టింగ్‌లు మరియు సత్వరమార్గాలను వ్రాయడం"</string>
     <string name="permdesc_write_settings" msgid="5440712911516509985">"హోమ్‌లో సెట్టింగ్‌లు మరియు సత్వరమార్గాలను మార్చడానికి యాప్‌ను అనుమతిస్తుంది."</string>
-    <string name="msg_no_phone_permission" msgid="9208659281529857371">"ఫోన్ కాల్‌లను చేసేందుకు <xliff:g id="APP_NAME">%1$s</xliff:g>కి అనుమతి లేదు"</string>
+    <string name="msg_no_phone_permission" msgid="9208659281529857371">"ఫోన్ కాల్స్‌ను చేసేందుకు <xliff:g id="APP_NAME">%1$s</xliff:g>కి అనుమతి లేదు"</string>
     <string name="gadget_error_text" msgid="740356548025791839">"విడ్జెట్‌ను లోడ్ చేయడం సాధ్యం కాలేదు"</string>
     <string name="gadget_setup_text" msgid="1745356155479272374">"సెటప్‌ను పూర్తి చేయడానికి ట్యాప్ చేయండి"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"ఇది సిస్టమ్ యాప్ మరియు దీన్ని అన్‌ఇన్‌స్టాల్ చేయడం సాధ్యపడదు."</string>
