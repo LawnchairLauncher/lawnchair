@@ -48,15 +48,16 @@ import com.android.quickstep.views.RecentsView;
 public class AnimatorControllerWithResistance {
 
     private enum RecentsResistanceParams {
-        FROM_APP(0.75f, 0.5f, 1f),
-        FROM_APP_TABLET(0.9f, 0.75f, 1f),
-        FROM_OVERVIEW(1f, 0.75f, 0.5f);
+        FROM_APP(0.75f, 0.5f, 1f, false),
+        FROM_APP_TABLET(1f, 0.7f, 1f, true),
+        FROM_OVERVIEW(1f, 0.75f, 0.5f, false);
 
         RecentsResistanceParams(float scaleStartResist, float scaleMaxResist,
-                float translationFactor) {
+                float translationFactor, boolean stopScalingAtTop) {
             this.scaleStartResist = scaleStartResist;
             this.scaleMaxResist = scaleMaxResist;
             this.translationFactor = translationFactor;
+            this.stopScalingAtTop = stopScalingAtTop;
         }
 
         /**
@@ -74,6 +75,12 @@ public class AnimatorControllerWithResistance {
          * where 0 will keep it centered and 1 will have it barely touch the top of the screen.
          */
         public final float translationFactor;
+
+        /**
+         * Whether to end scaling effect when the scaled down version of TaskView's top reaches the
+         * non-scaled version of TaskView's top.
+         */
+        public final boolean stopScalingAtTop;
     }
 
     private static final TimeInterpolator RECENTS_SCALE_RESIST_INTERPOLATOR = DEACCEL;
@@ -161,26 +168,6 @@ public class AnimatorControllerWithResistance {
         PointF pivot = new PointF();
         float fullscreenScale = params.recentsOrientedState.getFullScreenScaleAndPivot(
                 startRect, params.dp, pivot);
-        float prevScaleRate = (fullscreenScale - params.startScale)
-                / (params.dp.heightPx - startRect.bottom);
-        // This is what the scale would be at the end of the drag if we didn't apply resistance.
-        float endScale = params.startScale - prevScaleRate * distanceToCover;
-        // Create an interpolator that resists the scale so the scale doesn't get smaller than
-        // RECENTS_SCALE_MAX_RESIST.
-        float startResist = Utilities.getProgress(params.resistanceParams.scaleStartResist,
-                params.startScale, endScale);
-        float maxResist = Utilities.getProgress(params.resistanceParams.scaleMaxResist,
-                params.startScale, endScale);
-        final TimeInterpolator scaleInterpolator = t -> {
-            if (t < startResist) {
-                return t;
-            }
-            float resistProgress = Utilities.getProgress(t, startResist, 1);
-            resistProgress = RECENTS_SCALE_RESIST_INTERPOLATOR.getInterpolation(resistProgress);
-            return startResist + resistProgress * (maxResist - startResist);
-        };
-        resistAnim.addFloat(params.scaleTarget, params.scaleProperty, params.startScale, endScale,
-                scaleInterpolator);
 
         // Compute where the task view would be based on the end scale.
         RectF endRectF = new RectF(startRect);
@@ -194,6 +181,32 @@ public class AnimatorControllerWithResistance {
                 * params.resistanceParams.translationFactor;
         resistAnim.addFloat(params.translationTarget, params.translationProperty,
                 params.startTranslation, endTranslation, RECENTS_TRANSLATE_RESIST_INTERPOLATOR);
+
+        float prevScaleRate = (fullscreenScale - params.startScale)
+                / (params.dp.heightPx - startRect.bottom);
+        // This is what the scale would be at the end of the drag if we didn't apply resistance.
+        float endScale = params.startScale - prevScaleRate * distanceToCover;
+        // Create an interpolator that resists the scale so the scale doesn't get smaller than
+        // RECENTS_SCALE_MAX_RESIST.
+        float startResist = Utilities.getProgress(params.resistanceParams.scaleStartResist,
+                params.startScale, endScale);
+        float maxResist = Utilities.getProgress(params.resistanceParams.scaleMaxResist,
+                params.startScale, endScale);
+        float stopResist =
+                params.resistanceParams.stopScalingAtTop ? 1f - startRect.top / endRectF.top : 1f;
+        final TimeInterpolator scaleInterpolator = t -> {
+            if (t < startResist) {
+                return t;
+            }
+            if (t > stopResist) {
+                return maxResist;
+            }
+            float resistProgress = Utilities.getProgress(t, startResist, stopResist);
+            resistProgress = RECENTS_SCALE_RESIST_INTERPOLATOR.getInterpolation(resistProgress);
+            return startResist + resistProgress * (maxResist - startResist);
+        };
+        resistAnim.addFloat(params.scaleTarget, params.scaleProperty, params.startScale, endScale,
+                scaleInterpolator);
 
         return resistAnim;
     }
