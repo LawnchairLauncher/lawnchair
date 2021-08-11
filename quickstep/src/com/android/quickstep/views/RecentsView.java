@@ -1775,7 +1775,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     public void onGestureAnimationEnd() {
         mGestureActive = false;
         if (mOrientationState.setGestureActive(false)) {
-            updateOrientationHandler();
+            updateOrientationHandler(/* forceRecreateDragLayerControllers = */ false);
         }
 
         setEnableFreeScroll(true);
