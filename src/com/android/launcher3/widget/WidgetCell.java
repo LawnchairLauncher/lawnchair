@@ -483,6 +483,20 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
         mAppWidgetHostViewPreview.measure(
                 makeMeasureSpec(MAX_MEASURE_SPEC_DIMENSION, MeasureSpec.UNSPECIFIED),
                 makeMeasureSpec(MAX_MEASURE_SPEC_DIMENSION, MeasureSpec.UNSPECIFIED));
+        if (mRemoteViewsPreview != null) {
+            // If RemoteViews contains multiple sizes, the best fit sized RemoteViews will be
+            // selected in onLayout. To work out the right measurement, let's layout and then
+            // measure again.
+            mAppWidgetHostViewPreview.layout(
+                    /* left= */ 0,
+                    /* top= */ 0,
+                    /* right= */ mTargetPreviewWidth,
+                    /* bottom= */ mTargetPreviewHeight);
+            mAppWidgetHostViewPreview.measure(
+                    makeMeasureSpec(mTargetPreviewWidth, MeasureSpec.UNSPECIFIED),
+                    makeMeasureSpec(mTargetPreviewHeight, MeasureSpec.UNSPECIFIED));
+
+        }
         View widgetContent = mAppWidgetHostViewPreview.getChildAt(0);
         int appWidgetContentWidth = widgetContent.getMeasuredWidth();
         int appWidgetContentHeight = widgetContent.getMeasuredHeight();
