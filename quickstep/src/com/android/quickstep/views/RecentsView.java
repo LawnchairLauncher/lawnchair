@@ -602,6 +602,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             };
 
     private RunnableList mSideTaskLaunchCallback;
+    private TaskLaunchListener mTaskLaunchListener;
 
     public RecentsView(Context context, AttributeSet attrs, int defStyleAttr,
             BaseActivityInterface sizeStrategy) {
@@ -880,6 +881,21 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             mSideTaskLaunchCallback = new RunnableList();
         }
         mSideTaskLaunchCallback.add(callback::executeAllAndDestroy);
+    }
+
+    /**
+     * This is a one-time callback when touching in live tile mode. It's reset to null right
+     * after it's called.
+     */
+    public void setTaskLaunchListener(TaskLaunchListener taskLaunchListener) {
+        mTaskLaunchListener = taskLaunchListener;
+    }
+
+    public void onTaskLaunchedInLiveTileMode() {
+        if (mTaskLaunchListener != null) {
+            mTaskLaunchListener.onTaskLaunched();
+            mTaskLaunchListener = null;
+        }
     }
 
     private void executeSideTaskLaunchCallback() {
@@ -1172,7 +1188,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         mMovingTaskView = focusedTaskView;
         removeView(focusedTaskView);
         mMovingTaskView = null;
-        focusedTaskView.onRecycle();
+        focusedTaskView.resetPersistentViewTransforms();
         addView(focusedTaskView, mTaskViewStartIndex);
         setCurrentPage(mTaskViewStartIndex);
 
@@ -4209,5 +4225,9 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         final LocusId id = new LocusId(locusId);
         // Set locus context is a binder call, don't want it to happen during a transition
         UI_HELPER_EXECUTOR.post(() -> mActivity.setLocusContext(id, Bundle.EMPTY));
+    }
+
+    public interface TaskLaunchListener {
+        void onTaskLaunched();
     }
 }
