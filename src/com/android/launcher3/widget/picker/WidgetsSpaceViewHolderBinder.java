@@ -27,6 +27,7 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 import com.android.launcher3.recyclerview.ViewHolderBinder;
 import com.android.launcher3.widget.model.WidgetListSpaceEntry;
 
+import java.util.List;
 import java.util.function.IntSupplier;
 
 /**
@@ -47,7 +48,8 @@ public class WidgetsSpaceViewHolderBinder
     }
 
     @Override
-    public void bindViewHolder(ViewHolder holder, WidgetListSpaceEntry data, int position) {
+    public void bindViewHolder(ViewHolder holder, WidgetListSpaceEntry data,
+            @ListPosition int position, List<Object> payloads) {
         ((EmptySpaceView) holder.itemView).setFixedHeight(mEmptySpaceHeightProvider.getAsInt());
     }
 

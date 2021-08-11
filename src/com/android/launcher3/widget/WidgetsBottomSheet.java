@@ -37,7 +37,6 @@ import android.widget.TableRow;
 import android.widget.TextView;
 
 import com.android.launcher3.DeviceProfile;
-import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.R;
 import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.model.WidgetItem;
@@ -199,11 +198,7 @@ public class WidgetsBottomSheet extends BaseWidgetSheet {
             tableRow.setGravity(Gravity.TOP);
             row.forEach(widgetItem -> {
                 WidgetCell widget = addItemCell(tableRow);
-                widget.setPreviewSize(widgetItem);
-                widget.applyFromCellItem(widgetItem, LauncherAppState.getInstance(mActivityContext)
-                        .getWidgetCache());
-                widget.ensurePreview();
-                widget.setVisibility(View.VISIBLE);
+                widget.applyFromCellItem(widgetItem);
             });
             widgetsTable.addView(tableRow);
         });

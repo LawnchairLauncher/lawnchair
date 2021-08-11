@@ -48,7 +48,6 @@ import com.android.launcher3.util.SafeCloseable;
 import com.android.launcher3.util.SettingsCache;
 import com.android.launcher3.util.SimpleBroadcastReceiver;
 import com.android.launcher3.util.Themes;
-import com.android.launcher3.widget.DatabaseWidgetPreviewLoader;
 import com.android.launcher3.widget.custom.CustomWidgetManager;
 
 public class LauncherAppState {
@@ -64,7 +63,6 @@ public class LauncherAppState {
     private final LauncherModel mModel;
     private final IconProvider mIconProvider;
     private final IconCache mIconCache;
-    private final DatabaseWidgetPreviewLoader mWidgetCache;
     private final InvariantDeviceProfile mInvariantDeviceProfile;
     private final RunnableList mOnTerminateCallback = new RunnableList();
 
@@ -139,7 +137,6 @@ public class LauncherAppState {
         mIconProvider =  new IconProvider(context, Themes.isThemedIconEnabled(context));
         mIconCache = new IconCache(mContext, mInvariantDeviceProfile,
                 iconCacheFileName, mIconProvider);
-        mWidgetCache = new DatabaseWidgetPreviewLoader(mContext, mIconCache);
         mModel = new LauncherModel(context, this, mIconCache, new AppFilter(mContext));
         mOnTerminateCallback.add(mIconCache::close);
     }
@@ -155,7 +152,6 @@ public class LauncherAppState {
         LauncherIcons.clearPool();
         mIconCache.updateIconParams(
                 mInvariantDeviceProfile.fillResIconDpi, mInvariantDeviceProfile.iconBitmapSize);
-        mWidgetCache.refresh();
         mModel.forceReload();
     }
 
@@ -179,10 +175,6 @@ public class LauncherAppState {
 
     public LauncherModel getModel() {
         return mModel;
-    }
-
-    public DatabaseWidgetPreviewLoader getWidgetCache() {
-        return mWidgetCache;
     }
 
     public InvariantDeviceProfile getInvariantDeviceProfile() {
