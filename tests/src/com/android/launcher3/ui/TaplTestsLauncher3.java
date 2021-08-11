@@ -36,7 +36,6 @@ import com.android.launcher3.tapl.AppIconMenu;
 import com.android.launcher3.tapl.AppIconMenuItem;
 import com.android.launcher3.tapl.Widgets;
 import com.android.launcher3.tapl.Workspace;
-import com.android.launcher3.util.rule.ScreenRecordRule.ScreenRecord;
 import com.android.launcher3.views.OptionsPopupView;
 import com.android.launcher3.widget.picker.WidgetsFullSheet;
 import com.android.launcher3.widget.picker.WidgetsRecyclerView;
@@ -97,7 +96,6 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
     }
 
     @Test
-    @ScreenRecord //b/187080582
     public void testDevicePressMenu() throws Exception {
         mDevice.pressMenu();
         mDevice.waitForIdle();
