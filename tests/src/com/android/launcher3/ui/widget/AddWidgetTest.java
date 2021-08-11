@@ -27,7 +27,6 @@ import com.android.launcher3.model.data.LauncherAppWidgetInfo;
 import com.android.launcher3.tapl.Widget;
 import com.android.launcher3.ui.AbstractLauncherUiTest;
 import com.android.launcher3.ui.TestViewHelpers;
-import com.android.launcher3.util.rule.ScreenRecordRule.ScreenRecord;
 import com.android.launcher3.util.rule.ShellCommandRule;
 import com.android.launcher3.widget.LauncherAppWidgetProviderInfo;
 
@@ -81,7 +80,6 @@ public class AddWidgetTest extends AbstractLauncherUiTest {
      */
     @Test
     @PortraitLandscape
-    @ScreenRecord //b/195263971
     public void testDragCustomShortcut() throws Throwable {
         clearHomescreen();
         mDevice.pressHome();
