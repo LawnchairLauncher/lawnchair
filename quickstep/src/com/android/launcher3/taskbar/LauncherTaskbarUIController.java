@@ -38,8 +38,8 @@ import com.android.quickstep.RecentsAnimationCallbacks;
 import com.android.quickstep.RecentsAnimationCallbacks.RecentsAnimationListener;
 import com.android.quickstep.RecentsAnimationController;
 import com.android.quickstep.SystemUiProxy;
+import com.android.quickstep.views.RecentsView;
 import com.android.systemui.shared.recents.model.ThumbnailData;
-
 
 /**
  * A data source which integrates with a Launcher instance
@@ -159,8 +159,7 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
      *                 automatically reset once the recents animation finishes
      */
     public Animator createAnimToLauncher(@NonNull LauncherState toState,
-            @NonNull RecentsAnimationCallbacks callbacks,
-            long duration) {
+            @NonNull RecentsAnimationCallbacks callbacks, long duration) {
         TaskbarStashController stashController = mControllers.taskbarStashController;
         ObjectAnimator animator = mIconAlignmentForGestureState
                 .animateToValue(1)
@@ -180,31 +179,15 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
                 stashController.animateToIsStashed(false, duration);
             }
         });
-        callbacks.addListener(new RecentsAnimationListener() {
-            @Override
-            public void onRecentsAnimationCanceled(ThumbnailData thumbnailData) {
-                endGestureStateOverride(true);
-            }
 
-            @Override
-            public void onRecentsAnimationFinished(RecentsAnimationController controller) {
-                endGestureStateOverride(!controller.getFinishTargetIsLauncher());
-            }
-
-            private void endGestureStateOverride(boolean finishedToApp) {
-                callbacks.removeListener(this);
-                mIsAnimatingToLauncherViaGesture = false;
-
-                mIconAlignmentForGestureState
-                        .animateToValue(0)
-                        .start();
-
-                if (finishedToApp) {
-                    // We only need this for the exiting live tile case.
-                    stashController.animateToIsStashed(stashController.isStashedInApp());
-                }
-            }
+        TaskBarRecentsAnimationListener listener = new TaskBarRecentsAnimationListener(callbacks);
+        callbacks.addListener(listener);
+        RecentsView recentsView = mLauncher.getOverviewPanel();
+        recentsView.setTaskLaunchListener(() -> {
+            listener.endGestureStateOverride(true);
+            callbacks.removeListener(listener);
         });
+
         return animator;
     }
 
@@ -248,5 +231,37 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
     void setTaskbarViewVisible(boolean isVisible) {
         mIconAlphaForHome.setValue(isVisible ? 1 : 0);
         mLauncher.getHotseat().setIconsAlpha(isVisible ? 0f : 1f);
+    }
+
+    private final class TaskBarRecentsAnimationListener implements RecentsAnimationListener {
+        private final RecentsAnimationCallbacks mCallbacks;
+
+        TaskBarRecentsAnimationListener(RecentsAnimationCallbacks callbacks) {
+            mCallbacks = callbacks;
+        }
+
+        @Override
+        public void onRecentsAnimationCanceled(ThumbnailData thumbnailData) {
+            endGestureStateOverride(true);
+        }
+
+        @Override
+        public void onRecentsAnimationFinished(RecentsAnimationController controller) {
+            endGestureStateOverride(!controller.getFinishTargetIsLauncher());
+        }
+
+        private void endGestureStateOverride(boolean finishedToApp) {
+            mCallbacks.removeListener(this);
+            mIsAnimatingToLauncherViaGesture = false;
+
+            mIconAlignmentForGestureState
+                    .animateToValue(0)
+                    .start();
+
+            TaskbarStashController controller = mControllers.taskbarStashController;
+            if (finishedToApp) {
+                controller.animateToIsStashed(controller.isStashedInApp());
+            }
+        }
     }
 }
