@@ -76,6 +76,14 @@ public class LocalColorExtractor implements ResourceBasedOverride {
     public void applyColorsOverride(Context base, WallpaperColors colors) { }
 
     /**
+     * Generates color resource overrides from {@link WallpaperColors}.
+     */
+    @Nullable
+    public SparseIntArray generateColorsOverride(WallpaperColors colors) {
+        return null;
+    }
+
+    /**
      * Takes a view and returns its rect that can be used by the wallpaper local color extractor.
      *
      * @param launcher Launcher class class.
