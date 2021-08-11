@@ -22,6 +22,7 @@ import static android.view.WindowManager.LayoutParams.TYPE_APPLICATION;
 import static com.android.launcher3.ResourceUtils.pxFromDp;
 import static com.android.launcher3.Utilities.dpiFromPx;
 import static com.android.launcher3.Utilities.pxFromSp;
+import static com.android.launcher3.folder.ClippedFolderIconLayoutRule.ICON_OVERLAP_FACTOR;
 import static com.android.launcher3.util.WindowManagerCompat.MIN_TABLET_WIDTH;
 
 import android.annotation.SuppressLint;
@@ -89,6 +90,9 @@ public class DeviceProfile {
     private static final float MAX_HORIZONTAL_PADDING_PERCENT = 0.14f;
 
     private static final float TALL_DEVICE_ASPECT_RATIO_THRESHOLD = 2.0f;
+    private static final float TALLER_DEVICE_ASPECT_RATIO_THRESHOLD = 2.15f;
+    private static final float TALL_DEVICE_EXTRA_SPACE_THRESHOLD_DP = 252;
+    private static final float TALL_DEVICE_MORE_EXTRA_SPACE_THRESHOLD_DP = 268;
 
     // To evenly space the icons, increase the left/right margins for tablets in portrait mode.
     private static final int PORTRAIT_TABLET_LEFT_RIGHT_PADDING_MULTIPLIER = 4;
@@ -148,12 +152,13 @@ public class DeviceProfile {
     public int folderChildDrawablePaddingPx;
 
     // Hotseat
+    public int hotseatBarSizeExtraSpacePx;
     public final int numShownHotseatIcons;
     public int hotseatCellHeightPx;
     private final int hotseatExtraVerticalSize;
     // In portrait: size = height, in landscape: size = width
     public int hotseatBarSizePx;
-    public final int hotseatBarTopPaddingPx;
+    public int hotseatBarTopPaddingPx;
     public final int hotseatBarBottomPaddingPx;
     // Start is the side next to the nav bar, end is the side next to the workspace
     public final int hotseatBarSidePaddingStartPx;
@@ -322,6 +327,7 @@ public class DeviceProfile {
                 isTwoPanels ? inv.numDatabaseHotseatIcons : inv.numShownHotseatIcons;
         numShownAllAppsColumns =
                 isTwoPanels ? inv.numDatabaseAllAppsColumns : inv.numAllAppsColumns;
+        hotseatBarSizeExtraSpacePx = 0;
         hotseatBarTopPaddingPx =
                 res.getDimensionPixelSize(R.dimen.dynamic_grid_hotseat_top_padding);
         hotseatBarBottomPaddingPx = (isTallDevice ? 0
@@ -352,6 +358,7 @@ public class DeviceProfile {
 
         // Calculate all of the remaining variables.
         extraSpace = updateAvailableDimensions(res);
+
         // Now that we have all of the variables calculated, we can tune certain sizes.
         if (isScalableGrid && inv.devicePaddings != null) {
             // Paddings were created assuming no scaling, so we first unscale the extra space.
@@ -371,12 +378,32 @@ public class DeviceProfile {
             qsbBottomMarginPx = Math.round(qsbBottomMarginOriginalPx * cellScaleToFit);
         } else if (!isVerticalBarLayout() && isPhone && isTallDevice) {
             // We increase the hotseat size when there is extra space.
-            // ie. For a display with a large aspect ratio, we can keep the icons on the workspace
-            // in portrait mode closer together by adding more height to the hotseat.
-            // Note: This calculation was created after noticing a pattern in the design spec.
-            int extraSpace = getCellSize().y - iconSizePx - iconDrawablePaddingPx * 2
-                    - workspacePageIndicatorHeight;
-            hotseatBarSizePx += extraSpace;
+
+            if (Float.compare(aspectRatio, TALLER_DEVICE_ASPECT_RATIO_THRESHOLD) >= 0
+                    && extraSpace >= Utilities.dpToPx(TALL_DEVICE_EXTRA_SPACE_THRESHOLD_DP)) {
+                // For taller devices, we will take a piece of the extra space from each row,
+                // and add it to the space above and below the hotseat.
+
+                // For devices with more extra space, we take a larger piece from each cell.
+                int piece = extraSpace < Utilities.dpToPx(TALL_DEVICE_MORE_EXTRA_SPACE_THRESHOLD_DP)
+                        ? 7 : 5;
+
+                int extraSpace = ((getCellSize().y - iconSizePx - iconDrawablePaddingPx * 2)
+                        * inv.numRows) / piece;
+
+                workspaceTopPadding = extraSpace / 8;
+                int halfLeftOver = (extraSpace - workspaceTopPadding) / 2;
+                hotseatBarTopPaddingPx += halfLeftOver;
+                hotseatBarSizeExtraSpacePx = halfLeftOver;
+            } else {
+                // ie. For a display with a large aspect ratio, we can keep the icons on the
+                // workspace in portrait mode closer together by adding more height to the hotseat.
+                // Note: This calculation was created after noticing a pattern in the design spec.
+                hotseatBarSizeExtraSpacePx = getCellSize().y - iconSizePx
+                        - iconDrawablePaddingPx * 2 - workspacePageIndicatorHeight;
+            }
+
+            updateHotseatIconSize(iconSizePx);
 
             // Recalculate the available dimensions using the new hotseat size.
             updateAvailableDimensions(res);
@@ -394,13 +421,15 @@ public class DeviceProfile {
     }
 
     private void updateHotseatIconSize(int hotseatIconSizePx) {
-        hotseatCellHeightPx = hotseatIconSizePx;
+        // Ensure there is enough space for folder icons, which have a slightly larger radius.
+        hotseatCellHeightPx = (int) Math.ceil(hotseatIconSizePx * ICON_OVERLAP_FACTOR);
         if (isVerticalBarLayout()) {
             hotseatBarSizePx = hotseatIconSizePx + hotseatBarSidePaddingStartPx
                     + hotseatBarSidePaddingEndPx;
         } else {
             hotseatBarSizePx = hotseatIconSizePx + hotseatBarTopPaddingPx
-                    + hotseatBarBottomPaddingPx + (isScalableGrid ? 0 : hotseatExtraVerticalSize);
+                    + hotseatBarBottomPaddingPx + (isScalableGrid ? 0 : hotseatExtraVerticalSize)
+                    + hotseatBarSizeExtraSpacePx;
         }
     }
 
@@ -473,7 +502,7 @@ public class DeviceProfile {
         if (workspaceCellPaddingY < iconTextHeight) {
             iconTextSizePx = 0;
             iconDrawablePaddingPx = 0;
-            cellHeightPx = iconSizePx;
+            cellHeightPx = (int) Math.ceil(iconSizePx * ICON_OVERLAP_FACTOR);
             autoResizeAllAppsCells();
         }
     }
@@ -560,7 +589,8 @@ public class DeviceProfile {
             desiredWorkspaceLeftRightMarginPx = (int) (desiredWorkspaceLeftRightOriginalPx * scale);
         } else {
             cellWidthPx = iconSizePx + iconDrawablePaddingPx;
-            cellHeightPx = iconSizePx + iconDrawablePaddingPx
+            cellHeightPx = (int) Math.ceil(iconSizePx * ICON_OVERLAP_FACTOR)
+                    + iconDrawablePaddingPx
                     + Utilities.calculateTextHeight(iconTextSizePx);
             int cellPaddingY = (getCellSize().y - cellHeightPx) / 2;
             if (iconDrawablePaddingPx > cellPaddingY && !isVerticalLayout
@@ -649,8 +679,11 @@ public class DeviceProfile {
         int textHeight = Utilities.calculateTextHeight(folderChildTextSizePx);
 
         if (isScalableGrid) {
-            folderCellWidthPx = (int) (cellWidthPx * scale);
-            folderCellHeightPx = (int) (cellHeightPx * scale);
+            int minWidth = folderChildIconSizePx + iconDrawablePaddingPx * 2;
+            int minHeight = folderChildIconSizePx + iconDrawablePaddingPx * 2 + textHeight;
+
+            folderCellWidthPx = (int) Math.max(minWidth, cellWidthPx * scale);
+            folderCellHeightPx = (int) Math.max(minHeight, cellHeightPx * scale);
 
             int borderSpacing = (int) (cellLayoutBorderSpacingOriginalPx * scale);
             folderCellLayoutBorderSpacingPx = borderSpacing;
@@ -844,14 +877,16 @@ public class DeviceProfile {
         return isVerticalBarLayout();
     }
 
-    public int getCellHeight(@ContainerType int containerType) {
+    public int getCellContentHeight(@ContainerType int containerType) {
         switch (containerType) {
             case CellLayout.WORKSPACE:
                 return cellHeightPx;
             case CellLayout.FOLDER:
                 return folderCellHeightPx;
             case CellLayout.HOTSEAT:
-                return hotseatCellHeightPx;
+                // The hotseat is the only container where the cell height is going to be
+                // different from the content within that cell.
+                return iconSizePx;
             default:
                 // ??
                 return 0;
