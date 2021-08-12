@@ -15,6 +15,13 @@
  */
 package com.android.launcher3.uioverrides;
 
+import static com.android.launcher3.anim.Interpolators.ACCEL_DEACCEL;
+
+import android.animation.Animator;
+import android.animation.Keyframe;
+import android.animation.ObjectAnimator;
+import android.animation.PropertyValuesHolder;
+import android.annotation.Nullable;
 import android.content.Context;
 import android.graphics.BlurMaskFilter;
 import android.graphics.Canvas;
@@ -23,8 +30,10 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
 import android.os.Process;
 import android.util.AttributeSet;
+import android.util.FloatProperty;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
@@ -35,6 +44,8 @@ import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.R;
+import com.android.launcher3.anim.AnimatorListeners;
+import com.android.launcher3.icons.BitmapInfo;
 import com.android.launcher3.icons.GraphicsUtils;
 import com.android.launcher3.icons.IconNormalizer;
 import com.android.launcher3.icons.LauncherIcons;
@@ -44,6 +55,9 @@ import com.android.launcher3.touch.ItemLongClickListener;
 import com.android.launcher3.util.SafeCloseable;
 import com.android.launcher3.views.ActivityContext;
 import com.android.launcher3.views.DoubleShadowBubbleTextView;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A BubbleTextView with a ring around it's drawable
@@ -67,6 +81,25 @@ public class PredictedAppIcon extends DoubleShadowBubbleTextView {
     private int mPlateColor;
     boolean mDrawForDrag = false;
 
+    // Used for the "slot-machine" education animation.
+    private List<Drawable> mSlotMachineIcons;
+    private Animator mSlotMachineAnim;
+    private float mSlotMachineIconTranslationY;
+
+    private static final FloatProperty<PredictedAppIcon> SLOT_MACHINE_TRANSLATION_Y =
+            new FloatProperty<PredictedAppIcon>("slotMachineTranslationY") {
+        @Override
+        public void setValue(PredictedAppIcon predictedAppIcon, float transY) {
+            predictedAppIcon.mSlotMachineIconTranslationY = transY;
+            predictedAppIcon.invalidate();
+        }
+
+        @Override
+        public Float get(PredictedAppIcon predictedAppIcon) {
+            return predictedAppIcon.mSlotMachineIconTranslationY;
+        }
+    };
+
     public PredictedAppIcon(Context context) {
         this(context, null, 0);
     }
@@ -88,13 +121,36 @@ public class PredictedAppIcon extends DoubleShadowBubbleTextView {
     @Override
     public void onDraw(Canvas canvas) {
         int count = canvas.save();
+        boolean isSlotMachineAnimRunning = mSlotMachineAnim != null;
         if (!mIsPinned) {
             drawEffect(canvas);
+            if (isSlotMachineAnimRunning) {
+                // Clip to to outside of the ring during the slot machine animation.
+                canvas.clipPath(mRingPath);
+            }
             canvas.translate(getWidth() * RING_EFFECT_RATIO, getHeight() * RING_EFFECT_RATIO);
             canvas.scale(1 - 2 * RING_EFFECT_RATIO, 1 - 2 * RING_EFFECT_RATIO);
         }
-        super.onDraw(canvas);
+        if (isSlotMachineAnimRunning) {
+            drawSlotMachineIcons(canvas);
+        } else {
+            super.onDraw(canvas);
+        }
         canvas.restoreToCount(count);
+    }
+
+    private void drawSlotMachineIcons(Canvas canvas) {
+        canvas.translate((getWidth() - getIconSize()) / 2f,
+                (getHeight() - getIconSize()) / 2f + mSlotMachineIconTranslationY);
+        for (Drawable icon : mSlotMachineIcons) {
+            icon.setBounds(0, 0, getIconSize(), getIconSize());
+            icon.draw(canvas);
+            canvas.translate(0, getSlotMachineIconPlusSpacingSize());
+        }
+    }
+
+    private float getSlotMachineIconPlusSpacingSize() {
+        return getIconSize() + getOutlineOffsetY();
     }
 
     @Override
@@ -119,6 +175,42 @@ public class PredictedAppIcon extends DoubleShadowBubbleTextView {
                     getContext().getString(R.string.hotseat_prediction_content_description,
                             info.contentDescription));
         }
+    }
+
+    /**
+     * Returns an Animator that translates the given icons in a "slot-machine" fashion, beginning
+     * and ending with the original icon.
+     */
+    public @Nullable Animator createSlotMachineAnim(List<BitmapInfo> iconsToAnimate) {
+        if (mIsPinned || iconsToAnimate == null || iconsToAnimate.isEmpty()) {
+            return null;
+        }
+        // Bookend the other animating icons with the original icon on both ends.
+        mSlotMachineIcons = new ArrayList<>(iconsToAnimate.size() + 2);
+        mSlotMachineIcons.add(getIcon());
+        iconsToAnimate.stream()
+                .map(iconInfo -> iconInfo.newThemedIcon(mContext))
+                .forEach(mSlotMachineIcons::add);
+        mSlotMachineIcons.add(getIcon());
+
+        float finalTrans = -getSlotMachineIconPlusSpacingSize() * (mSlotMachineIcons.size() - 1);
+        Keyframe[] keyframes = new Keyframe[] {
+                Keyframe.ofFloat(0f, 0f),
+                Keyframe.ofFloat(0.82f, finalTrans - getOutlineOffsetY() / 2f), // Overshoot
+                Keyframe.ofFloat(1f, finalTrans) // Ease back into the final position
+        };
+        keyframes[1].setInterpolator(ACCEL_DEACCEL);
+        keyframes[2].setInterpolator(ACCEL_DEACCEL);
+
+        mSlotMachineAnim = ObjectAnimator.ofPropertyValuesHolder(this,
+                PropertyValuesHolder.ofKeyframe(SLOT_MACHINE_TRANSLATION_Y, keyframes));
+        mSlotMachineAnim.addListener(AnimatorListeners.forEndCallback(() -> {
+            mSlotMachineIcons = null;
+            mSlotMachineAnim = null;
+            mSlotMachineIconTranslationY = 0;
+            invalidate();
+        }));
+        return mSlotMachineAnim;
     }
 
     /**
