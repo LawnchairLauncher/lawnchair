@@ -100,6 +100,7 @@ import com.android.quickstep.inputconsumers.TaskbarStashInputConsumer;
 import com.android.quickstep.util.ActiveGestureLog;
 import com.android.quickstep.util.AssistantUtilities;
 import com.android.quickstep.util.ProtoTracer;
+import com.android.quickstep.util.ProxyScreenStatusProvider;
 import com.android.quickstep.util.SplitScreenBounds;
 import com.android.systemui.plugins.OverscrollPlugin;
 import com.android.systemui.plugins.PluginListener;
@@ -266,6 +267,12 @@ public class TouchInteractionService extends Service implements PluginListener<O
         public void onSplitScreenSecondaryBoundsChanged(Rect bounds, Rect insets) {
             WindowBounds wb = new WindowBounds(bounds, insets);
             MAIN_EXECUTOR.execute(() -> SplitScreenBounds.INSTANCE.setSecondaryWindowBounds(wb));
+        }
+
+        @BinderThread
+        @Override
+        public void onScreenTurnedOn() {
+            MAIN_EXECUTOR.execute(ProxyScreenStatusProvider.INSTANCE::onScreenTurnedOn);
         }
 
         @Override

@@ -66,7 +66,6 @@ import androidx.test.uiautomator.Until;
 
 import com.android.launcher3.ResourceUtils;
 import com.android.launcher3.testing.TestProtocol;
-import com.android.systemui.shared.system.ContextUtils;
 import com.android.systemui.shared.system.QuickStepContract;
 
 import org.junit.Assert;
@@ -80,6 +79,7 @@ import java.util.Collections;
 import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -96,7 +96,7 @@ public final class LauncherInstrumentation {
     private static final String TAG = "Tapl";
     private static final int ZERO_BUTTON_STEPS_FROM_BACKGROUND_TO_HOME = 20;
     private static final int GESTURE_STEP_MS = 16;
-    private static final long FORCE_PAUSE_TIMEOUT_MS = 700;
+    private static final long FORCE_PAUSE_TIMEOUT_MS = TimeUnit.SECONDS.toMillis(2);
 
     static final Pattern EVENT_TOUCH_DOWN = getTouchEventPattern("ACTION_DOWN");
     static final Pattern EVENT_TOUCH_UP = getTouchEventPattern("ACTION_UP");
@@ -245,16 +245,12 @@ public final class LauncherInstrumentation {
         ComponentName cn = new ComponentName(pi.packageName, pi.name);
 
         if (pm.getComponentEnabledSetting(cn) != COMPONENT_ENABLED_STATE_ENABLED) {
-            if (TestHelpers.isInLauncherProcess()) {
+            mInstrumentation.getUiAutomation().adoptShellPermissionIdentity(
+                    android.Manifest.permission.CHANGE_COMPONENT_ENABLED_STATE);
+            try {
                 pm.setComponentEnabledSetting(cn, COMPONENT_ENABLED_STATE_ENABLED, DONT_KILL_APP);
-            } else {
-                try {
-                    final int userId = ContextUtils.getUserId(getContext());
-                    mDevice.executeShellCommand(
-                            "pm enable --user " + userId + " " + cn.flattenToString());
-                } catch (IOException e) {
-                    fail(e.toString());
-                }
+            } finally {
+                mInstrumentation.getUiAutomation().dropShellPermissionIdentity();
             }
         }
     }
@@ -304,7 +300,7 @@ public final class LauncherInstrumentation {
 
     public boolean isTwoPanels() {
         return getTestInfo(TestProtocol.REQUEST_IS_TWO_PANELS)
-            .getBoolean(TestProtocol.TEST_INFO_RESPONSE_FIELD);
+                .getBoolean(TestProtocol.TEST_INFO_RESPONSE_FIELD);
     }
 
     private void setForcePauseTimeout(long timeout) {

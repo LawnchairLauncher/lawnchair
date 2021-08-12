@@ -36,8 +36,12 @@ import static com.android.systemui.shared.system.ActivityManagerWrapper.CLOSE_SY
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.hardware.SensorManager;
+import android.hardware.devicestate.DeviceStateManager;
 import android.view.HapticFeedbackConstants;
 import android.view.View;
+
+import androidx.annotation.Nullable;
 
 import com.android.launcher3.BaseQuickstepLauncher;
 import com.android.launcher3.DeviceProfile;
@@ -75,9 +79,14 @@ import com.android.quickstep.SysUINavigationMode;
 import com.android.quickstep.SysUINavigationMode.Mode;
 import com.android.quickstep.SystemUiProxy;
 import com.android.quickstep.TaskUtils;
+import com.android.quickstep.util.LauncherUnfoldAnimationController;
+import com.android.quickstep.util.ProxyScreenStatusProvider;
 import com.android.quickstep.util.QuickstepOnboardingPrefs;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
+import com.android.unfold.UnfoldTransitionFactory;
+import com.android.unfold.UnfoldTransitionProgressProvider;
+import com.android.unfold.config.UnfoldTransitionConfig;
 
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
@@ -97,10 +106,51 @@ public class QuickstepLauncher extends BaseQuickstepLauncher {
     private FixedContainerItems mAllAppsPredictions;
     private HotseatPredictionController mHotseatPredictionController;
 
+    @Nullable
+    private LauncherUnfoldAnimationController mLauncherUnfoldAnimationController;
+
     @Override
     protected void setupViews() {
         super.setupViews();
         mHotseatPredictionController = new HotseatPredictionController(this);
+
+        final UnfoldTransitionConfig config = UnfoldTransitionFactory.createConfig(this);
+        if (config.isEnabled()) {
+            final UnfoldTransitionProgressProvider unfoldTransitionProgressProvider =
+                    UnfoldTransitionFactory.createUnfoldTransitionProgressProvider(
+                            this,
+                            config,
+                            ProxyScreenStatusProvider.INSTANCE,
+                            getSystemService(DeviceStateManager.class),
+                            getSystemService(SensorManager.class),
+                            getMainThreadHandler(),
+                            getMainExecutor()
+                    );
+
+            mLauncherUnfoldAnimationController = new LauncherUnfoldAnimationController(
+                    this,
+                    getWindowManager(),
+                    unfoldTransitionProgressProvider
+            );
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if (mLauncherUnfoldAnimationController != null) {
+            mLauncherUnfoldAnimationController.onResume();
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        if (mLauncherUnfoldAnimationController != null) {
+            mLauncherUnfoldAnimationController.onPause();
+        }
+
+        super.onPause();
     }
 
     @Override
@@ -231,6 +281,10 @@ public class QuickstepLauncher extends BaseQuickstepLauncher {
     public void onDestroy() {
         super.onDestroy();
         mHotseatPredictionController.destroy();
+
+        if (mLauncherUnfoldAnimationController != null) {
+            mLauncherUnfoldAnimationController.onDestroy();
+        }
     }
 
     @Override
