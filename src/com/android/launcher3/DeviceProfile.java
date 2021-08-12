@@ -612,12 +612,30 @@ public class DeviceProfile {
         iconScale = Math.min(1f, scale);
         cellScaleToFit = scale;
 
-
         // Workspace
         final boolean isVerticalLayout = isVerticalBarLayout();
-        float invIconSizeDp = isLandscape ? inv.landscapeIconSize : inv.iconSize;
+        float invIconSizeDp;
+        float invIconTextSizeSp;
+
+        if (isTwoPanels) {
+            if (isLandscape) {
+                invIconSizeDp = inv.twoPanelLandscapeIconSize;
+                invIconTextSizeSp = inv.twoPanelLandscapeIconTextSize;
+            } else {
+                invIconSizeDp = inv.twoPanelPortraitIconSize;
+                invIconTextSizeSp = inv.twoPanelPortraitIconTextSize;
+            }
+        } else {
+            if (isLandscape) {
+                invIconSizeDp = inv.landscapeIconSize;
+                invIconTextSizeSp = inv.landscapeIconTextSize;
+            } else {
+                invIconSizeDp = inv.iconSize;
+                invIconTextSizeSp = inv.iconTextSize;
+            }
+        }
+
         iconSizePx = Math.max(1, pxFromDp(invIconSizeDp, mMetrics, iconScale));
-        float invIconTextSizeSp = isLandscape ? inv.landscapeIconTextSize : inv.iconTextSize;
         iconTextSizePx = (int) (pxFromSp(invIconTextSizeSp, mMetrics) * iconScale);
         iconDrawablePaddingPx = (int) (iconDrawablePaddingOriginalPx * iconScale);
 
