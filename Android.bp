@@ -112,6 +112,7 @@ android_library {
         "androidx.preference_preference",
         "androidx.slice_slice-view",
         "androidx.cardview_cardview",
+        "com.google.android.material_material",
         "iconloader_base",
     ],
     manifest: "AndroidManifest-common.xml",
