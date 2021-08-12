@@ -17,6 +17,7 @@
 package com.android.launcher3.testing;
 
 import android.util.Log;
+import android.view.InputEvent;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 
@@ -48,17 +49,24 @@ public final class TestLogging {
         }
     }
 
+    private static void registerEventNotFromTest(InputEvent event) {
+        if (!sHadEventsNotFromTest && event.getDeviceId() != -1) {
+            sHadEventsNotFromTest = true;
+            Log.d(TestProtocol.PERMANENT_DIAG_TAG, "First event not from test: " + event);
+        }
+    }
+
     public static void recordKeyEvent(String sequence, String message, KeyEvent event) {
         if (Utilities.IS_RUNNING_IN_TEST_HARNESS) {
             recordEventSlow(sequence, message + ": " + event);
-            if (event.getDeviceId() != -1) sHadEventsNotFromTest = true;
+            registerEventNotFromTest(event);
         }
     }
 
     public static void recordMotionEvent(String sequence, String message, MotionEvent event) {
         if (Utilities.IS_RUNNING_IN_TEST_HARNESS && event.getAction() != MotionEvent.ACTION_MOVE) {
             recordEventSlow(sequence, message + ": " + event);
-            if (event.getDeviceId() != -1) sHadEventsNotFromTest = true;
+            registerEventNotFromTest(event);
         }
     }
 
