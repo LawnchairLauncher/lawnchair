@@ -40,6 +40,7 @@ import com.android.launcher3.BaseRecyclerView;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.R;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.views.ActivityContext;
 import com.android.launcher3.views.RecyclerViewFastScroller;
@@ -108,7 +109,8 @@ public class AllAppsRecyclerView extends BaseRecyclerView {
         pool.setMaxRecycledViews(AllAppsGridAdapter.VIEW_TYPE_EMPTY_SEARCH, 1);
         pool.setMaxRecycledViews(AllAppsGridAdapter.VIEW_TYPE_ALL_APPS_DIVIDER, 1);
         pool.setMaxRecycledViews(AllAppsGridAdapter.VIEW_TYPE_SEARCH_MARKET, 1);
-        pool.setMaxRecycledViews(AllAppsGridAdapter.VIEW_TYPE_ICON, approxRows * mNumAppsPerRow);
+        pool.setMaxRecycledViews(AllAppsGridAdapter.VIEW_TYPE_ICON, approxRows
+                * (mNumAppsPerRow + 1));
 
         mViewHeights.clear();
         mViewHeights.put(AllAppsGridAdapter.VIEW_TYPE_ICON, grid.allAppsCellHeightPx);
@@ -166,7 +168,7 @@ public class AllAppsRecyclerView extends BaseRecyclerView {
         // Always scroll the view to the top so the user can see the changed results
         scrollToTop();
 
-        if (mApps.hasNoFilteredResults()) {
+        if (mApps.hasNoFilteredResults() && !FeatureFlags.ENABLE_DEVICE_SEARCH.get()) {
             if (mEmptySearchBackground == null) {
                 mEmptySearchBackground = new AllAppsBackgroundDrawable(getContext());
                 mEmptySearchBackground.setAlpha(0);
@@ -188,6 +190,7 @@ public class AllAppsRecyclerView extends BaseRecyclerView {
         StatsLogManager mgr = BaseDraggingActivity.fromContext(getContext()).getStatsLogManager();
         switch (state) {
             case SCROLL_STATE_DRAGGING:
+                requestFocus();
                 mgr.logger().sendToInteractionJankMonitor(
                         LAUNCHER_ALLAPPS_VERTICAL_SWIPE_BEGIN, this);
                 break;
@@ -453,8 +456,8 @@ public class AllAppsRecyclerView extends BaseRecyclerView {
      */
     public int getTabWidth() {
         DeviceProfile grid = BaseDraggingActivity.fromContext(getContext()).getDeviceProfile();
-        int totalWidth = (grid.availableWidthPx - getPaddingLeft() - getPaddingRight());
+        int totalWidth = getMeasuredWidth() - getPaddingLeft() - getPaddingRight();
         int iconPadding = totalWidth / grid.numShownAllAppsColumns - grid.allAppsIconSizePx;
-        return totalWidth - iconPadding;
+        return totalWidth - iconPadding - grid.allAppsIconDrawablePaddingPx;
     }
 }

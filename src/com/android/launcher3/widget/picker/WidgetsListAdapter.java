@@ -111,6 +111,7 @@ public class WidgetsListAdapter extends Adapter<ViewHolder> implements OnHeaderC
     @Nullable private PackageUserKey mPendingClickHeader;
     private final int mShortcutPreviewPadding;
     private final int mSpacingBetweenEntries;
+    private int mMaxSpanSize = 4;
 
     private final WidgetPreviewLoadedCallback mPreviewLoadedCallback =
             ignored -> updateVisibleEntries();
@@ -249,10 +250,14 @@ public class WidgetsListAdapter extends Adapter<ViewHolder> implements OnHeaderC
                 .filter(entry -> (mFilter == null || mFilter.test(entry))
                         && mHeaderAndSelectedContentFilter.test(entry))
                 .map(entry -> {
-                    // Adjust the original entries to expand headers for the selected content.
                     if (entry instanceof WidgetsListBaseEntry.Header<?>
                             && matchesKey(entry, mWidgetsContentVisiblePackageUserKey)) {
+                        // Adjust the original entries to expand headers for the selected content.
                         return ((WidgetsListBaseEntry.Header<?>) entry).withWidgetListShown();
+                    } else if (entry instanceof WidgetsListContentEntry) {
+                        // Adjust the original content entries to accommodate for the current
+                        // maxSpanSize.
+                        return ((WidgetsListContentEntry) entry).withMaxSpanSize(mMaxSpanSize);
                     }
                     return entry;
                 })
@@ -291,11 +296,8 @@ public class WidgetsListAdapter extends Adapter<ViewHolder> implements OnHeaderC
             for (int i = 0; i < entry.mWidgets.size(); i++) {
                 WidgetItem widgetItem = entry.mWidgets.get(i);
                 DeviceProfile deviceProfile = activity.getDeviceProfile();
-                Size widgetSize =
-                        WidgetSizes.getWidgetSizePx(
-                                deviceProfile,
-                                widgetItem.spanX,
-                                widgetItem.spanY);
+                Size widgetSize = WidgetSizes.getWidgetItemSizePx(mContext, deviceProfile,
+                        widgetItem);
                 if (widgetItem.isShortcut()) {
                     widgetSize =
                             new Size(
@@ -491,20 +493,12 @@ public class WidgetsListAdapter extends Adapter<ViewHolder> implements OnHeaderC
     }
 
     /**
-     * Sets the max horizontal spans that are allowed for grouping more than one widgets in a table
-     * row.
-     *
-     * <p>If there is only one widget in a row, that widget horizontal span is allowed to exceed
-     * {@code maxHorizontalSpans}.
-     * <p>Let's say the max horizontal spans is set to 5. Widgets can be grouped in the same row if
-     * their total horizontal spans added don't exceed 5.
-     * Example 1: Row 1: 2x2, 2x3, 1x1. Total horizontal spans is 5. This is okay.
-     * Example 2: Row 1: 2x2, 4x3, 1x1. the total horizontal spans is 7. This is wrong.
-     *            4x3 and 1x1 should be moved to a new row.
-     * Example 3: Row 1: 6x4. This is okay because this is the only item in the row.
+     * Sets the max horizontal span in cells that is allowed for grouping more than one widget in a
+     * table row.
      */
     public void setMaxHorizontalSpansPerRow(int maxHorizontalSpans) {
-        mWidgetsListTableViewHolderBinder.setMaxSpansPerRow(maxHorizontalSpans);
+        mMaxSpanSize = maxHorizontalSpans;
+        updateVisibleEntries();
     }
 
     /**

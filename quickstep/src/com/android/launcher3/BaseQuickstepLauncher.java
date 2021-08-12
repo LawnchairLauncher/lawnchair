@@ -20,10 +20,10 @@ import static com.android.launcher3.AbstractFloatingView.TYPE_HIDE_BACK_BUTTON;
 import static com.android.launcher3.LauncherState.FLAG_HIDE_BACK_BUTTON;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.NO_OFFSET;
+import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
 import static com.android.launcher3.model.data.ItemInfo.NO_MATCHING_ID;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 import static com.android.quickstep.SysUINavigationMode.Mode.TWO_BUTTONS;
-import static com.android.quickstep.util.NavigationModeFeatureFlag.LIVE_TILE;
 import static com.android.systemui.shared.system.ActivityManagerWrapper.CLOSE_SYSTEM_WINDOWS_REASON_HOME_KEY;
 
 import android.animation.AnimatorSet;
@@ -58,6 +58,7 @@ import com.android.launcher3.uioverrides.RecentsViewStateController;
 import com.android.launcher3.util.ActivityOptionsWrapper;
 import com.android.launcher3.util.ObjectWrapper;
 import com.android.launcher3.util.UiThreadHelper;
+import com.android.quickstep.OverviewCommandHelper;
 import com.android.quickstep.RecentsModel;
 import com.android.quickstep.SysUINavigationMode;
 import com.android.quickstep.SysUINavigationMode.Mode;
@@ -98,12 +99,15 @@ public abstract class BaseQuickstepLauncher extends Launcher
     private OverviewActionsView mActionsView;
 
     private @Nullable TaskbarManager mTaskbarManager;
+    private @Nullable OverviewCommandHelper mOverviewCommandHelper;
     private @Nullable LauncherTaskbarUIController mTaskbarUIController;
     private final ServiceConnection mTisBinderConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
             mTaskbarManager = ((TISBinder) iBinder).getTaskbarManager();
             mTaskbarManager.setLauncher(BaseQuickstepLauncher.this);
+
+            mOverviewCommandHelper = ((TISBinder) iBinder).getOverviewCommandHelper();
         }
 
         @Override
@@ -134,6 +138,15 @@ public abstract class BaseQuickstepLauncher extends Launcher
             mTaskbarManager.setLauncher(null);
         }
         super.onDestroy();
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+
+        if (mOverviewCommandHelper != null) {
+            mOverviewCommandHelper.clearPendingCommands();
+        }
     }
 
     public QuickstepTransitionManager getAppTransitionManager() {
@@ -181,7 +194,7 @@ public abstract class BaseQuickstepLauncher extends Launcher
     @Override
     protected void onScreenOff() {
         super.onScreenOff();
-        if (LIVE_TILE.get()) {
+        if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
             RecentsView recentsView = getOverviewPanel();
             recentsView.finishRecentsAnimation(true /* toRecents */, null);
         }

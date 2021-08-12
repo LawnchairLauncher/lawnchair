@@ -16,6 +16,11 @@
 
 package com.android.launcher3.model.data;
 
+import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_ALL_APPS;
+import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_BOTTOM_WIDGETS_TRAY;
+import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_PIN_WIDGETS;
+import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_WIDGETS_PREDICTION;
+import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_WIDGETS_TRAY;
 import static com.android.launcher3.Utilities.ATLEAST_S;
 
 import android.appwidget.AppWidgetHostView;
@@ -139,6 +144,11 @@ public class LauncherAppWidgetInfo extends ItemInfo {
 
     private boolean mHasNotifiedInitialWidgetSizeChanged;
 
+    /**
+     * The container from which this widget was added (e.g. widgets tray, pin widget, search)
+     */
+    public int sourceContainer = LauncherSettings.Favorites.CONTAINER_UNKNOWN;
+
     public LauncherAppWidgetInfo(int appWidgetId, ComponentName providerName) {
         this.appWidgetId = appWidgetId;
         this.providerName = providerName;
@@ -187,7 +197,8 @@ public class LauncherAppWidgetInfo extends ItemInfo {
                 .put(LauncherSettings.Favorites.APPWIDGET_PROVIDER, providerName.flattenToString())
                 .put(LauncherSettings.Favorites.RESTORED, restoreStatus)
                 .put(LauncherSettings.Favorites.OPTIONS, options)
-                .put(LauncherSettings.Favorites.INTENT, bindOptions);
+                .put(LauncherSettings.Favorites.INTENT, bindOptions)
+                .put(LauncherSettings.Favorites.APPWIDGET_SOURCE, sourceContainer);
     }
 
     /**
@@ -255,11 +266,29 @@ public class LauncherAppWidgetInfo extends ItemInfo {
         return widgetFeatures;
     }
 
+    public static LauncherAtom.Attribute getAttribute(int container) {
+        switch (container) {
+            case CONTAINER_WIDGETS_TRAY:
+                return LauncherAtom.Attribute.WIDGETS;
+            case CONTAINER_BOTTOM_WIDGETS_TRAY:
+                return LauncherAtom.Attribute.WIDGETS_BOTTOM_TRAY;
+            case CONTAINER_PIN_WIDGETS:
+                return LauncherAtom.Attribute.PINITEM;
+            case CONTAINER_WIDGETS_PREDICTION:
+                return LauncherAtom.Attribute.WIDGETS_TRAY_PREDICTION;
+            case CONTAINER_ALL_APPS:
+                return LauncherAtom.Attribute.ALL_APPS_SEARCH_RESULT_WIDGETS;
+            default:
+                return LauncherAtom.Attribute.UNKNOWN;
+        }
+    }
+
     @Override
     public LauncherAtom.ItemInfo buildProto(FolderInfo folderInfo) {
         LauncherAtom.ItemInfo info = super.buildProto(folderInfo);
         return info.toBuilder()
                 .setWidget(info.getWidget().toBuilder().setWidgetFeatures(widgetFeatures))
+                .setAttribute(getAttribute(sourceContainer))
                 .build();
     }
 }

@@ -24,6 +24,8 @@
 
     <!--  Task Menu View  -->
     <dimen name="task_menu_corner_radius">22dp</dimen>
+    <dimen name="task_menu_item_corner_radius">4dp</dimen>
+    <dimen name="task_menu_spacing">2dp</dimen>
     <dimen name="overview_proactive_row_height">48dp</dimen>
     <dimen name="overview_proactive_row_bottom_margin">16dp</dimen>
 
@@ -113,8 +115,8 @@
 
     <!-- All Set page -->
     <dimen name="allset_page_margin_horizontal">40dp</dimen>
-    <dimen name="allset_title_margin_top">28dp</dimen>
-    <dimen name="allset_title_icon_margin_top">80dp</dimen>
+    <dimen name="allset_title_margin_top">24dp</dimen>
+    <dimen name="allset_title_icon_margin_top">32dp</dimen>
     <dimen name="allset_hint_margin_bottom">52dp</dimen>
     <dimen name="allset_subtitle_margin_top">24dp</dimen>
 

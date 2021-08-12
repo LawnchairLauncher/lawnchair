@@ -37,5 +37,5 @@
 
     <string name="wellbeing_provider_pkg" translatable="false"/>
 
-    <integer name="max_depth_blur_radius">72</integer>
+    <integer name="max_depth_blur_radius">23</integer>
 </resources>

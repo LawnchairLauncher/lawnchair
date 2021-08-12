@@ -263,7 +263,7 @@ public class CellLayout extends ViewGroup {
         mBackground.setCallback(this);
         mBackground.setAlpha(0);
 
-        mGridColor = Themes.getAttrColor(getContext(), R.attr.gridColor);
+        mGridColor = Themes.getAttrColor(getContext(), R.attr.workspaceAccentColor);
         mGridVisualizationPadding =
                 res.getDimensionPixelSize(R.dimen.grid_visualization_cell_spacing);
         mGridVisualizationRoundingRadius =
@@ -566,9 +566,10 @@ public class CellLayout extends ViewGroup {
                 int spanX = mDragOutlines[i].cellHSpan;
                 int spanY = mDragOutlines[i].cellVSpan;
 
+                // TODO b/194414754 clean this up, reconcile with cellToRect
                 mVisualizeGridRect.set(paddingX, paddingY,
-                        mCellWidth * spanX - paddingX,
-                        mCellHeight * spanY - paddingY);
+                        mCellWidth * spanX + mBorderSpacing * (spanX - 1) - paddingX,
+                        mCellHeight * spanY + mBorderSpacing * (spanY - 1) - paddingY);
 
                 int transX = x * mCellWidth + (x * mBorderSpacing)
                         + getPaddingLeft() + paddingX;

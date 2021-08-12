@@ -18,7 +18,7 @@ package com.android.quickstep;
 
 import static android.view.Surface.ROTATION_0;
 
-import static com.android.quickstep.util.NavigationModeFeatureFlag.LIVE_TILE;
+import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
 import static com.android.quickstep.views.OverviewActionsView.DISABLED_NO_THUMBNAIL;
 import static com.android.quickstep.views.OverviewActionsView.DISABLED_ROTATED;
 
@@ -88,6 +88,7 @@ public class TaskOverlayFactory implements ResourceBasedOverride {
             SystemShortcut screenshotShortcut = TaskShortcutFactory.SCREENSHOT
                     .getShortcut(activity, taskView);
             if (screenshotShortcut != null) {
+                screenshotShortcut.setHasFinishRecentsInAction(true);
                 shortcuts.add(screenshotShortcut);
             }
 
@@ -96,6 +97,7 @@ public class TaskOverlayFactory implements ResourceBasedOverride {
                 SystemShortcut modalShortcut = TaskShortcutFactory.MODAL
                         .getShortcut(activity, taskView);
                 if (modalShortcut != null) {
+                    modalShortcut.setHasFinishRecentsInAction(true);
                     shortcuts.add(modalShortcut);
                 }
             }
@@ -187,7 +189,7 @@ public class TaskOverlayFactory implements ResourceBasedOverride {
          * @param callback callback to run, after switching to screenshot
          */
         public void endLiveTileMode(@NonNull Runnable callback) {
-            if (LIVE_TILE.get()) {
+            if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
                 RecentsView recentsView = mThumbnailView.getTaskView().getRecentsView();
                 recentsView.switchToScreenshot(
                         () -> recentsView.finishRecentsAnimation(true /* toRecents */,
@@ -263,6 +265,12 @@ public class TaskOverlayFactory implements ResourceBasedOverride {
         @RequiresApi(api = Build.VERSION_CODES.Q)
         public Insets getTaskSnapshotInsets() {
             return mThumbnailView.getScaledInsets();
+        }
+
+        /**
+         * Called when the device rotated.
+         */
+        public void updateOrientationState(RecentsOrientedState state) {
         }
 
         protected void showBlockedByPolicyMessage() {

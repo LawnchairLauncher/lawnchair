@@ -78,6 +78,9 @@ public final class FeatureFlags {
     public static final BooleanFlag UNSTABLE_SPRINGS = getDebugFlag(
             "UNSTABLE_SPRINGS", false, "Enable unstable springs for quickstep animations");
 
+    public static final BooleanFlag ENABLE_LOCAL_COLOR_POPUPS = getDebugFlag(
+            "ENABLE_LOCAL_COLOR_POPUPS", false, "Enable local color extraction for popups.");
+
     public static final BooleanFlag KEYGUARD_ANIMATION = getDebugFlag(
             "KEYGUARD_ANIMATION", false, "Enable animation for keyguard going away on wallpaper");
 
@@ -98,6 +101,10 @@ public final class FeatureFlags {
 
     public static final BooleanFlag ENABLE_DEVICE_SEARCH = new DeviceFlag(
             "ENABLE_DEVICE_SEARCH", true, "Allows on device search in all apps");
+
+    public static final BooleanFlag ENABLE_DEVICE_SEARCH_PERFORMANCE_LOGGING = new DeviceFlag(
+            "ENABLE_DEVICE_SEARCH_PERFORMANCE_LOGGING", true,
+            "Allows on device search in all apps logging");
 
     public static final BooleanFlag IME_STICKY_SNACKBAR_EDU = getDebugFlag(
             "IME_STICKY_SNACKBAR_EDU", true, "Show sticky IME edu in AllApps");
@@ -168,8 +175,8 @@ public final class FeatureFlags {
             "ENABLE_SMARTSPACE_UNIVERSAL", false,
             "Replace Smartspace with a version rendered by System UI.");
 
-    public static final BooleanFlag ENABLE_SMARTSPACE_ENHANCED = new DeviceFlag(
-            "ENABLE_SMARTSPACE_ENHANCED", false,
+    public static final BooleanFlag ENABLE_SMARTSPACE_ENHANCED = getDebugFlag(
+            "ENABLE_SMARTSPACE_ENHANCED", true,
             "Replace Smartspace with the enhanced version. "
                     + "Ignored if ENABLE_SMARTSPACE_UNIVERSAL is enabled.");
 

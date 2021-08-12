@@ -97,8 +97,10 @@ public class ScrimView extends View implements Insettable {
     private void updateSysUiColors() {
         // Use a light system UI (dark icons) if all apps is behind at least half of the
         // status bar.
-        boolean forceChange =
-                getVisibility() == VISIBLE && getAlpha() > STATUS_BAR_COLOR_FORCE_UPDATE_THRESHOLD;
+        final float threshold = STATUS_BAR_COLOR_FORCE_UPDATE_THRESHOLD;
+        boolean forceChange = getVisibility() == VISIBLE
+                && getAlpha() > threshold
+                && (Color.alpha(mBackgroundColor) / 255f) > threshold;
         if (forceChange) {
             getSystemUiController().updateUiState(UI_STATE_SCRIM_VIEW, !isScrimDark());
         } else {
