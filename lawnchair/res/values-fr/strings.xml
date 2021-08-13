@@ -106,4 +106,8 @@
     <string name="show_sys_ui_scrim">Ombre du haut</string>
     <string name="show_status_bar">Barre d\'état</string>
     <string name="what_to_show">Quoi afficher</string>
+    <string name="missing_notification_access_label">Notification Access Needed</string>
+    <string name="missing_notification_access_description">Notification access needed.</string>
+    <string name="msg_missing_notification_access">To use Notification Dots, turn on app notifications for <xliff:g id="name" example="My App">%1$s</xliff:g>.</string>
+    <string name="title_change_settings">Change Settings</string>
 </resources>
