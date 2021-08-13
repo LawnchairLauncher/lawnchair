@@ -108,6 +108,6 @@
     <string name="what_to_show">Mit mutasson</string>
     <string name="missing_notification_access_label">Értesítés hozzáférés szükséges</string>
     <string name="missing_notification_access_description">Értesítés hozzáférés szükséges.</string>
-    <string name="msg_missing_notification_access">To use Notification Dots, turn on app notifications for <xliff:g id="name" example="My App">%1$s</xliff:g>.</string>
-    <string name="title_change_settings">Change Settings</string>
+    <string name="msg_missing_notification_access">Az értesítési pöttyök használatához kapcsaold be az alkalmazás értesítéseket a <xliff:g id="name" example="My App">%1$s</xliff:g>.</string>
+    <string name="title_change_settings">Beállítások megváltoztatása</string>
 </resources>
