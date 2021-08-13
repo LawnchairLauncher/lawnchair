@@ -16,6 +16,8 @@ package com.android.launcher3.uioverrides.plugins;
 
 import static android.content.pm.PackageManager.MATCH_DISABLED_COMPONENTS;
 
+import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
+
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -24,6 +26,7 @@ import android.content.pm.ResolveInfo;
 import com.android.launcher3.util.MainThreadInitializedObject;
 import com.android.systemui.plugins.Plugin;
 import com.android.systemui.plugins.PluginListener;
+import com.android.systemui.shared.plugins.PluginInstanceManager;
 import com.android.systemui.shared.plugins.PluginManager;
 import com.android.systemui.shared.plugins.PluginManagerImpl;
 import com.android.systemui.shared.plugins.PluginPrefs;
@@ -31,6 +34,7 @@ import com.android.systemui.shared.plugins.PluginPrefs;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 public class PluginManagerWrapper {
@@ -47,8 +51,14 @@ public class PluginManagerWrapper {
     private PluginManagerWrapper(Context c) {
         mContext = c;
         PluginInitializerImpl pluginInitializer  = new PluginInitializerImpl();
-        mPluginManager = new PluginManagerImpl(c, pluginInitializer);
-        mPluginEnabler = pluginInitializer.getPluginEnabler(c);
+        mPluginEnabler = new PluginEnablerImpl(c);
+        PluginInstanceManager.Factory instanceManagerFactory = new PluginInstanceManager.Factory(
+                c, c.getPackageManager(),  MODEL_EXECUTOR.getLooper(), pluginInitializer);
+
+        mPluginManager = new PluginManagerImpl(c, instanceManagerFactory,
+                pluginInitializer.isDebuggable(),
+                Optional.ofNullable(Thread.getDefaultUncaughtExceptionHandler()), mPluginEnabler,
+                new PluginPrefs(c), pluginInitializer.getPrivilegedPlugins(c));
     }
 
     public PluginEnablerImpl getPluginEnabler() {
