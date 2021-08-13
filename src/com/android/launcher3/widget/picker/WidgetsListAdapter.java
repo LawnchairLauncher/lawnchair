@@ -16,6 +16,9 @@
 package com.android.launcher3.widget.picker;
 
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_WIDGETSTRAY_APP_EXPANDED;
+import static com.android.launcher3.recyclerview.ViewHolderBinder.POSITION_DEFAULT;
+import static com.android.launcher3.recyclerview.ViewHolderBinder.POSITION_FIRST;
+import static com.android.launcher3.recyclerview.ViewHolderBinder.POSITION_LAST;
 
 import android.content.Context;
 import android.graphics.Rect;
@@ -52,6 +55,7 @@ import com.android.launcher3.widget.CachingWidgetPreviewLoader;
 import com.android.launcher3.widget.DatabaseWidgetPreviewLoader;
 import com.android.launcher3.widget.WidgetCell;
 import com.android.launcher3.widget.WidgetPreviewLoader.WidgetPreviewLoadedCallback;
+import com.android.launcher3.widget.model.WidgetListSpaceEntry;
 import com.android.launcher3.widget.model.WidgetsListBaseEntry;
 import com.android.launcher3.widget.model.WidgetsListContentEntry;
 import com.android.launcher3.widget.model.WidgetsListHeaderEntry;
@@ -64,6 +68,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.OptionalInt;
+import java.util.function.IntSupplier;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -84,6 +89,7 @@ public class WidgetsListAdapter extends Adapter<ViewHolder> implements OnHeaderC
     private static final boolean DEBUG = false;
 
     /** Uniquely identifies widgets list view type within the app. */
+    private static final int VIEW_TYPE_WIDGETS_SPACE = R.id.view_type_widgets_space;
     private static final int VIEW_TYPE_WIDGETS_LIST = R.id.view_type_widgets_list;
     private static final int VIEW_TYPE_WIDGETS_HEADER = R.id.view_type_widgets_header;
     private static final int VIEW_TYPE_WIDGETS_SEARCH_HEADER = R.id.view_type_widgets_search_header;
@@ -97,7 +103,7 @@ public class WidgetsListAdapter extends Adapter<ViewHolder> implements OnHeaderC
     private final WidgetListBaseRowEntryComparator mRowComparator =
             new WidgetListBaseRowEntryComparator();
 
-    private List<WidgetsListBaseEntry> mAllEntries = new ArrayList<>();
+    private final List<WidgetsListBaseEntry> mAllEntries = new ArrayList<>();
     private ArrayList<WidgetsListBaseEntry> mVisibleEntries = new ArrayList<>();
     @Nullable private PackageUserKey mWidgetsContentVisiblePackageUserKey = null;
 
@@ -118,6 +124,7 @@ public class WidgetsListAdapter extends Adapter<ViewHolder> implements OnHeaderC
 
     public WidgetsListAdapter(Context context, LayoutInflater layoutInflater,
             DatabaseWidgetPreviewLoader widgetPreviewLoader, IconCache iconCache,
+            IntSupplier emptySpaceHeightProvider,
             OnClickListener iconClickListener, OnLongClickListener iconLongClickListener) {
         mContext = context;
         mLauncher = Launcher.getLauncher(context);
@@ -126,22 +133,23 @@ public class WidgetsListAdapter extends Adapter<ViewHolder> implements OnHeaderC
         WidgetsListDrawableFactory listDrawableFactory = new WidgetsListDrawableFactory(context);
         mWidgetsListTableViewHolderBinder = new WidgetsListTableViewHolderBinder(
                 layoutInflater, iconClickListener, iconLongClickListener,
-                mCachingPreviewLoader, listDrawableFactory, /* listAdapter= */ this);
+                mCachingPreviewLoader, listDrawableFactory);
         mViewHolderBinders.put(VIEW_TYPE_WIDGETS_LIST, mWidgetsListTableViewHolderBinder);
         mViewHolderBinders.put(
                 VIEW_TYPE_WIDGETS_HEADER,
                 new WidgetsListHeaderViewHolderBinder(
                         layoutInflater,
                         /* onHeaderClickListener= */ this,
-                        listDrawableFactory,
-                        /* listAdapter= */ this));
+                        listDrawableFactory));
         mViewHolderBinders.put(
                 VIEW_TYPE_WIDGETS_SEARCH_HEADER,
                 new WidgetsListSearchHeaderViewHolderBinder(
                         layoutInflater,
                         /* onHeaderClickListener= */ this,
-                        listDrawableFactory,
-                        /* listAdapter= */ this));
+                        listDrawableFactory));
+        mViewHolderBinders.put(
+                VIEW_TYPE_WIDGETS_SPACE,
+                new WidgetsSpaceViewHolderBinder(emptySpaceHeightProvider));
         mShortcutPreviewPadding =
                 2 * context.getResources()
                         .getDimensionPixelSize(R.dimen.widget_preview_shortcut_padding);
@@ -205,6 +213,14 @@ public class WidgetsListAdapter extends Adapter<ViewHolder> implements OnHeaderC
         return mVisibleEntries.size();
     }
 
+    /**
+     * Returns true if the adapter has entries which will be visible to the user
+     */
+    public boolean hasVisibleEntries() {
+        // Account for the 1st space entry
+        return getItemCount() > 1;
+    }
+
     /** Returns all items that will be drawn in a recycler view. */
     public List<WidgetsListBaseEntry> getItems() {
         return mVisibleEntries;
@@ -218,8 +234,9 @@ public class WidgetsListAdapter extends Adapter<ViewHolder> implements OnHeaderC
     /** Updates the widget list based on {@code tempEntries}. */
     public void setWidgets(List<WidgetsListBaseEntry> tempEntries) {
         mCachingPreviewLoader.clearAll();
-        mAllEntries = tempEntries.stream().sorted(mRowComparator)
-                .collect(Collectors.toList());
+        mAllEntries.clear();
+        mAllEntries.add(new WidgetListSpaceEntry());
+        tempEntries.stream().sorted(mRowComparator).forEach(mAllEntries::add);
         if (shouldClearVisibleEntries()) {
             mVisibleEntries.clear();
         }
@@ -247,8 +264,9 @@ public class WidgetsListAdapter extends Adapter<ViewHolder> implements OnHeaderC
                 getOffsetForPosition(previousPositionForPackageUserKey);
 
         List<WidgetsListBaseEntry> newVisibleEntries = mAllEntries.stream()
-                .filter(entry -> (mFilter == null || mFilter.test(entry))
+                .filter(entry -> ((mFilter == null || mFilter.test(entry))
                         && mHeaderAndSelectedContentFilter.test(entry))
+                        || entry instanceof WidgetListSpaceEntry)
                 .map(entry -> {
                     if (entry instanceof WidgetsListBaseEntry.Header<?>
                             && matchesKey(entry, mWidgetsContentVisiblePackageUserKey)) {
@@ -352,7 +370,13 @@ public class WidgetsListAdapter extends Adapter<ViewHolder> implements OnHeaderC
     public void onBindViewHolder(ViewHolder holder, int pos) {
         ViewHolderBinder viewHolderBinder = mViewHolderBinders.get(getItemViewType(pos));
         WidgetsListBaseEntry entry = mVisibleEntries.get(pos);
-        viewHolderBinder.bindViewHolder(holder, mVisibleEntries.get(pos), pos);
+
+        // The first entry has an empty space, count from second entries.
+        int listPos = (pos > 1) ? POSITION_DEFAULT : POSITION_FIRST;
+        if (pos == (getItemCount() - 1)) {
+            listPos |= POSITION_LAST;
+        }
+        viewHolderBinder.bindViewHolder(holder, mVisibleEntries.get(pos), listPos);
         holder.itemView.setTag(R.id.tag_widget_entry, entry);
     }
 
@@ -395,6 +419,8 @@ public class WidgetsListAdapter extends Adapter<ViewHolder> implements OnHeaderC
             return VIEW_TYPE_WIDGETS_HEADER;
         } else if (entry instanceof WidgetsListSearchHeaderEntry) {
             return VIEW_TYPE_WIDGETS_SEARCH_HEADER;
+        } else if (entry instanceof WidgetListSpaceEntry) {
+            return VIEW_TYPE_WIDGETS_SPACE;
         }
         throw new UnsupportedOperationException("ViewHolderBinder not found for " + entry);
     }

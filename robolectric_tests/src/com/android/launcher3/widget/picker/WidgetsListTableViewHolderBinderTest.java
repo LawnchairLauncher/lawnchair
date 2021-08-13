@@ -107,19 +107,12 @@ public final class WidgetsListTableViewHolderBinderTest {
             return componentWithLabel.getComponent().getShortClassName();
         }).when(mIconCache).getTitleNoCache(any());
 
-        WidgetsListAdapter widgetsListAdapter = new WidgetsListAdapter(mContext,
-                LayoutInflater.from(mTestActivity),
-                mWidgetPreviewLoader,
-                mIconCache,
-                /* iconClickListener= */ view -> {},
-                /* iconLongClickListener= */ view -> false);
         mViewHolderBinder = new WidgetsListTableViewHolderBinder(
                 LayoutInflater.from(mTestActivity),
                 mOnIconClickListener,
                 mOnLongClickListener,
                 new CachingWidgetPreviewLoader(mWidgetPreviewLoader),
-                new WidgetsListDrawableFactory(mTestActivity),
-                widgetsListAdapter);
+                new WidgetsListDrawableFactory(mTestActivity));
     }
 
     @After

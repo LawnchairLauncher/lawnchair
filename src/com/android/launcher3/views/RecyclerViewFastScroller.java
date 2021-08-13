@@ -40,7 +40,6 @@ import android.view.ViewConfiguration;
 import android.view.WindowInsets;
 import android.widget.TextView;
 
-import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -131,7 +130,6 @@ public class RecyclerViewFastScroller extends View {
 
     protected BaseRecyclerView mRv;
     private RecyclerView.OnScrollListener mOnScrollListener;
-    @Nullable private OnFastScrollChangeListener mOnFastScrollChangeListener;
 
     private int mDownX;
     private int mDownY;
@@ -208,7 +206,6 @@ public class RecyclerViewFastScroller extends View {
             int rvCurrentOffsetY = mRv.getCurrentScrollY();
             if (mRvOffsetY != rvCurrentOffsetY) {
                 mRvOffsetY = mRv.getCurrentScrollY();
-                notifyScrollChanged();
             }
             return;
         }
@@ -216,7 +213,6 @@ public class RecyclerViewFastScroller extends View {
         mThumbOffsetY = y;
         invalidate();
         mRvOffsetY = mRv.getCurrentScrollY();
-        notifyScrollChanged();
     }
 
     public int getThumbOffsetY() {
@@ -460,24 +456,5 @@ public class RecyclerViewFastScroller extends View {
 
     public void setIsRecyclerViewFirstChildInParent(boolean isRecyclerViewFirstChildInParent) {
         mIsRecyclerViewFirstChildInParent = isRecyclerViewFirstChildInParent;
-    }
-
-    public void setOnFastScrollChangeListener(
-            @Nullable OnFastScrollChangeListener onFastScrollChangeListener) {
-        mOnFastScrollChangeListener = onFastScrollChangeListener;
-    }
-
-    private void notifyScrollChanged() {
-        if (mOnFastScrollChangeListener != null) {
-            mOnFastScrollChangeListener.onScrollChanged();
-        }
-    }
-
-    /**
-     * A callback that is invoked when there is a scroll change in {@link RecyclerViewFastScroller}.
-     */
-    public interface OnFastScrollChangeListener {
-        /** Called when the recycler view scroll has changed. */
-        void onScrollChanged();
     }
 }
