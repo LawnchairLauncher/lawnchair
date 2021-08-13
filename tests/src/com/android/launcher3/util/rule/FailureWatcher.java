@@ -44,7 +44,7 @@ public class FailureWatcher extends TestWatcher {
             @Override
             public void evaluate() throws Throwable {
                 try {
-                    base.evaluate();
+                    FailureWatcher.super.apply(base, description).evaluate();
                 } finally {
                     if (mLauncher.hadNontestEvents()) {
                         throw new AssertionError(
