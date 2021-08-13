@@ -106,8 +106,8 @@
     <string name="show_sys_ui_scrim">Oberer Schatten</string>
     <string name="show_status_bar">Statusleiste</string>
     <string name="what_to_show">Was soll angezeigt werden</string>
-    <string name="missing_notification_access_label">Notification Access Needed</string>
-    <string name="missing_notification_access_description">Notification access needed.</string>
-    <string name="msg_missing_notification_access">To use Notification Dots, turn on app notifications for <xliff:g id="name" example="My App">%1$s</xliff:g>.</string>
-    <string name="title_change_settings">Change Settings</string>
+    <string name="missing_notification_access_label">Benachrichtigungszugriff erforderlich</string>
+    <string name="missing_notification_access_description">Benachrichtigungszugriff erforderlich.</string>
+    <string name="msg_missing_notification_access">Um Benachrichtigungspunkte zu verwenden, aktivieren Sie App-Benachrichtigungen für <xliff:g id="name" example="My App">%1$s</xliff:g>.</string>
+    <string name="title_change_settings">Einstellungen ändern</string>
 </resources>
