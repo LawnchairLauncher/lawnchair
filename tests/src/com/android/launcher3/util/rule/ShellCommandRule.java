@@ -21,7 +21,6 @@ import static com.android.launcher3.tapl.TestHelpers.getLauncherInMyProcess;
 
 import android.content.ComponentName;
 import android.content.pm.ActivityInfo;
-import android.util.Log;
 
 import androidx.annotation.Nullable;
 import androidx.test.InstrumentationRegistry;
@@ -103,8 +102,6 @@ public class ShellCommandRule implements TestRule {
      */
     public static ShellCommandRule setDefaultLauncher() {
         final ActivityInfo launcher = getLauncherInMyProcess();
-        Log.d("b/187080582", "Launcher: " + new ComponentName(launcher.packageName, launcher.name)
-                .flattenToString());
         return new ShellCommandRule(getLauncherCommand(launcher), null, true, () ->
                 Assert.assertEquals("Setting default launcher failed",
                         new ComponentName(launcher.packageName, launcher.name)
