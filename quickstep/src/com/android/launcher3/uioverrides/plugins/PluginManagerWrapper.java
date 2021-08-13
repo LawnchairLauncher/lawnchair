@@ -35,7 +35,7 @@ import com.android.systemui.shared.plugins.PluginPrefs;
 
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -55,7 +55,7 @@ public class PluginManagerWrapper {
         mContext = c;
         PluginInitializerImpl pluginInitializer  = new PluginInitializerImpl();
         mPluginEnabler = new PluginEnablerImpl(c);
-        List<String> privilegedPlugins = Arrays.asList(pluginInitializer.getPrivilegedPlugins(c));
+        List<String> privilegedPlugins = Collections.emptyList();
         PluginInstance.Factory instanceFactory = new PluginInstance.Factory(
                 getClass().getClassLoader(), new PluginInstance.InstanceFactory<>(),
                 new PluginInstance.VersionChecker(), privilegedPlugins,
