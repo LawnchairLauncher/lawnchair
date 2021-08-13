@@ -108,8 +108,8 @@
     <string name="show_sys_ui_scrim">Тень под строкой состояния</string>
     <string name="show_status_bar">Строка состояния</string>
     <string name="what_to_show">Что показывать</string>
-    <string name="missing_notification_access_label">Notification Access Needed</string>
-    <string name="missing_notification_access_description">Notification access needed.</string>
-    <string name="msg_missing_notification_access">To use Notification Dots, turn on app notifications for <xliff:g id="name" example="My App">%1$s</xliff:g>.</string>
-    <string name="title_change_settings">Change Settings</string>
+    <string name="missing_notification_access_label">Доступ к уведомлениям</string>
+    <string name="missing_notification_access_description">Необходимо разрешение доступа к уведомлениям.</string>
+    <string name="msg_missing_notification_access">Чтобы использовать значки уведомлений, предоставьте доступ к уведомлениям для <xliff:g id="name" example="My App">%1$s</xliff:g>.</string>
+    <string name="title_change_settings">Изменить параметры</string>
 </resources>
