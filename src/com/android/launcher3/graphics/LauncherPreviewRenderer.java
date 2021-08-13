@@ -270,13 +270,13 @@ public class LauncherPreviewRenderer extends ContextWrapper
             CellLayout leftPanel = mRootView.findViewById(R.id.workspace_left);
             leftPanel.setPadding(mDp.workspacePadding.left + mDp.cellLayoutPaddingLeftRightPx,
                     mDp.workspacePadding.top,
-                    mDp.workspacePadding.right + mDp.cellLayoutPaddingLeftRightPx,
+                    mDp.workspacePadding.right,
                     mDp.workspacePadding.bottom);
             mWorkspaceScreens.put(LEFT_PANEL_ID, leftPanel);
         }
 
         CellLayout firstScreen = mRootView.findViewById(R.id.workspace);
-        firstScreen.setPadding(mDp.workspacePadding.left + mDp.cellLayoutPaddingLeftRightPx,
+        firstScreen.setPadding(mDp.workspacePadding.left,
                 mDp.workspacePadding.top,
                 mDp.workspacePadding.right + mDp.cellLayoutPaddingLeftRightPx,
                 mDp.workspacePadding.bottom);
