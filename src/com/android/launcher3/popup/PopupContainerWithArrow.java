@@ -365,6 +365,11 @@ public class PopupContainerWithArrow<T extends StatefulActivity<LauncherState>>
     }
 
     private void initializeSystemShortcut(int resId, ViewGroup container, SystemShortcut info) {
+        if (!info.isEnabled()) {
+            // If the shortcut is disabled, do not display it
+            return;
+        }
+
         View view = inflateAndAdd(
                 resId, container, getInsertIndexForSystemShortcut(container, info));
         if (view instanceof DeepShortcutView) {
@@ -597,6 +602,12 @@ public class PopupContainerWithArrow<T extends StatefulActivity<LauncherState>>
                 mNotificationContainer.trimNotifications(
                         NotificationKeyData.extractKeysOnly(dotInfo.getNotificationKeys()));
             }
+        }
+
+        @Override
+        public void onSystemShortcutsUpdated() {
+            close(true);
+            PopupContainerWithArrow.showForIcon(mOriginalIcon);
         }
     }
 
