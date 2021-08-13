@@ -35,6 +35,7 @@ import android.graphics.Rect;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.util.SparseArray;
 import android.util.TypedValue;
 import android.util.Xml;
@@ -68,6 +69,8 @@ public class InvariantDeviceProfile {
 
     private static final int DEFAULT_TRUE = -1;
     private static final int DEFAULT_SPLIT_DISPLAY = 2;
+    private static final int GRID_ENABLED_ALL_DISPLAYS = 0;
+    private static final int GRID_ENABLED_SINGLE_DISPLAY = 1;
 
     private static final String KEY_IDP_GRID_NAME = "idp_grid_name";
 
@@ -104,6 +107,7 @@ public class InvariantDeviceProfile {
     public float iconTextSize;
     public float allAppsIconSize;
     public float allAppsIconTextSize;
+    public boolean isSplitDisplay;
 
     public float minCellHeight;
     public float minCellWidth;
@@ -280,6 +284,7 @@ public class InvariantDeviceProfile {
         numFolderColumns = closestProfile.numFolderColumns;
         isScalable = closestProfile.isScalable;
         devicePaddingId = closestProfile.devicePaddingId;
+        this.isSplitDisplay = isSplitDisplay;
 
         mExtraAttrs = closestProfile.extraAttrs;
 
@@ -390,16 +395,19 @@ public class InvariantDeviceProfile {
                 if ((type == XmlPullParser.START_TAG)
                         && GridOption.TAG_NAME.equals(parser.getName())) {
 
-                    GridOption gridOption = new GridOption(context, Xml.asAttributeSet(parser));
-                    final int displayDepth = parser.getDepth();
-                    while (((type = parser.next()) != XmlPullParser.END_TAG ||
-                            parser.getDepth() > displayDepth)
-                            && type != XmlPullParser.END_DOCUMENT) {
-                        if ((type == XmlPullParser.START_TAG) && "display-option".equals(
-                                parser.getName())) {
-                            profiles.add(new DisplayOption(gridOption, context,
-                                    Xml.asAttributeSet(parser),
-                                    isSplitDisplay ? DEFAULT_SPLIT_DISPLAY : DEFAULT_TRUE));
+                    GridOption gridOption =
+                            new GridOption(context, Xml.asAttributeSet(parser), isSplitDisplay);
+                    if (gridOption.isEnabled) {
+                        final int displayDepth = parser.getDepth();
+                        while (((type = parser.next()) != XmlPullParser.END_TAG
+                                || parser.getDepth() > displayDepth)
+                                && type != XmlPullParser.END_DOCUMENT) {
+                            if ((type == XmlPullParser.START_TAG) && "display-option".equals(
+                                    parser.getName())) {
+                                profiles.add(new DisplayOption(gridOption, context,
+                                        Xml.asAttributeSet(parser),
+                                        isSplitDisplay ? DEFAULT_SPLIT_DISPLAY : DEFAULT_TRUE));
+                            }
                         }
                     }
                 }
@@ -411,7 +419,7 @@ public class InvariantDeviceProfile {
         ArrayList<DisplayOption> filteredProfiles = new ArrayList<>();
         if (!TextUtils.isEmpty(gridName)) {
             for (DisplayOption option : profiles) {
-                if (gridName.equals(option.grid.name)) {
+                if (gridName.equals(option.grid.name) && option.grid.isEnabled) {
                     filteredProfiles.add(option);
                 }
             }
@@ -428,6 +436,32 @@ public class InvariantDeviceProfile {
             throw new RuntimeException("No display option with canBeDefault=true");
         }
         return filteredProfiles;
+    }
+
+    /**
+     * @return all the grid options that can be shown on the device
+     */
+    public List<GridOption> parseAllGridOptions(Context context) {
+        List<GridOption> result = new ArrayList<>();
+        try (XmlResourceParser parser = context.getResources().getXml(R.xml.device_profiles)) {
+            final int depth = parser.getDepth();
+            int type;
+            while (((type = parser.next()) != XmlPullParser.END_TAG
+                    || parser.getDepth() > depth) && type != XmlPullParser.END_DOCUMENT) {
+                if ((type == XmlPullParser.START_TAG)
+                        && GridOption.TAG_NAME.equals(parser.getName())) {
+                    GridOption option =
+                            new GridOption(context, Xml.asAttributeSet(parser), isSplitDisplay);
+                    if (option.isEnabled) {
+                        result.add(option);
+                    }
+                }
+            }
+        } catch (IOException | XmlPullParserException e) {
+            Log.e(TAG, "Error parsing device profile", e);
+            return Collections.emptyList();
+        }
+        return result;
     }
 
     private int getLauncherIconDensity(int requiredSize) {
@@ -591,6 +625,7 @@ public class InvariantDeviceProfile {
         public final String name;
         public final int numRows;
         public final int numColumns;
+        public final boolean isEnabled;
 
         private final int numFolderRows;
         private final int numFolderColumns;
@@ -610,7 +645,7 @@ public class InvariantDeviceProfile {
 
         private final SparseArray<TypedValue> extraAttrs;
 
-        public GridOption(Context context, AttributeSet attrs) {
+        public GridOption(Context context, AttributeSet attrs, boolean isSplitDisplay) {
             TypedArray a = context.obtainStyledAttributes(
                     attrs, R.styleable.GridDisplayOption);
             name = a.getString(R.styleable.GridDisplayOption_name);
@@ -642,6 +677,12 @@ public class InvariantDeviceProfile {
                     R.styleable.GridDisplayOption_isScalable, false);
             devicePaddingId = a.getResourceId(
                     R.styleable.GridDisplayOption_devicePaddingId, 0);
+
+            final int enabledInt =
+                    a.getInteger(R.styleable.GridDisplayOption_gridEnabled,
+                            GRID_ENABLED_ALL_DISPLAYS);
+            isEnabled = enabledInt == GRID_ENABLED_ALL_DISPLAYS
+                    || enabledInt == GRID_ENABLED_SINGLE_DISPLAY && !isSplitDisplay;
 
             a.recycle();
             extraAttrs = Themes.createValueMap(context, attrs,
