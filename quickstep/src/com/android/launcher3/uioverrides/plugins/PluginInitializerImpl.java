@@ -14,32 +14,15 @@
 
 package com.android.launcher3.uioverrides.plugins;
 
-import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
-
 import android.content.Context;
-import android.os.Looper;
 
 import com.android.launcher3.Utilities;
 import com.android.systemui.shared.plugins.PluginInitializer;
 
 public class PluginInitializerImpl implements PluginInitializer {
     @Override
-    public Looper getBgLooper() {
-        return MODEL_EXECUTOR.getLooper();
-    }
-
-    @Override
-    public void onPluginManagerInit() {
-    }
-
-    @Override
-    public String[] getWhitelistedPlugins(Context context) {
+    public String[] getPrivilegedPlugins(Context context) {
         return new String[0];
-    }
-
-    @Override
-    public PluginEnablerImpl getPluginEnabler(Context context) {
-        return new PluginEnablerImpl(context);
     }
 
     @Override
