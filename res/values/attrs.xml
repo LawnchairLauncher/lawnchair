@@ -152,6 +152,12 @@
         <attr name="demoModeLayoutId" format="reference" />
         <attr name="isScalable" format="boolean" />
         <attr name="devicePaddingId" format="reference" />
+        <attr name="gridEnabled" format="integer" >
+            <!-- Enable on all devices; default value -->
+            <enum name="all_displays" value="0" />
+            <!-- Enable on single display devices only -->
+            <enum name="single_display" value="1" />
+        </attr>
 
     </declare-styleable>
 
