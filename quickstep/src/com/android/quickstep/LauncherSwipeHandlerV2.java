@@ -106,7 +106,9 @@ public class LauncherSwipeHandlerV2 extends
         boolean canUseWorkspaceView = workspaceView != null && workspaceView.isAttachedToWindow();
 
         mActivity.getRootView().setForceHideBackArrow(true);
-        mActivity.setHintUserWillBeActive();
+        if (!TaskAnimationManager.ENABLE_SHELL_TRANSITIONS) {
+            mActivity.setHintUserWillBeActive();
+        }
 
         if (!canUseWorkspaceView || appCanEnterPip) {
             return new LauncherHomeAnimationFactory();
