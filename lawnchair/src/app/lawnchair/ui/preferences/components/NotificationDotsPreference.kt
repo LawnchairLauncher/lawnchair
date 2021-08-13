@@ -46,7 +46,7 @@ fun NotificationDotsPreference() {
 
     val showWarning = enabled && !serviceEnabled
     val summary = when {
-        showWarning -> R.string.title_missing_notification_access
+        showWarning -> R.string.missing_notification_access_description
         enabled -> R.string.notification_dots_desc_on
         else -> R.string.notification_dots_desc_off
     }
@@ -136,7 +136,7 @@ fun NotificationAccessConfirmation(onDismissRequest: () -> Unit) {
             Text(text = stringResource(id = android.R.string.cancel))
         } },
         title = {
-            Text(text = stringResource(id = R.string.title_missing_notification_access))
+            Text(text = stringResource(id = R.string.missing_notification_access_label))
         },
         text = {
             val appName = stringResource(id = R.string.derived_app_name)
