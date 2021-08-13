@@ -763,9 +763,6 @@ public final class LauncherInstrumentation {
                     try (LauncherInstrumentation.Closable c1 = addContextLayer(
                             "Swiped up from context menu to home")) {
                         waitUntilLauncherObjectGone(CONTEXT_MENU_RES_ID);
-                        // Swiping up can temporarily bring Nexus Launcher if the current
-                        // Launcher is a Launcher3 one. Wait for the current launcher to reappear.
-                        SystemClock.sleep(5000); // b/187080582
                         waitForLauncherObject(getAnyObjectSelector());
                     }
                 }
