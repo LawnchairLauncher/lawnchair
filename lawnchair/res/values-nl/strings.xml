@@ -106,8 +106,8 @@
     <string name="show_sys_ui_scrim">Schaduw bovenaan</string>
     <string name="show_status_bar">Statusbalk</string>
     <string name="what_to_show">Wat te tonen</string>
-    <string name="missing_notification_access_label">Notification Access Needed</string>
+    <string name="missing_notification_access_label">Notificatie toegang nodig</string>
     <string name="missing_notification_access_description">Notification access needed.</string>
-    <string name="msg_missing_notification_access">To use Notification Dots, turn on app notifications for <xliff:g id="name" example="My App">%1$s</xliff:g>.</string>
-    <string name="title_change_settings">Change Settings</string>
+    <string name="msg_missing_notification_access">Om meldingsstipjes te gebruiken, schakel app-meldingen voor <xliff:g id="name" example="My App">%1$s</xliff:g> in.</string>
+    <string name="title_change_settings">Instellingen wijzigen</string>
 </resources>
