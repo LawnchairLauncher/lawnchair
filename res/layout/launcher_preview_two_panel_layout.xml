@@ -25,24 +25,24 @@
         android:layout_height="match_parent">
 
         <com.android.launcher3.CellLayout
-            android:id="@+id/workspace_left"
+            android:id="@+id/workspace"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:theme="@style/HomeScreenElementTheme"
             launcher:containerType="workspace"
             launcher:layout_constraintStart_toStartOf="parent"
             launcher:layout_constraintTop_toTopOf="parent"
-            launcher:layout_constraintEnd_toStartOf="@id/workspace"
+            launcher:layout_constraintEnd_toStartOf="@id/workspace_right"
             launcher:layout_constraintBottom_toBottomOf="parent"
             launcher:pageIndicator="@+id/page_indicator" />
 
         <com.android.launcher3.CellLayout
-            android:id="@+id/workspace"
+            android:id="@+id/workspace_right"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:theme="@style/HomeScreenElementTheme"
             launcher:containerType="workspace"
-            launcher:layout_constraintStart_toEndOf="@id/workspace_left"
+            launcher:layout_constraintStart_toEndOf="@id/workspace"
             launcher:layout_constraintTop_toTopOf="parent"
             launcher:layout_constraintEnd_toEndOf="parent"
             launcher:layout_constraintBottom_toBottomOf="parent"
