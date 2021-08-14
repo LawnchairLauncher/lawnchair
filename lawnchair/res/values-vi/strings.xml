@@ -101,12 +101,12 @@
     <string name="custom">Tùy chỉnh</string>
     <string name="custom_color">Tuỳ chỉnh màu sắc</string>
     <string name="quickstep_description">Nút xoá tất cả, độ cong của góc</string>
-    <string name="wallpaper_scrolling_label">Scroll Wallpaper</string>
+    <string name="wallpaper_scrolling_label">Hình nền cuộn</string>
     <string name="show_sys_ui_scrim">Bóng đổ phía trên</string>
     <string name="show_status_bar">Thanh trạng thái</string>
     <string name="what_to_show">Hiện gì</string>
-    <string name="missing_notification_access_label">Notification Access Needed</string>
-    <string name="missing_notification_access_description">Notification access needed.</string>
-    <string name="msg_missing_notification_access">To use Notification Dots, turn on app notifications for <xliff:g id="name" example="My App">%1$s</xliff:g>.</string>
-    <string name="title_change_settings">Change Settings</string>
+    <string name="missing_notification_access_label">Cần quyền truy cập thông báo</string>
+    <string name="missing_notification_access_description">Cần quyền truy cập thông báo.</string>
+    <string name="msg_missing_notification_access">Để sử dụng chấm thông báo, hãy bật thông báo cho ứng dụng <xliff:g id="name" example="My App">%1$s</xliff:g>.</string>
+    <string name="title_change_settings">Thay đổi cài đặt</string>
 </resources>
