@@ -36,12 +36,14 @@ import android.view.ContextThemeWrapper;
 import android.view.Display;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.RoundedCorner;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.DeviceProfile;
@@ -83,6 +85,7 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
     private final TaskbarControllers mControllers;
 
     private final WindowManager mWindowManager;
+    private final @Nullable RoundedCorner mLeftCorner, mRightCorner;
     private WindowManager.LayoutParams mWindowLayoutParams;
     private boolean mIsFullscreen;
     // The size we should return to when we call setTaskbarWindowFullscreen(false)
@@ -136,10 +139,12 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
                 ? windowContext.getApplicationContext()
                 : windowContext.getApplicationContext().createDisplayContext(display);
         mWindowManager = c.getSystemService(WindowManager.class);
+        mLeftCorner = display.getRoundedCorner(RoundedCorner.POSITION_BOTTOM_LEFT);
+        mRightCorner = display.getRoundedCorner(RoundedCorner.POSITION_BOTTOM_RIGHT);
     }
 
     public void init() {
-        mLastRequestedNonFullscreenHeight = mDeviceProfile.taskbarSize;
+        mLastRequestedNonFullscreenHeight = getDefaultTaskbarWindowHeight();
         mWindowLayoutParams = new WindowManager.LayoutParams(
                 MATCH_PARENT,
                 mLastRequestedNonFullscreenHeight,
@@ -167,6 +172,14 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
 
     public boolean isThreeButtonNav() {
         return mNavMode == Mode.THREE_BUTTONS;
+    }
+
+    public int getLeftCornerRadius() {
+        return mLeftCorner == null ? 0 : mLeftCorner.getRadius();
+    }
+
+    public int getRightCornerRadius() {
+        return mRightCorner == null ? 0 : mRightCorner.getRadius();
     }
 
     @Override
@@ -249,8 +262,12 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
         setTaskbarWindowHeight(fullscreen ? MATCH_PARENT : mLastRequestedNonFullscreenHeight);
     }
 
+    public boolean isTaskbarWindowFullscreen() {
+        return mIsFullscreen;
+    }
+
     /**
-     * Updates the TaskbarContainer height (pass deviceProfile.taskbarSize to reset).
+     * Updates the TaskbarContainer height (pass {@link #getDefaultTaskbarWindowHeight()} to reset).
      */
     public void setTaskbarWindowHeight(int height) {
         if (mWindowLayoutParams.height == height || mIsDestroyed) {
@@ -268,6 +285,13 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
         }
         mWindowLayoutParams.height = height;
         mWindowManager.updateViewLayout(mDragLayer, mWindowLayoutParams);
+    }
+
+    /**
+     * Returns the default height of the window, including the static corner radii above taskbar.
+     */
+    public int getDefaultTaskbarWindowHeight() {
+        return mDeviceProfile.taskbarSize + Math.max(getLeftCornerRadius(), getRightCornerRadius());
     }
 
     protected void onTaskbarIconClicked(View view) {
