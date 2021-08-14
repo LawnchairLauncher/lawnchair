@@ -278,12 +278,7 @@ public class RecyclerViewFastScroller extends View {
                 mIgnoreDragGesture |= absDeltaY > mConfig.getScaledPagingTouchSlop();
 
                 if (!mIsDragging && !mIgnoreDragGesture && mRv.supportsFastScrolling()) {
-                    // condition #1: triggering thumb is distance, angle based
-                    if ((isNearThumb(mDownX, mLastY)
-                            && absDeltaY > mConfig.getScaledPagingTouchSlop()
-                            && absDeltaY > absDeltaX)
-                            // condition#2: Fastscroll function is now time based
-                            || (isNearScrollBar(mDownX) && ev.getEventTime() - mDownTimeStampMillis
+                    if ((isNearThumb(mDownX, mLastY) && ev.getEventTime() - mDownTimeStampMillis
                                     > FASTSCROLL_THRESHOLD_MILLIS)) {
                         calcTouchOffsetAndPrepToFastScroll(mDownY, mLastY);
                     }
@@ -433,9 +428,6 @@ public class RecyclerViewFastScroller extends View {
     }
 
     private void updatePopupY(int lastTouchY) {
-        if (!mPopupVisible) {
-            return;
-        }
         int height = mPopupView.getHeight();
         // Aligns the rounded corner of the pop up with the top of the thumb.
         float top = mRv.getScrollBarTop() + lastTouchY + (getScrollThumbRadius() / 2f)

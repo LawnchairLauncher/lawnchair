@@ -629,7 +629,8 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         // Initialize quickstep specific cache params here, as this is constructed only once
         mActivity.getViewCache().setCacheSize(R.layout.digital_wellbeing_toast, 5);
 
-        mLiveTileTaskViewSimulator = new TaskViewSimulator(getContext(), getSizeStrategy());
+        mLiveTileTaskViewSimulator = new TaskViewSimulator(getContext(), getSizeStrategy(),
+                true /* isForLiveTile */);
         mLiveTileTaskViewSimulator.recentsViewScale.value = 1;
         mLiveTileTaskViewSimulator.setOrientationState(mOrientationState);
         mLiveTileTaskViewSimulator.setDrawsBelowRecents(true);
@@ -904,8 +905,8 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             TaskViewUtils.composeRecentsLaunchAnimator(anim, taskView, apps, wallpaper, nonApps,
                     true /* launcherClosing */, mActivity.getStateManager(), this,
                     getDepthController());
-            anim.start();
         }
+        anim.start();
     }
 
     private void updateTaskStartIndex(View affectingView) {
@@ -1791,6 +1792,12 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         }
 
         mCurrentGestureEndTarget = null;
+
+        if (ENABLE_QUICKSTEP_LIVE_TILE.get() && mActivity.getDeviceProfile().isMultiWindowMode) {
+            switchToScreenshot(
+                    () -> finishRecentsAnimation(true /* toRecents */, false /* shouldPip */,
+                            null));
+        }
     }
 
     /**
