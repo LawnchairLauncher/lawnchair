@@ -274,7 +274,7 @@ public class DepthController implements StateHandler<LauncherState>,
     public void onOverlayScrollChanged(float progress) {
         // Round out the progress to dedupe frequent, non-perceptable updates
         int progressI = (int) (progress * 256);
-        float progressF = progressI / 256f;
+        float progressF = Utilities.boundToRange(progressI / 256f, 0f, 1f);
         if (Float.compare(mOverlayScrollProgress, progressF) == 0) {
             return;
         }
