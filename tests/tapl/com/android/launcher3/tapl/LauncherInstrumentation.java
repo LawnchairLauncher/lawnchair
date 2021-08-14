@@ -66,6 +66,7 @@ import androidx.test.uiautomator.Until;
 
 import com.android.launcher3.ResourceUtils;
 import com.android.launcher3.testing.TestProtocol;
+import com.android.systemui.shared.system.ContextUtils;
 import com.android.systemui.shared.system.QuickStepContract;
 
 import org.junit.Assert;
@@ -245,12 +246,16 @@ public final class LauncherInstrumentation {
         ComponentName cn = new ComponentName(pi.packageName, pi.name);
 
         if (pm.getComponentEnabledSetting(cn) != COMPONENT_ENABLED_STATE_ENABLED) {
-            mInstrumentation.getUiAutomation().adoptShellPermissionIdentity(
-                    android.Manifest.permission.CHANGE_COMPONENT_ENABLED_STATE);
-            try {
+            if (TestHelpers.isInLauncherProcess()) {
                 pm.setComponentEnabledSetting(cn, COMPONENT_ENABLED_STATE_ENABLED, DONT_KILL_APP);
-            } finally {
-                mInstrumentation.getUiAutomation().dropShellPermissionIdentity();
+            } else {
+                try {
+                    final int userId = ContextUtils.getUserId(getContext());
+                    mDevice.executeShellCommand(
+                            "pm enable --user " + userId + " " + cn.flattenToString());
+                } catch (IOException e) {
+                    fail(e.toString());
+                }
             }
         }
     }
@@ -300,7 +305,7 @@ public final class LauncherInstrumentation {
 
     public boolean isTwoPanels() {
         return getTestInfo(TestProtocol.REQUEST_IS_TWO_PANELS)
-                .getBoolean(TestProtocol.TEST_INFO_RESPONSE_FIELD);
+            .getBoolean(TestProtocol.TEST_INFO_RESPONSE_FIELD);
     }
 
     private void setForcePauseTimeout(long timeout) {
@@ -763,9 +768,6 @@ public final class LauncherInstrumentation {
                     try (LauncherInstrumentation.Closable c1 = addContextLayer(
                             "Swiped up from context menu to home")) {
                         waitUntilLauncherObjectGone(CONTEXT_MENU_RES_ID);
-                        // Swiping up can temporarily bring Nexus Launcher if the current
-                        // Launcher is a Launcher3 one. Wait for the current launcher to reappear.
-                        SystemClock.sleep(5000); // b/187080582
                         waitForLauncherObject(getAnyObjectSelector());
                     }
                 }
