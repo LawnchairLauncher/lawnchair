@@ -19,7 +19,6 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="recent_task_option_split_screen" msgid="5353188922202653570">"स्क्रिन विभाजन गर्नुहोस्"</string>
     <string name="recent_task_option_pin" msgid="7929860679018978258">"पिन गर्नुहोस्"</string>
     <string name="recent_task_option_freeform" msgid="48863056265284071">"फ्रिफर्म"</string>
     <string name="recents_empty_message" msgid="7040467240571714191">"हालसालैको कुनै पनि वस्तु छैन"</string>
@@ -29,9 +28,9 @@
     <string name="task_contents_description_with_remaining_time" msgid="4479688746574672685">"<xliff:g id="TASK_DESCRIPTION">%1$s</xliff:g>, <xliff:g id="REMAINING_TIME">%2$s</xliff:g>"</string>
     <string name="shorter_duration_less_than_one_minute" msgid="4722015666335015336">"&lt; १ मिनेट"</string>
     <string name="time_left_for_app" msgid="3111996412933644358">"आज: <xliff:g id="TIME">%1$s</xliff:g> बाँकी"</string>
-    <string name="title_app_suggestions" msgid="4185902664111965088">"अनुप्रयोगसम्बन्धी सुझावहरू"</string>
+    <string name="title_app_suggestions" msgid="4185902664111965088">"एपसम्बन्धी सुझावहरू"</string>
     <string name="all_apps_label" msgid="8542784161730910663">"सबै एपहरू"</string>
-    <string name="all_apps_prediction_tip" msgid="2672336544844936186">"तपाईंका पूर्वानुमानित एपहरू"</string>
+    <string name="all_apps_prediction_tip" msgid="2672336544844936186">"तपाईंलाई चाहिने एपहरू"</string>
     <string name="hotseat_edu_title_migrate" msgid="306578144424489980">"तपाईंको गृह स्क्रिनको पुछारको पङ्क्तिमा सिफारिस गरिएका एपहरू प्राप्त गर्नुहोस्"</string>
     <string name="hotseat_edu_title_migrate_landscape" msgid="3633942953997845243">"आफ्नो होम स्क्रिनको मन पर्ने नामक पङ्क्तिमा सिफारिस गरिएका एपहरू प्राप्त गर्नुहोस्"</string>
     <string name="hotseat_edu_message_migrate" msgid="8927179260533775320">"गृह स्क्रिनबाटै आफूले सबैभन्दा बढी प्रयोग गर्ने एप सजिलै चलाउनुहोस्। सिफारिस गरिने एपहरूको क्रम तपाईंले एप प्रयोग गर्ने समयतालिकाअनुसार बदलिने छ। फेदको पङ्क्तिमा रहेका एपहरू तपाईंको गृह स्क्रिनको सिरानमा सर्ने छन्।"</string>
@@ -46,7 +45,72 @@
     <string name="hotsaet_tip_prediction_enabled" msgid="2233554377501347650">"सिफारिस गरिएका एपहरू देखाउने सुविधा सक्षम पारिएका छन्"</string>
     <string name="hotsaet_tip_prediction_disabled" msgid="1506426298884658491">"सिफारिस गरिएका एपहरू देखाउने सुविधा असक्षम पारिएको छ"</string>
     <string name="hotseat_prediction_content_description" msgid="4582028296938078419">"पूर्वानुमान गरिएको एप: <xliff:g id="TITLE">%1$s</xliff:g>"</string>
+    <!-- no translation found for back_gesture_feedback_swipe_too_far_from_left_edge (340972404868601012) -->
+    <skip />
+    <!-- no translation found for back_gesture_feedback_cancelled_left_edge (6671316150388702530) -->
+    <skip />
+    <!-- no translation found for back_gesture_feedback_complete_left_edge (3220478647881674266) -->
+    <skip />
+    <!-- no translation found for back_gesture_feedback_swipe_too_far_from_right_edge (4306700023773832353) -->
+    <skip />
+    <!-- no translation found for back_gesture_feedback_cancelled_right_edge (4951916546256902552) -->
+    <skip />
+    <!-- no translation found for back_gesture_feedback_complete (7261221999760772210) -->
+    <skip />
+    <!-- no translation found for back_gesture_feedback_swipe_in_nav_bar (1148198467090405643) -->
+    <skip />
+    <!-- no translation found for back_gesture_tutorial_confirm_subtitle (5181305411668713250) -->
+    <skip />
+    <!-- no translation found for back_gesture_intro_title (19551256430224428) -->
+    <skip />
+    <!-- no translation found for back_gesture_intro_subtitle (7912576483031802797) -->
+    <skip />
+    <!-- no translation found for home_gesture_feedback_swipe_too_far_from_edge (1446774096007065298) -->
+    <skip />
+    <!-- no translation found for home_gesture_feedback_overview_detected (1557523944897393013) -->
+    <skip />
+    <!-- no translation found for home_gesture_feedback_wrong_swipe_direction (6993979358080825438) -->
+    <skip />
+    <!-- no translation found for home_gesture_feedback_complete (2324789183070815517) -->
+    <skip />
+    <!-- no translation found for home_gesture_intro_title (836590312858441830) -->
+    <skip />
+    <!-- no translation found for home_gesture_intro_subtitle (2632238748497975326) -->
+    <skip />
+    <!-- no translation found for overview_gesture_feedback_swipe_too_far_from_edge (3032757898111577225) -->
+    <skip />
+    <!-- no translation found for overview_gesture_feedback_home_detected (1411130969354020489) -->
+    <skip />
+    <!-- no translation found for overview_gesture_feedback_wrong_swipe_direction (6725820500906747925) -->
+    <skip />
+    <!-- no translation found for overview_gesture_feedback_complete (5477014491632199169) -->
+    <skip />
+    <!-- no translation found for overview_gesture_intro_title (2902054412868489378) -->
+    <skip />
+    <!-- no translation found for overview_gesture_intro_subtitle (1579517193845186042) -->
+    <skip />
+    <!-- no translation found for gesture_tutorial_confirm_title (6201516182040074092) -->
+    <skip />
+    <!-- no translation found for gesture_tutorial_action_button_label_next (2556263116424738762) -->
+    <skip />
+    <!-- no translation found for gesture_tutorial_action_button_label_done (671834508127014231) -->
+    <skip />
+    <!-- no translation found for gesture_tutorial_action_button_label_settings (2923621047916486604) -->
+    <skip />
+    <!-- no translation found for gesture_tutorial_try_again (65962545858556697) -->
+    <skip />
+    <!-- no translation found for gesture_tutorial_nice (2936275692616928280) -->
+    <skip />
+    <!-- no translation found for gesture_tutorial_step (1279786122817620968) -->
+    <skip />
     <string name="action_share" msgid="2648470652637092375">"सेयर गर्नुहोस्"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"स्क्रिनसट"</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"यो एप वा तपाईंको सङ्गठनले यो कारबाही गर्ने अनुमति दिँदैन"</string>
+    <!-- no translation found for skip_tutorial_dialog_title (2725643161260038458) -->
+    <skip />
+    <string name="skip_tutorial_dialog_subtitle" msgid="544063326241955662">"तपाईं पछि <xliff:g id="NAME">%1$s</xliff:g> एपमा गई यो ट्युटोरियल भेट्टाउन सक्नुहुन्छ"</string>
+    <!-- no translation found for gesture_tutorial_action_button_label_cancel (3809842569351264108) -->
+    <skip />
+    <!-- no translation found for gesture_tutorial_action_button_label_skip (394452764989751960) -->
+    <skip />
 </resources>

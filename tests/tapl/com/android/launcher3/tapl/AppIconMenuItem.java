@@ -20,8 +20,6 @@ import androidx.test.uiautomator.UiObject2;
 
 import com.android.launcher3.testing.TestProtocol;
 
-import java.util.regex.Pattern;
-
 /**
  * Menu item in an app icon menu.
  */
@@ -50,5 +48,10 @@ public class AppIconMenuItem extends Launchable {
     @Override
     protected void expectActivityStartEvents() {
         mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN, LauncherInstrumentation.EVENT_START);
+    }
+
+    @Override
+    protected String launchableType() {
+        return "app icon menu item";
     }
 }

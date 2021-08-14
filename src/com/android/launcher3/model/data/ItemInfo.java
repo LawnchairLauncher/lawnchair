@@ -24,15 +24,16 @@ import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_PREDICT
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_SEARCH_RESULTS;
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_SETTINGS;
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_SHORTCUTS;
-import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_TASKFOREGROUND;
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_TASKSWITCHER;
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_WIDGETS_TRAY;
+import static com.android.launcher3.LauncherSettings.Favorites.EXTENDED_CONTAINERS;
 import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_APPLICATION;
 import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET;
 import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT;
 import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT;
 import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_TASK;
 import static com.android.launcher3.logger.LauncherAtom.ContainerInfo.ContainerCase.CONTAINER_NOT_SET;
+import static com.android.launcher3.shortcuts.ShortcutKey.EXTRA_SHORTCUT_ID;
 
 import android.content.ComponentName;
 import android.content.ContentValues;
@@ -51,9 +52,10 @@ import com.android.launcher3.logger.LauncherAtom.ContainerInfo;
 import com.android.launcher3.logger.LauncherAtom.PredictionContainer;
 import com.android.launcher3.logger.LauncherAtom.SearchResultContainer;
 import com.android.launcher3.logger.LauncherAtom.SettingsContainer;
+import com.android.launcher3.logger.LauncherAtom.Shortcut;
 import com.android.launcher3.logger.LauncherAtom.ShortcutsContainer;
-import com.android.launcher3.logger.LauncherAtom.TaskForegroundContainer;
 import com.android.launcher3.logger.LauncherAtom.TaskSwitcherContainer;
+import com.android.launcher3.logger.LauncherAtomExtensions.ExtendedContainers;
 import com.android.launcher3.model.ModelWriter;
 import com.android.launcher3.util.ContentWriter;
 
@@ -64,8 +66,10 @@ import java.util.Optional;
  */
 public class ItemInfo {
 
-    public static final boolean DEBUG = true;
+    public static final boolean DEBUG = false;
     public static final int NO_ID = -1;
+    // An id that doesn't match any item, including predicted apps with have an id=NO_ID
+    public static final int NO_MATCHING_ID = Integer.MIN_VALUE;
 
     /**
      * The id in the settings database for this item
@@ -164,6 +168,8 @@ public class ItemInfo {
         cellY = info.cellY;
         spanX = info.spanX;
         spanY = info.spanY;
+        minSpanX = info.minSpanX;
+        minSpanY = info.minSpanY;
         rank = info.rank;
         screenId = info.screenId;
         itemType = info.itemType;
@@ -180,6 +186,24 @@ public class ItemInfo {
     @Nullable
     public ComponentName getTargetComponent() {
         return Optional.ofNullable(getIntent()).map(Intent::getComponent).orElse(mComponentName);
+    }
+
+    /**
+     * Returns this item's package name.
+     *
+     * Prioritizes the component package name, then uses the intent package name as a fallback.
+     * This ensures deep shortcuts are supported.
+     */
+    @Nullable
+    public String getTargetPackage() {
+        ComponentName component = getTargetComponent();
+        Intent intent = getIntent();
+
+        return component != null
+                ? component.getPackageName()
+                : intent != null
+                        ? intent.getPackage()
+                        : null;
     }
 
     public void writeToValues(ContentWriter writer) {
@@ -225,7 +249,7 @@ public class ItemInfo {
     protected String dumpProperties() {
         return "id=" + id
                 + " type=" + LauncherSettings.Favorites.itemTypeToString(itemType)
-                + " container=" + LauncherSettings.Favorites.containerToString(container)
+                + " container=" + getContainerInfo()
                 + " targetComponent=" + getTargetComponent()
                 + " screen=" + screenId
                 + " cell(" + cellX + "," + cellY + ")"
@@ -259,12 +283,6 @@ public class ItemInfo {
     }
 
     /**
-     * Can be overridden by inherited classes to fill in {@link LauncherAtom.ItemInfo}
-     */
-    public void setItemBuilder(LauncherAtom.ItemInfo.Builder builder) {
-    }
-
-    /**
      * Creates {@link LauncherAtom.ItemInfo} with important fields and parent container info.
      */
     public LauncherAtom.ItemInfo buildProto() {
@@ -287,6 +305,18 @@ public class ItemInfo {
                                 .orElse(LauncherAtom.Application.newBuilder()));
                 break;
             case ITEM_TYPE_DEEP_SHORTCUT:
+                itemBuilder
+                        .setShortcut(nullableComponent
+                                .map(component -> {
+                                    Shortcut.Builder lsb = Shortcut.newBuilder()
+                                            .setShortcutName(component.flattenToShortString());
+                                    Optional.ofNullable(getIntent())
+                                            .map(i -> i.getStringExtra(EXTRA_SHORTCUT_ID))
+                                            .ifPresent(lsb::setShortcutId);
+                                    return lsb;
+                                })
+                                .orElse(LauncherAtom.Shortcut.newBuilder()));
+                break;
             case ITEM_TYPE_SHORTCUT:
                 itemBuilder
                         .setShortcut(nullableComponent
@@ -340,13 +370,16 @@ public class ItemInfo {
         return itemBuilder.build();
     }
 
-    LauncherAtom.ItemInfo.Builder getDefaultItemInfoBuilder() {
+    protected LauncherAtom.ItemInfo.Builder getDefaultItemInfoBuilder() {
         LauncherAtom.ItemInfo.Builder itemBuilder = LauncherAtom.ItemInfo.newBuilder();
         itemBuilder.setIsWork(user != Process.myUserHandle());
         return itemBuilder;
     }
 
-    protected ContainerInfo getContainerInfo() {
+    /**
+     * Returns {@link ContainerInfo} used when logging this item.
+     */
+    public ContainerInfo getContainerInfo() {
         switch (container) {
             case CONTAINER_HOTSEAT:
                 return ContainerInfo.newBuilder()
@@ -394,14 +427,20 @@ public class ItemInfo {
                 return ContainerInfo.newBuilder()
                         .setTaskSwitcherContainer(TaskSwitcherContainer.getDefaultInstance())
                         .build();
-            case CONTAINER_TASKFOREGROUND:
+            case EXTENDED_CONTAINERS:
                 return ContainerInfo.newBuilder()
-                        .setTaskForegroundContainer(TaskForegroundContainer.getDefaultInstance())
+                        .setExtendedContainers(getExtendedContainer())
                         .build();
-
-
         }
         return ContainerInfo.getDefaultInstance();
+    }
+
+    /**
+     * Returns non-AOSP container wrapped by {@link ExtendedContainers} object. Should be overridden
+     * by build variants.
+     */
+    protected ExtendedContainers getExtendedContainer() {
+        return ExtendedContainers.getDefaultInstance();
     }
 
     /**

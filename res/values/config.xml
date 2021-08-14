@@ -1,7 +1,6 @@
 <resources>
     <!-- Miscellaneous -->
     <bool name="config_largeHeap">false</bool>
-    <bool name="allow_rotation">false</bool>
 
     <integer name="extracted_color_gradient_alpha">153</integer>
 
@@ -24,7 +23,7 @@
 
     <!-- AllApps & Launcher transitions -->
     <!-- Out of 100, the percent to shrink the workspace during spring loaded mode. -->
-    <integer name="config_workspaceSpringLoadShrinkPercentage">90</integer>
+    <integer name="config_workspaceSpringLoadShrinkPercentage">85</integer>
 
     <!-- The duration of the animation from search hint to text entry -->
     <integer name="config_searchHintAnimationDuration">50</integer>
@@ -32,13 +31,16 @@
     <!-- View tag key used to store SpringAnimation data. -->
     <item type="id" name="spring_animation_tag" />
 
+    <!-- View tag key used to determine if we should fade in the child views.. -->
+    <string name="popup_container_iterate_children" translatable="false">popup_container_iterate_children</string>
+
     <!-- Workspace -->
     <!-- The duration (in ms) of the fade animation on the object outlines, used when
          we are dragging objects around on the home screen. -->
-    <integer name="config_dragOutlineFadeTime">900</integer>
+    <integer name="config_dragOutlineFadeTime">500</integer>
 
     <!-- The alpha value at which to show the most recent drop visualization outline. -->
-    <integer name="config_dragOutlineMaxAlpha">128</integer>
+    <integer name="config_dragOutlineMaxAlpha">255</integer>
 
     <!-- Parameters controlling the animation for when an item is dropped on the home screen,
          and it animates from its old position to the new one. -->
@@ -55,21 +57,15 @@
     <!-- The duration of the caret animation -->
     <integer name="config_caretAnimationDuration">200</integer>
 
-    <!-- Hotseat -->
-    <bool name="hotseat_transpose_layout_with_orientation">true</bool>
-
     <!-- Various classes overriden by projects/build flavors. -->
-    <string name="app_filter_class" translatable="false"></string>
-    <string name="user_event_dispatcher_class" translatable="false"></string>
     <string name="folder_name_provider_class" translatable="false"></string>
     <string name="stats_log_manager_class" translatable="false"></string>
-    <string name="app_transition_manager_class" translatable="false"></string>
     <string name="instant_app_resolver_class" translatable="false"></string>
     <string name="main_process_initializer_class" translatable="false"></string>
     <string name="app_launch_tracker_class" translatable="false"></string>
     <string name="test_information_handler_class" translatable="false"></string>
     <string name="launcher_activity_logic_class" translatable="false"></string>
-    <string name="prediction_model_class" translatable="false"></string>
+    <string name="model_delegate_class" translatable="false"></string>
 
     <!-- View ID to use for QSB widget -->
     <item type="id" name="qsb_widget" />
@@ -80,18 +76,15 @@
     <!-- View IDs to store item highlight information -->
     <item type="id" name="view_unhighlight_background" />
 
+    <!-- view ID used to restore work tab state -->
+    <item type="id" name="work_tab_state_id" />
+
     <!-- Menu id for feature flags -->
     <item type="id" name="menu_apply_flags" />
 
-    <!-- Popup items -->
-    <integer name="config_popupOpenCloseDuration">150</integer>
-    <integer name="config_popupArrowOpenCloseDuration">40</integer>
-    <integer name="config_removeNotificationViewDuration">300</integer>
-
     <!-- Default packages -->
     <string name="wallpaper_picker_package" translatable="false"></string>
-    <string name="calendar_component_name" translatable="false"></string>
-    <string name="clock_component_name" translatable="false"></string>
+    <string name="local_colors_extraction_class" translatable="false"></string>
 
     <!-- Accessibility actions -->
     <item type="id" name="action_remove" />
@@ -113,6 +106,7 @@
     <!-- QSB IDs. DO not change -->
     <item type="id" name="search_container_workspace" />
     <item type="id" name="search_container_all_apps" />
+    <item type="id" name="search_container_hotseat" />
 
     <!-- Recents -->
     <item type="id" name="overview_panel"/>
@@ -137,8 +131,45 @@
     <item name="swipe_up_rect_scale_stiffness" type="dimen" format="float">200</item>
 
     <item name="swipe_up_rect_xy_fling_friction" type="dimen" format="float">1.5</item>
+
+    <item name="swipe_up_scale_start"  type="dimen" format="float">0.88</item>
+    <item name="swipe_up_duration"  type="dimen" format="float">400</item>
+
+    <item name="swipe_up_trans_y_dp"  type="dimen" format="float">4.5</item>
+    <item name="swipe_up_trans_y_dp_per_s" type="dimen" format="float">3</item>
+
+    <item name="swipe_up_trans_y_damping" type="dimen" format="float">0.45</item>
+    <item name="swipe_up_trans_y_stiffness" type="dimen" format="float">200</item>
+
     <item name="swipe_up_rect_xy_damping_ratio" type="dimen" format="float">0.8</item>
     <item name="swipe_up_rect_xy_stiffness" type="dimen" format="float">200</item>
+
+
+    <item name="swipe_up_rect_2_x_damping_ratio" type="dimen" format="float">1</item>
+    <item name="swipe_up_rect_2_x_stiffness" type="dimen" format="float">250</item>
+
+    <item name="swipe_up_rect_2_y_damping_ratio" type="dimen" format="float">1</item>
+    <item name="swipe_up_rect_2_y_stiffness" type="dimen" format="float">600</item>
+
+    <item name="swipe_up_rect_2_y_stiffness_low_swipe_multiplier" type="dimen" format="float">0.8</item>
+    <item name="swipe_up_low_swipe_duration_multiplier"  type="dimen" format="float">1</item>
+
+    <item name="swipe_up_launcher_alpha_max_progress" type="dimen" format="float">0.85</item>
+
+
+    <item name="c1_a" type="dimen" format="float">0.05</item>
+    <item name="c1_b" type="dimen" format="float">0</item>
+    <item name="c1_c" type="dimen" format="float">0.133333</item>
+    <item name="c1_d" type="dimen" format="float">0.06</item>
+
+    <item name="mp_x" type="dimen" format="float">0.166666</item>
+    <item name="mp_y" type="dimen" format="float">.4</item>
+
+    <item name="c2_a" type="dimen" format="float">0.208333</item>
+    <item name="c2_b" type="dimen" format="float">.82</item>
+    <item name="c2_c" type="dimen" format="float">.25</item>
+    <item name="c2_d" type="dimen" format="float">1</item>
+
 
     <item name="staggered_damping_ratio" type="dimen" format="float">0.7</item>
     <item name="staggered_stiffness" type="dimen" format="float">150</item>
@@ -154,37 +185,37 @@
     <dimen name="swipe_up_max_workspace_trans_y">-60dp</dimen>
 
     <array name="dynamic_resources">
-        <item>@dimen/all_apps_spring_damping_ratio</item>
-        <item>@dimen/all_apps_spring_stiffness</item>
+        <item>@dimen/swipe_up_duration</item>
+        <item>@dimen/swipe_up_scale_start</item>
+        <item>@dimen/swipe_up_trans_y_dp</item>
+        <item>@dimen/swipe_up_trans_y_dp_per_s</item>
+        <item>@dimen/swipe_up_trans_y_damping</item>
+        <item>@dimen/swipe_up_trans_y_stiffness</item>
+        <item>@dimen/swipe_up_rect_2_x_damping_ratio</item>
+        <item>@dimen/swipe_up_rect_2_x_stiffness</item>
+        <item>@dimen/swipe_up_rect_2_y_damping_ratio</item>
+        <item>@dimen/swipe_up_rect_2_y_stiffness</item>
+        <item>@dimen/swipe_up_launcher_alpha_max_progress</item>
+        <item>@dimen/swipe_up_rect_2_y_stiffness_low_swipe_multiplier</item>
+        <item>@dimen/swipe_up_low_swipe_duration_multiplier</item>
 
-        <item>@dimen/dismiss_task_trans_y_damping_ratio</item>
-        <item>@dimen/dismiss_task_trans_y_stiffness</item>
+        <item>@dimen/c1_a</item>
+        <item>@dimen/c1_b</item>
+        <item>@dimen/c1_c</item>
+        <item>@dimen/c1_d</item>
 
-        <item>@dimen/dismiss_task_trans_x_damping_ratio</item>
-        <item>@dimen/dismiss_task_trans_x_stiffness</item>
+        <item>@dimen/mp_x</item>
+        <item>@dimen/mp_y</item>
 
-        <item>@dimen/horizontal_spring_damping_ratio</item>
-        <item>@dimen/horizontal_spring_stiffness</item>
-
-        <item>@dimen/swipe_up_rect_scale_damping_ratio</item>
-        <item>@dimen/swipe_up_rect_scale_stiffness</item>
-
-        <item>@dimen/swipe_up_rect_xy_fling_friction</item>
-        <item>@dimen/swipe_up_rect_xy_damping_ratio</item>
-        <item>@dimen/swipe_up_rect_xy_stiffness</item>
-
-        <item>@dimen/staggered_damping_ratio</item>
-        <item>@dimen/staggered_stiffness</item>
-        <item>@dimen/unlock_staggered_velocity_dp_per_s</item>
-
-        <item>@dimen/swipe_up_fling_min_visible_change</item>
-        <item>@dimen/swipe_up_y_overshoot</item>
-
-        <item>@dimen/hint_scale_damping_ratio</item>
-        <item>@dimen/hint_scale_stiffness</item>
-        <item>@dimen/hint_scale_velocity_dp_per_s</item>
+        <item>@dimen/c2_a</item>
+        <item>@dimen/c2_b</item>
+        <item>@dimen/c2_c</item>
+        <item>@dimen/c2_d</item>
     </array>
 
-    <string-array name="live_wallpapers_remove_sysui_scrims">
-    </string-array>
+    <string-array name="filtered_components" ></string-array>
+
+    <!-- Name of the class used to generate colors from the wallpaper colors. Must be implementing the LauncherAppWidgetHostView.ColorGenerator interface. -->
+    <string name="color_generator_class" translatable="false"/>
+
 </resources>

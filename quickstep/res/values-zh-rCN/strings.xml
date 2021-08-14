@@ -19,7 +19,6 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="recent_task_option_split_screen" msgid="5353188922202653570">"分屏"</string>
     <string name="recent_task_option_pin" msgid="7929860679018978258">"固定"</string>
     <string name="recent_task_option_freeform" msgid="48863056265284071">"自由窗口"</string>
     <string name="recents_empty_message" msgid="7040467240571714191">"近期没有任何内容"</string>
@@ -31,7 +30,7 @@
     <string name="time_left_for_app" msgid="3111996412933644358">"今天还可使用 <xliff:g id="TIME">%1$s</xliff:g>"</string>
     <string name="title_app_suggestions" msgid="4185902664111965088">"应用建议"</string>
     <string name="all_apps_label" msgid="8542784161730910663">"所有应用"</string>
-    <string name="all_apps_prediction_tip" msgid="2672336544844936186">"您的预测应用"</string>
+    <string name="all_apps_prediction_tip" msgid="2672336544844936186">"您可能想要使用的应用"</string>
     <string name="hotseat_edu_title_migrate" msgid="306578144424489980">"在主屏幕底部获取应用建议"</string>
     <string name="hotseat_edu_title_migrate_landscape" msgid="3633942953997845243">"在主屏幕的收藏行获取应用建议"</string>
     <string name="hotseat_edu_message_migrate" msgid="8927179260533775320">"直接在主屏幕上轻松访问您最常用的应用。系统会根据您的日常安排提供不同的建议。最下面一排中的应用会向上移动到主屏幕中。"</string>
@@ -46,7 +45,40 @@
     <string name="hotsaet_tip_prediction_enabled" msgid="2233554377501347650">"已启用应用建议"</string>
     <string name="hotsaet_tip_prediction_disabled" msgid="1506426298884658491">"已停用应用建议"</string>
     <string name="hotseat_prediction_content_description" msgid="4582028296938078419">"预测的应用：<xliff:g id="TITLE">%1$s</xliff:g>"</string>
+    <string name="back_gesture_feedback_swipe_too_far_from_left_edge" msgid="340972404868601012">"请从最左侧边缘开始滑动。"</string>
+    <string name="back_gesture_feedback_cancelled_left_edge" msgid="6671316150388702530">"请从左侧边缘滑动到屏幕中间位置后再松开手指。"</string>
+    <string name="back_gesture_feedback_complete_left_edge" msgid="3220478647881674266">"大功告成！现在试着从右侧边缘开始滑动。"</string>
+    <string name="back_gesture_feedback_swipe_too_far_from_right_edge" msgid="4306700023773832353">"请从最右侧边缘开始滑动。"</string>
+    <string name="back_gesture_feedback_cancelled_right_edge" msgid="4951916546256902552">"请从右侧边缘滑动到屏幕中间位置后再松开手指。"</string>
+    <string name="back_gesture_feedback_complete" msgid="7261221999760772210">"您完成了“返回”手势教程。接下来了解如何转到主屏幕。"</string>
+    <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="1148198467090405643">"滑动时，手的位置不要太靠近屏幕底部。"</string>
+    <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"如要调节“返回”手势的灵敏度，请转到“设置”"</string>
+    <string name="back_gesture_intro_title" msgid="19551256430224428">"滑动即可返回"</string>
+    <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"如要返回上一个屏幕，请从左侧或右侧边缘滑动到屏幕中间位置。"</string>
+    <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"请从屏幕底部边缘向上滑动。"</string>
+    <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"在松开手指前请勿停下来。"</string>
+    <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"请向上滑动。"</string>
+    <string name="home_gesture_feedback_complete" msgid="2324789183070815517">"您完成了“转到主屏幕”手势教程。接下来了解如何切换应用。"</string>
+    <string name="home_gesture_intro_title" msgid="836590312858441830">"滑动即可转到主屏幕"</string>
+    <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"从屏幕底部向上滑动。这个手势会一律将您转到主屏幕。"</string>
+    <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"请从屏幕底部边缘向上滑动。"</string>
+    <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"请尝试按住窗口较长时间，然后再松开手指。"</string>
+    <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"请向上滑动，然后停住。"</string>
+    <string name="overview_gesture_feedback_complete" msgid="5477014491632199169">"您完成了“切换应用”手势教程。您现在可以使用手机了！"</string>
+    <string name="overview_gesture_intro_title" msgid="2902054412868489378">"滑动即可切换应用"</string>
+    <string name="overview_gesture_intro_subtitle" msgid="1579517193845186042">"从屏幕底部向上滑动后按住，然后松开。"</string>
+    <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"大功告成"</string>
+    <string name="gesture_tutorial_action_button_label_next" msgid="2556263116424738762">"继续"</string>
+    <string name="gesture_tutorial_action_button_label_done" msgid="671834508127014231">"完成"</string>
+    <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"设置"</string>
+    <string name="gesture_tutorial_try_again" msgid="65962545858556697">"重试"</string>
+    <string name="gesture_tutorial_nice" msgid="2936275692616928280">"很好！"</string>
+    <string name="gesture_tutorial_step" msgid="1279786122817620968">"教程 <xliff:g id="CURRENT">%1$d</xliff:g>/<xliff:g id="TOTAL">%2$d</xliff:g>"</string>
     <string name="action_share" msgid="2648470652637092375">"分享"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"屏幕截图"</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"该应用或您所在的单位不允许执行此操作"</string>
+    <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"要跳过导航教程吗？"</string>
+    <string name="skip_tutorial_dialog_subtitle" msgid="544063326241955662">"您之后可以在“<xliff:g id="NAME">%1$s</xliff:g>”应用中找到此教程"</string>
+    <string name="gesture_tutorial_action_button_label_cancel" msgid="3809842569351264108">"取消"</string>
+    <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"跳过"</string>
 </resources>

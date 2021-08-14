@@ -14,16 +14,17 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
+<!-- NOTE! don't add dimensions for margins / gravity to root view in this file, they need to be
+     loaded at runtime. -->
 <com.android.quickstep.views.OverviewActionsView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/overview_actions_height"
-    android:layout_gravity="center_horizontal|bottom">
+    android:layout_height="wrap_content">
 
     <LinearLayout
         android:id="@+id/action_buttons"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
+        android:layout_height="@dimen/overview_actions_height"
+        android:layout_gravity="bottom|center_horizontal"
         android:orientation="horizontal">
 
         <Space
@@ -57,7 +58,7 @@
             android:visibility="gone" />
 
         <Space
-            android:id="@+id/share_space"
+            android:id="@+id/oav_three_button_space"
             android:layout_width="0dp"
             android:layout_height="1dp"
             android:layout_weight="1"

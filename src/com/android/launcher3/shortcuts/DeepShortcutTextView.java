@@ -132,6 +132,12 @@ public class DeepShortcutTextView extends BubbleTextView {
         mLoadingStatePlaceholder.draw(canvas);
     }
 
+    @Override
+    protected void drawDotIfNecessary(Canvas canvas) {
+        // This view (with the text label to the side of the icon) is not designed for a dot to be
+        // drawn on top of it, so never draw one even if a notification for this shortcut exists.
+    }
+
     private void showLoadingState(boolean loading) {
         if (loading == mShowLoadingState) {
             return;

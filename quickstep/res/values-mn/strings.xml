@@ -19,8 +19,7 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="recent_task_option_split_screen" msgid="5353188922202653570">"Дэлгэцийг хуваах"</string>
-    <string name="recent_task_option_pin" msgid="7929860679018978258">"Тогтоох"</string>
+    <string name="recent_task_option_pin" msgid="7929860679018978258">"Бэхлэх"</string>
     <string name="recent_task_option_freeform" msgid="48863056265284071">"Чөлөөтэй хувьсах"</string>
     <string name="recents_empty_message" msgid="7040467240571714191">"Сүүлийн үеийн зүйл алга"</string>
     <string name="accessibility_app_usage_settings" msgid="6312864233673544149">"Апп ашиглалтын тохиргоо"</string>
@@ -46,7 +45,40 @@
     <string name="hotsaet_tip_prediction_enabled" msgid="2233554377501347650">"Санал болгож буй аппуудыг идэвхжүүлсэн"</string>
     <string name="hotsaet_tip_prediction_disabled" msgid="1506426298884658491">"Санал болгож буй аппуудыг идэвхгүй болгосон"</string>
     <string name="hotseat_prediction_content_description" msgid="4582028296938078419">"Таамаглаж буй апп: <xliff:g id="TITLE">%1$s</xliff:g>"</string>
+    <string name="back_gesture_feedback_swipe_too_far_from_left_edge" msgid="340972404868601012">"Та зүүн захын булангаас шударна уу."</string>
+    <string name="back_gesture_feedback_cancelled_left_edge" msgid="6671316150388702530">"Та дэлгэцийн зүүн булангаас дунд хэсэг хүртэл шударч, суллаарай."</string>
+    <string name="back_gesture_feedback_complete_left_edge" msgid="3220478647881674266">"Ингээд л боллоо! Одоо баруун булангаас шударч үзнэ үү."</string>
+    <string name="back_gesture_feedback_swipe_too_far_from_right_edge" msgid="4306700023773832353">"Та баруун захын булангаас шударна уу."</string>
+    <string name="back_gesture_feedback_cancelled_right_edge" msgid="4951916546256902552">"Та дэлгэцийн баруун булангаас дунд хэсэг хүртэл шударч, суллаарай."</string>
+    <string name="back_gesture_feedback_complete" msgid="7261221999760772210">"Та буцах зангааг гүйцэтгэлээ. Дараа нь Нүүр лүү хэрхэн очихыг мэдэж авна уу."</string>
+    <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="1148198467090405643">"Та дэлгэцийн доод хэсэгтэй хэт ойр бүү шудраарай."</string>
+    <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"Буцах зангааны мэдрэгшлийг өөрчлөх бол Тохиргоо руу очно уу"</string>
+    <string name="back_gesture_intro_title" msgid="19551256430224428">"Буцахын тулд шудрах"</string>
+    <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"Сүүлийн дэлгэц рүү буцахын тулд дэлгэцийн зүүн эсвэл баруун булангаас дунд хэсэг рүү шударна уу."</string>
+    <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"Та дэлгэцийн доод булангаас дээш шударна уу."</string>
+    <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"Та суллахаасаа өмнө түр зогсоож болохгүй."</string>
+    <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"Та чигээрээ шударна уу."</string>
+    <string name="home_gesture_feedback_complete" msgid="2324789183070815517">"Та Нүүр лүү очих зангааг гүйцэтгэлээ. Дараа нь аппуудыг хэрхэн сэлгэх талаар мэдэж авна уу."</string>
+    <string name="home_gesture_intro_title" msgid="836590312858441830">"Нүүр лүү очихын тулд шудрах"</string>
+    <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"Дэлгэцийнхээ доороос дээш шударна уу. Энэ зангаа таныг тогтмол Үндсэн нүүрэнд аваачна."</string>
+    <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"Та дэлгэцийн доод булангаас дээш шударна уу."</string>
+    <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"Суллахаасаа өмнө цонхыг илүү удаан дарж үзнэ үү."</string>
+    <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"Та чигээрээ шударч, дараа нь түр зогсооно уу."</string>
+    <string name="overview_gesture_feedback_complete" msgid="5477014491632199169">"Та аппуудыг сэлгэх зангааг гүйцэтгэлээ. Та утсаа ашиглахад бэлэн боллоо!"</string>
+    <string name="overview_gesture_intro_title" msgid="2902054412868489378">"Аппуудыг сэлгэхийн тулд шудрах"</string>
+    <string name="overview_gesture_intro_subtitle" msgid="1579517193845186042">"Дэлгэцийнхээ доод хэсгээс дээш шударч, удаан дараад суллана уу."</string>
+    <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"Бүгдийг тохируулсан"</string>
+    <string name="gesture_tutorial_action_button_label_next" msgid="2556263116424738762">"Дараах"</string>
+    <string name="gesture_tutorial_action_button_label_done" msgid="671834508127014231">"Дууссан"</string>
+    <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"Тохиргоо"</string>
+    <string name="gesture_tutorial_try_again" msgid="65962545858556697">"Дахин оролдох"</string>
+    <string name="gesture_tutorial_nice" msgid="2936275692616928280">"Янзтай!"</string>
+    <string name="gesture_tutorial_step" msgid="1279786122817620968">"<xliff:g id="CURRENT">%1$d</xliff:g>/<xliff:g id="TOTAL">%2$d</xliff:g> практик хичээл"</string>
     <string name="action_share" msgid="2648470652637092375">"Хуваалцах"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"Дэлгэцийн агшин дарах"</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"Энэ үйлдлийг апп эсвэл танай байгууллага зөвшөөрдөггүй"</string>
+    <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"Навигацын практик хичээлийг алгасах уу?"</string>
+    <string name="skip_tutorial_dialog_subtitle" msgid="544063326241955662">"Та үүнийг дараа нь <xliff:g id="NAME">%1$s</xliff:g> аппаас олох боломжтой"</string>
+    <string name="gesture_tutorial_action_button_label_cancel" msgid="3809842569351264108">"Цуцлах"</string>
+    <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"Алгасах"</string>
 </resources>

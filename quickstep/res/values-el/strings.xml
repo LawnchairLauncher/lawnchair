@@ -19,7 +19,6 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="recent_task_option_split_screen" msgid="5353188922202653570">"Διαχωρισμός οθόνης"</string>
     <string name="recent_task_option_pin" msgid="7929860679018978258">"Καρφίτσωμα"</string>
     <string name="recent_task_option_freeform" msgid="48863056265284071">"Ελεύθερη μορφή"</string>
     <string name="recents_empty_message" msgid="7040467240571714191">"Δεν υπάρχουν πρόσφατα στοιχεία"</string>
@@ -46,7 +45,40 @@
     <string name="hotsaet_tip_prediction_enabled" msgid="2233554377501347650">"Οι προτεινόμενες εφαρμογές ενεργοποιήθηκαν"</string>
     <string name="hotsaet_tip_prediction_disabled" msgid="1506426298884658491">"Οι προτεινόμενες εφαρμογές είναι απενεργοποιημένες"</string>
     <string name="hotseat_prediction_content_description" msgid="4582028296938078419">"Εφαρμογή από πρόβλεψη: <xliff:g id="TITLE">%1$s</xliff:g>"</string>
+    <string name="back_gesture_feedback_swipe_too_far_from_left_edge" msgid="340972404868601012">"Φροντίστε να σύρετε από το άκρο της αριστερής πλευράς."</string>
+    <string name="back_gesture_feedback_cancelled_left_edge" msgid="6671316150388702530">"Φροντίστε να σύρετε από το αριστερό άκρο προς το μέσο της οθόνης και απομακρύνετε το δάχτυλό σας."</string>
+    <string name="back_gesture_feedback_complete_left_edge" msgid="3220478647881674266">"Αυτό ήταν! Δοκιμάστε τώρα να σύρετε από το δεξί άκρο."</string>
+    <string name="back_gesture_feedback_swipe_too_far_from_right_edge" msgid="4306700023773832353">"Φροντίστε να σύρετε από το άκρο της δεξιάς πλευράς."</string>
+    <string name="back_gesture_feedback_cancelled_right_edge" msgid="4951916546256902552">"Φροντίστε να σύρετε από το δεξί άκρο προς το μέσο της οθόνης και απομακρύνετε το δάχτυλό σας."</string>
+    <string name="back_gesture_feedback_complete" msgid="7261221999760772210">"Ολοκληρώσατε την κίνηση επιστροφής. Στη συνέχεια, μάθετε πώς να μεταβείτε στην αρχική σελίδα."</string>
+    <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="1148198467090405643">"Φροντίστε να μην σύρετε υπερβολικά κοντά στο κάτω μέρος της οθόνης."</string>
+    <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"Μεταβείτε στις Ρυθμίσεις για αλλαγή ευαισθ. κίνησης επιστρ."</string>
+    <string name="back_gesture_intro_title" msgid="19551256430224428">"Σύρετε για επιστροφή"</string>
+    <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"Για να επιστρέψετε στην τελευτ. οθόνη, σύρετε από το αριστ. ή το δεξί άκρο προς το μέσο της οθόνης."</string>
+    <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"Φροντίστε να σύρετε προς τα επάνω από το κάτω άκρο της οθόνης."</string>
+    <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"Φροντίστε να μην κάνετε παύση προτού απομακρύνετε τα δάχτυλά σας."</string>
+    <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"Φροντίστε να σύρετε απευθείας προς τα επάνω."</string>
+    <string name="home_gesture_feedback_complete" msgid="2324789183070815517">"Ολοκληρώσατε την κίνηση μετάβασης στην αρχική οθόνη. Στη συνέχεια, μάθετε πώς να κάνετε εναλλαγή εφαρμογών."</string>
+    <string name="home_gesture_intro_title" msgid="836590312858441830">"Σύρετε για μετάβαση στην αρχική οθόνη"</string>
+    <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"Σύρετε προς τα πάνω από το κάτω μέρος της οθόνης. Αυτή η κίνηση σάς μεταφέρει πάντα στην αρχ. οθόνη."</string>
+    <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"Φροντίστε να σύρετε προς τα επάνω από το κάτω άκρο της οθόνης."</string>
+    <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"Δοκιμάστε να κρατήσετε περισσότερο το παράθυρο προτού απελευθερώσετε."</string>
+    <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"Φροντίστε να σύρετε απευθείας προς τα επάνω και έπειτα κάντε παύση."</string>
+    <string name="overview_gesture_feedback_complete" msgid="5477014491632199169">"Ολοκληρώσατε την κίνηση εναλλαγής εφαρμογών. Είστε έτοιμοι να χρησιμοποιήσετε το τηλέφωνό σας!"</string>
+    <string name="overview_gesture_intro_title" msgid="2902054412868489378">"Σύρετε για εναλλαγή εφαρμογών"</string>
+    <string name="overview_gesture_intro_subtitle" msgid="1579517193845186042">"Σύρετε προς τα πάνω από το κάτω μέρος της οθόνης σας, κρατήστε παρατεταμένα και έπειτα ελευθερώστε."</string>
+    <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"Όλα είναι έτοιμα"</string>
+    <string name="gesture_tutorial_action_button_label_next" msgid="2556263116424738762">"Επόμενο"</string>
+    <string name="gesture_tutorial_action_button_label_done" msgid="671834508127014231">"Τέλος"</string>
+    <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"Ρυθμίσεις"</string>
+    <string name="gesture_tutorial_try_again" msgid="65962545858556697">"Δοκιμάστε ξανά"</string>
+    <string name="gesture_tutorial_nice" msgid="2936275692616928280">"Ωραία!"</string>
+    <string name="gesture_tutorial_step" msgid="1279786122817620968">"Οδηγός <xliff:g id="CURRENT">%1$d</xliff:g>/<xliff:g id="TOTAL">%2$d</xliff:g>"</string>
     <string name="action_share" msgid="2648470652637092375">"Κοινοποίηση"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"Στιγμιότυπο οθόνης"</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"Αυτή η ενέργεια δεν επιτρέπεται από την εφαρμογή ή τον οργανισμό σας."</string>
+    <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"Παράβλεψη οδηγού πλοήγησης;"</string>
+    <string name="skip_tutorial_dialog_subtitle" msgid="544063326241955662">"Βρείτε τον αργότερα στην εφαρμογή <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="gesture_tutorial_action_button_label_cancel" msgid="3809842569351264108">"Ακύρωση"</string>
+    <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"Παράβλεψη"</string>
 </resources>

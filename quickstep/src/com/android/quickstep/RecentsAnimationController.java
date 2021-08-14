@@ -18,11 +18,17 @@ package com.android.quickstep;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 
+import android.view.IRecentsAnimationController;
+import android.view.SurfaceControl;
+import android.window.PictureInPictureSurfaceTransaction;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.UiThread;
 
 import com.android.launcher3.util.Preconditions;
+import com.android.launcher3.util.RunnableList;
 import com.android.systemui.shared.recents.model.ThumbnailData;
+import com.android.systemui.shared.system.InteractionJankMonitorWrapper;
 import com.android.systemui.shared.system.RecentsAnimationControllerCompat;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 
@@ -39,6 +45,8 @@ public class RecentsAnimationController {
 
     private boolean mUseLauncherSysBarFlags = false;
     private boolean mSplitScreenMinimized = false;
+    private boolean mFinishRequested = false;
+    private RunnableList mPendingFinishCallbacks = new RunnableList();
 
     public RecentsAnimationController(RecentsAnimationControllerCompat controller,
             boolean allowMinimizeSplitScreen,
@@ -89,30 +97,12 @@ public class RecentsAnimationController {
     }
 
     /**
-     * Notifies the controller that we want to defer cancel until the next app transition starts.
-     * If {@param screenshot} is set, then we will receive a screenshot on the next
-     * {@link RecentsAnimationCallbacks#onAnimationCanceled(ThumbnailData)} and we must also call
-     * {@link #cleanupScreenshot()} when that screenshot is no longer used.
-     */
-    public void setDeferCancelUntilNextTransition(boolean defer, boolean screenshot) {
-        mController.setDeferCancelUntilNextTransition(defer, screenshot);
-    }
-
-    /**
-     * Cleans up the screenshot previously returned from
-     * {@link RecentsAnimationCallbacks#onAnimationCanceled(ThumbnailData)}.
-     */
-    public void cleanupScreenshot() {
-        UI_HELPER_EXECUTOR.execute(() -> mController.cleanupScreenshot());
-    }
-
-    /**
      * Remove task remote animation target from
      * {@link RecentsAnimationCallbacks#onTaskAppeared(RemoteAnimationTargetCompat)}}.
      */
     @UiThread
-    public boolean removeTaskTarget(@NonNull RemoteAnimationTargetCompat target) {
-        return mController.removeTask(target.taskId);
+    public void removeTaskTarget(@NonNull RemoteAnimationTargetCompat target) {
+        UI_HELPER_EXECUTOR.execute(() -> mController.removeTask(target.taskId));
     }
 
     @UiThread
@@ -146,13 +136,71 @@ public class RecentsAnimationController {
 
     @UiThread
     public void finishController(boolean toRecents, Runnable callback, boolean sendUserLeaveHint) {
+        if (mFinishRequested) {
+            // If finishing, add to pending finish callbacks, otherwise, if finished, adding to the
+            // destroyed RunnableList will just trigger the callback to be called immediately
+            mPendingFinishCallbacks.add(callback);
+            return;
+        }
+
+        // Finish not yet requested
+        mFinishRequested = true;
         mOnFinishedListener.accept(this);
+        mPendingFinishCallbacks.add(callback);
         UI_HELPER_EXECUTOR.execute(() -> {
             mController.finish(toRecents, sendUserLeaveHint);
-            if (callback != null) {
-                MAIN_EXECUTOR.execute(callback);
-            }
+            InteractionJankMonitorWrapper.end(InteractionJankMonitorWrapper.CUJ_QUICK_SWITCH);
+            InteractionJankMonitorWrapper.end(InteractionJankMonitorWrapper.CUJ_APP_CLOSE_TO_HOME);
+            MAIN_EXECUTOR.execute(mPendingFinishCallbacks::executeAllAndDestroy);
         });
+    }
+
+    /**
+     * @see IRecentsAnimationController#cleanupScreenshot()
+     */
+    @UiThread
+    public void cleanupScreenshot() {
+        UI_HELPER_EXECUTOR.execute(() -> mController.cleanupScreenshot());
+    }
+
+    /**
+     * @see RecentsAnimationControllerCompat#detachNavigationBarFromApp
+     */
+    @UiThread
+    public void detachNavigationBarFromApp(boolean moveHomeToTop) {
+        UI_HELPER_EXECUTOR.execute(() -> mController.detachNavigationBarFromApp(moveHomeToTop));
+    }
+
+    /**
+     * @see IRecentsAnimationController#animateNavigationBarToApp(long)
+     */
+    @UiThread
+    public void animateNavigationBarToApp(long duration) {
+        UI_HELPER_EXECUTOR.execute(() -> mController.animateNavigationBarToApp(duration));
+    }
+
+    /**
+     * @see IRecentsAnimationController#setWillFinishToHome(boolean)
+     */
+    @UiThread
+    public void setWillFinishToHome(boolean willFinishToHome) {
+        UI_HELPER_EXECUTOR.execute(() -> mController.setWillFinishToHome(willFinishToHome));
+    }
+
+    /**
+     * Sets the final surface transaction on a Task. This is used by Launcher to notify the system
+     * that animating Activity to PiP has completed and the associated task surface should be
+     * updated accordingly. This should be called before `finish`
+     * @param taskId for which the leash should be updated
+     * @param finishTransaction the transaction to transfer to the task surface control after the
+     *                          leash is removed
+     * @param overlay the surface control for an overlay being shown above the pip (can be null)
+     */
+    public void setFinishTaskTransaction(int taskId,
+            PictureInPictureSurfaceTransaction finishTransaction,
+            SurfaceControl overlay) {
+        UI_HELPER_EXECUTOR.execute(
+                () -> mController.setFinishTaskTransaction(taskId, finishTransaction, overlay));
     }
 
     /**

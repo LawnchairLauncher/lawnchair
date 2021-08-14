@@ -18,6 +18,8 @@ syntax = "proto2";
 option java_package = "com.android.launcher3.logger";
 option java_outer_classname = "LauncherAtom";
 
+import "launcher_atom_extension.proto";
+
 //
 // ItemInfos
 message ItemInfo {
@@ -27,6 +29,8 @@ message ItemInfo {
     Shortcut shortcut = 3;
     Widget widget = 4;
     FolderIcon folder_icon = 9;
+    Slice slice = 10;
+    SearchActionItem search_action_item = 11;
   }
   // When used for launch event, stores the global predictive rank
   optional int32 rank = 5;
@@ -55,7 +59,7 @@ message ContainerInfo {
     SettingsContainer settings_container = 9;
     PredictedHotseatContainer predicted_hotseat_container = 10;
     TaskSwitcherContainer task_switcher_container = 11;
-    TaskForegroundContainer task_foreground_container = 12;
+    ExtendedContainers extended_containers = 20;
   }
 }
 
@@ -93,14 +97,8 @@ message ShortcutsContainer {
 message SettingsContainer {
 }
 
-// Container for tasks in the Overview UI.
-// Typically entered using either the overview gesture or overview button.
-message TaskSwitcherContainer {}
-
-// Container for tasks from another foreground app, when not on launcher screen.
-// Typically home gesture or overview gesture can be triggered from
-// this container.
-message TaskForegroundContainer {}
+message TaskSwitcherContainer {
+}
 
 enum Attribute {
   UNKNOWN = 0;
@@ -127,6 +125,25 @@ enum Attribute {
   // Folder's label is empty(i.e., title == "").
   // Not eligible for auto-labeling.
   EMPTY_LABEL = 12;
+
+  ALL_APPS_SEARCH_RESULT_APPLICATION = 13;
+  ALL_APPS_SEARCH_RESULT_SHORTCUT = 14;
+  ALL_APPS_SEARCH_RESULT_PEOPLE = 15;
+  ALL_APPS_SEARCH_RESULT_ACTION = 16;
+  ALL_APPS_SEARCH_RESULT_SETTING = 17;
+  ALL_APPS_SEARCH_RESULT_SCREENSHOT = 18;
+  ALL_APPS_SEARCH_RESULT_SLICE = 19;
+  ALL_APPS_SEARCH_RESULT_WIDGETS = 20;
+  ALL_APPS_SEARCH_RESULT_PLAY = 21;
+  ALL_APPS_SEARCH_RESULT_SUGGEST = 22;
+  ALL_APPS_SEARCH_RESULT_ASSISTANT = 23;
+  ALL_APPS_SEARCH_RESULT_CHROMETAB = 24;
+  ALL_APPS_SEARCH_RESULT_NAVVYSITE = 25;
+  ALL_APPS_SEARCH_RESULT_TIPS = 26;
+  ALL_APPS_SEARCH_RESULT_PEOPLE_TILE = 27;
+
+  WIDGETS_BOTTOM_TRAY = 28;
+  WIDGETS_TRAY_PREDICTION = 29;
 }
 
 // Main app icons
@@ -138,6 +155,7 @@ message Application {
 // Legacy shortcuts and shortcuts handled by ShortcutManager
 message Shortcut {
   optional string shortcut_name = 1;
+  optional string shortcut_id = 2;
 }
 
 // AppWidgets handled by AppWidgetManager
@@ -147,6 +165,7 @@ message Widget {
   optional int32 app_widget_id = 3;
   optional string package_name = 4; // only populated during snapshot if from workspace
   optional string component_name = 5; // only populated during snapshot if from workspace
+  optional int32 widget_features = 6;
 }
 
 // Tasks handled by PackageManager
@@ -170,6 +189,17 @@ message FolderIcon {
   // Details about actual folder label.
   // Populated when folder label is not a PII.
   optional string label_info = 4;
+}
+
+// Contains Slice details for logging.
+message Slice{
+  optional string uri = 1;
+}
+
+// Represents SearchAction with in launcher
+message SearchActionItem{
+  optional string package_name = 1;
+  optional string title = 2;
 }
 
 //////////////////////////////////////////////

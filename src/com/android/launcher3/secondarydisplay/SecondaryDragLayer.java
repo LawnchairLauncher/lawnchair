@@ -29,7 +29,6 @@ import android.widget.GridView;
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.DeviceProfile;
-import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.R;
 import com.android.launcher3.allapps.AllAppsContainerView;
 import com.android.launcher3.model.data.ItemInfo;
@@ -109,8 +108,6 @@ public class SecondaryDragLayer extends BaseDragLayer<SecondaryDisplayLauncher> 
         setMeasuredDimension(width, height);
 
         DeviceProfile grid = mActivity.getDeviceProfile();
-        InvariantDeviceProfile idp = grid.inv;
-
         int count = getChildCount();
         for (int i = 0; i < count; i++) {
             final View child = getChildAt(i);
@@ -118,10 +115,10 @@ public class SecondaryDragLayer extends BaseDragLayer<SecondaryDisplayLauncher> 
                 int padding = 2 * (grid.desiredWorkspaceLeftRightMarginPx
                         + grid.cellLayoutPaddingLeftRightPx);
 
-                int maxWidth = grid.allAppsCellWidthPx * idp.numAllAppsColumns + padding;
+                int maxWidth = grid.allAppsCellWidthPx * grid.numShownAllAppsColumns + padding;
                 int appsWidth = Math.min(width, maxWidth);
 
-                int maxHeight = grid.allAppsCellHeightPx * idp.numAllAppsColumns + padding;
+                int maxHeight = grid.allAppsCellHeightPx * grid.numShownAllAppsColumns + padding;
                 int appsHeight = Math.min(height, maxHeight);
 
                 mAppsView.measure(

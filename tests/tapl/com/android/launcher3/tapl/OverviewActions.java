@@ -34,6 +34,27 @@ public class OverviewActions {
     }
 
     /**
+     * Clicks content push button.
+     */
+    @NonNull
+    public Overview clickAndDismissContentPush() {
+        if (mLauncher.overviewContentPushEnabled()) {
+            try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck();
+                 LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
+                         "want to click content push button and exit screenshot ui")) {
+                UiObject2 exo = mLauncher.waitForObjectInContainer(mOverviewActions,
+                        "action_content_push");
+                mLauncher.clickLauncherObject(exo);
+                try (LauncherInstrumentation.Closable c1 = mLauncher.addContextLayer(
+                        "clicked content push button")) {
+                    return new Overview(mLauncher);
+                }
+            }
+        }
+        return new Overview(mLauncher);
+    }
+
+    /**
      * Clicks screenshot button and closes screenshot ui.
      */
     @NonNull
@@ -43,6 +64,7 @@ public class OverviewActions {
                      "want to click screenshot button and exit screenshot ui")) {
             UiObject2 screenshot = mLauncher.waitForObjectInContainer(mOverviewActions,
                     "action_screenshot");
+
             mLauncher.clickLauncherObject(screenshot);
             try (LauncherInstrumentation.Closable c1 = mLauncher.addContextLayer(
                     "clicked screenshot button")) {

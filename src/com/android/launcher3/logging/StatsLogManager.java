@@ -15,32 +15,31 @@
  */
 package com.android.launcher3.logging;
 
-import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.IGNORE;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ALLAPPS_CLOSE_DOWN;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ALLAPPS_OPEN_UP;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_HOME_GESTURE;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_OVERVIEW_GESTURE;
 
 import android.content.Context;
+import android.view.View;
 
 import androidx.annotation.Nullable;
+import androidx.slice.SliceItem;
 
 import com.android.launcher3.R;
+import com.android.launcher3.logger.LauncherAtom;
 import com.android.launcher3.logger.LauncherAtom.ContainerInfo;
 import com.android.launcher3.logger.LauncherAtom.FromState;
 import com.android.launcher3.logger.LauncherAtom.ToState;
 import com.android.launcher3.model.data.ItemInfo;
-import com.android.launcher3.userevent.LauncherLogProto;
 import com.android.launcher3.util.ResourceBasedOverride;
-
-import java.util.List;
 
 /**
  * Handles the user event logging in R+.
  *
  * <pre>
  * All of the event ids are defined here.
- * Most of the methods are dummy methods for Launcher3
+ * Most of the methods are placeholder methods for Launcher3
  * Actual call happens only for Launcher variant that implements QuickStep.
  * </pre>
  */
@@ -53,41 +52,24 @@ public class StatsLogManager implements ResourceBasedOverride {
     public static final int LAUNCHER_STATE_ALLAPPS = 4;
     public static final int LAUNCHER_STATE_UNCHANGED = 5;
 
+    private InstanceId mInstanceId;
     /**
-     * Returns proper launcher state enum for {@link StatsLogManager}(to be removed during
-     * UserEventDispatcher cleanup)
-     */
-    public static int containerTypeToAtomState(int containerType) {
-        switch (containerType) {
-            case LauncherLogProto.ContainerType.ALLAPPS_VALUE:
-                return LAUNCHER_STATE_ALLAPPS;
-            case LauncherLogProto.ContainerType.OVERVIEW_VALUE:
-                return LAUNCHER_STATE_OVERVIEW;
-            case LauncherLogProto.ContainerType.WORKSPACE_VALUE:
-                return LAUNCHER_STATE_HOME;
-            case LauncherLogProto.ContainerType.APP_VALUE:
-                return LAUNCHER_STATE_BACKGROUND;
-        }
-        return LAUNCHER_STATE_UNSPECIFIED;
-    }
-
-    /**
-     * Returns event enum based on the two {@link ContainerType} transition information when swipe
+     * Returns event enum based on the two state transition information when swipe
      * gesture happens(to be removed during UserEventDispatcher cleanup).
      */
-    public static EventEnum getLauncherAtomEvent(int startContainerType,
-            int targetContainerType, EventEnum fallbackEvent) {
-        if (startContainerType == LauncherLogProto.ContainerType.WORKSPACE.getNumber()
-                && targetContainerType == LauncherLogProto.ContainerType.WORKSPACE.getNumber()) {
+    public static EventEnum getLauncherAtomEvent(int startState,
+            int targetState, EventEnum fallbackEvent) {
+        if (startState == LAUNCHER_STATE_HOME
+                && targetState == LAUNCHER_STATE_HOME) {
             return LAUNCHER_HOME_GESTURE;
-        } else if (startContainerType != LauncherLogProto.ContainerType.TASKSWITCHER.getNumber()
-                && targetContainerType == LauncherLogProto.ContainerType.TASKSWITCHER.getNumber()) {
+        } else if (startState != LAUNCHER_STATE_OVERVIEW
+                && targetState == LAUNCHER_STATE_OVERVIEW) {
             return LAUNCHER_OVERVIEW_GESTURE;
-        } else if (startContainerType != LauncherLogProto.ContainerType.ALLAPPS.getNumber()
-                && targetContainerType == LauncherLogProto.ContainerType.ALLAPPS.getNumber()) {
+        } else if (startState != LAUNCHER_STATE_ALLAPPS
+                && targetState == LAUNCHER_STATE_ALLAPPS) {
             return LAUNCHER_ALLAPPS_OPEN_UP;
-        } else if (startContainerType == LauncherLogProto.ContainerType.ALLAPPS.getNumber()
-                && targetContainerType != LauncherLogProto.ContainerType.ALLAPPS.getNumber()) {
+        } else if (startState == LAUNCHER_STATE_ALLAPPS
+                && targetState != LAUNCHER_STATE_ALLAPPS) {
             return LAUNCHER_ALLAPPS_CLOSE_DOWN;
         }
         return fallbackEvent; // TODO fix
@@ -119,8 +101,12 @@ public class StatsLogManager implements ResourceBasedOverride {
         @UiEvent(doc = "User dragged a launcher item")
         LAUNCHER_ITEM_DRAG_STARTED(383),
 
-        @UiEvent(doc = "A dragged launcher item is successfully dropped")
+        @UiEvent(doc = "A dragged launcher item is successfully dropped onto workspace, hotseat "
+                + "open folder etc")
         LAUNCHER_ITEM_DROP_COMPLETED(385),
+
+        @UiEvent(doc = "A dragged launcher item is successfully dropped onto a folder icon.")
+        LAUNCHER_ITEM_DROP_COMPLETED_ON_FOLDER_ICON(697),
 
         @UiEvent(doc = "A dragged launcher item is successfully dropped on another item "
                 + "resulting in a new folder creation")
@@ -149,6 +135,12 @@ public class StatsLogManager implements ResourceBasedOverride {
 
         @UiEvent(doc = "User tapped or long pressed on widget tray icon inside launcher settings.")
         LAUNCHER_WIDGETSTRAY_BUTTON_TAP_OR_LONGPRESS(464),
+
+        @UiEvent(doc = "User expanded the list of widgets for a single app in the widget picker.")
+        LAUNCHER_WIDGETSTRAY_APP_EXPANDED(818),
+
+        @UiEvent(doc = "User searched for a widget in the widget picker.")
+        LAUNCHER_WIDGETSTRAY_SEARCHED(819),
 
         @UiEvent(doc = "A dragged item is dropped on 'Remove' button in the target bar")
         LAUNCHER_ITEM_DROPPED_ON_REMOVE(465),
@@ -321,8 +313,182 @@ public class StatsLogManager implements ResourceBasedOverride {
         @UiEvent(doc = "User tapped on image content in Overview Select mode.")
         LAUNCHER_SELECT_MODE_IMAGE(627),
 
+        @UiEvent(doc = "Activity to add external item was started")
+        LAUNCHER_ADD_EXTERNAL_ITEM_START(641),
+
+        @UiEvent(doc = "Activity to add external item was cancelled")
+        LAUNCHER_ADD_EXTERNAL_ITEM_CANCELLED(642),
+
+        @UiEvent(doc = "Activity to add external item was backed out")
+        LAUNCHER_ADD_EXTERNAL_ITEM_BACK(643),
+
+        @UiEvent(doc = "Item was placed automatically in external item addition flow")
+        LAUNCHER_ADD_EXTERNAL_ITEM_PLACED_AUTOMATICALLY(644),
+
+        @UiEvent(doc = "Item was dragged in external item addition flow")
+        LAUNCHER_ADD_EXTERNAL_ITEM_DRAGGED(645),
+
+        @UiEvent(doc = "A folder was replaced by a single item")
+        LAUNCHER_FOLDER_CONVERTED_TO_ICON(646),
+
+        @UiEvent(doc = "A hotseat prediction item was pinned")
+        LAUNCHER_HOTSEAT_PREDICTION_PINNED(647),
+
+        @UiEvent(doc = "Undo event was tapped.")
+        LAUNCHER_UNDO(648),
+
+        @UiEvent(doc = "Task switcher clear all target was tapped.")
+        LAUNCHER_TASK_CLEAR_ALL(649),
+
+        @UiEvent(doc = "Task preview was long pressed.")
+        LAUNCHER_TASK_PREVIEW_LONGPRESS(650),
+
         @UiEvent(doc = "User swiped down on workspace (triggering noti shade to open).")
-        LAUNCHER_SWIPE_DOWN_WORKSPACE_NOTISHADE_OPEN(651);
+        LAUNCHER_SWIPE_DOWN_WORKSPACE_NOTISHADE_OPEN(651),
+
+        @UiEvent(doc = "Notification dismissed by swiping right.")
+        LAUNCHER_NOTIFICATION_DISMISSED(652),
+
+        @UiEvent(doc = "Current grid size is changed to 5.")
+        LAUNCHER_GRID_SIZE_5(662),
+
+        @UiEvent(doc = "Current grid size is changed to 4.")
+        LAUNCHER_GRID_SIZE_4(663),
+
+        @UiEvent(doc = "Current grid size is changed to 3.")
+        LAUNCHER_GRID_SIZE_3(664),
+
+        @UiEvent(doc = "Current grid size is changed to 2.")
+        LAUNCHER_GRID_SIZE_2(665),
+
+        @UiEvent(doc = "Launcher entered into AllApps state.")
+        LAUNCHER_ALLAPPS_ENTRY(692),
+
+        @UiEvent(doc = "Launcher exited from AllApps state.")
+        LAUNCHER_ALLAPPS_EXIT(693),
+
+        @UiEvent(doc = "User closed the AllApps keyboard.")
+        LAUNCHER_ALLAPPS_KEYBOARD_CLOSED(694),
+
+        @UiEvent(doc = "User switched to AllApps Main/Personal tab by swiping left.")
+        LAUNCHER_ALLAPPS_SWIPE_TO_PERSONAL_TAB(695),
+
+        @UiEvent(doc = "User switched to AllApps Work tab by swiping right.")
+        LAUNCHER_ALLAPPS_SWIPE_TO_WORK_TAB(696),
+
+        @UiEvent(doc = "Default event when dedicated UI event is not available for the user action"
+                + " on slice .")
+        LAUNCHER_SLICE_DEFAULT_ACTION(700),
+
+        @UiEvent(doc = "User toggled-on a Slice item.")
+        LAUNCHER_SLICE_TOGGLE_ON(701),
+
+        @UiEvent(doc = "User toggled-off a Slice item.")
+        LAUNCHER_SLICE_TOGGLE_OFF(702),
+
+        @UiEvent(doc = "User acted on a Slice item with a button.")
+        LAUNCHER_SLICE_BUTTON_ACTION(703),
+
+        @UiEvent(doc = "User acted on a Slice item with a slider.")
+        LAUNCHER_SLICE_SLIDER_ACTION(704),
+
+        @UiEvent(doc = "User tapped on the entire row of a Slice.")
+        LAUNCHER_SLICE_CONTENT_ACTION(705),
+
+        @UiEvent(doc = "User tapped on the see more button of a Slice.")
+        LAUNCHER_SLICE_SEE_MORE_ACTION(706),
+
+        @UiEvent(doc = "User selected from a selection row of Slice.")
+        LAUNCHER_SLICE_SELECTION_ACTION(707),
+
+        @UiEvent(doc = "IME is used for selecting the focused item on the AllApps screen.")
+        LAUNCHER_ALLAPPS_FOCUSED_ITEM_SELECTED_WITH_IME(718),
+
+        @UiEvent(doc = "User long-pressed on an AllApps item.")
+        LAUNCHER_ALLAPPS_ITEM_LONG_PRESSED(719),
+
+        @UiEvent(doc = "Launcher entered into AllApps state with device search enabled.")
+        LAUNCHER_ALLAPPS_ENTRY_WITH_DEVICE_SEARCH(720),
+
+        @UiEvent(doc = "User switched to AllApps Main/Personal tab by tapping on it.")
+        LAUNCHER_ALLAPPS_TAP_ON_PERSONAL_TAB(721),
+
+        @UiEvent(doc = "User switched to AllApps Work tab by tapping on it.")
+        LAUNCHER_ALLAPPS_TAP_ON_WORK_TAB(722),
+
+        @UiEvent(doc = "All apps vertical fling started.")
+        LAUNCHER_ALLAPPS_VERTICAL_SWIPE_BEGIN(724),
+
+        @UiEvent(doc = "All apps vertical fling ended.")
+        LAUNCHER_ALLAPPS_VERTICAL_SWIPE_END(725),
+
+        @UiEvent(doc = "Show URL indicator for Overview Sharing")
+        LAUNCHER_OVERVIEW_SHARING_SHOW_URL_INDICATOR(764),
+
+        @UiEvent(doc = "Show image indicator for Overview Sharing")
+        LAUNCHER_OVERVIEW_SHARING_SHOW_IMAGE_INDICATOR(765),
+
+        @UiEvent(doc = "User taps URL indicator in Overview")
+        LAUNCHER_OVERVIEW_SHARING_URL_INDICATOR_TAP(766),
+
+        @UiEvent(doc = "User taps image indicator in Overview")
+        LAUNCHER_OVERVIEW_SHARING_IMAGE_INDICATOR_TAP(767),
+
+        @UiEvent(doc = "User long presses an image in Overview")
+        LAUNCHER_OVERVIEW_SHARING_IMAGE_LONG_PRESS(768),
+
+        @UiEvent(doc = "User drags a URL in Overview")
+        LAUNCHER_OVERVIEW_SHARING_URL_DRAG(769),
+
+        @UiEvent(doc = "User drags an image in Overview")
+        LAUNCHER_OVERVIEW_SHARING_IMAGE_DRAG(770),
+
+        @UiEvent(doc = "User drops URL to a direct share target")
+        LAUNCHER_OVERVIEW_SHARING_DROP_URL_TO_TARGET(771),
+
+        @UiEvent(doc = "User drops an image to a direct share target")
+        LAUNCHER_OVERVIEW_SHARING_DROP_IMAGE_TO_TARGET(772),
+
+        @UiEvent(doc = "User drops URL to the More button")
+        LAUNCHER_OVERVIEW_SHARING_DROP_URL_TO_MORE(773),
+
+        @UiEvent(doc = "User drops an image to the More button")
+        LAUNCHER_OVERVIEW_SHARING_DROP_IMAGE_TO_MORE(774),
+
+        @UiEvent(doc = "User taps a share target to share URL")
+        LAUNCHER_OVERVIEW_SHARING_TAP_TARGET_TO_SHARE_URL(775),
+
+        @UiEvent(doc = "User taps a share target to share an image")
+        LAUNCHER_OVERVIEW_SHARING_TAP_TARGET_TO_SHARE_IMAGE(776),
+
+        @UiEvent(doc = "User taps the More button to share URL")
+        LAUNCHER_OVERVIEW_SHARING_TAP_MORE_TO_SHARE_URL(777),
+
+        @UiEvent(doc = "User taps the More button to share an image")
+        LAUNCHER_OVERVIEW_SHARING_TAP_MORE_TO_SHARE_IMAGE(778),
+
+        @UiEvent(doc = "User started resizing a widget on their home screen.")
+        LAUNCHER_WIDGET_RESIZE_STARTED(820),
+
+        @UiEvent(doc = "User finished resizing a widget on their home screen.")
+        LAUNCHER_WIDGET_RESIZE_COMPLETED(824),
+
+        @UiEvent(doc = "User reconfigured a widget on their home screen.")
+        LAUNCHER_WIDGET_RECONFIGURED(821),
+
+        @UiEvent(doc = "User enabled themed icons option in wallpaper & style settings.")
+        LAUNCHER_THEMED_ICON_ENABLED(836),
+
+        @UiEvent(doc = "User disabled themed icons option in wallpaper & style settings.")
+        LAUNCHER_THEMED_ICON_DISABLED(837),
+
+        @UiEvent(doc = "User tapped on 'Turn on work apps' button in all apps window.")
+        LAUNCHER_TURN_ON_WORK_APPS_TAP(838),
+
+        @UiEvent(doc = "User tapped on 'Turn off work apps' button in all apps window.")
+        LAUNCHER_TURN_OFF_WORK_APPS_TAP(839)
+        ;
+
         // ADD MORE
 
         private final int mId;
@@ -428,9 +594,30 @@ public class StatsLogManager implements ResourceBasedOverride {
         }
 
         /**
+         * Sets logging fields from provided {@link SliceItem}.
+         */
+        default StatsLogger withSliceItem(SliceItem sliceItem) {
+            return this;
+        }
+
+        /**
+         * Sets logging fields from provided {@link LauncherAtom.Slice}.
+         */
+        default StatsLogger withSlice(LauncherAtom.Slice slice) {
+            return this;
+        }
+
+        /**
          * Builds the final message and logs it as {@link EventEnum}.
          */
         default void log(EventEnum event) {
+        }
+
+        /**
+         * Builds the final message and logs it to two different atoms, one for
+         * event tracking and the other for jank tracking.
+         */
+        default void sendToInteractionJankMonitor(EventEnum event, View v) {
         }
     }
 
@@ -438,35 +625,32 @@ public class StatsLogManager implements ResourceBasedOverride {
      * Returns new logger object.
      */
     public StatsLogger logger() {
+        StatsLogger logger = createLogger();
+        if (mInstanceId != null) {
+            return logger.withInstanceId(mInstanceId);
+        }
+        return logger;
+    }
+
+    protected StatsLogger createLogger() {
         return new StatsLogger() {
         };
+    }
+
+    /**
+     * Sets InstanceId to every new {@link StatsLogger} object returned by {@link #logger()} when
+     * not-null.
+     */
+    public StatsLogManager withDefaultInstanceId(@Nullable InstanceId instanceId) {
+        this.mInstanceId = instanceId;
+        return this;
     }
 
     /**
      * Creates a new instance of {@link StatsLogManager} based on provided context.
      */
     public static StatsLogManager newInstance(Context context) {
-        StatsLogManager mgr = Overrides.getObject(StatsLogManager.class,
+        return Overrides.getObject(StatsLogManager.class,
                 context.getApplicationContext(), R.string.stats_log_manager_class);
-        return mgr;
-    }
-
-    /**
-     * Log an event with ranked-choice information along with package. Does nothing if event.getId()
-     * <= 0.
-     *
-     * @param rankingEvent an enum implementing EventEnum interface.
-     * @param instanceId An identifier obtained from an InstanceIdSequence.
-     * @param packageName the package name of the relevant app, if known (null otherwise).
-     * @param position the position picked.
-     */
-    public void log(EventEnum rankingEvent, InstanceId instanceId, @Nullable String packageName,
-            int position) {
-    }
-
-    /**
-     * Logs impression of the current workspace with additional launcher events.
-     */
-    public void logSnapshot(List<EventEnum> additionalEvents) {
     }
 }

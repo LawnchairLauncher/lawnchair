@@ -26,28 +26,44 @@
     <string name="safemode_shortcut_error" msgid="9160126848219158407">"இறக்கிய ஆப்ஸ் பாதுகாப்பு முறையில் முடக்கப்பட்டது"</string>
     <string name="safemode_widget_error" msgid="4863470563535682004">"பாதுகாப்புப் பயன்முறையில் விட்ஜெட்கள் முடக்கப்பட்டுள்ளன"</string>
     <string name="shortcut_not_available" msgid="2536503539825726397">"ஷார்ட்கட் இல்லை"</string>
-    <string name="home_screen" msgid="806512411299847073">"முகப்புத் திரை"</string>
-    <string name="custom_actions" msgid="3747508247759093328">"பிரத்தியேக செயல்கள்"</string>
-    <string name="long_press_widget_to_add" msgid="7699152356777458215">"விட்ஜெட்டைத் தேர்வுசெய்ய தொட்டுப் பிடிக்கவும்."</string>
-    <string name="long_accessible_way_to_add" msgid="4289502106628154155">"விட்ஜெட்டைத் தேர்ந்தெடுக்க இருமுறை தட்டிப் பிடிக்கவும் அல்லது பிரத்தியேக செயல்களைப் பயன்படுத்தவும்."</string>
+    <string name="home_screen" msgid="5629429142036709174">"முகப்பு"</string>
+    <string name="recent_task_option_split_screen" msgid="6690461455618725183">"திரைப் பிரிப்பு"</string>
+    <string name="long_press_widget_to_add" msgid="3587712543577675817">"விட்ஜெட்டை நகர்த்தத் தொட்டுப் பிடிக்கவும்."</string>
+    <string name="long_accessible_way_to_add" msgid="2733588281439571974">"விட்ஜெட்டை நகர்த்த இருமுறை தட்டிப் பிடிக்கவும் அல்லது பிரத்தியேகச் செயல்களைப் பயன்படுத்தவும்."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"%1$d அகலத்திற்கு %2$d உயரம்"</string>
     <string name="add_item_request_drag_hint" msgid="5899764264480397019">"நீங்களே சேர்க்க, தொட்டுப் பிடித்திருக்கவும்"</string>
     <string name="place_automatically" msgid="8064208734425456485">"தானாகவே சேர்"</string>
+    <plurals name="widgets_count" formatted="false" msgid="656794749266073027">
+      <item quantity="other"><xliff:g id="WIDGETS_COUNT_1">%1$d</xliff:g> விட்ஜெட்டுகள்</item>
+      <item quantity="one"><xliff:g id="WIDGETS_COUNT_0">%1$d</xliff:g> விட்ஜெட்</item>
+    </plurals>
+    <plurals name="shortcuts_count" formatted="false" msgid="8080294865447938455">
+      <item quantity="other"><xliff:g id="SHORTCUTS_COUNT_1">%1$d</xliff:g> ஷார்ட்கட்கள்</item>
+      <item quantity="one"><xliff:g id="SHORTCUTS_COUNT_0">%1$d</xliff:g> ஷார்ட்கட்</item>
+    </plurals>
+    <string name="widgets_and_shortcuts_count" msgid="7209136747878365116">"<xliff:g id="WIDGETS_COUNT">%1$s</xliff:g>, <xliff:g id="SHORTCUTS_COUNT">%2$s</xliff:g>"</string>
+    <string name="widget_button_text" msgid="2880537293434387943">"விட்ஜெட்கள்"</string>
+    <string name="widgets_full_sheet_search_bar_hint" msgid="8484659090860596457">"தேடுக"</string>
+    <string name="widgets_full_sheet_cancel_button_description" msgid="5766167035728653605">"தேடல் பெட்டியிலுள்ள உரையை அழிக்கும்"</string>
+    <string name="no_widgets_available" msgid="9140948620298620513">"விட்ஜெட்டுகள் எதுவுமில்லை"</string>
+    <string name="no_search_results" msgid="6518732304311458580">"தேடல் முடிவுகள் இல்லை"</string>
+    <string name="widgets_full_sheet_personal_tab" msgid="2743540105607120182">"தனிப்பட்டவை"</string>
+    <string name="widgets_full_sheet_work_tab" msgid="3767150027110633765">"பணி"</string>
+    <string name="widget_category_conversations" msgid="8894438636213590446">"உரையாடல்கள்"</string>
     <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"பயன்பாடுகளில் தேடுக"</string>
     <string name="all_apps_loading_message" msgid="5813968043155271636">"ஆப்ஸை ஏற்றுகிறது…"</string>
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"\"<xliff:g id="QUERY">%1$s</xliff:g>\" உடன் பொருந்தும் ஆப்ஸ் இல்லை"</string>
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"கூடுதல் பயன்பாடுகளைத் தேடு"</string>
     <string name="label_application" msgid="8531721983832654978">"ஆப்ஸ்"</string>
     <string name="notifications_header" msgid="1404149926117359025">"அறிவிப்புகள்"</string>
-    <string name="long_press_shortcut_to_add" msgid="4524750017792716791">"ஷார்ட்கட்டைச் சேர்க்க, தொட்டு பிடித்திருக்கவும்."</string>
-    <string name="long_accessible_way_to_add_shortcut" msgid="3327314059613154633">"ஷார்ட்கட்டைச் சேர்க்க, இருமுறை தட்டிப் பிடித்திருக்கவும் (அ) பிரத்தியேக செயல்களைப் பயன்படுத்தவும்."</string>
+    <string name="long_press_shortcut_to_add" msgid="5405328730817637737">"ஷார்ட்கட்டை நகர்த்தத் தொட்டுப் பிடிக்கவும்."</string>
+    <string name="long_accessible_way_to_add_shortcut" msgid="2199537273817090740">"ஷார்ட்கட்டை நகர்த்த இருமுறை தட்டிப் பிடிக்கவும் அல்லது பிரத்தியேகச் செயல்களைப் பயன்படுத்தவும்."</string>
     <string name="out_of_space" msgid="4691004494942118364">"முகப்புத் திரையில் இடமில்லை."</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"பிடித்தவை ட்ரேயில் இடமில்லை"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"ஆப்ஸின் பட்டியல்"</string>
     <string name="all_apps_button_personal_label" msgid="1315764287305224468">"தனிப்பட்ட ஆப்ஸ் பட்டியல்"</string>
     <string name="all_apps_button_work_label" msgid="7270707118948892488">"பணி ஆப்ஸ் பட்டியல்"</string>
-    <string name="all_apps_home_button_label" msgid="252062713717058851">"முகப்பு"</string>
     <string name="remove_drop_target_label" msgid="7812859488053230776">"அகற்று"</string>
     <string name="uninstall_drop_target_label" msgid="4722034217958379417">"நிறுவல் நீக்கு"</string>
     <string name="app_info_drop_target_label" msgid="692894985365717661">"ஆப்ஸ் தகவல்"</string>
@@ -80,7 +96,6 @@
     <string name="folder_renamed" msgid="1794088362165669656">"கோப்புறை <xliff:g id="NAME">%1$s</xliff:g> என மறுபெயரிடப்பட்டது"</string>
     <string name="folder_name_format_exact" msgid="8626242716117004803">"கோப்புறை: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> கோப்புகள்"</string>
     <string name="folder_name_format_overflow" msgid="4270108890534995199">"கோப்புறை: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> அல்லது அதற்கு அதிகமான கோப்புகள்"</string>
-    <string name="widget_button_text" msgid="2880537293434387943">"விட்ஜெட்கள்"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"வால்பேப்பர்கள்"</string>
     <string name="styles_wallpaper_button_text" msgid="4342122323125579619">"ஸ்டைல்கள் &amp; வால்பேப்பர்கள்"</string>
     <string name="settings_button_text" msgid="8873672322605444408">"முகப்பு அமைப்புகள்"</string>
@@ -101,12 +116,12 @@
     <string name="abandoned_search" msgid="891119232568284442">"தேடு"</string>
     <string name="abandoned_promises_title" msgid="7096178467971716750">"ஆப்ஸ் நிறுவப்படவில்லை"</string>
     <string name="abandoned_promise_explanation" msgid="3990027586878167529">"ஐகானுக்கான ஆப்ஸ் நிறுவப்படவில்லை. இதை அகற்றலாம் அல்லது பயன்பாட்டைத் தேடி கைமுறையாக நிறுவலாம்."</string>
+    <string name="app_installing_title" msgid="5864044122733792085">"<xliff:g id="NAME">%1$s</xliff:g> நிறுவப்படுகிறது, <xliff:g id="PROGRESS">%2$s</xliff:g> முடிந்தது"</string>
     <string name="app_downloading_title" msgid="8336702962104482644">"<xliff:g id="NAME">%1$s</xliff:g>ஐப் பதிவிறக்குகிறது, <xliff:g id="PROGRESS">%2$s</xliff:g> முடிந்தது"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"<xliff:g id="NAME">%1$s</xliff:g>ஐ நிறுவுவதற்காகக் காத்திருக்கிறது"</string>
-    <string name="widgets_bottom_sheet_title" msgid="2904559530954183366">"<xliff:g id="NAME">%1$s</xliff:g> விட்ஜெட்டுகள்"</string>
     <string name="widgets_list" msgid="796804551140113767">"விட்ஜெட்கள் பட்டியல்"</string>
     <string name="widgets_list_closed" msgid="6141506579418771922">"விட்ஜெட்கள் பட்டியல் மூடப்பட்டது"</string>
-    <string name="action_add_to_workspace" msgid="8902165848117513641">"முகப்புத் திரையில் சேர்"</string>
+    <string name="action_add_to_workspace" msgid="8902165848117513641">"முகப்புத் திரையில் சேருங்கள்"</string>
     <string name="action_move_here" msgid="2170188780612570250">"இங்கு நகர்த்து"</string>
     <string name="item_added_to_workspace" msgid="4211073925752213539">"முகப்புத் திரையில் சேர்க்கப்பட்டது"</string>
     <string name="item_removed" msgid="851119963877842327">"அகற்றப்பட்டது"</string>
@@ -141,8 +156,13 @@
     <string name="work_profile_edu_next" msgid="8783418929296503629">"அடுத்து"</string>
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"முடிந்தது"</string>
     <string name="work_apps_paused_title" msgid="2389865654362803723">"பணிக் கணக்கு இடைநிறுத்தப்பட்டது"</string>
-    <string name="work_apps_paused_body" msgid="2197210494568696054">"பணி ஆப்ஸால் அறிவிப்புகளை அனுப்பவோ பேட்டரியைப் பயன்படுத்தவோ இருப்பிடத்தை அணுகவோ முடியாது"</string>
-    <string name="work_apps_paused_content_description" msgid="7553586952985486433">"பணிக் கணக்கு இடைநிறுத்தப்பட்டது. பணி ஆப்ஸால் அறிவிப்புகளை அனுப்பவோ பேட்டரியைப் பயன்படுத்தவோ இருப்பிடத்தை அணுகவோ முடியாது"</string>
+    <string name="work_apps_paused_body" msgid="4209084728264328628">"பணி ஆப்ஸால் அறிவிப்புகளை அனுப்பவோ பேட்டரியைப் பயன்படுத்தவோ இருப்பிடத்தை அணுகவோ முடியாது"</string>
+    <string name="work_apps_paused_content_description" msgid="4473292417145736203">"பணிக் கணக்கு இடைநிறுத்தப்பட்டது. பணி ஆப்ஸால் அறிவிப்புகளை அனுப்பவோ பேட்டரியைப் பயன்படுத்தவோ இருப்பிடத்தை அணுகவோ முடியாது"</string>
+    <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"பணி ஆப்ஸ் பேட்ஜ் குறியிடப்பட்டுள்ளன. மேலும் உங்கள் IT நிர்வாகியால் அவற்றைப் பார்க்க முடியும்"</string>
+    <string name="work_apps_paused_edu_accept" msgid="6377476824357318532">"சரி"</string>
+    <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"பணி ஆப்ஸை இடைநிறுத்து"</string>
+    <string name="work_apps_enable_btn_text" msgid="82111102541971856">"இயக்கு"</string>
+    <string name="developer_options_filter_hint" msgid="5896817443635989056">"வடிப்பான்"</string>
     <string name="work_switch_tip" msgid="808075064383839144">"பணி தொடர்பான ஆப்ஸையும் அறிவிப்புகளையும் இடைநிறுத்தும்"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"தோல்வி: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
 </resources>

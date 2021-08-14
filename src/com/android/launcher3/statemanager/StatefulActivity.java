@@ -30,6 +30,8 @@ import com.android.launcher3.statemanager.StateManager.AtomicAnimationFactory;
 import com.android.launcher3.statemanager.StateManager.StateHandler;
 import com.android.launcher3.views.BaseDragLayer;
 
+import java.util.List;
+
 /**
  * Abstract activity with state management
  * @param <STATE_TYPE> Type of state object
@@ -46,7 +48,7 @@ public abstract class StatefulActivity<STATE_TYPE extends BaseState<STATE_TYPE>>
     /**
      * Create handlers to control the property changes for this activity
      */
-    protected abstract StateHandler<STATE_TYPE>[] createStateHandlers();
+    protected abstract void collectStateHandlers(List<StateHandler> out);
 
     /**
      * Returns true if the activity is in the provided state
@@ -150,8 +152,8 @@ public abstract class StatefulActivity<STATE_TYPE extends BaseState<STATE_TYPE>>
 
     private void handleDeferredResume() {
         if (hasBeenResumed() && !getStateManager().getState().hasFlag(FLAG_NON_INTERACTIVE)) {
-            onDeferredResumed();
             addActivityFlags(ACTIVITY_STATE_DEFERRED_RESUMED);
+            onDeferredResumed();
 
             mDeferredResumePending = false;
         } else {

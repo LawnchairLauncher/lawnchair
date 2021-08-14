@@ -17,86 +17,6 @@
 LOCAL_PATH := $(call my-dir)
 
 #
-# Build rule for Launcher3 dependencies lib.
-#
-include $(CLEAR_VARS)
-LOCAL_USE_AAPT2 := true
-LOCAL_AAPT2_ONLY := true
-LOCAL_MODULE_TAGS := optional
-
-LOCAL_STATIC_ANDROID_LIBRARIES := \
-    androidx.recyclerview_recyclerview \
-    androidx.dynamicanimation_dynamicanimation \
-    androidx.preference_preference \
-    iconloader_base
-
-LOCAL_STATIC_JAVA_LIBRARIES := \
-    LauncherPluginLib \
-    launcher_log_protos_lite
-
-LOCAL_SRC_FILES := \
-    $(call all-proto-files-under, protos) \
-    $(call all-proto-files-under, proto_overrides) \
-    $(call all-java-files-under, src_build_config) \
-
-LOCAL_RESOURCE_DIR := $(LOCAL_PATH)/res
-
-LOCAL_PROGUARD_ENABLED := disabled
-
-LOCAL_PROTOC_OPTIMIZE_TYPE := nano
-LOCAL_PROTOC_FLAGS := --proto_path=$(LOCAL_PATH)/protos/ --proto_path=$(LOCAL_PATH)/proto_overrides/
-LOCAL_PROTO_JAVA_OUTPUT_PARAMS := enum_style=java
-
-LOCAL_SDK_VERSION := current
-LOCAL_MIN_SDK_VERSION := 21
-LOCAL_MODULE := Launcher3CommonDepsLib
-LOCAL_LICENSE_KINDS := SPDX-license-identifier-Apache-2.0
-LOCAL_LICENSE_CONDITIONS := notice
-LOCAL_NOTICE_FILE := $(LOCAL_PATH)/NOTICE
-LOCAL_PRIVILEGED_MODULE := true
-LOCAL_MANIFEST_FILE := AndroidManifest-common.xml
-
-include $(BUILD_STATIC_JAVA_LIBRARY)
-
-#
-# Build rule for Launcher3 app.
-#
-include $(CLEAR_VARS)
-LOCAL_USE_AAPT2 := true
-LOCAL_MODULE_TAGS := optional
-
-LOCAL_STATIC_ANDROID_LIBRARIES := Launcher3CommonDepsLib
-
-LOCAL_SRC_FILES := \
-    $(call all-java-files-under, src) \
-    $(call all-java-files-under, src_shortcuts_overrides) \
-    $(call all-java-files-under, src_ui_overrides) \
-    $(call all-java-files-under, ext_tests/src)
-    
-LOCAL_RESOURCE_DIR := $(LOCAL_PATH)/ext_tests/res
-
-LOCAL_PROGUARD_FLAG_FILES := proguard.flags
-# Proguard is disable for testing. Derivarive prjects to keep proguard enabled
-LOCAL_PROGUARD_ENABLED := disabled
-
-LOCAL_SDK_VERSION := current
-LOCAL_MIN_SDK_VERSION := 21
-LOCAL_PACKAGE_NAME := Launcher3
-LOCAL_PRIVILEGED_MODULE := true
-LOCAL_SYSTEM_EXT_MODULE := true
-LOCAL_OVERRIDES_PACKAGES := Home Launcher2
-LOCAL_REQUIRED_MODULES := privapp_whitelist_com.android.launcher3
-
-LOCAL_FULL_LIBS_MANIFEST_FILES := $(LOCAL_PATH)/AndroidManifest-common.xml
-
-LOCAL_JACK_COVERAGE_INCLUDE_FILTER := com.android.launcher3.*
-
-LOCAL_LICENSE_KINDS := SPDX-license-identifier-Apache-2.0
-LOCAL_LICENSE_CONDITIONS := notice
-LOCAL_NOTICE_FILE := $(LOCAL_PATH)/NOTICE
-include $(BUILD_PACKAGE)
-
-#
 # Build rule for Launcher3 Go app for Android Go devices.
 #
 include $(CLEAR_VARS)
@@ -114,7 +34,7 @@ LOCAL_RESOURCE_DIR := $(LOCAL_PATH)/go/res
 LOCAL_PROGUARD_FLAG_FILES := proguard.flags
 
 LOCAL_SDK_VERSION := current
-LOCAL_MIN_SDK_VERSION := 21
+LOCAL_MIN_SDK_VERSION := 26
 LOCAL_PACKAGE_NAME := Launcher3Go
 LOCAL_PRIVILEGED_MODULE := true
 LOCAL_SYSTEM_EXT_MODULE := true
@@ -142,9 +62,7 @@ LOCAL_MODULE_TAGS := optional
 
 LOCAL_STATIC_JAVA_LIBRARIES := \
     SystemUI-statsd \
-    SystemUISharedLib \
-    launcherprotosnano \
-    launcher_log_protos_lite
+    SystemUISharedLib
 ifneq (,$(wildcard frameworks/base))
   LOCAL_PRIVATE_PLATFORM_APIS := true
 else
@@ -161,12 +79,9 @@ LOCAL_STATIC_ANDROID_LIBRARIES := Launcher3CommonDepsLib
 LOCAL_SRC_FILES := \
     $(call all-java-files-under, src) \
     $(call all-java-files-under, quickstep/src) \
-    $(call all-java-files-under, quickstep/recents_ui_overrides/src) \
     $(call all-java-files-under, src_shortcuts_overrides)
 
-LOCAL_RESOURCE_DIR := \
-    $(LOCAL_PATH)/quickstep/res \
-    $(LOCAL_PATH)/quickstep/recents_ui_overrides/res
+LOCAL_RESOURCE_DIR := $(LOCAL_PATH)/quickstep/res
 LOCAL_PROGUARD_ENABLED := disabled
 
 
@@ -195,9 +110,7 @@ LOCAL_SYSTEM_EXT_MODULE := true
 LOCAL_OVERRIDES_PACKAGES := Home Launcher2 Launcher3
 LOCAL_REQUIRED_MODULES := privapp_whitelist_com.android.launcher3
 
-LOCAL_RESOURCE_DIR := \
-    $(LOCAL_PATH)/quickstep/res \
-    $(LOCAL_PATH)/quickstep/recents_ui_overrides/res
+LOCAL_RESOURCE_DIR := $(LOCAL_PATH)/quickstep/res
 
 LOCAL_FULL_LIBS_MANIFEST_FILES := \
     $(LOCAL_PATH)/quickstep/AndroidManifest-launcher.xml \
@@ -221,9 +134,7 @@ LOCAL_MODULE_TAGS := optional
 
 LOCAL_STATIC_JAVA_LIBRARIES := \
     SystemUI-statsd \
-    SystemUISharedLib \
-    launcherprotosnano \
-    launcher_log_protos_lite
+    SystemUISharedLib
 ifneq (,$(wildcard frameworks/base))
   LOCAL_PRIVATE_PLATFORM_APIS := true
 else
@@ -235,13 +146,13 @@ LOCAL_STATIC_ANDROID_LIBRARIES := Launcher3CommonDepsLib
 LOCAL_SRC_FILES := \
     $(call all-java-files-under, src) \
     $(call all-java-files-under, quickstep/src) \
-    $(call all-java-files-under, quickstep/recents_ui_overrides/src) \
-    $(call all-java-files-under, go/src)
+    $(call all-java-files-under, go/src) \
+    $(call all-java-files-under, go/quickstep/src)
 
 LOCAL_RESOURCE_DIR := \
-    $(LOCAL_PATH)/quickstep/res \
-    $(LOCAL_PATH)/quickstep/recents_ui_overrides/res \
-    $(LOCAL_PATH)/go/res
+    $(LOCAL_PATH)/go/quickstep/res \
+    $(LOCAL_PATH)/go/res \
+    $(LOCAL_PATH)/quickstep/res
 
 LOCAL_PROGUARD_FLAG_FILES := proguard.flags
 LOCAL_PROGUARD_ENABLED := full
@@ -254,7 +165,7 @@ LOCAL_REQUIRED_MODULES := privapp_whitelist_com.android.launcher3
 
 LOCAL_FULL_LIBS_MANIFEST_FILES := \
     $(LOCAL_PATH)/go/AndroidManifest.xml \
-    $(LOCAL_PATH)/quickstep/AndroidManifest-launcher.xml \
+    $(LOCAL_PATH)/go/AndroidManifest-launcher.xml \
     $(LOCAL_PATH)/AndroidManifest-common.xml
 
 LOCAL_MANIFEST_FILE := quickstep/AndroidManifest.xml

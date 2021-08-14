@@ -56,7 +56,7 @@ import com.android.systemui.shared.system.QuickStepContract;
 
 /** Utility class to handle Home and Assistant gestures. */
 public class NavBarGestureHandler implements OnTouchListener,
-        TriggerSwipeUpTouchTracker.OnSwipeUpListener {
+        TriggerSwipeUpTouchTracker.OnSwipeUpListener, MotionPauseDetector.OnMotionPauseListener {
 
     private static final String LOG_TAG = "NavBarGestureHandler";
     private static final long RETRACT_GESTURE_ANIMATION_DURATION_MS = 300;
@@ -144,7 +144,6 @@ public class NavBarGestureHandler implements OnTouchListener,
         if (mGestureCallback == null || mAssistantGestureActive) {
             return;
         }
-        finalVelocity.set(finalVelocity.x / 1000, finalVelocity.y / 1000);
         if (mTouchCameFromNavBar) {
             mGestureCallback.onNavBarGestureAttempted(wasFling
                     ? HOME_GESTURE_COMPLETED : OVERVIEW_GESTURE_COMPLETED, finalVelocity);
@@ -182,7 +181,7 @@ public class NavBarGestureHandler implements OnTouchListener,
                 mLaunchedAssistant = false;
                 mSwipeUpTouchTracker.init();
                 mMotionPauseDetector.clear();
-                mMotionPauseDetector.setOnMotionPauseListener(this::onMotionPauseChanged);
+                mMotionPauseDetector.setOnMotionPauseListener(this);
                 break;
             case MotionEvent.ACTION_MOVE:
                 mLastPos.set(event.getX(), event.getY());
@@ -220,7 +219,6 @@ public class NavBarGestureHandler implements OnTouchListener,
             case MotionEvent.ACTION_UP:
             case MotionEvent.ACTION_CANCEL:
                 mMotionPauseDetector.clear();
-                mMotionPauseDetector.setOnMotionPauseListener(null);
                 if (mGestureCallback != null && !intercepted && mTouchCameFromNavBar) {
                     mGestureCallback.onNavBarGestureAttempted(
                             HOME_OR_OVERVIEW_NOT_STARTED_WRONG_SWIPE_DIRECTION, new PointF());
@@ -252,10 +250,20 @@ public class NavBarGestureHandler implements OnTouchListener,
         return intercepted;
     }
 
-    protected void onMotionPauseChanged(boolean isPaused) {
-        if (isPaused) {
-            VibratorWrapper.INSTANCE.get(mContext).vibrate(OVERVIEW_HAPTIC);
-        }
+    boolean onInterceptTouch(MotionEvent event) {
+        return mAssistantLeftRegion.contains(event.getX(), event.getY())
+                || mAssistantRightRegion.contains(event.getX(), event.getY())
+                || event.getY() >= mDisplaySize.y - mBottomGestureHeight;
+    }
+
+    @Override
+    public void onMotionPauseChanged(boolean isPaused) {
+        mGestureCallback.onMotionPaused(isPaused);
+    }
+
+    @Override
+    public void onMotionPauseDetected() {
+        VibratorWrapper.INSTANCE.get(mContext).vibrate(OVERVIEW_HAPTIC);
     }
 
     /**
@@ -308,6 +316,9 @@ public class NavBarGestureHandler implements OnTouchListener,
     interface NavBarGestureAttemptCallback {
         /** Called whenever any touch is completed. */
         void onNavBarGestureAttempted(NavBarGestureResult result, PointF finalVelocity);
+
+        /** Called when a motion stops or resumes */
+        default void onMotionPaused(boolean isPaused) {}
 
         /** Indicates how far a touch originating in the nav bar has moved from the nav bar. */
         default void setNavBarGestureProgress(@Nullable Float displacement) {}

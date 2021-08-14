@@ -15,16 +15,12 @@
  */
 package com.android.quickstep.util;
 
-import static com.android.launcher3.config.FeatureFlags.ENABLE_OVERVIEW_ACTIONS;
-import static com.android.quickstep.SysUINavigationMode.removeShelfFromOverview;
-
 import android.content.Context;
 import android.graphics.Rect;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.android.launcher3.DeviceProfile;
-import com.android.launcher3.R;
 import com.android.launcher3.touch.PagedOrientationHandler;
 import com.android.quickstep.LauncherActivityInterface;
 import com.android.quickstep.SysUINavigationMode;
@@ -45,16 +41,10 @@ public class LayoutUtils {
     public static int getShelfTrackingDistance(Context context, DeviceProfile dp,
             PagedOrientationHandler orientationHandler) {
         // Track the bottom of the window.
-        if (ENABLE_OVERVIEW_ACTIONS.get() && removeShelfFromOverview(context)) {
-            Rect taskSize = new Rect();
-            LauncherActivityInterface.INSTANCE.calculateTaskSize(context, dp, taskSize,
-                    orientationHandler);
-            return orientationHandler.getDistanceToBottomOfRect(dp, taskSize);
-        }
-        int shelfHeight = dp.hotseatBarSizePx + dp.getInsets().bottom;
-        int spaceBetweenShelfAndRecents = (int) context.getResources().getDimension(
-                R.dimen.task_card_vert_space);
-        return shelfHeight + spaceBetweenShelfAndRecents;
+        Rect taskSize = new Rect();
+        LauncherActivityInterface.INSTANCE.calculateTaskSize(
+                context, dp, taskSize, orientationHandler);
+        return orientationHandler.getDistanceToBottomOfRect(dp, taskSize);
     }
 
     /**

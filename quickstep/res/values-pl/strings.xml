@@ -19,7 +19,6 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="recent_task_option_split_screen" msgid="5353188922202653570">"Podziel ekran"</string>
     <string name="recent_task_option_pin" msgid="7929860679018978258">"Przypnij"</string>
     <string name="recent_task_option_freeform" msgid="48863056265284071">"Tryb dowolny"</string>
     <string name="recents_empty_message" msgid="7040467240571714191">"Brak ostatnich elementów"</string>
@@ -46,7 +45,40 @@
     <string name="hotsaet_tip_prediction_enabled" msgid="2233554377501347650">"Włączono sugestie aplikacji"</string>
     <string name="hotsaet_tip_prediction_disabled" msgid="1506426298884658491">"Sugestie aplikacji są wyłączone"</string>
     <string name="hotseat_prediction_content_description" msgid="4582028296938078419">"Przewidywana aplikacja: <xliff:g id="TITLE">%1$s</xliff:g>"</string>
+    <string name="back_gesture_feedback_swipe_too_far_from_left_edge" msgid="340972404868601012">"Pamiętaj, aby przesuwać palcem od samej lewej krawędzi."</string>
+    <string name="back_gesture_feedback_cancelled_left_edge" msgid="6671316150388702530">"Pamiętaj, aby przesuwać palcem od lewej krawędzi do środka ekranu, a potem podnieść palec."</string>
+    <string name="back_gesture_feedback_complete_left_edge" msgid="3220478647881674266">"Dobrze. Teraz przesuń palcem od prawej krawędzi."</string>
+    <string name="back_gesture_feedback_swipe_too_far_from_right_edge" msgid="4306700023773832353">"Pamiętaj, aby przesuwać palcem od samej prawej krawędzi."</string>
+    <string name="back_gesture_feedback_cancelled_right_edge" msgid="4951916546256902552">"Pamiętaj, aby przesuwać palcem od prawej krawędzi do środka ekranu, a potem podnieść palec."</string>
+    <string name="back_gesture_feedback_complete" msgid="7261221999760772210">"Gest przejścia wstecz został opanowany. Poćwicz teraz przechodzenie na ekran główny."</string>
+    <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="1148198467090405643">"Pamiętaj, aby nie przesuwać palcem zbyt blisko dolnej części ekranu."</string>
+    <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"Czułość gestu cofania możesz zmienić w Ustawieniach"</string>
+    <string name="back_gesture_intro_title" msgid="19551256430224428">"Przesuwanie palcem, aby przejść wstecz"</string>
+    <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"Aby wrócić do ostatniego ekranu, przesuń palcem od lewej lub prawej krawędzi do środka ekranu."</string>
+    <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"Pamiętaj, aby przesuwać palcem od dolnej krawędzi ekranu."</string>
+    <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"Pamiętaj, aby przed podniesieniem palca nie było przerwy."</string>
+    <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"Pamiętaj, aby przesuwać palcem prosto do góry."</string>
+    <string name="home_gesture_feedback_complete" msgid="2324789183070815517">"Gest przechodzenia na ekran główny został opanowany. Poćwicz teraz przełączanie aplikacji."</string>
+    <string name="home_gesture_intro_title" msgid="836590312858441830">"Przesuwanie palcem, aby przejść na ekran główny"</string>
+    <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"Przesuń palcem z dołu ekranu. Ten gest zawsze powoduje przejście na ekran główny."</string>
+    <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"Pamiętaj, aby przesuwać palcem od dolnej krawędzi ekranu."</string>
+    <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"Przytrzymaj okno dłużej, zanim podniesiesz palec."</string>
+    <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"Pamiętaj, aby przesuwać palcem prosto do góry, a potem przerwać ruch."</string>
+    <string name="overview_gesture_feedback_complete" msgid="5477014491632199169">"Gest przełączania aplikacji został opanowany. Możesz już używać telefonu."</string>
+    <string name="overview_gesture_intro_title" msgid="2902054412868489378">"Przesuwanie palcem, aby przełączać aplikacje"</string>
+    <string name="overview_gesture_intro_subtitle" msgid="1579517193845186042">"Przesuń palcem od dołu ekranu, przytrzymaj i puść."</string>
+    <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"Wszystko gotowe"</string>
+    <string name="gesture_tutorial_action_button_label_next" msgid="2556263116424738762">"Dalej"</string>
+    <string name="gesture_tutorial_action_button_label_done" msgid="671834508127014231">"Gotowe"</string>
+    <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"Ustawienia"</string>
+    <string name="gesture_tutorial_try_again" msgid="65962545858556697">"Spróbuj ponownie"</string>
+    <string name="gesture_tutorial_nice" msgid="2936275692616928280">"Super!"</string>
+    <string name="gesture_tutorial_step" msgid="1279786122817620968">"Samouczek <xliff:g id="CURRENT">%1$d</xliff:g>/<xliff:g id="TOTAL">%2$d</xliff:g>"</string>
     <string name="action_share" msgid="2648470652637092375">"Udostępnij"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"Zrzut ekranu"</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"Nie możesz wykonać tego działania, bo nie zezwala na to aplikacja lub Twoja organizacja"</string>
+    <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"Pominąć samouczek nawigacji?"</string>
+    <string name="skip_tutorial_dialog_subtitle" msgid="544063326241955662">"Znajdziesz to później w aplikacji <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="gesture_tutorial_action_button_label_cancel" msgid="3809842569351264108">"Anuluj"</string>
+    <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"Pomiń"</string>
 </resources>

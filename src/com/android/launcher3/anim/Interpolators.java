@@ -16,9 +16,6 @@
 
 package com.android.launcher3.anim;
 
-import static com.android.launcher3.util.DefaultDisplay.getSingleFrameMs;
-
-import android.content.Context;
 import android.graphics.Path;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.AccelerateInterpolator;
@@ -30,7 +27,6 @@ import android.view.animation.PathInterpolator;
 
 import com.android.launcher3.Utilities;
 
-
 /**
  * Common interpolators used in Launcher
  */
@@ -39,6 +35,7 @@ public class Interpolators {
     public static final Interpolator LINEAR = new LinearInterpolator();
 
     public static final Interpolator ACCEL = new AccelerateInterpolator();
+    public static final Interpolator ACCEL_0_5 = new AccelerateInterpolator(0.5f);
     public static final Interpolator ACCEL_0_75 = new AccelerateInterpolator(0.75f);
     public static final Interpolator ACCEL_1_5 = new AccelerateInterpolator(1.5f);
     public static final Interpolator ACCEL_2 = new AccelerateInterpolator(2);
@@ -49,7 +46,6 @@ public class Interpolators {
     public static final Interpolator DEACCEL_2 = new DecelerateInterpolator(2);
     public static final Interpolator DEACCEL_2_5 = new DecelerateInterpolator(2.5f);
     public static final Interpolator DEACCEL_3 = new DecelerateInterpolator(3f);
-    public static final Interpolator DEACCEL_5 = new DecelerateInterpolator(5f);
 
     public static final Interpolator ACCEL_DEACCEL = new AccelerateDecelerateInterpolator();
 
@@ -57,6 +53,9 @@ public class Interpolators {
 
     public static final Interpolator AGGRESSIVE_EASE = new PathInterpolator(0.2f, 0f, 0f, 1f);
     public static final Interpolator AGGRESSIVE_EASE_IN_OUT = new PathInterpolator(0.6f,0, 0.4f, 1);
+
+    public static final Interpolator DECELERATED_EASE = new PathInterpolator(0, 0, .2f, 1f);
+    public static final Interpolator ACCELERATED_EASE = new PathInterpolator(0.4f, 0, 1f, 1f);
 
     public static final Interpolator EXAGGERATED_EASE;
 
@@ -66,9 +65,6 @@ public class Interpolators {
      * which should only happen at the very end of the animation (when it's already hidden).
      */
     public static final Interpolator FINAL_FRAME = t -> t < 1 ? 0 : 1;
-
-    private static final int MIN_SETTLE_DURATION = 200;
-    private static final float OVERSHOOT_FACTOR = 0.9f;
 
     static {
         Path exaggeratedEase = new Path();
@@ -83,6 +79,9 @@ public class Interpolators {
 
     public static final Interpolator TOUCH_RESPONSE_INTERPOLATOR =
             new PathInterpolator(0.3f, 0f, 0.1f, 1f);
+    public static final Interpolator TOUCH_RESPONSE_INTERPOLATOR_ACCEL_DEACCEL =
+            v -> ACCEL_DEACCEL.getInterpolation(TOUCH_RESPONSE_INTERPOLATOR.getInterpolation(v));
+
 
     /**
      * Inversion of ZOOM_OUT, compounded with an ease-out.
@@ -151,11 +150,15 @@ public class Interpolators {
      */
     public static Interpolator clampToProgress(Interpolator interpolator, float lowerBound,
             float upperBound) {
-        if (upperBound <= lowerBound) {
-            throw new IllegalArgumentException(String.format(
-                    "lowerBound (%f) must be less than upperBound (%f)", lowerBound, upperBound));
+        if (upperBound < lowerBound) {
+            throw new IllegalArgumentException(
+                    String.format("upperBound (%f) must be greater than lowerBound (%f)",
+                            upperBound, lowerBound));
         }
         return t -> {
+            if (t == lowerBound && t == upperBound) {
+                return t == 0f ? 0 : 1;
+            }
             if (t < lowerBound) {
                 return 0;
             }
@@ -174,77 +177,5 @@ public class Interpolators {
     public static Interpolator mapToProgress(Interpolator interpolator, float lowerBound,
             float upperBound) {
         return t -> Utilities.mapRange(interpolator.getInterpolation(t), lowerBound, upperBound);
-    }
-
-    /**
-     * Computes parameters necessary for an overshoot effect.
-     */
-    public static class OvershootParams {
-        public Interpolator interpolator;
-        public float start;
-        public float end;
-        public long duration;
-
-        /**
-         * Given the input params, sets OvershootParams variables to be used by the caller.
-         * @param startProgress The progress from 0 to 1 that the overshoot starts from.
-         * @param overshootPastProgress The progress from 0 to 1 where we overshoot past (should
-         *        either be equal to startProgress or endProgress, depending on if we want to
-         *        overshoot immediately or only once we reach the end).
-         * @param endProgress The final progress from 0 to 1 that we will settle to.
-         * @param velocityPxPerMs The initial velocity that causes this overshoot.
-         * @param totalDistancePx The distance against which progress is calculated.
-         */
-        public OvershootParams(float startProgress, float overshootPastProgress,
-                float endProgress, float velocityPxPerMs, int totalDistancePx, Context context) {
-            velocityPxPerMs = Math.abs(velocityPxPerMs);
-            overshootPastProgress = Math.max(overshootPastProgress, startProgress);
-            start = startProgress;
-            int startPx = (int) (start * totalDistancePx);
-            // Overshoot by about half a frame.
-            float overshootBy = OVERSHOOT_FACTOR * velocityPxPerMs *
-                    getSingleFrameMs(context) / totalDistancePx / 2;
-            overshootBy = Utilities.boundToRange(overshootBy, 0.02f, 0.15f);
-            end = overshootPastProgress + overshootBy;
-            int endPx = (int) (end  * totalDistancePx);
-            int overshootDistance = endPx - startPx;
-            // Calculate deceleration necessary to reach overshoot distance.
-            // Formula: velocityFinal^2 = velocityInitial^2 + 2 * acceleration * distance
-            //          0 = v^2 + 2ad (velocityFinal == 0)
-            //          a = v^2 / -2d
-            float decelerationPxPerMs = velocityPxPerMs * velocityPxPerMs / (2 * overshootDistance);
-            // Calculate time necessary to reach peak of overshoot.
-            // Formula: acceleration = velocity / time
-            //          time = velocity / acceleration
-            duration = (long) (velocityPxPerMs / decelerationPxPerMs);
-
-            // Now that we're at the top of the overshoot, need to settle back to endProgress.
-            float settleDistance = end - endProgress;
-            int settleDistancePx = (int) (settleDistance * totalDistancePx);
-            // Calculate time necessary for the settle.
-            // Formula: distance = velocityInitial * time + 1/2 * acceleration * time^2
-            //          d = 1/2at^2 (velocityInitial = 0, since we just stopped at the top)
-            //          t = sqrt(2d/a)
-            // Above formula assumes constant acceleration. Since we use ACCEL_DEACCEL, we actually
-            // have acceleration to halfway then deceleration the rest. So the formula becomes:
-            //          t = sqrt(d/a) * 2 (half the distance for accel, half for deaccel)
-            long settleDuration = (long) Math.sqrt(settleDistancePx / decelerationPxPerMs) * 4;
-
-            settleDuration = Math.max(MIN_SETTLE_DURATION, settleDuration);
-            // How much of the animation to devote to playing the overshoot (the rest is for settle).
-            float overshootFraction = (float) duration / (duration + settleDuration);
-            duration += settleDuration;
-            // Finally, create the interpolator, composed of two interpolators: an overshoot, which
-            // reaches end > 1, and then a settle to endProgress.
-            Interpolator overshoot = Interpolators.clampToProgress(DEACCEL, 0, overshootFraction);
-            // The settle starts at 1, where 1 is the top of the overshoot, and maps to a fraction
-            // such that final progress is endProgress. For example, if we overshot to 1.1 but want
-            // to end at 1, we need to map to 1/1.1.
-            Interpolator settle = Interpolators.clampToProgress(Interpolators.mapToProgress(
-                    ACCEL_DEACCEL, 1, (endProgress - start) / (end - start)), overshootFraction, 1);
-            interpolator = t -> t <= overshootFraction
-                    ? overshoot.getInterpolation(t)
-                    : settle.getInterpolation(t);
-        }
     }
 }

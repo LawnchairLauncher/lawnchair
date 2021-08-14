@@ -19,7 +19,6 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="recent_task_option_split_screen" msgid="5353188922202653570">"ਸਪਲਿਟ ਸਕ੍ਰੀਨ"</string>
     <string name="recent_task_option_pin" msgid="7929860679018978258">"ਪਿੰਨ ਕਰੋ"</string>
     <string name="recent_task_option_freeform" msgid="48863056265284071">"ਫ੍ਰੀਫਾਰਮ"</string>
     <string name="recents_empty_message" msgid="7040467240571714191">"ਕੋਈ ਹਾਲੀਆ ਆਈਟਮਾਂ ਨਹੀਂ"</string>
@@ -46,7 +45,40 @@
     <string name="hotsaet_tip_prediction_enabled" msgid="2233554377501347650">"ਐਪ ਸੁਝਾਵਾਂ ਨੂੰ ਚਾਲੂ ਕੀਤਾ ਗਿਆ"</string>
     <string name="hotsaet_tip_prediction_disabled" msgid="1506426298884658491">"ਐਪ ਸੁਝਾਵਾਂ ਨੂੰ ਬੰਦ ਕੀਤਾ ਗਿਆ"</string>
     <string name="hotseat_prediction_content_description" msgid="4582028296938078419">"ਪੂਰਵ ਅਨੁਮਾਨਿਤ ਐਪ: <xliff:g id="TITLE">%1$s</xliff:g>"</string>
+    <string name="back_gesture_feedback_swipe_too_far_from_left_edge" msgid="340972404868601012">"ਇਹ ਪੱਕਾ ਕਰੋ ਕਿ ਤੁਸੀਂ ਦੂਰ-ਖੱਬੇ ਕਿਨਾਰੇ ਤੋਂ ਸਵਾਈਪ ਕਰਦੇ ਹੋ।"</string>
+    <string name="back_gesture_feedback_cancelled_left_edge" msgid="6671316150388702530">"ਇਹ ਪੱਕਾ ਕਰੋ ਕਿ ਤੁਸੀਂ ਖੱਬੇ ਕਿਨਾਰੇ ਤੋਂ ਸਕ੍ਰੀਨ ਦੇ ਵਿਚਕਾਰ ਤੱਕ ਸਵਾਈਪ ਕਰਦੇ ਹੋ ਅਤੇ ਛੱਡ ਦਿੰਦੇ ਹੋ।"</string>
+    <string name="back_gesture_feedback_complete_left_edge" msgid="3220478647881674266">"ਹੋ ਗਿਆ! ਹੁਣ ਸੱਜੇ ਕਿਨਾਰੇ ਤੋਂ ਸਵਾਈਪ ਕਰਕੇ ਦੇੇਖੋ।"</string>
+    <string name="back_gesture_feedback_swipe_too_far_from_right_edge" msgid="4306700023773832353">"ਇਹ ਪੱਕਾ ਕਰੋ ਕਿ ਤੁਸੀਂ ਦੂਰ-ਸੱਜੇ ਕਿਨਾਰੇ ਤੋਂ ਸਵਾਈਪ ਕਰਦੇ ਹੋ।"</string>
+    <string name="back_gesture_feedback_cancelled_right_edge" msgid="4951916546256902552">"ਇਹ ਪੱਕਾ ਕਰੋ ਕਿ ਤੁਸੀਂ ਸੱਜੇ ਕਿਨਾਰੇ ਤੋਂ ਸਕ੍ਰੀਨ ਦੇ ਵਿਚਕਾਰ ਤੱਕ ਸਵਾਈਪ ਕਰਦੇ ਹੋ ਅਤੇ ਛੱਡ ਦਿੰਦੇ ਹੋ।"</string>
+    <string name="back_gesture_feedback_complete" msgid="7261221999760772210">"ਤੁਸੀਂ \'ਵਾਪਸ ਜਾਓ\' ਦਾ ਇਸ਼ਾਰਾ ਪੂਰਾ ਕੀਤਾ। ਅੱਗੇ, ਜਾਣੋ ਕਿ ਹੋਮ \'ਤੇ ਕਿਵੇਂ ਜਾਣਾ ਹੈ।"</string>
+    <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="1148198467090405643">"ਇਹ ਪੱਕਾ ਕਰੋ ਕਿ ਤੁਸੀਂ ਸਕ੍ਰੀਨ ਦੇ ਹੇਠਲੇ ਹਿੱਸੇ ਦੇ ਬਹੁਤ ਨੇੜੇ ਸਵਾਈਪ ਨਾ ਕਰੋ।"</string>
+    <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"ਪਿੱਛੇ ਜਾਣ ਦੇ ਸੰਕੇਤ ਦੀ ਸੰਵੇਦਨਸ਼ੀਲਤਾ ਬਦਲਣ ਲਈ, ਸੈਟਿੰਗਾਂ \'ਤੇ ਜਾਓ"</string>
+    <string name="back_gesture_intro_title" msgid="19551256430224428">"ਪਿੱਛੇ ਜਾਣ ਲਈ ਸਵਾਈਪ ਕਰੋ"</string>
+    <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"ਪਿਛਲੀ ਸਕ੍ਰੀਨ \'ਤੇ ਵਾਪਸ ਜਾਣ ਲਈ, ਖੱਬੇ ਜਾਂ ਸੱਜੇ ਕਿਨਾਰੇ ਤੋਂ ਸਕ੍ਰੀਨ ਦੇ ਵਿਚਕਾਰ ਤੱਕ ਸਵਾਈਪ ਕਰੋ।"</string>
+    <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"ਇਹ ਪੱਕਾ ਕਰੋ ਕਿ ਤੁਸੀਂ ਸਕ੍ਰੀਨ ਦੇ ਹੇਠਲੇ ਕਿਨਾਰੇ ਤੋਂ ਉੱਪਰ ਵੱਲ ਸਵਾਈਪ ਕਰਦੇ ਹੋ।"</string>
+    <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"ਪੱਕਾ ਕਰੋ ਕਿ ਸਕ੍ਰੀਨ ਨੂੰ ਛੱਡਣ ਤੋਂ ਪਹਿਲਾਂ ਰੁਕੋ ਨਾ।"</string>
+    <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"ਇਹ ਪੱਕਾ ਕਰੋ ਕਿ ਤੁਸੀਂ ਸਿੱਧੇ ਉੱਪਰ ਵੱਲ ਸਵਾਈਪ ਕਰਦੇ ਹੋ।"</string>
+    <string name="home_gesture_feedback_complete" msgid="2324789183070815517">"ਤੁਸੀਂ ਹੋਮ \'ਤੇ ਜਾਓ ਦਾ ਇਸ਼ਾਰਾ ਪੂਰਾ ਕੀਤਾ। ਅੱਗੇ, ਜਾਣੋ ਕਿ ਐਪਾਂ ਵਿਚਾਲੇ ਅਦਲਾ-ਬਦਲੀ ਕਿਵੇਂ ਕਰਨੀ ਹੈ।"</string>
+    <string name="home_gesture_intro_title" msgid="836590312858441830">"ਹੋਮ \'ਤੇ ਜਾਣ ਲਈ ਸਵਾਈਪ ਕਰੋ"</string>
+    <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"ਆਪਣੀ ਸਕ੍ਰੀਨ ਦੇ ਹੇਠਾਂ ਤੋਂ ਉੱਪਰ ਵੱਲ ਸਵਾਈਪ ਕਰੋ। ਇਹ ਸੰਕੇਤ ਹਮੇਸ਼ਾਂ ਤੁਹਾਨੂੰ ਹੋਮ ਸਕ੍ਰੀਨ \'ਤੇ ਲੈ ਜਾਂਦਾ ਹੈ।"</string>
+    <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"ਇਹ ਪੱਕਾ ਕਰੋ ਕਿ ਤੁਸੀਂ ਸਕ੍ਰੀਨ ਦੇ ਹੇਠਲੇ ਕਿਨਾਰੇ ਤੋਂ ਉੱਪਰ ਵੱਲ ਸਵਾਈਪ ਕਰਦੇ ਹੋ।"</string>
+    <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"ਛੱਡਣ ਤੋਂ ਪਹਿਲਾਂ ਵਿੰਡੋ ਨੂੰ ਕੁਝ ਸਮੇਂ ਲਈ ਦਬਾ ਕੇ ਰੱਖੋ।"</string>
+    <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"ਇਹ ਪੱਕਾ ਕਰੋ ਕਿ ਤੁਸੀਂ ਸਿੱਧੇ ਉੱਪਰ ਵੱਲ ਸਵਾਈਪ ਕਰਦੇ ਹੋ, ਫਿਰ ਰੋਕੋ।"</string>
+    <string name="overview_gesture_feedback_complete" msgid="5477014491632199169">"ਤੁਸੀਂ ਐਪਾਂ ਵਿਚਾਲੇ ਅਦਲਾ-ਬਦਲੀ ਦਾ ਇਸ਼ਾਰਾ ਪੂਰਾ ਕੀਤਾ। ਤੁਸੀਂ ਆਪਣੇ ਫ਼ੋਨ ਦੀ ਵਰਤੋਂ ਕਰਨ ਲਈ ਤਿਆਰ ਹੋ!"</string>
+    <string name="overview_gesture_intro_title" msgid="2902054412868489378">"ਐਪਾਂ ਵਿਚਾਲੇ ਅਦਲਾ-ਬਦਲੀ ਕਰਨ ਲਈ ਸਵਾਈਪ ਕਰੋ"</string>
+    <string name="overview_gesture_intro_subtitle" msgid="1579517193845186042">"ਆਪਣੀ ਸਕ੍ਰੀਨ ਦੇ ਹੇਠਾਂ ਤੋਂ ਉੱਪਰ ਵੱਲ ਸਵਾਈਪ ਕਰਕੇ ਦਬਾਈ ਰੱਖੋ, ਅਤੇ ਫਿਰ ਛੱਡੋ।"</string>
+    <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"ਪੂਰੀ ਤਰ੍ਹਾਂ ਤਿਆਰ"</string>
+    <string name="gesture_tutorial_action_button_label_next" msgid="2556263116424738762">"ਅੱਗੇ"</string>
+    <string name="gesture_tutorial_action_button_label_done" msgid="671834508127014231">"ਹੋ ਗਿਆ"</string>
+    <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"ਸੈਟਿੰਗਾਂ"</string>
+    <string name="gesture_tutorial_try_again" msgid="65962545858556697">"ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰੋ"</string>
+    <string name="gesture_tutorial_nice" msgid="2936275692616928280">"ਵਧੀਆ!"</string>
+    <string name="gesture_tutorial_step" msgid="1279786122817620968">"ਟਿਊਟੋਰੀਅਲ <xliff:g id="CURRENT">%1$d</xliff:g>/<xliff:g id="TOTAL">%2$d</xliff:g>"</string>
     <string name="action_share" msgid="2648470652637092375">"ਸਾਂਝਾ ਕਰੋ"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"ਸਕ੍ਰੀਨਸ਼ਾਟ"</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"ਐਪ ਜਾਂ ਤੁਹਾਡੀ ਸੰਸਥਾ ਵੱਲੋਂ ਇਸ ਕਾਰਵਾਈ ਦੀ ਇਜਾਜ਼ਤ ਨਹੀਂ ਹੈ"</string>
+    <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"ਕੀ ਨੈਵੀਗੇਸ਼ਨ ਟਿਊਟੋਰੀਅਲ ਨੂੰ ਛੱਡਣਾ ਹੈ?"</string>
+    <string name="skip_tutorial_dialog_subtitle" msgid="544063326241955662">"ਤੁਸੀਂ ਇਸਨੂੰ ਬਾਅਦ ਵਿੱਚ <xliff:g id="NAME">%1$s</xliff:g> ਐਪ ਵਿੱਚ ਲੱਭ ਸਕਦੇ ਹੋ"</string>
+    <string name="gesture_tutorial_action_button_label_cancel" msgid="3809842569351264108">"ਰੱਦ ਕਰੋ"</string>
+    <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"ਛੱਡੋ"</string>
 </resources>

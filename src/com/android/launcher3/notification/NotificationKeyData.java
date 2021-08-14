@@ -30,9 +30,9 @@ import java.util.List;
 
 /**
  * The key data associated with the notification, used to determine what to include
- * in dots and dummy popup views before they are populated.
+ * in dots and stub popup views before they are populated.
  *
- * @see NotificationInfo for the full data used when populating the dummy views.
+ * @see NotificationInfo for the full data used when populating the stub views.
  */
 public class NotificationKeyData {
     public final String notificationKey;
