@@ -54,7 +54,6 @@ public final class WidgetsListTableViewHolderBinder
     private final OnLongClickListener mIconLongClickListener;
     private final WidgetsListDrawableFactory mListDrawableFactory;
     private final CachingWidgetPreviewLoader mWidgetPreviewLoader;
-    private final WidgetsListAdapter mWidgetsListAdapter;
     private boolean mApplyBitmapDeferred = false;
 
     public WidgetsListTableViewHolderBinder(
@@ -62,14 +61,12 @@ public final class WidgetsListTableViewHolderBinder
             OnClickListener iconClickListener,
             OnLongClickListener iconLongClickListener,
             CachingWidgetPreviewLoader widgetPreviewLoader,
-            WidgetsListDrawableFactory listDrawableFactory,
-            WidgetsListAdapter listAdapter) {
+            WidgetsListDrawableFactory listDrawableFactory) {
         mLayoutInflater = layoutInflater;
         mIconClickListener = iconClickListener;
         mIconLongClickListener = iconLongClickListener;
         mWidgetPreviewLoader = widgetPreviewLoader;
         mListDrawableFactory = listDrawableFactory;
-        mWidgetsListAdapter = listAdapter;
     }
 
     /**
@@ -97,15 +94,13 @@ public final class WidgetsListTableViewHolderBinder
 
     @Override
     public void bindViewHolder(WidgetsRowViewHolder holder, WidgetsListContentEntry entry,
-            int position) {
+            @ListPosition int position) {
         WidgetsListTableView table = holder.mTableContainer;
         if (DEBUG) {
             Log.d(TAG, String.format("onBindViewHolder [widget#=%d, table.getChildCount=%d]",
                     entry.mWidgets.size(), table.getChildCount()));
         }
-
-        table.setListDrawableState(
-                position == mWidgetsListAdapter.getItemCount() - 1 ? LAST : MIDDLE);
+        table.setListDrawableState(((position & POSITION_LAST) != 0) ? LAST : MIDDLE);
 
         List<ArrayList<WidgetItem>> widgetItemsTable =
                 WidgetsTableUtils.groupWidgetItemsIntoTable(
