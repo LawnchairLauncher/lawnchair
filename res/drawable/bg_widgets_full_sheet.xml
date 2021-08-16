@@ -13,17 +13,11 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-    <item>
-        <shape android:shape="rectangle">
-            <solid android:color="?android:attr/colorBackground" />
-            <padding android:top="16dp"/>
-        </shape>
-    </item>
-    <item android:gravity="center">
-        <shape android:shape="rectangle">
-            <solid android:color="?android:attr/textColorSecondary" />
-            <size android:width="48dp" android:height="2dp" />
-        </shape>
-    </item>
-</layer-list>
+
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle" >
+    <solid android:color="?android:attr/colorBackground" />
+    <corners
+        android:topLeftRadius="@dimen/dialogCornerRadius"
+        android:topRightRadius="@dimen/dialogCornerRadius" />
+</shape>
