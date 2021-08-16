@@ -133,7 +133,7 @@ import com.android.launcher3.util.MultiValueAlpha;
 import com.android.launcher3.util.ResourceBasedOverride.Overrides;
 import com.android.launcher3.util.RunnableList;
 import com.android.launcher3.util.SplitConfigurationOptions;
-import com.android.launcher3.util.SplitConfigurationOptions.SplitPositionOption;
+import com.android.launcher3.util.SplitConfigurationOptions.StagePosition;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.util.TranslateEdgeEffect;
 import com.android.launcher3.util.ViewPool;
@@ -2572,8 +2572,8 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     private void createInitialSplitSelectAnimation(PendingAnimation anim) {
         float placeholderHeight = getResources().getDimension(R.dimen.split_placeholder_size);
         mOrientationHandler.getInitialSplitPlaceholderBounds((int) placeholderHeight,
-                        mActivity.getDeviceProfile(),
-                mSplitSelectStateController.getActiveSplitPositionOption(), mTempRect);
+                mActivity.getDeviceProfile(),
+                mSplitSelectStateController.getActiveSplitStagePosition(), mTempRect);
 
         RectF startingTaskRect = new RectF();
         mSplitHiddenTaskView.setVisibility(INVISIBLE);
@@ -2582,6 +2582,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         mFirstFloatingTaskView.setAlpha(1);
         mFirstFloatingTaskView.addAnimation(anim, startingTaskRect,
                 mTempRect, mSplitHiddenTaskView, true /*fadeWithThumbnail*/);
+        anim.addEndListener(aBoolean -> mActionsView.setSplitButtonVisible(false));
     }
 
     /**
@@ -3014,8 +3015,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
      * @return {@code true} if one of the task thumbnails would intersect/overlap with the
      *         {@link #mFirstFloatingTaskView}
      */
-    public boolean shouldShiftThumbnailsForSplitSelect(@SplitConfigurationOptions.StagePosition
-            int stagePosition) {
+    public boolean shouldShiftThumbnailsForSplitSelect(@StagePosition int stagePosition) {
         if (!mActivity.getDeviceProfile().isTablet) {
             // Never enough space on phones
             return true;
@@ -3547,12 +3547,17 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         }
     }
 
-    public void initiateSplitSelect(TaskView taskView, SplitPositionOption splitPositionOption) {
+    public void initiateSplitSelect(TaskView taskView) {
+        int defaultSplitPosition = mOrientationHandler
+                .getDefaultSplitPosition(mActivity.getDeviceProfile());
+        initiateSplitSelect(taskView, defaultSplitPosition);
+    }
+
+    public void initiateSplitSelect(TaskView taskView, @StagePosition int stagePosition) {
         mSplitHiddenTaskView = taskView;
         Rect initialBounds = new Rect(taskView.getLeft(), taskView.getTop(), taskView.getRight(),
                 taskView.getBottom());
-        mSplitSelectStateController.setInitialTaskSelect(taskView,
-                splitPositionOption, initialBounds);
+        mSplitSelectStateController.setInitialTaskSelect(taskView, stagePosition, initialBounds);
         mSplitHiddenTaskViewIndex = indexOfChild(taskView);
         if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
             finishRecentsAnimation(true, null);
@@ -3578,7 +3583,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                 .getDimensionPixelSize(R.dimen.multi_window_task_divider_size) / 2;
         mOrientationHandler.getFinalSplitPlaceholderBounds(halfDividerSize,
                 mActivity.getDeviceProfile(),
-                mSplitSelectStateController.getActiveSplitPositionOption(), firstTaskEndingBounds,
+                mSplitSelectStateController.getActiveSplitStagePosition(), firstTaskEndingBounds,
                 secondTaskEndingBounds);
 
         mFirstFloatingTaskView.getBoundsOnScreen(firstTaskStartingBounds);
@@ -3603,7 +3608,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
 
     public PendingAnimation cancelSplitSelect(boolean animate) {
         SplitSelectStateController splitController = mSplitSelectStateController;
-        SplitPositionOption splitOption = splitController.getActiveSplitPositionOption();
+        @StagePosition int stagePosition = splitController.getActiveSplitStagePosition();
         Rect initialBounds = splitController.getInitialBounds();
         splitController.resetState();
         int duration = mActivity.getStateManager().getState().getTransitionDuration(getContext());
@@ -3629,7 +3634,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             if (child == mSplitHiddenTaskView) {
                 TaskView taskView = (TaskView) child;
 
-                int dir = mOrientationHandler.getSplitTaskViewDismissDirection(splitOption,
+                int dir = mOrientationHandler.getSplitTaskViewDismissDirection(stagePosition,
                         mActivity.getDeviceProfile());
                 FloatProperty<TaskView> dismissingTaskViewTranslate;
                 Rect hiddenBounds = new Rect(taskView.getLeft(), taskView.getTop(),
@@ -3701,10 +3706,10 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         return pendingAnim;
     }
 
+    /** TODO(b/181707736) More gracefully handle exiting split selection state */
     private void resetFromSplitSelectionState() {
         mSplitHiddenTaskView.setTranslationY(0);
         if (!showAsGrid()) {
-            // TODO(b/186800707)
             int pageToSnapTo = mCurrentPage;
             if (mSplitHiddenTaskViewIndex <= pageToSnapTo) {
                 pageToSnapTo += 1;
@@ -3728,6 +3733,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             mSecondSplitHiddenTaskView.setVisibility(VISIBLE);
             mSecondSplitHiddenTaskView = null;
         }
+        mActionsView.setSplitButtonVisible(true);
     }
 
     private void updateDeadZoneRects() {

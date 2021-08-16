@@ -80,11 +80,11 @@ public interface PagedOrientationHandler {
     FloatProperty<View> getSecondaryViewTranslate();
 
     /**
-     * @param splitPosition The position where the view to be split will go
+     * @param stagePosition The position where the view to be split will go
      * @return {@link #SPLIT_TRANSLATE_*} constants to indicate which direction the
      * dismissal should happen
      */
-    int getSplitTaskViewDismissDirection(SplitPositionOption splitPosition, DeviceProfile dp);
+    int getSplitTaskViewDismissDirection(@StagePosition int stagePosition, DeviceProfile dp);
     int getPrimaryScroll(View view);
     float getPrimaryScale(View view);
     int getChildStart(View view);
@@ -122,18 +122,20 @@ public interface PagedOrientationHandler {
      * @param splitholderSize height of placeholder view in portrait, width in landscape
      */
     void getInitialSplitPlaceholderBounds(int splitholderSize, DeviceProfile dp,
-            SplitPositionOption splitPositionOption, Rect out);
+            @StagePosition int stagePosition, Rect out);
 
     /**
      * @param splitDividerSize height of split screen drag handle in portrait, width in landscape
-     * @param initialSplitOption the split position option (top/left, bottom/right) of the first
+     * @param stagePosition the split position option (top/left, bottom/right) of the first
      *                           task selected for entering split
      * @param out1 the bounds for where the first selected app will be
      * @param out2 the bounds for where the second selected app will be, complimentary to
      *             {@param out1} based on {@param initialSplitOption}
      */
     void getFinalSplitPlaceholderBounds(int splitDividerSize, DeviceProfile dp,
-            SplitPositionOption initialSplitOption, Rect out1, Rect out2);
+            @StagePosition int stagePosition, Rect out1, Rect out2);
+
+    int getDefaultSplitPosition(DeviceProfile deviceProfile);
 
     /**
      * @param outRect This is expected to be the rect that has the dimensions for a non-split,
