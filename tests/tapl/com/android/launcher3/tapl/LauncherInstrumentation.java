@@ -1332,13 +1332,6 @@ public final class LauncherInstrumentation {
         }
 
         final MotionEvent event = getMotionEvent(downTime, currentTime, action, point.x, point.y);
-        // b/190748682
-        switch (action) {
-            case MotionEvent.ACTION_DOWN:
-            case MotionEvent.ACTION_UP:
-                log("b/190748682: injecting " + event);
-                break;
-        }
         assertTrue("injectInputEvent failed",
                 mInstrumentation.getUiAutomation().injectInputEvent(event, true, false));
         event.recycle();
