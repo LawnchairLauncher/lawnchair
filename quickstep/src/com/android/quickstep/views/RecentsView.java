@@ -1277,7 +1277,8 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                             + " taskId: " + getTaskIdsForTaskViewId(taskViewId)[0]
                             + " for taskView: " + taskView + "\n");
                 }
-                Log.d(TASK_VIEW_ID_CRASH, sb.toString());
+                Log.d(TASK_VIEW_ID_CRASH, "taskViewCount: " + getTaskViewCount()
+                        + " " + sb.toString());
             }
             mRunningTaskViewId = newRunningTaskView.getTaskViewId();
         }
@@ -2017,6 +2018,8 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
      * Sets the running task id, cleaning up the old running task if necessary.
      */
     public void setCurrentTask(int runningTaskViewId) {
+        Log.d(TASK_VIEW_ID_CRASH, "currentRunningTaskViewId: " + mRunningTaskViewId
+                + " requestedTaskViewId: " + runningTaskViewId);
         if (mRunningTaskViewId == runningTaskViewId) {
             return;
         }
