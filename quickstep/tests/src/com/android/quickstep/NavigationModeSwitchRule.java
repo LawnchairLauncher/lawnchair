@@ -49,6 +49,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Test rule that allows executing a test with Quickstep on and then Quickstep off.
@@ -182,17 +183,12 @@ public class NavigationModeSwitchRule implements TestRule {
                     };
             targetContext.getMainExecutor().execute(() ->
                     SYS_UI_NAVIGATION_MODE.addModeChangeListener(listener));
-            // b/139137636
-//            latch.await(60, TimeUnit.SECONDS);
+            latch.await(60, TimeUnit.SECONDS);
             targetContext.getMainExecutor().execute(() ->
                     SYS_UI_NAVIGATION_MODE.removeModeChangeListener(listener));
 
-            Wait.atMost(() -> "Navigation mode didn't change to " + expectedMode,
-                    () -> currentSysUiNavigationMode() == expectedMode, WAIT_TIME_MS,
-                    launcher);
-            // b/139137636
-//            assertTrue(launcher, "Navigation mode didn't change to " + expectedMode,
-//                    currentSysUiNavigationMode() == expectedMode, description);
+            assertTrue(launcher, "Navigation mode didn't change to " + expectedMode,
+                    currentSysUiNavigationMode() == expectedMode, description);
 
         }
 
