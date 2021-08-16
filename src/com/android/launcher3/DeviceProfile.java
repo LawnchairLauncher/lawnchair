@@ -17,7 +17,6 @@
 package com.android.launcher3;
 
 import static android.util.DisplayMetrics.DENSITY_DEVICE_STABLE;
-import static android.view.WindowManager.LayoutParams.TYPE_APPLICATION;
 
 import static com.android.launcher3.ResourceUtils.pxFromDp;
 import static com.android.launcher3.Utilities.dpiFromPx;
@@ -33,11 +32,8 @@ import android.graphics.Path;
 import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.Rect;
-import android.hardware.display.DisplayManager;
 import android.util.DisplayMetrics;
 import android.view.Surface;
-import android.view.WindowInsets;
-import android.view.WindowManager;
 
 import com.android.launcher3.CellLayout.ContainerType;
 import com.android.launcher3.DevicePaddings.DevicePadding;
@@ -267,13 +263,7 @@ public class DeviceProfile {
             // Taskbar will be added later, but provides bottom insets that we should subtract
             // from availableHeightPx.
             taskbarSize = res.getDimensionPixelSize(R.dimen.taskbar_size);
-            WindowInsets windowInsets =
-                    context.createWindowContext(
-                            context.getSystemService(DisplayManager.class).getDisplay(mInfo.id),
-                            TYPE_APPLICATION, null)
-                    .getSystemService(WindowManager.class)
-                    .getCurrentWindowMetrics().getWindowInsets();
-            nonOverlappingTaskbarInset = taskbarSize - windowInsets.getSystemWindowInsetBottom();
+            nonOverlappingTaskbarInset = taskbarSize - windowBounds.insets.bottom;
             if (nonOverlappingTaskbarInset > 0) {
                 nonFinalAvailableHeightPx -= nonOverlappingTaskbarInset;
             }
