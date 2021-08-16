@@ -53,7 +53,8 @@ public class PluginManagerWrapper {
         PluginInitializerImpl pluginInitializer  = new PluginInitializerImpl();
         mPluginEnabler = new PluginEnablerImpl(c);
         PluginInstanceManager.Factory instanceManagerFactory = new PluginInstanceManager.Factory(
-                c, c.getPackageManager(),  MODEL_EXECUTOR.getLooper(), pluginInitializer);
+                c, c.getPackageManager(),  MODEL_EXECUTOR, MODEL_EXECUTOR.getLooper(),
+                pluginInitializer);
 
         mPluginManager = new PluginManagerImpl(c, instanceManagerFactory,
                 pluginInitializer.isDebuggable(),
