@@ -160,6 +160,12 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
     @PortraitLandscape
     @ScreenRecord //b/193125090
     public void testOverviewActions() throws Exception {
+        // Experimenting for b/165029151:
+        final Overview overview = mLauncher.pressHome().switchToOverview();
+        if (overview.hasTasks()) overview.dismissAllTasks();
+        mLauncher.pressHome();
+        //
+
         startTestAppsWithCheck();
         OverviewActions actionsView =
                 mLauncher.pressHome().switchToOverview().getOverviewActions();
