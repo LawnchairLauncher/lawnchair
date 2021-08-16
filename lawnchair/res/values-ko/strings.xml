@@ -40,7 +40,7 @@
     <string name="icons">아이콘</string>
     <string name="icon_size">아이콘 크기</string>
     <string name="label_size">라벨 사이즈</string>
-    <string name="show_home_labels">Show Labels</string>
+    <string name="show_home_labels">라벨 표시</string>
     <string name="allow_empty_pages_label">빈 페이지 허용</string>
     <string name="notification_dots">알림 딱지</string>
     <string name="smartspace_preferences">설정</string>
@@ -64,7 +64,7 @@
     <string name="auto_adaptive_icons_description">모든 비적응형 아이콘들을 위한 기능입니다.</string>
     <string name="support_and_pr">지원 &amp; 문의</string>
     <string name="workspace_dt2s">화면 두 번 눌러 끄기</string>
-    <string name="smart_space_enable">At a Glance Widget</string>
+    <string name="smart_space_enable">한 눈에 보기 위젯 활성화</string>
     <string name="design_and_development">디자인 &amp; 개발</string>
     <string name="translate">번역</string>
     <string name="product">제품</string>
@@ -80,7 +80,7 @@
     <string name="dt2s_a11y_hint_title">접근성 서비스가 활성화되어야합니다</string>
     <string name="dt2s_a11y_hint">두 번 눌러 화면 끄기를 사용하려면, Lawnchair 접근성 서비스를 활성화해야합니다. \"설정 열기\"를 눌러 \"Lawnchair\"를 선택하고 \"Lawnchair 사용\"을 활성화해주세요.</string>
     <string name="dt2s_warning_open_settings">설정 열기</string>
-    <string name="minus_one_enable">Feed</string>
+    <string name="minus_one_enable">피드</string>
     <string name="minus_one_unavailable">피드를 이용할 수 없습니다.</string>
     <string name="fuzzy_search_title">유사 검색어 검색</string>
     <string name="fuzzy_search_desc">앱을 검색할 때 검색어와 유사한 앱을 찾아줍니다.</string>
@@ -103,10 +103,10 @@
     <string name="quickstep_description">모두 닫기 버튼, 가장자리 둥글기</string>
     <string name="wallpaper_scrolling_label">배경화면 움직이기</string>
     <string name="show_sys_ui_scrim">Top Shadow</string>
-    <string name="show_status_bar">Status Bar</string>
+    <string name="show_status_bar">상태표시줄</string>
     <string name="what_to_show">What to Show</string>
-    <string name="missing_notification_access_label">Notification Access Needed</string>
-    <string name="missing_notification_access_description">Notification access needed.</string>
+    <string name="missing_notification_access_label">알림권한이 필요함</string>
+    <string name="missing_notification_access_description">알림 권한이 필요함</string>
     <string name="msg_missing_notification_access">To use Notification Dots, turn on app notifications for <xliff:g id="name" example="My App">%1$s</xliff:g>.</string>
-    <string name="title_change_settings">Change Settings</string>
+    <string name="title_change_settings">설정 변경</string>
 </resources>
