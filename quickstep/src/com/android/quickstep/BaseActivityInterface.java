@@ -40,6 +40,7 @@ import android.graphics.Rect;
 import android.os.Build;
 import android.view.Gravity;
 import android.view.MotionEvent;
+import android.view.View;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
@@ -384,6 +385,15 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
      * Returns the expected STATE_TYPE from the provided GestureEndTarget.
      */
     public abstract STATE_TYPE stateFromGestureEndTarget(GestureState.GestureEndTarget endTarget);
+
+    /**
+     * Called when the animation to the target has finished, but right before updating the state.
+     * @return A View that needs to draw before ending the recents animation to LAST_TASK.
+     * (This is a hack to ensure Taskbar draws its background first to avoid flickering.)
+     */
+    public @Nullable View onSettledOnEndTarget(GestureState.GestureEndTarget endTarget) {
+        return null;
+    }
 
     public interface AnimationFactory {
 

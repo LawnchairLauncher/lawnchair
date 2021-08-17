@@ -23,6 +23,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.graphics.Rect;
 import android.view.MotionEvent;
+import android.view.View;
 
 import androidx.annotation.NonNull;
 
@@ -241,7 +242,11 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
         return mContext.getDragController().isDragging();
     }
 
-    void setTaskbarViewVisible(boolean isVisible) {
+    public View getRootView() {
+        return mTaskbarDragLayer;
+    }
+
+    private void setTaskbarViewVisible(boolean isVisible) {
         mIconAlphaForHome.setValue(isVisible ? 1 : 0);
         mLauncher.getHotseat().setIconsAlpha(isVisible ? 0f : 1f);
     }
