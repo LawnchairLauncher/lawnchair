@@ -550,9 +550,6 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         if (!FeatureFlags.QSB_ON_FIRST_SCREEN) {
             return;
         }
-        if (isTwoPanelEnabled()) {
-            insertNewWorkspaceScreen(Workspace.LEFT_PANEL_ID, getChildCount());
-        }
 
         // Add the first page
         CellLayout firstPage = insertNewWorkspaceScreen(Workspace.FIRST_SCREEN_ID, getChildCount());
