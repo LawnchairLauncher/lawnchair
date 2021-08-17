@@ -128,7 +128,8 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
                 new TaskbarViewController(this, taskbarView),
                 new TaskbarKeyguardController(this),
                 new StashedHandleViewController(this, stashedHandleView),
-                new TaskbarStashController(this));
+                new TaskbarStashController(this),
+                new TaskbarEduController(this));
 
         Display display = windowContext.getDisplay();
         Context c = display.getDisplayId() == Display.DEFAULT_DISPLAY

@@ -34,6 +34,7 @@ public class TaskbarControllers {
     public final TaskbarKeyguardController taskbarKeyguardController;
     public final StashedHandleViewController stashedHandleViewController;
     public final TaskbarStashController taskbarStashController;
+    public final TaskbarEduController taskbarEduController;
 
     /** Do not store this controller, as it may change at runtime. */
     @NonNull public TaskbarUIController uiController = TaskbarUIController.DEFAULT;
@@ -47,7 +48,8 @@ public class TaskbarControllers {
             TaskbarViewController taskbarViewController,
             TaskbarKeyguardController taskbarKeyguardController,
             StashedHandleViewController stashedHandleViewController,
-            TaskbarStashController taskbarStashController) {
+            TaskbarStashController taskbarStashController,
+            TaskbarEduController taskbarEduController) {
         this.taskbarActivityContext = taskbarActivityContext;
         this.taskbarDragController = taskbarDragController;
         this.navButtonController = navButtonController;
@@ -58,6 +60,7 @@ public class TaskbarControllers {
         this.taskbarKeyguardController = taskbarKeyguardController;
         this.stashedHandleViewController = stashedHandleViewController;
         this.taskbarStashController = taskbarStashController;
+        this.taskbarEduController = taskbarEduController;
     }
 
     /**

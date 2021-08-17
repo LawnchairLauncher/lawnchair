@@ -38,6 +38,7 @@ public class OnboardingPrefs<T extends Launcher> {
     public static final String HOTSEAT_LONGPRESS_TIP_SEEN = "launcher.hotseat_longpress_tip_seen";
     public static final String SEARCH_EDU_SEEN = "launcher.search_edu_seen";
     public static final String SEARCH_SNACKBAR_COUNT = "launcher.keyboard_snackbar_count";
+    public static final String TASKBAR_EDU_SEEN = "launcher.taskbar_edu_seen";
 
     /**
      * Events that either have happened or have not (booleans).
@@ -45,7 +46,8 @@ public class OnboardingPrefs<T extends Launcher> {
     @StringDef(value = {
             HOME_BOUNCE_SEEN,
             HOTSEAT_LONGPRESS_TIP_SEEN,
-            SEARCH_EDU_SEEN
+            SEARCH_EDU_SEEN,
+            TASKBAR_EDU_SEEN
     })
     @Retention(RetentionPolicy.SOURCE)
     public @interface EventBoolKey {
