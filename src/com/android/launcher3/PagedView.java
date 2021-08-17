@@ -289,7 +289,7 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
         newPage = Utilities.boundToRange(newPage, 0, getPageCount() - 1);
 
         if (getPanelCount() > 1) {
-            // Always return left panel as new page
+            // Always return left most panel as new page
             newPage = getLeftmostVisiblePageForIndex(newPage);
         }
         return newPage;
@@ -774,7 +774,7 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
 
         if (panelCount > 1) {
             for (int i = 0; i < childCount; i++) {
-                // In case we have multiple panels, always use left panel's page scroll for all
+                // In case we have multiple panels, always use left most panel's page scroll for all
                 // panels on the screen.
                 int adjustedScroll = outPageScrolls[getLeftmostVisiblePageForIndex(i)];
                 if (outPageScrolls[i] != adjustedScroll) {

@@ -266,21 +266,21 @@ public class LauncherPreviewRenderer extends ContextWrapper
         mHotseat = mRootView.findViewById(R.id.hotseat);
         mHotseat.resetLayout(false);
 
-        if (mDp.isTwoPanels) {
-            CellLayout leftPanel = mRootView.findViewById(R.id.workspace_left);
-            leftPanel.setPadding(mDp.workspacePadding.left + mDp.cellLayoutPaddingLeftRightPx,
-                    mDp.workspacePadding.top,
-                    mDp.workspacePadding.right,
-                    mDp.workspacePadding.bottom);
-            mWorkspaceScreens.put(LEFT_PANEL_ID, leftPanel);
-        }
-
         CellLayout firstScreen = mRootView.findViewById(R.id.workspace);
-        firstScreen.setPadding(mDp.workspacePadding.left,
+        firstScreen.setPadding(mDp.workspacePadding.left + mDp.cellLayoutPaddingLeftRightPx,
                 mDp.workspacePadding.top,
-                mDp.workspacePadding.right + mDp.cellLayoutPaddingLeftRightPx,
+                mDp.workspacePadding.right,
                 mDp.workspacePadding.bottom);
         mWorkspaceScreens.put(FIRST_SCREEN_ID, firstScreen);
+
+        if (mDp.isTwoPanels) {
+            CellLayout rightPanel = mRootView.findViewById(R.id.workspace_right);
+            rightPanel.setPadding(mDp.workspacePadding.left,
+                    mDp.workspacePadding.top,
+                    mDp.workspacePadding.right + mDp.cellLayoutPaddingLeftRightPx,
+                    mDp.workspacePadding.bottom);
+            mWorkspaceScreens.put(PreviewSurfaceRenderer.SECOND_SCREEN_ID, rightPanel);
+        }
 
         if (Utilities.ATLEAST_S) {
             WallpaperColors wallpaperColors = wallpaperColorsOverride != null
