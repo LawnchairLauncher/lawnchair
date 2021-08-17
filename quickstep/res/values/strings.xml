@@ -203,4 +203,13 @@
     <string name="gesture_tutorial_action_button_label_cancel">Cancel</string>
     <!-- Button text shown on a button on the tutorial skip dialog to exit the tutorial. [CHAR LIMIT=14] -->
     <string name="gesture_tutorial_action_button_label_skip">Skip</string>
+
+    <!-- ******* Taskbar Edu ******* -->
+    <!-- Text in dialog that lets a user know how they can use the taskbar on their device.
+         [CHAR_LIMIT=NONE] -->
+    <string name="taskbar_edu_header_1">Use 2 apps at once and switch apps with the taskbar</string>
+    <!-- Text on button to go to the next screen of a tutorial [CHAR_LIMIT=30] -->
+    <string name="taskbar_edu_next">Next</string>
+    <!-- Text on button to exit a tutorial [CHAR_LIMIT=30] -->
+    <string name="taskbar_edu_close">Close</string>
 </resources>

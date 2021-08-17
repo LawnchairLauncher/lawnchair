@@ -165,4 +165,5 @@
     <dimen name="taskbar_stashed_size">24dp</dimen>
     <dimen name="taskbar_stashed_handle_width">220dp</dimen>
     <dimen name="taskbar_stashed_handle_height">6dp</dimen>
+    <dimen name="taskbar_edu_bg_corner_radius">28dp</dimen>
 </resources>
