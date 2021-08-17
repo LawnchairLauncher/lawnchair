@@ -23,6 +23,7 @@ import android.graphics.Color;
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
+import com.android.launcher3.R;
 import com.android.launcher3.allapps.AllAppsTransitionController;
 import com.android.quickstep.util.LayoutUtils;
 import com.android.quickstep.views.RecentsView;
@@ -89,6 +90,10 @@ public class BackgroundAppState extends OverviewState {
 
     @Override
     public int getWorkspaceScrimColor(Launcher launcher) {
+        DeviceProfile dp = launcher.getDeviceProfile();
+        if (dp.isTaskbarPresentInApps) {
+            return launcher.getColor(R.color.taskbar_background);
+        }
         return Color.TRANSPARENT;
     }
 

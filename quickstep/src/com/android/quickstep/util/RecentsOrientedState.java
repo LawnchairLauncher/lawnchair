@@ -396,7 +396,7 @@ public class RecentsOrientedState implements
         Rect insets = dp.getInsets();
         float fullWidth = dp.widthPx;
         float fullHeight = dp.heightPx;
-        if (TaskView.CLIP_STATUS_AND_NAV_BARS) {
+        if (TaskView.clipStatusAndNavBars(dp)) {
             fullWidth -= insets.left + insets.right;
             fullHeight -= insets.top + insets.bottom;
         }

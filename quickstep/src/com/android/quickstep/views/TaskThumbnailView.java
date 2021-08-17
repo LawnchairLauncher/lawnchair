@@ -211,7 +211,7 @@ public class TaskThumbnailView extends View implements PluginListener<OverviewSc
             return Insets.NONE;
         }
 
-        if (!TaskView.CLIP_STATUS_AND_NAV_BARS) {
+        if (!TaskView.clipStatusAndNavBars(mActivity.getDeviceProfile())) {
             return Insets.NONE;
         }
 
@@ -440,7 +440,7 @@ public class TaskThumbnailView extends View implements PluginListener<OverviewSc
 
             int thumbnailRotation = thumbnailData.rotation;
             int deltaRotate = getRotationDelta(currentRotation, thumbnailRotation);
-            RectF thumbnailClipHint = TaskView.CLIP_STATUS_AND_NAV_BARS
+            RectF thumbnailClipHint = TaskView.clipStatusAndNavBars(dp)
                     ? new RectF(thumbnailData.insets) : new RectF();
 
             float scale = thumbnailData.scale;
@@ -554,7 +554,7 @@ public class TaskThumbnailView extends View implements PluginListener<OverviewSc
                         -thumbnailClipHint.left * scale,
                         -thumbnailClipHint.top * scale);
             } else {
-                setThumbnailRotation(deltaRotate, thumbnailClipHint, scale, thumbnailBounds);
+                setThumbnailRotation(deltaRotate, thumbnailClipHint, scale, thumbnailBounds, dp);
             }
 
             final float widthWithInsets;
@@ -599,7 +599,7 @@ public class TaskThumbnailView extends View implements PluginListener<OverviewSc
         }
 
         private void setThumbnailRotation(int deltaRotate, RectF thumbnailInsets, float scale,
-                Rect thumbnailPosition) {
+                Rect thumbnailPosition, DeviceProfile dp) {
             float newLeftInset = 0;
             float newTopInset = 0;
             float translateX = 0;
@@ -626,7 +626,7 @@ public class TaskThumbnailView extends View implements PluginListener<OverviewSc
             }
             mClippedInsets.offsetTo(newLeftInset * scale, newTopInset * scale);
             mMatrix.postTranslate(translateX, translateY);
-            if (TaskView.FULL_THUMBNAIL) {
+            if (TaskView.useFullThumbnail(dp)) {
                 mMatrix.postTranslate(-mClippedInsets.left, -mClippedInsets.top);
             }
         }
@@ -634,8 +634,8 @@ public class TaskThumbnailView extends View implements PluginListener<OverviewSc
         /**
          * Insets to used for clipping the thumbnail (in case it is drawing outside its own space)
          */
-        public RectF getInsetsToDrawInFullscreen() {
-            return TaskView.FULL_THUMBNAIL ? mClippedInsets : EMPTY_RECT_F;
+        public RectF getInsetsToDrawInFullscreen(DeviceProfile dp) {
+            return TaskView.useFullThumbnail(dp) ? mClippedInsets : EMPTY_RECT_F;
         }
     }
 }
