@@ -85,6 +85,7 @@ import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.icons.FastBitmapDrawable;
 import com.android.launcher3.shortcuts.DeepShortcutView;
 import com.android.launcher3.statehandlers.DepthController;
+import com.android.launcher3.taskbar.LauncherTaskbarUIController;
 import com.android.launcher3.util.ActivityOptionsWrapper;
 import com.android.launcher3.util.MultiValueAlpha.AlphaProperty;
 import com.android.launcher3.util.RunnableList;
@@ -427,6 +428,10 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
                         4 - rotationChange);
             }
         }
+        // TODO(b/196637509): don't do this for immersive apps.
+        if (mDeviceProfile.isTaskbarPresentInApps) {
+            bounds.bottom -= mDeviceProfile.taskbarSize;
+        }
         return bounds;
     }
 
@@ -511,7 +516,10 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
 
             final boolean scrimEnabled = ENABLE_SCRIM_FOR_APP_LAUNCH.get();
             if (scrimEnabled) {
-                int scrimColor = Themes.getAttrColor(mLauncher, R.attr.overviewScrimColor);
+                boolean useTaskbarColor = mDeviceProfile.isTaskbarPresentInApps;
+                int scrimColor = useTaskbarColor
+                        ? mLauncher.getResources().getColor(R.color.taskbar_background)
+                        : Themes.getAttrColor(mLauncher, R.attr.overviewScrimColor);
                 int scrimColorTrans = ColorUtils.setAlphaComponent(scrimColor, 0);
                 int[] colors = isAppOpening
                         ? new int[]{scrimColorTrans, scrimColor}
@@ -524,6 +532,30 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
                             colors);
                     scrim.setDuration(CONTENT_SCRIM_DURATION);
                     scrim.setInterpolator(DEACCEL_1_5);
+
+                    if (useTaskbarColor) {
+                        // Hide the taskbar background color since it would duplicate the scrim.
+                        scrim.addListener(new AnimatorListenerAdapter() {
+                            @Override
+                            public void onAnimationStart(Animator animation) {
+                                LauncherTaskbarUIController taskbarUIController =
+                                        mLauncher.getTaskbarUIController();
+                                if (taskbarUIController != null) {
+                                    taskbarUIController.forceHideBackground(true);
+                                }
+                            }
+
+                            @Override
+                            public void onAnimationEnd(Animator animation) {
+                                LauncherTaskbarUIController taskbarUIController =
+                                        mLauncher.getTaskbarUIController();
+                                if (taskbarUIController != null) {
+                                    taskbarUIController.forceHideBackground(false);
+                                }
+                            }
+                        });
+                    }
+
                     launcherAnimator.play(scrim);
                 }
             }
