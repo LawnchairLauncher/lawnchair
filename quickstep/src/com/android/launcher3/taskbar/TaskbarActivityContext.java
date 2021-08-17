@@ -234,7 +234,6 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
             return;
         }
         mControllers.rotationButtonController.onDisable2FlagChanged(state2);
-        mControllers.taskbarKeyguardController.disableNavbarElements(state1, state2);
     }
 
     public void onSystemBarAttributesChanged(int displayId, int behavior) {
