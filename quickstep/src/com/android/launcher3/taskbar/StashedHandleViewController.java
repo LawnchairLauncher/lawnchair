@@ -16,6 +16,7 @@
 package com.android.launcher3.taskbar;
 
 import android.animation.Animator;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Outline;
 import android.graphics.Rect;
@@ -25,19 +26,30 @@ import android.view.ViewOutlineProvider;
 import androidx.annotation.Nullable;
 
 import com.android.launcher3.R;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.RevealOutlineAnimation;
 import com.android.launcher3.anim.RoundedRectRevealOutlineProvider;
+import com.android.launcher3.util.Executors;
 import com.android.quickstep.AnimatedFloat;
+import com.android.systemui.shared.navigationbar.RegionSamplingHelper;
 
 /**
  * Handles properties/data collection, then passes the results to our stashed handle View to render.
  */
 public class StashedHandleViewController {
 
+    /**
+     * The SharedPreferences key for whether the stashed handle region is dark.
+     */
+    private static final String SHARED_PREFS_STASHED_HANDLE_REGION_DARK_KEY =
+            "stashed_handle_region_is_dark";
+
     private final TaskbarActivityContext mActivity;
-    private final View mStashedHandleView;
+    private final SharedPreferences mPrefs;
+    private final StashedHandleView mStashedHandleView;
     private final int mStashedHandleWidth;
     private final int mStashedHandleHeight;
+    private final RegionSamplingHelper mRegionSamplingHelper;
     private final AnimatedFloat mTaskbarStashedHandleAlpha = new AnimatedFloat(
             this::updateStashedHandleAlpha);
     private final AnimatedFloat mTaskbarStashedHandleHintScale = new AnimatedFloat(
@@ -52,13 +64,31 @@ public class StashedHandleViewController {
 
     private boolean mIsAtStashedRevealBounds = true;
 
-    public StashedHandleViewController(TaskbarActivityContext activity, View stashedHandleView) {
+    public StashedHandleViewController(TaskbarActivityContext activity,
+            StashedHandleView stashedHandleView) {
         mActivity = activity;
+        mPrefs = Utilities.getPrefs(mActivity);
         mStashedHandleView = stashedHandleView;
+        mStashedHandleView.updateHandleColor(
+                mPrefs.getBoolean(SHARED_PREFS_STASHED_HANDLE_REGION_DARK_KEY, false));
         final Resources resources = mActivity.getResources();
         mStashedHandleWidth = resources.getDimensionPixelSize(R.dimen.taskbar_stashed_handle_width);
         mStashedHandleHeight = resources.getDimensionPixelSize(
                 R.dimen.taskbar_stashed_handle_height);
+        mRegionSamplingHelper = new RegionSamplingHelper(mStashedHandleView,
+                new RegionSamplingHelper.SamplingCallback() {
+                    @Override
+                    public void onRegionDarknessChanged(boolean isRegionDark) {
+                        mStashedHandleView.updateHandleColor(isRegionDark);
+                        mPrefs.edit().putBoolean(SHARED_PREFS_STASHED_HANDLE_REGION_DARK_KEY,
+                                isRegionDark).apply();
+                    }
+
+                    @Override
+                    public Rect getSampledRegion(View sampledView) {
+                        return mStashedHandleView.getSampledRegion();
+                    }
+                }, Executors.UI_HELPER_EXECUTOR);
     }
 
     public void init(TaskbarControllers controllers) {
@@ -93,6 +123,10 @@ public class StashedHandleViewController {
         });
     }
 
+    public void onDestroy() {
+        mRegionSamplingHelper.stopAndDestroy();
+    }
+
     public AnimatedFloat getStashedHandleAlpha() {
         return mTaskbarStashedHandleAlpha;
     }
@@ -115,6 +149,16 @@ public class StashedHandleViewController {
                 mStashedHandleRadius, mStashedHandleRadius,
                 mControllers.taskbarViewController.getIconLayoutBounds(), mStashedHandleBounds);
         return handleRevealProvider.createRevealAnimator(mStashedHandleView, !isStashed);
+    }
+
+    public void onIsStashed(boolean isStashed) {
+        mRegionSamplingHelper.setWindowVisible(isStashed);
+        if (isStashed) {
+            mStashedHandleView.updateSampledRegion();
+            mRegionSamplingHelper.start(mStashedHandleView.getSampledRegion());
+        } else {
+            mRegionSamplingHelper.stop();
+        }
     }
 
     protected void updateStashedHandleAlpha() {
