@@ -79,8 +79,10 @@ public class FallbackRecentsView extends RecentsView<RecentsActivity, RecentsSta
      * to the home task. This allows us to handle quick-switch similarly to a quick-switching
      * from a foreground task.
      */
-    public void onGestureAnimationStartOnHome(RunningTaskInfo homeTaskInfo) {
-        mHomeTaskInfo = homeTaskInfo;
+    public void onGestureAnimationStartOnHome(RunningTaskInfo[] homeTaskInfo) {
+        // TODO(b/195607777) General fallback love, but this might be correct
+        //  Home task should be defined as the front-most task info I think?
+        mHomeTaskInfo = homeTaskInfo[0];
         onGestureAnimationStart(homeTaskInfo);
     }
 
@@ -92,8 +94,8 @@ public class FallbackRecentsView extends RecentsView<RecentsActivity, RecentsSta
     @Override
     public void onPrepareGestureEndAnimation(
             @Nullable AnimatorSet animatorSet, GestureState.GestureEndTarget endTarget,
-            TaskViewSimulator taskViewSimulator) {
-        super.onPrepareGestureEndAnimation(animatorSet, endTarget, taskViewSimulator);
+            TaskViewSimulator[] taskViewSimulators) {
+        super.onPrepareGestureEndAnimation(animatorSet, endTarget, taskViewSimulators);
         if (mHomeTaskInfo != null && endTarget == RECENTS && animatorSet != null) {
             TaskView tv = getTaskViewByTaskId(mHomeTaskInfo.taskId);
             if (tv != null) {
@@ -133,7 +135,13 @@ public class FallbackRecentsView extends RecentsView<RecentsActivity, RecentsSta
     }
 
     @Override
-    protected boolean shouldAddStubTaskView(RunningTaskInfo runningTaskInfo) {
+    protected boolean shouldAddStubTaskView(RunningTaskInfo[] runningTaskInfos) {
+        if (runningTaskInfos.length > 1) {
+            // can't be in split screen w/ home task
+            return super.shouldAddStubTaskView(runningTaskInfos);
+        }
+
+        RunningTaskInfo runningTaskInfo = runningTaskInfos[0];
         if (mHomeTaskInfo != null && runningTaskInfo != null &&
                 mHomeTaskInfo.taskId == runningTaskInfo.taskId
                 && getTaskViewCount() == 0) {
@@ -141,7 +149,7 @@ public class FallbackRecentsView extends RecentsView<RecentsActivity, RecentsSta
             // show the empty recents message instead of showing a stub task and later removing it.
             return false;
         }
-        return super.shouldAddStubTaskView(runningTaskInfo);
+        return super.shouldAddStubTaskView(runningTaskInfos);
     }
 
     @Override
@@ -149,6 +157,7 @@ public class FallbackRecentsView extends RecentsView<RecentsActivity, RecentsSta
         // When quick-switching on 3p-launcher, we add a "stub" tile corresponding to Launcher
         // as well. This tile is never shown as we have setCurrentTaskHidden, but allows use to
         // track the index of the next task appropriately, as if we are switching on any other app.
+        // TODO(b/195607777) Confirm home task info is front-most task and not mixed in with others
         int runningTaskId = getTaskIdsForRunningTaskView()[0];
         if (mHomeTaskInfo != null && mHomeTaskInfo.taskId == runningTaskId && !tasks.isEmpty()) {
             // Check if the task list has running task

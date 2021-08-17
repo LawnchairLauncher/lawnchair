@@ -46,6 +46,7 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimatorListeners;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.PendingAnimation;
+import com.android.launcher3.statemanager.StatefulActivity;
 import com.android.quickstep.AnimatedFloat;
 import com.android.quickstep.GestureState;
 import com.android.quickstep.OverviewComponentObserver;
@@ -263,14 +264,16 @@ abstract class SwipeUpGestureTutorialController extends TutorialController {
 
         void initDp(DeviceProfile dp) {
             initTransitionEndpoints(dp);
-            mTaskViewSimulator.setPreviewBounds(
+            mRemoteTargetHandles[0].mTaskViewSimulator.setPreviewBounds(
                     new Rect(0, 0, dp.widthPx, dp.heightPx), dp.getInsets());
         }
 
         @Override
         public void updateFinalShift() {
-            mWindowTransitionController.setProgress(mCurrentShift.value, mDragLengthFactor);
-            mTaskViewSimulator.apply(mTransformParams);
+            mRemoteTargetHandles[0].mPlaybackController
+                    .setProgress(mCurrentShift.value, mDragLengthFactor);
+            mRemoteTargetHandles[0].mTaskViewSimulator.apply(
+                    mRemoteTargetHandles[0].mTransformParams);
         }
 
         AnimatedFloat getCurrentShift() {
@@ -326,7 +329,8 @@ abstract class SwipeUpGestureTutorialController extends TutorialController {
                     mFakeIconView.setVisibility(View.INVISIBLE);
                 }
             };
-            RectFSpringAnim windowAnim = createWindowAnimationToHome(startShift, homeAnimFactory);
+            RectFSpringAnim windowAnim = createWindowAnimationToHome(startShift,
+                    homeAnimFactory)[0];
             windowAnim.start(mContext, velocityPxPerMs);
             return windowAnim;
         }

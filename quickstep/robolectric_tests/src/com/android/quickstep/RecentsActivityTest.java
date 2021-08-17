@@ -63,7 +63,7 @@ public class RecentsActivityTest {
 
         RunningTaskInfo placeholderTask = new RunningTaskInfo();
         placeholderTask.taskId = 22;
-        frv.showCurrentTask(placeholderTask);
+        frv.showCurrentTask(new RunningTaskInfo[]{placeholderTask});
         doLayout(activity);
 
         ThumbnailData thumbnailData = new ThumbnailData();
