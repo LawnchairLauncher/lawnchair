@@ -622,9 +622,7 @@ public final class LauncherInstrumentation {
     }
 
     private String getNavigationButtonResPackage() {
-        return isTablet() && getNavigationModel() == NavigationModel.THREE_BUTTON ?
-                getLauncherPackageName() :
-                SYSTEMUI_PACKAGE;
+        return isTablet() ? getLauncherPackageName() : SYSTEMUI_PACKAGE;
     }
 
     private UiObject2 verifyContainerType(ContainerType containerType) {
@@ -755,11 +753,11 @@ public final class LauncherInstrumentation {
                 boolean gestureStartFromLauncher = isTablet()
                         ? !isLauncher3() || hasLauncherObject(WORKSPACE_RES_ID)
                         : isLauncherVisible();
-                GestureScope gestureScope = gestureStartFromLauncher
-                        ? GestureScope.INSIDE_TO_OUTSIDE
-                        : GestureScope.OUTSIDE_WITH_PILFER;
 
                 if (hasLauncherObject(CONTEXT_MENU_RES_ID)) {
+                    GestureScope gestureScope = gestureStartFromLauncher
+                            ? (isTablet()? GestureScope.INSIDE : GestureScope.INSIDE_TO_OUTSIDE)
+                            : GestureScope.OUTSIDE_WITH_PILFER;
                     linearGesture(
                             displaySize.x / 2, displaySize.y - 1,
                             displaySize.x / 2, 0,
@@ -782,7 +780,8 @@ public final class LauncherInstrumentation {
                             displaySize.x / 2, displaySize.y - 1,
                             displaySize.x / 2, 0,
                             ZERO_BUTTON_STEPS_FROM_BACKGROUND_TO_HOME, NORMAL_STATE_ORDINAL,
-                            gestureScope);
+                            gestureStartFromLauncher ? GestureScope.INSIDE_TO_OUTSIDE
+                                    : GestureScope.OUTSIDE_WITH_PILFER);
                 }
             } else {
                 log("Hierarchy before clicking home:");

@@ -18,6 +18,7 @@ import static android.content.pm.PackageManager.MATCH_DISABLED_COMPONENTS;
 
 import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
 
+import android.app.NotificationManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -33,6 +34,7 @@ import com.android.systemui.shared.plugins.PluginPrefs;
 
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -53,12 +55,14 @@ public class PluginManagerWrapper {
         PluginInitializerImpl pluginInitializer  = new PluginInitializerImpl();
         mPluginEnabler = new PluginEnablerImpl(c);
         PluginInstanceManager.Factory instanceManagerFactory = new PluginInstanceManager.Factory(
-                c, c.getPackageManager(),  MODEL_EXECUTOR.getLooper(), pluginInitializer);
+                c, c.getPackageManager(), c.getMainExecutor(), MODEL_EXECUTOR, pluginInitializer,
+                c.getSystemService(NotificationManager.class), mPluginEnabler,
+                Arrays.asList(pluginInitializer.getPrivilegedPlugins(c)));
 
         mPluginManager = new PluginManagerImpl(c, instanceManagerFactory,
                 pluginInitializer.isDebuggable(),
                 Optional.ofNullable(Thread.getDefaultUncaughtExceptionHandler()), mPluginEnabler,
-                new PluginPrefs(c), pluginInitializer.getPrivilegedPlugins(c));
+                new PluginPrefs(c), Arrays.asList(pluginInitializer.getPrivilegedPlugins(c)));
     }
 
     public PluginEnablerImpl getPluginEnabler() {

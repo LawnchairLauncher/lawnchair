@@ -17,7 +17,6 @@
 package com.android.launcher3;
 
 import static android.util.DisplayMetrics.DENSITY_DEVICE_STABLE;
-import static android.view.WindowManager.LayoutParams.TYPE_APPLICATION;
 
 import static com.android.launcher3.ResourceUtils.pxFromDp;
 import static com.android.launcher3.Utilities.dpiFromPx;
@@ -33,11 +32,8 @@ import android.graphics.Path;
 import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.Rect;
-import android.hardware.display.DisplayManager;
 import android.util.DisplayMetrics;
 import android.view.Surface;
-import android.view.WindowInsets;
-import android.view.WindowManager;
 
 import com.android.launcher3.CellLayout.ContainerType;
 import com.android.launcher3.DevicePaddings.DevicePadding;
@@ -214,6 +210,8 @@ public class DeviceProfile {
 
      // Taskbar
     public boolean isTaskbarPresent;
+    // Whether Taskbar will inset the bottom of apps by taskbarSize.
+    public boolean isTaskbarPresentInApps;
     public int taskbarSize;
     // How much of the bottom inset is due to Taskbar rather than other system elements.
     public int nonOverlappingTaskbarInset;
@@ -267,13 +265,7 @@ public class DeviceProfile {
             // Taskbar will be added later, but provides bottom insets that we should subtract
             // from availableHeightPx.
             taskbarSize = res.getDimensionPixelSize(R.dimen.taskbar_size);
-            WindowInsets windowInsets =
-                    context.createWindowContext(
-                            context.getSystemService(DisplayManager.class).getDisplay(mInfo.id),
-                            TYPE_APPLICATION, null)
-                    .getSystemService(WindowManager.class)
-                    .getCurrentWindowMetrics().getWindowInsets();
-            nonOverlappingTaskbarInset = taskbarSize - windowInsets.getSystemWindowInsetBottom();
+            nonOverlappingTaskbarInset = taskbarSize - windowBounds.insets.bottom;
             if (nonOverlappingTaskbarInset > 0) {
                 nonFinalAvailableHeightPx -= nonOverlappingTaskbarInset;
             }
@@ -790,7 +782,7 @@ public class DeviceProfile {
         Point padding = getTotalWorkspacePadding();
         // availableWidthPx is the screen width of the device. In 2 panels mode, each panel should
         // only have half of the screen width. In addition, there is only cellLayoutPadding in the
-        // left side of the left panel and the right side of the right panel. There is no
+        // left side of the left most panel and the right most side of the right panel. There is no
         // cellLayoutPadding in the middle.
         int screenWidthPx = isTwoPanels
                 ? availableWidthPx / 2 - padding.x - cellLayoutPaddingLeftRightPx
@@ -1089,6 +1081,7 @@ public class DeviceProfile {
         writer.println(prefix + "\tnumShownHotseatIcons: " + numShownHotseatIcons);
 
         writer.println(prefix + "\tisTaskbarPresent:" + isTaskbarPresent);
+        writer.println(prefix + "\tisTaskbarPresentInApps:" + isTaskbarPresentInApps);
 
         writer.println(prefix + pxToDpStr("taskbarSize", taskbarSize));
         writer.println(prefix + pxToDpStr("nonOverlappingTaskbarInset",

@@ -125,6 +125,7 @@ import com.android.launcher3.statemanager.StatefulActivity;
 import com.android.launcher3.touch.OverScroll;
 import com.android.launcher3.touch.PagedOrientationHandler;
 import com.android.launcher3.util.DynamicResource;
+import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.IntSet;
 import com.android.launcher3.util.MultiValueAlpha;
 import com.android.launcher3.util.ResourceBasedOverride.Overrides;
@@ -1277,7 +1278,8 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                             + " taskId: " + getTaskIdsForTaskViewId(taskViewId)[0]
                             + " for taskView: " + taskView + "\n");
                 }
-                Log.d(TASK_VIEW_ID_CRASH, sb.toString());
+                Log.d(TASK_VIEW_ID_CRASH, "taskViewCount: " + getTaskViewCount()
+                        + " " + sb.toString());
             }
             mRunningTaskViewId = newRunningTaskView.getTaskViewId();
         }
@@ -2017,6 +2019,8 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
      * Sets the running task id, cleaning up the old running task if necessary.
      */
     public void setCurrentTask(int runningTaskViewId) {
+        Log.d(TASK_VIEW_ID_CRASH, "currentRunningTaskViewId: " + mRunningTaskViewId
+                + " requestedTaskViewId: " + runningTaskViewId);
         if (mRunningTaskViewId == runningTaskViewId) {
             return;
         }
@@ -2087,23 +2091,39 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         }
     }
 
-    /** Updates TaskView and ClearAllButtion scaling and translation required to turn into grid
+    /**
+     * Updates TaskView and ClearAllButtion scaling and translation required to turn into grid
      * layout.
      * This method is used when no task dismissal has occurred.
      */
     private void updateGridProperties() {
-        updateGridProperties(false);
+        updateGridProperties(false, Integer.MAX_VALUE);
+    }
+
+    /**
+     * Updates TaskView and ClearAllButtion scaling and translation required to turn into grid
+     * layout.
+     *
+     * This method is used when task dismissal has occurred, but rebalance is not needed.
+     *
+     * @param isTaskDismissal indicates if update was called due to task dismissal
+     */
+    private void updateGridProperties(boolean isTaskDismissal) {
+        updateGridProperties(isTaskDismissal, Integer.MAX_VALUE);
     }
 
     /**
      * Updates TaskView and ClearAllButton scaling and translation required to turn into grid
      * layout.
+     *
      * This method only calculates the potential position and depends on {@link #setGridProgress} to
      * apply the actual scaling and translation.
      *
-     * @param isTaskDismissal indicates if update was called due to task dismissal
+     * @param isTaskDismissal    indicates if update was called due to task dismissal
+     * @param startRebalanceAfter which view index to start rebalancing from. Use Integer.MAX_VALUE
+     *                           to skip rebalance
      */
-    private void updateGridProperties(boolean isTaskDismissal) {
+    private void updateGridProperties(boolean isTaskDismissal, int startRebalanceAfter) {
         int taskCount = getTaskViewCount();
         if (taskCount == 0) {
             return;
@@ -2170,8 +2190,20 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                     focusedTaskShift += mIsRtl ? taskWidthAndSpacing : -taskWidthAndSpacing;
                 }
                 int taskViewId = taskView.getTaskViewId();
-                boolean isTopRow = isTaskDismissal ? mTopRowIdSet.contains(taskViewId)
-                        : topRowWidth <= bottomRowWidth;
+
+                // Rebalance the grid starting after a certain index
+                boolean isTopRow;
+                if (isTaskDismissal) {
+                    if (i > startRebalanceAfter) {
+                        mTopRowIdSet.remove(taskViewId);
+                        isTopRow = topRowWidth <= bottomRowWidth;
+                    } else {
+                        isTopRow = mTopRowIdSet.contains(taskViewId);
+                    }
+                } else {
+                    isTopRow = topRowWidth <= bottomRowWidth;
+                }
+
                 if (isTopRow) {
                     if (homeTaskView != null && nextFocusedTaskView == null) {
                         // TaskView will be focused when swipe up, don't count towards row width.
@@ -2677,9 +2709,44 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                             mTopRowIdSet.remove(mFocusedTaskViewId);
                             finalNextFocusedTaskView.animateIconScaleAndDimIntoView();
                         }
-                        updateTaskSize(true);
+                        updateTaskSize(/*isTaskDismissal=*/ true);
                         // Update scroll and snap to page.
                         updateScrollSynchronously();
+
+                        int highestVisibleTaskIndex = getHighestVisibleTaskIndex();
+                        if (highestVisibleTaskIndex < Integer.MAX_VALUE) {
+                            TaskView taskView = getTaskViewAt(highestVisibleTaskIndex);
+
+                            boolean shouldRebalance = false;
+                            int screenStart = mOrientationHandler.getPrimaryScroll(
+                                    RecentsView.this);
+                            int taskStart = mOrientationHandler.getChildStart(taskView)
+                                    + (int) taskView.getOffsetAdjustment(
+                                    /*fullscreenEnabled=*/ false,
+                                    /*gridEnabled=*/ true);
+
+                            // Rebalance only if there is a maximum gap between the task and the
+                            // screen's edge; this ensures that rebalanced tasks are outside the
+                            // visible screen.
+                            if (mIsRtl) {
+                                shouldRebalance = taskStart <= screenStart + mPageSpacing;
+                            } else {
+                                int screenEnd = screenStart + mOrientationHandler.getMeasuredSize(
+                                        RecentsView.this);
+                                int taskSize = (int) (mOrientationHandler.getMeasuredSize(taskView)
+                                        * taskView.getSizeAdjustment(/*fullscreenEnabled=*/ false));
+                                int taskEnd = taskStart + taskSize;
+
+                                shouldRebalance = taskEnd >= screenEnd - mPageSpacing;
+                            }
+
+                            if (shouldRebalance) {
+                                updateGridProperties(/*isTaskDismissal=*/ true,
+                                        highestVisibleTaskIndex);
+                                updateScrollSynchronously();
+                            }
+                        }
+
                         setCurrentPage(pageToSnapTo);
                         dispatchScrollChanged();
                     }
@@ -2689,6 +2756,52 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             }
         });
         return anim;
+    }
+
+    /**
+     * Returns all the tasks in the bottom row, without the focused task
+     */
+    private IntArray getBottomRowIdArray() {
+        IntArray bottomArray = new IntArray();
+        int taskViewCount = getTaskViewCount();
+        for (int i = 0; i < taskViewCount; i++) {
+            int taskViewId = getTaskViewAt(i).getTaskViewId();
+            if (!mTopRowIdSet.contains(taskViewId) && taskViewId != mFocusedTaskViewId) {
+                bottomArray.add(taskViewId);
+            }
+        }
+        return bottomArray;
+    }
+
+    /**
+     * Iterate the grid by columns instead of by TaskView index, starting after the focused task and
+     * up to the last balanced column.
+     *
+     * @return the highest visible TaskView index between both rows
+     */
+    private int getHighestVisibleTaskIndex() {
+        if (mTopRowIdSet.isEmpty()) return Integer.MAX_VALUE; // return earlier
+
+        int lastVisibleIndex = Integer.MAX_VALUE;
+        IntArray topRowIdArray = mTopRowIdSet.getArray();
+        IntArray bottomRowIdArray = getBottomRowIdArray();
+        int balancedColumns = Math.min(bottomRowIdArray.size(), topRowIdArray.size());
+
+        for (int i = 0; i < balancedColumns; i++) {
+            TaskView topTask = getTaskViewFromTaskViewId(topRowIdArray.get(i));
+
+            if (isTaskViewVisible(topTask)) {
+                TaskView bottomTask = getTaskViewFromTaskViewId(bottomRowIdArray.get(i));
+                lastVisibleIndex = Math.max(
+                        indexOfChild(topTask) - mTaskViewStartIndex,
+                        indexOfChild(bottomTask) - mTaskViewStartIndex
+                );
+            } else if (lastVisibleIndex < Integer.MAX_VALUE) {
+                break;
+            }
+        }
+
+        return lastVisibleIndex;
     }
 
     private void removeTaskInternal(int dismissedTaskId) {

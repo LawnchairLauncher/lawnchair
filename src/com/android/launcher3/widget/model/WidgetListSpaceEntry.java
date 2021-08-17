@@ -13,26 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.android.launcher3.taskbar;
 
-import android.graphics.Rect;
+package com.android.launcher3.widget.model;
+
+import com.android.launcher3.model.data.PackageItemInfo;
+
+import java.util.Collections;
 
 /**
- * Base class for providing different taskbar UI
+ * Entry representing the top empty space
  */
-public class TaskbarUIController {
+public class WidgetListSpaceEntry extends WidgetsListBaseEntry {
 
-    public static final TaskbarUIController DEFAULT = new TaskbarUIController();
-
-    protected void init(TaskbarControllers taskbarControllers) { }
-
-    protected void onDestroy() { }
-
-    protected boolean isTaskbarTouchable() {
-        return true;
+    public WidgetListSpaceEntry() {
+        super(new PackageItemInfo(""), "", Collections.EMPTY_LIST);
+        mPkgItem.title = "";
     }
 
-    protected void updateContentInsets(Rect outContentInsets) { }
-
-    protected void onStashedInAppChanged() { }
+    @Override
+    public int getRank() {
+        return RANK_WIDGETS_TOP_SPACE;
+    }
 }
