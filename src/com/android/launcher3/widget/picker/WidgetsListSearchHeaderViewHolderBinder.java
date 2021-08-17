@@ -32,16 +32,13 @@ public final class WidgetsListSearchHeaderViewHolderBinder implements
     private final LayoutInflater mLayoutInflater;
     private final OnHeaderClickListener mOnHeaderClickListener;
     private final WidgetsListDrawableFactory mListDrawableFactory;
-    private final WidgetsListAdapter mWidgetsListAdapter;
 
     public WidgetsListSearchHeaderViewHolderBinder(LayoutInflater layoutInflater,
             OnHeaderClickListener onHeaderClickListener,
-            WidgetsListDrawableFactory listDrawableFactory,
-            WidgetsListAdapter listAdapter) {
+            WidgetsListDrawableFactory listDrawableFactory) {
         mLayoutInflater = layoutInflater;
         mOnHeaderClickListener = onHeaderClickListener;
         mListDrawableFactory = listDrawableFactory;
-        mWidgetsListAdapter = listAdapter;
     }
 
     @Override
@@ -54,14 +51,14 @@ public final class WidgetsListSearchHeaderViewHolderBinder implements
 
     @Override
     public void bindViewHolder(WidgetsListSearchHeaderHolder viewHolder,
-            WidgetsListSearchHeaderEntry data, int position) {
+            WidgetsListSearchHeaderEntry data, @ListPosition int position) {
         WidgetsListHeader widgetsListHeader = viewHolder.mWidgetsListHeader;
         widgetsListHeader.applyFromItemInfoWithIcon(data);
         widgetsListHeader.setExpanded(data.isWidgetListShown());
         widgetsListHeader.setListDrawableState(
                 WidgetsListDrawableState.obtain(
-                        /* isFirst= */ position == 0,
-                        /* isLast= */ position == mWidgetsListAdapter.getItemCount() - 1,
+                        (position & POSITION_FIRST) != 0,
+                        (position & POSITION_LAST) != 0,
                         /* isExpanded= */ data.isWidgetListShown()));
         widgetsListHeader.setOnExpandChangeListener(isExpanded ->
                 mOnHeaderClickListener.onHeaderClicked(isExpanded,

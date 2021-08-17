@@ -41,7 +41,6 @@ import com.android.launcher3.model.WidgetItem;
 import com.android.launcher3.model.data.PackageItemInfo;
 import com.android.launcher3.testing.TestActivity;
 import com.android.launcher3.util.PackageUserKey;
-import com.android.launcher3.widget.DatabaseWidgetPreviewLoader;
 import com.android.launcher3.widget.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.widget.model.WidgetsListSearchHeaderEntry;
 
@@ -79,8 +78,6 @@ public final class WidgetsListSearchHeaderViewHolderBinderTest {
     @Mock
     private DeviceProfile mDeviceProfile;
     @Mock
-    private DatabaseWidgetPreviewLoader mWidgetPreviewLoader;
-    @Mock
     private OnHeaderClickListener mOnHeaderClickListener;
 
     @Before
@@ -99,18 +96,10 @@ public final class WidgetsListSearchHeaderViewHolderBinderTest {
             ComponentWithLabel componentWithLabel = (ComponentWithLabel) invocation.getArgument(0);
             return componentWithLabel.getComponent().getShortClassName();
         }).when(mIconCache).getTitleNoCache(any());
-
-        WidgetsListAdapter widgetsListAdapter = new WidgetsListAdapter(mContext,
-                LayoutInflater.from(mTestActivity),
-                mWidgetPreviewLoader,
-                mIconCache,
-                /* iconClickListener= */ view -> {},
-                /* iconLongClickListener= */ view -> false);
         mViewHolderBinder = new WidgetsListSearchHeaderViewHolderBinder(
                 LayoutInflater.from(mTestActivity),
                 mOnHeaderClickListener,
-                new WidgetsListDrawableFactory(mTestActivity),
-                widgetsListAdapter);
+                new WidgetsListDrawableFactory(mTestActivity));
     }
 
     @After
