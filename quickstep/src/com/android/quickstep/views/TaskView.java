@@ -91,6 +91,7 @@ import com.android.launcher3.util.TransformingTouchDelegate;
 import com.android.launcher3.util.ViewPool.Reusable;
 import com.android.quickstep.RecentsModel;
 import com.android.quickstep.RemoteAnimationTargets;
+import com.android.quickstep.SwipeUpAnimationLogic.RemoteTargetHandle;
 import com.android.quickstep.SystemUiProxy;
 import com.android.quickstep.TaskIconCache;
 import com.android.quickstep.TaskOverlayFactory;
@@ -100,16 +101,20 @@ import com.android.quickstep.TaskViewUtils;
 import com.android.quickstep.util.CancellableTask;
 import com.android.quickstep.util.RecentsOrientedState;
 import com.android.quickstep.util.TaskCornerRadius;
+import com.android.quickstep.util.TransformParams;
 import com.android.quickstep.views.TaskThumbnailView.PreviewPositionHelper;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.ActivityOptionsCompat;
 import com.android.systemui.shared.system.QuickStepContract;
+import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 
 import java.lang.annotation.Retention;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.stream.Stream;
 
 /**
  * A task in the Recents view.
@@ -333,8 +338,8 @@ public class TaskView extends FrameLayout implements Reusable {
 
     private final TaskOutlineProvider mOutlineProvider;
 
-    private Task mTask;
-    private TaskThumbnailView mSnapshotView;
+    protected Task mTask;
+    protected TaskThumbnailView mSnapshotView;
     private IconView mIconView;
     private final DigitalWellBeingToast mDigitalWellBeingToast;
     private float mFullscreenProgress;
@@ -342,7 +347,7 @@ public class TaskView extends FrameLayout implements Reusable {
     private float mNonGridScale = 1;
     private float mDismissScale = 1;
     private final FullscreenDrawParams mCurrentFullscreenParams;
-    private final StatefulActivity mActivity;
+    protected final StatefulActivity mActivity;
 
     // Various causes of changing primary translation, which we aggregate to setTranslationX/Y().
     private float mDismissTranslationX;
@@ -371,7 +376,12 @@ public class TaskView extends FrameLayout implements Reusable {
     private float mStableAlpha = 1;
 
     private int mTaskViewId = -1;
-    private final int[] mTaskIdContainer = new int[]{-1, -1};
+    /**
+     * Index 0 will contain taskID of left/top task, index 1 will contain taskId of bottom/right
+     */
+    protected final int[] mTaskIdContainer = new int[]{-1, -1};
+    protected final TaskIdAttributeContainer[] mTaskIdAttributeContainer =
+            new TaskIdAttributeContainer[2];
 
     private boolean mShowScreenshot;
 
@@ -522,8 +532,13 @@ public class TaskView extends FrameLayout implements Reusable {
         cancelPendingLoadTasks();
         mTask = task;
         mTaskIdContainer[0] = mTask.key.id;
+        mTaskIdAttributeContainer[0] = new TaskIdAttributeContainer(task, mSnapshotView);
         mSnapshotView.bind(task);
         setOrientationState(orientedState);
+    }
+
+    public TaskIdAttributeContainer[] getTaskIdAttributeContainers() {
+        return mTaskIdAttributeContainer;
     }
 
     public Task getTask() {
@@ -567,7 +582,29 @@ public class TaskView extends FrameLayout implements Reusable {
 
             mIsClickableAsLiveTile = false;
             RecentsView recentsView = getRecentsView();
-            final RemoteAnimationTargets targets = recentsView.getLiveTileParams().getTargetSet();
+            RemoteAnimationTargets targets;
+            RemoteTargetHandle[] remoteTargetHandles =
+                    recentsView.mRemoteTargetHandles;
+            if (remoteTargetHandles.length == 1) {
+                targets = remoteTargetHandles[0].mTransformParams.getTargetSet();
+            } else {
+                TransformParams topLeftParams = remoteTargetHandles[0].mTransformParams;
+                TransformParams rightBottomParams = remoteTargetHandles[1].mTransformParams;
+                RemoteAnimationTargetCompat[] apps = Stream.concat(
+                        Arrays.stream(topLeftParams.getTargetSet().apps),
+                        Arrays.stream(rightBottomParams.getTargetSet().apps))
+                        .toArray(RemoteAnimationTargetCompat[]::new);
+                RemoteAnimationTargetCompat[] wallpapers = Stream.concat(
+                        Arrays.stream(topLeftParams.getTargetSet().wallpapers),
+                        Arrays.stream(rightBottomParams.getTargetSet().wallpapers))
+                        .toArray(RemoteAnimationTargetCompat[]::new);
+                RemoteAnimationTargetCompat[] nonApps = Stream.concat(
+                        Arrays.stream(topLeftParams.getTargetSet().nonApps),
+                        Arrays.stream(rightBottomParams.getTargetSet().nonApps))
+                        .toArray(RemoteAnimationTargetCompat[]::new);
+                targets = new RemoteAnimationTargets(apps, wallpapers, nonApps,
+                        topLeftParams.getTargetSet().targetMode);
+            }
             if (targets == null) {
                 // If the recents animation is cancelled somehow between the parent if block and
                 // here, try to launch the task as a non live tile task.
@@ -727,11 +764,11 @@ public class TaskView extends FrameLayout implements Reusable {
         }
     }
 
-    private boolean needsUpdate(@TaskDataChanges int dataChange, @TaskDataChanges int flag) {
+    protected boolean needsUpdate(@TaskDataChanges int dataChange, @TaskDataChanges int flag) {
         return (dataChange & flag) == flag;
     }
 
-    private void cancelPendingLoadTasks() {
+    protected void cancelPendingLoadTasks() {
         if (mThumbnailLoadRequest != null) {
             mThumbnailLoadRequest.cancel();
             mThumbnailLoadRequest = null;
@@ -1516,5 +1553,23 @@ public class TaskView extends FrameLayout implements Reusable {
             }
         }
 
+    }
+
+    public class TaskIdAttributeContainer {
+        private final TaskThumbnailView thumbnailView;
+        private final Task task;
+
+        public TaskIdAttributeContainer(Task task, TaskThumbnailView thumbnailView) {
+            this.task = task;
+            this.thumbnailView = thumbnailView;
+        }
+
+        public TaskThumbnailView getThumbnailView() {
+            return thumbnailView;
+        }
+
+        public Task getTask() {
+            return task;
+        }
     }
 }
