@@ -188,8 +188,7 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate impleme
     private boolean itemSupportsAccessibleDrag(ItemInfo item) {
         if (item instanceof WorkspaceItemInfo) {
             // Support the action unless the item is in a context menu.
-            return (item.screenId >= 0 || item.screenId == Workspace.LEFT_PANEL_ID)
-                    && item.container != Favorites.CONTAINER_HOTSEAT_PREDICTION;
+            return item.screenId >= 0 && item.container != Favorites.CONTAINER_HOTSEAT_PREDICTION;
         }
         return (item instanceof LauncherAppWidgetInfo)
                 || (item instanceof FolderInfo);

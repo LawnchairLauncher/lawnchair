@@ -790,7 +790,7 @@ public class DeviceProfile {
         Point padding = getTotalWorkspacePadding();
         // availableWidthPx is the screen width of the device. In 2 panels mode, each panel should
         // only have half of the screen width. In addition, there is only cellLayoutPadding in the
-        // left side of the left panel and the right side of the right panel. There is no
+        // left side of the left most panel and the right most side of the right panel. There is no
         // cellLayoutPadding in the middle.
         int screenWidthPx = isTwoPanels
                 ? availableWidthPx / 2 - padding.x - cellLayoutPaddingLeftRightPx

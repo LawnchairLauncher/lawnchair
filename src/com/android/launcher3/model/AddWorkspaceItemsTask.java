@@ -16,7 +16,6 @@
 package com.android.launcher3.model;
 
 import static com.android.launcher3.WorkspaceLayoutManager.FIRST_SCREEN_ID;
-import static com.android.launcher3.WorkspaceLayoutManager.LEFT_PANEL_ID;
 
 import android.content.Intent;
 import android.content.pm.LauncherActivityInfo;
@@ -297,7 +296,7 @@ public class AddWorkspaceItemsTask extends BaseModelUpdateTask {
 
         int screenCount = workspaceScreens.size();
         // First check the preferred screen.
-        IntSet screensToExclude = IntSet.wrap(LEFT_PANEL_ID);
+        IntSet screensToExclude = new IntSet();
         if (FeatureFlags.QSB_ON_FIRST_SCREEN) {
             screensToExclude.add(FIRST_SCREEN_ID);
         }
