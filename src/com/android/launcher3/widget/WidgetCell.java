@@ -26,14 +26,12 @@ import static com.android.launcher3.Utilities.ATLEAST_S;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
-import android.os.CancellationSignal;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.util.Size;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.View.OnLayoutChangeListener;
 import android.view.ViewGroup;
 import android.view.ViewPropertyAnimator;
 import android.view.accessibility.AccessibilityNodeInfo;
@@ -42,6 +40,7 @@ import android.widget.LinearLayout;
 import android.widget.RemoteViews;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.android.launcher3.BaseActivity;
@@ -51,8 +50,12 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.icons.FastBitmapDrawable;
 import com.android.launcher3.icons.RoundDrawableWrapper;
+import com.android.launcher3.icons.cache.HandlerRunnable;
 import com.android.launcher3.model.WidgetItem;
+import com.android.launcher3.views.ActivityContext;
 import com.android.launcher3.widget.util.WidgetSizes;
+
+import java.util.function.Consumer;
 
 /**
  * Represents the individual cell of the widget inside the widget tray. The preview is drawn
@@ -63,7 +66,7 @@ import com.android.launcher3.widget.util.WidgetSizes;
  * transition from the view to drag view, so when adding padding support, DnD would need to
  * consider the appropriate scaling factor.
  */
-public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
+public class WidgetCell extends LinearLayout {
 
     private static final String TAG = "WidgetCell";
     private static final boolean DEBUG = false;
@@ -115,13 +118,10 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
 
     protected WidgetItem mItem;
 
-    private WidgetPreviewLoader mWidgetPreviewLoader;
+    private final DatabaseWidgetPreviewLoader mWidgetPreviewLoader;
 
-    protected CancellationSignal mActiveRequest;
+    protected HandlerRunnable mActiveRequest;
     private boolean mAnimatePreview = true;
-
-    private boolean mApplyBitmapDeferred = false;
-    private Drawable mDeferredDrawable;
 
     protected final BaseActivity mActivity;
     private final CheckLongPressHelper mLongPressHelper;
@@ -144,6 +144,7 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
         super(context, attrs, defStyle);
 
         mActivity = BaseActivity.fromContext(context);
+        mWidgetPreviewLoader = new DatabaseWidgetPreviewLoader(mActivity);
         mLongPressHelper = new CheckLongPressHelper(this);
         mLongPressHelper.setLongPressTimeoutFactor(1);
 
@@ -218,7 +219,36 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
         this.mSourceContainer = sourceContainer;
     }
 
-    public void applyFromCellItem(WidgetItem item, WidgetPreviewLoader loader) {
+    /**
+     * Applies the item to this view
+     */
+    public void applyFromCellItem(WidgetItem item) {
+        applyFromCellItem(item, 1f);
+    }
+
+    /**
+     * Applies the item to this view
+     */
+    public void applyFromCellItem(WidgetItem item, float previewScale) {
+        applyFromCellItem(item, previewScale, this::applyPreview, null);
+    }
+
+    /**
+     * Applies the item to this view
+     * @param item item to apply
+     * @param previewScale factor to scale the preview
+     * @param callback callback when preview is loaded in case the preview is being loaded or cached
+     * @param cachedPreview previously cached preview bitmap is present
+     */
+    public void applyFromCellItem(WidgetItem item, float previewScale,
+            @NonNull Consumer<Bitmap> callback, @Nullable Bitmap cachedPreview) {
+        // setPreviewSize
+        DeviceProfile deviceProfile = mActivity.getDeviceProfile();
+        Size widgetSize = WidgetSizes.getWidgetItemSizePx(getContext(), deviceProfile, item);
+        mTargetPreviewWidth = widgetSize.getWidth();
+        mTargetPreviewHeight = widgetSize.getHeight();
+        mPreviewContainerScale = previewScale;
+
         applyPreviewOnAppWidgetHostView(item);
 
         Context context = getContext();
@@ -240,14 +270,14 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
             }
         }
 
-        mWidgetPreviewLoader = loader;
         if (item.activityInfo != null) {
             setTag(new PendingAddShortcutInfo(item.activityInfo));
         } else {
             setTag(new PendingAddWidgetInfo(item.widgetInfo, mSourceContainer));
         }
-    }
 
+        ensurePreviewWithCallback(callback, cachedPreview);
+    }
 
     private void applyPreviewOnAppWidgetHostView(WidgetItem item) {
         if (mRemoteViewsPreview != null) {
@@ -294,37 +324,15 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
         return mAppWidgetHostViewPreview;
     }
 
-    /**
-     * Sets if applying bitmap preview should be deferred. The UI will still load the bitmap, but
-     * will not cause invalidate, so that when deferring is disabled later, all the bitmaps are
-     * ready.
-     * This prevents invalidates while the animation is running.
-     */
-    public void setApplyBitmapDeferred(boolean isDeferred) {
-        if (mApplyBitmapDeferred != isDeferred) {
-            mApplyBitmapDeferred = isDeferred;
-            if (!mApplyBitmapDeferred && mDeferredDrawable != null) {
-                applyPreview(mDeferredDrawable);
-                mDeferredDrawable = null;
-            }
-        }
-    }
-
     public void setAnimatePreview(boolean shouldAnimate) {
         mAnimatePreview = shouldAnimate;
     }
 
-    public void applyPreview(Bitmap bitmap) {
-        FastBitmapDrawable drawable = new FastBitmapDrawable(bitmap);
-        applyPreview(new RoundDrawableWrapper(drawable, mEnforcedCornerRadius));
-    }
+    private void applyPreview(Bitmap bitmap) {
+        if (bitmap != null) {
+            Drawable drawable = new RoundDrawableWrapper(
+                    new FastBitmapDrawable(bitmap), mEnforcedCornerRadius);
 
-    private void applyPreview(Drawable drawable) {
-        if (mApplyBitmapDeferred) {
-            mDeferredDrawable = drawable;
-            return;
-        }
-        if (drawable != null) {
             // Scale down the preview size if it's wider than the cell.
             float scale = 1f;
             if (mTargetPreviewWidth > 0) {
@@ -349,6 +357,10 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
         } else {
             mWidgetImageContainer.setAlpha(1f);
         }
+        if (mActiveRequest != null) {
+            mActiveRequest.cancel();
+            mActiveRequest = null;
+        }
     }
 
     private void setContainerSize(int width, int height) {
@@ -358,7 +370,13 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
         mWidgetImageContainer.setLayoutParams(layoutParams);
     }
 
-    public void ensurePreview() {
+    /**
+     * Ensures that the preview is already loaded or being loaded. If the preview is not loaded,
+     * it applies the provided cachedPreview. If that is null, it starts a loader and notifies the
+     * callback on successful load.
+     */
+    private void ensurePreviewWithCallback(Consumer<Bitmap> callback,
+            @Nullable Bitmap cachedPreview) {
         if (mAppWidgetHostViewPreview != null) {
             int containerWidth = (int) (mTargetPreviewWidth * mPreviewContainerScale);
             int containerHeight = (int) (mTargetPreviewHeight * mPreviewContainerScale);
@@ -382,38 +400,18 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
             mAppWidgetHostViewPreview.setLayoutParams(params);
             mWidgetImageContainer.addView(mAppWidgetHostViewPreview, /* index= */ 0);
             mWidgetImage.setVisibility(View.GONE);
-            applyPreview((Drawable) null);
+            applyPreview(null);
+            return;
+        }
+        if (cachedPreview != null) {
+            applyPreview(cachedPreview);
             return;
         }
         if (mActiveRequest != null) {
             return;
         }
         mActiveRequest = mWidgetPreviewLoader.loadPreview(
-                BaseActivity.fromContext(getContext()), mItem,
-                new Size(mTargetPreviewWidth, mTargetPreviewHeight),
-                this::applyPreview);
-    }
-
-    /** Sets the widget preview image size in number of cells. */
-    public Size setPreviewSize(WidgetItem widgetItem) {
-        return setPreviewSize(widgetItem, 1f);
-    }
-
-    /** Sets the widget preview image size, in number of cells, and preview scale. */
-    public Size setPreviewSize(WidgetItem widgetItem, float previewScale) {
-        DeviceProfile deviceProfile = mActivity.getDeviceProfile();
-        Size widgetSize = WidgetSizes.getWidgetItemSizePx(getContext(), deviceProfile, widgetItem);
-        mTargetPreviewWidth = widgetSize.getWidth();
-        mTargetPreviewHeight = widgetSize.getHeight();
-        mPreviewContainerScale = previewScale;
-        return widgetSize;
-    }
-
-    @Override
-    public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft,
-            int oldTop, int oldRight, int oldBottom) {
-        removeOnLayoutChangeListener(this);
-        ensurePreview();
+                mItem, new Size(mTargetPreviewWidth, mTargetPreviewHeight), callback);
     }
 
     @Override
@@ -429,17 +427,6 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
         mLongPressHelper.cancelLongPress();
     }
 
-    /**
-     * Helper method to get the string info of the tag.
-     */
-    private String getTagToString() {
-        if (getTag() instanceof PendingAddWidgetInfo ||
-                getTag() instanceof PendingAddShortcutInfo) {
-            return getTag().toString();
-        }
-        return "";
-    }
-
     private static NavigableAppWidgetHostView createAppWidgetHostView(Context context) {
         return new NavigableAppWidgetHostView(context) {
             @Override
@@ -450,12 +437,7 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
     }
 
     private static boolean isLauncherContext(Context context) {
-        try {
-            Launcher.getLauncher(context);
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
+        return ActivityContext.lookupContext(context) instanceof Launcher;
     }
 
     @Override
