@@ -38,7 +38,6 @@ import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.Workspace;
 import com.android.launcher3.graphics.LauncherPreviewRenderer;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.pm.InstallSessionHelper;
@@ -214,9 +213,6 @@ public class GridSizeMigrationTaskV2 {
         // Migrate workspace.
         // First we create a collection of the screens
         List<Integer> screens = new ArrayList<>();
-        if (idp.getDeviceProfile(mContext).isTwoPanels) {
-            screens.add(Workspace.LEFT_PANEL_ID);
-        }
         for (int screenId = 0; screenId <= mDestReader.mLastScreenId; screenId++) {
             screens.add(screenId);
         }

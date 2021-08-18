@@ -144,12 +144,16 @@ public class TaskView extends FrameLayout implements Reusable {
      * Should the TaskView display clip off the status and navigation bars in recents. When this
      * is false the overview shows the whole screen scaled down instead.
      */
-    public static final boolean CLIP_STATUS_AND_NAV_BARS = false;
+    public static boolean clipStatusAndNavBars(DeviceProfile deviceProfile) {
+        return deviceProfile.isTaskbarPresentInApps;
+    }
 
     /**
      * Should the TaskView scale down to fit whole thumbnail in fullscreen.
      */
-    public static final boolean FULL_THUMBNAIL = false;
+    public static boolean useFullThumbnail(DeviceProfile deviceProfile) {
+        return deviceProfile.isTaskbarPresentInApps;
+    };
 
     private static final float EDGE_SCALE_DOWN_FACTOR_CAROUSEL = 0.03f;
     private static final float EDGE_SCALE_DOWN_FACTOR_GRID = 0.00f;
@@ -1489,12 +1493,16 @@ public class TaskView extends FrameLayout implements Reusable {
          */
         public void setProgress(float fullscreenProgress, float parentScale, float taskViewScale,
                 int previewWidth, DeviceProfile dp, PreviewPositionHelper pph) {
-            RectF insets = pph.getInsetsToDrawInFullscreen();
+            RectF insets = pph.getInsetsToDrawInFullscreen(dp);
 
             float currentInsetsLeft = insets.left * fullscreenProgress;
             float currentInsetsRight = insets.right * fullscreenProgress;
+            float insetsBottom = insets.bottom;
+            if (dp.isTaskbarPresentInApps) {
+                insetsBottom = Math.max(0, insetsBottom - dp.taskbarSize);
+            }
             mCurrentDrawnInsets.set(currentInsetsLeft, insets.top * fullscreenProgress,
-                    currentInsetsRight, insets.bottom * fullscreenProgress);
+                    currentInsetsRight, insetsBottom * fullscreenProgress);
             float fullscreenCornerRadius = dp.isMultiWindowMode ? 0 : mWindowCornerRadius;
 
             mCurrentDrawnCornerRadius =

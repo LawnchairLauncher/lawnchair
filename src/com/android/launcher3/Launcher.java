@@ -36,7 +36,6 @@ import static com.android.launcher3.LauncherState.NO_OFFSET;
 import static com.android.launcher3.LauncherState.NO_SCALE;
 import static com.android.launcher3.LauncherState.SPRING_LOADED;
 import static com.android.launcher3.Utilities.postAsyncCallback;
-import static com.android.launcher3.WorkspaceLayoutManager.LEFT_PANEL_ID;
 import static com.android.launcher3.accessibility.LauncherAccessibilityDelegate.getSupportedActions;
 import static com.android.launcher3.dragndrop.DragLayer.ALPHA_INDEX_LAUNCHER_LOAD;
 import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_BACKGROUND;
@@ -2099,19 +2098,12 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
                 ? mWorkspace.getCurrentPageScreenIds() : mPagesToBindSynchronously;
         IntArray actualIds = new IntArray();
 
-        if (mDeviceProfile.isTwoPanels) {
-            actualIds.add(LEFT_PANEL_ID);
-        } else {
-            visibleIds.remove(LEFT_PANEL_ID);
-        }
         IntSet result = new IntSet();
         if (visibleIds.isEmpty()) {
             return result;
         }
         for (int id : orderedScreenIds.toArray()) {
-            if (id != LEFT_PANEL_ID) {
-                actualIds.add(id);
-            }
+            actualIds.add(id);
         }
         int firstId = visibleIds.getArray().get(0);
         if (actualIds.contains(firstId)) {
@@ -2119,7 +2111,7 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
 
             if (mDeviceProfile.isTwoPanels) {
                 int index = actualIds.indexOf(firstId);
-                int nextIndex = ((int) (index / 2)) * 2;
+                int nextIndex = (index / 2) * 2;
                 if (nextIndex == index) {
                     nextIndex++;
                 }
@@ -2176,12 +2168,7 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
 
     @Override
     public void bindScreens(IntArray orderedScreenIds) {
-        // Make sure the first screen is at the start if there's no widget panel,
-        // or on the second place if the first is the widget panel
-        boolean isLeftPanelShown =
-                mWorkspace.mWorkspaceScreens.containsKey(LEFT_PANEL_ID);
-        int firstScreenPosition = isLeftPanelShown && orderedScreenIds.size() > 1 ? 1 : 0;
-
+        int firstScreenPosition = 0;
         if (FeatureFlags.QSB_ON_FIRST_SCREEN &&
                 orderedScreenIds.indexOf(Workspace.FIRST_SCREEN_ID) != firstScreenPosition) {
             orderedScreenIds.removeValue(Workspace.FIRST_SCREEN_ID);
@@ -2204,11 +2191,6 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
             int screenId = orderedScreenIds.get(i);
             if (FeatureFlags.QSB_ON_FIRST_SCREEN && screenId == Workspace.FIRST_SCREEN_ID) {
                 // No need to bind the first screen, as its always bound.
-                continue;
-            }
-
-            if (screenId == LEFT_PANEL_ID) {
-                // No need to bind the left panel, as its always bound.
                 continue;
             }
 
@@ -2284,11 +2266,6 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
             // Short circuit if we are loading dock items for a configuration which has no dock
             if (item.container == LauncherSettings.Favorites.CONTAINER_HOTSEAT &&
                     mHotseat == null) {
-                continue;
-            }
-
-            // Skip if the item is on the left widget panel but the panel is not shown
-            if (item.screenId == LEFT_PANEL_ID && !getDeviceProfile().isTwoPanels) {
                 continue;
             }
 
