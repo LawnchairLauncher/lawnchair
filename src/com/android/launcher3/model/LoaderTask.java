@@ -72,6 +72,7 @@ import com.android.launcher3.icons.cache.IconCacheUpdateHandler;
 import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.FolderInfo;
+import com.android.launcher3.model.data.IconRequestInfo;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.ItemInfoWithIcon;
 import com.android.launcher3.model.data.LauncherAppWidgetInfo;
@@ -420,6 +421,7 @@ public class LoaderTask implements Runnable {
                 LauncherAppWidgetProviderInfo widgetProviderInfo;
                 Intent intent;
                 String targetPkg;
+                List<IconRequestInfo<WorkspaceItemInfo>> iconRequestInfos = new ArrayList<>();
 
                 while (!mStopped && c.moveToNext()) {
                     try {
@@ -542,7 +544,10 @@ public class LoaderTask implements Runnable {
                             } else if (c.itemType ==
                                     LauncherSettings.Favorites.ITEM_TYPE_APPLICATION) {
                                 info = c.getAppShortcutInfo(
-                                        intent, allowMissingTarget, useLowResIcon);
+                                        intent,
+                                        allowMissingTarget,
+                                        useLowResIcon,
+                                        !FeatureFlags.ENABLE_BULK_WORKSPACE_ICON_LOADING.get());
                             } else if (c.itemType ==
                                     LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT) {
 
@@ -594,6 +599,8 @@ public class LoaderTask implements Runnable {
                             }
 
                             if (info != null) {
+                                iconRequestInfos.add(c.createIconRequestInfo(info, useLowResIcon));
+
                                 c.applyCommonProperties(info);
 
                                 info.intent = intent;
@@ -809,6 +816,21 @@ public class LoaderTask implements Runnable {
                         }
                     } catch (Exception e) {
                         Log.e(TAG, "Desktop items loading interrupted", e);
+                    }
+                }
+                if (FeatureFlags.ENABLE_BULK_WORKSPACE_ICON_LOADING.get()) {
+                    Trace.beginSection("LoadWorkspaceIconsInBulk");
+                    try {
+                        mIconCache.getTitlesAndIconsInBulk(iconRequestInfos);
+                        for (IconRequestInfo<WorkspaceItemInfo> iconRequestInfo :
+                                iconRequestInfos) {
+                            WorkspaceItemInfo wai = iconRequestInfo.itemInfo;
+                            if (mIconCache.isDefaultIcon(wai.bitmap, wai.user)) {
+                                iconRequestInfo.loadWorkspaceIcon(mApp.getContext());
+                            }
+                        }
+                    } finally {
+                        Trace.endSection();
                     }
                 }
             } finally {
