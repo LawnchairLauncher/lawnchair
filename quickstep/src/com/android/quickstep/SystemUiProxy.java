@@ -17,6 +17,7 @@ package com.android.quickstep;
 
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 
+import android.app.ActivityManager;
 import android.app.PendingIntent;
 import android.app.PictureInPictureParams;
 import android.content.ComponentName;
@@ -632,10 +633,11 @@ public class SystemUiProxy implements ISystemUiProxy,
      * @param cancel true if recents starting is being cancelled.
      * @return RemoteAnimationTargets of windows that need to animate but only exist in shell.
      */
-    public RemoteAnimationTarget[] onGoingToRecentsLegacy(boolean cancel) {
+    public RemoteAnimationTarget[] onGoingToRecentsLegacy(boolean cancel,
+            RemoteAnimationTarget[] apps) {
         if (mSplitScreen != null) {
             try {
-                return mSplitScreen.onGoingToRecentsLegacy(cancel);
+                return mSplitScreen.onGoingToRecentsLegacy(cancel, apps);
             } catch (RemoteException e) {
                 Log.w(TAG, "Failed call onGoingToRecentsLegacy");
             }

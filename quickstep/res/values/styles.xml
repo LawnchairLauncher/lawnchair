@@ -139,4 +139,16 @@
     <style name="BaseIcon.Workspace.Taskbar" >
         <item name="iconDisplay">taskbar</item>
     </style>
+
+    <style name="TaskbarEdu.Button.Close" parent="@android:style/Widget.Material.Button">
+        <item name="android:background">@drawable/button_taskbar_edu_bordered</item>
+        <item name="android:stateListAnimator">@null</item>
+        <item name="android:textSize">16sp</item>
+    </style>
+
+    <style name="TaskbarEdu.Button.Next" parent="@android:style/Widget.Material.Button">
+        <item name="android:background">@drawable/button_taskbar_edu_colored</item>
+        <item name="android:stateListAnimator">@null</item>
+        <item name="android:textSize">16sp</item>
+    </style>
 </resources>

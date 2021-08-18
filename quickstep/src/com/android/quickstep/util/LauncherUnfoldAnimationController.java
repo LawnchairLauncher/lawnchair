@@ -15,10 +15,15 @@
  */
 package com.android.quickstep.util;
 
+import static com.android.launcher3.Utilities.comp;
+
+import android.annotation.Nullable;
 import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 
+import com.android.launcher3.Hotseat;
 import com.android.launcher3.Launcher;
+import com.android.launcher3.util.HorizontalInsettableView;
 import com.android.unfold.UnfoldTransitionProgressProvider;
 import com.android.unfold.UnfoldTransitionProgressProvider.TransitionProgressListener;
 
@@ -27,9 +32,16 @@ import com.android.unfold.UnfoldTransitionProgressProvider.TransitionProgressLis
  */
 public class LauncherUnfoldAnimationController {
 
+    // Percentage of the width of the quick search bar that will be reduced
+    // from the both sides of the bar when progress is 0
+    private static final float MAX_WIDTH_INSET_FRACTION = 0.15f;
+
     private final Launcher mLauncher;
     private final UnfoldTransitionProgressProvider mUnfoldTransitionProgressProvider;
     private final UnfoldMoveFromCenterWorkspaceAnimator mMoveFromCenterWorkspaceAnimation;
+
+    @Nullable
+    private HorizontalInsettableView mQsbInsettable;
 
     private final AnimationListener mAnimationListener = new AnimationListener();
 
@@ -51,6 +63,11 @@ public class LauncherUnfoldAnimationController {
      * Called when launcher is resumed
      */
     public void onResume() {
+        Hotseat hotseat = mLauncher.getHotseat();
+        if (hotseat != null && hotseat.getQsb() instanceof HorizontalInsettableView) {
+            mQsbInsettable = (HorizontalInsettableView) hotseat.getQsb();
+        }
+
         final ViewTreeObserver obs = mLauncher.getWorkspace().getViewTreeObserver();
         obs.addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
             @Override
@@ -68,12 +85,13 @@ public class LauncherUnfoldAnimationController {
      * Called when launcher activity is paused
      */
     public void onPause() {
-        mIsReadyToPlayAnimation = false;
-
         if (mIsTransitionRunning) {
             mIsTransitionRunning = false;
-            mMoveFromCenterWorkspaceAnimation.onTransitionFinished();
+            mAnimationListener.onTransitionFinished();
         }
+
+        mIsReadyToPlayAnimation = false;
+        mQsbInsettable = null;
     }
 
     /**
@@ -109,6 +127,10 @@ public class LauncherUnfoldAnimationController {
         public void onTransitionFinished() {
             if (mIsReadyToPlayAnimation) {
                 mMoveFromCenterWorkspaceAnimation.onTransitionFinished();
+
+                if (mQsbInsettable != null) {
+                    mQsbInsettable.setHorizontalInsets(0);
+                }
             }
 
             mIsTransitionRunning = false;
@@ -117,6 +139,11 @@ public class LauncherUnfoldAnimationController {
         @Override
         public void onTransitionProgress(float progress) {
             mMoveFromCenterWorkspaceAnimation.onTransitionProgress(progress);
+
+            if (mQsbInsettable != null) {
+                float insetPercentage = comp(progress) * MAX_WIDTH_INSET_FRACTION;
+                mQsbInsettable.setHorizontalInsets(insetPercentage);
+            }
         }
     }
 }

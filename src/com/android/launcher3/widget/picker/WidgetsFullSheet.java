@@ -687,7 +687,7 @@ public class WidgetsFullSheet extends BaseWidgetSheet
                         .findFirst()
                         .orElse(null);
         if (viewHolderForTip != null) {
-            return ((ViewGroup) viewHolderForTip.mTableContainer.getChildAt(0)).getChildAt(0);
+            return ((ViewGroup) viewHolderForTip.tableContainer.getChildAt(0)).getChildAt(0);
         }
 
         return null;
@@ -745,7 +745,6 @@ public class WidgetsFullSheet extends BaseWidgetSheet
             mWidgetsListAdapter = new WidgetsListAdapter(
                     context,
                     LayoutInflater.from(context),
-                    apps.getWidgetCache(),
                     apps.getIconCache(),
                     this::getEmptySpaceHeight,
                     /* iconClickListener= */ WidgetsFullSheet.this,
@@ -784,7 +783,6 @@ public class WidgetsFullSheet extends BaseWidgetSheet
             if (mAdapterType == PRIMARY || mAdapterType == WORK) {
                 mWidgetsRecyclerView.addOnAttachStateChangeListener(mBindScrollbarInSearchMode);
             }
-            mWidgetsListAdapter.setApplyBitmapDeferred(false, mWidgetsRecyclerView);
             mWidgetsListAdapter.setMaxHorizontalSpansPerRow(mMaxSpansPerRow);
         }
     }

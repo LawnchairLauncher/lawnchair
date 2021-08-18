@@ -1,7 +1,10 @@
 package com.android.launcher3.taskbar;
 
+import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_BACK_DISABLED;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_BOUNCER_SHOWING;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_DEVICE_DOZING;
+import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_HOME_DISABLED;
+import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_OVERVIEW_DISABLED;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_STATUS_BAR_KEYGUARD_SHOWING;
 
 import android.app.KeyguardManager;
@@ -9,7 +12,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.view.View;
 
 /**
  * Controller for managing keyguard state for taskbar
@@ -17,10 +19,11 @@ import android.view.View;
 public class TaskbarKeyguardController {
 
     private static final int KEYGUARD_SYSUI_FLAGS = SYSUI_STATE_BOUNCER_SHOWING |
-            SYSUI_STATE_STATUS_BAR_KEYGUARD_SHOWING | SYSUI_STATE_DEVICE_DOZING;
+            SYSUI_STATE_STATUS_BAR_KEYGUARD_SHOWING | SYSUI_STATE_DEVICE_DOZING |
+            SYSUI_STATE_OVERVIEW_DISABLED | SYSUI_STATE_HOME_DISABLED |
+            SYSUI_STATE_BACK_DISABLED;
 
     private final TaskbarActivityContext mContext;
-    private int mDisabledNavIcons;
     private int mKeyguardSysuiFlags;
     private boolean mBouncerShowing;
     private NavbarButtonsViewController mNavbarButtonsViewController;
@@ -70,22 +73,13 @@ public class TaskbarKeyguardController {
         mIsScreenOff = false;
     }
 
-    public void disableNavbarElements(int state1, int state2) {
-        if (mDisabledNavIcons == state1) {
-            // no change
-            return;
-        }
-        mDisabledNavIcons = state1;
-        updateIconsForBouncer();
-    }
-
     /**
      * Hides/shows taskbar when keyguard is up
      */
     private void updateIconsForBouncer() {
-        boolean disableBack = (mDisabledNavIcons & View.STATUS_BAR_DISABLE_BACK) != 0;
-        boolean disableRecent = (mDisabledNavIcons & View.STATUS_BAR_DISABLE_RECENT) != 0;
-        boolean disableHome = (mDisabledNavIcons & View.STATUS_BAR_DISABLE_HOME) != 0;
+        boolean disableBack = (mKeyguardSysuiFlags & SYSUI_STATE_BACK_DISABLED) != 0;
+        boolean disableRecent = (mKeyguardSysuiFlags & SYSUI_STATE_OVERVIEW_DISABLED) != 0;
+        boolean disableHome = (mKeyguardSysuiFlags & SYSUI_STATE_HOME_DISABLED) != 0;
         boolean onlyBackEnabled = !disableBack && disableRecent && disableHome;
 
         boolean showBackForBouncer = onlyBackEnabled &&

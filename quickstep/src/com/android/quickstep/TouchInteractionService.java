@@ -99,6 +99,7 @@ import com.android.quickstep.inputconsumers.SysUiOverlayInputConsumer;
 import com.android.quickstep.inputconsumers.TaskbarStashInputConsumer;
 import com.android.quickstep.util.ActiveGestureLog;
 import com.android.quickstep.util.AssistantUtilities;
+import com.android.quickstep.util.LauncherSplitScreenListener;
 import com.android.quickstep.util.ProtoTracer;
 import com.android.quickstep.util.ProxyScreenStatusProvider;
 import com.android.quickstep.util.SplitScreenBounds;
@@ -364,6 +365,7 @@ public class TouchInteractionService extends Service implements PluginListener<O
         mDeviceState.runOnUserUnlocked(this::onUserUnlocked);
         mDeviceState.runOnUserUnlocked(mTaskbarManager::onUserUnlocked);
         ProtoTracer.INSTANCE.get(this).add(this);
+        LauncherSplitScreenListener.INSTANCE.get(this).init();
         sConnected = true;
     }
 
@@ -520,6 +522,7 @@ public class TouchInteractionService extends Service implements PluginListener<O
         getSystemService(AccessibilityManager.class)
                 .unregisterSystemAction(SYSTEM_ACTION_ID_ALL_APPS);
 
+        LauncherSplitScreenListener.INSTANCE.get(this).destroy();
         mTaskbarManager.destroy();
         sConnected = false;
         super.onDestroy();

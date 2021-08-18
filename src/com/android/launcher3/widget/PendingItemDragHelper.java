@@ -140,10 +140,9 @@ public class PendingItemDragHelper extends DragPreviewProvider {
                         .addDragListener(new AppWidgetHostViewDragListener(launcher));
             }
             if (preview == null && mAppWidgetHostViewPreview == null) {
-                Drawable p = new FastBitmapDrawable(
-                        app.getWidgetCache().generateWidgetPreview(launcher,
-                                createWidgetInfo.info, maxWidth, null,
-                                previewSizeBeforeScale).first);
+                Drawable p = new FastBitmapDrawable(new DatabaseWidgetPreviewLoader(launcher)
+                        .generateWidgetPreview(
+                                createWidgetInfo.info, maxWidth, previewSizeBeforeScale));
                 if (RoundedCornerEnforcement.isRoundedCornerEnabled()) {
                     p = new RoundDrawableWrapper(p, mEnforcedRoundedCornersForWidget);
                 }

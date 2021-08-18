@@ -25,10 +25,12 @@ import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TI
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 
 import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.content.Context;
 import android.graphics.Rect;
 import android.view.MotionEvent;
+import android.view.View;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
@@ -71,7 +73,7 @@ public final class LauncherActivityInterface extends
     @Override
     public int getSwipeUpDestinationAndLength(DeviceProfile dp, Context context, Rect outRect,
             PagedOrientationHandler orientationHandler) {
-        calculateTaskSize(context, dp, outRect, orientationHandler);
+        calculateTaskSize(context, dp, outRect);
         if (dp.isVerticalBarLayout() && SysUINavigationMode.getMode(context) != Mode.NO_BUTTON) {
             return dp.isSeascape() ? outRect.left : (dp.widthPx - outRect.right);
         } else {
@@ -130,6 +132,18 @@ public final class LauncherActivityInterface extends
                 pa.addFloat(getDepthController(),
                         new ClampedDepthProperty(fromDepthRatio, toDepthRatio),
                         fromDepthRatio, toDepthRatio, LINEAR);
+
+                pa.addListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationStart(Animator animation) {
+                        LauncherTaskbarUIController taskbarUIController =
+                                activity.getTaskbarUIController();
+                        if (taskbarUIController != null) {
+                            // Launcher's ScrimView will draw the background throughout the gesture.
+                            taskbarUIController.forceHideBackground(true);
+                        }
+                    }
+                });
 
             }
         };
@@ -288,6 +302,10 @@ public final class LauncherActivityInterface extends
         } else {
             om.hideOverlay(150);
         }
+        LauncherTaskbarUIController taskbarController = getTaskbarController();
+        if (taskbarController != null) {
+            taskbarController.hideEdu();
+        }
     }
 
     @Override
@@ -353,5 +371,17 @@ public final class LauncherActivityInterface extends
             default:
                 return NORMAL;
         }
+    }
+
+    @Override
+    public View onSettledOnEndTarget(@Nullable GestureEndTarget endTarget) {
+        View superRet = super.onSettledOnEndTarget(endTarget);
+        LauncherTaskbarUIController taskbarUIController = getTaskbarController();
+        if (taskbarUIController != null) {
+            // Start drawing taskbar's background again since launcher might stop drawing.
+            taskbarUIController.forceHideBackground(false);
+            return taskbarUIController.getRootView();
+        }
+        return superRet;
     }
 }

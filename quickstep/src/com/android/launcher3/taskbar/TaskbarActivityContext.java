@@ -115,7 +115,7 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
                 R.layout.taskbar, null, false);
         TaskbarView taskbarView = mDragLayer.findViewById(R.id.taskbar_view);
         FrameLayout navButtonsView = mDragLayer.findViewById(R.id.navbuttons_view);
-        View stashedHandleView = mDragLayer.findViewById(R.id.stashed_handle);
+        StashedHandleView stashedHandleView = mDragLayer.findViewById(R.id.stashed_handle);
 
         // Construct controllers.
         mControllers = new TaskbarControllers(this,
@@ -128,7 +128,8 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
                 new TaskbarViewController(this, taskbarView),
                 new TaskbarKeyguardController(this),
                 new StashedHandleViewController(this, stashedHandleView),
-                new TaskbarStashController(this));
+                new TaskbarStashController(this),
+                new TaskbarEduController(this));
 
         Display display = windowContext.getDisplay();
         Context c = display.getDisplayId() == Display.DEFAULT_DISPLAY
@@ -234,7 +235,6 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
             return;
         }
         mControllers.rotationButtonController.onDisable2FlagChanged(state2);
-        mControllers.taskbarKeyguardController.disableNavbarElements(state1, state2);
     }
 
     public void onSystemBarAttributesChanged(int displayId, int behavior) {

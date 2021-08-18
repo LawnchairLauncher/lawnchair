@@ -32,7 +32,6 @@ import androidx.annotation.Nullable;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
-import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.R;
 import com.android.launcher3.model.WidgetItem;
 import com.android.launcher3.widget.WidgetCell;
@@ -109,10 +108,7 @@ public final class WidgetsRecommendationTableLayout extends TableLayout {
 
             for (WidgetItem widgetItem : widgetItems) {
                 WidgetCell widgetCell = addItemCell(tableRow);
-                widgetCell.setPreviewSize(widgetItem, data.mPreviewScale);
-                widgetCell.applyFromCellItem(widgetItem,
-                        LauncherAppState.getInstance(getContext()).getWidgetCache());
-                widgetCell.ensurePreview();
+                widgetCell.applyFromCellItem(widgetItem, data.mPreviewScale);
             }
             addView(tableRow);
         }

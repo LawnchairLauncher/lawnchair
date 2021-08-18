@@ -18,6 +18,7 @@ package com.android.launcher3.statemanager;
 
 import static android.animation.ValueAnimator.areAnimatorsEnabled;
 
+import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.anim.AnimatorPlaybackController.callListenerCommandRecursively;
 import static com.android.launcher3.states.StateAnimationConfig.SKIP_ALL_ANIMATIONS;
 
@@ -27,12 +28,14 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 
 import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.states.StateAnimationConfig;
 import com.android.launcher3.states.StateAnimationConfig.AnimationFlags;
+import com.android.launcher3.testing.TestProtocol;
 
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -253,6 +256,9 @@ public class StateManager<STATE_TYPE extends BaseState<STATE_TYPE>> {
         if (listener != null) {
             animation.addListener(listener);
         }
+        if (TestProtocol.sDebugTracing && state == NORMAL) {
+            Log.d(TestProtocol.L3_SWIPE_TO_HOME, "goToStateAnimated: " + state);
+        }
         mUiHandler.post(new StartAnimRunnable(animation));
     }
 
@@ -328,11 +334,17 @@ public class StateManager<STATE_TYPE extends BaseState<STATE_TYPE>> {
             @Override
             public void onAnimationStart(Animator animation) {
                 // Change the internal state only when the transition actually starts
+                if (TestProtocol.sDebugTracing && state == NORMAL) {
+                    Log.d(TestProtocol.L3_SWIPE_TO_HOME, "onAnimationStart: " + state);
+                }
                 onStateTransitionStart(state);
             }
 
             @Override
             public void onAnimationSuccess(Animator animator) {
+                if (TestProtocol.sDebugTracing && state == NORMAL) {
+                    Log.d(TestProtocol.L3_SWIPE_TO_HOME, "onAnimationEnd: " + state);
+                }
                 onStateTransitionEnd(state);
             }
         };

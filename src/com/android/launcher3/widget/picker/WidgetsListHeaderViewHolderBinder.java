@@ -23,6 +23,8 @@ import com.android.launcher3.recyclerview.ViewHolderBinder;
 import com.android.launcher3.util.PackageUserKey;
 import com.android.launcher3.widget.model.WidgetsListHeaderEntry;
 
+import java.util.List;
+
 /**
  * Binds data from {@link WidgetsListHeaderEntry} to UI elements in {@link WidgetsListHeaderHolder}.
  */
@@ -50,7 +52,7 @@ public final class WidgetsListHeaderViewHolderBinder implements
 
     @Override
     public void bindViewHolder(WidgetsListHeaderHolder viewHolder, WidgetsListHeaderEntry data,
-            @ListPosition int position) {
+            @ListPosition int position, List<Object> payloads) {
         WidgetsListHeader widgetsListHeader = viewHolder.mWidgetsListHeader;
         widgetsListHeader.applyFromItemInfoWithIcon(data);
         widgetsListHeader.setExpanded(data.isWidgetListShown());

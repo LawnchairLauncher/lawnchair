@@ -110,7 +110,7 @@ public class LauncherSwipeHandlerV2 extends
             mActivity.setHintUserWillBeActive();
         }
 
-        if (!canUseWorkspaceView || appCanEnterPip) {
+        if (!canUseWorkspaceView || appCanEnterPip || mIsSwipeForStagedSplit) {
             return new LauncherHomeAnimationFactory();
         }
         if (workspaceView instanceof LauncherAppWidgetHostView) {
@@ -181,14 +181,16 @@ public class LauncherSwipeHandlerV2 extends
         final float floatingWidgetAlpha = isTargetTranslucent ? 0 : 1;
         RectF backgroundLocation = new RectF();
         Rect crop = new Rect();
-        mTaskViewSimulator.getCurrentCropRect().roundOut(crop);
+        // We can assume there is only one remote target here because staged split never animates
+        // into the app icon, only into the homescreen
+        mRemoteTargetHandles[0].mTaskViewSimulator.getCurrentCropRect().roundOut(crop);
         Size windowSize = new Size(crop.width(), crop.height());
         int fallbackBackgroundColor =
                 FloatingWidgetView.getDefaultBackgroundColor(mContext, runningTaskTarget);
         FloatingWidgetView floatingWidgetView = FloatingWidgetView.getFloatingWidgetView(mActivity,
                 hostView, backgroundLocation, windowSize,
-                mTaskViewSimulator.getCurrentCornerRadius(), isTargetTranslucent,
-                fallbackBackgroundColor);
+                mRemoteTargetHandles[0].mTaskViewSimulator.getCurrentCornerRadius(),
+                isTargetTranslucent, fallbackBackgroundColor);
 
         return new FloatingViewHomeAnimationFactory(floatingWidgetView) {
 

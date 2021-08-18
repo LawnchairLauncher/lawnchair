@@ -25,8 +25,11 @@ import static com.android.launcher3.taskbar.TaskbarViewController.ALPHA_INDEX_IM
 import static com.android.launcher3.taskbar.TaskbarViewController.ALPHA_INDEX_KEYGUARD;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_A11Y_BUTTON_CLICKABLE;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_A11Y_BUTTON_LONG_CLICKABLE;
+import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_BACK_DISABLED;
+import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_HOME_DISABLED;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_IME_SHOWING;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_IME_SWITCHER_SHOWING;
+import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_OVERVIEW_DISABLED;
 
 import android.animation.ObjectAnimator;
 import android.annotation.DrawableRes;
@@ -69,6 +72,9 @@ public class NavbarButtonsViewController {
     private static final int FLAG_A11Y_VISIBLE = 1 << 3;
     private static final int FLAG_ONLY_BACK_FOR_BOUNCER_VISIBLE = 1 << 4;
     private static final int FLAG_KEYGUARD_VISIBLE = 1 << 5;
+    private static final int FLAG_DISABLE_HOME = 1 << 6;
+    private static final int FLAG_DISABLE_RECENTS = 1 << 7;
+    private static final int FLAG_DISABLE_BACK = 1 << 8;
 
     private static final int MASK_IME_SWITCHER_VISIBLE = FLAG_SWITCHER_SUPPORTED | FLAG_IME_VISIBLE;
 
@@ -169,7 +175,8 @@ public class NavbarButtonsViewController {
         mBackButton = addButton(R.drawable.ic_sysbar_back, BUTTON_BACK,
                 mNavButtonContainer, mControllers.navButtonController, R.id.back);
         mPropertyHolders.add(new StatePropertyHolder(mBackButton,
-                flags -> (flags & FLAG_IME_VISIBLE) == 0));
+                flags -> (flags & FLAG_IME_VISIBLE) == 0 &&
+                        (flags & FLAG_DISABLE_BACK) == 0));
         // Hide when keyguard is showing, show when bouncer is showing
         mPropertyHolders.add(new StatePropertyHolder(mBackButton,
                 flags -> (flags & FLAG_KEYGUARD_VISIBLE) == 0 ||
@@ -180,12 +187,14 @@ public class NavbarButtonsViewController {
                 navButtonController, R.id.home);
         mPropertyHolders.add(new StatePropertyHolder(homeButton,
                 flags -> (flags & FLAG_IME_VISIBLE) == 0 &&
-                        (flags & FLAG_KEYGUARD_VISIBLE) == 0));
+                        (flags & FLAG_KEYGUARD_VISIBLE) == 0 &&
+                        (flags & FLAG_DISABLE_HOME) == 0));
         View recentsButton = addButton(R.drawable.ic_sysbar_recent, BUTTON_RECENTS,
                 navContainer, navButtonController, R.id.recent_apps);
         mPropertyHolders.add(new StatePropertyHolder(recentsButton,
                 flags -> (flags & FLAG_IME_VISIBLE) == 0 &&
-                        (flags & FLAG_KEYGUARD_VISIBLE) == 0));
+                        (flags & FLAG_KEYGUARD_VISIBLE) == 0 &&
+                        (flags & FLAG_DISABLE_RECENTS) == 0));
 
         // A11y button
         mA11yButton = addButton(R.drawable.ic_sysbar_accessibility_button, BUTTON_A11Y,
@@ -202,6 +211,12 @@ public class NavbarButtonsViewController {
         boolean a11yVisible = (systemUiStateFlags & SYSUI_STATE_A11Y_BUTTON_CLICKABLE) != 0;
         boolean a11yLongClickable =
                 (systemUiStateFlags & SYSUI_STATE_A11Y_BUTTON_LONG_CLICKABLE) != 0;
+        boolean isHomeDisabled =
+                (systemUiStateFlags & SYSUI_STATE_HOME_DISABLED) != 0;
+        boolean isRecentsDisabled =
+                (systemUiStateFlags & SYSUI_STATE_OVERVIEW_DISABLED) != 0;
+        boolean isBackDisabled =
+                (systemUiStateFlags & SYSUI_STATE_BACK_DISABLED) != 0;
 
         if (!forceUpdate && systemUiStateFlags == mSysuiStateFlags) {
             return;
@@ -211,6 +226,10 @@ public class NavbarButtonsViewController {
         updateStateForFlag(FLAG_IME_VISIBLE, isImeVisible);
         updateStateForFlag(FLAG_SWITCHER_SUPPORTED, isImeSwitcherShowing);
         updateStateForFlag(FLAG_A11Y_VISIBLE, a11yVisible);
+        updateStateForFlag(FLAG_DISABLE_HOME, isHomeDisabled);
+        updateStateForFlag(FLAG_DISABLE_RECENTS, isRecentsDisabled);
+        updateStateForFlag(FLAG_DISABLE_BACK, isBackDisabled);
+
         if (mA11yButton != null) {
             // Only used in 3 button
             mA11yButton.setLongClickable(a11yLongClickable);

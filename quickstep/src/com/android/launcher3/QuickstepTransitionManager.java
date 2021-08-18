@@ -670,6 +670,10 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
                 if (v instanceof BubbleTextView) {
                     ((BubbleTextView) v).setStayPressed(false);
                 }
+                LauncherTaskbarUIController taskbarController = mLauncher.getTaskbarUIController();
+                if (taskbarController != null) {
+                    taskbarController.showEdu();
+                }
                 openingTargets.release();
             }
         });

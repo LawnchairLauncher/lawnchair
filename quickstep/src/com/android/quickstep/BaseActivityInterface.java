@@ -40,6 +40,7 @@ import android.graphics.Rect;
 import android.os.Build;
 import android.view.Gravity;
 import android.view.MotionEvent;
+import android.view.View;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
@@ -52,6 +53,7 @@ import com.android.launcher3.statehandlers.DepthController;
 import com.android.launcher3.statemanager.BaseState;
 import com.android.launcher3.statemanager.StatefulActivity;
 import com.android.launcher3.touch.PagedOrientationHandler;
+import com.android.launcher3.util.SplitConfigurationOptions;
 import com.android.launcher3.util.WindowBounds;
 import com.android.launcher3.views.ScrimView;
 import com.android.quickstep.SysUINavigationMode.Mode;
@@ -201,10 +203,36 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
     }
 
     /**
+     * Sets the task size in {@param outRect} taking split screened windows into account.
+     * We assume combined height of both tasks will be same as one normal task, then we'll modify
+     * the task height/width based on the ratio of task screen space bounds from
+     * {@param splitInfo}
+     *
+     * @param desiredStageBounds whether task size for top/left or bottom/right needs to be computed
+     */
+    public final void calculateStagedSplitTaskSize(Context context, DeviceProfile dp, Rect outRect,
+            SplitConfigurationOptions.StagedSplitBounds splitInfo,
+            @SplitConfigurationOptions.StagePosition int desiredStageBounds) {
+        calculateTaskSize(context, dp, outRect);
+
+        // TODO(b/181705607) Change for landscape vs portrait
+        float totalHeight = splitInfo.mLeftTopBounds.height()
+                + splitInfo.mRightBottomBounds.height()
+                + splitInfo.mDividerBounds.height() / 2f;
+        float topTaskPercent = splitInfo.mLeftTopBounds.height() / totalHeight;
+        if (desiredStageBounds == SplitConfigurationOptions.STAGE_POSITION_TOP_OR_LEFT) {
+            float diff = outRect.height() * (1f - topTaskPercent);
+            outRect.bottom -= diff;
+        } else {
+            float diff = outRect.height() * topTaskPercent;
+            outRect.top += diff;
+        }
+    }
+
+    /**
      * Calculates the taskView size for the provided device configuration.
      */
-    public final void calculateTaskSize(Context context, DeviceProfile dp, Rect outRect,
-            PagedOrientationHandler orientedState) {
+    public final void calculateTaskSize(Context context, DeviceProfile dp, Rect outRect) {
         Resources res = context.getResources();
         if (dp.overviewShowAsGrid) {
             Rect gridRect = new Rect();
@@ -384,6 +412,15 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
      * Returns the expected STATE_TYPE from the provided GestureEndTarget.
      */
     public abstract STATE_TYPE stateFromGestureEndTarget(GestureState.GestureEndTarget endTarget);
+
+    /**
+     * Called when the animation to the target has finished, but right before updating the state.
+     * @return A View that needs to draw before ending the recents animation to LAST_TASK.
+     * (This is a hack to ensure Taskbar draws its background first to avoid flickering.)
+     */
+    public @Nullable View onSettledOnEndTarget(GestureState.GestureEndTarget endTarget) {
+        return null;
+    }
 
     public interface AnimationFactory {
 

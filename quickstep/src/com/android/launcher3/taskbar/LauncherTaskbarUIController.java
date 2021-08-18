@@ -23,6 +23,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.graphics.Rect;
 import android.view.MotionEvent;
+import android.view.View;
 
 import androidx.annotation.NonNull;
 
@@ -32,8 +33,10 @@ import com.android.launcher3.LauncherState;
 import com.android.launcher3.QuickstepTransitionManager;
 import com.android.launcher3.R;
 import com.android.launcher3.anim.AnimatorListeners;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.util.MultiValueAlpha;
 import com.android.launcher3.util.MultiValueAlpha.AlphaProperty;
+import com.android.launcher3.util.OnboardingPrefs;
 import com.android.quickstep.AnimatedFloat;
 import com.android.quickstep.RecentsAnimationCallbacks;
 import com.android.quickstep.RecentsAnimationCallbacks.RecentsAnimationListener;
@@ -239,7 +242,11 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
         return mContext.getDragController().isDragging();
     }
 
-    void setTaskbarViewVisible(boolean isVisible) {
+    public View getRootView() {
+        return mTaskbarDragLayer;
+    }
+
+    private void setTaskbarViewVisible(boolean isVisible) {
         mIconAlphaForHome.setValue(isVisible ? 1 : 0);
         mLauncher.getHotseat().setIconsAlpha(isVisible ? 0f : 1f);
     }
@@ -259,6 +266,30 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
      */
     public void forceHideBackground(boolean forceHide) {
         mTaskbarOverrideBackgroundAlpha.updateValue(forceHide ? 0 : 1);
+    }
+
+    /**
+     * Starts the taskbar education flow, if the user hasn't seen it yet.
+     */
+    public void showEdu() {
+        if (!FeatureFlags.ENABLE_TASKBAR_EDU.get()
+                || mLauncher.getOnboardingPrefs().getBoolean(OnboardingPrefs.TASKBAR_EDU_SEEN)) {
+            return;
+        }
+        mLauncher.getOnboardingPrefs().markChecked(OnboardingPrefs.TASKBAR_EDU_SEEN);
+
+        mControllers.taskbarEduController.showEdu();
+    }
+
+    /**
+     * Manually ends the taskbar education flow.
+     */
+    public void hideEdu() {
+        if (!FeatureFlags.ENABLE_TASKBAR_EDU.get()) {
+            return;
+        }
+
+        mControllers.taskbarEduController.hideEdu();
     }
 
     private final class TaskBarRecentsAnimationListener implements RecentsAnimationListener {
