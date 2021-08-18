@@ -175,8 +175,8 @@ public final class FeatureFlags {
             "ENABLE_SMARTSPACE_UNIVERSAL", false,
             "Replace Smartspace with a version rendered by System UI.");
 
-    public static final BooleanFlag ENABLE_SMARTSPACE_ENHANCED = new DeviceFlag(
-            "ENABLE_SMARTSPACE_ENHANCED", false,
+    public static final BooleanFlag ENABLE_SMARTSPACE_ENHANCED = getDebugFlag(
+            "ENABLE_SMARTSPACE_ENHANCED", true,
             "Replace Smartspace with the enhanced version. "
                     + "Ignored if ENABLE_SMARTSPACE_UNIVERSAL is enabled.");
 
