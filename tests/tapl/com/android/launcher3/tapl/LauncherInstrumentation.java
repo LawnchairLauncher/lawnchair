@@ -251,8 +251,19 @@ public final class LauncherInstrumentation {
             } else {
                 try {
                     final int userId = ContextUtils.getUserId(getContext());
+                    final String launcherPidCommand = "pidof " + pi.packageName;
+                    final String initialPid = mDevice.executeShellCommand(launcherPidCommand)
+                            .replaceAll("\\s", "");
                     mDevice.executeShellCommand(
                             "pm enable --user " + userId + " " + cn.flattenToString());
+                    // Wait for Launcher restart after enabling test provider.
+                    for (int i = 0; i < 100; ++i) {
+                        final String currentPid = mDevice.executeShellCommand(launcherPidCommand)
+                                .replaceAll("\\s", "");
+                        if (!currentPid.isEmpty() && !currentPid.equals(initialPid)) break;
+                        if (i == 99) fail("Launcher didn't restart after enabling test provider");
+                        SystemClock.sleep(100);
+                    }
                 } catch (IOException e) {
                     fail(e.toString());
                 }
@@ -305,7 +316,7 @@ public final class LauncherInstrumentation {
 
     public boolean isTwoPanels() {
         return getTestInfo(TestProtocol.REQUEST_IS_TWO_PANELS)
-            .getBoolean(TestProtocol.TEST_INFO_RESPONSE_FIELD);
+                .getBoolean(TestProtocol.TEST_INFO_RESPONSE_FIELD);
     }
 
     private void setForcePauseTimeout(long timeout) {
