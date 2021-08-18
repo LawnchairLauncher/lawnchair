@@ -324,6 +324,7 @@
     <dimen name="task_thumbnail_icon_drawable_size">0dp</dimen>
     <dimen name="task_thumbnail_icon_drawable_size_grid">0dp</dimen>
     <dimen name="overview_task_margin">0dp</dimen>
+    <dimen name="overview_task_margin_focused">0dp</dimen>
     <dimen name="overview_task_margin_grid">0dp</dimen>
     <dimen name="overview_actions_margin_gesture">0dp</dimen>
     <dimen name="overview_actions_top_margin_gesture_grid_portrait">0dp</dimen>

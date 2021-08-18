@@ -1329,6 +1329,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         mFocusedTaskViewId = newFocusedTaskView != null ?
                 newFocusedTaskView.getTaskViewId() : -1;
         updateTaskSize();
+        updateChildTaskOrientations();
 
         TaskView newRunningTaskView = null;
         if (runningTaskId != -1) {
@@ -1977,7 +1978,6 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         return as;
     }
 
-
     private void updateChildTaskOrientations() {
         for (int i = 0; i < getTaskViewCount(); i++) {
             getTaskViewAt(i).setOrientationState(mOrientationState);
@@ -2120,6 +2120,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         setRunningTaskHidden(runningTaskTileHidden);
         // Update task size after setting current task.
         updateTaskSize();
+        updateChildTaskOrientations();
 
         // Reload the task list
         mTaskListChangeId = mModel.getTasks(this::applyLoadPlan);
@@ -2829,6 +2830,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                             finalNextFocusedTaskView.animateIconScaleAndDimIntoView();
                         }
                         updateTaskSize(/*isTaskDismissal=*/ true);
+                        updateChildTaskOrientations();
                         // Update scroll and snap to page.
                         updateScrollSynchronously();
 
