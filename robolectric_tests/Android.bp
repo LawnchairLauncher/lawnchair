@@ -40,7 +40,6 @@ android_robolectric_test {
     name: "LauncherRoboTests",
     srcs: [
         ":launcher3-robolectric-src",
-        ":launcher3-test-src-common",
     ],
     java_resources: [":launcher3-robolectric-resources"],
     static_libs: [
