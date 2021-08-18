@@ -150,7 +150,6 @@ public class WidgetsModel {
             }
         }
 
-        app.getWidgetCache().removeObsoletePreviews(widgetsAndShortcuts, packageUser);
         return updatedItems;
     }
 
