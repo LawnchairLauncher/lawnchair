@@ -28,4 +28,7 @@
     <!-- Taskbar -->
     <color name="taskbar_background">@color/overview_scrim_dark</color>
     <color name="taskbar_icon_selection_ripple">#E0E0E0</color>
+
+    <color name="taskbar_stashed_handle_light_color">#EBffffff</color>
+    <color name="taskbar_stashed_handle_dark_color">#99000000</color>
 </resources>
