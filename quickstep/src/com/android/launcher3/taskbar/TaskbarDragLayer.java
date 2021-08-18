@@ -18,7 +18,6 @@ package com.android.launcher3.taskbar;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.graphics.Path;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
@@ -41,12 +40,9 @@ import com.android.systemui.shared.system.ViewTreeObserverWrapper.OnComputeInset
 public class TaskbarDragLayer extends BaseDragLayer<TaskbarActivityContext> {
 
     private final Paint mTaskbarBackgroundPaint;
-    private final Path mInvertedLeftCornerPath, mInvertedRightCornerPath;
     private final OnComputeInsetsListener mTaskbarInsetsComputer = this::onComputeTaskbarInsets;
 
-    // Initialized in init.
     private TaskbarDragLayerController.TaskbarDragLayerCallbacks mControllerCallbacks;
-    private float mLeftCornerRadius, mRightCornerRadius;
 
     private float mTaskbarBackgroundOffset;
 
@@ -69,32 +65,10 @@ public class TaskbarDragLayer extends BaseDragLayer<TaskbarActivityContext> {
         mTaskbarBackgroundPaint = new Paint();
         mTaskbarBackgroundPaint.setColor(getResources().getColor(R.color.taskbar_background));
         mTaskbarBackgroundPaint.setAlpha(0);
-        mTaskbarBackgroundPaint.setFlags(Paint.ANTI_ALIAS_FLAG);
-        mTaskbarBackgroundPaint.setStyle(Paint.Style.FILL);
-
-        // Will be set in init(), but this ensures they are always non-null.
-        mInvertedLeftCornerPath = new Path();
-        mInvertedRightCornerPath = new Path();
     }
 
     public void init(TaskbarDragLayerController.TaskbarDragLayerCallbacks callbacks) {
         mControllerCallbacks = callbacks;
-
-        // Create the paths for the inverted rounded corners above the taskbar. Start with a filled
-        // square, and then subtracting out a circle from the appropriate corner.
-        mLeftCornerRadius = mActivity.getLeftCorner().getRadius();
-        mRightCornerRadius = mActivity.getRightCorner().getRadius();
-        Path square = new Path();
-        square.addRect(0, 0, mLeftCornerRadius, mLeftCornerRadius, Path.Direction.CW);
-        Path circle = new Path();
-        circle.addCircle(mLeftCornerRadius, 0, mLeftCornerRadius, Path.Direction.CW);
-        mInvertedLeftCornerPath.op(square, circle, Path.Op.DIFFERENCE);
-        square.reset();
-        square.addRect(0, 0, mRightCornerRadius, mRightCornerRadius, Path.Direction.CW);
-        circle.reset();
-        circle.addCircle(0, 0, mRightCornerRadius, Path.Direction.CW);
-        mInvertedRightCornerPath.op(square, circle, Path.Op.DIFFERENCE);
-
         recreateControllers();
     }
 
@@ -147,20 +121,8 @@ public class TaskbarDragLayer extends BaseDragLayer<TaskbarActivityContext> {
     protected void dispatchDraw(Canvas canvas) {
         float backgroundHeight = mControllerCallbacks.getTaskbarBackgroundHeight()
                 * (1f - mTaskbarBackgroundOffset);
-        canvas.save();
-        canvas.translate(0, canvas.getHeight() - backgroundHeight);
-
-        // Draw the background behind taskbar content.
-        canvas.drawRect(0, 0, canvas.getWidth(), backgroundHeight, mTaskbarBackgroundPaint);
-
-        // Draw the inverted rounded corners above the taskbar.
-        canvas.translate(0, -mLeftCornerRadius);
-        canvas.drawPath(mInvertedLeftCornerPath, mTaskbarBackgroundPaint);
-        canvas.translate(0, mLeftCornerRadius);
-        canvas.translate(canvas.getWidth() - mRightCornerRadius, -mRightCornerRadius);
-        canvas.drawPath(mInvertedRightCornerPath, mTaskbarBackgroundPaint);
-
-        canvas.restore();
+        canvas.drawRect(0, canvas.getHeight() - backgroundHeight, canvas.getWidth(),
+                canvas.getHeight(), mTaskbarBackgroundPaint);
         super.dispatchDraw(canvas);
     }
 
