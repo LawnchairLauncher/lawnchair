@@ -117,7 +117,7 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
                 R.layout.taskbar, null, false);
         TaskbarView taskbarView = mDragLayer.findViewById(R.id.taskbar_view);
         FrameLayout navButtonsView = mDragLayer.findViewById(R.id.navbuttons_view);
-        View stashedHandleView = mDragLayer.findViewById(R.id.stashed_handle);
+        StashedHandleView stashedHandleView = mDragLayer.findViewById(R.id.stashed_handle);
 
         // Construct controllers.
         mControllers = new TaskbarControllers(this,
