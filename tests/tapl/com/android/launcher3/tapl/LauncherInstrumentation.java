@@ -1016,6 +1016,15 @@ public final class LauncherInstrumentation {
         }
     }
 
+    List<UiObject2> getChildren(UiObject2 container) {
+        try {
+            return container.getChildren();
+        } catch (StaleObjectException e) {
+            fail("The container disappeared from screen");
+            return null;
+        }
+    }
+
     private boolean hasLauncherObject(String resId) {
         return mDevice.hasObject(getLauncherObjectSelector(resId));
     }
