@@ -676,8 +676,13 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
 
     private void onAnimatorPlaybackControllerCreated(AnimatorControllerWithResistance anim) {
         mLauncherTransitionController = anim;
-        mLauncherTransitionController.getNormalController().dispatchOnStart();
-        updateLauncherTransitionProgress();
+        mStateCallback.runOnceAtState(STATE_GESTURE_STARTED, () -> {
+            // Wait until the gesture is started (touch slop was passed) to start in sync with
+            // mWindowTransitionController. This ensures we don't hide the taskbar background when
+            // long pressing to stash it, for instance.
+            mLauncherTransitionController.getNormalController().dispatchOnStart();
+            updateLauncherTransitionProgress();
+        });
     }
 
     public Intent getLaunchIntent() {
@@ -913,6 +918,9 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
         // Fast-finish the attaching animation if it's still running.
         maybeUpdateRecentsAttachedState(false);
         final GestureEndTarget endTarget = mGestureState.getEndTarget();
+        // Wait until the given View (if supplied) draws before resuming the last task.
+        View postResumeLastTask = mActivityInterface.onSettledOnEndTarget(endTarget);
+
         if (endTarget != NEW_TASK) {
             InteractionJankMonitorWrapper.cancel(
                     InteractionJankMonitorWrapper.CUJ_QUICK_SWITCH);
@@ -921,6 +929,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
             InteractionJankMonitorWrapper.cancel(
                     InteractionJankMonitorWrapper.CUJ_APP_CLOSE_TO_HOME);
         }
+
         switch (endTarget) {
             case HOME:
                 mStateCallback.setState(STATE_SCALED_CONTROLLER_HOME | STATE_CAPTURE_SCREENSHOT);
@@ -935,7 +944,12 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
                 mStateCallback.setState(STATE_START_NEW_TASK | STATE_CAPTURE_SCREENSHOT);
                 break;
             case LAST_TASK:
-                mStateCallback.setState(STATE_RESUME_LAST_TASK);
+                if (postResumeLastTask != null) {
+                    ViewUtils.postFrameDrawn(postResumeLastTask,
+                            () -> mStateCallback.setState(STATE_RESUME_LAST_TASK));
+                } else {
+                    mStateCallback.setState(STATE_RESUME_LAST_TASK);
+                }
                 TaskViewUtils.setDividerBarShown(mRecentsAnimationTargets.nonApps, true);
                 break;
         }
