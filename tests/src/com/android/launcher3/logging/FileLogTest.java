@@ -1,16 +1,17 @@
 package com.android.launcher3.logging;
 
+import static androidx.test.core.app.ApplicationProvider.getApplicationContext;
+
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+import androidx.test.filters.SmallTest;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.robolectric.RobolectricTestRunner;
-import org.robolectric.RuntimeEnvironment;
-import org.robolectric.annotation.LooperMode;
-import org.robolectric.annotation.LooperMode.Mode;
 
 import java.io.File;
 import java.io.PrintWriter;
@@ -20,8 +21,8 @@ import java.util.Calendar;
 /**
  * Tests for {@link FileLog}
  */
-@RunWith(RobolectricTestRunner.class)
-@LooperMode(Mode.PAUSED)
+@SmallTest
+@RunWith(AndroidJUnit4.class)
 public class FileLogTest {
 
     private File mTempDir;
@@ -29,7 +30,7 @@ public class FileLogTest {
     public void setUp() {
         int count = 0;
         do {
-            mTempDir = new File(RuntimeEnvironment.application.getCacheDir(),
+            mTempDir = new File(getApplicationContext().getCacheDir(),
                     "log-test-" + (count++));
         } while (!mTempDir.mkdir());
 
