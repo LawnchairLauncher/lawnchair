@@ -154,9 +154,10 @@ public final class TaskViewUtils {
         boolean isRunningTask = v.isRunningTask();
         TransformParams params = null;
         TaskViewSimulator tsv = null;
+        // TODO(b/195675206) handle two TSVs here
         if (ENABLE_QUICKSTEP_LIVE_TILE.get() && isRunningTask) {
-            params = v.getRecentsView().getLiveTileParams();
-            tsv = v.getRecentsView().getLiveTileTaskViewSimulator();
+            params = v.getRecentsView().getRemoteTargetHandles()[0].mTransformParams;
+            tsv = v.getRecentsView().getRemoteTargetHandles()[0].mTaskViewSimulator;
         }
         createRecentsWindowAnimator(v, skipViewChanges, appTargets, wallpaperTargets, nonAppTargets,
                 depthController, out, params, tsv);

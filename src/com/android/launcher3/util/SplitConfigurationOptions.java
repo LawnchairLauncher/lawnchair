@@ -18,6 +18,8 @@ package com.android.launcher3.util;
 
 import static java.lang.annotation.RetentionPolicy.SOURCE;
 
+import android.graphics.Rect;
+
 import androidx.annotation.IntDef;
 
 import java.lang.annotation.Retention;
@@ -81,5 +83,26 @@ public final class SplitConfigurationOptions {
             mStagePosition = stagePosition;
             mStageType = stageType;
         }
+    }
+
+    public static class StagedSplitBounds {
+        public final Rect mLeftTopBounds;
+        public final Rect mRightBottomBounds;
+        public final Rect mDividerBounds;
+
+
+        public StagedSplitBounds(Rect leftTopBounds, Rect rightBottomBounds, Rect dividerBounds) {
+            mLeftTopBounds = leftTopBounds;
+            mRightBottomBounds = rightBottomBounds;
+            mDividerBounds = dividerBounds;
+        }
+    }
+
+    public static class StagedSplitTaskPosition {
+        public int taskId = -1;
+        @StagePosition
+        public int stagePosition = STAGE_POSITION_UNDEFINED;
+        @StageType
+        public int stageType = STAGE_TYPE_UNDEFINED;
     }
 }
