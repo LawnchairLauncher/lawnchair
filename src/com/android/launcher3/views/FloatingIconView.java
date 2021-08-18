@@ -580,11 +580,6 @@ public class FloatingIconView extends FrameLayout implements
                     if (originalView instanceof IconLabelDotView) {
                         setIconAndDotVisible(originalView, true);
                     }
-                    if (originalView instanceof BubbleTextView) {
-                        BubbleTextView btv = (BubbleTextView) originalView;
-                        btv.setIconVisible(true);
-                        btv.setForceHideDot(true);
-                    }
                     view.finish(dragLayer);
                 }
             } else {
