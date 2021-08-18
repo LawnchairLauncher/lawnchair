@@ -179,6 +179,7 @@ public class DeviceProfile {
     // Overview
     public final boolean overviewShowAsGrid;
     public int overviewTaskMarginPx;
+    public int overviewTaskMarginGridPx;
     public int overviewTaskIconSizePx;
     public int overviewTaskIconDrawableSizePx;
     public int overviewTaskIconDrawableSizeGridPx;
@@ -354,8 +355,9 @@ public class DeviceProfile {
 
         overviewShowAsGrid = isTablet && FeatureFlags.ENABLE_OVERVIEW_GRID.get();
         overviewTaskMarginPx = overviewShowAsGrid
-                ? res.getDimensionPixelSize(R.dimen.overview_task_margin_grid)
+                ? res.getDimensionPixelSize(R.dimen.overview_task_margin_focused)
                 : res.getDimensionPixelSize(R.dimen.overview_task_margin);
+        overviewTaskMarginGridPx = res.getDimensionPixelSize(R.dimen.overview_task_margin_grid);
         overviewTaskIconSizePx = res.getDimensionPixelSize(R.dimen.task_thumbnail_icon_size);
         overviewTaskIconDrawableSizePx =
                 res.getDimensionPixelSize(R.dimen.task_thumbnail_icon_drawable_size);

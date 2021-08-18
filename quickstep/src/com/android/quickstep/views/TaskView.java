@@ -825,8 +825,11 @@ public class TaskView extends FrameLayout implements Reusable {
         LayoutParams snapshotParams = (LayoutParams) mSnapshotView.getLayoutParams();
         DeviceProfile deviceProfile = mActivity.getDeviceProfile();
         snapshotParams.topMargin = deviceProfile.overviewTaskThumbnailTopMarginPx;
-        int taskIconMargin = deviceProfile.overviewTaskMarginPx;
+        boolean isGridTask = deviceProfile.overviewShowAsGrid && !isFocusedTask();
         int taskIconHeight = deviceProfile.overviewTaskIconSizePx;
+        int taskMargin = isGridTask ? deviceProfile.overviewTaskMarginGridPx
+                : deviceProfile.overviewTaskMarginPx;
+        int taskIconMargin = snapshotParams.topMargin - taskIconHeight - taskMargin;
         LayoutParams iconParams = (LayoutParams) mIconView.getLayoutParams();
         switch (orientationHandler.getRotation()) {
             case ROTATION_90:
@@ -858,6 +861,9 @@ public class TaskView extends FrameLayout implements Reusable {
         iconParams.width = iconParams.height = taskIconHeight;
         mIconView.setLayoutParams(iconParams);
         mIconView.setRotation(orientationHandler.getDegreesRotated());
+        int iconDrawableSize = isGridTask ? deviceProfile.overviewTaskIconDrawableSizeGridPx
+                : deviceProfile.overviewTaskIconDrawableSizePx;
+        mIconView.setDrawableSize(iconDrawableSize, iconDrawableSize);
         snapshotParams.topMargin = deviceProfile.overviewTaskThumbnailTopMarginPx;
         mSnapshotView.setLayoutParams(snapshotParams);
         mSnapshotView.getTaskOverlay().updateOrientationState(orientationState);
@@ -1401,7 +1407,6 @@ public class TaskView extends FrameLayout implements Reusable {
         float boxTranslationY;
         int expectedWidth;
         int expectedHeight;
-        int iconDrawableSize;
         DeviceProfile deviceProfile = mActivity.getDeviceProfile();
         if (deviceProfile.overviewShowAsGrid) {
             final int thumbnailPadding = deviceProfile.overviewTaskThumbnailTopMarginPx;
@@ -1417,13 +1422,11 @@ public class TaskView extends FrameLayout implements Reusable {
                 // that is associated with the original orientation of the focused task.
                 boxWidth = taskWidth;
                 boxHeight = taskHeight;
-                iconDrawableSize = deviceProfile.overviewTaskIconDrawableSizePx;
             } else {
                 // Otherwise task is in grid, and should use lastComputedGridTaskSize.
                 Rect lastComputedGridTaskSize = getRecentsView().getLastComputedGridTaskSize();
                 boxWidth = lastComputedGridTaskSize.width();
                 boxHeight = lastComputedGridTaskSize.height();
-                iconDrawableSize = deviceProfile.overviewTaskIconDrawableSizeGridPx;
             }
 
             // Bound width/height to the box size.
@@ -1440,7 +1443,6 @@ public class TaskView extends FrameLayout implements Reusable {
             boxTranslationY = 0f;
             expectedWidth = ViewGroup.LayoutParams.MATCH_PARENT;
             expectedHeight = ViewGroup.LayoutParams.MATCH_PARENT;
-            iconDrawableSize = deviceProfile.overviewTaskIconDrawableSizePx;
         }
 
         setNonGridScale(nonGridScale);
@@ -1450,7 +1452,6 @@ public class TaskView extends FrameLayout implements Reusable {
             params.height = expectedHeight;
             setLayoutParams(params);
         }
-        mIconView.setDrawableSize(iconDrawableSize, iconDrawableSize);
     }
 
     private float getGridTrans(float endTranslation) {
