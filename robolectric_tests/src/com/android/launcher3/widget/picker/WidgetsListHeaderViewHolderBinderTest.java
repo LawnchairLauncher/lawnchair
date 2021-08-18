@@ -23,6 +23,8 @@ import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.verify;
 import static org.robolectric.Shadows.shadowOf;
 
+import static java.util.Collections.EMPTY_LIST;
+
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.ComponentName;
 import android.content.Context;
@@ -116,7 +118,7 @@ public final class WidgetsListHeaderViewHolderBinderTest {
                 APP_NAME,
                 TEST_PACKAGE,
                 /* numOfWidgets= */ 3);
-        mViewHolderBinder.bindViewHolder(viewHolder, entry, /* position= */ 0);
+        mViewHolderBinder.bindViewHolder(viewHolder, entry, /* position= */ 0, EMPTY_LIST);
 
         TextView appTitle = widgetsListHeader.findViewById(R.id.app_title);
         TextView appSubtitle = widgetsListHeader.findViewById(R.id.app_subtitle);
@@ -134,7 +136,7 @@ public final class WidgetsListHeaderViewHolderBinderTest {
                 TEST_PACKAGE,
                 /* numOfWidgets= */ 3);
 
-        mViewHolderBinder.bindViewHolder(viewHolder, entry, /* position= */ 0);
+        mViewHolderBinder.bindViewHolder(viewHolder, entry, /* position= */ 0, EMPTY_LIST);
         widgetsListHeader.callOnClick();
 
         verify(mOnHeaderClickListener).onHeaderClicked(eq(true),

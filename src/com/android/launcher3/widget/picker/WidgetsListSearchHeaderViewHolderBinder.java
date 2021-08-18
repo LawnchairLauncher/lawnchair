@@ -24,6 +24,8 @@ import com.android.launcher3.util.PackageUserKey;
 import com.android.launcher3.widget.model.WidgetsListHeaderEntry;
 import com.android.launcher3.widget.model.WidgetsListSearchHeaderEntry;
 
+import java.util.List;
+
 /**
  * Binds data from {@link WidgetsListHeaderEntry} to UI elements in {@link WidgetsListHeaderHolder}.
  */
@@ -51,7 +53,7 @@ public final class WidgetsListSearchHeaderViewHolderBinder implements
 
     @Override
     public void bindViewHolder(WidgetsListSearchHeaderHolder viewHolder,
-            WidgetsListSearchHeaderEntry data, @ListPosition int position) {
+            WidgetsListSearchHeaderEntry data, @ListPosition int position, List<Object> payloads) {
         WidgetsListHeader widgetsListHeader = viewHolder.mWidgetsListHeader;
         widgetsListHeader.applyFromItemInfoWithIcon(data);
         widgetsListHeader.setExpanded(data.isWidgetListShown());

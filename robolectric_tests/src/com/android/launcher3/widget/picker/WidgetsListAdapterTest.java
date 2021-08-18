@@ -39,7 +39,6 @@ import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.model.WidgetItem;
 import com.android.launcher3.model.data.PackageItemInfo;
 import com.android.launcher3.util.PackageUserKey;
-import com.android.launcher3.widget.DatabaseWidgetPreviewLoader;
 import com.android.launcher3.widget.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.widget.model.WidgetsListBaseEntry;
 import com.android.launcher3.widget.model.WidgetsListContentEntry;
@@ -64,7 +63,6 @@ public final class WidgetsListAdapterTest {
     private static final String TEST_PACKAGE_PLACEHOLDER = "com.google.test";
 
     @Mock private LayoutInflater mMockLayoutInflater;
-    @Mock private DatabaseWidgetPreviewLoader mMockWidgetCache;
     @Mock private RecyclerView.AdapterDataObserver mListener;
     @Mock private IconCache mIconCache;
 
@@ -81,7 +79,7 @@ public final class WidgetsListAdapterTest {
         mTestProfile.numRows = 5;
         mTestProfile.numColumns = 5;
         mUserHandle = Process.myUserHandle();
-        mAdapter = new WidgetsListAdapter(mContext, mMockLayoutInflater, mMockWidgetCache,
+        mAdapter = new WidgetsListAdapter(mContext, mMockLayoutInflater,
                 mIconCache, () -> 0, null, null);
         mAdapter.registerAdapterDataObserver(mListener);
 

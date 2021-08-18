@@ -23,6 +23,8 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doAnswer;
 import static org.robolectric.Shadows.shadowOf;
 
+import static java.util.Collections.EMPTY_LIST;
+
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.ComponentName;
 import android.content.Context;
@@ -44,7 +46,6 @@ import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.model.WidgetItem;
 import com.android.launcher3.model.data.PackageItemInfo;
 import com.android.launcher3.testing.TestActivity;
-import com.android.launcher3.widget.CachingWidgetPreviewLoader;
 import com.android.launcher3.widget.DatabaseWidgetPreviewLoader;
 import com.android.launcher3.widget.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.widget.WidgetCell;
@@ -111,7 +112,6 @@ public final class WidgetsListTableViewHolderBinderTest {
                 LayoutInflater.from(mTestActivity),
                 mOnIconClickListener,
                 mOnLongClickListener,
-                new CachingWidgetPreviewLoader(mWidgetPreviewLoader),
                 new WidgetsListDrawableFactory(mTestActivity));
     }
 
@@ -128,13 +128,13 @@ public final class WidgetsListTableViewHolderBinderTest {
                 APP_NAME,
                 TEST_PACKAGE,
                 /* numOfWidgets= */ 3);
-        mViewHolderBinder.bindViewHolder(viewHolder, entry, /* position= */ 0);
+        mViewHolderBinder.bindViewHolder(viewHolder, entry, /* position= */ 0, EMPTY_LIST);
         shadowOf(getMainLooper()).idle();
 
         // THEN the table container has one row, which contains 3 widgets.
         // View:  .SampleWidget0 | .SampleWidget1 | .SampleWidget2
-        assertThat(viewHolder.mTableContainer.getChildCount()).isEqualTo(1);
-        TableRow row = (TableRow) viewHolder.mTableContainer.getChildAt(0);
+        assertThat(viewHolder.tableContainer.getChildCount()).isEqualTo(1);
+        TableRow row = (TableRow) viewHolder.tableContainer.getChildAt(0);
         assertThat(row.getChildCount()).isEqualTo(3);
         // Widget 0 label is .SampleWidget0.
         assertWidgetCellWithLabel(row.getChildAt(0), ".SampleWidget0");
