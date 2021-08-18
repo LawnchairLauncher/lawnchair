@@ -285,6 +285,7 @@ public class TaskbarStashController {
             @Override
             public void onAnimationStart(Animator animation) {
                 mIsStashed = isStashed;
+                onIsStashed(mIsStashed);
             }
 
             @Override
@@ -325,5 +326,9 @@ public class TaskbarStashController {
         mTaskbarStashedHandleHintScale.animateToValue(
                 animateForward ? UNSTASHED_TASKBAR_HANDLE_HINT_SCALE : 1)
                 .setDuration(TASKBAR_HINT_STASH_DURATION).start();
+    }
+
+    private void onIsStashed(boolean isStashed) {
+        mControllers.stashedHandleViewController.onIsStashed(isStashed);
     }
 }
