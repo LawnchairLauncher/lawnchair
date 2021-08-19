@@ -15,13 +15,12 @@
  */
 package com.android.launcher3.widget.picker;
 
-import static android.os.Looper.getMainLooper;
+import static androidx.test.core.app.ApplicationProvider.getApplicationContext;
 
 import static com.google.common.truth.Truth.assertThat;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doAnswer;
-import static org.robolectric.Shadows.shadowOf;
 
 import static java.util.Collections.EMPTY_LIST;
 
@@ -37,7 +36,9 @@ import android.widget.FrameLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
-import com.android.launcher3.DeviceProfile;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+import androidx.test.filters.SmallTest;
+
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.R;
 import com.android.launcher3.icons.BitmapInfo;
@@ -45,29 +46,24 @@ import com.android.launcher3.icons.ComponentWithLabel;
 import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.model.WidgetItem;
 import com.android.launcher3.model.data.PackageItemInfo;
-import com.android.launcher3.testing.TestActivity;
-import com.android.launcher3.widget.DatabaseWidgetPreviewLoader;
+import com.android.launcher3.util.ActivityContextWrapper;
+import com.android.launcher3.util.Executors;
+import com.android.launcher3.util.WidgetUtils;
 import com.android.launcher3.widget.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.widget.WidgetCell;
 import com.android.launcher3.widget.model.WidgetsListContentEntry;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.robolectric.Robolectric;
-import org.robolectric.RobolectricTestRunner;
-import org.robolectric.RuntimeEnvironment;
-import org.robolectric.android.controller.ActivityController;
-import org.robolectric.shadows.ShadowPackageManager;
-import org.robolectric.util.ReflectionHelpers;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@RunWith(RobolectricTestRunner.class)
+@SmallTest
+@RunWith(AndroidJUnit4.class)
 public final class WidgetsListTableViewHolderBinderTest {
     private static final String TEST_PACKAGE = "com.google.test";
     private static final String APP_NAME = "Test app";
@@ -75,10 +71,6 @@ public final class WidgetsListTableViewHolderBinderTest {
     private Context mContext;
     private WidgetsListTableViewHolderBinder mViewHolderBinder;
     private InvariantDeviceProfile mTestProfile;
-    // Replace ActivityController with ActivityScenario, which is the recommended way for activity
-    // testing.
-    private ActivityController<TestActivity> mActivityController;
-    private TestActivity mTestActivity;
 
     @Mock
     private OnLongClickListener mOnLongClickListener;
@@ -86,22 +78,14 @@ public final class WidgetsListTableViewHolderBinderTest {
     private OnClickListener mOnIconClickListener;
     @Mock
     private IconCache mIconCache;
-    @Mock
-    private DatabaseWidgetPreviewLoader mWidgetPreviewLoader;
-    @Mock
-    private DeviceProfile mDeviceProfile;
 
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        mContext = RuntimeEnvironment.application;
+        mContext = new ActivityContextWrapper(getApplicationContext());
         mTestProfile = new InvariantDeviceProfile();
         mTestProfile.numRows = 5;
         mTestProfile.numColumns = 5;
-
-        mActivityController = Robolectric.buildActivity(TestActivity.class);
-        mTestActivity = mActivityController.setup().get();
-        mTestActivity.setDeviceProfile(mDeviceProfile);
 
         doAnswer(invocation -> {
             ComponentWithLabel componentWithLabel = (ComponentWithLabel) invocation.getArgument(0);
@@ -109,27 +93,22 @@ public final class WidgetsListTableViewHolderBinderTest {
         }).when(mIconCache).getTitleNoCache(any());
 
         mViewHolderBinder = new WidgetsListTableViewHolderBinder(
-                LayoutInflater.from(mTestActivity),
+                LayoutInflater.from(mContext),
                 mOnIconClickListener,
                 mOnLongClickListener,
-                new WidgetsListDrawableFactory(mTestActivity));
-    }
-
-    @After
-    public void tearDown() {
-        mActivityController.destroy();
+                new WidgetsListDrawableFactory(mContext));
     }
 
     @Test
-    public void bindViewHolder_appWith3Widgets_shouldHave3Widgets() {
+    public void bindViewHolder_appWith3Widgets_shouldHave3Widgets() throws Exception {
         WidgetsRowViewHolder viewHolder = mViewHolderBinder.newViewHolder(
-                new FrameLayout(mTestActivity));
+                new FrameLayout(mContext));
         WidgetsListContentEntry entry = generateSampleAppWithWidgets(
                 APP_NAME,
                 TEST_PACKAGE,
                 /* numOfWidgets= */ 3);
         mViewHolderBinder.bindViewHolder(viewHolder, entry, /* position= */ 0, EMPTY_LIST);
-        shadowOf(getMainLooper()).idle();
+        Executors.MAIN_EXECUTOR.submit(() -> { }).get();
 
         // THEN the table container has one row, which contains 3 widgets.
         // View:  .SampleWidget0 | .SampleWidget1 | .SampleWidget2
@@ -152,18 +131,15 @@ public final class WidgetsListTableViewHolderBinderTest {
 
         return new WidgetsListContentEntry(appInfo,
                 /* titleSectionName= */ "",
-                generateWidgetItems(packageName, numOfWidgets));
+                generateWidgetItems(packageName, numOfWidgets),
+                Integer.MAX_VALUE);
     }
 
     private List<WidgetItem> generateWidgetItems(String packageName, int numOfWidgets) {
-        ShadowPackageManager packageManager = shadowOf(mContext.getPackageManager());
         ArrayList<WidgetItem> widgetItems = new ArrayList<>();
         for (int i = 0; i < numOfWidgets; i++) {
             ComponentName cn = ComponentName.createRelative(packageName, ".SampleWidget" + i);
-            AppWidgetProviderInfo widgetInfo = new AppWidgetProviderInfo();
-            widgetInfo.provider = cn;
-            ReflectionHelpers.setField(widgetInfo, "providerInfo",
-                    packageManager.addReceiverIfNotPresent(cn));
+            AppWidgetProviderInfo widgetInfo = WidgetUtils.createAppWidgetProviderInfo(cn);
 
             widgetItems.add(new WidgetItem(
                     LauncherAppWidgetProviderInfo.fromProviderInfo(mContext, widgetInfo),

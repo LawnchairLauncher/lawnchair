@@ -39,13 +39,13 @@ import androidx.recyclerview.widget.RecyclerView.Adapter;
 import androidx.recyclerview.widget.RecyclerView.LayoutParams;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
-import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.model.data.PackageItemInfo;
 import com.android.launcher3.recyclerview.ViewHolderBinder;
 import com.android.launcher3.util.LabelComparator;
 import com.android.launcher3.util.PackageUserKey;
+import com.android.launcher3.views.ActivityContext;
 import com.android.launcher3.widget.model.WidgetListSpaceEntry;
 import com.android.launcher3.widget.model.WidgetsListBaseEntry;
 import com.android.launcher3.widget.model.WidgetsListContentEntry;
@@ -85,7 +85,7 @@ public class WidgetsListAdapter extends Adapter<ViewHolder> implements OnHeaderC
     private static final int VIEW_TYPE_WIDGETS_HEADER = R.id.view_type_widgets_header;
     private static final int VIEW_TYPE_WIDGETS_SEARCH_HEADER = R.id.view_type_widgets_search_header;
 
-    private final Launcher mLauncher;
+    private final Context mContext;
     private final WidgetsDiffReporter mDiffReporter;
     private final SparseArray<ViewHolderBinder> mViewHolderBinders = new SparseArray<>();
     private final WidgetListBaseRowEntryComparator mRowComparator =
@@ -109,7 +109,7 @@ public class WidgetsListAdapter extends Adapter<ViewHolder> implements OnHeaderC
     public WidgetsListAdapter(Context context, LayoutInflater layoutInflater,
             IconCache iconCache, IntSupplier emptySpaceHeightProvider,
             OnClickListener iconClickListener, OnLongClickListener iconLongClickListener) {
-        mLauncher = Launcher.getLauncher(context);
+        mContext = context;
         mDiffReporter = new WidgetsDiffReporter(iconCache, this);
         WidgetsListDrawableFactory listDrawableFactory = new WidgetsListDrawableFactory(context);
 
@@ -340,7 +340,8 @@ public class WidgetsListAdapter extends Adapter<ViewHolder> implements OnHeaderC
 
         if (showWidgets) {
             mWidgetsContentVisiblePackageUserKey = packageUserKey;
-            mLauncher.getStatsLogManager().logger().log(LAUNCHER_WIDGETSTRAY_APP_EXPANDED);
+            ActivityContext.lookupContext(mContext)
+                    .getStatsLogManager().logger().log(LAUNCHER_WIDGETSTRAY_APP_EXPANDED);
         } else {
             mWidgetsContentVisiblePackageUserKey = null;
         }

@@ -16,7 +16,10 @@
 
 package com.android.launcher3.widget.picker.search;
 
-import static android.os.Looper.getMainLooper;
+import static androidx.test.core.app.ApplicationProvider.getApplicationContext;
+
+import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
+import static com.android.launcher3.util.WidgetUtils.createAppWidgetProviderInfo;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
@@ -25,13 +28,15 @@ import static org.mockito.ArgumentMatchers.matches;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.verify;
-import static org.robolectric.Shadows.shadowOf;
 
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.ComponentName;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.UserHandle;
+
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+import androidx.test.filters.SmallTest;
 
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.icons.BitmapInfo;
@@ -52,16 +57,13 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.robolectric.RobolectricTestRunner;
-import org.robolectric.RuntimeEnvironment;
-import org.robolectric.shadows.ShadowPackageManager;
-import org.robolectric.util.ReflectionHelpers;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-@RunWith(RobolectricTestRunner.class)
+@SmallTest
+@RunWith(AndroidJUnit4.class)
 public class SimpleWidgetsSearchAlgorithmTest {
 
     @Mock private IconCache mIconCache;
@@ -82,7 +84,7 @@ public class SimpleWidgetsSearchAlgorithmTest {
     private SearchCallback<WidgetsListBaseEntry> mSearchCallback;
 
     @Before
-    public void setUp() {
+    public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
         doAnswer(invocation -> {
             ComponentWithLabel componentWithLabel = (ComponentWithLabel) invocation.getArgument(0);
@@ -91,7 +93,7 @@ public class SimpleWidgetsSearchAlgorithmTest {
         mTestProfile = new InvariantDeviceProfile();
         mTestProfile.numRows = 5;
         mTestProfile.numColumns = 5;
-        mContext = RuntimeEnvironment.application;
+        mContext = getApplicationContext();
 
         mCalendarHeaderEntry =
                 createWidgetsHeaderEntry("com.example.android.Calendar", "Calendar", 2);
@@ -102,8 +104,8 @@ public class SimpleWidgetsSearchAlgorithmTest {
         mClockHeaderEntry = createWidgetsHeaderEntry("com.example.android.Clock", "Clock", 3);
         mClockContentEntry = createWidgetsContentEntry("com.example.android.Clock", "Clock", 3);
 
-
-        mSimpleWidgetsSearchAlgorithm = new SimpleWidgetsSearchAlgorithm(mDataProvider);
+        mSimpleWidgetsSearchAlgorithm = MAIN_EXECUTOR.submit(
+                () -> new SimpleWidgetsSearchAlgorithm(mDataProvider)).get();
         doReturn(Collections.EMPTY_LIST).when(mDataProvider).getAllWidgets();
     }
 
@@ -156,13 +158,13 @@ public class SimpleWidgetsSearchAlgorithmTest {
     }
 
     @Test
-    public void doSearch_shouldInformCallback() {
+    public void doSearch_shouldInformCallback() throws Exception {
         doReturn(List.of(mCalendarHeaderEntry, mCalendarContentEntry, mCameraHeaderEntry,
                 mCameraContentEntry, mClockHeaderEntry, mClockContentEntry))
                 .when(mDataProvider)
                 .getAllWidgets();
         mSimpleWidgetsSearchAlgorithm.doSearch("Ca", mSearchCallback);
-        shadowOf(getMainLooper()).idle();
+        MAIN_EXECUTOR.submit(() -> { }).get();
         verify(mSearchCallback).onSearchResult(
                 matches("Ca"), argThat(a -> a != null && !a.isEmpty()));
     }
@@ -195,14 +197,10 @@ public class SimpleWidgetsSearchAlgorithmTest {
     }
 
     private List<WidgetItem> generateWidgetItems(String packageName, int numOfWidgets) {
-        ShadowPackageManager packageManager = shadowOf(mContext.getPackageManager());
         ArrayList<WidgetItem> widgetItems = new ArrayList<>();
         for (int i = 0; i < numOfWidgets; i++) {
             ComponentName cn = ComponentName.createRelative(packageName, ".SampleWidget" + i);
-            AppWidgetProviderInfo widgetInfo = new AppWidgetProviderInfo();
-            widgetInfo.provider = cn;
-            ReflectionHelpers.setField(widgetInfo, "providerInfo",
-                    packageManager.addReceiverIfNotPresent(cn));
+            AppWidgetProviderInfo widgetInfo = createAppWidgetProviderInfo(cn);
 
             WidgetItem widgetItem = new WidgetItem(
                     LauncherAppWidgetProviderInfo.fromProviderInfo(mContext, widgetInfo),

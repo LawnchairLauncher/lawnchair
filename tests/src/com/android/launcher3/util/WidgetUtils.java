@@ -15,12 +15,19 @@
  */
 package com.android.launcher3.util;
 
+import static androidx.test.core.app.ApplicationProvider.getApplicationContext;
+import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
+
 import static com.android.launcher3.WorkspaceLayoutManager.FIRST_SCREEN_ID;
 
 import android.appwidget.AppWidgetHost;
+import android.appwidget.AppWidgetManager;
+import android.appwidget.AppWidgetProviderInfo;
+import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Process;
 
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.model.data.ItemInfo;
@@ -100,5 +107,18 @@ public class WidgetUtils {
         writer.put(LauncherSettings.Favorites._ID, item.id);
         resolver.insert(LauncherSettings.Favorites.CONTENT_URI,
                 writer.getValues(targetContext));
+    }
+
+
+    /**
+     * Creates a {@link AppWidgetProviderInfo} for the provided component name
+     */
+    public static AppWidgetProviderInfo createAppWidgetProviderInfo(ComponentName cn) {
+        AppWidgetProviderInfo info = AppWidgetManager.getInstance(getApplicationContext())
+                .getInstalledProvidersForPackage(
+                        getInstrumentation().getContext().getPackageName(), Process.myUserHandle())
+                .get(0);
+        info.provider = cn;
+        return info;
     }
 }

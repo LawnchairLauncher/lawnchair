@@ -15,12 +15,13 @@
  */
 package com.android.launcher3.widget.picker;
 
+import static androidx.test.core.app.ApplicationProvider.getApplicationContext;
+
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.isNull;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.verify;
-import static org.robolectric.Shadows.shadowOf;
 
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.ComponentName;
@@ -31,6 +32,8 @@ import android.os.UserHandle;
 import android.view.LayoutInflater;
 
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+import androidx.test.filters.SmallTest;
 
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.icons.BitmapInfo;
@@ -38,7 +41,9 @@ import com.android.launcher3.icons.ComponentWithLabel;
 import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.model.WidgetItem;
 import com.android.launcher3.model.data.PackageItemInfo;
+import com.android.launcher3.util.ActivityContextWrapper;
 import com.android.launcher3.util.PackageUserKey;
+import com.android.launcher3.util.WidgetUtils;
 import com.android.launcher3.widget.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.widget.model.WidgetsListBaseEntry;
 import com.android.launcher3.widget.model.WidgetsListContentEntry;
@@ -50,15 +55,16 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.robolectric.RobolectricTestRunner;
-import org.robolectric.RuntimeEnvironment;
-import org.robolectric.shadows.ShadowPackageManager;
-import org.robolectric.util.ReflectionHelpers;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@RunWith(RobolectricTestRunner.class)
+/**
+ * Unit tests for WidgetsListAdapter
+ * Note that all indices matching are shifted by 1 to account for the empty space at the start.
+ */
+@SmallTest
+@RunWith(AndroidJUnit4.class)
 public final class WidgetsListAdapterTest {
     private static final String TEST_PACKAGE_PLACEHOLDER = "com.google.test";
 
@@ -74,7 +80,7 @@ public final class WidgetsListAdapterTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        mContext = RuntimeEnvironment.application;
+        mContext = new ActivityContextWrapper(getApplicationContext());
         mTestProfile = new InvariantDeviceProfile();
         mTestProfile.numRows = 5;
         mTestProfile.numColumns = 5;
@@ -100,7 +106,7 @@ public final class WidgetsListAdapterTest {
         mAdapter.setWidgets(generateSampleMap(1));
         mAdapter.setWidgets(generateSampleMap(2));
 
-        verify(mListener).onItemRangeInserted(eq(1), eq(1));
+        verify(mListener).onItemRangeInserted(eq(2), eq(1));
     }
 
     @Test
@@ -108,7 +114,7 @@ public final class WidgetsListAdapterTest {
         mAdapter.setWidgets(generateSampleMap(2));
         mAdapter.setWidgets(generateSampleMap(1));
 
-        verify(mListener).onItemRangeRemoved(eq(1), eq(1));
+        verify(mListener).onItemRangeRemoved(eq(2), eq(1));
     }
 
     @Test
@@ -116,7 +122,7 @@ public final class WidgetsListAdapterTest {
         mAdapter.setWidgets(generateSampleMap(1));
         mAdapter.setWidgets(generateSampleMap(1));
 
-        verify(mListener).onItemRangeChanged(eq(0), eq(1), isNull());
+        verify(mListener).onItemRangeChanged(eq(1), eq(1), isNull());
     }
 
     @Test
@@ -135,7 +141,7 @@ public final class WidgetsListAdapterTest {
         // THEN the visible entries list becomes:
         // [com.google.test0, com.google.test1, com.google.test1 content, com.google.test2]
         // com.google.test.1 content is inserted into position 2.
-        verify(mListener).onItemRangeInserted(eq(2), eq(1));
+        verify(mListener).onItemRangeInserted(eq(3), eq(1));
     }
 
     @Test
@@ -163,7 +169,7 @@ public final class WidgetsListAdapterTest {
         mAdapter.setWidgets(allEntries);
 
         // THEN the onItemRangeChanged is invoked for "com.google.test1 content" at index 2.
-        verify(mListener).onItemRangeChanged(eq(2), eq(1), isNull());
+        verify(mListener).onItemRangeChanged(eq(3), eq(1), isNull());
     }
 
     @Test
@@ -194,15 +200,16 @@ public final class WidgetsListAdapterTest {
                 allAppsWithWidgets.get(6), allAppsWithWidgets.get(7));
         mAdapter.setWidgets(newList);
 
+        // Account for 1st items as empty space
         // Computation logic                           | [Intermediate list during computation]
         // THEN B <> C < 0, removed B from index 1     | [A, E]
-        verify(mListener).onItemRangeRemoved(/* positionStart= */ 1, /* itemCount= */ 1);
+        verify(mListener).onItemRangeRemoved(/* positionStart= */ 2, /* itemCount= */ 1);
         // THEN E <> C > 0, C inserted to index 1      | [A, C, E]
-        verify(mListener).onItemRangeInserted(/* positionStart= */ 1, /* itemCount= */ 1);
-        // THEN E <> D > 0, D inserted to index 2      | [A, C, D, E]
         verify(mListener).onItemRangeInserted(/* positionStart= */ 2, /* itemCount= */ 1);
+        // THEN E <> D > 0, D inserted to index 2      | [A, C, D, E]
+        verify(mListener).onItemRangeInserted(/* positionStart= */ 3, /* itemCount= */ 1);
         // THEN E <> null = -1, E deleted from index 3 | [A, C, D]
-        verify(mListener).onItemRangeRemoved(/* positionStart= */ 3, /* itemCount= */ 1);
+        verify(mListener).onItemRangeRemoved(/* positionStart= */ 4, /* itemCount= */ 1);
     }
 
     @Test
@@ -225,8 +232,8 @@ public final class WidgetsListAdapterTest {
 
         // THEN expanded app is reset and the visible entries list becomes:
         // [com.google.test0, com.google.test1, com.google.test2]
-        verify(mListener).onItemRangeChanged(eq(1), eq(1), isNull());
-        verify(mListener).onItemRangeRemoved(/* positionStart= */ 2, /* itemCount= */ 1);
+        verify(mListener).onItemRangeChanged(eq(2), eq(1), isNull());
+        verify(mListener).onItemRangeRemoved(/* positionStart= */ 3, /* itemCount= */ 1);
     }
 
     /**
@@ -263,14 +270,10 @@ public final class WidgetsListAdapterTest {
     }
 
     private List<WidgetItem> generateWidgetItems(String packageName, int numOfWidgets) {
-        ShadowPackageManager packageManager = shadowOf(mContext.getPackageManager());
         ArrayList<WidgetItem> widgetItems = new ArrayList<>();
         for (int i = 0; i < numOfWidgets; i++) {
             ComponentName cn = ComponentName.createRelative(packageName, ".SampleWidget" + i);
-            AppWidgetProviderInfo widgetInfo = new AppWidgetProviderInfo();
-            widgetInfo.provider = cn;
-            ReflectionHelpers.setField(widgetInfo, "providerInfo",
-                    packageManager.addReceiverIfNotPresent(cn));
+            AppWidgetProviderInfo widgetInfo = WidgetUtils.createAppWidgetProviderInfo(cn);
 
             widgetItems.add(new WidgetItem(
                     LauncherAppWidgetProviderInfo.fromProviderInfo(mContext, widgetInfo),
