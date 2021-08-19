@@ -105,7 +105,7 @@ public class FallbackSwipeHandler extends
         mRunningOverHome = ActivityManagerWrapper.isHomeTask(mGestureState.getRunningTask());
         if (mRunningOverHome) {
             runActionOnRemoteHandles(remoteTargetHandle ->
-                    remoteTargetHandle.mTransformParams.setHomeBuilderProxy(
+                    remoteTargetHandle.getTransformParams().setHomeBuilderProxy(
                     FallbackSwipeHandler.this::updateHomeActivityTransformDuringSwipeUp));
         }
     }
@@ -115,7 +115,8 @@ public class FallbackSwipeHandler extends
         super.initTransitionEndpoints(dp);
         if (mRunningOverHome) {
             // Full screen scale should be independent of remote target handle
-            mMaxLauncherScale = 1 / mRemoteTargetHandles[0].mTaskViewSimulator.getFullScreenScale();
+            mMaxLauncherScale = 1 / mRemoteTargetHandles[0].getTaskViewSimulator()
+                    .getFullScreenScale();
         }
     }
 
@@ -214,21 +215,21 @@ public class FallbackSwipeHandler extends
                 mHomeAlpha.value = Utilities.boundToRange(1 - mCurrentShift.value, 0, 1);
                 mVerticalShiftForScale.value = mCurrentShift.value;
                 runActionOnRemoteHandles(remoteTargetHandle ->
-                        remoteTargetHandle.mTransformParams.setHomeBuilderProxy(
+                        remoteTargetHandle.getTransformParams().setHomeBuilderProxy(
                                 FallbackHomeAnimationFactory.this
                                         ::updateHomeActivityTransformDuringHomeAnim));
             } else {
                 mHomeAlpha = new AnimatedFloat(this::updateHomeAlpha);
                 mHomeAlpha.value = 0;
                 runActionOnRemoteHandles(remoteTargetHandle ->
-                        remoteTargetHandle.mTransformParams.setHomeBuilderProxy(
+                        remoteTargetHandle.getTransformParams().setHomeBuilderProxy(
                                 FallbackHomeAnimationFactory.this
                                         ::updateHomeActivityTransformDuringHomeAnim));
             }
 
             mRecentsAlpha.value = 1;
             runActionOnRemoteHandles(remoteTargetHandle ->
-                    remoteTargetHandle.mTransformParams.setHomeBuilderProxy(
+                    remoteTargetHandle.getTransformParams().setHomeBuilderProxy(
                             FallbackHomeAnimationFactory.this
                                     ::updateRecentsActivityTransformDuringHomeAnim));
         }

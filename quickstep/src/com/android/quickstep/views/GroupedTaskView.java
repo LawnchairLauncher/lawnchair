@@ -113,6 +113,11 @@ public class GroupedTaskView extends TaskView {
     }
 
     @Override
+    public TaskThumbnailView[] getThumbnails() {
+        return new TaskThumbnailView[]{mSnapshotView, mSnapshotView2};
+    }
+
+    @Override
     public void onRecycle() {
         super.onRecycle();
         mSnapshotView2.setThumbnail(mSecondaryTask, null);
