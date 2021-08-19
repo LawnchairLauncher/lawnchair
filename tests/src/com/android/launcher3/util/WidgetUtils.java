@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.android.launcher3.common;
+package com.android.launcher3.util;
 
 import static com.android.launcher3.WorkspaceLayoutManager.FIRST_SCREEN_ID;
 
@@ -25,7 +25,6 @@ import android.os.Bundle;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.LauncherAppWidgetInfo;
-import com.android.launcher3.util.ContentWriter;
 import com.android.launcher3.widget.LauncherAppWidgetHost;
 import com.android.launcher3.widget.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.widget.PendingAddWidgetInfo;

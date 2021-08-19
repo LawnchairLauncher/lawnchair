@@ -286,9 +286,7 @@ public class AddItemActivity extends BaseActivity
 
             @Override
             protected void onPostExecute(WidgetItem item) {
-                mWidgetCell.setPreviewSize(item);
-                mWidgetCell.applyFromCellItem(item, mApp.getWidgetCache());
-                mWidgetCell.ensurePreview();
+                mWidgetCell.applyFromCellItem(item);
             }
         }.executeOnExecutor(MODEL_EXECUTOR);
         // TODO: Create a worker looper executor and reuse that everywhere.

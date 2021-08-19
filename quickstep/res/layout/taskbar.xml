@@ -65,13 +65,12 @@
             android:layout_gravity="end"/>
     </FrameLayout>
 
-    <View
+    <com.android.launcher3.taskbar.StashedHandleView
         android:id="@+id/stashed_handle"
         tools:comment1="The actual size and shape will be set as a ViewOutlineProvider at runtime"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:comment2="TODO: Tint dynamically"
-        android:background="?android:attr/textColorPrimary"
+        android:background="@color/taskbar_stashed_handle_dark_color"
         android:clipToOutline="true"
         android:layout_gravity="bottom"/>
 

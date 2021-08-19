@@ -24,7 +24,7 @@
     <uses-permission android:name="android.permission.READ_LOGS"/>
     <uses-permission android:name="android.permission.WRITE_SECURE_SETTINGS"/>
 
-    <application android:debuggable="true">
+    <application android:debuggable="true" android:extractNativeLibs="true">
         <uses-library android:name="android.test.runner"/>
 
         <receiver

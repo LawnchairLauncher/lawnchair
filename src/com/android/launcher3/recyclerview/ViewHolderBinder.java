@@ -22,6 +22,7 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.util.List;
 
 /**
  * Creates and populates views with data
@@ -46,7 +47,7 @@ public interface ViewHolderBinder<T, V extends ViewHolder> {
     V newViewHolder(ViewGroup parent);
 
     /** Populate UI references in {@link ViewHolder} with data. */
-    void bindViewHolder(V viewHolder, T data, @ListPosition int position);
+    void bindViewHolder(V viewHolder, T data, @ListPosition int position, List<Object> payloads);
 
     /**
      * Called when the view is recycled. Views are recycled in batches once they are sufficiently

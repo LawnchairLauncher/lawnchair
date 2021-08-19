@@ -16,20 +16,24 @@
 package com.android.quickstep;
 
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
+import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.ACTIVITY_TYPE_HOME;
 
 import android.graphics.Rect;
 import android.util.ArraySet;
+import android.util.Log;
 import android.view.RemoteAnimationTarget;
 
 import androidx.annotation.BinderThread;
 import androidx.annotation.UiThread;
 
 import com.android.launcher3.Utilities;
+import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.util.Preconditions;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.RecentsAnimationControllerCompat;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 
+import java.util.Arrays;
 import java.util.Set;
 
 /**
@@ -93,8 +97,19 @@ public class RecentsAnimationCallbacks implements
             RemoteAnimationTargetCompat[] appTargets,
             RemoteAnimationTargetCompat[] wallpaperTargets,
             Rect homeContentInsets, Rect minimizedHomeBounds) {
+        if (Utilities.IS_RUNNING_IN_TEST_HARNESS) {
+            Log.d(TestProtocol.L3_SWIPE_TO_HOME, "RecentsAnimationCallbacks.onAnimationStart");
+        }
+        // Convert appTargets to type RemoteAnimationTarget for all apps except Home app
+        RemoteAnimationTarget[] nonHomeApps = Arrays.stream(appTargets)
+                .filter(remoteAnimationTarget ->
+                        remoteAnimationTarget.activityType != ACTIVITY_TYPE_HOME)
+                .map(RemoteAnimationTargetCompat::unwrap)
+                .toArray(RemoteAnimationTarget[]::new);
+
         RemoteAnimationTarget[] nonAppTargets =
-                mSystemUiProxy.onGoingToRecentsLegacy(mCancelled);
+                mSystemUiProxy.onGoingToRecentsLegacy(mCancelled, nonHomeApps);
+
         RecentsAnimationTargets targets = new RecentsAnimationTargets(appTargets,
                 wallpaperTargets, RemoteAnimationTargetCompat.wrap(nonAppTargets),
                 homeContentInsets, minimizedHomeBounds);
@@ -106,6 +121,10 @@ public class RecentsAnimationCallbacks implements
                     mController::finishAnimationToApp);
         } else {
             Utilities.postAsyncCallback(MAIN_EXECUTOR.getHandler(), () -> {
+                if (Utilities.IS_RUNNING_IN_TEST_HARNESS) {
+                    Log.d(TestProtocol.L3_SWIPE_TO_HOME,
+                            "RecentsAnimationCallbacks.onAnimationStart callback");
+                }
                 for (RecentsAnimationListener listener : getListeners()) {
                     listener.onRecentsAnimationStart(mController, targets);
                 }

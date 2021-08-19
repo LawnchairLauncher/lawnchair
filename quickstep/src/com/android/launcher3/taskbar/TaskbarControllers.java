@@ -89,5 +89,6 @@ public class TaskbarControllers {
         taskbarDragLayerController.onDestroy();
         taskbarKeyguardController.onDestroy();
         taskbarViewController.onDestroy();
+        stashedHandleViewController.onDestroy();
     }
 }
