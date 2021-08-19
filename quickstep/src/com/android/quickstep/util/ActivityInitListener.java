@@ -15,11 +15,6 @@
  */
 package com.android.quickstep.util;
 
-import android.content.Context;
-import android.content.Intent;
-import android.os.Bundle;
-import android.os.Handler;
-
 import com.android.launcher3.BaseActivity;
 import com.android.launcher3.util.ActivityTracker;
 import com.android.launcher3.util.ActivityTracker.SchedulerCallback;
@@ -74,18 +69,5 @@ public class ActivityInitListener<T extends BaseActivity> implements
         mActivityTracker.unregisterCallback(this);
         mIsRegistered = false;
         mOnInitListener = null;
-    }
-
-    /**
-     * Starts the given intent with the provided animation. Unlike {@link #register(Intent)}, this
-     * method will not call {@link #init} if the activity already exists, it will only call it when
-     * we get handleIntent() for the provided intent that we're starting.
-     */
-    public void registerAndStartActivity(Intent intent, RemoteAnimationProvider animProvider,
-            Context context, Handler handler, long duration) {
-        register();
-
-        Bundle options = animProvider.toActivityOptions(handler, duration, context).toBundle();
-        context.startActivity(new Intent(intent), options);
     }
 }
