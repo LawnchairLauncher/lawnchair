@@ -145,6 +145,7 @@ public abstract class BaseActivity extends Activity implements ActivityContext {
     /**
      * Returns {@link StatsLogManager} for user event logging.
      */
+    @Override
     public StatsLogManager getStatsLogManager() {
         if (mStatsLogManager == null) {
             mStatsLogManager = StatsLogManager.newInstance(this);

@@ -15,13 +15,14 @@
  */
 package com.android.launcher3.widget.picker;
 
+import static androidx.test.core.app.ApplicationProvider.getApplicationContext;
+
 import static com.google.common.truth.Truth.assertThat;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.verify;
-import static org.robolectric.Shadows.shadowOf;
 
 import static java.util.Collections.EMPTY_LIST;
 
@@ -33,7 +34,9 @@ import android.view.LayoutInflater;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
-import com.android.launcher3.DeviceProfile;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+import androidx.test.filters.SmallTest;
+
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.R;
 import com.android.launcher3.icons.BitmapInfo;
@@ -41,28 +44,23 @@ import com.android.launcher3.icons.ComponentWithLabel;
 import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.model.WidgetItem;
 import com.android.launcher3.model.data.PackageItemInfo;
-import com.android.launcher3.testing.TestActivity;
+import com.android.launcher3.util.ActivityContextWrapper;
 import com.android.launcher3.util.PackageUserKey;
+import com.android.launcher3.util.WidgetUtils;
 import com.android.launcher3.widget.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.widget.model.WidgetsListSearchHeaderEntry;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.robolectric.Robolectric;
-import org.robolectric.RobolectricTestRunner;
-import org.robolectric.RuntimeEnvironment;
-import org.robolectric.android.controller.ActivityController;
-import org.robolectric.shadows.ShadowPackageManager;
-import org.robolectric.util.ReflectionHelpers;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@RunWith(RobolectricTestRunner.class)
+@SmallTest
+@RunWith(AndroidJUnit4.class)
 public final class WidgetsListSearchHeaderViewHolderBinderTest {
     private static final String TEST_PACKAGE = "com.google.test";
     private static final String APP_NAME = "Test app";
@@ -70,49 +68,34 @@ public final class WidgetsListSearchHeaderViewHolderBinderTest {
     private Context mContext;
     private WidgetsListSearchHeaderViewHolderBinder mViewHolderBinder;
     private InvariantDeviceProfile mTestProfile;
-    // Replace ActivityController with ActivityScenario, which is the recommended way for activity
-    // testing.
-    private ActivityController<TestActivity> mActivityController;
-    private TestActivity mTestActivity;
 
     @Mock
     private IconCache mIconCache;
-    @Mock
-    private DeviceProfile mDeviceProfile;
     @Mock
     private OnHeaderClickListener mOnHeaderClickListener;
 
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        mContext = RuntimeEnvironment.application;
+        mContext = new ActivityContextWrapper(getApplicationContext());
         mTestProfile = new InvariantDeviceProfile();
         mTestProfile.numRows = 5;
         mTestProfile.numColumns = 5;
-
-        mActivityController = Robolectric.buildActivity(TestActivity.class);
-        mTestActivity = mActivityController.setup().get();
-        mTestActivity.setDeviceProfile(mDeviceProfile);
 
         doAnswer(invocation -> {
             ComponentWithLabel componentWithLabel = (ComponentWithLabel) invocation.getArgument(0);
             return componentWithLabel.getComponent().getShortClassName();
         }).when(mIconCache).getTitleNoCache(any());
         mViewHolderBinder = new WidgetsListSearchHeaderViewHolderBinder(
-                LayoutInflater.from(mTestActivity),
+                LayoutInflater.from(mContext),
                 mOnHeaderClickListener,
-                new WidgetsListDrawableFactory(mTestActivity));
-    }
-
-    @After
-    public void tearDown() {
-        mActivityController.destroy();
+                new WidgetsListDrawableFactory(mContext));
     }
 
     @Test
     public void bindViewHolder_appWith3Widgets_shouldShowTheCorrectAppNameAndSubtitle() {
         WidgetsListSearchHeaderHolder viewHolder = mViewHolderBinder.newViewHolder(
-                new FrameLayout(mTestActivity));
+                new FrameLayout(mContext));
         WidgetsListHeader widgetsListHeader = viewHolder.mWidgetsListHeader;
         WidgetsListSearchHeaderEntry entry = generateSampleSearchHeader(
                 APP_NAME,
@@ -130,7 +113,7 @@ public final class WidgetsListSearchHeaderViewHolderBinderTest {
     @Test
     public void bindViewHolder_shouldAttachOnHeaderClickListener() {
         WidgetsListSearchHeaderHolder viewHolder = mViewHolderBinder.newViewHolder(
-                new FrameLayout(mTestActivity));
+                new FrameLayout(mContext));
         WidgetsListHeader widgetsListHeader = viewHolder.mWidgetsListHeader;
         WidgetsListSearchHeaderEntry entry = generateSampleSearchHeader(
                 APP_NAME,
@@ -156,14 +139,10 @@ public final class WidgetsListSearchHeaderViewHolderBinderTest {
     }
 
     private List<WidgetItem> generateWidgetItems(String packageName, int numOfWidgets) {
-        ShadowPackageManager packageManager = shadowOf(mContext.getPackageManager());
         ArrayList<WidgetItem> widgetItems = new ArrayList<>();
         for (int i = 0; i < numOfWidgets; i++) {
             ComponentName cn = ComponentName.createRelative(packageName, ".SampleWidget" + i);
-            AppWidgetProviderInfo widgetInfo = new AppWidgetProviderInfo();
-            widgetInfo.provider = cn;
-            ReflectionHelpers.setField(widgetInfo, "providerInfo",
-                    packageManager.addReceiverIfNotPresent(cn));
+            AppWidgetProviderInfo widgetInfo = WidgetUtils.createAppWidgetProviderInfo(cn);
 
             widgetItems.add(new WidgetItem(
                     LauncherAppWidgetProviderInfo.fromProviderInfo(mContext, widgetInfo),

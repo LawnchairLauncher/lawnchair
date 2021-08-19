@@ -84,9 +84,9 @@ import com.android.quickstep.util.ProxyScreenStatusProvider;
 import com.android.quickstep.util.QuickstepOnboardingPrefs;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
-import com.android.unfold.UnfoldTransitionFactory;
-import com.android.unfold.UnfoldTransitionProgressProvider;
-import com.android.unfold.config.UnfoldTransitionConfig;
+import com.android.systemui.unfold.UnfoldTransitionFactory;
+import com.android.systemui.unfold.UnfoldTransitionProgressProvider;
+import com.android.systemui.unfold.config.UnfoldTransitionConfig;
 
 import java.io.FileDescriptor;
 import java.io.PrintWriter;

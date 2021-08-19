@@ -29,7 +29,7 @@ import com.android.launcher3.Workspace;
 import com.android.launcher3.widget.NavigableAppWidgetHostView;
 import com.android.systemui.shared.animation.UnfoldMoveFromCenterAnimator;
 import com.android.systemui.shared.animation.UnfoldMoveFromCenterAnimator.TranslationApplier;
-import com.android.unfold.UnfoldTransitionProgressProvider;
+import com.android.systemui.unfold.UnfoldTransitionProgressProvider;
 
 import java.util.HashMap;
 import java.util.Map;

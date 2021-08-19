@@ -15,11 +15,14 @@
  */
 package com.android.launcher3.widget.picker.util;
 
+import static androidx.test.core.app.ApplicationProvider.getApplicationContext;
+
+import static com.android.launcher3.util.WidgetUtils.createAppWidgetProviderInfo;
+
 import static com.google.common.truth.Truth.assertThat;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doAnswer;
-import static org.robolectric.Shadows.shadowOf;
 
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.ComponentName;
@@ -28,6 +31,9 @@ import android.content.pm.PackageManager;
 import android.graphics.Point;
 import android.graphics.drawable.Drawable;
 import android.os.UserHandle;
+
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+import androidx.test.filters.SmallTest;
 
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.icons.ComponentWithLabel;
@@ -42,15 +48,12 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.robolectric.RobolectricTestRunner;
-import org.robolectric.RuntimeEnvironment;
-import org.robolectric.shadows.ShadowPackageManager;
-import org.robolectric.util.ReflectionHelpers;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@RunWith(RobolectricTestRunner.class)
+@SmallTest
+@RunWith(AndroidJUnit4.class)
 public final class WidgetsTableUtilsTest {
     private static final String TEST_PACKAGE = "com.google.test";
 
@@ -73,7 +76,7 @@ public final class WidgetsTableUtilsTest {
     public void setUp() {
         MockitoAnnotations.initMocks(this);
 
-        mContext = RuntimeEnvironment.application;
+        mContext = getApplicationContext();
 
         mTestProfile = new InvariantDeviceProfile();
         mTestProfile.numRows = 5;
@@ -152,16 +155,14 @@ public final class WidgetsTableUtilsTest {
         ArrayList<WidgetItem> widgetItems = new ArrayList<>();
         widgetSizes.stream().forEach(
                 widgetSize -> {
-                    ShadowPackageManager packageManager = shadowOf(mContext.getPackageManager());
-                    AppWidgetProviderInfo info = new AppWidgetProviderInfo();
-                    info.provider = ComponentName.createRelative(TEST_PACKAGE,
-                            ".WidgetProvider_" + widgetSize.x + "x" + widgetSize.y);
+                    AppWidgetProviderInfo info = createAppWidgetProviderInfo(
+                            ComponentName.createRelative(
+                                    TEST_PACKAGE,
+                                    ".WidgetProvider_" + widgetSize.x + "x" + widgetSize.y));
                     LauncherAppWidgetProviderInfo widgetInfo =
                             LauncherAppWidgetProviderInfo.fromProviderInfo(mContext, info);
                     widgetInfo.spanX = widgetSize.x;
                     widgetInfo.spanY = widgetSize.y;
-                    ReflectionHelpers.setField(widgetInfo, "providerInfo",
-                            packageManager.addReceiverIfNotPresent(widgetInfo.provider));
                     widgetItems.add(new WidgetItem(widgetInfo, mTestProfile, mIconCache));
                 }
         );
