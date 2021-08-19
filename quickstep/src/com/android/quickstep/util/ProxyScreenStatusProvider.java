@@ -17,7 +17,7 @@ package com.android.quickstep.util;
 
 import androidx.annotation.NonNull;
 
-import com.android.unfold.updates.screen.ScreenStatusProvider;
+import com.android.systemui.unfold.updates.screen.ScreenStatusProvider;
 
 import java.util.ArrayList;
 import java.util.List;
