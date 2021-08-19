@@ -110,10 +110,13 @@ public final class WidgetsListTableViewHolderBinder
 
                 // When preview loads, notify adapter to rebind the item and possibly animate
                 widget.applyFromCellItem(widgetItem, 1f,
-                        bitmap -> holder.getBindingAdapter().notifyItemChanged(
-                                holder.getBindingAdapterPosition(),
-                                Pair.create(widgetItem, bitmap)),
-                        holder.previewCache.get(widgetItem));
+                        bitmap -> {
+                        if (holder.getBindingAdapter() != null) {
+                            holder.getBindingAdapter().notifyItemChanged(
+                                    holder.getBindingAdapterPosition(),
+                                    Pair.create(widgetItem, bitmap));
+                            }
+                        }, holder.previewCache.get(widgetItem));
             }
         }
     }
