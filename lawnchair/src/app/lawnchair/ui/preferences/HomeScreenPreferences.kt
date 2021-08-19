@@ -42,10 +42,11 @@ fun NavGraphBuilder.homeScreenGraph(route: String) {
 fun HomeScreenPreferences() {
     val prefs = preferenceManager()
     PreferenceLayout(label = stringResource(id = R.string.home_screen_label)) {
-        PreferenceGroup(heading = "General", isFirstChild = true) {
+        PreferenceGroup(heading = stringResource(id = R.string.general_label), isFirstChild = true) {
             SwitchPreference(
                 prefs.addIconToHome.getAdapter(),
                 label = stringResource(id = R.string.auto_add_shortcuts_label),
+                showDivider = false
             )
             SwitchPreference(
                 prefs.wallpaperScrolling.getAdapter(),
