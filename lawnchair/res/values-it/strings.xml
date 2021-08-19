@@ -40,6 +40,7 @@
     <string name="icons">Icone</string>
     <string name="icon_size">Dimensioni icona</string>
     <string name="label_size">Dimensioni etichetta</string>
+    <string name="show_home_labels">Mostra etichette</string>
     <string name="allow_empty_pages_label">Consenti pagine vuote</string>
     <string name="notification_dots">Badge di notifica</string>
     <string name="smartspace_preferences">Preferenze</string>
@@ -63,7 +64,7 @@
     <string name="auto_adaptive_icons_description">Per tutte le icone non adattive.</string>
     <string name="support_and_pr">Supporto &amp; PR</string>
     <string name="workspace_dt2s">Doppio tocco per bloccare lo schermo</string>
-    <string name="smart_space_enable">Mostra il widget “At a Glance”</string>
+    <string name="smart_space_enable">Widget \"At a Glance\"</string>
     <string name="design_and_development">Disegno &amp; Sviluppo</string>
     <string name="translate">Traduci</string>
     <string name="product">Prodotto</string>
@@ -80,8 +81,33 @@
     <string name="dt2s_a11y_hint_title">Servizio di accessibilità richiesto</string>
     <string name="dt2s_a11y_hint">Per utilizzare doppio tocco per bloccare lo schermo, abilita il servizio di accessibilità.</string>
     <string name="dt2s_warning_open_settings">Apri Impostazioni</string>
-    <string name="minus_one_enable">Mostra la feed</string>
+    <string name="minus_one_enable">Feed</string>
     <string name="minus_one_unavailable">Feed is not available</string>
     <string name="fuzzy_search_title">Ricerca approssimativa</string>
     <string name="fuzzy_search_desc">Mostra risultati simili a ciò che hai digitato nella ricerca delle app.</string>
+    <string name="theme_label">Tema</string>
+    <string name="theme_light">Chiaro</string>
+    <string name="theme_dark">Scuro</string>
+    <string name="theme_system_default">Segui il sistema</string>
+    <string name="theme_follow_wallpaper">Abbina allo sfondo</string>
+    <string name="quickstep_label">Recenti</string>
+    <string name="clear_all_as_action_label">Pulsante \"Cancella tutto\" in basso</string>
+    <string name="window_corner_radius_label">Raggio dell\'angolo</string>
+    <string name="override_window_corner_radius_label">Raggio dell\'angolo personalizzato</string>
+    <string name="system_icons">Icone di sistema</string>
+    <string name="accent_color">Colore primario</string>
+    <string name="done">Fatto</string>
+    <string name="loading">Caricamento…</string>
+    <string name="system">Sistema</string>
+    <string name="custom">Personalizzato</string>
+    <string name="custom_color">Colore Personalizzato</string>
+    <string name="quickstep_description">Pulsante \"Cancella tutto\", raggio dell\'angolo</string>
+    <string name="wallpaper_scrolling_label">Scorrimento dello sfondo</string>
+    <string name="show_sys_ui_scrim">Ombra in alto</string>
+    <string name="show_status_bar">Barra di stato</string>
+    <string name="what_to_show">Cosa mostrare</string>
+    <string name="missing_notification_access_label">Accesso alle notifiche necessario</string>
+    <string name="missing_notification_access_description">Accesso alle notifiche necessario.</string>
+    <string name="msg_missing_notification_access">Per usare i badge di notifica, attiva le notifiche per <xliff:g id="name" example="My App">%1$s</xliff:g>.</string>
+    <string name="title_change_settings">Modifica impostazioni</string>
 </resources>

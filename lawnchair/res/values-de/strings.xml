@@ -40,6 +40,7 @@
     <string name="icons">Symbole</string>
     <string name="icon_size">Symbolgröße</string>
     <string name="label_size">Labelgröße</string>
+    <string name="show_home_labels">Beschriftung anzeigen</string>
     <string name="allow_empty_pages_label">Leere Seiten erlauben</string>
     <string name="notification_dots">Benachrichtigungspunkte</string>
     <string name="smartspace_preferences">Voreinstellungen</string>
@@ -63,7 +64,7 @@
     <string name="auto_adaptive_icons_description">Für alle nicht adaptiven Symbole.</string>
     <string name="support_and_pr">Support &amp; PR</string>
     <string name="workspace_dt2s">Doppeltippen zum Schlafen</string>
-    <string name="smart_space_enable">Auf einen Blick Widget anzeigen</string>
+    <string name="smart_space_enable">Auf einen Blick Widget</string>
     <string name="design_and_development">Design &amp; Entwicklung</string>
     <string name="translate">Übersetzen</string>
     <string name="product">Produkt</string>
@@ -80,8 +81,33 @@
     <string name="dt2s_a11y_hint_title">Bedienungshilfen erforderlich</string>
     <string name="dt2s_a11y_hint">Aktivieren Sie den Bedienungshilfen, um doppeltes Tippen zum Schlafen zu verwenden.</string>
     <string name="dt2s_warning_open_settings">Einstellungen öffnen</string>
-    <string name="minus_one_enable">Feed anzeigen</string>
-    <string name="minus_one_unavailable">Feed ist nicht verfügbar</string>
+    <string name="minus_one_enable">Feed</string>
+    <string name="minus_one_unavailable">Feed ist nicht verfügbar.</string>
     <string name="fuzzy_search_title">Unscharfe Suche</string>
     <string name="fuzzy_search_desc">Ungefähre Übereinstimmung für Appsuche.</string>
+    <string name="theme_label">Design</string>
+    <string name="theme_light">Hell</string>
+    <string name="theme_dark">Dunkel</string>
+    <string name="theme_system_default">System folgen</string>
+    <string name="theme_follow_wallpaper">Hintergrund übereinstimmen</string>
+    <string name="quickstep_label">Kürzliche</string>
+    <string name="clear_all_as_action_label">Alles entfernen Taste unten</string>
+    <string name="window_corner_radius_label">Eckradius</string>
+    <string name="override_window_corner_radius_label">Benutzerdefinierter Eckradius</string>
+    <string name="system_icons">System-Symbole</string>
+    <string name="accent_color">Akzentfarbe</string>
+    <string name="done">Erledigt</string>
+    <string name="loading">Laden…</string>
+    <string name="system">System</string>
+    <string name="custom">Benutzerdefiniert</string>
+    <string name="custom_color">Benutzerdefinierte Farbe</string>
+    <string name="quickstep_description">Alles entfernen Taste, Eckradius</string>
+    <string name="wallpaper_scrolling_label">Hintergrund scrollen</string>
+    <string name="show_sys_ui_scrim">Oberer Schatten</string>
+    <string name="show_status_bar">Statusleiste</string>
+    <string name="what_to_show">Was soll angezeigt werden</string>
+    <string name="missing_notification_access_label">Benachrichtigungszugriff erforderlich</string>
+    <string name="missing_notification_access_description">Benachrichtigungszugriff erforderlich.</string>
+    <string name="msg_missing_notification_access">Um Benachrichtigungspunkte zu verwenden, aktivieren Sie App-Benachrichtigungen für <xliff:g id="name" example="My App">%1$s</xliff:g>.</string>
+    <string name="title_change_settings">Einstellungen ändern</string>
 </resources>
