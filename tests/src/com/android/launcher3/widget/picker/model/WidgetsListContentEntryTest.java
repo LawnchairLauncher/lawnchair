@@ -15,15 +15,20 @@
  */
 package com.android.launcher3.widget.picker.model;
 
+import static androidx.test.core.app.ApplicationProvider.getApplicationContext;
+
+import static com.android.launcher3.util.WidgetUtils.createAppWidgetProviderInfo;
+
 import static com.google.common.truth.Truth.assertThat;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doAnswer;
-import static org.robolectric.Shadows.shadowOf;
 
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.ComponentName;
-import android.content.Context;
+
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+import androidx.test.filters.SmallTest;
 
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.icons.ComponentWithLabel;
@@ -38,16 +43,13 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.robolectric.RobolectricTestRunner;
-import org.robolectric.RuntimeEnvironment;
-import org.robolectric.shadows.ShadowPackageManager;
-import org.robolectric.util.ReflectionHelpers;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@RunWith(RobolectricTestRunner.class)
+@SmallTest
+@RunWith(AndroidJUnit4.class)
 public final class WidgetsListContentEntryTest {
     private static final String PACKAGE_NAME = "com.android.test";
     private static final String PACKAGE_NAME_2 = "com.android.test2";
@@ -60,7 +62,6 @@ public final class WidgetsListContentEntryTest {
 
     @Mock private IconCache mIconCache;
 
-    private Context mContext;
     private InvariantDeviceProfile mTestProfile;
 
     @Before
@@ -71,7 +72,6 @@ public final class WidgetsListContentEntryTest {
         mWidgetsToLabels.put(mWidget2, "Dog");
         mWidgetsToLabels.put(mWidget3, "Bird");
 
-        mContext = RuntimeEnvironment.application;
         mTestProfile = new InvariantDeviceProfile();
         mTestProfile.numRows = 5;
         mTestProfile.numColumns = 5;
@@ -242,17 +242,12 @@ public final class WidgetsListContentEntryTest {
         assertThat(widgetsListRowEntry1.equals(widgetsListRowEntry2)).isTrue();
     }
 
-
     private WidgetItem createWidgetItem(ComponentName componentName, int spanX, int spanY) {
         String label = mWidgetsToLabels.get(componentName);
-        ShadowPackageManager packageManager = shadowOf(mContext.getPackageManager());
-        AppWidgetProviderInfo widgetInfo = new AppWidgetProviderInfo();
-        widgetInfo.provider = componentName;
-        ReflectionHelpers.setField(widgetInfo, "providerInfo",
-                packageManager.addReceiverIfNotPresent(componentName));
+        AppWidgetProviderInfo widgetInfo = createAppWidgetProviderInfo(componentName);
 
         LauncherAppWidgetProviderInfo launcherAppWidgetProviderInfo =
-                LauncherAppWidgetProviderInfo.fromProviderInfo(mContext, widgetInfo);
+                LauncherAppWidgetProviderInfo.fromProviderInfo(getApplicationContext(), widgetInfo);
         launcherAppWidgetProviderInfo.spanX = spanX;
         launcherAppWidgetProviderInfo.spanY = spanY;
         launcherAppWidgetProviderInfo.label = label;

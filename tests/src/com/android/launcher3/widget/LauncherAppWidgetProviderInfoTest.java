@@ -15,6 +15,8 @@
  */
 package com.android.launcher3.widget;
 
+import static androidx.test.core.app.ApplicationProvider.getApplicationContext;
+
 import static com.google.common.truth.Truth.assertThat;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -25,6 +27,9 @@ import android.content.Context;
 import android.graphics.Point;
 import android.graphics.Rect;
 
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+import androidx.test.filters.SmallTest;
+
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.InvariantDeviceProfile;
 
@@ -32,15 +37,13 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
-import org.robolectric.RobolectricTestRunner;
-import org.robolectric.RuntimeEnvironment;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-@RunWith(RobolectricTestRunner.class)
+@SmallTest
+@RunWith(AndroidJUnit4.class)
 public final class LauncherAppWidgetProviderInfoTest {
 
     private static final int CELL_SIZE = 50;
@@ -51,8 +54,7 @@ public final class LauncherAppWidgetProviderInfoTest {
 
     @Before
     public void setUp() {
-        MockitoAnnotations.initMocks(this);
-        mContext = RuntimeEnvironment.application;
+        mContext = getApplicationContext();
     }
 
     @Test
@@ -260,6 +262,7 @@ public final class LauncherAppWidgetProviderInfoTest {
             return null;
         }).when(profile).getCellSize(any(Point.class));
         Mockito.when(profile.getCellSize()).thenReturn(new Point(CELL_SIZE, CELL_SIZE));
+        Mockito.when(profile.shouldInsetWidgets()).thenReturn(true);
 
         InvariantDeviceProfile idp = new InvariantDeviceProfile();
         List<DeviceProfile> supportedProfiles = new ArrayList<>(idp.supportedProfiles);
