@@ -21,6 +21,7 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.os.Looper
+import androidx.core.os.UserManagerCompat
 import app.lawnchair.preferences.PreferenceManager
 import com.android.launcher3.util.Executors.MAIN_EXECUTOR
 import com.android.systemui.shared.system.QuickStepContract
@@ -76,16 +77,24 @@ fun killLauncher() {
     exitProcess(0)
 }
 
+fun getPrefsIfUnlocked(context: Context): PreferenceManager? {
+    return if (UserManagerCompat.isUserUnlocked(context)) {
+        PreferenceManager.getInstance(context)
+    } else {
+        null
+    }
+}
+
 fun getWindowCornerRadius(context: Context): Float {
-    val prefs = PreferenceManager.getInstance(context)
-    if (prefs.overrideWindowCornerRadius.get()) {
+    val prefs = getPrefsIfUnlocked(context)
+    if (prefs != null && prefs.overrideWindowCornerRadius.get()) {
         return prefs.windowCornerRadius.get().toFloat()
     }
     return QuickStepContract.getWindowCornerRadius(context.resources)
 }
 
 fun supportsRoundedCornersOnWindows(context: Context): Boolean {
-    if (PreferenceManager.getInstance(context).overrideWindowCornerRadius.get()) {
+    if (getPrefsIfUnlocked(context)?.overrideWindowCornerRadius?.get() == true) {
         return true
     }
     return QuickStepContract.supportsRoundedCornersOnWindows(context.resources)

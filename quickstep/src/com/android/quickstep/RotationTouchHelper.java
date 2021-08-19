@@ -157,6 +157,12 @@ public class RotationTouchHelper implements
         };
     }
 
+    void onUserUnlocked() {
+        // We can't load custom window radius before the user had unlocked,
+        // so we just fallback to system values and then reload it here.
+        onNavigationModeChanged(mSysUiNavMode.getMode());
+    }
+
     private void setupOrientationSwipeHandler() {
         ActivityManagerWrapper.getInstance().registerTaskStackListener(mFrozenTaskListener);
         mOnDestroyFrozenTaskRunnable = () -> ActivityManagerWrapper.getInstance()
