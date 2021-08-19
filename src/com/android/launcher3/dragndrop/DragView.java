@@ -580,23 +580,18 @@ public class DragView extends View implements StateListener<LauncherState> {
 
         private float mValue;
 
-        private final float mRange;
-
         public SpringFloatValue(View view, float range) {
-            mRange = range;
             mView = view;
             mSpring = new SpringAnimation(this, VALUE, 0)
                     .setMinValue(-range).setMaxValue(range)
                     .setSpring(new SpringForce(0)
                             .setDampingRatio(DAMPENING_RATIO)
                             .setStiffness(STIFFNESS));
-            mDelta = view.getResources().getDisplayMetrics().density * PARALLAX_MAX_IN_DP;
+            mDelta = Math.min(range, view.getResources().getDisplayMetrics().density * PARALLAX_MAX_IN_DP);
         }
 
         public void animateToPos(float value) {
-            mSpring.animateToFinalPosition(
-                    Math.max(-mRange, Math.min(mRange, Utilities.boundToRange(value, -mDelta, mDelta)))
-            );
+            mSpring.animateToFinalPosition(Utilities.boundToRange(value, -mDelta, mDelta));
         }
     }
 }
