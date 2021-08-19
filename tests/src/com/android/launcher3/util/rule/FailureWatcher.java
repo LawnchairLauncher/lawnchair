@@ -30,6 +30,7 @@ public class FailureWatcher extends TestWatcher {
     public FailureWatcher(UiDevice device, LauncherInstrumentation launcher) {
         mDevice = device;
         mLauncher = launcher;
+        Log.d("b/196820244", "FailureWatcher.ctor", new Exception());
     }
 
     @Override
@@ -44,7 +45,9 @@ public class FailureWatcher extends TestWatcher {
             @Override
             public void evaluate() throws Throwable {
                 try {
+                    Log.d("b/196820244", "Before evaluate");
                     FailureWatcher.super.apply(base, description).evaluate();
+                    Log.d("b/196820244", "After evaluate");
                 } finally {
                     if (mLauncher.hadNontestEvents()) {
                         throw new AssertionError(
@@ -64,7 +67,9 @@ public class FailureWatcher extends TestWatcher {
     }
 
     public static void onError(UiDevice device, Description description, Throwable e) {
+        Log.d("b/196820244", "onError 1");
         if (device == null) return;
+        Log.d("b/196820244", "onError 2");
         final File parentFile = getInstrumentation().getTargetContext().getFilesDir();
         final File sceenshot = new File(parentFile,
                 "TestScreenshot-" + description.getMethodName() + ".png");
