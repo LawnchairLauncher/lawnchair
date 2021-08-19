@@ -16,6 +16,8 @@
 
 package com.android.launcher3.popup;
 
+import static androidx.test.core.app.ApplicationProvider.getApplicationContext;
+
 import static com.android.launcher3.popup.PopupPopulator.MAX_SHORTCUTS;
 import static com.android.launcher3.popup.PopupPopulator.NUM_DYNAMIC;
 
@@ -27,10 +29,11 @@ import static org.mockito.Mockito.spy;
 
 import android.content.pm.ShortcutInfo;
 
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+import androidx.test.filters.SmallTest;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.robolectric.RobolectricTestRunner;
-import org.robolectric.RuntimeEnvironment;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -39,7 +42,8 @@ import java.util.List;
 /**
  * Tests the sorting and filtering of shortcuts in {@link PopupPopulator}.
  */
-@RunWith(RobolectricTestRunner.class)
+@SmallTest
+@RunWith(AndroidJUnit4.class)
 public class PopupPopulatorTest {
 
     @Test
@@ -137,7 +141,7 @@ public class PopupPopulatorTest {
 
     private ShortcutInfo createInfo(boolean isStatic, int rank) {
         ShortcutInfo info = spy(new ShortcutInfo.Builder(
-                RuntimeEnvironment.application, generateId(isStatic, rank))
+                getApplicationContext(), generateId(isStatic, rank))
                 .setRank(rank)
                 .build());
         doReturn(isStatic).when(info).isDeclaredInManifest();
