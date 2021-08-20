@@ -107,6 +107,6 @@
     <string name="what_to_show">显示内容</string>
     <string name="missing_notification_access_label">需要通知使用权</string>
     <string name="missing_notification_access_description">需要通知使用权。</string>
-    <string name="msg_missing_notification_access">若要使用小红点，请为 <xliff:g id="name" example="My App">%1$s</xliff:g> 开启应用通知。</string>
+    <string name="msg_missing_notification_access">若要启用通知红点，请为 <xliff:g id="name" example="My App">%1$s</xliff:g> 开启应用通知。</string>
     <string name="title_change_settings">修改设置</string>
 </resources>
