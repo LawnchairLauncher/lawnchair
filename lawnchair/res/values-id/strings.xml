@@ -107,6 +107,6 @@
     <string name="what_to_show">Yang Ditampilkan</string>
     <string name="missing_notification_access_label">Akses Notifikasi Diperlukan</string>
     <string name="missing_notification_access_description">Akses notifikasi diperlukan.</string>
-    <string name="msg_missing_notification_access">To use Notification Dots, turn on app notifications for <xliff:g id="name" example="My App">%1$s</xliff:g>.</string>
+    <string name="msg_missing_notification_access">Untuk menggunakan Titik Notifikasi, nyalakan notifikasi aplikasi untuk <xliff:g id="name" example="My App">%1$s</xliff:g>.</string>
     <string name="title_change_settings">Ubah Pengaturan</string>
 </resources>
