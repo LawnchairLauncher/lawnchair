@@ -7,10 +7,21 @@ import java.lang.Exception
 
 private const val TAG = "Compatibility"
 
-val isOnePlusStock = !TextUtils.isEmpty(getSystemProperty("ro.oxygen.version", ""))
-        || !TextUtils.isEmpty(getSystemProperty("ro.hydrogen.version", ""))
-        || getSystemProperty("ro.rom.version", "").contains("Oxygen OS")
-        || getSystemProperty("ro.rom.version", "").contains("Hydrogen OS")
+val isOnePlusStock = checkOnePlusStock()
+
+private fun checkOnePlusStock(): Boolean {
+    val roRomVersion = getSystemProperty("ro.rom.version", "")
+    if (roRomVersion.contains(Regex("Oxygen OS|Hydrogen OS|O2_BETA|H2_BETA"))) {
+        return true
+    }
+    if (getSystemProperty("ro.oxygen.version", "").isNotEmpty()) {
+        return true
+    }
+    if (getSystemProperty("ro.hydrogen.version", "").isNotEmpty()) {
+        return true
+    }
+    return false
+}
 
 @SuppressLint("PrivateApi")
 fun getSystemProperty(property: String, defaultValue: String): String {
