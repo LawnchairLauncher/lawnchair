@@ -211,10 +211,6 @@ public class TaskThumbnailView extends View implements PluginListener<OverviewSc
             return Insets.NONE;
         }
 
-        if (!TaskView.clipStatusAndNavBars(mActivity.getDeviceProfile())) {
-            return Insets.NONE;
-        }
-
         RectF bitmapRect = new RectF(
                 0, 0,
                 mThumbnailData.thumbnail.getWidth(), mThumbnailData.thumbnail.getHeight());
@@ -228,11 +224,14 @@ public class TaskThumbnailView extends View implements PluginListener<OverviewSc
         RectF boundsInBitmapSpace = new RectF();
         boundsToBitmapSpace.mapRect(boundsInBitmapSpace, viewRect);
 
-        return Insets.of(
-            Math.round(boundsInBitmapSpace.left),
-            Math.round(boundsInBitmapSpace.top),
-            Math.round(bitmapRect.right - boundsInBitmapSpace.right),
-            Math.round(bitmapRect.bottom - boundsInBitmapSpace.bottom));
+        DeviceProfile dp = mActivity.getDeviceProfile();
+        int leftInset = TaskView.clipLeft(dp) ? Math.round(boundsInBitmapSpace.left) : 0;
+        int topInset = TaskView.clipTop(dp) ? Math.round(boundsInBitmapSpace.top) : 0;
+        int rightInset = TaskView.clipRight(dp) ? Math.round(
+                bitmapRect.right - boundsInBitmapSpace.right) : 0;
+        int bottomInset = TaskView.clipBottom(dp)
+                ? Math.round(bitmapRect.bottom - boundsInBitmapSpace.bottom) : 0;
+        return Insets.of(leftInset, topInset, rightInset, bottomInset);
     }
 
 
@@ -440,8 +439,19 @@ public class TaskThumbnailView extends View implements PluginListener<OverviewSc
 
             int thumbnailRotation = thumbnailData.rotation;
             int deltaRotate = getRotationDelta(currentRotation, thumbnailRotation);
-            RectF thumbnailClipHint = TaskView.clipStatusAndNavBars(dp)
-                    ? new RectF(thumbnailData.insets) : new RectF();
+            RectF thumbnailClipHint = new RectF();
+            if (TaskView.clipLeft(dp)) {
+                thumbnailClipHint.left = thumbnailData.insets.left;
+            }
+            if (TaskView.clipRight(dp)) {
+                thumbnailClipHint.right = thumbnailData.insets.right;
+            }
+            if (TaskView.clipTop(dp)) {
+                thumbnailClipHint.top = thumbnailData.insets.top;
+            }
+            if (TaskView.clipBottom(dp)) {
+                thumbnailClipHint.bottom = thumbnailData.insets.bottom;
+            }
 
             float scale = thumbnailData.scale;
             final float thumbnailScale;
