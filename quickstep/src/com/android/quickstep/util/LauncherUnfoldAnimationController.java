@@ -24,8 +24,8 @@ import android.view.WindowManager;
 import com.android.launcher3.Hotseat;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.util.HorizontalInsettableView;
-import com.android.unfold.UnfoldTransitionProgressProvider;
-import com.android.unfold.UnfoldTransitionProgressProvider.TransitionProgressListener;
+import com.android.systemui.unfold.UnfoldTransitionProgressProvider;
+import com.android.systemui.unfold.UnfoldTransitionProgressProvider.TransitionProgressListener;
 
 /**
  * Controls animations that are happening during unfolding foldable devices

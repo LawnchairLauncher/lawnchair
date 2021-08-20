@@ -17,6 +17,7 @@ package com.android.launcher3.widget;
 
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 
+import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -34,7 +35,6 @@ import android.util.Size;
 
 import androidx.annotation.NonNull;
 
-import com.android.launcher3.BaseActivity;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.R;
@@ -46,6 +46,7 @@ import com.android.launcher3.icons.cache.HandlerRunnable;
 import com.android.launcher3.model.WidgetItem;
 import com.android.launcher3.pm.ShortcutConfigActivityInfo;
 import com.android.launcher3.util.Executors;
+import com.android.launcher3.views.ActivityContext;
 import com.android.launcher3.widget.util.WidgetSizes;
 
 import java.util.concurrent.ExecutionException;
@@ -56,10 +57,10 @@ public class DatabaseWidgetPreviewLoader {
 
     private static final String TAG = "WidgetPreviewLoader";
 
-    private final BaseActivity mContext;
+    private final Context mContext;
     private final float mPreviewBoxCornerRadius;
 
-    public DatabaseWidgetPreviewLoader(BaseActivity context) {
+    public DatabaseWidgetPreviewLoader(Context context) {
         mContext = context;
         float previewCornerRadius = RoundedCornerEnforcement.computeEnforcedRadius(context);
         mPreviewBoxCornerRadius = previewCornerRadius > 0
@@ -139,12 +140,13 @@ public class DatabaseWidgetPreviewLoader {
         int previewWidth;
         int previewHeight;
 
+        DeviceProfile dp = ActivityContext.lookupContext(mContext).getDeviceProfile();
+
         if (widgetPreviewExists && drawable.getIntrinsicWidth() > 0
                 && drawable.getIntrinsicHeight() > 0) {
             previewWidth = drawable.getIntrinsicWidth();
             previewHeight = drawable.getIntrinsicHeight();
         } else {
-            DeviceProfile dp = mContext.getDeviceProfile();
             Size widgetSize = WidgetSizes.getWidgetPaddedSizePx(mContext, info.provider, dp, spanX,
                     spanY);
             previewWidth = widgetSize.getWidth();
@@ -215,7 +217,7 @@ public class DatabaseWidgetPreviewLoader {
                     Drawable icon = LauncherAppState.getInstance(mContext).getIconCache()
                             .getFullResIcon(info.provider.getPackageName(), info.icon);
                     if (icon != null) {
-                        int appIconSize = mContext.getDeviceProfile().iconSizePx;
+                        int appIconSize = dp.iconSizePx;
                         int iconSize = (int) Math.min(appIconSize * scale,
                                 Math.min(boxRect.width(), boxRect.height()));
 
@@ -248,7 +250,7 @@ public class DatabaseWidgetPreviewLoader {
 
     private Bitmap generateShortcutPreview(
             ShortcutConfigActivityInfo info, int maxWidth, int maxHeight) {
-        int iconSize = mContext.getDeviceProfile().allAppsIconSizePx;
+        int iconSize = ActivityContext.lookupContext(mContext).getDeviceProfile().allAppsIconSizePx;
         int padding = mContext.getResources()
                 .getDimensionPixelSize(R.dimen.widget_preview_shortcut_padding);
 

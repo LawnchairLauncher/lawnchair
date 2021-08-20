@@ -15,6 +15,8 @@
  */
 package com.android.launcher3.folder;
 
+import static androidx.test.core.app.ApplicationProvider.getApplicationContext;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -23,6 +25,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.UserHandle;
 
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+import androidx.test.filters.SmallTest;
+
 import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.util.Executors;
@@ -30,15 +35,11 @@ import com.android.launcher3.util.Executors;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.robolectric.RobolectricTestRunner;
-import org.robolectric.RuntimeEnvironment;
-import org.robolectric.annotation.LooperMode;
-import org.robolectric.annotation.LooperMode.Mode;
 
 import java.util.ArrayList;
 
-@RunWith(RobolectricTestRunner.class)
-@LooperMode(Mode.PAUSED)
+@SmallTest
+@RunWith(AndroidJUnit4.class)
 public final class FolderNameProviderTest {
     private Context mContext;
     private WorkspaceItemInfo mItem1;
@@ -46,7 +47,7 @@ public final class FolderNameProviderTest {
 
     @Before
     public void setUp() {
-        mContext = RuntimeEnvironment.application;
+        mContext = getApplicationContext();
         mItem1 = new WorkspaceItemInfo(new AppInfo(
                 new ComponentName("a.b.c", "a.b.c/a.b.c.d"),
                 "title1",

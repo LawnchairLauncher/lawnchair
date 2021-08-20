@@ -17,14 +17,17 @@ package com.android.launcher3.util;
 
 import static com.google.common.truth.Truth.assertThat;
 
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+import androidx.test.filters.SmallTest;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.robolectric.RobolectricTestRunner;
 
 /**
- * Robolectric unit tests for {@link IntArray}
+ * Unit tests for {@link IntArray}
  */
-@RunWith(RobolectricTestRunner.class)
+@SmallTest
+@RunWith(AndroidJUnit4.class)
 public class IntArrayTest {
 
     @Test

@@ -27,6 +27,7 @@ import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.dot.DotInfo;
 import com.android.launcher3.dragndrop.DragController;
 import com.android.launcher3.folder.FolderIcon;
+import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.util.ViewCache;
 
@@ -107,6 +108,10 @@ public interface ActivityContext {
      */
     default @Nullable FolderIcon findFolderIcon(final int folderIconId) {
         return null;
+    }
+
+    default StatsLogManager getStatsLogManager() {
+        return StatsLogManager.newInstance((Context) this);
     }
 
     /**

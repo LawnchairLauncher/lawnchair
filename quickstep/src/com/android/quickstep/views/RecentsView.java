@@ -4062,6 +4062,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         setCurrentTask(-1);
         mRecentsAnimationController = null;
         executeSideTaskLaunchCallback();
+        mRemoteTargetHandles = null;
     }
 
     public void setDisallowScrollToClearAll(boolean disallowScrollToClearAll) {
