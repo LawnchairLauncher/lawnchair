@@ -92,8 +92,9 @@
     <string name="theme_follow_wallpaper">Duvar kağıdı ile eşleştir</string>
     <string name="quickstep_label">En Son Uygulamalar</string>
     <string name="clear_all_as_action_label">Clear All Button at Bottom</string>
-    <string name="window_corner_radius_label">Corner Radius</string>
-    <string name="override_window_corner_radius_label">Custom Corner Radius</string>
+    <string name="window_corner_radius_label">Screen Corner Radius</string>
+    <string name="override_window_corner_radius_label">Custom Screen Corner Radius</string>
+    <string name="window_corner_radius_description">Use this slider to match the transition radius to your actual screen.</string>
     <string name="system_icons">Sistem Simgeleri</string>
     <string name="accent_color">Vurgu Rengi</string>
     <string name="done">Tamam</string>
