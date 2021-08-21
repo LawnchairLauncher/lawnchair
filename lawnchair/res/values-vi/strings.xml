@@ -40,7 +40,7 @@
     <string name="icons">Biểu tượng</string>
     <string name="icon_size">Kích thước biểu tượng</string>
     <string name="label_size">Kích thước tên ứng dụng</string>
-    <string name="show_home_labels">Hiện Nhãn</string>
+    <string name="show_home_labels">Hiện tên ứng dụng</string>
     <string name="allow_empty_pages_label">Cho phép trang trống</string>
     <string name="notification_dots">Dấu chấm thông báo</string>
     <string name="smartspace_preferences">Tùy chỉnh</string>
@@ -80,7 +80,7 @@
     <string name="dt2s_a11y_hint_title">Bật dịch vụ trợ năng</string>
     <string name="dt2s_a11y_hint">Dùng chạm 2 lần để khoá màn hình cần mở dịch vụ trợ năng trên Lawnchair. Chọn \"Mở cài đặt\", sau đó chọn \"Lawnchair\" và chọn \"Sử dụng Lawnchair\"</string>
     <string name="dt2s_warning_open_settings">Mở cài đặt</string>
-    <string name="minus_one_enable">Feed</string>
+    <string name="minus_one_enable">Bản tin</string>
     <string name="minus_one_unavailable">Chưa cài đặt bản tin.</string>
     <string name="fuzzy_search_title">Tìm kiếm Fuzzy</string>
     <string name="fuzzy_search_desc">Cho kết quả tìm kiếm ứng dụng gần đúng.</string>
@@ -102,8 +102,8 @@
     <string name="custom">Tùy chỉnh</string>
     <string name="custom_color">Tuỳ chỉnh màu sắc</string>
     <string name="quickstep_description">Nút xoá tất cả, độ cong của góc</string>
-    <string name="wallpaper_scrolling_label">Hình nền cuộn</string>
-    <string name="show_sys_ui_scrim">Bóng đổ phía trên</string>
+    <string name="wallpaper_scrolling_label">Chuyển động hình nền</string>
+    <string name="show_sys_ui_scrim">Đổ bóng phía trên</string>
     <string name="show_status_bar">Thanh trạng thái</string>
     <string name="what_to_show">Hiện gì</string>
     <string name="missing_notification_access_label">Cần quyền truy cập thông báo</string>
