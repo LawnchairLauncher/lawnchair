@@ -84,4 +84,7 @@
     <string name="skip_tutorial_dialog_subtitle" msgid="544063326241955662">"អ្នកអាចស្វែងរកមេរៀននេះនៅពេលក្រោយក្នុងកម្មវិធី <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="gesture_tutorial_action_button_label_cancel" msgid="3809842569351264108">"បោះបង់"</string>
     <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"រំលង"</string>
+    <string name="taskbar_edu_header_1" msgid="5323217563328273689">"ប្រើ​កម្មវិធី 2 ក្នុងពេលតែមួយ ហើយប្ដូរ​កម្មវិធី​ដោយប្រើ​របារ​កិច្ចការ"</string>
+    <string name="taskbar_edu_next" msgid="4007618274426775841">"បន្ទាប់"</string>
+    <string name="taskbar_edu_close" msgid="887022990168191073">"បិទ"</string>
 </resources>

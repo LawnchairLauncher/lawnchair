@@ -84,4 +84,7 @@
     <string name="skip_tutorial_dialog_subtitle" msgid="544063326241955662">"You can find this later in the <xliff:g id="NAME">%1$s</xliff:g> app"</string>
     <string name="gesture_tutorial_action_button_label_cancel" msgid="3809842569351264108">"Cancel"</string>
     <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"Skip"</string>
+    <string name="taskbar_edu_header_1" msgid="5323217563328273689">"Use two apps at once and switch apps with the taskbar"</string>
+    <string name="taskbar_edu_next" msgid="4007618274426775841">"Next"</string>
+    <string name="taskbar_edu_close" msgid="887022990168191073">"Close"</string>
 </resources>
