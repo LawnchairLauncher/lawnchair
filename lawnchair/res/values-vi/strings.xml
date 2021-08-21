@@ -110,4 +110,5 @@
     <string name="missing_notification_access_description">Cần quyền truy cập thông báo.</string>
     <string name="msg_missing_notification_access">Để sử dụng chấm thông báo, hãy bật thông báo cho ứng dụng <xliff:g id="name" example="My App">%1$s</xliff:g>.</string>
     <string name="title_change_settings">Thay đổi cài đặt</string>
+    <string name="debug_restart_launcher">Restart Lawnchair</string>
 </resources>
