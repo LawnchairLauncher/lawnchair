@@ -111,4 +111,5 @@
     <string name="missing_notification_access_description">Benachrichtigungszugriff erforderlich.</string>
     <string name="msg_missing_notification_access">Um Benachrichtigungspunkte zu verwenden, aktivieren Sie App-Benachrichtigungen für <xliff:g id="name" example="My App">%1$s</xliff:g>.</string>
     <string name="title_change_settings">Einstellungen ändern</string>
+    <string name="debug_restart_launcher">Restart Lawnchair</string>
 </resources>
