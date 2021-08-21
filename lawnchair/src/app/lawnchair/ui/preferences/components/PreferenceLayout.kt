@@ -20,6 +20,7 @@ import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -37,6 +38,7 @@ fun PreferenceLayout(
     horizontalAlignment: Alignment.Horizontal = Alignment.Start,
     scrollState: ScrollState = rememberScrollState(),
     label: String,
+    actions: @Composable RowScope.() -> Unit = {},
     backArrowVisible: Boolean = true,
     content: @Composable ColumnScope.() -> Unit
 ) {
@@ -44,6 +46,7 @@ fun PreferenceLayout(
         backArrowVisible = backArrowVisible,
         floating = rememberFloatingState(scrollState),
         label = label,
+        actions = actions,
     ) {
         PreferenceColumn(
             verticalArrangement = verticalArrangement,
@@ -61,13 +64,15 @@ fun PreferenceLayoutLazyColumn(
     enabled: Boolean = true,
     state: LazyListState = rememberLazyListState(),
     label: String,
+    actions: @Composable RowScope.() -> Unit = {},
     backArrowVisible: Boolean = true,
     content: LazyListScope.() -> Unit
 ) {
     PreferenceScaffold(
         backArrowVisible = backArrowVisible,
         floating = rememberFloatingState(state),
-        label = label
+        label = label,
+        actions = actions,
     ) {
         PreferenceLazyColumn(
             modifier = modifier,

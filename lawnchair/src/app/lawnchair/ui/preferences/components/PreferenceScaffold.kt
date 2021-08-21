@@ -21,6 +21,7 @@ fun PreferenceScaffold(
     backArrowVisible: Boolean = true,
     floating: State<Boolean> = remember { mutableStateOf(false) },
     label: String,
+    actions: @Composable RowScope.() -> Unit = {},
     content: @Composable (PaddingValues) -> Unit
 ) {
     Scaffold(
@@ -28,7 +29,8 @@ fun PreferenceScaffold(
             TopBar(
                 backArrowVisible = backArrowVisible,
                 floating = floating.value,
-                label = label
+                label = label,
+                actions = actions,
             )
         },
         bottomBar = {

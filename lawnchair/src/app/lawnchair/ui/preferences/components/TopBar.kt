@@ -22,16 +22,11 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.LocalElevationOverlay
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.ArrowForward
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -53,35 +48,51 @@ import com.google.accompanist.insets.statusBarsPadding
 fun TopBar(
     backArrowVisible: Boolean,
     floating: Boolean,
-    label: String
+    label: String,
+    actions: @Composable RowScope.() -> Unit = {},
 ) {
     val navController = LocalNavController.current
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
 
     TopBarSurface(floating = floating) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(topBarSize)
-                .padding(horizontal = 8.dp)
-        ) {
-            if (backArrowVisible) {
-                ClickableIcon(
-                    imageVector = backIcon(),
-                    tint = MaterialTheme.colors.onBackground,
-                    onClick = { if (currentRoute != "/") navController.popBackStack() }
+        CompositionLocalProvider(LocalContentColor provides MaterialTheme.colors.onSurface) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(topBarSize)
+                    .padding(horizontal = 4.dp)
+            ) {
+                if (backArrowVisible) {
+                    IconButton(onClick = { if (currentRoute != "/") navController.popBackStack() }) {
+                        Icon(
+                            imageVector = backIcon(),
+                            contentDescription = "",
+                        )
+                    }
+                } else {
+                    Spacer(modifier = Modifier.width(4.dp))
+                }
+                Text(
+                    text = label,
+                    style = MaterialTheme.typography.h6,
+                    modifier = Modifier
+                        .padding(horizontal = 8.dp)
+                        .weight(1f),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
                 )
+
+                CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
+                    Row(
+                        Modifier.fillMaxHeight(),
+                        horizontalArrangement = Arrangement.End,
+                        verticalAlignment = Alignment.CenterVertically,
+                        content = actions
+                    )
+                }
             }
-            Text(
-                text = label,
-                style = MaterialTheme.typography.h6,
-                modifier = Modifier.padding(start = 8.dp),
-                color = MaterialTheme.colors.onSurface,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
         }
     }
 }
