@@ -92,8 +92,9 @@
     <string name="theme_follow_wallpaper">Coincidir con fondo</string>
     <string name="quickstep_label">Recientes</string>
     <string name="clear_all_as_action_label">Botón \"Borrar todo\" al fondo</string>
-    <string name="window_corner_radius_label">Radio de esquina</string>
-    <string name="override_window_corner_radius_label">Radio de esquina personalizado</string>
+    <string name="window_corner_radius_label">Screen Corner Radius</string>
+    <string name="override_window_corner_radius_label">Custom Screen Corner Radius</string>
+    <string name="window_corner_radius_description">Use this slider to match the transition radius to your actual screen.</string>
     <string name="system_icons">Iconos del sistema</string>
     <string name="accent_color">Color de acento</string>
     <string name="done">Hecho</string>
