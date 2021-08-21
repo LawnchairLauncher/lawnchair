@@ -113,4 +113,5 @@
     <string name="missing_notification_access_description">נדרשת גישה להתראות.</string>
     <string name="msg_missing_notification_access">To use Notification Dots, turn on app notifications for <xliff:g id="name" example="My App">%1$s</xliff:g>.</string>
     <string name="title_change_settings">שינוי הגדרות</string>
+    <string name="debug_restart_launcher">Restart Lawnchair</string>
 </resources>
