@@ -67,8 +67,8 @@ public class IconProvider {
     // Default value returned if there are problems getting resources.
     private static final int NO_ID = 0;
 
-    private final BiFunction<LauncherActivityInfo, Integer, Drawable> LAI_IP_LOADER =
-            this::loadFromIconPack;
+    private final BiFunction<LauncherActivityInfo, Integer, Drawable> LAI_IP_LOADER = createIconPackLoader(LAI_LOADER);
+    private final BiFunction<ActivityInfo, PackageManager, Drawable> AI_IP_LOADER = createIconPackLoader(AI_LOADER);
 
     private static final BiFunction<LauncherActivityInfo, Integer, Drawable> LAI_LOADER =
             LauncherActivityInfo::getIcon;
@@ -143,17 +143,22 @@ public class IconProvider {
                 info, iconDpi, LAI_IP_LOADER);
     }
 
-    @Nullable
-    private Drawable loadFromIconPack(LauncherActivityInfo info, int iconDpi) {
-        Drawable icon = null;
-        IconPack iconPack = IconPackProvider.loadAndGetIconPack(mContext);
-        if (iconPack != null) {
-            icon = iconPack.getIcon(info, iconDpi);
-        }
-        if (icon == null) {
-            icon = LAI_LOADER.apply(info, iconDpi);
-        }
-        return icon;
+    private <T, P> BiFunction<T, P, Drawable> createIconPackLoader(BiFunction<T, P, Drawable> loader) {
+        return (obj, param) -> {
+            Drawable icon = null;
+            IconPack iconPack = IconPackProvider.loadAndGetIconPack(mContext);
+            if (iconPack != null) {
+                if (obj instanceof LauncherActivityInfo) {
+                    icon = iconPack.getIcon((LauncherActivityInfo) obj, (int) param);
+                } else if (obj instanceof ActivityInfo) {
+                    icon = iconPack.getIcon((ActivityInfo) obj, 0);
+                }
+            }
+            if (icon == null) {
+                icon = loader.apply(obj, param);
+            }
+            return icon;
+        };
     }
 
     /**
@@ -161,7 +166,7 @@ public class IconProvider {
      */
     public Drawable getIcon(ActivityInfo info, UserHandle user) {
         return getIcon(info.applicationInfo.packageName, user, info, mContext.getPackageManager(),
-                AI_LOADER);
+                AI_IP_LOADER);
     }
 
     private <T, P> Drawable getIcon(String packageName, UserHandle user, T obj, P param,
