@@ -96,7 +96,7 @@
     <string name="clear_all_as_action_label">Кнопка \"Очистить всё\" внизу</string>
     <string name="window_corner_radius_label">Радиус скругления краёв экрана</string>
     <string name="override_window_corner_radius_label">Задать радиус скругления краёв экрана</string>
-    <string name="window_corner_radius_description">Use this slider to match the transition radius to your actual screen.</string>
+    <string name="window_corner_radius_description">Используйте этот ползунок, чтобы соответствовать радиусу скругления краёв экрана при переходах.</string>
     <string name="system_icons">Системные иконки</string>
     <string name="accent_color">Цветовой акцент</string>
     <string name="done">Готово</string>
@@ -113,5 +113,5 @@
     <string name="missing_notification_access_description">Необходимо разрешение доступа к уведомлениям.</string>
     <string name="msg_missing_notification_access">Чтобы использовать значки уведомлений, предоставьте доступ к уведомлениям для <xliff:g id="name" example="My App">%1$s</xliff:g>.</string>
     <string name="title_change_settings">Изменить параметры</string>
-    <string name="debug_restart_launcher">Restart Lawnchair</string>
+    <string name="debug_restart_launcher">Перезапустить Lawnchair</string>
 </resources>
