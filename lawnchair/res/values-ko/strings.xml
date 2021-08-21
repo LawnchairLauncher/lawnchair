@@ -91,8 +91,9 @@
     <string name="theme_follow_wallpaper">배경화면에 따르기</string>
     <string name="quickstep_label">최근 앱</string>
     <string name="clear_all_as_action_label">하단 모두 닫기 버튼</string>
-    <string name="window_corner_radius_label">가장자리 둥글기</string>
-    <string name="override_window_corner_radius_label">가장자리 둥글기 개인화</string>
+    <string name="window_corner_radius_label">Screen Corner Radius</string>
+    <string name="override_window_corner_radius_label">Custom Screen Corner Radius</string>
+    <string name="window_corner_radius_description">Use this slider to match the transition radius to your actual screen.</string>
     <string name="system_icons">시스템 아이콘</string>
     <string name="accent_color">강조 색상</string>
     <string name="done">완료</string>
