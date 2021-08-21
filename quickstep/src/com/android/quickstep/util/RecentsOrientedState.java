@@ -396,9 +396,17 @@ public class RecentsOrientedState implements
         Rect insets = dp.getInsets();
         float fullWidth = dp.widthPx;
         float fullHeight = dp.heightPx;
-        if (TaskView.clipStatusAndNavBars(dp)) {
-            fullWidth -= insets.left + insets.right;
-            fullHeight -= insets.top + insets.bottom;
+        if (TaskView.clipLeft(dp)) {
+            fullWidth -= insets.left;
+        }
+        if (TaskView.clipRight(dp)) {
+            fullWidth -= insets.right;
+        }
+        if (TaskView.clipTop(dp)) {
+            fullHeight -= insets.top;
+        }
+        if (TaskView.clipBottom(dp)) {
+            fullHeight -= insets.bottom;
         }
 
         getTaskDimension(mContext, dp, outPivot);
