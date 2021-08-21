@@ -111,4 +111,5 @@
     <string name="missing_notification_access_description">Accesso alle notifiche necessario.</string>
     <string name="msg_missing_notification_access">Per usare i badge di notifica, attiva le notifiche per <xliff:g id="name" example="My App">%1$s</xliff:g>.</string>
     <string name="title_change_settings">Modifica impostazioni</string>
+    <string name="debug_restart_launcher">Restart Lawnchair</string>
 </resources>
