@@ -94,8 +94,9 @@
     <string name="theme_follow_wallpaper">Uskladi s ozadjem</string>
     <string name="quickstep_label">Nedavno</string>
     <string name="clear_all_as_action_label">Clear All Button at Bottom</string>
-    <string name="window_corner_radius_label">Corner Radius</string>
-    <string name="override_window_corner_radius_label">Custom Corner Radius</string>
+    <string name="window_corner_radius_label">Screen Corner Radius</string>
+    <string name="override_window_corner_radius_label">Custom Screen Corner Radius</string>
+    <string name="window_corner_radius_description">Use this slider to match the transition radius to your actual screen.</string>
     <string name="system_icons">Sistemske ikone</string>
     <string name="accent_color">Sekundarna barva</string>
     <string name="done">Končano</string>
