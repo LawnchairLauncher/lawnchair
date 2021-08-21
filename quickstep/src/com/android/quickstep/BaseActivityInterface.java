@@ -290,19 +290,35 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
     public static void getTaskDimension(Context context, DeviceProfile dp, PointF out) {
         if (dp.isMultiWindowMode) {
             WindowBounds bounds = SplitScreenBounds.INSTANCE.getSecondaryWindowBounds(context);
-            if (TaskView.clipStatusAndNavBars(dp)) {
-                out.x = bounds.availableSize.x;
-                out.y = bounds.availableSize.y;
-            } else {
-                out.x = bounds.availableSize.x + bounds.insets.left + bounds.insets.right;
-                out.y = bounds.availableSize.y + bounds.insets.top + bounds.insets.bottom;
+            out.x = bounds.availableSize.x;
+            out.y = bounds.availableSize.y;
+            if (!TaskView.clipLeft(dp)) {
+                out.x += bounds.insets.left;
             }
-        } else if (TaskView.clipStatusAndNavBars(dp)) {
-            out.x = dp.availableWidthPx;
-            out.y = dp.availableHeightPx;
+            if (!TaskView.clipRight(dp)) {
+                out.x += bounds.insets.right;
+            }
+            if (!TaskView.clipTop(dp)) {
+                out.y += bounds.insets.top;
+            }
+            if (!TaskView.clipBottom(dp)) {
+                out.y += bounds.insets.bottom;
+            }
         } else {
             out.x = dp.widthPx;
             out.y = dp.heightPx;
+            if (TaskView.clipLeft(dp)) {
+                out.x -= dp.getInsets().left;
+            }
+            if (TaskView.clipRight(dp)) {
+                out.x -= dp.getInsets().right;
+            }
+            if (TaskView.clipTop(dp)) {
+                out.y -= dp.getInsets().top;
+            }
+            if (TaskView.clipBottom(dp)) {
+                out.y -= Math.max(dp.getInsets().bottom, dp.taskbarSize);
+            }
         }
     }
 
