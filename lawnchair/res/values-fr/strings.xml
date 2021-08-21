@@ -92,8 +92,9 @@
     <string name="theme_follow_wallpaper">Fais correspondre au fond d\'écran</string>
     <string name="quickstep_label">Récents</string>
     <string name="clear_all_as_action_label">Bouton \"Tout effacer\" en bas</string>
-    <string name="window_corner_radius_label">Courbure des coins</string>
-    <string name="override_window_corner_radius_label">Courbure des coins personnalisée</string>
+    <string name="window_corner_radius_label">Screen Corner Radius</string>
+    <string name="override_window_corner_radius_label">Custom Screen Corner Radius</string>
+    <string name="window_corner_radius_description">Use this slider to match the transition radius to your actual screen.</string>
     <string name="system_icons">Icônes système</string>
     <string name="accent_color">Couleur d\'accentuation</string>
     <string name="done">Terminé</string>
