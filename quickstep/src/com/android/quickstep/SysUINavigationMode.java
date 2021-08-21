@@ -101,6 +101,7 @@ public class SysUINavigationMode {
     }
 
     private void initializeMode() {
+        mMode = Mode.THREE_BUTTONS;
         int modeInt = getSystemIntegerRes(mContext, NAV_BAR_INTERACTION_MODE_RES_NAME);
         for(Mode m : Mode.values()) {
             if (m.resValue == modeInt) {
