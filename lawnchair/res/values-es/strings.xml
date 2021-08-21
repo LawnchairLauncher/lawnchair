@@ -111,4 +111,5 @@
     <string name="missing_notification_access_description">Acceso a las notificaciones requerido.</string>
     <string name="msg_missing_notification_access">Para usar las insignias de notificaciones, activa las notificaciones para <xliff:g id="name" example="My App">%1$s</xliff:g>.</string>
     <string name="title_change_settings">Cambiar ajustes</string>
+    <string name="debug_restart_launcher">Restart Lawnchair</string>
 </resources>
