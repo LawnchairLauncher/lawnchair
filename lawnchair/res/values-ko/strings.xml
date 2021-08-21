@@ -110,4 +110,5 @@
     <string name="missing_notification_access_description">알림 권한이 필요함</string>
     <string name="msg_missing_notification_access">아이콘 알림벳지를 사용하려면 , 설정에서 런처 알람을 켜주세요</string>
     <string name="title_change_settings">설정 변경</string>
+    <string name="debug_restart_launcher">Restart Lawnchair</string>
 </resources>
