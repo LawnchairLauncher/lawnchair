@@ -111,4 +111,5 @@
     <string name="missing_notification_access_description">Notifikationsadgang krævet.</string>
     <string name="msg_missing_notification_access">For at bruge Notifikations prikker, skal du aktivere app notifikationer for <xliff:g id="name" example="My App">%1$s</xliff:g>.</string>
     <string name="title_change_settings">Ændre Indstillinger</string>
+    <string name="debug_restart_launcher">Restart Lawnchair</string>
 </resources>
