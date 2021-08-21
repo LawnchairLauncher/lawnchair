@@ -102,9 +102,9 @@
     <string name="custom_color">색상 개인화</string>
     <string name="quickstep_description">모두 닫기 버튼, 가장자리 둥글기</string>
     <string name="wallpaper_scrolling_label">배경화면 움직이기</string>
-    <string name="show_sys_ui_scrim">Top Shadow</string>
+    <string name="show_sys_ui_scrim">상단바 그림자</string>
     <string name="show_status_bar">상태표시줄</string>
-    <string name="what_to_show">What to Show</string>
+    <string name="what_to_show">표시할 항목</string>
     <string name="missing_notification_access_label">알림 권한이 필요함</string>
     <string name="missing_notification_access_description">알림 권한이 필요함</string>
     <string name="msg_missing_notification_access">아이콘 알림벳지를 사용하려면 , 설정에서 런처 알람을 켜주세요</string>
