@@ -113,4 +113,5 @@
     <string name="missing_notification_access_description">Необходимо разрешение доступа к уведомлениям.</string>
     <string name="msg_missing_notification_access">Чтобы использовать значки уведомлений, предоставьте доступ к уведомлениям для <xliff:g id="name" example="My App">%1$s</xliff:g>.</string>
     <string name="title_change_settings">Изменить параметры</string>
+    <string name="debug_restart_launcher">Restart Lawnchair</string>
 </resources>
