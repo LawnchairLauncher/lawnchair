@@ -40,6 +40,7 @@
     <string name="icons">Icons</string>
     <string name="icon_size">Icon Size</string>
     <string name="label_size">Label Size</string>
+    <string name="show_home_labels">Show Labels</string>
     <string name="allow_empty_pages_label">Allow Empty Pages</string>
     <string name="notification_dots">Notification Dots</string>
     <string name="smartspace_preferences">Preferences</string>
@@ -63,7 +64,7 @@
     <string name="auto_adaptive_icons_description">For all non-Adaptive icons.</string>
     <string name="support_and_pr">Support &amp; PR</string>
     <string name="workspace_dt2s">Double-Tap to Sleep</string>
-    <string name="smart_space_enable">Show At a Glance Widget</string>
+    <string name="smart_space_enable">At a Glance Widget</string>
     <string name="design_and_development">Design &amp; Development</string>
     <string name="translate">Translate</string>
     <string name="product">Product</string>
@@ -80,8 +81,33 @@
     <string name="dt2s_a11y_hint_title">Accessibility service required</string>
     <string name="dt2s_a11y_hint">To use Double Tap to Sleep, enable the accessibility service.</string>
     <string name="dt2s_warning_open_settings">Open Settings</string>
-    <string name="minus_one_enable">Show Feed</string>
+    <string name="minus_one_enable">Feed</string>
     <string name="minus_one_unavailable">Feed is not available</string>
     <string name="fuzzy_search_title">Fuzzy Search</string>
     <string name="fuzzy_search_desc">Approximate matching for app searches.</string>
+    <string name="theme_label">Theme</string>
+    <string name="theme_light">Light</string>
+    <string name="theme_dark">Dark</string>
+    <string name="theme_system_default">Follow System</string>
+    <string name="theme_follow_wallpaper">Match Wallpaper</string>
+    <string name="quickstep_label">Recents</string>
+    <string name="clear_all_as_action_label">Clear All Button at Bottom</string>
+    <string name="window_corner_radius_label">Corner Radius</string>
+    <string name="override_window_corner_radius_label">Custom Corner Radius</string>
+    <string name="system_icons">System Icons</string>
+    <string name="accent_color">Accent Color</string>
+    <string name="done">Done</string>
+    <string name="loading">Loading…</string>
+    <string name="system">System</string>
+    <string name="custom">Custom</string>
+    <string name="custom_color">Custom Color</string>
+    <string name="quickstep_description">Clear All Button, Corner Radius</string>
+    <string name="wallpaper_scrolling_label">Scroll Wallpaper</string>
+    <string name="show_sys_ui_scrim">Top Shadow</string>
+    <string name="show_status_bar">Status Bar</string>
+    <string name="what_to_show">What to Show</string>
+    <string name="missing_notification_access_label">Notification Access Needed</string>
+    <string name="missing_notification_access_description">Notification access needed.</string>
+    <string name="msg_missing_notification_access">To use Notification Dots, turn on app notifications for <xliff:g id="name" example="My App">%1$s</xliff:g>.</string>
+    <string name="title_change_settings">Change Settings</string>
 </resources>
