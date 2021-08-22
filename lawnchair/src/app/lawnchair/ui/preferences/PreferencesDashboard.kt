@@ -5,16 +5,22 @@ import android.content.Context
 import android.content.pm.LauncherApps
 import android.os.Process
 import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.material.*
+import androidx.compose.material.DropdownMenu
+import androidx.compose.material.DropdownMenuItem
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.MoreVert
 import androidx.compose.runtime.*
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.DpOffset
+import androidx.compose.ui.unit.dp
 import androidx.core.content.getSystemService
 import app.lawnchair.LawnchairApp
 import app.lawnchair.LawnchairLauncher
 import app.lawnchair.preferences.getMajorVersion
+import app.lawnchair.ui.preferences.components.ClickableIcon
 import app.lawnchair.ui.preferences.components.PreferenceCategory
 import app.lawnchair.ui.preferences.components.PreferenceLayout
 import app.lawnchair.util.restartLauncher
@@ -87,12 +93,15 @@ fun PreferencesDashboard() {
 fun PreferencesOverflowMenu() {
     var showMenu by remember { mutableStateOf(false) }
 
-    IconButton(onClick = { showMenu = true }) {
-        Icon(Icons.Rounded.MoreVert, "")
-    }
+    ClickableIcon(
+        imageVector = Icons.Rounded.MoreVert,
+        onClick = { showMenu = true },
+        tint = MaterialTheme.colors.onSurface
+    )
     DropdownMenu(
         expanded = showMenu,
-        onDismissRequest = { showMenu = false }
+        onDismissRequest = { showMenu = false },
+        offset = DpOffset(x = 8.dp, y = 0.dp)
     ) {
         val context = LocalContext.current
         DropdownMenuItem(onClick = {

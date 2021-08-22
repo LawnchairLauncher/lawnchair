@@ -62,17 +62,13 @@ fun TopBar(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(topBarSize)
-                    .padding(horizontal = 4.dp)
+                    .padding(horizontal = 8.dp)
             ) {
                 if (backArrowVisible) {
-                    IconButton(onClick = { if (currentRoute != "/") navController.popBackStack() }) {
-                        Icon(
-                            imageVector = backIcon(),
-                            contentDescription = "",
-                        )
-                    }
-                } else {
-                    Spacer(modifier = Modifier.width(4.dp))
+                    ClickableIcon(
+                        imageVector = backIcon(),
+                        onClick = { if (currentRoute != "/") navController.popBackStack() }
+                    )
                 }
                 Text(
                     text = label,
