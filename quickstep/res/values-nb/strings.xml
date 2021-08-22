@@ -84,4 +84,7 @@
     <string name="skip_tutorial_dialog_subtitle" msgid="544063326241955662">"Du kan finne dette i <xliff:g id="NAME">%1$s</xliff:g>-appen senere"</string>
     <string name="gesture_tutorial_action_button_label_cancel" msgid="3809842569351264108">"Avbryt"</string>
     <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"Hopp over"</string>
+    <string name="taskbar_edu_header_1" msgid="5323217563328273689">"Bruk to apper samtidig og bytt app med oppgavelinjen"</string>
+    <string name="taskbar_edu_next" msgid="4007618274426775841">"Neste"</string>
+    <string name="taskbar_edu_close" msgid="887022990168191073">"Lukk"</string>
 </resources>

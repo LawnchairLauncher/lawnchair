@@ -84,4 +84,7 @@
     <string name="skip_tutorial_dialog_subtitle" msgid="544063326241955662">"<xliff:g id="NAME">%1$s</xliff:g> ആപ്പിൽ നിങ്ങൾക്ക് ഇത് പിന്നീട് കാണാനാകും"</string>
     <string name="gesture_tutorial_action_button_label_cancel" msgid="3809842569351264108">"റദ്ദാക്കുക"</string>
     <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"ഒഴിവാക്കുക"</string>
+    <string name="taskbar_edu_header_1" msgid="5323217563328273689">"ടാസ്‌ക്‌ബാറിന്റെ സഹായത്തോടെ ഒരേ സമയം 2 ആപ്പുകൾ ഉപയോഗിക്കുകയും ആപ്പുകൾ പരസ്പരം മാറുകയും ചെയ്യൂ"</string>
+    <string name="taskbar_edu_next" msgid="4007618274426775841">"അടുത്തത്"</string>
+    <string name="taskbar_edu_close" msgid="887022990168191073">"അടയ്ക്കുക"</string>
 </resources>
