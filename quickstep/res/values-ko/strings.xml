@@ -84,4 +84,7 @@
     <string name="skip_tutorial_dialog_subtitle" msgid="544063326241955662">"이 튜토리얼은 <xliff:g id="NAME">%1$s</xliff:g> 앱에서 다시 볼 수 있습니다"</string>
     <string name="gesture_tutorial_action_button_label_cancel" msgid="3809842569351264108">"취소"</string>
     <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"건너뛰기"</string>
+    <string name="taskbar_edu_header_1" msgid="5323217563328273689">"작업 표시줄을 통해 앱 2개를 동시에 사용하고 앱 간에 전환"</string>
+    <string name="taskbar_edu_next" msgid="4007618274426775841">"다음"</string>
+    <string name="taskbar_edu_close" msgid="887022990168191073">"닫기"</string>
 </resources>

@@ -84,4 +84,7 @@
     <string name="skip_tutorial_dialog_subtitle" msgid="544063326241955662">"Bạn có thể tìm lại phần hướng dẫn này trong ứng dụng <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="gesture_tutorial_action_button_label_cancel" msgid="3809842569351264108">"Hủy"</string>
     <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"Bỏ qua"</string>
+    <string name="taskbar_edu_header_1" msgid="5323217563328273689">"Dùng 2 ứng dụng một lúc và chuyển đổi ứng dụng thông qua thanh tác vụ"</string>
+    <string name="taskbar_edu_next" msgid="4007618274426775841">"Tiếp theo"</string>
+    <string name="taskbar_edu_close" msgid="887022990168191073">"Đóng"</string>
 </resources>

@@ -84,4 +84,7 @@
     <string name="skip_tutorial_dialog_subtitle" msgid="544063326241955662">"Ви знайдете його пізніше в додатку <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="gesture_tutorial_action_button_label_cancel" msgid="3809842569351264108">"Скасувати"</string>
     <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"Пропустити"</string>
+    <string name="taskbar_edu_header_1" msgid="5323217563328273689">"Користуйтеся двома додатками одночасно й перемикайтеся між ними за допомогою панелі завдань"</string>
+    <string name="taskbar_edu_next" msgid="4007618274426775841">"Далі"</string>
+    <string name="taskbar_edu_close" msgid="887022990168191073">"Закрити"</string>
 </resources>

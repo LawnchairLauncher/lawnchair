@@ -84,4 +84,7 @@
     <string name="skip_tutorial_dialog_subtitle" msgid="544063326241955662">"<xliff:g id="NAME">%1$s</xliff:g> aplikazioan dago eskuragarri tutoriala"</string>
     <string name="gesture_tutorial_action_button_label_cancel" msgid="3809842569351264108">"Utzi"</string>
     <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"Saltatu"</string>
+    <string name="taskbar_edu_header_1" msgid="5323217563328273689">"Erabili bi aplikazio aldi berean eta aldatu aplikazioz zereginen barra erabilita"</string>
+    <string name="taskbar_edu_next" msgid="4007618274426775841">"Hurrengoa"</string>
+    <string name="taskbar_edu_close" msgid="887022990168191073">"Itxi"</string>
 </resources>
