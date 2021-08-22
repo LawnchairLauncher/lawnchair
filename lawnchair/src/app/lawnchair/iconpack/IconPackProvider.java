@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.util.ArrayMap;
+import android.util.Log;
 import android.widget.Toast;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -59,7 +60,7 @@ public class IconPackProvider {
                 return context.getPackageManager().getXml(packageName, resourceId, null);
             }
         } catch (PackageManager.NameNotFoundException e) {
-            Toast.makeText(context, "Failed to get AppFilter", Toast.LENGTH_SHORT).show();
+            Log.e("IconPackProvider", "Failed to get AppFilter", e);
         }
         return null;
     }
