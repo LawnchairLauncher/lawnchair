@@ -1996,7 +1996,6 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             TaskViewSimulator[] taskViewSimulators) {
         mCurrentGestureEndTarget = endTarget;
         if (endTarget == GestureState.GestureEndTarget.RECENTS) {
-            setEnableFreeScroll(true);
             updateGridProperties();
         }
 
@@ -3452,8 +3451,11 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         boolean isStartShift;
         if (midpointIndex > -1) {
             // When there is a midpoint reference task, adjacent tasks have less distance to travel
-            // to reach offscreen. Offset the task position to the task's starting point.
-            int midpointScroll = getScrollForPage(midpointIndex);
+            // to reach offscreen. Offset the task position to the task's starting point, and offset
+            // by current page's scroll diff.
+            int midpointScroll = getScrollForPage(midpointIndex)
+                    + mOrientationHandler.getPrimaryScroll(this) - getScrollForPage(mCurrentPage);
+
             getPersistentChildPosition(midpointIndex, midpointScroll, taskPosition);
             float midpointStart = mOrientationHandler.getStart(taskPosition);
 
