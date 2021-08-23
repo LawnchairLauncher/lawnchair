@@ -109,9 +109,9 @@
     <string name="show_sys_ui_scrim">Horní stín</string>
     <string name="show_status_bar">Stavová lišta</string>
     <string name="what_to_show">Co ukázat</string>
-    <string name="missing_notification_access_label">Notification Access Needed</string>
-    <string name="missing_notification_access_description">Notification access needed.</string>
-    <string name="msg_missing_notification_access">To use Notification Dots, turn on app notifications for <xliff:g id="name" example="My App">%1$s</xliff:g>.</string>
-    <string name="title_change_settings">Change Settings</string>
-    <string name="debug_restart_launcher">Restart Lawnchair</string>
+    <string name="missing_notification_access_label">Je vyžadován přístup k oznámením</string>
+    <string name="missing_notification_access_description">Je vyžadován přístup k oznámením.</string>
+    <string name="msg_missing_notification_access">Chcete-li používat tečky oznámení, zapněte oznámení aplikace pro <xliff:g id="name" example="My App">%1$s</xliff:g>.</string>
+    <string name="title_change_settings">Změnit nastavení</string>
+    <string name="debug_restart_launcher">Restartovat Lawnchair</string>
 </resources>
