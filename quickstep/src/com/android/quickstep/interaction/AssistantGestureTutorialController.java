@@ -68,7 +68,6 @@ final class AssistantGestureTutorialController extends TutorialController {
                         showFeedback(R.string.assistant_gesture_feedback_swipe_too_far_from_corner);
                         break;
                     case ASSISTANT_COMPLETED:
-                        hideFeedback(true);
                         showRippleEffect(null);
                         showFeedback(R.string.assistant_gesture_tutorial_playground_subtitle);
                         break;
