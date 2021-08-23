@@ -25,11 +25,14 @@ import android.graphics.drawable.ColorDrawable;
 import android.util.AttributeSet;
 import android.view.View;
 
+import androidx.annotation.NonNull;
 import androidx.core.graphics.ColorUtils;
 
 import com.android.launcher3.BaseActivity;
 import com.android.launcher3.Insettable;
 import com.android.launcher3.util.SystemUiController;
+
+import java.util.ArrayList;
 
 /**
  * Simple scrim which draws a flat color
@@ -37,11 +40,12 @@ import com.android.launcher3.util.SystemUiController;
 public class ScrimView extends View implements Insettable {
     private static final float STATUS_BAR_COLOR_FORCE_UPDATE_THRESHOLD = 0.9f;
 
+    private final ArrayList<Runnable> mOpaquenessListeners = new ArrayList<>(1);
     private SystemUiController mSystemUiController;
-
     private ScrimDrawingController mDrawingController;
     private int mBackgroundColor;
     private boolean mIsVisible = true;
+    private boolean mLastDispatchedOpaqueness;
 
     public ScrimView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -60,6 +64,7 @@ public class ScrimView extends View implements Insettable {
     @Override
     protected boolean onSetAlpha(int alpha) {
         updateSysUiColors();
+        dispatchVisibilityListenersIfNeeded();
         return super.onSetAlpha(alpha);
     }
 
@@ -67,6 +72,7 @@ public class ScrimView extends View implements Insettable {
     public void setBackgroundColor(int color) {
         mBackgroundColor = color;
         updateSysUiColors();
+        dispatchVisibilityListenersIfNeeded();
         super.setBackgroundColor(color);
     }
 
@@ -74,6 +80,7 @@ public class ScrimView extends View implements Insettable {
     public void onVisibilityAggregated(boolean isVisible) {
         super.onVisibilityAggregated(isVisible);
         mIsVisible = isVisible;
+        dispatchVisibilityListenersIfNeeded();
     }
 
     public boolean isFullyOpaque() {
@@ -108,6 +115,17 @@ public class ScrimView extends View implements Insettable {
         }
     }
 
+    private void dispatchVisibilityListenersIfNeeded() {
+        boolean fullyOpaque = isFullyOpaque();
+        if (mLastDispatchedOpaqueness == fullyOpaque) {
+            return;
+        }
+        mLastDispatchedOpaqueness = fullyOpaque;
+        for (int i = 0; i < mOpaquenessListeners.size(); i++) {
+            mOpaquenessListeners.get(i).run();
+        }
+    }
+
     private SystemUiController getSystemUiController() {
         if (mSystemUiController == null) {
             mSystemUiController = BaseActivity.fromContext(getContext()).getSystemUiController();
@@ -133,6 +151,22 @@ public class ScrimView extends View implements Insettable {
             mDrawingController = drawingController;
             invalidate();
         }
+    }
+
+    /**
+     * Registers a listener to be notified of whether the scrim is occluding other UI elements.
+     * @see #isFullyOpaque()
+     */
+    public void addOpaquenessListener(@NonNull Runnable listener) {
+        mOpaquenessListeners.add(listener);
+    }
+
+    /**
+     * Removes previously registered listener.
+     * @see #addOpaquenessListener(Runnable)
+     */
+    public void removeOpaquenessListener(@NonNull Runnable listener) {
+        mOpaquenessListeners.remove(listener);
     }
 
     /**
