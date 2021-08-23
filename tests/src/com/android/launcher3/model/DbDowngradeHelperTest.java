@@ -15,12 +15,13 @@
  */
 package com.android.launcher3.model;
 
+import static androidx.test.InstrumentationRegistry.getContext;
+
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertNotSame;
 import static junit.framework.Assert.assertTrue;
 
-import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
@@ -32,6 +33,10 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+import androidx.test.filters.SmallTest;
+import androidx.test.platform.app.InstrumentationRegistry;
+
 import com.android.launcher3.LauncherProvider;
 import com.android.launcher3.LauncherProvider.DatabaseHelper;
 import com.android.launcher3.LauncherSettings.Favorites;
@@ -40,15 +45,14 @@ import com.android.launcher3.R;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.robolectric.RobolectricTestRunner;
-import org.robolectric.RuntimeEnvironment;
 
 import java.io.File;
 
 /**
  * Tests for {@link DbDowngradeHelper}
  */
-@RunWith(RobolectricTestRunner.class)
+@SmallTest
+@RunWith(AndroidJUnit4.class)
 public class DbDowngradeHelperTest {
 
     private static final String SCHEMA_FILE = "test_schema.json";
@@ -60,7 +64,7 @@ public class DbDowngradeHelperTest {
 
     @Before
     public void setup() {
-        mContext = RuntimeEnvironment.application;
+        mContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
         mSchemaFile = mContext.getFileStreamPath(SCHEMA_FILE);
         mDbFile = mContext.getDatabasePath(DB_FILE);
     }
@@ -77,8 +81,10 @@ public class DbDowngradeHelperTest {
     public void testUpdateSchemaFile() throws Exception {
         // Setup mock resources
         Resources res = spy(mContext.getResources());
-        doAnswer(i ->this.getClass().getResourceAsStream("/db_schema_v10.json"))
-                .when(res).openRawResource(eq(R.raw.downgrade_schema));
+        Resources myRes = getContext().getResources();
+        doAnswer(i -> myRes.openRawResource(
+                myRes.getIdentifier("db_schema_v10", "raw", getContext().getPackageName())))
+                .when(res).openRawResource(R.raw.downgrade_schema);
         Context context = spy(mContext);
         when(context.getResources()).thenReturn(res);
 

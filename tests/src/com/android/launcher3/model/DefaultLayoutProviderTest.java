@@ -16,17 +16,17 @@
 
 package com.android.launcher3.model;
 
+import static com.android.launcher3.util.LauncherModelHelper.TEST_ACTIVITY;
 import static com.android.launcher3.util.LauncherModelHelper.TEST_PACKAGE;
 
 import static org.junit.Assert.assertEquals;
-import static org.robolectric.Shadows.shadowOf;
-import static org.robolectric.util.ReflectionHelpers.setField;
 
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.pm.PackageInstaller;
-import android.content.pm.PackageInstaller.SessionInfo;
 import android.content.pm.PackageInstaller.SessionParams;
+
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+import androidx.test.filters.SmallTest;
 
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.icons.BitmapInfo;
@@ -35,19 +35,16 @@ import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.util.LauncherLayoutBuilder;
 import com.android.launcher3.util.LauncherModelHelper;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.robolectric.RobolectricTestRunner;
-import org.robolectric.RuntimeEnvironment;
-import org.robolectric.annotation.LooperMode;
-import org.robolectric.annotation.LooperMode.Mode;
 
 /**
  * Tests for layout parser for remote layout
  */
-@RunWith(RobolectricTestRunner.class)
-@LooperMode(Mode.PAUSED)
+@SmallTest
+@RunWith(AndroidJUnit4.class)
 public class DefaultLayoutProviderTest {
 
     private LauncherModelHelper mModelHelper;
@@ -56,16 +53,18 @@ public class DefaultLayoutProviderTest {
     @Before
     public void setUp() {
         mModelHelper = new LauncherModelHelper();
-        mTargetContext = RuntimeEnvironment.application;
+        mTargetContext = mModelHelper.sandboxContext;
+    }
 
-        shadowOf(mTargetContext.getPackageManager())
-                .addActivityIfNotPresent(new ComponentName(TEST_PACKAGE, TEST_PACKAGE));
+    @After
+    public void tearDown() {
+        mModelHelper.destroy();
     }
 
     @Test
     public void testCustomProfileLoaded_with_icon_on_hotseat() throws Exception {
         writeLayoutAndLoad(new LauncherLayoutBuilder().atHotseat(0)
-                .putApp(TEST_PACKAGE, TEST_PACKAGE));
+                .putApp(TEST_PACKAGE, TEST_ACTIVITY));
 
         // Verify one item in hotseat
         assertEquals(1, mModelHelper.getBgDataModel().workspaceItems.size());
@@ -77,9 +76,9 @@ public class DefaultLayoutProviderTest {
     @Test
     public void testCustomProfileLoaded_with_folder() throws Exception {
         writeLayoutAndLoad(new LauncherLayoutBuilder().atHotseat(0).putFolder(android.R.string.copy)
-                .addApp(TEST_PACKAGE, TEST_PACKAGE)
-                .addApp(TEST_PACKAGE, TEST_PACKAGE)
-                .addApp(TEST_PACKAGE, TEST_PACKAGE)
+                .addApp(TEST_PACKAGE, TEST_ACTIVITY)
+                .addApp(TEST_PACKAGE, TEST_ACTIVITY)
+                .addApp(TEST_PACKAGE, TEST_ACTIVITY)
                 .build());
 
         // Verify folder
@@ -92,9 +91,9 @@ public class DefaultLayoutProviderTest {
     @Test
     public void testCustomProfileLoaded_with_folder_custom_title() throws Exception {
         writeLayoutAndLoad(new LauncherLayoutBuilder().atHotseat(0).putFolder("CustomFolder")
-                .addApp(TEST_PACKAGE, TEST_PACKAGE)
-                .addApp(TEST_PACKAGE, TEST_PACKAGE)
-                .addApp(TEST_PACKAGE, TEST_PACKAGE)
+                .addApp(TEST_PACKAGE, TEST_ACTIVITY)
+                .addApp(TEST_PACKAGE, TEST_ACTIVITY)
+                .addApp(TEST_PACKAGE, TEST_ACTIVITY)
                 .build());
 
         // Verify folder
@@ -112,12 +111,10 @@ public class DefaultLayoutProviderTest {
         // Add a placeholder session info so that the widget exists
         SessionParams params = new SessionParams(SessionParams.MODE_FULL_INSTALL);
         params.setAppPackageName(pendingAppPkg);
+        params.setAppIcon(BitmapInfo.LOW_RES_ICON);
 
         PackageInstaller installer = mTargetContext.getPackageManager().getPackageInstaller();
-        int sessionId = installer.createSession(params);
-        SessionInfo sessionInfo = installer.getSessionInfo(sessionId);
-        setField(sessionInfo, "installerPackageName", "com.test");
-        setField(sessionInfo, "appIcon", BitmapInfo.LOW_RES_ICON);
+        installer.createSession(params);
 
         writeLayoutAndLoad(new LauncherLayoutBuilder().atWorkspace(0, 1, 0)
                 .putWidget(pendingAppPkg, "PlaceholderWidget", 2, 2));

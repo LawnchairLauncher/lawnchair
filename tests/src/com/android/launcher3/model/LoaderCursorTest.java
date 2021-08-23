@@ -16,6 +16,8 @@
 
 package com.android.launcher3.model;
 
+import static androidx.test.InstrumentationRegistry.getContext;
+
 import static com.android.launcher3.LauncherSettings.Favorites.CELLX;
 import static com.android.launcher3.LauncherSettings.Favorites.CELLY;
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER;
@@ -33,7 +35,7 @@ import static com.android.launcher3.LauncherSettings.Favorites.RESTORED;
 import static com.android.launcher3.LauncherSettings.Favorites.SCREEN;
 import static com.android.launcher3.LauncherSettings.Favorites.TITLE;
 import static com.android.launcher3.LauncherSettings.Favorites._ID;
-import static com.android.launcher3.util.LauncherModelHelper.TEST_PACKAGE;
+import static com.android.launcher3.util.LauncherModelHelper.TEST_ACTIVITY;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
@@ -41,13 +43,14 @@ import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertNull;
 import static junit.framework.Assert.assertTrue;
 
-import static org.robolectric.Shadows.shadowOf;
-
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.database.MatrixCursor;
 import android.os.Process;
+
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+import androidx.test.filters.SmallTest;
 
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.LauncherAppState;
@@ -55,23 +58,22 @@ import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.util.Executors;
+import com.android.launcher3.util.LauncherModelHelper;
 import com.android.launcher3.util.PackageManagerHelper;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.robolectric.RobolectricTestRunner;
-import org.robolectric.RuntimeEnvironment;
-import org.robolectric.annotation.LooperMode;
-import org.robolectric.annotation.LooperMode.Mode;
 
 /**
  * Tests for {@link LoaderCursor}
  */
-@RunWith(RobolectricTestRunner.class)
-@LooperMode(Mode.PAUSED)
+@SmallTest
+@RunWith(AndroidJUnit4.class)
 public class LoaderCursorTest {
 
+    private LauncherModelHelper mModelHelper;
     private LauncherAppState mApp;
 
     private MatrixCursor mCursor;
@@ -82,7 +84,8 @@ public class LoaderCursorTest {
 
     @Before
     public void setup() {
-        mContext = RuntimeEnvironment.application;
+        mModelHelper = new LauncherModelHelper();
+        mContext = mModelHelper.sandboxContext;
         mIDP = InvariantDeviceProfile.INSTANCE.get(mContext);
         mApp = LauncherAppState.getInstance(mContext);
 
@@ -95,6 +98,11 @@ public class LoaderCursorTest {
         UserManagerState ums = new UserManagerState();
         mLoaderCursor = new LoaderCursor(mCursor, Favorites.CONTENT_URI, mApp, ums);
         ums.allUsers.put(0, Process.myUserHandle());
+    }
+
+    @After
+    public void tearDown() {
+        mModelHelper.destroy();
     }
 
     private void initCursor(int itemType, String title) {
@@ -117,9 +125,7 @@ public class LoaderCursorTest {
 
     @Test
     public void getAppShortcutInfo_dontAllowMissing_validComponent() throws Exception {
-        ComponentName cn = new ComponentName(TEST_PACKAGE, TEST_PACKAGE);
-        shadowOf(mContext.getPackageManager()).addActivityIfNotPresent(cn);
-
+        ComponentName cn = new ComponentName(getContext(), TEST_ACTIVITY);
         initCursor(ITEM_TYPE_APPLICATION, "");
         assertTrue(mLoaderCursor.moveToNext());
 
