@@ -110,6 +110,7 @@
     <dimen name="all_apps_tip_bottom_margin">8dp</dimen>
     <!-- The size of corner radius of the arrow in the arrow toast. -->
     <dimen name="arrow_toast_corner_radius">2dp</dimen>
+    <dimen name="arrow_toast_elevation">2dp</dimen>
     <dimen name="arrow_toast_arrow_width">10dp</dimen>
 
 <!-- Search bar in All Apps -->
@@ -240,6 +241,7 @@
     <dimen name="bg_popup_padding">2dp</dimen>
     <dimen name="bg_popup_item_width">216dp</dimen>
     <dimen name="bg_popup_item_height">56dp</dimen>
+    <dimen name="bg_popup_item_vertical_padding">12dp</dimen>
     <dimen name="pre_drag_view_scale">6dp</dimen>
     <!-- an icon with shortcuts must be dragged this far before the container is removed. -->
     <dimen name="deep_shortcuts_start_drag_threshold">16dp</dimen>
@@ -346,4 +348,5 @@
     <dimen name="search_row_icon_size">48dp</dimen>
     <dimen name="search_row_small_icon_size">32dp</dimen>
     <dimen name="padded_rounded_button_padding">8dp</dimen>
+
 </resources>
