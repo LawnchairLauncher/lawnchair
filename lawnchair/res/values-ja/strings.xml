@@ -40,7 +40,7 @@
     <string name="icons">アイコン</string>
     <string name="icon_size">アイコンのサイズ</string>
     <string name="label_size">ラベルのサイズ</string>
-    <string name="show_home_labels">Show Labels</string>
+    <string name="show_home_labels">ラベルの表示</string>
     <string name="allow_empty_pages_label">空のページを許可する</string>
     <string name="notification_dots">通知ドット</string>
     <string name="smartspace_preferences">設定</string>
@@ -64,10 +64,10 @@
     <string name="auto_adaptive_icons_description">すべての非アダプティブ アイコンを対象。</string>
     <string name="support_and_pr">サポート &amp; PR</string>
     <string name="workspace_dt2s">ダブルタップでスリープ</string>
-    <string name="smart_space_enable">At a Glance Widget</string>
+    <string name="smart_space_enable">At a Glance ウィジェット</string>
     <string name="design_and_development">デザイン &amp; 開発</string>
     <string name="translate">翻訳</string>
-    <string name="product">Product</string>
+    <string name="product">製品</string>
     <string name="hidden_apps_label">非表示のアプリ</string>
     <string name="hidden_apps_label_with_count">非表示のアプリ (%1$d)</string>
     <plurals name="apps_count">
@@ -103,12 +103,12 @@
     <string name="custom_color">カスタムカラー</string>
     <string name="quickstep_description">Clear All Button, Corner Radius</string>
     <string name="wallpaper_scrolling_label">Scroll Wallpaper</string>
-    <string name="show_sys_ui_scrim">Top Shadow</string>
+    <string name="show_sys_ui_scrim">上部の影</string>
     <string name="show_status_bar">ステータスバー</string>
-    <string name="what_to_show">What to Show</string>
-    <string name="missing_notification_access_label">Notification Access Needed</string>
-    <string name="missing_notification_access_description">Notification access needed.</string>
-    <string name="msg_missing_notification_access">To use Notification Dots, turn on app notifications for <xliff:g id="name" example="My App">%1$s</xliff:g>.</string>
-    <string name="title_change_settings">Change Settings</string>
+    <string name="what_to_show">表示するもの</string>
+    <string name="missing_notification_access_label">通知へのアクセスが必要です</string>
+    <string name="missing_notification_access_description">通知へのアクセスが必要です。</string>
+    <string name="msg_missing_notification_access">通知ドットを使用するには、 <xliff:g id="name" example="My App">%1$s</xliff:g> のアプリ通知をオンにします。</string>
+    <string name="title_change_settings">設定を変更</string>
     <string name="debug_restart_launcher">Lawnchairを再起動</string>
 </resources>
