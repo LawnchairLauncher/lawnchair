@@ -84,4 +84,7 @@
     <string name="skip_tutorial_dialog_subtitle" msgid="544063326241955662">"ይህን በኋላ በ<xliff:g id="NAME">%1$s</xliff:g> መተግበሪያው ውስጥ ማግኘት ይችላሉ"</string>
     <string name="gesture_tutorial_action_button_label_cancel" msgid="3809842569351264108">"ይቅር"</string>
     <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"ዝለል"</string>
+    <string name="taskbar_edu_header_1" msgid="5323217563328273689">"በአንድ ጊዜ 2 መተግበሪያዎችን ይጠቀሙ እና በተግባር አሞሌው አማካኝነት መተግበሪያዎችን ይቀያይሩ"</string>
+    <string name="taskbar_edu_next" msgid="4007618274426775841">"ቀጣይ"</string>
+    <string name="taskbar_edu_close" msgid="887022990168191073">"ዝጋ"</string>
 </resources>

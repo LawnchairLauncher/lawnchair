@@ -84,4 +84,7 @@
     <string name="skip_tutorial_dialog_subtitle" msgid="544063326241955662">"Je vindt dit later terug in de app <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="gesture_tutorial_action_button_label_cancel" msgid="3809842569351264108">"Annuleren"</string>
     <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"Overslaan"</string>
+    <string name="taskbar_edu_header_1" msgid="5323217563328273689">"Gebruik 2 apps tegelijk en schakel tussen apps via de taakbalk"</string>
+    <string name="taskbar_edu_next" msgid="4007618274426775841">"Volgende"</string>
+    <string name="taskbar_edu_close" msgid="887022990168191073">"Sluiten"</string>
 </resources>
