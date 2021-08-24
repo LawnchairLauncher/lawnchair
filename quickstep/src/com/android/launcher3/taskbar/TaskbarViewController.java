@@ -111,6 +111,10 @@ public class TaskbarViewController {
         return mTaskbarView.getIconLayoutBounds();
     }
 
+    public View[] getIconViews() {
+        return mTaskbarView.getIconViews();
+    }
+
     public AnimatedFloat getTaskbarIconScaleForStash() {
         return mTaskbarIconScaleForStash;
     }

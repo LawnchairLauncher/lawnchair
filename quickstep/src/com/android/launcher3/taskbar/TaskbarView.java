@@ -256,6 +256,18 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
         return mIconLayoutBounds;
     }
 
+    /**
+     * Returns the app icons currently shown in the taskbar.
+     */
+    public View[] getIconViews() {
+        final int count = getChildCount();
+        View[] icons = new View[count];
+        for (int i = 0; i < count; i++) {
+            icons[i] = getChildAt(i);
+        }
+        return icons;
+    }
+
     // FolderIconParent implemented methods.
 
     @Override
