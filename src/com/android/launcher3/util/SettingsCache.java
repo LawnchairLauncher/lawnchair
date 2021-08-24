@@ -47,7 +47,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
  *
  * Cache will also be updated if a key queried is missing (even if it has no listeners registered).
  */
-public class SettingsCache extends ContentObserver implements SafeCloseable {
+public class SettingsCache extends ContentObserver {
 
     /** Hidden field Settings.Secure.NOTIFICATION_BADGING */
     public static final Uri NOTIFICATION_BADGING_URI =
@@ -69,6 +69,7 @@ public class SettingsCache extends ContentObserver implements SafeCloseable {
     private final Map<Uri, CopyOnWriteArrayList<OnChangeListener>> mListenerMap = new HashMap<>();
     protected final ContentResolver mResolver;
 
+
     /**
      * Singleton instance
      */
@@ -78,11 +79,6 @@ public class SettingsCache extends ContentObserver implements SafeCloseable {
     private SettingsCache(Context context) {
         super(new Handler());
         mResolver = context.getContentResolver();
-    }
-
-    @Override
-    public void close() {
-        mResolver.unregisterContentObserver(this);
     }
 
     @Override
