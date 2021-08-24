@@ -3314,9 +3314,9 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
 
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
-        // If we're going to HOME, avoid unnecessary onLayout that cause TaskViews to re-arrange
-        // during animation to HOME.
-        if (mCurrentGestureEndTarget == GestureState.GestureEndTarget.HOME) {
+        // If we're going to a state without overview panel, avoid unnecessary onLayout that
+        // cause TaskViews to re-arrange during animation to that state.
+        if (!mOverviewStateEnabled && !mFirstLayout) {
             return;
         }
 
