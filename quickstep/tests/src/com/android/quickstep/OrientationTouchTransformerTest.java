@@ -19,6 +19,8 @@ package com.android.quickstep;
 
 import static android.view.Display.DEFAULT_DISPLAY;
 
+import static androidx.test.core.app.ApplicationProvider.getApplicationContext;
+
 import static com.android.quickstep.SysUINavigationMode.Mode.NO_BUTTON;
 
 import static org.junit.Assert.assertFalse;
@@ -40,6 +42,9 @@ import android.view.Display;
 import android.view.MotionEvent;
 import android.view.Surface;
 
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+import androidx.test.filters.SmallTest;
+
 import com.android.launcher3.ResourceUtils;
 import com.android.launcher3.util.DisplayController;
 
@@ -47,10 +52,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.MockitoAnnotations;
-import org.robolectric.RobolectricTestRunner;
-import org.robolectric.RuntimeEnvironment;
 
-@RunWith(RobolectricTestRunner.class)
+@SmallTest
+@RunWith(AndroidJUnit4.class)
 public class OrientationTouchTransformerTest {
     static class ScreenSize {
         int mHeight;
@@ -293,7 +297,7 @@ public class OrientationTouchTransformerTest {
     }
 
     private DisplayController.Info createDisplayInfo(ScreenSize screenSize, int rotation) {
-        Context context = RuntimeEnvironment.application;
+        Context context = getApplicationContext();
         Display display = spy(context.getSystemService(DisplayManager.class)
                 .getDisplay(DEFAULT_DISPLAY));
 
