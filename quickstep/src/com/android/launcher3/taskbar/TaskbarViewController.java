@@ -165,8 +165,9 @@ public class TaskbarViewController {
         int offsetY = launcherDp.getTaskbarOffsetY();
         setter.setFloat(mTaskbarIconTranslationYForHome, VALUE, -offsetY, LINEAR);
 
-        int collapsedHeight = mActivity.getDeviceProfile().taskbarSize;
-        int expandedHeight = collapsedHeight + offsetY;
+        int collapsedHeight = mActivity.getDefaultTaskbarWindowHeight();
+        int expandedHeight = Math.max(collapsedHeight,
+                mActivity.getDeviceProfile().taskbarSize + offsetY);
         setter.addOnFrameListener(anim -> mActivity.setTaskbarWindowHeight(
                 anim.getAnimatedFraction() > 0 ? expandedHeight : collapsedHeight));
 
