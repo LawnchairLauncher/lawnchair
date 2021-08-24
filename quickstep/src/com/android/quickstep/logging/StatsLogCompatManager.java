@@ -375,6 +375,8 @@ public class StatsLogCompatManager extends StatsLogManager {
         switch (info.getContainerInfo().getContainerCase()) {
             case PREDICTED_HOTSEAT_CONTAINER:
                 return info.getContainerInfo().getPredictedHotseatContainer().getCardinality();
+            case TASK_BAR_CONTAINER:
+                return info.getContainerInfo().getTaskBarContainer().getCardinality();
             case SEARCH_RESULT_CONTAINER:
                 return info.getContainerInfo().getSearchResultContainer().getQueryLength();
             case EXTENDED_CONTAINERS:
@@ -461,6 +463,8 @@ public class StatsLogCompatManager extends StatsLogManager {
                 return info.getContainerInfo().getHotseat().getIndex();
             case PREDICTED_HOTSEAT_CONTAINER:
                 return info.getContainerInfo().getPredictedHotseatContainer().getIndex();
+            case TASK_BAR_CONTAINER:
+                return info.getContainerInfo().getTaskBarContainer().getIndex();
             default:
                 return info.getContainerInfo().getWorkspace().getPageIndex();
         }
