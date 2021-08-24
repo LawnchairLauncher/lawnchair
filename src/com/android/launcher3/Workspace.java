@@ -333,7 +333,8 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         int paddingBottom = grid.cellLayoutBottomPaddingPx;
 
         int panelCount = getPanelCount();
-        for (int i = mWorkspaceScreens.size() - 1; i >= 0; i--) {
+        int numberOfScreens = mScreenOrder.size();
+        for (int i = 0; i < numberOfScreens; i++) {
             int paddingLeft = paddingLeftRight;
             int paddingRight = paddingLeftRight;
             if (panelCount > 1) {
@@ -348,7 +349,9 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
                     paddingRight = 0;
                 }
             }
-            mWorkspaceScreens.valueAt(i).setPadding(paddingLeft, 0, paddingRight, paddingBottom);
+            // SparseArrayMap doesn't keep the order
+            mWorkspaceScreens.get(mScreenOrder.get(i))
+                    .setPadding(paddingLeft, 0, paddingRight, paddingBottom);
         }
     }
 
