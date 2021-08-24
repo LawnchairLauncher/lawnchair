@@ -16,6 +16,7 @@
 package com.android.launcher3.taskbar;
 
 import static com.android.launcher3.AbstractFloatingView.TYPE_ALL;
+import static com.android.systemui.shared.system.ViewTreeObserverWrapper.InsetsInfo.TOUCHABLE_INSETS_CONTENT;
 import static com.android.systemui.shared.system.ViewTreeObserverWrapper.InsetsInfo.TOUCHABLE_INSETS_FRAME;
 import static com.android.systemui.shared.system.ViewTreeObserverWrapper.InsetsInfo.TOUCHABLE_INSETS_REGION;
 
@@ -132,13 +133,14 @@ public class TaskbarDragLayerController {
                 // Let touches pass through us.
                 insetsInfo.setTouchableInsets(TOUCHABLE_INSETS_REGION);
             } else if (mControllers.navbarButtonsViewController.isImeVisible()) {
-                insetsInfo.setTouchableInsets(TOUCHABLE_INSETS_FRAME);
+                insetsInfo.setTouchableInsets(TOUCHABLE_INSETS_CONTENT);
             } else if (!mControllers.uiController.isTaskbarTouchable()) {
                 // Let touches pass through us.
                 insetsInfo.setTouchableInsets(TOUCHABLE_INSETS_REGION);
             } else if (mControllers.taskbarViewController.areIconsVisible()) {
                 // Buttons are visible, take over the full taskbar area
-                insetsInfo.setTouchableInsets(TOUCHABLE_INSETS_FRAME);
+                insetsInfo.setTouchableInsets(mActivity.isTaskbarWindowFullscreen()
+                        ? TOUCHABLE_INSETS_FRAME : TOUCHABLE_INSETS_CONTENT);
             } else {
                 insetsInfo.setTouchableInsets(TOUCHABLE_INSETS_REGION);
             }

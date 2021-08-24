@@ -32,9 +32,8 @@ public class TaskbarEduController {
         mActivity.getDragLayer().post(() -> {
             mTaskbarEduView = (TaskbarEduView) mActivity.getLayoutInflater().inflate(
                     R.layout.taskbar_edu, mActivity.getDragLayer(), false);
-            mTaskbarEduView.addOnCloseListener(() -> {
-                mTaskbarEduView = null;
-            });
+            mTaskbarEduView.init(new TaskbarEduCallbacks());
+            mTaskbarEduView.addOnCloseListener(() -> mTaskbarEduView = null);
             mTaskbarEduView.show();
         });
     }
@@ -42,6 +41,29 @@ public class TaskbarEduController {
     void hideEdu() {
         if (mTaskbarEduView != null) {
             mTaskbarEduView.close(true /* animate */);
+        }
+    }
+
+
+    /**
+     * Callbacks for {@link TaskbarEduView} to interact with its controller.
+     */
+    class TaskbarEduCallbacks {
+        void onPageChanged(int currentPage, int pageCount) {
+            if (currentPage == 0) {
+                mTaskbarEduView.updateStartButton(R.string.taskbar_edu_close,
+                        v -> mTaskbarEduView.close(true /* animate */));
+            } else {
+                mTaskbarEduView.updateStartButton(R.string.taskbar_edu_previous,
+                        v -> mTaskbarEduView.snapToPage(currentPage - 1));
+            }
+            if (currentPage == pageCount - 1) {
+                mTaskbarEduView.updateEndButton(R.string.taskbar_edu_done,
+                        v -> mTaskbarEduView.close(true /* animate */));
+            } else {
+                mTaskbarEduView.updateEndButton(R.string.taskbar_edu_next,
+                        v -> mTaskbarEduView.snapToPage(currentPage + 1));
+            }
         }
     }
 }

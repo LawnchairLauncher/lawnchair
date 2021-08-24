@@ -18,9 +18,8 @@ package com.android.quickstep.interaction;
 import static com.android.quickstep.interaction.TutorialController.TutorialType.BACK_NAVIGATION;
 import static com.android.quickstep.interaction.TutorialController.TutorialType.BACK_NAVIGATION_COMPLETE;
 
+import android.annotation.LayoutRes;
 import android.graphics.PointF;
-
-import androidx.appcompat.content.res.AppCompatResources;
 
 import com.android.launcher3.R;
 import com.android.quickstep.interaction.EdgeBackGestureHandler.BackGestureResult;
@@ -44,8 +43,18 @@ final class BackGestureTutorialController extends TutorialController {
     }
 
     @Override
-    protected int getMockAppTaskThumbnailResId(boolean forDarkMode) {
-        return R.drawable.mock_conversation;
+    protected int getMockAppTaskLayoutResId() {
+        return getMockAppTaskCurrentPageLayoutResId();
+    }
+
+    @LayoutRes
+    int getMockAppTaskCurrentPageLayoutResId() {
+        return R.layout.gesture_tutorial_mock_conversation;
+    }
+
+    @LayoutRes
+    int getMockAppTaskPreviousPageLayoutResId() {
+        return R.layout.gesture_tutorial_mock_conversation_list;
     }
 
     @Override
@@ -70,10 +79,8 @@ final class BackGestureTutorialController extends TutorialController {
         switch (result) {
             case BACK_COMPLETED_FROM_LEFT:
             case BACK_COMPLETED_FROM_RIGHT:
-                mTutorialFragment.releaseGestureVideoView();
-                hideFeedback(true);
-                mFakeTaskView.setBackground(AppCompatResources.getDrawable(mContext,
-                        R.drawable.mock_conversations_list));
+                mTutorialFragment.releaseFeedbackAnimation();
+                updateFakeAppTaskViewLayout(getMockAppTaskPreviousPageLayoutResId());
                 int subtitleResId = mTutorialFragment.isAtFinalStep()
                         ? R.string.back_gesture_feedback_complete_without_follow_up
                         : R.string.back_gesture_feedback_complete_with_overview_follow_up;

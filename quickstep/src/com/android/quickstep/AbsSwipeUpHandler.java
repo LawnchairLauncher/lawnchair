@@ -65,6 +65,7 @@ import android.graphics.RectF;
 import android.os.Build;
 import android.os.IBinder;
 import android.os.SystemClock;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnApplyWindowInsetsListener;
@@ -87,6 +88,7 @@ import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.logging.StatsLogManager.StatsLogger;
 import com.android.launcher3.statemanager.BaseState;
 import com.android.launcher3.statemanager.StatefulActivity;
+import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.tracing.InputConsumerProto;
 import com.android.launcher3.tracing.SwipeHandlerProto;
 import com.android.launcher3.util.TraceHelper;
@@ -876,6 +878,9 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
      */
     @UiThread
     public void onGestureEnded(float endVelocity, PointF velocity, PointF downPos) {
+        if (Utilities.IS_RUNNING_IN_TEST_HARNESS) {
+            Log.d(TestProtocol.L3_SWIPE_TO_HOME, "3");
+        }
         float flingThreshold = mContext.getResources()
                 .getDimension(R.dimen.quickstep_fling_threshold_speed);
         boolean isFling = mGestureStarted && !mIsMotionPaused
@@ -1037,6 +1042,9 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
     @UiThread
     private void handleNormalGestureEnd(float endVelocity, boolean isFling, PointF velocity,
             boolean isCancel) {
+        if (Utilities.IS_RUNNING_IN_TEST_HARNESS) {
+            Log.d(TestProtocol.L3_SWIPE_TO_HOME, "4");
+        }
         long duration = MAX_SWIPE_DURATION;
         float currentShift = mCurrentShift.value;
         final GestureEndTarget endTarget = calculateEndTarget(velocity, endVelocity,
@@ -1155,6 +1163,9 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
     @UiThread
     private void animateToProgress(float start, float end, long duration, Interpolator interpolator,
             GestureEndTarget target, PointF velocityPxPerMs) {
+        if (Utilities.IS_RUNNING_IN_TEST_HARNESS) {
+            Log.d(TestProtocol.L3_SWIPE_TO_HOME, "5");
+        }
         runOnRecentsAnimationStart(() -> animateToProgressInternal(start, end, duration,
                 interpolator, target, velocityPxPerMs));
     }
@@ -1183,6 +1194,9 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
     @UiThread
     private void animateToProgressInternal(float start, float end, long duration,
             Interpolator interpolator, GestureEndTarget target, PointF velocityPxPerMs) {
+        if (Utilities.IS_RUNNING_IN_TEST_HARNESS) {
+            Log.d(TestProtocol.L3_SWIPE_TO_HOME, "7");
+        }
         maybeUpdateRecentsAttachedState();
 
         // If we are transitioning to launcher, then listen for the activity to be restarted while
@@ -1812,6 +1826,9 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
      * be run when it is next started.
      */
     protected void runOnRecentsAnimationStart(Runnable action) {
+        if (Utilities.IS_RUNNING_IN_TEST_HARNESS) {
+            Log.d(TestProtocol.L3_SWIPE_TO_HOME, "6");
+        }
         if (mRecentsAnimationTargets == null) {
             mRecentsAnimationStartCallbacks.add(action);
         } else {
