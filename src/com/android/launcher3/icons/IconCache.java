@@ -134,6 +134,9 @@ public class IconCache extends BaseIconCache {
      * Closes the cache DB. This will clear any in-memory cache.
      */
     public void close() {
+        // This will clear all pending updates
+        getUpdateHandler();
+
         mIconDb.close();
     }
 
