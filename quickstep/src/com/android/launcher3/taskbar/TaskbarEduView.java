@@ -21,6 +21,9 @@ import android.animation.PropertyValuesHolder;
 import android.content.Context;
 import android.graphics.Rect;
 import android.util.AttributeSet;
+import android.util.Pair;
+import android.view.View;
+import android.widget.Button;
 
 import com.android.launcher3.Insettable;
 import com.android.launcher3.R;
@@ -34,6 +37,10 @@ public class TaskbarEduView extends AbstractSlideInView<TaskbarActivityContext>
 
     private final Rect mInsets = new Rect();
 
+    private Button mStartButton;
+    private Button mEndButton;
+    private TaskbarEduPagedView mPagedView;
+
     public TaskbarEduView(Context context, AttributeSet attr) {
         this(context, attr, 0);
     }
@@ -41,6 +48,12 @@ public class TaskbarEduView extends AbstractSlideInView<TaskbarActivityContext>
     public TaskbarEduView(Context context, AttributeSet attrs,
             int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+    }
+
+    protected void init(TaskbarEduController.TaskbarEduCallbacks callbacks) {
+        if (mPagedView != null) {
+            mPagedView.setControllerCallbacks(callbacks);
+        }
     }
 
     @Override
@@ -57,7 +70,10 @@ public class TaskbarEduView extends AbstractSlideInView<TaskbarActivityContext>
     protected void onFinishInflate() {
         super.onFinishInflate();
         mContent = findViewById(R.id.edu_view);
-        findViewById(R.id.edu_close_button).setOnClickListener(v -> close(true /* animate */));
+        mStartButton = findViewById(R.id.edu_start_button);
+        mEndButton = findViewById(R.id.edu_end_button);
+        mPagedView = findViewById(R.id.content);
+        mPagedView.setTaskbarEduView(this);
     }
 
     @Override
@@ -79,6 +95,12 @@ public class TaskbarEduView extends AbstractSlideInView<TaskbarActivityContext>
     public void show() {
         attachToContainer();
         animateOpen();
+    }
+
+    @Override
+    protected Pair<View, String> getAccessibilityTarget() {
+        return Pair.create(mContent, mIsOpen ? getContext().getString(R.string.taskbar_edu_opened)
+                : getContext().getString(R.string.taskbar_edu_closed));
     }
 
     @Override
@@ -109,5 +131,19 @@ public class TaskbarEduView extends AbstractSlideInView<TaskbarActivityContext>
                 PropertyValuesHolder.ofFloat(TRANSLATION_SHIFT, TRANSLATION_SHIFT_OPENED));
         mOpenCloseAnimator.setInterpolator(FAST_OUT_SLOW_IN);
         mOpenCloseAnimator.start();
+    }
+
+    void snapToPage(int page) {
+        mPagedView.snapToPage(page);
+    }
+
+    void updateStartButton(int textResId, OnClickListener onClickListener) {
+        mStartButton.setText(textResId);
+        mStartButton.setOnClickListener(onClickListener);
+    }
+
+    void updateEndButton(int textResId, OnClickListener onClickListener) {
+        mEndButton.setText(textResId);
+        mEndButton.setOnClickListener(onClickListener);
     }
 }
