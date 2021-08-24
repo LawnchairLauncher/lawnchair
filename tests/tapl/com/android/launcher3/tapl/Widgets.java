@@ -116,9 +116,9 @@ public final class Widgets extends LauncherInstrumentation.VisibleContainer {
                     "widget_preview");
             int i = 0;
             for (; ; ) {
-                final Collection<UiObject2> tableRows = widgetsContainer.getChildren();
+                final Collection<UiObject2> tableRows = mLauncher.getChildren(widgetsContainer);
                 for (UiObject2 row : tableRows) {
-                    final Collection<UiObject2> widgetCells = row.getChildren();
+                    final Collection<UiObject2> widgetCells = mLauncher.getChildren(row);
                     for (UiObject2 widget : widgetCells) {
                         final UiObject2 label = mLauncher.findObjectInContainer(widget,
                                 labelSelector);
