@@ -55,7 +55,7 @@ import java.util.Set;
  * Utility class to cache properties of default display to avoid a system RPC on every call.
  */
 @SuppressLint("NewApi")
-public class DisplayController implements DisplayListener, ComponentCallbacks, SafeCloseable {
+public class DisplayController implements DisplayListener, ComponentCallbacks {
 
     private static final String TAG = "DisplayController";
 
@@ -79,7 +79,6 @@ public class DisplayController implements DisplayListener, ComponentCallbacks, S
 
     private final ArrayList<DisplayInfoChangeListener> mListeners = new ArrayList<>();
     private Info mInfo;
-    private boolean mDestroyed = false;
 
     private DisplayController(Context context) {
         mContext = context;
@@ -109,17 +108,6 @@ public class DisplayController implements DisplayListener, ComponentCallbacks, S
         }
         mInfo = new Info(getDisplayInfoContext(display), display, extraInternalDisplays);
         mDM.registerDisplayListener(this, UI_HELPER_EXECUTOR.getHandler());
-    }
-
-    @Override
-    public void close() {
-        mDestroyed = true;
-        if (mWindowContext != null) {
-            mWindowContext.unregisterComponentCallbacks(this);
-        } else {
-            // TODO: unregister broadcast receiver
-        }
-        mDM.unregisterDisplayListener(this);
     }
 
     @Override
@@ -169,9 +157,6 @@ public class DisplayController implements DisplayListener, ComponentCallbacks, S
      * Only used for pre-S
      */
     private void onConfigChanged(Intent intent) {
-        if (mDestroyed) {
-            return;
-        }
         Configuration config = mContext.getResources().getConfiguration();
         if (mInfo.fontScale != config.fontScale || mInfo.densityDpi != config.densityDpi) {
             Log.d(TAG, "Configuration changed, notifying listeners");

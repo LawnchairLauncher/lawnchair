@@ -2,19 +2,18 @@ package com.android.launcher3.model;
 
 import static org.junit.Assert.assertEquals;
 
-import androidx.test.ext.junit.runners.AndroidJUnit4;
-import androidx.test.filters.SmallTest;
-
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.LauncherAppWidgetInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.pm.PackageInstallInfo;
 import com.android.launcher3.util.LauncherModelHelper;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.robolectric.RobolectricTestRunner;
+import org.robolectric.annotation.LooperMode;
+import org.robolectric.annotation.LooperMode.Mode;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -22,8 +21,8 @@ import java.util.HashSet;
 /**
  * Tests for {@link PackageInstallStateChangedTask}
  */
-@SmallTest
-@RunWith(AndroidJUnit4.class)
+@RunWith(RobolectricTestRunner.class)
+@LooperMode(Mode.PAUSED)
 public class PackageInstallStateChangedTaskTest {
 
     private LauncherModelHelper mModelHelper;
@@ -31,12 +30,7 @@ public class PackageInstallStateChangedTaskTest {
     @Before
     public void setup() throws Exception {
         mModelHelper = new LauncherModelHelper();
-        mModelHelper.initializeData("package_install_state_change_task_data");
-    }
-
-    @After
-    public void tearDown() {
-        mModelHelper.destroy();
+        mModelHelper.initializeData("/package_install_state_change_task_data.txt");
     }
 
     private PackageInstallStateChangedTask newTask(String pkg, int progress) {
@@ -72,7 +66,7 @@ public class PackageInstallStateChangedTaskTest {
         HashSet<Integer> updates = new HashSet<>(Arrays.asList(idsUpdated));
         for (ItemInfo info : mModelHelper.getBgDataModel().itemsIdMap) {
             if (info instanceof WorkspaceItemInfo) {
-                assertEquals(updates.contains(info.id) ? progress: 100,
+                assertEquals(updates.contains(info.id) ? progress: 0,
                         ((WorkspaceItemInfo) info).getProgressLevel());
             } else {
                 assertEquals(updates.contains(info.id) ? progress: -1,
