@@ -15,60 +15,69 @@
  */
 package com.android.launcher3.model;
 
+import static com.android.launcher3.util.Executors.createAndStartNewLooper;
 import static com.android.launcher3.util.LauncherModelHelper.TEST_PACKAGE;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.spy;
+import static org.robolectric.Shadows.shadowOf;
 
 import android.os.Process;
-
-import androidx.test.ext.junit.runners.AndroidJUnit4;
-import androidx.test.filters.SmallTest;
 
 import com.android.launcher3.model.BgDataModel.Callbacks;
 import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.ItemInfo;
+import com.android.launcher3.shadows.ShadowLooperExecutor;
 import com.android.launcher3.util.Executors;
 import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.IntSet;
 import com.android.launcher3.util.LauncherLayoutBuilder;
 import com.android.launcher3.util.LauncherModelHelper;
+import com.android.launcher3.util.LooperExecutor;
 import com.android.launcher3.util.RunnableList;
-import com.android.launcher3.util.TestUtil;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.robolectric.RobolectricTestRunner;
+import org.robolectric.RuntimeEnvironment;
+import org.robolectric.annotation.LooperMode;
+import org.robolectric.annotation.LooperMode.Mode;
+import org.robolectric.shadow.api.Shadow;
+import org.robolectric.shadows.ShadowPackageManager;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
  * Tests to verify multiple callbacks in Loader
  */
-@SmallTest
-@RunWith(AndroidJUnit4.class)
+@RunWith(RobolectricTestRunner.class)
+@LooperMode(Mode.PAUSED)
 public class ModelMultiCallbacksTest {
 
     private LauncherModelHelper mModelHelper;
 
-    @Before
-    public void setUp() {
-        mModelHelper = new LauncherModelHelper();
-    }
+    private ShadowPackageManager mSpm;
+    private LooperExecutor mTempMainExecutor;
 
-    @After
-    public void tearDown() throws Exception {
-        mModelHelper.destroy();
-        TestUtil.uninstallDummyApp();
+    @Before
+    public void setUp() throws Exception {
+        mModelHelper = new LauncherModelHelper();
+        mModelHelper.installApp(TEST_PACKAGE);
+
+        mSpm = shadowOf(RuntimeEnvironment.application.getPackageManager());
+
+        // Since robolectric tests run on main thread, we run the loader-UI calls on a temp thread,
+        // so that we can wait appropriately for the loader to complete.
+        mTempMainExecutor = new LooperExecutor(createAndStartNewLooper("tempMain"));
+        ShadowLooperExecutor sle = Shadow.extract(Executors.MAIN_EXECUTOR);
+        sle.setHandler(mTempMainExecutor.getHandler());
     }
 
     @Test
@@ -76,7 +85,7 @@ public class ModelMultiCallbacksTest {
         setupWorkspacePages(3);
 
         MyCallbacks cb1 = spy(MyCallbacks.class);
-        Executors.MAIN_EXECUTOR.execute(() -> mModelHelper.getModel().addCallbacksAndLoad(cb1));
+        mModelHelper.getModel().addCallbacksAndLoad(cb1);
 
         waitForLoaderAndTempMainThread();
         cb1.verifySynchronouslyBound(3);
@@ -85,10 +94,10 @@ public class ModelMultiCallbacksTest {
         cb1.reset();
         MyCallbacks cb2 = spy(MyCallbacks.class);
         cb2.mPageToBindSync = IntSet.wrap(2);
-        Executors.MAIN_EXECUTOR.execute(() -> mModelHelper.getModel().addCallbacksAndLoad(cb2));
+        mModelHelper.getModel().addCallbacksAndLoad(cb2);
 
         waitForLoaderAndTempMainThread();
-        assertFalse(cb1.bindStarted);
+        cb1.verifySynchronouslyBound(3);
         cb2.verifySynchronouslyBound(3);
 
         // Remove callbacks
@@ -96,7 +105,7 @@ public class ModelMultiCallbacksTest {
         cb2.reset();
 
         // No effect on callbacks when removing an callback
-        Executors.MAIN_EXECUTOR.execute(() -> mModelHelper.getModel().removeCallbacks(cb2));
+        mModelHelper.getModel().removeCallbacks(cb2);
         waitForLoaderAndTempMainThread();
         assertNull(cb1.mPendingTasks);
         assertNull(cb2.mPendingTasks);
@@ -110,48 +119,52 @@ public class ModelMultiCallbacksTest {
 
     @Test
     public void testTwoCallbacks_receiveUpdates() throws Exception {
-        TestUtil.uninstallDummyApp();
-
         setupWorkspacePages(1);
 
         MyCallbacks cb1 = spy(MyCallbacks.class);
         MyCallbacks cb2 = spy(MyCallbacks.class);
-        Executors.MAIN_EXECUTOR.execute(() -> mModelHelper.getModel().addCallbacksAndLoad(cb1));
-        Executors.MAIN_EXECUTOR.execute(() -> mModelHelper.getModel().addCallbacksAndLoad(cb2));
+        mModelHelper.getModel().addCallbacksAndLoad(cb1);
+        mModelHelper.getModel().addCallbacksAndLoad(cb2);
         waitForLoaderAndTempMainThread();
 
-        assertTrue(cb1.allApps().contains(TEST_PACKAGE));
-        assertTrue(cb2.allApps().contains(TEST_PACKAGE));
+        cb1.verifyApps(TEST_PACKAGE);
+        cb2.verifyApps(TEST_PACKAGE);
 
         // Install package 1
-        TestUtil.installDummyApp();
-        mModelHelper.getModel().onPackageAdded(TestUtil.DUMMY_PACKAGE, Process.myUserHandle());
+        String pkg1 = "com.test.pkg1";
+        mModelHelper.installApp(pkg1);
+        mModelHelper.getModel().onPackageAdded(pkg1, Process.myUserHandle());
         waitForLoaderAndTempMainThread();
-        assertTrue(cb1.allApps().contains(TestUtil.DUMMY_PACKAGE));
-        assertTrue(cb2.allApps().contains(TestUtil.DUMMY_PACKAGE));
+        cb1.verifyApps(TEST_PACKAGE, pkg1);
+        cb2.verifyApps(TEST_PACKAGE, pkg1);
+
+        // Install package 2
+        String pkg2 = "com.test.pkg2";
+        mModelHelper.installApp(pkg2);
+        mModelHelper.getModel().onPackageAdded(pkg2, Process.myUserHandle());
+        waitForLoaderAndTempMainThread();
+        cb1.verifyApps(TEST_PACKAGE, pkg1, pkg2);
+        cb2.verifyApps(TEST_PACKAGE, pkg1, pkg2);
 
         // Uninstall package 2
-        TestUtil.uninstallDummyApp();
-        mModelHelper.getModel().onPackageRemoved(TestUtil.DUMMY_PACKAGE, Process.myUserHandle());
+        mSpm.removePackage(pkg1);
+        mModelHelper.getModel().onPackageRemoved(pkg1, Process.myUserHandle());
         waitForLoaderAndTempMainThread();
-        assertFalse(cb1.allApps().contains(TestUtil.DUMMY_PACKAGE));
-        assertFalse(cb2.allApps().contains(TestUtil.DUMMY_PACKAGE));
+        cb1.verifyApps(TEST_PACKAGE, pkg2);
+        cb2.verifyApps(TEST_PACKAGE, pkg2);
 
         // Unregister a callback and verify updates no longer received
-        Executors.MAIN_EXECUTOR.execute(() -> mModelHelper.getModel().removeCallbacks(cb2));
-        TestUtil.installDummyApp();
-        mModelHelper.getModel().onPackageAdded(TestUtil.DUMMY_PACKAGE, Process.myUserHandle());
+        mModelHelper.getModel().removeCallbacks(cb2);
+        mSpm.removePackage(pkg2);
+        mModelHelper.getModel().onPackageRemoved(pkg2, Process.myUserHandle());
         waitForLoaderAndTempMainThread();
-
-        // cb2 didn't get the update
-        assertTrue(cb1.allApps().contains(TestUtil.DUMMY_PACKAGE));
-        assertFalse(cb2.allApps().contains(TestUtil.DUMMY_PACKAGE));
+        cb1.verifyApps(TEST_PACKAGE);
+        cb2.verifyApps(TEST_PACKAGE, pkg2);
     }
 
     private void waitForLoaderAndTempMainThread() throws Exception {
-        Executors.MAIN_EXECUTOR.submit(() -> { }).get();
         Executors.MODEL_EXECUTOR.submit(() -> { }).get();
-        Executors.MAIN_EXECUTOR.submit(() -> { }).get();
+        mTempMainExecutor.submit(() -> { }).get();
     }
 
     private void setupWorkspacePages(int pageCount) throws Exception {
@@ -170,14 +183,8 @@ public class ModelMultiCallbacksTest {
         IntSet mPageBoundSync = new IntSet();
         RunnableList mPendingTasks;
         AppInfo[] mAppInfos;
-        boolean bindStarted;
 
         MyCallbacks() { }
-
-        @Override
-        public void startBinding() {
-            bindStarted = true;
-        }
 
         @Override
         public void onInitialBindComplete(IntSet boundPages, RunnableList pendingTasks) {
@@ -205,12 +212,10 @@ public class ModelMultiCallbacksTest {
             mPageBoundSync = new IntSet();
             mPendingTasks = null;
             mAppInfos = null;
-            bindStarted = false;
         }
 
         public void verifySynchronouslyBound(int totalItems) {
             // Verify that the requested page is bound synchronously
-            assertTrue(bindStarted);
             assertEquals(mPageToBindSync, mPageBoundSync);
             assertEquals(mItems.size(), 1);
             assertEquals(IntSet.wrap(mItems.get(0).screenId), mPageBoundSync);
@@ -221,14 +226,12 @@ public class ModelMultiCallbacksTest {
             assertEquals(mItems.size(), totalItems);
         }
 
-        public Set<String> allApps() {
-            return Arrays.stream(mAppInfos)
-                    .map(ai -> ai.getTargetComponent().getPackageName())
-                    .collect(Collectors.toSet());
-        }
-
         public void verifyApps(String... apps) {
-            assertTrue(allApps().containsAll(Arrays.asList(apps)));
+            assertEquals(apps.length, mAppInfos.length);
+            assertEquals(Arrays.stream(mAppInfos)
+                    .map(ai -> ai.getTargetComponent().getPackageName())
+                    .collect(Collectors.toSet()),
+                    new HashSet<>(Arrays.asList(apps)));
         }
     }
 }
