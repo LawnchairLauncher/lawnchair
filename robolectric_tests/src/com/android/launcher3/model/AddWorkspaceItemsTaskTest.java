@@ -13,9 +13,6 @@ import android.content.Intent;
 import android.graphics.Rect;
 import android.util.Pair;
 
-import androidx.test.ext.junit.runners.AndroidJUnit4;
-import androidx.test.filters.SmallTest;
-
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherSettings;
@@ -24,17 +21,19 @@ import com.android.launcher3.model.BgDataModel.Callbacks;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.util.ContentWriter;
-import com.android.launcher3.util.Executors;
 import com.android.launcher3.util.GridOccupancy;
 import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.IntSparseArrayMap;
 import com.android.launcher3.util.LauncherModelHelper;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
+import org.robolectric.RobolectricTestRunner;
+import org.robolectric.RuntimeEnvironment;
+import org.robolectric.annotation.LooperMode;
+import org.robolectric.annotation.LooperMode.Mode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,8 +41,8 @@ import java.util.List;
 /**
  * Tests for {@link AddWorkspaceItemsTask}
  */
-@SmallTest
-@RunWith(AndroidJUnit4.class)
+@RunWith(RobolectricTestRunner.class)
+@LooperMode(Mode.PAUSED)
 public class AddWorkspaceItemsTaskTest {
 
     private final ComponentName mComponent1 = new ComponentName("a", "b");
@@ -61,7 +60,7 @@ public class AddWorkspaceItemsTaskTest {
     @Before
     public void setup() {
         mModelHelper = new LauncherModelHelper();
-        mTargetContext = mModelHelper.sandboxContext;
+        mTargetContext = RuntimeEnvironment.application;
         mIdp = InvariantDeviceProfile.INSTANCE.get(mTargetContext);
         mIdp.numColumns = mIdp.numRows = 5;
         mAppState = LauncherAppState.getInstance(mTargetContext);
@@ -69,11 +68,6 @@ public class AddWorkspaceItemsTaskTest {
         mExistingScreens = new IntArray();
         mScreenOccupancy = new IntSparseArrayMap<>();
         mNewScreens = new IntArray();
-    }
-
-    @After
-    public void tearDown() {
-        mModelHelper.destroy();
     }
 
     private AddWorkspaceItemsTask newTask(ItemInfo... items) {
@@ -94,7 +88,7 @@ public class AddWorkspaceItemsTaskTest {
 
         int[] spaceFound = newTask().findSpaceForItem(
                 mAppState, mModelHelper.getBgDataModel(), mExistingScreens, mNewScreens, 1, 1);
-        assertEquals(1, spaceFound[0]);
+        assertEquals(2, spaceFound[0]);
         assertTrue(mScreenOccupancy.get(spaceFound[0])
                 .isRegionVacant(spaceFound[1], spaceFound[2], 1, 1));
 
@@ -133,7 +127,7 @@ public class AddWorkspaceItemsTaskTest {
     @Test
     public void testAddItem_some_items_added() throws Exception {
         Callbacks callbacks = mock(Callbacks.class);
-        Executors.MAIN_EXECUTOR.submit(() -> mModelHelper.getModel().addCallbacks(callbacks)).get();
+        mModelHelper.getModel().addCallbacks(callbacks);
 
         WorkspaceItemInfo info = new WorkspaceItemInfo();
         info.intent = new Intent().setComponent(mComponent1);

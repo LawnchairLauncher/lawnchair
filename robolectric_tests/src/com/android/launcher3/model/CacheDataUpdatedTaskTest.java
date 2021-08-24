@@ -16,8 +16,6 @@ import android.os.UserHandle;
 import android.os.UserManager;
 
 import androidx.annotation.NonNull;
-import androidx.test.ext.junit.runners.AndroidJUnit4;
-import androidx.test.filters.SmallTest;
 
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.icons.BitmapInfo;
@@ -28,10 +26,13 @@ import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.util.LauncherModelHelper;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.robolectric.RobolectricTestRunner;
+import org.robolectric.RuntimeEnvironment;
+import org.robolectric.annotation.LooperMode;
+import org.robolectric.annotation.LooperMode.Mode;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -39,8 +40,8 @@ import java.util.HashSet;
 /**
  * Tests for {@link CacheDataUpdatedTask}
  */
-@SmallTest
-@RunWith(AndroidJUnit4.class)
+@RunWith(RobolectricTestRunner.class)
+@LooperMode(Mode.PAUSED)
 public class CacheDataUpdatedTaskTest {
 
     private static final String NEW_LABEL_PREFIX = "new-label-";
@@ -50,10 +51,10 @@ public class CacheDataUpdatedTaskTest {
     @Before
     public void setup() throws Exception {
         mModelHelper = new LauncherModelHelper();
-        mModelHelper.initializeData("cache_data_updated_task_data");
+        mModelHelper.initializeData("/cache_data_updated_task_data.txt");
 
         // Add placeholder entries in the cache to simulate update
-        Context context = mModelHelper.sandboxContext;
+        Context context = RuntimeEnvironment.application;
         IconCache iconCache = LauncherAppState.getInstance(context).getIconCache();
         CachingLogic<ItemInfo> placeholderLogic = new CachingLogic<ItemInfo>() {
             @Override
@@ -83,11 +84,6 @@ public class CacheDataUpdatedTaskTest {
             iconCache.addIconToDBAndMemCache(info, placeholderLogic, new PackageInfo(),
                     um.getSerialNumberForUser(info.user), true);
         }
-    }
-
-    @After
-    public void tearDown() {
-        mModelHelper.destroy();
     }
 
     private CacheDataUpdatedTask newTask(int op, String... pkg) {

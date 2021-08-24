@@ -21,21 +21,18 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-import androidx.test.InstrumentationRegistry;
-import androidx.test.filters.SmallTest;
-import androidx.test.runner.AndroidJUnit4;
-
 import com.android.launcher3.LauncherProvider.DatabaseHelper;
 import com.android.launcher3.LauncherSettings.Favorites;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.robolectric.RobolectricTestRunner;
+import org.robolectric.RuntimeEnvironment;
 
 /**
  * Tests for {@link RestoreDbTask}
  */
-@SmallTest
-@RunWith(AndroidJUnit4.class)
+@RunWith(RobolectricTestRunner.class)
 public class RestoreDbTaskTest {
 
     @Test
@@ -98,7 +95,7 @@ public class RestoreDbTaskTest {
         private final long mProfileId;
 
         MyDatabaseHelper(long profileId) {
-            super(InstrumentationRegistry.getInstrumentation().getTargetContext(), null, false);
+            super(RuntimeEnvironment.application, null, false);
             mProfileId = profileId;
         }
 

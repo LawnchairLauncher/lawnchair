@@ -17,7 +17,6 @@
 package com.android.launcher3.model;
 
 import static android.content.pm.PackageManager.INSTALL_REASON_DEVICE_RESTORE;
-import static android.os.Process.myUserHandle;
 
 import static com.android.launcher3.LauncherSettings.Favorites.BACKUP_TABLE_NAME;
 import static com.android.launcher3.LauncherSettings.Favorites.TABLE_NAME;
@@ -27,110 +26,74 @@ import static com.android.launcher3.provider.LauncherDbUtils.tableExists;
 import static com.android.launcher3.util.LauncherModelHelper.APP_ICON;
 import static com.android.launcher3.util.LauncherModelHelper.NO__ICON;
 import static com.android.launcher3.util.LauncherModelHelper.SHORTCUT;
-import static com.android.launcher3.util.ReflectionHelpers.getField;
-import static com.android.launcher3.util.ReflectionHelpers.setField;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.spy;
+import static org.robolectric.util.ReflectionHelpers.setField;
 
 import android.app.backup.BackupManager;
 import android.content.pm.PackageInstaller;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Process;
 import android.os.UserHandle;
-import android.util.ArrayMap;
-import android.util.LongSparseArray;
-
-import androidx.test.ext.junit.runners.AndroidJUnit4;
-import androidx.test.filters.SmallTest;
+import android.os.UserManager;
 
 import com.android.launcher3.InvariantDeviceProfile;
-import com.android.launcher3.pm.UserCache;
 import com.android.launcher3.provider.RestoreDbTask;
+import com.android.launcher3.shadows.LShadowBackupManager;
 import com.android.launcher3.util.LauncherModelHelper;
-import com.android.launcher3.util.SafeCloseable;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.robolectric.RobolectricTestRunner;
+import org.robolectric.RuntimeEnvironment;
+import org.robolectric.annotation.LooperMode;
+import org.robolectric.shadow.api.Shadow;
+import org.robolectric.shadows.ShadowUserManager;
 
 /**
  * Tests to verify backup and restore flow.
  */
-@SmallTest
-@RunWith(AndroidJUnit4.class)
+@RunWith(RobolectricTestRunner.class)
+@LooperMode(LooperMode.Mode.PAUSED)
 public class BackupRestoreTest {
 
-    private static final int PER_USER_RANGE = 200000;
+    private static final long MY_OLD_PROFILE_ID = 1;
+    private static final long MY_PROFILE_ID = 0;
+    private static final long OLD_WORK_PROFILE_ID = 11;
+    private static final int WORK_PROFILE_ID = 10;
 
-
-    private long mCurrentMyProfileId;
-    private long mOldMyProfileId;
-
-    private long mCurrentWorkProfileId;
-    private long mOldWorkProfileId;
-
+    private ShadowUserManager mUserManager;
     private BackupManager mBackupManager;
     private LauncherModelHelper mModelHelper;
     private SQLiteDatabase mDb;
     private InvariantDeviceProfile mIdp;
 
-    private UserHandle mWorkUserHandle;
-
-    private SafeCloseable mUserChangeListener;
-
     @Before
     public void setUp() {
-        mModelHelper = new LauncherModelHelper();
-
-        mCurrentMyProfileId = mModelHelper.defaultProfileId;
-        mOldMyProfileId = mCurrentMyProfileId + 1;
-        mCurrentWorkProfileId = mOldMyProfileId + 1;
-        mOldWorkProfileId = mCurrentWorkProfileId + 1;
-
-        mWorkUserHandle = UserHandle.getUserHandleForUid(PER_USER_RANGE);
-        mUserChangeListener = UserCache.INSTANCE.get(mModelHelper.sandboxContext)
-                .addUserChangeListener(() -> { });
-
         setupUserManager();
         setupBackupManager();
-        RestoreDbTask.setPending(mModelHelper.sandboxContext);
+        mModelHelper = new LauncherModelHelper();
+        RestoreDbTask.setPending(RuntimeEnvironment.application);
         mDb = mModelHelper.provider.getDb();
-        mIdp = InvariantDeviceProfile.INSTANCE.get(mModelHelper.sandboxContext);
-
-    }
-
-    @After
-    public void tearDown() {
-        mUserChangeListener.close();
-        mModelHelper.destroy();
+        mIdp = InvariantDeviceProfile.INSTANCE.get(RuntimeEnvironment.application);
     }
 
     private void setupUserManager() {
-        UserCache cache = UserCache.INSTANCE.get(mModelHelper.sandboxContext);
-        synchronized (cache) {
-            LongSparseArray<UserHandle> users = getField(cache, "mUsers");
-            users.clear();
-            users.put(mCurrentMyProfileId, myUserHandle());
-            users.put(mCurrentWorkProfileId, mWorkUserHandle);
-
-            ArrayMap<UserHandle, Long> userMap = getField(cache, "mUserToSerialMap");
-            userMap.clear();
-            userMap.put(myUserHandle(), mCurrentMyProfileId);
-            userMap.put(mWorkUserHandle, mCurrentWorkProfileId);
-        }
+        final UserManager userManager = RuntimeEnvironment.application.getSystemService(
+                UserManager.class);
+        mUserManager = Shadow.extract(userManager);
+        // sign in to work profile
+        mUserManager.addUser(WORK_PROFILE_ID, "work", ShadowUserManager.FLAG_MANAGED_PROFILE);
     }
 
     private void setupBackupManager() {
-        mBackupManager = spy(new BackupManager(mModelHelper.sandboxContext));
-        doReturn(myUserHandle()).when(mBackupManager)
-                .getUserForAncestralSerialNumber(eq(mOldMyProfileId));
-        doReturn(mWorkUserHandle).when(mBackupManager)
-                .getUserForAncestralSerialNumber(eq(mOldWorkProfileId));
+        mBackupManager = new BackupManager(RuntimeEnvironment.application);
+        final LShadowBackupManager bm = Shadow.extract(mBackupManager);
+        bm.addProfile(MY_OLD_PROFILE_ID, Process.myUserHandle());
+        bm.addProfile(OLD_WORK_PROFILE_ID, UserHandle.of(WORK_PROFILE_ID));
     }
 
     @Test
@@ -155,18 +118,18 @@ public class BackupRestoreTest {
                 { SHORTCUT, SHORTCUT, NO__ICON, NO__ICON},
                 { NO__ICON, NO__ICON, SHORTCUT, SHORTCUT},
                 { APP_ICON, SHORTCUT, SHORTCUT, APP_ICON},
-            }}, 1, mOldMyProfileId);
+            }}, 1, MY_OLD_PROFILE_ID);
         // setup grid for work profile on second screen
         mModelHelper.createGrid(new int[][][]{{
                 { NO__ICON, APP_ICON, SHORTCUT, SHORTCUT},
                 { SHORTCUT, SHORTCUT, NO__ICON, NO__ICON},
                 { NO__ICON, NO__ICON, SHORTCUT, SHORTCUT},
                 { APP_ICON, SHORTCUT, SHORTCUT, NO__ICON},
-            }}, 2, mOldWorkProfileId);
+            }}, 2, OLD_WORK_PROFILE_ID);
         // simulates the creation of backup upon restore
-        new GridBackupTable(mModelHelper.sandboxContext, mDb, mIdp.numDatabaseHotseatIcons,
+        new GridBackupTable(RuntimeEnvironment.application, mDb, mIdp.numDatabaseHotseatIcons,
                 mIdp.numColumns, mIdp.numRows).doBackup(
-                mOldMyProfileId, GridBackupTable.OPTION_REQUIRES_SANITIZATION);
+                        MY_OLD_PROFILE_ID, GridBackupTable.OPTION_REQUIRES_SANITIZATION);
         // reset favorites table
         createTableUsingOldProfileId();
     }
@@ -178,28 +141,28 @@ public class BackupRestoreTest {
     private void verifyTableIsFilled(String tableName, boolean sanitized) {
         assertEquals(sanitized ? 12 : 13, getCount(mDb,
                 "SELECT * FROM " + tableName + " WHERE profileId = "
-                        + (sanitized ? mCurrentMyProfileId : mOldMyProfileId)));
+                        + (sanitized ? MY_PROFILE_ID : MY_OLD_PROFILE_ID)));
         assertEquals(10, getCount(mDb, "SELECT * FROM " + tableName + " WHERE profileId = "
-                + (sanitized ? mCurrentWorkProfileId : mOldWorkProfileId)));
+                + (sanitized ? WORK_PROFILE_ID : OLD_WORK_PROFILE_ID)));
     }
 
     private void createTableUsingOldProfileId() {
         // simulates the creation of favorites table on old device
         dropTable(mDb, TABLE_NAME);
-        addTableToDb(mDb, mOldMyProfileId, false);
+        addTableToDb(mDb, MY_OLD_PROFILE_ID, false);
     }
 
     private void createRestoreSession() throws Exception {
         final PackageInstaller.SessionParams params = new PackageInstaller.SessionParams(
                 PackageInstaller.SessionParams.MODE_FULL_INSTALL);
-        final PackageInstaller installer = mModelHelper.sandboxContext.getPackageManager()
+        final PackageInstaller installer = RuntimeEnvironment.application.getPackageManager()
                 .getPackageInstaller();
         final int sessionId = installer.createSession(params);
         final PackageInstaller.SessionInfo info = installer.getSessionInfo(sessionId);
         setField(info, "installReason", INSTALL_REASON_DEVICE_RESTORE);
         // TODO: (b/148410677) we should verify the following call instead
         //  InstallSessionHelper.INSTANCE.get(getContext()).restoreDbIfApplicable(info);
-        RestoreDbTask.restoreIfPossible(mModelHelper.sandboxContext,
+        RestoreDbTask.restoreIfPossible(RuntimeEnvironment.application,
                 mModelHelper.provider.getHelper(), mBackupManager);
     }
 

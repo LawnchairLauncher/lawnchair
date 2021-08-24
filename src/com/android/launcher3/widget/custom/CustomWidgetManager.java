@@ -33,7 +33,6 @@ import com.android.launcher3.model.data.LauncherAppWidgetInfo;
 import com.android.launcher3.uioverrides.plugins.PluginManagerWrapper;
 import com.android.launcher3.util.MainThreadInitializedObject;
 import com.android.launcher3.util.PackageUserKey;
-import com.android.launcher3.util.SafeCloseable;
 import com.android.launcher3.widget.LauncherAppWidgetHostView;
 import com.android.launcher3.widget.LauncherAppWidgetProviderInfo;
 import com.android.systemui.plugins.CustomWidgetPlugin;
@@ -47,7 +46,7 @@ import java.util.stream.Stream;
 /**
  * CustomWidgetManager handles custom widgets implemented as a plugin.
  */
-public class CustomWidgetManager implements PluginListener<CustomWidgetPlugin>, SafeCloseable {
+public class CustomWidgetManager implements PluginListener<CustomWidgetPlugin> {
 
     public static final MainThreadInitializedObject<CustomWidgetManager> INSTANCE =
             new MainThreadInitializedObject<>(CustomWidgetManager::new);
@@ -72,8 +71,7 @@ public class CustomWidgetManager implements PluginListener<CustomWidgetPlugin>, 
                 .addPluginListener(this, CustomWidgetPlugin.class, true);
     }
 
-    @Override
-    public void close() {
+    public void onDestroy() {
         PluginManagerWrapper.INSTANCE.get(mContext).removePluginListener(this);
     }
 

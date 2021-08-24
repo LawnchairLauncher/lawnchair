@@ -96,10 +96,9 @@ public class LauncherModel extends LauncherApps.Callback implements InstallSessi
     // our monitoring of the package manager provides all updates and we never
     // need to do a requery. This is only ever touched from the loader thread.
     private boolean mModelLoaded;
-    private boolean mModelDestroyed = false;
     public boolean isModelLoaded() {
         synchronized (mLock) {
-            return mModelLoaded && mLoaderTask == null && !mModelDestroyed;
+            return mModelLoaded && mLoaderTask == null;
         }
     }
 
@@ -246,7 +245,6 @@ public class LauncherModel extends LauncherApps.Callback implements InstallSessi
      * Called when the model is destroyed
      */
     public void destroy() {
-        mModelDestroyed = true;
         MODEL_EXECUTOR.execute(mModelDelegate::destroy);
     }
 
@@ -559,9 +557,6 @@ public class LauncherModel extends LauncherApps.Callback implements InstallSessi
     }
 
     public void enqueueModelUpdateTask(ModelUpdateTask task) {
-        if (mModelDestroyed) {
-            return;
-        }
         task.init(mApp, this, mBgDataModel, mBgAllAppsList, MAIN_EXECUTOR);
         MODEL_EXECUTOR.execute(task);
     }
