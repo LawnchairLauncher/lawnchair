@@ -1,13 +1,10 @@
 package com.android.quickstep.views;
 
-import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
-
 import android.content.Context;
 import android.util.AttributeSet;
-import android.view.ViewGroup;
 
-import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
+import com.android.launcher3.util.SplitConfigurationOptions;
 import com.android.quickstep.RecentsModel;
 import com.android.quickstep.TaskThumbnailCache;
 import com.android.quickstep.util.CancellableTask;
@@ -48,13 +45,14 @@ public class GroupedTaskView extends TaskView {
         mSnapshotView2 = findViewById(R.id.bottomright_snapshot);
     }
 
-    public void bind(Task primary, Task secondary, RecentsOrientedState orientedState) {
+    public void bind(Task primary, Task secondary, RecentsOrientedState orientedState,
+            SplitConfigurationOptions.StagedSplitBounds splitBoundsConfig) {
         super.bind(primary, orientedState);
         mSecondaryTask = secondary;
         mTaskIdContainer[1] = secondary.key.id;
         mTaskIdAttributeContainer[1] = new TaskIdAttributeContainer(secondary, mSnapshotView2);
         mSnapshotView2.bind(secondary);
-        adjustThumbnailBoundsForSplit();
+        adjustThumbnailBoundsForSplit(splitBoundsConfig, orientedState);
     }
 
     @Override
@@ -108,30 +106,15 @@ public class GroupedTaskView extends TaskView {
         mSnapshotView2.setOverlayEnabled(overlayEnabled);
     }
 
-    private void adjustThumbnailBoundsForSplit() {
-        DeviceProfile deviceProfile = mActivity.getDeviceProfile();
-        ViewGroup.LayoutParams primaryLp = mSnapshotView.getLayoutParams();
-        primaryLp.width = mSecondaryTask == null ?
-                MATCH_PARENT :
-                getWidth();
-        int spaceAboveSnapshot = deviceProfile.overviewTaskThumbnailTopMarginPx;
-        // TODO get divider height
-        int dividerBar = 20;
-        primaryLp.height = mSecondaryTask == null ?
-                MATCH_PARENT :
-                (getHeight() - spaceAboveSnapshot - dividerBar) / 2;
-        mSnapshotView.setLayoutParams(primaryLp);
-
-        if (mSecondaryTask == null) {
-            mSnapshotView2.setVisibility(GONE);
+    private void adjustThumbnailBoundsForSplit(
+            SplitConfigurationOptions.StagedSplitBounds splitBoundsConfig,
+            RecentsOrientedState orientedState) {
+        if (splitBoundsConfig == null) {
             return;
         }
 
-        mSnapshotView2.setVisibility(VISIBLE);
-        ViewGroup.LayoutParams secondaryLp = mSnapshotView2.getLayoutParams();
-        secondaryLp.width = getWidth();
-        secondaryLp.height = primaryLp.height;
-        mSnapshotView2.setLayoutParams(secondaryLp);
-        mSnapshotView2.setTranslationY(primaryLp.height + spaceAboveSnapshot + dividerBar);
+        orientedState.getOrientationHandler().setGroupedTaskViewThumbnailBounds(
+                mSnapshotView, mSnapshotView2, this, splitBoundsConfig,
+                mActivity.getDeviceProfile());
     }
 }

@@ -36,6 +36,7 @@ import android.view.MotionEvent;
 import android.view.Surface;
 import android.view.VelocityTracker;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.accessibility.AccessibilityEvent;
 import android.widget.LinearLayout;
 
@@ -403,6 +404,25 @@ public class LandscapePagedViewHandler implements PagedOrientationHandler {
             // The preview set is for the bottom/right, inset by top/left task
             splitOffset.x = splitInfo.mLeftTopBounds.width() + splitInfo.mDividerBounds.width() / 2;
         }
+    }
+
+    @Override
+    public void setGroupedTaskViewThumbnailBounds(View mSnapshotView, View mSnapshotView2,
+            View taskParent, SplitConfigurationOptions.StagedSplitBounds splitBoundsConfig,
+            DeviceProfile dp) {
+        int spaceAboveSnapshot = dp.overviewTaskThumbnailTopMarginPx;
+        int totalThumbnailHeight = taskParent.getHeight() - spaceAboveSnapshot;
+        int totalThumbnailWidth = taskParent.getWidth();
+        int dividerBar = splitBoundsConfig.mDividerBounds.width() / 2;
+        ViewGroup.LayoutParams primaryLp = mSnapshotView.getLayoutParams();
+        ViewGroup.LayoutParams secondaryLp = mSnapshotView2.getLayoutParams();
+
+        primaryLp.width = totalThumbnailWidth;
+        primaryLp.height = (int)(totalThumbnailHeight * splitBoundsConfig.mLeftTaskPercent);
+
+        secondaryLp.width = totalThumbnailWidth;
+        secondaryLp.height = totalThumbnailHeight - primaryLp.height - dividerBar;
+        mSnapshotView2.setTranslationY(primaryLp.height + spaceAboveSnapshot + dividerBar);
     }
 
     @Override

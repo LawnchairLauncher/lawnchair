@@ -575,6 +575,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
      */
     private TaskView mSplitHiddenTaskView;
     private TaskView mSecondSplitHiddenTaskView;
+    private SplitConfigurationOptions.StagedSplitBounds mSplitBoundsConfig;
 
     /**
      * Keeps track of the index of the TaskView that split screen was initialized with so we know
@@ -1314,7 +1315,8 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                     taskDataIndex--;
                     leftTop = tasks.get(taskDataIndex);
                 }
-                ((GroupedTaskView) taskView).bind(leftTop, rightBottom, mOrientationState);
+                ((GroupedTaskView) taskView).bind(leftTop, rightBottom, mOrientationState,
+                        mSplitBoundsConfig);
             } else {
                 taskView.bind(task, mOrientationState);
             }
@@ -2087,8 +2089,11 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                         Task.from(new TaskKey(secondaryTaskInfo), secondaryTaskInfo, false)
                 };
                 addView(taskView, mTaskViewStartIndex);
+                // When we create a placeholder task view mSplitBoundsConfig will be null, but with
+                // the actual app running we won't need to show the thumbnail until all the tasks
+                // load later anyways
                 ((GroupedTaskView)taskView).bind(mTmpRunningTasks[0], mTmpRunningTasks[1],
-                        mOrientationState);
+                        mOrientationState, mSplitBoundsConfig);
             } else {
                 taskView = getTaskViewFromPool(false);
                 addView(taskView, mTaskViewStartIndex);
@@ -4038,12 +4043,13 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                     recentsAnimationTargets.getNonAppTargetOfType(TYPE_DOCK_DIVIDER);
             RemoteAnimationTargetCompat primaryTaskTarget = recentsAnimationTargets.apps[0];
             RemoteAnimationTargetCompat secondaryTaskTarget = recentsAnimationTargets.apps[1];
-            SplitConfigurationOptions.StagedSplitBounds
-                    info = new SplitConfigurationOptions.StagedSplitBounds(
+            mSplitBoundsConfig = new SplitConfigurationOptions.StagedSplitBounds(
                     primaryTaskTarget.screenSpaceBounds,
                     secondaryTaskTarget.screenSpaceBounds, dividerTarget.screenSpaceBounds);
-            mRemoteTargetHandles[0].mTaskViewSimulator.setPreview(primaryTaskTarget, info);
-            mRemoteTargetHandles[1].mTaskViewSimulator.setPreview(secondaryTaskTarget, info);
+            mRemoteTargetHandles[0].mTaskViewSimulator.setPreview(primaryTaskTarget,
+                    mSplitBoundsConfig);
+            mRemoteTargetHandles[1].mTaskViewSimulator.setPreview(secondaryTaskTarget,
+                    mSplitBoundsConfig);
             RemoteAnimationTargets rats = new RemoteAnimationTargets(
                     new RemoteAnimationTargetCompat[]{primaryTaskTarget},
                     recentsAnimationTargets.wallpapers, recentsAnimationTargets.nonApps,
