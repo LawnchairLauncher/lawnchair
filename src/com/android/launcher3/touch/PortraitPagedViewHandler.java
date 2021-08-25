@@ -25,6 +25,7 @@ import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_TYPE_MA
 
 import android.content.res.Resources;
 import android.graphics.Matrix;
+import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.RectF;
@@ -40,6 +41,7 @@ import android.widget.LinearLayout;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.util.SplitConfigurationOptions;
 import com.android.launcher3.util.SplitConfigurationOptions.SplitPositionOption;
 import com.android.launcher3.views.BaseDragLayer;
 
@@ -465,6 +467,44 @@ public class PortraitPagedViewHandler implements PagedOrientationHandler {
         mTmpRectF.set(out2);
         mTmpMatrix.mapRect(mTmpRectF);
         mTmpRectF.roundOut(out2);
+    }
+
+    @Override
+    public void setSplitTaskSwipeRect(DeviceProfile dp, Rect outRect,
+            SplitConfigurationOptions.StagedSplitBounds splitInfo, int desiredStagePosition) {
+        boolean isLandscape = dp.isLandscape;
+        float diff;
+        if (desiredStagePosition == SplitConfigurationOptions.STAGE_POSITION_TOP_OR_LEFT) {
+            if (isLandscape) {
+                diff = outRect.width() * (1f - splitInfo.mLeftTaskPercent);
+                outRect.right -= diff;
+            } else {
+                diff = outRect.height() * (1f - splitInfo.mTopTaskPercent);
+                outRect.bottom -= diff;
+            }
+        } else {
+            if (isLandscape) {
+                diff = outRect.width() * splitInfo.mLeftTaskPercent;
+                outRect.left += diff;
+            } else {
+                diff = outRect.height() * splitInfo.mTopTaskPercent;
+                outRect.top += diff;
+            }
+        }
+    }
+
+    @Override
+    public void setLeashSplitOffset(Point splitOffset, DeviceProfile dp,
+            SplitConfigurationOptions.StagedSplitBounds splitInfo, int desiredStagePosition) {
+        if (desiredStagePosition == STAGE_POSITION_BOTTOM_OR_RIGHT) {
+            if (dp.isLandscape) {
+                splitOffset.x = splitInfo.mLeftTopBounds.width() +
+                        splitInfo.mDividerBounds.width() / 2;
+            } else {
+                splitOffset.y = splitInfo.mLeftTopBounds.height() +
+                        splitInfo.mDividerBounds.height() / 2;
+            }
+        }
     }
 
     @Override

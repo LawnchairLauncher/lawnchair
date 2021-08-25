@@ -26,6 +26,7 @@ import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITIO
 import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_TYPE_MAIN;
 
 import android.content.res.Resources;
+import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.RectF;
@@ -41,6 +42,7 @@ import android.widget.LinearLayout;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.util.SplitConfigurationOptions;
 import com.android.launcher3.util.SplitConfigurationOptions.SplitPositionOption;
 import com.android.launcher3.views.BaseDragLayer;
 
@@ -379,6 +381,28 @@ public class LandscapePagedViewHandler implements PagedOrientationHandler {
         int screenWidth = dp.widthPx;
         out1.set(0, 0, screenWidth, screenHeight / 2  - splitDividerSize);
         out2.set(0, screenHeight / 2  + splitDividerSize, screenWidth, screenHeight);
+    }
+
+    @Override
+    public void setSplitTaskSwipeRect(DeviceProfile dp, Rect outRect,
+            SplitConfigurationOptions.StagedSplitBounds splitInfo, int desiredStagePosition) {
+        float diff;
+        if (desiredStagePosition == SplitConfigurationOptions.STAGE_POSITION_TOP_OR_LEFT) {
+            diff = outRect.height() * (1f - splitInfo.mLeftTaskPercent);
+            outRect.bottom -= diff;
+        } else {
+            diff = outRect.height() * splitInfo.mLeftTaskPercent;
+            outRect.top += diff;
+        }
+    }
+
+    @Override
+    public void setLeashSplitOffset(Point splitOffset, DeviceProfile dp,
+            SplitConfigurationOptions.StagedSplitBounds splitInfo, int desiredStagePosition) {
+        if (desiredStagePosition == STAGE_POSITION_BOTTOM_OR_RIGHT) {
+            // The preview set is for the bottom/right, inset by top/left task
+            splitOffset.x = splitInfo.mLeftTopBounds.width() + splitInfo.mDividerBounds.width() / 2;
+        }
     }
 
     @Override

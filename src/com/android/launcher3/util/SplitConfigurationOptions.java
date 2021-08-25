@@ -89,12 +89,24 @@ public final class SplitConfigurationOptions {
         public final Rect mLeftTopBounds;
         public final Rect mRightBottomBounds;
         public final Rect mDividerBounds;
+        // This class is orientation-agnostic, so we compute both for later use
+        public final float mTopTaskPercent;
+        public final float mLeftTaskPercent;
 
 
         public StagedSplitBounds(Rect leftTopBounds, Rect rightBottomBounds, Rect dividerBounds) {
             mLeftTopBounds = leftTopBounds;
             mRightBottomBounds = rightBottomBounds;
             mDividerBounds = dividerBounds;
+            float totalHeight = mLeftTopBounds.height()
+                    + mRightBottomBounds.height()
+                    + mDividerBounds.height();
+            float totalWidth = mLeftTopBounds.width()
+                    + mRightBottomBounds.width()
+                    + mDividerBounds.width();
+
+            mLeftTaskPercent = mLeftTopBounds.width() / totalWidth;
+            mTopTaskPercent = mLeftTopBounds.height() / totalHeight;
         }
     }
 
