@@ -248,6 +248,8 @@ public final class LauncherInstrumentation {
         if (pm.getComponentEnabledSetting(cn) != COMPONENT_ENABLED_STATE_ENABLED) {
             if (TestHelpers.isInLauncherProcess()) {
                 pm.setComponentEnabledSetting(cn, COMPONENT_ENABLED_STATE_ENABLED, DONT_KILL_APP);
+                // b/195031154
+                SystemClock.sleep(5000);
             } else {
                 try {
                     final int userId = ContextUtils.getUserId(getContext());
