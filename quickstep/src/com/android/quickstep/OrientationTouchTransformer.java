@@ -462,7 +462,7 @@ class OrientationTouchTransformer {
                             + "mRotation: " + mRotation
                             + " this: " + this);
                 }
-                event.transform(mTmpMatrix);
+                event.applyTransform(mTmpMatrix);
                 return true;
             }
             mTmpPoint[0] = event.getX();
@@ -478,7 +478,7 @@ class OrientationTouchTransformer {
             }
 
             if (contains(mTmpPoint[0], mTmpPoint[1])) {
-                event.transform(mTmpMatrix);
+                event.applyTransform(mTmpMatrix);
                 return true;
             }
             return false;

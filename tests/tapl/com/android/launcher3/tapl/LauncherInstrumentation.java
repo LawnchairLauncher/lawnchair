@@ -248,6 +248,8 @@ public final class LauncherInstrumentation {
         if (pm.getComponentEnabledSetting(cn) != COMPONENT_ENABLED_STATE_ENABLED) {
             if (TestHelpers.isInLauncherProcess()) {
                 pm.setComponentEnabledSetting(cn, COMPONENT_ENABLED_STATE_ENABLED, DONT_KILL_APP);
+                // b/195031154
+                SystemClock.sleep(5000);
             } else {
                 try {
                     final int userId = ContextUtils.getUserId(getContext());
@@ -1027,6 +1029,15 @@ public final class LauncherInstrumentation {
             assertNotNull("Can't find a view in Launcher, id: " + selector + " in container: "
                     + container.getResourceName(), object);
             return object;
+        } catch (StaleObjectException e) {
+            fail("The container disappeared from screen");
+            return null;
+        }
+    }
+
+    List<UiObject2> getChildren(UiObject2 container) {
+        try {
+            return container.getChildren();
         } catch (StaleObjectException e) {
             fail("The container disappeared from screen");
             return null;

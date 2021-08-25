@@ -4019,12 +4019,14 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             recentsAnimationTargets.addReleaseCheck(mSyncTransactionApplier);
         }
 
-        // TODO Consolidate this shared code with SwipeUpAnimationLogic (or mabe just reuse
-        //  what that class has and pass it into here
-        mRemoteTargetHandles = new RemoteTargetHandle[recentsAnimationTargets.apps.length];
+        RemoteAnimationTargetCompat dividerTarget =
+                recentsAnimationTargets.getNonAppTargetOfType(TYPE_DOCK_DIVIDER);
+        // TODO Consolidate this shared code with SwipeUpAnimationLogic (or maybe just reuse
+        //  what that class has and pass it into here)
+        mRemoteTargetHandles = new RemoteTargetHandle[dividerTarget == null ? 1 : 2];
         TaskViewSimulator primaryTvs = createTaskViewSimulator();
         mRemoteTargetHandles[0] = new RemoteTargetHandle(primaryTvs, new TransformParams());
-        if (recentsAnimationTargets.apps.length == 1) {
+        if (dividerTarget == null) {
             mRemoteTargetHandles[0].mTaskViewSimulator
                     .setPreview(recentsAnimationTargets.apps[0], null);
             mRemoteTargetHandles[0].mTransformParams.setTargetSet(recentsAnimationTargets);
@@ -4034,8 +4036,6 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             secondaryTvs.recentsViewScale.value = 1;
 
             mRemoteTargetHandles[1] = new RemoteTargetHandle(secondaryTvs, new TransformParams());
-            RemoteAnimationTargetCompat dividerTarget =
-                    recentsAnimationTargets.getNonAppTargetOfType(TYPE_DOCK_DIVIDER);
             RemoteAnimationTargetCompat primaryTaskTarget = recentsAnimationTargets.apps[0];
             RemoteAnimationTargetCompat secondaryTaskTarget = recentsAnimationTargets.apps[1];
             SplitConfigurationOptions.StagedSplitBounds
