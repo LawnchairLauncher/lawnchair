@@ -26,6 +26,7 @@ import android.animation.ObjectAnimator;
 import android.os.IBinder;
 import android.os.SystemProperties;
 import android.util.FloatProperty;
+import android.view.AttachedSurfaceControl;
 import android.view.CrossWindowBlurListeners;
 import android.view.SurfaceControl;
 import android.view.View;
@@ -316,7 +317,12 @@ public class DepthController implements StateHandler<LauncherState>,
                 transaction.setEarlyWakeupEnd();
                 mInEarlyWakeUp = false;
             }
-            transaction.apply();
+
+            AttachedSurfaceControl rootSurfaceControl =
+                    mLauncher.getRootView().getRootSurfaceControl();
+            if (rootSurfaceControl != null) {
+                rootSurfaceControl.applyTransactionOnDraw(transaction);
+            }
         }
         return true;
     }
