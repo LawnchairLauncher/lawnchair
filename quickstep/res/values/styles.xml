@@ -153,4 +153,14 @@
         <item name="android:textSize">16sp</item>
         <item name="android:padding">4dp</item>
     </style>
+
+    <style name="TextAppearance.TaskbarEdu.Title"
+        parent="@android:style/TextAppearance.DeviceDefault.DialogWindowTitle" >
+        <item name="android:layout_marginHorizontal">16dp</item>
+        <item name="android:gravity">center_horizontal</item>
+        <item name="android:fontFamily">google-sans</item>
+        <item name="android:textColor">?android:attr/textColorPrimary</item>
+        <item name="android:textSize">24sp</item>
+        <item name="android:lines">2</item>
+    </style>
 </resources>
