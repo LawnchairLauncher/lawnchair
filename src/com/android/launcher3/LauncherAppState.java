@@ -50,7 +50,7 @@ import com.android.launcher3.util.SimpleBroadcastReceiver;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.widget.custom.CustomWidgetManager;
 
-public class LauncherAppState implements SafeCloseable {
+public class LauncherAppState {
 
     public static final String ACTION_FORCE_ROLOAD = "force-reload-launcher";
     private static final String KEY_ICON_STATE = "pref_icon_shape_path";
@@ -158,8 +158,7 @@ public class LauncherAppState implements SafeCloseable {
     /**
      * Call from Application.onTerminate(), which is not guaranteed to ever be called.
      */
-    @Override
-    public void close() {
+    public void onTerminate() {
         mModel.destroy();
         mContext.getSystemService(LauncherApps.class).unregisterCallback(mModel);
         CustomWidgetManager.INSTANCE.get(mContext).setWidgetRefreshCallback(null);

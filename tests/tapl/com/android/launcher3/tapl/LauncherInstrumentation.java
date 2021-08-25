@@ -390,7 +390,7 @@ public final class LauncherInstrumentation {
         }
     }
 
-    private String getSystemAnomalyMessage() {
+    private String getSystemAnomalyMessage(boolean ignoreNavmodeChangeStates) {
         try {
             {
                 final StringBuilder sb = new StringBuilder();
@@ -413,16 +413,18 @@ public final class LauncherInstrumentation {
 
             if (hasSystemUiObject("keyguard_status_view")) return "Phone is locked";
 
-            final String visibleApps = mDevice.findObjects(getAnyObjectSelector())
-                    .stream()
-                    .map(LauncherInstrumentation::getApplicationPackageSafe)
-                    .distinct()
-                    .filter(pkg -> pkg != null)
-                    .collect(Collectors.joining(","));
-            if (SYSTEMUI_PACKAGE.equals(visibleApps)) return "Only System UI views are visible";
+            if (!ignoreNavmodeChangeStates) {
+                final String visibleApps = mDevice.findObjects(getAnyObjectSelector())
+                        .stream()
+                        .map(LauncherInstrumentation::getApplicationPackageSafe)
+                        .distinct()
+                        .filter(pkg -> pkg != null)
+                        .collect(Collectors.joining(","));
+                if (SYSTEMUI_PACKAGE.equals(visibleApps)) return "Only System UI views are visible";
 
-            if (!mDevice.wait(Until.hasObject(getAnyObjectSelector()), WAIT_TIME_MS)) {
-                return "Screen is empty";
+                if (!mDevice.wait(Until.hasObject(getAnyObjectSelector()), WAIT_TIME_MS)) {
+                    return "Screen is empty";
+                }
             }
 
             final String navigationModeError = getNavigationModeMismatchError(true);
@@ -434,8 +436,12 @@ public final class LauncherInstrumentation {
         return null;
     }
 
-    public void checkForAnomaly() {
-        final String systemAnomalyMessage = getSystemAnomalyMessage();
+    private void checkForAnomaly() {
+        checkForAnomaly(false);
+    }
+
+    public void checkForAnomaly(boolean ignoreNavmodeChangeStates) {
+        final String systemAnomalyMessage = getSystemAnomalyMessage(ignoreNavmodeChangeStates);
         if (systemAnomalyMessage != null) {
             Assert.fail(formatSystemHealthMessage(formatErrorWithEvents(
                     "http://go/tapl : Tests are broken by a non-Launcher system error: "
@@ -767,7 +773,7 @@ public final class LauncherInstrumentation {
 
                 if (hasLauncherObject(CONTEXT_MENU_RES_ID)) {
                     GestureScope gestureScope = gestureStartFromLauncher
-                            ? (isTablet()? GestureScope.INSIDE : GestureScope.INSIDE_TO_OUTSIDE)
+                            ? (isTablet() ? GestureScope.INSIDE : GestureScope.INSIDE_TO_OUTSIDE)
                             : GestureScope.OUTSIDE_WITH_PILFER;
                     linearGesture(
                             displaySize.x / 2, displaySize.y - 1,
@@ -1021,6 +1027,15 @@ public final class LauncherInstrumentation {
             assertNotNull("Can't find a view in Launcher, id: " + selector + " in container: "
                     + container.getResourceName(), object);
             return object;
+        } catch (StaleObjectException e) {
+            fail("The container disappeared from screen");
+            return null;
+        }
+    }
+
+    List<UiObject2> getChildren(UiObject2 container) {
+        try {
+            return container.getChildren();
         } catch (StaleObjectException e) {
             fail("The container disappeared from screen");
             return null;

@@ -278,6 +278,8 @@ public abstract class SwipeUpAnimationLogic implements
         RemoteAnimationTargetCompat primaryTaskTarget;
         RemoteAnimationTargetCompat secondaryTaskTarget;
 
+        // TODO(b/197568823) Determine if we need to exclude assistant as one of the targets we
+        //  animate
         if (!mIsSwipeForStagedSplit) {
             primaryTaskTarget = targets.findTask(mGestureState.getRunningTaskId());
             mRemoteTargetHandles[0].mTransformParams.setTargetSet(targets);

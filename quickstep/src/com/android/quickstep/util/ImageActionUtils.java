@@ -154,6 +154,18 @@ public class ImageActionUtils {
     @WorkerThread
     public static void persistBitmapAndStartActivity(Context context, Bitmap bitmap, Rect crop,
             Intent intent, BiFunction<Uri, Intent, Intent[]> uriToIntentMap, String tag) {
+        persistBitmapAndStartActivity(context, bitmap, crop, intent, uriToIntentMap, tag,
+                (Runnable) null);
+    }
+
+    /**
+     * Starts activity based on given intent created from image uri.
+     * @param exceptionCallback An optional callback to be called when the intent can't be resolved
+     */
+    @WorkerThread
+    public static void persistBitmapAndStartActivity(Context context, Bitmap bitmap, Rect crop,
+            Intent intent, BiFunction<Uri, Intent, Intent[]> uriToIntentMap, String tag,
+            Runnable exceptionCallback) {
         Intent[] intents = uriToIntentMap.apply(getImageUri(bitmap, crop, context, tag), intent);
 
         try {
@@ -165,6 +177,9 @@ public class ImageActionUtils {
             }
         } catch (ActivityNotFoundException e) {
             Log.e(TAG, "No activity found to receive image intent");
+            if (exceptionCallback != null) {
+                exceptionCallback.run();
+            }
         }
     }
 
