@@ -53,7 +53,6 @@ import com.android.launcher3.statehandlers.DepthController;
 import com.android.launcher3.statemanager.BaseState;
 import com.android.launcher3.statemanager.StatefulActivity;
 import com.android.launcher3.touch.PagedOrientationHandler;
-import com.android.launcher3.util.SplitConfigurationOptions;
 import com.android.launcher3.util.WindowBounds;
 import com.android.launcher3.views.ScrimView;
 import com.android.quickstep.SysUINavigationMode.Mode;
@@ -200,33 +199,6 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
             return;
         }
         recentsView.switchToScreenshot(thumbnailData, runnable);
-    }
-
-    /**
-     * Sets the task size in {@param outRect} taking split screened windows into account.
-     * We assume combined height of both tasks will be same as one normal task, then we'll modify
-     * the task height/width based on the ratio of task screen space bounds from
-     * {@param splitInfo}
-     *
-     * @param desiredStageBounds whether task size for top/left or bottom/right needs to be computed
-     */
-    public final void calculateStagedSplitTaskSize(Context context, DeviceProfile dp, Rect outRect,
-            SplitConfigurationOptions.StagedSplitBounds splitInfo,
-            @SplitConfigurationOptions.StagePosition int desiredStageBounds) {
-        calculateTaskSize(context, dp, outRect);
-
-        // TODO(b/181705607) Change for landscape vs portrait
-        float totalHeight = splitInfo.mLeftTopBounds.height()
-                + splitInfo.mRightBottomBounds.height()
-                + splitInfo.mDividerBounds.height() / 2f;
-        float topTaskPercent = splitInfo.mLeftTopBounds.height() / totalHeight;
-        if (desiredStageBounds == SplitConfigurationOptions.STAGE_POSITION_TOP_OR_LEFT) {
-            float diff = outRect.height() * (1f - topTaskPercent);
-            outRect.bottom -= diff;
-        } else {
-            float diff = outRect.height() * topTaskPercent;
-            outRect.top += diff;
-        }
     }
 
     /**
