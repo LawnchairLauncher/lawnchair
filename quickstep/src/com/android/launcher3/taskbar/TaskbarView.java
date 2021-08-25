@@ -115,6 +115,7 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
      */
     protected void updateHotseatItems(ItemInfo[] hotseatItemInfos) {
         int nextViewIndex = 0;
+        int numViewsAnimated = 0;
 
         for (int i = 0; i < hotseatItemInfos.length; i++) {
             ItemInfo hotseatItemInfo = hotseatItemInfos[i];
@@ -170,8 +171,14 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
             // Apply the Hotseat ItemInfos, or hide the view if there is none for a given index.
             if (hotseatView instanceof BubbleTextView
                     && hotseatItemInfo instanceof WorkspaceItemInfo) {
-                ((BubbleTextView) hotseatView).applyFromWorkspaceItem(
-                        (WorkspaceItemInfo) hotseatItemInfo);
+                BubbleTextView btv = (BubbleTextView) hotseatView;
+                WorkspaceItemInfo workspaceInfo = (WorkspaceItemInfo) hotseatItemInfo;
+
+                boolean animate = btv.shouldAnimateIconChange((WorkspaceItemInfo) hotseatItemInfo);
+                btv.applyFromWorkspaceItem(workspaceInfo, animate, numViewsAnimated);
+                if (animate) {
+                    numViewsAnimated++;
+                }
             }
             setClickAndLongClickListenersForIcon(hotseatView);
             nextViewIndex++;
