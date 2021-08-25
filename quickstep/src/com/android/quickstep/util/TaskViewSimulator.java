@@ -176,7 +176,7 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
             mStagePosition = STAGE_POSITION_UNDEFINED;
             return;
         }
-        mStagePosition = mThumbnailPosition.equals(splitInfo.mLeftTopBounds) ?
+        mStagePosition = mThumbnailPosition.equals(splitInfo.leftTopBounds) ?
                 STAGE_POSITION_TOP_OR_LEFT :
                 STAGE_POSITION_BOTTOM_OR_RIGHT;
     }

@@ -44,7 +44,7 @@ public class SplitScreenSelectState extends OverviewState {
     public float getSplitSelectTranslation(Launcher launcher) {
         RecentsView recentsView = launcher.getOverviewPanel();
         int splitPosition = recentsView.getSplitPlaceholder()
-                .getActiveSplitPositionOption().mStagePosition;
+                .getActiveSplitPositionOption().stagePosition;
         if (!recentsView.shouldShiftThumbnailsForSplitSelect(splitPosition)) {
             return 0f;
         }
