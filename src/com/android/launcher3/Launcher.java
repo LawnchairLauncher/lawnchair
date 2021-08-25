@@ -2094,8 +2094,16 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
 
     @Override
     public IntSet getPagesToBindSynchronously(IntArray orderedScreenIds) {
-        IntSet visibleIds = mPagesToBindSynchronously.isEmpty()
-                ? mWorkspace.getCurrentPageScreenIds() : mPagesToBindSynchronously;
+        IntSet visibleIds;
+        if (!mPagesToBindSynchronously.isEmpty()) {
+            visibleIds = mPagesToBindSynchronously;
+        } else if (!mWorkspaceLoading) {
+            visibleIds = mWorkspace.getCurrentPageScreenIds();
+        } else {
+            // If workspace binding is still in progress, getCurrentPageScreenIds won't be accurate,
+            // and we should use mSynchronouslyBoundPages that's set during initial binding.
+            visibleIds = mSynchronouslyBoundPages;
+        }
         IntArray actualIds = new IntArray();
 
         IntSet result = new IntSet();
