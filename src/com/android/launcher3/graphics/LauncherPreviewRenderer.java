@@ -65,6 +65,7 @@ import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.Workspace;
 import com.android.launcher3.WorkspaceLayoutManager;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.folder.FolderIcon;
@@ -279,7 +280,7 @@ public class LauncherPreviewRenderer extends ContextWrapper
                     mDp.workspacePadding.top,
                     mDp.workspacePadding.right + mDp.cellLayoutPaddingLeftRightPx,
                     mDp.workspacePadding.bottom);
-            mWorkspaceScreens.put(PreviewSurfaceRenderer.SECOND_SCREEN_ID, rightPanel);
+            mWorkspaceScreens.put(Workspace.SECOND_SCREEN_ID, rightPanel);
         }
 
         if (Utilities.ATLEAST_S) {
