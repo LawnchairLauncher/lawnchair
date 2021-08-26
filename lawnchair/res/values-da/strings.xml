@@ -76,10 +76,10 @@
     </plurals>
     <string name="hotseat_qsb_label">Vis søgebar</string>
     <string name="dt2s_admin_hint_title">Administratorrettigheder Påkrævet</string>
-    <string name="dt2s_admin_hint">To use Double-Tap to Sleep, set Lawnchair as a device admin app. Tap “Open Settings,” then tap “Activate this device admin app.”</string>
+    <string name="dt2s_admin_hint">To use Double-Tap to Sleep, set Lawnchair as a device admin app. Tap Open Settings, then tap “Activate this device admin app.”</string>
     <string name="dt2s_admin_warning">Dobbelttryk for at sove vil blive slået fra.</string>
     <string name="dt2s_a11y_hint_title">Slå tilgængelighedstjeneste til</string>
-    <string name="dt2s_a11y_hint">For at bruger dobbelttryk for at sove skal du slå tilgængeligheds service for Lawnchair. Tryk \"Åben indstillinger,\" og så vælg \"Lawnchair\" og slå \"Brug Lawnchair.\" til</string>
+    <string name="dt2s_a11y_hint">To use Double-Tap to Sleep, turn on the Lawnchair accessibility service. Tap Open Settings, then select Lawnchair and turn on Use Lawnchair.</string>
     <string name="dt2s_warning_open_settings">Åbn Indstillinger</string>
     <string name="minus_one_enable">Feed</string>
     <string name="minus_one_unavailable">Ingen fred installeret.</string>
@@ -94,7 +94,7 @@
     <string name="clear_all_as_action_label">Ryd alle knap ved bunden</string>
     <string name="window_corner_radius_label">Screen Corner Radius</string>
     <string name="override_window_corner_radius_label">Custom Screen Corner Radius</string>
-    <string name="window_corner_radius_description">Use this slider to match the transition radius to your actual screen.</string>
+    <string name="window_corner_radius_description">When you swipe up to open Recents, the current app follows your finger, shrinking into a card. Use this slider to adjust the corner radius of the card when it’s nearly full-screen such that it matches the corners of your screen.</string>
     <string name="system_icons">System Ikoner</string>
     <string name="accent_color">Accent Farve</string>
     <string name="done">Færdig</string>
@@ -109,7 +109,7 @@
     <string name="what_to_show">Hvad skal vises</string>
     <string name="missing_notification_access_label">Notifikationsadgang krævet</string>
     <string name="missing_notification_access_description">Notifikationsadgang krævet.</string>
-    <string name="msg_missing_notification_access">For at bruge Notifikations prikker, skal du aktivere app notifikationer for <xliff:g id="name" example="My App">%1$s</xliff:g>.</string>
+    <string name="msg_missing_notification_access">To use Notification Dots, grant <xliff:g id="name" example="My App">%1$s</xliff:g> access to notifications.</string>
     <string name="title_change_settings">Ændre Indstillinger</string>
     <string name="debug_restart_launcher">Restart Lawnchair</string>
 </resources>
