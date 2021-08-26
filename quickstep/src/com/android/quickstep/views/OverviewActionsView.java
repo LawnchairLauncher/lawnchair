@@ -79,6 +79,7 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
     private static final int INDEX_SCROLL_ALPHA = 4;
 
     private final MultiValueAlpha mMultiValueAlpha;
+    private View mSplitButton;
 
     @ActionsHiddenFlags
     private int mHiddenFlags;
@@ -110,6 +111,8 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
         View share = findViewById(R.id.action_share);
         share.setOnClickListener(this);
         findViewById(R.id.action_screenshot).setOnClickListener(this);
+        mSplitButton = findViewById(R.id.action_split);
+        mSplitButton.setOnClickListener(this);
         if (ENABLE_OVERVIEW_SHARE.get()) {
             share.setVisibility(VISIBLE);
             findViewById(R.id.oav_three_button_space).setVisibility(VISIBLE);
@@ -135,6 +138,8 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
             mCallbacks.onShare();
         } else if (id == R.id.action_screenshot) {
             mCallbacks.onScreenshot();
+        } else if (id == R.id.action_split) {
+            mCallbacks.onSplit();
         }
     }
 
@@ -218,6 +223,16 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
         mDp = dp;
         updateVerticalMargin(SysUINavigationMode.getMode(getContext()));
         requestLayout();
+        setSplitButtonVisible(mDp.isTablet);
+    }
+
+    public void setSplitButtonVisible(boolean visible) {
+        if (mSplitButton == null) {
+            return;
+        }
+
+        mSplitButton.setVisibility(visible ? VISIBLE : GONE);
+        findViewById(R.id.action_split_space).setVisibility(visible ? VISIBLE : GONE);
     }
 
     /** Get the top margin associated with the action buttons in Overview. */

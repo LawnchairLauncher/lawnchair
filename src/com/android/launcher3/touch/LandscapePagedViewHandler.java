@@ -45,6 +45,7 @@ import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.util.SplitConfigurationOptions;
 import com.android.launcher3.util.SplitConfigurationOptions.SplitPositionOption;
+import com.android.launcher3.util.SplitConfigurationOptions.StagePosition;
 import com.android.launcher3.views.BaseDragLayer;
 
 import java.util.Collections;
@@ -165,16 +166,24 @@ public class LandscapePagedViewHandler implements PagedOrientationHandler {
     }
 
     @Override
-    public int getSplitTaskViewDismissDirection(SplitPositionOption splitPosition,
+    public int getSplitTaskViewDismissDirection(@StagePosition int stagePosition,
             DeviceProfile dp) {
         // Don't use device profile here because we know we're in fake landscape, only split option
         // available is top/left
-        if (splitPosition.stagePosition == STAGE_POSITION_TOP_OR_LEFT) {
+//<<<<<<< HEAD
+//        if (splitPosition.stagePosition == STAGE_POSITION_TOP_OR_LEFT) {
+//            // Top (visually left) side
+//            return SPLIT_TRANSLATE_PRIMARY_NEGATIVE;
+//        }
+//        throw new IllegalStateException("Invalid split stage position: " +
+//                splitPosition.stagePosition);
+//=======
+        if (stagePosition == STAGE_POSITION_TOP_OR_LEFT) {
             // Top (visually left) side
             return SPLIT_TRANSLATE_PRIMARY_NEGATIVE;
         }
-        throw new IllegalStateException("Invalid split stage position: " +
-                splitPosition.stagePosition);
+        throw new IllegalStateException("Invalid split stage position: " + stagePosition);
+//>>>>>>> f6769c8532 (Add Split button in OverviewActions)
     }
 
     @Override
@@ -367,7 +376,7 @@ public class LandscapePagedViewHandler implements PagedOrientationHandler {
 
     @Override
     public void getInitialSplitPlaceholderBounds(int placeholderHeight, DeviceProfile dp,
-            SplitPositionOption splitPositionOption, Rect out) {
+            @StagePosition int stagePosition, Rect out) {
         // In fake land/seascape, the placeholder always needs to go to the "top" of the device,
         // which is the same bounds as 0 rotation.
         int width = dp.widthPx;
@@ -376,7 +385,7 @@ public class LandscapePagedViewHandler implements PagedOrientationHandler {
 
     @Override
     public void getFinalSplitPlaceholderBounds(int splitDividerSize, DeviceProfile dp,
-            SplitPositionOption initialSplitOption, Rect out1, Rect out2) {
+            @StagePosition int stagePosition, Rect out1, Rect out2) {
         // In fake land/seascape, the window bounds are always top and bottom half
         int screenHeight = dp.heightPx;
         int screenWidth = dp.widthPx;
@@ -385,6 +394,7 @@ public class LandscapePagedViewHandler implements PagedOrientationHandler {
     }
 
     @Override
+//<<<<<<< HEAD
     public void setSplitTaskSwipeRect(DeviceProfile dp, Rect outRect,
             SplitConfigurationOptions.StagedSplitBounds splitInfo, int desiredStagePosition) {
         float diff;
@@ -418,11 +428,18 @@ public class LandscapePagedViewHandler implements PagedOrientationHandler {
         ViewGroup.LayoutParams secondaryLp = mSnapshotView2.getLayoutParams();
 
         primaryLp.width = totalThumbnailWidth;
-        primaryLp.height = (int)(totalThumbnailHeight * splitBoundsConfig.leftTaskPercent);
+        primaryLp.height = (int) (totalThumbnailHeight * splitBoundsConfig.leftTaskPercent);
 
         secondaryLp.width = totalThumbnailWidth;
         secondaryLp.height = totalThumbnailHeight - primaryLp.height - dividerBar;
         mSnapshotView2.setTranslationY(primaryLp.height + spaceAboveSnapshot + dividerBar);
+    }
+
+//=======
+    @Override
+    public int getDefaultSplitPosition(DeviceProfile deviceProfile) {
+        throw new IllegalStateException("Default position not available in fake landscape");
+//>>>>>>> f6769c8532 (Add Split button in OverviewActions)
     }
 
     @Override
