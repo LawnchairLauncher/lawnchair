@@ -31,9 +31,11 @@ import static com.android.systemui.shared.system.SysUiStatsLog.LAUNCHER_UICHANGE
 
 import android.content.Context;
 import android.util.Log;
+import android.util.StatsEvent;
 import android.view.View;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.annotation.WorkerThread;
 import androidx.slice.SliceItem;
 
@@ -132,6 +134,36 @@ public class StatsLogCompatManager extends StatsLogManager {
                 info.getWidget().getSpanX(),
                 info.getWidget().getSpanY(),
                 getFeatures(info));
+    }
+
+    /**
+     * Builds {@link StatsEvent} from {@link LauncherAtom.ItemInfo}. Used for pulled atom callback
+     * implementation.
+     */
+    public static StatsEvent buildStatsEvent(LauncherAtom.ItemInfo info,
+            @Nullable InstanceId instanceId) {
+        return SysUiStatsLog.buildStatsEvent(
+                SysUiStatsLog.LAUNCHER_LAYOUT_SNAPSHOT, // atom ID,
+                LAUNCHER_WORKSPACE_SNAPSHOT.getId(), // event_id = 1;
+                info.getAttribute().getNumber() * ATTRIBUTE_MULTIPLIER
+                        + info.getItemCase().getNumber(), // item_id = 2;
+                instanceId == null ? 0 : instanceId.getId(), //instance_id = 3;
+                0, //uid = 4 [(is_uid) = true];
+                getPackageName(info), // package_name = 5;
+                getComponentName(info), // component_name = 6;
+                getGridX(info, false), //grid_x = 7 [default = -1];
+                getGridY(info, false), //grid_y = 8 [default = -1];
+                getPageId(info), // page_id = 9 [default = -2];
+                getGridX(info, true), //grid_x_parent = 10 [default = -1];
+                getGridY(info, true), //grid_y_parent = 11 [default = -1];
+                getParentPageId(info), //page_id_parent = 12 [default = -2];
+                getHierarchy(info), // container_id = 13;
+                info.getIsWork(), // is_work_profile = 14;
+                info.getAttribute().getNumber(), // attribute_id = 15;
+                getCardinality(info), // cardinality = 16;
+                info.getWidget().getSpanX(), // span_x = 17 [default = 1];
+                info.getWidget().getSpanY() // span_y = 18 [default = 1];
+        );
     }
 
     /**
