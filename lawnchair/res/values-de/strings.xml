@@ -76,10 +76,10 @@
     </plurals>
     <string name="hotseat_qsb_label">Suchleiste anzeigen</string>
     <string name="dt2s_admin_hint_title">Adminberechtigung erforderlich</string>
-    <string name="dt2s_admin_hint">Um doppeltes Tippen zum Schlafen zu verwenden, gewähre Adminberechtigung.</string>
+    <string name="dt2s_admin_hint">To use Double-Tap to Sleep, set Lawnchair as a device admin app. Tap Open Settings, then tap “Activate this device admin app.”</string>
     <string name="dt2s_admin_warning">Doppeltes Tippen zum Schlafen wird deaktiviert.</string>
     <string name="dt2s_a11y_hint_title">Bedienungshilfen erforderlich</string>
-    <string name="dt2s_a11y_hint">Aktivieren Sie den Bedienungshilfen, um doppeltes Tippen zum Schlafen zu verwenden.</string>
+    <string name="dt2s_a11y_hint">To use Double-Tap to Sleep, turn on the Lawnchair accessibility service. Tap Open Settings, then select Lawnchair and turn on Use Lawnchair.</string>
     <string name="dt2s_warning_open_settings">Einstellungen öffnen</string>
     <string name="minus_one_enable">Feed</string>
     <string name="minus_one_unavailable">Feed ist nicht verfügbar.</string>
@@ -94,7 +94,7 @@
     <string name="clear_all_as_action_label">Alles entfernen Taste unten</string>
     <string name="window_corner_radius_label">Screen Corner Radius</string>
     <string name="override_window_corner_radius_label">Custom Screen Corner Radius</string>
-    <string name="window_corner_radius_description">Use this slider to match the transition radius to your actual screen.</string>
+    <string name="window_corner_radius_description">When you swipe up to open Recents, the current app follows your finger, shrinking into a card. Use this slider to adjust the corner radius of the card when it’s nearly full-screen such that it matches the corners of your screen.</string>
     <string name="system_icons">System-Symbole</string>
     <string name="accent_color">Akzentfarbe</string>
     <string name="done">Erledigt</string>
@@ -109,7 +109,7 @@
     <string name="what_to_show">Was soll angezeigt werden</string>
     <string name="missing_notification_access_label">Benachrichtigungszugriff erforderlich</string>
     <string name="missing_notification_access_description">Benachrichtigungszugriff erforderlich.</string>
-    <string name="msg_missing_notification_access">Um Benachrichtigungspunkte zu verwenden, aktivieren Sie App-Benachrichtigungen für <xliff:g id="name" example="My App">%1$s</xliff:g>.</string>
+    <string name="msg_missing_notification_access">To use Notification Dots, grant <xliff:g id="name" example="My App">%1$s</xliff:g> access to notifications.</string>
     <string name="title_change_settings">Einstellungen ändern</string>
     <string name="debug_restart_launcher">Restart Lawnchair</string>
 </resources>
