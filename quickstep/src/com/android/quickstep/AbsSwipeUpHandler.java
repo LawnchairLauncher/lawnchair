@@ -1194,9 +1194,6 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
     @UiThread
     private void animateToProgressInternal(float start, float end, long duration,
             Interpolator interpolator, GestureEndTarget target, PointF velocityPxPerMs) {
-        if (Utilities.IS_RUNNING_IN_TEST_HARNESS) {
-            Log.d(TestProtocol.L3_SWIPE_TO_HOME, "7");
-        }
         maybeUpdateRecentsAttachedState();
 
         // If we are transitioning to launcher, then listen for the activity to be restarted while
@@ -1219,6 +1216,9 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
             }
         }
 
+        if (Utilities.IS_RUNNING_IN_TEST_HARNESS) {
+            Log.d(TestProtocol.L3_SWIPE_TO_HOME, "7, end target=" + mGestureState.getEndTarget());
+        }
         if (mGestureState.getEndTarget() == HOME) {
             getOrientationHandler().adjustFloatingIconStartVelocity(velocityPxPerMs);
             final RemoteAnimationTargetCompat runningTaskTarget = mRecentsAnimationTargets != null
@@ -1233,6 +1233,9 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
                     && runningTaskTarget.allowEnterPip
                     && runningTaskTarget.taskInfo.pictureInPictureParams != null
                     && runningTaskTarget.taskInfo.pictureInPictureParams.isAutoEnterEnabled();
+            if (Utilities.IS_RUNNING_IN_TEST_HARNESS) {
+                Log.d(TestProtocol.L3_SWIPE_TO_HOME, "8, class=" + getClass().getSimpleName());
+            }
             HomeAnimationFactory homeAnimFactory =
                     createHomeAnimationFactory(cookies, duration, isTranslucent, appCanEnterPip,
                             runningTaskTarget);
