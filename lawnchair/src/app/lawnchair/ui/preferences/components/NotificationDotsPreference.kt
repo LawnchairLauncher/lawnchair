@@ -31,15 +31,20 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
+import app.lawnchair.ui.AlertBottomSheetContent
 import app.lawnchair.util.lifecycleState
 import com.android.launcher3.R
 import com.android.launcher3.notification.NotificationListener
 import com.android.launcher3.settings.SettingsActivity
 import com.android.launcher3.util.SecureSettingsObserver
+import kotlinx.coroutines.launch
 
 @Composable
+@ExperimentalMaterialApi
 fun NotificationDotsPreference() {
     val context = LocalContext.current
+    val sheetState = rememberBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
+    val coroutineScope = rememberCoroutineScope()
 
     val enabled = notificationDotsEnabled()
     val serviceEnabled = notificationServiceEnabled()
@@ -51,10 +56,14 @@ fun NotificationDotsPreference() {
         else -> R.string.notification_dots_desc_off
     }
 
-    var showDialog by remember { mutableStateOf(false) }
-    if (showDialog) {
-        NotificationAccessConfirmation(onDismissRequest = { showDialog = false })
-    }
+    NotificationAccessConfirmation(
+        sheetState = sheetState,
+        onDismissRequest = {
+            coroutineScope.launch {
+                sheetState.hide()
+            }
+        }
+    )
 
     PreferenceTemplate(height = 72.dp) {
         Row(
@@ -62,7 +71,9 @@ fun NotificationDotsPreference() {
             modifier = Modifier
                 .clickable {
                     if (showWarning) {
-                        showDialog = true
+                        coroutineScope.launch {
+                            sheetState.show()
+                        }
                     } else {
                         val intent = Intent("android.settings.NOTIFICATION_SETTINGS")
                             .putExtra(
@@ -107,43 +118,52 @@ fun NotificationDotsPreference() {
 }
 
 @Composable
-fun NotificationAccessConfirmation(onDismissRequest: () -> Unit) {
+@ExperimentalMaterialApi
+fun NotificationAccessConfirmation(
+    sheetState: BottomSheetState,
+    onDismissRequest: () -> Unit
+) {
     val context = LocalContext.current
-    val elevationOverlay = LocalElevationOverlay.current
-    val surface = MaterialTheme.colors.surface
-    val backgroundColor = elevationOverlay?.apply(surface, 16.dp) ?: surface
-    AlertDialog(
-        onDismissRequest = onDismissRequest,
-        confirmButton = { TextButton(onClick = {
-            onDismissRequest()
 
-            val cn = ComponentName(context, NotificationListener::class.java)
-            val showFragmentArgs = Bundle()
-            showFragmentArgs.putString(
-                SettingsActivity.EXTRA_FRAGMENT_ARG_KEY,
-                cn.flattenToString()
-            )
+    BottomSheet(sheetState = sheetState) {
+        AlertBottomSheetContent(
+            title = { Text(text = stringResource(id = R.string.missing_notification_access_label)) },
+            text = {
+                val appName = stringResource(id = R.string.derived_app_name)
+                Text(text = stringResource(id = R.string.msg_missing_notification_access, appName))
+            },
+            buttons = {
+                OutlinedButton(
+                    shape = MaterialTheme.shapes.small,
+                    onClick = onDismissRequest
+                ) {
+                    Text(text = stringResource(id = android.R.string.cancel))
+                }
+                Spacer(modifier = Modifier.requiredWidth(16.dp))
+                Button(
+                    shape = MaterialTheme.shapes.small,
+                    onClick = {
+                        onDismissRequest()
 
-            val intent = Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS)
-                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                .putExtra(SettingsActivity.EXTRA_FRAGMENT_ARG_KEY, cn.flattenToString())
-                .putExtra(SettingsActivity.EXTRA_SHOW_FRAGMENT_ARGS, showFragmentArgs)
-            context.startActivity(intent)
-        }) {
-            Text(text = stringResource(id = R.string.title_change_settings))
-        } },
-        dismissButton = { TextButton(onClick = onDismissRequest) {
-            Text(text = stringResource(id = android.R.string.cancel))
-        } },
-        title = {
-            Text(text = stringResource(id = R.string.missing_notification_access_label))
-        },
-        text = {
-            val appName = stringResource(id = R.string.derived_app_name)
-            Text(text = stringResource(id = R.string.msg_missing_notification_access, appName))
-        },
-        backgroundColor = backgroundColor
-    )
+                        val cn = ComponentName(context, NotificationListener::class.java)
+                        val showFragmentArgs = Bundle()
+                        showFragmentArgs.putString(
+                            SettingsActivity.EXTRA_FRAGMENT_ARG_KEY,
+                            cn.flattenToString()
+                        )
+
+                        val intent = Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS)
+                            .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                            .putExtra(SettingsActivity.EXTRA_FRAGMENT_ARG_KEY, cn.flattenToString())
+                            .putExtra(SettingsActivity.EXTRA_SHOW_FRAGMENT_ARGS, showFragmentArgs)
+                        context.startActivity(intent)
+                    }
+                ) {
+                    Text(text = stringResource(id = R.string.title_change_settings))
+                }
+            }
+        )
+    }
 }
 
 @Composable
