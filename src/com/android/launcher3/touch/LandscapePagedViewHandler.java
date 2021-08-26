@@ -169,12 +169,12 @@ public class LandscapePagedViewHandler implements PagedOrientationHandler {
             DeviceProfile dp) {
         // Don't use device profile here because we know we're in fake landscape, only split option
         // available is top/left
-        if (splitPosition.mStagePosition == STAGE_POSITION_TOP_OR_LEFT) {
+        if (splitPosition.stagePosition == STAGE_POSITION_TOP_OR_LEFT) {
             // Top (visually left) side
             return SPLIT_TRANSLATE_PRIMARY_NEGATIVE;
         }
         throw new IllegalStateException("Invalid split stage position: " +
-                splitPosition.mStagePosition);
+                splitPosition.stagePosition);
     }
 
     @Override
@@ -389,10 +389,10 @@ public class LandscapePagedViewHandler implements PagedOrientationHandler {
             SplitConfigurationOptions.StagedSplitBounds splitInfo, int desiredStagePosition) {
         float diff;
         if (desiredStagePosition == SplitConfigurationOptions.STAGE_POSITION_TOP_OR_LEFT) {
-            diff = outRect.height() * (1f - splitInfo.mLeftTaskPercent);
+            diff = outRect.height() * (1f - splitInfo.leftTaskPercent);
             outRect.bottom -= diff;
         } else {
-            diff = outRect.height() * splitInfo.mLeftTaskPercent;
+            diff = outRect.height() * splitInfo.leftTaskPercent;
             outRect.top += diff;
         }
     }
@@ -402,7 +402,7 @@ public class LandscapePagedViewHandler implements PagedOrientationHandler {
             SplitConfigurationOptions.StagedSplitBounds splitInfo, int desiredStagePosition) {
         if (desiredStagePosition == STAGE_POSITION_BOTTOM_OR_RIGHT) {
             // The preview set is for the bottom/right, inset by top/left task
-            splitOffset.x = splitInfo.mLeftTopBounds.width() + splitInfo.mDividerBounds.width() / 2;
+            splitOffset.x = splitInfo.leftTopBounds.width() + splitInfo.dividerBounds.width() / 2;
         }
     }
 
@@ -413,12 +413,12 @@ public class LandscapePagedViewHandler implements PagedOrientationHandler {
         int spaceAboveSnapshot = dp.overviewTaskThumbnailTopMarginPx;
         int totalThumbnailHeight = taskParent.getHeight() - spaceAboveSnapshot;
         int totalThumbnailWidth = taskParent.getWidth();
-        int dividerBar = splitBoundsConfig.mDividerBounds.width() / 2;
+        int dividerBar = splitBoundsConfig.dividerBounds.width() / 2;
         ViewGroup.LayoutParams primaryLp = mSnapshotView.getLayoutParams();
         ViewGroup.LayoutParams secondaryLp = mSnapshotView2.getLayoutParams();
 
         primaryLp.width = totalThumbnailWidth;
-        primaryLp.height = (int)(totalThumbnailHeight * splitBoundsConfig.mLeftTaskPercent);
+        primaryLp.height = (int)(totalThumbnailHeight * splitBoundsConfig.leftTaskPercent);
 
         secondaryLp.width = totalThumbnailWidth;
         secondaryLp.height = totalThumbnailHeight - primaryLp.height - dividerBar;

@@ -69,44 +69,44 @@ public final class SplitConfigurationOptions {
     ///////////////////////////////////
 
     public static class SplitPositionOption {
-        public final int mIconResId;
-        public final int mTextResId;
+        public final int iconResId;
+        public final int textResId;
         @StagePosition
-        public final int mStagePosition;
+        public final int stagePosition;
 
         @StageType
         public final int mStageType;
 
         public SplitPositionOption(int iconResId, int textResId, int stagePosition, int stageType) {
-            mIconResId = iconResId;
-            mTextResId = textResId;
-            mStagePosition = stagePosition;
+            this.iconResId = iconResId;
+            this.textResId = textResId;
+            this.stagePosition = stagePosition;
             mStageType = stageType;
         }
     }
 
     public static class StagedSplitBounds {
-        public final Rect mLeftTopBounds;
-        public final Rect mRightBottomBounds;
-        public final Rect mDividerBounds;
+        public final Rect leftTopBounds;
+        public final Rect rightBottomBounds;
+        public final Rect dividerBounds;
         // This class is orientation-agnostic, so we compute both for later use
-        public final float mTopTaskPercent;
-        public final float mLeftTaskPercent;
+        public final float topTaskPercent;
+        public final float leftTaskPercent;
 
 
         public StagedSplitBounds(Rect leftTopBounds, Rect rightBottomBounds, Rect dividerBounds) {
-            mLeftTopBounds = leftTopBounds;
-            mRightBottomBounds = rightBottomBounds;
-            mDividerBounds = dividerBounds;
-            float totalHeight = mLeftTopBounds.height()
-                    + mRightBottomBounds.height()
-                    + mDividerBounds.height();
-            float totalWidth = mLeftTopBounds.width()
-                    + mRightBottomBounds.width()
-                    + mDividerBounds.width();
+            this.leftTopBounds = leftTopBounds;
+            this.rightBottomBounds = rightBottomBounds;
+            this.dividerBounds = dividerBounds;
+            float totalHeight = this.leftTopBounds.height()
+                    + this.rightBottomBounds.height()
+                    + this.dividerBounds.height();
+            float totalWidth = this.leftTopBounds.width()
+                    + this.rightBottomBounds.width()
+                    + this.dividerBounds.width();
 
-            mLeftTaskPercent = mLeftTopBounds.width() / totalWidth;
-            mTopTaskPercent = mLeftTopBounds.height() / totalHeight;
+            leftTaskPercent = this.leftTopBounds.width() / totalWidth;
+            topTaskPercent = this.leftTopBounds.height() / totalHeight;
         }
     }
 
