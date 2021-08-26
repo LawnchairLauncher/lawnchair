@@ -113,7 +113,7 @@
     <string name="what_to_show">ماذا تريد أن تُظهر</string>
     <string name="missing_notification_access_label">الوصول إلى الإشعارات مطلوب</string>
     <string name="missing_notification_access_description">الوصول إلى الإشعارات مطلوب.</string>
-    <string name="msg_missing_notification_access">To use Notification Dots, turn on app notifications for <xliff:g id="name" example="My App">%1$s</xliff:g>.</string>
-    <string name="title_change_settings">Change Settings</string>
-    <string name="debug_restart_launcher">Restart Lawnchair</string>
+    <string name="msg_missing_notification_access">لاستخدام نقاط الإشعارارت، قم بتشغيل إشعارات التطبيق لـ <xliff:g id="name" example="My App">%1$s</xliff:g>.</string>
+    <string name="title_change_settings">تغيير الإعدادات</string>
+    <string name="debug_restart_launcher">إعادة تشغيل Lawnchair</string>
 </resources>
