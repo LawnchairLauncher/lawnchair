@@ -17,35 +17,9 @@
 package app.lawnchair.preferences
 
 import android.content.Context
-import android.content.pm.PackageInfo
-import androidx.core.text.isDigitsOnly
-import app.lawnchair.util.capitalize
 
-fun getFormattedVersionName(context: Context): String {
-    val packageInfo: PackageInfo = context.packageManager.getPackageInfo(context.packageName, 0)
-    val versionName = packageInfo.versionName
-    val withoutMetadata = versionName.split("+")[0]
+inline val Context.versionName: String
+    get() = packageManager.getPackageInfo(packageName, 0).versionName.split(" (")[0]
 
-    var result = ""
-    val segments = withoutMetadata.split("-")
-    segments.forEachIndexed { segmentIndex, segment ->
-        var subresult = ""
-        val subsegments = segment.split(".")
-        subsegments.forEachIndexed { subsegmentIndex, subsegment ->
-            subresult += when {
-                subsegmentIndex == 0 -> subsegment.capitalize()
-                subsegments[subsegmentIndex - 1].isDigitsOnly() && subsegment.isDigitsOnly() -> ".$subsegment"
-                else -> " ${subsegment.capitalize()}"
-            }
-        }
-        result += if (segmentIndex == 0) subresult else " $subresult"
-    }
-
-    return result
-}
-
-fun getMajorVersion(context: Context): String {
-    val packageInfo: PackageInfo = context.packageManager.getPackageInfo(context.packageName, 0)
-    val versionName = packageInfo.versionName
-    return versionName.split(".")[0]
-}
+inline val Context.majorVersion: String
+    get() = versionName.split('.')[0]

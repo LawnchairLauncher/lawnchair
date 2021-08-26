@@ -70,7 +70,7 @@ android {
         minSdkVersion 25
         targetSdkVersion 30
         versionCode 7
-        versionName "11.0-alpha.6.1+${commitHash()}"
+        versionName "11.0 Alpha 6.1 (${commitHash()})"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
