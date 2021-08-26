@@ -26,6 +26,7 @@ import android.animation.ObjectAnimator;
 import android.os.IBinder;
 import android.os.SystemProperties;
 import android.util.FloatProperty;
+import android.view.AttachedSurfaceControl;
 import android.view.CrossWindowBlurListeners;
 import android.view.SurfaceControl;
 import android.view.View;
@@ -270,7 +271,7 @@ public class DepthController implements StateHandler<LauncherState>,
     public void onOverlayScrollChanged(float progress) {
         // Round out the progress to dedupe frequent, non-perceptable updates
         int progressI = (int) (progress * 256);
-        float progressF = progressI / 256f;
+        float progressF = Utilities.boundToRange(progressI / 256f, 0f, 1f);
         if (Float.compare(mOverlayScrollProgress, progressF) == 0) {
             return;
         }
@@ -298,10 +299,15 @@ public class DepthController implements StateHandler<LauncherState>,
 
             int blur = opaque || isOverview || !mCrossWindowBlursEnabled
                     || mBlurDisabledForAppLaunch ? 0 : (int) (depth * mMaxBlurRadius);
-            new SurfaceControl.Transaction()
+            SurfaceControl.Transaction transaction = new SurfaceControl.Transaction()
                     .setBackgroundBlurRadius(mSurface, blur)
-                    .setOpaque(mSurface, opaque)
-                    .apply();
+                    .setOpaque(mSurface, opaque);
+
+            AttachedSurfaceControl rootSurfaceControl =
+                    mLauncher.getRootView().getRootSurfaceControl();
+            if (rootSurfaceControl != null) {
+                rootSurfaceControl.applyTransactionOnDraw(transaction);
+            }
         }
         return true;
     }
