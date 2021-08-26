@@ -25,6 +25,7 @@ import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_TYPE_MA
 
 import android.content.res.Resources;
 import android.graphics.Matrix;
+import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.RectF;
@@ -34,13 +35,16 @@ import android.view.MotionEvent;
 import android.view.Surface;
 import android.view.VelocityTracker;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.accessibility.AccessibilityEvent;
 import android.widget.LinearLayout;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.util.SplitConfigurationOptions;
 import com.android.launcher3.util.SplitConfigurationOptions.SplitPositionOption;
+import com.android.launcher3.util.SplitConfigurationOptions.StagePosition;
 import com.android.launcher3.views.BaseDragLayer;
 
 import java.util.ArrayList;
@@ -162,9 +166,13 @@ public class PortraitPagedViewHandler implements PagedOrientationHandler {
     }
 
     @Override
-    public int getSplitTaskViewDismissDirection(SplitPositionOption splitPosition,
+    public int getSplitTaskViewDismissDirection(@StagePosition int stagePosition,
             DeviceProfile dp) {
-        if (splitPosition.mStagePosition == STAGE_POSITION_TOP_OR_LEFT) {
+//<<<<<<< HEAD
+//        if (splitPosition.stagePosition == STAGE_POSITION_TOP_OR_LEFT) {
+//=======
+        if (stagePosition == STAGE_POSITION_TOP_OR_LEFT) {
+//>>>>>>> f6769c8532 (Add Split button in OverviewActions)
             if (dp.isLandscape) {
                 // Left side
                 return SPLIT_TRANSLATE_PRIMARY_NEGATIVE;
@@ -172,12 +180,20 @@ public class PortraitPagedViewHandler implements PagedOrientationHandler {
                 // Top side
                 return SPLIT_TRANSLATE_SECONDARY_NEGATIVE;
             }
-        } else if (splitPosition.mStagePosition == STAGE_POSITION_BOTTOM_OR_RIGHT) {
+//<<<<<<< HEAD
+//        } else if (splitPosition.stagePosition == STAGE_POSITION_BOTTOM_OR_RIGHT) {
+             // We don't have a bottom option, so should be right
+//            return SPLIT_TRANSLATE_PRIMARY_POSITIVE;
+//        }
+//        throw new IllegalStateException("Invalid split stage position: " +
+//                splitPosition.stagePosition);
+//=======
+        } else if (stagePosition == STAGE_POSITION_BOTTOM_OR_RIGHT) {
             // We don't have a bottom option, so should be right
             return SPLIT_TRANSLATE_PRIMARY_POSITIVE;
         }
-        throw new IllegalStateException("Invalid split stage position: " +
-                splitPosition.mStagePosition);
+        throw new IllegalStateException("Invalid split stage position: " + stagePosition);
+//>>>>>>> f6769c8532 (Add Split button in OverviewActions)
     }
 
     @Override
@@ -413,7 +429,7 @@ public class PortraitPagedViewHandler implements PagedOrientationHandler {
 
     @Override
     public void getInitialSplitPlaceholderBounds(int placeholderHeight, DeviceProfile dp,
-            SplitPositionOption splitPositionOption, Rect out) {
+            @StagePosition int stagePosition, Rect out) {
         int width = dp.widthPx;
         out.set(0, 0, width, placeholderHeight);
         if (!dp.isLandscape) {
@@ -422,7 +438,11 @@ public class PortraitPagedViewHandler implements PagedOrientationHandler {
         }
 
         // Now we rotate the portrait rect depending on what side we want pinned
-        boolean pinToRight = splitPositionOption.mStagePosition == STAGE_POSITION_BOTTOM_OR_RIGHT;
+//<<<<<<< HEAD
+//        boolean pinToRight = splitPositionOption.stagePosition == STAGE_POSITION_BOTTOM_OR_RIGHT;
+//=======
+        boolean pinToRight = stagePosition == STAGE_POSITION_BOTTOM_OR_RIGHT;
+//>>>>>>> f6769c8532 (Add Split button in OverviewActions)
 
         int screenHeight = dp.heightPx;
         float postRotateScale = (float) screenHeight / width;
@@ -439,7 +459,7 @@ public class PortraitPagedViewHandler implements PagedOrientationHandler {
 
     @Override
     public void getFinalSplitPlaceholderBounds(int splitDividerSize, DeviceProfile dp,
-            SplitPositionOption initialSplitOption, Rect out1, Rect out2) {
+            @StagePosition int stagePosition, Rect out1, Rect out2) {
         int screenHeight = dp.heightPx;
         int screenWidth = dp.widthPx;
         out1.set(0, 0, screenWidth, screenHeight / 2 - splitDividerSize);
@@ -450,7 +470,11 @@ public class PortraitPagedViewHandler implements PagedOrientationHandler {
         }
 
         // Now we rotate the portrait rect depending on what side we want pinned
-        boolean pinToRight = initialSplitOption.mStagePosition == STAGE_POSITION_BOTTOM_OR_RIGHT;
+//<<<<<<< HEAD
+//        boolean pinToRight = initialSplitOption.stagePosition == STAGE_POSITION_BOTTOM_OR_RIGHT;
+//=======
+        boolean pinToRight = stagePosition == STAGE_POSITION_BOTTOM_OR_RIGHT;
+//>>>>>>> f6769c8532 (Add Split button in OverviewActions)
         float postRotateScale = (float) screenHeight / screenWidth;
 
         mTmpMatrix.reset();
@@ -465,6 +489,92 @@ public class PortraitPagedViewHandler implements PagedOrientationHandler {
         mTmpRectF.set(out2);
         mTmpMatrix.mapRect(mTmpRectF);
         mTmpRectF.roundOut(out2);
+    }
+
+    @Override
+//<<<<<<< HEAD
+    public void setSplitTaskSwipeRect(DeviceProfile dp, Rect outRect,
+            SplitConfigurationOptions.StagedSplitBounds splitInfo, int desiredStagePosition) {
+        boolean isLandscape = dp.isLandscape;
+        float diff;
+        if (desiredStagePosition == SplitConfigurationOptions.STAGE_POSITION_TOP_OR_LEFT) {
+            if (isLandscape) {
+                diff = outRect.width() * (1f - splitInfo.leftTaskPercent);
+                outRect.right -= diff;
+            } else {
+                diff = outRect.height() * (1f - splitInfo.topTaskPercent);
+                outRect.bottom -= diff;
+            }
+        } else {
+            if (isLandscape) {
+                diff = outRect.width() * splitInfo.leftTaskPercent;
+                outRect.left += diff;
+            } else {
+                diff = outRect.height() * splitInfo.topTaskPercent;
+                outRect.top += diff;
+            }
+        }
+    }
+
+    @Override
+    public void setLeashSplitOffset(Point splitOffset, DeviceProfile dp,
+            SplitConfigurationOptions.StagedSplitBounds splitInfo, int desiredStagePosition) {
+        if (desiredStagePosition == STAGE_POSITION_BOTTOM_OR_RIGHT) {
+            if (dp.isLandscape) {
+                splitOffset.x = splitInfo.leftTopBounds.width() +
+                        splitInfo.dividerBounds.width() / 2;
+            } else {
+                splitOffset.y = splitInfo.leftTopBounds.height() +
+                        splitInfo.dividerBounds.height() / 2;
+            }
+        }
+    }
+
+    @Override
+    public void setGroupedTaskViewThumbnailBounds(View mSnapshotView, View mSnapshotView2,
+            View taskParent, SplitConfigurationOptions.StagedSplitBounds splitBoundsConfig,
+            DeviceProfile dp) {
+        int spaceAboveSnapshot = dp.overviewTaskThumbnailTopMarginPx;
+        int totalThumbnailHeight = taskParent.getHeight() - spaceAboveSnapshot;
+        int totalThumbnailWidth = taskParent.getWidth();
+        int dividerBar = (dp.isLandscape ?
+                splitBoundsConfig.dividerBounds.width() :
+                splitBoundsConfig.dividerBounds.height())
+                / 2;
+        ViewGroup.LayoutParams primaryLp = mSnapshotView.getLayoutParams();
+        ViewGroup.LayoutParams secondaryLp = mSnapshotView2.getLayoutParams();
+
+        if (dp.isLandscape) {
+            primaryLp.height = totalThumbnailHeight;
+            primaryLp.width = (int) (totalThumbnailWidth * splitBoundsConfig.leftTaskPercent);
+
+            secondaryLp.height = totalThumbnailHeight;
+            secondaryLp.width = totalThumbnailWidth - primaryLp.width - dividerBar;
+            mSnapshotView2.setTranslationX(primaryLp.width + dividerBar);
+            mSnapshotView2.setTranslationY(spaceAboveSnapshot);
+        } else {
+            primaryLp.width = totalThumbnailWidth;
+            primaryLp.height = (int) (totalThumbnailHeight * splitBoundsConfig.topTaskPercent);
+
+            secondaryLp.width = totalThumbnailWidth;
+            secondaryLp.height = totalThumbnailHeight - primaryLp.height - dividerBar;
+            mSnapshotView2.setTranslationY(primaryLp.height + spaceAboveSnapshot + dividerBar);
+            mSnapshotView2.setTranslationX(0);
+        }
+    }
+
+//=======
+    @Override
+    public int getDefaultSplitPosition(DeviceProfile deviceProfile) {
+        if (!deviceProfile.isTablet) {
+            throw new IllegalStateException("Default position available only for large screens");
+        }
+        if (deviceProfile.isLandscape) {
+            return STAGE_POSITION_BOTTOM_OR_RIGHT;
+        } else {
+            return STAGE_POSITION_TOP_OR_LEFT;
+//>>>>>>> f6769c8532 (Add Split button in OverviewActions)
+        }
     }
 
     @Override

@@ -236,6 +236,8 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
                 systemUiStateFlags, forceUpdate);
         mControllers.taskbarViewController.setImeIsVisible(
                 mControllers.navbarButtonsViewController.isImeVisible());
+        mControllers.taskbarViewController.setRecentsButtonDisabled(
+                mControllers.navbarButtonsViewController.isRecentsDisabled());
         mControllers.taskbarKeyguardController.updateStateForSysuiFlags(systemUiStateFlags);
     }
 

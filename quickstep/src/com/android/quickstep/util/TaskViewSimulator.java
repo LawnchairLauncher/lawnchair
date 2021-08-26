@@ -145,8 +145,9 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
             // The task rect changes according to the staged split task sizes, but recents
             // fullscreen scale and pivot remains the same since the task fits into the existing
             // sized task space bounds
-            mSizeStrategy.calculateStagedSplitTaskSize(mContext, mDp, mTaskRect, mStagedSplitBounds,
-                    mStagePosition);
+            mSizeStrategy.calculateTaskSize(mContext, mDp, mTaskRect);
+            mOrientationState.getOrientationHandler()
+                    .setSplitTaskSwipeRect(mDp, mTaskRect, mStagedSplitBounds, mStagePosition);
         } else {
             mTaskRect.set(fullTaskSize);
         }
@@ -175,7 +176,7 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
             mStagePosition = STAGE_POSITION_UNDEFINED;
             return;
         }
-        mStagePosition = mThumbnailPosition.equals(splitInfo.mLeftTopBounds) ?
+        mStagePosition = mThumbnailPosition.equals(splitInfo.leftTopBounds) ?
                 STAGE_POSITION_TOP_OR_LEFT :
                 STAGE_POSITION_BOTTOM_OR_RIGHT;
     }
@@ -277,13 +278,9 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
             getFullScreenScale();
             mThumbnailData.rotation = mOrientationState.getDisplayRotation();
 
-            // TODO(b/195145340) handle non 50-50 split scenarios
             if (mStagedSplitBounds != null) {
-                if (mStagePosition == STAGE_POSITION_BOTTOM_OR_RIGHT) {
-                    // The preview set is for the bottom/right, inset by top/left task
-                    mSplitOffset.y = mStagedSplitBounds.mLeftTopBounds.height() +
-                        mStagedSplitBounds.mDividerBounds.height() / 2;
-                }
+                mOrientationState.getOrientationHandler().setLeashSplitOffset(mSplitOffset, mDp,
+                        mStagedSplitBounds, mStagePosition);
             }
 
             // mIsRecentsRtl is the inverse of TaskView RTL.
@@ -331,7 +328,7 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
         applyWindowToHomeRotation(mMatrix);
 
         // Move lower/right split window into correct position
-        mMatrix.postTranslate(0, mSplitOffset.y);
+        mMatrix.postTranslate(mSplitOffset.x, mSplitOffset.y);
 
         // Crop rect is the inverse of thumbnail matrix
         mTempRectF.set(-insets.left, -insets.top,

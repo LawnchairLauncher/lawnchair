@@ -296,7 +296,7 @@ public class IntArray implements Cloneable, Iterable<Integer> {
 
         @Override
         public void remove() {
-            throw new UnsupportedOperationException();
+            removeIndex(--mNextIndex);
         }
     }
 }

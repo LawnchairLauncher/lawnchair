@@ -32,12 +32,11 @@ import android.view.RemoteAnimationAdapter;
 import android.view.SurfaceControl;
 import android.window.TransitionInfo;
 
-import androidx.annotation.Nullable;
-
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.InsettableFrameLayout;
 import com.android.launcher3.R;
-import com.android.launcher3.util.SplitConfigurationOptions.SplitPositionOption;
+import com.android.launcher3.util.SplitConfigurationOptions;
+import com.android.launcher3.util.SplitConfigurationOptions.StagePosition;
 import com.android.quickstep.SystemUiProxy;
 import com.android.quickstep.TaskAnimationManager;
 import com.android.quickstep.TaskViewUtils;
@@ -57,7 +56,7 @@ public class SplitSelectStateController {
     private final SystemUiProxy mSystemUiProxy;
     private TaskView mInitialTaskView;
     private TaskView mSecondTaskView;
-    private SplitPositionOption mInitialPosition;
+    private @StagePosition int mStagePosition;
     private Rect mInitialBounds;
     private final Handler mHandler;
 
@@ -69,10 +68,10 @@ public class SplitSelectStateController {
     /**
      * To be called after first task selected
      */
-    public void setInitialTaskSelect(TaskView taskView, SplitPositionOption positionOption,
+    public void setInitialTaskSelect(TaskView taskView, @StagePosition int stagePosition,
             Rect initialBounds) {
         mInitialTaskView = taskView;
-        mInitialPosition = positionOption;
+        mStagePosition = stagePosition;
         mInitialBounds = initialBounds;
     }
 
@@ -83,7 +82,11 @@ public class SplitSelectStateController {
         mSecondTaskView = taskView;
         // Assume initial task is for top/left part of screen
 
-        final int[] taskIds = mInitialPosition.mStagePosition == STAGE_POSITION_TOP_OR_LEFT
+//<<<<<<< HEAD
+//        final int[] taskIds = mInitialPosition.stagePosition == STAGE_POSITION_TOP_OR_LEFT
+//=======
+        final int[] taskIds = mStagePosition == STAGE_POSITION_TOP_OR_LEFT
+//>>>>>>> f6769c8532 (Add Split button in OverviewActions)
                 ? new int[]{mInitialTaskView.getTask().key.id, taskView.getTask().key.id}
                 : new int[]{taskView.getTask().key.id, mInitialTaskView.getTask().key.id};
         if (TaskAnimationManager.ENABLE_SHELL_TRANSITIONS) {
@@ -113,7 +116,11 @@ public class SplitSelectStateController {
             DeviceProfile deviceProfile) {
         InsettableFrameLayout.LayoutParams params =
                 new InsettableFrameLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT);
-        boolean topLeftPosition = mInitialPosition.mStagePosition == STAGE_POSITION_TOP_OR_LEFT;
+//<<<<<<< HEAD
+//        boolean topLeftPosition = mInitialPosition.stagePosition == STAGE_POSITION_TOP_OR_LEFT;
+//=======
+        boolean topLeftPosition = mStagePosition == STAGE_POSITION_TOP_OR_LEFT;
+//>>>>>>> f6769c8532 (Add Split button in OverviewActions)
         if (deviceProfile.isLandscape) {
             params.width = (int) resources.getDimension(R.dimen.split_placeholder_size);
             params.gravity = topLeftPosition ? Gravity.START : Gravity.END;
@@ -125,9 +132,8 @@ public class SplitSelectStateController {
         return params;
     }
 
-    @Nullable
-    public SplitPositionOption getActiveSplitPositionOption() {
-        return mInitialPosition;
+    public @StagePosition int getActiveSplitStagePosition() {
+        return mStagePosition;
     }
 
     /**
@@ -189,7 +195,7 @@ public class SplitSelectStateController {
     public void resetState() {
         mInitialTaskView = null;
         mSecondTaskView = null;
-        mInitialPosition = null;
+        mStagePosition = SplitConfigurationOptions.STAGE_POSITION_UNDEFINED;
         mInitialBounds = null;
     }
 
