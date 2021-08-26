@@ -44,6 +44,8 @@ public class TaskbarViewController {
     public static final int ALPHA_INDEX_IME = 1;
     public static final int ALPHA_INDEX_KEYGUARD = 2;
     public static final int ALPHA_INDEX_STASH = 3;
+    public static final int ALPHA_INDEX_RECENTS_DISABLED = 4;
+    private static final int NUM_ALPHA_CHANNELS = 5;
 
     private final TaskbarActivityContext mActivity;
     private final TaskbarView mTaskbarView;
@@ -67,7 +69,7 @@ public class TaskbarViewController {
     public TaskbarViewController(TaskbarActivityContext activity, TaskbarView taskbarView) {
         mActivity = activity;
         mTaskbarView = taskbarView;
-        mTaskbarIconAlpha = new MultiValueAlpha(mTaskbarView, 4);
+        mTaskbarIconAlpha = new MultiValueAlpha(mTaskbarView, NUM_ALPHA_CHANNELS);
         mTaskbarIconAlpha.setUpdateVisibility(true);
         mModelCallbacks = new TaskbarModelCallbacks(activity, mTaskbarView);
     }
@@ -98,6 +100,14 @@ public class TaskbarViewController {
      */
     public void setImeIsVisible(boolean isImeVisible) {
         mTaskbarView.setTouchesEnabled(!isImeVisible);
+    }
+
+    /**
+     * Should be called when the recents button is disabled, so we can hide taskbar icons as well.
+     */
+    public void setRecentsButtonDisabled(boolean isDisabled) {
+        // TODO: check TaskbarStashController#supportsStashing(), to stash instead of setting alpha.
+        mTaskbarIconAlpha.getProperty(ALPHA_INDEX_RECENTS_DISABLED).setValue(isDisabled ? 0 : 1);
     }
 
     /**
