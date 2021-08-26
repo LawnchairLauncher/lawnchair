@@ -36,10 +36,9 @@ public class OverlayCallbackImpl
 
     private final Launcher mLauncher;
     private final LauncherClient mClient;
-
+    boolean mFlagsChanged = false;
     private LauncherOverlayCallbacks mLauncherOverlayCallbacks;
     private boolean mWasOverlayAttached = false;
-    boolean mFlagsChanged = false;
     private int mFlags;
 
     public OverlayCallbackImpl(LawnchairLauncher launcher) {
@@ -49,6 +48,11 @@ public class OverlayCallbackImpl
         mLauncher = launcher;
         mClient = new LauncherClient(mLauncher, this, new StaticInteger(
                 (minusOnePref.get() ? 1 : 0) | 2 | 4 | 8));
+    }
+
+    public static boolean minusOneAvailable(Context context) {
+        return FeedBridge.useBridge(context)
+                || ((context.getApplicationInfo().flags & (FLAG_DEBUGGABLE | FLAG_SYSTEM)) != 0);
     }
 
     @Override
@@ -112,7 +116,8 @@ public class OverlayCallbackImpl
     }
 
     @Override
-    public void onActivitySaveInstanceState(Activity activity, Bundle bundle) { }
+    public void onActivitySaveInstanceState(Activity activity, Bundle bundle) {
+    }
 
     @Override
     public void onActivityDestroyed(Activity activity) {
@@ -167,10 +172,5 @@ public class OverlayCallbackImpl
             mFlags = flags;
             Utilities.getDevicePrefs(mLauncher).edit().putInt(PREF_PERSIST_FLAGS, flags).apply();
         }
-    }
-
-    public static boolean minusOneAvailable(Context context) {
-        return FeedBridge.useBridge(context)
-                || ((context.getApplicationInfo().flags & (FLAG_DEBUGGABLE | FLAG_SYSTEM)) != 0);
     }
 }

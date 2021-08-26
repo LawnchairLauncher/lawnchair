@@ -20,10 +20,7 @@ import android.content.Context
 import android.content.pm.LauncherActivityInfo
 import android.content.pm.LauncherApps
 import android.graphics.Bitmap
-import android.graphics.drawable.BitmapDrawable
-import android.graphics.drawable.Drawable
 import android.os.Handler
-import android.util.Log
 import androidx.compose.runtime.*
 import androidx.compose.ui.platform.LocalContext
 import com.android.launcher3.AppFilter
@@ -49,7 +46,7 @@ fun appsList(
         Utilities.postAsyncCallback(Handler(MODEL_EXECUTOR.looper)) {
             val appInfos = ArrayList<LauncherActivityInfo>()
             val profiles = UserCache.INSTANCE.get(context).userProfiles
-            val launcherApps  = context.getSystemService(LauncherApps::class.java)
+            val launcherApps = context.getSystemService(LauncherApps::class.java)
             profiles.forEach { appInfos += launcherApps.getActivityList(null, it) }
 
             val apps = appInfos
@@ -58,7 +55,7 @@ fun appsList(
                 .sortedWith(comparator)
             appsState.value = Optional.of(apps)
         }
-        onDispose {  }
+        onDispose { }
     }
     return appsState
 }

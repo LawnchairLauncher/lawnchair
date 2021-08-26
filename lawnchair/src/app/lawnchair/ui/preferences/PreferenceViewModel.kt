@@ -65,21 +65,23 @@ class PreferenceViewModel(application: Application) : AndroidViewModel(applicati
         return iconPackList
     }
 
-    override val licenses by lazy { runBlocking {
-        val licensesState = mutableStateOf<List<License>?>(null)
-        launch {
-            val res = application.resources
-            val reader = BufferedReader(InputStreamReader(res.openRawResource(R.raw.third_party_license_metadata)))
-            val licenses = reader.readLines().map { line ->
-                val parts = line.split(" ")
-                val startEnd = parts[0].split(":")
-                val start = startEnd[0].toLong()
-                val length = startEnd[1].toInt()
-                val name = parts.subList(1, parts.size).joinToString(" ")
-                License(name, start, length)
-            }.sortedBy { it.name.lowercase() }
-            licensesState.value = licenses
+    override val licenses by lazy {
+        runBlocking {
+            val licensesState = mutableStateOf<List<License>?>(null)
+            launch {
+                val res = application.resources
+                val reader = BufferedReader(InputStreamReader(res.openRawResource(R.raw.third_party_license_metadata)))
+                val licenses = reader.readLines().map { line ->
+                    val parts = line.split(" ")
+                    val startEnd = parts[0].split(":")
+                    val start = startEnd[0].toLong()
+                    val length = startEnd[1].toInt()
+                    val name = parts.subList(1, parts.size).joinToString(" ")
+                    License(name, start, length)
+                }.sortedBy { it.name.lowercase() }
+                licensesState.value = licenses
+            }
+            licensesState
         }
-        licensesState
-    } }
+    }
 }

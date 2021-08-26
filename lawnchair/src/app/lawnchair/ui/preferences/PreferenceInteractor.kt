@@ -18,7 +18,6 @@ package app.lawnchair.ui.preferences
 
 import androidx.compose.runtime.State
 import app.lawnchair.ui.preferences.about.licenses.License
-import java.util.*
 
 interface PreferenceInteractor {
     val licenses: State<List<License>?>

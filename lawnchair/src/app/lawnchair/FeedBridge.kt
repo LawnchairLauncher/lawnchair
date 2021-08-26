@@ -24,9 +24,9 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Process
 import android.util.Log
+import app.lawnchair.preferences.PreferenceManager
 import app.lawnchair.util.SingletonHolder
 import app.lawnchair.util.ensureOnMainThread
-import app.lawnchair.preferences.PreferenceManager
 import app.lawnchair.util.useApplicationContext
 import com.android.launcher3.BuildConfig
 import com.android.launcher3.R
@@ -74,7 +74,8 @@ class FeedBridge(private val context: Context) {
     }
 
     open inner class BridgeInfo(val packageName: String, signatureHashRes: Int) {
-        protected open val signatureHash = if (signatureHashRes > 0) context.resources.getInteger(signatureHashRes) else 0
+        protected open val signatureHash =
+            if (signatureHashRes > 0) context.resources.getInteger(signatureHashRes) else 0
 
         open val supportsSmartspace = false
 

@@ -40,8 +40,8 @@ fun <T, A> ensureOnMainThread(creator: (A) -> T): (A) -> T = { it ->
         } catch (e: ExecutionException) {
             throw RuntimeException(e)
         }
-        }
     }
+}
 
 fun <T> useApplicationContext(creator: (Context) -> T): (Context) -> T = { it ->
     creator(it.applicationContext)

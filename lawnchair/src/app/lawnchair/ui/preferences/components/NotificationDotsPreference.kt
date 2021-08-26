@@ -205,7 +205,7 @@ fun notificationServiceEnabled(): Boolean {
     if (resumed) {
         DisposableEffect(null) {
             enabledState.value = isNotificationServiceEnabled()
-            onDispose {  }
+            onDispose { }
         }
     }
 

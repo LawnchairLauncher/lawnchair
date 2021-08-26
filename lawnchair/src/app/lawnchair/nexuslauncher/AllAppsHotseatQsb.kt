@@ -33,11 +33,15 @@ import com.android.launcher3.qsb.QsbContainerView
 import com.android.launcher3.util.ComponentKey
 import com.android.launcher3.util.Themes
 import com.android.launcher3.views.ActivityContext
-import java.util.*
 import kotlin.math.round
 
-class AllAppsHotseatQsb @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
-        QsbContainerView(context, attrs, defStyleAttr), Insettable, SearchUiManager, AllAppsSearchBarController.Callbacks, AllAppsStore.OnUpdateListener {
+class AllAppsHotseatQsb @JvmOverloads constructor(
+    context: Context,
+    attrs: AttributeSet? = null,
+    defStyleAttr: Int = 0
+) :
+    QsbContainerView(context, attrs, defStyleAttr), Insettable, SearchUiManager, AllAppsSearchBarController.Callbacks,
+    AllAppsStore.OnUpdateListener {
     private val mActivity: ActivityContext = ActivityContext.lookupContext(context)
     private val mFixedTranslationY: Int = resources.getDimensionPixelSize(R.dimen.search_widget_hotseat_height) / 2
     private val mMarginTopAdjusting: Int = resources.getDimensionPixelSize(R.dimen.search_widget_top_shift)
@@ -61,8 +65,10 @@ class AllAppsHotseatQsb @JvmOverloads constructor(context: Context, attrs: Attri
         mSearchWrapperView = findViewById(R.id.search_wrapper_view)
         val accentColor = Themes.getColorAccent(context)
         val spanned = SpannableString("  " + mFallbackSearchView.hint)
-        spanned.setSpan(TintedDrawableSpan(context, R.drawable.ic_allapps_search),
-                0, 1, Spannable.SPAN_EXCLUSIVE_INCLUSIVE)
+        spanned.setSpan(
+            TintedDrawableSpan(context, R.drawable.ic_allapps_search),
+            0, 1, Spannable.SPAN_EXCLUSIVE_INCLUSIVE
+        )
 
         mFallbackSearchView.apply {
             hint = spanned
@@ -107,8 +113,10 @@ class AllAppsHotseatQsb @JvmOverloads constructor(context: Context, attrs: Attri
                 mFallbackSearchView.elevation = initialElevation + elevationScale * initialElevation
             }
         })
-        mSearchBarController.initialize(LawnchairAppSearchAlgorithm(context, mApps.apps),
-                mFallbackSearchView, Launcher.cast(mActivity), this)
+        mSearchBarController.initialize(
+            LawnchairAppSearchAlgorithm(context, mApps.apps),
+            mFallbackSearchView, Launcher.cast(mActivity), this
+        )
     }
 
     override fun onAppsUpdated() {
@@ -121,13 +129,16 @@ class AllAppsHotseatQsb @JvmOverloads constructor(context: Context, attrs: Attri
 
     override fun preDispatchKeyEvent(event: KeyEvent) {
         if (!mSearchBarController.isSearchFieldFocused &&
-                event.action == KeyEvent.ACTION_DOWN) {
+            event.action == KeyEvent.ACTION_DOWN
+        ) {
             val unicodeChar = event.unicodeChar
             val isKeyNotWhitespace = unicodeChar > 0 &&
                     !Character.isWhitespace(unicodeChar) && !Character.isSpaceChar(unicodeChar)
             if (isKeyNotWhitespace) {
-                val gotKey: Boolean = TextKeyListener.getInstance().onKeyDown(this, mSearchQueryBuilder,
-                        event.keyCode, event)
+                val gotKey: Boolean = TextKeyListener.getInstance().onKeyDown(
+                    this, mSearchQueryBuilder,
+                    event.keyCode, event
+                )
                 if (gotKey && mSearchQueryBuilder.isNotEmpty()) {
                     mSearchBarController.focusSearchField()
                 }
@@ -205,8 +216,10 @@ class AllAppsHotseatQsb @JvmOverloads constructor(context: Context, attrs: Attri
         }
     }
 
-    override fun setContentVisibility(visibleElements: Int, setter: PropertySetter,
-                                      interpolator: Interpolator) {
+    override fun setContentVisibility(
+        visibleElements: Int, setter: PropertySetter,
+        interpolator: Interpolator
+    ) {
         val showHotseatMode = visibleElements and LauncherState.HOTSEAT_SEARCH_BOX != 0 && enableHotseatQsb
         val showAllAppsMode = visibleElements and LauncherState.ALL_APPS_CONTENT != 0
         setter.setViewAlpha(mSearchWrapperView, if (showHotseatMode) 1f else 0f, Interpolators.LINEAR)

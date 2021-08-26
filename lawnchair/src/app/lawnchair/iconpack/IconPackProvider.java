@@ -16,7 +16,7 @@ import app.lawnchair.preferences.PreferenceManager;
 public class IconPackProvider {
     private static final Map<String, IconPack> iconPacks = new ArrayMap<>();
 
-    public static IconPack getIconPack(String packageName){
+    public static IconPack getIconPack(String packageName) {
         return iconPacks.get(packageName);
     }
 

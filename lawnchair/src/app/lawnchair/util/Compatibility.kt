@@ -3,7 +3,6 @@ package app.lawnchair.util
 import android.annotation.SuppressLint
 import android.text.TextUtils
 import android.util.Log
-import java.lang.Exception
 
 private const val TAG = "Compatibility"
 

@@ -187,7 +187,9 @@ fun TopBar(
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier.height(56.dp).padding(horizontal = 8.dp)
+        modifier = Modifier
+            .height(56.dp)
+            .padding(horizontal = 8.dp)
     ) {
         AnimatedVisibility(visible = showBackArrow) {
             ClickableIcon(

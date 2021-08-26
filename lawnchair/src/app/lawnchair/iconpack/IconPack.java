@@ -62,6 +62,67 @@ public class IconPack {
         mContext = context;
     }
 
+    private static Bitmap pad(Bitmap src) {
+        int dpi = (int) Resources.getSystem().getDisplayMetrics().density;
+        int newSrcSize = 192;
+        int retSize = newSrcSize + 200;
+        int cOffsetTopLeft = (retSize - newSrcSize) / 2;
+
+        Bitmap newSrc = Bitmap.createScaledBitmap(src, newSrcSize, newSrcSize, true);
+        newSrc.setDensity(dpi);
+
+        Bitmap ret = Bitmap.createBitmap(retSize, retSize, Bitmap.Config.ARGB_8888);
+        ret.setDensity(dpi);
+
+        Canvas c = new Canvas(ret);
+        c.drawBitmap(newSrc, cOffsetTopLeft, cOffsetTopLeft, null);
+
+        return ret;
+    }
+
+    public static Bitmap drawableToBitmap(Drawable drawable) {
+        if (drawable instanceof BitmapDrawable) {
+            return ((BitmapDrawable) drawable).getBitmap();
+        }
+
+        int width = drawable.getIntrinsicWidth();
+        width = width > 0 ? width : 1;
+        int height = drawable.getIntrinsicHeight();
+        height = height > 0 ? height : 1;
+
+        Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+        drawable.draw(canvas);
+        return bitmap;
+    }
+
+    public static Drawable wrapAdaptiveIcon(Drawable d, Context context) {
+        PreferenceManager prefs = PreferenceManager.getInstance(context);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && !(d instanceof AdaptiveIconDrawable)
+                && prefs.getWrapAdaptiveIcons().get()) {
+            assert d != null;
+            Bitmap b = drawableToBitmap(d);
+            // Already running on UI_HELPER, no need to async this.
+            Palette p = (new Palette.Builder(b)).generate();
+            ColorDrawable backgroundColor = new ColorDrawable(makeBackgroundColor(p.getDominantColor(Color.WHITE), prefs));
+            d = new AdaptiveIconDrawable(backgroundColor, new BitmapDrawable(pad(b)));
+        }
+        return d;
+    }
+
+    private static @ColorInt
+    int makeBackgroundColor(@ColorInt int dominantColor, PreferenceManager prefs) {
+        float lightness = prefs.getColoredBackgroundLightness().get();
+        if (dominantColor != Color.WHITE) {
+            float[] outHsl = new float[]{0F, 0F, 0F};
+            ColorUtils.colorToHSL(dominantColor, outHsl);
+            outHsl[2] = lightness;
+            return ColorUtils.HSLToColor(outHsl);
+        }
+        return dominantColor;
+    }
+
     void parseAppFilter(String packageName, XmlPullParser parser) throws Exception {
         List<String> iconBackStrings = new ArrayList<String>();
 
@@ -239,68 +300,8 @@ public class IconPack {
         return getDrawableWithName(drawableName, iconDpi);
     }
 
-    private static Bitmap pad(Bitmap src) {
-        int dpi = (int) Resources.getSystem().getDisplayMetrics().density;
-        int newSrcSize = 192;
-        int retSize = newSrcSize + 200;
-        int cOffsetTopLeft = (retSize - newSrcSize) / 2;
-
-        Bitmap newSrc = Bitmap.createScaledBitmap(src, newSrcSize, newSrcSize, true);
-        newSrc.setDensity(dpi);
-
-        Bitmap ret = Bitmap.createBitmap(retSize, retSize, Bitmap.Config.ARGB_8888);
-        ret.setDensity(dpi);
-
-        Canvas c = new Canvas(ret);
-        c.drawBitmap(newSrc, cOffsetTopLeft, cOffsetTopLeft, null);
-
-        return ret;
-    }
-
-    public static Bitmap drawableToBitmap(Drawable drawable) {
-        if (drawable instanceof BitmapDrawable) {
-            return ((BitmapDrawable) drawable).getBitmap();
-        }
-
-        int width = drawable.getIntrinsicWidth();
-        width = width > 0 ? width : 1;
-        int height = drawable.getIntrinsicHeight();
-        height = height > 0 ? height : 1;
-
-        Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(bitmap);
-        drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
-        drawable.draw(canvas);
-        return bitmap;
-    }
-
     private Drawable getDrawable(String name, int iconDpi) {
         return getDrawableForName(name, iconDpi);
-    }
-
-    public static Drawable wrapAdaptiveIcon(Drawable d, Context context) {
-        PreferenceManager prefs = PreferenceManager.getInstance(context);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && !(d instanceof AdaptiveIconDrawable)
-                && prefs.getWrapAdaptiveIcons().get()) {
-            assert d != null;
-            Bitmap b = drawableToBitmap(d);
-            // Already running on UI_HELPER, no need to async this.
-            Palette p = (new Palette.Builder(b)).generate();
-            ColorDrawable backgroundColor = new ColorDrawable(makeBackgroundColor(p.getDominantColor(Color.WHITE), prefs));
-            d = new AdaptiveIconDrawable(backgroundColor, new BitmapDrawable(pad(b)));
-        }
-        return d;
-    }
-
-    private static @ColorInt int makeBackgroundColor(@ColorInt int dominantColor, PreferenceManager prefs) {
-        float lightness = prefs.getColoredBackgroundLightness().get();
-        if (dominantColor != Color.WHITE) {
-            float[] outHsl = new float[]{0F, 0F, 0F};
-            ColorUtils.colorToHSL(dominantColor, outHsl);
-            outHsl[2] = lightness;
-            return ColorUtils.HSLToColor(outHsl);
-        }
-        return dominantColor;
     }
 
     private Drawable getIconBackFor(CharSequence tag) {

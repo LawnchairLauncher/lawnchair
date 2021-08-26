@@ -20,7 +20,8 @@ class LawnchairAppSearchAlgorithm(context: Context, apps: MutableList<AppInfo>) 
         val result = ArrayList<ComponentKey>()
         val matches = FuzzySearch.extractSorted(
             query.lowercase(Locale.getDefault()), mApps,
-            { it.title.toString() }, WeightedRatio(), 65)
+            { it.title.toString() }, WeightedRatio(), 65
+        )
         for (match in matches) {
             result.add(match.referent.toComponentKey())
         }

@@ -24,6 +24,7 @@ open class StretchRelativeLayout @JvmOverloads constructor(
                 invalidate()
             }
         }
+
     @JvmField
     protected val mSpringViews = SparseBooleanArray()
 

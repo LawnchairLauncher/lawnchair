@@ -49,7 +49,7 @@ fun loadLicense(license: License): State<LicenseData?> {
             }
         }
         licenseStringState.value = LicenseData(license, annotatedString)
-        onDispose {  }
+        onDispose { }
     }
     return licenseStringState
 }

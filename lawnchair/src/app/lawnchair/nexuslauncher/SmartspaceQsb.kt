@@ -13,17 +13,19 @@ import android.view.ViewGroup
 import com.android.launcher3.R
 import com.android.launcher3.qsb.QsbContainerView
 
-class SmartspaceQsb @JvmOverloads constructor(context: Context?, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : QsbContainerView(context, attrs, defStyleAttr) {
+class SmartspaceQsb @JvmOverloads constructor(context: Context?, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
+    QsbContainerView(context, attrs, defStyleAttr) {
     class SmartSpaceFragment : QsbFragment() {
         override fun createHost(): QsbWidgetHost {
-            return QsbWidgetHost(context, SMART_SPACE_WIDGET_HOST_ID
+            return QsbWidgetHost(
+                context, SMART_SPACE_WIDGET_HOST_ID
             ) { c: Context? -> SmartSpaceHostView(c) }
         }
 
         @SuppressLint("NewApi")
         override fun getSearchWidgetProvider(): AppWidgetProviderInfo? {
             for (info in AppWidgetManager.getInstance(context)
-                    .getInstalledProvidersForPackage(WIDGET_PACKAGE_NAME, Process.myUserHandle())) {
+                .getInstalledProvidersForPackage(WIDGET_PACKAGE_NAME, Process.myUserHandle())) {
                 if (WIDGET_CLASS_NAME == info.provider.className) {
                     return info
                 }
@@ -53,10 +55,12 @@ class SmartspaceQsb @JvmOverloads constructor(context: Context?, attrs: Attribut
 
     companion object {
         const val WIDGET_PACKAGE_NAME = "com.google.android.googlequicksearchbox"
-        private const val WIDGET_CLASS_NAME = "com.google.android.apps.gsa.staticplugins.smartspace.widget.SmartspaceWidgetProvider"
+        private const val WIDGET_CLASS_NAME =
+            "com.google.android.apps.gsa.staticplugins.smartspace.widget.SmartspaceWidgetProvider"
+
         fun getDateView(parent: ViewGroup): View {
             return LayoutInflater.from(parent.context)
-                    .inflate(R.layout.smart_space_date_view, parent, false)
+                .inflate(R.layout.smart_space_date_view, parent, false)
         }
     }
 }
