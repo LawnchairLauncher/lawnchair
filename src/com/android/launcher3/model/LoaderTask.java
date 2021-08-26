@@ -43,6 +43,7 @@ import android.content.pm.ShortcutInfo;
 import android.graphics.Point;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Trace;
 import android.os.UserHandle;
 import android.os.UserManager;
 import android.text.TextUtils;
@@ -197,7 +198,12 @@ public class LoaderTask implements Runnable {
         TimingLogger logger = new TimingLogger(TAG, "run");
         try (LauncherModel.LoaderTransaction transaction = mApp.getModel().beginLoader(this)) {
             List<ShortcutInfo> allShortcuts = new ArrayList<>();
-            loadWorkspace(allShortcuts);
+            Trace.beginSection("LoadWorkspace");
+            try {
+                loadWorkspace(allShortcuts);
+            } finally {
+                Trace.endSection();
+            }
             logASplit(logger, "loadWorkspace");
 
             // Sanitize data re-syncs widgets/shortcuts based on the workspace loaded from db.
@@ -225,7 +231,13 @@ public class LoaderTask implements Runnable {
             verifyNotStopped();
 
             // second step
-            List<LauncherActivityInfo> allActivityList = loadAllApps();
+            Trace.beginSection("LoadAllApps");
+            List<LauncherActivityInfo> allActivityList;
+            try {
+               allActivityList = loadAllApps();
+            } finally {
+                Trace.endSection();
+            }
             logASplit(logger, "loadAllApps");
 
             verifyNotStopped();
