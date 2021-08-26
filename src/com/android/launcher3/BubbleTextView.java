@@ -256,7 +256,25 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
 
     @UiThread
     public void applyFromWorkspaceItem(WorkspaceItemInfo info) {
+        applyFromWorkspaceItem(info, /* animate = */ false, /* staggerIndex = */ 0);
+    }
+
+    @UiThread
+    public void applyFromWorkspaceItem(WorkspaceItemInfo info, boolean animate, int staggerIndex) {
         applyFromWorkspaceItem(info, false);
+    }
+
+    /**
+     * Returns whether the newInfo differs from the current getTag().
+     */
+    public boolean shouldAnimateIconChange(WorkspaceItemInfo newInfo) {
+        WorkspaceItemInfo oldInfo = getTag() instanceof WorkspaceItemInfo
+                ? (WorkspaceItemInfo) getTag()
+                : null;
+        boolean changedIcons = oldInfo != null && oldInfo.getTargetComponent() != null
+                && newInfo.getTargetComponent() != null
+                && !oldInfo.getTargetComponent().equals(newInfo.getTargetComponent());
+        return changedIcons && isShown();
     }
 
     @Override

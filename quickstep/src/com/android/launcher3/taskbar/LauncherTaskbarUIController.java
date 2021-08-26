@@ -34,6 +34,7 @@ import com.android.launcher3.QuickstepTransitionManager;
 import com.android.launcher3.R;
 import com.android.launcher3.anim.AnimatorListeners;
 import com.android.launcher3.config.FeatureFlags;
+import com.android.launcher3.model.data.ItemInfoWithIcon;
 import com.android.launcher3.util.MultiValueAlpha;
 import com.android.launcher3.util.MultiValueAlpha.AlphaProperty;
 import com.android.launcher3.util.OnboardingPrefs;
@@ -44,6 +45,9 @@ import com.android.quickstep.RecentsAnimationController;
 import com.android.quickstep.SystemUiProxy;
 import com.android.quickstep.views.RecentsView;
 import com.android.systemui.shared.recents.model.ThumbnailData;
+
+import java.util.Arrays;
+import java.util.stream.Stream;
 
 /**
  * A data source which integrates with a Launcher instance
@@ -266,6 +270,11 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
      */
     public void forceHideBackground(boolean forceHide) {
         mTaskbarOverrideBackgroundAlpha.updateValue(forceHide ? 0 : 1);
+    }
+
+    @Override
+    public Stream<ItemInfoWithIcon> getAppIconsForEdu() {
+        return Arrays.stream(mLauncher.getAppsView().getAppsStore().getApps());
     }
 
     /**
