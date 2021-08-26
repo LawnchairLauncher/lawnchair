@@ -83,7 +83,7 @@ public class SplitSelectStateController {
         mSecondTaskView = taskView;
         // Assume initial task is for top/left part of screen
 
-        final int[] taskIds = mInitialPosition.mStagePosition == STAGE_POSITION_TOP_OR_LEFT
+        final int[] taskIds = mInitialPosition.stagePosition == STAGE_POSITION_TOP_OR_LEFT
                 ? new int[]{mInitialTaskView.getTask().key.id, taskView.getTask().key.id}
                 : new int[]{taskView.getTask().key.id, mInitialTaskView.getTask().key.id};
         if (TaskAnimationManager.ENABLE_SHELL_TRANSITIONS) {
@@ -113,7 +113,7 @@ public class SplitSelectStateController {
             DeviceProfile deviceProfile) {
         InsettableFrameLayout.LayoutParams params =
                 new InsettableFrameLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT);
-        boolean topLeftPosition = mInitialPosition.mStagePosition == STAGE_POSITION_TOP_OR_LEFT;
+        boolean topLeftPosition = mInitialPosition.stagePosition == STAGE_POSITION_TOP_OR_LEFT;
         if (deviceProfile.isLandscape) {
             params.width = (int) resources.getDimension(R.dimen.split_placeholder_size);
             params.gravity = topLeftPosition ? Gravity.START : Gravity.END;

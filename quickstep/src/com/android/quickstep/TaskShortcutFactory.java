@@ -100,7 +100,7 @@ public interface TaskShortcutFactory {
         private SplitPositionOption mSplitPositionOption;
         public SplitSelectSystemShortcut(BaseDraggingActivity target, TaskView taskView,
                 SplitPositionOption option) {
-            super(option.mIconResId, option.mTextResId, target, taskView.getItemInfo());
+            super(option.iconResId, option.textResId, target, taskView.getItemInfo());
             mTaskView = taskView;
             mSplitPositionOption = option;
             setEnabled(taskView.getRecentsView().getTaskViewCount() > 1);
