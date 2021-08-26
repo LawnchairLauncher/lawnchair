@@ -76,10 +76,10 @@
     </plurals>
     <string name="hotseat_qsb_label">Zoekbalk weergeven</string>
     <string name="dt2s_admin_hint_title">Beheerdersrechten vereist</string>
-    <string name="dt2s_admin_hint">Om dubbeltik voor slapen te kunnen gebruiken, maak Lawnchair een apparaat beheerder app. Tik op “Open instellingen” en tik dan op “Activeer deze apparaat beheerder app”</string>
+    <string name="dt2s_admin_hint">To use Double-Tap to Sleep, set Lawnchair as a device admin app. Tap Open Settings, then tap “Activate this device admin app.”</string>
     <string name="dt2s_admin_warning">Dubbeltik om te slapen wordt uitgeschakeld.</string>
     <string name="dt2s_a11y_hint_title">Toegankelijkheid service vereist</string>
-    <string name="dt2s_a11y_hint">Schakel de toegankelijkheids service in om dubbeltik om te slapen te gebruiken</string>
+    <string name="dt2s_a11y_hint">To use Double-Tap to Sleep, turn on the Lawnchair accessibility service. Tap Open Settings, then select Lawnchair and turn on Use Lawnchair.</string>
     <string name="dt2s_warning_open_settings">Open instellingen</string>
     <string name="minus_one_enable">Feed</string>
     <string name="minus_one_unavailable">Geen feed geïnstalleerd.</string>
@@ -94,7 +94,7 @@
     <string name="clear_all_as_action_label">Wis alles knop onderaan</string>
     <string name="window_corner_radius_label">Screen Corner Radius</string>
     <string name="override_window_corner_radius_label">Custom Screen Corner Radius</string>
-    <string name="window_corner_radius_description">Use this slider to match the transition radius to your actual screen.</string>
+    <string name="window_corner_radius_description">When you swipe up to open Recents, the current app follows your finger, shrinking into a card. Use this slider to adjust the corner radius of the card when it’s nearly full-screen such that it matches the corners of your screen.</string>
     <string name="system_icons">Systeem iconen</string>
     <string name="accent_color">Accent kleur</string>
     <string name="done">Voltooid</string>
@@ -109,7 +109,7 @@
     <string name="what_to_show">Wat te tonen</string>
     <string name="missing_notification_access_label">Notificatie toegang nodig</string>
     <string name="missing_notification_access_description">Notification access needed.</string>
-    <string name="msg_missing_notification_access">Om meldingsstipjes te gebruiken, schakel app-meldingen voor <xliff:g id="name" example="My App">%1$s</xliff:g> in.</string>
+    <string name="msg_missing_notification_access">To use Notification Dots, grant <xliff:g id="name" example="My App">%1$s</xliff:g> access to notifications.</string>
     <string name="title_change_settings">Instellingen wijzigen</string>
     <string name="debug_restart_launcher">Restart Lawnchair</string>
 </resources>
