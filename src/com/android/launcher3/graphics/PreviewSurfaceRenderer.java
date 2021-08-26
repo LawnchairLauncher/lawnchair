@@ -66,9 +66,6 @@ public class PreviewSurfaceRenderer {
 
     private static final int FADE_IN_ANIMATION_DURATION = 200;
 
-    // The is the second screen. It is always present in two panel, even if its empty.
-    static final int SECOND_SCREEN_ID = 1;
-
     private static final String KEY_HOST_TOKEN = "host_token";
     private static final String KEY_VIEW_WIDTH = "width";
     private static final String KEY_VIEW_HEIGHT = "height";
@@ -172,7 +169,7 @@ public class PreviewSurfaceRenderer {
                             + LauncherSettings.Favorites.CONTAINER_HOTSEAT;
                     if (deviceProfile.isTwoPanels) {
                         query += " or " + LauncherSettings.Favorites.SCREEN + " = "
-                                + SECOND_SCREEN_ID;
+                                + Workspace.SECOND_SCREEN_ID;
                     }
                     loadWorkspace(new ArrayList<>(), LauncherSettings.Favorites.PREVIEW_CONTENT_URI,
                             query);

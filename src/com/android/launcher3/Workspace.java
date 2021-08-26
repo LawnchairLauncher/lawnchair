@@ -123,6 +123,7 @@ import com.android.systemui.plugins.shared.LauncherOverlayManager.LauncherOverla
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -800,6 +801,21 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         return mScreenOrder;
     }
 
+    /**
+     * Returns the page that is shown together with the given page when two panel is enabled.
+     * @throws IllegalStateException if called while two panel home isn't enabled.
+     */
+    public int getPagePair(int page) {
+        if (!isTwoPanelEnabled()) {
+            throw new IllegalStateException("Two panel home isn't enabled.");
+        }
+        if (page % 2 == 0) {
+            return page + 1;
+        } else {
+            return page - 1;
+        }
+    }
+
     public void stripEmptyScreens() {
         if (mLauncher.isWorkspaceLoading()) {
             // Don't strip empty screens if the workspace is still loading.
@@ -822,6 +838,22 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
             if ((!FeatureFlags.QSB_ON_FIRST_SCREEN || id > FIRST_SCREEN_ID)
                     && cl.getShortcutsAndWidgets().getChildCount() == 0) {
                 removeScreens.add(id);
+            }
+        }
+
+        // When two panel home is enabled we only remove an empty page if both visible pages are
+        // empty.
+        if (isTwoPanelEnabled()) {
+            // We go through all the pages that were marked as removable and check their page pair
+            Iterator<Integer> removeScreensIterator = removeScreens.iterator();
+            while (removeScreensIterator.hasNext()) {
+                int pageToRemove = removeScreensIterator.next();
+                int pagePair = getPagePair(pageToRemove);
+                if (!removeScreens.contains(pagePair)) {
+                    // The page pair isn't empty so we want to remove the current page from the
+                    // removable pages' collection
+                    removeScreensIterator.remove();
+                }
             }
         }
 
