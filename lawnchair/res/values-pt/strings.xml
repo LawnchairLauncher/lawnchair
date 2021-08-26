@@ -76,10 +76,10 @@
     </plurals>
     <string name="hotseat_qsb_label">Mostrar Barra de Pesquisa</string>
     <string name="dt2s_admin_hint_title">Permissões de Administrador Necessárias</string>
-    <string name="dt2s_admin_hint">Para usar o Duplo Toque para Dormir, defina o Lawnchair como uma aplicação de administrador do dispositivo. Toque em \"Abrir Definições,\" e de seguida em \"Ativar a aplicação de administrador deste dispositivo.\"</string>
+    <string name="dt2s_admin_hint">To use Double-Tap to Sleep, set Lawnchair as a device admin app. Tap Open Settings, then tap “Activate this device admin app.”</string>
     <string name="dt2s_admin_warning">O Duplo Toque para Dormir será desativado.</string>
     <string name="dt2s_a11y_hint_title">Active o Serviço se Acessibilidade</string>
-    <string name="dt2s_a11y_hint">Para usar o Duplo Toque para Dormir, ative o serviço de acessibilidade do Lawnchair. Toque em \"Abrir Definições,\" depois selecione \"Lawnchair\" e ative \"Utilizar Lawnchair.\"</string>
+    <string name="dt2s_a11y_hint">To use Double-Tap to Sleep, turn on the Lawnchair accessibility service. Tap Open Settings, then select Lawnchair and turn on Use Lawnchair.</string>
     <string name="dt2s_warning_open_settings">Abrir Definições</string>
     <string name="minus_one_enable">Feed</string>
     <string name="minus_one_unavailable">Nenhum feed instalado.</string>
@@ -94,7 +94,7 @@
     <string name="clear_all_as_action_label">Botão Limpar Tudo na Parte Inferior</string>
     <string name="window_corner_radius_label">Raio dos Cantos do Ecrã</string>
     <string name="override_window_corner_radius_label">Raio dos Cantos do Ecrã Personalizado</string>
-    <string name="window_corner_radius_description">Utilize este controlo deslizante para corresponder o raio de transição ao ecrã atual.</string>
+    <string name="window_corner_radius_description">When you swipe up to open Recents, the current app follows your finger, shrinking into a card. Use this slider to adjust the corner radius of the card when it’s nearly full-screen such that it matches the corners of your screen.</string>
     <string name="system_icons">Ícones de Sistema</string>
     <string name="accent_color">Cor de Destaque</string>
     <string name="done">Feito</string>
@@ -109,7 +109,7 @@
     <string name="what_to_show">O que Mostrar</string>
     <string name="missing_notification_access_label">Acesso às Notificações Necessário</string>
     <string name="missing_notification_access_description">Acesso às notificações necessário.</string>
-    <string name="msg_missing_notification_access">Para utilizar os Pontos de Notificação, active as notificações de aplicação para <xliff:g id="name" example="My App">%1$s</xliff:g>.</string>
+    <string name="msg_missing_notification_access">To use Notification Dots, grant <xliff:g id="name" example="My App">%1$s</xliff:g> access to notifications.</string>
     <string name="title_change_settings">Alterar Definições</string>
     <string name="debug_restart_launcher">Reiniciar o Lawnchair</string>
 </resources>
