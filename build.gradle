@@ -10,7 +10,7 @@ buildscript {
         google()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:7.1.0-alpha05'
+        classpath 'com.android.tools.build:gradle:7.1.0-alpha10'
         classpath PROTOBUF_CLASS_PATH
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath 'com.google.android.gms:oss-licenses-plugin:0.10.4'
