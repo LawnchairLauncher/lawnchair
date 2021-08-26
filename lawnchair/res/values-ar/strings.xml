@@ -40,7 +40,7 @@
     <string name="icons">الأيقونات</string>
     <string name="icon_size">حجم الأيقونات</string>
     <string name="label_size">حجم التسمية</string>
-    <string name="show_home_labels">Show Labels</string>
+    <string name="show_home_labels">إظهار التسميات</string>
     <string name="allow_empty_pages_label">السماح بالصفحات الفارغة</string>
     <string name="notification_dots">نقط الإشعارات</string>
     <string name="smartspace_preferences">التفضيلات</string>
@@ -64,7 +64,7 @@
     <string name="auto_adaptive_icons_description">لجميع الأيقونات غير المتكيفة.</string>
     <string name="support_and_pr">الدعم &amp; و العلاقات العامة</string>
     <string name="workspace_dt2s">المس مرتين لإغلاق الشاشة</string>
-    <string name="smart_space_enable">At a Glance Widget</string>
+    <string name="smart_space_enable">إظهار شريط \"في لمحة\"</string>
     <string name="design_and_development">التصميم والتطوير</string>
     <string name="translate">ترجمة</string>
     <string name="product">منتج</string>
@@ -85,7 +85,7 @@
     <string name="dt2s_a11y_hint_title">Accessibility service required</string>
     <string name="dt2s_a11y_hint">لاستخدام الضغط المزدوج لإغلاق الشاشة، شغِّل خدمة الوصول إلى Lawnchair. اضغط على \"فتح الإعدادات\" ثم قم باختيار \"Lawnchair\" وشغِّل \"استخدم Lawnchair\".</string>
     <string name="dt2s_warning_open_settings">افتح الإعدادات</string>
-    <string name="minus_one_enable">Feed</string>
+    <string name="minus_one_enable">الموجز</string>
     <string name="minus_one_unavailable">لا يوجد \"Feed\" مثبّت.</string>
     <string name="fuzzy_search_title">بحث غامض</string>
     <string name="fuzzy_search_desc">قارب التطابقات لعمليات البحث عن التطبيقات.</string>
@@ -96,9 +96,9 @@
     <string name="theme_follow_wallpaper">طابِق الخلفية</string>
     <string name="quickstep_label">مؤخَرًا</string>
     <string name="clear_all_as_action_label">زر \"مسح الكل\" في القاع</string>
-    <string name="window_corner_radius_label">Screen Corner Radius</string>
-    <string name="override_window_corner_radius_label">Custom Screen Corner Radius</string>
-    <string name="window_corner_radius_description">Use this slider to match the transition radius to your actual screen.</string>
+    <string name="window_corner_radius_label">نصف قطر زاوية الشاشة</string>
+    <string name="override_window_corner_radius_label">نصف قطر مخصص لزاوية الشاشة</string>
+    <string name="window_corner_radius_description">استخدم شريط التمرير هذا لمطابقة نصف قطر حركة الانتقال إلى الشاشة الفعلية.</string>
     <string name="system_icons">أيقونات النظام</string>
     <string name="accent_color">لون اللمحة</string>
     <string name="done">تمّ</string>
@@ -108,11 +108,11 @@
     <string name="custom_color">لون مخصص</string>
     <string name="quickstep_description">نصف قطر زاوية زر \"مسح الكل\"</string>
     <string name="wallpaper_scrolling_label">تحريك الخلفية</string>
-    <string name="show_sys_ui_scrim">Top Shadow</string>
-    <string name="show_status_bar">Status Bar</string>
-    <string name="what_to_show">What to Show</string>
-    <string name="missing_notification_access_label">Notification Access Needed</string>
-    <string name="missing_notification_access_description">Notification access needed.</string>
+    <string name="show_sys_ui_scrim">الظل العلوي</string>
+    <string name="show_status_bar">شريط الحالة</string>
+    <string name="what_to_show">ماذا تريد أن تُظهر</string>
+    <string name="missing_notification_access_label">الوصول إلى الإشعارات مطلوب</string>
+    <string name="missing_notification_access_description">الوصول إلى الإشعارات مطلوب.</string>
     <string name="msg_missing_notification_access">To use Notification Dots, turn on app notifications for <xliff:g id="name" example="My App">%1$s</xliff:g>.</string>
     <string name="title_change_settings">Change Settings</string>
     <string name="debug_restart_launcher">Restart Lawnchair</string>
