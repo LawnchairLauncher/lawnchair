@@ -91,7 +91,7 @@
     <string name="theme_follow_wallpaper">Samakan dengan wallpaper</string>
     <string name="quickstep_label">Terbaru</string>
     <string name="clear_all_as_action_label">Tombol Hapus Semua di Bawah</string>
-    <string name="window_corner_radius_label">Screen Corner Radius</string>
+    <string name="window_corner_radius_label">Tampilan Radius Sudut</string>
     <string name="override_window_corner_radius_label">Custom Screen Corner Radius</string>
     <string name="window_corner_radius_description">Use this slider to match the transition radius to your actual screen.</string>
     <string name="system_icons">Ikon sistem</string>
