@@ -17,6 +17,10 @@ package com.android.launcher3.taskbar;
 
 import android.graphics.Rect;
 
+import com.android.launcher3.model.data.ItemInfoWithIcon;
+
+import java.util.stream.Stream;
+
 /**
  * Base class for providing different taskbar UI
  */
@@ -35,4 +39,8 @@ public class TaskbarUIController {
     protected void updateContentInsets(Rect outContentInsets) { }
 
     protected void onStashedInAppChanged() { }
+
+    public Stream<ItemInfoWithIcon> getAppIconsForEdu() {
+        return Stream.empty();
+    }
 }

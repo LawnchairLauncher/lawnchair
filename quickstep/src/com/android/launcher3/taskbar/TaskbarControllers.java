@@ -78,6 +78,7 @@ public class TaskbarControllers {
         taskbarKeyguardController.init(navbarButtonsViewController);
         stashedHandleViewController.init(this);
         taskbarStashController.init(this);
+        taskbarEduController.init(this);
     }
 
     /**
