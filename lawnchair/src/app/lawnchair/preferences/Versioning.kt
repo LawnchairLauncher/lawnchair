@@ -16,10 +16,9 @@
 
 package app.lawnchair.preferences
 
-import android.content.Context
+import com.android.launcher3.BuildConfig
 
-inline val Context.versionName: String
-    get() = packageManager.getPackageInfo(packageName, 0).versionName.split(" (")[0]
-
-inline val Context.majorVersion: String
-    get() = versionName.split('.')[0]
+object Versioning {
+    const val versionName = BuildConfig.VERSION_DISPLAY_NAME
+    const val majorVersion = BuildConfig.MAJOR_VERSION
+}

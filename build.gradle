@@ -70,7 +70,11 @@ android {
         minSdkVersion 25
         targetSdkVersion 30
         versionCode 7
-        versionName "11.0 Alpha 6.1 (${commitHash()})"
+        def versionDisplayName = "11.0 Alpha 6.1"
+        def majorVersion = versionDisplayName.split("\\.")[0]
+        versionName "${versionDisplayName} (${commitHash()})"
+        buildConfigField "String", "VERSION_DISPLAY_NAME", "\"${versionDisplayName}\""
+        buildConfigField "String", "MAJOR_VERSION", "\"${majorVersion}\""
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true

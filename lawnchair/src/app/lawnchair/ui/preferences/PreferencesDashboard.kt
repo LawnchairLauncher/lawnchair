@@ -19,7 +19,7 @@ import androidx.compose.ui.unit.dp
 import androidx.core.content.getSystemService
 import app.lawnchair.LawnchairApp
 import app.lawnchair.LawnchairLauncher
-import app.lawnchair.preferences.majorVersion
+import app.lawnchair.preferences.Versioning
 import app.lawnchair.ui.preferences.components.ClickableIcon
 import app.lawnchair.ui.preferences.components.PreferenceCategory
 import app.lawnchair.ui.preferences.components.PreferenceLayout
@@ -82,7 +82,7 @@ fun PreferencesDashboard() {
         val context = LocalContext.current
         PreferenceCategory(
             label = stringResource(R.string.about_label),
-            description = "${context.getString(R.string.derived_app_name)} ${context.majorVersion}",
+            description = "${context.getString(R.string.derived_app_name)} ${Versioning.majorVersion}",
             iconResource = R.drawable.ic_about,
             route = Routes.ABOUT
         )

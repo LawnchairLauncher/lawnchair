@@ -34,7 +34,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavGraphBuilder
-import app.lawnchair.preferences.versionName
+import app.lawnchair.preferences.Versioning
 import app.lawnchair.ui.preferences.about.licenses.licensesGraph
 import app.lawnchair.ui.preferences.components.ClickablePreference
 import app.lawnchair.ui.preferences.components.NavigationActionPreference
@@ -170,7 +170,7 @@ fun About() {
             LocalContentAlpha provides ContentAlpha.medium,
             LocalContentColor provides MaterialTheme.colors.onBackground
         ) {
-            Text(text = LocalContext.current.versionName)
+            Text(text = Versioning.versionName)
         }
         Spacer(modifier = Modifier.requiredHeight(16.dp))
         Row(
