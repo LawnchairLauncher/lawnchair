@@ -90,6 +90,9 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
         // We layout the icons to be of mIconTouchSize in width and height
         mItemMarginLeftRight = actualMargin - (mIconTouchSize - actualIconSize) / 2;
         mItemPadding = (mIconTouchSize - actualIconSize) / 2;
+
+        // Needed to draw folder leave-behind when opening one.
+        setWillNotDraw(false);
     }
 
     protected void init(TaskbarViewController.TaskbarViewCallbacks callbacks) {
