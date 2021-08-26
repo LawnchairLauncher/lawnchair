@@ -44,6 +44,7 @@ import com.android.quickstep.views.RecentsView;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -218,6 +219,7 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
     }
 
     @Test
+    @Ignore("b/197802324")
     @PortraitLandscape
     public void testAllAppsFromHome() throws Exception {
         // Test opening all apps
