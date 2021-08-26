@@ -261,6 +261,13 @@ public class NavbarButtonsViewController {
     }
 
     /**
+     * Returns true if the recents (overview) button is disabled
+     */
+    public boolean isRecentsDisabled() {
+        return (mState & FLAG_DISABLE_RECENTS) != 0;
+    }
+
+    /**
      * Adds the bounds corresponding to all visible buttons to provided region
      */
     public void addVisibleButtonsRegion(TaskbarDragLayer parent, Region outRegion) {
