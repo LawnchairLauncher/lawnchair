@@ -245,8 +245,8 @@ public class LauncherRecentsView extends RecentsView<BaseQuickstepLauncher, Laun
 
     @Override
     public void initiateSplitSelect(TaskView taskView,
-            SplitConfigurationOptions.SplitPositionOption splitPositionOption) {
-        super.initiateSplitSelect(taskView, splitPositionOption);
+            @SplitConfigurationOptions.StagePosition int stagePosition) {
+        super.initiateSplitSelect(taskView, stagePosition);
         mActivity.getStateManager().goToState(LauncherState.OVERVIEW_SPLIT_SELECT);
     }
 
