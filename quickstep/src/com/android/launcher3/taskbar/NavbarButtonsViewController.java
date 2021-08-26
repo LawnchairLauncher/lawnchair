@@ -38,6 +38,7 @@ import android.graphics.Rect;
 import android.graphics.Region;
 import android.graphics.Region.Op;
 import android.graphics.drawable.AnimatedVectorDrawable;
+import android.provider.Settings;
 import android.util.Property;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -54,6 +55,7 @@ import com.android.launcher3.taskbar.TaskbarNavButtonController.TaskbarButton;
 import com.android.launcher3.taskbar.contextual.RotationButton;
 import com.android.launcher3.taskbar.contextual.RotationButtonController;
 import com.android.launcher3.util.MultiValueAlpha;
+import com.android.launcher3.util.SettingsCache;
 import com.android.quickstep.AnimatedFloat;
 
 import java.util.ArrayList;
@@ -145,7 +147,10 @@ public class NavbarButtonsViewController {
                 .getKeyguardBgTaskbar(),
                 flags -> (flags & FLAG_KEYGUARD_VISIBLE) == 0, AnimatedFloat.VALUE, 1, 0));
 
-        if (mContext.isThreeButtonNav()) {
+        // Force nav buttons (specifically back button) to be visible during setup wizard.
+        boolean areButtonsForcedVisible = !SettingsCache.INSTANCE.get(mContext).getValue(
+                Settings.Secure.getUriFor(Settings.Secure.USER_SETUP_COMPLETE), 0);
+        if (mContext.isThreeButtonNav() || areButtonsForcedVisible) {
             initButtons(mNavButtonContainer, mEndContextualContainer,
                     mControllers.navButtonController);
 
