@@ -84,7 +84,11 @@
     <string name="skip_tutorial_dialog_subtitle" msgid="544063326241955662">"To možete pronaći kasnije u aplikaciji <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="gesture_tutorial_action_button_label_cancel" msgid="3809842569351264108">"Otkaži"</string>
     <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"Preskoči"</string>
-    <string name="taskbar_edu_header_1" msgid="5323217563328273689">"Koristite 2 aplikacije odjednom i prebacujte između aplikacija putem programske trake"</string>
+    <string name="taskbar_edu_opened" msgid="3950252793551919129">"Upute za programsku traku su se pojavile"</string>
+    <string name="taskbar_edu_closed" msgid="126643734478892862">"Upute za programsku traku su zatvorene"</string>
+    <string name="taskbar_edu_dock" msgid="8484594848150559893">"Dodirnite i zadržite da biste sakrili programsku traku"</string>
     <string name="taskbar_edu_next" msgid="4007618274426775841">"Naprijed"</string>
+    <string name="taskbar_edu_previous" msgid="459202320127201702">"Natrag"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"Zatvori"</string>
+    <string name="taskbar_edu_done" msgid="6880178093977704569">"Gotovo"</string>
 </resources>

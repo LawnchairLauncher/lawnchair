@@ -84,7 +84,11 @@
     <string name="skip_tutorial_dialog_subtitle" msgid="544063326241955662">"Tai galėsite rasti vėliau programoje „<xliff:g id="NAME">%1$s</xliff:g>“"</string>
     <string name="gesture_tutorial_action_button_label_cancel" msgid="3809842569351264108">"Atšaukti"</string>
     <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"Praleisti"</string>
-    <string name="taskbar_edu_header_1" msgid="5323217563328273689">"Užduočių juostoje vienu metu naudokite dvi programas ir jas perjunkite"</string>
+    <string name="taskbar_edu_opened" msgid="3950252793551919129">"Užduočių juostos patarimai rodomi"</string>
+    <string name="taskbar_edu_closed" msgid="126643734478892862">"Užduočių juostos patarimai uždaryti"</string>
+    <string name="taskbar_edu_dock" msgid="8484594848150559893">"Bet kuriuo metu palieskite ir palaik., kad pasl. užd. juostą"</string>
     <string name="taskbar_edu_next" msgid="4007618274426775841">"Kitas"</string>
+    <string name="taskbar_edu_previous" msgid="459202320127201702">"Atgal"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"Uždaryti"</string>
+    <string name="taskbar_edu_done" msgid="6880178093977704569">"Atlikta"</string>
 </resources>
