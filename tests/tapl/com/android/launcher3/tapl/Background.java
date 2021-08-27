@@ -99,12 +99,12 @@ public class Background extends LauncherInstrumentation.VisibleContainer {
                                 end,
                                 gestureScope),
                         event -> TestProtocol.PAUSE_DETECTED_MESSAGE.equals(event.getClassName()),
-                        () -> "Pause wasn't detected");
+                        () -> "Pause wasn't detected", "swiping and holding");
                 mLauncher.runToState(
                         () -> mLauncher.sendPointer(
                                 downTime, SystemClock.uptimeMillis(), MotionEvent.ACTION_UP, end,
                                 gestureScope),
-                        OVERVIEW_STATE_ORDINAL);
+                        OVERVIEW_STATE_ORDINAL, "sending UP event");
                 break;
             }
 
@@ -137,7 +137,7 @@ public class Background extends LauncherInstrumentation.VisibleContainer {
                 mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN, SQUARE_BUTTON_EVENT);
                 mLauncher.runToState(
                         () -> mLauncher.waitForSystemUiObject("recent_apps").click(),
-                        OVERVIEW_STATE_ORDINAL);
+                        OVERVIEW_STATE_ORDINAL, "clicking Recents button");
                 break;
         }
         expectSwitchToOverviewEvents();
@@ -218,7 +218,7 @@ public class Background extends LauncherInstrumentation.VisibleContainer {
                             () -> mLauncher.linearGesture(
                                     startX, startY, endX, endY, 20, false, gestureScope),
                             event -> event.getEventType() == TYPE_WINDOW_STATE_CHANGED,
-                            () -> "Quick switch gesture didn't change window state");
+                            () -> "Quick switch gesture didn't change window state", "swiping");
                     break;
                 }
 
@@ -226,13 +226,15 @@ public class Background extends LauncherInstrumentation.VisibleContainer {
                     // Double press the recents button.
                     UiObject2 recentsButton = mLauncher.waitForSystemUiObject("recent_apps");
                     mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN, SQUARE_BUTTON_EVENT);
-                    mLauncher.runToState(() -> recentsButton.click(), OVERVIEW_STATE_ORDINAL);
+                    mLauncher.runToState(() -> recentsButton.click(), OVERVIEW_STATE_ORDINAL,
+                            "clicking Recents button for the first time");
                     mLauncher.getOverview();
                     mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN, SQUARE_BUTTON_EVENT);
                     mLauncher.executeAndWaitForEvent(
                             () -> recentsButton.click(),
                             event -> event.getEventType() == TYPE_WINDOW_STATE_CHANGED,
-                            () -> "Pressing recents button didn't change window state");
+                            () -> "Pressing recents button didn't change window state",
+                            "clicking Recents button for the second time");
                     break;
             }
             mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN, TASK_START_EVENT);

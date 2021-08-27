@@ -26,6 +26,7 @@ import android.animation.ObjectAnimator;
 import android.os.IBinder;
 import android.os.SystemProperties;
 import android.util.FloatProperty;
+import android.view.AttachedSurfaceControl;
 import android.view.CrossWindowBlurListeners;
 import android.view.SurfaceControl;
 import android.view.View;
@@ -100,9 +101,19 @@ public class DepthController implements StateHandler<LauncherState>,
                 }
             };
 
-    private final Consumer<Boolean> mCrossWindowBlurListener = (enabled) -> {
-        mCrossWindowBlursEnabled = enabled;
-        dispatchTransactionSurface();
+    private final Consumer<Boolean> mCrossWindowBlurListener = new Consumer<Boolean>() {
+        @Override
+        public void accept(Boolean enabled) {
+            mCrossWindowBlursEnabled = enabled;
+            dispatchTransactionSurface(mDepth);
+        }
+    };
+
+    private final Runnable mOpaquenessListener = new Runnable() {
+        @Override
+        public void run() {
+            dispatchTransactionSurface(mDepth);
+        }
     };
 
     private final Launcher mLauncher;
@@ -147,21 +158,26 @@ public class DepthController implements StateHandler<LauncherState>,
                     if (windowToken != null) {
                         mWallpaperManager.setWallpaperZoomOut(windowToken, mDepth);
                     }
-                    CrossWindowBlurListeners.getInstance().addListener(mLauncher.getMainExecutor(),
-                            mCrossWindowBlurListener);
+                    onAttached();
                 }
 
                 @Override
                 public void onViewDetachedFromWindow(View view) {
                     CrossWindowBlurListeners.getInstance().removeListener(mCrossWindowBlurListener);
+                    mLauncher.getScrimView().removeOpaquenessListener(mOpaquenessListener);
                 }
             };
             mLauncher.getRootView().addOnAttachStateChangeListener(mOnAttachListener);
             if (mLauncher.getRootView().isAttachedToWindow()) {
-                CrossWindowBlurListeners.getInstance().addListener(mLauncher.getMainExecutor(),
-                        mCrossWindowBlurListener);
+                onAttached();
             }
         }
+    }
+
+    private void onAttached() {
+        CrossWindowBlurListeners.getInstance().addListener(mLauncher.getMainExecutor(),
+                mCrossWindowBlurListener);
+        mLauncher.getScrimView().addOpaquenessListener(mOpaquenessListener);
     }
 
     /**
@@ -180,17 +196,23 @@ public class DepthController implements StateHandler<LauncherState>,
      * Sets the specified app target surface to apply the blur to.
      */
     public void setSurface(SurfaceControl surface) {
+        // Set launcher as the SurfaceControl when we don't need an external target anymore.
+        if (surface == null) {
+            ViewRootImpl viewRootImpl = mLauncher.getDragLayer().getViewRootImpl();
+            surface = viewRootImpl != null ? viewRootImpl.getSurfaceControl() : null;
+        }
+
         if (mSurface != surface) {
             mSurface = surface;
             if (surface != null) {
-                dispatchTransactionSurface();
+                dispatchTransactionSurface(mDepth);
             }
         }
     }
 
     @Override
     public void setState(LauncherState toState) {
-        if (mIgnoreStateChangesDuringMultiWindowAnimation) {
+        if (mSurface == null || mIgnoreStateChangesDuringMultiWindowAnimation) {
             return;
         }
 
@@ -198,7 +220,7 @@ public class DepthController implements StateHandler<LauncherState>,
         if (Float.compare(mDepth, toDepth) != 0) {
             setDepth(toDepth);
         } else if (toState == LauncherState.OVERVIEW) {
-            dispatchTransactionSurface();
+            dispatchTransactionSurface(mDepth);
         }
     }
 
@@ -237,31 +259,41 @@ public class DepthController implements StateHandler<LauncherState>,
         if (Float.compare(mDepth, depthF) == 0) {
             return;
         }
-        mDepth = depthF;
-        dispatchTransactionSurface();
+        if (dispatchTransactionSurface(depthF)) {
+            mDepth = depthF;
+        }
     }
 
-    private void dispatchTransactionSurface() {
+    private boolean dispatchTransactionSurface(float depth) {
         boolean supportsBlur = BlurUtils.supportsBlursOnWindows();
+        if (supportsBlur && (mSurface == null || !mSurface.isValid())) {
+            return false;
+        }
         ensureDependencies();
         IBinder windowToken = mLauncher.getRootView().getWindowToken();
         if (windowToken != null) {
-            mWallpaperManager.setWallpaperZoomOut(windowToken, mDepth);
+            mWallpaperManager.setWallpaperZoomOut(windowToken, depth);
         }
 
-        if (supportsBlur && (mSurface != null && mSurface.isValid())) {
+        if (supportsBlur) {
             // We cannot mark the window as opaque in overview because there will be an app window
             // below the launcher layer, and we need to draw it -- without blurs.
             boolean isOverview = mLauncher.isInState(LauncherState.OVERVIEW);
             boolean opaque = mLauncher.getScrimView().isFullyOpaque() && !isOverview;
 
             int blur = opaque || isOverview || !mCrossWindowBlursEnabled
-                    || mBlurDisabledForAppLaunch ? 0 : (int) (mDepth * mMaxBlurRadius);
-            new SurfaceControl.Transaction()
+                    || mBlurDisabledForAppLaunch ? 0 : (int) (depth * mMaxBlurRadius);
+            SurfaceControl.Transaction transaction = new SurfaceControl.Transaction()
                     .setBackgroundBlurRadius(mSurface, blur)
-                    .setOpaque(mSurface, opaque)
-                    .apply();
+                    .setOpaque(mSurface, opaque);
+
+            AttachedSurfaceControl rootSurfaceControl =
+                    mLauncher.getRootView().getRootSurfaceControl();
+            if (rootSurfaceControl != null) {
+                rootSurfaceControl.applyTransactionOnDraw(transaction);
+            }
         }
+        return true;
     }
 
     @Override

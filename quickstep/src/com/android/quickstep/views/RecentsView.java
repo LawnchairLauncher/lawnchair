@@ -83,7 +83,6 @@ import android.text.StaticLayout;
 import android.text.TextPaint;
 import android.util.AttributeSet;
 import android.util.FloatProperty;
-import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.Gravity;
 import android.view.HapticFeedbackConstants;
@@ -630,7 +629,8 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         // Initialize quickstep specific cache params here, as this is constructed only once
         mActivity.getViewCache().setCacheSize(R.layout.digital_wellbeing_toast, 5);
 
-        mLiveTileTaskViewSimulator = new TaskViewSimulator(getContext(), getSizeStrategy());
+        mLiveTileTaskViewSimulator = new TaskViewSimulator(getContext(), getSizeStrategy(),
+                true /* isForLiveTile */);
         mLiveTileTaskViewSimulator.recentsViewScale.value = 1;
         mLiveTileTaskViewSimulator.setOrientationState(mOrientationState);
         mLiveTileTaskViewSimulator.setDrawsBelowRecents(true);
@@ -863,10 +863,12 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     }
 
     public void launchSideTaskInLiveTileModeForRestartedApp(int taskId) {
-        if (mRunningTaskId != -1 && mRunningTaskId == taskId &&
-                getLiveTileParams().getTargetSet().findTask(taskId) != null) {
+        if (mRunningTaskId != -1 && mRunningTaskId == taskId) {
             RemoteAnimationTargets targets = getLiveTileParams().getTargetSet();
-            launchSideTaskInLiveTileMode(taskId, targets.apps, targets.wallpapers, targets.nonApps);
+            if (targets != null && targets.findTask(taskId) != null) {
+                launchSideTaskInLiveTileMode(taskId, targets.apps, targets.wallpapers,
+                        targets.nonApps);
+            }
         }
     }
 
@@ -903,8 +905,8 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             TaskViewUtils.composeRecentsLaunchAnimator(anim, taskView, apps, wallpaper, nonApps,
                     true /* launcherClosing */, mActivity.getStateManager(), this,
                     getDepthController());
-            anim.start();
         }
+        anim.start();
     }
 
     private void updateTaskStartIndex(View affectingView) {
@@ -1284,8 +1286,14 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     }
 
     private void updateOrientationHandler() {
+        updateOrientationHandler(true);
+    }
+
+    private void updateOrientationHandler(boolean forceRecreateDragLayerControllers) {
         // Handle orientation changes.
+        PagedOrientationHandler oldOrientationHandler = mOrientationHandler;
         mOrientationHandler = mOrientationState.getOrientationHandler();
+
         mIsRtl = mOrientationHandler.getRecentsRtlSetting(getResources());
         setLayoutDirection(mIsRtl
                 ? View.LAYOUT_DIRECTION_RTL
@@ -1294,7 +1302,13 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                 ? View.LAYOUT_DIRECTION_LTR
                 : View.LAYOUT_DIRECTION_RTL);
         mClearAllButton.setRotation(mOrientationHandler.getDegreesRotated());
-        mActivity.getDragLayer().recreateControllers();
+
+        if (forceRecreateDragLayerControllers
+                || !mOrientationHandler.equals(oldOrientationHandler)) {
+            // Changed orientations, update controllers so they intercept accordingly.
+            mActivity.getDragLayer().recreateControllers();
+        }
+
         boolean isInLandscape = mOrientationState.getTouchRotation() != ROTATION_0
                 || mOrientationState.getRecentsActivityRotation() != ROTATION_0;
         mActionsView.updateHiddenFlags(HIDDEN_NON_ZERO_ROTATION,
@@ -1614,7 +1628,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             setCurrentPage(0);
             LayoutUtils.setViewEnabled(mActionsView, true);
             if (mOrientationState.setGestureActive(false)) {
-                updateOrientationHandler();
+                updateOrientationHandler(/* forceRecreateDragLayerControllers = */ false);
             }
         });
     }
@@ -1686,7 +1700,6 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
      * {@link #onGestureAnimationStart} and {@link #onGestureAnimationEnd()}.
      */
     public void onSwipeUpAnimationSuccess() {
-        Log.d("b/186444448", "onSwipeUpAnimationSuccess");
         if (getRunningTaskView() != null) {
             animateUpRunningTaskIconScale();
         }
@@ -1760,7 +1773,6 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
      * Called when a gesture from an app has finished, and the animation to the target has ended.
      */
     public void onGestureAnimationEnd() {
-        Log.d("b/186444448", "onGestureEnd");
         mGestureActive = false;
         if (mOrientationState.setGestureActive(false)) {
             updateOrientationHandler();
@@ -1780,6 +1792,12 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         }
 
         mCurrentGestureEndTarget = null;
+
+        if (ENABLE_QUICKSTEP_LIVE_TILE.get() && mActivity.getDeviceProfile().isMultiWindowMode) {
+            switchToScreenshot(
+                    () -> finishRecentsAnimation(true /* toRecents */, false /* shouldPip */,
+                            null));
+        }
     }
 
     /**
@@ -1918,8 +1936,6 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     public void animateUpRunningTaskIconScale() {
         mRunningTaskIconScaledDown = false;
         TaskView firstTask = getRunningTaskView();
-        Log.d("b/186444448", "animateUpRunningTaskIconScale: firstTask="
-                + (firstTask != null ? "t:" + firstTask.getTask() : null));
         if (firstTask != null) {
             firstTask.setIconScaleAnimStartProgress(0f);
             firstTask.animateIconScaleAndDimIntoView();

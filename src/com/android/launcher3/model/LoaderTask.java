@@ -760,16 +760,13 @@ public class LoaderTask implements Runnable {
                                 if (widgetProviderInfo != null
                                         && (appWidgetInfo.spanX < widgetProviderInfo.minSpanX
                                         || appWidgetInfo.spanY < widgetProviderInfo.minSpanY)) {
-                                    logDeleteWidgetInfo(mApp.getInvariantDeviceProfile(),
-                                            widgetProviderInfo);
-
-                                    // This can happen when display size changes.
-                                    c.markDeleted("Widget removed, min sizes not met: "
-                                            + "span=" + appWidgetInfo.spanX + "x"
-                                            + appWidgetInfo.spanY + " minSpan="
+                                    FileLog.d(TAG, "Widget " + widgetProviderInfo.getComponent()
+                                            + " minSizes not meet: span=" + appWidgetInfo.spanX
+                                            + "x" + appWidgetInfo.spanY + " minSpan="
                                             + widgetProviderInfo.minSpanX + "x"
                                             + widgetProviderInfo.minSpanY);
-                                    continue;
+                                    logWidgetInfo(mApp.getInvariantDeviceProfile(),
+                                            widgetProviderInfo);
                                 }
                                 if (!c.isOnWorkspaceOrHotseat()) {
                                     c.markDeleted("Widget found where container != " +
@@ -990,10 +987,8 @@ public class LoaderTask implements Runnable {
     }
 
     @SuppressLint("NewApi") // Already added API check.
-    private static void logDeleteWidgetInfo(InvariantDeviceProfile idp,
+    private static void logWidgetInfo(InvariantDeviceProfile idp,
             LauncherAppWidgetProviderInfo widgetProviderInfo) {
-        FileLog.d(TAG, "Deleting " + widgetProviderInfo.getComponent()
-                + " due to min size constraint");
         Point cellSize = new Point();
         for (DeviceProfile deviceProfile : idp.supportedProfiles) {
             deviceProfile.getCellSize(cellSize);

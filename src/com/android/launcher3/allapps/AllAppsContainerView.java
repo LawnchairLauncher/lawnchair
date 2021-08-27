@@ -51,7 +51,6 @@ import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 import androidx.annotation.VisibleForTesting;
 import androidx.core.graphics.ColorUtils;
-import androidx.core.os.BuildCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -188,11 +187,11 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
         Bundle state = (Bundle) sparseArray.get(R.id.work_tab_state_id, null);
         if (state != null) {
             int currentPage = state.getInt(BUNDLE_KEY_CURRENT_PAGE, 0);
-            if (currentPage != 0) {
+            if (currentPage != 0 && mViewPager != null) {
                 mViewPager.setCurrentPage(currentPage);
                 rebindAdapters(true);
             } else {
-                mSearchUiManager.resetSearch();
+                reset(true);
             }
         }
 
@@ -260,21 +259,6 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
         mWorkAdapterProvider.updateCurrentState(isEnabled);
     }
 
-    private void hideInput() {
-        if (!BuildCompat.isAtLeastR() || !FeatureFlags.ENABLE_DEVICE_SEARCH.get()) return;
-
-        WindowInsets insets = getRootWindowInsets();
-        if (insets == null) return;
-
-        if (insets.isVisible(WindowInsets.Type.ime())) {
-            hideIme();
-        }
-    }
-
-    protected void hideIme() {
-        getWindowInsetsController().hide(WindowInsets.Type.ime());
-    }
-
     /**
      * Returns whether the view itself will handle the touch event or not.
      */
@@ -290,7 +274,6 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
         }
         if (rv.getScrollbar().getThumbOffsetY() >= 0 &&
                 mLauncher.getDragLayer().isEventOverView(rv.getScrollbar(), ev)) {
-            hideInput();
             return false;
         }
         return rv.shouldContainerScroll(ev, mLauncher.getDragLayer());
@@ -494,10 +477,6 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
         } else {
             mAH[AdapterHolder.MAIN].setup(findViewById(R.id.apps_list_view), null);
             mAH[AdapterHolder.WORK].recyclerView = null;
-            if (mWorkModeSwitch != null) {
-                ((ViewGroup) mWorkModeSwitch.getParent()).removeView(mWorkModeSwitch);
-                mWorkModeSwitch = null;
-            }
         }
         setupHeader();
 
@@ -549,7 +528,7 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
 
     @Override
     public void onActivePageChanged(int currentActivePage) {
-        mHeader.setMainActive(currentActivePage == 0);
+        mHeader.setMainActive(currentActivePage == AdapterHolder.MAIN);
         if (mAH[currentActivePage].recyclerView != null) {
             mAH[currentActivePage].recyclerView.bindFastScrollbar();
         }
@@ -558,6 +537,14 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
             mWorkModeSwitch.setWorkTabVisible(currentActivePage == AdapterHolder.WORK
                     && mAllAppsStore.hasModelFlag(
                     FLAG_HAS_SHORTCUT_PERMISSION | FLAG_QUIET_MODE_CHANGE_PERMISSION));
+
+            if (currentActivePage == AdapterHolder.WORK) {
+                if (mWorkModeSwitch.getParent() == null) {
+                    addView(mWorkModeSwitch);
+                }
+            } else {
+                removeView(mWorkModeSwitch);
+            }
         }
     }
 
