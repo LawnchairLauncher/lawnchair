@@ -150,8 +150,8 @@ public class WallpaperOffsetInterpolator extends BroadcastReceiver {
      */
     private int getNumPagesExcludingEmpty() {
         int numOfPages = mWorkspace.getChildCount();
-        if (numOfPages >= MIN_PARALLAX_PAGE_SPAN && mWorkspace.hasExtraEmptyScreen()) {
-            return numOfPages - 1;
+        if (numOfPages >= MIN_PARALLAX_PAGE_SPAN && mWorkspace.hasExtraEmptyScreens()) {
+            return numOfPages - mWorkspace.getPanelCount();
         } else {
             return numOfPages;
         }

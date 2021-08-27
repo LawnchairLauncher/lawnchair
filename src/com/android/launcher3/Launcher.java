@@ -871,11 +871,11 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
         if (dropLayout == null) {
             // it's possible that the add screen was removed because it was
             // empty and a re-bind occurred
-            mWorkspace.addExtraEmptyScreen();
-            return mWorkspace.commitExtraEmptyScreen();
-        } else {
-            return screenId;
+            mWorkspace.addExtraEmptyScreens();
+            IntSet emptyPagesAdded = mWorkspace.commitExtraEmptyScreens();
+            return emptyPagesAdded.isEmpty() ? -1 : emptyPagesAdded.getArray().get(0);
         }
+        return screenId;
     }
 
     @Thunk
@@ -2175,7 +2175,7 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
             orderedScreenIds.add(firstScreenPosition, Workspace.FIRST_SCREEN_ID);
         } else if (!FeatureFlags.QSB_ON_FIRST_SCREEN && orderedScreenIds.isEmpty()) {
             // If there are no screens, we need to have an empty screen
-            mWorkspace.addExtraEmptyScreen();
+            mWorkspace.addExtraEmptyScreens();
         }
         bindAddScreens(orderedScreenIds);
 
@@ -2190,17 +2190,7 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
             // Some empty pages might have been removed while the phone was in a single panel
             // mode, so we want to add those empty pages back.
             IntSet screenIds = IntSet.wrap(orderedScreenIds);
-            for (int i = 0; i < orderedScreenIds.size(); i++) {
-                int screenId = orderedScreenIds.get(i);
-                // Don't add the page pair if the page is the last one and if the pair is on the
-                // right, because that would cause a bug when adding new pages.
-                // TODO: (b/196376162) remove this when the new screen id logic is fixed for two
-                //  panel in Workspace::commitExtraEmptyScreen
-                if (i == orderedScreenIds.size() - 1 && screenId % 2 == 0) {
-                    continue;
-                }
-                screenIds.add(mWorkspace.getPagePair(screenId));
-            }
+            orderedScreenIds.forEach(screenId -> screenIds.add(mWorkspace.getPagePair(screenId)));
             orderedScreenIds = screenIds.getArray();
         }
 
