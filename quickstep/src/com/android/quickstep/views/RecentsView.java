@@ -1278,7 +1278,8 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             while (getTaskViewCount() > requiredTaskViewCount) {
                 removeView(getChildAt(getChildCount() - 1));
             }
-            while (requiredGroupTaskViews > 0) {
+            int groupedTaskViewCount = getGroupedTaskViewCount();
+            while (requiredGroupTaskViews > groupedTaskViewCount) {
                 // Add to front of list
                 addView(getTaskViewFromPool(true), 0);
                 requiredGroupTaskViews--;
@@ -1403,6 +1404,16 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             taskViewCount--;
         }
         return taskViewCount;
+    }
+
+    public int getGroupedTaskViewCount() {
+        int groupViewCount = 0;
+        for (int i = 0; i < getChildCount(); i++) {
+            if (getChildAt(i) instanceof GroupedTaskView) {
+                groupViewCount++;
+            }
+        }
+        return groupViewCount;
     }
 
     protected void onTaskStackUpdated() {
