@@ -75,7 +75,7 @@
     </plurals>
     <string name="hotseat_qsb_label">검색 창 활성화</string>
     <string name="dt2s_admin_hint_title">관리자 권한이 필요합니다.</string>
-    <string name="dt2s_admin_hint">To use Double-Tap to Sleep, set Lawnchair as a device admin app. Tap Open Settings, then tap “Activate this device admin app.”</string>
+    <string name="dt2s_admin_hint">더블탭 화면 끄기 기능을 사용하려면 관리자 권한을 할당받아야합니다. \"설정 열기\"를 누른 후, Lawnchair앱을 등록시켜주세요</string>
     <string name="dt2s_admin_warning">두 번 눌러 화면 끄기 기능이 비활성화 되었습니다.</string>
     <string name="dt2s_a11y_hint_title">접근성 서비스가 활성화되어야합니다</string>
     <string name="dt2s_a11y_hint">To use Double-Tap to Sleep, turn on the Lawnchair accessibility service. Tap Open Settings, then select Lawnchair and turn on Use Lawnchair.</string>
@@ -91,8 +91,8 @@
     <string name="theme_follow_wallpaper">배경화면에 따르기</string>
     <string name="quickstep_label">최근 앱</string>
     <string name="clear_all_as_action_label">하단 모두 닫기 버튼</string>
-    <string name="window_corner_radius_label">Screen Corner Radius</string>
-    <string name="override_window_corner_radius_label">Custom Screen Corner Radius</string>
+    <string name="window_corner_radius_label">가장자리 둥글기</string>
+    <string name="override_window_corner_radius_label">가장자리 둥글기 개인화</string>
     <string name="window_corner_radius_description">When you swipe up to open Recents, the current app follows your finger, shrinking into a card. Use this slider to adjust the corner radius of the card when it’s nearly full-screen such that it matches the corners of your screen.</string>
     <string name="system_icons">시스템 아이콘</string>
     <string name="accent_color">강조 색상</string>
@@ -110,5 +110,5 @@
     <string name="missing_notification_access_description">알림 권한이 필요함</string>
     <string name="msg_missing_notification_access">To use Notification Dots, grant <xliff:g id="name" example="My App">%1$s</xliff:g> access to notifications.</string>
     <string name="title_change_settings">설정 변경</string>
-    <string name="debug_restart_launcher">Restart Lawnchair</string>
+    <string name="debug_restart_launcher">Lawnchair 재시작</string>
 </resources>
