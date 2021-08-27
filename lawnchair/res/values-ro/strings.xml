@@ -77,10 +77,10 @@
     </plurals>
     <string name="hotseat_qsb_label">Arată Bara de Căutare</string>
     <string name="dt2s_admin_hint_title">Permisiunea administratorului necesară</string>
-    <string name="dt2s_admin_hint">To use Double-Tap to Sleep, set Lawnchair as a device admin app. Tap Open Settings, then tap “Activate this device admin app.”</string>
+    <string name="dt2s_admin_hint">Pentru a folosi Apăsați dublu pentru a adormi, setați Lawnchair ca o aplicație administrator dispozitiv. Atingeți Deschideți Setări, și apoi atingeți \"Activați această aplicație administrator dispozitiv.\"</string>
     <string name="dt2s_admin_warning">Dublă-Atingere pentru oprirea ecranului va fi dezactivată.</string>
     <string name="dt2s_a11y_hint_title">Activați serviciul de accesibilitate</string>
-    <string name="dt2s_a11y_hint">To use Double-Tap to Sleep, turn on the Lawnchair accessibility service. Tap Open Settings, then select Lawnchair and turn on Use Lawnchair.</string>
+    <string name="dt2s_a11y_hint">Pentru a folosi Apăsați dublu pentru a adormi, porniți serviciul de accesibilitate Lawnchair. Atingeți Deschideți Setări, apoi selectați Lawnchair și activați Utilizați Lawnchair.</string>
     <string name="dt2s_warning_open_settings">Deschide Setările</string>
     <string name="minus_one_enable">Flux</string>
     <string name="minus_one_unavailable">Fluxul nu este instalat.</string>
@@ -93,7 +93,7 @@
     <string name="theme_follow_wallpaper">Potrivire a imaginii de fundal</string>
     <string name="quickstep_label">Recente</string>
     <string name="clear_all_as_action_label">Buton “Șterge tot” în partea de jos</string>
-    <string name="window_corner_radius_label">Screen Corner Radius</string>
+    <string name="window_corner_radius_label">Rază colțuri ecran</string>
     <string name="override_window_corner_radius_label">Custom Screen Corner Radius</string>
     <string name="window_corner_radius_description">When you swipe up to open Recents, the current app follows your finger, shrinking into a card. Use this slider to adjust the corner radius of the card when it’s nearly full-screen such that it matches the corners of your screen.</string>
     <string name="system_icons">Pictogramele sistemului</string>
