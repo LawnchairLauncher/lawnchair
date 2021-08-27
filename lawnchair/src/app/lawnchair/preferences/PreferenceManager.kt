@@ -92,6 +92,7 @@ class PreferenceManager private constructor(private val context: Context) : Base
     val wallpaperScrolling = BoolPref("pref_wallpaperScrolling", true)
     val showSysUiScrim = BoolPref("pref_showSysUiScrim", true)
     val showStatusBar = BoolPref("pref_showStatusBar", true, recreate)
+    val allAppsIconLabels = BoolPref("pref_allAppsIconLabels", true, reloadGrid)
 
     init {
         sp.registerOnSharedPreferenceChangeListener(this)

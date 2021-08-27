@@ -16,7 +16,7 @@
 
 package app.lawnchair.ui.preferences
 
-import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -81,13 +81,24 @@ fun AppDrawerPreferences() {
                 showAsPercentage = true,
                 showDivider = false
             )
-            SliderPreference(
-                label = stringResource(id = R.string.label_size),
-                adapter = prefs.allAppsTextSizeFactor.getAdapter(),
-                step = 0.1f,
-                valueRange = 0.5F..1.5F,
-                showAsPercentage = true,
+            val allAppsIconLabels = prefs.allAppsIconLabels.getAdapter()
+            SwitchPreference(
+                allAppsIconLabels,
+                label = stringResource(id = R.string.show_home_labels),
             )
+            AnimatedVisibility(
+                visible = allAppsIconLabels.state.value,
+                enter = expandVertically() + fadeIn(),
+                exit = shrinkVertically() + fadeOut()
+            ) {
+                SliderPreference(
+                    label = stringResource(id = R.string.label_size),
+                    adapter = prefs.allAppsTextSizeFactor.getAdapter(),
+                    step = 0.1F,
+                    valueRange = 0.5F..1.5F,
+                    showAsPercentage = true,
+                )
+            }
         }
     }
 }

@@ -25,7 +25,7 @@ class DeviceProfileOverrides(context: Context) {
         idp.iconSize *= prefs.iconSizeFactor.get()
         idp.iconTextSize *= (if (prefs.showHomeLabels.get()) prefs.textSizeFactor.get() else 0.0F)
         idp.allAppsIconSize *= prefs.allAppsIconSizeFactor.get()
-        idp.allAppsIconTextSize *= prefs.allAppsTextSizeFactor.get()
+        idp.allAppsIconTextSize *= (if (prefs.allAppsIconLabels.get()) prefs.allAppsTextSizeFactor.get() else 0F)
     }
 
     companion object {
