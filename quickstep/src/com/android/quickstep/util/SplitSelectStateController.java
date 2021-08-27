@@ -16,25 +16,18 @@
 
 package com.android.quickstep.util;
 
-import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
-
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITION_BOTTOM_OR_RIGHT;
 import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITION_TOP_OR_LEFT;
 
 import android.app.ActivityThread;
-import android.content.res.Resources;
 import android.graphics.Rect;
 import android.os.Handler;
 import android.os.IBinder;
-import android.view.Gravity;
 import android.view.RemoteAnimationAdapter;
 import android.view.SurfaceControl;
 import android.window.TransitionInfo;
 
-import com.android.launcher3.DeviceProfile;
-import com.android.launcher3.InsettableFrameLayout;
-import com.android.launcher3.R;
 import com.android.launcher3.util.SplitConfigurationOptions;
 import com.android.launcher3.util.SplitConfigurationOptions.StagePosition;
 import com.android.quickstep.SystemUiProxy;
@@ -81,12 +74,7 @@ public class SplitSelectStateController {
     public void setSecondTaskId(TaskView taskView) {
         mSecondTaskView = taskView;
         // Assume initial task is for top/left part of screen
-
-//<<<<<<< HEAD
-//        final int[] taskIds = mInitialPosition.stagePosition == STAGE_POSITION_TOP_OR_LEFT
-//=======
         final int[] taskIds = mStagePosition == STAGE_POSITION_TOP_OR_LEFT
-//>>>>>>> f6769c8532 (Add Split button in OverviewActions)
                 ? new int[]{mInitialTaskView.getTask().key.id, taskView.getTask().key.id}
                 : new int[]{taskView.getTask().key.id, mInitialTaskView.getTask().key.id};
         if (TaskAnimationManager.ENABLE_SHELL_TRANSITIONS) {
@@ -106,30 +94,6 @@ public class SplitSelectStateController {
             mSystemUiProxy.startTasksWithLegacyTransition(taskIds[0], null /* mainOptions */,
                     taskIds[1], null /* sideOptions */, STAGE_POSITION_BOTTOM_OR_RIGHT, adapter);
         }
-    }
-
-    /**
-     * @return {@link InsettableFrameLayout.LayoutParams} to correctly position the
-     * split placeholder view
-     */
-    public InsettableFrameLayout.LayoutParams getLayoutParamsForActivePosition(Resources resources,
-            DeviceProfile deviceProfile) {
-        InsettableFrameLayout.LayoutParams params =
-                new InsettableFrameLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT);
-//<<<<<<< HEAD
-//        boolean topLeftPosition = mInitialPosition.stagePosition == STAGE_POSITION_TOP_OR_LEFT;
-//=======
-        boolean topLeftPosition = mStagePosition == STAGE_POSITION_TOP_OR_LEFT;
-//>>>>>>> f6769c8532 (Add Split button in OverviewActions)
-        if (deviceProfile.isLandscape) {
-            params.width = (int) resources.getDimension(R.dimen.split_placeholder_size);
-            params.gravity = topLeftPosition ? Gravity.START : Gravity.END;
-        } else {
-            params.height = (int) resources.getDimension(R.dimen.split_placeholder_size);
-            params.gravity = Gravity.TOP;
-        }
-
-        return params;
     }
 
     public @StagePosition int getActiveSplitStagePosition() {
