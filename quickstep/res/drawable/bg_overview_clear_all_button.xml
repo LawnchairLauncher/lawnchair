@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-     Copyright (C) 2018 The Android Open Source Project
+     Copyright (C) 2021 The Android Open Source Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -14,12 +14,14 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<com.android.quickstep.views.ClearAllButton
+<ripple android:color="?android:attr/colorControlHighlight"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    style="@style/OverviewClearAllButton"
-    android:id="@+id/clear_all"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:text="@string/recents_clear_all"
-    android:textColor="?android:attr/textColorPrimary"
-    android:textSize="14sp" />
+    xmlns:androidprv="http://schemas.android.com/apk/prv/res/android">
+    <item>
+        <shape android:shape="rectangle"
+            android:tint="?colorButtonNormal">
+            <corners android:radius="18dp" />
+            <solid android:color="?androidprv:attr/colorSurface"/>
+        </shape>
+    </item>
+</ripple>

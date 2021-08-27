@@ -135,6 +135,13 @@
         <item name="android:textAllCaps">false</item>
     </style>
 
+    <style name="OverviewClearAllButton" parent="@android:style/Widget.DeviceDefault.Button">
+        <item name="android:background">@drawable/bg_overview_clear_all_button</item>
+        <item name="android:minWidth">85dp</item>
+        <item name="android:minHeight">36dp</item>
+        <item name="android:stateListAnimator">@null</item>
+    </style>
+
     <!-- Icon displayed on the taskbar -->
     <style name="BaseIcon.Workspace.Taskbar" >
         <item name="iconDisplay">taskbar</item>
