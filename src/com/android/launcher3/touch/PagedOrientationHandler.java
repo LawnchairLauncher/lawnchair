@@ -19,6 +19,7 @@ package com.android.launcher3.touch;
 import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
+import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.RectF;
@@ -31,6 +32,7 @@ import android.view.accessibility.AccessibilityEvent;
 import android.widget.LinearLayout;
 
 import com.android.launcher3.DeviceProfile;
+import com.android.launcher3.util.SplitConfigurationOptions;
 import com.android.launcher3.util.SplitConfigurationOptions.SplitPositionOption;
 import com.android.launcher3.util.SplitConfigurationOptions.StagePosition;
 
@@ -78,11 +80,11 @@ public interface PagedOrientationHandler {
     FloatProperty<View> getSecondaryViewTranslate();
 
     /**
-     * @param splitPosition The position where the view to be split will go
+     * @param stagePosition The position where the view to be split will go
      * @return {@link #SPLIT_TRANSLATE_*} constants to indicate which direction the
      * dismissal should happen
      */
-    int getSplitTaskViewDismissDirection(SplitPositionOption splitPosition, DeviceProfile dp);
+    int getSplitTaskViewDismissDirection(@StagePosition int stagePosition, DeviceProfile dp);
     int getPrimaryScroll(View view);
     float getPrimaryScale(View view);
     int getChildStart(View view);
@@ -120,18 +122,48 @@ public interface PagedOrientationHandler {
      * @param splitholderSize height of placeholder view in portrait, width in landscape
      */
     void getInitialSplitPlaceholderBounds(int splitholderSize, DeviceProfile dp,
-            SplitPositionOption splitPositionOption, Rect out);
+            @StagePosition int stagePosition, Rect out);
 
     /**
      * @param splitDividerSize height of split screen drag handle in portrait, width in landscape
-     * @param initialSplitOption the split position option (top/left, bottom/right) of the first
+     * @param stagePosition the split position option (top/left, bottom/right) of the first
      *                           task selected for entering split
      * @param out1 the bounds for where the first selected app will be
      * @param out2 the bounds for where the second selected app will be, complimentary to
      *             {@param out1} based on {@param initialSplitOption}
      */
     void getFinalSplitPlaceholderBounds(int splitDividerSize, DeviceProfile dp,
-            SplitPositionOption initialSplitOption, Rect out1, Rect out2);
+            @StagePosition int stagePosition, Rect out1, Rect out2);
+
+    int getDefaultSplitPosition(DeviceProfile deviceProfile);
+
+    /**
+     * @param outRect This is expected to be the rect that has the dimensions for a non-split,
+     *                fullscreen task in overview. This will directly be modified.
+     * @param desiredStagePosition Which stage position (topLeft/rightBottom) we want to resize
+     *                           outRect for
+     */
+    void setSplitTaskSwipeRect(DeviceProfile dp, Rect outRect,
+            SplitConfigurationOptions.StagedSplitBounds splitInfo,
+            @SplitConfigurationOptions.StagePosition int desiredStagePosition);
+
+    /**
+     * It's important to note that {@link #setSplitTaskSwipeRect(DeviceProfile, Rect,
+     * SplitConfigurationOptions.StagedSplitBounds, int)} above operates on the outRect based on
+     * launcher's coordinate system, meaning it will treat the outRect as portrait if home rotation
+     * is not allowed.
+     *
+     * However, here the splitOffset is from perspective of TaskViewSimulator, which is in display
+     * orientation coordinates. So, for example, for the fake landscape scenario, even though
+     * launcher is portrait, we inset the bottom/right task by an X coordinate instead of the
+     * usual Y
+     */
+    void setLeashSplitOffset(Point splitOffset, DeviceProfile dp,
+            SplitConfigurationOptions.StagedSplitBounds splitInfo,
+            @SplitConfigurationOptions.StagePosition int desiredStagePosition);
+
+    void setGroupedTaskViewThumbnailBounds(View mSnapshot1, View mSnapshot2, View taskParent,
+            SplitConfigurationOptions.StagedSplitBounds splitBoundsConfig, DeviceProfile dp);
 
     // Overview TaskMenuView methods
     float getTaskMenuX(float x, View thumbnailView, int overScroll);

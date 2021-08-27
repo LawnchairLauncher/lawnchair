@@ -218,6 +218,11 @@ public class TaskOverlayFactory implements ResourceBasedOverride {
             }
         }
 
+        private void enterSplitSelect() {
+            RecentsView overviewPanel = mThumbnailView.getTaskView().getRecentsView();
+            overviewPanel.initiateSplitSelect(mThumbnailView.getTaskView());
+        }
+
         /**
          * Called when the overlay is no longer used.
          */
@@ -323,6 +328,10 @@ public class TaskOverlayFactory implements ResourceBasedOverride {
             public void onScreenshot() {
                 endLiveTileMode(() -> saveScreenshot(mTask));
             }
+
+            public void onSplit() {
+                endLiveTileMode(TaskOverlay.this::enterSplitSelect);
+            }
         }
     }
 
@@ -336,5 +345,8 @@ public class TaskOverlayFactory implements ResourceBasedOverride {
 
         /** User has indicated they want to screenshot the current task. */
         void onScreenshot();
+
+        /** User wants to start split screen with current app. */
+        void onSplit();
     }
 }

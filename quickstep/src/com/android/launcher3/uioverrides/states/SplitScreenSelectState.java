@@ -43,8 +43,12 @@ public class SplitScreenSelectState extends OverviewState {
     @Override
     public float getSplitSelectTranslation(Launcher launcher) {
         RecentsView recentsView = launcher.getOverviewPanel();
-        int splitPosition = recentsView.getSplitPlaceholder()
-                .getActiveSplitPositionOption().mStagePosition;
+//<<<<<<< HEAD
+//        int splitPosition = recentsView.getSplitPlaceholder()
+//                .getActiveSplitPositionOption().stagePosition;
+//=======
+        int splitPosition = recentsView.getSplitPlaceholder().getActiveSplitStagePosition();
+//>>>>>>> f6769c8532 (Add Split button in OverviewActions)
         if (!recentsView.shouldShiftThumbnailsForSplitSelect(splitPosition)) {
             return 0f;
         }

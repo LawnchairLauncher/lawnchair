@@ -2186,6 +2186,24 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
     }
 
     private void bindAddScreens(IntArray orderedScreenIds) {
+        if (mDeviceProfile.isTwoPanels) {
+            // Some empty pages might have been removed while the phone was in a single panel
+            // mode, so we want to add those empty pages back.
+            IntSet screenIds = IntSet.wrap(orderedScreenIds);
+            for (int i = 0; i < orderedScreenIds.size(); i++) {
+                int screenId = orderedScreenIds.get(i);
+                // Don't add the page pair if the page is the last one and if the pair is on the
+                // right, because that would cause a bug when adding new pages.
+                // TODO: (b/196376162) remove this when the new screen id logic is fixed for two
+                //  panel in Workspace::commitExtraEmptyScreen
+                if (i == orderedScreenIds.size() - 1 && screenId % 2 == 0) {
+                    continue;
+                }
+                screenIds.add(mWorkspace.getPagePair(screenId));
+            }
+            orderedScreenIds = screenIds.getArray();
+        }
+
         int count = orderedScreenIds.size();
         for (int i = 0; i < count; i++) {
             int screenId = orderedScreenIds.get(i);
@@ -2193,7 +2211,6 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
                 // No need to bind the first screen, as its always bound.
                 continue;
             }
-
             mWorkspace.insertNewWorkspaceScreenBeforeEmptyScreen(screenId);
         }
     }

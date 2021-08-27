@@ -200,6 +200,7 @@ public class HotseatPredictionController implements DragController.DragListener,
         }
 
         int predictionIndex = 0;
+        int numViewsAnimated = 0;
         ArrayList<WorkspaceItemInfo> newItems = new ArrayList<>();
         // make sure predicted icon removal and filling predictions don't step on each other
         if (mIconRemoveAnimators != null && mIconRemoveAnimators.isRunning()) {
@@ -233,7 +234,11 @@ public class HotseatPredictionController implements DragController.DragListener,
                     (WorkspaceItemInfo) mPredictedItems.get(predictionIndex++);
             if (isPredictedIcon(child) && child.isEnabled()) {
                 PredictedAppIcon icon = (PredictedAppIcon) child;
-                icon.applyFromWorkspaceItem(predictedItem);
+                boolean animateIconChange = icon.shouldAnimateIconChange(predictedItem);
+                icon.applyFromWorkspaceItem(predictedItem, animateIconChange, numViewsAnimated);
+                if (animateIconChange) {
+                    numViewsAnimated++;
+                }
                 icon.finishBinding(mPredictionLongClickListener);
             } else {
                 newItems.add(predictedItem);

@@ -32,6 +32,8 @@ public interface WorkspaceLayoutManager {
     int EXTRA_EMPTY_SCREEN_ID = -201;
     // The is the first screen. It is always present, even if its empty.
     int FIRST_SCREEN_ID = 0;
+    // This is the second page. On two panel home it is always present, even if its empty.
+    int SECOND_SCREEN_ID = 1;
 
     /**
      * At bind time, we use the rank (screenId) to compute x and y for hotseat items.
