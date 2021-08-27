@@ -296,13 +296,10 @@ public class DepthController implements StateHandler<LauncherState>,
         }
 
         if (supportsBlur) {
-            // We cannot mark the window as opaque in overview because there will be an app window
-            // below the launcher layer, and we need to draw it -- without blurs.
-            boolean isOverview = mLauncher.isInState(LauncherState.OVERVIEW);
-            boolean opaque = mLauncher.getScrimView().isFullyOpaque() && !isOverview;
+            boolean opaque = mLauncher.getScrimView().isFullyOpaque();
 
-            int blur = opaque || isOverview || !mCrossWindowBlursEnabled
-                    || mBlurDisabledForAppLaunch ? 0 : (int) (depth * mMaxBlurRadius);
+            int blur = !mCrossWindowBlursEnabled || mBlurDisabledForAppLaunch
+                    ? 0 : (int) (depth * mMaxBlurRadius);
             SurfaceControl.Transaction transaction = new SurfaceControl.Transaction()
                     .setBackgroundBlurRadius(mSurface, blur)
                     .setOpaque(mSurface, opaque);
