@@ -76,10 +76,10 @@
     </plurals>
     <string name="hotseat_qsb_label">Mostra la Barra di Ricerca</string>
     <string name="dt2s_admin_hint_title">Permesso di amministratore richiesto</string>
-    <string name="dt2s_admin_hint">Per usare il doppio tocco per bloccare lo schermo, concedi il permesso di amministratore.</string>
+    <string name="dt2s_admin_hint">To use Double-Tap to Sleep, set Lawnchair as a device admin app. Tap Open Settings, then tap “Activate this device admin app.”</string>
     <string name="dt2s_admin_warning">Il doppio tocco per bloccare lo schermo sarà disabilitato.</string>
     <string name="dt2s_a11y_hint_title">Servizio di accessibilità richiesto</string>
-    <string name="dt2s_a11y_hint">Per utilizzare doppio tocco per bloccare lo schermo, abilita il servizio di accessibilità.</string>
+    <string name="dt2s_a11y_hint">To use Double-Tap to Sleep, turn on the Lawnchair accessibility service. Tap Open Settings, then select Lawnchair and turn on Use Lawnchair.</string>
     <string name="dt2s_warning_open_settings">Apri Impostazioni</string>
     <string name="minus_one_enable">Feed</string>
     <string name="minus_one_unavailable">Feed is not available</string>
@@ -92,8 +92,9 @@
     <string name="theme_follow_wallpaper">Abbina allo sfondo</string>
     <string name="quickstep_label">Recenti</string>
     <string name="clear_all_as_action_label">Pulsante \"Cancella tutto\" in basso</string>
-    <string name="window_corner_radius_label">Raggio dell\'angolo</string>
-    <string name="override_window_corner_radius_label">Raggio dell\'angolo personalizzato</string>
+    <string name="window_corner_radius_label">Raggio di curvatura dell\'angolo</string>
+    <string name="override_window_corner_radius_label">Raggio di curvatura dell\'angolo personalizzato</string>
+    <string name="window_corner_radius_description">When you swipe up to open Recents, the current app follows your finger, shrinking into a card. Use this slider to adjust the corner radius of the card when it’s nearly full-screen such that it matches the corners of your screen.</string>
     <string name="system_icons">Icone di sistema</string>
     <string name="accent_color">Colore primario</string>
     <string name="done">Fatto</string>
@@ -108,6 +109,7 @@
     <string name="what_to_show">Cosa mostrare</string>
     <string name="missing_notification_access_label">Accesso alle notifiche necessario</string>
     <string name="missing_notification_access_description">Accesso alle notifiche necessario.</string>
-    <string name="msg_missing_notification_access">Per usare i badge di notifica, attiva le notifiche per <xliff:g id="name" example="My App">%1$s</xliff:g>.</string>
+    <string name="msg_missing_notification_access">To use Notification Dots, grant <xliff:g id="name" example="My App">%1$s</xliff:g> access to notifications.</string>
     <string name="title_change_settings">Modifica impostazioni</string>
+    <string name="debug_restart_launcher">Riavvia Lawnchair</string>
 </resources>

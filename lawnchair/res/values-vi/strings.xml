@@ -40,7 +40,7 @@
     <string name="icons">Biểu tượng</string>
     <string name="icon_size">Kích thước biểu tượng</string>
     <string name="label_size">Kích thước tên ứng dụng</string>
-    <string name="show_home_labels">Hiện Nhãn</string>
+    <string name="show_home_labels">Hiện tên ứng dụng</string>
     <string name="allow_empty_pages_label">Cho phép trang trống</string>
     <string name="notification_dots">Dấu chấm thông báo</string>
     <string name="smartspace_preferences">Tùy chỉnh</string>
@@ -75,12 +75,12 @@
     </plurals>
     <string name="hotseat_qsb_label">Hiện thanh tìm kiếm</string>
     <string name="dt2s_admin_hint_title">Cần cấp Quyền Quản trị</string>
-    <string name="dt2s_admin_hint">To use Double Tap to Sleep, grant the Admin permission.</string>
+    <string name="dt2s_admin_hint">To use Double-Tap to Sleep, set Lawnchair as a device admin app. Tap Open Settings, then tap “Activate this device admin app.”</string>
     <string name="dt2s_admin_warning">Nhấp đôi để khoá màn hình sẽ được tắt.</string>
     <string name="dt2s_a11y_hint_title">Bật dịch vụ trợ năng</string>
-    <string name="dt2s_a11y_hint">Dùng chạm 2 lần để khoá màn hình cần mở dịch vụ trợ năng trên Lawnchair. Chọn \"Mở cài đặt\", sau đó chọn \"Lawnchair\" và chọn \"Sử dụng Lawnchair\"</string>
+    <string name="dt2s_a11y_hint">To use Double-Tap to Sleep, turn on the Lawnchair accessibility service. Tap Open Settings, then select Lawnchair and turn on Use Lawnchair.</string>
     <string name="dt2s_warning_open_settings">Mở cài đặt</string>
-    <string name="minus_one_enable">Feed</string>
+    <string name="minus_one_enable">Bản tin</string>
     <string name="minus_one_unavailable">Chưa cài đặt bản tin.</string>
     <string name="fuzzy_search_title">Tìm kiếm Fuzzy</string>
     <string name="fuzzy_search_desc">Cho kết quả tìm kiếm ứng dụng gần đúng.</string>
@@ -91,8 +91,9 @@
     <string name="theme_follow_wallpaper">Theo hình nền</string>
     <string name="quickstep_label">Gần đây</string>
     <string name="clear_all_as_action_label">Nút xoá tất cả ở bên dưới</string>
-    <string name="window_corner_radius_label">Độ cong của góc</string>
-    <string name="override_window_corner_radius_label">Tuỳ chỉnh độ cong của góc</string>
+    <string name="window_corner_radius_label">Screen Corner Radius</string>
+    <string name="override_window_corner_radius_label">Custom Screen Corner Radius</string>
+    <string name="window_corner_radius_description">When you swipe up to open Recents, the current app follows your finger, shrinking into a card. Use this slider to adjust the corner radius of the card when it’s nearly full-screen such that it matches the corners of your screen.</string>
     <string name="system_icons">Biểu tượng hệ thống</string>
     <string name="accent_color">Màu chủ đạo</string>
     <string name="done">Xong</string>
@@ -101,12 +102,13 @@
     <string name="custom">Tùy chỉnh</string>
     <string name="custom_color">Tuỳ chỉnh màu sắc</string>
     <string name="quickstep_description">Nút xoá tất cả, độ cong của góc</string>
-    <string name="wallpaper_scrolling_label">Hình nền cuộn</string>
-    <string name="show_sys_ui_scrim">Bóng đổ phía trên</string>
+    <string name="wallpaper_scrolling_label">Chuyển động hình nền</string>
+    <string name="show_sys_ui_scrim">Đổ bóng phía trên</string>
     <string name="show_status_bar">Thanh trạng thái</string>
-    <string name="what_to_show">Hiện gì</string>
+    <string name="what_to_show">Thứ bạn muốn xuất hiện</string>
     <string name="missing_notification_access_label">Cần quyền truy cập thông báo</string>
     <string name="missing_notification_access_description">Cần quyền truy cập thông báo.</string>
-    <string name="msg_missing_notification_access">Để sử dụng chấm thông báo, hãy bật thông báo cho ứng dụng <xliff:g id="name" example="My App">%1$s</xliff:g>.</string>
+    <string name="msg_missing_notification_access">To use Notification Dots, grant <xliff:g id="name" example="My App">%1$s</xliff:g> access to notifications.</string>
     <string name="title_change_settings">Thay đổi cài đặt</string>
+    <string name="debug_restart_launcher">Restart Lawnchair</string>
 </resources>

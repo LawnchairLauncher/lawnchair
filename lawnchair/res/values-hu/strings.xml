@@ -76,10 +76,10 @@
     </plurals>
     <string name="hotseat_qsb_label">Keresősáv megjelenítése</string>
     <string name="dt2s_admin_hint_title">Rendszergazdai jogosultság szükséges</string>
-    <string name="dt2s_admin_hint">A dupla koppintásos altatáshoz engedélyezze az Eszközadminisztrátor jogusultságot.</string>
+    <string name="dt2s_admin_hint">To use Double-Tap to Sleep, set Lawnchair as a device admin app. Tap Open Settings, then tap “Activate this device admin app.”</string>
     <string name="dt2s_admin_warning">A dupla koppintásos alvás ki lesz kapcsolva.</string>
     <string name="dt2s_a11y_hint_title">Akadálymentesítési szolgáltatás bekapcsolása</string>
-    <string name="dt2s_a11y_hint">A dupla koppintásos alvás bekapcsolásához kapcsolja be a Lawnchair akadálymentesítési szolgáltatást. Koppintson a „Beállítások megnyitása” gombra, majd válassza a „Lawnchair” lehetőséget, és kapcsolja be ezt: „Lawnchair használata\".</string>
+    <string name="dt2s_a11y_hint">To use Double-Tap to Sleep, turn on the Lawnchair accessibility service. Tap Open Settings, then select Lawnchair and turn on Use Lawnchair.</string>
     <string name="dt2s_warning_open_settings">Beállítások megnyitása</string>
     <string name="minus_one_enable">Csatorna</string>
     <string name="minus_one_unavailable">Nincs hírfolyam telepítve.</string>
@@ -92,8 +92,9 @@
     <string name="theme_follow_wallpaper">Háttérkép szerinti téma</string>
     <string name="quickstep_label">Legutóbbiak</string>
     <string name="clear_all_as_action_label">Minden törlése gomb lent</string>
-    <string name="window_corner_radius_label">Sarok sugár</string>
-    <string name="override_window_corner_radius_label">Egyedi sarok sugár</string>
+    <string name="window_corner_radius_label">Képernyő Sarok Sugár</string>
+    <string name="override_window_corner_radius_label">Egyedi Képernyő Sarok Sugár</string>
+    <string name="window_corner_radius_description">When you swipe up to open Recents, the current app follows your finger, shrinking into a card. Use this slider to adjust the corner radius of the card when it’s nearly full-screen such that it matches the corners of your screen.</string>
     <string name="system_icons">Rendszerikonok</string>
     <string name="accent_color">Kiemelő szín</string>
     <string name="done">Kész</string>
@@ -108,6 +109,7 @@
     <string name="what_to_show">Mit mutasson</string>
     <string name="missing_notification_access_label">Értesítés hozzáférés szükséges</string>
     <string name="missing_notification_access_description">Értesítés hozzáférés szükséges.</string>
-    <string name="msg_missing_notification_access">Az értesítési pöttyök használatához kapcsaold be az alkalmazás értesítéseket a <xliff:g id="name" example="My App">%1$s</xliff:g>.</string>
+    <string name="msg_missing_notification_access">To use Notification Dots, grant <xliff:g id="name" example="My App">%1$s</xliff:g> access to notifications.</string>
     <string name="title_change_settings">Beállítások megváltoztatása</string>
+    <string name="debug_restart_launcher">Lawnchair Újraindítása</string>
 </resources>

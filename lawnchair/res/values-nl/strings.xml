@@ -79,7 +79,7 @@
     <string name="dt2s_admin_hint">Om dubbeltik voor slapen te kunnen gebruiken, maak Lawnchair een apparaat beheerder app. Tik op “Open instellingen” en tik dan op “Activeer deze apparaat beheerder app”</string>
     <string name="dt2s_admin_warning">Dubbeltik om te slapen wordt uitgeschakeld.</string>
     <string name="dt2s_a11y_hint_title">Toegankelijkheid service vereist</string>
-    <string name="dt2s_a11y_hint">Schakel de toegankelijkheids service in om dubbeltik om te slapen te gebruiken</string>
+    <string name="dt2s_a11y_hint">Om dubbeltik voor slapen te kunnen gebruiken, zet de Lawnchair toegankelijkheid dienst aan. Tik op “Open instellingen”, selecteer dan Lawnchair en zet gebruik Lawnchair aan.</string>
     <string name="dt2s_warning_open_settings">Open instellingen</string>
     <string name="minus_one_enable">Feed</string>
     <string name="minus_one_unavailable">Geen feed geïnstalleerd.</string>
@@ -92,8 +92,9 @@
     <string name="theme_follow_wallpaper">Overeenkomen met achtergrond</string>
     <string name="quickstep_label">Recente apps</string>
     <string name="clear_all_as_action_label">Wis alles knop onderaan</string>
-    <string name="window_corner_radius_label">Hoek radius</string>
-    <string name="override_window_corner_radius_label">Aangepaste hoek radius</string>
+    <string name="window_corner_radius_label">Scherm hoek radius</string>
+    <string name="override_window_corner_radius_label">Aangepaste scherm hoek radius</string>
+    <string name="window_corner_radius_description">Als je veegt om de recente apps te openen volgt de huidige app je vinger, deze vormt zich in een kaart. Gebruik deze schuifregelaar om de hoek straal van de kaart aan te passen wanneer het bijna volledig scherm is, zodat het overeenkomt met de hoeken van uw scherm.</string>
     <string name="system_icons">Systeem iconen</string>
     <string name="accent_color">Accent kleur</string>
     <string name="done">Voltooid</string>
@@ -107,7 +108,8 @@
     <string name="show_status_bar">Statusbalk</string>
     <string name="what_to_show">Wat te tonen</string>
     <string name="missing_notification_access_label">Notificatie toegang nodig</string>
-    <string name="missing_notification_access_description">Notification access needed.</string>
-    <string name="msg_missing_notification_access">Om meldingsstipjes te gebruiken, schakel app-meldingen voor <xliff:g id="name" example="My App">%1$s</xliff:g> in.</string>
+    <string name="missing_notification_access_description">Notificatie toegang vereist.</string>
+    <string name="msg_missing_notification_access">Om meldingsstipjes te gebruiken, geef <xliff:g id="name" example="My App">%1$s</xliff:g> toegang tot meldingen.</string>
     <string name="title_change_settings">Instellingen wijzigen</string>
+    <string name="debug_restart_launcher">Lawnchair herstarten</string>
 </resources>

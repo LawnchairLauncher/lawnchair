@@ -78,10 +78,10 @@
     </plurals>
     <string name="hotseat_qsb_label">Pokaži vrstico za iskanje</string>
     <string name="dt2s_admin_hint_title">Zahtevana so skrbniška dovoljenja</string>
-    <string name="dt2s_admin_hint">To use Double-Tap to Sleep, set Lawnchair as a device admin app. Tap “Open Settings,” then tap “Activate this device admin app.”</string>
+    <string name="dt2s_admin_hint">To use Double-Tap to Sleep, set Lawnchair as a device admin app. Tap Open Settings, then tap “Activate this device admin app.”</string>
     <string name="dt2s_admin_warning">Double-Tap za spanje bo izklopljen.</string>
     <string name="dt2s_a11y_hint_title">Vklopite storitve dostopnosti</string>
-    <string name="dt2s_a11y_hint">Za uporabo spanja na dvojni dotik, vklopite Lawnchair storitev dostopnosti. Tapnite na »Odpri nastavitve«, nato izberite »Lawnchair« in vklopite »Use Lawnchair«</string>
+    <string name="dt2s_a11y_hint">To use Double-Tap to Sleep, turn on the Lawnchair accessibility service. Tap Open Settings, then select Lawnchair and turn on Use Lawnchair.</string>
     <string name="dt2s_warning_open_settings">Odpri nastavitve</string>
     <string name="minus_one_enable">Feed</string>
     <string name="minus_one_unavailable">Noben feed ni nameščen.</string>
@@ -94,8 +94,9 @@
     <string name="theme_follow_wallpaper">Uskladi s ozadjem</string>
     <string name="quickstep_label">Nedavno</string>
     <string name="clear_all_as_action_label">Clear All Button at Bottom</string>
-    <string name="window_corner_radius_label">Corner Radius</string>
-    <string name="override_window_corner_radius_label">Custom Corner Radius</string>
+    <string name="window_corner_radius_label">Screen Corner Radius</string>
+    <string name="override_window_corner_radius_label">Custom Screen Corner Radius</string>
+    <string name="window_corner_radius_description">When you swipe up to open Recents, the current app follows your finger, shrinking into a card. Use this slider to adjust the corner radius of the card when it’s nearly full-screen such that it matches the corners of your screen.</string>
     <string name="system_icons">Sistemske ikone</string>
     <string name="accent_color">Sekundarna barva</string>
     <string name="done">Končano</string>
@@ -110,6 +111,7 @@
     <string name="what_to_show">What to Show</string>
     <string name="missing_notification_access_label">Notification Access Needed</string>
     <string name="missing_notification_access_description">Notification access needed.</string>
-    <string name="msg_missing_notification_access">To use Notification Dots, turn on app notifications for <xliff:g id="name" example="My App">%1$s</xliff:g>.</string>
+    <string name="msg_missing_notification_access">To use Notification Dots, grant <xliff:g id="name" example="My App">%1$s</xliff:g> access to notifications.</string>
     <string name="title_change_settings">Change Settings</string>
+    <string name="debug_restart_launcher">Restart Lawnchair</string>
 </resources>

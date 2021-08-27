@@ -40,7 +40,7 @@
     <string name="icons">Ikon</string>
     <string name="icon_size">Ukuran Ikon</string>
     <string name="label_size">Ukuran Label</string>
-    <string name="show_home_labels">Show Labels</string>
+    <string name="show_home_labels">Tampilkan Label</string>
     <string name="allow_empty_pages_label">Izinkan halaman kosong</string>
     <string name="notification_dots">Bintik Notifikasi</string>
     <string name="smartspace_preferences">preferensi</string>
@@ -64,7 +64,7 @@
     <string name="auto_adaptive_icons_description">Untuk semua Ikon Non-Adaptif.</string>
     <string name="support_and_pr">Bantuan &amp; PR</string>
     <string name="workspace_dt2s">Ketuk Ganda untuk Tidur</string>
-    <string name="smart_space_enable">At a Glance Widget</string>
+    <string name="smart_space_enable">Tampilkan Widget At a Glance</string>
     <string name="design_and_development">Desain &amp; Pengembangan</string>
     <string name="translate">Terjemah</string>
     <string name="product">Produk</string>
@@ -75,12 +75,12 @@
     </plurals>
     <string name="hotseat_qsb_label">Tampilkan Bilah Pencarian</string>
     <string name="dt2s_admin_hint_title">Izin Admin Dibutuhkan</string>
-    <string name="dt2s_admin_hint">Untuk menggunakan Ketuk Dua Kali untuk Tidur, atur Lawnchair sebagai aplikasi admin perangkat. Ketuk \"Buka Pengaturan,\" lalu ketuk \"Aktifkan aplikasi admin perangkat ini.\"</string>
+    <string name="dt2s_admin_hint">To use Double-Tap to Sleep, set Lawnchair as a device admin app. Tap Open Settings, then tap “Activate this device admin app.”</string>
     <string name="dt2s_admin_warning">Ketuk Dua Kali untuk Tidur akan dimatikan.</string>
     <string name="dt2s_a11y_hint_title">Aktifkan Layanan Aksesibilitas</string>
-    <string name="dt2s_a11y_hint">Untuk menggunakan Ketuk Dua Kali untuk Tidur, nyalakan layanan aksesibilitas Lawnchair. Ketuk \"Buka Pengaturan,\" lalu pilih \"Lawnchair\" dan nyalakan \"Gunakan Lawnchair.\"</string>
+    <string name="dt2s_a11y_hint">To use Double-Tap to Sleep, turn on the Lawnchair accessibility service. Tap Open Settings, then select Lawnchair and turn on Use Lawnchair.</string>
     <string name="dt2s_warning_open_settings">Buka Pengaturan</string>
-    <string name="minus_one_enable">Feed</string>
+    <string name="minus_one_enable">Umpan</string>
     <string name="minus_one_unavailable">Tidak ada umpan terpasang.</string>
     <string name="fuzzy_search_title">Pencarian Fuzzy</string>
     <string name="fuzzy_search_desc">Perkiraan pencocokan untuk pencarian aplikasi.</string>
@@ -91,8 +91,9 @@
     <string name="theme_follow_wallpaper">Samakan dengan wallpaper</string>
     <string name="quickstep_label">Terbaru</string>
     <string name="clear_all_as_action_label">Tombol Hapus Semua di Bawah</string>
-    <string name="window_corner_radius_label">Radius sudut</string>
-    <string name="override_window_corner_radius_label">Radius sudut kustom</string>
+    <string name="window_corner_radius_label">Tampilan Radius Sudut</string>
+    <string name="override_window_corner_radius_label">Radius Sudut Layar Tersesuai</string>
+    <string name="window_corner_radius_description">When you swipe up to open Recents, the current app follows your finger, shrinking into a card. Use this slider to adjust the corner radius of the card when it’s nearly full-screen such that it matches the corners of your screen.</string>
     <string name="system_icons">Ikon sistem</string>
     <string name="accent_color">Warna Aksen</string>
     <string name="done">Selesai</string>
@@ -101,12 +102,13 @@
     <string name="custom">Kustom</string>
     <string name="custom_color">Warna Kustom</string>
     <string name="quickstep_description">Tombol Hapus Semua, Radius Sudut</string>
-    <string name="wallpaper_scrolling_label">Scroll Wallpaper</string>
-    <string name="show_sys_ui_scrim">Top Shadow</string>
-    <string name="show_status_bar">Status Bar</string>
-    <string name="what_to_show">What to Show</string>
+    <string name="wallpaper_scrolling_label">Latar Bergulir</string>
+    <string name="show_sys_ui_scrim">Bayangan Atas</string>
+    <string name="show_status_bar">Bar Status</string>
+    <string name="what_to_show">Yang Ditampilkan</string>
     <string name="missing_notification_access_label">Akses Notifikasi Diperlukan</string>
     <string name="missing_notification_access_description">Akses notifikasi diperlukan.</string>
-    <string name="msg_missing_notification_access">To use Notification Dots, turn on app notifications for <xliff:g id="name" example="My App">%1$s</xliff:g>.</string>
+    <string name="msg_missing_notification_access">To use Notification Dots, grant <xliff:g id="name" example="My App">%1$s</xliff:g> access to notifications.</string>
     <string name="title_change_settings">Ubah Pengaturan</string>
+    <string name="debug_restart_launcher">Muat ulang Lawnchair</string>
 </resources>

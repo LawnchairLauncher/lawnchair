@@ -77,10 +77,10 @@
     </plurals>
     <string name="hotseat_qsb_label">Arată Bara de Căutare</string>
     <string name="dt2s_admin_hint_title">Permisiunea administratorului necesară</string>
-    <string name="dt2s_admin_hint">To use Double Tap to Sleep, grant the Admin permission.</string>
+    <string name="dt2s_admin_hint">Pentru a folosi Apasă dublu pentru a adormi, setează Lawnchair ca o aplicație administrator dispozitiv. Apasă Deschideți Setări, și apoi apasă \"Activează această aplicație administrator dispozitiv.\"</string>
     <string name="dt2s_admin_warning">Dublă-Atingere pentru oprirea ecranului va fi dezactivată.</string>
     <string name="dt2s_a11y_hint_title">Activați serviciul de accesibilitate</string>
-    <string name="dt2s_a11y_hint">Pentru a utiliza Dublă-Atingere pentru a opri ecranul, activați serviciul de accesibilitate pentru Lawnchair. Apasă \"Deschide Setările\", apoi selectează \"Lawnchair\" și activează \"Utilizați Lawnchair.\"</string>
+    <string name="dt2s_a11y_hint">Pentru a folosi Apasă dublu pentru a adormi, pornește serviciul de accesibilitate Lawnchair. Apasă Deschideți Setări, apoi selectează Lawnchair și activează Utilizează Lawnchair.</string>
     <string name="dt2s_warning_open_settings">Deschide Setările</string>
     <string name="minus_one_enable">Flux</string>
     <string name="minus_one_unavailable">Fluxul nu este instalat.</string>
@@ -93,8 +93,9 @@
     <string name="theme_follow_wallpaper">Potrivire a imaginii de fundal</string>
     <string name="quickstep_label">Recente</string>
     <string name="clear_all_as_action_label">Buton “Șterge tot” în partea de jos</string>
-    <string name="window_corner_radius_label">Raza colțurilor</string>
-    <string name="override_window_corner_radius_label">Raza colțurilor personalizată</string>
+    <string name="window_corner_radius_label">Rază colțuri ecran</string>
+    <string name="override_window_corner_radius_label">Rază colțuri ecran personalizată</string>
+    <string name="window_corner_radius_description">Când glisezi în sus pentru a porni Recente, aplicația prezentă îți urmărește degetul, micșorându-se într-un card. Utilizează acest glisor pentru a ajusta raza colțurilor cardului când este aproape în ecran complet pentru ca aceasta să se potrivească colțurilor ecranului tău.</string>
     <string name="system_icons">Pictogramele sistemului</string>
     <string name="accent_color">Culoare accent</string>
     <string name="done">Terminat</string>
@@ -109,6 +110,7 @@
     <string name="what_to_show">Ce trebuie afișat</string>
     <string name="missing_notification_access_label">Acces la notificări necesar</string>
     <string name="missing_notification_access_description">Acces la notificări necesar.</string>
-    <string name="msg_missing_notification_access">Pentru a utiliza punctele de notificare, activați notificările pentru <xliff:g id="name" example="My App">%1$s</xliff:g>.</string>
+    <string name="msg_missing_notification_access">Pentru a utiliza Puncte Notificare, acordă accesul la notificări pentru <xliff:g id="name" example="My App">%1$s</xliff:g>.</string>
     <string name="title_change_settings">Modifică setările</string>
+    <string name="debug_restart_launcher">Repornește Lawnchair</string>
 </resources>
