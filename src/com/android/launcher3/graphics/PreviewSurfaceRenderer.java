@@ -41,7 +41,6 @@ import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherSettings;
-import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.graphics.LauncherPreviewRenderer.PreviewContext;
@@ -149,7 +148,8 @@ public class PreviewSurfaceRenderer {
             inflationContext = new ContextThemeWrapper(context,
                     Themes.getActivityThemeRes(context, mWallpaperColors.getColorHints()));
         } else {
-            inflationContext = new ContextThemeWrapper(mContext,  R.style.AppTheme);
+            inflationContext = new ContextThemeWrapper(mContext,
+                    Themes.getActivityThemeRes(mContext));
         }
 
         if (migrated) {
