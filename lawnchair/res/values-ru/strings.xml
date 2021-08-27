@@ -78,10 +78,10 @@
     </plurals>
     <string name="hotseat_qsb_label">Показать строку поиска</string>
     <string name="dt2s_admin_hint_title">Необходимы права администратора</string>
-    <string name="dt2s_admin_hint">To use Double-Tap to Sleep, set Lawnchair as a device admin app. Tap Open Settings, then tap “Activate this device admin app.”</string>
+    <string name="dt2s_admin_hint">Чтобы использовать функцию \"Нажмите дважды для выключения\", выберите Lawnchair как приложение администратора устройства. Для этого откройте Настройки, потом нажмите на \"Активировать приложение администратора устройства.\"</string>
     <string name="dt2s_admin_warning">Двойной тап для блокировки будет отключен.</string>
     <string name="dt2s_a11y_hint_title">Требуются спец. возможности</string>
-    <string name="dt2s_a11y_hint">To use Double-Tap to Sleep, turn on the Lawnchair accessibility service. Tap Open Settings, then select Lawnchair and turn on Use Lawnchair.</string>
+    <string name="dt2s_a11y_hint">Чтобы использовать функцию \"Нажмите дважды для выключения\", выберите Lawnchair в меню специальных возможностей. Для этого откройте настройки, потом выберите Lawnchair и нажмите Использовать Lawnchair.</string>
     <string name="dt2s_warning_open_settings">Открыть настройки</string>
     <string name="minus_one_enable">Лента Google</string>
     <string name="minus_one_unavailable">Лента новостей не установлена.</string>
@@ -111,7 +111,7 @@
     <string name="what_to_show">Что показывать</string>
     <string name="missing_notification_access_label">Доступ к уведомлениям</string>
     <string name="missing_notification_access_description">Необходимо разрешение доступа к уведомлениям.</string>
-    <string name="msg_missing_notification_access">To use Notification Dots, grant <xliff:g id="name" example="My App">%1$s</xliff:g> access to notifications.</string>
+    <string name="msg_missing_notification_access">Чтобы использовать значки уведомлений, предоставте <xliff:g id="name" example="My App">%1$s</xliff:g> доступ к уведомлениям.</string>
     <string name="title_change_settings">Изменить параметры</string>
     <string name="debug_restart_launcher">Перезапустить Lawnchair</string>
 </resources>
