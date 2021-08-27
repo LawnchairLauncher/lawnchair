@@ -40,7 +40,7 @@
     <string name="icons">Ikoner</string>
     <string name="icon_size">Ikonstørrelse</string>
     <string name="label_size">Merkelapp størrelse</string>
-    <string name="show_home_labels">Show Labels</string>
+    <string name="show_home_labels">Vis etiketter</string>
     <string name="allow_empty_pages_label">Tillat tomme sider</string>
     <string name="notification_dots">Notifikasjons prikker</string>
     <string name="smartspace_preferences">Preferanser</string>
@@ -64,7 +64,7 @@
     <string name="auto_adaptive_icons_description">For alle ikke-adaptive ikoner.</string>
     <string name="support_and_pr">Brukerstøtte &amp; PR</string>
     <string name="workspace_dt2s">Dobbeltrykk for å slukke</string>
-    <string name="smart_space_enable">At a Glance Widget</string>
+    <string name="smart_space_enable">Kort fortalt modul</string>
     <string name="design_and_development">Design- &amp; utvikling</string>
     <string name="translate">Oversett</string>
     <string name="product">Produkt</string>
@@ -86,10 +86,10 @@
     <string name="fuzzy_search_title">Uklart søk</string>
     <string name="fuzzy_search_desc">Omtrentlig samsvaring for appsøk.</string>
     <string name="theme_label">Theme</string>
-    <string name="theme_light">Light</string>
-    <string name="theme_dark">Dark</string>
-    <string name="theme_system_default">Follow System</string>
-    <string name="theme_follow_wallpaper">Match Wallpaper</string>
+    <string name="theme_light">Lyst</string>
+    <string name="theme_dark">Mørkt</string>
+    <string name="theme_system_default">Følg enhetens tema</string>
+    <string name="theme_follow_wallpaper">Tilpass bakgrunn</string>
     <string name="quickstep_label">Recents</string>
     <string name="clear_all_as_action_label">Clear All Button at Bottom</string>
     <string name="window_corner_radius_label">Screen Corner Radius</string>
@@ -97,19 +97,19 @@
     <string name="window_corner_radius_description">When you swipe up to open Recents, the current app follows your finger, shrinking into a card. Use this slider to adjust the corner radius of the card when it’s nearly full-screen such that it matches the corners of your screen.</string>
     <string name="system_icons">System Icons</string>
     <string name="accent_color">Accent Color</string>
-    <string name="done">Done</string>
+    <string name="done">Fullført</string>
     <string name="loading">Loading…</string>
     <string name="system">System</string>
     <string name="custom">Custom</string>
     <string name="custom_color">Custom Color</string>
     <string name="quickstep_description">Clear All Button, Corner Radius</string>
-    <string name="wallpaper_scrolling_label">Scroll Wallpaper</string>
+    <string name="wallpaper_scrolling_label">Rull bakgrunn</string>
     <string name="show_sys_ui_scrim">Top Shadow</string>
-    <string name="show_status_bar">Status Bar</string>
-    <string name="what_to_show">What to Show</string>
-    <string name="missing_notification_access_label">Notification Access Needed</string>
-    <string name="missing_notification_access_description">Notification access needed.</string>
-    <string name="msg_missing_notification_access">To use Notification Dots, grant <xliff:g id="name" example="My App">%1$s</xliff:g> access to notifications.</string>
-    <string name="title_change_settings">Change Settings</string>
+    <string name="show_status_bar">Statuslinje</string>
+    <string name="what_to_show">Vis</string>
+    <string name="missing_notification_access_label">Varseltilgang kreves</string>
+    <string name="missing_notification_access_description">Varseltilgang kreves.</string>
+    <string name="msg_missing_notification_access">For å bruke appikonmerker, gi <xliff:g id="name" example="My App">%1$s</xliff:g> tilgang til varsler.</string>
+    <string name="title_change_settings">Endre innstillinger</string>
     <string name="debug_restart_launcher">Restart Lawnchair</string>
 </resources>
