@@ -87,7 +87,7 @@ import com.android.launcher3.uioverrides.plugins.PluginManagerWrapper;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.IntSet;
-import com.android.launcher3.util.MainThreadInitializedObject;
+import com.android.launcher3.util.MainThreadInitializedObject.SandboxContext;
 import com.android.launcher3.views.ActivityContext;
 import com.android.launcher3.views.BaseDragLayer;
 import com.android.launcher3.widget.BaseLauncherAppWidgetHostView;
@@ -98,13 +98,10 @@ import com.android.launcher3.widget.NavigableAppWidgetHostView;
 import com.android.launcher3.widget.custom.CustomWidgetManager;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
@@ -123,58 +120,21 @@ public class LauncherPreviewRenderer extends ContextWrapper
      * Context used just for preview. It also provides a few objects (e.g. UserCache) just for
      * preview purposes.
      */
-    public static class PreviewContext extends ContextWrapper {
-
-        private final Set<MainThreadInitializedObject> mAllowedObjects = new HashSet<>(
-                Arrays.asList(UserCache.INSTANCE, InstallSessionHelper.INSTANCE,
-                        LauncherAppState.INSTANCE, InvariantDeviceProfile.INSTANCE,
-                        CustomWidgetManager.INSTANCE, PluginManagerWrapper.INSTANCE));
+    public static class PreviewContext extends SandboxContext {
 
         private final InvariantDeviceProfile mIdp;
-        private final Map<MainThreadInitializedObject, Object> mObjectMap = new HashMap<>();
         private final ConcurrentLinkedQueue<LauncherIconsForPreview> mIconPool =
                 new ConcurrentLinkedQueue<>();
 
-        private boolean mDestroyed = false;
-
         public PreviewContext(Context base, InvariantDeviceProfile idp) {
-            super(base);
+            super(base, UserCache.INSTANCE, InstallSessionHelper.INSTANCE,
+                    LauncherAppState.INSTANCE, InvariantDeviceProfile.INSTANCE,
+                    CustomWidgetManager.INSTANCE, PluginManagerWrapper.INSTANCE);
             mIdp = idp;
             mObjectMap.put(InvariantDeviceProfile.INSTANCE, idp);
             mObjectMap.put(LauncherAppState.INSTANCE,
                     new LauncherAppState(this, null /* iconCacheFileName */));
 
-        }
-
-        @Override
-        public Context getApplicationContext() {
-            return this;
-        }
-
-        public void onDestroy() {
-            CustomWidgetManager.INSTANCE.get(this).onDestroy();
-            LauncherAppState.INSTANCE.get(this).onTerminate();
-            mDestroyed = true;
-        }
-
-        /**
-         * Find a cached object from mObjectMap if we have already created one. If not, generate
-         * an object using the provider.
-         */
-        public <T> T getObject(MainThreadInitializedObject<T> mainThreadInitializedObject,
-                MainThreadInitializedObject.ObjectProvider<T> provider) {
-            if (FeatureFlags.IS_STUDIO_BUILD && mDestroyed) {
-                throw new RuntimeException("Context already destroyed");
-            }
-            if (!mAllowedObjects.contains(mainThreadInitializedObject)) {
-                throw new IllegalStateException("Leaking unknown objects");
-            }
-            if (mObjectMap.containsKey(mainThreadInitializedObject)) {
-                return (T) mObjectMap.get(mainThreadInitializedObject);
-            }
-            T t = provider.get(this);
-            mObjectMap.put(mainThreadInitializedObject, t);
-            return t;
         }
 
         public LauncherIcons newLauncherIcons(Context context, boolean shapeDetection) {
