@@ -15,20 +15,16 @@
  */
 package com.android.quickstep.util;
 
-import android.annotation.NonNull;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 
-import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.CellLayout;
 import com.android.launcher3.Hotseat;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.ShortcutAndWidgetContainer;
 import com.android.launcher3.Workspace;
-import com.android.launcher3.widget.NavigableAppWidgetHostView;
 import com.android.systemui.shared.animation.UnfoldMoveFromCenterAnimator;
-import com.android.systemui.shared.animation.UnfoldMoveFromCenterAnimator.TranslationApplier;
 import com.android.systemui.unfold.UnfoldTransitionProgressProvider;
 
 import java.util.HashMap;
@@ -49,7 +45,7 @@ public class UnfoldMoveFromCenterWorkspaceAnimator
     public UnfoldMoveFromCenterWorkspaceAnimator(Launcher launcher, WindowManager windowManager) {
         mLauncher = launcher;
         mMoveFromCenterAnimation = new UnfoldMoveFromCenterAnimator(windowManager,
-                new WorkspaceViewsTranslationApplier());
+                new LauncherViewsMoveFromCenterTranslationApplier());
     }
 
     @Override
@@ -120,21 +116,6 @@ public class UnfoldMoveFromCenterWorkspaceAnimator
         final Boolean originalClipChildren = mOriginalClipChildren.get(view);
         if (originalClipChildren != null) {
             view.setClipChildren(originalClipChildren);
-        }
-    }
-
-    private static class WorkspaceViewsTranslationApplier implements TranslationApplier {
-
-        @Override
-        public void apply(@NonNull View view, float x, float y) {
-            if (view instanceof NavigableAppWidgetHostView) {
-                ((NavigableAppWidgetHostView) view).setTranslationForMoveFromCenterAnimation(x, y);
-            } else if (view instanceof BubbleTextView) {
-                ((BubbleTextView) view).setTranslationForMoveFromCenterAnimation(x, y);
-            } else {
-                view.setTranslationX(x);
-                view.setTranslationY(y);
-            }
         }
     }
 }

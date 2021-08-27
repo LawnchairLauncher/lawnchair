@@ -31,6 +31,7 @@ public class TaskbarControllers {
     public final RotationButtonController rotationButtonController;
     public final TaskbarDragLayerController taskbarDragLayerController;
     public final TaskbarViewController taskbarViewController;
+    public final TaskbarUnfoldAnimationController taskbarUnfoldAnimationController;
     public final TaskbarKeyguardController taskbarKeyguardController;
     public final StashedHandleViewController stashedHandleViewController;
     public final TaskbarStashController taskbarStashController;
@@ -46,6 +47,7 @@ public class TaskbarControllers {
             RotationButtonController rotationButtonController,
             TaskbarDragLayerController taskbarDragLayerController,
             TaskbarViewController taskbarViewController,
+            TaskbarUnfoldAnimationController taskbarUnfoldAnimationController,
             TaskbarKeyguardController taskbarKeyguardController,
             StashedHandleViewController stashedHandleViewController,
             TaskbarStashController taskbarStashController,
@@ -57,6 +59,7 @@ public class TaskbarControllers {
         this.rotationButtonController = rotationButtonController;
         this.taskbarDragLayerController = taskbarDragLayerController;
         this.taskbarViewController = taskbarViewController;
+        this.taskbarUnfoldAnimationController = taskbarUnfoldAnimationController;
         this.taskbarKeyguardController = taskbarKeyguardController;
         this.stashedHandleViewController = stashedHandleViewController;
         this.taskbarStashController = taskbarStashController;
@@ -75,6 +78,7 @@ public class TaskbarControllers {
         }
         taskbarDragLayerController.init(this);
         taskbarViewController.init(this);
+        taskbarUnfoldAnimationController.init(this);
         taskbarKeyguardController.init(navbarButtonsViewController);
         stashedHandleViewController.init(this);
         taskbarStashController.init(this);
@@ -89,6 +93,7 @@ public class TaskbarControllers {
         rotationButtonController.onDestroy();
         taskbarDragLayerController.onDestroy();
         taskbarKeyguardController.onDestroy();
+        taskbarUnfoldAnimationController.onDestroy();
         taskbarViewController.onDestroy();
         stashedHandleViewController.onDestroy();
     }
