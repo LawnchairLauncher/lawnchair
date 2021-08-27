@@ -96,7 +96,11 @@ public class DepthController implements StateHandler<LauncherState>,
                 public void onDraw() {
                     View view = mLauncher.getDragLayer();
                     ViewRootImpl viewRootImpl = view.getViewRootImpl();
-                    setSurface(viewRootImpl != null ? viewRootImpl.getSurfaceControl() : null);
+                    boolean applied = setSurface(
+                            viewRootImpl != null ? viewRootImpl.getSurfaceControl() : null);
+                    if (!applied) {
+                        dispatchTransactionSurface(mDepth);
+                    }
                     view.post(() -> view.getViewTreeObserver().removeOnDrawListener(this));
                 }
             };
@@ -202,20 +206,22 @@ public class DepthController implements StateHandler<LauncherState>,
 
     /**
      * Sets the specified app target surface to apply the blur to.
+     * @return true when surface was valid and transaction was dispatched.
      */
-    public void setSurface(SurfaceControl surface) {
+    public boolean setSurface(SurfaceControl surface) {
         // Set launcher as the SurfaceControl when we don't need an external target anymore.
         if (surface == null) {
             ViewRootImpl viewRootImpl = mLauncher.getDragLayer().getViewRootImpl();
             surface = viewRootImpl != null ? viewRootImpl.getSurfaceControl() : null;
         }
-
         if (mSurface != surface) {
             mSurface = surface;
             if (surface != null) {
                 dispatchTransactionSurface(mDepth);
+                return true;
             }
         }
+        return false;
     }
 
     @Override
@@ -229,6 +235,8 @@ public class DepthController implements StateHandler<LauncherState>,
             setDepth(toDepth);
         } else if (toState == LauncherState.OVERVIEW) {
             dispatchTransactionSurface(mDepth);
+        } else if (toState == LauncherState.BACKGROUND_APP) {
+            mLauncher.getDragLayer().getViewTreeObserver().addOnDrawListener(mOnDrawListener);
         }
     }
 
