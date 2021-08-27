@@ -83,7 +83,11 @@ public class LauncherAppState {
         Log.v(Launcher.TAG, "LauncherAppState initiated");
         Preconditions.assertUIThread();
 
-        mInvariantDeviceProfile.addOnChangeListener(idp -> refreshAndReloadLauncher());
+        mInvariantDeviceProfile.addOnChangeListener(modelPropertiesChanged -> {
+            if (modelPropertiesChanged) {
+                refreshAndReloadLauncher();
+            }
+        });
 
         mContext.getSystemService(LauncherApps.class).registerCallback(mModel);
 

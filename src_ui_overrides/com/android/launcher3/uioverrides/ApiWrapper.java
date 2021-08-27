@@ -39,6 +39,13 @@ public class ApiWrapper {
     }
 
     /**
+     * Returns a unique ID representing the display
+     */
+    public static String getUniqueId(Display display) {
+        return Integer.toString(display.getDisplayId());
+    }
+
+    /**
      * Returns the minimum space that should be left empty at the end of hotseat
      */
     public static int getHotseatEndOffset(Context context) {
