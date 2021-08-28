@@ -170,20 +170,11 @@ public class LandscapePagedViewHandler implements PagedOrientationHandler {
             DeviceProfile dp) {
         // Don't use device profile here because we know we're in fake landscape, only split option
         // available is top/left
-//<<<<<<< HEAD
-//        if (splitPosition.stagePosition == STAGE_POSITION_TOP_OR_LEFT) {
-//            // Top (visually left) side
-//            return SPLIT_TRANSLATE_PRIMARY_NEGATIVE;
-//        }
-//        throw new IllegalStateException("Invalid split stage position: " +
-//                splitPosition.stagePosition);
-//=======
         if (stagePosition == STAGE_POSITION_TOP_OR_LEFT) {
             // Top (visually left) side
             return SPLIT_TRANSLATE_PRIMARY_NEGATIVE;
         }
         throw new IllegalStateException("Invalid split stage position: " + stagePosition);
-//>>>>>>> f6769c8532 (Add Split button in OverviewActions)
     }
 
     @Override
@@ -394,7 +385,6 @@ public class LandscapePagedViewHandler implements PagedOrientationHandler {
     }
 
     @Override
-//<<<<<<< HEAD
     public void setSplitTaskSwipeRect(DeviceProfile dp, Rect outRect,
             SplitConfigurationOptions.StagedSplitBounds splitInfo, int desiredStagePosition) {
         float diff;
@@ -435,11 +425,9 @@ public class LandscapePagedViewHandler implements PagedOrientationHandler {
         mSnapshotView2.setTranslationY(primaryLp.height + spaceAboveSnapshot + dividerBar);
     }
 
-//=======
     @Override
     public int getDefaultSplitPosition(DeviceProfile deviceProfile) {
         throw new IllegalStateException("Default position not available in fake landscape");
-//>>>>>>> f6769c8532 (Add Split button in OverviewActions)
     }
 
     @Override
