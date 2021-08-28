@@ -558,7 +558,7 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
     public void onConfigurationChanged(Configuration newConfig) {
         int diff = newConfig.diff(mOldConfig);
         if ((diff & (CONFIG_ORIENTATION | CONFIG_SCREEN_SIZE)) != 0) {
-            onIdpChanged(mDeviceProfile.inv);
+            onIdpChanged(false);
         }
 
         mOldConfig.setTo(newConfig);
@@ -566,8 +566,8 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
     }
 
     @Override
-    public void onIdpChanged(InvariantDeviceProfile idp) {
-        initDeviceProfile(idp);
+    public void onIdpChanged(boolean modelPropertiesChanged) {
+        initDeviceProfile(mDeviceProfile.inv);
         dispatchDeviceProfileChanged();
         reapplyUi();
         mDragLayer.recreateControllers();

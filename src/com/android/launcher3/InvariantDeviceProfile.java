@@ -57,6 +57,7 @@ import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -158,38 +159,6 @@ public class InvariantDeviceProfile {
     @VisibleForTesting
     public InvariantDeviceProfile() {}
 
-    private InvariantDeviceProfile(InvariantDeviceProfile p) {
-        numRows = p.numRows;
-        numColumns = p.numColumns;
-        numFolderRows = p.numFolderRows;
-        numFolderColumns = p.numFolderColumns;
-        iconSize = p.iconSize;
-        landscapeIconSize = p.landscapeIconSize;
-        twoPanelPortraitIconSize = p.twoPanelPortraitIconSize;
-        twoPanelLandscapeIconSize = p.twoPanelLandscapeIconSize;
-        iconBitmapSize = p.iconBitmapSize;
-        iconTextSize = p.iconTextSize;
-        landscapeIconTextSize = p.landscapeIconTextSize;
-        twoPanelPortraitIconTextSize = p.twoPanelPortraitIconTextSize;
-        twoPanelLandscapeIconTextSize = p.twoPanelLandscapeIconTextSize;
-        numShownHotseatIcons = p.numShownHotseatIcons;
-        numDatabaseHotseatIcons = p.numDatabaseHotseatIcons;
-        numAllAppsColumns = p.numAllAppsColumns;
-        numDatabaseAllAppsColumns = p.numDatabaseAllAppsColumns;
-        isScalable = p.isScalable;
-        devicePaddingId = p.devicePaddingId;
-        minCellHeight = p.minCellHeight;
-        minCellWidth = p.minCellWidth;
-        borderSpacing = p.borderSpacing;
-        dbFile = p.dbFile;
-        allAppsIconSize = p.allAppsIconSize;
-        allAppsIconTextSize = p.allAppsIconTextSize;
-        defaultLayoutId = p.defaultLayoutId;
-        demoModeLayoutId = p.demoModeLayoutId;
-        mExtraAttrs = p.mExtraAttrs;
-        devicePaddings = p.devicePaddings;
-    }
-
     @TargetApi(23)
     private InvariantDeviceProfile(Context context) {
         String gridName = getCurrentGridName(context);
@@ -236,13 +205,13 @@ public class InvariantDeviceProfile {
 
         DisplayOption result = new DisplayOption(defaultDisplayOption.grid)
                 .add(myDisplayOption);
-        result.iconSize = defaultDisplayOption.iconSize;
-        result.landscapeIconSize = defaultDisplayOption.landscapeIconSize;
-        if (defaultDisplayOption.allAppsIconSize < myDisplayOption.allAppsIconSize) {
-            result.allAppsIconSize = defaultDisplayOption.allAppsIconSize;
-        } else {
-            result.allAppsIconSize = myDisplayOption.allAppsIconSize;
+        result.iconSizes[DisplayOption.INDEX_DEFAULT] =
+                defaultDisplayOption.iconSizes[DisplayOption.INDEX_DEFAULT];
+        for (int i = 1; i < DisplayOption.COUNT_TOTAL; i++) {
+            result.iconSizes[i] = Math.min(
+                    defaultDisplayOption.iconSizes[i], myDisplayOption.iconSizes[i]);
         }
+
         result.minCellHeight = defaultDisplayOption.minCellHeight;
         result.minCellWidth = defaultDisplayOption.minCellWidth;
         result.borderSpacing = defaultDisplayOption.borderSpacing;
@@ -288,16 +257,20 @@ public class InvariantDeviceProfile {
 
         mExtraAttrs = closestProfile.extraAttrs;
 
-        iconSize = displayOption.iconSize;
-        landscapeIconSize = displayOption.landscapeIconSize;
-        twoPanelPortraitIconSize = displayOption.twoPanelPortraitIconSize;
-        twoPanelLandscapeIconSize = displayOption.twoPanelLandscapeIconSize;
+        iconSize = displayOption.iconSizes[DisplayOption.INDEX_DEFAULT];
+        landscapeIconSize = displayOption.iconSizes[DisplayOption.INDEX_LANDSCAPE];
+        twoPanelPortraitIconSize = displayOption.iconSizes[DisplayOption.INDEX_TWO_PANEL_PORTRAIT];
+        twoPanelLandscapeIconSize =
+                displayOption.iconSizes[DisplayOption.INDEX_TWO_PANEL_LANDSCAPE];
         iconBitmapSize = ResourceUtils.pxFromDp(iconSize, metrics);
-        iconTextSize = displayOption.iconTextSize;
-        landscapeIconTextSize = displayOption.landscapeIconTextSize;
-        twoPanelPortraitIconTextSize = displayOption.twoPanelPortraitIconTextSize;
-        twoPanelLandscapeIconTextSize = displayOption.twoPanelLandscapeIconTextSize;
         fillResIconDpi = getLauncherIconDensity(iconBitmapSize);
+
+        iconTextSize = displayOption.textSizes[DisplayOption.INDEX_DEFAULT];
+        landscapeIconTextSize = displayOption.textSizes[DisplayOption.INDEX_LANDSCAPE];
+        twoPanelPortraitIconTextSize =
+                displayOption.textSizes[DisplayOption.INDEX_TWO_PANEL_PORTRAIT];
+        twoPanelLandscapeIconTextSize =
+                displayOption.textSizes[DisplayOption.INDEX_TWO_PANEL_LANDSCAPE];
 
         minCellHeight = displayOption.minCellHeight;
         minCellWidth = displayOption.minCellWidth;
@@ -312,8 +285,8 @@ public class InvariantDeviceProfile {
                 ? closestProfile.numDatabaseAllAppsColumns : closestProfile.numAllAppsColumns;
 
         if (Utilities.isGridOptionsEnabled(context)) {
-            allAppsIconSize = displayOption.allAppsIconSize;
-            allAppsIconTextSize = displayOption.allAppsIconTextSize;
+            allAppsIconSize = displayOption.iconSizes[DisplayOption.INDEX_ALL_APPS];
+            allAppsIconTextSize = displayOption.textSizes[DisplayOption.INDEX_ALL_APPS];
         } else {
             allAppsIconSize = iconSize;
             allAppsIconTextSize = iconTextSize;
@@ -374,13 +347,22 @@ public class InvariantDeviceProfile {
         MAIN_EXECUTOR.execute(() -> onConfigChanged(appContext));
     }
 
+    private Object[] toModelState() {
+        return new Object[] {
+                numColumns, numRows, numDatabaseHotseatIcons, iconBitmapSize, fillResIconDpi,
+                numDatabaseAllAppsColumns, dbFile};
+    }
+
     private void onConfigChanged(Context context) {
+        Object[] oldState = toModelState();
+
         // Re-init grid
         String gridName = getCurrentGridName(context);
         initGrid(context, gridName);
 
+        boolean modelPropsChanged = !Arrays.equals(oldState, toModelState());
         for (OnIDPChangeListener listener : mChangeListeners) {
-            listener.onIdpChanged(this);
+            listener.onIdpChanged(modelPropsChanged);
         }
     }
 
@@ -533,22 +515,33 @@ public class InvariantDeviceProfile {
                 Float.compare(dist(width, height, a.minWidthDps, a.minHeightDps),
                         dist(width, height, b.minWidthDps, b.minHeightDps)));
 
-        GridOption closestOption = points.get(0).grid;
+        DisplayOption closestPoint = points.get(0);
+        GridOption closestOption = closestPoint.grid;
         float weights = 0;
 
-        DisplayOption p = points.get(0);
-        if (dist(width, height, p.minWidthDps, p.minHeightDps) == 0) {
-            return p;
+        if (dist(width, height, closestPoint.minWidthDps, closestPoint.minHeightDps) == 0) {
+            return closestPoint;
         }
 
         DisplayOption out = new DisplayOption(closestOption);
         for (int i = 0; i < points.size() && i < KNEARESTNEIGHBOR; ++i) {
-            p = points.get(i);
+            DisplayOption p = points.get(i);
             float w = weight(width, height, p.minWidthDps, p.minHeightDps, WEIGHT_POWER);
             weights += w;
             out.add(new DisplayOption().add(p).multiply(w));
         }
-        return out.multiply(1.0f / weights);
+        out.multiply(1.0f / weights);
+
+        // Since the bitmaps are persisted, ensure that the default bitmap size is same as
+        // predefined size to avoid cache invalidation
+        out.iconSizes[DisplayOption.INDEX_DEFAULT] =
+                closestPoint.iconSizes[DisplayOption.INDEX_DEFAULT];
+        for (int i = DisplayOption.INDEX_DEFAULT + 1; i < DisplayOption.COUNT_TOTAL; i++) {
+            out.iconSizes[i] = Math.min(out.iconSizes[i],
+                    out.iconSizes[DisplayOption.INDEX_DEFAULT]);
+        }
+
+        return out;
     }
 
     public DeviceProfile getDeviceProfile(Context context) {
@@ -614,7 +607,7 @@ public class InvariantDeviceProfile {
         /**
          * Called when the device provide changes
          */
-        void onIdpChanged(InvariantDeviceProfile profile);
+        void onIdpChanged(boolean modelPropertiesChanged);
     }
 
 
@@ -695,6 +688,14 @@ public class InvariantDeviceProfile {
     @VisibleForTesting
     static final class DisplayOption {
 
+        static final int INDEX_DEFAULT = 0;
+        static final int INDEX_LANDSCAPE = 1;
+        static final int INDEX_ALL_APPS = 2;
+        static final int INDEX_TWO_PANEL_PORTRAIT = 3;
+        static final int INDEX_TWO_PANEL_LANDSCAPE = 4;
+
+        static final int COUNT_TOTAL = 5;
+
         public final GridOption grid;
 
         private final float minWidthDps;
@@ -705,16 +706,8 @@ public class InvariantDeviceProfile {
         private float minCellWidth;
         private float borderSpacing;
 
-        private float iconSize;
-        private float iconTextSize;
-        private float landscapeIconSize;
-        private float twoPanelPortraitIconSize;
-        private float twoPanelLandscapeIconSize;
-        private float landscapeIconTextSize;
-        private float twoPanelPortraitIconTextSize;
-        private float twoPanelLandscapeIconTextSize;
-        private float allAppsIconSize;
-        private float allAppsIconTextSize;
+        private final float[] iconSizes = new float[COUNT_TOTAL];
+        private final float[] textSizes = new float[COUNT_TOTAL];
 
         DisplayOption(GridOption grid, Context context, AttributeSet attrs, int defaultFlagValue) {
             this.grid = grid;
@@ -732,27 +725,36 @@ public class InvariantDeviceProfile {
             minCellWidth = a.getFloat(R.styleable.ProfileDisplayOption_minCellWidthDps, 0);
             borderSpacing = a.getFloat(R.styleable.ProfileDisplayOption_borderSpacingDps, 0);
 
-            iconSize = a.getFloat(R.styleable.ProfileDisplayOption_iconImageSize, 0);
-            landscapeIconSize = a.getFloat(R.styleable.ProfileDisplayOption_landscapeIconSize,
-                    iconSize);
-            twoPanelPortraitIconSize = a.getFloat(
-                    R.styleable.ProfileDisplayOption_twoPanelPortraitIconSize, iconSize);
-            twoPanelLandscapeIconSize = a.getFloat(
-                    R.styleable.ProfileDisplayOption_twoPanelLandscapeIconSize,
-                    landscapeIconSize);
-            iconTextSize = a.getFloat(R.styleable.ProfileDisplayOption_iconTextSize, 0);
-            landscapeIconTextSize = a.getFloat(
-                    R.styleable.ProfileDisplayOption_landscapeIconTextSize, iconTextSize);
-            twoPanelPortraitIconTextSize = a.getFloat(
-                    R.styleable.ProfileDisplayOption_twoPanelPortraitIconTextSize, iconTextSize);
-            twoPanelLandscapeIconTextSize = a.getFloat(
-                    R.styleable.ProfileDisplayOption_twoPanelLandscapeIconTextSize,
-                    landscapeIconTextSize);
+            iconSizes[INDEX_DEFAULT] =
+                    a.getFloat(R.styleable.ProfileDisplayOption_iconImageSize, 0);
+            iconSizes[INDEX_LANDSCAPE] =
+                    a.getFloat(R.styleable.ProfileDisplayOption_landscapeIconSize,
+                            iconSizes[INDEX_DEFAULT]);
+            iconSizes[INDEX_ALL_APPS] =
+                    a.getFloat(R.styleable.ProfileDisplayOption_allAppsIconSize,
+                            iconSizes[INDEX_DEFAULT]);
+            iconSizes[INDEX_TWO_PANEL_PORTRAIT] =
+                    a.getFloat(R.styleable.ProfileDisplayOption_twoPanelPortraitIconSize,
+                            iconSizes[INDEX_DEFAULT]);
+            iconSizes[INDEX_TWO_PANEL_LANDSCAPE] =
+                    a.getFloat(R.styleable.ProfileDisplayOption_twoPanelLandscapeIconSize,
+                            iconSizes[INDEX_LANDSCAPE]);
 
-            allAppsIconSize = a.getFloat(R.styleable.ProfileDisplayOption_allAppsIconSize,
-                    iconSize);
-            allAppsIconTextSize = a.getFloat(R.styleable.ProfileDisplayOption_allAppsIconTextSize,
-                    iconTextSize);
+            textSizes[INDEX_DEFAULT] =
+                    a.getFloat(R.styleable.ProfileDisplayOption_iconTextSize, 0);
+            textSizes[INDEX_LANDSCAPE] =
+                    a.getFloat(R.styleable.ProfileDisplayOption_landscapeIconTextSize,
+                            textSizes[INDEX_DEFAULT]);
+            textSizes[INDEX_ALL_APPS] =
+                    a.getFloat(R.styleable.ProfileDisplayOption_allAppsIconTextSize,
+                            textSizes[INDEX_DEFAULT]);
+            textSizes[INDEX_TWO_PANEL_PORTRAIT] =
+                    a.getFloat(R.styleable.ProfileDisplayOption_twoPanelPortraitIconTextSize,
+                            textSizes[INDEX_DEFAULT]);
+            textSizes[INDEX_TWO_PANEL_LANDSCAPE] =
+                    a.getFloat(R.styleable.ProfileDisplayOption_twoPanelLandscapeIconTextSize,
+                            textSizes[INDEX_LANDSCAPE]);
+
             a.recycle();
         }
 
@@ -771,16 +773,10 @@ public class InvariantDeviceProfile {
         }
 
         private DisplayOption multiply(float w) {
-            iconSize *= w;
-            landscapeIconSize *= w;
-            twoPanelPortraitIconSize *= w;
-            twoPanelLandscapeIconSize *= w;
-            allAppsIconSize *= w;
-            iconTextSize *= w;
-            landscapeIconTextSize *= w;
-            twoPanelPortraitIconTextSize *= w;
-            twoPanelLandscapeIconTextSize *= w;
-            allAppsIconTextSize *= w;
+            for (int i = 0; i < COUNT_TOTAL; i++) {
+                iconSizes[i] *= w;
+                textSizes[i] *= w;
+            }
             minCellHeight *= w;
             minCellWidth *= w;
             borderSpacing *= w;
@@ -788,16 +784,10 @@ public class InvariantDeviceProfile {
         }
 
         private DisplayOption add(DisplayOption p) {
-            iconSize += p.iconSize;
-            landscapeIconSize += p.landscapeIconSize;
-            twoPanelPortraitIconSize += p.twoPanelPortraitIconSize;
-            twoPanelLandscapeIconSize += p.twoPanelLandscapeIconSize;
-            allAppsIconSize += p.allAppsIconSize;
-            iconTextSize += p.iconTextSize;
-            landscapeIconTextSize += p.landscapeIconTextSize;
-            twoPanelPortraitIconTextSize += p.twoPanelPortraitIconTextSize;
-            twoPanelLandscapeIconTextSize += p.twoPanelLandscapeIconTextSize;
-            allAppsIconTextSize += p.allAppsIconTextSize;
+            for (int i = 0; i < COUNT_TOTAL; i++) {
+                iconSizes[i] += p.iconSizes[i];
+                textSizes[i] += p.textSizes[i];
+            }
             minCellHeight += p.minCellHeight;
             minCellWidth += p.minCellWidth;
             borderSpacing += p.borderSpacing;

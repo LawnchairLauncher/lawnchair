@@ -24,6 +24,8 @@ import static com.android.launcher3.util.DisplayController.CHANGE_SUPPORTED_BOUN
 
 import android.content.Context;
 import android.hardware.display.DisplayManager;
+import android.net.Uri;
+import android.provider.Settings;
 import android.view.Display;
 
 import androidx.annotation.NonNull;
@@ -35,6 +37,7 @@ import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.DisplayController.Info;
+import com.android.launcher3.util.SettingsCache;
 import com.android.quickstep.SysUINavigationMode;
 import com.android.quickstep.SysUINavigationMode.Mode;
 import com.android.quickstep.SystemUiProxy;
@@ -46,10 +49,14 @@ import com.android.quickstep.TouchInteractionService;
 public class TaskbarManager implements DisplayController.DisplayInfoChangeListener,
         SysUINavigationMode.NavigationModeChangeListener {
 
+    private static final Uri USER_SETUP_COMPLETE_URI = Settings.Secure.getUriFor(
+            Settings.Secure.USER_SETUP_COMPLETE);
+
     private final Context mContext;
     private final DisplayController mDisplayController;
     private final SysUINavigationMode mSysUINavigationMode;
     private final TaskbarNavButtonController mNavButtonController;
+    private final SettingsCache.OnChangeListener mUserSetupCompleteListener;
 
     private TaskbarActivityContext mTaskbarActivityContext;
     private BaseQuickstepLauncher mLauncher;
@@ -71,9 +78,13 @@ public class TaskbarManager implements DisplayController.DisplayInfoChangeListen
                 service.getSystemService(DisplayManager.class).getDisplay(DEFAULT_DISPLAY);
         mContext = service.createWindowContext(display, TYPE_APPLICATION_OVERLAY, null);
         mNavButtonController = new TaskbarNavButtonController(service);
+        mUserSetupCompleteListener = isUserSetupComplete -> recreateTaskbar();
 
         mDisplayController.addChangeListener(this);
         mSysUINavigationMode.addModeChangeListener(this);
+        SettingsCache.INSTANCE.get(mContext).register(USER_SETUP_COMPLETE_URI,
+                mUserSetupCompleteListener);
+
         recreateTaskbar();
     }
 
@@ -188,6 +199,8 @@ public class TaskbarManager implements DisplayController.DisplayInfoChangeListen
         destroyExistingTaskbar();
         mDisplayController.removeChangeListener(this);
         mSysUINavigationMode.removeModeChangeListener(this);
+        SettingsCache.INSTANCE.get(mContext).unregister(USER_SETUP_COMPLETE_URI,
+                mUserSetupCompleteListener);
     }
 
     public @Nullable TaskbarActivityContext getCurrentActivityContext() {

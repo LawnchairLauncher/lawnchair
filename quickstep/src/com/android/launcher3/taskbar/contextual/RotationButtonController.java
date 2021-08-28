@@ -149,7 +149,7 @@ public class RotationButtonController {
 
     public void init() {
         registerListeners();
-        if (mDisplayController.getInfo().id != DEFAULT_DISPLAY) {
+        if (mContext.getDisplay().getDisplayId() != DEFAULT_DISPLAY) {
             // Currently there is no accelerometer sensor on non-default display, disable fixed
             // rotation for non-default display
             onDisable2FlagChanged(StatusBarManager.DISABLE2_ROTATE_SUGGESTIONS);
@@ -168,7 +168,7 @@ public class RotationButtonController {
         mListenersRegistered = true;
         try {
             WindowManagerGlobal.getWindowManagerService()
-                    .watchRotation(mRotationWatcher, mDisplayController.getInfo().id);
+                    .watchRotation(mRotationWatcher, DEFAULT_DISPLAY);
         } catch (IllegalArgumentException e) {
             mListenersRegistered = false;
             Log.w(TAG, "RegisterListeners for the display failed");
@@ -335,7 +335,7 @@ public class RotationButtonController {
     }
 
     public void onBehaviorChanged(int displayId, @WindowInsetsController.Behavior int behavior) {
-        if (mDisplayController.getInfo().id != displayId) {
+        if (DEFAULT_DISPLAY != displayId) {
             return;
         }
 

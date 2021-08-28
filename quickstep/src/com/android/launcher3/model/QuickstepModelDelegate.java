@@ -44,7 +44,6 @@ import androidx.annotation.Nullable;
 import androidx.annotation.WorkerThread;
 
 import com.android.launcher3.InvariantDeviceProfile;
-import com.android.launcher3.InvariantDeviceProfile.OnIDPChangeListener;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.logging.InstanceId;
 import com.android.launcher3.logging.InstanceIdSequence;
@@ -68,7 +67,7 @@ import java.util.stream.IntStream;
 /**
  * Model delegate which loads prediction items
  */
-public class QuickstepModelDelegate extends ModelDelegate implements OnIDPChangeListener {
+public class QuickstepModelDelegate extends ModelDelegate {
 
     public static final String LAST_PREDICTION_ENABLED_STATE = "last_prediction_enabled_state";
     private static final String LAST_SNAPSHOT_TIME_MILLIS = "LAST_SNAPSHOT_TIME_MILLIS";
@@ -93,7 +92,6 @@ public class QuickstepModelDelegate extends ModelDelegate implements OnIDPChange
         mAppEventProducer = new AppEventProducer(context, this::onAppTargetEvent);
 
         mIDP = InvariantDeviceProfile.INSTANCE.get(context);
-        mIDP.addOnChangeListener(this);
         StatsLogCompatManager.LOGS_CONSUMER.add(mAppEventProducer);
     }
 
@@ -179,7 +177,6 @@ public class QuickstepModelDelegate extends ModelDelegate implements OnIDPChange
         StatsLogCompatManager.LOGS_CONSUMER.remove(mAppEventProducer);
 
         destroyPredictors();
-        mIDP.removeOnChangeListener(this);
     }
 
     private void destroyPredictors() {
@@ -248,12 +245,6 @@ public class QuickstepModelDelegate extends ModelDelegate implements OnIDPChange
                             new WidgetsPredictionUpdateTask(mWidgetsRecommendationState, targets));
                 });
         mWidgetsRecommendationState.predictor.requestPredictionUpdate();
-    }
-
-    @Override
-    public void onIdpChanged(InvariantDeviceProfile profile) {
-        // Reinitialize everything
-        Executors.MODEL_EXECUTOR.execute(this::recreatePredictors);
     }
 
     private void onAppTargetEvent(AppTargetEvent event, int client) {
