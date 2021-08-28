@@ -64,7 +64,7 @@
     <string name="auto_adaptive_icons_description">Dla wszystkich ikon nieadaptacyjnych.</string>
     <string name="support_and_pr">Wsparcie &amp; PR</string>
     <string name="workspace_dt2s">Dotknij dwukrotnie, aby uśpić</string>
-    <string name="smart_space_enable">Widget \"Rzut oka\"</string>
+    <string name="smart_space_enable">Widget \"W skrócie\"</string>
     <string name="design_and_development">Projekt &amp; Rozwój</string>
     <string name="translate">Przetłumacz</string>
     <string name="product">Produkt</string>
@@ -78,12 +78,12 @@
     </plurals>
     <string name="hotseat_qsb_label">Pokaż pasek wyszukiwania</string>
     <string name="dt2s_admin_hint_title">Wymagane uprawnienia administratora</string>
-    <string name="dt2s_admin_hint">To use Double-Tap to Sleep, set Lawnchair as a device admin app. Tap Open Settings, then tap “Activate this device admin app.”</string>
+    <string name="dt2s_admin_hint">Aby korzystać z funkcji uśpienia dwukrotnym dotknięciem, przyznaj Lawnchair uprawnienia administratora urządzenia. Otwórz ustawienia, następnie dotknij \"Aktywuj tę aplikację do administrowania urządzeniem\".</string>
     <string name="dt2s_admin_warning">Opcja \"Dotknij dwa razy aby uśpić\" zostanie wyłączona.</string>
     <string name="dt2s_a11y_hint_title">Włącz usługę ułatwień dostępu</string>
-    <string name="dt2s_a11y_hint">To use Double-Tap to Sleep, turn on the Lawnchair accessibility service. Tap Open Settings, then select Lawnchair and turn on Use Lawnchair.</string>
+    <string name="dt2s_a11y_hint">Aby korzystać z funkcji uśpienia dwukrotnym dotknięciem, włącz usługi Lawnchair w ułatwieniach dostępu. Otwórz ustawienia (Ułatwienia dostępu), następnie włącz \"Używanie aplikacji Lawnchair\".</string>
     <string name="dt2s_warning_open_settings">Otwórz ustawienia</string>
-    <string name="minus_one_enable">Feed</string>
+    <string name="minus_one_enable">Kanał</string>
     <string name="minus_one_unavailable">Aplikacja aktualności \"Feed\" niezainstalowana.</string>
     <string name="fuzzy_search_title">Wyszukiwanie rozmyte</string>
     <string name="fuzzy_search_desc">Przybliżone dopasowanie dla wyszukiwań aplikacji.</string>
@@ -94,9 +94,9 @@
     <string name="theme_follow_wallpaper">Dopasuj do tapety</string>
     <string name="quickstep_label">Ostatnie aplikacje</string>
     <string name="clear_all_as_action_label">Przycisk \"Wyczyść wszystko\" na dole</string>
-    <string name="window_corner_radius_label">Screen Corner Radius</string>
-    <string name="override_window_corner_radius_label">Custom Screen Corner Radius</string>
-    <string name="window_corner_radius_description">When you swipe up to open Recents, the current app follows your finger, shrinking into a card. Use this slider to adjust the corner radius of the card when it’s nearly full-screen such that it matches the corners of your screen.</string>
+    <string name="window_corner_radius_label">Promień narożnika ekranu</string>
+    <string name="override_window_corner_radius_label">Niestandardowy promień narożnika ekranu</string>
+    <string name="window_corner_radius_description">Gdy przeciągniesz w górę, aby otworzyć menu Ulubione, bieżąca aplikacja podąży za Twoim palcem, kurcząc się kartę. Użyj tego suwaka, aby dostosować promień narożnika karty, gdy jest ona prawie pełnoekranowa, tak aby dopasować ją do rogów ekranu.</string>
     <string name="system_icons">Ikony systemowe</string>
     <string name="accent_color">Kolor Akcentujący</string>
     <string name="done">Gotowe</string>
@@ -109,9 +109,9 @@
     <string name="show_sys_ui_scrim">Górny cień</string>
     <string name="show_status_bar">Pasek stanu</string>
     <string name="what_to_show">Co wyświetlić</string>
-    <string name="missing_notification_access_label">Notification Access Needed</string>
-    <string name="missing_notification_access_description">Notification access needed.</string>
-    <string name="msg_missing_notification_access">To use Notification Dots, grant <xliff:g id="name" example="My App">%1$s</xliff:g> access to notifications.</string>
-    <string name="title_change_settings">Change Settings</string>
-    <string name="debug_restart_launcher">Restart Lawnchair</string>
+    <string name="missing_notification_access_label">Wymagany dostęp do powiadomień</string>
+    <string name="missing_notification_access_description">Wymagany dostęp do powiadomień.</string>
+    <string name="msg_missing_notification_access">Aby używać plakietek powiadomień, przyznaj <xliff:g id="name" example="My App">%1$s</xliff:g> dostęp do powiadomień.</string>
+    <string name="title_change_settings">Zmień ustawienia</string>
+    <string name="debug_restart_launcher">Zrestartuj Lawnchair</string>
 </resources>
