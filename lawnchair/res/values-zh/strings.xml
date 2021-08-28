@@ -75,10 +75,10 @@
     </plurals>
     <string name="hotseat_qsb_label">顯示搜尋列</string>
     <string name="dt2s_admin_hint_title">需要管理員權限</string>
-    <string name="dt2s_admin_hint">To use Double-Tap to Sleep, set Lawnchair as a device admin app. Tap Open Settings, then tap “Activate this device admin app.”</string>
+    <string name="dt2s_admin_hint">如要使用「輕觸兩下來關閉螢幕」，請先將 Lawnchair 設定為系統管理員。輕觸「開啟設定」，然後輕觸「啟動裝置管理員應用程式」即可。</string>
     <string name="dt2s_admin_warning">將停用「輕觸兩下來關閉螢幕」</string>
     <string name="dt2s_a11y_hint_title">啟用無障礙服務</string>
-    <string name="dt2s_a11y_hint">如要使用「輕觸兩下來關閉螢幕」，請先開啟 Lawnchair 無障礙服務。選取「開啟設定」，然後選取「Lawnchair」，再啟用「使用 Lawnchair」即可。</string>
+    <string name="dt2s_a11y_hint">如要使用「輕觸兩下來關閉螢幕」，請先開啟 Lawnchair 無障礙服務。輕觸「開啟設定」，然後輕觸「Lawnchair」，再啟用「使用 Lawnchair」即可。</string>
     <string name="dt2s_warning_open_settings">開啟設定</string>
     <string name="minus_one_enable">Feed</string>
     <string name="minus_one_unavailable">尚未安裝 Feed</string>
