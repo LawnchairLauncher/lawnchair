@@ -1550,7 +1550,7 @@ public final class LauncherInstrumentation {
         try {
             return object.getVisibleBounds();
         } catch (StaleObjectException e) {
-            fail("Object " + object + " disappeared from screen");
+            fail("Object disappeared from screen");
             return null;
         } catch (Throwable t) {
             fail(t.toString());

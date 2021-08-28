@@ -15,7 +15,7 @@
  */
 package com.android.launcher3.taskbar;
 
-import static com.android.launcher3.anim.Interpolators.FAST_OUT_SLOW_IN;
+import static com.android.launcher3.anim.Interpolators.AGGRESSIVE_EASE;
 
 import android.animation.PropertyValuesHolder;
 import android.content.Context;
@@ -33,6 +33,7 @@ import com.android.launcher3.views.AbstractSlideInView;
 public class TaskbarEduView extends AbstractSlideInView<TaskbarActivityContext>
         implements Insettable {
 
+    private static final int DEFAULT_OPEN_DURATION = 500;
     private static final int DEFAULT_CLOSE_DURATION = 200;
 
     private final Rect mInsets = new Rect();
@@ -129,8 +130,8 @@ public class TaskbarEduView extends AbstractSlideInView<TaskbarActivityContext>
         mIsOpen = true;
         mOpenCloseAnimator.setValues(
                 PropertyValuesHolder.ofFloat(TRANSLATION_SHIFT, TRANSLATION_SHIFT_OPENED));
-        mOpenCloseAnimator.setInterpolator(FAST_OUT_SLOW_IN);
-        mOpenCloseAnimator.start();
+        mOpenCloseAnimator.setInterpolator(AGGRESSIVE_EASE);
+        mOpenCloseAnimator.setDuration(DEFAULT_OPEN_DURATION).start();
     }
 
     void snapToPage(int page) {
