@@ -20,7 +20,7 @@
     <string name="home_screen_label">מסך הבית</string>
     <string name="home_screen_description">הזנה, מבט מהיר, רשת, סמלים</string>
     <string name="general_label">כללי</string>
-    <string name="general_description">Notification Dots, Icon Pack</string>
+    <string name="general_description">התראות, אייקונים</string>
     <string name="home_screen_rotation_label">סיבוב מסך הבית</string>
     <string name="home_screen_rotaton_description">כאשר המכשיר מסובב.</string>
     <string name="auto_add_shortcuts_label">הוספת יישומים חדשים למסך הבית</string>
@@ -36,13 +36,13 @@
     <string name="max_folder_rows">מספר מרבי לשורות בתיקייה</string>
     <string name="home_screen_columns">עמודות במסך הבית</string>
     <string name="grid">רשת</string>
-    <string name="home_screen_rows">Home Screen Rows</string>
+    <string name="home_screen_rows">שורות במסך הבית</string>
     <string name="icons">סמלים</string>
     <string name="icon_size">גודל סמל</string>
     <string name="label_size">גודל טקסט</string>
     <string name="show_home_labels">הצגת תוויות</string>
     <string name="allow_empty_pages_label">התר עמודים ריקים</string>
-    <string name="notification_dots">Notification Dots</string>
+    <string name="notification_dots">התראות</string>
     <string name="smartspace_preferences">העדפות</string>
     <string name="about_label">על אודות</string>
     <string name="news">חדשות</string>
@@ -53,17 +53,17 @@
     <string name="all_apps_search_bar_hint">חיפוש יישומים</string>
     <string name="settings_button_text">הגדרות בית</string>
     <string name="development">פיתוח</string>
-    <string name="app_info_drop_target_label">App Info</string>
+    <string name="app_info_drop_target_label">מידע על האפליקציה</string>
     <string name="item_removed">הפריט הוסר.</string>
     <string name="all_apps_no_search_results">No apps found matching “<xliff:g example="Android" id="query">%1$s</xliff:g>”.</string>
-    <string name="background_opacity">Background Opacity</string>
-    <string name="background_lightness_label">Background Lightness</string>
+    <string name="background_opacity">שקיפות הרקע</string>
+    <string name="background_lightness_label">בהירות הרקע</string>
     <string name="adaptive_icons">Adaptive Icons</string>
     <string name="adaptive_icon_background_description">Use 100% background lightness for white.</string>
     <string name="auto_adaptive_icons_label">Auto Adaptive Icons</string>
     <string name="auto_adaptive_icons_description">For all non-Adaptive icons.</string>
     <string name="support_and_pr">Support &amp; PR</string>
-    <string name="workspace_dt2s">Double-Tap to Sleep</string>
+    <string name="workspace_dt2s">הקשה כפולה לכיבוי המסך</string>
     <string name="smart_space_enable">At a Glance Widget</string>
     <string name="design_and_development">Design &amp; Development</string>
     <string name="translate">תרגום</string>
