@@ -93,7 +93,7 @@
     <string name="clear_all_as_action_label">清除底部的所有按钮</string>
     <string name="window_corner_radius_label">屏幕圆角半径</string>
     <string name="override_window_corner_radius_label">自定义屏幕圆角半径</string>
-    <string name="window_corner_radius_description">When you swipe up to open Recents, the current app follows your finger, shrinking into a card. Use this slider to adjust the corner radius of the card when it’s nearly full-screen such that it matches the corners of your screen.</string>
+    <string name="window_corner_radius_description">当您向上滑动以打开最近应用菜单时，当前的应用程序跟随您的手指，缩进卡片。 使用滑块来调整卡片的圆角半径，直到它接近全屏，贴合您屏幕的角落。</string>
     <string name="system_icons">系统图标</string>
     <string name="accent_color">强调颜色</string>
     <string name="done">完成</string>
@@ -108,7 +108,7 @@
     <string name="what_to_show">显示内容</string>
     <string name="missing_notification_access_label">需要通知使用权</string>
     <string name="missing_notification_access_description">需要通知使用权。</string>
-    <string name="msg_missing_notification_access">To use Notification Dots, grant <xliff:g id="name" example="My App">%1$s</xliff:g> access to notifications.</string>
+    <string name="msg_missing_notification_access">要使用通知点，请授予 <xliff:g id="name" example="My App">%1$s</xliff:g> 对通知的访问。</string>
     <string name="title_change_settings">修改设置</string>
     <string name="debug_restart_launcher">重启 Lawnchair</string>
 </resources>
