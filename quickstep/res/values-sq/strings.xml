@@ -84,10 +84,11 @@
     <string name="skip_tutorial_dialog_subtitle" msgid="544063326241955662">"Këtë mund ta gjesh më vonë tek aplikacioni <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="gesture_tutorial_action_button_label_cancel" msgid="3809842569351264108">"Anulo"</string>
     <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"Kapërce"</string>
-    <!-- no translation found for taskbar_edu_header_1 (5323217563328273689) -->
-    <skip />
-    <!-- no translation found for taskbar_edu_next (4007618274426775841) -->
-    <skip />
-    <!-- no translation found for taskbar_edu_close (887022990168191073) -->
-    <skip />
+    <string name="taskbar_edu_opened" msgid="3950252793551919129">"Edukimi i shiritit të detyrave u shfaq"</string>
+    <string name="taskbar_edu_closed" msgid="126643734478892862">"Edukimi nga shiriti i detyrave u mbyll"</string>
+    <string name="taskbar_edu_dock" msgid="8484594848150559893">"Preke dhe mbaje prekur për ta fshehur shiritin e detyrave në çdo kohë"</string>
+    <string name="taskbar_edu_next" msgid="4007618274426775841">"Para"</string>
+    <string name="taskbar_edu_previous" msgid="459202320127201702">"Pas"</string>
+    <string name="taskbar_edu_close" msgid="887022990168191073">"Mbyll"</string>
+    <string name="taskbar_edu_done" msgid="6880178093977704569">"U krye"</string>
 </resources>

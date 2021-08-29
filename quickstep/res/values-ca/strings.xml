@@ -84,7 +84,11 @@
     <string name="skip_tutorial_dialog_subtitle" msgid="544063326241955662">"Pots trobar-lo més tard a l\'aplicació <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="gesture_tutorial_action_button_label_cancel" msgid="3809842569351264108">"Cancel·la"</string>
     <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"Omet"</string>
-    <string name="taskbar_edu_header_1" msgid="5323217563328273689">"Utilitza 2 aplicacions alhora i canvia d\'aplicació amb la barra de tasques"</string>
+    <string name="taskbar_edu_opened" msgid="3950252793551919129">"Ha aparegut el tauler educatiu de la barra de tasques"</string>
+    <string name="taskbar_edu_closed" msgid="126643734478892862">"S\'ha tancat el tauler educatiu de la barra de tasques"</string>
+    <string name="taskbar_edu_dock" msgid="8484594848150559893">"Mantén premut per amagar la barra de tasques"</string>
     <string name="taskbar_edu_next" msgid="4007618274426775841">"Següent"</string>
+    <string name="taskbar_edu_previous" msgid="459202320127201702">"Enrere"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"Tanca"</string>
+    <string name="taskbar_edu_done" msgid="6880178093977704569">"Fet"</string>
 </resources>
