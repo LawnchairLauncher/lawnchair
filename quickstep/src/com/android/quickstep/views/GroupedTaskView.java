@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.AttributeSet;
 
 import com.android.launcher3.R;
+import com.android.launcher3.util.RunnableList;
 import com.android.launcher3.util.SplitConfigurationOptions;
 import com.android.quickstep.RecentsModel;
 import com.android.quickstep.TaskThumbnailCache;
@@ -92,6 +93,13 @@ public class GroupedTaskView extends TaskView {
             mThumbnailLoadRequest2.cancel();
             mThumbnailLoadRequest2 = null;
         }
+    }
+
+    @Override
+    public RunnableList launchTaskAnimated() {
+        getRecentsView().getSplitPlaceholder().launchTasks(mTask, mSecondaryTask,
+                SplitConfigurationOptions.STAGE_POSITION_TOP_OR_LEFT);
+        return null;
     }
 
     @Override
