@@ -75,7 +75,7 @@
     </plurals>
     <string name="hotseat_qsb_label">Hiện thanh tìm kiếm</string>
     <string name="dt2s_admin_hint_title">Cần cấp Quyền Quản trị</string>
-    <string name="dt2s_admin_hint">To use Double-Tap to Sleep, set Lawnchair as a device admin app. Tap Open Settings, then tap “Activate this device admin app.”</string>
+    <string name="dt2s_admin_hint">Để sử dụng \"Chạm hai lần để khóa máy\", đặt ứng dụng Lawnchair là một ứng dụng quản trị viên. Chọn \"Mở Cài đặt\", sau đó chọn “Đặt làm ứng dụng quản trị viên.”</string>
     <string name="dt2s_admin_warning">Nhấp đôi để khoá màn hình sẽ được tắt.</string>
     <string name="dt2s_a11y_hint_title">Bật dịch vụ trợ năng</string>
     <string name="dt2s_a11y_hint">To use Double-Tap to Sleep, turn on the Lawnchair accessibility service. Tap Open Settings, then select Lawnchair and turn on Use Lawnchair.</string>
@@ -102,7 +102,7 @@
     <string name="custom">Tùy chỉnh</string>
     <string name="custom_color">Tuỳ chỉnh màu sắc</string>
     <string name="quickstep_description">Nút xoá tất cả, độ cong của góc</string>
-    <string name="wallpaper_scrolling_label">Chuyển động hình nền</string>
+    <string name="wallpaper_scrolling_label">Hình nền cuộn</string>
     <string name="show_sys_ui_scrim">Đổ bóng phía trên</string>
     <string name="show_status_bar">Thanh trạng thái</string>
     <string name="what_to_show">Thứ bạn muốn xuất hiện</string>
@@ -110,5 +110,5 @@
     <string name="missing_notification_access_description">Cần quyền truy cập thông báo.</string>
     <string name="msg_missing_notification_access">To use Notification Dots, grant <xliff:g id="name" example="My App">%1$s</xliff:g> access to notifications.</string>
     <string name="title_change_settings">Thay đổi cài đặt</string>
-    <string name="debug_restart_launcher">Restart Lawnchair</string>
+    <string name="debug_restart_launcher">Khởi động lại ứng dụng Lawnchair</string>
 </resources>
