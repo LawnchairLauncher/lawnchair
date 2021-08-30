@@ -78,7 +78,7 @@
     <string name="dt2s_admin_hint">Để sử dụng \"Chạm hai lần để khóa máy\", đặt ứng dụng Lawnchair là một ứng dụng quản trị viên. Chọn \"Mở Cài đặt\", sau đó chọn “Đặt làm ứng dụng quản trị viên.”</string>
     <string name="dt2s_admin_warning">Nhấp đôi để khoá màn hình sẽ được tắt.</string>
     <string name="dt2s_a11y_hint_title">Bật dịch vụ trợ năng</string>
-    <string name="dt2s_a11y_hint">To use Double-Tap to Sleep, turn on the Lawnchair accessibility service. Tap Open Settings, then select Lawnchair and turn on Use Lawnchair.</string>
+    <string name="dt2s_a11y_hint">Để sử dụng \"Chạm hai lần để khóa máy\", bạn cần phải mở dịch vụ trợ năng của Lawnchair. Chọn \"Mở Cài đặt\", sau đó chọn ứng dụng Lawnchair và bật dịch vụ trợ năng Lawnchair.</string>
     <string name="dt2s_warning_open_settings">Mở cài đặt</string>
     <string name="minus_one_enable">Bản tin</string>
     <string name="minus_one_unavailable">Chưa cài đặt bản tin.</string>
@@ -91,8 +91,8 @@
     <string name="theme_follow_wallpaper">Theo hình nền</string>
     <string name="quickstep_label">Gần đây</string>
     <string name="clear_all_as_action_label">Nút xoá tất cả ở bên dưới</string>
-    <string name="window_corner_radius_label">Screen Corner Radius</string>
-    <string name="override_window_corner_radius_label">Custom Screen Corner Radius</string>
+    <string name="window_corner_radius_label">Độ cong của góc màn hình</string>
+    <string name="override_window_corner_radius_label">Tùy chỉnh độ cong của góc màn hình</string>
     <string name="window_corner_radius_description">When you swipe up to open Recents, the current app follows your finger, shrinking into a card. Use this slider to adjust the corner radius of the card when it’s nearly full-screen such that it matches the corners of your screen.</string>
     <string name="system_icons">Biểu tượng hệ thống</string>
     <string name="accent_color">Màu chủ đạo</string>
@@ -108,7 +108,7 @@
     <string name="what_to_show">Thứ bạn muốn xuất hiện</string>
     <string name="missing_notification_access_label">Cần quyền truy cập thông báo</string>
     <string name="missing_notification_access_description">Cần quyền truy cập thông báo.</string>
-    <string name="msg_missing_notification_access">To use Notification Dots, grant <xliff:g id="name" example="My App">%1$s</xliff:g> access to notifications.</string>
+    <string name="msg_missing_notification_access">Để sử dụng Chấm nổi thông báo, ứng dụng <xliff:g id="name" example="My App">%1$s</xliff:g> cần quyền truy cập thông báo.</string>
     <string name="title_change_settings">Thay đổi cài đặt</string>
     <string name="debug_restart_launcher">Khởi động lại ứng dụng Lawnchair</string>
 </resources>
