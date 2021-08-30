@@ -223,7 +223,6 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
     }
 
     @Test
-    @Ignore("b/197802324")
     @PortraitLandscape
     public void testAllAppsFromHome() throws Exception {
         // Test opening all apps
