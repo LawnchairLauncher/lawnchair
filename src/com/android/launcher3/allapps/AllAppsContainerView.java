@@ -454,7 +454,6 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
         mAllAppsStore.unregisterIconContainer(mAH[AdapterHolder.WORK].recyclerView);
 
         if (mUsingTabs) {
-            setupWorkToggle();
             mAH[AdapterHolder.MAIN].setup(mViewPager.getChildAt(0), mPersonalMatcher);
             mAH[AdapterHolder.WORK].setup(mViewPager.getChildAt(1), mWorkMatcher);
             mAH[AdapterHolder.WORK].recyclerView.setId(R.id.apps_list_view_work);
@@ -485,6 +484,7 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
     }
 
     private void setupWorkToggle() {
+        removeWorkToggle();
         if (Utilities.ATLEAST_P) {
             mWorkModeSwitch = (WorkModeSwitch) mLauncher.getLayoutInflater().inflate(
                     R.layout.work_mode_fab, this, false);
@@ -495,6 +495,14 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
                 resetWorkProfile();
             });
         }
+    }
+
+    private void removeWorkToggle() {
+        if (mWorkModeSwitch == null) return;
+        if (mWorkModeSwitch.getParent() == this) {
+            this.removeView(mWorkModeSwitch);
+        }
+        mWorkModeSwitch = null;
     }
 
     private void replaceRVContainer(boolean showTabs) {
@@ -519,8 +527,10 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
             mViewPager = (AllAppsPagedView) newView;
             mViewPager.initParentViews(this);
             mViewPager.getPageIndicator().setOnActivePageChangedListener(this);
+            setupWorkToggle();
         } else {
             mViewPager = null;
+            removeWorkToggle();
         }
     }
 
@@ -539,14 +549,6 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
             mWorkModeSwitch.setWorkTabVisible(currentActivePage == AdapterHolder.WORK
                     && mAllAppsStore.hasModelFlag(
                     FLAG_HAS_SHORTCUT_PERMISSION | FLAG_QUIET_MODE_CHANGE_PERMISSION));
-
-            if (currentActivePage == AdapterHolder.WORK) {
-                if (mWorkModeSwitch.getParent() == null) {
-                    addView(mWorkModeSwitch);
-                }
-            } else {
-                removeView(mWorkModeSwitch);
-            }
         }
     }
 
