@@ -56,6 +56,7 @@ import com.android.launcher3.model.data.FolderInfo;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.util.Executors;
 import com.android.launcher3.util.LogConfig;
+import com.android.launcher3.views.ActivityContext;
 import com.android.systemui.shared.system.InteractionJankMonitorWrapper;
 import com.android.systemui.shared.system.SysUiStatsLog;
 
@@ -97,7 +98,7 @@ public class StatsLogCompatManager extends StatsLogManager {
 
     @Override
     protected StatsLogger createLogger() {
-        return new StatsCompatLogger(mContext);
+        return new StatsCompatLogger(mContext, mActivityContext);
     }
 
     /**
@@ -141,7 +142,8 @@ public class StatsLogCompatManager extends StatsLogManager {
 
         private static final ItemInfo DEFAULT_ITEM_INFO = new ItemInfo();
 
-        private Context mContext;
+        private final Context mContext;
+        private final Optional<ActivityContext> mActivityContext;
         private ItemInfo mItemInfo = DEFAULT_ITEM_INFO;
         private InstanceId mInstanceId = DEFAULT_INSTANCE_ID;
         private OptionalInt mRank = OptionalInt.empty();
@@ -154,8 +156,9 @@ public class StatsLogCompatManager extends StatsLogManager {
         private SliceItem mSliceItem;
         private LauncherAtom.Slice mSlice;
 
-        StatsCompatLogger(Context context) {
+        StatsCompatLogger(Context context, ActivityContext activityContext) {
             mContext = context;
+            mActivityContext = Optional.ofNullable(activityContext);
         }
 
         @Override
@@ -306,6 +309,9 @@ public class StatsLogCompatManager extends StatsLogManager {
 
             mRank.ifPresent(itemInfoBuilder::setRank);
             mContainerInfo.ifPresent(itemInfoBuilder::setContainerInfo);
+
+            mActivityContext.ifPresent(activityContext ->
+                    activityContext.applyOverwritesToLogItem(itemInfoBuilder));
 
             if (mFromState.isPresent() || mToState.isPresent() || mEditText.isPresent()) {
                 FolderIcon.Builder folderIconBuilder = itemInfoBuilder

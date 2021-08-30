@@ -241,6 +241,7 @@ message FolderContainer {
   oneof ParentContainer {
     WorkspaceContainer workspace = 4;
     HotseatContainer hotseat = 5;
+    TaskBarContainer taskbar = 6;
   }
 }
 

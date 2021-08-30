@@ -18,6 +18,7 @@ package com.android.launcher3.taskbar;
 import android.graphics.Rect;
 
 import com.android.launcher3.model.data.ItemInfoWithIcon;
+import com.android.launcher3.model.data.WorkspaceItemInfo;
 
 import java.util.stream.Stream;
 
@@ -43,4 +44,6 @@ public class TaskbarUIController {
     public Stream<ItemInfoWithIcon> getAppIconsForEdu() {
         return Stream.empty();
     }
+
+    public void onTaskbarIconLaunched(WorkspaceItemInfo item) { }
 }
