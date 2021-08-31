@@ -1046,7 +1046,7 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
     /**
      * If being flinged and user touches the screen, initiate drag; otherwise don't.
      */
-    private void updateIsBeingDraggedOnTouchDown(MotionEvent ev) {
+    protected void updateIsBeingDraggedOnTouchDown(MotionEvent ev) {
         // mScroller.isFinished should be false when being flinged.
         final int xDist = Math.abs(mScroller.getFinalX() - mScroller.getCurrX());
         final boolean finishedScrolling = (mScroller.isFinished() || xDist < mPageSlop / 3);
