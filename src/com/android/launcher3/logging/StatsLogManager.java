@@ -76,6 +76,22 @@ public class StatsLogManager implements ResourceBasedOverride {
     }
 
     public interface EventEnum {
+
+        /**
+         * Tag used to request new UI Event IDs via presubmit analysis.
+         *
+         * <p>Use RESERVE_NEW_UI_EVENT_ID as the constructor parameter for a new {@link EventEnum}
+         * to signal the presubmit analyzer to reserve a new ID for the event. The new ID will be
+         * returned as a Gerrit presubmit finding.  Do not submit {@code RESERVE_NEW_UI_EVENT_ID} as
+         * the constructor parameter for any event.
+         *
+         * <pre>
+         * &#064;UiEvent(doc = "Briefly describe the interaction when this event will be logged")
+         * UNIQUE_EVENT_NAME(RESERVE_NEW_UI_EVENT_ID);
+         * </pre>
+         */
+        int RESERVE_NEW_UI_EVENT_ID = Integer.MIN_VALUE; // Negative IDs are ignored by the logger.
+
         int getId();
     }
 
@@ -489,8 +505,7 @@ public class StatsLogManager implements ResourceBasedOverride {
         LAUNCHER_TURN_OFF_WORK_APPS_TAP(839),
 
         @UiEvent(doc = "Launcher item drop failed since there was not enough room on the screen.")
-        LAUNCHER_ITEM_DROP_FAILED_INSUFFICIENT_SPACE(872)
-        ;
+        LAUNCHER_ITEM_DROP_FAILED_INSUFFICIENT_SPACE(872);
 
         // ADD MORE
 

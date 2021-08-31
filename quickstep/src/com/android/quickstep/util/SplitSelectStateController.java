@@ -33,7 +33,7 @@ import com.android.launcher3.util.SplitConfigurationOptions.StagePosition;
 import com.android.quickstep.SystemUiProxy;
 import com.android.quickstep.TaskAnimationManager;
 import com.android.quickstep.TaskViewUtils;
-import com.android.quickstep.views.TaskView;
+import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.system.RemoteAnimationAdapterCompat;
 import com.android.systemui.shared.system.RemoteAnimationRunnerCompat;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
@@ -47,23 +47,21 @@ import com.android.systemui.shared.system.RemoteTransitionRunner;
 public class SplitSelectStateController {
 
     private final SystemUiProxy mSystemUiProxy;
-    private TaskView mInitialTaskView;
-    private TaskView mSecondTaskView;
     private @StagePosition int mStagePosition;
+    private Task mInitialTask;
+    private Task mSecondTask;
     private Rect mInitialBounds;
-    private final Handler mHandler;
 
     public SplitSelectStateController(Handler handler, SystemUiProxy systemUiProxy) {
         mSystemUiProxy = systemUiProxy;
-        mHandler = handler;
     }
 
     /**
      * To be called after first task selected
      */
-    public void setInitialTaskSelect(TaskView taskView, @StagePosition int stagePosition,
+    public void setInitialTaskSelect(Task taskView, @StagePosition int stagePosition,
             Rect initialBounds) {
-        mInitialTaskView = taskView;
+        mInitialTask = taskView;
         mStagePosition = stagePosition;
         mInitialBounds = initialBounds;
     }
@@ -71,21 +69,28 @@ public class SplitSelectStateController {
     /**
      * To be called after second task selected
      */
-    public void setSecondTaskId(TaskView taskView) {
-        mSecondTaskView = taskView;
+    public void setSecondTaskId(Task taskView) {
+        mSecondTask = taskView;
+        launchTasks(mInitialTask, mSecondTask, mStagePosition);
+    }
+
+    /**
+     * @param stagePosition representing location of task1
+     */
+    public void launchTasks(Task task1, Task task2, @StagePosition int stagePosition) {
         // Assume initial task is for top/left part of screen
-        final int[] taskIds = mStagePosition == STAGE_POSITION_TOP_OR_LEFT
-                ? new int[]{mInitialTaskView.getTask().key.id, taskView.getTask().key.id}
-                : new int[]{taskView.getTask().key.id, mInitialTaskView.getTask().key.id};
+        final int[] taskIds = stagePosition == STAGE_POSITION_TOP_OR_LEFT
+                ? new int[]{task1.key.id, task2.key.id}
+                : new int[]{task2.key.id, task1.key.id};
         if (TaskAnimationManager.ENABLE_SHELL_TRANSITIONS) {
             RemoteSplitLaunchTransitionRunner animationRunner =
-                    new RemoteSplitLaunchTransitionRunner(mInitialTaskView, taskView);
+                    new RemoteSplitLaunchTransitionRunner(task1, task2);
             mSystemUiProxy.startTasks(taskIds[0], null /* mainOptions */, taskIds[1],
                     null /* sideOptions */, STAGE_POSITION_BOTTOM_OR_RIGHT,
                     new RemoteTransitionCompat(animationRunner, MAIN_EXECUTOR));
         } else {
             RemoteSplitLaunchAnimationRunner animationRunner =
-                    new RemoteSplitLaunchAnimationRunner(mInitialTaskView, taskView);
+                    new RemoteSplitLaunchAnimationRunner(task1, task2);
             final RemoteAnimationAdapter adapter = new RemoteAnimationAdapter(
                     RemoteAnimationAdapterCompat.wrapRemoteAnimationRunner(animationRunner),
                     300, 150,
@@ -105,19 +110,19 @@ public class SplitSelectStateController {
      */
     private class RemoteSplitLaunchTransitionRunner implements RemoteTransitionRunner {
 
-        private final TaskView mInitialTaskView;
-        private final TaskView mTaskView;
+        private final Task mInitialTask;
+        private final Task mSecondTask;
 
-        RemoteSplitLaunchTransitionRunner(TaskView initialTaskView, TaskView taskView) {
-            mInitialTaskView = initialTaskView;
-            mTaskView = taskView;
+        RemoteSplitLaunchTransitionRunner(Task initialTask, Task secondTask) {
+            mInitialTask = initialTask;
+            mSecondTask = secondTask;
         }
 
         @Override
         public void startAnimation(IBinder transition, TransitionInfo info,
                 SurfaceControl.Transaction t, Runnable finishCallback) {
-            TaskViewUtils.composeRecentsSplitLaunchAnimator(mInitialTaskView, mTaskView,
-                    info, t, finishCallback);
+            TaskViewUtils.composeRecentsSplitLaunchAnimator(mInitialTask,
+                    mSecondTask, info, t, finishCallback);
             // After successful launch, call resetState
             resetState();
         }
@@ -129,20 +134,20 @@ public class SplitSelectStateController {
      */
     private class RemoteSplitLaunchAnimationRunner implements RemoteAnimationRunnerCompat {
 
-        private final TaskView mInitialTaskView;
-        private final TaskView mTaskView;
+        private final Task mInitialTask;
+        private final Task mSecondTask;
 
-        RemoteSplitLaunchAnimationRunner(TaskView initialTaskView, TaskView taskView) {
-            mInitialTaskView = initialTaskView;
-            mTaskView = taskView;
+        RemoteSplitLaunchAnimationRunner(Task initialTask, Task secondTask) {
+            mInitialTask = initialTask;
+            mSecondTask = secondTask;
         }
 
         @Override
         public void onAnimationStart(int transit, RemoteAnimationTargetCompat[] apps,
                 RemoteAnimationTargetCompat[] wallpapers, RemoteAnimationTargetCompat[] nonApps,
                 Runnable finishedCallback) {
-            TaskViewUtils.composeRecentsSplitLaunchAnimatorLegacy(mInitialTaskView, mTaskView, apps,
-                    wallpapers, nonApps, finishedCallback);
+            TaskViewUtils.composeRecentsSplitLaunchAnimatorLegacy(mInitialTask,
+                    mSecondTask, apps, wallpapers, nonApps, finishedCallback);
             // After successful launch, call resetState
             resetState();
         }
@@ -157,8 +162,8 @@ public class SplitSelectStateController {
      * To be called if split select was cancelled
      */
     public void resetState() {
-        mInitialTaskView = null;
-        mSecondTaskView = null;
+        mInitialTask = null;
+        mSecondTask = null;
         mStagePosition = SplitConfigurationOptions.STAGE_POSITION_UNDEFINED;
         mInitialBounds = null;
     }
@@ -168,7 +173,7 @@ public class SplitSelectStateController {
      *         chosen
      */
     public boolean isSplitSelectActive() {
-        return mInitialTaskView != null && mSecondTaskView == null;
+        return mInitialTask != null && mSecondTask == null;
     }
 
     public Rect getInitialBounds() {

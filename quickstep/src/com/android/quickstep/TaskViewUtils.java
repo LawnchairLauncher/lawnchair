@@ -366,8 +366,8 @@ public final class TaskViewUtils {
      * device is considered in multiWindowMode and things like insets and stuff change
      * and calculations have to be adjusted in the animations for that
      */
-    public static void composeRecentsSplitLaunchAnimator(@NonNull TaskView initialView,
-            @NonNull TaskView v, @NonNull TransitionInfo transitionInfo,
+    public static void composeRecentsSplitLaunchAnimator(@NonNull Task initalTask,
+            @NonNull Task secondTask, @NonNull TransitionInfo transitionInfo,
             SurfaceControl.Transaction t, @NonNull Runnable finishCallback) {
 
         final TransitionInfo.Change[] splitRoots = new TransitionInfo.Change[2];
@@ -377,7 +377,7 @@ public final class TaskViewUtils {
             final int mode = change.getMode();
             // Find the target tasks' root tasks since those are the split stages that need to
             // be animated (the tasks themselves are children and thus inherit animation).
-            if (taskId == initialView.getTask().key.id || taskId == v.getTask().key.id) {
+            if (taskId == initalTask.key.id || taskId == secondTask.key.id) {
                 if (!(mode == TRANSIT_OPEN || mode == TRANSIT_TO_FRONT)) {
                     throw new IllegalStateException(
                             "Expected task to be showing, but it is " + mode);
@@ -386,7 +386,7 @@ public final class TaskViewUtils {
                     throw new IllegalStateException("Initiating multi-split launch but the split"
                             + "root of " + taskId + " is already visible or has broken hierarchy.");
                 }
-                splitRoots[taskId == initialView.getTask().key.id ? 0 : 1] =
+                splitRoots[taskId == initalTask.key.id ? 0 : 1] =
                         transitionInfo.getChange(change.getParent());
             }
         }
@@ -406,8 +406,8 @@ public final class TaskViewUtils {
     }
 
     /** Legacy version (until shell transitions are enabled) */
-    public static void composeRecentsSplitLaunchAnimatorLegacy(@NonNull TaskView initialView,
-            @NonNull TaskView v, @NonNull RemoteAnimationTargetCompat[] appTargets,
+    public static void composeRecentsSplitLaunchAnimatorLegacy(@NonNull Task initialTask,
+            @NonNull Task secondTask, @NonNull RemoteAnimationTargetCompat[] appTargets,
             @NonNull RemoteAnimationTargetCompat[] wallpaperTargets,
             @NonNull RemoteAnimationTargetCompat[] nonAppTargets,
             @NonNull Runnable finishCallback) {
@@ -416,12 +416,12 @@ public final class TaskViewUtils {
         for (int i = 0; i < appTargets.length; ++i) {
             final int taskId = appTargets[i].taskInfo != null ? appTargets[i].taskInfo.taskId : -1;
             final int mode = appTargets[i].mode;
-            if (taskId == initialView.getTask().key.id || taskId == v.getTask().key.id) {
+            if (taskId == initialTask.key.id || taskId == secondTask.key.id) {
                 if (mode != MODE_OPENING) {
                     throw new IllegalStateException(
                             "Expected task to be opening, but it is " + mode);
                 }
-                splitRoots[taskId == initialView.getTask().key.id ? 0 : 1] = i;
+                splitRoots[taskId == initialTask.key.id ? 0 : 1] = i;
             }
         }
 
