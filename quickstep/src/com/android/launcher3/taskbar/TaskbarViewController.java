@@ -223,7 +223,11 @@ public class TaskbarViewController {
             return view -> mControllers.taskbarStashController.updateAndAnimateIsStashedInApp(true);
         }
 
-        public void onTouchEvent(MotionEvent motionEvent) {
+        /**
+         * Get the first chance to handle TaskbarView#onTouchEvent, and return whether we want to
+         * consume the touch so TaskbarView treats it as an ACTION_CANCEL.
+         */
+        public boolean onTouchEvent(MotionEvent motionEvent) {
             final float x = motionEvent.getRawX();
             final float y = motionEvent.getRawY();
             switch (motionEvent.getAction()) {
@@ -239,6 +243,7 @@ public class TaskbarViewController {
                         mControllers.taskbarStashController.startStashHint(
                                 /* animateForward= */ false);
                         mCanceledStashHint = true;
+                        return true;
                     }
                     break;
                 case MotionEvent.ACTION_UP:
@@ -249,6 +254,7 @@ public class TaskbarViewController {
                     }
                     break;
             }
+            return false;
         }
     }
 }
