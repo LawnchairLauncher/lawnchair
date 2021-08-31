@@ -219,7 +219,7 @@ public final class FeatureFlags {
     public static final BooleanFlag ENABLE_TASKBAR = getDebugFlag(
             "ENABLE_TASKBAR", true, "Allows a system Taskbar to be shown on larger devices.");
 
-    public static final BooleanFlag ENABLE_TASKBAR_EDU = getDebugFlag("ENABLE_TASKBAR_EDU", false,
+    public static final BooleanFlag ENABLE_TASKBAR_EDU = getDebugFlag("ENABLE_TASKBAR_EDU", true,
             "Enables showing taskbar education the first time an app is opened.");
 
     public static final BooleanFlag ENABLE_OVERVIEW_GRID = getDebugFlag(
