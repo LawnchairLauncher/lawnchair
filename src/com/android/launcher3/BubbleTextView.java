@@ -409,6 +409,10 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
      * Returns true if the touch down at the provided position be ignored
      */
     protected boolean shouldIgnoreTouchDown(float x, float y) {
+        if (mDisplay == DISPLAY_TASKBAR) {
+            // Allow touching within padding on taskbar, given icon sizes are smaller.
+            return false;
+        }
         return y < getPaddingTop()
                 || x < getPaddingLeft()
                 || y > getHeight() - getPaddingBottom()
