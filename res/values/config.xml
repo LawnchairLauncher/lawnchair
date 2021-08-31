@@ -34,6 +34,9 @@
     <!-- View tag key used to determine if we should fade in the child views.. -->
     <string name="popup_container_iterate_children" translatable="false">popup_container_iterate_children</string>
 
+    <!-- config used to determine if header protection is supported in AllApps -->
+    <bool name="config_header_protection_supported">false</bool>
+
     <!-- Workspace -->
     <!-- The duration (in ms) of the fade animation on the object outlines, used when
          we are dragging objects around on the home screen. -->
