@@ -3,6 +3,8 @@ package com.android.quickstep.views;
 import android.content.Context;
 import android.util.AttributeSet;
 
+import androidx.annotation.NonNull;
+
 import com.android.launcher3.R;
 import com.android.launcher3.util.RunnableList;
 import com.android.launcher3.util.SplitConfigurationOptions;
@@ -11,6 +13,8 @@ import com.android.quickstep.TaskThumbnailCache;
 import com.android.quickstep.util.CancellableTask;
 import com.android.quickstep.util.RecentsOrientedState;
 import com.android.systemui.shared.recents.model.Task;
+
+import java.util.function.Consumer;
 
 /**
  * TaskView that contains and shows thumbnails for not one, BUT TWO(!!) tasks
@@ -98,8 +102,14 @@ public class GroupedTaskView extends TaskView {
     @Override
     public RunnableList launchTaskAnimated() {
         getRecentsView().getSplitPlaceholder().launchTasks(mTask, mSecondaryTask,
-                SplitConfigurationOptions.STAGE_POSITION_TOP_OR_LEFT);
+                SplitConfigurationOptions.STAGE_POSITION_TOP_OR_LEFT, null /*callback*/);
         return null;
+    }
+
+    @Override
+    public void launchTask(@NonNull Consumer<Boolean> callback, boolean freezeTaskList) {
+        getRecentsView().getSplitPlaceholder().launchTasks(mTask, mSecondaryTask,
+                SplitConfigurationOptions.STAGE_POSITION_TOP_OR_LEFT, callback);
     }
 
     @Override
