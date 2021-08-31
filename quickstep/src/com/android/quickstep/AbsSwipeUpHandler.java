@@ -805,7 +805,9 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
         mActivityInitListener.unregister();
         mStateCallback.setStateOnUiThread(STATE_GESTURE_CANCELLED | STATE_HANDLER_INVALIDATED);
 
-        TaskViewUtils.setDividerBarShown(mRecentsAnimationTargets.nonApps, true);
+        if (mRecentsAnimationTargets != null) {
+            TaskViewUtils.setDividerBarShown(mRecentsAnimationTargets.nonApps, true);
+        }
 
         // Defer clearing the controller and the targets until after we've updated the state
         mRecentsAnimationController = null;
