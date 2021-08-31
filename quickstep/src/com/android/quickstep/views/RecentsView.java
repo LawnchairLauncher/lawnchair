@@ -3568,7 +3568,8 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         mSplitHiddenTaskView = taskView;
         Rect initialBounds = new Rect(taskView.getLeft(), taskView.getTop(), taskView.getRight(),
                 taskView.getBottom());
-        mSplitSelectStateController.setInitialTaskSelect(taskView, stagePosition, initialBounds);
+        mSplitSelectStateController.setInitialTaskSelect(taskView.getTask(),
+                stagePosition, initialBounds);
         mSplitHiddenTaskViewIndex = indexOfChild(taskView);
         if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
             finishRecentsAnimation(true, null);
@@ -3609,7 +3610,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                 secondTaskEndingBounds, taskView.getThumbnail(),
                 true /*fadeWithThumbnail*/);
         pendingAnimation.addEndListener(aBoolean -> {
-            mSplitSelectStateController.setSecondTaskId(taskView);
+            mSplitSelectStateController.setSecondTaskId(taskView.getTask());
             resetFromSplitSelectionState();
         });
         mSecondSplitHiddenTaskView = taskView;

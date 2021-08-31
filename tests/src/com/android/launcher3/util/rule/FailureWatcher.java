@@ -15,6 +15,7 @@ import org.junit.rules.TestWatcher;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
 
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -66,15 +67,18 @@ public class FailureWatcher extends TestWatcher {
         onError(mDevice, description, e);
     }
 
+    static File diagFile(Description description, String prefix, String ext) {
+        return new File(getInstrumentation().getTargetContext().getFilesDir(),
+                prefix + "-" + description.getTestClass().getSimpleName() + "."
+                        + description.getMethodName() + "." + ext);
+    }
+
     public static void onError(UiDevice device, Description description, Throwable e) {
         Log.d("b/196820244", "onError 1");
         if (device == null) return;
         Log.d("b/196820244", "onError 2");
-        final File parentFile = getInstrumentation().getTargetContext().getFilesDir();
-        final File sceenshot = new File(parentFile,
-                "TestScreenshot-" + description.getMethodName() + ".png");
-        final File hierarchy = new File(parentFile,
-                "Hierarchy-" + description.getMethodName() + ".zip");
+        final File sceenshot = diagFile(description, "TestScreenshot", "png");
+        final File hierarchy = diagFile(description, "Hierarchy", "zip");
 
         // Dump window hierarchy
         try (ZipOutputStream out = new ZipOutputStream(new FileOutputStream(hierarchy))) {
@@ -97,18 +101,26 @@ public class FailureWatcher extends TestWatcher {
         device.takeScreenshot(sceenshot);
 
         // Dump accessibility hierarchy
-        final File accessibilityHierarchyFile = new File(parentFile,
-                "AccessibilityHierarchy-" + description.getMethodName() + ".uix");
         try {
-            device.dumpWindowHierarchy(accessibilityHierarchyFile);
+            device.dumpWindowHierarchy(diagFile(description, "AccessibilityHierarchy", "uix"));
         } catch (IOException ex) {
             Log.e(TAG, "Failed to save accessibility hierarchy", ex);
         }
+
+        dumpCommand("logcat -d -s TestRunner", diagFile(description, "FilteredLogcat", "txt"));
     }
 
     private static void dumpStringCommand(String cmd, OutputStream out) throws IOException {
         out.write(("\n\n" + cmd + "\n").getBytes());
         dumpCommand(cmd, out);
+    }
+
+    private static void dumpCommand(String cmd, File out) {
+        try (BufferedOutputStream buffered = new BufferedOutputStream(
+                new FileOutputStream(out))) {
+            dumpCommand(cmd, buffered);
+        } catch (IOException ex) {
+        }
     }
 
     private static void dumpCommand(String cmd, OutputStream out) throws IOException {
