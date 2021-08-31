@@ -93,7 +93,7 @@
     <string name="clear_all_as_action_label">하단 모두 닫기 버튼</string>
     <string name="window_corner_radius_label">가장자리 둥글기</string>
     <string name="override_window_corner_radius_label">가장자리 둥글기 개인화</string>
-    <string name="window_corner_radius_description">When you swipe up to open Recents, the current app follows your finger, shrinking into a card. Use this slider to adjust the corner radius of the card when it’s nearly full-screen such that it matches the corners of your screen.</string>
+    <string name="window_corner_radius_description">최근앱보기에서 앱 미리보기 창에대한 가장자리 모서리 둥글기에 대한 설정입니다. 화면의 둥글기에 맞게 혹은 기호에 맞춰 가장자리 둥글기를 조정하세요</string>
     <string name="system_icons">시스템 아이콘</string>
     <string name="accent_color">강조 색상</string>
     <string name="done">완료</string>
