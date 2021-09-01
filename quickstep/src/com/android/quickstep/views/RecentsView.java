@@ -1500,7 +1500,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         mActionsView.setDp(dp);
         mOrientationState.setDeviceProfile(dp);
 
-        // Update RecentsView adn TaskView's DeviceProfile dependent layout.
+        // Update RecentsView and TaskView's DeviceProfile dependent layout.
         updateOrientationHandler();
     }
 
@@ -2593,7 +2593,6 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         mFirstFloatingTaskView.setAlpha(1);
         mFirstFloatingTaskView.addAnimation(anim, startingTaskRect,
                 mTempRect, mSplitHiddenTaskView, true /*fadeWithThumbnail*/);
-        anim.addEndListener(aBoolean -> mActionsView.setSplitButtonVisible(false));
     }
 
     /**
@@ -2933,11 +2932,25 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                         dispatchScrollChanged();
                     }
                 }
+                updateFocusedSplitButtonVisibility();
                 onDismissAnimationEnds();
                 mPendingAnimation = null;
             }
         });
         return anim;
+    }
+
+    /**
+     * Shows split button if
+     * * We're in large screen
+     * * We're not already in split
+     * * There are at least 2 tasks to invoke split
+     */
+    private void updateFocusedSplitButtonVisibility() {
+        mActionsView.setSplitButtonVisible(mActivity.getDeviceProfile().isTablet &&
+                !(getRunningTaskView() instanceof GroupedTaskView) &&
+                getTaskViewCount() > 1
+        );
     }
 
     /**
@@ -3745,7 +3758,6 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             mSecondSplitHiddenTaskView.setVisibility(VISIBLE);
             mSecondSplitHiddenTaskView = null;
         }
-        mActionsView.setSplitButtonVisible(true);
     }
 
     private void updateDeadZoneRects() {
@@ -3960,6 +3972,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     @Override
     protected void notifyPageSwitchListener(int prevPage) {
         super.notifyPageSwitchListener(prevPage);
+        updateFocusedSplitButtonVisibility();
         loadVisibleTaskData(TaskView.FLAG_UPDATE_ALL);
         updateEnabledOverlays();
     }
