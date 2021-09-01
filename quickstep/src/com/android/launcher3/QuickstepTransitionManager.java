@@ -1124,6 +1124,7 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
             if (target.mode == mode && target.taskInfo != null
                     // Compare component name instead of task-id because transitions will promote
                     // the target up to the root task while getTaskId returns the leaf.
+                    && target.taskInfo.topActivity != null
                     && target.taskInfo.topActivity.equals(mLauncher.getComponentName())) {
                 return true;
             }

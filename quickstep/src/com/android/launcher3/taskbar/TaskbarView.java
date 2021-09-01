@@ -243,7 +243,19 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
         if (!mTouchEnabled) {
             return true;
         }
-        mControllerCallbacks.onTouchEvent(event);
+        if (mIconLayoutBounds.contains((int) event.getX(), (int) event.getY())) {
+            // Don't allow long pressing between icons.
+            return true;
+        }
+        if (mControllerCallbacks.onTouchEvent(event)) {
+            int oldAction = event.getAction();
+            try {
+                event.setAction(MotionEvent.ACTION_CANCEL);
+                return super.onTouchEvent(event);
+            } finally {
+                event.setAction(oldAction);
+            }
+        }
         return super.onTouchEvent(event);
     }
 

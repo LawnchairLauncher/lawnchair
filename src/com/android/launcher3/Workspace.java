@@ -223,6 +223,9 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
     // Variables relating to touch disambiguation (scrolling workspace vs. scrolling a widget)
     private float mXDown;
     private float mYDown;
+    private View mQsb;
+    private boolean mIsEventOverQsb;
+
     final static float START_DAMPING_TOUCH_SLOP_ANGLE = (float) Math.PI / 6;
     final static float MAX_SWIPE_ANGLE = (float) Math.PI / 3;
     final static float TOUCH_SLOP_DAMPING_FACTOR = 4;
@@ -548,9 +551,8 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
 
     /**
      * Initializes and binds the first page
-     * @param qsb an existing qsb to recycle or null.
      */
-    public void bindAndInitFirstWorkspaceScreen(View qsb) {
+    public void bindAndInitFirstWorkspaceScreen() {
         if (!FeatureFlags.QSB_ON_FIRST_SCREEN) {
             return;
         }
@@ -558,10 +560,10 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         // Add the first page
         CellLayout firstPage = insertNewWorkspaceScreen(Workspace.FIRST_SCREEN_ID, getChildCount());
         // Always add a QSB on the first screen.
-        if (qsb == null) {
+        if (mQsb == null) {
             // In transposed layout, we add the QSB in the Grid. As workspace does not touch the
             // edges, we do not need a full width QSB.
-            qsb = LayoutInflater.from(getContext())
+            mQsb = LayoutInflater.from(getContext())
                     .inflate(R.layout.search_container_workspace, firstPage, false);
         }
 
@@ -570,8 +572,9 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         CellLayout.LayoutParams lp = new CellLayout.LayoutParams(0, 0, firstPage.getCountX(),
                 cellVSpan);
         lp.canReorder = false;
-        if (!firstPage.addViewToCellLayout(qsb, 0, R.id.search_container_workspace, lp, true)) {
+        if (!firstPage.addViewToCellLayout(mQsb, 0, R.id.search_container_workspace, lp, true)) {
             Log.e(TAG, "Failed to add to item at (0, 0) to CellLayout");
+            mQsb = null;
         }
     }
 
@@ -581,9 +584,8 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         disableLayoutTransitions();
 
         // Recycle the QSB widget
-        View qsb = findViewById(R.id.search_container_workspace);
-        if (qsb != null) {
-            ((ViewGroup) qsb.getParent()).removeView(qsb);
+        if (mQsb != null) {
+            ((ViewGroup) mQsb.getParent()).removeView(mQsb);
         }
 
         // Remove the pages and clear the screen models
@@ -596,7 +598,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         mLauncher.mHandler.removeCallbacksAndMessages(DeferredWidgetRefresh.class);
 
         // Ensure that the first page is always present
-        bindAndInitFirstWorkspaceScreen(qsb);
+        bindAndInitFirstWorkspaceScreen();
 
         // Re-enable the layout transitions
         enableLayoutTransitions();
@@ -922,17 +924,25 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
     }
 
     @Override
-    public boolean onInterceptTouchEvent(MotionEvent ev) {
-        if (ev.getActionMasked() == MotionEvent.ACTION_DOWN) {
-            mXDown = ev.getX();
-            mYDown = ev.getY();
+    protected void updateIsBeingDraggedOnTouchDown(MotionEvent ev) {
+        super.updateIsBeingDraggedOnTouchDown(ev);
+
+        mXDown = ev.getX();
+        mYDown = ev.getY();
+        if (mQsb != null) {
+            mTempFXY[0] = mXDown + getScrollX();
+            mTempFXY[1] = mYDown + getScrollY();
+            Utilities.mapCoordInSelfToDescendant(mQsb, this, mTempFXY);
+            mIsEventOverQsb = mQsb.getLeft() <= mTempFXY[0] && mQsb.getRight() >= mTempFXY[0]
+                    && mQsb.getTop() <= mTempFXY[1] && mQsb.getBottom() >= mTempFXY[1];
+        } else {
+            mIsEventOverQsb = false;
         }
-        return super.onInterceptTouchEvent(ev);
     }
 
     @Override
     protected void determineScrollingStart(MotionEvent ev) {
-        if (!isFinishedSwitchingState()) return;
+        if (!isFinishedSwitchingState() || mIsEventOverQsb) return;
 
         float deltaX = ev.getX() - mXDown;
         float absDeltaX = Math.abs(deltaX);

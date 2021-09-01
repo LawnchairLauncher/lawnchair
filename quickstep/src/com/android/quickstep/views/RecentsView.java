@@ -1351,8 +1351,10 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                 }
                 Log.d(TASK_VIEW_ID_CRASH, "taskViewCount: " + getTaskViewCount()
                         + " " + sb.toString());
+                mRunningTaskViewId = -1;
+            } else {
+                mRunningTaskViewId = newRunningTaskView.getTaskViewId();
             }
-            mRunningTaskViewId = newRunningTaskView.getTaskViewId();
         }
 
         if (mNextPage == INVALID_PAGE) {
@@ -1365,7 +1367,10 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         } else if (currentTaskId != -1) {
             currentTaskView = getTaskViewByTaskId(currentTaskId);
             if (currentTaskView != null) {
-                setCurrentPage(indexOfChild(currentTaskView));
+                int currentTaskViewIndex = indexOfChild(currentTaskView);
+                if (mCurrentPage != currentTaskViewIndex) {
+                    setCurrentPage(currentTaskViewIndex);
+                }
             }
         }
 

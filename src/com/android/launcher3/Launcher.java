@@ -555,6 +555,14 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
     }
 
     @Override
+    public void onMultiWindowModeChanged(boolean isInMultiWindowMode, Configuration newConfig) {
+        super.onMultiWindowModeChanged(isInMultiWindowMode, newConfig);
+        // Always update device profile when multi window mode changed.
+        initDeviceProfile(mDeviceProfile.inv);
+        dispatchDeviceProfileChanged();
+    }
+
+    @Override
     public void onConfigurationChanged(Configuration newConfig) {
         int diff = newConfig.diff(mOldConfig);
         if ((diff & (CONFIG_ORIENTATION | CONFIG_SCREEN_SIZE)) != 0) {
@@ -592,11 +600,9 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
 
     private void initDeviceProfile(InvariantDeviceProfile idp) {
         // Load configuration-specific DeviceProfile
-        mDeviceProfile = idp.getDeviceProfile(this);
-        if (isInMultiWindowMode()) {
-            mDeviceProfile = mDeviceProfile.getMultiWindowProfile(
-                    this, getMultiWindowDisplaySize());
-        }
+        mDeviceProfile = isInMultiWindowMode()
+                ? mDeviceProfile.getMultiWindowProfile(this, getMultiWindowDisplaySize())
+                : idp.getDeviceProfile(this);
 
         onDeviceProfileInitiated();
         mModelWriter = mModel.getWriter(getDeviceProfile().isVerticalBarLayout(), true, this);
@@ -1195,7 +1201,7 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
         // Until the workspace is bound, ensure that we keep the wallpaper offset locked to the
         // default state, otherwise we will update to the wrong offsets in RTL
         mWorkspace.lockWallpaperToDefaultPage();
-        mWorkspace.bindAndInitFirstWorkspaceScreen(null /* recycled qsb */);
+        mWorkspace.bindAndInitFirstWorkspaceScreen();
         mDragController.addDragListener(mWorkspace);
 
         // Get the search/delete/uninstall bar
