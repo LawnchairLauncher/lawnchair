@@ -24,6 +24,7 @@ import android.content.res.Resources;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 import android.view.HapticFeedbackConstants;
 import android.view.View;
 
@@ -36,6 +37,7 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.accessibility.DragViewStateAnnouncer;
 import com.android.launcher3.model.data.ItemInfo;
+import com.android.launcher3.testing.TestProtocol;
 
 /**
  * Drag controller for Launcher activity
@@ -65,6 +67,9 @@ public class LauncherDragController extends DragController<Launcher> {
             float initialDragViewScale,
             float dragViewScaleOnDrop,
             DragOptions options) {
+        if (TestProtocol.sDebugTracing) {
+            Log.d(TestProtocol.NO_DROP_TARGET, "5");
+        }
         if (PROFILE_DRAWING_DURING_DRAG) {
             android.os.Debug.startMethodTracing("Launcher");
         }
