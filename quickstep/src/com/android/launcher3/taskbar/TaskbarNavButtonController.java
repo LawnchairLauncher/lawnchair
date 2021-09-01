@@ -56,6 +56,8 @@ public class TaskbarNavButtonController {
             BUTTON_RECENTS,
             BUTTON_IME_SWITCH,
             BUTTON_A11Y,
+            BUTTON_QUICK_SETTINGS,
+            BUTTON_NOTIFICATIONS,
     })
 
     public @interface TaskbarButton {}
@@ -65,6 +67,8 @@ public class TaskbarNavButtonController {
     static final int BUTTON_RECENTS = BUTTON_HOME << 1;
     static final int BUTTON_IME_SWITCH = BUTTON_RECENTS << 1;
     static final int BUTTON_A11Y = BUTTON_IME_SWITCH << 1;
+    static final int BUTTON_QUICK_SETTINGS = BUTTON_A11Y << 1;
+    static final int BUTTON_NOTIFICATIONS = BUTTON_QUICK_SETTINGS << 1;
 
     private static final int SCREEN_UNPIN_COMBO = BUTTON_BACK | BUTTON_RECENTS;
     private int mLongPressedButtons = 0;
