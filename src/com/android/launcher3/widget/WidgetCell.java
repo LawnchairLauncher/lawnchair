@@ -16,6 +16,7 @@
 
 package com.android.launcher3.widget;
 
+import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_WIDGETS_TRAY;
 import static com.android.launcher3.Utilities.ATLEAST_S;
 
 import android.content.Context;
@@ -42,6 +43,7 @@ import androidx.annotation.Nullable;
 import com.android.launcher3.BaseActivity;
 import com.android.launcher3.CheckLongPressHelper;
 import com.android.launcher3.DeviceProfile;
+import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.icons.FastBitmapDrawable;
 import com.android.launcher3.icons.RoundDrawableWrapper;
@@ -99,6 +101,7 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
 
     private RemoteViews mRemoteViewsPreview;
     private NavigableAppWidgetHostView mAppWidgetHostViewPreview;
+    private int mSourceContainer = CONTAINER_WIDGETS_TRAY;
 
     public WidgetCell(Context context) {
         this(context, null);
@@ -175,19 +178,27 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
             mWidgetImageContainer.removeView(mAppWidgetHostViewPreview);
         }
         mAppWidgetHostViewPreview = null;
+        mItem = null;
+    }
+
+    public void setSourceContainer(int sourceContainer) {
+        this.mSourceContainer = sourceContainer;
     }
 
     public void applyFromCellItem(WidgetItem item, WidgetPreviewLoader loader) {
         applyPreviewOnAppWidgetHostView(item);
 
+        Context context = getContext();
         mItem = item;
         mWidgetName.setText(mItem.label);
-        mWidgetDims.setText(getContext().getString(R.string.widget_dims_format,
+        mWidgetName.setContentDescription(
+                context.getString(R.string.widget_preview_context_description, mItem.label));
+        mWidgetDims.setText(context.getString(R.string.widget_dims_format,
                 mItem.spanX, mItem.spanY));
-        mWidgetDims.setContentDescription(getContext().getString(
+        mWidgetDims.setContentDescription(context.getString(
                 R.string.widget_accessible_dims_format, mItem.spanX, mItem.spanY));
         if (ATLEAST_S && mItem.widgetInfo != null) {
-            CharSequence description = mItem.widgetInfo.loadDescription(getContext());
+            CharSequence description = mItem.widgetInfo.loadDescription(context);
             if (description != null && description.length() > 0) {
                 mWidgetDescription.setText(description);
                 mWidgetDescription.setVisibility(VISIBLE);
@@ -199,22 +210,15 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
         mWidgetPreviewLoader = loader;
         if (item.activityInfo != null) {
             setTag(new PendingAddShortcutInfo(item.activityInfo));
-            mPreviewWidth += mShortcutPreviewPadding;
-            mPreviewHeight += mShortcutPreviewPadding;
         } else {
-            setTag(new PendingAddWidgetInfo(item.widgetInfo));
+            setTag(new PendingAddWidgetInfo(item.widgetInfo, mSourceContainer));
         }
     }
 
 
     private void applyPreviewOnAppWidgetHostView(WidgetItem item) {
         if (mRemoteViewsPreview != null) {
-            mAppWidgetHostViewPreview = new NavigableAppWidgetHostView(getContext()) {
-                @Override
-                protected boolean shouldAllowDirectClick() {
-                    return false;
-                }
-            };
+            mAppWidgetHostViewPreview = createAppWidgetHostView(getContext());
             setAppWidgetHostViewPreview(mAppWidgetHostViewPreview, item.widgetInfo,
                     mRemoteViewsPreview);
             return;
@@ -222,10 +226,15 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
 
         if (!item.hasPreviewLayout()) return;
 
-        mAppWidgetHostViewPreview = new LauncherAppWidgetHostView(getContext());
+        Context context = getContext();
+        // If the context is a Launcher activity, DragView will show mAppWidgetHostViewPreview as
+        // a preview during drag & drop. And thus, we should use LauncherAppWidgetHostView, which
+        // supports applying local color extraction during drag & drop.
+        mAppWidgetHostViewPreview = isLauncherContext(context)
+                ? new LauncherAppWidgetHostView(context)
+                : createAppWidgetHostView(context);
         LauncherAppWidgetProviderInfo launcherAppWidgetProviderInfo =
-                LauncherAppWidgetProviderInfo.fromProviderInfo(getContext(),
-                        item.widgetInfo.clone());
+                LauncherAppWidgetProviderInfo.fromProviderInfo(context, item.widgetInfo.clone());
         // A hack to force the initial layout to be the preview layout since there is no API for
         // rendering a preview layout for work profile apps yet. For non-work profile layout, a
         // proper solution is to use RemoteViews(PackageName, LayoutId).
@@ -238,6 +247,7 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
             NavigableAppWidgetHostView appWidgetHostViewPreview,
             LauncherAppWidgetProviderInfo providerInfo,
             @Nullable RemoteViews remoteViews) {
+        appWidgetHostViewPreview.setImportantForAccessibility(IMPORTANT_FOR_ACCESSIBILITY_NO);
         appWidgetHostViewPreview.setAppWidget(/* appWidgetId= */ -1, providerInfo);
         Rect padding;
         DeviceProfile deviceProfile = mActivity.getDeviceProfile();
@@ -346,14 +356,14 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
     }
 
     /** Sets the widget preview image size in number of cells. */
-    public Size setPreviewSize(int spanX, int spanY) {
-        return setPreviewSize(spanX, spanY, 1f);
+    public Size setPreviewSize(WidgetItem widgetItem) {
+        return setPreviewSize(widgetItem, 1f);
     }
 
     /** Sets the widget preview image size, in number of cells, and preview scale. */
-    public Size setPreviewSize(int spanX, int spanY, float previewScale) {
+    public Size setPreviewSize(WidgetItem widgetItem, float previewScale) {
         DeviceProfile deviceProfile = mActivity.getDeviceProfile();
-        Size widgetSize = WidgetSizes.getWidgetSizePx(deviceProfile, spanX, spanY);
+        Size widgetSize = WidgetSizes.getWidgetItemSizePx(getContext(), deviceProfile, widgetItem);
         mPreviewWidth = widgetSize.getWidth();
         mPreviewHeight = widgetSize.getHeight();
         mPreviewScale = previewScale;
@@ -389,6 +399,24 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
             return getTag().toString();
         }
         return "";
+    }
+
+    private static NavigableAppWidgetHostView createAppWidgetHostView(Context context) {
+        return new NavigableAppWidgetHostView(context) {
+            @Override
+            protected boolean shouldAllowDirectClick() {
+                return false;
+            }
+        };
+    }
+
+    private static boolean isLauncherContext(Context context) {
+        try {
+            Launcher.getLauncher(context);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     @Override

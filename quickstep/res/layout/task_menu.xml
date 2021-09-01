@@ -25,7 +25,7 @@
 
     <TextView
         android:id="@+id/task_name"
-        android:background="?android:attr/colorPrimary"
+        android:background="@drawable/task_menu_item_bg"
         android:textColor="?android:attr/textColorPrimary"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -40,7 +40,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:divider="@drawable/all_apps_divider"
         android:showDividers="middle" />
 
 </com.android.quickstep.views.TaskMenuView>

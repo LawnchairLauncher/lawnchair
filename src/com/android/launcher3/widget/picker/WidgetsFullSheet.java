@@ -15,6 +15,8 @@
  */
 package com.android.launcher3.widget.picker;
 
+import static android.view.View.MeasureSpec.makeMeasureSpec;
+
 import static com.android.launcher3.LauncherAnimUtils.VIEW_TRANSLATE_Y;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_WIDGETSTRAY_SEARCHED;
 import static com.android.launcher3.testing.TestProtocol.NORMAL_STATE_ORDINAL;
@@ -45,8 +47,6 @@ import androidx.annotation.VisibleForTesting;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.android.launcher3.DeviceProfile;
-import com.android.launcher3.Insettable;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.R;
@@ -76,7 +76,7 @@ import java.util.stream.IntStream;
  * Popup for showing the full list of available widgets
  */
 public class WidgetsFullSheet extends BaseWidgetSheet
-        implements Insettable, ProviderChangedListener, OnActivePageChangedListener,
+        implements ProviderChangedListener, OnActivePageChangedListener,
         WidgetsRecyclerView.HeaderViewDimensionsProvider, SearchModeListener {
     private static final String TAG = WidgetsFullSheet.class.getSimpleName();
 
@@ -130,6 +130,22 @@ public class WidgetsFullSheet extends BaseWidgetSheet
             removeOnLayoutChangeListener(mLayoutChangeListenerToShowTips);
         }
     };
+
+    private final OnAttachStateChangeListener mBindScrollbarInSearchMode =
+            new OnAttachStateChangeListener() {
+                @Override
+                public void onViewAttachedToWindow(View view) {
+                    WidgetsRecyclerView searchRecyclerView =
+                            mAdapters.get(AdapterHolder.SEARCH).mWidgetsRecyclerView;
+                    if (mIsInSearchMode && searchRecyclerView != null) {
+                        searchRecyclerView.bindFastScrollbar();
+                    }
+                }
+
+                @Override
+                public void onViewDetachedFromWindow(View view) {
+                }
+            };
 
     private final int mTabsHeight;
     private final int mViewPagerTopPadding;
@@ -305,11 +321,17 @@ public class WidgetsFullSheet extends BaseWidgetSheet
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         mActivityContext.getAppWidgetHost().removeProviderChangeListener(this);
+        mAdapters.get(AdapterHolder.PRIMARY).mWidgetsRecyclerView
+                .removeOnAttachStateChangeListener(mBindScrollbarInSearchMode);
+        if (mHasWorkProfile) {
+            mAdapters.get(AdapterHolder.WORK).mWidgetsRecyclerView
+                    .removeOnAttachStateChangeListener(mBindScrollbarInSearchMode);
+        }
     }
 
     @Override
     public void setInsets(Rect insets) {
-        mInsets.set(insets);
+        super.setInsets(insets);
 
         setBottomPadding(mAdapters.get(AdapterHolder.PRIMARY).mWidgetsRecyclerView, insets.bottom);
         setBottomPadding(mAdapters.get(AdapterHolder.SEARCH).mWidgetsRecyclerView, insets.bottom);
@@ -323,7 +345,6 @@ public class WidgetsFullSheet extends BaseWidgetSheet
             clearNavBarColor();
         }
 
-        ((TopRoundedCornerView) mContent).setNavBarScrimHeight(mInsets.bottom);
         requestLayout();
     }
 
@@ -350,24 +371,6 @@ public class WidgetsFullSheet extends BaseWidgetSheet
                 doMeasure(widthMeasureSpec, heightMeasureSpec);
             }
         }
-    }
-
-    private void doMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        DeviceProfile deviceProfile = mActivityContext.getDeviceProfile();
-        int widthUsed;
-        if (mInsets.bottom > 0) {
-            widthUsed = mInsets.left + mInsets.right;
-        } else {
-            Rect padding = deviceProfile.workspacePadding;
-            widthUsed = Math.max(padding.left + padding.right,
-                    2 * (mInsets.left + mInsets.right));
-        }
-
-        int heightUsed = mInsets.top + deviceProfile.edgeMarginPx;
-        measureChildWithMargins(mContent, widthMeasureSpec,
-                widthUsed, heightMeasureSpec, heightUsed);
-        setMeasuredDimension(MeasureSpec.getSize(widthMeasureSpec),
-                MeasureSpec.getSize(heightMeasureSpec));
     }
 
     /** Returns {@code true} if the max spans have been updated. */
@@ -518,7 +521,12 @@ public class WidgetsFullSheet extends BaseWidgetSheet
                                 mNoWidgetsView.getText().length(), noWidgetsViewTextBounds);
                 noWidgetsViewHeight = noWidgetsViewTextBounds.height();
             }
-            float maxTableHeight = (mActivityContext.getDeviceProfile().availableHeightPx
+            doMeasure(
+                    makeMeasureSpec(mActivityContext.getDeviceProfile().availableWidthPx,
+                            MeasureSpec.EXACTLY),
+                    makeMeasureSpec(mActivityContext.getDeviceProfile().availableHeightPx,
+                            MeasureSpec.EXACTLY));
+            float maxTableHeight = (mContent.getMeasuredHeight()
                     - mTabsHeight - mViewPagerTopPadding - getHeaderViewHeight()
                     - noWidgetsViewHeight) * RECOMMENDATION_TABLE_HEIGHT_RATIO;
 
@@ -773,6 +781,12 @@ public class WidgetsFullSheet extends BaseWidgetSheet
             mWidgetsRecyclerView.setHeaderViewDimensionsProvider(WidgetsFullSheet.this);
             mWidgetsRecyclerView.setEdgeEffectFactory(
                     ((TopRoundedCornerView) mContent).createEdgeEffectFactory());
+            // Recycler view binds to fast scroller when it is attached to screen. Make sure
+            // search recycler view is bound to fast scroller if user is in search mode at the time
+            // of attachment.
+            if (mAdapterType == PRIMARY || mAdapterType == WORK) {
+                mWidgetsRecyclerView.addOnAttachStateChangeListener(mBindScrollbarInSearchMode);
+            }
             mWidgetsListAdapter.setApplyBitmapDeferred(false, mWidgetsRecyclerView);
             mWidgetsListAdapter.setMaxHorizontalSpansPerRow(mMaxSpansPerRow);
         }

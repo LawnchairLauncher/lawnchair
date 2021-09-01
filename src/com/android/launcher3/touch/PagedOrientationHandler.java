@@ -22,6 +22,7 @@ import android.graphics.Matrix;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.graphics.drawable.ShapeDrawable;
 import android.util.FloatProperty;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
@@ -123,7 +124,8 @@ public interface PagedOrientationHandler {
      * inside task menu view.
      */
     void setTaskOptionsMenuLayoutOrientation(DeviceProfile deviceProfile,
-            LinearLayout taskMenuLayout);
+            LinearLayout taskMenuLayout, int dividerSpacing,
+            ShapeDrawable dividerDrawable);
     /**
      * Sets layout param attributes for {@link com.android.launcher3.popup.SystemShortcut} child
      * views inside task menu view.

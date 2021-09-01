@@ -41,10 +41,10 @@
         parent="TextAppearance.GestureTutorial">
         <item name="android:gravity">start</item>
         <item name="android:textColor">?android:attr/textColorPrimary</item>
-        <item name="android:fontFamily">google-sans-display</item>
+        <item name="android:fontFamily">google-sans-regular</item>
         <item name="android:letterSpacing">0.03</item>
         <item name="android:textSize">36sp</item>
-        <item name="android:lineHeight">42sp</item>
+        <item name="android:lineHeight">44sp</item>
     </style>
 
     <style name="TextAppearance.GestureTutorial.Dialog.Title"
@@ -108,6 +108,14 @@
     <style name="TextAppearance.GestureTutorial.LinkText"
         parent="TextAppearance.GestureTutorial.Feedback.Subtitle">
         <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="AllSetTheme" parent="@android:style/Theme.DeviceDefault.Light.NoActionBar">
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:enforceNavigationBarContrast">false</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:windowBackground">#FFFFFFFF</item>
     </style>
 
     <!--

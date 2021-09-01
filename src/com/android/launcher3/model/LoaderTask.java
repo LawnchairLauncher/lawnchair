@@ -75,7 +75,6 @@ import com.android.launcher3.model.data.FolderInfo;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.ItemInfoWithIcon;
 import com.android.launcher3.model.data.LauncherAppWidgetInfo;
-import com.android.launcher3.model.data.PackageItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.pm.InstallSessionHelper;
 import com.android.launcher3.pm.PackageInstallInfo;
@@ -380,6 +379,8 @@ public class LoaderTask implements Runnable {
                         LauncherSettings.Favorites.RANK);
                 final int optionsIndex = c.getColumnIndexOrThrow(
                         LauncherSettings.Favorites.OPTIONS);
+                final int sourceContainerIndex = c.getColumnIndexOrThrow(
+                        LauncherSettings.Favorites.APPWIDGET_SOURCE);
 
                 final LongSparseArray<Boolean> unlockedUsers = new LongSparseArray<>();
 
@@ -747,6 +748,7 @@ public class LoaderTask implements Runnable {
                                 appWidgetInfo.spanY = c.getInt(spanYIndex);
                                 appWidgetInfo.options = c.getInt(optionsIndex);
                                 appWidgetInfo.user = c.user;
+                                appWidgetInfo.sourceContainer = c.getInt(sourceContainerIndex);
 
                                 if (appWidgetInfo.spanX <= 0 || appWidgetInfo.spanY <= 0) {
                                     c.markDeleted("Widget has invalid size: "
@@ -758,16 +760,13 @@ public class LoaderTask implements Runnable {
                                 if (widgetProviderInfo != null
                                         && (appWidgetInfo.spanX < widgetProviderInfo.minSpanX
                                         || appWidgetInfo.spanY < widgetProviderInfo.minSpanY)) {
-                                    logDeleteWidgetInfo(mApp.getInvariantDeviceProfile(),
-                                            widgetProviderInfo);
-
-                                    // This can happen when display size changes.
-                                    c.markDeleted("Widget removed, min sizes not met: "
-                                            + "span=" + appWidgetInfo.spanX + "x"
-                                            + appWidgetInfo.spanY + " minSpan="
+                                    FileLog.d(TAG, "Widget " + widgetProviderInfo.getComponent()
+                                            + " minSizes not meet: span=" + appWidgetInfo.spanX
+                                            + "x" + appWidgetInfo.spanY + " minSpan="
                                             + widgetProviderInfo.minSpanX + "x"
                                             + widgetProviderInfo.minSpanY);
-                                    continue;
+                                    logWidgetInfo(mApp.getInvariantDeviceProfile(),
+                                            widgetProviderInfo);
                                 }
                                 if (!c.isOnWorkspaceOrHotseat()) {
                                     c.markDeleted("Widget found where container != " +
@@ -791,8 +790,8 @@ public class LoaderTask implements Runnable {
 
                                 if (appWidgetInfo.restoreStatus !=
                                         LauncherAppWidgetInfo.RESTORE_COMPLETED) {
-                                    String pkg = appWidgetInfo.providerName.getPackageName();
-                                    appWidgetInfo.pendingItemInfo = new PackageItemInfo(pkg);
+                                    appWidgetInfo.pendingItemInfo = WidgetsModel.newPendingItemInfo(
+                                            appWidgetInfo.providerName);
                                     appWidgetInfo.pendingItemInfo.user = appWidgetInfo.user;
                                     mIconCache.getTitleAndIconForApp(
                                             appWidgetInfo.pendingItemInfo, false);
@@ -988,10 +987,8 @@ public class LoaderTask implements Runnable {
     }
 
     @SuppressLint("NewApi") // Already added API check.
-    private static void logDeleteWidgetInfo(InvariantDeviceProfile idp,
+    private static void logWidgetInfo(InvariantDeviceProfile idp,
             LauncherAppWidgetProviderInfo widgetProviderInfo) {
-        FileLog.d(TAG, "Deleting " + widgetProviderInfo.getComponent()
-                + " due to min size constraint");
         Point cellSize = new Point();
         for (DeviceProfile deviceProfile : idp.supportedProfiles) {
             deviceProfile.getCellSize(cellSize);

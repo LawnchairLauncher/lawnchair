@@ -190,13 +190,15 @@ public final class Workspace extends Home {
                     launcher.movePointer(launchableCenter, dest, 10, downTime, true,
                             LauncherInstrumentation.GestureScope.INSIDE);
                 },
-                SPRING_LOADED_STATE_ORDINAL);
+                SPRING_LOADED_STATE_ORDINAL,
+                "long-pressing and moving");
         LauncherInstrumentation.log("dragIconToWorkspace: moved pointer");
         launcher.runToState(
                 () -> launcher.sendPointer(
                         downTime, SystemClock.uptimeMillis(), MotionEvent.ACTION_UP, dest,
                         LauncherInstrumentation.GestureScope.INSIDE),
-                NORMAL_STATE_ORDINAL);
+                NORMAL_STATE_ORDINAL,
+                "sending UP event");
         if (startsActivity || isWidgetShortcut) {
             launcher.expectEvent(TestProtocol.SEQUENCE_MAIN, LauncherInstrumentation.EVENT_START);
         }

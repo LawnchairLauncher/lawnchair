@@ -15,9 +15,9 @@
  */
 package com.android.quickstep.util;
 
+import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
 import static com.android.launcher3.states.RotationHelper.deltaRotation;
 import static com.android.launcher3.touch.PagedOrientationHandler.MATRIX_POST_TRANSLATE;
-import static com.android.quickstep.util.NavigationModeFeatureFlag.LIVE_TILE;
 import static com.android.quickstep.util.RecentsOrientedState.postDisplayRotation;
 import static com.android.quickstep.util.RecentsOrientedState.preDisplayRotation;
 import static com.android.systemui.shared.system.WindowManagerWrapper.WINDOWING_MODE_FULLSCREEN;
@@ -56,6 +56,7 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
 
     private final Context mContext;
     private final BaseActivityInterface mSizeStrategy;
+    private final boolean mIsForLiveTile;
 
     @NonNull
     private RecentsOrientedState mOrientationState;
@@ -93,8 +94,14 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
     private int mOrientationStateId;
 
     public TaskViewSimulator(Context context, BaseActivityInterface sizeStrategy) {
+        this(context, sizeStrategy, false);
+    }
+
+    public TaskViewSimulator(Context context, BaseActivityInterface sizeStrategy,
+            boolean isForLiveTile) {
         mContext = context;
         mSizeStrategy = sizeStrategy;
+        mIsForLiveTile = isForLiveTile;
 
         // TODO(b/187074722): Don't create this per-TaskViewSimulator
         mOrientationState = TraceHelper.allowIpcs("",
@@ -302,7 +309,8 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
                 .withWindowCrop(mTmpCropRect)
                 .withCornerRadius(getCurrentCornerRadius());
 
-        if (LIVE_TILE.get() && params.getRecentsSurface() != null) {
+        if (ENABLE_QUICKSTEP_LIVE_TILE.get() && mIsForLiveTile
+                && params.getRecentsSurface() != null) {
             // When relativeLayer = 0, it reverts the surfaces back to the original order.
             builder.withRelativeLayerTo(params.getRecentsSurface(),
                     mDrawsBelowRecents ? Integer.MIN_VALUE : 0);

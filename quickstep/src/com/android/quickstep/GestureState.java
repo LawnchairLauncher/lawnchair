@@ -142,6 +142,8 @@ public class GestureState implements RecentsAnimationCallbacks.RecentsAnimationL
     private RemoteAnimationTargetCompat mLastAppearedTaskTarget;
     private Set<Integer> mPreviouslyAppearedTaskIds = new HashSet<>();
     private int mLastStartedTaskId = -1;
+    private RecentsAnimationController mRecentsAnimationController;
+    private ThumbnailData mRecentsAnimationCanceledSnapshot;
 
     /** The time when the swipe up gesture is triggered. */
     private long mSwipeUpStartTimeMs;
@@ -351,19 +353,39 @@ public class GestureState implements RecentsAnimationCallbacks.RecentsAnimationL
     @Override
     public void onRecentsAnimationStart(RecentsAnimationController controller,
             RecentsAnimationTargets targets) {
+        mRecentsAnimationController = controller;
         mStateCallback.setState(STATE_RECENTS_ANIMATION_STARTED);
     }
 
     @Override
     public void onRecentsAnimationCanceled(ThumbnailData thumbnailData) {
+        mRecentsAnimationCanceledSnapshot = thumbnailData;
         mStateCallback.setState(STATE_RECENTS_ANIMATION_CANCELED);
         mStateCallback.setState(STATE_RECENTS_ANIMATION_ENDED);
+        if (mRecentsAnimationCanceledSnapshot != null) {
+            // Clean up the screenshot to finalize the recents animation cancel
+            if (mRecentsAnimationController != null) {
+                mRecentsAnimationController.cleanupScreenshot();
+            }
+            mRecentsAnimationCanceledSnapshot = null;
+        }
     }
 
     @Override
     public void onRecentsAnimationFinished(RecentsAnimationController controller) {
         mStateCallback.setState(STATE_RECENTS_ANIMATION_FINISHED);
         mStateCallback.setState(STATE_RECENTS_ANIMATION_ENDED);
+    }
+
+    /**
+     * Returns and clears the canceled animation thumbnail data. This call only returns a value
+     * while STATE_RECENTS_ANIMATION_CANCELED state is being set, and the caller is responsible for
+     * calling {@link RecentsAnimationController#cleanupScreenshot()}.
+     */
+    ThumbnailData consumeRecentsAnimationCanceledSnapshot() {
+        ThumbnailData data = mRecentsAnimationCanceledSnapshot;
+        mRecentsAnimationCanceledSnapshot = null;
+        return data;
     }
 
     void setSwipeUpStartTimeMs(long uptimeMs) {
