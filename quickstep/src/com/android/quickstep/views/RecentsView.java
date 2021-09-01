@@ -1357,21 +1357,22 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             }
         }
 
+        int targetPage = -1;
         if (mNextPage == INVALID_PAGE) {
             // Set the current page to the running task, but not if settling on new task.
             if (runningTaskId != -1) {
-                setCurrentPage(indexOfChild(newRunningTaskView));
+                targetPage = indexOfChild(newRunningTaskView);
             } else if (getTaskViewCount() > 0) {
-                setCurrentPage(indexOfChild(getTaskViewAt(0)));
+                targetPage = indexOfChild(getTaskViewAt(0));
             }
         } else if (currentTaskId != -1) {
             currentTaskView = getTaskViewByTaskId(currentTaskId);
             if (currentTaskView != null) {
-                int currentTaskViewIndex = indexOfChild(currentTaskView);
-                if (mCurrentPage != currentTaskViewIndex) {
-                    setCurrentPage(currentTaskViewIndex);
-                }
+                targetPage = indexOfChild(currentTaskView);
             }
+        }
+        if (targetPage != -1 && mCurrentPage != targetPage) {
+            setCurrentPage(targetPage);
         }
 
         if (mIgnoreResetTaskId != -1 &&
