@@ -1367,7 +1367,10 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         } else if (currentTaskId != -1) {
             currentTaskView = getTaskViewByTaskId(currentTaskId);
             if (currentTaskView != null) {
-                setCurrentPage(indexOfChild(currentTaskView));
+                int currentTaskViewIndex = indexOfChild(currentTaskView);
+                if (mCurrentPage != currentTaskViewIndex) {
+                    setCurrentPage(currentTaskViewIndex);
+                }
             }
         }
 
