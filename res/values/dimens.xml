@@ -272,6 +272,8 @@
 
 <!-- Notifications -->
     <dimen name="bg_round_rect_radius">8dp</dimen>
+    <dimen name="notification_max_trans">8dp</dimen>
+    <dimen name="notification_space">8dp</dimen>
     <dimen name="notification_padding">16dp</dimen>
     <dimen name="notification_padding_top">18dp</dimen>
     <dimen name="notification_header_text_size">14sp</dimen>
