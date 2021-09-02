@@ -531,7 +531,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
         ActivityManager.RunningTaskInfo[] runningTasks;
         if (mIsSwipeForStagedSplit) {
             int[] splitTaskIds =
-                    LauncherSplitScreenListener.INSTANCE.getNoCreate().getSplitTaskIds();
+                    LauncherSplitScreenListener.INSTANCE.getNoCreate().getRunningSplitTaskIds();
             runningTasks = new ActivityManager.RunningTaskInfo[splitTaskIds.length];
             for (int i = 0; i < splitTaskIds.length; i++) {
                 int taskId = splitTaskIds[i];

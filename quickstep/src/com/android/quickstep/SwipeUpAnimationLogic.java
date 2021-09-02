@@ -90,7 +90,8 @@ public abstract class SwipeUpAnimationLogic implements
         mGestureState = gestureState;
 
         mIsSwipeForStagedSplit = ENABLE_SPLIT_SELECT.get() &&
-                LauncherSplitScreenListener.INSTANCE.getNoCreate().getSplitTaskIds().length > 1;
+                LauncherSplitScreenListener.INSTANCE.getNoCreate()
+                        .getRunningSplitTaskIds().length > 1;
 
         TaskViewSimulator primaryTVS = new TaskViewSimulator(context,
                 gestureState.getActivityInterface());
