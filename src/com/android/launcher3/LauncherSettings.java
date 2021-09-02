@@ -199,6 +199,7 @@ public class LauncherSettings {
         public static final int CONTAINER_WIDGETS_TRAY = -105;
         public static final int CONTAINER_BOTTOM_WIDGETS_TRAY = -112;
         public static final int CONTAINER_PIN_WIDGETS = -113;
+        public static final int CONTAINER_WALLPAPERS = -114;
         // Represents search results view.
         public static final int CONTAINER_SEARCH_RESULTS = -106;
         public static final int CONTAINER_SHORTCUTS = -107;
