@@ -22,6 +22,7 @@ import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 import android.util.Size;
 import android.view.View;
 import android.view.View.MeasureSpec;
@@ -41,6 +42,7 @@ import com.android.launcher3.graphics.DragPreviewProvider;
 import com.android.launcher3.icons.FastBitmapDrawable;
 import com.android.launcher3.icons.LauncherIcons;
 import com.android.launcher3.icons.RoundDrawableWrapper;
+import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.widget.dragndrop.AppWidgetHostViewDragListener;
 import com.android.launcher3.widget.util.WidgetSizes;
 
@@ -94,6 +96,9 @@ public class PendingItemDragHelper extends DragPreviewProvider {
      */
     public void startDrag(Rect previewBounds, int previewBitmapWidth, int previewViewWidth,
             Point screenPos, DragSource source, DragOptions options) {
+        if (TestProtocol.sDebugTracing) {
+            Log.d(TestProtocol.NO_DROP_TARGET, "3");
+        }
         final Launcher launcher = Launcher.getLauncher(mView.getContext());
         LauncherAppState app = LauncherAppState.getInstance(launcher);
 
