@@ -119,4 +119,5 @@ public final class TestProtocol {
     public static final String FALLBACK_ACTIVITY_NO_SET = "b/181019015";
     public static final String TASK_VIEW_ID_CRASH = "b/195430732";
     public static final String L3_SWIPE_TO_HOME = "b/192018189";
+    public static final String NO_DROP_TARGET = "b/195031154";
 }
