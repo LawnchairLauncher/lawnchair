@@ -107,6 +107,13 @@ public class TaskOverlayFactory implements ResourceBasedOverride {
 
     public static void addSplitOptions(List<SystemShortcut> outShortcuts,
             BaseDraggingActivity activity, TaskView taskView, DeviceProfile deviceProfile) {
+        int[] taskViewTaskIds = taskView.getTaskIds();
+        boolean alreadyHasMultipleTasks = taskViewTaskIds[0] != -1 &&
+                taskViewTaskIds[1] != -1;
+        if (alreadyHasMultipleTasks) {
+            return;
+        }
+
         PagedOrientationHandler orientationHandler =
                 taskView.getRecentsView().getPagedOrientationHandler();
         List<SplitPositionOption> positions =
