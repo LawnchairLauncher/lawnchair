@@ -31,12 +31,9 @@
         android:elevation="@dimen/deep_shortcuts_elevation"
         android:orientation="vertical"/>
 
-    <LinearLayout
+    <com.android.launcher3.notification.NotificationContainer
         android:id="@+id/notification_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:visibility="gone"
-        android:background="?attr/popupColorPrimary"
-        android:elevation="@dimen/deep_shortcuts_elevation"
-        android:orientation="vertical"/>
+        android:visibility="gone"/>
 </com.android.launcher3.popup.PopupContainerWithArrow>
