@@ -1259,7 +1259,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                 mIgnoreResetTaskId == -1 ? null : getTaskViewByTaskId(mIgnoreResetTaskId);
 
         int[] splitTaskIds =
-                LauncherSplitScreenListener.INSTANCE.getNoCreate().getSplitTaskIds();
+                LauncherSplitScreenListener.INSTANCE.getNoCreate().getPersistentSplitIds();
         int requiredGroupTaskViews = splitTaskIds.length / 2;
 
         // Subtract half the number of split tasks and not total number because we've already
@@ -1963,6 +1963,9 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     /**
      * Called only when a swipe-up gesture from an app has completed. Only called after
      * {@link #onGestureAnimationStart} and {@link #onGestureAnimationEnd()}.
+     *
+     * TODO(b/198310766) Need to also explicitly exit split screen if
+     *  the swipe up was to home
      */
     public void onSwipeUpAnimationSuccess() {
         animateUpTaskIconScale();
