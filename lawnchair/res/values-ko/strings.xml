@@ -75,7 +75,7 @@
     </plurals>
     <string name="hotseat_qsb_label">검색 창 활성화</string>
     <string name="dt2s_admin_hint_title">관리자 권한이 필요합니다.</string>
-    <string name="dt2s_admin_hint">더블탭 화면 끄기 기능을 사용하려면 관리자 권한을 할당받아야합니다. \"설정 열기\"를 누른 후, Lawnchair앱을 등록시켜주세요</string>
+    <string name="dt2s_admin_hint">더블탭으로 화면 끄기 기능을 사용하려면 관리자 권한을 할당받아야합니다. \"설정 열기\"를 누른 후, Lawnchair앱을 등록시켜주세요</string>
     <string name="dt2s_admin_warning">두 번 눌러 화면 끄기 기능이 비활성화 되었습니다.</string>
     <string name="dt2s_a11y_hint_title">접근성 서비스가 활성화되어야합니다</string>
     <string name="dt2s_a11y_hint">두 번 눌러 화면 끄기를 사용하려면, 접근성 설정에서 Lawnchair를 활성화 해야합니다. \"설정 열기\"를 눌러 \"Lawnchair를 활성화 해주세요.</string>
