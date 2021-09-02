@@ -19,6 +19,7 @@ import android.content.Context;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
@@ -108,6 +109,9 @@ public abstract class BaseWidgetSheet extends AbstractSlideInView<Launcher>
 
     @Override
     public boolean onLongClick(View v) {
+        if (TestProtocol.sDebugTracing) {
+            Log.d(TestProtocol.NO_DROP_TARGET, "1");
+        }
         TestLogging.recordEvent(TestProtocol.SEQUENCE_MAIN, "Widgets.onLongClick");
         v.cancelLongPress();
         if (!ItemLongClickListener.canStartDrag(mActivityContext)) return false;
@@ -178,6 +182,9 @@ public abstract class BaseWidgetSheet extends AbstractSlideInView<Launcher>
     }
 
     private boolean beginDraggingWidget(WidgetCell v) {
+        if (TestProtocol.sDebugTracing) {
+            Log.d(TestProtocol.NO_DROP_TARGET, "2");
+        }
         // Get the widget preview as the drag representation
         WidgetImageView image = v.getWidgetView();
 
