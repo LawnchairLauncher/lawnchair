@@ -79,21 +79,19 @@
     <string name="allset_navigation_settings" msgid="4713404605961476027"><annotation id="link">"Nastavení navigace v systému"</annotation></string>
     <string name="action_share" msgid="2648470652637092375">"Sdílet"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"Snímek obrazovky"</string>
+    <!-- no translation found for action_split (2098009717623550676) -->
+    <skip />
     <string name="blocked_by_policy" msgid="2071401072261365546">"Aplikace nebo organizace zakazuje tuto akci"</string>
     <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"Přeskočit výukový program k navigaci?"</string>
     <string name="skip_tutorial_dialog_subtitle" msgid="544063326241955662">"Program později najdete v aplikaci <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="gesture_tutorial_action_button_label_cancel" msgid="3809842569351264108">"Zrušit"</string>
     <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"Přeskočit"</string>
-    <!-- no translation found for taskbar_edu_opened (3950252793551919129) -->
-    <skip />
-    <!-- no translation found for taskbar_edu_closed (126643734478892862) -->
-    <skip />
-    <!-- no translation found for taskbar_edu_dock (8484594848150559893) -->
+    <string name="taskbar_edu_opened" msgid="3950252793551919129">"Zobrazila se výuka k hlavnímu panelu"</string>
+    <string name="taskbar_edu_closed" msgid="126643734478892862">"Výuka k hlavnímu panelu byla zavřena"</string>
+    <!-- no translation found for taskbar_edu_stashing (5212374387411764031) -->
     <skip />
     <string name="taskbar_edu_next" msgid="4007618274426775841">"Další"</string>
-    <!-- no translation found for taskbar_edu_previous (459202320127201702) -->
-    <skip />
+    <string name="taskbar_edu_previous" msgid="459202320127201702">"Zpět"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"Zavřít"</string>
-    <!-- no translation found for taskbar_edu_done (6880178093977704569) -->
-    <skip />
+    <string name="taskbar_edu_done" msgid="6880178093977704569">"Hotovo"</string>
 </resources>
