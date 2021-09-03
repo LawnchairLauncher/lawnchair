@@ -2001,9 +2001,6 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     /**
      * Called only when a swipe-up gesture from an app has completed. Only called after
      * {@link #onGestureAnimationStart} and {@link #onGestureAnimationEnd()}.
-     *
-     * TODO(b/198310766) Need to also explicitly exit split screen if
-     *  the swipe up was to home
      */
     public void onSwipeUpAnimationSuccess() {
         animateUpTaskIconScale();

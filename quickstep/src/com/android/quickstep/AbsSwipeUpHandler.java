@@ -942,6 +942,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
                 mStateCallback.setState(STATE_SCALED_CONTROLLER_HOME | STATE_CAPTURE_SCREENSHOT);
                 // Notify swipe-to-home (recents animation) is finished
                 SystemUiProxy.INSTANCE.get(mContext).notifySwipeToHomeFinished();
+                LauncherSplitScreenListener.INSTANCE.getNoCreate().notifySwipingToHome();
                 break;
             case RECENTS:
                 mStateCallback.setState(STATE_SCALED_CONTROLLER_RECENTS | STATE_CAPTURE_SCREENSHOT
@@ -1802,8 +1803,13 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
                 mGestureState.updateLastStartedTaskId(taskId);
                 boolean hasTaskPreviouslyAppeared = mGestureState.getPreviouslyAppearedTaskIds()
                         .contains(taskId);
+                boolean isOldTaskSplit = LauncherSplitScreenListener.INSTANCE.getNoCreate()
+                        .getRunningSplitTaskIds().length > 0;
                 nextTask.launchTask(success -> {
                     resultCallback.accept(success);
+                    if (isOldTaskSplit) {
+                        SystemUiProxy.INSTANCE.getNoCreate().exitSplitScreen(taskId);
+                    }
                     if (success) {
                         if (hasTaskPreviouslyAppeared) {
                             onRestartPreviouslyAppearedTask();

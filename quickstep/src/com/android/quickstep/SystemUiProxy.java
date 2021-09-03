@@ -533,10 +533,17 @@ public class SystemUiProxy implements ISystemUiProxy,
         }
     }
 
-    public void exitSplitScreen() {
+    /**
+     * To be called whenever the user exits out of split screen apps (either by launching another
+     * app or by swiping home)
+     * @param topTaskId The taskId of the new app that was launched. System will then move this task
+     *                  to the front of what the user sees while removing all other split stages.
+     *                  If swiping to home (or there is no task to put at the top), can pass in -1.
+     */
+    public void exitSplitScreen(int topTaskId) {
         if (mSplitScreen != null) {
             try {
-                mSplitScreen.exitSplitScreen();
+                mSplitScreen.exitSplitScreen(topTaskId);
             } catch (RemoteException e) {
                 Log.w(TAG, "Failed call exitSplitScreen");
             }

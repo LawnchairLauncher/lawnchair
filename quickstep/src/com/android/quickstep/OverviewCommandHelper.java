@@ -32,6 +32,7 @@ import androidx.annotation.UiThread;
 import com.android.launcher3.statemanager.StatefulActivity;
 import com.android.launcher3.util.RunnableList;
 import com.android.quickstep.RecentsAnimationCallbacks.RecentsAnimationListener;
+import com.android.quickstep.util.LauncherSplitScreenListener;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
 import com.android.systemui.shared.recents.model.ThumbnailData;
@@ -157,6 +158,7 @@ public class OverviewCommandHelper {
             }
             if (cmd.type == TYPE_HOME) {
                 mService.startActivity(mOverviewComponentObserver.getHomeIntent());
+                LauncherSplitScreenListener.INSTANCE.getNoCreate().notifySwipingToHome();
                 return true;
             }
         } else {
@@ -175,6 +177,7 @@ public class OverviewCommandHelper {
                     return launchTask(recents, getNextTask(recents), cmd);
                 case TYPE_HOME:
                     recents.startHome();
+                    LauncherSplitScreenListener.INSTANCE.getNoCreate().notifySwipingToHome();
                     return true;
             }
         }
