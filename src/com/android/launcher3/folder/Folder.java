@@ -276,15 +276,19 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
         mPageIndicator = findViewById(R.id.folder_page_indicator);
         mFolderName = findViewById(R.id.folder_name);
         mFolderName.setTextSize(TypedValue.COMPLEX_UNIT_PX, dp.folderLabelTextSizePx);
-        mFolderName.setOnBackKeyListener(this);
-        mFolderName.setOnFocusChangeListener(this);
-        mFolderName.setOnEditorActionListener(this);
-        mFolderName.setSelectAllOnFocus(true);
-        mFolderName.setInputType(mFolderName.getInputType()
-                & ~InputType.TYPE_TEXT_FLAG_AUTO_CORRECT
-                | InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS
-                | InputType.TYPE_TEXT_FLAG_CAP_WORDS);
-        mFolderName.forceDisableSuggestions(true);
+        if (mActivityContext.supportsIme()) {
+            mFolderName.setOnBackKeyListener(this);
+            mFolderName.setOnFocusChangeListener(this);
+            mFolderName.setOnEditorActionListener(this);
+            mFolderName.setSelectAllOnFocus(true);
+            mFolderName.setInputType(mFolderName.getInputType()
+                    & ~InputType.TYPE_TEXT_FLAG_AUTO_CORRECT
+                    | InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS
+                    | InputType.TYPE_TEXT_FLAG_CAP_WORDS);
+            mFolderName.forceDisableSuggestions(true);
+        } else {
+            mFolderName.setEnabled(false);
+        }
 
         mFooter = findViewById(R.id.folder_footer);
         mFooterHeight = getResources().getDimensionPixelSize(R.dimen.folder_label_height);
