@@ -90,6 +90,8 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
     private final PointF mTranslationForReorderBounce = new PointF(0, 0);
     private final PointF mTranslationForReorderPreview = new PointF(0, 0);
 
+    private float mTranslationXForTaskbarAlignmentAnimation = 0f;
+
     private final PointF mTranslationForMoveFromCenterAnimation = new PointF(0, 0);
 
     private float mScaleForReorderBounce = 1f;
@@ -825,7 +827,8 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
 
     private void updateTranslation() {
         super.setTranslationX(mTranslationForReorderBounce.x + mTranslationForReorderPreview.x
-                + mTranslationForMoveFromCenterAnimation.x);
+                + mTranslationForMoveFromCenterAnimation.x
+                + mTranslationXForTaskbarAlignmentAnimation);
         super.setTranslationY(mTranslationForReorderBounce.y + mTranslationForReorderPreview.y
                 + mTranslationForMoveFromCenterAnimation.y);
     }
@@ -860,9 +863,27 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
         return mScaleForReorderBounce;
     }
 
+    /**
+     * Sets translation values for move from center animation
+     */
     public void setTranslationForMoveFromCenterAnimation(float x, float y) {
         mTranslationForMoveFromCenterAnimation.set(x, y);
         updateTranslation();
+    }
+
+    /**
+     * Sets translationX for taskbar to launcher alignment animation
+     */
+    public void setTranslationXForTaskbarAlignmentAnimation(float translationX) {
+        mTranslationXForTaskbarAlignmentAnimation = translationX;
+        updateTranslation();
+    }
+
+    /**
+     * Returns translationX value for taskbar to launcher alignment animation
+     */
+    public float getTranslationXForTaskbarAlignmentAnimation() {
+        return mTranslationXForTaskbarAlignmentAnimation;
     }
 
     public View getView() {

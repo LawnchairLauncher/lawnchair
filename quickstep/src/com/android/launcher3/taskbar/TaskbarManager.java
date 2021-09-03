@@ -42,6 +42,7 @@ import com.android.quickstep.SysUINavigationMode;
 import com.android.quickstep.SysUINavigationMode.Mode;
 import com.android.quickstep.SystemUiProxy;
 import com.android.quickstep.TouchInteractionService;
+import com.android.quickstep.util.ScopedUnfoldTransitionProgressProvider;
 
 /**
  * Class to manage taskbar lifecycle
@@ -57,6 +58,10 @@ public class TaskbarManager implements DisplayController.DisplayInfoChangeListen
     private final SysUINavigationMode mSysUINavigationMode;
     private final TaskbarNavButtonController mNavButtonController;
     private final SettingsCache.OnChangeListener mUserSetupCompleteListener;
+
+    // The source for this provider is set when Launcher is available
+    private final ScopedUnfoldTransitionProgressProvider mUnfoldProgressProvider =
+            new ScopedUnfoldTransitionProgressProvider();
 
     private TaskbarActivityContext mTaskbarActivityContext;
     private BaseQuickstepLauncher mLauncher;
@@ -120,6 +125,9 @@ public class TaskbarManager implements DisplayController.DisplayInfoChangeListen
      */
     public void setLauncher(@NonNull BaseQuickstepLauncher launcher) {
         mLauncher = launcher;
+        mUnfoldProgressProvider.setSourceProvider(launcher
+                .getUnfoldTransitionProgressProvider());
+
         if (mTaskbarActivityContext != null) {
             mTaskbarActivityContext.setUIController(
                     new LauncherTaskbarUIController(launcher, mTaskbarActivityContext));
@@ -135,6 +143,7 @@ public class TaskbarManager implements DisplayController.DisplayInfoChangeListen
             if (mTaskbarActivityContext != null) {
                 mTaskbarActivityContext.setUIController(TaskbarUIController.DEFAULT);
             }
+            mUnfoldProgressProvider.setSourceProvider(null);
         }
     }
 
@@ -153,8 +162,8 @@ public class TaskbarManager implements DisplayController.DisplayInfoChangeListen
             return;
         }
 
-        mTaskbarActivityContext = new TaskbarActivityContext(
-                mContext, dp.copy(mContext), mNavButtonController);
+        mTaskbarActivityContext = new TaskbarActivityContext(mContext, dp.copy(mContext),
+                mNavButtonController, mUnfoldProgressProvider);
         mTaskbarActivityContext.init();
         if (mLauncher != null) {
             mTaskbarActivityContext.setUIController(
