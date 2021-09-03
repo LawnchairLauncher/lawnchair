@@ -83,9 +83,9 @@ public final class Workspace extends Home {
                             + mLauncher.getTouchSlop());
 
             mLauncher.swipeToState(
-                    0,
+                    windowCornerRadius,
                     startY,
-                    0,
+                    windowCornerRadius,
                     startY - swipeHeight - mLauncher.getTouchSlop(),
                     12,
                     ALL_APPS_STATE_ORDINAL, LauncherInstrumentation.GestureScope.INSIDE);
