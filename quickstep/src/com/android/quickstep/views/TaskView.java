@@ -838,6 +838,7 @@ public class TaskView extends FrameLayout implements Reusable {
                     RecentsView recentsView = getRecentsView();
                     recentsView.switchToScreenshot(
                             () -> recentsView.finishRecentsAnimation(true /* toRecents */,
+                                    false /* shouldPip */,
                                     this::showTaskMenu));
                 } else {
                     showTaskMenu();
