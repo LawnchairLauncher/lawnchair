@@ -1541,7 +1541,7 @@ public class TaskView extends FrameLayout implements Reusable {
 
         public FullscreenDrawParams(Context context) {
             mCornerRadius = TaskCornerRadius.get(context);
-            mWindowCornerRadius = QuickStepContract.getWindowCornerRadius(context.getResources());
+            mWindowCornerRadius = QuickStepContract.getWindowCornerRadius(context);
 
             mCurrentDrawnCornerRadius = mCornerRadius;
         }
