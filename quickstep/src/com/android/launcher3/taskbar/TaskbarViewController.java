@@ -16,20 +16,24 @@
 package com.android.launcher3.taskbar;
 
 import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
-import static com.android.launcher3.LauncherAnimUtils.VIEW_TRANSLATE_X;
 import static com.android.launcher3.Utilities.squaredHypot;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.quickstep.AnimatedFloat.VALUE;
 
 import android.graphics.Rect;
+import android.util.FloatProperty;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewTreeObserver;
+import android.view.ViewTreeObserver.OnPreDrawListener;
 
+import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.PendingAnimation;
+import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.util.MultiValueAlpha;
 import com.android.quickstep.AnimatedFloat;
@@ -117,6 +121,25 @@ public class TaskbarViewController {
         mTaskbarView.setClickAndLongClickListenersForIcon(icon);
     }
 
+    /**
+     * Adds one time pre draw listener to the taskbar view, it is called before
+     * drawing a frame and invoked only once
+     * @param listener callback that will be invoked before drawing the next frame
+     */
+    public void addOneTimePreDrawListener(Runnable listener) {
+        mTaskbarView.getViewTreeObserver().addOnPreDrawListener(new OnPreDrawListener() {
+            @Override
+            public boolean onPreDraw() {
+                final ViewTreeObserver viewTreeObserver = mTaskbarView.getViewTreeObserver();
+                if (viewTreeObserver.isAlive()) {
+                    listener.run();
+                    viewTreeObserver.removeOnPreDrawListener(this);
+                }
+                return true;
+            }
+        });
+    }
+
     public Rect getIconLayoutBounds() {
         return mTaskbarView.getIconLayoutBounds();
     }
@@ -194,7 +217,7 @@ public class TaskbarViewController {
             float childCenter = (child.getLeft() + child.getRight()) / 2;
             float hotseatIconCenter = hotseatPadding.left + hotseatCellSize * info.screenId
                     + hotseatCellSize / 2;
-            setter.setFloat(child, VIEW_TRANSLATE_X, hotseatIconCenter - childCenter, LINEAR);
+            setter.setFloat(child, ICON_TRANSLATE_X, hotseatIconCenter - childCenter, LINEAR);
         }
 
         AnimatorPlaybackController controller = setter.createPlaybackController();
@@ -257,4 +280,30 @@ public class TaskbarViewController {
             return false;
         }
     }
+
+    public static final FloatProperty<View> ICON_TRANSLATE_X =
+            new FloatProperty<View>("taskbarAligmentTranslateX") {
+
+                @Override
+                public void setValue(View view, float v) {
+                    if (view instanceof BubbleTextView) {
+                        ((BubbleTextView) view).setTranslationXForTaskbarAlignmentAnimation(v);
+                    } else if (view instanceof FolderIcon) {
+                        ((FolderIcon) view).setTranslationForTaskbarAlignmentAnimation(v);
+                    } else {
+                        view.setTranslationX(v);
+                    }
+                }
+
+                @Override
+                public Float get(View view) {
+                    if (view instanceof BubbleTextView) {
+                        return ((BubbleTextView) view)
+                                .getTranslationXForTaskbarAlignmentAnimation();
+                    } else if (view instanceof FolderIcon) {
+                        return ((FolderIcon) view).getTranslationXForTaskbarAlignmentAnimation();
+                    }
+                    return view.getTranslationX();
+                }
+            };
 }
