@@ -66,6 +66,7 @@ import androidx.test.uiautomator.UiObject2;
 import androidx.test.uiautomator.Until;
 
 import com.android.launcher3.ResourceUtils;
+import com.android.launcher3.testing.TestInformationRequest;
 import com.android.launcher3.testing.TestProtocol;
 import com.android.systemui.shared.system.ContextUtils;
 import com.android.systemui.shared.system.QuickStepContract;
@@ -301,15 +302,25 @@ public final class LauncherInstrumentation {
     }
 
     Bundle getTestInfo(String request, String arg) {
+        return getTestInfo(request, arg, null);
+    }
+
+    Bundle getTestInfo(String request, String arg, Bundle extra) {
         try (ContentProviderClient client = getContext().getContentResolver()
                 .acquireContentProviderClient(mTestProviderUri)) {
-            return client.call(request, arg, null);
+            return client.call(request, arg, extra);
         } catch (DeadObjectException e) {
             fail("Launcher crashed");
             return null;
         } catch (RemoteException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    Bundle getTestInfo(TestInformationRequest request) {
+        Bundle extra = new Bundle();
+        extra.putParcelable(TestProtocol.TEST_INFO_REQUEST_FIELD, request);
+        return getTestInfo(request.getRequestName(), null, extra);
     }
 
     Insets getTargetInsets() {

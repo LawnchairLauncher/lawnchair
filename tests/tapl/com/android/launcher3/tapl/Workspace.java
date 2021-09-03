@@ -41,6 +41,7 @@ import androidx.test.uiautomator.UiObject2;
 import androidx.test.uiautomator.Until;
 
 import com.android.launcher3.testing.TestProtocol;
+import com.android.launcher3.testing.WorkspaceCellCenterRequest;
 
 import java.util.List;
 import java.util.function.Supplier;
@@ -88,7 +89,7 @@ public final class Workspace extends Home {
             final int windowCornerRadius = (int) Math.ceil(mLauncher.getWindowCornerRadius());
             final int startY = deviceHeight - Math.max(bottomGestureMargin, windowCornerRadius) - 1;
             final int swipeHeight = mLauncher.getTestInfo(
-                            TestProtocol.REQUEST_HOME_TO_ALL_APPS_SWIPE_HEIGHT)
+                    TestProtocol.REQUEST_HOME_TO_ALL_APPS_SWIPE_HEIGHT)
                     .getInt(TestProtocol.TEST_INFO_RESPONSE_FIELD);
             LauncherInstrumentation.log(
                     "switchToAllApps: deviceHeight = " + deviceHeight + ", startY = " + startY
@@ -180,8 +181,8 @@ public final class Workspace extends Home {
      *
      * @param appIcon   - icon to drag.
      * @param pageDelta - how many pages should the icon be dragged from the current page.
-     *                    It can be a negative value. currentPage + pageDelta should be greater
-     *                    than or equal to 0.
+     *                  It can be a negative value. currentPage + pageDelta should be greater
+     *                  than or equal to 0.
      */
     public void dragIcon(AppIcon appIcon, int pageDelta) {
         if (mHotseat.getVisibleBounds().height() > mHotseat.getVisibleBounds().width()) {
@@ -266,8 +267,9 @@ public final class Workspace extends Home {
     /**
      * Uninstall the appIcon by dragging it to the 'uninstall' drop point of the drop_target_bar.
      *
-     * @param launcher the root TAPL instrumentation object of {@link LauncherInstrumentation} type.
-     * @param appIcon to be uninstalled.
+     * @param launcher              the root TAPL instrumentation object of {@link
+     *                              LauncherInstrumentation} type.
+     * @param appIcon               to be uninstalled.
      * @param expectLongClickEvents the runnable to be executed to verify expected longclick event.
      * @return validated workspace after the existing appIcon being uninstalled.
      */
@@ -302,6 +304,23 @@ public final class Workspace extends Home {
                 return new Workspace(launcher);
             }
         }
+    }
+
+    /**
+     * Get cell layout's grids size. The return point's x and y values are the cell counts in X and
+     * Y directions respectively, not the values in pixels.
+     */
+    public Point getIconGridDimensions() {
+        int[] countXY = mLauncher.getTestInfo(
+                TestProtocol.REQUEST_WORKSPACE_CELL_LAYOUT_SIZE).getIntArray(
+                TestProtocol.TEST_INFO_RESPONSE_FIELD);
+        return new Point(countXY[0], countXY[1]);
+    }
+
+    static Point getCellCenter(LauncherInstrumentation launcher, int cellX, int cellY) {
+        return launcher.getTestInfo(WorkspaceCellCenterRequest.builder().setCellX(
+                cellX).setCellY(cellY).build()).getParcelable(
+                TestProtocol.TEST_INFO_RESPONSE_FIELD);
     }
 
     /**

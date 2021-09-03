@@ -24,6 +24,8 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import android.graphics.Point;
+
 import androidx.test.filters.LargeTest;
 import androidx.test.runner.AndroidJUnit4;
 
@@ -368,8 +370,7 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
             AllApps allApps = mLauncher.getWorkspace().switchToAllApps();
             allApps.freeze();
             try {
-                appIcon = allApps.getAppIcon(name);
-                appIcon.dragToWorkspace(false, false);
+                allApps.getAppIcon(name).dragToWorkspace(false, false);
             } finally {
                 allApps.unfreeze();
             }
@@ -431,7 +432,7 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
     @PortraitLandscape
     public void testDeleteFromWorkspace() throws Exception {
         // test delete both built-in apps and user-installed app from workspace
-        for (String appName : new String[] {"Gmail", "Play Store", APP_NAME}) {
+        for (String appName : new String[]{"Gmail", "Play Store", APP_NAME}) {
             final AppIcon appIcon = createShortcutIfNotExist(appName);
             Workspace workspace = mLauncher.getWorkspace().deleteAppIcon(appIcon);
             assertNull(appName + " app was found after being deleted from workspace",
@@ -478,6 +479,38 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
             verifyAppUninstalledFromAllApps(workspace, DUMMY_APP_NAME);
         } finally {
             TestUtil.uninstallDummyApp();
+        }
+    }
+
+    @Test
+    @PortraitLandscape
+    public void testDragAppIconToWorkspaceCell() throws Exception {
+        final Point dimensions = mLauncher.getWorkspace().getIconGridDimensions();
+
+        Point[] targets = {
+                new Point(0, 1),
+                new Point(0, dimensions.y - 2),
+                new Point(dimensions.x - 1, 1),
+                new Point(dimensions.x - 1, dimensions.y - 2),
+                new Point(dimensions.x / 2, dimensions.y / 2)
+        };
+
+        for (Point target : targets) {
+            final AllApps allApps = mLauncher.getWorkspace().switchToAllApps();
+            allApps.freeze();
+            try {
+                allApps.getAppIcon(APP_NAME).dragToWorkspace(target.x, target.y);
+            } finally {
+                allApps.unfreeze();
+            }
+            // Reset the workspace for the next shortcut creation.
+            initialize(this);
+        }
+
+        // test to move a shortcut to other cell.
+        final AppIcon launcherTestAppIcon = createShortcutIfNotExist(APP_NAME);
+        for (Point target : targets) {
+            launcherTestAppIcon.dragToWorkspace(target.x, target.y);
         }
     }
 
