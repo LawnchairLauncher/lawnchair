@@ -212,6 +212,14 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
         return mViewCache;
     }
 
+    @Override
+    public boolean supportsIme() {
+        // Currently we don't support IME because we have FLAG_NOT_FOCUSABLE. We can remove that
+        // flag when opening a floating view that needs IME (such as Folder), but then that means
+        // Taskbar will be below IME and thus users can't click the back button.
+        return false;
+    }
+
     /**
      * Sets a new data-source for this taskbar instance
      */
