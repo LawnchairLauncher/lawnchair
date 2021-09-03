@@ -223,7 +223,6 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
         mDp = dp;
         updateVerticalMargin(SysUINavigationMode.getMode(getContext()));
         requestLayout();
-        setSplitButtonVisible(mDp.isTablet);
     }
 
     public void setSplitButtonVisible(boolean visible) {
