@@ -487,6 +487,13 @@ public abstract class ArrowPopup<T extends StatefulActivity<LauncherState>>
         return getMeasuredWidth() - mArrowOffsetHorizontal - mArrowWidth;
     }
 
+    /**
+     * @param show If true, shows arrow (when applicable), otherwise hides arrow.
+     */
+    public void showArrow(boolean show) {
+        mArrow.setVisibility(show && shouldAddArrow() ? VISIBLE : INVISIBLE);
+    }
+
     private void addArrow() {
         getPopupContainer().addView(mArrow);
         mArrow.setX(getX() + getArrowLeft());
