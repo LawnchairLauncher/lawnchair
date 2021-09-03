@@ -51,8 +51,8 @@ import com.android.systemui.shared.system.SyncRtSurfaceTransactionApplierCompat.
  */
 public class TaskViewSimulator implements TransformParams.BuilderProxy {
 
-    private final String TAG = "TaskViewSimulator";
-    private final boolean DEBUG = false;
+    private static final String TAG = "TaskViewSimulator";
+    private static final boolean DEBUG = false;
 
     private final Rect mTmpCropRect = new Rect();
     private final RectF mTempRectF = new RectF();
