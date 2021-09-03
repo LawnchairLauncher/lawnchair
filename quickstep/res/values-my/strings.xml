@@ -79,6 +79,8 @@
     <string name="allset_navigation_settings" msgid="4713404605961476027"><annotation id="link">"စနစ် လမ်းညွှန် ဆက်တင်များ"</annotation></string>
     <string name="action_share" msgid="2648470652637092375">"မျှဝေရန်"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"ဖန်သားပြင်ဓာတ်ပုံ"</string>
+    <!-- no translation found for action_split (2098009717623550676) -->
+    <skip />
     <string name="blocked_by_policy" msgid="2071401072261365546">"ဤလုပ်ဆောင်ချက်ကို အက်ပ် သို့မဟုတ် သင်၏အဖွဲ့အစည်းက ခွင့်မပြုပါ"</string>
     <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"လမ်းညွှန်ခြင်း ရှင်းလင်းပို့ချချက်ကို ကျော်မလား။"</string>
     <string name="skip_tutorial_dialog_subtitle" msgid="544063326241955662">"၎င်းကို နောက်မှ <xliff:g id="NAME">%1$s</xliff:g> အက်ပ်တွင် ရှာနိုင်သည်"</string>
@@ -86,7 +88,8 @@
     <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"ကျော်ရန်"</string>
     <string name="taskbar_edu_opened" msgid="3950252793551919129">"ပညာရေး လုပ်ဆောင်စရာဘား ပြထားသည်"</string>
     <string name="taskbar_edu_closed" msgid="126643734478892862">"ပညာရေး လုပ်ဆောင်စရာဘား ပိတ်ထားသည်"</string>
-    <string name="taskbar_edu_dock" msgid="8484594848150559893">"လုပ်ဆောင်စရာဘားကို အချိန်မရွေးဖျောက်ရန် ထိပြီးဖိထားနိုင်သည်"</string>
+    <!-- no translation found for taskbar_edu_stashing (5212374387411764031) -->
+    <skip />
     <string name="taskbar_edu_next" msgid="4007618274426775841">"ရှေ့သို့"</string>
     <string name="taskbar_edu_previous" msgid="459202320127201702">"နောက်သို့"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"ပိတ်ရန်"</string>
