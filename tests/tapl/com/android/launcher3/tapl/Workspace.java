@@ -36,7 +36,10 @@ import androidx.test.uiautomator.UiObject2;
 
 import com.android.launcher3.testing.TestProtocol;
 
+import java.util.List;
+import java.util.function.Supplier;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
  * Operations on the workspace screen.
@@ -170,38 +173,98 @@ public final class Workspace extends Home {
                 mHotseat, AppIcon.getAppIconSelector(appName, mLauncher)));
     }
 
-    static void dragIconToWorkspace(
-            LauncherInstrumentation launcher, Launchable launchable, Point dest,
-            String longPressIndicator, boolean startsActivity, boolean isWidgetShortcut,
-            Runnable expectLongClickEvents) {
-        LauncherInstrumentation.log("dragIconToWorkspace: begin");
-        final Point launchableCenter = launchable.getObject().getVisibleCenter();
-        final long downTime = SystemClock.uptimeMillis();
-        launcher.runToState(
-                () -> {
-                    launcher.sendPointer(downTime, downTime, MotionEvent.ACTION_DOWN,
-                            launchableCenter, LauncherInstrumentation.GestureScope.INSIDE);
-                    LauncherInstrumentation.log("dragIconToWorkspace: sent down");
-                    expectLongClickEvents.run();
-                    launcher.waitForLauncherObject(longPressIndicator);
-                    LauncherInstrumentation.log("dragIconToWorkspace: indicator");
-                    launcher.movePointer(launchableCenter, dest, 10, downTime, true,
-                            LauncherInstrumentation.GestureScope.INSIDE);
-                },
-                SPRING_LOADED_STATE_ORDINAL,
-                "long-pressing and moving");
-        LauncherInstrumentation.log("dragIconToWorkspace: moved pointer");
+    private static int getStartDragThreshold(LauncherInstrumentation launcher) {
+        return launcher.getTestInfo(TestProtocol.REQUEST_START_DRAG_THRESHOLD).getInt(
+                TestProtocol.TEST_INFO_RESPONSE_FIELD);
+    }
+
+    /**
+     * Finds folder icons in the current workspace.
+     *
+     * @return a list of folder icons.
+     */
+    List<FolderIcon> getFolderIcons() {
+        final UiObject2 workspace = verifyActiveContainer();
+        return mLauncher.getObjectsInContainer(workspace, "folder_icon_name").stream().map(
+                o -> new FolderIcon(mLauncher, o)).collect(Collectors.toList());
+    }
+
+    /**
+     * Drag an icon up with a short distance that makes workspace go to spring loaded state.
+     *
+     * @return the position after dragging.
+     */
+    private static Point dragIconToSpringLoaded(LauncherInstrumentation launcher, long downTime,
+            UiObject2 icon,
+            String longPressIndicator, Runnable expectLongClickEvents) {
+        final Point iconCenter = icon.getVisibleCenter();
+        final Point dragStartCenter = new Point(iconCenter.x,
+                iconCenter.y - getStartDragThreshold(launcher));
+
+        launcher.runToState(() -> {
+            launcher.sendPointer(downTime, downTime, MotionEvent.ACTION_DOWN,
+                    iconCenter, LauncherInstrumentation.GestureScope.INSIDE);
+            LauncherInstrumentation.log("dragIconToSpringLoaded: sent down");
+            expectLongClickEvents.run();
+            launcher.waitForLauncherObject(longPressIndicator);
+            LauncherInstrumentation.log("dragIconToSpringLoaded: indicator");
+            launcher.movePointer(iconCenter, dragStartCenter, 10, downTime, true,
+                    LauncherInstrumentation.GestureScope.INSIDE);
+        }, SPRING_LOADED_STATE_ORDINAL, "long-pressing and triggering drag start");
+        return dragStartCenter;
+    }
+
+    private static void dropDraggedIcon(LauncherInstrumentation launcher, Point dest, long downTime,
+            @Nullable Runnable expectedEvents) {
         launcher.runToState(
                 () -> launcher.sendPointer(
                         downTime, SystemClock.uptimeMillis(), MotionEvent.ACTION_UP, dest,
                         LauncherInstrumentation.GestureScope.INSIDE),
                 NORMAL_STATE_ORDINAL,
                 "sending UP event");
-        if (startsActivity || isWidgetShortcut) {
-            launcher.expectEvent(TestProtocol.SEQUENCE_MAIN, LauncherInstrumentation.EVENT_START);
+        if (expectedEvents != null) {
+            expectedEvents.run();
         }
-        LauncherInstrumentation.log("dragIconToWorkspace: end");
+        LauncherInstrumentation.log("dropIcon: end");
         launcher.waitUntilLauncherObjectGone("drop_target_bar");
+    }
+
+    static void dragIconToWorkspace(LauncherInstrumentation launcher, Launchable launchable,
+            Point dest, String longPressIndicator, boolean startsActivity, boolean isWidgetShortcut,
+            Runnable expectLongClickEvents) {
+        Runnable expectDropEvents = null;
+        if (startsActivity || isWidgetShortcut) {
+            expectDropEvents = () -> launcher.expectEvent(TestProtocol.SEQUENCE_MAIN,
+                    LauncherInstrumentation.EVENT_START);
+        }
+        dragIconToWorkspace(launcher, launchable, () -> dest, longPressIndicator,
+                expectLongClickEvents, expectDropEvents);
+    }
+
+    /**
+     * Drag icon in workspace to else where.
+     * This function expects the launchable is inside the workspace and there is no drop event.
+     */
+    static void dragIconToWorkspace(LauncherInstrumentation launcher, Launchable launchable,
+            Supplier<Point> destSupplier, String longPressIndicator) {
+        dragIconToWorkspace(launcher, launchable, destSupplier, longPressIndicator,
+                () -> launcher.expectEvent(TestProtocol.SEQUENCE_MAIN, LONG_CLICK_EVENT), null);
+    }
+
+    static void dragIconToWorkspace(
+            LauncherInstrumentation launcher, Launchable launchable, Supplier<Point> dest,
+            String longPressIndicator, Runnable expectLongClickEvents,
+            @Nullable Runnable expectDropEvents) {
+        try (LauncherInstrumentation.Closable ignored = launcher.addContextLayer(
+                "want to drag icon to workspace")) {
+            final long downTime = SystemClock.uptimeMillis();
+            final Point dragStartCenter = dragIconToSpringLoaded(launcher, downTime,
+                    launchable.getObject(), longPressIndicator, expectLongClickEvents);
+            final Point targetDest = dest.get();
+            launcher.movePointer(dragStartCenter, targetDest, 10, downTime, true,
+                    LauncherInstrumentation.GestureScope.INSIDE);
+            dropDraggedIcon(launcher, targetDest, downTime, expectDropEvents);
+        }
     }
 
     /**
