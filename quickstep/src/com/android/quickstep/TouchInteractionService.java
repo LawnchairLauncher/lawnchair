@@ -331,12 +331,14 @@ public class TouchInteractionService extends Service implements PluginListener<O
         mDeviceState = new RecentsAnimationDeviceState(this, true);
         mDisplayManager = getSystemService(DisplayManager.class);
         mTaskbarManager = new TaskbarManager(this);
-
         mRotationTouchHelper = mDeviceState.getRotationTouchHelper();
-        mDeviceState.addNavigationModeChangedCallback(this::onNavigationModeChanged);
-        mDeviceState.addOneHandedModeChangedCallback(this::onOneHandedModeOverlayChanged);
+
+        // Call runOnUserUnlocked() before any other callbacks to ensure everything is initialized.
         mDeviceState.runOnUserUnlocked(this::onUserUnlocked);
         mDeviceState.runOnUserUnlocked(mTaskbarManager::onUserUnlocked);
+        mDeviceState.addNavigationModeChangedCallback(this::onNavigationModeChanged);
+        mDeviceState.addOneHandedModeChangedCallback(this::onOneHandedModeOverlayChanged);
+
         ProtoTracer.INSTANCE.get(this).add(this);
         sConnected = true;
     }
