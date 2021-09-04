@@ -42,6 +42,9 @@ import com.android.systemui.shared.system.SurfaceControlCompat;
 import com.android.systemui.shared.system.TransactionCompat;
 import com.android.systemui.shared.system.WallpaperManagerCompat;
 
+import app.lawnchair.preferences.BasePreferenceManager;
+import app.lawnchair.preferences.PreferenceManager;
+
 /**
  * Controls blur and wallpaper zoom, for the Launcher surface only.
  */
@@ -114,8 +117,12 @@ public class DepthController implements StateHandler<LauncherState>,
 
     private View.OnAttachStateChangeListener mOnAttachListener;
 
+    private final BasePreferenceManager.FloatPref mDrawerOpacity;
+
     public DepthController(Launcher l) {
         mLauncher = l;
+
+        mDrawerOpacity = PreferenceManager.getInstance(mLauncher).getDrawerOpacity();
     }
 
     private void ensureDependencies() {
@@ -228,7 +235,8 @@ public class DepthController implements StateHandler<LauncherState>,
 
         if (supportsBlur) {
             final int blur;
-            if (mLauncher.isInState(LauncherState.ALL_APPS) && mDepth == 1) {
+            boolean isDrawerSolid = mDrawerOpacity.get() == 1f;
+            if (isDrawerSolid && mLauncher.isInState(LauncherState.ALL_APPS) && mDepth == 1) {
                 // All apps has a solid background. We don't need to draw blurs after it's fully
                 // visible. This will take us out of GPU composition, saving battery and increasing
                 // performance.
