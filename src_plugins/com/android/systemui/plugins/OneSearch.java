@@ -29,7 +29,7 @@ import java.util.ArrayList;
 @ProvidesInterface(action = OneSearch.ACTION, version = OneSearch.VERSION)
 public interface OneSearch extends Plugin {
     String ACTION = "com.android.systemui.action.PLUGIN_ONE_SEARCH";
-    int VERSION = 1;
+    int VERSION = 2;
 
     /**
      * Get the content provider warmed up.
@@ -53,4 +53,7 @@ public interface OneSearch extends Plugin {
      * @param suggest The suggest to get the subtitle for.
      */
     String getSubtitle(Spanned suggest);
+
+    /** Clear any cached data or storage used in search. */
+    void clear();
 }
