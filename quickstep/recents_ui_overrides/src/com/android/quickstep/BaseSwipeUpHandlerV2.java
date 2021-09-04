@@ -405,11 +405,6 @@ public abstract class BaseSwipeUpHandlerV2<T extends StatefulActivity<?>, Q exte
                         mActivityInterface));
 
         notifyGestureStartedAsync();
-
-        DepthController depthController = mActivityInterface.getDepthController();
-        if (depthController != null) {
-            depthController.reapplyDepth();
-        }
     }
 
     private void onDeferredActivityLaunch() {
@@ -455,6 +450,11 @@ public abstract class BaseSwipeUpHandlerV2<T extends StatefulActivity<?>, Q exte
         // high-res thumbnail loader here once we are sure that we will end up in an overview state
         RecentsModel.INSTANCE.get(mContext).getThumbnailCache()
                 .getHighResLoadingState().setVisible(true);
+
+        DepthController depthController = mActivityInterface.getDepthController();
+        if (depthController != null) {
+            depthController.reapplyDepth();
+        }
     }
 
     @Override

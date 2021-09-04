@@ -214,12 +214,14 @@ public class DepthController implements StateHandler<LauncherState>,
         }
     }
 
-    private void setDepth(float depth) {
-        setDepth(depth, false);
+    public void reapplyDepth() {
+        LauncherState toState = mLauncher.getStateManager().getState();
+        float toDepth = toState.getDepth(mLauncher);
+        setDepth(toDepth, true);
     }
 
-    public void reapplyDepth() {
-        setDepth(mDepth, true);
+    private void setDepth(float depth) {
+        setDepth(depth, false);
     }
 
     private void setDepth(float depth, boolean force) {
