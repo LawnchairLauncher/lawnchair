@@ -22,7 +22,6 @@ import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITIO
 
 import android.app.ActivityThread;
 import android.graphics.Rect;
-import android.os.Handler;
 import android.os.IBinder;
 import android.view.RemoteAnimationAdapter;
 import android.view.SurfaceControl;
@@ -40,6 +39,8 @@ import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 import com.android.systemui.shared.system.RemoteTransitionCompat;
 import com.android.systemui.shared.system.RemoteTransitionRunner;
 
+import java.util.function.Consumer;
+
 /**
  * Represent data needed for the transient state when user has selected one app for split screen
  * and is in the process of either a) selecting a second app or b) exiting intention to invoke split
@@ -52,7 +53,7 @@ public class SplitSelectStateController {
     private Task mSecondTask;
     private Rect mInitialBounds;
 
-    public SplitSelectStateController(Handler handler, SystemUiProxy systemUiProxy) {
+    public SplitSelectStateController(SystemUiProxy systemUiProxy) {
         mSystemUiProxy = systemUiProxy;
     }
 
@@ -71,13 +72,14 @@ public class SplitSelectStateController {
      */
     public void setSecondTaskId(Task taskView) {
         mSecondTask = taskView;
-        launchTasks(mInitialTask, mSecondTask, mStagePosition);
+        launchTasks(mInitialTask, mSecondTask, mStagePosition, null /*callback*/);
     }
 
     /**
      * @param stagePosition representing location of task1
      */
-    public void launchTasks(Task task1, Task task2, @StagePosition int stagePosition) {
+    public void launchTasks(Task task1, Task task2, @StagePosition int stagePosition,
+            Consumer<Boolean> callback) {
         // Assume initial task is for top/left part of screen
         final int[] taskIds = stagePosition == STAGE_POSITION_TOP_OR_LEFT
                 ? new int[]{task1.key.id, task2.key.id}
@@ -90,7 +92,7 @@ public class SplitSelectStateController {
                     new RemoteTransitionCompat(animationRunner, MAIN_EXECUTOR));
         } else {
             RemoteSplitLaunchAnimationRunner animationRunner =
-                    new RemoteSplitLaunchAnimationRunner(task1, task2);
+                    new RemoteSplitLaunchAnimationRunner(task1, task2, callback);
             final RemoteAnimationAdapter adapter = new RemoteAnimationAdapter(
                     RemoteAnimationAdapterCompat.wrapRemoteAnimationRunner(animationRunner),
                     300, 150,
@@ -136,10 +138,13 @@ public class SplitSelectStateController {
 
         private final Task mInitialTask;
         private final Task mSecondTask;
+        private final Consumer<Boolean> mSuccessCallback;
 
-        RemoteSplitLaunchAnimationRunner(Task initialTask, Task secondTask) {
+        RemoteSplitLaunchAnimationRunner(Task initialTask, Task secondTask,
+                Consumer<Boolean> successCallback) {
             mInitialTask = initialTask;
             mSecondTask = secondTask;
+            mSuccessCallback = successCallback;
         }
 
         @Override
@@ -147,13 +152,21 @@ public class SplitSelectStateController {
                 RemoteAnimationTargetCompat[] wallpapers, RemoteAnimationTargetCompat[] nonApps,
                 Runnable finishedCallback) {
             TaskViewUtils.composeRecentsSplitLaunchAnimatorLegacy(mInitialTask,
-                    mSecondTask, apps, wallpapers, nonApps, finishedCallback);
+                    mSecondTask, apps, wallpapers, nonApps, () -> {
+                        finishedCallback.run();
+                        if (mSuccessCallback != null) {
+                            mSuccessCallback.accept(true);
+                        }
+                    });
             // After successful launch, call resetState
             resetState();
         }
 
         @Override
         public void onAnimationCancelled() {
+            if (mSuccessCallback != null) {
+                mSuccessCallback.accept(false);
+            }
             resetState();
         }
     }

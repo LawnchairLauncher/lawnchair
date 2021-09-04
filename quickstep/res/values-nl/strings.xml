@@ -79,6 +79,8 @@
     <string name="allset_navigation_settings" msgid="4713404605961476027"><annotation id="link">"Navigatie-instellingen van systeem"</annotation></string>
     <string name="action_share" msgid="2648470652637092375">"Delen"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"Screenshot"</string>
+    <!-- no translation found for action_split (2098009717623550676) -->
+    <skip />
     <string name="blocked_by_policy" msgid="2071401072261365546">"Deze actie wordt niet toegestaan door de app of je organisatie"</string>
     <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"Navigatietutorial overslaan?"</string>
     <string name="skip_tutorial_dialog_subtitle" msgid="544063326241955662">"Je vindt dit later terug in de app <xliff:g id="NAME">%1$s</xliff:g>"</string>
@@ -86,7 +88,8 @@
     <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"Overslaan"</string>
     <string name="taskbar_edu_opened" msgid="3950252793551919129">"Uitleg van taakbalk geopend"</string>
     <string name="taskbar_edu_closed" msgid="126643734478892862">"Uitleg van taakbalk gesloten"</string>
-    <string name="taskbar_edu_dock" msgid="8484594848150559893">"Tik en houd vast om de taakbalk op elk moment te verbergen"</string>
+    <!-- no translation found for taskbar_edu_stashing (5212374387411764031) -->
+    <skip />
     <string name="taskbar_edu_next" msgid="4007618274426775841">"Volgende"</string>
     <string name="taskbar_edu_previous" msgid="459202320127201702">"Terug"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"Sluiten"</string>

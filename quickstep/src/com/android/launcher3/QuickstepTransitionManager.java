@@ -676,7 +676,7 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
                 ? Math.max(crop.width(), crop.height()) / 2f
                 : 0f;
         final float finalWindowRadius = mDeviceProfile.isMultiWindowMode
-                ? 0 : getWindowCornerRadius(mLauncher.getResources());
+                ? 0 : getWindowCornerRadius(mLauncher);
         final float finalShadowRadius = appTargetsAreTranslucent ? 0 : mMaxShadowRadius;
 
         MultiValueUpdateListener listener = new MultiValueUpdateListener() {
@@ -867,7 +867,7 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
         }
 
         final float finalWindowRadius = mDeviceProfile.isMultiWindowMode
-                ? 0 : getWindowCornerRadius(mLauncher.getResources());
+                ? 0 : getWindowCornerRadius(mLauncher);
         final FloatingWidgetView floatingView = FloatingWidgetView.getFloatingWidgetView(mLauncher,
                 v, widgetBackgroundBounds,
                 new Size(windowTargetBounds.width(), windowTargetBounds.height()),
@@ -1149,7 +1149,7 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
         ValueAnimator unlockAnimator = ValueAnimator.ofFloat(0, 1);
         unlockAnimator.setDuration(CLOSING_TRANSITION_DURATION_MS);
         float cornerRadius = mDeviceProfile.isMultiWindowMode ? 0 :
-                QuickStepContract.getWindowCornerRadius(mLauncher.getResources());
+                QuickStepContract.getWindowCornerRadius(mLauncher);
         unlockAnimator.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationStart(Animator animation) {
@@ -1191,7 +1191,7 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
         ValueAnimator closingAnimator = ValueAnimator.ofFloat(0, 1);
         int duration = CLOSING_TRANSITION_DURATION_MS;
         float windowCornerRadius = mDeviceProfile.isMultiWindowMode
-                ? 0 : getWindowCornerRadius(mLauncher.getResources());
+                ? 0 : getWindowCornerRadius(mLauncher);
         float startShadowRadius = areAllTargetsTranslucent(appTargets) ? 0 : mMaxShadowRadius;
         closingAnimator.setDuration(duration);
         closingAnimator.addUpdateListener(new MultiValueUpdateListener() {

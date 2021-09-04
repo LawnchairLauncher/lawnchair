@@ -79,21 +79,19 @@
     <string name="allset_navigation_settings" msgid="4713404605961476027"><annotation id="link">"ಸಿಸ್ಟಂ ನ್ಯಾವಿಗೇಶನ್ ಸೆಟ್ಟಿಂಗ್‌ಗಳು"</annotation></string>
     <string name="action_share" msgid="2648470652637092375">"ಹಂಚಿಕೊಳ್ಳಿ"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"ಸ್ಕ್ರೀನ್‌ಶಾಟ್"</string>
+    <!-- no translation found for action_split (2098009717623550676) -->
+    <skip />
     <string name="blocked_by_policy" msgid="2071401072261365546">"ಆ್ಯಪ್ ಅಥವಾ ನಿಮ್ಮ ಸಂಸ್ಥೆಯು ಈ ಕ್ರಿಯೆಯನ್ನು ಅನುಮತಿಸುವುದಿಲ್ಲ"</string>
     <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"ನ್ಯಾವಿಗೇಷನ್ ಟ್ಯುಟೋರಿಯಲ್ ಸ್ಕಿಪ್ ಮಾಡಿ?"</string>
     <string name="skip_tutorial_dialog_subtitle" msgid="544063326241955662">"<xliff:g id="NAME">%1$s</xliff:g> ಆ್ಯಪ್‌ನಲ್ಲಿ ಇದನ್ನು ನಂತರ ಕಾಣಬಹುದು"</string>
     <string name="gesture_tutorial_action_button_label_cancel" msgid="3809842569351264108">"ರದ್ದುಮಾಡಿ"</string>
     <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"ಸ್ಕಿಪ್ ಮಾಡಿ"</string>
-    <!-- no translation found for taskbar_edu_opened (3950252793551919129) -->
-    <skip />
-    <!-- no translation found for taskbar_edu_closed (126643734478892862) -->
-    <skip />
-    <!-- no translation found for taskbar_edu_dock (8484594848150559893) -->
+    <string name="taskbar_edu_opened" msgid="3950252793551919129">"ಟಾಸ್ಕ್‌ಬಾರ್ ಶಿಕ್ಷಣ ಕಾಣಿಸಿಕೊಂಡಿದೆ"</string>
+    <string name="taskbar_edu_closed" msgid="126643734478892862">"ಟಾಸ್ಕ್‌ಬಾರ್ ಶಿಕ್ಷಣ ಮುಚ್ಚಿದೆ"</string>
+    <!-- no translation found for taskbar_edu_stashing (5212374387411764031) -->
     <skip />
     <string name="taskbar_edu_next" msgid="4007618274426775841">"ಮುಂದೆ"</string>
-    <!-- no translation found for taskbar_edu_previous (459202320127201702) -->
-    <skip />
+    <string name="taskbar_edu_previous" msgid="459202320127201702">"ಹಿಂದೆ"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"ಮುಚ್ಚಿರಿ"</string>
-    <!-- no translation found for taskbar_edu_done (6880178093977704569) -->
-    <skip />
+    <string name="taskbar_edu_done" msgid="6880178093977704569">"ಮುಗಿದಿದೆ"</string>
 </resources>

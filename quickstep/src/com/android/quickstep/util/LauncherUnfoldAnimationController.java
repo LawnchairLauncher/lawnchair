@@ -37,26 +37,23 @@ public class LauncherUnfoldAnimationController {
     private static final float MAX_WIDTH_INSET_FRACTION = 0.15f;
 
     private final Launcher mLauncher;
-    private final UnfoldTransitionProgressProvider mUnfoldTransitionProgressProvider;
-    private final UnfoldMoveFromCenterWorkspaceAnimator mMoveFromCenterWorkspaceAnimation;
 
     @Nullable
     private HorizontalInsettableView mQsbInsettable;
 
-    private final AnimationListener mAnimationListener = new AnimationListener();
-
-    private boolean mIsTransitionRunning = false;
-    private boolean mIsReadyToPlayAnimation = false;
+    private final ScopedUnfoldTransitionProgressProvider mProgressProvider;
 
     public LauncherUnfoldAnimationController(
             Launcher launcher,
             WindowManager windowManager,
             UnfoldTransitionProgressProvider unfoldTransitionProgressProvider) {
         mLauncher = launcher;
-        mUnfoldTransitionProgressProvider = unfoldTransitionProgressProvider;
-        mMoveFromCenterWorkspaceAnimation = new UnfoldMoveFromCenterWorkspaceAnimator(launcher,
-                windowManager);
-        mUnfoldTransitionProgressProvider.addCallback(mAnimationListener);
+        mProgressProvider = new ScopedUnfoldTransitionProgressProvider(
+                unfoldTransitionProgressProvider);
+
+        mProgressProvider.addCallback(new UnfoldMoveFromCenterWorkspaceAnimator(launcher,
+                windowManager));
+        mProgressProvider.addCallback(new QsbAnimationListener());
     }
 
     /**
@@ -73,7 +70,7 @@ public class LauncherUnfoldAnimationController {
             @Override
             public boolean onPreDraw() {
                 if (obs.isAlive()) {
-                    onPreDrawAfterResume();
+                    mProgressProvider.setReadyToHandleTransition(true);
                     obs.removeOnPreDrawListener(this);
                 }
                 return true;
@@ -85,12 +82,7 @@ public class LauncherUnfoldAnimationController {
      * Called when launcher activity is paused
      */
     public void onPause() {
-        if (mIsTransitionRunning) {
-            mIsTransitionRunning = false;
-            mAnimationListener.onTransitionFinished();
-        }
-
-        mIsReadyToPlayAnimation = false;
+        mProgressProvider.setReadyToHandleTransition(false);
         mQsbInsettable = null;
     }
 
@@ -98,48 +90,24 @@ public class LauncherUnfoldAnimationController {
      * Called when launcher activity is destroyed
      */
     public void onDestroy() {
-        mUnfoldTransitionProgressProvider.removeCallback(mAnimationListener);
+        mProgressProvider.destroy();
     }
 
-    /**
-     * Called after performing layouting of the views after configuration change
-     */
-    private void onPreDrawAfterResume() {
-        mIsReadyToPlayAnimation = true;
-
-        if (mIsTransitionRunning) {
-            mMoveFromCenterWorkspaceAnimation.onTransitionStarted();
-        }
-    }
-
-    private class AnimationListener implements TransitionProgressListener {
+    private class QsbAnimationListener implements TransitionProgressListener {
 
         @Override
         public void onTransitionStarted() {
-            mIsTransitionRunning = true;
-
-            if (mIsReadyToPlayAnimation) {
-                mMoveFromCenterWorkspaceAnimation.onTransitionStarted();
-            }
         }
 
         @Override
         public void onTransitionFinished() {
-            if (mIsReadyToPlayAnimation) {
-                mMoveFromCenterWorkspaceAnimation.onTransitionFinished();
-
-                if (mQsbInsettable != null) {
-                    mQsbInsettable.setHorizontalInsets(0);
-                }
+            if (mQsbInsettable != null) {
+                mQsbInsettable.setHorizontalInsets(0);
             }
-
-            mIsTransitionRunning = false;
         }
 
         @Override
         public void onTransitionProgress(float progress) {
-            mMoveFromCenterWorkspaceAnimation.onTransitionProgress(progress);
-
             if (mQsbInsettable != null) {
                 float insetPercentage = comp(progress) * MAX_WIDTH_INSET_FRACTION;
                 mQsbInsettable.setHorizontalInsets(insetPercentage);

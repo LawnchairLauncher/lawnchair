@@ -11,19 +11,53 @@ import com.android.launcher3.util.SplitConfigurationOptions.StagePosition;
 import com.android.launcher3.util.SplitConfigurationOptions.StageType;
 import com.android.launcher3.util.SplitConfigurationOptions.StagedSplitTaskPosition;
 import com.android.quickstep.SystemUiProxy;
+import com.android.systemui.shared.system.TaskStackChangeListener;
+import com.android.systemui.shared.system.TaskStackChangeListeners;
 import com.android.wm.shell.splitscreen.ISplitScreenListener;
 
 /**
  * Listeners for system wide split screen position and stage changes.
- * Use {@link #getSplitTaskIds()} to determine which tasks, if any, are in staged split.
+ *
+ * Use {@link #getRunningSplitTaskIds()} to determine which tasks, if any, are actively in
+ * staged split.
+ *
+ * Use {@link #getPersistentSplitIds()} to know if tasks were in split screen before a quickswitch
+ * gesture happened.
  */
 public class LauncherSplitScreenListener extends ISplitScreenListener.Stub {
 
     public static final MainThreadInitializedObject<LauncherSplitScreenListener> INSTANCE =
             new MainThreadInitializedObject<>(LauncherSplitScreenListener::new);
 
+    private static final int[] EMPTY_ARRAY = {};
+
     private final StagedSplitTaskPosition mMainStagePosition = new StagedSplitTaskPosition();
     private final StagedSplitTaskPosition mSideStagePosition = new StagedSplitTaskPosition();
+
+    private boolean mIsRecentsListFrozen = false;
+    private final TaskStackChangeListener mTaskStackListener = new TaskStackChangeListener() {
+        @Override
+        public void onRecentTaskListFrozenChanged(boolean frozen) {
+            super.onRecentTaskListFrozenChanged(frozen);
+            mIsRecentsListFrozen = frozen;
+
+            if (frozen) {
+                mPersistentGroupedIds = getRunningSplitTaskIds();
+            } else {
+                // TODO(b/198310766) Need to also explicitly exit split screen if
+                //  we're not currently viewing split screened apps
+                mPersistentGroupedIds = EMPTY_ARRAY;
+            }
+        }
+    };
+
+    /**
+     * Gets set to current split taskIDs whenever the task list is frozen, and set to empty array
+     * whenever task list unfreezes.
+     * When not null, this indicates that we need to load a GroupedTaskView as the most recent
+     * page, so user can quickswitch back to a grouped task.
+     */
+    private int[] mPersistentGroupedIds;
 
     public LauncherSplitScreenListener(Context context) {
         mMainStagePosition.stageType = SplitConfigurationOptions.STAGE_TYPE_MAIN;
@@ -33,17 +67,30 @@ public class LauncherSplitScreenListener extends ISplitScreenListener.Stub {
     /** Also call {@link #destroy()} when done. */
     public void init() {
         SystemUiProxy.INSTANCE.getNoCreate().registerSplitScreenListener(this);
+        TaskStackChangeListeners.getInstance().registerTaskStackListener(mTaskStackListener);
     }
 
     public void destroy() {
         SystemUiProxy.INSTANCE.getNoCreate().unregisterSplitScreenListener(this);
+        TaskStackChangeListeners.getInstance().unregisterTaskStackListener(mTaskStackListener);
     }
 
+    /**
+     * This method returns the active split taskIDs that were active if a user quickswitched from
+     * split screen to a fullscreen app as long as the recents task list remains frozen.
+     */
+    public int[] getPersistentSplitIds() {
+        if (mIsRecentsListFrozen) {
+            return mPersistentGroupedIds;
+        } else {
+            return getRunningSplitTaskIds();
+        }
+    }
     /**
      * @return index 0 will be task in left/top position, index 1 in right/bottom position.
      *         Will return empty array if device is not in staged split
      */
-    public int[] getSplitTaskIds() {
+    public int[] getRunningSplitTaskIds() {
         if (mMainStagePosition.taskId == -1 || mSideStagePosition.taskId == -1) {
             return new int[]{};
         }
