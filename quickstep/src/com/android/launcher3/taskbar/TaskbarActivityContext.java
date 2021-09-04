@@ -27,6 +27,7 @@ import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.LauncherApps;
+import android.graphics.Insets;
 import android.graphics.PixelFormat;
 import android.graphics.Rect;
 import android.os.Process;
@@ -167,6 +168,10 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
                 mWindowLayoutParams,
                 new int[] { ITYPE_EXTRA_NAVIGATION_BAR, ITYPE_BOTTOM_TAPPABLE_ELEMENT }
         );
+        // Adjust the frame by the rounded corners (ie. leaving just the bar as the inset) when
+        // the IME is showing
+        mWindowLayoutParams.providedInternalImeInsets = Insets.of(0,
+                getDefaultTaskbarWindowHeight() - mDeviceProfile.taskbarSize, 0, 0);
 
         // Initialize controllers after all are constructed.
         mControllers.init();
