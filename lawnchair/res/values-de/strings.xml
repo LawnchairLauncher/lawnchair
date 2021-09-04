@@ -76,7 +76,7 @@
     </plurals>
     <string name="hotseat_qsb_label">Suchleiste anzeigen</string>
     <string name="dt2s_admin_hint_title">Adminberechtigung erforderlich</string>
-    <string name="dt2s_admin_hint">To use Double-Tap to Sleep, set Lawnchair as a device admin app. Tap Open Settings, then tap “Activate this device admin app.”</string>
+    <string name="dt2s_admin_hint">Um Double-Tap to Sleep zu verwenden, aktiviere Lawnchair als Verwaltungs-App. Öffne die Einstellungen und tippe auf „Diese App zur Geräteverwaltung aktivieren“.</string>
     <string name="dt2s_admin_warning">Doppeltes Tippen zum Schlafen wird deaktiviert.</string>
     <string name="dt2s_a11y_hint_title">Bedienungshilfen erforderlich</string>
     <string name="dt2s_a11y_hint">To use Double-Tap to Sleep, turn on the Lawnchair accessibility service. Tap Open Settings, then select Lawnchair and turn on Use Lawnchair.</string>
