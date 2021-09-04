@@ -264,9 +264,7 @@ public class InvariantDeviceProfile {
         iconSize = displayOption.iconSize;
         iconShapePath = getIconShapePath(context);
         landscapeIconSize = displayOption.landscapeIconSize;
-        iconBitmapSize = ResourceUtils.pxFromDp(iconSize, displayInfo.metrics);
         iconTextSize = displayOption.iconTextSize;
-        fillResIconDpi = getLauncherIconDensity(iconBitmapSize);
 
         if (Utilities.isGridOptionsEnabled(context)) {
             allAppsIconSize = displayOption.allAppsIconSize;
@@ -280,6 +278,9 @@ public class InvariantDeviceProfile {
         // Supported overrides: numRows, numColumns, iconSize
         applyPartnerDeviceProfileOverrides(context, displayInfo.metrics);
         DeviceProfileOverrides.getINSTANCE().get(context).apply(this, closestProfile);
+
+        iconBitmapSize = ResourceUtils.pxFromDp(Math.max(iconSize, allAppsIconSize), displayInfo.metrics);
+        fillResIconDpi = getLauncherIconDensity(iconBitmapSize);
 
         Point realSize = new Point(displayInfo.realSize);
         // The real size never changes. smallSide and largeSide will remain the
