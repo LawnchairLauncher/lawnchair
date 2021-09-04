@@ -39,10 +39,24 @@ public class ClearAllButton extends Button {
                 }
             };
 
+    public static final FloatProperty<ClearAllButton> DISMISS_ALPHA =
+            new FloatProperty<ClearAllButton>("dismissAlpha") {
+                @Override
+                public Float get(ClearAllButton view) {
+                    return view.mDismissAlpha;
+                }
+
+                @Override
+                public void setValue(ClearAllButton view, float v) {
+                    view.setDismissAlpha(v);
+                }
+            };
+
     private final StatefulActivity mActivity;
     private float mScrollAlpha = 1;
     private float mContentAlpha = 1;
     private float mVisibilityAlpha = 1;
+    private float mDismissAlpha = 1;
     private float mFullscreenProgress = 1;
     private float mGridProgress = 1;
 
@@ -97,6 +111,13 @@ public class ClearAllButton extends Button {
         }
     }
 
+    public void setDismissAlpha(float alpha) {
+        if (mDismissAlpha != alpha) {
+            mDismissAlpha = alpha;
+            updateAlpha();
+        }
+    }
+
     public void onRecentsViewScroll(int scroll, boolean gridEnabled) {
         RecentsView recentsView = getRecentsView();
         if (recentsView == null) {
@@ -123,7 +144,7 @@ public class ClearAllButton extends Button {
     }
 
     private void updateAlpha() {
-        final float alpha = mScrollAlpha * mContentAlpha * mVisibilityAlpha;
+        final float alpha = mScrollAlpha * mContentAlpha * mVisibilityAlpha * mDismissAlpha;
         setAlpha(alpha);
         setClickable(Math.min(alpha, 1) == 1);
     }

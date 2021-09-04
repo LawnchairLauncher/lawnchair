@@ -115,6 +115,13 @@ public interface ActivityContext {
     }
 
     /**
+     * Returns whether we can show the IME for elements hosted by this ActivityContext.
+     */
+    default boolean supportsIme() {
+        return true;
+    }
+
+    /**
      * Returns the ActivityContext associated with the given Context.
      */
     static <T extends Context & ActivityContext> T lookupContext(Context context) {

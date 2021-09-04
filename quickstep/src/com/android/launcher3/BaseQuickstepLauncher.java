@@ -35,6 +35,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.ServiceConnection;
+import android.hardware.SensorManager;
+import android.hardware.devicestate.DeviceStateManager;
 import android.os.Bundle;
 import android.os.CancellationSignal;
 import android.os.Handler;
@@ -73,6 +75,8 @@ import com.android.quickstep.SystemUiProxy;
 import com.android.quickstep.TaskUtils;
 import com.android.quickstep.TouchInteractionService;
 import com.android.quickstep.TouchInteractionService.TISBinder;
+import com.android.quickstep.util.LauncherUnfoldAnimationController;
+import com.android.quickstep.util.ProxyScreenStatusProvider;
 import com.android.quickstep.util.RemoteAnimationProvider;
 import com.android.quickstep.util.RemoteFadeOutAnimationListener;
 import com.android.quickstep.util.SplitSelectStateController;
@@ -82,6 +86,9 @@ import com.android.quickstep.views.SplitPlaceholderView;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.ActivityOptionsCompat;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
+import com.android.systemui.unfold.UnfoldTransitionFactory;
+import com.android.systemui.unfold.UnfoldTransitionProgressProvider;
+import com.android.systemui.unfold.config.UnfoldTransitionConfig;
 
 import java.util.List;
 import java.util.stream.Stream;
@@ -117,6 +124,7 @@ public abstract class BaseQuickstepLauncher extends Launcher
         public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
             mTaskbarManager = ((TISBinder) iBinder).getTaskbarManager();
             mTaskbarManager.setLauncher(BaseQuickstepLauncher.this);
+
             Log.d(TAG, "TIS service connected");
             resetServiceBindRetryState();
 
@@ -142,16 +150,41 @@ public abstract class BaseQuickstepLauncher extends Launcher
     private @Nullable DragOptions mNextWorkspaceDragOptions = null;
     private SplitPlaceholderView mSplitPlaceholderView;
 
+    private @Nullable UnfoldTransitionProgressProvider mUnfoldTransitionProgressProvider;
+    private @Nullable LauncherUnfoldAnimationController mLauncherUnfoldAnimationController;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         SysUINavigationMode.INSTANCE.get(this).addModeChangeListener(this);
         addMultiWindowModeChangedListener(mDepthController);
+        initUnfoldTransitionProgressProvider();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if (mLauncherUnfoldAnimationController != null) {
+            mLauncherUnfoldAnimationController.onResume();
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        if (mLauncherUnfoldAnimationController != null) {
+            mLauncherUnfoldAnimationController.onPause();
+        }
+
+        super.onPause();
     }
 
     @Override
     public void onDestroy() {
         mAppTransitionManager.onActivityDestroyed();
+        if (mUnfoldTransitionProgressProvider != null) {
+            mUnfoldTransitionProgressProvider.destroy();
+        }
 
         SysUINavigationMode.INSTANCE.get(this).removeModeChangeListener(this);
 
@@ -160,6 +193,11 @@ public abstract class BaseQuickstepLauncher extends Launcher
             mTaskbarManager.clearLauncher(this);
         }
         resetServiceBindRetryState();
+
+        if (mLauncherUnfoldAnimationController != null) {
+            mLauncherUnfoldAnimationController.onDestroy();
+        }
+
         super.onDestroy();
     }
 
@@ -297,7 +335,7 @@ public abstract class BaseQuickstepLauncher extends Launcher
         mActionsView = findViewById(R.id.overview_actions_view);
         RecentsView overviewPanel = (RecentsView) getOverviewPanel();
         SplitSelectStateController controller =
-                new SplitSelectStateController(mHandler, SystemUiProxy.INSTANCE.get(this));
+                new SplitSelectStateController(SystemUiProxy.INSTANCE.get(this));
         overviewPanel.init(mActionsView, controller);
         mActionsView.setDp(getDeviceProfile());
         mActionsView.updateVerticalMargin(SysUINavigationMode.getMode(this));
@@ -332,6 +370,28 @@ public abstract class BaseQuickstepLauncher extends Launcher
             mHandler.removeCallbacks(mConnectionRunnable);
         }
         mConnectionAttempts = 0;
+    }
+
+    private void initUnfoldTransitionProgressProvider() {
+        final UnfoldTransitionConfig config = UnfoldTransitionFactory.createConfig(this);
+        if (config.isEnabled()) {
+            mUnfoldTransitionProgressProvider =
+                    UnfoldTransitionFactory.createUnfoldTransitionProgressProvider(
+                            this,
+                            config,
+                            ProxyScreenStatusProvider.INSTANCE,
+                            getSystemService(DeviceStateManager.class),
+                            getSystemService(SensorManager.class),
+                            getMainThreadHandler(),
+                            getMainExecutor()
+                    );
+
+            mLauncherUnfoldAnimationController = new LauncherUnfoldAnimationController(
+                    this,
+                    getWindowManager(),
+                    mUnfoldTransitionProgressProvider
+            );
+        }
     }
 
     public void setTaskbarUIController(LauncherTaskbarUIController taskbarUIController) {
@@ -371,6 +431,11 @@ public abstract class BaseQuickstepLauncher extends Launcher
 
     public TaskbarStateHandler getTaskbarStateHandler() {
         return mTaskbarStateHandler;
+    }
+
+    @Nullable
+    public UnfoldTransitionProgressProvider getUnfoldTransitionProgressProvider() {
+        return mUnfoldTransitionProgressProvider;
     }
 
     @Override

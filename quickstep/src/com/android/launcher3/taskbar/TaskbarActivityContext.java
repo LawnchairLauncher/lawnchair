@@ -27,6 +27,7 @@ import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.LauncherApps;
+import android.graphics.Insets;
 import android.graphics.PixelFormat;
 import android.graphics.Rect;
 import android.os.Process;
@@ -62,6 +63,7 @@ import com.android.launcher3.util.ViewCache;
 import com.android.launcher3.views.ActivityContext;
 import com.android.quickstep.SysUINavigationMode;
 import com.android.quickstep.SysUINavigationMode.Mode;
+import com.android.quickstep.util.ScopedUnfoldTransitionProgressProvider;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.WindowManagerWrapper;
@@ -98,7 +100,8 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
     private boolean mIsDestroyed = false;
 
     public TaskbarActivityContext(Context windowContext, DeviceProfile dp,
-            TaskbarNavButtonController buttonController) {
+            TaskbarNavButtonController buttonController, ScopedUnfoldTransitionProgressProvider
+            unfoldTransitionProgressProvider) {
         super(windowContext, Themes.getActivityThemeRes(windowContext));
         mDeviceProfile = dp;
 
@@ -120,6 +123,14 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
         FrameLayout navButtonsView = mDragLayer.findViewById(R.id.navbuttons_view);
         StashedHandleView stashedHandleView = mDragLayer.findViewById(R.id.stashed_handle);
 
+        Display display = windowContext.getDisplay();
+        Context c = display.getDisplayId() == Display.DEFAULT_DISPLAY
+                ? windowContext.getApplicationContext()
+                : windowContext.getApplicationContext().createDisplayContext(display);
+        mWindowManager = c.getSystemService(WindowManager.class);
+        mLeftCorner = display.getRoundedCorner(RoundedCorner.POSITION_BOTTOM_LEFT);
+        mRightCorner = display.getRoundedCorner(RoundedCorner.POSITION_BOTTOM_RIGHT);
+
         // Construct controllers.
         mControllers = new TaskbarControllers(this,
                 new TaskbarDragController(this),
@@ -129,18 +140,12 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
                         R.color.popup_color_primary_light),
                 new TaskbarDragLayerController(this, mDragLayer),
                 new TaskbarViewController(this, taskbarView),
+                new TaskbarUnfoldAnimationController(unfoldTransitionProgressProvider,
+                        mWindowManager),
                 new TaskbarKeyguardController(this),
                 new StashedHandleViewController(this, stashedHandleView),
                 new TaskbarStashController(this),
                 new TaskbarEduController(this));
-
-        Display display = windowContext.getDisplay();
-        Context c = display.getDisplayId() == Display.DEFAULT_DISPLAY
-                ? windowContext.getApplicationContext()
-                : windowContext.getApplicationContext().createDisplayContext(display);
-        mWindowManager = c.getSystemService(WindowManager.class);
-        mLeftCorner = display.getRoundedCorner(RoundedCorner.POSITION_BOTTOM_LEFT);
-        mRightCorner = display.getRoundedCorner(RoundedCorner.POSITION_BOTTOM_RIGHT);
     }
 
     public void init() {
@@ -163,6 +168,10 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
                 mWindowLayoutParams,
                 new int[] { ITYPE_EXTRA_NAVIGATION_BAR, ITYPE_BOTTOM_TAPPABLE_ELEMENT }
         );
+        // Adjust the frame by the rounded corners (ie. leaving just the bar as the inset) when
+        // the IME is showing
+        mWindowLayoutParams.providedInternalImeInsets = Insets.of(0,
+                getDefaultTaskbarWindowHeight() - mDeviceProfile.taskbarSize, 0, 0);
 
         // Initialize controllers after all are constructed.
         mControllers.init();
@@ -210,6 +219,14 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
     @Override
     public ViewCache getViewCache() {
         return mViewCache;
+    }
+
+    @Override
+    public boolean supportsIme() {
+        // Currently we don't support IME because we have FLAG_NOT_FOCUSABLE. We can remove that
+        // flag when opening a floating view that needs IME (such as Folder), but then that means
+        // Taskbar will be below IME and thus users can't click the back button.
+        return false;
     }
 
     /**

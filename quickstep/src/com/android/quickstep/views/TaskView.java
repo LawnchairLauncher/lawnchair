@@ -343,6 +343,19 @@ public class TaskView extends FrameLayout implements Reusable {
                 }
             };
 
+    public static final FloatProperty<TaskView> GRID_END_TRANSLATION_X =
+            new FloatProperty<TaskView>("gridEndTranslationX") {
+                @Override
+                public void setValue(TaskView taskView, float v) {
+                    taskView.setGridEndTranslationX(v);
+                }
+
+                @Override
+                public Float get(TaskView taskView) {
+                    return taskView.mGridEndTranslationX;
+                }
+            };
+
     public static final FloatProperty<TaskView> SNAPSHOT_SCALE =
             new FloatProperty<TaskView>("snapshotScale") {
                 @Override
@@ -381,6 +394,8 @@ public class TaskView extends FrameLayout implements Reusable {
     // The following grid translations scales with mGridProgress.
     private float mGridTranslationX;
     private float mGridTranslationY;
+    // The following grid translation is used to animate closing the gap between grid and clear all.
+    private float mGridEndTranslationX;
     // Applied as a complement to gridTranslation, for adjusting the carousel overview and quick
     // switch.
     private float mNonGridTranslationX;
@@ -823,6 +838,7 @@ public class TaskView extends FrameLayout implements Reusable {
                     RecentsView recentsView = getRecentsView();
                     recentsView.switchToScreenshot(
                             () -> recentsView.finishRecentsAnimation(true /* toRecents */,
+                                    false /* shouldPip */,
                                     this::showTaskMenu));
                 } else {
                     showTaskMenu();
@@ -950,8 +966,8 @@ public class TaskView extends FrameLayout implements Reusable {
     protected void resetViewTransforms() {
         // fullscreenTranslation and accumulatedTranslation should not be reset, as
         // resetViewTransforms is called during Quickswitch scrolling.
-        mDismissTranslationX = mTaskOffsetTranslationX = mTaskResistanceTranslationX =
-                mSplitSelectTranslationX = 0f;
+        mDismissTranslationX = mTaskOffsetTranslationX =
+                mTaskResistanceTranslationX = mSplitSelectTranslationX = mGridEndTranslationX = 0f;
         mDismissTranslationY = mTaskOffsetTranslationY = mTaskResistanceTranslationY =
                 mSplitSelectTranslationY = 0f;
         setSnapshotScale(1f);
@@ -1162,6 +1178,11 @@ public class TaskView extends FrameLayout implements Reusable {
         return mGridTranslationY;
     }
 
+    private void setGridEndTranslationX(float gridEndTranslationX) {
+        mGridEndTranslationX = gridEndTranslationX;
+        applyTranslationX();
+    }
+
     public float getScrollAdjustment(boolean fullscreenEnabled, boolean gridEnabled) {
         float scrollAdjustment = 0;
         if (gridEnabled) {
@@ -1191,7 +1212,7 @@ public class TaskView extends FrameLayout implements Reusable {
 
     private void applyTranslationX() {
         setTranslationX(mDismissTranslationX + mTaskOffsetTranslationX + mTaskResistanceTranslationX
-                + mSplitSelectTranslationX + getPersistentTranslationX());
+                + mSplitSelectTranslationX + mGridEndTranslationX + getPersistentTranslationX());
     }
 
     private void applyTranslationY() {
@@ -1541,7 +1562,7 @@ public class TaskView extends FrameLayout implements Reusable {
 
         public FullscreenDrawParams(Context context) {
             mCornerRadius = TaskCornerRadius.get(context);
-            mWindowCornerRadius = QuickStepContract.getWindowCornerRadius(context.getResources());
+            mWindowCornerRadius = QuickStepContract.getWindowCornerRadius(context);
 
             mCurrentDrawnCornerRadius = mCornerRadius;
         }

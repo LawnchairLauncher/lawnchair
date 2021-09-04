@@ -148,7 +148,7 @@ public class RotationTouchHelper implements
         mDisplayId = DEFAULT_DISPLAY;
 
         mOrientationTouchTransformer = new OrientationTouchTransformer(resources, mMode,
-                () -> QuickStepContract.getWindowCornerRadius(resources));
+                () -> QuickStepContract.getWindowCornerRadius(mContext));
 
         // Register for navigation mode changes
         SysUINavigationMode.Mode newMode = mSysUiNavMode.addModeChangeListener(this);

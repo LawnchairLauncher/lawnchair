@@ -16,6 +16,7 @@
 package com.android.launcher3.taskbar;
 
 import static com.android.launcher3.LauncherState.HOTSEAT_ICONS;
+import static com.android.launcher3.taskbar.TaskbarStashController.FLAG_IN_APP;
 import static com.android.launcher3.taskbar.TaskbarViewController.ALPHA_INDEX_HOME;
 
 import android.animation.Animator;
@@ -162,10 +163,9 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
         anim.start();
         mIsAnimatingToLauncherViaResume = isResumed;
 
-        if (!isResumed) {
-            TaskbarStashController stashController = mControllers.taskbarStashController;
-            stashController.animateToIsStashed(stashController.isStashedInApp(), duration);
-        }
+        TaskbarStashController stashController = mControllers.taskbarStashController;
+        stashController.updateStateForFlag(FLAG_IN_APP, !isResumed);
+        stashController.applyState(duration);
         SystemUiProxy.INSTANCE.get(mContext).notifyTaskbarStatus(!isResumed,
                 mControllers.taskbarStashController.isStashedInApp());
     }
@@ -193,8 +193,11 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
             public void onAnimationStart(Animator animation) {
                 mTargetStateOverride = toState;
                 mIsAnimatingToLauncherViaGesture = true;
-                // TODO: base this on launcher state
-                stashController.animateToIsStashed(false, duration);
+                // TODO: FLAG_IN_APP might be sufficient for now, but in the future we do want to
+                // add another flag for LauncherState as well. We will need to decide whether to
+                // show hotseat or the task bar.
+                stashController.updateStateForFlag(FLAG_IN_APP, false);
+                stashController.applyState(duration);
             }
         });
 
@@ -327,9 +330,8 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
                     .start();
 
             TaskbarStashController controller = mControllers.taskbarStashController;
-            if (finishedToApp) {
-                controller.animateToIsStashed(controller.isStashedInApp());
-            }
+            controller.updateStateForFlag(FLAG_IN_APP, finishedToApp);
+            controller.applyState();
         }
     }
 }
