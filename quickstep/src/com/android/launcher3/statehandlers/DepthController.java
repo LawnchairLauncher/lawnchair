@@ -117,12 +117,10 @@ public class DepthController implements StateHandler<LauncherState>,
 
     private View.OnAttachStateChangeListener mOnAttachListener;
 
-    private final BasePreferenceManager.FloatPref mDrawerOpacity;
+    private BasePreferenceManager.FloatPref mDrawerOpacity;
 
     public DepthController(Launcher l) {
         mLauncher = l;
-
-        mDrawerOpacity = PreferenceManager.getInstance(mLauncher).getDrawerOpacity();
     }
 
     private void ensureDependencies() {
@@ -146,6 +144,9 @@ public class DepthController implements StateHandler<LauncherState>,
                 }
             };
             mLauncher.getRootView().addOnAttachStateChangeListener(mOnAttachListener);
+        }
+        if (mDrawerOpacity == null) {
+            mDrawerOpacity = PreferenceManager.getInstance(mLauncher).getDrawerOpacity();
         }
     }
 
