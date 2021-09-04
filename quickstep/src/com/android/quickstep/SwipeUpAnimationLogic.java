@@ -289,9 +289,11 @@ public abstract class SwipeUpAnimationLogic implements
                 mRemoteTargetHandles[0].mTaskViewSimulator.setPreview(primaryTaskTarget);
             }
         } else {
+            int[] taskIds = LauncherSplitScreenListener.INSTANCE.getNoCreate()
+                    .getRunningSplitTaskIds();
             // We're in staged split
-            primaryTaskTarget = targets.apps[0];
-            secondaryTaskTarget = targets.apps[1];
+            primaryTaskTarget = targets.findTask(taskIds[0]);
+            secondaryTaskTarget = targets.findTask(taskIds[1]);
             mStagedSplitBounds = new SplitConfigurationOptions.StagedSplitBounds(
                     primaryTaskTarget.screenSpaceBounds,
                     secondaryTaskTarget.screenSpaceBounds, dividerTarget.screenSpaceBounds);
