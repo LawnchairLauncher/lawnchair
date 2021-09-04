@@ -44,6 +44,8 @@ import com.android.quickstep.SystemUiProxy;
 import java.io.PrintWriter;
 import java.lang.reflect.InvocationTargetException;
 
+import app.lawnchair.util.CompatibilityKt;
+
 /**
  * TouchController for handling touch events that get sent to the StatusBar. Once the
  * Once the event delta mDownY passes the touch slop, the events start getting forwarded.
@@ -162,6 +164,8 @@ public class StatusBarTouchController implements TouchController {
                     .log(LAUNCHER_SWIPE_DOWN_WORKSPACE_NOTISHADE_OPEN);
             setWindowSlippery(false);
             return true;
+        } else if (CompatibilityKt.isOnePlusStock() && action == ACTION_MOVE) {
+            dispatchTouchEvent(ev);
         }
         return true;
     }
