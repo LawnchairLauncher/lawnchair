@@ -214,11 +214,22 @@ public class DepthController implements StateHandler<LauncherState>,
     }
 
     private void setDepth(float depth) {
+        setDepth(depth, false);
+    }
+
+    public void reapplyDepth() {
+        setDepth(mDepth, true);
+    }
+
+    private void setDepth(float depth, boolean force) {
         depth = Utilities.boundToRange(depth, 0, 1);
         // Round out the depth to dedupe frequent, non-perceptable updates
         int depthI = (int) (depth * 256);
         float depthF = depthI / 256f;
-        if (!Utilities.ATLEAST_R || Float.compare(mDepth, depthF) == 0) {
+        if (!Utilities.ATLEAST_R) {
+            return;
+        }
+        if (Float.compare(mDepth, depthF) == 0 && !force) {
             return;
         }
 

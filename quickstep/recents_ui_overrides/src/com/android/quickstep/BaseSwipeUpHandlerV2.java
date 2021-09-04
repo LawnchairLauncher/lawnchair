@@ -71,6 +71,7 @@ import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.logging.UserEventDispatcher;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
+import com.android.launcher3.statehandlers.DepthController;
 import com.android.launcher3.statemanager.StatefulActivity;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Direction;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
@@ -404,6 +405,11 @@ public abstract class BaseSwipeUpHandlerV2<T extends StatefulActivity<?>, Q exte
                         mActivityInterface));
 
         notifyGestureStartedAsync();
+
+        DepthController depthController = mActivityInterface.getDepthController();
+        if (depthController != null) {
+            depthController.reapplyDepth();
+        }
     }
 
     private void onDeferredActivityLaunch() {
