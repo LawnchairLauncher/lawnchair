@@ -1561,6 +1561,7 @@ public final class LauncherInstrumentation {
     float getWindowCornerRadius() {
         final Resources resources = getResources();
         if (!supportsRoundedCornersOnWindows(resources)) {
+            Log.d(TAG, "No rounded corners");
             return 0f;
         }
 
@@ -1579,7 +1580,8 @@ public final class LauncherInstrumentation {
 
         // Always use the smallest radius to make sure the rounded corners will
         // completely cover the display.
-        return Math.min(topRadius, bottomRadius);
+        Log.d(TAG, "Rounded corners top: " + topRadius + " bottom: " + bottomRadius);
+        return Math.max(topRadius, bottomRadius);
     }
 
     private static boolean supportsRoundedCornersOnWindows(Resources resources) {
