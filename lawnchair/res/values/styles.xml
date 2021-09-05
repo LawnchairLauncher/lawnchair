@@ -3,26 +3,32 @@
     <style name="AppTheme" parent="@style/LauncherTheme">
         <item name="android:colorAccent">@color/primary_500</item>
         <item name="android:dialogCornerRadius" tools:ignore="NewApi">@dimen/lawnchair_dialog_corner_radius</item>
+        <item name="allAppsAlternateTextColor">@color/dark_drawer_text_color</item>
     </style>
     <style name="AppTheme.DarkMainColor" parent="@style/LauncherTheme.DarkMainColor">
         <item name="android:colorAccent">@color/primary_500</item>
         <item name="android:dialogCornerRadius" tools:ignore="NewApi">@dimen/lawnchair_dialog_corner_radius</item>
+        <item name="allAppsAlternateTextColor">@color/dark_drawer_text_color</item>
     </style>
     <style name="AppTheme.DarkText" parent="@style/LauncherTheme.DarkText">
         <item name="android:colorAccent">@color/primary_500</item>
         <item name="android:dialogCornerRadius" tools:ignore="NewApi">@dimen/lawnchair_dialog_corner_radius</item>
+        <item name="allAppsAlternateTextColor">?android:textColorSecondary</item>
     </style>
 
     <style name="AppTheme.Dark" parent="@style/LauncherTheme.Dark">
         <item name="android:colorAccent">@color/primary_200</item>
         <item name="android:dialogCornerRadius" tools:ignore="NewApi">@dimen/lawnchair_dialog_corner_radius</item>
+        <item name="allAppsAlternateTextColor">?android:textColorSecondary</item>
     </style>
     <style name="AppTheme.Dark.DarkMainColor" parent="@style/LauncherTheme.Dark.DarkMainColor">
         <item name="android:colorAccent">@color/primary_200</item>
         <item name="android:dialogCornerRadius" tools:ignore="NewApi">@dimen/lawnchair_dialog_corner_radius</item>
+        <item name="allAppsAlternateTextColor">?android:textColorSecondary</item>
     </style>
     <style name="AppTheme.Dark.DarkText" parent="@style/LauncherTheme.Dark.DarkText">
         <item name="android:colorAccent">@color/primary_200</item>
         <item name="android:dialogCornerRadius" tools:ignore="NewApi">@dimen/lawnchair_dialog_corner_radius</item>
+        <item name="allAppsAlternateTextColor">@color/light_drawer_text_color</item>
     </style>
 </resources>

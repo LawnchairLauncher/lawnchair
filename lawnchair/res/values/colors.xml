@@ -19,4 +19,6 @@
 <resources>
     <color name="primary_500">#1a73e8</color>
     <color name="primary_200">#8ab4f8</color>
+    <color name="dark_drawer_text_color">#FFFFFFFF</color>
+    <color name="light_drawer_text_color">#DE000000</color>
 </resources>

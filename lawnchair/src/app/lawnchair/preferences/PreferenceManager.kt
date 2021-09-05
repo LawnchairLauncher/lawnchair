@@ -76,7 +76,8 @@ class PreferenceManager private constructor(private val context: Context) : Base
     // TODO: Add the ability to manually delete empty pages.
     val allowEmptyPages = BoolPref("pref_allowEmptyPages", false)
     val drawerOpacity = FloatPref("pref_drawerOpacity", 1F) {
-        LauncherAppState.getInstance(context).launcher.scrimView.refreshScrimAlpha(context)
+        LawnchairLauncher.instance?.scrimView?.refreshScrimAlpha()
+        reloadGrid()
     }
     val coloredBackgroundLightness = FloatPref("pref_coloredBackgroundLightness", 0.9F, reloadIcons)
     val feedProvider = StringPref("pref_feedProvider", "")

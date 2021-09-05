@@ -59,7 +59,7 @@ fun AppDrawerPreferences() {
                 label = stringResource(id = R.string.background_opacity),
                 adapter = prefs.drawerOpacity.getAdapter(),
                 step = 0.1f,
-                valueRange = 0.7F..1F,
+                valueRange = 0F..1F,
                 showAsPercentage = true,
             )
         }

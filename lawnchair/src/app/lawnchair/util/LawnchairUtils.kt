@@ -21,9 +21,12 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.os.Looper
+import android.widget.TextView
 import androidx.core.os.UserManagerCompat
 import app.lawnchair.preferences.PreferenceManager
+import com.android.launcher3.R
 import com.android.launcher3.util.Executors.MAIN_EXECUTOR
+import com.android.launcher3.util.Themes
 import com.android.systemui.shared.system.QuickStepContract
 import java.util.concurrent.Callable
 import java.util.concurrent.ExecutionException
@@ -98,4 +101,12 @@ fun supportsRoundedCornersOnWindows(context: Context): Boolean {
         return true
     }
     return QuickStepContract.supportsRoundedCornersOnWindows(context.resources)
+}
+
+fun overrideAllAppsTextColor(textView: TextView) {
+    val context = textView.context
+    val opacity = PreferenceManager.getInstance(context).drawerOpacity.get()
+    if (opacity <= 0.3f) {
+        textView.setTextColor(Themes.getAttrColor(context, R.attr.allAppsAlternateTextColor))
+    }
 }

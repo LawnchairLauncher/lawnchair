@@ -38,6 +38,8 @@ import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.animation.Interpolator;
 
+import androidx.core.graphics.ColorUtils;
+
 import com.android.launcher3.BaseQuickstepLauncher;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.LauncherState;
@@ -120,7 +122,7 @@ public class ShelfScrimView extends ScrimView<BaseQuickstepLauncher>
         // Just assume the easiest UI for now, until we have the proper layout information.
         mDrawingFlatColor = true;
 
-        refreshScrimAlpha(context);
+        refreshScrimAlpha();
     }
 
     @Override
@@ -323,9 +325,15 @@ public class ShelfScrimView extends ScrimView<BaseQuickstepLauncher>
     }
 
     @Override
-    public void refreshScrimAlpha(Context context) {
-        PreferenceManager prefs = PreferenceManager.getInstance(context);
-        mEndAlpha = (int) (prefs.getDrawerOpacity().get() * 255);
+    public void refreshScrimAlpha() {
+        PreferenceManager prefs = PreferenceManager.getInstance(getContext());
+        float opacity = prefs.getDrawerOpacity().get();
+        mEndAlpha = (int) (opacity * 255);
+        if (opacity <= 0.3f) {
+            mIsScrimDark = !Themes.getAttrBoolean(getContext(), R.attr.isWorkspaceDarkText);
+        } else {
+            mIsScrimDark = ColorUtils.calculateLuminance(mEndScrim) < 0.5f;
+        }
     }
 
     @Override
