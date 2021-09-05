@@ -18,6 +18,7 @@ package app.lawnchair
 
 import android.content.Context
 import android.os.Bundle
+import android.view.ViewTreeObserver
 import androidx.activity.OnBackPressedDispatcher
 import androidx.activity.OnBackPressedDispatcherOwner
 import androidx.core.view.WindowInsetsCompat
@@ -103,6 +104,22 @@ class LawnchairLauncher : QuickstepLauncher(), LifecycleOwner,
         super.onResume()
         lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_RESUME)
         restartIfPending()
+
+        dragLayer.viewTreeObserver.addOnDrawListener(object : ViewTreeObserver.OnDrawListener {
+            var handled = false
+
+            override fun onDraw() {
+                if (handled) {
+                    return
+                }
+                handled = true
+
+                dragLayer.post {
+                    dragLayer.viewTreeObserver.removeOnDrawListener(this)
+                }
+                depthController.reapplyDepth()
+            }
+        })
     }
 
     override fun onPause() {
