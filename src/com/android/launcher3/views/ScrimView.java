@@ -544,13 +544,4 @@ public class ScrimView<T extends Launcher> extends View implements Insettable, O
     public float getVisualTop() {
         return Float.MAX_VALUE;
     }
-
-    public void refreshScrimAlpha() {
-        // Override in inheriting classes
-    }
-
-    public int getScrimAlpha() {
-        // Override in inheriting classes
-        return 255;
-    }
 }

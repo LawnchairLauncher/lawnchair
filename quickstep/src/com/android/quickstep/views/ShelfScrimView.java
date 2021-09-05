@@ -12,8 +12,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
- * Modifications copyright 2021, Lawnchair
  */
 package com.android.quickstep.views;
 
@@ -38,8 +36,6 @@ import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.animation.Interpolator;
 
-import androidx.core.graphics.ColorUtils;
-
 import com.android.launcher3.BaseQuickstepLauncher;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.LauncherState;
@@ -55,8 +51,6 @@ import com.android.quickstep.SysUINavigationMode;
 import com.android.quickstep.SysUINavigationMode.Mode;
 import com.android.quickstep.SysUINavigationMode.NavigationModeChangeListener;
 import com.android.quickstep.util.LayoutUtils;
-
-import app.lawnchair.preferences.PreferenceManager;
 
 /**
  * Scrim used for all-apps and shelf in Overview
@@ -79,7 +73,7 @@ public class ShelfScrimView extends ScrimView<BaseQuickstepLauncher>
     private boolean mDrawingFlatColor;
 
     // For shelf mode
-    private int mEndAlpha;
+    protected int mEndAlpha;
     private final float mRadius;
     private final int mMaxScrimAlpha;
     private final Paint mPaint;
@@ -115,14 +109,13 @@ public class ShelfScrimView extends ScrimView<BaseQuickstepLauncher>
         super(context, attrs);
         mMaxScrimAlpha = Math.round(OVERVIEW.getOverviewScrimAlpha(mLauncher) * 255);
 
+        mEndAlpha = Color.alpha(mEndScrim);
         mRadius = BOTTOM_CORNER_RADIUS_RATIO * Themes.getDialogCornerRadius(context);
         mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         mOnboardingPrefs = mLauncher.getOnboardingPrefs();
 
         // Just assume the easiest UI for now, until we have the proper layout information.
         mDrawingFlatColor = true;
-
-        refreshScrimAlpha();
     }
 
     @Override
@@ -322,22 +315,5 @@ public class ShelfScrimView extends ScrimView<BaseQuickstepLauncher>
     @Override
     public float getVisualTop() {
         return mShelfTop;
-    }
-
-    @Override
-    public void refreshScrimAlpha() {
-        PreferenceManager prefs = PreferenceManager.getInstance(getContext());
-        float opacity = prefs.getDrawerOpacity().get();
-        mEndAlpha = (int) (opacity * 255);
-        if (opacity <= 0.3f) {
-            mIsScrimDark = !Themes.getAttrBoolean(getContext(), R.attr.isWorkspaceDarkText);
-        } else {
-            mIsScrimDark = ColorUtils.calculateLuminance(mEndScrim) < 0.5f;
-        }
-    }
-
-    @Override
-    public int getScrimAlpha() {
-        return mEndAlpha;
     }
 }
