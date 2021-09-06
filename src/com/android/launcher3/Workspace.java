@@ -647,7 +647,8 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         if (mDragSourceInternal != null) {
             int dragSourceChildCount = mDragSourceInternal.getChildCount();
 
-            if (isTwoPanelEnabled()) {
+            // If the icon was dragged from Hotseat, there is no page pair
+            if (isTwoPanelEnabled() && !(mDragSourceInternal.getParent() instanceof Hotseat)) {
                 int pagePairScreenId = getPagePair(dragObject.dragInfo.screenId);
                 CellLayout pagePair = mWorkspaceScreens.get(pagePairScreenId);
                 if (pagePair == null) {
