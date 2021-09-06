@@ -920,12 +920,8 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
 
     /**
      * Returns the page that is shown together with the given page when two panel is enabled.
-     * @throws IllegalStateException if called while two panel home isn't enabled.
      */
     public int getPagePair(int page) {
-        if (!isTwoPanelEnabled()) {
-            throw new IllegalStateException("Two panel home isn't enabled.");
-        }
         if (page % 2 == 0) {
             return page + 1;
         } else {

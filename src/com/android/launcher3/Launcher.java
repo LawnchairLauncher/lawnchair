@@ -2112,19 +2112,19 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
             actualIds.add(id);
         }
         int firstId = visibleIds.getArray().get(0);
+        int pairId = mWorkspace.getPagePair(firstId);
+        // Double check that actual screenIds contains the visibleId, as empty screens are hidden
+        // in single panel.
         if (actualIds.contains(firstId)) {
             result.add(firstId);
-
-            if (mDeviceProfile.isTwoPanels) {
-                int index = actualIds.indexOf(firstId);
-                int nextIndex = (index / 2) * 2;
-                if (nextIndex == index) {
-                    nextIndex++;
-                }
-                if (nextIndex < actualIds.size()) {
-                    result.add(actualIds.get(nextIndex));
-                }
+            if (mDeviceProfile.isTwoPanels && actualIds.contains(pairId)) {
+                result.add(pairId);
             }
+        } else if (LauncherAppState.getIDP(this).supportedProfiles.stream().anyMatch(
+                deviceProfile -> deviceProfile.isTwoPanels) && actualIds.contains(pairId)) {
+            // Add the right panel if left panel is hidden when switching display, due to empty
+            // pages being hidden in single panel.
+            result.add(pairId);
         }
         return result;
     }
