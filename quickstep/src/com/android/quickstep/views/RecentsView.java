@@ -3000,6 +3000,10 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                                                     : getBottomRowIdArray();
                                     int snappedIndex = taskViewIdArray.indexOf(snappedTaskViewId);
                                     taskViewIdArray.removeValue(dismissedTaskViewId);
+                                    if (finalNextFocusedTaskView != null) {
+                                        taskViewIdArray.removeValue(
+                                                finalNextFocusedTaskView.getTaskViewId());
+                                    }
                                     if (snappedIndex < taskViewIdArray.size()) {
                                         taskViewIdToSnapTo = taskViewIdArray.get(snappedIndex);
                                     } else if (snappedIndex == taskViewIdArray.size()) {
@@ -3088,7 +3092,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                             }
                         }
                         setCurrentPage(pageToSnapTo);
-                        // Update various scroll depedent UI.
+                        // Update various scroll-dependent UI.
                         dispatchScrollChanged();
                         updateActionsViewFocusedScroll();
                         if (isClearAllHidden()) {
