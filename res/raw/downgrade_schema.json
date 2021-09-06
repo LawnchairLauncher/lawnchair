@@ -2,8 +2,9 @@
   // Note: Comments are not supported in JSON schema, but android parser is lenient.
 
   // Maximum DB version supported by this schema
-  "version" : 29,
+  "version" : 30,
 
+  "downgrade_to_29" : [],
   "downgrade_to_28" : [
     "ALTER TABLE favorites RENAME TO temp_favorites;",
     "CREATE TABLE favorites(_id INTEGER PRIMARY KEY, title TEXT, intent TEXT, container INTEGER, screen INTEGER, cellX INTEGER, cellY INTEGER, spanX INTEGER, spanY INTEGER, itemType INTEGER, appWidgetId INTEGER NOT NULL DEFAULT - 1, iconPackage TEXT, iconResource TEXT, icon BLOB, appWidgetProvider TEXT, modified INTEGER NOT NULL DEFAULT 0, restored INTEGER NOT NULL DEFAULT 0, profileId INTEGER DEFAULT 0, rank INTEGER NOT NULL DEFAULT 0, options INTEGER NOT NULL DEFAULT 0);",
