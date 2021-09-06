@@ -29,7 +29,6 @@ import static com.android.launcher3.LauncherAnimUtils.VIEW_ALPHA;
 import static com.android.launcher3.LauncherState.BACKGROUND_APP;
 import static com.android.launcher3.QuickstepTransitionManager.RECENTS_LAUNCH_DURATION;
 import static com.android.launcher3.Utilities.EDGE_NAV_BAR;
-import static com.android.launcher3.Utilities.boundToRange;
 import static com.android.launcher3.Utilities.mapToRange;
 import static com.android.launcher3.Utilities.squaredHypot;
 import static com.android.launcher3.Utilities.squaredTouchSlop;
@@ -3001,6 +3000,10 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                                                     : getBottomRowIdArray();
                                     int snappedIndex = taskViewIdArray.indexOf(snappedTaskViewId);
                                     taskViewIdArray.removeValue(dismissedTaskViewId);
+                                    if (finalNextFocusedTaskView != null) {
+                                        taskViewIdArray.removeValue(
+                                                finalNextFocusedTaskView.getTaskViewId());
+                                    }
                                     if (snappedIndex < taskViewIdArray.size()) {
                                         taskViewIdToSnapTo = taskViewIdArray.get(snappedIndex);
                                     } else if (snappedIndex == taskViewIdArray.size()) {
@@ -3089,7 +3092,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                             }
                         }
                         setCurrentPage(pageToSnapTo);
-                        // Update various scroll depedent UI.
+                        // Update various scroll-dependent UI.
                         dispatchScrollChanged();
                         updateActionsViewScrollAlpha();
                         if (isClearAllHidden()) {
