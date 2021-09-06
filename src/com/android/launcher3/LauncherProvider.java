@@ -97,7 +97,7 @@ public class LauncherProvider extends ContentProvider {
      * Represents the schema of the database. Changes in scheme need not be backwards compatible.
      * When increasing the scheme version, ensure that downgrade_schema.json is updated
      */
-    public static final int SCHEMA_VERSION = 29;
+    public static final int SCHEMA_VERSION = 30;
 
     public static final String AUTHORITY = BuildConfig.APPLICATION_ID + ".settings";
     public static final String KEY_LAYOUT_PROVIDER_AUTHORITY = "KEY_LAYOUT_PROVIDER_AUTHORITY";
@@ -864,6 +864,11 @@ public class LauncherProvider extends ContentProvider {
                     }
                 }
                 case 29: {
+                    // Remove widget panel related leftover workspace items
+                    db.delete(Favorites.TABLE_NAME, Utilities.createDbSelectionQuery(
+                            Favorites.SCREEN, IntArray.wrap(-777, -778)), null);
+                }
+                case 30: {
                     // DB Upgraded successfully
                     return;
                 }
