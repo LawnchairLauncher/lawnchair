@@ -125,6 +125,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -644,18 +645,36 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         boolean childOnFinalScreen = false;
 
         if (mDragSourceInternal != null) {
+            int dragSourceChildCount = mDragSourceInternal.getChildCount();
+
+            // If the icon was dragged from Hotseat, there is no page pair
+            if (isTwoPanelEnabled() && !(mDragSourceInternal.getParent() instanceof Hotseat)) {
+                int pagePairScreenId = getPagePair(dragObject.dragInfo.screenId);
+                CellLayout pagePair = mWorkspaceScreens.get(pagePairScreenId);
+                if (pagePair == null) {
+                    // TODO: after http://b/198820019 is fixed, remove this
+                    throw new IllegalStateException("Page pair is null, "
+                            + "dragScreenId: " + dragObject.dragInfo.screenId
+                            + ", pagePairScreenId: " + pagePairScreenId
+                            + ", mScreenOrder: " + mScreenOrder.toConcatString()
+                    );
+                }
+                dragSourceChildCount += pagePair.getShortcutsAndWidgets().getChildCount();
+            }
+
             // When the drag view content is a LauncherAppWidgetHostView, we should increment the
             // drag source child count by 1 because the widget in drag has been detached from its
             // original parent, ShortcutAndWidgetContainer, and reattached to the DragView.
-            int dragSourceChildCount =
-                    dragObject.dragView.getContentView() instanceof LauncherAppWidgetHostView
-                            ? mDragSourceInternal.getChildCount() + 1
-                            : mDragSourceInternal.getChildCount();
+            if (dragObject.dragView.getContentView() instanceof LauncherAppWidgetHostView) {
+                dragSourceChildCount++;
+            }
+
             if (dragSourceChildCount == 1) {
                 lastChildOnScreen = true;
             }
             CellLayout cl = (CellLayout) mDragSourceInternal.getParent();
-            if (indexOfChild(cl) == getChildCount() - 1) {
+            if (getLeftmostVisiblePageForIndex(indexOfChild(cl))
+                    == getLeftmostVisiblePageForIndex(getPageCount() - 1)) {
                 childOnFinalScreen = true;
             }
         }
@@ -664,40 +683,83 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         if (lastChildOnScreen && childOnFinalScreen) {
             return;
         }
-        if (!mWorkspaceScreens.containsKey(EXTRA_EMPTY_SCREEN_ID)) {
-            insertNewWorkspaceScreen(EXTRA_EMPTY_SCREEN_ID);
+
+        forEachExtraEmptyPageId(extraEmptyPageId -> {
+            if (!mWorkspaceScreens.containsKey(extraEmptyPageId)) {
+                insertNewWorkspaceScreen(extraEmptyPageId);
+            }
+        });
+    }
+
+    /**
+     * Inserts extra empty pages to the end of the existing workspaces.
+     * Usually we add one extra empty screen, but when two panel home is enabled we add
+     * two extra screens.
+     **/
+    public void addExtraEmptyScreens() {
+        forEachExtraEmptyPageId(extraEmptyPageId -> {
+            if (!mWorkspaceScreens.containsKey(extraEmptyPageId)) {
+                insertNewWorkspaceScreen(extraEmptyPageId);
+            }
+        });
+    }
+
+    /**
+     * Calls the consumer with all the necessary extra empty page IDs.
+     * On a normal one panel Workspace that means only EXTRA_EMPTY_SCREEN_ID,
+     * but in a two panel scenario this also includes EXTRA_EMPTY_SCREEN_SECOND_ID.
+     */
+    private void forEachExtraEmptyPageId(Consumer<Integer> callback) {
+        callback.accept(EXTRA_EMPTY_SCREEN_ID);
+        if (isTwoPanelEnabled()) {
+            callback.accept(EXTRA_EMPTY_SCREEN_SECOND_ID);
         }
     }
 
-    public boolean addExtraEmptyScreen() {
-        if (!mWorkspaceScreens.containsKey(EXTRA_EMPTY_SCREEN_ID)) {
-            insertNewWorkspaceScreen(EXTRA_EMPTY_SCREEN_ID);
-            return true;
-        }
-        return false;
-    }
-
+    /**
+     * If two panel home is enabled we convert the last two screens that are visible at the same
+     * time. In other cases we only convert the last page.
+     */
     private void convertFinalScreenToEmptyScreenIfNecessary() {
         if (mLauncher.isWorkspaceLoading()) {
             // Invalid and dangerous operation if workspace is loading
             return;
         }
 
-        if (hasExtraEmptyScreen() || mScreenOrder.size() == 0) return;
-        int finalScreenId = mScreenOrder.get(mScreenOrder.size() - 1);
+        int panelCount = getPanelCount();
+        if (hasExtraEmptyScreens() || mScreenOrder.size() < panelCount) {
+            return;
+        }
 
-        CellLayout finalScreen = mWorkspaceScreens.get(finalScreenId);
+        SparseArray<CellLayout> finalScreens = new SparseArray<>();
 
-        // If the final screen is empty, convert it to the extra empty screen
-        if (finalScreen != null
-                && finalScreen.getShortcutsAndWidgets().getChildCount() == 0
-                && !finalScreen.isDropPending()) {
-            mWorkspaceScreens.remove(finalScreenId);
-            mScreenOrder.removeValue(finalScreenId);
+        int pageCount = mScreenOrder.size();
+        // First we add the last page(s) to the finalScreens collection. The number of final pages
+        // depends on the panel count.
+        for (int pageIndex = pageCount - panelCount; pageIndex < pageCount; pageIndex++) {
+            int screenId = mScreenOrder.get(pageIndex);
+            CellLayout screen = mWorkspaceScreens.get(screenId);
+            if (screen == null || screen.getShortcutsAndWidgets().getChildCount() != 0
+                    || screen.isDropPending()) {
+                // Final screen doesn't exist or it isn't empty or there's a pending drop
+                return;
+            }
+            finalScreens.append(screenId, screen);
+        }
 
-            // if this is the last screen, convert it to the empty screen
-            mWorkspaceScreens.put(EXTRA_EMPTY_SCREEN_ID, finalScreen);
-            mScreenOrder.add(EXTRA_EMPTY_SCREEN_ID);
+        // Then we remove the final screens from the collections (but not from the view hierarchy)
+        // and we store them as extra empty screens.
+        for (int i = 0; i < finalScreens.size(); i++) {
+            int screenId = finalScreens.keyAt(i);
+            CellLayout screen = finalScreens.get(screenId);
+
+            mWorkspaceScreens.remove(screenId);
+            mScreenOrder.removeValue(screenId);
+
+            int newScreenId = mWorkspaceScreens.containsKey(EXTRA_EMPTY_SCREEN_ID)
+                    ? EXTRA_EMPTY_SCREEN_SECOND_ID : EXTRA_EMPTY_SCREEN_ID;
+            mWorkspaceScreens.put(newScreenId, screen);
+            mScreenOrder.add(newScreenId);
         }
     }
 
@@ -705,6 +767,23 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         removeExtraEmptyScreenDelayed(0, stripEmptyScreens, null);
     }
 
+    /**
+     * The purpose of this method is to remove empty pages from Workspace.
+     * Empty page(s) from the end of mWorkspaceScreens will always be removed. The pages with
+     * ID = Workspace.EXTRA_EMPTY_SCREEN_IDS will be removed if there are other non-empty pages.
+     * If there are no more non-empty pages left, extra empty page(s) will either stay or get added.
+     *
+     * If stripEmptyScreens is true, all empty pages (not just the ones on the end) will be removed
+     * from the Workspace, and if there are no more pages left then extra empty page(s) will be
+     * added.
+     *
+     * The number of extra empty pages is equal to what getPanelCount() returns.
+     *
+     * After the method returns the possible pages are:
+     * stripEmptyScreens = true : [non-empty pages, extra empty page(s) alone]
+     * stripEmptyScreens = false : [non-empty pages, empty pages (not in the end),
+     *                             extra empty page(s) alone]
+     */
     public void removeExtraEmptyScreenDelayed(
             int delay, boolean stripEmptyScreens, Runnable onComplete) {
         if (mLauncher.isWorkspaceLoading()) {
@@ -718,18 +797,26 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
             return;
         }
 
+        // First we convert the last page to an extra page if the last page is empty
+        // and we don't already have an extra page.
         convertFinalScreenToEmptyScreenIfNecessary();
-        if (hasExtraEmptyScreen()) {
-            removeView(mWorkspaceScreens.get(EXTRA_EMPTY_SCREEN_ID));
+        // Then we remove the extra page(s) if they are not the only pages left in Workspace.
+        if (hasExtraEmptyScreens()) {
+            forEachExtraEmptyPageId(extraEmptyPageId -> {
+                removeView(mWorkspaceScreens.get(extraEmptyPageId));
+                mWorkspaceScreens.remove(extraEmptyPageId);
+                mScreenOrder.removeValue(extraEmptyPageId);
+            });
+
             setCurrentPage(getNextPage());
-            mWorkspaceScreens.remove(EXTRA_EMPTY_SCREEN_ID);
-            mScreenOrder.removeValue(EXTRA_EMPTY_SCREEN_ID);
 
             // Update the page indicator to reflect the removed page.
             showPageIndicatorAtCurrentScroll();
         }
 
         if (stripEmptyScreens) {
+            // This will remove all empty pages from the Workspace. If there are no more pages left,
+            // it will add extra page(s) so that users can put items on at least one page.
             stripEmptyScreens();
         }
 
@@ -738,27 +825,56 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         }
     }
 
-    public boolean hasExtraEmptyScreen() {
-        return mWorkspaceScreens.containsKey(EXTRA_EMPTY_SCREEN_ID) && getChildCount() > 1;
+    public boolean hasExtraEmptyScreens() {
+        return mWorkspaceScreens.containsKey(EXTRA_EMPTY_SCREEN_ID)
+                && getChildCount() > getPanelCount()
+                && (!isTwoPanelEnabled()
+                || mWorkspaceScreens.containsKey(EXTRA_EMPTY_SCREEN_SECOND_ID));
     }
 
-    public int commitExtraEmptyScreen() {
+    /**
+     *  Commits the extra empty pages then returns the screen ids of those new screens.
+     *  Usually there's only one extra empty screen, but when two panel home is enabled we commit
+     *  two extra screens.
+     *
+     *  Returns an empty IntSet in case we cannot commit any new screens.
+     */
+    public IntSet commitExtraEmptyScreens() {
         if (mLauncher.isWorkspaceLoading()) {
             // Invalid and dangerous operation if workspace is loading
-            return -1;
+            return new IntSet();
         }
 
-        CellLayout cl = mWorkspaceScreens.get(EXTRA_EMPTY_SCREEN_ID);
-        mWorkspaceScreens.remove(EXTRA_EMPTY_SCREEN_ID);
-        mScreenOrder.removeValue(EXTRA_EMPTY_SCREEN_ID);
+        IntSet extraEmptyPageIds = new IntSet();
+        forEachExtraEmptyPageId(extraEmptyPageId ->
+                extraEmptyPageIds.add(commitExtraEmptyScreen(extraEmptyPageId)));
 
-        int newId = LauncherSettings.Settings.call(getContext().getContentResolver(),
+        return extraEmptyPageIds;
+    }
+
+    private int commitExtraEmptyScreen(int emptyScreenId) {
+        CellLayout cl = mWorkspaceScreens.get(emptyScreenId);
+        mWorkspaceScreens.remove(emptyScreenId);
+        mScreenOrder.removeValue(emptyScreenId);
+
+        int newScreenId = LauncherSettings.Settings.call(getContext().getContentResolver(),
                 LauncherSettings.Settings.METHOD_NEW_SCREEN_ID)
                 .getInt(LauncherSettings.Settings.EXTRA_VALUE);
-        mWorkspaceScreens.put(newId, cl);
-        mScreenOrder.add(newId);
 
-        return newId;
+
+        // When two panel home is enabled and the last page (the page on the right) doesn't
+        // have any items, then Launcher database doesn't know about this page because it was added
+        // by Launcher::bindAddScreens but wasn't inserted into the database. LauncherSettings's
+        // generate new screen ID method will return the ID for the left page,
+        // so we need to increment it.
+        if (isTwoPanelEnabled() && emptyScreenId == EXTRA_EMPTY_SCREEN_ID && newScreenId % 2 == 1) {
+            newScreenId++;
+        }
+
+        mWorkspaceScreens.put(newScreenId, cl);
+        mScreenOrder.add(newScreenId);
+
+        return newScreenId;
     }
 
     @Override
@@ -805,12 +921,8 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
 
     /**
      * Returns the page that is shown together with the given page when two panel is enabled.
-     * @throws IllegalStateException if called while two panel home isn't enabled.
      */
     public int getPagePair(int page) {
-        if (!isTwoPanelEnabled()) {
-            throw new IllegalStateException("Two panel home isn't enabled.");
-        }
         if (page % 2 == 0) {
             return page + 1;
         } else {
@@ -859,9 +971,10 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
             }
         }
 
-        // We enforce at least one page to add new items to. In the case that we remove the last
-        // such screen, we convert the last screen to the empty screen
-        int minScreens = 1;
+        // We enforce at least one page (two pages on two panel home) to add new items to.
+        // In the case that we remove the last such screen(s), we convert the last screen(s)
+        // to the empty screen(s)
+        int minScreens = getPanelCount();
 
         int pageShift = 0;
         for (int i = 0; i < removeScreens.size(); i++) {
@@ -871,14 +984,21 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
             mScreenOrder.removeValue(id);
 
             if (getChildCount() > minScreens) {
+                // If this isn't the last page, just remove it
                 if (indexOfChild(cl) < currentPage) {
                     pageShift++;
                 }
                 removeView(cl);
             } else {
-                // if this is the last screen, convert it to the empty screen
-                mWorkspaceScreens.put(EXTRA_EMPTY_SCREEN_ID, cl);
-                mScreenOrder.add(EXTRA_EMPTY_SCREEN_ID);
+                // The last page(s) should be converted into extra empty page(s)
+                int extraScreenId = isTwoPanelEnabled() && id % 2 == 1
+                        // This is the right panel in a two panel scenario
+                        ? EXTRA_EMPTY_SCREEN_SECOND_ID
+                        // This is either the last screen in a one panel scenario, or the left panel
+                        // in a two panel scenario when there are only two empty pages left
+                        : EXTRA_EMPTY_SCREEN_ID;
+                mWorkspaceScreens.put(extraScreenId, cl);
+                mScreenOrder.add(extraScreenId);
             }
         }
 
@@ -1656,8 +1776,8 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         }
 
         int screenId = getIdForScreen(dropTargetLayout);
-        if (screenId == EXTRA_EMPTY_SCREEN_ID) {
-            commitExtraEmptyScreen();
+        if (Workspace.EXTRA_EMPTY_SCREEN_IDS.contains(screenId)) {
+            commitExtraEmptyScreens();
         }
 
         return true;

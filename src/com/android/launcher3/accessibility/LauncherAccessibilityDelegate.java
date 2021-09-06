@@ -45,6 +45,7 @@ import com.android.launcher3.popup.ArrowPopup;
 import com.android.launcher3.popup.PopupContainerWithArrow;
 import com.android.launcher3.touch.ItemLongClickListener;
 import com.android.launcher3.util.IntArray;
+import com.android.launcher3.util.IntSet;
 import com.android.launcher3.util.ShortcutUtil;
 import com.android.launcher3.util.Thunk;
 import com.android.launcher3.views.OptionsPopupView;
@@ -221,6 +222,9 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate impleme
         } else if (action == ADD_TO_WORKSPACE) {
             final int[] coordinates = new int[2];
             final int screenId = findSpaceOnWorkspace(item, coordinates);
+            if (screenId == -1) {
+                return false;
+            }
             mLauncher.getStateManager().goToState(NORMAL, true, forSuccessCallback(() -> {
                 if (item instanceof AppInfo) {
                     WorkspaceItemInfo info = ((AppInfo) item).makeWorkspaceItem();
@@ -250,6 +254,9 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate impleme
 
             final int[] coordinates = new int[2];
             final int screenId = findSpaceOnWorkspace(item, coordinates);
+            if (screenId == -1) {
+                return false;
+            }
             mLauncher.getModelWriter().moveItemInDatabase(info,
                     Favorites.CONTAINER_DESKTOP,
                     screenId, coordinates[0], coordinates[1]);
@@ -489,8 +496,14 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate impleme
             return screenId;
         }
 
-        workspace.addExtraEmptyScreen();
-        screenId = workspace.commitExtraEmptyScreen();
+        workspace.addExtraEmptyScreens();
+        IntSet emptyScreenIds = workspace.commitExtraEmptyScreens();
+        if (emptyScreenIds.isEmpty()) {
+            // Couldn't create extra empty screens for some reason (e.g. Workspace is loading)
+            return -1;
+        }
+
+        screenId = emptyScreenIds.getArray().get(0);
         layout = workspace.getScreenWithId(screenId);
         found = layout.findCellForSpan(outCoordinates, info.spanX, info.spanY);
 
