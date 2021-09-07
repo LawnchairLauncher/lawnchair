@@ -56,8 +56,14 @@ public class ApiWrapper {
     public static int getHotseatEndOffset(Context context) {
         if (SysUINavigationMode.INSTANCE.get(context).getMode() == Mode.THREE_BUTTONS) {
             Resources res = context.getResources();
+            /*
+            * 2 (left + right) x Padding +
+            * 3 nav buttons +
+            * Little space at the end for contextual buttons
+            */
             return 2 * res.getDimensionPixelSize(R.dimen.taskbar_nav_buttons_spacing)
-                    + 3 * res.getDimensionPixelSize(R.dimen.taskbar_nav_buttons_size);
+                    + 3 * res.getDimensionPixelSize(R.dimen.taskbar_nav_buttons_size)
+                    + res.getDimensionPixelSize(R.dimen.taskbar_contextual_button_margin);
         } else {
             return 0;
         }
