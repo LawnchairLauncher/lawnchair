@@ -1866,7 +1866,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         setCurrentTask(-1);
         mIgnoreResetTaskId = -1;
         mTaskListChangeId = -1;
-        mFocusedTaskViewId = getTaskViewCount() > 0 ? getTaskViewAt(0).getTaskViewId() : -1;
+        mFocusedTaskViewId = -1;
 
         if (mRecentsAnimationController != null) {
             if (ENABLE_QUICKSTEP_LIVE_TILE.get() && mEnableDrawingLiveTile) {
