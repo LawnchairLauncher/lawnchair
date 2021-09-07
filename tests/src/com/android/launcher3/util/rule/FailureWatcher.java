@@ -2,6 +2,7 @@ package com.android.launcher3.util.rule;
 
 import static androidx.test.InstrumentationRegistry.getInstrumentation;
 
+import android.content.Context;
 import android.os.FileUtils;
 import android.os.ParcelFileDescriptor.AutoCloseInputStream;
 import android.util.Log;
@@ -45,11 +46,30 @@ public class FailureWatcher extends TestWatcher {
         return new Statement() {
             @Override
             public void evaluate() throws Throwable {
+                boolean success = false;
                 try {
                     Log.d("b/196820244", "Before evaluate");
+                    mDevice.executeShellCommand("cmd statusbar tracing start");
                     FailureWatcher.super.apply(base, description).evaluate();
                     Log.d("b/196820244", "After evaluate");
+                    success = true;
                 } finally {
+                    // Save artifact for Launcher Winscope trace.
+                    mDevice.executeShellCommand("cmd statusbar tracing stop");
+                    final Context nexusLauncherContext =
+                            getInstrumentation().getTargetContext()
+                                    .createPackageContext("com.google.android.apps.nexuslauncher",
+                                            0);
+                    final File launcherTrace =
+                            new File(nexusLauncherContext.getFilesDir(), "launcher_trace.pb");
+                    if (success) {
+                        mDevice.executeShellCommand("rm " + launcherTrace);
+                    } else {
+                        mDevice.executeShellCommand("mv " + launcherTrace + " "
+                                + diagFile(description, "LauncherWinscope", "pb"));
+                    }
+
+                    // Detect touch events coming from physical screen.
                     if (mLauncher.hadNontestEvents()) {
                         throw new AssertionError(
                                 "Launcher received events not sent by the test. This may mean "
