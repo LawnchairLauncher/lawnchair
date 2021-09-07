@@ -16,8 +16,7 @@
 
 package com.android.systemui.plugins;
 
-import android.graphics.Bitmap;
-import android.text.Spanned;
+import android.os.Parcelable;
 
 import com.android.systemui.plugins.annotations.ProvidesInterface;
 
@@ -29,7 +28,7 @@ import java.util.ArrayList;
 @ProvidesInterface(action = OneSearch.ACTION, version = OneSearch.VERSION)
 public interface OneSearch extends Plugin {
     String ACTION = "com.android.systemui.action.PLUGIN_ONE_SEARCH";
-    int VERSION = 2;
+    int VERSION = 3;
 
     /**
      * Get the content provider warmed up.
@@ -37,23 +36,8 @@ public interface OneSearch extends Plugin {
     void warmUp();
 
     /**
-     * Get the suggests for the query.
+     * Get the suggest search target list for the query.
      * @param query The query to get the search suggests for.
      */
-    ArrayList<Spanned> getSuggests(String query);
-
-    /**
-     * Get the image bitmap for the suggest.
-     * @param suggest The suggest to get the image bitmap for.
-     */
-    Bitmap getImageBitmap(Spanned suggest);
-
-    /**
-     * Get the subtitle for the suggest.
-     * @param suggest The suggest to get the subtitle for.
-     */
-    String getSubtitle(Spanned suggest);
-
-    /** Clear any cached data or storage used in search. */
-    void clear();
+    ArrayList<Parcelable> getSuggests(Parcelable query);
 }
