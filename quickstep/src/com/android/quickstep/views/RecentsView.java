@@ -1146,19 +1146,23 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         }
         updateTaskSize();
 
+        int targetPage = -1;
         if (mNextPage == INVALID_PAGE) {
             // Set the current page to the running task, but not if settling on new task.
             TaskView runningTaskView = getRunningTaskView();
             if (runningTaskView != null) {
-                setCurrentPage(indexOfChild(runningTaskView));
+                targetPage = indexOfChild(runningTaskView);
             } else if (getTaskViewCount() > 0) {
-                setCurrentPage(indexOfChild(getTaskViewAt(0)));
+                targetPage = indexOfChild(getTaskViewAt(0));
             }
         } else if (currentTaskId != -1) {
             currentTaskView = getTaskView(currentTaskId);
             if (currentTaskView != null) {
-                setCurrentPage(indexOfChild(currentTaskView));
+                targetPage = indexOfChild(currentTaskView);
             }
+        }
+        if (targetPage != -1 && mCurrentPage != targetPage) {
+            setCurrentPage(targetPage);
         }
 
         if (mIgnoreResetTaskId != -1 && getTaskView(mIgnoreResetTaskId) != ignoreResetTaskView) {
