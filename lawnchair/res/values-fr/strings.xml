@@ -111,5 +111,5 @@
     <string name="missing_notification_access_description">Notification access needed.</string>
     <string name="msg_missing_notification_access">To use Notification Dots, grant <xliff:g id="name" example="My App">%1$s</xliff:g> access to notifications.</string>
     <string name="title_change_settings">Change Settings</string>
-    <string name="debug_restart_launcher">Restart Lawnchair</string>
+    <string name="debug_restart_launcher">Redémarrer Lawnchair</string>
 </resources>
