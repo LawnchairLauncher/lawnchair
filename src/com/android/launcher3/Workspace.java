@@ -647,7 +647,8 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         if (mDragSourceInternal != null) {
             int dragSourceChildCount = mDragSourceInternal.getChildCount();
 
-            if (isTwoPanelEnabled()) {
+            // If the icon was dragged from Hotseat, there is no page pair
+            if (isTwoPanelEnabled() && !(mDragSourceInternal.getParent() instanceof Hotseat)) {
                 int pagePairScreenId = getPagePair(dragObject.dragInfo.screenId);
                 CellLayout pagePair = mWorkspaceScreens.get(pagePairScreenId);
                 if (pagePair == null) {
@@ -920,12 +921,8 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
 
     /**
      * Returns the page that is shown together with the given page when two panel is enabled.
-     * @throws IllegalStateException if called while two panel home isn't enabled.
      */
     public int getPagePair(int page) {
-        if (!isTwoPanelEnabled()) {
-            throw new IllegalStateException("Two panel home isn't enabled.");
-        }
         if (page % 2 == 0) {
             return page + 1;
         } else {

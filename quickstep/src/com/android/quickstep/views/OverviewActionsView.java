@@ -53,13 +53,15 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
     @IntDef(flag = true, value = {
             HIDDEN_NON_ZERO_ROTATION,
             HIDDEN_NO_TASKS,
-            HIDDEN_NO_RECENTS})
+            HIDDEN_NO_RECENTS,
+            HIDDEN_FOCUSED_SCROLL})
     @Retention(RetentionPolicy.SOURCE)
     public @interface ActionsHiddenFlags { }
 
     public static final int HIDDEN_NON_ZERO_ROTATION = 1 << 0;
     public static final int HIDDEN_NO_TASKS = 1 << 1;
     public static final int HIDDEN_NO_RECENTS = 1 << 2;
+    public static final int HIDDEN_FOCUSED_SCROLL = 1 << 3;
 
     @IntDef(flag = true, value = {
             DISABLED_SCROLLING,
@@ -76,7 +78,6 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
     private static final int INDEX_VISIBILITY_ALPHA = 1;
     private static final int INDEX_FULLSCREEN_ALPHA = 2;
     private static final int INDEX_HIDDEN_FLAGS_ALPHA = 3;
-    private static final int INDEX_SCROLL_ALPHA = 4;
 
     private final MultiValueAlpha mMultiValueAlpha;
     private View mSplitButton;
@@ -194,10 +195,6 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
 
     public AlphaProperty getFullscreenAlpha() {
         return mMultiValueAlpha.getProperty(INDEX_FULLSCREEN_ALPHA);
-    }
-
-    public AlphaProperty getScrollAlpha() {
-        return mMultiValueAlpha.getProperty(INDEX_SCROLL_ALPHA);
     }
 
     private void updateHorizontalPadding() {

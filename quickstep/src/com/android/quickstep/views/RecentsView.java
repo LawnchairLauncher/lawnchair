@@ -29,7 +29,6 @@ import static com.android.launcher3.LauncherAnimUtils.VIEW_ALPHA;
 import static com.android.launcher3.LauncherState.BACKGROUND_APP;
 import static com.android.launcher3.QuickstepTransitionManager.RECENTS_LAUNCH_DURATION;
 import static com.android.launcher3.Utilities.EDGE_NAV_BAR;
-import static com.android.launcher3.Utilities.boundToRange;
 import static com.android.launcher3.Utilities.mapToRange;
 import static com.android.launcher3.Utilities.squaredHypot;
 import static com.android.launcher3.Utilities.squaredTouchSlop;
@@ -1691,28 +1690,28 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
 
             // After scrolling, update the visible task's data
             loadVisibleTaskData(TaskView.FLAG_UPDATE_ALL);
-
-            // After scrolling, update ActionsView's visibility.
-            updateActionsViewScrollAlpha();
         }
+
+        // Update ActionsView's visibility when scroll changes.
+        updateActionsViewFocusedScroll();
 
         // Update the high res thumbnail loader state
         mModel.getThumbnailCache().getHighResLoadingState().setFlingingFast(isFlingingFast);
         return scrolling;
     }
 
-    private void updateActionsViewScrollAlpha() {
-        float scrollAlpha = 1f;
+    private void updateActionsViewFocusedScroll() {
+        boolean hiddenFocusedScroll;
         if (showAsGrid()) {
             TaskView focusedTaskView = getFocusedTaskView();
-            if (focusedTaskView != null) {
-                float scrollDiff = Math.abs(getScrollForPage(indexOfChild(focusedTaskView))
-                        - mOrientationHandler.getPrimaryScroll(this));
-                float delta = (mGridSideMargin - scrollDiff) / (float) mGridSideMargin;
-                scrollAlpha = Utilities.boundToRange(delta, 0, 1);
-            }
+            hiddenFocusedScroll = focusedTaskView == null
+                    || getScrollForPage(indexOfChild(focusedTaskView))
+                    != mOrientationHandler.getPrimaryScroll(this);
+        } else {
+            hiddenFocusedScroll = false;
         }
-        mActionsView.getScrollAlpha().setValue(scrollAlpha);
+        mActionsView.updateHiddenFlags(OverviewActionsView.HIDDEN_FOCUSED_SCROLL,
+                hiddenFocusedScroll);
     }
 
     /**
@@ -3001,6 +3000,10 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                                                     : getBottomRowIdArray();
                                     int snappedIndex = taskViewIdArray.indexOf(snappedTaskViewId);
                                     taskViewIdArray.removeValue(dismissedTaskViewId);
+                                    if (finalNextFocusedTaskView != null) {
+                                        taskViewIdArray.removeValue(
+                                                finalNextFocusedTaskView.getTaskViewId());
+                                    }
                                     if (snappedIndex < taskViewIdArray.size()) {
                                         taskViewIdToSnapTo = taskViewIdArray.get(snappedIndex);
                                     } else if (snappedIndex == taskViewIdArray.size()) {
@@ -3089,9 +3092,9 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                             }
                         }
                         setCurrentPage(pageToSnapTo);
-                        // Update various scroll depedent UI.
+                        // Update various scroll-dependent UI.
                         dispatchScrollChanged();
-                        updateActionsViewScrollAlpha();
+                        updateActionsViewFocusedScroll();
                         if (isClearAllHidden()) {
                             mActionsView.updateDisabledFlags(OverviewActionsView.DISABLED_SCROLLING,
                                     false);
@@ -4560,7 +4563,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     public void setOverviewGridEnabled(boolean overviewGridEnabled) {
         if (mOverviewGridEnabled != overviewGridEnabled) {
             mOverviewGridEnabled = overviewGridEnabled;
-            updateActionsViewScrollAlpha();
+            updateActionsViewFocusedScroll();
             // Request layout to ensure scroll position is recalculated with updated mGridProgress.
             requestLayout();
         }
