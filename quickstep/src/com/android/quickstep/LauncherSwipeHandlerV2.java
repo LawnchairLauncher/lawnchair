@@ -183,13 +183,13 @@ public class LauncherSwipeHandlerV2 extends
         Rect crop = new Rect();
         // We can assume there is only one remote target here because staged split never animates
         // into the app icon, only into the homescreen
-        mRemoteTargetHandles[0].mTaskViewSimulator.getCurrentCropRect().roundOut(crop);
+        mRemoteTargetHandles[0].getTaskViewSimulator().getCurrentCropRect().roundOut(crop);
         Size windowSize = new Size(crop.width(), crop.height());
         int fallbackBackgroundColor =
                 FloatingWidgetView.getDefaultBackgroundColor(mContext, runningTaskTarget);
         FloatingWidgetView floatingWidgetView = FloatingWidgetView.getFloatingWidgetView(mActivity,
                 hostView, backgroundLocation, windowSize,
-                mRemoteTargetHandles[0].mTaskViewSimulator.getCurrentCornerRadius(),
+                mRemoteTargetHandles[0].getTaskViewSimulator().getCurrentCornerRadius(),
                 isTargetTranslucent, fallbackBackgroundColor);
 
         return new FloatingViewHomeAnimationFactory(floatingWidgetView) {
