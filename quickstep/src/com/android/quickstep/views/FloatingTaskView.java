@@ -97,8 +97,9 @@ public class FloatingTaskView extends FrameLayout {
 
         floatingView.mOrientationHandler =
                 originalView.getRecentsView().getPagedOrientationHandler();
-        floatingView.mSplitPlaceholderView.setIcon(originalView.getIconView());
-        floatingView.mSplitPlaceholderView.getIcon()
+        floatingView.mSplitPlaceholderView.setIconView(originalView.getIconView(),
+                launcher.getDeviceProfile().overviewTaskIconDrawableSizePx);
+        floatingView.mSplitPlaceholderView.getIconView()
                 .setRotation(floatingView.mOrientationHandler.getDegreesRotated());
         parent.addView(floatingView);
         return floatingView;
@@ -141,8 +142,8 @@ public class FloatingTaskView extends FrameLayout {
         // TODO(194414938) seems like this scale value could be fine tuned, some stretchiness
         mImageView.setScaleX(1f / scaleX + scaleX * progress);
         mImageView.setScaleY(1f / scaleY + scaleY * progress);
-        mOrientationHandler.setPrimaryScale(mSplitPlaceholderView.getIcon(), childScaleX);
-        mOrientationHandler.setSecondaryScale(mSplitPlaceholderView.getIcon(), childScaleY);
+        mOrientationHandler.setPrimaryScale(mSplitPlaceholderView.getIconView(), childScaleX);
+        mOrientationHandler.setSecondaryScale(mSplitPlaceholderView.getIconView(), childScaleY);
     }
 
     protected void initPosition(RectF pos, InsettableFrameLayout.LayoutParams lp) {
