@@ -2229,6 +2229,9 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
             ArrayList<ItemInfo> addAnimated) {
         // Add the new screens
         if (newScreens != null) {
+            // newScreens can contain an empty right panel that is already bound, but not known
+            // by BgDataModel.
+            newScreens.removeAllValues(mWorkspace.mScreenOrder);
             bindAddScreens(newScreens);
         }
 
