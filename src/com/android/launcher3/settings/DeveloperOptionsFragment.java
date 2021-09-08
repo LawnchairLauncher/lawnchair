@@ -20,6 +20,7 @@ import static android.content.pm.PackageManager.MATCH_DISABLED_COMPONENTS;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 
+import static com.android.launcher3.settings.SettingsActivity.EXTRA_FRAGMENT_ARG_KEY;
 import static com.android.launcher3.uioverrides.plugins.PluginManagerWrapper.PLUGIN_CHANGED;
 import static com.android.launcher3.uioverrides.plugins.PluginManagerWrapper.pluginEnabledKey;
 
@@ -158,6 +159,15 @@ public class DeveloperOptionsFragment extends PreferenceFragmentCompat {
                 filterPreferences(query, mPreferenceScreen);
             }
         });
+
+        if (getArguments() != null) {
+            String filter = getArguments().getString(EXTRA_FRAGMENT_ARG_KEY);
+            // Normally EXTRA_FRAGMENT_ARG_KEY is used to highlight the preference with the given
+            // key. This is a slight variation where we instead filter by the human-readable titles.
+            if (filter != null) {
+                filterBox.setText(filter);
+            }
+        }
 
         View listView = getListView();
         final int bottomPadding = listView.getPaddingBottom();
