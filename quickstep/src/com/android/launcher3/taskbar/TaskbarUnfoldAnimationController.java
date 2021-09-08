@@ -77,6 +77,7 @@ public class TaskbarUnfoldAnimationController {
         @Override
         public void onTransitionFinished() {
             mMoveFromCenterAnimator.onTransitionFinished();
+            mMoveFromCenterAnimator.clearRegisteredViews();
         }
 
         @Override
