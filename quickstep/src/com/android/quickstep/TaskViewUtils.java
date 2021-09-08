@@ -55,7 +55,6 @@ import android.view.View;
 import android.window.TransitionInfo;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 import com.android.launcher3.BaseActivity;
 import com.android.launcher3.DeviceProfile;
@@ -67,6 +66,7 @@ import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.statehandlers.DepthController;
 import com.android.launcher3.statemanager.StateManager;
 import com.android.launcher3.util.DisplayController;
+import com.android.quickstep.RemoteTargetGluer.RemoteTargetHandle;
 import com.android.quickstep.util.MultiValueUpdateListener;
 import com.android.quickstep.util.SurfaceTransactionApplier;
 import com.android.quickstep.util.TaskViewSimulator;
@@ -151,28 +151,7 @@ public final class TaskViewUtils {
             RemoteAnimationTargetCompat[] wallpaperTargets,
             RemoteAnimationTargetCompat[] nonAppTargets, DepthController depthController,
             PendingAnimation out) {
-        boolean isRunningTask = v.isRunningTask();
-        TransformParams params = null;
-        TaskViewSimulator tsv = null;
-        // TODO(b/195675206) handle two TSVs here
-        if (ENABLE_QUICKSTEP_LIVE_TILE.get() && isRunningTask) {
-            params = v.getRecentsView().getRemoteTargetHandles()[0].mTransformParams;
-            tsv = v.getRecentsView().getRemoteTargetHandles()[0].mTaskViewSimulator;
-        }
-        createRecentsWindowAnimator(v, skipViewChanges, appTargets, wallpaperTargets, nonAppTargets,
-                depthController, out, params, tsv);
-    }
-
-    /**
-     * Creates an animation that controls the window of the opening targets for the recents launch
-     * animation.
-     */
-    public static void createRecentsWindowAnimator(TaskView v, boolean skipViewChanges,
-            RemoteAnimationTargetCompat[] appTargets,
-            RemoteAnimationTargetCompat[] wallpaperTargets,
-            RemoteAnimationTargetCompat[] nonAppTargets, DepthController depthController,
-            PendingAnimation out, @Nullable TransformParams params,
-            @Nullable TaskViewSimulator tsv) {
+        RecentsView recentsView = v.getRecentsView();
         boolean isQuickSwitch = v.isEndQuickswitchCuj();
         v.setEndQuickswitchCuj(false);
 
@@ -183,16 +162,27 @@ public final class TaskViewUtils {
                         inLiveTileMode ? MODE_CLOSING : MODE_OPENING);
         final RemoteAnimationTargetCompat navBarTarget = targets.getNavBarRemoteAnimationTarget();
 
-        if (params == null) {
-            SurfaceTransactionApplier applier = new SurfaceTransactionApplier(v);
-            targets.addReleaseCheck(applier);
+        SurfaceTransactionApplier applier = new SurfaceTransactionApplier(v);
+        targets.addReleaseCheck(applier);
 
-            params = new TransformParams()
-                    .setSyncTransactionApplier(applier)
-                    .setTargetSet(targets);
+        RemoteTargetHandle[] remoteTargetHandles;
+        RemoteTargetHandle[] recentsViewHandles = recentsView.getRemoteTargetHandles();
+        if (v.isRunningTask()) {
+            // Re-use existing handles
+            remoteTargetHandles = recentsViewHandles;
+        } else {
+            RemoteTargetGluer gluer = new RemoteTargetGluer(v.getContext(),
+                    recentsView.getSizeStrategy(), targets);
+            if (recentsViewHandles != null && recentsViewHandles.length > 1) {
+                remoteTargetHandles = gluer.assignTargetsForSplitScreen(targets);
+            } else {
+                remoteTargetHandles = gluer.assignTargets(targets);
+            }
+        }
+        for (RemoteTargetHandle remoteTargetGluer : remoteTargetHandles) {
+            remoteTargetGluer.getTransformParams().setSyncTransactionApplier(applier);
         }
 
-        final RecentsView recentsView = v.getRecentsView();
         int taskIndex = recentsView.indexOfChild(v);
         Context context = v.getContext();
         DeviceProfile dp = BaseActivity.fromContext(context).getDeviceProfile();
@@ -202,45 +192,51 @@ public final class TaskViewUtils {
         float gridTranslationSecondary = recentsView.getGridTranslationSecondary(taskIndex);
         int startScroll = recentsView.getScrollOffset(taskIndex);
 
-        TaskViewSimulator topMostSimulator = null;
+        RemoteTargetHandle[] topMostSimulators = null;
 
-        if (tsv == null && targets.apps.length > 0) {
-            tsv = new TaskViewSimulator(context, recentsView.getSizeStrategy());
-            tsv.setDp(dp);
+        if (!v.isRunningTask()) {
+            // TVSs already initialized from the running task, no need to re-init
+            for (RemoteTargetHandle targetHandle : remoteTargetHandles) {
+                TaskViewSimulator tvsLocal = targetHandle.getTaskViewSimulator();
+                tvsLocal.setDp(dp);
 
-            // RecentsView never updates the display rotation until swipe-up so the value may
-            // be stale. Use the display value instead.
-            int displayRotation = DisplayController.INSTANCE.get(context).getInfo().rotation;
-            tsv.getOrientationState().update(displayRotation, displayRotation);
+                // RecentsView never updates the display rotation until swipe-up so the value may
+                // be stale. Use the display value instead.
+                int displayRotation = DisplayController.INSTANCE.get(context).getInfo().rotation;
+                tvsLocal.getOrientationState().update(displayRotation, displayRotation);
 
-            tsv.setPreview(targets.apps[targets.apps.length - 1]);
-            tsv.fullScreenProgress.value = 0;
-            tsv.recentsViewScale.value = 1;
-            if (showAsGrid) {
-                tsv.taskSecondaryTranslation.value = gridTranslationSecondary;
+                tvsLocal.fullScreenProgress.value = 0;
+                tvsLocal.recentsViewScale.value = 1;
+                if (showAsGrid) {
+                    tvsLocal.taskSecondaryTranslation.value = gridTranslationSecondary;
+                }
+                tvsLocal.setScroll(startScroll);
+
+                // Fade in the task during the initial 20% of the animation
+                out.addFloat(targetHandle.getTransformParams(), TransformParams.TARGET_ALPHA, 0, 1,
+                        clampToProgress(LINEAR, 0, 0.2f));
             }
-            tsv.setScroll(startScroll);
-
-            // Fade in the task during the initial 20% of the animation
-            out.addFloat(params, TransformParams.TARGET_ALPHA, 0, 1,
-                    clampToProgress(LINEAR, 0, 0.2f));
         }
 
-        if (tsv != null) {
-            out.setFloat(tsv.fullScreenProgress,
+        for (RemoteTargetHandle targetHandle : remoteTargetHandles) {
+            TaskViewSimulator tvsLocal = targetHandle.getTaskViewSimulator();
+            out.setFloat(tvsLocal.fullScreenProgress,
                     AnimatedFloat.VALUE, 1, TOUCH_RESPONSE_INTERPOLATOR);
-            out.setFloat(tsv.recentsViewScale,
-                    AnimatedFloat.VALUE, tsv.getFullScreenScale(), TOUCH_RESPONSE_INTERPOLATOR);
+            out.setFloat(tvsLocal.recentsViewScale,
+                    AnimatedFloat.VALUE, tvsLocal.getFullScreenScale(),
+                    TOUCH_RESPONSE_INTERPOLATOR);
             if (showAsGrid) {
-                out.setFloat(tsv.taskSecondaryTranslation, AnimatedFloat.VALUE, 0,
+                out.setFloat(tvsLocal.taskSecondaryTranslation, AnimatedFloat.VALUE, 0,
                         TOUCH_RESPONSE_INTERPOLATOR_ACCEL_DEACCEL);
             }
-            out.setFloat(tsv.recentsViewScroll, AnimatedFloat.VALUE, 0,
+            out.setFloat(tvsLocal.recentsViewScroll, AnimatedFloat.VALUE, 0,
                     TOUCH_RESPONSE_INTERPOLATOR);
 
-            TaskViewSimulator finalTsv = tsv;
-            TransformParams finalParams = params;
-            out.addOnFrameCallback(() -> finalTsv.apply(finalParams));
+            out.addOnFrameCallback(() -> {
+                for (RemoteTargetHandle handle : remoteTargetHandles) {
+                    handle.getTaskViewSimulator().apply(handle.getTransformParams());
+                }
+            });
             if (navBarTarget != null) {
                 final Rect cropRect = new Rect();
                 out.addOnFrameListener(new MultiValueUpdateListener() {
@@ -253,15 +249,20 @@ public final class TaskViewUtils {
                     public void onUpdate(float percent, boolean initOnly) {
                         final SurfaceParams.Builder navBuilder =
                                 new SurfaceParams.Builder(navBarTarget.leash);
-                        if (mNavFadeIn.value > mNavFadeIn.getStartValue()) {
-                            finalTsv.getCurrentCropRect().round(cropRect);
-                            navBuilder.withMatrix(finalTsv.getCurrentMatrix())
-                                    .withWindowCrop(cropRect)
-                                    .withAlpha(mNavFadeIn.value);
-                        } else {
-                            navBuilder.withAlpha(mNavFadeOut.value);
+
+                        // TODO Do we need to operate over multiple TVSs for the navbar leash?
+                        for (RemoteTargetHandle handle : remoteTargetHandles) {
+                            if (mNavFadeIn.value > mNavFadeIn.getStartValue()) {
+                                TaskViewSimulator taskViewSimulator = handle.getTaskViewSimulator();
+                                taskViewSimulator.getCurrentCropRect().round(cropRect);
+                                navBuilder.withMatrix(taskViewSimulator.getCurrentMatrix())
+                                        .withWindowCrop(cropRect)
+                                        .withAlpha(mNavFadeIn.value);
+                            } else {
+                                navBuilder.withAlpha(mNavFadeOut.value);
+                            }
+                            handle.getTransformParams().applySurfaceParams(navBuilder.build());
                         }
-                        finalParams.applySurfaceParams(navBuilder.build());
                     }
                 });
             } else if (inLiveTileMode) {
@@ -273,14 +274,16 @@ public final class TaskViewUtils {
                     controller.animateNavigationBarToApp(RECENTS_LAUNCH_DURATION);
                 }
             }
-            topMostSimulator = tsv;
+            topMostSimulators = remoteTargetHandles;
         }
 
-        if (!skipViewChanges && parallaxCenterAndAdjacentTask && topMostSimulator != null) {
+        if (!skipViewChanges && parallaxCenterAndAdjacentTask && topMostSimulators.length > 0) {
             out.addFloat(v, VIEW_ALPHA, 1, 0, clampToProgress(LINEAR, 0.2f, 0.4f));
 
-            TaskViewSimulator simulatorToCopy = topMostSimulator;
-            simulatorToCopy.apply(params);
+            RemoteTargetHandle[] simulatorCopies = topMostSimulators;
+            for (RemoteTargetHandle handle : simulatorCopies) {
+                handle.getTaskViewSimulator().apply(handle.getTransformParams());
+            }
 
             // Mt represents the overall transformation on the thumbnailView relative to the
             // Launcher's rootView
@@ -294,36 +297,49 @@ public final class TaskViewUtils {
             // During animation we apply transformation on the thumbnailView (and not the rootView)
             // to follow the TaskViewSimulator. So the final matrix applied on the thumbnailView is:
             //    Mt K(0)` K(t) Mt`
-            TaskThumbnailView ttv = v.getThumbnail();
-            RectF tvBounds = new RectF(0, 0,  ttv.getWidth(), ttv.getHeight());
-            float[] tvBoundsMapped = new float[]{0, 0,  ttv.getWidth(), ttv.getHeight()};
-            getDescendantCoordRelativeToAncestor(ttv, ttv.getRootView(), tvBoundsMapped, false);
-            RectF tvBoundsInRoot = new RectF(
-                    tvBoundsMapped[0], tvBoundsMapped[1],
-                    tvBoundsMapped[2], tvBoundsMapped[3]);
+            TaskThumbnailView[] thumbnails = v.getThumbnails();
+            Matrix[] mt = new Matrix[simulatorCopies.length];
+            Matrix[] mti = new Matrix[simulatorCopies.length];
+            for (int i = 0; i < thumbnails.length; i++) {
+                TaskThumbnailView ttv = thumbnails[i];
+                RectF localBounds = new RectF(0, 0,  ttv.getWidth(), ttv.getHeight());
+                float[] tvBoundsMapped = new float[]{0, 0,  ttv.getWidth(), ttv.getHeight()};
+                getDescendantCoordRelativeToAncestor(ttv, ttv.getRootView(), tvBoundsMapped, false);
+                RectF localBoundsInRoot = new RectF(
+                        tvBoundsMapped[0], tvBoundsMapped[1],
+                        tvBoundsMapped[2], tvBoundsMapped[3]);
+                Matrix localMt = new Matrix();
+                localMt.setRectToRect(localBounds, localBoundsInRoot, ScaleToFit.FILL);
+                mt[i] = localMt;
 
-            Matrix mt = new Matrix();
-            mt.setRectToRect(tvBounds, tvBoundsInRoot, ScaleToFit.FILL);
+                Matrix localMti = new Matrix();
+                localMti.invert(localMt);
+                mti[i] = localMti;
+            }
 
-            Matrix mti = new Matrix();
-            mt.invert(mti);
-
-            Matrix k0i = new Matrix();
-            simulatorToCopy.getCurrentMatrix().invert(k0i);
-
+            Matrix[] k0i = new Matrix[simulatorCopies.length];
+            for (int i = 0; i < simulatorCopies.length; i++) {
+                k0i[i] = new Matrix();
+                simulatorCopies[i].getTaskViewSimulator().getCurrentMatrix().invert(k0i[i]);
+            }
             Matrix animationMatrix = new Matrix();
             out.addOnFrameCallback(() -> {
-                animationMatrix.set(mt);
-                animationMatrix.postConcat(k0i);
-                animationMatrix.postConcat(simulatorToCopy.getCurrentMatrix());
-                animationMatrix.postConcat(mti);
-                ttv.setAnimationMatrix(animationMatrix);
+                for (int i = 0; i < simulatorCopies.length; i++) {
+                    animationMatrix.set(mt[i]);
+                    animationMatrix.postConcat(k0i[i]);
+                    animationMatrix.postConcat(simulatorCopies[i]
+                            .getTaskViewSimulator().getCurrentMatrix());
+                    animationMatrix.postConcat(mti[i]);
+                    thumbnails[i].setAnimationMatrix(animationMatrix);
+                }
             });
 
             out.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
-                    ttv.setAnimationMatrix(null);
+                    for (TaskThumbnailView ttv : thumbnails) {
+                        ttv.setAnimationMatrix(null);
+                    }
                 }
             });
         }
