@@ -600,9 +600,11 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
 
     private void initDeviceProfile(InvariantDeviceProfile idp) {
         // Load configuration-specific DeviceProfile
-        mDeviceProfile = isInMultiWindowMode()
-                ? mDeviceProfile.getMultiWindowProfile(this, getMultiWindowDisplaySize())
-                : idp.getDeviceProfile(this);
+        mDeviceProfile = idp.getDeviceProfile(this);
+        if (isInMultiWindowMode()) {
+            mDeviceProfile = mDeviceProfile.getMultiWindowProfile(
+                    this, getMultiWindowDisplaySize());
+        }
 
         onDeviceProfileInitiated();
         mModelWriter = mModel.getWriter(getDeviceProfile().isVerticalBarLayout(), true, this);

@@ -324,7 +324,9 @@ public class LauncherPreviewRenderer extends ContextWrapper
     }
 
     private void inflateAndAddFolder(FolderInfo info) {
-        CellLayout screen = mWorkspaceScreens.get(info.screenId);
+        CellLayout screen = info.container == Favorites.CONTAINER_DESKTOP
+                ? mWorkspaceScreens.get(info.screenId)
+                : mHotseat;
         FolderIcon folderIcon = FolderIcon.inflateIcon(R.layout.folder_icon, this, screen,
                 info);
         addInScreenFromBind(folderIcon, info);

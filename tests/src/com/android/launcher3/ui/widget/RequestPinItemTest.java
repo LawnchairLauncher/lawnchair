@@ -42,7 +42,6 @@ import com.android.launcher3.ui.AbstractLauncherUiTest;
 import com.android.launcher3.util.LauncherBindableItemsContainer.ItemOperator;
 import com.android.launcher3.util.Wait;
 import com.android.launcher3.util.Wait.Condition;
-import com.android.launcher3.util.rule.ScreenRecordRule.ScreenRecord;
 import com.android.launcher3.util.rule.ShellCommandRule;
 
 import org.junit.Before;
@@ -78,7 +77,6 @@ public class RequestPinItemTest extends AbstractLauncherUiTest {
     public void testEmpty() throws Throwable { /* needed while the broken tests are being fixed */ }
 
     @Test
-    @ScreenRecord  //b/192010616
     public void testPinWidgetNoConfig() throws Throwable {
         runTest("pinWidgetNoConfig", true, (info, view) -> info instanceof LauncherAppWidgetInfo &&
                 ((LauncherAppWidgetInfo) info).appWidgetId == mAppWidgetId &&
