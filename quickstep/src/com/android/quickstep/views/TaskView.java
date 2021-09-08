@@ -1067,7 +1067,6 @@ public class TaskView extends FrameLayout implements Reusable {
 
     private void setNonGridScale(float nonGridScale) {
         mNonGridScale = nonGridScale;
-        updateCornerRadius();
         applyScale();
     }
 
@@ -1098,6 +1097,7 @@ public class TaskView extends FrameLayout implements Reusable {
         scale *= mDismissScale;
         setScaleX(scale);
         setScaleY(scale);
+        updateSnapshotRadius();
     }
 
     /**
@@ -1413,29 +1413,25 @@ public class TaskView extends FrameLayout implements Reusable {
         mIconView.setVisibility(progress < 1 ? VISIBLE : INVISIBLE);
         mSnapshotView.getTaskOverlay().setFullscreenProgress(progress);
 
-        updateCornerRadius();
+        updateSnapshotRadius();
 
-        mSnapshotView.setFullscreenParams(mCurrentFullscreenParams);
         mOutlineProvider.updateParams(
                 mCurrentFullscreenParams,
                 mActivity.getDeviceProfile().overviewTaskThumbnailTopMarginPx);
         invalidateOutline();
     }
 
-    private void updateCornerRadius() {
+    private void updateSnapshotRadius() {
         updateCurrentFullscreenParams(mSnapshotView.getPreviewPositionHelper());
+        mSnapshotView.setFullscreenParams(mCurrentFullscreenParams);
     }
 
     void updateCurrentFullscreenParams(PreviewPositionHelper previewPositionHelper) {
         if (getRecentsView() == null) {
             return;
         }
-        mCurrentFullscreenParams.setProgress(
-                mFullscreenProgress,
-                getRecentsView().getScaleX(),
-                mNonGridScale,
-                getWidth(), mActivity.getDeviceProfile(),
-                previewPositionHelper);
+        mCurrentFullscreenParams.setProgress(mFullscreenProgress, getRecentsView().getScaleX(),
+                getScaleX(), getWidth(), mActivity.getDeviceProfile(), previewPositionHelper);
     }
 
     /**
