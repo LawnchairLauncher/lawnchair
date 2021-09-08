@@ -120,6 +120,7 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
 
     protected boolean mUsingTabs;
     private boolean mIsSearching;
+    private boolean mHasWorkApps;
 
     protected RecyclerViewFastScroller mTouchHandler;
     protected final Point mFastScrollerOffset = new Point();
@@ -191,7 +192,7 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
             int currentPage = state.getInt(BUNDLE_KEY_CURRENT_PAGE, 0);
             if (currentPage != 0 && mViewPager != null) {
                 mViewPager.setCurrentPage(currentPage);
-                rebindAdapters(true);
+                rebindAdapters();
             } else {
                 reset(true);
             }
@@ -245,9 +246,10 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
                 break;
             }
         }
+        mHasWorkApps = hasWorkApps;
         if (!mAH[AdapterHolder.MAIN].appsList.hasFilter()) {
-            rebindAdapters(hasWorkApps);
-            if (hasWorkApps) {
+            rebindAdapters();
+            if (mHasWorkApps) {
                 resetWorkProfile();
             }
         }
@@ -324,6 +326,8 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
                     mViewPager.getNextPage() == 0
                             ? R.string.all_apps_button_personal_label
                             : R.string.all_apps_button_work_label;
+        } else if (mIsSearching) {
+            descriptionRes = R.string.all_apps_search_results;
         } else {
             descriptionRes = R.string.all_apps_button_label;
         }
@@ -372,7 +376,7 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
         });
 
         mHeader = findViewById(R.id.all_apps_header);
-        rebindAdapters(mUsingTabs, true /* force */);
+        rebindAdapters(true /* force */);
 
         mSearchContainer = findViewById(R.id.search_container_all_apps);
         mSearchUiManager = (SearchUiManager) mSearchContainer;
@@ -441,11 +445,12 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
         }
     }
 
-    private void rebindAdapters(boolean showTabs) {
-        rebindAdapters(showTabs, false /* force */);
+    private void rebindAdapters() {
+        rebindAdapters(false /* force */);
     }
 
-    protected void rebindAdapters(boolean showTabs, boolean force) {
+    protected void rebindAdapters(boolean force) {
+        boolean showTabs = mHasWorkApps && !mIsSearching;
         if (showTabs == mUsingTabs && !force) {
             return;
         }
@@ -628,17 +633,13 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
             mAH[i].adapter.setLastSearchQuery(query);
         }
         mIsSearching = true;
-        if (mUsingTabs) {
-            rebindAdapters(false); // hide tabs
-        }
+        rebindAdapters();
         mHeader.setCollapsed(true);
     }
 
     public void onClearSearchResult() {
-        if (mUsingTabs) {
-            rebindAdapters(true); // show tabs
-        }
         mIsSearching = false;
+        rebindAdapters();
         getActiveRecyclerView().scrollToTop();
     }
 
