@@ -32,6 +32,11 @@ import java.util.Set;
  */
 public interface ItemInfoMatcher {
 
+    /**
+     * Empty component used for match testing
+     */
+    ComponentName EMPTY_COMPONENT = new ComponentName("", "");
+
     boolean matches(ItemInfo info, ComponentName cn);
 
     /**
@@ -40,7 +45,7 @@ public interface ItemInfoMatcher {
     default boolean matchesInfo(ItemInfo info) {
         if (info != null) {
             ComponentName cn = info.getTargetComponent();
-            return cn != null && matches(info, cn);
+            return matches(info, cn != null ? cn : EMPTY_COMPONENT);
         } else {
             return false;
         }
