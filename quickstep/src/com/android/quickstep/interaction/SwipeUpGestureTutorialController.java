@@ -46,7 +46,6 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimatorListeners;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.PendingAnimation;
-import com.android.launcher3.statemanager.StatefulActivity;
 import com.android.quickstep.AnimatedFloat;
 import com.android.quickstep.GestureState;
 import com.android.quickstep.OverviewComponentObserver;
@@ -260,16 +259,16 @@ abstract class SwipeUpGestureTutorialController extends TutorialController {
 
         void initDp(DeviceProfile dp) {
             initTransitionEndpoints(dp);
-            mRemoteTargetHandles[0].mTaskViewSimulator.setPreviewBounds(
+            mRemoteTargetHandles[0].getTaskViewSimulator().setPreviewBounds(
                     new Rect(0, 0, dp.widthPx, dp.heightPx), dp.getInsets());
         }
 
         @Override
         public void updateFinalShift() {
-            mRemoteTargetHandles[0].mPlaybackController
+            mRemoteTargetHandles[0].getPlaybackController()
                     .setProgress(mCurrentShift.value, mDragLengthFactor);
-            mRemoteTargetHandles[0].mTaskViewSimulator.apply(
-                    mRemoteTargetHandles[0].mTransformParams);
+            mRemoteTargetHandles[0].getTaskViewSimulator().apply(
+                    mRemoteTargetHandles[0].getTransformParams());
         }
 
         AnimatedFloat getCurrentShift() {

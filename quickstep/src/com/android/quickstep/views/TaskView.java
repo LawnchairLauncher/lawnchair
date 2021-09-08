@@ -91,7 +91,7 @@ import com.android.launcher3.util.TransformingTouchDelegate;
 import com.android.launcher3.util.ViewPool.Reusable;
 import com.android.quickstep.RecentsModel;
 import com.android.quickstep.RemoteAnimationTargets;
-import com.android.quickstep.SwipeUpAnimationLogic.RemoteTargetHandle;
+import com.android.quickstep.RemoteTargetGluer.RemoteTargetHandle;
 import com.android.quickstep.SystemUiProxy;
 import com.android.quickstep.TaskIconCache;
 import com.android.quickstep.TaskOverlayFactory;
@@ -592,6 +592,11 @@ public class TaskView extends FrameLayout implements Reusable {
         return mSnapshotView;
     }
 
+    /** TODO(b/197033698) Remove all usages of above method and migrate to this one */
+    public TaskThumbnailView[] getThumbnails() {
+        return new TaskThumbnailView[]{mSnapshotView};
+    }
+
     public IconView getIconView() {
         return mIconView;
     }
@@ -618,13 +623,12 @@ public class TaskView extends FrameLayout implements Reusable {
             mIsClickableAsLiveTile = false;
             RecentsView recentsView = getRecentsView();
             RemoteAnimationTargets targets;
-            RemoteTargetHandle[] remoteTargetHandles =
-                    recentsView.mRemoteTargetHandles;
+            RemoteTargetHandle[] remoteTargetHandles = recentsView.mRemoteTargetHandles;
             if (remoteTargetHandles.length == 1) {
-                targets = remoteTargetHandles[0].mTransformParams.getTargetSet();
+                targets = remoteTargetHandles[0].getTransformParams().getTargetSet();
             } else {
-                TransformParams topLeftParams = remoteTargetHandles[0].mTransformParams;
-                TransformParams rightBottomParams = remoteTargetHandles[1].mTransformParams;
+                TransformParams topLeftParams = remoteTargetHandles[0].getTransformParams();
+                TransformParams rightBottomParams = remoteTargetHandles[1].getTransformParams();
                 RemoteAnimationTargetCompat[] apps = Stream.concat(
                         Arrays.stream(topLeftParams.getTargetSet().apps),
                         Arrays.stream(rightBottomParams.getTargetSet().apps))

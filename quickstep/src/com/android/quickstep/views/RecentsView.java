@@ -19,7 +19,6 @@ package com.android.quickstep.views;
 import static android.view.Surface.ROTATION_0;
 import static android.view.View.MeasureSpec.EXACTLY;
 import static android.view.View.MeasureSpec.makeMeasureSpec;
-import static android.view.WindowManager.LayoutParams.TYPE_DOCK_DIVIDER;
 
 import static com.android.launcher3.AbstractFloatingView.TYPE_TASK_MENU;
 import static com.android.launcher3.AbstractFloatingView.getTopOpenViewWithType;
@@ -53,7 +52,6 @@ import static com.android.quickstep.views.ClearAllButton.DISMISS_ALPHA;
 import static com.android.quickstep.views.OverviewActionsView.HIDDEN_NON_ZERO_ROTATION;
 import static com.android.quickstep.views.OverviewActionsView.HIDDEN_NO_RECENTS;
 import static com.android.quickstep.views.OverviewActionsView.HIDDEN_NO_TASKS;
-import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.MODE_CLOSING;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -146,7 +144,8 @@ import com.android.quickstep.RecentsAnimationTargets;
 import com.android.quickstep.RecentsModel;
 import com.android.quickstep.RecentsModel.TaskVisualsChangeListener;
 import com.android.quickstep.RemoteAnimationTargets;
-import com.android.quickstep.SwipeUpAnimationLogic.RemoteTargetHandle;
+import com.android.quickstep.RemoteTargetGluer;
+import com.android.quickstep.RemoteTargetGluer.RemoteTargetHandle;
 import com.android.quickstep.SystemUiProxy;
 import com.android.quickstep.TaskOverlayFactory;
 import com.android.quickstep.TaskThumbnailCache;
@@ -325,7 +324,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                     view.runActionOnRemoteHandles(new Consumer<RemoteTargetHandle>() {
                         @Override
                         public void accept(RemoteTargetHandle remoteTargetHandle) {
-                            remoteTargetHandle.mTaskViewSimulator.recentsViewScale.value =
+                            remoteTargetHandle.getTaskViewSimulator().recentsViewScale.value =
                                     scale;
                         }
                     });
@@ -828,7 +827,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         mActivity.addMultiWindowModeChangedListener(mMultiWindowModeChangedListener);
         TaskStackChangeListeners.getInstance().registerTaskStackListener(mTaskStackListener);
         mSyncTransactionApplier = new SurfaceTransactionApplier(this);
-        runActionOnRemoteHandles(remoteTargetHandle -> remoteTargetHandle.mTransformParams
+        runActionOnRemoteHandles(remoteTargetHandle -> remoteTargetHandle.getTransformParams()
                 .setSyncTransactionApplier(mSyncTransactionApplier));
         RecentsModel.INSTANCE.get(getContext()).addThumbnailChangeListener(this);
         mIPipAnimationListener.setActivityAndRecentsView(mActivity, this);
@@ -847,7 +846,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         mActivity.removeMultiWindowModeChangedListener(mMultiWindowModeChangedListener);
         TaskStackChangeListeners.getInstance().unregisterTaskStackListener(mTaskStackListener);
         mSyncTransactionApplier = null;
-        runActionOnRemoteHandles(remoteTargetHandle -> remoteTargetHandle.mTransformParams
+        runActionOnRemoteHandles(remoteTargetHandle -> remoteTargetHandle.getTransformParams()
                 .setSyncTransactionApplier(null));
         executeSideTaskLaunchCallback();
         RecentsModel.INSTANCE.get(getContext()).removeThumbnailChangeListener(this);
@@ -937,7 +936,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     public void launchSideTaskInLiveTileModeForRestartedApp(int taskId) {
         int runningTaskViewId = getTaskViewIdFromTaskId(taskId);
         if (mRunningTaskViewId != -1 && mRunningTaskViewId == runningTaskViewId) {
-            TransformParams params = mRemoteTargetHandles[0].mTransformParams;
+            TransformParams params = mRemoteTargetHandles[0].getTransformParams();
             RemoteAnimationTargets targets = params.getTargetSet();
             if (targets != null && targets.findTask(taskId) != null) {
                 launchSideTaskInLiveTileMode(taskId, targets.apps, targets.wallpapers,
@@ -1481,10 +1480,11 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             // to reset the params after it settles in Overview from swipe up so that we don't
             // render with obsolete param values.
             runActionOnRemoteHandles(remoteTargetHandle -> {
-                remoteTargetHandle.mTaskViewSimulator.taskPrimaryTranslation.value = 0;
-                remoteTargetHandle.mTaskViewSimulator.taskSecondaryTranslation.value = 0;
-                remoteTargetHandle.mTaskViewSimulator.fullScreenProgress.value = 0;
-                remoteTargetHandle.mTaskViewSimulator.recentsViewScale.value = 1;
+                TaskViewSimulator simulator = remoteTargetHandle.getTaskViewSimulator();
+                simulator.taskPrimaryTranslation.value = 0;
+                simulator.taskSecondaryTranslation.value = 0;
+                simulator.fullScreenProgress.value = 0;
+                simulator.recentsViewScale.value = 1;
             });
 
             // Similar to setRunningTaskHidden below, reapply the state before runningTaskView is
@@ -1540,7 +1540,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
 
         // Propagate DeviceProfile change event.
         runActionOnRemoteHandles(
-                remoteTargetHandle -> remoteTargetHandle.mTaskViewSimulator.setDp(dp));
+                remoteTargetHandle -> remoteTargetHandle.getTaskViewSimulator().setDp(dp));
         mActionsView.setDp(dp);
         mOrientationState.setDeviceProfile(dp);
 
@@ -1877,7 +1877,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             }
         }
         setEnableDrawingLiveTile(false);
-        runActionOnRemoteHandles(remoteTargetHandle -> remoteTargetHandle.mTransformParams
+        runActionOnRemoteHandles(remoteTargetHandle -> remoteTargetHandle.getTransformParams()
                 .setTargetSet(null));
 
         // These are relatively expensive and don't need to be done this frame (RecentsView isn't
@@ -2590,7 +2590,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         // alpha is set to 0 so that it can be recycled in the view pool properly
         if (ENABLE_QUICKSTEP_LIVE_TILE.get() && taskView.isRunningTask()) {
             runActionOnRemoteHandles(remoteTargetHandle -> {
-                TransformParams params = remoteTargetHandle.mTransformParams;
+                TransformParams params = remoteTargetHandle.getTransformParams();
                 anim.setFloat(params, TransformParams.TARGET_ALPHA, 0,
                         clampToProgress(ACCEL, 0, 0.5f));
             });
@@ -2613,7 +2613,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                 && taskView.isRunningTask()) {
             anim.addOnFrameCallback(() -> {
                 runActionOnRemoteHandles(
-                        remoteTargetHandle -> remoteTargetHandle.mTaskViewSimulator
+                        remoteTargetHandle -> remoteTargetHandle.getTaskViewSimulator()
                                 .taskSecondaryTranslation.value = mOrientationHandler
                                 .getSecondaryValue(taskView.getTranslationX(),
                                         taskView.getTranslationY()
@@ -2782,7 +2782,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                         anim.addOnFrameCallback(() -> {
                             runActionOnRemoteHandles(
                                     remoteTargetHandle ->
-                                            remoteTargetHandle.mTaskViewSimulator
+                                            remoteTargetHandle.getTaskViewSimulator()
                                                     .taskPrimaryTranslation.value =
                                                     TaskView.GRID_END_TRANSLATION_X.get(taskView));
                             redrawLiveTile();
@@ -2855,7 +2855,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                         anim.addOnFrameCallback(() -> {
                             runActionOnRemoteHandles(
                                     remoteTargetHandle ->
-                                            remoteTargetHandle.mTaskViewSimulator
+                                            remoteTargetHandle.getTaskViewSimulator()
                                                     .taskPrimaryTranslation.value =
                                                     mOrientationHandler.getPrimaryValue(
                                                             child.getTranslationX(),
@@ -3533,7 +3533,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         mLastComputedTaskEndPushOutDistance = null;
         updatePageOffsets();
         runActionOnRemoteHandles(
-                remoteTargetHandle -> remoteTargetHandle.mTaskViewSimulator
+                remoteTargetHandle -> remoteTargetHandle.getTaskViewSimulator()
                         .setScroll(getScrollOffset()));
         setImportantForAccessibility(isModal() ? IMPORTANT_FOR_ACCESSIBILITY_NO
                 : IMPORTANT_FOR_ACCESSIBILITY_AUTO);
@@ -3599,7 +3599,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             if (ENABLE_QUICKSTEP_LIVE_TILE.get() && mEnableDrawingLiveTile
                     && i == getRunningTaskIndex()) {
                 runActionOnRemoteHandles(
-                        remoteTargetHandle -> remoteTargetHandle.mTaskViewSimulator
+                        remoteTargetHandle -> remoteTargetHandle.getTaskViewSimulator()
                                 .taskPrimaryTranslation.value = totalTranslation);
                 redrawLiveTile();
             }
@@ -3707,7 +3707,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             task.getTaskResistanceTranslationProperty().set(task, translation / getScaleY());
         }
         runActionOnRemoteHandles(
-                remoteTargetHandle -> remoteTargetHandle.mTaskViewSimulator
+                remoteTargetHandle -> remoteTargetHandle.getTaskViewSimulator()
                         .recentsViewSecondaryTranslation.value = translation);
     }
 
@@ -4023,7 +4023,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                     && runningTaskIndex != taskIndex) {
                 for (RemoteTargetHandle remoteHandle : recentsView.getRemoteTargetHandles()) {
                     anim.play(ObjectAnimator.ofFloat(
-                            remoteHandle.mTaskViewSimulator.taskPrimaryTranslation,
+                            remoteHandle.getTaskViewSimulator().taskPrimaryTranslation,
                             AnimatedFloat.VALUE,
                             primaryTranslation));
                 }
@@ -4107,7 +4107,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         mPendingAnimation.add(anim);
         if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
             runActionOnRemoteHandles(
-                    remoteTargetHandle -> remoteTargetHandle.mTaskViewSimulator
+                    remoteTargetHandle -> remoteTargetHandle.getTaskViewSimulator()
                             .addOverviewToAppAnim(mPendingAnimation, interpolator));
             mPendingAnimation.addOnFrameCallback(this::redrawLiveTile);
         }
@@ -4201,9 +4201,9 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
 
     public void redrawLiveTile() {
         runActionOnRemoteHandles(remoteTargetHandle -> {
-            TransformParams params = remoteTargetHandle.mTransformParams;
+            TransformParams params = remoteTargetHandle.getTransformParams();
             if (params.getTargetSet() != null) {
-                remoteTargetHandle.mTaskViewSimulator.apply(params);
+                remoteTargetHandle.getTaskViewSimulator().apply(params);
             }
         });
     }
@@ -4224,44 +4224,14 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             recentsAnimationTargets.addReleaseCheck(mSyncTransactionApplier);
         }
 
-        RemoteAnimationTargetCompat dividerTarget =
-                recentsAnimationTargets.getNonAppTargetOfType(TYPE_DOCK_DIVIDER);
-        // TODO Consolidate this shared code with SwipeUpAnimationLogic (or maybe just reuse
-        //  what that class has and pass it into here)
-        mRemoteTargetHandles = new RemoteTargetHandle[dividerTarget == null ? 1 : 2];
-        TaskViewSimulator primaryTvs = createTaskViewSimulator();
-        mRemoteTargetHandles[0] = new RemoteTargetHandle(primaryTvs, new TransformParams());
-        if (dividerTarget == null) {
-            mRemoteTargetHandles[0].mTaskViewSimulator
-                    .setPreview(recentsAnimationTargets.apps[0], null);
-            mRemoteTargetHandles[0].mTransformParams.setTargetSet(recentsAnimationTargets);
-        } else {
-            TaskViewSimulator secondaryTvs = createTaskViewSimulator();
-            secondaryTvs.setOrientationState(mOrientationState);
-            secondaryTvs.recentsViewScale.value = 1;
-
-            mRemoteTargetHandles[1] = new RemoteTargetHandle(secondaryTvs, new TransformParams());
-            RemoteAnimationTargetCompat primaryTaskTarget = recentsAnimationTargets.apps[0];
-            RemoteAnimationTargetCompat secondaryTaskTarget = recentsAnimationTargets.apps[1];
-            mSplitBoundsConfig = new SplitConfigurationOptions.StagedSplitBounds(
-                    primaryTaskTarget.screenSpaceBounds,
-                    secondaryTaskTarget.screenSpaceBounds, dividerTarget.screenSpaceBounds);
-            mRemoteTargetHandles[0].mTaskViewSimulator.setPreview(primaryTaskTarget,
-                    mSplitBoundsConfig);
-            mRemoteTargetHandles[1].mTaskViewSimulator.setPreview(secondaryTaskTarget,
-                    mSplitBoundsConfig);
-            RemoteAnimationTargets rats = new RemoteAnimationTargets(
-                    new RemoteAnimationTargetCompat[]{primaryTaskTarget},
-                    recentsAnimationTargets.wallpapers, recentsAnimationTargets.nonApps,
-                    MODE_CLOSING
-            );
-            RemoteAnimationTargets splitRats = new RemoteAnimationTargets(
-                    new RemoteAnimationTargetCompat[]{secondaryTaskTarget},
-                    recentsAnimationTargets.wallpapers, recentsAnimationTargets.nonApps,
-                    MODE_CLOSING
-            );
-            mRemoteTargetHandles[0].mTransformParams.setTargetSet(rats);
-            mRemoteTargetHandles[1].mTransformParams.setTargetSet(splitRats);
+        RemoteTargetGluer gluer = new RemoteTargetGluer(getContext(), getSizeStrategy());
+        mRemoteTargetHandles = gluer.assignTargetsForSplitScreen(recentsAnimationTargets);
+        mSplitBoundsConfig = gluer.getStagedSplitBounds();
+        for (RemoteTargetHandle remoteTargetHandle : mRemoteTargetHandles) {
+            TaskViewSimulator tvs = remoteTargetHandle.getTaskViewSimulator();
+            tvs.setOrientationState(mOrientationState);
+            tvs.setDp(mActivity.getDeviceProfile());
+            tvs.recentsViewScale.value = 1;
         }
     }
 
@@ -4274,14 +4244,6 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         for (RemoteTargetHandle handle : mRemoteTargetHandles) {
             consumer.accept(handle);
         }
-    }
-
-    private TaskViewSimulator createTaskViewSimulator() {
-        TaskViewSimulator tvs = new TaskViewSimulator(getContext(), getSizeStrategy());
-        tvs.setOrientationState(mOrientationState);
-        tvs.setDp(mActivity.getDeviceProfile());
-        tvs.recentsViewScale.value = 1;
-        return tvs;
     }
 
     public void finishRecentsAnimation(boolean toRecents, Runnable onFinishComplete) {
@@ -4778,7 +4740,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
 
     private void dispatchScrollChanged() {
         runActionOnRemoteHandles(remoteTargetHandle ->
-                remoteTargetHandle.mTaskViewSimulator.setScroll(getScrollOffset()));
+                remoteTargetHandle.getTaskViewSimulator().setScroll(getScrollOffset()));
         for (int i = mScrollListeners.size() - 1; i >= 0; i--) {
             mScrollListeners.get(i).onScrollChanged();
         }
