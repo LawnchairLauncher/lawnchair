@@ -548,15 +548,18 @@ public class InvariantDeviceProfile {
         Resources res = context.getResources();
         Configuration config = context.getResources().getConfiguration();
 
-        float availableWidth = config.screenWidthDp * res.getDisplayMetrics().density;
-        float availableHeight = config.screenHeightDp * res.getDisplayMetrics().density;
+        float screenWidth = config.screenWidthDp * res.getDisplayMetrics().density;
+        float screenHeight = config.screenHeightDp * res.getDisplayMetrics().density;
+        return getBestMatch(screenWidth, screenHeight);
+    }
 
+    public DeviceProfile getBestMatch(float screenWidth, float screenHeight) {
         DeviceProfile bestMatch = supportedProfiles.get(0);
         float minDiff = Float.MAX_VALUE;
 
         for (DeviceProfile profile : supportedProfiles) {
-            float diff = Math.abs(profile.availableWidthPx - availableWidth)
-                    + Math.abs(profile.availableHeightPx - availableHeight);
+            float diff = Math.abs(profile.widthPx - screenWidth)
+                    + Math.abs(profile.heightPx - screenHeight);
             if (diff < minDiff) {
                 minDiff = diff;
                 bestMatch = profile;

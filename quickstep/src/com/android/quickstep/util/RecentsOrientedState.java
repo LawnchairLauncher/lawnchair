@@ -600,17 +600,7 @@ public class RecentsOrientedState implements
             width = Math.min(currentSize.x, currentSize.y);
             height = Math.max(currentSize.x, currentSize.y);
         }
-
-        DeviceProfile bestMatch = idp.supportedProfiles.get(0);
-        float minDiff = Float.MAX_VALUE;
-        for (DeviceProfile profile : idp.supportedProfiles) {
-            float diff = Math.abs(profile.widthPx - width) + Math.abs(profile.heightPx - height);
-            if (diff < minDiff) {
-                minDiff = diff;
-                bestMatch = profile;
-            }
-        }
-        return bestMatch;
+        return idp.getBestMatch(width, height);
     }
 
     private static String nameAndAddress(Object obj) {
