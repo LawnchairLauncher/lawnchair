@@ -59,6 +59,7 @@ import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.DeviceProfile.OnDeviceProfileChangeListener;
 import com.android.launcher3.DragSource;
 import com.android.launcher3.DropTarget.DragObject;
+import com.android.launcher3.ExtendedEditText;
 import com.android.launcher3.Insettable;
 import com.android.launcher3.InsettableFrameLayout;
 import com.android.launcher3.R;
@@ -118,7 +119,7 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
     private SpannableStringBuilder mSearchQueryBuilder = null;
 
     protected boolean mUsingTabs;
-    private boolean mSearchModeWhileUsingTabs = false;
+    private boolean mIsSearching;
 
     protected RecyclerViewFastScroller mTouchHandler;
     protected final Point mFastScrollerOffset = new Point();
@@ -132,6 +133,7 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
     private final float mHeaderThreshold;
     private ScrimView mScrimView;
     private int mHeaderColor;
+    private int mTabsProtectionAlpha;
 
     public AllAppsContainerView(Context context) {
         this(context, null);
@@ -625,18 +627,19 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
         for (int i = 0; i < mAH.length; i++) {
             mAH[i].adapter.setLastSearchQuery(query);
         }
+        mIsSearching = true;
         if (mUsingTabs) {
-            mSearchModeWhileUsingTabs = true;
             rebindAdapters(false); // hide tabs
         }
         mHeader.setCollapsed(true);
     }
 
     public void onClearSearchResult() {
-        if (mSearchModeWhileUsingTabs) {
+        if (mUsingTabs) {
             rebindAdapters(true); // show tabs
-            mSearchModeWhileUsingTabs = false;
         }
+        mIsSearching = false;
+        getActiveRecyclerView().scrollToTop();
     }
 
     public void onSearchResultsChanged() {
@@ -710,13 +713,12 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
         mHeaderPaint.setColor(mHeaderColor);
         mHeaderPaint.setAlpha((int) (getAlpha() * Color.alpha(mHeaderColor)));
         if (mHeaderPaint.getColor() != mScrimColor && mHeaderPaint.getColor() != 0) {
-            int bottom = mUsingTabs && mHeader.mHeaderCollapsed ? mHeader.getVisibleBottomBound()
-                    : mSearchContainer.getBottom();
-            canvas.drawRect(0, 0, canvas.getWidth(), bottom + getTranslationY(),
-                    mHeaderPaint);
-
-            if (FeatureFlags.ENABLE_DEVICE_SEARCH.get() && getTranslationY() == 0) {
-                mSearchUiManager.getEditText().setBackground(null);
+            int bottom = (int) (mSearchContainer.getBottom() + getTranslationY());
+            canvas.drawRect(0, 0, canvas.getWidth(), bottom, mHeaderPaint);
+            int tabsHeight = getFloatingHeaderView().getPeripheralProtectionHeight();
+            if (mTabsProtectionAlpha > 0 && tabsHeight != 0) {
+                mHeaderPaint.setAlpha((int) (getAlpha() * mTabsProtectionAlpha));
+                canvas.drawRect(0, bottom, canvas.getWidth(), bottom + tabsHeight, mHeaderPaint);
             }
         }
     }
@@ -796,18 +798,29 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
 
 
     protected void updateHeaderScroll(int scrolledOffset) {
-        float prog = Math.max(0, Math.min(1, (float) scrolledOffset / mHeaderThreshold));
+
+        float prog = Utilities.boundToRange((float) scrolledOffset / mHeaderThreshold, 0f, 1f);
         int viewBG = ColorUtils.blendARGB(mScrimColor, mHeaderProtectionColor, prog);
         int headerColor = ColorUtils.setAlphaComponent(viewBG,
                 (int) (getSearchView().getAlpha() * 255));
-        if (headerColor != mHeaderColor) {
+        int tabsAlpha = mHeader.getPeripheralProtectionHeight() == 0 ? 0
+                : (int) (Utilities.boundToRange(
+                        (scrolledOffset + mHeader.mSnappedScrolledY) / mHeaderThreshold, 0f, 1f)
+                        * 255);
+        if (headerColor != mHeaderColor || mTabsProtectionAlpha != tabsAlpha) {
             mHeaderColor = headerColor;
-            getSearchView().setBackgroundColor(viewBG);
-            getFloatingHeaderView().setHeaderColor(viewBG);
+            mTabsProtectionAlpha = tabsAlpha;
             invalidateHeader();
-            if (scrolledOffset == 0 && mSearchUiManager.getEditText() != null) {
-                mSearchUiManager.getEditText().show();
+        }
+        if (mSearchUiManager.getEditText() != null) {
+            ExtendedEditText editText = mSearchUiManager.getEditText();
+            boolean bgVisible = editText.getBackgroundVisibility();
+            if (scrolledOffset == 0 && !mIsSearching) {
+                bgVisible = true;
+            } else if (scrolledOffset > mHeaderThreshold) {
+                bgVisible = false;
             }
+            editText.setBackgroundVisibility(bgVisible, 1 - prog);
         }
     }
 
@@ -815,7 +828,7 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
      * redraws header protection
      */
     public void invalidateHeader() {
-        if (mScrimView != null && FeatureFlags.ENABLE_DEVICE_SEARCH.get()) {
+        if (mScrimView != null && mHeader.isHeaderProtectionSupported()) {
             mScrimView.invalidate();
         }
     }
