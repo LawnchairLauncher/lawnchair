@@ -66,7 +66,6 @@ import com.android.launcher3.pm.InstallSessionHelper;
 import com.android.launcher3.pm.UserCache;
 import com.android.launcher3.testing.TestInformationProvider;
 import com.android.launcher3.uioverrides.plugins.PluginManagerWrapper;
-import com.android.launcher3.util.MainThreadInitializedObject.ObjectProvider;
 import com.android.launcher3.util.MainThreadInitializedObject.SandboxContext;
 import com.android.launcher3.widget.custom.CustomWidgetManager;
 
@@ -531,12 +530,6 @@ public class LauncherModelHelper {
                 mDbDir.delete();
             }
             super.onDestroy();
-        }
-
-
-        @Override
-        protected <T> T createObject(ObjectProvider<T> provider) {
-            return spy(provider.get(this));
         }
 
         @Override
