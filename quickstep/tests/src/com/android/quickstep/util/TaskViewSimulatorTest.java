@@ -17,20 +17,30 @@ package com.android.quickstep.util;
 
 import static android.view.Display.DEFAULT_DISPLAY;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 
-import android.content.Context;
+import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.RectF;
-import android.hardware.display.DisplayManager;
+import android.view.Display;
 import android.view.Surface;
 import android.view.SurfaceControl;
 
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+import androidx.test.filters.SmallTest;
+
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.InvariantDeviceProfile;
-import com.android.launcher3.shadows.LShadowDisplay;
 import com.android.launcher3.util.DisplayController;
-import com.android.quickstep.LauncherActivityInterface;
+import com.android.launcher3.util.DisplayController.Info;
+import com.android.launcher3.util.LauncherModelHelper;
+import com.android.launcher3.util.ReflectionHelpers;
+import com.android.quickstep.FallbackActivityInterface;
+import com.android.quickstep.SysUINavigationMode;
+import com.android.quickstep.SystemUiProxy;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 import com.android.systemui.shared.system.SyncRtSurfaceTransactionApplierCompat.SurfaceParams;
 
@@ -39,15 +49,9 @@ import org.hamcrest.TypeSafeMatcher;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.robolectric.RobolectricTestRunner;
-import org.robolectric.RuntimeEnvironment;
-import org.robolectric.annotation.LooperMode;
-import org.robolectric.annotation.LooperMode.Mode;
-import org.robolectric.shadow.api.Shadow;
-import org.robolectric.shadows.ShadowDisplayManager;
 
-@RunWith(RobolectricTestRunner.class)
-@LooperMode(Mode.PAUSED)
+@SmallTest
+@RunWith(AndroidJUnit4.class)
 public class TaskViewSimulatorTest {
 
     @Test
@@ -104,8 +108,8 @@ public class TaskViewSimulatorTest {
 
     private static class TaskMatrixVerifier extends TransformParams {
 
-        private final Context mContext = RuntimeEnvironment.application;
-
+        private Point mDisplaySize = new Point();
+        private Rect mDisplayInsets = new Rect();
         private Rect mAppBounds = new Rect();
         private Rect mLauncherInsets = new Rect();
 
@@ -115,8 +119,7 @@ public class TaskViewSimulatorTest {
         private DeviceProfile mDeviceProfile;
 
         TaskMatrixVerifier withLauncherSize(int width, int height) {
-            ShadowDisplayManager.changeDisplay(DEFAULT_DISPLAY,
-                    String.format("w%sdp-h%sdp-mdpi", width, height));
+            mDisplaySize.set(width, height);
             if (mAppBounds.isEmpty()) {
                 mAppBounds.set(0, 0, width, height);
             }
@@ -124,9 +127,7 @@ public class TaskViewSimulatorTest {
         }
 
         TaskMatrixVerifier withInsets(Rect insets) {
-            LShadowDisplay shadowDisplay = Shadow.extract(
-                    mContext.getSystemService(DisplayManager.class).getDisplay(DEFAULT_DISPLAY));
-            shadowDisplay.setInsets(insets);
+            mDisplayInsets.set(insets);
             mLauncherInsets.set(insets);
             return this;
         }
@@ -139,27 +140,64 @@ public class TaskViewSimulatorTest {
         }
 
         void verifyNoTransforms() {
-            mDeviceProfile = InvariantDeviceProfile.INSTANCE.get(mContext)
-                    .getDeviceProfile(mContext);
-            mDeviceProfile.updateInsets(mLauncherInsets);
+            LauncherModelHelper helper = new LauncherModelHelper();
+            try {
+                helper.sandboxContext.allow(SystemUiProxy.INSTANCE);
+                helper.sandboxContext.allow(SysUINavigationMode.INSTANCE);
 
-            TaskViewSimulator tvs = new TaskViewSimulator(mContext,
-                    LauncherActivityInterface.INSTANCE);
-            tvs.setDp(mDeviceProfile);
+                Display display = mock(Display.class);
+                doReturn(DEFAULT_DISPLAY).when(display).getDisplayId();
+                doReturn(mDisplaySize.x > mDisplaySize.y ? Surface.ROTATION_90 : Surface.ROTATION_0)
+                        .when(display).getRotation();
+                doAnswer(i -> {
+                    ((Point) i.getArgument(0)).set(mDisplaySize.x, mDisplaySize.y);
+                    return null;
+                }).when(display).getRealSize(any());
+                doAnswer(i -> {
+                    Point smallestSize = i.getArgument(0);
+                    Point largestSize = i.getArgument(1);
+                    smallestSize.x = smallestSize.y = Math.min(mDisplaySize.x, mDisplaySize.y);
+                    largestSize.x = largestSize.y = Math.max(mDisplaySize.x, mDisplaySize.y);
 
-            int launcherRotation = DisplayController.INSTANCE.get(mContext).getInfo().rotation;
-            if (mAppRotation < 0) {
-                mAppRotation = launcherRotation;
+                    smallestSize.x -= mDisplayInsets.left + mDisplayInsets.right;
+                    largestSize.x -= mDisplayInsets.left + mDisplayInsets.right;
+
+                    smallestSize.y -= mDisplayInsets.top + mDisplayInsets.bottom;
+                    largestSize.y -= mDisplayInsets.top + mDisplayInsets.bottom;
+                    return null;
+                }).when(display).getCurrentSizeRange(any(), any());
+                DisplayController.Info mockInfo = new Info(helper.sandboxContext, display);
+
+                DisplayController controller =
+                        DisplayController.INSTANCE.get(helper.sandboxContext);
+                controller.close();
+                ReflectionHelpers.setField(controller, "mInfo", mockInfo);
+
+                mDeviceProfile = InvariantDeviceProfile.INSTANCE.get(helper.sandboxContext)
+                        .getBestMatch(mAppBounds.width(), mAppBounds.height());
+                mDeviceProfile.updateInsets(mLauncherInsets);
+
+                TaskViewSimulator tvs = new TaskViewSimulator(helper.sandboxContext,
+                        FallbackActivityInterface.INSTANCE);
+                tvs.setDp(mDeviceProfile);
+
+                int launcherRotation = mockInfo.rotation;
+                if (mAppRotation < 0) {
+                    mAppRotation = launcherRotation;
+                }
+
+                tvs.getOrientationState().update(launcherRotation, mAppRotation);
+                if (mAppInsets == null) {
+                    mAppInsets = new Rect(mLauncherInsets);
+                }
+                tvs.setPreviewBounds(mAppBounds, mAppInsets);
+
+                tvs.fullScreenProgress.value = 1;
+                tvs.recentsViewScale.value = tvs.getFullScreenScale();
+                tvs.apply(this);
+            } finally {
+                helper.destroy();
             }
-            tvs.getOrientationState().update(launcherRotation, mAppRotation);
-            if (mAppInsets == null) {
-                mAppInsets = new Rect(mLauncherInsets);
-            }
-            tvs.setPreviewBounds(mAppBounds, mAppInsets);
-
-            tvs.fullScreenProgress.value = 1;
-            tvs.recentsViewScale.value = tvs.getFullScreenScale();
-            tvs.apply(this);
         }
 
         @Override
@@ -182,8 +220,8 @@ public class TaskViewSimulatorTest {
 
     private static class AlmostSame extends TypeSafeMatcher<RectF>  {
 
-        // Allow 1px error margin to account for float to int conversions
-        private final float mError = 1f;
+        // Allow .1% error margin to account for float to int conversions
+        private final float mErrorFactor = .001f;
         private final Rect mExpected;
 
         AlmostSame(Rect expected) {
@@ -192,10 +230,12 @@ public class TaskViewSimulatorTest {
 
         @Override
         protected boolean matchesSafely(RectF item) {
-            return Math.abs(item.left - mExpected.left) < mError
-                    && Math.abs(item.top - mExpected.top) < mError
-                    && Math.abs(item.right - mExpected.right) < mError
-                    && Math.abs(item.bottom - mExpected.bottom) < mError;
+            float errorWidth = mErrorFactor * mExpected.width();
+            float errorHeight = mErrorFactor * mExpected.height();
+            return Math.abs(item.left - mExpected.left) < errorWidth
+                    && Math.abs(item.top - mExpected.top) < errorHeight
+                    && Math.abs(item.right - mExpected.right) < errorWidth
+                    && Math.abs(item.bottom - mExpected.bottom) < errorHeight;
         }
 
         @Override
