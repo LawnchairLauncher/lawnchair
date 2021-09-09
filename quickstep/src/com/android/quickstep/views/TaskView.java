@@ -99,6 +99,7 @@ import com.android.quickstep.TaskThumbnailCache;
 import com.android.quickstep.TaskUtils;
 import com.android.quickstep.TaskViewUtils;
 import com.android.quickstep.util.CancellableTask;
+import com.android.quickstep.util.LauncherSplitScreenListener;
 import com.android.quickstep.util.RecentsOrientedState;
 import com.android.quickstep.util.TaskCornerRadius;
 import com.android.quickstep.util.TransformParams;
@@ -693,8 +694,13 @@ public class TaskView extends FrameLayout implements Reusable {
             TestLogging.recordEvent(
                     TestProtocol.SEQUENCE_MAIN, "startActivityFromRecentsAsync", mTask);
             ActivityOptionsWrapper opts =  mActivity.getActivityLaunchOptions(this, null);
+            boolean isOldTaskSplit = LauncherSplitScreenListener.INSTANCE.getNoCreate()
+                    .getPersistentSplitIds().length > 0;
             if (ActivityManagerWrapper.getInstance()
                     .startActivityFromRecents(mTask.key, opts.options)) {
+                if (isOldTaskSplit) {
+                    SystemUiProxy.INSTANCE.getNoCreate().exitSplitScreen(mTask.key.id);
+                }
                 RecentsView recentsView = getRecentsView();
                 if (ENABLE_QUICKSTEP_LIVE_TILE.get() && recentsView.getRunningTaskViewId() != -1) {
                     recentsView.onTaskLaunchedInLiveTileMode();
