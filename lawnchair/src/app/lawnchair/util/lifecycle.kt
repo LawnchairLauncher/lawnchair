@@ -1,9 +1,12 @@
 package app.lawnchair.util
 
+import android.content.Context
+import android.content.ContextWrapper
 import androidx.compose.runtime.*
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.LifecycleOwner
 
 private val LocalLifecycleState = compositionLocalOf<Lifecycle.State> {
     error("CompositionLocal LocalLifecycleState not present")
@@ -33,4 +36,12 @@ private fun observeLifecycleState(): Lifecycle.State {
     }
 
     return state
+}
+
+fun Context.lookupLifecycleOwner(): LifecycleOwner? {
+    return when (this) {
+        is LifecycleOwner -> this
+        is ContextWrapper -> baseContext.lookupLifecycleOwner()
+        else -> null
+    }
 }

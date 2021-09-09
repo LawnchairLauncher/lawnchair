@@ -68,6 +68,7 @@ import com.android.launcher3.views.IconLabelDotView;
 
 import java.text.NumberFormat;
 
+import app.lawnchair.font.FontManager;
 import app.lawnchair.util.LawnchairUtilsKt;
 
 /**
@@ -187,6 +188,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
             // widget_selection or shortcut_popup
             defaultIconSize = grid.iconSizePx;
         }
+        FontManager.INSTANCE.get(context).overrideFont(this, attrs);
 
         mCenterVertically = a.getBoolean(R.styleable.BubbleTextView_centerVertically, false);
 

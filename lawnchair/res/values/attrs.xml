@@ -24,4 +24,20 @@
         <attr name="snapEvery" format="integer" />
         <attr name="asPercentages" format="boolean" />
     </declare-styleable>
+
+    <declare-styleable name="CustomFont">
+        <attr name="android:textAppearance"/>
+        <attr name="customFontType" format="reference" />
+        <attr name="customFontWeight" format="enum">
+            <enum name="w100" value="100" />
+            <enum name="w200" value="200" />
+            <enum name="w300" value="300" />
+            <enum name="w400" value="400" />
+            <enum name="w500" value="500" />
+            <enum name="w600" value="600" />
+            <enum name="w700" value="700" />
+            <enum name="w800" value="800" />
+            <enum name="w900" value="900" />
+        </attr>
+    </declare-styleable>
 </resources>

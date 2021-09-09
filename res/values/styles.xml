@@ -205,6 +205,7 @@
         <item name="android:defaultFocusHighlightEnabled">false</item>
         <!-- No shadows in the base theme -->
         <item name="android:shadowRadius">0</item>
+        <item name="customFontType">@id/font_base_icon</item>
     </style>
 
     <!-- Base theme for BubbleTextView and sub classes -->

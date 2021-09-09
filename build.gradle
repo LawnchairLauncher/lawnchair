@@ -217,6 +217,9 @@ android {
             aidl.srcDirs = ['lawnchair/aidl']
             res.srcDirs = ['lawnchair/res']
             manifest.srcFile "lawnchair/AndroidManifest.xml"
+            assets {
+                srcDirs 'lawnchair/assets'
+            }
         }
 
         lawnWithoutQuickstep {
