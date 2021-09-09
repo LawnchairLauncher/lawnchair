@@ -35,6 +35,7 @@ import static com.android.launcher3.anim.Interpolators.ACCEL;
 import static com.android.launcher3.anim.Interpolators.ACCEL_0_75;
 import static com.android.launcher3.anim.Interpolators.ACCEL_DEACCEL;
 import static com.android.launcher3.anim.Interpolators.FAST_OUT_SLOW_IN;
+import static com.android.launcher3.anim.Interpolators.FINAL_FRAME;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.anim.Interpolators.clampToProgress;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
@@ -2592,10 +2593,13 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             runActionOnRemoteHandles(remoteTargetHandle -> {
                 TransformParams params = remoteTargetHandle.getTransformParams();
                 anim.setFloat(params, TransformParams.TARGET_ALPHA, 0,
-                        clampToProgress(ACCEL, 0, 0.5f));
+                        clampToProgress(FINAL_FRAME, 0, 0.5f));
             });
         }
-        anim.setFloat(taskView, VIEW_ALPHA, 0, clampToProgress(ACCEL, 0, 0.5f));
+        boolean isTaskInBottomGridRow = showAsGrid() && !mTopRowIdSet.contains(
+                taskView.getTaskViewId()) && taskView.getTaskViewId() != mFocusedTaskViewId;
+        anim.setFloat(taskView, VIEW_ALPHA, 0,
+                clampToProgress(isTaskInBottomGridRow ? ACCEL : FINAL_FRAME, 0, 0.5f));
         FloatProperty<TaskView> secondaryViewTranslate =
                 taskView.getSecondaryDissmissTranslationProperty();
         int secondaryTaskDimension = mOrientationHandler.getSecondaryDimension(taskView);
