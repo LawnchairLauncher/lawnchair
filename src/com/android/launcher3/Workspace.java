@@ -2453,21 +2453,32 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         }
 
         int nextPage = getNextPage();
-        if (layout == null && !isPageInTransition()) {
-            layout = verifyInsidePage(nextPage + (mIsRtl ? 1 : -1), Math.min(centerX, d.x), d.y);
+        IntSet pageIndexesToVerify = IntSet.wrap(nextPage - 1, nextPage + 1);
+        if (isTwoPanelEnabled()) {
+            // If two panel is enabled, users can also drag items to nextPage + 2
+            pageIndexesToVerify.add(nextPage + 2);
         }
 
-        if (layout == null && !isPageInTransition()) {
-            layout = verifyInsidePage(nextPage + (mIsRtl ? -1 : 1), Math.max(centerX, d.x), d.y);
+        int touchX = (int) Math.min(centerX, d.x);
+        int touchY = d.y;
+
+        // Go through the pages and check if the dragged item is inside one of them
+        for (int pageIndex : pageIndexesToVerify) {
+            if (layout != null || isPageInTransition()) {
+                break;
+            }
+            layout = verifyInsidePage(pageIndex, touchX, touchY);
         }
 
-        // If two panel is enabled, users can also drag items to currentPage + 2
-        if (isTwoPanelEnabled() && layout == null && !isPageInTransition()) {
-            layout = verifyInsidePage(nextPage + (mIsRtl ? -2 : 2), Math.max(centerX, d.x), d.y);
-        }
-
-        // Always pick the current page.
+        // If the dragged item isn't located in one of the pages above, the icon will stay on the
+        // current screen. For two panel pick the closest panel on the current screen,
+        // on one panel just choose the current page.
         if (layout == null && nextPage >= 0 && nextPage < getPageCount()) {
+            if (isTwoPanelEnabled()) {
+                nextPage = getScreenCenter(getScrollX()) > touchX
+                        ? (mIsRtl ? nextPage + 1 : nextPage) // left side
+                        : (mIsRtl ? nextPage : nextPage + 1); // right side
+            }
             layout = (CellLayout) getChildAt(nextPage);
         }
         if (layout != mDragTargetLayout) {
