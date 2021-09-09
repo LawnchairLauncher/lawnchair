@@ -88,25 +88,29 @@ public final class SplitConfigurationOptions {
     public static class StagedSplitBounds {
         public final Rect leftTopBounds;
         public final Rect rightBottomBounds;
-        public final Rect dividerBounds;
+        /** This rect represents the actual gap between the two apps */
+        public final Rect visualDividerBounds;
         // This class is orientation-agnostic, so we compute both for later use
         public final float topTaskPercent;
         public final float leftTaskPercent;
 
 
-        public StagedSplitBounds(Rect leftTopBounds, Rect rightBottomBounds, Rect dividerBounds) {
+        public StagedSplitBounds(Rect leftTopBounds, Rect rightBottomBounds) {
             this.leftTopBounds = leftTopBounds;
             this.rightBottomBounds = rightBottomBounds;
-            this.dividerBounds = dividerBounds;
-            float totalHeight = this.leftTopBounds.height()
-                    + this.rightBottomBounds.height()
-                    + this.dividerBounds.height();
-            float totalWidth = this.leftTopBounds.width()
-                    + this.rightBottomBounds.width()
-                    + this.dividerBounds.width();
 
-            leftTaskPercent = this.leftTopBounds.width() / totalWidth;
-            topTaskPercent = this.leftTopBounds.height() / totalHeight;
+            if (rightBottomBounds.top > leftTopBounds.top) {
+                // vertical apps, horizontal divider
+                this.visualDividerBounds = new Rect(leftTopBounds.left, leftTopBounds.bottom,
+                        leftTopBounds.right, rightBottomBounds.top);
+            } else {
+                // horizontal apps, vertical divider
+                this.visualDividerBounds = new Rect(leftTopBounds.right, leftTopBounds.top,
+                        rightBottomBounds.left, leftTopBounds.bottom);
+            }
+
+            leftTaskPercent = this.leftTopBounds.width() / (float) rightBottomBounds.right;
+            topTaskPercent = this.leftTopBounds.height() / (float) rightBottomBounds.bottom;
         }
     }
 

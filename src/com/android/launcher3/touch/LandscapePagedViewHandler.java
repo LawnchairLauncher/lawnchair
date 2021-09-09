@@ -388,11 +388,12 @@ public class LandscapePagedViewHandler implements PagedOrientationHandler {
     public void setSplitTaskSwipeRect(DeviceProfile dp, Rect outRect,
             SplitConfigurationOptions.StagedSplitBounds splitInfo, int desiredStagePosition) {
         float diff;
+        float horizontalDividerDiff = splitInfo.visualDividerBounds.width() / 2f;
         if (desiredStagePosition == SplitConfigurationOptions.STAGE_POSITION_TOP_OR_LEFT) {
-            diff = outRect.height() * (1f - splitInfo.leftTaskPercent);
+            diff = outRect.height() * (1f - splitInfo.leftTaskPercent) + horizontalDividerDiff;
             outRect.bottom -= diff;
         } else {
-            diff = outRect.height() * splitInfo.leftTaskPercent;
+            diff = outRect.height() * splitInfo.leftTaskPercent + horizontalDividerDiff;
             outRect.top += diff;
         }
     }
@@ -402,7 +403,7 @@ public class LandscapePagedViewHandler implements PagedOrientationHandler {
             SplitConfigurationOptions.StagedSplitBounds splitInfo, int desiredStagePosition) {
         if (desiredStagePosition == STAGE_POSITION_BOTTOM_OR_RIGHT) {
             // The preview set is for the bottom/right, inset by top/left task
-            splitOffset.x = splitInfo.leftTopBounds.width() + splitInfo.dividerBounds.width() / 2;
+            splitOffset.x = splitInfo.leftTopBounds.width() + splitInfo.visualDividerBounds.width();
         }
     }
 
@@ -413,7 +414,7 @@ public class LandscapePagedViewHandler implements PagedOrientationHandler {
         int spaceAboveSnapshot = dp.overviewTaskThumbnailTopMarginPx;
         int totalThumbnailHeight = taskParent.getHeight() - spaceAboveSnapshot;
         int totalThumbnailWidth = taskParent.getWidth();
-        int dividerBar = splitBoundsConfig.dividerBounds.width() / 2;
+        int dividerBar = splitBoundsConfig.visualDividerBounds.width();
         ViewGroup.LayoutParams primaryLp = mSnapshotView.getLayoutParams();
         ViewGroup.LayoutParams secondaryLp = mSnapshotView2.getLayoutParams();
 
