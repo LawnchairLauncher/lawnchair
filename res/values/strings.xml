@@ -153,6 +153,7 @@
 
     <!-- All applications label -->
     <string name="all_apps_button_label">Apps list</string>
+    <string name="all_apps_search_results">Search results</string>
     <string name="all_apps_button_personal_label">Personal apps list</string>
     <string name="all_apps_button_work_label">Work apps list</string>
 

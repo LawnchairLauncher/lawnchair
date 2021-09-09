@@ -33,6 +33,7 @@ import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.QuickstepTransitionManager;
 import com.android.launcher3.R;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimatorListeners;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.model.data.ItemInfoWithIcon;
@@ -285,6 +286,7 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
      */
     public void showEdu() {
         if (!FeatureFlags.ENABLE_TASKBAR_EDU.get()
+                || Utilities.IS_RUNNING_IN_TEST_HARNESS
                 || mLauncher.getOnboardingPrefs().getBoolean(OnboardingPrefs.TASKBAR_EDU_SEEN)) {
             return;
         }

@@ -19,33 +19,34 @@ import static android.view.Surface.ROTATION_0;
 import static android.view.Surface.ROTATION_180;
 import static android.view.Surface.ROTATION_90;
 
+import static androidx.test.core.app.ApplicationProvider.getApplicationContext;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 
 import android.content.Context;
+
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+import androidx.test.filters.SmallTest;
 
 import com.android.quickstep.FallbackActivityInterface;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.robolectric.RobolectricTestRunner;
-import org.robolectric.RuntimeEnvironment;
-import org.robolectric.annotation.LooperMode;
-import org.robolectric.annotation.LooperMode.Mode;
 
 /**
  * Tests for {@link RecentsOrientedState}
  */
-@RunWith(RobolectricTestRunner.class)
-@LooperMode(Mode.PAUSED)
+@SmallTest
+@RunWith(AndroidJUnit4.class)
 public class RecentsOrientedStateTest {
 
     private RecentsOrientedState mR1, mR2;
 
     @Before
     public void setup() {
-        Context context = RuntimeEnvironment.application;
+        Context context = getApplicationContext();
         mR1 = new RecentsOrientedState(context, FallbackActivityInterface.INSTANCE, i -> { });
         mR2 = new RecentsOrientedState(context, FallbackActivityInterface.INSTANCE, i -> { });
         assertEquals(mR1.getStateId(), mR2.getStateId());
