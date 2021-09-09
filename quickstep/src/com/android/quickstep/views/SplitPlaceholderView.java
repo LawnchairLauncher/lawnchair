@@ -24,8 +24,6 @@ import android.widget.FrameLayout;
 
 import androidx.annotation.Nullable;
 
-import com.android.quickstep.util.SplitSelectStateController;
-
 public class SplitPlaceholderView extends FrameLayout {
 
     public static final FloatProperty<SplitPlaceholderView> ALPHA_FLOAT =
@@ -42,34 +40,26 @@ public class SplitPlaceholderView extends FrameLayout {
                 }
             };
 
-    private SplitSelectStateController mSplitController;
-    private IconView mIcon;
+    private IconView mIconView;
 
     public SplitPlaceholderView(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public void init(SplitSelectStateController controller) {
-        this.mSplitController = controller;
-    }
-
-    public SplitSelectStateController getSplitController() {
-        return mSplitController;
-    }
-
     @Nullable
-    public IconView getIcon() {
-        return mIcon;
+    public IconView getIconView() {
+        return mIconView;
     }
 
-    public void setIcon(IconView icon) {
-        if (mIcon == null) {
-            mIcon = new IconView(getContext());
-            addView(mIcon);
+    public void setIconView(IconView iconView, int iconSize) {
+        if (mIconView == null) {
+            mIconView = new IconView(getContext());
+            addView(mIconView);
         }
-        mIcon.setDrawable(icon.getDrawable());
-        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(icon.getLayoutParams());
+        mIconView.setDrawable(iconView.getDrawable());
+        mIconView.setDrawableSize(iconSize, iconSize);
+        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(iconView.getLayoutParams());
         params.gravity = Gravity.CENTER;
-        mIcon.setLayoutParams(params);
+        mIconView.setLayoutParams(params);
     }
 }
