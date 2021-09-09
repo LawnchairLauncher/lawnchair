@@ -112,15 +112,15 @@
     <string name="msg_missing_notification_access">Um Benachrichtigungspunkte zu verwenden, gewähre <xliff:g id="name" example="My App">%1$s</xliff:g> Zugriff auf Benachrichtigungen.</string>
     <string name="title_change_settings">Einstellungen ändern</string>
     <string name="debug_restart_launcher">Lawnchair neustarten</string>
-    <string name="pref_fonts_missing_font">Font not found.</string>
+    <string name="pref_fonts_missing_font">Schriftart nicht gefunden.</string>
     <string name="font_variant_italic">Italic</string>
-    <string name="font_weight_thin">Thin</string>
-    <string name="font_weight_extra_light">Extralight</string>
+    <string name="font_weight_thin">Dünn</string>
+    <string name="font_weight_extra_light">Extraleicht</string>
     <string name="font_weight_light">Hell</string>
-    <string name="font_weight_regular">Regular</string>
-    <string name="font_weight_medium">Medium</string>
-    <string name="font_weight_semi_bold">Semibold</string>
-    <string name="font_weight_bold">Bold</string>
-    <string name="font_weight_extra_bold">Extrabold</string>
-    <string name="font_weight_extra_black">Black</string>
+    <string name="font_weight_regular">Normal</string>
+    <string name="font_weight_medium">Mittel</string>
+    <string name="font_weight_semi_bold">Halbfett</string>
+    <string name="font_weight_bold">Fett</string>
+    <string name="font_weight_extra_bold">Extrafett</string>
+    <string name="font_weight_extra_black">Schwarz</string>
 </resources>
