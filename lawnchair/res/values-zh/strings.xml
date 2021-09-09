@@ -113,13 +113,13 @@
     <string name="debug_restart_launcher">重新啟動 Lawnchair</string>
     <string name="pref_fonts_missing_font">找不到字型。</string>
     <string name="font_variant_italic">斜體</string>
-    <string name="font_weight_thin">Thin</string>
-    <string name="font_weight_extra_light">Extralight</string>
+    <string name="font_weight_thin">特細體</string>
+    <string name="font_weight_extra_light">纖細體</string>
     <string name="font_weight_light">淺色</string>
-    <string name="font_weight_regular">Regular</string>
-    <string name="font_weight_medium">Medium</string>
-    <string name="font_weight_semi_bold">Semibold</string>
-    <string name="font_weight_bold">Bold</string>
-    <string name="font_weight_extra_bold">Extrabold</string>
-    <string name="font_weight_extra_black">Black</string>
+    <string name="font_weight_regular">標準體</string>
+    <string name="font_weight_medium">中黑體</string>
+    <string name="font_weight_semi_bold">中粗體</string>
+    <string name="font_weight_bold">粗體</string>
+    <string name="font_weight_extra_bold">特粗體</string>
+    <string name="font_weight_extra_black">黑體</string>
 </resources>
