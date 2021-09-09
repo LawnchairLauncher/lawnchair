@@ -117,12 +117,12 @@
     <string name="pref_fonts_missing_font">Brak czcionki.</string>
     <string name="font_variant_italic">Kursywa</string>
     <string name="font_weight_thin">Wąska</string>
-    <string name="font_weight_extra_light">Extralight</string>
+    <string name="font_weight_extra_light">Ekstra smukła</string>
     <string name="font_weight_light">Jasny</string>
-    <string name="font_weight_regular">Zwykła</string>
+    <string name="font_weight_regular">Regularna</string>
     <string name="font_weight_medium">Średnia</string>
-    <string name="font_weight_semi_bold">Semibold</string>
-    <string name="font_weight_bold">Bold</string>
-    <string name="font_weight_extra_bold">Extrabold</string>
-    <string name="font_weight_extra_black">Black</string>
+    <string name="font_weight_semi_bold">Średnio pogrubiona</string>
+    <string name="font_weight_bold">Pogrubiona</string>
+    <string name="font_weight_extra_bold">Ekstra pogrubiona</string>
+    <string name="font_weight_extra_black">Czarna</string>
 </resources>
