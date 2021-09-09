@@ -55,6 +55,7 @@ import com.android.systemui.shared.plugins.PluginPrefs;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -75,6 +76,7 @@ public class SettingsActivityTest {
     }
 
     @Test
+    @Ignore  // b/199309785
     public void testSettings_aboutTap_launchesActivity() {
         ActivityScenario.launch(SettingsActivity.class);
         onView(withId(R.id.recycler_view)).perform(
@@ -88,6 +90,7 @@ public class SettingsActivityTest {
     }
 
     @Test
+    @Ignore  // b/199309785
     public void testSettings_developerOptionsTap_launchesActivityWithFragment() {
         PluginPrefs.setHasPlugins(mApplicationContext);
         ActivityScenario.launch(SettingsActivity.class);
@@ -100,6 +103,7 @@ public class SettingsActivityTest {
     }
 
     @Test
+    @Ignore  // b/199309785
     public void testSettings_aboutScreenIntent() {
         Bundle fragmentArgs = new Bundle();
         fragmentArgs.putString(ARG_PREFERENCE_ROOT, "about_screen");
@@ -114,6 +118,7 @@ public class SettingsActivityTest {
     }
 
     @Test
+    @Ignore  // b/199309785
     public void testSettings_developerOptionsFragmentIntent() {
         Intent intent = new Intent(mApplicationContext, SettingsActivity.class)
                 .putExtra(EXTRA_FRAGMENT, DeveloperOptionsFragment.class.getName());
@@ -125,6 +130,7 @@ public class SettingsActivityTest {
     }
 
     @Test
+    @Ignore  // b/199309785
     public void testSettings_intentWithUnknownFragment() {
         String fragmentClass = PreferenceFragmentCompat.class.getName();
         Intent intent = new Intent(mApplicationContext, SettingsActivity.class)
@@ -139,6 +145,7 @@ public class SettingsActivityTest {
     }
 
     @Test
+    @Ignore  // b/199309785
     public void testSettings_backButtonFinishesActivity() {
         Bundle fragmentArgs = new Bundle();
         fragmentArgs.putString(ARG_PREFERENCE_ROOT, "about_screen");
