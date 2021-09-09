@@ -13,13 +13,13 @@ import android.view.ViewGroup
 import com.android.launcher3.R
 import com.android.launcher3.qsb.QsbContainerView
 
-class SmartspaceQsb @JvmOverloads constructor(context: Context?, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
+class SmartspaceQsb @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
     QsbContainerView(context, attrs, defStyleAttr) {
     class SmartSpaceFragment : QsbFragment() {
         override fun createHost(): QsbWidgetHost {
             return QsbWidgetHost(
                 context, SMART_SPACE_WIDGET_HOST_ID
-            ) { c: Context? -> SmartSpaceHostView(c) }
+            ) { c: Context -> ThemedSmartSpaceHostView(c) }
         }
 
         @SuppressLint("NewApi")

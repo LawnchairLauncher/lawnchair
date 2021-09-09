@@ -19,8 +19,8 @@ import com.android.launcher3.views.BaseDragLayer.TouchCompleteListener
 import com.android.launcher3.views.OptionsPopupView
 import com.android.launcher3.views.OptionsPopupView.OptionItem
 
-class SmartSpaceHostView(context: Context?) : QsbWidgetHostView(context), OnLongClickListener, TouchCompleteListener {
-    private val mLauncher: Launcher = Launcher.getLauncher(context)
+open class SmartSpaceHostView(context: Context) : QsbWidgetHostView(context), OnLongClickListener, TouchCompleteListener {
+    private val mLauncher: Launcher by lazy { Launcher.getLauncher(context) }
     private val mLongPressHelper: CheckLongPressHelper = CheckLongPressHelper(this, this)
 
     override fun getErrorView(): View {
@@ -42,8 +42,8 @@ class SmartSpaceHostView(context: Context?) : QsbWidgetHostView(context), OnLong
         centerPos.bottom = findBottomRecur(this, pos.top, pos).toFloat().coerceAtMost(centerPos.bottom)
         val item = OptionItem(R.string.smartspace_preferences,
             R.drawable.ic_smartspace_preferences,
-            NexusLauncherEnum.SMARTSPACE_TAP_OR_LONGPRESS,
-            { v: View -> openSettings(v) })
+            NexusLauncherEnum.SMARTSPACE_TAP_OR_LONGPRESS
+        ) { v: View -> openSettings(v) }
         OptionsPopupView.show(mLauncher, centerPos, listOf(item))
         return true
     }
