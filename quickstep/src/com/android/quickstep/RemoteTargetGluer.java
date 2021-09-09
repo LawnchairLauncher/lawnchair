@@ -107,11 +107,9 @@ public class RemoteTargetGluer {
             primaryTaskTarget = targets.findTask(splitIds[0]);
             secondaryTaskTarget = targets.findTask(splitIds[1]);
 
-            RemoteAnimationTargetCompat dividerTarget = targets.getNonAppTargetOfType(
-                    TYPE_DOCK_DIVIDER);
             mStagedSplitBounds = new SplitConfigurationOptions.StagedSplitBounds(
                     primaryTaskTarget.screenSpaceBounds,
-                    secondaryTaskTarget.screenSpaceBounds, dividerTarget.screenSpaceBounds);
+                    secondaryTaskTarget.screenSpaceBounds);
             mRemoteTargetHandles[0].mTransformParams.setTargetSet(
                     createRemoteAnimationTargetsForTarget(primaryTaskTarget, targets));
             mRemoteTargetHandles[0].mTaskViewSimulator.setPreview(primaryTaskTarget,
