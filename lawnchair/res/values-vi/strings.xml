@@ -111,4 +111,15 @@
     <string name="msg_missing_notification_access">Để sử dụng Chấm nổi thông báo, ứng dụng <xliff:g id="name" example="My App">%1$s</xliff:g> cần quyền truy cập thông báo.</string>
     <string name="title_change_settings">Thay đổi cài đặt</string>
     <string name="debug_restart_launcher">Khởi động lại ứng dụng Lawnchair</string>
+    <string name="pref_fonts_missing_font">Font not found.</string>
+    <string name="font_variant_italic">Italic</string>
+    <string name="font_weight_thin">Thin</string>
+    <string name="font_weight_extra_light">Extralight</string>
+    <string name="font_weight_light">Sáng</string>
+    <string name="font_weight_regular">Regular</string>
+    <string name="font_weight_medium">Medium</string>
+    <string name="font_weight_semi_bold">Semibold</string>
+    <string name="font_weight_bold">Bold</string>
+    <string name="font_weight_extra_bold">Extrabold</string>
+    <string name="font_weight_extra_black">Black</string>
 </resources>
