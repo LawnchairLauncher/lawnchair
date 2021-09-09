@@ -338,15 +338,17 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         int paddingBottom = grid.cellLayoutBottomPaddingPx;
 
         int panelCount = getPanelCount();
+        int rightPanelModulus = mIsRtl ? 0 : panelCount - 1;
+        int leftPanelModulus = mIsRtl ? panelCount - 1 : 0;
         int numberOfScreens = mScreenOrder.size();
         for (int i = 0; i < numberOfScreens; i++) {
             int paddingLeft = paddingLeftRight;
             int paddingRight = paddingLeftRight;
             if (panelCount > 1) {
-                if (i % panelCount == 0) { // left side panel
+                if (i % panelCount == leftPanelModulus) {
                     paddingLeft = paddingLeftRight;
                     paddingRight = 0;
-                } else if (i % panelCount == panelCount - 1) { // right side panel
+                } else if (i % panelCount == rightPanelModulus) {
                     paddingLeft = 0;
                     paddingRight = paddingLeftRight;
                 } else { // middle panel
