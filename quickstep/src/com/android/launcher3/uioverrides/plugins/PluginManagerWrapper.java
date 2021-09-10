@@ -24,6 +24,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ResolveInfo;
 
+import com.android.launcher3.Utilities;
 import com.android.launcher3.util.MainThreadInitializedObject;
 import com.android.systemui.plugins.Plugin;
 import com.android.systemui.plugins.PluginListener;
@@ -53,20 +54,19 @@ public class PluginManagerWrapper {
 
     private PluginManagerWrapper(Context c) {
         mContext = c;
-        PluginInitializerImpl pluginInitializer  = new PluginInitializerImpl();
         mPluginEnabler = new PluginEnablerImpl(c);
         List<String> privilegedPlugins = Collections.emptyList();
         PluginInstance.Factory instanceFactory = new PluginInstance.Factory(
                 getClass().getClassLoader(), new PluginInstance.InstanceFactory<>(),
                 new PluginInstance.VersionChecker(), privilegedPlugins,
-                pluginInitializer.isDebuggable());
+                Utilities.IS_DEBUG_DEVICE);
         PluginActionManager.Factory instanceManagerFactory = new PluginActionManager.Factory(
-                c, c.getPackageManager(), c.getMainExecutor(), MODEL_EXECUTOR, pluginInitializer,
+                c, c.getPackageManager(), c.getMainExecutor(), MODEL_EXECUTOR,
                 c.getSystemService(NotificationManager.class), mPluginEnabler,
                 privilegedPlugins, instanceFactory);
 
         mPluginManager = new PluginManagerImpl(c, instanceManagerFactory,
-                pluginInitializer.isDebuggable(),
+                Utilities.IS_DEBUG_DEVICE,
                 Optional.ofNullable(Thread.getDefaultUncaughtExceptionHandler()), mPluginEnabler,
                 new PluginPrefs(c), privilegedPlugins);
     }
