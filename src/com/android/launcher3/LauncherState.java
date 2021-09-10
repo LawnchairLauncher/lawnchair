@@ -197,6 +197,10 @@ public abstract class LauncherState implements BaseState<LauncherState> {
         return (getVisibleElements(launcher) & elements) == elements;
     }
 
+    public boolean isTaskbarStashed() {
+        return false;
+    }
+
     /**
      * Fraction shift in the vertical translation UI and related properties
      *
