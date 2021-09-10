@@ -28,7 +28,7 @@
         android:layout_marginTop="40dp"
         android:text="@string/work_apps_paused_title"
         android:textAlignment="center"
-        android:textSize="22sp" />
+        android:textSize="18sp" />
 
     <TextView
         android:layout_width="wrap_content"
