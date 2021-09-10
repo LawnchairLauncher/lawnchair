@@ -33,6 +33,9 @@ license {
 
 android_library {
     name: "launcher-aosp-tapl",
+    libs: [
+        "framework-statsd",
+    ],
     static_libs: [
         "androidx.annotation_annotation",
         "androidx.test.runner",
@@ -192,6 +195,9 @@ android_library {
     resource_dirs: [
         "quickstep/res",
     ],
+    libs: [
+        "framework-statsd",
+    ],
     static_libs: [
         "Launcher3ResLib",
         "SystemUISharedLib",
@@ -260,6 +266,9 @@ android_library {
     ],
     resource_dirs: [
         "quickstep/res",
+    ],
+    libs: [
+        "framework-statsd",
     ],
     static_libs: [
         "SystemUI-statsd",
