@@ -40,7 +40,7 @@ class FontCache private constructor(private val context: Context) {
 
     private val scope = CoroutineScope(CoroutineName("FontCache"))
 
-    private val deferredFonts = HashMap<Font, Deferred<Typeface?>>()
+    private val deferredFonts = mutableMapOf<Font, Deferred<Typeface?>>()
     private val weightNameMap: Map<String, String> = mapOf(
         Pair("100", R.string.font_weight_thin),
         Pair("200", R.string.font_weight_extra_light),
@@ -53,7 +53,7 @@ class FontCache private constructor(private val context: Context) {
         Pair("900", R.string.font_weight_extra_black)
     ).mapValues { context.getString(it.value) }
 
-    suspend fun loadFont(font: Font): Typeface? {
+    suspend fun getFont(font: Font): Typeface? {
         return loadFontAsync(font).await()
     }
 
