@@ -25,11 +25,15 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.text.TextUtils;
 
+import androidx.annotation.IntDef;
+
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.logging.StatsLogManager.LauncherEvent;
 import com.android.launcher3.util.IntSet;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.util.Locale;
 import java.util.Objects;
 
@@ -42,14 +46,23 @@ public class DeviceGridState {
     public static final String KEY_HOTSEAT_COUNT = "migration_src_hotseat_count";
     public static final String KEY_DEVICE_TYPE = "migration_src_device_type";
 
+    @Retention(RetentionPolicy.SOURCE)
+    @IntDef({TYPE_PHONE, TYPE_MULTI_DISPLAY, TYPE_TABLET})
+    public @interface DeviceType{}
     public static final int TYPE_PHONE = 0;
     public static final int TYPE_MULTI_DISPLAY = 1;
     public static final int TYPE_TABLET = 2;
-    public static final IntSet COMPATIBLE_TYPES = IntSet.wrap(TYPE_PHONE, TYPE_MULTI_DISPLAY);
+
+    private static final IntSet COMPATIBLE_TYPES = IntSet.wrap(TYPE_PHONE, TYPE_MULTI_DISPLAY);
+
+    public static boolean deviceTypeCompatible(@DeviceType int typeA, @DeviceType int typeB) {
+        return typeA == typeB
+                || (COMPATIBLE_TYPES.contains(typeA) && COMPATIBLE_TYPES.contains(typeB));
+    }
 
     private final String mGridSizeString;
     private final int mNumHotseat;
-    private final int mDeviceType;
+    private final @DeviceType int mDeviceType;
 
     public DeviceGridState(InvariantDeviceProfile idp) {
         mGridSizeString = String.format(Locale.ENGLISH, "%d,%d", idp.numColumns, idp.numRows);
@@ -71,7 +84,7 @@ public class DeviceGridState {
     /**
      * Returns the device type for the grid
      */
-    public int getDeviceType() {
+    public @DeviceType int getDeviceType() {
         return mDeviceType;
     }
 
@@ -111,9 +124,7 @@ public class DeviceGridState {
         if (o == null || getClass() != o.getClass()) return false;
         DeviceGridState that = (DeviceGridState) o;
         return mNumHotseat == that.mNumHotseat
-                && (mDeviceType == that.mDeviceType
-                    || (COMPATIBLE_TYPES.contains(mDeviceType)
-                        && COMPATIBLE_TYPES.contains(that.mDeviceType)))
+                && deviceTypeCompatible(mDeviceType, that.mDeviceType)
                 && Objects.equals(mGridSizeString, that.mGridSizeString);
     }
 }
