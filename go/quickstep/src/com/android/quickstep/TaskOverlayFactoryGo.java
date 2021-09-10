@@ -186,6 +186,9 @@ public final class TaskOverlayFactoryGo extends TaskOverlayFactory {
         public void reset() {
             super.reset();
             mWebUrl = null;
+            if (mDialog != null && mDialog.isShowing()) {
+                mDialog.dismiss();
+            }
         }
 
         @Override

@@ -52,6 +52,7 @@
             android:orientation="horizontal"
             android:paddingLeft="@dimen/taskbar_nav_buttons_spacing"
             android:paddingRight="@dimen/taskbar_nav_buttons_spacing"
+            android:layout_marginEnd="@dimen/taskbar_contextual_button_margin"
             android:gravity="center_vertical"
             android:layout_gravity="end"/>
 

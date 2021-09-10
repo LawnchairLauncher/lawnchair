@@ -28,6 +28,7 @@ import android.text.TextUtils;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.logging.StatsLogManager.LauncherEvent;
+import com.android.launcher3.util.IntSet;
 
 import java.util.Locale;
 import java.util.Objects;
@@ -44,6 +45,7 @@ public class DeviceGridState {
     public static final int TYPE_PHONE = 0;
     public static final int TYPE_MULTI_DISPLAY = 1;
     public static final int TYPE_TABLET = 2;
+    public static final IntSet COMPATIBLE_TYPES = IntSet.wrap(TYPE_PHONE, TYPE_MULTI_DISPLAY);
 
     private final String mGridSizeString;
     private final int mNumHotseat;
@@ -109,7 +111,9 @@ public class DeviceGridState {
         if (o == null || getClass() != o.getClass()) return false;
         DeviceGridState that = (DeviceGridState) o;
         return mNumHotseat == that.mNumHotseat
-                && mDeviceType == that.mDeviceType
+                && (mDeviceType == that.mDeviceType
+                    || (COMPATIBLE_TYPES.contains(mDeviceType)
+                        && COMPATIBLE_TYPES.contains(that.mDeviceType)))
                 && Objects.equals(mGridSizeString, that.mGridSizeString);
     }
 }

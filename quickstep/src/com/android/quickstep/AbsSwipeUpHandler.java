@@ -36,7 +36,6 @@ import static com.android.launcher3.util.DisplayController.getSingleFrameMs;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 import static com.android.launcher3.util.SystemUiController.UI_STATE_FULLSCREEN_TASK;
-import static com.android.launcher3.util.VibratorWrapper.OVERVIEW_HAPTIC;
 import static com.android.quickstep.GestureState.GestureEndTarget.HOME;
 import static com.android.quickstep.GestureState.GestureEndTarget.LAST_TASK;
 import static com.android.quickstep.GestureState.GestureEndTarget.NEW_TASK;
@@ -46,6 +45,7 @@ import static com.android.quickstep.GestureState.STATE_END_TARGET_SET;
 import static com.android.quickstep.GestureState.STATE_RECENTS_ANIMATION_CANCELED;
 import static com.android.quickstep.GestureState.STATE_RECENTS_SCROLLING_FINISHED;
 import static com.android.quickstep.MultiStateCallback.DEBUG_STATES;
+import static com.android.quickstep.util.VibratorWrapper.OVERVIEW_HAPTIC;
 import static com.android.quickstep.views.RecentsView.UPDATE_SYSUI_FLAGS_THRESHOLD;
 import static com.android.systemui.shared.system.ActivityManagerWrapper.CLOSE_SYSTEM_WINDOWS_REASON_RECENTS;
 import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.ACTIVITY_TYPE_HOME;
@@ -92,10 +92,10 @@ import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.tracing.InputConsumerProto;
 import com.android.launcher3.tracing.SwipeHandlerProto;
 import com.android.launcher3.util.TraceHelper;
-import com.android.launcher3.util.VibratorWrapper;
 import com.android.launcher3.util.WindowBounds;
 import com.android.quickstep.BaseActivityInterface.AnimationFactory;
 import com.android.quickstep.GestureState.GestureEndTarget;
+import com.android.quickstep.RemoteTargetGluer.RemoteTargetHandle;
 import com.android.quickstep.util.ActiveGestureLog;
 import com.android.quickstep.util.ActivityInitListener;
 import com.android.quickstep.util.AnimatorControllerWithResistance;
@@ -111,6 +111,7 @@ import com.android.quickstep.util.SurfaceTransactionApplier;
 import com.android.quickstep.util.SwipePipToHomeAnimator;
 import com.android.quickstep.util.TaskViewSimulator;
 import com.android.quickstep.util.TransformParams;
+import com.android.quickstep.util.VibratorWrapper;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
 import com.android.systemui.shared.recents.model.ThumbnailData;
@@ -434,7 +435,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
         // RecentsView never updates the display rotation until swipe-up, force update
         // RecentsOrientedState before passing to TaskViewSimulator.
         mRecentsView.updateRecentsRotation();
-        runActionOnRemoteHandles(remoteTargetHandle -> remoteTargetHandle.mTaskViewSimulator
+        runActionOnRemoteHandles(remoteTargetHandle -> remoteTargetHandle.getTaskViewSimulator()
                 .setOrientationState(mRecentsView.getPagedViewOrientedState()));
 
         // If we've already ended the gesture and are going home, don't prepare recents UI,
@@ -753,6 +754,8 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
     public void onRecentsAnimationStart(RecentsAnimationController controller,
             RecentsAnimationTargets targets) {
         super.onRecentsAnimationStart(controller, targets);
+        ActiveGestureLog.INSTANCE.addLog("startRecentsAnimationCallback", targets.apps.length);
+        mRemoteTargetHandles = mTargetGluer.assignTargetsForSplitScreen(targets);
         mRecentsAnimationController = controller;
         mRecentsAnimationTargets = targets;
 
@@ -763,7 +766,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
             // orientation state is independent of which remote target handle we use since both
             // should be pointing to the same one. Just choose index 0 for now since that works for
             // both split and non-split
-            RecentsOrientedState orientationState = mRemoteTargetHandles[0].mTaskViewSimulator
+            RecentsOrientedState orientationState = mRemoteTargetHandles[0].getTaskViewSimulator()
                     .getOrientationState();
             DeviceProfile dp = orientationState.getLauncherDeviceProfile();
             if (targets.minimizedHomeBounds != null && primaryTaskTarget != null) {
@@ -1350,7 +1353,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
             RemoteAnimationTargetCompat runningTaskTarget, float startProgress) {
         // Directly animate the app to PiP (picture-in-picture) mode
         final ActivityManager.RunningTaskInfo taskInfo = mGestureState.getRunningTask();
-        final RecentsOrientedState orientationState = mRemoteTargetHandles[0].mTaskViewSimulator
+        final RecentsOrientedState orientationState = mRemoteTargetHandles[0].getTaskViewSimulator()
                 .getOrientationState();
         final int windowRotation = calculateWindowRotation(runningTaskTarget, orientationState);
         final int homeRotation = orientationState.getRecentsActivityRotation();
@@ -1386,7 +1389,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
         // is not ROTATION_0 (which implies the rotation is turned on in launcher settings).
         if (homeRotation == ROTATION_0
                 && (windowRotation == ROTATION_90 || windowRotation == ROTATION_270)) {
-            builder.setFromRotation(mRemoteTargetHandles[0].mTaskViewSimulator, windowRotation,
+            builder.setFromRotation(mRemoteTargetHandles[0].getTaskViewSimulator(), windowRotation,
                     taskInfo.displayCutoutInsets);
         }
         final SwipePipToHomeAnimator swipePipToHomeAnimator = builder.build();
@@ -1756,7 +1759,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
      * depend on proper class initialization.
      */
     protected void initAfterSubclassConstructor() {
-        initTransitionEndpoints(mRemoteTargetHandles[0].mTaskViewSimulator
+        initTransitionEndpoints(mRemoteTargetHandles[0].getTaskViewSimulator()
                         .getOrientationState().getLauncherDeviceProfile());
     }
 
@@ -1774,7 +1777,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
 
     protected void linkRecentsViewScroll() {
         SurfaceTransactionApplier.create(mRecentsView, applier -> {
-            runActionOnRemoteHandles(remoteTargetHandle -> remoteTargetHandle.mTransformParams
+            runActionOnRemoteHandles(remoteTargetHandle -> remoteTargetHandle.getTransformParams()
                             .setSyncTransactionApplier(applier));
             runOnRecentsAnimationStart(() ->
                     mRecentsAnimationTargets.addReleaseCheck(applier));
@@ -1910,18 +1913,19 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
         boolean notSwipingPipToHome = mRecentsAnimationTargets != null && !mIsSwipingPipToHome;
         boolean setRecentsScroll = mRecentsViewScrollLinked && mRecentsView != null;
         for (RemoteTargetHandle remoteHandle : mRemoteTargetHandles) {
-            AnimatorControllerWithResistance playbackController = remoteHandle.mPlaybackController;
+            AnimatorControllerWithResistance playbackController =
+                    remoteHandle.getPlaybackController();
             if (playbackController != null) {
                 playbackController.setProgress(Math.max(mCurrentShift.value,
                         getScaleProgressDueToScroll()), mDragLengthFactor);
             }
 
             if (notSwipingPipToHome) {
-                TaskViewSimulator taskViewSimulator = remoteHandle.mTaskViewSimulator;
+                TaskViewSimulator taskViewSimulator = remoteHandle.getTaskViewSimulator();
                 if (setRecentsScroll) {
                     taskViewSimulator.setScroll(mRecentsView.getScrollOffset());
                 }
-                taskViewSimulator.apply(remoteHandle.mTransformParams);
+                taskViewSimulator.apply(remoteHandle.getTransformParams());
             }
         }
         ProtoTracer.INSTANCE.get(mContext).scheduleFrameUpdate();
