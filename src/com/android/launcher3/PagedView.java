@@ -1576,7 +1576,7 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
         return getDisplacementFromScreenCenter(childIndex, screenCenter);
     }
 
-    private int getScreenCenter(int primaryScroll) {
+    protected int getScreenCenter(int primaryScroll) {
         float primaryScale = mOrientationHandler.getPrimaryScale(this);
         float primaryPivot =  mOrientationHandler.getPrimaryValue(getPivotX(), getPivotY());
         int pageOrientationSize = mOrientationHandler.getMeasuredSize(this);
