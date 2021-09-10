@@ -14,17 +14,10 @@
 
 package com.android.launcher3.uioverrides.plugins;
 
-import android.content.Context;
-
 import com.android.launcher3.Utilities;
 import com.android.systemui.shared.plugins.PluginInitializer;
 
 public class PluginInitializerImpl implements PluginInitializer {
-    @Override
-    public String[] getPrivilegedPlugins(Context context) {
-        return new String[0];
-    }
-
     @Override
     public void handleWtfs() {
     }
