@@ -773,7 +773,8 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
                 childStart += primaryDimension + getChildGap();
 
                 // This makes sure that the space is added after the page, not after each panel
-                if (i % panelCount == panelCount - 1) {
+                int lastPanel = mIsRtl ? 0 : panelCount - 1;
+                if (i % panelCount == lastPanel) {
                     childStart += mPageSpacing;
                 }
             }
