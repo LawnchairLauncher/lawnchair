@@ -859,18 +859,13 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         mWorkspaceScreens.remove(emptyScreenId);
         mScreenOrder.removeValue(emptyScreenId);
 
-        int newScreenId = LauncherSettings.Settings.call(getContext().getContentResolver(),
-                LauncherSettings.Settings.METHOD_NEW_SCREEN_ID)
-                .getInt(LauncherSettings.Settings.EXTRA_VALUE);
-
-
-        // When two panel home is enabled and the last page (the page on the right) doesn't
-        // have any items, then Launcher database doesn't know about this page because it was added
-        // by Launcher::bindAddScreens but wasn't inserted into the database. LauncherSettings's
-        // generate new screen ID method will return the ID for the left page,
-        // so we need to increment it.
-        if (isTwoPanelEnabled() && emptyScreenId == EXTRA_EMPTY_SCREEN_ID && newScreenId % 2 == 1) {
-            newScreenId++;
+        int newScreenId = -1;
+        // Launcher database isn't aware of empty pages that are already bound, so we need to
+        // skip those IDs manually.
+        while (newScreenId == -1 || mWorkspaceScreens.containsKey(newScreenId)) {
+            newScreenId = LauncherSettings.Settings.call(getContext().getContentResolver(),
+                    LauncherSettings.Settings.METHOD_NEW_SCREEN_ID)
+                    .getInt(LauncherSettings.Settings.EXTRA_VALUE);
         }
 
         mWorkspaceScreens.put(newScreenId, cl);
