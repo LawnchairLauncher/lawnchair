@@ -3150,7 +3150,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
      */
     private void updateFocusedSplitButtonVisibility() {
         mActionsView.setSplitButtonVisible(mActivity.getDeviceProfile().isTablet &&
-                !(getRunningTaskView() instanceof GroupedTaskView) &&
+                !(getFocusedTaskView() instanceof GroupedTaskView) &&
                 getTaskViewCount() > 1
         );
     }
