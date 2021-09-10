@@ -105,8 +105,7 @@
         launcher:numFolderColumns="4"
         launcher:numHotseatIcons="5"
         launcher:dbFile="launcher.db"
-        launcher:defaultLayoutId="@xml/default_workspace_5x5"
-        launcher:defaultSplitDisplayLayoutId="@xml/default_workspace_splitdisplay_5x5" >
+        launcher:defaultLayoutId="@xml/default_workspace_5x5" >
 
         <display-option
             launcher:name="Large Phone"
