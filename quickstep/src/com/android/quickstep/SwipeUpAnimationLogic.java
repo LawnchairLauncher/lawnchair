@@ -89,13 +89,13 @@ public abstract class SwipeUpAnimationLogic implements
                 LauncherSplitScreenListener.INSTANCE.getNoCreate()
                         .getRunningSplitTaskIds().length > 1;
 
-        TaskViewSimulator primaryTVS = new TaskViewSimulator(context,
-                gestureState.getActivityInterface());
-        primaryTVS.getOrientationState().update(
-                mDeviceState.getRotationTouchHelper().getCurrentActiveRotation(),
-                mDeviceState.getRotationTouchHelper().getDisplayRotation());
         mTargetGluer = new RemoteTargetGluer(mContext, mGestureState.getActivityInterface());
         mRemoteTargetHandles = mTargetGluer.getRemoteTargetHandles();
+        runActionOnRemoteHandles(remoteTargetHandle ->
+                remoteTargetHandle.getTaskViewSimulator().getOrientationState().update(
+                        mDeviceState.getRotationTouchHelper().getCurrentActiveRotation(),
+                        mDeviceState.getRotationTouchHelper().getDisplayRotation()
+                ));
     }
 
     protected void initTransitionEndpoints(DeviceProfile dp) {
