@@ -117,10 +117,10 @@
     <string name="font_weight_thin">Vékony betű</string>
     <string name="font_weight_extra_light">Extralight</string>
     <string name="font_weight_light">Világos</string>
-    <string name="font_weight_regular">Regular</string>
-    <string name="font_weight_medium">Medium</string>
-    <string name="font_weight_semi_bold">Semibold</string>
-    <string name="font_weight_bold">Bold</string>
-    <string name="font_weight_extra_bold">Extrabold</string>
-    <string name="font_weight_extra_black">Black</string>
+    <string name="font_weight_regular">Szokásos</string>
+    <string name="font_weight_medium">Közepes</string>
+    <string name="font_weight_semi_bold">Félkövér</string>
+    <string name="font_weight_bold">Kövér</string>
+    <string name="font_weight_extra_bold">Extra kövér</string>
+    <string name="font_weight_extra_black">Fekete</string>
 </resources>
