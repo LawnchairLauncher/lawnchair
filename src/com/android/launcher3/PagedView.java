@@ -108,6 +108,8 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
     // relative scroll position unchanged in updateCurrentPageScroll. Cleared when snapping to a
     // page.
     protected int mCurrentPageScrollDiff;
+    // The current page the PagedView is scrolling over on it's way to the destination page.
+    protected int mCurrentScrollOverPage;
 
     @ViewDebug.ExportedProperty(category = "launcher")
     protected int mNextPage = INVALID_PAGE;
@@ -180,6 +182,7 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
 
         mScroller = new OverScroller(context, SCROLL);
         mCurrentPage = 0;
+        mCurrentScrollOverPage = 0;
 
         final ViewConfiguration configuration = ViewConfiguration.get(context);
         mTouchSlop = configuration.getScaledTouchSlop();
@@ -437,6 +440,7 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
         }
         int prevPage = overridePrevPage != INVALID_PAGE ? overridePrevPage : mCurrentPage;
         mCurrentPage = validateNewPage(currentPage);
+        mCurrentScrollOverPage = mCurrentPage;
         updateCurrentPageScroll();
         notifyPageSwitchListener(prevPage);
         invalidate();
@@ -557,9 +561,11 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
                 if (newPos < mMinScroll && oldPos >= mMinScroll) {
                     mEdgeGlowLeft.onAbsorb((int) mScroller.getCurrVelocity());
                     mScroller.abortAnimation();
+                    onEdgeAbsorbingScroll();
                 } else if (newPos > mMaxScroll && oldPos <= mMaxScroll) {
                     mEdgeGlowRight.onAbsorb((int) mScroller.getCurrVelocity());
                     mScroller.abortAnimation();
+                    onEdgeAbsorbingScroll();
                 }
             }
 
@@ -577,6 +583,7 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
             sendScrollAccessibilityEvent();
             int prevPage = mCurrentPage;
             mCurrentPage = validateNewPage(mNextPage);
+            mCurrentScrollOverPage = mCurrentPage;
             mNextPage = INVALID_PAGE;
             notifyPageSwitchListener(prevPage);
 
@@ -766,7 +773,8 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
                 childStart += primaryDimension + getChildGap();
 
                 // This makes sure that the space is added after the page, not after each panel
-                if (i % panelCount == panelCount - 1) {
+                int lastPanel = mIsRtl ? 0 : panelCount - 1;
+                if (i % panelCount == lastPanel) {
                     childStart += mPageSpacing;
                 }
             }
@@ -837,6 +845,7 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
     public void onViewRemoved(View child) {
         super.onViewRemoved(child);
         mCurrentPage = validateNewPage(mCurrentPage);
+        mCurrentScrollOverPage = mCurrentPage;
         dispatchPageCountChanged();
     }
 
@@ -1408,6 +1417,20 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
 
     protected void onNotSnappingToPageInFreeScroll() { }
 
+    /**
+     * Called when the view edges absorb part of the scroll. Subclasses can override this
+     * to provide custom behavior during animation.
+     */
+    protected void onEdgeAbsorbingScroll() {
+    }
+
+    /**
+     * Called when the current page closest to the center of the screen changes as part of the
+     * scroll. Subclasses can override this to provide custom behavior during scroll.
+     */
+    protected void onScrollOverPageChanged() {
+    }
+
     protected boolean shouldFlingForVelocity(int velocity) {
         float threshold = mAllowEasyFling ? mEasyFlingThresholdVelocity : mFlingThresholdVelocity;
         return Math.abs(velocity) > threshold;
@@ -1553,7 +1576,7 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
         return getDisplacementFromScreenCenter(childIndex, screenCenter);
     }
 
-    private int getScreenCenter(int primaryScroll) {
+    protected int getScreenCenter(int primaryScroll) {
         float primaryScale = mOrientationHandler.getPrimaryScale(this);
         float primaryPivot =  mOrientationHandler.getPrimaryValue(getPivotX(), getPivotY());
         int pageOrientationSize = mOrientationHandler.getMeasuredSize(this);
@@ -1689,6 +1712,15 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
             return true;
         }
         return mAllowOverScroll;
+    }
+
+    @Override
+    protected void onScrollChanged(int l, int t, int oldl, int oldt) {
+        int newDestinationPage = getDestinationPage();
+        if (newDestinationPage >= 0 && newDestinationPage != mCurrentScrollOverPage) {
+            mCurrentScrollOverPage = newDestinationPage;
+            onScrollOverPageChanged();
+        }
     }
 
     @Override

@@ -30,6 +30,7 @@
          determines how many thumbnails will be fetched in the background. -->
     <integer name="recentsThumbnailCacheSize">3</integer>
     <integer name="recentsIconCacheSize">12</integer>
+    <integer name="recentsScrollHapticMinGapMillis">20</integer>
 
     <!-- Assistant Gesture -->
     <integer name="assistant_gesture_min_time_threshold">200</integer>

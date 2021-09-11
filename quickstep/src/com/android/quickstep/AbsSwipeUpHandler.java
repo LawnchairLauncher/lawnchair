@@ -36,7 +36,6 @@ import static com.android.launcher3.util.DisplayController.getSingleFrameMs;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 import static com.android.launcher3.util.SystemUiController.UI_STATE_FULLSCREEN_TASK;
-import static com.android.launcher3.util.VibratorWrapper.OVERVIEW_HAPTIC;
 import static com.android.quickstep.GestureState.GestureEndTarget.HOME;
 import static com.android.quickstep.GestureState.GestureEndTarget.LAST_TASK;
 import static com.android.quickstep.GestureState.GestureEndTarget.NEW_TASK;
@@ -46,6 +45,7 @@ import static com.android.quickstep.GestureState.STATE_END_TARGET_SET;
 import static com.android.quickstep.GestureState.STATE_RECENTS_ANIMATION_CANCELED;
 import static com.android.quickstep.GestureState.STATE_RECENTS_SCROLLING_FINISHED;
 import static com.android.quickstep.MultiStateCallback.DEBUG_STATES;
+import static com.android.quickstep.util.VibratorWrapper.OVERVIEW_HAPTIC;
 import static com.android.quickstep.views.RecentsView.UPDATE_SYSUI_FLAGS_THRESHOLD;
 import static com.android.systemui.shared.system.ActivityManagerWrapper.CLOSE_SYSTEM_WINDOWS_REASON_RECENTS;
 import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.ACTIVITY_TYPE_HOME;
@@ -92,7 +92,6 @@ import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.tracing.InputConsumerProto;
 import com.android.launcher3.tracing.SwipeHandlerProto;
 import com.android.launcher3.util.TraceHelper;
-import com.android.launcher3.util.VibratorWrapper;
 import com.android.launcher3.util.WindowBounds;
 import com.android.quickstep.BaseActivityInterface.AnimationFactory;
 import com.android.quickstep.GestureState.GestureEndTarget;
@@ -112,6 +111,7 @@ import com.android.quickstep.util.SurfaceTransactionApplier;
 import com.android.quickstep.util.SwipePipToHomeAnimator;
 import com.android.quickstep.util.TaskViewSimulator;
 import com.android.quickstep.util.TransformParams;
+import com.android.quickstep.util.VibratorWrapper;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
 import com.android.systemui.shared.recents.model.ThumbnailData;
@@ -945,6 +945,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
                 mStateCallback.setState(STATE_SCALED_CONTROLLER_HOME | STATE_CAPTURE_SCREENSHOT);
                 // Notify swipe-to-home (recents animation) is finished
                 SystemUiProxy.INSTANCE.get(mContext).notifySwipeToHomeFinished();
+                LauncherSplitScreenListener.INSTANCE.getNoCreate().notifySwipingToHome();
                 break;
             case RECENTS:
                 mStateCallback.setState(STATE_SCALED_CONTROLLER_RECENTS | STATE_CAPTURE_SCREENSHOT
@@ -1805,8 +1806,13 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
                 mGestureState.updateLastStartedTaskId(taskId);
                 boolean hasTaskPreviouslyAppeared = mGestureState.getPreviouslyAppearedTaskIds()
                         .contains(taskId);
+                boolean isOldTaskSplit = LauncherSplitScreenListener.INSTANCE.getNoCreate()
+                        .getRunningSplitTaskIds().length > 0;
                 nextTask.launchTask(success -> {
                     resultCallback.accept(success);
+                    if (isOldTaskSplit) {
+                        SystemUiProxy.INSTANCE.getNoCreate().exitSplitScreen(taskId);
+                    }
                     if (success) {
                         if (hasTaskPreviouslyAppeared) {
                             onRestartPreviouslyAppearedTask();
