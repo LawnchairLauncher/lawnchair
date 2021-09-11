@@ -503,9 +503,11 @@ public class PortraitPagedViewHandler implements PagedOrientationHandler {
             if (dp.isLandscape) {
                 splitOffset.x = splitInfo.leftTopBounds.width() +
                         splitInfo.visualDividerBounds.width();
+                splitOffset.y = 0;
             } else {
                 splitOffset.y = splitInfo.leftTopBounds.height() +
                         splitInfo.visualDividerBounds.height();
+                splitOffset.x = 0;
             }
         }
     }

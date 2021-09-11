@@ -44,6 +44,8 @@ import com.android.launcher3.states.StateAnimationConfig;
 import com.android.systemui.shared.system.BlurUtils;
 import com.android.systemui.shared.system.WallpaperManagerCompat;
 
+import java.io.FileDescriptor;
+import java.io.PrintWriter;
 import java.util.function.Consumer;
 
 /**
@@ -137,6 +139,11 @@ public class DepthController implements StateHandler<LauncherState>,
      * @see android.service.wallpaper.WallpaperService.Engine#onZoomChanged(float)
      */
     private float mDepth;
+    /**
+     * Last blur value, in pixels, that was applied.
+     * For debugging purposes.
+     */
+    private int mCurrentBlur;
     /**
      * If we're launching and app and should not be blurring the screen for performance reasons.
      */
@@ -306,10 +313,10 @@ public class DepthController implements StateHandler<LauncherState>,
         if (supportsBlur) {
             boolean opaque = mLauncher.getScrimView().isFullyOpaque();
 
-            int blur = !mCrossWindowBlursEnabled || mBlurDisabledForAppLaunch
+            mCurrentBlur = !mCrossWindowBlursEnabled || mBlurDisabledForAppLaunch
                     ? 0 : (int) (depth * mMaxBlurRadius);
             SurfaceControl.Transaction transaction = new SurfaceControl.Transaction()
-                    .setBackgroundBlurRadius(mSurface, blur)
+                    .setBackgroundBlurRadius(mSurface, mCurrentBlur)
                     .setOpaque(mSurface, opaque);
 
             // Set early wake-up flags when we know we're executing an expensive operation, this way
@@ -347,5 +354,19 @@ public class DepthController implements StateHandler<LauncherState>,
         });
         mwAnimation.setAutoCancel(true);
         mwAnimation.start();
+    }
+
+    public void dump(String prefix, PrintWriter writer) {
+        writer.println(prefix + this.getClass().getSimpleName());
+        writer.println(prefix + "\tmMaxBlurRadius=" + mMaxBlurRadius);
+        writer.println(prefix + "\tmCrossWindowBlursEnabled=" + mCrossWindowBlursEnabled);
+        writer.println(prefix + "\tmSurface=" + mSurface);
+        writer.println(prefix + "\tmOverlayScrollProgress=" + mOverlayScrollProgress);
+        writer.println(prefix + "\tmDepth=" + mDepth);
+        writer.println(prefix + "\tmCurrentBlur=" + mCurrentBlur);
+        writer.println(prefix + "\tmBlurDisabledForAppLaunch=" + mBlurDisabledForAppLaunch);
+        writer.println(prefix + "\tmInEarlyWakeUp=" + mInEarlyWakeUp);
+        writer.println(prefix + "\tmIgnoreStateChangesDuringMultiWindowAnimation="
+                + mIgnoreStateChangesDuringMultiWindowAnimation);
     }
 }
