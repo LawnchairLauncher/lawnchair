@@ -90,6 +90,8 @@ import com.android.systemui.unfold.UnfoldTransitionFactory;
 import com.android.systemui.unfold.UnfoldTransitionProgressProvider;
 import com.android.systemui.unfold.config.UnfoldTransitionConfig;
 
+import java.io.FileDescriptor;
+import java.io.PrintWriter;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -617,6 +619,14 @@ public abstract class BaseQuickstepLauncher extends Launcher
         if ((flags & CHANGE_ACTIVE_SCREEN) != 0 && ENABLE_QUICKSTEP_LIVE_TILE.get()) {
             RecentsView recentsView = getOverviewPanel();
             recentsView.finishRecentsAnimation(/* toRecents= */ true, null);
+        }
+    }
+
+    @Override
+    public void dump(String prefix, FileDescriptor fd, PrintWriter writer, String[] args) {
+        super.dump(prefix, fd, writer, args);
+        if (mDepthController != null) {
+            mDepthController.dump(prefix, writer);
         }
     }
 }
