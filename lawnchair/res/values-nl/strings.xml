@@ -119,8 +119,8 @@
     <string name="font_weight_light">Licht</string>
     <string name="font_weight_regular">Normaal</string>
     <string name="font_weight_medium">Medium</string>
-    <string name="font_weight_semi_bold">Halfdik</string>
-    <string name="font_weight_bold">Dik</string>
-    <string name="font_weight_extra_bold">Extradik</string>
+    <string name="font_weight_semi_bold">Half dikgedrukt</string>
+    <string name="font_weight_bold">Dikgedrukt</string>
+    <string name="font_weight_extra_bold">Extra dikgedrukt</string>
     <string name="font_weight_extra_black">Zwart</string>
 </resources>
