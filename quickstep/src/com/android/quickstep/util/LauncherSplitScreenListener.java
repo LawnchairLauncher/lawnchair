@@ -44,8 +44,6 @@ public class LauncherSplitScreenListener extends ISplitScreenListener.Stub {
             if (frozen) {
                 mPersistentGroupedIds = getRunningSplitTaskIds();
             } else {
-                // TODO(b/198310766) Need to also explicitly exit split screen if
-                //  we're not currently viewing split screened apps
                 mPersistentGroupedIds = EMPTY_ARRAY;
             }
         }
@@ -53,8 +51,11 @@ public class LauncherSplitScreenListener extends ISplitScreenListener.Stub {
 
     /**
      * Gets set to current split taskIDs whenever the task list is frozen, and set to empty array
-     * whenever task list unfreezes.
-     * When not null, this indicates that we need to load a GroupedTaskView as the most recent
+     * whenever task list unfreezes. This also gets set to empty array whenever the user swipes to
+     * home - in that case the task list does not unfreeze immediately after the gesture, so it's
+     * done via {@link #notifySwipingToHome()}.
+     *
+     * When not empty, this indicates that we need to load a GroupedTaskView as the most recent
      * page, so user can quickswitch back to a grouped task.
      */
     private int[] mPersistentGroupedIds;
@@ -138,6 +139,18 @@ public class LauncherSplitScreenListener extends ISplitScreenListener.Stub {
         } else {
             mSideStagePosition.taskId = taskId;
         }
+    }
+
+    /** Notifies SystemUi to remove any split screen state */
+    public void notifySwipingToHome() {
+        boolean hasSplitTasks = LauncherSplitScreenListener.INSTANCE.getNoCreate()
+                .getPersistentSplitIds().length > 0;
+        if (!hasSplitTasks) {
+            return;
+        }
+
+        SystemUiProxy.INSTANCE.getNoCreate().exitSplitScreen(-1);
+        mPersistentGroupedIds = EMPTY_ARRAY;
     }
 
     private void resetTaskId(StagedSplitTaskPosition taskPosition) {

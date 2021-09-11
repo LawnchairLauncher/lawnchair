@@ -338,15 +338,17 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         int paddingBottom = grid.cellLayoutBottomPaddingPx;
 
         int panelCount = getPanelCount();
+        int rightPanelModulus = mIsRtl ? 0 : panelCount - 1;
+        int leftPanelModulus = mIsRtl ? panelCount - 1 : 0;
         int numberOfScreens = mScreenOrder.size();
         for (int i = 0; i < numberOfScreens; i++) {
             int paddingLeft = paddingLeftRight;
             int paddingRight = paddingLeftRight;
             if (panelCount > 1) {
-                if (i % panelCount == 0) { // left side panel
+                if (i % panelCount == leftPanelModulus) {
                     paddingLeft = paddingLeftRight;
                     paddingRight = 0;
-                } else if (i % panelCount == panelCount - 1) { // right side panel
+                } else if (i % panelCount == rightPanelModulus) {
                     paddingLeft = 0;
                     paddingRight = paddingLeftRight;
                 } else { // middle panel
@@ -857,18 +859,13 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         mWorkspaceScreens.remove(emptyScreenId);
         mScreenOrder.removeValue(emptyScreenId);
 
-        int newScreenId = LauncherSettings.Settings.call(getContext().getContentResolver(),
-                LauncherSettings.Settings.METHOD_NEW_SCREEN_ID)
-                .getInt(LauncherSettings.Settings.EXTRA_VALUE);
-
-
-        // When two panel home is enabled and the last page (the page on the right) doesn't
-        // have any items, then Launcher database doesn't know about this page because it was added
-        // by Launcher::bindAddScreens but wasn't inserted into the database. LauncherSettings's
-        // generate new screen ID method will return the ID for the left page,
-        // so we need to increment it.
-        if (isTwoPanelEnabled() && emptyScreenId == EXTRA_EMPTY_SCREEN_ID && newScreenId % 2 == 1) {
-            newScreenId++;
+        int newScreenId = -1;
+        // Launcher database isn't aware of empty pages that are already bound, so we need to
+        // skip those IDs manually.
+        while (newScreenId == -1 || mWorkspaceScreens.containsKey(newScreenId)) {
+            newScreenId = LauncherSettings.Settings.call(getContext().getContentResolver(),
+                    LauncherSettings.Settings.METHOD_NEW_SCREEN_ID)
+                    .getInt(LauncherSettings.Settings.EXTRA_VALUE);
         }
 
         mWorkspaceScreens.put(newScreenId, cl);
@@ -2453,21 +2450,32 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         }
 
         int nextPage = getNextPage();
-        if (layout == null && !isPageInTransition()) {
-            layout = verifyInsidePage(nextPage + (mIsRtl ? 1 : -1), Math.min(centerX, d.x), d.y);
+        IntSet pageIndexesToVerify = IntSet.wrap(nextPage - 1, nextPage + 1);
+        if (isTwoPanelEnabled()) {
+            // If two panel is enabled, users can also drag items to nextPage + 2
+            pageIndexesToVerify.add(nextPage + 2);
         }
 
-        if (layout == null && !isPageInTransition()) {
-            layout = verifyInsidePage(nextPage + (mIsRtl ? -1 : 1), Math.max(centerX, d.x), d.y);
+        int touchX = (int) Math.min(centerX, d.x);
+        int touchY = d.y;
+
+        // Go through the pages and check if the dragged item is inside one of them
+        for (int pageIndex : pageIndexesToVerify) {
+            if (layout != null || isPageInTransition()) {
+                break;
+            }
+            layout = verifyInsidePage(pageIndex, touchX, touchY);
         }
 
-        // If two panel is enabled, users can also drag items to currentPage + 2
-        if (isTwoPanelEnabled() && layout == null && !isPageInTransition()) {
-            layout = verifyInsidePage(nextPage + (mIsRtl ? -2 : 2), Math.max(centerX, d.x), d.y);
-        }
-
-        // Always pick the current page.
+        // If the dragged item isn't located in one of the pages above, the icon will stay on the
+        // current screen. For two panel pick the closest panel on the current screen,
+        // on one panel just choose the current page.
         if (layout == null && nextPage >= 0 && nextPage < getPageCount()) {
+            if (isTwoPanelEnabled()) {
+                nextPage = getScreenCenter(getScrollX()) > touchX
+                        ? (mIsRtl ? nextPage + 1 : nextPage) // left side
+                        : (mIsRtl ? nextPage : nextPage + 1); // right side
+            }
             layout = (CellLayout) getChildAt(nextPage);
         }
         if (layout != mDragTargetLayout) {
