@@ -17,6 +17,7 @@ package com.android.launcher3.allapps;
 
 import static com.android.launcher3.LauncherState.ALL_APPS;
 import static com.android.launcher3.LauncherState.ALL_APPS_CONTENT;
+import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.anim.Interpolators.DEACCEL_1_7;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.anim.PropertySetter.NO_ANIM_PROPERTY_SETTER;
@@ -28,6 +29,7 @@ import android.animation.Animator;
 import android.animation.Animator.AnimatorListener;
 import android.animation.ObjectAnimator;
 import android.util.FloatProperty;
+import android.view.HapticFeedbackConstants;
 import android.view.View;
 import android.view.animation.Interpolator;
 
@@ -168,6 +170,11 @@ public class AllAppsTransitionController
         builder.add(anim);
 
         setAlphas(toState, config, builder);
+
+        if (ALL_APPS.equals(toState) && mLauncher.isInState(NORMAL)) {
+            mLauncher.getAppsView().performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY,
+                    HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
+        }
     }
 
     public Animator createSpringAnimation(float... progressValues) {
