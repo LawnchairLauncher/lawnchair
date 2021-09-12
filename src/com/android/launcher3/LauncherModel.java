@@ -126,10 +126,12 @@ public class LauncherModel extends LauncherApps.Callback implements InstallSessi
         }
     };
 
-    LauncherModel(Context context, LauncherAppState app, IconCache iconCache, AppFilter appFilter) {
+    LauncherModel(Context context, LauncherAppState app, IconCache iconCache, AppFilter appFilter,
+            boolean isPrimaryInstance) {
         mApp = app;
         mBgAllAppsList = new AllAppsList(iconCache, appFilter);
-        mModelDelegate = ModelDelegate.newInstance(context, app, mBgAllAppsList, mBgDataModel);
+        mModelDelegate = ModelDelegate.newInstance(context, app, mBgAllAppsList, mBgDataModel,
+                isPrimaryInstance);
     }
 
     public ModelDelegate getModelDelegate() {
