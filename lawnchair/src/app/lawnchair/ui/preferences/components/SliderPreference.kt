@@ -69,8 +69,14 @@ fun SliderPreference(
         onDispose { }
     }
 
-    PreferenceTemplate(height = 76.dp, showDivider = showDivider) {
-        Column(modifier = Modifier.fillMaxHeight(), verticalArrangement = Arrangement.Center) {
+    PreferenceTemplate(
+        height = 76.dp,
+        showDivider = showDivider
+    ) {
+        Column(
+            modifier = Modifier.fillMaxHeight(),
+            verticalArrangement = Arrangement.Center
+        ) {
             Spacer(modifier = Modifier.requiredHeight(2.dp))
             Row(
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -90,11 +96,7 @@ fun SliderPreference(
                 ) {
                     val value = snapSliderValue(valueRange.start, sliderValue, step)
                     Text(
-                        text = if (showAsPercentage) {
-                            "${(value * 100).roundToInt()}%"
-                        } else {
-                            "${value.roundToInt()}"
-                        }
+                        text = if (showAsPercentage) "${(value * 100).roundToInt()}%" else "${value.roundToInt()}"
                     )
                 }
             }
@@ -107,7 +109,7 @@ fun SliderPreference(
                 steps = getSteps(valueRange, step),
                 modifier = Modifier
                     .height(24.dp)
-                    .padding(start = 10.dp, end = 10.dp)
+                    .padding(horizontal = 10.dp)
             )
         }
     }
