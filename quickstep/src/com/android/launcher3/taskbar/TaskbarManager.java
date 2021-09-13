@@ -24,6 +24,7 @@ import static com.android.launcher3.util.DisplayController.CHANGE_SUPPORTED_BOUN
 
 import android.content.ComponentCallbacks;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.hardware.display.DisplayManager;
@@ -41,6 +42,7 @@ import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.DisplayController.Info;
 import com.android.launcher3.util.SettingsCache;
+import com.android.launcher3.util.SimpleBroadcastReceiver;
 import com.android.quickstep.SysUINavigationMode;
 import com.android.quickstep.SysUINavigationMode.Mode;
 import com.android.quickstep.SystemUiProxy;
@@ -62,6 +64,7 @@ public class TaskbarManager implements DisplayController.DisplayInfoChangeListen
     private final TaskbarNavButtonController mNavButtonController;
     private final SettingsCache.OnChangeListener mUserSetupCompleteListener;
     private final ComponentCallbacks mComponentCallbacks;
+    private final SimpleBroadcastReceiver mShutdownReceiver;
 
     // The source for this provider is set when Launcher is available
     private final ScopedUnfoldTransitionProgressProvider mUnfoldProgressProvider =
@@ -103,12 +106,14 @@ public class TaskbarManager implements DisplayController.DisplayInfoChangeListen
             @Override
             public void onLowMemory() { }
         };
+        mShutdownReceiver = new SimpleBroadcastReceiver(i -> destroyExistingTaskbar());
 
         mDisplayController.addChangeListener(this);
         mSysUINavigationMode.addModeChangeListener(this);
         SettingsCache.INSTANCE.get(mContext).register(USER_SETUP_COMPLETE_URI,
                 mUserSetupCompleteListener);
         mContext.registerComponentCallbacks(mComponentCallbacks);
+        mShutdownReceiver.register(mContext, Intent.ACTION_SHUTDOWN);
 
         recreateTaskbar();
     }
@@ -231,6 +236,7 @@ public class TaskbarManager implements DisplayController.DisplayInfoChangeListen
         SettingsCache.INSTANCE.get(mContext).unregister(USER_SETUP_COMPLETE_URI,
                 mUserSetupCompleteListener);
         mContext.unregisterComponentCallbacks(mComponentCallbacks);
+        mContext.unregisterReceiver(mShutdownReceiver);
     }
 
     public @Nullable TaskbarActivityContext getCurrentActivityContext() {
