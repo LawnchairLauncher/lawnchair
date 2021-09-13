@@ -17,6 +17,7 @@ import app.lawnchair.ui.util.portal.Portal
 import app.lawnchair.util.BackHandler
 import com.google.accompanist.insets.LocalWindowInsets
 import kotlinx.coroutines.launch
+import java.lang.Integer.max
 
 @ExperimentalMaterialApi
 @Composable
@@ -53,7 +54,8 @@ fun BottomSheet(
 
 @Composable
 fun StatusBarOffset(content: @Composable () -> Unit) {
-    val statusBarHeight = LocalWindowInsets.current.statusBars.top
+    val windowInsets = LocalWindowInsets.current
+    val statusBarHeight = max(windowInsets.statusBars.top, windowInsets.displayCutout.top)
     val topOffset = statusBarHeight + with(LocalDensity.current) { 8.dp.roundToPx() }
 
     Box(
