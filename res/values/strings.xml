@@ -67,17 +67,15 @@
          button in a dialog. [CHAR_LIMIT=none] -->
     <string name="added_to_home_screen_accessibility_text"><xliff:g id="widget_name" example="Calendar month view">%1$s</xliff:g> widget added to home screen</string>
     <!-- Label for showing the number of widgets an app has in the full widgets picker.
-         [CHAR_LIMIT=25] -->
-    <plurals name="widgets_count">
-        <item quantity="one"><xliff:g id="widgets_count" example="1">%1$d</xliff:g> widget</item>
-        <item quantity="other"><xliff:g id="widgets_count" example="2">%1$d</xliff:g> widgets</item>
-    </plurals>
+         [CHAR_LIMIT=25][ICU SYNTAX] -->
+    <string name="widgets_count">
+        {count, plural, =1{# widget} other{# widgets}}
+    </string>
     <!-- Label for showing the number of shortcut an app has in the full widgets picker.
-         [CHAR_LIMIT=25] -->
-    <plurals name="shortcuts_count">
-        <item quantity="one"><xliff:g id="shortcuts_count" example="1">%1$d</xliff:g> shortcut</item>
-        <item quantity="other"><xliff:g id="shortcuts_count" example="2">%1$d</xliff:g> shortcuts</item>
-    </plurals>
+         [CHAR_LIMIT=25][ICU SYNTAX] -->
+    <string name="shortcuts_count">
+        {count, plural, =1{# shortcut} other{# shortcuts}}
+    </string>
     <!-- Label for showing both the number of widgets and shortcuts an app has in the full widgets
          picker. [CHAR_LIMIT=50] -->
     <string name="widgets_and_shortcuts_count"><xliff:g id="widgets_count" example="5 widgets">%1$s</xliff:g>, <xliff:g id="shortcuts_count" example="1 shortcut">%2$s</xliff:g></string>
@@ -212,11 +210,13 @@
     <!-- Accessibility -->
     <!-- The format string for when an app is temporarily disabled. -->
     <string name="disabled_app_label">Disabled <xliff:g id="app_name" example="Messenger">%1$s</xliff:g></string>
-    <!-- The format string for when an app has a notification dot (meaning it has associated notifications). -->
-    <plurals name="dotted_app_label">
-        <item quantity="one"><xliff:g id="app_name" example="Messenger">%1$s</xliff:g>, has <xliff:g id="notification_count" example="1">%2$d</xliff:g> notification</item>
-        <item quantity="other"><xliff:g id="app_name" example="Messenger">%1$s</xliff:g>, has <xliff:g id="notification_count" example="3">%2$d</xliff:g> notifications</item>
-    </plurals>
+    <!-- The format string for when an app has a notification dot (meaning it has associated notifications). [ICU_FORMAT]-->
+    <string name="dotted_app_label">
+        {count, plural, offset:1
+            =1      {{app_name} has # notification}
+            other   {{app_name} has # notifications}
+        }
+    </string>
     <skip />
 
     <!-- The format string for default page scroll text [CHAR_LIMIT=none] -->

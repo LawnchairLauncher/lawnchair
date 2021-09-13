@@ -39,6 +39,7 @@ import com.android.launcher3.icons.PlaceHolderIconDrawable;
 import com.android.launcher3.icons.cache.HandlerRunnable;
 import com.android.launcher3.model.data.ItemInfoWithIcon;
 import com.android.launcher3.model.data.PackageItemInfo;
+import com.android.launcher3.util.PluralMessageFormat;
 import com.android.launcher3.views.ActivityContext;
 import com.android.launcher3.widget.model.WidgetsListHeaderEntry;
 import com.android.launcher3.widget.model.WidgetsListSearchHeaderEntry;
@@ -217,18 +218,18 @@ public final class WidgetsListHeader extends LinearLayout implements ItemInfoUpd
 
         String subtitle;
         if (entry.widgetsCount > 0 && entry.shortcutsCount > 0) {
-            String widgetsCount = resources.getQuantityString(R.plurals.widgets_count,
-                    entry.widgetsCount, entry.widgetsCount);
-            String shortcutsCount = resources.getQuantityString(R.plurals.shortcuts_count,
-                    entry.shortcutsCount, entry.shortcutsCount);
+            String widgetsCount = PluralMessageFormat.getIcuPluralString(getContext(),
+                    R.string.widgets_count, entry.widgetsCount);
+            String shortcutsCount = PluralMessageFormat.getIcuPluralString(getContext(),
+                    R.string.shortcuts_count, entry.shortcutsCount);
             subtitle = resources.getString(R.string.widgets_and_shortcuts_count, widgetsCount,
                     shortcutsCount);
         } else if (entry.widgetsCount > 0) {
-            subtitle = resources.getQuantityString(R.plurals.widgets_count,
-                    entry.widgetsCount, entry.widgetsCount);
+            subtitle = PluralMessageFormat.getIcuPluralString(getContext(),
+                    R.string.widgets_count, entry.widgetsCount);
         } else {
-            subtitle = resources.getQuantityString(R.plurals.shortcuts_count,
-                    entry.shortcutsCount, entry.shortcutsCount);
+            subtitle = PluralMessageFormat.getIcuPluralString(getContext(),
+                    R.string.shortcuts_count, entry.shortcutsCount);
         }
         mSubtitle.setText(subtitle);
         mSubtitle.setVisibility(VISIBLE);
