@@ -80,7 +80,7 @@ public abstract class SwipeUpAnimationLogic implements
     protected boolean mIsSwipeForStagedSplit;
 
     public SwipeUpAnimationLogic(Context context, RecentsAnimationDeviceState deviceState,
-            GestureState gestureState, TransformParams transformParams) {
+            GestureState gestureState) {
         mContext = context;
         mDeviceState = deviceState;
         mGestureState = gestureState;
