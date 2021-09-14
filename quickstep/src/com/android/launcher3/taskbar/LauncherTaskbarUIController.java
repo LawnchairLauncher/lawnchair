@@ -128,7 +128,7 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
 
     @Override
     protected boolean isTaskbarTouchable() {
-        return !isAnimatingToLauncher() && !mControllers.taskbarStashController.isStashed();
+        return !isAnimatingToLauncher();
     }
 
     private boolean isAnimatingToLauncher() {
