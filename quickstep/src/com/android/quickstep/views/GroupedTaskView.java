@@ -31,6 +31,7 @@ public class GroupedTaskView extends TaskView {
     private Task mSecondaryTask;
     private TaskThumbnailView mSnapshotView2;
     private CancellableTask mThumbnailLoadRequest2;
+    private SplitConfigurationOptions.StagedSplitBounds mSplitBoundsConfig;
 
     public GroupedTaskView(Context context) {
         super(context);
@@ -57,7 +58,7 @@ public class GroupedTaskView extends TaskView {
         mTaskIdContainer[1] = secondary.key.id;
         mTaskIdAttributeContainer[1] = new TaskIdAttributeContainer(secondary, mSnapshotView2);
         mSnapshotView2.bind(secondary);
-        adjustThumbnailBoundsForSplit(splitBoundsConfig, orientedState);
+        mSplitBoundsConfig = splitBoundsConfig;
     }
 
     @Override
@@ -121,23 +122,26 @@ public class GroupedTaskView extends TaskView {
     public void onRecycle() {
         super.onRecycle();
         mSnapshotView2.setThumbnail(mSecondaryTask, null);
+        mSplitBoundsConfig = null;
+    }
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        int widthSize = MeasureSpec.getSize(widthMeasureSpec);
+        int heightSize = MeasureSpec.getSize(heightMeasureSpec);
+        setMeasuredDimension(widthSize, heightSize);
+        if (mSplitBoundsConfig == null || mSnapshotView == null || mSnapshotView2 == null) {
+            return;
+        }
+        getPagedOrientationHandler().measureGroupedTaskViewThumbnailBounds(mSnapshotView,
+                mSnapshotView2, widthSize, heightSize, mSplitBoundsConfig,
+                mActivity.getDeviceProfile());
     }
 
     @Override
     public void setOverlayEnabled(boolean overlayEnabled) {
         super.setOverlayEnabled(overlayEnabled);
         mSnapshotView2.setOverlayEnabled(overlayEnabled);
-    }
-
-    private void adjustThumbnailBoundsForSplit(
-            SplitConfigurationOptions.StagedSplitBounds splitBoundsConfig,
-            RecentsOrientedState orientedState) {
-        if (splitBoundsConfig == null) {
-            return;
-        }
-
-        orientedState.getOrientationHandler().setGroupedTaskViewThumbnailBounds(
-                mSnapshotView, mSnapshotView2, this, splitBoundsConfig,
-                mActivity.getDeviceProfile());
     }
 }

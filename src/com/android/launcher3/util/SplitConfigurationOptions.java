@@ -93,7 +93,13 @@ public final class SplitConfigurationOptions {
         // This class is orientation-agnostic, so we compute both for later use
         public final float topTaskPercent;
         public final float leftTaskPercent;
-
+        /**
+         * If {@code true}, that means at the time of creation of this object, the
+         * split-screened apps were vertically stacked. This is useful in scenarios like
+         * rotation where the bounds won't change, but this variable can indicate what orientation
+         * the bounds were originally in
+         */
+        public final boolean appsStackedVertically;
 
         public StagedSplitBounds(Rect leftTopBounds, Rect rightBottomBounds) {
             this.leftTopBounds = leftTopBounds;
@@ -103,10 +109,12 @@ public final class SplitConfigurationOptions {
                 // vertical apps, horizontal divider
                 this.visualDividerBounds = new Rect(leftTopBounds.left, leftTopBounds.bottom,
                         leftTopBounds.right, rightBottomBounds.top);
+                appsStackedVertically = true;
             } else {
                 // horizontal apps, vertical divider
                 this.visualDividerBounds = new Rect(leftTopBounds.right, leftTopBounds.top,
                         rightBottomBounds.left, leftTopBounds.bottom);
+                appsStackedVertically = false;
             }
 
             leftTaskPercent = this.leftTopBounds.width() / (float) rightBottomBounds.right;
