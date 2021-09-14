@@ -270,7 +270,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
             TaskAnimationManager taskAnimationManager, GestureState gestureState,
             long touchTimeMs, boolean continuingLastGesture,
             InputConsumerController inputConsumer) {
-        super(context, deviceState, gestureState, new TransformParams());
+        super(context, deviceState, gestureState);
         mActivityInterface = gestureState.getActivityInterface();
         mActivityInitListener = mActivityInterface.createActivityInitListener(this::onActivityInit);
         mInputConsumerProxy =
