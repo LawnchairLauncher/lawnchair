@@ -50,7 +50,6 @@ import android.view.ViewConfiguration;
 import androidx.annotation.UiThread;
 
 import com.android.launcher3.R;
-import com.android.launcher3.Utilities;
 import com.android.launcher3.testing.TestLogging;
 import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.tracing.InputConsumerProto;
@@ -357,9 +356,6 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
             }
             case ACTION_CANCEL:
             case ACTION_UP: {
-                if (Utilities.IS_RUNNING_IN_TEST_HARNESS) {
-                    Log.d(TestProtocol.L3_SWIPE_TO_HOME, "1");
-                }
                 if (DEBUG_FAILED_QUICKSWITCH && !mPassedWindowMoveSlop) {
                     float displacementX = mLastPos.x - mDownPos.x;
                     float displacementY = mLastPos.y - mDownPos.y;
@@ -413,9 +409,6 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
      * the animation can still be running.
      */
     private void finishTouchTracking(MotionEvent ev) {
-        if (Utilities.IS_RUNNING_IN_TEST_HARNESS) {
-            Log.d(TestProtocol.L3_SWIPE_TO_HOME, "2");
-        }
         Object traceToken = TraceHelper.INSTANCE.beginSection(UP_EVT,
                 FLAG_CHECK_FOR_RACE_CONDITIONS);
 
