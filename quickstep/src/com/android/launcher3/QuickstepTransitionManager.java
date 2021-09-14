@@ -1307,7 +1307,8 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
         }
 
         final RectF startRect = new RectF(0, 0, mDeviceProfile.widthPx, mDeviceProfile.heightPx);
-        RectFSpringAnim anim = new RectFSpringAnim(startRect, targetRect, mLauncher);
+        RectFSpringAnim anim = new RectFSpringAnim(startRect, targetRect, mLauncher,
+                mDeviceProfile);
 
         // Hook up floating views to the closing window animators.
         if (floatingIconView != null) {
