@@ -35,7 +35,6 @@ import android.view.MotionEvent;
 import android.view.Surface;
 import android.view.VelocityTracker;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.accessibility.AccessibilityEvent;
 import android.widget.LinearLayout;
 
@@ -513,35 +512,46 @@ public class PortraitPagedViewHandler implements PagedOrientationHandler {
     }
 
     @Override
-    public void setGroupedTaskViewThumbnailBounds(View mSnapshotView, View mSnapshotView2,
-            View taskParent, SplitConfigurationOptions.StagedSplitBounds splitBoundsConfig,
-            DeviceProfile dp) {
+    public void measureGroupedTaskViewThumbnailBounds(View primarySnapshot, View secondarySnapshot,
+            int parentWidth, int parentHeight,
+            SplitConfigurationOptions.StagedSplitBounds splitBoundsConfig, DeviceProfile dp) {
         int spaceAboveSnapshot = dp.overviewTaskThumbnailTopMarginPx;
-        int totalThumbnailHeight = taskParent.getHeight() - spaceAboveSnapshot;
-        int totalThumbnailWidth = taskParent.getWidth();
-        int dividerBar = (dp.isLandscape ?
-                splitBoundsConfig.visualDividerBounds.width() :
-                splitBoundsConfig.visualDividerBounds.height());
-        ViewGroup.LayoutParams primaryLp = mSnapshotView.getLayoutParams();
-        ViewGroup.LayoutParams secondaryLp = mSnapshotView2.getLayoutParams();
-
+        int totalThumbnailHeight = parentHeight - spaceAboveSnapshot;
+        int dividerBar = (splitBoundsConfig.appsStackedVertically ?
+                splitBoundsConfig.visualDividerBounds.height() :
+                splitBoundsConfig.visualDividerBounds.width());
+        int primarySnapshotHeight;
+        int primarySnapshotWidth;
+        int secondarySnapshotHeight;
+        int secondarySnapshotWidth;
+        float taskPercent = splitBoundsConfig.appsStackedVertically ?
+                splitBoundsConfig.topTaskPercent : splitBoundsConfig.leftTaskPercent;
         if (dp.isLandscape) {
-            primaryLp.height = totalThumbnailHeight;
-            primaryLp.width = (int) (totalThumbnailWidth * splitBoundsConfig.leftTaskPercent);
+            primarySnapshotHeight = totalThumbnailHeight;
+            primarySnapshotWidth = (int) (parentWidth * taskPercent);
 
-            secondaryLp.height = totalThumbnailHeight;
-            secondaryLp.width = totalThumbnailWidth - primaryLp.width - dividerBar;
-            mSnapshotView2.setTranslationX(primaryLp.width + dividerBar);
-            mSnapshotView2.setTranslationY(spaceAboveSnapshot);
+            secondarySnapshotHeight = totalThumbnailHeight;
+            secondarySnapshotWidth = parentWidth - primarySnapshotWidth - dividerBar;
+            int translationX = primarySnapshotWidth + dividerBar;
+            secondarySnapshot.setTranslationX(translationX);
+            secondarySnapshot.setTranslationY(spaceAboveSnapshot);
         } else {
-            primaryLp.width = totalThumbnailWidth;
-            primaryLp.height = (int) (totalThumbnailHeight * splitBoundsConfig.topTaskPercent);
+            primarySnapshotWidth = parentWidth;
+            primarySnapshotHeight = (int) (totalThumbnailHeight * taskPercent);
 
-            secondaryLp.width = totalThumbnailWidth;
-            secondaryLp.height = totalThumbnailHeight - primaryLp.height - dividerBar;
-            mSnapshotView2.setTranslationY(primaryLp.height + spaceAboveSnapshot + dividerBar);
-            mSnapshotView2.setTranslationX(0);
+            secondarySnapshotWidth = parentWidth;
+            secondarySnapshotHeight = totalThumbnailHeight - primarySnapshotHeight - dividerBar;
+            int translationY = primarySnapshotHeight + spaceAboveSnapshot + dividerBar;
+            secondarySnapshot.setTranslationY(translationY);
+            secondarySnapshot.setTranslationX(0);
         }
+        primarySnapshot.measure(
+                View.MeasureSpec.makeMeasureSpec(primarySnapshotWidth, View.MeasureSpec.EXACTLY),
+                View.MeasureSpec.makeMeasureSpec(primarySnapshotHeight, View.MeasureSpec.EXACTLY));
+        secondarySnapshot.measure(
+                View.MeasureSpec.makeMeasureSpec(secondarySnapshotWidth, View.MeasureSpec.EXACTLY),
+                View.MeasureSpec.makeMeasureSpec(secondarySnapshotHeight,
+                        View.MeasureSpec.EXACTLY));
     }
 
     @Override

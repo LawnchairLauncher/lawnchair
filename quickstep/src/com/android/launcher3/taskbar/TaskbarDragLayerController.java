@@ -135,8 +135,9 @@ public class TaskbarDragLayerController {
             } else if (!mControllers.uiController.isTaskbarTouchable()) {
                 // Let touches pass through us.
                 insetsInfo.setTouchableInsets(TOUCHABLE_INSETS_REGION);
-            } else if (mControllers.taskbarViewController.areIconsVisible()) {
-                // Buttons are visible, take over the full taskbar area
+            } else if (mControllers.taskbarViewController.areIconsVisible()
+                    || AbstractFloatingView.getOpenView(mActivity, TYPE_ALL) != null) {
+                // Taskbar has some touchable elements, take over the full taskbar area
                 insetsInfo.setTouchableInsets(mActivity.isTaskbarWindowFullscreen()
                         ? TOUCHABLE_INSETS_FRAME : TOUCHABLE_INSETS_CONTENT);
             } else {

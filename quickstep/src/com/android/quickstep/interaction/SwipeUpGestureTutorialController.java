@@ -50,6 +50,7 @@ import com.android.quickstep.AnimatedFloat;
 import com.android.quickstep.GestureState;
 import com.android.quickstep.OverviewComponentObserver;
 import com.android.quickstep.RecentsAnimationDeviceState;
+import com.android.quickstep.RemoteTargetGluer;
 import com.android.quickstep.SwipeUpAnimationLogic;
 import com.android.quickstep.SwipeUpAnimationLogic.RunningWindowAnim;
 import com.android.quickstep.util.AppCloseConfig;
@@ -254,7 +255,9 @@ abstract class SwipeUpGestureTutorialController extends TutorialController {
 
         ViewSwipeUpAnimation(Context context, RecentsAnimationDeviceState deviceState,
                              GestureState gestureState) {
-            super(context, deviceState, gestureState, new FakeTransformParams());
+            super(context, deviceState, gestureState);
+            mRemoteTargetHandles[0] = new RemoteTargetGluer.RemoteTargetHandle(
+                    mRemoteTargetHandles[0].getTaskViewSimulator(), new FakeTransformParams());
         }
 
         void initDp(DeviceProfile dp) {
