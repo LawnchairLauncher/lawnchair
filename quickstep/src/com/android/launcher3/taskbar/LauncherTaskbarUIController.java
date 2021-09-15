@@ -16,6 +16,8 @@
 package com.android.launcher3.taskbar;
 
 import static com.android.launcher3.LauncherState.HOTSEAT_ICONS;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASKBAR_LONGPRESS_HIDE;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASKBAR_LONGPRESS_SHOW;
 import static com.android.launcher3.taskbar.TaskbarStashController.FLAG_IN_APP;
 import static com.android.launcher3.taskbar.TaskbarViewController.ALPHA_INDEX_HOME;
 
@@ -36,7 +38,10 @@ import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimatorListeners;
 import com.android.launcher3.config.FeatureFlags;
+import com.android.launcher3.logging.InstanceId;
+import com.android.launcher3.logging.InstanceIdSequence;
 import com.android.launcher3.model.data.ItemInfoWithIcon;
+import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.util.MultiValueAlpha;
 import com.android.launcher3.util.MultiValueAlpha.AlphaProperty;
 import com.android.launcher3.util.OnboardingPrefs;
@@ -262,6 +267,11 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
     @Override
     protected void onStashedInAppChanged() {
         onStashedInAppChanged(mLauncher.getDeviceProfile());
+        if (mControllers.taskbarStashController.isStashedInApp()) {
+            mContext.getStatsLogManager().logger().log(LAUNCHER_TASKBAR_LONGPRESS_HIDE);
+        } else {
+            mContext.getStatsLogManager().logger().log(LAUNCHER_TASKBAR_LONGPRESS_SHOW);
+        }
     }
 
     private void onStashedInAppChanged(DeviceProfile deviceProfile) {
@@ -304,6 +314,12 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
         }
 
         mControllers.taskbarEduController.hideEdu();
+    }
+
+    @Override
+    public void onTaskbarIconLaunched(WorkspaceItemInfo item) {
+        InstanceId instanceId = new InstanceIdSequence().newInstanceId();
+        mLauncher.logAppLaunch(mContext.getStatsLogManager(), item, instanceId);
     }
 
     private final class TaskBarRecentsAnimationListener implements RecentsAnimationListener {

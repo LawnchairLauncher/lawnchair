@@ -34,6 +34,8 @@ import android.view.View;
 
 import androidx.annotation.Nullable;
 
+import com.android.internal.logging.InstanceId;
+import com.android.internal.logging.InstanceIdSequence;
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.DragSource;
@@ -48,6 +50,7 @@ import com.android.launcher3.dragndrop.DragView;
 import com.android.launcher3.dragndrop.DraggableView;
 import com.android.launcher3.graphics.DragPreviewProvider;
 import com.android.launcher3.icons.FastBitmapDrawable;
+import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.systemui.shared.recents.model.Task;
@@ -284,10 +287,22 @@ public class TaskbarDragController extends DragController<TaskbarActivityContext
         }
 
         if (clipDescription != null && intent != null) {
+            // Need to share the same InstanceId between launcher3 and WM Shell (internal).
+            InstanceId internalInstanceId = new InstanceIdSequence(
+                    com.android.launcher3.logging.InstanceId.INSTANCE_ID_MAX).newInstanceId();
+            com.android.launcher3.logging.InstanceId launcherInstanceId =
+                    new com.android.launcher3.logging.InstanceId(internalInstanceId.getId());
+
+            intent.putExtra(ClipDescription.EXTRA_LOGGING_INSTANCE_ID, internalInstanceId);
+
             ClipData clipData = new ClipData(clipDescription, new ClipData.Item(intent));
             if (btv.startDragAndDrop(clipData, shadowBuilder, null /* localState */,
                     View.DRAG_FLAG_GLOBAL | View.DRAG_FLAG_OPAQUE)) {
                 onSystemDragStarted();
+
+                mActivity.getStatsLogManager().logger().withItemInfo(mDragObject.dragInfo)
+                        .withInstanceId(launcherInstanceId)
+                        .log(StatsLogManager.LauncherEvent.LAUNCHER_ITEM_DRAG_STARTED);
             }
         }
     }
