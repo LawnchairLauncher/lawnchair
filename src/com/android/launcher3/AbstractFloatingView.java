@@ -195,10 +195,24 @@ public abstract class AbstractFloatingView extends LinearLayout implements Touch
     }
 
     /**
-     * Returns a view matching FloatingViewType
+     * Returns a view matching FloatingViewType and {@link #isOpen()} == true.
      */
     public static <T extends AbstractFloatingView> T getOpenView(
             ActivityContext activity, @FloatingViewType int type) {
+        return getView(activity, type, true /* mustBeOpen */);
+    }
+
+    /**
+     * Returns a view matching FloatingViewType, and {@link #isOpen()} may be false (if animating
+     * closed).
+     */
+    public static <T extends AbstractFloatingView> T getAnyView(
+            ActivityContext activity, @FloatingViewType int type) {
+        return getView(activity, type, false /* mustBeOpen */);
+    }
+
+    private static <T extends AbstractFloatingView> T getView(
+            ActivityContext activity, @FloatingViewType int type, boolean mustBeOpen) {
         BaseDragLayer dragLayer = activity.getDragLayer();
         if (dragLayer == null) return null;
         // Iterate in reverse order. AbstractFloatingView is added later to the dragLayer,
@@ -207,7 +221,7 @@ public abstract class AbstractFloatingView extends LinearLayout implements Touch
             View child = dragLayer.getChildAt(i);
             if (child instanceof AbstractFloatingView) {
                 AbstractFloatingView view = (AbstractFloatingView) child;
-                if (view.isOfType(type) && view.isOpen()) {
+                if (view.isOfType(type) && (!mustBeOpen || view.isOpen())) {
                     return (T) view;
                 }
             }
