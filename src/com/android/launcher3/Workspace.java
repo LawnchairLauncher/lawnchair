@@ -314,8 +314,6 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         Rect padding = grid.workspacePadding;
         setPadding(padding.left, padding.top, padding.right, padding.bottom);
         mInsets.set(insets);
-        // Increase our bottom insets so we don't overlap with the taskbar.
-        mInsets.bottom += grid.nonOverlappingTaskbarInset;
 
         if (mWorkspaceFadeInAdjacentScreens) {
             // In landscape mode the page spacing is set to the default.
