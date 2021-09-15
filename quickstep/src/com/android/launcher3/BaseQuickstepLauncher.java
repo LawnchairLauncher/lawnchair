@@ -124,6 +124,15 @@ public abstract class BaseQuickstepLauncher extends Launcher
     private final ServiceConnection mTisBinderConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
+            if (!(iBinder instanceof TISBinder)) {
+                // Seems like there can be a race condition when user unlocks, which kills the TIS
+                // process and re-starts it. I guess in the meantime service can be connected to
+                // a killed TIS? Either way, unbind and try to re-connect in that case.
+                unbindService(mTisBinderConnection);
+                mHandler.postDelayed(mConnectionRunnable, BACKOFF_MILLIS);
+                return;
+            }
+
             mTaskbarManager = ((TISBinder) iBinder).getTaskbarManager();
             mTaskbarManager.setLauncher(BaseQuickstepLauncher.this);
 
