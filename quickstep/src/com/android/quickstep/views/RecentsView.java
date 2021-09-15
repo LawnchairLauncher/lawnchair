@@ -2059,10 +2059,10 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         int runningIndex = getCurrentPage();
         AnimatorSet as = new AnimatorSet();
         for (int i = 0; i < getTaskViewCount(); i++) {
-            if (runningIndex == i) {
+            View taskView = getTaskViewAt(i);
+            if (runningIndex == i && taskView.getAlpha() != 0) {
                 continue;
             }
-            View taskView = getTaskViewAt(i);
             as.play(ObjectAnimator.ofFloat(taskView, View.ALPHA, fadeInChildren ? 0 : 1));
         }
         return as;
