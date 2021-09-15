@@ -162,6 +162,8 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
         mWindowLayoutParams.setFitInsetsTypes(0);
         mWindowLayoutParams.softInputMode = WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING;
         mWindowLayoutParams.layoutInDisplayCutoutMode = LAYOUT_IN_DISPLAY_CUTOUT_MODE_ALWAYS;
+        mWindowLayoutParams.privateFlags =
+                WindowManager.LayoutParams.PRIVATE_FLAG_NO_MOVE_ANIMATION;
 
         WindowManagerWrapper wmWrapper = WindowManagerWrapper.getInstance();
         wmWrapper.setProvidesInsetsTypes(
