@@ -162,7 +162,8 @@ public interface PagedOrientationHandler {
             SplitConfigurationOptions.StagedSplitBounds splitInfo,
             @SplitConfigurationOptions.StagePosition int desiredStagePosition);
 
-    void setGroupedTaskViewThumbnailBounds(View mSnapshot1, View mSnapshot2, View taskParent,
+    void measureGroupedTaskViewThumbnailBounds(View primarySnapshot, View secondarySnapshot,
+            int parentWidth, int parentHeight,
             SplitConfigurationOptions.StagedSplitBounds splitBoundsConfig, DeviceProfile dp);
 
     // Overview TaskMenuView methods
