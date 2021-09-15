@@ -120,7 +120,7 @@ public class WorkspaceRevealAnim {
         launcher.getStateManager().createAtomicAnimation(BACKGROUND_APP, NORMAL, config).start();
 
         // Stop scrolling so that it doesn't interfere with the translation offscreen.
-        launcher.<RecentsView>getOverviewPanel().getScroller().forceFinished(true);
+        launcher.<RecentsView>getOverviewPanel().forceFinishScroller();
 
         if (animateOverviewScrim) {
             launcher.getWorkspace().getStateTransitionAnimation()
