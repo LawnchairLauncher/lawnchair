@@ -155,7 +155,7 @@ public class TaskbarDragLayerController {
          * Called when a child is removed from TaskbarDragLayer.
          */
         public void onDragLayerViewRemoved() {
-            if (AbstractFloatingView.getOpenView(mActivity, TYPE_ALL) == null) {
+            if (AbstractFloatingView.getAnyView(mActivity, TYPE_ALL) == null) {
                 mActivity.setTaskbarWindowFullscreen(false);
             }
         }
