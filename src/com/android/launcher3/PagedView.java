@@ -254,7 +254,7 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
         }
         mOrientationHandler.set(this, VIEW_SCROLL_TO, newPosition);
         mScroller.startScroll(mScroller.getCurrX(), 0, newPosition - mScroller.getCurrX(), 0);
-        forceFinishScroller(true);
+        forceFinishScroller();
     }
 
     /**
@@ -276,14 +276,16 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
         }
     }
 
-    private void forceFinishScroller(boolean resetNextPage) {
+    /**
+     * Immediately finishes any in-progress scroll, maintaining the current position. Also sets
+     * mNextPage = INVALID_PAGE and calls pageEndTransition().
+     */
+    public void forceFinishScroller() {
         mScroller.forceFinished(true);
         // We need to clean up the next page here to avoid computeScrollHelper from
         // updating current page on the pass.
-        if (resetNextPage) {
-            mNextPage = INVALID_PAGE;
-            pageEndTransition();
-        }
+        mNextPage = INVALID_PAGE;
+        pageEndTransition();
     }
 
     private int validateNewPage(int newPage) {
