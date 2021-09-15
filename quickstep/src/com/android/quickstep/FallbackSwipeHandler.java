@@ -45,7 +45,6 @@ import android.os.Message;
 import android.os.Messenger;
 import android.os.ParcelUuid;
 import android.os.UserHandle;
-import android.util.Log;
 import android.view.Surface;
 import android.view.SurfaceControl;
 import android.view.SurfaceControl.Transaction;
@@ -58,7 +57,6 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.anim.SpringAnimationBuilder;
-import com.android.launcher3.testing.TestProtocol;
 import com.android.quickstep.fallback.FallbackRecentsView;
 import com.android.quickstep.fallback.RecentsState;
 import com.android.quickstep.util.AppCloseConfig;
@@ -141,10 +139,6 @@ public class FallbackSwipeHandler extends
         mActiveAnimationFactory = new FallbackHomeAnimationFactory(duration);
         ActivityOptions options = ActivityOptions.makeCustomAnimation(mContext, 0, 0);
         Intent intent = new Intent(mGestureState.getHomeIntent());
-        if (Utilities.IS_RUNNING_IN_TEST_HARNESS) {
-            Log.d(TestProtocol.L3_SWIPE_TO_HOME,
-                    "createHomeAnimationFactory: " + intent.toShortString(true, true, true, false));
-        }
         mActiveAnimationFactory.addGestureContract(intent);
         try {
             mContext.startActivity(intent, options.toBundle());
