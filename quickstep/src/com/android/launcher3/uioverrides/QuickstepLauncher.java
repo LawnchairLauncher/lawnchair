@@ -51,6 +51,7 @@ import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.appprediction.PredictionRowView;
 import com.android.launcher3.hybridhotseat.HotseatPredictionController;
 import com.android.launcher3.logging.InstanceId;
+import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.logging.StatsLogManager.StatsLogger;
 import com.android.launcher3.model.BgDataModel.FixedContainerItems;
 import com.android.launcher3.model.data.ItemInfo;
@@ -104,7 +105,8 @@ public class QuickstepLauncher extends BaseQuickstepLauncher {
     }
 
     @Override
-    protected void logAppLaunch(ItemInfo info, InstanceId instanceId) {
+    public void logAppLaunch(StatsLogManager statsLogManager, ItemInfo info,
+            InstanceId instanceId) {
         // If the app launch is from any of the surfaces in AllApps then add the InstanceId from
         // LiveSearchManager to recreate the AllApps session on the server side.
         if (mAllAppsSessionLogId != null && ALL_APPS.equals(
@@ -112,8 +114,7 @@ public class QuickstepLauncher extends BaseQuickstepLauncher {
             instanceId = mAllAppsSessionLogId;
         }
 
-        StatsLogger logger = getStatsLogManager()
-                .logger().withItemInfo(info).withInstanceId(instanceId);
+        StatsLogger logger = statsLogManager.logger().withItemInfo(info).withInstanceId(instanceId);
 
         if (mAllAppsPredictions != null
                 && (info.itemType == ITEM_TYPE_APPLICATION

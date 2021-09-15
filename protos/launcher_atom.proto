@@ -59,6 +59,7 @@ message ContainerInfo {
     SettingsContainer settings_container = 9;
     PredictedHotseatContainer predicted_hotseat_container = 10;
     TaskSwitcherContainer task_switcher_container = 11;
+    TaskBarContainer task_bar_container = 12;
     ExtendedContainers extended_containers = 20;
   }
 }
@@ -98,6 +99,16 @@ message SettingsContainer {
 }
 
 message TaskSwitcherContainer {
+}
+
+// Container for taskbar.
+// Configured to show up on large screens(tablet-sized) such as foldables in expanded state, within
+// an app view(not in launcher screen).
+message TaskBarContainer {
+  optional int32 index = 1;
+
+  // Bit encoded value to capture pinned and predicted taskbar positions.
+  optional int32 cardinality = 2;
 }
 
 enum Attribute {
@@ -230,6 +241,7 @@ message FolderContainer {
   oneof ParentContainer {
     WorkspaceContainer workspace = 4;
     HotseatContainer hotseat = 5;
+    TaskBarContainer taskbar = 6;
   }
 }
 
