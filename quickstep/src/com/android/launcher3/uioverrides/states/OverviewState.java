@@ -97,6 +97,11 @@ public class OverviewState extends LauncherState {
     }
 
     @Override
+    public boolean isTaskbarStashed() {
+        return true;
+    }
+
+    @Override
     public int getWorkspaceScrimColor(Launcher launcher) {
         return Themes.getAttrColor(launcher, R.attr.overviewScrimColor);
     }

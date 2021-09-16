@@ -41,6 +41,7 @@ public class TaskbarStashController {
 
     public static final int FLAG_IN_APP = 1 << 0;
     public static final int FLAG_STASHED_IN_APP = 1 << 1;
+    public static final int FLAG_IN_STASHED_LAUNCHER_STATE = 1 << 2;
 
     /**
      * How long to stash/unstash when manually invoked via long press.
@@ -83,9 +84,6 @@ public class TaskbarStashController {
     private final int mStashedHeight;
     private final int mUnstashedHeight;
 
-    private final StatePropertyHolder mStatePropertyHolder = new StatePropertyHolder(
-            flags -> (((flags & FLAG_IN_APP) != 0) && (flags & FLAG_STASHED_IN_APP) != 0));
-
     // Initialized in init.
     private TaskbarControllers mControllers;
     // Taskbar background properties.
@@ -105,6 +103,18 @@ public class TaskbarStashController {
     private int mState;
 
     private @Nullable AnimatorSet mAnimator;
+
+    // Evaluate whether the handle should be stashed
+    private final StatePropertyHolder mStatePropertyHolder = new StatePropertyHolder(
+            flags -> {
+                if (!supportsStashing()) {
+                    return false;
+                }
+                boolean inApp = (flags & FLAG_IN_APP) != 0;
+                boolean stashedInApp = (flags & FLAG_STASHED_IN_APP) != 0;
+                boolean stashedLauncherState = (flags & FLAG_IN_STASHED_LAUNCHER_STATE) != 0;
+                return (inApp && stashedInApp) || (!inApp && stashedLauncherState);
+            });
 
     public TaskbarStashController(TaskbarActivityContext activity) {
         mActivity = activity;
@@ -331,7 +341,15 @@ public class TaskbarStashController {
     }
 
     public void applyState(long duration) {
-        mStatePropertyHolder.setState(mState, duration);
+        mStatePropertyHolder.setState(mState, duration, true);
+    }
+
+    public Animator applyStateWithoutStart() {
+        return applyStateWithoutStart(TASKBAR_STASH_DURATION);
+    }
+
+    public Animator applyStateWithoutStart(long duration) {
+        return mStatePropertyHolder.setState(mState, duration, false);
     }
 
     /**
@@ -360,12 +378,16 @@ public class TaskbarStashController {
             mStashCondition = stashCondition;
         }
 
-        public void setState(int flags, long duration) {
+        public Animator setState(int flags, long duration, boolean start) {
             boolean isStashed = mStashCondition.test(flags);
             if (mIsStashed != isStashed) {
                 mIsStashed = isStashed;
-                createAnimToIsStashed(mIsStashed, duration).start();
+                Animator animator = createAnimToIsStashed(mIsStashed, duration);
+                if (start) {
+                    animator.start();
+                }
             }
+            return mAnimator;
         }
     }
 }
