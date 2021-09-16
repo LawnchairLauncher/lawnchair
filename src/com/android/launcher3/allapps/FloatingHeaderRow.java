@@ -47,6 +47,8 @@ public interface FloatingHeaderRow {
 
     /**
      * Scrolls the content vertically.
+     * @param scroll scrolled distance in pixels for active recyclerview.
+     * @param isScrolledOut bool to determine if row is scrolled out of view
      */
     void setVerticalScroll(int scroll, boolean isScrolledOut);
 

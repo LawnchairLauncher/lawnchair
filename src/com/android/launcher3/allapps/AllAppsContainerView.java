@@ -624,6 +624,9 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
         for (int i = 0; i < mAH.length; i++) {
             mAH[i].padding.top = padding;
             mAH[i].applyPadding();
+            if (mAH[i].recyclerView != null) {
+                mAH[i].recyclerView.scrollToTop();
+            }
         }
         mHeaderTop = mHeader.getTop();
     }
