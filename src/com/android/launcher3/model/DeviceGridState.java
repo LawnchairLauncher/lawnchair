@@ -119,12 +119,23 @@ public class DeviceGridState {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        DeviceGridState that = (DeviceGridState) o;
-        return mNumHotseat == that.mNumHotseat
-                && deviceTypeCompatible(mDeviceType, that.mDeviceType)
-                && Objects.equals(mGridSizeString, that.mGridSizeString);
+    public String toString() {
+        return "DeviceGridState{"
+                + "mGridSizeString='" + mGridSizeString + '\''
+                + ", mNumHotseat=" + mNumHotseat
+                + ", mDeviceType=" + mDeviceType
+                + '}';
+    }
+
+    /**
+     * Returns true if the database from another DeviceGridState can be loaded into the current
+     * DeviceGridState without migration, or false otherwise.
+     */
+    public boolean isCompatible(DeviceGridState other) {
+        if (this == other) return true;
+        if (other == null) return false;
+        return mNumHotseat == other.mNumHotseat
+                && deviceTypeCompatible(mDeviceType, other.mDeviceType)
+                && Objects.equals(mGridSizeString, other.mGridSizeString);
     }
 }
