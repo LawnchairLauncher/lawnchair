@@ -19,6 +19,7 @@ import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_ALWAYS;
 import static android.view.WindowManager.LayoutParams.TYPE_NAVIGATION_BAR_PANEL;
 
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_FOLDER_OPEN;
 import static com.android.systemui.shared.system.WindowManagerWrapper.ITYPE_BOTTOM_TAPPABLE_ELEMENT;
 import static com.android.systemui.shared.system.WindowManagerWrapper.ITYPE_EXTRA_NAVIGATION_BAR;
 
@@ -52,6 +53,7 @@ import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.R;
 import com.android.launcher3.folder.Folder;
 import com.android.launcher3.folder.FolderIcon;
+import com.android.launcher3.logger.LauncherAtom;
 import com.android.launcher3.model.data.FolderInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.taskbar.contextual.RotationButtonController;
@@ -162,6 +164,8 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
         mWindowLayoutParams.setFitInsetsTypes(0);
         mWindowLayoutParams.softInputMode = WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING;
         mWindowLayoutParams.layoutInDisplayCutoutMode = LAYOUT_IN_DISPLAY_CUTOUT_MODE_ALWAYS;
+        mWindowLayoutParams.privateFlags =
+                WindowManager.LayoutParams.PRIVATE_FLAG_NO_MOVE_ANIMATION;
 
         WindowManagerWrapper wmWrapper = WindowManagerWrapper.getInstance();
         wmWrapper.setProvidesInsetsTypes(
@@ -227,6 +231,60 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
         // flag when opening a floating view that needs IME (such as Folder), but then that means
         // Taskbar will be below IME and thus users can't click the back button.
         return false;
+    }
+
+    /**
+     * Change from hotseat/predicted hotseat to taskbar container.
+     */
+    @Override
+    public void applyOverwritesToLogItem(LauncherAtom.ItemInfo.Builder itemInfoBuilder) {
+        if (!itemInfoBuilder.hasContainerInfo()) {
+            return;
+        }
+        LauncherAtom.ContainerInfo oldContainer = itemInfoBuilder.getContainerInfo();
+
+        if (oldContainer.hasPredictedHotseatContainer()) {
+            LauncherAtom.PredictedHotseatContainer predictedHotseat =
+                    oldContainer.getPredictedHotseatContainer();
+            LauncherAtom.TaskBarContainer.Builder taskbarBuilder =
+                    LauncherAtom.TaskBarContainer.newBuilder();
+
+            if (predictedHotseat.hasIndex()) {
+                taskbarBuilder.setIndex(predictedHotseat.getIndex());
+            }
+            if (predictedHotseat.hasCardinality()) {
+                taskbarBuilder.setCardinality(predictedHotseat.getCardinality());
+            }
+
+            itemInfoBuilder.setContainerInfo(LauncherAtom.ContainerInfo.newBuilder()
+                    .setTaskBarContainer(taskbarBuilder));
+        } else if (oldContainer.hasHotseat()) {
+            LauncherAtom.HotseatContainer hotseat = oldContainer.getHotseat();
+            LauncherAtom.TaskBarContainer.Builder taskbarBuilder =
+                    LauncherAtom.TaskBarContainer.newBuilder();
+
+            if (hotseat.hasIndex()) {
+                taskbarBuilder.setIndex(hotseat.getIndex());
+            }
+
+            itemInfoBuilder.setContainerInfo(LauncherAtom.ContainerInfo.newBuilder()
+                    .setTaskBarContainer(taskbarBuilder));
+        } else if (oldContainer.hasFolder() && oldContainer.getFolder().hasHotseat()) {
+            LauncherAtom.FolderContainer.Builder folderBuilder = oldContainer.getFolder()
+                    .toBuilder();
+            LauncherAtom.HotseatContainer hotseat = folderBuilder.getHotseat();
+            LauncherAtom.TaskBarContainer.Builder taskbarBuilder =
+                    LauncherAtom.TaskBarContainer.newBuilder();
+
+            if (hotseat.hasIndex()) {
+                taskbarBuilder.setIndex(hotseat.getIndex());
+            }
+
+            folderBuilder.setTaskbar(taskbarBuilder);
+            folderBuilder.clearHotseat();
+            itemInfoBuilder.setContainerInfo(LauncherAtom.ContainerInfo.newBuilder()
+                    .setFolder(folderBuilder));
+        }
     }
 
     /**
@@ -326,6 +384,7 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
 
             getDragLayer().post(() -> {
                 folder.animateOpen();
+                getStatsLogManager().logger().withItemInfo(folder.mInfo).log(LAUNCHER_FOLDER_OPEN);
 
                 folder.iterateOverItems((itemInfo, itemView) -> {
                     mControllers.taskbarViewController
@@ -363,6 +422,8 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
                         getSystemService(LauncherApps.class).startMainActivity(
                                 intent.getComponent(), info.user, intent.getSourceBounds(), null);
                     }
+
+                    mControllers.uiController.onTaskbarIconLaunched(info);
                 } catch (NullPointerException | ActivityNotFoundException | SecurityException e) {
                     Toast.makeText(this, R.string.activity_not_found, Toast.LENGTH_SHORT)
                             .show();
