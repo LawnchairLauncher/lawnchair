@@ -103,7 +103,13 @@ public class GridSizeMigrationTaskV2 {
      * Check given a new IDP, if migration is necessary.
      */
     public static boolean needsToMigrate(Context context, InvariantDeviceProfile idp) {
-        return !new DeviceGridState(idp).equals(new DeviceGridState(context));
+        DeviceGridState idpGridState = new DeviceGridState(idp);
+        DeviceGridState contextGridState = new DeviceGridState(context);
+        boolean needsToMigrate = !idpGridState.isCompatible(contextGridState);
+        // TODO: Revert this change after b/200010396 is fixed
+        Log.d(TAG, "Migration is needed. idpGridState: " + idpGridState
+                + ", contextGridState: " + contextGridState);
+        return needsToMigrate;
     }
 
     /** See {@link #migrateGridIfNeeded(Context, InvariantDeviceProfile)} */
