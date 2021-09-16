@@ -29,6 +29,7 @@ import android.annotation.TargetApi;
 import android.app.Fragment;
 import android.app.WallpaperColors;
 import android.app.WallpaperManager;
+import android.appwidget.AppWidgetHost;
 import android.appwidget.AppWidgetHostView;
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.Context;
@@ -87,8 +88,11 @@ import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.MainThreadInitializedObject;
 import com.android.launcher3.views.ActivityContext;
 import com.android.launcher3.views.BaseDragLayer;
+import com.android.launcher3.widget.BaseLauncherAppWidgetHostView;
+import com.android.launcher3.widget.LauncherAppWidgetHost;
 import com.android.launcher3.widget.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.widget.LocalColorExtractor;
+import com.android.launcher3.widget.NavigableAppWidgetHostView;
 import com.android.launcher3.widget.custom.CustomWidgetManager;
 
 import java.util.ArrayList;
@@ -207,6 +211,7 @@ public class LauncherPreviewRenderer extends ContextWrapper
     private final Hotseat mHotseat;
     private final CellLayout mWorkspace;
     private final SparseIntArray mWallpaperColorResources;
+    private final AppWidgetHost mAppWidgetHost;
 
     public LauncherPreviewRenderer(Context context,
             InvariantDeviceProfile idp,
@@ -273,6 +278,9 @@ public class LauncherPreviewRenderer extends ContextWrapper
         } else {
             mWallpaperColorResources = null;
         }
+        mAppWidgetHost = FeatureFlags.WIDGETS_IN_LAUNCHER_PREVIEW.get()
+                ? new LauncherPreviewAppWidgetHost(context)
+                : null;
     }
 
     /** Populate preview and render it. */
@@ -372,9 +380,20 @@ public class LauncherPreviewRenderer extends ContextWrapper
 
     private void inflateAndAddWidgets(
             LauncherAppWidgetInfo info, LauncherAppWidgetProviderInfo providerInfo) {
-        AppWidgetHostView view = new AppWidgetHostView(mContext);
-        view.setAppWidget(-1, providerInfo);
-        view.updateAppWidget(null);
+        AppWidgetHostView view;
+        if (FeatureFlags.WIDGETS_IN_LAUNCHER_PREVIEW.get()) {
+            view = mAppWidgetHost.createView(mContext, info.appWidgetId, providerInfo);
+        } else {
+            view = new NavigableAppWidgetHostView(this) {
+                @Override
+                protected boolean shouldAllowDirectClick() {
+                    return false;
+                }
+            };
+            view.setAppWidget(-1, providerInfo);
+            view.updateAppWidget(null);
+        }
+
         view.setTag(info);
 
         if (mWallpaperColorResources != null) {
@@ -502,6 +521,33 @@ public class LauncherPreviewRenderer extends ContextWrapper
         @Override
         public boolean onInterceptTouchEvent(MotionEvent ev) {
             return true;
+        }
+    }
+
+    private class LauncherPreviewAppWidgetHost extends AppWidgetHost {
+
+        private LauncherPreviewAppWidgetHost(Context context) {
+            super(context, LauncherAppWidgetHost.APPWIDGET_HOST_ID);
+        }
+
+        @Override
+        protected AppWidgetHostView onCreateView(
+                Context context,
+                int appWidgetId,
+                AppWidgetProviderInfo appWidget) {
+            return new LauncherPreviewAppWidgetHostView(LauncherPreviewRenderer.this);
+        }
+    }
+
+    private static class LauncherPreviewAppWidgetHostView extends BaseLauncherAppWidgetHostView {
+
+        private LauncherPreviewAppWidgetHostView(Context context) {
+            super(context);
+        }
+
+        @Override
+        protected boolean shouldAllowDirectClick() {
+            return false;
         }
     }
 }
