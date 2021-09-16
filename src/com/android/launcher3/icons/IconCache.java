@@ -19,6 +19,8 @@ package com.android.launcher3.icons;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
 
+import static java.util.stream.Collectors.groupingBy;
+
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -30,10 +32,15 @@ import android.content.pm.PackageInstaller;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.pm.ShortcutInfo;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteException;
 import android.graphics.drawable.Drawable;
 import android.os.Process;
+import android.os.Trace;
 import android.os.UserHandle;
+import android.text.TextUtils;
 import android.util.Log;
+import android.util.Pair;
 
 import androidx.annotation.NonNull;
 
@@ -47,6 +54,7 @@ import com.android.launcher3.icons.cache.BaseIconCache;
 import com.android.launcher3.icons.cache.CachingLogic;
 import com.android.launcher3.icons.cache.HandlerRunnable;
 import com.android.launcher3.model.data.AppInfo;
+import com.android.launcher3.model.data.IconRequestInfo;
 import com.android.launcher3.model.data.ItemInfoWithIcon;
 import com.android.launcher3.model.data.PackageItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
@@ -56,8 +64,13 @@ import com.android.launcher3.util.InstantAppResolver;
 import com.android.launcher3.util.PackageUserKey;
 import com.android.launcher3.util.Preconditions;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 /**
  * Cache of application icons.  Icons can be made from any thread.
@@ -304,6 +317,87 @@ public class IconCache extends BaseIconCache {
                 activityInfoProvider, mLauncherActivityInfoCachingLogic, usePkgIcon,
                 useLowResIcon);
         applyCacheEntry(entry, infoInOut);
+    }
+
+    /**
+     * Creates an sql cursor for a query of a set of ItemInfoWithIcon icons and titles.
+     *
+     * @param iconRequestInfos List of IconRequestInfos representing titles and icons to query.
+     * @param user UserHandle all the given iconRequestInfos share
+     * @param useLowResIcons whether we should exclude the icon column from the sql results.
+     */
+    private <T extends ItemInfoWithIcon> Cursor createBulkQueryCursor(
+            List<IconRequestInfo<T>> iconRequestInfos, UserHandle user, boolean useLowResIcons)
+            throws SQLiteException {
+        String[] queryParams = Stream.concat(
+                iconRequestInfos.stream()
+                        .map(r -> r.itemInfo.getTargetComponent())
+                        .filter(Objects::nonNull)
+                        .distinct()
+                        .map(ComponentName::flattenToString),
+                Stream.of(Long.toString(getSerialNumberForUser(user)))).toArray(String[]::new);
+        String componentNameQuery = TextUtils.join(
+                ",", Collections.nCopies(queryParams.length - 1, "?"));
+
+        return mIconDb.query(
+                useLowResIcons ? IconDB.COLUMNS_LOW_RES : IconDB.COLUMNS_HIGH_RES,
+                IconDB.COLUMN_COMPONENT
+                        + " IN ( " + componentNameQuery + " )"
+                        + " AND " + IconDB.COLUMN_USER + " = ?",
+                queryParams);
+    }
+
+    /**
+     * Load and fill icons requested in iconRequestInfos using a single bulk sql query.
+     */
+    public synchronized <T extends ItemInfoWithIcon> void getTitlesAndIconsInBulk(
+            List<IconRequestInfo<T>> iconRequestInfos) {
+        Map<Pair<UserHandle, Boolean>, List<IconRequestInfo<T>>> iconLoadSubsectionsMap =
+                iconRequestInfos.stream()
+                        .collect(groupingBy(iconRequest ->
+                                Pair.create(iconRequest.itemInfo.user, iconRequest.useLowResIcon)));
+
+        Trace.beginSection("loadIconsInBulk");
+        iconLoadSubsectionsMap.forEach((sectionKey, filteredList) -> {
+            Map<ComponentName, List<IconRequestInfo<T>>> duplicateIconRequestsMap =
+                    filteredList.stream()
+                            .collect(groupingBy(iconRequest ->
+                                    iconRequest.itemInfo.getTargetComponent()));
+
+            Trace.beginSection("loadIconSubsectionInBulk");
+            try (Cursor c = createBulkQueryCursor(
+                    filteredList,
+                    /* user = */ sectionKey.first,
+                    /* useLowResIcons = */ sectionKey.second)) {
+                int componentNameColumnIndex = c.getColumnIndexOrThrow(IconDB.COLUMN_COMPONENT);
+                while (c.moveToNext()) {
+                    ComponentName cn = ComponentName.unflattenFromString(
+                            c.getString(componentNameColumnIndex));
+                    List<IconRequestInfo<T>> duplicateIconRequests =
+                            duplicateIconRequestsMap.get(cn);
+
+                    if (cn != null) {
+                        CacheEntry entry = cacheLocked(
+                                cn,
+                                /* user = */ sectionKey.first,
+                                () -> duplicateIconRequests.get(0).launcherActivityInfo,
+                                mLauncherActivityInfoCachingLogic,
+                                c,
+                                /* usePackageIcon= */ false,
+                                /* useLowResIcons = */ sectionKey.second);
+
+                        for (IconRequestInfo<T> iconRequest : duplicateIconRequests) {
+                            applyCacheEntry(entry, iconRequest.itemInfo);
+                        }
+                    }
+                }
+            } catch (SQLiteException e) {
+                Log.d(TAG, "Error reading icon cache", e);
+            } finally {
+                Trace.endSection();
+            }
+        });
+        Trace.endSection();
     }
 
 

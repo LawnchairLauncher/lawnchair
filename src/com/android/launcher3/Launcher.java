@@ -87,6 +87,7 @@ import android.os.Parcelable;
 import android.os.Process;
 import android.os.StrictMode;
 import android.os.SystemClock;
+import android.os.Trace;
 import android.text.TextUtils;
 import android.text.method.TextKeyListener;
 import android.util.Log;
@@ -280,6 +281,11 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
 
     private static final int THEME_CROSS_FADE_ANIMATION_DURATION = 375;
 
+    private static final String DISPLAY_WORKSPACE_TRACE_METHOD_NAME = "DisplayWorkspaceFirstFrame";
+    private static final String DISPLAY_ALL_APPS_TRACE_METHOD_NAME = "DisplayAllApps";
+    public static final int DISPLAY_WORKSPACE_TRACE_COOKIE = 0;
+    public static final int DISPLAY_ALL_APPS_TRACE_COOKIE = 1;
+
     private Configuration mOldConfig;
 
     @Thunk
@@ -366,7 +372,15 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
     private LauncherState mPrevLauncherState;
 
     @Override
+    @TargetApi(Build.VERSION_CODES.S)
     protected void onCreate(Bundle savedInstanceState) {
+        // Only use a hard-coded cookie since we only want to trace this once.
+        if (Utilities.ATLEAST_S) {
+            Trace.beginAsyncSection(
+                    DISPLAY_WORKSPACE_TRACE_METHOD_NAME, DISPLAY_WORKSPACE_TRACE_COOKIE);
+            Trace.beginAsyncSection(DISPLAY_ALL_APPS_TRACE_METHOD_NAME,
+                    DISPLAY_ALL_APPS_TRACE_COOKIE);
+        }
         Object traceToken = TraceHelper.INSTANCE.beginSection(ON_CREATE_EVT,
                 TraceHelper.FLAG_UI_EVENT);
         if (DEBUG_STRICT_MODE) {
@@ -2584,6 +2598,7 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
     }
 
     @Override
+    @TargetApi(Build.VERSION_CODES.S)
     public void onInitialBindComplete(IntSet boundPages, RunnableList pendingTasks) {
         mSynchronouslyBoundPages = boundPages;
         mPagesToBindSynchronously = new IntSet();
@@ -2606,6 +2621,10 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
             executor.onLoadAnimationCompleted();
         }
         executor.attachTo(this);
+        if (Utilities.ATLEAST_S) {
+            Trace.endAsyncSection(DISPLAY_WORKSPACE_TRACE_METHOD_NAME,
+                    DISPLAY_WORKSPACE_TRACE_COOKIE);
+        }
     }
 
     /**
@@ -2669,9 +2688,14 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
      * Implementation of the method from LauncherModel.Callbacks.
      */
     @Override
+    @TargetApi(Build.VERSION_CODES.S)
     public void bindAllApplications(AppInfo[] apps, int flags) {
         mAppsView.getAppsStore().setApps(apps, flags);
         PopupContainerWithArrow.dismissInvalidPopup(this);
+        if (Utilities.ATLEAST_S) {
+            Trace.endAsyncSection(DISPLAY_ALL_APPS_TRACE_METHOD_NAME,
+                    DISPLAY_ALL_APPS_TRACE_COOKIE);
+        }
     }
 
     /**
