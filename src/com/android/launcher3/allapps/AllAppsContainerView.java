@@ -59,7 +59,6 @@ import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.DeviceProfile.OnDeviceProfileChangeListener;
 import com.android.launcher3.DragSource;
 import com.android.launcher3.DropTarget.DragObject;
-import com.android.launcher3.ExtendedEditText;
 import com.android.launcher3.Insettable;
 import com.android.launcher3.InsettableFrameLayout;
 import com.android.launcher3.R;
@@ -642,6 +641,7 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
 
     public void onClearSearchResult() {
         mIsSearching = false;
+        mHeader.setCollapsed(false);
         rebindAdapters();
         getActiveRecyclerView().scrollToTop();
     }
@@ -817,14 +817,13 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
             invalidateHeader();
         }
         if (mSearchUiManager.getEditText() != null) {
-            ExtendedEditText editText = mSearchUiManager.getEditText();
-            boolean bgVisible = editText.getBackgroundVisibility();
+            boolean bgVisible = mSearchUiManager.getBackgroundVisibility();
             if (scrolledOffset == 0 && !mIsSearching) {
                 bgVisible = true;
             } else if (scrolledOffset > mHeaderThreshold) {
                 bgVisible = false;
             }
-            editText.setBackgroundVisibility(bgVisible, 1 - prog);
+            mSearchUiManager.setBackgroundVisibility(bgVisible, 1 - prog);
         }
     }
 

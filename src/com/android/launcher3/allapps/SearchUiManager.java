@@ -49,6 +49,19 @@ public interface SearchUiManager {
     ExtendedEditText getEditText();
 
     /**
+     * Sets whether EditText background should be visible
+     * @param maxAlpha defines the maximum alpha the background should animates to
+     */
+    default void setBackgroundVisibility(boolean visible, float maxAlpha) {}
+
+    /**
+     * Returns whether a visible background is set on EditText
+     */
+    default boolean getBackgroundVisibility() {
+        return false;
+    }
+
+    /**
      * sets highlight result's title
      */
     default void setFocusedResultTitle(@Nullable  CharSequence title) { }
