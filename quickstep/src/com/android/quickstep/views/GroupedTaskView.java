@@ -1,18 +1,26 @@
 package com.android.quickstep.views;
 
 import android.content.Context;
+import android.graphics.Rect;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
+import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
 import com.android.launcher3.util.RunnableList;
 import com.android.launcher3.util.SplitConfigurationOptions;
+import com.android.launcher3.util.SplitConfigurationOptions.StagedSplitBounds;
+import com.android.launcher3.util.TransformingTouchDelegate;
 import com.android.quickstep.RecentsModel;
+import com.android.quickstep.TaskIconCache;
 import com.android.quickstep.TaskThumbnailCache;
 import com.android.quickstep.util.CancellableTask;
 import com.android.quickstep.util.RecentsOrientedState;
 import com.android.systemui.shared.recents.model.Task;
+import com.android.systemui.shared.recents.model.ThumbnailData;
 
 import java.util.function.Consumer;
 
@@ -30,8 +38,14 @@ public class GroupedTaskView extends TaskView {
 
     private Task mSecondaryTask;
     private TaskThumbnailView mSnapshotView2;
-    private CancellableTask mThumbnailLoadRequest2;
-    private SplitConfigurationOptions.StagedSplitBounds mSplitBoundsConfig;
+    private IconView mIconView2;
+    private CancellableTask<ThumbnailData> mThumbnailLoadRequest2;
+    private CancellableTask mIconLoadRequest2;
+    private final float[] mIcon2CenterCoords = new float[2];
+    private TransformingTouchDelegate mIcon2TouchDelegate;
+    @Nullable private StagedSplitBounds mSplitBoundsConfig;
+    private final Rect mPrimaryTempRect = new Rect();
+    private final Rect mSecondaryTempRect = new Rect();
 
     public GroupedTaskView(Context context) {
         super(context);
@@ -49,10 +63,12 @@ public class GroupedTaskView extends TaskView {
     protected void onFinishInflate() {
         super.onFinishInflate();
         mSnapshotView2 = findViewById(R.id.bottomright_snapshot);
+        mIconView2 = findViewById(R.id.bottomRight_icon);
+        mIcon2TouchDelegate = new TransformingTouchDelegate(mIconView2);
     }
 
     public void bind(Task primary, Task secondary, RecentsOrientedState orientedState,
-            SplitConfigurationOptions.StagedSplitBounds splitBoundsConfig) {
+            StagedSplitBounds splitBoundsConfig) {
         super.bind(primary, orientedState);
         mSecondaryTask = secondary;
         mTaskIdContainer[1] = secondary.key.id;
@@ -67,6 +83,7 @@ public class GroupedTaskView extends TaskView {
         if (visible) {
             RecentsModel model = RecentsModel.INSTANCE.get(getContext());
             TaskThumbnailCache thumbnailCache = model.getThumbnailCache();
+            TaskIconCache iconCache = model.getIconCache();
 
             if (needsUpdate(changes, FLAG_UPDATE_THUMBNAIL)) {
                 mThumbnailLoadRequest2 = thumbnailCache.updateThumbnailInBackground(mSecondaryTask,
@@ -76,7 +93,11 @@ public class GroupedTaskView extends TaskView {
             }
 
             if (needsUpdate(changes, FLAG_UPDATE_ICON)) {
-                // TODO What's the Icon for this going to look like? :o
+                mIconLoadRequest2 = iconCache.updateIconInBackground(mSecondaryTask,
+                        (task) -> {
+                            setIcon(mIconView2, task.icon);
+                            // TODO(199936292) Digital Wellbeing for individual tasks?
+                        });
             }
         } else {
             if (needsUpdate(changes, FLAG_UPDATE_THUMBNAIL)) {
@@ -86,9 +107,24 @@ public class GroupedTaskView extends TaskView {
                 mSecondaryTask.thumbnail = null;
             }
             if (needsUpdate(changes, FLAG_UPDATE_ICON)) {
-                // TODO
+                setIcon(mIconView2, null);
             }
         }
+    }
+
+    public void updateSplitBoundsConfig(StagedSplitBounds stagedSplitBounds) {
+        mSplitBoundsConfig = stagedSplitBounds;
+        invalidate();
+    }
+
+    @Override
+    public boolean offerTouchToChildren(MotionEvent event) {
+        computeAndSetIconTouchDelegate(mIconView2, mIcon2CenterCoords, mIcon2TouchDelegate);
+        if (mIcon2TouchDelegate.onTouchEvent(event)) {
+            return true;
+        }
+
+        return super.offerTouchToChildren(event);
     }
 
     @Override
@@ -97,6 +133,10 @@ public class GroupedTaskView extends TaskView {
         if (mThumbnailLoadRequest2 != null) {
             mThumbnailLoadRequest2.cancel();
             mThumbnailLoadRequest2 = null;
+        }
+        if (mIconLoadRequest2 != null) {
+            mIconLoadRequest2.cancel();
+            mIconLoadRequest2 = null;
         }
     }
 
@@ -137,11 +177,40 @@ public class GroupedTaskView extends TaskView {
         getPagedOrientationHandler().measureGroupedTaskViewThumbnailBounds(mSnapshotView,
                 mSnapshotView2, widthSize, heightSize, mSplitBoundsConfig,
                 mActivity.getDeviceProfile());
+        updateIconPlacement();
     }
 
     @Override
     public void setOverlayEnabled(boolean overlayEnabled) {
         super.setOverlayEnabled(overlayEnabled);
         mSnapshotView2.setOverlayEnabled(overlayEnabled);
+    }
+
+    @Override
+    public void setOrientationState(RecentsOrientedState orientationState) {
+        super.setOrientationState(orientationState);
+        DeviceProfile deviceProfile = mActivity.getDeviceProfile();
+        boolean isGridTask = deviceProfile.overviewShowAsGrid && !isFocusedTask();
+        int iconDrawableSize = isGridTask ? deviceProfile.overviewTaskIconDrawableSizeGridPx
+                : deviceProfile.overviewTaskIconDrawableSizePx;
+        mIconView2.setDrawableSize(iconDrawableSize, iconDrawableSize);
+        mIconView2.setRotation(getPagedOrientationHandler().getDegreesRotated());
+        updateIconPlacement();
+    }
+
+    private void updateIconPlacement() {
+        if (mSplitBoundsConfig == null) {
+            return;
+        }
+
+        DeviceProfile deviceProfile = mActivity.getDeviceProfile();
+        int taskIconHeight = deviceProfile.overviewTaskIconSizePx;
+        boolean isRtl = getLayoutDirection() == LAYOUT_DIRECTION_RTL;
+
+        mSnapshotView.getBoundsOnScreen(mPrimaryTempRect);
+        mSnapshotView2.getBoundsOnScreen(mSecondaryTempRect);
+        getPagedOrientationHandler().setSplitIconParams(mIconView, mIconView2,
+                taskIconHeight, mPrimaryTempRect, mSecondaryTempRect,
+                isRtl, deviceProfile, mSplitBoundsConfig);
     }
 }
