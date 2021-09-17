@@ -112,6 +112,10 @@ public class InvariantDeviceProfile {
 
     public float minCellHeight;
     public float minCellWidth;
+    public float twoPanelPortraitMinCellHeightDps;
+    public float twoPanelPortraitMinCellWidthDps;
+    public float twoPanelLandscapeMinCellHeightDps;
+    public float twoPanelLandscapeMinCellWidthDps;
     public float borderSpacing;
 
     private SparseArray<TypedValue> mExtraAttrs;
@@ -274,6 +278,10 @@ public class InvariantDeviceProfile {
 
         minCellHeight = displayOption.minCellHeight;
         minCellWidth = displayOption.minCellWidth;
+        twoPanelPortraitMinCellHeightDps = displayOption.twoPanelPortraitMinCellHeightDps;
+        twoPanelPortraitMinCellWidthDps = displayOption.twoPanelPortraitMinCellWidthDps;
+        twoPanelLandscapeMinCellHeightDps = displayOption.twoPanelLandscapeMinCellHeightDps;
+        twoPanelLandscapeMinCellWidthDps = displayOption.twoPanelLandscapeMinCellWidthDps;
         borderSpacing = displayOption.borderSpacing;
 
         numShownHotseatIcons = closestProfile.numHotseatIcons;
@@ -707,6 +715,10 @@ public class InvariantDeviceProfile {
 
         private float minCellHeight;
         private float minCellWidth;
+        private float twoPanelPortraitMinCellHeightDps;
+        private float twoPanelPortraitMinCellWidthDps;
+        private float twoPanelLandscapeMinCellHeightDps;
+        private float twoPanelLandscapeMinCellWidthDps;
         private float borderSpacing;
 
         private final float[] iconSizes = new float[COUNT_TOTAL];
@@ -726,6 +738,17 @@ public class InvariantDeviceProfile {
 
             minCellHeight = a.getFloat(R.styleable.ProfileDisplayOption_minCellHeightDps, 0);
             minCellWidth = a.getFloat(R.styleable.ProfileDisplayOption_minCellWidthDps, 0);
+            twoPanelPortraitMinCellHeightDps = a.getFloat(
+                    R.styleable.ProfileDisplayOption_twoPanelPortraitMinCellHeightDps,
+                    minCellHeight);
+            twoPanelPortraitMinCellWidthDps = a.getFloat(
+                    R.styleable.ProfileDisplayOption_twoPanelPortraitMinCellWidthDps, minCellWidth);
+            twoPanelLandscapeMinCellHeightDps = a.getFloat(
+                    R.styleable.ProfileDisplayOption_twoPanelLandscapeMinCellHeightDps,
+                    twoPanelPortraitMinCellHeightDps);
+            twoPanelLandscapeMinCellWidthDps = a.getFloat(
+                    R.styleable.ProfileDisplayOption_twoPanelLandscapeMinCellWidthDps,
+                    twoPanelPortraitMinCellWidthDps);
             borderSpacing = a.getFloat(R.styleable.ProfileDisplayOption_borderSpacingDps, 0);
 
             iconSizes[INDEX_DEFAULT] =
@@ -782,6 +805,10 @@ public class InvariantDeviceProfile {
             }
             minCellHeight *= w;
             minCellWidth *= w;
+            twoPanelPortraitMinCellHeightDps *= w;
+            twoPanelPortraitMinCellWidthDps *= w;
+            twoPanelLandscapeMinCellHeightDps *= w;
+            twoPanelLandscapeMinCellWidthDps *= w;
             borderSpacing *= w;
             return this;
         }
@@ -793,6 +820,10 @@ public class InvariantDeviceProfile {
             }
             minCellHeight += p.minCellHeight;
             minCellWidth += p.minCellWidth;
+            twoPanelPortraitMinCellHeightDps += p.twoPanelPortraitMinCellHeightDps;
+            twoPanelPortraitMinCellWidthDps += p.twoPanelPortraitMinCellWidthDps;
+            twoPanelLandscapeMinCellHeightDps += p.twoPanelLandscapeMinCellHeightDps;
+            twoPanelLandscapeMinCellWidthDps += p.twoPanelLandscapeMinCellWidthDps;
             borderSpacing += p.borderSpacing;
             return this;
         }
