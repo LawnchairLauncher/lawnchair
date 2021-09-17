@@ -29,12 +29,14 @@ import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
 import android.view.accessibility.AccessibilityEvent;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.util.SplitConfigurationOptions;
 import com.android.launcher3.util.SplitConfigurationOptions.SplitPositionOption;
 import com.android.launcher3.util.SplitConfigurationOptions.StagePosition;
+import com.android.launcher3.util.SplitConfigurationOptions.StagedSplitBounds;
 
 import java.util.List;
 
@@ -88,14 +90,11 @@ public interface PagedOrientationHandler {
     int getPrimaryScroll(View view);
     float getPrimaryScale(View view);
     int getChildStart(View view);
-    float getChildStartWithTranslation(View view);
     int getCenterForPage(View view, Rect insets);
     int getScrollOffsetStart(View view, Rect insets);
     int getScrollOffsetEnd(View view, Rect insets);
-    int getPrimaryTranslationDirectionFactor();
     int getSecondaryTranslationDirectionFactor();
     int getSplitTranslationDirectionFactor(@StagePosition int stagePosition);
-    int getSplitAnimationTranslation(int translationOffset, DeviceProfile dp);
     ChildBounds getChildBounds(View child, int childStart, int pageCenter, boolean layoutChild);
     void setMaxScroll(AccessibilityEvent event, int maxScroll);
     boolean getRecentsRtlSetting(Resources resources);
@@ -144,12 +143,12 @@ public interface PagedOrientationHandler {
      *                           outRect for
      */
     void setSplitTaskSwipeRect(DeviceProfile dp, Rect outRect,
-            SplitConfigurationOptions.StagedSplitBounds splitInfo,
+            StagedSplitBounds splitInfo,
             @SplitConfigurationOptions.StagePosition int desiredStagePosition);
 
     /**
      * It's important to note that {@link #setSplitTaskSwipeRect(DeviceProfile, Rect,
-     * SplitConfigurationOptions.StagedSplitBounds, int)} above operates on the outRect based on
+     * StagedSplitBounds, int)} above operates on the outRect based on
      * launcher's coordinate system, meaning it will treat the outRect as portrait if home rotation
      * is not allowed.
      *
@@ -159,7 +158,7 @@ public interface PagedOrientationHandler {
      * usual Y
      */
     void setLeashSplitOffset(Point splitOffset, DeviceProfile dp,
-            SplitConfigurationOptions.StagedSplitBounds splitInfo,
+            StagedSplitBounds splitInfo,
             @SplitConfigurationOptions.StagePosition int desiredStagePosition);
 
     void measureGroupedTaskViewThumbnailBounds(View primarySnapshot, View secondarySnapshot,
@@ -167,6 +166,11 @@ public interface PagedOrientationHandler {
             SplitConfigurationOptions.StagedSplitBounds splitBoundsConfig, DeviceProfile dp);
 
     // Overview TaskMenuView methods
+    void setIconAndSnapshotParams(View iconView, int taskIconMargin, int taskIconHeight,
+            FrameLayout.LayoutParams snapshotParams, boolean isRtl);
+    void setSplitIconParams(View primaryIconView, View secondaryIconView,
+            int taskIconHeight, Rect primarySnapshotBounds, Rect secondarySnapshotBounds,
+            boolean isRtl, DeviceProfile deviceProfile, StagedSplitBounds splitConfig);
     float getTaskMenuX(float x, View thumbnailView, int overScroll);
     float getTaskMenuY(float y, View thumbnailView, int overScroll);
     int getTaskMenuWidth(View view);
