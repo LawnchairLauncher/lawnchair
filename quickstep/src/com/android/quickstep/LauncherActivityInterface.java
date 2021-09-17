@@ -309,13 +309,6 @@ public final class LauncherActivityInterface extends
     }
 
     @Override
-    void onOverviewServiceBound() {
-        final BaseQuickstepLauncher activity = getCreatedActivity();
-        if (activity == null) return;
-        activity.getAppTransitionManager().registerRemoteTransitions();
-    }
-
-    @Override
     public @Nullable Animator getParallelAnimationToLauncher(GestureEndTarget endTarget,
             long duration, RecentsAnimationCallbacks callbacks) {
         LauncherTaskbarUIController uiController = getTaskbarController();

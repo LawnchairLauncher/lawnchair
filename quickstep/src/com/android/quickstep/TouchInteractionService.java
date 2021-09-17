@@ -179,12 +179,6 @@ public class TouchInteractionService extends Service implements PluginListener<O
                         smartspaceTransitionController);
                 TouchInteractionService.this.initInputMonitor();
                 preloadOverview(true /* fromInit */);
-                mDeviceState.runOnUserUnlocked(() -> {
-                    final BaseActivityInterface ai =
-                            mOverviewComponentObserver.getActivityInterface();
-                    if (ai == null) return;
-                    ai.onOverviewServiceBound();
-                });
             });
             sIsInitialized = true;
         }
