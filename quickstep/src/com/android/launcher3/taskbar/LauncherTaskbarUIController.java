@@ -19,10 +19,12 @@ import static com.android.launcher3.LauncherState.HOTSEAT_ICONS;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASKBAR_LONGPRESS_HIDE;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASKBAR_LONGPRESS_SHOW;
 import static com.android.launcher3.taskbar.TaskbarStashController.FLAG_IN_APP;
+import static com.android.launcher3.taskbar.TaskbarStashController.FLAG_IN_STASHED_LAUNCHER_STATE;
 import static com.android.launcher3.taskbar.TaskbarViewController.ALPHA_INDEX_HOME;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.graphics.Rect;
 import android.view.MotionEvent;
@@ -42,6 +44,7 @@ import com.android.launcher3.logging.InstanceId;
 import com.android.launcher3.logging.InstanceIdSequence;
 import com.android.launcher3.model.data.ItemInfoWithIcon;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
+import com.android.launcher3.statemanager.StateManager;
 import com.android.launcher3.util.MultiValueAlpha;
 import com.android.launcher3.util.MultiValueAlpha.AlphaProperty;
 import com.android.launcher3.util.OnboardingPrefs;
@@ -75,6 +78,16 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
 
     private final DeviceProfile.OnDeviceProfileChangeListener mOnDeviceProfileChangeListener =
             this::onStashedInAppChanged;
+
+    private final StateManager.StateListener<LauncherState> mStateListener =
+            new StateManager.StateListener<LauncherState>() {
+                @Override
+                public void onStateTransitionComplete(LauncherState finalState) {
+                    TaskbarStashController controller = mControllers.taskbarStashController;
+                    controller.updateStateForFlag(FLAG_IN_STASHED_LAUNCHER_STATE,
+                            finalState.isTaskbarStashed());
+                }
+            };
 
     // Initialized in init.
     private TaskbarControllers mControllers;
@@ -118,6 +131,7 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
 
         onStashedInAppChanged(mLauncher.getDeviceProfile());
         mLauncher.addOnDeviceProfileChangeListener(mOnDeviceProfileChangeListener);
+        mLauncher.getStateManager().addStateListener(mStateListener);
     }
 
     @Override
@@ -127,6 +141,7 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
         mIconAlignmentForGestureState.finishAnimation();
 
         mLauncher.removeOnDeviceProfileChangeListener(mOnDeviceProfileChangeListener);
+        mLauncher.getStateManager().removeStateListener(mStateListener);
         mLauncher.getHotseat().setIconsAlpha(1f);
         mLauncher.setTaskbarUIController(null);
     }
@@ -184,24 +199,28 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
      */
     public Animator createAnimToLauncher(@NonNull LauncherState toState,
             @NonNull RecentsAnimationCallbacks callbacks, long duration) {
+        AnimatorSet animatorSet = new AnimatorSet();
         TaskbarStashController stashController = mControllers.taskbarStashController;
-        ObjectAnimator animator = mIconAlignmentForGestureState
-                .animateToValue(1)
-                .setDuration(duration);
-        animator.addListener(new AnimatorListenerAdapter() {
+        stashController.updateStateForFlag(FLAG_IN_STASHED_LAUNCHER_STATE,
+                toState.isTaskbarStashed());
+        if (toState.isTaskbarStashed()) {
+            animatorSet.play(stashController.applyStateWithoutStart(duration));
+        } else {
+            animatorSet.play(mIconAlignmentForGestureState
+                    .animateToValue(1)
+                    .setDuration(duration));
+        }
+        animatorSet.addListener(new AnimatorListenerAdapter() {
             @Override
-            public void onAnimationEnd(Animator animation) {
+            public void onAnimationEnd(Animator animator) {
                 mTargetStateOverride = null;
                 animator.removeListener(this);
             }
 
             @Override
-            public void onAnimationStart(Animator animation) {
+            public void onAnimationStart(Animator animator) {
                 mTargetStateOverride = toState;
                 mIsAnimatingToLauncherViaGesture = true;
-                // TODO: FLAG_IN_APP might be sufficient for now, but in the future we do want to
-                // add another flag for LauncherState as well. We will need to decide whether to
-                // show hotseat or the task bar.
                 stashController.updateStateForFlag(FLAG_IN_APP, false);
                 stashController.applyState(duration);
             }
@@ -215,7 +234,7 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
             callbacks.removeListener(listener);
         });
 
-        return animator;
+        return animatorSet;
     }
 
     private float getCurrentIconAlignmentRatio() {
