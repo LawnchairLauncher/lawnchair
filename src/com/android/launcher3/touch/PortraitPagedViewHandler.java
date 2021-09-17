@@ -20,6 +20,7 @@ import static android.view.Gravity.BOTTOM;
 import static android.view.Gravity.CENTER_HORIZONTAL;
 import static android.view.Gravity.START;
 import static android.view.Gravity.TOP;
+import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 
 import static com.android.launcher3.LauncherAnimUtils.VIEW_TRANSLATE_X;
 import static com.android.launcher3.LauncherAnimUtils.VIEW_TRANSLATE_Y;
@@ -264,8 +265,14 @@ public class PortraitPagedViewHandler implements PagedOrientationHandler {
     }
 
     @Override
-    public float getTaskMenuX(float x, View thumbnailView, int overScroll) {
-        return x + overScroll;
+    public float getTaskMenuX(float x, View thumbnailView, int overScroll,
+            DeviceProfile deviceProfile) {
+        if (deviceProfile.isLandscape) {
+            return x + overScroll
+                    + (thumbnailView.getMeasuredWidth() - thumbnailView.getMeasuredHeight()) / 2f;
+        } else {
+            return x + overScroll;
+        }
     }
 
     @Override
@@ -274,43 +281,27 @@ public class PortraitPagedViewHandler implements PagedOrientationHandler {
     }
 
     @Override
-    public int getTaskMenuWidth(View view) {
-        return view.getMeasuredWidth();
+    public int getTaskMenuWidth(View view, DeviceProfile deviceProfile) {
+        return deviceProfile.isLandscape && !deviceProfile.overviewShowAsGrid ?
+                view.getMeasuredHeight() :
+                view.getMeasuredWidth();
     }
 
     @Override
     public void setTaskOptionsMenuLayoutOrientation(DeviceProfile deviceProfile,
             LinearLayout taskMenuLayout, int dividerSpacing,
             ShapeDrawable dividerDrawable) {
-        if (deviceProfile.isLandscape && !deviceProfile.isTablet) {
-            // Phone landscape
-            taskMenuLayout.setOrientation(LinearLayout.HORIZONTAL);
-            dividerDrawable.setIntrinsicWidth(dividerSpacing);
-        } else {
-            // Phone Portrait, LargeScreen Landscape/Portrait
-            taskMenuLayout.setOrientation(LinearLayout.VERTICAL);
-            dividerDrawable.setIntrinsicHeight(dividerSpacing);
-        }
+        taskMenuLayout.setOrientation(LinearLayout.VERTICAL);
+        dividerDrawable.setIntrinsicHeight(dividerSpacing);
         taskMenuLayout.setDividerDrawable(dividerDrawable);
     }
 
     @Override
     public void setLayoutParamsForTaskMenuOptionItem(LinearLayout.LayoutParams lp,
             LinearLayout viewGroup, DeviceProfile deviceProfile) {
-        if (deviceProfile.isLandscape && !deviceProfile.isTablet) {
-            // Phone landscape
-            viewGroup.setOrientation(LinearLayout.VERTICAL);
-            lp.width = 0;
-            lp.weight = 1;
-            Utilities.setStartMarginForView(viewGroup.findViewById(R.id.text), 0);
-            Utilities.setStartMarginForView(viewGroup.findViewById(R.id.icon), 0);
-        } else {
-            // Phone Portrait, LargeScreen Landscape/Portrait
-            viewGroup.setOrientation(LinearLayout.HORIZONTAL);
-            lp.width = LinearLayout.LayoutParams.MATCH_PARENT;
-        }
-
-        lp.height = LinearLayout.LayoutParams.WRAP_CONTENT;
+        viewGroup.setOrientation(LinearLayout.HORIZONTAL);
+        lp.width = LinearLayout.LayoutParams.MATCH_PARENT;
+        lp.height = WRAP_CONTENT;
     }
 
     @Override

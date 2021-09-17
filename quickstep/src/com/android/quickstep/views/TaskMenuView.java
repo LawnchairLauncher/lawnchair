@@ -151,7 +151,7 @@ public class TaskMenuView extends AbstractFloatingView implements OnScrollChange
         }
         setRotation(pagedOrientationHandler.getDegreesRotated());
         setX(pagedOrientationHandler.getTaskMenuX(adjustedX,
-                mTaskContainer.getThumbnailView(), overscrollShift));
+                mTaskContainer.getThumbnailView(), overscrollShift, deviceProfile));
         setY(pagedOrientationHandler.getTaskMenuY(
                 adjustedY, mTaskContainer.getThumbnailView(), overscrollShift));
 
@@ -229,7 +229,6 @@ public class TaskMenuView extends AbstractFloatingView implements OnScrollChange
     private void addMenuOptions(TaskIdAttributeContainer taskContainer) {
         mTaskName.setText(TaskUtils.getTitle(getContext(), taskContainer.getTask()));
         mTaskName.setOnClickListener(v -> close(true));
-        
         TaskOverlayFactory.getEnabledShortcuts(mTaskView, mActivity.getDeviceProfile(),
                 taskContainer)
                 .forEach(this::addMenuOption);
@@ -256,13 +255,21 @@ public class TaskMenuView extends AbstractFloatingView implements OnScrollChange
         orientationHandler.setTaskMenuAroundTaskView(this, mTaskInsetMargin);
 
         // Get Position
+        DeviceProfile deviceProfile = mActivity.getDeviceProfile();
         mActivity.getDragLayer().getDescendantRectRelativeToSelf(mTaskView, sTempRect);
         Rect insets = mActivity.getDragLayer().getInsets();
         BaseDragLayer.LayoutParams params = (BaseDragLayer.LayoutParams) getLayoutParams();
         int padding = getResources()
                 .getDimensionPixelSize(R.dimen.task_menu_vertical_padding);
-        params.width = orientationHandler
-                .getTaskMenuWidth(taskContainer.getThumbnailView()) - (2 * padding);
+        if (deviceProfile.overviewShowAsGrid) {
+            // TODO(b/193432925) temporary so it doesn't look terrible on large screen
+            params.width =
+                    getContext().getResources().getDimensionPixelSize(R.dimen.task_menu_width_grid);
+        } else {
+            params.width = orientationHandler
+                    .getTaskMenuWidth(taskContainer.getThumbnailView(),
+                            deviceProfile) - (2 * padding);
+        }
         // Gravity set to Left instead of Start as sTempRect.left measures Left distance not Start
         params.gravity = Gravity.LEFT;
         setLayoutParams(params);
@@ -276,7 +283,7 @@ public class TaskMenuView extends AbstractFloatingView implements OnScrollChange
         mOptionLayout.setShowDividers(SHOW_DIVIDER_MIDDLE);
 
         orientationHandler.setTaskOptionsMenuLayoutOrientation(
-                mActivity.getDeviceProfile(), mOptionLayout, dividerSpacing, divider);
+                deviceProfile, mOptionLayout, dividerSpacing, divider);
         setPosition(sTempRect.left - insets.left, sTempRect.top - insets.top, 0);
     }
 

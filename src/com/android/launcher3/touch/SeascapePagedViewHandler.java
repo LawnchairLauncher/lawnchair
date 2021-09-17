@@ -81,13 +81,15 @@ public class SeascapePagedViewHandler extends LandscapePagedViewHandler {
     }
 
     @Override
-    public float getTaskMenuX(float x, View thumbnailView, int overScroll) {
+    public float getTaskMenuX(float x, View thumbnailView, int overScroll,
+            DeviceProfile deviceProfile) {
         return x;
     }
 
     @Override
     public float getTaskMenuY(float y, View thumbnailView, int overScroll) {
-        return y + thumbnailView.getMeasuredHeight() + overScroll;
+        return y + overScroll +
+                (thumbnailView.getMeasuredHeight() + thumbnailView.getMeasuredWidth()) / 2f;
     }
 
     @Override

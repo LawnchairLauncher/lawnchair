@@ -20,7 +20,8 @@ import static android.view.Gravity.CENTER_VERTICAL;
 import static android.view.Gravity.END;
 import static android.view.Gravity.START;
 import static android.view.Gravity.TOP;
-import static android.widget.ListPopupWindow.WRAP_CONTENT;
+import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
+import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 
 import static com.android.launcher3.LauncherAnimUtils.VIEW_TRANSLATE_X;
 import static com.android.launcher3.LauncherAnimUtils.VIEW_TRANSLATE_Y;
@@ -257,26 +258,28 @@ public class LandscapePagedViewHandler implements PagedOrientationHandler {
     }
 
     @Override
-    public float getTaskMenuX(float x, View thumbnailView, int overScroll) {
+    public float getTaskMenuX(float x, View thumbnailView, int overScroll,
+            DeviceProfile deviceProfile) {
         return thumbnailView.getMeasuredWidth() + x;
     }
 
     @Override
     public float getTaskMenuY(float y, View thumbnailView, int overScroll) {
-        return y + overScroll;
+        return y + overScroll +
+                (thumbnailView.getMeasuredHeight() - thumbnailView.getMeasuredWidth()) / 2f;
     }
 
     @Override
-    public int getTaskMenuWidth(View view) {
-        return view.getMeasuredHeight();
+    public int getTaskMenuWidth(View view, DeviceProfile deviceProfile) {
+        return view.getMeasuredWidth();
     }
 
     @Override
     public void setTaskOptionsMenuLayoutOrientation(DeviceProfile deviceProfile,
             LinearLayout taskMenuLayout, int dividerSpacing,
             ShapeDrawable dividerDrawable) {
-        taskMenuLayout.setOrientation(LinearLayout.HORIZONTAL);
-        dividerDrawable.setIntrinsicWidth(dividerSpacing);
+        taskMenuLayout.setOrientation(LinearLayout.VERTICAL);
+        dividerDrawable.setIntrinsicHeight(dividerSpacing);
         taskMenuLayout.setDividerDrawable(dividerDrawable);
     }
 
@@ -284,12 +287,9 @@ public class LandscapePagedViewHandler implements PagedOrientationHandler {
     public void setLayoutParamsForTaskMenuOptionItem(LinearLayout.LayoutParams lp,
             LinearLayout viewGroup, DeviceProfile deviceProfile) {
         // Phone fake landscape
-        viewGroup.setOrientation(LinearLayout.VERTICAL);
-        lp.width = 0;
+        viewGroup.setOrientation(LinearLayout.HORIZONTAL);
+        lp.width = MATCH_PARENT;
         lp.height = WRAP_CONTENT;
-        lp.weight = 1;
-        Utilities.setStartMarginForView(viewGroup.findViewById(R.id.text), 0);
-        Utilities.setStartMarginForView(viewGroup.findViewById(R.id.icon), 0);
     }
 
     @Override
