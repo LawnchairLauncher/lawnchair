@@ -347,13 +347,13 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
             if (panelCount > 1) {
                 if (i % panelCount == leftPanelModulus) {
                     paddingLeft = paddingLeftRight;
-                    paddingRight = 0;
-                } else if (i % panelCount == rightPanelModulus) {
-                    paddingLeft = 0;
+                    paddingRight = grid.cellLayoutBorderSpacingPx / 2;
+                } else if (i % panelCount == rightPanelModulus) { // right side panel
+                    paddingLeft = grid.cellLayoutBorderSpacingPx / 2;
                     paddingRight = paddingLeftRight;
                 } else { // middle panel
-                    paddingLeft = 0;
-                    paddingRight = 0;
+                    paddingLeft = grid.cellLayoutBorderSpacingPx / 2;
+                    paddingRight = grid.cellLayoutBorderSpacingPx / 2;
                 }
             }
             // SparseArrayMap doesn't keep the order
