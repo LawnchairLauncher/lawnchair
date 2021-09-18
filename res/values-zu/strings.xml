@@ -69,6 +69,7 @@
     <string name="out_of_space" msgid="6692471482459245734">"Asikho isikhala kulesi sikrini sasekhaya"</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"Asisekho isikhala kwitreyi lezintandokazi"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"Uhlu lwezinhlelo zokusebenza"</string>
+    <string name="all_apps_search_results" msgid="5889367432531296759">"Imiphumela yosesho"</string>
     <string name="all_apps_button_personal_label" msgid="1315764287305224468">"Uhlu lwezinhlelo zokusebenza zomuntu siqu"</string>
     <string name="all_apps_button_work_label" msgid="7270707118948892488">"Uhlu lwezinhlelo zokusebenza zomsebenzi"</string>
     <string name="remove_drop_target_label" msgid="7812859488053230776">"Susa"</string>
