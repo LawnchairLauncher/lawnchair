@@ -22,7 +22,7 @@
     <string name="recent_task_option_pin" msgid="7929860679018978258">"পিন"</string>
     <string name="recent_task_option_freeform" msgid="48863056265284071">"Freeform"</string>
     <string name="recents_empty_message" msgid="7040467240571714191">"কোনো শেহতীয়া বস্তু নাই"</string>
-    <string name="accessibility_app_usage_settings" msgid="6312864233673544149">"এপে ব্যৱহাৰ কৰা ডেটাৰ ছেটিংসমূহ"</string>
+    <string name="accessibility_app_usage_settings" msgid="6312864233673544149">"এপে ব্যৱহাৰ কৰা ডেটাৰ ছেটিং"</string>
     <string name="recents_clear_all" msgid="5328176793634888831">"সকলো মচক"</string>
     <string name="accessibility_recent_apps" msgid="4058661986695117371">"শেহতীয়া এপসমূহ"</string>
     <string name="task_contents_description_with_remaining_time" msgid="4479688746574672685">"<xliff:g id="TASK_DESCRIPTION">%1$s</xliff:g>, <xliff:g id="REMAINING_TIME">%2$s</xliff:g>"</string>
@@ -38,7 +38,7 @@
     <string name="hotseat_edu_message_migrate_alt" msgid="3042360119039646356">"আপোনাৰ সকলোতকৈ বেছিকৈ ব্যৱহৃত এপ্‌সমূহ গৃহ স্ক্ৰীনতে সহজে এক্সেছ কৰক। আপোনাৰ ৰুটিনসমূহৰ ভিত্তিত পৰামর্শসমূহ সলনি হ\'ব। একেবাৰে তলৰ শাৰীটোত থকা এপ্‌সমূহ এটা নতুন ফ\'ল্ডাৰলৈ যাব।"</string>
     <string name="hotseat_edu_accept" msgid="1611544083278999837">"এপৰ পৰামর্শসমূহ পাওক"</string>
     <string name="hotseat_edu_dismiss" msgid="2781161822780201689">"নালাগে, ধন্যবাদ"</string>
-    <string name="hotseat_prediction_settings" msgid="6246554993566070818">"ছেটিংসমূহ"</string>
+    <string name="hotseat_prediction_settings" msgid="6246554993566070818">"ছেটিং"</string>
     <string name="hotseat_auto_enrolled" msgid="522100018967146807">"সকলোতকৈ বেছিকৈ ব্যৱহৃত এপ্‌সমূহ ইয়াত প্ৰদর্শিত হয় আৰু ৰুটিনসমূহ ওপৰত ভিত্তি কৰি সলনি হয়"</string>
     <string name="hotseat_tip_no_empty_slots" msgid="1325212677738179185">"এপৰ পৰামর্শসমূহ পাবলৈ একেবাৰে তলৰ শাৰীত থকা এপ্‌সমূহ টানি আঁতৰাওক"</string>
     <string name="hotseat_tip_gaps_filled" msgid="3035673010274223538">"খালী ঠাইত এপৰ পৰামর্শসমূহ যোগ কৰা হ\'ল"</string>
