@@ -69,6 +69,7 @@
     <string name="out_of_space" msgid="6692471482459245734">"Няма място на този начален екран"</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"Няма повече място в областта с любимите"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"Списък с приложения"</string>
+    <string name="all_apps_search_results" msgid="5889367432531296759">"Резултати от търсенето"</string>
     <string name="all_apps_button_personal_label" msgid="1315764287305224468">"Списък с лични приложения"</string>
     <string name="all_apps_button_work_label" msgid="7270707118948892488">"Списък със служебни приложения"</string>
     <string name="remove_drop_target_label" msgid="7812859488053230776">"Премахване"</string>

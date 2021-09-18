@@ -69,6 +69,7 @@
     <string name="out_of_space" msgid="6692471482459245734">"ਇਸ ਹੋਮ ਸਕ੍ਰੀਨ \'ਤੇ ਜਗ੍ਹਾ ਨਹੀਂ ਬਚੀ"</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"ਮਨਪਸੰਦ ਟ੍ਰੇ ਵਿੱਚ ਹੋਰ ਖਾਲੀ ਸਥਾਨ ਨਹੀਂ।"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"ਐਪ ਸੂਚੀ"</string>
+    <string name="all_apps_search_results" msgid="5889367432531296759">"ਖੋਜ ਨਤੀਜੇ"</string>
     <string name="all_apps_button_personal_label" msgid="1315764287305224468">"ਨਿੱਜੀ ਐਪਾਂ ਦੀ ਸੂਚੀ"</string>
     <string name="all_apps_button_work_label" msgid="7270707118948892488">"ਕਾਰਜ-ਸਥਾਨ ਸੰਬੰਧੀ ਐਪਾਂ ਦੀ ਸੂਚੀ"</string>
     <string name="remove_drop_target_label" msgid="7812859488053230776">"ਹਟਾਓ"</string>

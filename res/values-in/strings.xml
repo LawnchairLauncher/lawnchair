@@ -69,6 +69,7 @@
     <string name="out_of_space" msgid="6692471482459245734">"Tidak ada ruang di Layar utama ini"</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"Tidak ada ruang tersisa di baki Favorit"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"Daftar aplikasi"</string>
+    <string name="all_apps_search_results" msgid="5889367432531296759">"Hasil penelusuran"</string>
     <string name="all_apps_button_personal_label" msgid="1315764287305224468">"Daftar aplikasi pribadi"</string>
     <string name="all_apps_button_work_label" msgid="7270707118948892488">"Daftar aplikasi kantor"</string>
     <string name="remove_drop_target_label" msgid="7812859488053230776">"Hapus"</string>
