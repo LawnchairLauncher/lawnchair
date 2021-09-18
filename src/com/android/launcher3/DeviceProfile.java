@@ -33,6 +33,7 @@ import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.util.DisplayMetrics;
+import android.util.Pair;
 import android.view.Surface;
 
 import com.android.launcher3.CellLayout.ContainerType;
@@ -576,8 +577,9 @@ public class DeviceProfile {
             // We scale to fit the cellWidth and cellHeight in the available space.
             // The benefit of scalable grids is that we can get consistent aspect ratios between
             // devices.
-            float usedWidth = (cellWidthPx * inv.numColumns)
-                    + (cellLayoutBorderSpacingPx * (inv.numColumns - 1))
+            int numColumns = isTwoPanels ? inv.numColumns * 2 : inv.numColumns;
+            float usedWidth = (cellWidthPx * numColumns)
+                    + (cellLayoutBorderSpacingPx * (numColumns - 1))
                     + (desiredWorkspaceLeftRightMarginPx * 2);
             // We do not subtract padding here, as we also scale the workspace padding if needed.
             scaleX = availableWidthPx / usedWidth;
@@ -638,8 +640,9 @@ public class DeviceProfile {
         setCellLayoutBorderSpacing((int) (cellLayoutBorderSpacingOriginalPx * scale));
 
         if (isScalableGrid) {
-            cellWidthPx = pxFromDp(inv.minCellWidth, mMetrics, scale);
-            cellHeightPx = pxFromDp(inv.minCellHeight, mMetrics, scale);
+            PointF minCellHeightAndWidth = getMinCellHeightAndWidth();
+            cellWidthPx = pxFromDp(minCellHeightAndWidth.x, mMetrics, scale);
+            cellHeightPx = pxFromDp(minCellHeightAndWidth.y, mMetrics, scale);
             int cellContentHeight = iconSizePx + iconDrawablePaddingPx
                     + Utilities.calculateTextHeight(iconTextSizePx);
             cellYPaddingPx = Math.max(0, cellHeightPx - cellContentHeight) / 2;
@@ -696,6 +699,28 @@ public class DeviceProfile {
         // Folder icon
         folderIconSizePx = IconNormalizer.getNormalizedCircleSize(iconSizePx);
         folderIconOffsetYPx = (iconSizePx - folderIconSizePx) / 2;
+    }
+
+    /**
+     * Returns the minimum cell height and width as a pair.
+     */
+    private PointF getMinCellHeightAndWidth() {
+        PointF result = new PointF();
+
+        if (isTwoPanels) {
+            if (isLandscape) {
+                result.x = inv.twoPanelLandscapeMinCellWidthDps;
+                result.y = inv.twoPanelLandscapeMinCellHeightDps;
+            } else {
+                result.x = inv.twoPanelPortraitMinCellWidthDps;
+                result.y = inv.twoPanelPortraitMinCellHeightDps;
+            }
+        } else {
+            result.x = inv.minCellWidth;
+            result.y = inv.minCellHeight;
+        }
+
+        return result;
     }
 
     private void updateAvailableFolderCellDimensions(Resources res) {
@@ -781,17 +806,14 @@ public class DeviceProfile {
         if (result == null) {
             result = new Point();
         }
+
         // Since we are only concerned with the overall padding, layout direction does
         // not matter.
         Point padding = getTotalWorkspacePadding();
-        // availableWidthPx is the screen width of the device. In 2 panels mode, each panel should
-        // only have half of the screen width. In addition, there is only cellLayoutPadding in the
-        // left side of the left most panel and the right most side of the right panel. There is no
-        // cellLayoutPadding in the middle.
-        int screenWidthPx = isTwoPanels
-                ? availableWidthPx / 2 - padding.x - cellLayoutPaddingLeftRightPx
-                : availableWidthPx - padding.x - cellLayoutPaddingLeftRightPx * 2;
-        result.x = calculateCellWidth(screenWidthPx, cellLayoutBorderSpacingPx, inv.numColumns);
+
+        int numColumns = isTwoPanels ? inv.numColumns * 2 : inv.numColumns;
+        int screenWidthPx = availableWidthPx - padding.x;
+        result.x = calculateCellWidth(screenWidthPx, cellLayoutBorderSpacingPx, numColumns);
         result.y = calculateCellHeight(availableHeightPx - padding.y
                 - cellLayoutBottomPaddingPx, cellLayoutBorderSpacingPx, inv.numRows);
         return result;
@@ -1038,6 +1060,14 @@ public class DeviceProfile {
 
         writer.println(prefix + "\tinv.minCellWidth:" + inv.minCellWidth + "dp");
         writer.println(prefix + "\tinv.minCellHeight:" + inv.minCellHeight + "dp");
+        writer.println(prefix + "\tinv.twoPanelPortraitMinCellHeightDps:"
+                + inv.twoPanelPortraitMinCellHeightDps + "dp");
+        writer.println(prefix + "\tinv.twoPanelPortraitMinCellWidthDps:"
+                + inv.twoPanelPortraitMinCellWidthDps + "dp");
+        writer.println(prefix + "\tinv.twoPanelLandscapeMinCellHeightDps:"
+                + inv.twoPanelLandscapeMinCellHeightDps + "dp");
+        writer.println(prefix + "\tinv.twoPanelLandscapeMinCellWidthDps:"
+                + inv.twoPanelLandscapeMinCellWidthDps + "dp");
 
         writer.println(prefix + "\tinv.numColumns:" + inv.numColumns);
         writer.println(prefix + "\tinv.numRows:" + inv.numRows);
