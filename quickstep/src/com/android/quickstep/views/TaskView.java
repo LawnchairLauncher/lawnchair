@@ -374,7 +374,7 @@ public class TaskView extends FrameLayout implements Reusable {
 
     protected Task mTask;
     protected TaskThumbnailView mSnapshotView;
-    private IconView mIconView;
+    protected IconView mIconView;
     private final DigitalWellBeingToast mDigitalWellBeingToast;
     private float mFullscreenProgress;
     private float mGridProgress;
@@ -492,7 +492,7 @@ public class TaskView extends FrameLayout implements Reusable {
      */
     public boolean offerTouchToChildren(MotionEvent event) {
         if (event.getAction() == MotionEvent.ACTION_DOWN) {
-            computeAndSetIconTouchDelegate();
+            computeAndSetIconTouchDelegate(mIconView, mIconCenterCoords, mIconTouchDelegate);
             computeAndSetChipTouchDelegate();
         }
         if (mIconTouchDelegate != null && mIconTouchDelegate.onTouchEvent(event)) {
@@ -504,16 +504,17 @@ public class TaskView extends FrameLayout implements Reusable {
         return false;
     }
 
-    private void computeAndSetIconTouchDelegate() {
-        float iconHalfSize = mIconView.getWidth() / 2f;
-        mIconCenterCoords[0] = mIconCenterCoords[1] = iconHalfSize;
-        getDescendantCoordRelativeToAncestor(mIconView, mActivity.getDragLayer(), mIconCenterCoords,
+    protected void computeAndSetIconTouchDelegate(IconView iconView, float[] tempCenterCoords,
+            TransformingTouchDelegate transformingTouchDelegate) {
+        float iconHalfSize = iconView.getWidth() / 2f;
+        tempCenterCoords[0] = tempCenterCoords[1] = iconHalfSize;
+        getDescendantCoordRelativeToAncestor(iconView, mActivity.getDragLayer(), tempCenterCoords,
                 false);
-        mIconTouchDelegate.setBounds(
-                (int) (mIconCenterCoords[0] - iconHalfSize),
-                (int) (mIconCenterCoords[1] - iconHalfSize),
-                (int) (mIconCenterCoords[0] + iconHalfSize),
-                (int) (mIconCenterCoords[1] + iconHalfSize));
+        transformingTouchDelegate.setBounds(
+                (int) (tempCenterCoords[0] - iconHalfSize),
+                (int) (tempCenterCoords[1] - iconHalfSize),
+                (int) (tempCenterCoords[0] + iconHalfSize),
+                (int) (tempCenterCoords[1] + iconHalfSize));
     }
 
     private void computeAndSetChipTouchDelegate() {
@@ -792,7 +793,7 @@ public class TaskView extends FrameLayout implements Reusable {
             if (needsUpdate(changes, FLAG_UPDATE_ICON)) {
                 mIconLoadRequest = iconCache.updateIconInBackground(mTask,
                         (task) -> {
-                            setIcon(task.icon);
+                            setIcon(mIconView, task.icon);
                             mDigitalWellBeingToast.initialize(mTask);
                         });
             }
@@ -804,7 +805,7 @@ public class TaskView extends FrameLayout implements Reusable {
                 mTask.thumbnail = null;
             }
             if (needsUpdate(changes, FLAG_UPDATE_ICON)) {
-                setIcon(null);
+                setIcon(mIconView, null);
             }
         }
     }
@@ -840,10 +841,10 @@ public class TaskView extends FrameLayout implements Reusable {
         }
     }
 
-    private void setIcon(Drawable icon) {
+    protected void setIcon(IconView iconView, Drawable icon) {
         if (icon != null) {
-            mIconView.setDrawable(icon);
-            mIconView.setOnClickListener(v -> {
+            iconView.setDrawable(icon);
+            iconView.setOnClickListener(v -> {
                 if (ENABLE_QUICKSTEP_LIVE_TILE.get() && isRunningTask()) {
                     RecentsView recentsView = getRecentsView();
                     recentsView.switchToScreenshot(
@@ -854,14 +855,14 @@ public class TaskView extends FrameLayout implements Reusable {
                     showTaskMenu();
                 }
             });
-            mIconView.setOnLongClickListener(v -> {
+            iconView.setOnLongClickListener(v -> {
                 requestDisallowInterceptTouchEvent(true);
                 return showTaskMenu();
             });
         } else {
-            mIconView.setDrawable(null);
-            mIconView.setOnClickListener(null);
-            mIconView.setOnLongClickListener(null);
+            iconView.setDrawable(null);
+            iconView.setOnClickListener(null);
+            iconView.setOnLongClickListener(null);
         }
     }
 
@@ -877,32 +878,8 @@ public class TaskView extends FrameLayout implements Reusable {
                 : deviceProfile.overviewTaskMarginPx;
         int taskIconMargin = snapshotParams.topMargin - taskIconHeight - taskMargin;
         LayoutParams iconParams = (LayoutParams) mIconView.getLayoutParams();
-        switch (orientationHandler.getRotation()) {
-            case ROTATION_90:
-                iconParams.gravity = (isRtl ? START : END) | CENTER_VERTICAL;
-                iconParams.rightMargin = -taskIconHeight - taskIconMargin / 2;
-                iconParams.leftMargin = 0;
-                iconParams.topMargin = snapshotParams.topMargin / 2;
-                break;
-            case ROTATION_180:
-                iconParams.gravity = BOTTOM | CENTER_HORIZONTAL;
-                iconParams.bottomMargin = -snapshotParams.topMargin;
-                iconParams.leftMargin = iconParams.rightMargin = 0;
-                iconParams.topMargin = taskIconMargin;
-                break;
-            case ROTATION_270:
-                iconParams.gravity = (isRtl ? END : START) | CENTER_VERTICAL;
-                iconParams.leftMargin = -taskIconHeight - taskIconMargin / 2;
-                iconParams.rightMargin = 0;
-                iconParams.topMargin = snapshotParams.topMargin / 2;
-                break;
-            case Surface.ROTATION_0:
-            default:
-                iconParams.gravity = TOP | CENTER_HORIZONTAL;
-                iconParams.leftMargin = iconParams.rightMargin = 0;
-                iconParams.topMargin = taskIconMargin;
-                break;
-        }
+        orientationHandler.setIconAndSnapshotParams(mIconView, taskIconMargin, taskIconHeight,
+                snapshotParams, isRtl);
         mSnapshotView.setLayoutParams(snapshotParams);
         iconParams.width = iconParams.height = taskIconHeight;
         mIconView.setLayoutParams(iconParams);

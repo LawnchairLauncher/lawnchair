@@ -53,6 +53,7 @@ import static com.android.quickstep.views.ClearAllButton.DISMISS_ALPHA;
 import static com.android.quickstep.views.OverviewActionsView.HIDDEN_NON_ZERO_ROTATION;
 import static com.android.quickstep.views.OverviewActionsView.HIDDEN_NO_RECENTS;
 import static com.android.quickstep.views.OverviewActionsView.HIDDEN_NO_TASKS;
+import static com.android.quickstep.views.OverviewActionsView.HIDDEN_SPLIT_SCREEN;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -1109,6 +1110,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                 gtv.onTaskListVisibilityChanged(false);
                 removeView(gtv);
             }
+            mSplitBoundsConfig = null;
         }
         updateLocusId();
     }
@@ -2161,7 +2163,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
      * All subsequent calls to reload will keep the task as the first item until {@link #reset()}
      * is called.  Also scrolls the view to this task.
      */
-    public void showCurrentTask(RunningTaskInfo[] runningTaskInfo) {
+    private void showCurrentTask(RunningTaskInfo[] runningTaskInfo) {
         int runningTaskViewId = -1;
         boolean needGroupTaskView = runningTaskInfo.length > 1;
         RunningTaskInfo taskInfo = runningTaskInfo[0];
@@ -3134,7 +3136,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                         }
                     }
                 }
-                updateFocusedSplitButtonVisibility();
+                updateCurrentTaskActionsVisibility();
                 onDismissAnimationEnds();
                 mPendingAnimation = null;
             }
@@ -3143,16 +3145,19 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     }
 
     /**
-     * Shows split button if
-     * * We're in large screen
-     * * We're not already in split
+     * Hides all overview actions if current page is for split apps, shows otherwise
+     * If actions are showing, we only show split option if
+     * * Device is large screen
      * * There are at least 2 tasks to invoke split
      */
-    private void updateFocusedSplitButtonVisibility() {
-        mActionsView.setSplitButtonVisible(mActivity.getDeviceProfile().isTablet &&
-                !(getFocusedTaskView() instanceof GroupedTaskView) &&
-                getTaskViewCount() > 1
-        );
+    private void updateCurrentTaskActionsVisibility() {
+        boolean isCurrentSplit = getCurrentPageTaskView() instanceof GroupedTaskView;
+        mActionsView.updateHiddenFlags(HIDDEN_SPLIT_SCREEN, isCurrentSplit);
+        if (isCurrentSplit) {
+            return;
+        }
+        mActionsView.setSplitButtonVisible(
+                mActivity.getDeviceProfile().isTablet && getTaskViewCount() > 1);
     }
 
     /**
@@ -4174,7 +4179,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     @Override
     protected void notifyPageSwitchListener(int prevPage) {
         super.notifyPageSwitchListener(prevPage);
-        updateFocusedSplitButtonVisibility();
+        updateCurrentTaskActionsVisibility();
         loadVisibleTaskData(TaskView.FLAG_UPDATE_ALL);
         updateEnabledOverlays();
     }
@@ -4260,6 +4265,14 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         RemoteTargetGluer gluer = new RemoteTargetGluer(getContext(), getSizeStrategy());
         mRemoteTargetHandles = gluer.assignTargetsForSplitScreen(recentsAnimationTargets);
         mSplitBoundsConfig = gluer.getStagedSplitBounds();
+        TaskView runningTaskView = getRunningTaskView();
+        if (runningTaskView instanceof GroupedTaskView) {
+            // We initially create a GroupedTaskView in showCurrentTask() before launcher even
+            // receives the leashes for the remote apps, so the mSplitBoundsConfig that gets passed
+            // in there is either null or outdated, so we need to update here as soon as we're
+            // notified.
+            ((GroupedTaskView) runningTaskView).updateSplitBoundsConfig(mSplitBoundsConfig);
+        }
         for (RemoteTargetHandle remoteTargetHandle : mRemoteTargetHandles) {
             TaskViewSimulator tvs = remoteTargetHandle.getTaskViewSimulator();
             tvs.setOrientationState(mOrientationState);
