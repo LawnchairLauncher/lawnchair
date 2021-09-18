@@ -4,15 +4,20 @@ import static com.android.launcher3.config.FeatureFlags.SEPARATE_RECENTS_ACTIVIT
 
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Canvas;
+import android.graphics.Insets;
 import android.graphics.Rect;
 import android.os.Build;
 import android.util.AttributeSet;
 import android.view.ViewDebug;
 import android.view.WindowInsets;
 
+import androidx.annotation.RequiresApi;
+
 import com.android.launcher3.graphics.SysUiScrim;
 import com.android.launcher3.statemanager.StatefulActivity;
+import com.android.launcher3.uioverrides.ApiWrapper;
 
 import java.util.Collections;
 import java.util.List;
@@ -61,10 +66,73 @@ public class LauncherRootView extends InsettableFrameLayout {
 
     @Override
     public WindowInsets onApplyWindowInsets(WindowInsets insets) {
-        mTempRect.set(insets.getSystemWindowInsetLeft(), insets.getSystemWindowInsetTop(),
-                insets.getSystemWindowInsetRight(), insets.getSystemWindowInsetBottom());
+        if (Utilities.ATLEAST_R) {
+            insets = updateInsetsDueToTaskbar(insets);
+            Insets systemWindowInsets = insets.getInsetsIgnoringVisibility(
+                    WindowInsets.Type.systemBars() | WindowInsets.Type.displayCutout());
+            mTempRect.set(systemWindowInsets.left, systemWindowInsets.top, systemWindowInsets.right,
+                    systemWindowInsets.bottom);
+        } else {
+            mTempRect.set(insets.getSystemWindowInsetLeft(), insets.getSystemWindowInsetTop(),
+                    insets.getSystemWindowInsetRight(), insets.getSystemWindowInsetBottom());
+        }
         handleSystemWindowInsets(mTempRect);
         return insets;
+    }
+
+    /**
+     * Taskbar provides nav bar and tappable insets. However, taskbar is not attached immediately,
+     * and can be destroyed and recreated. Thus, instead of relying on taskbar being present to
+     * get its insets, we calculate them ourselves so they are stable regardless of whether taskbar
+     * is currently attached.
+     *
+     * TODO(b/198798034): Currently we always calculate nav insets as taskbarSize, but then we
+     * subtract nonOverlappingTaskbarInset in handleSystemWindowInsets(). Instead, we should just
+     * calculate the normal nav bar height here, and remove nonOverlappingTaskbarInset altogether.
+     *
+     * @param oldInsets The system-provided insets, which we are modifying.
+     * @return The updated insets.
+     */
+    @RequiresApi(api = Build.VERSION_CODES.R)
+    private WindowInsets updateInsetsDueToTaskbar(WindowInsets oldInsets) {
+        if (!ApiWrapper.TASKBAR_DRAWN_IN_PROCESS) {
+            // 3P launchers based on Launcher3 should still be inset like normal.
+            return oldInsets;
+        }
+
+        WindowInsets.Builder updatedInsetsBuilder = new WindowInsets.Builder(oldInsets);
+
+        DeviceProfile dp = mActivity.getDeviceProfile();
+        Resources resources = getResources();
+
+        Insets oldNavInsets = oldInsets.getInsets(WindowInsets.Type.navigationBars());
+        Rect newNavInsets = new Rect(oldNavInsets.left, oldNavInsets.top, oldNavInsets.right,
+                oldNavInsets.bottom);
+        if (dp.isTaskbarPresent) {
+            // TODO (see javadoc): Remove this block and fall into the next one instead.
+            newNavInsets.bottom = dp.taskbarSize;
+        } else if (dp.isLandscape) {
+            if (dp.isTablet) {
+                newNavInsets.bottom = ResourceUtils.getNavbarSize(
+                        "navigation_bar_height_landscape", resources);
+            } else {
+                int navWidth = ResourceUtils.getNavbarSize("navigation_bar_width", resources);
+                if (dp.isSeascape()) {
+                    newNavInsets.left = navWidth;
+                } else {
+                    newNavInsets.right = navWidth;
+                }
+            }
+        } else {
+            newNavInsets.bottom = ResourceUtils.getNavbarSize("navigation_bar_height", resources);
+        }
+        updatedInsetsBuilder.setInsets(WindowInsets.Type.navigationBars(), Insets.of(newNavInsets));
+        updatedInsetsBuilder.setInsetsIgnoringVisibility(WindowInsets.Type.navigationBars(),
+                Insets.of(newNavInsets));
+
+        mActivity.updateWindowInsets(updatedInsetsBuilder, oldInsets);
+
+        return updatedInsetsBuilder.build();
     }
 
     @Override
