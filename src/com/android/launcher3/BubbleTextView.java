@@ -32,6 +32,7 @@ import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.icu.text.MessageFormat;
 import android.text.TextUtils.TruncateAt;
 import android.util.AttributeSet;
 import android.util.Property;
@@ -68,6 +69,8 @@ import com.android.launcher3.views.ActivityContext;
 import com.android.launcher3.views.IconLabelDotView;
 
 import java.text.NumberFormat;
+import java.util.HashMap;
+import java.util.Locale;
 
 /**
  * TextView that draws a bubble behind the text. We cannot use a LineBackgroundSpan
@@ -695,8 +698,8 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
                             itemInfo.contentDescription));
                 } else if (hasDot()) {
                     int count = mDotInfo.getNotificationCount();
-                    setContentDescription(getContext().getResources().getQuantityString(
-                            R.plurals.dotted_app_label, count, itemInfo.contentDescription, count));
+                    setContentDescription(
+                            getAppLabelPluralString(itemInfo.contentDescription.toString(), count));
                 } else {
                     setContentDescription(itemInfo.contentDescription);
                 }
@@ -937,5 +940,15 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
         } else {
             setCompoundDrawables(null, newIcon, null, null);
         }
+    }
+
+    private String getAppLabelPluralString(String appName, int notificationCount) {
+        MessageFormat icuCountFormat = new MessageFormat(
+                getResources().getString(R.string.dotted_app_label),
+                Locale.getDefault());
+        HashMap<String, Object> args = new HashMap();
+        args.put("app_name", appName);
+        args.put("count", notificationCount);
+        return icuCountFormat.format(args);
     }
 }
