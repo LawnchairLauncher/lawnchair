@@ -63,6 +63,13 @@ public class AllAppsRecyclerView extends BaseRecyclerView {
     private final SparseIntArray mCachedScrollPositions = new SparseIntArray();
     private final AllAppsFastScrollHelper mFastScrollHelper;
 
+
+    private final AdapterDataObserver mObserver = new RecyclerView.AdapterDataObserver() {
+        public void onChanged() {
+            mCachedScrollPositions.clear();
+        }
+    };
+
     // The empty-search result background
     private AllAppsBackgroundDrawable mEmptySearchBackground;
     private int mEmptySearchBackgroundTopOffset;
@@ -247,12 +254,13 @@ public class AllAppsRecyclerView extends BaseRecyclerView {
 
     @Override
     public void setAdapter(Adapter adapter) {
+        if (getAdapter() != null) {
+            getAdapter().unregisterAdapterDataObserver(mObserver);
+        }
         super.setAdapter(adapter);
-        adapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
-            public void onChanged() {
-                mCachedScrollPositions.clear();
-            }
-        });
+        if (adapter != null) {
+            adapter.registerAdapterDataObserver(mObserver);
+        }
     }
 
     @Override
