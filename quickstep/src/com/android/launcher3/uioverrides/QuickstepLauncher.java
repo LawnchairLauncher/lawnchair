@@ -66,6 +66,7 @@ import com.android.launcher3.uioverrides.touchcontrollers.StatusBarTouchControll
 import com.android.launcher3.uioverrides.touchcontrollers.TaskViewTouchController;
 import com.android.launcher3.uioverrides.touchcontrollers.TransposedQuickSwitchTouchController;
 import com.android.launcher3.uioverrides.touchcontrollers.TwoButtonNavbarTouchController;
+import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.OnboardingPrefs;
 import com.android.launcher3.util.TouchController;
 import com.android.launcher3.util.UiThreadHelper;
@@ -163,7 +164,11 @@ public class QuickstepLauncher extends BaseQuickstepLauncher {
     public boolean startActivitySafely(View v, Intent intent, ItemInfo item) {
         // Only pause is taskbar controller is not present
         mHotseatPredictionController.setPauseUIUpdate(getTaskbarUIController() == null);
-        return super.startActivitySafely(v, intent, item);
+        boolean started = super.startActivitySafely(v, intent, item);
+        if (getTaskbarUIController() == null && !started) {
+            mHotseatPredictionController.setPauseUIUpdate(false);
+        }
+        return started;
     }
 
     @Override
@@ -225,6 +230,12 @@ public class QuickstepLauncher extends BaseQuickstepLauncher {
         } else if (item.containerId == Favorites.CONTAINER_WIDGETS_PREDICTION) {
             getPopupDataProvider().setRecommendedWidgets(item.items);
         }
+    }
+
+    @Override
+    public void bindWorkspaceComponentsRemoved(ItemInfoMatcher matcher) {
+        super.bindWorkspaceComponentsRemoved(matcher);
+        mHotseatPredictionController.onModelItemsRemoved(matcher);
     }
 
     @Override
