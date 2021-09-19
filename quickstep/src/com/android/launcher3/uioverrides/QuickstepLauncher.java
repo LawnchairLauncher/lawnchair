@@ -17,6 +17,7 @@ package com.android.launcher3.uioverrides;
 
 import static android.view.accessibility.AccessibilityEvent.TYPE_VIEW_FOCUSED;
 
+import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_HOTSEAT;
 import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_APPLICATION;
 import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT;
 import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT;
@@ -69,6 +70,7 @@ import com.android.launcher3.uioverrides.touchcontrollers.TransposedQuickSwitchT
 import com.android.launcher3.uioverrides.touchcontrollers.TwoButtonNavbarTouchController;
 import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.OnboardingPrefs;
+import com.android.launcher3.util.PendingRequestArgs;
 import com.android.launcher3.util.TouchController;
 import com.android.launcher3.util.UiThreadHelper;
 import com.android.launcher3.util.UiThreadHelper.AsyncCommand;
@@ -136,6 +138,15 @@ public class QuickstepLauncher extends BaseQuickstepLauncher {
         logger.log(LAUNCHER_APP_LAUNCH_TAP);
 
         mHotseatPredictionController.logLaunchedAppRankingInfo(info, instanceId);
+    }
+
+    @Override
+    protected void completeAddShortcut(Intent data, int container, int screenId, int cellX,
+            int cellY, PendingRequestArgs args) {
+        if (container == CONTAINER_HOTSEAT) {
+            mHotseatPredictionController.onDeferredDrop(cellX, cellY);
+        }
+        super.completeAddShortcut(data, container, screenId, cellX, cellY, args);
     }
 
     @Override

@@ -1264,7 +1264,7 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
      *
      * @param data The intent describing the shortcut.
      */
-    private void completeAddShortcut(Intent data, int container, int screenId, int cellX,
+    protected void completeAddShortcut(Intent data, int container, int screenId, int cellX,
             int cellY, PendingRequestArgs args) {
         if (args.getRequestCode() != REQUEST_CREATE_SHORTCUT
                 || args.getPendingIntent().getComponent() == null) {

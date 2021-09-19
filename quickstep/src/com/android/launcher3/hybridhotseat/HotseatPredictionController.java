@@ -510,6 +510,16 @@ public class HotseatPredictionController implements DragController.DragListener,
         }
     }
 
+    /**
+     * Called when user completes adding item requiring a config activity to the hotseat
+     */
+    public void onDeferredDrop(int cellX, int cellY) {
+        View child = mHotseat.getChildAt(cellX, cellY);
+        if (child instanceof PredictedAppIcon) {
+            removeIconWithoutNotify((PredictedAppIcon) child);
+        }
+    }
+
     private class PinPrediction extends SystemShortcut<QuickstepLauncher> {
 
         private PinPrediction(QuickstepLauncher target, ItemInfo itemInfo) {
