@@ -15,8 +15,7 @@
  */
 package com.android.launcher3.hybridhotseat;
 
-import static com.android.launcher3.logging.StatsLogManager.LauncherEvent
-        .LAUNCHER_HOTSEAT_EDU_ONLY_TIP;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_HOTSEAT_EDU_ONLY_TIP;
 
 import android.content.Intent;
 import android.view.View;
@@ -188,8 +187,12 @@ public class HotseatEduController {
                     .getInt(LauncherSettings.Settings.EXTRA_VALUE);
             mNewScreens = IntArray.wrap(pageId);
         }
-        for (int i = 0; i < mLauncher.getDeviceProfile().numShownHotseatIcons; i++) {
-            View child = mHotseat.getChildAt(i, 0);
+        boolean isPortrait = !mLauncher.getDeviceProfile().isVerticalBarLayout();
+        int hotseatItemsNum = mLauncher.getDeviceProfile().numShownHotseatIcons;
+        for (int i = 0; i < hotseatItemsNum; i++) {
+            int x = isPortrait ? i : 0;
+            int y = isPortrait ? 0 : hotseatItemsNum - i - 1;
+            View child = mHotseat.getChildAt(x, y);
             if (child == null || child.getTag() == null) continue;
             ItemInfo tag = (ItemInfo) child.getTag();
             if (tag.container == LauncherSettings.Favorites.CONTAINER_HOTSEAT_PREDICTION) continue;
