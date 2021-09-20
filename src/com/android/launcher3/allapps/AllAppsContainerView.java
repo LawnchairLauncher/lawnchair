@@ -640,7 +640,7 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
     public void onClearSearchResult() {
         mIsSearching = false;
         rebindAdapters();
-        getActiveRecyclerView().scrollToTop();
+        mHeader.reset(false);
     }
 
     public void onSearchResultsChanged() {
