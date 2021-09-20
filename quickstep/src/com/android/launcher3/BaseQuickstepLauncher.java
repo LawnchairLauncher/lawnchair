@@ -353,6 +353,7 @@ public abstract class BaseQuickstepLauncher extends Launcher
 
         mAppTransitionManager = new QuickstepTransitionManager(this);
         mAppTransitionManager.registerRemoteAnimations();
+        mAppTransitionManager.registerRemoteTransitions();
 
         internalBindToTIS();
     }
