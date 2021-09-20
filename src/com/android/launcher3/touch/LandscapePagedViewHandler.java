@@ -16,6 +16,10 @@
 
 package com.android.launcher3.touch;
 
+import static android.view.Gravity.CENTER_VERTICAL;
+import static android.view.Gravity.END;
+import static android.view.Gravity.START;
+import static android.view.Gravity.TOP;
 import static android.widget.ListPopupWindow.WRAP_CONTENT;
 
 import static com.android.launcher3.LauncherAnimUtils.VIEW_TRANSLATE_X;
@@ -36,8 +40,8 @@ import android.view.MotionEvent;
 import android.view.Surface;
 import android.view.VelocityTracker;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.accessibility.AccessibilityEvent;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
 import com.android.launcher3.DeviceProfile;
@@ -46,6 +50,7 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.util.SplitConfigurationOptions;
 import com.android.launcher3.util.SplitConfigurationOptions.SplitPositionOption;
 import com.android.launcher3.util.SplitConfigurationOptions.StagePosition;
+import com.android.launcher3.util.SplitConfigurationOptions.StagedSplitBounds;
 import com.android.launcher3.views.BaseDragLayer;
 
 import java.util.Collections;
@@ -223,11 +228,6 @@ public class LandscapePagedViewHandler implements PagedOrientationHandler {
     }
 
     @Override
-    public float getChildStartWithTranslation(View view) {
-        return view.getTop() + view.getTranslationY();
-    }
-
-    @Override
     public int getCenterForPage(View view, Rect insets) {
         return (view.getPaddingLeft() + view.getMeasuredWidth() + insets.left
             - insets.right - view.getPaddingRight()) / 2;
@@ -243,11 +243,6 @@ public class LandscapePagedViewHandler implements PagedOrientationHandler {
         return view.getHeight() - view.getPaddingBottom() - insets.bottom;
     }
 
-    @Override
-    public int getPrimaryTranslationDirectionFactor() {
-        return -1;
-    }
-
     public int getSecondaryTranslationDirectionFactor() {
         return 1;
     }
@@ -259,11 +254,6 @@ public class LandscapePagedViewHandler implements PagedOrientationHandler {
         } else {
             return 1;
         }
-    }
-
-    @Override
-    public int getSplitAnimationTranslation(int translationOffset, DeviceProfile dp) {
-        return translationOffset;
     }
 
     @Override
@@ -386,7 +376,7 @@ public class LandscapePagedViewHandler implements PagedOrientationHandler {
 
     @Override
     public void setSplitTaskSwipeRect(DeviceProfile dp, Rect outRect,
-            SplitConfigurationOptions.StagedSplitBounds splitInfo, int desiredStagePosition) {
+            StagedSplitBounds splitInfo, int desiredStagePosition) {
         float diff;
         float horizontalDividerDiff = splitInfo.visualDividerBounds.width() / 2f;
         if (desiredStagePosition == SplitConfigurationOptions.STAGE_POSITION_TOP_OR_LEFT) {
@@ -400,7 +390,7 @@ public class LandscapePagedViewHandler implements PagedOrientationHandler {
 
     @Override
     public void setLeashSplitOffset(Point splitOffset, DeviceProfile dp,
-            SplitConfigurationOptions.StagedSplitBounds splitInfo, int desiredStagePosition) {
+            StagedSplitBounds splitInfo, int desiredStagePosition) {
         if (desiredStagePosition == STAGE_POSITION_BOTTOM_OR_RIGHT) {
             // The preview set is for the bottom/right, inset by top/left task
             splitOffset.x = splitInfo.leftTopBounds.width() + splitInfo.visualDividerBounds.width();
@@ -419,8 +409,10 @@ public class LandscapePagedViewHandler implements PagedOrientationHandler {
         int secondarySnapshotHeight;
         int secondarySnapshotWidth;
 
+        float taskPercent = splitBoundsConfig.appsStackedVertically ?
+                splitBoundsConfig.topTaskPercent : splitBoundsConfig.leftTaskPercent;
         primarySnapshotWidth = parentWidth;
-        primarySnapshotHeight = (int) (totalThumbnailHeight * splitBoundsConfig.leftTaskPercent);
+        primarySnapshotHeight = (int) (totalThumbnailHeight * taskPercent);
 
         secondarySnapshotWidth = parentWidth;
         secondarySnapshotHeight = totalThumbnailHeight - primarySnapshotHeight - dividerBar;
@@ -432,6 +424,38 @@ public class LandscapePagedViewHandler implements PagedOrientationHandler {
                 View.MeasureSpec.makeMeasureSpec(secondarySnapshotWidth, View.MeasureSpec.EXACTLY),
                 View.MeasureSpec.makeMeasureSpec(secondarySnapshotHeight,
                         View.MeasureSpec.EXACTLY));
+    }
+
+    @Override
+    public void setIconAndSnapshotParams(View iconView, int taskIconMargin, int taskIconHeight,
+            FrameLayout.LayoutParams snapshotParams, boolean isRtl) {
+        FrameLayout.LayoutParams iconParams =
+                (FrameLayout.LayoutParams) iconView.getLayoutParams();
+        iconParams.gravity = (isRtl ? START : END) | CENTER_VERTICAL;
+        iconParams.rightMargin = -taskIconHeight - taskIconMargin / 2;
+        iconParams.leftMargin = 0;
+        iconParams.topMargin = snapshotParams.topMargin / 2;
+    }
+
+    @Override
+    public void setSplitIconParams(View primaryIconView, View secondaryIconView,
+            int taskIconHeight, Rect primarySnapshotBounds, Rect secondarySnapshotBounds,
+            boolean isRtl, DeviceProfile deviceProfile, StagedSplitBounds splitConfig) {
+        FrameLayout.LayoutParams primaryIconParams =
+                (FrameLayout.LayoutParams) primaryIconView.getLayoutParams();
+        FrameLayout.LayoutParams secondaryIconParams =
+                new FrameLayout.LayoutParams(primaryIconParams);
+
+        int primaryHeight = primarySnapshotBounds.height();
+        int secondaryHeight = secondarySnapshotBounds.height();
+        primaryIconParams.gravity = (isRtl ? START : END) | TOP;
+        primaryIconView.setTranslationY((primaryHeight + taskIconHeight) / 2f );
+
+        secondaryIconParams.gravity = (isRtl ? START : END) | TOP;
+        secondaryIconView.setTranslationY(primaryHeight
+                + ((secondaryHeight + taskIconHeight) / 2f));
+        primaryIconView.setLayoutParams(primaryIconParams);
+        secondaryIconView.setLayoutParams(secondaryIconParams);
     }
 
     @Override
