@@ -443,6 +443,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     protected float mTaskViewsSecondarySplitTranslation = 0;
     // Progress from 0 to 1 where 0 is a carousel and 1 is a 2 row grid.
     private float mGridProgress = 0;
+    private boolean mShowAsGridLastOnLayout = false;
     private final IntSet mTopRowIdSet = new IntSet();
 
     // The GestureEndTarget that is still in progress.
@@ -2095,11 +2096,14 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                 .displayOverviewTasksAsGrid(mActivity.getDeviceProfile())) {
             TaskView runningTaskView = getRunningTaskView();
             float runningTaskPrimaryGridTranslation = 0;
-            if (runningTaskView != null && indexOfChild(runningTaskView) != getNextPage()) {
-                // Apply the gird translation to running task unless it's being snapped to.
+            if (runningTaskView != null) {
+                // Apply the grid translation to running task unless it's being snapped to
+                // and removes the current translation applied to the running task.
                 runningTaskPrimaryGridTranslation = mOrientationHandler.getPrimaryValue(
                         runningTaskView.getGridTranslationX(),
-                        runningTaskView.getGridTranslationY());
+                        runningTaskView.getGridTranslationY())
+                        - runningTaskView.getPrimaryNonGridTranslationProperty().get(
+                        runningTaskView);
             }
             for (TaskViewSimulator tvs : taskViewSimulators) {
                 if (animatorSet == null) {
@@ -3556,6 +3560,8 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             return;
         }
 
+        mShowAsGridLastOnLayout = showAsGrid();
+
         super.onLayout(changed, left, top, right, bottom);
 
         updateEmptyStateUi(changed);
@@ -4377,7 +4383,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                 return getScrollForPage(mDisallowScrollToClearAll ? indexOfChild(
                         getTaskViewAt(getTaskViewCount() - 1)) : indexOfChild(mClearAllButton));
             } else {
-                TaskView focusedTaskView = showAsGrid() ? getFocusedTaskView() : null;
+                TaskView focusedTaskView = mShowAsGridLastOnLayout ? getFocusedTaskView() : null;
                 return getScrollForPage(focusedTaskView != null ? indexOfChild(focusedTaskView)
                         : mTaskViewStartIndex);
             }
@@ -4389,7 +4395,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     protected int computeMaxScroll() {
         if (getTaskViewCount() > 0) {
             if (mIsRtl) {
-                TaskView focusedTaskView = showAsGrid() ? getFocusedTaskView() : null;
+                TaskView focusedTaskView = mShowAsGridLastOnLayout ? getFocusedTaskView() : null;
                 return getScrollForPage(focusedTaskView != null ? indexOfChild(focusedTaskView)
                         : mTaskViewStartIndex);
             } else {
