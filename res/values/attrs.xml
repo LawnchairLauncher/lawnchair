@@ -180,6 +180,16 @@
         <!-- These min cell values are only used if GridDisplayOption#isScalable is true-->
         <attr name="minCellHeightDps" format="float" />
         <attr name="minCellWidthDps" format="float" />
+        <!-- twoPanelPortraitMinCellWidthDps defaults to minCellHeightDps, if not specified -->
+        <attr name="twoPanelPortraitMinCellHeightDps" format="float" />
+        <!-- twoPanelPortraitMinCellHeightDps defaults to minCellWidthDps, if not specified -->
+        <attr name="twoPanelPortraitMinCellWidthDps" format="float" />
+        <!-- twoPanelLandscapeMinCellHeightDps defaults to twoPanelPortraitMinCellHeightDps,
+        if not specified -->
+        <attr name="twoPanelLandscapeMinCellHeightDps" format="float" />
+        <!-- twoPanelLandscapeMinCellWidthDps defaults to twoPanelPortraitMinCellWidthDps,
+        if not specified -->
+        <attr name="twoPanelLandscapeMinCellWidthDps" format="float" />
 
         <attr name="borderSpacingDps" format="float" />
 
