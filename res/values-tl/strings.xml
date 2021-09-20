@@ -69,6 +69,7 @@
     <string name="out_of_space" msgid="6692471482459245734">"Walang espasyo sa Home screen na ito"</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"Wala nang lugar sa tray ng Mga Paborito"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"Listahan ng mga app"</string>
+    <string name="all_apps_search_results" msgid="5889367432531296759">"Mga resulta ng paghahanap"</string>
     <string name="all_apps_button_personal_label" msgid="1315764287305224468">"Listahan ng mga personal na app"</string>
     <string name="all_apps_button_work_label" msgid="7270707118948892488">"Listahan ng mga app sa trabaho"</string>
     <string name="remove_drop_target_label" msgid="7812859488053230776">"Alisin"</string>
