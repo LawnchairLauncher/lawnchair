@@ -106,9 +106,11 @@ public class GridSizeMigrationTaskV2 {
         DeviceGridState idpGridState = new DeviceGridState(idp);
         DeviceGridState contextGridState = new DeviceGridState(context);
         boolean needsToMigrate = !idpGridState.isCompatible(contextGridState);
-        // TODO: Revert this change after b/200010396 is fixed
-        Log.d(TAG, "Migration is needed. idpGridState: " + idpGridState
-                + ", contextGridState: " + contextGridState);
+        // TODO(b/198965093): Revert this change after bug is fixed
+        if (needsToMigrate) {
+            Log.d("b/198965093", "Migration is needed. idpGridState: " + idpGridState
+                    + ", contextGridState: " + contextGridState);
+        }
         return needsToMigrate;
     }
 
