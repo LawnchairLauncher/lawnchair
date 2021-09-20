@@ -55,6 +55,7 @@ import com.android.launcher3.popup.SystemShortcut;
 import com.android.launcher3.touch.ItemLongClickListener;
 import com.android.launcher3.uioverrides.PredictedAppIcon;
 import com.android.launcher3.uioverrides.QuickstepLauncher;
+import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.OnboardingPrefs;
 import com.android.launcher3.views.ArrowTipView;
 import com.android.launcher3.views.Snackbar;
@@ -495,6 +496,18 @@ public class HotseatPredictionController implements DragController.DragListener,
                         .setPredictedHotseatContainer(containerBuilder)
                         .build())
                 .log(LAUNCHER_HOTSEAT_RANKED);
+    }
+
+    /**
+     * Called when app/shortcut icon is removed by system. This is used to prune visible stale
+     * predictions while while waiting for AppAPrediction service to send new batch of predictions.
+     *
+     * @param matcher filter matching items that have been removed
+     */
+    public void onModelItemsRemoved(ItemInfoMatcher matcher) {
+        if (mPredictedItems.removeIf(matcher::matchesInfo)) {
+            fillGapsWithPrediction(true);
+        }
     }
 
     private class PinPrediction extends SystemShortcut<QuickstepLauncher> {
