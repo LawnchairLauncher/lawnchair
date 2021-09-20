@@ -204,7 +204,7 @@ public class WorkspaceItemInfo extends ItemInfoWithIcon {
     }
 
     @Override
-    public ItemInfoWithIcon clone() {
+    public WorkspaceItemInfo clone() {
         return new WorkspaceItemInfo(this);
     }
 }
