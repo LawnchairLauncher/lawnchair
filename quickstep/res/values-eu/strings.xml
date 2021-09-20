@@ -37,7 +37,7 @@
     <string name="hotseat_edu_message_migrate_landscape" msgid="4248943380443387697">"Atzitu erraz aplikazio erabilienak hasierako pantailatik bertatik. Ohituren arabera aldatuko dira iradokizunak. Gogokoen errenkadako aplikazioak hasierako pantailara eramango ditugu."</string>
     <string name="hotseat_edu_message_migrate_alt" msgid="3042360119039646356">"Atzitu erraz aplikazio erabilienak hasierako pantailatik bertatik. Ohituren arabera aldatuko dira iradokizunak. Karpeta berri batera eramango dira beheko errenkadan dauden aplikazioak."</string>
     <string name="hotseat_edu_accept" msgid="1611544083278999837">"Jaso aplikazioen iradokizunak"</string>
-    <string name="hotseat_edu_dismiss" msgid="2781161822780201689">"Ez"</string>
+    <string name="hotseat_edu_dismiss" msgid="2781161822780201689">"Ez, eskerrik asko"</string>
     <string name="hotseat_prediction_settings" msgid="6246554993566070818">"Ezarpenak"</string>
     <string name="hotseat_auto_enrolled" msgid="522100018967146807">"Hemen agertzen dira aplikazio erabilienak, eta ohituren arabera aldatzen dira"</string>
     <string name="hotseat_tip_no_empty_slots" msgid="1325212677738179185">"Arrastatu aplikazioak beheko errenkadatik aplikazioen iradokizunak jasotzeko"</string>
@@ -79,8 +79,7 @@
     <string name="allset_navigation_settings" msgid="4713404605961476027"><annotation id="link">"Sisteman nabigatzeko ezarpenak"</annotation></string>
     <string name="action_share" msgid="2648470652637092375">"Partekatu"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"Atera pantaila-argazki bat"</string>
-    <!-- no translation found for action_split (2098009717623550676) -->
-    <skip />
+    <string name="action_split" msgid="2098009717623550676">"Zatitu"</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"Aplikazioak edo erakundeak ez du eman ekintza hori gauzatzeko baimena"</string>
     <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"Nabigazio-tutoriala saltatu nahi duzu?"</string>
     <string name="skip_tutorial_dialog_subtitle" msgid="544063326241955662">"<xliff:g id="NAME">%1$s</xliff:g> aplikazioan dago eskuragarri tutoriala"</string>
@@ -88,8 +87,7 @@
     <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"Saltatu"</string>
     <string name="taskbar_edu_opened" msgid="3950252793551919129">"Agertu egin da zereginen barraren tutoriala"</string>
     <string name="taskbar_edu_closed" msgid="126643734478892862">"Itxi egin da zereginen barraren tutoriala"</string>
-    <!-- no translation found for taskbar_edu_stashing (5212374387411764031) -->
-    <skip />
+    <string name="taskbar_edu_stashing" msgid="5212374387411764031">"Zereginen barra ezkutatzeko, eduki ezazu sakatuta"</string>
     <string name="taskbar_edu_next" msgid="4007618274426775841">"Hurrengoa"</string>
     <string name="taskbar_edu_previous" msgid="459202320127201702">"Atzera"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"Itxi"</string>

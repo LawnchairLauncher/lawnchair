@@ -22,7 +22,7 @@
     <string name="recent_task_option_pin" msgid="7929860679018978258">"পিন"</string>
     <string name="recent_task_option_freeform" msgid="48863056265284071">"Freeform"</string>
     <string name="recents_empty_message" msgid="7040467240571714191">"কোনো শেহতীয়া বস্তু নাই"</string>
-    <string name="accessibility_app_usage_settings" msgid="6312864233673544149">"এপে ব্যৱহাৰ কৰা ডেটাৰ ছেটিংসমূহ"</string>
+    <string name="accessibility_app_usage_settings" msgid="6312864233673544149">"এপে ব্যৱহাৰ কৰা ডেটাৰ ছেটিং"</string>
     <string name="recents_clear_all" msgid="5328176793634888831">"সকলো মচক"</string>
     <string name="accessibility_recent_apps" msgid="4058661986695117371">"শেহতীয়া এপসমূহ"</string>
     <string name="task_contents_description_with_remaining_time" msgid="4479688746574672685">"<xliff:g id="TASK_DESCRIPTION">%1$s</xliff:g>, <xliff:g id="REMAINING_TIME">%2$s</xliff:g>"</string>
@@ -38,7 +38,7 @@
     <string name="hotseat_edu_message_migrate_alt" msgid="3042360119039646356">"আপোনাৰ সকলোতকৈ বেছিকৈ ব্যৱহৃত এপ্‌সমূহ গৃহ স্ক্ৰীনতে সহজে এক্সেছ কৰক। আপোনাৰ ৰুটিনসমূহৰ ভিত্তিত পৰামর্শসমূহ সলনি হ\'ব। একেবাৰে তলৰ শাৰীটোত থকা এপ্‌সমূহ এটা নতুন ফ\'ল্ডাৰলৈ যাব।"</string>
     <string name="hotseat_edu_accept" msgid="1611544083278999837">"এপৰ পৰামর্শসমূহ পাওক"</string>
     <string name="hotseat_edu_dismiss" msgid="2781161822780201689">"নালাগে, ধন্যবাদ"</string>
-    <string name="hotseat_prediction_settings" msgid="6246554993566070818">"ছেটিংসমূহ"</string>
+    <string name="hotseat_prediction_settings" msgid="6246554993566070818">"ছেটিং"</string>
     <string name="hotseat_auto_enrolled" msgid="522100018967146807">"সকলোতকৈ বেছিকৈ ব্যৱহৃত এপ্‌সমূহ ইয়াত প্ৰদর্শিত হয় আৰু ৰুটিনসমূহ ওপৰত ভিত্তি কৰি সলনি হয়"</string>
     <string name="hotseat_tip_no_empty_slots" msgid="1325212677738179185">"এপৰ পৰামর্শসমূহ পাবলৈ একেবাৰে তলৰ শাৰীত থকা এপ্‌সমূহ টানি আঁতৰাওক"</string>
     <string name="hotseat_tip_gaps_filled" msgid="3035673010274223538">"খালী ঠাইত এপৰ পৰামর্শসমূহ যোগ কৰা হ\'ল"</string>
@@ -79,8 +79,7 @@
     <string name="allset_navigation_settings" msgid="4713404605961476027"><annotation id="link">"ছিষ্টেম নেভিগেশ্বনৰ ছেটিং"</annotation></string>
     <string name="action_share" msgid="2648470652637092375">"শ্বেয়াৰ কৰক"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"স্ক্ৰীনশ্বট"</string>
-    <!-- no translation found for action_split (2098009717623550676) -->
-    <skip />
+    <string name="action_split" msgid="2098009717623550676">"বিভাজন কৰক"</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"এপ্‌টোৱে অথবা আপোনাৰ প্ৰতিষ্ঠানে এই কাৰ্যটোৰ অনুমতি নিদিয়ে"</string>
     <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"নেভিগেশ্বনৰ টিউট’ৰিয়েল এৰিব বিচাৰে নেকি?"</string>
     <string name="skip_tutorial_dialog_subtitle" msgid="544063326241955662">"আপুনি এয়া পাছত <xliff:g id="NAME">%1$s</xliff:g> এপ্‌টোত বিচাৰিব পাৰিব"</string>
@@ -88,8 +87,7 @@
     <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"এৰি যাওক"</string>
     <string name="taskbar_edu_opened" msgid="3950252793551919129">"টাস্কবাৰৰ শিক্ষাৰ পেনেলটো প্ৰদর্শিত হৈছে"</string>
     <string name="taskbar_edu_closed" msgid="126643734478892862">"টাস্কবাৰৰ শিক্ষাৰ পেনেলটো বন্ধ হৈছে"</string>
-    <!-- no translation found for taskbar_edu_stashing (5212374387411764031) -->
-    <skip />
+    <string name="taskbar_edu_stashing" msgid="5212374387411764031">"টাস্কবাৰডাল লুকুৱাবলৈ স্পৰ্শ কৰি ধৰি ৰাখক"</string>
     <string name="taskbar_edu_next" msgid="4007618274426775841">"পৰৱৰ্তী"</string>
     <string name="taskbar_edu_previous" msgid="459202320127201702">"উভতি যাওক"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"বন্ধ কৰক"</string>
