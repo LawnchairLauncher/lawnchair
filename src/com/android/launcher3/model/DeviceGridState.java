@@ -24,6 +24,7 @@ import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCH
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.text.TextUtils;
+import android.util.Log;
 
 import androidx.annotation.IntDef;
 
@@ -134,8 +135,17 @@ public class DeviceGridState {
     public boolean isCompatible(DeviceGridState other) {
         if (this == other) return true;
         if (other == null) return false;
-        return mNumHotseat == other.mNumHotseat
+        boolean isCompatible = mNumHotseat == other.mNumHotseat
                 && deviceTypeCompatible(mDeviceType, other.mDeviceType)
                 && Objects.equals(mGridSizeString, other.mGridSizeString);
+        // TODO(b/198965093): Temporary fix for multi-display devices, ignore hotseat size changes
+        //  and type compatibility.
+        if ((mDeviceType == TYPE_MULTI_DISPLAY || other.mDeviceType == TYPE_MULTI_DISPLAY)
+                && !isCompatible && Objects.equals(mGridSizeString, other.mGridSizeString)) {
+            Log.d("b/198965093", "Hotseat and deice type compatibility ignored: " + this
+                    + ", other: " + other);
+            isCompatible = true;
+        }
+        return isCompatible;
     }
 }
