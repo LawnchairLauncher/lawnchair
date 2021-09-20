@@ -79,7 +79,7 @@
     <string name="dt2s_admin_hint">Para usar el doble toque para dormir, establece a Lawnchair como una app de administrador de dispositivos. Toca en \"Abrir Configuración\", luego en \"Activar esta app de administrador de dispositivos.\"</string>
     <string name="dt2s_admin_warning">Se desactivará el doble toque para dormir.</string>
     <string name="dt2s_a11y_hint_title">Activar el Servicio de Accesibilidad</string>
-    <string name="dt2s_a11y_hint">Para usar Doble Toque para dormir, active el servicio de accesibilidad para sillas de Lawnchair. Toca en Abrir Configuración, luego seleccione Lawnchair y active Usar Lawnchair.</string>
+    <string name="dt2s_a11y_hint">Para usar el doble toque para dormir, activa el servicio de accesibilidad de Lawnchair. Toca en \"Abrir Configuración\", luego selecciona \"Lawnchair\" y activa \"Usar Lawnchair\".</string>
     <string name="dt2s_warning_open_settings">Abrir Configuración</string>
     <string name="minus_one_enable">Feed</string>
     <string name="minus_one_unavailable">Feed no instalado.</string>
