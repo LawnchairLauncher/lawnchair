@@ -97,8 +97,8 @@ public class DeviceProfile {
     private static final int PORTRAIT_TABLET_LEFT_RIGHT_PADDING_MULTIPLIER = 4;
 
     // Workspace
-    public final int desiredWorkspaceLeftRightOriginalPx;
-    public int desiredWorkspaceLeftRightMarginPx;
+    public final int desiredWorkspaceHorizontalMarginOriginalPx;
+    public int desiredWorkspaceHorizontalMarginPx;
     public final int cellLayoutBorderSpacingOriginalPx;
     public int cellLayoutBorderSpacingPx;
     public final int cellLayoutPaddingLeftRightPx;
@@ -270,11 +270,8 @@ public class DeviceProfile {
 
         edgeMarginPx = res.getDimensionPixelSize(R.dimen.dynamic_grid_edge_margin);
 
-        desiredWorkspaceLeftRightMarginPx = isVerticalBarLayout() ? 0 : isScalableGrid
-                ? res.getDimensionPixelSize(R.dimen.scalable_grid_left_right_margin)
-                : res.getDimensionPixelSize(R.dimen.dynamic_grid_left_right_margin);
-        desiredWorkspaceLeftRightOriginalPx = desiredWorkspaceLeftRightMarginPx;
-
+        desiredWorkspaceHorizontalMarginPx = getHorizontalMarginPx(inv, res);
+        desiredWorkspaceHorizontalMarginOriginalPx = desiredWorkspaceHorizontalMarginPx;
 
         allAppsOpenVerticalTranslate = res.getDimensionPixelSize(
                 R.dimen.all_apps_open_vertical_translate);
@@ -446,6 +443,29 @@ public class DeviceProfile {
                 new DotRenderer(allAppsIconSizePx, dotPath, DEFAULT_DOT_SIZE);
     }
 
+    private int getHorizontalMarginPx(InvariantDeviceProfile idp, Resources res) {
+        if (isVerticalBarLayout()) {
+            return 0;
+        }
+
+        int horizontalMarginPx;
+
+        if (isScalableGrid) {
+            if (isTwoPanels) {
+                if (isLandscape) {
+                    horizontalMarginPx = pxFromDp(idp.twoPanelLandscapeHorizontalMargin, mMetrics);
+                } else {
+                    horizontalMarginPx = pxFromDp(idp.twoPanelPortraitHorizontalMargin, mMetrics);
+                }
+            } else {
+                horizontalMarginPx = pxFromDp(idp.horizontalMargin, mMetrics);
+            }
+        } else {
+            horizontalMarginPx = res.getDimensionPixelSize(R.dimen.dynamic_grid_left_right_margin);
+        }
+        return horizontalMarginPx;
+    }
+
     private void updateHotseatIconSize(int hotseatIconSizePx) {
         // Ensure there is enough space for folder icons, which have a slightly larger radius.
         hotseatCellHeightPx = (int) Math.ceil(hotseatIconSizePx * ICON_OVERLAP_FACTOR);
@@ -554,7 +574,7 @@ public class DeviceProfile {
             allAppsLeftRightPadding = Math.max(1, (availableWidthPx - usedWidth) / 2);
         } else {
             allAppsLeftRightPadding =
-                    desiredWorkspaceLeftRightMarginPx + cellLayoutPaddingLeftRightPx;
+                    desiredWorkspaceHorizontalMarginPx + cellLayoutPaddingLeftRightPx;
         }
     }
 
@@ -581,7 +601,7 @@ public class DeviceProfile {
             int numColumns = isTwoPanels ? inv.numColumns * 2 : inv.numColumns;
             float usedWidth = (cellWidthPx * numColumns)
                     + (cellLayoutBorderSpacingPx * (numColumns - 1))
-                    + (desiredWorkspaceLeftRightMarginPx * 2);
+                    + (desiredWorkspaceHorizontalMarginPx * 2);
             // We do not subtract padding here, as we also scale the workspace padding if needed.
             scaleX = availableWidthPx / usedWidth;
             shouldScale = true;
@@ -647,7 +667,8 @@ public class DeviceProfile {
             int cellContentHeight = iconSizePx + iconDrawablePaddingPx
                     + Utilities.calculateTextHeight(iconTextSizePx);
             cellYPaddingPx = Math.max(0, cellHeightPx - cellContentHeight) / 2;
-            desiredWorkspaceLeftRightMarginPx = (int) (desiredWorkspaceLeftRightOriginalPx * scale);
+            desiredWorkspaceHorizontalMarginPx =
+                    (int) (desiredWorkspaceHorizontalMarginOriginalPx * scale);
         } else {
             cellWidthPx = iconSizePx + iconDrawablePaddingPx;
             cellHeightPx = (int) Math.ceil(iconSizePx * ICON_OVERLAP_FACTOR)
@@ -851,9 +872,9 @@ public class DeviceProfile {
             int paddingBottom = hotseatTop + workspacePageIndicatorHeight
                     + workspaceBottomPadding - mWorkspacePageIndicatorOverlapWorkspace;
 
-            padding.set(desiredWorkspaceLeftRightMarginPx,
+            padding.set(desiredWorkspaceHorizontalMarginPx,
                     (isScalableGrid ? workspaceTopPadding : edgeMarginPx),
-                    desiredWorkspaceLeftRightMarginPx,
+                    desiredWorkspaceHorizontalMarginPx,
                     paddingBottom);
         }
     }
@@ -1081,8 +1102,8 @@ public class DeviceProfile {
 
         writer.println(prefix + pxToDpStr("cellLayoutBorderSpacingPx",
                 cellLayoutBorderSpacingPx));
-        writer.println(prefix + pxToDpStr("desiredWorkspaceLeftRightMarginPx",
-                desiredWorkspaceLeftRightMarginPx));
+        writer.println(prefix + pxToDpStr("desiredWorkspaceHorizontalMarginPx",
+                desiredWorkspaceHorizontalMarginPx));
 
         writer.println(prefix + pxToDpStr("allAppsIconSizePx", allAppsIconSizePx));
         writer.println(prefix + pxToDpStr("allAppsIconTextSizePx", allAppsIconTextSizePx));
