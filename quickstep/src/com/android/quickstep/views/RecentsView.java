@@ -2725,7 +2725,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         if (showAsGrid) {
             dismissedTaskWidth = dismissedTaskView.getLayoutParams().width + mPageSpacing;
             isFocusedTaskDismissed = dismissedTaskViewId == mFocusedTaskViewId;
-            if (isFocusedTaskDismissed) {
+            if (isFocusedTaskDismissed && !isSplitSelectionActive()) {
                 nextFocusedTaskFromTop =
                         mTopRowIdSet.size() > 0 && mTopRowIdSet.size() >= (taskCount - 1) / 2f;
                 // Pick the next focused task from the preferred row.
@@ -2908,7 +2908,8 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             } else if (child instanceof TaskView) {
                 TaskView taskView = (TaskView) child;
                 if (isFocusedTaskDismissed) {
-                    if (!isSameGridRow(taskView, nextFocusedTaskView)) {
+                    if (nextFocusedTaskView != null &&
+                            !isSameGridRow(taskView, nextFocusedTaskView)) {
                         continue;
                     }
                 } else {
@@ -2945,7 +2946,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                             clampToProgress(LINEAR, 0f, ANIMATION_DISMISS_PROGRESS_MIDPOINT));
                 } else {
                     float primaryTranslation =
-                            isFocusedTaskDismissed ? nextFocusedTaskWidth : dismissedTaskWidth;
+                            nextFocusedTaskView != null ? nextFocusedTaskWidth : dismissedTaskWidth;
                     anim.setFloat(taskView, taskView.getPrimaryDismissTranslationProperty(),
                             mIsRtl ? primaryTranslation : -primaryTranslation,
                             clampToProgress(LINEAR, animationStartProgress,
@@ -3255,7 +3256,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             // Never enough space on phones
             return true;
         } else if (!mActivity.getDeviceProfile().isLandscape) {
-            return false;
+            return true;
         }
 
         Rect splitBounds = new Rect();
