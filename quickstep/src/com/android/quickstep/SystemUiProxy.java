@@ -17,7 +17,6 @@ package com.android.quickstep;
 
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 
-import android.app.ActivityManager;
 import android.app.PendingIntent;
 import android.app.PictureInPictureParams;
 import android.content.ComponentName;
@@ -54,6 +53,8 @@ import com.android.wm.shell.startingsurface.IStartingWindow;
 import com.android.wm.shell.startingsurface.IStartingWindowListener;
 import com.android.wm.shell.transition.IShellTransitions;
 
+import java.util.ArrayList;
+
 /**
  * Holds the reference to SystemUI.
  */
@@ -81,6 +82,7 @@ public class SystemUiProxy implements ISystemUiProxy,
     private ISplitScreenListener mPendingSplitScreenListener;
     private IStartingWindowListener mPendingStartingWindowListener;
     private ISmartspaceCallback mPendingSmartspaceCallback;
+    private final ArrayList<RemoteTransitionCompat> mPendingRemoteTransitions = new ArrayList<>();
 
     // Used to dedupe calls to SystemUI
     private int mLastShelfHeight;
@@ -161,6 +163,10 @@ public class SystemUiProxy implements ISystemUiProxy,
             setSmartspaceCallback(mPendingSmartspaceCallback);
             mPendingSmartspaceCallback = null;
         }
+        for (int i = mPendingRemoteTransitions.size() - 1; i >= 0; --i) {
+            registerRemoteTransition(mPendingRemoteTransitions.get(i));
+        }
+        mPendingRemoteTransitions.clear();
 
         if (mPendingSetNavButtonAlpha != null) {
             mPendingSetNavButtonAlpha.run();
@@ -688,6 +694,8 @@ public class SystemUiProxy implements ISystemUiProxy,
             } catch (RemoteException e) {
                 Log.w(TAG, "Failed call registerRemoteTransition");
             }
+        } else {
+            mPendingRemoteTransitions.add(remoteTransition);
         }
     }
 
@@ -699,6 +707,7 @@ public class SystemUiProxy implements ISystemUiProxy,
                 Log.w(TAG, "Failed call registerRemoteTransition");
             }
         }
+        mPendingRemoteTransitions.remove(remoteTransition);
     }
 
     //

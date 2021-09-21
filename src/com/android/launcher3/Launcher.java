@@ -1264,7 +1264,7 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
      *
      * @param data The intent describing the shortcut.
      */
-    private void completeAddShortcut(Intent data, int container, int screenId, int cellX,
+    protected void completeAddShortcut(Intent data, int container, int screenId, int cellX,
             int cellY, PendingRequestArgs args) {
         if (args.getRequestCode() != REQUEST_CREATE_SHORTCUT
                 || args.getPendingIntent().getComponent() == null) {
@@ -2128,7 +2128,7 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
             actualIds.add(id);
         }
         int firstId = visibleIds.getArray().get(0);
-        int pairId = mWorkspace.getPagePair(firstId);
+        int pairId = mWorkspace.getScreenPair(firstId);
         // Double check that actual screenIds contains the visibleId, as empty screens are hidden
         // in single panel.
         if (actualIds.contains(firstId)) {
@@ -2212,7 +2212,7 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
             // Some empty pages might have been removed while the phone was in a single panel
             // mode, so we want to add those empty pages back.
             IntSet screenIds = IntSet.wrap(orderedScreenIds);
-            orderedScreenIds.forEach(screenId -> screenIds.add(mWorkspace.getPagePair(screenId)));
+            orderedScreenIds.forEach(screenId -> screenIds.add(mWorkspace.getScreenPair(screenId)));
             orderedScreenIds = screenIds.getArray();
         }
 

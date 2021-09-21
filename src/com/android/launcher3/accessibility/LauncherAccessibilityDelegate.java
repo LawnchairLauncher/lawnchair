@@ -162,7 +162,8 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate impleme
             }
         }
 
-        if ((item instanceof AppInfo) || (item instanceof PendingAddItemInfo)) {
+        if ((item instanceof AppInfo) || (item instanceof WorkspaceItemInfo)
+                || (item instanceof PendingAddItemInfo)) {
             out.add(mActions.get(ADD_TO_WORKSPACE));
         }
     }
@@ -243,6 +244,13 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate impleme
                     workspace.snapToPage(workspace.getPageIndexForScreenId(screenId));
                     mLauncher.addPendingItem(info, Favorites.CONTAINER_DESKTOP,
                             screenId, coordinates, info.spanX, info.spanY);
+                }
+                else if (item instanceof WorkspaceItemInfo) {
+                    WorkspaceItemInfo info = ((WorkspaceItemInfo) item).clone();
+                    mLauncher.getModelWriter().addItemToDatabase(info,
+                            Favorites.CONTAINER_DESKTOP,
+                            screenId, coordinates[0], coordinates[1]);
+                    mLauncher.bindItems(Collections.singletonList(info), true, true);
                 }
             }));
             return true;
