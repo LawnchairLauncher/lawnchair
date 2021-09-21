@@ -246,7 +246,9 @@ android_library {
     static_libs: [
         "Launcher3CommonDepsLib",
         "QuickstepResLib",
+        "androidx.room_room-runtime",
     ],
+    plugins: ["androidx.room_room-compiler-plugin"],
     manifest: "quickstep/AndroidManifest-launcher.xml",
     additional_manifests: [
         "go/AndroidManifest.xml",
