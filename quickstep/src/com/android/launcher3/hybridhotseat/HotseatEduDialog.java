@@ -77,6 +77,11 @@ public class HotseatEduDialog extends AbstractSlideInView<Launcher> implements I
         mContent = this;
     }
 
+    @Override
+    protected void onLayout(boolean changed, int l, int t, int r, int b) {
+        super.onLayout(changed, l, t, r, b);
+        setTranslationShift(TRANSLATION_SHIFT_CLOSED);
+    }
 
     @Override
     protected void onFinishInflate() {
@@ -200,9 +205,9 @@ public class HotseatEduDialog extends AbstractSlideInView<Launcher> implements I
         }
         AbstractFloatingView.closeAllOpenViews(mActivityContext);
         attachToContainer();
-        mActivityContext.getStatsLogManager().logger().log(LAUNCHER_HOTSEAT_EDU_SEEN);
         animateOpen();
         populatePreview(predictions);
+        mActivityContext.getStatsLogManager().logger().log(LAUNCHER_HOTSEAT_EDU_SEEN);
     }
 
     /**
