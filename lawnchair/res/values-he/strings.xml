@@ -85,8 +85,8 @@
     <string name="dt2s_warning_open_settings">פתיחת הגדרות</string>
     <string name="minus_one_enable">פיד</string>
     <string name="minus_one_unavailable">ההזנה אינה מותקנת.</string>
-    <string name="fuzzy_search_title">Fuzzy Search</string>
-    <string name="fuzzy_search_desc">Approximate matching for app searches.</string>
+    <string name="fuzzy_search_title">חיפוש מקורב</string>
+    <string name="fuzzy_search_desc">התאמה מקורבת עבור חיפושי אפליקציה.</string>
     <string name="theme_label">ערכת נושא</string>
     <string name="theme_light">בהירה</string>
     <string name="theme_dark">כהה</string>
@@ -94,8 +94,8 @@
     <string name="theme_follow_wallpaper">התאמה לרקע</string>
     <string name="quickstep_label">אחרונים</string>
     <string name="clear_all_as_action_label">כפתור ניקוי הכל בתחתית</string>
-    <string name="window_corner_radius_label">Screen Corner Radius</string>
-    <string name="override_window_corner_radius_label">Custom Screen Corner Radius</string>
+    <string name="window_corner_radius_label">רדיוס פינות מסך</string>
+    <string name="override_window_corner_radius_label">רדיוס פינות מסך מותאם</string>
     <string name="window_corner_radius_description">When you swipe up to open Recents, the current app follows your finger, shrinking into a card. Use this slider to adjust the corner radius of the card when it’s nearly full-screen such that it matches the corners of your screen.</string>
     <string name="system_icons">סמלי המערכת</string>
     <string name="accent_color">צבע הדגשה</string>
@@ -114,9 +114,9 @@
     <string name="msg_missing_notification_access">To use Notification Dots, grant <xliff:g id="name" example="My App">%1$s</xliff:g> access to notifications.</string>
     <string name="title_change_settings">שינוי הגדרות</string>
     <string name="debug_restart_launcher">Restart Lawnchair</string>
-    <string name="pref_fonts_missing_font">Font not found.</string>
-    <string name="font_variant_italic">Italic</string>
-    <string name="font_weight_thin">Thin</string>
+    <string name="pref_fonts_missing_font">פונט לא נמצא.</string>
+    <string name="font_variant_italic">נטוי</string>
+    <string name="font_weight_thin">דק</string>
     <string name="font_weight_extra_light">Extralight</string>
     <string name="font_weight_light">בהירה</string>
     <string name="font_weight_regular">Regular</string>
