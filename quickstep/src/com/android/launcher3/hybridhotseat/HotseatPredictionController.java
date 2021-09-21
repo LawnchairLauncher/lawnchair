@@ -57,7 +57,6 @@ import com.android.launcher3.uioverrides.PredictedAppIcon;
 import com.android.launcher3.uioverrides.QuickstepLauncher;
 import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.OnboardingPrefs;
-import com.android.launcher3.views.ArrowTipView;
 import com.android.launcher3.views.Snackbar;
 
 import java.util.ArrayList;
@@ -153,35 +152,12 @@ public class HotseatPredictionController implements DragController.DragListener,
      */
     public void showEdu() {
         mLauncher.getStateManager().goToState(NORMAL, true, forSuccessCallback(() -> {
-            if (mPredictedItems.isEmpty()) {
-                // launcher has empty predictions set
-                Snackbar.show(mLauncher, R.string.hotsaet_tip_prediction_disabled,
-                        R.string.hotseat_prediction_settings, null,
-                        () -> mLauncher.startActivity(getSettingsIntent()));
-            } else if (getPredictedIcons().size() >= (mHotSeatItemsCount + 1) / 2) {
-                showDiscoveryTip();
-            } else {
-                HotseatEduController eduController = new HotseatEduController(mLauncher);
-                eduController.setPredictedApps(mPredictedItems.stream()
-                        .map(i -> (WorkspaceItemInfo) i)
-                        .collect(Collectors.toList()));
-                eduController.showEdu();
-            }
+            HotseatEduController eduController = new HotseatEduController(mLauncher);
+            eduController.setPredictedApps(mPredictedItems.stream()
+                    .map(i -> (WorkspaceItemInfo) i)
+                    .collect(Collectors.toList()));
+            eduController.showEdu();
         }));
-    }
-
-    /**
-     * Shows educational tip for hotseat if user does not go through Tips app.
-     */
-    private void showDiscoveryTip() {
-        if (getPredictedIcons().isEmpty()) {
-            new ArrowTipView(mLauncher).show(
-                    mLauncher.getString(R.string.hotseat_tip_no_empty_slots), mHotseat.getTop());
-        } else {
-            Snackbar.show(mLauncher, R.string.hotseat_tip_gaps_filled,
-                    R.string.hotseat_prediction_settings, null,
-                    () -> mLauncher.startActivity(getSettingsIntent()));
-        }
     }
 
     /**
