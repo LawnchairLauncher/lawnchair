@@ -651,7 +651,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
 
             // If the icon was dragged from Hotseat, there is no page pair
             if (isTwoPanelEnabled() && !(mDragSourceInternal.getParent() instanceof Hotseat)) {
-                int pagePairScreenId = getPagePair(dragObject.dragInfo.screenId);
+                int pagePairScreenId = getScreenPair(dragObject.dragInfo.screenId);
                 CellLayout pagePair = mWorkspaceScreens.get(pagePairScreenId);
                 if (pagePair == null) {
                     // TODO: after http://b/198820019 is fixed, remove this
@@ -917,14 +917,31 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
     }
 
     /**
-     * Returns the page that is shown together with the given page when two panel is enabled.
+     * Returns the screen ID of a page that is shown together with the given page screen ID when the
+     * two panel UI is enabled.
      */
-    public int getPagePair(int page) {
-        if (page % 2 == 0) {
-            return page + 1;
+    public int getScreenPair(int screenId) {
+        if (screenId % 2 == 0) {
+            return screenId + 1;
         } else {
-            return page - 1;
+            return screenId - 1;
         }
+    }
+
+    /**
+     * Returns {@link CellLayout} that is shown together with the given {@link CellLayout} when the
+     * two panel UI is enabled.
+     */
+    @Nullable
+    public CellLayout getScreenPair(CellLayout cellLayout) {
+        if (!isTwoPanelEnabled()) {
+            return null;
+        }
+        int screenId = getIdForScreen(cellLayout);
+        if (screenId == -1) {
+            return null;
+        }
+        return getScreenWithId(getScreenPair(screenId));
     }
 
     public void stripEmptyScreens() {
@@ -959,7 +976,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
             Iterator<Integer> removeScreensIterator = removeScreens.iterator();
             while (removeScreensIterator.hasNext()) {
                 int pageToRemove = removeScreensIterator.next();
-                int pagePair = getPagePair(pageToRemove);
+                int pagePair = getScreenPair(pageToRemove);
                 if (!removeScreens.contains(pagePair)) {
                     // The page pair isn't empty so we want to remove the current page from the
                     // removable pages' collection
