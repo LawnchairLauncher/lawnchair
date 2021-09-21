@@ -480,12 +480,12 @@ public class PopupContainerWithArrow<T extends StatefulActivity<LauncherState>>
 
     @Override
     protected void closeComplete() {
+        super.closeComplete();
         PopupContainerWithArrow openPopup = getOpen(mLauncher);
         if (openPopup == null || openPopup.mOriginalIcon != mOriginalIcon) {
             mOriginalIcon.setTextVisibility(mOriginalIcon.shouldTextBeVisible());
             mOriginalIcon.setForceHideDot(false);
         }
-        super.closeComplete();
     }
 
     /**
