@@ -536,9 +536,4 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
             pa.addFloat(recentsView, FULLSCREEN_PROGRESS, 1, 0, LINEAR);
         }
     }
-
-    /** Called when OverviewService is bound to this process */
-    void onOverviewServiceBound() {
-        // Do nothing
-    }
 }

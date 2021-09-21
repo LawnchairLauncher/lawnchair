@@ -714,6 +714,7 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
 
     @Override
     public void drawOnScrim(Canvas canvas) {
+        if (!mHeader.isHeaderProtectionSupported()) return;
         mHeaderPaint.setColor(mHeaderColor);
         mHeaderPaint.setAlpha((int) (getAlpha() * Color.alpha(mHeaderColor)));
         if (mHeaderPaint.getColor() != mScrimColor && mHeaderPaint.getColor() != 0) {
