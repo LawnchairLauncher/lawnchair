@@ -93,7 +93,7 @@
     <string name="clear_all_as_action_label">Nút xoá tất cả ở bên dưới</string>
     <string name="window_corner_radius_label">Độ cong của góc màn hình</string>
     <string name="override_window_corner_radius_label">Tùy chỉnh độ cong của góc màn hình</string>
-    <string name="window_corner_radius_description">When you swipe up to open Recents, the current app follows your finger, shrinking into a card. Use this slider to adjust the corner radius of the card when it’s nearly full-screen such that it matches the corners of your screen.</string>
+    <string name="window_corner_radius_description">Khi bạn vuốt lên để mở Gần đây, ứng dụng hiện tại theo dấu ngón tay của bạn, thu lại thành một thẻ. Dùng thanh trượt này để điều chỉnh độ cong các góc của thẻ khi nó lớn đến gần bằng các góc màn hình của bạn.</string>
     <string name="system_icons">Biểu tượng hệ thống</string>
     <string name="accent_color">Màu chủ đạo</string>
     <string name="done">Xong</string>
@@ -111,15 +111,15 @@
     <string name="msg_missing_notification_access">Để sử dụng Chấm nổi thông báo, ứng dụng <xliff:g id="name" example="My App">%1$s</xliff:g> cần quyền truy cập thông báo.</string>
     <string name="title_change_settings">Thay đổi cài đặt</string>
     <string name="debug_restart_launcher">Khởi động lại ứng dụng Lawnchair</string>
-    <string name="pref_fonts_missing_font">Font not found.</string>
-    <string name="font_variant_italic">Italic</string>
-    <string name="font_weight_thin">Thin</string>
-    <string name="font_weight_extra_light">Extralight</string>
+    <string name="pref_fonts_missing_font">Không tìm thấy phông chữ.</string>
+    <string name="font_variant_italic">Nghiêng</string>
+    <string name="font_weight_thin">Mỏng</string>
+    <string name="font_weight_extra_light">Siêu nhẹ</string>
     <string name="font_weight_light">Sáng</string>
-    <string name="font_weight_regular">Regular</string>
-    <string name="font_weight_medium">Medium</string>
-    <string name="font_weight_semi_bold">Semibold</string>
-    <string name="font_weight_bold">Bold</string>
-    <string name="font_weight_extra_bold">Extrabold</string>
-    <string name="font_weight_extra_black">Black</string>
+    <string name="font_weight_regular">Thường</string>
+    <string name="font_weight_medium">Trung bình</string>
+    <string name="font_weight_semi_bold">Hơi đậm</string>
+    <string name="font_weight_bold">Đậm</string>
+    <string name="font_weight_extra_bold">Rất đậm</string>
+    <string name="font_weight_extra_black">Cực kì đậm</string>
 </resources>
