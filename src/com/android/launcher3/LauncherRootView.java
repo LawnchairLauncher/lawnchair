@@ -47,15 +47,8 @@ public class LauncherRootView extends InsettableFrameLayout {
     }
 
     private void handleSystemWindowInsets(Rect insets) {
-        DeviceProfile dp = mActivity.getDeviceProfile();
-
-        // Taskbar provides insets, but we don't want that for most Launcher elements so remove it.
-        mTempRect.set(insets);
-        insets = mTempRect;
-        insets.bottom = Math.max(0, insets.bottom - dp.nonOverlappingTaskbarInset);
-
         // Update device profile before notifying the children.
-        dp.updateInsets(insets);
+        mActivity.getDeviceProfile().updateInsets(insets);
         boolean resetState = !insets.equals(mInsets);
         setInsets(insets);
 
@@ -86,10 +79,6 @@ public class LauncherRootView extends InsettableFrameLayout {
      * get its insets, we calculate them ourselves so they are stable regardless of whether taskbar
      * is currently attached.
      *
-     * TODO(b/198798034): Currently we always calculate nav insets as taskbarSize, but then we
-     * subtract nonOverlappingTaskbarInset in handleSystemWindowInsets(). Instead, we should just
-     * calculate the normal nav bar height here, and remove nonOverlappingTaskbarInset altogether.
-     *
      * @param oldInsets The system-provided insets, which we are modifying.
      * @return The updated insets.
      */
@@ -108,10 +97,8 @@ public class LauncherRootView extends InsettableFrameLayout {
         Insets oldNavInsets = oldInsets.getInsets(WindowInsets.Type.navigationBars());
         Rect newNavInsets = new Rect(oldNavInsets.left, oldNavInsets.top, oldNavInsets.right,
                 oldNavInsets.bottom);
-        if (dp.isTaskbarPresent) {
-            // TODO (see javadoc): Remove this block and fall into the next one instead.
-            newNavInsets.bottom = dp.taskbarSize;
-        } else if (dp.isLandscape) {
+
+        if (dp.isLandscape) {
             if (dp.isTablet) {
                 newNavInsets.bottom = ResourceUtils.getNavbarSize(
                         "navigation_bar_height_landscape", resources);

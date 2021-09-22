@@ -116,9 +116,7 @@ public class TestInformationHandler implements ResourceBasedOverride {
                 return getUIProperty(Bundle::putParcelable, activity -> {
                     WindowInsets insets = activity.getWindow()
                             .getDecorView().getRootWindowInsets();
-                    return Insets.subtract(
-                            insets.getSystemWindowInsets(),
-                            Insets.of(0, 0, 0, mDeviceProfile.nonOverlappingTaskbarInset));
+                    return insets.getSystemWindowInsets();
                 }, this::getCurrentActivity);
             }
 

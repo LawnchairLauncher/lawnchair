@@ -33,7 +33,6 @@ import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.util.DisplayMetrics;
-import android.util.Pair;
 import android.view.Surface;
 
 import com.android.launcher3.CellLayout.ContainerType;
@@ -215,8 +214,6 @@ public class DeviceProfile {
     // Whether Taskbar will inset the bottom of apps by taskbarSize.
     public boolean isTaskbarPresentInApps;
     public int taskbarSize;
-    // How much of the bottom inset is due to Taskbar rather than other system elements.
-    public int nonOverlappingTaskbarInset;
 
     // DragController
     public int flingToDeleteThresholdVelocity;
@@ -239,7 +236,7 @@ public class DeviceProfile {
         widthPx = windowBounds.bounds.width();
         heightPx = windowBounds.bounds.height();
         availableWidthPx = windowBounds.availableSize.x;
-        int nonFinalAvailableHeightPx = windowBounds.availableSize.y;
+        availableHeightPx = windowBounds.availableSize.y;
 
         mInfo = info;
         // If the device's pixel density was scaled (usually via settings for A11y), use the
@@ -266,15 +263,8 @@ public class DeviceProfile {
         isTaskbarPresent = isTablet && ApiWrapper.TASKBAR_DRAWN_IN_PROCESS
                 && FeatureFlags.ENABLE_TASKBAR.get();
         if (isTaskbarPresent) {
-            // Taskbar will be added later, but provides bottom insets that we should subtract
-            // from availableHeightPx.
             taskbarSize = res.getDimensionPixelSize(R.dimen.taskbar_size);
-            nonOverlappingTaskbarInset = taskbarSize - windowBounds.insets.bottom;
-            if (nonOverlappingTaskbarInset > 0) {
-                nonFinalAvailableHeightPx -= nonOverlappingTaskbarInset;
-            }
         }
-        availableHeightPx = nonFinalAvailableHeightPx;
 
         edgeMarginPx = res.getDimensionPixelSize(R.dimen.dynamic_grid_edge_margin);
 
@@ -842,7 +832,7 @@ public class DeviceProfile {
                 padding.right = hotseatBarSizePx;
             }
         } else {
-            int hotseatTop = isTaskbarPresent ? taskbarSize : hotseatBarSizePx;
+            int hotseatTop = hotseatBarSizePx;
             int paddingBottom = hotseatTop + workspacePageIndicatorHeight
                     + workspaceBottomPadding - mWorkspacePageIndicatorOverlapWorkspace;
             if (isTablet) {
@@ -853,8 +843,7 @@ public class DeviceProfile {
                         ((inv.numColumns - 1) * cellWidthPx)));
                 availablePaddingX = (int) Math.min(availablePaddingX,
                         widthPx * MAX_HORIZONTAL_PADDING_PERCENT);
-                int hotseatVerticalPadding = isTaskbarPresent ? 0
-                        : hotseatBarTopPaddingPx + hotseatBarBottomPaddingPx;
+                int hotseatVerticalPadding = hotseatBarTopPaddingPx + hotseatBarBottomPaddingPx;
                 int availablePaddingY = Math.max(0, heightPx - edgeMarginPx - paddingBottom
                         - (2 * inv.numRows * cellHeightPx) - hotseatVerticalPadding);
                 padding.set(availablePaddingX / 2, edgeMarginPx + availablePaddingY / 2,
@@ -886,9 +875,9 @@ public class DeviceProfile {
                         mInsets.right + hotseatBarSidePaddingStartPx, mInsets.bottom);
             }
         } else if (isTaskbarPresent) {
-            int hotseatHeight = workspacePadding.bottom + taskbarSize;
+            int hotseatHeight = workspacePadding.bottom;
             int taskbarOffset = getTaskbarOffsetY();
-            int hotseatTopDiff = hotseatHeight - taskbarSize - taskbarOffset;
+            int hotseatTopDiff = hotseatHeight - taskbarOffset;
 
             int endOffset = ApiWrapper.getHotseatEndOffset(context);
             int requiredWidth = iconSizePx * numShownHotseatIcons;
@@ -938,7 +927,8 @@ public class DeviceProfile {
                 : hotseatBarSizePx - hotseatCellHeightPx - hotseatQsbHeight;
 
         if (isScalableGrid && qsbBottomMarginPx > mInsets.bottom) {
-            return Math.min(qsbBottomMarginPx, freeSpace);
+            // Note that taskbarSize = 0 unless isTaskbarPresent.
+            return Math.min(qsbBottomMarginPx + taskbarSize, freeSpace);
         } else {
             return (int) (freeSpace * QSB_CENTER_FACTOR)
                 + (isTaskbarPresent ? taskbarSize : mInsets.bottom);
@@ -1116,10 +1106,7 @@ public class DeviceProfile {
 
         writer.println(prefix + "\tisTaskbarPresent:" + isTaskbarPresent);
         writer.println(prefix + "\tisTaskbarPresentInApps:" + isTaskbarPresentInApps);
-
         writer.println(prefix + pxToDpStr("taskbarSize", taskbarSize));
-        writer.println(prefix + pxToDpStr("nonOverlappingTaskbarInset",
-                nonOverlappingTaskbarInset));
 
         writer.println(prefix + pxToDpStr("workspacePadding.left", workspacePadding.left));
         writer.println(prefix + pxToDpStr("workspacePadding.top", workspacePadding.top));
