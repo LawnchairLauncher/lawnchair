@@ -1,5 +1,8 @@
 package com.android.quickstep.views;
 
+import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITION_BOTTOM_OR_RIGHT;
+import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITION_TOP_OR_LEFT;
+
 import android.content.Context;
 import android.graphics.Rect;
 import android.util.AttributeSet;
@@ -11,7 +14,6 @@ import androidx.annotation.Nullable;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
 import com.android.launcher3.util.RunnableList;
-import com.android.launcher3.util.SplitConfigurationOptions;
 import com.android.launcher3.util.SplitConfigurationOptions.StagedSplitBounds;
 import com.android.launcher3.util.TransformingTouchDelegate;
 import com.android.quickstep.RecentsModel;
@@ -72,7 +74,9 @@ public class GroupedTaskView extends TaskView {
         super.bind(primary, orientedState);
         mSecondaryTask = secondary;
         mTaskIdContainer[1] = secondary.key.id;
-        mTaskIdAttributeContainer[1] = new TaskIdAttributeContainer(secondary, mSnapshotView2);
+        mTaskIdAttributeContainer[1] = new TaskIdAttributeContainer(secondary, mSnapshotView2,
+                STAGE_POSITION_BOTTOM_OR_RIGHT);
+        mTaskIdAttributeContainer[0].setStagePosition(STAGE_POSITION_TOP_OR_LEFT);
         mSnapshotView2.bind(secondary);
         mSplitBoundsConfig = splitBoundsConfig;
     }
@@ -112,6 +116,10 @@ public class GroupedTaskView extends TaskView {
         }
     }
 
+    protected boolean showTaskMenuWithContainer(IconView iconView) {
+        return TaskMenuView.showForTask(mTaskIdAttributeContainer[iconView == mIconView ? 0 : 1]);
+    }
+
     public void updateSplitBoundsConfig(StagedSplitBounds stagedSplitBounds) {
         mSplitBoundsConfig = stagedSplitBounds;
         invalidate();
@@ -143,14 +151,14 @@ public class GroupedTaskView extends TaskView {
     @Override
     public RunnableList launchTaskAnimated() {
         getRecentsView().getSplitPlaceholder().launchTasks(mTask, mSecondaryTask,
-                SplitConfigurationOptions.STAGE_POSITION_TOP_OR_LEFT, null /*callback*/);
+                STAGE_POSITION_TOP_OR_LEFT, null /*callback*/);
         return null;
     }
 
     @Override
     public void launchTask(@NonNull Consumer<Boolean> callback, boolean freezeTaskList) {
         getRecentsView().getSplitPlaceholder().launchTasks(mTask, mSecondaryTask,
-                SplitConfigurationOptions.STAGE_POSITION_TOP_OR_LEFT, callback);
+                STAGE_POSITION_TOP_OR_LEFT, callback);
     }
 
     @Override
