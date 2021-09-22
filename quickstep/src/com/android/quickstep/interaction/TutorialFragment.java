@@ -237,7 +237,7 @@ abstract class TutorialFragment extends Fragment implements OnTouchListener {
     }
 
     void releaseFeedbackAnimation() {
-        if (mTutorialController != null) {
+        if (mTutorialController != null && !mTutorialController.isGestureCompleted()) {
             mTutorialController.cancelQueuedGestureAnimation();
         }
         if (mGestureAnimation != null && mGestureAnimation.isRunning()) {
