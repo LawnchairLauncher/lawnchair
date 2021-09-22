@@ -208,7 +208,7 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
     public void initParentViews(View parent) {
         if (mPageIndicatorViewId > -1) {
             mPageIndicator = parent.findViewById(mPageIndicatorViewId);
-            mPageIndicator.setMarkersCount(getChildCount());
+            mPageIndicator.setMarkersCount(getChildCount() / getPanelCount());
         }
     }
 
@@ -830,7 +830,7 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
 
     private void dispatchPageCountChanged() {
         if (mPageIndicator != null) {
-            mPageIndicator.setMarkersCount(getChildCount());
+            mPageIndicator.setMarkersCount(getChildCount() / getPanelCount());
         }
         // This ensures that when children are added, they get the correct transforms / alphas
         // in accordance with any scroll effects.
