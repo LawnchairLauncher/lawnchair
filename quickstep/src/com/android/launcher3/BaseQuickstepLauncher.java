@@ -24,6 +24,7 @@ import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TI
 import static com.android.launcher3.model.data.ItemInfo.NO_MATCHING_ID;
 import static com.android.launcher3.util.DisplayController.CHANGE_ACTIVE_SCREEN;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
+import static com.android.quickstep.SysUINavigationMode.Mode.NO_BUTTON;
 import static com.android.quickstep.SysUINavigationMode.Mode.TWO_BUTTONS;
 import static com.android.systemui.shared.system.ActivityManagerWrapper.CLOSE_SYSTEM_WINDOWS_REASON_HOME_KEY;
 
@@ -35,6 +36,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.ServiceConnection;
+import android.graphics.Insets;
 import android.hardware.SensorManager;
 import android.hardware.devicestate.DeviceStateManager;
 import android.os.Bundle;
@@ -43,6 +45,7 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowInsets;
 import android.window.SplashScreen;
 
 import androidx.annotation.Nullable;
@@ -637,6 +640,19 @@ public abstract class BaseQuickstepLauncher extends Launcher
         super.dump(prefix, fd, writer, args);
         if (mDepthController != null) {
             mDepthController.dump(prefix, writer);
+        }
+    }
+
+    @Override
+    public void updateWindowInsets(WindowInsets.Builder updatedInsetsBuilder,
+            WindowInsets oldInsets) {
+        // Override the tappable insets to be 0 on the bottom for gesture nav (otherwise taskbar
+        // would count towards it). This is used for the bottom protection in All Apps for example.
+        if (SysUINavigationMode.getMode(this) == NO_BUTTON) {
+            Insets oldTappableInsets = oldInsets.getInsets(WindowInsets.Type.tappableElement());
+            Insets newTappableInsets = Insets.of(oldTappableInsets.left, oldTappableInsets.top,
+                    oldTappableInsets.right, 0);
+            updatedInsetsBuilder.setInsets(WindowInsets.Type.tappableElement(), newTappableInsets);
         }
     }
 }
