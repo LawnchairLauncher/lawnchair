@@ -168,11 +168,13 @@ public class DeviceProfile {
     public int qsbBottomMarginPx;
 
     // All apps
+    public int allAppsCellSpacingPx;
     public int allAppsOpenVerticalTranslate;
     public int allAppsCellHeightPx;
     public int allAppsCellWidthPx;
     public int allAppsIconSizePx;
     public int allAppsIconDrawablePaddingPx;
+    public int allAppsLeftRightPadding;
     public final int numShownAllAppsColumns;
     public float allAppsIconTextSizePx;
 
@@ -283,6 +285,7 @@ public class DeviceProfile {
         folderContentPaddingTop = res.getDimensionPixelSize(R.dimen.folder_content_padding_top);
 
         setCellLayoutBorderSpacing(pxFromDp(inv.borderSpacing, mMetrics, 1f));
+        allAppsCellSpacingPx = pxFromDp(inv.allAppsCellSpacing, mMetrics, 1f);
         cellLayoutBorderSpacingOriginalPx = cellLayoutBorderSpacingPx;
         folderCellLayoutBorderSpacingPx = cellLayoutBorderSpacingPx;
 
@@ -547,6 +550,17 @@ public class DeviceProfile {
                 + textHeight + (topBottomPadding * 2);
     }
 
+    private void updateAllAppsWidth() {
+        if (isTwoPanels) {
+            int usedWidth = (allAppsCellWidthPx * numShownAllAppsColumns)
+                    + (allAppsCellSpacingPx * (numShownAllAppsColumns + 1));
+            allAppsLeftRightPadding = Math.max(1, (availableWidthPx - usedWidth) / 2);
+        } else {
+            allAppsLeftRightPadding =
+                    desiredWorkspaceLeftRightMarginPx + cellLayoutPaddingLeftRightPx;
+        }
+    }
+
     /**
      * Returns the amount of extra (or unused) vertical space.
      */
@@ -666,6 +680,7 @@ public class DeviceProfile {
             allAppsCellHeightPx = getCellSize().y;
         }
         allAppsCellWidthPx = allAppsIconSizePx + allAppsIconDrawablePaddingPx;
+        updateAllAppsWidth();
 
         if (isVerticalLayout) {
             hideWorkspaceLabelsIfNotEnoughSpace();
