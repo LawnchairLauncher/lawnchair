@@ -18,13 +18,6 @@ package com.android.quickstep.views;
 
 import static android.view.Gravity.BOTTOM;
 import static android.view.Gravity.CENTER_HORIZONTAL;
-import static android.view.Gravity.CENTER_VERTICAL;
-import static android.view.Gravity.END;
-import static android.view.Gravity.START;
-import static android.view.Gravity.TOP;
-import static android.view.Surface.ROTATION_180;
-import static android.view.Surface.ROTATION_270;
-import static android.view.Surface.ROTATION_90;
 import static android.widget.Toast.LENGTH_SHORT;
 
 import static com.android.launcher3.AbstractFloatingView.TYPE_TASK_MENU;
@@ -39,6 +32,7 @@ import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCH
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASK_LAUNCH_TAP;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
+import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITION_UNDEFINED;
 
 import static java.lang.annotation.RetentionPolicy.SOURCE;
 
@@ -58,7 +52,6 @@ import android.util.AttributeSet;
 import android.util.FloatProperty;
 import android.util.Log;
 import android.view.MotionEvent;
-import android.view.Surface;
 import android.view.TouchDelegate;
 import android.view.View;
 import android.view.ViewGroup;
@@ -86,6 +79,7 @@ import com.android.launcher3.touch.PagedOrientationHandler;
 import com.android.launcher3.util.ActivityOptionsWrapper;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.RunnableList;
+import com.android.launcher3.util.SplitConfigurationOptions;
 import com.android.launcher3.util.SplitConfigurationOptions.SplitPositionOption;
 import com.android.launcher3.util.TransformingTouchDelegate;
 import com.android.launcher3.util.ViewPool.Reusable;
@@ -466,7 +460,10 @@ public class TaskView extends FrameLayout implements Reusable {
      * Builds proto for logging
      */
     public WorkspaceItemInfo getItemInfo() {
-        final Task task = getTask();
+        return getItemInfo(mTask);
+    }
+
+    protected WorkspaceItemInfo getItemInfo(Task task) {
         ComponentKey componentKey = TaskUtils.getLaunchComponentKeyForTask(task.key);
         WorkspaceItemInfo stubInfo = new WorkspaceItemInfo();
         stubInfo.itemType = LauncherSettings.Favorites.ITEM_TYPE_TASK;
@@ -569,7 +566,8 @@ public class TaskView extends FrameLayout implements Reusable {
         cancelPendingLoadTasks();
         mTask = task;
         mTaskIdContainer[0] = mTask.key.id;
-        mTaskIdAttributeContainer[0] = new TaskIdAttributeContainer(task, mSnapshotView);
+        mTaskIdAttributeContainer[0] = new TaskIdAttributeContainer(task, mSnapshotView,
+                STAGE_POSITION_UNDEFINED);
         mSnapshotView.bind(task);
         setOrientationState(orientedState);
     }
@@ -825,7 +823,7 @@ public class TaskView extends FrameLayout implements Reusable {
         }
     }
 
-    private boolean showTaskMenu() {
+    private boolean showTaskMenu(IconView iconView) {
         if (getRecentsView().mActivity.isInState(OVERVIEW_SPLIT_SELECT)) {
             // Don't show menu when selecting second split screen app
             return true;
@@ -837,8 +835,12 @@ public class TaskView extends FrameLayout implements Reusable {
         } else {
             mActivity.getStatsLogManager().logger().withItemInfo(getItemInfo())
                     .log(LAUNCHER_TASK_ICON_TAP_OR_LONGPRESS);
-            return TaskMenuView.showForTask(this);
+            return showTaskMenuWithContainer(iconView);
         }
+    }
+
+    protected boolean showTaskMenuWithContainer(IconView iconView) {
+        return TaskMenuView.showForTask(mTaskIdAttributeContainer[0]);
     }
 
     protected void setIcon(IconView iconView, Drawable icon) {
@@ -850,14 +852,14 @@ public class TaskView extends FrameLayout implements Reusable {
                     recentsView.switchToScreenshot(
                             () -> recentsView.finishRecentsAnimation(true /* toRecents */,
                                     false /* shouldPip */,
-                                    this::showTaskMenu));
+                                    () -> showTaskMenu(iconView)));
                 } else {
-                    showTaskMenu();
+                    showTaskMenu(iconView);
                 }
             });
             iconView.setOnLongClickListener(v -> {
                 requestDisallowInterceptTouchEvent(true);
-                return showTaskMenu();
+                return showTaskMenu(iconView);
             });
         } else {
             iconView.setDrawable(null);
@@ -1328,8 +1330,9 @@ public class TaskView extends FrameLayout implements Reusable {
                         getContext().getText(R.string.accessibility_close)));
 
         final Context context = getContext();
+        // TODO(b/200609838) Determine which task to run A11y action on when in split screen
         for (SystemShortcut s : TaskOverlayFactory.getEnabledShortcuts(this,
-                mActivity.getDeviceProfile())) {
+                mActivity.getDeviceProfile(), mTaskIdAttributeContainer[0])) {
             info.addAction(s.createAccessibilityAction(context));
         }
 
@@ -1361,8 +1364,9 @@ public class TaskView extends FrameLayout implements Reusable {
             return true;
         }
 
+        // TODO(b/200609838) Determine which task to run A11y action on when in split screen
         for (SystemShortcut s : TaskOverlayFactory.getEnabledShortcuts(this,
-                mActivity.getDeviceProfile())) {
+                mActivity.getDeviceProfile(), mTaskIdAttributeContainer[0])) {
             if (s.hasHandlerForAction(action)) {
                 s.onClick(this);
                 return true;
@@ -1581,20 +1585,40 @@ public class TaskView extends FrameLayout implements Reusable {
     }
 
     public class TaskIdAttributeContainer {
-        private final TaskThumbnailView thumbnailView;
-        private final Task task;
+        private final TaskThumbnailView mThumbnailView;
+        private final Task mTask;
+        /** Defaults to STAGE_POSITION_UNDEFINED if in not a split screen task view */
+        private @SplitConfigurationOptions.StagePosition int mStagePosition;
 
-        public TaskIdAttributeContainer(Task task, TaskThumbnailView thumbnailView) {
-            this.task = task;
-            this.thumbnailView = thumbnailView;
+        public TaskIdAttributeContainer(Task task, TaskThumbnailView thumbnailView,
+                int stagePosition) {
+            this.mTask = task;
+            this.mThumbnailView = thumbnailView;
+            this.mStagePosition = stagePosition;
         }
 
         public TaskThumbnailView getThumbnailView() {
-            return thumbnailView;
+            return mThumbnailView;
         }
 
         public Task getTask() {
-            return task;
+            return mTask;
+        }
+
+        public WorkspaceItemInfo getItemInfo() {
+            return TaskView.this.getItemInfo(mTask);
+        }
+
+        public TaskView getTaskView() {
+            return TaskView.this;
+        }
+
+        public int getStagePosition() {
+            return mStagePosition;
+        }
+
+        void setStagePosition(@SplitConfigurationOptions.StagePosition int stagePosition) {
+            this.mStagePosition = stagePosition;
         }
     }
 }
