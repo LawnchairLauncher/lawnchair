@@ -137,6 +137,12 @@ public class LauncherSwipeHandlerV2 extends
             // opaque until it is ready.
             private boolean mIsFloatingIconReady = false;
 
+            @Nullable
+            @Override
+            protected View getViewIgnoredInWorkspaceRevealAnimation() {
+                return workspaceView;
+            }
+
             @Override
             public RectF getWindowTargetRect() {
                 super.getWindowTargetRect();

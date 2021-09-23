@@ -295,7 +295,7 @@ public abstract class SwipeUpAnimationLogic implements
                     taskViewSimulator.getCurrentCornerRadius(),
                     homeAnimationFactory.getEndRadius(cropRectF));
         } else {
-            anim = new RectFSpringAnim(startRect, targetRect, mContext);
+            anim = new RectFSpringAnim(startRect, targetRect, mContext, mDp);
         }
         homeAnimationFactory.setAnimation(anim);
 
