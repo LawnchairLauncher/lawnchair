@@ -79,6 +79,8 @@ public class DisplayController implements DisplayListener, ComponentCallbacks, S
 
     // Null for SDK < S
     private final Context mWindowContext;
+    // The callback in this listener updates DeviceProfile, which other listeners might depend on
+    private DisplayInfoChangeListener mPriorityListener;
     private final ArrayList<DisplayInfoChangeListener> mListeners = new ArrayList<>();
 
     private Info mInfo;
@@ -207,6 +209,10 @@ public class DisplayController implements DisplayListener, ComponentCallbacks, S
     @Override
     public final void onLowMemory() { }
 
+    public void setPriorityListener(DisplayInfoChangeListener listener) {
+        mPriorityListener = listener;
+    }
+
     public void addChangeListener(DisplayInfoChangeListener listener) {
         mListeners.add(listener);
     }
@@ -261,6 +267,9 @@ public class DisplayController implements DisplayListener, ComponentCallbacks, S
     }
 
     private void notifyChange(Context context, int flags) {
+        if (mPriorityListener != null) {
+            mPriorityListener.onDisplayInfoChanged(context, mInfo, flags);
+        }
         for (int i = mListeners.size() - 1; i >= 0; i--) {
             mListeners.get(i).onDisplayInfoChanged(context, mInfo, flags);
         }
