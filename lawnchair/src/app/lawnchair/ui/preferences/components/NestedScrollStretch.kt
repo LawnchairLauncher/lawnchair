@@ -2,13 +2,10 @@ package app.lawnchair.ui.preferences.components
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.drawscope.scale
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -17,21 +14,12 @@ import app.lawnchair.ui.StretchEdgeEffect
 
 @Composable
 fun NestedScrollStretch(content: @Composable () -> Unit) {
-    val shift = remember { mutableStateOf(0f) }
-    val connection = remember { NestedScrollStretchConnection(shift) }
+    val connection = remember { NestedScrollStretchConnection() }
     Box(
         modifier = Modifier
             .nestedScroll(connection)
             .drawWithContent {
-                val value = shift.value
-                val height = size.height
-                val scaleY = StretchEdgeEffect.getScale(value, height)
-                if (scaleY != 1f) {
-                    val pivotY = StretchEdgeEffect.getPivot(value, height)
-                    scale(1f, scaleY, pivot = Offset(0f, pivotY)) {
-                        this@drawWithContent.drawContent()
-                    }
-                } else {
+                connection.effect.draw(this) {
                     drawContent()
                 }
             }
@@ -40,10 +28,8 @@ fun NestedScrollStretch(content: @Composable () -> Unit) {
     }
 }
 
-private class NestedScrollStretchConnection(
-    shiftState: MutableState<Float>
-) : NestedScrollConnection {
-    private val effect = StretchEdgeEffect { shift -> shiftState.value = shift }
+private class NestedScrollStretchConnection : NestedScrollConnection {
+    val effect = StretchEdgeEffect()
     private var isFlinging = false
 
     override fun onPostScroll(

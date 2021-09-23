@@ -4,7 +4,6 @@ import android.content.Context
 import android.graphics.Canvas
 import android.util.AttributeSet
 import android.util.SparseBooleanArray
-import android.widget.EdgeEffect
 import android.widget.RelativeLayout
 import androidx.dynamicanimation.animation.DynamicAnimation.OnAnimationEndListener
 import androidx.recyclerview.widget.RecyclerView
@@ -16,14 +15,7 @@ open class StretchRelativeLayout @JvmOverloads constructor(
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
 ) : RelativeLayout(context, attrs, defStyleAttr) {
-    private val effect = StretchEdgeEffect { shift -> this.shift = shift }
-    private var shift = 0f
-        set(value) {
-            if (field != value) {
-                field = value
-                invalidate()
-            }
-        }
+    protected val effect = StretchEdgeEffect(this::invalidate)
 
     @JvmField
     protected val mSpringViews = SparseBooleanArray()
@@ -33,14 +25,7 @@ open class StretchRelativeLayout @JvmOverloads constructor(
     }
 
     override fun draw(canvas: Canvas) {
-        val height = height.toFloat()
-        val scaleY = StretchEdgeEffect.getScale(shift, height)
-        if (scaleY != 1f) {
-            val save = canvas.save()
-            canvas.scale(1f, scaleY, 0f, StretchEdgeEffect.getPivot(shift, height))
-            super.draw(canvas)
-            canvas.restoreToCount(save)
-        } else {
+        effect.draw(canvas, height.toFloat()) {
             super.draw(canvas)
         }
     }
@@ -67,48 +52,7 @@ open class StretchRelativeLayout @JvmOverloads constructor(
         effect.addEndListener(listener)
     }
 
-    fun createEdgeEffectFactory(): RecyclerView.EdgeEffectFactory {
-        return StretchEdgeEffectFactory()
-    }
-
-    private inner class StretchEdgeEffectFactory : RecyclerView.EdgeEffectFactory() {
-        override fun createEdgeEffect(view: RecyclerView, direction: Int): EdgeEffect {
-            return when (direction) {
-                DIRECTION_TOP, DIRECTION_BOTTOM -> EdgeEffectProxy(context, direction)
-                else -> super.createEdgeEffect(view, direction)
-            }
-        }
-    }
-
-    private inner class EdgeEffectProxy(context: Context, private val direction: Int) : EdgeEffect(context) {
-        private val multiplier = when (direction) {
-            RecyclerView.EdgeEffectFactory.DIRECTION_TOP -> 1f
-            RecyclerView.EdgeEffectFactory.DIRECTION_BOTTOM -> -1f
-            else -> throw IllegalArgumentException("invalid direction $direction")
-        }
-
-        override fun isFinished(): Boolean {
-            return when (direction) {
-                RecyclerView.EdgeEffectFactory.DIRECTION_TOP -> shift <= 0f
-                RecyclerView.EdgeEffectFactory.DIRECTION_BOTTOM -> shift >= 0f
-                else -> true
-            }
-        }
-
-        override fun onPull(deltaDistance: Float) {
-            effect.onPull(deltaDistance * height)
-        }
-
-        override fun onPull(deltaDistance: Float, displacement: Float) {
-            effect.onPull(deltaDistance * height * multiplier)
-        }
-
-        override fun onAbsorb(velocity: Int) {
-            effect.onAbsorb(velocity * multiplier)
-        }
-
-        override fun onRelease() {
-            effect.onRelease()
-        }
+    open fun createEdgeEffectFactory(): RecyclerView.EdgeEffectFactory {
+        return effect.createEdgeEffectFactory(context)
     }
 }
