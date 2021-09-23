@@ -171,9 +171,16 @@ public interface PagedOrientationHandler {
     void setSplitIconParams(View primaryIconView, View secondaryIconView,
             int taskIconHeight, Rect primarySnapshotBounds, Rect secondarySnapshotBounds,
             boolean isRtl, DeviceProfile deviceProfile, StagedSplitBounds splitConfig);
-    float getTaskMenuX(float x, View thumbnailView, int overScroll);
+
+    /*
+     * The following two methods try to center the TaskMenuView in landscape by finding the center
+     * of the thumbnail view and then subtracting half of the taskMenu width. In this case, the
+     * taskMenu width is the same size as the thumbnail width (what got set below in
+     * getTaskMenuWidth()), so we directly use that in the calculations.
+     */
+    float getTaskMenuX(float x, View thumbnailView, int overScroll, DeviceProfile deviceProfile);
     float getTaskMenuY(float y, View thumbnailView, int overScroll);
-    int getTaskMenuWidth(View view);
+    int getTaskMenuWidth(View view, DeviceProfile deviceProfile);
     /**
      * Sets linear layout orientation for {@link com.android.launcher3.popup.SystemShortcut} items
      * inside task menu view.
