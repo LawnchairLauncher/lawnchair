@@ -198,7 +198,6 @@ public class WidgetsFullSheet extends BaseWidgetSheet
                     .setOnClickListener((View view) -> mViewPager.snapToPage(0));
             findViewById(R.id.tab_work)
                     .setOnClickListener((View view) -> mViewPager.snapToPage(1));
-            fastScroller.setIsRecyclerViewFirstChildInParent(false);
             mAdapters.get(AdapterHolder.WORK).setup(findViewById(R.id.work_widgets_list_view));
         } else {
             mViewPager = null;
@@ -334,13 +333,18 @@ public class WidgetsFullSheet extends BaseWidgetSheet
         setContentViewChildHorizontalMargin(mSearchScrollController.mContainer,
                 contentHorizontalMarginInPx);
         if (mViewPager == null) {
-            setContentViewChildHorizontalMargin(
+            setContentViewChildHorizontalPadding(
                     mAdapters.get(AdapterHolder.PRIMARY).mWidgetsRecyclerView,
                     contentHorizontalMarginInPx);
         } else {
-            setContentViewChildHorizontalMargin(mViewPager, contentHorizontalMarginInPx);
+            setContentViewChildHorizontalPadding(
+                    mAdapters.get(AdapterHolder.PRIMARY).mWidgetsRecyclerView,
+                    contentHorizontalMarginInPx);
+            setContentViewChildHorizontalPadding(
+                    mAdapters.get(AdapterHolder.WORK).mWidgetsRecyclerView,
+                    contentHorizontalMarginInPx);
         }
-        setContentViewChildHorizontalMargin(
+        setContentViewChildHorizontalPadding(
                 mAdapters.get(AdapterHolder.SEARCH).mWidgetsRecyclerView,
                 contentHorizontalMarginInPx);
     }
@@ -350,6 +354,11 @@ public class WidgetsFullSheet extends BaseWidgetSheet
                 (ViewGroup.MarginLayoutParams) view.getLayoutParams();
         layoutParams.setMarginStart(horizontalMarginInPx);
         layoutParams.setMarginEnd(horizontalMarginInPx);
+    }
+
+    private static void setContentViewChildHorizontalPadding(View view, int horizontalPaddingInPx) {
+        view.setPadding(horizontalPaddingInPx, view.getPaddingTop(), horizontalPaddingInPx,
+                view.getPaddingBottom());
     }
 
     @Override
