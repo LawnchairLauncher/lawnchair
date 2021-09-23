@@ -108,7 +108,6 @@ import com.android.quickstep.util.StaggeredWorkspaceAnim;
 import com.android.quickstep.util.SurfaceTransactionApplier;
 import com.android.quickstep.util.SwipePipToHomeAnimator;
 import com.android.quickstep.util.TaskViewSimulator;
-import com.android.quickstep.util.TransformParams;
 import com.android.quickstep.util.VibratorWrapper;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
@@ -1342,9 +1341,10 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
         final int windowRotation = calculateWindowRotation(runningTaskTarget, orientationState);
         final int homeRotation = orientationState.getRecentsActivityRotation();
 
-        final Matrix homeToWindowPositionMap = new Matrix();
-        final RectF startRect = updateProgressForStartRect(homeToWindowPositionMap,
+        final Matrix[] homeToWindowPositionMaps = new Matrix[mRemoteTargetHandles.length];
+        final RectF startRect = updateProgressForStartRect(homeToWindowPositionMaps,
                 startProgress)[0];
+        final Matrix homeToWindowPositionMap = homeToWindowPositionMaps[0];
         // Move the startRect to Launcher space as floatingIconView runs in Launcher
         final Matrix windowToHomePositionMap = new Matrix();
         homeToWindowPositionMap.invert(windowToHomePositionMap);
