@@ -116,7 +116,6 @@
         <activity android:name="com.android.quickstep.interaction.AllSetActivity"
             android:autoRemoveFromRecents="true"
             android:excludeFromRecents="true"
-            android:screenOrientation="portrait"
             android:permission="android.permission.REBOOT"
             android:theme="@style/AllSetTheme"
             android:label="@string/allset_title"
