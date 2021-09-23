@@ -293,10 +293,7 @@ public class DeviceProfile {
                 : res.getDimensionPixelSize(R.dimen.dynamic_grid_cell_layout_padding);
 
         if (isTwoPanels) {
-            cellLayoutPaddingLeftRightPx = res.getDimensionPixelSize(
-                    isLandscape
-                            ? R.dimen.two_panels_home_side_padding_landscape
-                            : R.dimen.two_panels_home_side_padding_portrait);
+            cellLayoutPaddingLeftRightPx = 0;
             cellLayoutBottomPaddingPx = 0;
         } else if (isLandscape) {
             cellLayoutPaddingLeftRightPx = 0;
@@ -802,7 +799,9 @@ public class DeviceProfile {
         Point padding = getTotalWorkspacePadding();
 
         int numColumns = isTwoPanels ? inv.numColumns * 2 : inv.numColumns;
-        int screenWidthPx = availableWidthPx - padding.x - 2 * cellLayoutPaddingLeftRightPx;
+        int cellLayoutTotalPadding =
+                isTwoPanels ? 4 * cellLayoutPaddingLeftRightPx : 2 * cellLayoutPaddingLeftRightPx;
+        int screenWidthPx = availableWidthPx - padding.x - cellLayoutTotalPadding;
         result.x = calculateCellWidth(screenWidthPx, cellLayoutBorderSpacingPx, numColumns);
         result.y = calculateCellHeight(availableHeightPx - padding.y
                 - cellLayoutBottomPaddingPx, cellLayoutBorderSpacingPx, inv.numRows);
@@ -832,33 +831,15 @@ public class DeviceProfile {
                 padding.right = hotseatBarSizePx;
             }
         } else {
+            // Pad the bottom of the workspace with search/hotseat bar sizes
             int hotseatTop = hotseatBarSizePx;
             int paddingBottom = hotseatTop + workspacePageIndicatorHeight
                     + workspaceBottomPadding - mWorkspacePageIndicatorOverlapWorkspace;
-            if (isTablet) {
-                // Pad the left and right of the workspace to ensure consistent spacing
-                // between all icons
-                // The amount of screen space available for left/right padding.
-                int availablePaddingX = Math.max(0, widthPx - ((inv.numColumns * cellWidthPx) +
-                        ((inv.numColumns - 1) * cellWidthPx)));
-                availablePaddingX = (int) Math.min(availablePaddingX,
-                        widthPx * MAX_HORIZONTAL_PADDING_PERCENT);
-                int hotseatVerticalPadding = hotseatBarTopPaddingPx + hotseatBarBottomPaddingPx;
-                int availablePaddingY = Math.max(0, heightPx - edgeMarginPx - paddingBottom
-                        - (2 * inv.numRows * cellHeightPx) - hotseatVerticalPadding);
-                padding.set(availablePaddingX / 2, edgeMarginPx + availablePaddingY / 2,
-                        availablePaddingX / 2, paddingBottom + availablePaddingY / 2);
 
-                if (isTwoPanels) {
-                    padding.set(0, padding.top, 0, padding.bottom);
-                }
-            } else {
-                // Pad the top and bottom of the workspace with search/hotseat bar sizes
-                padding.set(desiredWorkspaceLeftRightMarginPx,
-                        workspaceTopPadding + (isScalableGrid ? 0 : edgeMarginPx),
-                        desiredWorkspaceLeftRightMarginPx,
-                        paddingBottom);
-            }
+            padding.set(desiredWorkspaceLeftRightMarginPx,
+                    (isScalableGrid ? workspaceTopPadding : edgeMarginPx),
+                    desiredWorkspaceLeftRightMarginPx,
+                    paddingBottom);
         }
     }
 
@@ -1117,6 +1098,7 @@ public class DeviceProfile {
         writer.println(prefix + pxToDpStr("iconScale", iconScale));
         writer.println(prefix + pxToDpStr("cellScaleToFit ", cellScaleToFit));
         writer.println(prefix + pxToDpStr("extraSpace", extraSpace));
+        writer.println(prefix + pxToDpStr("unscaled extraSpace", extraSpace / iconScale));
 
         if (inv.devicePaddings != null) {
             int unscaledExtraSpace = (int) (extraSpace / iconScale);
