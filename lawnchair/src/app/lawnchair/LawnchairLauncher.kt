@@ -93,6 +93,8 @@ class LawnchairLauncher : QuickstepLauncher(), LifecycleOwner,
         val launcherRootView = findViewById<LauncherRootView>(R.id.launcher)
         ViewTreeLifecycleOwner.set(launcherRootView, this)
         ViewTreeSavedStateRegistryOwner.set(launcherRootView, this)
+
+        appsView.setRecyclerViewVerticalFadingEdgeEnabled(true)
     }
 
     override fun onStart() {
