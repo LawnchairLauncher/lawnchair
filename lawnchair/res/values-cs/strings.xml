@@ -78,10 +78,10 @@
     </plurals>
     <string name="hotseat_qsb_label">Zobrazit vyhledávací lištu</string>
     <string name="dt2s_admin_hint_title">Vyžadována oprávnění správce</string>
-    <string name="dt2s_admin_hint">To use Double-Tap to Sleep, set Lawnchair as a device admin app. Tap Open Settings, then tap “Activate this device admin app.”</string>
+    <string name="dt2s_admin_hint">Pro použití dvojitého dotyku pro režim spánku, nastavte Lawnchair jako aplikaci administrátora. Klepněte na tlačítko Otevřete nastavení a poté klepněte na tlačítko „Aktivovat aplikaci správce zařízení.“</string>
     <string name="dt2s_admin_warning">Uspání dvojitým poklepáním bude vypnuto.</string>
     <string name="dt2s_a11y_hint_title">Zapnout službu usnadnění</string>
-    <string name="dt2s_a11y_hint">To use Double-Tap to Sleep, turn on the Lawnchair accessibility service. Tap Open Settings, then select Lawnchair and turn on Use Lawnchair.</string>
+    <string name="dt2s_a11y_hint">Chcete-li použít Dvojité klepnutí pro spánek, zapněte službu usnadnění přístupu k Lawnchair. Klepněte na Otevřené nastavení a poté vyberte Lawnchair a zapněte Použít Lawnchair.</string>
     <string name="dt2s_warning_open_settings">Otevřít nastavení</string>
     <string name="minus_one_enable">Kanál</string>
     <string name="minus_one_unavailable">Není nainstalován žádný kanál.</string>
