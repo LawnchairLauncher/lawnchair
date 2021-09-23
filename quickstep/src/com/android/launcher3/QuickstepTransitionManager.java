@@ -28,17 +28,24 @@ import static com.android.launcher3.LauncherAnimUtils.VIEW_BACKGROUND_COLOR;
 import static com.android.launcher3.LauncherState.ALL_APPS;
 import static com.android.launcher3.LauncherState.BACKGROUND_APP;
 import static com.android.launcher3.LauncherState.OVERVIEW;
+import static com.android.launcher3.Utilities.mapBoundToRange;
 import static com.android.launcher3.Utilities.postAsyncCallback;
+import static com.android.launcher3.anim.Interpolators.ACCEL_1_5;
 import static com.android.launcher3.anim.Interpolators.AGGRESSIVE_EASE;
 import static com.android.launcher3.anim.Interpolators.DEACCEL_1_5;
 import static com.android.launcher3.anim.Interpolators.DEACCEL_1_7;
+import static com.android.launcher3.anim.Interpolators.EXAGGERATED_EASE;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
+import static com.android.launcher3.config.FeatureFlags.ENABLE_BACK_SWIPE_HOME_ANIMATION;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_SCRIM_FOR_APP_LAUNCH;
 import static com.android.launcher3.config.FeatureFlags.KEYGUARD_ANIMATION;
 import static com.android.launcher3.config.FeatureFlags.SEPARATE_RECENTS_ACTIVITY;
 import static com.android.launcher3.dragndrop.DragLayer.ALPHA_INDEX_TRANSITIONS;
+import static com.android.launcher3.model.data.ItemInfo.NO_MATCHING_ID;
 import static com.android.launcher3.statehandlers.DepthController.DEPTH;
 import static com.android.launcher3.util.DisplayController.getSingleFrameMs;
+import static com.android.launcher3.views.FloatingIconView.SHAPE_PROGRESS_DURATION;
+import static com.android.launcher3.views.FloatingIconView.getFloatingIconView;
 import static com.android.quickstep.TaskViewUtils.findTaskViewToLaunch;
 import static com.android.systemui.shared.system.QuickStepContract.getWindowCornerRadius;
 import static com.android.systemui.shared.system.QuickStepContract.supportsRoundedCornersOnWindows;
@@ -50,20 +57,24 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Point;
+import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.CancellationSignal;
 import android.os.Handler;
+import android.os.IBinder;
 import android.os.Looper;
 import android.os.SystemProperties;
+import android.os.UserHandle;
 import android.util.Pair;
 import android.util.Size;
 import android.view.SurfaceControl;
@@ -86,8 +97,11 @@ import com.android.launcher3.icons.FastBitmapDrawable;
 import com.android.launcher3.shortcuts.DeepShortcutView;
 import com.android.launcher3.statehandlers.DepthController;
 import com.android.launcher3.taskbar.LauncherTaskbarUIController;
+import com.android.launcher3.touch.PagedOrientationHandler;
 import com.android.launcher3.util.ActivityOptionsWrapper;
+import com.android.launcher3.util.DynamicResource;
 import com.android.launcher3.util.MultiValueAlpha.AlphaProperty;
+import com.android.launcher3.util.ObjectWrapper;
 import com.android.launcher3.util.RunnableList;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.views.FloatingIconView;
@@ -96,8 +110,11 @@ import com.android.launcher3.widget.LauncherAppWidgetHostView;
 import com.android.quickstep.RemoteAnimationTargets;
 import com.android.quickstep.SystemUiProxy;
 import com.android.quickstep.TaskViewUtils;
+import com.android.quickstep.util.AppCloseConfig;
 import com.android.quickstep.util.MultiValueUpdateListener;
+import com.android.quickstep.util.RectFSpringAnim;
 import com.android.quickstep.util.RemoteAnimationProvider;
+import com.android.quickstep.util.StaggeredWorkspaceAnim;
 import com.android.quickstep.util.SurfaceTransactionApplier;
 import com.android.quickstep.util.WorkspaceRevealAnim;
 import com.android.quickstep.views.FloatingWidgetView;
@@ -1179,10 +1196,183 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
     }
 
     /**
-     * Animator that controls the transformations of the windows the targets that are closing.
+     * Returns view on the workspace that corresponds to the closing app in the list of app targets
      */
-    private Animator getClosingWindowAnimators(RemoteAnimationTargetCompat[] appTargets,
-            RemoteAnimationTargetCompat[] wallpaperTargets) {
+    private @Nullable View findWorkspaceView(RemoteAnimationTargetCompat[] appTargets) {
+        for (RemoteAnimationTargetCompat appTarget : appTargets) {
+            if (appTarget.mode == MODE_CLOSING) {
+                View workspaceView = findWorkspaceView(appTarget);
+                if (workspaceView != null) {
+                    return workspaceView;
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Returns view on the workspace that corresponds to the {@param runningTaskTarget}.
+     */
+    private @Nullable View findWorkspaceView(RemoteAnimationTargetCompat runningTaskTarget) {
+        if (runningTaskTarget == null || runningTaskTarget.taskInfo == null) {
+            return null;
+        }
+
+        final ComponentName[] taskInfoActivities = new ComponentName[] {
+                runningTaskTarget.taskInfo.baseActivity,
+                runningTaskTarget.taskInfo.origActivity,
+                runningTaskTarget.taskInfo.realActivity,
+                runningTaskTarget.taskInfo.topActivity};
+
+        String packageName = null;
+        for (ComponentName component : taskInfoActivities) {
+            if (component != null && component.getPackageName() != null) {
+                packageName = component.getPackageName();
+                break;
+            }
+        }
+
+        if (packageName == null) {
+            return null;
+        }
+
+        // Find the associated item info for the launch cookie (if available), note that predicted
+        // apps actually have an id of -1, so use another default id here
+        final ArrayList<IBinder> launchCookies = runningTaskTarget.taskInfo.launchCookies == null
+                ? new ArrayList<>()
+                : runningTaskTarget.taskInfo.launchCookies;
+
+        int launchCookieItemId = NO_MATCHING_ID;
+        for (IBinder cookie : launchCookies) {
+            Integer itemId = ObjectWrapper.unwrap(cookie);
+            if (itemId != null) {
+                launchCookieItemId = itemId;
+                break;
+            }
+        }
+
+        return mLauncher.getWorkspace().getFirstMatchForAppClose(launchCookieItemId,
+                packageName, UserHandle.of(runningTaskTarget.taskInfo.userId));
+    }
+
+    private @NonNull RectF getDefaultWindowTargetRect() {
+        RecentsView recentsView = mLauncher.getOverviewPanel();
+        PagedOrientationHandler orientationHandler = recentsView.getPagedOrientationHandler();
+        DeviceProfile dp = mLauncher.getDeviceProfile();
+        final int halfIconSize = dp.iconSizePx / 2;
+        float primaryDimension = orientationHandler
+                .getPrimaryValue(dp.availableWidthPx, dp.availableHeightPx);
+        float secondaryDimension = orientationHandler
+                .getSecondaryValue(dp.availableWidthPx, dp.availableHeightPx);
+        final float targetX =  primaryDimension / 2f;
+        final float targetY = secondaryDimension - dp.hotseatBarSizePx;
+        return new RectF(targetX - halfIconSize, targetY - halfIconSize,
+                targetX + halfIconSize, targetY + halfIconSize);
+    }
+
+    /**
+     * Closing animator that animates the window into its final location on the workspace.
+     */
+    private void getClosingWindowAnimators(AnimatorSet animation,
+            RemoteAnimationTargetCompat[] targets, View workspaceView) {
+        FloatingIconView floatingIconView = null;
+        FloatingWidgetView floatingWidget = null;
+        RectF targetRect = new RectF();
+
+        RemoteAnimationTargetCompat runningTaskTarget = null;
+        boolean isTransluscent = false;
+        for (RemoteAnimationTargetCompat target : targets) {
+            if (target.mode == MODE_CLOSING) {
+                runningTaskTarget = target;
+                isTransluscent = runningTaskTarget.isTranslucent;
+                break;
+            }
+        }
+
+        // Get floating view and target rect.
+        if (workspaceView instanceof LauncherAppWidgetHostView) {
+            Size windowSize = new Size(mDeviceProfile.availableWidthPx,
+                    mDeviceProfile.availableHeightPx);
+            int fallbackBackgroundColor =
+                    FloatingWidgetView.getDefaultBackgroundColor(mLauncher, runningTaskTarget);
+            floatingWidget = FloatingWidgetView.getFloatingWidgetView(mLauncher,
+                    (LauncherAppWidgetHostView) workspaceView, targetRect, windowSize,
+                    mDeviceProfile.isMultiWindowMode ? 0 : getWindowCornerRadius(mLauncher),
+                    isTransluscent, fallbackBackgroundColor);
+        } else if (workspaceView != null) {
+            floatingIconView = getFloatingIconView(mLauncher, workspaceView,
+                    true /* hideOriginal */, targetRect, false /* isOpening */);
+        } else {
+            targetRect.set(getDefaultWindowTargetRect());
+        }
+
+        final RectF startRect = new RectF(0, 0, mDeviceProfile.widthPx, mDeviceProfile.heightPx);
+        RectFSpringAnim anim = new RectFSpringAnim(startRect, targetRect, mLauncher);
+
+        // Hook up floating views to the closing window animators.
+        if (floatingIconView != null) {
+            anim.addAnimatorListener(floatingIconView);
+            floatingIconView.setOnTargetChangeListener(anim::onTargetPositionChanged);
+            floatingIconView.setFastFinishRunnable(anim::end);
+            FloatingIconView finalFloatingIconView = floatingIconView;
+
+            // We want the window alpha to be 0 once this threshold is met, so that the
+            // FolderIconView can be seen morphing into the icon shape.
+            final float windowAlphaThreshold = 1f - SHAPE_PROGRESS_DURATION;
+
+            RectFSpringAnim.OnUpdateListener runner = new SpringAnimRunner(targets, targetRect) {
+                @Override
+                public void onUpdate(@Nullable AppCloseConfig values, RectF currentRectF,
+                        float progress) {
+                    finalFloatingIconView.update(1f, 255 /* fgAlpha */, currentRectF, progress,
+                            windowAlphaThreshold, getCornerRadius(progress), false);
+
+                    super.onUpdate(values, currentRectF, progress);
+                }
+            };
+            anim.addOnUpdateListener(runner);
+        } else if (floatingWidget != null) {
+            anim.addAnimatorListener(floatingWidget);
+            floatingWidget.setOnTargetChangeListener(anim::onTargetPositionChanged);
+            floatingWidget.setFastFinishRunnable(anim::end);
+
+            final float floatingWidgetAlpha = isTransluscent ? 0 : 1;
+            FloatingWidgetView finalFloatingWidget = floatingWidget;
+            RectFSpringAnim.OnUpdateListener  runner = new SpringAnimRunner(targets, targetRect) {
+                @Override
+                public void onUpdate(@Nullable AppCloseConfig values, RectF currentRectF,
+                        float progress) {
+                    final float fallbackBackgroundAlpha =
+                            1 - mapBoundToRange(progress, 0.8f, 1, 0, 1, EXAGGERATED_EASE);
+                    final float foregroundAlpha =
+                            mapBoundToRange(progress, 0.5f, 1, 0, 1, EXAGGERATED_EASE);
+                    finalFloatingWidget.update(currentRectF, floatingWidgetAlpha, foregroundAlpha,
+                            fallbackBackgroundAlpha, 1 - progress);
+
+                    super.onUpdate(values, currentRectF, progress);
+                }
+            };
+            anim.addOnUpdateListener(runner);
+        }
+
+        // Use a fixed velocity to start the animation.
+        float velocityPxPerS = DynamicResource.provider(mLauncher)
+                .getDimension(R.dimen.unlock_staggered_velocity_dp_per_s);
+        PointF velocity = new PointF(0, -velocityPxPerS);
+        animation.play(new StaggeredWorkspaceAnim(mLauncher, velocity.y,
+                true /* animateOverviewScrim */, workspaceView).getAnimators());
+        animation.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+                anim.start(mLauncher, velocity);
+            }
+        });
+    }
+
+    /**
+     * Closing window animator that moves the window down and offscreen.
+     */
+    private Animator getFallbackClosingWindowAnimators(RemoteAnimationTargetCompat[] appTargets) {
         final int rotationChange = getRotationChange(appTargets);
         SurfaceTransactionApplier surfaceApplier = new SurfaceTransactionApplier(mDragLayer);
         Matrix matrix = new Matrix();
@@ -1321,7 +1511,7 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
                 LauncherAnimationRunner.AnimationResult result) {
             if (mLauncher.isDestroyed()) {
                 AnimatorSet anim = new AnimatorSet();
-                anim.play(getClosingWindowAnimators(appTargets, wallpaperTargets));
+                anim.play(getFallbackClosingWindowAnimators(appTargets));
                 result.setAnimation(anim, mLauncher.getApplicationContext());
                 return;
             }
@@ -1348,9 +1538,23 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
 
             if (anim == null) {
                 anim = new AnimatorSet();
-                anim.play(mFromUnlock
-                        ? getUnlockWindowAnimator(appTargets, wallpaperTargets)
-                        : getClosingWindowAnimators(appTargets, wallpaperTargets));
+
+                boolean playFallBackAnimation = mLauncher.isInState(LauncherState.ALL_APPS)
+                        && (launcherIsATargetWithMode(appTargets, MODE_OPENING)
+                        || mLauncher.isForceInvisible());
+
+                View workspaceView = findWorkspaceView(appTargets);
+                boolean playWorkspaceReveal = true;
+                if (mFromUnlock) {
+                    anim.play(getUnlockWindowAnimator(appTargets, wallpaperTargets));
+                } else if (ENABLE_BACK_SWIPE_HOME_ANIMATION.get()
+                        && !playFallBackAnimation) {
+                    getClosingWindowAnimators(anim, appTargets, workspaceView);
+                    // We play StaggeredWorkspaceAnim as a part of the closing window animation.
+                    playWorkspaceReveal = false;
+                } else {
+                    anim.play(getFallbackClosingWindowAnimators(appTargets));
+                }
 
                 // Normally, we run the launcher content animation when we are transitioning
                 // home, but if home is already visible, then we don't want to animate the
@@ -1378,7 +1582,9 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
                             }
                         });
                     } else {
-                        anim.play(new WorkspaceRevealAnim(mLauncher, false).getAnimators());
+                        if (playWorkspaceReveal) {
+                            anim.play(new WorkspaceRevealAnim(mLauncher, false).getAnimators());
+                        }
                     }
                 }
             }
@@ -1525,6 +1731,75 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
         @Override
         public void onTaskLaunching(int taskId, int supportedType, int color) {
             mTransitionManager.mTaskStartParams.put(taskId, Pair.create(supportedType, color));
+        }
+    }
+
+    /**
+     * RectFSpringAnim update listener to be used for app to home animation.
+     */
+    private class SpringAnimRunner implements RectFSpringAnim.OnUpdateListener {
+        private final RemoteAnimationTargetCompat[] mAppTargets;
+        private final Matrix mMatrix = new Matrix();
+        private final Point mTmpPos = new Point();
+        private final Rect mCurrentRect = new Rect();
+        private final float mStartRadius;
+        private final float mEndRadius;
+        private final SurfaceTransactionApplier mSurfaceApplier;
+
+        SpringAnimRunner(RemoteAnimationTargetCompat[] appTargets, RectF targetRect) {
+            mAppTargets = appTargets;
+            mStartRadius = QuickStepContract.getWindowCornerRadius(mLauncher);
+            mEndRadius = Math.max(1, targetRect.width()) / 2f;
+            mSurfaceApplier = new SurfaceTransactionApplier(mDragLayer);
+        }
+
+        public float getCornerRadius(float progress) {
+            return Utilities.mapRange(progress, mStartRadius, mEndRadius);
+        }
+
+        @Override
+        public void onUpdate(@Nullable AppCloseConfig values, RectF currentRectF, float progress) {
+            SurfaceParams[] params = new SurfaceParams[mAppTargets.length];
+            for (int i = mAppTargets.length - 1; i >= 0; i--) {
+                RemoteAnimationTargetCompat target = mAppTargets[i];
+                SurfaceParams.Builder builder = new SurfaceParams.Builder(target.leash);
+
+                if (target.localBounds != null) {
+                    mTmpPos.set(target.localBounds.left, target.localBounds.top);
+                } else {
+                    mTmpPos.set(target.position.x, target.position.y);
+                }
+
+                if (target.mode == MODE_CLOSING) {
+                    float alpha = getWindowAlpha(progress);
+                    currentRectF.round(mCurrentRect);
+
+                    builder.withMatrix(mMatrix)
+                            .withWindowCrop(mCurrentRect)
+                            .withAlpha(alpha)
+                            .withCornerRadius(getCornerRadius(progress));
+                } else if (target.mode == MODE_OPENING) {
+                    mMatrix.setTranslate(mTmpPos.x, mTmpPos.y);
+                    builder.withMatrix(mMatrix)
+                            .withAlpha(1f);
+                }
+                params[i] = builder.build();
+            }
+            mSurfaceApplier.scheduleApply(params);
+        }
+
+        protected float getWindowAlpha(float progress) {
+            // Alpha interpolates between [1, 0] between progress values [start, end]
+            final float start = 0f;
+            final float end = 0.85f;
+
+            if (progress <= start) {
+                return 1f;
+            }
+            if (progress >= end) {
+                return 0f;
+            }
+            return Utilities.mapToRange(progress, start, end, 1, 0, ACCEL_1_5);
         }
     }
 }

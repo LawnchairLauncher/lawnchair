@@ -51,6 +51,7 @@ import com.android.quickstep.views.OverviewActionsView;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskThumbnailView;
 import com.android.quickstep.views.TaskView;
+import com.android.quickstep.views.TaskView.TaskIdAttributeContainer;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 
@@ -63,11 +64,16 @@ import java.util.List;
 public class TaskOverlayFactory implements ResourceBasedOverride {
 
     public static List<SystemShortcut> getEnabledShortcuts(TaskView taskView,
-            DeviceProfile deviceProfile) {
+            DeviceProfile deviceProfile, TaskIdAttributeContainer taskContainer) {
         final ArrayList<SystemShortcut> shortcuts = new ArrayList<>();
         final BaseDraggingActivity activity = BaseActivity.fromContext(taskView.getContext());
+        boolean hasMultipleTasks = taskView.getTaskIds()[1] != -1;
         for (TaskShortcutFactory menuOption : MENU_OPTIONS) {
-            SystemShortcut shortcut = menuOption.getShortcut(activity, taskView);
+            if (hasMultipleTasks && !menuOption.showForSplitscreen()) {
+                continue;
+            }
+
+            SystemShortcut shortcut = menuOption.getShortcut(activity, taskContainer);
             if (shortcut == null) {
                 continue;
             }
@@ -87,7 +93,7 @@ public class TaskOverlayFactory implements ResourceBasedOverride {
         if (!canLauncherRotate && isInLandscape) {
             // Add screenshot action to task menu.
             SystemShortcut screenshotShortcut = TaskShortcutFactory.SCREENSHOT
-                    .getShortcut(activity, taskView);
+                    .getShortcut(activity, taskContainer);
             if (screenshotShortcut != null) {
                 shortcuts.add(screenshotShortcut);
             }
@@ -95,7 +101,7 @@ public class TaskOverlayFactory implements ResourceBasedOverride {
             // Add modal action only if display orientation is the same as the device orientation.
             if (orientedState.getDisplayRotation() == ROTATION_0) {
                 SystemShortcut modalShortcut = TaskShortcutFactory.MODAL
-                        .getShortcut(activity, taskView);
+                        .getShortcut(activity, taskContainer);
                 if (modalShortcut != null) {
                     shortcuts.add(modalShortcut);
                 }
@@ -105,7 +111,7 @@ public class TaskOverlayFactory implements ResourceBasedOverride {
     }
 
 
-    public static void addSplitOptions(List<SystemShortcut> outShortcuts,
+    private static void addSplitOptions(List<SystemShortcut> outShortcuts,
             BaseDraggingActivity activity, TaskView taskView, DeviceProfile deviceProfile) {
         int[] taskViewTaskIds = taskView.getTaskIds();
         boolean alreadyHasMultipleTasks = taskViewTaskIds[0] != -1 &&

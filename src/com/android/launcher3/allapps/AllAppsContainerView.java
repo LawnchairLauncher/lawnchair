@@ -426,8 +426,7 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
     @Override
     public WindowInsets dispatchApplyWindowInsets(WindowInsets insets) {
         if (Utilities.ATLEAST_Q) {
-            mNavBarScrimHeight = insets.getTappableElementInsets().bottom
-                    - mLauncher.getDeviceProfile().nonOverlappingTaskbarInset;
+            mNavBarScrimHeight = insets.getTappableElementInsets().bottom;
         } else {
             mNavBarScrimHeight = insets.getStableInsetBottom();
         }
@@ -643,7 +642,7 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
         mIsSearching = false;
         mHeader.setCollapsed(false);
         rebindAdapters();
-        getActiveRecyclerView().scrollToTop();
+        mHeader.reset(false);
     }
 
     public void onSearchResultsChanged() {

@@ -2,7 +2,6 @@ buildscript {
     repositories {
         mavenCentral()
         google()
-        jcenter()
     }
     dependencies {
         classpath GRADLE_CLASS_PATH

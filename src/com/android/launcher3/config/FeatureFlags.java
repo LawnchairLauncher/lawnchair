@@ -271,6 +271,10 @@ public final class FeatureFlags {
             "QUICK_WALLPAPER_PICKER", false,
             "Shows quick wallpaper picker in long-press menu");
 
+    public static final BooleanFlag ENABLE_BACK_SWIPE_HOME_ANIMATION = getDebugFlag(
+            "ENABLE_BACK_SWIPE_HOME_ANIMATION", true,
+            "Enables home animation to icon when user swipes back.");
+
     public static void initialize(Context context) {
         synchronized (sDebugFlags) {
             for (DebugFlag flag : sDebugFlags) {
