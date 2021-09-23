@@ -71,12 +71,12 @@ import com.android.launcher3.views.RecyclerViewFastScroller;
 import java.util.ArrayList;
 
 import app.lawnchair.allapps.LawnchairAlphabeticalAppsList;
-import app.lawnchair.ui.StretchRelativeLayout;
+import app.lawnchair.ui.AllAppsStretchLayout;
 
 /**
  * The all apps view container.
  */
-public class AllAppsContainerView extends StretchRelativeLayout implements DragSource,
+public class AllAppsContainerView extends AllAppsStretchLayout implements DragSource,
         Insettable, OnDeviceProfileChangeListener {
 
     private static final float FLING_VELOCITY_MULTIPLIER = 135f;
