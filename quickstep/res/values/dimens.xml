@@ -126,8 +126,8 @@
     <dimen name="allset_page_margin_horizontal">40dp</dimen>
     <dimen name="allset_title_margin_top">24dp</dimen>
     <dimen name="allset_title_icon_margin_top">32dp</dimen>
-    <dimen name="allset_hint_margin_bottom">52dp</dimen>
     <dimen name="allset_subtitle_margin_top">24dp</dimen>
+    <dimen name="allset_subtitle_width_max">348dp</dimen>
 
     <!-- All Apps Education tutorial -->
     <dimen name="swipe_edu_padding">8dp</dimen>
