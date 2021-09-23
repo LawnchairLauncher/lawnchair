@@ -65,7 +65,32 @@ public class KeyboardInsetAnimationCallback extends WindowInsetsAnimation.Callba
     public WindowInsetsAnimation.Bounds onStart(WindowInsetsAnimation animation,
             WindowInsetsAnimation.Bounds bounds) {
         mTerminalTranslation = mView.getTranslationY();
-        mView.setTranslationY(mInitialTranslation);
+        if (mView instanceof KeyboardInsetListener) {
+            ((KeyboardInsetListener) mView).onTranslationStart();
+        }
         return super.onStart(animation, bounds);
+    }
+
+    @Override
+    public void onEnd(WindowInsetsAnimation animation) {
+        if (mView instanceof KeyboardInsetListener) {
+            ((KeyboardInsetListener) mView).onTranslationEnd();
+        }
+        super.onEnd(animation);
+    }
+
+    /**
+     * Interface Allowing views to listen for keyboard translation events
+     */
+    public interface KeyboardInsetListener {
+        /**
+         * Called from {@link KeyboardInsetAnimationCallback#onStart}
+         */
+        void onTranslationStart();
+
+        /**
+         * Called from {@link KeyboardInsetAnimationCallback#onEnd}
+         */
+        void onTranslationEnd();
     }
 }

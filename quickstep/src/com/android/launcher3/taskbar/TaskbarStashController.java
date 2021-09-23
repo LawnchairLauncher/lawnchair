@@ -107,7 +107,7 @@ public class TaskbarStashController {
     // Evaluate whether the handle should be stashed
     private final StatePropertyHolder mStatePropertyHolder = new StatePropertyHolder(
             flags -> {
-                if (!supportsStashing()) {
+                if (!supportsVisualStashing()) {
                     return false;
                 }
                 boolean inApp = (flags & FLAG_IN_APP) != 0;
@@ -141,7 +141,7 @@ public class TaskbarStashController {
         mTaskbarStashedHandleAlpha = stashedHandleController.getStashedHandleAlpha();
         mTaskbarStashedHandleHintScale = stashedHandleController.getStashedHandleHintScale();
 
-        mIsStashedInApp = supportsStashing()
+        mIsStashedInApp = supportsManualStashing()
                 && mPrefs.getBoolean(SHARED_PREFS_STASHED_KEY, DEFAULT_STASHED_PREF);
         updateStateForFlag(FLAG_STASHED_IN_APP, mIsStashedInApp);
 
@@ -150,10 +150,18 @@ public class TaskbarStashController {
     }
 
     /**
+     * Returns whether the taskbar can visually stash into a handle based on the current device
+     * state.
+     */
+    private boolean supportsVisualStashing() {
+        return !mActivity.isThreeButtonNav();
+    }
+
+    /**
      * Returns whether the user can manually stash the taskbar based on the current device state.
      */
-    private boolean supportsStashing() {
-        return !mActivity.isThreeButtonNav()
+    private boolean supportsManualStashing() {
+        return supportsVisualStashing()
                 && (!Utilities.IS_RUNNING_IN_TEST_HARNESS || supportsStashingForTests());
     }
 
@@ -206,7 +214,7 @@ public class TaskbarStashController {
      * @return Whether we started an animation to either be newly stashed or unstashed.
      */
     public boolean updateAndAnimateIsStashedInApp(boolean isStashedInApp) {
-        if (!supportsStashing()) {
+        if (!supportsManualStashing()) {
             return false;
         }
         if (mIsStashedInApp != isStashedInApp) {
@@ -307,7 +315,7 @@ public class TaskbarStashController {
      *                       unstashed state.
      */
     public void startStashHint(boolean animateForward) {
-        if (isStashed() || !supportsStashing()) {
+        if (isStashed() || !supportsManualStashing()) {
             // Already stashed, no need to hint in that direction.
             return;
         }
