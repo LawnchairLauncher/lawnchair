@@ -16,7 +16,6 @@
 package com.android.launcher3.allapps;
 
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TURN_ON_WORK_APPS_TAP;
-import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 
 import android.content.Context;
 import android.content.res.Configuration;
@@ -62,8 +61,8 @@ public class WorkPausedCard extends LinearLayout implements View.OnClickListener
     public void onClick(View view) {
         if (Utilities.ATLEAST_P) {
             setEnabled(false);
+            mLauncher.getAppsView().getWorkManager().setWorkProfileEnabled(true);
             mLauncher.getStatsLogManager().logger().log(LAUNCHER_TURN_ON_WORK_APPS_TAP);
-            UI_HELPER_EXECUTOR.post(() -> WorkModeSwitch.setWorkProfileEnabled(getContext(), true));
         }
     }
 

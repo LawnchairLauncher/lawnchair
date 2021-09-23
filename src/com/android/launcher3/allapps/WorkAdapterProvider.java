@@ -15,12 +15,11 @@
  */
 package com.android.launcher3.allapps;
 
+import android.content.SharedPreferences;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
-import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.R;
-import com.android.launcher3.Utilities;
 
 import java.util.ArrayList;
 
@@ -33,13 +32,13 @@ public class WorkAdapterProvider extends BaseAdapterProvider {
 
     private static final int VIEW_TYPE_WORK_EDU_CARD = 1 << 20;
     private static final int VIEW_TYPE_WORK_DISABLED_CARD = 1 << 21;
-    private final Runnable mRefreshCB;
-    private final BaseDraggingActivity mLauncher;
-    private boolean mEnabled;
 
-    WorkAdapterProvider(BaseDraggingActivity launcher, Runnable refreshCallback) {
-        mLauncher = launcher;
-        mRefreshCB = refreshCallback;
+    @WorkProfileManager.WorkProfileState
+    private int mState;
+    private SharedPreferences mPreferences;
+
+    WorkAdapterProvider(SharedPreferences prefs) {
+        mPreferences = prefs;
     }
 
     @Override
@@ -61,19 +60,19 @@ public class WorkAdapterProvider extends BaseAdapterProvider {
      * returns whether or not work apps should be visible in work tab.
      */
     public boolean shouldShowWorkApps() {
-        return mEnabled;
+        return mState != WorkProfileManager.STATE_DISABLED;
     }
 
     /**
      * Adds work profile specific adapter items to adapterItems and returns number of items added
      */
     public int addWorkItems(ArrayList<AllAppsGridAdapter.AdapterItem> adapterItems) {
-        if (!mEnabled) {
+        if (mState == WorkProfileManager.STATE_DISABLED) {
             //add disabled card here.
             AllAppsGridAdapter.AdapterItem disabledCard = new AllAppsGridAdapter.AdapterItem();
             disabledCard.viewType = VIEW_TYPE_WORK_DISABLED_CARD;
             adapterItems.add(disabledCard);
-        } else if (!isEduSeen()) {
+        } else if (mState == WorkProfileManager.STATE_ENABLED && !isEduSeen()) {
             AllAppsGridAdapter.AdapterItem eduCard = new AllAppsGridAdapter.AdapterItem();
             eduCard.viewType = VIEW_TYPE_WORK_EDU_CARD;
             adapterItems.add(eduCard);
@@ -85,9 +84,8 @@ public class WorkAdapterProvider extends BaseAdapterProvider {
     /**
      * Sets the current state of work profile
      */
-    public void updateCurrentState(boolean isEnabled) {
-        mEnabled = isEnabled;
-        mRefreshCB.run();
+    public void updateCurrentState(@WorkProfileManager.WorkProfileState int state) {
+        mState = state;
     }
 
     @Override
@@ -101,6 +99,6 @@ public class WorkAdapterProvider extends BaseAdapterProvider {
     }
 
     private boolean isEduSeen() {
-        return Utilities.getPrefs(mLauncher).getInt(KEY_WORK_EDU_STEP, 0) != 0;
+        return mPreferences.getInt(KEY_WORK_EDU_STEP, 0) != 0;
     }
 }
