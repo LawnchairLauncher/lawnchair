@@ -132,7 +132,7 @@ public class RectFSpringAnim2 extends RectFSpringAnim {
 
     public RectFSpringAnim2(RectF startRect, RectF targetRect, Context context, float startRadius,
             float endRadius) {
-        super(startRect, targetRect, context);
+        super(startRect, targetRect, context, null);
         mStartRect = startRect;
         mTargetRect = targetRect;
 
