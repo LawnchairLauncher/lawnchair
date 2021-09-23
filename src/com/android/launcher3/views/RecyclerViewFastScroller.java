@@ -113,7 +113,6 @@ public class RecyclerViewFastScroller extends View {
     private boolean mIsThumbDetached;
     private final boolean mCanThumbDetach;
     private boolean mIgnoreDragGesture;
-    private boolean mIsRecyclerViewFirstChildInParent = true;
     private long mDownTimeStampMillis;
 
     // This is the offset from the top of the scrollbar when the user first starts touching.  To
@@ -438,9 +437,7 @@ public class RecyclerViewFastScroller extends View {
             return false;
         }
         getHitRect(sTempRect);
-        if (mIsRecyclerViewFirstChildInParent) {
-            sTempRect.top += mRv.getScrollBarTop();
-        }
+        sTempRect.top += mRv.getScrollBarTop();
         if (outOffset != null) {
             outOffset.set(sTempRect.left, sTempRect.top);
         }
@@ -452,9 +449,5 @@ public class RecyclerViewFastScroller extends View {
         // There is actually some overlap between the track and the thumb. But since the track
         // alpha is so low, it does not matter.
         return false;
-    }
-
-    public void setIsRecyclerViewFirstChildInParent(boolean isRecyclerViewFirstChildInParent) {
-        mIsRecyclerViewFirstChildInParent = isRecyclerViewFirstChildInParent;
     }
 }
