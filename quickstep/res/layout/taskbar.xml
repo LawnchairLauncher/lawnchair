@@ -30,6 +30,11 @@
         android:layout_gravity="bottom"
         android:clipChildren="false" />
 
+    <com.android.launcher3.taskbar.TaskbarScrimView
+        android:id="@+id/taskbar_scrim"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
     <FrameLayout
         android:id="@+id/navbuttons_view"
         android:layout_width="match_parent"

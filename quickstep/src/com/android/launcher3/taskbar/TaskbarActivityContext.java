@@ -124,6 +124,7 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
         mDragLayer = (TaskbarDragLayer) mLayoutInflater.inflate(
                 R.layout.taskbar, null, false);
         TaskbarView taskbarView = mDragLayer.findViewById(R.id.taskbar_view);
+        TaskbarScrimView taskbarScrimView = mDragLayer.findViewById(R.id.taskbar_scrim);
         FrameLayout navButtonsView = mDragLayer.findViewById(R.id.navbuttons_view);
         StashedHandleView stashedHandleView = mDragLayer.findViewById(R.id.stashed_handle);
 
@@ -144,6 +145,7 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
                         R.color.popup_color_primary_light),
                 new TaskbarDragLayerController(this, mDragLayer),
                 new TaskbarViewController(this, taskbarView),
+                new TaskbarScrimViewController(this, taskbarScrimView),
                 new TaskbarUnfoldAnimationController(unfoldTransitionProgressProvider,
                         mWindowManager),
                 new TaskbarKeyguardController(this),
@@ -322,6 +324,7 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
                 mControllers.navbarButtonsViewController.isRecentsDisabled());
         mControllers.taskbarKeyguardController.updateStateForSysuiFlags(systemUiStateFlags);
         mControllers.taskbarStashController.updateStateForSysuiFlags(systemUiStateFlags);
+        mControllers.taskbarScrimViewController.updateStateForSysuiFlags(systemUiStateFlags);
     }
 
     public void onRotationProposal(int rotation, boolean isValid) {
