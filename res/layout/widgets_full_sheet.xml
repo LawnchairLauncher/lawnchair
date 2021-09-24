@@ -25,7 +25,9 @@
         android:id="@+id/container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/bg_widgets_full_sheet">
+        android:background="@drawable/bg_widgets_full_sheet"
+        android:focusable="true"
+        android:importantForAccessibility="no">
 
         <View
             android:id="@+id/collapse_handle"
