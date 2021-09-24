@@ -214,7 +214,7 @@ abstract class SwipeUpGestureTutorialController extends TutorialController {
 
     @Override
     public void setNavBarGestureProgress(@Nullable Float displacement) {
-        if (mGestureCompleted) {
+        if (isGestureCompleted()) {
             return;
         }
         if (mTutorialType == HOME_NAVIGATION_COMPLETE
@@ -235,7 +235,7 @@ abstract class SwipeUpGestureTutorialController extends TutorialController {
 
     @Override
     public void onMotionPaused(boolean unused) {
-        if (mGestureCompleted) {
+        if (isGestureCompleted()) {
             return;
         }
         if (mShowTasks) {
