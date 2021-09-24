@@ -183,7 +183,7 @@ public final class FeatureFlags {
                     + "Ignored if ENABLE_SMARTSPACE_UNIVERSAL is enabled.");
 
     public static final BooleanFlag ENABLE_SMARTSPACE_FEEDBACK = getDebugFlag(
-            "ENABLE_SMARTSPACE_FEEDBACK", true,
+            "ENABLE_SMARTSPACE_FEEDBACK", false,
             "Adds a menu option to send feedback for Enhanced Smartspace.");
 
     public static final BooleanFlag ENABLE_SMARTSPACE_DISMISS = getDebugFlag(
