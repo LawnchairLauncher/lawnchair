@@ -75,9 +75,10 @@ public class NavbarButtonsViewController {
     private static final int FLAG_A11Y_VISIBLE = 1 << 3;
     private static final int FLAG_ONLY_BACK_FOR_BOUNCER_VISIBLE = 1 << 4;
     private static final int FLAG_KEYGUARD_VISIBLE = 1 << 5;
-    private static final int FLAG_DISABLE_HOME = 1 << 6;
-    private static final int FLAG_DISABLE_RECENTS = 1 << 7;
-    private static final int FLAG_DISABLE_BACK = 1 << 8;
+    private static final int FLAG_KEYGUARD_OCCLUDED = 1 << 6;
+    private static final int FLAG_DISABLE_HOME = 1 << 7;
+    private static final int FLAG_DISABLE_RECENTS = 1 << 8;
+    private static final int FLAG_DISABLE_BACK = 1 << 9;
 
     private static final int MASK_IME_SWITCHER_VISIBLE = FLAG_SWITCHER_SUPPORTED | FLAG_IME_VISIBLE;
 
@@ -188,10 +189,11 @@ public class NavbarButtonsViewController {
         mPropertyHolders.add(new StatePropertyHolder(
                 mBackButton, flags -> (flags & FLAG_IME_VISIBLE) != 0, View.ROTATION,
                 isRtl ? 90 : -90, 0));
-        // Hide when keyguard is showing, show when bouncer is showing
+        // Hide when keyguard is showing, show when bouncer or lock screen app is showing
         mPropertyHolders.add(new StatePropertyHolder(mBackButton,
                 flags -> (flags & FLAG_KEYGUARD_VISIBLE) == 0 ||
-                        (flags & FLAG_ONLY_BACK_FOR_BOUNCER_VISIBLE) != 0));
+                        (flags & FLAG_ONLY_BACK_FOR_BOUNCER_VISIBLE) != 0 ||
+                        (flags & FLAG_KEYGUARD_OCCLUDED) != 0));
 
         // home and recents buttons
         View homeButton = addButton(R.drawable.ic_sysbar_home, BUTTON_HOME, navContainer,
@@ -256,10 +258,12 @@ public class NavbarButtonsViewController {
     }
 
     /**
-     * Slightly misnamed, but should be called when keyguard OR AOD is showing
+     * Slightly misnamed, but should be called when keyguard OR AOD is showing.
+     * We consider keyguardVisible when it's showing bouncer OR is occlucded by another app
      */
-    public void setKeyguardVisible(boolean isKeyguardVisible) {
-        updateStateForFlag(FLAG_KEYGUARD_VISIBLE, isKeyguardVisible);
+    public void setKeyguardVisible(boolean isKeyguardVisible, boolean isKeyguardOccluded) {
+        updateStateForFlag(FLAG_KEYGUARD_VISIBLE, isKeyguardVisible || isKeyguardOccluded);
+        updateStateForFlag(FLAG_KEYGUARD_OCCLUDED, isKeyguardOccluded);
         applyState();
     }
 
