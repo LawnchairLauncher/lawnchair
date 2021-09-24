@@ -46,6 +46,8 @@ import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.folder.Folder;
 import com.android.launcher3.folder.FolderIcon;
+import com.android.launcher3.logging.InstanceId;
+import com.android.launcher3.logging.InstanceIdSequence;
 import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.FolderInfo;
@@ -313,6 +315,12 @@ public class ItemClickHandler {
                 // web ui. This only works though if the package isn't set
                 intent = new Intent(intent);
                 intent.setPackage(null);
+            }
+            if ((si.options & WorkspaceItemInfo.FLAG_START_FOR_RESULT) != 0) {
+                launcher.startActivityForResult(item.getIntent(), 0);
+                InstanceId instanceId = new InstanceIdSequence().newInstanceId();
+                launcher.logAppLaunch(launcher.getStatsLogManager(), item, instanceId);
+                return;
             }
         }
         if (v != null && launcher.supportsAdaptiveIconAnimation(v)) {

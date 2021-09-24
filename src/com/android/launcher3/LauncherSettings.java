@@ -95,6 +95,12 @@ public class LauncherSettings {
         public static final int ITEM_TYPE_DEEP_SHORTCUT = 6;
 
         /**
+         * The favroite is a search action
+         */
+        public static final int ITEM_TYPE_SEARCH_ACTION = 7;
+
+
+        /**
          * Type of the item is recents task.
          * TODO(hyunyoungs): move constants not related to Favorites DB to a better location.
          */

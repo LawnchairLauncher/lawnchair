@@ -164,6 +164,7 @@ public class ItemInfo {
 
     public void copyFrom(ItemInfo info) {
         id = info.id;
+        title = info.title;
         cellX = info.cellX;
         cellY = info.cellY;
         spanX = info.spanX;

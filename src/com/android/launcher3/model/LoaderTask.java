@@ -584,6 +584,7 @@ public class LoaderTask implements Runnable {
                                         && pmHelper.isAppSuspended(targetPkg, c.user)) {
                                     disabledState |= FLAG_DISABLED_SUSPENDED;
                                 }
+                                info.options = c.getInt(optionsIndex);
 
                                 // App shortcuts that used to be automatically added to Launcher
                                 // didn't always have the correct intent flags set, so do that
