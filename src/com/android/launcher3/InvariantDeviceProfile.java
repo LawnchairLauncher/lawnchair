@@ -172,7 +172,7 @@ public class InvariantDeviceProfile {
         }
         new DeviceGridState(this).writeToPrefs(context);
 
-        DisplayController.INSTANCE.get(context).addChangeListener(
+        DisplayController.INSTANCE.get(context).setPriorityListener(
                 (displayContext, info, flags) -> {
                     if ((flags & (CHANGE_DENSITY | CHANGE_SUPPORTED_BOUNDS)) != 0) {
                         onConfigChanged(displayContext);
