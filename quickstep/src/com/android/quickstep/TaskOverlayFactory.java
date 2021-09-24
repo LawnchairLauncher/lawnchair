@@ -114,9 +114,11 @@ public class TaskOverlayFactory implements ResourceBasedOverride {
     private static void addSplitOptions(List<SystemShortcut> outShortcuts,
             BaseDraggingActivity activity, TaskView taskView, DeviceProfile deviceProfile) {
         int[] taskViewTaskIds = taskView.getTaskIds();
-        boolean alreadyHasMultipleTasks = taskViewTaskIds[0] != -1 &&
+        boolean taskViewHasMultipleTasks = taskViewTaskIds[0] != -1 &&
                 taskViewTaskIds[1] != -1;
-        if (alreadyHasMultipleTasks) {
+        boolean notEnoughTasksToSplit = taskView.getRecentsView().getTaskViewCount() < 2;
+        if (taskViewHasMultipleTasks || notEnoughTasksToSplit ||
+                (deviceProfile.overviewShowAsGrid && taskView.isFocusedTask())) {
             return;
         }
 
