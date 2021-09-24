@@ -125,10 +125,13 @@ public class MultiValueAlpha {
         }
 
         /**
-         * Creates and returns an Animator from the current value to the given value.
+         * Creates and returns an Animator from the current value to the given value. Future
+         * animator on the same target automatically cancels the previous one.
          */
         public Animator animateToValue(float value) {
-            return ObjectAnimator.ofFloat(this, VALUE, value);
+            ObjectAnimator animator = ObjectAnimator.ofFloat(this, VALUE, value);
+            animator.setAutoCancel(true);
+            return animator;
         }
     }
 }
