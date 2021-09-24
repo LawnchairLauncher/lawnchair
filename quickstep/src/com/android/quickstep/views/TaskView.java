@@ -847,6 +847,9 @@ public class TaskView extends FrameLayout implements Reusable {
         if (icon != null) {
             iconView.setDrawable(icon);
             iconView.setOnClickListener(v -> {
+                if (confirmSecondSplitSelectApp()) {
+                    return;
+                }
                 if (ENABLE_QUICKSTEP_LIVE_TILE.get() && isRunningTask()) {
                     RecentsView recentsView = getRecentsView();
                     recentsView.switchToScreenshot(
