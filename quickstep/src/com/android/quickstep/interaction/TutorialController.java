@@ -95,7 +95,7 @@ abstract class TutorialController implements BackGestureAttemptCallback,
     final ImageView mFingerDotView;
     private final AlertDialog mSkipTutorialDialog;
 
-    protected boolean mGestureCompleted = false;
+    private boolean mGestureCompleted = false;
 
     // These runnables  should be used when posting callbacks to their views and cleared from their
     // views before posting new callbacks.
@@ -284,6 +284,10 @@ abstract class TutorialController implements BackGestureAttemptCallback,
         mFeedbackViewCallback = mShowFeedbackRunnable;
 
         mFeedbackView.post(mFeedbackViewCallback);
+    }
+
+    public boolean isGestureCompleted() {
+        return mGestureCompleted;
     }
 
     void hideFeedback() {
