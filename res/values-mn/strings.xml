@@ -36,14 +36,8 @@
     <string name="add_item_request_drag_hint" msgid="5653291305078645405">"Жижиг хэрэгслийг Үндсэн нүүрний эргэн тойронд зөөхийн тулд түүнд хүрээд, удаан дарна уу"</string>
     <string name="add_to_home_screen" msgid="8631549138215492708">"Үндсэн нүүрэнд нэмэх"</string>
     <string name="added_to_home_screen_accessibility_text" msgid="4451545765448884415">"<xliff:g id="WIDGET_NAME">%1$s</xliff:g> виджетийг үндсэн нүүрэнд нэмсэн"</string>
-    <plurals name="widgets_count" formatted="false" msgid="656794749266073027">
-      <item quantity="other"><xliff:g id="WIDGETS_COUNT_1">%1$d</xliff:g> жижиг хэрэгсэл</item>
-      <item quantity="one"><xliff:g id="WIDGETS_COUNT_0">%1$d</xliff:g> жижиг хэрэгсэл</item>
-    </plurals>
-    <plurals name="shortcuts_count" formatted="false" msgid="8080294865447938455">
-      <item quantity="other"><xliff:g id="SHORTCUTS_COUNT_1">%1$d</xliff:g> товчлол</item>
-      <item quantity="one"><xliff:g id="SHORTCUTS_COUNT_0">%1$d</xliff:g> товчлол</item>
-    </plurals>
+    <string name="widgets_count" msgid="6467746476364652096">"{count,plural, =1{# виджет}other{# виджет}}"</string>
+    <string name="shortcuts_count" msgid="8471715556199592381">"{count,plural, =1{# товчлол}other{# товчлол}}"</string>
     <string name="widgets_and_shortcuts_count" msgid="7209136747878365116">"<xliff:g id="WIDGETS_COUNT">%1$s</xliff:g>, <xliff:g id="SHORTCUTS_COUNT">%2$s</xliff:g>"</string>
     <string name="widget_button_text" msgid="2880537293434387943">"Виджет"</string>
     <string name="widgets_full_sheet_search_bar_hint" msgid="8484659090860596457">"Хайх"</string>
@@ -90,10 +84,7 @@
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"Энэ апп нь системийн апп ба устгах боломжгүй."</string>
     <string name="folder_hint_text" msgid="5174843001373488816">"Нэр засах"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"<xliff:g id="APP_NAME">%1$s</xliff:g>-г идэвхгүй болгосон"</string>
-    <plurals name="dotted_app_label" formatted="false" msgid="5194538107138265416">
-      <item quantity="other"><xliff:g id="APP_NAME_2">%1$s</xliff:g>, <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> мэдэгдэлтэй байна</item>
-      <item quantity="one"><xliff:g id="APP_NAME_0">%1$s</xliff:g>, <xliff:g id="NOTIFICATION_COUNT_1">%2$d</xliff:g> мэдэгдэлтэй байна</item>
-    </plurals>
+    <string name="dotted_app_label" msgid="1704091277755818896">"{count,plural,offset:1 =1{{app_name} дээр # мэдэгдэл байна}other{{app_name} дээр # мэдэгдэл байна}}"</string>
     <string name="default_scroll_format" msgid="7475544710230993317">"%2$d-н %1$d хуудас"</string>
     <string name="workspace_scroll_format" msgid="8458889198184077399">"%2$d-н Нүүр дэлгэц %1$d"</string>
     <string name="workspace_new_page" msgid="257366611030256142">"Шинэ үндсэн нүүр хуудас"</string>
