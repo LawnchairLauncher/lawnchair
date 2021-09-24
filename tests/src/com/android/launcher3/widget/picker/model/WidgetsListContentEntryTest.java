@@ -26,6 +26,7 @@ import static org.mockito.Mockito.doAnswer;
 
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.ComponentName;
+import android.os.UserHandle;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.SmallTest;
@@ -53,8 +54,10 @@ import java.util.Map;
 public final class WidgetsListContentEntryTest {
     private static final String PACKAGE_NAME = "com.android.test";
     private static final String PACKAGE_NAME_2 = "com.android.test2";
-    private final PackageItemInfo mPackageItemInfo1 = new PackageItemInfo(PACKAGE_NAME);
-    private final PackageItemInfo mPackageItemInfo2 = new PackageItemInfo(PACKAGE_NAME_2);
+    private final PackageItemInfo mPackageItemInfo1 = new PackageItemInfo(PACKAGE_NAME,
+            UserHandle.CURRENT);
+    private final PackageItemInfo mPackageItemInfo2 = new PackageItemInfo(PACKAGE_NAME_2,
+            UserHandle.CURRENT);
     private final ComponentName mWidget1 = ComponentName.createRelative(PACKAGE_NAME, ".mWidget1");
     private final ComponentName mWidget2 = ComponentName.createRelative(PACKAGE_NAME, ".mWidget2");
     private final ComponentName mWidget3 = ComponentName.createRelative(PACKAGE_NAME, ".mWidget3");

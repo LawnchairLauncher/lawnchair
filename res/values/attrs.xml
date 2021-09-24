@@ -258,4 +258,18 @@
     <declare-styleable name="WidgetsListRowHeader">
         <attr name="appIconSize" format="dimension" />
     </declare-styleable>
+
+    <declare-styleable name="WidgetSections">
+        <!-- Component name of an app widget provider. -->
+        <attr name="provider" format="string" />
+        <!-- If true, keep the app widget under its app listing in addition to the widget category
+             in the widget picker. Defaults to false if not specified. -->
+        <attr name="alsoKeepInApp" format="boolean" />
+        <!-- The category of an app widget provider. Defaults to -1 if not specified. -->
+        <attr name="category" format="integer" />
+        <!-- The title name of a widget category. -->
+        <attr name="sectionTitle" format="reference" />
+        <!-- The icon drawable of a widget category. -->
+        <attr name="sectionDrawable" format="reference" />
+    </declare-styleable>
 </resources>

@@ -804,8 +804,9 @@ public class LoaderTask implements Runnable {
                                 if (appWidgetInfo.restoreStatus !=
                                         LauncherAppWidgetInfo.RESTORE_COMPLETED) {
                                     appWidgetInfo.pendingItemInfo = WidgetsModel.newPendingItemInfo(
-                                            appWidgetInfo.providerName);
-                                    appWidgetInfo.pendingItemInfo.user = appWidgetInfo.user;
+                                            mApp.getContext(),
+                                            appWidgetInfo.providerName,
+                                            appWidgetInfo.user);
                                     mIconCache.getTitleAndIconForApp(
                                             appWidgetInfo.pendingItemInfo, false);
                                 }
