@@ -36,18 +36,8 @@
     <string name="add_item_request_drag_hint" msgid="5653291305078645405">"Утрымліваючы віджэт націснутым, перамяшчайце яго па Галоўным экране"</string>
     <string name="add_to_home_screen" msgid="8631549138215492708">"Дадаць на Галоўны экран"</string>
     <string name="added_to_home_screen_accessibility_text" msgid="4451545765448884415">"Віджэт \"<xliff:g id="WIDGET_NAME">%1$s</xliff:g>\" дададзены на галоўны экран"</string>
-    <plurals name="widgets_count" formatted="false" msgid="656794749266073027">
-      <item quantity="one"><xliff:g id="WIDGETS_COUNT_1">%1$d</xliff:g> віджэт</item>
-      <item quantity="few"><xliff:g id="WIDGETS_COUNT_1">%1$d</xliff:g> віджэты</item>
-      <item quantity="many"><xliff:g id="WIDGETS_COUNT_1">%1$d</xliff:g> віджэтаў</item>
-      <item quantity="other"><xliff:g id="WIDGETS_COUNT_1">%1$d</xliff:g> віджэта</item>
-    </plurals>
-    <plurals name="shortcuts_count" formatted="false" msgid="8080294865447938455">
-      <item quantity="one"><xliff:g id="SHORTCUTS_COUNT_1">%1$d</xliff:g> ярлык</item>
-      <item quantity="few"><xliff:g id="SHORTCUTS_COUNT_1">%1$d</xliff:g> ярлыкі</item>
-      <item quantity="many"><xliff:g id="SHORTCUTS_COUNT_1">%1$d</xliff:g> ярлыкоў</item>
-      <item quantity="other"><xliff:g id="SHORTCUTS_COUNT_1">%1$d</xliff:g> ярлыка</item>
-    </plurals>
+    <string name="widgets_count" msgid="6467746476364652096">"{count,plural, =1{# віджэт}one{# віджэт}few{# віджэты}many{# віджэтаў}other{# віджэта}}"</string>
+    <string name="shortcuts_count" msgid="8471715556199592381">"{count,plural, =1{# ярлык}one{# ярлык}few{# ярлыкі}many{# ярлыкоў}other{# ярлыка}}"</string>
     <string name="widgets_and_shortcuts_count" msgid="7209136747878365116">"<xliff:g id="WIDGETS_COUNT">%1$s</xliff:g>, <xliff:g id="SHORTCUTS_COUNT">%2$s</xliff:g>"</string>
     <string name="widget_button_text" msgid="2880537293434387943">"Віджэты"</string>
     <string name="widgets_full_sheet_search_bar_hint" msgid="8484659090860596457">"Пошук"</string>
@@ -94,12 +84,7 @@
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"Гэта сістэмная праграма, яе нельга выдаліць."</string>
     <string name="folder_hint_text" msgid="5174843001373488816">"Змяніць назву"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"<xliff:g id="APP_NAME">%1$s</xliff:g> адключана"</string>
-    <plurals name="dotted_app_label" formatted="false" msgid="5194538107138265416">
-      <item quantity="one"><xliff:g id="APP_NAME_2">%1$s</xliff:g>, мае <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> апавяшчэнне</item>
-      <item quantity="few"><xliff:g id="APP_NAME_2">%1$s</xliff:g>, мае <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> апавяшчэнні</item>
-      <item quantity="many"><xliff:g id="APP_NAME_2">%1$s</xliff:g>, мае <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> апавяшчэнняў</item>
-      <item quantity="other"><xliff:g id="APP_NAME_2">%1$s</xliff:g>, мае <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> апавяшчэння</item>
-    </plurals>
+    <string name="dotted_app_label" msgid="1704091277755818896">"{count,plural,offset:1 =1{У праграмы \"{app_name}\" ёсць # апавяшчэнне}one{У праграмы \"{app_name}\" ёсць # апавяшчэнне}few{У праграмы \"{app_name}\" ёсць # апавяшчэнні}many{У праграмы \"{app_name}\" ёсць # апавяшчэнняў}other{У праграмы \"{app_name}\" ёсць # апавяшчэння}}"</string>
     <string name="default_scroll_format" msgid="7475544710230993317">"Старонка %1$d з %2$d"</string>
     <string name="workspace_scroll_format" msgid="8458889198184077399">"Галоўны экран %1$d з %2$d"</string>
     <string name="workspace_new_page" msgid="257366611030256142">"Новая старонка галоўнага экрана"</string>

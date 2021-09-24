@@ -36,18 +36,8 @@
     <string name="add_item_request_drag_hint" msgid="5653291305078645405">"Pridržite pripomoček, če ga želite premikati po začetnem zaslonu."</string>
     <string name="add_to_home_screen" msgid="8631549138215492708">"Dodaj na začetni zaslon"</string>
     <string name="added_to_home_screen_accessibility_text" msgid="4451545765448884415">"Pripomoček »<xliff:g id="WIDGET_NAME">%1$s</xliff:g>« je dodan na začetni zaslon."</string>
-    <plurals name="widgets_count" formatted="false" msgid="656794749266073027">
-      <item quantity="one"><xliff:g id="WIDGETS_COUNT_1">%1$d</xliff:g> pripomoček</item>
-      <item quantity="two"><xliff:g id="WIDGETS_COUNT_1">%1$d</xliff:g> pripomočka</item>
-      <item quantity="few"><xliff:g id="WIDGETS_COUNT_1">%1$d</xliff:g> pripomočki</item>
-      <item quantity="other"><xliff:g id="WIDGETS_COUNT_1">%1$d</xliff:g> pripomočkov</item>
-    </plurals>
-    <plurals name="shortcuts_count" formatted="false" msgid="8080294865447938455">
-      <item quantity="one"><xliff:g id="SHORTCUTS_COUNT_1">%1$d</xliff:g> bližnjica</item>
-      <item quantity="two"><xliff:g id="SHORTCUTS_COUNT_1">%1$d</xliff:g> bližnjici</item>
-      <item quantity="few"><xliff:g id="SHORTCUTS_COUNT_1">%1$d</xliff:g> bližnjice</item>
-      <item quantity="other"><xliff:g id="SHORTCUTS_COUNT_1">%1$d</xliff:g> bližnjic</item>
-    </plurals>
+    <string name="widgets_count" msgid="6467746476364652096">"{count,plural, =1{# pripomoček}one{# pripomoček}two{# pripomočka}few{# pripomočki}other{# pripomočkov}}"</string>
+    <string name="shortcuts_count" msgid="8471715556199592381">"{count,plural, =1{# bližnjica}one{# bližnjica}two{# bližnjici}few{# bližnjice}other{# bližnjic}}"</string>
     <string name="widgets_and_shortcuts_count" msgid="7209136747878365116">"<xliff:g id="WIDGETS_COUNT">%1$s</xliff:g>, <xliff:g id="SHORTCUTS_COUNT">%2$s</xliff:g>"</string>
     <string name="widget_button_text" msgid="2880537293434387943">"Pripomočki"</string>
     <string name="widgets_full_sheet_search_bar_hint" msgid="8484659090860596457">"Iskanje"</string>
@@ -94,12 +84,7 @@
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"To je sistemska aplikacija in je ni mogoče odstraniti."</string>
     <string name="folder_hint_text" msgid="5174843001373488816">"Urejanje imena"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"Aplikacija <xliff:g id="APP_NAME">%1$s</xliff:g> je onemogočena"</string>
-    <plurals name="dotted_app_label" formatted="false" msgid="5194538107138265416">
-      <item quantity="one"><xliff:g id="APP_NAME_2">%1$s</xliff:g> ima <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> obvestilo</item>
-      <item quantity="two"><xliff:g id="APP_NAME_2">%1$s</xliff:g> ima <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> obvestili</item>
-      <item quantity="few"><xliff:g id="APP_NAME_2">%1$s</xliff:g> ima <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> obvestila</item>
-      <item quantity="other"><xliff:g id="APP_NAME_2">%1$s</xliff:g> ima <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> obvestil</item>
-    </plurals>
+    <string name="dotted_app_label" msgid="1704091277755818896">"{count,plural,offset:1 =1{{app_name} ima # obvestilo}one{{app_name} ima # obvestilo}two{{app_name} ima # obvestili}few{{app_name} ima # obvestila}other{{app_name} ima # obvestil}}"</string>
     <string name="default_scroll_format" msgid="7475544710230993317">"Stran %1$d od %2$d"</string>
     <string name="workspace_scroll_format" msgid="8458889198184077399">"Začetni zaslon %1$d od %2$d"</string>
     <string name="workspace_new_page" msgid="257366611030256142">"Nova stran na začetnem zaslonu"</string>
