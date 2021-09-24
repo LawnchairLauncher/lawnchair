@@ -209,7 +209,7 @@ public class DeviceProfile {
     public DotRenderer mDotRendererWorkSpace;
     public DotRenderer mDotRendererAllApps;
 
-     // Taskbar
+    // Taskbar
     public boolean isTaskbarPresent;
     // Whether Taskbar will inset the bottom of apps by taskbarSize.
     public boolean isTaskbarPresentInApps;
@@ -376,8 +376,8 @@ public class DeviceProfile {
         overviewActionsMarginThreeButtonPx = res.getDimensionPixelSize(
                 R.dimen.overview_actions_margin_three_button);
         overviewPageSpacing = overviewShowAsGrid
-                        ? res.getDimensionPixelSize(R.dimen.recents_page_spacing_grid)
-                        : res.getDimensionPixelSize(R.dimen.recents_page_spacing);
+                ? res.getDimensionPixelSize(R.dimen.recents_page_spacing_grid)
+                : res.getDimensionPixelSize(R.dimen.recents_page_spacing);
         overviewRowSpacing = isLandscape
                 ? res.getDimensionPixelSize(R.dimen.overview_grid_row_spacing_landscape)
                 : res.getDimensionPixelSize(R.dimen.overview_grid_row_spacing_portrait);
@@ -802,7 +802,7 @@ public class DeviceProfile {
         Point padding = getTotalWorkspacePadding();
 
         int numColumns = isTwoPanels ? inv.numColumns * 2 : inv.numColumns;
-        int screenWidthPx = availableWidthPx - padding.x;
+        int screenWidthPx = availableWidthPx - padding.x - 2 * cellLayoutPaddingLeftRightPx;
         result.x = calculateCellWidth(screenWidthPx, cellLayoutBorderSpacingPx, numColumns);
         result.y = calculateCellHeight(availableHeightPx - padding.y
                 - cellLayoutBottomPaddingPx, cellLayoutBorderSpacingPx, inv.numRows);
@@ -931,7 +931,7 @@ public class DeviceProfile {
             return Math.min(qsbBottomMarginPx + taskbarSize, freeSpace);
         } else {
             return (int) (freeSpace * QSB_CENTER_FACTOR)
-                + (isTaskbarPresent ? taskbarSize : mInsets.bottom);
+                    + (isTaskbarPresent ? taskbarSize : mInsets.bottom);
         }
     }
 
@@ -966,6 +966,7 @@ public class DeviceProfile {
     public static int calculateCellWidth(int width, int borderSpacing, int countX) {
         return (width - ((countX - 1) * borderSpacing)) / countX;
     }
+
     public static int calculateCellHeight(int height, int borderSpacing, int countY) {
         return (height - ((countY - 1) * borderSpacing)) / countY;
     }
