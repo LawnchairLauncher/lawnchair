@@ -392,7 +392,8 @@ public final class LauncherInstrumentation {
         }
     }
 
-    private String getSystemAnomalyMessage(boolean ignoreNavmodeChangeStates) {
+    private String getSystemAnomalyMessage(
+            boolean ignoreNavmodeChangeStates, boolean ignoreOnlySystemUiViews) {
         try {
             {
                 final StringBuilder sb = new StringBuilder();
@@ -415,7 +416,7 @@ public final class LauncherInstrumentation {
 
             if (hasSystemUiObject("keyguard_status_view")) return "Phone is locked";
 
-            if (!ignoreNavmodeChangeStates) {
+            if (!ignoreOnlySystemUiViews) {
                 final String visibleApps = mDevice.findObjects(getAnyObjectSelector())
                         .stream()
                         .map(LauncherInstrumentation::getApplicationPackageSafe)
@@ -423,7 +424,8 @@ public final class LauncherInstrumentation {
                         .filter(pkg -> pkg != null)
                         .collect(Collectors.joining(","));
                 if (SYSTEMUI_PACKAGE.equals(visibleApps)) return "Only System UI views are visible";
-
+            }
+            if (!ignoreNavmodeChangeStates) {
                 if (!mDevice.wait(Until.hasObject(getAnyObjectSelector()), WAIT_TIME_MS)) {
                     return "Screen is empty";
                 }
@@ -439,11 +441,13 @@ public final class LauncherInstrumentation {
     }
 
     private void checkForAnomaly() {
-        checkForAnomaly(false);
+        checkForAnomaly(false, false);
     }
 
-    public void checkForAnomaly(boolean ignoreNavmodeChangeStates) {
-        final String systemAnomalyMessage = getSystemAnomalyMessage(ignoreNavmodeChangeStates);
+    public void checkForAnomaly(
+            boolean ignoreNavmodeChangeStates, boolean ignoreOnlySystemUiViews) {
+        final String systemAnomalyMessage =
+                getSystemAnomalyMessage(ignoreNavmodeChangeStates, ignoreOnlySystemUiViews);
         if (systemAnomalyMessage != null) {
             Assert.fail(formatSystemHealthMessage(formatErrorWithEvents(
                     "http://go/tapl : Tests are broken by a non-Launcher system error: "
@@ -765,7 +769,7 @@ public final class LauncherInstrumentation {
             // pause in accessibility events prior to pressing Home.
             final String action;
             if (getNavigationModel() == NavigationModel.ZERO_BUTTON) {
-                checkForAnomaly();
+                checkForAnomaly(false, true);
                 setForcePauseTimeout(FORCE_PAUSE_TIMEOUT_MS);
 
                 final Point displaySize = getRealDisplaySize();
