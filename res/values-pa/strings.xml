@@ -36,14 +36,8 @@
     <string name="add_item_request_drag_hint" msgid="5653291305078645405">"ਵਿਜੇਟ ਨੂੰ ਹੋਮ ਸਕ੍ਰੀਨ \'ਤੇ ਇੱਧਰ-ਉੱਧਰ ਲਿਜਾਉਣ ਲਈ ਸਪਰਸ਼ ਕਰਕੇ ਦਬਾਈ ਰੱਖੋ"</string>
     <string name="add_to_home_screen" msgid="8631549138215492708">"ਹੋਮ ਸਕ੍ਰੀਨ \'ਤੇ ਸ਼ਾਮਲ ਕਰੋ"</string>
     <string name="added_to_home_screen_accessibility_text" msgid="4451545765448884415">"<xliff:g id="WIDGET_NAME">%1$s</xliff:g> ਵਿਜੇਟ ਨੂੰ ਹੋਮ ਸਕ੍ਰੀਨ \'ਤੇ ਸ਼ਾਮਲ ਕੀਤਾ ਗਿਆ"</string>
-    <plurals name="widgets_count" formatted="false" msgid="656794749266073027">
-      <item quantity="one"><xliff:g id="WIDGETS_COUNT_1">%1$d</xliff:g> ਵਿਜੇਟ</item>
-      <item quantity="other"><xliff:g id="WIDGETS_COUNT_1">%1$d</xliff:g> ਵਿਜੇਟ</item>
-    </plurals>
-    <plurals name="shortcuts_count" formatted="false" msgid="8080294865447938455">
-      <item quantity="one"><xliff:g id="SHORTCUTS_COUNT_1">%1$d</xliff:g> ਸ਼ਾਰਟਕੱਟ</item>
-      <item quantity="other"><xliff:g id="SHORTCUTS_COUNT_1">%1$d</xliff:g> ਸ਼ਾਰਟਕੱਟ</item>
-    </plurals>
+    <string name="widgets_count" msgid="6467746476364652096">"{count,plural, =1{# ਵਿਜੇਟ}one{# ਵਿਜੇਟ}other{# ਵਿਜੇਟ}}"</string>
+    <string name="shortcuts_count" msgid="8471715556199592381">"{count,plural, =1{# ਸ਼ਾਰਟਕੱਟ}one{# ਸ਼ਾਰਟਕੱਟ}other{# ਸ਼ਾਰਟਕੱਟ}}"</string>
     <string name="widgets_and_shortcuts_count" msgid="7209136747878365116">"<xliff:g id="WIDGETS_COUNT">%1$s</xliff:g>, <xliff:g id="SHORTCUTS_COUNT">%2$s</xliff:g>"</string>
     <string name="widget_button_text" msgid="2880537293434387943">"ਵਿਜੇਟ"</string>
     <string name="widgets_full_sheet_search_bar_hint" msgid="8484659090860596457">"ਖੋਜੋ"</string>
@@ -90,10 +84,7 @@
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"ਇਹ ਇੱਕ ਸਿਸਟਮ ਐਪ ਹੈ ਅਤੇ ਇਸਨੂੰ ਅਣਇੰਸਟੌਲ ਨਹੀਂ ਕੀਤਾ ਜਾ ਸਕਦਾ।"</string>
     <string name="folder_hint_text" msgid="5174843001373488816">"ਨਾਮ ਦਾ ਸੰਪਾਦਨ ਕਰੋ"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"<xliff:g id="APP_NAME">%1$s</xliff:g> ਨੂੰ ਅਯੋਗ ਬਣਾਇਆ ਗਿਆ"</string>
-    <plurals name="dotted_app_label" formatted="false" msgid="5194538107138265416">
-      <item quantity="one"><xliff:g id="APP_NAME_2">%1$s</xliff:g> ਦੀ <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> ਸੂਚਨਾ</item>
-      <item quantity="other"><xliff:g id="APP_NAME_2">%1$s</xliff:g> ਦੀਆਂ <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> ਸੂਚਨਾਵਾਂ</item>
-    </plurals>
+    <string name="dotted_app_label" msgid="1704091277755818896">"{count,plural,offset:1 =1{{app_name} \'ਤੇ # ਸੂਚਨਾ ਹੈ}one{{app_name} \'ਤੇ # ਸੂਚਨਾ ਹੈ}other{{app_name} \'ਤੇ # ਸੂਚਨਾਵਾਂ ਹਨ}}"</string>
     <string name="default_scroll_format" msgid="7475544710230993317">"ਸਫ਼ਾ %2$d ਦਾ %1$d"</string>
     <string name="workspace_scroll_format" msgid="8458889198184077399">"ਹੋਮ ਸਕ੍ਰੀਨ %2$d ਦੀ %1$d"</string>
     <string name="workspace_new_page" msgid="257366611030256142">"ਨਵਾਂ ਹੋਮ ਸਕ੍ਰੀਨ ਸਫ਼ਾ"</string>
