@@ -35,6 +35,7 @@ import static com.android.launcher3.anim.Interpolators.TOUCH_RESPONSE_INTERPOLAT
 import static com.android.launcher3.anim.Interpolators.clampToProgress;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
 import static com.android.launcher3.statehandlers.DepthController.DEPTH;
+import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.MODE_CLOSING;
 import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.MODE_OPENING;
 
@@ -42,6 +43,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.annotation.TargetApi;
 import android.content.ComponentName;
 import android.content.Context;
@@ -78,6 +80,8 @@ import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.system.InteractionJankMonitorWrapper;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 import com.android.systemui.shared.system.SyncRtSurfaceTransactionApplierCompat.SurfaceParams;
+
+import java.util.ArrayList;
 
 /**
  * Utility class for helpful methods related to {@link TaskView} objects and their tasks.
@@ -427,34 +431,64 @@ public final class TaskViewUtils {
             @NonNull RemoteAnimationTargetCompat[] wallpaperTargets,
             @NonNull RemoteAnimationTargetCompat[] nonAppTargets,
             @NonNull Runnable finishCallback) {
+        final ArrayList<SurfaceControl> openingTargets = new ArrayList<>();
+        final ArrayList<SurfaceControl> closingTargets = new ArrayList<>();
 
-        final int[] splitRoots = new int[2];
-        for (int i = 0; i < appTargets.length; ++i) {
-            final int taskId = appTargets[i].taskInfo != null ? appTargets[i].taskInfo.taskId : -1;
-            final int mode = appTargets[i].mode;
-            if (taskId == initialTask.key.id || taskId == secondTask.key.id) {
-                if (mode != MODE_OPENING) {
-                    throw new IllegalStateException(
-                            "Expected task to be opening, but it is " + mode);
-                }
-                splitRoots[taskId == initialTask.key.id ? 0 : 1] = i;
+        for (RemoteAnimationTargetCompat appTarget : appTargets) {
+            final int taskId = appTarget.taskInfo != null ? appTarget.taskInfo.taskId : -1;
+            final int mode = appTarget.mode;
+            final SurfaceControl leash = appTarget.leash.getSurfaceControl();
+            if (leash == null) {
+                continue;
+            }
+
+            if (mode == MODE_OPENING) {
+                openingTargets.add(leash);
+            } else if (taskId == initialTask.key.id || taskId == secondTask.key.id) {
+                throw new IllegalStateException("Expected task to be opening, but it is " + mode);
+            } else if (mode == MODE_CLOSING) {
+                closingTargets.add(leash);
             }
         }
 
-        SurfaceControl.Transaction t = new SurfaceControl.Transaction();
-
-        // This is where we should animate the split roots. For now, though, just make them visible.
-        for (int i = 0; i < 2; ++i) {
-            t.show(appTargets[splitRoots[i]].leash.getSurfaceControl());
-            t.setAlpha(appTargets[splitRoots[i]].leash.getSurfaceControl(), 1.f);
+        for (int i = 0; i < nonAppTargets.length; ++i) {
+            final SurfaceControl leash = appTargets[i].leash.getSurfaceControl();
+            if (nonAppTargets[i].windowType == TYPE_DOCK_DIVIDER && leash != null) {
+                openingTargets.add(leash);
+            }
         }
 
-        // This contains the initial state (before animation), so apply this at the beginning of
-        // the animation.
-        t.apply();
+        final SurfaceControl.Transaction t = new SurfaceControl.Transaction();
+        ValueAnimator animator = ValueAnimator.ofFloat(0f, 1f);
+        animator.addUpdateListener(valueAnimator -> {
+            float progress = valueAnimator.getAnimatedFraction();
+            for (SurfaceControl leash: openingTargets) {
+                t.setAlpha(leash, progress);
+            }
+            for (SurfaceControl leash: closingTargets) {
+                t.setAlpha(leash, 1 - progress);
+            }
+            t.apply();
+        });
+        animator.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+                for (SurfaceControl leash: openingTargets) {
+                    t.show(leash).setAlpha(leash, 0.0f);
+                }
+                t.apply();
+            }
 
-        // Once there is an animation, this should be called AFTER the animation completes.
-        finishCallback.run();
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                for (SurfaceControl leash: closingTargets) {
+                    t.hide(leash);
+                }
+                super.onAnimationEnd(animation);
+                finishCallback.run();
+            }
+        });
+        animator.start();
     }
 
     public static void composeRecentsLaunchAnimator(@NonNull AnimatorSet anim, @NonNull View v,
