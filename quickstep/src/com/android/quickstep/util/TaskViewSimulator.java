@@ -256,12 +256,14 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
      * window coordinate space.
      */
     public void applyWindowToHomeRotation(Matrix matrix) {
-        mMatrix.postTranslate(mDp.windowX, mDp.windowY);
+        matrix.postTranslate(mDp.windowX, mDp.windowY);
         postDisplayRotation(deltaRotation(
                 mOrientationState.getRecentsActivityRotation(),
                 mOrientationState.getDisplayRotation()),
                 mDp.widthPx, mDp.heightPx, matrix);
         matrix.postTranslate(-mRunningTargetWindowPosition.x, -mRunningTargetWindowPosition.y);
+        // Move lower/right split window into correct position
+        matrix.postTranslate(mSplitOffset.x, mSplitOffset.y);
     }
 
     /**
@@ -325,9 +327,6 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
         mOrientationState.getOrientationHandler().set(mMatrix, MATRIX_POST_TRANSLATE,
                 recentsViewPrimaryTranslation.value);
         applyWindowToHomeRotation(mMatrix);
-
-        // Move lower/right split window into correct position
-        mMatrix.postTranslate(mSplitOffset.x, mSplitOffset.y);
 
         // Crop rect is the inverse of thumbnail matrix
         mTempRectF.set(-insets.left, -insets.top,
