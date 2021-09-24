@@ -6,6 +6,7 @@ import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_D
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_HOME_DISABLED;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_OVERVIEW_DISABLED;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_STATUS_BAR_KEYGUARD_SHOWING;
+import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_STATUS_BAR_KEYGUARD_SHOWING_OCCLUDED;
 
 import android.app.KeyguardManager;
 import android.content.BroadcastReceiver;
@@ -21,7 +22,7 @@ public class TaskbarKeyguardController {
     private static final int KEYGUARD_SYSUI_FLAGS = SYSUI_STATE_BOUNCER_SHOWING |
             SYSUI_STATE_STATUS_BAR_KEYGUARD_SHOWING | SYSUI_STATE_DEVICE_DOZING |
             SYSUI_STATE_OVERVIEW_DISABLED | SYSUI_STATE_HOME_DISABLED |
-            SYSUI_STATE_BACK_DISABLED;
+            SYSUI_STATE_BACK_DISABLED | SYSUI_STATE_STATUS_BAR_KEYGUARD_SHOWING_OCCLUDED;
 
     private final TaskbarActivityContext mContext;
     private int mKeyguardSysuiFlags;
@@ -51,6 +52,8 @@ public class TaskbarKeyguardController {
         boolean bouncerShowing = (systemUiStateFlags & SYSUI_STATE_BOUNCER_SHOWING) != 0;
         boolean keyguardShowing = (systemUiStateFlags & SYSUI_STATE_STATUS_BAR_KEYGUARD_SHOWING)
                 != 0;
+        boolean keyguardOccluded =
+                (systemUiStateFlags & SYSUI_STATE_STATUS_BAR_KEYGUARD_SHOWING_OCCLUDED) != 0;
         boolean dozing = (systemUiStateFlags & SYSUI_STATE_DEVICE_DOZING) != 0;
 
         int interestingKeyguardFlags = systemUiStateFlags & KEYGUARD_SYSUI_FLAGS;
@@ -61,7 +64,8 @@ public class TaskbarKeyguardController {
 
         mBouncerShowing = bouncerShowing;
 
-        mNavbarButtonsViewController.setKeyguardVisible(keyguardShowing || dozing);
+        mNavbarButtonsViewController.setKeyguardVisible(keyguardShowing || dozing,
+                keyguardOccluded);
         updateIconsForBouncer();
     }
 
