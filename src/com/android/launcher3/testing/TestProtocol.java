@@ -99,6 +99,9 @@ public final class TestProtocol {
     public static final String REQUEST_CLEAR_DATA = "clear-data";
     public static final String REQUEST_IS_TABLET = "is-tablet";
     public static final String REQUEST_IS_TWO_PANELS = "is-two-panel";
+    public static final String REQUEST_GET_ACTIVITIES_CREATED_COUNT =
+            "get-activities-created-count";
+    public static final String REQUEST_GET_ACTIVITIES = "get-activities";
 
     public static Long sForcePauseTimeout;
     public static final String REQUEST_SET_FORCE_PAUSE_TIMEOUT = "set-force-pause-timeout";
