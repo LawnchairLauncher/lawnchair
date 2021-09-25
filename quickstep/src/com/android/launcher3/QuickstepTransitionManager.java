@@ -856,7 +856,13 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
         // Since we added a start delay, call update here to init the FloatingIconView properly.
         listener.onUpdate(0, true /* initOnly */);
 
-        animatorSet.playTogether(appAnimator, getBackgroundAnimator(appTargets));
+        // If app targets are translucent, do not animate the background as it causes a visible
+        // flicker when it resets itself at the end of its animation.
+        if (appTargetsAreTranslucent) {
+            animatorSet.play(appAnimator);
+        } else {
+            animatorSet.playTogether(appAnimator, getBackgroundAnimator());
+        }
         return animatorSet;
     }
 
@@ -993,11 +999,20 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
             }
         });
 
-        animatorSet.playTogether(appAnimator, getBackgroundAnimator(appTargets));
+        // If app targets are translucent, do not animate the background as it causes a visible
+        // flicker when it resets itself at the end of its animation.
+        if (appTargetsAreTranslucent) {
+            animatorSet.play(appAnimator);
+        } else {
+            animatorSet.playTogether(appAnimator, getBackgroundAnimator());
+        }
         return animatorSet;
     }
 
-    private ObjectAnimator getBackgroundAnimator(RemoteAnimationTargetCompat[] appTargets) {
+    /**
+     * Returns animator that controls depth/blur of the background.
+     */
+    private ObjectAnimator getBackgroundAnimator() {
         // When launching an app from overview that doesn't map to a task, we still want to just
         // blur the wallpaper instead of the launcher surface as well
         boolean allowBlurringLauncher = mLauncher.getStateManager().getState() != OVERVIEW;
