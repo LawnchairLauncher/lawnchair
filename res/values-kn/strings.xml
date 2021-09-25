@@ -36,14 +36,8 @@
     <string name="add_item_request_drag_hint" msgid="5653291305078645405">"ಮುಖಪುಟದ ಪರದೆ ಸುತ್ತ ವಿಜೆಟ್ ಅನ್ನು ಸರಿಸಲು, ಸ್ಪರ್ಶಿಸಿ ಮತ್ತು ಒತ್ತಿ ಹಿಡಿದುಕೊಳ್ಳಿ"</string>
     <string name="add_to_home_screen" msgid="8631549138215492708">"ಮುಖಪುಟಕ್ಕೆ ಸೇರಿಸಿ"</string>
     <string name="added_to_home_screen_accessibility_text" msgid="4451545765448884415">"ಹೋಮ್‌ಸ್ಕ್ರೀನ್‌ಗೆ <xliff:g id="WIDGET_NAME">%1$s</xliff:g> ವಿಜೆಟ್ ಅನ್ನು ಸೇರಿಸಲಾಗಿದೆ"</string>
-    <plurals name="widgets_count" formatted="false" msgid="656794749266073027">
-      <item quantity="one"><xliff:g id="WIDGETS_COUNT_1">%1$d</xliff:g> ವಿಜೆಟ್‌ಗಳು</item>
-      <item quantity="other"><xliff:g id="WIDGETS_COUNT_1">%1$d</xliff:g> ವಿಜೆಟ್‌ಗಳು</item>
-    </plurals>
-    <plurals name="shortcuts_count" formatted="false" msgid="8080294865447938455">
-      <item quantity="one"><xliff:g id="SHORTCUTS_COUNT_1">%1$d</xliff:g> ಶಾರ್ಟ್‌ಕಟ್‌ಗಳು</item>
-      <item quantity="other"><xliff:g id="SHORTCUTS_COUNT_1">%1$d</xliff:g> ಶಾರ್ಟ್‌ಕಟ್‌ಗಳು</item>
-    </plurals>
+    <string name="widgets_count" msgid="6467746476364652096">"{count,plural, =1{# ವಿಜೆಟ್}one{# ವಿಜೆಟ್‌ಗಳು}other{# ವಿಜೆಟ್‌ಗಳು}}"</string>
+    <string name="shortcuts_count" msgid="8471715556199592381">"{count,plural, =1{# ಶಾರ್ಟ್‌ಕಟ್}one{# ಶಾರ್ಟ್‌ಕಟ್‌ಗಳು}other{# ಶಾರ್ಟ್‌ಕಟ್‌ಗಳು}}"</string>
     <string name="widgets_and_shortcuts_count" msgid="7209136747878365116">"<xliff:g id="WIDGETS_COUNT">%1$s</xliff:g>, <xliff:g id="SHORTCUTS_COUNT">%2$s</xliff:g>"</string>
     <string name="widget_button_text" msgid="2880537293434387943">"ವಿಜೆಟ್‌ಗಳು"</string>
     <string name="widgets_full_sheet_search_bar_hint" msgid="8484659090860596457">"ಹುಡುಕಿ"</string>
@@ -90,10 +84,7 @@
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"ಇದೊಂದು ಅಪ್ಲಿಕೇಶನ್ ಆಗಿದೆ ಮತ್ತು ಅಸ್ಥಾಪಿಸಲು ಸಾಧ್ಯವಿಲ್ಲ."</string>
     <string name="folder_hint_text" msgid="5174843001373488816">"ಹೆಸರನ್ನು ಎಡಿಟ್ ಮಾಡಿ"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"<xliff:g id="APP_NAME">%1$s</xliff:g> ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಲಾಗಿದೆ"</string>
-    <plurals name="dotted_app_label" formatted="false" msgid="5194538107138265416">
-      <item quantity="one"><xliff:g id="APP_NAME_2">%1$s</xliff:g>, <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> ಅಧಿಸೂಚನೆಗಳನ್ನು ಹೊಂದಿದೆ</item>
-      <item quantity="other"><xliff:g id="APP_NAME_2">%1$s</xliff:g>, <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> ಅಧಿಸೂಚನೆಗಳನ್ನು ಹೊಂದಿದೆ</item>
-    </plurals>
+    <string name="dotted_app_label" msgid="1704091277755818896">"{count,plural,offset:1 =1{{app_name} ಆ್ಯಪ್‌ # ಅಧಿಸೂಚನೆಯನ್ನು ಹೊಂದಿದೆ}one{{app_name} ಆ್ಯಪ್‌ # ಅಧಿಸೂಚನೆಗಳನ್ನು ಹೊಂದಿದೆ}other{{app_name} ಆ್ಯಪ್‌ # ಅಧಿಸೂಚನೆಗಳನ್ನು ಹೊಂದಿದೆ}}"</string>
     <string name="default_scroll_format" msgid="7475544710230993317">"%2$d ರಲ್ಲಿ %1$d ಪುಟ"</string>
     <string name="workspace_scroll_format" msgid="8458889198184077399">"%2$d ರಲ್ಲಿ %1$d ಮುಖಪುಟದ ಪರದೆ"</string>
     <string name="workspace_new_page" msgid="257366611030256142">"ಹೊಸ ಮುಖಪುಟ ಪರದೆ"</string>

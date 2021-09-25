@@ -227,7 +227,7 @@ public abstract class SwipeUpAnimationLogic implements
      * @param startProgress The progress of {@link #mCurrentShift} to start thw window from.
      * @return {@link RectF} represents the bounds as starting point in window space.
      */
-    protected RectF[] updateProgressForStartRect(Matrix outMatrix, float startProgress) {
+    protected RectF[] updateProgressForStartRect(Matrix[] outMatrix, float startProgress) {
         mCurrentShift.updateValue(startProgress);
         RectF[] startRects = new RectF[mRemoteTargetHandles.length];
         for (int i = 0, mRemoteTargetHandlesLength = mRemoteTargetHandles.length;
@@ -237,7 +237,8 @@ public abstract class SwipeUpAnimationLogic implements
             tvs.apply(remoteHandle.getTransformParams().setProgress(startProgress));
 
             startRects[i] = new RectF(tvs.getCurrentCropRect());
-            tvs.applyWindowToHomeRotation(outMatrix);
+            outMatrix[i] = new Matrix();
+            tvs.applyWindowToHomeRotation(outMatrix[i]);
             tvs.getCurrentMatrix().mapRect(startRects[i]);
         }
         return startRects;
@@ -267,14 +268,14 @@ public abstract class SwipeUpAnimationLogic implements
         // TODO(b/195473584) compute separate end targets for different staged split
         final RectF targetRect = homeAnimationFactory.getWindowTargetRect();
         RectFSpringAnim[] out = new RectFSpringAnim[mRemoteTargetHandles.length];
-        Matrix homeToWindowPositionMap = new Matrix();
+        Matrix[] homeToWindowPositionMap = new Matrix[mRemoteTargetHandles.length];
         RectF[] startRects = updateProgressForStartRect(homeToWindowPositionMap, startProgress);
         for (int i = 0, mRemoteTargetHandlesLength = mRemoteTargetHandles.length;
                 i < mRemoteTargetHandlesLength; i++) {
             RemoteTargetHandle remoteHandle = mRemoteTargetHandles[i];
             out[i] = getWindowAnimationToHomeInternal(homeAnimationFactory,
                     targetRect, remoteHandle.getTransformParams(),
-                    remoteHandle.getTaskViewSimulator(), startRects[i], homeToWindowPositionMap);
+                    remoteHandle.getTaskViewSimulator(), startRects[i], homeToWindowPositionMap[i]);
         }
         return out;
     }
@@ -295,7 +296,7 @@ public abstract class SwipeUpAnimationLogic implements
                     taskViewSimulator.getCurrentCornerRadius(),
                     homeAnimationFactory.getEndRadius(cropRectF));
         } else {
-            anim = new RectFSpringAnim(startRect, targetRect, mContext);
+            anim = new RectFSpringAnim(startRect, targetRect, mContext, mDp);
         }
         homeAnimationFactory.setAnimation(anim);
 

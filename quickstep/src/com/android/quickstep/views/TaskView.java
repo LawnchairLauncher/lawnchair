@@ -693,6 +693,7 @@ public class TaskView extends FrameLayout implements Reusable {
             TestLogging.recordEvent(
                     TestProtocol.SEQUENCE_MAIN, "startActivityFromRecentsAsync", mTask);
             ActivityOptionsWrapper opts =  mActivity.getActivityLaunchOptions(this, null);
+            opts.options.setLaunchDisplayId(getRootViewDisplayId());
             boolean isOldTaskSplit = LauncherSplitScreenListener.INSTANCE.getNoCreate()
                     .getPersistentSplitIds().length > 0;
             if (ActivityManagerWrapper.getInstance()
@@ -738,6 +739,7 @@ public class TaskView extends FrameLayout implements Reusable {
             // Indicate success once the system has indicated that the transition has started
             ActivityOptions opts = ActivityOptionsCompat.makeCustomAnimation(
                     getContext(), 0, 0, () -> callback.accept(true), MAIN_EXECUTOR.getHandler());
+            opts.setLaunchDisplayId(getRootViewDisplayId());
             if (freezeTaskList) {
                 ActivityOptionsCompat.setFreezeRecentTasksList(opts);
             }
@@ -847,6 +849,9 @@ public class TaskView extends FrameLayout implements Reusable {
         if (icon != null) {
             iconView.setDrawable(icon);
             iconView.setOnClickListener(v -> {
+                if (confirmSecondSplitSelectApp()) {
+                    return;
+                }
                 if (ENABLE_QUICKSTEP_LIVE_TILE.get() && isRunningTask()) {
                     RecentsView recentsView = getRecentsView();
                     recentsView.switchToScreenshot(
@@ -1532,6 +1537,11 @@ public class TaskView extends FrameLayout implements Reusable {
         mSnapshotView.setDimAlpha(amount);
         mIconView.setIconColorTint(tintColor, amount);
         mDigitalWellBeingToast.setBannerColorTint(tintColor, amount);
+    }
+
+
+    private int getRootViewDisplayId() {
+        return getRootView().getDisplay().getDisplayId();
     }
 
     /**

@@ -16,17 +16,20 @@
 
 package com.android.quickstep.util;
 
+import static com.android.launcher3.Utilities.postAsyncCallback;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITION_BOTTOM_OR_RIGHT;
 import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITION_TOP_OR_LEFT;
 
 import android.app.ActivityThread;
 import android.graphics.Rect;
+import android.os.Handler;
 import android.os.IBinder;
 import android.view.RemoteAnimationAdapter;
 import android.view.SurfaceControl;
 import android.window.TransitionInfo;
 
+import com.android.launcher3.Utilities;
 import com.android.launcher3.util.SplitConfigurationOptions;
 import com.android.launcher3.util.SplitConfigurationOptions.StagePosition;
 import com.android.quickstep.SystemUiProxy;
@@ -47,13 +50,15 @@ import java.util.function.Consumer;
  */
 public class SplitSelectStateController {
 
+    private final Handler mHandler;
     private final SystemUiProxy mSystemUiProxy;
     private @StagePosition int mStagePosition;
     private Task mInitialTask;
     private Task mSecondTask;
     private Rect mInitialBounds;
 
-    public SplitSelectStateController(SystemUiProxy systemUiProxy) {
+    public SplitSelectStateController(Handler handler, SystemUiProxy systemUiProxy) {
+        mHandler = handler;
         mSystemUiProxy = systemUiProxy;
     }
 
@@ -70,9 +75,9 @@ public class SplitSelectStateController {
     /**
      * To be called after second task selected
      */
-    public void setSecondTaskId(Task taskView) {
+    public void setSecondTaskId(Task taskView, Consumer<Boolean> callback) {
         mSecondTask = taskView;
-        launchTasks(mInitialTask, mSecondTask, mStagePosition, null /*callback*/);
+        launchTasks(mInitialTask, mSecondTask, mStagePosition, callback);
     }
 
     /**
@@ -151,22 +156,27 @@ public class SplitSelectStateController {
         public void onAnimationStart(int transit, RemoteAnimationTargetCompat[] apps,
                 RemoteAnimationTargetCompat[] wallpapers, RemoteAnimationTargetCompat[] nonApps,
                 Runnable finishedCallback) {
-            TaskViewUtils.composeRecentsSplitLaunchAnimatorLegacy(mInitialTask,
-                    mSecondTask, apps, wallpapers, nonApps, () -> {
-                        finishedCallback.run();
-                        if (mSuccessCallback != null) {
-                            mSuccessCallback.accept(true);
-                        }
-                    });
+            postAsyncCallback(mHandler,
+                    () -> TaskViewUtils.composeRecentsSplitLaunchAnimatorLegacy(mInitialTask,
+                            mSecondTask, apps, wallpapers, nonApps, () -> {
+                                finishedCallback.run();
+                                if (mSuccessCallback != null) {
+                                    mSuccessCallback.accept(true);
+                                }
+                            }));
+
             // After successful launch, call resetState
             resetState();
         }
 
         @Override
         public void onAnimationCancelled() {
-            if (mSuccessCallback != null) {
-                mSuccessCallback.accept(false);
-            }
+            postAsyncCallback(mHandler, () -> {
+                if (mSuccessCallback != null) {
+                    mSuccessCallback.accept(false);
+                }
+            });
+
             resetState();
         }
     }

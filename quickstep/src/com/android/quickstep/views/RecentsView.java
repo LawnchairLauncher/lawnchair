@@ -3162,7 +3162,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             return;
         }
         mActionsView.setSplitButtonVisible(
-                mActivity.getDeviceProfile().isTablet && getTaskViewCount() > 1);
+                mActivity.getDeviceProfile().overviewShowAsGrid && getTaskViewCount() > 1);
     }
 
     /**
@@ -3836,10 +3836,9 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         mSecondFloatingTaskView.addAnimation(pendingAnimation, secondTaskStartingBounds,
                 secondTaskEndingBounds, taskView.getThumbnail(),
                 true /*fadeWithThumbnail*/);
-        pendingAnimation.addEndListener(aBoolean -> {
-            mSplitSelectStateController.setSecondTaskId(taskView.getTask());
-            resetFromSplitSelectionState();
-        });
+        pendingAnimation.addEndListener(aBoolean ->
+                mSplitSelectStateController.setSecondTaskId(taskView.getTask(),
+                aBoolean1 -> RecentsView.this.resetFromSplitSelectionState()));
         mSecondSplitHiddenTaskView = taskView;
         taskView.setVisibility(INVISIBLE);
         pendingAnimation.buildAnim().start();

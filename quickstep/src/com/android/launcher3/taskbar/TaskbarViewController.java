@@ -49,7 +49,8 @@ public class TaskbarViewController {
     public static final int ALPHA_INDEX_KEYGUARD = 2;
     public static final int ALPHA_INDEX_STASH = 3;
     public static final int ALPHA_INDEX_RECENTS_DISABLED = 4;
-    private static final int NUM_ALPHA_CHANNELS = 5;
+    public static final int ALPHA_INDEX_NOTIFICATION_EXPANDED = 5;
+    private static final int NUM_ALPHA_CHANNELS = 6;
 
     private final TaskbarActivityContext mActivity;
     private final TaskbarView mTaskbarView;
@@ -104,6 +105,16 @@ public class TaskbarViewController {
      */
     public void setImeIsVisible(boolean isImeVisible) {
         mTaskbarView.setTouchesEnabled(!isImeVisible);
+    }
+
+    /**
+     * Should be called when the notification shade is expanded, so we can hide taskbar icons as
+     * well. Note that we are animating icons to appear / disappear.
+     */
+    public void setNotificationShadeIsExpanded(boolean isNotificationShadeExpanded) {
+        mTaskbarIconAlpha.getProperty(ALPHA_INDEX_NOTIFICATION_EXPANDED)
+                .animateToValue(isNotificationShadeExpanded ? 0 : 1)
+                .start();
     }
 
     /**

@@ -116,7 +116,7 @@ public class SwipePipToHomeAnimator extends RectFSpringAnim {
             @NonNull Rect destinationBoundsTransformed,
             int cornerRadius,
             @NonNull View view) {
-        super(startBounds, new RectF(destinationBoundsTransformed), context);
+        super(startBounds, new RectF(destinationBoundsTransformed), context, null);
         mTaskId = taskId;
         mComponentName = componentName;
         mLeash = leash;
