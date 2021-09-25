@@ -20,6 +20,8 @@ import static android.view.WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_M
 import static android.view.WindowManager.LayoutParams.TYPE_NAVIGATION_BAR_PANEL;
 
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_FOLDER_OPEN;
+import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_NOTIFICATION_PANEL_EXPANDED;
+import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_QUICK_SETTINGS_EXPANDED;
 import static com.android.systemui.shared.system.WindowManagerWrapper.ITYPE_BOTTOM_TAPPABLE_ELEMENT;
 import static com.android.systemui.shared.system.WindowManagerWrapper.ITYPE_EXTRA_NAVIGATION_BAR;
 
@@ -156,7 +158,8 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
                 MATCH_PARENT,
                 mLastRequestedNonFullscreenHeight,
                 TYPE_NAVIGATION_BAR_PANEL,
-                WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
+                WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
+                        | WindowManager.LayoutParams.FLAG_SLIPPERY,
                 PixelFormat.TRANSLUCENT);
         mWindowLayoutParams.setTitle(WINDOW_TITLE);
         mWindowLayoutParams.packageName = getPackageName();
@@ -311,6 +314,10 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
                 systemUiStateFlags, forceUpdate);
         mControllers.taskbarViewController.setImeIsVisible(
                 mControllers.navbarButtonsViewController.isImeVisible());
+        boolean panelExpanded = (systemUiStateFlags & SYSUI_STATE_NOTIFICATION_PANEL_EXPANDED) != 0;
+        boolean inSettings = (systemUiStateFlags & SYSUI_STATE_QUICK_SETTINGS_EXPANDED) != 0;
+        mControllers.taskbarViewController.setNotificationShadeIsExpanded(
+                panelExpanded || inSettings);
         mControllers.taskbarViewController.setRecentsButtonDisabled(
                 mControllers.navbarButtonsViewController.isRecentsDisabled());
         mControllers.taskbarKeyguardController.updateStateForSysuiFlags(systemUiStateFlags);

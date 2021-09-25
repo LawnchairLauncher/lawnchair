@@ -35,7 +35,6 @@ import android.window.SplashScreen;
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
-import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.logging.StatsLogManager.LauncherEvent;
 import com.android.launcher3.model.WellbeingModel;
 import com.android.launcher3.popup.SystemShortcut;
@@ -115,13 +114,12 @@ public interface TaskShortcutFactory {
 
     class SplitSelectSystemShortcut extends SystemShortcut {
         private final TaskView mTaskView;
-        private SplitPositionOption mSplitPositionOption;
+        private final SplitPositionOption mSplitPositionOption;
         public SplitSelectSystemShortcut(BaseDraggingActivity target, TaskView taskView,
                 SplitPositionOption option) {
             super(option.iconResId, option.textResId, target, taskView.getItemInfo());
             mTaskView = taskView;
             mSplitPositionOption = option;
-            setEnabled(taskView.getRecentsView().getTaskViewCount() > 1);
         }
 
         @Override
@@ -249,18 +247,6 @@ public interface TaskShortcutFactory {
             // implementation is enabled
             return !activity.getDeviceProfile().isMultiWindowMode
                     && (displayId == -1 || displayId == DEFAULT_DISPLAY);
-        }
-
-        @Override
-        public SystemShortcut getShortcut(BaseDraggingActivity activity,
-                TaskIdAttributeContainer taskContainer) {
-            SystemShortcut shortcut = super.getShortcut(activity, taskContainer);
-            if (shortcut != null && FeatureFlags.ENABLE_SPLIT_SELECT.get()) {
-                // Disable if there's only one recent app for split screen
-                shortcut.setEnabled(taskContainer.getTaskView().
-                        getRecentsView().getTaskViewCount() > 1);
-            }
-            return shortcut;
         }
 
         @Override
