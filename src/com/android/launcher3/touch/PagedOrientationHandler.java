@@ -19,7 +19,6 @@ package com.android.launcher3.touch;
 import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
-import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.RectF;
@@ -143,21 +142,6 @@ public interface PagedOrientationHandler {
      *                           outRect for
      */
     void setSplitTaskSwipeRect(DeviceProfile dp, Rect outRect,
-            StagedSplitBounds splitInfo,
-            @SplitConfigurationOptions.StagePosition int desiredStagePosition);
-
-    /**
-     * It's important to note that {@link #setSplitTaskSwipeRect(DeviceProfile, Rect,
-     * StagedSplitBounds, int)} above operates on the outRect based on
-     * launcher's coordinate system, meaning it will treat the outRect as portrait if home rotation
-     * is not allowed.
-     *
-     * However, here the splitOffset is from perspective of TaskViewSimulator, which is in display
-     * orientation coordinates. So, for example, for the fake landscape scenario, even though
-     * launcher is portrait, we inset the bottom/right task by an X coordinate instead of the
-     * usual Y
-     */
-    void setLeashSplitOffset(Point splitOffset, DeviceProfile dp,
             StagedSplitBounds splitInfo,
             @SplitConfigurationOptions.StagePosition int desiredStagePosition);
 
