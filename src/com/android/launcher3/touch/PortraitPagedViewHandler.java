@@ -31,7 +31,6 @@ import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_TYPE_MA
 
 import android.content.res.Resources;
 import android.graphics.Matrix;
-import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.RectF;
@@ -471,22 +470,6 @@ public class PortraitPagedViewHandler implements PagedOrientationHandler {
             } else {
                 diff = outRect.height() * splitInfo.topTaskPercent + verticalDividerDiff;
                 outRect.top += diff;
-            }
-        }
-    }
-
-    @Override
-    public void setLeashSplitOffset(Point splitOffset, DeviceProfile dp,
-            StagedSplitBounds splitInfo, int desiredStagePosition) {
-        if (desiredStagePosition == STAGE_POSITION_BOTTOM_OR_RIGHT) {
-            if (dp.isLandscape) {
-                splitOffset.x = splitInfo.leftTopBounds.width() +
-                        splitInfo.visualDividerBounds.width();
-                splitOffset.y = 0;
-            } else {
-                splitOffset.y = splitInfo.leftTopBounds.height() +
-                        splitInfo.visualDividerBounds.height();
-                splitOffset.x = 0;
             }
         }
     }

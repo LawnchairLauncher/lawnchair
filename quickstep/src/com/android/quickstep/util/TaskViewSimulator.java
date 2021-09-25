@@ -17,7 +17,11 @@ package com.android.quickstep.util;
 
 import static com.android.launcher3.states.RotationHelper.deltaRotation;
 import static com.android.launcher3.touch.PagedOrientationHandler.MATRIX_POST_TRANSLATE;
-import static com.android.launcher3.util.SplitConfigurationOptions.*;
+import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITION_BOTTOM_OR_RIGHT;
+import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITION_TOP_OR_LEFT;
+import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITION_UNDEFINED;
+import static com.android.launcher3.util.SplitConfigurationOptions.StagePosition;
+import static com.android.launcher3.util.SplitConfigurationOptions.StagedSplitBounds;
 import static com.android.quickstep.util.RecentsOrientedState.postDisplayRotation;
 import static com.android.quickstep.util.RecentsOrientedState.preDisplayRotation;
 import static com.android.systemui.shared.system.WindowManagerWrapper.WINDOWING_MODE_FULLSCREEN;
@@ -26,7 +30,6 @@ import android.animation.TimeInterpolator;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Matrix;
-import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.RectF;
@@ -56,8 +59,6 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
 
     private final Rect mTmpCropRect = new Rect();
     private final RectF mTempRectF = new RectF();
-    // Additional offset for split tasks
-    private final Point mSplitOffset = new Point();
     private final float[] mTempPoint = new float[2];
 
     private final Context mContext;
@@ -75,7 +76,6 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
 
     private final Matrix mMatrix = new Matrix();
     private final Matrix mMatrixTmp = new Matrix();
-    private final Point mRunningTargetWindowPosition = new Point();
 
     // Thumbnail view properties
     private final Rect mThumbnailPosition = new Rect();
@@ -159,8 +159,6 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
      */
     public void setPreview(RemoteAnimationTargetCompat runningTarget) {
         setPreviewBounds(runningTarget.screenSpaceBounds, runningTarget.contentInsets);
-        mRunningTargetWindowPosition.set(runningTarget.screenSpaceBounds.left,
-                runningTarget.screenSpaceBounds.top);
     }
 
     /**
@@ -261,9 +259,6 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
                 mOrientationState.getRecentsActivityRotation(),
                 mOrientationState.getDisplayRotation()),
                 mDp.widthPx, mDp.heightPx, matrix);
-        matrix.postTranslate(-mRunningTargetWindowPosition.x, -mRunningTargetWindowPosition.y);
-        // Move lower/right split window into correct position
-        matrix.postTranslate(mSplitOffset.x, mSplitOffset.y);
     }
 
     /**
@@ -280,11 +275,6 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
             getFullScreenScale();
             mThumbnailData.rotation = mOrientationState.getDisplayRotation();
 
-            if (mStagedSplitBounds != null) {
-                mOrientationState.getOrientationHandler().setLeashSplitOffset(mSplitOffset, mDp,
-                        mStagedSplitBounds, mStagePosition);
-            }
-
             // mIsRecentsRtl is the inverse of TaskView RTL.
             boolean isRtlEnabled = !mIsRecentsRtl;
             mPositionHelper.updateThumbnailMatrix(
@@ -293,7 +283,7 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
                     mDp, mOrientationState.getRecentsActivityRotation(), isRtlEnabled);
             mPositionHelper.getMatrix().invert(mInversePositionMatrix);
             if (DEBUG) {
-                Log.d(TAG, " taskRect: " + mTaskRect + " splitOffset: " + mSplitOffset);
+                Log.d(TAG, " taskRect: " + mTaskRect);
             }
         }
 
@@ -344,7 +334,6 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
                 + " recentsViewScale: " + recentsViewScale.value
                 + " crop: " + mTmpCropRect
                 + " radius: " + getCurrentCornerRadius()
-                + " translate: " + mSplitOffset
                 + " taskW: " + taskWidth + " H: " + taskHeight
                 + " taskRect: " + mTaskRect
                 + " taskPrimaryT: " + taskPrimaryTranslation.value
