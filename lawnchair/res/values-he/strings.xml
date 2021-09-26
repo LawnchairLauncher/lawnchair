@@ -119,10 +119,10 @@
     <string name="font_weight_thin">דק</string>
     <string name="font_weight_extra_light">Extralight</string>
     <string name="font_weight_light">בהירה</string>
-    <string name="font_weight_regular">Regular</string>
-    <string name="font_weight_medium">Medium</string>
-    <string name="font_weight_semi_bold">Semibold</string>
-    <string name="font_weight_bold">Bold</string>
+    <string name="font_weight_regular">רגיל</string>
+    <string name="font_weight_medium">בינוני</string>
+    <string name="font_weight_semi_bold">מודגש למחצה</string>
+    <string name="font_weight_bold">מודגש</string>
     <string name="font_weight_extra_bold">Extrabold</string>
-    <string name="font_weight_extra_black">Black</string>
+    <string name="font_weight_extra_black">שחור</string>
 </resources>
