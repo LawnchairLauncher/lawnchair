@@ -64,7 +64,7 @@
     <string name="auto_adaptive_icons_description">Pro všechny neadaptivní ikony.</string>
     <string name="support_and_pr">Podpora &amp; PR</string>
     <string name="workspace_dt2s">Uspat dvojitým poklepáním</string>
-    <string name="smart_space_enable">Chytrý widget na domovské stránce</string>
+    <string name="smart_space_enable">Okénko glanc sdělení</string>
     <string name="design_and_development">Design &amp; Vývoj</string>
     <string name="translate">Přeložit</string>
     <string name="product">Produkt</string>
@@ -78,10 +78,10 @@
     </plurals>
     <string name="hotseat_qsb_label">Zobrazit vyhledávací lištu</string>
     <string name="dt2s_admin_hint_title">Vyžadována oprávnění správce</string>
-    <string name="dt2s_admin_hint">Pro použití dvojitého dotyku pro režim spánku, nastavte Lawnchair jako aplikaci administrátora. Klepněte na tlačítko Otevřete nastavení a poté klepněte na tlačítko „Aktivovat aplikaci správce zařízení.“</string>
+    <string name="dt2s_admin_hint">K použití funkce dvojitého poklepání pro uspání zařízení, nastavte Lawnchair jako aplikaci administrátora. Klepněte na tlačítko \"Otevřít nastavení\" a poté na tlačítko „Aktivovat aplikaci správce zařízení.“</string>
     <string name="dt2s_admin_warning">Uspání dvojitým poklepáním bude vypnuto.</string>
     <string name="dt2s_a11y_hint_title">Zapnout službu usnadnění</string>
-    <string name="dt2s_a11y_hint">Chcete-li použít Dvojité klepnutí pro spánek, zapněte službu usnadnění přístupu k Lawnchair. Klepněte na Otevřené nastavení a poté vyberte Lawnchair a zapněte Použít Lawnchair.</string>
+    <string name="dt2s_a11y_hint">Chcete-li použít dvojité poklepání k uspání zařízení, zapněte službu usnadnění přístupu k Lawnchair. Klepněte na \"Otevřít nastavení\" a aktivujte volbu Lawnchair jakožto službu poskytující uživatelská usnadnění.</string>
     <string name="dt2s_warning_open_settings">Otevřít nastavení</string>
     <string name="minus_one_enable">Kanál</string>
     <string name="minus_one_unavailable">Není nainstalován žádný kanál.</string>
