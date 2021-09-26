@@ -111,18 +111,18 @@
     <string name="what_to_show">Co ukázat</string>
     <string name="missing_notification_access_label">Je vyžadován přístup k oznámením</string>
     <string name="missing_notification_access_description">Je vyžadován přístup k oznámením.</string>
-    <string name="msg_missing_notification_access">To use Notification Dots, grant <xliff:g id="name" example="My App">%1$s</xliff:g> access to notifications.</string>
+    <string name="msg_missing_notification_access">Chcete-li používat oznamovací tečky, udělte <xliff:g id="name" example="My App">%1$s</xliff:g> přístup k oznámením.</string>
     <string name="title_change_settings">Změnit nastavení</string>
     <string name="debug_restart_launcher">Restartovat Lawnchair</string>
-    <string name="pref_fonts_missing_font">Font not found.</string>
-    <string name="font_variant_italic">Italic</string>
-    <string name="font_weight_thin">Thin</string>
-    <string name="font_weight_extra_light">Extralight</string>
+    <string name="pref_fonts_missing_font">Písmo nebylo nalezeno.</string>
+    <string name="font_variant_italic">Kurzíva</string>
+    <string name="font_weight_thin">Tenké</string>
+    <string name="font_weight_extra_light">Velmi tenké</string>
     <string name="font_weight_light">Světlé</string>
-    <string name="font_weight_regular">Regular</string>
-    <string name="font_weight_medium">Medium</string>
-    <string name="font_weight_semi_bold">Semibold</string>
-    <string name="font_weight_bold">Bold</string>
-    <string name="font_weight_extra_bold">Extrabold</string>
-    <string name="font_weight_extra_black">Black</string>
+    <string name="font_weight_regular">Běžné</string>
+    <string name="font_weight_medium">Střední</string>
+    <string name="font_weight_semi_bold">Středně tučné</string>
+    <string name="font_weight_bold">Tučné</string>
+    <string name="font_weight_extra_bold">Velmi tučné</string>
+    <string name="font_weight_extra_black">Černé</string>
 </resources>
