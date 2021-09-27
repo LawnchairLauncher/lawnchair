@@ -51,21 +51,20 @@ import android.widget.FrameLayout;
 import androidx.annotation.NonNull;
 
 import com.android.launcher3.AbstractFloatingView;
-import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.InsettableFrameLayout;
 import com.android.launcher3.Launcher;
-import com.android.launcher3.LauncherState;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.shortcuts.DeepShortcutView;
-import com.android.launcher3.statemanager.StatefulActivity;
 import com.android.launcher3.util.Themes;
+import com.android.launcher3.views.ActivityContext;
 import com.android.launcher3.views.BaseDragLayer;
 import com.android.launcher3.widget.LocalColorExtractor;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -74,7 +73,7 @@ import java.util.List;
  *
  * @param <T> The activity on with the popup shows
  */
-public abstract class ArrowPopup<T extends StatefulActivity<LauncherState>>
+public abstract class ArrowPopup<T extends Context & ActivityContext>
         extends AbstractFloatingView {
 
     // Duration values (ms) for popup open and close animations.
@@ -98,7 +97,7 @@ public abstract class ArrowPopup<T extends StatefulActivity<LauncherState>>
 
     protected final LayoutInflater mInflater;
     private final float mOutlineRadius;
-    protected final T mLauncher;
+    protected final T mActivityContext;
     protected final boolean mIsRtl;
 
     private final int mArrowOffsetVertical;
@@ -131,13 +130,13 @@ public abstract class ArrowPopup<T extends StatefulActivity<LauncherState>>
 
     private final String mIterateChildrenTag;
 
-    private final int[] mColors;
+    private final int[] mColorIds;
 
     public ArrowPopup(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         mInflater = LayoutInflater.from(context);
         mOutlineRadius = Themes.getDialogCornerRadius(context);
-        mLauncher = BaseDraggingActivity.fromContext(context);
+        mActivityContext = ActivityContext.lookupContext(context);
         mIsRtl = Utilities.isRtl(getResources());
 
         mBackgroundColor = Themes.getAttrColor(context, R.attr.popupColorPrimary);
@@ -169,22 +168,18 @@ public abstract class ArrowPopup<T extends StatefulActivity<LauncherState>>
 
         mIterateChildrenTag = getContext().getString(R.string.popup_container_iterate_children);
 
-        boolean isAboveAnotherSurface = getTopOpenViewWithType(mLauncher, TYPE_FOLDER) != null
-                || mLauncher.getStateManager().getState() == LauncherState.ALL_APPS;
-        if (!isAboveAnotherSurface && Utilities.ATLEAST_S && ENABLE_LOCAL_COLOR_POPUPS.get()) {
+        boolean shouldUseColorExtraction = mActivityContext.shouldUseColorExtractionForPopup();
+        if (shouldUseColorExtraction && Utilities.ATLEAST_S && ENABLE_LOCAL_COLOR_POPUPS.get()) {
             mColorExtractors = new ArrayList<>();
         } else {
             mColorExtractors = null;
         }
 
-        if (isAboveAnotherSurface) {
-            mColors = new int[] {
-                    getColorStateList(context, R.color.popup_shade_first).getDefaultColor()};
+        if (shouldUseColorExtraction) {
+            mColorIds = new int[]{R.color.popup_shade_first, R.color.popup_shade_second,
+                    R.color.popup_shade_third};
         } else {
-            mColors = new int[] {
-                    getColorStateList(context, R.color.popup_shade_first).getDefaultColor(),
-                    getColorStateList(context, R.color.popup_shade_second).getDefaultColor(),
-                    getColorStateList(context, R.color.popup_shade_third).getDefaultColor()};
+            mColorIds = new int[]{R.color.popup_shade_first};
         }
     }
 
@@ -236,17 +231,22 @@ public abstract class ArrowPopup<T extends StatefulActivity<LauncherState>>
     }
 
     /**
-     * @param backgroundColor When Color.TRANSPARENT, we get color from {@link #mColors}.
+     * @param backgroundColor When Color.TRANSPARENT, we get color from {@link #mColorIds}.
      *                        Otherwise, we will use this color for all child views.
      */
     private void assignMarginsAndBackgrounds(ViewGroup viewGroup, int backgroundColor) {
-        final boolean getColorFromColorArray = backgroundColor == Color.TRANSPARENT;
+        int[] colors = null;
+        if (backgroundColor == Color.TRANSPARENT) {
+            // Lazily get the colors so they match the current wallpaper colors.
+            colors = Arrays.stream(mColorIds).map(
+                    r -> getColorStateList(getContext(), r).getDefaultColor()).toArray();
+        }
 
         int count = viewGroup.getChildCount();
         int totalVisibleShortcuts = 0;
         for (int i = 0; i < count; i++) {
             View view = viewGroup.getChildAt(i);
-            if (view.getVisibility() == VISIBLE && view instanceof DeepShortcutView) {
+            if (view.getVisibility() == VISIBLE && isShortcutOrWrapper(view)) {
                 totalVisibleShortcuts++;
             }
         }
@@ -266,9 +266,8 @@ public abstract class ArrowPopup<T extends StatefulActivity<LauncherState>>
                 MarginLayoutParams mlp = (MarginLayoutParams) lastView.getLayoutParams();
                 mlp.bottomMargin = 0;
 
-
-                if (getColorFromColorArray) {
-                    backgroundColor = mColors[numVisibleChild % mColors.length];
+                if (colors != null) {
+                    backgroundColor = colors[numVisibleChild % colors.length];
                 }
 
                 if (view instanceof ViewGroup && mIterateChildrenTag.equals(view.getTag())) {
@@ -277,7 +276,7 @@ public abstract class ArrowPopup<T extends StatefulActivity<LauncherState>>
                     continue;
                 }
 
-                if (view instanceof DeepShortcutView) {
+                if (isShortcutOrWrapper(view)) {
                     if (totalVisibleShortcuts == 1) {
                         view.setBackgroundResource(R.drawable.single_item_primary);
                     } else if (totalVisibleShortcuts > 1) {
@@ -310,6 +309,12 @@ public abstract class ArrowPopup<T extends StatefulActivity<LauncherState>>
         measure(MeasureSpec.UNSPECIFIED, MeasureSpec.UNSPECIFIED);
     }
 
+    /**
+     * Returns {@code true} if the child is a shortcut or wraps a shortcut.
+     */
+    protected boolean isShortcutOrWrapper(View view) {
+        return view instanceof DeepShortcutView;
+    }
 
     @TargetApi(Build.VERSION_CODES.S)
     private int getExtractedColor(SparseIntArray colors) {
@@ -427,7 +432,7 @@ public abstract class ArrowPopup<T extends StatefulActivity<LauncherState>>
     /**
      * Shows the popup at the desired location.
      */
-    protected void show() {
+    public void show() {
         setupForDisplay();
         onInflationComplete(false);
         assignMarginsAndBackgrounds(this);
@@ -807,6 +812,6 @@ public abstract class ArrowPopup<T extends StatefulActivity<LauncherState>>
     }
 
     protected BaseDragLayer getPopupContainer() {
-        return mLauncher.getDragLayer();
+        return mActivityContext.getDragLayer();
     }
 }
