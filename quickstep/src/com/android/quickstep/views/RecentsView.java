@@ -103,6 +103,7 @@ import android.view.accessibility.AccessibilityNodeInfo;
 import android.view.animation.Interpolator;
 import android.widget.ListView;
 import android.widget.OverScroller;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
@@ -591,6 +592,8 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     private TaskView mSplitHiddenTaskView;
     private TaskView mSecondSplitHiddenTaskView;
     private SplitConfigurationOptions.StagedSplitBounds mSplitBoundsConfig;
+    private final Toast mSplitToast = Toast.makeText(getContext(),
+            R.string.toast_split_select_app, Toast.LENGTH_SHORT);
 
     /**
      * Keeps track of the index of the TaskView that split screen was initialized with so we know
@@ -2679,6 +2682,11 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         mFirstFloatingTaskView.setAlpha(1);
         mFirstFloatingTaskView.addAnimation(anim, startingTaskRect,
                 mTempRect, mSplitHiddenTaskView, true /*fadeWithThumbnail*/);
+        anim.addEndListener(success -> {
+            if (success) {
+                mSplitToast.show();
+            }
+        });
     }
 
     /**
@@ -3810,6 +3818,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     }
 
     public void confirmSplitSelect(TaskView taskView) {
+        mSplitToast.cancel();
         RectF secondTaskStartingBounds = new RectF();
         Rect secondTaskEndingBounds = new Rect();
         // TODO(194414938) starting bounds seem slightly off, investigate
@@ -3851,6 +3860,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         splitController.resetState();
         int duration = mActivity.getStateManager().getState().getTransitionDuration(getContext());
         PendingAnimation pendingAnim = new PendingAnimation(duration);
+        mSplitToast.cancel();
         if (!animate) {
             resetFromSplitSelectionState();
             return pendingAnim;
