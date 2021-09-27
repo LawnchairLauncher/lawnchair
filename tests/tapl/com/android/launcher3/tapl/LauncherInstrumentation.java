@@ -1502,6 +1502,30 @@ public final class LauncherInstrumentation {
         getTestInfo(TestProtocol.REQUEST_CLEAR_DATA);
     }
 
+    private String[] getActivities() {
+        return getTestInfo(TestProtocol.REQUEST_GET_ACTIVITIES)
+                .getStringArray(TestProtocol.TEST_INFO_RESPONSE_FIELD);
+    }
+
+    public String getRootedActivitiesList() {
+        return String.join(", ", getActivities());
+    }
+
+    public boolean noLeakedActivities() {
+        final String[] activities = getActivities();
+        for (String activity : activities) {
+            if (activity.contains("(destroyed)")) {
+                return false;
+            }
+        }
+        return activities.length <= 2;
+    }
+
+    public int getActivitiesCreated() {
+        return getTestInfo(TestProtocol.REQUEST_GET_ACTIVITIES_CREATED_COUNT)
+                .getInt(TestProtocol.TEST_INFO_RESPONSE_FIELD);
+    }
+
     public Closable eventsCheck() {
         Assert.assertTrue("Nested event checking", mEventChecker == null);
         disableSensorRotation();
