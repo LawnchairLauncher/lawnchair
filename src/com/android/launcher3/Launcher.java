@@ -2124,6 +2124,10 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
 
         IntSet result = new IntSet();
         if (visibleIds.isEmpty()) {
+            if (TestProtocol.sDebugTracing) {
+                Log.d(TestProtocol.NULL_INT_SET, "getPagesToBindSynchronously (1): "
+                        + result);
+            }
             return result;
         }
         for (int id : orderedScreenIds.toArray()) {
@@ -2143,6 +2147,10 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
             // Add the right panel if left panel is hidden when switching display, due to empty
             // pages being hidden in single panel.
             result.add(pairId);
+        }
+        if (TestProtocol.sDebugTracing) {
+            Log.d(TestProtocol.NULL_INT_SET, "getPagesToBindSynchronously (2): "
+                    + result);
         }
         return result;
     }
