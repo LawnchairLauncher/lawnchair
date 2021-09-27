@@ -47,20 +47,17 @@ import androidx.core.graphics.ColorUtils;
 import com.android.launcher3.BaseActivity;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.uioverrides.plugins.PluginManagerWrapper;
 import com.android.launcher3.util.MainThreadInitializedObject;
 import com.android.launcher3.util.SystemUiController;
 import com.android.quickstep.TaskOverlayFactory.TaskOverlay;
 import com.android.quickstep.views.TaskView.FullscreenDrawParams;
-import com.android.systemui.plugins.OverviewScreenshotActions;
-import com.android.systemui.plugins.PluginListener;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 
 /**
  * A task in the Recents view.
  */
-public class TaskThumbnailView extends View implements PluginListener<OverviewScreenshotActions> {
+public class TaskThumbnailView extends View {
     private static final MainThreadInitializedObject<FullscreenDrawParams> TEMP_PARAMS =
             new MainThreadInitializedObject<>(FullscreenDrawParams::new);
 
@@ -97,7 +94,6 @@ public class TaskThumbnailView extends View implements PluginListener<OverviewSc
     private float mDimAlpha = 0f;
 
     private boolean mOverlayEnabled;
-    private OverviewScreenshotActions mOverviewScreenshotActionsPlugin;
 
     public TaskThumbnailView(Context context) {
         this(context, null);
@@ -170,9 +166,6 @@ public class TaskThumbnailView extends View implements PluginListener<OverviewSc
             mThumbnailData = null;
             mPaint.setShader(null);
             getTaskOverlay().reset();
-        }
-        if (mOverviewScreenshotActionsPlugin != null) {
-            mOverviewScreenshotActionsPlugin.setupActions(getTaskView(), getThumbnail(), mActivity);
         }
         updateThumbnailPaintFilter();
     }
@@ -263,33 +256,6 @@ public class TaskThumbnailView extends View implements PluginListener<OverviewSc
                 getMeasuredHeight() + currentDrawnInsets.bottom,
                 mFullscreenParams.mCurrentDrawnCornerRadius);
         canvas.restore();
-    }
-
-    @Override
-    public void onPluginConnected(OverviewScreenshotActions overviewScreenshotActions,
-            Context context) {
-        mOverviewScreenshotActionsPlugin = overviewScreenshotActions;
-        mOverviewScreenshotActionsPlugin.setupActions(getTaskView(), getThumbnail(), mActivity);
-    }
-
-    @Override
-    public void onPluginDisconnected(OverviewScreenshotActions plugin) {
-        if (mOverviewScreenshotActionsPlugin != null) {
-            mOverviewScreenshotActionsPlugin = null;
-        }
-    }
-
-    @Override
-    protected void onAttachedToWindow() {
-        super.onAttachedToWindow();
-        PluginManagerWrapper.INSTANCE.get(getContext())
-            .addPluginListener(this, OverviewScreenshotActions.class);
-    }
-
-    @Override
-    protected void onDetachedFromWindow() {
-        super.onDetachedFromWindow();
-        PluginManagerWrapper.INSTANCE.get(getContext()).removePluginListener(this);
     }
 
     public PreviewPositionHelper getPreviewPositionHelper() {
