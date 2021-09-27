@@ -23,9 +23,11 @@ import static android.view.View.IMPORTANT_FOR_ACCESSIBILITY_NO;
 import static android.view.accessibility.AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED;
 
 import static com.android.launcher3.AbstractFloatingView.TYPE_ALL;
+import static com.android.launcher3.AbstractFloatingView.TYPE_FOLDER;
 import static com.android.launcher3.AbstractFloatingView.TYPE_ICON_SURFACE;
 import static com.android.launcher3.AbstractFloatingView.TYPE_REBIND_SAFE;
 import static com.android.launcher3.AbstractFloatingView.TYPE_SNACKBAR;
+import static com.android.launcher3.AbstractFloatingView.getTopOpenViewWithType;
 import static com.android.launcher3.LauncherAnimUtils.SPRING_LOADED_EXIT_DELAY;
 import static com.android.launcher3.LauncherState.ALL_APPS;
 import static com.android.launcher3.LauncherState.FLAG_CLOSE_POPUPS;
@@ -2901,13 +2903,26 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
      * Shows the default options popup
      */
     public void showDefaultOptions(float x, float y) {
+        OptionsPopupView.show(this, getPopupTarget(x, y), OptionsPopupView.getOptions(this),
+                false);
+    }
+
+    /**
+     * Returns target rectangle for anchoring a popup menu.
+     */
+    protected RectF getPopupTarget(float x, float y) {
         float halfSize = getResources().getDimension(R.dimen.options_menu_thumb_size) / 2;
         if (x < 0 || y < 0) {
             x = mDragLayer.getWidth() / 2;
             y = mDragLayer.getHeight() / 2;
         }
-        RectF target = new RectF(x - halfSize, y - halfSize, x + halfSize, y + halfSize);
-        OptionsPopupView.show(this, target, OptionsPopupView.getOptions(this), false);
+        return new RectF(x - halfSize, y - halfSize, x + halfSize, y + halfSize);
+    }
+
+    @Override
+    public boolean shouldUseColorExtractionForPopup() {
+        return getTopOpenViewWithType(this, TYPE_FOLDER) == null
+                && getStateManager().getState() != LauncherState.ALL_APPS;
     }
 
     @Override

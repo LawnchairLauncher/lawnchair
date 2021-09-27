@@ -151,7 +151,7 @@ public class PopupContainerWithArrow<T extends StatefulActivity<LauncherState>>
 
     public OnClickListener getItemClickListener() {
         return (view) -> {
-            mLauncher.getItemOnClickListener().onClick(view);
+            mActivityContext.getItemOnClickListener().onClick(view);
             close(true);
         };
     }
@@ -326,7 +326,7 @@ public class PopupContainerWithArrow<T extends StatefulActivity<LauncherState>>
 
         // Load the shortcuts on a background thread and update the container as it animates.
         MODEL_EXECUTOR.getHandler().postAtFrontOfQueue(PopupPopulator.createUpdateRunnable(
-                mLauncher, originalItemInfo, new Handler(Looper.getMainLooper()),
+                mActivityContext, originalItemInfo, new Handler(Looper.getMainLooper()),
                 this, mShortcuts, notificationKeys));
     }
 
@@ -439,7 +439,7 @@ public class PopupContainerWithArrow<T extends StatefulActivity<LauncherState>>
 
     private void updateNotificationHeader() {
         ItemInfoWithIcon itemInfo = (ItemInfoWithIcon) mOriginalIcon.getTag();
-        DotInfo dotInfo = mLauncher.getDotInfoForItem(itemInfo);
+        DotInfo dotInfo = mActivityContext.getDotInfoForItem(itemInfo);
         if (mNotificationContainer != null && dotInfo != null) {
             mNotificationContainer.updateHeader(dotInfo.getNotificationCount());
         }
@@ -481,7 +481,7 @@ public class PopupContainerWithArrow<T extends StatefulActivity<LauncherState>>
     @Override
     protected void closeComplete() {
         super.closeComplete();
-        PopupContainerWithArrow openPopup = getOpen(mLauncher);
+        PopupContainerWithArrow openPopup = getOpen(mActivityContext);
         if (openPopup == null || openPopup.mOriginalIcon != mOriginalIcon) {
             mOriginalIcon.setTextVisibility(mOriginalIcon.shouldTextBeVisible());
             mOriginalIcon.setForceHideDot(false);
