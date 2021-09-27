@@ -59,7 +59,7 @@ import java.util.List;
 /**
  * Popup shown on long pressing an empty space in launcher
  */
-public class OptionsPopupView extends ArrowPopup
+public class OptionsPopupView extends ArrowPopup<Launcher>
         implements OnClickListener, OnLongClickListener {
 
     private final ArrayMap<View, OptionItem> mItemMap = new ArrayMap<>();
@@ -72,6 +72,10 @@ public class OptionsPopupView extends ArrowPopup
 
     public OptionsPopupView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+    }
+
+    public void setTargetRect(RectF targetRect) {
+        mTargetRect = targetRect;
     }
 
     @Override
@@ -90,7 +94,7 @@ public class OptionsPopupView extends ArrowPopup
             return false;
         }
         if (item.eventId.getId() > 0) {
-            mLauncher.getStatsLogManager().logger().log(item.eventId);
+            mActivityContext.getStatsLogManager().logger().log(item.eventId);
         }
         if (item.clickListener.onLongClick(view)) {
             close(true);
