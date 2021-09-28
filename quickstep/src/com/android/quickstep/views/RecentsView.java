@@ -3928,9 +3928,9 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             pendingAnim.addOnFrameCallback(this::updateCurveProperties);
         }
 
-        pendingAnim.addListener(new AnimationSuccessListener() {
+        pendingAnim.addListener(new AnimatorListenerAdapter() {
             @Override
-            public void onAnimationSuccess(Animator animator) {
+            public void onAnimationEnd(Animator animation) {
                 // TODO(b/186800707) Figure out how to undo for grid view
                 //  Need to handle cases where dismissed task is
                 //  * Top Row
