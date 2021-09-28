@@ -30,6 +30,7 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.RevealOutlineAnimation;
 import com.android.launcher3.anim.RoundedRectRevealOutlineProvider;
 import com.android.launcher3.util.Executors;
+import com.android.launcher3.util.MultiValueAlpha;
 import com.android.quickstep.AnimatedFloat;
 import com.android.systemui.shared.navigationbar.RegionSamplingHelper;
 
@@ -37,6 +38,10 @@ import com.android.systemui.shared.navigationbar.RegionSamplingHelper;
  * Handles properties/data collection, then passes the results to our stashed handle View to render.
  */
 public class StashedHandleViewController {
+
+    public static final int ALPHA_INDEX_STASHED = 0;
+    public static final int ALPHA_INDEX_HOME_DISABLED = 1;
+    private static final int NUM_ALPHA_CHANNELS = 2;
 
     /**
      * The SharedPreferences key for whether the stashed handle region is dark.
@@ -50,8 +55,7 @@ public class StashedHandleViewController {
     private final int mStashedHandleWidth;
     private final int mStashedHandleHeight;
     private final RegionSamplingHelper mRegionSamplingHelper;
-    private final AnimatedFloat mTaskbarStashedHandleAlpha = new AnimatedFloat(
-            this::updateStashedHandleAlpha);
+    private final MultiValueAlpha mTaskbarStashedHandleAlpha;
     private final AnimatedFloat mTaskbarStashedHandleHintScale = new AnimatedFloat(
             this::updateStashedHandleHintScale);
 
@@ -69,6 +73,8 @@ public class StashedHandleViewController {
         mActivity = activity;
         mPrefs = Utilities.getPrefs(mActivity);
         mStashedHandleView = stashedHandleView;
+        mTaskbarStashedHandleAlpha = new MultiValueAlpha(mStashedHandleView, NUM_ALPHA_CHANNELS);
+        mTaskbarStashedHandleAlpha.setUpdateVisibility(true);
         mStashedHandleView.updateHandleColor(
                 mPrefs.getBoolean(SHARED_PREFS_STASHED_HANDLE_REGION_DARK_KEY, false),
                 false /* animate */);
@@ -96,7 +102,7 @@ public class StashedHandleViewController {
         mControllers = controllers;
         mStashedHandleView.getLayoutParams().height = mActivity.getDeviceProfile().taskbarSize;
 
-        updateStashedHandleAlpha();
+        mTaskbarStashedHandleAlpha.getProperty(ALPHA_INDEX_STASHED).setValue(0);
         mTaskbarStashedHandleHintScale.updateValue(1f);
 
         final int stashedTaskbarHeight = mControllers.taskbarStashController.getStashedHeight();
@@ -129,7 +135,7 @@ public class StashedHandleViewController {
         mRegionSamplingHelper.stopAndDestroy();
     }
 
-    public AnimatedFloat getStashedHandleAlpha() {
+    public MultiValueAlpha getStashedHandleAlpha() {
         return mTaskbarStashedHandleAlpha;
     }
 
@@ -163,12 +169,20 @@ public class StashedHandleViewController {
         }
     }
 
-    protected void updateStashedHandleAlpha() {
-        mStashedHandleView.setAlpha(mTaskbarStashedHandleAlpha.value);
-    }
-
     protected void updateStashedHandleHintScale() {
         mStashedHandleView.setScaleX(mTaskbarStashedHandleHintScale.value);
         mStashedHandleView.setScaleY(mTaskbarStashedHandleHintScale.value);
+    }
+
+    /**
+     * Should be called when the home button is disabled, so we can hide this handle as well.
+     */
+    public void setIsHomeButtonDisabled(boolean homeDisabled) {
+        mTaskbarStashedHandleAlpha.getProperty(ALPHA_INDEX_HOME_DISABLED).setValue(
+                homeDisabled ? 0 : 1);
+    }
+
+    public boolean isStashedHandleVisible() {
+        return mStashedHandleView.getVisibility() == View.VISIBLE;
     }
 }
