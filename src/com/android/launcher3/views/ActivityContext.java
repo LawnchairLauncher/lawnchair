@@ -116,6 +116,13 @@ public interface ActivityContext {
     }
 
     /**
+     * Returns {@code true} if popups should use color extraction.
+     */
+    default boolean shouldUseColorExtractionForPopup() {
+        return true;
+    }
+
+    /**
      * Returns whether we can show the IME for elements hosted by this ActivityContext.
      */
     default boolean supportsIme() {

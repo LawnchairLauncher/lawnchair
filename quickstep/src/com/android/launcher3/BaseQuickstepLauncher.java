@@ -85,7 +85,6 @@ import com.android.quickstep.util.RemoteFadeOutAnimationListener;
 import com.android.quickstep.util.SplitSelectStateController;
 import com.android.quickstep.views.OverviewActionsView;
 import com.android.quickstep.views.RecentsView;
-import com.android.quickstep.views.SplitPlaceholderView;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.ActivityOptionsCompat;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
@@ -131,7 +130,7 @@ public abstract class BaseQuickstepLauncher extends Launcher
                 // Seems like there can be a race condition when user unlocks, which kills the TIS
                 // process and re-starts it. I guess in the meantime service can be connected to
                 // a killed TIS? Either way, unbind and try to re-connect in that case.
-                unbindService(mTisBinderConnection);
+                internalUnbindToTIS();
                 mHandler.postDelayed(mConnectionRunnable, BACKOFF_MILLIS);
                 return;
             }
@@ -159,10 +158,10 @@ public abstract class BaseQuickstepLauncher extends Launcher
     private short mConnectionAttempts;
     private final TaskbarStateHandler mTaskbarStateHandler = new TaskbarStateHandler(this);
     private final Handler mHandler = new Handler();
+    private boolean mTisServiceBound;
 
     // Will be updated when dragging from taskbar.
     private @Nullable DragOptions mNextWorkspaceDragOptions = null;
-    private SplitPlaceholderView mSplitPlaceholderView;
 
     private @Nullable UnfoldTransitionProgressProvider mUnfoldTransitionProgressProvider;
     private @Nullable LauncherUnfoldAnimationController mLauncherUnfoldAnimationController;
@@ -202,7 +201,7 @@ public abstract class BaseQuickstepLauncher extends Launcher
 
         SysUINavigationMode.INSTANCE.get(this).removeModeChangeListener(this);
 
-        unbindService(mTisBinderConnection);
+        internalUnbindToTIS();
         if (mTaskbarManager != null) {
             mTaskbarManager.clearLauncher(this);
         }
@@ -363,12 +362,13 @@ public abstract class BaseQuickstepLauncher extends Launcher
 
     /**
      * Binds {@link #mTisBinderConnection} to {@link TouchInteractionService}. If the binding fails,
-     * attempts to retry via {@link #mConnectionRunnable}
+     * attempts to retry via {@link #mConnectionRunnable}.
+     * Unbind via {@link #internalUnbindToTIS()}
      */
     private void internalBindToTIS() {
-        boolean bound = bindService(new Intent(this, TouchInteractionService.class),
+        mTisServiceBound = bindService(new Intent(this, TouchInteractionService.class),
                         mTisBinderConnection, 0);
-        if (bound) {
+        if (mTisServiceBound) {
             resetServiceBindRetryState();
             return;
         }
@@ -378,6 +378,14 @@ public abstract class BaseQuickstepLauncher extends Launcher
                 Math.scalb(BACKOFF_MILLIS, mConnectionAttempts), MAX_BACKOFF_MILLIS);
         mHandler.postDelayed(mConnectionRunnable, timeoutMs);
         mConnectionAttempts++;
+    }
+
+    /** See {@link #internalBindToTIS()} */
+    private void internalUnbindToTIS() {
+        if (mTisServiceBound) {
+            unbindService(mTisBinderConnection);
+            mTisServiceBound = false;
+        }
     }
 
     private void resetServiceBindRetryState() {
@@ -415,10 +423,6 @@ public abstract class BaseQuickstepLauncher extends Launcher
 
     public <T extends OverviewActionsView> T getActionsView() {
         return (T) mActionsView;
-    }
-
-    public SplitPlaceholderView getSplitPlaceholderView() {
-        return mSplitPlaceholderView;
     }
 
     @Override

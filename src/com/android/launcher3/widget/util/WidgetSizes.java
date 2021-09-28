@@ -17,7 +17,6 @@ package com.android.launcher3.widget.util;
 
 import static android.appwidget.AppWidgetHostView.getDefaultPaddingForWidget;
 
-
 import android.appwidget.AppWidgetHostView;
 import android.appwidget.AppWidgetManager;
 import android.content.ComponentName;
@@ -87,7 +86,13 @@ public final class WidgetSizes {
     }
 
     /**
-     * Returns the size of a WidgetItem.
+     * Returns the size of a {@link WidgetItem}.
+     *
+     * <p>This size is used by the widget picker. It should NEVER be shared with app widgets.
+     *
+     * <p>For sizes shared with app widgets, please refer to
+     * {@link #getWidgetPaddedSizes(Context, ComponentName, int, int)} &
+     * {@link #getWidgetPaddedSizePx(Context, ComponentName, DeviceProfile, int, int)}.
      */
     public static Size getWidgetItemSizePx(Context context, DeviceProfile profile,
             WidgetItem widgetItem) {
@@ -96,8 +101,15 @@ public final class WidgetSizes {
                     .getDimensionPixelSize(R.dimen.widget_preview_shortcut_padding);
             return new Size(dimension, dimension);
         }
-        return getWidgetPaddedSizePx(context, widgetItem.componentName, profile, widgetItem.spanX,
-                widgetItem.spanY);
+        Size widgetItemSize = getWidgetSizePx(profile, widgetItem.spanX,
+                widgetItem.spanY, /* recycledCellSize= */ null);
+        if (profile.shouldInsetWidgets()) {
+            Rect inset = new Rect();
+            AppWidgetHostView.getDefaultPaddingForWidget(context, widgetItem.componentName, inset);
+            return new Size(widgetItemSize.getWidth() + inset.left + inset.right,
+                    widgetItemSize.getHeight() + inset.top + inset.bottom);
+        }
+        return widgetItemSize;
     }
 
     private static Size getWidgetSizePx(DeviceProfile profile, int spanX, int spanY,
