@@ -1555,11 +1555,13 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
             if (anim == null) {
                 anim = new AnimatorSet();
 
-                boolean playFallBackAnimation = mLauncher.isInState(LauncherState.ALL_APPS)
+                View workspaceView = findWorkspaceView(appTargets);
+                boolean isWorkspaceViewVisible = workspaceView != null
+                        && !mLauncher.isInState(LauncherState.ALL_APPS);
+                boolean playFallBackAnimation = !isWorkspaceViewVisible
                         && (launcherIsATargetWithMode(appTargets, MODE_OPENING)
                         || mLauncher.isForceInvisible());
 
-                View workspaceView = findWorkspaceView(appTargets);
                 boolean playWorkspaceReveal = true;
                 if (mFromUnlock) {
                     anim.play(getUnlockWindowAnimator(appTargets, wallpaperTargets));
