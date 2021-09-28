@@ -166,9 +166,6 @@ public final class FeatureFlags {
             "ENABLE_OVERVIEW_SHARING_TO_PEOPLE", true,
             "Show indicators for content on Overview to share with top people. ");
 
-    public static final BooleanFlag ENABLE_OVERVIEW_CONTENT_PUSH = getDebugFlag(
-            "ENABLE_OVERVIEW_CONTENT_PUSH", false, "Show Content Push button in Overview Actions");
-
     public static final BooleanFlag ENABLE_DATABASE_RESTORE = getDebugFlag(
             "ENABLE_DATABASE_RESTORE", false,
             "Enable database restore when new restore session is created");
