@@ -52,6 +52,8 @@ import com.android.systemui.shared.system.TaskDescriptionCompat;
 
 import java.util.function.Consumer;
 
+import app.lawnchair.util.TaskIconUtils;
+
 /**
  * Manages the caching of task icons and related data.
  */
@@ -142,7 +144,7 @@ public class TaskIconCache {
         // Load icon
         // TODO: Load icon resource (b/143363444)
         Bitmap icon = TaskDescriptionCompat.getIcon(desc, key.userId);
-        if (icon != null) {
+        if (icon != null && TaskIconUtils.allowCustomIcon(task)) {
             entry.icon = new FastBitmapDrawable(getBitmapInfo(
                     new BitmapDrawable(mContext.getResources(), icon),
                     key.userId,
