@@ -382,12 +382,10 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
     public void setInsets(Rect insets) {
         mInsets.set(insets);
         DeviceProfile grid = mLauncher.getDeviceProfile();
-        int leftRightPadding = grid.desiredWorkspaceLeftRightMarginPx
-                + grid.cellLayoutPaddingLeftRightPx;
 
         for (int i = 0; i < mAH.length; i++) {
             mAH[i].padding.bottom = insets.bottom;
-            mAH[i].padding.left = mAH[i].padding.right = leftRightPadding;
+            mAH[i].padding.left = mAH[i].padding.right = grid.allAppsLeftRightPadding;
             mAH[i].applyPadding();
         }
 
