@@ -183,15 +183,16 @@ public class WidgetsBottomSheet extends BaseWidgetSheet {
         TableLayout widgetsTable = findViewById(R.id.widgets_table);
         widgetsTable.removeAllViews();
 
-        WidgetsTableUtils.groupWidgetItemsIntoTable(widgets, mMaxHorizontalSpan).forEach(row -> {
-            TableRow tableRow = new TableRow(getContext());
-            tableRow.setGravity(Gravity.TOP);
-            row.forEach(widgetItem -> {
-                WidgetCell widget = addItemCell(tableRow);
-                widget.applyFromCellItem(widgetItem);
-            });
-            widgetsTable.addView(tableRow);
-        });
+        WidgetsTableUtils.groupWidgetItemsIntoTableWithReordering(widgets, mMaxHorizontalSpan)
+                .forEach(row -> {
+                    TableRow tableRow = new TableRow(getContext());
+                    tableRow.setGravity(Gravity.TOP);
+                    row.forEach(widgetItem -> {
+                        WidgetCell widget = addItemCell(tableRow);
+                        widget.applyFromCellItem(widgetItem);
+                    });
+                    widgetsTable.addView(tableRow);
+                });
     }
 
     @Override
