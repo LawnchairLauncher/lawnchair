@@ -109,6 +109,7 @@ public class StashedHandleViewController {
                         stashedCenterY - mStashedHandleHeight / 2,
                         stashedCenterX + mStashedHandleWidth / 2,
                         stashedCenterY + mStashedHandleHeight / 2);
+                mStashedHandleView.updateSampledRegion(mStashedHandleBounds);
                 mStashedHandleRadius = view.getHeight() / 2f;
                 outline.setRoundRect(mStashedHandleBounds, mStashedHandleRadius);
             }
@@ -154,7 +155,7 @@ public class StashedHandleViewController {
     public void onIsStashed(boolean isStashed) {
         mRegionSamplingHelper.setWindowVisible(isStashed);
         if (isStashed) {
-            mStashedHandleView.updateSampledRegion();
+            mStashedHandleView.updateSampledRegion(mStashedHandleBounds);
             mRegionSamplingHelper.start(mStashedHandleView.getSampledRegion());
         } else {
             mRegionSamplingHelper.stop();
