@@ -41,13 +41,54 @@
         android:layout_height="20dp"
         android:visibility="invisible" />
 
-    <View
+    <com.android.quickstep.interaction.AnimatedTaskView
         android:id="@+id/gesture_tutorial_fake_previous_task_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleX="0.98"
         android:scaleY="0.98"
-        android:visibility="invisible" />
+        android:visibility="invisible">
+
+        <View
+            android:id="@+id/full_task_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="invisible"
+
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/top_task_view"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:visibility="invisible"
+            android:layout_marginBottom="@dimen/gesture_tutorial_multi_row_task_view_spacing"
+
+            app:cardElevation="0dp"
+            app:cardCornerRadius="@dimen/gesture_tutorial_small_task_view_corner_radius"
+            app:layout_constraintVertical_chainStyle="spread"
+            app:layout_constraintTop_toTopOf="@id/full_task_view"
+            app:layout_constraintBottom_toTopOf="@id/bottom_task_view"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/bottom_task_view"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:visibility="invisible"
+
+            app:cardElevation="0dp"
+            app:cardCornerRadius="@dimen/gesture_tutorial_small_task_view_corner_radius"
+            app:layout_constraintTop_toBottomOf="@id/top_task_view"
+            app:layout_constraintBottom_toBottomOf="@id/full_task_view"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+    </com.android.quickstep.interaction.AnimatedTaskView>
 
     <FrameLayout
         android:id="@+id/gesture_tutorial_fake_task_view"
