@@ -230,9 +230,6 @@ public class OverscrollInputConsumer extends DelegateInputConsumer {
 
         // Make sure there isn't an app to quick switch to on our right
         int maxIndex = 0;
-        if (mRecentsView != null && mRecentsView.hasRecentsExtraCard()) {
-            maxIndex = 1;
-        }
 
         boolean atRightMostApp = mRecentsView == null
                 || (mRecentsView.getRunningTaskIndex() <= maxIndex);
