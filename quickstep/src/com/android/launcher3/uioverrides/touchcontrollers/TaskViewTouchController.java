@@ -84,6 +84,8 @@ public abstract class TaskViewTouchController<T extends BaseDraggingActivity>
 
     private TaskView mTaskBeingDragged;
 
+    private boolean mIsDismissHapticRunning = false;
+
     public TaskViewTouchController(T activity) {
         mActivity = activity;
         mRecentsView = activity.getOverviewPanel();
@@ -365,9 +367,10 @@ public abstract class TaskViewTouchController<T extends BaseDraggingActivity>
         mCurrentAnimation.startWithVelocity(mActivity, goingToEnd,
                 velocity * orientationHandler.getSecondaryTranslationDirectionFactor(),
                 mEndDisplacement, animationDuration);
-        if (goingUp && goingToEnd) {
+        if (goingUp && goingToEnd && !mIsDismissHapticRunning) {
             VibratorWrapper.INSTANCE.get(mActivity).vibrate(TASK_DISMISS_VIBRATION_PRIMITIVE,
                     TASK_DISMISS_VIBRATION_PRIMITIVE_SCALE, TASK_DISMISS_VIBRATION_FALLBACK);
+            mIsDismissHapticRunning = true;
         }
     }
 
@@ -376,5 +379,6 @@ public abstract class TaskViewTouchController<T extends BaseDraggingActivity>
         mDetector.setDetectableScrollConditions(0, false);
         mTaskBeingDragged = null;
         mCurrentAnimation = null;
+        mIsDismissHapticRunning = false;
     }
 }
