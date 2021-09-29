@@ -24,6 +24,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
+import android.annotation.ColorRes;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.AnimatedVectorDrawable;
@@ -87,7 +88,7 @@ abstract class TutorialController implements BackGestureAttemptCallback,
     final ImageView mFakeHotseatView;
     final ClipIconView mFakeIconView;
     final FrameLayout mFakeTaskView;
-    final View mFakePreviousTaskView;
+    final AnimatedTaskView mFakePreviousTaskView;
     final View mRippleView;
     final RippleDrawable mRippleDrawable;
     final Button mActionButton;
@@ -177,9 +178,9 @@ abstract class TutorialController implements BackGestureAttemptCallback,
         return View.NO_ID;
     }
 
-    @DrawableRes
-    protected int getMockPreviousAppTaskThumbnailResId() {
-        return R.drawable.default_sandbox_app_previous_task_thumbnail;
+    @ColorRes
+    protected int getMockPreviousAppTaskThumbnailColorResId() {
+        return R.color.gesture_tutorial_fake_previous_task_view_color;
     }
 
     @DrawableRes
@@ -442,8 +443,8 @@ abstract class TutorialController implements BackGestureAttemptCallback,
             updateFakeAppTaskViewLayout(getMockAppTaskLayoutResId());
             mFakeTaskView.animate().alpha(1).setListener(
                     AnimatorListeners.forSuccessCallback(() -> mFakeTaskView.animate().cancel()));
-            mFakePreviousTaskView.setBackground(AppCompatResources.getDrawable(
-                    mContext, getMockPreviousAppTaskThumbnailResId()));
+            mFakePreviousTaskView.setFakeTaskViewFillColor(mContext.getResources().getColor(
+                    getMockPreviousAppTaskThumbnailColorResId()));
             mFakeIconView.setBackground(AppCompatResources.getDrawable(
                     mContext, getMockAppIconResId()));
         }
