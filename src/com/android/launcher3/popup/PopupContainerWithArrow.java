@@ -593,6 +593,7 @@ public class PopupContainerWithArrow<T extends StatefulActivity<LauncherState>>
                 mNotificationContainer.setVisibility(GONE);
                 updateHiddenShortcuts();
                 assignMarginsAndBackgrounds(PopupContainerWithArrow.this);
+                updateArrowColor();
             } else {
                 mNotificationContainer.trimNotifications(
                         NotificationKeyData.extractKeysOnly(dotInfo.getNotificationKeys()));
