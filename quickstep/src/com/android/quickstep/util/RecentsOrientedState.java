@@ -218,8 +218,8 @@ public class RecentsOrientedState implements
 
     private boolean updateHandler() {
         mRecentsActivityRotation = inferRecentsActivityRotation(mDisplayRotation);
-        if (mRecentsActivityRotation == mTouchRotation
-                || (canRecentsActivityRotate() && (mFlags & FLAG_SWIPE_UP_NOT_RUNNING) != 0)) {
+        if (mRecentsActivityRotation == mTouchRotation || (isRecentsActivityRotationAllowed()
+                && (mFlags & FLAG_SWIPE_UP_NOT_RUNNING) != 0)) {
             mOrientationHandler = PagedOrientationHandler.PORTRAIT;
         } else if (mTouchRotation == ROTATION_90) {
             mOrientationHandler = PagedOrientationHandler.LANDSCAPE;
@@ -253,7 +253,7 @@ public class RecentsOrientedState implements
     private boolean setFlag(int mask, boolean enabled) {
         boolean wasRotationEnabled = !TestProtocol.sDisableSensorRotation
                 && (mFlags & VALUE_ROTATION_WATCHER_ENABLED) == VALUE_ROTATION_WATCHER_ENABLED
-                && !canRecentsActivityRotate();
+                && !isRecentsActivityRotationAllowed();
         if (enabled) {
             mFlags |= mask;
         } else {
@@ -262,7 +262,7 @@ public class RecentsOrientedState implements
 
         boolean isRotationEnabled = !TestProtocol.sDisableSensorRotation
                 && (mFlags & VALUE_ROTATION_WATCHER_ENABLED) == VALUE_ROTATION_WATCHER_ENABLED
-                && !canRecentsActivityRotate();
+                && !isRecentsActivityRotationAllowed();
         if (wasRotationEnabled != isRotationEnabled) {
             UI_HELPER_EXECUTOR.execute(() -> {
                 if (isRotationEnabled) {
@@ -373,13 +373,6 @@ public class RecentsOrientedState implements
                 || (mFlags & (FLAG_HOME_ROTATION_ALLOWED_IN_PREFS
                         | FLAG_MULTIWINDOW_ROTATION_ALLOWED
                         | FLAG_HOME_ROTATION_FORCE_ENABLED_FOR_TESTING)) != 0;
-    }
-
-    /**
-     * Returns true if the activity can rotate, if allowed by system rotation settings
-     */
-    public boolean canRecentsActivityRotate() {
-        return (mFlags & FLAG_SYSTEM_ROTATION_ALLOWED) != 0 && isRecentsActivityRotationAllowed();
     }
 
     /**
