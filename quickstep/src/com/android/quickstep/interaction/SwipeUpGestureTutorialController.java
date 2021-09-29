@@ -63,6 +63,7 @@ abstract class SwipeUpGestureTutorialController extends TutorialController {
 
     private static final int FAKE_PREVIOUS_TASK_MARGIN = Utilities.dpToPx(12);
 
+    protected static final long TASK_VIEW_END_ANIMATION_DURATION_MILLIS = 300;
     private static final long HOME_SWIPE_ANIMATION_DURATION_MILLIS = 625;
     private static final long OVERVIEW_SWIPE_ANIMATION_DURATION_MILLIS = 1000;
 
@@ -89,6 +90,7 @@ abstract class SwipeUpGestureTutorialController extends TutorialController {
             mFakeTaskView.setAlpha(1);
             mFakePreviousTaskView.setVisibility(View.INVISIBLE);
             mFakePreviousTaskView.setAlpha(1);
+            mFakePreviousTaskView.setToSingleRowLayout(false);
             mShowTasks = false;
             mShowPreviousTasks = false;
             mRunningWindowAnim = null;
@@ -146,7 +148,8 @@ abstract class SwipeUpGestureTutorialController extends TutorialController {
             anim.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation, boolean isReverse) {
-                    PendingAnimation fadeAnim = new PendingAnimation(300);
+                    PendingAnimation fadeAnim =
+                            new PendingAnimation(TASK_VIEW_END_ANIMATION_DURATION_MILLIS);
                     if (reset) {
                         fadeAnim.setFloat(mTaskViewSwipeUpAnimation
                                 .getCurrentShift(), AnimatedFloat.VALUE, 0, ACCEL);
@@ -159,6 +162,23 @@ abstract class SwipeUpGestureTutorialController extends TutorialController {
                         fadeAnim.addListener(AnimatorListeners.forSuccessCallback(onEndRunnable));
                     }
                     AnimatorSet animset = fadeAnim.buildAnim();
+
+                    if (reset && mTutorialFragment.isLargeScreen()) {
+                        animset.addListener(new AnimatorListenerAdapter() {
+                            @Override
+                            public void onAnimationStart(Animator animation) {
+                                super.onAnimationStart(animation);
+                                Animator multiRowAnimation =
+                                        mFakePreviousTaskView.createAnimationToMultiRowLayout();
+
+                                if (multiRowAnimation != null) {
+                                    multiRowAnimation.setDuration(
+                                            TASK_VIEW_END_ANIMATION_DURATION_MILLIS).start();
+                                }
+                            }
+                        });
+                    }
+
                     animset.setStartDelay(100);
                     animset.start();
                     mRunningWindowAnim = RunningWindowAnim.wrap(animset);
@@ -301,7 +321,7 @@ abstract class SwipeUpGestureTutorialController extends TutorialController {
                 public RectF getWindowTargetRect() {
                     int fakeHomeIconSizePx = Utilities.dpToPx(60);
                     int fakeHomeIconLeft = mFakeHotseatView.getLeft();
-                    int fakeHomeIconTop = mDp.heightPx - Utilities.dpToPx(216);
+                    int fakeHomeIconTop = mFakeHotseatView.getTop();
                     return new RectF(fakeHomeIconLeft, fakeHomeIconTop,
                             fakeHomeIconLeft + fakeHomeIconSizePx,
                             fakeHomeIconTop + fakeHomeIconSizePx);

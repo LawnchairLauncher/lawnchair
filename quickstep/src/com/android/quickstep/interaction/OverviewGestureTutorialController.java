@@ -17,6 +17,7 @@ package com.android.quickstep.interaction;
 
 import static com.android.launcher3.anim.Interpolators.ACCEL;
 
+import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.annotation.TargetApi;
 import android.graphics.PointF;
@@ -28,6 +29,8 @@ import com.android.quickstep.AnimatedFloat;
 import com.android.quickstep.SwipeUpAnimationLogic;
 import com.android.quickstep.interaction.EdgeBackGestureHandler.BackGestureResult;
 import com.android.quickstep.interaction.NavBarGestureHandler.NavBarGestureResult;
+
+import java.util.ArrayList;
 
 /** A {@link TutorialController} for the Overview tutorial. */
 @TargetApi(Build.VERSION_CODES.R)
@@ -123,10 +126,24 @@ final class OverviewGestureTutorialController extends SwipeUpGestureTutorialCont
     }
 
     public void animateTaskViewToOverview() {
-        PendingAnimation anim = new PendingAnimation(300);
+        PendingAnimation anim = new PendingAnimation(TASK_VIEW_END_ANIMATION_DURATION_MILLIS);
         anim.setFloat(mTaskViewSwipeUpAnimation
                 .getCurrentShift(), AnimatedFloat.VALUE, 1, ACCEL);
-        AnimatorSet animset = anim.buildAnim();
+
+        ArrayList<Animator> animators = new ArrayList<>();
+
+        if (mTutorialFragment.isLargeScreen()) {
+            Animator multiRowAnimation = mFakePreviousTaskView.createAnimationToMultiRowLayout();
+
+            if (multiRowAnimation != null) {
+                multiRowAnimation.setDuration(TASK_VIEW_END_ANIMATION_DURATION_MILLIS);
+                animators.add(multiRowAnimation);
+            }
+        }
+        animators.add(anim.buildAnim());
+
+        AnimatorSet animset = new AnimatorSet();
+        animset.playTogether(animators);
         animset.start();
         mRunningWindowAnim = SwipeUpAnimationLogic.RunningWindowAnim.wrap(animset);
     }
