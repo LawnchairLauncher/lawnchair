@@ -495,7 +495,7 @@ public abstract class ArrowPopup<T extends Context & ActivityContext>
         mArrow.setPivotY(mIsAboveIcon ? mArrowHeight : 0);
     }
 
-    private void updateArrowColor() {
+    protected void updateArrowColor() {
         if (!Gravity.isVertical(mGravity)) {
             mArrow.setBackground(new RoundedArrowDrawable(
                     mArrowWidth, mArrowHeight, mArrowPointRadius,
