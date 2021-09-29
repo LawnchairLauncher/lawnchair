@@ -92,8 +92,8 @@
     <string name="theme_follow_wallpaper">Fais correspondre au fond d\'écran</string>
     <string name="quickstep_label">Récents</string>
     <string name="clear_all_as_action_label">Bouton \"Tout effacer\" en bas</string>
-    <string name="window_corner_radius_label">Screen Corner Radius</string>
-    <string name="override_window_corner_radius_label">Custom Screen Corner Radius</string>
+    <string name="window_corner_radius_label">Rayon d\'angle de l\'écran</string>
+    <string name="override_window_corner_radius_label">Rayon d\'angle de l\'écran personnalisé</string>
     <string name="window_corner_radius_description">When you swipe up to open Recents, the current app follows your finger, shrinking into a card. Use this slider to adjust the corner radius of the card when it’s nearly full-screen such that it matches the corners of your screen.</string>
     <string name="system_icons">Icônes système</string>
     <string name="accent_color">Couleur d\'accentuation</string>
@@ -107,20 +107,20 @@
     <string name="show_sys_ui_scrim">Ombre du haut</string>
     <string name="show_status_bar">Barre d\'état</string>
     <string name="what_to_show">Quoi afficher</string>
-    <string name="missing_notification_access_label">Notification Access Needed</string>
-    <string name="missing_notification_access_description">Notification access needed.</string>
-    <string name="msg_missing_notification_access">To use Notification Dots, grant <xliff:g id="name" example="My App">%1$s</xliff:g> access to notifications.</string>
-    <string name="title_change_settings">Change Settings</string>
+    <string name="missing_notification_access_label">Accès aux notifications requis</string>
+    <string name="missing_notification_access_description">Accès aux notifications requis.</string>
+    <string name="msg_missing_notification_access">Pour utiliser les points de notification, accordez <xliff:g id="name" example="My App">%1$s</xliff:g> l\'accès aux notifications.</string>
+    <string name="title_change_settings">Modifier les réglages</string>
     <string name="debug_restart_launcher">Redémarrer Lawnchair</string>
-    <string name="pref_fonts_missing_font">Font not found.</string>
-    <string name="font_variant_italic">Italic</string>
-    <string name="font_weight_thin">Thin</string>
-    <string name="font_weight_extra_light">Extralight</string>
+    <string name="pref_fonts_missing_font">Police introuvable.</string>
+    <string name="font_variant_italic">Italique</string>
+    <string name="font_weight_thin">Mince</string>
+    <string name="font_weight_extra_light">Extra-léger</string>
     <string name="font_weight_light">Clair</string>
-    <string name="font_weight_regular">Regular</string>
-    <string name="font_weight_medium">Medium</string>
-    <string name="font_weight_semi_bold">Semibold</string>
-    <string name="font_weight_bold">Bold</string>
-    <string name="font_weight_extra_bold">Extrabold</string>
-    <string name="font_weight_extra_black">Black</string>
+    <string name="font_weight_regular">Régulier</string>
+    <string name="font_weight_medium">Moyen</string>
+    <string name="font_weight_semi_bold">Semi-gras</string>
+    <string name="font_weight_bold">Gras</string>
+    <string name="font_weight_extra_bold">Extra-gras</string>
+    <string name="font_weight_extra_black">Noir</string>
 </resources>
