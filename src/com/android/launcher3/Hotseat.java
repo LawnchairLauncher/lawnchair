@@ -151,7 +151,8 @@ public class Hotseat extends CellLayout implements Insettable {
             }
             return mWorkspace.onTouchEvent(event);
         }
-        return event.getY() > getCellHeight();
+        // Always let touch follow through to Workspace.
+        return false;
     }
 
     @Override

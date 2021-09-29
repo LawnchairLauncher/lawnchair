@@ -121,6 +121,8 @@
     <dimen name="gesture_tutorial_subtitle_margin_start_end">16dp</dimen>
     <dimen name="gesture_tutorial_feedback_margin_start_end">24dp</dimen>
     <dimen name="gesture_tutorial_button_margin_start_end">18dp</dimen>
+    <dimen name="gesture_tutorial_multi_row_task_view_spacing">72dp</dimen>
+    <dimen name="gesture_tutorial_small_task_view_corner_radius">18dp</dimen>
 
     <!-- All Set page -->
     <dimen name="allset_page_margin_horizontal">40dp</dimen>

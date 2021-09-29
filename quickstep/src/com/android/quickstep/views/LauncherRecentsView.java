@@ -29,18 +29,14 @@ import android.os.Build;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.Surface;
-import android.widget.FrameLayout;
 
 import com.android.launcher3.BaseQuickstepLauncher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.statehandlers.DepthController;
 import com.android.launcher3.statemanager.StateManager.StateListener;
-import com.android.launcher3.uioverrides.plugins.PluginManagerWrapper;
 import com.android.launcher3.util.SplitConfigurationOptions;
 import com.android.quickstep.LauncherActivityInterface;
 import com.android.quickstep.util.SplitSelectStateController;
-import com.android.systemui.plugins.PluginListener;
-import com.android.systemui.plugins.RecentsExtraCard;
 
 /**
  * {@link RecentsView} used in Launcher activity
@@ -48,25 +44,6 @@ import com.android.systemui.plugins.RecentsExtraCard;
 @TargetApi(Build.VERSION_CODES.O)
 public class LauncherRecentsView extends RecentsView<BaseQuickstepLauncher, LauncherState>
         implements StateListener<LauncherState> {
-
-    private RecentsExtraCard mRecentsExtraCardPlugin;
-    private RecentsExtraViewContainer mRecentsExtraViewContainer;
-    private PluginListener<RecentsExtraCard> mRecentsExtraCardPluginListener =
-            new PluginListener<RecentsExtraCard>() {
-        @Override
-        public void onPluginConnected(RecentsExtraCard recentsExtraCard, Context context) {
-            createRecentsExtraCard();
-            mRecentsExtraCardPlugin = recentsExtraCard;
-            mRecentsExtraCardPlugin.setupView(context, mRecentsExtraViewContainer, mActivity);
-        }
-
-        @Override
-        public void onPluginDisconnected(RecentsExtraCard plugin) {
-            removeView(mRecentsExtraViewContainer);
-            mRecentsExtraCardPlugin = null;
-            mRecentsExtraViewContainer = null;
-        }
-    };
 
     public LauncherRecentsView(Context context) {
         this(context, null);
@@ -145,73 +122,6 @@ public class LauncherRecentsView extends RecentsView<BaseQuickstepLauncher, Laun
         boolean result = super.onTouchEvent(ev);
         // Do not let touch escape to siblings below this view.
         return result || mActivity.getStateManager().getState().overviewUi;
-    }
-
-    @Override
-    protected void onAttachedToWindow() {
-        super.onAttachedToWindow();
-        PluginManagerWrapper.INSTANCE.get(getContext()).addPluginListener(
-                mRecentsExtraCardPluginListener, RecentsExtraCard.class);
-    }
-
-    @Override
-    protected void onDetachedFromWindow() {
-        super.onDetachedFromWindow();
-        PluginManagerWrapper.INSTANCE.get(getContext()).removePluginListener(
-                mRecentsExtraCardPluginListener);
-    }
-
-    @Override
-    protected int computeMinScroll() {
-        if (canComputeScrollX() && !mIsRtl) {
-            return computeScrollX();
-        }
-        return super.computeMinScroll();
-    }
-
-    @Override
-    protected int computeMaxScroll() {
-        if (canComputeScrollX() && mIsRtl) {
-            return computeScrollX();
-        }
-        return super.computeMaxScroll();
-    }
-
-    private boolean canComputeScrollX() {
-        return mRecentsExtraCardPlugin != null && getTaskViewCount() > 0
-                && !mDisallowScrollToClearAll;
-    }
-
-    private int computeScrollX() {
-        int scrollIndex = getTaskViewStartIndex() - 1;
-        while (scrollIndex >= 0 && getChildAt(scrollIndex) instanceof RecentsExtraViewContainer
-                && ((RecentsExtraViewContainer) getChildAt(scrollIndex)).isScrollable()) {
-            scrollIndex--;
-        }
-        return getScrollForPage(scrollIndex + 1);
-    }
-
-    private void createRecentsExtraCard() {
-        mRecentsExtraViewContainer = new RecentsExtraViewContainer(getContext());
-        FrameLayout.LayoutParams helpCardParams =
-                new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT,
-                        FrameLayout.LayoutParams.MATCH_PARENT);
-        mRecentsExtraViewContainer.setLayoutParams(helpCardParams);
-        mRecentsExtraViewContainer.setScrollable(true);
-        addView(mRecentsExtraViewContainer, 0);
-    }
-
-    @Override
-    public boolean hasRecentsExtraCard() {
-        return mRecentsExtraViewContainer != null;
-    }
-
-    @Override
-    public void setContentAlpha(float alpha) {
-        super.setContentAlpha(alpha);
-        if (mRecentsExtraViewContainer != null) {
-            mRecentsExtraViewContainer.setAlpha(alpha);
-        }
     }
 
     @Override
