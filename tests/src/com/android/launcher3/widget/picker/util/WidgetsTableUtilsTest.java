@@ -92,12 +92,13 @@ public final class WidgetsTableUtilsTest {
 
 
     @Test
-    public void groupWidgetItemsIntoTable_widgetsOnly_maxSpansPerRow5_shouldGroupWidgetsInTable() {
+    public void groupWidgetItemsIntoTableWithReordering_widgetsOnly_maxSpansPerRow5_shouldGroupWidgetsInTable() {
         List<WidgetItem> widgetItems = List.of(mWidget4x4, mWidget2x3, mWidget1x1, mWidget2x4,
                 mWidget2x2);
 
-        List<ArrayList<WidgetItem>> widgetItemInTable = WidgetsTableUtils.groupWidgetItemsIntoTable(
-                widgetItems, /* maxSpansPerRow= */ 5);
+        List<ArrayList<WidgetItem>> widgetItemInTable =
+                WidgetsTableUtils.groupWidgetItemsIntoTableWithReordering(
+                        widgetItems, /* maxSpansPerRow= */ 5);
 
         // Row 0: 1x1, 2x2
         // Row 1: 2x3, 2x4
@@ -109,12 +110,13 @@ public final class WidgetsTableUtilsTest {
     }
 
     @Test
-    public void groupWidgetItemsIntoTable_widgetsOnly_maxSpansPerRow4_shouldGroupWidgetsInTable() {
+    public void groupWidgetItemsIntoTableWithReordering_widgetsOnly_maxSpansPerRow4_shouldGroupWidgetsInTable() {
         List<WidgetItem> widgetItems = List.of(mWidget4x4, mWidget2x3, mWidget1x1, mWidget2x4,
                 mWidget2x2);
 
-        List<ArrayList<WidgetItem>> widgetItemInTable = WidgetsTableUtils.groupWidgetItemsIntoTable(
-                widgetItems, /* maxSpansPerRow= */ 4);
+        List<ArrayList<WidgetItem>> widgetItemInTable =
+                WidgetsTableUtils.groupWidgetItemsIntoTableWithReordering(
+                        widgetItems, /* maxSpansPerRow= */ 4);
 
         // Row 0: 1x1, 2x2
         // Row 1: 2x3,
@@ -128,12 +130,13 @@ public final class WidgetsTableUtilsTest {
     }
 
     @Test
-    public void groupWidgetItemsIntoTable_mixItems_maxSpansPerRow4_shouldGroupWidgetsInTable() {
+    public void groupWidgetItemsIntoTableWithReordering_mixItems_maxSpansPerRow4_shouldGroupWidgetsInTable() {
         List<WidgetItem> widgetItems = List.of(mWidget4x4, mShortcut3, mWidget2x3, mShortcut1,
                 mWidget1x1, mShortcut2, mWidget2x4, mWidget2x2);
 
-        List<ArrayList<WidgetItem>> widgetItemInTable = WidgetsTableUtils.groupWidgetItemsIntoTable(
-                widgetItems, /* maxSpansPerRow= */ 4);
+        List<ArrayList<WidgetItem>> widgetItemInTable =
+                WidgetsTableUtils.groupWidgetItemsIntoTableWithReordering(
+                        widgetItems, /* maxSpansPerRow= */ 4);
 
         // Row 0: 1x1, 2x2
         // Row 1: 2x3,
@@ -146,6 +149,24 @@ public final class WidgetsTableUtilsTest {
         assertThat(widgetItemInTable.get(2)).containsExactly(mWidget2x4);
         assertThat(widgetItemInTable.get(3)).containsExactly(mWidget4x4);
         assertThat(widgetItemInTable.get(4)).containsExactly(mShortcut3, mShortcut2, mShortcut1);
+    }
+
+    @Test
+    public void groupWidgetItemsIntoTableWithoutReordering_shouldMaintainTheOrder() {
+        List<WidgetItem> widgetItems =
+                List.of(mWidget4x4, mWidget2x3, mWidget1x1, mWidget2x4, mWidget2x2);
+
+        List<ArrayList<WidgetItem>> widgetItemInTable =
+                WidgetsTableUtils.groupWidgetItemsIntoTableWithoutReordering(
+                        widgetItems, /* maxSpansPerRow= */ 5);
+
+        // Row 0: 4x4
+        // Row 1: 2x3, 1x1
+        // Row 2: 2x4, 2x2
+        assertThat(widgetItemInTable).hasSize(3);
+        assertThat(widgetItemInTable.get(0)).containsExactly(mWidget4x4);
+        assertThat(widgetItemInTable.get(1)).containsExactly(mWidget2x3, mWidget1x1);
+        assertThat(widgetItemInTable.get(2)).containsExactly(mWidget2x4, mWidget2x2);
     }
 
     private void initTestWidgets() {
