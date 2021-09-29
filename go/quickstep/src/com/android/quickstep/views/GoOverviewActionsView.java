@@ -117,7 +117,7 @@ public class GoOverviewActionsView extends OverviewActionsView<OverlayUICallback
      */
     public void updateOrientationState(RecentsOrientedState orientedState) {
         // dismiss tooltip
-        boolean canLauncherRotate = orientedState.canRecentsActivityRotate();
+        boolean canLauncherRotate = orientedState.isRecentsActivityRotationAllowed();
         if (mArrowTipView != null && !canLauncherRotate) {
             mArrowTipView.close(/* animate= */ false);
         }

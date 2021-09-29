@@ -116,7 +116,6 @@ import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.PagedView;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.AnimatorListeners;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.PendingAnimation;
@@ -1612,7 +1611,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         boolean isInLandscape = mOrientationState.getTouchRotation() != ROTATION_0
                 || mOrientationState.getRecentsActivityRotation() != ROTATION_0;
         mActionsView.updateHiddenFlags(HIDDEN_NON_ZERO_ROTATION,
-                !mOrientationState.canRecentsActivityRotate() && isInLandscape);
+                !mOrientationState.isRecentsActivityRotationAllowed() && isInLandscape);
 
         // Update TaskView's DeviceProfile dependent layout.
         updateChildTaskOrientations();
@@ -2044,7 +2043,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     }
 
     private void animateRecentsRotationInPlace(int newRotation) {
-        if (mOrientationState.canRecentsActivityRotate()) {
+        if (mOrientationState.isRecentsActivityRotationAllowed()) {
             // Let system take care of the rotation
             return;
         }
@@ -4666,7 +4665,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             getCurrentPageTaskView().setModalness(modalness);
         }
         // Only show actions view when it's modal for in-place landscape mode.
-        boolean inPlaceLandscape = !mOrientationState.canRecentsActivityRotate()
+        boolean inPlaceLandscape = !mOrientationState.isRecentsActivityRotationAllowed()
                 && mOrientationState.getTouchRotation() != ROTATION_0;
         mActionsView.updateHiddenFlags(HIDDEN_NON_ZERO_ROTATION, modalness < 1 && inPlaceLandscape);
     }
