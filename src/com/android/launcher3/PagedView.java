@@ -638,7 +638,10 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
     }
 
     private int getPageWidthSize(int widthSize) {
-        return (widthSize - mInsets.left - mInsets.right) / getPanelCount();
+        // It's necessary to add the padding back because it is remove when measuring children,
+        // like when MeasureSpec.getSize in CellLayout.
+        return (widthSize - mInsets.left - mInsets.right - getPaddingLeft() - getPaddingRight())
+                / getPanelCount() + getPaddingLeft() + getPaddingRight();
     }
 
     @Override
