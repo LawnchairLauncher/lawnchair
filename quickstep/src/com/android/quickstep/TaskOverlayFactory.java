@@ -331,14 +331,6 @@ public class TaskOverlayFactory implements ResourceBasedOverride {
                 mTask = task;
             }
 
-            public void onShare() {
-                if (mIsAllowedByPolicy) {
-                    endLiveTileMode(() -> mImageApi.startShareActivity(null));
-                } else {
-                    showBlockedByPolicyMessage();
-                }
-            }
-
             @SuppressLint("NewApi")
             public void onScreenshot() {
                 endLiveTileMode(() -> saveScreenshot(mTask));
@@ -355,9 +347,6 @@ public class TaskOverlayFactory implements ResourceBasedOverride {
      * controller.
      */
     public interface OverlayUICallbacks {
-        /** User has indicated they want to share the current task. */
-        void onShare();
-
         /** User has indicated they want to screenshot the current task. */
         void onScreenshot();
 

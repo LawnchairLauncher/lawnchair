@@ -1464,11 +1464,6 @@ public final class LauncherInstrumentation {
         getTestInfo(TestProtocol.REQUEST_ENABLE_DEBUG_TRACING);
     }
 
-    boolean overviewShareEnabled() {
-        return getTestInfo(TestProtocol.REQUEST_OVERVIEW_SHARE_ENABLED).getBoolean(
-                TestProtocol.TEST_INFO_RESPONSE_FIELD);
-    }
-
     private void disableSensorRotation() {
         getTestInfo(TestProtocol.REQUEST_MOCK_SENSOR_ROTATION);
     }

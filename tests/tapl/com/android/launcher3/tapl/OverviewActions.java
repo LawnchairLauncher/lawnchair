@@ -66,35 +66,6 @@ public class OverviewActions {
     }
 
     /**
-     * Click share button, then drags sharesheet down to remove it.
-     *
-     * Share is currently hidden behind flag, test is kept in case share becomes a default feature.
-     * If share is completely removed then remove this test as well.
-     */
-    @NonNull
-    public Overview clickAndDismissShare() {
-        if (mLauncher.overviewShareEnabled()) {
-            try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck();
-                 LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
-                         "want to click share button and dismiss sharesheet")) {
-                UiObject2 share = mLauncher.waitForObjectInContainer(mOverviewActions,
-                        "action_share");
-                mLauncher.clickLauncherObject(share);
-                try (LauncherInstrumentation.Closable c1 = mLauncher.addContextLayer(
-                        "clicked share button")) {
-                    mLauncher.waitForAndroidObject("contentPanel");
-                    mLauncher.getDevice().pressBack();
-                    try (LauncherInstrumentation.Closable c2 = mLauncher.addContextLayer(
-                            "dismissed sharesheet")) {
-                        return new Overview(mLauncher);
-                    }
-                }
-            }
-        }
-        return new Overview(mLauncher);
-    }
-
-    /**
      * Click select button
      *
      * @return The select mode buttons that are now shown instead of action buttons.
