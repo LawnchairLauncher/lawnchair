@@ -54,10 +54,14 @@ public class StashedHandleView extends View {
                 R.color.taskbar_stashed_handle_dark_color);
     }
 
-    public void updateSampledRegion() {
+    /**
+     * Updates mSampledRegion to be the location of the stashedHandleBounds relative to the screen.
+     * @see #getSampledRegion()
+     */
+    public void updateSampledRegion(Rect stashedHandleBounds) {
         getLocationOnScreen(mTmpArr);
-        mSampledRegion.set(mTmpArr[0], mTmpArr[1], mTmpArr[0] + getWidth(),
-                mTmpArr[1] + getHeight());
+        mSampledRegion.set(stashedHandleBounds);
+        mSampledRegion.offset(mTmpArr[0], mTmpArr[1]);
     }
 
     public Rect getSampledRegion() {
