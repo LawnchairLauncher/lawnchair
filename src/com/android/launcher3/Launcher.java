@@ -2297,7 +2297,7 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
             final boolean focusFirstItemForAccessibility) {
         // Get the list of added items and intersect them with the set of items here
         final Collection<Animator> bounceAnims = new ArrayList<>();
-        final boolean animateIcons = forceAnimateIcons && canRunNewAppsAnimation();
+        boolean canAnimatePageChange = canAnimatePageChange();
         Workspace workspace = mWorkspace;
         int newItemsScreenId = -1;
         int end = items.size();
@@ -2358,7 +2358,7 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
                 }
             }
             workspace.addInScreenFromBind(view, item);
-            if (animateIcons) {
+            if (forceAnimateIcons) {
                 // Animate all the applications up now
                 view.setAlpha(0f);
                 view.setScaleX(0f);
@@ -2374,7 +2374,7 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
 
         View viewToFocus = newView;
         // Animate to the correct pager
-        if (animateIcons && newItemsScreenId > -1) {
+        if (forceAnimateIcons && newItemsScreenId > -1) {
             AnimatorSet anim = new AnimatorSet();
             anim.playTogether(bounceAnims);
             if (focusFirstItemForAccessibility && viewToFocus != null) {
@@ -2390,7 +2390,7 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
             final int newScreenIndex = mWorkspace.getPageIndexForScreenId(newItemsScreenId);
             final Runnable startBounceAnimRunnable = anim::start;
 
-            if (newItemsScreenId != currentScreenId) {
+            if (canAnimatePageChange && newItemsScreenId != currentScreenId) {
                 // We post the animation slightly delayed to prevent slowdowns
                 // when we are loading right after we return to launcher.
                 mWorkspace.postDelayed(new Runnable() {
@@ -2671,7 +2671,7 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
         TraceHelper.INSTANCE.endSection(traceToken);
     }
 
-    private boolean canRunNewAppsAnimation() {
+    private boolean canAnimatePageChange() {
         if (mDragController.isDragging()) {
             return false;
         } else {
