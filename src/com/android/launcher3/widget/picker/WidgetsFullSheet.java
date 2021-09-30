@@ -535,8 +535,8 @@ public class WidgetsFullSheet extends BaseWidgetSheet
                     - noWidgetsViewHeight) * RECOMMENDATION_TABLE_HEIGHT_RATIO;
 
             List<ArrayList<WidgetItem>> recommendedWidgetsInTable =
-                    WidgetsTableUtils.groupWidgetItemsIntoTable(recommendedWidgets,
-                            mMaxSpansPerRow);
+                    WidgetsTableUtils.groupWidgetItemsIntoTableWithoutReordering(
+                            recommendedWidgets, mMaxSpansPerRow);
             table.setRecommendedWidgets(recommendedWidgetsInTable, maxTableHeight);
         } else {
             table.setVisibility(GONE);

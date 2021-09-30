@@ -70,7 +70,8 @@ public class StashedHandleViewController {
         mPrefs = Utilities.getPrefs(mActivity);
         mStashedHandleView = stashedHandleView;
         mStashedHandleView.updateHandleColor(
-                mPrefs.getBoolean(SHARED_PREFS_STASHED_HANDLE_REGION_DARK_KEY, false));
+                mPrefs.getBoolean(SHARED_PREFS_STASHED_HANDLE_REGION_DARK_KEY, false),
+                false /* animate */);
         final Resources resources = mActivity.getResources();
         mStashedHandleWidth = resources.getDimensionPixelSize(R.dimen.taskbar_stashed_handle_width);
         mStashedHandleHeight = resources.getDimensionPixelSize(
@@ -79,7 +80,7 @@ public class StashedHandleViewController {
                 new RegionSamplingHelper.SamplingCallback() {
                     @Override
                     public void onRegionDarknessChanged(boolean isRegionDark) {
-                        mStashedHandleView.updateHandleColor(isRegionDark);
+                        mStashedHandleView.updateHandleColor(isRegionDark, true /* animate */);
                         mPrefs.edit().putBoolean(SHARED_PREFS_STASHED_HANDLE_REGION_DARK_KEY,
                                 isRegionDark).apply();
                     }
@@ -109,6 +110,7 @@ public class StashedHandleViewController {
                         stashedCenterY - mStashedHandleHeight / 2,
                         stashedCenterX + mStashedHandleWidth / 2,
                         stashedCenterY + mStashedHandleHeight / 2);
+                mStashedHandleView.updateSampledRegion(mStashedHandleBounds);
                 mStashedHandleRadius = view.getHeight() / 2f;
                 outline.setRoundRect(mStashedHandleBounds, mStashedHandleRadius);
             }
@@ -154,7 +156,7 @@ public class StashedHandleViewController {
     public void onIsStashed(boolean isStashed) {
         mRegionSamplingHelper.setWindowVisible(isStashed);
         if (isStashed) {
-            mStashedHandleView.updateSampledRegion();
+            mStashedHandleView.updateSampledRegion(mStashedHandleBounds);
             mRegionSamplingHelper.start(mStashedHandleView.getSampledRegion());
         } else {
             mRegionSamplingHelper.stop();

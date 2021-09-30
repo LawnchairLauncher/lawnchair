@@ -321,6 +321,15 @@ public final class LauncherInstrumentation {
                 .getBoolean(TestProtocol.TEST_INFO_RESPONSE_FIELD);
     }
 
+    int getFocusedTaskWidth() {
+        return getTestInfo(TestProtocol.REQUEST_GET_FOCUSED_TASK_WIDTH_FOR_TABLET).getInt(
+                TestProtocol.TEST_INFO_RESPONSE_FIELD);
+    }
+
+    float getExactScreenCenterX() {
+        return getRealDisplaySize().x / 2f;
+    }
+
     private void setForcePauseTimeout(long timeout) {
         getTestInfo(TestProtocol.REQUEST_SET_FORCE_PAUSE_TIMEOUT, Long.toString(timeout));
     }
@@ -1453,11 +1462,6 @@ public final class LauncherInstrumentation {
 
     public void enableDebugTracing() {
         getTestInfo(TestProtocol.REQUEST_ENABLE_DEBUG_TRACING);
-    }
-
-    boolean overviewShareEnabled() {
-        return getTestInfo(TestProtocol.REQUEST_OVERVIEW_SHARE_ENABLED).getBoolean(
-                TestProtocol.TEST_INFO_RESPONSE_FIELD);
     }
 
     private void disableSensorRotation() {

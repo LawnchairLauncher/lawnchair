@@ -15,6 +15,10 @@
  */
 package com.android.launcher3.taskbar;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.ObjectAnimator;
+import android.annotation.Nullable;
 import android.content.Context;
 import android.graphics.Rect;
 import android.util.AttributeSet;
@@ -23,14 +27,19 @@ import android.view.View;
 import androidx.annotation.ColorInt;
 import androidx.core.content.ContextCompat;
 
+import com.android.launcher3.LauncherAnimUtils;
 import com.android.launcher3.R;
 
 public class StashedHandleView extends View {
+
+    private static final long COLOR_CHANGE_DURATION = 120;
 
     private final @ColorInt int mStashedHandleLightColor;
     private final @ColorInt int mStashedHandleDarkColor;
     private final Rect mSampledRegion = new Rect();
     private final int[] mTmpArr = new int[2];
+
+    private @Nullable ObjectAnimator mColorChangeAnim;
 
     public StashedHandleView(Context context) {
         this(context, null);
@@ -54,17 +63,44 @@ public class StashedHandleView extends View {
                 R.color.taskbar_stashed_handle_dark_color);
     }
 
-    public void updateSampledRegion() {
+    /**
+     * Updates mSampledRegion to be the location of the stashedHandleBounds relative to the screen.
+     * @see #getSampledRegion()
+     */
+    public void updateSampledRegion(Rect stashedHandleBounds) {
         getLocationOnScreen(mTmpArr);
-        mSampledRegion.set(mTmpArr[0], mTmpArr[1], mTmpArr[0] + getWidth(),
-                mTmpArr[1] + getHeight());
+        mSampledRegion.set(stashedHandleBounds);
+        mSampledRegion.offset(mTmpArr[0], mTmpArr[1]);
     }
 
     public Rect getSampledRegion() {
         return mSampledRegion;
     }
 
-    public void updateHandleColor(boolean isRegionDark) {
-        setBackgroundColor(isRegionDark ? mStashedHandleLightColor : mStashedHandleDarkColor);
+    /**
+     * Updates the handle color.
+     * @param isRegionDark Whether the background behind the handle is dark, and thus the handle
+     *                     should be light (and vice versa).
+     * @param animate Whether to animate the change, or apply it immediately.
+     */
+    public void updateHandleColor(boolean isRegionDark, boolean animate) {
+        int newColor = isRegionDark ? mStashedHandleLightColor : mStashedHandleDarkColor;
+        if (mColorChangeAnim != null) {
+            mColorChangeAnim.cancel();
+        }
+        if (animate) {
+            mColorChangeAnim = ObjectAnimator.ofArgb(this,
+                    LauncherAnimUtils.VIEW_BACKGROUND_COLOR, newColor);
+            mColorChangeAnim.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    mColorChangeAnim = null;
+                }
+            });
+            mColorChangeAnim.setDuration(COLOR_CHANGE_DURATION);
+            mColorChangeAnim.start();
+        } else {
+            setBackgroundColor(newColor);
+        }
     }
 }

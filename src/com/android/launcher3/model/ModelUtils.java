@@ -31,6 +31,7 @@ import com.android.launcher3.icons.BitmapInfo;
 import com.android.launcher3.icons.LauncherIcons;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
+import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.IntSet;
 
@@ -66,6 +67,10 @@ public class ModelUtils {
                 (lhs, rhs) -> Integer.compare(lhs.container, rhs.container));
         for (T info : allWorkspaceItems) {
             if (info.container == LauncherSettings.Favorites.CONTAINER_DESKTOP) {
+                if (TestProtocol.sDebugTracing) {
+                    Log.d(TestProtocol.NULL_INT_SET, "filterCurrentWorkspaceItems: "
+                            + currentScreenIds);
+                }
                 if (currentScreenIds.contains(info.screenId)) {
                     currentScreenItems.add(info);
                     itemsOnScreen.add(info.id);

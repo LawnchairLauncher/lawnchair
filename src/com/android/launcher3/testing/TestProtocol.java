@@ -102,6 +102,8 @@ public final class TestProtocol {
     public static final String REQUEST_GET_ACTIVITIES_CREATED_COUNT =
             "get-activities-created-count";
     public static final String REQUEST_GET_ACTIVITIES = "get-activities";
+    public static final String REQUEST_GET_FOCUSED_TASK_WIDTH_FOR_TABLET =
+            "get-focused-task-width-for-tablet";
 
     public static Long sForcePauseTimeout;
     public static final String REQUEST_SET_FORCE_PAUSE_TIMEOUT = "set-force-pause-timeout";
@@ -110,7 +112,6 @@ public final class TestProtocol {
     public static final String REQUEST_ENABLE_DEBUG_TRACING = "enable-debug-tracing";
     public static final String REQUEST_DISABLE_DEBUG_TRACING = "disable-debug-tracing";
 
-    public static final String REQUEST_OVERVIEW_SHARE_ENABLED = "overview-share-enabled";
 
     public static boolean sDisableSensorRotation;
     public static final String REQUEST_MOCK_SENSOR_ROTATION = "mock-sensor-rotation";
@@ -119,4 +120,5 @@ public final class TestProtocol {
     public static final String WORK_PROFILE_REMOVED = "b/159671700";
     public static final String TASK_VIEW_ID_CRASH = "b/195430732";
     public static final String NO_DROP_TARGET = "b/195031154";
+    public static final String NULL_INT_SET = "b/200572078";
 }

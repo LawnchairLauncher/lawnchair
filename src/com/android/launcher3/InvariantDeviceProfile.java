@@ -108,6 +108,7 @@ public class InvariantDeviceProfile {
     public float iconTextSize;
     public float allAppsIconSize;
     public float allAppsIconTextSize;
+    public float allAppsCellSpacing;
     public boolean isSplitDisplay;
 
     public float minCellHeight;
@@ -153,7 +154,8 @@ public class InvariantDeviceProfile {
      */
     public List<DeviceProfile> supportedProfiles = Collections.EMPTY_LIST;
 
-    @Nullable public DevicePaddings devicePaddings;
+    @Nullable
+    public DevicePaddings devicePaddings;
 
     public Point defaultWallpaperSize;
     public Rect defaultWidgetPadding;
@@ -161,7 +163,8 @@ public class InvariantDeviceProfile {
     private final ArrayList<OnIDPChangeListener> mChangeListeners = new ArrayList<>();
 
     @VisibleForTesting
-    public InvariantDeviceProfile() {}
+    public InvariantDeviceProfile() {
+    }
 
     @TargetApi(23)
     private InvariantDeviceProfile(Context context) {
@@ -219,6 +222,7 @@ public class InvariantDeviceProfile {
         result.minCellHeight = defaultDisplayOption.minCellHeight;
         result.minCellWidth = defaultDisplayOption.minCellWidth;
         result.borderSpacing = defaultDisplayOption.borderSpacing;
+        result.allAppsCellSpacing = defaultDisplayOption.allAppsCellSpacing;
 
         initGrid(context, myInfo, result, false);
     }
@@ -283,6 +287,7 @@ public class InvariantDeviceProfile {
         twoPanelLandscapeMinCellHeightDps = displayOption.twoPanelLandscapeMinCellHeightDps;
         twoPanelLandscapeMinCellWidthDps = displayOption.twoPanelLandscapeMinCellWidthDps;
         borderSpacing = displayOption.borderSpacing;
+        allAppsCellSpacing = displayOption.allAppsCellSpacing;
 
         numShownHotseatIcons = closestProfile.numHotseatIcons;
         numDatabaseHotseatIcons = isSplitDisplay
@@ -356,7 +361,7 @@ public class InvariantDeviceProfile {
     }
 
     private Object[] toModelState() {
-        return new Object[] {
+        return new Object[]{
                 numColumns, numRows, numDatabaseHotseatIcons, iconBitmapSize, fillResIconDpi,
                 numDatabaseAllAppsColumns, dbFile};
     }
@@ -402,7 +407,7 @@ public class InvariantDeviceProfile {
                     }
                 }
             }
-        } catch (IOException|XmlPullParserException e) {
+        } catch (IOException | XmlPullParserException e) {
             throw new RuntimeException(e);
         }
 
@@ -456,7 +461,7 @@ public class InvariantDeviceProfile {
 
     private int getLauncherIconDensity(int requiredSize) {
         // Densities typically defined by an app.
-        int[] densityBuckets = new int[] {
+        int[] densityBuckets = new int[]{
                 DisplayMetrics.DENSITY_LOW,
                 DisplayMetrics.DENSITY_MEDIUM,
                 DisplayMetrics.DENSITY_TV,
@@ -596,8 +601,8 @@ public class InvariantDeviceProfile {
         // We will use these two data points to extrapolate how much the wallpaper parallax effect
         // to span (ie travel) at any aspect ratio:
 
-        final float ASPECT_RATIO_LANDSCAPE = 16/10f;
-        final float ASPECT_RATIO_PORTRAIT = 10/16f;
+        final float ASPECT_RATIO_LANDSCAPE = 16 / 10f;
+        final float ASPECT_RATIO_PORTRAIT = 10 / 16f;
         final float WALLPAPER_WIDTH_TO_SCREEN_RATIO_LANDSCAPE = 1.5f;
         final float WALLPAPER_WIDTH_TO_SCREEN_RATIO_PORTRAIT = 1.2f;
 
@@ -607,7 +612,8 @@ public class InvariantDeviceProfile {
         //   (10/16)x + y = 1.2
         // We solve for x and y and end up with a final formula:
         final float x =
-                (WALLPAPER_WIDTH_TO_SCREEN_RATIO_LANDSCAPE - WALLPAPER_WIDTH_TO_SCREEN_RATIO_PORTRAIT) /
+                (WALLPAPER_WIDTH_TO_SCREEN_RATIO_LANDSCAPE
+                        - WALLPAPER_WIDTH_TO_SCREEN_RATIO_PORTRAIT) /
                         (ASPECT_RATIO_LANDSCAPE - ASPECT_RATIO_PORTRAIT);
         final float y = WALLPAPER_WIDTH_TO_SCREEN_RATIO_PORTRAIT - x * ASPECT_RATIO_PORTRAIT;
         return x * aspectRatio + y;
@@ -719,6 +725,7 @@ public class InvariantDeviceProfile {
         private float twoPanelPortraitMinCellWidthDps;
         private float twoPanelLandscapeMinCellHeightDps;
         private float twoPanelLandscapeMinCellWidthDps;
+        private float allAppsCellSpacing;
         private float borderSpacing;
 
         private final float[] iconSizes = new float[COUNT_TOTAL];
@@ -750,6 +757,8 @@ public class InvariantDeviceProfile {
                     R.styleable.ProfileDisplayOption_twoPanelLandscapeMinCellWidthDps,
                     twoPanelPortraitMinCellWidthDps);
             borderSpacing = a.getFloat(R.styleable.ProfileDisplayOption_borderSpacingDps, 0);
+            allAppsCellSpacing = a.getFloat(R.styleable.ProfileDisplayOption_allAppsCellSpacingDps,
+                    borderSpacing);
 
             iconSizes[INDEX_DEFAULT] =
                     a.getFloat(R.styleable.ProfileDisplayOption_iconImageSize, 0);
@@ -810,6 +819,7 @@ public class InvariantDeviceProfile {
             twoPanelLandscapeMinCellHeightDps *= w;
             twoPanelLandscapeMinCellWidthDps *= w;
             borderSpacing *= w;
+            allAppsCellSpacing *= w;
             return this;
         }
 
@@ -825,6 +835,7 @@ public class InvariantDeviceProfile {
             twoPanelLandscapeMinCellHeightDps += p.twoPanelLandscapeMinCellHeightDps;
             twoPanelLandscapeMinCellWidthDps += p.twoPanelLandscapeMinCellWidthDps;
             borderSpacing += p.borderSpacing;
+            allAppsCellSpacing += p.allAppsCellSpacing;
             return this;
         }
     }
