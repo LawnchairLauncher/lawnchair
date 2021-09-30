@@ -239,9 +239,9 @@ public class FolderAnimationManager {
                 mFolder, startRect, endRect, finalRadius, !mIsOpening));
 
         // Create reveal animator for the folder content (capture the top 4 icons 2x2)
-        int width = mDeviceProfile.folderCellLayoutBorderSpacingPx
+        int width = mDeviceProfile.folderCellLayoutBorderSpacePx.x
                 + mDeviceProfile.folderCellWidthPx * 2;
-        int height = mDeviceProfile.folderCellLayoutBorderSpacingPx
+        int height = mDeviceProfile.folderCellLayoutBorderSpacePx.y
                 + mDeviceProfile.folderCellHeightPx * 2;
         int page = mIsOpening ? mContent.getCurrentPage() : mContent.getDestinationPage();
         int left = mContent.getPaddingLeft() + page * lp.width;
