@@ -41,6 +41,13 @@
     <color name="gesture_tutorial_action_button_label_color">#FF000000</color>
     <color name="gesture_tutorial_primary_color">#B7F29F</color> <!-- Light Green -->
 
+    <!-- Mock hotseat -->
+    <color name="mock_app_icon_1">#8AB4F8</color>
+    <color name="mock_app_icon_2">#F28B82</color>
+    <color name="mock_app_icon_3">#FDD663</color>
+    <color name="mock_app_icon_4">#81C995</color>
+    <color name="mock_search_bar">#3C4043</color>
+
     <!-- Mock conversation -->
     <color name="mock_conversation_background">#f1f3f4</color>
     <color name="mock_conversation_top_bar">#e8eaed</color>
