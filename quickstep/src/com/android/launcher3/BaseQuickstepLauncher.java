@@ -631,11 +631,10 @@ public abstract class BaseQuickstepLauncher extends Launcher
     @Override
     public void onDisplayInfoChanged(Context context, DisplayController.Info info, int flags) {
         super.onDisplayInfoChanged(context, info, flags);
-        // When changing screens with live tile active, finish the recents animation to close
-        // overview as it should be an interim state
-        if ((flags & CHANGE_ACTIVE_SCREEN) != 0 && ENABLE_QUICKSTEP_LIVE_TILE.get()) {
-            RecentsView recentsView = getOverviewPanel();
-            recentsView.finishRecentsAnimation(/* toRecents= */ true, null);
+        // When changing screens, force moving to rest state similar to StatefulActivity.onStop, as
+        // StatefulActivity isn't called consistently.
+        if ((flags & CHANGE_ACTIVE_SCREEN) != 0) {
+            getStateManager().moveToRestState();
         }
     }
 
