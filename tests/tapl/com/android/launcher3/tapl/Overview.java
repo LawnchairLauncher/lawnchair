@@ -30,7 +30,6 @@ public final class Overview extends BaseOverview {
 
     Overview(LauncherInstrumentation launcher) {
         super(launcher);
-        verifyActiveContainer();
     }
 
     @Override

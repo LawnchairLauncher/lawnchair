@@ -270,6 +270,15 @@ public abstract class ArrowPopup<T extends Context & ActivityContext>
                     backgroundColor = colors[numVisibleChild % colors.length];
                 }
 
+                if (!ENABLE_LOCAL_COLOR_POPUPS.get()) {
+                    // Arrow color matches the first child or the last child.
+                    if (!mIsAboveIcon && numVisibleChild == 0 && viewGroup == this) {
+                        mArrowColor = backgroundColor;
+                    } else if (mIsAboveIcon) {
+                        mArrowColor = backgroundColor;
+                    }
+                }
+
                 if (view instanceof ViewGroup && mIterateChildrenTag.equals(view.getTag())) {
                     assignMarginsAndBackgrounds((ViewGroup) view, backgroundColor);
                     numVisibleChild++;
@@ -293,12 +302,6 @@ public abstract class ArrowPopup<T extends Context & ActivityContext>
 
                 if (!ENABLE_LOCAL_COLOR_POPUPS.get()) {
                     setChildColor(view, backgroundColor, colorAnimator);
-                    // Arrow color matches the first child or the last child.
-                    if (!mIsAboveIcon && numVisibleChild == 0) {
-                        mArrowColor = backgroundColor;
-                    } else if (mIsAboveIcon) {
-                        mArrowColor = backgroundColor;
-                    }
                 }
 
                 numVisibleChild++;
@@ -495,7 +498,7 @@ public abstract class ArrowPopup<T extends Context & ActivityContext>
         mArrow.setPivotY(mIsAboveIcon ? mArrowHeight : 0);
     }
 
-    private void updateArrowColor() {
+    protected void updateArrowColor() {
         if (!Gravity.isVertical(mGravity)) {
             mArrow.setBackground(new RoundedArrowDrawable(
                     mArrowWidth, mArrowHeight, mArrowPointRadius,

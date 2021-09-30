@@ -20,6 +20,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.graphics.Insets;
 import android.graphics.drawable.Animatable2;
 import android.graphics.drawable.AnimatedVectorDrawable;
@@ -40,6 +41,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 
+import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.R;
 import com.android.quickstep.interaction.TutorialController.TutorialType;
 
@@ -62,6 +64,8 @@ abstract class TutorialFragment extends Fragment implements OnTouchListener {
     private boolean mIntroductionShown = false;
 
     private boolean mFragmentStopped = false;
+
+    private boolean mIsLargeScreen;
 
     public static TutorialFragment newInstance(TutorialType tutorialType) {
         TutorialFragment fragment = getFragmentForTutorialType(tutorialType);
@@ -130,6 +134,21 @@ abstract class TutorialFragment extends Fragment implements OnTouchListener {
         mTutorialType = (TutorialType) args.getSerializable(KEY_TUTORIAL_TYPE);
         mEdgeBackGestureHandler = new EdgeBackGestureHandler(getContext());
         mNavBarGestureHandler = new NavBarGestureHandler(getContext());
+
+        mIsLargeScreen = InvariantDeviceProfile.INSTANCE.get(getContext())
+                .getDeviceProfile(getContext()).isTablet;
+
+        if (mIsLargeScreen) {
+            ((Activity) getContext()).setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_USER);
+        } else {
+            // Temporary until UI mocks for landscape mode for phones are created.
+            ((Activity) getContext()).setRequestedOrientation(
+                    ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        }
+    }
+
+    public boolean isLargeScreen() {
+        return mIsLargeScreen;
     }
 
     @Override

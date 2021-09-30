@@ -193,6 +193,8 @@
 
         <attr name="borderSpacingDps" format="float" />
 
+        <attr name="allAppsCellSpacingDps" format="float" />
+
         <attr name="iconImageSize" format="float" />
         <!-- landscapeIconSize defaults to iconImageSize, if not specified -->
         <attr name="landscapeIconSize" format="float" />

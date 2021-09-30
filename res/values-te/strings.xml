@@ -41,7 +41,7 @@
     <string name="widgets_and_shortcuts_count" msgid="7209136747878365116">"<xliff:g id="WIDGETS_COUNT">%1$s</xliff:g>, <xliff:g id="SHORTCUTS_COUNT">%2$s</xliff:g>"</string>
     <string name="widget_button_text" msgid="2880537293434387943">"విడ్జెట్‌లు"</string>
     <string name="widgets_full_sheet_search_bar_hint" msgid="8484659090860596457">"సెర్చ్ చేయండి"</string>
-    <string name="widgets_full_sheet_cancel_button_description" msgid="5766167035728653605">"సెర్చ్ బాక్స్ నుండి టెక్స్ట్‌ను క్లియర్ చేయి"</string>
+    <string name="widgets_full_sheet_cancel_button_description" msgid="5766167035728653605">"సెర్చ్ బాక్స్ నుండి టెక్స్ట్‌ను క్లియర్ చేయండి"</string>
     <string name="no_widgets_available" msgid="4337693382501046170">"విడ్జెట్‌లు, షార్ట్‌కట్‌లు అందుబాటులో లేవు"</string>
     <string name="no_search_results" msgid="3787956167293097509">"విడ్జెట్‌లు లేదా షార్ట్‌కట్‌లు కనుగొనబడలేదు"</string>
     <string name="widgets_full_sheet_personal_tab" msgid="2743540105607120182">"వ్యక్తిగత గ్యాడ్జెట్స్"</string>
@@ -52,10 +52,10 @@
     <string name="reconfigurable_widget_education_tip" msgid="6336962690888067057">"విడ్జెట్ సెట్టింగ్‌లను మార్చడానికి ట్యాప్ చేయండి"</string>
     <string name="widget_education_close_button" msgid="8676165703104836580">"అర్థమైంది"</string>
     <string name="widget_reconfigure_button_content_description" msgid="8811472721881205250">"విడ్జెట్ సెట్టింగ్‌లను మార్చండి"</string>
-    <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"అప్లికేషన్‌లను వెతకండి"</string>
+    <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"యాప్‌ల కోసం సెర్చ్ చేయండి"</string>
     <string name="all_apps_loading_message" msgid="5813968043155271636">"అప్లికేషన్‌లను లోడ్ చేస్తోంది…"</string>
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"\"<xliff:g id="QUERY">%1$s</xliff:g>\"కి సరిపోలే అప్లికేషన్‌లేవీ కనుగొనబడలేదు"</string>
-    <string name="all_apps_search_market_message" msgid="1366263386197059176">"మరిన్ని యాప్‌ల కోసం వెతుకు"</string>
+    <string name="all_apps_search_market_message" msgid="1366263386197059176">"మరిన్ని యాప్‌ల కోసం సెర్చ్ చేయండి"</string>
     <string name="label_application" msgid="8531721983832654978">"యాప్"</string>
     <string name="notifications_header" msgid="1404149926117359025">"నోటిఫికేషన్‌లు"</string>
     <string name="long_press_shortcut_to_add" msgid="5405328730817637737">"షార్ట్‌కట్‌ను తరలించడానికి తాకి &amp; నొక్కి ఉంచు."</string>
@@ -114,7 +114,7 @@
     <string name="abandoned_clean_this" msgid="7610119707847920412">"తీసివేయి"</string>
     <string name="abandoned_search" msgid="891119232568284442">"సెర్చ్"</string>
     <string name="abandoned_promises_title" msgid="7096178467971716750">"ఈ యాప్ ఇన్‌స్టాల్ చేయబడలేదు"</string>
-    <string name="abandoned_promise_explanation" msgid="3990027586878167529">"ఈ చిహ్నం యొక్క యాప్ ఇన్‌స్టాల్ చేయబడలేదు. మీరు దీన్ని తీసివేయవచ్చు లేదా ఆ యాప్ కోసం శోధించి దాన్ని మాన్యువల్‌గా ఇన్‌స్టాల్ చేయవచ్చు."</string>
+    <string name="abandoned_promise_explanation" msgid="3990027586878167529">"ఈ ఐకాన్‌కు చెందిన యాప్ ఇన్‌స్టాల్ చేయలేదు. మీరు దీన్ని తీసివేయవచ్చు లేదా ఆ యాప్ కోసం సెర్చ్ చేసి, దాన్ని మాన్యువల్‌గా ఇన్‌స్టాల్ చేయవచ్చు."</string>
     <string name="app_installing_title" msgid="5864044122733792085">"<xliff:g id="NAME">%1$s</xliff:g>‌ను ఇన్‌స్టాల్ చేయడం, <xliff:g id="PROGRESS">%2$s</xliff:g> పూర్తయింది"</string>
     <string name="app_downloading_title" msgid="8336702962104482644">"<xliff:g id="NAME">%1$s</xliff:g> డౌన్‌లోడ్ అవుతోంది, <xliff:g id="PROGRESS">%2$s</xliff:g> పూర్తయింది"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"<xliff:g id="NAME">%1$s</xliff:g> ఇన్‌స్టాల్ కావడానికి వేచి ఉంది"</string>

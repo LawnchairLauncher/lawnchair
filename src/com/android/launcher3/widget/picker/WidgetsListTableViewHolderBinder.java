@@ -93,7 +93,7 @@ public final class WidgetsListTableViewHolderBinder
         }
         table.setListDrawableState(((position & POSITION_LAST) != 0) ? LAST : MIDDLE);
         List<ArrayList<WidgetItem>> widgetItemsTable =
-                WidgetsTableUtils.groupWidgetItemsIntoTable(
+                WidgetsTableUtils.groupWidgetItemsIntoTableWithReordering(
                         entry.mWidgets, entry.getMaxSpanSizeInCells());
         recycleTableBeforeBinding(table, widgetItemsTable);
 
