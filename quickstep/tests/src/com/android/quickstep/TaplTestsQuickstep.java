@@ -170,7 +170,6 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
         OverviewActions actionsView =
                 mLauncher.pressHome().switchToOverview().getOverviewActions();
         actionsView.clickAndDismissScreenshot();
-        actionsView.clickAndDismissShare();
     }
 
     private int getCurrentOverviewPage(Launcher launcher) {

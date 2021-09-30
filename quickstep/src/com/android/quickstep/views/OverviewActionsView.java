@@ -16,8 +16,6 @@
 
 package com.android.quickstep.views;
 
-import static com.android.launcher3.config.FeatureFlags.ENABLE_OVERVIEW_SHARE;
-
 import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.Rect;
@@ -111,15 +109,9 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-        View share = findViewById(R.id.action_share);
-        share.setOnClickListener(this);
         findViewById(R.id.action_screenshot).setOnClickListener(this);
         mSplitButton = findViewById(R.id.action_split);
         mSplitButton.setOnClickListener(this);
-        if (ENABLE_OVERVIEW_SHARE.get()) {
-            share.setVisibility(VISIBLE);
-            findViewById(R.id.oav_three_button_space).setVisibility(VISIBLE);
-        }
     }
 
     /**
@@ -137,9 +129,7 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
             return;
         }
         int id = view.getId();
-        if (id == R.id.action_share) {
-            mCallbacks.onShare();
-        } else if (id == R.id.action_screenshot) {
+        if (id == R.id.action_screenshot) {
             mCallbacks.onScreenshot();
         } else if (id == R.id.action_split) {
             mCallbacks.onSplit();
