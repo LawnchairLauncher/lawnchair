@@ -40,6 +40,7 @@
     <color name="gesture_tutorial_fake_previous_task_view_color">#3C4043</color> <!-- Gray -->
     <color name="gesture_tutorial_action_button_label_color">#FF000000</color>
     <color name="gesture_tutorial_primary_color">#B7F29F</color> <!-- Light Green -->
+    <color name="gesture_tutorial_taskbar_color">#202124</color>
 
     <!-- Mock hotseat -->
     <color name="mock_app_icon_1">#8AB4F8</color>

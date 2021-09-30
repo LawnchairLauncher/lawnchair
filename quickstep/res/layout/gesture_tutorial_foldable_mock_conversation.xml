@@ -84,7 +84,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:background="@color/mock_conversation_background"
-        android:paddingBottom="80dp"
+        android:paddingBottom="@dimen/gesture_tutorial_mock_taskbar_height"
 
         app:layout_constraintTop_toBottomOf="@id/top_bar"
         app:layout_constraintBottom_toBottomOf="parent"

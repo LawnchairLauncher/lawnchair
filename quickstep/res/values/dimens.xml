@@ -121,6 +121,7 @@
     <dimen name="gesture_tutorial_foldable_feedback_margin_start_end">140dp</dimen>
     <dimen name="gesture_tutorial_multi_row_task_view_spacing">72dp</dimen>
     <dimen name="gesture_tutorial_small_task_view_corner_radius">18dp</dimen>
+    <dimen name="gesture_tutorial_mock_taskbar_height">80dp</dimen>
 
     <!-- Gesture Tutorial mock conversations -->
     <dimen name="gesture_tutorial_message_icon_size">44dp</dimen>
@@ -154,6 +155,11 @@
     <dimen name="gesture_tutorial_webpage_small_corner_radius">4dp</dimen>
     <dimen name="gesture_tutorial_webpage_large_line_height">36dp</dimen>
     <dimen name="gesture_tutorial_webpage_small_line_height">22dp</dimen>
+
+    <!-- Gesture Tutorial mock taskbar -->
+    <dimen name="gesture_tutorial_taskbar_icon_size">44dp</dimen>
+    <dimen name="gesture_tutorial_taskbar_icon_corner_radius">100dp</dimen>
+    <dimen name="gesture_tutorial_taskbar_padding_start_end">218dp</dimen>
 
     <!-- All Set page -->
     <dimen name="allset_page_margin_horizontal">40dp</dimen>

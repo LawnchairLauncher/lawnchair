@@ -95,8 +95,10 @@ final class HomeGestureTutorialController extends SwipeUpGestureTutorialControll
                         showFeedback(R.string.home_gesture_feedback_swipe_too_far_from_edge);
                         break;
                     case OVERVIEW_GESTURE_COMPLETED:
-                        fadeOutFakeTaskView(true, true, () ->
-                                showFeedback(R.string.home_gesture_feedback_overview_detected));
+                        fadeOutFakeTaskView(true, true, () -> {
+                            showFeedback(R.string.home_gesture_feedback_overview_detected);
+                            showFakeTaskbar(/* animateFromHotseat= */ false);
+                        });
                         break;
                     case HOME_OR_OVERVIEW_NOT_STARTED_WRONG_SWIPE_DIRECTION:
                     case HOME_OR_OVERVIEW_CANCELLED:
