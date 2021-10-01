@@ -123,6 +123,6 @@
     <string name="font_weight_bold">Negrita</string>
     <string name="font_weight_extra_bold">Extra negrita</string>
     <string name="font_weight_extra_black">Negra</string>
-    <string name="font_label">Font</string>
-    <string name="reset_font">Reset</string>
+    <string name="font_label">Fuente</string>
+    <string name="reset_font">Restablecer</string>
 </resources>
