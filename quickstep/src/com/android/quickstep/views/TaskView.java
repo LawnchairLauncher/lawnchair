@@ -795,7 +795,8 @@ public class TaskView extends FrameLayout implements Reusable {
             return true;
         }
 
-        if (!getRecentsView().isClearAllHidden()) {
+        if (!mActivity.getDeviceProfile().overviewShowAsGrid
+                && !getRecentsView().isClearAllHidden()) {
             getRecentsView().snapToPage(getRecentsView().indexOfChild(this));
             return false;
         } else {
