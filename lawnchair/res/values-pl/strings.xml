@@ -125,6 +125,6 @@
     <string name="font_weight_bold">Pogrubiona</string>
     <string name="font_weight_extra_bold">Ekstra pogrubiona</string>
     <string name="font_weight_extra_black">Czarna</string>
-    <string name="font_label">Font</string>
+    <string name="font_label">Czcionka</string>
     <string name="reset_font">Reset</string>
 </resources>
