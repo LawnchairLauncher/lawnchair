@@ -18,6 +18,8 @@ package app.lawnchair.preferences
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.util.Log
+import app.lawnchair.font.FontCache
 import com.android.launcher3.InvariantDeviceProfile
 import com.android.launcher3.Utilities
 import kotlinx.coroutines.CoroutineScope
@@ -25,7 +27,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.util.concurrent.CopyOnWriteArraySet
 
-abstract class BasePreferenceManager(context: Context) : SharedPreferences.OnSharedPreferenceChangeListener {
+abstract class BasePreferenceManager(private val context: Context) : SharedPreferences.OnSharedPreferenceChangeListener {
     val sp: SharedPreferences = Utilities.getPrefs(context)
     val prefsMap = mutableMapOf<String, BasePref<*>>()
     private val coroutineScope = CoroutineScope(Dispatchers.IO)
@@ -64,29 +66,46 @@ abstract class BasePreferenceManager(context: Context) : SharedPreferences.OnSha
         }
     }
 
-    inner class StringPref(
+    abstract inner class StringBasedPref<T>(
         key: String,
-        override val defaultValue: String,
+        override val defaultValue: T,
         primaryListener: ChangeListener? = null
-    ) : BasePref<String>(key, primaryListener) {
-        private var currentValue = ""
+    ) : BasePref<T>(key, primaryListener) {
+        private var currentValue: T? = null
 
         init {
             prefsMap[key] = this
         }
 
-        override fun get(): String {
+        @Suppress("UNCHECKED_CAST")
+        override fun get(): T {
             if (!loaded) {
-                currentValue = sp.getString(key, defaultValue)!!
+                currentValue = if (sp.contains(key)) {
+                    parse(sp.getString(key, null)!!)
+                } else {
+                    defaultValue
+                }
                 loaded = true
             }
-            return currentValue
+            return currentValue as T
         }
 
-        override fun set(newValue: String) {
+        override fun set(newValue: T) {
             currentValue = newValue
-            editSp { putString(key, newValue) }
+            editSp { putString(key, stringify(newValue)) }
         }
+
+        protected abstract fun parse(stringValue: String): T
+        protected abstract fun stringify(value: T): String
+    }
+
+    inner class StringPref(
+        key: String,
+        defaultValue: String,
+        primaryListener: ChangeListener? = null
+    ) : StringBasedPref<String>(key, defaultValue, primaryListener) {
+        override fun parse(stringValue: String) = stringValue
+        override fun stringify(value: String) = value
     }
 
     inner class BoolPref(
@@ -230,5 +249,23 @@ abstract class BasePreferenceManager(context: Context) : SharedPreferences.OnSha
             currentValue = newValue
             editSp { putStringSet(key, newValue) }
         }
+    }
+
+    inner class FontPref(
+        key: String,
+        defaultValue: FontCache.Font,
+        primaryListener: ChangeListener? = null
+    ) : StringBasedPref<FontCache.Font>(key, defaultValue, primaryListener) {
+
+        override fun parse(stringValue: String): FontCache.Font {
+            try {
+                return FontCache.Font.fromJsonString(context, stringValue)
+            } catch (e: Exception) {
+                Log.e("FontPref", "Failed to load font $stringValue", e)
+            }
+            return defaultValue
+        }
+
+        override fun stringify(value: FontCache.Font) = value.toJsonString()
     }
 }
