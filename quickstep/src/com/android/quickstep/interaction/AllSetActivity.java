@@ -32,6 +32,8 @@ import androidx.annotation.Nullable;
 
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
+import com.android.quickstep.TouchInteractionService.TISBinder;
+import com.android.quickstep.util.TISBindHelper;
 
 import java.net.URISyntaxException;
 
@@ -46,6 +48,9 @@ public class AllSetActivity extends Activity {
             "#Intent;action=com.android.settings.SEARCH_RESULT_TRAMPOLINE;S.:settings:fragment_args_key=gesture_system_navigation_input_summary;S.:settings:show_fragment=com.android.settings.gestures.SystemNavigationGestureSettings;end";
     private static final String EXTRA_ACCENT_COLOR_DARK_MODE = "suwColorAccentDark";
     private static final String EXTRA_ACCENT_COLOR_LIGHT_MODE = "suwColorAccentLight";
+
+    private TISBindHelper mTISBindHelper;
+    private TISBinder mBinder;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -73,6 +78,34 @@ public class AllSetActivity extends Activity {
         });
 
         findViewById(R.id.hint).setAccessibilityDelegate(new SkipButtonAccessibilityDelegate());
+        mTISBindHelper = new TISBindHelper(this, this::onTISConnected);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (mBinder != null) {
+            mBinder.getTaskbarManager().setSetupUIVisible(true);
+        }
+    }
+
+    private void onTISConnected(TISBinder binder) {
+        mBinder = binder;
+        mBinder.getTaskbarManager().setSetupUIVisible(isResumed());
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (mBinder != null) {
+            mBinder.getTaskbarManager().setSetupUIVisible(false);
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mTISBindHelper.onDestroy();
     }
 
     /**

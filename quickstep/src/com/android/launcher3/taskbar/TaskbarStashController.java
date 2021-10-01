@@ -25,21 +25,15 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.annotation.Nullable;
-import android.app.ActivityManager;
-import android.content.ComponentName;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
-import android.provider.Settings;
 import android.view.ViewConfiguration;
 
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.util.MultiValueAlpha.AlphaProperty;
-import com.android.launcher3.util.SettingsCache;
 import com.android.quickstep.AnimatedFloat;
 import com.android.quickstep.SystemUiProxy;
-import com.android.quickstep.interaction.AllSetActivity;
-import com.android.systemui.shared.system.ActivityManagerWrapper;
 
 import java.util.function.IntPredicate;
 
@@ -136,7 +130,7 @@ public class TaskbarStashController {
         mUnstashedHeight = mActivity.getDeviceProfile().taskbarSize;
     }
 
-    public void init(TaskbarControllers controllers) {
+    public void init(TaskbarControllers controllers, TaskbarSharedState sharedState) {
         mControllers = controllers;
 
         TaskbarDragLayerController dragLayerController = controllers.taskbarDragLayerController;
@@ -157,7 +151,8 @@ public class TaskbarStashController {
         boolean isManuallyStashedInApp = supportsManualStashing()
                 && mPrefs.getBoolean(SHARED_PREFS_STASHED_KEY, DEFAULT_STASHED_PREF);
         updateStateForFlag(FLAG_STASHED_IN_APP_MANUAL, isManuallyStashedInApp);
-        updateStateForFlag(FLAG_STASHED_IN_APP_SETUP, isInSetup());
+        updateStateForFlag(FLAG_STASHED_IN_APP_SETUP,
+                !mActivity.isUserSetupComplete() || sharedState.setupUIVisible);
         applyState();
 
         SystemUiProxy.INSTANCE.get(mActivity)
@@ -186,20 +181,12 @@ public class TaskbarStashController {
     }
 
     /**
-     * Returns whether we are in Setup Wizard or the corresponding AllSetActivity that follows it.
+     * Sets the flag indicating setup UI is visible
      */
-    private boolean isInSetup() {
-        boolean isInSetup = !SettingsCache.INSTANCE.get(mActivity).getValue(
-                Settings.Secure.getUriFor(Settings.Secure.USER_SETUP_COMPLETE), 0);
-        if (isInSetup) {
-            return true;
-        }
-        ActivityManager.RunningTaskInfo runningTask =
-                ActivityManagerWrapper.getInstance().getRunningTask();
-        if (runningTask == null || runningTask.baseActivity == null) {
-            return false;
-        }
-        return runningTask.baseActivity.equals(new ComponentName(mActivity, AllSetActivity.class));
+    protected void setSetupUIVisible(boolean isVisible) {
+        updateStateForFlag(FLAG_STASHED_IN_APP_SETUP,
+                isVisible || !mActivity.isUserSetupComplete());
+        applyState();
     }
 
     /**
