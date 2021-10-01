@@ -2,7 +2,7 @@ buildscript {
     ext {
         kotlin_version = '1.5.10'
         compose_version = '1.0.2'
-        accompanist_version = '0.18.0'
+        accompanist_version = '0.19.0'
         libsu_version = '3.1.2'
     }
     repositories {
@@ -10,7 +10,7 @@ buildscript {
         google()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:7.1.0-alpha11'
+        classpath 'com.android.tools.build:gradle:7.1.0-alpha12'
         classpath PROTOBUF_CLASS_PATH
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath 'com.google.android.gms:oss-licenses-plugin:0.10.4'
