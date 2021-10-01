@@ -18,6 +18,7 @@ package com.android.launcher3.icons;
 
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
+import static com.android.launcher3.widget.WidgetSections.NO_CATEGORY;
 
 import static java.util.stream.Collectors.groupingBy;
 
@@ -46,7 +47,6 @@ import androidx.annotation.NonNull;
 
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.LauncherFiles;
-import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.icons.ComponentWithLabel.ComponentCachingLogic;
@@ -63,6 +63,8 @@ import com.android.launcher3.shortcuts.ShortcutKey;
 import com.android.launcher3.util.InstantAppResolver;
 import com.android.launcher3.util.PackageUserKey;
 import com.android.launcher3.util.Preconditions;
+import com.android.launcher3.widget.WidgetSections;
+import com.android.launcher3.widget.WidgetSections.WidgetSection;
 
 import java.util.Collections;
 import java.util.List;
@@ -275,7 +277,8 @@ public class IconCache extends BaseIconCache {
             getTitleAndIcon(appInfo, false);
             return appInfo.bitmap;
         } else {
-            PackageItemInfo pkgInfo = new PackageItemInfo(shortcutInfo.getPackage());
+            PackageItemInfo pkgInfo = new PackageItemInfo(shortcutInfo.getPackage(),
+                    shortcutInfo.getUserHandle());
             getTitleAndIconForApp(pkgInfo, false);
             return pkgInfo.bitmap;
         }
@@ -409,8 +412,10 @@ public class IconCache extends BaseIconCache {
         CacheEntry entry = getEntryForPackageLocked(
                 infoInOut.packageName, infoInOut.user, useLowResIcon);
         applyCacheEntry(entry, infoInOut);
-        if (infoInOut.category == PackageItemInfo.CONVERSATIONS) {
-            infoInOut.title = mContext.getString(R.string.widget_category_conversations);
+        if (infoInOut.widgetCategory != NO_CATEGORY) {
+            WidgetSection widgetSection = WidgetSections.getWidgetSections(mContext)
+                    .get(infoInOut.widgetCategory);
+            infoInOut.title = mContext.getString(widgetSection.mSectionTitle);
             infoInOut.contentDescription = mPackageManager.getUserBadgedLabel(
                     infoInOut.title, infoInOut.user);
         }

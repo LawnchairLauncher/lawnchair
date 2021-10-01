@@ -30,6 +30,7 @@ import android.appwidget.AppWidgetProviderInfo;
 import android.content.ComponentName;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.os.UserHandle;
 import android.view.LayoutInflater;
 import android.widget.FrameLayout;
 import android.widget.TextView;
@@ -124,12 +125,12 @@ public final class WidgetsListSearchHeaderViewHolderBinderTest {
         widgetsListHeader.callOnClick();
 
         verify(mOnHeaderClickListener).onHeaderClicked(eq(true),
-                eq(new PackageUserKey(entry.mPkgItem.packageName, entry.mPkgItem.user)));
+                eq(PackageUserKey.fromPackageItemInfo(entry.mPkgItem)));
     }
 
     private WidgetsListSearchHeaderEntry generateSampleSearchHeader(String appName,
             String packageName, int numOfWidgets) {
-        PackageItemInfo appInfo = new PackageItemInfo(packageName);
+        PackageItemInfo appInfo = new PackageItemInfo(packageName, UserHandle.CURRENT);
         appInfo.title = appName;
         appInfo.bitmap = BitmapInfo.of(Bitmap.createBitmap(10, 10, Bitmap.Config.ALPHA_8), 0);
 
