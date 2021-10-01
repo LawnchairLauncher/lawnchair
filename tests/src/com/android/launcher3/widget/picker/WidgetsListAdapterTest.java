@@ -215,14 +215,23 @@ public final class WidgetsListAdapterTest {
     @Test
     public void setWidgetsOnSearch_expandedApp_shouldResetExpandedApp() {
         // GIVEN a list of widgets entries:
-        // [com.google.test0, com.google.test0 content,
-        //  com.google.test1, com.google.test1 content,
-        //  com.google.test2, com.google.test2 content]
-        // The visible widgets entries: [com.google.test0, com.google.test1, com.google.test2].
-        ArrayList<WidgetsListBaseEntry> allEntries = generateSampleMap(2);
+        // [Empty item
+        //  com.google.test0,
+        //  com.google.test0 content,
+        //  com.google.test1,
+        //  com.google.test1 content,
+        //  com.google.test2,
+        //  com.google.test2 content]
+        // The visible widgets entries:
+        // [Empty item,
+        // com.google.test0,
+        // com.google.test1,
+        // com.google.test2].
+        ArrayList<WidgetsListBaseEntry> allEntries = generateSampleMap(3);
         mAdapter.setWidgetsOnSearch(allEntries);
         // GIVEN com.google.test.1 header is expanded. The visible entries list becomes:
-        // [com.google.test0, com.google.test1, com.google.test1 content, com.google.test2]
+        // [Empty item, com.google.test0, com.google.test1, com.google.test1 content,
+        // com.google.test2]
         mAdapter.onHeaderClicked(/* showWidgets= */ true,
                 new PackageUserKey(TEST_PACKAGE_PLACEHOLDER + 1, mUserHandle));
         Mockito.reset(mListener);
@@ -231,7 +240,7 @@ public final class WidgetsListAdapterTest {
         mAdapter.setWidgetsOnSearch(allEntries);
 
         // THEN expanded app is reset and the visible entries list becomes:
-        // [com.google.test0, com.google.test1, com.google.test2]
+        // [Empty item, com.google.test0, com.google.test1, com.google.test2]
         verify(mListener).onItemRangeChanged(eq(2), eq(1), isNull());
         verify(mListener).onItemRangeRemoved(/* positionStart= */ 3, /* itemCount= */ 1);
     }
@@ -257,9 +266,8 @@ public final class WidgetsListAdapterTest {
 
             List<WidgetItem> widgetItems = generateWidgetItems(packageName, /* numOfWidgets= */ 1);
 
-            PackageItemInfo pInfo = new PackageItemInfo(packageName);
+            PackageItemInfo pInfo = new PackageItemInfo(packageName, widgetItems.get(0).user);
             pInfo.title = pInfo.packageName;
-            pInfo.user = widgetItems.get(0).user;
             pInfo.bitmap = BitmapInfo.of(Bitmap.createBitmap(10, 10, Bitmap.Config.ALPHA_8), 0);
 
             result.add(new WidgetsListHeaderEntry(pInfo, /* titleSectionName= */ "", widgetItems));

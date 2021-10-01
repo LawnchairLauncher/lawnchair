@@ -15,6 +15,8 @@
  */
 package com.android.launcher3.widget.picker;
 
+import static com.android.launcher3.widget.WidgetSections.NO_CATEGORY;
+
 import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
@@ -41,6 +43,8 @@ import com.android.launcher3.model.data.ItemInfoWithIcon;
 import com.android.launcher3.model.data.PackageItemInfo;
 import com.android.launcher3.util.PluralMessageFormat;
 import com.android.launcher3.views.ActivityContext;
+import com.android.launcher3.widget.WidgetSections;
+import com.android.launcher3.widget.WidgetSections.WidgetSection;
 import com.android.launcher3.widget.model.WidgetsListHeaderEntry;
 import com.android.launcher3.widget.model.WidgetsListSearchHeaderEntry;
 
@@ -173,12 +177,12 @@ public final class WidgetsListHeader extends LinearLayout implements ItemInfoUpd
 
     private void setIcon(PackageItemInfo info) {
         Drawable icon;
-        switch (info.category) {
-            case PackageItemInfo.CONVERSATIONS:
-                icon = getContext().getDrawable(R.drawable.ic_conversations_widget_category);
-                break;
-            default:
-                icon = info.newIcon(getContext());
+        if (info.widgetCategory == NO_CATEGORY) {
+            icon = info.newIcon(getContext());
+        } else {
+            WidgetSection widgetSection = WidgetSections.getWidgetSections(getContext())
+                    .get(info.widgetCategory);
+            icon = getContext().getDrawable(widgetSection.mSectionDrawable);
         }
         applyDrawables(icon);
         mIconDrawable = icon;

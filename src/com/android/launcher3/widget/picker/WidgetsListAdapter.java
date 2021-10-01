@@ -98,7 +98,7 @@ public class WidgetsListAdapter extends Adapter<ViewHolder> implements OnHeaderC
     private Predicate<WidgetsListBaseEntry> mHeaderAndSelectedContentFilter = entry ->
             entry instanceof WidgetsListHeaderEntry
                     || entry instanceof WidgetsListSearchHeaderEntry
-                    || new PackageUserKey(entry.mPkgItem.packageName, entry.mPkgItem.user)
+                    || PackageUserKey.fromPackageItemInfo(entry.mPkgItem)
                             .equals(mWidgetsContentVisiblePackageUserKey);
     @Nullable private Predicate<WidgetsListBaseEntry> mFilter = null;
     @Nullable private RecyclerView mRecyclerView;
@@ -252,10 +252,11 @@ public class WidgetsListAdapter extends Adapter<ViewHolder> implements OnHeaderC
         return entry instanceof WidgetsListBaseEntry.Header && matchesKey(entry, key);
     }
 
-    private static boolean matchesKey(
-            @NonNull WidgetsListBaseEntry entry, @Nullable PackageUserKey key) {
+    private static boolean matchesKey(@NonNull WidgetsListBaseEntry entry,
+            @Nullable PackageUserKey key) {
         if (key == null) return false;
         return entry.mPkgItem.packageName.equals(key.mPackageName)
+                && entry.mPkgItem.widgetCategory == key.mWidgetCategory
                 && entry.mPkgItem.user.equals(key.mUser);
     }
 
@@ -434,11 +435,10 @@ public class WidgetsListAdapter extends Adapter<ViewHolder> implements OnHeaderC
                         .filter(entry -> entry instanceof WidgetsListHeaderEntry)
                         .map(entry -> entry.mPkgItem)
                         .collect(Collectors.toMap(
-                                entry -> new PackageUserKey(entry.packageName, entry.user),
+                                entry -> PackageUserKey.fromPackageItemInfo(entry),
                                 entry -> entry));
         for (WidgetsListBaseEntry visibleEntry: mVisibleEntries) {
-            PackageUserKey key = new PackageUserKey(visibleEntry.mPkgItem.packageName,
-                    visibleEntry.mPkgItem.user);
+            PackageUserKey key = PackageUserKey.fromPackageItemInfo(visibleEntry.mPkgItem);
             PackageItemInfo packageItemInfo = packagesInfo.get(key);
             if (packageItemInfo != null
                     && !visibleEntry.mPkgItem.title.equals(packageItemInfo.title)) {
