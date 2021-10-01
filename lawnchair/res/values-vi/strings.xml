@@ -122,4 +122,6 @@
     <string name="font_weight_bold">Đậm</string>
     <string name="font_weight_extra_bold">Rất đậm</string>
     <string name="font_weight_extra_black">Cực kì đậm</string>
+    <string name="font_label">Font</string>
+    <string name="reset_font">Reset</string>
 </resources>
