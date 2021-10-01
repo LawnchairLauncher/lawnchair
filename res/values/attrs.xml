@@ -177,7 +177,7 @@
         <attr name="minWidthDps" format="float" />
         <attr name="minHeightDps" format="float" />
 
-        <!-- These min cell values are only used if GridDisplayOption#isScalable is true-->
+        <!-- These min cell values are only used if GridDisplayOption#isScalable is true -->
         <attr name="minCellHeightDps" format="float" />
         <attr name="minCellWidthDps" format="float" />
         <!-- twoPanelPortraitMinCellWidthDps defaults to minCellHeightDps, if not specified -->
@@ -223,6 +223,12 @@
         <!-- allAppsIconTextSize defaults to iconTextSize, if not specified -->
         <attr name="allAppsIconTextSize" format="float" />
 
+        <!-- Margin on left and right of the workspace when GridDisplayOption#isScalable is true -->
+        <attr name="horizontalMargin" format="float"/>
+        <!-- twoPanelLandscapeHorizontalMargin defaults to horizontalMargin if not specified -->
+        <attr name="twoPanelLandscapeHorizontalMargin" format="float"/>
+        <!-- twoPanelPortraitHorizontalMargin defaults to horizontalMargin if not specified -->
+        <attr name="twoPanelPortraitHorizontalMargin" format="float"/>
     </declare-styleable>
 
     <declare-styleable name="CellLayout">
