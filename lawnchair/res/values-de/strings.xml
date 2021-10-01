@@ -123,4 +123,6 @@
     <string name="font_weight_bold">Fett</string>
     <string name="font_weight_extra_bold">Extrafett</string>
     <string name="font_weight_extra_black">Schwarz</string>
+    <string name="font_label">Font</string>
+    <string name="reset_font">Reset</string>
 </resources>
