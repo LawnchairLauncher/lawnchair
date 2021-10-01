@@ -80,7 +80,10 @@
     <string name="permdesc_write_settings" msgid="5440712911516509985">"Aplikaciji dovoli spreminjanje nastavitev in bližnjic na začetnem zaslonu."</string>
     <string name="msg_no_phone_permission" msgid="9208659281529857371">"Aplikaciji <xliff:g id="APP_NAME">%1$s</xliff:g> ni dovoljeno opravljanje klicev"</string>
     <string name="gadget_error_text" msgid="740356548025791839">"Pripomočka ni mogoče naložiti."</string>
-    <string name="gadget_setup_text" msgid="1745356155479272374">"Dotaknite se, da dokončate postopek nastavitve."</string>
+    <!-- no translation found for gadget_setup_text (8348374825537681407) -->
+    <skip />
+    <!-- no translation found for gadget_complete_setup_text (309040266978007925) -->
+    <skip />
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"To je sistemska aplikacija in je ni mogoče odstraniti."</string>
     <string name="folder_hint_text" msgid="5174843001373488816">"Urejanje imena"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"Aplikacija <xliff:g id="APP_NAME">%1$s</xliff:g> je onemogočena"</string>

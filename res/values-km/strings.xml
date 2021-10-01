@@ -80,7 +80,10 @@
     <string name="permdesc_write_settings" msgid="5440712911516509985">"អនុញ្ញាត​ឲ្យ​កម្មវិធី​ប្ដូរ​ការ​កំណត់ និង​ផ្លូវ​កាត់​ក្នុង​អេក្រង់​ដើម។"</string>
     <string name="msg_no_phone_permission" msgid="9208659281529857371">"<xliff:g id="APP_NAME">%1$s</xliff:g> មិនត្រូវបានអនុញ្ញាតឲ្យធ្វើការហៅទូរស័ព្ទទេ"</string>
     <string name="gadget_error_text" msgid="740356548025791839">"មិនអាចផ្ទុក​ធាតុក្រាហ្វិក​បានទេ"</string>
-    <string name="gadget_setup_text" msgid="1745356155479272374">"ចុច​ដើម្បី​បញ្ចប់​ការរៀបចំ"</string>
+    <!-- no translation found for gadget_setup_text (8348374825537681407) -->
+    <skip />
+    <!-- no translation found for gadget_complete_setup_text (309040266978007925) -->
+    <skip />
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"នេះ​​​ជា​កម្មវិធី​ប្រព័ន្ធ មិន​អាច​លុប​បាន​ទេ។"</string>
     <string name="folder_hint_text" msgid="5174843001373488816">"កែ​ឈ្មោះ"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"បានបិទដំណើរការ <xliff:g id="APP_NAME">%1$s</xliff:g>"</string>
