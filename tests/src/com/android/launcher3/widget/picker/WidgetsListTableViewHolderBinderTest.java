@@ -28,6 +28,7 @@ import android.appwidget.AppWidgetProviderInfo;
 import android.content.ComponentName;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.os.UserHandle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -125,7 +126,7 @@ public final class WidgetsListTableViewHolderBinderTest {
 
     private WidgetsListContentEntry generateSampleAppWithWidgets(String appName, String packageName,
             int numOfWidgets) {
-        PackageItemInfo appInfo = new PackageItemInfo(packageName);
+        PackageItemInfo appInfo = new PackageItemInfo(packageName, UserHandle.CURRENT);
         appInfo.title = appName;
         appInfo.bitmap = BitmapInfo.of(Bitmap.createBitmap(10, 10, Bitmap.Config.ALPHA_8), 0);
 

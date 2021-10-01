@@ -16,47 +16,41 @@
 
 package com.android.launcher3.model.data;
 
-import androidx.annotation.IntDef;
+import static com.android.launcher3.widget.WidgetSections.NO_CATEGORY;
+
+import android.os.UserHandle;
 
 import com.android.launcher3.LauncherSettings;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
 import java.util.Objects;
 
 /**
  * Represents a {@link Package} in the widget tray section.
  */
 public class PackageItemInfo extends ItemInfoWithIcon {
-    @Retention(RetentionPolicy.SOURCE)
-    @IntDef({NO_CATEGORY, CONVERSATIONS})
-    public @interface Category{}
-    /** The package is not categorized in the widget tray. */
-    public static final int NO_CATEGORY = 0;
-    /** The package is categorized to conversations widget in the widget tray. */
-    public static final int CONVERSATIONS = 1;
-
     /**
      * Package name of the {@link PackageItemInfo}.
      */
     public final String packageName;
 
     /** Represents a widget category shown in the widget tray section. */
-    @Category public final int category;
+    public final int widgetCategory;
 
-    public PackageItemInfo(String packageName) {
-        this(packageName, NO_CATEGORY);
+    public PackageItemInfo(String packageName, UserHandle user) {
+        this(packageName, NO_CATEGORY, user);
     }
 
-    public PackageItemInfo(String packageName, @Category int category) {
+    public PackageItemInfo(String packageName, int widgetCategory, UserHandle user) {
         this.packageName = packageName;
-        this.category = category;
+        this.widgetCategory = widgetCategory;
+        this.user = user;
         this.itemType = LauncherSettings.Favorites.ITEM_TYPE_NON_ACTIONABLE;
     }
 
     public PackageItemInfo(PackageItemInfo copy) {
         this.packageName = copy.packageName;
-        this.category = copy.category;
+        this.widgetCategory = copy.widgetCategory;
+        this.user = copy.user;
         this.itemType = LauncherSettings.Favorites.ITEM_TYPE_NON_ACTIONABLE;
     }
 
@@ -75,11 +69,13 @@ public class PackageItemInfo extends ItemInfoWithIcon {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         PackageItemInfo that = (PackageItemInfo) o;
-        return Objects.equals(packageName, that.packageName);
+        return Objects.equals(packageName, that.packageName)
+                && Objects.equals(user, that.user)
+                && widgetCategory == that.widgetCategory;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(packageName, user);
+        return Objects.hash(packageName, user, widgetCategory);
     }
 }

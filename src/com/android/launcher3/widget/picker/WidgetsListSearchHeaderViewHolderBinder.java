@@ -64,6 +64,6 @@ public final class WidgetsListSearchHeaderViewHolderBinder implements
                         /* isExpanded= */ data.isWidgetListShown()));
         widgetsListHeader.setOnExpandChangeListener(isExpanded ->
                 mOnHeaderClickListener.onHeaderClicked(isExpanded,
-                        new PackageUserKey(data.mPkgItem.packageName, data.mPkgItem.user)));
+                        PackageUserKey.fromPackageItemInfo(data.mPkgItem)));
     }
 }

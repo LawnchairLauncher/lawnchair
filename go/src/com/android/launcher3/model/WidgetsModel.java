@@ -79,12 +79,13 @@ public class WidgetsModel {
     }
 
     public WidgetItem getWidgetProviderInfoByProviderName(
-            ComponentName providerName) {
+            ComponentName providerName, UserHandle user) {
         return null;
     }
 
     /** Returns {@link PackageItemInfo} of a pending widget. */
-    public static PackageItemInfo newPendingItemInfo(ComponentName provider) {
-        return new PackageItemInfo(provider.getPackageName());
+    public static PackageItemInfo newPendingItemInfo(
+            Context context, ComponentName provider, UserHandle userHandle) {
+        return new PackageItemInfo(provider.getPackageName(), userHandle);
     }
 }
