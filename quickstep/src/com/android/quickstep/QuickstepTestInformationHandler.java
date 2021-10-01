@@ -6,7 +6,6 @@ import android.graphics.Rect;
 import android.os.Bundle;
 
 import com.android.launcher3.LauncherState;
-import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.testing.TestInformationHandler;
 import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.touch.PagedOrientationHandler;
@@ -52,12 +51,6 @@ public class QuickstepTestInformationHandler extends TestInformationHandler {
             case TestProtocol.REQUEST_HOTSEAT_TOP: {
                 return getLauncherUIProperty(
                         Bundle::putInt, PortraitStatesTouchController::getHotseatTop);
-            }
-
-            case TestProtocol.REQUEST_OVERVIEW_SHARE_ENABLED: {
-                response.putBoolean(TestProtocol.TEST_INFO_RESPONSE_FIELD,
-                        FeatureFlags.ENABLE_OVERVIEW_SHARE.get());
-                return response;
             }
 
             case TestProtocol.REQUEST_GET_FOCUSED_TASK_WIDTH_FOR_TABLET: {

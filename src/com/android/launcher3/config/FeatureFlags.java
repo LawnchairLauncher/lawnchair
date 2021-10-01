@@ -94,11 +94,6 @@ public final class FeatureFlags {
             "ENABLE_QUICKSTEP_WIDGET_APP_START", true,
             "Enable Quickstep animation when launching activities from an app widget");
 
-    // Keep as DeviceFlag to allow remote disable in emergency.
-    public static final BooleanFlag ENABLE_SUGGESTED_ACTIONS_OVERVIEW = new DeviceFlag(
-            "ENABLE_SUGGESTED_ACTIONS_OVERVIEW", false, "Show chip hints on the overview screen");
-
-
     public static final BooleanFlag ENABLE_DEVICE_SEARCH = new DeviceFlag(
             "ENABLE_DEVICE_SEARCH", true, "Allows on device search in all apps");
 
@@ -158,9 +153,6 @@ public final class FeatureFlags {
 
     public static final BooleanFlag ENABLE_WIDGETS_PICKER_AIAI_SEARCH = new DeviceFlag(
             "ENABLE_WIDGETS_PICKER_AIAI_SEARCH", false, "Enable AiAi search in the widgets picker");
-
-    public static final BooleanFlag ENABLE_OVERVIEW_SHARE = getDebugFlag(
-            "ENABLE_OVERVIEW_SHARE", false, "Show Share button in Overview Actions");
 
     public static final BooleanFlag ENABLE_OVERVIEW_SHARING_TO_PEOPLE = getDebugFlag(
             "ENABLE_OVERVIEW_SHARING_TO_PEOPLE", true,
