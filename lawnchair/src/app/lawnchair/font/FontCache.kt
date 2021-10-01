@@ -41,17 +41,10 @@ class FontCache private constructor(private val context: Context) {
     private val scope = CoroutineScope(CoroutineName("FontCache"))
 
     private val deferredFonts = mutableMapOf<Font, Deferred<Typeface?>>()
-    private val weightNameMap: Map<String, String> = mapOf(
-        Pair("100", R.string.font_weight_thin),
-        Pair("200", R.string.font_weight_extra_light),
-        Pair("300", R.string.font_weight_light),
-        Pair("400", R.string.font_weight_regular),
-        Pair("500", R.string.font_weight_medium),
-        Pair("600", R.string.font_weight_semi_bold),
-        Pair("700", R.string.font_weight_bold),
-        Pair("800", R.string.font_weight_extra_bold),
-        Pair("900", R.string.font_weight_extra_black)
-    ).mapValues { context.getString(it.value) }
+
+    val uiRegular = GoogleFont(context, "Google Sans")
+    val uiMedium = GoogleFont(context, "Google Sans", "500")
+    val uiTextMedium = GoogleFont(context, "Google Sans Text", "500")
 
     suspend fun getFont(font: Font): Typeface? {
         return loadFontAsync(font).await()
@@ -273,7 +266,7 @@ class FontCache private constructor(private val context: Context) {
         private fun createVariantName(): String {
             if (variant == "italic") return context.getString(R.string.font_variant_italic)
             val weight = GoogleFontsListing.getWeight(variant)
-            val weightString = INSTANCE.get(context).weightNameMap[weight] ?: weight
+            val weightString = weightNameMap[weight]?.let(context::getString) ?: weight
             val italicString = if (GoogleFontsListing.isItalic(variant))
                 " " + context.getString(R.string.font_variant_italic) else ""
             return "$weightString$italicString"
@@ -374,5 +367,17 @@ class FontCache private constructor(private val context: Context) {
         private const val KEY_VARIANT = "variant"
         private const val KEY_VARIANTS = "variants"
         private const val KEY_FONT_NAME = "font"
+
+        private val weightNameMap: Map<String, Int> = mapOf(
+            Pair("100", R.string.font_weight_thin),
+            Pair("200", R.string.font_weight_extra_light),
+            Pair("300", R.string.font_weight_light),
+            Pair("400", R.string.font_weight_regular),
+            Pair("500", R.string.font_weight_medium),
+            Pair("600", R.string.font_weight_semi_bold),
+            Pair("700", R.string.font_weight_bold),
+            Pair("800", R.string.font_weight_extra_bold),
+            Pair("900", R.string.font_weight_extra_black)
+        )
     }
 }

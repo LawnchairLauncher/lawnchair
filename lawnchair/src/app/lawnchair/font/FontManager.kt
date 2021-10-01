@@ -6,6 +6,8 @@ import android.util.AttributeSet
 import android.widget.TextView
 import androidx.annotation.IdRes
 import androidx.lifecycle.lifecycleScope
+import app.lawnchair.preferences.BasePreferenceManager
+import app.lawnchair.preferences.PreferenceManager
 import app.lawnchair.util.lookupLifecycleOwner
 import app.lawnchair.util.runOnMainThread
 import com.android.launcher3.R
@@ -16,9 +18,9 @@ class FontManager private constructor(private val context: Context) {
 
     private val fontCache = FontCache.INSTANCE.get(context)
 
-    private val uiRegular = FontCache.GoogleFont(context, "Google Sans")
-    private val uiMedium = FontCache.GoogleFont(context, "Google Sans", "500")
-    private val uiTextMedium = FontCache.GoogleFont(context, "Google Sans Text", "500")
+    private val uiRegular = fontCache.uiRegular
+    private val uiMedium = fontCache.uiMedium
+    private val uiTextMedium = fontCache.uiTextMedium
 
     private val specMap = createFontMap()
 
@@ -26,8 +28,9 @@ class FontManager private constructor(private val context: Context) {
         val sansSerif = Typeface.SANS_SERIF
         val sansSerifMedium = Typeface.create("sans-serif-medium", Typeface.NORMAL)
 
+        val prefs = PreferenceManager.getInstance(context)
         val map = mutableMapOf<Int, FontSpec>()
-        map[R.id.font_base_icon] = FontSpec(uiTextMedium, sansSerif)
+        map[R.id.font_base_icon] = FontSpec(prefs.workspaceFont, sansSerif)
         map[R.id.font_button] = FontSpec(uiMedium, sansSerifMedium)
         map[R.id.font_smartspace_text] = FontSpec(uiRegular, sansSerif)
         return map
@@ -71,6 +74,7 @@ class FontManager private constructor(private val context: Context) {
 
     class FontSpec(val loader: () -> FontCache.Font, val fallback: Typeface) {
         constructor(font: FontCache.Font, fallback: Typeface) : this({ font }, fallback)
+        constructor(pref: BasePreferenceManager.FontPref, fallback: Typeface) : this(pref::get, fallback)
 
         val font get() = loader()
     }
