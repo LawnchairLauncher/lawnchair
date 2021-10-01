@@ -125,4 +125,6 @@
     <string name="font_weight_bold">Tučné</string>
     <string name="font_weight_extra_bold">Velmi tučné</string>
     <string name="font_weight_extra_black">Černé</string>
+    <string name="font_label">Font</string>
+    <string name="reset_font">Reset</string>
 </resources>
