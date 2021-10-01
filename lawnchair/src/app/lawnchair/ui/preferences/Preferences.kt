@@ -42,6 +42,7 @@ object Routes {
     const val APP_DRAWER: String = "appDrawer"
     const val FOLDERS: String = "folders"
     const val QUICKSTEP: String = "quickstep"
+    const val FONT_SELECTION: String = "fontSelection"
 }
 
 val LocalNavController = staticCompositionLocalOf<NavController> {
@@ -84,6 +85,7 @@ fun Preferences(interactor: PreferenceInteractor = viewModel<PreferenceViewModel
                         folderGraph(route = subRoute(Routes.FOLDERS))
                         quickstepGraph(route = subRoute(Routes.QUICKSTEP))
                         aboutGraph(route = subRoute(Routes.ABOUT))
+                        fontSelectionGraph(route = subRoute(Routes.FONT_SELECTION))
                     }
                 }
             }

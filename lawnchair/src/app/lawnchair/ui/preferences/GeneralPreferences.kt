@@ -63,6 +63,10 @@ fun GeneralPreferences() {
             )
             ThemePreference()
             AccentColorPreference()
+            FontPreference(
+                adapter = prefs.workspaceFont.getAdapter(),
+                label = stringResource(id = R.string.font_label)
+            )
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val wrapAdaptiveIcons = prefs.wrapAdaptiveIcons.observeAsState()
