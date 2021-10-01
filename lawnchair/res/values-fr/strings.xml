@@ -123,4 +123,6 @@
     <string name="font_weight_bold">Gras</string>
     <string name="font_weight_extra_bold">Extra-gras</string>
     <string name="font_weight_extra_black">Noir</string>
+    <string name="font_label">Font</string>
+    <string name="reset_font">Reset</string>
 </resources>
