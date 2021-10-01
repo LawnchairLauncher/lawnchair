@@ -123,6 +123,6 @@
     <string name="font_weight_bold">Bold</string>
     <string name="font_weight_extra_bold">Extrabold</string>
     <string name="font_weight_extra_black">Black</string>
-    <string name="font_label">Font</string>
-    <string name="reset_font">Reset</string>
+    <string name="font_label">Skrifttype</string>
+    <string name="reset_font">Nullstill</string>
 </resources>
