@@ -34,7 +34,11 @@ import app.lawnchair.ui.preferences.components.PreferenceLayoutLazyColumn
 import app.lawnchair.ui.preferences.components.preferenceGroupItems
 import com.android.launcher3.R
 
-data class IconPackInfo(val name: String, val packageName: String, val icon: Drawable)
+data class IconPackInfo(
+    val name: String,
+    val packageName: String,
+    val icon: Drawable
+)
 
 @ExperimentalAnimationApi
 fun NavGraphBuilder.iconPackGraph(route: String) {
@@ -47,8 +51,12 @@ fun IconPackPreferences() {
     val interactor = LocalPreferenceInteractor.current
     val iconPacks = remember { interactor.getIconPacks() }
     var iconPackPackage by preferenceManager().iconPackPackage.getAdapter()
+
     PreferenceLayoutLazyColumn(label = stringResource(id = R.string.icon_pack)) {
-        preferenceGroupItems(iconPacks, isFirstChild = true) { index, iconPack ->
+        preferenceGroupItems(
+            items = iconPacks,
+            isFirstChild = true
+        ) { index, iconPack ->
             AppItem(
                 label = iconPack.name,
                 icon = remember(iconPack) { iconPack.icon.toBitmap() },
