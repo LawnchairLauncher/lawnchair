@@ -21,10 +21,12 @@ import android.content.Intent
 import android.os.Bundle
 import android.provider.Settings
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.requiredWidth
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -65,56 +67,35 @@ fun NotificationDotsPreference() {
         }
     )
 
-    PreferenceTemplate(height = 72.dp) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier
-                .clickable {
-                    if (showWarning) {
-                        coroutineScope.launch {
-                            sheetState.show()
-                        }
-                    } else {
-                        val intent = Intent("android.settings.NOTIFICATION_SETTINGS")
-                            .putExtra(
-                                SettingsActivity.EXTRA_FRAGMENT_ARG_KEY,
-                                "notification_badging"
-                            )
-                        context.startActivity(intent)
+    PreferenceTemplate(
+        title = { Text(text = stringResource(id = R.string.notification_dots)) },
+        description = { Text(text = stringResource(id = summary)) },
+        endWidget = if (showWarning) { {
+            Icon(
+                modifier = Modifier
+                    .padding(8.dp)
+                    .size(24.dp),
+                painter = painterResource(id = R.drawable.ic_warning),
+                contentDescription = "",
+                tint = MaterialTheme.colors.onBackground.copy(alpha = ContentAlpha.medium)
+            )
+        } } else null,
+        modifier = Modifier
+            .clickable {
+                if (showWarning) {
+                    coroutineScope.launch {
+                        sheetState.show()
                     }
-                }
-                .fillMaxHeight()
-                .fillMaxWidth()
-                .padding(start = 16.dp, end = 16.dp)
-        ) {
-            Column(Modifier.weight(1f)) {
-                Text(
-                    text = stringResource(id = R.string.notification_dots),
-                    style = MaterialTheme.typography.subtitle1,
-                    color = MaterialTheme.colors.onBackground
-                )
-                CompositionLocalProvider(
-                    LocalContentAlpha provides ContentAlpha.medium,
-                    LocalContentColor provides MaterialTheme.colors.onBackground
-                ) {
-                    Text(
-                        text = stringResource(id = summary),
-                        style = MaterialTheme.typography.body2
-                    )
+                } else {
+                    val intent = Intent("android.settings.NOTIFICATION_SETTINGS")
+                        .putExtra(
+                            SettingsActivity.EXTRA_FRAGMENT_ARG_KEY,
+                            "notification_badging"
+                        )
+                    context.startActivity(intent)
                 }
             }
-            if (showWarning) {
-                Icon(
-                    modifier = Modifier
-                        .padding(8.dp)
-                        .size(24.dp),
-                    painter = painterResource(id = R.drawable.ic_warning),
-                    contentDescription = "",
-                    tint = MaterialTheme.colors.onBackground.copy(alpha = ContentAlpha.medium)
-                )
-            }
-        }
-    }
+    )
 }
 
 @Composable

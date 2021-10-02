@@ -39,7 +39,7 @@ fun AppItem(
     onClick: (app: App) -> Unit,
     showDivider: Boolean = true,
     widgetSize: Dp = 0.dp,
-    widget: (@Composable RowScope.() -> Unit)? = null,
+    widget: (@Composable () -> Unit)? = null,
 ) {
     AppItem(
         label = app.label,
@@ -58,7 +58,7 @@ fun AppItem(
     onClick: () -> Unit,
     showDivider: Boolean = true,
     widgetSize: Dp = 0.dp,
-    widget: (@Composable RowScope.() -> Unit)? = null,
+    widget: (@Composable () -> Unit)? = null,
 ) {
     AppItemLayout(
         modifier = Modifier
@@ -66,14 +66,15 @@ fun AppItem(
         showDivider = showDivider,
         widgetSize = widgetSize,
         widget = widget,
+        icon = {
+            Image(
+                bitmap = icon.asImageBitmap(),
+                contentDescription = null,
+                modifier = Modifier.size(30.dp),
+            )
+        }
     ) {
-        Image(
-            bitmap = icon.asImageBitmap(),
-            contentDescription = null,
-            modifier = Modifier.size(30.dp),
-        )
         Text(
-            modifier = Modifier.padding(start = 16.dp),
             text = label,
             style = MaterialTheme.typography.subtitle1,
             color = MaterialTheme.colors.onBackground
@@ -85,26 +86,27 @@ fun AppItem(
 fun AppItemPlaceholder(
     showDivider: Boolean = true,
     widgetSize: Dp = 0.dp,
-    widget: (@Composable RowScope.() -> Unit)? = null,
+    widget: (@Composable () -> Unit)? = null,
 ) {
     AppItemLayout(
         showDivider = showDivider,
         widgetSize = widgetSize,
         widget = widget,
+        icon = {
+            Spacer(
+                modifier = Modifier
+                    .size(30.dp)
+                    .placeholder(
+                        visible = true,
+                        highlight = PlaceholderHighlight.fade(),
+                    )
+            )
+        }
     ) {
-        Spacer(
-            modifier = Modifier
-                .size(30.dp)
-                .placeholder(
-                    visible = true,
-                    highlight = PlaceholderHighlight.fade(),
-                )
-        )
         Spacer(
             modifier = Modifier
                 .width(120.dp)
                 .height(24.dp)
-                .padding(start = 16.dp)
                 .placeholder(
                     visible = true,
                     highlight = PlaceholderHighlight.fade(),
@@ -118,26 +120,22 @@ private fun AppItemLayout(
     modifier: Modifier = Modifier,
     showDivider: Boolean = true,
     widgetSize: Dp = 0.dp,
-    widget: (@Composable RowScope.() -> Unit)? = null,
-    content: @Composable RowScope.() -> Unit,
+    widget: (@Composable () -> Unit)? = null,
+    icon: @Composable () -> Unit,
+    title: @Composable () -> Unit,
 ) {
     PreferenceTemplate(
-        height = 52.dp,
-        showDivider = showDivider,
-        dividerIndent = if (widgetSize != 0.dp) widgetSize + 16.dp else 0.dp
-    ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = modifier
-                .fillMaxWidth()
-                .fillMaxHeight()
-                .padding(horizontal = 16.dp)
-        ) {
+        title = title,
+        modifier = modifier,
+        startWidget = {
             widget?.let {
                 it()
-                Spacer(modifier = Modifier.width(16.dp))
+                Spacer(modifier = Modifier.requiredWidth(16.dp))
             }
-            content()
-        }
-    }
+            icon()
+        },
+        showDivider = showDivider,
+        dividerIndent = if (widgetSize != 0.dp) widgetSize + 16.dp else 0.dp,
+        verticalPadding = 12.dp
+    )
 }

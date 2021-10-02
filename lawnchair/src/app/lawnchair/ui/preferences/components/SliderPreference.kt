@@ -70,26 +70,16 @@ fun SliderPreference(
     }
 
     PreferenceTemplate(
-        height = 76.dp,
-        showDivider = showDivider
-    ) {
-        Column(
-            modifier = Modifier.fillMaxHeight(),
-            verticalArrangement = Arrangement.Center
-        ) {
-            Spacer(modifier = Modifier.requiredHeight(2.dp))
+        title = {
             Row(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
                     .fillMaxWidth()
+                    .padding(top = 16.dp)
                     .padding(horizontal = 16.dp)
             ) {
-                Text(
-                    text = label,
-                    style = MaterialTheme.typography.subtitle1,
-                    color = MaterialTheme.colors.onBackground
-                )
+                Text(text = label)
                 CompositionLocalProvider(
                     LocalContentAlpha provides ContentAlpha.medium,
                     LocalContentColor provides MaterialTheme.colors.onBackground
@@ -100,7 +90,8 @@ fun SliderPreference(
                     )
                 }
             }
-            Spacer(modifier = Modifier.requiredHeight(2.dp))
+        },
+        description = {
             Slider(
                 value = sliderValue,
                 onValueChange = { newValue -> sliderValue = newValue },
@@ -108,11 +99,14 @@ fun SliderPreference(
                 valueRange = valueRange,
                 steps = getSteps(valueRange, step),
                 modifier = Modifier
-                    .height(24.dp)
+                    .padding(top = 2.dp, bottom = 12.dp)
                     .padding(horizontal = 10.dp)
+                    .height(24.dp)
             )
-        }
-    }
+        },
+        showDivider = showDivider,
+        applyPaddings = false
+    )
 }
 
 fun getSteps(valueRange: ClosedFloatingPointRange<Float>, step: Float): Int {

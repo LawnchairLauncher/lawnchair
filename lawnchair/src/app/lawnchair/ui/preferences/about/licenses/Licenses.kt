@@ -69,25 +69,17 @@ fun LicenseItem(license: License, index: Int, showDivider: Boolean) {
     val destination = subRoute(name = "$index")
 
     PreferenceTemplate(
-        height = 52.dp,
-        showDivider = showDivider
-    ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier
-                .fillMaxSize()
-                .clickable { navController.navigate(route = destination) }
-                .padding(start = 16.dp, end = 16.dp)
-        ) {
+        title = {
             Text(
                 text = license.name,
-                style = MaterialTheme.typography.subtitle1,
-                color = MaterialTheme.colors.onBackground,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
-        }
-    }
+        },
+        modifier = Modifier
+            .clickable { navController.navigate(route = destination) },
+        showDivider = showDivider
+    )
 }
 
 @ExperimentalAnimationApi
