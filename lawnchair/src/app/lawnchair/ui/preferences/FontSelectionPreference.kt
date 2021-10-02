@@ -153,48 +153,12 @@ fun FontSelectionItem(
             )
         },
         endWidget = if (selected && family.variants.size > 1) { {
-            var showFamily by remember { mutableStateOf(false) }
-            val selectedFont = adapter.state.value
             Row(
                 horizontalArrangement = Arrangement.End,
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.wrapContentWidth()
             ) {
-                TextButton(
-                    onClick = { showFamily = true },
-                    colors = ButtonDefaults.textButtonColors(contentColor = MaterialTheme.colors.onBackground)
-                ) {
-                    AndroidText(
-                        modifier = Modifier.wrapContentWidth(),
-                        update = {
-                            it.text = selectedFont.displayName
-                            it.setFont(selectedFont)
-                        }
-                    )
-                    Icon(
-                        imageVector = Icons.Rounded.ArrowDropDown,
-                        contentDescription = null,
-                    )
-                }
-                DropdownMenu(
-                    expanded = showFamily,
-                    onDismissRequest = { showFamily = false }
-                ) {
-                    family.sortedVariants.forEach { font ->
-                        DropdownMenuItem(onClick = {
-                            adapter.onChange(font)
-                            showFamily = false
-                        }) {
-                            AndroidText(
-                                modifier = Modifier.wrapContentWidth(),
-                                update = {
-                                    it.text = font.displayName
-                                    it.setFont(font)
-                                }
-                            )
-                        }
-                    }
-                }
+                VariantDropdown(adapter = adapter, family = family)
             }
         } } else null,
         modifier = Modifier.clickable { adapter.onChange(family.default) },
@@ -202,4 +166,48 @@ fun FontSelectionItem(
         dividerIndent = 40.dp,
         verticalPadding = 0.dp
     )
+}
+
+@Composable
+fun VariantDropdown(
+    adapter: PreferenceAdapter<FontCache.Font>,
+    family: FontCache.Family
+) {
+    val selectedFont = adapter.state.value
+    var showVariants by remember { mutableStateOf(false) }
+    TextButton(
+        onClick = { showVariants = true },
+        colors = ButtonDefaults.textButtonColors(contentColor = MaterialTheme.colors.onBackground)
+    ) {
+        AndroidText(
+            modifier = Modifier.wrapContentWidth(),
+            update = {
+                it.text = selectedFont.displayName
+                it.setFont(selectedFont)
+            }
+        )
+        Icon(
+            imageVector = Icons.Rounded.ArrowDropDown,
+            contentDescription = null,
+        )
+    }
+    DropdownMenu(
+        expanded = showVariants,
+        onDismissRequest = { showVariants = false }
+    ) {
+        family.sortedVariants.forEach { font ->
+            DropdownMenuItem(onClick = {
+                adapter.onChange(font)
+                showVariants = false
+            }) {
+                AndroidText(
+                    modifier = Modifier.wrapContentWidth(),
+                    update = {
+                        it.text = font.displayName
+                        it.setFont(font)
+                    }
+                )
+            }
+        }
+    }
 }
