@@ -57,6 +57,6 @@ fun LawnchairLink(@DrawableRes iconResId: Int, label: String, modifier: Modifier
                 .width(24.dp), colorFilter = ColorFilter.tint(color = MaterialTheme.colors.onBackground)
         )
         Spacer(modifier = Modifier.requiredHeight(4.dp))
-        Text(text = label, style = MaterialTheme.typography.body1, color = MaterialTheme.colors.onBackground)
+        Text(text = label, style = MaterialTheme.typography.body2, color = MaterialTheme.colors.onBackground)
     }
 }

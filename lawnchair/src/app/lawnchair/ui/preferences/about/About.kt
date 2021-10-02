@@ -202,6 +202,12 @@ fun About() {
                 modifier = Modifier.weight(1f),
                 url = "https://github.com/LawnchairLauncher/Lawnchair"
             )
+            LawnchairLink(
+                iconResId = R.drawable.ic_discord,
+                label = stringResource(id = R.string.discord),
+                modifier = Modifier.weight(1f),
+                url = "https://discord.com/invite/3x8qNWxgGZ"
+            )
         }
         PreferenceGroup(heading = stringResource(id = R.string.product)) {
             product.forEachIndexed { index, it ->
