@@ -127,4 +127,5 @@
     <string name="font_weight_extra_black">Černé</string>
     <string name="font_label">Písmo</string>
     <string name="reset_font">Obnovit výchozí</string>
+    <string name="search_bar_placeholder">Search</string>
 </resources>
