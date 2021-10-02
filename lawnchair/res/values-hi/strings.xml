@@ -59,7 +59,7 @@
     <string name="background_opacity">चित्रभूमि अपारदर्शिता</string>
     <string name="background_lightness_label">चित्रभूमि हल्कापन</string>
     <string name="adaptive_icons">अनुकूली प्रतीक</string>
-    <string name="adaptive_icon_background_description">सफेद रंग के लिए १००% चित्रभूमि हल्कापन का उपयोग करें।</string>
+    <string name="adaptive_icon_background_description">सफेद रंग के लिए १००%% चित्रभूमि हल्कापन का उपयोग करें।</string>
     <string name="auto_adaptive_icons_label">ऑटो अनुकूली प्रतीक</string>
     <string name="auto_adaptive_icons_description">सभी गैर-अनुकूली आइकन के लिए।</string>
     <string name="support_and_pr">समर्थन &amp; जनसंपर्क</string>
@@ -69,7 +69,7 @@
     <string name="translate">अनुवाद</string>
     <string name="product">उत्पाद</string>
     <string name="hidden_apps_label">छिपे हुए ऐप्स</string>
-    <string name="hidden_apps_label_with_count">छिपे हुए ऐप्स</string>
+    <string name="hidden_apps_label_with_count">छिपे हुए ऐप्स (%1$d)</string>
     <plurals name="apps_count">
         <item quantity="one">%1$d एप्लिकेशन</item>
         <item quantity="other">ऐप्स</item>
