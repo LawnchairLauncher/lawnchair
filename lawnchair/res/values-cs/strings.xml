@@ -126,5 +126,5 @@
     <string name="font_weight_extra_bold">Velmi tučné</string>
     <string name="font_weight_extra_black">Černé</string>
     <string name="font_label">Písmo</string>
-    <string name="reset_font">Výchozí</string>
+    <string name="reset_font">Obnovit výchozí</string>
 </resources>
