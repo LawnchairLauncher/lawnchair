@@ -122,7 +122,7 @@
     <string name="font_weight_bold">粗體</string>
     <string name="font_weight_extra_bold">特粗體</string>
     <string name="font_weight_extra_black">黑體</string>
-    <string name="font_label">Font</string>
-    <string name="reset_font">Reset</string>
-    <string name="search_bar_placeholder">Search</string>
+    <string name="font_label">字型</string>
+    <string name="reset_font">重設</string>
+    <string name="search_bar_placeholder">搜尋</string>
 </resources>
