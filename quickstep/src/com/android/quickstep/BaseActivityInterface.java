@@ -221,7 +221,7 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
             int taskMargin = dp.overviewTaskMarginPx;
             calculateTaskSizeInternal(context, dp,
                     dp.overviewTaskThumbnailTopMarginPx,
-                    getProactiveRowAndMargin(context, dp) + getOverviewActionsHeight(context, dp),
+                    getOverviewActionsHeight(context, dp),
                     res.getDimensionPixelSize(R.dimen.overview_minimum_next_prev_size) + taskMargin,
                     outRect);
         }
@@ -301,8 +301,7 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
         Resources res = context.getResources();
         Rect insets = dp.getInsets();
         int topMargin = dp.overviewTaskThumbnailTopMarginPx;
-        int bottomMargin =
-                getProactiveRowAndMargin(context, dp) + getOverviewActionsHeight(context, dp);
+        int bottomMargin = getOverviewActionsHeight(context, dp);
         int sideMargin = res.getDimensionPixelSize(R.dimen.overview_grid_side_margin);
 
         outRect.set(0, 0, dp.widthPx, dp.heightPx);
@@ -343,21 +342,6 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
                 getOverviewActionsHeight(context, dp),
                 dp.overviewTaskMarginPx,
                 outRect);
-    }
-
-    private int getProactiveRowAndMargin(Context context, DeviceProfile dp) {
-        Resources res = context.getResources();
-        int proactiveRowAndMargin;
-        if (!TaskView.SHOW_PROACTIVE_ACTIONS || dp.isVerticalBarLayout()) {
-            // In Vertical Bar Layout the proactive row doesn't have its own space, it's inside
-            // the actions row.
-            proactiveRowAndMargin = 0;
-        } else {
-            proactiveRowAndMargin = res.getDimensionPixelSize(
-                    R.dimen.overview_proactive_row_height)
-                    + res.getDimensionPixelSize(R.dimen.overview_proactive_row_bottom_margin);
-        }
-        return proactiveRowAndMargin;
     }
 
     /** Gets the space that the overview actions will take, including bottom margin. */

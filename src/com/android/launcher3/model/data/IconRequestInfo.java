@@ -50,6 +50,19 @@ public class IconRequestInfo<T extends ItemInfoWithIcon> {
     public IconRequestInfo(
             @NonNull T itemInfo,
             @Nullable LauncherActivityInfo launcherActivityInfo,
+            boolean useLowResIcon) {
+        this(
+                itemInfo,
+                launcherActivityInfo,
+                /* packageName= */ null,
+                /* resourceName= */ null,
+                /* iconBlob= */ null,
+                useLowResIcon);
+    }
+
+    public IconRequestInfo(
+            @NonNull T itemInfo,
+            @Nullable LauncherActivityInfo launcherActivityInfo,
             @Nullable String packageName,
             @Nullable String resourceName,
             @Nullable byte[] iconBlob,

@@ -16,8 +16,6 @@
 
 package com.android.quickstep.views;
 
-import static android.view.Gravity.BOTTOM;
-import static android.view.Gravity.CENTER_HORIZONTAL;
 import static android.widget.Toast.LENGTH_SHORT;
 
 import static com.android.launcher3.AbstractFloatingView.TYPE_TASK_MENU;
@@ -131,12 +129,6 @@ public class TaskView extends FrameLayout implements Reusable {
     @IntDef({FLAG_UPDATE_ALL, FLAG_UPDATE_ICON, FLAG_UPDATE_THUMBNAIL})
     public @interface TaskDataChanges {}
 
-    /**
-     * Should the layout account for space for a proactive action (or chip) to be added under
-     * the task.
-     */
-    public static final boolean SHOW_PROACTIVE_ACTIONS = false;
-
     /** The maximum amount that a task view can be scrimmed, dimmed or tinted. */
     public static final float MAX_PAGE_SCRIM_ALPHA = 0.4f;
 
@@ -190,7 +182,6 @@ public class TaskView extends FrameLayout implements Reusable {
      * delegated bounds only to be updated.
      */
     private TransformingTouchDelegate mIconTouchDelegate;
-    private TransformingTouchDelegate mChipTouchDelegate;
 
     private static final List<Rect> SYSTEM_GESTURE_EXCLUSION_RECT =
             Collections.singletonList(new Rect());
@@ -421,9 +412,7 @@ public class TaskView extends FrameLayout implements Reusable {
 
     private boolean mEndQuickswitchCuj;
 
-    private View mContextualChipWrapper;
     private final float[] mIconCenterCoords = new float[2];
-    private final float[] mChipCenterCoords = new float[2];
 
     private boolean mIsClickableAsLiveTile = true;
 
@@ -490,12 +479,8 @@ public class TaskView extends FrameLayout implements Reusable {
     public boolean offerTouchToChildren(MotionEvent event) {
         if (event.getAction() == MotionEvent.ACTION_DOWN) {
             computeAndSetIconTouchDelegate(mIconView, mIconCenterCoords, mIconTouchDelegate);
-            computeAndSetChipTouchDelegate();
         }
         if (mIconTouchDelegate != null && mIconTouchDelegate.onTouchEvent(event)) {
-            return true;
-        }
-        if (mChipTouchDelegate != null && mChipTouchDelegate.onTouchEvent(event)) {
             return true;
         }
         return false;
@@ -514,23 +499,6 @@ public class TaskView extends FrameLayout implements Reusable {
                 (int) (tempCenterCoords[1] + iconHalfSize));
     }
 
-    private void computeAndSetChipTouchDelegate() {
-        if (mContextualChipWrapper != null) {
-            float chipHalfWidth = mContextualChipWrapper.getWidth() / 2f;
-            float chipHalfHeight = mContextualChipWrapper.getHeight() / 2f;
-            mChipCenterCoords[0] = chipHalfWidth;
-            mChipCenterCoords[1] = chipHalfHeight;
-            getDescendantCoordRelativeToAncestor(mContextualChipWrapper, mActivity.getDragLayer(),
-                    mChipCenterCoords,
-                    false);
-            mChipTouchDelegate.setBounds(
-                    (int) (mChipCenterCoords[0] - chipHalfWidth),
-                    (int) (mChipCenterCoords[1] - chipHalfHeight),
-                    (int) (mChipCenterCoords[0] + chipHalfWidth),
-                    (int) (mChipCenterCoords[1] + chipHalfHeight));
-        }
-    }
-
     /**
      * The modalness of this view is how it should be displayed when it is shown on its own in the
      * modal state of overview.
@@ -543,10 +511,6 @@ public class TaskView extends FrameLayout implements Reusable {
         }
         mModalness = modalness;
         mIconView.setAlpha(comp(modalness));
-        if (mContextualChipWrapper != null) {
-            mContextualChipWrapper.setScaleX(comp(modalness));
-            mContextualChipWrapper.setScaleY(comp(modalness));
-        }
         mDigitalWellBeingToast.updateBannerOffset(modalness,
                 mCurrentFullscreenParams.mCurrentDrawnInsets.top
                         + mCurrentFullscreenParams.mCurrentDrawnInsets.bottom);
@@ -831,7 +795,8 @@ public class TaskView extends FrameLayout implements Reusable {
             return true;
         }
 
-        if (!getRecentsView().isClearAllHidden()) {
+        if (!mActivity.getDeviceProfile().overviewShowAsGrid
+                && !getRecentsView().isClearAllHidden()) {
             getRecentsView().snapToPage(getRecentsView().indexOfChild(this));
             return false;
         } else {
@@ -910,11 +875,6 @@ public class TaskView extends FrameLayout implements Reusable {
         float scale = Interpolators.clampToProgress(FAST_OUT_SLOW_IN, lowerClamp, upperClamp)
                 .getInterpolation(progress);
         mIconView.setAlpha(scale);
-        if (mContextualChipWrapper != null && mContextualChipWrapper != null) {
-            mContextualChipWrapper.setAlpha(scale);
-            mContextualChipWrapper.setScaleX(Math.min(scale, comp(mModalness)));
-            mContextualChipWrapper.setScaleY(Math.min(scale, comp(mModalness)));
-        }
         mDigitalWellBeingToast.updateBannerOffset(1f - scale,
                 mCurrentFullscreenParams.mCurrentDrawnInsets.top
                         + mCurrentFullscreenParams.mCurrentDrawnInsets.bottom);
@@ -988,51 +948,8 @@ public class TaskView extends FrameLayout implements Reusable {
         onTaskListVisibilityChanged(false);
     }
 
-    /**
-     * Sets the contextual chip.
-     *
-     * @param view Wrapper view containing contextual chip.
-     */
-    public void setContextualChip(View view) {
-        if (mContextualChipWrapper != null) {
-            removeView(mContextualChipWrapper);
-        }
-        if (view != null) {
-            mContextualChipWrapper = view;
-            LayoutParams layoutParams = new LayoutParams(((View) getParent()).getMeasuredWidth(),
-                    LayoutParams.WRAP_CONTENT);
-            layoutParams.gravity = BOTTOM | CENTER_HORIZONTAL;
-            int expectedChipHeight = getExpectedViewHeight(view);
-            float chipOffset = getResources().getDimension(R.dimen.chip_hint_vertical_offset);
-            layoutParams.bottomMargin = -expectedChipHeight - (int) chipOffset;
-            mContextualChipWrapper.setScaleX(0f);
-            mContextualChipWrapper.setScaleY(0f);
-            addView(view, getChildCount(), layoutParams);
-            if (mContextualChipWrapper != null) {
-                float scale = comp(mModalness);
-                mContextualChipWrapper.animate().scaleX(scale).scaleY(scale).setDuration(50);
-                mChipTouchDelegate = new TransformingTouchDelegate(mContextualChipWrapper);
-            }
-        }
-    }
-
     public float getTaskCornerRadius() {
         return TaskCornerRadius.get(mActivity);
-    }
-
-    /**
-     * Clears the contextual chip from TaskView.
-     *
-     * @return The contextual chip wrapper view to be recycled.
-     */
-    public View clearContextualChip() {
-        if (mContextualChipWrapper != null) {
-            removeView(mContextualChipWrapper);
-        }
-        View oldContextualChipWrapper = mContextualChipWrapper;
-        mContextualChipWrapper = null;
-        mChipTouchDelegate = null;
-        return oldContextualChipWrapper;
     }
 
     @Override

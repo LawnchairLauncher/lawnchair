@@ -804,8 +804,9 @@ public class LoaderTask implements Runnable {
                                 if (appWidgetInfo.restoreStatus !=
                                         LauncherAppWidgetInfo.RESTORE_COMPLETED) {
                                     appWidgetInfo.pendingItemInfo = WidgetsModel.newPendingItemInfo(
-                                            appWidgetInfo.providerName);
-                                    appWidgetInfo.pendingItemInfo.user = appWidgetInfo.user;
+                                            mApp.getContext(),
+                                            appWidgetInfo.providerName,
+                                            appWidgetInfo.user);
                                     mIconCache.getTitleAndIconForApp(
                                             appWidgetInfo.pendingItemInfo, false);
                                 }
@@ -936,6 +937,8 @@ public class LoaderTask implements Runnable {
         List<LauncherActivityInfo> allActivityList = new ArrayList<>();
         // Clear the list of apps
         mBgAllAppsList.clear();
+
+        List<IconRequestInfo<AppInfo>> iconRequestInfos = new ArrayList<>();
         for (UserHandle user : profiles) {
             // Query for the set of apps
             final List<LauncherActivityInfo> apps = mLauncherApps.getActivityList(null, user);
@@ -948,18 +951,43 @@ public class LoaderTask implements Runnable {
             // Create the ApplicationInfos
             for (int i = 0; i < apps.size(); i++) {
                 LauncherActivityInfo app = apps.get(i);
-                // This builds the icon bitmaps.
-                mBgAllAppsList.add(new AppInfo(app, user, quietMode), app);
+                AppInfo appInfo = new AppInfo(app, user, quietMode);
+
+                iconRequestInfos.add(new IconRequestInfo<>(
+                        appInfo, app, /* useLowResIcon= */ false));
+                mBgAllAppsList.add(
+                        appInfo, app, !FeatureFlags.ENABLE_BULK_ALL_APPS_ICON_LOADING.get());
             }
             allActivityList.addAll(apps);
         }
+
 
         if (FeatureFlags.PROMISE_APPS_IN_ALL_APPS.get()) {
             // get all active sessions and add them to the all apps list
             for (PackageInstaller.SessionInfo info :
                     mSessionHelper.getAllVerifiedSessions()) {
-                mBgAllAppsList.addPromiseApp(mApp.getContext(),
-                        PackageInstallInfo.fromInstallingState(info));
+                AppInfo promiseAppInfo = mBgAllAppsList.addPromiseApp(
+                        mApp.getContext(),
+                        PackageInstallInfo.fromInstallingState(info),
+                        !FeatureFlags.ENABLE_BULK_ALL_APPS_ICON_LOADING.get());
+
+                if (promiseAppInfo != null) {
+                    iconRequestInfos.add(new IconRequestInfo<>(
+                            promiseAppInfo,
+                            /* launcherActivityInfo= */ null,
+                            promiseAppInfo.usingLowResIcon()));
+                }
+            }
+        }
+
+        if (FeatureFlags.ENABLE_BULK_ALL_APPS_ICON_LOADING.get()) {
+            Trace.beginSection("LoadAllAppsIconsInBulk");
+            try {
+                mIconCache.getTitlesAndIconsInBulk(iconRequestInfos);
+                iconRequestInfos.forEach(iconRequestInfo ->
+                        mBgAllAppsList.updateSectionName(iconRequestInfo.itemInfo));
+            } finally {
+                Trace.endSection();
             }
         }
 
