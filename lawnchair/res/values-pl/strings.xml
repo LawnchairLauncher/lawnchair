@@ -127,4 +127,5 @@
     <string name="font_weight_extra_black">Czarna</string>
     <string name="font_label">Czcionka</string>
     <string name="reset_font">Reset</string>
+    <string name="search_bar_placeholder">Search</string>
 </resources>
