@@ -59,7 +59,7 @@
     <string name="background_opacity">Genomskinlighet för bakgrund</string>
     <string name="background_lightness_label">Bakgrundens lätthet</string>
     <string name="adaptive_icons">Adaptiva ikoner</string>
-    <string name="adaptive_icon_background_description">Use 100% background lightness for white.</string>
+    <string name="adaptive_icon_background_description">Use 100%% background lightness for white.</string>
     <string name="auto_adaptive_icons_label">Automatiska adaptiva ikoner</string>
     <string name="auto_adaptive_icons_description">För alla icke-adaptiva ikoner.</string>
     <string name="support_and_pr">Stöd &amp; PR</string>
