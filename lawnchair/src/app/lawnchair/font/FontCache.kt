@@ -53,6 +53,13 @@ class FontCache private constructor(private val context: Context) {
         return loadFontAsync(font).await()
     }
 
+    @ExperimentalCoroutinesApi
+    fun getLoadedFont(font: Font): Typeface? {
+        val deferredFont = deferredFonts[font] ?: return null
+        if (!deferredFont.isCompleted) return null
+        return deferredFont.getCompleted()
+    }
+
     private fun loadFontAsync(font: Font): Deferred<Typeface?> {
         return deferredFonts.getOrPut(font) {
             scope.async(Dispatchers.IO) {
@@ -66,6 +73,12 @@ class FontCache private constructor(private val context: Context) {
         constructor(font: Font) : this(font.displayName, mapOf(Pair("regular", font)))
 
         val default = variants.getOrElse("regular") { variants.values.first() }
+        val sortedVariants by lazy { variants.values.sortedBy { it.familySorter } }
+    }
+
+    class TypefaceFamily(val variants: Map<String, Typeface?>) {
+
+        val default = variants.getOrElse("regular") { variants.values.firstOrNull() }
     }
 
     abstract class Font {
@@ -382,6 +395,8 @@ class FontCache private constructor(private val context: Context) {
             Pair("800", R.string.font_weight_extra_bold),
             Pair("900", R.string.font_weight_extra_black)
         )
+
+        val emptyTypefaceFamily = TypefaceFamily(emptyMap())
     }
 }
 
@@ -392,6 +407,20 @@ fun FontCache.Font.toTypeface(): Result<Typeface?>? {
     val state = produceState<Result<Typeface?>?>(initialValue = null, font) {
         val fontCache = FontCache.INSTANCE.get(context)
         value = Result.success(fontCache.getFont(font))
+    }
+    return state.value
+}
+
+@Composable
+fun FontCache.Family.toTypefaceFamily(): FontCache.TypefaceFamily {
+    val context = LocalContext.current
+    val family = this
+    val state = produceState(initialValue = FontCache.emptyTypefaceFamily, family) {
+        val fontCache = FontCache.INSTANCE.get(context)
+        val variants = family.variants
+            .mapValues { async { fontCache.getFont(it.value) } }
+            .mapValues { it.value.await() }
+        value = FontCache.TypefaceFamily(variants)
     }
     return state.value
 }
