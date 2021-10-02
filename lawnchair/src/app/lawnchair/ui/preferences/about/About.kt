@@ -18,6 +18,7 @@ package app.lawnchair.ui.preferences.about
 
 import android.content.Intent
 import android.net.Uri
+import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.Image
@@ -44,9 +45,20 @@ import app.lawnchair.ui.preferences.preferenceGraph
 import app.lawnchair.ui.preferences.subRoute
 import com.android.launcher3.R
 
-class TeamMember(val name: String, @StringRes val descriptionRes: Int, val photoUrl: String, val socialUrl: String)
+private data class TeamMember(
+    val name: String,
+    @StringRes val descriptionRes: Int,
+    val photoUrl: String,
+    val socialUrl: String
+)
 
-val product = listOf(
+private data class Link(
+    @DrawableRes val iconResId: Int,
+    @StringRes val labelResId: Int,
+    val url: String
+)
+
+private val product = listOf(
     TeamMember(
         name = "Amogh Lele",
         descriptionRes = R.string.development,
@@ -106,10 +118,10 @@ val product = listOf(
         descriptionRes = R.string.quickswitch_maintenance,
         photoUrl = "https://avatars.githubusercontent.com/u/7065700",
         socialUrl = "https://twitter.com/skittles9823"
-    ),
+    )
 )
 
-val supportAndPr = listOf(
+private val supportAndPr = listOf(
     TeamMember(
         name = "Daniel Souza",
         descriptionRes = R.string.support,
@@ -128,6 +140,34 @@ val supportAndPr = listOf(
         descriptionRes = R.string.support_and_pr,
         photoUrl = "https://avatars.githubusercontent.com/u/29402532",
         socialUrl = "https://twitter.com/rikkoedoot"
+    )
+)
+
+private val links = listOf(
+    Link(
+        iconResId = R.drawable.ic_new_releases,
+        labelResId = R.string.news,
+        url = "https://t.me/lawnchairci"
+    ),
+    Link(
+        iconResId = R.drawable.ic_help,
+        labelResId = R.string.support,
+        url = "https://t.me/lccommunity"
+    ),
+    Link(
+        iconResId = R.drawable.ic_twitter,
+        labelResId = R.string.twitter,
+        url = "https://twitter.com/lawnchairapp"
+    ),
+    Link(
+        iconResId = R.drawable.ic_github,
+        labelResId = R.string.github,
+        url = "https://github.com/LawnchairLauncher/Lawnchair"
+    ),
+    Link(
+        iconResId = R.drawable.ic_discord,
+        labelResId = R.string.discord,
+        url = "https://discord.com/invite/3x8qNWxgGZ"
     )
 )
 
@@ -178,36 +218,14 @@ fun About() {
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp)
         ) {
-            LawnchairLink(
-                iconResId = R.drawable.ic_new_releases,
-                label = stringResource(id = R.string.news),
-                modifier = Modifier.weight(1f),
-                url = "https://t.me/lawnchairci"
-            )
-            LawnchairLink(
-                iconResId = R.drawable.ic_help,
-                label = stringResource(id = R.string.support),
-                modifier = Modifier.weight(1f),
-                url = "https://t.me/lccommunity"
-            )
-            LawnchairLink(
-                iconResId = R.drawable.ic_twitter,
-                label = stringResource(id = R.string.twitter),
-                modifier = Modifier.weight(1f),
-                url = "https://twitter.com/lawnchairapp"
-            )
-            LawnchairLink(
-                iconResId = R.drawable.ic_github,
-                label = stringResource(id = R.string.github),
-                modifier = Modifier.weight(1f),
-                url = "https://github.com/LawnchairLauncher/Lawnchair"
-            )
-            LawnchairLink(
-                iconResId = R.drawable.ic_discord,
-                label = stringResource(id = R.string.discord),
-                modifier = Modifier.weight(1f),
-                url = "https://discord.com/invite/3x8qNWxgGZ"
-            )
+            links.map { link ->
+                LawnchairLink(
+                    iconResId = link.iconResId,
+                    label = stringResource(id = link.labelResId),
+                    modifier = Modifier.weight(1f),
+                    url = link.url
+                )
+            }
         }
         PreferenceGroup(heading = stringResource(id = R.string.product)) {
             product.forEachIndexed { index, it ->
