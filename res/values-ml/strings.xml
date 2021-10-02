@@ -80,7 +80,10 @@
     <string name="permdesc_write_settings" msgid="5440712911516509985">"ഹോമിലെ ക്രമീകരണങ്ങളും കുറുക്കുവഴികളും മാറ്റാൻ അപ്ലിക്കേഷനെ അനുവദിക്കുന്നു."</string>
     <string name="msg_no_phone_permission" msgid="9208659281529857371">"ഫോൺ കോൾ ചെയ്യാൻ <xliff:g id="APP_NAME">%1$s</xliff:g> എന്നതിനെ അനുവദിച്ചിട്ടില്ല"</string>
     <string name="gadget_error_text" msgid="740356548025791839">"വിജറ്റ് ലോഡ് ചെയ്യാനാകുന്നില്ല"</string>
-    <string name="gadget_setup_text" msgid="1745356155479272374">"സജ്ജീകരണം പൂർത്തിയാക്കാൻ ടാപ്പ് ചെയ്യുക"</string>
+    <!-- no translation found for gadget_setup_text (8348374825537681407) -->
+    <skip />
+    <!-- no translation found for gadget_complete_setup_text (309040266978007925) -->
+    <skip />
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"ഇതൊരു സിസ്‌റ്റം അപ്ലിക്കേഷനായതിനാൽ അൺഇൻസ്‌റ്റാളുചെയ്യാനാവില്ല."</string>
     <string name="folder_hint_text" msgid="5174843001373488816">"പേര് എഡിറ്റ് ചെയ്യുക"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"<xliff:g id="APP_NAME">%1$s</xliff:g> പ്രവർത്തനരഹിതമാക്കി"</string>

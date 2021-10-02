@@ -80,7 +80,8 @@
     <string name="permdesc_write_settings" msgid="5440712911516509985">"Дозвољава апликацији да мења подешавања и пречице на почетном екрану."</string>
     <string name="msg_no_phone_permission" msgid="9208659281529857371">"<xliff:g id="APP_NAME">%1$s</xliff:g> нема дозволу за упућивање телефонских позива"</string>
     <string name="gadget_error_text" msgid="740356548025791839">"Учитавање виџета није успело"</string>
-    <string name="gadget_setup_text" msgid="1745356155479272374">"Додирните да бисте довршили подешавање"</string>
+    <string name="gadget_setup_text" msgid="8348374825537681407">"Подешавања виџета"</string>
+    <string name="gadget_complete_setup_text" msgid="309040266978007925">"Додирните да бисте довршили подешавање"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"Ово је системска апликација и не може да се деинсталира."</string>
     <string name="folder_hint_text" msgid="5174843001373488816">"Измените назив"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"Апликација <xliff:g id="APP_NAME">%1$s</xliff:g> је онемогућена"</string>

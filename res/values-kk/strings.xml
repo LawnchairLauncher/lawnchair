@@ -80,7 +80,8 @@
     <string name="permdesc_write_settings" msgid="5440712911516509985">"Қолданбаға Негізгі экрандағы параметрлер мен төте пернелерді өзгерту мүмкіндігін береді."</string>
     <string name="msg_no_phone_permission" msgid="9208659281529857371">"<xliff:g id="APP_NAME">%1$s</xliff:g> арқылы телефон қоңырауларын соғуға рұқсат етілмеген"</string>
     <string name="gadget_error_text" msgid="740356548025791839">"Виджетті жүктеу мүмкін емес."</string>
-    <string name="gadget_setup_text" msgid="1745356155479272374">"Реттеуді аяқтау үшін түртіңіз."</string>
+    <string name="gadget_setup_text" msgid="8348374825537681407">"Виджет параметрлері"</string>
+    <string name="gadget_complete_setup_text" msgid="309040266978007925">"Реттеуді аяқтау үшін түртіңіз."</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"Бұл жүйе қолданбасы, сондықтан оны алу мүмкін емес."</string>
     <string name="folder_hint_text" msgid="5174843001373488816">"Атын өңдеу"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"<xliff:g id="APP_NAME">%1$s</xliff:g> өшірілді"</string>
