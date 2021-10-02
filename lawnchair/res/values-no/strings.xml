@@ -125,4 +125,5 @@
     <string name="font_weight_extra_black">Black</string>
     <string name="font_label">Skrifttype</string>
     <string name="reset_font">Nullstill</string>
+    <string name="search_bar_placeholder">Search</string>
 </resources>
