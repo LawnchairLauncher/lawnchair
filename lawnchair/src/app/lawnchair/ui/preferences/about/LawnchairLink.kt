@@ -34,10 +34,16 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun LawnchairLink(@DrawableRes iconResId: Int, label: String, modifier: Modifier = Modifier, url: String) {
+fun LawnchairLink(
+    @DrawableRes iconResId: Int,
+    label: String,
+    modifier: Modifier = Modifier,
+    url: String
+) {
     val context = LocalContext.current
 
     Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
         modifier = modifier
             .height(64.dp)
@@ -48,15 +54,19 @@ fun LawnchairLink(@DrawableRes iconResId: Int, label: String, modifier: Modifier
                 if (intent.resolveActivity(context.packageManager) != null) {
                     context.startActivity(intent)
                 }
-            },
-        horizontalAlignment = Alignment.CenterHorizontally
+            }
     ) {
         Image(
-            painterResource(id = iconResId), contentDescription = null, modifier = Modifier
-                .height(24.dp)
-                .width(24.dp), colorFilter = ColorFilter.tint(color = MaterialTheme.colors.onBackground)
+            painterResource(id = iconResId),
+            contentDescription = null,
+            colorFilter = ColorFilter.tint(color = MaterialTheme.colors.onBackground),
+            modifier = Modifier.size(24.dp)
         )
         Spacer(modifier = Modifier.requiredHeight(4.dp))
-        Text(text = label, style = MaterialTheme.typography.body2, color = MaterialTheme.colors.onBackground)
+        Text(
+            text = label,
+            style = MaterialTheme.typography.body2,
+            color = MaterialTheme.colors.onBackground
+        )
     }
 }
