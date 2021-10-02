@@ -20,6 +20,7 @@
     <string name="derived_app_name" tools:override="true" translatable="false">Lawnchair</string>
     <string name="twitter" translatable="false">Twitter</string>
     <string name="github" translatable="false">GitHub</string>
+    <string name="discord" translatable="false">Discord</string>
 
     <string name="icon_pack">Icon Pack</string>
     <string name="settings">Settings</string>
