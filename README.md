@@ -13,8 +13,10 @@ Whether you’ve fixed a bug or introduced a new feature, we welcome pull reques
 You can use Git to clone this repository:
 
 ```
-git clone https://github.com/LawnchairLauncher/lawnchair.git
+git clone --recursive https://github.com/LawnchairLauncher/lawnchair.git
 ```
+
+- If you get build errors for `IconLoader` project resolution, run `git submodule update --init --recursive`
 
 Lawnchair 11 uses [Jetpack Compose](https://developer.android.com/jetpack/compose); we suggest using a version of Android Studio that supports Compose tooling, such as Arctic Fox (2020.3.1). To build the app, select the `lawnWithQuickstepDebug` build type.
 
