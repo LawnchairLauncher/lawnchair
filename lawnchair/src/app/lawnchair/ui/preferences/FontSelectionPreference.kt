@@ -152,15 +152,17 @@ fun FontSelectionItem(
                 )
             )
         },
-        endWidget = if (selected && family.variants.size > 1) { {
-            Row(
-                horizontalArrangement = Arrangement.End,
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.wrapContentWidth()
-            ) {
-                VariantDropdown(adapter = adapter, family = family)
+        endWidget = if (selected && family.variants.size > 1) {
+            {
+                Row(
+                    horizontalArrangement = Arrangement.End,
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.wrapContentWidth()
+                ) {
+                    VariantDropdown(adapter = adapter, family = family)
+                }
             }
-        } } else null,
+        } else null,
         modifier = Modifier.clickable { adapter.onChange(family.default) },
         showDivider = showDivider,
         dividerIndent = 40.dp,
@@ -175,6 +177,14 @@ fun VariantDropdown(
 ) {
     val selectedFont = adapter.state.value
     var showVariants by remember { mutableStateOf(false) }
+
+    val context = LocalContext.current
+    DisposableEffect(family) {
+        val fontCache = FontCache.INSTANCE.get(context)
+        family.variants.forEach { fontCache.preloadFont(it.value) }
+        onDispose { }
+    }
+
     TextButton(
         onClick = { showVariants = true },
         colors = ButtonDefaults.textButtonColors(contentColor = MaterialTheme.colors.onBackground)

@@ -53,6 +53,11 @@ class FontCache private constructor(private val context: Context) {
         return loadFontAsync(font).await()
     }
 
+    fun preloadFont(font: Font) {
+        @Suppress("DeferredResultUnused")
+        loadFontAsync(font)
+    }
+
     @ExperimentalCoroutinesApi
     fun getLoadedFont(font: Font): Typeface? {
         val deferredFont = deferredFonts[font] ?: return null
