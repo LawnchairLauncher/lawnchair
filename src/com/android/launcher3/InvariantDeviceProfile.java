@@ -118,6 +118,9 @@ public class InvariantDeviceProfile {
     public float twoPanelLandscapeMinCellHeightDps;
     public float twoPanelLandscapeMinCellWidthDps;
     public float borderSpacing;
+    public float horizontalMargin;
+    public float twoPanelLandscapeHorizontalMargin;
+    public float twoPanelPortraitHorizontalMargin;
 
     private SparseArray<TypedValue> mExtraAttrs;
 
@@ -288,6 +291,10 @@ public class InvariantDeviceProfile {
         twoPanelLandscapeMinCellWidthDps = displayOption.twoPanelLandscapeMinCellWidthDps;
         borderSpacing = displayOption.borderSpacing;
         allAppsCellSpacing = displayOption.allAppsCellSpacing;
+
+        horizontalMargin = displayOption.horizontalMargin;
+        twoPanelLandscapeHorizontalMargin = displayOption.twoPanelLandscapeHorizontalMargin;
+        twoPanelPortraitHorizontalMargin = displayOption.twoPanelPortraitHorizontalMargin;
 
         numShownHotseatIcons = closestProfile.numHotseatIcons;
         numDatabaseHotseatIcons = isSplitDisplay
@@ -728,6 +735,10 @@ public class InvariantDeviceProfile {
         private float allAppsCellSpacing;
         private float borderSpacing;
 
+        private float horizontalMargin;
+        private float twoPanelLandscapeHorizontalMargin;
+        private float twoPanelPortraitHorizontalMargin;
+
         private final float[] iconSizes = new float[COUNT_TOTAL];
         private final float[] textSizes = new float[COUNT_TOTAL];
 
@@ -790,6 +801,14 @@ public class InvariantDeviceProfile {
                     a.getFloat(R.styleable.ProfileDisplayOption_twoPanelLandscapeIconTextSize,
                             textSizes[INDEX_LANDSCAPE]);
 
+            horizontalMargin = a.getFloat(R.styleable.ProfileDisplayOption_horizontalMargin, 0);
+            twoPanelLandscapeHorizontalMargin = a.getFloat(
+                    R.styleable.ProfileDisplayOption_twoPanelLandscapeHorizontalMargin,
+                    horizontalMargin);
+            twoPanelPortraitHorizontalMargin = a.getFloat(
+                    R.styleable.ProfileDisplayOption_twoPanelPortraitHorizontalMargin,
+                    horizontalMargin);
+
             a.recycle();
         }
 
@@ -820,6 +839,9 @@ public class InvariantDeviceProfile {
             twoPanelLandscapeMinCellWidthDps *= w;
             borderSpacing *= w;
             allAppsCellSpacing *= w;
+            horizontalMargin *= w;
+            twoPanelLandscapeHorizontalMargin *= w;
+            twoPanelPortraitHorizontalMargin *= w;
             return this;
         }
 
@@ -836,6 +858,9 @@ public class InvariantDeviceProfile {
             twoPanelLandscapeMinCellWidthDps += p.twoPanelLandscapeMinCellWidthDps;
             borderSpacing += p.borderSpacing;
             allAppsCellSpacing += p.allAppsCellSpacing;
+            horizontalMargin += p.horizontalMargin;
+            twoPanelLandscapeHorizontalMargin += p.twoPanelLandscapeHorizontalMargin;
+            twoPanelPortraitHorizontalMargin += p.twoPanelPortraitHorizontalMargin;
             return this;
         }
     }

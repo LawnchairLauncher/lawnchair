@@ -189,9 +189,8 @@ public class SimpleWidgetsSearchAlgorithmTest {
 
     private PackageItemInfo createPackageItemInfo(String packageName, String appName,
             UserHandle userHandle) {
-        PackageItemInfo pInfo = new PackageItemInfo(packageName);
+        PackageItemInfo pInfo = new PackageItemInfo(packageName, userHandle);
         pInfo.title = appName;
-        pInfo.user = userHandle;
         pInfo.bitmap = BitmapInfo.of(Bitmap.createBitmap(10, 10, Bitmap.Config.ALPHA_8), 0);
         return pInfo;
     }
