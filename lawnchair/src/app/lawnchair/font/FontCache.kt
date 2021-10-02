@@ -22,6 +22,9 @@ import android.content.res.AssetManager
 import android.graphics.Typeface
 import android.net.Uri
 import androidx.annotation.Keep
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.produceState
+import androidx.compose.ui.platform.LocalContext
 import androidx.core.provider.FontRequest
 import androidx.core.provider.FontsContractCompat
 import app.lawnchair.font.googlefonts.GoogleFontsListing
@@ -380,4 +383,15 @@ class FontCache private constructor(private val context: Context) {
             Pair("900", R.string.font_weight_extra_black)
         )
     }
+}
+
+@Composable
+fun FontCache.Font.toTypeface(): Result<Typeface?>? {
+    val context = LocalContext.current
+    val font = this
+    val state = produceState<Result<Typeface?>?>(initialValue = null, font) {
+        val fontCache = FontCache.INSTANCE.get(context)
+        value = Result.success(fontCache.getFont(font))
+    }
+    return state.value
 }

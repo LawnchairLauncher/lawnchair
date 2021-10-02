@@ -3,13 +3,10 @@ package app.lawnchair.ui.preferences
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.produceState
-import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -18,6 +15,7 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.navigation.NavGraphBuilder
 import app.lawnchair.font.FontCache
 import app.lawnchair.font.googlefonts.GoogleFontsListing
+import app.lawnchair.font.toTypeface
 import app.lawnchair.preferences.BasePreferenceManager
 import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences.preferenceManager
@@ -26,6 +24,9 @@ import app.lawnchair.ui.preferences.components.PreferenceLayoutLazyColumn
 import app.lawnchair.ui.preferences.components.PreferenceTemplate
 import app.lawnchair.ui.preferences.components.preferenceGroupItems
 import com.android.launcher3.R
+import com.google.accompanist.placeholder.PlaceholderHighlight
+import com.google.accompanist.placeholder.material.fade
+import com.google.accompanist.placeholder.material.placeholder
 
 @ExperimentalAnimationApi
 fun NavGraphBuilder.fontSelectionGraph(route: String) {
@@ -69,7 +70,29 @@ fun FontSelection(fontPref: BasePreferenceManager.FontPref) {
     ) {
         preferenceGroupItems(items.value, isFirstChild = true) { index, font ->
             PreferenceTemplate(
-                title = { FontPreview(font = font) },
+                title = {
+                    val typeface = font.toTypeface()
+                    if (typeface != null) {
+                        AndroidView(
+                            factory = { context ->
+                                AppCompatTextView(context).apply {
+                                    text = font.fullDisplayName
+                                    this.typeface = typeface.getOrNull()
+                                }
+                            },
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                    } else {
+                        Text(
+                            text = font.fullDisplayName,
+                            modifier = Modifier
+                                .placeholder(
+                                    visible = true,
+                                    highlight = PlaceholderHighlight.fade()
+                                )
+                        )
+                    }
+                },
                 startWidget = {
                     RadioButton(
                         selected = fontPref.getAdapter().state.value == font,
@@ -85,15 +108,4 @@ fun FontSelection(fontPref: BasePreferenceManager.FontPref) {
             )
         }
     }
-}
-
-@Composable
-fun FontPreview(font: FontCache.Font) {
-    val context = LocalContext.current
-    val textView = remember { AppCompatTextView(context) }
-    LaunchedEffect(font) {
-        textView.text = font.fullDisplayName
-        textView.typeface = font.load()
-    }
-    AndroidView(factory = { textView })
 }
