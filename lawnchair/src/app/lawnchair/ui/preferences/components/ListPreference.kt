@@ -36,43 +36,14 @@ fun <T> ListPreference(
         .firstOrNull { it.value == currentValue }
         ?.label?.invoke()
 
-    PreferenceTemplate(height = if (currentLabel != null) 72.dp else 52.dp, showDivider = showDivider) {
-        Row(
-            modifier = Modifier
-                .clickable(enabled) { scope.launch { sheetState.show() } }
-                .fillMaxHeight()
-                .fillMaxWidth()
-                .padding(start = 16.dp, end = 16.dp),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            Column(
-                modifier = Modifier
-                    .weight(1f)
-                    .addIf(!enabled) { alpha(ContentAlpha.disabled) }
-            ) {
-                Text(
-                    text = label,
-                    style = MaterialTheme.typography.subtitle1,
-                    color = MaterialTheme.colors.onBackground,
-                    overflow = TextOverflow.Ellipsis,
-                    maxLines = 1
-                )
-                currentLabel?.let {
-                    CompositionLocalProvider(
-                        LocalContentAlpha provides ContentAlpha.medium,
-                        LocalContentColor provides MaterialTheme.colors.onBackground
-                    ) {
-                        Text(
-                            text = it,
-                            style = MaterialTheme.typography.body2,
-                            overflow = TextOverflow.Ellipsis,
-                            maxLines = 1
-                        )
-                    }
-                }
-            }
-        }
-    }
+    PreferenceTemplate(
+        title = { Text(text = label) },
+        description = { currentLabel?.let { Text(text = it) } },
+        enabled = enabled,
+        modifier = Modifier
+            .clickable(enabled) { scope.launch { sheetState.show() } },
+        showDivider = showDivider
+    )
 
     BottomSheet(sheetState = sheetState) {
         AlertBottomSheetContent(

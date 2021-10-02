@@ -32,33 +32,10 @@ fun ClickablePreference(
     showDivider: Boolean = true
 ) {
     PreferenceTemplate(
-        height = if (subtitle != null) 72.dp else 52.dp,
+        title = { Text(text = label) },
+        modifier = Modifier
+            .clickable(onClick = onClick),
+        description = { subtitle?.let { Text(text = it) } },
         showDivider = showDivider
-    ) {
-        Column(
-            verticalArrangement = Arrangement.Center,
-            modifier = Modifier
-                .fillMaxWidth()
-                .fillMaxHeight()
-                .clickable(onClick = onClick)
-                .padding(start = 16.dp, end = 16.dp),
-        ) {
-            Text(
-                text = label,
-                style = MaterialTheme.typography.subtitle1,
-                color = MaterialTheme.colors.onBackground
-            )
-            subtitle?.let {
-                CompositionLocalProvider(
-                    LocalContentAlpha provides ContentAlpha.medium,
-                    LocalContentColor provides MaterialTheme.colors.onBackground
-                ) {
-                    Text(
-                        text = it,
-                        style = MaterialTheme.typography.body2
-                    )
-                }
-            }
-        }
-    }
+    )
 }

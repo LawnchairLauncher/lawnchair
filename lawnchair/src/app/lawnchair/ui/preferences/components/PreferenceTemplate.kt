@@ -17,18 +17,30 @@
 package app.lawnchair.ui.preferences.components
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.Divider
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import app.lawnchair.ui.util.addIf
 
 @Composable
 fun PreferenceTemplate(
-    height: Dp,
+    title: @Composable () -> Unit,
+    modifier: Modifier = Modifier,
+    description: @Composable () -> Unit = {},
+    startWidget: (@Composable () -> Unit)? = null,
+    endWidget: (@Composable () -> Unit)? = null,
+    enabled: Boolean = true,
     showDivider: Boolean = true,
     dividerIndent: Dp = 0.dp,
-    content: @Composable () -> Unit
+    applyPaddings: Boolean = true,
+    horizontalPadding: Dp = 16.dp,
+    verticalPadding: Dp = 16.dp,
+    verticalAlignment: Alignment.Vertical = Alignment.CenterVertically,
 ) {
     Column {
         if (showDivider) {
@@ -37,12 +49,47 @@ fun PreferenceTemplate(
                 startIndent = dividerIndent,
             )
         }
-        Box(
-            modifier = Modifier
-                .height(height)
+        Row(
+            verticalAlignment = verticalAlignment,
+            modifier = modifier
                 .fillMaxWidth()
+                .addIf(applyPaddings) {
+                    padding(horizontal = horizontalPadding, vertical = verticalPadding)
+                }
         ) {
-            content()
+            startWidget?.let {
+                startWidget()
+                if (applyPaddings) {
+                    Spacer(modifier = Modifier.requiredWidth(16.dp))
+                }
+            }
+            Column(
+                modifier = Modifier
+                    .weight(1f)
+                    .addIf(!enabled) {
+                        alpha(ContentAlpha.disabled)
+                    }
+            ) {
+                CompositionLocalProvider(
+                    LocalContentColor provides MaterialTheme.colors.onBackground,
+                    LocalTextStyle provides MaterialTheme.typography.subtitle1
+                ) {
+                    title()
+                }
+                CompositionLocalProvider(
+                    LocalContentAlpha provides ContentAlpha.medium,
+                    LocalContentColor provides MaterialTheme.colors.onBackground,
+                    LocalTextStyle provides MaterialTheme.typography.body2
+                ) {
+                    description()
+                }
+            }
+            endWidget?.let {
+                if (applyPaddings) {
+                    Spacer(modifier = Modifier.requiredWidth(16.dp))
+                }
+                endWidget()
+            }
         }
     }
 }

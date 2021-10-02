@@ -17,17 +17,14 @@
 package app.lawnchair.ui.preferences.components
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
-import androidx.compose.material.*
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Switch
+import androidx.compose.material.SwitchDefaults
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.Dp
 import app.lawnchair.preferences.PreferenceAdapter
-import app.lawnchair.ui.util.addIf
 
 @Composable
 fun SwitchPreference(
@@ -39,52 +36,19 @@ fun SwitchPreference(
 ) {
     // TODO: Wrap overflowing text instead of using an ellipsis.
     PreferenceTemplate(
-        height = if (description != null) 72.dp else 52.dp,
-        showDivider = showDivider
-    ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier
-                .clickable(enabled) { adapter.onChange(!adapter.state.value) }
-                .fillMaxHeight()
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp)
-        ) {
-            Column(
-                modifier = Modifier
-                    .weight(1f)
-                    .addIf(!enabled) {
-                        alpha(ContentAlpha.disabled)
-                    }
-            ) {
-                Text(
-                    text = label,
-                    style = MaterialTheme.typography.subtitle1,
-                    color = MaterialTheme.colors.onBackground,
-                    overflow = TextOverflow.Ellipsis,
-                    maxLines = 1
-                )
-                description?.let {
-                    CompositionLocalProvider(
-                        LocalContentAlpha provides ContentAlpha.medium,
-                        LocalContentColor provides MaterialTheme.colors.onBackground
-                    ) {
-                        Text(
-                            text = it,
-                            style = MaterialTheme.typography.body2,
-                            overflow = TextOverflow.Ellipsis,
-                            maxLines = 1
-                        )
-                    }
-                }
-            }
-            Spacer(modifier = Modifier.requiredWidth(16.dp))
+        title = { Text(text = label) },
+        description = { description?.let { Text(text = it) } },
+        endWidget = {
             Switch(
                 checked = adapter.state.value,
                 onCheckedChange = adapter::onChange,
                 enabled = enabled,
                 colors = SwitchDefaults.colors(checkedThumbColor = MaterialTheme.colors.primary),
             )
-        }
-    }
+        },
+        modifier = Modifier
+            .clickable(enabled) { adapter.onChange(!adapter.state.value) },
+        enabled = enabled,
+        showDivider = showDivider
+    )
 }

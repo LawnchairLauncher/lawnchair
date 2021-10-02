@@ -47,34 +47,21 @@ fun ColorPreference(
     val context = LocalContext.current
 
     PreferenceTemplate(
-        height = 52.dp,
-        showDivider = showDivider
-    ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween,
-            modifier = Modifier
-                .fillMaxSize()
-                .clickable {
-                    coroutineScope.launch {
-                        bottomSheetState.show()
-                    }
-                }
-                .padding(horizontal = 16.dp)
-        ) {
-            Text(
-                text = label,
-                style = MaterialTheme.typography.subtitle1,
-                color = MaterialTheme.colors.onBackground
-            )
+        title = { Text(text = label) },
+        modifier = Modifier
+            .clickable { coroutineScope.launch { bottomSheetState.show() } },
+        endWidget = {
             Box(
                 modifier = Modifier
                     .size(30.dp)
                     .clip(CircleShape)
                     .background(Color(previewColor))
             )
-        }
-    }
+        },
+        showDivider = showDivider,
+        verticalPadding = 12.dp
+    )
+
     BottomSheet(sheetState = bottomSheetState) {
         var selectingCustomColor by remember { mutableStateOf(value = false) }
 
@@ -100,7 +87,8 @@ fun ColorPreference(
                     onClick = { useSystemAccent = true },
                     selected = useSystemAccent,
                     lightThemeColor = context.getSystemAccent(darkTheme = false),
-                    darkThemeColor = context.getSystemAccent(darkTheme = true)
+                    darkThemeColor = context.getSystemAccent(darkTheme = true),
+                    showDivider = false
                 )
                 ModeRow(
                     label = stringResource(id = R.string.custom),
@@ -108,7 +96,6 @@ fun ColorPreference(
                     selected = !useSystemAccent,
                     lightThemeColor = customColor,
                     darkThemeColor = lightenColor(customColor),
-                    showDivider = false,
                     onEditClick = { selectingCustomColor = true }
                 )
                 Spacer(modifier = Modifier.requiredHeight(16.dp))
@@ -217,73 +204,44 @@ fun ModeRow(
     showDivider: Boolean = true,
     selected: Boolean
 ) {
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
+    PreferenceTemplate(
+        title = { Text(text = label) },
         modifier = Modifier
-            .height(52.dp)
-            .fillMaxWidth()
-            .clickable(onClick = onClick)
-            .padding(start = 16.dp, end = 8.dp)
-    ) {
-        RadioButton(
-            selected = selected,
-            onClick = null,
-            colors = RadioButtonDefaults.colors(
-                unselectedColor = MaterialTheme.colors.onSurface.copy(alpha = 0.48F)
+            .clickable(onClick = onClick),
+        startWidget = {
+            RadioButton(
+                selected = selected,
+                onClick = null,
+                colors = RadioButtonDefaults.colors(
+                    unselectedColor = MaterialTheme.colors.onSurface.copy(alpha = 0.48F)
+                )
             )
-        )
-        Column(
-            modifier = Modifier
-                .padding(start = 16.dp)
-                .fillMaxWidth()
-        ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween,
+            Spacer(modifier = Modifier.requiredWidth(16.dp))
+            Box(
                 modifier = Modifier
-                    .weight(1F)
-                    .fillMaxWidth()
-            ) {
-                Row(modifier = Modifier.fillMaxHeight(), verticalAlignment = Alignment.CenterVertically) {
-                    Box(
-                        modifier = Modifier
-                            .size(30.dp)
-                            .clip(CircleShape)
-                            .background(Color(if (MaterialTheme.colors.isLight) lightThemeColor else darkThemeColor))
-                    )
-                    Text(
-                        text = label,
-                        style = MaterialTheme.typography.body1,
-                        modifier = Modifier.padding(start = 16.dp)
+                    .size(30.dp)
+                    .clip(CircleShape)
+                    .background(Color(if (MaterialTheme.colors.isLight) lightThemeColor else darkThemeColor))
+            )
+        },
+        endWidget = {
+            if (onEditClick != null) {
+                CompositionLocalProvider(
+                    LocalContentColor provides MaterialTheme.colors.primary
+                ) {
+                    ClickableIcon(
+                        painter = painterResource(id = R.drawable.ic_edit),
+                        onClick = onEditClick,
+                        enabled = selected
                     )
                 }
-                if (onEditClick != null) {
-                    Crossfade(targetState = selected) {
-                        if (it) {
-                            ClickableIcon(
-                                painter = painterResource(id = R.drawable.ic_edit),
-                                tint = MaterialTheme.colors.primary,
-                                onClick = onEditClick
-                            )
-                        } else {
-                            CompositionLocalProvider(
-                                LocalContentAlpha provides ContentAlpha.disabled,
-                                LocalContentColor provides MaterialTheme.colors.primary
-                            ) {
-                                ClickableIcon(
-                                    painter = painterResource(id = R.drawable.ic_edit),
-                                    onClick = null
-                                )
-                            }
-                        }
-                    }
-                }
+            } else {
+                Spacer(modifier = Modifier.requiredHeight(40.dp))
             }
-            if (showDivider) {
-                Divider(modifier = Modifier.padding(end = 8.dp))
-            }
-        }
-    }
+        },
+        showDivider = showDivider,
+        verticalPadding = 8.dp
+    )
 }
 
 @Composable

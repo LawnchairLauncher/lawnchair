@@ -69,18 +69,8 @@ fun FontSelection(fontPref: BasePreferenceManager.FontPref) {
     ) {
         preferenceGroupItems(items.value, isFirstChild = true) { index, font ->
             PreferenceTemplate(
-                height = 52.dp,
-                showDivider = index != 0,
-                dividerIndent = 40.dp
-            ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier
-                        .clickable { fontPref.set(font) }
-                        .fillMaxWidth()
-                        .fillMaxHeight()
-                        .padding(horizontal = 16.dp)
-                ) {
+                title = { FontPreview(font = font) },
+                startWidget = {
                     RadioButton(
                         selected = fontPref.getAdapter().state.value == font,
                         onClick = null,
@@ -88,10 +78,11 @@ fun FontSelection(fontPref: BasePreferenceManager.FontPref) {
                             unselectedColor = MaterialTheme.colors.onBackground.copy(alpha = 0.48F)
                         )
                     )
-                    Spacer(modifier = Modifier.width(16.dp))
-                    FontPreview(font = font)
-                }
-            }
+                },
+                modifier = Modifier.clickable { fontPref.set(font) },
+                showDivider = index != 0,
+                dividerIndent = 40.dp
+            )
         }
     }
 }

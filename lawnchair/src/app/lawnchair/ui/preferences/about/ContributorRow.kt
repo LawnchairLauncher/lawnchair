@@ -35,32 +35,21 @@ import app.lawnchair.ui.preferences.components.PreferenceTemplate
 import coil.compose.rememberImagePainter
 
 @Composable
-fun ContributorRow(
-    name: String,
-    description: String,
-    photoUrl: String,
-    url: String,
-    showDivider: Boolean = true
-) {
+fun ContributorRow(name: String, description: String, photoUrl: String, url: String, showDivider: Boolean = true) {
     val context = LocalContext.current
 
     PreferenceTemplate(
-        height = 72.dp,
-        showDivider = showDivider
-    ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier
-                .fillMaxSize()
-                .clickable {
-                    val webpage = Uri.parse(url)
-                    val intent = Intent(Intent.ACTION_VIEW, webpage)
-                    if (intent.resolveActivity(context.packageManager) != null) {
-                        context.startActivity(intent)
-                    }
+        title = { Text(text = name) },
+        modifier = Modifier
+            .clickable {
+                val webpage = Uri.parse(url)
+                val intent = Intent(Intent.ACTION_VIEW, webpage)
+                if (intent.resolveActivity(context.packageManager) != null) {
+                    context.startActivity(intent)
                 }
-                .padding(horizontal = 16.dp)
-        ) {
+            },
+        description = { Text(text = description) },
+        startWidget = {
             Image(
                 painter = rememberImagePainter(
                     data = photoUrl,
@@ -74,23 +63,7 @@ fun ContributorRow(
                     .size(32.dp)
                     .background(MaterialTheme.colors.onBackground.copy(alpha = 0.12F)),
             )
-            Spacer(modifier = Modifier.requiredWidth(16.dp))
-            Column {
-                Text(
-                    text = name,
-                    style = MaterialTheme.typography.subtitle1,
-                    color = MaterialTheme.colors.onBackground
-                )
-                CompositionLocalProvider(
-                    LocalContentAlpha provides ContentAlpha.medium,
-                    LocalContentColor provides MaterialTheme.colors.onBackground
-                ) {
-                    Text(
-                        text = description,
-                        style = MaterialTheme.typography.body2
-                    )
-                }
-            }
-        }
-    }
+        },
+        showDivider = showDivider
+    )
 }
