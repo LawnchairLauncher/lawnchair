@@ -35,11 +35,21 @@ import app.lawnchair.ui.preferences.components.PreferenceTemplate
 import coil.compose.rememberImagePainter
 
 @Composable
-fun ContributorRow(name: String, description: String, photoUrl: String, url: String, showDivider: Boolean = true) {
+fun ContributorRow(
+    name: String,
+    description: String,
+    photoUrl: String,
+    url: String,
+    showDivider: Boolean = true
+) {
     val context = LocalContext.current
 
-    PreferenceTemplate(height = 72.dp, showDivider = showDivider) {
+    PreferenceTemplate(
+        height = 72.dp,
+        showDivider = showDivider
+    ) {
         Row(
+            verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
                 .fillMaxSize()
                 .clickable {
@@ -49,8 +59,7 @@ fun ContributorRow(name: String, description: String, photoUrl: String, url: Str
                         context.startActivity(intent)
                     }
                 }
-                .padding(start = 16.dp, end = 16.dp),
-            verticalAlignment = Alignment.CenterVertically
+                .padding(horizontal = 16.dp)
         ) {
             Image(
                 painter = rememberImagePainter(
@@ -62,18 +71,24 @@ fun ContributorRow(name: String, description: String, photoUrl: String, url: Str
                 contentDescription = null,
                 modifier = Modifier
                     .clip(CircleShape)
-                    .width(32.dp)
-                    .height(32.dp)
+                    .size(32.dp)
                     .background(MaterialTheme.colors.onBackground.copy(alpha = 0.12F)),
             )
             Spacer(modifier = Modifier.requiredWidth(16.dp))
             Column {
-                Text(text = name, style = MaterialTheme.typography.subtitle1, color = MaterialTheme.colors.onBackground)
+                Text(
+                    text = name,
+                    style = MaterialTheme.typography.subtitle1,
+                    color = MaterialTheme.colors.onBackground
+                )
                 CompositionLocalProvider(
                     LocalContentAlpha provides ContentAlpha.medium,
                     LocalContentColor provides MaterialTheme.colors.onBackground
                 ) {
-                    Text(text = description, style = MaterialTheme.typography.body2)
+                    Text(
+                        text = description,
+                        style = MaterialTheme.typography.body2
+                    )
                 }
             }
         }
