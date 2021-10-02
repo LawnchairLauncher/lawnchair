@@ -7,9 +7,11 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowDropDown
+import androidx.compose.material.icons.rounded.Clear
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -22,9 +24,7 @@ import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences.preferenceManager
 import app.lawnchair.ui.AndroidText
 import app.lawnchair.ui.OverflowMenu
-import app.lawnchair.ui.preferences.components.PreferenceLayoutLazyColumn
-import app.lawnchair.ui.preferences.components.PreferenceTemplate
-import app.lawnchair.ui.preferences.components.preferenceGroupItems
+import app.lawnchair.ui.preferences.components.*
 import app.lawnchair.ui.preferences.views.CustomFontTextView
 import app.lawnchair.ui.util.ViewPool
 import app.lawnchair.ui.util.rememberViewPool
@@ -42,7 +42,7 @@ fun NavGraphBuilder.fontSelectionGraph(route: String) {
 @Composable
 fun FontSelection(fontPref: BasePreferenceManager.FontPref) {
     val context = LocalContext.current
-    val items = produceState(initialValue = emptyList<FontCache.Family>()) {
+    val items by produceState(initialValue = emptyList<FontCache.Family>()) {
         val list = mutableListOf<FontCache.Family>()
         list.add(FontCache.Family(FontCache.SystemFont("sans-serif")))
         list.add(FontCache.Family(FontCache.SystemFont("sans-serif-medium")))
@@ -59,8 +59,39 @@ fun FontSelection(fontPref: BasePreferenceManager.FontPref) {
     }
     val adapter = fontPref.getAdapter()
     val textViewPool = rememberViewPool { CustomFontTextView(it) }
-    PreferenceLayoutLazyColumn(
-        label = stringResource(id = R.string.font_label),
+    var searchQuery by remember { mutableStateOf("") }
+
+    val filteredItems by derivedStateOf {
+        if (searchQuery.isNotEmpty()) {
+            val lowerCaseQuery = searchQuery.lowercase()
+            items.filter { it.displayName.lowercase().contains(lowerCaseQuery) }
+        } else items
+    }
+
+    PreferenceSearchScaffold(
+        searchInput = {
+            OutlinedTextField(
+                value = searchQuery,
+                onValueChange = { searchQuery = it },
+                modifier = Modifier
+                    .fillMaxSize(),
+                placeholder = { Text(text = stringResource(id = R.string.search_bar_placeholder)) },
+                trailingIcon = {
+                    if (searchQuery.isNotEmpty()) {
+                        ClickableIcon(
+                            imageVector = Icons.Rounded.Clear,
+                            onClick = { searchQuery = "" }
+                        )
+                    }
+                },
+                singleLine = true,
+                colors = TextFieldDefaults.outlinedTextFieldColors(
+                    focusedBorderColor = Color.Transparent,
+                    unfocusedBorderColor = Color.Transparent,
+                    disabledBorderColor = Color.Transparent
+                )
+            )
+        },
         actions = {
             OverflowMenu {
                 DropdownMenuItem(onClick = {
@@ -70,15 +101,21 @@ fun FontSelection(fontPref: BasePreferenceManager.FontPref) {
                     Text(text = stringResource(id = R.string.reset_font))
                 }
             }
-        }
+        },
     ) {
-        preferenceGroupItems(items.value, isFirstChild = true) { index, family ->
-            FontSelectionItem(
-                textViewPool = textViewPool,
-                adapter = adapter,
-                family = family,
-                showDivider = index != 0
-            )
+        PreferenceLazyColumn {
+            preferenceGroupItems(
+                filteredItems,
+                isFirstChild = true,
+                key = { _, family -> family.toString() }
+            ) { index, family ->
+                FontSelectionItem(
+                    textViewPool = textViewPool,
+                    adapter = adapter,
+                    family = family,
+                    showDivider = index != 0
+                )
+            }
         }
     }
 }
