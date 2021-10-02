@@ -121,6 +121,7 @@ public class OverlayCallbackImpl
 
     @Override
     public void onActivityDestroyed(Activity activity) {
+        mClient.onDestroy();
         mClient.mDestroyed = true;
     }
 

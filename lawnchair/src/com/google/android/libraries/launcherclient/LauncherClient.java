@@ -215,6 +215,10 @@ public class LauncherClient {
         }
     }
 
+    public void onDestroy() {
+        mActivity.unregisterReceiver(googleInstallListener);
+    }
+
     private void reconnect() {
         if (!mDestroyed && (!mLauncherService.connect() || !mBaseService.connect())) {
             mActivity.runOnUiThread(() -> setServiceState(0));
