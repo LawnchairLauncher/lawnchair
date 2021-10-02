@@ -121,7 +121,7 @@ fun FontSelection(fontPref: BasePreferenceManager.FontPref) {
 }
 
 @Composable
-fun FontSelectionItem(
+private fun FontSelectionItem(
     textViewPool: ViewPool<CustomFontTextView>,
     adapter: PreferenceAdapter<FontCache.Font>,
     family: FontCache.Family,
@@ -170,8 +170,15 @@ fun FontSelectionItem(
     )
 }
 
+private val VariantButtonContentPadding = PaddingValues(
+    start = 8.dp,
+    top = 8.dp,
+    end = 0.dp,
+    bottom = 8.dp
+)
+
 @Composable
-fun VariantDropdown(
+private fun VariantDropdown(
     adapter: PreferenceAdapter<FontCache.Font>,
     family: FontCache.Family
 ) {
@@ -187,7 +194,8 @@ fun VariantDropdown(
 
     TextButton(
         onClick = { showVariants = true },
-        colors = ButtonDefaults.textButtonColors(contentColor = MaterialTheme.colors.onBackground)
+        colors = ButtonDefaults.textButtonColors(contentColor = MaterialTheme.colors.onBackground),
+        contentPadding = VariantButtonContentPadding
     ) {
         AndroidText(
             modifier = Modifier.wrapContentWidth(),
