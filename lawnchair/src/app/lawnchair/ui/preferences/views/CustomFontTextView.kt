@@ -15,10 +15,10 @@ class CustomFontTextView(context: Context) : AppCompatTextView(context), ViewPoo
     private var job: Job? = null
 
     fun setFont(font: FontCache.Font) {
+        reset()
         val fontCache = FontCache.INSTANCE.get(context)
         @Suppress("EXPERIMENTAL_API_USAGE")
         typeface = fontCache.getLoadedFont(font)
-        job?.cancel()
         job = scope.launch {
             val typeface = fontCache.getFont(font)
             runOnMainThread { setTypeface(typeface) }
@@ -26,6 +26,10 @@ class CustomFontTextView(context: Context) : AppCompatTextView(context), ViewPoo
     }
 
     override fun onRecycled() {
+        reset()
+    }
+
+    private fun reset() {
         job?.cancel()
         job = null
         typeface = null
