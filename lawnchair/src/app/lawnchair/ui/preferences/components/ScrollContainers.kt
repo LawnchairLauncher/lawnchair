@@ -12,12 +12,15 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.pointer.pointerInteropFilter
 import androidx.compose.ui.unit.dp
 import app.lawnchair.ui.util.rememberExtendPadding
 import com.google.accompanist.insets.ui.LocalScaffoldPadding
 import kotlinx.coroutines.awaitCancellation
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun PreferenceColumn(
     verticalArrangement: Arrangement.Vertical = Arrangement.Top,
@@ -32,12 +35,17 @@ fun PreferenceColumn(
             modifier = Modifier
                 .fillMaxHeight()
                 .verticalScroll(scrollState)
+                .pointerInteropFilter {
+                    // return true if scrolling
+                    scrollState.isScrollInProgress
+                }
                 .padding(rememberExtendPadding(LocalScaffoldPadding.current, bottom = 8.dp)),
             content = content
         )
     }
 }
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun PreferenceLazyColumn(
     modifier: Modifier = Modifier,
@@ -54,7 +62,12 @@ fun PreferenceLazyColumn(
     }
     NestedScrollStretch {
         LazyColumn(
-            modifier = modifier.fillMaxHeight(),
+            modifier = modifier
+                .fillMaxHeight()
+                .pointerInteropFilter {
+                    // return true if scrolling
+                    state.isScrollInProgress
+                },
             contentPadding = rememberExtendPadding(LocalScaffoldPadding.current, bottom = 8.dp),
             state = state,
             content = content
