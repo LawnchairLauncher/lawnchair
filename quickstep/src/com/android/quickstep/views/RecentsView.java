@@ -1055,11 +1055,11 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     }
 
     /**
-     * Returns true if the task is snapped.
+     * Returns true if the task is in expected scroll position.
      *
      * @param taskIndex the index of the task
      */
-    public boolean isTaskSnapped(int taskIndex) {
+    public boolean isTaskInExpectedScrollPosition(int taskIndex) {
         return getScrollForPage(taskIndex) == getPagedOrientationHandler().getPrimaryScroll(this);
     }
 
@@ -1726,8 +1726,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         if (showAsGrid()) {
             TaskView focusedTaskView = getFocusedTaskView();
             hiddenFocusedScroll = focusedTaskView == null
-                    || getScrollForPage(indexOfChild(focusedTaskView))
-                    != mOrientationHandler.getPrimaryScroll(this);
+                    || !isTaskInExpectedScrollPosition(indexOfChild(focusedTaskView));
         } else {
             hiddenFocusedScroll = false;
         }

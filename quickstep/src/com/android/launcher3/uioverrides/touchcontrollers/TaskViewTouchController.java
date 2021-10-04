@@ -179,7 +179,7 @@ public abstract class TaskViewTouchController<T extends BaseDraggingActivity>
                         mAllowGoingDown = i == mRecentsView.getCurrentPage()
                                 && SysUINavigationMode.getMode(mActivity).hasGestures
                                 && (!mRecentsView.showAsGrid() || mTaskBeingDragged.isFocusedTask())
-                                && mRecentsView.isTaskSnapped(i);
+                                && mRecentsView.isTaskInExpectedScrollPosition(i);
 
                         directionsToDetectScroll = mAllowGoingDown ? DIRECTION_BOTH : upDirection;
                         break;

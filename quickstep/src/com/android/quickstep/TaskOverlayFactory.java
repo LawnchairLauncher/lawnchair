@@ -111,19 +111,30 @@ public class TaskOverlayFactory implements ResourceBasedOverride {
     }
 
 
+    /**
+     * Does NOT add split options in the following scenarios:
+     * * The taskView to add split options is already showing split screen tasks
+     * * There aren't at least 2 tasks in overview to show split options for
+     * * The taskView to show split options for is the focused task AND we haven't started
+     *   scrolling in overview (if we haven't scrolled, there's a split overview action so
+     *   we don't need this menu option)
+     */
     private static void addSplitOptions(List<SystemShortcut> outShortcuts,
             BaseDraggingActivity activity, TaskView taskView, DeviceProfile deviceProfile) {
+        RecentsView recentsView = taskView.getRecentsView();
+        PagedOrientationHandler orientationHandler = recentsView.getPagedOrientationHandler();
         int[] taskViewTaskIds = taskView.getTaskIds();
         boolean taskViewHasMultipleTasks = taskViewTaskIds[0] != -1 &&
                 taskViewTaskIds[1] != -1;
-        boolean notEnoughTasksToSplit = taskView.getRecentsView().getTaskViewCount() < 2;
+        boolean notEnoughTasksToSplit = recentsView.getTaskViewCount() < 2;
+        boolean isFocusedTask = deviceProfile.overviewShowAsGrid && taskView.isFocusedTask();
+        boolean isTaskInExpectedScrollPosition =
+                recentsView.isTaskInExpectedScrollPosition(recentsView.indexOfChild(taskView));
         if (taskViewHasMultipleTasks || notEnoughTasksToSplit ||
-                (deviceProfile.overviewShowAsGrid && taskView.isFocusedTask())) {
+                (isFocusedTask && isTaskInExpectedScrollPosition)) {
             return;
         }
 
-        PagedOrientationHandler orientationHandler =
-                taskView.getRecentsView().getPagedOrientationHandler();
         List<SplitPositionOption> positions =
                 orientationHandler.getSplitPositionOptions(deviceProfile);
         for (SplitPositionOption option : positions) {
