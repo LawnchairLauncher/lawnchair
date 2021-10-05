@@ -66,6 +66,7 @@ import com.android.launcher3.model.data.SearchActionItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.util.SafeCloseable;
 import com.android.launcher3.views.ActivityContext;
+import com.android.launcher3.views.BubbleTextHolder;
 import com.android.launcher3.views.IconLabelDotView;
 
 import java.text.NumberFormat;
@@ -297,7 +298,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
     @UiThread
     public void applyFromWorkspaceItem(WorkspaceItemInfo info, boolean promiseStateChanged) {
         applyIconAndLabel(info);
-        setTag(info);
+        setItemInfo(info);
         applyLoadingState(promiseStateChanged);
         applyDotState(info, false /* animate */);
         setDownloadStateContentDescription(info, info.getProgressLevel());
@@ -308,7 +309,8 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
         applyIconAndLabel(info);
 
         // We don't need to check the info since it's not a WorkspaceItemInfo
-        super.setTag(info);
+        setItemInfo(info);
+
 
         // Verify high res immediately
         verifyHighRes();
@@ -327,7 +329,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
     public void applyFromItemInfoWithIcon(ItemInfoWithIcon info) {
         applyIconAndLabel(info);
         // We don't need to check the info since it's not a WorkspaceItemInfo
-        super.setTag(info);
+        setItemInfo(info);
 
         // Verify high res immediately
         verifyHighRes();
@@ -335,13 +337,11 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
         setDownloadStateContentDescription(info, info.getProgressLevel());
     }
 
-    /**
-     * Apply label and tag using a {@link SearchActionItemInfo}
-     */
-    @UiThread
-    public void applyFromSearchActionItemInfo(SearchActionItemInfo searchActionItemInfo) {
-        applyIconAndLabel(searchActionItemInfo);
-        setTag(searchActionItemInfo);
+    private void setItemInfo(ItemInfo itemInfo) {
+        setTag(itemInfo);
+        if (getParent() instanceof BubbleTextHolder) {
+            ((BubbleTextHolder) getParent()).onItemInfoChanged(itemInfo);
+        }
     }
 
     @UiThread
@@ -799,7 +799,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
             } else if (info instanceof PackageItemInfo) {
                 applyFromItemInfoWithIcon((PackageItemInfo) info);
             } else if (info instanceof SearchActionItemInfo) {
-                applyFromSearchActionItemInfo((SearchActionItemInfo) info);
+                applyFromItemInfoWithIcon((SearchActionItemInfo) info);
             }
 
             mDisableRelayout = false;
