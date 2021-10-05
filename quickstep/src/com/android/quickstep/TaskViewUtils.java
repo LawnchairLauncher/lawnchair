@@ -35,7 +35,6 @@ import static com.android.launcher3.anim.Interpolators.TOUCH_RESPONSE_INTERPOLAT
 import static com.android.launcher3.anim.Interpolators.clampToProgress;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
 import static com.android.launcher3.statehandlers.DepthController.DEPTH;
-import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.MODE_CLOSING;
 import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.MODE_OPENING;
 
@@ -505,7 +504,7 @@ public final class TaskViewUtils {
                 nonAppTargets, depthController, pa);
         if (launcherClosing) {
             // TODO(b/182592057): differentiate between "restore split" vs "launch fullscreen app"
-            TaskViewUtils.setDividerBarShown(nonAppTargets, true);
+            TaskViewUtils.setSplitAuxiliarySurfacesShown(nonAppTargets, true);
         }
 
         Animator childStateAnimation = null;
@@ -560,18 +559,20 @@ public final class TaskViewUtils {
         anim.addListener(windowAnimEndListener);
     }
 
-    static void setDividerBarShown(RemoteAnimationTargetCompat[] nonApps, boolean shown) {
+    static void setSplitAuxiliarySurfacesShown(RemoteAnimationTargetCompat[] nonApps,
+            boolean shown) {
         // TODO(b/182592057): make this part of the animations instead.
         if (nonApps != null && nonApps.length > 0) {
+            SurfaceControl.Transaction t = new SurfaceControl.Transaction();
             for (int i = 0; i < nonApps.length; ++i) {
                 final RemoteAnimationTargetCompat targ = nonApps[i];
-                if (targ.windowType == TYPE_DOCK_DIVIDER) {
-                    SurfaceControl.Transaction t = new SurfaceControl.Transaction();
-                    t.setVisibility(targ.leash.getSurfaceControl(), shown);
-                    t.apply();
-                    t.close();
+                final SurfaceControl leash = targ.leash.getSurfaceControl();
+                if (targ.windowType == TYPE_DOCK_DIVIDER && leash != null) {
+                    t.setVisibility(leash, shown);
                 }
             }
+            t.apply();
+            t.close();
         }
     }
 }

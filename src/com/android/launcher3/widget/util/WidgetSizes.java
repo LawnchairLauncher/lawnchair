@@ -114,8 +114,8 @@ public final class WidgetSizes {
 
     private static Size getWidgetSizePx(DeviceProfile profile, int spanX, int spanY,
             @Nullable Point recycledCellSize) {
-        final int hBorderSpacing = (spanX - 1) * profile.cellLayoutBorderSpacingPx;
-        final int vBorderSpacing = (spanY - 1) * profile.cellLayoutBorderSpacingPx;
+        final int hBorderSpacing = (spanX - 1) * profile.cellLayoutBorderSpacePx.x;
+        final int vBorderSpacing = (spanY - 1) * profile.cellLayoutBorderSpacePx.y;
         if (recycledCellSize == null) {
             recycledCellSize = new Point();
         }

@@ -91,6 +91,7 @@ import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.FolderInfo;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.LauncherAppWidgetInfo;
+import com.android.launcher3.model.data.SearchActionItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.pageindicators.WorkspacePageIndicator;
 import com.android.launcher3.popup.PopupContainerWithArrow;
@@ -345,12 +346,12 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
             // Add missing cellLayout border in-between panels.
             if (panelCount > 1) {
                 if (i % panelCount == leftPanelModulus) {
-                    paddingRight += grid.cellLayoutBorderSpacingPx / 2;
+                    paddingRight += grid.cellLayoutBorderSpacePx.x / 2;
                 } else if (i % panelCount == rightPanelModulus) { // right side panel
-                    paddingLeft += grid.cellLayoutBorderSpacingPx / 2;
+                    paddingLeft += grid.cellLayoutBorderSpacePx.x / 2;
                 } else { // middle panel
-                    paddingLeft += grid.cellLayoutBorderSpacingPx / 2;
-                    paddingRight += grid.cellLayoutBorderSpacingPx / 2;
+                    paddingLeft += grid.cellLayoutBorderSpacePx.x / 2;
+                    paddingRight += grid.cellLayoutBorderSpacePx.x / 2;
                 }
             }
             // SparseArrayMap doesn't keep the order
@@ -2735,9 +2736,15 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
                 case ITEM_TYPE_APPLICATION:
                 case LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT:
                 case LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT:
+                case LauncherSettings.Favorites.ITEM_TYPE_SEARCH_ACTION:
                     if (info instanceof AppInfo) {
                         // Came from all apps -- make a copy
                         info = ((AppInfo) info).makeWorkspaceItem();
+                        d.dragInfo = info;
+                    }
+                    if (info instanceof SearchActionItemInfo) {
+                        info = ((SearchActionItemInfo) info).createWorkspaceItem(
+                                mLauncher.getModel());
                         d.dragInfo = info;
                     }
                     view = mLauncher.createShortcut(cellLayout, (WorkspaceItemInfo) info);
