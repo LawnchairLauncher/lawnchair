@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+     Copyright (C) 2021 The Android Open Source Project
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+
+<device-paddings xmlns:launcher="http://schemas.android.com/apk/res-auto" >
+
+    <device-padding
+        launcher:maxEmptySpace="88dp">
+        <workspaceTopPadding
+            launcher:a="0"
+            launcher:b="0"/>
+        <workspaceBottomPadding
+            launcher:a="0.52"
+            launcher:b="0"/>
+        <hotseatBottomPadding
+            launcher:a="0.48"
+            launcher:b="0"/>
+    </device-padding>
+
+    <device-padding
+        launcher:maxEmptySpace="100dp">
+        <workspaceTopPadding
+            launcher:a="0"
+            launcher:b="9dp"/>
+        <workspaceBottomPadding
+            launcher:a="0.40"
+            launcher:b="0"
+            launcher:c="9dp"/>
+        <hotseatBottomPadding
+            launcher:a="0.60"
+            launcher:b="0"
+            launcher:c="9dp"/>
+    </device-padding>
+
+    <device-padding
+        launcher:maxEmptySpace="103dp">
+        <workspaceTopPadding
+            launcher:a="0"
+            launcher:b="26dp"/>
+        <workspaceBottomPadding
+            launcher:a="0"
+            launcher:b="20dp"/>
+        <hotseatBottomPadding
+            launcher:a="1"
+            launcher:b="0"
+            launcher:c="46dp"/>
+    </device-padding>
+
+    <device-padding
+        launcher:maxEmptySpace="107dp">
+        <workspaceTopPadding
+            launcher:a="0"
+            launcher:b="9dp"/>
+        <workspaceBottomPadding
+            launcher:a="0"
+            launcher:b="34dp"/>
+        <hotseatBottomPadding
+            launcher:a="1"
+            launcher:b="0"
+            launcher:c="43dp"/>
+    </device-padding>
+
+    <device-padding
+        launcher:maxEmptySpace="120dp">
+        <workspaceTopPadding
+            launcher:a="0"
+            launcher:b="16dp"/>
+        <workspaceBottomPadding
+            launcher:a="1"
+            launcher:c="72dp"/>
+        <hotseatBottomPadding
+            launcher:a="0"
+            launcher:b="56dp"/>
+    </device-padding>
+
+    <device-padding
+        launcher:maxEmptySpace="135dp">
+        <workspaceTopPadding
+            launcher:a="0"
+            launcher:b="39dp"/>
+        <workspaceBottomPadding
+            launcher:a="1"
+            launcher:c="95dp"/>
+        <hotseatBottomPadding
+            launcher:a="0"
+            launcher:b="56dp"/>
+    </device-padding>
+
+    <device-padding
+        launcher:maxEmptySpace="9999dp">
+        <workspaceTopPadding
+            launcher:a="0.40"
+            launcher:c="36dp"/>
+        <workspaceBottomPadding
+            launcher:a="0.60"
+            launcher:c="36dp"/>
+        <hotseatBottomPadding
+            launcher:a="0"
+            launcher:b="36dp"/>
+    </device-padding>
+</device-paddings>

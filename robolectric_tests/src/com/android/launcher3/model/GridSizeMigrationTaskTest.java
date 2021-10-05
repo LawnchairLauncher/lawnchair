@@ -64,7 +64,7 @@ public class GridSizeMigrationTaskTest {
                 mModelHelper.addItem(APP_ICON, 4, HOTSEAT, 0, 0),
         };
 
-        mIdp.numHotseatIcons = 3;
+        mIdp.numDatabaseHotseatIcons = 3;
         new GridSizeMigrationTask(mContext, mDb, mValidPackages, false, 5, 3)
                 .migrateHotseat();
         // First item is dropped as it has the least weight.
@@ -81,7 +81,7 @@ public class GridSizeMigrationTaskTest {
                 mModelHelper.addItem(10, 4, HOTSEAT, 0, 0),
         };
 
-        mIdp.numHotseatIcons = 3;
+        mIdp.numDatabaseHotseatIcons = 3;
         new GridSizeMigrationTask(mContext, mDb, mValidPackages, false, 5, 3)
                 .migrateHotseat();
         // First item is dropped as it has the least weight.

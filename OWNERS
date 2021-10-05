@@ -4,6 +4,16 @@
 # People who can approve changes for submission
 #
 
+alexchau@google.com
+andraskloczl@google.com
+patmanning@google.com
+petrcermak@google.com
+pbdr@google.com
+kideckel@google.com
+stevenckng@google.com
+ydixit@google.com
+boadway@google.com
+alinazaidi@google.com
 adamcohen@google.com
 hyunyoungs@google.com
 mrcasey@google.com
@@ -28,6 +38,7 @@ tracyzhou@google.com
 peanutbutter@google.com
 xuqiu@google.com
 sreyasr@google.com
+thiruram@google.com
 
 per-file FeatureFlags.java, globs = set noparent
 per-file FeatureFlags.java = sunnygoyal@google.com, winsonc@google.com, zakcohen@google.com, mrcasey@google.com, adamcohen@google.com, hyunyoungs@google.com

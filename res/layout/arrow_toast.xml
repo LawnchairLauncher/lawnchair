@@ -19,46 +19,23 @@
     android:layout_height="wrap_content"
     android:layout_width="wrap_content">
 
-    <LinearLayout
+    <TextView
+        android:id="@+id/text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingStart="24dp"
-        android:paddingEnd="4dp"
-        android:background="@drawable/arrow_toast_rounded_background"
         android:layout_gravity="center_horizontal"
+        android:gravity="center"
+        android:padding="16dp"
+        android:background="@drawable/arrow_toast_rounded_background"
         android:elevation="2dp"
-        android:orientation="horizontal">
-
-        <TextView
-            android:id="@+id/text"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:paddingTop="5dp"
-            android:paddingBottom="5dp"
-            android:gravity="center"
-            android:layout_gravity="center_vertical"
-            android:textColor="@android:color/white"
-            android:textSize="16sp"/>
-        <ImageView
-            android:id="@+id/dismiss"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_gravity="center_vertical"
-            android:padding="10dp"
-            android:layout_marginStart="2dp"
-            android:layout_marginEnd="2dp"
-            android:alpha="0.7"
-            android:src="@drawable/ic_remove_no_shadow"
-            android:tint="@android:color/white"
-            android:background="?android:attr/selectableItemBackgroundBorderless"
-            android:contentDescription="@string/accessibility_close"/>
-    </LinearLayout>
+        android:outlineProvider="none"
+        android:textColor="@color/arrow_tip_view_content"
+        android:textSize="14sp"/>
 
     <View
         android:id="@+id/arrow"
         android:elevation="2dp"
-        android:layout_width="10dp"
-        android:layout_height="8dp"
-        android:layout_marginTop="-2dp"/>
+        android:outlineProvider="none"
+        android:layout_width="@dimen/arrow_toast_arrow_width"
+        android:layout_height="10dp"/>
 </merge>

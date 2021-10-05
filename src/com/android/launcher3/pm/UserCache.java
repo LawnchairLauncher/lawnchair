@@ -60,6 +60,9 @@ public class UserCache {
     private void onUsersChanged(Intent intent) {
         enableAndResetCache();
         mUserChangeListeners.forEach(Runnable::run);
+        if (TestProtocol.sDebugTracing) {
+            Log.d(TestProtocol.WORK_PROFILE_REMOVED, "profile changed", new Exception());
+        }
     }
 
     /**
@@ -103,9 +106,6 @@ public class UserCache {
 
                 mUsers = null;
                 mUserToSerialMap = null;
-            }
-            if (TestProtocol.sDebugTracing) {
-                Log.d(TestProtocol.WORK_PROFILE_REMOVED, "Work profile removed", new Exception());
             }
         }
     }

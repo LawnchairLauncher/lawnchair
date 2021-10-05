@@ -15,10 +15,11 @@
  */
 package com.android.launcher3.allapps;
 
-import static com.android.launcher3.LauncherAnimUtils.VIEW_ALPHA;
-
 import android.animation.ValueAnimator;
 import android.content.Context;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.util.ArrayMap;
@@ -26,7 +27,6 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Interpolator;
 import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
@@ -37,7 +37,7 @@ import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Insettable;
 import com.android.launcher3.R;
-import com.android.launcher3.anim.PropertySetter;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.uioverrides.plugins.PluginManagerWrapper;
 import com.android.systemui.plugins.AllAppsRow;
 import com.android.systemui.plugins.AllAppsRow.OnHeightUpdatedListener;
@@ -52,27 +52,35 @@ public class FloatingHeaderView extends LinearLayout implements
 
     private final Rect mClip = new Rect(0, 0, Integer.MAX_VALUE, Integer.MAX_VALUE);
     private final ValueAnimator mAnimator = ValueAnimator.ofInt(0, 0);
+    private final ValueAnimator mHeaderAnimator = ValueAnimator.ofInt(0, 1).setDuration(100);
     private final Point mTempOffset = new Point();
-    private final RecyclerView.OnScrollListener mOnScrollListener = new RecyclerView.OnScrollListener() {
-        @Override
-        public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-        }
+    private final Paint mBGPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+    private final RecyclerView.OnScrollListener mOnScrollListener =
+            new RecyclerView.OnScrollListener() {
+                @Override
+                public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                }
 
-        @Override
-        public void onScrolled(RecyclerView rv, int dx, int dy) {
-            if (rv != mCurrentRV) {
-                return;
-            }
+                @Override
+                public void onScrolled(RecyclerView rv, int dx, int dy) {
+                    if (rv != mCurrentRV) {
+                        return;
+                    }
 
-            if (mAnimator.isStarted()) {
-                mAnimator.cancel();
-            }
+                    if (mAnimator.isStarted()) {
+                        mAnimator.cancel();
+                    }
 
-            int current = -mCurrentRV.getCurrentScrollY();
-            moved(current);
-            applyVerticalMove();
-        }
-    };
+                    int current = -mCurrentRV.getCurrentScrollY();
+                    boolean headerCollapsed = mHeaderCollapsed;
+                    moved(current);
+                    applyVerticalMove();
+                    if (headerCollapsed != mHeaderCollapsed) {
+                        AllAppsContainerView parent = (AllAppsContainerView) getParent();
+                        parent.invalidateHeader();
+                    }
+                }
+            };
 
     private final int mHeaderTopPadding;
 
@@ -83,11 +91,11 @@ public class FloatingHeaderView extends LinearLayout implements
     private AllAppsRecyclerView mWorkRV;
     private AllAppsRecyclerView mCurrentRV;
     private ViewGroup mParent;
-    private boolean mHeaderCollapsed;
+    public boolean mHeaderCollapsed;
     private int mSnappedScrolledY;
     private int mTranslationY;
+    private int mHeaderColor;
 
-    private boolean mAllowTouchForwarding;
     private boolean mForwardToRecyclerView;
 
     protected boolean mTabsHidden;
@@ -130,6 +138,7 @@ public class FloatingHeaderView extends LinearLayout implements
         }
         mFixedRows = rows.toArray(new FloatingHeaderRow[rows.size()]);
         mAllRows = mFixedRows;
+        mHeaderAnimator.addUpdateListener(valueAnimator -> invalidate());
     }
 
     @Override
@@ -143,6 +152,14 @@ public class FloatingHeaderView extends LinearLayout implements
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         PluginManagerWrapper.INSTANCE.get(getContext()).removePluginListener(this);
+    }
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        if (mMainRV != null) {
+            mTabLayout.getLayoutParams().width = mMainRV.getTabWidth();
+        }
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }
 
     private void recreateAllRowsArray() {
@@ -194,6 +211,19 @@ public class FloatingHeaderView extends LinearLayout implements
         onHeightUpdated();
     }
 
+    @Override
+    public View getFocusedChild() {
+        if (FeatureFlags.ENABLE_DEVICE_SEARCH.get()) {
+            for (FloatingHeaderRow row : mAllRows) {
+                if (row.hasVisibleContent() && row.isVisible()) {
+                    return row.getFocusedChild();
+                }
+            }
+            return null;
+        }
+        return super.getFocusedChild();
+    }
+
     public void setup(AllAppsContainerView.AdapterHolder[] mAH, boolean tabsHidden) {
         for (FloatingHeaderRow row : mAllRows) {
             row.setup(this, mAllRows, tabsHidden);
@@ -210,7 +240,7 @@ public class FloatingHeaderView extends LinearLayout implements
     }
 
     private AllAppsRecyclerView setupRV(AllAppsRecyclerView old, AllAppsRecyclerView updated) {
-        if (old != updated && updated != null ) {
+        if (old != updated && updated != null) {
             updated.addOnScrollListener(mOnScrollListener);
         }
         return updated;
@@ -265,8 +295,29 @@ public class FloatingHeaderView extends LinearLayout implements
             } else if (mTranslationY <= -mMaxTranslation) { // hide or stay hidden
                 mHeaderCollapsed = true;
                 mSnappedScrolledY = -mMaxTranslation;
+                mHeaderAnimator.setCurrentFraction(0);
+                mHeaderAnimator.start();
             }
         }
+    }
+
+    /**
+     * Set current header protection background color
+     */
+    public void setHeaderColor(int color) {
+        mHeaderColor = color;
+        invalidate();
+    }
+
+    @Override
+    protected void dispatchDraw(Canvas canvas) {
+        if (mHeaderCollapsed && !mCollapsed && mTabLayout.getVisibility() == VISIBLE
+                && mHeaderColor != Color.TRANSPARENT && FeatureFlags.ENABLE_DEVICE_SEARCH.get()) {
+            mBGPaint.setColor(mHeaderColor);
+            mBGPaint.setAlpha((int) (255 * mHeaderAnimator.getAnimatedFraction()));
+            canvas.drawRect(0, 0, getWidth(), getHeight() + mTranslationY, mBGPaint);
+        }
+        super.dispatchDraw(canvas);
     }
 
     protected void applyVerticalMove() {
@@ -333,10 +384,6 @@ public class FloatingHeaderView extends LinearLayout implements
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
-        if (!mAllowTouchForwarding) {
-            mForwardToRecyclerView = false;
-            return super.onInterceptTouchEvent(ev);
-        }
         calcOffset(mTempOffset);
         ev.offsetLocation(mTempOffset.x, mTempOffset.y);
         mForwardToRecyclerView = mCurrentRV.onInterceptTouchEvent(ev);
@@ -363,20 +410,6 @@ public class FloatingHeaderView extends LinearLayout implements
     private void calcOffset(Point p) {
         p.x = getLeft() - mCurrentRV.getLeft() - mParent.getLeft();
         p.y = getTop() - mCurrentRV.getTop() - mParent.getTop();
-    }
-
-    public void setContentVisibility(boolean hasHeader, boolean hasAllAppsContent,
-            PropertySetter setter, Interpolator headerFade, Interpolator allAppsFade) {
-        for (FloatingHeaderRow row : mAllRows) {
-            row.setContentVisibility(hasHeader, hasAllAppsContent, setter, headerFade, allAppsFade);
-        }
-
-        allowTouchForwarding(hasAllAppsContent);
-        setter.setFloat(mTabLayout, VIEW_ALPHA, hasAllAppsContent ? 1 : 0, headerFade);
-    }
-
-    protected void allowTouchForwarding(boolean allow) {
-        mAllowTouchForwarding = allow;
     }
 
     public boolean hasVisibleContent() {
@@ -408,6 +441,13 @@ public class FloatingHeaderView extends LinearLayout implements
             }
         }
         return null;
+    }
+
+    /**
+     * Returns visible height of FloatingHeaderView contents
+     */
+    public int getVisibleBottomBound() {
+        return getBottom() + mTranslationY;
     }
 }
 

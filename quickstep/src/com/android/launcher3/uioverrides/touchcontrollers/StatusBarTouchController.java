@@ -17,10 +17,11 @@
  */
 package com.android.launcher3.uioverrides.touchcontrollers;
 
+import static android.view.MotionEvent.ACTION_CANCEL;
 import static android.view.MotionEvent.ACTION_DOWN;
 import static android.view.MotionEvent.ACTION_MOVE;
 import static android.view.MotionEvent.ACTION_UP;
-import static android.view.MotionEvent.ACTION_CANCEL;
+
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_SWIPE_DOWN_WORKSPACE_NOTISHADE_OPEN;
 
 import android.annotation.SuppressLint;
@@ -35,12 +36,9 @@ import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
-import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Direction;
-import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
-import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.launcher3.util.TouchController;
-
 import com.android.quickstep.SystemUiProxy;
+
 import java.io.PrintWriter;
 import java.lang.reflect.InvocationTargetException;
 
@@ -157,9 +155,6 @@ public class StatusBarTouchController implements TouchController {
         int action = ev.getAction();
         if (action == ACTION_UP || action == ACTION_CANCEL) {
             dispatchTouchEvent(ev);
-            mLauncher.getUserEventDispatcher().logActionOnContainer(action == ACTION_UP ?
-                    Touch.FLING : Touch.SWIPE, Direction.DOWN, ContainerType.WORKSPACE,
-                    mLauncher.getWorkspace().getCurrentPage());
             mLauncher.getStatsLogManager().logger()
                     .log(LAUNCHER_SWIPE_DOWN_WORKSPACE_NOTISHADE_OPEN);
             setWindowSlippery(false);

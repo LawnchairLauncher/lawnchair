@@ -5,11 +5,12 @@ import app.lawnchair.launcher
 import app.lawnchair.preferences.PreferenceManager
 import com.android.launcher3.allapps.AllAppsStore
 import com.android.launcher3.allapps.AlphabeticalAppsList
+import com.android.launcher3.allapps.WorkAdapterProvider
 import com.android.launcher3.model.data.AppInfo
 import com.android.launcher3.util.ItemInfoMatcher
 
-class LawnchairAlphabeticalAppsList(context: Context, appsStore: AllAppsStore, isWork: Boolean) :
-    AlphabeticalAppsList(context, appsStore, isWork) {
+class LawnchairAlphabeticalAppsList(context: Context, appsStore: AllAppsStore, adapterProvider: WorkAdapterProvider) :
+    AlphabeticalAppsList(context, appsStore, adapterProvider) {
 
     private val hiddenApps = PreferenceManager.getInstance(context).hiddenAppSet
     private var itemFilter: ItemInfoMatcher? = null

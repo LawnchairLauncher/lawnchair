@@ -19,25 +19,35 @@ package com.android.quickstep.util;
 import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 import static android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION;
 
+import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.Executors.THREAD_POOL_EXECUTOR;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 
+import android.app.Activity;
+import android.app.ActivityOptions;
+import android.app.prediction.AppTarget;
+import android.content.ActivityNotFoundException;
 import android.content.ClipData;
 import android.content.ClipDescription;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ShortcutInfo;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Insets;
 import android.graphics.Picture;
 import android.graphics.Rect;
+import android.graphics.RectF;
 import android.net.Uri;
 import android.util.Log;
+import android.view.View;
 
 import androidx.annotation.UiThread;
 import androidx.annotation.WorkerThread;
 import androidx.core.content.FileProvider;
 
+import com.android.internal.app.ChooserActivity;
 import com.android.launcher3.BuildConfig;
 import com.android.quickstep.SystemUiProxy;
 import com.android.systemui.shared.recents.model.Task;
@@ -59,6 +69,7 @@ public class ImageActionUtils {
     private static final long FILE_LIFE = 1000L /*ms*/ * 60L /*s*/ * 60L /*m*/ * 24L /*h*/;
     private static final String SUB_FOLDER = "Overview";
     private static final String BASE_NAME = "overview_image_";
+    private static final String TAG = "ImageActionUtils";
 
     /**
      * Saves screenshot to location determine by SystemUiProxy
@@ -68,6 +79,41 @@ public class ImageActionUtils {
             Insets visibleInsets, Task.TaskKey task) {
         systemUiProxy.handleImageBundleAsScreenshot(BitmapUtil.hardwareBitmapToBundle(screenshot),
                 screenshotBounds, visibleInsets, task);
+    }
+
+    /**
+     * Launch the activity to share image for overview sharing. This is to share cropped bitmap
+     * with specific share targets (with shortcutInfo and appTarget) rendered in overview.
+     */
+    @UiThread
+    public static void shareImage(Context context, Supplier<Bitmap> bitmapSupplier, RectF rectF,
+            ShortcutInfo shortcutInfo, AppTarget appTarget, String tag) {
+        if (bitmapSupplier.get() == null) {
+            return;
+        }
+        Rect crop = new Rect();
+        rectF.round(crop);
+        Intent intent = new Intent();
+        Uri uri =  getImageUri(bitmapSupplier.get(), crop, context, tag);
+        ClipData clipdata = new ClipData(new ClipDescription("content",
+                new String[]{"image/png"}),
+                new ClipData.Item(uri));
+        intent.setAction(Intent.ACTION_SEND)
+            .setComponent(new ComponentName(appTarget.getPackageName(), appTarget.getClassName()))
+            .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            .addFlags(FLAG_GRANT_READ_URI_PERMISSION)
+            .setType("image/png")
+            .putExtra(Intent.EXTRA_STREAM, uri)
+            .putExtra(Intent.EXTRA_SHORTCUT_ID, shortcutInfo.getId())
+            .setClipData(clipdata);
+
+        if (context.getUserId() != appTarget.getUser().getIdentifier()) {
+            intent.prepareToLeaveUser(context.getUserId());
+            intent.fixUris(context.getUserId());
+            context.startActivityAsUser(intent, appTarget.getUser());
+        } else {
+            context.startActivity(intent);
+        }
     }
 
     /**
@@ -87,6 +133,22 @@ public class ImageActionUtils {
     }
 
     /**
+     * Launch the activity to share image with shared element transition.
+     */
+    @UiThread
+    public static void startShareActivity(Context context, Supplier<Bitmap> bitmapSupplier,
+            Rect crop, Intent intent, String tag, View sharedElement) {
+        if (bitmapSupplier.get() == null) {
+            Log.e(tag, "No snapshot available, not starting share.");
+            return;
+        }
+
+        UI_HELPER_EXECUTOR.execute(() -> persistBitmapAndStartActivity(context,
+                bitmapSupplier.get(), crop, intent, ImageActionUtils::getShareIntentForImageUri,
+                tag, sharedElement));
+    }
+
+    /**
      * Starts activity based on given intent created from image uri.
      */
     @WorkerThread
@@ -94,13 +156,41 @@ public class ImageActionUtils {
             Intent intent, BiFunction<Uri, Intent, Intent[]> uriToIntentMap, String tag) {
         Intent[] intents = uriToIntentMap.apply(getImageUri(bitmap, crop, context, tag), intent);
 
-        // Work around b/159412574
-        if (intents.length == 1) {
-            context.startActivity(intents[0]);
-        } else {
-            context.startActivities(intents);
+        try {
+            // Work around b/159412574
+            if (intents.length == 1) {
+                context.startActivity(intents[0]);
+            } else {
+                context.startActivities(intents);
+            }
+        } catch (ActivityNotFoundException e) {
+            Log.e(TAG, "No activity found to receive image intent");
         }
     }
+
+    /**
+     * Starts activity based on given intent created from image uri with shared element transition.
+     */
+    @WorkerThread
+    public static void persistBitmapAndStartActivity(Context context, Bitmap bitmap, Rect crop,
+            Intent intent, BiFunction<Uri, Intent, Intent[]> uriToIntentMap, String tag,
+            View scaledImage) {
+        Intent[] intents = uriToIntentMap.apply(getImageUri(bitmap, crop, context, tag), intent);
+
+        // Work around b/159412574
+        if (intents.length == 1) {
+            MAIN_EXECUTOR.execute(() -> context.startActivity(intents[0],
+                    ActivityOptions.makeSceneTransitionAnimation((Activity) context, scaledImage,
+                            ChooserActivity.FIRST_IMAGE_PREVIEW_TRANSITION_NAME).toBundle()));
+
+        } else {
+            MAIN_EXECUTOR.execute(() -> context.startActivities(intents,
+                    ActivityOptions.makeSceneTransitionAnimation((Activity) context, scaledImage,
+                            ChooserActivity.FIRST_IMAGE_PREVIEW_TRANSITION_NAME).toBundle()));
+        }
+    }
+
+
 
     /**
      * Converts image bitmap to Uri by temporarily saving bitmap to cache, and creating Uri pointing

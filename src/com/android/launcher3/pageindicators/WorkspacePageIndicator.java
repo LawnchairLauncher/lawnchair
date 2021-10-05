@@ -24,7 +24,7 @@ import com.android.launcher3.Insettable;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.uioverrides.WallpaperColorInfo;
+import com.android.launcher3.util.Themes;
 
 /**
  * A PageIndicator that briefly shows a fraction of a line when moving between pages
@@ -123,7 +123,7 @@ public class WorkspacePageIndicator extends View implements Insettable, PageIndi
         mLauncher = Launcher.getLauncher(context);
         mLineHeight = res.getDimensionPixelSize(R.dimen.workspace_page_indicator_line_height);
 
-        boolean darkText = WallpaperColorInfo.INSTANCE.get(context).supportsDarkText();
+        boolean darkText = Themes.getAttrBoolean(mLauncher, R.attr.isWorkspaceDarkText);
         mActiveAlpha = darkText ? BLACK_ALPHA : WHITE_ALPHA;
         mLinePaint.setColor(darkText ? Color.BLACK : Color.WHITE);
     }
@@ -268,7 +268,9 @@ public class WorkspacePageIndicator extends View implements Insettable, PageIndi
         } else {
             lp.leftMargin = lp.rightMargin = 0;
             lp.gravity = Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM;
-            lp.bottomMargin = grid.hotseatBarSizePx + insets.bottom;
+            lp.bottomMargin = grid.isTaskbarPresent
+                    ? grid.workspacePadding.bottom + grid.taskbarSize
+                    : grid.hotseatBarSizePx + insets.bottom;
         }
         setLayoutParams(lp);
     }

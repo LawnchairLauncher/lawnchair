@@ -19,7 +19,6 @@ import static org.mockito.Mockito.mock;
 
 import android.app.Application;
 
-import com.android.launcher3.shadows.LShadowWallpaperManager;
 import com.android.launcher3.shadows.ShadowMainThreadInitializedObject;
 import com.android.launcher3.shadows.ShadowOverrides;
 import com.android.launcher3.uioverrides.plugins.PluginManagerWrapper;
@@ -37,9 +36,6 @@ public class LauncherTestApplication extends Application implements TestLifecycl
 
         // Disable plugins
         PluginManagerWrapper.INSTANCE.initializeForTesting(mock(PluginManagerWrapper.class));
-
-        // Initialize mock wallpaper manager
-        LShadowWallpaperManager.initializeMock();
     }
 
     @Override

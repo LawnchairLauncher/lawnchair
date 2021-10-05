@@ -28,7 +28,6 @@ import android.os.Looper;
 import android.util.Log;
 
 import com.android.launcher3.LauncherAppState;
-import com.android.launcher3.LauncherAppWidgetHost;
 import com.android.launcher3.LauncherModel;
 import com.android.launcher3.LauncherProvider;
 import com.android.launcher3.LauncherSettings;
@@ -43,6 +42,7 @@ import com.android.launcher3.model.data.LauncherAppWidgetInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.util.ContentWriter;
 import com.android.launcher3.util.ItemInfoMatcher;
+import com.android.launcher3.widget.LauncherAppWidgetHost;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -51,6 +51,7 @@ import java.util.List;
 import java.util.concurrent.Executor;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 /**
  * Class for handling model updates.
@@ -90,7 +91,7 @@ public class ModelWriter {
         // in the hotseat
         if (container == Favorites.CONTAINER_HOTSEAT) {
             item.screenId = mHasVerticalHotseat
-                    ? LauncherAppState.getIDP(mContext).numHotseatIcons - cellY - 1 : cellX;
+                    ? LauncherAppState.getIDP(mContext).numDatabaseHotseatIcons - cellY - 1 : cellX;
         } else {
             item.screenId = screenId;
         }
@@ -259,7 +260,9 @@ public class ModelWriter {
      * Removes all the items from the database matching {@param matcher}.
      */
     public void deleteItemsFromDatabase(ItemInfoMatcher matcher) {
-        deleteItemsFromDatabase(matcher.filterItemInfos(mBgDataModel.itemsIdMap));
+        deleteItemsFromDatabase(StreamSupport.stream(mBgDataModel.itemsIdMap.spliterator(), false)
+                        .filter(matcher::matchesInfo)
+                        .collect(Collectors.toList()));
     }
 
     /**

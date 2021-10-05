@@ -20,13 +20,11 @@ import android.content.ComponentName;
 import android.os.UserHandle;
 
 import com.android.launcher3.LauncherSettings.Favorites;
-import com.android.launcher3.model.data.FolderInfo;
 import com.android.launcher3.model.data.ItemInfo;
-import com.android.launcher3.model.data.LauncherAppWidgetInfo;
-import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.shortcuts.ShortcutKey;
 
 import java.util.HashSet;
+import java.util.Set;
 
 /**
  * A utility class to check for {@link ItemInfo}
@@ -36,34 +34,15 @@ public interface ItemInfoMatcher {
     boolean matches(ItemInfo info, ComponentName cn);
 
     /**
-     * Filters {@param infos} to those satisfying the {@link #matches(ItemInfo, ComponentName)}.
+     * Returns true if the itemInfo matches this check
      */
-    default HashSet<ItemInfo> filterItemInfos(Iterable<ItemInfo> infos) {
-        HashSet<ItemInfo> filtered = new HashSet<>();
-        for (ItemInfo i : infos) {
-            if (i instanceof WorkspaceItemInfo) {
-                WorkspaceItemInfo info = (WorkspaceItemInfo) i;
-                ComponentName cn = info.getTargetComponent();
-                if (cn != null && matches(info, cn)) {
-                    filtered.add(info);
-                }
-            } else if (i instanceof FolderInfo) {
-                FolderInfo info = (FolderInfo) i;
-                for (WorkspaceItemInfo s : info.contents) {
-                    ComponentName cn = s.getTargetComponent();
-                    if (cn != null && matches(s, cn)) {
-                        filtered.add(s);
-                    }
-                }
-            } else if (i instanceof LauncherAppWidgetInfo) {
-                LauncherAppWidgetInfo info = (LauncherAppWidgetInfo) i;
-                ComponentName cn = info.providerName;
-                if (cn != null && matches(info, cn)) {
-                    filtered.add(info);
-                }
-            }
+    default boolean matchesInfo(ItemInfo info) {
+        if (info != null) {
+            ComponentName cn = info.getTargetComponent();
+            return cn != null && matches(info, cn);
+        } else {
+            return false;
         }
-        return filtered;
     }
 
     /**
@@ -81,11 +60,10 @@ public interface ItemInfoMatcher {
     }
 
     /**
-     * Returns a new matcher which returns the opposite boolean value of the provided
-     * {@param matcher}.
+     * Returns a new matcher with returns the opposite value of this.
      */
-    static ItemInfoMatcher not(ItemInfoMatcher matcher) {
-        return (info, cn) -> !matcher.matches(info, cn);
+    default ItemInfoMatcher negate() {
+        return (info, cn) -> !matches(info, cn);
     }
 
     static ItemInfoMatcher ofUser(UserHandle user) {
@@ -96,16 +74,19 @@ public interface ItemInfoMatcher {
         return (info, cn) -> components.contains(cn) && info.user.equals(user);
     }
 
-    static ItemInfoMatcher ofPackages(HashSet<String> packageNames, UserHandle user) {
+    static ItemInfoMatcher ofPackages(Set<String> packageNames, UserHandle user) {
         return (info, cn) -> packageNames.contains(cn.getPackageName()) && info.user.equals(user);
     }
 
-    static ItemInfoMatcher ofShortcutKeys(HashSet<ShortcutKey> keys) {
+    static ItemInfoMatcher ofShortcutKeys(Set<ShortcutKey> keys) {
         return  (info, cn) -> info.itemType == Favorites.ITEM_TYPE_DEEP_SHORTCUT &&
                         keys.contains(ShortcutKey.fromItemInfo(info));
     }
 
-    static ItemInfoMatcher ofItemIds(IntSparseArrayMap<Boolean> ids, Boolean matchDefault) {
-        return (info, cn) -> ids.get(info.id, matchDefault);
+    /**
+     * Returns a matcher for items with provided ids
+     */
+    static ItemInfoMatcher ofItemIds(IntSet ids) {
+        return (info, cn) -> ids.contains(info.id);
     }
 }

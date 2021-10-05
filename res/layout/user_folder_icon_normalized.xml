@@ -18,8 +18,6 @@
     xmlns:launcher="http://schemas.android.com/apk/res-auto"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:background="@drawable/round_rect_folder"
-    android:elevation="5dp"
     android:orientation="vertical" >
 
     <com.android.launcher3.folder.FolderPagedView
@@ -27,15 +25,12 @@
         android:clipToPadding="false"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingLeft="8dp"
-        android:paddingRight="8dp"
-        android:paddingTop="16dp"
         launcher:pageIndicator="@+id/folder_page_indicator" />
 
     <LinearLayout
         android:id="@+id/folder_footer"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="48dp"
         android:clipChildren="false"
         android:orientation="horizontal"
         android:paddingLeft="12dp"
@@ -49,17 +44,13 @@
             style="@style/TextHeadline"
             android:layout_weight="1"
             android:background="@android:color/transparent"
-            android:textStyle="bold"
             android:gravity="center_horizontal"
             android:hint="@string/folder_hint_text"
             android:imeOptions="flagNoExtractUi"
-            android:paddingBottom="@dimen/folder_label_padding_bottom"
-            android:paddingTop="@dimen/folder_label_padding_top"
             android:singleLine="true"
             android:textColor="?attr/folderTextColor"
             android:textColorHighlight="?android:attr/colorControlHighlight"
-            android:textColorHint="?attr/folderHintColor"
-            android:textSize="@dimen/folder_label_text_size" />
+            android:textColorHint="?attr/folderHintColor"/>
 
         <com.android.launcher3.pageindicators.PageIndicatorDots
             android:id="@+id/folder_page_indicator"
