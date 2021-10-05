@@ -789,7 +789,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
             mRecentsAnimationStartCallbacks.clear();
         }
 
-        TaskViewUtils.setDividerBarShown(mRecentsAnimationTargets.nonApps, false);
+        TaskViewUtils.setSplitAuxiliarySurfacesShown(mRecentsAnimationTargets.nonApps, false);
 
         // Only add the callback to enable the input consumer after we actually have the controller
         mStateCallback.runOnceAtState(STATE_APP_CONTROLLER_RECEIVED | STATE_GESTURE_STARTED,
@@ -806,7 +806,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
         mStateCallback.setStateOnUiThread(STATE_GESTURE_CANCELLED | STATE_HANDLER_INVALIDATED);
 
         if (mRecentsAnimationTargets != null) {
-            TaskViewUtils.setDividerBarShown(mRecentsAnimationTargets.nonApps, true);
+            TaskViewUtils.setSplitAuxiliarySurfacesShown(mRecentsAnimationTargets.nonApps, true);
         }
 
         // Defer clearing the controller and the targets until after we've updated the state
@@ -955,7 +955,8 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
                 } else {
                     mStateCallback.setState(STATE_RESUME_LAST_TASK);
                 }
-                TaskViewUtils.setDividerBarShown(mRecentsAnimationTargets.nonApps, true);
+                TaskViewUtils.setSplitAuxiliarySurfacesShown(
+                        mRecentsAnimationTargets.nonApps, true);
                 break;
         }
         ActiveGestureLog.INSTANCE.addLog("onSettledOnEndTarget " + endTarget);
@@ -1598,7 +1599,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
         mActivityInterface.onTransitionCancelled(wasVisible, mGestureState.getEndTarget());
 
         if (mRecentsAnimationTargets != null) {
-            TaskViewUtils.setDividerBarShown(mRecentsAnimationTargets.nonApps, true);
+            TaskViewUtils.setSplitAuxiliarySurfacesShown(mRecentsAnimationTargets.nonApps, true);
         }
 
         // Leave the pending invisible flag, as it may be used by wallpaper open animation.
@@ -1841,7 +1842,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
     @Override
     public void onRecentsAnimationFinished(RecentsAnimationController controller) {
         if (!controller.getFinishTargetIsLauncher()) {
-            TaskViewUtils.setDividerBarShown(mRecentsAnimationTargets.nonApps, true);
+            TaskViewUtils.setSplitAuxiliarySurfacesShown(mRecentsAnimationTargets.nonApps, true);
         }
         mRecentsAnimationController = null;
         mRecentsAnimationTargets = null;
