@@ -184,11 +184,9 @@
         <attr name="twoPanelPortraitMinCellHeightDps" format="float" />
         <!-- twoPanelPortraitMinCellHeightDps defaults to minCellWidthDps, if not specified -->
         <attr name="twoPanelPortraitMinCellWidthDps" format="float" />
-        <!-- twoPanelLandscapeMinCellHeightDps defaults to twoPanelPortraitMinCellHeightDps,
-        if not specified -->
+        <!-- twoPanelLandscapeMinCellHeightDps defaults to minCellHeightDps, if not specified -->
         <attr name="twoPanelLandscapeMinCellHeightDps" format="float" />
-        <!-- twoPanelLandscapeMinCellWidthDps defaults to twoPanelPortraitMinCellWidthDps,
-        if not specified -->
+        <!-- twoPanelLandscapeMinCellWidthDps defaults to minCellWidthDps, if not specified -->
         <attr name="twoPanelLandscapeMinCellWidthDps" format="float" />
 
         <!-- These border spaces are only used if GridDisplayOption#isScalable is true -->
@@ -217,15 +215,20 @@
         if not specified -->
         <attr name="twoPanelLandscapeBorderSpaceVerticalDps" format="float" />
 
-
+        <!-- allAppsCellSpacingDps defaults to borderSpaceDps, if not specified -->
         <attr name="allAppsCellSpacingDps" format="float" />
+        <!-- The following values are only enabled if grid is supported. -->
+        <!-- allAppsIconSize defaults to iconSize, if not specified -->
+        <attr name="allAppsIconSize" format="float" />
+        <!-- allAppsIconTextSize defaults to iconTextSize, if not specified -->
+        <attr name="allAppsIconTextSize" format="float" />
 
         <attr name="iconImageSize" format="float" />
         <!-- landscapeIconSize defaults to iconImageSize, if not specified -->
         <attr name="landscapeIconSize" format="float" />
         <!-- twoPanelPortraitIconSize defaults to iconImageSize, if not specified -->
         <attr name="twoPanelPortraitIconSize" format="float" />
-        <!-- twoPanelLandscapeIconSize defaults to landscapeIconSize, if not specified -->
+        <!-- twoPanelLandscapeIconSize defaults to iconImageSize, if not specified -->
         <attr name="twoPanelLandscapeIconSize" format="float" />
 
         <attr name="iconTextSize" format="float" />
@@ -233,7 +236,7 @@
         <attr name="landscapeIconTextSize" format="float" />
         <!-- twoPanelPortraitIconTextSize defaults to iconTextSize, if not specified -->
         <attr name="twoPanelPortraitIconTextSize" format="float" />
-        <!-- twoPanelLandscapeIconTextSize defaults to landscapeIconTextSize, if not specified -->
+        <!-- twoPanelLandscapeIconTextSize defaults to iconTextSize, if not specified -->
         <attr name="twoPanelLandscapeIconTextSize" format="float" />
 
         <!-- If set, this display option is used to determine the default grid -->
@@ -241,12 +244,6 @@
             <!-- The profile can be default on split display devices -->
             <flag name="split_display" value="0x2" />
         </attr>
-
-        <!-- The following values are only enabled if grid is supported. -->
-        <!-- allAppsIconSize defaults to iconSize, if not specified -->
-        <attr name="allAppsIconSize" format="float" />
-        <!-- allAppsIconTextSize defaults to iconTextSize, if not specified -->
-        <attr name="allAppsIconTextSize" format="float" />
 
         <!-- Margin on left and right of the workspace when GridDisplayOption#isScalable is true -->
         <attr name="horizontalMargin" format="float"/>
