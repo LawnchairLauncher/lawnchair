@@ -409,7 +409,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     private final float mFastFlingVelocity;
     private final int mScrollHapticMinGapMillis;
     private final RecentsModel mModel;
-    private final int mGridSideMargin;
+    private final int mSplitPlaceholderSize;
     private final ClearAllButton mClearAllButton;
     private final Rect mClearAllButtonDeadZoneRect = new Rect();
     private final Rect mTaskViewDeadZoneRect = new Rect();
@@ -660,7 +660,8 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
 
         mIsRtl = mOrientationHandler.getRecentsRtlSetting(getResources());
         setLayoutDirection(mIsRtl ? View.LAYOUT_DIRECTION_RTL : View.LAYOUT_DIRECTION_LTR);
-        mGridSideMargin = getResources().getDimensionPixelSize(R.dimen.overview_grid_side_margin);
+        mSplitPlaceholderSize = getResources().getDimensionPixelSize(
+                R.dimen.split_placeholder_size);
         mSquaredTouchSlop = squaredTouchSlop(context);
 
         mEmptyIcon = context.getDrawable(R.drawable.ic_empty_recents);
@@ -4349,16 +4350,24 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     @Override
     protected int computeMinScroll() {
         if (getTaskViewCount() > 0) {
+            int minScroll;
             if (mIsRtl) {
                 // If we aren't showing the clear all button, use the rightmost task as the min
                 // scroll.
-                return getScrollForPage(mDisallowScrollToClearAll ? indexOfChild(
+                minScroll = getScrollForPage(mDisallowScrollToClearAll ? indexOfChild(
                         getTaskViewAt(getTaskViewCount() - 1)) : indexOfChild(mClearAllButton));
+                if (showAsGrid() && isSplitSelectionActive()
+                        && mSplitSelectStateController.getActiveSplitStagePosition()
+                        == SplitConfigurationOptions.STAGE_POSITION_BOTTOM_OR_RIGHT) {
+                    minScroll -= mSplitPlaceholderSize;
+                }
             } else {
                 TaskView focusedTaskView = mShowAsGridLastOnLayout ? getFocusedTaskView() : null;
-                return getScrollForPage(focusedTaskView != null ? indexOfChild(focusedTaskView)
+                minScroll = getScrollForPage(focusedTaskView != null ? indexOfChild(focusedTaskView)
                         : 0);
+                // TODO(b/200537659): Adjust according to mSplitPlaceholderSize.
             }
+            return minScroll;
         }
         return super.computeMinScroll();
     }
@@ -4366,16 +4375,24 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     @Override
     protected int computeMaxScroll() {
         if (getTaskViewCount() > 0) {
+            int maxScroll;
             if (mIsRtl) {
                 TaskView focusedTaskView = mShowAsGridLastOnLayout ? getFocusedTaskView() : null;
-                return getScrollForPage(focusedTaskView != null ? indexOfChild(focusedTaskView)
+                maxScroll = getScrollForPage(focusedTaskView != null ? indexOfChild(focusedTaskView)
                         : 0);
+                if (showAsGrid() && isSplitSelectionActive()
+                        && mSplitSelectStateController.getActiveSplitStagePosition()
+                        == SplitConfigurationOptions.STAGE_POSITION_TOP_OR_LEFT) {
+                    maxScroll += mSplitPlaceholderSize;
+                }
             } else {
                 // If we aren't showing the clear all button, use the leftmost task as the min
                 // scroll.
-                return getScrollForPage(mDisallowScrollToClearAll ? indexOfChild(
+                maxScroll = getScrollForPage(mDisallowScrollToClearAll ? indexOfChild(
                         getTaskViewAt(getTaskViewCount() - 1)) : indexOfChild(mClearAllButton));
+                // TODO(b/200537659): Adjust according to mSplitPlaceholderSize.
             }
+            return maxScroll;
         }
         return super.computeMaxScroll();
     }
