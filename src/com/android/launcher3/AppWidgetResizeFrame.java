@@ -422,8 +422,8 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
      */
     private void resizeWidgetIfNeeded(boolean onDismiss) {
         DeviceProfile dp = mLauncher.getDeviceProfile();
-        float xThreshold = mCellLayout.getCellWidth() + dp.cellLayoutBorderSpacingPx;
-        float yThreshold = mCellLayout.getCellHeight() + dp.cellLayoutBorderSpacingPx;
+        float xThreshold = mCellLayout.getCellWidth() + dp.cellLayoutBorderSpacePx.x;
+        float yThreshold = mCellLayout.getCellHeight() + dp.cellLayoutBorderSpacePx.y;
 
         int hSpanInc = getSpanIncrement((mDeltaX + mDeltaXAddOn) / xThreshold - mRunningHInc);
         int vSpanInc = getSpanIncrement((mDeltaY + mDeltaYAddOn) / yThreshold - mRunningVInc);
@@ -508,8 +508,8 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
 
     private void onTouchUp() {
         DeviceProfile dp = mLauncher.getDeviceProfile();
-        int xThreshold = mCellLayout.getCellWidth() + dp.cellLayoutBorderSpacingPx;
-        int yThreshold = mCellLayout.getCellHeight() + dp.cellLayoutBorderSpacingPx;
+        int xThreshold = mCellLayout.getCellWidth() + dp.cellLayoutBorderSpacePx.x;
+        int yThreshold = mCellLayout.getCellHeight() + dp.cellLayoutBorderSpacePx.y;
 
         mDeltaXAddOn = mRunningHInc * xThreshold;
         mDeltaYAddOn = mRunningVInc * yThreshold;

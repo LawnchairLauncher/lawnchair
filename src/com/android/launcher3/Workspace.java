@@ -346,12 +346,12 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
             // Add missing cellLayout border in-between panels.
             if (panelCount > 1) {
                 if (i % panelCount == leftPanelModulus) {
-                    paddingRight += grid.cellLayoutBorderSpacingPx / 2;
+                    paddingRight += grid.cellLayoutBorderSpacePx.x / 2;
                 } else if (i % panelCount == rightPanelModulus) { // right side panel
-                    paddingLeft += grid.cellLayoutBorderSpacingPx / 2;
+                    paddingLeft += grid.cellLayoutBorderSpacePx.x / 2;
                 } else { // middle panel
-                    paddingLeft += grid.cellLayoutBorderSpacingPx / 2;
-                    paddingRight += grid.cellLayoutBorderSpacingPx / 2;
+                    paddingLeft += grid.cellLayoutBorderSpacePx.x / 2;
+                    paddingRight += grid.cellLayoutBorderSpacePx.x / 2;
                 }
             }
             // SparseArrayMap doesn't keep the order

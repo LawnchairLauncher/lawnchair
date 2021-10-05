@@ -121,29 +121,29 @@ public class LauncherAppWidgetProviderInfo extends AppWidgetProviderInfo
                 localPadding.set(widgetPadding);
             }
             minSpanX = Math.max(minSpanX,
-                    getSpanX(localPadding, minResizeWidth, dp.cellLayoutBorderSpacingPx,
+                    getSpanX(localPadding, minResizeWidth, dp.cellLayoutBorderSpacePx.x,
                             cellSize.x));
             minSpanY = Math.max(minSpanY,
-                    getSpanY(localPadding, minResizeHeight, dp.cellLayoutBorderSpacingPx,
+                    getSpanY(localPadding, minResizeHeight, dp.cellLayoutBorderSpacePx.y,
                             cellSize.y));
 
             if (ATLEAST_S) {
                 if (maxResizeWidth > 0) {
-                    maxSpanX = Math.min(maxSpanX,
-                            getSpanX(localPadding, maxResizeWidth, dp.cellLayoutBorderSpacingPx,
-                                    cellSize.x));
+                    maxSpanX = Math.min(maxSpanX, getSpanX(localPadding, maxResizeWidth,
+                            dp.cellLayoutBorderSpacePx.x, cellSize.x));
                 }
                 if (maxResizeHeight > 0) {
-                    maxSpanY = Math.min(maxSpanY,
-                            getSpanY(localPadding, maxResizeHeight, dp.cellLayoutBorderSpacingPx,
-                                    cellSize.y));
+                    maxSpanY = Math.min(maxSpanY, getSpanY(localPadding, maxResizeHeight,
+                            dp.cellLayoutBorderSpacePx.y, cellSize.y));
                 }
             }
 
             spanX = Math.max(spanX,
-                    getSpanX(localPadding, minWidth, dp.cellLayoutBorderSpacingPx, cellSize.x));
+                    getSpanX(localPadding, minWidth, dp.cellLayoutBorderSpacePx.x,
+                            cellSize.x));
             spanY = Math.max(spanY,
-                    getSpanY(localPadding, minHeight, dp.cellLayoutBorderSpacingPx, cellSize.y));
+                    getSpanY(localPadding, minHeight, dp.cellLayoutBorderSpacePx.y,
+                            cellSize.y));
         }
 
         if (ATLEAST_S) {

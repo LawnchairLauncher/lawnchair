@@ -1051,7 +1051,10 @@ public class LoaderTask implements Runnable {
             deviceProfile.getCellSize(cellSize);
             FileLog.d(TAG, "DeviceProfile available width: " + deviceProfile.availableWidthPx
                     + ", available height: " + deviceProfile.availableHeightPx
-                    + ", cellLayoutBorderSpacingPx: " + deviceProfile.cellLayoutBorderSpacingPx
+                    + ", cellLayoutBorderSpacePx Horizontal: "
+                    + deviceProfile.cellLayoutBorderSpacePx.x
+                    + ", cellLayoutBorderSpacePx Vertical: "
+                    + deviceProfile.cellLayoutBorderSpacePx.y
                     + ", cellSize: " + cellSize);
         }
 
