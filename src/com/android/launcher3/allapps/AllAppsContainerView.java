@@ -78,6 +78,7 @@ import com.android.launcher3.views.ScrimView;
 import com.android.launcher3.workprofile.PersonalWorkSlidingTabStrip.OnActivePageChangedListener;
 
 import app.lawnchair.allapps.LawnchairAlphabeticalAppsList;
+import app.lawnchair.preferences.PreferenceManager;
 import app.lawnchair.theme.color.ColorTokens;
 import app.lawnchair.ui.StretchRecyclerViewContainer;
 
@@ -105,7 +106,9 @@ public class AllAppsContainerView extends StretchRecyclerViewContainer implement
             new RecyclerView.OnScrollListener() {
                 @Override
                 public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
-                    updateHeaderScroll(((AllAppsRecyclerView) recyclerView).getCurrentScrollY());
+                    if (!mHideSearchbar) {
+                        updateHeaderScroll(((AllAppsRecyclerView) recyclerView).getCurrentScrollY());
+                    }
                 }
             };
 
@@ -138,6 +141,7 @@ public class AllAppsContainerView extends StretchRecyclerViewContainer implement
     private final float mHeaderThreshold;
     private ScrimView mScrimView;
     private int mHeaderColor;
+    private boolean mHideSearchbar;
 
     public AllAppsContainerView(Context context) {
         this(context, null);
@@ -379,8 +383,22 @@ public class AllAppsContainerView extends StretchRecyclerViewContainer implement
         rebindAdapters(mUsingTabs, true /* force */);
 
         mSearchContainer = findViewById(R.id.search_container_all_apps);
+        setupSearchVisibility();
         mSearchUiManager = (SearchUiManager) mSearchContainer;
         mSearchUiManager.initializeSearch(this);
+    }
+
+    private void setupSearchVisibility() {
+        PreferenceManager prefs = PreferenceManager.getInstance(getContext());
+        prefs.getHideAppSearchBar().subscribeValues(this, enabled -> {
+            mHideSearchbar = enabled;
+            if (enabled) {
+                mSearchContainer.setVisibility(View.INVISIBLE);
+            }
+            else {
+                mSearchContainer.setVisibility(View.VISIBLE);
+            }
+        });
     }
 
     public SearchUiManager getSearchUiManager() {

@@ -167,4 +167,5 @@
     <string name="colors">Colors</string>
     <string name="dynamic">Dynamic</string>
     <string name="all_apps_search_market_message">Search for More Apps</string>
+    <string name="hide_app_search_bar">Hide search bar</string>
 </resources>

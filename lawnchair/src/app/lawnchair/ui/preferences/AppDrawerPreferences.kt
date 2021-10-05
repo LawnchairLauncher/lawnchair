@@ -60,6 +60,10 @@ fun AppDrawerPreferences() {
         }
         PreferenceGroup(heading = stringResource(id = R.string.pref_category_search)) {
             SwitchPreference(
+                    label = stringResource(id = R.string.hide_app_search_bar),
+                    adapter = prefs.hideAppSearchBar.getAdapter()
+            )
+            SwitchPreference(
                 adapter = prefs.searchAutoShowKeyboard.getAdapter(),
                 label = stringResource(id = R.string.pref_search_auto_show_keyboard),
             )

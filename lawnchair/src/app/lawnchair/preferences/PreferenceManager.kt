@@ -66,6 +66,7 @@ class PreferenceManager private constructor(private val context: Context) : Base
     val smartSpaceEnable = BoolPref("pref_smartSpaceEnable", true, restart)
     val minusOneEnable = BoolPref("pref_enableMinusOne", true, recreate)
     val useFuzzySearch = BoolPref("pref_useFuzzySearch", false)
+    val hideAppSearchBar = BoolPref("pref_hideAppSearchBar", false)
 
     // TODO: Add the ability to manually delete empty pages.
     val allowEmptyPages = BoolPref("pref_allowEmptyPages", false)
