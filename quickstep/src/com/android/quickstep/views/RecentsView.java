@@ -4237,13 +4237,19 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             return;
         }
 
-        if (mSyncTransactionApplier != null) {
-            recentsAnimationTargets.addReleaseCheck(mSyncTransactionApplier);
-        }
-
         RemoteTargetGluer gluer = new RemoteTargetGluer(getContext(), getSizeStrategy());
         mRemoteTargetHandles = gluer.assignTargetsForSplitScreen(recentsAnimationTargets);
         mSplitBoundsConfig = gluer.getStagedSplitBounds();
+        if (mSyncTransactionApplier != null) {
+            // Add release check to the targets from the RemoteTargetGluer and not the targets
+            // passed in because in the event we're in split screen, we use the passed in targets
+            // to create new RemoteAnimationTargets in assignTargetsForSplitScreen(), and the
+            // mSyncTransactionApplier doesn't get transferred over
+            runActionOnRemoteHandles(remoteTargetHandle -> remoteTargetHandle
+                    .getTransformParams().getTargetSet()
+                    .addReleaseCheck(mSyncTransactionApplier));
+        }
+
         TaskView runningTaskView = getRunningTaskView();
         if (runningTaskView instanceof GroupedTaskView) {
             // We initially create a GroupedTaskView in showCurrentTask() before launcher even
