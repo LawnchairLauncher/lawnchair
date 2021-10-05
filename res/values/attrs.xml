@@ -191,7 +191,32 @@
         if not specified -->
         <attr name="twoPanelLandscapeMinCellWidthDps" format="float" />
 
-        <attr name="borderSpacingDps" format="float" />
+        <!-- These border spaces are only used if GridDisplayOption#isScalable is true -->
+        <!-- space to be used horizontally and vertically -->
+        <attr name="borderSpaceDps" format="float" />
+        <!-- space to the right of the cell, defaults to borderSpaceDps if not specified -->
+        <attr name="borderSpaceHorizontalDps" format="float" />
+        <!-- space below the cell, defaults to borderSpaceDps if not specified -->
+        <attr name="borderSpaceVerticalDps" format="float" />
+        <!-- space to be used horizontally and vertically in two panels,
+        defaults to borderSpaceDps if not specified -->
+        <attr name="twoPanelPortraitBorderSpaceDps" format="float" />
+        <!-- space to the right of the cell in two panels, defaults to
+        twoPanelPortraitBorderSpaceDps if not specified -->
+        <attr name="twoPanelPortraitBorderSpaceHorizontalDps" format="float" />
+        <!-- space below the cell in two panels, defaults to twoPanelPortraitBorderSpaceDps
+        if not specified -->
+        <attr name="twoPanelPortraitBorderSpaceVerticalDps" format="float" />
+        <!-- space to be used horizontally and vertically in two panels,
+        defaults to borderSpaceDps if not specified -->
+        <attr name="twoPanelLandscapeBorderSpaceDps" format="float" />
+        <!-- space to the right of the cell in two panels, defaults to
+        twoPanelLandscapeBorderSpaceDps if not specified -->
+        <attr name="twoPanelLandscapeBorderSpaceHorizontalDps" format="float" />
+        <!-- space below the cell in two panels, defaults to twoPanelLandscapeBorderSpaceDps
+        if not specified -->
+        <attr name="twoPanelLandscapeBorderSpaceVerticalDps" format="float" />
+
 
         <attr name="allAppsCellSpacingDps" format="float" />
 

@@ -91,7 +91,7 @@ public class CellLayout extends ViewGroup {
     private int mFixedCellWidth;
     private int mFixedCellHeight;
     @ViewDebug.ExportedProperty(category = "launcher")
-    private final int mBorderSpacing;
+    private final Point mBorderSpace;
 
     @ViewDebug.ExportedProperty(category = "launcher")
     private int mCountX;
@@ -236,9 +236,9 @@ public class CellLayout extends ViewGroup {
         mActivity = ActivityContext.lookupContext(context);
         DeviceProfile deviceProfile = mActivity.getDeviceProfile();
 
-        mBorderSpacing = mContainerType == FOLDER
-                ? deviceProfile.folderCellLayoutBorderSpacingPx
-                : deviceProfile.cellLayoutBorderSpacingPx;
+        mBorderSpace = mContainerType == FOLDER
+                ? new Point(deviceProfile.folderCellLayoutBorderSpacePx)
+                : new Point(deviceProfile.cellLayoutBorderSpacePx);
 
         mCellWidth = mCellHeight = -1;
         mFixedCellWidth = mFixedCellHeight = -1;
@@ -308,7 +308,7 @@ public class CellLayout extends ViewGroup {
 
         mShortcutsAndWidgets = new ShortcutAndWidgetContainer(context, mContainerType);
         mShortcutsAndWidgets.setCellDimensions(mCellWidth, mCellHeight, mCountX, mCountY,
-                mBorderSpacing);
+                mBorderSpace);
         addView(mShortcutsAndWidgets);
     }
 
@@ -368,7 +368,7 @@ public class CellLayout extends ViewGroup {
         mFixedCellWidth = mCellWidth = width;
         mFixedCellHeight = mCellHeight = height;
         mShortcutsAndWidgets.setCellDimensions(mCellWidth, mCellHeight, mCountX, mCountY,
-                mBorderSpacing);
+                mBorderSpace);
     }
 
     public void setGridSize(int x, int y) {
@@ -378,7 +378,7 @@ public class CellLayout extends ViewGroup {
         mTmpOccupied = new GridOccupancy(mCountX, mCountY);
         mTempRectStack.clear();
         mShortcutsAndWidgets.setCellDimensions(mCellWidth, mCellHeight, mCountX, mCountY,
-                mBorderSpacing);
+                mBorderSpace);
         requestLayout();
     }
 
@@ -541,9 +541,9 @@ public class CellLayout extends ViewGroup {
         if (mVisualizeCells) {
             for (int i = 0; i < mCountX; i++) {
                 for (int j = 0; j < mCountY; j++) {
-                    int transX = i * mCellWidth + (i * mBorderSpacing) + getPaddingLeft()
+                    int transX = i * mCellWidth + (i * mBorderSpace.x) + getPaddingLeft()
                             + paddingX;
-                    int transY = j * mCellHeight + (j * mBorderSpacing) + getPaddingTop()
+                    int transY = j * mCellHeight + (j * mBorderSpace.y) + getPaddingTop()
                             + paddingY;
 
                     mVisualizeGridRect.offsetTo(transX, transY);
@@ -567,12 +567,12 @@ public class CellLayout extends ViewGroup {
 
                 // TODO b/194414754 clean this up, reconcile with cellToRect
                 mVisualizeGridRect.set(paddingX, paddingY,
-                        mCellWidth * spanX + mBorderSpacing * (spanX - 1) - paddingX,
-                        mCellHeight * spanY + mBorderSpacing * (spanY - 1) - paddingY);
+                        mCellWidth * spanX + mBorderSpace.x * (spanX - 1) - paddingX,
+                        mCellHeight * spanY + mBorderSpace.y * (spanY - 1) - paddingY);
 
-                int transX = x * mCellWidth + (x * mBorderSpacing)
+                int transX = x * mCellWidth + (x * mBorderSpace.x)
                         + getPaddingLeft() + paddingX;
-                int transY = y * mCellHeight + (y * mBorderSpacing)
+                int transY = y * mCellHeight + (y * mBorderSpace.y)
                         + getPaddingTop() + paddingY;
 
                 mVisualizeGridRect.offsetTo(transX, transY);
@@ -858,15 +858,15 @@ public class CellLayout extends ViewGroup {
         int childHeightSize = heightSize - (getPaddingTop() + getPaddingBottom());
 
         if (mFixedCellWidth < 0 || mFixedCellHeight < 0) {
-            int cw = DeviceProfile.calculateCellWidth(childWidthSize, mBorderSpacing,
+            int cw = DeviceProfile.calculateCellWidth(childWidthSize, mBorderSpace.x,
                     mCountX);
-            int ch = DeviceProfile.calculateCellHeight(childHeightSize, mBorderSpacing,
+            int ch = DeviceProfile.calculateCellHeight(childHeightSize, mBorderSpace.y,
                     mCountY);
             if (cw != mCellWidth || ch != mCellHeight) {
                 mCellWidth = cw;
                 mCellHeight = ch;
                 mShortcutsAndWidgets.setCellDimensions(mCellWidth, mCellHeight, mCountX, mCountY,
-                        mBorderSpacing);
+                        mBorderSpace);
             }
         }
 
@@ -920,7 +920,7 @@ public class CellLayout extends ViewGroup {
      */
     public int getUnusedHorizontalSpace() {
         return getMeasuredWidth() - getPaddingLeft() - getPaddingRight() - (mCountX * mCellWidth)
-                - ((mCountX - 1) * mBorderSpacing);
+                - ((mCountX - 1) * mBorderSpace.x);
     }
 
     @Override
@@ -2592,11 +2592,11 @@ public class CellLayout extends ViewGroup {
                 + (int) Math.ceil(getUnusedHorizontalSpace() / 2f);
         final int vStartPadding = getPaddingTop();
 
-        int x = hStartPadding + (cellX * mBorderSpacing) + (cellX * cellWidth);
-        int y = vStartPadding + (cellY * mBorderSpacing) + (cellY * cellHeight);
+        int x = hStartPadding + (cellX * mBorderSpace.x) + (cellX * cellWidth);
+        int y = vStartPadding + (cellY * mBorderSpace.y) + (cellY * cellHeight);
 
-        int width = cellHSpan * cellWidth + ((cellHSpan - 1) * mBorderSpacing);
-        int height = cellVSpan * cellHeight + ((cellVSpan - 1) * mBorderSpacing);
+        int width = cellHSpan * cellWidth + ((cellHSpan - 1) * mBorderSpace.x);
+        int height = cellVSpan * cellHeight + ((cellVSpan - 1) * mBorderSpace.y);
 
         resultRect.set(x, y, x + width, y + height);
     }
@@ -2615,12 +2615,12 @@ public class CellLayout extends ViewGroup {
 
     public int getDesiredWidth() {
         return getPaddingLeft() + getPaddingRight() + (mCountX * mCellWidth)
-                + ((mCountX - 1) * mBorderSpacing);
+                + ((mCountX - 1) * mBorderSpace.x);
     }
 
     public int getDesiredHeight()  {
         return getPaddingTop() + getPaddingBottom() + (mCountY * mCellHeight)
-                + ((mCountY - 1) * mBorderSpacing);
+                + ((mCountY - 1) * mBorderSpace.y);
     }
 
     public boolean isOccupied(int x, int y) {
@@ -2736,20 +2736,20 @@ public class CellLayout extends ViewGroup {
         }
 
         public void setup(int cellWidth, int cellHeight, boolean invertHorizontally, int colCount,
-                int rowCount, int borderSpacing, @Nullable Rect inset) {
+                int rowCount, Point borderSpace, @Nullable Rect inset) {
             setup(cellWidth, cellHeight, invertHorizontally, colCount, rowCount, 1.0f, 1.0f,
-                    borderSpacing, inset);
+                    borderSpace, inset);
         }
 
         /**
-         * Use this method, as opposed to {@link #setup(int, int, boolean, int, int, int, Rect)},
+         * Use this method, as opposed to {@link #setup(int, int, boolean, int, int, Point, Rect)},
          * if the view needs to be scaled.
          *
          * ie. In multi-window mode, we setup widgets so that they are measured and laid out
          * using their full/invariant device profile sizes.
          */
         public void setup(int cellWidth, int cellHeight, boolean invertHorizontally, int colCount,
-                int rowCount, float cellScaleX, float cellScaleY, int borderSpacing,
+                int rowCount, float cellScaleX, float cellScaleY, Point borderSpace,
                 @Nullable Rect inset) {
             if (isLockedToGrid) {
                 final int myCellHSpan = cellHSpan;
@@ -2761,16 +2761,16 @@ public class CellLayout extends ViewGroup {
                     myCellX = colCount - myCellX - cellHSpan;
                 }
 
-                int hBorderSpacing = (myCellHSpan - 1) * borderSpacing;
-                int vBorderSpacing = (myCellVSpan - 1) * borderSpacing;
+                int hBorderSpacing = (myCellHSpan - 1) * borderSpace.x;
+                int vBorderSpacing = (myCellVSpan - 1) * borderSpace.y;
 
                 float myCellWidth = ((myCellHSpan * cellWidth) + hBorderSpacing) / cellScaleX;
                 float myCellHeight = ((myCellVSpan * cellHeight) + vBorderSpacing) / cellScaleY;
 
                 width = Math.round(myCellWidth) - leftMargin - rightMargin;
                 height = Math.round(myCellHeight) - topMargin - bottomMargin;
-                x = leftMargin + (myCellX * cellWidth) + (myCellX * borderSpacing);
-                y = topMargin + (myCellY * cellHeight) + (myCellY * borderSpacing);
+                x = leftMargin + (myCellX * cellWidth) + (myCellX * borderSpace.x);
+                y = topMargin + (myCellY * cellHeight) + (myCellY * borderSpace.y);
 
                 if (inset != null) {
                     x -= inset.left;
