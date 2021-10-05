@@ -178,7 +178,7 @@ public abstract class BaseLoaderResults {
                 Log.d(TestProtocol.NULL_INT_SET, "bind (1) currentScreenIds: "
                         + currentScreenIds
                         + ", mCallBacks: "
-                        + mCallbacks.getClass().getSimpleName());
+                        + mCallbacks.getClass().getName());
             }
             filterCurrentWorkspaceItems(currentScreenIds, mWorkspaceItems, currentWorkspaceItems,
                     otherWorkspaceItems);
