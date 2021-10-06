@@ -81,6 +81,8 @@ public class RestoreDbTask {
         // Set is pending to false irrespective of the result, so that it doesn't get
         // executed again.
         Utilities.getPrefs(context).edit().remove(RESTORED_DEVICE_TYPE).commit();
+
+        InvariantDeviceProfile.INSTANCE.get(context).reinitializeAfterRestore(context);
     }
 
     private static boolean performRestore(Context context, DatabaseHelper helper) {
