@@ -53,14 +53,14 @@ public class QuickstepTestInformationHandler extends TestInformationHandler {
                         Bundle::putInt, PortraitStatesTouchController::getHotseatTop);
             }
 
-            case TestProtocol.REQUEST_GET_FOCUSED_TASK_WIDTH_FOR_TABLET: {
+            case TestProtocol.REQUEST_GET_FOCUSED_TASK_HEIGHT_FOR_TABLET: {
                 if (!mDeviceProfile.isTablet) {
                     return null;
                 }
                 Rect focusedTaskRect = new Rect();
                 LauncherActivityInterface.INSTANCE.calculateTaskSize(mContext, mDeviceProfile,
                         focusedTaskRect);
-                response.putInt(TestProtocol.TEST_INFO_RESPONSE_FIELD, focusedTaskRect.width());
+                response.putInt(TestProtocol.TEST_INFO_RESPONSE_FIELD, focusedTaskRect.height());
                 return response;
             }
         }
