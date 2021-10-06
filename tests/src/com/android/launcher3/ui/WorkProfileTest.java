@@ -22,7 +22,6 @@ import static com.android.launcher3.allapps.AllAppsStore.DEFER_UPDATES_TEST;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import android.util.Log;
 import android.view.View;
 
 import com.android.launcher3.R;
@@ -32,7 +31,6 @@ import com.android.launcher3.allapps.WorkAdapterProvider;
 import com.android.launcher3.allapps.WorkEduCard;
 import com.android.launcher3.allapps.WorkProfileManager;
 import com.android.launcher3.tapl.LauncherInstrumentation;
-import com.android.launcher3.testing.TestProtocol;
 
 import org.junit.After;
 import org.junit.Before;
@@ -57,14 +55,11 @@ public class WorkProfileTest extends AbstractLauncherUiTest {
 
         String[] tokens = output.split("\\s+");
         mProfileUserId = Integer.parseInt(tokens[tokens.length - 1]);
-        Log.d(TestProtocol.WORK_PROFILE_REMOVED, "Created new user uid" + mProfileUserId);
         mDevice.executeShellCommand("am start-user " + mProfileUserId);
     }
 
     @After
     public void removeWorkProfile() throws Exception {
-        Log.d(TestProtocol.WORK_PROFILE_REMOVED, "(teardown) removing uid" + mProfileUserId,
-                new Exception());
         mDevice.executeShellCommand("pm remove-user " + mProfileUserId);
     }
 
@@ -75,7 +70,6 @@ public class WorkProfileTest extends AbstractLauncherUiTest {
                 return;
             }
             launcher.getAppsView().getAppsStore().disableDeferUpdates(DEFER_UPDATES_TEST);
-            Log.d(TestProtocol.WORK_PROFILE_REMOVED, "resuming AppStore updates");
         });
     }
 
