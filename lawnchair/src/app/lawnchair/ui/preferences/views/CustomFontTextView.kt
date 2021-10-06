@@ -18,9 +18,9 @@ class CustomFontTextView(context: Context) : AppCompatTextView(context), ViewPoo
         reset()
         val fontCache = FontCache.INSTANCE.get(context)
         @Suppress("EXPERIMENTAL_API_USAGE")
-        typeface = fontCache.getLoadedFont(font)
+        typeface = fontCache.getLoadedFont(font)?.typeface
         job = scope.launch {
-            val typeface = fontCache.getFont(font)
+            val typeface = fontCache.getTypeface(font)
             runOnMainThread { setTypeface(typeface) }
         }
     }

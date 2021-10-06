@@ -65,7 +65,7 @@ class FontManager private constructor(private val context: Context) {
         val spec = specMap[type] ?: return
         val lifecycleOwner = textView.context.lookupLifecycleOwner()
         lifecycleOwner?.lifecycleScope?.launch {
-            val typeface = fontCache.getFont(spec.font.createWithWeight(style)) ?: spec.fallback
+            val typeface = fontCache.getTypeface(spec.font.createWithWeight(style)) ?: spec.fallback
             runOnMainThread {
                 textView.typeface = typeface
             }
