@@ -99,8 +99,8 @@ public class DeviceProfile {
     // Workspace
     public final int desiredWorkspaceHorizontalMarginOriginalPx;
     public int desiredWorkspaceHorizontalMarginPx;
-    public final int cellLayoutBorderSpacingOriginalPx;
-    public int cellLayoutBorderSpacingPx;
+    public Point cellLayoutBorderSpaceOriginalPx;
+    public Point cellLayoutBorderSpacePx;
     public final int cellLayoutPaddingLeftRightPx;
     public final int cellLayoutBottomPaddingPx;
     public final int edgeMarginPx;
@@ -137,7 +137,8 @@ public class DeviceProfile {
     public int folderIconOffsetYPx;
 
     // Folder content
-    public int folderCellLayoutBorderSpacingPx;
+    public Point folderCellLayoutBorderSpacePx;
+    public int folderCellLayoutBorderSpaceOriginalPx;
     public int folderContentPaddingLeftRight;
     public int folderContentPaddingTop;
 
@@ -281,10 +282,12 @@ public class DeviceProfile {
                 res.getDimensionPixelSize(R.dimen.folder_content_padding_left_right);
         folderContentPaddingTop = res.getDimensionPixelSize(R.dimen.folder_content_padding_top);
 
-        setCellLayoutBorderSpacing(pxFromDp(inv.borderSpacing, mMetrics, 1f));
+        cellLayoutBorderSpacePx = getCellLayoutBorderSpace(inv);
         allAppsCellSpacingPx = pxFromDp(inv.allAppsCellSpacing, mMetrics, 1f);
-        cellLayoutBorderSpacingOriginalPx = cellLayoutBorderSpacingPx;
-        folderCellLayoutBorderSpacingPx = cellLayoutBorderSpacingPx;
+        cellLayoutBorderSpaceOriginalPx = new Point(cellLayoutBorderSpacePx);
+        folderCellLayoutBorderSpaceOriginalPx = pxFromDp(inv.folderBorderSpace, mMetrics, 1f);
+        folderCellLayoutBorderSpacePx = new Point(folderCellLayoutBorderSpaceOriginalPx,
+                folderCellLayoutBorderSpaceOriginalPx);
 
         int cellLayoutPaddingLeftRightMultiplier = !isVerticalBarLayout() && isTablet
                 ? PORTRAIT_TABLET_LEFT_RIGHT_PADDING_MULTIPLIER : 1;
@@ -479,8 +482,33 @@ public class DeviceProfile {
         }
     }
 
-    private void setCellLayoutBorderSpacing(int borderSpacing) {
-        cellLayoutBorderSpacingPx = isScalableGrid ? borderSpacing : 0;
+    private Point getCellLayoutBorderSpace(InvariantDeviceProfile idp) {
+        if (!isScalableGrid) {
+            return new Point(0, 0);
+        }
+
+        int horizontalSpacePx;
+        int verticalSpacePx;
+
+        if (isTwoPanels) {
+            if (isLandscape) {
+                horizontalSpacePx = pxFromDp(idp.twoPanelLandscapeBorderSpace.x, mMetrics);
+                verticalSpacePx = pxFromDp(idp.twoPanelLandscapeBorderSpace.y, mMetrics);
+            } else {
+                horizontalSpacePx = pxFromDp(idp.twoPanelPortraitBorderSpace.x, mMetrics);
+                verticalSpacePx = pxFromDp(idp.twoPanelPortraitBorderSpace.y, mMetrics);
+            }
+        } else {
+            horizontalSpacePx = pxFromDp(idp.borderSpace.x, mMetrics);
+            verticalSpacePx = pxFromDp(idp.borderSpace.y, mMetrics);
+        }
+
+        return new Point(horizontalSpacePx, verticalSpacePx);
+    }
+
+    private Point getCellLayoutBorderSpaceScaled(InvariantDeviceProfile idp, float scale) {
+        Point original = getCellLayoutBorderSpace(idp);
+        return new Point((int) (original.x * scale), (int) (original.y * scale));
     }
 
     public Info getDisplayInfo() {
@@ -497,10 +525,10 @@ public class DeviceProfile {
         // Check all sides to ensure that the widget won't overlap into another cell, or into
         // status bar.
         return workspaceTopPadding > widgetPadding.top
-                && cellLayoutBorderSpacingPx > widgetPadding.left
-                && cellLayoutBorderSpacingPx > widgetPadding.top
-                && cellLayoutBorderSpacingPx > widgetPadding.right
-                && cellLayoutBorderSpacingPx > widgetPadding.bottom;
+                && cellLayoutBorderSpacePx.x > widgetPadding.left
+                && cellLayoutBorderSpacePx.y > widgetPadding.top
+                && cellLayoutBorderSpacePx.x > widgetPadding.right
+                && cellLayoutBorderSpacePx.y > widgetPadding.bottom;
     }
 
     public Builder toBuilder(Context context) {
@@ -600,7 +628,7 @@ public class DeviceProfile {
             // devices.
             int numColumns = isTwoPanels ? inv.numColumns * 2 : inv.numColumns;
             float usedWidth = (cellWidthPx * numColumns)
-                    + (cellLayoutBorderSpacingPx * (numColumns - 1))
+                    + (cellLayoutBorderSpacePx.x * (numColumns - 1))
                     + (desiredWorkspaceHorizontalMarginPx * 2);
             // We do not subtract padding here, as we also scale the workspace padding if needed.
             scaleX = availableWidthPx / usedWidth;
@@ -618,7 +646,7 @@ public class DeviceProfile {
     }
 
     private int getCellLayoutHeight() {
-        return (cellHeightPx * inv.numRows) + (cellLayoutBorderSpacingPx * (inv.numRows - 1));
+        return (cellHeightPx * inv.numRows) + (cellLayoutBorderSpacePx.y * (inv.numRows - 1));
     }
 
     /**
@@ -658,7 +686,7 @@ public class DeviceProfile {
         iconTextSizePx = (int) (pxFromSp(invIconTextSizeSp, mMetrics) * iconScale);
         iconDrawablePaddingPx = (int) (iconDrawablePaddingOriginalPx * iconScale);
 
-        setCellLayoutBorderSpacing((int) (cellLayoutBorderSpacingOriginalPx * scale));
+        cellLayoutBorderSpacePx = getCellLayoutBorderSpaceScaled(inv, scale);
 
         if (isScalableGrid) {
             PointF minCellHeightAndWidth = getMinCellHeightAndWidth();
@@ -757,14 +785,14 @@ public class DeviceProfile {
 
         // Check if the icons fit within the available height.
         float contentUsedHeight = folderCellHeightPx * inv.numFolderRows
-                + ((inv.numFolderRows - 1) * folderCellLayoutBorderSpacingPx);
+                + ((inv.numFolderRows - 1) * folderCellLayoutBorderSpacePx.y);
         int contentMaxHeight = availableHeightPx - totalWorkspacePadding.y - folderBottomPanelSize
                 - folderMargin - folderContentPaddingTop;
         float scaleY = contentMaxHeight / contentUsedHeight;
 
         // Check if the icons fit within the available width.
         float contentUsedWidth = folderCellWidthPx * inv.numFolderColumns
-                + ((inv.numFolderColumns - 1) * folderCellLayoutBorderSpacingPx);
+                + ((inv.numFolderColumns - 1) * folderCellLayoutBorderSpacePx.x);
         int contentMaxWidth = availableWidthPx - totalWorkspacePadding.x - folderMargin
                 - folderContentPaddingLeftRight * 2;
         float scaleX = contentMaxWidth / contentUsedWidth;
@@ -790,10 +818,10 @@ public class DeviceProfile {
             folderCellWidthPx = (int) Math.max(minWidth, cellWidthPx * scale);
             folderCellHeightPx = (int) Math.max(minHeight, cellHeightPx * scale);
 
-            int borderSpacing = (int) (cellLayoutBorderSpacingOriginalPx * scale);
-            folderCellLayoutBorderSpacingPx = borderSpacing;
-            folderContentPaddingLeftRight = borderSpacing;
-            folderContentPaddingTop = borderSpacing;
+            int scaledSpace = (int) (folderCellLayoutBorderSpaceOriginalPx * scale);
+            folderCellLayoutBorderSpacePx = new Point(scaledSpace, scaledSpace);
+            folderContentPaddingLeftRight = scaledSpace;
+            folderContentPaddingTop = scaledSpace;
         } else {
             int cellPaddingX = (int) (res.getDimensionPixelSize(R.dimen.folder_cell_x_padding)
                     * scale);
@@ -838,9 +866,9 @@ public class DeviceProfile {
         int cellLayoutTotalPadding =
                 isTwoPanels ? 4 * cellLayoutPaddingLeftRightPx : 2 * cellLayoutPaddingLeftRightPx;
         int screenWidthPx = availableWidthPx - padding.x - cellLayoutTotalPadding;
-        result.x = calculateCellWidth(screenWidthPx, cellLayoutBorderSpacingPx, numColumns);
+        result.x = calculateCellWidth(screenWidthPx, cellLayoutBorderSpacePx.x, numColumns);
         result.y = calculateCellHeight(availableHeightPx - padding.y
-                - cellLayoutBottomPaddingPx, cellLayoutBorderSpacingPx, inv.numRows);
+                - cellLayoutBottomPaddingPx, cellLayoutBorderSpacePx.y, inv.numRows);
         return result;
     }
 
@@ -1097,11 +1125,18 @@ public class DeviceProfile {
         writer.println(prefix + pxToDpStr("folderChildTextSizePx", folderChildTextSizePx));
         writer.println(prefix + pxToDpStr("folderChildDrawablePaddingPx",
                 folderChildDrawablePaddingPx));
-        writer.println(prefix + pxToDpStr("folderCellLayoutBorderSpacingPx",
-                folderCellLayoutBorderSpacingPx));
+        writer.println(prefix + pxToDpStr("folderCellLayoutBorderSpaceOriginalPx",
+                folderCellLayoutBorderSpaceOriginalPx));
+        writer.println(prefix + pxToDpStr("folderCellLayoutBorderSpacePx Horizontal",
+                folderCellLayoutBorderSpacePx.x));
+        writer.println(prefix + pxToDpStr("folderCellLayoutBorderSpacePx Vertical",
+                folderCellLayoutBorderSpacePx.y));
 
-        writer.println(prefix + pxToDpStr("cellLayoutBorderSpacingPx",
-                cellLayoutBorderSpacingPx));
+        writer.println(prefix + pxToDpStr("cellLayoutBorderSpacePx Horizontal",
+                cellLayoutBorderSpacePx.x));
+        writer.println(prefix + pxToDpStr("cellLayoutBorderSpacePx Vertical",
+                cellLayoutBorderSpacePx.y));
+
         writer.println(prefix + pxToDpStr("desiredWorkspaceHorizontalMarginPx",
                 desiredWorkspaceHorizontalMarginPx));
 

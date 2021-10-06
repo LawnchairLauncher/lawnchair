@@ -46,6 +46,7 @@ import java.util.List;
 @RunWith(AndroidJUnit4.class)
 public final class LauncherAppWidgetProviderInfoTest {
 
+    private static final int SPACE_SIZE = 10;
     private static final int CELL_SIZE = 50;
     private static final int NUM_OF_COLS = 4;
     private static final int NUM_OF_ROWS = 5;
@@ -159,7 +160,7 @@ public final class LauncherAppWidgetProviderInfoTest {
         AppWidgetHostView.getDefaultPaddingForWidget(mContext, null, padding);
         int maxPadding = Math.max(Math.max(padding.left, padding.right),
                 Math.max(padding.top, padding.bottom));
-        dp.cellLayoutBorderSpacingPx = maxPadding + 1;
+        dp.cellLayoutBorderSpacePx.x = dp.cellLayoutBorderSpacePx.y = maxPadding + 1;
         Mockito.when(dp.shouldInsetWidgets()).thenReturn(true);
 
         LauncherAppWidgetProviderInfo info = new LauncherAppWidgetProviderInfo();
@@ -182,7 +183,7 @@ public final class LauncherAppWidgetProviderInfoTest {
         AppWidgetHostView.getDefaultPaddingForWidget(mContext, null, padding);
         int maxPadding = Math.max(Math.max(padding.left, padding.right),
                 Math.max(padding.top, padding.bottom));
-        dp.cellLayoutBorderSpacingPx = maxPadding - 1;
+        dp.cellLayoutBorderSpacePx.x = dp.cellLayoutBorderSpacePx.y = maxPadding - 1;
         Mockito.when(dp.shouldInsetWidgets()).thenReturn(false);
         LauncherAppWidgetProviderInfo info = new LauncherAppWidgetProviderInfo();
         info.minWidth = CELL_SIZE * 3;
@@ -262,6 +263,7 @@ public final class LauncherAppWidgetProviderInfoTest {
             return null;
         }).when(profile).getCellSize(any(Point.class));
         Mockito.when(profile.getCellSize()).thenReturn(new Point(CELL_SIZE, CELL_SIZE));
+        profile.cellLayoutBorderSpacePx = new Point(SPACE_SIZE, SPACE_SIZE);
         Mockito.when(profile.shouldInsetWidgets()).thenReturn(true);
 
         InvariantDeviceProfile idp = new InvariantDeviceProfile();

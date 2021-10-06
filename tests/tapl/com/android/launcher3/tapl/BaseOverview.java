@@ -138,6 +138,10 @@ public class BaseOverview extends LauncherInstrumentation.VisibleContainer {
         }
     }
 
+    int getTaskCount() {
+        return getTasks().size();
+    }
+
     /**
      * Returns whether Overview has tasks.
      */
@@ -169,7 +173,7 @@ public class BaseOverview extends LauncherInstrumentation.VisibleContainer {
         }
         try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
                 "want to assert overview actions view visibility")) {
-            if (mLauncher.isTablet() && !isOverviewSnappedToFocusedTask()) {
+            if (mLauncher.isTablet() && !isOverviewSnappedToFocusedTaskForTablet()) {
                 mLauncher.waitUntilLauncherObjectGone("action_buttons");
             } else {
                 mLauncher.waitForLauncherObject("action_buttons");
@@ -178,14 +182,10 @@ public class BaseOverview extends LauncherInstrumentation.VisibleContainer {
     }
 
     /**
-     * Returns if focused task is currently snapped task in overview.
+     * Returns if focused task is currently snapped task in tablet grid overview.
      */
-    private boolean isOverviewSnappedToFocusedTask() {
-        if (!mLauncher.isTablet()) {
-            // Focused task only exists in tablet's grid-overview
-            return false;
-        }
-        UiObject2 focusedTask = getFocusedTask();
+    private boolean isOverviewSnappedToFocusedTaskForTablet() {
+        UiObject2 focusedTask = getFocusedTaskForTablet();
         if (focusedTask == null) {
             return false;
         }
@@ -197,14 +197,14 @@ public class BaseOverview extends LauncherInstrumentation.VisibleContainer {
     /**
      * Returns Overview focused task if it exists.
      */
-    private UiObject2 getFocusedTask() {
+    UiObject2 getFocusedTaskForTablet() {
         final List<UiObject2> taskViews = getTasks();
         if (taskViews.size() == 0) {
             return null;
         }
-        int focusedTaskWidth = mLauncher.getFocusedTaskWidth();
+        int focusedTaskHeight = mLauncher.getFocusedTaskHeightForTablet();
         for (UiObject2 task : taskViews) {
-            if (task.getVisibleBounds().width() == focusedTaskWidth) {
+            if (task.getVisibleBounds().height() == focusedTaskHeight) {
                 return task;
             }
         }
