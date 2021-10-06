@@ -1048,6 +1048,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
                 isFling, isCancel);
         // Set the state, but don't notify until the animation completes
         mGestureState.setEndTarget(endTarget, false /* isAtomic */);
+        mAnimationFactory.setEndTarget(endTarget);
 
         float endShift = endTarget.isLauncher ? 1 : 0;
         final float startShift;
@@ -1465,7 +1466,9 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
             mActivity.clearRunOnceOnStartCallback();
             resetLauncherListeners();
         }
-        if (mGestureState.getEndTarget() != null && !mGestureState.isRunningAnimationToLauncher()) {
+        if (mGestureState.isRecentsAnimationRunning() && mGestureState.getEndTarget() != null
+                && !mGestureState.getEndTarget().isLauncher) {
+            // Continued quick switch.
             cancelCurrentAnimation();
         } else {
             mStateCallback.setStateOnUiThread(STATE_FINISH_WITH_NO_END);
