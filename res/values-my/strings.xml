@@ -69,6 +69,7 @@
     <string name="out_of_space" msgid="6692471482459245734">"ဤပင်မစာမျက်နှာတွင် နေရာလွတ် မရှိတော့ပါ"</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"အနှစ်သက်ဆုံးများ ထားရာတွင် နေရာလွတ် မကျန်တော့ပါ"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"အက်ပ်စာရင်း"</string>
+    <string name="all_apps_search_results" msgid="5889367432531296759">"ရှာဖွေမှု ရလဒ်များ"</string>
     <string name="all_apps_button_personal_label" msgid="1315764287305224468">"တစ်ကိုယ်ရေသုံး အက်ပ်စာရင်း"</string>
     <string name="all_apps_button_work_label" msgid="7270707118948892488">"အလုပ်သုံး အက်ပ်စာရင်း"</string>
     <string name="remove_drop_target_label" msgid="7812859488053230776">"ဖယ်ရှားမည်"</string>

@@ -69,6 +69,7 @@
     <string name="out_of_space" msgid="6692471482459245734">"Er is geen ruimte op dit startscherm"</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"Geen ruimte meer in het vak \'Favorieten\'"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"Lijst met apps"</string>
+    <string name="all_apps_search_results" msgid="5889367432531296759">"Zoekresultaten"</string>
     <string name="all_apps_button_personal_label" msgid="1315764287305224468">"Lijst met persoonlijke apps"</string>
     <string name="all_apps_button_work_label" msgid="7270707118948892488">"Lijst met werk-apps"</string>
     <string name="remove_drop_target_label" msgid="7812859488053230776">"Verwijderen"</string>
