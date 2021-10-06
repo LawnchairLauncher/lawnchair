@@ -96,7 +96,10 @@ public class TaskbarManager implements DisplayController.DisplayInfoChangeListen
 
             @Override
             public void onConfigurationChanged(Configuration newConfig) {
-                if ((mOldConfig.diff(newConfig) & ActivityInfo.CONFIG_ASSETS_PATHS) != 0) {
+                int configDiff = mOldConfig.diff(newConfig);
+                int configsRequiringRecreate = ActivityInfo.CONFIG_ASSETS_PATHS
+                        | ActivityInfo.CONFIG_LAYOUT_DIRECTION;
+                if ((configDiff & configsRequiringRecreate) != 0) {
                     // Color has changed, recreate taskbar to reload background color & icons.
                     recreateTaskbar();
                 }

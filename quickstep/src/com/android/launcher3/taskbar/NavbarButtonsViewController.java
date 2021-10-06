@@ -15,6 +15,7 @@
  */
 package com.android.launcher3.taskbar;
 
+import static com.android.launcher3.LauncherAnimUtils.VIEW_TRANSLATE_X;
 import static com.android.launcher3.taskbar.TaskbarNavButtonController.BUTTON_A11Y;
 import static com.android.launcher3.taskbar.TaskbarNavButtonController.BUTTON_A11Y_LONG_CLICK;
 import static com.android.launcher3.taskbar.TaskbarNavButtonController.BUTTON_BACK;
@@ -194,6 +195,14 @@ public class NavbarButtonsViewController {
                 flags -> (flags & FLAG_KEYGUARD_VISIBLE) == 0 ||
                         (flags & FLAG_ONLY_BACK_FOR_BOUNCER_VISIBLE) != 0 ||
                         (flags & FLAG_KEYGUARD_OCCLUDED) != 0));
+        // Translate back button to be at end/start of other buttons for keyguard
+        int navButtonSize = mContext.getResources().getDimensionPixelSize(
+                R.dimen.taskbar_nav_buttons_size);
+        mPropertyHolders.add(new StatePropertyHolder(
+                mBackButton, flags -> (flags & FLAG_ONLY_BACK_FOR_BOUNCER_VISIBLE) != 0
+                        || (flags & FLAG_KEYGUARD_VISIBLE) != 0,
+                VIEW_TRANSLATE_X, navButtonSize * (isRtl ? -2 : 2), 0));
+
 
         // home and recents buttons
         View homeButton = addButton(R.drawable.ic_sysbar_home, BUTTON_HOME, navContainer,
@@ -235,6 +244,7 @@ public class NavbarButtonsViewController {
         }
         mSysuiStateFlags = systemUiStateFlags;
 
+        // TODO(b/202218289) we're getting IME as not visible on lockscreen from system
         updateStateForFlag(FLAG_IME_VISIBLE, isImeVisible);
         updateStateForFlag(FLAG_SWITCHER_SUPPORTED, isImeSwitcherShowing);
         updateStateForFlag(FLAG_A11Y_VISIBLE, a11yVisible);
@@ -335,6 +345,10 @@ public class NavbarButtonsViewController {
         parent.addView(buttonView);
         mAllButtons.add(buttonView);
         return buttonView;
+    }
+
+    public void onDestroy() {
+        mPropertyHolders.clear();
     }
 
     private class RotationButtonImpl implements RotationButton {

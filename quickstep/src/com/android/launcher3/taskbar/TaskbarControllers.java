@@ -89,6 +89,7 @@ public class TaskbarControllers {
      * Cleans up all controllers.
      */
     public void onDestroy() {
+        navbarButtonsViewController.onDestroy();
         uiController.onDestroy();
         rotationButtonController.onDestroy();
         taskbarDragLayerController.onDestroy();
