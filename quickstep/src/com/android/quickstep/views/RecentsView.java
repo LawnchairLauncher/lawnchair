@@ -3919,7 +3919,6 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
 
     /** TODO(b/181707736) More gracefully handle exiting split selection state */
     private void resetFromSplitSelectionState() {
-        mSplitHiddenTaskView.setTranslationY(0);
         if (!showAsGrid()) {
             int pageToSnapTo = mCurrentPage;
             if (mSplitHiddenTaskViewIndex <= pageToSnapTo) {
@@ -3931,9 +3930,12 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         }
         onLayout(false /*  changed */, getLeft(), getTop(), getRight(), getBottom());
         resetTaskVisuals();
-        mSplitHiddenTaskView.setVisibility(VISIBLE);
-        mSplitHiddenTaskView = null;
         mSplitHiddenTaskViewIndex = -1;
+        if (mSplitHiddenTaskView != null) {
+            mSplitHiddenTaskView.setTranslationY(0);
+            mSplitHiddenTaskView.setVisibility(VISIBLE);
+            mSplitHiddenTaskView = null;
+        }
         if (mFirstFloatingTaskView != null) {
             mActivity.getRootView().removeView(mFirstFloatingTaskView);
             mFirstFloatingTaskView = null;
