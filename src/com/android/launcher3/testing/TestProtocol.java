@@ -102,8 +102,8 @@ public final class TestProtocol {
     public static final String REQUEST_GET_ACTIVITIES_CREATED_COUNT =
             "get-activities-created-count";
     public static final String REQUEST_GET_ACTIVITIES = "get-activities";
-    public static final String REQUEST_GET_FOCUSED_TASK_WIDTH_FOR_TABLET =
-            "get-focused-task-width-for-tablet";
+    public static final String REQUEST_GET_FOCUSED_TASK_HEIGHT_FOR_TABLET =
+            "get-focused-task-height-for-tablet";
 
     public static Long sForcePauseTimeout;
     public static final String REQUEST_SET_FORCE_PAUSE_TIMEOUT = "set-force-pause-timeout";

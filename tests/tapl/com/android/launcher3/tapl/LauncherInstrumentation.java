@@ -321,8 +321,8 @@ public final class LauncherInstrumentation {
                 .getBoolean(TestProtocol.TEST_INFO_RESPONSE_FIELD);
     }
 
-    int getFocusedTaskWidth() {
-        return getTestInfo(TestProtocol.REQUEST_GET_FOCUSED_TASK_WIDTH_FOR_TABLET).getInt(
+    int getFocusedTaskHeightForTablet() {
+        return getTestInfo(TestProtocol.REQUEST_GET_FOCUSED_TASK_HEIGHT_FOR_TABLET).getInt(
                 TestProtocol.TEST_INFO_RESPONSE_FIELD);
     }
 

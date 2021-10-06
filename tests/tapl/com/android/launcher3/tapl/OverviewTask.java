@@ -47,27 +47,51 @@ public final class OverviewTask {
         mOverview.verifyActiveContainer();
     }
 
+    private int getVisibleHeight() {
+        return mTask.getVisibleBounds().height();
+    }
+
     /**
-     * Swipes the task up.
+     * Dismisses the task by swiping up.
      */
     public void dismiss() {
         try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck();
              LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
-                     "want to dismiss a task")) {
+                     "want to dismiss an overview task")) {
             verifyActiveContainer();
-            // Dismiss the task via flinging it up.
-            final Rect taskBounds = mLauncher.getVisibleBounds(mTask);
-            final int centerX = taskBounds.centerX();
-            final int centerY = taskBounds.centerY();
-            mLauncher.executeAndWaitForLauncherEvent(
-                    () -> mLauncher.linearGesture(centerX, centerY, centerX, 0, 10, false,
-                            LauncherInstrumentation.GestureScope.INSIDE),
-                    event -> TestProtocol.DISMISS_ANIMATION_ENDS_MESSAGE.equals(
-                            event.getClassName()),
-                    () -> "Didn't receive a dismiss animation ends message: " + centerX + ", "
-                            + centerY,
-                    "swiping to dismiss");
+            int taskCountBeforeDismiss = mOverview.getTaskCount();
+            mLauncher.assertNotEquals("Unable to find a task", 0, taskCountBeforeDismiss);
+            if (taskCountBeforeDismiss == 1) {
+                dismissBySwipingUp();
+                return;
+            }
+
+            boolean taskWasFocused = mLauncher.isTablet() && getVisibleHeight() == mLauncher
+                    .getFocusedTaskHeightForTablet();
+
+            dismissBySwipingUp();
+
+            try (LauncherInstrumentation.Closable c2 = mLauncher.addContextLayer("dismissed")) {
+                if (taskWasFocused) {
+                    mLauncher.assertNotNull("No task became focused",
+                            mOverview.getFocusedTaskForTablet());
+                }
+            }
         }
+    }
+
+    private void dismissBySwipingUp() {
+        verifyActiveContainer();
+        // Dismiss the task via flinging it up.
+        final Rect taskBounds = mLauncher.getVisibleBounds(mTask);
+        final int centerX = taskBounds.centerX();
+        final int centerY = taskBounds.centerY();
+        mLauncher.executeAndWaitForLauncherEvent(
+                () -> mLauncher.linearGesture(centerX, centerY, centerX, 0, 10, false,
+                        LauncherInstrumentation.GestureScope.INSIDE),
+                event -> TestProtocol.DISMISS_ANIMATION_ENDS_MESSAGE.equals(event.getClassName()),
+                () -> "Didn't receive a dismiss animation ends message: " + centerX + ", "
+                        + centerY, "swiping to dismiss");
     }
 
     /**
