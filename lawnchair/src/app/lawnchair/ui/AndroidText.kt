@@ -68,11 +68,3 @@ fun toIntColor(color: Color): Int {
         android.graphics.Color.argb((a * 255).toInt(), (r * 255).toInt(), (g * 255).toInt(), (b * 255).toInt())
     }
 }
-
-@Composable
-fun FontCache.Font.toTypeface(): Result<Typeface?>? {
-    val state = produceState<Result<Typeface?>?>(initialValue = null, this) {
-        value = Result.success(load())
-    }
-    return state.value
-}

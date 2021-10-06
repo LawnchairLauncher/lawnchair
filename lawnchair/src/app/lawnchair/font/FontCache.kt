@@ -25,6 +25,7 @@ import androidx.annotation.Keep
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.produceState
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontFamily
 import androidx.core.provider.FontRequest
 import androidx.core.provider.FontsContractCompat
 import app.lawnchair.font.googlefonts.GoogleFontsListing
@@ -41,16 +42,20 @@ import kotlin.coroutines.suspendCoroutine
 
 class FontCache private constructor(private val context: Context) {
 
-    private val scope = CoroutineScope(CoroutineName("FontCache"))
+    private val scope = MainScope() + CoroutineName("FontCache")
 
-    private val deferredFonts = mutableMapOf<Font, Deferred<Typeface?>>()
+    private val deferredFonts = mutableMapOf<Font, Deferred<LoadedFont?>>()
 
     val uiRegular = GoogleFont(context, "Google Sans")
     val uiMedium = GoogleFont(context, "Google Sans", "500")
     val uiTextMedium = GoogleFont(context, "Google Sans Text", "500")
 
-    suspend fun getFont(font: Font): Typeface? {
-        return loadFontAsync(font).await()
+    suspend fun getTypeface(font: Font): Typeface? {
+        return loadFontAsync(font).await()?.typeface
+    }
+
+    suspend fun getFontFamily(font: Font): FontFamily? {
+        return loadFontAsync(font).await()?.fontFamily
     }
 
     fun preloadFont(font: Font) {
@@ -59,16 +64,16 @@ class FontCache private constructor(private val context: Context) {
     }
 
     @ExperimentalCoroutinesApi
-    fun getLoadedFont(font: Font): Typeface? {
+    fun getLoadedFont(font: Font): LoadedFont? {
         val deferredFont = deferredFonts[font] ?: return null
         if (!deferredFont.isCompleted) return null
         return deferredFont.getCompleted()
     }
 
-    private fun loadFontAsync(font: Font): Deferred<Typeface?> {
+    private fun loadFontAsync(font: Font): Deferred<LoadedFont?> {
         return deferredFonts.getOrPut(font) {
-            scope.async(Dispatchers.IO) {
-                font.load()
+            scope.async {
+                font.load()?.let { LoadedFont(it) }
             }
         }
     }
@@ -378,6 +383,10 @@ class FontCache private constructor(private val context: Context) {
         }
     }
 
+    class LoadedFont internal constructor(val typeface: Typeface) {
+        val fontFamily = FontFamily(typeface)
+    }
+
     companion object {
         @JvmField
         val INSTANCE = MainThreadInitializedObject(::FontCache)
@@ -406,26 +415,19 @@ class FontCache private constructor(private val context: Context) {
 }
 
 @Composable
-fun FontCache.Font.toTypeface(): Result<Typeface?>? {
+fun FontCache.Font.toFontFamily(): Result<FontFamily?>? {
     val context = LocalContext.current
     val font = this
-    val state = produceState<Result<Typeface?>?>(initialValue = null, font) {
+    @Suppress("EXPERIMENTAL_API_USAGE")
+    val state = produceState<Result<FontFamily?>?>(initialValue = null, font) {
         val fontCache = FontCache.INSTANCE.get(context)
-        value = Result.success(fontCache.getFont(font))
-    }
-    return state.value
-}
-
-@Composable
-fun FontCache.Family.toTypefaceFamily(): FontCache.TypefaceFamily {
-    val context = LocalContext.current
-    val family = this
-    val state = produceState(initialValue = FontCache.emptyTypefaceFamily, family) {
-        val fontCache = FontCache.INSTANCE.get(context)
-        val variants = family.variants
-            .mapValues { async { fontCache.getFont(it.value) } }
-            .mapValues { it.value.await() }
-        value = FontCache.TypefaceFamily(variants)
+        val loadedFont = fontCache.getLoadedFont(font)
+        if (loadedFont != null) {
+            value = Result.success(loadedFont.fontFamily)
+        } else {
+            value = null
+            value = Result.success(fontCache.getFontFamily(font))
+        }
     }
     return state.value
 }

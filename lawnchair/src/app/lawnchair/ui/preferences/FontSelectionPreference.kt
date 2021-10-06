@@ -1,6 +1,5 @@
 package app.lawnchair.ui.preferences
 
-import android.view.Gravity
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -18,6 +17,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavGraphBuilder
 import app.lawnchair.font.FontCache
 import app.lawnchair.font.googlefonts.GoogleFontsListing
+import app.lawnchair.font.toFontFamily
 import app.lawnchair.preferences.BasePreferenceManager
 import app.lawnchair.preferences.PreferenceAdapter
 import app.lawnchair.preferences.getAdapter
@@ -25,9 +25,6 @@ import app.lawnchair.preferences.preferenceManager
 import app.lawnchair.ui.AndroidText
 import app.lawnchair.ui.OverflowMenu
 import app.lawnchair.ui.preferences.components.*
-import app.lawnchair.ui.preferences.views.CustomFontTextView
-import app.lawnchair.ui.util.ViewPool
-import app.lawnchair.ui.util.rememberViewPool
 import com.android.launcher3.R
 
 @ExperimentalAnimationApi
@@ -58,7 +55,6 @@ fun FontSelection(fontPref: BasePreferenceManager.FontPref) {
         value = list
     }
     val adapter = fontPref.getAdapter()
-    val textViewPool = rememberViewPool { CustomFontTextView(it) }
     var searchQuery by remember { mutableStateOf("") }
 
     val filteredItems by derivedStateOf {
@@ -110,7 +106,6 @@ fun FontSelection(fontPref: BasePreferenceManager.FontPref) {
                 key = { _, family -> family.toString() }
             ) { index, family ->
                 FontSelectionItem(
-                    textViewPool = textViewPool,
                     adapter = adapter,
                     family = family,
                     showDivider = index != 0
@@ -122,7 +117,6 @@ fun FontSelection(fontPref: BasePreferenceManager.FontPref) {
 
 @Composable
 private fun FontSelectionItem(
-    textViewPool: ViewPool<CustomFontTextView>,
     adapter: PreferenceAdapter<FontCache.Font>,
     family: FontCache.Family,
     showDivider: Boolean
@@ -130,18 +124,15 @@ private fun FontSelectionItem(
     val selected = family.variants.any { it.value == adapter.state.value }
     PreferenceTemplate(
         title = {
-            AndroidText(
-                textView = textViewPool.rememberView().apply {
-                    gravity = Gravity.CENTER_VERTICAL
-                },
-                modifier = Modifier
-                    .height(52.dp)
-                    .fillMaxWidth(),
-                update = {
-                    it.text = family.displayName
-                    it.setFont(family.default)
-                }
-            )
+            Box(modifier = Modifier.height(52.dp)) {
+                Text(
+                    text = family.displayName,
+                    modifier = Modifier
+                        .align(Alignment.CenterStart)
+                        .fillMaxWidth(),
+                    fontFamily = family.default.toFontFamily()?.getOrNull()
+                )
+            }
         },
         startWidget = {
             RadioButton(
@@ -218,12 +209,9 @@ private fun VariantDropdown(
                 adapter.onChange(font)
                 showVariants = false
             }) {
-                AndroidText(
-                    modifier = Modifier.wrapContentWidth(),
-                    update = {
-                        it.text = font.displayName
-                        it.setFont(font)
-                    }
+                Text(
+                    text = font.displayName,
+                    fontFamily = font.toFontFamily()?.getOrNull()
                 )
             }
         }
