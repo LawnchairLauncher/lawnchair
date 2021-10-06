@@ -113,10 +113,12 @@ public class WorkModeSwitch extends Button implements Insettable, View.OnClickLi
     /**
      * Sets the enabled or disabled state of the button
      */
-    public void updateCurrentState(boolean active) {
+    public void updateCurrentState(boolean isEnabled) {
         removeFlag(FLAG_PROFILE_TOGGLE_ONGOING);
-        mWorkEnabled = active;
-        updateVisibility();
+        if (mWorkEnabled != isEnabled) {
+            mWorkEnabled = isEnabled;
+            updateVisibility();
+        }
     }
 
 
@@ -125,7 +127,6 @@ public class WorkModeSwitch extends Button implements Insettable, View.OnClickLi
         if (mWorkEnabled && mOnWorkTab) {
             setFlag(FLAG_FADE_ONGOING);
             setVisibility(VISIBLE);
-            setAlpha(0);
             animate().alpha(1).withEndAction(() -> removeFlag(FLAG_FADE_ONGOING)).start();
         } else if (getVisibility() != GONE) {
             setFlag(FLAG_FADE_ONGOING);
