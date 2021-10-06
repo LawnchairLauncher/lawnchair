@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <array name="grayscale_calendar_icons">
+        <item>@drawable/themed_icon_calendar_1</item>
+        <item>@drawable/themed_icon_calendar_2</item>
+        <item>@drawable/themed_icon_calendar_3</item>
+        <item>@drawable/themed_icon_calendar_4</item>
+        <item>@drawable/themed_icon_calendar_5</item>
+        <item>@drawable/themed_icon_calendar_6</item>
+        <item>@drawable/themed_icon_calendar_7</item>
+        <item>@drawable/themed_icon_calendar_8</item>
+        <item>@drawable/themed_icon_calendar_9</item>
+        <item>@drawable/themed_icon_calendar_10</item>
+        <item>@drawable/themed_icon_calendar_11</item>
+        <item>@drawable/themed_icon_calendar_12</item>
+        <item>@drawable/themed_icon_calendar_13</item>
+        <item>@drawable/themed_icon_calendar_14</item>
+        <item>@drawable/themed_icon_calendar_15</item>
+        <item>@drawable/themed_icon_calendar_16</item>
+        <item>@drawable/themed_icon_calendar_17</item>
+        <item>@drawable/themed_icon_calendar_18</item>
+        <item>@drawable/themed_icon_calendar_19</item>
+        <item>@drawable/themed_icon_calendar_20</item>
+        <item>@drawable/themed_icon_calendar_21</item>
+        <item>@drawable/themed_icon_calendar_22</item>
+        <item>@drawable/themed_icon_calendar_23</item>
+        <item>@drawable/themed_icon_calendar_24</item>
+        <item>@drawable/themed_icon_calendar_25</item>
+        <item>@drawable/themed_icon_calendar_26</item>
+        <item>@drawable/themed_icon_calendar_27</item>
+        <item>@drawable/themed_icon_calendar_28</item>
+        <item>@drawable/themed_icon_calendar_29</item>
+        <item>@drawable/themed_icon_calendar_30</item>
+        <item>@drawable/themed_icon_calendar_31</item>
+    </array>
+
+    <array name="grayscale_clock_icons">
+        <item>com.android.launcher3.LEVEL_PER_TICK_ICON_ROUND</item>
+        <item>@drawable/themed_icon_clock</item>
+        <item>com.android.launcher3.HOUR_LAYER_INDEX</item>
+        <item>0</item>
+        <item>com.android.launcher3.MINUTE_LAYER_INDEX</item>
+        <item>1</item>
+        <item>com.android.launcher3.DEFAULT_HOUR</item>
+        <item>10</item>
+        <item>com.android.launcher3.DEFAULT_MINUTE</item>
+        <item>10</item>
+    </array>
+</resources>

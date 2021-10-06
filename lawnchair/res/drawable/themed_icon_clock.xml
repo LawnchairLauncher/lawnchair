@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <rotate android:fromDegrees="300" android:toDegrees="5300" android:pivotX="50%" android:pivotY="50%">
+            <inset android:inset="16%">
+                <vector android:height="60dp" android:width="60dp" android:viewportWidth="60" android:viewportHeight="60">
+                    <path android:fillColor="@android:color/white" android:pathData="M 30 31 L 30 31 C 30.552 31 31 30.552 31 30 L 31 12 C 31 11.448 30.552 11 30 11 L 30 11 C 29.448 11 29 11.448 29 12 L 29 30 C 29 30.552 29.448 31 30 31 Z"/>
+                </vector>
+            </inset>
+        </rotate>
+    </item>
+    <item>
+        <rotate android:fromDegrees="60" android:toDegrees="60060" android:pivotX="50%" android:pivotY="50%">
+            <inset android:inset="16%">
+                <vector android:height="60dp" android:width="60dp" android:viewportWidth="60" android:viewportHeight="60">
+                    <path android:fillColor="@android:color/white" android:pathData="M 30 7.021 H 30 A 1 1 0 0 1 31 8.021 V 30.021 A 1 1 0 0 1 30 31.021 H 30 A 1 1 0 0 1 29 30.021 V 8.021 A 1 1 0 0 1 30 7.021 Z"/>
+                    <path android:fillColor="@android:color/white" android:pathData="M 33 30 C 33 28.343 31.657 27 30 27 C 28.343 27 27 28.343 27 30 C 27 31.657 28.343 33 30 33 C 31.657 33 33 31.657 33 30 Z"/>
+                </vector>
+            </inset>
+        </rotate>
+    </item>
+</layer-list>
