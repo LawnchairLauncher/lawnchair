@@ -43,7 +43,8 @@
 
     <attr name="folderDotColor" format="color" />
     <attr name="folderPaginationColor" format="color" />
-    <attr name="folderFillColor" format="color" />
+    <attr name="folderPreviewColor" format="color" />
+    <attr name="folderBackgroundColor" format="color" />
     <attr name="folderIconRadius" format="float" />
     <attr name="folderIconBorderColor" format="color" />
     <attr name="folderTextColor" format="color" />
@@ -72,7 +73,7 @@
 
     <!-- BubbleTextView specific attributes. -->
     <declare-styleable name="FolderIconPreview">
-        <attr name="folderFillColor" />
+        <attr name="folderPreviewColor" />
         <attr name="folderIconBorderColor" />
         <attr name="folderDotColor" />
     </declare-styleable>
