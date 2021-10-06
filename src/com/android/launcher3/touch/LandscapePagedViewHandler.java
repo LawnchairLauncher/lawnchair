@@ -21,11 +21,15 @@ import static android.widget.ListPopupWindow.WRAP_CONTENT;
 import static com.android.launcher3.LauncherAnimUtils.VIEW_TRANSLATE_X;
 import static com.android.launcher3.LauncherAnimUtils.VIEW_TRANSLATE_Y;
 import static com.android.launcher3.touch.SingleAxisSwipeDetector.HORIZONTAL;
+import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITION_BOTTOM_OR_RIGHT;
+import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITION_TOP_OR_LEFT;
+import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_TYPE_MAIN;
 
 import android.content.res.Resources;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.graphics.drawable.ShapeDrawable;
 import android.util.FloatProperty;
 import android.view.MotionEvent;
 import android.view.Surface;
@@ -35,9 +39,13 @@ import android.view.accessibility.AccessibilityEvent;
 import android.widget.LinearLayout;
 
 import com.android.launcher3.DeviceProfile;
-import com.android.launcher3.PagedView;
+import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.util.OverScroller;
+import com.android.launcher3.util.SplitConfigurationOptions.SplitPositionOption;
+import com.android.launcher3.views.BaseDragLayer;
+
+import java.util.Collections;
+import java.util.List;
 
 public class LandscapePagedViewHandler implements PagedOrientationHandler {
 
@@ -52,31 +60,23 @@ public class LandscapePagedViewHandler implements PagedOrientationHandler {
     }
 
     @Override
-    public void delegateScrollTo(PagedView pagedView, int secondaryScroll, int minMaxScroll) {
-        pagedView.superScrollTo(secondaryScroll, minMaxScroll);
+    public int getPrimaryValue(int x, int y) {
+        return y;
     }
 
     @Override
-    public void delegateScrollBy(PagedView pagedView, int unboundedScroll, int x, int y) {
-        pagedView.scrollTo(pagedView.getScrollX() + x, unboundedScroll + y);
+    public int getSecondaryValue(int x, int y) {
+        return x;
     }
 
     @Override
-    public void scrollerStartScroll(OverScroller scroller, int newPosition) {
-        scroller.startScroll(scroller.getCurrPos(), newPosition - scroller.getCurrPos());
+    public float getPrimaryValue(float x, float y) {
+        return y;
     }
 
     @Override
-    public void getCurveProperties(PagedView view, Rect insets, CurveProperties out) {
-        out.scroll = view.getScrollY();
-        out.halfPageSize = view.getNormalChildHeight() / 2;
-        out.halfScreenSize = view.getMeasuredHeight() / 2;
-        out.screenCenter = insets.top + view.getPaddingTop() + out.scroll + out.halfPageSize;
-    }
-
-    @Override
-    public boolean isGoingUp(float displacement, boolean isRtl) {
-        return isRtl ? displacement < 0 : displacement > 0;
+    public float getSecondaryValue(float x, float y) {
+        return x;
     }
 
     @Override
@@ -89,11 +89,6 @@ public class LandscapePagedViewHandler implements PagedOrientationHandler {
         float oldX = velocity.x;
         float oldY = velocity.y;
         velocity.set(-oldY, oldX);
-    }
-
-    @Override
-    public void delegateScrollTo(PagedView pagedView, int primaryScroll) {
-        pagedView.superScrollTo(pagedView.getScrollX(), primaryScroll);
     }
 
     @Override
@@ -127,12 +122,27 @@ public class LandscapePagedViewHandler implements PagedOrientationHandler {
     }
 
     @Override
+    public int getPrimarySize(View view) {
+        return view.getHeight();
+    }
+
+    @Override
     public float getPrimarySize(RectF rect) {
         return rect.height();
     }
 
     @Override
-    public int getClearAllScrollOffset(View view, boolean isRtl) {
+    public float getStart(RectF rect) {
+        return rect.top;
+    }
+
+    @Override
+    public float getEnd(RectF rect) {
+        return rect.bottom;
+    }
+
+    @Override
+    public int getClearAllSidePadding(View view, boolean isRtl) {
         return (isRtl ? view.getPaddingBottom() : - view.getPaddingTop()) / 2;
     }
 
@@ -152,9 +162,16 @@ public class LandscapePagedViewHandler implements PagedOrientationHandler {
     }
 
     @Override
-    public void setPrimaryAndResetSecondaryTranslate(View view, float translation) {
-        view.setTranslationX(0);
-        view.setTranslationY(translation);
+    public int getSplitTaskViewDismissDirection(SplitPositionOption splitPosition,
+            DeviceProfile dp) {
+        // Don't use device profile here because we know we're in fake landscape, only split option
+        // available is top/left
+        if (splitPosition.mStagePosition == STAGE_POSITION_TOP_OR_LEFT) {
+            // Top (visually left) side
+            return SPLIT_TRANSLATE_PRIMARY_NEGATIVE;
+        }
+        throw new IllegalStateException("Invalid split stage position: " +
+                splitPosition.mStagePosition);
     }
 
     @Override
@@ -214,11 +231,6 @@ public class LandscapePagedViewHandler implements PagedOrientationHandler {
     }
 
     @Override
-    public SingleAxisSwipeDetector.Direction getOppositeSwipeDirection() {
-        return HORIZONTAL;
-    }
-
-    @Override
     public int getPrimaryTranslationDirectionFactor() {
         return -1;
     }
@@ -228,18 +240,27 @@ public class LandscapePagedViewHandler implements PagedOrientationHandler {
     }
 
     @Override
-    public int getTaskDragDisplacementFactor(boolean isRtl) {
-        return isRtl ? 1 : -1;
+    public int getSplitTranslationDirectionFactor(int stagePosition) {
+        if (stagePosition == STAGE_POSITION_BOTTOM_OR_RIGHT) {
+            return -1;
+        } else {
+            return 1;
+        }
     }
 
     @Override
-    public float getTaskMenuX(float x, View thumbnailView) {
+    public int getSplitAnimationTranslation(int translationOffset, DeviceProfile dp) {
+        return translationOffset;
+    }
+
+    @Override
+    public float getTaskMenuX(float x, View thumbnailView, int overScroll) {
         return thumbnailView.getMeasuredWidth() + x;
     }
 
     @Override
-    public float getTaskMenuY(float y, View thumbnailView) {
-        return y;
+    public float getTaskMenuY(float y, View thumbnailView, int overScroll) {
+        return y + overScroll;
     }
 
     @Override
@@ -248,17 +269,61 @@ public class LandscapePagedViewHandler implements PagedOrientationHandler {
     }
 
     @Override
-    public int getTaskMenuLayoutOrientation(boolean canRecentsActivityRotate,
-        LinearLayout taskMenuLayout) {
-        return LinearLayout.HORIZONTAL;
+    public void setTaskOptionsMenuLayoutOrientation(DeviceProfile deviceProfile,
+            LinearLayout taskMenuLayout, int dividerSpacing,
+            ShapeDrawable dividerDrawable) {
+        taskMenuLayout.setOrientation(LinearLayout.HORIZONTAL);
+        dividerDrawable.setIntrinsicWidth(dividerSpacing);
+        taskMenuLayout.setDividerDrawable(dividerDrawable);
     }
 
     @Override
-    public void setLayoutParamsForTaskMenuOptionItem(LinearLayout.LayoutParams lp) {
+    public void setLayoutParamsForTaskMenuOptionItem(LinearLayout.LayoutParams lp,
+            LinearLayout viewGroup, DeviceProfile deviceProfile) {
+        // Phone fake landscape
+        viewGroup.setOrientation(LinearLayout.VERTICAL);
         lp.width = 0;
         lp.height = WRAP_CONTENT;
         lp.weight = 1;
+        Utilities.setStartMarginForView(viewGroup.findViewById(R.id.text), 0);
+        Utilities.setStartMarginForView(viewGroup.findViewById(R.id.icon), 0);
     }
+
+    @Override
+    public void setTaskMenuAroundTaskView(LinearLayout taskView, float margin) {
+        BaseDragLayer.LayoutParams lp = (BaseDragLayer.LayoutParams) taskView.getLayoutParams();
+        lp.topMargin += margin;
+    }
+
+    @Override
+    public PointF getAdditionalInsetForTaskMenu(float margin) {
+        return new PointF(margin, 0);
+    }
+
+    /* ---------- The following are only used by TaskViewTouchHandler. ---------- */
+
+    @Override
+    public SingleAxisSwipeDetector.Direction getUpDownSwipeDirection() {
+        return HORIZONTAL;
+    }
+
+    @Override
+    public int getUpDirection(boolean isRtl) {
+        return isRtl ? SingleAxisSwipeDetector.DIRECTION_NEGATIVE
+                : SingleAxisSwipeDetector.DIRECTION_POSITIVE;
+    }
+
+    @Override
+    public boolean isGoingUp(float displacement, boolean isRtl) {
+        return isRtl ? displacement < 0 : displacement > 0;
+    }
+
+    @Override
+    public int getTaskDragDisplacementFactor(boolean isRtl) {
+        return isRtl ? 1 : -1;
+    }
+
+    /* -------------------- */
 
     @Override
     public ChildBounds getChildBounds(View child, int childStart, int pageCenter,
@@ -277,5 +342,19 @@ public class LandscapePagedViewHandler implements PagedOrientationHandler {
     @Override
     public int getDistanceToBottomOfRect(DeviceProfile dp, Rect rect) {
         return rect.left;
+    }
+
+    @Override
+    public List<SplitPositionOption> getSplitPositionOptions(DeviceProfile dp) {
+        // Add "left" side of phone which is actually the top
+        return Collections.singletonList(new SplitPositionOption(
+                R.drawable.ic_split_screen, R.string.split_screen_position_left,
+                STAGE_POSITION_TOP_OR_LEFT, STAGE_TYPE_MAIN));
+    }
+
+    @Override
+    public FloatProperty getSplitSelectTaskOffset(FloatProperty primary, FloatProperty secondary,
+            DeviceProfile deviceProfile) {
+        return primary;
     }
 }

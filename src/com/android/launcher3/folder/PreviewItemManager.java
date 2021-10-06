@@ -16,7 +16,6 @@
 
 package com.android.launcher3.folder;
 
-import static com.android.launcher3.FastBitmapDrawable.newIcon;
 import static com.android.launcher3.folder.ClippedFolderIconLayoutRule.ENTER_INDEX;
 import static com.android.launcher3.folder.ClippedFolderIconLayoutRule.EXIT_INDEX;
 import static com.android.launcher3.folder.ClippedFolderIconLayoutRule.MAX_NUM_ITEMS_IN_PREVIEW;
@@ -29,16 +28,19 @@ import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Path;
+import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.util.FloatProperty;
 import android.view.View;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 
+import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.graphics.PreloadIconDrawable;
+import com.android.launcher3.model.data.ItemInfoWithIcon;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.views.ActivityContext;
 
@@ -81,6 +83,10 @@ public class PreviewItemManager {
     // These hold the current page preview items. It is empty if the current page is the first page.
     private ArrayList<PreviewItemDrawingParams> mCurrentPageParams = new ArrayList<>();
 
+    // We clip the preview items during the middle of the animation, so that it does not go outside
+    // of the visual shape. We stop clipping at this threshold, since the preview items ultimately
+    // do not get cropped in their resting state.
+    private final float mClipThreshold;
     private float mCurrentPageItemsTransX = 0;
     private boolean mShouldSlideInFirstPage;
 
@@ -96,6 +102,7 @@ public class PreviewItemManager {
         mIcon = icon;
         mIconSize = ActivityContext.lookupContext(
                 mContext).getDeviceProfile().folderChildIconSizePx;
+        mClipThreshold = Utilities.dpToPx(1f);
     }
 
     /**
@@ -112,7 +119,7 @@ public class PreviewItemManager {
     }
 
     Drawable prepareCreateAnimation(final View destView) {
-        Drawable animateDrawable = ((TextView) destView).getCompoundDrawables()[1];
+        Drawable animateDrawable = ((BubbleTextView) destView).getIcon();
         computePreviewDrawingParams(animateDrawable.getIntrinsicWidth(),
                 destView.getMeasuredWidth());
         mReferenceDrawable = animateDrawable;
@@ -163,41 +170,60 @@ public class PreviewItemManager {
     }
 
     public void drawParams(Canvas canvas, ArrayList<PreviewItemDrawingParams> params,
-            float transX) {
-        canvas.translate(transX, 0);
+            PointF offset, boolean shouldClipPath, Path clipPath) {
         // The first item should be drawn last (ie. on top of later items)
         for (int i = params.size() - 1; i >= 0; i--) {
             PreviewItemDrawingParams p = params.get(i);
             if (!p.hidden) {
-                drawPreviewItem(canvas, p);
+                // Exiting param should always be clipped.
+                boolean isExiting = p.index == EXIT_INDEX;
+                drawPreviewItem(canvas, p, offset, isExiting | shouldClipPath, clipPath);
             }
         }
-        canvas.translate(-transX, 0);
     }
 
+    /**
+     * Draws the preview items on {@param canvas}.
+     */
     public void draw(Canvas canvas) {
+        int saveCount = canvas.getSaveCount();
         // The items are drawn in coordinates relative to the preview offset
         PreviewBackground bg = mIcon.getFolderBackground();
-        canvas.translate(bg.basePreviewOffsetX, bg.basePreviewOffsetY);
-
+        Path clipPath = bg.getClipPath();
         float firstPageItemsTransX = 0;
         if (mShouldSlideInFirstPage) {
-            drawParams(canvas, mCurrentPageParams, mCurrentPageItemsTransX);
-
+            PointF firstPageOffset = new PointF(bg.basePreviewOffsetX + mCurrentPageItemsTransX,
+                    bg.basePreviewOffsetY);
+            boolean shouldClip = mCurrentPageItemsTransX > mClipThreshold;
+            drawParams(canvas, mCurrentPageParams, firstPageOffset, shouldClip, clipPath);
             firstPageItemsTransX = -ITEM_SLIDE_IN_OUT_DISTANCE_PX + mCurrentPageItemsTransX;
         }
 
-        drawParams(canvas, mFirstPageParams, firstPageItemsTransX);
-        canvas.translate(-bg.basePreviewOffsetX, -bg.basePreviewOffsetY);
+        PointF firstPageOffset = new PointF(bg.basePreviewOffsetX + firstPageItemsTransX,
+                bg.basePreviewOffsetY);
+        boolean shouldClipFirstPage = firstPageItemsTransX < -mClipThreshold;
+        drawParams(canvas, mFirstPageParams, firstPageOffset, shouldClipFirstPage, clipPath);
+        canvas.restoreToCount(saveCount);
     }
 
     public void onParamsChanged() {
         mIcon.invalidate();
     }
 
-    private void drawPreviewItem(Canvas canvas, PreviewItemDrawingParams params) {
+    /**
+     * Draws each preview item.
+     *
+     * @param offset The offset needed to draw the preview items.
+     * @param shouldClipPath Iff true, clip path using {@param clipPath}.
+     * @param clipPath The clip path of the folder icon.
+     */
+    private void drawPreviewItem(Canvas canvas, PreviewItemDrawingParams params, PointF offset,
+            boolean shouldClipPath, Path clipPath) {
         canvas.save();
-        canvas.translate(params.transX, params.transY);
+        if (shouldClipPath) {
+            canvas.clipPath(clipPath);
+        }
+        canvas.translate(offset.x + params.transX, offset.y + params.transY);
         canvas.scale(params.scale, params.scale);
         Drawable d = params.drawable;
 
@@ -234,7 +260,7 @@ public class PreviewItemManager {
             params.remove(params.size() - 1);
         }
         while (items.size() > params.size()) {
-            params.add(new PreviewItemDrawingParams(0, 0, 0, 0));
+            params.add(new PreviewItemDrawingParams(0, 0, 0));
         }
 
         int numItemsInFirstPagePreview = page == 0 ? items.size() : MAX_NUM_ITEMS_IN_PREVIEW;
@@ -243,6 +269,9 @@ public class PreviewItemManager {
             setDrawable(p, items.get(i));
 
             if (!animate) {
+                if (p.anim != null) {
+                    p.anim.cancel();
+                }
                 computePreviewItemDrawingParams(i, numItemsInFirstPagePreview, p);
                 if (mReferenceDrawable == null) {
                     mReferenceDrawable = p.drawable;
@@ -394,12 +423,13 @@ public class PreviewItemManager {
     }
 
     private void setDrawable(PreviewItemDrawingParams p, WorkspaceItemInfo item) {
-        if (item.hasPromiseIconUi()) {
+        if (item.hasPromiseIconUi() || (item.runtimeStatusFlags
+                    & ItemInfoWithIcon.FLAG_SHOW_DOWNLOAD_PROGRESS_MASK) != 0) {
             PreloadIconDrawable drawable = newPendingIcon(mContext, item);
-            drawable.setLevel(item.getInstallProgress());
+            drawable.setLevel(item.getProgressLevel());
             p.drawable = drawable;
         } else {
-            p.drawable = newIcon(mContext, item);
+            p.drawable = item.newIcon(mContext, true);
         }
         p.drawable.setBounds(0, 0, mIconSize, mIconSize);
         p.item = item;

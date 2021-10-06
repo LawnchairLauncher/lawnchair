@@ -19,7 +19,6 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="recent_task_option_split_screen" msgid="5353188922202653570">"Gesplitst scherm"</string>
     <string name="recent_task_option_pin" msgid="7929860679018978258">"Vastzetten"</string>
     <string name="recent_task_option_freeform" msgid="48863056265284071">"Vrije vorm"</string>
     <string name="recents_empty_message" msgid="7040467240571714191">"Geen recente items"</string>
@@ -46,7 +45,40 @@
     <string name="hotsaet_tip_prediction_enabled" msgid="2233554377501347650">"App-suggesties zijn ingeschakeld"</string>
     <string name="hotsaet_tip_prediction_disabled" msgid="1506426298884658491">"App-suggesties zijn uitgeschakeld"</string>
     <string name="hotseat_prediction_content_description" msgid="4582028296938078419">"Voorspelde app: <xliff:g id="TITLE">%1$s</xliff:g>"</string>
+    <string name="back_gesture_feedback_swipe_too_far_from_left_edge" msgid="340972404868601012">"Swipe helemaal vanaf de linkerrand."</string>
+    <string name="back_gesture_feedback_cancelled_left_edge" msgid="6671316150388702530">"Swipe vanaf de linkerrand naar het midden van het scherm en laat los."</string>
+    <string name="back_gesture_feedback_complete_left_edge" msgid="3220478647881674266">"Dat is alles. Swipe nu vanaf de rechterrand."</string>
+    <string name="back_gesture_feedback_swipe_too_far_from_right_edge" msgid="4306700023773832353">"Swipe helemaal vanaf de rechterrand."</string>
+    <string name="back_gesture_feedback_cancelled_right_edge" msgid="4951916546256902552">"Swipe vanaf de rechterrand naar het midden van het scherm en laat los."</string>
+    <string name="back_gesture_feedback_complete" msgid="7261221999760772210">"Je hebt het gebaar Terug voltooid. Ontdek nu hoe je naar het startscherm gaat."</string>
+    <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="1148198467090405643">"Swipe niet te dicht bij de onderkant van het scherm."</string>
+    <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"Open Instellingen om de gevoeligheid van Terug te wijzigen"</string>
+    <string name="back_gesture_intro_title" msgid="19551256430224428">"Swipe om terug te gaan"</string>
+    <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"Swipe vanaf de linker- of rechterrand naar het midden om terug te gaan naar het vorige scherm."</string>
+    <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"Swipe vanaf de onderrand van het scherm omhoog."</string>
+    <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"Pauzeer niet voordat je loslaat."</string>
+    <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"Swipe recht omhoog."</string>
+    <string name="home_gesture_feedback_complete" msgid="2324789183070815517">"Je hebt het gebaar Naar startscherm voltooid. Ontdek nu hoe je tussen apps schakelt."</string>
+    <string name="home_gesture_intro_title" msgid="836590312858441830">"Swipe om naar het startscherm te gaan"</string>
+    <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"Swipe omhoog vanaf de onderkant van het scherm. Met dit gebaar ga je altijd naar het startscherm."</string>
+    <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"Swipe vanaf de onderrand van het scherm omhoog."</string>
+    <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"Houd het venster langer vast voordat je loslaat."</string>
+    <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"Swipe recht omhoog en pauzeer dan."</string>
+    <string name="overview_gesture_feedback_complete" msgid="5477014491632199169">"Je hebt het gebaar Schakelen tussen apps voltooid. Je kunt nu je telefoon gebruiken."</string>
+    <string name="overview_gesture_intro_title" msgid="2902054412868489378">"Swipe om tussen apps te schakelen"</string>
+    <string name="overview_gesture_intro_subtitle" msgid="1579517193845186042">"Swipe omhoog vanaf de onderkant van het scherm, houd vast en laat dan los."</string>
+    <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"Klaar"</string>
+    <string name="gesture_tutorial_action_button_label_next" msgid="2556263116424738762">"Volgende"</string>
+    <string name="gesture_tutorial_action_button_label_done" msgid="671834508127014231">"Klaar"</string>
+    <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"Instellingen"</string>
+    <string name="gesture_tutorial_try_again" msgid="65962545858556697">"Opnieuw"</string>
+    <string name="gesture_tutorial_nice" msgid="2936275692616928280">"Dat gaat lekker."</string>
+    <string name="gesture_tutorial_step" msgid="1279786122817620968">"Tutorial <xliff:g id="CURRENT">%1$d</xliff:g>/<xliff:g id="TOTAL">%2$d</xliff:g>"</string>
     <string name="action_share" msgid="2648470652637092375">"Delen"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"Screenshot"</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"Deze actie wordt niet toegestaan door de app of je organisatie"</string>
+    <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"Navigatietutorial overslaan?"</string>
+    <string name="skip_tutorial_dialog_subtitle" msgid="544063326241955662">"Je vindt dit later terug in de app <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="gesture_tutorial_action_button_label_cancel" msgid="3809842569351264108">"Annuleren"</string>
+    <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"Overslaan"</string>
 </resources>

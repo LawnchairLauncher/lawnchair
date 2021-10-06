@@ -15,51 +15,26 @@
  */
 package com.android.launcher3.views;
 
-import static androidx.dynamicanimation.animation.SpringForce.DAMPING_RATIO_MEDIUM_BOUNCY;
-import static androidx.dynamicanimation.animation.SpringForce.STIFFNESS_LOW;
-import static androidx.dynamicanimation.animation.SpringForce.STIFFNESS_MEDIUM;
-
 import android.content.Context;
 import android.graphics.Canvas;
 import android.util.AttributeSet;
-import android.util.SparseBooleanArray;
-import android.view.View;
 import android.widget.EdgeEffect;
 import android.widget.RelativeLayout;
 
 import androidx.annotation.NonNull;
-import androidx.dynamicanimation.animation.DynamicAnimation;
-import androidx.dynamicanimation.animation.FloatPropertyCompat;
-import androidx.dynamicanimation.animation.SpringAnimation;
-import androidx.dynamicanimation.animation.SpringForce;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.RecyclerView.EdgeEffectFactory;
 
+import com.android.launcher3.Utilities;
+
+/**
+ * View group to allow rendering overscroll effect in a child at the parent level
+ */
 public class SpringRelativeLayout extends RelativeLayout {
 
-    private static final float STIFFNESS = (STIFFNESS_MEDIUM + STIFFNESS_LOW) / 2;
-    private static final float DAMPING_RATIO = DAMPING_RATIO_MEDIUM_BOUNCY;
-    private static final float VELOCITY_MULTIPLIER = 0.3f;
-
-    private static final FloatPropertyCompat<SpringRelativeLayout> DAMPED_SCROLL =
-            new FloatPropertyCompat<SpringRelativeLayout>("value") {
-
-                @Override
-                public float getValue(SpringRelativeLayout object) {
-                    return object.mDampedScrollShift;
-                }
-
-                @Override
-                public void setValue(SpringRelativeLayout object, float value) {
-                    object.setDampedScrollShift(value);
-                }
-            };
-
-    protected final SparseBooleanArray mSpringViews = new SparseBooleanArray();
-    private final SpringAnimation mSpring;
-
-    private float mDampedScrollShift = 0;
-    private SpringEdgeEffect mActiveEdge;
+    // fixed edge at the time force is applied
+    private final EdgeEffect mEdgeGlowTop;
+    private final EdgeEffect mEdgeGlowBottom;
 
     public SpringRelativeLayout(Context context) {
         this(context, null);
@@ -71,98 +46,79 @@ public class SpringRelativeLayout extends RelativeLayout {
 
     public SpringRelativeLayout(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        mSpring = new SpringAnimation(this, DAMPED_SCROLL, 0);
-        mSpring.setSpring(new SpringForce(0)
-                .setStiffness(STIFFNESS)
-                .setDampingRatio(DAMPING_RATIO));
-    }
-
-    public void addSpringView(int id) {
-        mSpringViews.put(id, true);
-    }
-
-    public void removeSpringView(int id) {
-        mSpringViews.delete(id);
-        invalidate();
-    }
-
-    /**
-     * Used to clip the canvas when drawing child views during overscroll.
-     */
-    public int getCanvasClipTopForOverscroll() {
-        return 0;
+        mEdgeGlowTop = Utilities.ATLEAST_S
+                ? new EdgeEffect(context, attrs) : new EdgeEffect(context);
+        mEdgeGlowBottom = Utilities.ATLEAST_S
+                ? new EdgeEffect(context, attrs) : new EdgeEffect(context);
+        setWillNotDraw(false);
     }
 
     @Override
-    protected boolean drawChild(Canvas canvas, View child, long drawingTime) {
-        if (mDampedScrollShift != 0 && mSpringViews.get(child.getId())) {
-            int saveCount = canvas.save();
-
-            canvas.clipRect(0, getCanvasClipTopForOverscroll(), getWidth(), getHeight());
-            canvas.translate(0, mDampedScrollShift);
-            boolean result = super.drawChild(canvas, child, drawingTime);
-
-            canvas.restoreToCount(saveCount);
-
-            return result;
+    public void draw(Canvas canvas) {
+        super.draw(canvas);
+        if (!mEdgeGlowTop.isFinished()) {
+            final int restoreCount = canvas.save();
+            canvas.translate(0, 0);
+            mEdgeGlowTop.setSize(getWidth(), getHeight());
+            if (mEdgeGlowTop.draw(canvas)) {
+                postInvalidateOnAnimation();
+            }
+            canvas.restoreToCount(restoreCount);
         }
-        return super.drawChild(canvas, child, drawingTime);
-    }
-
-    private void setActiveEdge(SpringEdgeEffect edge) {
-        if (mActiveEdge != edge && mActiveEdge != null) {
-            mActiveEdge.mDistance = 0;
-        }
-        mActiveEdge = edge;
-    }
-
-    protected void setDampedScrollShift(float shift) {
-        if (shift != mDampedScrollShift) {
-            mDampedScrollShift = shift;
-            invalidate();
+        if (!mEdgeGlowBottom.isFinished()) {
+            final int restoreCount = canvas.save();
+            final int width = getWidth();
+            final int height = getHeight();
+            canvas.translate(-width, height);
+            canvas.rotate(180, width, 0);
+            mEdgeGlowBottom.setSize(width, height);
+            if (mEdgeGlowBottom.draw(canvas)) {
+                postInvalidateOnAnimation();
+            }
+            canvas.restoreToCount(restoreCount);
         }
     }
 
-    private void finishScrollWithVelocity(float velocity) {
-        mSpring.setStartVelocity(velocity);
-        mSpring.setStartValue(mDampedScrollShift);
-        mSpring.start();
+
+    /**
+     * Absorbs the velocity as a result for swipe-up fling
+     */
+    protected void absorbSwipeUpVelocity(int velocity) {
+        mEdgeGlowBottom.onAbsorb(velocity);
+        invalidate();
     }
 
-    protected void finishWithShiftAndVelocity(float shift, float velocity,
-            DynamicAnimation.OnAnimationEndListener listener) {
-        setDampedScrollShift(shift);
-        mSpring.addEndListener(listener);
-        finishScrollWithVelocity(velocity);
+    protected void absorbPullDeltaDistance(float deltaDistance, float displacement) {
+        mEdgeGlowBottom.onPull(deltaDistance, displacement);
+        invalidate();
+    }
+
+    public void onRelease() {
+        mEdgeGlowBottom.onRelease();
     }
 
     public EdgeEffectFactory createEdgeEffectFactory() {
-        return new SpringEdgeEffectFactory();
+        return new ProxyEdgeEffectFactory();
     }
 
-    private class SpringEdgeEffectFactory extends EdgeEffectFactory {
+    private class ProxyEdgeEffectFactory extends EdgeEffectFactory {
 
         @NonNull @Override
         protected EdgeEffect createEdgeEffect(RecyclerView view, int direction) {
-            switch (direction) {
-                case DIRECTION_TOP:
-                    return new SpringEdgeEffect(getContext(), +VELOCITY_MULTIPLIER);
-                case DIRECTION_BOTTOM:
-                    return new SpringEdgeEffect(getContext(), -VELOCITY_MULTIPLIER);
+            if (direction == DIRECTION_TOP) {
+                return new EdgeEffectProxy(getContext(), mEdgeGlowTop);
             }
             return super.createEdgeEffect(view, direction);
         }
     }
 
-    private class SpringEdgeEffect extends EdgeEffect {
+    private class EdgeEffectProxy extends EdgeEffect {
 
-        private final float mVelocityMultiplier;
+        private final EdgeEffect mParent;
 
-        private float mDistance;
-
-        public SpringEdgeEffect(Context context, float velocityMultiplier) {
+        EdgeEffectProxy(Context context, EdgeEffect parent) {
             super(context);
-            mVelocityMultiplier = velocityMultiplier;
+            mParent = parent;
         }
 
         @Override
@@ -170,22 +126,44 @@ public class SpringRelativeLayout extends RelativeLayout {
             return false;
         }
 
+        private void invalidateParentScrollEffect() {
+            if (!mParent.isFinished()) {
+                invalidate();
+            }
+        }
+
         @Override
         public void onAbsorb(int velocity) {
-            finishScrollWithVelocity(velocity * mVelocityMultiplier);
+            mParent.onAbsorb(velocity);
+            invalidateParentScrollEffect();
+        }
+
+        @Override
+        public void onPull(float deltaDistance) {
+            mParent.onPull(deltaDistance);
+            invalidateParentScrollEffect();
         }
 
         @Override
         public void onPull(float deltaDistance, float displacement) {
-            setActiveEdge(this);
-            mDistance += deltaDistance * (mVelocityMultiplier / 3f);
-            setDampedScrollShift(mDistance * getHeight());
+            mParent.onPull(deltaDistance, displacement);
+            invalidateParentScrollEffect();
         }
 
         @Override
         public void onRelease() {
-            mDistance = 0;
-            finishScrollWithVelocity(0);
+            mParent.onRelease();
+            invalidateParentScrollEffect();
+        }
+
+        @Override
+        public void finish() {
+            mParent.finish();
+        }
+
+        @Override
+        public boolean isFinished() {
+            return mParent.isFinished();
         }
     }
 }

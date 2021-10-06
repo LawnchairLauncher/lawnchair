@@ -15,6 +15,8 @@
  */
 package com.android.launcher3.model;
 
+import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
+
 import android.content.Context;
 import android.util.Log;
 
@@ -52,8 +54,14 @@ public class ModelPreload implements ModelUpdateTask {
     public final void run() {
         mModel.startLoaderForResultsIfNotLoaded(
                 new LoaderResults(mApp, mBgDataModel, mAllAppsList, new Callbacks[0]));
-        Log.d(TAG, "Preload completed : " + mModel.isModelLoaded());
-        onComplete(mModel.isModelLoaded());
+        MODEL_EXECUTOR.post(() -> {
+            Log.d(TAG, "Preload completed : " + mModel.isModelLoaded());
+            onComplete(mModel.isModelLoaded());
+        });
+    }
+
+    public BgDataModel getBgDataModel() {
+        return mBgDataModel;
     }
 
     /**

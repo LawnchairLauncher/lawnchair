@@ -15,13 +15,15 @@
  */
 package com.android.launcher3.widget;
 
+import static android.appwidget.AppWidgetProviderInfo.WIDGET_FEATURE_CONFIGURATION_OPTIONAL;
+import static android.appwidget.AppWidgetProviderInfo.WIDGET_FEATURE_RECONFIGURABLE;
+
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.android.launcher3.Launcher;
-import com.android.launcher3.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.LauncherAppWidgetInfo;
 import com.android.launcher3.util.PendingRequestArgs;
@@ -79,8 +81,22 @@ public class WidgetAddFlowHandler implements Parcelable {
         return true;
     }
 
+    /**
+     * Checks whether the widget needs configuration.
+     *
+     * A widget needs configuration if (1) it has a configuration activity and (2)
+     * it's configuration is not optional.
+     *
+     * @return true if the widget needs configuration, false otherwise.
+     */
     public boolean needsConfigure() {
-        return mProviderInfo.configure != null;
+        int featureFlags = mProviderInfo.widgetFeatures;
+        // A widget's configuration is optional only if it's configuration is marked as optional AND
+        // it can be reconfigured later.
+        boolean configurationOptional = (featureFlags & WIDGET_FEATURE_CONFIGURATION_OPTIONAL) != 0
+                && (featureFlags & WIDGET_FEATURE_RECONFIGURABLE) != 0;
+
+        return mProviderInfo.configure != null && !configurationOptional;
     }
 
     public LauncherAppWidgetProviderInfo getProviderInfo(Context context) {

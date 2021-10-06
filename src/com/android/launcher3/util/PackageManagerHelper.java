@@ -37,7 +37,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.PatternMatcher;
-import android.os.Process;
 import android.os.UserHandle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -49,8 +48,8 @@ import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.ItemInfo;
+import com.android.launcher3.model.data.ItemInfoWithIcon;
 import com.android.launcher3.model.data.LauncherAppWidgetInfo;
-import com.android.launcher3.model.data.PromiseAppInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 
 import java.net.URISyntaxException;
@@ -93,44 +92,28 @@ public class PackageManagerHelper {
     }
 
     /**
+     * Returns whether the target app is installed for a given user
+     */
+    public boolean isAppInstalled(String packageName, UserHandle user) {
+        ApplicationInfo info = getApplicationInfo(packageName, user, 0);
+        return info != null;
+    }
+
+    /**
      * Returns the application info for the provided package or null
      */
     public ApplicationInfo getApplicationInfo(String packageName, UserHandle user, int flags) {
-        if (Utilities.ATLEAST_OREO) {
-            try {
-                ApplicationInfo info = mLauncherApps.getApplicationInfo(packageName, flags, user);
-                return (info.flags & ApplicationInfo.FLAG_INSTALLED) == 0 || !info.enabled
-                        ? null : info;
-            } catch (PackageManager.NameNotFoundException e) {
-                return null;
-            }
-        } else {
-            final boolean isPrimaryUser = Process.myUserHandle().equals(user);
-            if (!isPrimaryUser && (flags == 0)) {
-                // We are looking for an installed app on a secondary profile. Prior to O, the only
-                // entry point for work profiles is through the LauncherActivity.
-                List<LauncherActivityInfo> activityList =
-                        mLauncherApps.getActivityList(packageName, user);
-                return activityList.size() > 0 ? activityList.get(0).getApplicationInfo() : null;
-            }
-            try {
-                ApplicationInfo info = mPm.getApplicationInfo(packageName, flags);
-                // There is no way to check if the app is installed for managed profile. But for
-                // primary profile, we can still have this check.
-                if (isPrimaryUser && ((info.flags & ApplicationInfo.FLAG_INSTALLED) == 0)
-                        || !info.enabled) {
-                    return null;
-                }
-                return info;
-            } catch (PackageManager.NameNotFoundException e) {
-                // Package not found
-                return null;
-            }
+        try {
+            ApplicationInfo info = mLauncherApps.getApplicationInfo(packageName, flags, user);
+            return (info.flags & ApplicationInfo.FLAG_INSTALLED) == 0 || !info.enabled
+                    ? null : info;
+        } catch (PackageManager.NameNotFoundException e) {
+            return null;
         }
     }
 
     public boolean isSafeMode() {
-        return mContext.getPackageManager().isSafeMode();
+        return mPm.isSafeMode();
     }
 
     public Intent getAppLaunchIntent(String pkg, UserHandle user) {
@@ -226,9 +209,12 @@ public class PackageManagerHelper {
      * Starts the details activity for {@code info}
      */
     public void startDetailsActivityForInfo(ItemInfo info, Rect sourceBounds, Bundle opts) {
-        if (info instanceof PromiseAppInfo) {
-            PromiseAppInfo promiseAppInfo = (PromiseAppInfo) info;
-            mContext.startActivity(promiseAppInfo.getMarketIntent(mContext));
+        if (info instanceof ItemInfoWithIcon
+                && (((ItemInfoWithIcon) info).runtimeStatusFlags
+                    & ItemInfoWithIcon.FLAG_INSTALL_SESSION_ACTIVE) != 0) {
+            ItemInfoWithIcon appInfo = (ItemInfoWithIcon) info;
+            mContext.startActivity(new PackageManagerHelper(mContext)
+                    .getMarketIntent(appInfo.getTargetComponent().getPackageName()));
             return;
         }
         ComponentName componentName = null;
@@ -344,5 +330,13 @@ public class PackageManagerHelper {
             Log.e(TAG, "Failed to make shortcut manager call", e);
         }
         return false;
+    }
+
+    /** Returns the incremental download progress for the given shortcut's app. */
+    public static int getLoadingProgress(LauncherActivityInfo info) {
+        if (Utilities.ATLEAST_S) {
+            return (int) (100 * info.getLoadingProgress());
+        }
+        return 100;
     }
 }

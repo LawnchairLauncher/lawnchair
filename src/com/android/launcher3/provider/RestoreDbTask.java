@@ -103,7 +103,7 @@ public class RestoreDbTask {
      */
     private void backupWorkspace(Context context, SQLiteDatabase db) throws Exception {
         InvariantDeviceProfile idp = LauncherAppState.getIDP(context);
-        new GridBackupTable(context, db, idp.numHotseatIcons, idp.numColumns, idp.numRows)
+        new GridBackupTable(context, db, idp.numDatabaseHotseatIcons, idp.numColumns, idp.numRows)
                 .doBackup(getDefaultProfileId(db), GridBackupTable.OPTION_REQUIRES_SANITIZATION);
     }
 
@@ -111,7 +111,7 @@ public class RestoreDbTask {
             @NonNull DatabaseHelper helper, @NonNull BackupManager backupManager)
             throws Exception {
         final InvariantDeviceProfile idp = LauncherAppState.getIDP(context);
-        GridBackupTable backupTable = new GridBackupTable(context, db, idp.numHotseatIcons,
+        GridBackupTable backupTable = new GridBackupTable(context, db, idp.numDatabaseHotseatIcons,
                 idp.numColumns, idp.numRows);
         if (backupTable.restoreFromRawBackupIfAvailable(getDefaultProfileId(db))) {
             int itemsDeleted = sanitizeDB(helper, db, backupManager);

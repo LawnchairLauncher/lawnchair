@@ -13,8 +13,9 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<com.android.launcher3.widget.WidgetsFullSheet
+<com.android.launcher3.widget.picker.WidgetsFullSheet
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -24,14 +25,17 @@
         android:id="@+id/container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="?android:attr/colorPrimary"
-        android:elevation="4dp">
+        android:background="?android:attr/colorBackground">
 
-        <com.android.launcher3.widget.WidgetsRecyclerView
-            android:id="@+id/widgets_list_view"
+        <TextView
+            android:id="@+id/no_widgets_text"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:clipToPadding="false" />
+            android:gravity="center"
+            android:visibility="gone"
+            android:fontFamily="sans-serif-medium"
+            android:textSize="20sp"
+            tools:text="No widgets available" />
 
         <!-- Fast scroller popup -->
         <TextView
@@ -48,5 +52,13 @@
             android:layout_alignParentEnd="true"
             android:layout_alignParentTop="true"
             android:layout_marginEnd="@dimen/fastscroll_end_margin" />
+
+        <com.android.launcher3.widget.picker.WidgetsRecyclerView
+            android:id="@+id/search_widgets_list_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:clipToPadding="false" />
+
     </com.android.launcher3.views.TopRoundedCornerView>
-</com.android.launcher3.widget.WidgetsFullSheet>
+</com.android.launcher3.widget.picker.WidgetsFullSheet>

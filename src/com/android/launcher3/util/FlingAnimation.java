@@ -70,9 +70,6 @@ public class FlingAnimation implements AnimatorUpdateListener, Runnable {
 
         mAnimationTimeFraction = ((float) mDuration) / (mDuration + DRAG_END_DELAY);
 
-        // Don't highlight the icon as it's animating
-        mDragObject.dragView.setColor(0);
-
         final int duration = mDuration + DRAG_END_DELAY;
         final long startTime = AnimationUtils.currentAnimationTimeMillis();
 

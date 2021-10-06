@@ -21,6 +21,7 @@ import com.android.launcher3.model.data.LauncherAppWidgetInfo;
 import com.android.launcher3.pm.UserCache;
 import com.android.launcher3.provider.RestoreDbTask;
 import com.android.launcher3.util.ContentWriter;
+import com.android.launcher3.widget.LauncherAppWidgetHost;
 
 public class AppWidgetsRestoredReceiver extends BroadcastReceiver {
 
@@ -86,13 +87,12 @@ public class AppWidgetsRestoredReceiver extends BroadcastReceiver {
             long mainProfileId = UserCache.INSTANCE.get(context)
                     .getSerialNumberForUser(myUserHandle());
             String oldWidgetId = Integer.toString(oldWidgetIds[i]);
-            int result = new ContentWriter(context, new ContentWriter.CommitParams(
-                    "appWidgetId=? and (restored & 1) = 1 and profileId=?",
-                    new String[] { oldWidgetId, Long.toString(mainProfileId) }))
+            final String where = "appWidgetId=? and (restored & 1) = 1 and profileId=?";
+            final String[] args = new String[] { oldWidgetId, Long.toString(mainProfileId) };
+            int result = new ContentWriter(context, new ContentWriter.CommitParams(where, args))
                     .put(LauncherSettings.Favorites.APPWIDGET_ID, newWidgetIds[i])
                     .put(LauncherSettings.Favorites.RESTORED, state)
                     .commit();
-
             if (result == 0) {
                 Cursor cursor = cr.query(Favorites.CONTENT_URI,
                         new String[] {Favorites.APPWIDGET_ID},
@@ -106,6 +106,12 @@ public class AppWidgetsRestoredReceiver extends BroadcastReceiver {
                     cursor.close();
                 }
             }
+            // attempt to update widget id in backup table as well
+            new ContentWriter(context, ContentWriter.CommitParams.backupCommitParams(
+                    "appWidgetId=? and profileId=?", args))
+                    .put(LauncherSettings.Favorites.APPWIDGET_ID, newWidgetIds[i])
+                    .put(LauncherSettings.Favorites.RESTORED, state)
+                    .commit();
         }
 
         LauncherAppState app = LauncherAppState.getInstanceNoCreate();

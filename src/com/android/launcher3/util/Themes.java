@@ -16,8 +16,12 @@
 
 package com.android.launcher3.util;
 
+import static android.app.WallpaperColors.HINT_SUPPORTS_DARK_TEXT;
+import static android.app.WallpaperColors.HINT_SUPPORTS_DARK_THEME;
+
+import android.app.WallpaperColors;
+import android.app.WallpaperManager;
 import android.content.Context;
-import android.content.res.Configuration;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.ColorMatrix;
@@ -28,33 +32,50 @@ import android.util.TypedValue;
 
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.uioverrides.WallpaperColorInfo;
+import com.android.launcher3.config.FeatureFlags;
+import com.android.launcher3.icons.GraphicsUtils;
 
 /**
  * Various utility methods associated with theming.
  */
+@SuppressWarnings("NewApi")
 public class Themes {
 
-    public static int getActivityThemeRes(Context context) {
-        WallpaperColorInfo wallpaperColorInfo = WallpaperColorInfo.INSTANCE.get(context);
-        boolean darkTheme;
-        if (Utilities.ATLEAST_Q) {
-            Configuration configuration = context.getResources().getConfiguration();
-            int nightMode = configuration.uiMode & Configuration.UI_MODE_NIGHT_MASK;
-            darkTheme = nightMode == Configuration.UI_MODE_NIGHT_YES;
-        } else {
-            darkTheme = wallpaperColorInfo.isDark();
-        }
+    public static final String KEY_THEMED_ICONS = "themed_icons";
 
-        if (darkTheme) {
-            return wallpaperColorInfo.supportsDarkText() ?
-                    R.style.AppTheme_Dark_DarkText : wallpaperColorInfo.isMainColorDark() ?
-                            R.style.AppTheme_Dark_DarkMainColor : R.style.AppTheme_Dark;
+    public static int getActivityThemeRes(Context context) {
+        final int colorHints;
+        if (Utilities.ATLEAST_P) {
+            WallpaperColors colors = context.getSystemService(WallpaperManager.class)
+                    .getWallpaperColors(WallpaperManager.FLAG_SYSTEM);
+            colorHints = colors == null ? 0 : colors.getColorHints();
         } else {
-            return wallpaperColorInfo.supportsDarkText() ?
-                    R.style.AppTheme_DarkText : wallpaperColorInfo.isMainColorDark() ?
-                            R.style.AppTheme_DarkMainColor : R.style.AppTheme;
+            colorHints = 0;
         }
+        return getActivityThemeRes(context, colorHints);
+    }
+
+    public static int getActivityThemeRes(Context context, int wallpaperColorHints) {
+        boolean supportsDarkText = Utilities.ATLEAST_S
+                && (wallpaperColorHints & HINT_SUPPORTS_DARK_TEXT) != 0;
+        boolean isMainColorDark = Utilities.ATLEAST_S
+                && (wallpaperColorHints & HINT_SUPPORTS_DARK_THEME) != 0;
+
+        if (Utilities.isDarkTheme(context)) {
+            return supportsDarkText ? R.style.AppTheme_Dark_DarkText
+                    : isMainColorDark ? R.style.AppTheme_Dark_DarkMainColor : R.style.AppTheme_Dark;
+        } else {
+            return supportsDarkText ? R.style.AppTheme_DarkText
+                    : isMainColorDark ? R.style.AppTheme_DarkMainColor : R.style.AppTheme;
+        }
+    }
+
+    /**
+     * Returns true if workspace icon theming is enabled
+     */
+    public static boolean isThemedIconEnabled(Context context) {
+        return FeatureFlags.ENABLE_THEMED_ICONS.get()
+                && Utilities.getPrefs(context).getBoolean(KEY_THEMED_ICONS, false);
     }
 
     public static String getDefaultBodyFont(Context context) {
@@ -81,11 +102,18 @@ public class Themes {
         return getAttrColor(context, android.R.attr.colorAccent);
     }
 
+    /** Returns the background color attribute. */
+    public static int getColorBackground(Context context) {
+        return getAttrColor(context, android.R.attr.colorBackground);
+    }
+
+    /** Returns the floating background color attribute. */
+    public static int getColorBackgroundFloating(Context context) {
+        return getAttrColor(context, android.R.attr.colorBackgroundFloating);
+    }
+
     public static int getAttrColor(Context context, int attr) {
-        TypedArray ta = context.obtainStyledAttributes(new int[]{attr});
-        int colorAccent = ta.getColor(0, 0);
-        ta.recycle();
-        return colorAccent;
+        return GraphicsUtils.getAttrColor(context, attr);
     }
 
     public static boolean getAttrBoolean(Context context, int attr) {
@@ -105,23 +133,6 @@ public class Themes {
     public static int getAttrInteger(Context context, int attr) {
         TypedArray ta = context.obtainStyledAttributes(new int[]{attr});
         int value = ta.getInteger(0, 0);
-        ta.recycle();
-        return value;
-    }
-
-    /**
-     * Returns the alpha corresponding to the theme attribute {@param attr}, in the range [0, 255].
-     */
-    public static int getAlpha(Context context, int attr) {
-        return (int) (255 * getFloat(context, attr, 0) + 0.5f);
-    }
-
-    /**
-     * Returns the alpha corresponding to the theme attribute {@param attr}
-     */
-    public static float getFloat(Context context, int attr, float defValue) {
-        TypedArray ta = context.obtainStyledAttributes(new int[]{attr});
-        float value = ta.getFloat(0, defValue);
         ta.recycle();
         return value;
     }

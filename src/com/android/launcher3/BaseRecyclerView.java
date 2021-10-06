@@ -16,21 +16,17 @@
 
 package com.android.launcher3;
 
-import static android.view.accessibility.AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED;
-
 import android.content.Context;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.accessibility.AccessibilityNodeInfo;
 
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.launcher3.compat.AccessibilityManagerCompat;
-import com.android.launcher3.testing.TestProtocol;
-import com.android.launcher3.views.ActivityContext;
 import com.android.launcher3.views.RecyclerViewFastScroller;
 
 
@@ -194,13 +190,20 @@ public abstract class BaseRecyclerView extends RecyclerView  {
         if (isLayoutSuppressed()) info.setScrollable(false);
     }
 
-    @Override
-    public void setLayoutFrozen(boolean frozen) {
-        final boolean changing = frozen != isLayoutSuppressed();
-        super.setLayoutFrozen(frozen);
-        if (changing) {
-            ActivityContext.lookupContext(getContext()).getDragLayer()
-                    .sendAccessibilityEvent(TYPE_WINDOW_CONTENT_CHANGED);
+    /**
+     * Scrolls this recycler view to the top.
+     */
+    public void scrollToTop() {
+        if (mScrollbar != null) {
+            mScrollbar.reattachThumbToScroll();
         }
+        if (getLayoutManager() instanceof LinearLayoutManager) {
+            LinearLayoutManager layoutManager = (LinearLayoutManager) getLayoutManager();
+            if (layoutManager.findFirstCompletelyVisibleItemPosition() == 0) {
+                // We are at the top, so don't scrollToPosition (would cause unnecessary relayout).
+                return;
+            }
+        }
+        scrollToPosition(0);
     }
 }

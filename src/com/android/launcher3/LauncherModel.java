@@ -20,7 +20,6 @@ import static com.android.launcher3.LauncherAppState.ACTION_FORCE_ROLOAD;
 import static com.android.launcher3.config.FeatureFlags.IS_STUDIO_BUILD;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
-import static com.android.launcher3.util.PackageManagerHelper.hasShortcutsPermission;
 
 import android.content.Context;
 import android.content.Intent;
@@ -44,9 +43,12 @@ import com.android.launcher3.model.BaseModelUpdateTask;
 import com.android.launcher3.model.BgDataModel;
 import com.android.launcher3.model.BgDataModel.Callbacks;
 import com.android.launcher3.model.CacheDataUpdatedTask;
+import com.android.launcher3.model.ItemInstallQueue;
 import com.android.launcher3.model.LoaderResults;
 import com.android.launcher3.model.LoaderTask;
+import com.android.launcher3.model.ModelDelegate;
 import com.android.launcher3.model.ModelWriter;
+import com.android.launcher3.model.PackageIncrementalDownloadUpdatedTask;
 import com.android.launcher3.model.PackageInstallStateChangedTask;
 import com.android.launcher3.model.PackageUpdatedTask;
 import com.android.launcher3.model.ShortcutsChangedTask;
@@ -58,9 +60,8 @@ import com.android.launcher3.pm.InstallSessionTracker;
 import com.android.launcher3.pm.PackageInstallInfo;
 import com.android.launcher3.pm.UserCache;
 import com.android.launcher3.shortcuts.ShortcutRequest;
-import com.android.launcher3.util.IntSparseArrayMap;
+import com.android.launcher3.util.IntSet;
 import com.android.launcher3.util.ItemInfoMatcher;
-import com.android.launcher3.util.LooperExecutor;
 import com.android.launcher3.util.PackageUserKey;
 import com.android.launcher3.util.Preconditions;
 
@@ -85,7 +86,6 @@ public class LauncherModel extends LauncherApps.Callback implements InstallSessi
 
     private final LauncherAppState mApp;
     private final Object mLock = new Object();
-    private final LooperExecutor mMainExecutor = MAIN_EXECUTOR;
 
     private LoaderTask mLoaderTask;
     private boolean mIsLoaderTaskRunning;
@@ -112,20 +112,26 @@ public class LauncherModel extends LauncherApps.Callback implements InstallSessi
      */
     private final BgDataModel mBgDataModel = new BgDataModel();
 
+    private final ModelDelegate mModelDelegate;
+
     // Runnable to check if the shortcuts permission has changed.
-    private final Runnable mShortcutPermissionCheckRunnable = new Runnable() {
+    private final Runnable mDataValidationCheck = new Runnable() {
         @Override
         public void run() {
-            if (mModelLoaded && hasShortcutsPermission(mApp.getContext())
-                    != mBgAllAppsList.hasShortcutHostPermission()) {
-                forceReload();
+            if (mModelLoaded) {
+                mModelDelegate.validateData();
             }
         }
     };
 
-    LauncherModel(LauncherAppState app, IconCache iconCache, AppFilter appFilter) {
+    LauncherModel(Context context, LauncherAppState app, IconCache iconCache, AppFilter appFilter) {
         mApp = app;
         mBgAllAppsList = new AllAppsList(iconCache, appFilter);
+        mModelDelegate = ModelDelegate.newInstance(context, app, mBgAllAppsList, mBgDataModel);
+    }
+
+    public ModelDelegate getModelDelegate() {
+        return mModelDelegate;
     }
 
     /**
@@ -195,6 +201,15 @@ public class LauncherModel extends LauncherApps.Callback implements InstallSessi
     }
 
     @Override
+    public void onPackageLoadingProgressChanged(
+                String packageName, UserHandle user, float progress) {
+        if (Utilities.ATLEAST_S) {
+            enqueueModelUpdateTask(new PackageIncrementalDownloadUpdatedTask(
+                    packageName, user, progress));
+        }
+    }
+
+    @Override
     public void onShortcutsChanged(String packageName, List<ShortcutInfo> shortcuts,
             UserHandle user) {
         enqueueModelUpdateTask(new ShortcutsChangedTask(packageName, shortcuts, user, true));
@@ -215,6 +230,20 @@ public class LauncherModel extends LauncherApps.Callback implements InstallSessi
             enqueueModelUpdateTask(new ShortcutsChangedTask(packageName, pinnedShortcuts, user,
                     false));
         }
+    }
+
+    /**
+     * Called when the workspace items have drastically changed
+     */
+    public void onWorkspaceUiChanged() {
+        MODEL_EXECUTOR.execute(mModelDelegate::workspaceLoadComplete);
+    }
+
+    /**
+     * Called when the model is destroyed
+     */
+    public void destroy() {
+        MODEL_EXECUTOR.execute(mModelDelegate::destroy);
     }
 
     public void onBroadcastIntent(Intent intent) {
@@ -321,20 +350,21 @@ public class LauncherModel extends LauncherApps.Callback implements InstallSessi
      */
     public boolean startLoader() {
         // Enable queue before starting loader. It will get disabled in Launcher#finishBindingItems
-        InstallShortcutReceiver.enableInstallQueue(InstallShortcutReceiver.FLAG_LOADER_RUNNING);
+        ItemInstallQueue.INSTANCE.get(mApp.getContext())
+                .pauseModelPush(ItemInstallQueue.FLAG_LOADER_RUNNING);
         synchronized (mLock) {
             // Don't bother to start the thread if we know it's not going to do anything
             final Callbacks[] callbacksList = getCallbacks();
             if (callbacksList.length > 0) {
                 // Clear any pending bind-runnables from the synchronized load process.
                 for (Callbacks cb : callbacksList) {
-                    mMainExecutor.execute(cb::clearPendingBinds);
+                    MAIN_EXECUTOR.execute(cb::clearPendingBinds);
                 }
 
                 // If there is already one running, tell it to stop.
                 stopLoader();
                 LoaderResults loaderResults = new LoaderResults(
-                        mApp, mBgDataModel, mBgAllAppsList, callbacksList, mMainExecutor);
+                        mApp, mBgDataModel, mBgAllAppsList, callbacksList);
                 if (mModelLoaded && !mIsLoaderTaskRunning) {
                     // Divide the set of loaded items into those that we are binding synchronously,
                     // and everything else that is to be bound normally (asynchronously).
@@ -372,7 +402,8 @@ public class LauncherModel extends LauncherApps.Callback implements InstallSessi
     public void startLoaderForResults(LoaderResults results) {
         synchronized (mLock) {
             stopLoader();
-            mLoaderTask = new LoaderTask(mApp, mBgAllAppsList, mBgDataModel, results);
+            mLoaderTask = new LoaderTask(
+                    mApp, mBgAllAppsList, mBgDataModel, mModelDelegate, results);
 
             // Always post the loader task, instead of running directly (even on same thread) so
             // that we exit any nested synchronized blocks
@@ -410,7 +441,7 @@ public class LauncherModel extends LauncherApps.Callback implements InstallSessi
         enqueueModelUpdateTask(new BaseModelUpdateTask() {
             @Override
             public void execute(LauncherAppState app, BgDataModel dataModel, AllAppsList apps) {
-                final IntSparseArrayMap<Boolean> removedIds = new IntSparseArrayMap<>();
+                final IntSet removedIds = new IntSet();
                 synchronized (dataModel) {
                     for (ItemInfo info : dataModel.itemsIdMap) {
                         if (info instanceof WorkspaceItemInfo
@@ -418,13 +449,13 @@ public class LauncherModel extends LauncherApps.Callback implements InstallSessi
                                 && user.equals(info.user)
                                 && info.getIntent() != null
                                 && TextUtils.equals(packageName, info.getIntent().getPackage())) {
-                            removedIds.put(info.id, true /* remove */);
+                            removedIds.add(info.id);
                         }
                     }
                 }
 
                 if (!removedIds.isEmpty()) {
-                    deleteAndBindComponentsRemoved(ItemInfoMatcher.ofItemIds(removedIds, false));
+                    deleteAndBindComponentsRemoved(ItemInfoMatcher.ofItemIds(removedIds));
                 }
             }
         });
@@ -491,9 +522,9 @@ public class LauncherModel extends LauncherApps.Callback implements InstallSessi
      * Current implementation simply reloads the workspace, but it can be optimized to
      * use partial updates similar to {@link UserCache}
      */
-    public void refreshShortcutsIfRequired() {
-        MODEL_EXECUTOR.getHandler().removeCallbacks(mShortcutPermissionCheckRunnable);
-        MODEL_EXECUTOR.post(mShortcutPermissionCheckRunnable);
+    public void validateModelDataOnResume() {
+        MODEL_EXECUTOR.getHandler().removeCallbacks(mDataValidationCheck);
+        MODEL_EXECUTOR.post(mDataValidationCheck);
     }
 
     /**
@@ -520,7 +551,7 @@ public class LauncherModel extends LauncherApps.Callback implements InstallSessi
     }
 
     public void enqueueModelUpdateTask(ModelUpdateTask task) {
-        task.init(mApp, this, mBgDataModel, mBgAllAppsList, mMainExecutor);
+        task.init(mApp, this, mBgDataModel, mBgAllAppsList, MAIN_EXECUTOR);
         MODEL_EXECUTOR.execute(task);
     }
 
@@ -588,7 +619,9 @@ public class LauncherModel extends LauncherApps.Callback implements InstallSessi
                         + "\" bitmapIcon=" + info.bitmap.icon
                         + " componentName=" + info.componentName.getPackageName());
             }
+            writer.println();
         }
+        mModelDelegate.dump(prefix, fd, writer, args);
         mBgDataModel.dump(prefix, fd, writer, args);
     }
 

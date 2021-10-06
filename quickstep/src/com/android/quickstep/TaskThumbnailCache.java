@@ -15,17 +15,12 @@
  */
 package com.android.quickstep;
 
-import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
-
 import android.content.Context;
 import android.content.res.Resources;
-import android.os.Handler;
-import android.os.Looper;
 
 import com.android.launcher3.R;
-import com.android.launcher3.Utilities;
-import com.android.launcher3.icons.cache.HandlerRunnable;
 import com.android.launcher3.util.Preconditions;
+import com.android.quickstep.util.CancellableTask;
 import com.android.quickstep.util.TaskKeyLruCache;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.recents.model.Task.TaskKey;
@@ -33,11 +28,12 @@ import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 
 import java.util.ArrayList;
+import java.util.concurrent.Executor;
 import java.util.function.Consumer;
 
 public class TaskThumbnailCache {
 
-    private final Handler mBackgroundHandler;
+    private final Executor mBgExecutor;
 
     private final int mCacheSize;
     private final TaskKeyLruCache<ThumbnailData> mCache;
@@ -94,8 +90,8 @@ public class TaskThumbnailCache {
         }
     }
 
-    public TaskThumbnailCache(Context context, Looper backgroundLooper) {
-        mBackgroundHandler = new Handler(backgroundLooper);
+    public TaskThumbnailCache(Context context, Executor bgExecutor) {
+        mBgExecutor = bgExecutor;
         mHighResLoadingState = new HighResLoadingState(context);
 
         Resources res = context.getResources();
@@ -130,7 +126,7 @@ public class TaskThumbnailCache {
      * @param callback The callback to receive the task after its data has been populated.
      * @return A cancelable handle to the request
      */
-    public ThumbnailLoadRequest updateThumbnailInBackground(
+    public CancellableTask updateThumbnailInBackground(
             Task task, Consumer<ThumbnailData> callback) {
         Preconditions.assertUIThread();
 
@@ -142,14 +138,13 @@ public class TaskThumbnailCache {
             return null;
         }
 
-
         return updateThumbnailInBackground(task.key, !mHighResLoadingState.isEnabled(), t -> {
             task.thumbnail = t;
             callback.accept(t);
         });
     }
 
-    private ThumbnailLoadRequest updateThumbnailInBackground(TaskKey key, boolean lowResolution,
+    private CancellableTask updateThumbnailInBackground(TaskKey key, boolean lowResolution,
             Consumer<ThumbnailData> callback) {
         Preconditions.assertUIThread();
 
@@ -160,26 +155,20 @@ public class TaskThumbnailCache {
             return null;
         }
 
-        ThumbnailLoadRequest request = new ThumbnailLoadRequest(mBackgroundHandler,
-                lowResolution) {
+        CancellableTask<ThumbnailData> request = new CancellableTask<ThumbnailData>() {
             @Override
-            public void run() {
-                ThumbnailData thumbnail = ActivityManagerWrapper.getInstance().getTaskThumbnail(
+            public ThumbnailData getResultOnBg() {
+                return ActivityManagerWrapper.getInstance().getTaskThumbnail(
                         key.id, lowResolution);
+            }
 
-                MAIN_EXECUTOR.execute(() -> {
-                    if (isCanceled()) {
-                        // We don't call back to the provided callback in this case
-                        return;
-                    }
-
-                    mCache.put(key, thumbnail);
-                    callback.accept(thumbnail);
-                    onEnd();
-                });
+            @Override
+            public void handleResult(ThumbnailData result) {
+                mCache.put(key, result);
+                callback.accept(result);
             }
         };
-        Utilities.postAsyncCallback(mBackgroundHandler, request);
+        mBgExecutor.execute(request);
         return request;
     }
 
@@ -216,15 +205,6 @@ public class TaskThumbnailCache {
      */
     public boolean isPreloadingEnabled() {
         return mEnableTaskSnapshotPreloading && mHighResLoadingState.mVisible;
-    }
-
-    public static abstract class ThumbnailLoadRequest extends HandlerRunnable {
-        public final boolean mLowResolution;
-
-        ThumbnailLoadRequest(Handler handler, boolean lowResolution) {
-            super(handler, null);
-            mLowResolution = lowResolution;
-        }
     }
 
     /**

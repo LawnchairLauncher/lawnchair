@@ -32,5 +32,10 @@ public interface TouchController {
      */
     boolean onControllerInterceptTouchEvent(MotionEvent ev);
 
+    /**
+     * Called when one handed mode state changed
+     */
+    default void onOneHandedModeStateChanged(boolean activated) { }
+
     default void dump(String prefix, PrintWriter writer) { }
 }

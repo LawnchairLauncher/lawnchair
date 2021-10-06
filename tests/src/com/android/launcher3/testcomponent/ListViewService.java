@@ -89,7 +89,7 @@ public class ListViewService extends RemoteViewsService {
                 public RemoteViewsFactory onGetViewFactory(Intent intent) {
                     return SimpleViewsFactory.this;
                 }
-            }.onBind(new Intent("dummy_intent"));
+            }.onBind(new Intent("stub_intent"));
         }
     }
 }
