@@ -15,8 +15,13 @@
      limitations under the License.
 -->
 
-<shape xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:androidprv="http://schemas.android.com/apk/prv/res/android">
-    <solid android:color="?androidprv:attr/colorSurface" />
-    <corners android:radius="@dimen/task_menu_item_corner_radius" />
-</shape>
+<ripple xmlns:android="http://schemas.android.com/apk/res/android"
+     xmlns:androidprv="http://schemas.android.com/apk/prv/res/android"
+     android:color="?android:attr/colorControlHighlight">
+     <item>
+          <shape>
+              <solid android:color="?androidprv:attr/colorSurface" />
+              <corners android:radius="@dimen/task_menu_item_corner_radius" />
+          </shape>
+     </item>
+</ripple>
