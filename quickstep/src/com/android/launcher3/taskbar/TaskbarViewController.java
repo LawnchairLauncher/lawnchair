@@ -254,7 +254,8 @@ public class TaskbarViewController {
         }
 
         public View.OnLongClickListener getBackgroundOnLongClickListener() {
-            return view -> mControllers.taskbarStashController.updateAndAnimateIsStashedInApp(true);
+            return view -> mControllers.taskbarStashController
+                    .updateAndAnimateIsManuallyStashedInApp(true);
         }
 
         /**
