@@ -19,4 +19,6 @@
     <attr name="overviewButtonTextColor" format="color" />
     <attr name="overviewButtonIconColor" format="color" />
     <attr name="overviewButtonBackgroundColor" format="color" />
+    <!-- Modal dialog theming -->
+    <attr name="modalDialogBackground" format="color" />
 </resources>

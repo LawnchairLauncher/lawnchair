@@ -61,6 +61,7 @@ import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.model.DbDowngradeHelper;
+import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.pm.UserCache;
 import com.android.launcher3.provider.LauncherDbUtils;
 import com.android.launcher3.provider.LauncherDbUtils.SQLiteTransaction;
@@ -98,7 +99,7 @@ public class LauncherProvider extends ContentProvider {
      * Represents the schema of the database. Changes in scheme need not be backwards compatible.
      * When increasing the scheme version, ensure that downgrade_schema.json is updated
      */
-    public static final int SCHEMA_VERSION = 28;
+    public static final int SCHEMA_VERSION = 29;
 
     public static final String AUTHORITY = BuildConfig.APPLICATION_ID + ".settings";
     public static final String KEY_LAYOUT_PROVIDER_AUTHORITY = "KEY_LAYOUT_PROVIDER_AUTHORITY";
@@ -879,9 +880,18 @@ public class LauncherProvider extends ContentProvider {
                     }
                     dropTable(db, "workspaceScreens");
                 }
-                case 28:
+                case 28: {
+                    boolean columnAdded = addIntegerColumn(
+                            db, Favorites.APPWIDGET_SOURCE, Favorites.CONTAINER_UNKNOWN);
+                    if (!columnAdded) {
+                        // Old version remains, which means we wipe old data
+                        break;
+                    }
+                }
+                case 29: {
                     // DB Upgraded successfully
                     return;
+                }
             }
 
             // DB was not upgraded

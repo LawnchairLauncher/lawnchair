@@ -225,6 +225,14 @@ public class WidgetsModel {
         return null;
     }
 
+    /** Returns {@link PackageItemInfo} of a pending widget. */
+    public static PackageItemInfo newPendingItemInfo(ComponentName provider) {
+        if (CONVERSATION_WIDGET.equals(provider)) {
+            return new PackageItemInfo(provider.getPackageName(), PackageItemInfo.CONVERSATIONS);
+        }
+        return new PackageItemInfo(provider.getPackageName());
+    }
+
     private WidgetPackageOrCategoryKey getWidgetPackageOrCategoryKey(WidgetItem item) {
         if (CONVERSATION_WIDGET.equals(item.componentName)) {
             return new WidgetPackageOrCategoryKey(PackageItemInfo.CONVERSATIONS, item.user);

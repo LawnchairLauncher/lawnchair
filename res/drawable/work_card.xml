@@ -19,9 +19,6 @@
     xmlns:androidprv="http://schemas.android.com/apk/prv/res/android"
     android:shape="rectangle">
     <solid android:color="?androidprv:attr/colorSurface" />
-    <corners android:radius="@dimen/work_edu_card_margin" />
-    <padding
-        android:left="@dimen/work_fab_radius"
-        android:right="@dimen/work_fab_radius" />
+    <corners android:radius="@dimen/work_edu_card_radius" />
 </shape>
 

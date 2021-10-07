@@ -96,6 +96,13 @@ public class PredictionRowView extends LinearLayout implements
 
     private void updateVisibility() {
         setVisibility(mPredictionsEnabled ? VISIBLE : GONE);
+        if (mLauncher.getAppsView() != null) {
+            if (mPredictionsEnabled) {
+                mLauncher.getAppsView().getAppsStore().registerIconContainer(this);
+            } else {
+                mLauncher.getAppsView().getAppsStore().unregisterIconContainer(this);
+            }
+        }
     }
 
     @Override

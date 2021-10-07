@@ -70,7 +70,9 @@ public class AllAppsState extends LauncherState {
 
     @Override
     protected float getDepthUnchecked(Context context) {
-        return 1f;
+        // The scrim fades in at approximately 50% of the swipe gesture.
+        // This means that the depth should be greater than 1, in order to fully zoom out.
+        return 2f;
     }
 
     @Override

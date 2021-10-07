@@ -266,20 +266,32 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
         Gravity.apply(Gravity.CENTER, outWidth, outHeight, potentialTaskRect, outRect);
     }
 
-    private PointF getTaskDimension(Context context, DeviceProfile dp) {
+    private static PointF getTaskDimension(Context context, DeviceProfile dp) {
         PointF dimension = new PointF();
+        getTaskDimension(context, dp, dimension);
+        return dimension;
+    }
+
+    /**
+     * Gets the dimension of the task in the current system state.
+     */
+    public static void getTaskDimension(Context context, DeviceProfile dp, PointF out) {
         if (dp.isMultiWindowMode) {
             WindowBounds bounds = SplitScreenBounds.INSTANCE.getSecondaryWindowBounds(context);
-            dimension.x = bounds.availableSize.x;
-            dimension.y = bounds.availableSize.y;
+            if (TaskView.CLIP_STATUS_AND_NAV_BARS) {
+                out.x = bounds.availableSize.x;
+                out.y = bounds.availableSize.y;
+            } else {
+                out.x = bounds.availableSize.x + bounds.insets.left + bounds.insets.right;
+                out.y = bounds.availableSize.y + bounds.insets.top + bounds.insets.bottom;
+            }
         } else if (TaskView.CLIP_STATUS_AND_NAV_BARS) {
-            dimension.x = dp.availableWidthPx;
-            dimension.y = dp.availableHeightPx;
+            out.x = dp.availableWidthPx;
+            out.y = dp.availableHeightPx;
         } else {
-            dimension.x = dp.widthPx;
-            dimension.y = dp.heightPx;
+            out.x = dp.widthPx;
+            out.y = dp.heightPx;
         }
-        return dimension;
     }
 
     /**

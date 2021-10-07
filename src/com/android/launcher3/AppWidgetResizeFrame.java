@@ -108,7 +108,8 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
     private boolean mTopBorderActive;
     private boolean mBottomBorderActive;
 
-    private int mResizeMode;
+    private boolean mHorizontalResizeActive;
+    private boolean mVerticalResizeActive;
 
     private int mRunningHInc;
     private int mRunningVInc;
@@ -207,7 +208,6 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
         mWidgetView.addOnAttachStateChangeListener(mWidgetViewAttachStateChangeListener);
         LauncherAppWidgetProviderInfo info = (LauncherAppWidgetProviderInfo)
                 widgetView.getAppWidgetInfo();
-        mResizeMode = info.resizeMode;
         mDragLayer = dragLayer;
 
         mMinHSpan = info.minSpanX;
@@ -218,10 +218,17 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
         mWidgetPadding = getDefaultPaddingForWidget(getContext(),
                 widgetView.getAppWidgetInfo().provider, null);
 
-        if (mResizeMode == AppWidgetProviderInfo.RESIZE_HORIZONTAL) {
+        // Only show resize handles for the directions in which resizing is possible.
+        InvariantDeviceProfile idp = LauncherAppState.getIDP(cellLayout.getContext());
+        mVerticalResizeActive = (info.resizeMode & AppWidgetProviderInfo.RESIZE_VERTICAL) != 0
+                && mMinVSpan < idp.numRows && mMaxVSpan > 1;
+        if (!mVerticalResizeActive) {
             mDragHandles[INDEX_TOP].setVisibility(GONE);
             mDragHandles[INDEX_BOTTOM].setVisibility(GONE);
-        } else if (mResizeMode == AppWidgetProviderInfo.RESIZE_VERTICAL) {
+        }
+        mHorizontalResizeActive = (info.resizeMode & AppWidgetProviderInfo.RESIZE_HORIZONTAL) != 0
+                && mMinHSpan < idp.numColumns && mMaxHSpan > 1;
+        if (!mHorizontalResizeActive) {
             mDragHandles[INDEX_LEFT].setVisibility(GONE);
             mDragHandles[INDEX_RIGHT].setVisibility(GONE);
         }
@@ -255,6 +262,14 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
             }
         }
 
+        CellLayout.LayoutParams lp = (CellLayout.LayoutParams) mWidgetView.getLayoutParams();
+        ItemInfo widgetInfo = (ItemInfo) mWidgetView.getTag();
+        lp.cellX = lp.tmpCellX = widgetInfo.cellX;
+        lp.cellY = lp.tmpCellY = widgetInfo.cellY;
+        lp.cellHSpan = widgetInfo.spanX;
+        lp.cellVSpan = widgetInfo.spanY;
+        lp.isLockedToGrid = true;
+
         // When we create the resize frame, we first mark all cells as unoccupied. The appropriate
         // cells (same if not resized, or different) will be marked as occupied when the resize
         // frame is dismissed.
@@ -263,21 +278,19 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
         mLauncher.getStatsLogManager()
                 .logger()
                 .withInstanceId(logInstanceId)
-                .withItemInfo((ItemInfo) mWidgetView.getTag())
+                .withItemInfo(widgetInfo)
                 .log(LAUNCHER_WIDGET_RESIZE_STARTED);
 
         setOnKeyListener(this);
     }
 
     public boolean beginResizeIfPointInRegion(int x, int y) {
-        boolean horizontalActive = (mResizeMode & AppWidgetProviderInfo.RESIZE_HORIZONTAL) != 0;
-        boolean verticalActive = (mResizeMode & AppWidgetProviderInfo.RESIZE_VERTICAL) != 0;
-
-        mLeftBorderActive = (x < mTouchTargetWidth) && horizontalActive;
-        mRightBorderActive = (x > getWidth() - mTouchTargetWidth) && horizontalActive;
-        mTopBorderActive = (y < mTouchTargetWidth + mTopTouchRegionAdjustment) && verticalActive;
+        mLeftBorderActive = (x < mTouchTargetWidth) && mHorizontalResizeActive;
+        mRightBorderActive = (x > getWidth() - mTouchTargetWidth) && mHorizontalResizeActive;
+        mTopBorderActive = (y < mTouchTargetWidth + mTopTouchRegionAdjustment)
+                && mVerticalResizeActive;
         mBottomBorderActive = (y > getHeight() - mTouchTargetWidth + mBottomTouchRegionAdjustment)
-                && verticalActive;
+                && mVerticalResizeActive;
 
         boolean anyBordersActive = mLeftBorderActive || mRightBorderActive
                 || mTopBorderActive || mBottomBorderActive;

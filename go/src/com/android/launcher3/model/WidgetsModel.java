@@ -24,6 +24,7 @@ import androidx.annotation.Nullable;
 
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.icons.ComponentWithLabelAndIcon;
+import com.android.launcher3.model.data.PackageItemInfo;
 import com.android.launcher3.util.PackageUserKey;
 import com.android.launcher3.widget.model.WidgetsListBaseEntry;
 
@@ -80,5 +81,10 @@ public class WidgetsModel {
     public WidgetItem getWidgetProviderInfoByProviderName(
             ComponentName providerName) {
         return null;
+    }
+
+    /** Returns {@link PackageItemInfo} of a pending widget. */
+    public static PackageItemInfo newPendingItemInfo(ComponentName provider) {
+        return new PackageItemInfo(provider.getPackageName());
     }
 }

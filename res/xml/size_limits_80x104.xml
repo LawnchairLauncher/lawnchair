@@ -31,32 +31,72 @@
     </device-padding>
 
     <device-padding
-        launcher:maxEmptySpace="97dp">
+        launcher:maxEmptySpace="100dp">
         <workspaceTopPadding
             launcher:a="0"
-            launcher:b="16dp"/>
+            launcher:b="9dp"/>
         <workspaceBottomPadding
-            launcher:a="0.56"
+            launcher:a="0.40"
             launcher:b="0"
-            launcher:c="16dp"/>
+            launcher:c="9dp"/>
         <hotseatBottomPadding
-            launcher:a="0.44"
+            launcher:a="0.60"
             launcher:b="0"
-            launcher:c="16dp"/>
+            launcher:c="9dp"/>
+    </device-padding>
+
+    <device-padding
+        launcher:maxEmptySpace="103dp">
+        <workspaceTopPadding
+            launcher:a="0"
+            launcher:b="26dp"/>
+        <workspaceBottomPadding
+            launcher:a="0"
+            launcher:b="20dp"/>
+        <hotseatBottomPadding
+            launcher:a="1"
+            launcher:b="0"
+            launcher:c="46dp"/>
     </device-padding>
 
     <device-padding
         launcher:maxEmptySpace="107dp">
         <workspaceTopPadding
             launcher:a="0"
-            launcher:b="16dp"/>
+            launcher:b="9dp"/>
         <workspaceBottomPadding
             launcher:a="0"
-            launcher:b="36dp"/>
+            launcher:b="34dp"/>
         <hotseatBottomPadding
             launcher:a="1"
             launcher:b="0"
-            launcher:c="52dp"/>
+            launcher:c="43dp"/>
+    </device-padding>
+
+    <device-padding
+        launcher:maxEmptySpace="120dp">
+        <workspaceTopPadding
+            launcher:a="0"
+            launcher:b="16dp"/>
+        <workspaceBottomPadding
+            launcher:a="1"
+            launcher:c="72dp"/>
+        <hotseatBottomPadding
+            launcher:a="0"
+            launcher:b="56dp"/>
+    </device-padding>
+
+    <device-padding
+        launcher:maxEmptySpace="135dp">
+        <workspaceTopPadding
+            launcher:a="0"
+            launcher:b="39dp"/>
+        <workspaceBottomPadding
+            launcher:a="1"
+            launcher:c="95dp"/>
+        <hotseatBottomPadding
+            launcher:a="0"
+            launcher:b="56dp"/>
     </device-padding>
 
     <device-padding
@@ -71,5 +111,4 @@
             launcher:a="0"
             launcher:b="36dp"/>
     </device-padding>
-
 </device-paddings>
