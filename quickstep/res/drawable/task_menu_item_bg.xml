@@ -15,7 +15,12 @@
      limitations under the License.
 -->
 
-<shape xmlns:android="http://schemas.android.com/apk/res/android">
-    <solid android:color="?android:attr/colorPrimary"/>
-    <corners android:radius="@dimen/task_menu_item_corner_radius"/>
-</shape>
+<ripple xmlns:android="http://schemas.android.com/apk/res/android"
+     android:color="?android:attr/colorControlHighlight">
+     <item>
+          <shape>
+               <solid android:color="?android:attr/colorPrimary"/>
+               <corners android:radius="@dimen/task_menu_item_corner_radius"/>
+          </shape>
+     </item>
+</ripple>
