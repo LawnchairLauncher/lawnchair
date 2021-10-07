@@ -13,11 +13,12 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<com.android.launcher3.InsettableFrameLayout
+<view class="com.android.launcher3.graphics.LauncherPreviewRenderer$LauncherPreviewLayout"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:launcher="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:focusable="false">
 
     <com.android.launcher3.CellLayout
         android:id="@+id/workspace"
@@ -28,23 +29,8 @@
         launcher:containerType="workspace"
         launcher:pageIndicator="@+id/page_indicator"/>
 
-    <com.android.launcher3.Hotseat
+    <include
         android:id="@+id/hotseat"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:importantForAccessibility="no"
-        android:theme="@style/HomeScreenElementTheme"
-        launcher:containerType="hotseat" />
+        layout="@layout/hotseat" />
 
-    <com.android.launcher3.InsettableFrameLayout
-        android:id="@+id/apps_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" >
-
-        <include
-            android:id="@id/search_container_all_apps"
-            layout="@layout/search_container_all_apps"/>
-
-    </com.android.launcher3.InsettableFrameLayout>
-
-</com.android.launcher3.InsettableFrameLayout>
+</view>

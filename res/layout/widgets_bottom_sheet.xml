@@ -19,36 +19,9 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingTop="28dp"
-    android:background="@drawable/top_round_rect_primary"
-    android:elevation="@dimen/deep_shortcuts_elevation"
     android:layout_gravity="bottom"
     android:theme="?attr/widgetsTheme">
 
-    <TextView
-        style="@style/TextHeadline"
-        android:id="@+id/title"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
-        android:textColor="?android:attr/textColorPrimary"
-        android:textSize="24sp"/>
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
-        android:paddingTop="4dp"
-        android:fontFamily="sans-serif"
-        android:textColor="?android:attr/textColorTertiary"
-        android:textSize="14sp"
-        android:text="@string/long_press_widget_to_add"/>
-
-    <include layout="@layout/widgets_scroll_container"
-         android:id="@+id/widgets"
-         android:layout_width="wrap_content"
-         android:layout_height="wrap_content"
-         android:layout_marginTop="45dp"
-         android:layout_marginBottom="40dp"/>
+    <include layout="@layout/widgets_bottom_sheet_content" />
 
 </com.android.launcher3.widget.WidgetsBottomSheet>

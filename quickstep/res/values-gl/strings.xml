@@ -19,7 +19,6 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="recent_task_option_split_screen" msgid="5353188922202653570">"Pantalla dividida"</string>
     <string name="recent_task_option_pin" msgid="7929860679018978258">"Fixar"</string>
     <string name="recent_task_option_freeform" msgid="48863056265284071">"Forma libre"</string>
     <string name="recents_empty_message" msgid="7040467240571714191">"Non hai elementos recentes"</string>
@@ -31,7 +30,7 @@
     <string name="time_left_for_app" msgid="3111996412933644358">"Tempo restante hoxe <xliff:g id="TIME">%1$s</xliff:g>"</string>
     <string name="title_app_suggestions" msgid="4185902664111965088">"Suxestións de aplicacións"</string>
     <string name="all_apps_label" msgid="8542784161730910663">"Todas as aplicacións"</string>
-    <string name="all_apps_prediction_tip" msgid="2672336544844936186">"As túas aplicacións preditas"</string>
+    <string name="all_apps_prediction_tip" msgid="2672336544844936186">"Previsión das túas aplicacións"</string>
     <string name="hotseat_edu_title_migrate" msgid="306578144424489980">"Recibe suxestións de aplicacións na fila inferior da pantalla de inicio"</string>
     <string name="hotseat_edu_title_migrate_landscape" msgid="3633942953997845243">"Recibe suxestións de aplicacións na fila de Favoritos da pantalla de inicio"</string>
     <string name="hotseat_edu_message_migrate" msgid="8927179260533775320">"Accede facilmente desde a pantalla de inicio ás aplicacións que máis usas. As suxestións irán cambiando en función das túas rutinas. As aplicacións da fila inferior pasarán á pantalla de inicio."</string>
@@ -46,7 +45,40 @@
     <string name="hotsaet_tip_prediction_enabled" msgid="2233554377501347650">"As suxestións de aplicacións están activadas"</string>
     <string name="hotsaet_tip_prediction_disabled" msgid="1506426298884658491">"As suxestións de aplicacións están desactivadas"</string>
     <string name="hotseat_prediction_content_description" msgid="4582028296938078419">"Aplicación predita: <xliff:g id="TITLE">%1$s</xliff:g>"</string>
+    <string name="back_gesture_feedback_swipe_too_far_from_left_edge" msgid="340972404868601012">"Asegúrate de pasar o dedo desde o bordo esquerdo máis afastado."</string>
+    <string name="back_gesture_feedback_cancelled_left_edge" msgid="6671316150388702530">"Asegúrate de pasar o dedo desde o bordo esquerdo ata o medio da pantalla e avanza."</string>
+    <string name="back_gesture_feedback_complete_left_edge" msgid="3220478647881674266">"Xa está! Proba a pasar o dedo desde o bordo dereito."</string>
+    <string name="back_gesture_feedback_swipe_too_far_from_right_edge" msgid="4306700023773832353">"Asegúrate de pasar o dedo desde o bordo dereito máis afastado."</string>
+    <string name="back_gesture_feedback_cancelled_right_edge" msgid="4951916546256902552">"Asegúrate de pasar o dedo desde o bordo dereito ata o medio da pantalla e avanza."</string>
+    <string name="back_gesture_feedback_complete" msgid="7261221999760772210">"Completaches o xesto de volver. O próximo é aprender a ir ao inicio."</string>
+    <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="1148198467090405643">"Asegúrate de non pasar o dedo demasiado preto da parte inferior da pantalla."</string>
+    <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"Podes cambiar a sensibilidade do xesto en Configuración"</string>
+    <string name="back_gesture_intro_title" msgid="19551256430224428">"Pasar o dedo para volver"</string>
+    <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"Para volver á última pantalla, pasa o dedo cara ao medio desde o bordo dereito ou esquerdo."</string>
+    <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"Asegúrate de pasar o dedo cara arriba desde o bordo inferior da pantalla."</string>
+    <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"Asegúrate de non facer unha pausa antes de avanzar."</string>
+    <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"Asegúrate de pasar o dedo cara arriba cun movemento vertical."</string>
+    <string name="home_gesture_feedback_complete" msgid="2324789183070815517">"Completaches o xesto de ir ao inicio. O próximo é aprender a cambiar de aplicación."</string>
+    <string name="home_gesture_intro_title" msgid="836590312858441830">"Pasar o dedo para ir ao inicio"</string>
+    <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"Pasa o dedo cara arriba desde a parte inferior da pantalla. Ao facelo, irás á pantalla de inicio."</string>
+    <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"Asegúrate de pasar o dedo cara arriba desde o bordo inferior da pantalla."</string>
+    <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"Proba a manter premida a pantalla máis tempo antes de soltala."</string>
+    <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"Asegúrate de pasar o dedo cara arriba cun movemento vertical. Despois, fai unha pausa."</string>
+    <string name="overview_gesture_feedback_complete" msgid="5477014491632199169">"Completaches o xesto para cambiar de aplicación. Xa podes usar o teléfono!"</string>
+    <string name="overview_gesture_intro_title" msgid="2902054412868489378">"Pasar o dedo para cambiar de aplicación"</string>
+    <string name="overview_gesture_intro_subtitle" msgid="1579517193845186042">"Pasa o dedo cara arriba desde a parte inferior da pantalla, mantena premida e sepárao."</string>
+    <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"Todo listo"</string>
+    <string name="gesture_tutorial_action_button_label_next" msgid="2556263116424738762">"Seguinte"</string>
+    <string name="gesture_tutorial_action_button_label_done" msgid="671834508127014231">"Feito"</string>
+    <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"Configuración"</string>
+    <string name="gesture_tutorial_try_again" msgid="65962545858556697">"Téntao de novo"</string>
+    <string name="gesture_tutorial_nice" msgid="2936275692616928280">"Excelente!"</string>
+    <string name="gesture_tutorial_step" msgid="1279786122817620968">"Titorial <xliff:g id="CURRENT">%1$d</xliff:g>/<xliff:g id="TOTAL">%2$d</xliff:g>"</string>
     <string name="action_share" msgid="2648470652637092375">"Compartir"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"Facer captura"</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"A aplicación ou a túa organización non permite realizar esta acción"</string>
+    <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"Queres omitir o titorial de navegación?"</string>
+    <string name="skip_tutorial_dialog_subtitle" msgid="544063326241955662">"Podes atopar isto máis tarde na aplicación <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="gesture_tutorial_action_button_label_cancel" msgid="3809842569351264108">"Cancelar"</string>
+    <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"Omitir"</string>
 </resources>

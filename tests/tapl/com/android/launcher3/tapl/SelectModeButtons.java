@@ -48,21 +48,4 @@ public class SelectModeButtons {
             }
         }
     }
-
-    /**
-     * Click feedback button.
-     */
-    @NonNull
-    public Background clickFeedback() {
-        try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck();
-             LauncherInstrumentation.Closable c =
-                     mLauncher.addContextLayer("want to click feedback button")) {
-            UiObject2 feedback = mLauncher.waitForObjectInContainer(mSelectModeButtons, "feedback");
-            mLauncher.clickLauncherObject(feedback);
-            try (LauncherInstrumentation.Closable c1 = mLauncher.addContextLayer(
-                    "clicked feedback button")) {
-                return new Background(mLauncher);
-            }
-        }
-    }
 }

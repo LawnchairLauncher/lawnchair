@@ -12,13 +12,12 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.android.launcher3.allapps.WorkPausedCard xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="?attr/allAppsScrimColor"
-    android:padding="48dp"
+    android:layout_height="wrap_content"
+    android:padding="@dimen/work_edu_card_margin"
     android:orientation="vertical"
-    android:gravity="center">
+    android:gravity="center_horizontal">
 
     <TextView
         style="@style/PrimaryHeadline"
@@ -26,18 +25,31 @@
         android:id="@+id/work_apps_paused_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginTop="40dp"
         android:text="@string/work_apps_paused_title"
         android:textAlignment="center"
-        android:textSize="20sp" />
+        android:textSize="22sp" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/work_apps_paused_content"
-        android:textColor="?attr/workProfileOverlayTextColor"
+        android:textColor="?android:attr/textColorSecondary"
         android:text="@string/work_apps_paused_body"
         android:textAlignment="center"
-        android:textSize="16sp" />
-</LinearLayout>
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="24dp"
+        android:textSize="14sp" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/rounded_button_height"
+        android:id="@+id/enable_work_apps"
+        android:textColor="?attr/workProfileOverlayTextColor"
+        android:text="@string/work_apps_enable_btn_text"
+        android:textAlignment="center"
+        android:background="@drawable/rounded_action_button"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:textSize="14sp" />
+</com.android.launcher3.allapps.WorkPausedCard>

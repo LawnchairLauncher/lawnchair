@@ -18,7 +18,6 @@ package com.android.launcher3;
 
 import static com.android.launcher3.model.data.ItemInfoWithIcon.FLAG_ICON_BADGED;
 
-import android.animation.ValueAnimator;
 import android.annotation.TargetApi;
 import android.app.ActivityManager;
 import android.app.Person;
@@ -26,6 +25,7 @@ import android.app.WallpaperManager;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.LauncherActivityInfo;
 import android.content.pm.LauncherApps;
@@ -33,9 +33,13 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.content.pm.ShortcutInfo;
+import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.database.ContentObserver;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.ColorFilter;
+import android.graphics.LightingColorFilter;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Point;
@@ -44,11 +48,11 @@ import android.graphics.RectF;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.InsetDrawable;
+import android.net.Uri;
 import android.os.Build;
 import android.os.DeadObjectException;
 import android.os.Handler;
 import android.os.Message;
-import android.os.PowerManager;
 import android.os.TransactionTooLargeException;
 import android.provider.Settings;
 import android.text.Spannable;
@@ -62,14 +66,16 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.animation.Interpolator;
+import android.widget.LinearLayout;
 
+import androidx.core.graphics.ColorUtils;
 import androidx.core.os.BuildCompat;
 
-import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.dragndrop.FolderAdaptiveIcon;
 import com.android.launcher3.graphics.GridCustomizationsProvider;
 import com.android.launcher3.graphics.TintedDrawableSpan;
-import com.android.launcher3.icons.IconProvider;
+import com.android.launcher3.icons.BitmapInfo;
+import com.android.launcher3.icons.FastBitmapDrawable;
 import com.android.launcher3.icons.LauncherIcons;
 import com.android.launcher3.icons.ShortcutCachingLogic;
 import com.android.launcher3.model.data.ItemInfo;
@@ -79,12 +85,14 @@ import com.android.launcher3.shortcuts.ShortcutKey;
 import com.android.launcher3.shortcuts.ShortcutRequest;
 import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.PackageManagerHelper;
+import com.android.launcher3.views.BaseDragLayer;
 import com.android.launcher3.widget.PendingAddShortcutInfo;
 
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
+import java.util.function.Consumer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -98,6 +106,8 @@ public final class Utilities {
     private static final Pattern sTrimPattern =
             Pattern.compile("^[\\s|\\p{javaSpaceChar}]*(.*)[\\s|\\p{javaSpaceChar}]*$");
 
+    private static final float[] sTmpFloatArray = new float[4];
+
     private static final int[] sLoc0 = new int[2];
     private static final int[] sLoc1 = new int[2];
     private static final Matrix sMatrix = new Matrix();
@@ -106,18 +116,14 @@ public final class Utilities {
     public static final String[] EMPTY_STRING_ARRAY = new String[0];
     public static final Person[] EMPTY_PERSON_ARRAY = new Person[0];
 
-    public static final boolean ATLEAST_R = BuildCompat.isAtLeastR();
+    public static final boolean ATLEAST_P = Build.VERSION.SDK_INT >= Build.VERSION_CODES.P;
 
     public static final boolean ATLEAST_Q = Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q;
 
-    public static final boolean ATLEAST_P =
-            Build.VERSION.SDK_INT >= Build.VERSION_CODES.P;
+    public static final boolean ATLEAST_R = Build.VERSION.SDK_INT >= Build.VERSION_CODES.R;
 
-    public static final boolean ATLEAST_OREO_MR1 =
-            Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1;
-
-    public static final boolean ATLEAST_OREO =
-            Build.VERSION.SDK_INT >= Build.VERSION_CODES.O;
+    public static final boolean ATLEAST_S = BuildCompat.isAtLeastS()
+            || Build.VERSION.SDK_INT >= Build.VERSION_CODES.S;
 
     /**
      * Set on a motion event dispatched from the nav bar. See {@link MotionEvent#setEdgeFlags(int)}.
@@ -132,6 +138,15 @@ public final class Utilities {
             Build.TYPE.toLowerCase(Locale.ROOT).contains("debug") ||
             Build.TYPE.toLowerCase(Locale.ROOT).equals("eng");
 
+    /**
+     * Returns true if theme is dark.
+     */
+    public static boolean isDarkTheme(Context context) {
+        Configuration configuration = context.getResources().getConfiguration();
+        int nightMode = configuration.uiMode & Configuration.UI_MODE_NIGHT_MASK;
+        return nightMode == Configuration.UI_MODE_NIGHT_YES;
+    }
+
     public static boolean isDevelopersOptionsEnabled(Context context) {
         return Settings.Global.getInt(context.getApplicationContext().getContentResolver(),
                         Settings.Global.DEVELOPMENT_SETTINGS_ENABLED, 0) != 0;
@@ -140,6 +155,10 @@ public final class Utilities {
     // An intent extra to indicate the horizontal scroll of the wallpaper.
     public static final String EXTRA_WALLPAPER_OFFSET = "com.android.launcher3.WALLPAPER_OFFSET";
     public static final String EXTRA_WALLPAPER_FLAVOR = "com.android.launcher3.WALLPAPER_FLAVOR";
+
+    // An intent extra to indicate the launch source by launcher.
+    public static final String EXTRA_WALLPAPER_LAUNCH_SOURCE =
+            "com.android.wallpaper.LAUNCH_SOURCE";
 
     public static boolean IS_RUNNING_IN_TEST_HARNESS =
                     ActivityManager.isRunningInTestHarness();
@@ -214,6 +233,33 @@ public final class Utilities {
     }
 
     /**
+     * Returns bounds for a child view of DragLayer, in drag layer coordinates.
+     *
+     * see {@link com.android.launcher3.dragndrop.DragLayer}.
+     *
+     * @param viewBounds Bounds of the view wanted in drag layer coordinates, relative to the view
+     *                   itself. eg. (0, 0, view.getWidth, view.getHeight)
+     * @param ignoreTransform If true, view transform is ignored
+     * @param outRect The out rect where we return the bounds of {@param view} in drag layer coords.
+     */
+    public static void getBoundsForViewInDragLayer(BaseDragLayer dragLayer, View view,
+            Rect viewBounds, boolean ignoreTransform, float[] recycle, RectF outRect) {
+        float[] points = recycle == null ? new float[4] : recycle;
+        points[0] = viewBounds.left;
+        points[1] = viewBounds.top;
+        points[2] = viewBounds.right;
+        points[3] = viewBounds.bottom;
+
+        Utilities.getDescendantCoordRelativeToAncestor(view, dragLayer, points,
+                false, ignoreTransform);
+        outRect.set(
+                Math.min(points[0], points[2]),
+                Math.min(points[1], points[3]),
+                Math.max(points[0], points[2]),
+                Math.max(points[1], points[3]));
+    }
+
+    /**
      * Inverse of {@link #getDescendantCoordRelativeToAncestor(View, View, float[], boolean)}.
      */
     public static void mapCoordInSelfToDescendant(View descendant, View root, float[] coord) {
@@ -268,16 +314,28 @@ public final class Utilities {
         return new int[] {sLoc1[0] - sLoc0[0], sLoc1[1] - sLoc0[1]};
     }
 
+    /**
+     * Helper method to set rectOut with rectFSrc.
+     */
+    public static void setRect(RectF rectFSrc, Rect rectOut) {
+        rectOut.left = (int) rectFSrc.left;
+        rectOut.top = (int) rectFSrc.top;
+        rectOut.right = (int) rectFSrc.right;
+        rectOut.bottom = (int) rectFSrc.bottom;
+    }
+
     public static void scaleRectFAboutCenter(RectF r, float scale) {
+        scaleRectFAboutPivot(r, scale, r.centerX(), r.centerY());
+    }
+
+    public static void scaleRectFAboutPivot(RectF r, float scale, float px, float py) {
         if (scale != 1.0f) {
-            float cx = r.centerX();
-            float cy = r.centerY();
-            r.offset(-cx, -cy);
+            r.offset(-px, -py);
             r.left = r.left * scale;
             r.top = r.top * scale ;
             r.right = r.right * scale;
             r.bottom = r.bottom * scale;
-            r.offset(cx, cy);
+            r.offset(px, py);
         }
     }
 
@@ -340,6 +398,13 @@ public final class Utilities {
         return mapRange(interpolator.getInterpolation(progress), toMin, toMax);
     }
 
+    /** Bounds t between a lower and upper bound and maps the result to a range. */
+    public static float mapBoundToRange(float t, float lowerBound, float upperBound,
+            float toMin, float toMax, Interpolator interpolator) {
+        return mapToRange(boundToRange(t, lowerBound, upperBound), lowerBound, upperBound,
+                toMin, toMax, interpolator);
+    }
+
     public static float getProgress(float current, float min, float max) {
         return Math.abs(current - min) / Math.abs(max - min);
     }
@@ -400,14 +465,24 @@ public final class Utilities {
         return res.getConfiguration().getLayoutDirection() == View.LAYOUT_DIRECTION_RTL;
     }
 
-    public static float dpiFromPx(float size, DisplayMetrics metrics) {
-        float densityRatio = (float) metrics.densityDpi / DisplayMetrics.DENSITY_DEFAULT;
+    public static float dpiFromPx(float size, int densityDpi) {
+        float densityRatio = (float) densityDpi / DisplayMetrics.DENSITY_DEFAULT;
         return (size / densityRatio);
     }
 
+    /** Converts a dp value to pixels for the current device. */
+    public static int dpToPx(float dp) {
+        return (int) (dp * Resources.getSystem().getDisplayMetrics().density);
+    }
+
+
     public static int pxFromSp(float size, DisplayMetrics metrics) {
-        return (int) Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP,
-                size, metrics));
+        return pxFromSp(size, metrics, 1f);
+    }
+
+    public static int pxFromSp(float size, DisplayMetrics metrics, float scale) {
+        return Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP,
+                size, metrics) * scale);
     }
 
     public static String createDbSelectionQuery(String columnName, IntArray values) {
@@ -456,6 +531,15 @@ public final class Utilities {
     }
 
     /**
+     * Returns an intent for starting the default home activity
+     */
+    public static Intent createHomeIntent() {
+        return new Intent(Intent.ACTION_MAIN)
+                .addCategory(Intent.CATEGORY_HOME)
+                .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+    }
+
+    /**
      * Wraps a message with a TTS span, so that a different message is spoken than
      * what is getting displayed.
      * @param msg original message
@@ -492,21 +576,6 @@ public final class Utilities {
         // Use application context for shared preferences, so that we use a single cached instance
         return context.getApplicationContext().getSharedPreferences(
                 LauncherFiles.DEVICE_PREFERENCES_KEY, Context.MODE_PRIVATE);
-    }
-
-    /**
-     * @return {@link SharedPreferences} that backs {@link FeatureFlags}
-     */
-    public static SharedPreferences getFeatureFlagsPrefs(Context context) {
-        // Use application context for shared preferences, so that we use a single cached instance
-        return context.getApplicationContext().getSharedPreferences(
-            FeatureFlags.FLAGS_PREF_NAME, Context.MODE_PRIVATE);
-    }
-
-    public static boolean areAnimationsEnabled(Context context) {
-        return ATLEAST_OREO
-                ? ValueAnimator.areAnimatorsEnabled()
-                : !context.getSystemService(PowerManager.class).isPowerSaveMode();
     }
 
     public static boolean isWallpaperAllowed(Context context) {
@@ -592,13 +661,23 @@ public final class Utilities {
      */
     public static Drawable getFullDrawable(Launcher launcher, ItemInfo info, int width, int height,
             Object[] outObj) {
+        Drawable icon = loadFullDrawableWithoutTheme(launcher, info, width, height, outObj);
+        if (icon instanceof BitmapInfo.Extender) {
+            icon = ((BitmapInfo.Extender) icon).getThemedDrawable(launcher);
+        }
+        return icon;
+    }
+
+    private static Drawable loadFullDrawableWithoutTheme(Launcher launcher, ItemInfo info,
+            int width, int height, Object[] outObj) {
         LauncherAppState appState = LauncherAppState.getInstance(launcher);
         if (info.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION) {
             LauncherActivityInfo activityInfo = launcher.getSystemService(LauncherApps.class)
                     .resolveActivity(info.getIntent(), info.user);
             outObj[0] = activityInfo;
-            return activityInfo == null ? null : new IconProvider(launcher).getIconForUI(
-                    activityInfo, launcher.getDeviceProfile().inv.fillResIconDpi);
+            return activityInfo == null ? null : LauncherAppState.getInstance(launcher)
+                    .getIconProvider().getIcon(
+                            activityInfo, launcher.getDeviceProfile().inv.fillResIconDpi);
         } else if (info.itemType == LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT) {
             if (info instanceof PendingAddShortcutInfo) {
                 ShortcutConfigActivityInfo activityInfo =
@@ -606,7 +685,6 @@ public final class Utilities {
                 outObj[0] = activityInfo;
                 return activityInfo.getFullResIcon(appState.getIconCache());
             }
-            if (info.getIntent() == null || info.getIntent().getPackage() == null) return null;
             List<ShortcutInfo> si = ShortcutKey.fromItemInfo(info)
                     .buildRequest(launcher)
                     .query(ShortcutRequest.ALL);
@@ -663,6 +741,14 @@ public final class Utilities {
         }
     }
 
+    /**
+     * @return true is the extra is either null or is of type {@param type}
+     */
+    public static boolean isValidExtraType(Intent intent, String key, Class type) {
+        Object extra = intent.getParcelableExtra(key);
+        return extra == null || type.isInstance(extra);
+    }
+
     public static float squaredHypot(float x, float y) {
         return x * x + y * y;
     }
@@ -670,6 +756,86 @@ public final class Utilities {
     public static float squaredTouchSlop(Context context) {
         float slop = ViewConfiguration.get(context).getScaledTouchSlop();
         return slop * slop;
+    }
+
+    /**
+     * Helper method to create a content provider
+     */
+    public static ContentObserver newContentObserver(Handler handler, Consumer<Uri> command) {
+        return new ContentObserver(handler) {
+            @Override
+            public void onChange(boolean selfChange, Uri uri) {
+                command.accept(uri);
+            }
+        };
+    }
+
+    /**
+     * Compares the ratio of two quantities and returns whether that ratio is greater than the
+     * provided bound. Order of quantities does not matter. Bound should be a decimal representation
+     * of a percentage.
+     */
+    public static boolean isRelativePercentDifferenceGreaterThan(float first, float second,
+            float bound) {
+        return (Math.abs(first - second) / Math.abs((first + second) / 2.0f)) > bound;
+    }
+
+    /**
+     * Rotates `inOutBounds` by `delta` 90-degree increments. Rotation is visually CCW. Parent
+     * sizes represent the "space" that will rotate carrying inOutBounds along with it to determine
+     * the final bounds.
+     */
+    public static void rotateBounds(Rect inOutBounds, int parentWidth, int parentHeight,
+            int delta) {
+        int rdelta = ((delta % 4) + 4) % 4;
+        int origLeft = inOutBounds.left;
+        switch (rdelta) {
+            case 0:
+                return;
+            case 1:
+                inOutBounds.left = inOutBounds.top;
+                inOutBounds.top = parentWidth - inOutBounds.right;
+                inOutBounds.right = inOutBounds.bottom;
+                inOutBounds.bottom = parentWidth - origLeft;
+                return;
+            case 2:
+                inOutBounds.left = parentWidth - inOutBounds.right;
+                inOutBounds.right = parentWidth - origLeft;
+                return;
+            case 3:
+                inOutBounds.left = parentHeight - inOutBounds.bottom;
+                inOutBounds.bottom = inOutBounds.right;
+                inOutBounds.right = parentHeight - inOutBounds.top;
+                inOutBounds.top = origLeft;
+                return;
+        }
+    }
+
+    /**
+     * Make a color filter that blends a color into the destination based on a scalable amout.
+     *
+     * @param color to blend in.
+     * @param tintAmount [0-1] 0 no tinting, 1 full color.
+     * @return ColorFilter for tinting, or {@code null} if no filter is needed.
+     */
+    public static ColorFilter makeColorTintingColorFilter(int color, float tintAmount) {
+        if (tintAmount == 0f) {
+            return null;
+        }
+        return new LightingColorFilter(
+                // This isn't blending in white, its making a multiplication mask for the base color
+                ColorUtils.blendARGB(Color.WHITE, 0, tintAmount),
+                ColorUtils.blendARGB(0, color, tintAmount));
+    }
+
+    /**
+     * Sets start margin on the provided {@param view} to be {@param margin}.
+     * Assumes {@param view} is a child of {@link LinearLayout}
+     */
+    public static void setStartMarginForView(View view, int margin) {
+        LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) view.getLayoutParams();
+        lp.setMarginStart(margin);
+        view.setLayoutParams(lp);
     }
 
     private static class FixedSizeEmptyDrawable extends ColorDrawable {

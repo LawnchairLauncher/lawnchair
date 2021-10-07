@@ -17,7 +17,7 @@
 package com.android.launcher3;
 
 import static com.android.launcher3.model.WidgetsModel.GO_DISABLE_WIDGETS;
-import static com.android.launcher3.util.SystemUiController.UI_STATE_OVERVIEW;
+import static com.android.launcher3.util.SystemUiController.UI_STATE_FULLSCREEN_TASK;
 
 import static java.lang.annotation.RetentionPolicy.SOURCE;
 
@@ -31,17 +31,15 @@ import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.UserHandle;
 import android.util.Log;
-import android.view.ContextThemeWrapper;
 
 import androidx.annotation.IntDef;
 
 import com.android.launcher3.DeviceProfile.OnDeviceProfileChangeListener;
 import com.android.launcher3.logging.StatsLogManager;
-import com.android.launcher3.logging.UserEventDispatcher;
-import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.util.SystemUiController;
 import com.android.launcher3.util.ViewCache;
 import com.android.launcher3.views.ActivityContext;
+import com.android.launcher3.views.ScrimView;
 
 import java.io.PrintWriter;
 import java.lang.annotation.Retention;
@@ -82,7 +80,6 @@ public abstract class BaseActivity extends Activity implements ActivityContext {
             new ArrayList<>();
 
     protected DeviceProfile mDeviceProfile;
-    protected UserEventDispatcher mUserEventDispatcher;
     protected StatsLogManager mStatsLogManager;
     protected SystemUiController mSystemUiController;
 
@@ -135,6 +132,7 @@ public abstract class BaseActivity extends Activity implements ActivityContext {
 
     private final ViewCache mViewCache = new ViewCache();
 
+    @Override
     public ViewCache getViewCache() {
         return mViewCache;
     }
@@ -144,20 +142,14 @@ public abstract class BaseActivity extends Activity implements ActivityContext {
         return mDeviceProfile;
     }
 
-    public void modifyUserEvent(LauncherLogProto.LauncherEvent event) {}
-
-    public final StatsLogManager getStatsLogManager() {
+    /**
+     * Returns {@link StatsLogManager} for user event logging.
+     */
+    public StatsLogManager getStatsLogManager() {
         if (mStatsLogManager == null) {
             mStatsLogManager = StatsLogManager.newInstance(this);
         }
         return mStatsLogManager;
-    }
-
-    public final UserEventDispatcher getUserEventDispatcher() {
-        if (mUserEventDispatcher == null) {
-            mUserEventDispatcher = UserEventDispatcher.newInstance(this);
-        }
-        return mUserEventDispatcher;
     }
 
     public SystemUiController getSystemUiController() {
@@ -165,6 +157,10 @@ public abstract class BaseActivity extends Activity implements ActivityContext {
             mSystemUiController = new SystemUiController(getWindow());
         }
         return mSystemUiController;
+    }
+
+    public ScrimView getScrimView() {
+        return null;
     }
 
     @Override
@@ -207,7 +203,7 @@ public abstract class BaseActivity extends Activity implements ActivityContext {
 
         // Reset the overridden sysui flags used for the task-swipe launch animation, this is a
         // catch all for if we do not get resumed (and therefore not paused below)
-        getSystemUiController().updateUiState(UI_STATE_OVERVIEW, 0);
+        getSystemUiController().updateUiState(UI_STATE_FULLSCREEN_TASK, 0);
     }
 
     @Override
@@ -219,7 +215,7 @@ public abstract class BaseActivity extends Activity implements ActivityContext {
         // here instead of at the end of the animation because the start of the new activity does
         // not happen immediately, which would cause us to reset to launcher's sysui flags and then
         // back to the new app (causing a flash)
-        getSystemUiController().updateUiState(UI_STATE_OVERVIEW, 0);
+        getSystemUiController().updateUiState(UI_STATE_FULLSCREEN_TASK, 0);
     }
 
     @Override
@@ -289,7 +285,7 @@ public abstract class BaseActivity extends Activity implements ActivityContext {
     /**
      * Used to set the override visibility state, used only to handle the transition home with the
      * recents animation.
-     * @see QuickstepAppTransitionManagerImpl#createWallpaperOpenRunner
+     * @see QuickstepTransitionManager#createWallpaperOpenRunner
      */
     public void addForceInvisibleFlag(@InvisibilityFlags int flag) {
         mForceInvisible |= flag;
@@ -342,7 +338,7 @@ public abstract class BaseActivity extends Activity implements ActivityContext {
     public static <T extends BaseActivity> T fromContext(Context context) {
         if (context instanceof BaseActivity) {
             return (T) context;
-        } else if (context instanceof ContextThemeWrapper) {
+        } else if (context instanceof ContextWrapper) {
             return fromContext(((ContextWrapper) context).getBaseContext());
         } else {
             throw new IllegalArgumentException("Cannot find BaseActivity in parent tree");

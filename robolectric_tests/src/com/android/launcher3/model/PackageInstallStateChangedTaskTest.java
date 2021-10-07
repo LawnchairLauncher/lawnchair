@@ -67,7 +67,7 @@ public class PackageInstallStateChangedTaskTest {
         for (ItemInfo info : mModelHelper.getBgDataModel().itemsIdMap) {
             if (info instanceof WorkspaceItemInfo) {
                 assertEquals(updates.contains(info.id) ? progress: 0,
-                        ((WorkspaceItemInfo) info).getInstallProgress());
+                        ((WorkspaceItemInfo) info).getProgressLevel());
             } else {
                 assertEquals(updates.contains(info.id) ? progress: -1,
                         ((LauncherAppWidgetInfo) info).installProgress);

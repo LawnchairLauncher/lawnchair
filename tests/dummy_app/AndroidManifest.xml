@@ -26,6 +26,7 @@
         <activity
             android:name="Activity1"
             android:icon="@mipmap/ic_launcher1"
+            android:exported="true"
             android:label="Aardwolf">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>

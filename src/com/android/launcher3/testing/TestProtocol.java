@@ -27,12 +27,13 @@ public final class TestProtocol {
     public static final int NORMAL_STATE_ORDINAL = 0;
     public static final int SPRING_LOADED_STATE_ORDINAL = 1;
     public static final int OVERVIEW_STATE_ORDINAL = 2;
-    public static final int OVERVIEW_PEEK_STATE_ORDINAL = 3;
-    public static final int OVERVIEW_MODAL_TASK_STATE_ORDINAL = 4;
-    public static final int QUICK_SWITCH_STATE_ORDINAL = 5;
-    public static final int ALL_APPS_STATE_ORDINAL = 6;
-    public static final int BACKGROUND_APP_STATE_ORDINAL = 7;
-    public static final int HINT_STATE_ORDINAL = 8;
+    public static final int OVERVIEW_MODAL_TASK_STATE_ORDINAL = 3;
+    public static final int QUICK_SWITCH_STATE_ORDINAL = 4;
+    public static final int ALL_APPS_STATE_ORDINAL = 5;
+    public static final int BACKGROUND_APP_STATE_ORDINAL = 6;
+    public static final int HINT_STATE_ORDINAL = 7;
+    public static final int HINT_STATE_TWO_BUTTON_ORDINAL = 8;
+    public static final int OVERVIEW_SPLIT_SELECT_ORDINAL = 9;
     public static final String TAPL_EVENTS_TAG = "TaplEvents";
     public static final String SEQUENCE_MAIN = "Main";
     public static final String SEQUENCE_TIS = "TIS";
@@ -46,8 +47,6 @@ public final class TestProtocol {
                 return "SpringLoaded";
             case OVERVIEW_STATE_ORDINAL:
                 return "Overview";
-            case OVERVIEW_PEEK_STATE_ORDINAL:
-                return "OverviewPeek";
             case OVERVIEW_MODAL_TASK_STATE_ORDINAL:
                 return "OverviewModal";
             case QUICK_SWITCH_STATE_ORDINAL:
@@ -58,6 +57,10 @@ public final class TestProtocol {
                 return "Background";
             case HINT_STATE_ORDINAL:
                 return "Hint";
+            case HINT_STATE_TWO_BUTTON_ORDINAL:
+                return "Hint2Button";
+            case OVERVIEW_SPLIT_SELECT_ORDINAL:
+                return "OverviewSplitSelect";
             default:
                 return "Unknown";
         }
@@ -81,11 +84,10 @@ public final class TestProtocol {
     public static final String REQUEST_UNFREEZE_APP_LIST = "unfreeze-app-list";
     public static final String REQUEST_APP_LIST_FREEZE_FLAGS = "app-list-freeze-flags";
     public static final String REQUEST_APPS_LIST_SCROLL_Y = "apps-list-scroll-y";
+    public static final String REQUEST_WIDGETS_SCROLL_Y = "widgets-scroll-y";
     public static final String REQUEST_WINDOW_INSETS = "window-insets";
     public static final String REQUEST_PID = "pid";
-    public static final String REQUEST_TOTAL_PSS_KB = "total_pss";
-    public static final String REQUEST_JAVA_LEAK = "java-leak";
-    public static final String REQUEST_NATIVE_LEAK = "native-leak";
+    public static final String REQUEST_FORCE_GC = "gc";
     public static final String REQUEST_VIEW_LEAK = "view-leak";
     public static final String REQUEST_RECENT_TASKS_LIST = "recent-tasks-list";
     public static final String REQUEST_START_EVENT_LOGGING = "start-event-logging";
@@ -97,15 +99,14 @@ public final class TestProtocol {
     public static final String REQUEST_ENABLE_DEBUG_TRACING = "enable-debug-tracing";
     public static final String REQUEST_DISABLE_DEBUG_TRACING = "disable-debug-tracing";
 
-    public static final String REQUEST_OVERVIEW_ACTIONS_ENABLED = "overview-actions-enabled";
     public static final String REQUEST_OVERVIEW_SHARE_ENABLED = "overview-share-enabled";
+    public static final String REQUEST_OVERVIEW_CONTENT_PUSH_ENABLED =
+            "overview-content-push-enabled";
 
     public static boolean sDisableSensorRotation;
     public static final String REQUEST_MOCK_SENSOR_ROTATION = "mock-sensor-rotation";
 
     public static final String PERMANENT_DIAG_TAG = "TaplTarget";
-    public static final String PAUSE_NOT_DETECTED = "b/139891609";
-    public static final String OVERIEW_NOT_ALLAPPS = "b/156095088";
-    public static final String NO_SWIPE_TO_HOME = "b/158017601";
     public static final String WORK_PROFILE_REMOVED = "b/159671700";
+    public static final String FALLBACK_ACTIVITY_NO_SET = "b/181019015";
 }

@@ -19,6 +19,7 @@
 -->
 <manifest
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.android.launcher3">
 
     <!--
@@ -29,13 +30,8 @@
     at compile time. Note that the components defined in AndroidManifest.xml are also required,
     with some minor changed based on the derivative app.
     -->
-    <permission
-        android:name="com.android.launcher.permission.INSTALL_SHORTCUT"
-        android:permissionGroup="android.permission-group.SYSTEM_TOOLS"
-        android:protectionLevel="dangerous"
-        android:label="@string/permlab_install_shortcut"
-        android:description="@string/permdesc_install_shortcut" />
 
+    <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.CALL_PHONE" />
     <uses-permission android:name="android.permission.SET_WALLPAPER" />
     <uses-permission android:name="android.permission.SET_WALLPAPER_HINTS" />
@@ -45,9 +41,8 @@
     <uses-permission android:name="android.permission.REQUEST_DELETE_PACKAGES" />
     <uses-permission android:name="android.permission.READ_DEVICE_CONFIG" />
     <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES" />
-
-    <!-- TODO(b/150802536): Enabled only for ENABLE_FIXED_ROTATION_TRANSFORM feature flag -->
-    <uses-permission android:name="android.permission.WRITE_SECURE_SETTINGS"/>
+    <!-- for rotating surface by arbitrary degree -->
+    <uses-permission android:name="android.permission.ROTATE_SURFACE_FLINGER" />
     
     <!--
     Permissions required for read/write access to the workspace data. These permission name
@@ -82,41 +77,27 @@
         android:restoreAnyVersion="true"
         android:supportsRtl="true" >
 
-        <!-- Intent received used to install shortcuts from other applications -->
-        <receiver
-            android:name="com.android.launcher3.InstallShortcutReceiver"
-            android:permission="com.android.launcher.permission.INSTALL_SHORTCUT"
-            android:enabled="@bool/enable_install_shortcut_api" >
-            <intent-filter>
-                <action android:name="com.android.launcher.action.INSTALL_SHORTCUT" />
-            </intent-filter>
-        </receiver>
-
         <!-- Intent received when a session is committed -->
         <receiver
-            android:name="com.android.launcher3.SessionCommitReceiver" >
+            android:name="com.android.launcher3.SessionCommitReceiver"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.content.pm.action.SESSION_COMMITTED" />
             </intent-filter>
         </receiver>
 
         <!-- Intent received used to initialize a restored widget -->
-        <receiver android:name="com.android.launcher3.AppWidgetsRestoredReceiver" >
+        <receiver android:name="com.android.launcher3.AppWidgetsRestoredReceiver"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_HOST_RESTORED"/>
             </intent-filter>
         </receiver>
 
         <service
-            android:name="com.android.launcher3.uioverrides.dynamicui.WallpaperManagerCompatVL$ColorExtractionService"
-            android:exported="false"
-            android:process=":wallpaper_chooser"
-            android:permission="android.permission.BIND_JOB_SERVICE" />
-
-        <service
             android:name="com.android.launcher3.notification.NotificationListener"
             android:label="@string/notification_dots_service_title"
-            android:enabled="@bool/notification_dots_enabled"
+            android:exported="true"
             android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE">
             <intent-filter>
                 <action android:name="android.service.notification.NotificationListenerService" />
@@ -127,10 +108,10 @@
                        android:value="true" />
 
         <activity android:name="com.android.launcher3.dragndrop.AddItemActivity"
-            android:theme="@style/AppItemActivityTheme"
+            android:theme="@style/AddItemActivityTheme"
             android:excludeFromRecents="true"
             android:autoRemoveFromRecents="true"
-            android:label="@string/action_add_to_workspace" >
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.content.pm.action.CONFIRM_PIN_SHORTCUT" />
                 <action android:name="android.content.pm.action.CONFIRM_PIN_APPWIDGET" />
@@ -165,6 +146,7 @@
             android:name="com.android.launcher3.settings.SettingsActivity"
             android:label="@string/settings_button_text"
             android:theme="@style/HomeSettingsTheme"
+            android:exported="true"
             android:autoRemoveFromRecents="true">
             <intent-filter>
                 <action android:name="android.intent.action.APPLICATION_PREFERENCES" />
@@ -187,6 +169,7 @@
             android:name="com.android.launcher3.secondarydisplay.SecondaryDisplayLauncher"
             android:theme="@style/AppTheme"
             android:launchMode="singleTop"
+            android:exported="true"
             android:enabled="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -194,5 +177,11 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+
+        <!-- [b/197780098] Disable eager initialization of Jetpack libraries. -->
+        <provider
+            android:name="androidx.startup.InitializationProvider"
+            android:authorities="${applicationId}.androidx-startup"
+            tools:node="remove" />
     </application>
 </manifest>

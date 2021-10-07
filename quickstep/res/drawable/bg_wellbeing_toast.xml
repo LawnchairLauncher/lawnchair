@@ -13,7 +13,9 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
-    <solid android:color="#E61A73E8" />
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:priv-android="http://schemas.android.com/apk/prv/res/android"
+    android:shape="rectangle">
+    <solid android:color="?priv-android:attr/colorAccentPrimary" />
     <corners android:radius="?android:attr/dialogCornerRadius" />
 </shape>
