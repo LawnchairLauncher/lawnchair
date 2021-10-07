@@ -121,6 +121,8 @@ android_library {
         "androidx.cardview_cardview",
         "iconloader_base",
         "libGoogleFeed",
+        "colorkt",
+        "themelib",
     ],
     manifest: "AndroidManifest-common.xml",
     sdk_version: "current",
