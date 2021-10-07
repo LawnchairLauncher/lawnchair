@@ -163,10 +163,8 @@ public class SplitSelectStateController {
                                 if (mSuccessCallback != null) {
                                     mSuccessCallback.accept(true);
                                 }
+                                resetState();
                             }));
-
-            // After successful launch, call resetState
-            resetState();
         }
 
         @Override
@@ -175,9 +173,8 @@ public class SplitSelectStateController {
                 if (mSuccessCallback != null) {
                     mSuccessCallback.accept(false);
                 }
+                resetState();
             });
-
-            resetState();
         }
     }
 
