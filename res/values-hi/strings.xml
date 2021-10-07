@@ -69,6 +69,7 @@
     <string name="out_of_space" msgid="6692471482459245734">"इस होम स्क्रीन पर जगह खाली नहीं है"</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"पसंदीदा ट्रे में और जगह नहीं है"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"ऐप्लिकेशन सूची"</string>
+    <string name="all_apps_search_results" msgid="5889367432531296759">"खोज के नतीजे"</string>
     <string name="all_apps_button_personal_label" msgid="1315764287305224468">"निजी ऐप्लिकेशन की सूची"</string>
     <string name="all_apps_button_work_label" msgid="7270707118948892488">"काम से जुड़े ऐप्लिकेशन की सूची"</string>
     <string name="remove_drop_target_label" msgid="7812859488053230776">"हटाएं"</string>

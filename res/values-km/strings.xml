@@ -69,6 +69,7 @@
     <string name="out_of_space" msgid="6692471482459245734">"គ្មានកន្លែង​នៅលើ​អេក្រង់ដើមនេះទេ"</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"គ្មាន​បន្ទប់​​ក្នុង​ថាស​និយម​ប្រើ"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"បញ្ជីកម្មវិធី"</string>
+    <string name="all_apps_search_results" msgid="5889367432531296759">"លទ្ធផលស្វែងរក"</string>
     <string name="all_apps_button_personal_label" msgid="1315764287305224468">"បញ្ជី​កម្មវិធី​ផ្ទាល់ខ្លួន"</string>
     <string name="all_apps_button_work_label" msgid="7270707118948892488">"បញ្ជី​កម្មវិធី​ការងារ"</string>
     <string name="remove_drop_target_label" msgid="7812859488053230776">"យកចេញ"</string>

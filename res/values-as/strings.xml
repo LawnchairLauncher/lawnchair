@@ -69,6 +69,7 @@
     <string name="out_of_space" msgid="6692471482459245734">"এই গৃহ স্ক্ৰীনত খালী ঠাই নাই"</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"পছন্দৰ ট্ৰে\'ত আৰু বেছি ঠাই নাই"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"এপৰ সূচী"</string>
+    <string name="all_apps_search_results" msgid="5889367432531296759">"সন্ধানৰ ফলাফল"</string>
     <string name="all_apps_button_personal_label" msgid="1315764287305224468">"ব্যক্তিগত এপৰ তালিকা"</string>
     <string name="all_apps_button_work_label" msgid="7270707118948892488">"কৰ্মস্থানৰ এপৰ তালিকা"</string>
     <string name="remove_drop_target_label" msgid="7812859488053230776">"আঁতৰাওক"</string>
