@@ -125,6 +125,8 @@ android_library {
         "com.google.android.material_material",
         "iconloader_base",
         "libGoogleFeed",
+        "colorkt",
+        "themelib",
     ],
     manifest: "AndroidManifest-common.xml",
     sdk_version: "current",
