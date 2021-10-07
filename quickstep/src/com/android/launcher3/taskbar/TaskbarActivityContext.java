@@ -61,7 +61,6 @@ import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.logger.LauncherAtom;
 import com.android.launcher3.model.data.FolderInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
-import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.touch.ItemClickHandler;
 import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.util.SettingsCache;
@@ -108,6 +107,8 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
     private final boolean mIsSafeModeEnabled;
     private final boolean mIsUserSetupComplete;
     private boolean mIsDestroyed = false;
+    // The flag to know if the window is excluded from magnification region computation.
+    private boolean mIsExcludeFromMagnificationRegion = false;
 
     public TaskbarActivityContext(Context windowContext, DeviceProfile dp,
             TaskbarNavButtonController buttonController, ScopedUnfoldTransitionProgressProvider
@@ -519,5 +520,26 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
 
     protected boolean isUserSetupComplete() {
         return mIsUserSetupComplete;
+    }
+
+    /**
+     * Called when we determine the touchable region.
+     *
+     * @param exclude {@code true} then the magnification region computation will omit the window.
+     */
+    public void excludeFromMagnificationRegion(boolean exclude) {
+        if (mIsExcludeFromMagnificationRegion == exclude) {
+            return;
+        }
+
+        mIsExcludeFromMagnificationRegion = exclude;
+        if (exclude) {
+            mWindowLayoutParams.privateFlags |=
+                    WindowManager.LayoutParams.PRIVATE_FLAG_EXCLUDE_FROM_SCREEN_MAGNIFICATION;
+        } else {
+            mWindowLayoutParams.privateFlags &=
+                    ~WindowManager.LayoutParams.PRIVATE_FLAG_EXCLUDE_FROM_SCREEN_MAGNIFICATION;
+        }
+        mWindowManager.updateViewLayout(mDragLayer, mWindowLayoutParams);
     }
 }
