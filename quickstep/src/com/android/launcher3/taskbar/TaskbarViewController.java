@@ -85,6 +85,8 @@ public class TaskbarViewController {
         mTaskbarView.getLayoutParams().height = mActivity.getDeviceProfile().taskbarSize;
 
         mTaskbarIconScaleForStash.updateValue(1f);
+
+        mModelCallbacks.init(controllers);
         LauncherAppState.getInstance(mActivity).getModel().addCallbacksAndLoad(mModelCallbacks);
     }
 

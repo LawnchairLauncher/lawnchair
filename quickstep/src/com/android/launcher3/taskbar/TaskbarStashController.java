@@ -19,6 +19,7 @@ import static android.view.HapticFeedbackConstants.LONG_PRESS;
 
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASKBAR_LONGPRESS_HIDE;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASKBAR_LONGPRESS_SHOW;
+import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_SCREEN_PINNING;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -44,10 +45,13 @@ public class TaskbarStashController {
 
     public static final int FLAG_IN_APP = 1 << 0;
     public static final int FLAG_STASHED_IN_APP_MANUAL = 1 << 1; // long press, persisted
-    public static final int FLAG_IN_STASHED_LAUNCHER_STATE = 1 << 2;
+    public static final int FLAG_STASHED_IN_APP_PINNED = 1 << 2; // app pinning
+    public static final int FLAG_STASHED_IN_APP_EMPTY = 1 << 3; // no hotseat icons
+    public static final int FLAG_IN_STASHED_LAUNCHER_STATE = 1 << 4;
 
     // If we're in an app and any of these flags are enabled, taskbar should be stashed.
-    public static final int FLAGS_STASHED_IN_APP = FLAG_STASHED_IN_APP_MANUAL;
+    public static final int FLAGS_STASHED_IN_APP = FLAG_STASHED_IN_APP_MANUAL
+            | FLAG_STASHED_IN_APP_PINNED | FLAG_STASHED_IN_APP_EMPTY;
 
     /**
      * How long to stash/unstash when manually invoked via long press.
@@ -366,6 +370,13 @@ public class TaskbarStashController {
 
     public Animator applyStateWithoutStart(long duration) {
         return mStatePropertyHolder.setState(mState, duration, false);
+    }
+
+    /** Called when some system ui state has changed. (See SYSUI_STATE_... in QuickstepContract) */
+    public void updateStateForSysuiFlags(int systemUiStateFlags) {
+        updateStateForFlag(FLAG_STASHED_IN_APP_PINNED,
+                hasAnyFlag(systemUiStateFlags, SYSUI_STATE_SCREEN_PINNING));
+        applyState();
     }
 
     /**
