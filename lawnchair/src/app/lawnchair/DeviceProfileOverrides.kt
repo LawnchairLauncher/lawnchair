@@ -14,7 +14,7 @@ class DeviceProfileOverrides(context: Context) {
         idp.dbFile = idp.dbFile + dbNameSuffix
 
         // apply grid size
-        idp.numHotseatIcons = prefs.hotseatColumns.get(defaultGrid)
+        idp.numShownHotseatIcons = prefs.hotseatColumns.get(defaultGrid)
         idp.numRows = prefs.workspaceRows.get(defaultGrid)
         idp.numColumns = prefs.workspaceColumns.get(defaultGrid)
         idp.numAllAppsColumns = prefs.allAppsColumns.get(defaultGrid)

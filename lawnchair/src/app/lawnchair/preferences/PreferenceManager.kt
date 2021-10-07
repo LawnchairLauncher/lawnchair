@@ -23,7 +23,6 @@ import app.lawnchair.LawnchairLauncher
 import app.lawnchair.font.FontCache
 import app.lawnchair.ui.theme.LAWNCHAIR_BLUE
 import com.android.launcher3.InvariantDeviceProfile
-import com.android.launcher3.LauncherAppState
 import com.android.launcher3.Utilities
 import com.android.launcher3.model.GridSizeMigrationTaskV2
 import com.android.launcher3.states.RotationHelper
@@ -31,8 +30,9 @@ import com.android.launcher3.util.MainThreadInitializedObject
 
 class PreferenceManager private constructor(private val context: Context) : BasePreferenceManager(context) {
     private val idp get() = InvariantDeviceProfile.INSTANCE.get(context)
-    private val reloadIcons = { idp.onPreferencesChanged(context, InvariantDeviceProfile.CHANGE_FLAG_ICON_PARAMS) }
+    private val reloadIcons = { idp.onPreferencesChanged(context) }
     private val reloadGrid: () -> Unit = {
+        /* TODO: fix this
         val defaultGrid = idp.closestProfile
         val numColumns = workspaceColumns.get(defaultGrid)
         val numRows = workspaceRows.get(defaultGrid)
@@ -40,7 +40,8 @@ class PreferenceManager private constructor(private val context: Context) : Base
         if (GridSizeMigrationTaskV2.needsToMigrate(context, numColumns, numRows, numHotseatIcons)) {
             toggleCurrentDbSlot()
         }
-        idp.onPreferencesChanged(context, InvariantDeviceProfile.CHANGE_FLAG_GRID)
+        idp.onPreferencesChanged(context)
+         */
     }
 
     private val scheduleRestart = {
@@ -55,7 +56,7 @@ class PreferenceManager private constructor(private val context: Context) : Base
 
     val hiddenAppSet = StringSetPref("hidden-app-set", setOf())
     val iconPackPackage = StringPref("pref_iconPackPackage", "", reloadIcons)
-    val allowRotation = BoolPref("pref_allowRotation", RotationHelper.getAllowRotationDefaultValue())
+    val allowRotation = BoolPref("pref_allowRotation", false)
     val wrapAdaptiveIcons = BoolPref("prefs_wrapAdaptive", false, reloadIcons)
     val addIconToHome = BoolPref("pref_add_icon_to_home", true)
     val enableHotseatQsb = BoolPref("pref_dockSearchBar", true, reloadGrid)

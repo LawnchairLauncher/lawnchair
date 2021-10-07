@@ -151,7 +151,7 @@ public class RotationTouchHelper implements
         mDisplayId = mDisplayController.getInfo().id;
 
         mOrientationTouchTransformer = new OrientationTouchTransformer(resources, mMode,
-                () -> LawnchairUtilsKt.getWindowCornerRadius(context));
+                () -> LawnchairUtilsKt.getWindowCornerRadius(mContext));
 
         // Register for navigation mode changes
         SysUINavigationMode.Mode newMode = mSysUiNavMode.addModeChangeListener(this);

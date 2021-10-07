@@ -122,7 +122,7 @@ public class InvariantDeviceProfile {
     /**
      * Number of icons inside the hotseat area.
      */
-    protected int numShownHotseatIcons;
+    public int numShownHotseatIcons;
 
     /**
      * Number of icons inside the hotseat area that is stored in the database. This is greater than
@@ -383,9 +383,9 @@ public class InvariantDeviceProfile {
         MAIN_EXECUTOR.execute(() -> onConfigChanged(appContext));
     }
 
-    public void onPreferencesChanged(Context context, int changeFlags) {
+    public void onPreferencesChanged(Context context) {
         Context appContext = context.getApplicationContext();
-        MAIN_EXECUTOR.execute(() -> onConfigChanged(appContext, changeFlags));
+        MAIN_EXECUTOR.execute(() -> onConfigChanged(appContext));
     }
 
     private void onConfigChanged(Context context) {
@@ -614,9 +614,9 @@ public class InvariantDeviceProfile {
         public final int numFolderRows;
         public final int numFolderColumns;
 
-        private final int numAllAppsColumns;
+        public final int numAllAppsColumns;
         private final int numDatabaseAllAppsColumns;
-        private final int numHotseatIcons;
+        public final int numHotseatIcons;
         private final int numDatabaseHotseatIcons;
 
         private final String dbFile;

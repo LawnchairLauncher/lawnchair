@@ -70,6 +70,7 @@ public class LauncherAppState {
                 }
             };
 
+    private Launcher mLauncher;
     private final Context mContext;
     private final LauncherModel mModel;
     private final IconProvider mIconProvider;

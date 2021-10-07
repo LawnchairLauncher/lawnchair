@@ -33,11 +33,9 @@ import com.android.launcher3.util.Executors.MODEL_EXECUTOR
 import java.util.*
 import java.util.Comparator.comparing
 
-private val appFilter = AppFilter()
-
 @Composable
 fun appsList(
-    filter: AppFilter = appFilter,
+    filter: AppFilter = AppFilter(LocalContext.current),
     comparator: Comparator<App> = appComparator
 ): State<Optional<List<App>>> {
     val context = LocalContext.current

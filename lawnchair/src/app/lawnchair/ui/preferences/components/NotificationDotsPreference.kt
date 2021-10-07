@@ -38,7 +38,8 @@ import app.lawnchair.util.lifecycleState
 import com.android.launcher3.R
 import com.android.launcher3.notification.NotificationListener
 import com.android.launcher3.settings.SettingsActivity
-import com.android.launcher3.util.SecureSettingsObserver
+import com.android.launcher3.util.SettingsCache
+import com.android.launcher3.util.SettingsCache.NOTIFICATION_BADGING_URI
 import kotlinx.coroutines.launch
 
 @Composable
@@ -152,14 +153,15 @@ fun notificationDotsEnabled(): Boolean {
     val context = LocalContext.current
     val enabledState = remember { mutableStateOf(false) }
     val observer = remember {
-        SecureSettingsObserver.newNotificationSettingsObserver(context) { isEnabled ->
-            enabledState.value = isEnabled
-        }.apply { dispatchOnChange() }
+        SettingsCache.OnChangeListener {
+            enabledState.value = SettingsCache.INSTANCE.get(context).getValue(NOTIFICATION_BADGING_URI)
+        }
     }
 
     DisposableEffect(null) {
-        observer.register()
-        onDispose { observer.unregister() }
+        val settingsCache = SettingsCache.INSTANCE.get(context)
+        settingsCache.register(NOTIFICATION_BADGING_URI, observer)
+        onDispose { settingsCache.unregister(NOTIFICATION_BADGING_URI, observer) }
     }
 
     return enabledState.value

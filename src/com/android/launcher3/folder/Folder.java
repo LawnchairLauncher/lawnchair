@@ -296,7 +296,7 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
         EditTextExtensions.setCursorColor(mFolderName, accentColor);
         EditTextExtensions.setTextSelectHandleColor(mFolderName, accentColor);
 
-        if (Utilities.ATLEAST_OREO) {
+        if (Utilities.ATLEAST_O) {
             mFolderName.setHighlightColor(ColorUtils.setAlphaComponent(accentColor, 82));
         }
 

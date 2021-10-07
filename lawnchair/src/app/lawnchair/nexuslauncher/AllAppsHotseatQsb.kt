@@ -21,16 +21,14 @@ import app.lawnchair.preferences.PreferenceManager
 import app.lawnchair.util.EditTextExtensions.setCursorColor
 import app.lawnchair.util.EditTextExtensions.setTextSelectHandleColor
 import com.android.launcher3.*
-import com.android.launcher3.allapps.AllAppsContainerView
-import com.android.launcher3.allapps.AllAppsStore
-import com.android.launcher3.allapps.AlphabeticalAppsList
-import com.android.launcher3.allapps.SearchUiManager
+import com.android.launcher3.allapps.*
+import com.android.launcher3.allapps.AllAppsGridAdapter.AdapterItem
 import com.android.launcher3.allapps.search.AllAppsSearchBarController
 import com.android.launcher3.anim.Interpolators
 import com.android.launcher3.anim.PropertySetter
 import com.android.launcher3.graphics.TintedDrawableSpan
 import com.android.launcher3.qsb.QsbContainerView
-import com.android.launcher3.util.ComponentKey
+import com.android.launcher3.search.SearchCallback
 import com.android.launcher3.util.Themes
 import com.android.launcher3.views.ActivityContext
 import kotlin.math.round
@@ -40,7 +38,7 @@ class AllAppsHotseatQsb @JvmOverloads constructor(
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
 ) :
-    QsbContainerView(context, attrs, defStyleAttr), Insettable, SearchUiManager, AllAppsSearchBarController.Callbacks,
+    QsbContainerView(context, attrs, defStyleAttr), Insettable, SearchUiManager, SearchCallback<AdapterItem>,
     AllAppsStore.OnUpdateListener {
     private val mActivity: ActivityContext = ActivityContext.lookupContext(context)
     private val mFixedTranslationY: Int = resources.getDimensionPixelSize(R.dimen.search_widget_hotseat_height) / 2
@@ -76,7 +74,7 @@ class AllAppsHotseatQsb @JvmOverloads constructor(
             setCursorColor(accentColor)
             setTextSelectHandleColor(accentColor)
 
-            if (Utilities.ATLEAST_OREO) {
+            if (Utilities.ATLEAST_O) {
                 highlightColor = ColorUtils.setAlphaComponent(accentColor, 82)
             }
         }
@@ -101,7 +99,7 @@ class AllAppsHotseatQsb @JvmOverloads constructor(
         requestLayout()
     }
 
-    override fun initialize(appsView: AllAppsContainerView) {
+    override fun initializeSearch(appsView: AllAppsContainerView) {
         mApps = appsView.apps
         mAppsView = appsView
         mAppsView.addElevationController(object : RecyclerView.OnScrollListener() {
@@ -114,7 +112,7 @@ class AllAppsHotseatQsb @JvmOverloads constructor(
             }
         })
         mSearchBarController.initialize(
-            LawnchairAppSearchAlgorithm(context, mApps.apps),
+            LawnchairAppSearchAlgorithm(context),
             mFallbackSearchView, Launcher.cast(mActivity), this
         )
     }
@@ -146,14 +144,23 @@ class AllAppsHotseatQsb @JvmOverloads constructor(
         }
     }
 
-    override fun onSearchResult(query: String, apps: ArrayList<ComponentKey>) {
-        mApps.setOrderedFilter(apps)
-        notifyResultChanged()
-        mAppsView.setLastSearchQuery(query)
+    override fun onSearchResult(query: String, items: ArrayList<AdapterItem>?) {
+        if (items != null) {
+            mApps.setSearchResults(items)
+            notifyResultChanged()
+            mAppsView.setLastSearchQuery(query)
+        }
+    }
+
+    override fun onAppendSearchResult(query: String, items: ArrayList<AdapterItem?>?) {
+        if (items != null) {
+            mApps.appendSearchResults(items)
+            notifyResultChanged()
+        }
     }
 
     override fun clearSearchResult() {
-        if (mApps.setOrderedFilter(null)) {
+        if (mApps.setSearchResults(null)) {
             notifyResultChanged()
         }
         mSearchQueryBuilder.clear()
@@ -164,21 +171,6 @@ class AllAppsHotseatQsb @JvmOverloads constructor(
 
     private fun notifyResultChanged() {
         mAppsView.onSearchResultsChanged()
-    }
-
-    override fun getScrollRangeDelta(insets: Rect): Float {
-        return if (mActivity.deviceProfile.isVerticalBarLayout) {
-            0.0f
-        } else {
-            val dp: DeviceProfile = mActivity.deviceProfile
-            val percentageOfAvailSpaceFromBottom = 0.45f
-            val center = ((dp.hotseatBarSizePx - dp.hotseatCellHeightPx
-                    - layoutParams.height - insets.bottom) * percentageOfAvailSpaceFromBottom).toInt()
-            val bottomMargin = insets.bottom + center
-            val topMargin = (-mFixedTranslationY).coerceAtLeast(insets.top - mMarginTopAdjusting)
-            val myBot: Int = layoutParams.height + topMargin + mFixedTranslationY
-            (bottomMargin + myBot).toFloat()
-        }
     }
 
     override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
@@ -203,7 +195,7 @@ class AllAppsHotseatQsb @JvmOverloads constructor(
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         val deviceProfile = mActivity.deviceProfile
         val width = getWidth((MeasureSpec.getSize(widthMeasureSpec)))
-        val iconFrameWidth = width / deviceProfile.inv.numHotseatIcons
+        val iconFrameWidth = width / deviceProfile.inv.numShownHotseatIcons
         val iconWidth = round(0.92f * (deviceProfile.iconSizePx.toFloat()))
         val iconPadding = (iconFrameWidth - iconWidth).toInt()
         setMeasuredDimension(
@@ -216,17 +208,7 @@ class AllAppsHotseatQsb @JvmOverloads constructor(
         }
     }
 
-    override fun setContentVisibility(
-        visibleElements: Int, setter: PropertySetter,
-        interpolator: Interpolator
-    ) {
-        val showHotseatMode = visibleElements and LauncherState.HOTSEAT_SEARCH_BOX != 0 && enableHotseatQsb
-        val showAllAppsMode = visibleElements and LauncherState.ALL_APPS_CONTENT != 0
-        setter.setViewAlpha(mSearchWrapperView, if (showHotseatMode) 1f else 0f, Interpolators.LINEAR)
-        setter.setViewAlpha(mFallbackSearchView, if (showAllAppsMode) 1f else 0f, Interpolators.LINEAR)
-    }
-
-    override fun setTextSearchEnabled(isEnabled: Boolean): EditText {
+    override fun getEditText(): ExtendedEditText {
         return mFallbackSearchView
     }
 

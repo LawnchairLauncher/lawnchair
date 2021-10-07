@@ -274,7 +274,6 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
 
     private void refreshRecyclerView() {
         if (mAdapter != null) {
-            mAdapter.setAllAppsColumns();
             mAdapter.notifyDataSetChanged();
         }
     }

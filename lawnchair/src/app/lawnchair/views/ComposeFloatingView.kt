@@ -13,7 +13,6 @@ import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.integerResource
 import app.lawnchair.LawnchairLauncher
 import app.lawnchair.launcher
 import app.lawnchair.ui.preferences.components.BottomSheet
@@ -26,8 +25,6 @@ import app.lawnchair.util.ProvideLifecycleState
 import com.android.launcher3.AbstractFloatingView
 import com.android.launcher3.Insettable
 import com.android.launcher3.R
-import com.android.launcher3.icons.GraphicsUtils
-import com.android.launcher3.uioverrides.WallpaperColorInfo
 import com.android.launcher3.util.SystemUiController
 import com.google.accompanist.insets.ProvideWindowInsets
 import kotlinx.coroutines.launch
@@ -75,10 +72,6 @@ class ComposeFloatingView(context: Context) :
         return false
     }
 
-    override fun logActionCommand(command: Int) {
-
-    }
-
     override fun onBackPressed(): Boolean {
         return false
     }
@@ -107,9 +100,7 @@ class ComposeFloatingView(context: Context) :
 @Composable
 fun scrimColor(): Color {
     val context = LocalContext.current
-    val colors = WallpaperColorInfo.INSTANCE[context]
-    val alpha = integerResource(id = R.integer.extracted_color_gradient_alpha)
-    val intColor = GraphicsUtils.setColorAlphaBound(colors.secondaryColor, alpha)
+    val intColor = context.resources.getColor(R.color.widgets_picker_scrim);
     return Color(intColor)
 }
 

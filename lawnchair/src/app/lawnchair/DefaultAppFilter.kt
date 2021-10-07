@@ -24,7 +24,7 @@ import com.android.launcher3.BuildConfig
 
 @Suppress("UNUSED_PARAMETER") // required by ResourceBasedOverride
 @Keep
-open class DefaultAppFilter(context: Context) : AppFilter() {
+open class DefaultAppFilter(context: Context) : AppFilter(context) {
     private val defaultHideList = setOf(
         // Voice search
         ComponentName.unflattenFromString("com.google.android.googlequicksearchbox/.VoiceSearchActivity"),

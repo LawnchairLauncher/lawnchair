@@ -117,7 +117,7 @@ public class ScrimView extends View implements Insettable {
         return mSystemUiController;
     }
 
-    private boolean isScrimDark() {
+    protected boolean isScrimDark() {
         if (!(getBackground() instanceof ColorDrawable)) {
             throw new IllegalStateException(
                     "ScrimView must have a ColorDrawable background, this one has: "

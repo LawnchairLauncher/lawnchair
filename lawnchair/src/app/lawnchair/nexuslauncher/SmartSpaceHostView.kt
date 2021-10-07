@@ -40,11 +40,12 @@ open class SmartSpaceHostView(context: Context) : QsbWidgetHostView(context), On
         centerPos.top = 0f
         centerPos.bottom = pos.bottom.toFloat()
         centerPos.bottom = findBottomRecur(this, pos.top, pos).toFloat().coerceAtMost(centerPos.bottom)
-        val item = OptionItem(R.string.smartspace_preferences,
+        val item = OptionItem(view.context,
+            R.string.smartspace_preferences,
             R.drawable.ic_smartspace_preferences,
             NexusLauncherEnum.SMARTSPACE_TAP_OR_LONGPRESS
         ) { v: View -> openSettings(v) }
-        OptionsPopupView.show(mLauncher, centerPos, listOf(item))
+        OptionsPopupView.show(mLauncher, centerPos, listOf(item), true)
         return true
     }
 

@@ -40,7 +40,7 @@ import java.util.List;
  */
 public class DefaultAppSearchAlgorithm implements SearchAlgorithm<AdapterItem> {
 
-    private static final int MAX_RESULTS_COUNT = 5;
+    protected static final int MAX_RESULTS_COUNT = 5;
 
     private final LauncherAppState mAppState;
     private final Handler mResultHandler;
@@ -66,6 +66,10 @@ public class DefaultAppSearchAlgorithm implements SearchAlgorithm<AdapterItem> {
                 mResultHandler.post(() -> callback.onSearchResult(query, result));
             }
         });
+    }
+
+    public ArrayList<AdapterItem> getResult(List<AppInfo> apps, String query) {
+        return getTitleMatchResult(apps, query);
     }
 
     /**
