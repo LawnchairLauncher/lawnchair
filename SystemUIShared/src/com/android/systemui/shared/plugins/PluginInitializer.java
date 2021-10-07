@@ -37,4 +37,9 @@ public interface PluginInitializer {
      * Called from {@link PluginManagerImpl#handleWtfs()}.
      */
     void handleWtfs();
+
+    /**
+     * Returns if pluging manager should run in debug mode.
+     */
+    boolean isDebuggable();
 }

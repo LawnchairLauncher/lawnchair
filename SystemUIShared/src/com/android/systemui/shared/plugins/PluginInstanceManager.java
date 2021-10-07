@@ -28,7 +28,6 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.pm.ResolveInfo;
 import android.content.res.Resources;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
@@ -72,7 +71,7 @@ public class PluginInstanceManager<T extends Plugin> {
     PluginInstanceManager(Context context, String action, PluginListener<T> listener,
             boolean allowMultiple, Looper looper, VersionInfo version, PluginManagerImpl manager) {
         this(context, context.getPackageManager(), action, listener, allowMultiple, looper, version,
-                manager, Build.IS_DEBUGGABLE, manager.getWhitelistedPlugins());
+                manager, manager.isDebuggable(), manager.getWhitelistedPlugins());
     }
 
     @VisibleForTesting
@@ -386,7 +385,8 @@ public class PluginInstanceManager<T extends Plugin> {
                     }
                     Intent i = new Intent(PluginManagerImpl.DISABLE_PLUGIN).setData(
                             Uri.parse("package://" + component.flattenToString()));
-                    PendingIntent pi = PendingIntent.getBroadcast(mContext, 0, i, 0);
+                    PendingIntent pi = PendingIntent.getBroadcast(mContext, 0, i,
+                            PendingIntent.FLAG_IMMUTABLE);
                     nb.addAction(new Action.Builder(null, "Disable plugin", pi).build());
                     mContext.getSystemService(NotificationManager.class)
                             .notify(SystemMessage.NOTE_PLUGIN, nb.build());

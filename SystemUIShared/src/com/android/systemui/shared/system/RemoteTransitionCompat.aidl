@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 The Android Open Source Project
+ * Copyright (C) 2020 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,19 +16,4 @@
 
 package com.android.systemui.shared.system;
 
-import android.content.Context;
-
-/**
- * Wraps a context to expose some methods for launcher to call.
- */
-public class ContextCompat {
-    private final Context mWrapped;
-
-    public ContextCompat(Context context) {
-        mWrapped = context;
-    }
-
-    public int getUserId() {
-        return mWrapped.getUserId();
-    }
-}
+parcelable RemoteTransitionCompat;

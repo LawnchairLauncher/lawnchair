@@ -36,6 +36,7 @@ import java.io.PrintWriter;
 
 /**
  * Manages the input consumer that allows the SystemUI to directly receive input.
+ * TODO: Refactor this for the gesture nav case
  */
 public class InputConsumerController {
 
@@ -99,14 +100,6 @@ public class InputConsumerController {
     }
 
     /**
-     * @return A controller for the pip input consumer.
-     */
-    public static InputConsumerController getPipInputConsumer() {
-        return new InputConsumerController(WindowManagerGlobal.getWindowManagerService(),
-                INPUT_CONSUMER_PIP);
-    }
-
-    /**
      * @return A controller for the recents animation input consumer.
      */
     public static InputConsumerController getRecentsAnimationInputConsumer() {
@@ -155,7 +148,6 @@ public class InputConsumerController {
         if (mInputEventReceiver == null) {
             final InputChannel inputChannel = new InputChannel();
             try {
-                // TODO(b/113087003): Support Picture-in-picture in multi-display.
                 mWindowManager.destroyInputConsumer(mName, DEFAULT_DISPLAY);
                 mWindowManager.createInputConsumer(mToken, mName, DEFAULT_DISPLAY, inputChannel);
             } catch (RemoteException e) {
@@ -175,7 +167,6 @@ public class InputConsumerController {
     public void unregisterInputConsumer() {
         if (mInputEventReceiver != null) {
             try {
-                // TODO(b/113087003): Support Picture-in-picture in multi-display.
                 mWindowManager.destroyInputConsumer(mName, DEFAULT_DISPLAY);
             } catch (RemoteException e) {
                 Log.e(TAG, "Failed to destroy input consumer", e);

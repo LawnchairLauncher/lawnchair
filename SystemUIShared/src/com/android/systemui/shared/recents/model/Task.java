@@ -43,17 +43,6 @@ public class Task {
 
     public static final String TAG = "Task";
 
-    /* Task callbacks */
-    @Deprecated
-    public interface TaskCallbacks {
-        /* Notifies when a task has been bound */
-        void onTaskDataLoaded(Task task, ThumbnailData thumbnailData);
-        /* Notifies when a task has been unbound */
-        void onTaskDataUnloaded();
-        /* Notifies when a task's windowing mode has changed. */
-        void onTaskWindowingModeChanged();
-    }
-
     /**
      * The Task Key represents the unique primary key for the task
      */
@@ -209,12 +198,6 @@ public class Task {
     public TaskKey key;
 
     /**
-     * The temporary sort index in the stack, used when ordering the stack.
-     */
-    @Deprecated
-    public int temporarySortIndexInStack;
-
-    /**
      * The icon is the task description icon (if provided), which falls back to the activity icon,
      * which can then fall back to the application icon.
      */
@@ -229,36 +212,14 @@ public class Task {
     public int colorPrimary;
     @ViewDebug.ExportedProperty(category="recents")
     public int colorBackground;
-    @ViewDebug.ExportedProperty(category="recents")
-    @Deprecated
-    public boolean useLightOnPrimaryColor;
 
     /**
      * The task description for this task, only used to reload task icons.
      */
     public TaskDescription taskDescription;
 
-    /**
-     * The state isLaunchTarget will be set for the correct task upon launching Recents.
-     */
-    @ViewDebug.ExportedProperty(category="recents")
-    @Deprecated
-    public boolean isLaunchTarget;
-    @ViewDebug.ExportedProperty(category="recents")
-    @Deprecated
-    public boolean isStackTask;
-    @ViewDebug.ExportedProperty(category="recents")
-    @Deprecated
-    public boolean isSystemApp;
     @ViewDebug.ExportedProperty(category="recents")
     public boolean isDockable;
-
-    /**
-     * Resize mode. See {@link ActivityInfo#resizeMode}.
-     */
-    @ViewDebug.ExportedProperty(category="recents")
-    @Deprecated
-    public int resizeMode;
 
     @ViewDebug.ExportedProperty(category="recents")
     public ComponentName topActivity;
@@ -266,8 +227,9 @@ public class Task {
     @ViewDebug.ExportedProperty(category="recents")
     public boolean isLocked;
 
-    @Deprecated
-    private ArrayList<TaskCallbacks> mCallbacks = new ArrayList<>();
+    // Last snapshot data, only used for recent tasks
+    public ActivityManager.RecentTaskInfo.PersistedTaskSnapshotData lastSnapshotData =
+            new ActivityManager.RecentTaskInfo.PersistedTaskSnapshotData();
 
     public Task() {
         // Do nothing
@@ -289,6 +251,16 @@ public class Task {
         this.taskDescription = new TaskDescription();
     }
 
+    public Task(Task other) {
+        this(other.key, other.colorPrimary, other.colorBackground, other.isDockable,
+                other.isLocked, other.taskDescription, other.topActivity);
+        lastSnapshotData.set(other.lastSnapshotData);
+    }
+
+    /**
+     * Use {@link Task#Task(Task)}.
+     */
+    @Deprecated
     public Task(TaskKey key, int colorPrimary, int colorBackground,
             boolean isDockable, boolean isLocked, TaskDescription taskDescription,
             ComponentName topActivity) {
@@ -301,103 +273,6 @@ public class Task {
         this.topActivity = topActivity;
     }
 
-    @Deprecated
-    public Task(TaskKey key, Drawable icon, ThumbnailData thumbnail, String title,
-            String titleDescription, int colorPrimary, int colorBackground, boolean isLaunchTarget,
-            boolean isStackTask, boolean isSystemApp, boolean isDockable,
-            TaskDescription taskDescription, int resizeMode, ComponentName topActivity,
-            boolean isLocked) {
-        this.key = key;
-        this.icon = icon;
-        this.thumbnail = thumbnail;
-        this.title = title;
-        this.titleDescription = titleDescription;
-        this.colorPrimary = colorPrimary;
-        this.colorBackground = colorBackground;
-        this.useLightOnPrimaryColor = Utilities.computeContrastBetweenColors(this.colorPrimary,
-                Color.WHITE) > 3f;
-        this.taskDescription = taskDescription;
-        this.isLaunchTarget = isLaunchTarget;
-        this.isStackTask = isStackTask;
-        this.isSystemApp = isSystemApp;
-        this.isDockable = isDockable;
-        this.resizeMode = resizeMode;
-        this.topActivity = topActivity;
-        this.isLocked = isLocked;
-    }
-
-    /**
-     * Copies the metadata from another task, but retains the current callbacks.
-     */
-    @Deprecated
-    public void copyFrom(Task o) {
-        this.key = o.key;
-        this.icon = o.icon;
-        this.thumbnail = o.thumbnail;
-        this.title = o.title;
-        this.titleDescription = o.titleDescription;
-        this.colorPrimary = o.colorPrimary;
-        this.colorBackground = o.colorBackground;
-        this.useLightOnPrimaryColor = o.useLightOnPrimaryColor;
-        this.taskDescription = o.taskDescription;
-        this.isLaunchTarget = o.isLaunchTarget;
-        this.isStackTask = o.isStackTask;
-        this.isSystemApp = o.isSystemApp;
-        this.isDockable = o.isDockable;
-        this.resizeMode = o.resizeMode;
-        this.isLocked = o.isLocked;
-        this.topActivity = o.topActivity;
-    }
-
-    /**
-     * Add a callback.
-     */
-    @Deprecated
-    public void addCallback(TaskCallbacks cb) {
-        if (!mCallbacks.contains(cb)) {
-            mCallbacks.add(cb);
-        }
-    }
-
-    /**
-     * Remove a callback.
-     */
-    @Deprecated
-    public void removeCallback(TaskCallbacks cb) {
-        mCallbacks.remove(cb);
-    }
-
-    /** Updates the task's windowing mode. */
-    @Deprecated
-    public void setWindowingMode(int windowingMode) {
-        key.setWindowingMode(windowingMode);
-        int callbackCount = mCallbacks.size();
-        for (int i = 0; i < callbackCount; i++) {
-            mCallbacks.get(i).onTaskWindowingModeChanged();
-        }
-    }
-
-    /** Notifies the callback listeners that this task has been loaded */
-    @Deprecated
-    public void notifyTaskDataLoaded(ThumbnailData thumbnailData, Drawable applicationIcon) {
-        this.icon = applicationIcon;
-        this.thumbnail = thumbnailData;
-        int callbackCount = mCallbacks.size();
-        for (int i = 0; i < callbackCount; i++) {
-            mCallbacks.get(i).onTaskDataLoaded(this, thumbnailData);
-        }
-    }
-
-    /** Notifies the callback listeners that this task has been unloaded */
-    @Deprecated
-    public void notifyTaskDataUnloaded(Drawable defaultApplicationIcon) {
-        icon = defaultApplicationIcon;
-        thumbnail = null;
-        for (int i = mCallbacks.size() - 1; i >= 0; i--) {
-            mCallbacks.get(i).onTaskDataUnloaded();
-        }
-    }
-
     /**
      * Returns the top activity component.
      */
@@ -405,6 +280,29 @@ public class Task {
         return topActivity != null
                 ? topActivity
                 : key.baseIntent.getComponent();
+    }
+
+    public void setLastSnapshotData(ActivityManager.RecentTaskInfo rawTask) {
+        lastSnapshotData.set(rawTask.lastSnapshotData);
+    }
+
+    /**
+     * Returns the visible width to height ratio. Returns 0f if snapshot data is not available.
+     */
+    public float getVisibleThumbnailRatio(boolean clipInsets) {
+        if (lastSnapshotData.taskSize == null || lastSnapshotData.contentInsets == null) {
+            return 0f;
+        }
+
+        float availableWidth = lastSnapshotData.taskSize.x;
+        float availableHeight = lastSnapshotData.taskSize.y;
+        if (clipInsets) {
+            availableWidth -=
+                    (lastSnapshotData.contentInsets.left + lastSnapshotData.contentInsets.right);
+            availableHeight -=
+                    (lastSnapshotData.contentInsets.top + lastSnapshotData.contentInsets.bottom);
+        }
+        return availableWidth / availableHeight;
     }
 
     @Override
@@ -423,9 +321,6 @@ public class Task {
         writer.print(prefix); writer.print(key);
         if (!isDockable) {
             writer.print(" dockable=N");
-        }
-        if (isLaunchTarget) {
-            writer.print(" launchTarget=Y");
         }
         if (isLocked) {
             writer.print(" locked=Y");

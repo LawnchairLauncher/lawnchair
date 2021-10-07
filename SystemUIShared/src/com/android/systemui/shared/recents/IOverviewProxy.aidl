@@ -75,4 +75,10 @@ oneway interface IOverviewProxy {
      * Sent when the split screen is resized
      */
     void onSplitScreenSecondaryBoundsChanged(in Rect bounds, in Rect insets) = 17;
+
+    /**
+     * Sent IME status changes
+     */
+    void onImeWindowStatusChanged(int displayId, IBinder token, int vis, int backDisposition,
+                         boolean showImeSwitcher) = 18;
 }

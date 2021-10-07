@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 The Android Open Source Project
+ * Copyright (C) 2020 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,11 +16,19 @@
 
 package com.android.systemui.shared.system;
 
-import android.view.WindowManager;
+import android.app.PendingIntent;
+import android.content.ComponentName;
+import android.content.pm.LauncherApps;
+import android.os.Bundle;
+import android.os.UserHandle;
 
-public interface RemoteAnimationRunnerCompat {
-    void onAnimationStart(@WindowManager.TransitionOldType int transit,
-            RemoteAnimationTargetCompat[] apps, RemoteAnimationTargetCompat[] wallpapers,
-            RemoteAnimationTargetCompat[] nonApps, Runnable finishedCallback);
-    void onAnimationCancelled();
+/**
+ * Wrapper around LauncherApps.
+ */
+public abstract class LauncherAppsCompat {
+
+    public static PendingIntent getMainActivityLaunchIntent(LauncherApps launcherApps,
+            ComponentName component, Bundle startActivityOptions, UserHandle user) {
+        return launcherApps.getMainActivityLaunchIntent(component, startActivityOptions, user);
+    }
 }

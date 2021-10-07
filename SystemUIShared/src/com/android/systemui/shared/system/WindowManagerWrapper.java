@@ -27,41 +27,41 @@ import android.graphics.Rect;
 import android.os.Handler;
 import android.os.RemoteException;
 import android.util.Log;
+import android.view.InsetsState;
 import android.view.SurfaceControl;
 import android.view.WindowManager;
 import android.view.WindowManagerGlobal;
 
 import com.android.systemui.shared.recents.view.AppTransitionAnimationSpecsFuture;
 import com.android.systemui.shared.recents.view.RecentsTransition;
-import com.android.systemui.shared.system.PinnedStackListenerForwarder.PinnedStackListener;
 
 public class WindowManagerWrapper {
 
     private static final String TAG = "WindowManagerWrapper";
 
-    public static final int TRANSIT_UNSET = WindowManager.TRANSIT_UNSET;
-    public static final int TRANSIT_NONE = WindowManager.TRANSIT_NONE;
-    public static final int TRANSIT_ACTIVITY_OPEN = WindowManager.TRANSIT_ACTIVITY_OPEN;
-    public static final int TRANSIT_ACTIVITY_CLOSE = WindowManager.TRANSIT_ACTIVITY_CLOSE;
-    public static final int TRANSIT_TASK_OPEN = WindowManager.TRANSIT_TASK_OPEN;
-    public static final int TRANSIT_TASK_CLOSE = WindowManager.TRANSIT_TASK_CLOSE;
-    public static final int TRANSIT_TASK_TO_FRONT = WindowManager.TRANSIT_TASK_TO_FRONT;
-    public static final int TRANSIT_TASK_TO_BACK = WindowManager.TRANSIT_TASK_TO_BACK;
-    public static final int TRANSIT_WALLPAPER_CLOSE = WindowManager.TRANSIT_WALLPAPER_CLOSE;
-    public static final int TRANSIT_WALLPAPER_OPEN = WindowManager.TRANSIT_WALLPAPER_OPEN;
+    public static final int TRANSIT_UNSET = WindowManager.TRANSIT_OLD_UNSET;
+    public static final int TRANSIT_NONE = WindowManager.TRANSIT_OLD_NONE;
+    public static final int TRANSIT_ACTIVITY_OPEN = WindowManager.TRANSIT_OLD_ACTIVITY_OPEN;
+    public static final int TRANSIT_ACTIVITY_CLOSE = WindowManager.TRANSIT_OLD_ACTIVITY_CLOSE;
+    public static final int TRANSIT_TASK_OPEN = WindowManager.TRANSIT_OLD_TASK_OPEN;
+    public static final int TRANSIT_TASK_CLOSE = WindowManager.TRANSIT_OLD_TASK_CLOSE;
+    public static final int TRANSIT_TASK_TO_FRONT = WindowManager.TRANSIT_OLD_TASK_TO_FRONT;
+    public static final int TRANSIT_TASK_TO_BACK = WindowManager.TRANSIT_OLD_TASK_TO_BACK;
+    public static final int TRANSIT_WALLPAPER_CLOSE = WindowManager.TRANSIT_OLD_WALLPAPER_CLOSE;
+    public static final int TRANSIT_WALLPAPER_OPEN = WindowManager.TRANSIT_OLD_WALLPAPER_OPEN;
     public static final int TRANSIT_WALLPAPER_INTRA_OPEN =
-            WindowManager.TRANSIT_WALLPAPER_INTRA_OPEN;
+            WindowManager.TRANSIT_OLD_WALLPAPER_INTRA_OPEN;
     public static final int TRANSIT_WALLPAPER_INTRA_CLOSE =
-            WindowManager.TRANSIT_WALLPAPER_INTRA_CLOSE;
-    public static final int TRANSIT_TASK_OPEN_BEHIND = WindowManager.TRANSIT_TASK_OPEN_BEHIND;
-    public static final int TRANSIT_ACTIVITY_RELAUNCH = WindowManager.TRANSIT_ACTIVITY_RELAUNCH;
-    public static final int TRANSIT_DOCK_TASK_FROM_RECENTS =
-            WindowManager.TRANSIT_DOCK_TASK_FROM_RECENTS;
-    public static final int TRANSIT_KEYGUARD_GOING_AWAY = WindowManager.TRANSIT_KEYGUARD_GOING_AWAY;
+            WindowManager.TRANSIT_OLD_WALLPAPER_INTRA_CLOSE;
+    public static final int TRANSIT_TASK_OPEN_BEHIND = WindowManager.TRANSIT_OLD_TASK_OPEN_BEHIND;
+    public static final int TRANSIT_ACTIVITY_RELAUNCH = WindowManager.TRANSIT_OLD_ACTIVITY_RELAUNCH;
+    public static final int TRANSIT_KEYGUARD_GOING_AWAY =
+            WindowManager.TRANSIT_OLD_KEYGUARD_GOING_AWAY;
     public static final int TRANSIT_KEYGUARD_GOING_AWAY_ON_WALLPAPER =
-            WindowManager.TRANSIT_KEYGUARD_GOING_AWAY_ON_WALLPAPER;
-    public static final int TRANSIT_KEYGUARD_OCCLUDE = WindowManager.TRANSIT_KEYGUARD_OCCLUDE;
-    public static final int TRANSIT_KEYGUARD_UNOCCLUDE = WindowManager.TRANSIT_KEYGUARD_UNOCCLUDE;
+            WindowManager.TRANSIT_OLD_KEYGUARD_GOING_AWAY_ON_WALLPAPER;
+    public static final int TRANSIT_KEYGUARD_OCCLUDE = WindowManager.TRANSIT_OLD_KEYGUARD_OCCLUDE;
+    public static final int TRANSIT_KEYGUARD_UNOCCLUDE =
+            WindowManager.TRANSIT_OLD_KEYGUARD_UNOCCLUDE;
 
     public static final int NAV_BAR_POS_INVALID = NAV_BAR_INVALID;
     public static final int NAV_BAR_POS_LEFT = NAV_BAR_LEFT;
@@ -75,24 +75,47 @@ public class WindowManagerWrapper {
             WindowConfiguration.WINDOWING_MODE_FULLSCREEN;
     public static final int WINDOWING_MODE_MULTI_WINDOW =
             WindowConfiguration.WINDOWING_MODE_MULTI_WINDOW;
-    public static final int WINDOWING_MODE_PINNED = WindowConfiguration.WINDOWING_MODE_PINNED;
+
     public static final int WINDOWING_MODE_SPLIT_SCREEN_PRIMARY =
             WindowConfiguration.WINDOWING_MODE_SPLIT_SCREEN_PRIMARY;
     public static final int WINDOWING_MODE_SPLIT_SCREEN_SECONDARY =
             WindowConfiguration.WINDOWING_MODE_SPLIT_SCREEN_SECONDARY;
     public static final int WINDOWING_MODE_FREEFORM = WindowConfiguration.WINDOWING_MODE_FREEFORM;
 
-    private static final WindowManagerWrapper sInstance = new WindowManagerWrapper();
+    public static final int ITYPE_EXTRA_NAVIGATION_BAR = InsetsState.ITYPE_EXTRA_NAVIGATION_BAR;
+    public static final int ITYPE_LEFT_TAPPABLE_ELEMENT = InsetsState.ITYPE_LEFT_TAPPABLE_ELEMENT;
+    public static final int ITYPE_TOP_TAPPABLE_ELEMENT = InsetsState.ITYPE_TOP_TAPPABLE_ELEMENT;
+    public static final int ITYPE_RIGHT_TAPPABLE_ELEMENT = InsetsState.ITYPE_RIGHT_TAPPABLE_ELEMENT;
+    public static final int ITYPE_BOTTOM_TAPPABLE_ELEMENT =
+            InsetsState.ITYPE_BOTTOM_TAPPABLE_ELEMENT;
 
-    /**
-     * Forwarder to which we can add multiple pinned stack listeners. Each listener will receive
-     * updates from the window manager service.
-     */
-    private PinnedStackListenerForwarder mPinnedStackListenerForwarder =
-            new PinnedStackListenerForwarder();
+    private static final WindowManagerWrapper sInstance = new WindowManagerWrapper();
 
     public static WindowManagerWrapper getInstance() {
         return sInstance;
+    }
+
+
+    /**
+     * Sets {@param providesInsetsTypes} as the inset types provided by {@param params}.
+     * @param params The window layout params.
+     * @param providesInsetsTypes The inset types we would like this layout params to provide.
+     */
+    public void setProvidesInsetsTypes(WindowManager.LayoutParams params,
+            int[] providesInsetsTypes) {
+        params.providesInsetsTypes = providesInsetsTypes;
+    }
+
+    /**
+     *  Sets if app requested fixed orientation should be ignored for given displayId.
+     */
+    public void setIgnoreOrientationRequest(int displayId, boolean ignoreOrientationRequest) {
+        try {
+            WindowManagerGlobal.getWindowManagerService().setIgnoreOrientationRequest(
+                    displayId, ignoreOrientationRequest);
+        } catch (RemoteException e) {
+            Log.e(TAG, "Failed to setIgnoreOrientationRequest()", e);
+        }
     }
 
     /**
@@ -153,12 +176,9 @@ public class WindowManagerWrapper {
         }
     }
 
+    @Deprecated
     public void setPipVisibility(final boolean visible) {
-        try {
-            WindowManagerGlobal.getWindowManagerService().setPipVisibility(visible);
-        } catch (RemoteException e) {
-            Log.e(TAG, "Unable to reach window manager", e);
-        }
+        // To be removed
     }
 
     /**
@@ -188,23 +208,6 @@ public class WindowManagerWrapper {
             Log.w(TAG, "Failed to get nav bar position");
         }
         return NAV_BAR_POS_INVALID;
-    }
-
-    /**
-     * Adds a pinned stack listener, which will receive updates from the window manager service
-     * along with any other pinned stack listeners that were added via this method.
-     */
-    public void addPinnedStackListener(PinnedStackListener listener) throws RemoteException {
-        mPinnedStackListenerForwarder.addListener(listener);
-        WindowManagerGlobal.getWindowManagerService().registerPinnedStackListener(
-                DEFAULT_DISPLAY, mPinnedStackListenerForwarder);
-    }
-
-    /**
-     * Removes a pinned stack listener.
-     */
-    public void removePinnedStackListener(PinnedStackListener listener) {
-        mPinnedStackListenerForwarder.removeListener(listener);
     }
 
     /**

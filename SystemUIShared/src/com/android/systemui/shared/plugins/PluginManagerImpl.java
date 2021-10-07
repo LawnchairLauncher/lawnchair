@@ -66,8 +66,6 @@ public class PluginManagerImpl extends BroadcastReceiver implements PluginManage
     private static final String TAG = PluginManagerImpl.class.getSimpleName();
     static final String DISABLE_PLUGIN = "com.android.systemui.action.DISABLE_PLUGIN";
 
-    private static PluginManager sInstance;
-
     private final ArrayMap<PluginListener<?>, PluginInstanceManager> mPluginMap
             = new ArrayMap<>();
     private final Map<String, ClassLoader> mClassLoaders = new ArrayMap<>();
@@ -75,7 +73,7 @@ public class PluginManagerImpl extends BroadcastReceiver implements PluginManage
     private final ArraySet<String> mWhitelistedPlugins = new ArraySet<>();
     private final Context mContext;
     private final PluginInstanceManagerFactory mFactory;
-    private final boolean isDebuggable;
+    private final boolean mIsDebuggable;
     private final PluginPrefs mPluginPrefs;
     private final PluginEnabler mPluginEnabler;
     private final PluginInitializer mPluginInitializer;
@@ -85,7 +83,7 @@ public class PluginManagerImpl extends BroadcastReceiver implements PluginManage
     private Looper mLooper;
 
     public PluginManagerImpl(Context context, PluginInitializer initializer) {
-        this(context, new PluginInstanceManagerFactory(), Build.IS_DEBUGGABLE,
+        this(context, new PluginInstanceManagerFactory(), initializer.isDebuggable(),
                 (UncaughtExceptionHandler) invoke(sGetUncaughtExceptionPreHandler, null), initializer);
     }
 
@@ -95,7 +93,7 @@ public class PluginManagerImpl extends BroadcastReceiver implements PluginManage
         mContext = context;
         mFactory = factory;
         mLooper = initializer.getBgLooper();
-        isDebuggable = debuggable;
+        mIsDebuggable = debuggable;
         mWhitelistedPlugins.addAll(Arrays.asList(initializer.getWhitelistedPlugins(mContext)));
         mPluginPrefs = new PluginPrefs(mContext);
         mPluginEnabler = initializer.getPluginEnabler(mContext);
@@ -111,6 +109,10 @@ public class PluginManagerImpl extends BroadcastReceiver implements PluginManage
                 initializer.onPluginManagerInit();
             }
         });
+    }
+
+    public boolean isDebuggable() {
+        return mIsDebuggable;
     }
 
     public String[] getWhitelistedPlugins() {
@@ -197,10 +199,12 @@ public class PluginManagerImpl extends BroadcastReceiver implements PluginManage
         filter.addAction(Intent.ACTION_PACKAGE_CHANGED);
         filter.addAction(Intent.ACTION_PACKAGE_REPLACED);
         filter.addAction(Intent.ACTION_PACKAGE_REMOVED);
+        filter.addDataScheme("package");
+        mContext.registerReceiver(this, filter);
         filter.addAction(PLUGIN_CHANGED);
         filter.addAction(DISABLE_PLUGIN);
         filter.addDataScheme("package");
-        mContext.registerReceiver(this, filter);
+        mContext.registerReceiver(this, filter, PluginInstanceManager.PLUGIN_PERMISSION, null);
         filter = new IntentFilter(Intent.ACTION_USER_UNLOCKED);
         mContext.registerReceiver(this, filter);
     }
@@ -259,7 +263,7 @@ public class PluginManagerImpl extends BroadcastReceiver implements PluginManage
                                 .setContentText("Restart SysUI for changes to take effect.");
                 Intent i = new Intent("com.android.systemui.action.RESTART").setData(
                             Uri.parse("package://" + pkg));
-                PendingIntent pi = PendingIntent.getBroadcast(mContext, 0, i, 0);
+                PendingIntent pi = PendingIntent.getBroadcast(mContext, 0, i, PendingIntent.FLAG_MUTABLE_UNAUDITED);
                 nb.addAction(new Action.Builder(null, "Restart SysUI", pi).build());
                 mContext.getSystemService(NotificationManager.class)
                         .notify(SystemMessage.NOTE_PLUGIN, nb.build());
@@ -299,7 +303,7 @@ public class PluginManagerImpl extends BroadcastReceiver implements PluginManage
 
     /** Returns class loader specific for the given plugin. */
     public ClassLoader getClassLoader(ApplicationInfo appInfo) {
-        if (!isDebuggable && !isPluginPackageWhitelisted(appInfo.packageName)) {
+        if (!mIsDebuggable && !isPluginPackageWhitelisted(appInfo.packageName)) {
             Log.w(TAG, "Cannot get class loader for non-whitelisted plugin. Src:"
                     + appInfo.sourceDir + ", pkg: " + appInfo.packageName);
             return null;

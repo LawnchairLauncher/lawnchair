@@ -1,4 +1,5 @@
 apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
 
 android {
     compileSdkVersion COMPILE_SDK
@@ -28,6 +29,10 @@ android {
         options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
     }
 
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
@@ -37,5 +42,5 @@ android {
 }
 
 dependencies {
-
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }

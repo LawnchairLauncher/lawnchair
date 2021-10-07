@@ -16,20 +16,24 @@
 
 package com.android.systemui.shared.system;
 
-import static android.view.CrossWindowBlurListeners.CROSS_WINDOW_BLUR_SUPPORTED;
+import android.content.ClipDescription;
+import android.content.Intent;
 
-import android.app.ActivityManager;
-import android.os.SystemProperties;
+/**
+ * Wrapper around ClipDescription.
+ */
+public abstract class ClipDescriptionCompat {
 
-public abstract class BlurUtils {
+    public static String MIMETYPE_APPLICATION_ACTIVITY =
+            ClipDescription.MIMETYPE_APPLICATION_ACTIVITY;
 
-    /**
-     * If this device can render blurs.
-     *
-     * @return {@code true} when supported.
-     */
-    public static boolean supportsBlursOnWindows() {
-        return CROSS_WINDOW_BLUR_SUPPORTED && ActivityManager.isHighEndGfx()
-                && !SystemProperties.getBoolean("persist.sysui.disableBlur", false);
-    }
+    public static String MIMETYPE_APPLICATION_SHORTCUT =
+            ClipDescription.MIMETYPE_APPLICATION_SHORTCUT;
+
+    public static String MIMETYPE_APPLICATION_TASK =
+            ClipDescription.MIMETYPE_APPLICATION_TASK;
+
+    public static String EXTRA_PENDING_INTENT = ClipDescription.EXTRA_PENDING_INTENT;
+
+    public static String EXTRA_TASK_ID = Intent.EXTRA_TASK_ID;
 }

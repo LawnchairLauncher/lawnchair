@@ -20,33 +20,21 @@ import android.graphics.Bitmap;
 import android.graphics.Insets;
 import android.graphics.Rect;
 import android.os.Bundle;
+import android.os.UserHandle;
 import android.view.MotionEvent;
 
-import com.android.systemui.shared.recents.IPinnedStackAnimationListener;
 import com.android.systemui.shared.recents.model.Task;
+import com.android.systemui.shared.system.RemoteTransitionCompat;
 
 /**
  * Temporary callbacks into SystemUI.
- * Next id = 27
  */
 interface ISystemUiProxy {
-
-    /**
-     * Proxies SurfaceControl.screenshotToBuffer().
-     * @Removed
-     * GraphicBufferCompat screenshot(in Rect sourceCrop, int width, int height, int minLayer,
-     *             int maxLayer, boolean useIdentityTransform, int rotation) = 0;
-     */
 
     /**
      * Begins screen pinning on the provided {@param taskId}.
      */
     void startScreenPinning(int taskId) = 1;
-
-    /**
-     * Notifies SystemUI that split screen has been invoked.
-     */
-    void onSplitScreenInvoked() = 5;
 
     /**
      * Notifies SystemUI that Overview is shown.
@@ -59,15 +47,9 @@ interface ISystemUiProxy {
     Rect getNonMinimizedSplitScreenSecondaryBounds() = 7;
 
     /**
-     * Control the {@param alpha} of the back button in the navigation bar and {@param animate} if
-     * needed from current value
-     * @deprecated
-     */
-    void setBackButtonAlpha(float alpha, boolean animate) = 8;
-
-    /**
      * Control the {@param alpha} of the option nav bar button (back-button in 2 button mode
-     * and home bar in no-button mode) and {@param animate} if needed from current value
+     * and home handle & background in gestural mode).  The {@param animate} is currently only
+     * supported for 2 button mode.
      */
     void setNavBarButtonAlpha(float alpha, boolean animate) = 19;
 
@@ -97,11 +79,6 @@ interface ISystemUiProxy {
     void startAssistant(in Bundle bundle) = 13;
 
     /**
-     * Creates a new gesture monitor
-     */
-    Bundle monitorGestureInput(String name, int displayId) = 14;
-
-    /**
      * Notifies that the accessibility button in the system's navigation area has been clicked
      */
     void notifyAccessibilityButtonClicked(int displayId) = 15;
@@ -115,11 +92,6 @@ interface ISystemUiProxy {
      * Ends the system screen pinning.
      */
     void stopScreenPinning() = 17;
-
-    /**
-     * Sets the shelf height and visibility.
-     */
-    void setShelfHeight(boolean visible, int shelfHeight) = 20;
 
     /**
      * Handle the provided image as if it was a screenshot.
@@ -141,19 +113,32 @@ interface ISystemUiProxy {
     void notifySwipeToHomeFinished() = 23;
 
     /**
-     * Sets listener to get pinned stack animation callbacks.
-     */
-    void setPinnedStackAnimationListener(IPinnedStackAnimationListener listener) = 24;
-
-    /**
      * Notifies that quickstep will switch to a new task
      * @param rotation indicates which Surface.Rotation the gesture was started in
      */
-    void onQuickSwitchToNewTask(int rotation) = 25;
+    void notifyPrioritizedRotation(int rotation) = 25;
 
     /**
      * Handle the provided image as if it was a screenshot.
      */
     void handleImageBundleAsScreenshot(in Bundle screenImageBundle, in Rect locationInScreen,
-              in Insets visibleInsets, in Task.TaskKey task) = 26;
+              in Insets visibleInsets, in Task.TaskKey task) = 28;
+
+    /**
+     * Notifies to expand notification panel.
+     */
+    void expandNotificationPanel() = 29;
+
+    /**
+     * Notifies SystemUI to invoke Back.
+     */
+    void onBackPressed() = 44;
+
+    /** Sets home rotation enabled. */
+    void setHomeRotationEnabled(boolean enabled) = 45;
+
+    /** Notifies that a swipe-up gesture has started */
+    oneway void notifySwipeUpGestureStarted() = 46;
+
+    // Next id = 47
 }

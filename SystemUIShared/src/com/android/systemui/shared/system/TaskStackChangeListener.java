@@ -19,7 +19,6 @@ package com.android.systemui.shared.system;
 import android.app.ActivityManager.RunningTaskInfo;
 import android.app.ITaskStackListener;
 import android.content.ComponentName;
-import android.os.IBinder;
 
 import com.android.systemui.shared.recents.model.ThumbnailData;
 
@@ -62,21 +61,6 @@ public abstract class TaskStackChangeListener {
         onActivityLaunchOnSecondaryDisplayRerouted();
     }
 
-    /**
-     * Called when contents are drawn for the first time on a display which can only contain one
-     * task.
-     *
-     * @param displayId the id of the display on which contents are drawn.
-     */
-    public void onSingleTaskDisplayDrawn(int displayId) { }
-
-    /**
-     * Called when the last task is removed from a display which can only contain one task.
-     *
-     * @param displayId the id of the display from which the window is removed.
-     */
-    public void onSingleTaskDisplayEmpty(int displayId) {}
-
     public void onTaskProfileLocked(int taskId, int userId) { }
     public void onTaskCreated(int taskId, ComponentName componentName) { }
     public void onTaskRemoved(int taskId) { }
@@ -95,7 +79,6 @@ public abstract class TaskStackChangeListener {
     public void onTaskDescriptionChanged(RunningTaskInfo taskInfo) { }
 
     public void onActivityRequestedOrientationChanged(int taskId, int requestedOrientation) { }
-    public void onSizeCompatModeActivityChanged(int displayId, IBinder activityToken) { }
 
     public void onBackPressedOnTaskRoot(RunningTaskInfo taskInfo) { }
 
@@ -117,4 +100,10 @@ public abstract class TaskStackChangeListener {
 
     /** @see ITaskStackListener#onActivityRotation(int)*/
     public void onActivityRotation(int displayId) { }
+
+    /**
+     * Called when the lock task mode changes. See ActivityManager#LOCK_TASK_MODE_* and
+     * LockTaskController.
+     */
+    public void onLockTaskModeChanged(int mode) { }
 }

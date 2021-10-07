@@ -21,9 +21,4 @@ public class LauncherEventUtil {
     // Constants for the Action
     public static final int VISIBLE = 0;
     public static final int DISMISS = 1;
-
-    // Constants for the Target (View)
-    public static final int RECENTS_SWIPE_UP_ONBOARDING_TIP = 0;
-    public static final int RECENTS_QUICK_SCRUB_ONBOARDING_TIP = 1;
-
 }

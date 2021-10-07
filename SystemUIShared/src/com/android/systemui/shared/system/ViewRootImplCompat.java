@@ -34,10 +34,6 @@ public class ViewRootImplCompat {
     }
 
     public SurfaceControl getRenderSurfaceControl() {
-        return mViewRoot == null ? null : mViewRoot.getRenderSurfaceControl();
-    }
-
-    public SurfaceControl getSurfaceControl() {
         return mViewRoot == null ? null : mViewRoot.getSurfaceControl();
     }
 
@@ -58,6 +54,14 @@ public class ViewRootImplCompat {
                             callback.accept(l);
                         }
                     });
+        }
+    }
+
+    public void mergeWithNextTransaction(SurfaceControl.Transaction t, long frame) {
+        if (mViewRoot != null) {
+            mViewRoot.mergeWithNextTransaction(t, frame);
+        } else {
+            t.apply();
         }
     }
 }
