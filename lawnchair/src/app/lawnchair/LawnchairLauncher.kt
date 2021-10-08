@@ -97,6 +97,10 @@ class LawnchairLauncher : QuickstepLauncher(), LifecycleOwner,
         appsView.setRecyclerViewVerticalFadingEdgeEnabled(true)
     }
 
+    override fun createStateHandlers(): Array<StateManager.StateHandler<LauncherState>> {
+        return super.createStateHandlers() + SearchBarStateHandler(this)
+    }
+
     override fun onStart() {
         super.onStart()
         lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_START)
