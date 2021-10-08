@@ -69,6 +69,7 @@
     <string name="out_of_space" msgid="6692471482459245734">"ບໍ່ມີບ່ອນຫວ່າງໃນໜ້າໂຮມສະກຣີນນີ້"</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"ບໍ່ມີບ່ອນຫວ່າງໃນຖາດສຳລັບເກັບສິ່ງທີ່ໃຊ້ເປັນປະຈຳ"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"ລາຍຊື່ແອັບ"</string>
+    <string name="all_apps_search_results" msgid="5889367432531296759">"ຜົນການຊອກຫາ"</string>
     <string name="all_apps_button_personal_label" msgid="1315764287305224468">"ລາຍຊື່ແອັບສ່ວນຕົວ"</string>
     <string name="all_apps_button_work_label" msgid="7270707118948892488">"ລາຍຊື່ແອັບເຮັດວຽກ"</string>
     <string name="remove_drop_target_label" msgid="7812859488053230776">"ເອົາ​ອອກ"</string>

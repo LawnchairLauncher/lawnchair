@@ -69,6 +69,7 @@
     <string name="out_of_space" msgid="6692471482459245734">"Hakuna nafasi kwenye Skrini hii ya kwanza"</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"Hakuna nafasi zaidi katika treya ya Vipendeleo"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"Orodha ya programu"</string>
+    <string name="all_apps_search_results" msgid="5889367432531296759">"Matokeo ya utafutaji"</string>
     <string name="all_apps_button_personal_label" msgid="1315764287305224468">"Orodha ya programu za binafsi"</string>
     <string name="all_apps_button_work_label" msgid="7270707118948892488">"Orodha ya programu za kazini"</string>
     <string name="remove_drop_target_label" msgid="7812859488053230776">"Ondoa"</string>

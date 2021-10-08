@@ -69,6 +69,7 @@
     <string name="out_of_space" msgid="6692471482459245734">"यो होम स्क्रिनमा ठाउँ छैन"</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"मन पर्ने ट्रे अब कुनै ठाँउ छैन"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"एपको सूची"</string>
+    <string name="all_apps_search_results" msgid="5889367432531296759">"खोज परिणामहरू"</string>
     <string name="all_apps_button_personal_label" msgid="1315764287305224468">"व्यक्तिगत अनुप्रयोगहरूको सूची"</string>
     <string name="all_apps_button_work_label" msgid="7270707118948892488">"कार्यसम्बन्धी अनुप्रयोगहरूको सूची"</string>
     <string name="remove_drop_target_label" msgid="7812859488053230776">"हटाउनुहोस्"</string>
