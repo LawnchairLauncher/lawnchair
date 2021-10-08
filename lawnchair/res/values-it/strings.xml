@@ -126,4 +126,6 @@
     <string name="font_label">Tipo di carattere</string>
     <string name="reset_font">Reset</string>
     <string name="search_bar_placeholder">Search</string>
+    <string name="pref_category_search">Search</string>
+    <string name="pref_search_auto_show_keyboard">Automatically show keyboard</string>
 </resources>
