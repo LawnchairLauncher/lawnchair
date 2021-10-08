@@ -2643,8 +2643,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
      * and then animates it into the split position that was desired
      */
     private void createInitialSplitSelectAnimation(PendingAnimation anim) {
-        float placeholderHeight = getResources().getDimension(R.dimen.split_placeholder_size);
-        mOrientationHandler.getInitialSplitPlaceholderBounds((int) placeholderHeight,
+        mOrientationHandler.getInitialSplitPlaceholderBounds(mSplitPlaceholderSize,
                 mActivity.getDeviceProfile(),
                 mSplitSelectStateController.getActiveSplitStagePosition(), mTempRect);
 
@@ -3238,14 +3237,13 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         }
 
         Rect splitBounds = new Rect();
-        float placeholderSize = getResources().getDimension(R.dimen.split_placeholder_size);
         // This acts as a best approximation on where the splitplaceholder view would be,
         // doesn't need to be exact necessarily. This also doesn't need to take translations
         // into account since placeholder view is not translated
         if (stagePosition == SplitConfigurationOptions.STAGE_POSITION_BOTTOM_OR_RIGHT) {
-            splitBounds.set((int) (getWidth() - placeholderSize), 0, getWidth(), getHeight());
+            splitBounds.set(getWidth() - mSplitPlaceholderSize, 0, getWidth(), getHeight());
         } else {
-            splitBounds.set(0, 0, (int) (placeholderSize), getHeight());
+            splitBounds.set(0, 0, mSplitPlaceholderSize, getHeight());
         }
         Rect taskBounds = new Rect();
         int taskCount = getTaskViewCount();
@@ -3743,6 +3741,50 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             }
             taskView.getSecondarySplitTranslationProperty().set(taskView, translation);
         }
+    }
+
+    /**
+     * Apply scroll offset to children of RecentsView when entering split select.
+     */
+    public void applySplitPrimaryScrollOffset() {
+        if (!mActivity.getDeviceProfile().isLandscape || !showAsGrid()) {
+            return;
+        }
+
+        @StagePosition int position = mSplitSelectStateController.getActiveSplitStagePosition();
+        boolean shouldShiftThumbnailsForSplitSelect = shouldShiftThumbnailsForSplitSelect(
+                position);
+        boolean expandLeft = false;
+        boolean expandRight = false;
+        if (mIsRtl) {
+            if (position == SplitConfigurationOptions.STAGE_POSITION_BOTTOM_OR_RIGHT
+                    && shouldShiftThumbnailsForSplitSelect) {
+                expandLeft = true;
+            } else if (position == SplitConfigurationOptions.STAGE_POSITION_TOP_OR_LEFT) {
+                if (shouldShiftThumbnailsForSplitSelect) {
+                    expandRight = true;
+                } else {
+                    expandLeft = true;
+                }
+            }
+        } // TODO(b/200537659): Handle system RTL.
+        if (expandRight) {
+            for (int i = 0; i < getTaskViewCount(); i++) {
+                getTaskViewAt(i).setSplitScrollOffsetPrimary(mSplitPlaceholderSize);
+            }
+        } else if (expandLeft) {
+            mClearAllButton.setSplitSelectScrollOffsetPrimary(-mSplitPlaceholderSize);
+        }
+    }
+
+    /**
+     * Reset scroll offset on children of RecentsView when exiting split select.
+     */
+    public void resetSplitPrimaryScrollOffset() {
+        for (int i = 0; i < getTaskViewCount(); i++) {
+            getTaskViewAt(i).setSplitScrollOffsetPrimary(0);
+        }
+        mClearAllButton.setSplitSelectScrollOffsetPrimary(0);
     }
 
     /**
@@ -4357,27 +4399,16 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     @Override
     protected int computeMinScroll() {
         if (getTaskViewCount() > 0) {
-            int minScroll;
-            boolean isLandscapeGridSplit = mActivity.getDeviceProfile().isLandscape
-                    && showAsGrid() && isSplitSelectionActive();
             if (mIsRtl) {
                 // If we aren't showing the clear all button, use the rightmost task as the min
                 // scroll.
-                minScroll = getScrollForPage(mDisallowScrollToClearAll ? indexOfChild(
+                return getScrollForPage(mDisallowScrollToClearAll ? indexOfChild(
                         getTaskViewAt(getTaskViewCount() - 1)) : indexOfChild(mClearAllButton));
-                if (isLandscapeGridSplit
-                        && mSplitSelectStateController.getActiveSplitStagePosition()
-                        == SplitConfigurationOptions.STAGE_POSITION_BOTTOM_OR_RIGHT) {
-                    minScroll -= mSplitPlaceholderSize;
-                }
             } else {
                 TaskView focusedTaskView = mShowAsGridLastOnLayout ? getFocusedTaskView() : null;
-                minScroll = getScrollForPage(focusedTaskView != null ? indexOfChild(focusedTaskView)
+                return getScrollForPage(focusedTaskView != null ? indexOfChild(focusedTaskView)
                         : 0);
-                // TODO(b/200537659): Adjust according to mSplitPlaceholderSize when
-                //  isLandscapeGridSplit is true.
             }
-            return minScroll;
         }
         return super.computeMinScroll();
     }
@@ -4385,27 +4416,16 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     @Override
     protected int computeMaxScroll() {
         if (getTaskViewCount() > 0) {
-            int maxScroll;
-            boolean isLandscapeGridSplit = mActivity.getDeviceProfile().isLandscape
-                    && showAsGrid() && isSplitSelectionActive();
             if (mIsRtl) {
                 TaskView focusedTaskView = mShowAsGridLastOnLayout ? getFocusedTaskView() : null;
-                maxScroll = getScrollForPage(focusedTaskView != null ? indexOfChild(focusedTaskView)
+                return getScrollForPage(focusedTaskView != null ? indexOfChild(focusedTaskView)
                         : 0);
-                if (isLandscapeGridSplit
-                        && mSplitSelectStateController.getActiveSplitStagePosition()
-                        == SplitConfigurationOptions.STAGE_POSITION_TOP_OR_LEFT) {
-                    maxScroll += mSplitPlaceholderSize;
-                }
             } else {
                 // If we aren't showing the clear all button, use the leftmost task as the min
                 // scroll.
-                maxScroll = getScrollForPage(mDisallowScrollToClearAll ? indexOfChild(
+                return getScrollForPage(mDisallowScrollToClearAll ? indexOfChild(
                         getTaskViewAt(getTaskViewCount() - 1)) : indexOfChild(mClearAllButton));
-                // TODO(b/200537659): Adjust according to mSplitPlaceholderSize when
-                //  isLandscapeGridSplit is true.
             }
-            return maxScroll;
         }
         return super.computeMaxScroll();
     }
