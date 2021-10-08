@@ -77,6 +77,7 @@
     <string name="out_of_space" msgid="6692471482459245734">"ما مِن مساحة على هذه الشاشة الرئيسية."</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"لا يوجد المزيد من الحقول في علبة المفضلة"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"قائمة التطبيقات"</string>
+    <string name="all_apps_search_results" msgid="5889367432531296759">"نتائج البحث"</string>
     <string name="all_apps_button_personal_label" msgid="1315764287305224468">"قائمة التطبيقات الشخصية"</string>
     <string name="all_apps_button_work_label" msgid="7270707118948892488">"قائمة تطبيقات العمل"</string>
     <string name="remove_drop_target_label" msgid="7812859488053230776">"إزالة"</string>

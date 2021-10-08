@@ -69,6 +69,7 @@
     <string name="out_of_space" msgid="6692471482459245734">"Ekkert pláss á þessum heimaskjá"</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"Ekki meira pláss í bakka fyrir uppáhald"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"Forritalisti"</string>
+    <string name="all_apps_search_results" msgid="5889367432531296759">"Leitarniðurstöður"</string>
     <string name="all_apps_button_personal_label" msgid="1315764287305224468">"Listi yfir eigin forrit"</string>
     <string name="all_apps_button_work_label" msgid="7270707118948892488">"Listi yfir vinnuforrit"</string>
     <string name="remove_drop_target_label" msgid="7812859488053230776">"Taka niður"</string>

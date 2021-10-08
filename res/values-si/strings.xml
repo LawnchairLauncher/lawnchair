@@ -69,6 +69,7 @@
     <string name="out_of_space" msgid="6692471482459245734">"මෙම මුල් තිරයේ ඉඩ නැත"</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"ප්‍රියතම දෑ ඇති තැටියේ තවත් ඉඩ නොමැත"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"යෙදුම් ලැයිස්තුව"</string>
+    <string name="all_apps_search_results" msgid="5889367432531296759">"සෙවීම් ප්‍රතිඵල"</string>
     <string name="all_apps_button_personal_label" msgid="1315764287305224468">"පෞද්ගලික යෙදුම් ලැයිස්තුව"</string>
     <string name="all_apps_button_work_label" msgid="7270707118948892488">"වැඩ යෙදුම් ලැයිස්තුව"</string>
     <string name="remove_drop_target_label" msgid="7812859488053230776">"ඉවත් කරන්න"</string>
