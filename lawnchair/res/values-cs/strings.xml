@@ -128,4 +128,6 @@
     <string name="font_label">Písmo</string>
     <string name="reset_font">Obnovit výchozí</string>
     <string name="search_bar_placeholder">Vyhledávání</string>
+    <string name="pref_category_search">Vyhledávání</string>
+    <string name="pref_search_auto_show_keyboard">Automatically show keyboard</string>
 </resources>
