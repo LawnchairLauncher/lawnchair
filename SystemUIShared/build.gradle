@@ -42,5 +42,6 @@ android {
 }
 
 dependencies {
+    compileOnly fileTree(dir: new File(rootProject.projectDir, 'prebuilts/libs'), include: 'wm_shell-aidls.jar')
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }

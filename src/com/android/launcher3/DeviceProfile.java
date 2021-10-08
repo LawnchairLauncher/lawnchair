@@ -630,6 +630,8 @@ public class DeviceProfile {
             allAppsIconDrawablePaddingPx = iconDrawablePaddingOriginalPx;
             autoResizeAllAppsCells();
         } else {
+            allAppsIconSizePx = iconSizePx;
+            allAppsIconTextSizePx = iconTextSizePx;
             allAppsIconDrawablePaddingPx = iconDrawablePaddingPx;
             allAppsCellHeightPx = getCellSize().y;
         }

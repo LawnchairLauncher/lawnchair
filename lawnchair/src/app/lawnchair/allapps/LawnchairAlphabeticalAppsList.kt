@@ -9,7 +9,7 @@ import com.android.launcher3.allapps.WorkAdapterProvider
 import com.android.launcher3.model.data.AppInfo
 import com.android.launcher3.util.ItemInfoMatcher
 
-class LawnchairAlphabeticalAppsList(context: Context, appsStore: AllAppsStore, adapterProvider: WorkAdapterProvider) :
+class LawnchairAlphabeticalAppsList(context: Context, appsStore: AllAppsStore, adapterProvider: WorkAdapterProvider?) :
     AlphabeticalAppsList(context, appsStore, adapterProvider) {
 
     private val hiddenApps = PreferenceManager.getInstance(context).hiddenAppSet

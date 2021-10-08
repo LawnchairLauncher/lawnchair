@@ -172,7 +172,7 @@ android {
             java.srcDirs = ['src', 'src_plugins']
             manifest.srcFile 'AndroidManifest-common.xml'
             proto {
-                srcDirs = ['protos/', 'protos_overrides/', 'quickstep/proto_overrides/']
+                srcDirs = ['protos/', 'quickstep/protos_overrides/']
             }
         }
 
@@ -263,6 +263,7 @@ dependencies {
 
     // Recents lib dependency
     withQuickstepImplementation project(':SystemUIShared')
+    implementation fileTree(dir: "${FRAMEWORK_PREBUILTS_DIR}/libs", include: 'wm_shell-aidls.jar')
 
     // Required for AOSP to compile. This is already included in the sysui_shared.jar
     withoutQuickstepImplementation fileTree(dir: "${FRAMEWORK_PREBUILTS_DIR}/libs", include: 'plugin_core.jar')

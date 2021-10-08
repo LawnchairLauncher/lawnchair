@@ -16,7 +16,6 @@
 
 package com.android.systemui.shared.system;
 
-import android.annotation.IntDef;
 import android.os.Build;
 import android.view.View;
 
@@ -47,14 +46,6 @@ public final class InteractionJankMonitorWrapper {
     public static final int CUJ_APP_LAUNCH_FROM_WIDGET =
             InteractionJankMonitor.CUJ_LAUNCHER_APP_LAUNCH_FROM_WIDGET;
 
-    @IntDef({
-            CUJ_APP_LAUNCH_FROM_RECENTS,
-            CUJ_APP_LAUNCH_FROM_ICON,
-            CUJ_APP_CLOSE_TO_HOME,
-            CUJ_APP_CLOSE_TO_PIP,
-            CUJ_QUICK_SWITCH,
-            CUJ_APP_LAUNCH_FROM_WIDGET,
-    })
     @Retention(RetentionPolicy.SOURCE)
     public @interface CujType {
     }
