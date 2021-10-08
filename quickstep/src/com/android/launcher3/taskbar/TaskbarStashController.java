@@ -115,9 +115,6 @@ public class TaskbarStashController {
     // Evaluate whether the handle should be stashed
     private final StatePropertyHolder mStatePropertyHolder = new StatePropertyHolder(
             flags -> {
-                if (!supportsVisualStashing()) {
-                    return false;
-                }
                 boolean inApp = hasAnyFlag(flags, FLAG_IN_APP);
                 boolean stashedInApp = hasAnyFlag(flags, FLAGS_STASHED_IN_APP);
                 boolean stashedLauncherState = hasAnyFlag(flags, FLAG_IN_STASHED_LAUNCHER_STATE);
@@ -244,6 +241,18 @@ public class TaskbarStashController {
     }
 
     private Animator createAnimToIsStashed(boolean isStashed, long duration) {
+        if (mAnimator != null) {
+            mAnimator.cancel();
+        }
+        mAnimator = new AnimatorSet();
+
+        if (!supportsVisualStashing()) {
+            // Just hide/show the icons instead of stashing into a handle.
+            mAnimator.play(mIconAlphaForStash.animateToValue(isStashed ? 0 : 1)
+                    .setDuration(duration));
+            return mAnimator;
+        }
+
         AnimatorSet fullLengthAnimatorSet = new AnimatorSet();
         // Not exactly half and may overlap. See [first|second]HalfDurationScale below.
         AnimatorSet firstHalfAnimatorSet = new AnimatorSet();
@@ -299,10 +308,6 @@ public class TaskbarStashController {
         secondHalfAnimatorSet.setDuration((long) (duration * secondHalfDurationScale));
         secondHalfAnimatorSet.setStartDelay((long) (duration * (1 - secondHalfDurationScale)));
 
-        if (mAnimator != null) {
-            mAnimator.cancel();
-        }
-        mAnimator = new AnimatorSet();
         mAnimator.playTogether(fullLengthAnimatorSet, firstHalfAnimatorSet,
                 secondHalfAnimatorSet);
         mAnimator.addListener(new AnimatorListenerAdapter() {
