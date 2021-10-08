@@ -71,7 +71,7 @@ android {
         minSdkVersion 25
         targetSdkVersion 30
         versionCode 7
-        def versionDisplayName = "11.0 Alpha 6.1"
+        def versionDisplayName = "12.0 Alpha 6.1"
         def majorVersion = versionDisplayName.split("\\.")[0]
         versionName "${versionDisplayName} (${commitHash()})"
         buildConfigField "String", "VERSION_DISPLAY_NAME", "\"${versionDisplayName}\""
