@@ -1056,11 +1056,11 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     }
 
     /**
-     * Returns true if the task is snapped.
+     * Returns true if the task is in expected scroll position.
      *
      * @param taskIndex the index of the task
      */
-    public boolean isTaskSnapped(int taskIndex) {
+    public boolean isTaskInExpectedScrollPosition(int taskIndex) {
         return getScrollForPage(taskIndex) == getPagedOrientationHandler().getPrimaryScroll(this);
     }
 
@@ -1727,8 +1727,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         if (showAsGrid()) {
             TaskView focusedTaskView = getFocusedTaskView();
             hiddenFocusedScroll = focusedTaskView == null
-                    || getScrollForPage(indexOfChild(focusedTaskView))
-                    != mOrientationHandler.getPrimaryScroll(this);
+                    || !isTaskInExpectedScrollPosition(indexOfChild(focusedTaskView));
         } else {
             hiddenFocusedScroll = false;
         }
@@ -4359,12 +4358,14 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     protected int computeMinScroll() {
         if (getTaskViewCount() > 0) {
             int minScroll;
+            boolean isLandscapeGridSplit = mActivity.getDeviceProfile().isLandscape
+                    && showAsGrid() && isSplitSelectionActive();
             if (mIsRtl) {
                 // If we aren't showing the clear all button, use the rightmost task as the min
                 // scroll.
                 minScroll = getScrollForPage(mDisallowScrollToClearAll ? indexOfChild(
                         getTaskViewAt(getTaskViewCount() - 1)) : indexOfChild(mClearAllButton));
-                if (showAsGrid() && isSplitSelectionActive()
+                if (isLandscapeGridSplit
                         && mSplitSelectStateController.getActiveSplitStagePosition()
                         == SplitConfigurationOptions.STAGE_POSITION_BOTTOM_OR_RIGHT) {
                     minScroll -= mSplitPlaceholderSize;
@@ -4373,7 +4374,8 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                 TaskView focusedTaskView = mShowAsGridLastOnLayout ? getFocusedTaskView() : null;
                 minScroll = getScrollForPage(focusedTaskView != null ? indexOfChild(focusedTaskView)
                         : 0);
-                // TODO(b/200537659): Adjust according to mSplitPlaceholderSize.
+                // TODO(b/200537659): Adjust according to mSplitPlaceholderSize when
+                //  isLandscapeGridSplit is true.
             }
             return minScroll;
         }
@@ -4384,11 +4386,13 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     protected int computeMaxScroll() {
         if (getTaskViewCount() > 0) {
             int maxScroll;
+            boolean isLandscapeGridSplit = mActivity.getDeviceProfile().isLandscape
+                    && showAsGrid() && isSplitSelectionActive();
             if (mIsRtl) {
                 TaskView focusedTaskView = mShowAsGridLastOnLayout ? getFocusedTaskView() : null;
                 maxScroll = getScrollForPage(focusedTaskView != null ? indexOfChild(focusedTaskView)
                         : 0);
-                if (showAsGrid() && isSplitSelectionActive()
+                if (isLandscapeGridSplit
                         && mSplitSelectStateController.getActiveSplitStagePosition()
                         == SplitConfigurationOptions.STAGE_POSITION_TOP_OR_LEFT) {
                     maxScroll += mSplitPlaceholderSize;
@@ -4398,7 +4402,8 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                 // scroll.
                 maxScroll = getScrollForPage(mDisallowScrollToClearAll ? indexOfChild(
                         getTaskViewAt(getTaskViewCount() - 1)) : indexOfChild(mClearAllButton));
-                // TODO(b/200537659): Adjust according to mSplitPlaceholderSize.
+                // TODO(b/200537659): Adjust according to mSplitPlaceholderSize when
+                //  isLandscapeGridSplit is true.
             }
             return maxScroll;
         }
