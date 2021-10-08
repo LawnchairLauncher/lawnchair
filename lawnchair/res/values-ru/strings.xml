@@ -128,6 +128,6 @@
     <string name="font_label">Font</string>
     <string name="reset_font">Reset</string>
     <string name="search_bar_placeholder">Search</string>
-    <string name="pref_category_search">Search</string>
-    <string name="pref_search_auto_show_keyboard">Automatically show keyboard</string>
+    <string name="pref_category_search">Поиск</string>
+    <string name="pref_search_auto_show_keyboard">Автоматически показывать клавиатуру</string>
 </resources>
