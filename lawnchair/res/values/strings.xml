@@ -140,4 +140,6 @@
 
     <string name="search_bar_placeholder">Search</string>
     <string name="search_input_action_clear_results">Clear search box</string>
+    <string name="pref_category_search">Search</string>
+    <string name="pref_search_auto_show_keyboard">Automatically show keyboard</string>
 </resources>

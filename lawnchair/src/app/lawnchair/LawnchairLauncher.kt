@@ -95,6 +95,11 @@ class LawnchairLauncher : QuickstepLauncher(), LifecycleOwner,
         ViewTreeSavedStateRegistryOwner.set(launcherRootView, this)
     }
 
+    override fun collectStateHandlers(out: MutableList<StateManager.StateHandler<*>>) {
+        super.collectStateHandlers(out)
+        out.add(SearchBarStateHandler(this))
+    }
+
     override fun onStart() {
         super.onStart()
         lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_START)

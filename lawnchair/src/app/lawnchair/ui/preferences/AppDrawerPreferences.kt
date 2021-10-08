@@ -50,17 +50,23 @@ fun AppDrawerPreferences() {
                 destination = subRoute(name = AppDrawerRoutes.HIDDEN_APPS),
                 showDivider = false
             )
-            SwitchPreference(
-                adapter = prefs.useFuzzySearch.getAdapter(),
-                label = stringResource(id = R.string.fuzzy_search_title),
-                description = stringResource(id = R.string.fuzzy_search_desc)
-            )
             SliderPreference(
                 label = stringResource(id = R.string.background_opacity),
                 adapter = prefs.drawerOpacity.getAdapter(),
                 step = 0.1f,
                 valueRange = 0F..1F,
                 showAsPercentage = true,
+            )
+        }
+        PreferenceGroup(heading = stringResource(id = R.string.pref_category_search)) {
+            SwitchPreference(
+                adapter = prefs.searchAutoShowKeyboard.getAdapter(),
+                label = stringResource(id = R.string.pref_search_auto_show_keyboard)
+            )
+            SwitchPreference(
+                adapter = prefs.useFuzzySearch.getAdapter(),
+                label = stringResource(id = R.string.fuzzy_search_title),
+                description = stringResource(id = R.string.fuzzy_search_desc)
             )
         }
         PreferenceGroup(heading = stringResource(id = R.string.grid)) {
