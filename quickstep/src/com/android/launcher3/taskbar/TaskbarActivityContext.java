@@ -321,6 +321,7 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
         mControllers.taskbarViewController.setRecentsButtonDisabled(
                 mControllers.navbarButtonsViewController.isRecentsDisabled());
         mControllers.taskbarKeyguardController.updateStateForSysuiFlags(systemUiStateFlags);
+        mControllers.taskbarStashController.updateStateForSysuiFlags(systemUiStateFlags);
     }
 
     public void onRotationProposal(int rotation, boolean isValid) {
