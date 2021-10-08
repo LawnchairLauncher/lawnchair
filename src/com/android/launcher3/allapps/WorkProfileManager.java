@@ -172,4 +172,8 @@ public class WorkProfileManager implements PersonalWorkSlidingTabStrip.OnActiveP
     private AllAppsContainerView.AdapterHolder getAH() {
         return mAllApps.mAH[AllAppsContainerView.AdapterHolder.WORK];
     }
+
+    public int getCurrentState() {
+        return mCurrentState;
+    }
 }
