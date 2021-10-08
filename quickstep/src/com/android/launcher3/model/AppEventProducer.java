@@ -30,6 +30,7 @@ import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCH
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ITEM_DROPPED_ON_REMOVE;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ITEM_DROP_COMPLETED;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ITEM_DROP_FOLDER_CREATED;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ONRESUME;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_QUICKSWITCH_LEFT;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_QUICKSWITCH_RIGHT;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASK_LAUNCH_SWIPE_DOWN;
@@ -161,6 +162,11 @@ public class AppEventProducer implements StatsLogConsumer {
             if (isTrackedForHotseatPrediction(atomInfo)) {
                 sendEvent(atomInfo, ACTION_PIN, CONTAINER_HOTSEAT_PREDICTION);
             }
+        } else if (event == LAUNCHER_ONRESUME) {
+            AppTarget target = new AppTarget.Builder(new AppTargetId("id:launcher"),
+                    mContext.getPackageName(), Process.myUserHandle())
+                    .build();
+            sendEvent(target, atomInfo, ACTION_LAUNCH, CONTAINER_PREDICTION);
         }
     }
 
