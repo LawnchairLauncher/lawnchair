@@ -189,6 +189,9 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         TaskThumbnailCache.HighResLoadingState.HighResLoadingStateChangedCallback,
         TaskVisualsChangeListener, SplitScreenBounds.OnChangeListener {
 
+    private static final String TAG = "RecentsView";
+    private static final boolean DEBUG = false;
+
     // TODO(b/184899234): We use this timeout to wait a fixed period after switching to the
     // screenshot when dismissing the current live task to ensure the app can try and get stopped.
     private static final int REMOVE_TASK_WAIT_FOR_APP_STOP_MS = 100;
@@ -4355,6 +4358,15 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     }
 
     @Override
+    protected void updateMinAndMaxScrollX() {
+        super.updateMinAndMaxScrollX();
+        if (DEBUG) {
+            Log.d(TAG, "updateMinAndMaxScrollX - mMinScroll: " + mMinScroll);
+            Log.d(TAG, "updateMinAndMaxScrollX - mMaxScroll: " + mMaxScroll);
+        }
+    }
+
+    @Override
     protected int computeMinScroll() {
         if (getTaskViewCount() > 0) {
             int minScroll;
@@ -4460,6 +4472,12 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                 pageScrollChanged = true;
                 outPageScrolls[i] = pageScroll;
             }
+            if (DEBUG) {
+                Log.d(TAG, "getPageScrolls - outPageScrolls[" + i + "]: " + outPageScrolls[i]);
+            }
+        }
+        if (DEBUG) {
+            Log.d(TAG, "getPageScrolls - clearAllScroll: " + clearAllScroll);
         }
         return pageScrollChanged;
     }
