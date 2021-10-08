@@ -129,5 +129,5 @@
     <string name="reset_font">Reset</string>
     <string name="search_bar_placeholder">Szukaj</string>
     <string name="pref_category_search">Szukaj</string>
-    <string name="pref_search_auto_show_keyboard">Automatically show keyboard</string>
+    <string name="pref_search_auto_show_keyboard">Automatycznie pokazuj klawiaturę</string>
 </resources>
