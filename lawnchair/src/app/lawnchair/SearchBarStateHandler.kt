@@ -40,7 +40,7 @@ class SearchBarStateHandler(private val launcher: LawnchairLauncher) : StateMana
                 cancellationSignal,
                 handler
             )
-            animation.setFloat(handler.progress, AnimatedFloat.VALUE, 1f, Interpolators.LINEAR)
+            animation.setFloat(handler.progress, AnimatedFloat.VALUE, 1f, Interpolators.DEACCEL_1_7)
             animation.runOnEnd { isSuccess ->
                 if (isSuccess) {
                     handler.onAnimationEnd()
