@@ -19,7 +19,7 @@ class SearchBarStateHandler(private val launcher: LawnchairLauncher) : StateMana
     private val autoShowKeyboard = PreferenceManager.getInstance(launcher).searchAutoShowKeyboard
 
     override fun setState(state: LauncherState) {
-        if (autoShowKeyboard.get()) {
+        if (state == LauncherState.ALL_APPS && autoShowKeyboard.get()) {
             showKeyboard()
         }
     }
@@ -50,8 +50,10 @@ class SearchBarStateHandler(private val launcher: LawnchairLauncher) : StateMana
         }
         if (launcher.isInState(LauncherState.NORMAL) && toState == LauncherState.ALL_APPS) {
             if (autoShowKeyboard.get()) {
+                val progress = AnimatedFloat()
+                animation.setFloat(progress, AnimatedFloat.VALUE, 1f, Interpolators.LINEAR)
                 animation.runOnEnd { isSuccess ->
-                    if (isSuccess) {
+                    if (isSuccess && progress.value > 0.5f) {
                         showKeyboard()
                     }
                 }
