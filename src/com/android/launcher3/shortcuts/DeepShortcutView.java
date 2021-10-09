@@ -39,6 +39,8 @@ import com.android.launcher3.popup.PopupContainerWithArrow;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.views.BubbleTextHolder;
 
+import app.lawnchair.util.DrawableUtilsKt;
+
 /**
  * A {@link android.widget.FrameLayout} that contains an icon and a {@link BubbleTextView} for text.
  * This lets us animate the child BubbleTextView's background (transparent ripple) separately from
@@ -101,7 +103,7 @@ public class DeepShortcutView extends FrameLayout implements BubbleTextHolder {
         GradientDrawable backgroundMask = new GradientDrawable();
         backgroundMask.setColor(color);
         backgroundMask.setShape(GradientDrawable.RECTANGLE);
-        if (background.getCornerRadii() != null) {
+        if (DrawableUtilsKt.getCornerRadiiCompat(background) != null) {
             backgroundMask.setCornerRadii(background.getCornerRadii());
         } else {
             backgroundMask.setCornerRadius(background.getCornerRadius());

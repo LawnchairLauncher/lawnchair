@@ -22,6 +22,7 @@ import static android.app.WindowConfiguration.WINDOWING_MODE_SPLIT_SCREEN_SECOND
 
 import android.app.ActivityOptions;
 import android.content.Context;
+import android.os.Build;
 import android.os.Handler;
 
 import com.android.systemui.shared.recents.model.Task;
@@ -101,7 +102,9 @@ public abstract class ActivityOptionsCompat {
      * Sets the launch event time from launcher.
      */
     public static ActivityOptions setLauncherSourceInfo(ActivityOptions opts, long uptimeMillis) {
-        opts.setSourceInfo(ActivityOptions.SourceInfo.TYPE_LAUNCHER, uptimeMillis);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            opts.setSourceInfo(ActivityOptions.SourceInfo.TYPE_LAUNCHER, uptimeMillis);
+        }
         return opts;
     }
 

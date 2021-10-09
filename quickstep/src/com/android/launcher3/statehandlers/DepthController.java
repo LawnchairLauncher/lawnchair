@@ -154,17 +154,21 @@ public class DepthController implements StateHandler<LauncherState>,
                     if (windowToken != null) {
                         mWallpaperManager.setWallpaperZoomOut(windowToken, mDepth);
                     }
-                    CrossWindowBlurListeners.getInstance().addListener(mLauncher.getMainExecutor(),
-                            mCrossWindowBlurListener);
+                    if (Utilities.ATLEAST_S) {
+                        CrossWindowBlurListeners.getInstance().addListener(mLauncher.getMainExecutor(),
+                                mCrossWindowBlurListener);
+                    }
                 }
 
                 @Override
                 public void onViewDetachedFromWindow(View view) {
-                    CrossWindowBlurListeners.getInstance().removeListener(mCrossWindowBlurListener);
+                    if (Utilities.ATLEAST_S) {
+                        CrossWindowBlurListeners.getInstance().removeListener(mCrossWindowBlurListener);
+                    }
                 }
             };
             mLauncher.getRootView().addOnAttachStateChangeListener(mOnAttachListener);
-            if (mLauncher.getRootView().isAttachedToWindow()) {
+            if (mLauncher.getRootView().isAttachedToWindow() && Utilities.ATLEAST_S) {
                 CrossWindowBlurListeners.getInstance().addListener(mLauncher.getMainExecutor(),
                         mCrossWindowBlurListener);
             }
