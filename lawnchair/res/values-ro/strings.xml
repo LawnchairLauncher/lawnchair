@@ -59,7 +59,7 @@
     <string name="background_opacity">Opacitatea fundalului</string>
     <string name="background_lightness_label">Luminozitate fundal</string>
     <string name="adaptive_icons">Pictograme Adaptive</string>
-    <string name="adaptive_icon_background_description">Folosește 100% luminozitate de fundal pentru alb.</string>
+    <string name="adaptive_icon_background_description">Use 100%% background lightness for white.</string>
     <string name="auto_adaptive_icons_label">Pictograme adaptive automate</string>
     <string name="auto_adaptive_icons_description">Pentru toate pictogramele non-adaptive.</string>
     <string name="support_and_pr">Asistență &amp; PR</string>
