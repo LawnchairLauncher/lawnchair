@@ -4,6 +4,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -58,35 +59,22 @@ fun <T> ListPreference(
             }
         ) {
             LazyColumn {
-                items(entries) { item ->
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier
-                            .height(52.dp)
-                            .fillMaxSize()
-                            .clickable {
-                                adapter.onChange(item.value)
-                                scope.launch { sheetState.hide() }
-                            }
-                            .padding(horizontal = 16.dp)
-                    ) {
-                        RadioButton(
-                            modifier = Modifier.padding(end = 16.dp),
-                            selected = item.value == currentValue,
-                            onClick = null
-                        )
-                        Column(modifier = Modifier.fillMaxHeight()) {
-                            Box(
-                                contentAlignment = Alignment.CenterStart,
-                                modifier = Modifier.weight(1F)
-                            ) {
-                                Text(text = item.label())
-                            }
-                            if (item != entries.last()) {
-                                Divider()
-                            }
-                        }
-                    }
+                itemsIndexed(entries) { index, item ->
+                    PreferenceTemplate(
+                        title = { Text(item.label()) },
+                        modifier = Modifier.clickable {
+                            adapter.onChange(item.value)
+                            scope.launch { sheetState.hide() }
+                        },
+                        startWidget = {
+                            RadioButton(
+                                selected = item.value == currentValue,
+                                onClick = null
+                            )
+                        },
+                        showDivider = index > 0,
+                        dividerIndent = 40.dp
+                    )
                 }
             }
         }
