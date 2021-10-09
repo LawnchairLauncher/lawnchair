@@ -59,7 +59,7 @@
     <string name="background_opacity">Opacidad del Fondo</string>
     <string name="background_lightness_label">Luminosidad del fondo</string>
     <string name="adaptive_icons">Iconos Adaptativos</string>
-    <string name="adaptive_icon_background_description">Use 100%% background lightness for white.</string>
+    <string name="adaptive_icon_background_description">Usar 100% de luz de fondo para blancos.</string>
     <string name="auto_adaptive_icons_label">Iconos Auto-Adaptables</string>
     <string name="auto_adaptive_icons_description">Para todos los iconos no adaptativos.</string>
     <string name="support_and_pr">Soporte &amp; Relaciones Públicas</string>
