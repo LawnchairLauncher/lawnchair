@@ -42,8 +42,10 @@ class SearchBarStateHandler(private val launcher: LawnchairLauncher) : StateMana
             )
             animation.setFloat(handler.progress, AnimatedFloat.VALUE, 1f, Interpolators.LINEAR)
             animation.runOnEnd { isSuccess ->
-                handler.onAnimationEnd(isSuccess)
-                cancellationSignal.cancel()
+                if (isSuccess) {
+                    handler.onAnimationEnd()
+                    cancellationSignal.cancel()
+                }
             }
         }
         if (launcher.isInState(LauncherState.NORMAL) && toState == LauncherState.ALL_APPS) {
