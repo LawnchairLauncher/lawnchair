@@ -62,7 +62,7 @@ public class DefaultAppSearchAlgorithm implements SearchAlgorithm<AdapterItem> {
         mAppState.getModel().enqueueModelUpdateTask(new BaseModelUpdateTask() {
             @Override
             public void execute(LauncherAppState app, BgDataModel dataModel, AllAppsList apps) {
-                ArrayList<AdapterItem> result = getTitleMatchResult(apps.data, query);
+                ArrayList<AdapterItem> result = getResult(apps.data, query);
                 mResultHandler.post(() -> callback.onSearchResult(query, result));
             }
         });
@@ -76,7 +76,7 @@ public class DefaultAppSearchAlgorithm implements SearchAlgorithm<AdapterItem> {
      * Filters {@link AppInfo}s matching specified query
      */
     @AnyThread
-    public static ArrayList<AdapterItem> getTitleMatchResult(List<AppInfo> apps, String query) {
+    private static ArrayList<AdapterItem> getTitleMatchResult(List<AppInfo> apps, String query) {
         // Do an intersection of the words in the query and each title, and filter out all the
         // apps that don't match all of the words in the query.
         final String queryTextLower = query.toLowerCase();
