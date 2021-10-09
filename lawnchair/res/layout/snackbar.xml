@@ -35,7 +35,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="0"
-        android:background="@drawable/snackbar_button_wrapper">
+        android:background="@drawable/circle">
         <TextView
             android:id="@+id/action"
             style="@style/TextTitle"

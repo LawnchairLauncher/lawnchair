@@ -7,6 +7,7 @@ import android.text.SpannableStringBuilder
 import android.text.method.TextKeyListener
 import android.util.AttributeSet
 import android.view.KeyEvent
+import android.widget.FrameLayout
 import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -56,6 +57,7 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) : LinearLayout(
         actionButton.setOnClickListener {
             input.reset()
         }
+        findViewById<FrameLayout>(R.id.button_wrapper).clipToOutline = true
     }
 
     override fun onAttachedToWindow() {
