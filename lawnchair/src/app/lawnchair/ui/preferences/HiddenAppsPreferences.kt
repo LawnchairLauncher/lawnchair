@@ -90,13 +90,12 @@ fun HiddenAppsPreferences() {
                     }
                     preferenceGroupItems(
                         items = apps,
-                        isFirstChild = true
-                    ) { index, app ->
+                        isFirstChild = true,
+                        dividerStartIndent = 40.dp
+                    ) { _, app ->
                         AppItem(
                             app = app,
                             onClick = toggleHiddenApp,
-                            showDivider = index != 0,
-                            widgetSize = 24.dp,
                         ) {
                             Checkbox(
                                 checked = hiddenApps.contains(app.key.toString()),
@@ -112,11 +111,8 @@ fun HiddenAppsPreferences() {
                 PreferenceLazyColumn(
                     enabled = false,
                 ) {
-                    preferenceGroupItems(count = 20, isFirstChild = true) { index ->
-                        AppItemPlaceholder(
-                            showDivider = index != 0,
-                            widgetSize = 24.dp,
-                        ) {
+                    preferenceGroupItems(count = 20, isFirstChild = true, dividerStartIndent = 40.dp) {
+                        AppItemPlaceholder {
                             Spacer(Modifier.width(24.dp))
                         }
                     }

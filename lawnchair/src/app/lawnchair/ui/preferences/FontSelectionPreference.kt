@@ -103,12 +103,12 @@ fun FontSelection(fontPref: BasePreferenceManager.FontPref) {
             preferenceGroupItems(
                 filteredItems,
                 isFirstChild = true,
-                key = { _, family -> family.toString() }
+                key = { _, family -> family.toString() },
+                dividerStartIndent = 40.dp
             ) { index, family ->
                 FontSelectionItem(
                     adapter = adapter,
-                    family = family,
-                    showDivider = index != 0
+                    family = family
                 )
             }
         }
@@ -118,8 +118,7 @@ fun FontSelection(fontPref: BasePreferenceManager.FontPref) {
 @Composable
 private fun FontSelectionItem(
     adapter: PreferenceAdapter<FontCache.Font>,
-    family: FontCache.Family,
-    showDivider: Boolean
+    family: FontCache.Family
 ) {
     val selected = family.variants.any { it.value == adapter.state.value }
     PreferenceTemplate(
@@ -155,8 +154,6 @@ private fun FontSelectionItem(
             }
         } else null,
         modifier = Modifier.clickable { adapter.onChange(family.default) },
-        showDivider = showDivider,
-        dividerIndent = 40.dp,
         verticalPadding = 0.dp
     )
 }

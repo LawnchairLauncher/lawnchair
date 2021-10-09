@@ -55,14 +55,13 @@ fun IconPackPreferences() {
     PreferenceLayoutLazyColumn(label = stringResource(id = R.string.icon_pack)) {
         preferenceGroupItems(
             items = iconPacks,
-            isFirstChild = true
-        ) { index, iconPack ->
+            isFirstChild = true,
+            dividerStartIndent = 40.dp
+        ) { _, iconPack ->
             AppItem(
                 label = iconPack.name,
                 icon = remember(iconPack) { iconPack.icon.toBitmap() },
                 onClick = { iconPackPackage = iconPack.packageName },
-                showDivider = index != 0,
-                widgetSize = 24.dp,
             ) {
                 RadioButton(
                     selected = iconPackPackage == iconPack.packageName,

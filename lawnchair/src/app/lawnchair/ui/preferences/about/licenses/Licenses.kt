@@ -57,14 +57,14 @@ fun Licenses() {
     LoadingScreen(optionalLicenses) { licenses ->
         PreferenceLayoutLazyColumn(label = stringResource(id = R.string.acknowledgements)) {
             preferenceGroupItems(licenses, isFirstChild = true) { index, license ->
-                LicenseItem(license = license, index = index, showDivider = index != 0)
+                LicenseItem(license = license, index = index)
             }
         }
     }
 }
 
 @Composable
-fun LicenseItem(license: License, index: Int, showDivider: Boolean) {
+fun LicenseItem(license: License, index: Int) {
     val navController = LocalNavController.current
     val destination = subRoute(name = "$index")
 
@@ -78,7 +78,6 @@ fun LicenseItem(license: License, index: Int, showDivider: Boolean) {
         },
         modifier = Modifier
             .clickable { navController.navigate(route = destination) },
-        showDivider = showDivider
     )
 }
 

@@ -42,7 +42,6 @@ fun DockPreferences() {
             SwitchPreference(
                 adapter = prefs.enableHotseatQsb.getAdapter(),
                 label = stringResource(id = R.string.hotseat_qsb_label),
-                showDivider = false
             )
         }
         PreferenceGroup(heading = stringResource(id = R.string.grid)) {
@@ -51,7 +50,6 @@ fun DockPreferences() {
                 adapter = prefs.hotseatColumns.getAdapter(),
                 step = 1,
                 valueRange = 3..10,
-                showDivider = false
             )
         }
     }

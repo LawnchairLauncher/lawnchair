@@ -51,7 +51,6 @@ fun GeneralPreferences() {
                 adapter = prefs.allowRotation.getAdapter(),
                 label = stringResource(id = R.string.home_screen_rotation_label),
                 description = stringResource(id = R.string.home_screen_rotaton_description),
-                showDivider = false
             )
             NotificationDotsPreference()
             NavigationActionPreference(
@@ -69,20 +68,19 @@ fun GeneralPreferences() {
             )
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val wrapAdaptiveIcons = prefs.wrapAdaptiveIcons.observeAsState()
+            val wrapAdaptiveIcons = prefs.wrapAdaptiveIcons.getAdapter()
             PreferenceGroup(
                 heading = stringResource(id = R.string.auto_adaptive_icons_label),
                 description = stringResource(id = (R.string.adaptive_icon_background_description)),
-                showDescription = wrapAdaptiveIcons.value
+                showDescription = wrapAdaptiveIcons.state.value
             ) {
                 SwitchPreference(
-                    adapter = prefs.wrapAdaptiveIcons.getAdapter(),
+                    adapter = wrapAdaptiveIcons,
                     label = stringResource(id = R.string.auto_adaptive_icons_label),
                     description = stringResource(id = R.string.auto_adaptive_icons_description),
-                    showDivider = false
                 )
                 AnimatedVisibility(
-                    visible = wrapAdaptiveIcons.value,
+                    visible = wrapAdaptiveIcons.state.value,
                     enter = expandVertically() + fadeIn(),
                     exit = shrinkVertically() + fadeOut()
                 ) {

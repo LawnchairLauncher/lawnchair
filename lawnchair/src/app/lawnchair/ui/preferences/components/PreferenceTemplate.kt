@@ -35,7 +35,7 @@ fun PreferenceTemplate(
     startWidget: (@Composable () -> Unit)? = null,
     endWidget: (@Composable () -> Unit)? = null,
     enabled: Boolean = true,
-    showDivider: Boolean = true,
+    showDivider: Boolean = false,
     dividerIndent: Dp = 0.dp,
     applyPaddings: Boolean = true,
     horizontalPadding: Dp = 16.dp,

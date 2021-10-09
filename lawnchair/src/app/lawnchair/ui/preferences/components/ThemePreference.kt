@@ -24,7 +24,7 @@ val themeEntries = listOf(
 
 @ExperimentalMaterialApi
 @Composable
-fun ThemePreference(showDivider: Boolean = true) {
+fun ThemePreference(showDivider: Boolean = false) {
     ListPreference(
         adapter = preferenceManager().launcherTheme.getAdapter(),
         entries = themeEntries,

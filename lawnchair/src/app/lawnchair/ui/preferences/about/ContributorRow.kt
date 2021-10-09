@@ -35,7 +35,7 @@ import app.lawnchair.ui.preferences.components.PreferenceTemplate
 import coil.compose.rememberImagePainter
 
 @Composable
-fun ContributorRow(name: String, description: String, photoUrl: String, url: String, showDivider: Boolean = true) {
+fun ContributorRow(name: String, description: String, photoUrl: String, url: String, showDivider: Boolean = false) {
     val context = LocalContext.current
 
     PreferenceTemplate(
