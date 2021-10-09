@@ -86,6 +86,15 @@ public class InvariantDeviceProfile {
     // used to offset float not being able to express extremely small weights in extreme cases.
     private static final float WEIGHT_EFFICIENT = 100000f;
 
+    // Used for arrays to specify different sizes (e.g. border spaces, width/height) in different
+    // constraints
+    static final int COUNT_SIZES = 5;
+    static final int INDEX_DEFAULT = 0;
+    static final int INDEX_LANDSCAPE = 1;
+    static final int INDEX_TWO_PANEL_PORTRAIT = 2;
+    static final int INDEX_TWO_PANEL_LANDSCAPE = 3;
+    static final int INDEX_ALL_APPS = 4;
+
     /**
      * Number of icons per row and column in the workspace.
      */
@@ -97,36 +106,18 @@ public class InvariantDeviceProfile {
      */
     public int numFolderRows;
     public int numFolderColumns;
-    public float iconSize;
-    public float landscapeIconSize;
-    public float twoPanelPortraitIconSize;
-    public float twoPanelLandscapeIconSize;
-    public float landscapeIconTextSize;
-    public float twoPanelPortraitIconTextSize;
-    public float twoPanelLandscapeIconTextSize;
+    public float[] iconSize;
+    public float[] iconTextSize;
     public int iconBitmapSize;
     public int fillResIconDpi;
-    public float iconTextSize;
-    public float allAppsIconSize;
-    public float allAppsIconTextSize;
-    public float allAppsCellSpacing;
     public boolean isSplitDisplay;
 
-    public float minCellHeight;
-    public float minCellWidth;
-    public float twoPanelPortraitMinCellHeightDps;
-    public float twoPanelPortraitMinCellWidthDps;
-    public float twoPanelLandscapeMinCellHeightDps;
-    public float twoPanelLandscapeMinCellWidthDps;
+    public PointF[] minCellSize;
 
-    public PointF borderSpace;
-    public PointF twoPanelPortraitBorderSpace;
-    public PointF twoPanelLandscapeBorderSpace;
+    public PointF[] borderSpaces;
     public float folderBorderSpace;
 
-    public float horizontalMargin;
-    public float twoPanelLandscapeHorizontalMargin;
-    public float twoPanelPortraitHorizontalMargin;
+    public float[] horizontalMargin;
 
     private SparseArray<TypedValue> mExtraAttrs;
 
@@ -221,17 +212,17 @@ public class InvariantDeviceProfile {
 
         DisplayOption result = new DisplayOption(defaultDisplayOption.grid)
                 .add(myDisplayOption);
-        result.iconSizes[DisplayOption.INDEX_DEFAULT] =
-                defaultDisplayOption.iconSizes[DisplayOption.INDEX_DEFAULT];
-        for (int i = 1; i < DisplayOption.COUNT_SIZES; i++) {
+        result.iconSizes[INDEX_DEFAULT] =
+                defaultDisplayOption.iconSizes[INDEX_DEFAULT];
+        for (int i = 1; i < COUNT_SIZES; i++) {
             result.iconSizes[i] = Math.min(
                     defaultDisplayOption.iconSizes[i], myDisplayOption.iconSizes[i]);
         }
 
-        result.minCellHeight = defaultDisplayOption.minCellHeight;
-        result.minCellWidth = defaultDisplayOption.minCellWidth;
-        result.borderSpaces[DisplayOption.INDEX_ALL_APPS] =
-                defaultDisplayOption.borderSpaces[DisplayOption.INDEX_ALL_APPS];
+        System.arraycopy(defaultDisplayOption.minCellSize, 0, result.minCellSize, 0,
+                COUNT_SIZES);
+        System.arraycopy(defaultDisplayOption.borderSpaces, 0, result.borderSpaces, 0,
+                COUNT_SIZES);
 
         initGrid(context, myInfo, result, false);
     }
@@ -274,39 +265,18 @@ public class InvariantDeviceProfile {
 
         mExtraAttrs = closestProfile.extraAttrs;
 
-        iconSize = displayOption.iconSizes[DisplayOption.INDEX_DEFAULT];
-        landscapeIconSize = displayOption.iconSizes[DisplayOption.INDEX_LANDSCAPE];
-        twoPanelPortraitIconSize = displayOption.iconSizes[DisplayOption.INDEX_TWO_PANEL_PORTRAIT];
-        twoPanelLandscapeIconSize =
-                displayOption.iconSizes[DisplayOption.INDEX_TWO_PANEL_LANDSCAPE];
-        iconBitmapSize = ResourceUtils.pxFromDp(iconSize, metrics);
+        iconSize = displayOption.iconSizes;
+        iconBitmapSize = ResourceUtils.pxFromDp(iconSize[INDEX_DEFAULT], metrics);
         fillResIconDpi = getLauncherIconDensity(iconBitmapSize);
 
-        iconTextSize = displayOption.textSizes[DisplayOption.INDEX_DEFAULT];
-        landscapeIconTextSize = displayOption.textSizes[DisplayOption.INDEX_LANDSCAPE];
-        twoPanelPortraitIconTextSize =
-                displayOption.textSizes[DisplayOption.INDEX_TWO_PANEL_PORTRAIT];
-        twoPanelLandscapeIconTextSize =
-                displayOption.textSizes[DisplayOption.INDEX_TWO_PANEL_LANDSCAPE];
+        iconTextSize = displayOption.textSizes;
 
-        minCellHeight = displayOption.minCellHeight;
-        minCellWidth = displayOption.minCellWidth;
-        twoPanelPortraitMinCellHeightDps = displayOption.twoPanelPortraitMinCellHeightDps;
-        twoPanelPortraitMinCellWidthDps = displayOption.twoPanelPortraitMinCellWidthDps;
-        twoPanelLandscapeMinCellHeightDps = displayOption.twoPanelLandscapeMinCellHeightDps;
-        twoPanelLandscapeMinCellWidthDps = displayOption.twoPanelLandscapeMinCellWidthDps;
+        minCellSize = displayOption.minCellSize;
 
-        borderSpace = displayOption.borderSpaces[DisplayOption.INDEX_DEFAULT];
-        twoPanelPortraitBorderSpace =
-                displayOption.borderSpaces[DisplayOption.INDEX_TWO_PANEL_PORTRAIT];
-        twoPanelLandscapeBorderSpace =
-                displayOption.borderSpaces[DisplayOption.INDEX_TWO_PANEL_LANDSCAPE];
-        allAppsCellSpacing = displayOption.borderSpaces[DisplayOption.INDEX_ALL_APPS].x;
+        borderSpaces = displayOption.borderSpaces;
         folderBorderSpace = displayOption.folderBorderSpace;
 
         horizontalMargin = displayOption.horizontalMargin;
-        twoPanelLandscapeHorizontalMargin = displayOption.twoPanelLandscapeHorizontalMargin;
-        twoPanelPortraitHorizontalMargin = displayOption.twoPanelPortraitHorizontalMargin;
 
         numShownHotseatIcons = closestProfile.numHotseatIcons;
         numDatabaseHotseatIcons = isSplitDisplay
@@ -316,12 +286,9 @@ public class InvariantDeviceProfile {
         numDatabaseAllAppsColumns = isSplitDisplay
                 ? closestProfile.numDatabaseAllAppsColumns : closestProfile.numAllAppsColumns;
 
-        if (Utilities.isGridOptionsEnabled(context)) {
-            allAppsIconSize = displayOption.iconSizes[DisplayOption.INDEX_ALL_APPS];
-            allAppsIconTextSize = displayOption.textSizes[DisplayOption.INDEX_ALL_APPS];
-        } else {
-            allAppsIconSize = iconSize;
-            allAppsIconTextSize = iconTextSize;
+        if (!Utilities.isGridOptionsEnabled(context)) {
+            iconSize[INDEX_ALL_APPS] = iconSize[INDEX_DEFAULT];
+            iconTextSize[INDEX_ALL_APPS] = iconTextSize[INDEX_DEFAULT];
         }
 
         if (devicePaddingId != 0) {
@@ -566,11 +533,11 @@ public class InvariantDeviceProfile {
 
         // Since the bitmaps are persisted, ensure that the default bitmap size is same as
         // predefined size to avoid cache invalidation
-        out.iconSizes[DisplayOption.INDEX_DEFAULT] =
-                closestPoint.iconSizes[DisplayOption.INDEX_DEFAULT];
-        for (int i = DisplayOption.INDEX_DEFAULT + 1; i < DisplayOption.COUNT_SIZES; i++) {
+        out.iconSizes[INDEX_DEFAULT] =
+                closestPoint.iconSizes[INDEX_DEFAULT];
+        for (int i = INDEX_DEFAULT + 1; i < COUNT_SIZES; i++) {
             out.iconSizes[i] = Math.min(out.iconSizes[i],
-                    out.iconSizes[DisplayOption.INDEX_DEFAULT]);
+                    out.iconSizes[INDEX_DEFAULT]);
         }
 
         return out;
@@ -724,32 +691,17 @@ public class InvariantDeviceProfile {
     @VisibleForTesting
     static final class DisplayOption {
 
-        static final int COUNT_SIZES = 5;
-        static final int INDEX_DEFAULT = 0;
-        static final int INDEX_LANDSCAPE = 1;
-        static final int INDEX_TWO_PANEL_PORTRAIT = 2;
-        static final int INDEX_TWO_PANEL_LANDSCAPE = 3;
-        static final int INDEX_ALL_APPS = 4;
-
         public final GridOption grid;
 
         private final float minWidthDps;
         private final float minHeightDps;
         private final boolean canBeDefault;
 
-        private float minCellHeight;
-        private float minCellWidth;
-        private float twoPanelPortraitMinCellHeightDps;
-        private float twoPanelPortraitMinCellWidthDps;
-        private float twoPanelLandscapeMinCellHeightDps;
-        private float twoPanelLandscapeMinCellWidthDps;
+        private final PointF[] minCellSize = new PointF[COUNT_SIZES];
 
         private float folderBorderSpace;
         private final PointF[] borderSpaces = new PointF[COUNT_SIZES];
-
-        private float horizontalMargin;
-        private float twoPanelLandscapeHorizontalMargin;
-        private float twoPanelPortraitHorizontalMargin;
+        private final float[] horizontalMargin = new float[COUNT_SIZES];
 
         private final float[] iconSizes = new float[COUNT_SIZES];
         private final float[] textSizes = new float[COUNT_SIZES];
@@ -766,27 +718,32 @@ public class InvariantDeviceProfile {
             canBeDefault = a.getInt(R.styleable.ProfileDisplayOption_canBeDefault, 0)
                     == defaultFlagValue;
 
-            minCellHeight = a.getFloat(R.styleable.ProfileDisplayOption_minCellHeightDps, 0);
-            minCellWidth = a.getFloat(R.styleable.ProfileDisplayOption_minCellWidthDps, 0);
-            twoPanelPortraitMinCellHeightDps = a.getFloat(
-                    R.styleable.ProfileDisplayOption_twoPanelPortraitMinCellHeightDps,
-                    minCellHeight);
-            twoPanelPortraitMinCellWidthDps = a.getFloat(
-                    R.styleable.ProfileDisplayOption_twoPanelPortraitMinCellWidthDps, minCellWidth);
-            twoPanelLandscapeMinCellHeightDps = a.getFloat(
-                    R.styleable.ProfileDisplayOption_twoPanelLandscapeMinCellHeightDps,
-                    twoPanelPortraitMinCellHeightDps);
-            twoPanelLandscapeMinCellWidthDps = a.getFloat(
-                    R.styleable.ProfileDisplayOption_twoPanelLandscapeMinCellWidthDps,
-                    twoPanelPortraitMinCellWidthDps);
+            float x;
+            float y;
+
+            x = a.getFloat(R.styleable.ProfileDisplayOption_minCellWidthDps, 0);
+            y = a.getFloat(R.styleable.ProfileDisplayOption_minCellHeightDps, 0);
+            minCellSize[INDEX_DEFAULT] = new PointF(x, y);
+            minCellSize[INDEX_LANDSCAPE] = new PointF(x, y);
+            minCellSize[INDEX_ALL_APPS] = new PointF(x, y);
+
+            x = a.getFloat(R.styleable.ProfileDisplayOption_twoPanelPortraitMinCellWidthDps,
+                    minCellSize[INDEX_DEFAULT].x);
+            y = a.getFloat(R.styleable.ProfileDisplayOption_twoPanelPortraitMinCellHeightDps,
+                    minCellSize[INDEX_DEFAULT].y);
+            minCellSize[INDEX_TWO_PANEL_PORTRAIT] = new PointF(x, y);
+
+            x = a.getFloat(R.styleable.ProfileDisplayOption_twoPanelLandscapeMinCellWidthDps,
+                    minCellSize[INDEX_DEFAULT].x);
+            y = a.getFloat(R.styleable.ProfileDisplayOption_twoPanelLandscapeMinCellHeightDps,
+                    minCellSize[INDEX_DEFAULT].y);
+            minCellSize[INDEX_TWO_PANEL_LANDSCAPE] = new PointF(x, y);
 
             float borderSpace = a.getFloat(R.styleable.ProfileDisplayOption_borderSpaceDps, 0);
             float twoPanelPortraitBorderSpaceDps = a.getFloat(
                     R.styleable.ProfileDisplayOption_twoPanelPortraitBorderSpaceDps, borderSpace);
             float twoPanelLandscapeBorderSpaceDps = a.getFloat(
                     R.styleable.ProfileDisplayOption_twoPanelLandscapeBorderSpaceDps, borderSpace);
-            float x;
-            float y;
 
             x = a.getFloat(R.styleable.ProfileDisplayOption_borderSpaceHorizontalDps, borderSpace);
             y = a.getFloat(R.styleable.ProfileDisplayOption_borderSpaceVerticalDps, borderSpace);
@@ -827,7 +784,7 @@ public class InvariantDeviceProfile {
                             iconSizes[INDEX_DEFAULT]);
             iconSizes[INDEX_TWO_PANEL_LANDSCAPE] =
                     a.getFloat(R.styleable.ProfileDisplayOption_twoPanelLandscapeIconSize,
-                            iconSizes[INDEX_LANDSCAPE]);
+                            iconSizes[INDEX_DEFAULT]);
 
             textSizes[INDEX_DEFAULT] =
                     a.getFloat(R.styleable.ProfileDisplayOption_iconTextSize, 0);
@@ -842,15 +799,18 @@ public class InvariantDeviceProfile {
                             textSizes[INDEX_DEFAULT]);
             textSizes[INDEX_TWO_PANEL_LANDSCAPE] =
                     a.getFloat(R.styleable.ProfileDisplayOption_twoPanelLandscapeIconTextSize,
-                            textSizes[INDEX_LANDSCAPE]);
+                            textSizes[INDEX_DEFAULT]);
 
-            horizontalMargin = a.getFloat(R.styleable.ProfileDisplayOption_horizontalMargin, 0);
-            twoPanelLandscapeHorizontalMargin = a.getFloat(
+            horizontalMargin[INDEX_DEFAULT] = a.getFloat(
+                    R.styleable.ProfileDisplayOption_horizontalMargin, 0);
+            horizontalMargin[INDEX_LANDSCAPE] = horizontalMargin[INDEX_DEFAULT];
+            horizontalMargin[INDEX_ALL_APPS] = horizontalMargin[INDEX_DEFAULT];
+            horizontalMargin[INDEX_TWO_PANEL_LANDSCAPE] = a.getFloat(
                     R.styleable.ProfileDisplayOption_twoPanelLandscapeHorizontalMargin,
-                    horizontalMargin);
-            twoPanelPortraitHorizontalMargin = a.getFloat(
+                    horizontalMargin[INDEX_DEFAULT]);
+            horizontalMargin[INDEX_TWO_PANEL_PORTRAIT] = a.getFloat(
                     R.styleable.ProfileDisplayOption_twoPanelPortraitHorizontalMargin,
-                    horizontalMargin);
+                    horizontalMargin[INDEX_DEFAULT]);
 
             a.recycle();
         }
@@ -864,12 +824,11 @@ public class InvariantDeviceProfile {
             minWidthDps = 0;
             minHeightDps = 0;
             canBeDefault = false;
-            minCellHeight = 0;
-            minCellWidth = 0;
             for (int i = 0; i < COUNT_SIZES; i++) {
                 iconSizes[i] = 0;
                 textSizes[i] = 0;
                 borderSpaces[i] = new PointF();
+                minCellSize[i] = new PointF();
             }
         }
 
@@ -877,21 +836,15 @@ public class InvariantDeviceProfile {
             for (int i = 0; i < COUNT_SIZES; i++) {
                 iconSizes[i] *= w;
                 textSizes[i] *= w;
-                borderSpaces[i].x *=  w;
-                borderSpaces[i].y *=  w;
+                borderSpaces[i].x *= w;
+                borderSpaces[i].y *= w;
+                minCellSize[i].x *= w;
+                minCellSize[i].y *= w;
+                horizontalMargin[i] *= w;
             }
-            minCellHeight *= w;
-            minCellWidth *= w;
-            twoPanelPortraitMinCellHeightDps *= w;
-            twoPanelPortraitMinCellWidthDps *= w;
-            twoPanelLandscapeMinCellHeightDps *= w;
-            twoPanelLandscapeMinCellWidthDps *= w;
 
             folderBorderSpace *= w;
 
-            horizontalMargin *= w;
-            twoPanelLandscapeHorizontalMargin *= w;
-            twoPanelPortraitHorizontalMargin *= w;
             return this;
         }
 
@@ -899,21 +852,15 @@ public class InvariantDeviceProfile {
             for (int i = 0; i < COUNT_SIZES; i++) {
                 iconSizes[i] += p.iconSizes[i];
                 textSizes[i] += p.textSizes[i];
-                borderSpaces[i].x +=  p.borderSpaces[i].x;
-                borderSpaces[i].y +=  p.borderSpaces[i].y;
+                borderSpaces[i].x += p.borderSpaces[i].x;
+                borderSpaces[i].y += p.borderSpaces[i].y;
+                minCellSize[i].x += p.minCellSize[i].x;
+                minCellSize[i].y += p.minCellSize[i].y;
+                horizontalMargin[i] += p.horizontalMargin[i];
             }
-            minCellHeight += p.minCellHeight;
-            minCellWidth += p.minCellWidth;
-            twoPanelPortraitMinCellHeightDps += p.twoPanelPortraitMinCellHeightDps;
-            twoPanelPortraitMinCellWidthDps += p.twoPanelPortraitMinCellWidthDps;
-            twoPanelLandscapeMinCellHeightDps += p.twoPanelLandscapeMinCellHeightDps;
-            twoPanelLandscapeMinCellWidthDps += p.twoPanelLandscapeMinCellWidthDps;
 
             folderBorderSpace += p.folderBorderSpace;
 
-            horizontalMargin += p.horizontalMargin;
-            twoPanelLandscapeHorizontalMargin += p.twoPanelLandscapeHorizontalMargin;
-            twoPanelPortraitHorizontalMargin += p.twoPanelPortraitHorizontalMargin;
             return this;
         }
     }

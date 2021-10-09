@@ -63,7 +63,6 @@ import com.android.launcher3.allapps.search.SearchAdapterProvider;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.keyboard.FocusedItemDecorator;
 import com.android.launcher3.model.data.AppInfo;
-import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.views.RecyclerViewFastScroller;
@@ -482,10 +481,6 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
         int layout = showTabs ? R.layout.all_apps_tabs : R.layout.all_apps_rv_layout;
         View newView = getLayoutInflater().inflate(layout, this, false);
         addView(newView, index);
-        if (TestProtocol.sDebugTracing) {
-            Log.d(TestProtocol.WORK_PROFILE_REMOVED, "should show tabs:" + showTabs,
-                    new Exception());
-        }
         if (showTabs) {
             mViewPager = (AllAppsPagedView) newView;
             mViewPager.initParentViews(this);

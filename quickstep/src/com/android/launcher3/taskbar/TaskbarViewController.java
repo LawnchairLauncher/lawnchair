@@ -85,6 +85,8 @@ public class TaskbarViewController {
         mTaskbarView.getLayoutParams().height = mActivity.getDeviceProfile().taskbarSize;
 
         mTaskbarIconScaleForStash.updateValue(1f);
+
+        mModelCallbacks.init(controllers);
         LauncherAppState.getInstance(mActivity).getModel().addCallbacksAndLoad(mModelCallbacks);
     }
 
@@ -254,7 +256,8 @@ public class TaskbarViewController {
         }
 
         public View.OnLongClickListener getBackgroundOnLongClickListener() {
-            return view -> mControllers.taskbarStashController.updateAndAnimateIsStashedInApp(true);
+            return view -> mControllers.taskbarStashController
+                    .updateAndAnimateIsManuallyStashedInApp(true);
         }
 
         /**
