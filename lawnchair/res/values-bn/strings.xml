@@ -59,7 +59,7 @@
     <string name="background_opacity">ব্যাকগ্রাউন্ডের অস্বচ্ছতা</string>
     <string name="background_lightness_label">ব্যাকগ্রাউন্ড লাইটনেস</string>
     <string name="adaptive_icons">অ্যাডাপ্টিভ আইকন</string>
-    <string name="adaptive_icon_background_description">সাদার জন্য ১০০%% ব্যাকগ্রাউন্ড লাইটনেস ব্যাবহার করুন.</string>
+    <string name="adaptive_icon_background_description">সাদার জন্য ১০০% ব্যাকগ্রাউন্ড লাইটনেস ব্যাবহার করুন.</string>
     <string name="auto_adaptive_icons_label">অটো অ্যাডাপ্টিভ আইকন</string>
     <string name="auto_adaptive_icons_description">সকল নন-অ্যাডাপ্টিভ আইকনের জন্য.</string>
     <string name="support_and_pr">সমর্থন &amp; পি আর</string>

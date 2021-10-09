@@ -59,7 +59,7 @@
     <string name="background_opacity">Arka Plan Opaklığı</string>
     <string name="background_lightness_label">Arka Plan Aydınlıklığı</string>
     <string name="adaptive_icons">Uyarlanabilir Simgeler</string>
-    <string name="adaptive_icon_background_description">Beyaz için %%100 arka plan aydınlıklığı kullan.</string>
+    <string name="adaptive_icon_background_description">Beyaz için %100 arka plan aydınlıklığı kullan.</string>
     <string name="auto_adaptive_icons_label">Otomatik Uyarlanabilir Simgeler</string>
     <string name="auto_adaptive_icons_description">Tüm uyarlanabilir olmayan simgeler için.</string>
     <string name="support_and_pr">Destek &amp; Halkla İlişkiler</string>

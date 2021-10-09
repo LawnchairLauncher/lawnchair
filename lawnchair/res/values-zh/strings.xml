@@ -59,7 +59,7 @@
     <string name="background_opacity">背景不透明度</string>
     <string name="background_lightness_label">背景亮度</string>
     <string name="adaptive_icons">自适应图标</string>
-    <string name="adaptive_icon_background_description">100%%背景亮度即为白色。</string>
+    <string name="adaptive_icon_background_description">100%背景亮度即为白色。</string>
     <string name="auto_adaptive_icons_label">自适应图标</string>
     <string name="auto_adaptive_icons_description">为未适配的图标启用自适应</string>
     <string name="support_and_pr">支持和公关</string>

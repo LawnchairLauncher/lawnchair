@@ -59,7 +59,7 @@
     <string name="background_opacity">Прозорість фону</string>
     <string name="background_lightness_label">Яскравість фону</string>
     <string name="adaptive_icons">Адаптивні значки</string>
-    <string name="adaptive_icon_background_description">Використовувати 100%% фонову яскравість для білого.</string>
+    <string name="adaptive_icon_background_description">Використовувати 100% фонову яскравість для білого.</string>
     <string name="auto_adaptive_icons_label">Автоматичні адаптивні значки</string>
     <string name="auto_adaptive_icons_description">Для всіх не адаптивних значків.</string>
     <string name="support_and_pr">Підтримка &amp; PR</string>

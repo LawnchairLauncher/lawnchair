@@ -59,7 +59,7 @@
     <string name="background_opacity">Kalabuan ng Background</string>
     <string name="background_lightness_label">Lightness ng Background</string>
     <string name="adaptive_icons">Mga Adaptive na Icon</string>
-    <string name="adaptive_icon_background_description">Ilagay sa 100%% ang background lightness upang makuha ang kulay puti.</string>
+    <string name="adaptive_icon_background_description">Ilagay sa 100% ang background lightness upang makuha ang kulay puti.</string>
     <string name="auto_adaptive_icons_label">Auto Adaptive Icons</string>
     <string name="auto_adaptive_icons_description">Para sa lahat ng mga hindi umaangkop na mga icon.</string>
     <string name="support_and_pr">Pagtulong &amp; PR</string>

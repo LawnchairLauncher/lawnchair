@@ -59,7 +59,7 @@
     <string name="background_opacity">Opacitat del fons</string>
     <string name="background_lightness_label">Lluminositat del fons</string>
     <string name="adaptive_icons">Icones Adaptables</string>
-    <string name="adaptive_icon_background_description">Utilitza un 100%% de lluminositat del fons per al blanc.</string>
+    <string name="adaptive_icon_background_description">Utilitza un 100% de lluminositat del fons per al blanc.</string>
     <string name="auto_adaptive_icons_label">Icones Automàticament Adaptables</string>
     <string name="auto_adaptive_icons_description">Per a totes les icones no Adaptables.</string>
     <string name="support_and_pr">Suport &amp; RRPP</string>
