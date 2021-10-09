@@ -38,7 +38,7 @@ class SearchBarInsetsHandler(private val shiftRange: Float) : WindowInsetsAnimat
         )
     }
 
-    fun onAnimationEnd(isSuccess: Boolean) {
-        animationController?.finish(!isSuccess)
+    fun onAnimationEnd() {
+        animationController?.finish(progress.value < 0.5f)
     }
 }
