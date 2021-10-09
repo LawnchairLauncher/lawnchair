@@ -284,7 +284,7 @@ public class InvariantDeviceProfile {
             Context context, Info displayInfo, DisplayOption displayOption,
             boolean isSplitDisplay) {
         DisplayMetrics metrics = context.getResources().getDisplayMetrics();
-        GridOption closestProfile = displayOption.grid;
+        closestProfile = displayOption.grid;
         numRows = closestProfile.numRows;
         numColumns = closestProfile.numColumns;
         dbFile = closestProfile.dbFile;
