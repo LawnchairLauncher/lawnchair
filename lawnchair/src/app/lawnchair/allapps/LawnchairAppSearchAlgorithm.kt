@@ -13,6 +13,12 @@ import java.util.*
 class LawnchairAppSearchAlgorithm(context: Context) : DefaultAppSearchAlgorithm(context) {
 
     private val useFuzzySearch by PreferenceManager.getInstance(context).useFuzzySearch
+    private val iconBackground = SearchItemBackground(
+        context,
+        showBackground = false,
+        roundTop = true,
+        roundBottom = true
+    )
 
     override fun getResult(
         apps: MutableList<AppInfo>,
@@ -35,7 +41,7 @@ class LawnchairAppSearchAlgorithm(context: Context) : DefaultAppSearchAlgorithm(
             .filter { StringMatcherUtility.matches(queryTextLower, it.title.toString(), matcher) }
             .take(MAX_RESULTS_COUNT)
             .mapIndexed { index, info ->
-                LawnchairSearchAdapterProvider.asIcon(index, "", info, index)
+                LawnchairSearchAdapterProvider.asIcon(index, "", info, index, iconBackground)
             }
             .toCollection(ArrayList())
         return result
@@ -49,7 +55,7 @@ class LawnchairAppSearchAlgorithm(context: Context) : DefaultAppSearchAlgorithm(
 
         return matches.take(MAX_RESULTS_COUNT)
             .mapIndexed { index, match ->
-                LawnchairSearchAdapterProvider.asIcon(index, "", match.referent, index)
+                LawnchairSearchAdapterProvider.asIcon(index, "", match.referent, index, iconBackground)
             }
             .toCollection(ArrayList())
     }

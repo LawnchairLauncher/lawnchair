@@ -32,5 +32,8 @@
     <dimen name="qsb_margin_top_adjusting">20dp</dimen>
     <dimen name="search_box_container_height">60dp</dimen>
     <dimen name="search_box_height">52dp</dimen>
+    <dimen name="search_decoration_padding">1.0dip</dimen>
+    <dimen name="search_group_radius">28dp</dimen>
     <dimen name="search_result_padding">16dp</dimen>
+    <dimen name="search_result_radius">4dp</dimen>
 </resources>

@@ -9,6 +9,8 @@
         <item name="allAppsScrimColor">?android:attr/colorBackground</item>
         <item name="allappsHeaderProtectionColor">@color/system_neutral1_100</item>
         <item name="allAppsAlternateTextColor">@color/dark_drawer_text_color</item>
+        <item name="focusHighlight">@color/system_neutral1_0</item>
+        <item name="groupHighlight">@color/surface_light</item>
         <item name="searchboxHighlight">@color/surface_variant_light</item>
     </style>
     <style name="AppTheme.DarkMainColor" parent="@style/LauncherTheme.DarkMainColor">
@@ -20,6 +22,8 @@
         <item name="allAppsScrimColor">?android:attr/colorBackground</item>
         <item name="allappsHeaderProtectionColor">@color/system_neutral1_100</item>
         <item name="allAppsAlternateTextColor">@color/dark_drawer_text_color</item>
+        <item name="focusHighlight">@color/system_neutral1_0</item>
+        <item name="groupHighlight">@color/surface_light</item>
         <item name="searchboxHighlight">@color/surface_variant_light</item>
     </style>
     <style name="AppTheme.DarkText" parent="@style/LauncherTheme.DarkText">
@@ -31,6 +35,8 @@
         <item name="allAppsScrimColor">?android:attr/colorBackground</item>
         <item name="allappsHeaderProtectionColor">@color/system_neutral1_100</item>
         <item name="allAppsAlternateTextColor">?android:textColorSecondary</item>
+        <item name="focusHighlight">@color/system_neutral1_0</item>
+        <item name="groupHighlight">@color/surface_light</item>
         <item name="searchboxHighlight">@color/surface_variant_light</item>
     </style>
 
@@ -43,6 +49,8 @@
         <item name="allAppsScrimColor">?android:attr/colorBackground</item>
         <item name="allappsHeaderProtectionColor">@color/system_neutral1_700</item>
         <item name="allAppsAlternateTextColor">?android:textColorSecondary</item>
+        <item name="focusHighlight">@color/system_neutral1_700</item>
+        <item name="groupHighlight">@color/surface_dark</item>
         <item name="searchboxHighlight">@color/system_neutral1_800</item>
     </style>
     <style name="AppTheme.Dark.DarkMainColor" parent="@style/LauncherTheme.Dark.DarkMainColor">
@@ -54,6 +62,8 @@
         <item name="allAppsScrimColor">?android:attr/colorBackground</item>
         <item name="allappsHeaderProtectionColor">@color/system_neutral1_700</item>
         <item name="allAppsAlternateTextColor">?android:textColorSecondary</item>
+        <item name="focusHighlight">@color/system_neutral1_700</item>
+        <item name="groupHighlight">@color/surface_dark</item>
         <item name="searchboxHighlight">@color/system_neutral1_800</item>
     </style>
     <style name="AppTheme.Dark.DarkText" parent="@style/LauncherTheme.Dark.DarkText">
@@ -65,6 +75,8 @@
         <item name="allAppsScrimColor">?android:attr/colorBackground</item>
         <item name="allappsHeaderProtectionColor">@color/system_neutral1_700</item>
         <item name="allAppsAlternateTextColor">@color/light_drawer_text_color</item>
+        <item name="focusHighlight">@color/system_neutral1_700</item>
+        <item name="groupHighlight">@color/surface_dark</item>
         <item name="searchboxHighlight">@color/system_neutral1_800</item>
     </style>
 </resources>

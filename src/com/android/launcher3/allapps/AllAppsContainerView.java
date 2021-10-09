@@ -61,6 +61,7 @@ import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.DeviceProfile.OnDeviceProfileChangeListener;
 import com.android.launcher3.DragSource;
 import com.android.launcher3.DropTarget.DragObject;
+import com.android.launcher3.ExtendedEditText;
 import com.android.launcher3.Insettable;
 import com.android.launcher3.InsettableFrameLayout;
 import com.android.launcher3.R;
@@ -806,8 +807,14 @@ public class AllAppsContainerView extends AllAppsStretchLayout implements DragSo
             getSearchView().setBackgroundColor(viewBG);
             getFloatingHeaderView().setHeaderColor(viewBG);
             invalidateHeader();
-            if (mHeaderColor == mScrimColor && mSearchUiManager.getEditText() != null) {
-                mSearchUiManager.getEditText().show();
+
+            ExtendedEditText editText = mSearchUiManager.getEditText();
+            if (editText != null) {
+                if (mHeaderColor == mScrimColor) {
+                    editText.show();
+                } else {
+                    editText.hide();
+                }
             }
         }
     }

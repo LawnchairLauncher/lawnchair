@@ -77,6 +77,7 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) : LinearLayout(
             LawnchairAppSearchAlgorithm(launcher),
             input, launcher, this
         )
+        input.initialize(appsView)
     }
 
     override fun onAppsUpdated() {

@@ -138,7 +138,6 @@ public class AllAppsSearchBarController
     public void reset() {
         mCallback.clearSearchResult();
         mInput.reset();
-        mInput.clearFocus();
         mQuery = null;
     }
 

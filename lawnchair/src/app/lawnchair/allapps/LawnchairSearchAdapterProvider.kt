@@ -17,6 +17,8 @@ class LawnchairSearchAdapterProvider(
     private val appsView: AllAppsContainerView
 ) : DefaultSearchAdapterProvider(launcher, appsView) {
 
+    private val decorator = SearchItemDecorator(appsView)
+
     override fun isViewSupported(viewType: Int): Boolean {
         return viewType == SEARCH_RESULT_ICON
     }
@@ -54,11 +56,13 @@ class LawnchairSearchAdapterProvider(
         }
     }
 
+    override fun getDecorator() = decorator
+
     companion object {
         private const val SEARCH_RESULT_ICON = (1 shl 8) and AllAppsGridAdapter.VIEW_TYPE_ICON
 
         fun asIcon(
-            pos: Int, sectionName: String, appInfo: AppInfo, appIndex: Int
+            pos: Int, sectionName: String, appInfo: AppInfo, appIndex: Int, background: SearchItemBackground
         ): AdapterItem {
             val item = AdapterItem()
             item.viewType = SEARCH_RESULT_ICON
@@ -66,6 +70,7 @@ class LawnchairSearchAdapterProvider(
             item.sectionName = sectionName
             item.appInfo = appInfo
             item.appIndex = appIndex
+            item.decorationInfo = SearchDecorationInfo(background)
             return item
         }
     }
