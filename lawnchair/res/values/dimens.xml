@@ -26,5 +26,5 @@
     <dimen name="search_widget_top_shift">16dp</dimen>
     <dimen name="search_widget_hotseat_height">56dp</dimen>
 
-    <dimen name="lawnchair_dialog_corner_radius">12dp</dimen>
+    <dimen name="lawnchair_dialog_corner_radius">24dp</dimen>
 </resources>
