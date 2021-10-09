@@ -64,7 +64,7 @@
     <string name="auto_adaptive_icons_description">Pour toutes les icônes non-adaptatives.</string>
     <string name="support_and_pr">Support &amp; PR</string>
     <string name="workspace_dt2s">Double-Tapez pour mettre en veille</string>
-    <string name="smart_space_enable">Widget Coup d’œil</string>
+    <string name="smart_space_enable">Widget En bref</string>
     <string name="design_and_development">Conception &amp; Développement</string>
     <string name="translate">Traduire</string>
     <string name="product">Produit</string>
@@ -92,7 +92,7 @@
     <string name="theme_follow_wallpaper">Fais correspondre au fond d\'écran</string>
     <string name="quickstep_label">Récents</string>
     <string name="clear_all_as_action_label">Bouton \"Tout effacer\" en bas</string>
-    <string name="window_corner_radius_label">Rayon d\'angle de l\'écran</string>
+    <string name="window_corner_radius_label">Courbure des coins d\'écran</string>
     <string name="override_window_corner_radius_label">Rayon d\'angle de l\'écran personnalisé</string>
     <string name="window_corner_radius_description">When you swipe up to open Recents, the current app follows your finger, shrinking into a card. Use this slider to adjust the corner radius of the card when it’s nearly full-screen such that it matches the corners of your screen.</string>
     <string name="system_icons">Icônes système</string>
