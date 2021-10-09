@@ -59,7 +59,7 @@
     <string name="background_opacity">Bakrunnsgjennomsiktighet</string>
     <string name="background_lightness_label">Bakgrunnslyshet</string>
     <string name="adaptive_icons">Adaptive ikoner</string>
-    <string name="adaptive_icon_background_description">Use 100%% background lightness for white.</string>
+    <string name="adaptive_icon_background_description">Bruk 100% bakgrunnslyshet for hvit.</string>
     <string name="auto_adaptive_icons_label">Auto adaptive ikoner</string>
     <string name="auto_adaptive_icons_description">For alle ikke-adaptive ikoner.</string>
     <string name="support_and_pr">Brukerstøtte &amp; PR</string>
