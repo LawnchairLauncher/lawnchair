@@ -3,6 +3,7 @@ package app.lawnchair.preferences
 import android.view.View
 import androidx.core.util.Consumer
 import androidx.lifecycle.LifecycleOwner
+import com.android.launcher3.util.SafeCloseable
 import kotlin.reflect.KProperty
 
 typealias ChangeListener = () -> Unit
@@ -15,6 +16,12 @@ interface PrefEntry<T> {
 
     fun addListener(listener: PreferenceChangeListener)
     fun removeListener(listener: PreferenceChangeListener)
+
+    fun subscribeChanges(onChange: Runnable): SafeCloseable {
+        val observer = PrefLifecycleObserver(this, onChange)
+        observer.connectListener()
+        return SafeCloseable { observer.disconnectListener() }
+    }
 
     fun subscribeChanges(lifecycleOwner: LifecycleOwner, onChange: Runnable) {
         lifecycleOwner.lifecycle.addObserver(PrefLifecycleObserver(this, onChange))

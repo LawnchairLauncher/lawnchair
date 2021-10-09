@@ -54,6 +54,7 @@ import com.android.launcher3.widget.DatabaseWidgetPreviewLoader;
 import com.android.launcher3.widget.custom.CustomWidgetManager;
 
 import app.lawnchair.LawnchairAppKt;
+import app.lawnchair.icons.LawnchairIconProvider;
 
 public class LauncherAppState {
 
@@ -147,7 +148,7 @@ public class LauncherAppState {
         mContext = context;
 
         mInvariantDeviceProfile = InvariantDeviceProfile.INSTANCE.get(context);
-        mIconProvider =  new IconProvider(context, Themes.isThemedIconEnabled(context));
+        mIconProvider =  new LawnchairIconProvider(context, Themes.isThemedIconEnabled(context));
         mIconCache = new IconCache(mContext, mInvariantDeviceProfile,
                 iconCacheFileName, mIconProvider);
         mWidgetCache = new DatabaseWidgetPreviewLoader(mContext, mIconCache);

@@ -48,6 +48,7 @@ import java.util.concurrent.Executors;
 import java.util.function.Consumer;
 
 import app.lawnchair.LawnchairApp;
+import app.lawnchair.icons.LawnchairIconProvider;
 
 /**
  * Singleton class to load and manage recents model.
@@ -74,7 +75,7 @@ public class RecentsModel extends TaskStackChangeListener implements IconChangeL
         mTaskList = new RecentTasksList(MAIN_EXECUTOR,
                 new KeyguardManagerCompat(context), ActivityManagerWrapper.getInstance());
 
-        IconProvider iconProvider = new IconProvider(context);
+        IconProvider iconProvider = new LawnchairIconProvider(context);
         mIconCache = new TaskIconCache(context, RECENTS_MODEL_EXECUTOR, iconProvider);
         mThumbnailCache = new TaskThumbnailCache(context, RECENTS_MODEL_EXECUTOR);
 
