@@ -26,7 +26,7 @@ fun <T> ListPreference(
     entries: List<ListPreferenceEntry<T>>,
     label: String,
     enabled: Boolean = true,
-    showDivider: Boolean = true
+    showDivider: Boolean = false
 ) {
     val sheetState = rememberBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
     val scope = rememberCoroutineScope()

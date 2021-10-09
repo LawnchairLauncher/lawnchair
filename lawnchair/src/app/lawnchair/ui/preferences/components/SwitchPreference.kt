@@ -32,7 +32,7 @@ fun SwitchPreference(
     label: String,
     description: String? = null,
     enabled: Boolean = true,
-    showDivider: Boolean = true
+    showDivider: Boolean = false
 ) {
     // TODO: Wrap overflowing text instead of using an ellipsis.
     PreferenceTemplate(

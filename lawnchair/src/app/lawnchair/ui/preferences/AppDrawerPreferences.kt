@@ -48,7 +48,6 @@ fun AppDrawerPreferences() {
                 label = stringResource(id = R.string.hidden_apps_label),
                 subtitle = resources.getQuantityString(R.plurals.apps_count, hiddenAppsCount(), hiddenAppsCount()),
                 destination = subRoute(name = AppDrawerRoutes.HIDDEN_APPS),
-                showDivider = false
             )
             SliderPreference(
                 label = stringResource(id = R.string.background_opacity),
@@ -62,7 +61,6 @@ fun AppDrawerPreferences() {
             SwitchPreference(
                 adapter = prefs.searchAutoShowKeyboard.getAdapter(),
                 label = stringResource(id = R.string.pref_search_auto_show_keyboard),
-                showDivider = false
             )
             SwitchPreference(
                 adapter = prefs.useFuzzySearch.getAdapter(),
@@ -76,7 +74,6 @@ fun AppDrawerPreferences() {
                 adapter = prefs.allAppsColumns.getAdapter(),
                 step = 1,
                 valueRange = 3..10,
-                showDivider = false
             )
         }
         PreferenceGroup(heading = stringResource(id = R.string.icons)) {
@@ -86,7 +83,6 @@ fun AppDrawerPreferences() {
                 step = 0.1f,
                 valueRange = 0.5F..1.5F,
                 showAsPercentage = true,
-                showDivider = false
             )
             val allAppsIconLabels = prefs.allAppsIconLabels.getAdapter()
             SwitchPreference(

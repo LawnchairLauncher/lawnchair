@@ -21,12 +21,15 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Divider
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import app.lawnchair.util.smartBorder
 
@@ -35,11 +38,22 @@ fun LazyListScope.preferenceGroupItems(
     heading: String? = null,
     isFirstChild: Boolean,
     key: ((index: Int) -> Any)? = null,
+    showDividers: Boolean = true,
+    dividerStartIndent: Dp = 0.dp,
+    dividerEndIndent: Dp = 0.dp,
     itemContent: @Composable LazyItemScope.(index: Int) -> Unit
 ) {
+    val actualStartIndent = 16.dp + dividerStartIndent
+    val actualEndIndent = 16.dp + dividerEndIndent
     item { PreferenceGroupHeading(heading, isFirstChild) }
     items(count, key) {
         PreferenceGroupItem(cutTop = it > 0, cutBottom = it < count - 1) {
+            if (showDividers && it > 0) {
+                Divider(
+                    modifier = Modifier
+                        .padding(start = actualStartIndent, end = actualEndIndent)
+                )
+            }
             itemContent(it)
         }
     }
@@ -50,20 +64,30 @@ inline fun <T> LazyListScope.preferenceGroupItems(
     heading: String? = null,
     isFirstChild: Boolean,
     noinline key: ((index: Int, item: T) -> Any)? = null,
+    showDividers: Boolean = true,
+    dividerStartIndent: Dp = 0.dp,
+    dividerEndIndent: Dp = 0.dp,
     crossinline itemContent: @Composable LazyItemScope.(index: Int, item: T) -> Unit
 ) {
     preferenceGroupItems(
         items.size,
         heading,
         isFirstChild,
-        if (key != null) { index: Int -> key(index, items[index]) } else null
+        if (key != null) { index: Int -> key(index, items[index]) } else null,
+        showDividers = showDividers,
+        dividerStartIndent = dividerStartIndent,
+        dividerEndIndent = dividerEndIndent,
     ) {
         itemContent(it, items[it])
     }
 }
 
 @Composable
-fun PreferenceGroupItem(cutTop: Boolean, cutBottom: Boolean, content: @Composable () -> Unit) {
+fun PreferenceGroupItem(
+    cutTop: Boolean,
+    cutBottom: Boolean,
+    content: @Composable () -> Unit
+) {
     val shape = remember(cutTop, cutBottom) {
         val top = if (cutTop) 0.dp else 12.dp
         val bottom = if (cutBottom) 0.dp else 12.dp

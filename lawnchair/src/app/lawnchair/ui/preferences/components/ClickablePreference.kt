@@ -29,7 +29,7 @@ fun ClickablePreference(
     label: String,
     subtitle: String? = null,
     onClick: () -> Unit,
-    showDivider: Boolean = true
+    showDivider: Boolean = false
 ) {
     PreferenceTemplate(
         title = { Text(text = label) },

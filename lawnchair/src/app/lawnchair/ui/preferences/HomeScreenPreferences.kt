@@ -44,7 +44,6 @@ fun HomeScreenPreferences() {
             SwitchPreference(
                 prefs.addIconToHome.getAdapter(),
                 label = stringResource(id = R.string.auto_add_shortcuts_label),
-                showDivider = false
             )
             SwitchPreference(
                 prefs.wallpaperScrolling.getAdapter(),
@@ -62,7 +61,6 @@ fun HomeScreenPreferences() {
                 label = stringResource(id = R.string.minus_one_enable),
                 description = if (feedAvailable) null else stringResource(id = R.string.minus_one_unavailable),
                 enabled = feedAvailable,
-                showDivider = false
             )
             SwitchPreference(
                 prefs.smartSpaceEnable.getAdapter(),
@@ -83,7 +81,6 @@ fun HomeScreenPreferences() {
                 adapter = prefs.workspaceColumns.getAdapter(),
                 step = 1,
                 valueRange = 3..10,
-                showDivider = false
             )
             SliderPreference(
                 label = stringResource(id = R.string.home_screen_rows),
@@ -99,7 +96,6 @@ fun HomeScreenPreferences() {
                 step = 0.1f,
                 valueRange = 0.5F..1.5F,
                 showAsPercentage = true,
-                showDivider = false
             )
             val showHomeLabels = prefs.showHomeLabels.getAdapter()
             SwitchPreference(

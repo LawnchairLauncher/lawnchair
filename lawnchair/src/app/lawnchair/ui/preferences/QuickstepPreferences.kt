@@ -28,7 +28,6 @@ fun QuickstepPreferences() {
             SwitchPreference(
                 adapter = prefs.clearAllAsAction.getAdapter(),
                 label = stringResource(id = R.string.clear_all_as_action_label),
-                showDivider = false
             )
         }
         val overrideWindowCornerRadius by prefs.overrideWindowCornerRadius.observeAsState()
@@ -40,7 +39,6 @@ fun QuickstepPreferences() {
             SwitchPreference(
                 adapter = prefs.overrideWindowCornerRadius.getAdapter(),
                 label = stringResource(id = R.string.override_window_corner_radius_label),
-                showDivider = false
             )
             AnimatedVisibility(
                 visible = overrideWindowCornerRadius,

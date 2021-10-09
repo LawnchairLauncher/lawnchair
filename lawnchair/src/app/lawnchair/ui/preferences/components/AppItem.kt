@@ -37,7 +37,7 @@ import com.google.accompanist.placeholder.material.placeholder
 fun AppItem(
     app: App,
     onClick: (app: App) -> Unit,
-    showDivider: Boolean = true,
+    showDivider: Boolean = false,
     widgetSize: Dp = 0.dp,
     widget: (@Composable () -> Unit)? = null,
 ) {
@@ -56,7 +56,7 @@ fun AppItem(
     label: String,
     icon: Bitmap,
     onClick: () -> Unit,
-    showDivider: Boolean = true,
+    showDivider: Boolean = false,
     widgetSize: Dp = 0.dp,
     widget: (@Composable () -> Unit)? = null,
 ) {
@@ -84,7 +84,7 @@ fun AppItem(
 
 @Composable
 fun AppItemPlaceholder(
-    showDivider: Boolean = true,
+    showDivider: Boolean = false,
     widgetSize: Dp = 0.dp,
     widget: (@Composable () -> Unit)? = null,
 ) {
@@ -118,7 +118,7 @@ fun AppItemPlaceholder(
 @Composable
 private fun AppItemLayout(
     modifier: Modifier = Modifier,
-    showDivider: Boolean = true,
+    showDivider: Boolean = false,
     widgetSize: Dp = 0.dp,
     widget: (@Composable () -> Unit)? = null,
     icon: @Composable () -> Unit,

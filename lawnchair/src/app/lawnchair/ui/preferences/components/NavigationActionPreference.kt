@@ -27,7 +27,7 @@ fun NavigationActionPreference(
     label: String,
     subtitle: String? = null,
     destination: String,
-    showDivider: Boolean = true
+    showDivider: Boolean = false
 ) {
     val navController = LocalNavController.current
 

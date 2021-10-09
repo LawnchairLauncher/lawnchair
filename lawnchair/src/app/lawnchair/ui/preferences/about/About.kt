@@ -233,8 +233,7 @@ fun About() {
                     name = it.name,
                     description = stringResource(it.descriptionRes),
                     url = it.socialUrl,
-                    photoUrl = it.photoUrl,
-                    showDivider = index != 0
+                    photoUrl = it.photoUrl
                 )
             }
         }
@@ -244,16 +243,14 @@ fun About() {
                     name = it.name,
                     description = stringResource(it.descriptionRes),
                     url = it.socialUrl,
-                    photoUrl = it.photoUrl,
-                    showDivider = index != 0
+                    photoUrl = it.photoUrl
                 )
             }
         }
         PreferenceGroup {
             NavigationActionPreference(
                 label = stringResource(id = R.string.acknowledgements),
-                destination = subRoute(name = AboutRoutes.LICENSES),
-                showDivider = false,
+                destination = subRoute(name = AboutRoutes.LICENSES)
             )
             ClickablePreference(
                 label = stringResource(id = R.string.translate),
