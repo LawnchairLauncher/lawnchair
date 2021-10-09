@@ -50,6 +50,8 @@ import com.android.launcher3.util.DynamicResource;
 import com.android.launcher3.util.Themes;
 import com.android.systemui.plugins.ResourceProvider;
 
+import app.lawnchair.preferences.PreferenceManager;
+
 /**
  * View scrim which draws behind hotseat and workspace
  */
@@ -142,6 +144,12 @@ public class SysUiScrim implements View.OnAttachStateChangeListener {
         mWallpaperScrimPaint.setColor(wallpaperScrimColor);
 
         view.addOnAttachStateChangeListener(this);
+
+        PreferenceManager prefs = PreferenceManager.getInstance(mRoot.getContext());
+        prefs.getShowSysUiScrim().subscribeValues(mRoot, (show) -> {
+            mHideSysUiScrim = !show;
+            mRoot.invalidate();
+        });
     }
 
     /**
