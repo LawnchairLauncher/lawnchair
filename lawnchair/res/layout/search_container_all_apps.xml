@@ -15,40 +15,65 @@
   ~ limitations under the License.
   -->
 
-<app.lawnchair.nexuslauncher.AllAppsHotseatQsb
+<app.lawnchair.allapps.AllAppsSearchInput
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@id/search_container_all_apps"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/search_widget_hotseat_height"
-    android:layout_gravity="top|center_horizontal">
+    android:layout_height="@dimen/search_box_container_height"
+    android:id="@+id/search_container_all_apps"
+    android:focusable="true"
+    android:clickable="true">
 
-    <fragment
-        android:id="@+id/search_wrapper_view"
-        android:name="app.lawnchair.nexuslauncher.AllAppsHotseatQsb$HotseatQsbFragment"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:tag="qsb_view"
-        tools:ignore="FragmentTagUsage" />
+    <FrameLayout
+        android:layout_width="0dp"
+        android:layout_height="@dimen/search_box_height"
+        android:layout_weight="1"
+        android:layout_gravity="bottom"
+        android:padding="0dp"
+        android:focusable="true"
+        android:clickable="false">
 
-    <com.android.launcher3.ExtendedEditText
-        android:id="@+id/fallback_search_view"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/all_apps_search_bar_field_height"
-        android:layout_gravity="center"
-        android:background="@drawable/bg_all_apps_searchbox"
-        android:elevation="1.5dp"
-        android:focusableInTouchMode="true"
-        android:gravity="center"
-        android:hint="@string/all_apps_search_bar_hint"
-        android:imeOptions="actionSearch|flagNoExtractUi"
-        android:inputType="text|textNoSuggestions|textCapWords"
-        android:maxLines="1"
-        android:padding="8dp"
-        android:saveEnabled="false"
-        android:scrollHorizontally="true"
-        android:singleLine="true"
-        android:textColor="?android:attr/textColorSecondary"
-        android:textColorHint="@drawable/all_apps_search_hint"
-        android:textSize="16sp" />
-</app.lawnchair.nexuslauncher.AllAppsHotseatQsb>
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:id="@+id/hint"
+            android:clickable="false"
+            android:paddingStart="16.0dip"
+            android:paddingEnd="16.0dip"
+            android:textSize="20sp"
+            android:textColor="?android:textColorTertiary"
+            android:ellipsize="end"
+            android:gravity="start|center"
+            android:scrollHorizontally="true"
+            android:singleLine="true" />
+
+        <app.lawnchair.allapps.FallbackSearchInputView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/input"
+            android:paddingEnd="16dp"
+            android:background="@drawable/search_input_fg"
+            android:textSize="20sp"
+            android:textColor="?android:textColorPrimary"
+            android:textColorHint="?android:textColorTertiary"
+            android:ellipsize="end"
+            android:gravity="start|center"
+            android:focusableInTouchMode="true"
+            android:scrollHorizontally="true"
+            android:singleLine="true"
+            android:inputType="textNoSuggestions"
+            android:privateImeOptions="bc_search"
+            android:imeOptions="actionGo|flagNoExtractUi" />
+
+        <ImageButton
+            android:id="@+id/action_btn"
+            android:layout_width="@dimen/search_box_height"
+            android:layout_height="@dimen/search_box_height"
+            android:layout_gravity="bottom|center|end"
+            android:background="?android:selectableItemBackgroundBorderless"
+            android:clickable="true"
+            android:src="@drawable/ic_remove_no_shadow"
+            android:scaleType="center"
+            android:tint="?android:textColorSecondary"
+            android:contentDescription="@string/search_input_action_clear_results" />
+    </FrameLayout>
+</app.lawnchair.allapps.AllAppsSearchInput>

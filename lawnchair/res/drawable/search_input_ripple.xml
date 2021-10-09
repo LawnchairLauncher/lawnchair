@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ripple android:color="?allAppsScrimColor"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@android:id/mask" android:bottom="2dp">
+        <shape android:shape="rectangle">
+            <solid android:color="@android:color/white" />
+            <corners android:radius="32dp" />
+            <padding android:left="@dimen/search_result_padding" android:right="@dimen/search_result_padding" />
+        </shape>
+    </item>
+    <item android:bottom="2dp">
+        <shape android:shape="rectangle">
+            <solid android:color="?searchboxHighlight" />
+            <corners android:radius="32dp" />
+            <padding android:left="@dimen/search_result_padding" android:right="@dimen/search_result_padding" />
+        </shape>
+    </item>
+</ripple>

@@ -17,6 +17,7 @@
 
 <resources>
     <attr name="allAppsAlternateTextColor" format="color" />
+    <attr name="searchboxHighlight" format="color" />
 
     <declare-styleable name="CustomSeekBarPreference">
         <attr name="minValue" format="integer" />

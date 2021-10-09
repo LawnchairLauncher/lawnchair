@@ -60,8 +60,8 @@ class AllAppsHotseatQsb @JvmOverloads constructor(
 
     override fun onFinishInflate() {
         super.onFinishInflate()
-        mFallbackSearchView = findViewById(R.id.fallback_search_view)
-        mSearchWrapperView = findViewById(R.id.search_wrapper_view)
+        // mFallbackSearchView = findViewById(R.id.fallback_search_view)
+        // mSearchWrapperView = findViewById(R.id.search_wrapper_view)
         val accentColor = Themes.getColorAccent(context)
         val spanned = SpannableString("  " + mFallbackSearchView.hint)
         spanned.setSpan(

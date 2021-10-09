@@ -27,4 +27,10 @@
     <dimen name="search_widget_hotseat_height">56dp</dimen>
 
     <dimen name="lawnchair_dialog_corner_radius">24dp</dimen>
+
+    <dimen name="all_apps_search_vertical_offset">30dp</dimen>
+    <dimen name="qsb_margin_top_adjusting">20dp</dimen>
+    <dimen name="search_box_container_height">60dp</dimen>
+    <dimen name="search_box_height">52dp</dimen>
+    <dimen name="search_result_padding">16dp</dimen>
 </resources>

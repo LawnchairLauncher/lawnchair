@@ -139,4 +139,5 @@
     <string name="reset_font">Reset</string>
 
     <string name="search_bar_placeholder">Search</string>
+    <string name="search_input_action_clear_results">Clear search box</string>
 </resources>
