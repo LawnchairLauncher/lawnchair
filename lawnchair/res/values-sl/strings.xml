@@ -59,7 +59,7 @@
     <string name="background_opacity">Nejasnost ozadja</string>
     <string name="background_lightness_label">Svetloba Ozadja</string>
     <string name="adaptive_icons">Adaptivne Ikone</string>
-    <string name="adaptive_icon_background_description">Use 100%% background lightness for white.</string>
+    <string name="adaptive_icon_background_description">Za belo uporabite 100% svetlost ozadja.</string>
     <string name="auto_adaptive_icons_label">Samodejno prilagodljive ikone</string>
     <string name="auto_adaptive_icons_description">Za vse neprilagodljive ikone.</string>
     <string name="support_and_pr">Podpirajte &amp; PR</string>
