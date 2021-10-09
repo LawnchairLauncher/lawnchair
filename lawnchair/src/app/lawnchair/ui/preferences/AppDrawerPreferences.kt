@@ -61,7 +61,8 @@ fun AppDrawerPreferences() {
         PreferenceGroup(heading = stringResource(id = R.string.pref_category_search)) {
             SwitchPreference(
                 adapter = prefs.searchAutoShowKeyboard.getAdapter(),
-                label = stringResource(id = R.string.pref_search_auto_show_keyboard)
+                label = stringResource(id = R.string.pref_search_auto_show_keyboard),
+                showDivider = false
             )
             SwitchPreference(
                 adapter = prefs.useFuzzySearch.getAdapter(),
