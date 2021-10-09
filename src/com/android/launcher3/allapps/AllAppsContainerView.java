@@ -78,11 +78,12 @@ import com.android.launcher3.views.SpringRelativeLayout;
 import com.android.launcher3.workprofile.PersonalWorkSlidingTabStrip.OnActivePageChangedListener;
 
 import app.lawnchair.allapps.LawnchairAlphabeticalAppsList;
+import app.lawnchair.ui.AllAppsStretchLayout;
 
 /**
  * The all apps view container.
  */
-public class AllAppsContainerView extends SpringRelativeLayout implements DragSource,
+public class AllAppsContainerView extends AllAppsStretchLayout implements DragSource,
         Insettable, OnDeviceProfileChangeListener, OnActivePageChangedListener,
         ScrimView.ScrimDrawingController {
 

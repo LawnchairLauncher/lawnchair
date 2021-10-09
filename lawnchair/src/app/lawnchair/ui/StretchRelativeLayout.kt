@@ -7,6 +7,8 @@ import android.util.SparseBooleanArray
 import android.widget.RelativeLayout
 import androidx.dynamicanimation.animation.DynamicAnimation.OnAnimationEndListener
 import androidx.recyclerview.widget.RecyclerView
+import com.android.launcher3.Utilities
+import com.android.launcher3.views.SpringRelativeLayout
 import kotlin.math.round
 
 @Suppress("LeakingThis")
@@ -14,7 +16,7 @@ open class StretchRelativeLayout @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
-) : RelativeLayout(context, attrs, defStyleAttr) {
+) : SpringRelativeLayout(context, attrs, defStyleAttr) {
     protected val effect = StretchEdgeEffect(this::invalidate)
 
     @JvmField
@@ -25,34 +27,25 @@ open class StretchRelativeLayout @JvmOverloads constructor(
     }
 
     override fun draw(canvas: Canvas) {
-        effect.draw(canvas, height.toFloat()) {
+        if (Utilities.ATLEAST_S) {
             super.draw(canvas)
+        } else {
+            effect.draw(canvas, height.toFloat()) {
+                super.draw(canvas)
+            }
         }
     }
 
-    fun addSpringView(id: Int) {
-        mSpringViews.put(id, true)
+    override fun absorbSwipeUpVelocity(velocity: Int) {
+        if (Utilities.ATLEAST_S) {
+            super.absorbSwipeUpVelocity(velocity)
+        } else {
+            effect.onAbsorb(-round(velocity * 400f / 135f))
+        }
     }
 
-    fun removeSpringView(id: Int) {
-        mSpringViews.delete(id)
-    }
-
-    open fun getCanvasClipTopForOverscroll() = 0
-
-    protected open fun setDampedScrollShift(shift: Float) {
-
-    }
-
-    protected open fun finishWithShiftAndVelocity(
-        shift: Float, velocity: Float,
-        listener: OnAnimationEndListener
-    ) {
-        effect.onAbsorb(round(velocity * 800f / 135f))
-        effect.addEndListener(listener)
-    }
-
-    open fun createEdgeEffectFactory(): RecyclerView.EdgeEffectFactory {
+    override fun createEdgeEffectFactory(): RecyclerView.EdgeEffectFactory {
+        if (Utilities.ATLEAST_S) return super.createEdgeEffectFactory()
         return effect.createEdgeEffectFactory(context)
     }
 }

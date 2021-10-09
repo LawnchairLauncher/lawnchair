@@ -7,6 +7,7 @@ import android.view.View
 import android.widget.EdgeEffect
 import androidx.recyclerview.widget.RecyclerView
 import com.android.launcher3.R
+import com.android.launcher3.Utilities
 
 open class AllAppsStretchLayout @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
@@ -26,6 +27,7 @@ open class AllAppsStretchLayout @JvmOverloads constructor(
     }
 
     override fun createEdgeEffectFactory(): RecyclerView.EdgeEffectFactory {
+        if (Utilities.ATLEAST_S) return super.createEdgeEffectFactory()
         return object : RecyclerView.EdgeEffectFactory() {
             override fun createEdgeEffect(view: RecyclerView, direction: Int): EdgeEffect {
                 return when (direction) {
