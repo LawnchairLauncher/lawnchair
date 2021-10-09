@@ -64,7 +64,10 @@ public abstract class BaseWidgetSheet extends AbstractSlideInView<Launcher>
     }
 
     protected int getScrimColor(Context context) {
-        return context.getResources().getColor(R.color.widgets_picker_scrim);
+        boolean isMainColorDark = Themes.getAttrBoolean(context, R.attr.isMainColorDark);
+        return context.getResources().getColor(isMainColorDark
+                ? R.color.widgets_picker_scrim_dark
+                : R.color.widgets_picker_scrim);
     }
 
     @Override
