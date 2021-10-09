@@ -59,7 +59,7 @@
     <string name="background_opacity">Fon xiraligi</string>
     <string name="background_lightness_label">Fon yorug‘ligi</string>
     <string name="adaptive_icons">Moslashuvchan belgilar</string>
-    <string name="adaptive_icon_background_description">Use 100%% background lightness for white.</string>
+    <string name="adaptive_icon_background_description">Oq rang uchun 100% fon yorug‘ligini ishlating.</string>
     <string name="auto_adaptive_icons_label">Avtomatik moslashuvchan belgilar</string>
     <string name="auto_adaptive_icons_description">Barcha mos kelmaydigan belgilar uchun.</string>
     <string name="support_and_pr">Qo‘llab-quvvatlash &amp; PR</string>
