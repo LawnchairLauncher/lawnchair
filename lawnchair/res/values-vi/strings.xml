@@ -59,7 +59,7 @@
     <string name="background_opacity">Độ trong suốt Nền</string>
     <string name="background_lightness_label">Độ sáng nền</string>
     <string name="adaptive_icons">Biểu tượng thích ứng</string>
-    <string name="adaptive_icon_background_description">Sử dụng 100% độ sáng nền cho màu trắng.</string>
+    <string name="adaptive_icon_background_description">Use 100%% background lightness for white.</string>
     <string name="auto_adaptive_icons_label">Biểu tượng thích ứng tự động</string>
     <string name="auto_adaptive_icons_description">Cho mọi biểu tượng không thích ứng.</string>
     <string name="support_and_pr">Hỗ trợ &amp; PR</string>
