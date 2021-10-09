@@ -127,5 +127,5 @@
     <string name="reset_font">Zurücksetzen</string>
     <string name="search_bar_placeholder">Suchen</string>
     <string name="pref_category_search">Suchen</string>
-    <string name="pref_search_auto_show_keyboard">Automatically show keyboard</string>
+    <string name="pref_search_auto_show_keyboard">Tastatur automatisch anzeigen</string>
 </resources>
