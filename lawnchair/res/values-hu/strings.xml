@@ -59,7 +59,7 @@
     <string name="background_opacity">Háttér átlátszósága</string>
     <string name="background_lightness_label">Háttér világossága</string>
     <string name="adaptive_icons">Adaptív ikonok</string>
-    <string name="adaptive_icon_background_description">Use 100%% background lightness for white.</string>
+    <string name="adaptive_icon_background_description">100%-os világosság a háttérben a fehérnél.</string>
     <string name="auto_adaptive_icons_label">Automatikus adaptív ikonok</string>
     <string name="auto_adaptive_icons_description">A nem adaptív ikonok számára.</string>
     <string name="support_and_pr">Támogatás &amp; PR</string>
