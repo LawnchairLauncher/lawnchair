@@ -59,7 +59,7 @@
     <string name="background_opacity">Opacité de l\'arrière-plan</string>
     <string name="background_lightness_label">Luminosité de l\'arrière-plan</string>
     <string name="adaptive_icons">Icônes Adaptatives</string>
-    <string name="adaptive_icon_background_description">Utilisez 100% de luminosité d\'arrière-plan pour le blanc.</string>
+    <string name="adaptive_icon_background_description">Use 100%% background lightness for white.</string>
     <string name="auto_adaptive_icons_label">Icônes Auto Adaptatives</string>
     <string name="auto_adaptive_icons_description">Pour toutes les icônes non-adaptatives.</string>
     <string name="support_and_pr">Support &amp; PR</string>
