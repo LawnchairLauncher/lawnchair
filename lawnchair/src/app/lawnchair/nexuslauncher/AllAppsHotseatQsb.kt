@@ -15,6 +15,7 @@ import android.view.animation.Interpolator
 import android.widget.EditText
 import android.widget.FrameLayout
 import androidx.core.graphics.ColorUtils
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import app.lawnchair.allapps.LawnchairAppSearchAlgorithm
 import app.lawnchair.preferences.PreferenceManager
@@ -67,6 +68,7 @@ class AllAppsHotseatQsb @JvmOverloads constructor(
             TintedDrawableSpan(context, R.drawable.ic_allapps_search),
             0, 1, Spannable.SPAN_EXCLUSIVE_INCLUSIVE
         )
+        mSearchWrapperView.isVisible = false
 
         mFallbackSearchView.apply {
             hint = spanned
