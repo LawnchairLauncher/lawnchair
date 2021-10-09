@@ -59,7 +59,7 @@
     <string name="background_opacity">백그라운드 투명도</string>
     <string name="background_lightness_label">백그라운드 밝기</string>
     <string name="adaptive_icons">적응형 아이콘</string>
-    <string name="adaptive_icon_background_description">백그라운드 밝기를 100%로 할 경우 하얀색이 됩니다.</string>
+    <string name="adaptive_icon_background_description">Use 100%% background lightness for white.</string>
     <string name="auto_adaptive_icons_label">자동 적응형 아이콘</string>
     <string name="auto_adaptive_icons_description">모든 비적응형 아이콘들을 위한 기능입니다.</string>
     <string name="support_and_pr">지원 &amp; 문의</string>
