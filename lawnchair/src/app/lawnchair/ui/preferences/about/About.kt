@@ -228,7 +228,7 @@ fun About() {
             }
         }
         PreferenceGroup(heading = stringResource(id = R.string.product)) {
-            product.forEachIndexed { index, it ->
+            product.forEach {
                 ContributorRow(
                     name = it.name,
                     description = stringResource(it.descriptionRes),
@@ -238,7 +238,7 @@ fun About() {
             }
         }
         PreferenceGroup(heading = stringResource(id = R.string.support_and_pr)) {
-            supportAndPr.forEachIndexed { index, it ->
+            supportAndPr.forEach {
                 ContributorRow(
                     name = it.name,
                     description = stringResource(it.descriptionRes),
