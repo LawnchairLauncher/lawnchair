@@ -806,7 +806,7 @@ public class AllAppsContainerView extends AllAppsStretchLayout implements DragSo
             getSearchView().setBackgroundColor(viewBG);
             getFloatingHeaderView().setHeaderColor(viewBG);
             invalidateHeader();
-            if (scrolledOffset == 0 && mSearchUiManager.getEditText() != null) {
+            if (mHeaderColor == mScrimColor && mSearchUiManager.getEditText() != null) {
                 mSearchUiManager.getEditText().show();
             }
         }
