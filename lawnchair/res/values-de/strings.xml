@@ -59,7 +59,7 @@
     <string name="background_opacity">Hintergrundtransparenz</string>
     <string name="background_lightness_label">Hintergrundbeleuchtung</string>
     <string name="adaptive_icons">Adaptive Symbole</string>
-    <string name="adaptive_icon_background_description">Verwende 100% Hintergrundhelligkeit für Weiß.</string>
+    <string name="adaptive_icon_background_description">Use 100%% background lightness for white.</string>
     <string name="auto_adaptive_icons_label">Automatische Adaptive Symbole</string>
     <string name="auto_adaptive_icons_description">Für alle nicht adaptiven Symbole.</string>
     <string name="support_and_pr">Support &amp; PR</string>
