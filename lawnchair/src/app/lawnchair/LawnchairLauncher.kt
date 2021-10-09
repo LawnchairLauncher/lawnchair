@@ -21,6 +21,7 @@ import android.os.Bundle
 import android.view.ViewTreeObserver
 import androidx.activity.OnBackPressedDispatcher
 import androidx.activity.OnBackPressedDispatcherOwner
+import androidx.core.graphics.ColorUtils
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.lifecycle.*
@@ -41,8 +42,10 @@ import com.android.launcher3.allapps.search.SearchAdapterProvider
 import com.android.launcher3.statemanager.StateManager
 import com.android.launcher3.uioverrides.QuickstepLauncher
 import com.android.launcher3.uioverrides.states.OverviewState
+import com.android.launcher3.util.Themes
 import com.android.systemui.plugins.shared.LauncherOverlayManager
 import kotlinx.coroutines.launch
+import kotlin.math.roundToInt
 
 class LawnchairLauncher : QuickstepLauncher(), LifecycleOwner,
     SavedStateRegistryOwner, OnBackPressedDispatcherOwner {
@@ -55,6 +58,7 @@ class LawnchairLauncher : QuickstepLauncher(), LifecycleOwner,
     val gestureController by lazy { GestureController(this) }
     private val defaultOverlay by lazy { OverlayCallbackImpl(this) }
     private val prefs by lazy { PreferenceManager.getInstance(this) }
+    var allAppsScrimColor = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         savedStateRegistryController.performRestore(savedInstanceState)
@@ -62,6 +66,11 @@ class LawnchairLauncher : QuickstepLauncher(), LifecycleOwner,
         lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_CREATE)
 
         prefs.launcherTheme.subscribeChanges(this, ::updateTheme)
+        prefs.drawerOpacity.subscribeValues(this) { opacity ->
+            val scrimColor = Themes.getAttrColor(this, R.attr.allAppsScrimColor)
+            val alpha = (opacity * 255).roundToInt()
+            allAppsScrimColor = ColorUtils.setAlphaComponent(scrimColor, alpha)
+        }
 
         if (prefs.autoLaunchRoot.get()) {
             lifecycleScope.launch {

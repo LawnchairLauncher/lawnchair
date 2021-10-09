@@ -26,6 +26,8 @@ import com.android.launcher3.R;
 import com.android.launcher3.allapps.AllAppsContainerView;
 import com.android.launcher3.util.Themes;
 
+import app.lawnchair.LawnchairLauncher;
+
 /**
  * Definition for AllApps state
  */
@@ -92,6 +94,9 @@ public class AllAppsState extends LauncherState {
 
     @Override
     public int getWorkspaceScrimColor(Launcher launcher) {
+        if (launcher instanceof LawnchairLauncher) {
+            return ((LawnchairLauncher) launcher).getAllAppsScrimColor();
+        }
         return Themes.getAttrColor(launcher, R.attr.allAppsScrimColor);
     }
 }

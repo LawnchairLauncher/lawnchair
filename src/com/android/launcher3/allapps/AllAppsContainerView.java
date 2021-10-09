@@ -77,6 +77,7 @@ import com.android.launcher3.views.RecyclerViewFastScroller;
 import com.android.launcher3.views.ScrimView;
 import com.android.launcher3.views.SpringRelativeLayout;
 import com.android.launcher3.workprofile.PersonalWorkSlidingTabStrip.OnActivePageChangedListener;
+import com.google.android.material.math.MathUtils;
 
 import app.lawnchair.allapps.LawnchairAlphabeticalAppsList;
 import app.lawnchair.ui.AllAppsStretchLayout;
@@ -711,7 +712,7 @@ public class AllAppsContainerView extends AllAppsStretchLayout implements DragSo
     public void drawOnScrim(Canvas canvas) {
         mHeaderPaint.setColor(mHeaderColor);
         mHeaderPaint.setAlpha((int) (getAlpha() * Color.alpha(mHeaderColor)));
-        if (mHeaderPaint.getColor() != mScrimColor && mHeaderPaint.getColor() != 0) {
+        if (Color.alpha(mHeaderPaint.getColor()) != 0 && mHeaderPaint.getColor() != 0) {
             int bottom = mUsingTabs && mHeader.mHeaderCollapsed ? mHeader.getVisibleBottomBound()
                     : mSearchContainer.getBottom();
             canvas.drawRect(0, 0, canvas.getWidth(), bottom + getTranslationY(),
@@ -799,18 +800,19 @@ public class AllAppsContainerView extends AllAppsStretchLayout implements DragSo
 
     protected void updateHeaderScroll(int scrolledOffset) {
         float prog = Math.max(0, Math.min(1, (float) scrolledOffset / mHeaderThreshold));
-        int viewBG = ColorUtils.blendARGB(mScrimColor, mHeaderProtectionColor, prog);
-        int headerColor = ColorUtils.setAlphaComponent(viewBG,
-                (int) (getSearchView().getAlpha() * 255));
+        int transparentScrim = ColorUtils.setAlphaComponent(mScrimColor, 0);
+        int viewBG = ColorUtils.blendARGB(transparentScrim, mHeaderProtectionColor, prog);
+        int searchAlpha = (int) (getSearchView().getAlpha() * prog * 255);
+        int headerColor = ColorUtils.setAlphaComponent(viewBG, searchAlpha);
         if (headerColor != mHeaderColor) {
             mHeaderColor = headerColor;
-            getSearchView().setBackgroundColor(viewBG);
+            getSearchView().setBackgroundColor(searchAlpha == 255 ? viewBG : 0);
             getFloatingHeaderView().setHeaderColor(viewBG);
             invalidateHeader();
 
             ExtendedEditText editText = mSearchUiManager.getEditText();
             if (editText != null) {
-                if (mHeaderColor == mScrimColor) {
+                if (searchAlpha == 0) {
                     editText.show();
                 } else {
                     editText.hide();
