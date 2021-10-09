@@ -59,7 +59,7 @@
     <string name="background_opacity">Αδιαφάνεια Φόντου</string>
     <string name="background_lightness_label">Φωτεινότητα Φόντου</string>
     <string name="adaptive_icons">Προσαρμοζόμενα Εικονίδια</string>
-    <string name="adaptive_icon_background_description">Use 100%% background lightness for white.</string>
+    <string name="adaptive_icon_background_description">Χρησιμοποιήστε 100% φωτεινότητα φόντου για λευκό.</string>
     <string name="auto_adaptive_icons_label">Αυτόματα Προσαρμοζόμενα Εικονίδια</string>
     <string name="auto_adaptive_icons_description">Για όλα τα μη προσαρμοζόμενα εικονίδια.</string>
     <string name="support_and_pr">Υποστήριξη &amp; PR</string>
