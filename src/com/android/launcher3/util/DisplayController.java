@@ -243,7 +243,7 @@ public class DisplayController implements DisplayListener, ComponentCallbacks, S
         }
 
         int change = 0;
-        if (!newInfo.mScreenSizeDp.equals(oldInfo.mScreenSizeDp)) {
+        if (!newInfo.displayId.equals(oldInfo.displayId)) {
             change |= CHANGE_ACTIVE_SCREEN;
         }
         if (newInfo.rotation != oldInfo.rotation) {
@@ -296,6 +296,7 @@ public class DisplayController implements DisplayListener, ComponentCallbacks, S
 
         public final Point currentSize;
 
+        public String displayId;
         public final Set<WindowBounds> supportedBounds = new ArraySet<>();
         private final Map<String, Set<WindowBounds>> mPerDisplayBounds = new ArrayMap<>();
         private final ArrayMap<String, PortraitSize> mInternalDisplays;
@@ -319,17 +320,17 @@ public class DisplayController implements DisplayListener, ComponentCallbacks, S
             currentSize = new Point();
             display.getRealSize(currentSize);
 
-            String myDisplayId = ApiWrapper.getUniqueId(display);
+            displayId = ApiWrapper.getUniqueId(display);
             Set<WindowBounds> currentSupportedBounds =
                     getSupportedBoundsForDisplay(display, currentSize);
-            mPerDisplayBounds.put(myDisplayId, currentSupportedBounds);
+            mPerDisplayBounds.put(displayId, currentSupportedBounds);
             supportedBounds.addAll(currentSupportedBounds);
 
             if (ApiWrapper.isInternalDisplay(display) && internalDisplays.size() > 1) {
                 int displayCount = internalDisplays.size();
                 for (int i = 0; i < displayCount; i++) {
                     String displayKey = internalDisplays.keyAt(i);
-                    if (TextUtils.equals(myDisplayId, displayKey)) {
+                    if (TextUtils.equals(displayId, displayKey)) {
                         continue;
                     }
 

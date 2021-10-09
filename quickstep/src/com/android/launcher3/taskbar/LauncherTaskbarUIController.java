@@ -16,8 +16,6 @@
 package com.android.launcher3.taskbar;
 
 import static com.android.launcher3.LauncherState.HOTSEAT_ICONS;
-import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASKBAR_LONGPRESS_HIDE;
-import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASKBAR_LONGPRESS_SHOW;
 import static com.android.launcher3.taskbar.TaskbarStashController.FLAG_IN_APP;
 import static com.android.launcher3.taskbar.TaskbarStashController.FLAG_IN_STASHED_LAUNCHER_STATE;
 import static com.android.launcher3.taskbar.TaskbarViewController.ALPHA_INDEX_HOME;
@@ -52,7 +50,6 @@ import com.android.quickstep.AnimatedFloat;
 import com.android.quickstep.RecentsAnimationCallbacks;
 import com.android.quickstep.RecentsAnimationCallbacks.RecentsAnimationListener;
 import com.android.quickstep.RecentsAnimationController;
-import com.android.quickstep.SystemUiProxy;
 import com.android.quickstep.views.RecentsView;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 
@@ -187,8 +184,6 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
         TaskbarStashController stashController = mControllers.taskbarStashController;
         stashController.updateStateForFlag(FLAG_IN_APP, !isResumed);
         stashController.applyState(duration);
-        SystemUiProxy.INSTANCE.get(mContext).notifyTaskbarStatus(!isResumed,
-                mControllers.taskbarStashController.isStashedInApp());
     }
 
     /**
@@ -286,11 +281,6 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
     @Override
     protected void onStashedInAppChanged() {
         onStashedInAppChanged(mLauncher.getDeviceProfile());
-        if (mControllers.taskbarStashController.isStashedInApp()) {
-            mContext.getStatsLogManager().logger().log(LAUNCHER_TASKBAR_LONGPRESS_HIDE);
-        } else {
-            mContext.getStatsLogManager().logger().log(LAUNCHER_TASKBAR_LONGPRESS_SHOW);
-        }
     }
 
     private void onStashedInAppChanged(DeviceProfile deviceProfile) {

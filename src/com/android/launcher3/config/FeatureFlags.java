@@ -176,10 +176,6 @@ public final class FeatureFlags {
             "Replace Smartspace with the enhanced version. "
                     + "Ignored if ENABLE_SMARTSPACE_UNIVERSAL is enabled.");
 
-    public static final BooleanFlag ENABLE_SMARTSPACE_FEEDBACK = getDebugFlag(
-            "ENABLE_SMARTSPACE_FEEDBACK", false,
-            "Adds a menu option to send feedback for Enhanced Smartspace.");
-
     public static final BooleanFlag ENABLE_SMARTSPACE_DISMISS = getDebugFlag(
             "ENABLE_SMARTSPACE_DISMISS", true,
             "Adds a menu option to dismiss the current Enhanced Smartspace card.");
@@ -262,7 +258,7 @@ public final class FeatureFlags {
             "Enables widgets in Launcher preview for the Wallpaper app.");
 
     public static final BooleanFlag QUICK_WALLPAPER_PICKER = getDebugFlag(
-            "QUICK_WALLPAPER_PICKER", false,
+            "QUICK_WALLPAPER_PICKER", true,
             "Shows quick wallpaper picker in long-press menu");
 
     public static final BooleanFlag ENABLE_BACK_SWIPE_HOME_ANIMATION = getDebugFlag(
