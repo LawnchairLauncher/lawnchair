@@ -241,7 +241,7 @@ android {
         }
     }
 
-    addFrameworkJar('framework.jar')
+    addFrameworkJar('framework-12.jar')
 }
 
 allprojects {

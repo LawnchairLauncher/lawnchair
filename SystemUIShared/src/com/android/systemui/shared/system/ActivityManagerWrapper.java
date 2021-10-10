@@ -53,11 +53,18 @@ import android.view.IRecentsAnimationRunner;
 import android.view.RemoteAnimationTarget;
 
 import com.android.internal.app.IVoiceInteractionManagerService;
+import com.android.systemui.shared.QuickstepCompat;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.recents.model.ThumbnailData;
+import com.android.systemui.shared.recents.utilities.Utilities;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
+
+import app.lawnchair.compatlib.ActivityManagerCompat;
+import app.lawnchair.compatlib.RecentsAnimationRunnerStub;
+import app.lawnchair.compatlib.eleven.ActivityManagerCompatVR;
 
 public class ActivityManagerWrapper {
 
@@ -73,7 +80,6 @@ public class ActivityManagerWrapper {
     private static final String INVOCATION_TIME_MS_KEY = "invocation_time_ms";
 
     private static final boolean ATLEAST_S = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S;
-    private final ActivityTaskManager mAtm = ATLEAST_S ? ActivityTaskManager.getInstance() : null;
     private ActivityManagerWrapper() { }
 
     public static ActivityManagerWrapper getInstance() {
@@ -105,26 +111,29 @@ public class ActivityManagerWrapper {
      * list (can be {@code null}).
      */
     public ActivityManager.RunningTaskInfo getRunningTask(boolean filterOnlyVisibleRecents) {
-        // Note: The set of running tasks from the system is ordered by recency
-        List<ActivityManager.RunningTaskInfo> tasks =
-                mAtm.getTasks(1, filterOnlyVisibleRecents);
-        if (tasks.isEmpty()) {
-            return null;
-        }
-        return tasks.get(0);
+        return QuickstepCompat.getActivityManagerCompat().getRunningTask(filterOnlyVisibleRecents);
     }
 
     /**
      * @return a list of the recents tasks.
      */
     public List<RecentTaskInfo> getRecentTasks(int numTasks, int userId) {
-        return mAtm.getRecentTasks(numTasks, RECENT_IGNORE_UNAVAILABLE, userId);
+        return QuickstepCompat.getActivityManagerCompat().getRecentTasks(numTasks, userId);
     }
 
     /**
      * @return the task snapshot for the given {@param taskId}.
      */
     public @NonNull ThumbnailData getTaskThumbnail(int taskId, boolean isLowResolution) {
+        if (!QuickstepCompat.ATLEAST_S) {
+            ActivityManagerCompatVR compat = ((ActivityManagerCompatVR) QuickstepCompat.getActivityManagerCompat());
+            ActivityManagerCompatVR.ThumbnailData data = compat.getTaskThumbnail(taskId, isLowResolution);
+            if (data != null) {
+                return new ThumbnailData(data);
+            } else {
+                return null;
+            }
+        }
         TaskSnapshot snapshot = null;
         try {
             snapshot = getService().getTaskSnapshot(taskId, isLowResolution);
@@ -173,9 +182,9 @@ public class ActivityManagerWrapper {
     public boolean startRecentsActivity(
             Intent intent, long eventTime, RecentsAnimationListener animationHandler) {
         try {
-            IRecentsAnimationRunner runner = null;
+            RecentsAnimationRunnerStub runner = null;
             if (animationHandler != null) {
-                runner = new IRecentsAnimationRunner.Stub() {
+                runner = new RecentsAnimationRunnerStub() {
                     @Override
                     public void onAnimationStart(IRecentsAnimationController controller,
                             RemoteAnimationTarget[] apps, RemoteAnimationTarget[] wallpapers,
@@ -191,9 +200,16 @@ public class ActivityManagerWrapper {
                     }
 
                     @Override
-                    public void onAnimationCanceled(TaskSnapshot taskSnapshot) {
-                        animationHandler.onAnimationCanceled(
-                                taskSnapshot != null ? new ThumbnailData(taskSnapshot) : null);
+                    public void onAnimationCanceled(Object taskSnapshot) {
+                        if (QuickstepCompat.ATLEAST_S) {
+                            animationHandler.onAnimationCanceled(
+                                    taskSnapshot != null ? new ThumbnailData((TaskSnapshot) taskSnapshot) : null);
+                        } else {
+                            ActivityManagerCompatVR compat = (ActivityManagerCompatVR) QuickstepCompat.getActivityManagerCompat();
+                            ActivityManagerCompatVR.ThumbnailData data = compat.convertTaskSnapshotToThumbnailData(taskSnapshot);
+                            animationHandler.onAnimationCanceled(
+                                    data != null ? new ThumbnailData(data) : null);
+                        }
                     }
 
                     @Override
@@ -202,7 +218,7 @@ public class ActivityManagerWrapper {
                     }
                 };
             }
-            getService().startRecentsActivity(intent, eventTime, runner);
+            QuickstepCompat.getActivityManagerCompat().startRecentsActivity(intent, eventTime, runner);
             return true;
         } catch (Exception e) {
             return false;

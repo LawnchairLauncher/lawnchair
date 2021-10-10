@@ -19,6 +19,7 @@ package com.android.systemui.shared.system;
 import android.content.Context;
 
 import com.android.internal.util.LatencyTracker;
+import com.android.systemui.shared.QuickstepCompat;
 
 /**
  * @see LatencyTracker
@@ -30,11 +31,17 @@ public class LatencyTrackerCompat {
      */
     @Deprecated
     public static void logToggleRecents(int duration) {
+        if (!QuickstepCompat.ATLEAST_S) {
+            return;
+        }
         LatencyTracker.logActionDeprecated(LatencyTracker.ACTION_TOGGLE_RECENTS, duration, false);
     }
 
     /** @see LatencyTracker */
     public static void logToggleRecents(Context context, int duration) {
+        if (!QuickstepCompat.ATLEAST_S) {
+            return;
+        }
         LatencyTracker.getInstance(context).logAction(LatencyTracker.ACTION_TOGGLE_RECENTS,
                 duration);
     }

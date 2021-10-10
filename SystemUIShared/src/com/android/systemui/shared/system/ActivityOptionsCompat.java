@@ -25,6 +25,7 @@ import android.content.Context;
 import android.os.Build;
 import android.os.Handler;
 
+import com.android.systemui.shared.QuickstepCompat;
 import com.android.systemui.shared.recents.model.Task;
 
 /**
@@ -61,8 +62,12 @@ public abstract class ActivityOptionsCompat {
 
     public static ActivityOptions makeRemoteAnimation(
             RemoteAnimationAdapterCompat remoteAnimationAdapter) {
-        return ActivityOptions.makeRemoteAnimation(remoteAnimationAdapter.getWrapped(),
-                remoteAnimationAdapter.getRemoteTransition().getTransition());
+        if (QuickstepCompat.ATLEAST_S) {
+            return ActivityOptions.makeRemoteAnimation(remoteAnimationAdapter.getWrapped(),
+                    remoteAnimationAdapter.getRemoteTransition().getTransition());
+        } else {
+            return ActivityOptions.makeRemoteAnimation(remoteAnimationAdapter.getWrapped());
+        }
     }
 
     /**
@@ -78,6 +83,18 @@ public abstract class ActivityOptionsCompat {
      */
     public static ActivityOptions makeCustomAnimation(Context context, int enterResId,
             int exitResId, final Runnable callback, final Handler callbackHandler) {
+        if (!QuickstepCompat.ATLEAST_S) {
+            return ActivityOptions.makeCustomAnimation(context, enterResId, exitResId,
+                    callbackHandler,
+                    new ActivityOptions.OnAnimationStartedListener() {
+                        @Override
+                        public void onAnimationStarted() {
+                            if (callback != null) {
+                                callbackHandler.post(callback);
+                            }
+                        }
+                    }, null /* finishedListener */);
+        }
         return ActivityOptions.makeCustomTaskAnimation(context, enterResId, exitResId,
                 callbackHandler,
                 new ActivityOptions.OnAnimationStartedListener() {

@@ -33,6 +33,7 @@ import androidx.annotation.Nullable;
 import com.android.launcher3.BaseQuickstepLauncher;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.LauncherAppState;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.DisplayController.Info;
@@ -64,7 +65,9 @@ public class TaskbarManager implements DisplayController.DisplayInfoChangeListen
         mSysUINavigationMode = SysUINavigationMode.INSTANCE.get(service);
         Display display =
                 service.getSystemService(DisplayManager.class).getDisplay(DEFAULT_DISPLAY);
-        mContext = service.createWindowContext(display, TYPE_APPLICATION_OVERLAY, null);
+        mContext = Utilities.ATLEAST_S
+                ? service.createWindowContext(display, TYPE_APPLICATION_OVERLAY, null)
+                : null;
         mNavButtonController = new TaskbarNavButtonController(service);
 
         mDisplayController.addChangeListener(this);

@@ -93,7 +93,7 @@ public final class FeatureFlags {
             "ADAPTIVE_ICON_WINDOW_ANIM", true, "Use adaptive icons for window animations.");
 
     public static final BooleanFlag ENABLE_QUICKSTEP_LIVE_TILE = getDebugFlag(
-            "ENABLE_QUICKSTEP_LIVE_TILE", true, "Enable live tile in Quickstep overview");
+            "ENABLE_QUICKSTEP_LIVE_TILE", Utilities.ATLEAST_S, "Enable live tile in Quickstep overview");
 
     public static final BooleanFlag ENABLE_QUICKSTEP_WIDGET_APP_START = getDebugFlag(
             "ENABLE_QUICKSTEP_WIDGET_APP_START", Utilities.ATLEAST_S,

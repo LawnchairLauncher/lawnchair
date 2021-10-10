@@ -25,6 +25,7 @@ import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TI
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.quickstep.GestureState.DEFAULT_STATE;
 import static com.android.systemui.shared.system.ActivityManagerWrapper.CLOSE_SYSTEM_WINDOWS_REASON_RECENTS;
+import static com.android.systemui.shared.system.QuickStepContract.KEY_EXTRA_INPUT_MONITOR;
 import static com.android.systemui.shared.system.QuickStepContract.KEY_EXTRA_SHELL_ONE_HANDED;
 import static com.android.systemui.shared.system.QuickStepContract.KEY_EXTRA_SHELL_PIP;
 import static com.android.systemui.shared.system.QuickStepContract.KEY_EXTRA_SHELL_SHELL_TRANSITIONS;
@@ -359,7 +360,16 @@ public class TouchInteractionService extends Service implements PluginListener<O
             return;
         }
 
-        mInputMonitorCompat = new InputMonitorCompat("swipe-up", mDeviceState.getDisplayId());
+        if (Utilities.ATLEAST_S) {
+            mInputMonitorCompat = new InputMonitorCompat("swipe-up", mDeviceState.getDisplayId());
+        } else {
+            if (!SystemUiProxy.INSTANCE.get(this).isActive()) {
+                return;
+            }
+            Bundle bundle = SystemUiProxy.INSTANCE.get(this).monitorGestureInput("swipe-up",
+                    mDeviceState.getDisplayId());
+            mInputMonitorCompat = InputMonitorCompat.fromBundle(bundle, KEY_EXTRA_INPUT_MONITOR);
+        }
         mInputEventReceiver = mInputMonitorCompat.getInputReceiver(Looper.getMainLooper(),
                 mMainChoreographer, this::onInputEvent);
 

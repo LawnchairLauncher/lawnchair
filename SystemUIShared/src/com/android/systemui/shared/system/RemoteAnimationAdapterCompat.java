@@ -39,7 +39,12 @@ import android.window.IRemoteTransition;
 import android.window.IRemoteTransitionFinishedCallback;
 import android.window.TransitionInfo;
 
+import com.android.systemui.shared.QuickstepCompat;
+import com.android.systemui.shared.recents.utilities.Utilities;
+
 import java.util.ArrayList;
+
+import app.lawnchair.compatlib.RemoteAnimationRunnerStub;
 
 /**
  * @see RemoteAnimationAdapter
@@ -47,13 +52,15 @@ import java.util.ArrayList;
 public class RemoteAnimationAdapterCompat {
 
     private final RemoteAnimationAdapter mWrapped;
-    private final RemoteTransitionCompat mRemoteTransition;
+    private RemoteTransitionCompat mRemoteTransition;
 
     public RemoteAnimationAdapterCompat(RemoteAnimationRunnerCompat runner, long duration,
             long statusBarTransitionDelay) {
         mWrapped = new RemoteAnimationAdapter(wrapRemoteAnimationRunner(runner), duration,
                 statusBarTransitionDelay);
-        mRemoteTransition = buildRemoteTransition(runner);
+        if (QuickstepCompat.ATLEAST_S) {
+            mRemoteTransition = buildRemoteTransition(runner);
+        }
     }
 
     RemoteAnimationAdapter getWrapped() {
@@ -71,7 +78,7 @@ public class RemoteAnimationAdapterCompat {
 
     private static IRemoteAnimationRunner.Stub wrapRemoteAnimationRunner(
             final RemoteAnimationRunnerCompat remoteAnimationAdapter) {
-        return new IRemoteAnimationRunner.Stub() {
+        return QuickstepCompat.getFactory().wrapRemoteAnimationRunnerStub(new RemoteAnimationRunnerStub() {
             @Override
             public void onAnimationStart(@TransitionOldType int transit,
                     RemoteAnimationTarget[] apps,
@@ -103,7 +110,7 @@ public class RemoteAnimationAdapterCompat {
             public void onAnimationCancelled() {
                 remoteAnimationAdapter.onAnimationCancelled();
             }
-        };
+        });
     }
 
     private static class CounterRotator {

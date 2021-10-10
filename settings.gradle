@@ -4,3 +4,6 @@ project(':IconLoader').projectDir = new File(rootDir, 'platform_frameworks_libs_
 include ':SharedLibWrapper'
 project(':SharedLibWrapper').projectDir = new File(rootDir, 'SharedLibWrapper')
 include ':SystemUIShared'
+include ':CompatLib'
+include ':CompatLibVR'
+include ':CompatLibVS'

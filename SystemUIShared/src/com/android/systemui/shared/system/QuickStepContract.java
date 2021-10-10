@@ -41,6 +41,7 @@ public class QuickStepContract {
             "com.google.android.apps.nexuslauncher.NexusLauncherActivity";
 
     public static final String KEY_EXTRA_SYSUI_PROXY = "extra_sysui_proxy";
+    public static final String KEY_EXTRA_INPUT_MONITOR = "extra_input_monitor";
     public static final String KEY_EXTRA_WINDOW_CORNER_RADIUS = "extra_window_corner_radius";
     public static final String KEY_EXTRA_SUPPORTS_WINDOW_CORNERS = "extra_supports_window_corners";
     // See IPip.aidl

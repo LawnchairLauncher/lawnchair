@@ -14,5 +14,5 @@
      limitations under the License.
 -->
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
-  <item android:color="#30000000" />
+  <item android:color="@color/system_neutral2_100" android:lStar="87" />
 </selector>

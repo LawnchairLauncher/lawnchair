@@ -228,7 +228,7 @@ public class RecentsAnimationDeviceState implements
         }
 
         try {
-            mPipIsActive = ActivityTaskManager.getService().getRootTaskInfo(
+            mPipIsActive = Utilities.ATLEAST_S && ActivityTaskManager.getService().getRootTaskInfo(
                     WINDOWING_MODE_PINNED, ACTIVITY_TYPE_UNDEFINED) != null;
         } catch (RemoteException e) {
             // Do nothing

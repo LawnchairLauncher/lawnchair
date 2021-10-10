@@ -35,6 +35,7 @@ import android.window.SplashScreen;
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.logging.StatsLogManager.LauncherEvent;
 import com.android.launcher3.model.WellbeingModel;
@@ -166,7 +167,7 @@ public interface TaskShortcutFactory {
             dismissTaskMenuView(mTarget);
 
             ActivityOptions options = mFactory.makeLaunchOptions(mTarget);
-            if (options != null) {
+            if (options != null && Utilities.ATLEAST_S) {
                 options.setSplashscreenStyle(SplashScreen.SPLASH_SCREEN_STYLE_ICON);
             }
             if (options != null

@@ -16,6 +16,7 @@
 package com.android.systemui.shared.system;
 
 import android.hardware.input.InputManager;
+import android.os.Bundle;
 import android.os.Looper;
 import android.view.Choreographer;
 import android.view.InputMonitor;
@@ -33,7 +34,11 @@ public class InputMonitorCompat {
      * Monitor input on the specified display for gestures.
      */
     public InputMonitorCompat(String name, int displayId) {
-        mInputMonitor = InputManager.getInstance().monitorGestureInput(name, displayId);
+        this(InputManager.getInstance().monitorGestureInput(name, displayId));
+    }
+
+    private InputMonitorCompat(InputMonitor monitor) {
+        mInputMonitor = monitor;
     }
 
     /**
@@ -57,5 +62,12 @@ public class InputMonitorCompat {
             InputEventListener listener) {
         return new InputEventReceiver(mInputMonitor.getInputChannel(), looper, choreographer,
                 listener);
+    }
+
+    /**
+     * Gets the input monitor stored in a bundle
+     */
+    public static InputMonitorCompat fromBundle(Bundle bundle, String key) {
+        return new InputMonitorCompat((InputMonitor) bundle.getParcelable(key));
     }
 }

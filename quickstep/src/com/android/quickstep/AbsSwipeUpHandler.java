@@ -122,6 +122,8 @@ import com.android.systemui.shared.system.TaskStackChangeListeners;
 import java.util.ArrayList;
 import java.util.function.Consumer;
 
+import app.lawnchair.util.CompatibilityKt;
+
 /**
  * Handles the navigation gestures when Launcher is the default home activity.
  */
@@ -1146,11 +1148,13 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
                     ? mRecentsAnimationTargets.findTask(mGestureState.getRunningTaskId())
                     : null;
             final ArrayList<IBinder> cookies = runningTaskTarget != null
+                    && runningTaskTarget.taskInfo != null
                     ? runningTaskTarget.taskInfo.launchCookies
                     : new ArrayList<>();
             boolean isTranslucent = runningTaskTarget != null && runningTaskTarget.isTranslucent;
             boolean appCanEnterPip = !mDeviceState.isPipActive()
                     && runningTaskTarget != null
+                    && runningTaskTarget.taskInfo != null
                     && runningTaskTarget.taskInfo.pictureInPictureParams != null
                     && runningTaskTarget.taskInfo.pictureInPictureParams.isAutoEnterEnabled();
             HomeAnimationFactory homeAnimFactory =
@@ -1391,6 +1395,17 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
     @UiThread
     private void startNewTask() {
         TaskView taskToLaunch = mRecentsView == null ? null : mRecentsView.getNextPageTaskView();
+        if (CompatibilityKt.isOnePlusStock()) {
+            reset();
+            if (mRecentsAnimationController != null) {
+                mRecentsAnimationController.finish(true, () -> startNewTaskInternal(taskToLaunch));
+            }
+        } else {
+            startNewTaskInternal(taskToLaunch);
+        }
+    }
+
+    private void startNewTaskInternal(TaskView taskToLaunch) {
         startNewTask(success -> {
             if (!success) {
                 reset();

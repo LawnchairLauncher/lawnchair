@@ -38,10 +38,13 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 
-    addFrameworkJar('framework.jar')
+    addFrameworkJar('framework-12.jar')
 }
 
 dependencies {
     compileOnly fileTree(dir: new File(rootProject.projectDir, 'prebuilts/libs'), include: 'wm_shell-aidls.jar')
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation project(':CompatLib')
+    implementation project(':CompatLibVR')
+    implementation project(':CompatLibVS')
 }

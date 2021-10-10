@@ -37,6 +37,8 @@ import android.view.SurfaceControl;
 import android.view.WindowManager;
 import android.window.TransitionInfo;
 
+import com.android.systemui.shared.QuickstepCompat;
+
 import java.util.ArrayList;
 
 /**
@@ -87,11 +89,11 @@ public class RemoteAnimationTargetCompat {
         isNotInRecents = app.isNotInRecents;
         contentInsets = app.contentInsets;
         activityType = app.windowConfiguration.getActivityType();
-        taskInfo = app.taskInfo;
+        taskInfo = QuickstepCompat.ATLEAST_S ? app.taskInfo : null;
         rotationChange = 0;
 
         mStartLeash = app.startLeash;
-        windowType = app.windowType;
+        windowType = QuickstepCompat.ATLEAST_S ? app.windowType : INVALID_WINDOW_TYPE;
     }
 
     private static int newModeToLegacyMode(int newMode) {
