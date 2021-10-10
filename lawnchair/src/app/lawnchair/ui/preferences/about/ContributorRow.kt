@@ -32,8 +32,10 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import app.lawnchair.ui.preferences.components.PreferenceTemplate
+import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
 
+@OptIn(ExperimentalCoilApi::class)
 @Composable
 fun ContributorRow(name: String, description: String, photoUrl: String, url: String, showDivider: Boolean = false) {
     val context = LocalContext.current

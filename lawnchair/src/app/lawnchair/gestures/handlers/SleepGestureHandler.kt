@@ -52,6 +52,7 @@ class SleepGestureHandler(private val launcher: LawnchairLauncher) : GestureHand
         method?.sleep()
     }
 
+    @OptIn(ExperimentalMaterialApi::class)
     private val method: SleepMethod? by lazy {
         listOf(
             SleepMethodRoot(launcher),
@@ -77,10 +78,10 @@ class SleepMethodRoot(launcher: LawnchairLauncher) : SleepGestureHandler.SleepMe
     }
 }
 
+@ExperimentalMaterialApi
 class SleepMethodPieAccessibility(launcher: LawnchairLauncher) : SleepGestureHandler.SleepMethod(launcher) {
     override val supported = Utilities.ATLEAST_P
 
-    @ExperimentalMaterialApi
     @TargetApi(Build.VERSION_CODES.P)
     override fun sleep() {
         val app = launcher.lawnchairApp
@@ -101,10 +102,10 @@ class SleepMethodPieAccessibility(launcher: LawnchairLauncher) : SleepGestureHan
     }
 }
 
+@ExperimentalMaterialApi
 class SleepMethodDeviceAdmin(launcher: LawnchairLauncher) : SleepGestureHandler.SleepMethod(launcher) {
     override val supported = true
 
-    @ExperimentalMaterialApi
     override fun sleep() {
         val devicePolicyManager = launcher.getSystemService(Context.DEVICE_POLICY_SERVICE) as DevicePolicyManager
         if (!devicePolicyManager.isAdminActive(ComponentName(launcher, SleepDeviceAdmin::class.java))) {

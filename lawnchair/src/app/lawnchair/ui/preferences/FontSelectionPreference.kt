@@ -105,7 +105,7 @@ fun FontSelection(fontPref: BasePreferenceManager.FontPref) {
                 isFirstChild = true,
                 key = { _, family -> family.toString() },
                 dividerStartIndent = 40.dp
-            ) { index, family ->
+            ) { _, family ->
                 FontSelectionItem(
                     adapter = adapter,
                     family = family

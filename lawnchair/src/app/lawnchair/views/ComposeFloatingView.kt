@@ -13,6 +13,7 @@ import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.core.content.ContextCompat
 import app.lawnchair.LawnchairLauncher
 import app.lawnchair.launcher
 import app.lawnchair.ui.preferences.components.BottomSheet
@@ -100,7 +101,7 @@ class ComposeFloatingView(context: Context) :
 @Composable
 fun scrimColor(): Color {
     val context = LocalContext.current
-    val intColor = context.resources.getColor(R.color.widgets_picker_scrim);
+    val intColor = ContextCompat.getColor(context, R.color.widgets_picker_scrim)
     return Color(intColor)
 }
 

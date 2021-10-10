@@ -25,9 +25,9 @@ import androidx.core.view.WindowCompat
 import app.lawnchair.ui.theme.LawnchairTheme
 import com.google.accompanist.insets.ProvideWindowInsets
 
+@ExperimentalMaterialApi
+@ExperimentalAnimationApi
 class PreferenceActivity : AppCompatActivity() {
-    @ExperimentalMaterialApi
-    @ExperimentalAnimationApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         WindowCompat.setDecorFitsSystemWindows(window, false)
