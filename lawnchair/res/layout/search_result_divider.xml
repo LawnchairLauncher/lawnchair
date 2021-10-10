@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<View xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/search_result_padding"
+    android:focusable="false"
+    android:importantForAccessibility="no"
+    android:paddingLeft="@dimen/search_result_padding"
+    android:paddingRight="@dimen/search_result_padding"
+    android:scaleType="fitXY"
+    android:visibility="invisible" />

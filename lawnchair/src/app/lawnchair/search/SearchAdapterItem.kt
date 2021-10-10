@@ -10,7 +10,7 @@ import com.android.launcher3.util.ComponentKey
 
 data class SearchAdapterItem(
     val searchTarget: SearchTargetCompat,
-    val background: SearchItemBackground
+    val background: SearchItemBackground?
 ) : AllAppsGridAdapter.AdapterItem() {
 
     companion object {
@@ -59,6 +59,21 @@ data class SearchAdapterItem(
             return SearchAdapterItem(target, background).apply {
                 viewType = LawnchairSearchAdapterProvider.viewTypeMap[target.layoutType]!!
                 position = pos
+            }
+        }
+
+        val topDivider by lazy {
+            val target = SearchTargetCompat.Builder(
+                SearchTargetCompat.RESULT_TYPE_SHORTCUT,
+                SearchTargetCompat.LAYOUT_TYPE_ICON_ROW,
+                "top_divider"
+            )
+                .setPackageName(BuildConfig.APPLICATION_ID)
+                .setUserHandle(Process.myUserHandle())
+                .build()
+            SearchAdapterItem(target, null).apply {
+                viewType = LawnchairSearchAdapterProvider.SEARCH_RESULT_TOP_DIVIDER
+                position = 0
             }
         }
     }

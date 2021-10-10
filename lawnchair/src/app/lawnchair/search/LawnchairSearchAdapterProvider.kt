@@ -22,6 +22,8 @@ class LawnchairSearchAdapterProvider(
     private val layoutIdMap = SparseIntArray().apply {
         append(SEARCH_RESULT_ICON, R.layout.search_result_icon)
         append(SEARCH_RESULT_ICON_ROW, R.layout.search_result_tall_icon_row)
+        append(SEARCH_RESULT_DIVIDER, R.layout.search_result_divider)
+        append(SEARCH_RESULT_TOP_DIVIDER, R.layout.search_result_top_divider)
     }
     private var quickLaunchItem: SearchResultView? = null
 
@@ -31,6 +33,8 @@ class LawnchairSearchAdapterProvider(
 
     override fun onBindView(holder: AllAppsGridAdapter.ViewHolder, position: Int) {
         val adapterItem = appsView.apps.adapterItems[position] as SearchAdapterItem
+        if ((adapterItem.viewType and SEARCH_RESULT_DIVIDER) != 0) return
+
         val itemView = holder.itemView as SearchResultView
         itemView.bind(adapterItem.searchTarget, emptyList())
         if (itemView.isQuickLaunch()) {
@@ -62,8 +66,10 @@ class LawnchairSearchAdapterProvider(
     override fun getDecorator() = decorator
 
     companion object {
-        private const val SEARCH_RESULT_ICON = (1 shl 8) and AllAppsGridAdapter.VIEW_TYPE_ICON
+        private const val SEARCH_RESULT_ICON = (1 shl 8) or AllAppsGridAdapter.VIEW_TYPE_ICON
         private const val SEARCH_RESULT_ICON_ROW = 1 shl 9
+        const val SEARCH_RESULT_DIVIDER = 1 shl 10
+        const val SEARCH_RESULT_TOP_DIVIDER = (1 shl 11) or SEARCH_RESULT_DIVIDER
 
         val viewTypeMap = mapOf(
             SearchTargetCompat.LAYOUT_TYPE_ICON to SEARCH_RESULT_ICON,
@@ -74,7 +80,7 @@ class LawnchairSearchAdapterProvider(
             items.firstOrNull()?.searchTarget?.extras?.apply {
                 putBoolean(SearchResultView.EXTRA_QUICK_LAUNCH, true)
             }
-            return items
+            return listOf(SearchAdapterItem.topDivider) + items
         }
     }
 }
