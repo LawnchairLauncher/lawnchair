@@ -798,7 +798,7 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
                 (int) (getSearchView().getAlpha() * 255));
         if (headerColor != mHeaderColor) {
             mHeaderColor = headerColor;
-            getSearchView().setBackgroundColor(viewBG);
+            getSearchView().setBackgroundResource(R.drawable.bg_all_apps_searchbox);
             getFloatingHeaderView().setHeaderColor(viewBG);
             invalidateHeader();
             if (scrolledOffset == 0 && mSearchUiManager.getEditText() != null) {
