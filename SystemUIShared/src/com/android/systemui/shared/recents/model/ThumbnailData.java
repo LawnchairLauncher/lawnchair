@@ -19,6 +19,10 @@ package com.android.systemui.shared.recents.model;
 import static android.app.WindowConfiguration.ROTATION_UNDEFINED;
 import static android.content.res.Configuration.ORIENTATION_UNDEFINED;
 import static android.graphics.Bitmap.Config.ARGB_8888;
+import static android.view.View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR;
+import static android.view.View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
+import static android.view.WindowInsetsController.APPEARANCE_LIGHT_NAVIGATION_BARS;
+import static android.view.WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS;
 
 import static com.android.systemui.shared.system.WindowManagerWrapper.WINDOWING_MODE_UNDEFINED;
 
@@ -109,6 +113,13 @@ public class ThumbnailData {
         isRealSnapshot = data.isRealSnapshot;
         isTranslucent = data.isTranslucent;
         windowingMode = data.windowingMode;
+        appearance = 0;
+        if ((data.systemUiVisibility & SYSTEM_UI_FLAG_LIGHT_STATUS_BAR) != 0) {
+            appearance |= APPEARANCE_LIGHT_STATUS_BARS;
+        }
+        if ((data.systemUiVisibility & SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR) != 0) {
+            appearance |= APPEARANCE_LIGHT_NAVIGATION_BARS;
+        }
         snapshotId = data.snapshotId;
     }
 }
