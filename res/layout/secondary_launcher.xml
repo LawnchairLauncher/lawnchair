@@ -105,9 +105,8 @@
             android:layout_centerHorizontal="true"
             android:layout_gravity="top|center_horizontal"
             android:background="@drawable/bg_all_apps_searchbox"
-            android:elevation="1dp"
+            android:elevation="0dp"
             android:focusableInTouchMode="true"
-            android:gravity="center"
             android:hint="@string/all_apps_search_bar_hint"
             android:imeOptions="actionSearch|flagNoExtractUi"
             android:inputType="text|textNoSuggestions|textCapWords"
@@ -118,7 +117,7 @@
             android:singleLine="true"
             android:textColor="?android:attr/textColorSecondary"
             android:textColorHint="@drawable/all_apps_search_hint"
-            android:textSize="16sp" />
+            android:textSize="20sp" />
 
         <include layout="@layout/all_apps_fast_scroller" />
     </com.android.launcher3.allapps.AllAppsContainerView>
