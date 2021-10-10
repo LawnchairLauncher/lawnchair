@@ -44,6 +44,7 @@ import com.android.launcher3.uioverrides.QuickstepLauncher
 import com.android.launcher3.uioverrides.states.OverviewState
 import com.android.launcher3.util.Themes
 import com.android.systemui.plugins.shared.LauncherOverlayManager
+import com.android.systemui.shared.system.QuickStepContract
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
@@ -97,6 +98,12 @@ class LawnchairLauncher : QuickstepLauncher(), LifecycleOwner,
                     }
                 }
             })
+        }
+        prefs.overrideWindowCornerRadius.subscribeValues(this) {
+            QuickStepContract.sHasCustomCornerRadius = it
+        }
+        prefs.windowCornerRadius.subscribeValues(this) {
+            QuickStepContract.sCustomCornerRadius = it.toFloat()
         }
     }
 

@@ -269,12 +269,18 @@ public class QuickStepContract {
         return mode == NAV_BAR_MODE_3BUTTON;
     }
 
+    public static boolean sHasCustomCornerRadius = false;
+    public static float sCustomCornerRadius = 0f;
+
     /**
      * Corner radius that should be used on windows in order to cover the display.
      * These values are expressed in pixels because they should not respect display or font
      * scaling, this means that we don't have to reload them on config changes.
      */
     public static float getWindowCornerRadius(Resources resources) {
+        if (sHasCustomCornerRadius) {
+            return sCustomCornerRadius;
+        }
         return ScreenDecorationsUtils.getWindowCornerRadius(resources);
     }
 
