@@ -14,6 +14,6 @@
      limitations under the License.
 -->
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:color="@android:color/system_neutral1_50" android:state_selected="true"/>
-    <item android:color="@android:color/system_neutral2_700"/>
+    <item android:color="?android:textColorPrimaryInverse" android:state_selected="true"/>
+    <item android:color="?android:textColorSecondary"/>
 </selector>
