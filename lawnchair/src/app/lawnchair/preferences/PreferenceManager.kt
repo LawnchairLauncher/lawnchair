@@ -24,8 +24,6 @@ import app.lawnchair.font.FontCache
 import app.lawnchair.ui.theme.LAWNCHAIR_BLUE
 import com.android.launcher3.InvariantDeviceProfile
 import com.android.launcher3.Utilities
-import com.android.launcher3.model.GridSizeMigrationTaskV2
-import com.android.launcher3.states.RotationHelper
 import com.android.launcher3.util.MainThreadInitializedObject
 
 class PreferenceManager private constructor(private val context: Context) : BasePreferenceManager(context) {

@@ -1,14 +1,11 @@
 package app.lawnchair.ui
 
-import android.graphics.Typeface
 import android.util.TypedValue
 import android.widget.TextView
-import androidx.appcompat.widget.AppCompatTextView
 import androidx.compose.material.LocalContentAlpha
 import androidx.compose.material.LocalContentColor
 import androidx.compose.material.LocalTextStyle
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -19,7 +16,6 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.ui.viewinterop.NoOpUpdate
-import app.lawnchair.font.FontCache
 import app.lawnchair.ui.preferences.views.CustomFontTextView
 
 @Composable

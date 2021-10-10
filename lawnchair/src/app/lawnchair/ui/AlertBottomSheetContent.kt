@@ -10,7 +10,6 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import app.lawnchair.util.navigationBarsOrDisplayCutoutPadding
-import com.google.accompanist.insets.navigationBarsPadding
 
 @Composable
 fun AlertBottomSheetContent(

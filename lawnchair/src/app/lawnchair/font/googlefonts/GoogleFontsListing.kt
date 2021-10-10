@@ -26,7 +26,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import org.json.JSONObject
-import java.util.*
 
 class GoogleFontsListing private constructor(private val context: Context) {
     private val scope = CoroutineScope(CoroutineName("GoogleFontsListing"))

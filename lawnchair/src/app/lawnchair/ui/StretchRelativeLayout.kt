@@ -4,8 +4,6 @@ import android.content.Context
 import android.graphics.Canvas
 import android.util.AttributeSet
 import android.util.SparseBooleanArray
-import android.widget.RelativeLayout
-import androidx.dynamicanimation.animation.DynamicAnimation.OnAnimationEndListener
 import androidx.recyclerview.widget.RecyclerView
 import com.android.launcher3.Utilities
 import com.android.launcher3.views.SpringRelativeLayout

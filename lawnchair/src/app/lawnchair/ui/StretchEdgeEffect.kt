@@ -2,7 +2,6 @@ package app.lawnchair.ui
 
 import android.content.Context
 import android.graphics.Canvas
-import android.util.Log
 import android.widget.EdgeEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf

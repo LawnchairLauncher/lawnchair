@@ -36,7 +36,6 @@ import app.lawnchair.preferences.PreferenceManager
 import app.lawnchair.root.RootHelperManager
 import app.lawnchair.root.RootNotAvailableException
 import com.android.launcher3.*
-import com.android.launcher3.R
 import com.android.launcher3.allapps.AllAppsContainerView
 import com.android.launcher3.allapps.search.SearchAdapterProvider
 import com.android.launcher3.statemanager.StateManager
