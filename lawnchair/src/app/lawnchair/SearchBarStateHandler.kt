@@ -14,12 +14,13 @@ import com.android.launcher3.statemanager.StateManager
 import com.android.launcher3.states.StateAnimationConfig
 import com.android.quickstep.AnimatedFloat
 
-class SearchBarStateHandler(private val launcher: LawnchairLauncher) : StateManager.StateHandler<LauncherState> {
+class SearchBarStateHandler(private val launcher: LawnchairLauncher) :
+    StateManager.StateHandler<LauncherState> {
 
     private val autoShowKeyboard = PreferenceManager.getInstance(launcher).searchAutoShowKeyboard
 
     override fun setState(state: LauncherState) {
-        if (state == LauncherState.ALL_APPS && autoShowKeyboard.get()) {
+        if (launcher.isInState(LauncherState.NORMAL) && state == LauncherState.ALL_APPS && autoShowKeyboard.get()) {
             showKeyboard()
         }
     }
