@@ -1,6 +1,7 @@
-package app.lawnchair.allapps
+package app.lawnchair.search
 
 import android.content.Context
+import app.lawnchair.allapps.SearchItemBackground
 import app.lawnchair.preferences.PreferenceManager
 import com.android.launcher3.allapps.AllAppsGridAdapter.AdapterItem
 import com.android.launcher3.allapps.search.DefaultAppSearchAlgorithm
@@ -37,14 +38,13 @@ class LawnchairAppSearchAlgorithm(context: Context) : DefaultAppSearchAlgorithm(
         val queryTextLower = query.lowercase(Locale.getDefault())
         val matcher = StringMatcherUtility.StringMatcher.getInstance()
 
-        val result = apps.asSequence()
+        return apps.asSequence()
             .filter { StringMatcherUtility.matches(queryTextLower, it.title.toString(), matcher) }
             .take(MAX_RESULTS_COUNT)
             .mapIndexed { index, info ->
-                LawnchairSearchAdapterProvider.asIcon(index, "", info, index, iconBackground)
+                SearchAdapterItem.fromApp(index, info, iconBackground)
             }
             .toCollection(ArrayList())
-        return result
     }
 
     private fun fuzzySearch(apps: List<AppInfo>, query: String): ArrayList<AdapterItem> {
@@ -55,7 +55,7 @@ class LawnchairAppSearchAlgorithm(context: Context) : DefaultAppSearchAlgorithm(
 
         return matches.take(MAX_RESULTS_COUNT)
             .mapIndexed { index, match ->
-                LawnchairSearchAdapterProvider.asIcon(index, "", match.referent, index, iconBackground)
+                SearchAdapterItem.fromApp(index, match.referent, iconBackground)
             }
             .toCollection(ArrayList())
     }

@@ -11,13 +11,11 @@ import android.text.method.TextKeyListener
 import android.util.AttributeSet
 import android.view.KeyEvent
 import android.view.View
-import android.view.animation.Interpolator
-import android.widget.EditText
 import android.widget.FrameLayout
 import androidx.core.graphics.ColorUtils
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
-import app.lawnchair.allapps.LawnchairAppSearchAlgorithm
+import app.lawnchair.search.LawnchairAppSearchAlgorithm
 import app.lawnchair.preferences.PreferenceManager
 import app.lawnchair.util.EditTextExtensions.setCursorColor
 import app.lawnchair.util.EditTextExtensions.setTextSelectHandleColor
@@ -25,8 +23,6 @@ import com.android.launcher3.*
 import com.android.launcher3.allapps.*
 import com.android.launcher3.allapps.AllAppsGridAdapter.AdapterItem
 import com.android.launcher3.allapps.search.AllAppsSearchBarController
-import com.android.launcher3.anim.Interpolators
-import com.android.launcher3.anim.PropertySetter
 import com.android.launcher3.graphics.TintedDrawableSpan
 import com.android.launcher3.qsb.QsbContainerView
 import com.android.launcher3.search.SearchCallback

@@ -29,7 +29,7 @@ import androidx.savedstate.SavedStateRegistry
 import androidx.savedstate.SavedStateRegistryController
 import androidx.savedstate.SavedStateRegistryOwner
 import androidx.savedstate.ViewTreeSavedStateRegistryOwner
-import app.lawnchair.allapps.LawnchairSearchAdapterProvider
+import app.lawnchair.search.LawnchairSearchAdapterProvider
 import app.lawnchair.gestures.GestureController
 import app.lawnchair.nexuslauncher.OverlayCallbackImpl
 import app.lawnchair.preferences.PreferenceManager

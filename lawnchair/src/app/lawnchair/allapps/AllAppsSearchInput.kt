@@ -15,6 +15,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import app.lawnchair.launcher
+import app.lawnchair.search.LawnchairAppSearchAlgorithm
 import com.android.launcher3.ExtendedEditText
 import com.android.launcher3.Insettable
 import com.android.launcher3.R

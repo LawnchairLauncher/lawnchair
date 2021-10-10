@@ -5,6 +5,7 @@ import android.graphics.Rect
 import android.view.View
 import androidx.core.view.children
 import androidx.recyclerview.widget.RecyclerView
+import app.lawnchair.search.SearchAdapterItem
 import com.android.launcher3.R
 import com.android.launcher3.allapps.AllAppsContainerView
 
@@ -30,7 +31,7 @@ class SearchItemDecorator(private val appsView: AllAppsContainerView) : Recycler
             val adapterPosition = parent.getChildAdapterPosition(child)
             if (adapterPosition >= 0 && adapterPosition < adapterItems.size) {
                 val adapterItem = adapterItems[adapterPosition]
-                val background = (adapterItem.decorationInfo as? SearchDecorationInfo)?.background
+                val background = (adapterItem as? SearchAdapterItem)?.background
                 if (background != null) {
                     val isHighlightedItem = child == searchAdapterProvider.highlightedItem
                     val inputHasFocus = appsView.searchUiManager.editText?.hasFocus() == true
