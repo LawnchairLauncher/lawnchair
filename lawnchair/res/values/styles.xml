@@ -6,6 +6,9 @@
         <item name="android:colorBackgroundFloating">@color/background_floating_device_default_light</item>
         <item name="android:dialogCornerRadius" tools:ignore="NewApi">@dimen/lawnchair_dialog_corner_radius</item>
 
+        <item name="colorAccentPrimary">@color/accent_primary_device_default</item>
+        <item name="textColorOnAccent">@color/text_color_on_accent_device_default</item>
+
         <item name="allAppsScrimColor">?android:attr/colorBackground</item>
         <item name="allappsHeaderProtectionColor">@color/system_neutral1_100</item>
         <item name="allAppsAlternateTextColor">@color/dark_drawer_text_color</item>
@@ -19,6 +22,9 @@
         <item name="android:colorBackgroundFloating">@color/background_floating_device_default_light</item>
         <item name="android:dialogCornerRadius" tools:ignore="NewApi">@dimen/lawnchair_dialog_corner_radius</item>
 
+        <item name="colorAccentPrimary">@color/accent_primary_device_default</item>
+        <item name="textColorOnAccent">@color/text_color_on_accent_device_default</item>
+
         <item name="allAppsScrimColor">?android:attr/colorBackground</item>
         <item name="allappsHeaderProtectionColor">@color/system_neutral1_100</item>
         <item name="allAppsAlternateTextColor">@color/dark_drawer_text_color</item>
@@ -31,6 +37,9 @@
         <item name="android:colorBackground">@color/background_device_default_light</item>
         <item name="android:colorBackgroundFloating">@color/background_floating_device_default_light</item>
         <item name="android:dialogCornerRadius" tools:ignore="NewApi">@dimen/lawnchair_dialog_corner_radius</item>
+
+        <item name="colorAccentPrimary">@color/accent_primary_device_default</item>
+        <item name="textColorOnAccent">@color/text_color_on_accent_device_default</item>
 
         <item name="allAppsScrimColor">?android:attr/colorBackground</item>
         <item name="allappsHeaderProtectionColor">@color/system_neutral1_100</item>
@@ -46,6 +55,9 @@
         <item name="android:colorBackgroundFloating">@color/background_floating_device_default_dark</item>
         <item name="android:dialogCornerRadius" tools:ignore="NewApi">@dimen/lawnchair_dialog_corner_radius</item>
 
+        <item name="colorAccentPrimary">@color/accent_primary_device_default</item>
+        <item name="textColorOnAccent">@color/text_color_on_accent_device_default</item>
+
         <item name="allAppsScrimColor">?android:attr/colorBackground</item>
         <item name="allappsHeaderProtectionColor">@color/system_neutral1_700</item>
         <item name="allAppsAlternateTextColor">?android:textColorSecondary</item>
@@ -59,6 +71,9 @@
         <item name="android:colorBackgroundFloating">@color/background_floating_device_default_dark</item>
         <item name="android:dialogCornerRadius" tools:ignore="NewApi">@dimen/lawnchair_dialog_corner_radius</item>
 
+        <item name="colorAccentPrimary">@color/accent_primary_device_default</item>
+        <item name="textColorOnAccent">@color/text_color_on_accent_device_default</item>
+
         <item name="allAppsScrimColor">?android:attr/colorBackground</item>
         <item name="allappsHeaderProtectionColor">@color/system_neutral1_700</item>
         <item name="allAppsAlternateTextColor">?android:textColorSecondary</item>
@@ -71,6 +86,9 @@
         <item name="android:colorBackground">@color/background_device_default_dark</item>
         <item name="android:colorBackgroundFloating">@color/background_floating_device_default_dark</item>
         <item name="android:dialogCornerRadius" tools:ignore="NewApi">@dimen/lawnchair_dialog_corner_radius</item>
+
+        <item name="colorAccentPrimary">@color/accent_primary_device_default</item>
+        <item name="textColorOnAccent">@color/text_color_on_accent_device_default</item>
 
         <item name="allAppsScrimColor">?android:attr/colorBackground</item>
         <item name="allappsHeaderProtectionColor">@color/system_neutral1_700</item>

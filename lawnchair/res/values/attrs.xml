@@ -21,6 +21,9 @@
     <attr name="focusHighlight" format="color" />
     <attr name="groupHighlight" format="color" />
 
+    <attr name="colorAccentPrimary" format="color" />
+    <attr name="textColorOnAccent" format="color" />
+
     <declare-styleable name="CustomSeekBarPreference">
         <attr name="minValue" format="integer" />
         <attr name="maxValue" format="integer" />
