@@ -97,4 +97,8 @@
         <item name="groupHighlight">@color/surface_dark</item>
         <item name="searchboxHighlight">@color/system_neutral1_800</item>
     </style>
+
+    <style name="AllAppsSearchResult">
+        <item name="android:fontFamily">google-sans-medium</item>
+    </style>
 </resources>

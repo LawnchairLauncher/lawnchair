@@ -12,6 +12,7 @@ import app.lawnchair.launcher
 import app.lawnchair.search.SearchTargetCompat
 import com.android.launcher3.BubbleTextView
 import com.android.launcher3.R
+import com.android.launcher3.icons.FastBitmapDrawable
 import com.android.launcher3.model.data.ItemInfoWithIcon
 import com.android.launcher3.model.data.SearchActionItemInfo
 import com.android.launcher3.touch.ItemClickHandler
@@ -41,6 +42,13 @@ class SearchResultIcon(context: Context, attrs: AttributeSet?) : BubbleTextView(
         )
     }
 
+    override fun isQuickLaunch() = hasFlag(flags, SearchResultView.FLAG_QUICK_LAUNCH)
+
+    override fun launch(): Boolean {
+        ItemClickHandler.INSTANCE.onClick(this)
+        return true
+    }
+
     override fun bind(target: SearchTargetCompat, shortcuts: List<SearchTargetCompat>) {
         if (boundId == target.id) return
         boundId = target.id
@@ -57,6 +65,11 @@ class SearchResultIcon(context: Context, attrs: AttributeSet?) : BubbleTextView(
             val className = extras.getString("class") ?: ""
             val componentName = ComponentName(target.packageName, className)
             bindFromApp(componentName, target.userHandle)
+        }
+        val iconComponentKey = extras.getString(SearchResultView.EXTRA_ICON_COMPONENT_KEY)
+            ?.let { ComponentKey.fromString(it) }
+        if (iconComponentKey != null) {
+            bindIconComponentKey(iconComponentKey)
         }
     }
 
@@ -95,6 +108,15 @@ class SearchResultIcon(context: Context, attrs: AttributeSet?) : BubbleTextView(
         }
         applyFromSearchActionItemInfo(info)
         notifyApplied(info)
+    }
+
+    private fun bindIconComponentKey(iconComponentKey: ComponentKey) {
+        val appInfo = launcher.appsView.appsStore.getApp(iconComponentKey)
+        if (appInfo == null) {
+            isVisible = false
+            return
+        }
+        icon = appInfo.newIcon(context, false)
     }
 
     private fun bindFromApp(componentName: ComponentName, user: UserHandle) {

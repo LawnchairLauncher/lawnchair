@@ -34,6 +34,11 @@
     <dimen name="search_box_height">52dp</dimen>
     <dimen name="search_decoration_padding">1dp</dimen>
     <dimen name="search_group_radius">28dp</dimen>
+    <dimen name="search_hero_inline_button_text_size">12sp</dimen>
+    <dimen name="search_result_hero_title_size">16sp</dimen>
+    <dimen name="search_result_hero_subtitle_size">14sp</dimen>
+    <dimen name="search_result_margin">8dp</dimen>
     <dimen name="search_result_padding">16dp</dimen>
     <dimen name="search_result_radius">4dp</dimen>
+    <dimen name="search_result_row_height">88dp</dimen>
 </resources>

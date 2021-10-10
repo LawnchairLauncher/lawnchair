@@ -5,6 +5,10 @@ import app.lawnchair.search.SearchTargetCompat
 
 interface SearchResultView {
 
+    fun isQuickLaunch(): Boolean
+
+    fun launch(): Boolean
+
     fun bind(target: SearchTargetCompat, shortcuts: List<SearchTargetCompat>)
 
     fun getFlags(extras: Bundle): Int {
@@ -33,5 +37,6 @@ interface SearchResultView {
         const val EXTRA_HIDE_SUBTITLE = "hide_subtitle"
         const val EXTRA_HIDE_ICON = "hide_icon"
         const val EXTRA_QUICK_LAUNCH = "quick_launch"
+        const val EXTRA_ICON_COMPONENT_KEY = "icon_component_key"
     }
 }
