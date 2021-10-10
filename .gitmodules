@@ -1,3 +1,4 @@
-[submodule "IconLoader"]
-	path = IconLoader
-	url = https://github.com/LawnchairLauncher/iconloader
+[submodule "platform_frameworks_libs_systemui"]
+	path = platform_frameworks_libs_systemui
+	url = https://github.com/LawnchairLauncher/platform_frameworks_libs_systemui
+	branch = 11-dev
