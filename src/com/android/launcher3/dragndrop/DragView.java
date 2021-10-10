@@ -205,6 +205,7 @@ public abstract class DragView<T extends Context & ActivityContext> extends Fram
     @TargetApi(Build.VERSION_CODES.O)
     public void setItemInfo(final ItemInfo info) {
         if (info.itemType != LauncherSettings.Favorites.ITEM_TYPE_APPLICATION
+                && info.itemType != LauncherSettings.Favorites.ITEM_TYPE_SEARCH_ACTION
                 && info.itemType != LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT
                 && info.itemType != LauncherSettings.Favorites.ITEM_TYPE_FOLDER) {
             return;
