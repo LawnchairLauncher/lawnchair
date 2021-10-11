@@ -250,13 +250,13 @@ public class LauncherAppWidgetInfo extends ItemInfo {
         if (ATLEAST_S && providerInfo.previewLayout != Resources.ID_NULL) {
             widgetFeatures |= FEATURE_PREVIEW_LAYOUT;
         }
-        if (ATLEAST_S && providerInfo.targetCellWidth > 0 || providerInfo.targetCellHeight > 0) {
+        if (ATLEAST_S && (providerInfo.targetCellWidth > 0 || providerInfo.targetCellHeight > 0)) {
             widgetFeatures |= FEATURE_TARGET_CELL_SIZE;
         }
         if (providerInfo.minResizeWidth > 0 || providerInfo.minResizeHeight > 0) {
             widgetFeatures |= FEATURE_MIN_SIZE;
         }
-        if (ATLEAST_S && providerInfo.maxResizeWidth > 0 || providerInfo.maxResizeHeight > 0) {
+        if (ATLEAST_S && (providerInfo.maxResizeWidth > 0 || providerInfo.maxResizeHeight > 0)) {
             widgetFeatures |= FEATURE_MAX_SIZE;
         }
         if (hostView instanceof LauncherAppWidgetHostView &&
