@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
     <style name="AppTheme" parent="@style/LauncherTheme">
-        <item name="android:colorAccent">@color/primary_500</item>
+        <item name="android:colorAccent">@color/accent_light</item>
         <item name="android:colorBackground">@color/background_device_default_light</item>
         <item name="android:colorBackgroundFloating">@color/background_floating_device_default_light</item>
         <item name="android:dialogCornerRadius" tools:ignore="NewApi">@dimen/lawnchair_dialog_corner_radius</item>
@@ -22,7 +22,7 @@
         <item name="searchboxHighlight">@color/surface_variant_light</item>
     </style>
     <style name="AppTheme.DarkMainColor" parent="@style/LauncherTheme.DarkMainColor">
-        <item name="android:colorAccent">@color/primary_500</item>
+        <item name="android:colorAccent">@color/accent_light</item>
         <item name="android:colorBackground">@color/background_device_default_light</item>
         <item name="android:colorBackgroundFloating">@color/background_floating_device_default_light</item>
         <item name="android:dialogCornerRadius" tools:ignore="NewApi">@dimen/lawnchair_dialog_corner_radius</item>
@@ -43,7 +43,7 @@
         <item name="searchboxHighlight">@color/surface_variant_light</item>
     </style>
     <style name="AppTheme.DarkText" parent="@style/LauncherTheme.DarkText">
-        <item name="android:colorAccent">@color/primary_500</item>
+        <item name="android:colorAccent">@color/accent_light</item>
         <item name="android:colorBackground">@color/background_device_default_light</item>
         <item name="android:colorBackgroundFloating">@color/background_floating_device_default_light</item>
         <item name="android:dialogCornerRadius" tools:ignore="NewApi">@dimen/lawnchair_dialog_corner_radius</item>
@@ -65,7 +65,7 @@
     </style>
 
     <style name="AppTheme.Dark" parent="@style/LauncherTheme.Dark">
-        <item name="android:colorAccent">@color/primary_200</item>
+        <item name="android:colorAccent">@color/accent_dark</item>
         <item name="android:colorBackground">@color/background_device_default_dark</item>
         <item name="android:colorBackgroundFloating">@color/background_floating_device_default_dark</item>
         <item name="android:dialogCornerRadius" tools:ignore="NewApi">@dimen/lawnchair_dialog_corner_radius</item>
@@ -86,7 +86,7 @@
         <item name="searchboxHighlight">@color/system_neutral1_800</item>
     </style>
     <style name="AppTheme.Dark.DarkMainColor" parent="@style/LauncherTheme.Dark.DarkMainColor">
-        <item name="android:colorAccent">@color/primary_200</item>
+        <item name="android:colorAccent">@color/accent_dark</item>
         <item name="android:colorBackground">@color/background_device_default_dark</item>
         <item name="android:colorBackgroundFloating">@color/background_floating_device_default_dark</item>
         <item name="android:dialogCornerRadius" tools:ignore="NewApi">@dimen/lawnchair_dialog_corner_radius</item>
@@ -107,7 +107,7 @@
         <item name="searchboxHighlight">@color/system_neutral1_800</item>
     </style>
     <style name="AppTheme.Dark.DarkText" parent="@style/LauncherTheme.Dark.DarkText">
-        <item name="android:colorAccent">@color/primary_200</item>
+        <item name="android:colorAccent">@color/accent_dark</item>
         <item name="android:colorBackground">@color/background_device_default_dark</item>
         <item name="android:colorBackgroundFloating">@color/background_floating_device_default_dark</item>
         <item name="android:dialogCornerRadius" tools:ignore="NewApi">@dimen/lawnchair_dialog_corner_radius</item>
