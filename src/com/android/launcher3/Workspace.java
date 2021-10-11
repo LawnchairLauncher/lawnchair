@@ -978,7 +978,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
     public void setLauncherOverlay(LauncherOverlay overlay) {
         mOverlayEdgeEffect = overlay == null ? null : new OverlayEdgeEffect(getContext(), overlay);
         EdgeEffectCompat newEffect = overlay == null
-                ? new EdgeEffectCompat(getContext()) : mOverlayEdgeEffect;
+                ? EdgeEffectCompat.create(getContext(), this) : mOverlayEdgeEffect;
         if (mIsRtl) {
             mEdgeGlowRight = newEffect;
         } else {

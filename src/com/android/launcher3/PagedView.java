@@ -61,6 +61,8 @@ import com.android.launcher3.views.ActivityContext;
 import java.util.ArrayList;
 import java.util.function.Consumer;
 
+import app.lawnchair.ui.StretchEdgeEffect;
+
 /**
  * An abstraction of the original Workspace which supports browsing through a
  * sequential list of "pages"
@@ -190,8 +192,8 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
     }
 
     protected void initEdgeEffect() {
-        mEdgeGlowLeft = new EdgeEffectCompat(getContext());
-        mEdgeGlowRight = new EdgeEffectCompat(getContext());
+        mEdgeGlowLeft = EdgeEffectCompat.create(getContext(), this);
+        mEdgeGlowRight = EdgeEffectCompat.create(getContext(), this);
     }
 
     public void initParentViews(View parent) {
@@ -1768,9 +1770,26 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
 
     @Override
     public void draw(Canvas canvas) {
+        if (!Utilities.ATLEAST_S) drawStretchEdgeEffect(canvas);
         super.draw(canvas);
-        drawEdgeEffect(canvas);
+        if (Utilities.ATLEAST_S) drawEdgeEffect(canvas);
         pageEndTransition();
+    }
+
+    protected void drawStretchEdgeEffect(Canvas canvas) {
+        if (mAllowOverScroll && (!mEdgeGlowRight.isFinished() || !mEdgeGlowLeft.isFinished())) {
+            final int width = getWidth();
+            final int height = getHeight();
+            if (!mEdgeGlowLeft.isFinished() && mEdgeGlowLeft instanceof StretchEdgeEffect) {
+                mEdgeGlowLeft.setSize(width, height);
+                ((StretchEdgeEffect) mEdgeGlowLeft).applyStretch(canvas, StretchEdgeEffect.POSITION_LEFT);
+            }
+            if (!mEdgeGlowRight.isFinished() && mEdgeGlowRight instanceof StretchEdgeEffect) {
+                mEdgeGlowRight.setSize(width, height);
+                ((StretchEdgeEffect) mEdgeGlowRight).applyStretch(canvas, StretchEdgeEffect.POSITION_RIGHT,
+                        -Math.max(mMaxScroll, getScrollX()), 0);
+            }
+        }
     }
 
     protected void drawEdgeEffect(Canvas canvas) {
