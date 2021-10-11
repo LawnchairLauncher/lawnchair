@@ -16,12 +16,16 @@
   -->
 
 <resources>
-    <dimen name="dynamic_grid_hotseat_size">70dp</dimen>
+    <!-- Hotseat -->
     <dimen name="dynamic_grid_hotseat_top_padding">0dp</dimen>
-    <dimen name="dynamic_grid_hotseat_bottom_padding">72dp</dimen>
+    <dimen name="dynamic_grid_hotseat_bottom_padding">62dp</dimen>
+    <dimen name="dynamic_grid_hotseat_bottom_non_tall_padding">15dp</dimen>
+    <dimen name="dynamic_grid_hotseat_extra_vertical_size">24dp</dimen>
 
     <dimen name="noqsb_hotseat_top_padding">8dp</dimen>
     <dimen name="noqsb_hotseat_bottom_padding">2dp</dimen>
+    <dimen name="noqsb_hotseat_bottom_non_tall_padding">0dp</dimen>
+    <dimen name="noqsb_hotseat_extra_vertical_size">34dp</dimen>
 
     <dimen name="search_widget_top_shift">16dp</dimen>
     <dimen name="search_widget_hotseat_height">56dp</dimen>
@@ -29,7 +33,16 @@
     <dimen name="lawnchair_dialog_corner_radius">24dp</dimen>
 
     <dimen name="all_apps_search_vertical_offset">30dp</dimen>
+    <dimen name="qsb_g_icon_marginStart">16dp</dimen>
+    <dimen name="qsb_lens_marginEnd">4dp</dimen>
+    <dimen name="qsb_lens_padding">8dp</dimen>
+    <dimen name="qsb_lens_width">48dp</dimen>
     <dimen name="qsb_margin_top_adjusting">20dp</dimen>
+    <dimen name="qsb_mic_width">54dp</dimen>
+    <dimen name="qsb_min_width_with_mic">124dp</dimen>
+    <dimen name="qsb_shadow_margin">6dp</dimen>
+    <dimen name="qsb_widget_height">63dp</dimen>
+
     <dimen name="search_box_container_height">60dp</dimen>
     <dimen name="search_box_height">52dp</dimen>
     <dimen name="search_decoration_padding">1dp</dimen>

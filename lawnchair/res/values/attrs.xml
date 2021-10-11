@@ -20,6 +20,11 @@
     <attr name="searchboxHighlight" format="color" />
     <attr name="focusHighlight" format="color" />
     <attr name="groupHighlight" format="color" />
+    <attr name="qsbFillColor" format="color" />
+    <attr name="qsbIconTintPrimary" format="color" />
+    <attr name="qsbIconTintQuaternary" format="color" />
+    <attr name="qsbIconTintSecondary" format="color" />
+    <attr name="qsbIconTintTertiary" format="color" />
 
     <attr name="colorAccentPrimary" format="color" />
     <attr name="textColorOnAccent" format="color" />

@@ -31,6 +31,8 @@ import androidx.annotation.Nullable;
 
 import java.util.function.Consumer;
 
+import app.lawnchair.preferences.PreferenceManager;
+
 /**
  * View class that represents the bottom row of the home screen.
  */
@@ -62,7 +64,9 @@ public class Hotseat extends CellLayout implements Insettable {
     public Hotseat(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
 
-        mQsb = LayoutInflater.from(context).inflate(R.layout.search_container_hotseat, this, false);
+        boolean enableQsb = PreferenceManager.getInstance(context).getEnableHotseatQsb().get();
+        int layoutId = enableQsb ? R.layout.search_container_hotseat : R.layout.empty_view;
+        mQsb = LayoutInflater.from(context).inflate(layoutId, this, false);
         mQsbHeight = mQsb.getLayoutParams().height;
         addView(mQsb);
 

@@ -71,7 +71,7 @@ fun FontSelection(fontPref: BasePreferenceManager.FontPref) {
                 onValueChange = { searchQuery = it },
                 modifier = Modifier
                     .fillMaxSize(),
-                placeholder = { Text(text = stringResource(id = R.string.search_bar_placeholder)) },
+                placeholder = { Text(text = stringResource(id = R.string.label_search)) },
                 trailingIcon = {
                     if (searchQuery.isNotEmpty()) {
                         ClickableIcon(

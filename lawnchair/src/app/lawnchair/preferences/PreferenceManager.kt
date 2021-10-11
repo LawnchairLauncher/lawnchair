@@ -30,6 +30,7 @@ class PreferenceManager private constructor(private val context: Context) : Base
     private val idp get() = InvariantDeviceProfile.INSTANCE.get(context)
     private val reloadIcons = { idp.onPreferencesChanged(context) }
     private val reloadGrid: () -> Unit = {
+        idp.onPreferencesChanged(context)
         /* TODO: fix this
         val defaultGrid = idp.closestProfile
         val numColumns = workspaceColumns.get(defaultGrid)
@@ -57,7 +58,10 @@ class PreferenceManager private constructor(private val context: Context) : Base
     val allowRotation = BoolPref("pref_allowRotation", false)
     val wrapAdaptiveIcons = BoolPref("prefs_wrapAdaptive", false, reloadIcons)
     val addIconToHome = BoolPref("pref_add_icon_to_home", true)
-    val enableHotseatQsb = BoolPref("pref_dockSearchBar", true, reloadGrid)
+    val enableHotseatQsb = BoolPref("pref_dockSearchBar", true) {
+        reloadGrid()
+        recreate()
+    }
     val hotseatColumns = IdpIntPref("pref_hotseatColumns", { numHotseatIcons }, reloadGrid)
     val workspaceColumns = IdpIntPref("pref_workspaceColumns", { numColumns }, reloadGrid)
     val workspaceRows = IdpIntPref("pref_workspaceRows", { numRows }, reloadGrid)

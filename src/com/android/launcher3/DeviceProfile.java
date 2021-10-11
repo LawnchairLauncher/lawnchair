@@ -335,12 +335,18 @@ public class DeviceProfile {
 
         int hotseatTopPaddingRes;
         int hotseatBottomPaddingRes;
+        int hotseatBottomNonTallPaddingRes;
+        int hotseatExtraVerticalSizeRes;
         if (prefs.getEnableHotseatQsb().get()) {
             hotseatTopPaddingRes = R.dimen.dynamic_grid_hotseat_top_padding;
             hotseatBottomPaddingRes = R.dimen.dynamic_grid_hotseat_bottom_padding;
+            hotseatBottomNonTallPaddingRes = R.dimen.dynamic_grid_hotseat_bottom_non_tall_padding;
+            hotseatExtraVerticalSizeRes = R.dimen.dynamic_grid_hotseat_extra_vertical_size;
         } else {
             hotseatTopPaddingRes = R.dimen.noqsb_hotseat_top_padding;
             hotseatBottomPaddingRes = R.dimen.noqsb_hotseat_bottom_padding;
+            hotseatBottomNonTallPaddingRes = R.dimen.noqsb_hotseat_bottom_non_tall_padding;
+            hotseatExtraVerticalSizeRes = R.dimen.noqsb_hotseat_extra_vertical_size;
         }
 
         numShownHotseatIcons =
@@ -351,14 +357,13 @@ public class DeviceProfile {
         hotseatBarTopPaddingPx =
                 res.getDimensionPixelSize(hotseatTopPaddingRes);
         hotseatBarBottomPaddingPx = (isTallDevice ? 0
-                : res.getDimensionPixelSize(R.dimen.dynamic_grid_hotseat_bottom_non_tall_padding))
+                : res.getDimensionPixelSize(hotseatBottomNonTallPaddingRes))
                 + res.getDimensionPixelSize(hotseatBottomPaddingRes);
         hotseatBarSidePaddingEndPx =
                 res.getDimensionPixelSize(R.dimen.dynamic_grid_hotseat_side_padding);
         // Add a bit of space between nav bar and hotseat in vertical bar layout.
         hotseatBarSidePaddingStartPx = isVerticalBarLayout() ? workspacePageIndicatorHeight : 0;
-        hotseatExtraVerticalSize =
-                res.getDimensionPixelSize(R.dimen.dynamic_grid_hotseat_extra_vertical_size);
+        hotseatExtraVerticalSize = res.getDimensionPixelSize(hotseatExtraVerticalSizeRes);
         updateHotseatIconSize(pxFromDp(inv.iconSize, mMetrics, 1f));
 
         qsbBottomMarginOriginalPx = isScalableGrid
