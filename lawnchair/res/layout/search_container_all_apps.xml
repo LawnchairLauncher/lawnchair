@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Copyright 2021, Lawnchair
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,73 +15,65 @@
   -->
 
 <app.lawnchair.allapps.AllAppsSearchInput xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="@dimen/search_box_container_height"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/search_container_all_apps"
-    android:focusable="true"
-    android:clickable="true">
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/search_box_container_height"
+    android:clickable="true"
+    android:focusable="true">
 
     <FrameLayout
         android:layout_width="0dp"
         android:layout_height="@dimen/search_box_height"
-        android:layout_weight="1"
         android:layout_gravity="bottom"
-        android:padding="0dp"
+        android:layout_weight="1"
+        android:clickable="false"
         android:focusable="true"
-        android:clickable="false">
+        android:padding="0dp">
 
         <TextView
+            android:id="@+id/hint"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:id="@+id/hint"
             android:clickable="false"
+            android:ellipsize="end"
+            android:gravity="start|center"
             android:paddingStart="16.0dip"
             android:paddingEnd="16.0dip"
-            android:textSize="20sp"
-            android:textColor="?android:textColorTertiary"
-            android:ellipsize="end"
-            android:gravity="start|center"
-            android:scrollHorizontally="true"
-            android:singleLine="true" />
-
-        <app.lawnchair.allapps.FallbackSearchInputView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/input"
-            android:paddingEnd="16dp"
-            android:background="@drawable/search_input_fg"
-            android:textSize="20sp"
-            android:textColor="?android:textColorPrimary"
-            android:textColorHint="?android:textColorTertiary"
-            android:ellipsize="end"
-            android:gravity="start|center"
-            android:focusableInTouchMode="true"
             android:scrollHorizontally="true"
             android:singleLine="true"
+            android:textColor="?android:textColorTertiary"
+            android:textSize="20sp" />
+
+        <app.lawnchair.allapps.FallbackSearchInputView
+            android:id="@+id/input"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/search_input_fg"
+            android:ellipsize="end"
+            android:focusableInTouchMode="true"
+            android:gravity="start|center"
+            android:imeOptions="actionGo|flagNoExtractUi"
             android:inputType="textNoSuggestions"
+            android:paddingEnd="16dp"
             android:privateImeOptions="bc_search"
-            android:imeOptions="actionGo|flagNoExtractUi" />
+            android:scrollHorizontally="true"
+            android:singleLine="true"
+            android:textColor="?android:textColorPrimary"
+            android:textColorHint="?android:textColorTertiary"
+            android:textSize="20sp" />
 
-        <FrameLayout
-            android:id="@+id/button_wrapper"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end"
-            android:background="@drawable/circle">
-
-            <ImageButton
-                android:id="@+id/action_btn"
-                android:layout_width="@dimen/search_box_height"
-                android:layout_height="@dimen/search_box_height"
-                android:layout_gravity="bottom|center"
-                android:background="?android:selectableItemBackground"
-                android:clickable="true"
-                android:contentDescription="@string/search_input_action_clear_results"
-                android:scaleType="center"
-                android:src="@drawable/ic_remove_no_shadow"
-                app:tint="?android:textColorSecondary" />
-        </FrameLayout>
+        <ImageButton
+            android:id="@+id/action_btn"
+            android:layout_width="@dimen/search_box_height"
+            android:layout_height="@dimen/search_box_height"
+            android:layout_gravity="bottom|center|end"
+            android:background="@drawable/pill_ripple"
+            android:clickable="true"
+            android:contentDescription="@string/search_input_action_clear_results"
+            android:scaleType="center"
+            android:src="@drawable/ic_remove_no_shadow"
+            app:tint="?android:textColorSecondary" />
 
     </FrameLayout>
 </app.lawnchair.allapps.AllAppsSearchInput>

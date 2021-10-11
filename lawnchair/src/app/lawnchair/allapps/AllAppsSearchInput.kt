@@ -58,7 +58,6 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) : LinearLayout(
         actionButton.setOnClickListener {
             input.reset()
         }
-        findViewById<FrameLayout>(R.id.button_wrapper).clipToOutline = true
     }
 
     override fun onAttachedToWindow() {
