@@ -171,6 +171,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
+import app.lawnchair.util.OverScrollerCompat;
+
 /**
  * A list of recent tasks.
  */
@@ -1079,12 +1081,12 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                             ? mMaxScroll
                             : getScrollForPage(mNextPage);
 
-            mScroller.setFinalX(pageSnapped);
+            OverScrollerCompat.setFinalX(mScroller, pageSnapped);
             // Ensure the scroll/snap doesn't happen too fast;
             int extraScrollDuration = OVERSCROLL_PAGE_SNAP_ANIMATION_DURATION
                     - mScroller.getDuration();
             if (extraScrollDuration > 0) {
-                mScroller.extendDuration(extraScrollDuration);
+                OverScrollerCompat.extendDuration(mScroller, extraScrollDuration);
             }
         }
     }
