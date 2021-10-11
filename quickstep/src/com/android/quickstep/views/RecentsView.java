@@ -770,6 +770,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     public void init(OverviewActionsView actionsView, SplitPlaceholderView splitPlaceholderView) {
         mActionsView = actionsView;
         mActionsView.updateHiddenFlags(HIDDEN_NO_TASKS, getTaskViewCount() == 0);
+        mActionsView.setClearAllClickListener(this::dismissAllTasks);
         mSplitPlaceholderView = splitPlaceholderView;
     }
 

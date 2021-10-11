@@ -35,6 +35,8 @@ import com.android.quickstep.util.LayoutUtils;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
 
+import app.lawnchair.preferences.PreferenceManager;
+
 /**
  * Definition for overview state
  */
@@ -104,6 +106,9 @@ public class OverviewState extends LauncherState {
 
     @Override
     public int getVisibleElements(Launcher launcher) {
+        if (PreferenceManager.getInstance(launcher).getClearAllAsAction().get()) {
+            return OVERVIEW_ACTIONS;
+        }
         return CLEAR_ALL_BUTTON | OVERVIEW_ACTIONS;
     }
 
