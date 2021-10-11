@@ -33,19 +33,23 @@
             android:background="@drawable/pill_ripple"
             android:clickable="true"
             android:contentDescription="@string/label_voice_search"
-            android:focusable="false" />
+            android:focusable="false"
+            android:padding="@dimen/qsb_icon_padding"
+            tools:src="@drawable/ic_mic_color" />
 
         <ImageButton
             android:id="@+id/lens_icon"
-            android:layout_width="@dimen/qsb_content_height"
+            android:layout_width="64dp"
             android:layout_height="fill_parent"
+            android:layout_marginLeft="-8dp"
             android:background="@drawable/pill_ripple"
             android:clickable="true"
             android:contentDescription="@string/label_lens"
             android:focusable="false"
-            android:padding="@dimen/qsb_lens_padding"
+            android:padding="@dimen/qsb_icon_padding"
             android:scaleType="fitCenter"
             android:visibility="gone"
+            tools:src="@drawable/ic_lens_color"
             tools:visibility="visible" />
     </LinearLayout>
 </app.lawnchair.qsb.QsbLayout>
