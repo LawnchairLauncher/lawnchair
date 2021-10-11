@@ -32,6 +32,7 @@
 
     <dimen name="lawnchair_dialog_corner_radius">24dp</dimen>
 
+    <dimen name="all_apps_search_bar_bottom_padding">36dp</dimen>
     <dimen name="all_apps_search_vertical_offset">30dp</dimen>
     <dimen name="qsb_g_icon_marginStart">16dp</dimen>
     <dimen name="qsb_icon_padding">10dp</dimen>

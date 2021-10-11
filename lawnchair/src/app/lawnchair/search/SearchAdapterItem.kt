@@ -16,6 +16,18 @@ data class SearchAdapterItem(
 
     companion object {
 
+        val divider by lazy {
+            val target = SearchTargetCompat.Builder(
+                SearchTargetCompat.RESULT_TYPE_SHORTCUT,
+                LayoutType.DIVIDER,
+                "divider"
+            )
+                .setPackageName(BuildConfig.APPLICATION_ID)
+                .setUserHandle(Process.myUserHandle())
+                .build()
+            createAdapterItem(0, target, null)
+        }
+
         fun fromApp(
             pos: Int,
             appInfo: AppInfo,
@@ -55,18 +67,6 @@ data class SearchAdapterItem(
                 .setExtras(extras)
                 .build()
             return createAdapterItem(pos, target, background)
-        }
-
-        val topDivider by lazy {
-            val target = SearchTargetCompat.Builder(
-                SearchTargetCompat.RESULT_TYPE_SHORTCUT,
-                LayoutType.EMPTY_DIVIDER,
-                "top_divider"
-            )
-                .setPackageName(BuildConfig.APPLICATION_ID)
-                .setUserHandle(Process.myUserHandle())
-                .build()
-            createAdapterItem(0, target, null)
         }
 
         private fun createAdapterItem(

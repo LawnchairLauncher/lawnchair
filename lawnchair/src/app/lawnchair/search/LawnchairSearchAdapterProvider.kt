@@ -24,7 +24,6 @@ class LawnchairSearchAdapterProvider(
         append(SEARCH_RESULT_ICON, R.layout.search_result_icon)
         append(SEARCH_RESULT_ICON_ROW, R.layout.search_result_tall_icon_row)
         append(SEARCH_RESULT_DIVIDER, R.layout.search_result_divider)
-        append(SEARCH_RESULT_TOP_DIVIDER, R.layout.search_result_top_divider)
     }
     private var quickLaunchItem: SearchResultView? = null
 
@@ -70,20 +69,18 @@ class LawnchairSearchAdapterProvider(
         private const val SEARCH_RESULT_ICON = (1 shl 8) or AllAppsGridAdapter.VIEW_TYPE_ICON
         private const val SEARCH_RESULT_ICON_ROW = 1 shl 9
         private const val SEARCH_RESULT_DIVIDER = 1 shl 10
-        private const val SEARCH_RESULT_TOP_DIVIDER = (1 shl 11) or SEARCH_RESULT_DIVIDER
 
         val viewTypeMap = mapOf(
             LayoutType.ICON_SINGLE_VERTICAL_TEXT to SEARCH_RESULT_ICON,
             LayoutType.ICON_HORIZONTAL_TEXT to SEARCH_RESULT_ICON_ROW,
             LayoutType.DIVIDER to SEARCH_RESULT_DIVIDER,
-            LayoutType.EMPTY_DIVIDER to SEARCH_RESULT_TOP_DIVIDER,
         )
 
         fun decorateSearchResults(items: List<SearchAdapterItem>): List<SearchAdapterItem> {
             items.firstOrNull()?.searchTarget?.extras?.apply {
                 putBoolean(SearchResultView.EXTRA_QUICK_LAUNCH, true)
             }
-            return listOf(SearchAdapterItem.topDivider) + items
+            return items
         }
     }
 }
