@@ -23,6 +23,8 @@ import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.staticCompositionLocalOf
+import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import app.lawnchair.ui.preferences.about.aboutGraph
@@ -59,8 +61,9 @@ val LocalPreferenceInteractor = staticCompositionLocalOf<PreferenceInteractor> {
 fun Preferences(interactor: PreferenceInteractor = viewModel<PreferenceViewModel>()) {
     val navController = rememberAnimatedNavController()
     val slideDistance = rememberSlideDistance()
-    val forwardSpec = materialSharedAxisX(forward = true, slideDistance = slideDistance)
-    val backwardSpec = materialSharedAxisX(forward = false, slideDistance = slideDistance)
+    val isRtl = LocalLayoutDirection.current == LayoutDirection.Rtl
+    val forwardSpec = materialSharedAxisX(forward = !isRtl, slideDistance = slideDistance)
+    val backwardSpec = materialSharedAxisX(forward = isRtl, slideDistance = slideDistance)
 
     SystemUi()
     Providers {
