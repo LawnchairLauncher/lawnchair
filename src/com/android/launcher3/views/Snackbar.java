@@ -69,7 +69,6 @@ public class Snackbar extends AbstractFloatingView {
         int padding = res.getDimensionPixelSize(R.dimen.snackbar_padding);
         snackbar.setPadding(padding, padding, padding, padding);
         snackbar.setBackgroundResource(R.drawable.round_rect_primary);
-        snackbar.findViewById(R.id.button_wrapper).setClipToOutline(true);
 
         snackbar.mIsOpen = true;
         BaseDragLayer dragLayer = activity.getDragLayer();
