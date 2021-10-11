@@ -23,8 +23,6 @@ import android.util.FloatProperty;
 import android.view.View;
 
 import com.android.launcher3.R;
-import com.android.launcher3.Utilities;
-import com.android.launcher3.util.Themes;
 
 /**
  * Contains general scrim properties such as wallpaper-extracted color that subclasses can use.
@@ -52,11 +50,7 @@ public class Scrim {
 
     public Scrim(View view) {
         mRoot = view;
-        if (Utilities.ATLEAST_S) {
-            mScrimColor = mRoot.getContext().getColor(R.color.wallpaper_popup_scrim);
-        } else {
-            mScrimColor = Themes.getColorAccent(mRoot.getContext());
-        }
+        mScrimColor = mRoot.getContext().getColor(R.color.wallpaper_popup_scrim);
     }
 
     public void draw(Canvas canvas) {
