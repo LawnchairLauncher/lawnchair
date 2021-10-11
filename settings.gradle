@@ -1,8 +1,9 @@
-include ':IconLoader'
-project(':IconLoader').projectDir = new File(rootDir, 'platform_frameworks_libs_systemui/iconloaderlib')
+include ':iconloaderlib'
+project(':iconloaderlib').projectDir = new File(rootDir, 'platform_frameworks_libs_systemui/iconloaderlib')
 
-include ':SharedLibWrapper'
-project(':SharedLibWrapper').projectDir = new File(rootDir, 'SharedLibWrapper')
+include ':searchuilib'
+project(':searchuilib').projectDir = new File(rootDir, 'platform_frameworks_libs_systemui/searchuilib')
+
 include ':SystemUIShared'
 include ':CompatLib'
 include ':CompatLibVR'

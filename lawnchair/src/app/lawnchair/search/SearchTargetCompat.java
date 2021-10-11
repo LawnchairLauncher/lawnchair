@@ -32,6 +32,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StringDef;
 
+import com.android.app.search.LayoutType;
+
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.Objects;
@@ -97,17 +99,6 @@ public final class SearchTargetCompat implements Parcelable {
     @Retention(RetentionPolicy.SOURCE)
     public @interface SearchResultType {}
     private final int mResultType;
-
-    /**
-     * @hide
-     */
-    @StringDef(value = {
-            LAYOUT_TYPE_ICON,
-            LAYOUT_TYPE_ICON_ROW,
-            LAYOUT_TYPE_SHORT_ICON_ROW,
-    })
-    @Retention(RetentionPolicy.SOURCE)
-    public @interface SearchLayoutType {}
 
     /**
      * Constant to express how the group of {@link SearchTargetCompat} should be rendered on
@@ -208,7 +199,7 @@ public final class SearchTargetCompat implements Parcelable {
      * Retrieves the layout type.
      */
     @NonNull
-    public @SearchLayoutType String getLayoutType() {
+    public @LayoutType.SearchLayoutType String getLayoutType() {
         return mLayoutType;
     }
 
@@ -377,7 +368,7 @@ public final class SearchTargetCompat implements Parcelable {
         private Bundle mExtras;
 
         public Builder(@SearchResultType int resultType,
-                       @SearchLayoutType @NonNull String layoutType,
+                       @LayoutType.SearchLayoutType @NonNull String layoutType,
                        @NonNull String id) {
             mId = id;
             mLayoutType = Objects.requireNonNull(layoutType);

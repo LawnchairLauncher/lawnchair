@@ -8,6 +8,7 @@ import androidx.core.util.containsKey
 import app.lawnchair.LawnchairLauncher
 import app.lawnchair.allapps.SearchItemDecorator
 import app.lawnchair.allapps.SearchResultView
+import com.android.app.search.LayoutType
 import com.android.launcher3.R
 import com.android.launcher3.allapps.AllAppsContainerView
 import com.android.launcher3.allapps.AllAppsGridAdapter
@@ -68,12 +69,14 @@ class LawnchairSearchAdapterProvider(
     companion object {
         private const val SEARCH_RESULT_ICON = (1 shl 8) or AllAppsGridAdapter.VIEW_TYPE_ICON
         private const val SEARCH_RESULT_ICON_ROW = 1 shl 9
-        const val SEARCH_RESULT_DIVIDER = 1 shl 10
-        const val SEARCH_RESULT_TOP_DIVIDER = (1 shl 11) or SEARCH_RESULT_DIVIDER
+        private const val SEARCH_RESULT_DIVIDER = 1 shl 10
+        private const val SEARCH_RESULT_TOP_DIVIDER = (1 shl 11) or SEARCH_RESULT_DIVIDER
 
         val viewTypeMap = mapOf(
-            SearchTargetCompat.LAYOUT_TYPE_ICON to SEARCH_RESULT_ICON,
-            SearchTargetCompat.LAYOUT_TYPE_ICON_ROW to SEARCH_RESULT_ICON_ROW,
+            LayoutType.ICON_SINGLE_VERTICAL_TEXT to SEARCH_RESULT_ICON,
+            LayoutType.ICON_HORIZONTAL_TEXT to SEARCH_RESULT_ICON_ROW,
+            LayoutType.DIVIDER to SEARCH_RESULT_DIVIDER,
+            LayoutType.EMPTY_DIVIDER to SEARCH_RESULT_TOP_DIVIDER,
         )
 
         fun decorateSearchResults(items: List<SearchAdapterItem>): List<SearchAdapterItem> {
