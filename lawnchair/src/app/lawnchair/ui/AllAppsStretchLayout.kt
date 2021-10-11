@@ -13,17 +13,23 @@ open class AllAppsStretchLayout @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : StretchRelativeLayout(context, attrs, defStyleAttr) {
 
-    private val childEffect = StretchEdgeEffect { invalidate() }
+    private val childEffect = StretchEdgeEffect(context, { invalidate() }, { postInvalidateOnAnimation() })
 
     override fun drawChild(canvas: Canvas, child: View, drawingTime: Long): Boolean {
-        if (child.id != R.id.apps_list_view) {
+        if (Utilities.ATLEAST_S || child.id != R.id.apps_list_view) {
             return super.drawChild(canvas, child, drawingTime)
         }
-        var result = false
-        childEffect.draw(canvas, child.height.toFloat()) {
-            result = super.drawChild(canvas, child, drawingTime)
+
+        if (!childEffect.isFinished) {
+            val save = canvas.save()
+            childEffect.setSize(width, height)
+            childEffect.applyStretch(canvas, StretchEdgeEffect.POSITION_BOTTOM)
+            val result = super.drawChild(canvas, child, drawingTime)
+            canvas.restoreToCount(save)
+            return result
+        } else {
+            return super.drawChild(canvas, child, drawingTime)
         }
-        return result
     }
 
     override fun createEdgeEffectFactory(): RecyclerView.EdgeEffectFactory {
@@ -31,8 +37,8 @@ open class AllAppsStretchLayout @JvmOverloads constructor(
         return object : RecyclerView.EdgeEffectFactory() {
             override fun createEdgeEffect(view: RecyclerView, direction: Int): EdgeEffect {
                 return when (direction) {
-                    DIRECTION_TOP -> effect.EdgeEffectProxy(context, direction, view)
-                    DIRECTION_BOTTOM -> childEffect.EdgeEffectProxy(context, direction, view)
+                    DIRECTION_TOP -> edgeEffectTop
+                    DIRECTION_BOTTOM -> childEffect
                     else -> super.createEdgeEffect(view, direction)
                 }
             }
