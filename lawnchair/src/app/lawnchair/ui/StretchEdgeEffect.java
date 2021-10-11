@@ -144,18 +144,32 @@ public class StretchEdgeEffect extends EdgeEffectCompat {
     public @interface EdgeEffectPosition {
     }
 
-    private final Runnable mInvalidate;
-    private final Runnable mPostInvalidateOnAnimation;
+    private Runnable mInvalidate = EMPTY_RUNNABLE;
+    private Runnable mPostInvalidateOnAnimation = EMPTY_RUNNABLE;
     private final float[] mTmpOut = new float[5];
+
+    private static final Runnable EMPTY_RUNNABLE = () -> {};
 
     /**
      * Construct a new EdgeEffect with a theme appropriate for the provided context.
      * @param context Context used to provide theming and resource information for the EdgeEffect
      */
-    public StretchEdgeEffect(Context context, Runnable invalidate, Runnable postInvalidateOnAnimation) {
+    public StretchEdgeEffect(Context context) {
         super(context);
+    }
+
+    public StretchEdgeEffect(Context context, Runnable invalidate, Runnable postInvalidateOnAnimation) {
+        this(context);
 
         mInvalidate = invalidate;
+        mPostInvalidateOnAnimation = postInvalidateOnAnimation;
+    }
+
+    public void setOnInvalidate(Runnable invalidate) {
+        mInvalidate = invalidate;
+    }
+
+    public void setPostInvalidateOnAnimation(Runnable postInvalidateOnAnimation) {
         mPostInvalidateOnAnimation = postInvalidateOnAnimation;
     }
 

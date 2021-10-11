@@ -17,21 +17,22 @@ package com.android.launcher3.util;
 
 import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.RenderNode;
 import android.widget.EdgeEffect;
+
+import app.lawnchair.ui.StretchEdgeEffect;
 
 /**
  * Extension of {@link EdgeEffect} which translates the content instead of the default
  * platform implementation
  */
-@SuppressWarnings("NewApi")
-public class TranslateEdgeEffect extends EdgeEffectCompat {
+public class TranslateEdgeEffect extends StretchEdgeEffect {
 
-    private final RenderNode mNode;
+    private final float[] mTmpOut = new float[5];
+    private boolean mInvalidated = false;
 
     public TranslateEdgeEffect(Context context) {
         super(context);
-        mNode = new RenderNode("TranslateEdgeEffect");
+        setPostInvalidateOnAnimation(() -> mInvalidated = true);
     }
 
     @Override
@@ -40,11 +41,10 @@ public class TranslateEdgeEffect extends EdgeEffectCompat {
     }
 
     public boolean getTranslationShift(float[] out) {
-        Canvas c = mNode.beginRecording(1, 1);
-        boolean result = super.draw(c);
-        mNode.endRecording();
+        mInvalidated = false;
+        super.getScale(mTmpOut, StretchEdgeEffect.POSITION_TOP);
 
         out[0] = getDistance();
-        return result;
+        return mInvalidated;
     }
 }
