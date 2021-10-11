@@ -9,10 +9,6 @@ class DeviceProfileOverrides(context: Context) {
     private val prefs = PreferenceManager.getInstance(context)
 
     fun apply(idp: InvariantDeviceProfile, defaultGrid: InvariantDeviceProfile.GridOption) {
-        // set db file to use
-        val dbNameSuffix = if (prefs.currentDbSlot.get() == "a") "" else "_b"
-        idp.dbFile = idp.dbFile + dbNameSuffix
-
         // apply grid size
         idp.numShownHotseatIcons = prefs.hotseatColumns.get(defaultGrid)
         idp.numRows = prefs.workspaceRows.get(defaultGrid)
@@ -26,10 +22,12 @@ class DeviceProfileOverrides(context: Context) {
         idp.iconTextSize *= (if (prefs.showHomeLabels.get()) prefs.textSizeFactor.get() else 0.0F)
         idp.allAppsIconSize *= prefs.allAppsIconSizeFactor.get()
         idp.allAppsIconTextSize *= (if (prefs.allAppsIconLabels.get()) prefs.allAppsTextSizeFactor.get() else 0F)
+
+        idp.dbFile = "launcher_${idp.numRows}_${idp.numColumns}_${idp.numShownHotseatIcons}.db"
     }
 
     companion object {
-        @JvmStatic
+        @JvmField
         val INSTANCE = MainThreadInitializedObject(::DeviceProfileOverrides)
     }
 }

@@ -19,6 +19,7 @@ package app.lawnchair.preferences
 import android.content.Context
 import android.content.SharedPreferences
 import android.util.Log
+import androidx.core.content.edit
 import app.lawnchair.font.FontCache
 import com.android.launcher3.InvariantDeviceProfile
 import com.android.launcher3.Utilities
@@ -31,6 +32,14 @@ abstract class BasePreferenceManager(private val context: Context) : SharedPrefe
     val sp: SharedPreferences = Utilities.getPrefs(context)
     val prefsMap = mutableMapOf<String, BasePref<*>>()
     private val coroutineScope = CoroutineScope(Dispatchers.IO)
+
+    init {
+        if (!sp.contains("version")) {
+            sp.edit {
+                putInt("version", 1)
+            }
+        }
+    }
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String) {
         prefsMap[key]?.onSharedPreferenceChange()

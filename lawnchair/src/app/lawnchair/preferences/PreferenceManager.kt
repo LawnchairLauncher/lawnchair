@@ -29,19 +29,7 @@ import com.android.launcher3.util.MainThreadInitializedObject
 class PreferenceManager private constructor(private val context: Context) : BasePreferenceManager(context) {
     private val idp get() = InvariantDeviceProfile.INSTANCE.get(context)
     private val reloadIcons = { idp.onPreferencesChanged(context) }
-    private val reloadGrid: () -> Unit = {
-        idp.onPreferencesChanged(context)
-        /* TODO: fix this
-        val defaultGrid = idp.closestProfile
-        val numColumns = workspaceColumns.get(defaultGrid)
-        val numRows = workspaceRows.get(defaultGrid)
-        val numHotseatIcons = hotseatColumns.get(defaultGrid)
-        if (GridSizeMigrationTaskV2.needsToMigrate(context, numColumns, numRows, numHotseatIcons)) {
-            toggleCurrentDbSlot()
-        }
-        idp.onPreferencesChanged(context)
-         */
-    }
+    private val reloadGrid: () -> Unit = { idp.onPreferencesChanged(context) }
 
     private val scheduleRestart = {
         LawnchairLauncher.instance?.scheduleRestart()
@@ -102,15 +90,6 @@ class PreferenceManager private constructor(private val context: Context) : Base
 
     init {
         sp.registerOnSharedPreferenceChangeListener(this)
-    }
-
-    val currentDbSlot = StringPref("pref_currentDbSlot", "a")
-    private fun toggleCurrentDbSlot() {
-        if (currentDbSlot.get() == "a") {
-            currentDbSlot.set("b")
-        } else {
-            currentDbSlot.set("a")
-        }
     }
 
     companion object {

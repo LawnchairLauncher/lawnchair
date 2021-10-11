@@ -331,7 +331,7 @@ public class InvariantDeviceProfile {
         // If the partner customization apk contains any grid overrides, apply them
         // Supported overrides: numRows, numColumns, iconSize
         applyPartnerDeviceProfileOverrides(context, metrics);
-        DeviceProfileOverrides.getINSTANCE().get(context).apply(this, closestProfile);
+        DeviceProfileOverrides.INSTANCE.get(context).apply(this, closestProfile);
 
         iconBitmapSize = ResourceUtils.pxFromDp(Math.max(iconSize, allAppsIconSize), metrics);
         fillResIconDpi = getLauncherIconDensity(iconBitmapSize);
