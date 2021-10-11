@@ -40,7 +40,7 @@ public final class FeatureFlags {
     private FeatureFlags() { }
 
     public static boolean showFlagTogglerUi(Context context) {
-        return Utilities.IS_DEBUG_DEVICE && Utilities.isDevelopersOptionsEnabled(context);
+        return Utilities.isDevelopersOptionsEnabled(context);
     }
 
     /**
@@ -347,8 +347,6 @@ public final class FeatureFlags {
     }
 
     private static BooleanFlag getDebugFlag(String key, boolean defaultValue, String description) {
-        return Utilities.IS_DEBUG_DEVICE
-                ? new DebugFlag(key, defaultValue, description)
-                : new BooleanFlag(key, defaultValue);
+        return new DebugFlag(key, defaultValue, description);
     }
 }
