@@ -21,25 +21,25 @@
         android:layout_width="wrap_content"
         android:layout_height="fill_parent"
         android:layout_gravity="end|center"
-        android:layout_marginTop="-6.0dip"
-        android:layout_marginBottom="-6.0dip"
+        android:layout_marginTop="6.0dp"
+        android:layout_marginBottom="6.0dp"
         android:orientation="horizontal">
 
         <app.lawnchair.qsb.AssistantIconView
             android:id="@+id/mic_icon"
-            android:layout_width="@dimen/qsb_mic_width"
+            android:layout_width="@dimen/qsb_content_height"
             android:layout_height="fill_parent"
-            android:background="?android:selectableItemBackgroundBorderless"
+            android:background="@drawable/pill_ripple"
             android:clickable="true"
             android:contentDescription="@string/label_voice_search"
             android:focusable="false" />
 
         <ImageButton
             android:id="@+id/lens_icon"
-            android:layout_width="@dimen/qsb_lens_width"
+            android:layout_width="@dimen/qsb_content_height"
             android:layout_height="fill_parent"
             android:layout_marginEnd="@dimen/qsb_lens_marginEnd"
-            android:background="?android:selectableItemBackgroundBorderless"
+            android:background="@drawable/pill_ripple"
             android:clickable="true"
             android:contentDescription="@string/label_lens"
             android:focusable="false"
