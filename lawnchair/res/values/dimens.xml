@@ -34,7 +34,6 @@
 
     <dimen name="all_apps_search_vertical_offset">30dp</dimen>
     <dimen name="qsb_g_icon_marginStart">16dp</dimen>
-    <dimen name="qsb_lens_marginEnd">4dp</dimen>
     <dimen name="qsb_lens_padding">8dp</dimen>
     <dimen name="qsb_margin_top_adjusting">20dp</dimen>
     <dimen name="qsb_min_width_with_mic">124dp</dimen>

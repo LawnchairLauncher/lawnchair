@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <app.lawnchair.qsb.QsbLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="@dimen/qsb_widget_height"
     android:layout_alignParentTop="true"
@@ -38,13 +39,13 @@
             android:id="@+id/lens_icon"
             android:layout_width="@dimen/qsb_content_height"
             android:layout_height="fill_parent"
-            android:layout_marginEnd="@dimen/qsb_lens_marginEnd"
             android:background="@drawable/pill_ripple"
             android:clickable="true"
             android:contentDescription="@string/label_lens"
             android:focusable="false"
             android:padding="@dimen/qsb_lens_padding"
             android:scaleType="fitCenter"
-            android:visibility="gone" />
+            android:visibility="gone"
+            tools:visibility="visible" />
     </LinearLayout>
 </app.lawnchair.qsb.QsbLayout>
