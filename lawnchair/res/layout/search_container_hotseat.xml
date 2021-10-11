@@ -39,9 +39,9 @@
 
         <ImageButton
             android:id="@+id/lens_icon"
-            android:layout_width="64dp"
+            android:layout_width="66dp"
             android:layout_height="fill_parent"
-            android:layout_marginLeft="-8dp"
+            android:layout_marginLeft="-12dp"
             android:background="@drawable/pill_ripple"
             android:clickable="true"
             android:contentDescription="@string/label_lens"
