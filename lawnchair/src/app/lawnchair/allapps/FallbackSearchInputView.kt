@@ -1,8 +1,10 @@
 package app.lawnchair.allapps
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Rect
 import android.util.AttributeSet
+import android.view.Gravity
 import com.android.launcher3.ExtendedEditText
 import com.android.launcher3.R
 import com.android.launcher3.allapps.AllAppsContainerView
@@ -49,5 +51,13 @@ class FallbackSearchInputView(context: Context, attrs: AttributeSet?) : Extended
     override fun onFocusChanged(focused: Boolean, direction: Int, previouslyFocusedRect: Rect?) {
         super.onFocusChanged(focused, direction, previouslyFocusedRect)
         updateBackground()
+    }
+
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
+        if (layoutDirection == LAYOUT_DIRECTION_RTL) {
+            @SuppressLint("RtlHardcoded")
+            gravity = Gravity.RIGHT or Gravity.CENTER
+        }
     }
 }
