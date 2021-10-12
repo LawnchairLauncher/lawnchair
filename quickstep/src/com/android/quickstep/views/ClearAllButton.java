@@ -66,6 +66,7 @@ public class ClearAllButton extends Button {
     private float mGridTranslationPrimary;
     private float mGridScrollOffset;
     private float mScrollOffsetPrimary;
+    private float mSplitSelectScrollOffsetPrimary;
 
     private int mSidePadding;
 
@@ -167,6 +168,10 @@ public class ClearAllButton extends Button {
         mScrollOffsetPrimary = scrollOffsetPrimary;
     }
 
+    public void setSplitSelectScrollOffsetPrimary(float splitSelectScrollOffsetPrimary) {
+        mSplitSelectScrollOffsetPrimary = splitSelectScrollOffsetPrimary;
+    }
+
     public float getScrollAdjustment(boolean fullscreenEnabled, boolean gridEnabled) {
         float scrollAdjustment = 0;
         if (fullscreenEnabled) {
@@ -176,6 +181,7 @@ public class ClearAllButton extends Button {
             scrollAdjustment += mGridTranslationPrimary + mGridScrollOffset;
         }
         scrollAdjustment += mScrollOffsetPrimary;
+        scrollAdjustment += mSplitSelectScrollOffsetPrimary;
         return scrollAdjustment;
     }
 
