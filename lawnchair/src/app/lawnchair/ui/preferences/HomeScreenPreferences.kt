@@ -61,7 +61,7 @@ fun HomeScreenPreferences() {
             NavigationActionPreference(
                 label = stringResource(id = R.string.home_screen_grid),
                 destination = subRoute(name = HomeScreenRoutes.GRID),
-                subtitle = "$columns × $rows"
+                subtitle = stringResource(id = R.string.x_by_y, columns, rows)
             )
         }
         PreferenceGroup(heading = stringResource(id = R.string.what_to_show)) {
