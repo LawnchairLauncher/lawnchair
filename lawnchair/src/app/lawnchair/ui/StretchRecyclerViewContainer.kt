@@ -9,14 +9,14 @@ import androidx.recyclerview.widget.RecyclerView
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
 
-open class AllAppsStretchLayout @JvmOverloads constructor(
+open class StretchRecyclerViewContainer @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : StretchRelativeLayout(context, attrs, defStyleAttr) {
 
     private val childEffect = StretchEdgeEffect(context, { invalidate() }, { postInvalidateOnAnimation() })
 
     override fun drawChild(canvas: Canvas, child: View, drawingTime: Long): Boolean {
-        if (Utilities.ATLEAST_S || child.id != R.id.apps_list_view) {
+        if (Utilities.ATLEAST_S || child !is RecyclerView) {
             return super.drawChild(canvas, child, drawingTime)
         }
 

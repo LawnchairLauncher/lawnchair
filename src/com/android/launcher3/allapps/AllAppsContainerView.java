@@ -75,17 +75,15 @@ import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.views.RecyclerViewFastScroller;
 import com.android.launcher3.views.ScrimView;
-import com.android.launcher3.views.SpringRelativeLayout;
 import com.android.launcher3.workprofile.PersonalWorkSlidingTabStrip.OnActivePageChangedListener;
-import com.google.android.material.math.MathUtils;
 
 import app.lawnchair.allapps.LawnchairAlphabeticalAppsList;
-import app.lawnchair.ui.AllAppsStretchLayout;
+import app.lawnchair.ui.StretchRecyclerViewContainer;
 
 /**
  * The all apps view container.
  */
-public class AllAppsContainerView extends AllAppsStretchLayout implements DragSource,
+public class AllAppsContainerView extends StretchRecyclerViewContainer implements DragSource,
         Insettable, OnDeviceProfileChangeListener, OnActivePageChangedListener,
         ScrimView.ScrimDrawingController {
 

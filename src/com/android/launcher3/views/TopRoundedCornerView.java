@@ -23,12 +23,12 @@ import android.util.AttributeSet;
 
 import com.android.launcher3.util.Themes;
 
-import app.lawnchair.ui.StretchRelativeLayout;
+import app.lawnchair.ui.StretchRecyclerViewContainer;
 
 /**
  * View with top rounded corners.
  */
-public class TopRoundedCornerView extends StretchRelativeLayout {
+public class TopRoundedCornerView extends StretchRecyclerViewContainer {
 
     private final RectF mRect = new RectF();
     private final Path mClipPath = new Path();
