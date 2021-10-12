@@ -38,8 +38,10 @@ class QsbLayout(context: Context, attrs: AttributeSet?) : FrameLayout(context, a
             setUpLensIcon()
         } else {
             val gIcon = ViewCompat.requireViewById<ImageView>(this, R.id.g_icon)
-            gIcon.setImageResource(R.drawable.ic_qsb_search)
-            gIcon.setColorFilter(Themes.getColorAccent(context))
+            with(gIcon) {
+                setImageResource(R.drawable.ic_qsb_search)
+                setColorFilter(Themes.getColorAccent(context))
+            }
         }
     }
 
@@ -84,10 +86,12 @@ class QsbLayout(context: Context, attrs: AttributeSet?) : FrameLayout(context, a
             .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED)
         if (context.packageManager.resolveActivity(lensIntent, 0) == null) return
 
-        lensIcon.isVisible = true
-        lensIcon.setImageResource(R.drawable.ic_lens_color)
-        lensIcon.setOnClickListener {
-            context.startActivity(lensIntent)
+        with(lensIcon) {
+            isVisible = true
+            setImageResource(R.drawable.ic_lens_color)
+            setOnClickListener {
+                context.startActivity(lensIntent)
+            }
         }
     }
 

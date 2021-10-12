@@ -27,9 +27,7 @@ class LawnchairSearchAdapterProvider(
     }
     private var quickLaunchItem: SearchResultView? = null
 
-    override fun isViewSupported(viewType: Int): Boolean {
-        return layoutIdMap.containsKey(viewType)
-    }
+    override fun isViewSupported(viewType: Int): Boolean = layoutIdMap.containsKey(viewType)
 
     override fun onBindView(holder: AllAppsGridAdapter.ViewHolder, position: Int) {
         val adapterItem = appsView.apps.adapterItems[position] as SearchAdapterItem
@@ -46,20 +44,13 @@ class LawnchairSearchAdapterProvider(
         layoutInflater: LayoutInflater,
         parent: ViewGroup?,
         viewType: Int
-    ): AllAppsGridAdapter.ViewHolder {
-        return AllAppsGridAdapter.ViewHolder(layoutInflater.inflate(layoutIdMap[viewType], parent, false))
-    }
+    ): AllAppsGridAdapter.ViewHolder =
+        AllAppsGridAdapter.ViewHolder(layoutInflater.inflate(layoutIdMap[viewType], parent, false))
 
-    override fun getItemsPerRow(viewType: Int, appsPerRow: Int): Int {
-        if (viewType != SEARCH_RESULT_ICON) {
-            return 1
-        }
-        return super.getItemsPerRow(viewType, appsPerRow)
-    }
+    override fun getItemsPerRow(viewType: Int, appsPerRow: Int) =
+        if (viewType != SEARCH_RESULT_ICON) 1 else super.getItemsPerRow(viewType, appsPerRow)
 
-    override fun launchHighlightedItem(): Boolean {
-        return quickLaunchItem?.launch() ?: false
-    }
+    override fun launchHighlightedItem(): Boolean = quickLaunchItem?.launch() ?: false
 
     override fun getHighlightedItem() = quickLaunchItem as View?
 
