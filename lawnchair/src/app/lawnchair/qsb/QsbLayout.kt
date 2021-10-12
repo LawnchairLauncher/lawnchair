@@ -29,13 +29,13 @@ class QsbLayout(context: Context, attrs: AttributeSet?) : FrameLayout(context, a
         super.onFinishInflate()
         assistantIcon = ViewCompat.requireViewById(this, R.id.mic_icon)
         lensIcon = ViewCompat.requireViewById(this, R.id.lens_icon)
-        setupMainSearch()
+        setUpMainSearch()
 
         val searchPackage = QsbContainerView.getSearchWidgetPackageName(context)
         val isGoogle = searchPackage == GOOGLE_PACKAGE
         assistantIcon.setIcon(isGoogle)
         if (isGoogle) {
-            setupLensIcon()
+            setUpLensIcon()
         } else {
             val gIcon = ViewCompat.requireViewById<ImageView>(this, R.id.g_icon)
             gIcon.setImageResource(R.drawable.ic_qsb_search)
@@ -62,7 +62,7 @@ class QsbLayout(context: Context, attrs: AttributeSet?) : FrameLayout(context, a
         }
     }
 
-    private fun setupMainSearch() {
+    private fun setUpMainSearch() {
         setOnClickListener {
             val searchPackage = QsbContainerView.getSearchWidgetPackageName(context)
             val intent = Intent("android.search.action.GLOBAL_SEARCH")
@@ -79,7 +79,7 @@ class QsbLayout(context: Context, attrs: AttributeSet?) : FrameLayout(context, a
         }
     }
 
-    private fun setupLensIcon() {
+    private fun setUpLensIcon() {
         val lensIntent = Intent.makeMainActivity(ComponentName(LENS_PACKAGE, LENS_ACTIVITY))
             .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED)
         if (context.packageManager.resolveActivity(lensIntent, 0) == null) return

@@ -21,7 +21,6 @@ class AssistantIconView(context: Context, attrs: AttributeSet?) : ImageButton(co
             isVisible = false
         }
 
-        scaleType = ScaleType.FIT_CENTER
         setOnClickListener {
             context.startActivity(intent)
         }

@@ -37,6 +37,7 @@
             android:background="@drawable/pill_ripple"
             android:clickable="true"
             android:contentDescription="@string/label_voice_search"
+            android:scaleType="fitCenter"
             android:focusable="false"
             android:padding="@dimen/qsb_icon_padding"
             tools:src="@drawable/ic_mic_color" />
