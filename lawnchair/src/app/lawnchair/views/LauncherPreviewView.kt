@@ -19,6 +19,7 @@ import com.android.launcher3.util.ComponentKey
 import com.android.launcher3.util.Executors.MAIN_EXECUTOR
 import com.android.launcher3.util.Executors.MODEL_EXECUTOR
 import com.android.launcher3.util.RunnableList
+import com.android.launcher3.util.Themes
 import kotlin.math.min
 
 @SuppressLint("ViewConstructor")
@@ -51,7 +52,7 @@ class LauncherPreviewView(
     private fun loadModelData() {
         val migrated = doGridMigrationIfNecessary()
 
-        val inflationContext = ContextThemeWrapper(context, R.style.AppTheme)
+        val inflationContext = ContextThemeWrapper(context, Themes.getActivityThemeRes(context))
         if (migrated) {
             val previewContext = LauncherPreviewRenderer.PreviewContext(inflationContext, idp)
             object : LoaderTask(
