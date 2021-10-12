@@ -29,6 +29,8 @@ import android.widget.EditText;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.views.ActivityContext;
 
+import app.lawnchair.font.FontManager;
+
 
 /**
  * The edit text that reports back when the back key has been pressed.
@@ -56,10 +58,12 @@ public class ExtendedEditText extends EditText {
     public ExtendedEditText(Context context, AttributeSet attrs) {
         // ctor chaining breaks the touch handling
         super(context, attrs);
+        FontManager.INSTANCE.get(context).overrideFont(this, attrs);
     }
 
     public ExtendedEditText(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        FontManager.INSTANCE.get(context).overrideFont(this, attrs);
     }
 
     public void setOnBackKeyListener(OnBackKeyListener listener) {

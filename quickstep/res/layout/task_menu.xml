@@ -23,7 +23,7 @@
     android:orientation="vertical"
     android:visibility="invisible">
 
-    <app.lawnchair.views.CustomTextView
+    <TextView
         android:id="@+id/task_name"
         android:background="@drawable/task_menu_item_bg"
         android:textColor="?android:attr/textColorPrimary"
@@ -34,7 +34,7 @@
         android:paddingTop="@dimen/task_menu_vertical_padding"
         android:paddingBottom="@dimen/task_menu_vertical_padding"
         android:textSize="16sp"
-        app:customFontType="@id/font_task_name"/>
+        app:customFontType="@id/font_body"/>
 
     <LinearLayout
         android:id="@+id/menu_option_layout"

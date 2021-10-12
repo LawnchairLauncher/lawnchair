@@ -43,7 +43,7 @@ class ThemedSmartSpaceHostView(context: Context) : SmartSpaceHostView(context) {
             tv.paint.clearShadowLayer()
         }
         tv.setTextColor(workspaceTextColor)
-        FontManager.INSTANCE.get(context).setCustomFont(tv, R.id.font_smartspace_text)
+        FontManager.INSTANCE.get(context).setCustomFont(tv, R.id.font_heading)
     }
 
     private fun overrideWeatherIcon(iv: ImageView) {

@@ -18,6 +18,7 @@ package app.lawnchair
 
 import android.content.Context
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.ViewTreeObserver
 import androidx.activity.OnBackPressedDispatcher
 import androidx.activity.OnBackPressedDispatcherOwner
@@ -59,6 +60,10 @@ class LawnchairLauncher : QuickstepLauncher(), LifecycleOwner,
     private val defaultOverlay by lazy { OverlayCallbackImpl(this) }
     private val prefs by lazy { PreferenceManager.getInstance(this) }
     var allAppsScrimColor = 0
+
+    private val customLayoutInflater by lazy {
+        LawnchairLayoutInflater(super.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater, this)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         savedStateRegistryController.performRestore(savedInstanceState)
@@ -187,6 +192,13 @@ class LawnchairLauncher : QuickstepLauncher(), LifecycleOwner,
 
     override fun getDefaultOverlay(): LauncherOverlayManager {
         return defaultOverlay
+    }
+
+    override fun getSystemService(name: String): Any? {
+        if (name == Context.LAYOUT_INFLATER_SERVICE) {
+            return customLayoutInflater
+        }
+        return super.getSystemService(name)
     }
 
     private fun restartIfPending() {

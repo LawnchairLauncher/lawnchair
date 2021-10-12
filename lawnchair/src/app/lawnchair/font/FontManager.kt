@@ -20,7 +20,8 @@ class FontManager private constructor(private val context: Context) {
 
     private val uiRegular = fontCache.uiRegular
     private val uiMedium = fontCache.uiMedium
-    private val uiText = fontCache.uiText
+    private val uiTextRegular = fontCache.uiText
+    private val uiTextMedium = fontCache.uiTextMedium
 
     private val specMap = createFontMap()
 
@@ -32,8 +33,10 @@ class FontManager private constructor(private val context: Context) {
         val map = mutableMapOf<Int, FontSpec>()
         map[R.id.font_base_icon] = FontSpec(prefs.workspaceFont, sansSerif)
         map[R.id.font_button] = FontSpec(uiMedium, sansSerifMedium)
-        map[R.id.font_smartspace_text] = FontSpec(uiRegular, sansSerif)
-        map[R.id.font_task_name] = FontSpec(uiText, sansSerif)
+        map[R.id.font_heading] = FontSpec(uiRegular, sansSerif)
+        map[R.id.font_heading_medium] = FontSpec(uiMedium, sansSerif)
+        map[R.id.font_body] = FontSpec(uiTextRegular, sansSerif)
+        map[R.id.font_body_medium] = FontSpec(uiTextMedium, sansSerif)
         return map
     }
 

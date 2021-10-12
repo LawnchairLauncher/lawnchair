@@ -61,7 +61,8 @@
             android:singleLine="true"
             android:textColor="?android:textColorPrimary"
             android:textColorHint="?android:textColorTertiary"
-            android:textSize="20sp" />
+            android:textSize="20sp"
+            app:customFontType="@id/font_body" />
 
         <ImageButton
             android:id="@+id/action_btn"

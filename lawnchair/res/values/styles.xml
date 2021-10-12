@@ -130,6 +130,7 @@
 
     <style name="AllAppsSearchResult">
         <item name="android:fontFamily">google-sans-medium</item>
+        <item name="customFontType">@id/font_heading_medium</item>
     </style>
 
     <style name="QsbIconTint">
