@@ -60,10 +60,10 @@ public class WindowManagerCompat {
         }
         WindowInsets defaultInsets = windowContext.getSystemService(WindowManager.class)
                 .getMaximumWindowMetrics().getWindowInsets();
-        boolean hasNavbar = ResourceUtils.getIntegerByName(
+        boolean isGesturalMode = ResourceUtils.getIntegerByName(
                 "config_navBarInteractionMode",
                 windowContext.getResources(),
-                INVALID_RESOURCE_HANDLE) != 0;
+                INVALID_RESOURCE_HANDLE) == 2;
 
         WindowInsets.Builder insetsBuilder = new WindowInsets.Builder(defaultInsets);
         Set<WindowBounds> result = new ArraySet<>();
@@ -74,7 +74,7 @@ public class WindowManagerCompat {
         if (isTablet && !consumeTaskBar) {
             portraitNav = landscapeNav = Insets.of(0, 0, 0, windowContext.getResources()
                     .getDimensionPixelSize(R.dimen.taskbar_size));
-        } else if (hasNavbar) {
+        } else if (!isGesturalMode) {
             portraitNav = Insets.of(0, 0, 0,
                     getSystemResource(windowContext, "navigation_bar_height", swDP));
             landscapeNav = isTablet
