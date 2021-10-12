@@ -34,6 +34,7 @@ fun GridOverridesPreview(
             .aspectRatio(ratio, matchHeightConstraintsFirst = true)
             .background(Color.Black)
     ) {
+        WallpaperPreview(modifier = Modifier.fillMaxSize())
         AndroidView(
             factory = { FrameLayout(it) },
             modifier = Modifier.fillMaxSize()
