@@ -27,6 +27,7 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -36,7 +37,7 @@ import androidx.compose.ui.Modifier
 fun PreferenceLayout(
     verticalArrangement: Arrangement.Vertical = Arrangement.Top,
     horizontalAlignment: Alignment.Horizontal = Alignment.Start,
-    scrollState: ScrollState = rememberScrollState(),
+    scrollState: ScrollState? = rememberScrollState(),
     label: String,
     actions: @Composable RowScope.() -> Unit = {},
     backArrowVisible: Boolean = true,
@@ -84,9 +85,9 @@ fun PreferenceLayoutLazyColumn(
 }
 
 @Composable
-fun rememberFloatingState(state: ScrollState) =
+fun rememberFloatingState(state: ScrollState?) =
     remember(state) {
-        derivedStateOf { state.value > 0 }
+        if (state != null) derivedStateOf { state.value > 0 } else mutableStateOf(false)
     }
 
 @Composable

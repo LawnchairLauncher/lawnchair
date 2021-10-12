@@ -3,9 +3,9 @@ package app.lawnchair.ui.preferences
 import android.content.res.Configuration
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
@@ -25,11 +25,9 @@ import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences.preferenceManager
 import app.lawnchair.ui.preferences.components.GridOverridesPreview
 import app.lawnchair.ui.preferences.components.PreferenceGroup
-import app.lawnchair.ui.preferences.components.PreferenceScaffold
+import app.lawnchair.ui.preferences.components.PreferenceLayout
 import app.lawnchair.ui.preferences.components.SliderPreference
-import app.lawnchair.ui.util.rememberExtendPadding
 import com.android.launcher3.R
-import com.google.accompanist.insets.ui.LocalScaffoldPadding
 
 @ExperimentalAnimationApi
 fun NavGraphBuilder.homeScreenGridGraph(route: String) {
@@ -39,71 +37,70 @@ fun NavGraphBuilder.homeScreenGridGraph(route: String) {
 @ExperimentalAnimationApi
 @Composable
 fun HomeScreenGridPreferences() {
-    PreferenceScaffold(label = stringResource(id = R.string.home_screen_grid)) {
-        Column(
-            modifier = Modifier
-                .padding(rememberExtendPadding(LocalScaffoldPadding.current, bottom = 8.dp)),
-        ) {
-            val prefs = preferenceManager()
-            val columnsAdapter = prefs.workspaceColumns.getAdapter()
-            val rowsAdapter = prefs.workspaceRows.getAdapter()
+    val isPortrait = LocalConfiguration.current.orientation == Configuration.ORIENTATION_PORTRAIT
+    val scrollState = rememberScrollState()
+    PreferenceLayout(
+        label = stringResource(id = R.string.home_screen_grid),
+        scrollState = if (isPortrait) null else scrollState
+    ) {
+        val prefs = preferenceManager()
+        val columnsAdapter = prefs.workspaceColumns.getAdapter()
+        val rowsAdapter = prefs.workspaceRows.getAdapter()
 
-            val originalColumns = remember { columnsAdapter.state.value }
-            val originalRows = remember { rowsAdapter.state.value }
-            val columns = rememberSaveable { mutableStateOf(originalColumns) }
-            val rows = rememberSaveable { mutableStateOf(originalRows) }
+        val originalColumns = remember { columnsAdapter.state.value }
+        val originalRows = remember { rowsAdapter.state.value }
+        val columns = rememberSaveable { mutableStateOf(originalColumns) }
+        val rows = rememberSaveable { mutableStateOf(originalRows) }
 
-            val configuration = LocalConfiguration.current
-            if (configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
-                GridOverridesPreview(
-                    modifier = Modifier
-                        .weight(1f)
-                        .align(Alignment.CenterHorizontally)
-                        .clip(MaterialTheme.shapes.large)
-                ) {
-                    numColumns = columns.value
-                    numRows = rows.value
-                }
-            }
-
-            PreferenceGroup {
-                SliderPreference(
-                    label = stringResource(id = R.string.home_screen_columns),
-                    adapter = columns.asPreferenceAdapter(),
-                    step = 1,
-                    valueRange = 3..10,
-                )
-                SliderPreference(
-                    label = stringResource(id = R.string.home_screen_rows),
-                    adapter = rows.asPreferenceAdapter(),
-                    step = 1,
-                    valueRange = 3..10,
-                )
-            }
-
-            val navController = LocalNavController.current
-            val applyOverrides = {
-                prefs.batchEdit {
-                    columnsAdapter.onChange(columns.value)
-                    rowsAdapter.onChange(rows.value)
-                }
-                navController.popBackStack()
-            }
-
-            Box(
+        if (isPortrait) {
+            GridOverridesPreview(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 16.dp)
-                    .padding(horizontal = 16.dp)
+                    .weight(1f)
+                    .align(Alignment.CenterHorizontally)
+                    .clip(MaterialTheme.shapes.large)
             ) {
-                Button(
-                    onClick = { applyOverrides() },
-                    modifier = Modifier
-                        .align(Alignment.CenterEnd),
-                    enabled = columns.value != originalColumns || rows.value != originalRows
-                ) {
-                    Text(text = stringResource(id = R.string.apply_grid))
-                }
+                numColumns = columns.value
+                numRows = rows.value
+            }
+        }
+
+        PreferenceGroup {
+            SliderPreference(
+                label = stringResource(id = R.string.home_screen_columns),
+                adapter = columns.asPreferenceAdapter(),
+                step = 1,
+                valueRange = 3..10,
+            )
+            SliderPreference(
+                label = stringResource(id = R.string.home_screen_rows),
+                adapter = rows.asPreferenceAdapter(),
+                step = 1,
+                valueRange = 3..10,
+            )
+        }
+
+        val navController = LocalNavController.current
+        val applyOverrides = {
+            prefs.batchEdit {
+                columnsAdapter.onChange(columns.value)
+                rowsAdapter.onChange(rows.value)
+            }
+            navController.popBackStack()
+        }
+
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 16.dp)
+                .padding(horizontal = 16.dp)
+        ) {
+            Button(
+                onClick = { applyOverrides() },
+                modifier = Modifier
+                    .align(Alignment.CenterEnd),
+                enabled = columns.value != originalColumns || rows.value != originalRows
+            ) {
+                Text(text = stringResource(id = R.string.apply_grid))
             }
         }
     }
