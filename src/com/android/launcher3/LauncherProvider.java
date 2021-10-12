@@ -88,6 +88,8 @@ import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 
+import app.lawnchair.LawnchairAppKt;
+
 public class LauncherProvider extends ContentProvider {
     private static final String TAG = "LauncherProvider";
     private static final boolean LOGD = false;
@@ -660,6 +662,7 @@ public class LauncherProvider extends ContentProvider {
             if (dbName == null) {
                 dbName = MULTI_DB_GRID_MIRATION_ALGO.get() ? InvariantDeviceProfile.INSTANCE.get(
                         context).dbFile : LauncherFiles.LAUNCHER_DB;
+                LawnchairAppKt.getLawnchairApp(context).migrateDbName(dbName);
             }
             DatabaseHelper databaseHelper = new DatabaseHelper(context, dbName, forMigration);
             // Table creation sometimes fails silently, which leads to a crash loop.

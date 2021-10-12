@@ -25,9 +25,11 @@ import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import android.util.Log
+import app.lawnchair.preferences.PreferenceManager
 import app.lawnchair.util.restartLauncher
 import com.android.launcher3.Utilities
 import com.android.quickstep.RecentsActivity
+import java.io.File
 
 class LawnchairApp : Application() {
 
@@ -52,6 +54,27 @@ class LawnchairApp : Application() {
         } else {
             restartLauncher(this)
         }
+    }
+
+    fun migrateDbName(dbName: String) {
+        val prefs = PreferenceManager.INSTANCE.get(this)
+        val dbFile = getDatabasePath(dbName)
+        if (dbFile.exists()) {
+            return
+        }
+        val dbJournalFile = getJournalFile(dbFile)
+        val oldDbSlot = prefs.sp.getString("pref_currentDbSlot", "a")
+        val oldDbName = if (oldDbSlot == "a") "launcher.db" else "launcher.db_b"
+        val oldDbFile = getDatabasePath(oldDbName)
+        val oldDbJournalFile = getJournalFile(oldDbFile)
+        if (oldDbFile.exists()) {
+            oldDbFile.copyTo(dbFile)
+            oldDbJournalFile.copyTo(dbJournalFile)
+        }
+    }
+
+    private fun getJournalFile(file: File): File {
+        return File(file.parentFile, "${file.name}-journal")
     }
 
     class ActivityHandler : ActivityLifecycleCallbacks {
