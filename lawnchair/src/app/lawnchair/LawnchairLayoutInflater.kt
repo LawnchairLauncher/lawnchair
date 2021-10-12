@@ -18,7 +18,6 @@ package app.lawnchair
 
 import android.content.Context
 import android.util.AttributeSet
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.TextView
@@ -33,7 +32,6 @@ class LawnchairLayoutInflater(original: LayoutInflater, newContext: Context) : L
     }
 
     private fun onViewCreated(view: View, attrs: AttributeSet?) {
-        Log.d("LawnchairLayoutInflater", "onViewCreated: $view")
         if (view is TextView) {
             fontManager.overrideFont(view, attrs)
         }
