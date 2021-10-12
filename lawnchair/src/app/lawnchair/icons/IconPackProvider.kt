@@ -23,7 +23,7 @@ class IconPackProvider(private val context: Context) {
     }
 
     companion object {
-        @JvmStatic
+        @JvmField
         val INSTANCE = MainThreadInitializedObject(::IconPackProvider)
     }
 }

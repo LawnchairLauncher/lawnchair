@@ -24,15 +24,18 @@ import androidx.navigation.NavGraphBuilder
 import app.lawnchair.nexuslauncher.OverlayCallbackImpl
 import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences.preferenceManager
-import app.lawnchair.ui.preferences.components.PreferenceGroup
-import app.lawnchair.ui.preferences.components.PreferenceLayout
-import app.lawnchair.ui.preferences.components.SliderPreference
-import app.lawnchair.ui.preferences.components.SwitchPreference
+import app.lawnchair.ui.preferences.components.*
 import com.android.launcher3.R
+
+object HomeScreenRoutes {
+    const val GRID = "grid"
+}
 
 @ExperimentalAnimationApi
 fun NavGraphBuilder.homeScreenGraph(route: String) {
-    preferenceGraph(route, { HomeScreenPreferences() })
+    preferenceGraph(route, { HomeScreenPreferences() }) { subRoute ->
+        homeScreenGridGraph(route = subRoute(HomeScreenRoutes.GRID))
+    }
 }
 
 @ExperimentalAnimationApi
@@ -76,17 +79,12 @@ fun HomeScreenPreferences() {
             )
         }
         PreferenceGroup(heading = stringResource(id = R.string.grid)) {
-            SliderPreference(
-                label = stringResource(id = R.string.home_screen_columns),
-                adapter = prefs.workspaceColumns.getAdapter(),
-                step = 1,
-                valueRange = 3..10,
-            )
-            SliderPreference(
-                label = stringResource(id = R.string.home_screen_rows),
-                adapter = prefs.workspaceRows.getAdapter(),
-                step = 1,
-                valueRange = 3..10,
+            val columns by prefs.workspaceColumns.getAdapter()
+            val rows by prefs.workspaceRows.getAdapter()
+            NavigationActionPreference(
+                label = stringResource(id = R.string.home_screen_grid),
+                destination = subRoute(name = HomeScreenRoutes.GRID),
+                subtitle = "${columns}x$rows"
             )
         }
         PreferenceGroup(heading = stringResource(id = R.string.icons)) {

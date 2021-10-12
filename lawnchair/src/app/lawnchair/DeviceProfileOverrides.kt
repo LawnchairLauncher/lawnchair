@@ -8,25 +8,7 @@ import com.android.launcher3.util.MainThreadInitializedObject
 class DeviceProfileOverrides(context: Context) {
     private val prefs = PreferenceManager.getInstance(context)
 
-    fun apply(idp: InvariantDeviceProfile, defaultGrid: InvariantDeviceProfile.GridOption) {
-        val options = Options(prefs, defaultGrid)
-
-        // apply grid size
-        idp.numShownHotseatIcons = options.numHotseatColumns
-        idp.numRows = options.numRows
-        idp.numColumns = options.numColumns
-        idp.numAllAppsColumns = options.numAllAppsColumns
-        idp.numFolderRows = options.numFolderRows
-        idp.numFolderColumns = options.numFolderColumns
-
-        // apply icon and text size
-        idp.iconSize *= options.iconSizeFactor
-        idp.iconTextSize *= (if (options.enableIconText) options.iconTextSizeFactor else 0f)
-        idp.allAppsIconSize *= options.allAppsIconSizeFactor
-        idp.allAppsIconTextSize *= (if (options.enableAllAppsIconText) options.allAppsIconTextSizeFactor else 0f)
-
-        idp.dbFile = "launcher_${idp.numRows}_${idp.numColumns}_${idp.numShownHotseatIcons}.db"
-    }
+    fun getOverrides(defaultGrid: InvariantDeviceProfile.GridOption) = Options(prefs, defaultGrid)
 
     data class Options(
         var numHotseatColumns: Int,
@@ -42,8 +24,11 @@ class DeviceProfileOverrides(context: Context) {
 
         var allAppsIconSizeFactor: Float,
         var enableAllAppsIconText: Boolean,
-        var allAppsIconTextSizeFactor: Float
+        var allAppsIconTextSizeFactor: Float,
+
+        val dbFile: String = "launcher_${numRows}_${numColumns}_${numHotseatColumns}.db"
     ) {
+
         constructor(
             prefs: PreferenceManager,
             defaultGrid: InvariantDeviceProfile.GridOption,
@@ -63,6 +48,24 @@ class DeviceProfileOverrides(context: Context) {
             enableAllAppsIconText = prefs.allAppsIconLabels.get(),
             allAppsIconTextSizeFactor = prefs.allAppsTextSizeFactor.get()
         )
+
+        fun apply(idp: InvariantDeviceProfile) {
+            // apply grid size
+            idp.numShownHotseatIcons = numHotseatColumns
+            idp.numRows = numRows
+            idp.numColumns = numColumns
+            idp.numAllAppsColumns = numAllAppsColumns
+            idp.numFolderRows = numFolderRows
+            idp.numFolderColumns = numFolderColumns
+
+            // apply icon and text size
+            idp.iconSize *= iconSizeFactor
+            idp.iconTextSize *= (if (enableIconText) iconTextSizeFactor else 0f)
+            idp.allAppsIconSize *= allAppsIconSizeFactor
+            idp.allAppsIconTextSize *= (if (enableAllAppsIconText) allAppsIconTextSizeFactor else 0f)
+
+            idp.dbFile = dbFile
+        }
     }
 
     companion object {

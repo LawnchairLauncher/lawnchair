@@ -59,7 +59,7 @@ public abstract class NavigableAppWidgetHostView extends AppWidgetHostView
     @ViewDebug.ExportedProperty(category = "launcher")
     private boolean mChildrenFocused;
 
-    protected final BaseActivity mActivity;
+    protected final ActivityContext mActivity;
 
     public NavigableAppWidgetHostView(Context context) {
         super(context);

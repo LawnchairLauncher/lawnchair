@@ -31,6 +31,16 @@ interface PreferenceAdapter<T> {
     }
 }
 
+private class MutableStatePreferenceAdapter<T>(
+    private val mutableState: MutableState<T>
+) : PreferenceAdapter<T> {
+    override val state = mutableState
+
+    override fun onChange(newValue: T) {
+        mutableState.value = newValue
+    }
+}
+
 class PreferenceAdapterImpl<T>(
     private val get: () -> T,
     private val set: (T) -> Unit
@@ -90,6 +100,11 @@ fun <T, R> rememberTransformAdapter(
     transformSet: (R) -> T
 ): PreferenceAdapter<R> = remember(adapter) {
     TransformPreferenceAdapter(adapter, transformGet, transformSet)
+}
+
+@Composable
+fun <T> MutableState<T>.asPreferenceAdapter(): PreferenceAdapter<T> {
+    return remember(this) { MutableStatePreferenceAdapter(this) }
 }
 
 private class TransformPreferenceAdapter<T, R>(

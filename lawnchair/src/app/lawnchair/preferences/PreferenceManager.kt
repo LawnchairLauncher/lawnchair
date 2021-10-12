@@ -93,6 +93,7 @@ class PreferenceManager private constructor(private val context: Context) : Base
     }
 
     companion object {
+        @JvmField
         val INSTANCE = MainThreadInitializedObject(::PreferenceManager)
 
         @JvmStatic

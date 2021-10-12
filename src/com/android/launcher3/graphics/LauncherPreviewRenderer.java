@@ -103,6 +103,11 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import app.lawnchair.font.FontCache;
+import app.lawnchair.font.FontManager;
+import app.lawnchair.icons.IconPackProvider;
+import app.lawnchair.preferences.PreferenceManager;
+
 /**
  * Utility class for generating the preview of Launcher for a given InvariantDeviceProfile.
  * Steps:
@@ -136,10 +141,18 @@ public class LauncherPreviewRenderer extends ContextWrapper
         public PreviewContext(Context base, InvariantDeviceProfile idp) {
             super(base);
             mIdp = idp;
+            putBaseInstance(PreferenceManager.INSTANCE);
+            putBaseInstance(FontCache.INSTANCE);
+            putBaseInstance(FontManager.INSTANCE);
+            putBaseInstance(IconPackProvider.INSTANCE);
             mObjectMap.put(InvariantDeviceProfile.INSTANCE, idp);
             mObjectMap.put(LauncherAppState.INSTANCE,
                     new LauncherAppState(this, null /* iconCacheFileName */));
+        }
 
+        private void putBaseInstance(MainThreadInitializedObject mainThreadInitializedObject) {
+            mAllowedObjects.add(mainThreadInitializedObject);
+            mObjectMap.put(mainThreadInitializedObject, mainThreadInitializedObject.get(getBaseContext()));
         }
 
         @Override
