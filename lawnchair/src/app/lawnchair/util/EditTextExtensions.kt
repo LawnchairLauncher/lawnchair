@@ -10,17 +10,15 @@ object EditTextExtensions {
     @JvmStatic
     fun EditText.setCursorColor(@ColorInt color: Int) {
         if (Utilities.ATLEAST_Q) {
-            this.textCursorDrawable?.colorFilter = BlendModeColorFilter(color, BlendMode.SRC)
+            textCursorDrawable?.colorFilter = BlendModeColorFilter(color, BlendMode.SRC)
         }
     }
 
     @JvmStatic
     fun EditText.setTextSelectHandleColor(@ColorInt color: Int) {
         if (Utilities.ATLEAST_Q) {
-            this.apply {
-                listOf(textSelectHandle, textSelectHandleLeft, textSelectHandleRight).forEach {
-                    it?.colorFilter = BlendModeColorFilter(color, BlendMode.SRC_IN)
-                }
+            listOf(textSelectHandle, textSelectHandleLeft, textSelectHandleRight).forEach {
+                it?.colorFilter = BlendModeColorFilter(color, BlendMode.SRC_IN)
             }
         }
     }
