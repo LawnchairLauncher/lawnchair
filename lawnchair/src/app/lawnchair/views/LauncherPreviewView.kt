@@ -12,7 +12,6 @@ import app.lawnchair.DeviceProfileOverrides
 import com.android.launcher3.InvariantDeviceProfile
 import com.android.launcher3.LauncherAppState
 import com.android.launcher3.LauncherSettings.Favorites.*
-import com.android.launcher3.R
 import com.android.launcher3.graphics.LauncherPreviewRenderer
 import com.android.launcher3.model.*
 import com.android.launcher3.util.ComponentKey

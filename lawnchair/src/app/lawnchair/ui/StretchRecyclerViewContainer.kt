@@ -6,7 +6,6 @@ import android.util.AttributeSet
 import android.view.View
 import android.widget.EdgeEffect
 import androidx.recyclerview.widget.RecyclerView
-import com.android.launcher3.R
 import com.android.launcher3.Utilities
 
 open class StretchRecyclerViewContainer @JvmOverloads constructor(

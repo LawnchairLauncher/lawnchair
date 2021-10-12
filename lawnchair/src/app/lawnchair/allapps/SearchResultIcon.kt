@@ -12,7 +12,6 @@ import app.lawnchair.launcher
 import app.lawnchair.search.SearchTargetCompat
 import com.android.launcher3.BubbleTextView
 import com.android.launcher3.R
-import com.android.launcher3.icons.FastBitmapDrawable
 import com.android.launcher3.model.data.ItemInfoWithIcon
 import com.android.launcher3.model.data.SearchActionItemInfo
 import com.android.launcher3.touch.ItemClickHandler
