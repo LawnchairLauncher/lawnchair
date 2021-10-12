@@ -9,9 +9,12 @@ import android.widget.ImageView
 import androidx.core.view.ViewCompat
 import androidx.core.view.children
 import androidx.core.view.isVisible
+import app.lawnchair.launcher
 import com.android.launcher3.BaseActivity
 import com.android.launcher3.DeviceProfile
+import com.android.launcher3.LauncherState
 import com.android.launcher3.R
+import com.android.launcher3.anim.AnimatorListeners.forSuccessCallback
 import com.android.launcher3.qsb.QsbContainerView
 import com.android.launcher3.util.Themes
 import com.android.launcher3.views.ActivityContext
@@ -26,15 +29,9 @@ class QsbLayout(context: Context, attrs: AttributeSet?) : FrameLayout(context, a
         super.onFinishInflate()
         assistantIcon = ViewCompat.requireViewById(this, R.id.mic_icon)
         lensIcon = ViewCompat.requireViewById(this, R.id.lens_icon)
+        setupMainSearch()
 
         val searchPackage = QsbContainerView.getSearchWidgetPackageName(context)
-        setOnClickListener {
-            val intent = Intent("android.search.action.GLOBAL_SEARCH")
-                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
-                .setPackage(searchPackage)
-            context.startActivity(intent)
-        }
-
         val isGoogle = searchPackage == GOOGLE_PACKAGE
         assistantIcon.setIcon(isGoogle)
         if (isGoogle) {
@@ -62,6 +59,23 @@ class QsbLayout(context: Context, attrs: AttributeSet?) : FrameLayout(context, a
 
         children.forEach { child ->
             measureChildWithMargins(child, widthMeasureSpec, 0, heightMeasureSpec, 0)
+        }
+    }
+
+    private fun setupMainSearch() {
+        setOnClickListener {
+            val searchPackage = QsbContainerView.getSearchWidgetPackageName(context)
+            val intent = Intent("android.search.action.GLOBAL_SEARCH")
+                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                .setPackage(searchPackage)
+            if (context.packageManager.resolveActivity(intent, 0) != null) {
+                context.startActivity(intent)
+            } else {
+                val launcher = context.launcher
+                launcher.stateManager.goToState(LauncherState.ALL_APPS, true, forSuccessCallback {
+                    launcher.appsView.searchUiManager.editText?.showKeyboard()
+                })
+            }
         }
     }
 
