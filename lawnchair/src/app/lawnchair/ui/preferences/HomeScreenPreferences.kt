@@ -56,6 +56,13 @@ fun HomeScreenPreferences() {
                 prefs.workspaceDt2s.getAdapter(),
                 label = stringResource(id = R.string.workspace_dt2s),
             )
+            val columns by prefs.workspaceColumns.getAdapter()
+            val rows by prefs.workspaceRows.getAdapter()
+            NavigationActionPreference(
+                label = stringResource(id = R.string.home_screen_grid),
+                destination = subRoute(name = HomeScreenRoutes.GRID),
+                subtitle = "$columns × $rows"
+            )
         }
         PreferenceGroup(heading = stringResource(id = R.string.what_to_show)) {
             val feedAvailable = OverlayCallbackImpl.minusOneAvailable(LocalContext.current)
@@ -76,15 +83,6 @@ fun HomeScreenPreferences() {
             SwitchPreference(
                 prefs.showSysUiScrim.getAdapter(),
                 label = stringResource(id = R.string.show_sys_ui_scrim),
-            )
-        }
-        PreferenceGroup(heading = stringResource(id = R.string.grid)) {
-            val columns by prefs.workspaceColumns.getAdapter()
-            val rows by prefs.workspaceRows.getAdapter()
-            NavigationActionPreference(
-                label = stringResource(id = R.string.home_screen_grid),
-                destination = subRoute(name = HomeScreenRoutes.GRID),
-                subtitle = "${columns}x$rows"
             )
         }
         PreferenceGroup(heading = stringResource(id = R.string.icons)) {

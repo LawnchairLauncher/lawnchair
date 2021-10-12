@@ -66,13 +66,13 @@ fun HomeScreenGridPreferences() {
 
         PreferenceGroup {
             SliderPreference(
-                label = stringResource(id = R.string.home_screen_columns),
+                label = stringResource(id = R.string.columns),
                 adapter = columns.asPreferenceAdapter(),
                 step = 1,
                 valueRange = 3..10,
             )
             SliderPreference(
-                label = stringResource(id = R.string.home_screen_rows),
+                label = stringResource(id = R.string.rows),
                 adapter = rows.asPreferenceAdapter(),
                 step = 1,
                 valueRange = 3..10,
