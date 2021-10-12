@@ -58,6 +58,10 @@
         <attr name="customFontType" />
     </declare-styleable>
 
+    <declare-styleable name="ExtendedEditText">
+        <attr name="customFontType" />
+    </declare-styleable>
+
     <declare-styleable name="FallbackSearchInputView">
         <attr name="customFontType" />
     </declare-styleable>

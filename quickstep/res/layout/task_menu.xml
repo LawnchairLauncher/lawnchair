@@ -17,7 +17,6 @@
 <com.android.quickstep.views.TaskMenuView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:animateLayoutChanges="true"
     android:background="@drawable/task_menu_bg"
     android:orientation="vertical"
@@ -33,8 +32,7 @@
         android:layout_marginBottom="2dp"
         android:paddingTop="@dimen/task_menu_vertical_padding"
         android:paddingBottom="@dimen/task_menu_vertical_padding"
-        android:textSize="16sp"
-        app:customFontType="@id/font_body"/>
+        android:textSize="16sp"/>
 
     <LinearLayout
         android:id="@+id/menu_option_layout"
