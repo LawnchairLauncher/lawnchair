@@ -5,7 +5,6 @@ import android.appwidget.AppWidgetProviderInfo
 import android.content.Context
 import android.util.Log
 import android.view.ContextThemeWrapper
-import android.view.animation.AccelerateDecelerateInterpolator
 import android.widget.FrameLayout
 import androidx.annotation.UiThread
 import androidx.annotation.WorkerThread
@@ -15,7 +14,6 @@ import com.android.launcher3.LauncherAppState
 import com.android.launcher3.LauncherSettings.Favorites.*
 import com.android.launcher3.R
 import com.android.launcher3.graphics.LauncherPreviewRenderer
-import com.android.launcher3.graphics.PreviewSurfaceRenderer
 import com.android.launcher3.model.*
 import com.android.launcher3.util.ComponentKey
 import com.android.launcher3.util.Executors.MAIN_EXECUTOR
@@ -118,11 +116,6 @@ class LauncherPreviewView(
         view.pivotX = 0f
         view.pivotY = 0f
         view.layoutParams = LayoutParams(view.measuredWidth, view.measuredHeight)
-        view.alpha = 0f
-        view.animate().alpha(1f)
-            .setInterpolator(AccelerateDecelerateInterpolator())
-            .setDuration(200L)
-            .start()
         addView(view)
     }
 }

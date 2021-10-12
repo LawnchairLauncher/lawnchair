@@ -2,6 +2,7 @@ package app.lawnchair.ui.preferences.components
 
 import android.view.View
 import android.widget.FrameLayout
+import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.aspectRatio
@@ -35,12 +36,9 @@ fun GridOverridesPreview(
             .background(Color.Black)
     ) {
         WallpaperPreview(modifier = Modifier.fillMaxSize())
-        AndroidView(
-            factory = { FrameLayout(it) },
-            modifier = Modifier.fillMaxSize()
-        ) { frame ->
-            frame.removeAllViews()
-            frame.addView(previewView)
+        Crossfade(targetState = previewView) {
+            val view = it
+            AndroidView(factory = { view }, modifier = Modifier.fillMaxSize())
         }
     }
 }
