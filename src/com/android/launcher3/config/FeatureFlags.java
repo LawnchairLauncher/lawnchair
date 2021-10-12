@@ -231,7 +231,7 @@ public final class FeatureFlags {
             "Uses two panel on home screen. Only applicable on large screen devices.");
 
     public static final BooleanFlag ENABLE_SCRIM_FOR_APP_LAUNCH = getDebugFlag(
-            "ENABLE_SCRIM_FOR_APP_LAUNCH", false,
+            "ENABLE_SCRIM_FOR_APP_LAUNCH", true,
             "Enables scrim during app launch animation.");
 
     public static final BooleanFlag ENABLE_SPLIT_SELECT = getDebugFlag(
@@ -248,7 +248,7 @@ public final class FeatureFlags {
             "Sends a notification whenever launcher encounters an uncaught exception.");
 
     public static final BooleanFlag PROTOTYPE_APP_CLOSE = getDebugFlag(
-            "PROTOTYPE_APP_CLOSE", false, "Enables new app close");
+            "PROTOTYPE_APP_CLOSE", true, "Enables new app close");
 
     public static final BooleanFlag ENABLE_WALLPAPER_SCRIM = getDebugFlag(
             "ENABLE_WALLPAPER_SCRIM", false,
