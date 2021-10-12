@@ -1,15 +1,18 @@
 package app.lawnchair.ui.preferences.components
 
+import android.annotation.SuppressLint
 import android.app.WallpaperManager
 import android.graphics.drawable.Drawable
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import com.google.accompanist.drawablepainter.rememberDrawablePainter
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.rememberPermissionState
 
 @Composable
 fun WallpaperPreview(modifier: Modifier = Modifier) {
@@ -22,11 +25,24 @@ fun WallpaperPreview(modifier: Modifier = Modifier) {
     )
 }
 
+@OptIn(ExperimentalPermissionsApi::class)
+@SuppressLint("MissingPermission")
 @Composable
 fun wallpaperDrawable(): Drawable? {
     val context = LocalContext.current
-    return remember {
-        val wallpaperManager = WallpaperManager.getInstance(context)
-        wallpaperManager.wallpaperInfo?.loadThumbnail(context.packageManager) ?: wallpaperManager.drawable
+    val wallpaperManager = remember { WallpaperManager.getInstance(context) }
+    val wallpaperInfo = wallpaperManager.wallpaperInfo
+
+    val permissionState = rememberPermissionState(android.Manifest.permission.READ_EXTERNAL_STORAGE)
+    return when {
+        wallpaperInfo != null -> remember { wallpaperInfo.loadThumbnail(context.packageManager) }
+        permissionState.hasPermission -> remember { wallpaperManager.drawable }
+        permissionState.shouldShowRationale || !permissionState.permissionRequested -> {
+            SideEffect {
+                permissionState.launchPermissionRequest()
+            }
+            null
+        }
+        else -> null
     }
 }

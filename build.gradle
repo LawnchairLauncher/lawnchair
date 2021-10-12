@@ -304,6 +304,7 @@ dependencies {
     implementation "com.google.accompanist:accompanist-insets:$accompanist_version"
     implementation "com.google.accompanist:accompanist-insets-ui:$accompanist_version"
     implementation "com.google.accompanist:accompanist-navigation-animation:$accompanist_version"
+    implementation "com.google.accompanist:accompanist-permissions:$accompanist_version"
     implementation "com.google.accompanist:accompanist-placeholder-material:$accompanist_version"
     implementation "com.google.accompanist:accompanist-systemuicontroller:$accompanist_version"
     implementation "com.github.fornewid:material-motion-compose:0.6.1"
