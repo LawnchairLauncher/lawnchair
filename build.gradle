@@ -91,6 +91,7 @@ android {
         variant.outputs.all {
             outputFileName = "Lawnchair ${variant.versionName}.apk"
         }
+        resValue("string", "launcher_component", "${applicationId}/app.lawnchair.LawnchairLauncher")
     }
 
     buildFeatures {

@@ -28,11 +28,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavGraphBuilder
-import app.lawnchair.DefaultAppFilter
 import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences.getState
 import app.lawnchair.preferences.preferenceManager
@@ -59,10 +57,8 @@ fun HiddenAppsPreferences() {
                 stringResource(id = R.string.hidden_apps_label_with_count, this)
             }
         }
-    val context = LocalContext.current
     var hiddenApps by preferenceManager().hiddenAppSet.getAdapter()
     val optionalApps by appsList(
-        filter = remember { DefaultAppFilter(context) },
         comparator = hiddenAppsComparator(hiddenApps)
     )
     val state = rememberLazyListState()
