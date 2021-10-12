@@ -13,6 +13,7 @@ import com.android.launcher3.BaseActivity
 import com.android.launcher3.DeviceProfile
 import com.android.launcher3.R
 import com.android.launcher3.qsb.QsbContainerView
+import com.android.launcher3.util.Themes
 import com.android.launcher3.views.ActivityContext
 
 class QsbLayout(context: Context, attrs: AttributeSet?) : FrameLayout(context, attrs) {
@@ -24,7 +25,6 @@ class QsbLayout(context: Context, attrs: AttributeSet?) : FrameLayout(context, a
     override fun onFinishInflate() {
         super.onFinishInflate()
         assistantIcon = ViewCompat.requireViewById(this, R.id.mic_icon)
-        assistantIcon.setIcon()
         lensIcon = ViewCompat.requireViewById(this, R.id.lens_icon)
 
         val searchPackage = QsbContainerView.getSearchWidgetPackageName(context)
@@ -34,8 +34,15 @@ class QsbLayout(context: Context, attrs: AttributeSet?) : FrameLayout(context, a
                 .setPackage(searchPackage)
             context.startActivity(intent)
         }
-        if (searchPackage == GOOGLE_PACKAGE) {
+
+        val isGoogle = searchPackage == GOOGLE_PACKAGE
+        assistantIcon.setIcon(isGoogle)
+        if (isGoogle) {
             setupLensIcon()
+        } else {
+            val gIcon = ViewCompat.requireViewById<ImageView>(this, R.id.g_icon)
+            gIcon.setImageResource(R.drawable.ic_qsb_search)
+            gIcon.setColorFilter(Themes.getColorAccent(context))
         }
     }
 
