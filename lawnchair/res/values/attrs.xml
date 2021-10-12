@@ -29,6 +29,8 @@
     <attr name="colorAccentPrimary" format="color" />
     <attr name="textColorOnAccent" format="color" />
 
+    <attr name="customFontType" format="reference" />
+
     <declare-styleable name="CustomSeekBarPreference">
         <attr name="minValue" format="integer" />
         <attr name="maxValue" format="integer" />
@@ -38,7 +40,7 @@
 
     <declare-styleable name="CustomFont">
         <attr name="android:textAppearance"/>
-        <attr name="customFontType" format="reference" />
+        <attr name="customFontType" />
         <attr name="customFontWeight" format="enum">
             <enum name="w100" value="100" />
             <enum name="w200" value="200" />
@@ -50,5 +52,9 @@
             <enum name="w800" value="800" />
             <enum name="w900" value="900" />
         </attr>
+    </declare-styleable>
+
+    <declare-styleable name="CustomTextView">
+        <attr name="customFontType" />
     </declare-styleable>
 </resources>

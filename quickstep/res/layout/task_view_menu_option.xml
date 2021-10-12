@@ -32,7 +32,7 @@
       android:layout_gravity="center_horizontal"
       android:backgroundTint="?android:attr/textColorPrimary"/>
 
-    <TextView
+    <app.lawnchair.views.CustomTextView
         style="@style/BaseIcon"
         android:id="@+id/text"
         android:layout_width="wrap_content"

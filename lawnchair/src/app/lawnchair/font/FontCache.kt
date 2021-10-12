@@ -47,6 +47,7 @@ class FontCache private constructor(private val context: Context) {
 
     val uiRegular = GoogleFont(context, "Google Sans")
     val uiMedium = GoogleFont(context, "Google Sans", "500")
+    val uiText = GoogleFont(context, "Google Sans Text")
     val uiTextMedium = GoogleFont(context, "Google Sans Text", "500")
 
     suspend fun getTypeface(font: Font): Typeface? {

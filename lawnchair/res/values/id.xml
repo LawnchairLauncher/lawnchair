@@ -19,4 +19,5 @@
     <item type="id" name="font_base_icon" />
     <item type="id" name="font_button" />
     <item type="id" name="font_smartspace_text" />
+    <item type="id" name="font_task_name" />
 </resources>

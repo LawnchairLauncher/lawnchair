@@ -24,6 +24,8 @@ import android.widget.Button;
 import com.android.launcher3.statemanager.StatefulActivity;
 import com.android.launcher3.touch.PagedOrientationHandler;
 
+import app.lawnchair.font.FontManager;
+
 public class ClearAllButton extends Button {
 
     public static final FloatProperty<ClearAllButton> VISIBILITY_ALPHA =
@@ -59,6 +61,7 @@ public class ClearAllButton extends Button {
         super(context, attrs);
         mIsRtl = getLayoutDirection() == LAYOUT_DIRECTION_RTL;
         mActivity = StatefulActivity.fromContext(context);
+        FontManager.INSTANCE.get(context).overrideFont(this, attrs);
     }
 
     @Override
