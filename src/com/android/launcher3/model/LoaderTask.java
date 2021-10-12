@@ -63,6 +63,7 @@ import com.android.launcher3.folder.Folder;
 import com.android.launcher3.folder.FolderGridOrganizer;
 import com.android.launcher3.folder.FolderNameInfos;
 import com.android.launcher3.folder.FolderNameProvider;
+import com.android.launcher3.graphics.LauncherPreviewRenderer;
 import com.android.launcher3.icons.ComponentWithLabelAndIcon;
 import com.android.launcher3.icons.ComponentWithLabelAndIcon.ComponentWithIconCachingLogic;
 import com.android.launcher3.icons.IconCache;
@@ -101,6 +102,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CancellationException;
+
+import app.lawnchair.LawnchairAppKt;
 
 /**
  * Runnable for the thread that loads the contents of the launcher:
@@ -336,6 +339,10 @@ public class LoaderTask implements Runnable {
                 : !GridSizeMigrationTask.migrateGridIfNeeded(context))) {
             // Migration failed. Clear workspace.
             clearDb = true;
+        }
+
+        if (!(context instanceof LauncherPreviewRenderer.PreviewContext)) {
+            LawnchairAppKt.getLawnchairApp(context).cleanUpDatabases();
         }
 
         if (clearDb) {

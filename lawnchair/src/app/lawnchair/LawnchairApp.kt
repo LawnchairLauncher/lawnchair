@@ -27,6 +27,7 @@ import android.provider.Settings
 import android.util.Log
 import app.lawnchair.preferences.PreferenceManager
 import app.lawnchair.util.restartLauncher
+import com.android.launcher3.InvariantDeviceProfile
 import com.android.launcher3.Utilities
 import com.android.quickstep.RecentsActivity
 import java.io.File
@@ -70,6 +71,18 @@ class LawnchairApp : Application() {
         if (oldDbFile.exists()) {
             oldDbFile.copyTo(dbFile)
             oldDbJournalFile.copyTo(dbJournalFile)
+        }
+    }
+
+    fun cleanUpDatabases() {
+        val idp = InvariantDeviceProfile.INSTANCE.get(this)
+        val dbName = idp.dbFile
+        val dbFile = getDatabasePath(dbName)
+        dbFile?.parentFile?.listFiles()?.forEach { file ->
+            val name = file.name
+            if (name.startsWith("launcher") && !name.startsWith(dbName)) {
+                file.delete()
+            }
         }
     }
 
