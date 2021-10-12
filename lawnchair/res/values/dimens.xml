@@ -40,7 +40,7 @@
     <dimen name="qsb_min_width_with_mic">124dp</dimen>
     <dimen name="qsb_shadow_margin">6dp</dimen>
     <dimen name="qsb_widget_height">64dp</dimen>
-    <dimen name="qsb_content_height">52dp</dimen>
+    <dimen name="qsb_icon_width">56dp</dimen>
 
     <dimen name="search_box_container_height">60dp</dimen>
     <dimen name="search_box_height">52dp</dimen>
