@@ -389,6 +389,7 @@ public class TaskView extends FrameLayout implements Reusable {
     // Used when in SplitScreenSelectState
     private float mSplitSelectTranslationY;
     private float mSplitSelectTranslationX;
+    private float mSplitSelectScrollOffsetPrimary;
 
     private ObjectAnimator mIconAndDimAnimator;
     private float mIconScaleAnimStartProgress = 0;
@@ -1031,6 +1032,11 @@ public class TaskView extends FrameLayout implements Reusable {
         mSplitSelectTranslationY = y;
         applyTranslationY();
     }
+
+    public void setSplitScrollOffsetPrimary(float splitSelectScrollOffsetPrimary) {
+        mSplitSelectScrollOffsetPrimary = splitSelectScrollOffsetPrimary;
+    }
+
     private void setDismissTranslationX(float x) {
         mDismissTranslationX = x;
         applyTranslationX();
@@ -1101,6 +1107,7 @@ public class TaskView extends FrameLayout implements Reusable {
         } else {
             scrollAdjustment += getPrimaryNonGridTranslationProperty().get(this);
         }
+        scrollAdjustment += mSplitSelectScrollOffsetPrimary;
         return scrollAdjustment;
     }
 
