@@ -5,9 +5,10 @@ import android.os.CancellationSignal
 import android.view.WindowInsets
 import androidx.annotation.RequiresApi
 import app.lawnchair.preferences.PreferenceManager
-import app.lawnchair.util.runOnEnd
 import com.android.launcher3.LauncherState
 import com.android.launcher3.Utilities
+import com.android.launcher3.anim.AnimatorListeners.forEndCallback
+import com.android.launcher3.anim.AnimatorListeners.forSuccessCallback
 import com.android.launcher3.anim.Interpolators
 import com.android.launcher3.anim.PendingAnimation
 import com.android.launcher3.statemanager.StateManager
@@ -42,22 +43,20 @@ class SearchBarStateHandler(private val launcher: LawnchairLauncher) :
                 handler
             )
             animation.setFloat(handler.progress, AnimatedFloat.VALUE, 1f, Interpolators.DEACCEL_1_7)
-            animation.runOnEnd { isSuccess ->
-                if (isSuccess) {
-                    handler.onAnimationEnd()
-                    cancellationSignal.cancel()
-                }
-            }
+            animation.addListener(forEndCallback(Runnable {
+                handler.onAnimationEnd()
+                cancellationSignal.cancel()
+            }))
         }
         if (launcher.isInState(LauncherState.NORMAL) && toState == LauncherState.ALL_APPS) {
             if (autoShowKeyboard.get()) {
                 val progress = AnimatedFloat()
                 animation.setFloat(progress, AnimatedFloat.VALUE, 1f, Interpolators.LINEAR)
-                animation.runOnEnd { isSuccess ->
-                    if (isSuccess && progress.value > 0.5f) {
+                animation.addListener(forSuccessCallback {
+                    if (progress.value > 0.5f) {
                         showKeyboard()
                     }
-                }
+                })
             }
         }
     }
