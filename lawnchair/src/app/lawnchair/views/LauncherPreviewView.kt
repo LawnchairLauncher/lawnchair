@@ -40,6 +40,7 @@ class LauncherPreviewView(
     fun destroy() {
         destroyed = true
         onDestroyCallbacks.executeAllAndDestroy()
+        removeAllViews()
     }
 
     private fun loadAsync() {

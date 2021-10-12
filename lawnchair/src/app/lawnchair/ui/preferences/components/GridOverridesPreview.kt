@@ -1,22 +1,24 @@
 package app.lawnchair.ui.preferences.components
 
 import android.view.View
-import android.widget.FrameLayout
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.lifecycle.Lifecycle
 import app.lawnchair.DeviceProfileOverrides
+import app.lawnchair.LauncherPreviewManager
 import app.lawnchair.preferences.preferenceManager
-import app.lawnchair.views.LauncherPreviewView
+import app.lawnchair.util.lifecycleState
 import com.android.launcher3.InvariantDeviceProfile
 
 @Composable
@@ -29,7 +31,7 @@ fun GridOverridesPreview(
     val dp = idp.getDeviceProfile(context)
     val ratio = dp.widthPx.toFloat() / dp.heightPx.toFloat()
 
-    val previewView by previewOverrideOptions(idp, updateGridOptions)
+    val previewView = previewOverrideOptions(idp, updateGridOptions)
     Box(
         modifier = modifier
             .aspectRatio(ratio, matchHeightConstraintsFirst = true)
@@ -38,7 +40,12 @@ fun GridOverridesPreview(
         WallpaperPreview(modifier = Modifier.fillMaxSize())
         Crossfade(targetState = previewView) {
             val view = it
-            AndroidView(factory = { view }, modifier = Modifier.fillMaxSize())
+            AndroidView(
+                factory = { context ->
+                    view ?: View(context)
+                },
+                modifier = Modifier.fillMaxSize()
+            )
         }
     }
 }
@@ -47,15 +54,21 @@ fun GridOverridesPreview(
 fun previewOverrideOptions(
     idp: InvariantDeviceProfile,
     updateGridOptions: DeviceProfileOverrides.Options.() -> Unit
-): State<View> {
+): View? {
     val context = LocalContext.current
     val prefs = preferenceManager()
     val defaultGrid = idp.closestProfile
-    return remember {
+    val lifecycleState = lifecycleState()
+    if (!lifecycleState.isAtLeast(Lifecycle.State.RESUMED)) {
+        return null
+    }
+    val previewManager = remember { LauncherPreviewManager(context) }
+    val previewView by remember {
         derivedStateOf {
             val options = DeviceProfileOverrides.Options(prefs, defaultGrid)
             updateGridOptions(options)
-            LauncherPreviewView(context, options)
+            previewManager.createPreviewView(options)
         }
     }
+    return previewView
 }
