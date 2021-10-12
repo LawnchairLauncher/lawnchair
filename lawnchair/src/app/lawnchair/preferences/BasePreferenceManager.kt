@@ -23,15 +23,39 @@ import androidx.core.content.edit
 import app.lawnchair.font.FontCache
 import com.android.launcher3.InvariantDeviceProfile
 import com.android.launcher3.Utilities
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import java.util.concurrent.CopyOnWriteArraySet
 
 abstract class BasePreferenceManager(private val context: Context) : SharedPreferences.OnSharedPreferenceChangeListener {
     val sp: SharedPreferences = Utilities.getPrefs(context)
     val prefsMap = mutableMapOf<String, BasePref<*>>()
-    private val coroutineScope = CoroutineScope(Dispatchers.IO)
+
+    private var changedPrefs: MutableSet<BasePref<*>>? = null
+    private var editor: SharedPreferences.Editor? = null
+    private var inBatchMode = false
+        set(value) {
+            if (field != value) {
+                if (field) {
+                    editor!!.apply()
+                    editor = null
+                    val tmp = changedPrefs?.let { HashSet(it) }
+                    changedPrefs = null
+                    if (tmp != null) {
+                        tmp.forEach { it.invalidate() }
+                        tmp.forEach { it.onSharedPreferenceChange() }
+                    }
+                }
+                field = value
+                if (field) {
+                    editor = sp.edit()
+                    changedPrefs = mutableSetOf()
+                }
+            }
+        }
+    private var activeBatchCount = 0
+        set(value) {
+            field = value
+            inBatchMode = value > 0
+        }
 
     init {
         if (!sp.contains("version")) {
@@ -42,21 +66,40 @@ abstract class BasePreferenceManager(private val context: Context) : SharedPrefe
     }
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String) {
-        prefsMap[key]?.onSharedPreferenceChange()
+        val pref = prefsMap[key] ?: return
+        val changedSet = changedPrefs
+        if (changedSet != null) {
+            changedSet.add(pref)
+        } else {
+            pref.invalidate()
+            pref.onSharedPreferenceChange()
+        }
+    }
+
+    fun batchEdit(block: () -> Unit) {
+        try {
+            activeBatchCount++
+            block()
+        } finally {
+            activeBatchCount--
+        }
     }
 
     private inline fun editSp(crossinline block: SharedPreferences.Editor.() -> Unit) {
-        coroutineScope.launch {
-            with(sp.edit()) {
-                block(this)
-                apply()
-            }
+        if (inBatchMode) {
+            block(editor!!)
+        } else {
+            sp.edit { block(this) }
         }
     }
 
     abstract inner class BasePref<T>(val key: String, private val primaryListener: ChangeListener?) : PrefEntry<T> {
         protected var loaded = false
         private val listeners = CopyOnWriteArraySet<PreferenceChangeListener>()
+
+        fun invalidate() {
+            loaded = false
+        }
 
         fun onSharedPreferenceChange() {
             loaded = false

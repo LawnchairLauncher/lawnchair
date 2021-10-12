@@ -83,8 +83,10 @@ fun HomeScreenGridPreferences() {
 
             val navController = LocalNavController.current
             val applyOverrides = {
-                columnsAdapter.onChange(columns.value)
-                rowsAdapter.onChange(rows.value)
+                prefs.batchEdit {
+                    columnsAdapter.onChange(columns.value)
+                    rowsAdapter.onChange(rows.value)
+                }
                 navController.popBackStack()
             }
 
