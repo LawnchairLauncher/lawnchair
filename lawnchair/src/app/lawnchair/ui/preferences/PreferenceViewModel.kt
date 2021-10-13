@@ -21,6 +21,7 @@ import android.content.Intent
 import androidx.compose.runtime.mutableStateOf
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.AndroidViewModel
+import app.lawnchair.icons.CustomAdaptiveIconDrawable
 import app.lawnchair.ui.preferences.about.licenses.License
 import com.android.launcher3.R
 import kotlinx.coroutines.launch
@@ -47,11 +48,13 @@ class PreferenceViewModel(application: Application) : AndroidViewModel(applicati
                 IconPackInfo(
                     info.loadLabel(pm).toString(),
                     info.activityInfo.packageName,
-                    info.loadIcon(pm)
+                    CustomAdaptiveIconDrawable.wrapNonNull(info.loadIcon(pm))
                 )
             }
 
-        val lawnchairIcon = ContextCompat.getDrawable(context, R.drawable.ic_launcher_home)!!
+        val lawnchairIcon = CustomAdaptiveIconDrawable.wrapNonNull(
+            ContextCompat.getDrawable(context, R.drawable.ic_launcher_home)!!
+        )
         val defaultIconPack = IconPackInfo(context.getString(R.string.system_icons), "", lawnchairIcon)
 
         return listOf(defaultIconPack) + iconPacks.sortedBy { it.name }
