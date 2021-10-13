@@ -154,12 +154,7 @@
         <attr name="demoModeLayoutId" format="reference" />
         <attr name="isScalable" format="boolean" />
         <attr name="devicePaddingId" format="reference" />
-        <attr name="gridEnabled" format="integer" >
-            <!-- Enable on all devices; default value -->
-            <enum name="all_displays" value="0" />
-            <!-- Enable on single display devices only -->
-            <enum name="single_display" value="1" />
-        </attr>
+        <attr name="gridEnabled" format="boolean" />
 
     </declare-styleable>
 
@@ -241,10 +236,7 @@
         <attr name="twoPanelLandscapeIconTextSize" format="float" />
 
         <!-- If set, this display option is used to determine the default grid -->
-        <attr name="canBeDefault" format="boolean|integer" >
-            <!-- The profile can be default on split display devices -->
-            <flag name="split_display" value="0x2" />
-        </attr>
+        <attr name="canBeDefault" format="boolean" />
 
         <!-- Margin on left and right of the workspace when GridDisplayOption#isScalable is true -->
         <attr name="horizontalMargin" format="float"/>
