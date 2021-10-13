@@ -30,6 +30,7 @@ import app.lawnchair.util.restartLauncher
 import com.android.launcher3.InvariantDeviceProfile
 import com.android.launcher3.Utilities
 import com.android.quickstep.RecentsActivity
+import com.android.systemui.shared.system.QuickStepContract
 import java.io.File
 
 class LawnchairApp : Application() {
@@ -43,6 +44,7 @@ class LawnchairApp : Application() {
     override fun onCreate() {
         super.onCreate()
         instance = this
+        QuickStepContract.sRecentsDisabled = !recentsEnabled
     }
 
     fun onLauncherAppStateCreated() {

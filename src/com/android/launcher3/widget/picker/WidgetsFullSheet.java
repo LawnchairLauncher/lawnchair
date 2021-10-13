@@ -37,6 +37,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.view.WindowInsets;
 import android.view.animation.AnimationUtils;
 import android.view.animation.Interpolator;
@@ -44,6 +45,8 @@ import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
+import androidx.core.view.WindowInsetsCompat;
+import androidx.core.view.WindowInsetsControllerCompat;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -670,7 +673,13 @@ public class WidgetsFullSheet extends BaseWidgetSheet
     @Override
     public void onDragStart(boolean start, float startDisplacement) {
         super.onDragStart(start, startDisplacement);
-        getWindowInsetsController().hide(WindowInsets.Type.ime());
+        if (Utilities.ATLEAST_R) {
+            getWindowInsetsController().hide(WindowInsets.Type.ime());
+        } else {
+            Window window = mActivityContext.getWindow();
+            WindowInsetsControllerCompat controller = new WindowInsetsControllerCompat(window, this);
+            controller.hide(WindowInsetsCompat.Type.ime());
+        }
     }
 
     @Nullable private View getViewToShowEducationTip() {
