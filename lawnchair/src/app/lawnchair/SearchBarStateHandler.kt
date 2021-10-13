@@ -4,6 +4,7 @@ import android.os.Build
 import android.os.CancellationSignal
 import android.view.WindowInsets
 import androidx.annotation.RequiresApi
+import androidx.core.view.WindowInsetsCompat
 import app.lawnchair.preferences.PreferenceManager
 import com.android.launcher3.LauncherState
 import com.android.launcher3.Utilities
@@ -31,22 +32,33 @@ class SearchBarStateHandler(private val launcher: LawnchairLauncher) :
         config: StateAnimationConfig,
         animation: PendingAnimation
     ) {
-        if (Utilities.ATLEAST_R && shouldAnimateKeyboard(toState)) {
-            val handler = SearchBarInsetsHandler(launcher.allAppsController.shiftRange)
-            val cancellationSignal = CancellationSignal()
-            val windowInsetsController = launcher.appsView.windowInsetsController
-            windowInsetsController?.controlWindowInsetsAnimation(
-                WindowInsets.Type.ime(),
-                -1,
-                Interpolators.LINEAR,
-                cancellationSignal,
-                handler
-            )
-            animation.setFloat(handler.progress, AnimatedFloat.VALUE, 1f, Interpolators.DEACCEL_1_7)
-            animation.addListener(forEndCallback(Runnable {
-                handler.onAnimationEnd()
-                cancellationSignal.cancel()
-            }))
+        if (shouldAnimateKeyboard(toState)) {
+            if (Utilities.ATLEAST_R) {
+                val handler = SearchBarInsetsHandler(launcher.allAppsController.shiftRange)
+                val cancellationSignal = CancellationSignal()
+                val windowInsetsController = launcher.appsView.windowInsetsController
+                windowInsetsController?.controlWindowInsetsAnimation(
+                    WindowInsets.Type.ime(),
+                    -1,
+                    Interpolators.LINEAR,
+                    cancellationSignal,
+                    handler
+                )
+                animation.setFloat(
+                    handler.progress,
+                    AnimatedFloat.VALUE,
+                    1f,
+                    Interpolators.DEACCEL_1_7
+                )
+                animation.addListener(forEndCallback(Runnable {
+                    handler.onAnimationEnd()
+                    cancellationSignal.cancel()
+                }))
+            } else {
+                animation.addListener(forSuccessCallback {
+                    launcher.appsView.searchUiManager.editText?.hideKeyboard()
+                })
+            }
         }
         if (launcher.isInState(LauncherState.NORMAL) && toState == LauncherState.ALL_APPS) {
             if (autoShowKeyboard.get()) {
@@ -61,10 +73,9 @@ class SearchBarStateHandler(private val launcher: LawnchairLauncher) :
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.R)
     private fun shouldAnimateKeyboard(toState: LauncherState): Boolean {
-        val rootWindowInsets = launcher.rootView.rootWindowInsets
-        val keyboardVisible = rootWindowInsets?.isVisible(WindowInsets.Type.ime()) ?: false
+        val rootWindowInsets = WindowInsetsCompat.toWindowInsetsCompat(launcher.rootView.rootWindowInsets)
+        val keyboardVisible = rootWindowInsets.isVisible(WindowInsetsCompat.Type.ime())
         return keyboardVisible && launcher.isInState(LauncherState.ALL_APPS) && toState != LauncherState.ALL_APPS
     }
 
