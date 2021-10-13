@@ -28,7 +28,6 @@ import android.util.Log
 import app.lawnchair.preferences.PreferenceManager
 import app.lawnchair.util.restartLauncher
 import com.android.launcher3.InvariantDeviceProfile
-import com.android.launcher3.Utilities
 import com.android.quickstep.RecentsActivity
 import com.android.systemui.shared.system.QuickStepContract
 import java.io.File
@@ -36,7 +35,6 @@ import java.io.File
 class LawnchairApp : Application() {
 
     val activityHandler = ActivityHandler()
-    var mismatchedQuickstepTarget = false
     private val recentsEnabled by lazy { checkRecentsComponent() }
     internal var accessibilityService: LawnchairAccessibilityService? = null
     val TAG = "LawnchairApp"
@@ -124,8 +122,8 @@ class LawnchairApp : Application() {
     }
 
     private fun checkRecentsComponent(): Boolean {
-        if (!Utilities.ATLEAST_R) {
-            Log.d(TAG, "API < P, disabling recents")
+        if (Build.VERSION.SDK_INT !in Build.VERSION_CODES.R..Build.VERSION_CODES.S) {
+            Log.d(TAG, "API ${Build.VERSION.SDK_INT} unsupported, disabling recents")
             return false
         }
 
@@ -143,11 +141,6 @@ class LawnchairApp : Application() {
                 && recentsComponent.className == RecentsActivity::class.java.name
         if (!isRecentsComponent) {
             Log.d(TAG, "config_recentsComponentName ($recentsComponent) is not Lawnchair, disabling recents")
-            return false
-        }
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.R) {
-            Log.d(TAG, "Quickstep target doesn't match, disabling recents")
-            mismatchedQuickstepTarget = true
             return false
         }
         return true
