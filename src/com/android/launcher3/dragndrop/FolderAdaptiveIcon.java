@@ -39,11 +39,13 @@ import com.android.launcher3.graphics.ShiftedBitmapDrawable;
 import com.android.launcher3.icons.BitmapRenderer;
 import com.android.launcher3.util.Preconditions;
 
+import app.lawnchair.icons.CustomAdaptiveIconDrawable;
+
 /**
  * {@link AdaptiveIconDrawable} representation of a {@link FolderIcon}
  */
 @TargetApi(Build.VERSION_CODES.O)
-public class FolderAdaptiveIcon extends AdaptiveIconDrawable {
+public class FolderAdaptiveIcon extends CustomAdaptiveIconDrawable {
     private static final String TAG = "FolderAdaptiveIcon";
 
     private final Drawable mBadge;

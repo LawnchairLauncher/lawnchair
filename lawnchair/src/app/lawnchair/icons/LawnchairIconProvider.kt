@@ -2,6 +2,9 @@ package app.lawnchair.icons
 
 import android.content.*
 import android.content.Intent.*
+import android.content.pm.ActivityInfo
+import android.content.pm.LauncherActivityInfo
+import android.graphics.drawable.AdaptiveIconDrawable
 import android.graphics.drawable.Drawable
 import android.os.Handler
 import android.os.Process
@@ -44,6 +47,18 @@ class LawnchairIconProvider @JvmOverloads constructor(
         }
         val icon = iconEntry?.getDrawable(iconDpi, user)
         return icon ?: super.getIconWithOverrides(packageName, component, user, iconDpi, fallback)
+    }
+
+    override fun getIcon(info: ActivityInfo?): Drawable {
+        return CustomAdaptiveIconDrawable.wrapNonNull(super.getIcon(info))
+    }
+
+    override fun getIcon(info: ActivityInfo?, iconDpi: Int): Drawable {
+        return CustomAdaptiveIconDrawable.wrapNonNull(super.getIcon(info, iconDpi))
+    }
+
+    override fun getIcon(info: LauncherActivityInfo?, iconDpi: Int): Drawable {
+        return CustomAdaptiveIconDrawable.wrapNonNull(super.getIcon(info, iconDpi))
     }
 
     override fun getSystemStateForPackage(systemState: String, packageName: String): String {

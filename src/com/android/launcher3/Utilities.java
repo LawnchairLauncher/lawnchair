@@ -96,6 +96,7 @@ import java.util.function.Consumer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import app.lawnchair.icons.CustomAdaptiveIconDrawable;
 import app.lawnchair.preferences.PreferenceManager;
 
 /**

@@ -105,6 +105,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 import app.lawnchair.font.FontCache;
 import app.lawnchair.font.FontManager;
+import app.lawnchair.icons.CustomAdaptiveIconDrawable;
 import app.lawnchair.icons.IconPackProvider;
 import app.lawnchair.preferences.PreferenceManager;
 
@@ -250,7 +251,7 @@ public class LauncherPreviewRenderer extends ContextWrapper
 
         BaseIconFactory iconFactory =
                 new BaseIconFactory(context, mIdp.fillResIconDpi, mIdp.iconBitmapSize) { };
-        BitmapInfo iconInfo = iconFactory.createBadgedIconBitmap(new AdaptiveIconDrawable(
+        BitmapInfo iconInfo = iconFactory.createBadgedIconBitmap(new CustomAdaptiveIconDrawable(
                         new ColorDrawable(Color.WHITE), new ColorDrawable(Color.WHITE)),
                 Process.myUserHandle(),
                 Build.VERSION.SDK_INT);

@@ -36,6 +36,8 @@ import com.android.launcher3.icons.cache.CachingLogic;
 import com.android.launcher3.shortcuts.ShortcutKey;
 import com.android.launcher3.util.Themes;
 
+import app.lawnchair.icons.CustomAdaptiveIconDrawable;
+
 /**
  * Caching logic for shortcuts.
  */
@@ -98,8 +100,9 @@ public class ShortcutCachingLogic implements CachingLogic<ShortcutInfo> {
             return null;
         }
         try {
-            return context.getSystemService(LauncherApps.class)
+            Drawable icon = context.getSystemService(LauncherApps.class)
                     .getShortcutIconDrawable(shortcutInfo, density);
+            return CustomAdaptiveIconDrawable.wrap(icon);
         } catch (SecurityException | IllegalStateException e) {
             Log.e(TAG, "Failed to get shortcut icon", e);
             return null;
