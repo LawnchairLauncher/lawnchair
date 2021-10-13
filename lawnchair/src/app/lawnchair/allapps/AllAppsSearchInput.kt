@@ -14,9 +14,11 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import app.lawnchair.launcher
+import app.lawnchair.preferences.PreferenceManager
 import app.lawnchair.search.LawnchairAppSearchAlgorithm
 import com.android.launcher3.ExtendedEditText
 import com.android.launcher3.Insettable
+import com.android.launcher3.LauncherState
 import com.android.launcher3.R
 import com.android.launcher3.allapps.*
 import com.android.launcher3.allapps.search.AllAppsSearchBarController
@@ -56,6 +58,13 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) : LinearLayout(
         actionButton.isVisible = false
         actionButton.setOnClickListener {
             input.reset()
+        }
+        input.addTextChangedListener {
+            if (input.text.toString() == "/lawnchairdebug") {
+                val enableDebugMenu = PreferenceManager.getInstance(context).enableDebugMenu
+                enableDebugMenu.set(!enableDebugMenu.get())
+                launcher.stateManager.goToState(LauncherState.NORMAL)
+            }
         }
     }
 

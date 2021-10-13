@@ -84,6 +84,7 @@ class PreferenceManager private constructor(private val context: Context) : Base
     val showStatusBar = BoolPref("pref_showStatusBar", true, recreate)
     val allAppsIconLabels = BoolPref("pref_allAppsIconLabels", true, reloadGrid)
     val searchAutoShowKeyboard = BoolPref("pref_searchAutoShowKeyboard", false)
+    val enableDebugMenu = BoolPref("pref_enableDebugMenu", false)
 
     private val fontCache = FontCache.INSTANCE.get(context)
     val workspaceFont = FontPref("pref_workspaceFont", fontCache.uiTextMedium, recreate)
