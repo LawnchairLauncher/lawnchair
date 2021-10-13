@@ -160,6 +160,7 @@ fun notificationDotsEnabled(): Boolean {
 
     DisposableEffect(null) {
         val settingsCache = SettingsCache.INSTANCE.get(context)
+        observer.onSettingsChanged(false)
         settingsCache.register(NOTIFICATION_BADGING_URI, observer)
         onDispose { settingsCache.unregister(NOTIFICATION_BADGING_URI, observer) }
     }
