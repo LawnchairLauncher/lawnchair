@@ -64,30 +64,29 @@ fun PreferenceGroup(
 }
 
 @Composable
-fun PreferenceGroupHeading(heading: String? = null, isFirstChild: Boolean) {
-    Spacer(
-        modifier = Modifier.requiredHeight(
-            if (isFirstChild) {
-                if (heading != null) 0.dp else 8.dp
-            } else {
-                if (heading != null) 8.dp else 16.dp
-            }
-        )
-    )
-    heading?.let {
+fun PreferenceGroupHeading(
+    heading: String? = null,
+    isFirstChild: Boolean
+) {
+    var spacerHeight = 0
+    if (heading == null) spacerHeight += 8
+    if (!isFirstChild) spacerHeight += 8
+
+    Spacer(modifier = Modifier.requiredHeight(spacerHeight.dp))
+    if (heading != null) {
         Column(
+            verticalArrangement = Arrangement.Center,
             modifier = Modifier
                 .height(48.dp)
                 .padding(horizontal = 32.dp)
-                .fillMaxWidth(),
-            verticalArrangement = Arrangement.Center
+                .fillMaxWidth()
         ) {
             CompositionLocalProvider(
                 LocalContentAlpha provides ContentAlpha.medium,
                 LocalContentColor provides MaterialTheme.colors.onBackground
             ) {
                 Text(
-                    text = it,
+                    text = heading,
                     style = MaterialTheme.typography.subtitle2,
                     color = MaterialTheme.colors.primary
                 )
