@@ -16,18 +16,22 @@
 
 package app.lawnchair.gestures
 
+import androidx.lifecycle.lifecycleScope
 import app.lawnchair.LawnchairLauncher
 import app.lawnchair.gestures.handlers.SleepGestureHandler
 import app.lawnchair.preferences.PreferenceManager
+import kotlinx.coroutines.launch
 
-class GestureController(launcher: LawnchairLauncher) {
+class GestureController(private val launcher: LawnchairLauncher) {
     private val prefs = PreferenceManager.getInstance(launcher)
     private val doubleTapHandler = SleepGestureHandler(launcher)
 
     fun onDoubleTap() {
         // TODO: proper gesture selection system
         if (prefs.workspaceDt2s.get()) {
-            doubleTapHandler.onTrigger()
+            launcher.lifecycleScope.launch {
+                doubleTapHandler.onTrigger()
+            }
         }
     }
 }

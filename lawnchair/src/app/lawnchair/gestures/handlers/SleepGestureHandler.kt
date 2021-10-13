@@ -34,7 +34,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.lifecycleScope
 import app.lawnchair.LawnchairLauncher
 import app.lawnchair.gestures.GestureHandler
 import app.lawnchair.lawnchairApp
@@ -46,44 +45,41 @@ import com.android.launcher3.R
 import com.android.launcher3.Utilities
 import kotlinx.coroutines.launch
 
-class SleepGestureHandler(private val launcher: LawnchairLauncher) : GestureHandler() {
+class SleepGestureHandler(launcher: LawnchairLauncher) : GestureHandler() {
 
-    override fun onTrigger() {
-        method?.sleep()
+    override suspend fun onTrigger() {
+        methods.first { it.isSupported() }.sleep()
     }
 
     @OptIn(ExperimentalMaterialApi::class)
-    private val method: SleepMethod? by lazy {
-        listOf(
-            SleepMethodRoot(launcher),
-            SleepMethodPieAccessibility(launcher),
-            SleepMethodDeviceAdmin(launcher)
-        ).firstOrNull { it.supported }
-    }
+    private val methods = listOf(
+        SleepMethodRoot(launcher),
+        SleepMethodPieAccessibility(launcher),
+        SleepMethodDeviceAdmin(launcher)
+    )
 
     abstract class SleepMethod(protected val launcher: LawnchairLauncher) {
-        abstract val supported: Boolean
-        abstract fun sleep()
+        abstract suspend fun isSupported(): Boolean
+        abstract suspend fun sleep()
     }
 }
 
 class SleepMethodRoot(launcher: LawnchairLauncher) : SleepGestureHandler.SleepMethod(launcher) {
-    override val supported get() = RootHelperManager.isAvailable
     private val rootHelperManager = RootHelperManager.INSTANCE.get(launcher)
 
-    override fun sleep() {
-        launcher.lifecycleScope.launch {
-            rootHelperManager.getService().goToSleep()
-        }
+    override suspend fun isSupported() = rootHelperManager.isAvailable()
+
+    override suspend fun sleep() {
+        rootHelperManager.getService().goToSleep()
     }
 }
 
 @ExperimentalMaterialApi
 class SleepMethodPieAccessibility(launcher: LawnchairLauncher) : SleepGestureHandler.SleepMethod(launcher) {
-    override val supported = Utilities.ATLEAST_P
+    override suspend fun isSupported() = Utilities.ATLEAST_P
 
     @TargetApi(Build.VERSION_CODES.P)
-    override fun sleep() {
+    override suspend fun sleep() {
         val app = launcher.lawnchairApp
         if (!app.isAccessibilityServiceBound()) {
             val intent = Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
@@ -104,9 +100,9 @@ class SleepMethodPieAccessibility(launcher: LawnchairLauncher) : SleepGestureHan
 
 @ExperimentalMaterialApi
 class SleepMethodDeviceAdmin(launcher: LawnchairLauncher) : SleepGestureHandler.SleepMethod(launcher) {
-    override val supported = true
+    override suspend fun isSupported() = true
 
-    override fun sleep() {
+    override suspend fun sleep() {
         val devicePolicyManager = launcher.getSystemService(Context.DEVICE_POLICY_SERVICE) as DevicePolicyManager
         if (!devicePolicyManager.isAdminActive(ComponentName(launcher, SleepDeviceAdmin::class.java))) {
             val intent = Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN)

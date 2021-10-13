@@ -18,5 +18,5 @@ package app.lawnchair.gestures
 
 abstract class GestureHandler {
 
-    abstract fun onTrigger()
+    abstract suspend fun onTrigger()
 }

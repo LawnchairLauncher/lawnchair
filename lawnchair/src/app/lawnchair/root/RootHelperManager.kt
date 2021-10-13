@@ -9,45 +9,55 @@ import app.lawnchair.preferences.PreferenceManager
 import com.android.launcher3.util.MainThreadInitializedObject
 import com.topjohnwu.superuser.Shell
 import com.topjohnwu.superuser.ipc.RootService
-import java.util.concurrent.CopyOnWriteArraySet
+import kotlinx.coroutines.*
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
 class RootHelperManager(private val context: Context) {
+    private val scope = MainScope() + CoroutineName("RootHelperManager")
     private val prefs = PreferenceManager.getInstance(context)
-    private var rootHelper: IRootHelper? = null
-    private val connectionListeners = CopyOnWriteArraySet<Runnable>()
-    private val connection = object : ServiceConnection {
-        override fun onServiceConnected(name: ComponentName, service: IBinder) {
-            rootHelper = IRootHelper.Stub.asInterface(service)
-            connectionListeners.forEach { it.run() }
-            connectionListeners.clear()
-        }
-
-        override fun onServiceDisconnected(name: ComponentName) {
-            rootHelper = null
+    private val isAvailableDeferred by lazy {
+        scope.async(Dispatchers.IO) {
+            Shell.rootAccess()
         }
     }
+    private var rootHelperDeferred: Deferred<IRootHelper>? = null
+
+    suspend fun isAvailable() = isAvailableDeferred.await()
 
     @Throws(RootNotAvailableException::class)
     suspend fun getService(): IRootHelper {
-        prefs.autoLaunchRoot.set(isAvailable)
+        prefs.autoLaunchRoot.set(isAvailable())
 
-        if (!isAvailable) throw RootNotAvailableException()
-        if (rootHelper != null) return rootHelper!!
+        if (!isAvailable()) throw RootNotAvailableException()
 
-        val intent = Intent(context, RootHelper::class.java)
-        RootService.bind(intent, connection)
+        if (rootHelperDeferred == null) {
+            rootHelperDeferred = scope.async {
+                bindImpl { rootHelperDeferred = null }
+            }
+        }
+        return rootHelperDeferred!!.await()
+    }
 
-        return suspendCoroutine {
-            connectionListeners.add {
-                it.resume(rootHelper!!)
+    private suspend fun bindImpl(onDisconnected: () -> Unit): IRootHelper {
+        return withContext(Dispatchers.IO) {
+            val intent = Intent(context, RootHelper::class.java)
+            suspendCoroutine {
+                val connection = object : ServiceConnection {
+                    override fun onServiceConnected(name: ComponentName, service: IBinder) {
+                        it.resume(IRootHelper.Stub.asInterface(service))
+                    }
+
+                    override fun onServiceDisconnected(name: ComponentName) {
+                        onDisconnected()
+                    }
+                }
+                RootService.bind(intent, connection)
             }
         }
     }
 
     companion object {
         val INSTANCE = MainThreadInitializedObject(::RootHelperManager)
-        val isAvailable by lazy { Shell.rootAccess() }
     }
 }
