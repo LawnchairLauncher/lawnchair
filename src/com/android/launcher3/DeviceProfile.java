@@ -629,17 +629,10 @@ public class DeviceProfile {
         }
 
         // All apps
-        if (numShownAllAppsColumns != inv.numColumns) {
-            allAppsIconSizePx = pxFromDp(inv.allAppsIconSize, mMetrics);
-            allAppsIconTextSizePx = pxFromSp(inv.allAppsIconTextSize, mMetrics);
-            allAppsIconDrawablePaddingPx = iconDrawablePaddingOriginalPx;
-            autoResizeAllAppsCells();
-        } else {
-            allAppsIconSizePx = iconSizePx;
-            allAppsIconTextSizePx = iconTextSizePx;
-            allAppsIconDrawablePaddingPx = iconDrawablePaddingPx;
-            allAppsCellHeightPx = getCellSize().y;
-        }
+        allAppsIconSizePx = pxFromDp(inv.allAppsIconSize, mMetrics);
+        allAppsIconTextSizePx = pxFromSp(inv.allAppsIconTextSize, mMetrics);
+        allAppsIconDrawablePaddingPx = iconDrawablePaddingOriginalPx;
+        autoResizeAllAppsCells();
         allAppsCellWidthPx = allAppsIconSizePx + allAppsIconDrawablePaddingPx;
 
         if (isVerticalLayout) {
