@@ -29,6 +29,8 @@ import com.android.launcher3.util.ResourceBasedOverride;
 
 import org.chickenhook.restrictionbypass.Unseal;
 
+import app.lawnchair.preferences.PreferenceManager;
+
 /**
  * Utility class to handle one time initializations of the main process
  */
@@ -44,6 +46,7 @@ public class MainProcessInitializer implements ResourceBasedOverride {
             Log.e(TAG, "Unseal fail!");
             e.printStackTrace();
         }
+        PreferenceManager.getInstance(context);
         Overrides.getObject(
                 MainProcessInitializer.class, context, R.string.main_process_initializer_class)
                 .init(context);
