@@ -16,7 +16,6 @@ import androidx.core.widget.addTextChangedListener
 import app.lawnchair.launcher
 import app.lawnchair.preferences.PreferenceManager
 import app.lawnchair.search.LawnchairAppSearchAlgorithm
-import com.android.launcher3.ExtendedEditText
 import com.android.launcher3.Insettable
 import com.android.launcher3.LauncherState
 import com.android.launcher3.R
@@ -49,16 +48,23 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) : LinearLayout(
     override fun onFinishInflate() {
         super.onFinishInflate()
         hint = ViewCompat.requireViewById(this, R.id.hint)
+
         input = ViewCompat.requireViewById(this, R.id.input)
-        input.setHint(R.string.all_apps_search_bar_hint)
-        input.addTextChangedListener {
-            actionButton.isVisible = !it.isNullOrEmpty()
+        with(input) {
+            setHint(R.string.all_apps_search_bar_hint)
+            addTextChangedListener {
+                actionButton.isVisible = !it.isNullOrEmpty()
+            }
         }
+
         actionButton = ViewCompat.requireViewById(this, R.id.action_btn)
-        actionButton.isVisible = false
-        actionButton.setOnClickListener {
-            input.reset()
+        with(actionButton) {
+            isVisible = false
+            setOnClickListener {
+                input.reset()
+            }
         }
+
         input.addTextChangedListener {
             if (input.text.toString() == "/lawnchairdebug") {
                 val enableDebugMenu = PreferenceManager.getInstance(context).enableDebugMenu
@@ -102,7 +108,7 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) : LinearLayout(
         if (!searchBarController.isSearchFieldFocused && event.action == KeyEvent.ACTION_DOWN) {
             val unicodeChar = event.unicodeChar
             val isKeyNotWhitespace = unicodeChar > 0 &&
-                    !Character.isWhitespace(unicodeChar) && !Character.isSpaceChar(unicodeChar)
+                !Character.isWhitespace(unicodeChar) && !Character.isSpaceChar(unicodeChar)
             if (isKeyNotWhitespace) {
                 val gotKey = TextKeyListener.getInstance().onKeyDown(input, searchQueryBuilder, event.keyCode, event)
                 if (gotKey && searchQueryBuilder.isNotEmpty()) {
@@ -161,7 +167,5 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) : LinearLayout(
         offsetTopAndBottom(allAppsSearchVerticalOffset)
     }
 
-    override fun getEditText(): ExtendedEditText {
-        return input
-    }
+    override fun getEditText() = input
 }
