@@ -47,7 +47,7 @@ import com.android.quickstep.SysUINavigationMode;
 import com.android.quickstep.SysUINavigationMode.Mode;
 import com.android.quickstep.SystemUiProxy;
 import com.android.quickstep.TouchInteractionService;
-import com.android.quickstep.util.ScopedUnfoldTransitionProgressProvider;
+import com.android.systemui.unfold.util.ScopedUnfoldTransitionProgressProvider;
 
 /**
  * Class to manage taskbar lifecycle
