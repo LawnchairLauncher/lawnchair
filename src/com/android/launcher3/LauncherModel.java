@@ -60,6 +60,7 @@ import com.android.launcher3.pm.InstallSessionTracker;
 import com.android.launcher3.pm.PackageInstallInfo;
 import com.android.launcher3.pm.UserCache;
 import com.android.launcher3.shortcuts.ShortcutRequest;
+import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.util.IntSet;
 import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.PackageUserKey;
@@ -346,6 +347,12 @@ public class LauncherModel extends LauncherApps.Callback implements InstallSessi
     public void addCallbacks(Callbacks callbacks) {
         Preconditions.assertUIThread();
         synchronized (mCallbacksList) {
+            if (TestProtocol.sDebugTracing) {
+                Log.d(TestProtocol.NULL_INT_SET, "addCallbacks pointer: "
+                        + callbacks
+                        + ", name: "
+                        + callbacks.getClass().getName(), new Exception());
+            }
             mCallbacksList.add(callbacks);
         }
     }
