@@ -173,9 +173,11 @@ public class WorkspaceItemInfo extends ItemInfoWithIcon {
         }
         disabledMessage = shortcutInfo.getDisabledMessage();
 
-        Person[] persons = ApiWrapper.getPersons(shortcutInfo);
-        personKeys = persons.length == 0 ? Utilities.EMPTY_STRING_ARRAY
-            : Arrays.stream(persons).map(Person::getKey).sorted().toArray(String[]::new);
+        if (Utilities.ATLEAST_Q) {
+            Person[] persons = ApiWrapper.getPersons(shortcutInfo);
+            personKeys = persons.length == 0 ? Utilities.EMPTY_STRING_ARRAY
+                    : Arrays.stream(persons).map(Person::getKey).sorted().toArray(String[]::new);
+        }
     }
 
     /** Returns the WorkspaceItemInfo id associated with the deep shortcut. */
