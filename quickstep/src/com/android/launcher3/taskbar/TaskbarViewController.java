@@ -60,6 +60,7 @@ public class TaskbarViewController {
             this::updateTranslationY);
     private final AnimatedFloat mTaskbarIconTranslationYForStash = new AnimatedFloat(
             this::updateTranslationY);
+    private AnimatedFloat mTaskbarNavButtonTranslationY;
 
     private final TaskbarModelCallbacks mModelCallbacks;
 
@@ -88,6 +89,8 @@ public class TaskbarViewController {
 
         mModelCallbacks.init(controllers);
         LauncherAppState.getInstance(mActivity).getModel().addCallbacksAndLoad(mModelCallbacks);
+        mTaskbarNavButtonTranslationY =
+                controllers.navbarButtonsViewController.getTaskbarNavButtonTranslationY();
     }
 
     public void onDestroy() {
@@ -214,6 +217,7 @@ public class TaskbarViewController {
 
         int offsetY = launcherDp.getTaskbarOffsetY();
         setter.setFloat(mTaskbarIconTranslationYForHome, VALUE, -offsetY, LINEAR);
+        setter.setFloat(mTaskbarNavButtonTranslationY, VALUE, -offsetY, LINEAR);
 
         int collapsedHeight = mActivity.getDefaultTaskbarWindowHeight();
         int expandedHeight = Math.max(collapsedHeight,
@@ -236,6 +240,14 @@ public class TaskbarViewController {
         AnimatorPlaybackController controller = setter.createPlaybackController();
         mOnControllerPreCreateCallback = () -> controller.setPlayFraction(0);
         return controller;
+    }
+
+    public void onRotationChanged(DeviceProfile deviceProfile) {
+        if (areIconsVisible()) {
+            // We only translate on rotation when on home
+            return;
+        }
+        mTaskbarNavButtonTranslationY.updateValue(-deviceProfile.getTaskbarOffsetY());
     }
 
     /**

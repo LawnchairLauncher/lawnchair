@@ -57,13 +57,13 @@ public class ApiWrapper {
         if (SysUINavigationMode.INSTANCE.get(context).getMode() == Mode.THREE_BUTTONS) {
             Resources res = context.getResources();
             /*
-            * 2 (left + right) x Padding +
             * 3 nav buttons +
-            * Little space at the end for contextual buttons
+            * Little space at the end for contextual buttons +
+            * Little space between icons and nav buttons
             */
-            return 2 * res.getDimensionPixelSize(R.dimen.taskbar_nav_buttons_spacing)
-                    + 3 * res.getDimensionPixelSize(R.dimen.taskbar_nav_buttons_size)
-                    + res.getDimensionPixelSize(R.dimen.taskbar_contextual_button_margin);
+            return 3 * res.getDimensionPixelSize(R.dimen.taskbar_nav_buttons_size)
+                    + res.getDimensionPixelSize(R.dimen.taskbar_contextual_button_margin)
+                    + res.getDimensionPixelSize(R.dimen.taskbar_hotseat_nav_spacing);
         } else {
             return 0;
         }

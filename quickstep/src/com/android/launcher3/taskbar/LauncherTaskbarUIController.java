@@ -62,7 +62,6 @@ import java.util.stream.Stream;
 public class LauncherTaskbarUIController extends TaskbarUIController {
 
     private final BaseQuickstepLauncher mLauncher;
-    private final TaskbarStateHandler mTaskbarStateHandler;
 
     private final TaskbarActivityContext mContext;
     private final TaskbarDragLayer mTaskbarDragLayer;
@@ -96,6 +95,14 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
     private TaskbarKeyguardController mKeyguardController;
 
     private LauncherState mTargetStateOverride = null;
+    private final DeviceProfile.OnDeviceProfileChangeListener mProfileChangeListener =
+            new DeviceProfile.OnDeviceProfileChangeListener() {
+                @Override
+                public void onDeviceProfileChanged(DeviceProfile dp) {
+                    mControllers.taskbarViewController.onRotationChanged(
+                            mLauncher.getDeviceProfile());
+                }
+            };
 
     public LauncherTaskbarUIController(
             BaseQuickstepLauncher launcher, TaskbarActivityContext context) {
@@ -104,7 +111,6 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
         mTaskbarView = mTaskbarDragLayer.findViewById(R.id.taskbar_view);
 
         mLauncher = launcher;
-        mTaskbarStateHandler = mLauncher.getTaskbarStateHandler();
     }
 
     @Override
@@ -129,6 +135,7 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
         onStashedInAppChanged(mLauncher.getDeviceProfile());
         mLauncher.addOnDeviceProfileChangeListener(mOnDeviceProfileChangeListener);
         mLauncher.getStateManager().addStateListener(mStateListener);
+        mLauncher.addOnDeviceProfileChangeListener(mProfileChangeListener);
     }
 
     @Override
@@ -141,6 +148,7 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
         mLauncher.getStateManager().removeStateListener(mStateListener);
         mLauncher.getHotseat().setIconsAlpha(1f);
         mLauncher.setTaskbarUIController(null);
+        mLauncher.removeOnDeviceProfileChangeListener(mProfileChangeListener);
     }
 
     @Override
