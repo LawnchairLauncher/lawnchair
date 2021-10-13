@@ -18,9 +18,8 @@ package app.lawnchair.ui.preferences
 
 import android.app.Application
 import android.content.Intent
-import android.content.pm.ResolveInfo
-import androidx.appcompat.content.res.AppCompatResources
 import androidx.compose.runtime.mutableStateOf
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.AndroidViewModel
 import app.lawnchair.ui.preferences.about.licenses.License
 import com.android.launcher3.R
@@ -29,40 +28,33 @@ import kotlinx.coroutines.runBlocking
 import java.io.BufferedReader
 import java.io.InputStreamReader
 
+private val iconPackIntents = listOf(
+    Intent("com.novalauncher.THEME"),
+    Intent("org.adw.launcher.icons.ACTION_PICK_ICON"),
+    Intent("com.dlto.atom.launcher.THEME"),
+    Intent("android.intent.action.MAIN").addCategory("com.anddoes.launcher.THEME")
+)
+
 class PreferenceViewModel(application: Application) : AndroidViewModel(application), PreferenceInteractor {
     override fun getIconPacks(): List<IconPackInfo> {
-        val pm = getApplication<Application>().packageManager
-        val iconPacks: MutableMap<String, IconPackInfo> = HashMap()
-        val list: MutableList<ResolveInfo> = pm.queryIntentActivities(Intent("com.novalauncher.THEME"), 0)
+        val context = getApplication<Application>()
+        val pm = context.packageManager
 
-        list.addAll(pm.queryIntentActivities(Intent("org.adw.launcher.icons.ACTION_PICK_ICON"), 0))
-        list.addAll(pm.queryIntentActivities(Intent("com.dlto.atom.launcher.THEME"), 0))
-        list.addAll(
-            pm.queryIntentActivities(Intent("android.intent.action.MAIN").addCategory("com.anddoes.launcher.THEME"), 0)
-        )
-
-        for (info in list) {
-            iconPacks.getOrPut(info.activityInfo.packageName) {
+        val iconPacks = iconPackIntents
+            .flatMap { pm.queryIntentActivities(it, 0) }
+            .associateBy { it.activityInfo.packageName }
+            .mapTo(mutableSetOf()) { (_, info) ->
                 IconPackInfo(
                     info.loadLabel(pm).toString(),
                     info.activityInfo.packageName,
                     info.loadIcon(pm)
                 )
             }
-        }
 
-        val iconPackList = iconPacks.values.toMutableList()
-        iconPackList.sortBy { it.name }
-        iconPackList.add(
-            0,
-            IconPackInfo(
-                getApplication<Application>().resources.getString(R.string.system_icons),
-                "",
-                AppCompatResources.getDrawable(getApplication(), R.drawable.ic_launcher_home)!!
-            )
-        )
+        val lawnchairIcon = ContextCompat.getDrawable(context, R.drawable.ic_launcher_home)!!
+        val defaultIconPack = IconPackInfo(context.getString(R.string.system_icons), "", lawnchairIcon)
 
-        return iconPackList
+        return listOf(defaultIconPack) + iconPacks.sortedBy { it.name }
     }
 
     override val licenses by lazy {
