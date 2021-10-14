@@ -39,6 +39,7 @@ import com.android.launcher3.popup.PopupContainerWithArrow;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.views.BubbleTextHolder;
 
+import app.lawnchair.theme.color.ColorTokens;
 import app.lawnchair.util.DrawableUtilsKt;
 
 /**
@@ -99,7 +100,7 @@ public class DeepShortcutView extends FrameLayout implements BubbleTextHolder {
         }
         GradientDrawable background = (GradientDrawable) getBackground();
 
-        int color = Themes.getAttrColor(getContext(), android.R.attr.colorControlHighlight);
+        int color = ColorTokens.PopupColorTertiary.resolveColor(getContext());
         GradientDrawable backgroundMask = new GradientDrawable();
         backgroundMask.setColor(color);
         backgroundMask.setShape(GradientDrawable.RECTANGLE);

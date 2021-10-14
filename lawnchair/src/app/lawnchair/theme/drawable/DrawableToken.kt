@@ -5,21 +5,30 @@ import android.content.res.Resources
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.util.TypedValue
+import androidx.annotation.AttrRes
 import androidx.annotation.DrawableRes
 import androidx.appcompat.content.res.AppCompatResources
 import app.lawnchair.theme.ResourceToken
 import app.lawnchair.theme.UiColorMode
 import app.lawnchair.theme.color.ColorToken
+import com.android.launcher3.util.Themes
 import dev.kdrag0n.monet.theme.ColorScheme
 
 interface DrawableToken<T : Drawable> : ResourceToken<T>
 
-data class ResourceDrawableToken<T : Drawable>(@DrawableRes private val resId: Int) :
-    DrawableToken<T> {
+data class ResourceDrawableToken<T : Drawable>(@DrawableRes private val resId: Int) : DrawableToken<T> {
 
     @Suppress("UNCHECKED_CAST")
     override fun resolve(context: Context, scheme: ColorScheme, uiColorMode: UiColorMode): T {
         return AppCompatResources.getDrawable(context, resId) as T
+    }
+}
+
+data class AttributeDrawableToken<T : Drawable>(@AttrRes private val attr: Int) : DrawableToken<T> {
+
+    @Suppress("UNCHECKED_CAST")
+    override fun resolve(context: Context, scheme: ColorScheme, uiColorMode: UiColorMode): T {
+        return Themes.getAttrDrawable(context, attr) as T
     }
 }
 

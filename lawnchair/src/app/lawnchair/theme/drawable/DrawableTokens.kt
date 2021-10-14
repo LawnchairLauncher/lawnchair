@@ -1,9 +1,7 @@
 package app.lawnchair.theme.drawable
 
-import android.graphics.drawable.Drawable
-import android.graphics.drawable.GradientDrawable
-import android.graphics.drawable.LayerDrawable
-import android.graphics.drawable.StateListDrawable
+import android.content.res.ColorStateList
+import android.graphics.drawable.*
 import app.lawnchair.theme.color.ColorTokens
 import com.android.launcher3.R
 
@@ -41,6 +39,15 @@ object DrawableTokens {
     @JvmField
     val RoundRectFolder = ResourceDrawableToken<GradientDrawable>(R.drawable.round_rect_folder)
         .setColor(ColorTokens.FolderFillColor)
+
+    @JvmField
+    val PopupItemBackgroundBorderless = AttributeDrawableToken<Drawable>(android.R.attr.selectableItemBackgroundBorderless)
+        .mutate { context, scheme, uiColorMode ->
+            if (this is RippleDrawable) {
+                val color = ColorTokens.PopupColorTertiary.resolveColor(context, scheme, uiColorMode)
+                setColor(ColorStateList.valueOf(color))
+            }
+        }
 
     @JvmField
     val SingleItemPrimary = ResourceDrawableToken<GradientDrawable>(R.drawable.single_item_primary)

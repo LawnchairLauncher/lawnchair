@@ -387,6 +387,7 @@ public class PopupContainerWithArrow<T extends StatefulActivity<LauncherState>>
             // Only the system shortcut icon shows on a gray background header.
             info.setIconAndContentDescriptionFor((ImageView) view);
             view.setTooltipText(view.getContentDescription());
+            view.setBackground(DrawableTokens.PopupItemBackgroundBorderless.resolve(getContext()));
         }
         view.setTag(info);
         view.setOnClickListener(info);
