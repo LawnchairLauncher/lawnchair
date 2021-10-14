@@ -24,12 +24,14 @@ import androidx.annotation.Nullable;
 
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.icons.ComponentWithLabelAndIcon;
+import com.android.launcher3.model.data.PackageItemInfo;
 import com.android.launcher3.util.PackageUserKey;
-import com.android.launcher3.widget.WidgetListRowEntry;
+import com.android.launcher3.widget.model.WidgetsListBaseEntry;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -41,19 +43,25 @@ public class WidgetsModel {
 
     // True is the widget support is disabled.
     public static final boolean GO_DISABLE_WIDGETS = true;
+    public static final boolean GO_DISABLE_NOTIFICATION_DOTS = true;
 
-    private static final ArrayList<WidgetListRowEntry> EMPTY_WIDGET_LIST = new ArrayList<>();
+    private static final ArrayList<WidgetsListBaseEntry> EMPTY_WIDGET_LIST = new ArrayList<>();
 
     /**
-     * Returns a list of {@link WidgetListRowEntry}. All {@link WidgetItem} in a single row
-     * are sorted (based on label and user), but the overall list of {@link WidgetListRowEntry}s
-     * is not sorted. This list is sorted at the UI when using
-     * {@link com.android.launcher3.widget.WidgetsDiffReporter}
+     * Returns a list of {@link WidgetsListBaseEntry}. All {@link WidgetItem} in a single row are
+     * sorted (based on label and user), but the overall list of {@link WidgetsListBaseEntry}s is
+     * not sorted. This list is sorted at the UI when using
+     * {@link com.android.launcher3.widget.picker.WidgetsDiffReporter}
      *
-     * @see com.android.launcher3.widget.WidgetsListAdapter#setWidgets(ArrayList)
+     * @see com.android.launcher3.widget.picker.WidgetsListAdapter#setWidgets(List)
      */
-    public synchronized ArrayList<WidgetListRowEntry> getWidgetsList(Context context) {
+    public synchronized ArrayList<WidgetsListBaseEntry> getWidgetsListForPicker(Context context) {
         return EMPTY_WIDGET_LIST;
+    }
+
+    /** Returns a mapping of packages to their widgets without static shortcuts. */
+    public synchronized Map<PackageUserKey, List<WidgetItem>> getAllWidgetsWithoutShortcuts() {
+        return Map.of();
     }
 
     /**
@@ -73,5 +81,10 @@ public class WidgetsModel {
     public WidgetItem getWidgetProviderInfoByProviderName(
             ComponentName providerName) {
         return null;
+    }
+
+    /** Returns {@link PackageItemInfo} of a pending widget. */
+    public static PackageItemInfo newPendingItemInfo(ComponentName provider) {
+        return new PackageItemInfo(provider.getPackageName());
     }
 }

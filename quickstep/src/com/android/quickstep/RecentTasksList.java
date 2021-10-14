@@ -22,15 +22,18 @@ import android.annotation.TargetApi;
 import android.app.ActivityManager;
 import android.os.Build;
 import android.os.Process;
+import android.util.Log;
 import android.util.SparseBooleanArray;
 
 import androidx.annotation.VisibleForTesting;
 
+import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.util.LooperExecutor;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.KeyguardManagerCompat;
 import com.android.systemui.shared.system.TaskStackChangeListener;
+import com.android.systemui.shared.system.TaskStackChangeListeners;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -51,6 +54,9 @@ public class RecentTasksList extends TaskStackChangeListener {
 
     // The list change id, increments as the task list changes in the system
     private int mChangeId;
+    // Whether we are currently updating the tasks in the background (up to when the result is
+    // posted back on the main thread)
+    private boolean mLoadingTasksInBackground;
 
     private TaskLoadResult mResultsBg = INVALID_RESULT;
     private TaskLoadResult mResultsUi = INVALID_RESULT;
@@ -61,7 +67,12 @@ public class RecentTasksList extends TaskStackChangeListener {
         mKeyguardManager = keyguardManager;
         mChangeId = 1;
         mActivityManagerWrapper = activityManagerWrapper;
-        mActivityManagerWrapper.registerTaskStackListener(this);
+        TaskStackChangeListeners.getInstance().registerTaskStackListener(this);
+    }
+
+    @VisibleForTesting
+    public boolean isLoadingTasksInBackground() {
+        return mLoadingTasksInBackground;
     }
 
     /**
@@ -90,19 +101,23 @@ public class RecentTasksList extends TaskStackChangeListener {
             if (callback != null) {
                 // Copy synchronously as the changeId might change by next frame
                 ArrayList<Task> result = copyOf(mResultsUi);
-                mMainThreadExecutor.post(() -> callback.accept(result));
+                mMainThreadExecutor.post(() -> {
+                    callback.accept(result);
+                });
             }
 
             return requestLoadId;
         }
 
         // Kick off task loading in the background
+        mLoadingTasksInBackground = true;
         UI_HELPER_EXECUTOR.execute(() -> {
             if (!mResultsBg.isValidForRequest(requestLoadId, loadKeysOnly)) {
                 mResultsBg = loadTasksInBackground(Integer.MAX_VALUE, requestLoadId, loadKeysOnly);
             }
             TaskLoadResult loadResult = mResultsBg;
             mMainThreadExecutor.execute(() -> {
+                mLoadingTasksInBackground = false;
                 mResultsUi = loadResult;
                 if (callback != null) {
                     ArrayList<Task> result = copyOf(mResultsUi);
@@ -191,6 +206,7 @@ public class RecentTasksList extends TaskStackChangeListener {
             } else {
                 task = new Task(taskKey);
             }
+            task.setLastSnapshotData(rawTask);
             allTasks.add(task);
         }
 
@@ -200,9 +216,7 @@ public class RecentTasksList extends TaskStackChangeListener {
     private ArrayList<Task> copyOf(ArrayList<Task> tasks) {
         ArrayList<Task> newTasks = new ArrayList<>();
         for (int i = 0; i < tasks.size(); i++) {
-            Task t = tasks.get(i);
-            newTasks.add(new Task(t.key, t.colorPrimary, t.colorBackground, t.isDockable,
-                    t.isLocked, t.taskDescription, t.topActivity));
+            newTasks.add(new Task(tasks.get(i)));
         }
         return newTasks;
     }

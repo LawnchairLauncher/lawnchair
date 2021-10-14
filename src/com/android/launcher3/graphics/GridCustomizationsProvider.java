@@ -1,5 +1,11 @@
 package com.android.launcher3.graphics;
 
+import static com.android.launcher3.Utilities.getPrefs;
+import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
+import static com.android.launcher3.util.Themes.KEY_THEMED_ICONS;
+import static com.android.launcher3.util.Themes.isThemedIconEnabled;
+
+import android.annotation.TargetApi;
 import android.content.ContentProvider;
 import android.content.ContentValues;
 import android.content.pm.PackageManager;
@@ -8,13 +14,23 @@ import android.database.Cursor;
 import android.database.MatrixCursor;
 import android.net.Uri;
 import android.os.Binder;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.IBinder;
+import android.os.IBinder.DeathRecipient;
+import android.os.Message;
+import android.os.Messenger;
+import android.util.ArrayMap;
 import android.util.Log;
 import android.util.Xml;
 
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.InvariantDeviceProfile.GridOption;
 import com.android.launcher3.R;
+import com.android.launcher3.Utilities;
+import com.android.launcher3.config.FeatureFlags;
+import com.android.launcher3.util.Executors;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -55,6 +71,16 @@ public class GridCustomizationsProvider extends ContentProvider {
 
     private static final String METHOD_GET_PREVIEW = "get_preview";
 
+    private static final String GET_ICON_THEMED = "/get_icon_themed";
+    private static final String SET_ICON_THEMED = "/set_icon_themed";
+    private static final String ICON_THEMED = "/icon_themed";
+    private static final String BOOLEAN_VALUE = "boolean_value";
+
+    private static final String KEY_SURFACE_PACKAGE = "surface_package";
+    private static final String KEY_CALLBACK = "callback";
+
+    private final ArrayMap<IBinder, PreviewLifecycleObserver> mActivePreviews = new ArrayMap<>();
+
     @Override
     public boolean onCreate() {
         return true;
@@ -63,22 +89,31 @@ public class GridCustomizationsProvider extends ContentProvider {
     @Override
     public Cursor query(Uri uri, String[] projection, String selection,
             String[] selectionArgs, String sortOrder) {
-        if (!KEY_LIST_OPTIONS.equals(uri.getPath())) {
-            return null;
+        switch (uri.getPath()) {
+            case KEY_LIST_OPTIONS: {
+                MatrixCursor cursor = new MatrixCursor(new String[] {
+                        KEY_NAME, KEY_ROWS, KEY_COLS, KEY_PREVIEW_COUNT, KEY_IS_DEFAULT});
+                InvariantDeviceProfile idp = InvariantDeviceProfile.INSTANCE.get(getContext());
+                for (GridOption gridOption : parseAllGridOptions()) {
+                    cursor.newRow()
+                            .add(KEY_NAME, gridOption.name)
+                            .add(KEY_ROWS, gridOption.numRows)
+                            .add(KEY_COLS, gridOption.numColumns)
+                            .add(KEY_PREVIEW_COUNT, 1)
+                            .add(KEY_IS_DEFAULT, idp.numColumns == gridOption.numColumns
+                                    && idp.numRows == gridOption.numRows);
+                }
+                return cursor;
+            }
+            case GET_ICON_THEMED:
+            case ICON_THEMED: {
+                MatrixCursor cursor = new MatrixCursor(new String[] {BOOLEAN_VALUE});
+                cursor.newRow().add(BOOLEAN_VALUE, isThemedIconEnabled(getContext()) ? 1 : 0);
+                return cursor;
+            }
+            default:
+                return null;
         }
-        MatrixCursor cursor = new MatrixCursor(new String[] {
-                KEY_NAME, KEY_ROWS, KEY_COLS, KEY_PREVIEW_COUNT, KEY_IS_DEFAULT});
-        InvariantDeviceProfile idp = InvariantDeviceProfile.INSTANCE.get(getContext());
-        for (GridOption gridOption : parseAllGridOptions()) {
-            cursor.newRow()
-                    .add(KEY_NAME, gridOption.name)
-                    .add(KEY_ROWS, gridOption.numRows)
-                    .add(KEY_COLS, gridOption.numColumns)
-                    .add(KEY_PREVIEW_COUNT, 1)
-                    .add(KEY_IS_DEFAULT, idp.numColumns == gridOption.numColumns
-                            && idp.numRows == gridOption.numRows);
-        }
-        return cursor;
     }
 
     private List<GridOption> parseAllGridOptions() {
@@ -117,25 +152,37 @@ public class GridCustomizationsProvider extends ContentProvider {
 
     @Override
     public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
-        if (!KEY_DEFAULT_GRID.equals(uri.getPath())) {
-            return 0;
-        }
+        switch (uri.getPath()) {
+            case KEY_DEFAULT_GRID: {
+                String gridName = values.getAsString(KEY_NAME);
+                // Verify that this is a valid grid option
+                GridOption match = null;
+                for (GridOption option : parseAllGridOptions()) {
+                    if (option.name.equals(gridName)) {
+                        match = option;
+                        break;
+                    }
+                }
+                if (match == null) {
+                    return 0;
+                }
 
-        String gridName = values.getAsString(KEY_NAME);
-        // Verify that this is a valid grid option
-        GridOption match = null;
-        for (GridOption option : parseAllGridOptions()) {
-            if (option.name.equals(gridName)) {
-                match = option;
-                break;
+                InvariantDeviceProfile.INSTANCE.get(getContext())
+                        .setCurrentGrid(getContext(), gridName);
+                return 1;
             }
+            case ICON_THEMED:
+            case SET_ICON_THEMED: {
+                if (FeatureFlags.ENABLE_THEMED_ICONS.get()) {
+                    getPrefs(getContext()).edit()
+                            .putBoolean(KEY_THEMED_ICONS, values.getAsBoolean(BOOLEAN_VALUE))
+                            .apply();
+                }
+                return 1;
+            }
+            default:
+                return 0;
         }
-        if (match == null) {
-            return 0;
-        }
-
-        InvariantDeviceProfile.INSTANCE.get(getContext()).setCurrentGrid(getContext(), gridName);
-        return 1;
     }
 
     @Override
@@ -146,10 +193,76 @@ public class GridCustomizationsProvider extends ContentProvider {
             return null;
         }
 
-        if (!METHOD_GET_PREVIEW.equals(method)) {
+        if (!Utilities.ATLEAST_R || !METHOD_GET_PREVIEW.equals(method)) {
             return null;
         }
+        return getPreview(extras);
+    }
 
-        return new PreviewSurfaceRenderer(getContext(), extras).render();
+    @TargetApi(Build.VERSION_CODES.R)
+    private synchronized Bundle getPreview(Bundle request) {
+        PreviewLifecycleObserver observer = null;
+        try {
+            PreviewSurfaceRenderer renderer = new PreviewSurfaceRenderer(getContext(), request);
+
+            // Destroy previous
+            destroyObserver(mActivePreviews.get(renderer.getHostToken()));
+
+            observer = new PreviewLifecycleObserver(renderer);
+            mActivePreviews.put(renderer.getHostToken(), observer);
+
+            renderer.loadAsync();
+            renderer.getHostToken().linkToDeath(observer, 0);
+
+            Bundle result = new Bundle();
+            result.putParcelable(KEY_SURFACE_PACKAGE, renderer.getSurfacePackage());
+
+            Messenger messenger =
+                    new Messenger(new Handler(UI_HELPER_EXECUTOR.getLooper(), observer));
+            Message msg = Message.obtain();
+            msg.replyTo = messenger;
+            result.putParcelable(KEY_CALLBACK, msg);
+            return result;
+        } catch (Exception e) {
+            Log.e(TAG, "Unable to generate preview", e);
+            if (observer != null) {
+                destroyObserver(observer);
+            }
+            return null;
+        }
+    }
+
+    private synchronized void destroyObserver(PreviewLifecycleObserver observer) {
+        if (observer == null || observer.destroyed) {
+            return;
+        }
+        observer.destroyed = true;
+        observer.renderer.getHostToken().unlinkToDeath(observer, 0);
+        Executors.MAIN_EXECUTOR.execute(observer.renderer::destroy);
+        PreviewLifecycleObserver cached = mActivePreviews.get(observer.renderer.getHostToken());
+        if (cached == observer) {
+            mActivePreviews.remove(observer.renderer.getHostToken());
+        }
+    }
+
+    private class PreviewLifecycleObserver implements Handler.Callback, DeathRecipient {
+
+        public final PreviewSurfaceRenderer renderer;
+        public boolean destroyed = false;
+
+        PreviewLifecycleObserver(PreviewSurfaceRenderer renderer) {
+            this.renderer = renderer;
+        }
+
+        @Override
+        public boolean handleMessage(Message message) {
+            destroyObserver(this);
+            return true;
+        }
+
+        @Override
+        public void binderDied() {
+            destroyObserver(this);
+        }
     }
 }

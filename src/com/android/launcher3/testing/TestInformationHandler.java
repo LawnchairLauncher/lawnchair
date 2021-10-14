@@ -33,6 +33,7 @@ import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.R;
 import com.android.launcher3.util.ResourceBasedOverride;
+import com.android.launcher3.widget.picker.WidgetsFullSheet;
 
 import java.util.concurrent.ExecutionException;
 import java.util.function.Function;
@@ -90,6 +91,11 @@ public class TestInformationHandler implements ResourceBasedOverride {
             case TestProtocol.REQUEST_APPS_LIST_SCROLL_Y: {
                 return getLauncherUIProperty(Bundle::putInt,
                         l -> l.getAppsView().getActiveRecyclerView().getCurrentScrollY());
+            }
+
+            case TestProtocol.REQUEST_WIDGETS_SCROLL_Y: {
+                return getLauncherUIProperty(Bundle::putInt,
+                        l -> WidgetsFullSheet.getWidgetsView(l).getCurrentScrollY());
             }
 
             case TestProtocol.REQUEST_WINDOW_INSETS: {

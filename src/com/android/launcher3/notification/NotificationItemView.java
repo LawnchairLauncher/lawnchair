@@ -16,23 +16,22 @@
 
 package com.android.launcher3.notification;
 
-import static com.android.launcher3.touch.SingleAxisSwipeDetector.HORIZONTAL;
-
-import android.app.Notification;
+import android.animation.AnimatorSet;
 import android.content.Context;
-import android.graphics.Color;
+import android.graphics.Outline;
 import android.graphics.Rect;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.ViewGroup.MarginLayoutParams;
+import android.view.ViewOutlineProvider;
 import android.widget.TextView;
 
 import com.android.launcher3.R;
-import com.android.launcher3.graphics.IconPalette;
 import com.android.launcher3.popup.PopupContainerWithArrow;
-import com.android.launcher3.touch.SingleAxisSwipeDetector;
 import com.android.launcher3.util.Themes;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -43,60 +42,51 @@ public class NotificationItemView {
     private static final Rect sTempRect = new Rect();
 
     private final Context mContext;
-    private final PopupContainerWithArrow mContainer;
+    private final PopupContainerWithArrow mPopupContainer;
+    private final ViewGroup mRootView;
 
-    private final TextView mHeaderText;
     private final TextView mHeaderCount;
     private final NotificationMainView mMainView;
-    private final NotificationFooterLayout mFooter;
-    private final SingleAxisSwipeDetector mSwipeDetector;
-    private final View mIconView;
 
     private final View mHeader;
-    private final View mDivider;
 
     private View mGutter;
 
     private boolean mIgnoreTouch = false;
-    private boolean mAnimatingNextIcon;
-    private int mNotificationHeaderTextColor = Notification.COLOR_DEFAULT;
+    private List<NotificationInfo> mNotificationInfos = new ArrayList<>();
 
-    public NotificationItemView(PopupContainerWithArrow container) {
-        mContainer = container;
+    public NotificationItemView(PopupContainerWithArrow container, ViewGroup rootView) {
+        mPopupContainer = container;
+        mRootView = rootView;
         mContext = container.getContext();
 
-        mHeaderText = container.findViewById(R.id.notification_text);
         mHeaderCount = container.findViewById(R.id.notification_count);
         mMainView = container.findViewById(R.id.main_view);
-        mFooter = container.findViewById(R.id.footer);
-        mIconView = container.findViewById(R.id.popup_item_icon);
 
         mHeader = container.findViewById(R.id.header);
-        mDivider = container.findViewById(R.id.divider);
 
-        mSwipeDetector = new SingleAxisSwipeDetector(mContext, mMainView, HORIZONTAL);
-        mSwipeDetector.setDetectableScrollConditions(SingleAxisSwipeDetector.DIRECTION_BOTH, false);
-        mMainView.setSwipeDetector(mSwipeDetector);
-        mFooter.setContainer(this);
+        float radius = Themes.getDialogCornerRadius(mContext);
+        rootView.setClipToOutline(true);
+        rootView.setOutlineProvider(new ViewOutlineProvider() {
+            @Override
+            public void getOutline(View view, Outline outline) {
+                outline.setRoundRect(0, 0, view.getWidth(), view.getHeight(), radius);
+            }
+        });
+    }
+
+    /**
+     * Animates the background color to a new color.
+     * @param color The color to change to.
+     * @param animatorSetOut The AnimatorSet where we add the color animator to.
+     */
+    public void updateBackgroundColor(int color, AnimatorSet animatorSetOut) {
+        mMainView.updateBackgroundColor(color, animatorSetOut);
     }
 
     public void addGutter() {
         if (mGutter == null) {
-            mGutter = mContainer.inflateAndAdd(R.layout.notification_gutter, mContainer);
-        }
-    }
-
-    /**
-     * Sets width for notification footer and spaces out items evenly
-     */
-    public void setFooterWidth(int footerWidth) {
-        mFooter.setWidth(footerWidth);
-    }
-
-    public void removeFooter() {
-        if (mContainer.indexOfChild(mFooter) >= 0) {
-            mContainer.removeView(mFooter);
-            mContainer.removeView(mDivider);
+            mGutter = mPopupContainer.inflateAndAdd(R.layout.notification_gutter, mRootView);
         }
     }
 
@@ -108,39 +98,39 @@ public class NotificationItemView {
     }
 
     public void removeAllViews() {
-        mContainer.removeView(mMainView);
-        mContainer.removeView(mHeader);
-
-        if (mContainer.indexOfChild(mFooter) >= 0) {
-            mContainer.removeView(mFooter);
-            mContainer.removeView(mDivider);
-        }
-
+        mRootView.removeView(mMainView);
+        mRootView.removeView(mHeader);
         if (mGutter != null) {
-            mContainer.removeView(mGutter);
+            mRootView.removeView(mGutter);
         }
     }
 
-    public void updateHeader(int notificationCount, int iconColor) {
-        mHeaderCount.setText(notificationCount <= 1 ? "" : String.valueOf(notificationCount));
-        if (Color.alpha(iconColor) > 0) {
-            if (mNotificationHeaderTextColor == Notification.COLOR_DEFAULT) {
-                mNotificationHeaderTextColor =
-                        IconPalette.resolveContrastColor(mContext, iconColor,
-                                Themes.getAttrColor(mContext, R.attr.popupColorPrimary));
-            }
-            mHeaderText.setTextColor(mNotificationHeaderTextColor);
-            mHeaderCount.setTextColor(mNotificationHeaderTextColor);
+    /**
+     * Updates the header text.
+     * @param notificationCount The number of notifications.
+     */
+    public void updateHeader(int notificationCount) {
+        final String text;
+        final int visibility;
+        if (notificationCount <= 1) {
+            text = "";
+            visibility = View.INVISIBLE;
+        } else {
+            text = String.valueOf(notificationCount);
+            visibility = View.VISIBLE;
+
         }
+        mHeaderCount.setText(text);
+        mHeaderCount.setVisibility(visibility);
     }
 
     public boolean onInterceptTouchEvent(MotionEvent ev) {
         if (ev.getAction() == MotionEvent.ACTION_DOWN) {
-            sTempRect.set(mMainView.getLeft(), mMainView.getTop(),
-                    mMainView.getRight(), mMainView.getBottom());
+            sTempRect.set(mRootView.getLeft(), mRootView.getTop(),
+                    mRootView.getRight(), mRootView.getBottom());
             mIgnoreTouch = !sTempRect.contains((int) ev.getX(), (int) ev.getY());
             if (!mIgnoreTouch) {
-                mContainer.getParent().requestDisallowInterceptTouchEvent(true);
+                mPopupContainer.getParent().requestDisallowInterceptTouchEvent(true);
             }
         }
         if (mIgnoreTouch) {
@@ -151,53 +141,39 @@ public class NotificationItemView {
             return false;
         }
 
-        mSwipeDetector.onTouchEvent(ev);
-        return mSwipeDetector.isDraggingOrSettling();
-    }
-
-    public boolean onTouchEvent(MotionEvent ev) {
-        if (mIgnoreTouch) {
-            return false;
-        }
-        if (mMainView.getNotificationInfo() == null) {
-            // The notification hasn't been populated yet.
-            return false;
-        }
-        return mSwipeDetector.onTouchEvent(ev);
+        return false;
     }
 
     public void applyNotificationInfos(final List<NotificationInfo> notificationInfos) {
+        mNotificationInfos.clear();
         if (notificationInfos.isEmpty()) {
             return;
         }
+        mNotificationInfos.addAll(notificationInfos);
 
         NotificationInfo mainNotification = notificationInfos.get(0);
         mMainView.applyNotificationInfo(mainNotification, false);
-
-        for (int i = 1; i < notificationInfos.size(); i++) {
-            mFooter.addNotificationInfo(notificationInfos.get(i));
-        }
-        mFooter.commitNotificationInfos();
     }
 
     public void trimNotifications(final List<String> notificationKeys) {
-        boolean dismissedMainNotification = !notificationKeys.contains(
-                mMainView.getNotificationInfo().notificationKey);
-        if (dismissedMainNotification && !mAnimatingNextIcon) {
-            // Animate the next icon into place as the new main notification.
-            mAnimatingNextIcon = true;
-            mMainView.setContentVisibility(View.INVISIBLE);
-            mMainView.setContentTranslation(0);
-            mIconView.getGlobalVisibleRect(sTempRect);
-            mFooter.animateFirstNotificationTo(sTempRect, (newMainNotification) -> {
-                if (newMainNotification != null) {
-                    mMainView.applyNotificationInfo(newMainNotification, true);
-                    mMainView.setContentVisibility(View.VISIBLE);
+        NotificationInfo currentMainNotificationInfo = mMainView.getNotificationInfo();
+        boolean shouldUpdateMainNotification = !notificationKeys.contains(
+                currentMainNotificationInfo.notificationKey);
+
+        if (shouldUpdateMainNotification) {
+            int size = notificationKeys.size();
+            NotificationInfo nextNotification = null;
+            // We get the latest notification by finding the notification after the one that was
+            // just dismissed.
+            for (int i = 0; i < size; ++i) {
+                if (currentMainNotificationInfo == mNotificationInfos.get(i) && i + 1 < size) {
+                    nextNotification = mNotificationInfos.get(i + 1);
+                    break;
                 }
-                mAnimatingNextIcon = false;
-            });
-        } else {
-            mFooter.trimNotifications(notificationKeys);
+            }
+            if (nextNotification != null) {
+                mMainView.applyNotificationInfo(nextNotification, true);
+            }
         }
     }
 }

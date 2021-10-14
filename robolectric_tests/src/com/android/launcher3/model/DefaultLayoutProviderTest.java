@@ -109,7 +109,7 @@ public class DefaultLayoutProviderTest {
     public void testCustomProfileLoaded_with_widget() throws Exception {
         String pendingAppPkg = "com.test.pending";
 
-        // Add a dummy session info so that the widget exists
+        // Add a placeholder session info so that the widget exists
         SessionParams params = new SessionParams(SessionParams.MODE_FULL_INSTALL);
         params.setAppPackageName(pendingAppPkg);
 
@@ -120,7 +120,7 @@ public class DefaultLayoutProviderTest {
         setField(sessionInfo, "appIcon", BitmapInfo.LOW_RES_ICON);
 
         writeLayoutAndLoad(new LauncherLayoutBuilder().atWorkspace(0, 1, 0)
-                .putWidget(pendingAppPkg, "DummyWidget", 2, 2));
+                .putWidget(pendingAppPkg, "PlaceholderWidget", 2, 2));
 
         // Verify widget
         assertEquals(1, mModelHelper.getBgDataModel().appWidgets.size());

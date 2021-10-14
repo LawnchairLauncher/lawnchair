@@ -35,11 +35,13 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.util.LongSparseArray;
 
+import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
 
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherSettings;
+import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.config.FeatureFlags;
@@ -50,6 +52,7 @@ import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
+import com.android.launcher3.shortcuts.ShortcutKey;
 import com.android.launcher3.util.ContentWriter;
 import com.android.launcher3.util.GridOccupancy;
 import com.android.launcher3.util.IntArray;
@@ -65,7 +68,7 @@ public class LoaderCursor extends CursorWrapper {
 
     private static final String TAG = "LoaderCursor";
 
-    public final LongSparseArray<UserHandle> allUsers;
+    private final LongSparseArray<UserHandle> allUsers;
 
     private final Uri mContentUri;
     private final Context mContext;
@@ -91,6 +94,9 @@ public class LoaderCursor extends CursorWrapper {
     private final int profileIdIndex;
     private final int restoredIndex;
     private final int intentIndex;
+
+    @Nullable
+    private LauncherActivityInfo mActivityInfo;
 
     // Properties loaded per iteration
     public long serialNumber;
@@ -132,6 +138,8 @@ public class LoaderCursor extends CursorWrapper {
     public boolean moveToNext() {
         boolean result = super.moveToNext();
         if (result) {
+            mActivityInfo = null;
+
             // Load common properties.
             itemType = getInt(itemTypeIndex);
             container = getInt(containerIndex);
@@ -245,6 +253,10 @@ public class LoaderCursor extends CursorWrapper {
         return info;
     }
 
+    public LauncherActivityInfo getLauncherActivityInfo() {
+        return mActivityInfo;
+    }
+
     /**
      * Make an WorkspaceItemInfo object for a shortcut that is an application.
      */
@@ -264,25 +276,25 @@ public class LoaderCursor extends CursorWrapper {
         Intent newIntent = new Intent(Intent.ACTION_MAIN, null);
         newIntent.addCategory(Intent.CATEGORY_LAUNCHER);
         newIntent.setComponent(componentName);
-        LauncherActivityInfo lai = mContext.getSystemService(LauncherApps.class)
+        mActivityInfo = mContext.getSystemService(LauncherApps.class)
                 .resolveActivity(newIntent, user);
-        if ((lai == null) && !allowMissingTarget) {
+        if ((mActivityInfo == null) && !allowMissingTarget) {
             Log.d(TAG, "Missing activity found in getShortcutInfo: " + componentName);
             return null;
         }
 
         final WorkspaceItemInfo info = new WorkspaceItemInfo();
-        info.itemType = LauncherSettings.Favorites.ITEM_TYPE_APPLICATION;
+        info.itemType = Favorites.ITEM_TYPE_APPLICATION;
         info.user = user;
         info.intent = newIntent;
 
-        mIconCache.getTitleAndIcon(info, lai, useLowResIcon);
+        mIconCache.getTitleAndIcon(info, mActivityInfo, useLowResIcon);
         if (mIconCache.isDefaultIcon(info.bitmap, user)) {
             loadIcon(info);
         }
 
-        if (lai != null) {
-            AppInfo.updateRuntimeFlagsForActivityTarget(info, lai);
+        if (mActivityInfo != null) {
+            AppInfo.updateRuntimeFlagsForActivityTarget(info, mActivityInfo);
         }
 
         // from the db
@@ -383,6 +395,11 @@ public class LoaderCursor extends CursorWrapper {
      * otherwise marks it for deletion.
      */
     public void checkAndAddItem(ItemInfo info, BgDataModel dataModel) {
+        if (info.itemType == LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT) {
+            // Ensure that it is a valid intent. An exception here will
+            // cause the item loading to get skipped
+            ShortcutKey.fromItemInfo(info);
+        }
         if (checkItemPlacement(info)) {
             dataModel.addItem(mContext, info, false);
         } else {
@@ -399,10 +416,10 @@ public class LoaderCursor extends CursorWrapper {
             final GridOccupancy hotseatOccupancy =
                     occupied.get(LauncherSettings.Favorites.CONTAINER_HOTSEAT);
 
-            if (item.screenId >= mIDP.numHotseatIcons) {
+            if (item.screenId >= mIDP.numDatabaseHotseatIcons) {
                 Log.e(TAG, "Error loading shortcut " + item
                         + " into hotseat position " + item.screenId
-                        + ", position out of bounds: (0 to " + (mIDP.numHotseatIcons - 1)
+                        + ", position out of bounds: (0 to " + (mIDP.numDatabaseHotseatIcons - 1)
                         + ")");
                 return false;
             }
@@ -418,7 +435,7 @@ public class LoaderCursor extends CursorWrapper {
                     return true;
                 }
             } else {
-                final GridOccupancy occupancy = new GridOccupancy(mIDP.numHotseatIcons, 1);
+                final GridOccupancy occupancy = new GridOccupancy(mIDP.numDatabaseHotseatIcons, 1);
                 occupancy.cells[item.screenId][0] = true;
                 occupied.put(LauncherSettings.Favorites.CONTAINER_HOTSEAT, occupancy);
                 return true;
@@ -445,7 +462,8 @@ public class LoaderCursor extends CursorWrapper {
             if (item.screenId == Workspace.FIRST_SCREEN_ID) {
                 // Mark the first row as occupied (if the feature is enabled)
                 // in order to account for the QSB.
-                screen.markCells(0, 0, countX + 1, 1, FeatureFlags.QSB_ON_FIRST_SCREEN);
+                int spanY = FeatureFlags.EXPANDED_SMARTSPACE.get() ? 2 : 1;
+                screen.markCells(0, 0, countX + 1, spanY, FeatureFlags.QSB_ON_FIRST_SCREEN);
             }
             occupied.put(item.screenId, screen);
         }

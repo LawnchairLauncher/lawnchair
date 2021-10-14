@@ -4,6 +4,7 @@ import android.util.Log;
 import android.view.Surface;
 
 import com.android.launcher3.tapl.TestHelpers;
+import com.android.launcher3.testing.TestProtocol;
 
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;

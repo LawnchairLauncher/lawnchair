@@ -31,6 +31,7 @@ import androidx.customview.widget.ExploreByTouchHelper;
 import com.android.launcher3.CellLayout;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
+import com.android.launcher3.dragndrop.DragLayer;
 
 import java.util.List;
 
@@ -41,30 +42,32 @@ public abstract class DragAndDropAccessibilityDelegate extends ExploreByTouchHel
         implements OnClickListener, OnHoverListener {
     protected static final int INVALID_POSITION = -1;
 
-    private static final int[] sTempArray = new int[2];
+    protected final Rect mTempRect = new Rect();
+    protected final int[] mTempCords = new int[2];
 
     protected final CellLayout mView;
     protected final Context mContext;
     protected final LauncherAccessibilityDelegate mDelegate;
-
-    private final Rect mTempRect = new Rect();
+    protected final DragLayer mDragLayer;
 
     public DragAndDropAccessibilityDelegate(CellLayout forView) {
         super(forView);
         mView = forView;
         mContext = mView.getContext();
-        mDelegate = Launcher.getLauncher(mContext).getAccessibilityDelegate();
+        Launcher launcher = Launcher.getLauncher(mContext);
+        mDelegate = launcher.getAccessibilityDelegate();
+        mDragLayer = launcher.getDragLayer();
     }
 
     @Override
-    protected int getVirtualViewAt(float x, float y) {
+    public int getVirtualViewAt(float x, float y) {
         if (x < 0 || y < 0 || x > mView.getMeasuredWidth() || y > mView.getMeasuredHeight()) {
             return INVALID_ID;
         }
-        mView.pointToCellExact((int) x, (int) y, sTempArray);
+        mView.pointToCellExact((int) x, (int) y, mTempCords);
 
         // Map cell to id
-        int id = sTempArray[0] + sTempArray[1] * mView.getCountX();
+        int id = mTempCords[0] + mTempCords[1] * mView.getCountX();
         return intersectsValidDropTarget(id);
     }
 
@@ -75,7 +78,7 @@ public abstract class DragAndDropAccessibilityDelegate extends ExploreByTouchHel
     protected abstract int intersectsValidDropTarget(int id);
 
     @Override
-    protected void getVisibleVirtualViews(List<Integer> virtualViews) {
+    public void getVisibleVirtualViews(List<Integer> virtualViews) {
         // We create a virtual view for each cell of the grid
         // The cell ids correspond to cells in reading order.
         int nCells = mView.getCountX() * mView.getCountY();
@@ -88,7 +91,7 @@ public abstract class DragAndDropAccessibilityDelegate extends ExploreByTouchHel
     }
 
     @Override
-    protected boolean onPerformActionForVirtualView(int viewId, int action, Bundle args) {
+    public boolean onPerformActionForVirtualView(int viewId, int action, Bundle args) {
         if (action == AccessibilityNodeInfoCompat.ACTION_CLICK && viewId != INVALID_ID) {
             String confirmation = getConfirmationForIconDrop(viewId);
             mDelegate.handleAccessibleDrop(mView, getItemBounds(viewId), confirmation);
@@ -112,13 +115,25 @@ public abstract class DragAndDropAccessibilityDelegate extends ExploreByTouchHel
     }
 
     @Override
-    protected void onPopulateNodeForVirtualView(int id, AccessibilityNodeInfoCompat node) {
+    public void onPopulateNodeForVirtualView(int id, AccessibilityNodeInfoCompat node) {
         if (id == INVALID_ID) {
             throw new IllegalArgumentException("Invalid virtual view id");
         }
 
         node.setContentDescription(getLocationDescriptionForIconDrop(id));
-        node.setBoundsInParent(getItemBounds(id));
+
+        Rect itemBounds = getItemBounds(id);
+        node.setBoundsInParent(itemBounds);
+
+        // ExploreByTouchHelper does not currently handle view scale.
+        // Update BoundsInScreen to appropriate value.
+        mTempCords[0] = mTempCords[1] = 0;
+        float scale = mDragLayer.getDescendantCoordRelativeToSelf(mView, mTempCords);
+        mTempRect.left = mTempCords[0] + (int) (itemBounds.left * scale);
+        mTempRect.right = mTempCords[0] + (int) (itemBounds.right * scale);
+        mTempRect.top = mTempCords[1] + (int) (itemBounds.top * scale);
+        mTempRect.bottom = mTempCords[1] + (int) (itemBounds.bottom * scale);
+        node.setBoundsInScreen(mTempRect);
 
         node.addAction(AccessibilityNodeInfoCompat.ACTION_CLICK);
         node.setClickable(true);
@@ -128,6 +143,13 @@ public abstract class DragAndDropAccessibilityDelegate extends ExploreByTouchHel
     @Override
     public boolean onHover(View view, MotionEvent motionEvent) {
         return dispatchHoverEvent(motionEvent);
+    }
+
+    /**
+     * Returns the target host container
+     */
+    public View getHost() {
+        return mView;
     }
 
     protected abstract String getLocationDescriptionForIconDrop(int id);

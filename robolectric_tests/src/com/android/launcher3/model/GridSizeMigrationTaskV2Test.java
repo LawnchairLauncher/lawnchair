@@ -120,7 +120,7 @@ public class GridSizeMigrationTaskV2Test {
         };
         mModelHelper.addItem(APP_ICON, 0, DESKTOP, 2, 2, testPackage7);
 
-        mIdp.numHotseatIcons = 4;
+        mIdp.numDatabaseHotseatIcons = 4;
         mIdp.numColumns = 4;
         mIdp.numRows = 4;
         GridSizeMigrationTaskV2.DbReader srcReader = new GridSizeMigrationTaskV2.DbReader(mDb,
@@ -128,16 +128,16 @@ public class GridSizeMigrationTaskV2Test {
                 srcHotseatItems.length);
         GridSizeMigrationTaskV2.DbReader destReader = new GridSizeMigrationTaskV2.DbReader(mDb,
                 LauncherSettings.Favorites.TABLE_NAME, mContext, mValidPackages,
-                mIdp.numHotseatIcons);
+                mIdp.numDatabaseHotseatIcons);
         GridSizeMigrationTaskV2 task = new GridSizeMigrationTaskV2(mContext, mDb, srcReader,
-                destReader, mIdp.numHotseatIcons, new Point(mIdp.numColumns, mIdp.numRows));
+                destReader, mIdp.numDatabaseHotseatIcons, new Point(mIdp.numColumns, mIdp.numRows));
         task.migrate();
 
         // Check hotseat items
         Cursor c = mContext.getContentResolver().query(LauncherSettings.Favorites.CONTENT_URI,
                 new String[]{LauncherSettings.Favorites.SCREEN, LauncherSettings.Favorites.INTENT},
                 "container=" + CONTAINER_HOTSEAT, null, null, null);
-        assertEquals(c.getCount(), mIdp.numHotseatIcons);
+        assertEquals(c.getCount(), mIdp.numDatabaseHotseatIcons);
         int screenIndex = c.getColumnIndex(LauncherSettings.Favorites.SCREEN);
         int intentIndex = c.getColumnIndex(LauncherSettings.Favorites.INTENT);
         c.moveToNext();
@@ -186,5 +186,101 @@ public class GridSizeMigrationTaskV2Test {
         assertTrue(c.getString(intentIndex).contains(testPackage8));
         assertEquals(c.getInt(cellXIndex), 0);
         assertEquals(c.getInt(cellYIndex), 2);
+
+        c.close();
+    }
+
+    @Test
+    public void migrateToLargerHotseat() {
+        int[] srcHotseatItems = {
+                mModelHelper.addItem(APP_ICON, 0, HOTSEAT, 0, 0, testPackage1, 1, TMP_CONTENT_URI),
+                mModelHelper.addItem(SHORTCUT, 1, HOTSEAT, 0, 0, testPackage2, 2, TMP_CONTENT_URI),
+                mModelHelper.addItem(APP_ICON, 2, HOTSEAT, 0, 0, testPackage3, 3, TMP_CONTENT_URI),
+                mModelHelper.addItem(SHORTCUT, 3, HOTSEAT, 0, 0, testPackage4, 4, TMP_CONTENT_URI),
+        };
+
+        int numSrcDatabaseHotseatIcons = srcHotseatItems.length;
+        mIdp.numDatabaseHotseatIcons = 6;
+        mIdp.numColumns = 4;
+        mIdp.numRows = 4;
+        GridSizeMigrationTaskV2.DbReader srcReader = new GridSizeMigrationTaskV2.DbReader(mDb,
+                LauncherSettings.Favorites.TMP_TABLE, mContext, mValidPackages,
+                numSrcDatabaseHotseatIcons);
+        GridSizeMigrationTaskV2.DbReader destReader = new GridSizeMigrationTaskV2.DbReader(mDb,
+                LauncherSettings.Favorites.TABLE_NAME, mContext, mValidPackages,
+                mIdp.numDatabaseHotseatIcons);
+        GridSizeMigrationTaskV2 task = new GridSizeMigrationTaskV2(mContext, mDb, srcReader,
+                destReader, mIdp.numDatabaseHotseatIcons, new Point(mIdp.numColumns, mIdp.numRows));
+        task.migrate();
+
+        // Check hotseat items
+        Cursor c = mContext.getContentResolver().query(LauncherSettings.Favorites.CONTENT_URI,
+                new String[]{LauncherSettings.Favorites.SCREEN, LauncherSettings.Favorites.INTENT},
+                "container=" + CONTAINER_HOTSEAT, null, null, null);
+        assertEquals(c.getCount(), numSrcDatabaseHotseatIcons);
+        int screenIndex = c.getColumnIndex(LauncherSettings.Favorites.SCREEN);
+        int intentIndex = c.getColumnIndex(LauncherSettings.Favorites.INTENT);
+        c.moveToNext();
+        assertEquals(c.getInt(screenIndex), 0);
+        assertTrue(c.getString(intentIndex).contains(testPackage1));
+        c.moveToNext();
+        assertEquals(c.getInt(screenIndex), 1);
+        assertTrue(c.getString(intentIndex).contains(testPackage2));
+        c.moveToNext();
+        assertEquals(c.getInt(screenIndex), 2);
+        assertTrue(c.getString(intentIndex).contains(testPackage3));
+        c.moveToNext();
+        assertEquals(c.getInt(screenIndex), 3);
+        assertTrue(c.getString(intentIndex).contains(testPackage4));
+
+        c.close();
+    }
+
+    @Test
+    public void migrateFromLargerHotseat() {
+        int[] srcHotseatItems = {
+                mModelHelper.addItem(APP_ICON, 0, HOTSEAT, 0, 0, testPackage1, 1, TMP_CONTENT_URI),
+                -1,
+                mModelHelper.addItem(SHORTCUT, 2, HOTSEAT, 0, 0, testPackage2, 2, TMP_CONTENT_URI),
+                mModelHelper.addItem(APP_ICON, 3, HOTSEAT, 0, 0, testPackage3, 3, TMP_CONTENT_URI),
+                mModelHelper.addItem(SHORTCUT, 4, HOTSEAT, 0, 0, testPackage4, 4, TMP_CONTENT_URI),
+                mModelHelper.addItem(APP_ICON, 5, HOTSEAT, 0, 0, testPackage5, 5, TMP_CONTENT_URI),
+        };
+
+        int numSrcDatabaseHotseatIcons = srcHotseatItems.length;
+        mIdp.numDatabaseHotseatIcons = 4;
+        mIdp.numColumns = 4;
+        mIdp.numRows = 4;
+        GridSizeMigrationTaskV2.DbReader srcReader = new GridSizeMigrationTaskV2.DbReader(mDb,
+                LauncherSettings.Favorites.TMP_TABLE, mContext, mValidPackages,
+                numSrcDatabaseHotseatIcons);
+        GridSizeMigrationTaskV2.DbReader destReader = new GridSizeMigrationTaskV2.DbReader(mDb,
+                LauncherSettings.Favorites.TABLE_NAME, mContext, mValidPackages,
+                mIdp.numDatabaseHotseatIcons);
+        GridSizeMigrationTaskV2 task = new GridSizeMigrationTaskV2(mContext, mDb, srcReader,
+                destReader, mIdp.numDatabaseHotseatIcons, new Point(mIdp.numColumns, mIdp.numRows));
+        task.migrate();
+
+        // Check hotseat items
+        Cursor c = mContext.getContentResolver().query(LauncherSettings.Favorites.CONTENT_URI,
+                new String[]{LauncherSettings.Favorites.SCREEN, LauncherSettings.Favorites.INTENT},
+                "container=" + CONTAINER_HOTSEAT, null, null, null);
+        assertEquals(c.getCount(), mIdp.numDatabaseHotseatIcons);
+        int screenIndex = c.getColumnIndex(LauncherSettings.Favorites.SCREEN);
+        int intentIndex = c.getColumnIndex(LauncherSettings.Favorites.INTENT);
+        c.moveToNext();
+        assertEquals(c.getInt(screenIndex), 0);
+        assertTrue(c.getString(intentIndex).contains(testPackage1));
+        c.moveToNext();
+        assertEquals(c.getInt(screenIndex), 1);
+        assertTrue(c.getString(intentIndex).contains(testPackage2));
+        c.moveToNext();
+        assertEquals(c.getInt(screenIndex), 2);
+        assertTrue(c.getString(intentIndex).contains(testPackage3));
+        c.moveToNext();
+        assertEquals(c.getInt(screenIndex), 3);
+        assertTrue(c.getString(intentIndex).contains(testPackage4));
+
+        c.close();
     }
 }

@@ -45,5 +45,5 @@
         launcher:iconSizeOverride="@dimen/widget_section_icon_size"
         launcher:layoutHorizontal="true" />
 
-    <include layout="@layout/widgets_scroll_container" />
+    <include layout="@layout/widgets_table_container" />
 </LinearLayout>

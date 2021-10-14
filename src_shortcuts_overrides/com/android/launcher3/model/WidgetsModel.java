@@ -5,20 +5,21 @@ import static android.appwidget.AppWidgetProviderInfo.WIDGET_FEATURE_HIDE_FROM_P
 
 import static com.android.launcher3.pm.ShortcutConfigActivityInfo.queryList;
 
+import static java.util.stream.Collectors.toList;
+
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.pm.PackageManager;
-import android.os.Process;
 import android.os.UserHandle;
 import android.util.Log;
 
 import androidx.annotation.Nullable;
+import androidx.collection.ArrayMap;
 
 import com.android.launcher3.AppFilter;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.LauncherAppState;
-import com.android.launcher3.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.compat.AlphabeticIndexCompat;
 import com.android.launcher3.config.FeatureFlags;
@@ -26,21 +27,25 @@ import com.android.launcher3.icons.ComponentWithLabelAndIcon;
 import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.model.data.PackageItemInfo;
 import com.android.launcher3.pm.ShortcutConfigActivityInfo;
-import com.android.launcher3.util.MultiHashMap;
 import com.android.launcher3.util.PackageUserKey;
 import com.android.launcher3.util.Preconditions;
-import com.android.launcher3.widget.WidgetItemComparator;
-import com.android.launcher3.widget.WidgetListRowEntry;
+import com.android.launcher3.widget.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.widget.WidgetManagerHelper;
+import com.android.launcher3.widget.model.WidgetsListBaseEntry;
+import com.android.launcher3.widget.model.WidgetsListContentEntry;
+import com.android.launcher3.widget.model.WidgetsListHeaderEntry;
+import com.android.launcher3.widget.picker.WidgetsDiffReporter;
 
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 /**
  * Widgets data model that is used by the adapters of the widget views and controllers.
@@ -51,36 +56,54 @@ public class WidgetsModel {
 
     // True is the widget support is disabled.
     public static final boolean GO_DISABLE_WIDGETS = false;
+    public static final boolean GO_DISABLE_NOTIFICATION_DOTS = false;
 
     private static final String TAG = "WidgetsModel";
     private static final boolean DEBUG = false;
 
-    /* Map of widgets and shortcuts that are tracked per package. */
-    private final MultiHashMap<PackageItemInfo, WidgetItem> mWidgetsList = new MultiHashMap<>();
+    private static final ComponentName CONVERSATION_WIDGET = ComponentName.createRelative(
+            "com.android.systemui", ".people.widget.PeopleSpaceWidgetProvider");
 
-    private AppFilter mAppFilter;
+    /* Map of widgets and shortcuts that are tracked per package. */
+    private final Map<PackageItemInfo, List<WidgetItem>> mWidgetsList = new HashMap<>();
 
     /**
-     * Returns a list of {@link WidgetListRowEntry}. All {@link WidgetItem} in a single row
-     * are sorted (based on label and user), but the overall list of {@link WidgetListRowEntry}s
-     * is not sorted. This list is sorted at the UI when using
-     * {@link com.android.launcher3.widget.WidgetsDiffReporter}
+     * Returns a list of {@link WidgetsListBaseEntry}. All {@link WidgetItem} in a single row
+     * are sorted (based on label and user), but the overall list of
+     * {@link WidgetsListBaseEntry}s is not sorted. This list is sorted at the UI when using
+     * {@link WidgetsDiffReporter}
      *
-     * @see com.android.launcher3.widget.WidgetsListAdapter#setWidgets(ArrayList)
+     * @see com.android.launcher3.widget.picker.WidgetsListAdapter#setWidgets(List)
      */
-    public synchronized ArrayList<WidgetListRowEntry> getWidgetsList(Context context) {
-        ArrayList<WidgetListRowEntry> result = new ArrayList<>();
+    public synchronized ArrayList<WidgetsListBaseEntry> getWidgetsListForPicker(Context context) {
+        ArrayList<WidgetsListBaseEntry> result = new ArrayList<>();
         AlphabeticIndexCompat indexer = new AlphabeticIndexCompat(context);
 
-        WidgetItemComparator widgetComparator = new WidgetItemComparator();
-        for (Map.Entry<PackageItemInfo, ArrayList<WidgetItem>> entry : mWidgetsList.entrySet()) {
-            WidgetListRowEntry row = new WidgetListRowEntry(entry.getKey(), entry.getValue());
-            row.titleSectionName = (row.pkgItem.title == null) ? "" :
-                    indexer.computeSectionName(row.pkgItem.title);
-            Collections.sort(row.widgets, widgetComparator);
-            result.add(row);
+        for (Map.Entry<PackageItemInfo, List<WidgetItem>> entry : mWidgetsList.entrySet()) {
+            PackageItemInfo pkgItem = entry.getKey();
+            List<WidgetItem> widgetItems = entry.getValue();
+            String sectionName = (pkgItem.title == null) ? "" :
+                    indexer.computeSectionName(pkgItem.title);
+            result.add(new WidgetsListHeaderEntry(pkgItem, sectionName, widgetItems));
+            result.add(new WidgetsListContentEntry(pkgItem, sectionName, widgetItems));
         }
         return result;
+    }
+
+    /** Returns a mapping of packages to their widgets without static shortcuts. */
+    public synchronized Map<PackageUserKey, List<WidgetItem>> getAllWidgetsWithoutShortcuts() {
+        Map<PackageUserKey, List<WidgetItem>> packagesToWidgets = new HashMap<>();
+        mWidgetsList.forEach((packageItemInfo, widgetsAndShortcuts) -> {
+            List<WidgetItem> widgets = widgetsAndShortcuts.stream()
+                        .filter(item -> item.widgetInfo != null)
+                        .collect(toList());
+            if (widgets.size() > 0) {
+                packagesToWidgets.put(
+                        new PackageUserKey(packageItemInfo.packageName, packageItemInfo.user),
+                        widgets);
+            }
+        });
+        return packagesToWidgets;
     }
 
     /**
@@ -137,98 +160,38 @@ public class WidgetsModel {
             Log.d(TAG, "addWidgetsAndShortcuts, widgetsShortcuts#=" + rawWidgetsShortcuts.size());
         }
 
-        // Temporary list for {@link PackageItemInfos} to avoid having to go through
+        // Temporary cache for {@link PackageItemInfos} to avoid having to go through
         // {@link mPackageItemInfos} to locate the key to be used for {@link #mWidgetsList}
-        HashMap<String, PackageItemInfo> tmpPackageItemInfos = new HashMap<>();
+        PackageItemInfoCache packageItemInfoCache = new PackageItemInfoCache();
 
-        // clear the lists.
         if (packageUser == null) {
+            // Clear the list if this is an update on all widgets and shortcuts.
             mWidgetsList.clear();
         } else {
-            // Only clear the widgets for the given package/user.
-            PackageItemInfo packageItem = null;
-            for (PackageItemInfo item : mWidgetsList.keySet()) {
-                if (item.packageName.equals(packageUser.mPackageName)) {
-                    packageItem = item;
-                    break;
-                }
-            }
-            if (packageItem != null) {
-                // We want to preserve the user that was on the packageItem previously,
-                // so add it to tmpPackageItemInfos here to avoid creating a new entry.
-                tmpPackageItemInfos.put(packageItem.packageName, packageItem);
-
-                Iterator<WidgetItem> widgetItemIterator = mWidgetsList.get(packageItem).iterator();
-                while (widgetItemIterator.hasNext()) {
-                    WidgetItem nextWidget = widgetItemIterator.next();
-                    if (nextWidget.componentName.getPackageName().equals(packageUser.mPackageName)
-                            && nextWidget.user.equals(packageUser.mUser)) {
-                        widgetItemIterator.remove();
-                    }
-                }
-            }
+            // Otherwise, only clear the widgets and shortcuts for the changed package.
+            mWidgetsList.remove(
+                    packageItemInfoCache.getOrCreate(new WidgetPackageOrCategoryKey(packageUser)));
         }
-
-        InvariantDeviceProfile idp = app.getInvariantDeviceProfile();
-        UserHandle myUser = Process.myUserHandle();
 
         // add and update.
-        for (WidgetItem item : rawWidgetsShortcuts) {
-            if (item.widgetInfo != null) {
-                if ((item.widgetInfo.getWidgetFeatures() & WIDGET_FEATURE_HIDE_FROM_PICKER) != 0) {
-                    // Widget is hidden from picker
-                    continue;
-                }
-
-                // Ensure that all widgets we show can be added on a workspace of this size
-                int minSpanX = Math.min(item.widgetInfo.spanX, item.widgetInfo.minSpanX);
-                int minSpanY = Math.min(item.widgetInfo.spanY, item.widgetInfo.minSpanY);
-                if (minSpanX > idp.numColumns || minSpanY > idp.numRows) {
-                    if (DEBUG) {
-                        Log.d(TAG, String.format(
-                                "Widget %s : (%d X %d) can't fit on this device",
-                                item.componentName, minSpanX, minSpanY));
-                    }
-                    continue;
-                }
-            }
-
-            if (mAppFilter == null) {
-                mAppFilter = AppFilter.newInstance(app.getContext());
-            }
-            if (!mAppFilter.shouldShowApp(item.componentName)) {
-                if (DEBUG) {
-                    Log.d(TAG, String.format("%s is filtered and not added to the widget tray.",
-                            item.componentName));
-                }
-                continue;
-            }
-
-            String packageName = item.componentName.getPackageName();
-            PackageItemInfo pInfo = tmpPackageItemInfos.get(packageName);
-            if (pInfo == null) {
-                pInfo = new PackageItemInfo(packageName);
-                pInfo.user = item.user;
-                tmpPackageItemInfos.put(packageName,  pInfo);
-            } else if (!myUser.equals(pInfo.user)) {
-                // Keep updating the user, until we get the primary user.
-                pInfo.user = item.user;
-            }
-            mWidgetsList.addToList(pInfo, item);
-        }
+        mWidgetsList.putAll(rawWidgetsShortcuts.stream()
+                .filter(new WidgetValidityCheck(app))
+                .collect(Collectors.groupingBy(item ->
+                        packageItemInfoCache.getOrCreate(getWidgetPackageOrCategoryKey(item))
+                )));
 
         // Update each package entry
         IconCache iconCache = app.getIconCache();
-        for (PackageItemInfo p : tmpPackageItemInfos.values()) {
+        for (PackageItemInfo p : packageItemInfoCache.values()) {
             iconCache.getTitleAndIconForApp(p, true /* userLowResIcon */);
         }
     }
 
     public void onPackageIconsUpdated(Set<String> packageNames, UserHandle user,
             LauncherAppState app) {
-        for (Entry<PackageItemInfo, ArrayList<WidgetItem>> entry : mWidgetsList.entrySet()) {
+        for (Entry<PackageItemInfo, List<WidgetItem>> entry : mWidgetsList.entrySet()) {
             if (packageNames.contains(entry.getKey().packageName)) {
-                ArrayList<WidgetItem> items = entry.getValue();
+                List<WidgetItem> items = entry.getValue();
                 int count = items.size();
                 for (int i = 0; i < count; i++) {
                     WidgetItem item = items.get(i);
@@ -248,7 +211,7 @@ public class WidgetsModel {
 
     public WidgetItem getWidgetProviderInfoByProviderName(
             ComponentName providerName) {
-        ArrayList<WidgetItem> widgetsList = mWidgetsList.get(
+        List<WidgetItem> widgetsList = mWidgetsList.get(
                 new PackageItemInfo(providerName.getPackageName()));
         if (widgetsList == null) {
             return null;
@@ -260,5 +223,118 @@ public class WidgetsModel {
             }
         }
         return null;
+    }
+
+    /** Returns {@link PackageItemInfo} of a pending widget. */
+    public static PackageItemInfo newPendingItemInfo(ComponentName provider) {
+        if (CONVERSATION_WIDGET.equals(provider)) {
+            return new PackageItemInfo(provider.getPackageName(), PackageItemInfo.CONVERSATIONS);
+        }
+        return new PackageItemInfo(provider.getPackageName());
+    }
+
+    private WidgetPackageOrCategoryKey getWidgetPackageOrCategoryKey(WidgetItem item) {
+        if (CONVERSATION_WIDGET.equals(item.componentName)) {
+            return new WidgetPackageOrCategoryKey(PackageItemInfo.CONVERSATIONS, item.user);
+        }
+        return new WidgetPackageOrCategoryKey(item.componentName.getPackageName(), item.user);
+    }
+
+    private static class WidgetValidityCheck implements Predicate<WidgetItem> {
+
+        private final InvariantDeviceProfile mIdp;
+        private final AppFilter mAppFilter;
+
+        WidgetValidityCheck(LauncherAppState app) {
+            mIdp = app.getInvariantDeviceProfile();
+            mAppFilter = new AppFilter(app.getContext());
+        }
+
+        @Override
+        public boolean test(WidgetItem item) {
+            if (item.widgetInfo != null) {
+                if ((item.widgetInfo.getWidgetFeatures() & WIDGET_FEATURE_HIDE_FROM_PICKER) != 0) {
+                    // Widget is hidden from picker
+                    return false;
+                }
+
+                // Ensure that all widgets we show can be added on a workspace of this size
+                if (!item.widgetInfo.isMinSizeFulfilled()) {
+                    if (DEBUG) {
+                        Log.d(TAG, String.format(
+                                "Widget %s : can't fit on this device with a grid size: %dx%d",
+                                item.componentName, mIdp.numColumns, mIdp.numRows));
+                    }
+                    return false;
+                }
+            }
+            if (!mAppFilter.shouldShowApp(item.componentName)) {
+                if (DEBUG) {
+                    Log.d(TAG, String.format("%s is filtered and not added to the widget tray.",
+                            item.componentName));
+                }
+                return false;
+            }
+
+            return true;
+        }
+    }
+
+    /** A hash key for grouping widgets by package name or category. */
+    private static class WidgetPackageOrCategoryKey {
+        /**
+         * The package name of the widget provider.
+         *
+         * <p>This shouldn't be empty if {@link #mCategory} has a value,
+         * {@link PackageItemInfo#NO_CATEGORY}.
+         */
+        public final String mPackage;
+        /** A widget category. */
+        @PackageItemInfo.Category public final int mCategory;
+        public final UserHandle mUser;
+        private final int mHashCode;
+
+        WidgetPackageOrCategoryKey(PackageUserKey key) {
+            this(key.mPackageName, key.mUser);
+        }
+
+        WidgetPackageOrCategoryKey(String packageName, UserHandle user) {
+            this(packageName,  PackageItemInfo.NO_CATEGORY, user);
+        }
+
+        WidgetPackageOrCategoryKey(@PackageItemInfo.Category int category, UserHandle user) {
+            this("", category, user);
+        }
+
+        private WidgetPackageOrCategoryKey(String packageName,
+                @PackageItemInfo.Category int category, UserHandle user) {
+            mPackage = packageName;
+            mCategory = category;
+            mUser = user;
+            mHashCode = Arrays.hashCode(new Object[]{mPackage, mCategory, mUser});
+        }
+
+        @Override
+        public int hashCode() {
+            return mHashCode;
+        }
+    }
+
+    private static final class PackageItemInfoCache {
+        private final Map<WidgetPackageOrCategoryKey, PackageItemInfo> mMap = new ArrayMap<>();
+
+        PackageItemInfo getOrCreate(WidgetPackageOrCategoryKey key) {
+            PackageItemInfo pInfo = mMap.get(key);
+            if (pInfo == null) {
+                pInfo = new PackageItemInfo(key.mPackage, key.mCategory);
+                pInfo.user = key.mUser;
+                mMap.put(key,  pInfo);
+            }
+            return pInfo;
+        }
+
+        Collection<PackageItemInfo> values() {
+            return mMap.values();
+        }
     }
 }

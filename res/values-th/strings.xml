@@ -26,34 +26,50 @@
     <string name="safemode_shortcut_error" msgid="9160126848219158407">"แอปที่ดาวน์โหลดถูกปิดในโหมดปลอดภัย"</string>
     <string name="safemode_widget_error" msgid="4863470563535682004">"มีการปิดใช้งานวิดเจ็ตในเซฟโหมด"</string>
     <string name="shortcut_not_available" msgid="2536503539825726397">"ทางลัดไม่พร้อมใช้งาน"</string>
-    <string name="home_screen" msgid="806512411299847073">"หน้าจอหลัก"</string>
-    <string name="custom_actions" msgid="3747508247759093328">"การทำงานที่กำหนดเอง"</string>
-    <string name="long_press_widget_to_add" msgid="7699152356777458215">"แตะค้างเพื่อรับวิดเจ็ต"</string>
-    <string name="long_accessible_way_to_add" msgid="4289502106628154155">"แตะ 2 ครั้งค้างไว้เพื่อเลือกวิดเจ็ตหรือใช้การกระทำที่กำหนดเอง"</string>
+    <string name="home_screen" msgid="5629429142036709174">"หน้าแรก"</string>
+    <string name="recent_task_option_split_screen" msgid="6690461455618725183">"แบ่งหน้าจอ"</string>
+    <string name="long_press_widget_to_add" msgid="3587712543577675817">"แตะค้างไว้เพื่อย้ายวิดเจ็ต"</string>
+    <string name="long_accessible_way_to_add" msgid="2733588281439571974">"แตะสองครั้งค้างไว้เพื่อย้ายวิดเจ็ตหรือใช้การดำเนินการที่กำหนดเอง"</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"กว้าง %1$d x สูง %2$d"</string>
     <string name="add_item_request_drag_hint" msgid="5899764264480397019">"แตะค้างไว้เพื่อวางด้วยตัวเอง"</string>
     <string name="place_automatically" msgid="8064208734425456485">"เพิ่มโดยอัตโนมัติ"</string>
+    <plurals name="widgets_count" formatted="false" msgid="656794749266073027">
+      <item quantity="other">วิดเจ็ต <xliff:g id="WIDGETS_COUNT_1">%1$d</xliff:g> รายการ</item>
+      <item quantity="one">วิดเจ็ต <xliff:g id="WIDGETS_COUNT_0">%1$d</xliff:g> รายการ</item>
+    </plurals>
+    <plurals name="shortcuts_count" formatted="false" msgid="8080294865447938455">
+      <item quantity="other">ทางลัด <xliff:g id="SHORTCUTS_COUNT_1">%1$d</xliff:g> รายการ</item>
+      <item quantity="one">ทางลัด <xliff:g id="SHORTCUTS_COUNT_0">%1$d</xliff:g> รายการ</item>
+    </plurals>
+    <string name="widgets_and_shortcuts_count" msgid="7209136747878365116">"<xliff:g id="WIDGETS_COUNT">%1$s</xliff:g>, <xliff:g id="SHORTCUTS_COUNT">%2$s</xliff:g>"</string>
+    <string name="widget_button_text" msgid="2880537293434387943">"วิดเจ็ต"</string>
+    <string name="widgets_full_sheet_search_bar_hint" msgid="8484659090860596457">"ค้นหา"</string>
+    <string name="widgets_full_sheet_cancel_button_description" msgid="5766167035728653605">"ล้างข้อความออกจากช่องค้นหา"</string>
+    <string name="no_widgets_available" msgid="9140948620298620513">"ไม่มีวิดเจ็ตพร้อมใช้งาน"</string>
+    <string name="no_search_results" msgid="6518732304311458580">"ไม่พบผลการค้นหา"</string>
+    <string name="widgets_full_sheet_personal_tab" msgid="2743540105607120182">"ส่วนตัว"</string>
+    <string name="widgets_full_sheet_work_tab" msgid="3767150027110633765">"งาน"</string>
+    <string name="widget_category_conversations" msgid="8894438636213590446">"การสนทนา"</string>
     <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"ค้นหาแอป"</string>
     <string name="all_apps_loading_message" msgid="5813968043155271636">"กำลังโหลดแอป…"</string>
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"ไม่พบแอปที่ตรงกับ \"<xliff:g id="QUERY">%1$s</xliff:g>\""</string>
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"ค้นหาแอปเพิ่มเติม"</string>
     <string name="label_application" msgid="8531721983832654978">"แอป"</string>
     <string name="notifications_header" msgid="1404149926117359025">"การแจ้งเตือน"</string>
-    <string name="long_press_shortcut_to_add" msgid="4524750017792716791">"แตะค้างไว้เพื่อเลือกทางลัด"</string>
-    <string name="long_accessible_way_to_add_shortcut" msgid="3327314059613154633">"แตะสองครั้งค้างไว้เพื่อเลือกทางลัดหรือใช้การกระทำที่กำหนดเอง"</string>
+    <string name="long_press_shortcut_to_add" msgid="5405328730817637737">"แตะค้างไว้เพื่อย้ายทางลัด"</string>
+    <string name="long_accessible_way_to_add_shortcut" msgid="2199537273817090740">"แตะสองครั้งค้างไว้เพื่อย้ายทางลัดหรือใช้การดำเนินการที่กำหนดเอง"</string>
     <string name="out_of_space" msgid="4691004494942118364">"ไม่มีที่ว่างในหน้าจอหลักนี้"</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"ไม่มีพื้นที่เหลือในถาดรายการโปรด"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"รายชื่อแอป"</string>
     <string name="all_apps_button_personal_label" msgid="1315764287305224468">"รายการแอปส่วนตัว"</string>
     <string name="all_apps_button_work_label" msgid="7270707118948892488">"รายการแอปสำหรับทำงาน"</string>
-    <string name="all_apps_home_button_label" msgid="252062713717058851">"หน้าแรก"</string>
     <string name="remove_drop_target_label" msgid="7812859488053230776">"นำออก"</string>
     <string name="uninstall_drop_target_label" msgid="4722034217958379417">"ถอนการติดตั้ง"</string>
     <string name="app_info_drop_target_label" msgid="692894985365717661">"ข้อมูลแอป"</string>
     <string name="install_drop_target_label" msgid="2539096853673231757">"ติดตั้ง"</string>
     <string name="dismiss_prediction_label" msgid="3357562989568808658">"ไม่ต้องแนะนำแอป"</string>
-    <string name="pin_prediction" msgid="4196423321649756498">"ตรึงแอปที่คาดการณ์ไว้"</string>
+    <string name="pin_prediction" msgid="4196423321649756498">"ปักหมุดแอปที่คาดการณ์ไว้"</string>
     <string name="permlab_install_shortcut" msgid="5632423390354674437">"ติดตั้งทางลัด"</string>
     <string name="permdesc_install_shortcut" msgid="923466509822011139">"อนุญาตให้แอปเพิ่มทางลัดโดยไม่ต้องให้ผู้ใช้จัดการ"</string>
     <string name="permlab_read_settings" msgid="1941457408239617576">"อ่านการตั้งค่าและทางลัดหน้าแรกแล้ว"</string>
@@ -80,7 +96,6 @@
     <string name="folder_renamed" msgid="1794088362165669656">"เปลี่ยนชื่อโฟลเดอร์เป็น <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="folder_name_format_exact" msgid="8626242716117004803">"โฟลเดอร์: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> รายการ"</string>
     <string name="folder_name_format_overflow" msgid="4270108890534995199">"โฟลเดอร์: <xliff:g id="NAME">%1$s</xliff:g>, อย่างน้อย <xliff:g id="SIZE">%2$d</xliff:g> รายการ"</string>
-    <string name="widget_button_text" msgid="2880537293434387943">"วิดเจ็ต"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"วอลเปเปอร์"</string>
     <string name="styles_wallpaper_button_text" msgid="4342122323125579619">"รูปแบบและวอลเปเปอร์"</string>
     <string name="settings_button_text" msgid="8873672322605444408">"การตั้งค่าหน้าแรก"</string>
@@ -101,9 +116,9 @@
     <string name="abandoned_search" msgid="891119232568284442">"ค้นหา"</string>
     <string name="abandoned_promises_title" msgid="7096178467971716750">"ไม่ได้ติดตั้งแอปนี้"</string>
     <string name="abandoned_promise_explanation" msgid="3990027586878167529">"ยังไม่ได้ติดตั้งแอปสำหรับไอคอนนี้ คุณสามารถนำไอคอนออก หรือค้นหาแอปดังกล่าวแล้วติดตั้งด้วยตนเอง"</string>
+    <string name="app_installing_title" msgid="5864044122733792085">"กำลังติดตั้ง <xliff:g id="NAME">%1$s</xliff:g> เสร็จแล้ว <xliff:g id="PROGRESS">%2$s</xliff:g>"</string>
     <string name="app_downloading_title" msgid="8336702962104482644">"กำลังดาวน์โหลด <xliff:g id="NAME">%1$s</xliff:g> เสร็จแล้ว <xliff:g id="PROGRESS">%2$s</xliff:g>"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"<xliff:g id="NAME">%1$s</xliff:g> กำลังรอติดตั้ง"</string>
-    <string name="widgets_bottom_sheet_title" msgid="2904559530954183366">"วิดเจ็ตของ <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="widgets_list" msgid="796804551140113767">"รายการวิดเจ็ต"</string>
     <string name="widgets_list_closed" msgid="6141506579418771922">"ปิดรายการวิดเจ็ตแล้ว"</string>
     <string name="action_add_to_workspace" msgid="8902165848117513641">"เพิ่มลงในหน้าจอหลัก"</string>
@@ -141,8 +156,13 @@
     <string name="work_profile_edu_next" msgid="8783418929296503629">"ถัดไป"</string>
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"รับทราบ"</string>
     <string name="work_apps_paused_title" msgid="2389865654362803723">"โปรไฟล์งานหยุดชั่วคราว"</string>
-    <string name="work_apps_paused_body" msgid="2197210494568696054">"แอปงานจะส่งการแจ้งเตือน ใช้แบตเตอรี่ หรือเข้าถึงตำแหน่งของคุณไม่ได้"</string>
-    <string name="work_apps_paused_content_description" msgid="7553586952985486433">"โปรไฟล์งานปิดชั่วคราว แอปงานจะส่งการแจ้งเตือน ใช้แบตเตอรี่ หรือเข้าถึงตำแหน่งของคุณไม่ได้"</string>
+    <string name="work_apps_paused_body" msgid="4209084728264328628">"แอปงานจะส่งการแจ้งเตือน ใช้แบตเตอรี่ หรือเข้าถึงตำแหน่งของคุณไม่ได้"</string>
+    <string name="work_apps_paused_content_description" msgid="4473292417145736203">"โปรไฟล์งานหยุดชั่วคราว แอปงานจะส่งการแจ้งเตือน ใช้แบตเตอรี่ หรือเข้าถึงตำแหน่งของคุณไม่ได้"</string>
+    <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"แอปงานจะติดป้ายไว้และผู้ดูแลระบบไอทีจะมองเห็น"</string>
+    <string name="work_apps_paused_edu_accept" msgid="6377476824357318532">"รับทราบ"</string>
+    <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"หยุดแอปงานชั่วคราว"</string>
+    <string name="work_apps_enable_btn_text" msgid="82111102541971856">"เปิด"</string>
+    <string name="developer_options_filter_hint" msgid="5896817443635989056">"ตัวกรอง"</string>
     <string name="work_switch_tip" msgid="808075064383839144">"หยุดแอปงานและการแจ้งเตือนไว้ชั่วคราว"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"ไม่สำเร็จ: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
 </resources>

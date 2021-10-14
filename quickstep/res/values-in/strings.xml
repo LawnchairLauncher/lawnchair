@@ -19,8 +19,7 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="recent_task_option_split_screen" msgid="5353188922202653570">"Layar terpisah"</string>
-    <string name="recent_task_option_pin" msgid="7929860679018978258">"Pasang pin"</string>
+    <string name="recent_task_option_pin" msgid="7929860679018978258">"Sematkan"</string>
     <string name="recent_task_option_freeform" msgid="48863056265284071">"Format bebas"</string>
     <string name="recents_empty_message" msgid="7040467240571714191">"Tidak ada item yang baru dibuka"</string>
     <string name="accessibility_app_usage_settings" msgid="6312864233673544149">"Setelan penggunaan aplikasi"</string>
@@ -46,7 +45,40 @@
     <string name="hotsaet_tip_prediction_enabled" msgid="2233554377501347650">"Saran aplikasi diaktifkan"</string>
     <string name="hotsaet_tip_prediction_disabled" msgid="1506426298884658491">"Saran aplikasi dinonaktifkan"</string>
     <string name="hotseat_prediction_content_description" msgid="4582028296938078419">"Aplikasi yang diprediksi: <xliff:g id="TITLE">%1$s</xliff:g>"</string>
+    <string name="back_gesture_feedback_swipe_too_far_from_left_edge" msgid="340972404868601012">"Pastikan Anda menggeser dari tepi ujung kiri."</string>
+    <string name="back_gesture_feedback_cancelled_left_edge" msgid="6671316150388702530">"Pastikan Anda menggeser dari tepi kiri ke tengah layar, lalu lepaskan."</string>
+    <string name="back_gesture_feedback_complete_left_edge" msgid="3220478647881674266">"Selesai. Sekarang, coba geser dari tepi kanan."</string>
+    <string name="back_gesture_feedback_swipe_too_far_from_right_edge" msgid="4306700023773832353">"Pastikan Anda menggeser dari tepi ujung kanan."</string>
+    <string name="back_gesture_feedback_cancelled_right_edge" msgid="4951916546256902552">"Pastikan Anda menggeser dari tepi kanan ke tengah layar, lalu lepaskan."</string>
+    <string name="back_gesture_feedback_complete" msgid="7261221999760772210">"Anda telah menyelesaikan gestur kembali. Selanjutnya, pelajari cara beralih ke Layar utama."</string>
+    <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="1148198467090405643">"Pastikan Anda tidak menggeser terlalu dekat ke bagian bawah layar."</string>
+    <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"Untuk mengubah sensitivitas gestur kembali, buka Setelan"</string>
+    <string name="back_gesture_intro_title" msgid="19551256430224428">"Geser untuk kembali"</string>
+    <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"Untuk kembali ke layar terakhir, geser dari tepi kiri atau kanan ke tengah layar."</string>
+    <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"Pastikan Anda menggeser ke atas dari tepi bawah layar."</string>
+    <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"Pastikan Anda tidak menjeda sebelum melepaskan."</string>
+    <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"Pastikan Anda menggeser lurus ke atas."</string>
+    <string name="home_gesture_feedback_complete" msgid="2324789183070815517">"Anda telah menyelesaikan gestur beralih ke Layar utama. Selanjutnya, pelajari cara beralih aplikasi."</string>
+    <string name="home_gesture_intro_title" msgid="836590312858441830">"Geser untuk beralih ke layar utama"</string>
+    <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"Geser ke atas dari bagian bawah layar. Gestur ini akan selalu membawa Anda ke Layar utama."</string>
+    <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"Pastikan Anda menggeser ke atas dari tepi bawah layar."</string>
+    <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"Coba tahan jendela lebih lama sebelum melepaskan."</string>
+    <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"Pastikan Anda menggeser lurus ke atas, lalu menjedanya."</string>
+    <string name="overview_gesture_feedback_complete" msgid="5477014491632199169">"Anda telah menyelesaikan gestur beralih aplikasi. Anda siap menggunakan ponsel Anda!"</string>
+    <string name="overview_gesture_intro_title" msgid="2902054412868489378">"Geser untuk beralih aplikasi"</string>
+    <string name="overview_gesture_intro_subtitle" msgid="1579517193845186042">"Geser ke atas dari bagian bawah layar, tahan, lalu lepaskan."</string>
+    <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"Semua siap"</string>
+    <string name="gesture_tutorial_action_button_label_next" msgid="2556263116424738762">"Berikutnya"</string>
+    <string name="gesture_tutorial_action_button_label_done" msgid="671834508127014231">"Selesai"</string>
+    <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"Setelan"</string>
+    <string name="gesture_tutorial_try_again" msgid="65962545858556697">"Coba lagi"</string>
+    <string name="gesture_tutorial_nice" msgid="2936275692616928280">"Bagus!"</string>
+    <string name="gesture_tutorial_step" msgid="1279786122817620968">"Tutorial <xliff:g id="CURRENT">%1$d</xliff:g>/<xliff:g id="TOTAL">%2$d</xliff:g>"</string>
     <string name="action_share" msgid="2648470652637092375">"Bagikan"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"Screenshot"</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"Tindakan ini tidak diizinkan oleh aplikasi atau organisasi Anda"</string>
+    <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"Lewati tutorial navigasi?"</string>
+    <string name="skip_tutorial_dialog_subtitle" msgid="544063326241955662">"Anda dapat menemukan tutorial ini di lain waktu di aplikasi <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="gesture_tutorial_action_button_label_cancel" msgid="3809842569351264108">"Batal"</string>
+    <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"Lewati"</string>
 </resources>

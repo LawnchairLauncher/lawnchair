@@ -17,7 +17,6 @@
 package com.android.launcher3.model;
 
 import static com.android.launcher3.model.ModelUtils.filterCurrentWorkspaceItems;
-import static com.android.launcher3.model.ModelUtils.getMissingHotseatRanks;
 import static com.android.launcher3.model.ModelUtils.sortWorkspaceItemsSpatially;
 
 import android.util.Log;
@@ -27,6 +26,7 @@ import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherModel.CallbackTask;
 import com.android.launcher3.PagedView;
 import com.android.launcher3.model.BgDataModel.Callbacks;
+import com.android.launcher3.model.BgDataModel.FixedContainerItems;
 import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.LauncherAppWidgetInfo;
@@ -76,18 +76,20 @@ public abstract class BaseLoaderResults {
         ArrayList<ItemInfo> workspaceItems = new ArrayList<>();
         ArrayList<LauncherAppWidgetInfo> appWidgets = new ArrayList<>();
         final IntArray orderedScreenIds = new IntArray();
+        ArrayList<FixedContainerItems> extraItems = new ArrayList<>();
 
         synchronized (mBgDataModel) {
             workspaceItems.addAll(mBgDataModel.workspaceItems);
             appWidgets.addAll(mBgDataModel.appWidgets);
             orderedScreenIds.addAll(mBgDataModel.collectWorkspaceScreens());
+            mBgDataModel.extraItems.forEach(extraItems::add);
             mBgDataModel.lastBindId++;
             mMyBindingId = mBgDataModel.lastBindId;
         }
 
         for (Callbacks cb : mCallbacksList) {
             new WorkspaceBinder(cb, mUiExecutor, mApp, mBgDataModel, mMyBindingId,
-                    workspaceItems, appWidgets, orderedScreenIds).bind();
+                    workspaceItems, appWidgets, extraItems, orderedScreenIds).bind();
         }
     }
 
@@ -135,7 +137,7 @@ public abstract class BaseLoaderResults {
         private final ArrayList<ItemInfo> mWorkspaceItems;
         private final ArrayList<LauncherAppWidgetInfo> mAppWidgets;
         private final IntArray mOrderedScreenIds;
-
+        private final ArrayList<FixedContainerItems> mExtraItems;
 
         WorkspaceBinder(Callbacks callbacks,
                 Executor uiExecutor,
@@ -144,6 +146,7 @@ public abstract class BaseLoaderResults {
                 int myBindingId,
                 ArrayList<ItemInfo> workspaceItems,
                 ArrayList<LauncherAppWidgetInfo> appWidgets,
+                ArrayList<FixedContainerItems> extraItems,
                 IntArray orderedScreenIds) {
             mCallbacks = callbacks;
             mUiExecutor = uiExecutor;
@@ -152,6 +155,7 @@ public abstract class BaseLoaderResults {
             mMyBindingId = myBindingId;
             mWorkspaceItems = workspaceItems;
             mAppWidgets = appWidgets;
+            mExtraItems = extraItems;
             mOrderedScreenIds = orderedScreenIds;
         }
 
@@ -198,15 +202,15 @@ public abstract class BaseLoaderResults {
             // Load items on the current page.
             bindWorkspaceItems(currentWorkspaceItems, mainExecutor);
             bindAppWidgets(currentAppWidgets, mainExecutor);
+            mExtraItems.forEach(item ->
+                    executeCallbacksTask(c -> c.bindExtraContainerItems(item), mainExecutor));
 
-            // Locate available spots for prediction using currentWorkspaceItems
-            IntArray gaps = getMissingHotseatRanks(currentWorkspaceItems, idp.numHotseatIcons);
-            bindPredictedItems(gaps, mainExecutor);
             // In case of validFirstPage, only bind the first screen, and defer binding the
             // remaining screens after first onDraw (and an optional the fade animation whichever
             // happens later).
             // This ensures that the first screen is immediately visible (eg. during rotation)
             // In case of !validFirstPage, bind all pages one after other.
+
             final Executor deferredExecutor =
                     validFirstPage ? new ViewOnDrawExecutor() : mainExecutor;
 
@@ -251,11 +255,6 @@ public abstract class BaseLoaderResults {
                 executeCallbacksTask(
                         c -> c.bindItems(Collections.singletonList(widget), false), executor);
             }
-        }
-
-        private void bindPredictedItems(IntArray ranks, final Executor executor) {
-            ArrayList<AppInfo> items = new ArrayList<>(mBgDataModel.cachedPredictedItems);
-            executeCallbacksTask(c -> c.bindPredictedItems(items, ranks), executor);
         }
 
         protected void executeCallbacksTask(CallbackTask task, Executor executor) {

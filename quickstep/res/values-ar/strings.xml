@@ -19,7 +19,6 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="recent_task_option_split_screen" msgid="5353188922202653570">"تقسيم الشاشة"</string>
     <string name="recent_task_option_pin" msgid="7929860679018978258">"تثبيت"</string>
     <string name="recent_task_option_freeform" msgid="48863056265284071">"شكل مجاني"</string>
     <string name="recents_empty_message" msgid="7040467240571714191">"ليست هناك عناصر تم استخدامها مؤخرًا"</string>
@@ -46,7 +45,40 @@
     <string name="hotsaet_tip_prediction_enabled" msgid="2233554377501347650">"تم تفعيل ميزة \"التطبيقات المقترحة\"."</string>
     <string name="hotsaet_tip_prediction_disabled" msgid="1506426298884658491">"ميزة \"التطبيقات المقترحة\" غير مفعّلة."</string>
     <string name="hotseat_prediction_content_description" msgid="4582028296938078419">"التطبيق المتوقع: <xliff:g id="TITLE">%1$s</xliff:g>"</string>
+    <string name="back_gesture_feedback_swipe_too_far_from_left_edge" msgid="340972404868601012">"تأكّد من التمرير سريعًا من أقصى الحافة اليمنى."</string>
+    <string name="back_gesture_feedback_cancelled_left_edge" msgid="6671316150388702530">"تأكّد من التمرير سريعًا من الحافة اليمنى إلى وسط الشاشة ثم ارفع إصبعك."</string>
+    <string name="back_gesture_feedback_complete_left_edge" msgid="3220478647881674266">"أكملت هذه الخطوة. جرِّب الآن التمرير سريعًا من الحافة اليسرى"</string>
+    <string name="back_gesture_feedback_swipe_too_far_from_right_edge" msgid="4306700023773832353">"تأكّد من التمرير سريعًا من أقصى الحافة اليسرى."</string>
+    <string name="back_gesture_feedback_cancelled_right_edge" msgid="4951916546256902552">"تأكّد من التمرير سريعًا من الحافة اليسرى إلى وسط الشاشة ثم ارفع إصبعك."</string>
+    <string name="back_gesture_feedback_complete" msgid="7261221999760772210">"لقد أكملت التدريب على إيماءة الرجوع. تعرّف بعد ذلك على كيفية الانتقال إلى الشاشة الرئيسية."</string>
+    <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="1148198467090405643">"تأكّد من عدم التمرير بالقرب من أسفل الشاشة."</string>
+    <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"لتغيير مستوى حساسية إيماءة الرجوع، انتقِل إلى \"الإعدادات\""</string>
+    <string name="back_gesture_intro_title" msgid="19551256430224428">"مرِّر سريعًا للرجوع."</string>
+    <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"للرجوع إلى الشاشة السابقة، مرِّر سريعًا من الحافة اليسرى أو الحافة اليمنى إلى وسط الشاشة."</string>
+    <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"تأكّد من التمرير سريعًا من الحافة السفلى للشاشة إلى أعلاها."</string>
+    <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"تأكّد من عدم التوقّف قليلاً قبل رفع إصبعك."</string>
+    <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"تأكّد من التمرير إلى الأعلى مباشرةً."</string>
+    <string name="home_gesture_feedback_complete" msgid="2324789183070815517">"أكملت التدريب على إيماءة الانتقال إلى الشاشة الرئيسية. تعرّف بعد ذلك على كيفية التبديل بين التطبيقات."</string>
+    <string name="home_gesture_intro_title" msgid="836590312858441830">"مرِّر سريعًا للانتقال إلى الشاشة الرئيسية"</string>
+    <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"مرِّر سريعًا من أسفل الشاشة إلى أعلاها. تنقلك هذه الإيماءة دائمًا إلى الشاشة الرئيسية."</string>
+    <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"تأكّد من التمرير سريعًا من الحافة السفلى للشاشة إلى أعلاها."</string>
+    <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"حاوِل إبقاء إصبعك على النافذة لمدة أطول قبل رفعه."</string>
+    <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"تأكّد من التمرير سريعًا للأعلى مباشرةً ثم التوقّف قليلاً."</string>
+    <string name="overview_gesture_feedback_complete" msgid="5477014491632199169">"أكملت التدريب على إيماءة التبديل بين التطبيقات. أنت جاهز لاستخدام هاتفك."</string>
+    <string name="overview_gesture_intro_title" msgid="2902054412868489378">"مرِّر سريعًا للتبديل بين التطبيقات"</string>
+    <string name="overview_gesture_intro_subtitle" msgid="1579517193845186042">"مرِّر سريعًا من أسفل الشاشة إلى أعلاها، وأبقِ إصبعك على الشاشة قليلاً ثم ارفعه."</string>
+    <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"اكتمل التدريب على الإيماءة"</string>
+    <string name="gesture_tutorial_action_button_label_next" msgid="2556263116424738762">"التالي"</string>
+    <string name="gesture_tutorial_action_button_label_done" msgid="671834508127014231">"تم"</string>
+    <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"الإعدادات"</string>
+    <string name="gesture_tutorial_try_again" msgid="65962545858556697">"إعادة المحاولة"</string>
+    <string name="gesture_tutorial_nice" msgid="2936275692616928280">"أحسنت"</string>
+    <string name="gesture_tutorial_step" msgid="1279786122817620968">"الدليل التوجيهي <xliff:g id="CURRENT">%1$d</xliff:g> من إجمالي <xliff:g id="TOTAL">%2$d</xliff:g>"</string>
     <string name="action_share" msgid="2648470652637092375">"مشاركة"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"لقطة شاشة"</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"لا يسمح التطبيق أو لا تسمح مؤسستك بهذا الإجراء."</string>
+    <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"هل تريد تخطي الدليل التوجيهي؟"</string>
+    <string name="skip_tutorial_dialog_subtitle" msgid="544063326241955662">"يمكنك العثور على هذا الدليل التوجيهي لاحقًا في التطبيق <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="gesture_tutorial_action_button_label_cancel" msgid="3809842569351264108">"إلغاء"</string>
+    <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"التخطي"</string>
 </resources>

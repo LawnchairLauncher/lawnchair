@@ -42,4 +42,11 @@ public class ObjectWrapper<T> extends Binder {
     public static IBinder wrap(Object obj) {
         return new ObjectWrapper<>(obj);
     }
+
+    public static <T> T unwrap(IBinder binder) {
+        if (binder instanceof ObjectWrapper) {
+            return ((ObjectWrapper<T>) binder).get();
+        }
+        return null;
+    }
 }

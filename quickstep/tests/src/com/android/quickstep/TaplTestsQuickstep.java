@@ -23,6 +23,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import android.content.Intent;
+import android.util.Log;
 
 import androidx.test.filters.LargeTest;
 import androidx.test.runner.AndroidJUnit4;
@@ -31,20 +32,19 @@ import androidx.test.uiautomator.Until;
 
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
-import com.android.launcher3.tapl.AllApps;
-import com.android.launcher3.tapl.AllAppsFromOverview;
 import com.android.launcher3.tapl.Background;
 import com.android.launcher3.tapl.LauncherInstrumentation.NavigationModel;
 import com.android.launcher3.tapl.Overview;
 import com.android.launcher3.tapl.OverviewActions;
 import com.android.launcher3.tapl.OverviewTask;
-import com.android.launcher3.tapl.TestHelpers;
+import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.ui.TaplTestsLauncher3;
 import com.android.quickstep.NavigationModeSwitchRule.NavigationModeSwitch;
 import com.android.quickstep.views.RecentsView;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -91,19 +91,6 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
                 mLauncher.getWorkspace().switchToAllApps());
         assertTrue("Launcher internal state is not All Apps",
                 isInState(() -> LauncherState.ALL_APPS));
-    }
-
-    @Test
-    public void testAllAppsFromOverview() throws Exception {
-        if (!mLauncher.hasAllAppsInOverview()) {
-            return;
-        }
-
-        // Test opening all apps from Overview.
-        assertNotNull("switchToAllApps() returned null",
-                mLauncher.getWorkspace().switchToOverview().switchToAllApps());
-
-        TaplTestsLauncher3.runAllAppsTest(this, mLauncher.getAllAppsFromOverview());
     }
 
     @Test
@@ -159,28 +146,6 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
                 launcher -> assertEquals("Dismissing a task didn't remove 1 task from Overview",
                         numTasks - 1, getTaskCount(launcher)));
 
-        if (mLauncher.hasAllAppsInOverview() && (!TestHelpers.isInLauncherProcess()
-                || getFromLauncher(launcher -> !launcher.getDeviceProfile().isLandscape))) {
-            // Test switching to all apps and back.
-            final AllAppsFromOverview allApps = overview.switchToAllApps();
-            assertNotNull("overview.switchToAllApps() returned null (1)", allApps);
-            assertTrue("Launcher internal state is not All Apps (1)",
-                    isInState(() -> LauncherState.ALL_APPS));
-
-            overview = allApps.switchBackToOverview();
-            assertNotNull("allApps.switchBackToOverview() returned null", overview);
-            assertTrue("Launcher internal state didn't switch to Overview",
-                    isInState(() -> LauncherState.OVERVIEW));
-
-            // Test UIDevice.pressBack()
-            overview.switchToAllApps();
-            assertNotNull("overview.switchToAllApps() returned null (2)", allApps);
-            assertTrue("Launcher internal state is not All Apps (2)",
-                    isInState(() -> LauncherState.ALL_APPS));
-            mDevice.pressBack();
-            mLauncher.getOverview();
-        }
-
         // Test UIDevice.pressHome, once we are in AllApps.
         mDevice.pressHome();
         waitForState("Launcher internal state didn't switch to Home", () -> LauncherState.NORMAL);
@@ -200,13 +165,17 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
     @NavigationModeSwitch
     @PortraitLandscape
     public void testOverviewActions() throws Exception {
-        if (mLauncher.getNavigationModel() != NavigationModel.TWO_BUTTON) {
-            startTestAppsWithCheck();
-            OverviewActions actionsView =
-                    mLauncher.pressHome().switchToOverview().getOverviewActions();
-            actionsView.clickAndDismissScreenshot();
-            actionsView.clickAndDismissShare();
-        }
+        // Experimenting for b/165029151:
+        final Overview overview = mLauncher.pressHome().switchToOverview();
+        if (overview.hasTasks()) overview.dismissAllTasks();
+        mLauncher.pressHome();
+        //
+
+        startTestAppsWithCheck();
+        OverviewActions actionsView =
+                mLauncher.pressHome().switchToOverview().getOverviewActions();
+        actionsView.clickAndDismissScreenshot();
+        actionsView.clickAndDismissShare();
     }
 
     private int getCurrentOverviewPage(Launcher launcher) {
@@ -215,20 +184,6 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
 
     private int getTaskCount(Launcher launcher) {
         return launcher.<RecentsView>getOverviewPanel().getTaskViewCount();
-    }
-
-    @Test
-    public void testAppIconLaunchFromAllAppsFromOverview() throws Exception {
-        if (!mLauncher.hasAllAppsInOverview()) {
-            return;
-        }
-
-        final AllApps allApps =
-                mLauncher.getWorkspace().switchToOverview().switchToAllApps();
-        assertTrue("Launcher internal state is not All Apps",
-                isInState(() -> LauncherState.ALL_APPS));
-
-        TaplTestsLauncher3.runIconLaunchFromAllAppsTest(this, allApps);
     }
 
     @Test
@@ -264,6 +219,7 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
     }
 
     @Test
+    @Ignore("b/197802324")
     @PortraitLandscape
     public void testAllAppsFromHome() throws Exception {
         // Test opening all apps
@@ -304,6 +260,10 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
             assertTrue("The second app we should have quick switched to is not running",
                     isTestActivityRunning(2));
         }
+        background = getAndAssertBackground();
+        background.quickSwitchToPreviousAppSwipeLeft();
+        assertTrue("The 2nd app we should have quick switched to is not running",
+                isTestActivityRunning(3));
         getAndAssertBackground();
     }
 

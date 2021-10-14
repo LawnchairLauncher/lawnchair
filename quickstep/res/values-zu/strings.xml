@@ -19,7 +19,6 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="recent_task_option_split_screen" msgid="5353188922202653570">"Hlukanisa isikrini"</string>
     <string name="recent_task_option_pin" msgid="7929860679018978258">"Phina"</string>
     <string name="recent_task_option_freeform" msgid="48863056265284071">"I-Freeform"</string>
     <string name="recents_empty_message" msgid="7040467240571714191">"Azikho izinto zakamuva"</string>
@@ -31,7 +30,7 @@
     <string name="time_left_for_app" msgid="3111996412933644358">"<xliff:g id="TIME">%1$s</xliff:g> esele namhlanje"</string>
     <string name="title_app_suggestions" msgid="4185902664111965088">"Iziphakamiso zohlelo lokusebenza"</string>
     <string name="all_apps_label" msgid="8542784161730910663">"Zonke izinhlelo zokusebenza"</string>
-    <string name="all_apps_prediction_tip" msgid="2672336544844936186">"Izinhlelo zakho zokusebenza eziqagelwe"</string>
+    <string name="all_apps_prediction_tip" msgid="2672336544844936186">"Ama-app akho aqagelwe"</string>
     <string name="hotseat_edu_title_migrate" msgid="306578144424489980">"Thola iziphakamiso ze-app emgqeni ongezansi wesikrini sakho sasekhaya"</string>
     <string name="hotseat_edu_title_migrate_landscape" msgid="3633942953997845243">"Thola iziphakamiso zohlelo lokusebenza kumugqa wezintandokazi Zesikrini sakho sasekhaya"</string>
     <string name="hotseat_edu_message_migrate" msgid="8927179260533775320">"Finyelela kalula izinhlelo zakho zokusebenza ezisetshenziswa kakhulu khona kusikrini sasekhaya. Iziphakamiso zizoshintsha ngokususelwe kwimijikelezo yakho. Izinhlelo zokusebenza ezisemgqeni ongezansi zizoya phezulu kusikrini sakho sasekhaya."</string>
@@ -46,7 +45,40 @@
     <string name="hotsaet_tip_prediction_enabled" msgid="2233554377501347650">"Iziphakamiso zohlelo lokusebenza zinikwe amandla"</string>
     <string name="hotsaet_tip_prediction_disabled" msgid="1506426298884658491">"Iziphakamiso zohlelo lokusebenza zikhutshaziwe"</string>
     <string name="hotseat_prediction_content_description" msgid="4582028296938078419">"Uhlelo lokusebenza olubikezelwe: <xliff:g id="TITLE">%1$s</xliff:g>"</string>
+    <string name="back_gesture_feedback_swipe_too_far_from_left_edge" msgid="340972404868601012">"Qiniseka ukuthi uswayiphela ekudeni emngceleni ongakwesobunxele."</string>
+    <string name="back_gesture_feedback_cancelled_left_edge" msgid="6671316150388702530">"Qiniseka ukuthi uswayipha kusuka emngceleni okwesobunxele kuya phakathi kwesikrini bese uyadedela."</string>
+    <string name="back_gesture_feedback_complete_left_edge" msgid="3220478647881674266">"Yilokho nje! Manje zama ukuswayipha kusuka kwesokudla."</string>
+    <string name="back_gesture_feedback_swipe_too_far_from_right_edge" msgid="4306700023773832353">"Qiniseka ukuthi uswayiphela ekudeni emngceleni ongakwesokudla."</string>
+    <string name="back_gesture_feedback_cancelled_right_edge" msgid="4951916546256902552">"Qiniseka ukuthi uswayipha kusuka emngceleni okwesokudla kuya phakathi kwesikrini bese uyadedela."</string>
+    <string name="back_gesture_feedback_complete" msgid="7261221999760772210">"Ukuqedile ukuthinta kokubuyela emuva. Ngokulandelayo, funda indlela yokuya Ekhaya."</string>
+    <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="1148198467090405643">"Qiniseka ukuba awuswayipheli eduze kakhulu naphansi kwesikrini."</string>
+    <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"Ukuze ushintshe ukuzwela kokuthinta emuva, iya Kumasethingi"</string>
+    <string name="back_gesture_intro_title" msgid="19551256430224428">"Swayipha ukuze uye emuva"</string>
+    <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"Ukuze ubuyele emuva esikrinini sokugcina, swapha kusuka emngceleni wesobunxele noma wesokudla kuya phakathi kwesikrini."</string>
+    <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"Qiniseka ukuthi uswayiphela phezulu kusuka emngceleni ophansi wesikrini."</string>
+    <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"Qiniseka ukuthi awumisi ngaphambi kokudedela."</string>
+    <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"Qiniseka ukuthi uswayiphela ngqo phezulu."</string>
+    <string name="home_gesture_feedback_complete" msgid="2324789183070815517">"Ukuqedile ukuthinta kokuya Ekhaya. Ngokulandelayo, funda indlela yokushintsha ama-app."</string>
+    <string name="home_gesture_intro_title" msgid="836590312858441830">"Swayipha ukuze uye ekhaya"</string>
+    <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"Swayiphela phezulu kusuka phansi kwesikrini sakho.Lokhu kuthinta kuhlala kukusa esikrinini sasekhaya."</string>
+    <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"Qiniseka ukuthi uswayiphela phezulu kusuka emngceleni ophansi wesikrini."</string>
+    <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"Zama ukubamba iwindi isikhashana ngaphambi kokulidedela."</string>
+    <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"Qiniseka ukuthi uswayiphela ngqo phezulu bese uyamisa."</string>
+    <string name="overview_gesture_feedback_complete" msgid="5477014491632199169">"Ukuqedile ukuthinta kokushintsha ama-app. Ukulungele ukusebenzisa ifoni yakho!"</string>
+    <string name="overview_gesture_intro_title" msgid="2902054412868489378">"Swayipha ukuze ushintshe ama-app"</string>
+    <string name="overview_gesture_intro_subtitle" msgid="1579517193845186042">"Swayiphela phezulu kusuka ngezansi kwesikrini sakho, ubambe, bese udedele."</string>
+    <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"Konke kusethiwe"</string>
+    <string name="gesture_tutorial_action_button_label_next" msgid="2556263116424738762">"Okulandelayo"</string>
+    <string name="gesture_tutorial_action_button_label_done" msgid="671834508127014231">"Kwenziwe"</string>
+    <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"Amasethingi"</string>
+    <string name="gesture_tutorial_try_again" msgid="65962545858556697">"Zama futhi"</string>
+    <string name="gesture_tutorial_nice" msgid="2936275692616928280">"Kuhle!"</string>
+    <string name="gesture_tutorial_step" msgid="1279786122817620968">"Okokufundisa <xliff:g id="CURRENT">%1$d</xliff:g>/<xliff:g id="TOTAL">%2$d</xliff:g>"</string>
     <string name="action_share" msgid="2648470652637092375">"Yabelana"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"Isithombe-skrini"</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"Lesi senzo asivunyelwanga uhlelo lokusebenza noma inhlangano yakho"</string>
+    <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"Yeqa isifundo sokuzulazula?"</string>
+    <string name="skip_tutorial_dialog_subtitle" msgid="544063326241955662">"Lokhu ungakuthola kamuva ku-app ye-<xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="gesture_tutorial_action_button_label_cancel" msgid="3809842569351264108">"Khansela"</string>
+    <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"Yeqa"</string>
 </resources>
