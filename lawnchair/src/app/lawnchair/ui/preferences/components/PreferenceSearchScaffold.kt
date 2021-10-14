@@ -50,27 +50,34 @@ fun PreferenceSearchScaffold(
                 shape = MaterialTheme.shapes.small,
                 elevation = 2.dp
             ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
+                Box(
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(topBarSize)
-                        .padding(horizontal = 8.dp)
+                        .padding(horizontal = 8.dp),
+                    contentAlignment = Alignment.CenterStart,
                 ) {
                     ClickableIcon(
                         imageVector = backIcon(),
                         onClick = { if (currentRoute != "/") navController.popBackStack() }
                     )
-                    Box(modifier = Modifier.weight(1f)) {
-                        searchInput()
-                    }
-                    CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
-                        Row(
-                            Modifier.fillMaxHeight(),
-                            horizontalArrangement = Arrangement.End,
-                            verticalAlignment = Alignment.CenterVertically,
-                            content = actions
-                        )
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(start = 32.dp)
+                    ) {
+                        Box(modifier = Modifier.weight(1f)) {
+                            searchInput()
+                        }
+                        CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
+                            Row(
+                                Modifier.fillMaxHeight(),
+                                horizontalArrangement = Arrangement.End,
+                                verticalAlignment = Alignment.CenterVertically,
+                                content = actions
+                            )
+                        }
                     }
                 }
             }
