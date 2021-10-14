@@ -19,8 +19,6 @@ package com.android.launcher3.util;
 import android.view.View;
 import android.view.Window;
 
-import com.android.launcher3.Utilities;
-
 import java.util.Arrays;
 
 /**
@@ -32,7 +30,8 @@ public class SystemUiController {
     public static final int UI_STATE_BASE_WINDOW = 0;
     public static final int UI_STATE_SCRIM_VIEW = 1;
     public static final int UI_STATE_WIDGET_BOTTOM_SHEET = 2;
-    public static final int UI_STATE_OVERVIEW = 3;
+    public static final int UI_STATE_FULLSCREEN_TASK = 3;
+    public static final int UI_STATE_ALLAPPS = 4;
 
     public static final int FLAG_LIGHT_NAV = 1 << 0;
     public static final int FLAG_DARK_NAV = 1 << 1;
@@ -40,7 +39,7 @@ public class SystemUiController {
     public static final int FLAG_DARK_STATUS = 1 << 3;
 
     private final Window mWindow;
-    private final int[] mStates = new int[4];
+    private final int[] mStates = new int[5];
 
     public SystemUiController(Window window) {
         mWindow = window;
@@ -77,12 +76,10 @@ public class SystemUiController {
     }
 
     private int getSysUiVisibilityFlags(int stateFlag, int currentVisibility) {
-        if (Utilities.ATLEAST_OREO) {
-            if ((stateFlag & FLAG_LIGHT_NAV) != 0) {
-                currentVisibility |= View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR;
-            } else if ((stateFlag & FLAG_DARK_NAV) != 0) {
-                currentVisibility &= ~(View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR);
-            }
+        if ((stateFlag & FLAG_LIGHT_NAV) != 0) {
+            currentVisibility |= View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR;
+        } else if ((stateFlag & FLAG_DARK_NAV) != 0) {
+            currentVisibility &= ~(View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR);
         }
 
         if ((stateFlag & FLAG_LIGHT_STATUS) != 0) {

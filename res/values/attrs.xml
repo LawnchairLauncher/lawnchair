@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
 /* Copyright 2008, The Android Open Source Project
 **
 ** Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,23 +19,27 @@
 
     <!-- Attributes used for launcher theme -->
     <attr name="allAppsScrimColor" format="color" />
-    <attr name="allAppsInterimScrimAlpha" format="integer" />
+    <attr name="allappsHeaderProtectionColor" format="color" />
     <attr name="allAppsNavBarScrimColor" format="color" />
     <attr name="allAppsTheme" format="reference" />
     <attr name="popupColorPrimary" format="color" />
     <attr name="popupColorSecondary" format="color" />
     <attr name="popupColorTertiary" format="color" />
+    <attr name="popupShadeFirst" format="color" />
+    <attr name="popupShadeSecond" format="color" />
+    <attr name="popupShadeThird" format="color" />
     <attr name="isMainColorDark" format="boolean" />
     <attr name="isWorkspaceDarkText" format="boolean" />
     <attr name="workspaceTextColor" format="color" />
     <attr name="workspaceShadowColor" format="color" />
-    <attr name="workspaceAmbientShadowColor" format="color"/>
+    <attr name="workspaceAmbientShadowColor" format="color" />
     <attr name="workspaceKeyShadowColor" format="color" />
     <attr name="workspaceStatusBarScrim" format="reference" />
     <attr name="widgetsTheme" format="reference" />
-    <attr name="loadingIconColor" format="color" />
-    <attr name="iconOnlyShortcutColor" format="color"/>
-    <attr name="eduHalfSheetBGColor" format="color"/>
+    <attr name="iconOnlyShortcutColor" format="color" />
+    <attr name="eduHalfSheetBGColor" format="color" />
+    <attr name="overviewScrimColor" format="color" />
+    <attr name="popupNotificationDotColor" format="color" />
 
     <attr name="folderDotColor" format="color" />
     <attr name="folderFillColor" format="color" />
@@ -44,8 +47,10 @@
     <attr name="folderIconBorderColor" format="color" />
     <attr name="folderTextColor" format="color" />
     <attr name="folderHintColor" format="color" />
+    <attr name="isFolderDarkText" format="boolean" />
     <attr name="workProfileOverlayTextColor" format="color" />
-    <attr name="disabledIconAlpha" format="float" />
+    <attr name="workspaceAccentColor" format="color" />
+    <attr name="dropTargetHoverTextColor" format="color" />
 
     <!-- BubbleTextView specific attributes. -->
     <declare-styleable name="BubbleTextView">
@@ -57,6 +62,9 @@
             <enum name="folder" value="2" />
             <enum name="widget_section" value="3" />
             <enum name="shortcut_popup" value="4" />
+            <enum name="taskbar" value="5" />
+            <enum name="search_result_tall" value="6" />
+            <enum name="search_result_small" value="7" />
         </attr>
         <attr name="centerVertically" format="boolean" />
     </declare-styleable>
@@ -68,12 +76,19 @@
         <attr name="folderDotColor" />
     </declare-styleable>
 
+    <declare-styleable name="SearchResultSuggestion">
+        <attr name="customIcon" format="reference" />
+        <attr name="matchTextInsetWithQuery" format="boolean" />
+    </declare-styleable>
+
+
     <declare-styleable name="ShadowInfo">
         <attr name="ambientShadowColor" format="color" />
         <attr name="ambientShadowBlur" format="dimension" />
         <attr name="keyShadowColor" format="color" />
         <attr name="keyShadowBlur" format="dimension" />
-        <attr name="keyShadowOffset" format="dimension" />
+        <attr name="keyShadowOffsetX" format="dimension" />
+        <attr name="keyShadowOffsetY" format="dimension" />
     </declare-styleable>
 
     <!-- PagedView specific attributes. These attributes are used to customize
@@ -119,13 +134,34 @@
         <!-- numFolderRows & numFolderColumns defaults to numRows & numColumns, if not specified -->
         <attr name="numFolderRows" format="integer" />
         <attr name="numFolderColumns" format="integer" />
-        <!-- numHotseatIcons defaults to numColumns, if not specified -->
-        <attr name="numHotseatIcons" format="integer" />
-        <attr name="dbFile" format="string" />
         <!-- numAllAppsColumns defaults to numColumns, if not specified -->
         <attr name="numAllAppsColumns" format="integer" />
+        <!-- Number of columns to use when extending the all-apps size,
+         defaults to 2 * numAllAppsColumns -->
+        <attr name="numExtendedAllAppsColumns" format="integer" />
+
+        <!-- numHotseatIcons defaults to numColumns, if not specified -->
+        <attr name="numHotseatIcons" format="integer" />
+        <!-- Number of icons to use when extending the hotseat size,
+         defaults to 2 * numHotseatIcons -->
+        <attr name="numExtendedHotseatIcons" format="integer" />
+
+        <attr name="dbFile" format="string" />
         <attr name="defaultLayoutId" format="reference" />
         <attr name="demoModeLayoutId" format="reference" />
+        <attr name="isScalable" format="boolean" />
+        <attr name="devicePaddingId" format="reference" />
+
+    </declare-styleable>
+
+    <declare-styleable name="DevicePadding">
+        <attr name="maxEmptySpace" format="dimension" />
+    </declare-styleable>
+
+    <declare-styleable name="DevicePaddingFormula">
+        <attr name="a" format="float|dimension" />
+        <attr name="b" format="float|dimension" />
+        <attr name="c" format="float|dimension" />
     </declare-styleable>
 
     <declare-styleable name="ProfileDisplayOption">
@@ -133,18 +169,31 @@
         <attr name="minWidthDps" format="float" />
         <attr name="minHeightDps" format="float" />
 
+        <!-- These min cell values are only used if GridDisplayOption#isScalable is true-->
+        <attr name="minCellHeightDps" format="float" />
+        <attr name="minCellWidthDps" format="float" />
+
+        <attr name="borderSpacingDps" format="float" />
+
         <attr name="iconImageSize" format="float" />
         <!-- landscapeIconSize defaults to iconSize, if not specified -->
         <attr name="landscapeIconSize" format="float" />
         <attr name="iconTextSize" format="float" />
-        <!-- If true, this display option is used to determine the default grid -->
-        <attr name="canBeDefault" format="boolean" />
+        <!-- landscapeIconTextSize defaults to iconTextSize, if not specified -->
+        <attr name="landscapeIconTextSize" format="float" />
+
+        <!-- If set, this display option is used to determine the default grid -->
+        <attr name="canBeDefault" format="boolean|integer" >
+            <!-- The profile can be default on split display devices -->
+            <flag name="split_display" value="0x2" />
+        </attr>
 
         <!-- The following values are only enabled if grid is supported. -->
         <!-- allAppsIconSize defaults to iconSize, if not specified -->
         <attr name="allAppsIconSize" format="float" />
         <!-- allAppsIconTextSize defaults to iconTextSize, if not specified -->
         <attr name="allAppsIconTextSize" format="float" />
+
     </declare-styleable>
 
     <declare-styleable name="CellLayout">
@@ -159,15 +208,27 @@
         <attr name="android:src" />
         <attr name="android:shadowColor" />
         <attr name="android:elevation" />
-        <attr name="darkTintColor" format="color"/>
+        <attr name="darkTintColor" format="color" />
     </declare-styleable>
 
     <declare-styleable name="RecyclerViewFastScroller">
         <attr name="canThumbDetach" format="boolean" />
     </declare-styleable>
 
+    <declare-styleable name="LoggablePref">
+        <attr name="android:key" />
+        <attr name="android:defaultValue" />
+        <!-- Ground truth of this Pref integer can be found in StatsLogManager -->
+        <attr name="logIdOn" format="integer" />
+        <attr name="logIdOff" format="integer" />
+    </declare-styleable>
+
     <declare-styleable name="PreviewFragment">
         <attr name="android:name" />
         <attr name="android:id" />
+    </declare-styleable>
+
+    <declare-styleable name="WidgetsListRowHeader">
+        <attr name="appIconSize" format="dimension" />
     </declare-styleable>
 </resources>

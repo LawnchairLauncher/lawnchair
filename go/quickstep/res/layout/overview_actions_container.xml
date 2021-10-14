@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+     Copyright (C) 2021 The Android Open Source Project
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+<!-- NOTE! don't add dimensions for margins / gravity to root view in this file, they need to be
+     loaded at runtime. -->
+<com.android.quickstep.views.GoOverviewActionsView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:id="@+id/action_buttons"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/overview_actions_height"
+        android:layout_gravity="top|center_horizontal"
+        android:orientation="horizontal">
+
+        <Space
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_weight="1" />
+
+        <LinearLayout
+            android:id="@+id/layout_translate"
+            style="@style/GoOverviewActionButtonContainer">
+            <ImageButton
+                android:id="@+id/action_translate"
+                style="@style/GoOverviewActionButton"
+                android:src="@drawable/ic_translate"
+                android:contentDescription="@string/action_translate" />
+            <TextView
+                style="@style/GoOverviewActionButtonCaption"
+                android:text="@string/action_translate" />
+        </LinearLayout>
+
+        <Space
+            android:id="@+id/spacer_translate"
+            android:layout_width="@dimen/go_overview_button_container_margin"
+            android:layout_height="1dp" />
+
+        <LinearLayout
+            android:id="@+id/layout_listen"
+            style="@style/GoOverviewActionButtonContainer">
+            <ImageButton
+                android:id="@+id/action_listen"
+                style="@style/GoOverviewActionButton"
+                android:src="@drawable/ic_listen"
+                android:contentDescription="@string/action_listen"
+                android:background="@drawable/round_rect_button" />
+            <TextView
+                style="@style/GoOverviewActionButtonCaption"
+                android:text="@string/action_listen" />
+        </LinearLayout>
+
+        <Space
+            android:id="@+id/spacer_listen"
+            android:layout_width="@dimen/go_overview_button_container_margin"
+            android:layout_height="1dp" />
+
+        <LinearLayout
+            android:id="@+id/layout_screenshot"
+            style="@style/GoOverviewActionButtonContainer">
+            <ImageButton
+                android:id="@+id/action_screenshot"
+                style="@style/GoOverviewActionButton"
+                android:src="@drawable/ic_screenshot"
+                android:contentDescription="@string/action_screenshot"
+                android:background="@drawable/round_rect_button" />
+            <TextView
+                style="@style/GoOverviewActionButtonCaption"
+                android:text="@string/action_screenshot" />
+        </LinearLayout>
+
+        <Space
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_weight="1" />
+
+        <!-- Will be enabled in a future version. -->
+        <LinearLayout
+            style="@style/GoOverviewActionButtonContainer"
+            android:visibility="gone" >
+            <ImageButton
+                android:id="@+id/action_search"
+                style="@style/GoOverviewActionButton"
+                android:src="@drawable/ic_search"
+                android:contentDescription="@string/action_search"
+                android:background="@drawable/round_rect_button" />
+            <TextView
+                style="@style/GoOverviewActionButtonCaption"
+                android:text="@string/action_search" />
+        </LinearLayout>
+
+        <!-- Unused. Included only for compatibility with parent class. -->
+        <Button
+            android:id="@+id/action_share"
+            style="@style/GoOverviewActionButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawableStart="@drawable/ic_share"
+            android:text="@string/action_share"
+            android:theme="@style/ThemeControlHighlightWorkspaceColor"
+            android:visibility="gone" />
+    </LinearLayout>
+
+</com.android.quickstep.views.GoOverviewActionsView>

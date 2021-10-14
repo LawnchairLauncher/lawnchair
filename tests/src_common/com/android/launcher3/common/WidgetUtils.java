@@ -16,19 +16,18 @@
 package com.android.launcher3.common;
 
 import static com.android.launcher3.WorkspaceLayoutManager.FIRST_SCREEN_ID;
-import static com.android.launcher3.widget.WidgetHostViewLoader.getDefaultOptionsForWidget;
 
 import android.appwidget.AppWidgetHost;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.os.Bundle;
 
-import com.android.launcher3.LauncherAppWidgetHost;
-import com.android.launcher3.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.LauncherAppWidgetInfo;
 import com.android.launcher3.util.ContentWriter;
+import com.android.launcher3.widget.LauncherAppWidgetHost;
+import com.android.launcher3.widget.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.widget.PendingAddWidgetInfo;
 import com.android.launcher3.widget.WidgetManagerHelper;
 
@@ -57,12 +56,14 @@ public class WidgetUtils {
         item.container = LauncherSettings.Favorites.CONTAINER_DESKTOP;
 
         if (bindWidget) {
-            PendingAddWidgetInfo pendingInfo = new PendingAddWidgetInfo(info);
+            PendingAddWidgetInfo pendingInfo =
+                    new PendingAddWidgetInfo(
+                            info, LauncherSettings.Favorites.CONTAINER_WIDGETS_TRAY);
             pendingInfo.spanX = item.spanX;
             pendingInfo.spanY = item.spanY;
             pendingInfo.minSpanX = item.minSpanX;
             pendingInfo.minSpanY = item.minSpanY;
-            Bundle options = getDefaultOptionsForWidget(targetContext, pendingInfo);
+            Bundle options = pendingInfo.getDefaultSizeOptions(targetContext);
 
             AppWidgetHost host = new LauncherAppWidgetHost(targetContext);
             int widgetId = host.allocateAppWidgetId();

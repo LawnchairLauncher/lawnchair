@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (C) 2021 The Android Open Source Project
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~      http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+-->
+
+<com.android.launcher3.workprofile.PersonalWorkSlidingTabStrip
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/tabs"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/all_apps_header_pill_height"
+    android:gravity="center_horizontal"
+    android:orientation="horizontal"
+    android:layout_marginHorizontal="@dimen/widget_tabs_horizontal_margin"
+    style="@style/TextHeadline">
+
+    <Button
+        android:id="@+id/tab_personal"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_marginEnd="@dimen/widget_tabs_button_horizontal_padding"
+        android:layout_marginVertical="@dimen/widget_apps_tabs_vertical_padding"
+        android:layout_weight="1"
+        android:background="@drawable/all_apps_tabs_background"
+        android:text="@string/widgets_full_sheet_personal_tab"
+        android:textColor="@color/all_apps_tab_text"
+        android:textSize="14sp"
+        style="?android:attr/borderlessButtonStyle" />
+
+    <Button
+        android:id="@+id/tab_work"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_marginEnd="@dimen/widget_tabs_button_horizontal_padding"
+        android:layout_marginVertical="@dimen/widget_apps_tabs_vertical_padding"
+        android:layout_weight="1"
+        android:background="@drawable/all_apps_tabs_background"
+        android:text="@string/widgets_full_sheet_work_tab"
+        android:textColor="@color/all_apps_tab_text"
+        android:textSize="14sp"
+        style="?android:attr/borderlessButtonStyle" />
+</com.android.launcher3.workprofile.PersonalWorkSlidingTabStrip>

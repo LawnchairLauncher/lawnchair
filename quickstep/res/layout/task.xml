@@ -13,19 +13,20 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
+<!-- NOTE! don't add dimensions for margins / paddings / sizes that change per orientation to this
+     file, they need to be loaded at runtime. -->
 <com.android.quickstep.views.TaskView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:clipChildren="false"
     android:defaultFocusHighlightEnabled="false"
-    android:elevation="4dp"
     android:focusable="true">
 
     <com.android.quickstep.views.TaskThumbnailView
         android:id="@+id/snapshot"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="@dimen/task_thumbnail_top_margin"/>
+        android:layout_height="match_parent"/>
 
     <com.android.quickstep.views.IconView
         android:id="@+id/icon"

@@ -49,7 +49,6 @@ import androidx.test.uiautomator.By;
 import androidx.test.uiautomator.UiDevice;
 import androidx.test.uiautomator.Until;
 
-import com.android.launcher3.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.model.data.LauncherAppWidgetInfo;
 import com.android.launcher3.tapl.Background;
@@ -58,6 +57,7 @@ import com.android.launcher3.testcomponent.ListViewService.SimpleViewsFactory;
 import com.android.launcher3.testcomponent.TestCommandReceiver;
 import com.android.launcher3.ui.TaplTestsLauncher3;
 import com.android.launcher3.ui.TestViewHelpers;
+import com.android.launcher3.widget.LauncherAppWidgetProviderInfo;
 import com.android.quickstep.NavigationModeSwitchRule.NavigationModeSwitch;
 
 import org.junit.Before;
@@ -71,7 +71,7 @@ import java.util.function.IntConsumer;
 
 /**
  * Test to verify view inflation does not happen during swipe up.
- * To verify view inflation, we setup a dummy ViewConfiguration and check if any call to that class
+ * To verify view inflation, we setup a stub ViewConfiguration and check if any call to that class
  * does from a View.init method or not.
  *
  * Alternative approaches considered:
@@ -79,10 +79,7 @@ import java.util.function.IntConsumer;
  *        directly (ex: new LinearLayout)
  *    Using ExtendedMockito: Mocking static methods from platform classes (loaded in zygote) makes
  *        the main thread extremely slow and untestable
- *
- * Suppressed until b/141579810 is resolved
  */
-@Suppress
 @LargeTest
 @RunWith(AndroidJUnit4.class)
 public class ViewInflationDuringSwipeUp extends AbstractQuickStepTest {
@@ -117,6 +114,7 @@ public class ViewInflationDuringSwipeUp extends AbstractQuickStepTest {
 
     @Test
     @NavigationModeSwitch(mode = ZERO_BUTTON)
+    @Suppress // until b/190618549 is fixed
     public void testSwipeUpFromApp() throws Exception {
         try {
             // Go to overview once so that all views are initialized and cached
@@ -137,18 +135,20 @@ public class ViewInflationDuringSwipeUp extends AbstractQuickStepTest {
 
     @Test
     @NavigationModeSwitch(mode = ZERO_BUTTON)
+    @Suppress // until b/190729479 is fixed
     public void testSwipeUpFromApp_widget_update() {
-        String dummyText = "Some random dummy text";
+        String stubText = "Some random stub text";
 
         executeSwipeUpTestWithWidget(
                 widgetId -> { },
                 widgetId -> AppWidgetManager.getInstance(getContext())
-                        .updateAppWidget(widgetId, createMainWidgetViews(dummyText)),
-                dummyText);
+                        .updateAppWidget(widgetId, createMainWidgetViews(stubText)),
+                stubText);
     }
 
     @Test
     @NavigationModeSwitch(mode = ZERO_BUTTON)
+    @Suppress // until b/190729479 is fixed
     public void testSwipeUp_with_list_widgets() {
         SimpleViewsFactory viewFactory = new SimpleViewsFactory();
         viewFactory.viewCount = 1;
@@ -188,6 +188,11 @@ public class ViewInflationDuringSwipeUp extends AbstractQuickStepTest {
             LauncherSettings.Settings.call(mResolver,
                     LauncherSettings.Settings.METHOD_CLEAR_EMPTY_DB_FLAG);
             LauncherAppWidgetProviderInfo info = TestViewHelpers.findWidgetProvider(this, false);
+            // Make sure the widget is big enough to show a list of items
+            info.minSpanX = 2;
+            info.minSpanY = 2;
+            info.spanX = 2;
+            info.spanY = 2;
             LauncherAppWidgetInfo item = createWidgetInfo(info, getTargetContext(), true);
 
             addItemToScreen(item);

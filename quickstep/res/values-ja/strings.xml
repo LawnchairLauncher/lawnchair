@@ -19,7 +19,6 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="recent_task_option_split_screen" msgid="5353188922202653570">"分割画面"</string>
     <string name="recent_task_option_pin" msgid="7929860679018978258">"固定"</string>
     <string name="recent_task_option_freeform" msgid="48863056265284071">"フリーフォーム"</string>
     <string name="recents_empty_message" msgid="7040467240571714191">"最近のアイテムはありません"</string>
@@ -46,7 +45,40 @@
     <string name="hotsaet_tip_prediction_enabled" msgid="2233554377501347650">"アプリの候補は有効です"</string>
     <string name="hotsaet_tip_prediction_disabled" msgid="1506426298884658491">"アプリの候補は無効です"</string>
     <string name="hotseat_prediction_content_description" msgid="4582028296938078419">"予測されたアプリ: <xliff:g id="TITLE">%1$s</xliff:g>"</string>
+    <string name="back_gesture_feedback_swipe_too_far_from_left_edge" msgid="340972404868601012">"一番左端からスワイプしてください。"</string>
+    <string name="back_gesture_feedback_cancelled_left_edge" msgid="6671316150388702530">"画面の左端から中央に向かってスワイプし、指を離してください。"</string>
+    <string name="back_gesture_feedback_complete_left_edge" msgid="3220478647881674266">"そのとおりです。次に、右端からスワイプしてみましょう。"</string>
+    <string name="back_gesture_feedback_swipe_too_far_from_right_edge" msgid="4306700023773832353">"一番右端からスワイプしてください。"</string>
+    <string name="back_gesture_feedback_cancelled_right_edge" msgid="4951916546256902552">"画面の右端から中央に向かってスワイプし、指を離してください。"</string>
+    <string name="back_gesture_feedback_complete" msgid="7261221999760772210">"「戻る」操作を完了しました。次は、ホームに戻る方法を覚えましょう。"</string>
+    <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="1148198467090405643">"スワイプする際は画面の下部に近づきすぎないようにしましょう。"</string>
+    <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"「戻る」操作の感度を変更するには [設定] に移動します"</string>
+    <string name="back_gesture_intro_title" msgid="19551256430224428">"スワイプで戻りましょう"</string>
+    <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"直前の画面に戻るには、画面の左端または右端から中央に向かってスワイプします。"</string>
+    <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"画面の下端から上にスワイプしてください。"</string>
+    <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"指を離す前にいったん止めないでください。"</string>
+    <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"まっすぐ上にスワイプしてください。"</string>
+    <string name="home_gesture_feedback_complete" msgid="2324789183070815517">"「ホームに戻る」操作を完了しました。次は、アプリを切り替える方法を覚えましょう。"</string>
+    <string name="home_gesture_intro_title" msgid="836590312858441830">"スワイプでホームに戻る"</string>
+    <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"画面を下から上にスワイプします。この操作でいつでもホーム画面に戻れます。"</string>
+    <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"画面の下端から上にスワイプしてください。"</string>
+    <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"指を離す前にウィンドウをもう少し長押ししてみましょう。"</string>
+    <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"まっすぐ上にスワイプしてから、いったん指を止めてください。"</string>
+    <string name="overview_gesture_feedback_complete" msgid="5477014491632199169">"「アプリを切り替える」操作を完了しました。スマートフォンをご利用いただけるようになりました。"</string>
+    <string name="overview_gesture_intro_title" msgid="2902054412868489378">"スワイプでアプリを切り替え"</string>
+    <string name="overview_gesture_intro_subtitle" msgid="1579517193845186042">"画面を下から上にスワイプして長押しし、指を離します。"</string>
+    <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"設定完了"</string>
+    <string name="gesture_tutorial_action_button_label_next" msgid="2556263116424738762">"次へ"</string>
+    <string name="gesture_tutorial_action_button_label_done" msgid="671834508127014231">"完了"</string>
+    <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"設定"</string>
+    <string name="gesture_tutorial_try_again" msgid="65962545858556697">"再試行"</string>
+    <string name="gesture_tutorial_nice" msgid="2936275692616928280">"成功"</string>
+    <string name="gesture_tutorial_step" msgid="1279786122817620968">"チュートリアル <xliff:g id="CURRENT">%1$d</xliff:g>/<xliff:g id="TOTAL">%2$d</xliff:g>"</string>
     <string name="action_share" msgid="2648470652637092375">"共有"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"スクリーンショット"</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"この操作はアプリまたは組織で許可されていません"</string>
+    <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"操作チュートリアルをスキップしますか？"</string>
+    <string name="skip_tutorial_dialog_subtitle" msgid="544063326241955662">"これは後から <xliff:g id="NAME">%1$s</xliff:g> アプリで確認できます"</string>
+    <string name="gesture_tutorial_action_button_label_cancel" msgid="3809842569351264108">"キャンセル"</string>
+    <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"スキップ"</string>
 </resources>

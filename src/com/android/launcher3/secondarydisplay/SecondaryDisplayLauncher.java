@@ -15,11 +15,8 @@
  */
 package com.android.launcher3.secondarydisplay;
 
-import static com.android.launcher3.model.AppLaunchTracker.CONTAINER_ALL_APPS;
-
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
-import android.app.ActivityOptions;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -37,9 +34,10 @@ import com.android.launcher3.allapps.AllAppsContainerView;
 import com.android.launcher3.model.BgDataModel;
 import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.ItemInfo;
+import com.android.launcher3.model.data.ItemInfoWithIcon;
 import com.android.launcher3.model.data.LauncherAppWidgetInfo;
-import com.android.launcher3.model.data.PromiseAppInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
+import com.android.launcher3.popup.PopupContainerWithArrow;
 import com.android.launcher3.popup.PopupDataProvider;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.IntArray;
@@ -47,7 +45,7 @@ import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.util.ViewOnDrawExecutor;
 import com.android.launcher3.views.BaseDragLayer;
-import com.android.launcher3.widget.WidgetListRowEntry;
+import com.android.launcher3.widget.model.WidgetsListBaseEntry;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -89,8 +87,8 @@ public class SecondaryDisplayLauncher extends BaseDraggingActivity
         if (mDragLayer != null) {
             return;
         }
-        InvariantDeviceProfile currentDisplayIdp =
-                new InvariantDeviceProfile(this, getWindow().getDecorView().getDisplay());
+        InvariantDeviceProfile currentDisplayIdp = new InvariantDeviceProfile(
+                this, getWindow().getDecorView().getDisplay());
 
         // Disable transpose layout and use multi-window mode so that the icons are scaled properly
         mDeviceProfile = currentDisplayIdp.getDeviceProfile(this)
@@ -169,11 +167,6 @@ public class SecondaryDisplayLauncher extends BaseDraggingActivity
     }
 
     @Override
-    public ActivityOptions getActivityLaunchOptions(View v) {
-        return null;
-    }
-
-    @Override
     protected void reapplyUi() { }
 
     @Override
@@ -196,9 +189,6 @@ public class SecondaryDisplayLauncher extends BaseDraggingActivity
     public void bindItems(List<ItemInfo> shortcuts, boolean forceAnimateIcons) { }
 
     @Override
-    public void bindPredictedItems(List<AppInfo> appInfos, IntArray ranks) { }
-
-    @Override
     public void bindScreens(IntArray orderedScreenIds) { }
 
     @Override
@@ -219,12 +209,12 @@ public class SecondaryDisplayLauncher extends BaseDraggingActivity
             ArrayList<ItemInfo> addAnimated) { }
 
     @Override
-    public void bindPromiseAppProgressUpdated(PromiseAppInfo app) {
-        mAppsView.getAppsStore().updatePromiseAppProgress(app);
+    public void bindIncrementalDownloadProgressUpdated(AppInfo app) {
+        mAppsView.getAppsStore().updateProgressBar(app);
     }
 
     @Override
-    public void bindWorkspaceItemsChanged(ArrayList<WorkspaceItemInfo> updated) { }
+    public void bindWorkspaceItemsChanged(List<WorkspaceItemInfo> updated) { }
 
     @Override
     public void bindWidgetsRestored(ArrayList<LauncherAppWidgetInfo> widgets) { }
@@ -236,7 +226,7 @@ public class SecondaryDisplayLauncher extends BaseDraggingActivity
     public void bindWorkspaceComponentsRemoved(ItemInfoMatcher matcher) { }
 
     @Override
-    public void bindAllWidgets(ArrayList<WidgetListRowEntry> widgets) { }
+    public void bindAllWidgets(List<WidgetsListBaseEntry> widgets) { }
 
     @Override
     public void onPageBoundSynchronously(int page) { }
@@ -298,6 +288,7 @@ public class SecondaryDisplayLauncher extends BaseDraggingActivity
     @Override
     public void bindAllApplications(AppInfo[] apps, int flags) {
         mAppsView.getAppsStore().setApps(apps, flags);
+        PopupContainerWithArrow.dismissInvalidPopup(this);
     }
 
     public PopupDataProvider getPopupDataProvider() {
@@ -318,16 +309,18 @@ public class SecondaryDisplayLauncher extends BaseDraggingActivity
         if (tag instanceof ItemInfo) {
             ItemInfo item = (ItemInfo) tag;
             Intent intent;
-            if (item instanceof PromiseAppInfo) {
-                PromiseAppInfo promiseAppInfo = (PromiseAppInfo) item;
-                intent = promiseAppInfo.getMarketIntent(this);
+            if (item instanceof ItemInfoWithIcon
+                    && (((ItemInfoWithIcon) item).runtimeStatusFlags
+                        & ItemInfoWithIcon.FLAG_INSTALL_SESSION_ACTIVE) != 0) {
+                ItemInfoWithIcon appInfo = (ItemInfoWithIcon) item;
+                intent = appInfo.getMarketIntent(this);
             } else {
                 intent = item.getIntent();
             }
             if (intent == null) {
                 throw new IllegalArgumentException("Input must have a valid intent");
             }
-            startActivitySafely(v, intent, item, CONTAINER_ALL_APPS);
+            startActivitySafely(v, intent, item);
         }
     }
 }

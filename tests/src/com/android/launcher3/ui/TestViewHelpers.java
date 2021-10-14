@@ -24,9 +24,9 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.android.launcher3.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.testcomponent.AppWidgetNoConfig;
 import com.android.launcher3.testcomponent.AppWidgetWithConfig;
+import com.android.launcher3.widget.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.widget.WidgetManagerHelper;
 
 import java.util.concurrent.Callable;

@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (C) 2021 The Android Open Source Project
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/niu_actions_dialog_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal"
+    android:layout_gravity="center">
+
+    <Space
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:layout_weight="1"/>
+
+    <LinearLayout
+        android:layout_width="@dimen/modal_dialog_width"
+        android:layout_height="wrap_content"
+        android:background="@drawable/round_rect_dialog"
+        android:backgroundTint="?attr/modalDialogBackground"
+        android:orientation="vertical"
+        android:layout_gravity="center"
+        android:paddingTop="@dimen/modal_dialog_padding"
+        android:paddingLeft="@dimen/modal_dialog_padding"
+        android:paddingRight="@dimen/modal_dialog_padding"
+        android:paddingBottom="@dimen/modal_dialog_padding_bottom">
+
+        <TextView
+            style="@style/ModalDialogTitle"
+            android:id="@+id/niu_actions_dialog_header"/>
+
+        <Space
+            android:layout_width="0dp"
+            android:layout_height="@dimen/modal_dialog_vertical_spacer"/>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constrainedHeight="true"
+                app:layout_constraintHeight_max="@dimen/modal_dialog_text_height">
+
+                <TextView
+                    style="@style/ModalDialogText"
+                    android:id="@+id/niu_actions_dialog_description"/>
+            </ScrollView>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+        <Space
+            android:layout_width="0dp"
+            android:layout_height="@dimen/modal_dialog_vertical_spacer"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="1"/>
+
+            <Button
+                style="@style/ModalDialogButton"
+                android:id="@+id/niu_actions_dialog_button_1"
+                android:text="@string/dialog_cancel"/>
+
+            <Button
+                style="@style/ModalDialogButton"
+                android:id="@+id/niu_actions_dialog_button_2"
+                android:text="@string/dialog_acknowledge"/>
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <Space
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:layout_weight="1" />
+
+</LinearLayout>

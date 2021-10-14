@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (C) 2021 The Android Open Source Project
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+<com.android.launcher3.widget.picker.SearchAndRecommendationsView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/search_and_recommendations_container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="16dp"
+    android:orientation="vertical">
+
+    <View
+        android:id="@+id/collapse_handle"
+        android:layout_width="match_parent"
+        android:layout_height="18dp"
+        android:elevation="0.1dp"
+        android:background="@drawable/bg_widgets_picker_handle"/>
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:textSize="24sp"
+        android:layout_marginTop="24dp"
+        android:textColor="?android:attr/textColorSecondary"
+        android:text="@string/widget_button_text"/>
+
+    <FrameLayout
+        android:id="@+id/search_bar_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:elevation="0.1dp"
+        android:background="?android:attr/colorBackground"
+        android:paddingBottom="8dp"
+        android:clipToPadding="false">
+        <include layout="@layout/widgets_search_bar" />
+    </FrameLayout>
+
+    <com.android.launcher3.widget.picker.WidgetsRecommendationTableLayout
+        android:id="@+id/recommended_widget_table"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/widget_list_horizontal_margin"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/widgets_recommendation_background"
+        android:paddingVertical="@dimen/recommended_widgets_table_vertical_padding"
+        android:visibility="gone" />
+</com.android.launcher3.widget.picker.SearchAndRecommendationsView>

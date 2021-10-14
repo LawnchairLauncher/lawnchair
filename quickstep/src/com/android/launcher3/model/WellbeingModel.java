@@ -18,8 +18,7 @@ package com.android.launcher3.model;
 
 import static android.content.ContentResolver.SCHEME_CONTENT;
 
-import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
-import static com.android.launcher3.util.Executors.createAndStartNewLooper;
+import static com.android.launcher3.Utilities.newContentObserver;
 
 import android.annotation.TargetApi;
 import android.app.RemoteAction;
@@ -35,7 +34,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.DeadObjectException;
 import android.os.Handler;
-import android.os.Message;
+import android.os.Looper;
 import android.os.Process;
 import android.os.UserHandle;
 import android.text.TextUtils;
@@ -43,7 +42,7 @@ import android.util.ArrayMap;
 import android.util.Log;
 
 import androidx.annotation.MainThread;
-import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.annotation.WorkerThread;
 
 import com.android.launcher3.BaseDraggingActivity;
@@ -55,6 +54,7 @@ import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.popup.RemoteActionShortcut;
 import com.android.launcher3.popup.SystemShortcut;
+import com.android.launcher3.util.BgObjectWithLooper;
 import com.android.launcher3.util.MainThreadInitializedObject;
 import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.util.Preconditions;
@@ -63,20 +63,15 @@ import com.android.launcher3.util.SimpleBroadcastReceiver;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Consumer;
 
 /**
  * Data model for digital wellbeing status of apps.
  */
 @TargetApi(Build.VERSION_CODES.Q)
-public final class WellbeingModel {
+public final class WellbeingModel extends BgObjectWithLooper {
     private static final String TAG = "WellbeingModel";
     private static final int[] RETRY_TIMES_MS = {5000, 15000, 30000};
     private static final boolean DEBUG = false;
-
-    private static final int MSG_PACKAGE_ADDED = 1;
-    private static final int MSG_PACKAGE_REMOVED = 2;
-    private static final int MSG_FULL_REFRESH = 3;
 
     private static final int UNKNOWN_MINIMAL_DEVICE_STATE = 0;
     private static final int IN_MINIMAL_DEVICE = 2;
@@ -99,9 +94,9 @@ public final class WellbeingModel {
 
     private final Context mContext;
     private final String mWellbeingProviderPkg;
-    private final Handler mWorkerHandler;
 
-    private final ContentObserver mContentObserver;
+    private Handler mWorkerHandler;
+    private ContentObserver mContentObserver;
 
     private final Object mModelLock = new Object();
     // Maps the action Id to the corresponding RemoteAction
@@ -112,46 +107,65 @@ public final class WellbeingModel {
 
     private WellbeingModel(final Context context) {
         mContext = context;
-        mWorkerHandler =
-                new Handler(createAndStartNewLooper("WellbeingHandler"), this::handleMessage);
-
         mWellbeingProviderPkg = mContext.getString(R.string.wellbeing_provider_pkg);
-        mContentObserver = new ContentObserver(MAIN_EXECUTOR.getHandler()) {
-            @Override
-            public void onChange(boolean selfChange, Uri uri) {
-                if (DEBUG || mIsInTest) {
-                    Log.d(TAG, "ContentObserver.onChange() called with: selfChange = ["
-                            + selfChange + "], uri = [" + uri + "]");
-                }
-                Preconditions.assertUIThread();
+        initializeInBackground("WellbeingHandler");
+    }
 
-                if (uri.getPath().contains(PATH_ACTIONS)) {
-                    // Wellbeing reports that app actions have changed.
-                    updateWellbeingData();
-                } else if (uri.getPath().contains(PATH_MINIMAL_DEVICE)) {
-                    // Wellbeing reports that minimal device state or config is changed.
-                    updateLauncherModel(context);
-                }
-            }
-        };
-        FeatureFlags.ENABLE_MINIMAL_DEVICE.addChangeListener(mContext, () ->
-                updateLauncherModel(context));
-
+    @Override
+    protected void onInitialized(Looper looper) {
+        mWorkerHandler = new Handler(looper);
+        mContentObserver = newContentObserver(mWorkerHandler, this::onWellbeingUriChanged);
         if (!TextUtils.isEmpty(mWellbeingProviderPkg)) {
-            context.registerReceiver(
-                    new SimpleBroadcastReceiver(this::onWellbeingProviderChanged),
+            mContext.registerReceiver(
+                    new SimpleBroadcastReceiver(t -> restartObserver()),
                     PackageManagerHelper.getPackageFilter(mWellbeingProviderPkg,
                             Intent.ACTION_PACKAGE_ADDED, Intent.ACTION_PACKAGE_CHANGED,
                             Intent.ACTION_PACKAGE_REMOVED, Intent.ACTION_PACKAGE_DATA_CLEARED,
-                            Intent.ACTION_PACKAGE_RESTARTED));
+                            Intent.ACTION_PACKAGE_RESTARTED),
+                    null, mWorkerHandler);
 
             IntentFilter filter = new IntentFilter(Intent.ACTION_PACKAGE_ADDED);
             filter.addAction(Intent.ACTION_PACKAGE_REMOVED);
             filter.addDataScheme("package");
-            context.registerReceiver(new SimpleBroadcastReceiver(this::onAppPackageChanged),
-                    filter);
+            mContext.registerReceiver(new SimpleBroadcastReceiver(this::onAppPackageChanged),
+                    filter, null, mWorkerHandler);
 
             restartObserver();
+        }
+    }
+
+    @WorkerThread
+    private void onWellbeingUriChanged(Uri uri) {
+        Preconditions.assertNonUiThread();
+        if (DEBUG || mIsInTest) {
+            Log.d(TAG, "ContentObserver.onChange() called with: uri = [" + uri + "]");
+        }
+        if (uri.getPath().contains(PATH_ACTIONS)) {
+            // Wellbeing reports that app actions have changed.
+            updateAllPackages();
+        } else if (uri.getPath().contains(PATH_MINIMAL_DEVICE)) {
+            // Wellbeing reports that minimal device state or config is changed.
+            if (!FeatureFlags.ENABLE_MINIMAL_DEVICE.get()) {
+                return;
+            }
+
+            // Temporary bug fix for b/169771796. Wellbeing provides the layout configuration when
+            // minimal device is enabled. We always want to reload the configuration from Wellbeing
+            // since the layout configuration might have changed.
+            mContext.deleteDatabase(DB_NAME_MINIMAL_DEVICE);
+
+            final Bundle extras = new Bundle();
+            String dbFile;
+            if (isInMinimalDeviceMode()) {
+                dbFile = DB_NAME_MINIMAL_DEVICE;
+                extras.putString(LauncherProvider.KEY_LAYOUT_PROVIDER_AUTHORITY,
+                        mWellbeingProviderPkg + ".api");
+            } else {
+                dbFile = InvariantDeviceProfile.INSTANCE.get(mContext).dbFile;
+            }
+            LauncherSettings.Settings.call(mContext.getContentResolver(),
+                    LauncherSettings.Settings.METHOD_SWITCH_DATABASE,
+                    dbFile, extras);
         }
     }
 
@@ -159,13 +173,7 @@ public final class WellbeingModel {
         mIsInTest = inTest;
     }
 
-    protected void onWellbeingProviderChanged(Intent intent) {
-        if (DEBUG || mIsInTest) {
-            Log.d(TAG, "Changes to Wellbeing package: intent = [" + intent + "]");
-        }
-        restartObserver();
-    }
-
+    @WorkerThread
     private void restartObserver() {
         final ContentResolver resolver = mContext.getContentResolver();
         resolver.unregisterContentObserver(mContentObserver);
@@ -180,7 +188,7 @@ public final class WellbeingModel {
             Log.e(TAG, "Failed to register content observer for " + actionsUri + ": " + e);
             if (mIsInTest) throw new RuntimeException(e);
         }
-        updateWellbeingData();
+        updateAllPackages();
     }
 
     @MainThread
@@ -213,74 +221,40 @@ public final class WellbeingModel {
         }
     }
 
-    private void updateWellbeingData() {
-        mWorkerHandler.sendEmptyMessage(MSG_FULL_REFRESH);
-    }
-
-    private void updateLauncherModel(@NonNull final Context context) {
-        if (!FeatureFlags.ENABLE_MINIMAL_DEVICE.get()) {
-            reloadLauncherInNormalMode(context);
-            return;
-        }
-        runWithMinimalDeviceConfigs((bundle) -> {
-            if (bundle.getInt(EXTRA_MINIMAL_DEVICE_STATE, UNKNOWN_MINIMAL_DEVICE_STATE)
-                    == IN_MINIMAL_DEVICE) {
-                reloadLauncherInMinimalMode(context);
-            } else {
-                reloadLauncherInNormalMode(context);
-            }
-        });
-    }
-
-    private void reloadLauncherInNormalMode(@NonNull final Context context) {
-        LauncherSettings.Settings.call(context.getContentResolver(),
-                LauncherSettings.Settings.METHOD_SWITCH_DATABASE,
-                InvariantDeviceProfile.INSTANCE.get(context).dbFile);
-    }
-
-    private void reloadLauncherInMinimalMode(@NonNull final Context context) {
-        final Bundle extras = new Bundle();
-        extras.putString(LauncherProvider.KEY_LAYOUT_PROVIDER_AUTHORITY,
-                mWellbeingProviderPkg + ".api");
-        LauncherSettings.Settings.call(context.getContentResolver(),
-                LauncherSettings.Settings.METHOD_SWITCH_DATABASE,
-                DB_NAME_MINIMAL_DEVICE, extras);
-    }
-
     private Uri.Builder apiBuilder() {
         return new Uri.Builder()
                 .scheme(SCHEME_CONTENT)
                 .authority(mWellbeingProviderPkg + ".api");
     }
 
-    /**
-     * Fetch most up-to-date minimal device config.
-     */
     @WorkerThread
-    private void runWithMinimalDeviceConfigs(Consumer<Bundle> consumer) {
+    private boolean isInMinimalDeviceMode() {
         if (!FeatureFlags.ENABLE_MINIMAL_DEVICE.get()) {
-            return;
+            return false;
         }
         if (DEBUG || mIsInTest) {
-            Log.d(TAG, "runWithMinimalDeviceConfigs() called");
+            Log.d(TAG, "isInMinimalDeviceMode() called");
         }
         Preconditions.assertNonUiThread();
 
         final Uri contentUri = apiBuilder().build();
-        final Bundle remoteBundle;
         try (ContentProviderClient client = mContext.getContentResolver()
                 .acquireUnstableContentProviderClient(contentUri)) {
-            remoteBundle = client.call(
+            final Bundle remoteBundle = client == null ? null : client.call(
                     METHOD_GET_MINIMAL_DEVICE_CONFIG, null /* args */, null /* extras */);
-            consumer.accept(remoteBundle);
+            return remoteBundle != null
+                    && remoteBundle.getInt(EXTRA_MINIMAL_DEVICE_STATE,
+                    UNKNOWN_MINIMAL_DEVICE_STATE) == IN_MINIMAL_DEVICE;
         } catch (Exception e) {
             Log.e(TAG, "Failed to retrieve data from " + contentUri + ": " + e);
             if (mIsInTest) throw new RuntimeException(e);
         }
-        if (DEBUG || mIsInTest) Log.i(TAG, "runWithMinimalDeviceConfigs(): finished");
+        if (DEBUG || mIsInTest) Log.i(TAG, "isInMinimalDeviceMode(): finished");
+        return false;
     }
 
-    private boolean updateActions(String... packageNames) {
+    @WorkerThread
+    private boolean updateActions(String[] packageNames) {
         if (packageNames.length == 0) {
             return true;
         }
@@ -343,68 +317,60 @@ public final class WellbeingModel {
         return true;
     }
 
-    private boolean handleMessage(Message msg) {
-        switch (msg.what) {
-            case MSG_PACKAGE_REMOVED: {
-                String packageName = (String) msg.obj;
-                mWorkerHandler.removeCallbacksAndMessages(packageName);
-                synchronized (mModelLock) {
-                    mPackageToActionId.remove(packageName);
-                }
-                return true;
-            }
-            case MSG_PACKAGE_ADDED: {
-                String packageName = (String) msg.obj;
-                mWorkerHandler.removeCallbacksAndMessages(packageName);
-                if (!updateActions(packageName)) {
-                    scheduleRefreshRetry(msg);
-                }
-                return true;
-            }
-
-            case MSG_FULL_REFRESH: {
-                // Remove all existing messages
-                mWorkerHandler.removeCallbacksAndMessages(null);
-                final String[] packageNames = mContext.getSystemService(LauncherApps.class)
-                        .getActivityList(null, Process.myUserHandle()).stream()
-                        .map(li -> li.getApplicationInfo().packageName).distinct()
-                        .toArray(String[]::new);
-                if (!updateActions(packageNames)) {
-                    scheduleRefreshRetry(msg);
-                }
-                return true;
-            }
+    @WorkerThread
+    private void updateActionsWithRetry(int retryCount, @Nullable String packageName) {
+        if (DEBUG || mIsInTest) {
+            Log.i(TAG,
+                    "updateActionsWithRetry(); retryCount: " + retryCount + ", package: "
+                            + packageName);
         }
-        return false;
-    }
+        String[] packageNames = TextUtils.isEmpty(packageName)
+                ? mContext.getSystemService(LauncherApps.class)
+                .getActivityList(null, Process.myUserHandle()).stream()
+                .map(li -> li.getApplicationInfo().packageName).distinct()
+                .toArray(String[]::new)
+                : new String[]{packageName};
 
-    private void scheduleRefreshRetry(Message originalMsg) {
-        int retryCount = originalMsg.arg1;
+        mWorkerHandler.removeCallbacksAndMessages(packageName);
+        if (updateActions(packageNames)) {
+            return;
+        }
         if (retryCount >= RETRY_TIMES_MS.length) {
             // To many retries, skip
             return;
         }
-
-        Message msg = Message.obtain(originalMsg);
-        msg.arg1 = retryCount + 1;
-        mWorkerHandler.sendMessageDelayed(msg, RETRY_TIMES_MS[retryCount]);
+        mWorkerHandler.postDelayed(
+                () -> {
+                    if (DEBUG || mIsInTest) Log.i(TAG, "Retrying; attempt " + (retryCount + 1));
+                    updateActionsWithRetry(retryCount + 1, packageName);
+                },
+                packageName, RETRY_TIMES_MS[retryCount]);
     }
 
+    @WorkerThread
+    private void updateAllPackages() {
+        if (DEBUG || mIsInTest) Log.i(TAG, "updateAllPackages");
+        updateActionsWithRetry(0, null);
+    }
+
+    @WorkerThread
     private void onAppPackageChanged(Intent intent) {
         if (DEBUG || mIsInTest) Log.d(TAG, "Changes in apps: intent = [" + intent + "]");
-        Preconditions.assertUIThread();
+        Preconditions.assertNonUiThread();
 
         final String packageName = intent.getData().getSchemeSpecificPart();
         if (packageName == null || packageName.length() == 0) {
             // they sent us a bad intent
             return;
         }
-
         final String action = intent.getAction();
         if (Intent.ACTION_PACKAGE_REMOVED.equals(action)) {
-            Message.obtain(mWorkerHandler, MSG_PACKAGE_REMOVED, packageName).sendToTarget();
+            mWorkerHandler.removeCallbacksAndMessages(packageName);
+            synchronized (mModelLock) {
+                mPackageToActionId.remove(packageName);
+            }
         } else if (Intent.ACTION_PACKAGE_ADDED.equals(action)) {
-            Message.obtain(mWorkerHandler, MSG_PACKAGE_ADDED, packageName).sendToTarget();
+            updateActionsWithRetry(0, packageName);
         }
     }
 

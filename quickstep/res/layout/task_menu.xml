@@ -16,39 +16,30 @@
 -->
 <com.android.quickstep.views.TaskMenuView
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:animateLayoutChanges="true"
     android:background="@drawable/task_menu_bg"
-    android:paddingBottom="@dimen/task_card_menu_shadow_height"
     android:orientation="vertical"
     android:visibility="invisible">
 
-    <com.android.quickstep.views.IconView
-      android:id="@+id/task_icon"
-      android:layout_width="@dimen/task_thumbnail_icon_size"
-      android:layout_height="@dimen/task_thumbnail_icon_size"
-      android:layout_gravity="top|center_horizontal"
-      android:layout_marginBottom="@dimen/deep_shortcut_drawable_padding"
-      android:focusable="false"
-      android:importantForAccessibility="no" />
-
     <TextView
         android:id="@+id/task_name"
+        android:background="@drawable/task_menu_item_bg"
+        android:textColor="?android:attr/textColorPrimary"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
-        android:layout_marginBottom="16dp"
-        android:textSize="12sp"/>
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:layout_marginBottom="2dp"
+        android:paddingTop="@dimen/task_menu_vertical_padding"
+        android:paddingBottom="@dimen/task_menu_vertical_padding"
+        android:textSize="16sp"/>
 
     <LinearLayout
         android:id="@+id/menu_option_layout"
-        style="@style/TaskMenu"
-        android:divider="@drawable/all_apps_divider"
-        android:showDividers="beginning"
-        android:paddingStart="@dimen/task_card_menu_horizontal_padding"
-        android:paddingEnd="@dimen/task_card_menu_horizontal_padding"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:showDividers="middle" />
 
 </com.android.quickstep.views.TaskMenuView>

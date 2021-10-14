@@ -19,7 +19,6 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="recent_task_option_split_screen" msgid="5353188922202653570">"화면 분할"</string>
     <string name="recent_task_option_pin" msgid="7929860679018978258">"고정"</string>
     <string name="recent_task_option_freeform" msgid="48863056265284071">"자유 형식"</string>
     <string name="recents_empty_message" msgid="7040467240571714191">"최근 항목이 없습니다."</string>
@@ -46,7 +45,40 @@
     <string name="hotsaet_tip_prediction_enabled" msgid="2233554377501347650">"앱 제안이 사용 설정됨"</string>
     <string name="hotsaet_tip_prediction_disabled" msgid="1506426298884658491">"앱 제안이 사용 중지됨"</string>
     <string name="hotseat_prediction_content_description" msgid="4582028296938078419">"예상 앱: <xliff:g id="TITLE">%1$s</xliff:g>"</string>
+    <string name="back_gesture_feedback_swipe_too_far_from_left_edge" msgid="340972404868601012">"왼쪽 가장자리 끝에서 스와이프하세요."</string>
+    <string name="back_gesture_feedback_cancelled_left_edge" msgid="6671316150388702530">"왼쪽 가장자리에서 화면 중앙으로 스와이프한 후 손가락을 떼세요."</string>
+    <string name="back_gesture_feedback_complete_left_edge" msgid="3220478647881674266">"좋습니다. 이번에는 오른쪽 가장자리에서 스와이프해 보세요."</string>
+    <string name="back_gesture_feedback_swipe_too_far_from_right_edge" msgid="4306700023773832353">"오른쪽 가장자리 끝에서 스와이프하세요."</string>
+    <string name="back_gesture_feedback_cancelled_right_edge" msgid="4951916546256902552">"오른쪽 가장자리에서 화면 중앙으로 스와이프한 후 손가락을 떼세요."</string>
+    <string name="back_gesture_feedback_complete" msgid="7261221999760772210">"돌아가기 동작을 완료했습니다. 이번에는 홈으로 가는 방법을 알아보겠습니다."</string>
+    <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="1148198467090405643">"화면 하단에 지나치게 가까운 곳에서 스와이프하면 안 됩니다."</string>
+    <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"돌아가기 동작의 민감도를 변경하려면 설정으로 이동하세요"</string>
+    <string name="back_gesture_intro_title" msgid="19551256430224428">"스와이프하여 돌아가기"</string>
+    <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"마지막 화면으로 돌아가려면 왼쪽 또는 오른쪽 가장자리에서 화면 중앙으로 스와이프하세요"</string>
+    <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"화면 하단 가장자리에서 위로 스와이프하세요."</string>
+    <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"손가락을 떼기 전에 멈추지 않아야 합니다."</string>
+    <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"위로 똑바르게 스와이프하세요."</string>
+    <string name="home_gesture_feedback_complete" msgid="2324789183070815517">"홈으로 이동 동작을 완료했습니다. 이번에는 앱 전환 방법을 알아보겠습니다."</string>
+    <string name="home_gesture_intro_title" msgid="836590312858441830">"스와이프하여 홈으로 이동"</string>
+    <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"화면 하단에서 위로 스와이프합니다. 이 동작을 사용하면 언제든지 홈 화면으로 이동할 수 있습니다"</string>
+    <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"화면 하단 가장자리에서 위로 스와이프하세요."</string>
+    <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"창을 더 오래 누르고 있다가 손가락을 떼 보세요."</string>
+    <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"위로 똑바르게 스와이프한 후 잠깐 멈추세요."</string>
+    <string name="overview_gesture_feedback_complete" msgid="5477014491632199169">"앱 전환 동작을 완료했습니다. 휴대전화를 사용할 준비가 됐습니다."</string>
+    <string name="overview_gesture_intro_title" msgid="2902054412868489378">"스와이프로 앱 전환"</string>
+    <string name="overview_gesture_intro_subtitle" msgid="1579517193845186042">"화면 하단에서 위로 스와이프하고 잠시 멈춘 다음 손가락을 떼세요"</string>
+    <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"설정 완료"</string>
+    <string name="gesture_tutorial_action_button_label_next" msgid="2556263116424738762">"다음"</string>
+    <string name="gesture_tutorial_action_button_label_done" msgid="671834508127014231">"완료"</string>
+    <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"설정"</string>
+    <string name="gesture_tutorial_try_again" msgid="65962545858556697">"다시 시도"</string>
+    <string name="gesture_tutorial_nice" msgid="2936275692616928280">"잘하셨습니다"</string>
+    <string name="gesture_tutorial_step" msgid="1279786122817620968">"튜토리얼 <xliff:g id="CURRENT">%1$d</xliff:g>/<xliff:g id="TOTAL">%2$d</xliff:g>"</string>
     <string name="action_share" msgid="2648470652637092375">"공유"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"스크린샷"</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"이 작업은 앱 또는 조직에서 허용되지 않습니다."</string>
+    <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"이동 방법 튜토리얼을 건너뛰시겠습니까?"</string>
+    <string name="skip_tutorial_dialog_subtitle" msgid="544063326241955662">"이 튜토리얼은 <xliff:g id="NAME">%1$s</xliff:g> 앱에서 다시 볼 수 있습니다"</string>
+    <string name="gesture_tutorial_action_button_label_cancel" msgid="3809842569351264108">"취소"</string>
+    <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"건너뛰기"</string>
 </resources>
