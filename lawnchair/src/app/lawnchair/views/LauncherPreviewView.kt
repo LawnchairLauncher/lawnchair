@@ -114,7 +114,7 @@ class LauncherPreviewView(
         )
         view.scaleX = scale
         view.scaleY = scale
-        view.pivotX = 0f
+        view.pivotX = if (layoutDirection == LAYOUT_DIRECTION_RTL) view.measuredWidth.toFloat() else 0f
         view.pivotY = 0f
         view.layoutParams = LayoutParams(view.measuredWidth, view.measuredHeight)
         addView(view)
