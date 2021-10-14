@@ -4,7 +4,6 @@ import android.content.*
 import android.content.Intent.*
 import android.content.pm.ActivityInfo
 import android.content.pm.LauncherActivityInfo
-import android.graphics.drawable.AdaptiveIconDrawable
 import android.graphics.drawable.Drawable
 import android.os.Handler
 import android.os.Process

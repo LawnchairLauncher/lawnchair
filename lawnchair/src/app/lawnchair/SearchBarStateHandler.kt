@@ -1,9 +1,7 @@
 package app.lawnchair
 
-import android.os.Build
 import android.os.CancellationSignal
 import android.view.WindowInsets
-import androidx.annotation.RequiresApi
 import androidx.core.view.WindowInsetsCompat
 import app.lawnchair.preferences.PreferenceManager
 import com.android.launcher3.LauncherState
