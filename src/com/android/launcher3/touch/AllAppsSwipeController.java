@@ -94,12 +94,28 @@ public class AllAppsSwipeController extends AbstractStateChangeTouchController {
             LauncherState toState) {
         StateAnimationConfig config = super.getConfigForStates(fromState, toState);
         if (fromState == NORMAL && toState == ALL_APPS) {
-            config.setInterpolator(ANIM_SCRIM_FADE, ALLAPPS_STAGGERED_FADE_EARLY_RESPONDER);
-            config.setInterpolator(ANIM_ALL_APPS_FADE, ALLAPPS_STAGGERED_FADE_LATE_RESPONDER);
+            applyNormalToAllAppsAnimConfig(config);
         } else if (fromState == ALL_APPS && toState == NORMAL) {
-            config.setInterpolator(ANIM_SCRIM_FADE, ALLAPPS_STAGGERED_FADE_LATE_RESPONDER);
-            config.setInterpolator(ANIM_ALL_APPS_FADE, ALLAPPS_STAGGERED_FADE_EARLY_RESPONDER);
+            applyAllAppsToNormalConfig(config);
         }
         return config;
     }
+
+    /**
+     * Applies Animation config values for transition from all apps to home
+     */
+    public static void applyAllAppsToNormalConfig(StateAnimationConfig config) {
+        config.setInterpolator(ANIM_SCRIM_FADE, ALLAPPS_STAGGERED_FADE_LATE_RESPONDER);
+        config.setInterpolator(ANIM_ALL_APPS_FADE, ALLAPPS_STAGGERED_FADE_EARLY_RESPONDER);
+    }
+
+    /**
+     * Applies Animation config values for transition from home to all apps
+     */
+    public static void applyNormalToAllAppsAnimConfig(StateAnimationConfig config) {
+        config.setInterpolator(ANIM_SCRIM_FADE, ALLAPPS_STAGGERED_FADE_EARLY_RESPONDER);
+        config.setInterpolator(ANIM_ALL_APPS_FADE, ALLAPPS_STAGGERED_FADE_LATE_RESPONDER);
+    }
+
+
 }
