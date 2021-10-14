@@ -37,7 +37,16 @@ fun NavGraphBuilder.folderGraph(route: String) {
 fun FolderPreferences() {
     PreferenceLayout(label = stringResource(id = R.string.folders_label)) {
         val prefs = preferenceManager()
-        PreferenceGroup(heading = stringResource(id = R.string.grid), isFirstChild = true) {
+        PreferenceGroup(heading = stringResource(id = R.string.general_label), isFirstChild = true) {
+            SliderPreference(
+                label = stringResource(id = R.string.folder_preview_bg_opacity_label),
+                adapter = prefs.folderPreviewBgOpacity.getAdapter(),
+                step = 0.1F,
+                valueRange = 0F..1F,
+                showAsPercentage = true,
+            )
+        }
+        PreferenceGroup(heading = stringResource(id = R.string.grid)) {
             SliderPreference(
                 label = stringResource(id = R.string.max_folder_columns),
                 adapter = prefs.folderColumns.getAdapter(),

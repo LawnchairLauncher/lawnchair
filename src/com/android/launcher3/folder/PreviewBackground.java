@@ -74,6 +74,7 @@ public class PreviewBackground extends CellLayout.DelegatedCellDrawing {
     private int mStrokeAlpha = MAX_BG_OPACITY;
     private int mShadowAlpha = 255;
     private View mInvalidateDelegate;
+    private int bgOpacity = 255;
 
     int previewSize;
     int basePreviewOffsetX;
@@ -90,7 +91,6 @@ public class PreviewBackground extends CellLayout.DelegatedCellDrawing {
     private static final float ACCEPT_COLOR_MULTIPLIER = 1.5f;
 
     // Expressed on a scale from 0 to 255.
-    private static final int BG_OPACITY = 255;
     private static final int MAX_BG_OPACITY = 255;
     private static final int SHADOW_OPACITY = 40;
 
@@ -227,8 +227,12 @@ public class PreviewBackground extends CellLayout.DelegatedCellDrawing {
     }
 
     public int getBgColor() {
-        int alpha = (int) Math.min(MAX_BG_OPACITY, BG_OPACITY * mColorMultiplier);
+        int alpha = (int) Math.min(MAX_BG_OPACITY, bgOpacity * mColorMultiplier);
         return setColorAlphaBound(mBgColor, alpha);
+    }
+
+    public void setBgOpacity(int opacity) {
+        bgOpacity = opacity;
     }
 
     public int getDotColor() {
@@ -444,7 +448,7 @@ public class PreviewBackground extends CellLayout.DelegatedCellDrawing {
     }
 
     public int getBackgroundAlpha() {
-        return (int) Math.min(MAX_BG_OPACITY, BG_OPACITY * mColorMultiplier);
+        return (int) Math.min(MAX_BG_OPACITY, bgOpacity * mColorMultiplier);
     }
 
     public float getStrokeWidth() {

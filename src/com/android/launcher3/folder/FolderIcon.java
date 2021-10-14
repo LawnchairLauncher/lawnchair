@@ -85,6 +85,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
 
+import app.lawnchair.preferences.PreferenceManager;
+
 
 /**
  * An icon that can appear on in the workspace representing an {@link Folder}.
@@ -135,6 +137,7 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
     private final PointF mTranslationForReorderBounce = new PointF(0, 0);
     private final PointF mTranslationForReorderPreview = new PointF(0, 0);
     private float mScaleForReorderBounce = 1f;
+    private final int previewBgOpacity = (int) (255 * PreferenceManager.getInstance(getContext()).getFolderPreviewBgOpacity().get());
 
     private static final Property<FolderIcon, Float> DOT_SCALE_PROPERTY
             = new Property<FolderIcon, Float>(Float.TYPE, "dotScale") {
@@ -609,6 +612,7 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
         mPreviewItemManager.recomputePreviewDrawingParams();
 
         if (!mBackground.drawingDelegated()) {
+            mBackground.setBgOpacity(previewBgOpacity);
             mBackground.drawBackground(canvas);
         }
 

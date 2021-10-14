@@ -90,6 +90,7 @@ class PreferenceManager private constructor(private val context: Context) : Base
     val searchAutoShowKeyboard = BoolPref("pref_searchAutoShowKeyboard", false)
     val enableDebugMenu = BoolPref("pref_enableDebugMenu", false)
     val customIconShape = StringPref("pref_customIconShape", "", this::onIconShapeChanged)
+    val folderPreviewBgOpacity = FloatPref("pref_folderPreviewBgOpacity", 1F, reloadIcons)
 
     private val fontCache = FontCache.INSTANCE.get(context)
     val workspaceFont = FontPref("pref_workspaceFont", fontCache.uiTextMedium, recreate)
