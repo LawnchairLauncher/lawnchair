@@ -202,6 +202,10 @@ public class FallbackRecentsView extends RecentsView<RecentsActivity, RecentsSta
 
     @Override
     public void onStateTransitionStart(RecentsState toState) {
+        if (toState == HOME) {
+            // Clean-up logic that occurs when recents is no longer in use/visible.
+            reset();
+        }
         setOverviewStateEnabled(true);
         setOverviewGridEnabled(toState.displayOverviewTasksAsGrid(mActivity.getDeviceProfile()));
         setOverviewFullscreenEnabled(toState.isFullScreen());
@@ -210,10 +214,6 @@ public class FallbackRecentsView extends RecentsView<RecentsActivity, RecentsSta
 
     @Override
     public void onStateTransitionComplete(RecentsState finalState) {
-        if (finalState == HOME) {
-            // Clean-up logic that occurs when recents is no longer in use/visible.
-            reset();
-        }
         setOverlayEnabled(finalState == DEFAULT || finalState == MODAL_TASK);
         setFreezeViewVisibility(false);
     }
