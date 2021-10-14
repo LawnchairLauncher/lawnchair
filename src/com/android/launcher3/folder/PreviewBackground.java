@@ -45,6 +45,8 @@ import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
 import com.android.launcher3.views.ActivityContext;
 
+import app.lawnchair.theme.color.ColorTokens;
+
 /**
  * This object represents a FolderIcon preview background. It stores drawing / measurement
  * information, handles drawing, and animation (accept state <--> rest state).
@@ -152,9 +154,9 @@ public class PreviewBackground extends CellLayout.DelegatedCellDrawing {
         mInvalidateDelegate = invalidateDelegate;
 
         TypedArray ta = context.getTheme().obtainStyledAttributes(R.styleable.FolderIconPreview);
-        mDotColor = ta.getColor(R.styleable.FolderIconPreview_folderDotColor, 0);
+        mDotColor = ColorTokens.FolderDotColor.resolveColor(context);
         mStrokeColor = ta.getColor(R.styleable.FolderIconPreview_folderIconBorderColor, 0);
-        mBgColor = ta.getColor(R.styleable.FolderIconPreview_folderFillColor, 0);
+        mBgColor = ColorTokens.FolderFillColor.resolveColor(context);
         ta.recycle();
 
         DeviceProfile grid = activity.getDeviceProfile();

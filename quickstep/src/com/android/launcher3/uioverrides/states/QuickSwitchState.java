@@ -18,8 +18,8 @@ package com.android.launcher3.uioverrides.states;
 import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_BACKGROUND;
 
 import com.android.launcher3.Launcher;
-import com.android.launcher3.R;
-import com.android.launcher3.util.Themes;
+
+import app.lawnchair.theme.color.ColorTokens;
 
 /**
  * State to indicate we are about to launch a recent task. Note that this state is only used when
@@ -42,7 +42,7 @@ public class QuickSwitchState extends BackgroundAppState {
 
     @Override
     public int getWorkspaceScrimColor(Launcher launcher) {
-        return Themes.getAttrColor(launcher, R.attr.overviewScrimColor);
+        return ColorTokens.OverviewScrim.resolveColor(launcher);
     }
 
     @Override

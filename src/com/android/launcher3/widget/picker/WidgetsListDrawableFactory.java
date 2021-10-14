@@ -33,6 +33,8 @@ import android.graphics.drawable.StateListDrawable;
 import com.android.launcher3.R;
 import com.android.launcher3.util.Themes;
 
+import app.lawnchair.theme.color.ColorTokens;
+
 /** Factory for creating drawables to use as background for list elements. */
 final class WidgetsListDrawableFactory {
 
@@ -45,7 +47,7 @@ final class WidgetsListDrawableFactory {
         Resources res = context.getResources();
         mTopBottomCornerRadius = res.getDimension(R.dimen.widget_list_top_bottom_corner_radius);
         mMiddleCornerRadius = res.getDimension(R.dimen.widget_list_content_corner_radius);
-        mSurfaceColor = context.getColorStateList(R.color.surface);
+        mSurfaceColor = ColorStateList.valueOf(ColorTokens.Surface.resolveColor(context));
         mRippleColor = ColorStateList.valueOf(
                 Themes.getAttrColor(context, android.R.attr.colorControlHighlight));
     }

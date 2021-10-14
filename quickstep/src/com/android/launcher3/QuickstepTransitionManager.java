@@ -89,7 +89,6 @@ import com.android.launcher3.statehandlers.DepthController;
 import com.android.launcher3.util.ActivityOptionsWrapper;
 import com.android.launcher3.util.MultiValueAlpha.AlphaProperty;
 import com.android.launcher3.util.RunnableList;
-import com.android.launcher3.util.Themes;
 import com.android.launcher3.views.FloatingIconView;
 import com.android.launcher3.views.ScrimView;
 import com.android.launcher3.widget.LauncherAppWidgetHostView;
@@ -119,6 +118,8 @@ import com.android.wm.shell.startingsurface.IStartingWindowListener;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
+
+import app.lawnchair.theme.color.ColorTokens;
 
 /**
  * Manages the opening and closing app transitions from Launcher
@@ -512,7 +513,7 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
 
             final boolean scrimEnabled = ENABLE_SCRIM_FOR_APP_LAUNCH.get();
             if (scrimEnabled) {
-                int scrimColor = Themes.getAttrColor(mLauncher, R.attr.overviewScrimColor);
+                int scrimColor = ColorTokens.OverviewScrim.resolveColor(mLauncher);
                 int scrimColorTrans = ColorUtils.setAlphaComponent(scrimColor, 0);
                 int[] colors = isAppOpening
                         ? new int[]{scrimColorTrans, scrimColor}

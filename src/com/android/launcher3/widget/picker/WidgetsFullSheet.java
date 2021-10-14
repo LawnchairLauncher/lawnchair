@@ -75,6 +75,9 @@ import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.IntStream;
 
+import app.lawnchair.theme.color.ColorTokens;
+import app.lawnchair.theme.drawable.DrawableTokens;
+
 /**
  * Popup for showing the full list of available widgets
  */
@@ -196,6 +199,7 @@ public class WidgetsFullSheet extends BaseWidgetSheet
         super.onFinishInflate();
         mContent = findViewById(R.id.container);
         TopRoundedCornerView springLayout = (TopRoundedCornerView) mContent;
+        springLayout.setBackgroundColor(ColorTokens.ColorBackground.resolveColor(getContext()));
 
         LayoutInflater layoutInflater = LayoutInflater.from(getContext());
         int contentLayoutRes = mHasWorkProfile ? R.layout.widgets_full_sheet_paged_view
@@ -823,6 +827,10 @@ public class WidgetsFullSheet extends BaseWidgetSheet
             });
             mRecommendedWidgetsTable.setWidgetCellLongClickListener(WidgetsFullSheet.this);
             mRecommendedWidgetsTable.setWidgetCellOnClickListener(WidgetsFullSheet.this);
+
+            mCollapseHandle.setBackground(DrawableTokens.BgWidgetsPickerHandle.resolve(getContext()));
+            mSearchBarContainer.setBackgroundColor(ColorTokens.ColorBackground.resolveColor(getContext()));
+            ((View) mSearchBar).setBackground(DrawableTokens.BgWidgetsSearchbox.resolve(getContext()));
         }
     }
 }

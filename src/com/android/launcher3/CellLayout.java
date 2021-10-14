@@ -80,6 +80,9 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Stack;
 
+import app.lawnchair.theme.color.ColorTokens;
+import app.lawnchair.theme.drawable.DrawableTokens;
+
 public class CellLayout extends ViewGroup {
     private static final String TAG = "CellLayout";
     private static final boolean LOGD = false;
@@ -259,11 +262,11 @@ public class CellLayout extends ViewGroup {
 
         Resources res = getResources();
 
-        mBackground = getContext().getDrawable(R.drawable.bg_celllayout);
+        mBackground = DrawableTokens.BgCellLayout.resolve(getContext());
         mBackground.setCallback(this);
         mBackground.setAlpha(0);
 
-        mGridColor = Themes.getAttrColor(getContext(), R.attr.workspaceAccentColor);
+        mGridColor = ColorTokens.WorkspaceAccentColor.resolveColor(getContext());
         mGridVisualizationPadding =
                 res.getDimensionPixelSize(R.dimen.grid_visualization_cell_spacing);
         mGridVisualizationRoundingRadius =

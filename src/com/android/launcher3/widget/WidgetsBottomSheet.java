@@ -47,6 +47,8 @@ import com.android.launcher3.widget.util.WidgetsTableUtils;
 
 import java.util.List;
 
+import app.lawnchair.theme.drawable.DrawableTokens;
+
 /**
  * Bottom sheet for the "Widgets" system shortcut in the long-press popup.
  */
@@ -123,6 +125,7 @@ public class WidgetsBottomSheet extends BaseWidgetSheet {
     protected void onFinishInflate() {
         super.onFinishInflate();
         mContent = findViewById(R.id.widgets_bottom_sheet);
+        mContent.setBackground(DrawableTokens.WidgetsBottomSheetBackground.resolve(getContext()));
     }
 
     @Override

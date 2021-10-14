@@ -78,6 +78,9 @@ import java.util.Objects;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import app.lawnchair.theme.color.ColorTokens;
+import app.lawnchair.theme.drawable.DrawableTokens;
+
 /**
  * A container for shortcuts to deep links and notifications associated with an app.
  *
@@ -260,6 +263,7 @@ public class PopupContainerWithArrow<T extends StatefulActivity<LauncherState>>
             // Add notification entries
             if (mNotificationContainer == null) {
                 mNotificationContainer = findViewById(R.id.notification_container);
+                mNotificationContainer.setBackgroundColor(ColorTokens.PopupColorPrimary.resolveColor(getContext()));
                 mNotificationContainer.setVisibility(VISIBLE);
             }
             View.inflate(getContext(), R.layout.notification_content, mNotificationContainer);
@@ -297,6 +301,7 @@ public class PopupContainerWithArrow<T extends StatefulActivity<LauncherState>>
                     }
                 }
                 mSystemShortcutContainer = inflateAndAdd(R.layout.system_shortcut_icons, this);
+                mSystemShortcutContainer.setBackground(DrawableTokens.SingleItemPrimary.resolve(getContext()));
 
                 for (SystemShortcut shortcut : systemShortcuts) {
                     if (!(shortcut instanceof SystemShortcut.Widgets)) {

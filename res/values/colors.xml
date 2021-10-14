@@ -66,17 +66,17 @@
     <color name="workspace_text_color_light">#FFF</color>
     <color name="workspace_text_color_dark">#FF000000</color>
 
-    <color name="folder_hint_text_color_light">#FFF</color>
-    <color name="folder_hint_text_color_dark">#FF000000</color>
+    <color name="folder_hint_text_color_light">@color/system_neutral1_50</color>
+    <color name="folder_hint_text_color_dark">@color/system_neutral2_700</color>
 
     <color name="folder_background_light">#F9F9F9</color>
     <color name="folder_background_dark">#464746</color>
 
     <color name="folder_dot_color">@color/system_accent2_50</color>
 
-    <color name="text_color_primary_dark">#FFFFFFFF</color>
-    <color name="text_color_secondary_dark">#FFFFFFFF</color>
-    <color name="text_color_tertiary_dark">#CCFFFFFF</color>
+    <color name="text_color_primary_dark">@color/system_neutral1_50</color>
+    <color name="text_color_secondary_dark">@color/system_neutral2_200</color>
+    <color name="text_color_tertiary_dark">@color/system_neutral2_400</color>
 
     <color name="wallpaper_popup_scrim">@color/system_neutral1_900</color>
     <color name="wallpaper_scrim_color">#0D878787</color>

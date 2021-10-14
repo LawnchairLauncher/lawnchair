@@ -7,7 +7,8 @@ import android.util.TypedValue
 import android.view.ContextThemeWrapper
 import androidx.annotation.ColorInt
 import androidx.core.graphics.ColorUtils
-import app.lawnchair.preferences.PreferenceManager
+import app.lawnchair.theme.UiColorMode
+import app.lawnchair.theme.color.ColorTokens
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
 import com.android.launcher3.util.Themes
@@ -16,12 +17,7 @@ const val LAWNCHAIR_BLUE: Long = 0xFF007FFF
 
 @JvmOverloads
 fun Context.getAccentColor(darkTheme: Boolean = Themes.getAttrBoolean(this, R.attr.isMainColorDark)): Int {
-    val prefs = PreferenceManager.getInstance(this)
-    val customAccentColor = prefs.accentColor.get()
-    val useSystemAccent = prefs.useSystemAccent.get()
-    val accentColor = if (useSystemAccent) this.getSystemAccent(darkTheme = darkTheme) else customAccentColor
-
-    return if (darkTheme) lightenColor(accentColor) else accentColor
+    return ColorTokens.ColorAccent.resolveColor(this, if (darkTheme) UiColorMode.Dark else UiColorMode.Light)
 }
 
 @ColorInt

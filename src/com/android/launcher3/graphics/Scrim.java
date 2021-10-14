@@ -22,7 +22,7 @@ import android.graphics.Canvas;
 import android.util.FloatProperty;
 import android.view.View;
 
-import com.android.launcher3.R;
+import app.lawnchair.theme.color.ColorTokens;
 
 /**
  * Contains general scrim properties such as wallpaper-extracted color that subclasses can use.
@@ -50,7 +50,7 @@ public class Scrim {
 
     public Scrim(View view) {
         mRoot = view;
-        mScrimColor = mRoot.getContext().getColor(R.color.wallpaper_popup_scrim);
+        mScrimColor = ColorTokens.WallpaperPopupScrim.resolveColor(mRoot.getContext());
     }
 
     public void draw(Canvas canvas) {

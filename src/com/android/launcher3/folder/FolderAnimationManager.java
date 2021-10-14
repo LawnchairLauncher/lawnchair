@@ -51,6 +51,8 @@ import com.android.launcher3.views.BaseDragLayer;
 
 import java.util.List;
 
+import app.lawnchair.theme.color.ColorTokens;
+
 /**
  * Manages the opening and closing animations for a {@link Folder}.
  *
@@ -178,7 +180,7 @@ public class FolderAnimationManager {
 
         // Set up the Folder background.
         final int finalColor;
-        int folderFillColor = Themes.getAttrColor(mContext, R.attr.folderFillColor);
+        int folderFillColor = ColorTokens.FolderFillColor.resolveColor(mContext);
         if (mIsOpening) {
             finalColor = folderFillColor;
         } else {

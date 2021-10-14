@@ -16,7 +16,6 @@
 
 package app.lawnchair.ui.theme
 
-import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material.Colors
 import androidx.compose.material.MaterialTheme
@@ -27,12 +26,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.colorResource
 import app.lawnchair.preferences.PreferenceManager
 import app.lawnchair.preferences.observeAsState
 import app.lawnchair.preferences.preferenceManager
+import app.lawnchair.theme.ThemeProvider
+import app.lawnchair.theme.toAndroidColor
 import app.lawnchair.ui.preferences.components.ThemeChoice
-import app.lawnchair.util.androidColorId
 import com.android.launcher3.Utilities
 
 @Composable
@@ -54,36 +53,30 @@ fun getColors(darkTheme: Boolean): Colors {
     val prefs = PreferenceManager.getInstance(context)
     val customColor = prefs.accentColor.observeAsState().value
     val useSystemAccent = prefs.useSystemAccent.observeAsState().value
-    val accentColor by animateColorAsState(targetValue = remember(darkTheme, customColor, useSystemAccent) {
-        Color(
-            context.getAccentColor(darkTheme)
-        )
-    })
+    val colorScheme = remember(customColor, useSystemAccent) {
+        ThemeProvider.INSTANCE.get(context).colorScheme
+    }
 
-    return when {
-        Utilities.ATLEAST_S -> {
-            if (darkTheme) {
-                val surface = colorResource(id = androidColorId(name = "system_neutral1_800"))
-                val background = colorResource(id = androidColorId(name = "system_neutral1_900"))
-                darkColors(
-                    primary = accentColor,
-                    secondary = accentColor,
-                    background = background,
-                    surface = surface
-                )
-            } else {
-                val surface = colorResource(id = androidColorId(name = "system_neutral1_100"))
-                val background = colorResource(id = androidColorId(name = "system_neutral1_50"))
-                lightColors(
-                    primary = accentColor,
-                    secondary = accentColor,
-                    background = background,
-                    surface = surface
-                )
-            }
+    return remember(colorScheme) {
+        val accent = Color(colorScheme.accent1[if (darkTheme) 100 else 600]!!.toAndroidColor())
+        val surface = Color(colorScheme.neutral1[if (darkTheme) 800 else 100]!!.toAndroidColor())
+        val background = Color(colorScheme.neutral1[if (darkTheme) 900 else 50]!!.toAndroidColor())
+
+        if (darkTheme) {
+            darkColors(
+                primary = accent,
+                secondary = accent,
+                background = background,
+                surface = surface
+            )
+        } else {
+            lightColors(
+                primary = accent,
+                secondary = accent,
+                background = background,
+                surface = surface
+            )
         }
-        darkTheme -> darkColors(primary = accentColor, secondary = accentColor)
-        else -> lightColors(primary = accentColor, secondary = accentColor)
     }
 }
 

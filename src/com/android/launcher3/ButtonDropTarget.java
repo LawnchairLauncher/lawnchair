@@ -21,6 +21,7 @@ import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 import static com.android.launcher3.LauncherState.NORMAL;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
@@ -39,6 +40,11 @@ import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.dragndrop.DragOptions;
 import com.android.launcher3.dragndrop.DragView;
 import com.android.launcher3.model.data.ItemInfo;
+import com.android.launcher3.util.Themes;
+
+import app.lawnchair.theme.color.ColorTokens;
+import app.lawnchair.theme.drawable.DrawableToken;
+import app.lawnchair.theme.drawable.DrawableTokens;
 
 /**
  * Implements a DropTarget.
@@ -92,6 +98,17 @@ public abstract class ButtonDropTarget extends TextView
         super.onFinishInflate();
         mText = getText();
         setContentDescription(mText);
+        setBackground(DrawableTokens.DropTargetBackground.resolve(getContext()));
+        setTextColor();
+    }
+
+    private void setTextColor() {
+        int normalColor = ColorTokens.ColorAccent.resolveColor(getContext());
+        int selectedColor = Themes.getAttrColor(getContext(), R.attr.dropTargetHoverTextColor);
+        setTextColor(new ColorStateList(
+                new int[][]{new int[]{-android.R.attr.state_selected}, new int[]{android.R.attr.state_selected}},
+                new int[]{normalColor, selectedColor}
+        ));
     }
 
     protected void updateText(int resId) {

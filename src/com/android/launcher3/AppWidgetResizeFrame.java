@@ -1,7 +1,6 @@
 package com.android.launcher3;
 
 import static android.appwidget.AppWidgetHostView.getDefaultPaddingForWidget;
-
 import static com.android.launcher3.LauncherAnimUtils.LAYOUT_HEIGHT;
 import static com.android.launcher3.LauncherAnimUtils.LAYOUT_WIDTH;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_WIDGET_RESIZE_COMPLETED;
@@ -40,6 +39,9 @@ import com.android.launcher3.widget.util.WidgetSizes;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import app.lawnchair.theme.color.ColorTokens;
+import app.lawnchair.theme.drawable.DrawableTokens;
 
 public class AppWidgetResizeFrame extends AbstractFloatingView implements View.OnKeyListener {
     private static final int SNAP_DURATION = 150;
@@ -159,6 +161,11 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
         mDragHandles[INDEX_TOP] = findViewById(R.id.widget_resize_top_handle);
         mDragHandles[INDEX_RIGHT] = findViewById(R.id.widget_resize_right_handle);
         mDragHandles[INDEX_BOTTOM] = findViewById(R.id.widget_resize_bottom_handle);
+
+        int workspaceAccentColor = ColorTokens.WorkspaceAccentColor.resolveColor(getContext());
+        for (int i = 0; i < HANDLE_COUNT; i++) {
+            ((ImageView) mDragHandles[i]).setColorFilter(workspaceAccentColor);
+        }
     }
 
     @Override
@@ -181,9 +188,10 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
         DragLayer dl = launcher.getDragLayer();
         AppWidgetResizeFrame frame = (AppWidgetResizeFrame) launcher.getLayoutInflater()
                 .inflate(R.layout.app_widget_resize_frame, dl, false);
+        ImageView imageView = frame.findViewById(R.id.widget_resize_frame);
+        imageView.setImageDrawable(DrawableTokens.WidgetResizeFrame.resolve(launcher));
         if (widget.hasEnforcedCornerRadius()) {
             float enforcedCornerRadius = widget.getEnforcedCornerRadius();
-            ImageView imageView = frame.findViewById(R.id.widget_resize_frame);
             Drawable d = imageView.getDrawable();
             if (d instanceof GradientDrawable) {
                 GradientDrawable gd = (GradientDrawable) d.mutate();

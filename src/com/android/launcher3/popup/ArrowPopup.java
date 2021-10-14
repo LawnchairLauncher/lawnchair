@@ -16,8 +16,6 @@
 
 package com.android.launcher3.popup;
 
-import static androidx.core.content.ContextCompat.getColorStateList;
-
 import static com.android.launcher3.anim.Interpolators.ACCELERATED_EASE;
 import static com.android.launcher3.anim.Interpolators.DECELERATED_EASE;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
@@ -71,6 +69,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+
+import app.lawnchair.theme.color.ColorTokens;
+import app.lawnchair.theme.drawable.DrawableTokens;
 
 /**
  * A container for shortcuts to deep links and notifications associated with an app.
@@ -146,7 +147,7 @@ public abstract class ArrowPopup<T extends StatefulActivity<LauncherState>>
         mLauncher = BaseDraggingActivity.fromContext(context);
         mIsRtl = Utilities.isRtl(getResources());
 
-        mBackgroundColor = Themes.getAttrColor(context, R.attr.popupColorPrimary);
+        mBackgroundColor = ColorTokens.PopupColorPrimary.resolveColor(context);
         mArrowColor = mBackgroundColor;
         mElevation = getResources().getDimension(R.dimen.deep_shortcuts_elevation);
 
@@ -183,12 +184,12 @@ public abstract class ArrowPopup<T extends StatefulActivity<LauncherState>>
 
         if (isAboveAnotherSurface) {
             mColors = new int[] {
-                    getColorStateList(context, R.color.popup_shade_first).getDefaultColor()};
+                    ColorTokens.PopupShadeFirst.resolveColor(context)};
         } else {
             mColors = new int[] {
-                    getColorStateList(context, R.color.popup_shade_first).getDefaultColor(),
-                    getColorStateList(context, R.color.popup_shade_second).getDefaultColor(),
-                    getColorStateList(context, R.color.popup_shade_third).getDefaultColor()};
+                    ColorTokens.PopupShadeFirst.resolveColor(context),
+                    ColorTokens.PopupShadeSecond.resolveColor(context),
+                    ColorTokens.PopupShadeThird.resolveColor(context)};
         }
     }
 
@@ -283,14 +284,14 @@ public abstract class ArrowPopup<T extends StatefulActivity<LauncherState>>
 
                 if (view instanceof DeepShortcutView) {
                     if (totalVisibleShortcuts == 1) {
-                        view.setBackgroundResource(R.drawable.single_item_primary);
+                        view.setBackground(DrawableTokens.SingleItemPrimary.resolve(getContext()));
                     } else if (totalVisibleShortcuts > 1) {
                         if (numVisibleShortcut == 0) {
                             view.setBackground(mRoundedTop.getConstantState().newDrawable());
                         } else if (numVisibleShortcut == (totalVisibleShortcuts - 1)) {
                             view.setBackground(mRoundedBottom.getConstantState().newDrawable());
                         } else {
-                            view.setBackgroundResource(R.drawable.middle_item_primary);
+                            view.setBackground(DrawableTokens.MiddleItemPrimary.resolve(getContext()));
                         }
                         numVisibleShortcut++;
                     }

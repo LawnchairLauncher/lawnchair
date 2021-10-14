@@ -16,6 +16,7 @@
   -->
 
 <resources>
+    <attr name="uiColorMode" format="integer" />
     <attr name="allAppsAlternateTextColor" format="color" />
     <attr name="searchboxHighlight" format="color" />
     <attr name="focusHighlight" format="color" />

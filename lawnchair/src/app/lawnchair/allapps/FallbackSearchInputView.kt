@@ -5,8 +5,8 @@ import android.content.Context
 import android.graphics.Rect
 import android.util.AttributeSet
 import android.view.Gravity
+import app.lawnchair.theme.drawable.DrawableTokens
 import com.android.launcher3.ExtendedEditText
-import com.android.launcher3.R
 import com.android.launcher3.allapps.AllAppsContainerView
 
 class FallbackSearchInputView(context: Context, attrs: AttributeSet?) : ExtendedEditText(context, attrs) {
@@ -19,6 +19,11 @@ class FallbackSearchInputView(context: Context, attrs: AttributeSet?) : Extended
                 updateBackground()
             }
         }
+    private val bg = DrawableTokens.SearchInputFg.resolve(context)
+
+    init {
+        background = bg
+    }
 
     fun initialize(appsView: AllAppsContainerView) {
         this.appsView = appsView
@@ -26,11 +31,7 @@ class FallbackSearchInputView(context: Context, attrs: AttributeSet?) : Extended
 
     private fun updateBackground() {
         val showBackground = shown && !isFocused
-        if (showBackground) {
-            setBackgroundResource(R.drawable.search_input_fg)
-        } else {
-            background = null
-        }
+        background = if (showBackground) bg else null
     }
 
     override fun show() {

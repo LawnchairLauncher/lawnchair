@@ -78,6 +78,7 @@ import com.android.launcher3.views.ScrimView;
 import com.android.launcher3.workprofile.PersonalWorkSlidingTabStrip.OnActivePageChangedListener;
 
 import app.lawnchair.allapps.LawnchairAlphabeticalAppsList;
+import app.lawnchair.theme.color.ColorTokens;
 import app.lawnchair.ui.StretchRecyclerViewContainer;
 
 /**
@@ -151,10 +152,10 @@ public class AllAppsContainerView extends StretchRecyclerViewContainer implement
 
         mLauncher = BaseDraggingActivity.fromContext(context);
 
-        mScrimColor = Themes.getAttrColor(context, R.attr.allAppsScrimColor);
+        mScrimColor = ColorTokens.AllAppsScrimColor.resolveColor(context);
         mHeaderThreshold = getResources().getDimensionPixelSize(
                 R.dimen.dynamic_grid_cell_border_spacing);
-        mHeaderProtectionColor = Themes.getAttrColor(context, R.attr.allappsHeaderProtectionColor);
+        mHeaderProtectionColor = ColorTokens.AllAppsHeaderProtectionColor.resolveColor(context);
 
         mLauncher.addOnDeviceProfileChangeListener(this);
 

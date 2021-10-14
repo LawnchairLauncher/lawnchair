@@ -6,8 +6,8 @@ import android.graphics.Paint
 import android.graphics.Path
 import android.graphics.RectF
 import android.view.View
+import app.lawnchair.theme.color.ColorTokens
 import com.android.launcher3.R
-import com.android.launcher3.util.Themes
 
 class SearchItemBackground(
     context: Context,
@@ -18,8 +18,8 @@ class SearchItemBackground(
     private val resources = context.resources
 
     private val searchDecorationPadding = resources.getDimensionPixelSize(R.dimen.search_decoration_padding)
-    private val focusHighlight = Themes.getAttrColor(context, R.attr.focusHighlight)
-    private val groupHighlight = if (showBackground) Themes.getAttrColor(context, R.attr.groupHighlight) else 0
+    private val focusHighlight = ColorTokens.FocusHighlight.resolveColor(context)
+    private val groupHighlight = if (showBackground) ColorTokens.GroupHighlight.resolveColor(context) else 0
 
     private val cornerRadii: FloatArray
     private val paint = Paint(Paint.ANTI_ALIAS_FLAG)

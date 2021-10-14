@@ -22,11 +22,11 @@ import android.content.Context;
 import android.graphics.Color;
 
 import com.android.launcher3.DeviceProfile;
-import com.android.launcher3.R;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.statemanager.BaseState;
-import com.android.launcher3.util.Themes;
 import com.android.quickstep.RecentsActivity;
+
+import app.lawnchair.theme.color.ColorTokens;
 
 /**
  * State definition for Fallback recents
@@ -121,7 +121,7 @@ public class RecentsState implements BaseState<RecentsState> {
      * For this state, what color scrim should be drawn behind overview.
      */
     public int getScrimColor(RecentsActivity activity) {
-        return hasFlag(FLAG_SCRIM) ? Themes.getAttrColor(activity, R.attr.overviewScrimColor)
+        return hasFlag(FLAG_SCRIM) ? ColorTokens.OverviewScrim.resolveColor(activity)
                 : Color.TRANSPARENT;
     }
 

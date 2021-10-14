@@ -113,6 +113,7 @@ import java.util.StringJoiner;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import app.lawnchair.theme.drawable.DrawableTokens;
 import app.lawnchair.util.EditTextExtensions;
 
 /**
@@ -272,8 +273,7 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
         final DeviceProfile dp = mActivityContext.getDeviceProfile();
         final int paddingLeftRight = dp.folderContentPaddingLeftRight;
 
-        mBackground = (GradientDrawable) ResourcesCompat.getDrawable(getResources(),
-                R.drawable.round_rect_folder, getContext().getTheme());
+        mBackground = DrawableTokens.RoundRectFolder.resolve(getContext());
 
         mContent = findViewById(R.id.folder_content);
         mContent.setPadding(paddingLeftRight, dp.folderContentPaddingTop, paddingLeftRight, 0);

@@ -36,13 +36,13 @@ import app.lawnchair.preferences.PreferenceManager
 import app.lawnchair.root.RootHelperManager
 import app.lawnchair.root.RootNotAvailableException
 import app.lawnchair.search.LawnchairSearchAdapterProvider
+import app.lawnchair.theme.color.ColorTokens
 import com.android.launcher3.*
 import com.android.launcher3.allapps.AllAppsContainerView
 import com.android.launcher3.allapps.search.SearchAdapterProvider
 import com.android.launcher3.statemanager.StateManager
 import com.android.launcher3.uioverrides.QuickstepLauncher
 import com.android.launcher3.uioverrides.states.OverviewState
-import com.android.launcher3.util.Themes
 import com.android.systemui.plugins.shared.LauncherOverlayManager
 import com.android.systemui.shared.system.QuickStepContract
 import kotlinx.coroutines.launch
@@ -72,7 +72,7 @@ class LawnchairLauncher : QuickstepLauncher(), LifecycleOwner,
 
         prefs.launcherTheme.subscribeChanges(this, ::updateTheme)
         prefs.drawerOpacity.subscribeValues(this) { opacity ->
-            val scrimColor = Themes.getAttrColor(this, R.attr.allAppsScrimColor)
+            val scrimColor = ColorTokens.AllAppsScrimColor.resolveColor(this)
             val alpha = (opacity * 255).roundToInt()
             allAppsScrimColor = ColorUtils.setAlphaComponent(scrimColor, alpha)
         }

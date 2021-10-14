@@ -172,7 +172,7 @@ import java.util.List;
 import java.util.function.Consumer;
 
 import app.lawnchair.LawnchairApp;
-import app.lawnchair.LawnchairAppKt;
+import app.lawnchair.theme.color.ColorTokens;
 import app.lawnchair.util.OverScrollerCompat;
 
 /**
@@ -3923,7 +3923,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
 
     /** Get the color used for foreground scrimming the RecentsView for sharing. */
     public static int getForegroundScrimDimColor(Context context) {
-        int baseColor = Themes.getAttrColor(context, R.attr.overviewScrimColor);
+        int baseColor = ColorTokens.OverviewScrim.resolveColor(context);
         // The Black blending is temporary until we have the proper color token.
         return ColorUtils.blendARGB(Color.BLACK, baseColor, 0.25f);
     }
