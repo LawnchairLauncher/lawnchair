@@ -46,12 +46,11 @@ fun CustomizeDialog(
         insets = windowInsets.ime,
         applyStart = true, applyEnd = true, applyBottom = true
     )
-    val minPaddings = remember { PaddingValues(bottom = 48.dp) }
+    val minPaddings = remember { PaddingValues(bottom = 64.dp) }
     Column(
         modifier = Modifier
             .padding(max(imePaddings, minPaddings))
             .navigationBarsOrDisplayCutoutPadding()
-            .padding(vertical = 16.dp)
             .fillMaxWidth()
     ) {
         val iconPainter = rememberDrawablePainter(drawable = icon)
@@ -59,7 +58,7 @@ fun CustomizeDialog(
             painter = iconPainter,
             contentDescription = "",
             modifier = Modifier
-                .padding(top = 16.dp, bottom = 32.dp)
+                .padding(vertical = 32.dp)
                 .size(54.dp)
                 .align(Alignment.CenterHorizontally)
         )
