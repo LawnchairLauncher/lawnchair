@@ -69,6 +69,7 @@ import android.view.ViewConfiguration;
 import android.view.animation.Interpolator;
 import android.widget.LinearLayout;
 
+import androidx.annotation.NonNull;
 import androidx.core.graphics.ColorUtils;
 import androidx.core.os.BuildCompat;
 
@@ -844,6 +845,12 @@ public final class Utilities {
         LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) view.getLayoutParams();
         lp.setMarginStart(margin);
         view.setLayoutParams(lp);
+    }
+
+    public static Rect getViewBounds(@NonNull View v) {
+        int[] pos = new int[2];
+        v.getLocationOnScreen(pos);
+        return new Rect(pos[0], pos[1], pos[0] + v.getWidth(), pos[1] + v.getHeight());
     }
 
     private static class FixedSizeEmptyDrawable extends ColorDrawable {

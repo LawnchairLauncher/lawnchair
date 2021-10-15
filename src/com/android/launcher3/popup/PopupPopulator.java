@@ -19,6 +19,7 @@ package com.android.launcher3.popup;
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_SHORTCUTS;
 
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.pm.ShortcutInfo;
 import android.os.Handler;
 import android.os.UserHandle;
@@ -26,7 +27,6 @@ import android.os.UserHandle;
 import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
 
-import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.model.data.ItemInfo;
@@ -36,6 +36,7 @@ import com.android.launcher3.notification.NotificationKeyData;
 import com.android.launcher3.notification.NotificationListener;
 import com.android.launcher3.shortcuts.DeepShortcutView;
 import com.android.launcher3.shortcuts.ShortcutRequest;
+import com.android.launcher3.views.ActivityContext;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -128,7 +129,8 @@ public class PopupPopulator {
     /**
      * Returns a runnable to update the provided shortcuts and notifications
      */
-    public static Runnable createUpdateRunnable(final BaseDraggingActivity launcher,
+    public static <T extends Context & ActivityContext> Runnable createUpdateRunnable(
+            final T context,
             final ItemInfo originalInfo,
             final Handler uiHandler, final PopupContainerWithArrow container,
             final List<DeepShortcutView> shortcutViews,
@@ -144,22 +146,22 @@ public class PopupPopulator {
                     infos = Collections.emptyList();
                 } else {
                     infos = notificationListener.getNotificationsForKeys(notificationKeys).stream()
-                            .map(sbn -> new NotificationInfo(launcher, sbn, originalInfo))
+                            .map(sbn -> new NotificationInfo(context, sbn, originalInfo))
                             .collect(Collectors.toList());
                 }
                 uiHandler.post(() -> container.applyNotificationInfos(infos));
             }
 
-            List<ShortcutInfo> shortcuts = new ShortcutRequest(launcher, user)
+            List<ShortcutInfo> shortcuts = new ShortcutRequest(context, user)
                     .withContainer(activity)
                     .query(ShortcutRequest.PUBLISHED);
             String shortcutIdToDeDupe = notificationKeys.isEmpty() ? null
                     : notificationKeys.get(0).shortcutId;
             shortcuts = PopupPopulator.sortAndFilterShortcuts(shortcuts, shortcutIdToDeDupe);
-            IconCache cache = LauncherAppState.getInstance(launcher).getIconCache();
+            IconCache cache = LauncherAppState.getInstance(context).getIconCache();
             for (int i = 0; i < shortcuts.size() && i < shortcutViews.size(); i++) {
                 final ShortcutInfo shortcut = shortcuts.get(i);
-                final WorkspaceItemInfo si = new WorkspaceItemInfo(shortcut, launcher);
+                final WorkspaceItemInfo si = new WorkspaceItemInfo(shortcut, context);
                 cache.getUnbadgedShortcutIcon(si, shortcut);
                 si.rank = i;
                 si.container = CONTAINER_SHORTCUTS;

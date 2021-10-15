@@ -128,7 +128,7 @@ public interface TaskShortcutFactory {
         }
     }
 
-    class MultiWindowSystemShortcut extends SystemShortcut {
+    class MultiWindowSystemShortcut extends SystemShortcut<BaseDraggingActivity> {
 
         private Handler mHandler;
 
@@ -305,7 +305,7 @@ public interface TaskShortcutFactory {
         return new PinSystemShortcut(activity, taskContainer);
     };
 
-    class PinSystemShortcut extends SystemShortcut {
+    class PinSystemShortcut extends SystemShortcut<BaseDraggingActivity> {
 
         private static final String TAG = "PinSystemShortcut";
 
