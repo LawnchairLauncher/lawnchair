@@ -53,7 +53,7 @@ public class DeviceProfile {
 
     private static final int DEFAULT_DOT_SIZE = 100;
     // Ratio of empty space, qsb should take up to appear visually centered.
-    private static final float QSB_CENTER_FACTOR = .325f;
+    private final float mQsbCenterFactor;
 
     public final InvariantDeviceProfile inv;
     private final Info mInfo;
@@ -255,7 +255,7 @@ public class DeviceProfile {
 
         aspectRatio = ((float) Math.max(widthPx, heightPx)) / Math.min(widthPx, heightPx);
         boolean isTallDevice = Float.compare(aspectRatio, TALL_DEVICE_ASPECT_RATIO_THRESHOLD) >= 0;
-
+        mQsbCenterFactor = context.getResources().getFloat(R.dimen.qsb_center_factor);
         // Some more constants
         context = getContext(context, info, isVerticalBarLayout()
                 ? Configuration.ORIENTATION_LANDSCAPE
@@ -347,7 +347,8 @@ public class DeviceProfile {
         hotseatBarSizeExtraSpacePx = 0;
         hotseatBarTopPaddingPx =
                 res.getDimensionPixelSize(R.dimen.dynamic_grid_hotseat_top_padding);
-        hotseatBarBottomPaddingPx = (isTallDevice ? 0
+        hotseatBarBottomPaddingPx = (isTallDevice ? res.getDimensionPixelSize(
+                R.dimen.dynamic_grid_hotseat_bottom_tall_padding)
                 : res.getDimensionPixelSize(R.dimen.dynamic_grid_hotseat_bottom_non_tall_padding))
                 + res.getDimensionPixelSize(R.dimen.dynamic_grid_hotseat_bottom_padding);
         hotseatBarSidePaddingEndPx =
@@ -931,8 +932,8 @@ public class DeviceProfile {
             // Note that taskbarSize = 0 unless isTaskbarPresent.
             return Math.min(qsbBottomMarginPx + taskbarSize, freeSpace);
         } else {
-            return (int) (freeSpace * QSB_CENTER_FACTOR)
-                    + (isTaskbarPresent ? taskbarSize : mInsets.bottom);
+            return (int) (freeSpace * mQsbCenterFactor)
+                + (isTaskbarPresent ? taskbarSize : mInsets.bottom);
         }
     }
 
