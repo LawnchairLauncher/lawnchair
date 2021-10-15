@@ -299,7 +299,7 @@ public class FloatingWidgetView extends FrameLayout implements AnimatorListener,
      */
     public static int getDefaultBackgroundColor(
             Context context, RemoteAnimationTargetCompat target) {
-        return (target != null && target.taskInfo.taskDescription != null)
+        return (target != null && target.taskInfo != null && target.taskInfo.taskDescription != null)
                 ? target.taskInfo.taskDescription.getBackgroundColor()
                 : Themes.getColorBackground(context);
     }
