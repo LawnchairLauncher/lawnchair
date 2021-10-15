@@ -119,6 +119,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import app.lawnchair.icons.shape.IconShapeManager;
 import app.lawnchair.theme.color.ColorTokens;
 
 /**
@@ -645,7 +646,7 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
         });
 
         final float initialWindowRadius = supportsRoundedCornersOnWindows(mLauncher.getResources())
-                ? Math.max(crop.width(), crop.height()) / 2f
+                ? Math.max(crop.width(), crop.height()) / 2f * IconShapeManager.getWindowTransitionRadius(mLauncher)
                 : 0f;
         final float finalWindowRadius = mDeviceProfile.isMultiWindowMode
                 ? 0 : getWindowCornerRadius(mLauncher.getResources());
