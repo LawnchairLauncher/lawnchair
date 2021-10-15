@@ -154,4 +154,7 @@
     <string name="icon_shape_circle">Circle</string>
     <string name="icon_shape_rounded_square">Rounded Square</string>
     <string name="icon_shape_squircle">Squircle</string>
+
+    <string name="customize_button_text">Customize</string>
+    <string name="app_title_label">Title</string>
 </resources>

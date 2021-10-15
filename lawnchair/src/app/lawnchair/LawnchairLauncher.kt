@@ -37,15 +37,18 @@ import app.lawnchair.root.RootHelperManager
 import app.lawnchair.root.RootNotAvailableException
 import app.lawnchair.search.LawnchairSearchAdapterProvider
 import app.lawnchair.theme.color.ColorTokens
+import app.lawnchair.ui.popup.LawnchairShortcut
 import com.android.launcher3.*
 import com.android.launcher3.allapps.AllAppsContainerView
 import com.android.launcher3.allapps.search.SearchAdapterProvider
+import com.android.launcher3.popup.SystemShortcut
 import com.android.launcher3.statemanager.StateManager
 import com.android.launcher3.uioverrides.QuickstepLauncher
 import com.android.launcher3.uioverrides.states.OverviewState
 import com.android.systemui.plugins.shared.LauncherOverlayManager
 import com.android.systemui.shared.system.QuickStepContract
 import kotlinx.coroutines.launch
+import java.util.stream.Stream
 import kotlin.math.roundToInt
 
 class LawnchairLauncher : QuickstepLauncher(), LifecycleOwner,
@@ -121,6 +124,13 @@ class LawnchairLauncher : QuickstepLauncher(), LifecycleOwner,
     override fun collectStateHandlers(out: MutableList<StateManager.StateHandler<*>>) {
         super.collectStateHandlers(out)
         out.add(SearchBarStateHandler(this))
+    }
+
+    override fun getSupportedShortcuts(): Stream<SystemShortcut.Factory<*>> {
+        return Stream.concat(
+            super.getSupportedShortcuts(),
+            Stream.of(LawnchairShortcut.CUSTOMIZE)
+        )
     }
 
     override fun createSearchAdapterProvider(allapps: AllAppsContainerView): SearchAdapterProvider {

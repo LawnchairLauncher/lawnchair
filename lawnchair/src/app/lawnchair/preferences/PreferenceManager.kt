@@ -27,6 +27,7 @@ import app.lawnchair.icons.shape.IconShapeManager
 import app.lawnchair.ui.theme.LAWNCHAIR_BLUE
 import com.android.launcher3.InvariantDeviceProfile
 import com.android.launcher3.Utilities
+import com.android.launcher3.util.ComponentKey
 import com.android.launcher3.util.MainThreadInitializedObject
 import com.android.launcher3.graphics.IconShape as L3IconShape
 
@@ -97,6 +98,12 @@ class PreferenceManager private constructor(private val context: Context) : Base
         { it.toString() },
         this::onIconShapeChanged
     )
+    val customAppName = object : MutableMapPref<ComponentKey, String>("pref_appNameMap", reloadGrid) {
+        override fun flattenKey(key: ComponentKey) = key.toString()
+        override fun unflattenKey(key: String) = ComponentKey.fromString(key)!!
+        override fun flattenValue(value: String) = value
+        override fun unflattenValue(value: String) = value
+    }
 
     private val fontCache = FontCache.INSTANCE.get(context)
     val workspaceFont = FontPref("pref_workspaceFont", fontCache.uiTextMedium, recreate)

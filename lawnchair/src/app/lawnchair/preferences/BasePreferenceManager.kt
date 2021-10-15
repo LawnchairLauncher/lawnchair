@@ -23,6 +23,7 @@ import androidx.core.content.edit
 import app.lawnchair.font.FontCache
 import com.android.launcher3.InvariantDeviceProfile
 import com.android.launcher3.Utilities
+import org.json.JSONObject
 import java.util.concurrent.CopyOnWriteArraySet
 
 abstract class BasePreferenceManager(private val context: Context) : SharedPreferences.OnSharedPreferenceChangeListener {
@@ -332,5 +333,58 @@ abstract class BasePreferenceManager(private val context: Context) : SharedPrefe
         override fun parse(stringValue: String) = parseFunc(stringValue)
 
         override fun stringify(value: T) = stringifyFunc(value)
+    }
+
+    abstract inner class MutableMapPref<K, V>(
+        key: String,
+        primaryListener: ChangeListener? = null
+    ) : BasePref<Map<K, V>>(key, primaryListener) {
+
+        override val defaultValue = mapOf<K, V>()
+        private val valueMap = mutableMapOf<K, V>()
+
+        init {
+            val obj = JSONObject(sp.getString(key, "{}")!!)
+            obj.keys().forEach {
+                valueMap[unflattenKey(it)] = unflattenValue(obj.getString(it))
+            }
+            prefsMap[key] = this
+        }
+
+        override fun get() = HashMap(valueMap)
+
+        override fun set(newValue: Map<K, V>) {
+            throw NotImplementedError()
+        }
+
+        open fun flattenKey(key: K) = key.toString()
+        abstract fun unflattenKey(key: String): K
+
+        open fun flattenValue(value: V) = value.toString()
+        abstract fun unflattenValue(value: String): V
+
+        operator fun set(key: K, value: V?) {
+            if (value != null) {
+                valueMap[key] = value
+            } else {
+                valueMap.remove(key)
+            }
+            saveChanges()
+        }
+
+        private fun saveChanges() {
+            val obj = JSONObject()
+            valueMap.entries.forEach { obj.put(flattenKey(it.key), flattenValue(it.value)) }
+            editSp { putString(key, obj.toString()) }
+        }
+
+        operator fun get(key: K): V? {
+            return valueMap[key]
+        }
+
+        fun clear() {
+            valueMap.clear()
+            saveChanges()
+        }
     }
 }

@@ -51,6 +51,7 @@ class ComposeFloatingView(context: Context) :
     }
 
     override fun handleClose(animate: Boolean) {
+        launcher.hideKeyboard()
         val handler = closeHandler ?: throw IllegalStateException("Close handler is null")
         handler(animate)
     }
@@ -109,7 +110,13 @@ fun LawnchairLauncher.showBottomSheet(
     content: @Composable (state: BottomSheetState) -> Unit
 ) {
     ComposeFloatingView.show(this) {
-        val state = rememberBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
+        val state = rememberBottomSheetState(
+            initialValue = ModalBottomSheetValue.Hidden,
+            confirmStateChange = {
+                if (it == ModalBottomSheetValue.Hidden) hideKeyboard()
+                true
+            }
+        )
         val scope = rememberCoroutineScope()
 
         closeHandler = { animate ->
