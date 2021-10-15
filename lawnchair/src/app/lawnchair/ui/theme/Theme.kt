@@ -59,7 +59,7 @@ fun getColors(darkTheme: Boolean): Colors {
 
     return remember(colorScheme) {
         val accent = Color(colorScheme.accent1[if (darkTheme) 100 else 600]!!.toAndroidColor())
-        val surface = Color(colorScheme.neutral1[if (darkTheme) 800 else 100]!!.toAndroidColor())
+        val surface = Color(colorScheme.neutral1[if (darkTheme) 900 else 100]!!.toAndroidColor())
         val background = Color(colorScheme.neutral1[if (darkTheme) 900 else 50]!!.toAndroidColor())
 
         if (darkTheme) {
