@@ -288,13 +288,14 @@ public abstract class AbstractLauncherUiTest {
     }
 
     /**
-     * Removes all icons from homescreen and hotseat.
+     * Removes all items from workspace and populate default hotseat.
      */
-    public void clearHomescreen() throws Throwable {
+    public void clearWorkspace() {
+        // First clear data to ensure hotseat is populated.
+        clearLauncherData();
+        // Next make provider call to clear everything apart from hotseat.
         LauncherSettings.Settings.call(mTargetContext.getContentResolver(),
-                LauncherSettings.Settings.METHOD_CREATE_EMPTY_DB);
-        LauncherSettings.Settings.call(mTargetContext.getContentResolver(),
-                LauncherSettings.Settings.METHOD_CLEAR_EMPTY_DB_FLAG);
+                LauncherSettings.Settings.METHOD_CLEAR_WORKSPACE);
         resetLoaderState();
     }
 
