@@ -21,7 +21,6 @@ import static com.android.launcher3.LauncherState.ALL_APPS;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.anim.Interpolators.scrollInterpolatorForVelocity;
-import static com.android.launcher3.config.FeatureFlags.UNSTABLE_SPRINGS;
 import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_ALLAPPS;
 import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_HOME;
 import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_OVERVIEW;
@@ -217,7 +216,7 @@ public abstract class AbstractStateChangeTouchController
                     mFlingBlockCheck.blockFling();
                 }
             }
-            if (mToState == LauncherState.ALL_APPS && !UNSTABLE_SPRINGS.get()) {
+            if (mToState == LauncherState.ALL_APPS) {
                 mAllAppsOvershootStarted = true;
                 // 1f, value when all apps container hit the top
                 mLauncher.getAppsView().onPull(progress - 1f, progress - 1f);
@@ -333,7 +332,7 @@ public abstract class AbstractStateChangeTouchController
         anim.setFloatValues(startProgress, endProgress);
         updateSwipeCompleteAnimation(anim, duration, targetState, velocity, fling);
         mCurrentAnimation.dispatchOnStart();
-        if (targetState == LauncherState.ALL_APPS && !UNSTABLE_SPRINGS.get()) {
+        if (targetState == LauncherState.ALL_APPS) {
             if (mAllAppsOvershootStarted) {
                 mLauncher.getAppsView().onRelease();
                 mAllAppsOvershootStarted = false;
