@@ -320,4 +320,17 @@ abstract class BasePreferenceManager(private val context: Context) : SharedPrefe
 
         override fun stringify(value: FontCache.Font) = value.toJsonString()
     }
+
+    inner class ObjectPref<T>(
+        key: String,
+        defaultValue: T,
+        private val parseFunc: (stringValue: String) -> T,
+        private val stringifyFunc: (value: T) -> String,
+        primaryListener: ChangeListener? = null
+    ) : StringBasedPref<T>(key, defaultValue, primaryListener) {
+
+        override fun parse(stringValue: String) = parseFunc(stringValue)
+
+        override fun stringify(value: T) = stringifyFunc(value)
+    }
 }

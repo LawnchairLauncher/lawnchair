@@ -59,6 +59,7 @@ fun GeneralPreferences() {
                 LocalPreferenceInteractor.current.getIconPacks()
                     .find { it.packageName == preferenceManager().iconPackPackage.get() }?.name
             )
+            IconShapePreference()
             ThemePreference()
             AccentColorPreference()
             FontPreference(

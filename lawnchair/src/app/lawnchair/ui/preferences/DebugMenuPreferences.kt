@@ -6,9 +6,10 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavGraphBuilder
-import app.lawnchair.preferences.getAdapter
-import app.lawnchair.preferences.preferenceManager
-import app.lawnchair.ui.preferences.components.*
+import app.lawnchair.ui.preferences.components.ClickablePreference
+import app.lawnchair.ui.preferences.components.IconShapePreference
+import app.lawnchair.ui.preferences.components.PreferenceGroup
+import app.lawnchair.ui.preferences.components.PreferenceLayout
 import com.android.launcher3.settings.DeveloperOptionsFragment
 import com.android.launcher3.settings.SettingsActivity
 
@@ -25,7 +26,6 @@ fun NavGraphBuilder.debugMenuGraph(route: String) {
 @ExperimentalAnimationApi
 @Composable
 fun DebugMenuPreferences() {
-    val prefs = preferenceManager()
     PreferenceLayout(
         label = "Debug Menu"
     ) {
@@ -36,19 +36,7 @@ fun DebugMenuPreferences() {
                     .putExtra(":settings:fragment", DeveloperOptionsFragment::class.java.name)
                 context.startActivity(intent)
             })
-            ListPreference(
-                adapter = prefs.customIconShape.getAdapter(),
-                entries = iconShapeEntries,
-                label = "Icon Shape"
-            )
+            IconShapePreference()
         }
     }
 }
-
-private val iconShapeEntries = listOf(
-    ListPreferenceEntry("") { "System" },
-    ListPreferenceEntry("circle") { "Circle" },
-    ListPreferenceEntry("roundedRect") { "Rounded Rectangle" },
-    ListPreferenceEntry("squircle") { "Squircle" },
-    ListPreferenceEntry("pebble") { "Pebble" },
-)

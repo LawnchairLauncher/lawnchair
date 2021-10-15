@@ -22,12 +22,13 @@ import androidx.compose.ui.platform.LocalContext
 import app.lawnchair.LawnchairLauncher
 import app.lawnchair.font.FontCache
 import app.lawnchair.icons.CustomAdaptiveIconDrawable
+import app.lawnchair.icons.shape.IconShape
+import app.lawnchair.icons.shape.IconShapeManager
 import app.lawnchair.ui.theme.LAWNCHAIR_BLUE
 import com.android.launcher3.InvariantDeviceProfile
 import com.android.launcher3.Utilities
-import com.android.launcher3.graphics.IconShape
-import com.android.launcher3.icons.IconProvider
 import com.android.launcher3.util.MainThreadInitializedObject
+import com.android.launcher3.graphics.IconShape as L3IconShape
 
 class PreferenceManager private constructor(private val context: Context) : BasePreferenceManager(context) {
     private val idp get() = InvariantDeviceProfile.INSTANCE.get(context)
@@ -88,18 +89,17 @@ class PreferenceManager private constructor(private val context: Context) : Base
     val allAppsIconLabels = BoolPref("pref_allAppsIconLabels", true, reloadGrid)
     val searchAutoShowKeyboard = BoolPref("pref_searchAutoShowKeyboard", false)
     val enableDebugMenu = BoolPref("pref_enableDebugMenu", false)
-    val customIconShape = StringPref("pref_customIconShape", "", this::onIconShapeChanged)
     val folderPreviewBgOpacity = FloatPref("pref_folderPreviewBgOpacity", 1F, reloadIcons)
+    val iconShape = ObjectPref(
+        "pref_iconShape",
+        IconShape.Circle,
+        { IconShape.fromString(it) ?: IconShapeManager.getSystemIconShape(context) },
+        { it.toString() },
+        this::onIconShapeChanged
+    )
 
     private val fontCache = FontCache.INSTANCE.get(context)
     val workspaceFont = FontPref("pref_workspaceFont", fontCache.uiTextMedium, recreate)
-
-    private val maskPathMap = mapOf(
-        "circle" to "M50 0C77.6 0 100 22.4 100 50C100 77.6 77.6 100 50 100C22.4 100 0 77.6 0 50C0 22.4 22.4 0 50 0Z",
-        "roundedRect" to "M50,0L88,0 C94.4,0 100,5.4 100 12 L100,88 C100,94.6 94.6 100 88 100 L12,100 C5.4,100 0,94.6 0,88 L0 12 C0 5.4 5.4 0 12 0 L50,0 Z",
-        "squircle" to "M50,0 C10,0 0,10 0,50 0,90 10,100 50,100 90,100 100,90 100,50 100,10 90,0 50,0 Z",
-        "pebble" to "MM55,0 C25,0 0,25 0,50 0,78 28,100 55,100 85,100 100,85 100,58 100,30 86,0 55,0 Z",
-    )
 
     init {
         sp.registerOnSharedPreferenceChangeListener(this)
@@ -108,23 +108,15 @@ class PreferenceManager private constructor(private val context: Context) : Base
 
     // TODO: move these somewhere else
     private fun initializeIconShape() {
-        var maskPath = maskPathMap[customIconShape.get()]
-        if (maskPath == null) {
-            val resId = IconProvider.CONFIG_ICON_MASK_RES_ID
-            if (resId != 0) {
-                maskPath = context.getString(resId)
-            }
-        }
-        if (maskPath == null) {
-            maskPath = maskPathMap["circle"]
-        }
+        val shape = iconShape.get()
         CustomAdaptiveIconDrawable.sInitialized = true
-        CustomAdaptiveIconDrawable.sMaskPath = maskPath
+        CustomAdaptiveIconDrawable.sMaskId = shape.getHashString()
+        CustomAdaptiveIconDrawable.sMask = shape.getMaskPath()
     }
 
     private fun onIconShapeChanged() {
         initializeIconShape()
-        IconShape.init(context)
+        L3IconShape.init(context)
         idp.onPreferencesChanged(context)
     }
 

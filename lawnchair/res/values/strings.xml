@@ -148,4 +148,10 @@
     <string name="apply_grid">Apply</string>
     <string name="x_by_y">%1$d × %2$d</string>
     <string name="folder_preview_bg_opacity_label">Icon Background Opacity</string>
+
+    <string name="icon_shape_label">Icon Shape</string>
+    <string name="icon_shape_system">Set by System</string>
+    <string name="icon_shape_circle">Circle</string>
+    <string name="icon_shape_rounded_square">Rounded Square</string>
+    <string name="icon_shape_squircle">Squircle</string>
 </resources>
