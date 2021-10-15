@@ -418,6 +418,22 @@ public class SystemUiProxy implements ISystemUiProxy,
         }
     }
 
+    /**
+     * NOTE: If called to suspend, caller MUST call this method to also un-suspend
+     * @param suspend should be true to stop auto-hide, false to resume normal behavior
+     */
+    @Override
+    public void notifyTaskbarAutohideSuspend(boolean suspend) {
+        if (mSystemUiProxy != null) {
+            try {
+                mSystemUiProxy.notifyTaskbarAutohideSuspend(suspend);
+            } catch (RemoteException e) {
+                Log.w(TAG, "Failed call notifyTaskbarAutohideSuspend with arg: " +
+                        suspend, e);
+            }
+        }
+    }
+
     @Override
     public void handleImageBundleAsScreenshot(Bundle screenImageBundle, Rect locationInScreen,
             Insets visibleInsets, Task.TaskKey task) {
