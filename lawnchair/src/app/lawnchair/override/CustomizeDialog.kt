@@ -1,11 +1,12 @@
 package app.lawnchair.override
 
 import android.graphics.drawable.Drawable
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
+import androidx.compose.material.TextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Clear
 import androidx.compose.runtime.*
@@ -13,13 +14,19 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import app.lawnchair.launcher
+import app.lawnchair.preferences.customPreferenceAdapter
+import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences.preferenceManager
 import app.lawnchair.ui.preferences.components.ClickableIcon
+import app.lawnchair.ui.preferences.components.PreferenceGroup
+import app.lawnchair.ui.preferences.components.SwitchPreference
 import app.lawnchair.util.max
 import app.lawnchair.util.navigationBarsOrDisplayCutoutPadding
 import com.android.launcher3.LauncherAppState
+import com.android.launcher3.R
 import com.android.launcher3.util.ComponentKey
 import com.google.accompanist.drawablepainter.rememberDrawablePainter
 import com.google.accompanist.insets.LocalWindowInsets
@@ -31,7 +38,8 @@ fun CustomizeDialog(
     icon: Drawable,
     title: String,
     onTitleChange: (String) -> Unit,
-    defaultTitle: String
+    defaultTitle: String,
+    content: (@Composable () -> Unit)? = null
 ) {
     val windowInsets = LocalWindowInsets.current
     val imePaddings = rememberInsetsPaddingValues(
@@ -43,7 +51,7 @@ fun CustomizeDialog(
         modifier = Modifier
             .padding(max(imePaddings, minPaddings))
             .navigationBarsOrDisplayCutoutPadding()
-            .padding(16.dp)
+            .padding(vertical = 16.dp)
             .fillMaxWidth()
     ) {
         val iconPainter = rememberDrawablePainter(drawable = icon)
@@ -55,11 +63,12 @@ fun CustomizeDialog(
                 .size(54.dp)
                 .align(Alignment.CenterHorizontally)
         )
-        OutlinedTextField(
+        TextField(
             value = title,
             onValueChange = onTitleChange,
             modifier = Modifier
-                .fillMaxWidth(),
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp),
             placeholder = { Text(defaultTitle) },
             trailingIcon = {
                 if (title.isNotEmpty()) {
@@ -71,10 +80,11 @@ fun CustomizeDialog(
             },
             singleLine = true
         )
+        content?.invoke()
     }
 }
 
-@OptIn(ExperimentalComposeUiApi::class)
+@OptIn(ExperimentalComposeUiApi::class, ExperimentalAnimationApi::class)
 @ExperimentalMaterialApi
 @Composable
 fun CustomizeAppDialog(
@@ -101,5 +111,26 @@ fun CustomizeAppDialog(
         title = title,
         onTitleChange = { title = it },
         defaultTitle = defaultTitle
-    )
+    ) {
+        PreferenceGroup {
+            val stringKey = componentKey.toString()
+            var hiddenApps by prefs.hiddenAppSet.getAdapter()
+            val adapter = customPreferenceAdapter(
+                value = hiddenApps.contains(stringKey) ,
+                onValueChange = { isHidden ->
+                    val newSet = hiddenApps.toMutableSet()
+                    if (isHidden) {
+                        newSet.add(stringKey)
+                    } else {
+                        newSet.remove(stringKey)
+                    }
+                    hiddenApps = newSet
+                }
+            )
+            SwitchPreference(
+                adapter = adapter,
+                label = stringResource(id = R.string.hide_from_drawer)
+            )
+        }
+    }
 }

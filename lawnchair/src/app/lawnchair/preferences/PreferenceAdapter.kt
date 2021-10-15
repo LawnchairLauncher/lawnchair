@@ -118,3 +118,15 @@ private class TransformPreferenceAdapter<T, R>(
         parent.onChange(transformSet(newValue))
     }
 }
+
+@Composable
+fun <T> customPreferenceAdapter(value: T, onValueChange: (T) -> Unit): PreferenceAdapter<T> {
+    val state = remember { mutableStateOf(value) }
+    state.value = value
+    return object : PreferenceAdapter<T> {
+        override val state = state
+        override fun onChange(newValue: T) {
+            onValueChange(newValue)
+        }
+    }
+}

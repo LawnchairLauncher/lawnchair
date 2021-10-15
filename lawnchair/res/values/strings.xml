@@ -157,4 +157,5 @@
 
     <string name="customize_button_text">Customize</string>
     <string name="app_title_label">Title</string>
+    <string name="hide_from_drawer">Hide from Drawer</string>
 </resources>
