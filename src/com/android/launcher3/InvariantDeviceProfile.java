@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 The Android Open Source Project
+ * Copyright (C) 2021 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -69,11 +69,6 @@ public class InvariantDeviceProfile {
     // We do not need any synchronization for this variable as its only written on UI thread.
     public static final MainThreadInitializedObject<InvariantDeviceProfile> INSTANCE =
             new MainThreadInitializedObject<>(InvariantDeviceProfile::new);
-
-    private static final int DEFAULT_TRUE = -1;
-    private static final int DEFAULT_SPLIT_DISPLAY = 2;
-    private static final int GRID_ENABLED_ALL_DISPLAYS = 0;
-    private static final int GRID_ENABLED_SINGLE_DISPLAY = 1;
 
     private static final String KEY_IDP_GRID_NAME = "idp_grid_name";
 
@@ -393,7 +388,9 @@ public class InvariantDeviceProfile {
     private static ArrayList<DisplayOption> getPredefinedDeviceProfiles(
             Context context, String gridName, boolean isSplitDisplay, boolean allowDisabledGrid) {
         ArrayList<DisplayOption> profiles = new ArrayList<>();
-        try (XmlResourceParser parser = context.getResources().getXml(R.xml.device_profiles)) {
+        int xmlResource = isSplitDisplay ? R.xml.device_profiles_split : R.xml.device_profiles;
+
+        try (XmlResourceParser parser = context.getResources().getXml(xmlResource)) {
             final int depth = parser.getDepth();
             int type;
             while (((type = parser.next()) != XmlPullParser.END_TAG ||
@@ -411,8 +408,7 @@ public class InvariantDeviceProfile {
                             if ((type == XmlPullParser.START_TAG) && "display-option".equals(
                                     parser.getName())) {
                                 profiles.add(new DisplayOption(gridOption, context,
-                                        Xml.asAttributeSet(parser),
-                                        isSplitDisplay ? DEFAULT_SPLIT_DISPLAY : DEFAULT_TRUE));
+                                        Xml.asAttributeSet(parser)));
                             }
                         }
                     }
@@ -450,7 +446,9 @@ public class InvariantDeviceProfile {
      */
     public List<GridOption> parseAllGridOptions(Context context) {
         List<GridOption> result = new ArrayList<>();
-        try (XmlResourceParser parser = context.getResources().getXml(R.xml.device_profiles)) {
+        int xmlResource = isSplitDisplay ? R.xml.device_profiles_split : R.xml.device_profiles;
+
+        try (XmlResourceParser parser = context.getResources().getXml(xmlResource)) {
             final int depth = parser.getDepth();
             int type;
             while (((type = parser.next()) != XmlPullParser.END_TAG
@@ -702,11 +700,7 @@ public class InvariantDeviceProfile {
             devicePaddingId = a.getResourceId(
                     R.styleable.GridDisplayOption_devicePaddingId, 0);
 
-            final int enabledInt =
-                    a.getInteger(R.styleable.GridDisplayOption_gridEnabled,
-                            GRID_ENABLED_ALL_DISPLAYS);
-            isEnabled = enabledInt == GRID_ENABLED_ALL_DISPLAYS
-                    || enabledInt == GRID_ENABLED_SINGLE_DISPLAY && !isSplitDisplay;
+            isEnabled = a.getBoolean(R.styleable.GridDisplayOption_gridEnabled, true);
 
             a.recycle();
             extraAttrs = Themes.createValueMap(context, attrs,
@@ -732,17 +726,15 @@ public class InvariantDeviceProfile {
         private final float[] iconSizes = new float[COUNT_SIZES];
         private final float[] textSizes = new float[COUNT_SIZES];
 
-        DisplayOption(GridOption grid, Context context, AttributeSet attrs, int defaultFlagValue) {
+        DisplayOption(GridOption grid, Context context, AttributeSet attrs) {
             this.grid = grid;
 
-            TypedArray a = context.obtainStyledAttributes(
-                    attrs, R.styleable.ProfileDisplayOption);
+            TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.ProfileDisplayOption);
 
             minWidthDps = a.getFloat(R.styleable.ProfileDisplayOption_minWidthDps, 0);
             minHeightDps = a.getFloat(R.styleable.ProfileDisplayOption_minHeightDps, 0);
 
-            canBeDefault = a.getInt(R.styleable.ProfileDisplayOption_canBeDefault, 0)
-                    == defaultFlagValue;
+            canBeDefault = a.getBoolean(R.styleable.ProfileDisplayOption_canBeDefault, false);
 
             float x;
             float y;
