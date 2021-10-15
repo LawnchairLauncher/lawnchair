@@ -45,6 +45,8 @@ import com.android.launcher3.util.Themes;
 import com.android.launcher3.views.AbstractSlideInView;
 import com.android.launcher3.views.ArrowTipView;
 
+import app.lawnchair.theme.color.ColorTokens;
+
 /**
  * Base class for various widgets popup
  */
@@ -64,10 +66,7 @@ public abstract class BaseWidgetSheet extends AbstractSlideInView<Launcher>
     }
 
     protected int getScrimColor(Context context) {
-        boolean isMainColorDark = Themes.getAttrBoolean(context, R.attr.isMainColorDark);
-        return context.getResources().getColor(isMainColorDark
-                ? R.color.widgets_picker_scrim_dark
-                : R.color.widgets_picker_scrim);
+        return ColorTokens.WidgetsPickerScrim.resolveColor(context);
     }
 
     @Override

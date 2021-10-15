@@ -35,6 +35,8 @@ import com.android.launcher3.R;
 import com.android.launcher3.dragndrop.AddItemActivity;
 import com.android.launcher3.views.AbstractSlideInView;
 
+import app.lawnchair.theme.color.ColorTokens;
+
 /**
  * Bottom sheet for the pin widget.
  */
@@ -129,7 +131,7 @@ public class AddItemWidgetsBottomSheet extends AbstractSlideInView<AddItemActivi
 
     @Override
     protected int getScrimColor(Context context) {
-        return context.getResources().getColor(R.color.widgets_picker_scrim);
+        return ColorTokens.WidgetsPickerScrim.resolveColor(context);
     }
 
     @SuppressLint("NewApi") // Already added API check.

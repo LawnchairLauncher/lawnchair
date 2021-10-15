@@ -2,6 +2,7 @@ package app.lawnchair.theme.color
 
 import android.content.Context
 import android.util.Log
+import androidx.core.graphics.ColorUtils
 import app.lawnchair.theme.ResourceToken
 import app.lawnchair.theme.ThemeProvider
 import app.lawnchair.theme.UiColorMode
@@ -75,6 +76,17 @@ data class DarkTextColorToken(
         } else {
             lightToken.resolve(context, scheme, uiColorMode)
         }
+    }
+}
+
+data class SetAlphaColorToken(
+    private val token: ColorToken,
+    private val alpha: Float
+) : ColorToken {
+
+    override fun resolve(context: Context, scheme: ColorScheme, uiColorMode: UiColorMode): Color {
+        val color = token.resolveColor(context, scheme, uiColorMode)
+        return AndroidColor(ColorUtils.setAlphaComponent(color, (alpha * 255).toInt()))
     }
 }
 

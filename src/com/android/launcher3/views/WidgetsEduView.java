@@ -28,6 +28,8 @@ import com.android.launcher3.Insettable;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 
+import app.lawnchair.theme.color.ColorTokens;
+
 /**
  * Education view about widgets.
  */
@@ -78,7 +80,7 @@ public class WidgetsEduView extends AbstractSlideInView<Launcher> implements Ins
 
     @Override
     protected int getScrimColor(Context context) {
-        return context.getResources().getColor(R.color.widgets_picker_scrim);
+        return ColorTokens.WidgetsPickerScrim.resolveColor(context);
     }
 
     @Override
