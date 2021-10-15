@@ -80,6 +80,8 @@ public abstract class ButtonDropTarget extends TextView
     private PopupWindow mToolTip;
     private int mToolTipLocation;
 
+    private int mDrawablePadding;
+
     public ButtonDropTarget(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
@@ -91,6 +93,7 @@ public abstract class ButtonDropTarget extends TextView
         Resources resources = getResources();
         mDragDistanceThreshold = resources.getDimensionPixelSize(R.dimen.drag_distanceThreshold);
         mDrawableSize = resources.getDimensionPixelSize(R.dimen.drop_target_text_size);
+        mDrawablePadding = getCompoundDrawablePadding();
     }
 
     @Override
@@ -320,6 +323,7 @@ public abstract class ButtonDropTarget extends TextView
             mTextVisible = isVisible;
             setText(newText);
             setCompoundDrawablesRelative(mDrawable, null, null, null);
+            setCompoundDrawablePadding(isVisible ? mDrawablePadding : 0);
         }
     }
 
@@ -330,7 +334,7 @@ public abstract class ButtonDropTarget extends TextView
 
     public boolean isTextTruncated(int availableWidth) {
         availableWidth -= (getPaddingLeft() + getPaddingRight() + mDrawable.getIntrinsicWidth()
-                + getCompoundDrawablePadding());
+                + mDrawablePadding);
         CharSequence displayedText = TextUtils.ellipsize(mText, getPaint(), availableWidth,
                 TextUtils.TruncateAt.END);
         return !mText.equals(displayedText);
