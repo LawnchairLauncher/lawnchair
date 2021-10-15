@@ -95,6 +95,9 @@ public class NavbarButtonsViewController {
     private final ViewGroup mEndContextualContainer;
     private final ViewGroup mStartContextualContainer;
 
+    private final AnimatedFloat mTaskbarNavButtonTranslationY = new AnimatedFloat(
+            this::updateNavButtonTranslationY);
+
     // Initialized in init.
     private TaskbarControllers mControllers;
     private View mA11yButton;
@@ -133,8 +136,7 @@ public class NavbarButtonsViewController {
                 mControllers.navButtonController, R.id.ime_switcher);
         mPropertyHolders.add(new StatePropertyHolder(imeSwitcherButton,
                 flags -> ((flags & MASK_IME_SWITCHER_VISIBLE) == MASK_IME_SWITCHER_VISIBLE)
-                        && ((flags & FLAG_ROTATION_BUTTON_VISIBLE) == 0)
-                        && ((flags & FLAG_A11Y_VISIBLE) == 0)));
+                        && ((flags & FLAG_ROTATION_BUTTON_VISIBLE) == 0)));
 
         mPropertyHolders.add(new StatePropertyHolder(
                 mControllers.taskbarViewController.getTaskbarIconAlpha()
@@ -305,6 +307,11 @@ public class NavbarButtonsViewController {
         }
     }
 
+    /** Use to set the translationY for the all nav+contextual buttons */
+    public AnimatedFloat getTaskbarNavButtonTranslationY() {
+        return mTaskbarNavButtonTranslationY;
+    }
+
     /**
      * Does not call {@link #applyState()}. Don't forget to!
      */
@@ -321,6 +328,10 @@ public class NavbarButtonsViewController {
         for (int i = 0; i < count; i++) {
             mPropertyHolders.get(i).setState(mState);
         }
+    }
+
+    private void updateNavButtonTranslationY() {
+        mNavButtonsView.setTranslationY(mTaskbarNavButtonTranslationY.value);
     }
 
     private ImageView addButton(@DrawableRes int drawableId, @TaskbarButton int buttonType,
