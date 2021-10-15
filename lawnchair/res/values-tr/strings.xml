@@ -40,7 +40,7 @@
     <string name="icons">Simgeler</string>
     <string name="icon_size">Simge Büyüklüğü</string>
     <string name="label_size">Etiket Büyüklüğü</string>
-    <string name="show_home_labels">Etiketleri Göster</string>
+    <string name="show_home_labels">Show Labels</string>
     <string name="allow_empty_pages_label">Boş Sayfalara İzin Ver</string>
     <string name="notification_dots">Bildirim Noktaları</string>
     <string name="smartspace_preferences">Tercihler</string>
@@ -64,7 +64,7 @@
     <string name="auto_adaptive_icons_description">Tüm uyarlanabilir olmayan simgeler için.</string>
     <string name="support_and_pr">Destek &amp; Halkla İlişkiler</string>
     <string name="workspace_dt2s">Ekranı Kapatmak İçin Çift Dokunun</string>
-    <string name="smart_space_enable">Bir Bakışta Widgetı</string>
+    <string name="smart_space_enable">At a Glance Widget</string>
     <string name="design_and_development">Tasarım &amp; Geliştirme</string>
     <string name="translate">Çeviri</string>
     <string name="product">Ürün</string>
@@ -76,10 +76,10 @@
     </plurals>
     <string name="hotseat_qsb_label">Arama Çubuğunu Göster</string>
     <string name="dt2s_admin_hint_title">Admin izni gerekli</string>
-    <string name="dt2s_admin_hint">Ekranı Kapatmak İçin Çift Dokunun\'u kullanmak için Lawnchair\'i bir cihaz yöneticisi uygulaması olarak ayarlayın. Ayarları Aç\'a tıklayın, ardından \"Bu cihaz yöneticisi uygulamasını aktif et\"\'e tıklayın.</string>
+    <string name="dt2s_admin_hint">To use Double-Tap to Sleep, set Lawnchair as a device admin app. Tap Open Settings, then tap “Activate this device admin app.”</string>
     <string name="dt2s_admin_warning">Ekranı Kapatmak İçin Çift Dokunun kapatılacaktır.</string>
     <string name="dt2s_a11y_hint_title">Erişebilirlik servisi gereklidir</string>
-    <string name="dt2s_a11y_hint">Ekranı Kapatmak İçin Çift Dokunun\'u kullanabilmek için erişilebilirlik servisini açın. Ayarları Aç\'a tıklayın, ardından Lawnchair\'i seç ve Lawnchair\'i kullan\'ı aç.</string>
+    <string name="dt2s_a11y_hint">To use Double-Tap to Sleep, turn on the Lawnchair accessibility service. Tap Open Settings, then select Lawnchair and turn on Use Lawnchair.</string>
     <string name="dt2s_warning_open_settings">Ayarları Aç</string>
     <string name="minus_one_enable">Akış</string>
     <string name="minus_one_unavailable">Akış mevcut değil</string>
@@ -124,8 +124,8 @@
     <string name="font_weight_extra_bold">Ekstra Kalın</string>
     <string name="font_weight_extra_black">En Kalın</string>
     <string name="font_label">Font</string>
-    <string name="reset_font">Reset</string>
-    <string name="search_bar_placeholder">Search</string>
-    <string name="pref_category_search">Search</string>
-    <string name="pref_search_auto_show_keyboard">Automatically show keyboard</string>
+    <string name="reset_font">Sıfırla</string>
+    <string name="search_bar_placeholder">Arama</string>
+    <string name="pref_category_search">Arama</string>
+    <string name="pref_search_auto_show_keyboard">Klavyeyi otomatik göster</string>
 </resources>
