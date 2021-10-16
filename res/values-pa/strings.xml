@@ -47,7 +47,7 @@
     <string name="widgets_and_shortcuts_count" msgid="7209136747878365116">"<xliff:g id="WIDGETS_COUNT">%1$s</xliff:g>, <xliff:g id="SHORTCUTS_COUNT">%2$s</xliff:g>"</string>
     <string name="widget_button_text" msgid="2880537293434387943">"ਵਿਜੇਟ"</string>
     <string name="widgets_full_sheet_search_bar_hint" msgid="8484659090860596457">"ਖੋਜੋ"</string>
-    <string name="widgets_full_sheet_cancel_button_description" msgid="5766167035728653605">"ਖੋਜ ਬਾਕਸ ਤੋਂ ਸਪੱਸ਼ਟ ਲਿਖਤ"</string>
+    <string name="widgets_full_sheet_cancel_button_description" msgid="5766167035728653605">"ਖੋਜ ਬਾਕਸ ਤੋਂ ਲਿਖਤ ਕਲੀਅਰ ਕਰੋ"</string>
     <string name="no_widgets_available" msgid="4337693382501046170">"ਵਿਜੇਟ ਜਾਂ ਸ਼ਾਰਟਕੱਟ ਉਪਲਬਧ ਨਹੀਂ ਹਨ"</string>
     <string name="no_search_results" msgid="3787956167293097509">"ਕੋਈ ਵੀ ਵਿਜੇਟ ਜਾਂ ਸ਼ਾਰਟਕੱਟ ਨਹੀਂ ਮਿਲਿਆ"</string>
     <string name="widgets_full_sheet_personal_tab" msgid="2743540105607120182">"ਨਿੱਜੀ"</string>
@@ -124,7 +124,7 @@
     <string name="abandoned_clean_this" msgid="7610119707847920412">"ਹਟਾਓ"</string>
     <string name="abandoned_search" msgid="891119232568284442">"ਖੋਜੋ"</string>
     <string name="abandoned_promises_title" msgid="7096178467971716750">"ਇਹ ਐਪ ਇੰਸਟੌਲ ਨਹੀਂ ਕੀਤਾ ਹੋਇਆ ਹੈ।"</string>
-    <string name="abandoned_promise_explanation" msgid="3990027586878167529">"ਇਸ ਪ੍ਰਤੀਕ ਲਈ ਐਪ ਸਥਾਪਤ ਨਹੀਂ ਕੀਤਾ ਹੋਇਆ ਹੈ। ਤੁਸੀਂ ਇਸਨੂੰ ਹਟਾ ਸਕਦੇ ਹੋ ਜਾਂ ਐਪ ਖੋਜ ਸਕਦੇ ਹੋ ਅਤੇ ਇਸਨੂੰ ਮੈਨੂਅਲੀ ਸਥਾਪਤ ਕਰ ਸਕਦੇ ਹੋ।"</string>
+    <string name="abandoned_promise_explanation" msgid="3990027586878167529">"ਇਸ ਪ੍ਰਤੀਕ ਲਈ ਐਪ ਸਥਾਪਤ ਨਹੀਂ ਕੀਤੀ ਹੋਈ ਹੈ। ਤੁਸੀਂ ਇਸਨੂੰ ਹਟਾ ਸਕਦੇ ਹੋ ਜਾਂ ਐਪ ਨੂੰ ਹੱਥੀਂ ਖੋਜ ਕੇ ਉਸਨੂੰ ਸਥਾਪਤ ਕਰ ਸਕਦੇ ਹੋ।"</string>
     <string name="app_installing_title" msgid="5864044122733792085">"<xliff:g id="NAME">%1$s</xliff:g> ਨੂੰ ਸਥਾਪਤ ਕੀਤਾ ਜਾ ਰਿਹਾ ਹੈ, <xliff:g id="PROGRESS">%2$s</xliff:g> ਪੂਰਾ ਹੋਇਆ"</string>
     <string name="app_downloading_title" msgid="8336702962104482644">"<xliff:g id="NAME">%1$s</xliff:g> ਡਾਉਨਲੋਡ ਹੋਰ ਰਿਹਾ ਹੈ, <xliff:g id="PROGRESS">%2$s</xliff:g> ਸੰਪੂਰਣ"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"<xliff:g id="NAME">%1$s</xliff:g> ਸਥਾਪਤ ਕਰਨ ਦੀ ਉਡੀਕ ਕਰ ਰਿਹਾ ਹੈ"</string>
