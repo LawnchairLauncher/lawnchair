@@ -42,6 +42,7 @@
             android:layout_height="match_parent"
             android:paddingLeft="@dimen/taskbar_nav_buttons_spacing"
             android:paddingRight="@dimen/taskbar_nav_buttons_spacing"
+            android:paddingTop="@dimen/taskbar_contextual_padding_top"
             android:gravity="center_vertical"
             android:layout_gravity="start"/>
 
@@ -62,6 +63,7 @@
             android:layout_height="match_parent"
             android:paddingLeft="@dimen/taskbar_nav_buttons_spacing"
             android:paddingRight="@dimen/taskbar_nav_buttons_spacing"
+            android:paddingTop="@dimen/taskbar_contextual_padding_top"
             android:gravity="center_vertical"
             android:layout_gravity="end"/>
     </FrameLayout>
