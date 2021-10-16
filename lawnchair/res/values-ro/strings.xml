@@ -125,8 +125,8 @@
     <string name="font_weight_extra_bold">Extrabold</string>
     <string name="font_weight_extra_black">Black</string>
     <string name="font_label">Font</string>
-    <string name="reset_font">Reset</string>
-    <string name="search_bar_placeholder">Search</string>
-    <string name="pref_category_search">Search</string>
+    <string name="reset_font">Resetați</string>
+    <string name="search_bar_placeholder">Caută</string>
+    <string name="pref_category_search">Caută</string>
     <string name="pref_search_auto_show_keyboard">Arată automat tastatura</string>
 </resources>
