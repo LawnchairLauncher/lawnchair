@@ -16,9 +16,8 @@
 
 package com.android.quickstep;
 
-import static android.view.WindowManager.LayoutParams.TYPE_DOCK_DIVIDER;
-
 import android.content.Context;
+import android.util.Log;
 
 import androidx.annotation.Nullable;
 
@@ -34,7 +33,9 @@ import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
  * {@link TaskViewSimulator}
  */
 public class RemoteTargetGluer {
-    private final RemoteTargetHandle[] mRemoteTargetHandles;
+    private static final String TAG = "RemoteTargetGluer";
+
+    private RemoteTargetHandle[] mRemoteTargetHandles;
     private SplitConfigurationOptions.StagedSplitBounds mStagedSplitBounds;
 
     /**
@@ -93,6 +94,13 @@ public class RemoteTargetGluer {
     public RemoteTargetHandle[] assignTargetsForSplitScreen(RemoteAnimationTargets targets) {
         int[] splitIds = LauncherSplitScreenListener.INSTANCE.getNoCreate()
                 .getRunningSplitTaskIds();
+        if (splitIds.length == 0 && mRemoteTargetHandles.length > 1) {
+            // There's a chance that between the creation of this class and assigning targets,
+            // LauncherSplitScreenListener may have received callback that removes split
+            mRemoteTargetHandles = new RemoteTargetHandle[]{mRemoteTargetHandles[0]};
+            Log.w(TAG, "splitTaskIds changed between creation and assignment");
+        }
+
         RemoteAnimationTargetCompat primaryTaskTarget;
         RemoteAnimationTargetCompat secondaryTaskTarget;
         if (mRemoteTargetHandles.length == 1) {
