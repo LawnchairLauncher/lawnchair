@@ -16,12 +16,14 @@
 package com.android.launcher3.views;
 
 import com.android.launcher3.BubbleTextView;
+import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.model.data.ItemInfo;
+import com.android.launcher3.model.data.ItemInfoWithIcon;
 
 /**
  * Views that contain {@link BubbleTextView} should implement this interface.
  */
-public interface BubbleTextHolder {
+public interface BubbleTextHolder extends IconCache.ItemInfoUpdateReceiver {
     BubbleTextView getBubbleText();
 
     /**
@@ -29,6 +31,6 @@ public interface BubbleTextHolder {
      *
      * @param itemInfo the new itemInfo
      */
-    default void onItemInfoChanged(ItemInfo itemInfo) {
-    }
+    @Override
+    default void reapplyItemInfo(ItemInfoWithIcon itemInfo){};
 }

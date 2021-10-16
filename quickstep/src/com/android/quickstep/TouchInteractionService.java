@@ -40,7 +40,6 @@ import android.app.PendingIntent;
 import android.app.RemoteAction;
 import android.app.Service;
 import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
@@ -86,7 +85,6 @@ import com.android.quickstep.inputconsumers.AssistantInputConsumer;
 import com.android.quickstep.inputconsumers.DeviceLockedInputConsumer;
 import com.android.quickstep.inputconsumers.OneHandedModeInputConsumer;
 import com.android.quickstep.inputconsumers.OtherActivityInputConsumer;
-import com.android.quickstep.inputconsumers.OverscrollInputConsumer;
 import com.android.quickstep.inputconsumers.OverviewInputConsumer;
 import com.android.quickstep.inputconsumers.OverviewWithoutFocusInputConsumer;
 import com.android.quickstep.inputconsumers.ResetGestureInputConsumer;
@@ -99,8 +97,6 @@ import com.android.quickstep.util.LauncherSplitScreenListener;
 import com.android.quickstep.util.ProtoTracer;
 import com.android.quickstep.util.ProxyScreenStatusProvider;
 import com.android.quickstep.util.SplitScreenBounds;
-import com.android.systemui.plugins.OverscrollPlugin;
-import com.android.systemui.plugins.PluginListener;
 import com.android.systemui.shared.recents.IOverviewProxy;
 import com.android.systemui.shared.recents.ISystemUiProxy;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
@@ -124,8 +120,8 @@ import java.util.LinkedList;
  * Service connected by system-UI for handling touch interaction.
  */
 @TargetApi(Build.VERSION_CODES.R)
-public class TouchInteractionService extends Service implements PluginListener<OverscrollPlugin>,
-        ProtoTraceable<LauncherTraceProto.Builder> {
+public class TouchInteractionService extends Service
+        implements ProtoTraceable<LauncherTraceProto.Builder> {
 
     private static final String TAG = "TouchInteractionService";
 
@@ -141,8 +137,6 @@ public class TouchInteractionService extends Service implements PluginListener<O
     private static final int SYSTEM_ACTION_ID_ALL_APPS = 14;
 
     private int mBackGestureNotificationCounter = -1;
-    @Nullable
-    private OverscrollPlugin mOverscrollPlugin;
 
     /**
      * Local IOverviewProxy implementation with some methods for local components
@@ -415,9 +409,6 @@ public class TouchInteractionService extends Service implements PluginListener<O
                 .getInt(KEY_BACK_NOTIFICATION_COUNT, MAX_BACK_NOTIFICATION_COUNT));
         resetHomeBounceSeenOnQuickstepEnabledFirstTime();
 
-        PluginManagerWrapper.INSTANCE.get(getBaseContext()).addPluginListener(this,
-                OverscrollPlugin.class, false /* allowMultiple */);
-
         mOverviewComponentObserver.setOverviewChangeListener(this::onOverviewTargetChange);
         onOverviewTargetChange(mOverviewComponentObserver.isHomeAndOverviewSame());
     }
@@ -499,7 +490,6 @@ public class TouchInteractionService extends Service implements PluginListener<O
         if (mDeviceState.isUserUnlocked()) {
             mInputConsumer.unregisterInputConsumer();
             mOverviewComponentObserver.onDestroy();
-            PluginManagerWrapper.INSTANCE.get(getBaseContext()).removePluginListener(this);
         }
         disposeEventHandlers();
         mDeviceState.destroy();
@@ -672,26 +662,6 @@ public class TouchInteractionService extends Service implements PluginListener<O
             if (activity != null && activity.getDeviceProfile().isTaskbarPresent) {
                 base = new TaskbarStashInputConsumer(this, base, mInputMonitorCompat,
                         mTaskbarManager.getCurrentActivityContext());
-            }
-
-            if (FeatureFlags.ENABLE_QUICK_CAPTURE_GESTURE.get()) {
-                OverscrollPlugin plugin = null;
-                if (FeatureFlags.FORCE_LOCAL_OVERSCROLL_PLUGIN.get()) {
-                    plugin = OverscrollPluginFactory.INSTANCE.get(
-                            getApplicationContext()).getLocalOverscrollPlugin();
-                }
-
-                // If not local plugin was forced, use the actual overscroll plugin if available.
-                if (plugin == null && mOverscrollPlugin != null && mOverscrollPlugin.isActive()) {
-                    plugin = mOverscrollPlugin;
-                }
-
-                if (plugin != null) {
-                    // Put the overscroll gesture as higher priority than the Assistant or base
-                    // gestures
-                    base = new OverscrollInputConsumer(this, newGestureState, base,
-                        mInputMonitorCompat, plugin);
-                }
             }
 
             // If Bubbles is expanded, use the overlay input consumer, which will close Bubbles
@@ -999,16 +969,6 @@ public class TouchInteractionService extends Service implements PluginListener<O
             mDeviceState.getGestureBlockedActivityPackages().forEach(blockedPackage ->
                     sendBroadcast(new Intent(NOTIFY_ACTION_BACK).setPackage(blockedPackage)));
         }
-    }
-
-    @Override
-    public void onPluginConnected(OverscrollPlugin overscrollPlugin, Context context) {
-        mOverscrollPlugin = overscrollPlugin;
-    }
-
-    @Override
-    public void onPluginDisconnected(OverscrollPlugin overscrollPlugin) {
-        mOverscrollPlugin = null;
     }
 
     @Override

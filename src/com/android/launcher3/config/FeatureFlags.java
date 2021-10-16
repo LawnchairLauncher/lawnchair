@@ -72,12 +72,6 @@ public final class FeatureFlags {
             "PROMISE_APPS_NEW_INSTALLS", true,
             "Adds a promise icon to the home screen for new install sessions.");
 
-    public static final BooleanFlag QUICKSTEP_SPRINGS = getDebugFlag(
-            "QUICKSTEP_SPRINGS", true, "Enable springs for quickstep animations");
-
-    public static final BooleanFlag UNSTABLE_SPRINGS = getDebugFlag(
-            "UNSTABLE_SPRINGS", false, "Enable unstable springs for quickstep animations");
-
     public static final BooleanFlag ENABLE_LOCAL_COLOR_POPUPS = getDebugFlag(
             "ENABLE_LOCAL_COLOR_POPUPS", false, "Enable local color extraction for popups.");
 
@@ -121,16 +115,6 @@ public final class FeatureFlags {
 
     public static final BooleanFlag ENABLE_PREDICTION_DISMISS = getDebugFlag(
             "ENABLE_PREDICTION_DISMISS", true, "Allow option to dimiss apps from predicted list");
-
-    public static final BooleanFlag ENABLE_QUICK_CAPTURE_GESTURE = getDebugFlag(
-            "ENABLE_QUICK_CAPTURE_GESTURE", true, "Swipe from right to left to quick capture");
-
-    public static final BooleanFlag ENABLE_QUICK_CAPTURE_WINDOW = getDebugFlag(
-            "ENABLE_QUICK_CAPTURE_WINDOW", false, "Use window to host quick capture");
-
-    public static final BooleanFlag FORCE_LOCAL_OVERSCROLL_PLUGIN = getDebugFlag(
-            "FORCE_LOCAL_OVERSCROLL_PLUGIN", false,
-            "Use a launcher-provided OverscrollPlugin if available");
 
     public static final BooleanFlag ASSISTANT_GIVES_LAUNCHER_FOCUS = getDebugFlag(
             "ASSISTANT_GIVES_LAUNCHER_FOCUS", false,
