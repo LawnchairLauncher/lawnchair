@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
 /*
 * Copyright (C) 2008 The Android Open Source Project
 *
@@ -132,6 +131,8 @@
     <string name="all_apps_search_market_message">Search for more apps</string>
     <!-- Label for an icon representing any generic app. [CHAR_LIMIT=50] -->
     <string name="label_application">App</string>
+    <!-- Label for the header text of the All Apps section in All Apps view, used to separate Predicted Apps and Actions section from All Apps section. [CHAR_LIMIT=50] -->
+    <string name="all_apps_label">All apps</string>
 
     <!-- Popup items -->
     <!-- Text to display as the header above notifications. [CHAR_LIMIT=30] -->
@@ -193,7 +194,7 @@
     <string name="msg_no_phone_permission"><xliff:g id="app_name" example="Launcher3">%1$s</xliff:g> is not allowed to make phone calls</string>
 
     <!-- Widgets: -->
-    <skip />    
+    <skip />
 
     <!-- Error text that lets a user know that the widget can't load. -->
     <string name="gadget_error_text">Can\'t load widget</string>
@@ -308,7 +309,7 @@
     <!-- Text announced by accessibility when the popup containing the list of widgets is closed. [CHAR_LIMIT=100] -->
     <string name="widgets_list_closed">Widgets list closed</string>
 
-<!-- Strings for accessibility actions -->
+    <!-- Strings for accessibility actions -->
     <!-- Accessibility action to add an app to workspace. [CHAR_LIMIT=30] -->
     <string name="action_add_to_workspace">Add to Home screen</string>
 
