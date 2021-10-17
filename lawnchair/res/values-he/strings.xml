@@ -117,17 +117,17 @@
     <string name="pref_fonts_missing_font">פונט לא נמצא.</string>
     <string name="font_variant_italic">נטוי</string>
     <string name="font_weight_thin">דק</string>
-    <string name="font_weight_extra_light">Extralight</string>
+    <string name="font_weight_extra_light">Extra Light</string>
     <string name="font_weight_light">בהירה</string>
     <string name="font_weight_regular">רגיל</string>
     <string name="font_weight_medium">בינוני</string>
     <string name="font_weight_semi_bold">מודגש למחצה</string>
     <string name="font_weight_bold">מודגש</string>
-    <string name="font_weight_extra_bold">Extrabold</string>
+    <string name="font_weight_extra_bold">Extra Bold</string>
     <string name="font_weight_extra_black">שחור</string>
     <string name="font_label">פונט</string>
     <string name="reset_font">איפוס</string>
     <string name="search_bar_placeholder">חיפוש</string>
     <string name="pref_category_search">חיפוש</string>
-    <string name="pref_search_auto_show_keyboard">הצגה אוטומטית של המקלדת</string>
+    <string name="pref_search_auto_show_keyboard">Automatically Show Keyboard</string>
 </resources>
