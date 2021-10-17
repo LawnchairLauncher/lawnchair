@@ -167,6 +167,7 @@ import com.android.quickstep.util.TaskViewSimulator;
 import com.android.quickstep.util.TransformParams;
 import com.android.quickstep.util.VibratorWrapper;
 import com.android.systemui.plugins.ResourceProvider;
+import com.android.systemui.shared.recents.model.GroupTask;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.recents.model.Task.TaskKey;
 import com.android.systemui.shared.recents.model.ThumbnailData;
@@ -1296,13 +1297,13 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         updateGridProperties();
     }
 
-    protected void applyLoadPlan(ArrayList<Task> tasks) {
+    protected void applyLoadPlan(ArrayList<GroupTask> taskGroups) {
         if (mPendingAnimation != null) {
-            mPendingAnimation.addEndListener(success -> applyLoadPlan(tasks));
+            mPendingAnimation.addEndListener(success -> applyLoadPlan(taskGroups));
             return;
         }
 
-        if (tasks == null || tasks.isEmpty()) {
+        if (taskGroups == null || taskGroups.isEmpty()) {
             removeTasksViewsAndClearAllButton();
             onTaskStackUpdated();
             return;
@@ -1324,10 +1325,11 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                 LauncherSplitScreenListener.INSTANCE.getNoCreate().getPersistentSplitIds();
         int requiredGroupTaskViews = splitTaskIds.length / 2;
 
+        // TODO(b/202740477): Update once grouped tasks are returned
         // Subtract half the number of split tasks and not total number because we've already
         // added a GroupedTaskView when swipe up gesture happens.
         // This will need to change if we start showing GroupedTaskViews during swipe up from home
-        int requiredTaskViewCount = tasks.size() - requiredGroupTaskViews;
+        int requiredTaskViewCount = taskGroups.size() - requiredGroupTaskViews;
 
         if (getTaskViewCount() != requiredTaskViewCount) {
             if (indexOfChild(mClearAllButton) != -1) {
@@ -1360,11 +1362,12 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                 + " runningTaskViewId: " + mRunningTaskViewId
                 + " forTaskView: " + getTaskViewFromTaskViewId(mRunningTaskViewId));
 
-        for (int taskViewIndex = requiredTaskViewCount - 1, taskDataIndex = tasks.size() - 1;
+        for (int taskViewIndex = requiredTaskViewCount - 1, taskDataIndex = taskGroups.size() - 1;
                 taskViewIndex >= 0;
                 taskViewIndex--, taskDataIndex--) {
             final int pageIndex = requiredTaskViewCount - taskViewIndex - 1;
-            final Task task = tasks.get(taskDataIndex);
+            // TODO(b/202740477): Temporary assumption, to be updated once groups are actually used
+            final Task task = taskGroups.get(taskDataIndex).task1;
             final TaskView taskView = (TaskView) getChildAt(pageIndex);
             if (taskView instanceof GroupedTaskView) {
                 Task leftTop;
@@ -1372,11 +1375,11 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                 if (task.key.id == splitTaskIds[0]) {
                     leftTop = task;
                     taskDataIndex--;
-                    rightBottom = tasks.get(taskDataIndex);
+                    rightBottom = taskGroups.get(taskDataIndex).task1;
                 } else {
                     rightBottom = task;
                     taskDataIndex--;
-                    leftTop = tasks.get(taskDataIndex);
+                    leftTop = taskGroups.get(taskDataIndex).task1;
                 }
                 ((GroupedTaskView) taskView).bind(leftTop, rightBottom, mOrientationState,
                         mSplitBoundsConfig);

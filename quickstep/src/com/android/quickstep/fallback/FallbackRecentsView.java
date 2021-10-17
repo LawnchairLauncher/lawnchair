@@ -42,6 +42,7 @@ import com.android.quickstep.util.TaskViewSimulator;
 import com.android.quickstep.views.OverviewActionsView;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
+import com.android.systemui.shared.recents.model.GroupTask;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.recents.model.Task.TaskKey;
 
@@ -153,29 +154,32 @@ public class FallbackRecentsView extends RecentsView<RecentsActivity, RecentsSta
     }
 
     @Override
-    protected void applyLoadPlan(ArrayList<Task> tasks) {
+    protected void applyLoadPlan(ArrayList<GroupTask> taskGroups) {
         // When quick-switching on 3p-launcher, we add a "stub" tile corresponding to Launcher
         // as well. This tile is never shown as we have setCurrentTaskHidden, but allows use to
         // track the index of the next task appropriately, as if we are switching on any other app.
         // TODO(b/195607777) Confirm home task info is front-most task and not mixed in with others
         int runningTaskId = getTaskIdsForRunningTaskView()[0];
-        if (mHomeTaskInfo != null && mHomeTaskInfo.taskId == runningTaskId && !tasks.isEmpty()) {
+        if (mHomeTaskInfo != null && mHomeTaskInfo.taskId == runningTaskId 
+                && !taskGroups.isEmpty()) {
             // Check if the task list has running task
             boolean found = false;
-            for (Task t : tasks) {
-                if (t.key.id == runningTaskId) {
+            for (GroupTask group : taskGroups) {
+                if (group.containsTask(runningTaskId)) {
                     found = true;
                     break;
                 }
             }
             if (!found) {
-                ArrayList<Task> newList = new ArrayList<>(tasks.size() + 1);
-                newList.addAll(tasks);
-                newList.add(Task.from(new TaskKey(mHomeTaskInfo), mHomeTaskInfo, false));
-                tasks = newList;
+                ArrayList<GroupTask> newList = new ArrayList<>(taskGroups.size() + 1);
+                newList.addAll(taskGroups);
+                newList.add(new GroupTask(
+                        Task.from(new TaskKey(mHomeTaskInfo), mHomeTaskInfo, false),
+                        null));
+                taskGroups = newList;
             }
         }
-        super.applyLoadPlan(tasks);
+        super.applyLoadPlan(taskGroups);
     }
 
     @Override
