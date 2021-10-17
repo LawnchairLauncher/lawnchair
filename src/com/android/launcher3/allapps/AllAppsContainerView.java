@@ -71,6 +71,7 @@ import com.android.launcher3.views.RecyclerViewFastScroller;
 import java.util.ArrayList;
 
 import app.lawnchair.allapps.LawnchairAlphabeticalAppsList;
+import app.lawnchair.preferences.PreferenceManager;
 import app.lawnchair.ui.AllAppsStretchLayout;
 
 /**
@@ -388,7 +389,8 @@ public class AllAppsContainerView extends AllAppsStretchLayout implements DragSo
     public void draw(@NonNull Canvas canvas) {
         super.draw(canvas);
 
-        if (mNavBarScrimHeight > 0) {
+        boolean shouldDrawScrim = PreferenceManager.getInstance(getContext()).getDrawerOpacity().get() > 0.3F;
+        if (mNavBarScrimHeight > 0 && shouldDrawScrim) {
             canvas.drawRect(0, getHeight() - mNavBarScrimHeight, getWidth(), getHeight(),
                     mNavBarScrimPaint);
         }
