@@ -115,17 +115,17 @@
     <string name="pref_fonts_missing_font">Schriftart nicht gefunden.</string>
     <string name="font_variant_italic">Italic</string>
     <string name="font_weight_thin">Dünn</string>
-    <string name="font_weight_extra_light">Extra Light</string>
+    <string name="font_weight_extra_light">Extra hell</string>
     <string name="font_weight_light">Hell</string>
     <string name="font_weight_regular">Normal</string>
     <string name="font_weight_medium">Mittel</string>
     <string name="font_weight_semi_bold">Halbfett</string>
     <string name="font_weight_bold">Fett</string>
-    <string name="font_weight_extra_bold">Extra Bold</string>
+    <string name="font_weight_extra_bold">Extra Fett</string>
     <string name="font_weight_extra_black">Schwarz</string>
     <string name="font_label">Schriftart</string>
     <string name="reset_font">Zurücksetzen</string>
     <string name="search_bar_placeholder">Suchen</string>
     <string name="pref_category_search">Suchen</string>
-    <string name="pref_search_auto_show_keyboard">Automatically Show Keyboard</string>
+    <string name="pref_search_auto_show_keyboard">Tastatur automatisch anzeigen</string>
 </resources>
