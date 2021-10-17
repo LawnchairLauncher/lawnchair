@@ -85,7 +85,7 @@ public class PendingAppWidgetHostView extends LauncherAppWidgetHostView
         setBackgroundResource(R.drawable.pending_widget_bg);
         setWillNotDraw(false);
 
-        updateAppWidget(null);
+        super.updateAppWidget(null);
         setOnClickListener(ItemClickHandler.INSTANCE);
 
         if (info.pendingItemInfo == null) {
