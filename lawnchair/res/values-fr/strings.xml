@@ -115,17 +115,17 @@
     <string name="pref_fonts_missing_font">Police introuvable.</string>
     <string name="font_variant_italic">Italique</string>
     <string name="font_weight_thin">Mince</string>
-    <string name="font_weight_extra_light">Extra-léger</string>
+    <string name="font_weight_extra_light">Extra Light</string>
     <string name="font_weight_light">Clair</string>
     <string name="font_weight_regular">Régulier</string>
     <string name="font_weight_medium">Moyen</string>
     <string name="font_weight_semi_bold">Semi-gras</string>
     <string name="font_weight_bold">Gras</string>
-    <string name="font_weight_extra_bold">Extra-gras</string>
+    <string name="font_weight_extra_bold">Extra Bold</string>
     <string name="font_weight_extra_black">Noir</string>
     <string name="font_label">Typo</string>
     <string name="reset_font">Restaurer</string>
     <string name="search_bar_placeholder">Rechercher</string>
     <string name="pref_category_search">Rechercher</string>
-    <string name="pref_search_auto_show_keyboard">Afficher le clavier automatiquement</string>
+    <string name="pref_search_auto_show_keyboard">Automatically Show Keyboard</string>
 </resources>
