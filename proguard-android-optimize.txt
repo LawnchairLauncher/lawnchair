@@ -1,10 +1,12 @@
 -allowaccessmodification
+-dontoptimize
 -dontpreverify
 -dontusemixedcaseclassnames
 -dontskipnonpubliclibraryclasses
 -verbose
 
 -keepattributes *Annotation*
+-keepattributes SourceFile,LineNumberTable
 
 -keepclasseswithmembernames class * {
     native <methods>;
