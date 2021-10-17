@@ -16,8 +16,19 @@
 ** limitations under the License.
 */
 -->
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
     <uses-permission android:name="android.permission.PACKAGE_USAGE_STATS" />
+
+    <permission
+        android:name="${packageName}.permission.READ_SETTINGS"
+        tools:node="remove" />
+    <permission
+        android:name="${packageName}.permission.WRITE_SETTINGS"
+        tools:node="remove" />
+    <permission
+        android:name="${packageName}.permission.HOTSEAT_EDU"
+        tools:node="remove" />
 
     <application>
         <meta-data

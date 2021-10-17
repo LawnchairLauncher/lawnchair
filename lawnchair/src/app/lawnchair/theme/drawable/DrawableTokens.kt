@@ -103,4 +103,7 @@ object DrawableTokens {
 
         list
     }
+
+    @JvmField val WorkCard = ResourceDrawableToken<GradientDrawable>(R.drawable.work_card)
+        .setColor(ColorTokens.Surface)
 }

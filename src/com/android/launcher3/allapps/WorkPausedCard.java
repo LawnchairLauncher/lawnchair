@@ -24,10 +24,16 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.TextView;
+
+import androidx.core.view.ViewCompat;
 
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
+
+import app.lawnchair.font.FontManager;
+import app.lawnchair.theme.color.ColorTokens;
 
 /**
  * Work profile toggle switch shown at the bottom of AllApps work tab
@@ -56,6 +62,8 @@ public class WorkPausedCard extends LinearLayout implements View.OnClickListener
         super.onFinishInflate();
         mBtn = findViewById(R.id.enable_work_apps);
         mBtn.setOnClickListener(this);
+        mBtn.setAllCaps(false);
+        FontManager.INSTANCE.get(getContext()).setCustomFont(mBtn, R.id.font_button);
     }
 
     @Override
