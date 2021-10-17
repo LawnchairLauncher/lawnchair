@@ -108,10 +108,10 @@
     <string name="what_to_show">표시할 항목</string>
     <string name="missing_notification_access_label">알림 권한이 필요함</string>
     <string name="missing_notification_access_description">알림 권한이 필요함</string>
-    <string name="msg_missing_notification_access">To use Notification Dots, grant <xliff:g id="name" example="My App">%1$s</xliff:g> access to notifications.</string>
+    <string name="msg_missing_notification_access">알림 배지를 사용하시려면, 알림들에게 <xliff:g id="name" example="My App">%1$s</xliff:g> 권한을 부여해주세요.</string>
     <string name="title_change_settings">설정 변경</string>
     <string name="debug_restart_launcher">Lawnchair 재시작</string>
-    <string name="pref_fonts_missing_font">Font not found.</string>
+    <string name="pref_fonts_missing_font">폰트를 찾을 수 없습니다.</string>
     <string name="font_variant_italic">Italic</string>
     <string name="font_weight_thin">Thin</string>
     <string name="font_weight_extra_light">Extra Light</string>
@@ -122,9 +122,9 @@
     <string name="font_weight_bold">Bold</string>
     <string name="font_weight_extra_bold">Extra Bold</string>
     <string name="font_weight_extra_black">Black</string>
-    <string name="font_label">Font</string>
-    <string name="reset_font">Reset</string>
-    <string name="search_bar_placeholder">Search</string>
-    <string name="pref_category_search">Search</string>
-    <string name="pref_search_auto_show_keyboard">Automatically Show Keyboard</string>
+    <string name="font_label">폰트</string>
+    <string name="reset_font">초기화</string>
+    <string name="search_bar_placeholder">검색</string>
+    <string name="pref_category_search">검색</string>
+    <string name="pref_search_auto_show_keyboard">자동으로 키보드 표시</string>
 </resources>
