@@ -124,7 +124,7 @@
     <string name="font_weight_bold">Bold</string>
     <string name="font_weight_extra_bold">Extra Bold</string>
     <string name="font_weight_extra_black">Black</string>
-    <string name="font_label">Font</string>
+    <string name="font_label">Font (Experimental)</string>
     <string name="reset_font">Resetați</string>
     <string name="search_bar_placeholder">Caută</string>
     <string name="pref_category_search">Caută</string>
