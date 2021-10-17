@@ -117,17 +117,17 @@
     <string name="pref_fonts_missing_font">Písmo nebylo nalezeno.</string>
     <string name="font_variant_italic">Kurzíva</string>
     <string name="font_weight_thin">Tenké</string>
-    <string name="font_weight_extra_light">Velmi tenké</string>
+    <string name="font_weight_extra_light">Extra Light</string>
     <string name="font_weight_light">Světlé</string>
     <string name="font_weight_regular">Běžné</string>
     <string name="font_weight_medium">Střední</string>
     <string name="font_weight_semi_bold">Středně tučné</string>
     <string name="font_weight_bold">Tučné</string>
-    <string name="font_weight_extra_bold">Velmi tučné</string>
+    <string name="font_weight_extra_bold">Extra Bold</string>
     <string name="font_weight_extra_black">Černé</string>
     <string name="font_label">Písmo</string>
     <string name="reset_font">Obnovit výchozí</string>
     <string name="search_bar_placeholder">Vyhledávání</string>
     <string name="pref_category_search">Vyhledávání</string>
-    <string name="pref_search_auto_show_keyboard">Automaticky zobrazit klávesnici</string>
+    <string name="pref_search_auto_show_keyboard">Automatically Show Keyboard</string>
 </resources>
