@@ -123,7 +123,7 @@
     <string name="font_weight_bold">Kalın</string>
     <string name="font_weight_extra_bold">Extra Bold</string>
     <string name="font_weight_extra_black">En Kalın</string>
-    <string name="font_label">Font</string>
+    <string name="font_label">Font (Experimental)</string>
     <string name="reset_font">Sıfırla</string>
     <string name="search_bar_placeholder">Arama</string>
     <string name="pref_category_search">Arama</string>
