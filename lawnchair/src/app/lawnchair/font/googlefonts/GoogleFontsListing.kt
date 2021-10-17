@@ -47,8 +47,7 @@ class GoogleFontsListing private constructor(private val context: Context) {
             val variants = font.getJSONArray(KEY_VARIANTS).toArrayList<String>()
             fonts.add(GoogleFontInfo(family, variants))
         }
-        fonts.add(GoogleFontInfo("Google Sans", listOf("regular", "italic", "500", "500italic", "700", "700italic")))
-        fonts.add(GoogleFontInfo("Google Sans Text", listOf("regular", "italic", "500", "500italic", "700", "700italic")))
+        fonts.add(GoogleFontInfo("Inter", listOf("regular", "italic", "500", "500italic", "700", "700italic")))
         fonts.sort()
         return fonts
     }

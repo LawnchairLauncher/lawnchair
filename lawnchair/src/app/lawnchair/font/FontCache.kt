@@ -26,6 +26,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.produceState
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontFamily
+import androidx.core.content.res.ResourcesCompat
 import androidx.core.provider.FontRequest
 import androidx.core.provider.FontsContractCompat
 import app.lawnchair.font.googlefonts.GoogleFontsListing
@@ -45,10 +46,10 @@ class FontCache private constructor(private val context: Context) {
 
     private val deferredFonts = mutableMapOf<Font, Deferred<LoadedFont?>>()
 
-    val uiRegular = GoogleFont(context, "Google Sans")
-    val uiMedium = GoogleFont(context, "Google Sans", "500")
-    val uiText = GoogleFont(context, "Google Sans Text")
-    val uiTextMedium = GoogleFont(context, "Google Sans Text", "500")
+    val uiRegular = ResourceFont(context, R.font.inter_regular, "Inter")
+    val uiMedium = ResourceFont(context, R.font.inter_medium, "Inter Medium")
+    val uiText = ResourceFont(context, R.font.inter_regular, "Inter")
+    val uiTextMedium = ResourceFont(context, R.font.inter_medium, "Inter Medium")
 
     suspend fun getTypeface(font: Font): Typeface? {
         return loadFontAsync(font).await()?.typeface
@@ -270,6 +271,25 @@ class FontCache private constructor(private val context: Context) {
 
         override fun equals(other: Any?): Boolean {
             return other is AssetFont && name == other.name
+        }
+
+        override fun hashCode(): Int {
+            return hashCode
+        }
+    }
+
+    class ResourceFont(
+        context: Context,
+        resId: Int,
+        private val name: String
+    ) : TypefaceFont(ResourcesCompat.getFont(context, resId)) {
+
+        private val hashCode = "ResourceFont|$name".hashCode()
+
+        override val fullDisplayName = name
+
+        override fun equals(other: Any?): Boolean {
+            return other is ResourceFont && name == other.name
         }
 
         override fun hashCode(): Int {
