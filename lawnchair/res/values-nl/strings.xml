@@ -127,5 +127,5 @@
     <string name="reset_font">Resetten</string>
     <string name="search_bar_placeholder">Zoeken</string>
     <string name="pref_category_search">Zoeken</string>
-    <string name="pref_search_auto_show_keyboard">Automatically Show Keyboard</string>
+    <string name="pref_search_auto_show_keyboard">Toetsenbord automatisch weergeven</string>
 </resources>
