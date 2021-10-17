@@ -125,7 +125,7 @@
     <string name="font_weight_bold">Жирный</string>
     <string name="font_weight_extra_bold">Extra Bold</string>
     <string name="font_weight_extra_black">Сверхжирный</string>
-    <string name="font_label">Шрифт</string>
+    <string name="font_label">Font (Experimental)</string>
     <string name="reset_font">Сброс</string>
     <string name="search_bar_placeholder">Поиск</string>
     <string name="pref_category_search">Поиск</string>
