@@ -10,6 +10,7 @@ import androidx.compose.material.Surface
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.LayoutDirection
@@ -33,6 +34,10 @@ fun PreferenceSearchScaffold(
     val navController = LocalNavController.current
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
+    val searchBarVerticalMargin = 8.dp
+    val searchBarHeight = 56.dp
+    val statusBarHeight = with(LocalDensity.current) { LocalWindowInsets.current.statusBars.top.toDp() }
+    val contentShift = statusBarHeight + searchBarVerticalMargin + searchBarHeight / 2
 
     Scaffold(
         topBar = {
@@ -40,7 +45,8 @@ fun PreferenceSearchScaffold(
                 modifier = Modifier
                     .statusBarsPadding()
                     .navigationBarsPadding(bottom = false)
-                    .padding(top = 8.dp, start = 8.dp, end = 8.dp),
+                    .padding(horizontal = 16.dp, vertical = searchBarVerticalMargin)
+                    .height(searchBarHeight),
                 shape = MaterialTheme.shapes.small,
                 elevation = 2.dp
             ) {
@@ -87,13 +93,13 @@ fun PreferenceSearchScaffold(
     ) {
         val layoutDirection = LocalLayoutDirection.current
         innerPadding.left = it.calculateLeftPadding(layoutDirection)
-        innerPadding.top = 8.dp
+        innerPadding.top = it.calculateTopPadding() - contentShift
         innerPadding.right = it.calculateRightPadding(layoutDirection)
         innerPadding.bottom = it.calculateBottomPadding()
         CompositionLocalProvider(
             LocalScaffoldPadding provides innerPadding
         ) {
-            Box(modifier = Modifier.padding(top = it.calculateTopPadding())) {
+            Box(modifier = Modifier.padding(top = contentShift)) {
                 content(it)
             }
         }
