@@ -123,7 +123,7 @@
     <string name="font_weight_bold">Fett</string>
     <string name="font_weight_extra_bold">Extra Fett</string>
     <string name="font_weight_extra_black">Schwarz</string>
-    <string name="font_label">Schriftart</string>
+    <string name="font_label">Font (Experimental)</string>
     <string name="reset_font">Zurücksetzen</string>
     <string name="search_bar_placeholder">Suchen</string>
     <string name="pref_category_search">Suchen</string>
