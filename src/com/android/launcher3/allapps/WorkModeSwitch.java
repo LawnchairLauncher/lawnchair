@@ -19,6 +19,7 @@ import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCH
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.graphics.Insets;
 import android.graphics.Rect;
 import android.os.Build;
@@ -39,6 +40,10 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.KeyboardInsetAnimationCallback;
 import com.android.launcher3.pm.UserCache;
+
+import app.lawnchair.font.FontManager;
+import app.lawnchair.theme.color.ColorStateListTokens;
+import app.lawnchair.theme.drawable.DrawableTokens;
 
 /**
  * Work profile toggle switch shown at the bottom of AllApps work tab
@@ -62,6 +67,8 @@ public class WorkModeSwitch extends Button implements Insettable, View.OnClickLi
 
     public WorkModeSwitch(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+
+        FontManager.INSTANCE.get(context).overrideFont(this, attrs);
     }
 
     @Override
@@ -73,6 +80,11 @@ public class WorkModeSwitch extends Button implements Insettable, View.OnClickLi
             mKeyboardInsetAnimationCallback = new KeyboardInsetAnimationCallback(this);
             setWindowInsetsAnimationCallback(mKeyboardInsetAnimationCallback);
         }
+
+        setBackground(DrawableTokens.WorkAppsToggleBackground.resolve(getContext()));
+        ColorStateList textColor = ColorStateListTokens.AllAppsTabText.resolve(getContext());
+        setTextColor(textColor);
+        setCompoundDrawableTintList(textColor);
     }
 
     @Override

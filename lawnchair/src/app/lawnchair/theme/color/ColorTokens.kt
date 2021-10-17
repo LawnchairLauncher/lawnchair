@@ -13,6 +13,7 @@ object ColorTokens {
 
     val Neutral2_50 = SwatchColorToken(Swatch.Neutral2, Shade.S50)
     val Neutral2_100 = SwatchColorToken(Swatch.Neutral2, Shade.S100)
+    val Neutral2_200 = SwatchColorToken(Swatch.Neutral2, Shade.S200)
     val Neutral2_300 = SwatchColorToken(Swatch.Neutral2, Shade.S300)
     val Neutral2_500 = SwatchColorToken(Swatch.Neutral2, Shade.S500)
     val Neutral2_700 = SwatchColorToken(Swatch.Neutral2, Shade.S700)
@@ -24,6 +25,7 @@ object ColorTokens {
     val Accent1_600 = SwatchColorToken(Swatch.Accent1, Shade.S600)
 
     val Accent2_50 = SwatchColorToken(Swatch.Accent2, Shade.S50)
+    val Accent2_100 = SwatchColorToken(Swatch.Accent2, Shade.S100)
     val Accent2_600 = SwatchColorToken(Swatch.Accent2, Shade.S600)
 
     val SurfaceLight = Neutral1_500.setLStar(98.0)
@@ -35,9 +37,14 @@ object ColorTokens {
 
     @JvmField val ColorAccent = DayNightColorToken(Accent1_600, Accent1_100)
     @JvmField val ColorBackground = DayNightColorToken(Neutral1_50, Neutral1_900)
+    @JvmField val TextColorPrimary = DayNightColorToken(Neutral1_900, Neutral1_50)
+    @JvmField val TextColorPrimaryInverse = TextColorPrimary.inverse()
+    @JvmField val TextColorSecondary = DayNightColorToken(StaticColorToken(0xde000000), Neutral2_200)
 
     @JvmField val AllAppsHeaderProtectionColor = DayNightColorToken(Neutral1_100, Neutral1_700)
     @JvmField val AllAppsScrimColor = ColorBackground
+    @JvmField val AllAppsTabBackgroundSelected = DayNightColorToken(Accent1_100, Accent2_100)
+
     @JvmField val FocusHighlight = DayNightColorToken(Neutral1_0, Neutral1_700)
     @JvmField val GroupHighlight = Surface
     @JvmField val OverviewScrim = DayNightColorToken(Neutral2_500.setLStar(87.0), Neutral1_800)

@@ -3,6 +3,7 @@ package app.lawnchair.theme.color
 import android.content.Context
 import android.util.Log
 import androidx.core.graphics.ColorUtils
+import androidx.core.graphics.toColorInt
 import app.lawnchair.theme.ResourceToken
 import app.lawnchair.theme.ThemeProvider
 import app.lawnchair.theme.UiColorMode
@@ -62,8 +63,11 @@ data class DayNightColorToken(
             lightToken.resolve(context, scheme, uiColorMode)
         }
     }
-}
 
+    fun inverse(): DayNightColorToken {
+        return DayNightColorToken(darkToken, lightToken)
+    }
+}
 
 data class DarkTextColorToken(
     private val lightToken: ColorToken,
@@ -76,6 +80,15 @@ data class DarkTextColorToken(
         } else {
             lightToken.resolve(context, scheme, uiColorMode)
         }
+    }
+}
+
+data class StaticColorToken(
+    private val color: Long
+) : ColorToken {
+
+    override fun resolve(context: Context, scheme: ColorScheme, uiColorMode: UiColorMode): Color {
+        return AndroidColor(color.toColorInt())
     }
 }
 

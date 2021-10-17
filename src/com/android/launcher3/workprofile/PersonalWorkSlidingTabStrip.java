@@ -16,6 +16,7 @@
 package com.android.launcher3.workprofile;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -23,7 +24,12 @@ import android.widget.LinearLayout;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.android.launcher3.R;
 import com.android.launcher3.pageindicators.PageIndicator;
+
+import app.lawnchair.font.FontManager;
+import app.lawnchair.theme.color.ColorStateListTokens;
+import app.lawnchair.theme.drawable.DrawableTokens;
 
 /**
  * Supports two indicator colors, dedicated for personal and work tabs.
@@ -34,6 +40,20 @@ public class PersonalWorkSlidingTabStrip extends LinearLayout implements PageInd
 
     public PersonalWorkSlidingTabStrip(@NonNull Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
+    }
+
+    @Override
+    protected void onFinishInflate() {
+        super.onFinishInflate();
+
+        FontManager fontManager = FontManager.INSTANCE.get(getContext());
+        for (int i = 0; i < getChildCount(); i++) {
+            Button tab = (Button) getChildAt(i);
+            tab.setAllCaps(false);
+            tab.setBackground(DrawableTokens.AllAppsTabsBackground.resolve(getContext()));
+            tab.setTextColor(ColorStateListTokens.AllAppsTabText.resolve(getContext()));
+            fontManager.setCustomFont(tab, R.id.font_body_medium);
+        }
     }
 
     /**

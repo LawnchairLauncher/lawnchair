@@ -1,8 +1,10 @@
 package app.lawnchair.theme
 
 import android.content.Context
+import app.lawnchair.theme.color.ColorToken
 import com.android.launcher3.R
 import com.android.launcher3.util.Themes
+import dev.kdrag0n.colorkt.Color
 import dev.kdrag0n.monet.theme.ColorScheme
 
 interface ResourceToken<T> {

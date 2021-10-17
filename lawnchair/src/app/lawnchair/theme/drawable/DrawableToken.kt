@@ -44,6 +44,15 @@ data class MutatedDrawableToken<T : Drawable>(
     }
 }
 
+data class NewDrawable<T : Drawable>(
+    private val factory: (context: Context, scheme: ColorScheme, uiColorMode: UiColorMode) -> T
+) : DrawableToken<T> {
+
+    override fun resolve(context: Context, scheme: ColorScheme, uiColorMode: UiColorMode): T {
+        return factory(context, scheme, uiColorMode)
+    }
+}
+
 fun <T : Drawable> DrawableToken<T>.mutate(
     mutateBlock: T.(context: Context, scheme: ColorScheme, uiColorMode: UiColorMode) -> Unit
 ) = MutatedDrawableToken(this, mutateBlock)
