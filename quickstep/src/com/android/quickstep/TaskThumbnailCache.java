@@ -104,6 +104,9 @@ public class TaskThumbnailCache {
      * Synchronously fetches the thumbnail for the given {@param task} and puts it in the cache.
      */
     public void updateThumbnailInCache(Task task) {
+        if (task == null) {
+            return;
+        }
         Preconditions.assertUIThread();
         // Fetch the thumbnail for this task and put it in the cache
         if (task.thumbnail == null) {
