@@ -123,7 +123,7 @@
     <string name="font_weight_bold">Dikgedrukt</string>
     <string name="font_weight_extra_bold">Extra Bold</string>
     <string name="font_weight_extra_black">Zwart</string>
-    <string name="font_label">Lettertype</string>
+    <string name="font_label">Font (Experimental)</string>
     <string name="reset_font">Resetten</string>
     <string name="search_bar_placeholder">Zoeken</string>
     <string name="pref_category_search">Zoeken</string>
