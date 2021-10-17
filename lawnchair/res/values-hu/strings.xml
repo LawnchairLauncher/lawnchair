@@ -123,7 +123,7 @@
     <string name="font_weight_bold">Kövér</string>
     <string name="font_weight_extra_bold">Extra kövér</string>
     <string name="font_weight_extra_black">Fekete</string>
-    <string name="font_label">Font (Experimental)</string>
+    <string name="font_label">Betűtípus (kísérleti)</string>
     <string name="reset_font">Visszaállítás</string>
     <string name="search_bar_placeholder">Keresés</string>
     <string name="pref_category_search">Keresés</string>
