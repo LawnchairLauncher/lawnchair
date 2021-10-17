@@ -117,17 +117,17 @@
     <string name="pref_fonts_missing_font">Brak czcionki.</string>
     <string name="font_variant_italic">Kursywa</string>
     <string name="font_weight_thin">Wąska</string>
-    <string name="font_weight_extra_light">Extra Light</string>
+    <string name="font_weight_extra_light">Ekstra smukła</string>
     <string name="font_weight_light">Jasny</string>
     <string name="font_weight_regular">Regularna</string>
     <string name="font_weight_medium">Średnia</string>
     <string name="font_weight_semi_bold">Średnio pogrubiona</string>
     <string name="font_weight_bold">Pogrubiona</string>
-    <string name="font_weight_extra_bold">Extra Bold</string>
+    <string name="font_weight_extra_bold">Ekstra pogrubiona</string>
     <string name="font_weight_extra_black">Czarna</string>
     <string name="font_label">Czcionka</string>
     <string name="reset_font">Reset</string>
     <string name="search_bar_placeholder">Szukaj</string>
     <string name="pref_category_search">Szukaj</string>
-    <string name="pref_search_auto_show_keyboard">Automatically Show Keyboard</string>
+    <string name="pref_search_auto_show_keyboard">Automatycznie pokazuj klawiaturę</string>
 </resources>
