@@ -28,7 +28,8 @@
             android:name="app.lawnchair.ui.preferences.PreferenceActivity"
             android:autoRemoveFromRecents="true"
             android:label="@string/settings_button_text"
-            android:theme="@style/Theme.Lawnchair">
+            android:theme="@style/Theme.Lawnchair"
+            android:exported="true">
             <intent-filter android:priority="1">
                 <action android:name="android.intent.action.APPLICATION_PREFERENCES" />
                 <category android:name="android.intent.category.DEFAULT" />
@@ -51,7 +52,8 @@
         <service
             android:name="app.lawnchair.LawnchairAccessibilityService"
             android:label="@string/derived_app_name"
-            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
+            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE"
+            android:exported="false">
             <intent-filter>
                 <action android:name="android.accessibilityservice.AccessibilityService" />
             </intent-filter>
