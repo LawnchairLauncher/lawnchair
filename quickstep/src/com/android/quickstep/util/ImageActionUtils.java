@@ -147,6 +147,19 @@ public class ImageActionUtils {
                 bitmapSupplier.get(), crop, intent, ImageActionUtils::getShareIntentForImageUri,
                 tag, sharedElement));
     }
+    
+    @UiThread
+    public static void startLensActivity(Context context, Supplier<Bitmap> bitmapSupplier,
+            Rect crop, Intent intent, String tag) {
+        if (bitmapSupplier.get() == null) {
+            Log.e(tag, "No snapshot available, not starting share.");
+            return;
+        }
+
+        UI_HELPER_EXECUTOR.execute(() -> persistBitmapAndStartActivity(context,
+                bitmapSupplier.get(), crop, intent, ImageActionUtils::getLensIntentForImageUri,
+                tag));
+    }
 
     /**
      * Starts activity based on given intent created from image uri.
@@ -271,6 +284,15 @@ public class ImageActionUtils {
                 .putExtra(Intent.EXTRA_STREAM, uri)
                 .setClipData(clipdata);
         return new Intent[]{Intent.createChooser(intent, null).addFlags(FLAG_ACTIVITY_NEW_TASK)};
+    }
+    
+    @WorkerThread
+    private static Intent[] getLensIntentForImageUri(Uri uri, Intent intent) {
+        if (intent == null) {
+            intent = new Intent();
+        }
+        intent.setPackage("com.google.ar.lens");
+        return getShareIntentForImageUri(uri, intent);
     }
 
     private static void clearOldCacheFiles(Context context) {
