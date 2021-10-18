@@ -60,6 +60,7 @@ import com.android.launcher3.statemanager.StateManager;
 import com.android.launcher3.statemanager.StateManager.AtomicAnimationFactory;
 import com.android.launcher3.statemanager.StateManager.StateHandler;
 import com.android.launcher3.statemanager.StatefulActivity;
+import com.android.launcher3.taskbar.TaskbarManager;
 import com.android.launcher3.util.ActivityOptionsWrapper;
 import com.android.launcher3.util.ActivityTracker;
 import com.android.launcher3.util.RunnableList;
@@ -73,6 +74,7 @@ import com.android.quickstep.fallback.RecentsDragLayer;
 import com.android.quickstep.fallback.RecentsState;
 import com.android.quickstep.util.RecentsAtomicAnimationFactory;
 import com.android.quickstep.util.SplitSelectStateController;
+import com.android.quickstep.util.TISBindHelper;
 import com.android.quickstep.views.OverviewActionsView;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
@@ -101,6 +103,8 @@ public final class RecentsActivity extends StatefulActivity<RecentsState> {
     private ScrimView mScrimView;
     private FallbackRecentsView mFallbackRecentsView;
     private OverviewActionsView mActionsView;
+    private TISBindHelper mTISBindHelper;
+    private @Nullable TaskbarManager mTaskbarManager;
 
     private Configuration mOldConfig;
 
@@ -125,6 +129,13 @@ public final class RecentsActivity extends StatefulActivity<RecentsState> {
                 new SplitSelectStateController(mHandler, SystemUiProxy.INSTANCE.get(this));
         mDragLayer.recreateControllers();
         mFallbackRecentsView.init(mActionsView, controller);
+
+        mTISBindHelper = new TISBindHelper(this, this::onTISConnected);
+    }
+
+    private void onTISConnected(TouchInteractionService.TISBinder binder) {
+        mTaskbarManager = binder.getTaskbarManager();
+        mTaskbarManager.setActivity(this);
     }
 
     @Override
@@ -346,6 +357,11 @@ public final class RecentsActivity extends StatefulActivity<RecentsState> {
         super.onDestroy();
         ACTIVITY_TRACKER.onActivityDestroyed(this);
         mActivityLaunchAnimationRunner = null;
+
+        mTISBindHelper.onDestroy();
+        if (mTaskbarManager != null) {
+            mTaskbarManager.clearActivity(this);
+        }
     }
 
     @Override

@@ -254,6 +254,14 @@ public class TaskbarViewController {
     }
 
     /**
+     * Returns whether the given MotionEvent, *in screen coorindates*, is within any Taskbar item's
+     * touch bounds.
+     */
+    public boolean isEventOverAnyItem(MotionEvent ev) {
+        return mTaskbarView.isEventOverAnyItem(ev);
+    }
+
+    /**
      * Callbacks for {@link TaskbarView} to interact with its controller.
      */
     public class TaskbarViewCallbacks {
