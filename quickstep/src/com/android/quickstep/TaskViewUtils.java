@@ -170,7 +170,7 @@ public final class TaskViewUtils {
 
         RemoteTargetHandle[] remoteTargetHandles;
         RemoteTargetHandle[] recentsViewHandles = recentsView.getRemoteTargetHandles();
-        if (v.isRunningTask()) {
+        if (v.isRunningTask() && recentsViewHandles != null) {
             // Re-use existing handles
             remoteTargetHandles = recentsViewHandles;
         } else {
