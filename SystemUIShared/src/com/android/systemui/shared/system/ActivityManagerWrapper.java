@@ -296,7 +296,7 @@ public class ActivityManagerWrapper {
     public void closeSystemWindows(final String reason) {
         try {
             ActivityManager.getService().closeSystemDialogs(reason);
-        } catch (RemoteException e) {
+        } catch (RemoteException | SecurityException e) {
             Log.w(TAG, "Failed to close system windows", e);
         }
     }
