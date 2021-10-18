@@ -36,12 +36,14 @@ import android.animation.ObjectAnimator;
 import android.annotation.DrawableRes;
 import android.annotation.IdRes;
 import android.annotation.LayoutRes;
+import android.content.res.ColorStateList;
 import android.graphics.Rect;
 import android.graphics.Region;
 import android.graphics.Region.Op;
 import android.graphics.drawable.AnimatedVectorDrawable;
 import android.provider.Settings;
 import android.util.Property;
+import android.view.Gravity;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnHoverListener;
@@ -58,6 +60,7 @@ import com.android.launcher3.taskbar.contextual.RotationButton;
 import com.android.launcher3.taskbar.contextual.RotationButtonController;
 import com.android.launcher3.util.MultiValueAlpha;
 import com.android.launcher3.util.SettingsCache;
+import com.android.launcher3.util.Themes;
 import com.android.quickstep.AnimatedFloat;
 
 import java.util.ArrayList;
@@ -148,11 +151,32 @@ public class NavbarButtonsViewController {
                 flags -> (flags & FLAG_KEYGUARD_VISIBLE) == 0, AnimatedFloat.VALUE, 1, 0));
 
         // Force nav buttons (specifically back button) to be visible during setup wizard.
-        boolean areButtonsForcedVisible = !SettingsCache.INSTANCE.get(mContext).getValue(
+        boolean isInSetup = !SettingsCache.INSTANCE.get(mContext).getValue(
                 Settings.Secure.getUriFor(Settings.Secure.USER_SETUP_COMPLETE), 0);
-        if (isThreeButtonNav || areButtonsForcedVisible) {
+        if (isThreeButtonNav || isInSetup) {
             initButtons(mNavButtonContainer, mEndContextualContainer,
                     mControllers.navButtonController);
+
+            if (isInSetup) {
+                // Since setup wizard only has back button enabled, it looks strange to be
+                // end-aligned, so start-align instead.
+                FrameLayout.LayoutParams navButtonsLayoutParams = (FrameLayout.LayoutParams)
+                        mNavButtonContainer.getLayoutParams();
+                navButtonsLayoutParams.setMarginStart(navButtonsLayoutParams.getMarginEnd());
+                navButtonsLayoutParams.setMarginEnd(0);
+                navButtonsLayoutParams.gravity = Gravity.START;
+                mNavButtonContainer.requestLayout();
+
+                if (!isThreeButtonNav) {
+                    // Tint all the nav buttons since there's no taskbar background in SUW.
+                    for (int i = 0; i < mNavButtonContainer.getChildCount(); i++) {
+                        if (!(mNavButtonContainer.getChildAt(i) instanceof ImageView)) continue;
+                        ImageView button = (ImageView) mNavButtonContainer.getChildAt(i);
+                        button.setImageTintList(ColorStateList.valueOf(Themes.getAttrColor(
+                                button.getContext(), android.R.attr.textColorPrimary)));
+                    }
+                }
+            }
 
             // Animate taskbar background when IME shows
             mPropertyHolders.add(new StatePropertyHolder(
@@ -284,6 +308,13 @@ public class NavbarButtonsViewController {
      */
     public boolean isImeVisible() {
         return (mState & FLAG_IME_VISIBLE) != 0;
+    }
+
+    /**
+     * Returns true if the home button is disabled
+     */
+    public boolean isHomeDisabled() {
+        return (mState & FLAG_DISABLE_HOME) != 0;
     }
 
     /**
