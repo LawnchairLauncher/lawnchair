@@ -30,6 +30,7 @@ public class TaskbarControllers {
     public final NavbarButtonsViewController navbarButtonsViewController;
     public final RotationButtonController rotationButtonController;
     public final TaskbarDragLayerController taskbarDragLayerController;
+    public final TaskbarScrimViewController taskbarScrimViewController;
     public final TaskbarViewController taskbarViewController;
     public final TaskbarUnfoldAnimationController taskbarUnfoldAnimationController;
     public final TaskbarKeyguardController taskbarKeyguardController;
@@ -47,6 +48,7 @@ public class TaskbarControllers {
             RotationButtonController rotationButtonController,
             TaskbarDragLayerController taskbarDragLayerController,
             TaskbarViewController taskbarViewController,
+            TaskbarScrimViewController taskbarScrimViewController,
             TaskbarUnfoldAnimationController taskbarUnfoldAnimationController,
             TaskbarKeyguardController taskbarKeyguardController,
             StashedHandleViewController stashedHandleViewController,
@@ -59,6 +61,7 @@ public class TaskbarControllers {
         this.rotationButtonController = rotationButtonController;
         this.taskbarDragLayerController = taskbarDragLayerController;
         this.taskbarViewController = taskbarViewController;
+        this.taskbarScrimViewController = taskbarScrimViewController;
         this.taskbarUnfoldAnimationController = taskbarUnfoldAnimationController;
         this.taskbarKeyguardController = taskbarKeyguardController;
         this.stashedHandleViewController = stashedHandleViewController;
@@ -78,6 +81,7 @@ public class TaskbarControllers {
         }
         taskbarDragLayerController.init(this);
         taskbarViewController.init(this);
+        taskbarScrimViewController.init(this);
         taskbarUnfoldAnimationController.init(this);
         taskbarKeyguardController.init(navbarButtonsViewController);
         stashedHandleViewController.init(this);
