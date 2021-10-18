@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Rect
 import android.view.MotionEvent
 import android.view.View
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ModalBottomSheetValue
@@ -13,6 +14,7 @@ import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.dp
 import app.lawnchair.LawnchairLauncher
 import app.lawnchair.launcher
 import app.lawnchair.theme.color.ColorTokens
@@ -139,10 +141,13 @@ fun LawnchairLauncher.showBottomSheet(
             sheetContent = {
                 content(state)
             },
-            scrimColor = scrimColor()
+            scrimColor = scrimColor(),
+            sheetShape = LauncherSheetShape
         )
     }
 }
+
+private val LauncherSheetShape = RoundedCornerShape(24.dp)
 
 @Composable
 fun ComposeFloatingView.SystemUi(setStatusBar: Boolean = true, setNavBar: Boolean = true) {

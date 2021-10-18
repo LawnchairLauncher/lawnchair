@@ -2,6 +2,7 @@ package app.lawnchair.ui.preferences.components
 
 import androidx.compose.animation.core.AnimationSpec
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.shape.CornerBasedShape
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.material.*
 import androidx.compose.runtime.*
@@ -24,6 +25,7 @@ import java.lang.Integer.max
 fun BottomSheet(
     sheetState: BottomSheetState = rememberBottomSheetState(initialValue = ModalBottomSheetValue.Hidden),
     scrimColor: Color = BottomSheetDefaults.scrimColor,
+    sheetShape: CornerBasedShape = MaterialTheme.shapes.large,
     sheetContent: @Composable () -> Unit,
 ) {
     val currentSheetContent by rememberUpdatedState(sheetContent)
@@ -36,7 +38,7 @@ fun BottomSheet(
                 sheetState = modalBottomSheetState,
                 sheetContent = { StatusBarOffset(currentSheetContent) },
                 scrimColor = scrimColor,
-                sheetShape = MaterialTheme.shapes.large.copy(
+                sheetShape = sheetShape.copy(
                     bottomStart = CornerSize(0.dp),
                     bottomEnd = CornerSize(0.dp)
                 )
