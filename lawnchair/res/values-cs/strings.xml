@@ -64,7 +64,7 @@
     <string name="auto_adaptive_icons_description">Pro všechny neadaptivní ikony.</string>
     <string name="support_and_pr">Podpora &amp; PR</string>
     <string name="workspace_dt2s">Uspat dvojitým poklepáním</string>
-    <string name="smart_space_enable">Chytrý widget na domovské stránce</string>
+    <string name="smart_space_enable">Okénko glanc sdělení</string>
     <string name="design_and_development">Design &amp; Vývoj</string>
     <string name="translate">Přeložit</string>
     <string name="product">Produkt</string>
@@ -78,10 +78,10 @@
     </plurals>
     <string name="hotseat_qsb_label">Zobrazit vyhledávací lištu</string>
     <string name="dt2s_admin_hint_title">Vyžadována oprávnění správce</string>
-    <string name="dt2s_admin_hint">To use Double-Tap to Sleep, set Lawnchair as a device admin app. Tap Open Settings, then tap “Activate this device admin app.”</string>
+    <string name="dt2s_admin_hint">K použití funkce dvojitého poklepání pro uspání zařízení, nastavte Lawnchair jako aplikaci administrátora. Klepněte na tlačítko \"Otevřít nastavení\" a poté na tlačítko „Aktivovat aplikaci správce zařízení.“</string>
     <string name="dt2s_admin_warning">Uspání dvojitým poklepáním bude vypnuto.</string>
     <string name="dt2s_a11y_hint_title">Zapnout službu usnadnění</string>
-    <string name="dt2s_a11y_hint">To use Double-Tap to Sleep, turn on the Lawnchair accessibility service. Tap Open Settings, then select Lawnchair and turn on Use Lawnchair.</string>
+    <string name="dt2s_a11y_hint">Chcete-li použít dvojité poklepání k uspání zařízení, zapněte službu usnadnění přístupu k Lawnchair. Klepněte na \"Otevřít nastavení\" a aktivujte volbu Lawnchair jakožto službu poskytující uživatelská usnadnění.</string>
     <string name="dt2s_warning_open_settings">Otevřít nastavení</string>
     <string name="minus_one_enable">Kanál</string>
     <string name="minus_one_unavailable">Není nainstalován žádný kanál.</string>
@@ -96,7 +96,7 @@
     <string name="clear_all_as_action_label">Tlačítko Vymazat vše na spodu obrazovky</string>
     <string name="window_corner_radius_label">Poloměr rohů obrazovky</string>
     <string name="override_window_corner_radius_label">Vlastní poloměr rohů obrazovky</string>
-    <string name="window_corner_radius_description">When you swipe up to open Recents, the current app follows your finger, shrinking into a card. Use this slider to adjust the corner radius of the card when it’s nearly full-screen such that it matches the corners of your screen.</string>
+    <string name="window_corner_radius_description">Když přejetím prstem nahoru otevřete nedávné aplikace, aktuální aplikace následuje prst a mění se na kartu. Použijte tento posuvník pro nastavení poloměru rohů karty tak, aby při velikosti blízké plné obrazovce polomer rohů karty odpovídal co nejvíc poloměru zakřivení rohů obrazovky.</string>
     <string name="system_icons">Systémové Ikony</string>
     <string name="accent_color">Barva odstínu</string>
     <string name="done">Hotovo</string>
@@ -111,7 +111,23 @@
     <string name="what_to_show">Co ukázat</string>
     <string name="missing_notification_access_label">Je vyžadován přístup k oznámením</string>
     <string name="missing_notification_access_description">Je vyžadován přístup k oznámením.</string>
-    <string name="msg_missing_notification_access">To use Notification Dots, grant <xliff:g id="name" example="My App">%1$s</xliff:g> access to notifications.</string>
+    <string name="msg_missing_notification_access">Chcete-li používat oznamovací tečky, udělte <xliff:g id="name" example="My App">%1$s</xliff:g> přístup k oznámením.</string>
     <string name="title_change_settings">Změnit nastavení</string>
     <string name="debug_restart_launcher">Restartovat Lawnchair</string>
+    <string name="pref_fonts_missing_font">Písmo nebylo nalezeno.</string>
+    <string name="font_variant_italic">Kurzíva</string>
+    <string name="font_weight_thin">Tenké</string>
+    <string name="font_weight_extra_light">Extra Light</string>
+    <string name="font_weight_light">Světlé</string>
+    <string name="font_weight_regular">Běžné</string>
+    <string name="font_weight_medium">Střední</string>
+    <string name="font_weight_semi_bold">Středně tučné</string>
+    <string name="font_weight_bold">Tučné</string>
+    <string name="font_weight_extra_bold">Extra Bold</string>
+    <string name="font_weight_extra_black">Černé</string>
+    <string name="font_label">Písmo (experimentální)</string>
+    <string name="reset_font">Obnovit výchozí</string>
+    <string name="search_bar_placeholder">Vyhledávání</string>
+    <string name="pref_category_search">Vyhledávání</string>
+    <string name="pref_search_auto_show_keyboard">Automatically Show Keyboard</string>
 </resources>

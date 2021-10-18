@@ -112,4 +112,20 @@
     <string name="msg_missing_notification_access">Om meldingsstipjes te gebruiken, geef <xliff:g id="name" example="My App">%1$s</xliff:g> toegang tot meldingen.</string>
     <string name="title_change_settings">Instellingen wijzigen</string>
     <string name="debug_restart_launcher">Lawnchair herstarten</string>
+    <string name="pref_fonts_missing_font">Lettertype niet gevonden.</string>
+    <string name="font_variant_italic">Cursief</string>
+    <string name="font_weight_thin">Dun</string>
+    <string name="font_weight_extra_light">Extra Light</string>
+    <string name="font_weight_light">Licht</string>
+    <string name="font_weight_regular">Normaal</string>
+    <string name="font_weight_medium">Medium</string>
+    <string name="font_weight_semi_bold">Half dikgedrukt</string>
+    <string name="font_weight_bold">Dikgedrukt</string>
+    <string name="font_weight_extra_bold">Extra Bold</string>
+    <string name="font_weight_extra_black">Zwart</string>
+    <string name="font_label">Font (Experimental)</string>
+    <string name="reset_font">Resetten</string>
+    <string name="search_bar_placeholder">Zoeken</string>
+    <string name="pref_category_search">Zoeken</string>
+    <string name="pref_search_auto_show_keyboard">Toetsenbord automatisch weergeven</string>
 </resources>

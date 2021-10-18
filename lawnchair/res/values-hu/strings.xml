@@ -112,4 +112,20 @@
     <string name="msg_missing_notification_access">To use Notification Dots, grant <xliff:g id="name" example="My App">%1$s</xliff:g> access to notifications.</string>
     <string name="title_change_settings">Beállítások megváltoztatása</string>
     <string name="debug_restart_launcher">Lawnchair Újraindítása</string>
+    <string name="pref_fonts_missing_font">Betűtípus nem található.</string>
+    <string name="font_variant_italic">Dőlt betű</string>
+    <string name="font_weight_thin">Vékony betű</string>
+    <string name="font_weight_extra_light">Extra vékony</string>
+    <string name="font_weight_light">Világos</string>
+    <string name="font_weight_regular">Szokásos</string>
+    <string name="font_weight_medium">Közepes</string>
+    <string name="font_weight_semi_bold">Félkövér</string>
+    <string name="font_weight_bold">Kövér</string>
+    <string name="font_weight_extra_bold">Extra kövér</string>
+    <string name="font_weight_extra_black">Fekete</string>
+    <string name="font_label">Betűtípus (kísérleti)</string>
+    <string name="reset_font">Visszaállítás</string>
+    <string name="search_bar_placeholder">Keresés</string>
+    <string name="pref_category_search">Keresés</string>
+    <string name="pref_search_auto_show_keyboard">Billentyűzet automatikus mutatása</string>
 </resources>

@@ -64,7 +64,7 @@
     <string name="auto_adaptive_icons_description">Pour toutes les icônes non-adaptatives.</string>
     <string name="support_and_pr">Support &amp; PR</string>
     <string name="workspace_dt2s">Double-Tapez pour mettre en veille</string>
-    <string name="smart_space_enable">Widget Coup d’œil</string>
+    <string name="smart_space_enable">Widget en bref</string>
     <string name="design_and_development">Conception &amp; Développement</string>
     <string name="translate">Traduire</string>
     <string name="product">Produit</string>
@@ -76,10 +76,10 @@
     </plurals>
     <string name="hotseat_qsb_label">Afficher la barre de recherche</string>
     <string name="dt2s_admin_hint_title">Admin permission required</string>
-    <string name="dt2s_admin_hint">To use Double-Tap to Sleep, set Lawnchair as a device admin app. Tap Open Settings, then tap “Activate this device admin app.”</string>
+    <string name="dt2s_admin_hint">Pour utiliser le double appui pour mettre en veille, définissez Lawnchair avec les permissions d\'administrateur. Appuyez sur \"Ouvrir les paramètres\", puis appuyez sur \"Activer l\'application avec les permissions d\'administrateur\"</string>
     <string name="dt2s_admin_warning">Double Tap to Sleep will be disabled.</string>
     <string name="dt2s_a11y_hint_title">Accessibility service required</string>
-    <string name="dt2s_a11y_hint">To use Double-Tap to Sleep, turn on the Lawnchair accessibility service. Tap Open Settings, then select Lawnchair and turn on Use Lawnchair.</string>
+    <string name="dt2s_a11y_hint">Pour utiliser la veille sur double tape, activez le service d\'accessibilité Lawnchair. Appuyez sur \"Ouvrir paramètres\", sélectionnez ensuite “Lawnchair” et activez “Utiliser Lawnchair”.</string>
     <string name="dt2s_warning_open_settings">Ouvrir les paramètres</string>
     <string name="minus_one_enable">Fil</string>
     <string name="minus_one_unavailable">Aucun fil installé.</string>
@@ -92,9 +92,9 @@
     <string name="theme_follow_wallpaper">Fais correspondre au fond d\'écran</string>
     <string name="quickstep_label">Récents</string>
     <string name="clear_all_as_action_label">Bouton \"Tout effacer\" en bas</string>
-    <string name="window_corner_radius_label">Screen Corner Radius</string>
-    <string name="override_window_corner_radius_label">Custom Screen Corner Radius</string>
-    <string name="window_corner_radius_description">When you swipe up to open Recents, the current app follows your finger, shrinking into a card. Use this slider to adjust the corner radius of the card when it’s nearly full-screen such that it matches the corners of your screen.</string>
+    <string name="window_corner_radius_label">Courbure des coins d\'écran</string>
+    <string name="override_window_corner_radius_label">Rayon d\'angle de l\'écran personnalisé</string>
+    <string name="window_corner_radius_description">Lorsque vous faites glisser vers le haut pour ouvrir Récents, l\'application actuelle suit votre doigt et se replie sur une carte. Utilisez ce curseur pour régler le rayon d\'angle de la carte quand il est presque en plein écran de telle sorte qu\'il corresponde aux coins de votre écran.</string>
     <string name="system_icons">Icônes système</string>
     <string name="accent_color">Couleur d\'accentuation</string>
     <string name="done">Terminé</string>
@@ -107,9 +107,25 @@
     <string name="show_sys_ui_scrim">Ombre du haut</string>
     <string name="show_status_bar">Barre d\'état</string>
     <string name="what_to_show">Quoi afficher</string>
-    <string name="missing_notification_access_label">Notification Access Needed</string>
-    <string name="missing_notification_access_description">Notification access needed.</string>
-    <string name="msg_missing_notification_access">To use Notification Dots, grant <xliff:g id="name" example="My App">%1$s</xliff:g> access to notifications.</string>
-    <string name="title_change_settings">Change Settings</string>
-    <string name="debug_restart_launcher">Restart Lawnchair</string>
+    <string name="missing_notification_access_label">Accès aux notifications requis</string>
+    <string name="missing_notification_access_description">Accès aux notifications requis.</string>
+    <string name="msg_missing_notification_access">Pour utiliser les points de notification, accordez <xliff:g id="name" example="My App">%1$s</xliff:g> l\'accès aux notifications.</string>
+    <string name="title_change_settings">Modifier les réglages</string>
+    <string name="debug_restart_launcher">Redémarrer Lawnchair</string>
+    <string name="pref_fonts_missing_font">Police introuvable.</string>
+    <string name="font_variant_italic">Italique</string>
+    <string name="font_weight_thin">Mince</string>
+    <string name="font_weight_extra_light">Extra Light</string>
+    <string name="font_weight_light">Clair</string>
+    <string name="font_weight_regular">Régulier</string>
+    <string name="font_weight_medium">Moyen</string>
+    <string name="font_weight_semi_bold">Semi-gras</string>
+    <string name="font_weight_bold">Gras</string>
+    <string name="font_weight_extra_bold">Extra Bold</string>
+    <string name="font_weight_extra_black">Noir</string>
+    <string name="font_label">Font (Experimental)</string>
+    <string name="reset_font">Restaurer</string>
+    <string name="search_bar_placeholder">Rechercher</string>
+    <string name="pref_category_search">Rechercher</string>
+    <string name="pref_search_auto_show_keyboard">Automatically Show Keyboard</string>
 </resources>

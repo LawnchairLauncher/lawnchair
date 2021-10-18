@@ -113,4 +113,20 @@
     <string name="msg_missing_notification_access">Pentru a utiliza Puncte Notificare, acordă accesul la notificări pentru <xliff:g id="name" example="My App">%1$s</xliff:g>.</string>
     <string name="title_change_settings">Modifică setările</string>
     <string name="debug_restart_launcher">Repornește Lawnchair</string>
+    <string name="pref_fonts_missing_font">Fontul nu a fost găsit.</string>
+    <string name="font_variant_italic">Italic</string>
+    <string name="font_weight_thin">Subțire</string>
+    <string name="font_weight_extra_light">Extra Light</string>
+    <string name="font_weight_light">Luminoasă</string>
+    <string name="font_weight_regular">Normal</string>
+    <string name="font_weight_medium">Mediu</string>
+    <string name="font_weight_semi_bold">Semibold</string>
+    <string name="font_weight_bold">Bold</string>
+    <string name="font_weight_extra_bold">Extra Bold</string>
+    <string name="font_weight_extra_black">Black</string>
+    <string name="font_label">Font (Experimental)</string>
+    <string name="reset_font">Resetați</string>
+    <string name="search_bar_placeholder">Caută</string>
+    <string name="pref_category_search">Caută</string>
+    <string name="pref_search_auto_show_keyboard">Automatically Show Keyboard</string>
 </resources>

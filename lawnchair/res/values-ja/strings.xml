@@ -111,4 +111,20 @@
     <string name="msg_missing_notification_access">To use Notification Dots, grant <xliff:g id="name" example="My App">%1$s</xliff:g> access to notifications.</string>
     <string name="title_change_settings">設定を変更</string>
     <string name="debug_restart_launcher">Lawnchairを再起動</string>
+    <string name="pref_fonts_missing_font">Font not found.</string>
+    <string name="font_variant_italic">Italic</string>
+    <string name="font_weight_thin">Thin</string>
+    <string name="font_weight_extra_light">Extra Light</string>
+    <string name="font_weight_light">ライト</string>
+    <string name="font_weight_regular">Regular</string>
+    <string name="font_weight_medium">Medium</string>
+    <string name="font_weight_semi_bold">Semibold</string>
+    <string name="font_weight_bold">Bold</string>
+    <string name="font_weight_extra_bold">Extra Bold</string>
+    <string name="font_weight_extra_black">Black</string>
+    <string name="font_label">Font (Experimental)</string>
+    <string name="reset_font">Reset</string>
+    <string name="search_bar_placeholder">Search</string>
+    <string name="pref_category_search">Search</string>
+    <string name="pref_search_auto_show_keyboard">Automatically Show Keyboard</string>
 </resources>

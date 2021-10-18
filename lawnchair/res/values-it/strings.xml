@@ -109,7 +109,23 @@
     <string name="what_to_show">Cosa mostrare</string>
     <string name="missing_notification_access_label">Accesso alle notifiche necessario</string>
     <string name="missing_notification_access_description">Accesso alle notifiche necessario.</string>
-    <string name="msg_missing_notification_access">To use Notification Dots, grant <xliff:g id="name" example="My App">%1$s</xliff:g> access to notifications.</string>
+    <string name="msg_missing_notification_access">Per usare i badge di notifica, concedi l\'accesso alle notifiche a <xliff:g id="name" example="My App">%1$s</xliff:g>.</string>
     <string name="title_change_settings">Modifica impostazioni</string>
     <string name="debug_restart_launcher">Riavvia Lawnchair</string>
+    <string name="pref_fonts_missing_font">Carattere non trovato.</string>
+    <string name="font_variant_italic">Corsivo</string>
+    <string name="font_weight_thin">Sottile</string>
+    <string name="font_weight_extra_light">Extra sottile</string>
+    <string name="font_weight_light">Chiaro</string>
+    <string name="font_weight_regular">Regolare</string>
+    <string name="font_weight_medium">Medio</string>
+    <string name="font_weight_semi_bold">Semi-grassetto</string>
+    <string name="font_weight_bold">Grassetto</string>
+    <string name="font_weight_extra_bold">Extra grassetto</string>
+    <string name="font_weight_extra_black">Black</string>
+    <string name="font_label">Tipo di carattere (Sperimentale)</string>
+    <string name="reset_font">Reset</string>
+    <string name="search_bar_placeholder">Ricerca</string>
+    <string name="pref_category_search">Ricerca</string>
+    <string name="pref_search_auto_show_keyboard">Mostra la tastiera automaticamente</string>
 </resources>

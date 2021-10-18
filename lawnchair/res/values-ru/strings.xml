@@ -114,4 +114,20 @@
     <string name="msg_missing_notification_access">Чтобы использовать значки уведомлений, предоставте <xliff:g id="name" example="My App">%1$s</xliff:g> доступ к уведомлениям.</string>
     <string name="title_change_settings">Изменить параметры</string>
     <string name="debug_restart_launcher">Перезапустить Lawnchair</string>
+    <string name="pref_fonts_missing_font">Шрифт не найден</string>
+    <string name="font_variant_italic">Курсив</string>
+    <string name="font_weight_thin">Тонкий</string>
+    <string name="font_weight_extra_light">Extra Light</string>
+    <string name="font_weight_light">Светлая</string>
+    <string name="font_weight_regular">Стандартный</string>
+    <string name="font_weight_medium">Средний</string>
+    <string name="font_weight_semi_bold">Полужирный</string>
+    <string name="font_weight_bold">Жирный</string>
+    <string name="font_weight_extra_bold">Extra Bold</string>
+    <string name="font_weight_extra_black">Сверхжирный</string>
+    <string name="font_label">Font (Experimental)</string>
+    <string name="reset_font">Сброс</string>
+    <string name="search_bar_placeholder">Поиск</string>
+    <string name="pref_category_search">Поиск</string>
+    <string name="pref_search_auto_show_keyboard">Automatically Show Keyboard</string>
 </resources>
