@@ -224,6 +224,14 @@ public class TaskbarStashController {
         return (flags & flagMask) != 0;
     }
 
+
+    /**
+     * Returns whether the taskbar is currently visible and in an app.
+     */
+    public boolean isInAppAndNotStashed() {
+        return !mIsStashed && (mState & FLAG_IN_APP) != 0;
+    }
+
     public int getContentHeight() {
         if (isStashed()) {
             boolean isAnimating = mAnimator != null && mAnimator.isStarted();
