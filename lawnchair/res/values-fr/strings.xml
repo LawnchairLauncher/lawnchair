@@ -103,7 +103,7 @@
     <string name="custom">Personnalisé</string>
     <string name="custom_color">Couleur personnalisée</string>
     <string name="quickstep_description">Bouton \"Tout effacer\", Courbure des coins</string>
-    <string name="wallpaper_scrolling_label">Faire défiler le fond d\'écran</string>
+    <string name="wallpaper_scrolling_label">Défiler le fond d\'écran</string>
     <string name="show_sys_ui_scrim">Ombre du haut</string>
     <string name="show_status_bar">Barre d\'état</string>
     <string name="what_to_show">Quoi afficher</string>
@@ -114,7 +114,7 @@
     <string name="debug_restart_launcher">Redémarrer Lawnchair</string>
     <string name="pref_fonts_missing_font">Police introuvable.</string>
     <string name="font_variant_italic">Italique</string>
-    <string name="font_weight_thin">Mince</string>
+    <string name="font_weight_thin">Fin</string>
     <string name="font_weight_extra_light">Très fin</string>
     <string name="font_weight_light">Clair</string>
     <string name="font_weight_regular">Régulier</string>
