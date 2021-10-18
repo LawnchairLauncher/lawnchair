@@ -122,7 +122,7 @@
     <string name="font_weight_bold">Đậm</string>
     <string name="font_weight_extra_bold">Siêu Đậm</string>
     <string name="font_weight_extra_black">Cực kì đậm</string>
-    <string name="font_label">Font (Experimental)</string>
+    <string name="font_label">Phông chữ (Thử nghiệm)</string>
     <string name="reset_font">Đặt lại</string>
     <string name="search_bar_placeholder">Tìm kiếm</string>
     <string name="pref_category_search">Tìm kiếm</string>
