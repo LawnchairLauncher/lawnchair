@@ -30,6 +30,8 @@ import android.graphics.Path;
 import android.graphics.PixelFormat;
 import android.graphics.drawable.Drawable;
 
+import com.android.launcher3.Utilities;
+
 /**
  * A drawable for a very specific purpose. Used for the caret arrow on a rounded rectangle popup
  * bubble.
@@ -85,7 +87,11 @@ public class RoundedArrowDrawable extends Drawable {
 
     @Override
     public void getOutline(Outline outline) {
-        outline.setPath(mPath);
+        if (Utilities.ATLEAST_R) {
+            outline.setPath(mPath);
+        } else {
+            outline.setConvexPath(mPath);
+        }
     }
 
     @Override
