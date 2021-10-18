@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.drawable.BitmapDrawable
+import android.view.LayoutInflater
 import android.widget.ImageView
 import android.widget.RemoteViews
 import android.widget.TextView
@@ -13,12 +14,16 @@ import com.android.launcher3.R
 import com.android.launcher3.ResourceUtils
 import com.android.launcher3.icons.ShadowGenerator
 import com.android.launcher3.util.Themes
+import com.android.launcher3.views.DoubleShadowBubbleTextView
 
 class ThemedSmartSpaceHostView(context: Context) : SmartSpaceHostView(context) {
 
     private val isWorkspaceDarkText = Themes.getAttrBoolean(context, R.attr.isWorkspaceDarkText)
     private val workspaceTextColor = Themes.getAttrColor(context, R.attr.workspaceTextColor)
     private val shadowGenerator = ShadowGenerator(ResourceUtils.pxFromDp(48f, resources.displayMetrics))
+
+    private val templateTextView = LayoutInflater.from(context)
+        .inflate(R.layout.smartspace_text_template, this, false) as DoubleShadowBubbleTextView
 
     override fun updateAppWidget(remoteViews: RemoteViews?) {
         super.updateAppWidget(remoteViews)
@@ -41,6 +46,14 @@ class ThemedSmartSpaceHostView(context: Context) : SmartSpaceHostView(context) {
     private fun overrideTextView(tv: TextView) {
         if (isWorkspaceDarkText) {
             tv.paint.clearShadowLayer()
+        } else {
+            val shadowInfo = templateTextView.shadowInfo
+            tv.paint.setShadowLayer(
+                shadowInfo.ambientShadowBlur,
+                shadowInfo.keyShadowOffsetX,
+                shadowInfo.keyShadowOffsetY,
+                shadowInfo.ambientShadowColor
+            )
         }
         tv.setTextColor(workspaceTextColor)
         FontManager.INSTANCE.get(context).setCustomFont(tv, R.id.font_heading)

@@ -133,4 +133,8 @@ public class DoubleShadowBubbleTextView extends BubbleTextView {
         return setColorAlphaBound(shadowColor,
                 Math.round(Color.alpha(shadowColor) * textAlpha / 255f));
     }
+
+    public ShadowInfo getShadowInfo() {
+        return mShadowInfo;
+    }
 }

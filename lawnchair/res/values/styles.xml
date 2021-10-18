@@ -166,4 +166,15 @@
     <style name="TextAppearance.Lawnchair" parent="@android:style/TextAppearance.Material">
         <item name="customFontType">@id/font_body</item>
     </style>
+
+    <style name="SmartspaceTextHeadline">
+        <item name="android:textColor">?attr/workspaceTextColor</item>
+        <item name="android:letterSpacing">@dimen/smartspaceLetterSpacing</item>
+        <item name="ambientShadowBlur">@dimen/smartspaceAmbientShadowBlur</item>
+        <item name="ambientShadowColor">?attr/workspaceAmbientShadowColor</item>
+        <item name="keyShadowBlur">@dimen/smartspaceKeyShadowBlur</item>
+        <item name="keyShadowColor">?attr/workspaceKeyShadowColor</item>
+        <item name="keyShadowOffsetX">@dimen/smartspaceKeyShadowOffset</item>
+        <item name="keyShadowOffsetY">@dimen/smartspaceKeyShadowOffset</item>
+    </style>
 </resources>
