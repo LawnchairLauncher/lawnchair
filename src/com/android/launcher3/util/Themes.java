@@ -16,11 +16,9 @@
 
 package com.android.launcher3.util;
 
-import static android.app.WallpaperColors.HINT_SUPPORTS_DARK_TEXT;
-import static android.app.WallpaperColors.HINT_SUPPORTS_DARK_THEME;
+import static app.lawnchair.theme.WallpaperManagerCompat.HINT_SUPPORTS_DARK_TEXT;
+import static app.lawnchair.theme.WallpaperManagerCompat.HINT_SUPPORTS_DARK_THEME;
 
-import android.app.WallpaperColors;
-import android.app.WallpaperManager;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Color;
@@ -35,7 +33,7 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.icons.GraphicsUtils;
 
-import app.lawnchair.preferences.PreferenceManager;
+import app.lawnchair.theme.WallpaperManagerCompat;
 import app.lawnchair.ui.theme.ColorKt;
 
 /**
@@ -47,22 +45,13 @@ public class Themes {
     public static final String KEY_THEMED_ICONS = "themed_icons";
 
     public static int getActivityThemeRes(Context context) {
-        final int colorHints;
-        if (Utilities.ATLEAST_P) {
-            WallpaperColors colors = context.getSystemService(WallpaperManager.class)
-                    .getWallpaperColors(WallpaperManager.FLAG_SYSTEM);
-            colorHints = colors == null ? 0 : colors.getColorHints();
-        } else {
-            colorHints = 0;
-        }
+        final int colorHints = WallpaperManagerCompat.INSTANCE.get(context).getColorHints();
         return getActivityThemeRes(context, colorHints);
     }
 
     public static int getActivityThemeRes(Context context, int wallpaperColorHints) {
-        boolean supportsDarkText = Utilities.ATLEAST_S
-                && (wallpaperColorHints & HINT_SUPPORTS_DARK_TEXT) != 0;
-        boolean isMainColorDark = Utilities.ATLEAST_S
-                && (wallpaperColorHints & HINT_SUPPORTS_DARK_THEME) != 0;
+        boolean supportsDarkText = (wallpaperColorHints & HINT_SUPPORTS_DARK_TEXT) != 0;
+        boolean isMainColorDark = (wallpaperColorHints & HINT_SUPPORTS_DARK_THEME) != 0;
 
         if (Utilities.isDarkTheme(context)) {
             return supportsDarkText ? R.style.AppTheme_Dark_DarkText

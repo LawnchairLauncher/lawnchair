@@ -18,12 +18,8 @@ package com.android.launcher3;
 
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_APP_LAUNCH_TAP;
 import static com.android.launcher3.util.DisplayController.CHANGE_ROTATION;
-import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 
 import android.app.ActivityOptions;
-import android.app.WallpaperColors;
-import android.app.WallpaperManager;
-import android.app.WallpaperManager.OnColorsChangedListener;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
@@ -68,12 +64,14 @@ import com.android.launcher3.util.Themes;
 import com.android.launcher3.util.TraceHelper;
 import com.android.launcher3.util.WindowBounds;
 
+import app.lawnchair.theme.WallpaperManagerCompat;
+
 /**
  * Extension of BaseActivity allowing support for drag-n-drop
  */
 @SuppressWarnings("NewApi")
 public abstract class BaseDraggingActivity extends BaseActivity
-        implements OnColorsChangedListener, DisplayInfoChangeListener {
+        implements WallpaperManagerCompat.OnColorsChangedListener, DisplayInfoChangeListener {
 
     private static final String TAG = "BaseDraggingActivity";
 
@@ -98,10 +96,7 @@ public abstract class BaseDraggingActivity extends BaseActivity
         DisplayController.INSTANCE.get(this).addChangeListener(this);
 
         // Update theme
-        if (Utilities.ATLEAST_P) {
-            getSystemService(WallpaperManager.class)
-                    .addOnColorsChangedListener(this, MAIN_EXECUTOR.getHandler());
-        }
+        WallpaperManagerCompat.INSTANCE.get(this).addOnChangeListener(this);
         int themeRes = Themes.getActivityThemeRes(this);
         if (themeRes != mThemeRes) {
             mThemeRes = themeRes;
@@ -120,7 +115,7 @@ public abstract class BaseDraggingActivity extends BaseActivity
     }
 
     @Override
-    public void onColorsChanged(WallpaperColors wallpaperColors, int which) {
+    public void onColorsChanged() {
         updateTheme();
     }
 
@@ -284,9 +279,7 @@ public abstract class BaseDraggingActivity extends BaseActivity
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (Utilities.ATLEAST_P) {
-            getSystemService(WallpaperManager.class).removeOnColorsChangedListener(this);
-        }
+        WallpaperManagerCompat.INSTANCE.get(this).removeOnChangeListener(this);
         DisplayController.INSTANCE.get(this).removeChangeListener(this);
     }
 
