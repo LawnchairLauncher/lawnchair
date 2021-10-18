@@ -1,6 +1,12 @@
 package app.lawnchair.theme
 
+import android.content.BroadcastReceiver
 import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
+import android.os.Handler
+import android.os.Looper
+import android.os.PatternMatcher
 import android.util.SparseArray
 import androidx.core.graphics.ColorUtils
 import app.lawnchair.preferences.PreferenceManager
@@ -32,7 +38,24 @@ class ThemeProvider(private val context: Context) {
     init {
         if (Utilities.ATLEAST_S) {
             colorSchemeMap.append(0, SystemColorScheme(context))
+            registerOverlayChangedListener()
         }
+    }
+
+    private fun registerOverlayChangedListener() {
+        val packageFilter = IntentFilter("android.intent.action.OVERLAY_CHANGED")
+        packageFilter.addDataScheme("package")
+        packageFilter.addDataSchemeSpecificPart("android", PatternMatcher.PATTERN_LITERAL)
+        context.registerReceiver(
+            object : BroadcastReceiver() {
+                override fun onReceive(context: Context, intent: Intent) {
+                    colorSchemeMap.append(0, SystemColorScheme(context))
+                }
+            },
+            packageFilter,
+            null,
+            Handler(Looper.getMainLooper())
+        )
     }
 
     val colorScheme get() = when {
@@ -40,12 +63,12 @@ class ThemeProvider(private val context: Context) {
         else -> getColorScheme(customAccentColor)
     }
 
-    val systemColorScheme get() = when {
+    private val systemColorScheme get() = when {
         Utilities.ATLEAST_S -> getColorScheme(0)
         else -> getColorScheme(context.getSystemAccent(darkTheme = false))
     }
 
-    fun getColorScheme(colorInt: Int): ColorScheme {
+    private fun getColorScheme(colorInt: Int): ColorScheme {
         var colorScheme = colorSchemeMap[colorInt]
         if (colorScheme == null) {
             val color = Srgb(colorInt)
