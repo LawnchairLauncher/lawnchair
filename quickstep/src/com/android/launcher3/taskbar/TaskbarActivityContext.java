@@ -321,6 +321,8 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
                 panelExpanded || inSettings);
         mControllers.taskbarViewController.setRecentsButtonDisabled(
                 mControllers.navbarButtonsViewController.isRecentsDisabled());
+        mControllers.stashedHandleViewController.setIsHomeButtonDisabled(
+                mControllers.navbarButtonsViewController.isHomeDisabled());
         mControllers.taskbarKeyguardController.updateStateForSysuiFlags(systemUiStateFlags);
         mControllers.taskbarStashController.updateStateForSysuiFlags(systemUiStateFlags);
     }
