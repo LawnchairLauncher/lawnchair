@@ -1,6 +1,7 @@
 package app.lawnchair.theme.color
 
 import android.content.Context
+import androidx.core.content.res.ResourcesCompat
 import dev.kdrag0n.colorkt.Color
 import dev.kdrag0n.colorkt.rgb.Srgb
 import dev.kdrag0n.monet.theme.ColorScheme
@@ -23,6 +24,6 @@ class SystemColorScheme(private val context: Context) : ColorScheme() {
     private fun loadSystemColor(paletteName: String, lum: Int): Srgb {
         val colorName = "system_${paletteName}_$lum"
         val colorId = resources.getIdentifier(colorName, "color", "android")
-        return Srgb(resources.getColor(colorId))
+        return Srgb(ResourcesCompat.getColor(resources, colorId, null))
     }
 }
