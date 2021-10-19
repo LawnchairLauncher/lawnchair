@@ -461,13 +461,6 @@ public class LauncherProvider extends ContentProvider {
                 app.getModel().forceReload();
                 return null;
             }
-            case LauncherSettings.Settings.METHOD_CLEAR_WORKSPACE:
-            {
-                Bundle result = new Bundle();
-                result.putIntArray(LauncherSettings.Settings.EXTRA_VALUE, clearWorkspace()
-                        .toArray());
-                return result;
-            }
         }
         return null;
     }
@@ -498,30 +491,6 @@ public class LauncherProvider extends ContentProvider {
             }
             t.commit();
             return folderIds;
-        } catch (SQLException ex) {
-            Log.e(TAG, ex.getMessage(), ex);
-            return new IntArray();
-        }
-    }
-
-    /**
-     * Deletes any items from the DB apart from hotseat.
-     * @return Ids of deleted items.
-     */
-    private IntArray clearWorkspace() {
-        SQLiteDatabase db = mOpenHelper.getWritableDatabase();
-        try (SQLiteTransaction t = new SQLiteTransaction(db)) {
-            String selection = LauncherSettings.Favorites.CONTAINER + " <> "
-                    + LauncherSettings.Favorites.CONTAINER_HOTSEAT;
-
-            IntArray itemIds = LauncherDbUtils.queryIntArray(db, Favorites.TABLE_NAME,
-                    Favorites._ID, selection, null, null);
-            if (!itemIds.isEmpty()) {
-                db.delete(Favorites.TABLE_NAME, Utilities.createDbSelectionQuery(
-                        LauncherSettings.Favorites._ID, itemIds), null);
-            }
-            t.commit();
-            return itemIds;
         } catch (SQLException ex) {
             Log.e(TAG, ex.getMessage(), ex);
             return new IntArray();

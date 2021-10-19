@@ -125,7 +125,7 @@ public class RequestPinItemTest extends AbstractLauncherUiTest {
 
     private void runTest(String activityMethod, boolean isWidget, ItemOperator itemMatcher,
             Intent... commandIntents) throws Throwable {
-        clearWorkspace();
+        clearHomescreen();
         mDevice.pressHome();
 
         // Open Pin item activity
