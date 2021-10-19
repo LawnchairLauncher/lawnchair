@@ -34,12 +34,20 @@ private val customOptions = customOptionsValues.map(ColorOption::preferenceOptio
 @ExperimentalMaterialApi
 @ExperimentalAnimationApi
 fun AccentColorPreference() {
+    val prefs = preferenceManager()
     ColorPreference(
         previewColor = MaterialTheme.colors.primary,
-        colorAdapter = preferenceManager().accentColor.getAdapter(),
-        lastCustomColorAdapter = preferenceManager().lastCustomAccent.getAdapter(),
+        colorAdapter = prefs.accentColor.getAdapter(),
+        lastCustomColorAdapter = prefs.lastCustomAccent.getAdapter(),
         label = stringResource(id = R.string.accent_color),
         options = options,
         customOptions = customOptions
-    )
+    ) {
+        PreferenceGroup {
+            SwitchPreference(
+                adapter = prefs.enableColorfulTheme.getAdapter(),
+                label = stringResource(id = R.string.enable_colorful_theme)
+            )
+        }
+    }
 }

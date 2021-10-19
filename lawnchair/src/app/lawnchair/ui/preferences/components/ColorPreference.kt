@@ -36,7 +36,7 @@ fun <T> ColorPreference(
     label: String,
     options: List<ColorPreferenceOption<T>>,
     customOptions: List<ColorPreferenceOption<T>>,
-    showDivider: Boolean = false
+    widget: @Composable () -> Unit = {}
 ) {
     val bottomSheetState = rememberBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
     val coroutineScope = rememberCoroutineScope()
@@ -55,7 +55,6 @@ fun <T> ColorPreference(
                     .background(previewColor)
             )
         },
-        showDivider = showDivider,
         verticalPadding = 12.dp
     )
 
@@ -100,6 +99,7 @@ fun <T> ColorPreference(
                     option = lastCustomColorOption,
                     onEditClick = { selectingCustomColor = true }
                 )
+                widget()
                 Spacer(modifier = Modifier.requiredHeight(16.dp))
             }
             Row(
@@ -260,11 +260,12 @@ fun <T> ColorSwatch(
     val color = if (darkTheme) option.darkColor() else option.lightColor()
     val elevationOverlay = LocalElevationOverlay.current
     val absoluteElevation = LocalAbsoluteElevation.current + elevation
-    val ringColorWithOverlay = if (ringColor == MaterialTheme.colors.surface && elevationOverlay != null) {
-        elevationOverlay.apply(ringColor, absoluteElevation)
-    } else {
-        ringColor
-    }
+    val ringColorWithOverlay =
+        if (ringColor == MaterialTheme.colors.surface && elevationOverlay != null) {
+            elevationOverlay.apply(ringColor, absoluteElevation)
+        } else {
+            ringColor
+        }
 
     Box(
         modifier = modifier

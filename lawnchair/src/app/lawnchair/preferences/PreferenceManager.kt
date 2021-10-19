@@ -95,6 +95,7 @@ class PreferenceManager private constructor(private val context: Context) : Base
         ColorOption::fromString,
         ColorOption::toString
     )
+    val enableColorfulTheme = BoolPref("pref_enableColorfulTheme", true, recreate)
     val wallpaperScrolling = BoolPref("pref_wallpaperScrolling", true)
     val showSysUiScrim = BoolPref("pref_showSysUiScrim", true)
     val showStatusBar = BoolPref("pref_showStatusBar", true, recreate)

@@ -10,11 +10,12 @@ import dev.kdrag0n.colorkt.gamut.LchGamut.clipToLinearSrgb
 import dev.kdrag0n.colorkt.rgb.Srgb
 import dev.kdrag0n.colorkt.tristimulus.CieXyz
 import dev.kdrag0n.colorkt.tristimulus.CieXyzAbs.Companion.toAbs
+import java.util.*
 
 class DynamicColorScheme(
     targets: ColorScheme,
-    seedColor: Color,
-    chromaFactor: Double = 1.0,
+    private val seedColor: Color,
+    private val chromaFactor: Double = 1.0,
     private val cond: Zcam.ViewingConditions,
     private val accurateShades: Boolean = true,
 ) : ColorScheme() {
@@ -89,6 +90,16 @@ class DynamicColorScheme(
             newColor.clipToLinearSrgb(LchGamut.ClipMethod.ADAPTIVE_TOWARDS_MID, alpha = 5.0)
         }
     }
+
+    override fun equals(other: Any?): Boolean {
+        return other is DynamicColorScheme
+                && other.seedColor == seedColor
+                && other.chromaFactor == chromaFactor
+                && other.cond == cond
+                && other.accurateShades == accurateShades
+    }
+
+    override fun hashCode() = Objects.hash(seedColor, chromaFactor, cond, accurateShades)
 
     companion object {
         private const val TAG = "DynamicColorScheme"

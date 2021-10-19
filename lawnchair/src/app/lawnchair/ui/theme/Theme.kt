@@ -51,7 +51,8 @@ fun getColors(darkTheme: Boolean): Colors {
     val context = LocalContext.current
     val prefs = PreferenceManager.getInstance(context)
     val accentColor = prefs.accentColor.observeAsState().value
-    val colorScheme = remember(accentColor) {
+    val enableColorfulTheme = prefs.enableColorfulTheme.observeAsState().value
+    val colorScheme = remember(accentColor, enableColorfulTheme) {
         ThemeProvider.INSTANCE.get(context).colorScheme
     }
 

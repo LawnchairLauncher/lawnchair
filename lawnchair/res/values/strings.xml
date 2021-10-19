@@ -160,4 +160,5 @@
     <string name="app_title_label">Title</string>
     <string name="hide_from_drawer">Hide from Drawer</string>
     <string name="action_lens">Lens</string>
+    <string name="enable_colorful_theme">Also Apply to Background</string>
 </resources>
