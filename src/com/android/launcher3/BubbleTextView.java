@@ -66,6 +66,7 @@ import com.android.launcher3.model.data.SearchActionItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.util.SafeCloseable;
 import com.android.launcher3.views.ActivityContext;
+import com.android.launcher3.views.BubbleTextHolder;
 import com.android.launcher3.views.IconLabelDotView;
 
 import java.text.NumberFormat;
@@ -162,7 +163,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
     private HandlerRunnable mIconLoadRequest;
 
     private boolean mEnableIconUpdateAnimation = false;
-    private ItemInfoUpdateReceiver mItemInfoUpdateReceiver;
+    private BubbleTextHolder mBubbleTextHolder;
 
     public BubbleTextView(Context context) {
         this(context, null, 0);
@@ -240,7 +241,6 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
         mDotParams.scale = 0f;
         mForceHideDot = false;
         setBackground(null);
-        mItemInfoUpdateReceiver = null;
     }
 
     private void cancelDotScaleAnim() {
@@ -340,14 +340,14 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
 
     private void setItemInfo(ItemInfoWithIcon itemInfo) {
         setTag(itemInfo);
-        if (mItemInfoUpdateReceiver != null) {
-            mItemInfoUpdateReceiver.reapplyItemInfo(itemInfo);
+        if (mBubbleTextHolder != null) {
+            mBubbleTextHolder.onItemInfoUpdated(itemInfo);
         }
     }
 
-    public void setItemInfoUpdateReceiver(
-            ItemInfoUpdateReceiver itemInfoUpdateReceiver) {
-        mItemInfoUpdateReceiver = itemInfoUpdateReceiver;
+    public void setBubbleTextHolder(
+            BubbleTextHolder bubbleTextHolder) {
+        mBubbleTextHolder = bubbleTextHolder;
     }
 
     @UiThread
