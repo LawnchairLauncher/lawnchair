@@ -25,15 +25,21 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.annotation.Nullable;
+import android.app.ActivityManager;
+import android.content.ComponentName;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
+import android.provider.Settings;
 import android.view.ViewConfiguration;
 
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.util.MultiValueAlpha.AlphaProperty;
+import com.android.launcher3.util.SettingsCache;
 import com.android.quickstep.AnimatedFloat;
 import com.android.quickstep.SystemUiProxy;
+import com.android.quickstep.interaction.AllSetActivity;
+import com.android.systemui.shared.system.ActivityManagerWrapper;
 
 import java.util.function.IntPredicate;
 
@@ -47,11 +53,12 @@ public class TaskbarStashController {
     public static final int FLAG_STASHED_IN_APP_MANUAL = 1 << 1; // long press, persisted
     public static final int FLAG_STASHED_IN_APP_PINNED = 1 << 2; // app pinning
     public static final int FLAG_STASHED_IN_APP_EMPTY = 1 << 3; // no hotseat icons
-    public static final int FLAG_IN_STASHED_LAUNCHER_STATE = 1 << 4;
+    public static final int FLAG_STASHED_IN_APP_SETUP = 1 << 4; // setup wizard and AllSetActivity
+    public static final int FLAG_IN_STASHED_LAUNCHER_STATE = 1 << 5;
 
     // If we're in an app and any of these flags are enabled, taskbar should be stashed.
     public static final int FLAGS_STASHED_IN_APP = FLAG_STASHED_IN_APP_MANUAL
-            | FLAG_STASHED_IN_APP_PINNED | FLAG_STASHED_IN_APP_EMPTY;
+            | FLAG_STASHED_IN_APP_PINNED | FLAG_STASHED_IN_APP_EMPTY | FLAG_STASHED_IN_APP_SETUP;
 
     /**
      * How long to stash/unstash when manually invoked via long press.
@@ -103,7 +110,7 @@ public class TaskbarStashController {
     private AnimatedFloat mIconScaleForStash;
     private AnimatedFloat mIconTranslationYForStash;
     // Stashed handle properties.
-    private AnimatedFloat mTaskbarStashedHandleAlpha;
+    private AlphaProperty mTaskbarStashedHandleAlpha;
     private AnimatedFloat mTaskbarStashedHandleHintScale;
 
     /** Whether we are currently visually stashed (might change based on launcher state). */
@@ -143,12 +150,14 @@ public class TaskbarStashController {
 
         StashedHandleViewController stashedHandleController =
                 controllers.stashedHandleViewController;
-        mTaskbarStashedHandleAlpha = stashedHandleController.getStashedHandleAlpha();
+        mTaskbarStashedHandleAlpha = stashedHandleController.getStashedHandleAlpha().getProperty(
+                StashedHandleViewController.ALPHA_INDEX_STASHED);
         mTaskbarStashedHandleHintScale = stashedHandleController.getStashedHandleHintScale();
 
         boolean isManuallyStashedInApp = supportsManualStashing()
                 && mPrefs.getBoolean(SHARED_PREFS_STASHED_KEY, DEFAULT_STASHED_PREF);
         updateStateForFlag(FLAG_STASHED_IN_APP_MANUAL, isManuallyStashedInApp);
+        updateStateForFlag(FLAG_STASHED_IN_APP_SETUP, isInSetup());
         applyState();
 
         SystemUiProxy.INSTANCE.get(mActivity)
@@ -177,6 +186,23 @@ public class TaskbarStashController {
     }
 
     /**
+     * Returns whether we are in Setup Wizard or the corresponding AllSetActivity that follows it.
+     */
+    private boolean isInSetup() {
+        boolean isInSetup = !SettingsCache.INSTANCE.get(mActivity).getValue(
+                Settings.Secure.getUriFor(Settings.Secure.USER_SETUP_COMPLETE), 0);
+        if (isInSetup) {
+            return true;
+        }
+        ActivityManager.RunningTaskInfo runningTask =
+                ActivityManagerWrapper.getInstance().getRunningTask();
+        if (runningTask == null || runningTask.baseActivity == null) {
+            return false;
+        }
+        return runningTask.baseActivity.equals(new ComponentName(mActivity, AllSetActivity.class));
+    }
+
+    /**
      * Returns whether the taskbar is currently visually stashed.
      */
     public boolean isStashed() {
@@ -198,8 +224,21 @@ public class TaskbarStashController {
         return (flags & flagMask) != 0;
     }
 
+
+    /**
+     * Returns whether the taskbar is currently visible and in an app.
+     */
+    public boolean isInAppAndNotStashed() {
+        return !mIsStashed && (mState & FLAG_IN_APP) != 0;
+    }
+
     public int getContentHeight() {
-        return isStashed() ? mStashedHeight : mUnstashedHeight;
+        if (isStashed()) {
+            boolean isAnimating = mAnimator != null && mAnimator.isStarted();
+            return mControllers.stashedHandleViewController.isStashedHandleVisible() || isAnimating
+                    ? mStashedHeight : 0;
+        }
+        return mUnstashedHeight;
     }
 
     public int getStashedHeight() {

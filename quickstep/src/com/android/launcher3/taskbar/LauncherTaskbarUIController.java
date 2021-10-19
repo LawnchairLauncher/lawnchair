@@ -18,6 +18,7 @@ package com.android.launcher3.taskbar;
 import static com.android.launcher3.LauncherState.HOTSEAT_ICONS;
 import static com.android.launcher3.taskbar.TaskbarStashController.FLAG_IN_APP;
 import static com.android.launcher3.taskbar.TaskbarStashController.FLAG_IN_STASHED_LAUNCHER_STATE;
+import static com.android.launcher3.taskbar.TaskbarStashController.FLAG_STASHED_IN_APP_SETUP;
 import static com.android.launcher3.taskbar.TaskbarViewController.ALPHA_INDEX_HOME;
 
 import android.animation.Animator;
@@ -128,7 +129,7 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
         mLauncher.setTaskbarUIController(this);
         mKeyguardController = taskbarControllers.taskbarKeyguardController;
 
-        onLauncherResumedOrPaused(mLauncher.hasBeenResumed());
+        onLauncherResumedOrPaused(mLauncher.hasBeenResumed(), true /* fromInit */);
         mIconAlignmentForResumedState.finishAnimation();
         onIconAlignmentRatioChanged();
 
@@ -170,6 +171,10 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
      * Should be called from onResume() and onPause(), and animates the Taskbar accordingly.
      */
     public void onLauncherResumedOrPaused(boolean isResumed) {
+        onLauncherResumedOrPaused(isResumed, false /* fromInit */);
+    }
+
+    private void onLauncherResumedOrPaused(boolean isResumed, boolean fromInit) {
         if (mKeyguardController.isScreenOff()) {
             if (!isResumed) {
                 return;
@@ -180,6 +185,11 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
         }
 
         long duration = QuickstepTransitionManager.CONTENT_ALPHA_DURATION;
+        if (fromInit) {
+            // Since we are creating the starting state, we don't have a state to animate from, so
+            // set our state immediately.
+            duration = 0;
+        }
         ObjectAnimator anim = mIconAlignmentForResumedState.animateToValue(
                 getCurrentIconAlignmentRatio(), isResumed ? 1 : 0)
                 .setDuration(duration);
@@ -191,6 +201,10 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
 
         TaskbarStashController stashController = mControllers.taskbarStashController;
         stashController.updateStateForFlag(FLAG_IN_APP, !isResumed);
+        if (isResumed) {
+            // Launcher is resumed, meaning setup must be finished.
+            stashController.updateStateForFlag(FLAG_STASHED_IN_APP_SETUP, false);
+        }
         stashController.applyState(duration);
     }
 
