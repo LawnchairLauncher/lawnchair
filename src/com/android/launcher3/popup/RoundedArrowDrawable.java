@@ -70,8 +70,10 @@ public class RoundedArrowDrawable extends Drawable {
 
         // Make the drawable with the triangle pointing down and positioned on the left..
         addDownPointingRoundedTriangleToPath(width, height, radius, mPath);
-        clipPopupBodyFromPath(popupRadius, popupWidth, popupHeight, arrowOffsetX, arrowOffsetY,
-                mPath);
+        if (Utilities.ATLEAST_Q) {
+            clipPopupBodyFromPath(popupRadius, popupWidth, popupHeight, arrowOffsetX, arrowOffsetY,
+                    mPath);
+        }
 
         // ... then flip it horizontal or vertical based on where it will be used.
         Matrix pathTransform = new Matrix();
