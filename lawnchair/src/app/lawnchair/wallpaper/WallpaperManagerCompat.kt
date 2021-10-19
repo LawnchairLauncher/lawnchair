@@ -1,16 +1,17 @@
-package app.lawnchair.theme
+package app.lawnchair.wallpaper
 
+import android.app.WallpaperManager
 import android.content.Context
-import androidx.annotation.IntDef
+import androidx.core.content.getSystemService
 import com.android.launcher3.Utilities
 import com.android.launcher3.util.MainThreadInitializedObject
 
 abstract class WallpaperManagerCompat(val context: Context) {
 
     private val listeners = mutableListOf<OnColorsChangedListener>()
+    protected val wallpaperManager = context.getSystemService<WallpaperManager>()!!
 
-    @ColorsHints
-    abstract val colorHints: Int
+    abstract val wallpaperColors: WallpaperColorsCompat?
 
     fun addOnChangeListener(listener: OnColorsChangedListener) {
         listeners.add(listener)
@@ -32,23 +33,11 @@ abstract class WallpaperManagerCompat(val context: Context) {
 
     companion object {
 
-        const val HINT_SUPPORTS_DARK_TEXT = 1 shl 0
-        const val HINT_SUPPORTS_DARK_THEME = 1 shl 1
-
-        @IntDef(
-            value = [HINT_SUPPORTS_DARK_TEXT, HINT_SUPPORTS_DARK_THEME],
-            flag = true
-        )
-        @Retention(
-            AnnotationRetention.SOURCE
-        )
-        annotation class ColorsHints
-
         @JvmField
         val INSTANCE = MainThreadInitializedObject { context ->
             when {
                 Utilities.ATLEAST_S -> WallpaperManagerCompatVS(context)
-                Utilities.ATLEAST_P -> WallpaperManagerCompatVP(context)
+                Utilities.ATLEAST_O_MR1 -> WallpaperManagerCompatVOMR1(context)
                 else -> WallpaperManagerCompatVO(context)
             }
         }

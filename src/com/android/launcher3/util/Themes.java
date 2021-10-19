@@ -16,8 +16,8 @@
 
 package com.android.launcher3.util;
 
-import static app.lawnchair.theme.WallpaperManagerCompat.HINT_SUPPORTS_DARK_TEXT;
-import static app.lawnchair.theme.WallpaperManagerCompat.HINT_SUPPORTS_DARK_THEME;
+import static app.lawnchair.wallpaper.WallpaperColorsCompat.HINT_SUPPORTS_DARK_TEXT;
+import static app.lawnchair.wallpaper.WallpaperColorsCompat.HINT_SUPPORTS_DARK_THEME;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -33,7 +33,8 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.icons.GraphicsUtils;
 
-import app.lawnchair.theme.WallpaperManagerCompat;
+import app.lawnchair.wallpaper.WallpaperColorsCompat;
+import app.lawnchair.wallpaper.WallpaperManagerCompat;
 import app.lawnchair.ui.theme.ColorKt;
 
 /**
@@ -45,7 +46,8 @@ public class Themes {
     public static final String KEY_THEMED_ICONS = "themed_icons";
 
     public static int getActivityThemeRes(Context context) {
-        final int colorHints = WallpaperManagerCompat.INSTANCE.get(context).getColorHints();
+        WallpaperColorsCompat colors = WallpaperManagerCompat.INSTANCE.get(context).getWallpaperColors();
+        final int colorHints = colors != null ? colors.getColorHints() : 0;
         return getActivityThemeRes(context, colorHints);
     }
 
