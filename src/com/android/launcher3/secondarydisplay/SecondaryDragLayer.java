@@ -33,6 +33,7 @@ import com.android.launcher3.R;
 import com.android.launcher3.allapps.AllAppsContainerView;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.popup.PopupContainerWithArrow;
+import com.android.launcher3.popup.PopupDataProvider;
 import com.android.launcher3.util.ShortcutUtil;
 import com.android.launcher3.util.TouchController;
 import com.android.launcher3.views.BaseDragLayer;
@@ -177,12 +178,16 @@ public class SecondaryDragLayer extends BaseDragLayer<SecondaryDisplayLauncher> 
         if (!ShortcutUtil.supportsShortcuts(item)) {
             return false;
         }
+        PopupDataProvider popupDataProvider = mActivity.getPopupDataProvider();
+        if (popupDataProvider == null) {
+            return false;
+        }
         final PopupContainerWithArrow container =
                 (PopupContainerWithArrow) mActivity.getLayoutInflater().inflate(
                         R.layout.popup_container, mActivity.getDragLayer(), false);
 
         container.populateAndShow((BubbleTextView) v,
-                mActivity.getPopupDataProvider().getShortcutCountForItem(item),
+                popupDataProvider.getShortcutCountForItem(item),
                 Collections.emptyList(),
                 Arrays.asList(mPinnedAppsAdapter.getSystemShortcut(item),
                         APP_INFO.getShortcut(mActivity, item)));

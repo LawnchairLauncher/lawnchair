@@ -30,6 +30,7 @@ import android.os.Message;
 import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
 import android.text.TextUtils;
+import android.util.ArraySet;
 import android.util.Log;
 import android.util.Pair;
 
@@ -66,7 +67,8 @@ public class NotificationListener extends NotificationListenerService {
     private static final int MSG_RANKING_UPDATE = 5;
 
     private static NotificationListener sNotificationListenerInstance = null;
-    private static NotificationsChangedListener sNotificationsChangedListener;
+    private static final ArraySet<NotificationsChangedListener> sNotificationsChangedListeners =
+            new ArraySet<>();
     private static boolean sIsConnected;
 
     private final Handler mWorkerHandler;
@@ -94,8 +96,11 @@ public class NotificationListener extends NotificationListenerService {
         return sIsConnected ? sNotificationListenerInstance : null;
     }
 
-    public static void setNotificationsChangedListener(NotificationsChangedListener listener) {
-        sNotificationsChangedListener = listener;
+    public static void addNotificationsChangedListener(NotificationsChangedListener listener) {
+        if (listener == null) {
+            return;
+        }
+        sNotificationsChangedListeners.add(listener);
 
         NotificationListener notificationListener = getInstanceIfConnected();
         if (notificationListener != null) {
@@ -108,8 +113,10 @@ public class NotificationListener extends NotificationListenerService {
         }
     }
 
-    public static void removeNotificationsChangedListener() {
-        sNotificationsChangedListener = null;
+    public static void removeNotificationsChangedListener(NotificationsChangedListener listener) {
+        if (listener != null) {
+            sNotificationsChangedListeners.remove(listener);
+        }
     }
 
     private boolean handleWorkerMessage(Message message) {
@@ -180,23 +187,27 @@ public class NotificationListener extends NotificationListenerService {
     private boolean handleUiMessage(Message message) {
         switch (message.what) {
             case MSG_NOTIFICATION_POSTED:
-                if (sNotificationsChangedListener != null) {
+                if (sNotificationsChangedListeners.size() > 0) {
                     Pair<PackageUserKey, NotificationKeyData> msg = (Pair) message.obj;
-                    sNotificationsChangedListener.onNotificationPosted(
-                            msg.first, msg.second);
+                    for (NotificationsChangedListener listener : sNotificationsChangedListeners) {
+                        listener.onNotificationPosted(msg.first, msg.second);
+                    }
                 }
                 break;
             case MSG_NOTIFICATION_REMOVED:
-                if (sNotificationsChangedListener != null) {
+                if (sNotificationsChangedListeners.size() > 0) {
                     Pair<PackageUserKey, NotificationKeyData> msg = (Pair) message.obj;
-                    sNotificationsChangedListener.onNotificationRemoved(
-                            msg.first, msg.second);
+                    for (NotificationsChangedListener listener : sNotificationsChangedListeners) {
+                        listener.onNotificationRemoved(msg.first, msg.second);
+                    }
                 }
                 break;
             case MSG_NOTIFICATION_FULL_REFRESH:
-                if (sNotificationsChangedListener != null) {
-                    sNotificationsChangedListener.onNotificationFullRefresh(
-                            (List<StatusBarNotification>) message.obj);
+                if (sNotificationsChangedListeners.size() > 0) {
+                    for (NotificationsChangedListener listener : sNotificationsChangedListeners) {
+                        listener.onNotificationFullRefresh(
+                                (List<StatusBarNotification>) message.obj);
+                    }
                 }
                 break;
         }

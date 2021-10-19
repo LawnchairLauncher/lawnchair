@@ -31,6 +31,7 @@ import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.logger.LauncherAtom;
 import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.model.data.ItemInfo;
+import com.android.launcher3.popup.PopupDataProvider;
 import com.android.launcher3.util.ViewCache;
 
 /**
@@ -165,5 +166,10 @@ public interface ActivityContext {
         return v -> {
             // No op.
         };
+    }
+
+    @Nullable
+    default PopupDataProvider getPopupDataProvider() {
+        return null;
     }
 }
