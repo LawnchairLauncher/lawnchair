@@ -94,6 +94,9 @@ public class RemoteTargetGluer {
     public RemoteTargetHandle[] assignTargetsForSplitScreen(RemoteAnimationTargets targets) {
         int[] splitIds = LauncherSplitScreenListener.INSTANCE.getNoCreate()
                 .getRunningSplitTaskIds();
+        Log.d(TAG, "splitIds length: " + splitIds.length
+                + " targetAppsLength: " + targets.apps.length
+                + " remoteHandlesLength: " + mRemoteTargetHandles.length);
         if (splitIds.length == 0 && mRemoteTargetHandles.length > 1) {
             // There's a chance that between the creation of this class and assigning targets,
             // LauncherSplitScreenListener may have received callback that removes split
