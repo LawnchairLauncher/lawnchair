@@ -74,8 +74,8 @@ public class TaskbarControllers {
      * TaskbarControllers instance, but should be careful to only access things that were created
      * in constructors for now, as some controllers may still be waiting for init().
      */
-    public void init() {
-        navbarButtonsViewController.init(this);
+    public void init(TaskbarSharedState sharedState) {
+        navbarButtonsViewController.init(this, sharedState);
         if (taskbarActivityContext.isThreeButtonNav()) {
             rotationButtonController.init();
         }
@@ -85,7 +85,7 @@ public class TaskbarControllers {
         taskbarUnfoldAnimationController.init(this);
         taskbarKeyguardController.init(navbarButtonsViewController);
         stashedHandleViewController.init(this);
-        taskbarStashController.init(this);
+        taskbarStashController.init(this, sharedState);
         taskbarEduController.init(this);
     }
 
