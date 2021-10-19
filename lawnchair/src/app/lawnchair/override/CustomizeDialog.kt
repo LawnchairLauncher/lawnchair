@@ -98,11 +98,18 @@ fun CustomizeAppDialog(
     DisposableEffect(key1 = null) {
         title = prefs.customAppName[componentKey] ?: ""
         onDispose {
-            prefs.customAppName[componentKey] = title.ifEmpty { null }
-            val las = LauncherAppState.getInstance(context)
-            val idp = las.invariantDeviceProfile
-            las.iconCache.updateIconsForPkg(componentKey.componentName.packageName, componentKey.user)
-            context.launcher.onIdpChanged(idp)
+            val previousTitle = prefs.customAppName[componentKey]
+            val newTitle = title.ifEmpty { null }
+            if (newTitle != previousTitle) {
+                prefs.customAppName[componentKey] = newTitle
+                val las = LauncherAppState.getInstance(context)
+                val idp = las.invariantDeviceProfile
+                las.iconCache.updateIconsForPkg(
+                    componentKey.componentName.packageName,
+                    componentKey.user
+                )
+                context.launcher.onIdpChanged(idp)
+            }
         }
     }
     CustomizeDialog(
