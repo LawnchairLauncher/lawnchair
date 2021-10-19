@@ -18,7 +18,7 @@ val themeEntries = listOf(
     ListPreferenceEntry(ThemeChoice.LIGHT) { stringResource(id = R.string.theme_light) },
     ListPreferenceEntry(ThemeChoice.DARK) { stringResource(id = R.string.theme_dark) },
     ListPreferenceEntry(ThemeChoice.SYSTEM) {
-        stringResource(id = if (Utilities.ATLEAST_Q) R.string.theme_system_default else R.string.theme_follow_wallpaper)
+        stringResource(id = if (Utilities.ATLEAST_P) R.string.theme_system_default else R.string.theme_follow_wallpaper)
     }
 )
     .filter {
