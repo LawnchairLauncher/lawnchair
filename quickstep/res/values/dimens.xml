@@ -117,12 +117,43 @@
     <dimen name="gestures_overscroll_finish_threshold">136dp</dimen>
 
     <!-- Tips Gesture Tutorial -->
-    <dimen name="gesture_tutorial_title_margin_start_end">40dp</dimen>
-    <dimen name="gesture_tutorial_subtitle_margin_start_end">16dp</dimen>
     <dimen name="gesture_tutorial_feedback_margin_start_end">24dp</dimen>
-    <dimen name="gesture_tutorial_button_margin_start_end">18dp</dimen>
+    <dimen name="gesture_tutorial_foldable_feedback_margin_start_end">140dp</dimen>
     <dimen name="gesture_tutorial_multi_row_task_view_spacing">72dp</dimen>
     <dimen name="gesture_tutorial_small_task_view_corner_radius">18dp</dimen>
+
+    <!-- Gesture Tutorial mock conversations -->
+    <dimen name="gesture_tutorial_message_icon_size">44dp</dimen>
+    <dimen name="gesture_tutorial_message_icon_corner_radius">100dp</dimen>
+    <dimen name="gesture_tutorial_message_input_margin_top">36dp</dimen>
+    <dimen name="gesture_tutorial_message_large_margin_bottom">32dp</dimen>
+    <dimen name="gesture_tutorial_message_small_margin_bottom">4dp</dimen>
+    <dimen name="gesture_tutorial_message_padding_start">26dp</dimen>
+    <dimen name="gesture_tutorial_message_padding_end">18dp</dimen>
+    <dimen name="gesture_tutorial_foldable_message_padding_start_end">126dp</dimen>
+
+    <!-- Gesture Tutorial mock conversation lists -->
+    <dimen name="gesture_tutorial_conversation_icon_size">56dp</dimen>
+    <dimen name="gesture_tutorial_conversation_icon_corner_radius">100dp</dimen>
+    <dimen name="gesture_tutorial_conversation_list_padding_top">28dp</dimen>
+    <dimen name="gesture_tutorial_conversation_line_padding_start">20dp</dimen>
+
+    <!-- Gesture Tutorial mock hotseats -->
+    <dimen name="gesture_tutorial_hotseat_icon_size">60dp</dimen>
+    <dimen name="gesture_tutorial_hotseat_icon_corner_radius">100dp</dimen>
+    <dimen name="gesture_tutorial_hotseat_search_height">50dp</dimen>
+    <dimen name="gesture_tutorial_hotseat_search_corner_radius">100dp</dimen>
+    <dimen name="gesture_tutorial_hotseat_icon_search_margin">36dp</dimen>
+
+    <!-- Gesture Tutorial mock webpages -->
+    <dimen name="gesture_tutorial_webpage_padding_top">32dp</dimen>
+    <dimen name="gesture_tutorial_webpage_large_margin_top">24dp</dimen>
+    <dimen name="gesture_tutorial_webpage_small_margin_top">8dp</dimen>
+    <dimen name="gesture_tutorial_webpage_large_corner_radius">22dp</dimen>
+    <dimen name="gesture_tutorial_webpage_medium_corner_radius">8dp</dimen>
+    <dimen name="gesture_tutorial_webpage_small_corner_radius">4dp</dimen>
+    <dimen name="gesture_tutorial_webpage_large_line_height">36dp</dimen>
+    <dimen name="gesture_tutorial_webpage_small_line_height">22dp</dimen>
 
     <!-- All Set page -->
     <dimen name="allset_page_margin_horizontal">40dp</dimen>
