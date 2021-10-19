@@ -320,8 +320,8 @@ abstract class SwipeUpGestureTutorialController extends TutorialController {
                 @Override
                 public RectF getWindowTargetRect() {
                     int fakeHomeIconSizePx = Utilities.dpToPx(60);
-                    int fakeHomeIconLeft = mFakeHotseatView.getLeft();
-                    int fakeHomeIconTop = mFakeHotseatView.getTop();
+                    int fakeHomeIconLeft = getHotseatIconLeft();
+                    int fakeHomeIconTop = getHotseatIconTop();
                     return new RectF(fakeHomeIconLeft, fakeHomeIconTop,
                             fakeHomeIconLeft + fakeHomeIconSizePx,
                             fakeHomeIconTop + fakeHomeIconSizePx);
@@ -374,8 +374,19 @@ abstract class SwipeUpGestureTutorialController extends TutorialController {
     }
 
     protected Animator createFingerDotOverviewSwipeAnimator(float fingerDotStartTranslationY) {
-        return createFingerDotSwipeUpAnimator(fingerDotStartTranslationY)
+        Animator overviewSwipeAnimator = createFingerDotSwipeUpAnimator(fingerDotStartTranslationY)
                 .setDuration(OVERVIEW_SWIPE_ANIMATION_DURATION_MILLIS);
+
+        overviewSwipeAnimator.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                super.onAnimationEnd(animation);
+                mFakePreviousTaskView.setVisibility(View.VISIBLE);
+                onMotionPaused(true /*arbitrary value*/);
+            }
+        });
+
+        return overviewSwipeAnimator;
     }
 
 

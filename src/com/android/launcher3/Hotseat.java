@@ -198,6 +198,10 @@ public class Hotseat extends CellLayout implements Insettable {
         getShortcutsAndWidgets().setAlpha(alpha);
     }
 
+    public float getIconsAlpha() {
+        return getShortcutsAndWidgets().getAlpha();
+    }
+
     /**
      * Returns the QSB inside hotseat
      */

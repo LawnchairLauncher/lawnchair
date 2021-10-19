@@ -63,7 +63,7 @@ public class TaskbarStashController {
     /**
      * How long to stash/unstash when manually invoked via long press.
      */
-    private static final long TASKBAR_STASH_DURATION = 300;
+    public static final long TASKBAR_STASH_DURATION = 300;
 
     /**
      * The scale TaskbarView animates to when being stashed.
@@ -224,6 +224,14 @@ public class TaskbarStashController {
         return (flags & flagMask) != 0;
     }
 
+
+    /**
+     * Returns whether the taskbar is currently visible and in an app.
+     */
+    public boolean isInAppAndNotStashed() {
+        return !mIsStashed && (mState & FLAG_IN_APP) != 0;
+    }
+
     public int getContentHeight() {
         if (isStashed()) {
             boolean isAnimating = mAnimator != null && mAnimator.isStarted();
@@ -271,7 +279,12 @@ public class TaskbarStashController {
         return false;
     }
 
-    private Animator createAnimToIsStashed(boolean isStashed, long duration) {
+    /**
+     * Create a stash animation and save to {@link #mAnimator}.
+     * @param isStashed whether it's a stash animation or an unstash animation
+     * @param duration duration of the animation
+     */
+    private void createAnimToIsStashed(boolean isStashed, long duration) {
         if (mAnimator != null) {
             mAnimator.cancel();
         }
@@ -281,7 +294,7 @@ public class TaskbarStashController {
             // Just hide/show the icons instead of stashing into a handle.
             mAnimator.play(mIconAlphaForStash.animateToValue(isStashed ? 0 : 1)
                     .setDuration(duration));
-            return mAnimator;
+            return;
         }
 
         AnimatorSet fullLengthAnimatorSet = new AnimatorSet();
@@ -353,7 +366,6 @@ public class TaskbarStashController {
                 mAnimator = null;
             }
         });
-        return mAnimator;
     }
 
     /**
@@ -473,12 +485,13 @@ public class TaskbarStashController {
             boolean isStashed = mStashCondition.test(flags);
             if (mIsStashed != isStashed) {
                 mIsStashed = isStashed;
-                Animator animator = createAnimToIsStashed(mIsStashed, duration);
+                createAnimToIsStashed(mIsStashed, duration);
                 if (start) {
-                    animator.start();
+                    mAnimator.start();
                 }
+                return mAnimator;
             }
-            return mAnimator;
+            return null;
         }
     }
 }

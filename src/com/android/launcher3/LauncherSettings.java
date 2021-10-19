@@ -392,8 +392,6 @@ public class LauncherSettings {
 
         public static final String METHOD_SWITCH_DATABASE = "switch_database";
 
-        public static final String METHOD_CLEAR_WORKSPACE = "clear_workspace";
-
         public static final String EXTRA_VALUE = "value";
 
         public static final String EXTRA_DB_NAME = "db_name";

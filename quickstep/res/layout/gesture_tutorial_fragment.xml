@@ -25,13 +25,12 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <ImageView
+        <FrameLayout
             android:id="@+id/gesture_tutorial_fake_hotseat_view"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:layout_alignParentBottom="true"
-            android:layout_marginBottom="70dp"/>
+            android:layout_alignParentBottom="true"/>
 
     </RelativeLayout>
 
@@ -128,8 +127,6 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginStart="@dimen/gesture_tutorial_feedback_margin_start_end"
-        android:layout_marginEnd="@dimen/gesture_tutorial_feedback_margin_start_end"
         android:layout_marginTop="24dp"
         android:paddingTop="24dp"
         android:paddingBottom="16dp"

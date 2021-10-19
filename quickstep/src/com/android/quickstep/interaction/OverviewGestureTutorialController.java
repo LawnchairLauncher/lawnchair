@@ -53,7 +53,9 @@ final class OverviewGestureTutorialController extends SwipeUpGestureTutorialCont
 
     @Override
     protected int getMockAppTaskLayoutResId() {
-        return R.layout.gesture_tutorial_mock_conversation_list;
+        return mTutorialFragment.isLargeScreen()
+                ? R.layout.gesture_tutorial_foldable_mock_conversation_list
+                : R.layout.gesture_tutorial_mock_conversation_list;
     }
 
     @Override
