@@ -24,7 +24,7 @@ import app.lawnchair.font.FontCache
 import app.lawnchair.icons.CustomAdaptiveIconDrawable
 import app.lawnchair.icons.shape.IconShape
 import app.lawnchair.icons.shape.IconShapeManager
-import app.lawnchair.ui.theme.LAWNCHAIR_BLUE
+import app.lawnchair.theme.color.ColorOption
 import com.android.launcher3.InvariantDeviceProfile
 import com.android.launcher3.Utilities
 import com.android.launcher3.util.ComponentKey
@@ -82,8 +82,19 @@ class PreferenceManager private constructor(private val context: Context) : Base
     val overrideWindowCornerRadius = BoolPref("pref_overrideWindowCornerRadius", false, recreate)
     val windowCornerRadius = IntPref("pref_windowCornerRadius", 80, recreate)
     val autoLaunchRoot = BoolPref("pref_autoLaunchRoot", false)
-    val useSystemAccent = BoolPref("pref_useSystemAccent", Utilities.ATLEAST_S, recreate)
-    val accentColor = IntPref("pref_accentColor", LAWNCHAIR_BLUE.toInt(), recreate)
+    val accentColor = ObjectPref(
+        "pref_accentColor2",
+        if (Utilities.ATLEAST_O_MR1) ColorOption.WallpaperPrimary else ColorOption.LawnchairBlue,
+        ColorOption::fromString,
+        ColorOption::toString,
+        recreate
+    )
+    val lastCustomAccent = ObjectPref(
+        "pref_lastCustomAccent",
+        ColorOption.LawnchairBlue,
+        ColorOption::fromString,
+        ColorOption::toString
+    )
     val wallpaperScrolling = BoolPref("pref_wallpaperScrolling", true)
     val showSysUiScrim = BoolPref("pref_showSysUiScrim", true)
     val showStatusBar = BoolPref("pref_showStatusBar", true, recreate)

@@ -51,9 +51,8 @@ fun LawnchairTheme(
 fun getColors(darkTheme: Boolean): Colors {
     val context = LocalContext.current
     val prefs = PreferenceManager.getInstance(context)
-    val customColor = prefs.accentColor.observeAsState().value
-    val useSystemAccent = prefs.useSystemAccent.observeAsState().value
-    val colorScheme = remember(customColor, useSystemAccent) {
+    val accentColor = prefs.accentColor.observeAsState().value
+    val colorScheme = remember(accentColor) {
         ThemeProvider.INSTANCE.get(context).colorScheme
     }
 

@@ -1,10 +1,9 @@
 package app.lawnchair.wallpaper
 
-import android.graphics.Color
 import androidx.annotation.IntDef
 
 data class WallpaperColorsCompat(
-    val primaryColor: Color,
+    val primaryColor: Int,
     @ColorsHints val colorHints: Int
 ) {
 

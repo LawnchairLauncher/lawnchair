@@ -1,6 +1,5 @@
 package app.lawnchair.ui.preferences.components
 
-import androidx.annotation.ColorInt
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.ExperimentalAnimationApi
@@ -16,13 +15,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import app.lawnchair.preferences.PreferenceAdapter
-import app.lawnchair.ui.theme.getSystemAccent
 import app.lawnchair.ui.theme.lightenColor
 import app.lawnchair.util.BackHandler
 import com.android.launcher3.R
@@ -32,19 +29,19 @@ import kotlinx.coroutines.launch
 @Composable
 @ExperimentalMaterialApi
 @ExperimentalAnimationApi
-fun ColorPreference(
-    @ColorInt previewColor: Int,
-    customColorAdapter: PreferenceAdapter<Int>,
+fun <T> ColorPreference(
+    previewColor: Color,
+    colorAdapter: PreferenceAdapter<T>,
+    lastCustomColorAdapter: PreferenceAdapter<T>,
     label: String,
-    presets: List<ColorPreferencePreset>,
-    showDivider: Boolean,
-    useSystemAccentAdapter: PreferenceAdapter<Boolean>
+    options: List<ColorPreferenceOption<T>>,
+    customOptions: List<ColorPreferenceOption<T>>,
+    showDivider: Boolean = false
 ) {
     val bottomSheetState = rememberBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
     val coroutineScope = rememberCoroutineScope()
-    var customColor by customColorAdapter
-    var useSystemAccent by useSystemAccentAdapter
-    val context = LocalContext.current
+    var selectedColor by colorAdapter
+    var lastCustomColor by lastCustomColorAdapter
 
     PreferenceTemplate(
         title = { Text(text = label) },
@@ -55,7 +52,7 @@ fun ColorPreference(
                 modifier = Modifier
                     .size(30.dp)
                     .clip(CircleShape)
-                    .background(Color(previewColor))
+                    .background(previewColor)
             )
         },
         showDivider = showDivider,
@@ -76,26 +73,31 @@ fun ColorPreference(
                     selectingCustomColor = false
                 }
                 ColorSwatchGrid(
-                    presets = presets,
-                    onColorSwatchClicked = { customColor = it },
-                    customColor = customColor,
+                    options = customOptions,
+                    onColorSwatchClicked = {
+                        selectedColor = it
+                        lastCustomColor = it
+                    },
+                    selectedColor = lastCustomColor,
                     modifier = Modifier.padding(top = 8.dp, bottom = 24.dp)
                 )
             } else {
+                options.mapIndexed { index, option ->
+                    key(option) {
+                        ModeRow(
+                            onClick = { selectedColor = option.value },
+                            selected = selectedColor == option.value,
+                            option = option,
+                            showDivider = index != 0
+                        )
+                    }
+                }
+                val customColorOption = customOptions.firstOrNull { it.value == selectedColor }
+                val lastCustomColorOption = customOptions.first { it.value == lastCustomColor }
                 ModeRow(
-                    label = stringResource(id = R.string.system),
-                    onClick = { useSystemAccent = true },
-                    selected = useSystemAccent,
-                    lightThemeColor = context.getSystemAccent(darkTheme = false),
-                    darkThemeColor = context.getSystemAccent(darkTheme = true),
-                    showDivider = false
-                )
-                ModeRow(
-                    label = stringResource(id = R.string.custom),
-                    onClick = { useSystemAccent = false },
-                    selected = !useSystemAccent,
-                    lightThemeColor = customColor,
-                    darkThemeColor = lightenColor(customColor),
+                    onClick = { selectedColor = lastCustomColor },
+                    selected = customColorOption != null,
+                    option = lastCustomColorOption,
                     onEditClick = { selectingCustomColor = true }
                 )
                 Spacer(modifier = Modifier.requiredHeight(16.dp))
@@ -127,14 +129,14 @@ fun ColorPreference(
 
 @Composable
 @ExperimentalAnimationApi
-fun ColorSwatchGrid(
-    presets: List<ColorPreferencePreset>,
-    onColorSwatchClicked: (Int) -> Unit,
-    customColor: Int,
+fun <T> ColorSwatchGrid(
+    options: List<ColorPreferenceOption<T>>,
+    onColorSwatchClicked: (T) -> Unit,
+    selectedColor: T,
     modifier: Modifier = Modifier
 ) {
     val columnCount = 6
-    val rowCount = (presets.size.toDouble() / 6.0).toInt()
+    val rowCount = (options.size.toDouble() / 6.0).toInt()
 
     Column(modifier = modifier) {
         for (rowNo in 1..rowCount) {
@@ -143,12 +145,12 @@ fun ColorSwatchGrid(
             val indices = firstIndex..lastIndex
 
             Row(modifier = Modifier.padding(horizontal = 13.dp)) {
-                presets.slice(indices).forEachIndexed { index, entry ->
+                options.slice(indices).forEachIndexed { index, entry ->
                     ColorSwatch(
-                        preset = entry,
+                        option = entry,
                         onClick = { onColorSwatchClicked(entry.value) },
                         modifier = Modifier.weight(1F),
-                        isSelected = entry.value == customColor,
+                        isSelected = entry.value == selectedColor,
                         ringColor = MaterialTheme.colors.surface,
                         elevation = ModalBottomSheetDefaults.Elevation
                     )
@@ -195,17 +197,15 @@ fun TopBar(
 
 @Composable
 @ExperimentalAnimationApi
-fun ModeRow(
-    label: String,
+fun <T> ModeRow(
     onClick: () -> Unit,
     onEditClick: (() -> Unit)? = null,
-    @ColorInt lightThemeColor: Int,
-    @ColorInt darkThemeColor: Int,
+    option: ColorPreferenceOption<T>,
     showDivider: Boolean = true,
     selected: Boolean
 ) {
     PreferenceTemplate(
-        title = { Text(text = label) },
+        title = { Text(text = option.label()) },
         modifier = Modifier
             .clickable(onClick = onClick),
         startWidget = {
@@ -221,7 +221,7 @@ fun ModeRow(
                 modifier = Modifier
                     .size(30.dp)
                     .clip(CircleShape)
-                    .background(Color(if (MaterialTheme.colors.isLight) lightThemeColor else darkThemeColor))
+                    .background(Color(if (MaterialTheme.colors.isLight) option.lightColor() else option.darkColor()))
             )
         },
         endWidget = {
@@ -246,8 +246,8 @@ fun ModeRow(
 
 @Composable
 @ExperimentalAnimationApi
-fun ColorSwatch(
-    preset: ColorPreferencePreset,
+fun <T> ColorSwatch(
+    option: ColorPreferenceOption<T>,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     isSelected: Boolean,
@@ -257,7 +257,7 @@ fun ColorSwatch(
     val swatchPadding by animateDpAsState(targetValue = if (isSelected) 2.dp else 3.dp)
     val ringPadding by animateDpAsState(targetValue = if (isSelected) 5.dp else 0.dp)
     val darkTheme = !MaterialTheme.colors.isLight
-    val color = if (darkTheme) preset.darkColor() else preset.lightColor()
+    val color = if (darkTheme) option.darkColor() else option.lightColor()
     val elevationOverlay = LocalElevationOverlay.current
     val absoluteElevation = LocalAbsoluteElevation.current + elevation
     val ringColorWithOverlay = if (ringColor == MaterialTheme.colors.surface && elevationOverlay != null) {
@@ -293,8 +293,9 @@ fun ColorSwatch(
     }
 }
 
-open class ColorPreferencePreset(
-    val value: Int,
+open class ColorPreferenceOption<T>(
+    val value: T,
+    val label: @Composable () -> String,
     val lightColor: @Composable () -> Int,
     val darkColor: @Composable () -> Int = { lightenColor(lightColor()) },
 )

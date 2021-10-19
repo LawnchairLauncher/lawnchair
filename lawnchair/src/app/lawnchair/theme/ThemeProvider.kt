@@ -11,8 +11,10 @@ import android.util.SparseArray
 import androidx.core.graphics.ColorUtils
 import app.lawnchair.preferences.PreferenceManager
 import app.lawnchair.theme.color.AndroidColor
+import app.lawnchair.theme.color.ColorOption
 import app.lawnchair.theme.color.SystemColorScheme
 import app.lawnchair.ui.theme.getSystemAccent
+import app.lawnchair.wallpaper.WallpaperManagerCompat
 import com.android.launcher3.Utilities
 import com.android.launcher3.util.MainThreadInitializedObject
 import dev.kdrag0n.colorkt.Color
@@ -29,8 +31,7 @@ import dev.kdrag0n.monet.theme.MaterialYouTargets
 
 class ThemeProvider(private val context: Context) {
     private val prefs = PreferenceManager.getInstance(context)
-    private val useSystemAccent by prefs.useSystemAccent
-    private val customAccentColor by prefs.accentColor
+    private val accentColor by prefs.accentColor
 
     private val targets = MaterialYouTargets(1.0, false, viewingCondition)
     private val colorSchemeMap = SparseArray<ColorScheme>()
@@ -58,9 +59,14 @@ class ThemeProvider(private val context: Context) {
         )
     }
 
-    val colorScheme get() = when {
-        useSystemAccent -> systemColorScheme
-        else -> getColorScheme(customAccentColor)
+    val colorScheme get() = when (val accentColor = this.accentColor) {
+        is ColorOption.SystemAccent -> systemColorScheme
+        is ColorOption.WallpaperPrimary -> {
+            val wallpaperManager = WallpaperManagerCompat.INSTANCE.get(context)
+            val wallpaperPrimary = wallpaperManager.wallpaperColors?.primaryColor
+            getColorScheme(wallpaperPrimary ?: ColorOption.LawnchairBlue.color)
+        }
+        is ColorOption.CustomColor -> getColorScheme(accentColor.color)
     }
 
     private val systemColorScheme get() = when {

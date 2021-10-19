@@ -36,6 +36,7 @@ import app.lawnchair.preferences.PreferenceManager
 import app.lawnchair.root.RootHelperManager
 import app.lawnchair.root.RootNotAvailableException
 import app.lawnchair.search.LawnchairSearchAdapterProvider
+import app.lawnchair.theme.ThemeProvider
 import app.lawnchair.theme.color.ColorTokens
 import app.lawnchair.ui.popup.LawnchairShortcut
 import com.android.launcher3.*
@@ -47,6 +48,7 @@ import com.android.launcher3.uioverrides.QuickstepLauncher
 import com.android.launcher3.uioverrides.states.OverviewState
 import com.android.systemui.plugins.shared.LauncherOverlayManager
 import com.android.systemui.shared.system.QuickStepContract
+import dev.kdrag0n.monet.theme.ColorScheme
 import kotlinx.coroutines.launch
 import java.util.stream.Stream
 import kotlin.math.roundToInt
@@ -67,6 +69,9 @@ class LawnchairLauncher : QuickstepLauncher(), LifecycleOwner,
     private val customLayoutInflater by lazy {
         LawnchairLayoutInflater(super.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater, this)
     }
+
+    private val themeProvider by lazy { ThemeProvider.INSTANCE.get(this) }
+    private lateinit var colorScheme: ColorScheme
 
     override fun onCreate(savedInstanceState: Bundle?) {
         savedStateRegistryController.performRestore(savedInstanceState)
@@ -112,6 +117,8 @@ class LawnchairLauncher : QuickstepLauncher(), LifecycleOwner,
         prefs.windowCornerRadius.subscribeValues(this) {
             QuickStepContract.sCustomCornerRadius = it.toFloat()
         }
+
+        colorScheme = themeProvider.colorScheme
     }
 
     override fun setupViews() {
@@ -135,6 +142,14 @@ class LawnchairLauncher : QuickstepLauncher(), LifecycleOwner,
 
     override fun createSearchAdapterProvider(allapps: AllAppsContainerView): SearchAdapterProvider {
         return LawnchairSearchAdapterProvider(this, allapps)
+    }
+
+    override fun updateTheme() {
+        if (themeProvider.colorScheme != colorScheme) {
+            recreate()
+        } else {
+            super.updateTheme()
+        }
     }
 
     override fun onStart() {

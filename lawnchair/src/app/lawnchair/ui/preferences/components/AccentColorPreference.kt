@@ -4,42 +4,42 @@ import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.res.stringResource
 import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences.preferenceManager
-import app.lawnchair.ui.theme.LAWNCHAIR_BLUE
+import app.lawnchair.theme.color.ColorOption
 import com.android.launcher3.R
 
-val presetColors = listOf(
-    0xFFF32020,
-    0xFFF20D69,
-    0xFF7452FF,
-    0xFF2C41C9,
-    LAWNCHAIR_BLUE,
-    0xFF00BAD6,
-    0xFF00A399,
-    0xFF47B84F,
-    0xFFFFBB00,
-    0xFFFF9800,
-    0xFF7C5445,
-    0xFF67818E
+private val customOptionsValues = listOf(
+    ColorOption.CustomColor(0xFFF32020),
+    ColorOption.CustomColor(0xFFF20D69),
+    ColorOption.CustomColor(0xFF7452FF),
+    ColorOption.CustomColor(0xFF2C41C9),
+    ColorOption.LawnchairBlue,
+    ColorOption.CustomColor(0xFF00BAD6),
+    ColorOption.CustomColor(0xFF00A399),
+    ColorOption.CustomColor(0xFF47B84F),
+    ColorOption.CustomColor(0xFFFFBB00),
+    ColorOption.CustomColor(0xFFFF9800),
+    ColorOption.CustomColor(0xFF7C5445),
+    ColorOption.CustomColor(0xFF67818E)
 )
 
-val presets = presetColors.map {
-    ColorPreferencePreset(it.toInt(), { it.toInt() })
-}
+private val options = listOf(ColorOption.SystemAccent, ColorOption.WallpaperPrimary)
+    .filter(ColorOption::isSupported)
+    .map(ColorOption::preferenceOption)
+private val customOptions = customOptionsValues.map(ColorOption::preferenceOption)
 
 @Composable
 @ExperimentalMaterialApi
 @ExperimentalAnimationApi
-fun AccentColorPreference(showDivider: Boolean = false) {
+fun AccentColorPreference() {
     ColorPreference(
-        previewColor = MaterialTheme.colors.primary.toArgb(),
-        customColorAdapter = preferenceManager().accentColor.getAdapter(),
+        previewColor = MaterialTheme.colors.primary,
+        colorAdapter = preferenceManager().accentColor.getAdapter(),
+        lastCustomColorAdapter = preferenceManager().lastCustomAccent.getAdapter(),
         label = stringResource(id = R.string.accent_color),
-        presets = presets,
-        showDivider = showDivider,
-        useSystemAccentAdapter = preferenceManager().useSystemAccent.getAdapter()
+        options = options,
+        customOptions = customOptions
     )
 }

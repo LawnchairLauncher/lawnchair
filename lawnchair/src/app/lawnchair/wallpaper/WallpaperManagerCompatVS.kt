@@ -44,6 +44,6 @@ internal class WallpaperManagerCompatVS(context: Context) : WallpaperManagerComp
         if ((platformHints and WallpaperColors.HINT_SUPPORTS_DARK_THEME) != 0) {
             hints = hints or HINT_SUPPORTS_DARK_THEME
         }
-        this.wallpaperColors = WallpaperColorsCompat(wallpaperColors.primaryColor, hints)
+        this.wallpaperColors = WallpaperColorsCompat(wallpaperColors.primaryColor.toArgb(), hints)
     }
 }
