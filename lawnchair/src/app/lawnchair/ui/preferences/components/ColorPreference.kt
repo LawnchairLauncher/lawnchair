@@ -45,6 +45,13 @@ fun <T> ColorPreference(
 
     PreferenceTemplate(
         title = { Text(text = label) },
+        description = {
+            val selectedOption = (options + customOptions)
+                .firstOrNull { it.value == selectedColor }
+            if (selectedOption != null) {
+                Text(text = selectedOption.label())
+            }
+        },
         modifier = Modifier
             .clickable { coroutineScope.launch { bottomSheetState.show() } },
         endWidget = {
@@ -54,8 +61,7 @@ fun <T> ColorPreference(
                     .clip(CircleShape)
                     .background(previewColor)
             )
-        },
-        verticalPadding = 12.dp
+        }
     )
 
     BottomSheet(sheetState = bottomSheetState) {
@@ -84,6 +90,7 @@ fun <T> ColorPreference(
                 options.mapIndexed { index, option ->
                     key(option) {
                         ModeRow(
+                            title = option.label(),
                             onClick = { selectedColor = option.value },
                             selected = selectedColor == option.value,
                             option = option,
@@ -94,6 +101,7 @@ fun <T> ColorPreference(
                 val customColorOption = customOptions.firstOrNull { it.value == selectedColor }
                 val lastCustomColorOption = customOptions.first { it.value == lastCustomColor }
                 ModeRow(
+                    title = stringResource(id = R.string.custom),
                     onClick = { selectedColor = lastCustomColor },
                     selected = customColorOption != null,
                     option = lastCustomColorOption,
@@ -198,6 +206,7 @@ fun TopBar(
 @Composable
 @ExperimentalAnimationApi
 fun <T> ModeRow(
+    title: String,
     onClick: () -> Unit,
     onEditClick: (() -> Unit)? = null,
     option: ColorPreferenceOption<T>,
@@ -205,7 +214,7 @@ fun <T> ModeRow(
     selected: Boolean
 ) {
     PreferenceTemplate(
-        title = { Text(text = option.label()) },
+        title = { Text(text = title) },
         modifier = Modifier
             .clickable(onClick = onClick),
         startWidget = {
