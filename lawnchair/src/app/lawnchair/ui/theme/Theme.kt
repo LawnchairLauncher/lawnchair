@@ -21,9 +21,7 @@ import androidx.compose.material.Colors
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import app.lawnchair.preferences.PreferenceManager
@@ -32,6 +30,7 @@ import app.lawnchair.preferences.preferenceManager
 import app.lawnchair.theme.ThemeProvider
 import app.lawnchair.theme.toAndroidColor
 import app.lawnchair.ui.preferences.components.ThemeChoice
+import app.lawnchair.wallpaper.WallpaperManagerCompat
 import com.android.launcher3.Utilities
 
 @Composable
@@ -90,4 +89,24 @@ fun isSelectedThemeDark(): Boolean {
 }
 
 @Composable
-fun isAutoThemeDark(): Boolean = if (Utilities.ATLEAST_Q) isSystemInDarkTheme() else false
+fun isAutoThemeDark() = when {
+    Utilities.ATLEAST_Q -> isSystemInDarkTheme()
+    else -> wallpaperSupportsDarkTheme()
+}
+
+@Composable
+fun wallpaperSupportsDarkTheme(): Boolean {
+    val wallpaperManager = WallpaperManagerCompat.INSTANCE.get(LocalContext.current)
+    var supportsDarkTheme by remember { mutableStateOf(wallpaperManager.supportsDarkTheme) }
+
+    DisposableEffect(wallpaperManager) {
+        val listener = object : WallpaperManagerCompat.OnColorsChangedListener {
+            override fun onColorsChanged() {
+                supportsDarkTheme = wallpaperManager.supportsDarkTheme
+            }
+        }
+        wallpaperManager.addOnChangeListener(listener)
+        onDispose { wallpaperManager.removeOnChangeListener(listener) }
+    }
+    return supportsDarkTheme
+}

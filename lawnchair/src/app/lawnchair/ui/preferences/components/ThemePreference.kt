@@ -21,6 +21,12 @@ val themeEntries = listOf(
         stringResource(id = if (Utilities.ATLEAST_Q) R.string.theme_system_default else R.string.theme_follow_wallpaper)
     }
 )
+    .filter {
+        when (it.value) {
+            ThemeChoice.SYSTEM -> Utilities.ATLEAST_O_MR1
+            else -> true
+        }
+    }
 
 @ExperimentalMaterialApi
 @Composable
