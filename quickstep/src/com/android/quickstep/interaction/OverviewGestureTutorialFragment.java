@@ -57,17 +57,6 @@ public class OverviewGestureTutorialFragment extends TutorialFragment {
             }
         });
 
-        Animator swipeAnimator =
-                controller.createFingerDotOverviewSwipeAnimator(fingerDotStartTranslationY);
-        swipeAnimator.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                super.onAnimationEnd(animation);
-                mFakePreviousTaskView.setVisibility(View.VISIBLE);
-                controller.onMotionPaused(true /*arbitrary value*/);
-            }
-        });
-
         AnimatorSet fingerDotDisappearanceAnimator =
                 controller.createFingerDotDisappearanceAnimatorSet();
         fingerDotDisappearanceAnimator.addListener(new AnimatorListenerAdapter() {
@@ -89,7 +78,7 @@ public class OverviewGestureTutorialFragment extends TutorialFragment {
         ArrayList<Animator> animators = new ArrayList<>();
 
         animators.add(fingerDotAppearanceAnimator);
-        animators.add(swipeAnimator);
+        animators.add(controller.createFingerDotOverviewSwipeAnimator(fingerDotStartTranslationY));
         animators.add(controller.createAnimationPause());
         animators.add(fingerDotDisappearanceAnimator);
         animators.add(animationPause);
