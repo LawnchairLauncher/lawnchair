@@ -35,6 +35,7 @@ import android.graphics.PixelFormat;
 import android.graphics.Rect;
 import android.os.Process;
 import android.os.SystemProperties;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.Display;
@@ -61,6 +62,7 @@ import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.taskbar.contextual.RotationButtonController;
 import com.android.launcher3.touch.ItemClickHandler;
 import com.android.launcher3.util.PackageManagerHelper;
+import com.android.launcher3.util.SettingsCache;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.util.TraceHelper;
 import com.android.launcher3.util.ViewCache;
@@ -102,6 +104,7 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
     private final ViewCache mViewCache = new ViewCache();
 
     private final boolean mIsSafeModeEnabled;
+    private final boolean mIsUserSetupComplete;
     private boolean mIsDestroyed = false;
 
     public TaskbarActivityContext(Context windowContext, DeviceProfile dp,
@@ -113,6 +116,8 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
         mNavMode = SysUINavigationMode.getMode(windowContext);
         mIsSafeModeEnabled = TraceHelper.allowIpcs("isSafeMode",
                 () -> getPackageManager().isSafeMode());
+        mIsUserSetupComplete = SettingsCache.INSTANCE.get(this).getValue(
+                Settings.Secure.getUriFor(Settings.Secure.USER_SETUP_COMPLETE), 0);
 
         float taskbarIconSize = getResources().getDimension(R.dimen.taskbar_icon_size);
         mDeviceProfile.updateIconSize(1, getResources());
@@ -155,7 +160,7 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
                 new TaskbarEduController(this));
     }
 
-    public void init() {
+    public void init(TaskbarSharedState sharedState) {
         mLastRequestedNonFullscreenHeight = getDefaultTaskbarWindowHeight();
         mWindowLayoutParams = new WindowManager.LayoutParams(
                 MATCH_PARENT,
@@ -184,7 +189,7 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
                 getDefaultTaskbarWindowHeight() - mDeviceProfile.taskbarSize, 0, 0);
 
         // Initialize controllers after all are constructed.
-        mControllers.init();
+        mControllers.init(sharedState);
 
         mWindowManager.addView(mDragLayer, mWindowLayoutParams);
     }
@@ -303,6 +308,13 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
     }
 
     /**
+     * Sets the flag indicating setup UI is visible
+     */
+    public void setSetupUIVisible(boolean isVisible) {
+        mControllers.taskbarStashController.setSetupUIVisible(isVisible);
+    }
+
+    /**
      * Called when this instance of taskbar is no longer needed
      */
     public void onDestroy() {
@@ -312,9 +324,8 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
         mWindowManager.removeViewImmediate(mDragLayer);
     }
 
-    public void updateSysuiStateFlags(int systemUiStateFlags, boolean forceUpdate) {
-        mControllers.navbarButtonsViewController.updateStateForSysuiFlags(
-                systemUiStateFlags, forceUpdate);
+    public void updateSysuiStateFlags(int systemUiStateFlags) {
+        mControllers.navbarButtonsViewController.updateStateForSysuiFlags(systemUiStateFlags);
         mControllers.taskbarViewController.setImeIsVisible(
                 mControllers.navbarButtonsViewController.isImeVisible());
         boolean panelExpanded = (systemUiStateFlags & SYSUI_STATE_NOTIFICATION_PANEL_EXPANDED) != 0;
@@ -466,5 +477,9 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
      */
     public void startTaskbarUnstashHint(boolean animateForward) {
         mControllers.taskbarStashController.startUnstashHint(animateForward);
+    }
+
+    protected boolean isUserSetupComplete() {
+        return mIsUserSetupComplete;
     }
 }

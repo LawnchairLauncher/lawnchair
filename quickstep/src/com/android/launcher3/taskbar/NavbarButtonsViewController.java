@@ -41,7 +41,6 @@ import android.graphics.Rect;
 import android.graphics.Region;
 import android.graphics.Region.Op;
 import android.graphics.drawable.AnimatedVectorDrawable;
-import android.provider.Settings;
 import android.util.Property;
 import android.view.Gravity;
 import android.view.View;
@@ -59,7 +58,6 @@ import com.android.launcher3.taskbar.TaskbarNavButtonController.TaskbarButton;
 import com.android.launcher3.taskbar.contextual.RotationButton;
 import com.android.launcher3.taskbar.contextual.RotationButtonController;
 import com.android.launcher3.util.MultiValueAlpha;
-import com.android.launcher3.util.SettingsCache;
 import com.android.launcher3.util.Themes;
 import com.android.quickstep.AnimatedFloat;
 
@@ -118,9 +116,10 @@ public class NavbarButtonsViewController {
     /**
      * Initializes the controller
      */
-    public void init(TaskbarControllers controllers) {
+    public void init(TaskbarControllers controllers, TaskbarSharedState sharedState) {
         mControllers = controllers;
         mNavButtonsView.getLayoutParams().height = mContext.getDeviceProfile().taskbarSize;
+        parseSystemUiFlags(sharedState.sysuiStateFlags);
 
         mA11yLongClickListener = view -> {
             mControllers.navButtonController.onButtonClick(BUTTON_A11Y_LONG_CLICK);
@@ -151,8 +150,7 @@ public class NavbarButtonsViewController {
                 flags -> (flags & FLAG_KEYGUARD_VISIBLE) == 0, AnimatedFloat.VALUE, 1, 0));
 
         // Force nav buttons (specifically back button) to be visible during setup wizard.
-        boolean isInSetup = !SettingsCache.INSTANCE.get(mContext).getValue(
-                Settings.Secure.getUriFor(Settings.Secure.USER_SETUP_COMPLETE), 0);
+        boolean isInSetup = !mContext.isUserSetupComplete();
         if (isThreeButtonNav || isInSetup) {
             initButtons(mNavButtonContainer, mEndContextualContainer,
                     mControllers.navButtonController);
@@ -252,23 +250,14 @@ public class NavbarButtonsViewController {
         mA11yButton.setOnLongClickListener(mA11yLongClickListener);
     }
 
-    public void updateStateForSysuiFlags(int systemUiStateFlags, boolean forceUpdate) {
-        boolean isImeVisible = (systemUiStateFlags & SYSUI_STATE_IME_SHOWING) != 0;
-        boolean isImeSwitcherShowing = (systemUiStateFlags & SYSUI_STATE_IME_SWITCHER_SHOWING) != 0;
-        boolean a11yVisible = (systemUiStateFlags & SYSUI_STATE_A11Y_BUTTON_CLICKABLE) != 0;
-        boolean a11yLongClickable =
-                (systemUiStateFlags & SYSUI_STATE_A11Y_BUTTON_LONG_CLICKABLE) != 0;
-        boolean isHomeDisabled =
-                (systemUiStateFlags & SYSUI_STATE_HOME_DISABLED) != 0;
-        boolean isRecentsDisabled =
-                (systemUiStateFlags & SYSUI_STATE_OVERVIEW_DISABLED) != 0;
-        boolean isBackDisabled =
-                (systemUiStateFlags & SYSUI_STATE_BACK_DISABLED) != 0;
-
-        if (!forceUpdate && systemUiStateFlags == mSysuiStateFlags) {
-            return;
-        }
-        mSysuiStateFlags = systemUiStateFlags;
+    private void parseSystemUiFlags(int sysUiStateFlags) {
+        mSysuiStateFlags = sysUiStateFlags;
+        boolean isImeVisible = (sysUiStateFlags & SYSUI_STATE_IME_SHOWING) != 0;
+        boolean isImeSwitcherShowing = (sysUiStateFlags & SYSUI_STATE_IME_SWITCHER_SHOWING) != 0;
+        boolean a11yVisible = (sysUiStateFlags & SYSUI_STATE_A11Y_BUTTON_CLICKABLE) != 0;
+        boolean isHomeDisabled = (sysUiStateFlags & SYSUI_STATE_HOME_DISABLED) != 0;
+        boolean isRecentsDisabled = (sysUiStateFlags & SYSUI_STATE_OVERVIEW_DISABLED) != 0;
+        boolean isBackDisabled = (sysUiStateFlags & SYSUI_STATE_BACK_DISABLED) != 0;
 
         // TODO(b/202218289) we're getting IME as not visible on lockscreen from system
         updateStateForFlag(FLAG_IME_VISIBLE, isImeVisible);
@@ -280,8 +269,17 @@ public class NavbarButtonsViewController {
 
         if (mA11yButton != null) {
             // Only used in 3 button
+            boolean a11yLongClickable =
+                    (sysUiStateFlags & SYSUI_STATE_A11Y_BUTTON_LONG_CLICKABLE) != 0;
             mA11yButton.setLongClickable(a11yLongClickable);
         }
+    }
+
+    public void updateStateForSysuiFlags(int systemUiStateFlags) {
+        if (systemUiStateFlags == mSysuiStateFlags) {
+            return;
+        }
+        parseSystemUiFlags(systemUiStateFlags);
         applyState();
     }
 
