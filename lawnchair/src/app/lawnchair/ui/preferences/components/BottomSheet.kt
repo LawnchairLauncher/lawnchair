@@ -26,6 +26,7 @@ fun BottomSheet(
     sheetState: BottomSheetState = rememberBottomSheetState(initialValue = ModalBottomSheetValue.Hidden),
     scrimColor: Color = BottomSheetDefaults.scrimColor,
     sheetShape: CornerBasedShape = MaterialTheme.shapes.large,
+    sheetBackgroundColor: Color = MaterialTheme.colors.surface,
     sheetContent: @Composable () -> Unit,
 ) {
     val currentSheetContent by rememberUpdatedState(sheetContent)
@@ -41,7 +42,8 @@ fun BottomSheet(
                 sheetShape = sheetShape.copy(
                     bottomStart = CornerSize(0.dp),
                     bottomEnd = CornerSize(0.dp)
-                )
+                ),
+                sheetBackgroundColor = sheetBackgroundColor
             ) {
                 BackHandler {
                     scope.launch { sheetState.onBackPressed() }

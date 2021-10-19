@@ -1,5 +1,9 @@
 package app.lawnchair.theme.color
 
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+
 @Suppress("MemberVisibilityCanBePrivate", "unused")
 object ColorTokens {
     val Neutral1_0 = SwatchColorToken(Swatch.Neutral1, Shade.S0)
@@ -65,4 +69,11 @@ object ColorTokens {
     @JvmField val WidgetsPickerScrim = DayNightColorToken(Neutral1_200, Neutral1_900).setAlpha(0.8f)
 
     @JvmField val WorkspaceAccentColor = DarkTextColorToken(Accent1_100, Accent2_600)
+}
+
+@Composable
+fun colorToken(token: ColorToken): Color {
+    val context = LocalContext.current
+    val intColor = token.resolveColor(context)
+    return Color(intColor)
 }

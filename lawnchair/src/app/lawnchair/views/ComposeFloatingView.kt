@@ -18,6 +18,7 @@ import androidx.compose.ui.unit.dp
 import app.lawnchair.LawnchairLauncher
 import app.lawnchair.launcher
 import app.lawnchair.theme.color.ColorTokens
+import app.lawnchair.theme.color.colorToken
 import app.lawnchair.ui.preferences.components.BottomSheet
 import app.lawnchair.ui.preferences.components.BottomSheetState
 import app.lawnchair.ui.preferences.components.rememberBottomSheetState
@@ -100,13 +101,6 @@ class ComposeFloatingView(context: Context) :
     }
 }
 
-@Composable
-fun scrimColor(): Color {
-    val context = LocalContext.current
-    val intColor = ColorTokens.WidgetsPickerScrim.resolveColor(context)
-    return Color(intColor)
-}
-
 @OptIn(ExperimentalMaterialApi::class)
 fun LawnchairLauncher.showBottomSheet(
     content: @Composable (state: BottomSheetState) -> Unit
@@ -141,8 +135,9 @@ fun LawnchairLauncher.showBottomSheet(
             sheetContent = {
                 content(state)
             },
-            scrimColor = scrimColor(),
-            sheetShape = LauncherSheetShape
+            scrimColor = colorToken(ColorTokens.WidgetsPickerScrim),
+            sheetShape = LauncherSheetShape,
+            sheetBackgroundColor = colorToken(ColorTokens.Surface)
         )
     }
 }
