@@ -76,7 +76,7 @@ public class TaskbarManager implements DisplayController.DisplayInfoChangeListen
      * Cache a copy here so we can initialize state whenever taskbar is recreated, since
      * this class does not get re-initialized w/ new taskbars.
      */
-    private int mSysuiStateFlags;
+    private final TaskbarSharedState mSharedState = new TaskbarSharedState();
 
     private static final int CHANGE_FLAGS =
             CHANGE_ACTIVE_SCREEN | CHANGE_DENSITY | CHANGE_SUPPORTED_BOUNDS;
@@ -192,22 +192,27 @@ public class TaskbarManager implements DisplayController.DisplayInfoChangeListen
 
         mTaskbarActivityContext = new TaskbarActivityContext(mContext, dp.copy(mContext),
                 mNavButtonController, mUnfoldProgressProvider);
-        mTaskbarActivityContext.init();
+        mTaskbarActivityContext.init(mSharedState);
         if (mLauncher != null) {
             mTaskbarActivityContext.setUIController(
                     new LauncherTaskbarUIController(mLauncher, mTaskbarActivityContext));
         }
-        onSysuiFlagsChangedInternal(mSysuiStateFlags, true /* forceUpdate */);
     }
 
     public void onSystemUiFlagsChanged(int systemUiStateFlags) {
-        onSysuiFlagsChangedInternal(systemUiStateFlags, false /* forceUpdate */);
+        mSharedState.sysuiStateFlags = systemUiStateFlags;
+        if (mTaskbarActivityContext != null) {
+            mTaskbarActivityContext.updateSysuiStateFlags(systemUiStateFlags);
+        }
     }
 
-    private void onSysuiFlagsChangedInternal(int systemUiStateFlags, boolean forceUpdate) {
-        mSysuiStateFlags = systemUiStateFlags;
+    /**
+     * Sets the flag indicating setup UI is visible
+     */
+    public void setSetupUIVisible(boolean isVisible) {
+        mSharedState.setupUIVisible = isVisible;
         if (mTaskbarActivityContext != null) {
-            mTaskbarActivityContext.updateSysuiStateFlags(systemUiStateFlags, forceUpdate);
+            mTaskbarActivityContext.setSetupUIVisible(isVisible);
         }
     }
 

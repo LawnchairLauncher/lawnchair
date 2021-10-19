@@ -84,7 +84,6 @@ import com.android.systemui.shared.system.TaskStackChangeListeners;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Manages the state of the system during a swipe up gesture.
@@ -395,14 +394,6 @@ public class RecentsAnimationDeviceState implements
     public boolean isGestureBlockedActivity(ActivityManager.RunningTaskInfo runningTaskInfo) {
         return runningTaskInfo != null
                 && mGestureBlockedActivities.contains(runningTaskInfo.topActivity);
-    }
-
-    /**
-     * @return the packages of gesture-blocked activities.
-     */
-    public List<String> getGestureBlockedActivityPackages() {
-        return mGestureBlockedActivities.stream().map(ComponentName::getPackageName)
-                .collect(Collectors.toList());
     }
 
     /**

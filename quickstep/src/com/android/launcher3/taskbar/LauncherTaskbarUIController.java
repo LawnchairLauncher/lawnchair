@@ -19,7 +19,6 @@ import static com.android.launcher3.LauncherState.HOTSEAT_ICONS;
 import static com.android.launcher3.anim.Interpolators.FAST_OUT_SLOW_IN;
 import static com.android.launcher3.taskbar.TaskbarStashController.FLAG_IN_APP;
 import static com.android.launcher3.taskbar.TaskbarStashController.FLAG_IN_STASHED_LAUNCHER_STATE;
-import static com.android.launcher3.taskbar.TaskbarStashController.FLAG_STASHED_IN_APP_SETUP;
 import static com.android.launcher3.taskbar.TaskbarStashController.TASKBAR_STASH_DURATION;
 import static com.android.launcher3.taskbar.TaskbarViewController.ALPHA_INDEX_HOME;
 
@@ -255,10 +254,6 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
 
         TaskbarStashController stashController = mControllers.taskbarStashController;
         stashController.updateStateForFlag(FLAG_IN_APP, !isResumed);
-        if (isResumed) {
-            // Launcher is resumed, meaning setup must be finished.
-            stashController.updateStateForFlag(FLAG_STASHED_IN_APP_SETUP, false);
-        }
         stashController.applyState(duration);
     }
 
