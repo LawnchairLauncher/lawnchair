@@ -85,7 +85,7 @@ public class AddConfigWidgetTest extends AbstractLauncherUiTest {
      * @param acceptConfig accept the config activity
      */
     private void runTest(boolean acceptConfig) throws Throwable {
-        clearWorkspace();
+        clearHomescreen();
         mDevice.pressHome();
 
         final Widgets widgets = mLauncher.getWorkspace().openAllWidgets();
