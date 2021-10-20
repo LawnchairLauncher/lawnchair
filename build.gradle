@@ -65,6 +65,22 @@ final def commitHash = { ->
     stdout.toString().trim()
 }
 
+def ciBuild = System.getenv("CI") == "true"
+def ciRef = System.getenv("GITHUB_REF") ?: ""
+def ciRunId = System.getenv("GITHUB_RUN_ID") ?: ""
+def isReleaseBuild = ciBuild && ciRef.contains("alpha")
+def devReleaseName
+if (ciBuild) {
+    devReleaseName = "Dev (#${ciRunId})"
+} else {
+    devReleaseName = "Dev (${commitHash()})"
+}
+
+def version = "12.0"
+def releaseName = "Alpha 1"
+def versionDisplayName = "${version} ${isReleaseBuild ? releaseName : devReleaseName}"
+def majorVersion = versionDisplayName.split("\\.")[0]
+
 android {
     compileSdkVersion COMPILE_SDK
     buildToolsVersion BUILD_TOOLS_VERSION
@@ -77,9 +93,7 @@ android {
         minSdkVersion 26
         targetSdkVersion 31
         versionCode 12_00_01
-        def versionDisplayName = "12.0 Alpha 1"
-        def majorVersion = versionDisplayName.split("\\.")[0]
-        versionName "${versionDisplayName} (${commitHash()})"
+        versionName "${versionDisplayName}"
         buildConfigField "String", "VERSION_DISPLAY_NAME", "\"${versionDisplayName}\""
         buildConfigField "String", "MAJOR_VERSION", "\"${majorVersion}\""
 
@@ -118,7 +132,7 @@ android {
 
     buildTypes {
         debug {
-            versionNameSuffix ".debug"
+
         }
 
         release {
