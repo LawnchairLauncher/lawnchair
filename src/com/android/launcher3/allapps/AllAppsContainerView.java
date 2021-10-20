@@ -485,8 +485,9 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
             mViewPager = (AllAppsPagedView) newView;
             mViewPager.initParentViews(this);
             mViewPager.getPageIndicator().setOnActivePageChangedListener(this);
-            mWorkManager.attachWorkModeSwitch();
-            mWorkManager.getWorkModeSwitch().post(() -> mAH[AdapterHolder.WORK].applyPadding());
+            if (mWorkManager.attachWorkModeSwitch()) {
+                mWorkManager.getWorkModeSwitch().post(() -> mAH[AdapterHolder.WORK].applyPadding());
+            }
         } else {
             mWorkManager.detachWorkModeSwitch();
             mViewPager = null;

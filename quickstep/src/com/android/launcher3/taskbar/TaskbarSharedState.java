@@ -13,23 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.android.launcher3.views;
-
-import com.android.launcher3.BubbleTextView;
-import com.android.launcher3.model.data.ItemInfo;
-import com.android.launcher3.model.data.ItemInfoWithIcon;
+package com.android.launcher3.taskbar;
 
 /**
- * Views that contain {@link BubbleTextView} should implement this interface.
+ * State shared across different taskbar instance
  */
-public interface BubbleTextHolder {
-    BubbleTextView getBubbleText();
+public class TaskbarSharedState {
 
-    /**
-     * Called when new {@link ItemInfo} is set to {@link BubbleTextView}
-     *
-     * @param itemInfo the new itemInfo
-     */
-    default void onItemInfoUpdated(ItemInfoWithIcon itemInfo) {
-    }
+    public int sysuiStateFlags;
+
+    public boolean setupUIVisible = false;
+
 }
