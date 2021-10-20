@@ -45,6 +45,12 @@ jobs:
           alias: ${{ secrets.KEY_ALIAS }}
           keyStorePassword: ${{ secrets.KEYSTORE_PASSWORD }}
           keyPassword: ${{ secrets.KEY_PASSWORD }}
+      - name: Rename artifact
+        continue-on-error: true
+        run: |
+          oldPath="${{ steps.sign-debug-apk.outputs.signedReleaseFile }}"
+          newPath="${oldPath%'-signed.apk'}.apk"
+          mv $oldPath $newPath
       - name: Upload artifact
         uses: actions/upload-artifact@v2
         with:
