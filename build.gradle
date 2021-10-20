@@ -67,11 +67,11 @@ final def commitHash = { ->
 
 def ciBuild = System.getenv("CI") == "true"
 def ciRef = System.getenv("GITHUB_REF") ?: ""
-def ciRunId = System.getenv("GITHUB_RUN_ID") ?: ""
+def ciRunNumber = System.getenv("GITHUB_RUN_NUMBER") ?: ""
 def isReleaseBuild = ciBuild && ciRef.contains("alpha")
 def devReleaseName
 if (ciBuild) {
-    devReleaseName = "Dev (#${ciRunId})"
+    devReleaseName = "Dev (#${ciRunNumber})"
 } else {
     devReleaseName = "Dev (${commitHash()})"
 }
