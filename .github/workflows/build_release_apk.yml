@@ -43,14 +43,15 @@ jobs:
       - name: Rename artifact
         continue-on-error: true
         run: |
-          oldPath="${{ steps.sign-debug-apk.outputs.signedReleaseFile }}"
-          newPath="${oldPath%'-signed.apk'}.apk"
-          mv $oldPath $newPath
+          oldArtifactPath="${{ steps.sign-debug-apk.outputs.signedReleaseFile }}"
+          newArtifactPath="${oldArtifactPath%'-signed.apk'}.apk"
+          echo "ARTIFACT_PATH=$newArtifactPath" >> $GITHUB_ENV
+          mv $oldArtifactPath $newArtifactPath
       - name: Upload artifact
         uses: actions/upload-artifact@v2
         with:
           name: Release APK
-          path: ${{ steps.sign-release-apk.outputs.signedReleaseFile }}
+          path: ${{ env.ARTIFACT_PATH }}
   send-notifications:
     runs-on: ubuntu-latest
     needs: build-release-apk
