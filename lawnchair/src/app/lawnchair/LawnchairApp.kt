@@ -37,7 +37,6 @@ class LawnchairApp : Application() {
     val activityHandler = ActivityHandler()
     private val recentsEnabled by lazy { checkRecentsComponent() }
     internal var accessibilityService: LawnchairAccessibilityService? = null
-    val TAG = "LawnchairApp"
 
     override fun onCreate() {
         super.onCreate()
@@ -58,11 +57,9 @@ class LawnchairApp : Application() {
     }
 
     fun migrateDbName(dbName: String) {
-        val prefs = PreferenceManager.INSTANCE.get(this)
         val dbFile = getDatabasePath(dbName)
-        if (dbFile.exists()) {
-            return
-        }
+        if (dbFile.exists()) return
+        val prefs = PreferenceManager.INSTANCE.get(this)
         val dbJournalFile = getJournalFile(dbFile)
         val oldDbSlot = prefs.sp.getString("pref_currentDbSlot", "a")
         val oldDbName = if (oldDbSlot == "a") "launcher.db" else "launcher.db_b"
@@ -86,9 +83,8 @@ class LawnchairApp : Application() {
         }
     }
 
-    private fun getJournalFile(file: File): File {
-        return File(file.parentFile, "${file.name}-journal")
-    }
+    private fun getJournalFile(file: File): File =
+        File(file.parentFile, "${file.name}-journal")
 
     class ActivityHandler : ActivityLifecycleCallbacks {
 
@@ -132,17 +128,20 @@ class LawnchairApp : Application() {
             Log.d(TAG, "config_recentsComponentName not found, disabling recents")
             return false
         }
+
         val recentsComponent = ComponentName.unflattenFromString(resources.getString(resId))
         if (recentsComponent == null) {
             Log.d(TAG, "config_recentsComponentName is empty, disabling recents")
             return false
         }
+
         val isRecentsComponent = recentsComponent.packageName == packageName
                 && recentsComponent.className == RecentsActivity::class.java.name
         if (!isRecentsComponent) {
             Log.d(TAG, "config_recentsComponentName ($recentsComponent) is not Lawnchair, disabling recents")
             return false
         }
+
         return true
     }
 
@@ -161,6 +160,8 @@ class LawnchairApp : Application() {
     }
 
     companion object {
+        private const val TAG = "LawnchairApp"
+
         @JvmStatic
         var instance: LawnchairApp? = null
             private set
