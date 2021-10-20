@@ -24,7 +24,9 @@ import androidx.test.uiautomator.UiObject2;
 
 import com.android.launcher3.testing.TestProtocol;
 
+import java.util.List;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
  * A recent task in the overview panel carousel.
@@ -47,8 +49,12 @@ public final class OverviewTask {
         mOverview.verifyActiveContainer();
     }
 
-    private int getVisibleHeight() {
+    int getVisibleHeight() {
         return mTask.getVisibleBounds().height();
+    }
+
+    int getTaskCenterX() {
+        return mTask.getVisibleCenter().x;
     }
 
     /**
@@ -68,6 +74,8 @@ public final class OverviewTask {
 
             boolean taskWasFocused = mLauncher.isTablet() && getVisibleHeight() == mLauncher
                     .getFocusedTaskHeightForTablet();
+            List<Integer> originalTasksCenterX = getCurrentTasksCenterXList();
+            boolean isClearAllVisibleBeforeDismiss = mOverview.isClearAllVisible();
 
             dismissBySwipingUp();
 
@@ -75,6 +83,16 @@ public final class OverviewTask {
                 if (taskWasFocused) {
                     mLauncher.assertNotNull("No task became focused",
                             mOverview.getFocusedTaskForTablet());
+                }
+                if (!isClearAllVisibleBeforeDismiss) {
+                    List<Integer> currentTasksCenterX = getCurrentTasksCenterXList();
+                    if (originalTasksCenterX.size() == currentTasksCenterX.size()) {
+                        // Check for the same number of visible tasks before and after to
+                        // avoid asserting on cases of shifting all tasks to close the distance
+                        // between clear all and tasks at the end of the grid.
+                        mLauncher.assertTrue("Task centers not aligned",
+                                originalTasksCenterX.equals(currentTasksCenterX));
+                    }
                 }
             }
         }
@@ -92,6 +110,14 @@ public final class OverviewTask {
                 event -> TestProtocol.DISMISS_ANIMATION_ENDS_MESSAGE.equals(event.getClassName()),
                 () -> "Didn't receive a dismiss animation ends message: " + centerX + ", "
                         + centerY, "swiping to dismiss");
+    }
+
+    private List<Integer> getCurrentTasksCenterXList() {
+        return mLauncher.isTablet()
+                ? mOverview.getCurrentTasksForTablet().stream()
+                    .map(OverviewTask::getTaskCenterX)
+                    .collect(Collectors.toList())
+                : List.of(mOverview.getCurrentTask().getTaskCenterX());
     }
 
     /**
