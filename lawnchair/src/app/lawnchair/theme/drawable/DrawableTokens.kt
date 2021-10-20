@@ -60,6 +60,10 @@ object DrawableTokens {
         .setColor(ColorTokens.Surface)
 
     @JvmField
+    val WidgetsRecommendationBackground = ResourceDrawableToken<GradientDrawable>(R.drawable.widgets_recommendation_background)
+        .setColor(ColorTokens.Surface)
+
+    @JvmField
     val WidgetResizeFrame = ResourceDrawableToken<GradientDrawable>(R.drawable.widget_resize_frame)
         .setStroke(2f, ColorTokens.WorkspaceAccentColor)
 

@@ -831,6 +831,7 @@ public class WidgetsFullSheet extends BaseWidgetSheet
             mCollapseHandle.setBackground(DrawableTokens.BgWidgetsPickerHandle.resolve(getContext()));
             mSearchBarContainer.setBackgroundColor(ColorTokens.ColorBackground.resolveColor(getContext()));
             ((View) mSearchBar).setBackground(DrawableTokens.BgWidgetsSearchbox.resolve(getContext()));
+            mRecommendedWidgetsTable.setBackground(DrawableTokens.WidgetsRecommendationBackground.resolve(getContext()));
         }
     }
 }
