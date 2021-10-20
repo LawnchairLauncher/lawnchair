@@ -38,6 +38,8 @@ import app.lawnchair.util.lifecycleState
 import com.android.launcher3.R
 import com.android.launcher3.notification.NotificationListener
 import com.android.launcher3.settings.SettingsActivity
+import com.android.launcher3.settings.SettingsActivity.EXTRA_FRAGMENT_ARG_KEY
+import com.android.launcher3.settings.SettingsActivity.EXTRA_SHOW_FRAGMENT_ARGS
 import com.android.launcher3.util.SettingsCache
 import com.android.launcher3.util.SettingsCache.NOTIFICATION_BADGING_URI
 import kotlinx.coroutines.launch
@@ -88,11 +90,11 @@ fun NotificationDotsPreference() {
                         sheetState.show()
                     }
                 } else {
+                    val extras = Bundle().apply {
+                        putString(EXTRA_FRAGMENT_ARG_KEY, "notification_badging")
+                    }
                     val intent = Intent("android.settings.NOTIFICATION_SETTINGS")
-                        .putExtra(
-                            SettingsActivity.EXTRA_FRAGMENT_ARG_KEY,
-                            "notification_badging"
-                        )
+                        .putExtra(EXTRA_SHOW_FRAGMENT_ARGS, extras)
                     context.startActivity(intent)
                 }
             }
@@ -130,14 +132,14 @@ fun NotificationAccessConfirmation(
                         val cn = ComponentName(context, NotificationListener::class.java)
                         val showFragmentArgs = Bundle()
                         showFragmentArgs.putString(
-                            SettingsActivity.EXTRA_FRAGMENT_ARG_KEY,
+                            EXTRA_FRAGMENT_ARG_KEY,
                             cn.flattenToString()
                         )
 
                         val intent = Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS)
                             .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                            .putExtra(SettingsActivity.EXTRA_FRAGMENT_ARG_KEY, cn.flattenToString())
-                            .putExtra(SettingsActivity.EXTRA_SHOW_FRAGMENT_ARGS, showFragmentArgs)
+                            .putExtra(EXTRA_FRAGMENT_ARG_KEY, cn.flattenToString())
+                            .putExtra(EXTRA_SHOW_FRAGMENT_ARGS, showFragmentArgs)
                         context.startActivity(intent)
                     }
                 ) {
