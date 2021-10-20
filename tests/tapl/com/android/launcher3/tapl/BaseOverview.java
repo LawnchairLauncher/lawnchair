@@ -25,6 +25,7 @@ import androidx.test.uiautomator.UiObject2;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Common overview panel for both Launcher and fallback recents
@@ -53,14 +54,18 @@ public class BaseOverview extends LauncherInstrumentation.VisibleContainer {
     }
 
     private void flingForwardImpl() {
+        flingForwardImpl(0);
+    }
+
+    private void flingForwardImpl(int rightMargin) {
         try (LauncherInstrumentation.Closable c =
                      mLauncher.addContextLayer("want to fling forward in overview")) {
             LauncherInstrumentation.log("Overview.flingForward before fling");
             final UiObject2 overview = verifyActiveContainer();
             final int leftMargin =
                     mLauncher.getTargetInsets().left + mLauncher.getEdgeSensitivityWidth();
-            mLauncher.scroll(
-                    overview, Direction.LEFT, new Rect(leftMargin + 1, 0, 0, 0), 20, false);
+            mLauncher.scroll(overview, Direction.LEFT, new Rect(leftMargin + 1, 0, rightMargin, 0),
+                    20, false);
             try (LauncherInstrumentation.Closable c2 =
                          mLauncher.addContextLayer("flung forwards")) {
                 verifyActiveContainer();
@@ -86,6 +91,8 @@ public class BaseOverview extends LauncherInstrumentation.VisibleContainer {
 
             mLauncher.clickLauncherObject(
                     mLauncher.waitForObjectInContainer(verifyActiveContainer(), clearAllSelector));
+
+            mLauncher.waitUntilLauncherObjectGone(clearAllSelector);
         }
     }
 
@@ -111,6 +118,40 @@ public class BaseOverview extends LauncherInstrumentation.VisibleContainer {
     }
 
     /**
+     * Scrolls the current task via flinging forward until it is off screen.
+     *
+     * If only one task is present, it is only partially scrolled off screen and will still be
+     * the current task.
+     */
+    public void scrollCurrentTaskOffScreen() {
+        try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck();
+             LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
+                     "want to scroll current task off screen in overview")) {
+            verifyActiveContainer();
+
+            OverviewTask task = getCurrentTask();
+            mLauncher.assertNotNull("current task is null", task);
+            flingForwardImpl(task.getTaskCenterX());
+
+            try (LauncherInstrumentation.Closable c2 =
+                         mLauncher.addContextLayer("scrolled task off screen")) {
+                verifyActiveContainer();
+                verifyActionsViewVisibility();
+
+                if (getTaskCount() > 1) {
+                    if (mLauncher.isTablet()) {
+                        mLauncher.assertTrue("current task is not grid height",
+                                getCurrentTask().getVisibleHeight() == mLauncher
+                                        .getGridTaskRectForTablet().height());
+                    }
+                    mLauncher.assertTrue("Current task not scrolled off screen",
+                            !getCurrentTask().equals(task));
+                }
+            }
+        }
+    }
+
+    /**
      * Gets the current task in the carousel, or fails if the carousel is empty.
      *
      * @return the task in the middle of the visible tasks list.
@@ -128,6 +169,20 @@ public class BaseOverview extends LauncherInstrumentation.VisibleContainer {
                         mLauncher.getVisibleBounds(t2).width()));
 
         return new OverviewTask(mLauncher, widestTask, this);
+    }
+
+    /**
+     * Returns a list of all tasks fully visible in the tablet grid overview.
+     */
+    @NonNull
+    public List<OverviewTask> getCurrentTasksForTablet() {
+        final List<UiObject2> taskViews = getTasks();
+        mLauncher.assertNotEquals("Unable to find a task", 0, taskViews.size());
+
+        final int gridTaskWidth = mLauncher.getGridTaskRectForTablet().width();
+
+        return taskViews.stream().filter(t -> t.getVisibleBounds().width() == gridTaskWidth).map(
+                t -> new OverviewTask(mLauncher, t, this)).collect(Collectors.toList());
     }
 
     @NonNull
@@ -166,11 +221,18 @@ public class BaseOverview extends LauncherInstrumentation.VisibleContainer {
         }
     }
 
+    /**
+     * Returns if clear all button is visible.
+     */
+    public boolean isClearAllVisible() {
+        return mLauncher.hasLauncherObject(mLauncher.getOverviewObjectSelector("clear_all"));
+    }
+
     /* TODO(b/197630182): Once b/188790554 is fixed, remove instanceof check. Currently, when
         swiping from app to overview in Fallback Recents, taskbar remains and no action buttons
         are visible, so we are only testing Overview for now, not BaseOverview. */
     private void verifyActionsViewVisibility() {
-        if (!(this instanceof Overview)) {
+        if (!(this instanceof Overview) || !hasTasks()) {
             return;
         }
         try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
@@ -198,8 +260,13 @@ public class BaseOverview extends LauncherInstrumentation.VisibleContainer {
 
     /**
      * Returns Overview focused task if it exists.
+     *
+     * @throws IllegalStateException if not run on a tablet device.
      */
     UiObject2 getFocusedTaskForTablet() {
+        if (!mLauncher.isTablet()) {
+            throw new IllegalStateException("Must be run on tablet device.");
+        }
         final List<UiObject2> taskViews = getTasks();
         if (taskViews.size() == 0) {
             return null;
