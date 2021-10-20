@@ -16,7 +16,12 @@
 
 package com.android.launcher3.tapl;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.test.uiautomator.By;
+import androidx.test.uiautomator.BySelector;
 import androidx.test.uiautomator.UiObject2;
+import androidx.test.uiautomator.Until;
 
 import com.android.launcher3.testing.TestProtocol;
 
@@ -50,5 +55,56 @@ public final class Widget extends Launchable {
     @Override
     protected String launchableType() {
         return "widget";
+    }
+
+    /**
+     * Drags a non-configurable widget from the widgets container to the workspace and returns the
+     * resize frame that is shown after the widget is added.
+     */
+    @NonNull
+    public WidgetResizeFrame dragWidgetToWorkspace() {
+        return dragWidgetToWorkspace(/* configurable= */ false, /* acceptsConfig= */ false);
+    }
+
+    /**
+     * Drags a configurable widget from the widgets container to the workspace, either accepts or
+     * cancels the configuration based on {@code acceptsConfig}, and returns the resize frame that
+     * is shown if the widget is added.
+     */
+    @Nullable
+    public WidgetResizeFrame dragConfigWidgetToWorkspace(boolean acceptsConfig) {
+        return dragWidgetToWorkspace(/* configurable= */ true, acceptsConfig);
+    }
+
+    /**
+     * Drags a widget from the widgets container to the workspace and returns the resize frame that
+     * is shown after the widget is added.
+     *
+     * <p> If {@code configurable} is true, then either accepts or cancels the configuration based
+     * on {@code acceptsConfig}.
+     */
+    @Nullable
+    private WidgetResizeFrame dragWidgetToWorkspace(
+            boolean configurable, boolean acceptsConfig) {
+        dragToWorkspace(/* startsActivity= */ configurable, /* isWidgetShortcut= */ false);
+
+        if (configurable) {
+            // Configure the widget.
+            BySelector selector = By.text(acceptsConfig ? "OK" : "Cancel");
+            mLauncher.getDevice()
+                    .wait(Until.findObject(selector), LauncherInstrumentation.WAIT_TIME_MS)
+                    .click();
+
+            // If the widget configuration was cancelled, then the widget wasn't added to the home
+            // screen. In that case, we cannot return a resize frame.
+            if (!acceptsConfig) {
+                return null;
+            }
+        }
+
+        try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
+                "want to get widget resize frame")) {
+            return new WidgetResizeFrame(mLauncher);
+        }
     }
 }
