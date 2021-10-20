@@ -31,19 +31,14 @@ import static com.android.systemui.shared.system.ActivityManagerWrapper.CLOSE_SY
 import android.animation.AnimatorSet;
 import android.animation.ValueAnimator;
 import android.app.ActivityOptions;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
-import android.content.ServiceConnection;
 import android.graphics.Insets;
 import android.hardware.SensorManager;
 import android.hardware.devicestate.DeviceStateManager;
 import android.os.Bundle;
 import android.os.CancellationSignal;
-import android.os.Handler;
-import android.os.IBinder;
-import android.util.Log;
 import android.view.View;
 import android.view.WindowInsets;
 import android.window.SplashScreen;
@@ -76,13 +71,13 @@ import com.android.quickstep.SysUINavigationMode.Mode;
 import com.android.quickstep.SysUINavigationMode.NavigationModeChangeListener;
 import com.android.quickstep.SystemUiProxy;
 import com.android.quickstep.TaskUtils;
-import com.android.quickstep.TouchInteractionService;
 import com.android.quickstep.TouchInteractionService.TISBinder;
 import com.android.quickstep.util.LauncherUnfoldAnimationController;
 import com.android.quickstep.util.ProxyScreenStatusProvider;
 import com.android.quickstep.util.RemoteAnimationProvider;
 import com.android.quickstep.util.RemoteFadeOutAnimationListener;
 import com.android.quickstep.util.SplitSelectStateController;
+import com.android.quickstep.util.TISBindHelper;
 import com.android.quickstep.views.OverviewActionsView;
 import com.android.quickstep.views.RecentsView;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
@@ -103,11 +98,6 @@ import java.util.stream.Stream;
 public abstract class BaseQuickstepLauncher extends Launcher
         implements NavigationModeChangeListener {
 
-    private static final long BACKOFF_MILLIS = 1000;
-
-    // Max backoff caps at 5 mins
-    private static final long MAX_BACKOFF_MILLIS = 10 * 60 * 1000;
-
     private DepthController mDepthController = new DepthController(this);
     private QuickstepTransitionManager mAppTransitionManager;
 
@@ -120,45 +110,12 @@ public abstract class BaseQuickstepLauncher extends Launcher
 
     private OverviewActionsView mActionsView;
 
+    private TISBindHelper mTISBindHelper;
     private @Nullable TaskbarManager mTaskbarManager;
     private @Nullable OverviewCommandHelper mOverviewCommandHelper;
     private @Nullable LauncherTaskbarUIController mTaskbarUIController;
-    private final ServiceConnection mTisBinderConnection = new ServiceConnection() {
-        @Override
-        public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
-            if (!(iBinder instanceof TISBinder)) {
-                // Seems like there can be a race condition when user unlocks, which kills the TIS
-                // process and re-starts it. I guess in the meantime service can be connected to
-                // a killed TIS? Either way, unbind and try to re-connect in that case.
-                internalUnbindToTIS();
-                mHandler.postDelayed(mConnectionRunnable, BACKOFF_MILLIS);
-                return;
-            }
 
-            mTaskbarManager = ((TISBinder) iBinder).getTaskbarManager();
-            mTaskbarManager.setLauncher(BaseQuickstepLauncher.this);
-
-            Log.d(TAG, "TIS service connected");
-            resetServiceBindRetryState();
-
-            mOverviewCommandHelper = ((TISBinder) iBinder).getOverviewCommandHelper();
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName componentName) { }
-
-        @Override
-        public void onBindingDied(ComponentName name) {
-            Log.w(TAG, "TIS binding died");
-            internalBindToTIS();
-        }
-    };
-
-    private final Runnable mConnectionRunnable = this::internalBindToTIS;
-    private short mConnectionAttempts;
     private final TaskbarStateHandler mTaskbarStateHandler = new TaskbarStateHandler(this);
-    private final Handler mHandler = new Handler();
-    private boolean mTisServiceBound;
 
     // Will be updated when dragging from taskbar.
     private @Nullable DragOptions mNextWorkspaceDragOptions = null;
@@ -201,11 +158,10 @@ public abstract class BaseQuickstepLauncher extends Launcher
 
         SysUINavigationMode.INSTANCE.get(this).removeModeChangeListener(this);
 
-        internalUnbindToTIS();
+        mTISBindHelper.onDestroy();
         if (mTaskbarManager != null) {
             mTaskbarManager.clearLauncher(this);
         }
-        resetServiceBindRetryState();
 
         if (mLauncherUnfoldAnimationController != null) {
             mLauncherUnfoldAnimationController.onDestroy();
@@ -357,42 +313,13 @@ public abstract class BaseQuickstepLauncher extends Launcher
         mAppTransitionManager.registerRemoteAnimations();
         mAppTransitionManager.registerRemoteTransitions();
 
-        internalBindToTIS();
+        mTISBindHelper = new TISBindHelper(this, this::onTISConnected);
     }
 
-    /**
-     * Binds {@link #mTisBinderConnection} to {@link TouchInteractionService}. If the binding fails,
-     * attempts to retry via {@link #mConnectionRunnable}.
-     * Unbind via {@link #internalUnbindToTIS()}
-     */
-    private void internalBindToTIS() {
-        mTisServiceBound = bindService(new Intent(this, TouchInteractionService.class),
-                        mTisBinderConnection, 0);
-        if (mTisServiceBound) {
-            resetServiceBindRetryState();
-            return;
-        }
-
-        Log.w(TAG, "Retrying TIS Binder connection attempt: " + mConnectionAttempts);
-        final long timeoutMs = (long) Math.min(
-                Math.scalb(BACKOFF_MILLIS, mConnectionAttempts), MAX_BACKOFF_MILLIS);
-        mHandler.postDelayed(mConnectionRunnable, timeoutMs);
-        mConnectionAttempts++;
-    }
-
-    /** See {@link #internalBindToTIS()} */
-    private void internalUnbindToTIS() {
-        if (mTisServiceBound) {
-            unbindService(mTisBinderConnection);
-            mTisServiceBound = false;
-        }
-    }
-
-    private void resetServiceBindRetryState() {
-        if (mHandler.hasCallbacks(mConnectionRunnable)) {
-            mHandler.removeCallbacks(mConnectionRunnable);
-        }
-        mConnectionAttempts = 0;
+    private void onTISConnected(TISBinder binder) {
+        mTaskbarManager = binder.getTaskbarManager();
+        mTaskbarManager.setLauncher(BaseQuickstepLauncher.this);
+        mOverviewCommandHelper = binder.getOverviewCommandHelper();
     }
 
     private void initUnfoldTransitionProgressProvider() {

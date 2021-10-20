@@ -62,7 +62,6 @@ import androidx.annotation.BinderThread;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
-import androidx.annotation.WorkerThread;
 
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.R;
@@ -953,22 +952,6 @@ public class TouchInteractionService extends Service
         return new FallbackSwipeHandler(this, mDeviceState, mTaskAnimationManager,
                 gestureState, touchTimeMs, mTaskAnimationManager.isRecentsAnimationRunning(),
                 mInputConsumer);
-    }
-
-    protected boolean shouldNotifyBackGesture() {
-        return mBackGestureNotificationCounter > 0 &&
-                !mDeviceState.getGestureBlockedActivityPackages().isEmpty();
-    }
-
-    @WorkerThread
-    protected void tryNotifyBackGesture() {
-        if (shouldNotifyBackGesture()) {
-            mBackGestureNotificationCounter--;
-            Utilities.getDevicePrefs(this).edit()
-                    .putInt(KEY_BACK_NOTIFICATION_COUNT, mBackGestureNotificationCounter).apply();
-            mDeviceState.getGestureBlockedActivityPackages().forEach(blockedPackage ->
-                    sendBroadcast(new Intent(NOTIFY_ACTION_BACK).setPackage(blockedPackage)));
-        }
     }
 
     @Override

@@ -47,7 +47,7 @@ public class AddWidgetTest extends AbstractLauncherUiTest {
     @Test
     @PortraitLandscape
     public void testDragIcon() throws Throwable {
-        clearWorkspace();
+        clearHomescreen();
         mDevice.pressHome();
 
         final LauncherAppWidgetProviderInfo widgetInfo =
@@ -81,7 +81,7 @@ public class AddWidgetTest extends AbstractLauncherUiTest {
     @Test
     @PortraitLandscape
     public void testDragCustomShortcut() throws Throwable {
-        clearWorkspace();
+        clearHomescreen();
         mDevice.pressHome();
         mLauncher.getWorkspace().openAllWidgets()
                 .getWidget("com.android.launcher3.testcomponent.CustomShortcutConfigActivity")

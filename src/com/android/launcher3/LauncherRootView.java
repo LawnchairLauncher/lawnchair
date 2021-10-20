@@ -1,5 +1,6 @@
 package com.android.launcher3;
 
+import static com.android.launcher3.ResourceUtils.INVALID_RESOURCE_HANDLE;
 import static com.android.launcher3.config.FeatureFlags.SEPARATE_RECENTS_ACTIVITY;
 
 import android.annotation.TargetApi;
@@ -99,7 +100,11 @@ public class LauncherRootView extends InsettableFrameLayout {
                 oldNavInsets.bottom);
 
         if (dp.isLandscape) {
-            if (dp.isTablet) {
+            boolean isGesturalMode = ResourceUtils.getIntegerByName(
+                    "config_navBarInteractionMode",
+                    resources,
+                    INVALID_RESOURCE_HANDLE) == 2;
+            if (dp.isTablet || isGesturalMode) {
                 newNavInsets.bottom = ResourceUtils.getNavbarSize(
                         "navigation_bar_height_landscape", resources);
             } else {

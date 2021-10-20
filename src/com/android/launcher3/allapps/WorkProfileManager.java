@@ -28,6 +28,7 @@ import android.os.UserManager;
 import android.util.Log;
 
 import androidx.annotation.IntDef;
+import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 
 import com.android.launcher3.R;
@@ -127,11 +128,11 @@ public class WorkProfileManager implements PersonalWorkSlidingTabStrip.OnActiveP
     /**
      * Creates and attaches for profile toggle button to {@link AllAppsContainerView}
      */
-    public void attachWorkModeSwitch() {
+    public boolean attachWorkModeSwitch() {
         if (!mAllApps.getAppsStore().hasModelFlag(
                 FLAG_HAS_SHORTCUT_PERMISSION | FLAG_QUIET_MODE_CHANGE_PERMISSION)) {
-            Log.e(TAG, "Unable to attach widget; Missing required permissions");
-            return;
+            Log.e(TAG, "unable to attach work mode switch; Missing required permissions");
+            return false;
         }
         if (mWorkModeSwitch == null) {
             mWorkModeSwitch = (WorkModeSwitch) mAllApps.getLayoutInflater().inflate(
@@ -144,6 +145,7 @@ public class WorkProfileManager implements PersonalWorkSlidingTabStrip.OnActiveP
             getAH().applyPadding();
         }
         mWorkModeSwitch.updateCurrentState(mCurrentState == STATE_ENABLED);
+        return true;
     }
 
     /**
@@ -165,6 +167,7 @@ public class WorkProfileManager implements PersonalWorkSlidingTabStrip.OnActiveP
         return mMatcher;
     }
 
+    @Nullable
     public WorkModeSwitch getWorkModeSwitch() {
         return mWorkModeSwitch;
     }
