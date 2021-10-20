@@ -28,7 +28,7 @@
             android:layout_gravity="center_horizontal"
             android:layout_marginBottom="16dp"
             android:visibility="gone"
-            android:background="?android:attr/textColorSecondary"/>
+            android:background="@drawable/bottom_sheet_collapse_handle"/>
         <TextView
             style="@style/TextHeadline"
             android:id="@+id/title"
