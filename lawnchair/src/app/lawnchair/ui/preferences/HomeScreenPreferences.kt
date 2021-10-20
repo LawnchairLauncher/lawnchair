@@ -26,6 +26,7 @@ import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences.preferenceManager
 import app.lawnchair.ui.preferences.components.*
 import com.android.launcher3.R
+import com.android.launcher3.Utilities
 
 object HomeScreenRoutes {
     const val GRID = "grid"
@@ -109,6 +110,14 @@ fun HomeScreenPreferences() {
                     step = 0.1f,
                     valueRange = 0.5F..1.5F,
                     showAsPercentage = true,
+                )
+            }
+        }
+        if (!Utilities.ATLEAST_S) {
+            PreferenceGroup(heading = stringResource(id = R.string.widget_button_text)) {
+                SwitchPreference(
+                    adapter = prefs.roundedWidgets.getAdapter(),
+                    label = stringResource(id = R.string.force_rounded_widgets)
                 )
             }
         }

@@ -116,6 +116,7 @@ class PreferenceManager private constructor(private val context: Context) : Base
         override fun flattenValue(value: String) = value
         override fun unflattenValue(value: String) = value
     }
+    val roundedWidgets = BoolPref("pref_roundedWidgets", true, reloadGrid)
 
     private val fontCache = FontCache.INSTANCE.get(context)
     val workspaceFont = FontPref("pref_workspaceFont", fontCache.uiTextMedium, recreate)

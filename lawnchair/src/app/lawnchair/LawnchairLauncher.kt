@@ -45,6 +45,7 @@ import com.android.launcher3.popup.SystemShortcut
 import com.android.launcher3.statemanager.StateManager
 import com.android.launcher3.uioverrides.QuickstepLauncher
 import com.android.launcher3.uioverrides.states.OverviewState
+import com.android.launcher3.widget.RoundedCornerEnforcement
 import com.android.systemui.plugins.shared.LauncherOverlayManager
 import com.android.systemui.shared.system.QuickStepContract
 import dev.kdrag0n.monet.theme.ColorScheme
@@ -112,6 +113,9 @@ class LawnchairLauncher : QuickstepLauncher(), LifecycleOwner,
         }
         prefs.windowCornerRadius.subscribeValues(this) {
             QuickStepContract.sCustomCornerRadius = it.toFloat()
+        }
+        prefs.roundedWidgets.subscribeValues(this) {
+            RoundedCornerEnforcement.sRoundedCornerEnabled = it
         }
 
         colorScheme = themeProvider.colorScheme
