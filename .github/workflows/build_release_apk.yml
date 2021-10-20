@@ -46,7 +46,7 @@ jobs:
           oldArtifactPath="${{ steps.sign-debug-apk.outputs.signedReleaseFile }}"
           newArtifactPath="${oldArtifactPath%'-signed.apk'}.apk"
           echo "ARTIFACT_PATH=$newArtifactPath" >> $GITHUB_ENV
-          mv $oldArtifactPath $newArtifactPath
+          mv "$oldArtifactPath" "$newArtifactPath"
       - name: Upload artifact
         uses: actions/upload-artifact@v2
         with:
