@@ -63,6 +63,17 @@ public class QuickstepTestInformationHandler extends TestInformationHandler {
                 response.putInt(TestProtocol.TEST_INFO_RESPONSE_FIELD, focusedTaskRect.height());
                 return response;
             }
+
+            case TestProtocol.REQUEST_GET_GRID_TASK_SIZE_RECT_FOR_TABLET: {
+                if (!mDeviceProfile.isTablet) {
+                    return null;
+                }
+                Rect gridTaskRect = new Rect();
+                LauncherActivityInterface.INSTANCE.calculateGridTaskSize(mContext, mDeviceProfile,
+                        gridTaskRect, PagedOrientationHandler.PORTRAIT);
+                response.putParcelable(TestProtocol.TEST_INFO_RESPONSE_FIELD, gridTaskRect);
+                return response;
+            }
         }
 
         return super.call(method, arg);
