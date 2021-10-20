@@ -326,6 +326,11 @@ public final class LauncherInstrumentation {
                 TestProtocol.TEST_INFO_RESPONSE_FIELD);
     }
 
+    Rect getGridTaskRectForTablet() {
+        return ((Rect) getTestInfo(TestProtocol.REQUEST_GET_GRID_TASK_SIZE_RECT_FOR_TABLET)
+                .getParcelable(TestProtocol.TEST_INFO_RESPONSE_FIELD));
+    }
+
     float getExactScreenCenterX() {
         return getRealDisplaySize().x / 2f;
     }
