@@ -54,8 +54,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:drawableStart="@drawable/ic_share"
-            android:text="@string/action_share"
-            android:theme="@style/ThemeControlHighlightWorkspaceColor" />
+            android:text="@string/action_share" />
 
         <Space
             android:id="@+id/oav_three_button_space"
@@ -69,8 +68,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:drawableStart="@drawable/ic_lens"
-            android:text="@string/action_lens"
-            android:theme="@style/ThemeControlHighlightWorkspaceColor" />
+            android:text="@string/action_lens" />
 
         <Space
             android:id="@+id/lens_space"
@@ -85,7 +83,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/recents_clear_all"
-            android:theme="@style/ThemeControlHighlightWorkspaceColor"
             android:drawableStart="@drawable/ic_clear_all_recents"
             android:visibility="gone"
             />
