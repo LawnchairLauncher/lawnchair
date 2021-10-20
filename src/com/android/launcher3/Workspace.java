@@ -1676,7 +1676,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         }
 
         if (child instanceof BubbleTextView && !dragOptions.isAccessibleDrag) {
-            PopupContainerWithArrow popupContainer = PopupContainerWithArrow
+            PopupContainerWithArrow<Launcher> popupContainer = PopupContainerWithArrow
                     .showForIcon((BubbleTextView) child);
             if (popupContainer != null) {
                 dragOptions.preDragCondition = popupContainer.createPreDragCondition();

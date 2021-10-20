@@ -18,12 +18,14 @@ import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.model.WidgetItem;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.util.InstantAppResolver;
 import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.util.PackageUserKey;
+import com.android.launcher3.views.ActivityContext;
 import com.android.launcher3.widget.WidgetsBottomSheet;
 
 import java.util.List;
@@ -35,7 +37,7 @@ import java.util.List;
  * Example system shortcuts, defined as inner classes, include Widgets and AppInfo.
  * @param <T>
  */
-public abstract class SystemShortcut<T extends BaseDraggingActivity> extends ItemInfo
+public abstract class SystemShortcut<T extends Context & ActivityContext> extends ItemInfo
         implements View.OnClickListener {
 
     private final int mIconResId;
@@ -100,7 +102,7 @@ public abstract class SystemShortcut<T extends BaseDraggingActivity> extends Ite
         return mAccessibilityActionId == action;
     }
 
-    public interface Factory<T extends BaseDraggingActivity> {
+    public interface Factory<T extends Context & ActivityContext> {
 
         @Nullable SystemShortcut<T> getShortcut(T activity, ItemInfo itemInfo);
     }
@@ -135,9 +137,9 @@ public abstract class SystemShortcut<T extends BaseDraggingActivity> extends Ite
 
     public static final Factory<BaseDraggingActivity> APP_INFO = AppInfo::new;
 
-    public static class AppInfo extends SystemShortcut {
+    public static class AppInfo<T extends Context & ActivityContext> extends SystemShortcut<T> {
 
-        public AppInfo(BaseDraggingActivity target, ItemInfo itemInfo) {
+        public AppInfo(T target, ItemInfo itemInfo) {
             super(R.drawable.ic_info_no_shadow, R.string.app_info_drop_target_label, target,
                     itemInfo);
         }
@@ -145,7 +147,7 @@ public abstract class SystemShortcut<T extends BaseDraggingActivity> extends Ite
         @Override
         public void onClick(View view) {
             dismissTaskMenuView(mTarget);
-            Rect sourceBounds = mTarget.getViewBounds(view);
+            Rect sourceBounds = Utilities.getViewBounds(view);
             new PackageManagerHelper(mTarget).startDetailsActivityForInfo(
                     mItemInfo, sourceBounds, ActivityOptions.makeBasic().toBundle());
             mTarget.getStatsLogManager().logger().withItemInfo(mItemInfo)
@@ -170,7 +172,7 @@ public abstract class SystemShortcut<T extends BaseDraggingActivity> extends Ite
         return new Install(activity, itemInfo);
     };
 
-    public static class Install extends SystemShortcut {
+    public static class Install extends SystemShortcut<BaseDraggingActivity> {
 
         public Install(BaseDraggingActivity target, ItemInfo itemInfo) {
             super(R.drawable.ic_install_no_shadow, R.string.install_drop_target_label,
@@ -186,7 +188,7 @@ public abstract class SystemShortcut<T extends BaseDraggingActivity> extends Ite
         }
     }
 
-    public static void dismissTaskMenuView(BaseDraggingActivity activity) {
+    public static <T extends Context & ActivityContext> void dismissTaskMenuView(T activity) {
         AbstractFloatingView.closeOpenViews(activity, true,
             AbstractFloatingView.TYPE_ALL & ~AbstractFloatingView.TYPE_REBIND_SAFE);
     }

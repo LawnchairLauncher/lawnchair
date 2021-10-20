@@ -30,6 +30,7 @@ import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.R;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.model.data.FolderInfo;
@@ -298,7 +299,7 @@ public class HotseatEduController {
             Log.e(TAG, "Unable to find suitable view for ArrowTip");
             return false;
         }
-        Rect bounds = mLauncher.getViewBounds(tipTargetView);
+        Rect bounds = Utilities.getViewBounds(tipTargetView);
         new ArrowTipView(mLauncher).show(message, Gravity.END, bounds.centerX(), bounds.top);
         return true;
     }
