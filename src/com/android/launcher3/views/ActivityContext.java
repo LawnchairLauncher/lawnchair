@@ -19,6 +19,7 @@ import android.content.Context;
 import android.content.ContextWrapper;
 import android.graphics.Rect;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.View.AccessibilityDelegate;
 
 import androidx.annotation.Nullable;
@@ -158,5 +159,11 @@ public interface ActivityContext {
         } else {
             return null;
         }
+    }
+
+    default View.OnClickListener getItemOnClickListener() {
+        return v -> {
+            // No op.
+        };
     }
 }
