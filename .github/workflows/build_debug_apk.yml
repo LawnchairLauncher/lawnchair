@@ -9,6 +9,7 @@ on:
       - '**'
       - '!11-dev-localization'
       - '!11-alpha'
+      - '!12-alpha'
 
 jobs:
   build-debug-apk:
