@@ -33,7 +33,6 @@ fun SwitchPreference(
     enabled: Boolean = true,
     showDivider: Boolean = false
 ) {
-    // TODO: Wrap overflowing text instead of using an ellipsis.
     PreferenceTemplate(
         title = { Text(text = label) },
         description = { description?.let { Text(text = it) } },
