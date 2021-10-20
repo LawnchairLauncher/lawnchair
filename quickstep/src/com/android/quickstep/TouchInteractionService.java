@@ -137,6 +137,8 @@ public class TouchInteractionService extends Service
 
     private int mBackGestureNotificationCounter = -1;
 
+    private final TISBinder mTISBinder = new TISBinder();
+
     /**
      * Local IOverviewProxy implementation with some methods for local components
      */
@@ -508,7 +510,7 @@ public class TouchInteractionService extends Service
     @Override
     public IBinder onBind(Intent intent) {
         Log.d(TAG, "Touch service connected: user=" + getUserId());
-        return new TISBinder();
+        return mTISBinder;
     }
 
     private void onInputEvent(InputEvent ev) {
