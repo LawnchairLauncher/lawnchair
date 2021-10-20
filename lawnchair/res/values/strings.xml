@@ -163,4 +163,5 @@
     <string name="enable_colorful_theme">Also Apply to Background</string>
     <string name="force_rounded_widgets">Round Corners</string>
     <string name="suggestion_pref_screen_title">Suggestions</string>
+    <string name="n_percent">%1$d%%</string>
 </resources>

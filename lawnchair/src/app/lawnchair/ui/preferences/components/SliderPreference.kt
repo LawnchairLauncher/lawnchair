@@ -21,9 +21,11 @@ import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import app.lawnchair.preferences.PreferenceAdapter
 import app.lawnchair.preferences.rememberTransformAdapter
+import com.android.launcher3.R
 import kotlin.math.roundToInt
 
 @Composable
@@ -86,7 +88,10 @@ fun SliderPreference(
                 ) {
                     val value = snapSliderValue(valueRange.start, sliderValue, step)
                     Text(
-                        text = if (showAsPercentage) "${(value * 100).roundToInt()}%" else "${value.roundToInt()}"
+                        text = if (showAsPercentage) stringResource(
+                            id = R.string.n_percent,
+                            (value * 100).roundToInt()
+                        ) else value.roundToInt().toString()
                     )
                 }
             }
