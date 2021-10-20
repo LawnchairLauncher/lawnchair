@@ -162,4 +162,5 @@
     <string name="action_lens">Lens</string>
     <string name="enable_colorful_theme">Also Apply to Background</string>
     <string name="force_rounded_widgets">Round Corners</string>
+    <string name="suggestion_pref_screen_title">Suggestions</string>
 </resources>

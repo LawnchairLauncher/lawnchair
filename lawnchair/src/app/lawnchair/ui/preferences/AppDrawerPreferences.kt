@@ -56,6 +56,7 @@ fun AppDrawerPreferences() {
                 valueRange = 0F..1F,
                 showAsPercentage = true,
             )
+            SuggestionsPreference()
         }
         PreferenceGroup(heading = stringResource(id = R.string.pref_category_search)) {
             SwitchPreference(
