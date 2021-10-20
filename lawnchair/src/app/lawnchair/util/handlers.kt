@@ -5,8 +5,7 @@ import android.os.Looper
 import com.android.launcher3.util.Executors
 
 val mainHandler = Handler(Looper.getMainLooper())
-val workerHandler = Executors.MODEL_EXECUTOR.handler
-val uiHelperHandler = Executors.UI_HELPER_EXECUTOR.handler
+val uiHelperHandler: Handler = Executors.UI_HELPER_EXECUTOR.handler
 
 fun runOnMainThread(r: () -> Unit) {
     runOnThread(mainHandler, r)
