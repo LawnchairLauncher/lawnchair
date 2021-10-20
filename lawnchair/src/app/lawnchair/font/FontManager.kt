@@ -41,26 +41,30 @@ class FontManager private constructor(private val context: Context) {
     }
 
     fun overrideFont(textView: TextView, attrs: AttributeSet?) {
-        val context = textView.context
-        var a = context.obtainStyledAttributes(attrs, R.styleable.CustomFont)
-        var fontType = a.getResourceId(R.styleable.CustomFont_customFontType, -1)
-        var fontWeight = a.getInt(R.styleable.CustomFont_customFontWeight, -1)
-        val ap = a.getResourceId(R.styleable.CustomFont_android_textAppearance, -1)
-        a.recycle()
-
-        if (ap != -1) {
-            a = context.obtainStyledAttributes(ap, R.styleable.CustomFont)
-            if (fontType == -1) {
-                fontType = a.getResourceId(R.styleable.CustomFont_customFontType, -1)
-            }
-            if (fontWeight == -1) {
-                fontWeight = a.getInt(R.styleable.CustomFont_customFontWeight, -1)
-            }
+        try {
+            val context = textView.context
+            var a = context.obtainStyledAttributes(attrs, R.styleable.CustomFont)
+            var fontType = a.getResourceId(R.styleable.CustomFont_customFontType, -1)
+            var fontWeight = a.getInt(R.styleable.CustomFont_customFontWeight, -1)
+            val ap = a.getResourceId(R.styleable.CustomFont_android_textAppearance, -1)
             a.recycle()
-        }
 
-        if (fontType != -1) {
-            setCustomFont(textView, fontType, fontWeight)
+            if (ap != -1) {
+                a = context.obtainStyledAttributes(ap, R.styleable.CustomFont)
+                if (fontType == -1) {
+                    fontType = a.getResourceId(R.styleable.CustomFont_customFontType, -1)
+                }
+                if (fontWeight == -1) {
+                    fontWeight = a.getInt(R.styleable.CustomFont_customFontWeight, -1)
+                }
+                a.recycle()
+            }
+
+            if (fontType != -1) {
+                setCustomFont(textView, fontType, fontWeight)
+            }
+        } catch (e: Exception) {
+            // ignore
         }
     }
 
