@@ -540,6 +540,12 @@ public class DeviceProfile {
         int topBottomPadding = textHeight;
         allAppsCellHeightPx = allAppsIconSizePx + allAppsIconDrawablePaddingPx
                 + textHeight + (topBottomPadding * 2);
+        if (allAppsIconTextSizePx == 0) {
+            int leftRightPadding = desiredWorkspaceLeftRightMarginPx + cellLayoutPaddingLeftRightPx;
+            int drawerWidth = availableWidthPx - leftRightPadding * 2;
+            allAppsCellHeightPx = drawerWidth / inv.numAllAppsColumns;
+            allAppsIconDrawablePaddingPx = 0;
+        }
     }
 
     /**
