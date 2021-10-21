@@ -343,6 +343,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                         }
                     });
                     view.setTaskViewsResistanceTranslation(view.mTaskViewsSecondaryTranslation);
+                    view.updateTaskViewsSnapshotRadius();
                     view.updatePageOffsets();
                 }
 
@@ -3739,6 +3740,12 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         runActionOnRemoteHandles(
                 remoteTargetHandle -> remoteTargetHandle.getTaskViewSimulator()
                         .recentsViewSecondaryTranslation.value = translation);
+    }
+
+    private void updateTaskViewsSnapshotRadius() {
+        for (int i = 0; i < getTaskViewCount(); i++) {
+            getTaskViewAt(i).updateSnapshotRadius();
+        }
     }
 
     protected void setTaskViewsPrimarySplitTranslation(float translation) {
