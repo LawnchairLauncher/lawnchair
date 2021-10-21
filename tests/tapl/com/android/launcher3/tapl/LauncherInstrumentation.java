@@ -1075,6 +1075,11 @@ public final class LauncherInstrumentation {
     }
 
     @NonNull
+    UiObject2 waitForOverviewObject(String resName) {
+        return waitForObjectBySelector(getOverviewObjectSelector(resName));
+    }
+
+    @NonNull
     UiObject2 waitForLauncherObject(String resName) {
         return waitForObjectBySelector(getLauncherObjectSelector(resName));
     }
