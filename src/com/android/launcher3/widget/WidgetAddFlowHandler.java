@@ -24,6 +24,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.android.launcher3.Launcher;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.LauncherAppWidgetInfo;
 import com.android.launcher3.util.PendingRequestArgs;
@@ -90,7 +91,7 @@ public class WidgetAddFlowHandler implements Parcelable {
      * @return true if the widget needs configuration, false otherwise.
      */
     public boolean needsConfigure() {
-        int featureFlags = mProviderInfo.widgetFeatures;
+        int featureFlags = Utilities.ATLEAST_P ? mProviderInfo.widgetFeatures : 0;
         // A widget's configuration is optional only if it's configuration is marked as optional AND
         // it can be reconfigured later.
         boolean configurationOptional = (featureFlags & WIDGET_FEATURE_CONFIGURATION_OPTIONAL) != 0
