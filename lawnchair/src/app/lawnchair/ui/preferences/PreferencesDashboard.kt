@@ -11,12 +11,14 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Build
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.core.content.getSystemService
 import app.lawnchair.LawnchairApp
 import app.lawnchair.LawnchairLauncher
 import app.lawnchair.preferences.Versioning
+import app.lawnchair.preferences.observeAsState
 import app.lawnchair.preferences.preferenceManager
 import app.lawnchair.ui.OverflowMenu
 import app.lawnchair.ui.preferences.components.ClickableIcon
@@ -90,7 +92,7 @@ fun PreferencesDashboard() {
 
 @Composable
 fun PreferencesOverflowMenu() {
-    val enableDebug by preferenceManager().enableDebugMenu
+    val enableDebug by preferenceManager().enableDebugMenu.observeAsState()
     if (enableDebug) {
         val navController = LocalNavController.current
         val resolvedRoute = subRoute(name = Routes.DEBUG_MENU)
