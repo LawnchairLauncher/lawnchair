@@ -451,6 +451,12 @@ public class TouchInteractionService extends Service
         } else {
             am.unregisterSystemAction(SYSTEM_ACTION_ID_ALL_APPS);
         }
+
+        StatefulActivity newOverviewActivity = mOverviewComponentObserver.getActivityInterface()
+                .getCreatedActivity();
+        if (newOverviewActivity != null) {
+            mTaskbarManager.setActivity(newOverviewActivity);
+        }
     }
 
     @UiThread

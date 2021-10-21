@@ -36,7 +36,6 @@ import com.android.launcher3.BaseQuickstepLauncher;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.QuickstepTransitionManager;
-import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimatorListeners;
 import com.android.launcher3.anim.PendingAnimation;
@@ -66,10 +65,6 @@ import java.util.stream.Stream;
 public class LauncherTaskbarUIController extends TaskbarUIController {
 
     private final BaseQuickstepLauncher mLauncher;
-
-    private final TaskbarActivityContext mContext;
-    private final TaskbarDragLayer mTaskbarDragLayer;
-    private final TaskbarView mTaskbarView;
 
     private final AnimatedFloat mIconAlignmentForResumedState =
             new AnimatedFloat(this::onIconAlignmentRatioChanged);
@@ -157,12 +152,7 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
                 }
             };
 
-    public LauncherTaskbarUIController(
-            BaseQuickstepLauncher launcher, TaskbarActivityContext context) {
-        mContext = context;
-        mTaskbarDragLayer = context.getDragLayer();
-        mTaskbarView = mTaskbarDragLayer.findViewById(R.id.taskbar_view);
-
+    public LauncherTaskbarUIController(BaseQuickstepLauncher launcher) {
         mLauncher = launcher;
     }
 
@@ -217,7 +207,8 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
     @Override
     protected void updateContentInsets(Rect outContentInsets) {
         int contentHeight = mControllers.taskbarStashController.getContentHeight();
-        outContentInsets.top = mTaskbarDragLayer.getHeight() - contentHeight;
+        TaskbarDragLayer dragLayer = mControllers.taskbarActivityContext.getDragLayer();
+        outContentInsets.top = dragLayer.getHeight() - contentHeight;
     }
 
     /**
@@ -343,15 +334,15 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
      * @return Whether any Taskbar item could handle the given MotionEvent if given the chance.
      */
     public boolean isEventOverAnyTaskbarItem(MotionEvent ev) {
-        return mTaskbarView.isEventOverAnyItem(ev);
+        return mControllers.taskbarViewController.isEventOverAnyItem(ev);
     }
 
     public boolean isDraggingItem() {
-        return mContext.getDragController().isDragging();
+        return mControllers.taskbarDragController.isDragging();
     }
 
     public View getRootView() {
-        return mTaskbarDragLayer;
+        return mControllers.taskbarActivityContext.getDragLayer();
     }
 
     private void setIconAlpha(LauncherState state, float progress) {
@@ -418,7 +409,8 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
     @Override
     public void onTaskbarIconLaunched(WorkspaceItemInfo item) {
         InstanceId instanceId = new InstanceIdSequence().newInstanceId();
-        mLauncher.logAppLaunch(mContext.getStatsLogManager(), item, instanceId);
+        mLauncher.logAppLaunch(mControllers.taskbarActivityContext.getStatsLogManager(), item,
+                instanceId);
     }
 
     private final class TaskBarRecentsAnimationListener implements RecentsAnimationListener {
