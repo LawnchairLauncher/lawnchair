@@ -160,7 +160,7 @@ public abstract class BaseQuickstepLauncher extends Launcher
 
         mTISBindHelper.onDestroy();
         if (mTaskbarManager != null) {
-            mTaskbarManager.clearLauncher(this);
+            mTaskbarManager.clearActivity(this);
         }
 
         if (mLauncherUnfoldAnimationController != null) {
@@ -318,7 +318,7 @@ public abstract class BaseQuickstepLauncher extends Launcher
 
     private void onTISConnected(TISBinder binder) {
         mTaskbarManager = binder.getTaskbarManager();
-        mTaskbarManager.setLauncher(BaseQuickstepLauncher.this);
+        mTaskbarManager.setActivity(this);
         mOverviewCommandHelper = binder.getOverviewCommandHelper();
     }
 
@@ -348,6 +348,10 @@ public abstract class BaseQuickstepLauncher extends Launcher
         mTaskbarUIController = taskbarUIController;
     }
 
+    public @Nullable LauncherTaskbarUIController getTaskbarUIController() {
+        return mTaskbarUIController;
+    }
+
     public <T extends OverviewActionsView> T getActionsView() {
         return (T) mActionsView;
     }
@@ -369,10 +373,6 @@ public abstract class BaseQuickstepLauncher extends Launcher
 
     public DepthController getDepthController() {
         return mDepthController;
-    }
-
-    public @Nullable LauncherTaskbarUIController getTaskbarUIController() {
-        return mTaskbarUIController;
     }
 
     public TaskbarStateHandler getTaskbarStateHandler() {

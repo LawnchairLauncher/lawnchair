@@ -187,7 +187,8 @@ public final class LauncherActivityInterface extends
     }
 
     @Nullable
-    private LauncherTaskbarUIController getTaskbarController() {
+    @Override
+    public LauncherTaskbarUIController getTaskbarController() {
         BaseQuickstepLauncher launcher = getCreatedActivity();
         if (launcher == null) {
             return null;

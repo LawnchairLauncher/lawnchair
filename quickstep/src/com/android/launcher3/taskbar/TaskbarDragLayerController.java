@@ -62,8 +62,11 @@ public class TaskbarDragLayerController {
     public void init(TaskbarControllers controllers) {
         mControllers = controllers;
         mTaskbarDragLayer.init(new TaskbarDragLayerCallbacks());
+
+        mBgTaskbar.value = 1;
         mKeyguardBgTaskbar.value = 1;
         mBgOverride.value = 1;
+        updateBackgroundAlpha();
     }
 
     public void onDestroy() {
