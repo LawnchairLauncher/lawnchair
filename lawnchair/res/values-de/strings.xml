@@ -79,7 +79,7 @@
     <string name="dt2s_admin_hint">Um Double-Tap to Sleep zu verwenden, aktiviere Lawnchair als Verwaltungs-App. Öffne die Einstellungen und tippe auf „Diese App zur Geräteverwaltung aktivieren“.</string>
     <string name="dt2s_admin_warning">Doppeltes Tippen zum Schlafen wird deaktiviert.</string>
     <string name="dt2s_a11y_hint_title">Bedienungshilfen erforderlich</string>
-    <string name="dt2s_a11y_hint">Um Double-Tap to Sleep zu verwenden, aktiviere die Bedienungshilfe für Lawnchair. Öffne die Einstellungen, wähle Lawnchair aus und aktiviere den Dienst.</string>
+    <string name="dt2s_a11y_hint">Um Doppeltippen zum Display ausschalten zu verwenden, aktiviere die Bedienungshilfe für Lawnchair. Öffne die Einstellungen, wähle Lawnchair aus und aktiviere den Dienst.</string>
     <string name="dt2s_warning_open_settings">Einstellungen öffnen</string>
     <string name="minus_one_enable">Feed</string>
     <string name="minus_one_unavailable">Feed ist nicht verfügbar.</string>
@@ -113,7 +113,7 @@
     <string name="title_change_settings">Einstellungen ändern</string>
     <string name="debug_restart_launcher">Lawnchair neustarten</string>
     <string name="pref_fonts_missing_font">Schriftart nicht gefunden.</string>
-    <string name="font_variant_italic">Italic</string>
+    <string name="font_variant_italic">Kursiv</string>
     <string name="font_weight_thin">Dünn</string>
     <string name="font_weight_extra_light">Extra hell</string>
     <string name="font_weight_light">Hell</string>
