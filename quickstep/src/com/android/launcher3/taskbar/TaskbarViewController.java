@@ -116,16 +116,6 @@ public class TaskbarViewController {
     }
 
     /**
-     * Should be called when the notification shade is expanded, so we can hide taskbar icons as
-     * well. Note that we are animating icons to appear / disappear.
-     */
-    public void setNotificationShadeIsExpanded(boolean isNotificationShadeExpanded) {
-        mTaskbarIconAlpha.getProperty(ALPHA_INDEX_NOTIFICATION_EXPANDED)
-                .animateToValue(isNotificationShadeExpanded ? 0 : 1)
-                .start();
-    }
-
-    /**
      * Should be called when the recents button is disabled, so we can hide taskbar icons as well.
      */
     public void setRecentsButtonDisabled(boolean isDisabled) {
