@@ -57,6 +57,7 @@
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"\"<xliff:g id="QUERY">%1$s</xliff:g>\" എന്നതുമായി പൊരുത്തപ്പെടുന്ന ആപ്പുകളൊന്നും കണ്ടെത്തിയില്ല"</string>
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"കൂടുതൽ ആപ്പുകൾക്ക് തിരയുക"</string>
     <string name="label_application" msgid="8531721983832654978">"ആപ്പ്"</string>
+    <string name="all_apps_label" msgid="5015784846527570951">"എല്ലാ ആപ്പുകളും"</string>
     <string name="notifications_header" msgid="1404149926117359025">"അറിയിപ്പുകൾ"</string>
     <string name="long_press_shortcut_to_add" msgid="5405328730817637737">"കുറുക്കുവഴി നീക്കാൻ സ്‌പർശിച്ച് പിടിക്കുക."</string>
     <string name="long_accessible_way_to_add_shortcut" msgid="2199537273817090740">"കുറുക്കുവഴി നീക്കാൻ ഡബിൾ ടാപ്പ് ചെയ്യൂ, ഹോൾഡ് ചെയ്യൂ അല്ലെങ്കിൽ ഇഷ്‌ടാനുസൃത പ്രവർത്തനങ്ങൾ ഉപയോഗിക്കൂ."</string>
