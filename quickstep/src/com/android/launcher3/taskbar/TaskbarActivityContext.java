@@ -60,7 +60,6 @@ import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.logger.LauncherAtom;
 import com.android.launcher3.model.data.FolderInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
-import com.android.launcher3.taskbar.contextual.RotationButtonController;
 import com.android.launcher3.touch.ItemClickHandler;
 import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.util.SettingsCache;
@@ -71,6 +70,7 @@ import com.android.launcher3.views.ActivityContext;
 import com.android.quickstep.SysUINavigationMode;
 import com.android.quickstep.SysUINavigationMode.Mode;
 import com.android.systemui.shared.recents.model.Task;
+import com.android.systemui.shared.rotation.RotationButtonController;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.WindowManagerWrapper;
 import com.android.systemui.unfold.util.ScopedUnfoldTransitionProgressProvider;
@@ -147,8 +147,14 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
                 new TaskbarDragController(this),
                 buttonController,
                 new NavbarButtonsViewController(this, navButtonsView),
-                new RotationButtonController(this, R.color.popup_color_primary_light,
-                        R.color.popup_color_primary_light),
+                new RotationButtonController(this,
+                        c.getColor(R.color.rotation_button_light_color),
+                        c.getColor(R.color.rotation_button_dark_color),
+                        R.drawable.ic_sysbar_rotate_button_ccw_start_0,
+                        R.drawable.ic_sysbar_rotate_button_ccw_start_90,
+                        R.drawable.ic_sysbar_rotate_button_cw_start_0,
+                        R.drawable.ic_sysbar_rotate_button_cw_start_90,
+                        () -> getDisplay().getRotation()),
                 new TaskbarDragLayerController(this, mDragLayer),
                 new TaskbarViewController(this, taskbarView),
                 new TaskbarScrimViewController(this, taskbarScrimView),

@@ -31,8 +31,8 @@ import androidx.test.InstrumentationRegistry;
 import androidx.test.filters.SmallTest;
 import androidx.test.runner.AndroidJUnit4;
 
-import com.android.launcher3.taskbar.contextual.RotationButton;
-import com.android.launcher3.taskbar.contextual.RotationButtonController;
+import com.android.systemui.shared.rotation.RotationButton;
+import com.android.systemui.shared.rotation.RotationButtonController;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -55,8 +55,9 @@ public class NavigationBarRotationContextTest {
         Context mTargetContext = InstrumentationRegistry.getTargetContext();
         final View view = new View(mTargetContext);
         RotationButton rotationButton = mock(RotationButton.class);
-        mRotationButtonController = new RotationButtonController(mTargetContext, 0, 0);
-        mRotationButtonController.setRotationButton(rotationButton);
+        mRotationButtonController = new RotationButtonController(mTargetContext, 0, 0, 0, 0, 0, 0,
+                () -> 0);
+        mRotationButtonController.setRotationButton(rotationButton, null);
         // Due to a mockito issue, only spy the object after setting the initial state
         mRotationButtonController = spy(mRotationButtonController);
         final AnimatedVectorDrawable kbd = mock(AnimatedVectorDrawable.class);
@@ -85,7 +86,7 @@ public class NavigationBarRotationContextTest {
         // No navigation bar should not call to set visibility state
         mRotationButtonController.onBehaviorChanged(DEFAULT_DISPLAY,
                 WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE);
-        mRotationButtonController.onTaskBarVisibilityChange(false /* showing */);
+        mRotationButtonController.onNavigationBarWindowVisibilityChange(false /* showing */);
         verify(mRotationButtonController, times(0)).setRotateSuggestionButtonState(
                 false /* visible */);
         verify(mRotationButtonController, times(0)).setRotateSuggestionButtonState(
@@ -100,7 +101,7 @@ public class NavigationBarRotationContextTest {
                 true /* visible */);
 
         // Since rotation has changed rotation should be pending, show mButton when showing nav bar
-        mRotationButtonController.onTaskBarVisibilityChange(true /* showing */);
+        mRotationButtonController.onNavigationBarWindowVisibilityChange(true /* showing */);
         verify(mRotationButtonController, times(1)).setRotateSuggestionButtonState(
                 true /* visible */);
     }
@@ -108,7 +109,7 @@ public class NavigationBarRotationContextTest {
     @Test
     public void testOnRotationProposalShowButton() {
         // Navigation bar being visible should not call to set visibility state
-        mRotationButtonController.onTaskBarVisibilityChange(true /* showing */);
+        mRotationButtonController.onNavigationBarWindowVisibilityChange(true /* showing */);
         verify(mRotationButtonController, times(0))
                 .setRotateSuggestionButtonState(false /* visible */);
         verify(mRotationButtonController, times(0))
