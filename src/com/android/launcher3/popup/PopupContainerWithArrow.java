@@ -66,6 +66,7 @@ import com.android.launcher3.shortcuts.ShortcutDragPreviewProvider;
 import com.android.launcher3.touch.ItemLongClickListener;
 import com.android.launcher3.util.PackageUserKey;
 import com.android.launcher3.util.ShortcutUtil;
+import com.android.launcher3.views.ActivityContext;
 import com.android.launcher3.views.BaseDragLayer;
 
 import java.util.ArrayList;
@@ -81,7 +82,7 @@ import java.util.stream.Collectors;
  *
  * @param <T> The activity on with the popup shows
  */
-public class PopupContainerWithArrow<T extends BaseDraggingActivity>
+public class PopupContainerWithArrow<T extends Context & ActivityContext>
         extends ArrowPopup<T> implements DragSource, DragController.DragListener {
 
     private final List<DeepShortcutView> mShortcuts = new ArrayList<>();
@@ -190,10 +191,10 @@ public class PopupContainerWithArrow<T extends BaseDraggingActivity>
     }
 
     /**
-     * Shows the notifications and deep shortcuts associated with {@param icon}.
+     * Shows the notifications and deep shortcuts associated with a Launcher {@param icon}.
      * @return the container if shown or null.
      */
-    public static PopupContainerWithArrow showForIcon(BubbleTextView icon) {
+    public static PopupContainerWithArrow<Launcher> showForIcon(BubbleTextView icon) {
         Launcher launcher = Launcher.getLauncher(icon.getContext());
         if (getOpen(launcher) != null) {
             // There is already an items container open, so don't open this one.
@@ -205,7 +206,7 @@ public class PopupContainerWithArrow<T extends BaseDraggingActivity>
             return null;
         }
 
-        final PopupContainerWithArrow container =
+        final PopupContainerWithArrow<Launcher> container =
                 (PopupContainerWithArrow) launcher.getLayoutInflater().inflate(
                         R.layout.popup_container, launcher.getDragLayer(), false);
         container.configureForLauncher(launcher);
@@ -494,8 +495,8 @@ public class PopupContainerWithArrow<T extends BaseDraggingActivity>
     /**
      * Returns a PopupContainerWithArrow which is already open or null
      */
-    public static PopupContainerWithArrow getOpen(BaseDraggingActivity launcher) {
-        return getOpenView(launcher, TYPE_ACTION_POPUP);
+    public static <T extends Context & ActivityContext> PopupContainerWithArrow getOpen(T context) {
+        return getOpenView(context, TYPE_ACTION_POPUP);
     }
 
     /**

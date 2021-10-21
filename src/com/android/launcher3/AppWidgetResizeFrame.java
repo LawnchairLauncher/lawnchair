@@ -215,7 +215,7 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
 
         dl.addView(frame);
         frame.mIsOpen = true;
-        frame.snapToWidget(false);
+        frame.post(() -> frame.snapToWidget(false));
     }
 
     private void setupForWidget(LauncherAppWidgetHostView widgetView, CellLayout cellLayout,

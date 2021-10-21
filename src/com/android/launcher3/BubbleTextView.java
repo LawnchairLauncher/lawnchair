@@ -16,6 +16,7 @@
 
 package com.android.launcher3;
 
+import static com.android.launcher3.config.FeatureFlags.ENABLE_ICON_LABEL_AUTO_SCALING;
 import static com.android.launcher3.graphics.PreloadIconDrawable.newPendingIcon;
 import static com.android.launcher3.icons.GraphicsUtils.setColorAlphaBound;
 
@@ -33,6 +34,7 @@ import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.icu.text.MessageFormat;
+import android.text.TextPaint;
 import android.text.TextUtils.TruncateAt;
 import android.util.AttributeSet;
 import android.util.Property;
@@ -66,6 +68,7 @@ import com.android.launcher3.model.data.SearchActionItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.util.SafeCloseable;
 import com.android.launcher3.views.ActivityContext;
+import com.android.launcher3.views.BubbleTextHolder;
 import com.android.launcher3.views.IconLabelDotView;
 
 import java.text.NumberFormat;
@@ -86,6 +89,9 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
     protected static final int DISPLAY_TASKBAR = 5;
     private static final int DISPLAY_SEARCH_RESULT = 6;
     private static final int DISPLAY_SEARCH_RESULT_SMALL = 7;
+
+    private static final float MIN_LETTER_SPACING = -0.5f;
+    private static final int MAX_SEARCH_LOOP_COUNT = 20;
 
     private static final int[] STATE_PRESSED = new int[]{android.R.attr.state_pressed};
     private static final float HIGHLIGHT_SCALE = 1.16f;
@@ -162,7 +168,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
     private HandlerRunnable mIconLoadRequest;
 
     private boolean mEnableIconUpdateAnimation = false;
-    private ItemInfoUpdateReceiver mItemInfoUpdateReceiver;
+    private BubbleTextHolder mBubbleTextHolder;
 
     public BubbleTextView(Context context) {
         this(context, null, 0);
@@ -240,7 +246,6 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
         mDotParams.scale = 0f;
         mForceHideDot = false;
         setBackground(null);
-        mItemInfoUpdateReceiver = null;
     }
 
     private void cancelDotScaleAnim() {
@@ -340,14 +345,14 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
 
     private void setItemInfo(ItemInfoWithIcon itemInfo) {
         setTag(itemInfo);
-        if (mItemInfoUpdateReceiver != null) {
-            mItemInfoUpdateReceiver.reapplyItemInfo(itemInfo);
+        if (mBubbleTextHolder != null) {
+            mBubbleTextHolder.onItemInfoUpdated(itemInfo);
         }
     }
 
-    public void setItemInfoUpdateReceiver(
-            ItemInfoUpdateReceiver itemInfoUpdateReceiver) {
-        mItemInfoUpdateReceiver = itemInfoUpdateReceiver;
+    public void setBubbleTextHolder(
+            BubbleTextHolder bubbleTextHolder) {
+        mBubbleTextHolder = bubbleTextHolder;
     }
 
     @UiThread
@@ -458,6 +463,75 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
         mIgnorePressedStateChange = false;
         refreshDrawableState();
         return result;
+    }
+
+    @Override
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+        super.onSizeChanged(w, h, oldw, oldh);
+        checkForEllipsis();
+    }
+
+    @Override
+    protected void onTextChanged(CharSequence text, int start, int lengthBefore, int lengthAfter) {
+        super.onTextChanged(text, start, lengthBefore, lengthAfter);
+        checkForEllipsis();
+    }
+
+    private void checkForEllipsis() {
+        if (!ENABLE_ICON_LABEL_AUTO_SCALING.get()) {
+            return;
+        }
+        float width = getWidth() - getCompoundPaddingLeft() - getCompoundPaddingRight();
+        if (width <= 0) {
+            return;
+        }
+        setLetterSpacing(0);
+
+        String text = getText().toString();
+        TextPaint paint = getPaint();
+        if (paint.measureText(text) < width) {
+            return;
+        }
+
+        float spacing = findBestSpacingValue(paint, text, width, MIN_LETTER_SPACING);
+        // Reset the paint value so that the call to TextView does appropriate diff.
+        paint.setLetterSpacing(0);
+        setLetterSpacing(spacing);
+    }
+
+    /**
+     * Find the appropriate text spacing to display the provided text
+     * @param paint the paint used by the text view
+     * @param text the text to display
+     * @param allowedWidthPx available space to render the text
+     * @param minSpacingEm minimum spacing allowed between characters
+     * @return the final textSpacing value
+     *
+     * @see #setLetterSpacing(float)
+     */
+    private float findBestSpacingValue(TextPaint paint, String text, float allowedWidthPx,
+            float minSpacingEm) {
+        paint.setLetterSpacing(minSpacingEm);
+        if (paint.measureText(text) > allowedWidthPx) {
+            // If there is no result at high limit, we can do anything more
+            return minSpacingEm;
+        }
+
+        float lowLimit = 0;
+        float highLimit = minSpacingEm;
+
+        for (int i = 0; i < MAX_SEARCH_LOOP_COUNT; i++) {
+            float value = (lowLimit + highLimit) / 2;
+            paint.setLetterSpacing(value);
+            if (paint.measureText(text) < allowedWidthPx) {
+                highLimit = value;
+            } else {
+                lowLimit = value;
+            }
+        }
+
+        // At the end error on the higher side
+        return highLimit;
     }
 
     @SuppressWarnings("wrongcall")
