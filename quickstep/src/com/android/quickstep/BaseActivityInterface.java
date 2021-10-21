@@ -52,6 +52,7 @@ import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.statehandlers.DepthController;
 import com.android.launcher3.statemanager.BaseState;
 import com.android.launcher3.statemanager.StatefulActivity;
+import com.android.launcher3.taskbar.TaskbarUIController;
 import com.android.launcher3.touch.PagedOrientationHandler;
 import com.android.launcher3.util.WindowBounds;
 import com.android.launcher3.views.ScrimView;
@@ -137,6 +138,9 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
     public DepthController getDepthController() {
         return null;
     }
+
+    @Nullable
+    public abstract TaskbarUIController getTaskbarController();
 
     public final boolean isResumed() {
         ACTIVITY_TYPE activity = getCreatedActivity();
