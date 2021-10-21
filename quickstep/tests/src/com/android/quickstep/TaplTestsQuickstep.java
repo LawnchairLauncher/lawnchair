@@ -290,6 +290,7 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
 
     @Test
     @PortraitLandscape
+    @Ignore("b/203781041")
     public void testOverviewForTablet() throws Exception {
         if (!mLauncher.isTablet()) {
             return;
