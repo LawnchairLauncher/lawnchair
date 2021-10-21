@@ -57,6 +57,7 @@
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"Azikho izinhlelo zokusebenza ezitholiwe ezifana ne-\"<xliff:g id="QUERY">%1$s</xliff:g>\""</string>
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"Sesha izinhlelo zokusebenza eziningi"</string>
     <string name="label_application" msgid="8531721983832654978">"Uhlelo lokusebenza"</string>
+    <string name="all_apps_label" msgid="5015784846527570951">"Zonke izinhlelo zokusebenza"</string>
     <string name="notifications_header" msgid="1404149926117359025">"Izaziso"</string>
     <string name="long_press_shortcut_to_add" msgid="5405328730817637737">"Thinta uphinde ubambe ukuze uhambise isinqamuleli."</string>
     <string name="long_accessible_way_to_add_shortcut" msgid="2199537273817090740">"Thepha kabili uphinde ubambe ukuze uhambise isinqamuleli noma usebenzise izenzo ezingokwezifiso."</string>

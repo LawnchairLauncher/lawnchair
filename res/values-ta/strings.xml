@@ -52,11 +52,12 @@
     <string name="reconfigurable_widget_education_tip" msgid="6336962690888067057">"விட்ஜெட் அமைப்புகளை மாற்றத் தட்டவும்"</string>
     <string name="widget_education_close_button" msgid="8676165703104836580">"சரி"</string>
     <string name="widget_reconfigure_button_content_description" msgid="8811472721881205250">"விட்ஜெட் அமைப்புகளை மாற்றும்"</string>
-    <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"பயன்பாடுகளில் தேடுக"</string>
+    <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"ஆப்ஸில் தேடுக"</string>
     <string name="all_apps_loading_message" msgid="5813968043155271636">"ஆப்ஸை ஏற்றுகிறது…"</string>
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"\"<xliff:g id="QUERY">%1$s</xliff:g>\" உடன் பொருந்தும் ஆப்ஸ் இல்லை"</string>
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"கூடுதல் பயன்பாடுகளைத் தேடு"</string>
     <string name="label_application" msgid="8531721983832654978">"ஆப்ஸ்"</string>
+    <string name="all_apps_label" msgid="5015784846527570951">"அனைத்து ஆப்ஸும்"</string>
     <string name="notifications_header" msgid="1404149926117359025">"அறிவிப்புகள்"</string>
     <string name="long_press_shortcut_to_add" msgid="5405328730817637737">"ஷார்ட்கட்டை நகர்த்தத் தொட்டுப் பிடிக்கவும்."</string>
     <string name="long_accessible_way_to_add_shortcut" msgid="2199537273817090740">"ஷார்ட்கட்டை நகர்த்த இருமுறை தட்டிப் பிடிக்கவும் அல்லது பிரத்தியேகச் செயல்களைப் பயன்படுத்தவும்."</string>

@@ -57,6 +57,7 @@
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"\"<xliff:g id="QUERY">%1$s</xliff:g>\"కి సరిపోలే అప్లికేషన్‌లేవీ కనుగొనబడలేదు"</string>
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"మరిన్ని యాప్‌ల కోసం సెర్చ్ చేయండి"</string>
     <string name="label_application" msgid="8531721983832654978">"యాప్"</string>
+    <string name="all_apps_label" msgid="5015784846527570951">"అన్ని యాప్‌లు"</string>
     <string name="notifications_header" msgid="1404149926117359025">"నోటిఫికేషన్‌లు"</string>
     <string name="long_press_shortcut_to_add" msgid="5405328730817637737">"షార్ట్‌కట్‌ను తరలించడానికి తాకి &amp; నొక్కి ఉంచు."</string>
     <string name="long_accessible_way_to_add_shortcut" msgid="2199537273817090740">"షార్ట్‌కట్‌ను తరలించడానికి లేదా అనుకూల చర్యలను ఉపయోగించడానికి రెండుసార్లు నొక్కండి &amp; హోల్డ్ చేయండి."</string>
