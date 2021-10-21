@@ -40,37 +40,23 @@ fun PreferenceCategory(
     val navController = LocalNavController.current
     val resolvedRoute = subRoute(name = route)
 
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier
-            .clickable(onClick = { navController.navigate(resolvedRoute) })
-            .height(72.dp)
-            .padding(horizontal = 16.dp)
-            .fillMaxWidth()
-    ) {
-        Image(
-            painter = painterResource(id = iconResource),
-            contentDescription = null,
-            modifier = Modifier
-                .size(32.dp)
-        )
-        Column(Modifier.padding(start = 16.dp)) {
-            Text(
-                text = label,
-                style = MaterialTheme.typography.subtitle1,
-                color = MaterialTheme.colors.onBackground
-            )
+    PreferenceTemplate(
+        verticalPadding = 14.dp,
+        modifier = Modifier.clickable(onClick = { navController.navigate(resolvedRoute) }),
+        title = {
+            Text(text = label)
+        },
+        description = {
             if (description != null) {
-                CompositionLocalProvider(
-                    LocalContentAlpha provides ContentAlpha.medium,
-                    LocalContentColor provides MaterialTheme.colors.onBackground
-                ) {
-                    Text(
-                        text = description,
-                        style = MaterialTheme.typography.body2,
-                    )
-                }
+                Text(text = description)
             }
-        }
-    }
+        },
+        startWidget = {
+            Image(
+                painter = painterResource(id = iconResource),
+                contentDescription = null,
+                modifier = Modifier.size(32.dp)
+            )
+        },
+    )
 }
