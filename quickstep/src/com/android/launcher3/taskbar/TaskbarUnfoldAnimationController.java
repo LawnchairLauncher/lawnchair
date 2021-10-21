@@ -19,9 +19,9 @@ import android.view.View;
 import android.view.WindowManager;
 
 import com.android.quickstep.util.LauncherViewsMoveFromCenterTranslationApplier;
-import com.android.quickstep.util.ScopedUnfoldTransitionProgressProvider;
 import com.android.systemui.shared.animation.UnfoldMoveFromCenterAnimator;
 import com.android.systemui.unfold.UnfoldTransitionProgressProvider.TransitionProgressListener;
+import com.android.systemui.unfold.util.ScopedUnfoldTransitionProgressProvider;
 
 /**
  * Controls animation of taskbar icons when unfolding foldable devices
