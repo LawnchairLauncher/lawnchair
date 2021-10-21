@@ -252,10 +252,6 @@ public final class FeatureFlags {
             "ENABLE_BACK_SWIPE_HOME_ANIMATION", true,
             "Enables home animation to icon when user swipes back.");
 
-    public static final BooleanFlag ENABLE_ICON_LABEL_AUTO_SCALING = getDebugFlag(
-            "ENABLE_ICON_LABEL_AUTO_SCALING", true,
-            "Enables scaling/spacing for icon labels to make more characters visible");
-
     public static void initialize(Context context) {
         synchronized (sDebugFlags) {
             for (DebugFlag flag : sDebugFlags) {
