@@ -36,14 +36,14 @@ class PreferenceManager private constructor(private val context: Context) : Base
     private val reloadIcons = { idp.onPreferencesChanged(context) }
     private val reloadGrid: () -> Unit = { idp.onPreferencesChanged(context) }
 
-    private val scheduleRestart = {
-        LawnchairLauncher.instance?.scheduleRestart()
-        Unit
-    }
-
     private val recreate = {
         LawnchairLauncher.instance?.recreateIfNotScheduled()
         Unit
+    }
+
+    private val restart = {
+        reloadGrid()
+        recreate()
     }
 
     val hiddenAppSet = StringSetPref("hidden-app-set", setOf())
@@ -51,10 +51,7 @@ class PreferenceManager private constructor(private val context: Context) : Base
     val allowRotation = BoolPref("pref_allowRotation", false)
     val wrapAdaptiveIcons = BoolPref("prefs_wrapAdaptive", false, reloadIcons)
     val addIconToHome = BoolPref("pref_add_icon_to_home", true)
-    val enableHotseatQsb = BoolPref("pref_dockSearchBar", true) {
-        reloadGrid()
-        recreate()
-    }
+    val enableHotseatQsb = BoolPref("pref_dockSearchBar", true, restart)
     val hotseatColumns = IdpIntPref("pref_hotseatColumns", { numHotseatIcons }, reloadGrid)
     val workspaceColumns = IdpIntPref("pref_workspaceColumns", { numColumns }, reloadGrid)
     val workspaceRows = IdpIntPref("pref_workspaceRows", { numRows }, reloadGrid)
@@ -66,7 +63,7 @@ class PreferenceManager private constructor(private val context: Context) : Base
     val allAppsIconSizeFactor = FloatPref("pref_allAppsIconSizeFactor", 1F, reloadIcons)
     val allAppsTextSizeFactor = FloatPref("pref_allAppsTextSizeFactor", 1F, reloadGrid)
     val allAppsColumns = IdpIntPref("pref_allAppsColumns", { numAllAppsColumns }, reloadGrid)
-    val smartSpaceEnable = BoolPref("pref_smartSpaceEnable", true, scheduleRestart)
+    val smartSpaceEnable = BoolPref("pref_smartSpaceEnable", true, restart)
     val minusOneEnable = BoolPref("pref_enableMinusOne", true, recreate)
     val useFuzzySearch = BoolPref("pref_useFuzzySearch", false)
 
