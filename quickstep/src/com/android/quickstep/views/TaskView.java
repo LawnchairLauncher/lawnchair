@@ -1341,7 +1341,7 @@ public class TaskView extends FrameLayout implements Reusable {
         invalidateOutline();
     }
 
-    private void updateSnapshotRadius() {
+    void updateSnapshotRadius() {
         updateCurrentFullscreenParams(mSnapshotView.getPreviewPositionHelper());
         mSnapshotView.setFullscreenParams(mCurrentFullscreenParams);
     }
