@@ -29,7 +29,6 @@
     <string name="shorter_duration_less_than_one_minute" msgid="4722015666335015336">"1 分未満"</string>
     <string name="time_left_for_app" msgid="3111996412933644358">"今日はあと <xliff:g id="TIME">%1$s</xliff:g>です"</string>
     <string name="title_app_suggestions" msgid="4185902664111965088">"アプリの候補"</string>
-    <string name="all_apps_label" msgid="8542784161730910663">"すべてのアプリ"</string>
     <string name="all_apps_prediction_tip" msgid="2672336544844936186">"予測されたアプリ"</string>
     <string name="hotseat_edu_title_migrate" msgid="306578144424489980">"ホーム画面の一番下にアプリの候補を表示できます"</string>
     <string name="hotseat_edu_title_migrate_landscape" msgid="3633942953997845243">"ホーム画面のお気に入りの行でアプリの候補を利用できます"</string>

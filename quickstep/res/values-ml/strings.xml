@@ -29,7 +29,6 @@
     <string name="shorter_duration_less_than_one_minute" msgid="4722015666335015336">"&lt; 1 മിനിറ്റ്"</string>
     <string name="time_left_for_app" msgid="3111996412933644358">"ഇന്ന് <xliff:g id="TIME">%1$s</xliff:g> ശേഷിക്കുന്നു"</string>
     <string name="title_app_suggestions" msgid="4185902664111965088">"ആപ്പ് നിർദ്ദേശങ്ങൾ"</string>
-    <string name="all_apps_label" msgid="8542784161730910663">"എല്ലാ ആപ്പുകളും"</string>
     <string name="all_apps_prediction_tip" msgid="2672336544844936186">"നിങ്ങളുടെ പ്രവചിക്കപ്പെട്ട ആപ്പുകൾ"</string>
     <string name="hotseat_edu_title_migrate" msgid="306578144424489980">"നിങ്ങളുടെ ഹോം സ്‌ക്രീനിന്റെ താഴത്തെ നിരയിൽ ആപ്പ് നിർദ്ദേശങ്ങൾ നേടുക"</string>
     <string name="hotseat_edu_title_migrate_landscape" msgid="3633942953997845243">"നിങ്ങളുടെ ഹോം സ്‌ക്രീനിന്റെ \'പ്രിയപ്പെട്ടവ\' വരിയിൽ ആപ്പ് നിർദ്ദേശങ്ങൾ നേടുക"</string>
