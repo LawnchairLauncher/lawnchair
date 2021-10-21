@@ -115,13 +115,13 @@
     <string name="pref_fonts_missing_font">Schriftart nicht gefunden.</string>
     <string name="font_variant_italic">Kursiv</string>
     <string name="font_weight_thin">Dünn</string>
-    <string name="font_weight_extra_light">Extra hell</string>
+    <string name="font_weight_extra_light">Sehr dünn</string>
     <string name="font_weight_light">Hell</string>
     <string name="font_weight_regular">Normal</string>
     <string name="font_weight_medium">Mittel</string>
     <string name="font_weight_semi_bold">Halbfett</string>
     <string name="font_weight_bold">Fett</string>
-    <string name="font_weight_extra_bold">Extra Fett</string>
+    <string name="font_weight_extra_bold">Extra fett</string>
     <string name="font_weight_extra_black">Schwarz</string>
     <string name="font_label">Schriftart (experimentell)</string>
     <string name="reset_font">Zurücksetzen</string>
