@@ -92,7 +92,11 @@ public class RoundedArrowDrawable extends Drawable {
         if (Utilities.ATLEAST_R) {
             outline.setPath(mPath);
         } else {
-            outline.setConvexPath(mPath);
+            try {
+                outline.setConvexPath(mPath);
+            } catch (Exception e) {
+                // ignore
+            }
         }
     }
 
