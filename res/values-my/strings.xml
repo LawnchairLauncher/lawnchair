@@ -57,6 +57,7 @@
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"\"<xliff:g id="QUERY">%1$s</xliff:g>\" နှင့်ကိုက်ညီသည့် အပ်ပ်များကို မတွေ့ပါ"</string>
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"နောက်ထပ် အက်ပ်များကို ရှာပါ"</string>
     <string name="label_application" msgid="8531721983832654978">"အက်ပ်"</string>
+    <string name="all_apps_label" msgid="5015784846527570951">"အက်ပ်အားလုံး"</string>
     <string name="notifications_header" msgid="1404149926117359025">"အကြောင်းကြားချက်များ"</string>
     <string name="long_press_shortcut_to_add" msgid="5405328730817637737">"ဖြတ်လမ်းလင့်ခ်ကို ရွှေ့ရန် နှစ်ချက်တို့ပြီး ဖိထားပါ။"</string>
     <string name="long_accessible_way_to_add_shortcut" msgid="2199537273817090740">"ဖြတ်လမ်းလင့်ခ်ကို ရွှေ့ရန် (သို့) စိတ်ကြိုက်လုပ်ဆောင်ချက်များကို သုံးရန် နှစ်ချက်တို့ပြီး ဖိထားပါ။"</string>
