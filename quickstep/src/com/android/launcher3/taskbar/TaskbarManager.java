@@ -39,15 +39,18 @@ import com.android.launcher3.BaseQuickstepLauncher;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.config.FeatureFlags;
+import com.android.launcher3.statemanager.StatefulActivity;
 import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.DisplayController.Info;
 import com.android.launcher3.util.SettingsCache;
 import com.android.launcher3.util.SimpleBroadcastReceiver;
+import com.android.quickstep.RecentsActivity;
 import com.android.quickstep.SysUINavigationMode;
 import com.android.quickstep.SysUINavigationMode.Mode;
 import com.android.quickstep.SystemUiProxy;
 import com.android.quickstep.TouchInteractionService;
-import com.android.quickstep.util.ScopedUnfoldTransitionProgressProvider;
+import com.android.systemui.unfold.UnfoldTransitionProgressProvider;
+import com.android.systemui.unfold.util.ScopedUnfoldTransitionProgressProvider;
 
 /**
  * Class to manage taskbar lifecycle
@@ -71,7 +74,7 @@ public class TaskbarManager implements DisplayController.DisplayInfoChangeListen
             new ScopedUnfoldTransitionProgressProvider();
 
     private TaskbarActivityContext mTaskbarActivityContext;
-    private BaseQuickstepLauncher mLauncher;
+    private StatefulActivity mActivity;
     /**
      * Cache a copy here so we can initialize state whenever taskbar is recreated, since
      * this class does not get re-initialized w/ new taskbars.
@@ -149,25 +152,50 @@ public class TaskbarManager implements DisplayController.DisplayInfoChangeListen
     }
 
     /**
-     * Sets a launcher to act as taskbar callback
+     * Sets a {@link StatefulActivity} to act as taskbar callback
      */
-    public void setLauncher(@NonNull BaseQuickstepLauncher launcher) {
-        mLauncher = launcher;
-        mUnfoldProgressProvider.setSourceProvider(launcher
-                .getUnfoldTransitionProgressProvider());
+    public void setActivity(@NonNull StatefulActivity activity) {
+        mActivity = activity;
+        mUnfoldProgressProvider.setSourceProvider(getUnfoldTransitionProgressProviderForActivity(
+                activity));
 
         if (mTaskbarActivityContext != null) {
             mTaskbarActivityContext.setUIController(
-                    new LauncherTaskbarUIController(launcher, mTaskbarActivityContext));
+                    createTaskbarUIControllerForActivity(mActivity));
         }
     }
 
     /**
-     * Clears a previously set Launcher
+     * Returns an {@link UnfoldTransitionProgressProvider} to use while the given StatefulActivity
+     * is active.
      */
-    public void clearLauncher(@NonNull BaseQuickstepLauncher launcher) {
-        if (mLauncher == launcher) {
-            mLauncher = null;
+    private UnfoldTransitionProgressProvider getUnfoldTransitionProgressProviderForActivity(
+            StatefulActivity activity) {
+        if (activity instanceof BaseQuickstepLauncher) {
+            return ((BaseQuickstepLauncher) activity).getUnfoldTransitionProgressProvider();
+        }
+        return null;
+    }
+
+    /**
+     * Creates a {@link TaskbarUIController} to use while the given StatefulActivity is active.
+     */
+    private TaskbarUIController createTaskbarUIControllerForActivity(StatefulActivity activity) {
+        if (activity instanceof BaseQuickstepLauncher) {
+            return new LauncherTaskbarUIController((BaseQuickstepLauncher) activity);
+        }
+        if (activity instanceof RecentsActivity) {
+            return new FallbackTaskbarUIController((RecentsActivity) activity);
+        }
+        return TaskbarUIController.DEFAULT;
+    }
+
+    /**
+     * Clears a previously set {@link StatefulActivity}
+     */
+    public void clearActivity(@NonNull StatefulActivity activity) {
+        if (mActivity == activity) {
+            mActivity = null;
             if (mTaskbarActivityContext != null) {
                 mTaskbarActivityContext.setUIController(TaskbarUIController.DEFAULT);
             }
@@ -192,10 +220,11 @@ public class TaskbarManager implements DisplayController.DisplayInfoChangeListen
 
         mTaskbarActivityContext = new TaskbarActivityContext(mContext, dp.copy(mContext),
                 mNavButtonController, mUnfoldProgressProvider);
+
         mTaskbarActivityContext.init(mSharedState);
-        if (mLauncher != null) {
+        if (mActivity != null) {
             mTaskbarActivityContext.setUIController(
-                    new LauncherTaskbarUIController(mLauncher, mTaskbarActivityContext));
+                    createTaskbarUIControllerForActivity(mActivity));
         }
     }
 
