@@ -20,7 +20,8 @@
 package app.lawnchair.icons.shape
 
 import android.content.Context
-import android.graphics.*
+import android.graphics.Path
+import android.graphics.Region
 import android.graphics.drawable.AdaptiveIconDrawable
 import app.lawnchair.preferences.PreferenceManager
 import com.android.launcher3.Utilities

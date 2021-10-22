@@ -71,5 +71,6 @@ fun <T : GradientDrawable> DrawableToken<T>.setStroke(widthDp: Float, color: Col
         widthDp,
         Resources.getSystem().displayMetrics
     )
+
     setStroke(widthPx.toInt(), color.resolveColor(context, scheme, uiColorMode))
 }

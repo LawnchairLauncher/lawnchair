@@ -23,7 +23,6 @@ import android.graphics.Path
 import android.graphics.PointF
 import android.util.Log
 import com.android.launcher3.Utilities
-import java.lang.Exception
 
 open class IconShape(val topLeft: Corner,
                      val topRight: Corner,
