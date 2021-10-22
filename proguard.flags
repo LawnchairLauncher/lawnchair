@@ -107,3 +107,7 @@
 -keep class com.android.launcher3.tracing.LauncherTraceProto$* { *; }
 -keep class com.android.launcher3.userevent.LauncherLogExtensions$* { *; }
 -keepattributes InnerClasses
+
+-keep class app.lawnchair.compatlib.** {
+  *;
+}
