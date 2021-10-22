@@ -65,7 +65,7 @@ object DrawableTokens {
 
     @JvmField
     val WidgetResizeFrame = ResourceDrawableToken<GradientDrawable>(R.drawable.widget_resize_frame)
-        .setStroke(2f, ColorTokens.WorkspaceAccentColor)
+        .setTint(ColorTokens.WorkspaceAccentColor)
 
     @JvmField
     val AllAppsTabsBackground = NewDrawable { context, scheme, uiColorMode ->
