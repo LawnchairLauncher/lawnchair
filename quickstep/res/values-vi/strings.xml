@@ -29,7 +29,6 @@
     <string name="shorter_duration_less_than_one_minute" msgid="4722015666335015336">"&lt; 1 phút"</string>
     <string name="time_left_for_app" msgid="3111996412933644358">"Hôm nay còn <xliff:g id="TIME">%1$s</xliff:g>"</string>
     <string name="title_app_suggestions" msgid="4185902664111965088">"Các ứng dụng đề xuất"</string>
-    <string name="all_apps_label" msgid="8542784161730910663">"Tất cả ứng dụng"</string>
     <string name="all_apps_prediction_tip" msgid="2672336544844936186">"Các ứng dụng gợi ý của bạn"</string>
     <string name="hotseat_edu_title_migrate" msgid="306578144424489980">"Nhận các ứng dụng đề xuất ở cuối Màn hình chính"</string>
     <string name="hotseat_edu_title_migrate_landscape" msgid="3633942953997845243">"Nhận các ứng dụng đề xuất trên hàng mục ưa thích của Màn hình chính"</string>
