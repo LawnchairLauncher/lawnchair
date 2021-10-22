@@ -29,7 +29,6 @@
     <string name="shorter_duration_less_than_one_minute" msgid="4722015666335015336">"&lt; 1 minutt"</string>
     <string name="time_left_for_app" msgid="3111996412933644358">"<xliff:g id="TIME">%1$s</xliff:g> gjenstår i dag"</string>
     <string name="title_app_suggestions" msgid="4185902664111965088">"Appanbefalinger"</string>
-    <string name="all_apps_label" msgid="8542784161730910663">"Alle apper"</string>
     <string name="all_apps_prediction_tip" msgid="2672336544844936186">"Forslag til apper"</string>
     <string name="hotseat_edu_title_migrate" msgid="306578144424489980">"Få appforslag i den nederste raden på startskjermen"</string>
     <string name="hotseat_edu_title_migrate_landscape" msgid="3633942953997845243">"Få appforslag i favoritter-raden på startskjermen"</string>
