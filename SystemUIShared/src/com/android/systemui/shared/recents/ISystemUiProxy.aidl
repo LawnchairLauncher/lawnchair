@@ -126,6 +126,12 @@ interface ISystemUiProxy {
     /**
      * Handle the provided image as if it was a screenshot.
      */
+    void handleImageBundleAsScreenshotR(in Bundle screenImageBundle, in Rect locationInScreen,
+              in Insets visibleInsets, in Task.TaskKey task) = 26;
+
+    /**
+     * Handle the provided image as if it was a screenshot.
+     */
     void handleImageBundleAsScreenshot(in Bundle screenImageBundle, in Rect locationInScreen,
               in Insets visibleInsets, in Task.TaskKey task) = 28;
 

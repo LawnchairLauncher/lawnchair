@@ -35,6 +35,7 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceControl;
 
+import com.android.launcher3.Utilities;
 import com.android.launcher3.util.MainThreadInitializedObject;
 import com.android.launcher3.util.SplitConfigurationOptions;
 import com.android.systemui.shared.recents.ISystemUiProxy;
@@ -400,12 +401,23 @@ public class SystemUiProxy implements ISystemUiProxy,
     }
 
     @Override
+    public void handleImageBundleAsScreenshotR(Bundle screenImageBundle, Rect locationInScreen,
+            Insets visibleInsets, Task.TaskKey task) {
+        // just a placeholder
+    }
+
+    @Override
     public void handleImageBundleAsScreenshot(Bundle screenImageBundle, Rect locationInScreen,
             Insets visibleInsets, Task.TaskKey task) {
         if (mSystemUiProxy != null) {
             try {
-                mSystemUiProxy.handleImageBundleAsScreenshot(screenImageBundle, locationInScreen,
-                    visibleInsets, task);
+                if (Utilities.ATLEAST_S) {
+                    mSystemUiProxy.handleImageBundleAsScreenshot(screenImageBundle, locationInScreen,
+                            visibleInsets, task);
+                } else {
+                    mSystemUiProxy.handleImageBundleAsScreenshotR(screenImageBundle, locationInScreen,
+                            visibleInsets, task);
+                }
             } catch (RemoteException e) {
                 Log.w(TAG, "Failed call handleImageBundleAsScreenshot");
             }
