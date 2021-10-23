@@ -1,19 +1,17 @@
 package app.lawnchair.override
 
 import android.graphics.drawable.Drawable
+import androidx.compose.animation.Crossfade
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.Text
-import androidx.compose.material.TextField
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Clear
+import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import app.lawnchair.launcher
@@ -62,22 +60,27 @@ fun CustomizeDialog(
                 .size(54.dp)
                 .align(Alignment.CenterHorizontally)
         )
-        TextField(
+        OutlinedTextField(
             value = title,
             onValueChange = onTitleChange,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp),
-            placeholder = { Text(defaultTitle) },
             trailingIcon = {
-                if (title.isNotEmpty()) {
+                if (title != defaultTitle) {
                     ClickableIcon(
-                        imageVector = Icons.Rounded.Clear,
-                        onClick = { onTitleChange("") }
+                        painter = painterResource(id = R.drawable.ic_undo),
+                        onClick = { onTitleChange(defaultTitle) }
                     )
                 }
             },
-            singleLine = true
+            singleLine = true,
+            colors = TextFieldDefaults.outlinedTextFieldColors(
+                unfocusedBorderColor = MaterialTheme.colors.onSurface.copy(alpha = 0.12F)
+            ),
+            shape = MaterialTheme.shapes.large,
+            label = { Text(text = stringResource(id = R.string.label)) },
+            isError = title.isEmpty()
         )
         content?.invoke()
     }
@@ -96,7 +99,7 @@ fun CustomizeAppDialog(
     var title by remember { mutableStateOf("") }
 
     DisposableEffect(key1 = null) {
-        title = prefs.customAppName[componentKey] ?: ""
+        title = prefs.customAppName[componentKey] ?: defaultTitle
         onDispose {
             val previousTitle = prefs.customAppName[componentKey]
             val newTitle = title.ifEmpty { null }
@@ -122,7 +125,7 @@ fun CustomizeAppDialog(
             val stringKey = componentKey.toString()
             var hiddenApps by prefs.hiddenAppSet.getAdapter()
             val adapter = customPreferenceAdapter(
-                value = hiddenApps.contains(stringKey) ,
+                value = hiddenApps.contains(stringKey),
                 onValueChange = { isHidden ->
                     val newSet = hiddenApps.toMutableSet()
                     if (isHidden) {
