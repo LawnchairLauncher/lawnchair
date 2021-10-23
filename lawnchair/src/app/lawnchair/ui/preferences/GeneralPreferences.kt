@@ -16,10 +16,8 @@
 
 package app.lawnchair.ui.preferences
 
-import android.os.Build
 import androidx.compose.animation.*
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavGraphBuilder
@@ -30,7 +28,6 @@ import com.android.launcher3.R
 
 object GeneralRoutes {
     const val ICON_PACK = "iconPack"
-    const val ACCENT_COLOR = "accentColor"
 }
 
 @ExperimentalMaterialApi
@@ -38,7 +35,6 @@ object GeneralRoutes {
 fun NavGraphBuilder.generalGraph(route: String) {
     preferenceGraph(route, { GeneralPreferences() }) { subRoute ->
         iconPackGraph(route = subRoute(GeneralRoutes.ICON_PACK))
-        accentColorGraph(route = subRoute(GeneralRoutes.ACCENT_COLOR))
     }
 }
 
@@ -63,16 +59,19 @@ fun GeneralPreferences() {
                     .find { it.packageName == preferenceManager().iconPackPackage.get() }?.name
             )
             IconShapePreference()
-            ThemePreference()
-            NavigationActionPreference(
-                label = stringResource(id = R.string.accent_color),
-                destination = subRoute(name = GeneralRoutes.ACCENT_COLOR),
-                subtitle = (dynamicColors + staticColors).firstOrNull { it.value == prefs.accentColor.get() }?.label?.invoke(),
-                endWidget = { ColorDot(color = MaterialTheme.colors.primary) }
-            )
             FontPreference(
                 adapter = prefs.workspaceFont.getAdapter(),
                 label = stringResource(id = R.string.font_label)
+            )
+        }
+        PreferenceGroup(
+            heading = stringResource(id = R.string.colors)
+        ) {
+            ThemePreference()
+            AccentColorPreferences()
+            SwitchPreference(
+                adapter = prefs.enableColorfulTheme.getAdapter(),
+                label = stringResource(id = R.string.enable_colorful_theme)
             )
         }
         val wrapAdaptiveIcons = prefs.wrapAdaptiveIcons.getAdapter()

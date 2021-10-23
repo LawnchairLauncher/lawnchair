@@ -20,8 +20,8 @@ fun DividerColumn(
     thickness: Dp = 1.dp,
     startIndent: Dp = 0.dp,
     endIndent: Dp = 0.dp,
+    dividersToSkip: Int = 0,
     content: @Composable () -> Unit,
-    dividersToSkip: Int
 ) {
     val state = remember { DividersState() }
     val density = LocalDensity.current

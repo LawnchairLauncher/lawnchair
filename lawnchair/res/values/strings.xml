@@ -166,4 +166,6 @@
     <string name="n_percent">%1$d%%</string>
     <string name="label">Label</string>
     <string name="presets">Presets</string>
+    <string name="colors">Colors</string>
+    <string name="dynamic">Dynamic</string>
 </resources>

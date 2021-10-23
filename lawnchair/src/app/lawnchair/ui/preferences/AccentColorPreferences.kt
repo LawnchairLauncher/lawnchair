@@ -2,12 +2,13 @@ package app.lawnchair.ui.preferences
 
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
-import androidx.compose.material.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Done
 import androidx.compose.runtime.*
@@ -17,16 +18,17 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavGraphBuilder
 import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences.preferenceManager
 import app.lawnchair.theme.color.ColorOption
-import app.lawnchair.ui.preferences.components.PreferenceGroup
-import app.lawnchair.ui.preferences.components.PreferenceLayout
+import app.lawnchair.ui.AlertBottomSheetContent
+import app.lawnchair.ui.preferences.components.BottomSheet
+import app.lawnchair.ui.preferences.components.DividerColumn
 import app.lawnchair.ui.preferences.components.PreferenceTemplate
-import app.lawnchair.ui.preferences.components.SwitchPreference
+import app.lawnchair.ui.preferences.components.rememberBottomSheetState
 import app.lawnchair.ui.theme.lightenColor
 import com.android.launcher3.R
+import kotlinx.coroutines.launch
 
 val staticColors = listOf(
     ColorOption.CustomColor(0xFFF32020),
@@ -47,83 +49,97 @@ val dynamicColors = listOf(ColorOption.SystemAccent, ColorOption.WallpaperPrimar
     .filter(ColorOption::isSupported)
     .map(ColorOption::accentColorOption)
 
-@ExperimentalAnimationApi
-fun NavGraphBuilder.accentColorGraph(route: String) {
-    preferenceGraph(route, { AccentColorPreferences() })
-}
-
 @Composable
-@OptIn(ExperimentalAnimationApi::class)
+@OptIn(ExperimentalAnimationApi::class, ExperimentalMaterialApi::class)
 fun AccentColorPreferences() {
     val pm = preferenceManager()
     var accentColor by pm.accentColor.getAdapter()
     val defaultTabIndex = if (dynamicColors.any { accentColor == it.value }) 0 else 1
     var selectedTabIndex by remember { mutableStateOf(value = defaultTabIndex) }
+    val bottomSheetState = rememberBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
+    val coroutineScope = rememberCoroutineScope()
+    val description = (dynamicColors + staticColors).firstOrNull { it.value == pm.accentColor.get() }?.label?.invoke()
 
-    PreferenceLayout(label = stringResource(id = R.string.accent_color)) {
-        PreferenceGroup(
-            isFirstChild = true,
-            dividersToSkip = 1
-        ) {
-            TabRow(
-                selectedTabIndex = selectedTabIndex,
-                backgroundColor = Color.Transparent,
-                indicator = { tabPositions ->
-                    TabRowDefaults.Indicator(
-                        modifier = Modifier.tabIndicatorOffset(tabPositions[selectedTabIndex]),
-                        color = MaterialTheme.colors.primary
-                    )
-                },
-            ) {
-                CustomTab(
-                    selected = selectedTabIndex == 0,
-                    onClick = { selectedTabIndex = 0 },
-                    label = stringResource(id = R.string.presets)
-                )
-                CustomTab(
-                    selected = selectedTabIndex == 1,
-                    onClick = { selectedTabIndex = 1 },
-                    label = stringResource(id = R.string.custom)
-                )
+    PreferenceTemplate(
+        title = { Text(text = stringResource(id = R.string.accent_color)) },
+        endWidget = { ColorDot(color = MaterialTheme.colors.primary) },
+        modifier = Modifier.clickable {
+            coroutineScope.launch {
+                bottomSheetState.show()
             }
-            when (selectedTabIndex) {
-                0 -> {
-                    dynamicColors.map { accentColorOption ->
-                        key(accentColorOption) {
-                            PreferenceTemplate(
-                                title = { Text(text = accentColorOption.label()) },
-                                verticalPadding = 12.dp,
-                                modifier = Modifier
-                                    .clickable { accentColor = accentColorOption.value },
-                                startWidget = {
-                                    RadioButton(
-                                        selected = accentColorOption.value == accentColor,
-                                        onClick = null
-                                    )
-                                    ColorDot(
-                                        accentColorOption = accentColorOption,
-                                        modifier = Modifier.padding(start = 16.dp)
-                                    )
-                                }
-                            )
-                        }
-                    }
-                }
-                1 -> {
-                    SwatchGrid(
-                        accentColorOptions = staticColors,
-                        modifier = Modifier.padding(16.dp),
-                        onSwatchClick = { accentColor = it },
-                        isSwatchSelected = { it == accentColor }
-                    )
-                }
+        },
+        description = {
+            if (description != null) {
+                Text(text = description)
             }
         }
-        PreferenceGroup {
-            SwitchPreference(
-                adapter = pm.enableColorfulTheme.getAdapter(),
-                label = stringResource(id = R.string.enable_colorful_theme)
-            )
+    )
+
+    BottomSheet(
+        sheetState = bottomSheetState,
+        sheetBackgroundColor = MaterialTheme.colors.background
+    ) {
+        AlertBottomSheetContent(
+            title = { Text(text = stringResource(id = R.string.accent_color)) },
+            buttons = {
+                Button(
+                    shape = MaterialTheme.shapes.small,
+                    onClick = { coroutineScope.launch { bottomSheetState.hide() } }
+                ) {
+                    Text(text = stringResource(id = R.string.done))
+                }
+            }
+        ) {
+            Column {
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(space = 8.dp),
+                    modifier = Modifier.padding(horizontal = 16.dp)
+                ) {
+                    Chip(
+                        label = stringResource(id = R.string.dynamic),
+                        selected = selectedTabIndex == 0,
+                        onClick = { selectedTabIndex = 0 }
+                    )
+                    Chip(
+                        label = stringResource(id = R.string.presets),
+                        selected = selectedTabIndex == 1,
+                        onClick = { selectedTabIndex = 1 }
+                    )
+                }
+                when (selectedTabIndex) {
+                    0 -> {
+                        DividerColumn(modifier = Modifier.padding(top = 16.dp)) {
+                            dynamicColors.map { accentColorOption ->
+                                key(accentColorOption) {
+                                    PreferenceTemplate(
+                                        title = { Text(text = accentColorOption.label()) },
+                                        verticalPadding = 12.dp,
+                                        modifier = Modifier.clickable { accentColor = accentColorOption.value },
+                                        startWidget = {
+                                            RadioButton(
+                                                selected = accentColorOption.value == accentColor,
+                                                onClick = null
+                                            )
+                                            ColorDot(
+                                                accentColorOption = accentColorOption,
+                                                modifier = Modifier.padding(start = 16.dp)
+                                            )
+                                        }
+                                    )
+                                }
+                            }
+                        }
+                    }
+                    1 -> {
+                        SwatchGrid(
+                            accentColorOptions = staticColors,
+                            modifier = Modifier.padding(start = 16.dp, top = 20.dp, end = 16.dp, bottom = 16.dp),
+                            onSwatchClick = { accentColor = it },
+                            isSwatchSelected = { it == accentColor }
+                        )
+                    }
+                }
+            }
         }
     }
 }
@@ -230,20 +246,47 @@ fun ColorDot(
 }
 
 @Composable
-fun CustomTab(
+fun Chip(
+    label: String,
     selected: Boolean,
-    onClick: () -> Unit,
-    label: String
+    onClick: () -> Unit
 ) {
-    Tab(
-        selected = selected,
-        onClick = onClick,
-        selectedContentColor = MaterialTheme.colors.primary,
-        unselectedContentColor = MaterialTheme.colors.onBackground.copy(alpha = ContentAlpha.medium)
+    val backgroundColor by animateColorAsState(
+        targetValue = if (selected) {
+            MaterialTheme.colors.primary.copy(alpha = 0.08F)
+        } else {
+            Color.Transparent
+        }
+    )
+    val textColor by animateColorAsState(
+        targetValue = if (selected) {
+            MaterialTheme.colors.primary
+        } else {
+            MaterialTheme.colors.onBackground.copy(alpha = ContentAlpha.medium)
+        }
+    )
+    val borderColor by animateColorAsState(
+        targetValue = if (selected) {
+            MaterialTheme.colors.primary
+        } else {
+            MaterialTheme.colors.onBackground.copy(alpha = 0.12F)
+        }
+    )
+
+    Box(
+        contentAlignment = Alignment.Center,
+        modifier = Modifier
+            .height(36.dp)
+            .clip(CircleShape)
+            .border(width = 1.dp, color = borderColor, shape = CircleShape)
+            .background(backgroundColor)
+            .clickable(onClick = onClick)
+            .padding(horizontal = 16.dp)
     ) {
         Text(
             text = label,
-            modifier = Modifier.padding(vertical = 12.dp)
+            style = MaterialTheme.typography.body2,
+            color = textColor
         )
     }
 }
