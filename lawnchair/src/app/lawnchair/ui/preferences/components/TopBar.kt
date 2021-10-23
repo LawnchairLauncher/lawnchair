@@ -93,8 +93,6 @@ fun TopBar(
     }
 }
 
-val shadowColors = listOf(Color(0, 0, 0, 31), Color.Transparent)
-
 @Composable
 fun TopBarSurface(floating: Boolean, content: @Composable () -> Unit) {
     val (normalColor, floatingColor) = topBarColors()
@@ -102,7 +100,6 @@ fun TopBarSurface(floating: Boolean, content: @Composable () -> Unit) {
     LaunchedEffect(floating) {
         color.animateTo(if (floating) floatingColor else normalColor)
     }
-    val shadowAlpha by animateFloatAsState(if (floating) 1f else 0f)
 
     Column(
         modifier = Modifier
@@ -118,13 +115,6 @@ fun TopBarSurface(floating: Boolean, content: @Composable () -> Unit) {
         ) {
             content()
         }
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(3.dp)
-                .alpha(shadowAlpha)
-                .background(Brush.verticalGradient(shadowColors))
-        )
     }
 }
 
@@ -134,7 +124,7 @@ fun topBarColors(): Pair<Color, Color> {
     val backgroundColor = MaterialTheme.colors.background
     val surfaceColor = MaterialTheme.colors.surface
     val floatingColor = elevationOverlay?.apply(surfaceColor, 4.dp) ?: surfaceColor
-    return Pair(backgroundColor.copy(alpha = 0.9f), floatingColor.copy(alpha = 0.9f))
+    return Pair(backgroundColor, floatingColor)
 }
 
 @Composable
