@@ -75,10 +75,7 @@ fun AccentColorPreferences() {
         }
     )
 
-    BottomSheet(
-        sheetState = bottomSheetState,
-        sheetBackgroundColor = MaterialTheme.colors.background
-    ) {
+    BottomSheet(sheetState = bottomSheetState) {
         AlertBottomSheetContent(
             title = { Text(text = stringResource(id = R.string.accent_color)) },
             buttons = {
