@@ -115,17 +115,17 @@
     <string name="pref_fonts_missing_font">Fonte não encontrada.</string>
     <string name="font_variant_italic">Itálico</string>
     <string name="font_weight_thin">Fino</string>
-    <string name="font_weight_extra_light">Extra Light</string>
+    <string name="font_weight_extra_light">Extra Leve</string>
     <string name="font_weight_light">Luz</string>
     <string name="font_weight_regular">Normal</string>
     <string name="font_weight_medium">Médio</string>
     <string name="font_weight_semi_bold">Semi negrito</string>
     <string name="font_weight_bold">Negrito</string>
-    <string name="font_weight_extra_bold">Extra Bold</string>
+    <string name="font_weight_extra_bold">Extra Negrito</string>
     <string name="font_weight_extra_black">Preto</string>
-    <string name="font_label">Font (Experimental)</string>
+    <string name="font_label">Fonte (Experimental)</string>
     <string name="reset_font">Redefinir</string>
     <string name="search_bar_placeholder">Pesquisar</string>
     <string name="pref_category_search">Pesquisar</string>
-    <string name="pref_search_auto_show_keyboard">Automatically Show Keyboard</string>
+    <string name="pref_search_auto_show_keyboard">Mostrar Teclado Automaticamente</string>
 </resources>
