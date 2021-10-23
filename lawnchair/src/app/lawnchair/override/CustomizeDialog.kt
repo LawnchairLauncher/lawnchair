@@ -76,7 +76,8 @@ fun CustomizeDialog(
             },
             singleLine = true,
             colors = TextFieldDefaults.outlinedTextFieldColors(
-                unfocusedBorderColor = MaterialTheme.colors.onSurface.copy(alpha = 0.12F)
+                unfocusedBorderColor = MaterialTheme.colors.onSurface.copy(alpha = 0.12F),
+                textColor = MaterialTheme.colors.onSurface
             ),
             shape = MaterialTheme.shapes.large,
             label = { Text(text = stringResource(id = R.string.label)) },
