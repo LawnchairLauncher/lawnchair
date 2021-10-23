@@ -55,6 +55,7 @@
             android:gravity="start|center"
             android:imeOptions="actionGo|flagNoExtractUi"
             android:inputType="textNoSuggestions"
+            android:letterSpacing="-0.01"
             android:paddingEnd="16dp"
             android:privateImeOptions="bc_search"
             android:scrollHorizontally="true"
