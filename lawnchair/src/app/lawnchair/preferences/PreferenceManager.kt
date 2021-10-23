@@ -74,7 +74,7 @@ class PreferenceManager private constructor(private val context: Context) : Base
     val feedProvider = StringPref("pref_feedProvider", "")
     val ignoreFeedWhitelist = BoolPref("pref_ignoreFeedWhitelist", false)
     val workspaceDt2s = BoolPref("pref_doubleTap2Sleep", true)
-    val launcherTheme = StringPref("pref_launcherTheme", "system")
+    val launcherTheme = StringPref("pref_launcherTheme", "system", recreate)
     val clearAllAsAction = BoolPref("pref_clearAllAsAction", false)
     val overrideWindowCornerRadius = BoolPref("pref_overrideWindowCornerRadius", false, recreate)
     val windowCornerRadius = IntPref("pref_windowCornerRadius", 80, recreate)

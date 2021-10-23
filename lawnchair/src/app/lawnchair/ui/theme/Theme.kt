@@ -52,11 +52,12 @@ fun getColors(darkTheme: Boolean): Colors {
     val prefs = PreferenceManager.getInstance(context)
     val accentColor = prefs.accentColor.observeAsState().value
     val enableColorfulTheme = prefs.enableColorfulTheme.observeAsState().value
+    val launcherTheme = prefs.launcherTheme.observeAsState().value
     val colorScheme = remember(accentColor, enableColorfulTheme) {
         ThemeProvider.INSTANCE.get(context).colorScheme
     }
 
-    return remember(colorScheme) {
+    return remember(colorScheme, launcherTheme) {
         val accent = Color(colorScheme.accent1[if (darkTheme) 100 else 600]!!.toAndroidColor())
         val surface = Color(colorScheme.neutral1[if (darkTheme) 900 else 100]!!.toAndroidColor())
         val background = Color(colorScheme.neutral1[if (darkTheme) 900 else 50]!!.toAndroidColor())
