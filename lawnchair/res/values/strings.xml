@@ -111,7 +111,6 @@
     <string name="system">System</string>
     <string name="wallpaper">Wallpaper</string>
     <string name="custom">Custom</string>
-    <string name="custom_color">Custom Color</string>
     <string name="quickstep_description">Clear All Button, Corner Radius</string>
     <string name="wallpaper_scrolling_label">Scroll Wallpaper</string>
     <string name="show_sys_ui_scrim">Top Shadow</string>
