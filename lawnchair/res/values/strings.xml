@@ -160,9 +160,10 @@
     <string name="app_title_label">Title</string>
     <string name="hide_from_drawer">Hide from App Drawer</string>
     <string name="action_lens">Lens</string>
-    <string name="enable_colorful_theme">Also Apply to Background</string>
+    <string name="enable_colorful_theme">Tint Backgrounds</string>
     <string name="force_rounded_widgets">Round Corners</string>
     <string name="suggestion_pref_screen_title">Suggestions</string>
     <string name="n_percent">%1$d%%</string>
     <string name="label">Label</string>
+    <string name="presets">Presets</string>
 </resources>

@@ -86,12 +86,6 @@ class PreferenceManager private constructor(private val context: Context) : Base
         ColorOption::toString,
         recreate
     )
-    val lastCustomAccent = ObjectPref(
-        "pref_lastCustomAccent",
-        ColorOption.LawnchairBlue,
-        ColorOption::fromString,
-        ColorOption::toString
-    )
     val enableColorfulTheme = BoolPref("pref_enableColorfulTheme", true, recreate)
     val wallpaperScrolling = BoolPref("pref_wallpaperScrolling", true)
     val showSysUiScrim = BoolPref("pref_showSysUiScrim", true)

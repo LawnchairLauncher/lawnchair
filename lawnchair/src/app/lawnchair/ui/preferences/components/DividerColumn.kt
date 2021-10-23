@@ -20,7 +20,8 @@ fun DividerColumn(
     thickness: Dp = 1.dp,
     startIndent: Dp = 0.dp,
     endIndent: Dp = 0.dp,
-    content: @Composable () -> Unit
+    content: @Composable () -> Unit,
+    dividersToSkip: Int
 ) {
     val state = remember { DividersState() }
     val density = LocalDensity.current
@@ -50,7 +51,7 @@ fun DividerColumn(
 
             // Place children in the parent layout
             placeables.forEachIndexed { index, placeable ->
-                if (index > 0) {
+                if (index > dividersToSkip) {
                     dividerPositions.add(yPosition)
                     yPosition += thicknessPx.roundToInt()
                 }

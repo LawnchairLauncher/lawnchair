@@ -37,6 +37,7 @@ fun PreferenceGroup(
     showDividers: Boolean = true,
     dividerStartIndent: Dp = 0.dp,
     dividerEndIndent: Dp = 0.dp,
+    dividersToSkip: Int = 0,
     content: @Composable () -> Unit
 ) {
     PreferenceGroupHeading(heading, isFirstChild)
@@ -53,7 +54,8 @@ fun PreferenceGroup(
             modifier = columnModifier,
             startIndent = dividerStartIndent,
             endIndent = dividerEndIndent,
-            content = content
+            content = content,
+            dividersToSkip = dividersToSkip
         )
     } else {
         Column(modifier = columnModifier) {
