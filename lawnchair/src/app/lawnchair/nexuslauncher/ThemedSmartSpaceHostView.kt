@@ -56,6 +56,7 @@ class ThemedSmartSpaceHostView(context: Context) : SmartSpaceHostView(context) {
             )
         }
         tv.setTextColor(workspaceTextColor)
+        tv.letterSpacing = -0.01F
         FontManager.INSTANCE.get(context).setCustomFont(tv, R.id.font_heading)
     }
 
