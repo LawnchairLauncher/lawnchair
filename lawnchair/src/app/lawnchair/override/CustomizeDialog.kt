@@ -1,7 +1,6 @@
 package app.lawnchair.override
 
 import android.graphics.drawable.Drawable
-import androidx.compose.animation.Crossfade
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
