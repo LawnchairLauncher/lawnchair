@@ -57,6 +57,7 @@
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"\"<xliff:g id="QUERY">%1$s</xliff:g>\" سے مماثل کوئی ایپس نہیں ملیں"</string>
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"مزید ایپس تلاش کریں"</string>
     <string name="label_application" msgid="8531721983832654978">"ایپ"</string>
+    <string name="all_apps_label" msgid="5015784846527570951">"سبھی ایپس"</string>
     <string name="notifications_header" msgid="1404149926117359025">"اطلاعات"</string>
     <string name="long_press_shortcut_to_add" msgid="5405328730817637737">"شارٹ کٹ منتقل کرنے کیلیے ٹچ کریں اور پکڑ کر رکھیں۔"</string>
     <string name="long_accessible_way_to_add_shortcut" msgid="2199537273817090740">"شارٹ کٹ کو منتقل کرنے یا حسب ضرورت کارروائیاں استعمال کرنے کے لیے دوبار تھپتھپائیں اور پکڑ کر رکھیں۔"</string>

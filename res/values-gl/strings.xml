@@ -57,6 +57,8 @@
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"Non se atoparon aplicacións que coincidan con \"<xliff:g id="QUERY">%1$s</xliff:g>\""</string>
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"Buscar máis aplicacións"</string>
     <string name="label_application" msgid="8531721983832654978">"Aplicación"</string>
+    <!-- no translation found for all_apps_label (5015784846527570951) -->
+    <skip />
     <string name="notifications_header" msgid="1404149926117359025">"Notificacións"</string>
     <string name="long_press_shortcut_to_add" msgid="5405328730817637737">"Mantén premido un atallo para movelo."</string>
     <string name="long_accessible_way_to_add_shortcut" msgid="2199537273817090740">"Toca dúas veces un atallo e manteno premido para movelo ou utiliza accións personalizadas."</string>

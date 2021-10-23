@@ -57,6 +57,8 @@
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"\"<xliff:g id="QUERY">%1$s</xliff:g>\" ସହିତ ମେଳ ହେଉଥିବା କୌଣସି ଆପ୍‌ ମିଳିଲା ନାହିଁ"</string>
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"ଅଧିକ ଆପ୍‌ ଖୋଜନ୍ତୁ"</string>
     <string name="label_application" msgid="8531721983832654978">"ଆପ୍"</string>
+    <!-- no translation found for all_apps_label (5015784846527570951) -->
+    <skip />
     <string name="notifications_header" msgid="1404149926117359025">"ବିଜ୍ଞପ୍ତି"</string>
     <string name="long_press_shortcut_to_add" msgid="5405328730817637737">"ଏକ ସର୍ଟକଟକୁ ମୁଭ୍ କରିବା ପାଇଁ ସ୍ପର୍ଶ କରି ଧରି ରଖନ୍ତୁ।"</string>
     <string name="long_accessible_way_to_add_shortcut" msgid="2199537273817090740">"ଏକ ସର୍ଟକଟକୁ ମୁଭ୍ କରିବା ପାଇଁ ଦୁଇଥର-ଟାପ୍ କରି ଧରି ରଖନ୍ତୁ କିମ୍ବା କଷ୍ଟମ୍ କାର୍ଯ୍ୟଗୁଡ଼ିକୁ ବ୍ୟବହାର କରନ୍ତୁ।"</string>

@@ -57,6 +57,7 @@
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"Không tìm thấy ứng dụng nào phù hợp với \"<xliff:g id="QUERY">%1$s</xliff:g>\""</string>
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"Tìm kiếm thêm ứng dụng"</string>
     <string name="label_application" msgid="8531721983832654978">"Ứng dụng"</string>
+    <string name="all_apps_label" msgid="5015784846527570951">"Tất cả ứng dụng"</string>
     <string name="notifications_header" msgid="1404149926117359025">"Thông báo"</string>
     <string name="long_press_shortcut_to_add" msgid="5405328730817637737">"Chạm và giữ để di chuyển một lối tắt."</string>
     <string name="long_accessible_way_to_add_shortcut" msgid="2199537273817090740">"Nhấn đúp và giữ để di chuyển một lối tắt hoặc sử dụng các thao tác tùy chỉnh."</string>

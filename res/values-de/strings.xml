@@ -57,6 +57,8 @@
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"Keine Apps für \"<xliff:g id="QUERY">%1$s</xliff:g>\" gefunden"</string>
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"Weitere Apps suchen"</string>
     <string name="label_application" msgid="8531721983832654978">"App"</string>
+    <!-- no translation found for all_apps_label (5015784846527570951) -->
+    <skip />
     <string name="notifications_header" msgid="1404149926117359025">"Benachrichtigungen"</string>
     <string name="long_press_shortcut_to_add" msgid="5405328730817637737">"Zum Verschieben einer Verknüpfung berühren und halten"</string>
     <string name="long_accessible_way_to_add_shortcut" msgid="2199537273817090740">"Doppeltippen und halten, um eine Verknüpfung zu bewegen oder benutzerdefinierte Aktionen zu nutzen."</string>

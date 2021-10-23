@@ -57,6 +57,7 @@
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"Nenhuma app correspondente a \"<xliff:g id="QUERY">%1$s</xliff:g>\""</string>
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"Pesquisar mais aplicações"</string>
     <string name="label_application" msgid="8531721983832654978">"Aplicação"</string>
+    <string name="all_apps_label" msgid="5015784846527570951">"Todas as apps"</string>
     <string name="notifications_header" msgid="1404149926117359025">"Notificações"</string>
     <string name="long_press_shortcut_to_add" msgid="5405328730817637737">"Toque sem soltar para mover um atalho."</string>
     <string name="long_accessible_way_to_add_shortcut" msgid="2199537273817090740">"Toque duas vezes sem soltar para mover um atalho ou utilizar ações personalizadas."</string>
