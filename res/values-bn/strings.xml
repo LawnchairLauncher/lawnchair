@@ -57,6 +57,8 @@
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"\"<xliff:g id="QUERY">%1$s</xliff:g>\" এর সাথে মেলে এমন কোনো অ্যাপ পাওয়া যায়নি"</string>
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"আরও অ্যাপ্লিকেশানের জন্য খুঁজুন"</string>
     <string name="label_application" msgid="8531721983832654978">"অ্যাপ"</string>
+    <!-- no translation found for all_apps_label (5015784846527570951) -->
+    <skip />
     <string name="notifications_header" msgid="1404149926117359025">"বিজ্ঞপ্তি"</string>
     <string name="long_press_shortcut_to_add" msgid="5405328730817637737">"একটি শর্টকাট সরাতে টাচ করে ধরে রাখুন।"</string>
     <string name="long_accessible_way_to_add_shortcut" msgid="2199537273817090740">"একটি শর্টকাট সরাতে বা কাস্টম অ্যাকশন ব্যবহার করতে ডবল ট্যাপ করে ধরে রাখুন।"</string>

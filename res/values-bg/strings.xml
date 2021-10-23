@@ -57,6 +57,7 @@
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"Няма намерени приложения, съответстващи на „<xliff:g id="QUERY">%1$s</xliff:g>“"</string>
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"Търсене на още приложения"</string>
     <string name="label_application" msgid="8531721983832654978">"Приложение"</string>
+    <string name="all_apps_label" msgid="5015784846527570951">"Всички приложения"</string>
     <string name="notifications_header" msgid="1404149926117359025">"Известия"</string>
     <string name="long_press_shortcut_to_add" msgid="5405328730817637737">"Докоснете и задръжте за преместване на пряк път."</string>
     <string name="long_accessible_way_to_add_shortcut" msgid="2199537273817090740">"Докоснете двукратно и задръжте за преместване на пряк път или използвайте персонализирани действия."</string>
