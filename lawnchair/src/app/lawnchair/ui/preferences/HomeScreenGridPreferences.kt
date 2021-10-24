@@ -98,7 +98,8 @@ fun HomeScreenGridPreferences() {
             Button(
                 onClick = { applyOverrides() },
                 modifier = Modifier
-                    .align(Alignment.CenterEnd),
+                    .align(Alignment.CenterEnd)
+                    .fillMaxWidth(),
                 enabled = columns.value != originalColumns || rows.value != originalRows
             ) {
                 Text(text = stringResource(id = R.string.apply_grid))
