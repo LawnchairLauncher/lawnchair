@@ -16,8 +16,8 @@
 
 package app.lawnchair.ui.preferences.components
 
-import androidx.compose.animation.Animatable
 import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
@@ -93,10 +93,7 @@ fun TopBar(
 @Composable
 fun TopBarSurface(floating: Boolean, content: @Composable () -> Unit) {
     val (normalColor, floatingColor) = topBarColors()
-    val color = remember(key1 = normalColor) { Animatable(normalColor) }
-    LaunchedEffect(floating) {
-        color.animateTo(if (floating) floatingColor else normalColor)
-    }
+    val color by animateColorAsState(targetValue = if (floating) floatingColor else normalColor)
 
     Column(
         modifier = Modifier
@@ -104,7 +101,7 @@ fun TopBarSurface(floating: Boolean, content: @Composable () -> Unit) {
     ) {
         Box(
             modifier = Modifier
-                .background(color.value)
+                .background(color)
                 .statusBarsPadding()
                 .pointerInput(remember { MutableInteractionSource() }) {
                     // consume touch
