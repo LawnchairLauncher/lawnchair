@@ -146,7 +146,7 @@
     <string name="label_voice_search">Voice Search</string>
     <string name="apply_grid">Apply</string>
     <string name="x_by_y">%1$d × %2$d</string>
-    <string name="folder_preview_bg_opacity_label">Preview Background Opacity</string>
+    <string name="folder_preview_bg_opacity_label">Icon Background Opacity</string>
 
     <string name="icon_shape_label">Icon Shape</string>
     <string name="icon_shape_system">System</string>
