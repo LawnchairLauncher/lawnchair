@@ -43,7 +43,7 @@ jobs:
       - name: Rename artifact
         continue-on-error: true
         run: |
-          oldArtifactPath="${{ steps.sign-debug-apk.outputs.signedReleaseFile }}"
+          oldArtifactPath="${{ steps.sign-release-apk.outputs.signedReleaseFile }}"
           newArtifactPath="${oldArtifactPath%'-signed.apk'}.apk"
           echo "ARTIFACT_PATH=$newArtifactPath" >> $GITHUB_ENV
           mv "$oldArtifactPath" "$newArtifactPath"
