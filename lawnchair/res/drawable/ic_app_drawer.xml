@@ -1,36 +1,33 @@
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
-    android:width="32dp"
-    android:height="32dp"
-    android:viewportWidth="32"
-    android:viewportHeight="32">
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
   <path
-      android:pathData="M16,16m-16,0a16,16 0,1 1,32 0a16,16 0,1 1,-32 0"
-      android:fillColor="#00B8B8"/>
-  <path
-      android:pathData="M10,10m-2,0a2,2 0,1 1,4 0a2,2 0,1 1,-4 0"
+      android:pathData="M6,6m-2,0a2,2 0,1 1,4 0a2,2 0,1 1,-4 0"
       android:fillColor="#ffffff"/>
   <path
-      android:pathData="M16,10m-2,0a2,2 0,1 1,4 0a2,2 0,1 1,-4 0"
+      android:pathData="M12,6m-2,0a2,2 0,1 1,4 0a2,2 0,1 1,-4 0"
       android:fillColor="#ffffff"/>
   <path
-      android:pathData="M22,10m-2,0a2,2 0,1 1,4 0a2,2 0,1 1,-4 0"
+      android:pathData="M18,6m-2,0a2,2 0,1 1,4 0a2,2 0,1 1,-4 0"
       android:fillColor="#ffffff"/>
   <path
-      android:pathData="M10,16m-2,0a2,2 0,1 1,4 0a2,2 0,1 1,-4 0"
+      android:pathData="M6,12m-2,0a2,2 0,1 1,4 0a2,2 0,1 1,-4 0"
       android:fillColor="#ffffff"/>
   <path
-      android:pathData="M16,16m-2,0a2,2 0,1 1,4 0a2,2 0,1 1,-4 0"
+      android:pathData="M12,12m-2,0a2,2 0,1 1,4 0a2,2 0,1 1,-4 0"
       android:fillColor="#ffffff"/>
   <path
-      android:pathData="M22,16m-2,0a2,2 0,1 1,4 0a2,2 0,1 1,-4 0"
+      android:pathData="M18,12m-2,0a2,2 0,1 1,4 0a2,2 0,1 1,-4 0"
       android:fillColor="#ffffff"/>
   <path
-      android:pathData="M10,22m-2,0a2,2 0,1 1,4 0a2,2 0,1 1,-4 0"
+      android:pathData="M6,18m-2,0a2,2 0,1 1,4 0a2,2 0,1 1,-4 0"
       android:fillColor="#ffffff"/>
   <path
-      android:pathData="M16,22m-2,0a2,2 0,1 1,4 0a2,2 0,1 1,-4 0"
+      android:pathData="M12,18m-2,0a2,2 0,1 1,4 0a2,2 0,1 1,-4 0"
       android:fillColor="#ffffff"/>
   <path
-      android:pathData="M22,22m-2,0a2,2 0,1 1,4 0a2,2 0,1 1,-4 0"
+      android:pathData="M18,18m-2,0a2,2 0,1 1,4 0a2,2 0,1 1,-4 0"
       android:fillColor="#ffffff"/>
 </vector>
