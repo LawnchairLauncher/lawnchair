@@ -61,13 +61,13 @@ fun PreferenceCategory(
                 modifier = Modifier
                     .size(32.dp)
                     .clip(CircleShape)
-                    .background(MaterialTheme.colors.primary)
+                    .background(MaterialTheme.colors.primary.copy(alpha = 0.12F))
             ) {
                 Icon(
                     painter = painterResource(id = iconResource),
                     contentDescription = null,
                     modifier = Modifier.size(24.dp),
-                    tint = MaterialTheme.colors.onPrimary
+                    tint = MaterialTheme.colors.primary
                 )
             }
         },
