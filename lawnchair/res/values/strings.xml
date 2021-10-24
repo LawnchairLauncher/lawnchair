@@ -27,7 +27,7 @@
     <string name="home_screen_label">Home Screen</string>
     <string name="home_screen_description">Feed, At a Glance, Grid, Icons</string>
     <string name="general_label">General</string>
-    <string name="general_description">Notification Dots, Icon Pack</string>
+    <string name="general_description">Colors, Icon Pack, Notification Dots</string>
     <string name="home_screen_rotation_label">Home Screen Rotation</string>
     <string name="home_screen_rotaton_description">When device is rotated.</string>
     <string name="auto_add_shortcuts_label">Add New Apps to Home Screen</string>
@@ -146,7 +146,7 @@
     <string name="label_voice_search">Voice Search</string>
     <string name="apply_grid">Apply</string>
     <string name="x_by_y">%1$d × %2$d</string>
-    <string name="folder_preview_bg_opacity_label">Icon Background Opacity</string>
+    <string name="folder_preview_bg_opacity_label">Preview Background Opacity</string>
 
     <string name="icon_shape_label">Icon Shape</string>
     <string name="icon_shape_system">System</string>
