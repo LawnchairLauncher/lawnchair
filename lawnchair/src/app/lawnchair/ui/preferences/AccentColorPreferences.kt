@@ -273,12 +273,12 @@ fun Chip(
     Box(
         contentAlignment = Alignment.Center,
         modifier = Modifier
-            .height(36.dp)
+            .height(32.dp)
             .clip(CircleShape)
             .border(width = 1.dp, color = borderColor, shape = CircleShape)
             .background(backgroundColor)
             .clickable(onClick = onClick)
-            .padding(horizontal = 16.dp)
+            .padding(horizontal = 12.dp)
     ) {
         Text(
             text = label,
