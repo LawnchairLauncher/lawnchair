@@ -55,6 +55,7 @@ fun HomeScreenGridPreferences() {
         if (isPortrait) {
             GridOverridesPreview(
                 modifier = Modifier
+                    .padding(top = 8.dp)
                     .weight(1f)
                     .align(Alignment.CenterHorizontally)
                     .clip(MaterialTheme.shapes.large)
