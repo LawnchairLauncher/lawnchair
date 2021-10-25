@@ -7,6 +7,7 @@ import androidx.compose.ui.platform.LocalContext
 @Suppress("MemberVisibilityCanBePrivate", "unused")
 object ColorTokens {
     val Neutral1_0 = SwatchColorToken(Swatch.Neutral1, Shade.S0)
+    val Neutral1_10 = SwatchColorToken(Swatch.Neutral1, Shade.S10)
     val Neutral1_50 = SwatchColorToken(Swatch.Neutral1, Shade.S50)
     val Neutral1_100 = SwatchColorToken(Swatch.Neutral1, Shade.S100)
     val Neutral1_200 = SwatchColorToken(Swatch.Neutral1, Shade.S200)
@@ -41,6 +42,7 @@ object ColorTokens {
 
     @JvmField val ColorAccent = DayNightColorToken(Accent1_600, Accent1_100)
     @JvmField val ColorBackground = DayNightColorToken(Neutral1_50, Neutral1_900)
+    @JvmField val ColorBackgroundFloating = DayNightColorToken(Neutral1_10, Neutral1_800)
     @JvmField val TextColorPrimary = DayNightColorToken(Neutral1_900, Neutral1_50)
     @JvmField val TextColorPrimaryInverse = TextColorPrimary.inverse()
     @JvmField val TextColorSecondary = DayNightColorToken(StaticColorToken(0xde000000), Neutral2_200)

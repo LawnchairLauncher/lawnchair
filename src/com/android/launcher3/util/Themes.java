@@ -33,6 +33,7 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.icons.GraphicsUtils;
 
+import app.lawnchair.theme.color.ColorTokens;
 import app.lawnchair.wallpaper.WallpaperColorsCompat;
 import app.lawnchair.wallpaper.WallpaperManagerCompat;
 import app.lawnchair.ui.theme.ColorKt;
@@ -97,12 +98,12 @@ public class Themes {
 
     /** Returns the background color attribute. */
     public static int getColorBackground(Context context) {
-        return getAttrColor(context, android.R.attr.colorBackground);
+        return ColorTokens.ColorBackground.resolveColor(context);
     }
 
     /** Returns the floating background color attribute. */
     public static int getColorBackgroundFloating(Context context) {
-        return getAttrColor(context, android.R.attr.colorBackgroundFloating);
+        return ColorTokens.ColorBackgroundFloating.resolveColor(context);
     }
 
     public static int getAttrColor(Context context, int attr) {
