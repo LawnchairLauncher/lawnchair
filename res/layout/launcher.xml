@@ -62,7 +62,7 @@
             android:id="@+id/drop_target_bar"
             layout="@layout/drop_target_bar" />
 
-        <com.android.launcher3.views.ScrimView
+        <app.lawnchair.views.LawnchairScrimView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:id="@+id/scrim_view"

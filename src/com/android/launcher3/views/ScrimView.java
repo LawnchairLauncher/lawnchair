@@ -31,32 +31,23 @@ import androidx.core.graphics.ColorUtils;
 
 import com.android.launcher3.BaseActivity;
 import com.android.launcher3.Insettable;
-import com.android.launcher3.R;
 import com.android.launcher3.util.SystemUiController;
-import com.android.launcher3.util.Themes;
-
-import app.lawnchair.preferences.PreferenceManager;
 
 /**
  * Simple scrim which draws a flat color
  */
 public class ScrimView extends View implements Insettable {
-    private static final float STATUS_BAR_COLOR_FORCE_UPDATE_THRESHOLD = 0.9f;
+    protected static final float STATUS_BAR_COLOR_FORCE_UPDATE_THRESHOLD = 0.9f;
 
     private SystemUiController mSystemUiController;
 
     private ScrimDrawingController mDrawingController;
-    private int mBackgroundColor;
+    protected int mBackgroundColor;
     private boolean mIsVisible = true;
-    private final float drawerOpacity;
-    private final boolean workspaceTextDark;
 
     public ScrimView(Context context, AttributeSet attrs) {
         super(context, attrs);
         setFocusable(false);
-        PreferenceManager preferenceManager = PreferenceManager.INSTANCE.get(context);
-        drawerOpacity = preferenceManager.getDrawerOpacity().get();
-        workspaceTextDark = Themes.getAttrBoolean(context, R.attr.isWorkspaceDarkText);
     }
 
     @Override
@@ -105,13 +96,13 @@ public class ScrimView extends View implements Insettable {
         updateSysUiColors();
     }
 
-    private void updateSysUiColors() {
+    protected void updateSysUiColors() {
         // Use a light system UI (dark icons) if all apps is behind at least half of the
         // status bar.
         final float threshold = STATUS_BAR_COLOR_FORCE_UPDATE_THRESHOLD;
         boolean forceChange = getVisibility() == VISIBLE
                 && getAlpha() > threshold
-                && (Color.alpha(mBackgroundColor) / (255f * drawerOpacity)) > threshold;
+                && (Color.alpha(mBackgroundColor) / 255f) > threshold;
         if (forceChange) {
             getSystemUiController().updateUiState(UI_STATE_SCRIM_VIEW, !isScrimDark());
         } else {
@@ -119,7 +110,7 @@ public class ScrimView extends View implements Insettable {
         }
     }
 
-    private SystemUiController getSystemUiController() {
+    protected SystemUiController getSystemUiController() {
         if (mSystemUiController == null) {
             mSystemUiController = BaseActivity.fromContext(getContext()).getSystemUiController();
         }
@@ -132,9 +123,8 @@ public class ScrimView extends View implements Insettable {
                     "ScrimView must have a ColorDrawable background, this one has: "
                             + getBackground());
         }
-        return drawerOpacity <= 0.3f
-                ? !workspaceTextDark
-                : ColorUtils.calculateLuminance(((ColorDrawable) getBackground()).getColor()) < 0.5f;
+        return ColorUtils.calculateLuminance(
+                ((ColorDrawable) getBackground()).getColor()) < 0.5f;
     }
 
     /**
