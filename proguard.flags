@@ -111,3 +111,7 @@
 -keep class app.lawnchair.compatlib.** {
   *;
 }
+
+-keep class com.android.** {
+  *;
+}
