@@ -2,7 +2,9 @@ package app.lawnchair.ui.popup
 
 import android.content.pm.LauncherActivityInfo
 import android.view.View
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.ui.unit.dp
 import app.lawnchair.LawnchairLauncher
 import app.lawnchair.override.CustomizeAppDialog
 import app.lawnchair.views.showBottomSheet
@@ -37,7 +39,9 @@ class LawnchairShortcut {
             val defaultTitle = launcherActivityInfo.label.toString()
 
             AbstractFloatingView.closeAllOpenViews(launcher)
-            launcher.showBottomSheet {
+            launcher.showBottomSheet(
+                contentPaddings = PaddingValues(bottom = 64.dp)
+            ) {
                 CustomizeAppDialog(
                     icon = icon,
                     defaultTitle = defaultTitle,

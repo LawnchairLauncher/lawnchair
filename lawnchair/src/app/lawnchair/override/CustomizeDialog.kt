@@ -3,7 +3,10 @@ package app.lawnchair.override
 import android.graphics.drawable.Drawable
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -20,14 +23,11 @@ import app.lawnchair.preferences.preferenceManager
 import app.lawnchair.ui.preferences.components.ClickableIcon
 import app.lawnchair.ui.preferences.components.PreferenceGroup
 import app.lawnchair.ui.preferences.components.SwitchPreference
-import app.lawnchair.util.max
 import app.lawnchair.util.navigationBarsOrDisplayCutoutPadding
 import com.android.launcher3.LauncherAppState
 import com.android.launcher3.R
 import com.android.launcher3.util.ComponentKey
 import com.google.accompanist.drawablepainter.rememberDrawablePainter
-import com.google.accompanist.insets.LocalWindowInsets
-import com.google.accompanist.insets.rememberInsetsPaddingValues
 
 @ExperimentalMaterialApi
 @Composable
@@ -38,15 +38,8 @@ fun CustomizeDialog(
     defaultTitle: String,
     content: (@Composable () -> Unit)? = null
 ) {
-    val windowInsets = LocalWindowInsets.current
-    val imePaddings = rememberInsetsPaddingValues(
-        insets = windowInsets.ime,
-        applyStart = true, applyEnd = true, applyBottom = true
-    )
-    val minPaddings = remember { PaddingValues(bottom = 64.dp) }
     Column(
         modifier = Modifier
-            .padding(max(imePaddings, minPaddings))
             .navigationBarsOrDisplayCutoutPadding()
             .fillMaxWidth()
     ) {

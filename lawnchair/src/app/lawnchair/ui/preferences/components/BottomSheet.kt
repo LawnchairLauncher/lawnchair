@@ -23,6 +23,7 @@ import java.lang.Integer.max
 @ExperimentalMaterialApi
 @Composable
 fun BottomSheet(
+    modifier: Modifier = Modifier,
     sheetState: BottomSheetState = rememberBottomSheetState(initialValue = ModalBottomSheetValue.Hidden),
     scrimColor: Color = BottomSheetDefaults.scrimColor,
     sheetShape: CornerBasedShape = MaterialTheme.shapes.large,
@@ -36,6 +37,7 @@ fun BottomSheet(
     if (modalBottomSheetState != null) {
         Portal {
             ModalBottomSheetLayout(
+                modifier = modifier,
                 sheetState = modalBottomSheetState,
                 sheetContent = { StatusBarOffset(currentSheetContent) },
                 scrimColor = scrimColor,

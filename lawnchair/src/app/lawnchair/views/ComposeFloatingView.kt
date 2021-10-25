@@ -4,14 +4,15 @@ import android.content.Context
 import android.graphics.Rect
 import android.view.MotionEvent
 import android.view.View
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ModalBottomSheetValue
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.SideEffect
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.*
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import app.lawnchair.LawnchairLauncher
 import app.lawnchair.launcher
@@ -24,10 +25,14 @@ import app.lawnchair.ui.theme.LawnchairTheme
 import app.lawnchair.ui.util.portal.PortalNode
 import app.lawnchair.ui.util.portal.PortalNodeView
 import app.lawnchair.util.ProvideLifecycleState
+import app.lawnchair.util.minus
 import com.android.launcher3.AbstractFloatingView
 import com.android.launcher3.Insettable
 import com.android.launcher3.util.SystemUiController
+import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.ProvideWindowInsets
+import com.google.accompanist.insets.imePadding
+import com.google.accompanist.insets.rememberInsetsPaddingValues
 import kotlinx.coroutines.launch
 
 typealias CloseHandler = (animate: Boolean) -> Unit
@@ -101,6 +106,7 @@ class ComposeFloatingView(context: Context) :
 
 @OptIn(ExperimentalMaterialApi::class)
 fun LawnchairLauncher.showBottomSheet(
+    contentPaddings: PaddingValues = PaddingValues(all = 0.dp),
     content: @Composable (state: BottomSheetState) -> Unit
 ) {
     ComposeFloatingView.show(this) {
@@ -127,11 +133,21 @@ fun LawnchairLauncher.showBottomSheet(
             state.show()
         }
 
+        val windowInsets = LocalWindowInsets.current
+        val imePaddings = rememberInsetsPaddingValues(
+            insets = windowInsets.ime,
+            applyStart = true, applyEnd = true, applyBottom = true
+        )
+
         SystemUi(setStatusBar = false)
         BottomSheet(
+            modifier = Modifier
+                .padding(imePaddings - contentPaddings),
             sheetState = state,
             sheetContent = {
-                content(state)
+                Box(modifier = Modifier.padding(contentPaddings)) {
+                    content(state)
+                }
             },
             scrimColor = colorToken(ColorTokens.WidgetsPickerScrim),
             sheetShape = LauncherSheetShape,
