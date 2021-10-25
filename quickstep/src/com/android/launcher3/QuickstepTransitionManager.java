@@ -439,9 +439,9 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
                         4 - rotationChange);
             }
         }
-        // TODO(b/196637509): don't do this for immersive apps.
         if (mDeviceProfile.isTaskbarPresentInApps) {
-            bounds.bottom -= mDeviceProfile.taskbarSize;
+            // Animate to above the taskbar.
+            bounds.bottom -= target.contentInsets.bottom;
         }
         return bounds;
     }
