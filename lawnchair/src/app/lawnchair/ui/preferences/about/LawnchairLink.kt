@@ -31,6 +31,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 
 @Composable
@@ -66,7 +67,9 @@ fun LawnchairLink(
         Text(
             text = label,
             style = MaterialTheme.typography.body2,
-            color = MaterialTheme.colors.onBackground
+            color = MaterialTheme.colors.onBackground,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis
         )
     }
 }
