@@ -22,6 +22,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavGraphBuilder
 import app.lawnchair.preferences.getAdapter
+import app.lawnchair.preferences.not
 import app.lawnchair.preferences.preferenceManager
 import app.lawnchair.ui.preferences.components.*
 import com.android.launcher3.R
@@ -59,19 +60,28 @@ fun AppDrawerPreferences() {
             SuggestionsPreference()
         }
         PreferenceGroup(heading = stringResource(id = R.string.pref_category_search)) {
+            val showSearchBar = !prefs.hideAppSearchBar.getAdapter()
             SwitchPreference(
-                    label = stringResource(id = R.string.hide_app_search_bar),
-                    adapter = prefs.hideAppSearchBar.getAdapter()
+                label = stringResource(id = R.string.show_app_search_bar),
+                adapter = showSearchBar
             )
-            SwitchPreference(
-                adapter = prefs.searchAutoShowKeyboard.getAdapter(),
-                label = stringResource(id = R.string.pref_search_auto_show_keyboard),
-            )
-            SwitchPreference(
-                adapter = prefs.useFuzzySearch.getAdapter(),
-                label = stringResource(id = R.string.fuzzy_search_title),
-                description = stringResource(id = R.string.fuzzy_search_desc)
-            )
+            AnimatedVisibility(
+                visible = showSearchBar.state.value,
+                enter = expandVertically() + fadeIn(),
+                exit = shrinkVertically() + fadeOut()
+            ) {
+                DividerColumn {
+                    SwitchPreference(
+                        adapter = prefs.searchAutoShowKeyboard.getAdapter(),
+                        label = stringResource(id = R.string.pref_search_auto_show_keyboard),
+                    )
+                    SwitchPreference(
+                        adapter = prefs.useFuzzySearch.getAdapter(),
+                        label = stringResource(id = R.string.fuzzy_search_title),
+                        description = stringResource(id = R.string.fuzzy_search_desc)
+                    )
+                }
+            }
         }
         PreferenceGroup(heading = stringResource(id = R.string.grid)) {
             SliderPreference(

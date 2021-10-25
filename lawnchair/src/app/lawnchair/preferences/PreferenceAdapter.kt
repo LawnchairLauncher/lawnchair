@@ -130,3 +130,8 @@ fun <T> customPreferenceAdapter(value: T, onValueChange: (T) -> Unit): Preferenc
         }
     }
 }
+
+@Composable
+operator fun PreferenceAdapter<Boolean>.not(): PreferenceAdapter<Boolean> {
+    return rememberTransformAdapter(adapter = this, transformGet = { !it }, transformSet = { !it })
+}
