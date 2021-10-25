@@ -76,10 +76,10 @@
     </plurals>
     <string name="hotseat_qsb_label">Exibir Barra de Pesquisa</string>
     <string name="dt2s_admin_hint_title">Admin permission required</string>
-    <string name="dt2s_admin_hint">Para usar o Toque Duplo para Bloquear, defina o Lawnchair como um aplicativo do administrador do dispositivo. Toque em abrir Configurações e depois em \"Ativar o aplicativo de administrador do dispositivo\"</string>
+    <string name="dt2s_admin_hint">Para usar o toque duplo para bloquear, defina o Lawnchair como um aplicativo do administrador do dispositivo. Toque em abrir Configurações e depois em \"Ativar o aplicativo de administrador do dispositivo\"</string>
     <string name="dt2s_admin_warning">Double Tap to Sleep will be disabled.</string>
     <string name="dt2s_a11y_hint_title">Accessibility service required</string>
-    <string name="dt2s_a11y_hint">To use Double Tap to Sleep, enable the accessibility service.</string>
+    <string name="dt2s_a11y_hint">Para usar o duplo toque para Dormir, ative o serviço de acessibilidade do Lawnchair. Toque em abrir configurações, e de seguida selecione Lawnchair e ative Usar Lawnchair.</string>
     <string name="dt2s_warning_open_settings">Abrir Configurações</string>
     <string name="minus_one_enable">Feed</string>
     <string name="minus_one_unavailable">Feed is not available</string>
