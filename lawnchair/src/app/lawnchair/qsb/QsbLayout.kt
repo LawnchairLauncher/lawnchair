@@ -31,7 +31,7 @@ class QsbLayout(context: Context, attrs: AttributeSet?) : FrameLayout(context, a
         lensIcon = ViewCompat.requireViewById(this, R.id.lens_icon)
         setUpMainSearch()
 
-        val searchPackage = QsbContainerView.getSearchWidgetPackageName(context)
+        val searchPackage = getSearchPackageName(context)
         val isGoogle = searchPackage == GOOGLE_PACKAGE
         assistantIcon.setIcon(isGoogle)
         if (isGoogle) {
@@ -66,7 +66,7 @@ class QsbLayout(context: Context, attrs: AttributeSet?) : FrameLayout(context, a
 
     private fun setUpMainSearch() {
         setOnClickListener {
-            val searchPackage = QsbContainerView.getSearchWidgetPackageName(context)
+            val searchPackage = getSearchPackageName(context)
             val intent = Intent("android.search.action.GLOBAL_SEARCH")
                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
                 .setPackage(searchPackage)
@@ -99,5 +99,23 @@ class QsbLayout(context: Context, attrs: AttributeSet?) : FrameLayout(context, a
         private const val GOOGLE_PACKAGE = "com.google.android.googlequicksearchbox"
         private const val LENS_PACKAGE = "com.google.ar.lens"
         private const val LENS_ACTIVITY = "com.google.vr.apps.ornament.app.lens.LensLauncherActivity"
+
+        fun getSearchPackageName(context: Context): String {
+            val searchPackage = QsbContainerView.getSearchWidgetPackageName(context)
+            if (!searchPackage.isNullOrEmpty()) {
+                return searchPackage
+            }
+            if (resolveSearchIntent(context, GOOGLE_PACKAGE)) {
+                return GOOGLE_PACKAGE
+            }
+            return ""
+        }
+
+        private fun resolveSearchIntent(context: Context, searchPackage: String): Boolean {
+            val intent = Intent("android.search.action.GLOBAL_SEARCH")
+                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                .setPackage(searchPackage)
+            return context.packageManager.resolveActivity(intent, 0) != null
+        }
     }
 }
