@@ -70,6 +70,8 @@ public class FloatingIconView extends FrameLayout implements
 
     // Manages loading the icon on a worker thread
     private static @Nullable IconLoadResult sIconLoadResult;
+    private static long sFetchIconId = 0;
+    private static long sRecycledFetchIconId = sFetchIconId;
 
     public static final float SHAPE_PROGRESS_DURATION = 0.10f;
     private static final RectF sTmpRectF = new RectF();
@@ -519,8 +521,13 @@ public class FloatingIconView extends FrameLayout implements
         IconLoadResult result = new IconLoadResult(info,
                 btvIcon == null ? false : btvIcon.isThemed());
 
-        MODEL_EXECUTOR.getHandler().postAtFrontOfQueue(() ->
-                getIconResult(l, v, info, position, btvIcon, result));
+        final long fetchIconId = sFetchIconId++;
+        MODEL_EXECUTOR.getHandler().postAtFrontOfQueue(() -> {
+            if (fetchIconId < sRecycledFetchIconId) {
+                return;
+            }
+            getIconResult(l, v, info, position, btvIcon, result);
+        });
 
         sIconLoadResult = result;
         return result;
@@ -622,6 +629,7 @@ public class FloatingIconView extends FrameLayout implements
         mOnTargetChangeRunnable = null;
         mBadge = null;
         sTmpObjArray[0] = null;
+        sRecycledFetchIconId = sFetchIconId;
         mIconLoadResult = null;
         mClipIconView.recycle();
         mBtvDrawable.setBackground(null);
