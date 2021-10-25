@@ -59,7 +59,6 @@ import android.os.SystemProperties;
 import android.os.UserManager;
 import android.provider.Settings;
 import android.text.TextUtils;
-import android.util.DisplayMetrics;
 import android.view.MotionEvent;
 import android.view.Surface;
 
@@ -581,8 +580,7 @@ public class RecentsAnimationDeviceState implements
             final Info displayInfo = mDisplayController.getInfo();
             return (mRotationTouchHelper.touchInOneHandedModeRegion(ev)
                 && displayInfo.rotation != Surface.ROTATION_90
-                && displayInfo.rotation != Surface.ROTATION_270
-                && displayInfo.densityDpi < DisplayMetrics.DENSITY_600);
+                && displayInfo.rotation != Surface.ROTATION_270);
         }
         return false;
     }
