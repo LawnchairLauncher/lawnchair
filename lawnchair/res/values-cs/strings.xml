@@ -40,7 +40,7 @@
     <string name="icons">Ikony</string>
     <string name="icon_size">Velikost ikon</string>
     <string name="label_size">Velikost popisku</string>
-    <string name="show_home_labels">Zobrazit štítky</string>
+    <string name="show_home_labels">Zobrazit popisky</string>
     <string name="allow_empty_pages_label">Povolit prázdné stránky</string>
     <string name="notification_dots">Tečky oznámení</string>
     <string name="smartspace_preferences">Předvolby</string>
@@ -64,7 +64,7 @@
     <string name="auto_adaptive_icons_description">Pro všechny neadaptivní ikony.</string>
     <string name="support_and_pr">Podpora &amp; PR</string>
     <string name="workspace_dt2s">Uspat dvojitým poklepáním</string>
-    <string name="smart_space_enable">Okénko glanc sdělení</string>
+    <string name="smart_space_enable">Widget At a Glance</string>
     <string name="design_and_development">Design &amp; Vývoj</string>
     <string name="translate">Přeložit</string>
     <string name="product">Produkt</string>
@@ -107,7 +107,7 @@
     <string name="quickstep_description">Tlačítko „Vyčistit vše“, Poloměr rohů</string>
     <string name="wallpaper_scrolling_label">Posouvat tapetu</string>
     <string name="show_sys_ui_scrim">Horní stín</string>
-    <string name="show_status_bar">Stavová lišta</string>
+    <string name="show_status_bar">Stavový řádek</string>
     <string name="what_to_show">Co ukázat</string>
     <string name="missing_notification_access_label">Je vyžadován přístup k oznámením</string>
     <string name="missing_notification_access_description">Je vyžadován přístup k oznámením.</string>
@@ -126,7 +126,7 @@
     <string name="font_weight_extra_bold">Velmi tučné</string>
     <string name="font_weight_extra_black">Černé</string>
     <string name="font_label">Písmo (experimentální)</string>
-    <string name="reset_font">Obnovit výchozí</string>
+    <string name="reset_font">Obnovit</string>
     <string name="search_bar_placeholder">Vyhledávání</string>
     <string name="pref_category_search">Vyhledávání</string>
     <string name="pref_search_auto_show_keyboard">Automaticky zobrazit klávesnici</string>
