@@ -1,4 +1,4 @@
-package app.lawnchair.ui.preferences
+package app.lawnchair.ui.preferences.components
 
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.ExperimentalAnimationApi
@@ -18,50 +18,32 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import app.lawnchair.preferences.getAdapter
-import app.lawnchair.preferences.preferenceManager
+import app.lawnchair.preferences.PreferenceAdapter
 import app.lawnchair.theme.color.ColorOption
 import app.lawnchair.ui.AlertBottomSheetContent
-import app.lawnchair.ui.preferences.components.BottomSheet
-import app.lawnchair.ui.preferences.components.DividerColumn
-import app.lawnchair.ui.preferences.components.PreferenceTemplate
-import app.lawnchair.ui.preferences.components.rememberBottomSheetState
 import app.lawnchair.ui.theme.lightenColor
 import com.android.launcher3.R
 import kotlinx.coroutines.launch
 
-val staticColors = listOf(
-    ColorOption.CustomColor(0xFFF32020),
-    ColorOption.CustomColor(0xFFF20D69),
-    ColorOption.CustomColor(0xFF7452FF),
-    ColorOption.CustomColor(0xFF2C41C9),
-    ColorOption.LawnchairBlue,
-    ColorOption.CustomColor(0xFF00BAD6),
-    ColorOption.CustomColor(0xFF00A399),
-    ColorOption.CustomColor(0xFF47B84F),
-    ColorOption.CustomColor(0xFFFFBB00),
-    ColorOption.CustomColor(0xFFFF9800),
-    ColorOption.CustomColor(0xFF7C5445),
-    ColorOption.CustomColor(0xFF67818E)
-).map(ColorOption::accentColorOption)
-
-val dynamicColors = listOf(ColorOption.SystemAccent, ColorOption.WallpaperPrimary)
-    .filter(ColorOption::isSupported)
-    .map(ColorOption::accentColorOption)
-
 @Composable
 @OptIn(ExperimentalAnimationApi::class, ExperimentalMaterialApi::class)
-fun AccentColorPreferences() {
-    val pm = preferenceManager()
-    var accentColor by pm.accentColor.getAdapter()
-    val defaultTabIndex = if (dynamicColors.any { accentColor == it.value }) 0 else 1
+fun ColorPreference(
+    adapter: PreferenceAdapter<ColorOption>,
+    label: String,
+    dynamicEntries: List<ColorPreferenceEntry<ColorOption>>,
+    staticEntries: List<ColorPreferenceEntry<ColorOption>>
+) {
+    var selectedColor by adapter
+    val selectedEntry = dynamicEntries.firstOrNull { it.value == selectedColor }
+        ?: staticEntries.firstOrNull { it.value == selectedColor }
+    val defaultTabIndex = if (dynamicEntries.any { it.value == selectedColor }) 0 else 1
     var selectedTabIndex by remember { mutableStateOf(value = defaultTabIndex) }
     val bottomSheetState = rememberBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
     val coroutineScope = rememberCoroutineScope()
-    val description = (dynamicColors + staticColors).firstOrNull { it.value == pm.accentColor.get() }?.label?.invoke()
+    val description = selectedEntry?.label?.invoke()
 
     PreferenceTemplate(
-        title = { Text(text = stringResource(id = R.string.accent_color)) },
+        title = { Text(text = label) },
         endWidget = { ColorDot(color = MaterialTheme.colors.primary) },
         modifier = Modifier.clickable {
             coroutineScope.launch {
@@ -77,7 +59,7 @@ fun AccentColorPreferences() {
 
     BottomSheet(sheetState = bottomSheetState) {
         AlertBottomSheetContent(
-            title = { Text(text = stringResource(id = R.string.accent_color)) },
+            title = { Text(text = label) },
             buttons = {
                 Button(
                     shape = MaterialTheme.shapes.small,
@@ -106,19 +88,19 @@ fun AccentColorPreferences() {
                 when (selectedTabIndex) {
                     0 -> {
                         DividerColumn(modifier = Modifier.padding(top = 16.dp)) {
-                            dynamicColors.map { accentColorOption ->
-                                key(accentColorOption) {
+                            dynamicEntries.map { entry ->
+                                key(entry) {
                                     PreferenceTemplate(
-                                        title = { Text(text = accentColorOption.label()) },
+                                        title = { Text(text = entry.label()) },
                                         verticalPadding = 12.dp,
-                                        modifier = Modifier.clickable { accentColor = accentColorOption.value },
+                                        modifier = Modifier.clickable { selectedColor = entry.value },
                                         startWidget = {
                                             RadioButton(
-                                                selected = accentColorOption.value == accentColor,
+                                                selected = entry.value == selectedColor,
                                                 onClick = null
                                             )
                                             ColorDot(
-                                                accentColorOption = accentColorOption,
+                                                entry = entry,
                                                 modifier = Modifier.padding(start = 16.dp)
                                             )
                                         }
@@ -129,10 +111,10 @@ fun AccentColorPreferences() {
                     }
                     1 -> {
                         SwatchGrid(
-                            accentColorOptions = staticColors,
+                            entries = staticEntries,
                             modifier = Modifier.padding(start = 16.dp, top = 20.dp, end = 16.dp, bottom = 16.dp),
-                            onSwatchClick = { accentColor = it },
-                            isSwatchSelected = { it == accentColor }
+                            onSwatchClick = { selectedColor = it },
+                            isSwatchSelected = { it == selectedColor }
                         )
                     }
                 }
@@ -143,13 +125,13 @@ fun AccentColorPreferences() {
 
 @Composable
 fun <T> SwatchGrid(
-    accentColorOptions: List<AccentColorOption<T>>,
+    entries: List<ColorPreferenceEntry<T>>,
     onSwatchClick: (T) -> Unit,
     modifier: Modifier = Modifier,
     isSwatchSelected: (T) -> Boolean
 ) {
     val columnCount = 6
-    val rowCount = (staticColors.size.toDouble() / 6.0).toInt()
+    val rowCount = (entries.size.toDouble() / 6.0).toInt()
     val gutter = 12.dp
 
     Column(modifier = modifier) {
@@ -159,9 +141,9 @@ fun <T> SwatchGrid(
             val indices = firstIndex..lastIndex
 
             Row {
-                accentColorOptions.slice(indices).forEachIndexed { index, colorOption ->
+                entries.slice(indices).forEachIndexed { index, colorOption ->
                     ColorSwatch(
-                        accentColorOption = colorOption,
+                        entry = colorOption,
                         onClick = { onSwatchClick(colorOption.value) },
                         modifier = Modifier.weight(1F),
                         selected = isSwatchSelected(colorOption.value)
@@ -180,15 +162,15 @@ fun <T> SwatchGrid(
 
 @Composable
 fun <T> ColorSwatch(
-    accentColorOption: AccentColorOption<T>,
+    entry: ColorPreferenceEntry<T>,
     modifier: Modifier = Modifier,
     onClick: () -> Unit,
     selected: Boolean
 ) {
     val color = if (MaterialTheme.colors.isLight) {
-        accentColorOption.lightColor()
+        entry.lightColor()
     } else {
-        accentColorOption.darkColor()
+        entry.darkColor()
     }
 
     Box(
@@ -214,13 +196,13 @@ fun <T> ColorSwatch(
 
 @Composable
 fun <T> ColorDot(
-    accentColorOption: AccentColorOption<T>,
+    entry: ColorPreferenceEntry<T>,
     modifier: Modifier = Modifier
 ) {
     val color = if (MaterialTheme.colors.isLight) {
-        accentColorOption.lightColor()
+        entry.lightColor()
     } else {
-        accentColorOption.darkColor()
+        entry.darkColor()
     }
 
     ColorDot(
@@ -288,7 +270,7 @@ fun Chip(
     }
 }
 
-open class AccentColorOption<T>(
+open class ColorPreferenceEntry<T>(
     val value: T,
     val label: @Composable () -> String,
     val lightColor: @Composable () -> Int,

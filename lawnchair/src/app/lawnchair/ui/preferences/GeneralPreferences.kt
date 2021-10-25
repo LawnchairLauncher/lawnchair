@@ -68,7 +68,7 @@ fun GeneralPreferences() {
             heading = stringResource(id = R.string.colors)
         ) {
             ThemePreference()
-            AccentColorPreferences()
+            AccentColorPreference()
             SwitchPreference(
                 adapter = prefs.enableColorfulTheme.getAdapter(),
                 label = stringResource(id = R.string.enable_colorful_theme)

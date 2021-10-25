@@ -3,7 +3,7 @@ package app.lawnchair.theme.color
 import android.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import app.lawnchair.ui.preferences.AccentColorOption
+import app.lawnchair.ui.preferences.components.ColorPreferenceEntry
 import app.lawnchair.ui.theme.getSystemAccent
 import app.lawnchair.wallpaper.WallpaperManagerCompat
 import com.android.launcher3.R
@@ -12,12 +12,12 @@ import com.android.launcher3.Utilities
 sealed class ColorOption {
 
     abstract val isSupported: Boolean
-    abstract val accentColorOption: AccentColorOption<ColorOption>
+    abstract val colorPreferenceEntry: ColorPreferenceEntry<ColorOption>
 
     object SystemAccent : ColorOption() {
         override val isSupported = true
 
-        override val accentColorOption = AccentColorOption<ColorOption>(
+        override val colorPreferenceEntry = ColorPreferenceEntry<ColorOption>(
             this,
             { stringResource(id = R.string.system) },
             { LocalContext.current.getSystemAccent(false) },
@@ -30,7 +30,7 @@ sealed class ColorOption {
     object WallpaperPrimary : ColorOption() {
         override val isSupported = Utilities.ATLEAST_O_MR1
 
-        override val accentColorOption = AccentColorOption<ColorOption>(
+        override val colorPreferenceEntry = ColorPreferenceEntry<ColorOption>(
             this,
             { stringResource(id = R.string.wallpaper) },
             {
@@ -47,7 +47,7 @@ sealed class ColorOption {
     class CustomColor(val color: Int) : ColorOption() {
         override val isSupported = true
 
-        override val accentColorOption = AccentColorOption<ColorOption>(
+        override val colorPreferenceEntry = ColorPreferenceEntry<ColorOption>(
             this,
             { stringResource(id = R.string.custom) },
             { color }
