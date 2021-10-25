@@ -132,11 +132,9 @@ public class ScrimView extends View implements Insettable {
                     "ScrimView must have a ColorDrawable background, this one has: "
                             + getBackground());
         }
-        if (drawerOpacity <= 0.3f) {
-            return !workspaceTextDark;
-        } else {
-            return ColorUtils.calculateLuminance(((ColorDrawable) getBackground()).getColor()) < 0.5f;
-        }
+        return drawerOpacity <= 0.3f
+                ? !workspaceTextDark
+                : ColorUtils.calculateLuminance(((ColorDrawable) getBackground()).getColor()) < 0.5f;
     }
 
     /**
