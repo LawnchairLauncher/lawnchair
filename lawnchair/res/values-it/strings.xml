@@ -76,10 +76,10 @@
     </plurals>
     <string name="hotseat_qsb_label">Mostra la Barra di Ricerca</string>
     <string name="dt2s_admin_hint_title">Permesso di amministratore richiesto</string>
-    <string name="dt2s_admin_hint">To use Double-Tap to Sleep, set Lawnchair as a device admin app. Tap Open Settings, then tap “Activate this device admin app.”</string>
+    <string name="dt2s_admin_hint">Per usare il doppio tocco per attivare la modalità standby, imposta Lawnchair come app amministratore del dispositivo. Tocca Apri impostazioni, poi tocca \"Attiva app come amministratore del dispositivo\"</string>
     <string name="dt2s_admin_warning">Il doppio tocco per bloccare lo schermo sarà disabilitato.</string>
     <string name="dt2s_a11y_hint_title">Servizio di accessibilità richiesto</string>
-    <string name="dt2s_a11y_hint">To use Double-Tap to Sleep, turn on the Lawnchair accessibility service. Tap Open Settings, then select Lawnchair and turn on Use Lawnchair.</string>
+    <string name="dt2s_a11y_hint">Per utilizzare il doppio tocco per attivare lo modalità standby, attivare il servizio di accessibilità Lawnchair. Toccare Iapri impostazioni, quindi selezionare Lawnchair e attivare Usa Lawnchair.</string>
     <string name="dt2s_warning_open_settings">Apri Impostazioni</string>
     <string name="minus_one_enable">Feed</string>
     <string name="minus_one_unavailable">Feed is not available</string>
@@ -94,7 +94,7 @@
     <string name="clear_all_as_action_label">Pulsante \"Cancella tutto\" in basso</string>
     <string name="window_corner_radius_label">Raggio di curvatura dell\'angolo</string>
     <string name="override_window_corner_radius_label">Raggio di curvatura dell\'angolo personalizzato</string>
-    <string name="window_corner_radius_description">When you swipe up to open Recents, the current app follows your finger, shrinking into a card. Use this slider to adjust the corner radius of the card when it’s nearly full-screen such that it matches the corners of your screen.</string>
+    <string name="window_corner_radius_description">Quando scorri verso l\'alto per aprire le app recenti, l\'applicazione corrente segue il dito, restringendosi in una scheda. Utilizza questo cursore per regolare il raggio d\'angolo della carta quando è quasi a schermo intero in modo che corrisponda agli angoli dello schermo.</string>
     <string name="system_icons">Icone di sistema</string>
     <string name="accent_color">Colore primario</string>
     <string name="done">Fatto</string>
@@ -122,7 +122,7 @@
     <string name="font_weight_semi_bold">Semi-grassetto</string>
     <string name="font_weight_bold">Grassetto</string>
     <string name="font_weight_extra_bold">Extra grassetto</string>
-    <string name="font_weight_extra_black">Black</string>
+    <string name="font_weight_extra_black">Nero</string>
     <string name="font_label">Tipo di carattere (Sperimentale)</string>
     <string name="reset_font">Reset</string>
     <string name="search_bar_placeholder">Ricerca</string>
