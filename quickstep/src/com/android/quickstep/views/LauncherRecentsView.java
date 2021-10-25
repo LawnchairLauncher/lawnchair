@@ -90,6 +90,10 @@ public class LauncherRecentsView extends RecentsView<BaseQuickstepLauncher, Laun
 
     @Override
     public void onStateTransitionStart(LauncherState toState) {
+        if (toState == NORMAL || toState == SPRING_LOADED) {
+            // Clean-up logic that occurs when recents is no longer in use/visible.
+            reset();
+        }
         setOverviewStateEnabled(toState.overviewUi);
         setOverviewGridEnabled(toState.displayOverviewTasksAsGrid(mActivity.getDeviceProfile()));
         setOverviewFullscreenEnabled(toState.getOverviewFullscreenProgress() == 1);
@@ -98,10 +102,6 @@ public class LauncherRecentsView extends RecentsView<BaseQuickstepLauncher, Laun
 
     @Override
     public void onStateTransitionComplete(LauncherState finalState) {
-        if (finalState == NORMAL || finalState == SPRING_LOADED) {
-            // Clean-up logic that occurs when recents is no longer in use/visible.
-            reset();
-        }
         setOverlayEnabled(finalState == OVERVIEW || finalState == OVERVIEW_MODAL_TASK);
         setFreezeViewVisibility(false);
     }
