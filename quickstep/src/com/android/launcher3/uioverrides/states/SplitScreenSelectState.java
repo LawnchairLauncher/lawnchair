@@ -44,7 +44,7 @@ public class SplitScreenSelectState extends OverviewState {
     public float getSplitSelectTranslation(Launcher launcher) {
         RecentsView recentsView = launcher.getOverviewPanel();
         int splitPosition = recentsView.getSplitPlaceholder().getActiveSplitStagePosition();
-        if (!recentsView.shouldShiftThumbnailsForSplitSelect(splitPosition)) {
+        if (!recentsView.shouldShiftThumbnailsForSplitSelect()) {
             return 0f;
         }
         PagedOrientationHandler orientationHandler = recentsView.getPagedOrientationHandler();
