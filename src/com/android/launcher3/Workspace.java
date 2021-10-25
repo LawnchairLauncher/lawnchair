@@ -651,14 +651,6 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
             if (isTwoPanelEnabled() && !(mDragSourceInternal.getParent() instanceof Hotseat)) {
                 int pagePairScreenId = getScreenPair(dragObject.dragInfo.screenId);
                 CellLayout pagePair = mWorkspaceScreens.get(pagePairScreenId);
-                if (pagePair == null) {
-                    // TODO: after http://b/198820019 is fixed, remove this
-                    throw new IllegalStateException("Page pair is null, "
-                            + "dragScreenId: " + dragObject.dragInfo.screenId
-                            + ", pagePairScreenId: " + pagePairScreenId
-                            + ", mScreenOrder: " + mScreenOrder.toConcatString()
-                    );
-                }
                 dragSourceChildCount += pagePair.getShortcutsAndWidgets().getChildCount();
             }
 
