@@ -3,7 +3,6 @@ package app.lawnchair.theme.color
 import android.content.Context
 import android.util.Log
 import androidx.core.graphics.ColorUtils
-import androidx.core.graphics.toColorInt
 import app.lawnchair.theme.ResourceToken
 import app.lawnchair.theme.ThemeProvider
 import app.lawnchair.theme.UiColorMode
@@ -88,7 +87,7 @@ data class StaticColorToken(
 ) : ColorToken {
 
     override fun resolve(context: Context, scheme: ColorScheme, uiColorMode: UiColorMode): Color {
-        return AndroidColor(color.toColorInt())
+        return AndroidColor(color.toInt())
     }
 }
 
