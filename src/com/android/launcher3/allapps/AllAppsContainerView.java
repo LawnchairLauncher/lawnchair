@@ -78,7 +78,6 @@ import com.android.launcher3.views.ScrimView;
 import com.android.launcher3.workprofile.PersonalWorkSlidingTabStrip.OnActivePageChangedListener;
 
 import app.lawnchair.allapps.LawnchairAlphabeticalAppsList;
-import app.lawnchair.preferences.PreferenceManager;
 import app.lawnchair.theme.color.ColorTokens;
 import app.lawnchair.ui.StretchRecyclerViewContainer;
 
@@ -380,21 +379,8 @@ public class AllAppsContainerView extends StretchRecyclerViewContainer implement
         rebindAdapters(mUsingTabs, true /* force */);
 
         mSearchContainer = findViewById(R.id.search_container_all_apps);
-        setupSearchVisibility();
         mSearchUiManager = (SearchUiManager) mSearchContainer;
         mSearchUiManager.initializeSearch(this);
-    }
-
-    private void setupSearchVisibility() {
-        PreferenceManager prefs = PreferenceManager.getInstance(getContext());
-        prefs.getHideAppSearchBar().subscribeValues(this, enabled -> {
-            if (enabled) {
-                mSearchContainer.setVisibility(View.GONE);
-            }
-            else {
-                mSearchContainer.setVisibility(View.VISIBLE);
-            }
-        });
     }
 
     public SearchUiManager getSearchUiManager() {

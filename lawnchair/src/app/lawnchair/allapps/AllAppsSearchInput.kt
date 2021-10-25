@@ -7,6 +7,7 @@ import android.text.SpannableStringBuilder
 import android.text.method.TextKeyListener
 import android.util.AttributeSet
 import android.view.KeyEvent
+import android.view.View
 import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -72,6 +73,9 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) : LinearLayout(
                 launcher.stateManager.goToState(LauncherState.NORMAL)
             }
         }
+
+        val prefs = PreferenceManager.getInstance(context)
+        isVisible = !prefs.hideAppSearchBar.get()
     }
 
     override fun onAttachedToWindow() {
