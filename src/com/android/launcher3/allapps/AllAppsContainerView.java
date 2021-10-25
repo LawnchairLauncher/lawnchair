@@ -106,9 +106,7 @@ public class AllAppsContainerView extends StretchRecyclerViewContainer implement
             new RecyclerView.OnScrollListener() {
                 @Override
                 public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
-                    if (!mHideSearchbar) {
-                        updateHeaderScroll(((AllAppsRecyclerView) recyclerView).getCurrentScrollY());
-                    }
+                    updateHeaderScroll(((AllAppsRecyclerView) recyclerView).getCurrentScrollY());
                 }
             };
 
@@ -141,7 +139,6 @@ public class AllAppsContainerView extends StretchRecyclerViewContainer implement
     private final float mHeaderThreshold;
     private ScrimView mScrimView;
     private int mHeaderColor;
-    private boolean mHideSearchbar;
 
     public AllAppsContainerView(Context context) {
         this(context, null);
@@ -391,9 +388,8 @@ public class AllAppsContainerView extends StretchRecyclerViewContainer implement
     private void setupSearchVisibility() {
         PreferenceManager prefs = PreferenceManager.getInstance(getContext());
         prefs.getHideAppSearchBar().subscribeValues(this, enabled -> {
-            mHideSearchbar = enabled;
             if (enabled) {
-                mSearchContainer.setVisibility(View.INVISIBLE);
+                mSearchContainer.setVisibility(View.GONE);
             }
             else {
                 mSearchContainer.setVisibility(View.VISIBLE);
