@@ -42,6 +42,8 @@ public class TaskbarDragLayerController {
     private final AnimatedFloat mBgTaskbar = new AnimatedFloat(this::updateBackgroundAlpha);
     private final AnimatedFloat mBgNavbar = new AnimatedFloat(this::updateBackgroundAlpha);
     private final AnimatedFloat mKeyguardBgTaskbar = new AnimatedFloat(this::updateBackgroundAlpha);
+    private final AnimatedFloat mNotificationShadeBgTaskbar = new AnimatedFloat(
+            this::updateBackgroundAlpha);
     // Used to hide our background color when someone else (e.g. ScrimView) is handling it.
     private final AnimatedFloat mBgOverride = new AnimatedFloat(this::updateBackgroundAlpha);
 
@@ -65,6 +67,7 @@ public class TaskbarDragLayerController {
 
         mBgTaskbar.value = 1;
         mKeyguardBgTaskbar.value = 1;
+        mNotificationShadeBgTaskbar.value = 1;
         mBgOverride.value = 1;
         updateBackgroundAlpha();
     }
@@ -95,6 +98,10 @@ public class TaskbarDragLayerController {
         return mKeyguardBgTaskbar;
     }
 
+    public AnimatedFloat getNotificationShadeBgTaskbar() {
+        return mNotificationShadeBgTaskbar;
+    }
+
     public AnimatedFloat getOverrideBackgroundAlpha() {
         return mBgOverride;
     }
@@ -105,7 +112,8 @@ public class TaskbarDragLayerController {
 
     private void updateBackgroundAlpha() {
         final float bgNavbar = mBgNavbar.value;
-        final float bgTaskbar = mBgTaskbar.value * mKeyguardBgTaskbar.value;
+        final float bgTaskbar = mBgTaskbar.value * mKeyguardBgTaskbar.value
+                * mNotificationShadeBgTaskbar.value;
         mTaskbarDragLayer.setTaskbarBackgroundAlpha(
                 mBgOverride.value * Math.max(bgNavbar, bgTaskbar)
         );
