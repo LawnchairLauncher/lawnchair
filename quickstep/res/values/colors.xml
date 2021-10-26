@@ -72,4 +72,7 @@
     <color name="mock_webpage_top_bar">#e8eaed</color>
     <color name="mock_webpage_top_bar_item">#80868b</color>
     <color name="mock_webpage_page_text">#bdc1c6</color>
+
+    <color name="all_set_page_background">#FFFFFFFF</color>
+
 </resources>

@@ -21,14 +21,20 @@ import static com.android.launcher3.taskbar.TaskbarStashController.FLAG_IN_APP;
 import static com.android.launcher3.taskbar.TaskbarStashController.FLAG_IN_STASHED_LAUNCHER_STATE;
 import static com.android.launcher3.taskbar.TaskbarStashController.TASKBAR_STASH_DURATION;
 import static com.android.launcher3.taskbar.TaskbarViewController.ALPHA_INDEX_HOME;
+import static com.android.systemui.shared.system.WindowManagerWrapper.ITYPE_EXTRA_NAVIGATION_BAR;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
+import android.annotation.ColorInt;
 import android.graphics.Rect;
+import android.os.RemoteException;
+import android.util.Log;
 import android.view.MotionEvent;
+import android.view.TaskTransitionSpec;
 import android.view.View;
+import android.view.WindowManagerGlobal;
 
 import androidx.annotation.NonNull;
 
@@ -36,6 +42,7 @@ import com.android.launcher3.BaseQuickstepLauncher;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.QuickstepTransitionManager;
+import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimatorListeners;
 import com.android.launcher3.anim.PendingAnimation;
@@ -56,6 +63,7 @@ import com.android.quickstep.views.RecentsView;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 
 import java.util.Arrays;
+import java.util.Set;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
@@ -63,6 +71,8 @@ import java.util.stream.Stream;
  * A data source which integrates with a Launcher instance
  */
 public class LauncherTaskbarUIController extends TaskbarUIController {
+
+    private static final String TAG = "TaskbarUIController";
 
     private final BaseQuickstepLauncher mLauncher;
 
@@ -193,6 +203,7 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
         mLauncher.getHotseat().setIconsAlpha(1f);
         mLauncher.setTaskbarUIController(null);
         mLauncher.removeOnDeviceProfileChangeListener(mProfileChangeListener);
+        updateTaskTransitionSpec(true);
     }
 
     @Override
@@ -367,6 +378,32 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
     private void onStashedInAppChanged(DeviceProfile deviceProfile) {
         boolean taskbarStashedInApps = mControllers.taskbarStashController.isStashedInApp();
         deviceProfile.isTaskbarPresentInApps = !taskbarStashedInApps;
+        updateTaskTransitionSpec(taskbarStashedInApps);
+    }
+
+    private void updateTaskTransitionSpec(boolean taskbarIsHidden) {
+        try {
+            if (taskbarIsHidden) {
+                // Clear custom task transition settings when the taskbar is stashed
+                WindowManagerGlobal.getWindowManagerService().clearTaskTransitionSpec();
+            } else {
+                // Adjust task transition spec to account for taskbar being visible
+                @ColorInt int taskAnimationBackgroundColor =
+                        mLauncher.getColor(R.color.taskbar_background);
+
+                TaskTransitionSpec customTaskAnimationSpec = new TaskTransitionSpec(
+                        taskAnimationBackgroundColor,
+                        Set.of(ITYPE_EXTRA_NAVIGATION_BAR)
+                );
+                WindowManagerGlobal.getWindowManagerService()
+                        .setTaskTransitionSpec(customTaskAnimationSpec);
+            }
+        } catch (RemoteException e) {
+            // This shouldn't happen but if it does task animations won't look good until the
+            // taskbar stashing state is changed.
+            Log.e(TAG, "Failed to update task transition spec to account for new taskbar state",
+                    e);
+        }
     }
 
     /**
