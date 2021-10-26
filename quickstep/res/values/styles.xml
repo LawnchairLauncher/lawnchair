@@ -115,7 +115,7 @@
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:enforceNavigationBarContrast">false</item>
         <item name="android:windowLightStatusBar">true</item>
-        <item name="android:windowBackground">#FFFFFFFF</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
     </style>
 
     <!--
