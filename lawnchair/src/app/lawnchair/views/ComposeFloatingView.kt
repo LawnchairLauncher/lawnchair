@@ -2,8 +2,10 @@ package app.lawnchair.views
 
 import android.content.Context
 import android.graphics.Rect
+import android.util.FloatProperty
 import android.view.MotionEvent
 import android.view.View
+import android.view.animation.Interpolator
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
@@ -13,6 +15,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.unit.dp
 import app.lawnchair.LawnchairLauncher
 import app.lawnchair.launcher
@@ -28,10 +31,10 @@ import app.lawnchair.util.ProvideLifecycleState
 import app.lawnchair.util.minus
 import com.android.launcher3.AbstractFloatingView
 import com.android.launcher3.Insettable
+import com.android.launcher3.anim.PendingAnimation
 import com.android.launcher3.util.SystemUiController
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.ProvideWindowInsets
-import com.google.accompanist.insets.imePadding
 import com.google.accompanist.insets.rememberInsetsPaddingValues
 import kotlinx.coroutines.launch
 
@@ -49,6 +52,10 @@ class ComposeFloatingView(context: Context) :
             }
         }
     }
+    private var _hintCloseProgress = mutableStateOf(0f)
+    val hintCloseProgress get() = _hintCloseProgress.value
+    var hintCloseDistance = 0f
+        private set
     var closeHandler: CloseHandler? = null
 
     init {
@@ -87,7 +94,27 @@ class ComposeFloatingView(context: Context) :
         return type and TYPE_COMPOSE_VIEW != 0
     }
 
+    override fun addHintCloseAnim(
+        distanceToMove: Float,
+        interpolator: Interpolator,
+        target: PendingAnimation
+    ) {
+        super.addHintCloseAnim(distanceToMove, interpolator, target)
+        hintCloseDistance = distanceToMove
+        target.setFloat(this, HINT_CLOSE_PROGRESS, 1f, interpolator)
+    }
+
     companion object {
+
+        private val HINT_CLOSE_PROGRESS = object : FloatProperty<ComposeFloatingView>("hintCloseDistance") {
+
+            override fun setValue(floatingView: ComposeFloatingView, value: Float) {
+                floatingView._hintCloseProgress.value = value
+            }
+
+            override fun get(floatingView: ComposeFloatingView) = floatingView._hintCloseProgress.value
+        }
+
         fun show(launcher: LawnchairLauncher, content: @Composable ComposeFloatingView.() -> Unit) {
             val view = ComposeFloatingView(launcher)
             view.container.setContent {
@@ -145,7 +172,14 @@ fun LawnchairLauncher.showBottomSheet(
                 .padding(imePaddings - contentPaddings),
             sheetState = state,
             sheetContent = {
-                Box(modifier = Modifier.padding(contentPaddings)) {
+                Box(
+                    modifier = Modifier
+                        .padding(contentPaddings)
+                        .graphicsLayer(
+                            alpha = 1f - (hintCloseProgress * 0.5f),
+                            translationY = hintCloseProgress * -hintCloseDistance
+                        )
+                ) {
                     content(state)
                 }
             },
