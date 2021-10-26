@@ -72,7 +72,8 @@ class SearchBarStateHandler(private val launcher: LawnchairLauncher) :
     }
 
     private fun shouldAnimateKeyboard(toState: LauncherState): Boolean {
-        val rootWindowInsets = WindowInsetsCompat.toWindowInsetsCompat(launcher.rootView.rootWindowInsets)
+        val windowInsets = launcher.rootView.rootWindowInsets ?: return false
+        val rootWindowInsets = WindowInsetsCompat.toWindowInsetsCompat(windowInsets)
         val keyboardVisible = rootWindowInsets.isVisible(WindowInsetsCompat.Type.ime())
         return keyboardVisible && launcher.isInState(LauncherState.ALL_APPS) && toState != LauncherState.ALL_APPS
     }
