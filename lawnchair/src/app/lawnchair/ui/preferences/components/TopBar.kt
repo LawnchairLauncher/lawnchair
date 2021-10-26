@@ -16,6 +16,7 @@
 
 package app.lawnchair.ui.preferences.components
 
+import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
@@ -25,7 +26,10 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.ArrowForward
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -35,8 +39,6 @@ import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
-import androidx.navigation.compose.currentBackStackEntryAsState
-import app.lawnchair.ui.preferences.LocalNavController
 import com.google.accompanist.insets.navigationBarsPadding
 import com.google.accompanist.insets.statusBarsPadding
 
@@ -48,9 +50,7 @@ fun TopBar(
     label: String,
     actions: @Composable RowScope.() -> Unit = {},
 ) {
-    val navController = LocalNavController.current
-    val navBackStackEntry by navController.currentBackStackEntryAsState()
-    val currentRoute = navBackStackEntry?.destination?.route
+    val backDispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
 
     TopBarSurface(floating = floating) {
         CompositionLocalProvider(LocalContentColor provides MaterialTheme.colors.onSurface) {
@@ -64,7 +64,7 @@ fun TopBar(
                 if (backArrowVisible) {
                     ClickableIcon(
                         imageVector = backIcon(),
-                        onClick = { if (currentRoute != "/") navController.popBackStack() }
+                        onClick = { backDispatcher?.onBackPressed() }
                     )
                 }
                 Text(

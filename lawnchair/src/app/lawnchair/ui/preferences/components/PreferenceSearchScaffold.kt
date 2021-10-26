@@ -1,5 +1,6 @@
 package app.lawnchair.ui.preferences.components
 
+import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -15,8 +16,6 @@ import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
-import androidx.navigation.compose.currentBackStackEntryAsState
-import app.lawnchair.ui.preferences.LocalNavController
 import app.lawnchair.ui.util.addIf
 import com.android.quickstep.SysUINavigationMode
 import com.google.accompanist.insets.*
@@ -31,9 +30,7 @@ fun PreferenceSearchScaffold(
     content: @Composable (PaddingValues) -> Unit
 ) {
     val innerPadding = remember { MutablePaddingValues() }
-    val navController = LocalNavController.current
-    val navBackStackEntry by navController.currentBackStackEntryAsState()
-    val currentRoute = navBackStackEntry?.destination?.route
+    val backDispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
     val searchBarVerticalMargin = 8.dp
     val searchBarHeight = 56.dp
     val statusBarHeight = with(LocalDensity.current) { LocalWindowInsets.current.statusBars.top.toDp() }
@@ -59,7 +56,7 @@ fun PreferenceSearchScaffold(
                 ) {
                     ClickableIcon(
                         imageVector = backIcon(),
-                        onClick = { if (currentRoute != "/") navController.popBackStack() }
+                        onClick = { backDispatcher?.onBackPressed() }
                     )
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
