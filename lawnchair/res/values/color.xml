@@ -32,4 +32,6 @@
 
     <color name="black_800">#121212</color>
     <color name="black_900">#000000</color>
+
+    <color name="bugNotificationColor">#ff4caf50</color>
 </resources>

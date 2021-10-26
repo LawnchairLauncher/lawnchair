@@ -69,11 +69,12 @@ def ciBuild = System.getenv("CI") == "true"
 def ciRef = System.getenv("GITHUB_REF") ?: ""
 def ciRunNumber = System.getenv("GITHUB_RUN_NUMBER") ?: ""
 def isReleaseBuild = ciBuild && ciRef.contains("alpha")
+def buildCommit = commitHash()
 def devReleaseName
 if (ciBuild) {
     devReleaseName = "Dev (#${ciRunNumber})"
 } else {
-    devReleaseName = "Dev (${commitHash()})"
+    devReleaseName = "Dev (${buildCommit})"
 }
 
 def version = "12.0"
@@ -96,6 +97,7 @@ android {
         versionName "${versionDisplayName}"
         buildConfigField "String", "VERSION_DISPLAY_NAME", "\"${versionDisplayName}\""
         buildConfigField "String", "MAJOR_VERSION", "\"${majorVersion}\""
+        buildConfigField "String", "COMMIT_HASH", "\"${buildCommit}\""
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true

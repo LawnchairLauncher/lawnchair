@@ -37,6 +37,9 @@ fun DebugMenuPreferences() {
                 context.startActivity(intent)
             })
             IconShapePreference()
+            ClickablePreference(label = "Crash launcher", onClick = {
+                throw RuntimeException("User triggered crash")
+            })
         }
     }
 }

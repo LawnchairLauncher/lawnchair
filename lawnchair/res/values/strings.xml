@@ -168,4 +168,22 @@
     <string name="dynamic">Dynamic</string>
     <string name="all_apps_search_market_message">Search for More Apps</string>
     <string name="show_app_search_bar">Show Search Bar</string>
+
+    <string name="lawnchair_bug_report">Lawnchair Bug Report</string>
+    <string name="crash_report_notif_title">%1$s Crashed</string>
+    <string name="action_upload">Upload to Dogbin</string>
+
+    <string name="action_copy_link">Copy Link</string>
+    <string name="action_copy">Copy</string>
+    <string name="copied_toast">Copied to clipboard.</string>
+    <string name="action_share">Share</string>
+
+    <string name="action_upload_error">Upload failed</string>
+    <string name="dogbin_uploading">Uploading…</string>
+
+    <string name="bugreport_channel_name">Bug Reports</string>
+    <string name="status_channel_name">Upload Status</string>
+
+    <string name="bugreport_group_summary">%d new reports.</string>
+    <string name="bugreport_group_summary_multiple">Multiple new reports.</string>
 </resources>
