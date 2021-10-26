@@ -88,6 +88,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
 
+import app.lawnchair.LawnchairApp;
+
 public class QuickstepLauncher extends BaseQuickstepLauncher {
 
     public static final boolean GO_LOW_RAM_RECENTS_ENABLED = false;
@@ -328,7 +330,7 @@ public class QuickstepLauncher extends BaseQuickstepLauncher {
 
     protected LauncherAppWidgetHost createAppWidgetHost() {
         LauncherAppWidgetHost appWidgetHost = super.createAppWidgetHost();
-        if (ENABLE_QUICKSTEP_WIDGET_APP_START.get()) {
+        if (ENABLE_QUICKSTEP_WIDGET_APP_START.get() && LawnchairApp.isRecentsEnabled()) {
             appWidgetHost.setInteractionHandler(new QuickstepInteractionHandler(this));
         }
         return appWidgetHost;
