@@ -30,7 +30,9 @@ import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_B
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_HOME_DISABLED;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_IME_SHOWING;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_IME_SWITCHER_SHOWING;
+import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_NOTIFICATION_PANEL_EXPANDED;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_OVERVIEW_DISABLED;
+import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_QUICK_SETTINGS_EXPANDED;
 
 import android.animation.ObjectAnimator;
 import android.annotation.DrawableRes;
@@ -81,6 +83,7 @@ public class NavbarButtonsViewController {
     private static final int FLAG_DISABLE_HOME = 1 << 7;
     private static final int FLAG_DISABLE_RECENTS = 1 << 8;
     private static final int FLAG_DISABLE_BACK = 1 << 9;
+    private static final int FLAG_NOTIFICATION_SHADE_EXPANDED = 1 << 10;
 
     private static final int MASK_IME_SWITCHER_VISIBLE = FLAG_SWITCHER_SUPPORTED | FLAG_IME_VISIBLE;
 
@@ -97,6 +100,8 @@ public class NavbarButtonsViewController {
     private final ViewGroup mStartContextualContainer;
 
     private final AnimatedFloat mTaskbarNavButtonTranslationY = new AnimatedFloat(
+            this::updateNavButtonTranslationY);
+    private final AnimatedFloat mNavButtonTranslationYMultiplier = new AnimatedFloat(
             this::updateNavButtonTranslationY);
 
     // Initialized in init.
@@ -120,6 +125,7 @@ public class NavbarButtonsViewController {
         mControllers = controllers;
         mNavButtonsView.getLayoutParams().height = mContext.getDeviceProfile().taskbarSize;
         parseSystemUiFlags(sharedState.sysuiStateFlags);
+        mNavButtonTranslationYMultiplier.value = 1;
 
         mA11yLongClickListener = view -> {
             mControllers.navButtonController.onButtonClick(BUTTON_A11Y_LONG_CLICK);
@@ -149,6 +155,11 @@ public class NavbarButtonsViewController {
                 .getKeyguardBgTaskbar(),
                 flags -> (flags & FLAG_KEYGUARD_VISIBLE) == 0, AnimatedFloat.VALUE, 1, 0));
 
+        // Make sure to remove nav bar buttons translation when notification shade is expanded.
+        mPropertyHolders.add(new StatePropertyHolder(mNavButtonTranslationYMultiplier,
+                flags -> (flags & FLAG_NOTIFICATION_SHADE_EXPANDED) != 0, AnimatedFloat.VALUE,
+                0, 1));
+
         // Force nav buttons (specifically back button) to be visible during setup wizard.
         boolean isInSetup = !mContext.isUserSetupComplete();
         if (isThreeButtonNav || isInSetup) {
@@ -176,12 +187,12 @@ public class NavbarButtonsViewController {
                 }
             }
 
-            // Animate taskbar background when IME shows
+            // Animate taskbar background when any of these flags are enabled
+            int flagsToShowBg = FLAG_IME_VISIBLE | FLAG_ONLY_BACK_FOR_BOUNCER_VISIBLE
+                    | FLAG_NOTIFICATION_SHADE_EXPANDED;
             mPropertyHolders.add(new StatePropertyHolder(
                     mControllers.taskbarDragLayerController.getNavbarBackgroundAlpha(),
-                    flags -> (flags & FLAG_IME_VISIBLE) != 0 ||
-                            (flags & FLAG_ONLY_BACK_FOR_BOUNCER_VISIBLE) != 0,
-                    AnimatedFloat.VALUE, 1, 0));
+                    flags -> (flags & flagsToShowBg) != 0, AnimatedFloat.VALUE, 1, 0));
 
             // Rotation button
             RotationButton rotationButton = new RotationButtonImpl(
@@ -258,6 +269,9 @@ public class NavbarButtonsViewController {
         boolean isHomeDisabled = (sysUiStateFlags & SYSUI_STATE_HOME_DISABLED) != 0;
         boolean isRecentsDisabled = (sysUiStateFlags & SYSUI_STATE_OVERVIEW_DISABLED) != 0;
         boolean isBackDisabled = (sysUiStateFlags & SYSUI_STATE_BACK_DISABLED) != 0;
+        int shadeExpandedFlags = SYSUI_STATE_NOTIFICATION_PANEL_EXPANDED
+                | SYSUI_STATE_QUICK_SETTINGS_EXPANDED;
+        boolean isNotificationShadeExpanded = (sysUiStateFlags & shadeExpandedFlags) != 0;
 
         // TODO(b/202218289) we're getting IME as not visible on lockscreen from system
         updateStateForFlag(FLAG_IME_VISIBLE, isImeVisible);
@@ -266,6 +280,7 @@ public class NavbarButtonsViewController {
         updateStateForFlag(FLAG_DISABLE_HOME, isHomeDisabled);
         updateStateForFlag(FLAG_DISABLE_RECENTS, isRecentsDisabled);
         updateStateForFlag(FLAG_DISABLE_BACK, isBackDisabled);
+        updateStateForFlag(FLAG_NOTIFICATION_SHADE_EXPANDED, isNotificationShadeExpanded);
 
         if (mA11yButton != null) {
             // Only used in 3 button
@@ -360,7 +375,8 @@ public class NavbarButtonsViewController {
     }
 
     private void updateNavButtonTranslationY() {
-        mNavButtonsView.setTranslationY(mTaskbarNavButtonTranslationY.value);
+        mNavButtonsView.setTranslationY(mTaskbarNavButtonTranslationY.value
+                * mNavButtonTranslationYMultiplier.value);
     }
 
     private ImageView addButton(@DrawableRes int drawableId, @TaskbarButton int buttonType,
