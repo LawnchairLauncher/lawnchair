@@ -12,95 +12,15 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
- * Modifications copyright 2021, Lawnchair
  */
 
 package com.android.launcher3.uioverrides;
 
-import android.Manifest;
-import android.annotation.TargetApi;
-import android.app.ActivityThread;
-import android.content.Context;
-import android.content.pm.PackageManager;
-import android.os.Build;
-import android.provider.DeviceConfig;
-
 import com.android.launcher3.config.FeatureFlags.DebugFlag;
 
-import java.util.ArrayList;
-
-@TargetApi(Build.VERSION_CODES.P)
 public class DeviceFlag extends DebugFlag {
 
-    public static final String NAMESPACE_LAUNCHER = "launcher";
-
-    private final boolean mDefaultValueInCode;
-    ArrayList<Runnable> mListeners;
-
     public DeviceFlag(String key, boolean defaultValue, String description) {
-        super(key, getDeviceValue(key, defaultValue), description);
-        mDefaultValueInCode = defaultValue;
-    }
-
-    @Override
-    protected StringBuilder appendProps(StringBuilder src) {
-        return super.appendProps(src).append(", mDefaultValueInCode=").append(mDefaultValueInCode);
-    }
-
-    @Override
-    public void initialize(Context context) {
-        super.initialize(context);
-        if (mListeners == null) {
-            mListeners = new ArrayList<>();
-            registerDeviceConfigChangedListener(context);
-        }
-    }
-
-    @Override
-    public void addChangeListener(Context context, Runnable r) {
-        if (mListeners == null) {
-            initialize(context);
-        }
-        mListeners.add(r);
-    }
-
-    @Override
-    public void removeChangeListener(Runnable r) {
-        if (mListeners == null) {
-            return;
-        }
-        mListeners.remove(r);
-    }
-
-    @Override
-    public boolean get() {
-        // Override this method in order to let Robolectric ShadowDeviceFlag to stub it.
-        return super.get();
-    }
-
-    private void registerDeviceConfigChangedListener(Context context) {
-        int usagePerm = context.checkCallingOrSelfPermission("android.permission.READ_DEVICE_CONFIG");
-        if (usagePerm != PackageManager.PERMISSION_GRANTED) return;
-        DeviceConfig.addOnPropertiesChangedListener(
-                NAMESPACE_LAUNCHER,
-                context.getMainExecutor(),
-                properties -> {
-                    if (!NAMESPACE_LAUNCHER.equals(properties.getNamespace())
-                            || !properties.getKeyset().contains(key)) {
-                        return;
-                    }
-                    defaultValue = getDeviceValue(key, mDefaultValueInCode);
-                    initialize(context);
-                    for (Runnable r: mListeners) {
-                        r.run();
-                    }
-                });
-    }
-
-    protected static boolean getDeviceValue(String key, boolean defaultValue) {
-        int usagePerm = ActivityThread.currentApplication().checkCallingOrSelfPermission("android.permission.READ_DEVICE_CONFIG");
-        if (usagePerm != PackageManager.PERMISSION_GRANTED) return defaultValue;
-        return DeviceConfig.getBoolean(NAMESPACE_LAUNCHER, key, defaultValue);
+        super(key, defaultValue, description);
     }
 }
