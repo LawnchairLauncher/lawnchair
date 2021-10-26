@@ -94,7 +94,7 @@ abstract class BasePreferenceManager(private val context: Context) : SharedPrefe
         }
     }
 
-    abstract inner class BasePref<T>(val key: String, private val primaryListener: ChangeListener?) : PrefEntry<T> {
+    abstract inner class BasePref<T>(override val key: String, private val primaryListener: ChangeListener?) : PrefEntry<T> {
         protected var loaded = false
         private val listeners = CopyOnWriteArraySet<PreferenceChangeListener>()
 

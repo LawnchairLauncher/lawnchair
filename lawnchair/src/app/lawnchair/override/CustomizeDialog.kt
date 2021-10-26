@@ -3,6 +3,8 @@ package app.lawnchair.override
 import android.graphics.drawable.Drawable
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -20,6 +22,8 @@ import app.lawnchair.launcher
 import app.lawnchair.preferences.customPreferenceAdapter
 import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences.preferenceManager
+import app.lawnchair.ui.preferences.PreferenceActivity
+import app.lawnchair.ui.preferences.Routes
 import app.lawnchair.ui.preferences.components.ClickableIcon
 import app.lawnchair.ui.preferences.components.PreferenceGroup
 import app.lawnchair.ui.preferences.components.SwitchPreference
@@ -36,6 +40,7 @@ fun CustomizeDialog(
     title: String,
     onTitleChange: (String) -> Unit,
     defaultTitle: String,
+    launchSelectIcon: () -> Unit,
     content: (@Composable () -> Unit)? = null
 ) {
     Column(
@@ -51,6 +56,12 @@ fun CustomizeDialog(
                 .padding(vertical = 32.dp)
                 .size(54.dp)
                 .align(Alignment.CenterHorizontally)
+                .clickable(
+                    interactionSource = remember { MutableInteractionSource() },
+                    indication = null
+                ) {
+                    launchSelectIcon()
+                }
         )
         OutlinedTextField(
             value = title,
@@ -112,7 +123,13 @@ fun CustomizeAppDialog(
         icon = icon,
         title = title,
         onTitleChange = { title = it },
-        defaultTitle = defaultTitle
+        defaultTitle = defaultTitle,
+        launchSelectIcon = {
+            if (prefs.enableIconSelection.get()) {
+                val destination = "/${Routes.SELECT_ICON}/$componentKey/"
+                context.startActivity(PreferenceActivity.createIntent(context, destination))
+            }
+        }
     ) {
         PreferenceGroup {
             val stringKey = componentKey.toString()

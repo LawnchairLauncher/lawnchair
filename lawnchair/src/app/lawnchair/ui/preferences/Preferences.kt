@@ -46,6 +46,7 @@ object Routes {
     const val QUICKSTEP: String = "quickstep"
     const val FONT_SELECTION: String = "fontSelection"
     const val DEBUG_MENU: String = "debugMenu"
+    const val SELECT_ICON: String = "selectIcon"
 }
 
 val LocalNavController = staticCompositionLocalOf<NavController> {
@@ -91,6 +92,7 @@ fun Preferences(interactor: PreferenceInteractor = viewModel<PreferenceViewModel
                         aboutGraph(route = subRoute(Routes.ABOUT))
                         fontSelectionGraph(route = subRoute(Routes.FONT_SELECTION))
                         debugMenuGraph(route = subRoute(Routes.DEBUG_MENU))
+                        selectIconGraph(route = subRoute(Routes.SELECT_ICON))
                     }
                 }
             }

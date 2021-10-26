@@ -117,6 +117,8 @@ class PreferenceManager private constructor(private val context: Context) : Base
     private val fontCache = FontCache.INSTANCE.get(context)
     val workspaceFont = FontPref("pref_workspaceFont", fontCache.uiText, recreate)
 
+    val enableIconSelection = BoolPref("pref_enableIconSelection", false)
+
     init {
         sp.registerOnSharedPreferenceChangeListener(this)
         initializeIconShape()

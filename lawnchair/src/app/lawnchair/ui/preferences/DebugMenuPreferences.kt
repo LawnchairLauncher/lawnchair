@@ -4,12 +4,14 @@ import android.content.Intent
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavGraphBuilder
-import app.lawnchair.ui.preferences.components.ClickablePreference
-import app.lawnchair.ui.preferences.components.IconShapePreference
-import app.lawnchair.ui.preferences.components.PreferenceGroup
-import app.lawnchair.ui.preferences.components.PreferenceLayout
+import app.lawnchair.preferences.PrefEntry
+import app.lawnchair.preferences.PreferenceManager
+import app.lawnchair.preferences.getAdapter
+import app.lawnchair.preferences.preferenceManager
+import app.lawnchair.ui.preferences.components.*
 import com.android.launcher3.settings.DeveloperOptionsFragment
 import com.android.launcher3.settings.SettingsActivity
 
@@ -26,6 +28,8 @@ fun NavGraphBuilder.debugMenuGraph(route: String) {
 @ExperimentalAnimationApi
 @Composable
 fun DebugMenuPreferences() {
+    val prefs = preferenceManager()
+    val flags = remember { prefs.getDebugFlags() }
     PreferenceLayout(
         label = "Debug Menu"
     ) {
@@ -41,5 +45,19 @@ fun DebugMenuPreferences() {
                 throw RuntimeException("User triggered crash")
             })
         }
+        PreferenceGroup(heading = "Debug flags") {
+            flags.forEach {
+                SwitchPreference(
+                    adapter = it.getAdapter(),
+                    label = it.key
+                )
+            }
+        }
     }
+}
+
+private fun PreferenceManager.getDebugFlags(): List<PrefEntry<Boolean>> {
+    return listOf(
+        enableIconSelection
+    )
 }

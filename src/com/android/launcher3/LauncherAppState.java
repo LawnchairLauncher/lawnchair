@@ -148,7 +148,7 @@ public class LauncherAppState {
         mContext = context;
 
         mInvariantDeviceProfile = InvariantDeviceProfile.INSTANCE.get(context);
-        mIconProvider =  new LawnchairIconProvider(context, Themes.isThemedIconEnabled(context));
+        mIconProvider = new LawnchairIconProvider(context, Themes.isThemedIconEnabled(context));
         mIconCache = new IconCache(mContext, mInvariantDeviceProfile,
                 iconCacheFileName, mIconProvider);
         mWidgetCache = new DatabaseWidgetPreviewLoader(mContext, mIconCache);
