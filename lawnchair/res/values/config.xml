@@ -20,7 +20,7 @@
     <string name="calendar_component_name" translatable="false">com.google.android.calendar/com.android.calendar.AllInOneActivity</string>
     <string name="clock_component_name" translatable="false">com.google.android.deskclock/com.android.deskclock.DeskClock</string>
     <string name="launcher_activity_logic_class" translatable="false">app.lawnchair.LauncherActivityCachingLogic</string>
-
+    <string name="main_process_initializer_class" translatable="false">app.lawnchair.LawnchairProcessInitializer</string>
     <string name="task_overlay_factory_class" translatable="false">app.lawnchair.overview.TaskOverlayFactoryImpl</string>
 
     <string-array name="filtered_components">

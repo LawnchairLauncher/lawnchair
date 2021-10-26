@@ -25,7 +25,6 @@ import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import android.util.Log
-import app.lawnchair.bugreport.LawnchairBugReporter
 import app.lawnchair.preferences.PreferenceManager
 import app.lawnchair.util.restartLauncher
 import com.android.launcher3.InvariantDeviceProfile
@@ -43,8 +42,6 @@ class LawnchairApp : Application() {
         super.onCreate()
         instance = this
         QuickStepContract.sRecentsDisabled = !recentsEnabled
-
-        LawnchairBugReporter.INSTANCE.get(this)
     }
 
     fun onLauncherAppStateCreated() {
