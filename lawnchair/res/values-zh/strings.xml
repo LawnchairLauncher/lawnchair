@@ -108,7 +108,7 @@
     <string name="what_to_show">显示内容</string>
     <string name="missing_notification_access_label">需要通知使用权</string>
     <string name="missing_notification_access_description">需要通知使用权。</string>
-    <string name="msg_missing_notification_access">要使用通知点，请授予 <xliff:g id="name" example="My App">%1$s</xliff:g> 对通知的访问。</string>
+    <string name="msg_missing_notification_access">要使用通知圆点，请授予 <xliff:g id="name" example="My App">%1$s</xliff:g> 对通知的访问。</string>
     <string name="title_change_settings">修改设置</string>
     <string name="debug_restart_launcher">重启 Lawnchair</string>
     <string name="pref_fonts_missing_font">未找到字体。</string>
