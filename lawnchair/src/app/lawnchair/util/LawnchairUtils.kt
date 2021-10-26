@@ -18,6 +18,8 @@ package app.lawnchair.util
 
 import android.app.AlarmManager
 import android.app.PendingIntent
+import android.app.PendingIntent.FLAG_CANCEL_CURRENT
+import android.app.PendingIntent.FLAG_IMMUTABLE
 import android.content.Context
 import android.content.Intent
 import android.os.Looper
@@ -72,7 +74,7 @@ fun restartLauncher(context: Context, intent: Intent?) {
 
     // Create a pending intent so the application is restarted after System.exit(0) was called.
     // We use an AlarmManager to call this intent in 100ms
-    val mPendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT)
+    val mPendingIntent = PendingIntent.getActivity(context, 0, intent, FLAG_CANCEL_CURRENT or FLAG_IMMUTABLE)
     val mgr = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
     mgr[AlarmManager.RTC, System.currentTimeMillis() + 100] = mPendingIntent
 
