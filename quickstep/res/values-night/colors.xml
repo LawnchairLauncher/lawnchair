@@ -22,4 +22,6 @@
     <color name="mock_webpage_url_bar">#202124</color>
     <color name="mock_webpage_url_bar_item">#3c4043</color>
 
+    <color name="all_set_page_background">#FF000000</color>
+
 </resources>

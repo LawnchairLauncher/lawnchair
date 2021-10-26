@@ -161,6 +161,7 @@
     <dimen name="allset_title_icon_margin_top">32dp</dimen>
     <dimen name="allset_subtitle_margin_top">24dp</dimen>
     <dimen name="allset_subtitle_width_max">348dp</dimen>
+    <dimen name="allset_swipe_up_shift">10dp</dimen>
 
     <!-- All Apps Education tutorial -->
     <dimen name="swipe_edu_padding">8dp</dimen>
