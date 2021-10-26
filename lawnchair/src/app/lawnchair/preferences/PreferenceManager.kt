@@ -82,7 +82,11 @@ class PreferenceManager private constructor(private val context: Context) : Base
     val autoLaunchRoot = BoolPref("pref_autoLaunchRoot", false)
     val accentColor = ObjectPref(
         "pref_accentColor2",
-        if (Utilities.ATLEAST_O_MR1) ColorOption.WallpaperPrimary else ColorOption.LawnchairBlue,
+        when {
+            Utilities.ATLEAST_S -> ColorOption.SystemAccent
+            Utilities.ATLEAST_O_MR1 -> ColorOption.WallpaperPrimary
+            else -> ColorOption.LawnchairBlue
+        },
         ColorOption::fromString,
         ColorOption::toString,
         recreate
