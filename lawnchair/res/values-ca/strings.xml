@@ -79,7 +79,7 @@
     <string name="dt2s_admin_hint">Per a utilitzar \"Toca dos cops per apagar la pantalla\", selecciona Lawnchair com a aplicació administradora del dispositiu. Toca \"Obre la Configuració\", i toca \"Activa aquesta aplicació administradora del dispositiu.\"</string>
     <string name="dt2s_admin_warning">\"Toca dos cops per apagar la pantalla\" s\'apagarà.</string>
     <string name="dt2s_a11y_hint_title">Cal activar el Servei d\'Accessibilitat</string>
-    <string name="dt2s_a11y_hint">To use Double-Tap to Sleep, turn on the Lawnchair accessibility service. Tap Open Settings, then select Lawnchair and turn on Use Lawnchair.</string>
+    <string name="dt2s_a11y_hint">Per a utilitzar Toca dos \"vegades\" per apagar la pantalla, \"encén\" el servei d\'accessibilitat de Lawnchair. Toca \"Obre la Configuració\", selecciona \"Lawnchair\" i activa \"Utilitza Lawnchair.\"</string>
     <string name="dt2s_warning_open_settings">Obre la configuració</string>
     <string name="minus_one_enable">Feed</string>
     <string name="minus_one_unavailable">No hi ha cap Feed instal·lat.</string>
