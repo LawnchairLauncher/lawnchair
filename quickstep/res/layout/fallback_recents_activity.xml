@@ -45,8 +45,7 @@
             android:layout_height="match_parent"
             android:clipChildren="false"
             android:clipToPadding="false"
-            android:outlineProvider="none"
-            android:theme="@style/HomeScreenElementTheme" />
+            android:outlineProvider="none" />
 
         <include
             android:id="@+id/overview_actions_view"
