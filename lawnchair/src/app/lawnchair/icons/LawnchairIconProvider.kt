@@ -13,6 +13,7 @@ import androidx.core.content.getSystemService
 import app.lawnchair.preferences.PreferenceManager
 import app.lawnchair.util.MultiSafeCloseable
 import com.android.launcher3.icons.IconProvider
+import com.android.launcher3.icons.ThemedIconDrawable
 import com.android.launcher3.util.SafeCloseable
 import java.util.function.Supplier
 
@@ -36,16 +37,32 @@ class LawnchairIconProvider @JvmOverloads constructor(
         val iconPack = this.iconPack
         val componentName = ComponentName(packageName, component)
         var iconEntry: IconEntry? = null
+
+        var iconType = ICON_TYPE_DEFAULT
+        var themeData: ThemedIconDrawable.ThemeData? = null
         if (iconPack != null) {
             if (iconEntry == null) {
                 iconEntry = iconPack.getCalendar(componentName)?.getIconEntry(getDay())
+                themeData = themedIconMap[mCalendar.packageName]
+                iconType = ICON_TYPE_CALENDAR
             }
             if (iconEntry == null) {
                 iconEntry = iconPack.getIcon(componentName)
+                val clock = iconEntry?.let { iconPack.getClock(it) }
+                if (clock != null) {
+                    themeData = themedIconMap[mClock.packageName]
+                    iconType = ICON_TYPE_CLOCK
+                } else {
+                    themeData = themedIconMap[componentName.packageName]
+                }
             }
         }
         val icon = iconEntry?.getDrawable(iconDpi, user)
-        return icon ?: super.getIconWithOverrides(packageName, component, user, iconDpi, fallback)
+        val td = themeData
+        if (icon != null) {
+            return if (td != null) td.wrapDrawable(icon, iconType) else icon
+        }
+        return super.getIconWithOverrides(packageName, component, user, iconDpi, fallback)
     }
 
     override fun getIcon(info: ActivityInfo?): Drawable {
