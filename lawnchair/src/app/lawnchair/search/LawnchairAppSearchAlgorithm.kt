@@ -40,10 +40,19 @@ class LawnchairAppSearchAlgorithm(private val context: Context) :
         apps: MutableList<AppInfo>,
         query: String
     ): ArrayList<AdapterItem> {
-        val results = if (useFuzzySearch) {
+        val appResults = if (useFuzzySearch) {
             fuzzySearch(apps, query)
         } else {
             normalSearch(apps, query)
+        }
+        val results = mutableListOf<SearchAdapterItem>()
+        if (appResults.size == 1) {
+            val app = appResults.first()
+            results.add(SearchAdapterItem.fromApp(0, app, normalBackground, true))
+        } else {
+            results.addAll(appResults.mapIndexed { index, info ->
+                SearchAdapterItem.fromApp(index, info, iconBackground)
+            })
         }
         if (results.isEmpty()) {
             results.add(getEmptySearchItem(query))
@@ -51,7 +60,7 @@ class LawnchairAppSearchAlgorithm(private val context: Context) :
         return ArrayList(LawnchairSearchAdapterProvider.decorateSearchResults(results))
     }
 
-    private fun normalSearch(apps: List<AppInfo>, query: String): MutableList<SearchAdapterItem> {
+    private fun normalSearch(apps: List<AppInfo>, query: String): List<AppInfo> {
         // Do an intersection of the words in the query and each title, and filter out all the
         // apps that don't match all of the words in the query.
         val queryTextLower = query.lowercase(Locale.getDefault())
@@ -60,23 +69,17 @@ class LawnchairAppSearchAlgorithm(private val context: Context) :
         return apps.asSequence()
             .filter { StringMatcherUtility.matches(queryTextLower, it.title.toString(), matcher) }
             .take(MAX_RESULTS_COUNT)
-            .mapIndexed { index, info ->
-                SearchAdapterItem.fromApp(index, info, iconBackground)
-            }
-            .toCollection(ArrayList())
+            .toList()
     }
 
-    private fun fuzzySearch(apps: List<AppInfo>, query: String): MutableList<SearchAdapterItem> {
+    private fun fuzzySearch(apps: List<AppInfo>, query: String): List<AppInfo> {
         val matches = FuzzySearch.extractSorted(
             query.lowercase(Locale.getDefault()), apps,
             { it.title.toString() }, WeightedRatio(), 65
         )
 
         return matches.take(MAX_RESULTS_COUNT)
-            .mapIndexed { index, match ->
-                SearchAdapterItem.fromApp(index, match.referent, iconBackground)
-            }
-            .toCollection(ArrayList())
+            .map { it.referent }
     }
 
     private fun resolveMarketSearchActivity(): ComponentKey? {

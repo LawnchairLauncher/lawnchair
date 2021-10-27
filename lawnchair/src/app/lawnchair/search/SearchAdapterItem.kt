@@ -31,13 +31,14 @@ data class SearchAdapterItem(
         fun fromApp(
             pos: Int,
             appInfo: AppInfo,
-            background: SearchItemBackground
+            background: SearchItemBackground,
+            asRow: Boolean = false
         ): SearchAdapterItem {
             val componentName = appInfo.componentName
             val user = appInfo.user
             val target = SearchTargetCompat.Builder(
                 SearchTargetCompat.RESULT_TYPE_APPLICATION,
-                LayoutType.ICON_SINGLE_VERTICAL_TEXT,
+                if (asRow) LayoutType.ICON_HORIZONTAL_TEXT else LayoutType.ICON_SINGLE_VERTICAL_TEXT ,
                 ComponentKey(componentName, user).toString()
             )
                 .setPackageName(componentName.packageName)
