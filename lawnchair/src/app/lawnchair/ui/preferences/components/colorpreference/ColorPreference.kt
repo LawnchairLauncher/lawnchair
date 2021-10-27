@@ -2,10 +2,9 @@ package app.lawnchair.ui.preferences.components.colorpreference
 
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -53,6 +52,8 @@ fun ColorPreference(
     BottomSheet(sheetState = bottomSheetState) {
         var selectedTabIndex by remember { mutableStateOf(value = defaultTabIndex) }
         AlertBottomSheetContent(
+            modifier = Modifier
+                .verticalScroll(rememberScrollState()),
             title = { Text(text = label) },
             buttons = {
                 Button(
@@ -79,17 +80,30 @@ fun ColorPreference(
                         onClick = { selectedTabIndex = 1 }
                     )
                 }
-                when (selectedTabIndex) {
-                    0 -> {
-                        PresetsList(dynamicEntries, adapter)
-                    }
-                    1 -> {
-                        SwatchGrid(
-                            entries = staticEntries,
-                            modifier = Modifier.padding(start = 16.dp, top = 20.dp, end = 16.dp, bottom = 16.dp),
-                            onSwatchClick = { selectedColor = it },
-                            isSwatchSelected = { it == selectedColor }
+                Box(
+                    modifier = Modifier
+                        .pagerHeight(
+                            dynamicCount = dynamicEntries.size,
+                            staticCount = staticEntries.size
                         )
+                ) {
+                    when (selectedTabIndex) {
+                        0 -> {
+                            PresetsList(dynamicEntries, adapter)
+                        }
+                        1 -> {
+                            SwatchGrid(
+                                entries = staticEntries,
+                                modifier = Modifier.padding(
+                                    start = 16.dp,
+                                    top = 20.dp,
+                                    end = 16.dp,
+                                    bottom = 16.dp
+                                ),
+                                onSwatchClick = { selectedColor = it },
+                                isSwatchSelected = { it == selectedColor }
+                            )
+                        }
                     }
                 }
             }

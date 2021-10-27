@@ -14,6 +14,7 @@ import app.lawnchair.util.navigationBarsOrDisplayCutoutPadding
 @Composable
 fun AlertBottomSheetContent(
     buttons: @Composable RowScope.() -> Unit,
+    modifier: Modifier = Modifier,
     title: (@Composable () -> Unit)? = null,
     text: @Composable (() -> Unit)? = null,
     content: @Composable (() -> Unit)? = null
@@ -21,7 +22,7 @@ fun AlertBottomSheetContent(
     val contentPadding = Modifier.padding(start = 16.dp, top = 16.dp, end = 16.dp)
 
     Column(
-        modifier = Modifier
+        modifier = modifier
             .navigationBarsOrDisplayCutoutPadding()
             .fillMaxWidth()
     ) {

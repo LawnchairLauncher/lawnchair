@@ -16,6 +16,11 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
+object SwatchGridDefaults {
+    val GutterSize = 12.dp
+    const val ColumnCount = 6
+}
+
 @Composable
 fun <T> SwatchGrid(
     entries: List<ColorPreferenceEntry<T>>,
@@ -23,9 +28,9 @@ fun <T> SwatchGrid(
     modifier: Modifier = Modifier,
     isSwatchSelected: (T) -> Boolean
 ) {
-    val columnCount = 6
-    val rowCount = (entries.size.toDouble() / 6.0).toInt()
-    val gutter = 12.dp
+    val columnCount = SwatchGridDefaults.ColumnCount
+    val rowCount = (entries.size - 1) / columnCount + 1
+    val gutter = SwatchGridDefaults.GutterSize
 
     Column(modifier = modifier) {
         for (rowNo in 1..rowCount) {
