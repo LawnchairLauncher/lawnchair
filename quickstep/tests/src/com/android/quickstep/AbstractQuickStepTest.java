@@ -44,7 +44,7 @@ public abstract class AbstractQuickStepTest extends AbstractLauncherUiTest {
     protected void onLauncherActivityClose(Launcher launcher) {
         RecentsView recentsView = launcher.getOverviewPanel();
         if (recentsView != null) {
-            recentsView.finishRecentsAnimation(true, null);
+            recentsView.finishRecentsAnimation(false /* toRecents */, null);
         }
     }
 
