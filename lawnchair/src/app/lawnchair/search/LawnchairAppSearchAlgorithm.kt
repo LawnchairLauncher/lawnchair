@@ -7,6 +7,7 @@ import android.os.Process
 import app.lawnchair.allapps.SearchItemBackground
 import app.lawnchair.allapps.SearchResultView
 import app.lawnchair.preferences.PreferenceManager
+import com.android.app.search.LayoutType
 import com.android.launcher3.R
 import com.android.launcher3.allapps.AllAppsGridAdapter.AdapterItem
 import com.android.launcher3.allapps.search.DefaultAppSearchAlgorithm
@@ -23,16 +24,12 @@ class LawnchairAppSearchAlgorithm(private val context: Context) :
 
     private val useFuzzySearch by PreferenceManager.getInstance(context).useFuzzySearch
     private val iconBackground = SearchItemBackground(
-        context,
-        showBackground = false,
-        roundTop = true,
-        roundBottom = true
+        context, showBackground = false,
+        roundTop = true, roundBottom = true
     )
     private val normalBackground = SearchItemBackground(
-        context,
-        showBackground = true,
-        roundTop = true,
-        roundBottom = true
+        context, showBackground = true,
+        roundTop = true, roundBottom = true
     )
     private val marketSearchComponent = resolveMarketSearchActivity()
 
@@ -45,19 +42,25 @@ class LawnchairAppSearchAlgorithm(private val context: Context) :
         } else {
             normalSearch(apps, query)
         }
-        val results = mutableListOf<SearchAdapterItem>()
+        val results = mutableListOf<SearchTargetCompat>()
         if (appResults.size == 1) {
             val app = appResults.first()
-            results.add(SearchAdapterItem.fromApp(0, app, normalBackground, true))
+            results.add(createSearchTarget(app, true))
         } else {
-            results.addAll(appResults.mapIndexed { index, info ->
-                SearchAdapterItem.fromApp(index, info, iconBackground)
+            results.addAll(appResults.map { app ->
+                createSearchTarget(app)
             })
         }
         if (results.isEmpty()) {
             results.add(getEmptySearchItem(query))
         }
-        return ArrayList(LawnchairSearchAdapterProvider.decorateSearchResults(results))
+        val items = results
+            .mapIndexed { index, target ->
+                val isIcon = target.layoutType == LayoutType.ICON_SINGLE_VERTICAL_TEXT
+                val background = if (isIcon) iconBackground else normalBackground
+                SearchAdapterItem.createAdapterItem(index, target, background)
+            }
+        return ArrayList(LawnchairSearchAdapterProvider.decorateSearchResults(items))
     }
 
     private fun normalSearch(apps: List<AppInfo>, query: String): List<AppInfo> {
@@ -90,7 +93,7 @@ class LawnchairAppSearchAlgorithm(private val context: Context) :
         return ComponentKey(launchIntent.component, Process.myUserHandle())
     }
 
-    private fun getEmptySearchItem(query: String): SearchAdapterItem {
+    private fun getEmptySearchItem(query: String): SearchTargetCompat {
         val id = "marketSearch:$query"
         val action = SearchActionCompat.Builder(
             id,
@@ -107,6 +110,6 @@ class LawnchairAppSearchAlgorithm(private val context: Context) :
             }
             putBoolean(SearchResultView.EXTRA_HIDE_SUBTITLE, true)
         }
-        return SearchAdapterItem.fromAction(0, id, action, normalBackground, extras)
+        return createSearchTarget(id, action, extras)
     }
 }
