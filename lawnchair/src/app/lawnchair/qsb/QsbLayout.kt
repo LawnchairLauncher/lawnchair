@@ -120,7 +120,7 @@ class QsbLayout(context: Context, attrs: AttributeSet?) : FrameLayout(context, a
     private fun clipIconRipples() {
         val cornerRadius = getCornerRadius(context, preferenceManager)
         listOf(lensIcon, micIcon).forEach {
-            it.clipToOutline = true
+            it.clipToOutline = cornerRadius > 0
             it.background = PaintDrawable(Color.TRANSPARENT).apply {
                 setCornerRadius(cornerRadius)
             }
@@ -131,7 +131,7 @@ class QsbLayout(context: Context, attrs: AttributeSet?) : FrameLayout(context, a
         val cornerRadius = getCornerRadius(context, preferenceManager)
         val color = if (themed) Themes.getColorBackgroundFloating(context) else Themes.getAttrColor(context, R.attr.qsbFillColor)
         with (inner) {
-            clipToOutline = true
+            clipToOutline = cornerRadius > 0
             background = PaintDrawable(color).apply {
                 setCornerRadius(cornerRadius)
             }
