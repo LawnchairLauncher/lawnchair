@@ -18,6 +18,22 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.unit.dp
+import kotlin.math.abs
+
+@Composable
+fun Chip(
+    label: String,
+    onClick: () -> Unit,
+    currentOffset: Float,
+    page: Int
+) {
+    val selectedProgress = 1f - abs(currentOffset - page).coerceIn(0f, 1f)
+    Chip(
+        label = label,
+        selectedProgress = selectedProgress,
+        onClick = onClick
+    )
+}
 
 @Composable
 fun Chip(

@@ -78,13 +78,15 @@ fun ColorPreference(
                 ) {
                     Chip(
                         label = stringResource(id = R.string.dynamic),
-                        selected = pagerState.currentPage == 0,
-                        onClick = { scrollToPage(0) }
+                        onClick = { scrollToPage(0) },
+                        currentOffset = pagerState.currentPage + pagerState.currentPageOffset,
+                        page = 0
                     )
                     Chip(
                         label = stringResource(id = R.string.presets),
-                        selected = pagerState.currentPage == 1,
-                        onClick = { scrollToPage(1) }
+                        onClick = { scrollToPage(1) },
+                        currentOffset = pagerState.currentPage + pagerState.currentPageOffset,
+                        page = 1
                     )
                 }
                 HorizontalPager(
