@@ -690,13 +690,8 @@ public class TaskView extends FrameLayout implements Reusable {
                     TestProtocol.SEQUENCE_MAIN, "startActivityFromRecentsAsync", mTask);
             ActivityOptionsWrapper opts =  mActivity.getActivityLaunchOptions(this, null);
             opts.options.setLaunchDisplayId(getRootViewDisplayId());
-            boolean isOldTaskSplit = LauncherSplitScreenListener.INSTANCE.getNoCreate()
-                    .getPersistentSplitIds().length > 0;
             if (ActivityManagerWrapper.getInstance()
                     .startActivityFromRecents(mTask.key, opts.options)) {
-                if (isOldTaskSplit) {
-                    SystemUiProxy.INSTANCE.getNoCreate().exitSplitScreen(mTask.key.id);
-                }
                 RecentsView recentsView = getRecentsView();
                 if (ENABLE_QUICKSTEP_LIVE_TILE.get() && recentsView.getRunningTaskViewId() != -1) {
                     recentsView.onTaskLaunchedInLiveTileMode();
