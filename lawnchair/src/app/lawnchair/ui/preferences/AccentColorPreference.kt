@@ -5,7 +5,7 @@ import androidx.compose.ui.res.stringResource
 import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences.preferenceManager
 import app.lawnchair.theme.color.ColorOption
-import app.lawnchair.ui.preferences.components.ColorPreference
+import app.lawnchair.ui.preferences.components.colorpreference.ColorPreference
 import com.android.launcher3.R
 
 val staticColors = listOf(
