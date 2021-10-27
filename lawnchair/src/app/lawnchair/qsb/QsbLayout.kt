@@ -10,6 +10,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.children
 import androidx.core.view.isVisible
 import app.lawnchair.launcher
+import app.lawnchair.preferences.PreferenceManager
 import com.android.launcher3.BaseActivity
 import com.android.launcher3.DeviceProfile
 import com.android.launcher3.LauncherState
@@ -22,22 +23,27 @@ import com.android.launcher3.views.ActivityContext
 class QsbLayout(context: Context, attrs: AttributeSet?) : FrameLayout(context, attrs) {
 
     private val activity: ActivityContext = ActivityContext.lookupContext<BaseActivity>(context)
+    private lateinit var gIcon: ImageView
     private lateinit var assistantIcon: AssistantIconView
     private lateinit var lensIcon: ImageView
 
     override fun onFinishInflate() {
         super.onFinishInflate()
+        gIcon = ViewCompat.requireViewById<ImageView>(this, R.id.g_icon)
         assistantIcon = ViewCompat.requireViewById(this, R.id.mic_icon)
         lensIcon = ViewCompat.requireViewById(this, R.id.lens_icon)
         setUpMainSearch()
 
         val searchPackage = getSearchPackageName(context)
         val isGoogle = searchPackage == GOOGLE_PACKAGE
-        assistantIcon.setIcon(isGoogle)
         if (isGoogle) {
+            val prefs = PreferenceManager.getInstance(context)
+            prefs.themedIcons.subscribeValues(this) {
+                setThemedIconEnabled(it)
+            }
             setUpLensIcon()
         } else {
-            val gIcon = ViewCompat.requireViewById<ImageView>(this, R.id.g_icon)
+            assistantIcon.setIcon(isGoogle = false, themed = false)
             with(gIcon) {
                 setImageResource(R.drawable.ic_qsb_search)
                 setColorFilter(Themes.getColorAccent(context))
@@ -64,6 +70,17 @@ class QsbLayout(context: Context, attrs: AttributeSet?) : FrameLayout(context, a
         }
     }
 
+    private fun setThemedIconEnabled(themed: Boolean) {
+        val backgroundColor = when {
+            themed -> Themes.getColorBackgroundFloating(context)
+            else -> Themes.getAttrColor(context, R.attr.qsbFillColor)
+        }
+        background.setTint(backgroundColor)
+        gIcon.setThemedIconResource(R.drawable.ic_super_g_color, themed)
+        assistantIcon.setIcon(isGoogle = true, themed)
+        lensIcon.setThemedIconResource(R.drawable.ic_lens_color, themed)
+    }
+
     private fun setUpMainSearch() {
         setOnClickListener {
             val searchPackage = getSearchPackageName(context)
@@ -88,7 +105,6 @@ class QsbLayout(context: Context, attrs: AttributeSet?) : FrameLayout(context, a
 
         with(lensIcon) {
             isVisible = true
-            setImageResource(R.drawable.ic_lens_color)
             setOnClickListener {
                 context.startActivity(lensIntent)
             }

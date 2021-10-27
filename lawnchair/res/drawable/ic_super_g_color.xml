@@ -4,15 +4,19 @@
     android:viewportWidth="24"
     android:viewportHeight="24">
   <path
+      android:name="qsbIconTintPrimary"
       android:pathData="M23.49,12.27C23.49,11.48 23.42,10.73 23.3,10H12V14.51H18.47C18.18,15.99 17.33,17.24 16.07,18.09V21.09H19.93C22.19,19 23.49,15.92 23.49,12.27Z"
       android:fillColor="#4285F4"/>
   <path
+      android:name="qsbIconTintSecondary"
       android:pathData="M12,24C15.24,24 17.95,22.92 19.93,21.09L16.07,18.09C14.99,18.81 13.62,19.25 12,19.25C8.87,19.25 6.22,17.14 5.27,14.29H1.29V17.38C3.26,21.3 7.31,24 12,24Z"
       android:fillColor="#34A853"/>
   <path
+      android:name="qsbIconTintTertiary"
       android:pathData="M5.27,14.29C5.02,13.57 4.89,12.8 4.89,12C4.89,11.2 5.03,10.43 5.27,9.71V6.62H1.29C0.47,8.24 0,10.06 0,12C0,13.94 0.47,15.76 1.29,17.38L5.27,14.29Z"
       android:fillColor="#FBBC05"/>
   <path
+      android:name="qsbIconTintQuaternary"
       android:pathData="M12,4.75C13.77,4.75 15.35,5.36 16.6,6.55L20.02,3.13C17.95,1.19 15.24,0 12,0C7.31,0 3.26,2.7 1.29,6.62L5.27,9.71C6.22,6.86 8.87,4.75 12,4.75Z"
       android:fillColor="#EA4335"/>
 </vector>

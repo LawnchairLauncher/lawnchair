@@ -26,10 +26,10 @@ class AssistantIconView(context: Context, attrs: AttributeSet?) : ImageButton(co
         }
     }
 
-    fun setIcon(isGoogle: Boolean) {
+    fun setIcon(isGoogle: Boolean, themed: Boolean) {
         clearColorFilter()
         if (isGoogle) {
-            setImageResource(R.drawable.ic_mic_color)
+            setThemedIconResource(R.drawable.ic_mic_color, themed)
         } else {
             setImageResource(R.drawable.ic_mic_flat)
             setColorFilter(Themes.getColorAccent(context))

@@ -94,8 +94,8 @@
 
     <color name="background_device_default_dark">@color/system_neutral1_900</color>
     <color name="background_device_default_light">@color/system_neutral1_50</color>
-    <color name="background_floating_device_default_dark">@color/system_neutral1_800</color>
-    <color name="background_floating_device_default_light">@color/system_neutral1_10</color>
+    <color name="background_floating_device_default_dark">@color/background_device_default_dark</color>
+    <color name="background_floating_device_default_light">@color/background_device_default_light</color>
 
     <color name="surface_dark">@color/system_neutral1_800</color>
     <color name="surface_header_dark">@color/system_neutral1_700</color>
