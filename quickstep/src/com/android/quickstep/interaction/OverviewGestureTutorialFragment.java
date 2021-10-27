@@ -72,7 +72,7 @@ public class OverviewGestureTutorialFragment extends TutorialFragment {
             @Override
             public void onAnimationEnd(Animator animation) {
                 super.onAnimationEnd(animation);
-                controller.resetFakeTaskView();
+                controller.resetFakeTaskView(false);
             }
         });
         ArrayList<Animator> animators = new ArrayList<>();
@@ -88,7 +88,7 @@ public class OverviewGestureTutorialFragment extends TutorialFragment {
             @Override
             public void onAnimationCancel(Animator animation) {
                 super.onAnimationCancel(animation);
-                controller.resetFakeTaskView();
+                controller.resetFakeTaskView(false);
             }
         });
         finalAnimation.playSequentially(animators);
