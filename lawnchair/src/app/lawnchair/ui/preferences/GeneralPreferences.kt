@@ -58,6 +58,10 @@ fun GeneralPreferences() {
                 LocalPreferenceInteractor.current.getIconPacks()
                     .find { it.packageName == preferenceManager().iconPackPackage.get() }?.name
             )
+            SwitchPreference(
+                adapter = prefs.themedIcons.getAdapter(),
+                label = stringResource(id = R.string.themed_icon_title)
+            )
             IconShapePreference()
             FontPreference(
                 adapter = prefs.workspaceFont.getAdapter(),
