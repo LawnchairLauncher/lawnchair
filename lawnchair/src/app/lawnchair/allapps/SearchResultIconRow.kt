@@ -37,11 +37,13 @@ class SearchResultIconRow(context: Context, attrs: AttributeSet?) :
         subtitle.isVisible = false
         setOnClickListener(icon)
 
-        shortcutIcons = arrayOf(
-            ViewCompat.requireViewById(this, R.id.shortcut_0),
-            ViewCompat.requireViewById(this, R.id.shortcut_1),
-            ViewCompat.requireViewById(this, R.id.shortcut_2),
+        shortcutIcons = listOf(
+            R.id.shortcut_0,
+            R.id.shortcut_1,
+            R.id.shortcut_2,
         )
+            .mapNotNull { findViewById<SearchResultIcon>(it) }
+            .toTypedArray()
         shortcutIcons.forEach {
             it.setTextVisibility(false)
             it.layoutParams.apply {

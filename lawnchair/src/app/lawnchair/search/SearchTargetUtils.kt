@@ -1,5 +1,6 @@
 package app.lawnchair.search
 
+import android.content.pm.ShortcutInfo
 import android.os.Bundle
 import android.os.Process
 import com.android.app.search.LayoutType
@@ -20,6 +21,18 @@ fun createSearchTarget(appInfo: AppInfo, asRow: Boolean = false): SearchTargetCo
         .setExtras(Bundle().apply {
             putString("class", componentName.className)
         })
+        .build()
+}
+
+fun createSearchTarget(shortcutInfo: ShortcutInfo): SearchTargetCompat {
+    return SearchTargetCompat.Builder(
+        SearchTargetCompat.RESULT_TYPE_SHORTCUT,
+        LayoutType.SMALL_ICON_HORIZONTAL_TEXT,
+        "${shortcutInfo.`package`}|${shortcutInfo.userHandle}|${shortcutInfo.id}"
+    )
+        .setShortcutInfo(shortcutInfo)
+        .setUserHandle(shortcutInfo.userHandle)
+        .setExtras(Bundle())
         .build()
 }
 

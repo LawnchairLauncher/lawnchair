@@ -2,6 +2,7 @@ package app.lawnchair.allapps
 
 import android.content.ComponentName
 import android.content.Context
+import android.content.pm.ShortcutInfo
 import android.os.UserHandle
 import android.util.AttributeSet
 import android.view.View
@@ -10,13 +11,18 @@ import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import app.lawnchair.launcher
 import app.lawnchair.search.SearchTargetCompat
+import app.lawnchair.util.runOnMainThread
 import com.android.launcher3.BubbleTextView
+import com.android.launcher3.LauncherAppState
+import com.android.launcher3.LauncherSettings
 import com.android.launcher3.R
 import com.android.launcher3.model.data.ItemInfoWithIcon
 import com.android.launcher3.model.data.SearchActionItemInfo
+import com.android.launcher3.model.data.WorkspaceItemInfo
 import com.android.launcher3.touch.ItemClickHandler
 import com.android.launcher3.touch.ItemLongClickListener
 import com.android.launcher3.util.ComponentKey
+import com.android.launcher3.util.Executors.MODEL_EXECUTOR
 
 class SearchResultIcon(context: Context, attrs: AttributeSet?) : BubbleTextView(context, attrs),
     SearchResultView, View.OnClickListener, View.OnLongClickListener {
@@ -56,14 +62,21 @@ class SearchResultIcon(context: Context, attrs: AttributeSet?) : BubbleTextView(
         setForceHideDot(true)
 
         val extras = target.extras
-        if (target.searchAction != null) {
-            allowLongClick = false
-            bindFromAction(target)
-        } else {
-            allowLongClick = true
-            val className = extras.getString("class") ?: ""
-            val componentName = ComponentName(target.packageName, className)
-            bindFromApp(componentName, target.userHandle)
+        when {
+            target.searchAction != null -> {
+                allowLongClick = false
+                bindFromAction(target)
+            }
+            target.shortcutInfo != null -> {
+                allowLongClick = true
+                bindFromShortcutInfo(target.shortcutInfo!!)
+            }
+            else -> {
+                allowLongClick = true
+                val className = extras.getString("class") ?: ""
+                val componentName = ComponentName(target.packageName, className)
+                bindFromApp(componentName, target.userHandle)
+            }
         }
         val iconComponentKey = extras.getString(SearchResultView.EXTRA_ICON_COMPONENT_KEY)
             ?.let { ComponentKey.fromString(it) }
@@ -126,6 +139,18 @@ class SearchResultIcon(context: Context, attrs: AttributeSet?) : BubbleTextView(
         }
         applyFromApplicationInfo(appInfo)
         notifyApplied(appInfo)
+    }
+
+    private fun bindFromShortcutInfo(shortcutInfo: ShortcutInfo) {
+        val si = WorkspaceItemInfo(shortcutInfo, launcher)
+        si.container = LauncherSettings.Favorites.CONTAINER_ALL_APPS
+        applyFromWorkspaceItem(si)
+        notifyApplied(si)
+        val cache = LauncherAppState.getInstance(launcher).iconCache
+        MODEL_EXECUTOR.handler.postAtFrontOfQueue {
+            cache.getUnbadgedShortcutIcon(si, shortcutInfo)
+            runOnMainThread { applyFromWorkspaceItem(si) }
+        }
     }
 
     private fun notifyApplied(info: ItemInfoWithIcon) {

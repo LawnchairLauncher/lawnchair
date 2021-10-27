@@ -21,7 +21,7 @@ class SearchItemDecorator(private val appsView: AllAppsContainerView) : Recycler
         parent: RecyclerView,
         state: RecyclerView.State
     ) {
-        outRect.offset(0, searchDecorationPadding)
+        outRect.inset(0, searchDecorationPadding)
     }
 
     override fun onDraw(c: Canvas, parent: RecyclerView, state: RecyclerView.State) {

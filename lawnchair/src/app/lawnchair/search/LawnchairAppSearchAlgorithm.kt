@@ -1,18 +1,22 @@
 package app.lawnchair.search
 
 import android.content.Context
+import android.content.pm.ShortcutInfo
 import android.graphics.drawable.Icon
 import android.os.Bundle
 import android.os.Process
 import app.lawnchair.allapps.SearchItemBackground
 import app.lawnchair.allapps.SearchResultView
+import app.lawnchair.launcher
 import app.lawnchair.preferences.PreferenceManager
 import com.android.app.search.LayoutType
 import com.android.launcher3.R
 import com.android.launcher3.allapps.AllAppsGridAdapter.AdapterItem
 import com.android.launcher3.allapps.search.DefaultAppSearchAlgorithm
 import com.android.launcher3.model.data.AppInfo
+import com.android.launcher3.popup.PopupPopulator
 import com.android.launcher3.search.StringMatcherUtility
+import com.android.launcher3.shortcuts.ShortcutRequest
 import com.android.launcher3.util.ComponentKey
 import com.android.launcher3.util.PackageManagerHelper
 import me.xdrop.fuzzywuzzy.FuzzySearch
@@ -31,6 +35,18 @@ class LawnchairAppSearchAlgorithm(private val context: Context) :
         context, showBackground = true,
         roundTop = true, roundBottom = true
     )
+    private val topBackground = SearchItemBackground(
+        context, showBackground = true,
+        roundTop = true, roundBottom = false
+    )
+    private val centerBackground = SearchItemBackground(
+        context, showBackground = true,
+        roundTop = false, roundBottom = false
+    )
+    private val bottomBackground = SearchItemBackground(
+        context, showBackground = true,
+        roundTop = false, roundBottom = true
+    )
     private val marketSearchComponent = resolveMarketSearchActivity()
 
     override fun getResult(
@@ -45,22 +61,37 @@ class LawnchairAppSearchAlgorithm(private val context: Context) :
         val results = mutableListOf<SearchTargetCompat>()
         if (appResults.size == 1) {
             val app = appResults.first()
+            val shortcuts = getShortcuts(app)
             results.add(createSearchTarget(app, true))
+            shortcuts.mapTo(results, ::createSearchTarget)
         } else {
-            results.addAll(appResults.map { app ->
-                createSearchTarget(app)
-            })
+            appResults.mapTo(results, ::createSearchTarget)
         }
         if (results.isEmpty()) {
             results.add(getEmptySearchItem(query))
         }
         val items = results
             .mapIndexed { index, target ->
+                val isFirst = index == 0
+                val isLast = index == results.lastIndex
                 val isIcon = target.layoutType == LayoutType.ICON_SINGLE_VERTICAL_TEXT
-                val background = if (isIcon) iconBackground else normalBackground
+                val background = when {
+                    isIcon -> iconBackground
+                    isFirst && isLast -> normalBackground
+                    isFirst -> topBackground
+                    isLast -> bottomBackground
+                    else -> centerBackground
+                }
                 SearchAdapterItem.createAdapterItem(index, target, background)
             }
         return ArrayList(LawnchairSearchAdapterProvider.decorateSearchResults(items))
+    }
+
+    private fun getShortcuts(app: AppInfo): List<ShortcutInfo> {
+        val shortcuts = ShortcutRequest(context.launcher, app.user)
+            .withContainer(app.targetComponent)
+            .query(ShortcutRequest.PUBLISHED)
+        return PopupPopulator.sortAndFilterShortcuts(shortcuts, null)
     }
 
     private fun normalSearch(apps: List<AppInfo>, query: String): List<AppInfo> {

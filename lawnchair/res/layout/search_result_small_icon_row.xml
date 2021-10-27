@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<app.lawnchair.allapps.SearchResultIconRow xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:launcher="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/search_result_small_row_height"
+    android:orientation="horizontal"
+    android:paddingStart="8dp">
+
+    <app.lawnchair.allapps.SearchResultIcon
+        android:id="@+id/icon"
+        style="@style/BaseIcon"
+        android:layout_width="@dimen/search_row_icon_size"
+        android:layout_height="@dimen/search_row_icon_size"
+        android:layout_margin="@dimen/search_result_padding"
+        android:drawableTint="?android:textColorPrimary"
+        android:ellipsize="end"
+        launcher:iconDisplay="search_result_small"
+        launcher:layoutHorizontal="true"
+        launcher:matchTextInsetWithQuery="true" />
+
+    <LinearLayout
+        android:id="@+id/text_rows"
+        style="@style/AllAppsSearchResult"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_weight="1.0"
+        android:orientation="horizontal"
+        android:paddingStart="@dimen/dynamic_grid_edge_margin"
+        android:paddingTop="@dimen/dynamic_grid_edge_margin"
+        android:paddingEnd="@dimen/dynamic_grid_edge_margin"
+        android:paddingBottom="@dimen/dynamic_grid_edge_margin"
+        android:singleLine="true">
+
+        <TextView
+            android:id="@+id/title"
+            style="@style/AllAppsSearchResult"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:gravity="start|center"
+            android:maxLines="1"
+            android:paddingEnd="4dp"
+            android:singleLine="true"
+            android:textAlignment="viewStart"
+            android:textColor="?android:textColorPrimary"
+            android:textSize="@dimen/search_result_hero_title_size" />
+
+        <TextView
+            android:id="@+id/delimeter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="start|center"
+            android:maxLines="1"
+            android:text="•"
+            android:textColor="?android:textColorPrimary"
+            android:textSize="@dimen/search_result_hero_subtitle_size"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/subtitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:paddingStart="4dp"
+            android:singleLine="true"
+            android:textColor="?android:textColorSecondary"
+            android:textSize="@dimen/search_result_hero_subtitle_size" />
+    </LinearLayout>
+</app.lawnchair.allapps.SearchResultIconRow>
