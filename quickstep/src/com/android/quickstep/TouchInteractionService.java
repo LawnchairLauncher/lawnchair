@@ -86,6 +86,7 @@ import com.android.quickstep.inputconsumers.OneHandedModeInputConsumer;
 import com.android.quickstep.inputconsumers.OtherActivityInputConsumer;
 import com.android.quickstep.inputconsumers.OverviewInputConsumer;
 import com.android.quickstep.inputconsumers.OverviewWithoutFocusInputConsumer;
+import com.android.quickstep.inputconsumers.ProgressDelegateInputConsumer;
 import com.android.quickstep.inputconsumers.ResetGestureInputConsumer;
 import com.android.quickstep.inputconsumers.ScreenPinnedInputConsumer;
 import com.android.quickstep.inputconsumers.SysUiOverlayInputConsumer;
@@ -114,6 +115,7 @@ import java.io.FileDescriptor;
 import java.io.PrintWriter;
 import java.util.Arrays;
 import java.util.LinkedList;
+import java.util.function.Function;
 
 /**
  * Service connected by system-UI for handling touch interaction.
@@ -290,6 +292,13 @@ public class TouchInteractionService extends Service
         public OverviewCommandHelper getOverviewCommandHelper() {
             return mOverviewCommandHelper;
         }
+
+        /**
+         * Sets a proxy to bypass swipe up behavior
+         */
+        public void setSwipeUpProxy(Function<GestureState, AnimatedFloat> proxy) {
+            mSwipeUpProxyProvider = proxy != null ? proxy : (i -> null);
+        }
     }
 
     private static boolean sConnected = false;
@@ -328,6 +337,7 @@ public class TouchInteractionService extends Service
     private DisplayManager mDisplayManager;
 
     private TaskbarManager mTaskbarManager;
+    private Function<GestureState, AnimatedFloat> mSwipeUpProxyProvider = i -> null;
 
     @Override
     public void onCreate() {
@@ -636,6 +646,12 @@ public class TouchInteractionService extends Service
 
     private InputConsumer newConsumer(GestureState previousGestureState,
             GestureState newGestureState, MotionEvent event) {
+        AnimatedFloat progressProxy = mSwipeUpProxyProvider.apply(mGestureState);
+        if (progressProxy != null) {
+            return new ProgressDelegateInputConsumer(this, mTaskAnimationManager,
+                    mGestureState, mInputMonitorCompat, progressProxy);
+        }
+
         boolean canStartSystemGesture = mDeviceState.canStartSystemGesture();
 
         if (!mDeviceState.isUserUnlocked()) {

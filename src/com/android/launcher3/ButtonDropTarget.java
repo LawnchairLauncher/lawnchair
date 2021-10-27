@@ -108,8 +108,8 @@ public abstract class ButtonDropTarget extends TextView
         // We do not set the drawable in the xml as that inflates two drawables corresponding to
         // drawableLeft and drawableStart.
         mDrawable = getContext().getDrawable(resId).mutate();
-        mDrawable.setBounds(0, 0, mDrawableSize, mDrawableSize);
         mDrawable.setTintList(getTextColors());
+        centerIcon();
         setCompoundDrawablesRelative(mDrawable, null, null, null);
     }
 
@@ -278,7 +278,7 @@ public abstract class ButtonDropTarget extends TextView
         }
 
         final int top = to.top + (getMeasuredHeight() - height) / 2;
-        final int bottom = top +  height;
+        final int bottom = top + height;
 
         to.set(left, top, right, bottom);
 
@@ -288,6 +288,12 @@ public abstract class ButtonDropTarget extends TextView
         to.offset(xOffset, yOffset);
 
         return to;
+    }
+
+    private void centerIcon() {
+        int x = mTextVisible ? 0
+                : (getWidth() - getPaddingLeft() - getPaddingRight()) / 2 - mDrawableSize / 2;
+        mDrawable.setBounds(x, 0, x + mDrawableSize, mDrawableSize);
     }
 
     @Override
@@ -300,10 +306,17 @@ public abstract class ButtonDropTarget extends TextView
         if (mTextVisible != isVisible || !TextUtils.equals(newText, getText())) {
             mTextVisible = isVisible;
             setText(newText);
+            centerIcon();
             setCompoundDrawablesRelative(mDrawable, null, null, null);
             int drawablePadding = mTextVisible ? mDrawablePadding : 0;
             setCompoundDrawablePadding(drawablePadding);
         }
+    }
+
+    @Override
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+        super.onSizeChanged(w, h, oldw, oldh);
+        centerIcon();
     }
 
     public void setToolTipLocation(int location) {

@@ -25,6 +25,7 @@ import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_Q
 import static com.android.systemui.shared.system.WindowManagerWrapper.ITYPE_BOTTOM_TAPPABLE_ELEMENT;
 import static com.android.systemui.shared.system.WindowManagerWrapper.ITYPE_EXTRA_NAVIGATION_BAR;
 
+import android.animation.AnimatorSet;
 import android.app.ActivityOptions;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
@@ -328,10 +329,9 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
         mControllers.navbarButtonsViewController.updateStateForSysuiFlags(systemUiStateFlags);
         mControllers.taskbarViewController.setImeIsVisible(
                 mControllers.navbarButtonsViewController.isImeVisible());
-        boolean panelExpanded = (systemUiStateFlags & SYSUI_STATE_NOTIFICATION_PANEL_EXPANDED) != 0;
-        boolean inSettings = (systemUiStateFlags & SYSUI_STATE_QUICK_SETTINGS_EXPANDED) != 0;
-        mControllers.taskbarViewController.setNotificationShadeIsExpanded(
-                panelExpanded || inSettings);
+        int shadeExpandedFlags = SYSUI_STATE_NOTIFICATION_PANEL_EXPANDED
+                | SYSUI_STATE_QUICK_SETTINGS_EXPANDED;
+        onNotificationShadeExpandChanged((systemUiStateFlags & shadeExpandedFlags) != 0);
         mControllers.taskbarViewController.setRecentsButtonDisabled(
                 mControllers.navbarButtonsViewController.isRecentsDisabled());
         mControllers.stashedHandleViewController.setIsHomeButtonDisabled(
@@ -339,6 +339,21 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
         mControllers.taskbarKeyguardController.updateStateForSysuiFlags(systemUiStateFlags);
         mControllers.taskbarStashController.updateStateForSysuiFlags(systemUiStateFlags);
         mControllers.taskbarScrimViewController.updateStateForSysuiFlags(systemUiStateFlags);
+    }
+
+    /**
+     * Hides the taskbar icons and background when the notication shade is expanded.
+     */
+    private void onNotificationShadeExpandChanged(boolean isExpanded) {
+        float alpha = isExpanded ? 0 : 1;
+        AnimatorSet anim = new AnimatorSet();
+        anim.play(mControllers.taskbarViewController.getTaskbarIconAlpha().getProperty(
+                TaskbarViewController.ALPHA_INDEX_NOTIFICATION_EXPANDED).animateToValue(alpha));
+        if (!isThreeButtonNav()) {
+            anim.play(mControllers.taskbarDragLayerController.getNotificationShadeBgTaskbar()
+                    .animateToValue(alpha));
+        }
+        anim.start();
     }
 
     public void onRotationProposal(int rotation, boolean isValid) {

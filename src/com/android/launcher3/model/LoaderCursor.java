@@ -190,6 +190,7 @@ public class LoaderCursor extends CursorWrapper {
         String resourceName = itemType == LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT
                 ? getString(iconResourceIndex) : null;
         byte[] iconBlob = itemType == LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT
+                || itemType == Favorites.ITEM_TYPE_DEEP_SHORTCUT
                 || restoreFlag != 0
                 ? getBlob(iconIndex) : null;
 
