@@ -40,6 +40,7 @@
     <dimen name="qsb_icon_width">56dp</dimen>
     <dimen name="search_widget_top_shift">16dp</dimen>
     <dimen name="search_widget_hotseat_height">56dp</dimen>
+    <dimen name="qsb_widget_vertical_padding">6dp</dimen>
 
     <!-- search -->
     <dimen name="search_box_container_height">60dp</dimen>

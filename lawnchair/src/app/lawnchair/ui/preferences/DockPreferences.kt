@@ -16,7 +16,7 @@
 
 package app.lawnchair.ui.preferences
 
-import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavGraphBuilder
@@ -38,11 +38,28 @@ fun NavGraphBuilder.dockGraph(route: String) {
 fun DockPreferences() {
     val prefs = preferenceManager()
     PreferenceLayout(label = stringResource(id = R.string.dock_label)) {
-        PreferenceGroup(isFirstChild = true, heading = stringResource(id = R.string.general_label)) {
+        PreferenceGroup(
+            isFirstChild = true,
+            heading = stringResource(id = R.string.search_bar_label)
+        ) {
+            val enableHotseatQsbAdapter = prefs.enableHotseatQsb.getAdapter()
             SwitchPreference(
-                adapter = prefs.enableHotseatQsb.getAdapter(),
+                adapter = enableHotseatQsbAdapter,
                 label = stringResource(id = R.string.hotseat_qsb_label),
             )
+            AnimatedVisibility(
+                visible = enableHotseatQsbAdapter.state.value,
+                enter = expandVertically() + fadeIn(),
+                exit = shrinkVertically() + fadeOut()
+            ) {
+                SliderPreference(
+                    label = stringResource(id = R.string.corner_radius_label),
+                    adapter = prefs.hotseatQsbCornerRadius.getAdapter(),
+                    step = 0.1F,
+                    valueRange = 0F..1F,
+                    showAsPercentage = true
+                )
+            }
         }
         PreferenceGroup(heading = stringResource(id = R.string.grid)) {
             SliderPreference(

@@ -3,6 +3,8 @@ package app.lawnchair.qsb
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.drawable.PaintDrawable
 import android.util.AttributeSet
 import android.widget.FrameLayout
 import android.widget.ImageView
@@ -24,26 +26,33 @@ class QsbLayout(context: Context, attrs: AttributeSet?) : FrameLayout(context, a
 
     private val activity: ActivityContext = ActivityContext.lookupContext<BaseActivity>(context)
     private lateinit var gIcon: ImageView
-    private lateinit var assistantIcon: AssistantIconView
+    private lateinit var micIcon: AssistantIconView
     private lateinit var lensIcon: ImageView
+    private lateinit var inner: FrameLayout
+    private lateinit var preferenceManager: PreferenceManager
 
     override fun onFinishInflate() {
         super.onFinishInflate()
+
         gIcon = ViewCompat.requireViewById<ImageView>(this, R.id.g_icon)
-        assistantIcon = ViewCompat.requireViewById(this, R.id.mic_icon)
+        micIcon = ViewCompat.requireViewById(this, R.id.mic_icon)
         lensIcon = ViewCompat.requireViewById(this, R.id.lens_icon)
+        inner = ViewCompat.requireViewById(this, R.id.inner)
+        preferenceManager = PreferenceManager.getInstance(context)
+
         setUpMainSearch()
+        setUpBackground()
+        clipIconRipples()
 
         val searchPackage = getSearchPackageName(context)
         val isGoogle = searchPackage == GOOGLE_PACKAGE
         if (isGoogle) {
-            val prefs = PreferenceManager.getInstance(context)
-            prefs.themedIcons.subscribeValues(this) {
+            preferenceManager.themedIcons.subscribeValues(this) {
                 setThemedIconEnabled(it)
             }
             setUpLensIcon()
         } else {
-            assistantIcon.setIcon(isGoogle = false, themed = false)
+            micIcon.setIcon(isGoogle = false, themed = false)
             with(gIcon) {
                 setImageResource(R.drawable.ic_qsb_search)
                 setColorFilter(Themes.getColorAccent(context))
@@ -62,22 +71,19 @@ class QsbLayout(context: Context, attrs: AttributeSet?) : FrameLayout(context, a
             dp.numShownHotseatIcons
         )
         val iconSize = (dp.iconSizePx * 0.92f).toInt()
-        val width = requestedWidth - (cellWidth - iconSize)
+        val widthReduction = cellWidth - iconSize
+        val width = requestedWidth - widthReduction
         setMeasuredDimension(width, height)
 
         children.forEach { child ->
-            measureChildWithMargins(child, widthMeasureSpec, 0, heightMeasureSpec, 0)
+            measureChildWithMargins(child, widthMeasureSpec, widthReduction, heightMeasureSpec, 0)
         }
     }
 
     private fun setThemedIconEnabled(themed: Boolean) {
-        val backgroundColor = when {
-            themed -> Themes.getColorBackgroundFloating(context)
-            else -> Themes.getAttrColor(context, R.attr.qsbFillColor)
-        }
-        background.setTint(backgroundColor)
+        setUpBackground(themed)
         gIcon.setThemedIconResource(R.drawable.ic_super_g_color, themed)
-        assistantIcon.setIcon(isGoogle = true, themed)
+        micIcon.setIcon(isGoogle = true, themed)
         lensIcon.setThemedIconResource(R.drawable.ic_lens_color, themed)
     }
 
@@ -111,6 +117,27 @@ class QsbLayout(context: Context, attrs: AttributeSet?) : FrameLayout(context, a
         }
     }
 
+    private fun clipIconRipples() {
+        val cornerRadius = getCornerRadius(context, preferenceManager)
+        listOf(lensIcon, micIcon).forEach {
+            it.clipToOutline = true
+            it.background = PaintDrawable(Color.TRANSPARENT).apply {
+                setCornerRadius(cornerRadius)
+            }
+        }
+    }
+
+    private fun setUpBackground(themed: Boolean = false) {
+        val cornerRadius = getCornerRadius(context, preferenceManager)
+        val color = if (themed) Themes.getColorBackgroundFloating(context) else Themes.getAttrColor(context, R.attr.qsbFillColor)
+        with (inner) {
+            clipToOutline = true
+            background = PaintDrawable(color).apply {
+                setCornerRadius(cornerRadius)
+            }
+        }
+    }
+
     companion object {
         private const val GOOGLE_PACKAGE = "com.google.android.googlequicksearchbox"
         private const val LENS_PACKAGE = "com.google.ar.lens"
@@ -132,6 +159,17 @@ class QsbLayout(context: Context, attrs: AttributeSet?) : FrameLayout(context, a
                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
                 .setPackage(searchPackage)
             return context.packageManager.resolveActivity(intent, 0) != null
+        }
+
+        private fun getCornerRadius(
+            context: Context,
+            preferenceManager: PreferenceManager
+        ): Float {
+            val resources = context.resources
+            val qsbWidgetHeight = resources.getDimension(R.dimen.qsb_widget_height)
+            val qsbWidgetPadding = resources.getDimension(R.dimen.qsb_widget_vertical_padding)
+            val innerHeight = qsbWidgetHeight - 2 * qsbWidgetPadding
+            return innerHeight / 2 * preferenceManager.hotseatQsbCornerRadius.get()
         }
     }
 }

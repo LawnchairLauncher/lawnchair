@@ -119,6 +119,7 @@ class PreferenceManager private constructor(private val context: Context) : Base
 
     val enableIconSelection = BoolPref("pref_enableIconSelection", false)
     val themedIcons = BoolPref("themed_icons", false)
+    val hotseatQsbCornerRadius = FloatPref("pref_hotseatQsbCornerRadius", 1F, recreate)
 
     init {
         sp.registerOnSharedPreferenceChangeListener(this)

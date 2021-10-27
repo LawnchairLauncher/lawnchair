@@ -188,4 +188,6 @@
     <string name="bugreport_group_summary_multiple">Multiple new reports.</string>
 
     <string name="themed_icon_title">Themed Icons</string>
+    <string name="corner_radius_label">Corner Radius</string>
+    <string name="search_bar_label">Search Bar</string>
 </resources>
