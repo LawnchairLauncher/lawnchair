@@ -1,6 +1,6 @@
 package app.lawnchair.ui.preferences.components
 
-import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -16,7 +16,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.unit.dp
 
 @Composable
@@ -25,26 +25,30 @@ fun Chip(
     selected: Boolean,
     onClick: () -> Unit
 ) {
-    val backgroundColor by animateColorAsState(
-        targetValue = if (selected) {
-            MaterialTheme.colors.primary.copy(alpha = 0.08F)
-        } else {
-            Color.Transparent
-        }
+    val selectedProgress by animateFloatAsState(targetValue = if (selected) 1f else 0f)
+    Chip(
+        label = label,
+        selectedProgress = selectedProgress,
+        onClick = onClick
     )
-    val textColor by animateColorAsState(
-        targetValue = if (selected) {
-            MaterialTheme.colors.primary
-        } else {
-            MaterialTheme.colors.onBackground.copy(alpha = ContentAlpha.medium)
-        }
+}
+
+@Composable
+fun Chip(
+    label: String,
+    selectedProgress: Float,
+    onClick: () -> Unit
+) {
+    val backgroundColor = MaterialTheme.colors.primary.copy(alpha = 0.08f * selectedProgress)
+    val textColor = lerp(
+        MaterialTheme.colors.onBackground.copy(alpha = ContentAlpha.medium),
+        MaterialTheme.colors.primary,
+        selectedProgress
     )
-    val borderColor by animateColorAsState(
-        targetValue = if (selected) {
-            MaterialTheme.colors.primary
-        } else {
-            MaterialTheme.colors.onBackground.copy(alpha = 0.12F)
-        }
+    val borderColor = lerp(
+        MaterialTheme.colors.onBackground.copy(alpha = 0.12F),
+        MaterialTheme.colors.primary,
+        selectedProgress
     )
 
     Box(
