@@ -57,7 +57,6 @@ import com.android.launcher3.statehandlers.DepthController;
 import com.android.launcher3.statemanager.StateManager.StateHandler;
 import com.android.launcher3.taskbar.LauncherTaskbarUIController;
 import com.android.launcher3.taskbar.TaskbarManager;
-import com.android.launcher3.taskbar.TaskbarStateHandler;
 import com.android.launcher3.uioverrides.RecentsViewStateController;
 import com.android.launcher3.util.ActivityOptionsWrapper;
 import com.android.launcher3.util.DisplayController;
@@ -114,8 +113,6 @@ public abstract class BaseQuickstepLauncher extends Launcher
     private @Nullable TaskbarManager mTaskbarManager;
     private @Nullable OverviewCommandHelper mOverviewCommandHelper;
     private @Nullable LauncherTaskbarUIController mTaskbarUIController;
-
-    private final TaskbarStateHandler mTaskbarStateHandler = new TaskbarStateHandler(this);
 
     // Will be updated when dragging from taskbar.
     private @Nullable DragOptions mNextWorkspaceDragOptions = null;
@@ -368,15 +365,10 @@ public abstract class BaseQuickstepLauncher extends Launcher
         out.add(getDepthController());
         out.add(new RecentsViewStateController(this));
         out.add(new BackButtonAlphaHandler(this));
-        out.add(getTaskbarStateHandler());
     }
 
     public DepthController getDepthController() {
         return mDepthController;
-    }
-
-    public TaskbarStateHandler getTaskbarStateHandler() {
-        return mTaskbarStateHandler;
     }
 
     @Nullable
