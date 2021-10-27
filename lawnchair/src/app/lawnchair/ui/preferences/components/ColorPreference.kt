@@ -37,7 +37,6 @@ fun ColorPreference(
     val selectedEntry = dynamicEntries.firstOrNull { it.value == selectedColor }
         ?: staticEntries.firstOrNull { it.value == selectedColor }
     val defaultTabIndex = if (dynamicEntries.any { it.value == selectedColor }) 0 else 1
-    var selectedTabIndex by remember { mutableStateOf(value = defaultTabIndex) }
     val bottomSheetState = rememberBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
     val coroutineScope = rememberCoroutineScope()
     val description = selectedEntry?.label?.invoke()
@@ -58,6 +57,7 @@ fun ColorPreference(
     )
 
     BottomSheet(sheetState = bottomSheetState) {
+        var selectedTabIndex by remember { mutableStateOf(value = defaultTabIndex) }
         AlertBottomSheetContent(
             title = { Text(text = label) },
             buttons = {
