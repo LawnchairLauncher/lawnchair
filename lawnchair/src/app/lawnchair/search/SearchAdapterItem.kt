@@ -14,9 +14,10 @@ data class SearchAdapterItem(
             pos: Int,
             target: SearchTargetCompat,
             background: SearchItemBackground?
-        ): SearchAdapterItem {
+        ): SearchAdapterItem? {
+            val type = LawnchairSearchAdapterProvider.viewTypeMap[target.layoutType] ?: return null
             return SearchAdapterItem(target, background).apply {
-                viewType = LawnchairSearchAdapterProvider.viewTypeMap[target.layoutType]!!
+                viewType = type
                 position = pos
             }
         }

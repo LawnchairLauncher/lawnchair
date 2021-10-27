@@ -4,55 +4,59 @@ import android.content.Context
 import android.content.pm.ShortcutInfo
 import android.graphics.drawable.Icon
 import android.os.Bundle
+import android.os.Handler
 import android.os.Process
-import app.lawnchair.allapps.SearchItemBackground
 import app.lawnchair.allapps.SearchResultView
 import app.lawnchair.launcher
 import app.lawnchair.preferences.PreferenceManager
-import com.android.app.search.LayoutType
+import com.android.launcher3.LauncherAppState
 import com.android.launcher3.R
-import com.android.launcher3.allapps.AllAppsGridAdapter.AdapterItem
-import com.android.launcher3.allapps.search.DefaultAppSearchAlgorithm
+import com.android.launcher3.allapps.AllAppsGridAdapter
+import com.android.launcher3.model.AllAppsList
+import com.android.launcher3.model.BaseModelUpdateTask
+import com.android.launcher3.model.BgDataModel
 import com.android.launcher3.model.data.AppInfo
 import com.android.launcher3.popup.PopupPopulator
+import com.android.launcher3.search.SearchCallback
 import com.android.launcher3.search.StringMatcherUtility
 import com.android.launcher3.shortcuts.ShortcutRequest
 import com.android.launcher3.util.ComponentKey
+import com.android.launcher3.util.Executors
 import com.android.launcher3.util.PackageManagerHelper
 import me.xdrop.fuzzywuzzy.FuzzySearch
 import me.xdrop.fuzzywuzzy.algorithms.WeightedRatio
 import java.util.*
 
-class LawnchairAppSearchAlgorithm(private val context: Context) :
-    DefaultAppSearchAlgorithm(context) {
+class LawnchairAppSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm(context) {
 
+    private val appState = LauncherAppState.getInstance(context)
+    private val resultHandler = Handler(Executors.MAIN_EXECUTOR.looper)
     private val useFuzzySearch by PreferenceManager.getInstance(context).useFuzzySearch
-    private val iconBackground = SearchItemBackground(
-        context, showBackground = false,
-        roundTop = true, roundBottom = true
-    )
-    private val normalBackground = SearchItemBackground(
-        context, showBackground = true,
-        roundTop = true, roundBottom = true
-    )
-    private val topBackground = SearchItemBackground(
-        context, showBackground = true,
-        roundTop = true, roundBottom = false
-    )
-    private val centerBackground = SearchItemBackground(
-        context, showBackground = true,
-        roundTop = false, roundBottom = false
-    )
-    private val bottomBackground = SearchItemBackground(
-        context, showBackground = true,
-        roundTop = false, roundBottom = true
-    )
     private val marketSearchComponent = resolveMarketSearchActivity()
 
-    override fun getResult(
+    override fun doSearch(query: String, callback: SearchCallback<AllAppsGridAdapter.AdapterItem>) {
+        appState.model.enqueueModelUpdateTask(object : BaseModelUpdateTask() {
+            override fun execute(
+                app: LauncherAppState?,
+                dataModel: BgDataModel?,
+                apps: AllAppsList?
+            ) {
+                val result = getResult(apps!!.data, query)
+                resultHandler.post { callback.onSearchResult(query, result) }
+            }
+        })
+    }
+
+    override fun cancel(interruptActiveRequests: Boolean) {
+        if (interruptActiveRequests) {
+            resultHandler.removeCallbacksAndMessages(null)
+        }
+    }
+
+    private fun getResult(
         apps: MutableList<AppInfo>,
         query: String
-    ): ArrayList<AdapterItem> {
+    ): ArrayList<AllAppsGridAdapter.AdapterItem> {
         val appResults = if (useFuzzySearch) {
             fuzzySearch(apps, query)
         } else {
@@ -70,21 +74,7 @@ class LawnchairAppSearchAlgorithm(private val context: Context) :
         if (results.isEmpty()) {
             results.add(getEmptySearchItem(query))
         }
-        val items = results
-            .mapIndexed { index, target ->
-                val isFirst = index == 0
-                val isLast = index == results.lastIndex
-                val isIcon = target.layoutType == LayoutType.ICON_SINGLE_VERTICAL_TEXT
-                val background = when {
-                    isIcon -> iconBackground
-                    isFirst && isLast -> normalBackground
-                    isFirst -> topBackground
-                    isLast -> bottomBackground
-                    else -> centerBackground
-                }
-                SearchAdapterItem.createAdapterItem(index, target, background)
-            }
-        return ArrayList(LawnchairSearchAdapterProvider.decorateSearchResults(items))
+        return transformSearchResults(results)
     }
 
     private fun getShortcuts(app: AppInfo): List<ShortcutInfo> {
@@ -102,7 +92,7 @@ class LawnchairAppSearchAlgorithm(private val context: Context) :
 
         return apps.asSequence()
             .filter { StringMatcherUtility.matches(queryTextLower, it.title.toString(), matcher) }
-            .take(MAX_RESULTS_COUNT)
+            .take(maxResultsCount)
             .toList()
     }
 
@@ -112,7 +102,7 @@ class LawnchairAppSearchAlgorithm(private val context: Context) :
             { it.title.toString() }, WeightedRatio(), 65
         )
 
-        return matches.take(MAX_RESULTS_COUNT)
+        return matches.take(maxResultsCount)
             .map { it.referent }
     }
 
@@ -142,5 +132,9 @@ class LawnchairAppSearchAlgorithm(private val context: Context) :
             putBoolean(SearchResultView.EXTRA_HIDE_SUBTITLE, true)
         }
         return createSearchTarget(id, action, extras)
+    }
+
+    companion object {
+        private const val maxResultsCount = 5
     }
 }

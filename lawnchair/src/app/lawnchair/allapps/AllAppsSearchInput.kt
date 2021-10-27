@@ -22,6 +22,7 @@ import androidx.core.widget.addTextChangedListener
 import app.lawnchair.launcher
 import app.lawnchair.preferences.PreferenceManager
 import app.lawnchair.search.LawnchairAppSearchAlgorithm
+import app.lawnchair.search.LawnchairSearchAlgorithm
 import com.android.launcher3.Insettable
 import com.android.launcher3.LauncherState
 import com.android.launcher3.R
@@ -139,7 +140,7 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) : LinearLayout(
         apps = appsView.apps
         this.appsView = appsView
         searchBarController.initialize(
-            LawnchairAppSearchAlgorithm(launcher),
+            LawnchairSearchAlgorithm.create(context),
             input, launcher, this
         )
         input.initialize(appsView)
