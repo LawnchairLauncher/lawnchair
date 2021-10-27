@@ -7,6 +7,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -16,10 +17,14 @@ import app.lawnchair.ui.AlertBottomSheetContent
 import app.lawnchair.ui.preferences.components.*
 import app.lawnchair.ui.theme.lightenColor
 import com.android.launcher3.R
+import com.google.accompanist.pager.HorizontalPager
+import com.google.accompanist.pager.rememberPagerState
 import kotlinx.coroutines.launch
 
 @Composable
-@OptIn(ExperimentalAnimationApi::class, ExperimentalMaterialApi::class)
+@OptIn(ExperimentalAnimationApi::class, ExperimentalMaterialApi::class,
+    com.google.accompanist.pager.ExperimentalPagerApi::class
+)
 fun ColorPreference(
     adapter: PreferenceAdapter<ColorOption>,
     label: String,
@@ -50,7 +55,9 @@ fun ColorPreference(
     )
 
     BottomSheet(sheetState = bottomSheetState) {
-        var selectedTabIndex by remember { mutableStateOf(value = defaultTabIndex) }
+        val pagerState = rememberPagerState(defaultTabIndex)
+        val scope = rememberCoroutineScope()
+        val scrollToPage = { page: Int -> scope.launch { pagerState.animateScrollToPage(page) } }
         AlertBottomSheetContent(
             modifier = Modifier
                 .verticalScroll(rememberScrollState()),
@@ -71,23 +78,26 @@ fun ColorPreference(
                 ) {
                     Chip(
                         label = stringResource(id = R.string.dynamic),
-                        selected = selectedTabIndex == 0,
-                        onClick = { selectedTabIndex = 0 }
+                        selected = pagerState.currentPage == 0,
+                        onClick = { scrollToPage(0) }
                     )
                     Chip(
                         label = stringResource(id = R.string.presets),
-                        selected = selectedTabIndex == 1,
-                        onClick = { selectedTabIndex = 1 }
+                        selected = pagerState.currentPage == 1,
+                        onClick = { scrollToPage(1) }
                     )
                 }
-                Box(
+                HorizontalPager(
+                    count = 2,
                     modifier = Modifier
                         .pagerHeight(
                             dynamicCount = dynamicEntries.size,
                             staticCount = staticEntries.size
-                        )
-                ) {
-                    when (selectedTabIndex) {
+                        ),
+                    state = pagerState,
+                    verticalAlignment = Alignment.Top
+                ) { page ->
+                    when (page) {
                         0 -> {
                             PresetsList(dynamicEntries, adapter)
                         }
@@ -116,24 +126,30 @@ private fun PresetsList(
     dynamicEntries: List<ColorPreferenceEntry<ColorOption>>,
     adapter: PreferenceAdapter<ColorOption>,
 ) {
-    DividerColumn(modifier = Modifier.padding(top = 16.dp)) {
-        dynamicEntries.map { entry ->
-            key(entry) {
-                PreferenceTemplate(
-                    title = { Text(text = entry.label()) },
-                    verticalPadding = 12.dp,
-                    modifier = Modifier.clickable { adapter.onChange(entry.value) },
-                    startWidget = {
-                        RadioButton(
-                            selected = entry.value == adapter.state.value,
-                            onClick = null
-                        )
-                        ColorDot(
-                            entry = entry,
-                            modifier = Modifier.padding(start = 16.dp)
-                        )
-                    }
-                )
+    Box(
+        modifier = Modifier
+            .fillMaxHeight(),
+        contentAlignment = Alignment.TopStart
+    ) {
+        DividerColumn(modifier = Modifier.padding(top = 16.dp)) {
+            dynamicEntries.map { entry ->
+                key(entry) {
+                    PreferenceTemplate(
+                        title = { Text(text = entry.label()) },
+                        verticalPadding = 12.dp,
+                        modifier = Modifier.clickable { adapter.onChange(entry.value) },
+                        startWidget = {
+                            RadioButton(
+                                selected = entry.value == adapter.state.value,
+                                onClick = null
+                            )
+                            ColorDot(
+                                entry = entry,
+                                modifier = Modifier.padding(start = 16.dp)
+                            )
+                        }
+                    )
+                }
             }
         }
     }
