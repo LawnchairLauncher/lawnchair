@@ -1,8 +1,8 @@
 package dev.kdrag0n.monet.theme
 
-import androidx.compose.ui.graphics.Color as ComposeColor
 import app.lawnchair.theme.toAndroidColor
 import dev.kdrag0n.colorkt.Color
+import androidx.compose.ui.graphics.Color as ComposeColor
 
 typealias ColorSwatch = Map<Int, Color>
 
@@ -22,7 +22,8 @@ abstract class ColorScheme {
     fun tertiary(tonal: Int) = resolveComposeColor(accent3, tonal)
 
     private fun resolveComposeColor(swatch: ColorSwatch, tonal: Int): ComposeColor {
-        return swatch[1000 - 10 * tonal]!!.toComposeColor()
+        val lum = 1000 - 10 * tonal
+        return swatch[lum]!!.toComposeColor()
     }
 
     // Helpers

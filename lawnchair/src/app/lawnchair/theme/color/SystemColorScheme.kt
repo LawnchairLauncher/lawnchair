@@ -17,7 +17,7 @@ class SystemColorScheme(private val context: Context) : ColorScheme() {
     override val accent3 = systemPaletteMap("accent3")
 
     private fun systemPaletteMap(paletteName: String): Map<Int, Color> {
-        val lums = listOf(0, 50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000)
+        val lums = listOf(0, 10, 50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000)
         return lums.associateWith { loadSystemColor(paletteName, it) }
     }
 
