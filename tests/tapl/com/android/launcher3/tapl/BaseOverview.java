@@ -54,18 +54,14 @@ public class BaseOverview extends LauncherInstrumentation.VisibleContainer {
     }
 
     private void flingForwardImpl() {
-        flingForwardImpl(0);
-    }
-
-    private void flingForwardImpl(int rightMargin) {
         try (LauncherInstrumentation.Closable c =
                      mLauncher.addContextLayer("want to fling forward in overview")) {
             LauncherInstrumentation.log("Overview.flingForward before fling");
             final UiObject2 overview = verifyActiveContainer();
             final int leftMargin =
                     mLauncher.getTargetInsets().left + mLauncher.getEdgeSensitivityWidth();
-            mLauncher.scroll(overview, Direction.LEFT, new Rect(leftMargin + 1, 0, rightMargin, 0),
-                    20, false);
+            mLauncher.scroll(overview, Direction.LEFT, new Rect(leftMargin + 1, 0, 0, 0), 20,
+                    false);
             try (LauncherInstrumentation.Closable c2 =
                          mLauncher.addContextLayer("flung forwards")) {
                 verifyActiveContainer();
@@ -131,7 +127,7 @@ public class BaseOverview extends LauncherInstrumentation.VisibleContainer {
 
             OverviewTask task = getCurrentTask();
             mLauncher.assertNotNull("current task is null", task);
-            flingForwardImpl(task.getTaskCenterX());
+            mLauncher.scrollLeftByDistance(verifyActiveContainer(), task.getVisibleWidth());
 
             try (LauncherInstrumentation.Closable c2 =
                          mLauncher.addContextLayer("scrolled task off screen")) {
