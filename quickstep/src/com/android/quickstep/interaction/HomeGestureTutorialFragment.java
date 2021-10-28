@@ -61,7 +61,7 @@ public class HomeGestureTutorialFragment extends TutorialFragment {
             @Override
             public void onAnimationEnd(Animator animation) {
                 super.onAnimationEnd(animation);
-                controller.resetFakeTaskView();
+                controller.resetFakeTaskView(true);
             }
         });
         ArrayList<Animator> animators = new ArrayList<>();
@@ -76,7 +76,7 @@ public class HomeGestureTutorialFragment extends TutorialFragment {
             @Override
             public void onAnimationCancel(Animator animation) {
                 super.onAnimationCancel(animation);
-                controller.resetFakeTaskView();
+                controller.resetFakeTaskView(true);
             }
         });
         finalAnimation.playSequentially(animators);

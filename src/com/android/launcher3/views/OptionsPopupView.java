@@ -40,6 +40,7 @@ import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
 import androidx.core.content.ContextCompat;
 
+import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.R;
@@ -220,6 +221,11 @@ public class OptionsPopupView extends ArrowPopup<Launcher>
             Toast.makeText(launcher, R.string.safemode_widget_error, Toast.LENGTH_SHORT).show();
             return null;
         } else {
+            AbstractFloatingView floatingView = AbstractFloatingView.getTopOpenViewWithType(
+                    launcher, TYPE_WIDGETS_FULL_SHEET);
+            if (floatingView != null) {
+                return (WidgetsFullSheet) floatingView;
+            }
             return WidgetsFullSheet.show(launcher, true /* animated */);
         }
     }
@@ -279,7 +285,7 @@ public class OptionsPopupView extends ArrowPopup<Launcher>
         public final OnLongClickListener clickListener;
 
         public OptionItem(Context context, int labelRes, int iconRes, EventEnum eventId,
-                          OnLongClickListener clickListener) {
+                OnLongClickListener clickListener) {
             this.labelRes = labelRes;
             this.label = context.getText(labelRes);
             this.icon = ContextCompat.getDrawable(context, iconRes);
@@ -288,7 +294,7 @@ public class OptionsPopupView extends ArrowPopup<Launcher>
         }
 
         public OptionItem(CharSequence label, Drawable icon, EventEnum eventId,
-                          OnLongClickListener clickListener) {
+                OnLongClickListener clickListener) {
             this.labelRes = 0;
             this.label = label;
             this.icon = icon;
