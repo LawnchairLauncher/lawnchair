@@ -1,11 +1,13 @@
 package app.lawnchair.allapps
 
 import android.content.Context
+import android.text.TextUtils
 import android.util.AttributeSet
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.view.ViewCompat
 import androidx.core.view.isVisible
+import app.lawnchair.allapps.SearchResultView.Companion.FLAG_HIDE_SUBTITLE
 import app.lawnchair.search.SearchTargetCompat
 import com.android.launcher3.R
 import com.android.launcher3.touch.ItemClickHandler
@@ -71,6 +73,16 @@ class SearchResultIconRow(context: Context, attrs: AttributeSet?) :
             tag = it
         }
         bindShortcuts(shortcuts)
+        setSubtitleText(target.searchAction?.subtitle)
+    }
+
+    private fun setSubtitleText(subtitleText: CharSequence?) {
+        if (TextUtils.isEmpty(subtitleText) || icon.hasFlag(FLAG_HIDE_SUBTITLE)) {
+            subtitle.isVisible = false
+        } else {
+            subtitle.text = subtitleText
+            subtitle.isVisible = true
+        }
     }
 
     private fun bindShortcuts(shortcuts: List<SearchTargetCompat>) {

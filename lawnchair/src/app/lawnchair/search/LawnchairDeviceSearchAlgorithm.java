@@ -42,7 +42,12 @@ public class LawnchairDeviceSearchAlgorithm extends LawnchairSearchAlgorithm {
             extras.putInt("launcher.maxInlineIcons", 3);
             extras.putString("settings_source", "superpacks_settings_source");
             extras.putString("tips_source", "superpacks_tips_source");
-            SearchContext searchContext = new SearchContext(65535, 200, extras);
+            int resultTypes = 1 /* apps */
+                    | 2 /* shortcuts */
+                    | 1564 /* somehow also shortcuts */
+                    | 4 /* people */
+                    | 8192 /* pixel tips */;
+            SearchContext searchContext = new SearchContext(resultTypes, 200, extras);
             SearchUiManager searchManager = context.getSystemService(SearchUiManager.class);
             SearchSession searchSession = searchManager.createSearchSession(searchContext);
             MAIN_EXECUTOR.post(() -> mSearchSession = searchSession);
@@ -95,7 +100,7 @@ public class LawnchairDeviceSearchAlgorithm extends LawnchairSearchAlgorithm {
             if (!mCanceled) {
                 Log.d("DeviceSearchAlg", "=====");
                 List<SearchTargetCompat> targets = platformTargets.stream().map(SearchTargetCompat::wrap).collect(Collectors.toList());
-                targets.forEach(target -> Log.d("DeviceSearchAlg", "layout= " + target.getLayoutType() + ", id=" + target.getId()));
+                targets.forEach(target -> Log.d("DeviceSearchAlg", "type=" + target.getResultType() + ", layout=" + target.getLayoutType() + ", id=" + target.getId()));
                 Log.d("DeviceSearchAlg", "=====");
                 mCallback.onSearchResult(mQuery, transformSearchResults(targets));
             }

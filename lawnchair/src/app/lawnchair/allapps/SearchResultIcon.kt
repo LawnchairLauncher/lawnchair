@@ -6,6 +6,7 @@ import android.content.pm.PackageManager
 import android.content.pm.ShortcutInfo
 import android.os.UserHandle
 import android.util.AttributeSet
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isInvisible
@@ -127,7 +128,7 @@ class SearchResultIcon(context: Context, attrs: AttributeSet?) : BubbleTextView(
         }
         val extras = action.extras
         if (extras != null) {
-            if (extras.getBoolean("should_start_for_result")) {
+            if (extras.getBoolean("should_start_for_result") || target.resultType == 16 /* settings */) {
                 info.setFlags(FLAG_SHOULD_START_FOR_RESULT)
             } else if (extras.getBoolean("should_start")) {
                 info.setFlags(FLAG_SHOULD_START)
@@ -237,4 +238,6 @@ class SearchResultIcon(context: Context, attrs: AttributeSet?) : BubbleTextView(
         }
         return ItemLongClickListener.INSTANCE_ALL_APPS.onLongClick(v)
     }
+
+    fun hasFlag(flag: Int) = hasFlag(flags, flag)
 }
