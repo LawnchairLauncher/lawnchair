@@ -15,9 +15,6 @@
  */
 package com.android.launcher3.taskbar;
 
-import static android.view.View.INVISIBLE;
-import static android.view.View.VISIBLE;
-
 import android.content.ClipData;
 import android.content.ClipDescription;
 import android.content.Intent;
@@ -49,7 +46,6 @@ import com.android.launcher3.dragndrop.DragOptions;
 import com.android.launcher3.dragndrop.DragView;
 import com.android.launcher3.dragndrop.DraggableView;
 import com.android.launcher3.graphics.DragPreviewProvider;
-import com.android.launcher3.icons.FastBitmapDrawable;
 import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
@@ -65,6 +61,9 @@ public class TaskbarDragController extends DragController<TaskbarActivityContext
     private final int mDragIconSize;
     private final int[] mTempXY = new int[2];
 
+    // Initialized in init.
+    TaskbarControllers mControllers;
+
     // Where the initial touch was relative to the dragged icon.
     private int mRegistrationX;
     private int mRegistrationY;
@@ -75,6 +74,10 @@ public class TaskbarDragController extends DragController<TaskbarActivityContext
         super(activity);
         Resources resources = mActivity.getResources();
         mDragIconSize = resources.getDimensionPixelSize(R.dimen.taskbar_icon_drag_icon_size);
+    }
+
+    public void init(TaskbarControllers controllers) {
+        mControllers = controllers;
     }
 
     /**
@@ -90,19 +93,17 @@ public class TaskbarDragController extends DragController<TaskbarActivityContext
         BubbleTextView btv = (BubbleTextView) view;
 
         mActivity.setTaskbarWindowFullscreen(true);
-        view.post(() -> {
+        btv.post(() -> {
             startInternalDrag(btv);
-            btv.setVisibility(INVISIBLE);
+            btv.getIcon().setIsDisabled(true);
+            mControllers.taskbarAutohideSuspendController.updateFlag(
+                    TaskbarAutohideSuspendController.FLAG_AUTOHIDE_SUSPEND_DRAGGING, true);
         });
         return true;
     }
 
     private void startInternalDrag(BubbleTextView btv) {
-        float iconScale = 1f;
-        Drawable icon = btv.getIcon();
-        if (icon instanceof FastBitmapDrawable) {
-            iconScale = ((FastBitmapDrawable) icon).getAnimatedScale();
-        }
+        float iconScale = btv.getIcon().getAnimatedScale();
 
         // Clear the pressed state if necessary
         btv.clearFocus();
@@ -239,16 +240,17 @@ public class TaskbarDragController extends DragController<TaskbarActivityContext
                 shadowSize.set(mDragIconSize, mDragIconSize);
                 // The registration point was taken before the icon scaled to mDragIconSize, so
                 // offset the registration to where the touch is on the new size.
-                int offset = (mDragIconSize - btv.getIconSize()) / 2;
-                shadowTouchPoint.set(mRegistrationX + offset, mRegistrationY + offset);
+                int offsetX = (mDragIconSize - mDragObject.dragView.getDragRegionWidth()) / 2;
+                int offsetY = (mDragIconSize - mDragObject.dragView.getDragRegionHeight()) / 2;
+                shadowTouchPoint.set(mRegistrationX + offsetX, mRegistrationY + offsetY);
             }
 
             @Override
             public void onDrawShadow(Canvas canvas) {
                 canvas.save();
-                float scale = (float) mDragIconSize / btv.getIconSize();
+                float scale = mDragObject.dragView.getScaleX();
                 canvas.scale(scale, scale);
-                btv.getIcon().draw(canvas);
+                mDragObject.dragView.draw(canvas);
                 canvas.restore();
             }
         };
@@ -330,7 +332,9 @@ public class TaskbarDragController extends DragController<TaskbarActivityContext
 
     private void maybeOnDragEnd() {
         if (!isDragging()) {
-            ((View) mDragObject.originalView).setVisibility(VISIBLE);
+            ((BubbleTextView) mDragObject.originalView).getIcon().setIsDisabled(false);
+            mControllers.taskbarAutohideSuspendController.updateFlag(
+                    TaskbarAutohideSuspendController.FLAG_AUTOHIDE_SUSPEND_DRAGGING, false);
         }
     }
 
