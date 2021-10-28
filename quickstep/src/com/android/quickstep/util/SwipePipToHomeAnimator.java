@@ -56,6 +56,7 @@ public class SwipePipToHomeAnimator extends RectFSpringAnim {
     private final int mTaskId;
     private final ComponentName mComponentName;
     private final SurfaceControl mLeash;
+    private final Rect mSourceRectHint = new Rect();
     private final Rect mAppBounds = new Rect();
     private final Matrix mHomeToWindowPositionMap = new Matrix();
     private final Rect mStartBounds = new Rect();
@@ -140,6 +141,7 @@ public class SwipePipToHomeAnimator extends RectFSpringAnim {
         }
 
         if (sourceRectHint == null) {
+            mSourceRectHint.setEmpty();
             mSourceHintRectInsets = null;
 
             // Create a new overlay layer
@@ -169,6 +171,7 @@ public class SwipePipToHomeAnimator extends RectFSpringAnim {
                 t.apply();
             });
         } else {
+            mSourceRectHint.set(sourceRectHint);
             mSourceHintRectInsets = new Rect(sourceRectHint.left - appBounds.left,
                     sourceRectHint.top - appBounds.top,
                     appBounds.right - sourceRectHint.right,
@@ -249,7 +252,8 @@ public class SwipePipToHomeAnimator extends RectFSpringAnim {
             return mSurfaceTransactionHelper.scaleAndRotate(tx, mLeash, mAppBounds, bounds, insets,
                     rotatedPosition.degree, rotatedPosition.positionX, rotatedPosition.positionY);
         } else {
-            return mSurfaceTransactionHelper.scaleAndCrop(tx, mLeash, mAppBounds, bounds, insets);
+            return mSurfaceTransactionHelper.scaleAndCrop(tx, mLeash, mSourceRectHint, mAppBounds,
+                    bounds, insets);
         }
     }
 
