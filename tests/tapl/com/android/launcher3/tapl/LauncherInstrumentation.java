@@ -1190,8 +1190,17 @@ public final class LauncherInstrumentation {
         return getVisibleBounds(container).bottom - bottomGestureStartOnScreen;
     }
 
+    int getRightGestureMarginInContainer(UiObject2 container) {
+        final int rightGestureStartOnScreen = getRightGestureStartOnScreen();
+        return getVisibleBounds(container).right - rightGestureStartOnScreen;
+    }
+
     int getBottomGestureStartOnScreen() {
         return getRealDisplaySize().y - getBottomGestureSize();
+    }
+
+    int getRightGestureStartOnScreen() {
+        return getRealDisplaySize().x - getWindowInsets().right;
     }
 
     void clickLauncherObject(UiObject2 object) {
@@ -1231,6 +1240,21 @@ public final class LauncherInstrumentation {
                         containerRect.height() - distance - bottomGestureMarginInContainer,
                         0,
                         bottomGestureMarginInContainer),
+                10,
+                true);
+    }
+
+    void scrollLeftByDistance(UiObject2 container, int distance) {
+        final Rect containerRect = getVisibleBounds(container);
+        final int rightGestureMarginInContainer = getRightGestureMarginInContainer(container);
+        scroll(
+                container,
+                Direction.LEFT,
+                new Rect(
+                        0,
+                        containerRect.width() - distance - rightGestureMarginInContainer,
+                        0,
+                        rightGestureMarginInContainer),
                 10,
                 true);
     }
