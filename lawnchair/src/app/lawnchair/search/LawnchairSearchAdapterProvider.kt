@@ -8,6 +8,7 @@ import androidx.core.util.containsKey
 import app.lawnchair.LawnchairLauncher
 import app.lawnchair.allapps.SearchItemDecorator
 import app.lawnchair.allapps.SearchResultView
+import app.lawnchair.allapps.SearchResultView.Companion.EXTRA_QUICK_LAUNCH
 import com.android.app.search.LayoutType
 import com.android.launcher3.R
 import com.android.launcher3.allapps.AllAppsContainerView
@@ -75,11 +76,14 @@ class LawnchairSearchAdapterProvider(
             LayoutType.EMPTY_DIVIDER to SEARCH_RESULT_DIVIDER,
         )
 
-        fun setFirstItemQuickLaunch(items: List<SearchAdapterItem>): List<SearchAdapterItem> {
-            items.firstOrNull()?.searchTarget?.extras?.apply {
-                putBoolean(SearchResultView.EXTRA_QUICK_LAUNCH, true)
+        @JvmStatic
+        fun setFirstItemQuickLaunch(items: List<SearchAdapterItem>) {
+            val hasQuickLaunch = items.any { it.searchTarget.extras.containsKey(EXTRA_QUICK_LAUNCH) }
+            if (!hasQuickLaunch) {
+                items.firstOrNull()?.searchTarget?.extras?.apply {
+                    putBoolean(EXTRA_QUICK_LAUNCH, true)
+                }
             }
-            return items
         }
     }
 }

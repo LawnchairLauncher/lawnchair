@@ -112,7 +112,9 @@ public class LawnchairDeviceSearchAlgorithm extends LawnchairSearchAlgorithm {
                             .toString();
                     Log.d("DeviceSearchAlg", itemInfo);
                 });
-                mCallback.onSearchResult(mQuery, new ArrayList<>(transformSearchResults(targets)));
+                List<SearchAdapterItem> adapterItems = transformSearchResults(targets);
+                LawnchairSearchAdapterProvider.setFirstItemQuickLaunch(adapterItems);
+                mCallback.onSearchResult(mQuery, new ArrayList<>(adapterItems));
             }
         }
 

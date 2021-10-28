@@ -76,7 +76,8 @@ class LawnchairAppSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm(c
             results.add(getEmptySearchItem(query))
         }
         val adapterItems = transformSearchResults(results)
-        return ArrayList(LawnchairSearchAdapterProvider.setFirstItemQuickLaunch(adapterItems))
+        LawnchairSearchAdapterProvider.setFirstItemQuickLaunch(adapterItems)
+        return ArrayList(adapterItems)
     }
 
     private fun getShortcuts(app: AppInfo): List<ShortcutInfo> {
