@@ -35,7 +35,10 @@ abstract class LawnchairSearchAlgorithm(
     )
 
     protected fun transformSearchResults(results: List<SearchTargetCompat>): ArrayList<AllAppsGridAdapter.AdapterItem> {
-        val filtered = results.filter { it.packageName != BuildConfig.APPLICATION_ID }
+        val filtered = results
+            .filter { it.packageName != BuildConfig.APPLICATION_ID }
+            .filter { it.packageName != "com.android.settings" }
+            .filter { LawnchairSearchAdapterProvider.viewTypeMap[it.layoutType] != null }
         val items = filtered
             .mapIndexedNotNull { index, target ->
                 val isFirst = index == 0 || filtered[index - 1].isDivider
