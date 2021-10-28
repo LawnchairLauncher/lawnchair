@@ -3,6 +3,7 @@ package app.lawnchair.search
 import android.content.Context
 import app.lawnchair.LawnchairApp
 import app.lawnchair.allapps.SearchItemBackground
+import com.android.app.search.LayoutType
 import com.android.app.search.LayoutType.*
 import com.android.launcher3.BuildConfig
 import com.android.launcher3.Utilities
@@ -39,6 +40,7 @@ abstract class LawnchairSearchAlgorithm(
             .filter { it.packageName != BuildConfig.APPLICATION_ID }
             .filter { it.packageName != "com.android.settings" }
             .filter { LawnchairSearchAdapterProvider.viewTypeMap[it.layoutType] != null }
+            .removeDuplicateDividers()
         return filtered
             .mapIndexedNotNull { index, target ->
                 val isFirst = index == 0 || filtered[index - 1].isDivider
@@ -60,6 +62,16 @@ abstract class LawnchairSearchAlgorithm(
             Utilities.ATLEAST_S && LawnchairApp.isRecentsEnabled -> LawnchairDeviceSearchAlgorithm(context)
             else -> LawnchairAppSearchAlgorithm(context)
         }
+    }
+}
+
+private fun Iterable<SearchTargetCompat>.removeDuplicateDividers(): List<SearchTargetCompat> {
+    var previousWasDivider = false
+    return filter { item ->
+        val isDivider = item.layoutType == EMPTY_DIVIDER
+        val remove = isDivider && previousWasDivider
+        previousWasDivider = isDivider
+        !remove
     }
 }
 
