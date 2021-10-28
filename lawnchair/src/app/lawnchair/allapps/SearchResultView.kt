@@ -5,7 +5,8 @@ import app.lawnchair.search.SearchTargetCompat
 
 interface SearchResultView {
 
-    fun isQuickLaunch(): Boolean
+    val isQuickLaunch: Boolean
+    val titleText: CharSequence? get() = null
 
     fun launch(): Boolean
 

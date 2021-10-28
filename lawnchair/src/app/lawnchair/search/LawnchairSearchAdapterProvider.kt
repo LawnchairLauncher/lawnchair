@@ -27,6 +27,10 @@ class LawnchairSearchAdapterProvider(
         append(SEARCH_RESULT_DIVIDER, R.layout.search_result_divider)
     }
     private var quickLaunchItem: SearchResultView? = null
+        set(value) {
+            field = value
+            appsView.searchUiManager.setFocusedResultTitle(field?.titleText)
+        }
 
     override fun isViewSupported(viewType: Int): Boolean = layoutIdMap.containsKey(viewType)
 
@@ -36,7 +40,7 @@ class LawnchairSearchAdapterProvider(
 
         val itemView = holder.itemView as SearchResultView
         itemView.bind(adapterItem.searchTarget, emptyList())
-        if (itemView.isQuickLaunch()) {
+        if (itemView.isQuickLaunch) {
             quickLaunchItem = itemView
         }
     }

@@ -53,7 +53,8 @@ class SearchResultIconRow(context: Context, attrs: AttributeSet?) :
         }
     }
 
-    override fun isQuickLaunch() = hasFlag(flags, SearchResultView.FLAG_QUICK_LAUNCH)
+    override val isQuickLaunch get() = icon.isQuickLaunch
+    override val titleText get() = icon.titleText
 
     override fun launch(): Boolean {
         ItemClickHandler.INSTANCE.onClick(this)

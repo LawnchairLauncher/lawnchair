@@ -47,7 +47,8 @@ class SearchResultIcon(context: Context, attrs: AttributeSet?) : BubbleTextView(
         )
     }
 
-    override fun isQuickLaunch() = hasFlag(flags, SearchResultView.FLAG_QUICK_LAUNCH)
+    override val isQuickLaunch get() = hasFlag(flags, SearchResultView.FLAG_QUICK_LAUNCH)
+    override val titleText: CharSequence? get() = text
 
     override fun launch(): Boolean {
         ItemClickHandler.INSTANCE.onClick(this)

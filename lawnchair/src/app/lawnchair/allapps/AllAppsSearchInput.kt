@@ -1,17 +1,22 @@
 package app.lawnchair.allapps
 
 import android.content.Context
+import android.graphics.Color
 import android.graphics.Rect
 import android.text.Selection
 import android.text.SpannableStringBuilder
+import android.text.Spanned.SPAN_POINT_MARK
+import android.text.TextUtils
 import android.text.method.TextKeyListener
+import android.text.style.ForegroundColorSpan
 import android.util.AttributeSet
 import android.view.KeyEvent
-import android.view.View
+import android.view.ViewTreeObserver
 import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.view.ViewCompat
+import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import app.lawnchair.launcher
@@ -23,12 +28,15 @@ import com.android.launcher3.R
 import com.android.launcher3.allapps.*
 import com.android.launcher3.allapps.search.AllAppsSearchBarController
 import com.android.launcher3.search.SearchCallback
+import com.android.launcher3.util.Themes
+import java.util.*
+import kotlin.collections.ArrayList
 import kotlin.math.max
 
 class AllAppsSearchInput(context: Context, attrs: AttributeSet?) : LinearLayout(context, attrs),
     Insettable, SearchUiManager,
     SearchCallback<AllAppsGridAdapter.AdapterItem>,
-    AllAppsStore.OnUpdateListener {
+    AllAppsStore.OnUpdateListener, ViewTreeObserver.OnGlobalLayoutListener {
 
     private lateinit var hint: TextView
     private lateinit var input: FallbackSearchInputView
@@ -45,6 +53,9 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) : LinearLayout(
 
     private lateinit var apps: AlphabeticalAppsList
     private lateinit var appsView: AllAppsContainerView
+
+    private var focusedResultTitle = ""
+    private var canShowHint = false
 
     override fun onFinishInflate() {
         super.onFinishInflate()
@@ -66,26 +77,61 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) : LinearLayout(
             }
         }
 
-        input.addTextChangedListener {
-            if (input.text.toString() == "/lawnchairdebug") {
-                val enableDebugMenu = PreferenceManager.getInstance(context).enableDebugMenu
-                enableDebugMenu.set(!enableDebugMenu.get())
-                launcher.stateManager.goToState(LauncherState.NORMAL)
+        input.addTextChangedListener(
+            beforeTextChanged = { _, _, _, _ ->
+                hint.isInvisible = true
+            },
+            afterTextChanged = {
+                updateHint()
+                if (input.text.toString() == "/lawnchairdebug") {
+                    val enableDebugMenu = PreferenceManager.getInstance(context).enableDebugMenu
+                    enableDebugMenu.set(!enableDebugMenu.get())
+                    launcher.stateManager.goToState(LauncherState.NORMAL)
+                }
             }
-        }
+        )
 
         val prefs = PreferenceManager.getInstance(context)
         isVisible = !prefs.hideAppSearchBar.get()
     }
 
+    override fun setFocusedResultTitle(title: CharSequence?) {
+        focusedResultTitle = title?.toString() ?: ""
+        updateHint()
+    }
+
+    private fun updateHint() {
+        val inputLowerCase = input.text.toString().lowercase(Locale.getDefault())
+        val focusedLowerCase = focusedResultTitle.lowercase(Locale.getDefault())
+        if (canShowHint
+            && !TextUtils.isEmpty(inputLowerCase) && !TextUtils.isEmpty(focusedLowerCase)
+            && focusedLowerCase.matches(Regex("^[\\x00-\\x7F]*$"))
+            && focusedLowerCase.startsWith(inputLowerCase)
+        ) {
+            val hintColor = Themes.getAttrColor(context, android.R.attr.textColorTertiary)
+            val hintText = SpannableStringBuilder(inputLowerCase)
+                .append(focusedLowerCase.substring(inputLowerCase.length))
+            hintText.setSpan(ForegroundColorSpan(Color.TRANSPARENT), 0, inputLowerCase.length, SPAN_POINT_MARK)
+            hintText.setSpan(ForegroundColorSpan(hintColor), inputLowerCase.length, hintText.length, SPAN_POINT_MARK)
+            hint.text = hintText
+            hint.isVisible = true
+        }
+    }
+
+    override fun onGlobalLayout() {
+        canShowHint = input.layout?.getEllipsisCount(0) == 0
+    }
+
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
         appsView.appsStore.addUpdateListener(this)
+        input.viewTreeObserver.addOnGlobalLayoutListener(this)
     }
 
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
         appsView.appsStore.removeUpdateListener(this)
+        input.viewTreeObserver.removeOnGlobalLayoutListener(this)
     }
 
     override fun initializeSearch(appsView: AllAppsContainerView) {
