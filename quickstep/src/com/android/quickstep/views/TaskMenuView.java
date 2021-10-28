@@ -210,7 +210,7 @@ public class TaskMenuView extends AbstractFloatingView implements OnScrollChange
 
     @Override
     public void onScrollChanged() {
-        RecentsView rv = mTaskView.getRecentsView();
+        RecentsView rv = mActivity.getOverviewPanel();
         setPosition(mTaskView.getX() - rv.getScrollX(), mTaskView.getY() - rv.getScrollY(),
                 rv.getOverScrollShift());
     }
