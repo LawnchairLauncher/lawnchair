@@ -38,7 +38,9 @@ abstract class LawnchairSearchAlgorithm(
     protected fun transformSearchResults(results: List<SearchTargetCompat>): List<SearchAdapterItem> {
         val filtered = results
             .filter { it.packageName != BuildConfig.APPLICATION_ID }
-            .filter { it.packageName != "com.android.settings" }
+            .filterNot {
+                it.packageName == "com.android.settings" && it.resultType != SearchTargetCompat.RESULT_TYPE_APPLICATION
+            }
             .filter { LawnchairSearchAdapterProvider.viewTypeMap[it.layoutType] != null }
             .removeDuplicateDividers()
         return filtered
