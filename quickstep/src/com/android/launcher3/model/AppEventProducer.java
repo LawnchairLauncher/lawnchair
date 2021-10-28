@@ -171,7 +171,7 @@ public class AppEventProducer implements StatsLogConsumer {
                 sendEvent(atomInfo, ACTION_PIN, CONTAINER_HOTSEAT_PREDICTION);
             }
         } else if (event == LAUNCHER_ONRESUME) {
-            AppTarget target = new AppTarget.Builder(new AppTargetId("id:launcher"),
+            AppTarget target = new AppTarget.Builder(new AppTargetId("launcher:launcher"),
                     mContext.getPackageName(), Process.myUserHandle())
                     .build();
             sendEvent(target, atomInfo, ACTION_LAUNCH, CONTAINER_PREDICTION);
