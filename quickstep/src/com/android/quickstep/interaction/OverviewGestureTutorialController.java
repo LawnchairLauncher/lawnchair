@@ -93,8 +93,8 @@ final class OverviewGestureTutorialController extends SwipeUpGestureTutorialCont
                 switch (result) {
                     case HOME_GESTURE_COMPLETED: {
                         animateFakeTaskViewHome(finalVelocity, () -> {
-                            resetFakeTaskView();
                             showFeedback(R.string.overview_gesture_feedback_home_detected);
+                            resetFakeTaskView(true);
                         });
                         break;
                     }
@@ -146,6 +146,7 @@ final class OverviewGestureTutorialController extends SwipeUpGestureTutorialCont
 
         AnimatorSet animset = new AnimatorSet();
         animset.playTogether(animators);
+        hideFakeTaskbar(/* animateToHotseat= */ false);
         animset.start();
         mRunningWindowAnim = SwipeUpAnimationLogic.RunningWindowAnim.wrap(animset);
     }

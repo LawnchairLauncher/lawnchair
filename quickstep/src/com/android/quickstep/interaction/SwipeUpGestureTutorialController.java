@@ -198,11 +198,12 @@ abstract class SwipeUpGestureTutorialController extends TutorialController {
             }
         }
         AnimatorSet animset = anim.buildAnim();
+        hideFakeTaskbar(/* animateToHotseat= */ false);
         animset.start();
         mRunningWindowAnim = RunningWindowAnim.wrap(animset);
     }
 
-    void resetFakeTaskView() {
+    void resetFakeTaskView(boolean animateFromHome) {
         mFakeTaskView.setVisibility(View.VISIBLE);
         PendingAnimation anim = new PendingAnimation(300);
         anim.setFloat(mTaskViewSwipeUpAnimation
@@ -210,12 +211,14 @@ abstract class SwipeUpGestureTutorialController extends TutorialController {
         anim.setViewAlpha(mFakeTaskView, 1, ACCEL);
         anim.addListener(mResetTaskView);
         AnimatorSet animset = anim.buildAnim();
+        showFakeTaskbar(animateFromHome);
         animset.start();
         mRunningWindowAnim = RunningWindowAnim.wrap(animset);
     }
 
     void animateFakeTaskViewHome(PointF finalVelocity, @Nullable Runnable onEndRunnable) {
         cancelRunningAnimation();
+        hideFakeTaskbar(/* animateToHotseat= */ true);
         mFakePreviousTaskView.setVisibility(View.INVISIBLE);
         mFakeHotseatView.setVisibility(View.VISIBLE);
         mShowPreviousTasks = false;
