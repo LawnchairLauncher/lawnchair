@@ -275,8 +275,12 @@ public class DropTargetBar extends FrameLayout
     @Override
     protected void onVisibilityChanged(@NonNull View changedView, int visibility) {
         super.onVisibilityChanged(changedView, visibility);
-        if (TestProtocol.sDebugTracing && visibility == VISIBLE) {
-            Log.d(TestProtocol.NO_DROP_TARGET, "9");
+        if (TestProtocol.sDebugTracing) {
+            if (visibility == VISIBLE) {
+                Log.d(TestProtocol.NO_DROP_TARGET, "9");
+            } else {
+                Log.d(TestProtocol.NO_DROP_TARGET, "Hiding drop target", new Exception());
+            }
         }
     }
 }
