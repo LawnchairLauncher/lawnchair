@@ -71,6 +71,7 @@ class LawnchairSearchAdapterProvider(
             LayoutType.ICON_SINGLE_VERTICAL_TEXT to SEARCH_RESULT_ICON,
             LayoutType.ICON_HORIZONTAL_TEXT to SEARCH_RESULT_ICON_ROW,
             LayoutType.SMALL_ICON_HORIZONTAL_TEXT to SEARCH_RESULT_SMALL_ICON_ROW,
+            LayoutType.HORIZONTAL_MEDIUM_TEXT to SEARCH_RESULT_SMALL_ICON_ROW,
             LayoutType.EMPTY_DIVIDER to SEARCH_RESULT_DIVIDER,
         )
 
