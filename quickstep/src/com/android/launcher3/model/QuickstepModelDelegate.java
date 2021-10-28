@@ -25,7 +25,11 @@ import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_APPLICA
 import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT;
 import static com.android.launcher3.Utilities.getDevicePrefs;
 import static com.android.launcher3.hybridhotseat.HotseatPredictionModel.convertDataModelToAppTargetBundle;
+import static com.android.launcher3.model.PredictionHelper.getAppTargetFromItemInfo;
+import static com.android.launcher3.model.PredictionHelper.wrapAppTargetWithItemLocation;
 import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
+
+import static java.util.stream.Collectors.toCollection;
 
 import android.app.StatsManager;
 import android.app.prediction.AppPredictionContext;
@@ -39,6 +43,7 @@ import android.content.SharedPreferences;
 import android.content.pm.LauncherActivityInfo;
 import android.content.pm.LauncherApps;
 import android.content.pm.ShortcutInfo;
+import android.os.Bundle;
 import android.os.UserHandle;
 import android.util.Log;
 import android.util.StatsEvent;
@@ -62,6 +67,7 @@ import com.android.launcher3.util.PersistedItemArray;
 import com.android.quickstep.logging.StatsLogCompatManager;
 import com.android.systemui.shared.system.SysUiStatsLog;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -75,6 +81,7 @@ public class QuickstepModelDelegate extends ModelDelegate {
 
     public static final String LAST_PREDICTION_ENABLED_STATE = "last_prediction_enabled_state";
     private static final String LAST_SNAPSHOT_TIME_MILLIS = "LAST_SNAPSHOT_TIME_MILLIS";
+    private static final String BUNDLE_KEY_ADDED_APP_WIDGETS = "added_app_widgets";
     private static final int NUM_OF_RECOMMENDED_WIDGETS_PREDICATION = 20;
 
     private static final boolean IS_DEBUG = false;
@@ -272,6 +279,7 @@ public class QuickstepModelDelegate extends ModelDelegate {
         registerWidgetsPredictor(apm.createAppPredictionSession(
                 new AppPredictionContext.Builder(context)
                         .setUiSurface("widgets")
+                        .setExtras(getBundleForWidgetsOnWorkspace(context, mDataModel))
                         .setPredictedTargetCount(NUM_OF_RECOMMENDED_WIDGETS_PREDICATION)
                         .build()));
     }
@@ -306,10 +314,39 @@ public class QuickstepModelDelegate extends ModelDelegate {
     }
 
     private void onAppTargetEvent(AppTargetEvent event, int client) {
-        PredictorState state = client == CONTAINER_PREDICTION ? mAllAppsState : mHotseatState;
+        PredictorState state;
+        switch(client) {
+            case CONTAINER_PREDICTION:
+                state = mAllAppsState;
+                break;
+            case CONTAINER_WIDGETS_PREDICTION:
+                state = mWidgetsRecommendationState;
+                break;
+            case CONTAINER_HOTSEAT_PREDICTION:
+            default:
+                state = mHotseatState;
+                break;
+        }
         if (state.predictor != null) {
             state.predictor.notifyAppTargetEvent(event);
         }
+    }
+
+    private Bundle getBundleForWidgetsOnWorkspace(Context context, BgDataModel dataModel) {
+        Bundle bundle = new Bundle();
+        ArrayList<AppTargetEvent> widgetEvents =
+                dataModel.getAllWorkspaceItems().stream()
+                        .filter(PredictionHelper::isTrackedForWidgetPrediction)
+                        .map(item -> {
+                            AppTarget target = getAppTargetFromItemInfo(context, item);
+                            if (target == null) return null;
+                            return wrapAppTargetWithItemLocation(
+                                    target, AppTargetEvent.ACTION_PIN, item);
+                        })
+                        .filter(Objects::nonNull)
+                        .collect(toCollection(ArrayList::new));
+        bundle.putParcelableArrayList(BUNDLE_KEY_ADDED_APP_WIDGETS, widgetEvents);
+        return bundle;
     }
 
     static class PredictorState {
