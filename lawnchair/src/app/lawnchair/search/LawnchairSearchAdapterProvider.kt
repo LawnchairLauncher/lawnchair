@@ -75,7 +75,7 @@ class LawnchairSearchAdapterProvider(
             LayoutType.EMPTY_DIVIDER to SEARCH_RESULT_DIVIDER,
         )
 
-        fun decorateSearchResults(items: List<SearchAdapterItem>): List<SearchAdapterItem> {
+        fun setFirstItemQuickLaunch(items: List<SearchAdapterItem>): List<SearchAdapterItem> {
             items.firstOrNull()?.searchTarget?.extras?.apply {
                 putBoolean(SearchResultView.EXTRA_QUICK_LAUNCH, true)
             }

@@ -34,12 +34,12 @@ abstract class LawnchairSearchAlgorithm(
         roundTop = false, roundBottom = true
     )
 
-    protected fun transformSearchResults(results: List<SearchTargetCompat>): ArrayList<AllAppsGridAdapter.AdapterItem> {
+    protected fun transformSearchResults(results: List<SearchTargetCompat>): List<SearchAdapterItem> {
         val filtered = results
             .filter { it.packageName != BuildConfig.APPLICATION_ID }
             .filter { it.packageName != "com.android.settings" }
             .filter { LawnchairSearchAdapterProvider.viewTypeMap[it.layoutType] != null }
-        val items = filtered
+        return filtered
             .mapIndexedNotNull { index, target ->
                 val isFirst = index == 0 || filtered[index - 1].isDivider
                 val isLast = index == filtered.lastIndex || filtered[index + 1].isDivider
@@ -53,7 +53,6 @@ abstract class LawnchairSearchAlgorithm(
                 }
                 SearchAdapterItem.createAdapterItem(index, target, background)
             }
-        return ArrayList(LawnchairSearchAdapterProvider.decorateSearchResults(items))
     }
 
     companion object {

@@ -23,6 +23,7 @@ import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.allapps.AllAppsGridAdapter;
 import com.android.launcher3.search.SearchCallback;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
@@ -102,7 +103,7 @@ public class LawnchairDeviceSearchAlgorithm extends LawnchairSearchAlgorithm {
                 List<SearchTargetCompat> targets = platformTargets.stream().map(SearchTargetCompat::wrap).collect(Collectors.toList());
                 targets.forEach(target -> Log.d("DeviceSearchAlg", "type=" + target.getResultType() + ", layout=" + target.getLayoutType() + ", id=" + target.getId()));
                 Log.d("DeviceSearchAlg", "=====");
-                mCallback.onSearchResult(mQuery, transformSearchResults(targets));
+                mCallback.onSearchResult(mQuery, new ArrayList<>(transformSearchResults(targets)));
             }
         }
 

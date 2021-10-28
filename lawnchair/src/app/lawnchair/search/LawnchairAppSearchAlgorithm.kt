@@ -26,6 +26,7 @@ import com.android.launcher3.util.PackageManagerHelper
 import me.xdrop.fuzzywuzzy.FuzzySearch
 import me.xdrop.fuzzywuzzy.algorithms.WeightedRatio
 import java.util.*
+import kotlin.collections.ArrayList
 
 class LawnchairAppSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm(context) {
 
@@ -74,7 +75,8 @@ class LawnchairAppSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm(c
         if (results.isEmpty()) {
             results.add(getEmptySearchItem(query))
         }
-        return transformSearchResults(results)
+        val adapterItems = transformSearchResults(results)
+        return ArrayList(LawnchairSearchAdapterProvider.setFirstItemQuickLaunch(adapterItems))
     }
 
     private fun getShortcuts(app: AppInfo): List<ShortcutInfo> {
