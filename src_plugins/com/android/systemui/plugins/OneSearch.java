@@ -40,4 +40,7 @@ public interface OneSearch extends Plugin {
      * @param query The query to get the search suggests for.
      */
     ArrayList<Parcelable> getSuggests(Parcelable query);
+
+    /** Get image bitmap with the URL. */
+    Parcelable getImageBitmap(String imageUrl);
 }
