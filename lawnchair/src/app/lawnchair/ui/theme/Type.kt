@@ -17,6 +17,7 @@
 package app.lawnchair.ui.theme
 
 import androidx.compose.material.Typography
+import androidx.compose.material3.Typography as Material3Typography
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -98,4 +99,23 @@ val Typography = Typography(
         fontSize = 12.sp,
         letterSpacing = 1.sp
     )
+)
+
+private val base = Material3Typography()
+val M3Typography = Material3Typography(
+    displayLarge = base.displayLarge.copy(fontFamily = InterFontFamily),
+    displayMedium = base.displayMedium.copy(fontFamily = InterFontFamily),
+    displaySmall = base.displaySmall.copy(fontFamily = InterFontFamily),
+    headlineLarge = base.headlineLarge.copy(fontFamily = InterFontFamily),
+    headlineMedium = base.headlineMedium.copy(fontFamily = InterFontFamily),
+    headlineSmall = base.headlineSmall.copy(fontFamily = InterFontFamily),
+    titleLarge = base.titleLarge.copy(fontFamily = InterFontFamily),
+    titleMedium = base.titleMedium.copy(fontFamily = InterFontFamily),
+    titleSmall = base.titleSmall.copy(fontFamily = InterFontFamily),
+    bodyLarge = base.bodyLarge.copy(fontFamily = InterFontFamily),
+    bodyMedium = base.bodyMedium.copy(fontFamily = InterFontFamily),
+    bodySmall = base.bodySmall.copy(fontFamily = InterFontFamily),
+    labelLarge = base.labelLarge.copy(fontFamily = InterFontFamily),
+    labelMedium = base.labelMedium.copy(fontFamily = InterFontFamily),
+    labelSmall = base.labelSmall.copy(fontFamily = InterFontFamily),
 )

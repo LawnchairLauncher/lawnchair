@@ -18,8 +18,7 @@ package app.lawnchair.ui.preferences
 
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.staticCompositionLocalOf
@@ -69,7 +68,7 @@ fun Preferences(interactor: PreferenceInteractor = viewModel<PreferenceViewModel
 
     SystemUi()
     Providers {
-        Surface(color = MaterialTheme.colors.background) {
+        Surface {
             CompositionLocalProvider(
                 LocalNavController provides navController,
                 LocalPreferenceInteractor provides interactor,

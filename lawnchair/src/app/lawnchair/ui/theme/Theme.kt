@@ -17,37 +17,42 @@
 package app.lawnchair.ui.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.material.Colors
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.darkColors
-import androidx.compose.material.lightColors
+import androidx.compose.material3.ColorScheme
 import androidx.compose.runtime.*
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import app.lawnchair.preferences.PreferenceManager
 import app.lawnchair.preferences.observeAsState
 import app.lawnchair.preferences.preferenceManager
 import app.lawnchair.theme.ThemeProvider
-import app.lawnchair.theme.toAndroidColor
+import app.lawnchair.theme.m3ColorScheme
+import app.lawnchair.theme.materialColors
 import app.lawnchair.ui.preferences.components.ThemeChoice
 import app.lawnchair.wallpaper.WallpaperManagerCompat
 import com.android.launcher3.Utilities
+import androidx.compose.material3.MaterialTheme as Material3Theme
 
 @Composable
 fun LawnchairTheme(
     darkTheme: Boolean = isSelectedThemeDark(),
     content: @Composable () -> Unit
 ) {
+    val colorScheme = getColorScheme(darkTheme = darkTheme)
     MaterialTheme(
-        colors = getColors(darkTheme),
+        colors = materialColors(colorScheme, darkTheme),
         typography = Typography,
-        shapes = Shapes,
-        content = content
-    )
+        shapes = Shapes
+    ) {
+        Material3Theme(
+            colorScheme = colorScheme,
+            typography = M3Typography,
+            content = content
+        )
+    }
 }
 
 @Composable
-fun getColors(darkTheme: Boolean): Colors {
+fun getColorScheme(darkTheme: Boolean): ColorScheme {
     val context = LocalContext.current
     val prefs = PreferenceManager.getInstance(context)
     val accentColor = prefs.accentColor.observeAsState().value
@@ -56,27 +61,7 @@ fun getColors(darkTheme: Boolean): Colors {
         ThemeProvider.INSTANCE.get(context).colorScheme
     }
 
-    return remember(colorScheme, darkTheme) {
-        val accent = Color(colorScheme.accent1[if (darkTheme) 100 else 600]!!.toAndroidColor())
-        val surface = Color(colorScheme.neutral1[if (darkTheme) 900 else 100]!!.toAndroidColor())
-        val background = Color(colorScheme.neutral1[if (darkTheme) 900 else 50]!!.toAndroidColor())
-
-        if (darkTheme) {
-            darkColors(
-                primary = accent,
-                secondary = accent,
-                background = background,
-                surface = surface
-            )
-        } else {
-            lightColors(
-                primary = accent,
-                secondary = accent,
-                background = background,
-                surface = surface
-            )
-        }
-    }
+    return m3ColorScheme(colorScheme = colorScheme, isDark = darkTheme)
 }
 
 @Composable
