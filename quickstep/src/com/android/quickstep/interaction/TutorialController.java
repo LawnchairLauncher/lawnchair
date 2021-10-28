@@ -274,7 +274,6 @@ abstract class TutorialController implements BackGestureAttemptCallback,
                 mFeedbackView.findViewById(R.id.gesture_tutorial_fragment_feedback_subtitle);
         subtitle.setText(subtitleResId);
         if (isGestureSuccessful) {
-            hideCloseButton();
             if (mTutorialFragment.isAtFinalStep()) {
                 showActionButton();
             }
@@ -402,6 +401,7 @@ abstract class TutorialController implements BackGestureAttemptCallback,
     void transitToController() {
         hideFeedback();
         hideActionButton();
+        updateCloseButton();
         updateSubtext();
         updateDrawables();
         updateLayout();
@@ -412,26 +412,21 @@ abstract class TutorialController implements BackGestureAttemptCallback,
         }
     }
 
-    void hideCloseButton() {
-        mCloseButton.setVisibility(GONE);
-    }
-
-    void showCloseButton() {
-        mCloseButton.setVisibility(View.VISIBLE);
+    void updateCloseButton() {
         mCloseButton.setTextAppearance(Utilities.isDarkTheme(mContext)
                 ? R.style.TextAppearance_GestureTutorial_Feedback_Subtext
                 : R.style.TextAppearance_GestureTutorial_Feedback_Subtext_Dark);
     }
 
     void hideActionButton() {
-        showCloseButton();
+        mCloseButton.setVisibility(View.VISIBLE);
         // Invisible to maintain the layout.
         mActionButton.setVisibility(View.INVISIBLE);
         mActionButton.setOnClickListener(null);
     }
 
     void showActionButton() {
-        hideCloseButton();
+        mCloseButton.setVisibility(GONE);
         mActionButton.setVisibility(View.VISIBLE);
         mActionButton.setOnClickListener(this::onActionButtonClicked);
     }
