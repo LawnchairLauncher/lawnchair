@@ -212,6 +212,8 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
         mWindowLayoutParams.providedInternalImeInsets = Insets.of(0,
                 getDefaultTaskbarWindowHeight() - mTaskbarHeightForIme, 0, 0);
 
+        mWindowLayoutParams.insetsRoundedCornerFrame = true;
+
         // Initialize controllers after all are constructed.
         mControllers.init(sharedState);
         updateSysuiStateFlags(sharedState.sysuiStateFlags, true /* fromInit */);
@@ -443,6 +445,18 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
 
     public boolean isTaskbarWindowFullscreen() {
         return mIsFullscreen;
+    }
+
+    /**
+     * Notify system to inset the rounded corner frame based on the task bar insets.
+     */
+    public void updateInsetRoundedCornerFrame(boolean shouldInsetsRoundedCorner) {
+        if (!mDragLayer.isAttachedToWindow()
+                || mWindowLayoutParams.insetsRoundedCornerFrame == shouldInsetsRoundedCorner) {
+            return;
+        }
+        mWindowLayoutParams.insetsRoundedCornerFrame = shouldInsetsRoundedCorner;
+        mWindowManager.updateViewLayout(mDragLayer, mWindowLayoutParams);
     }
 
     /**
