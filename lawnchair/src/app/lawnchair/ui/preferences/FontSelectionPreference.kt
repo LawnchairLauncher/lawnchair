@@ -136,10 +136,7 @@ private fun FontSelectionItem(
         startWidget = {
             RadioButton(
                 selected = selected,
-                onClick = null,
-                colors = RadioButtonDefaults.colors(
-                    unselectedColor = MaterialTheme.colors.onBackground.copy(alpha = 0.48F)
-                )
+                onClick = null
             )
         },
         endWidget = if (selected && family.variants.size > 1) {

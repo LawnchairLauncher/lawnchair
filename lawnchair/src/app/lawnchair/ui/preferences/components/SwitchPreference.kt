@@ -17,10 +17,10 @@
 package app.lawnchair.ui.preferences.components
 
 import androidx.compose.foundation.clickable
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Switch
 import androidx.compose.material.SwitchDefaults
-import androidx.compose.material.Text
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import app.lawnchair.preferences.PreferenceAdapter
@@ -41,7 +41,7 @@ fun SwitchPreference(
                 checked = adapter.state.value,
                 onCheckedChange = adapter::onChange,
                 enabled = enabled,
-                colors = SwitchDefaults.colors(checkedThumbColor = MaterialTheme.colors.primary),
+                colors = SwitchDefaults.colors(checkedThumbColor = MaterialTheme.colorScheme.primary),
             )
         },
         modifier = Modifier

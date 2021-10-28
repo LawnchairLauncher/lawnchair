@@ -27,7 +27,10 @@ import android.os.Build
 import android.provider.Settings
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.requiredWidth
-import androidx.compose.material.*
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material3.Button
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
@@ -147,7 +150,6 @@ fun ServiceWarningDialog(
         text = { Text(text = stringResource(id = description)) },
         buttons = {
             OutlinedButton(
-                shape = MaterialTheme.shapes.small,
                 onClick = {
                     scope.launch { sheetState.hide() }
                 }
@@ -156,7 +158,6 @@ fun ServiceWarningDialog(
             }
             Spacer(modifier = Modifier.requiredWidth(16.dp))
             Button(
-                shape = MaterialTheme.shapes.small,
                 onClick = {
                     context.startActivity(settingsIntent)
                     scope.launch { sheetState.hide() }

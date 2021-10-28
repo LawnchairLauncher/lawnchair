@@ -18,14 +18,17 @@ package app.lawnchair.ui.preferences.components
 
 import androidx.compose.animation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.*
+import androidx.compose.material.ContentAlpha
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material3.LocalContentColor
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import app.lawnchair.util.smartBorder
+import androidx.compose.material3.MaterialTheme as Material3Theme
 
 @Composable
 @ExperimentalAnimationApi
@@ -83,16 +86,11 @@ fun PreferenceGroupHeading(
                 .padding(horizontal = 32.dp)
                 .fillMaxWidth()
         ) {
-            CompositionLocalProvider(
-                LocalContentAlpha provides ContentAlpha.medium,
-                LocalContentColor provides MaterialTheme.colors.onBackground
-            ) {
-                Text(
-                    text = heading,
-                    style = MaterialTheme.typography.subtitle2,
-                    color = MaterialTheme.colors.primary
-                )
-            }
+            Text(
+                text = heading,
+                style = Material3Theme.typography.titleSmall,
+                color = Material3Theme.colorScheme.primary
+            )
         }
     }
 }
@@ -107,15 +105,11 @@ fun PreferenceGroupDescription(description: String? = null, showDescription: Boo
             exit = shrinkVertically() + fadeOut()
         ) {
             Row(modifier = Modifier.padding(start = 32.dp, end = 32.dp, top = 16.dp)) {
-                CompositionLocalProvider(
-                    LocalContentAlpha provides ContentAlpha.medium,
-                    LocalContentColor provides MaterialTheme.colors.onBackground
-                ) {
-                    Text(
-                        text = it,
-                        style = MaterialTheme.typography.body2
-                    )
-                }
+                Text(
+                    text = it,
+                    style = Material3Theme.typography.bodyMedium,
+                    color = LocalContentColor.current.copy(alpha = ContentAlpha.medium)
+                )
             }
         }
     }

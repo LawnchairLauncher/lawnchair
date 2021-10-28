@@ -3,7 +3,7 @@ package app.lawnchair.ui.preferences.about.licenses
 import android.text.SpannableString
 import android.text.style.URLSpan
 import android.text.util.Linkify
-import androidx.compose.material.MaterialTheme
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.AnnotatedString
@@ -16,7 +16,7 @@ import com.android.launcher3.R
 fun loadLicense(license: License): State<LicenseData?> {
     val res = LocalContext.current.resources
     val licenseStringState = remember { mutableStateOf<LicenseData?>(null) }
-    val accentColor = MaterialTheme.colors.primary
+    val accentColor = MaterialTheme.colorScheme.primary
     DisposableEffect(Unit) {
         val reader = res.openRawResource(R.raw.third_party_licenses)
         reader.skip(license.start)

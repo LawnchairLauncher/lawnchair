@@ -3,7 +3,11 @@ package app.lawnchair.ui.preferences.components
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.material.*
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.ModalBottomSheetValue
+import androidx.compose.material.RadioButton
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
@@ -44,7 +48,6 @@ fun <T> ListPreference(
             title = { Text(label) },
             buttons = {
                 OutlinedButton(
-                    shape = MaterialTheme.shapes.small,
                     onClick = { scope.launch { sheetState.hide() } }
                 ) {
                     Text(text = stringResource(id = android.R.string.cancel))

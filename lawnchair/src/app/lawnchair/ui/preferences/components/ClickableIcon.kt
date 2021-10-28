@@ -7,8 +7,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.Icon
-import androidx.compose.material.LocalContentAlpha
-import androidx.compose.material.LocalContentColor
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -35,7 +34,7 @@ fun ClickableIcon(
             .clip(CircleShape)
             .clickable(enabled, onClick = onClick)
     ) {
-        val contentAlpha = if (enabled) LocalContentAlpha.current else ContentAlpha.disabled
+        val contentAlpha = if (enabled) tint.alpha else ContentAlpha.disabled
         val alpha by animateFloatAsState(targetValue = contentAlpha)
         Icon(
             painter = painter,

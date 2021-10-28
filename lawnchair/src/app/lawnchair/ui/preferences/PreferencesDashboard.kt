@@ -6,10 +6,9 @@ import android.content.pm.LauncherApps
 import android.os.Process
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.material.DropdownMenuItem
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Build
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalContext
@@ -99,7 +98,6 @@ fun PreferencesOverflowMenu() {
         ClickableIcon(
             imageVector = Icons.Rounded.Build,
             onClick = { navController.navigate(resolvedRoute) },
-            tint = MaterialTheme.colors.onSurface
         )
     }
     OverflowMenu {

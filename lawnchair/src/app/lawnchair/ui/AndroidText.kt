@@ -2,15 +2,12 @@ package app.lawnchair.ui
 
 import android.util.TypedValue
 import android.widget.TextView
-import androidx.compose.material.LocalContentAlpha
-import androidx.compose.material.LocalContentColor
-import androidx.compose.material.LocalTextStyle
+import androidx.compose.material3.LocalTextStyle
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.colorspace.ColorSpaces
-import androidx.compose.ui.graphics.takeOrElse
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.TextStyle
@@ -26,9 +23,7 @@ fun <T : TextView> AndroidText(
     style: TextStyle = LocalTextStyle.current
 ) {
     val mergedStyle = LocalTextStyle.current.merge(style)
-    val textColor = toIntColor(mergedStyle.color.takeOrElse {
-        LocalContentColor.current.copy(alpha = LocalContentAlpha.current)
-    })
+    val textColor = toIntColor(mergedStyle.color)
     val textSize = with(LocalDensity.current) { mergedStyle.fontSize.toPx() }
     AndroidView(
         factory = { textView.apply { text = "" } },

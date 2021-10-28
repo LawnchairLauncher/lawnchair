@@ -23,7 +23,9 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material3.LocalContentColor
+import androidx.compose.material3.MaterialTheme as Material3Theme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -60,14 +62,13 @@ fun LawnchairLink(
         Image(
             painterResource(id = iconResId),
             contentDescription = null,
-            colorFilter = ColorFilter.tint(color = MaterialTheme.colors.onBackground),
+            colorFilter = ColorFilter.tint(color = LocalContentColor.current),
             modifier = Modifier.size(24.dp)
         )
         Spacer(modifier = Modifier.requiredHeight(4.dp))
         Text(
             text = label,
-            style = MaterialTheme.typography.body2,
-            color = MaterialTheme.colors.onBackground,
+            style = Material3Theme.typography.bodyMedium,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis
         )

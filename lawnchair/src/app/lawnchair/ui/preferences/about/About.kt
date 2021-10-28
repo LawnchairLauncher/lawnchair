@@ -24,9 +24,11 @@ import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.*
+import androidx.compose.material.ContentAlpha
+import androidx.compose.material3.LocalContentColor
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -203,15 +205,12 @@ fun About() {
         Spacer(modifier = Modifier.requiredHeight(16.dp))
         Text(
             text = stringResource(id = R.string.derived_app_name),
-            style = MaterialTheme.typography.h6,
-            color = MaterialTheme.colors.onBackground
+            style = MaterialTheme.typography.headlineSmall
         )
-        CompositionLocalProvider(
-            LocalContentAlpha provides ContentAlpha.medium,
-            LocalContentColor provides MaterialTheme.colors.onBackground
-        ) {
-            Text(text = Versioning.versionName)
-        }
+        Text(
+            text = Versioning.versionName,
+            color = LocalContentColor.current.copy(alpha = ContentAlpha.medium)
+        )
         Spacer(modifier = Modifier.requiredHeight(16.dp))
         Row(
             modifier = Modifier

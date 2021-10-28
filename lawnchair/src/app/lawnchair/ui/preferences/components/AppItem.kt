@@ -20,8 +20,8 @@ import android.graphics.Bitmap
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asImageBitmap
@@ -71,14 +71,9 @@ fun AppItem(
                 contentDescription = null,
                 modifier = Modifier.size(30.dp),
             )
-        }
-    ) {
-        Text(
-            text = label,
-            style = MaterialTheme.typography.subtitle1,
-            color = MaterialTheme.colors.onBackground
-        )
-    }
+        },
+        title = { Text(text = label) }
+    )
 }
 
 @Composable

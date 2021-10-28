@@ -22,8 +22,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.Checkbox
-import androidx.compose.material.CheckboxDefaults
-import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -95,10 +93,7 @@ fun HiddenAppsPreferences() {
                         ) {
                             Checkbox(
                                 checked = hiddenApps.contains(app.key.toString()),
-                                onCheckedChange = null,
-                                colors = CheckboxDefaults.colors(
-                                    uncheckedColor = MaterialTheme.colors.onBackground.copy(alpha = 0.48F)
-                                )
+                                onCheckedChange = null
                             )
                         }
                     }

@@ -18,9 +18,7 @@ package app.lawnchair.ui.preferences
 
 import android.graphics.drawable.Drawable
 import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.RadioButton
-import androidx.compose.material.RadioButtonDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.res.stringResource
@@ -65,10 +63,7 @@ fun IconPackPreferences() {
             ) {
                 RadioButton(
                     selected = iconPackPackage == iconPack.packageName,
-                    onClick = null,
-                    colors = RadioButtonDefaults.colors(
-                        unselectedColor = MaterialTheme.colors.onBackground.copy(alpha = 0.48F)
-                    )
+                    onClick = null
                 )
             }
         }

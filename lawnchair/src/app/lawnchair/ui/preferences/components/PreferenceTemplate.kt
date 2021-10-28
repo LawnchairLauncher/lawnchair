@@ -17,7 +17,11 @@
 package app.lawnchair.ui.preferences.components
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.*
+import androidx.compose.material.ContentAlpha
+import androidx.compose.material.Divider
+import androidx.compose.material3.LocalContentColor
+import androidx.compose.material3.LocalTextStyle
+import androidx.compose.material3.MaterialTheme as Material3Theme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
@@ -71,15 +75,14 @@ fun PreferenceTemplate(
                     }
             ) {
                 CompositionLocalProvider(
-                    LocalContentColor provides MaterialTheme.colors.onBackground,
-                    LocalTextStyle provides MaterialTheme.typography.subtitle1
+                    LocalContentColor provides Material3Theme.colorScheme.onBackground,
+                    LocalTextStyle provides Material3Theme.typography.bodyLarge
                 ) {
                     title()
                 }
                 CompositionLocalProvider(
-                    LocalContentAlpha provides ContentAlpha.medium,
-                    LocalContentColor provides MaterialTheme.colors.onBackground,
-                    LocalTextStyle provides MaterialTheme.typography.body2
+                    LocalContentColor provides Material3Theme.colorScheme.onBackground.copy(alpha = ContentAlpha.medium),
+                    LocalTextStyle provides Material3Theme.typography.bodyMedium
                 ) {
                     description()
                 }

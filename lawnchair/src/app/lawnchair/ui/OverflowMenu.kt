@@ -1,7 +1,6 @@
 package app.lawnchair.ui
 
 import androidx.compose.material.DropdownMenu
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.MoreVert
 import androidx.compose.runtime.Composable
@@ -19,8 +18,7 @@ fun OverflowMenu(block: @Composable OverflowMenuScope.() -> Unit) {
 
     ClickableIcon(
         imageVector = Icons.Rounded.MoreVert,
-        onClick = { showMenu.value = true },
-        tint = MaterialTheme.colors.onSurface
+        onClick = { showMenu.value = true }
     )
     DropdownMenu(
         expanded = showMenu.value,

@@ -5,7 +5,12 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.*
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.ModalBottomSheetValue
+import androidx.compose.material.RadioButton
+import androidx.compose.material3.Button
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -17,14 +22,13 @@ import app.lawnchair.ui.AlertBottomSheetContent
 import app.lawnchair.ui.preferences.components.*
 import app.lawnchair.ui.theme.lightenColor
 import com.android.launcher3.R
+import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
 import kotlinx.coroutines.launch
 
 @Composable
-@OptIn(ExperimentalAnimationApi::class, ExperimentalMaterialApi::class,
-    com.google.accompanist.pager.ExperimentalPagerApi::class
-)
+@OptIn(ExperimentalAnimationApi::class, ExperimentalMaterialApi::class, ExperimentalPagerApi::class)
 fun ColorPreference(
     adapter: PreferenceAdapter<ColorOption>,
     label: String,
@@ -41,7 +45,7 @@ fun ColorPreference(
 
     PreferenceTemplate(
         title = { Text(text = label) },
-        endWidget = { ColorDot(color = MaterialTheme.colors.primary) },
+        endWidget = { ColorDot(color = MaterialTheme.colorScheme.primary) },
         modifier = Modifier.clickable {
             coroutineScope.launch {
                 bottomSheetState.show()
@@ -64,7 +68,6 @@ fun ColorPreference(
             title = { Text(text = label) },
             buttons = {
                 Button(
-                    shape = MaterialTheme.shapes.small,
                     onClick = { coroutineScope.launch { bottomSheetState.hide() } }
                 ) {
                     Text(text = stringResource(id = R.string.done))

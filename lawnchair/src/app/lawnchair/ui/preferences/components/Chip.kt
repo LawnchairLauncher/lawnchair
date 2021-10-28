@@ -9,8 +9,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.ContentAlpha
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -55,15 +55,15 @@ fun Chip(
     selectedProgress: Float,
     onClick: () -> Unit
 ) {
-    val backgroundColor = MaterialTheme.colors.primary.copy(alpha = 0.08f * selectedProgress)
+    val backgroundColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.08f * selectedProgress)
     val textColor = lerp(
-        MaterialTheme.colors.onBackground.copy(alpha = ContentAlpha.medium),
-        MaterialTheme.colors.primary,
+        MaterialTheme.colorScheme.onBackground.copy(alpha = ContentAlpha.medium),
+        MaterialTheme.colorScheme.primary,
         selectedProgress
     )
     val borderColor = lerp(
-        MaterialTheme.colors.onBackground.copy(alpha = 0.12F),
-        MaterialTheme.colors.primary,
+        MaterialTheme.colorScheme.onBackground.copy(alpha = 0.12F),
+        MaterialTheme.colorScheme.primary,
         selectedProgress
     )
 
@@ -79,7 +79,7 @@ fun Chip(
     ) {
         Text(
             text = label,
-            style = MaterialTheme.typography.body2,
+            style = MaterialTheme.typography.bodyMedium,
             color = textColor
         )
     }

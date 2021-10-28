@@ -23,13 +23,14 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import app.lawnchair.theme.surfaceColorAtElevation
 import app.lawnchair.ui.preferences.components.PreferenceTemplate
 import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
@@ -62,7 +63,7 @@ fun ContributorRow(name: String, description: String, photoUrl: String, url: Str
                 modifier = Modifier
                     .clip(CircleShape)
                     .size(32.dp)
-                    .background(MaterialTheme.colors.onBackground.copy(alpha = 0.12F)),
+                    .background(MaterialTheme.colorScheme.surfaceColorAtElevation(3.dp)),
             )
         },
         showDivider = showDivider
