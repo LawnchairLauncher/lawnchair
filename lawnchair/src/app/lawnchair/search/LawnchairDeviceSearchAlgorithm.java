@@ -24,6 +24,8 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
+import app.lawnchair.preferences.PreferenceManager;
+
 public class LawnchairDeviceSearchAlgorithm extends LawnchairSearchAlgorithm {
 
     private SearchSession mSearchSession;
@@ -39,11 +41,18 @@ public class LawnchairDeviceSearchAlgorithm extends LawnchairSearchAlgorithm {
             extras.putInt("launcher.maxInlineIcons", 3);
             extras.putString("settings_source", "superpacks_settings_source");
             extras.putString("tips_source", "superpacks_tips_source");
-            int resultTypes = 1 /* apps */
-                    | 2 /* shortcuts */
-                    | 1564 /* somehow also shortcuts */
-                    | 4 /* people */
-                    | 8192 /* pixel tips */;
+
+            PreferenceManager prefs = PreferenceManager.getInstance(context);
+            int resultTypes = 1 /* apps */ | 2 /* shortcuts */;
+            if (prefs.getSearchResultShortcuts().get()) {
+                resultTypes = resultTypes | 1546;
+            }
+            if (prefs.getSearchResultPeople().get()) {
+                resultTypes = resultTypes | 4;
+            }
+            if (prefs.getSearchResultPixelTips().get()) {
+                resultTypes = resultTypes | 8192;
+            }
             SearchContext searchContext = new SearchContext(resultTypes, 200, extras);
             SearchUiManager searchManager = context.getSystemService(SearchUiManager.class);
             SearchSession searchSession = searchManager.createSearchSession(searchContext);

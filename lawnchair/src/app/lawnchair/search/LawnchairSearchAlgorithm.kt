@@ -4,6 +4,7 @@ import android.content.Context
 import app.lawnchair.LawnchairApp
 import app.lawnchair.allapps.SearchItemBackground
 import app.lawnchair.preferences.PreferenceManager
+import app.lawnchair.search.SearchTargetCompat.RESULT_TYPE_APPLICATION
 import com.android.app.search.LayoutType
 import com.android.app.search.LayoutType.*
 import com.android.launcher3.BuildConfig
@@ -37,10 +38,14 @@ abstract class LawnchairSearchAlgorithm(
     )
 
     protected fun transformSearchResults(results: List<SearchTargetCompat>): List<SearchAdapterItem> {
+        val tipsEnabled = PreferenceManager.getInstance(context).searchResultPixelTips.get()
         val filtered = results
             .filter { it.packageName != BuildConfig.APPLICATION_ID }
             .filterNot {
-                it.packageName == "com.android.settings" && it.resultType != SearchTargetCompat.RESULT_TYPE_APPLICATION
+                it.packageName == PACKAGE_SETTINGS && it.resultType != RESULT_TYPE_APPLICATION
+            }
+            .filterNot {
+                !tipsEnabled && it.packageName == PACKAGE_TIPS && it.resultType != RESULT_TYPE_APPLICATION
             }
             .filter { LawnchairSearchAdapterProvider.viewTypeMap[it.layoutType] != null }
             .removeDuplicateDividers()
@@ -61,6 +66,9 @@ abstract class LawnchairSearchAlgorithm(
     }
 
     companion object {
+        private const val PACKAGE_SETTINGS = "com.android.settings"
+        private const val PACKAGE_TIPS = "com.google.android.apps.tips"
+
         fun create(context: Context): LawnchairSearchAlgorithm {
             val prefs = PreferenceManager.getInstance(context)
             val deviceSearchEnabled = prefs.deviceSearch.get()
