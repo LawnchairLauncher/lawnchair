@@ -1730,7 +1730,10 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
         endLauncherTransitionController();
         mRecentsView.onSwipeUpAnimationSuccess();
         if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
-            mTaskAnimationManager.setLiveTileCleanUpHandler(mInputConsumerProxy::destroy);
+            mTaskAnimationManager.setLiveTileCleanUpHandler(() -> {
+                mRecentsView.cleanupRemoteTargets();
+                mInputConsumerProxy.destroy();
+            });
             mTaskAnimationManager.enableLiveTileRestartListener();
         }
 
