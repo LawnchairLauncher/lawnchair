@@ -71,7 +71,6 @@ internal fun M3ColorScheme.surfaceColorAtElevation(
     return primary.copy(alpha = alpha).compositeOver(surface)
 }
 
-
 @Composable
 fun materialColors(colorScheme: M3ColorScheme, isDark: Boolean) = remember(colorScheme, isDark) {
     Colors(
