@@ -70,7 +70,6 @@ import com.android.launcher3.util.ViewCache;
 import com.android.launcher3.views.ActivityContext;
 import com.android.quickstep.SysUINavigationMode;
 import com.android.quickstep.SysUINavigationMode.Mode;
-import com.android.quickstep.SystemUiProxy;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.WindowManagerWrapper;
@@ -158,7 +157,8 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
                 new TaskbarKeyguardController(this),
                 new StashedHandleViewController(this, stashedHandleView),
                 new TaskbarStashController(this),
-                new TaskbarEduController(this));
+                new TaskbarEduController(this),
+                new TaskbarAutohideSuspendController(this));
     }
 
     public void init(TaskbarSharedState sharedState) {
@@ -375,7 +375,8 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
      * Updates the TaskbarContainer to MATCH_PARENT vs original Taskbar size.
      */
     public void setTaskbarWindowFullscreen(boolean fullscreen) {
-        SystemUiProxy.INSTANCE.getNoCreate().notifyTaskbarAutohideSuspend(fullscreen);
+        mControllers.taskbarAutohideSuspendController.updateFlag(
+                TaskbarAutohideSuspendController.FLAG_AUTOHIDE_SUSPEND_FULLSCREEN, fullscreen);
         mIsFullscreen = fullscreen;
         setTaskbarWindowHeight(fullscreen ? MATCH_PARENT : mLastRequestedNonFullscreenHeight);
     }
