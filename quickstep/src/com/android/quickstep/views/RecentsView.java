@@ -599,6 +599,8 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     private SplitConfigurationOptions.StagedSplitBounds mSplitBoundsConfig;
     private final Toast mSplitToast = Toast.makeText(getContext(),
             R.string.toast_split_select_app, Toast.LENGTH_SHORT);
+    private final Toast mSplitUnsupportedToast = Toast.makeText(getContext(),
+            R.string.toast_split_app_unsupported, Toast.LENGTH_SHORT);
 
     /**
      * Keeps track of the index of the TaskView that split screen was initialized with so we know
@@ -3878,6 +3880,11 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
 
     public void confirmSplitSelect(TaskView taskView) {
         mSplitToast.cancel();
+        if (!taskView.getTask().isDockable) {
+            // Task not split screen supported
+            mSplitUnsupportedToast.show();
+            return;
+        }
         RectF secondTaskStartingBounds = new RectF();
         Rect secondTaskEndingBounds = new Rect();
         // TODO(194414938) starting bounds seem slightly off, investigate
@@ -3920,6 +3927,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         int duration = mActivity.getStateManager().getState().getTransitionDuration(getContext());
         PendingAnimation pendingAnim = new PendingAnimation(duration);
         mSplitToast.cancel();
+        mSplitUnsupportedToast.cancel();
         if (!animate) {
             resetFromSplitSelectionState();
             return pendingAnim;
