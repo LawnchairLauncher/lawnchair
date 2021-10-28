@@ -53,6 +53,10 @@ public final class OverviewTask {
         return mTask.getVisibleBounds().height();
     }
 
+    int getVisibleWidth() {
+        return mTask.getVisibleBounds().width();
+    }
+
     int getTaskCenterX() {
         return mTask.getVisibleCenter().x;
     }
