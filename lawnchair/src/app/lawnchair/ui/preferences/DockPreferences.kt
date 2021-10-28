@@ -22,10 +22,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavGraphBuilder
 import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences.preferenceManager
-import app.lawnchair.ui.preferences.components.PreferenceGroup
-import app.lawnchair.ui.preferences.components.PreferenceLayout
-import app.lawnchair.ui.preferences.components.SliderPreference
-import app.lawnchair.ui.preferences.components.SwitchPreference
+import app.lawnchair.ui.preferences.components.*
 import com.android.launcher3.R
 
 @ExperimentalAnimationApi
@@ -52,13 +49,19 @@ fun DockPreferences() {
                 enter = expandVertically() + fadeIn(),
                 exit = shrinkVertically() + fadeOut()
             ) {
-                SliderPreference(
-                    label = stringResource(id = R.string.corner_radius_label),
-                    adapter = prefs.hotseatQsbCornerRadius.getAdapter(),
-                    step = 0.1F,
-                    valueRange = 0F..1F,
-                    showAsPercentage = true
-                )
+                DividerColumn {
+                    SwitchPreference(
+                        label = stringResource(id = R.string.apply_accent_color_label),
+                        adapter = prefs.themedHotseatQsb.getAdapter(),
+                    )
+                    SliderPreference(
+                        label = stringResource(id = R.string.corner_radius_label),
+                        adapter = prefs.hotseatQsbCornerRadius.getAdapter(),
+                        step = 0.1F,
+                        valueRange = 0F..1F,
+                        showAsPercentage = true
+                    )
+                }
             }
         }
         PreferenceGroup(heading = stringResource(id = R.string.grid)) {

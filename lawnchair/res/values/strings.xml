@@ -190,4 +190,5 @@
     <string name="themed_icon_title">Themed Icons</string>
     <string name="corner_radius_label">Corner Radius</string>
     <string name="search_bar_label">Search Bar</string>
+    <string name="apply_accent_color_label">Apply Accent Color</string>
 </resources>
