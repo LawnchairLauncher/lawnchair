@@ -5,6 +5,7 @@ import app.lawnchair.LawnchairApp
 import app.lawnchair.allapps.SearchItemBackground
 import app.lawnchair.preferences.PreferenceManager
 import app.lawnchair.search.SearchTargetCompat.RESULT_TYPE_APPLICATION
+import app.lawnchair.search.SearchTargetCompat.RESULT_TYPE_SHORTCUT
 import com.android.app.search.LayoutType
 import com.android.app.search.LayoutType.*
 import com.android.launcher3.BuildConfig
@@ -41,12 +42,8 @@ abstract class LawnchairSearchAlgorithm(
         val tipsEnabled = PreferenceManager.getInstance(context).searchResultPixelTips.get()
         val filtered = results
             .filter { it.packageName != BuildConfig.APPLICATION_ID }
-            .filterNot {
-                it.packageName == PACKAGE_SETTINGS && it.resultType != RESULT_TYPE_APPLICATION
-            }
-            .filterNot {
-                !tipsEnabled && it.packageName == PACKAGE_TIPS && it.resultType != RESULT_TYPE_APPLICATION
-            }
+            .filterNot { it.packageName == PACKAGE_SETTINGS && !it.isApp && !it.isShortcut }
+            .filterNot { !tipsEnabled && it.packageName == PACKAGE_TIPS && !it.isApp }
             .filter { LawnchairSearchAdapterProvider.viewTypeMap[it.layoutType] != null }
             .removeDuplicateDividers()
         return filtered
@@ -91,4 +88,6 @@ private fun Iterable<SearchTargetCompat>.removeDuplicateDividers(): List<SearchT
     }
 }
 
+private val SearchTargetCompat.isApp get() = resultType == RESULT_TYPE_APPLICATION
+private val SearchTargetCompat.isShortcut get() = resultType == RESULT_TYPE_SHORTCUT
 private val SearchTargetCompat.isDivider get() = layoutType == EMPTY_DIVIDER
