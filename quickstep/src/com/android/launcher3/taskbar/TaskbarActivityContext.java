@@ -191,6 +191,7 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
 
         // Initialize controllers after all are constructed.
         mControllers.init(sharedState);
+        updateSysuiStateFlags(sharedState.sysuiStateFlags, true /* fromInit */);
 
         mWindowManager.addView(mDragLayer, mWindowLayoutParams);
     }
@@ -325,26 +326,28 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
         mWindowManager.removeViewImmediate(mDragLayer);
     }
 
-    public void updateSysuiStateFlags(int systemUiStateFlags) {
-        mControllers.navbarButtonsViewController.updateStateForSysuiFlags(systemUiStateFlags);
+    public void updateSysuiStateFlags(int systemUiStateFlags, boolean fromInit) {
+        mControllers.navbarButtonsViewController.updateStateForSysuiFlags(systemUiStateFlags,
+                fromInit);
         mControllers.taskbarViewController.setImeIsVisible(
                 mControllers.navbarButtonsViewController.isImeVisible());
         int shadeExpandedFlags = SYSUI_STATE_NOTIFICATION_PANEL_EXPANDED
                 | SYSUI_STATE_QUICK_SETTINGS_EXPANDED;
-        onNotificationShadeExpandChanged((systemUiStateFlags & shadeExpandedFlags) != 0);
+        onNotificationShadeExpandChanged((systemUiStateFlags & shadeExpandedFlags) != 0, fromInit);
         mControllers.taskbarViewController.setRecentsButtonDisabled(
                 mControllers.navbarButtonsViewController.isRecentsDisabled());
         mControllers.stashedHandleViewController.setIsHomeButtonDisabled(
                 mControllers.navbarButtonsViewController.isHomeDisabled());
         mControllers.taskbarKeyguardController.updateStateForSysuiFlags(systemUiStateFlags);
-        mControllers.taskbarStashController.updateStateForSysuiFlags(systemUiStateFlags);
-        mControllers.taskbarScrimViewController.updateStateForSysuiFlags(systemUiStateFlags);
+        mControllers.taskbarStashController.updateStateForSysuiFlags(systemUiStateFlags, fromInit);
+        mControllers.taskbarScrimViewController.updateStateForSysuiFlags(systemUiStateFlags,
+                fromInit);
     }
 
     /**
      * Hides the taskbar icons and background when the notication shade is expanded.
      */
-    private void onNotificationShadeExpandChanged(boolean isExpanded) {
+    private void onNotificationShadeExpandChanged(boolean isExpanded, boolean skipAnim) {
         float alpha = isExpanded ? 0 : 1;
         AnimatorSet anim = new AnimatorSet();
         anim.play(mControllers.taskbarViewController.getTaskbarIconAlpha().getProperty(
@@ -354,6 +357,9 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
                     .animateToValue(alpha));
         }
         anim.start();
+        if (skipAnim) {
+            anim.end();
+        }
     }
 
     public void onRotationProposal(int rotation, boolean isValid) {
