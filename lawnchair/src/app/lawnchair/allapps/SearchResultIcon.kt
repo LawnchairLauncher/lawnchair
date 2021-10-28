@@ -2,6 +2,7 @@ package app.lawnchair.allapps
 
 import android.content.ComponentName
 import android.content.Context
+import android.content.pm.PackageManager
 import android.content.pm.ShortcutInfo
 import android.os.UserHandle
 import android.util.AttributeSet
@@ -16,8 +17,13 @@ import com.android.launcher3.BubbleTextView
 import com.android.launcher3.LauncherAppState
 import com.android.launcher3.LauncherSettings
 import com.android.launcher3.R
+import com.android.launcher3.icons.BitmapInfo
+import com.android.launcher3.icons.IconProvider
+import com.android.launcher3.icons.LauncherIcons
 import com.android.launcher3.model.data.ItemInfoWithIcon
+import com.android.launcher3.model.data.PackageItemInfo
 import com.android.launcher3.model.data.SearchActionItemInfo
+import com.android.launcher3.model.data.SearchActionItemInfo.*
 import com.android.launcher3.model.data.WorkspaceItemInfo
 import com.android.launcher3.touch.ItemClickHandler
 import com.android.launcher3.touch.ItemLongClickListener
@@ -119,8 +125,28 @@ class SearchResultIcon(context: Context, attrs: AttributeSet?) : BubbleTextView(
         if (action.pendingIntent != null) {
             info.pendingIntent = action.pendingIntent
         }
-        applyFromSearchActionItemInfo(info)
+        val extras = action.extras
+        if (extras != null) {
+            if (extras.getBoolean("should_start_for_result")) {
+                info.setFlags(FLAG_SHOULD_START_FOR_RESULT)
+            } else if (extras.getBoolean("should_start")) {
+                info.setFlags(FLAG_SHOULD_START)
+            }
+            if (extras.getBoolean("badge_with_package")) {
+                info.setFlags(FLAG_BADGE_WITH_PACKAGE)
+            }
+            if (extras.getBoolean("badge_with_component_name")) {
+                info.setFlags(FLAG_BADGE_WITH_COMPONENT_NAME)
+            }
+            if (extras.getBoolean("primary_icon_from_title")) {
+                info.setFlags(FLAG_PRIMARY_ICON_FROM_TITLE)
+            }
+        }
         notifyApplied(info)
+        MODEL_EXECUTOR.handler.postAtFrontOfQueue {
+            populateSearchActionItemInfo(target, info)
+            runOnMainThread { applyFromSearchActionItemInfo(info) }
+        }
     }
 
     private fun bindIconComponentKey(iconComponentKey: ComponentKey) {
@@ -161,6 +187,48 @@ class SearchResultIcon(context: Context, attrs: AttributeSet?) : BubbleTextView(
 
     override fun onClick(v: View) {
         ItemClickHandler.INSTANCE.onClick(v)
+    }
+
+    private fun populateSearchActionItemInfo(
+        target: SearchTargetCompat,
+        info: SearchActionItemInfo
+    ) {
+        val action = target.searchAction!!
+        LauncherIcons.obtain(context).use { li ->
+            val icon = action.icon
+
+            val packageIcon = getPackageIcon(target.packageName, target.userHandle)
+
+            info.bitmap = when {
+                info.hasFlags(FLAG_PRIMARY_ICON_FROM_TITLE) ->
+                    li.createIconBitmap("${info.title[0]}", packageIcon.color)
+                icon == null -> packageIcon
+                else -> li.createBadgedIconBitmap(icon.loadDrawable(context), info.user, false)
+            }
+            if (info.hasFlags(FLAG_BADGE_WITH_COMPONENT_NAME) && target.extras.containsKey("class")) {
+                try {
+                    val iconProvider = IconProvider(context)
+                    val componentName = ComponentName(target.packageName, target.extras.getString("class")!!)
+                    val activityInfo = context.packageManager.getActivityInfo(componentName, 0)
+                    val activityIcon = iconProvider.getIcon(activityInfo)
+                    val bitmap = li.createIconBitmap(activityIcon, 1f, iconSize)
+                    val bitmapInfo = BitmapInfo.of(bitmap, packageIcon.color)
+                    info.bitmap = li.badgeBitmap(info.bitmap.icon, bitmapInfo)
+                } catch (ignore: PackageManager.NameNotFoundException) {
+
+                }
+            } else if (info.hasFlags(FLAG_BADGE_WITH_PACKAGE) && info.bitmap != packageIcon) {
+                info.bitmap = li.badgeBitmap(info.bitmap.icon, packageIcon)
+            }
+        }
+    }
+
+    private fun getPackageIcon(packageName: String, user: UserHandle): BitmapInfo {
+        val las = LauncherAppState.getInstance(context)
+        val info = PackageItemInfo(packageName)
+        info.user = user
+        las.iconCache.getTitleAndIconForApp(info, false)
+        return info.bitmap
     }
 
     override fun onLongClick(v: View): Boolean {
