@@ -38,6 +38,7 @@
             android:clickable="false"
             android:ellipsize="end"
             android:gravity="start|center"
+            android:letterSpacing="-0.01"
             android:paddingStart="16.0dip"
             android:paddingEnd="16.0dip"
             android:scrollHorizontally="true"
