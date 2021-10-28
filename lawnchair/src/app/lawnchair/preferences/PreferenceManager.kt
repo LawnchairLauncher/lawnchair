@@ -116,6 +116,8 @@ class PreferenceManager private constructor(private val context: Context) : Base
     private val fontCache = FontCache.INSTANCE.get(context)
     val workspaceFont = FontPref("pref_workspaceFont", fontCache.uiText, recreate)
 
+    val deviceSearch = BoolPref("device_search", false, recreate)
+
     val enableIconSelection = BoolPref("pref_enableIconSelection", false)
     val themedIcons = BoolPref("themed_icons", false)
     val hotseatQsbCornerRadius = FloatPref("pref_hotseatQsbCornerRadius", 1F, recreate)

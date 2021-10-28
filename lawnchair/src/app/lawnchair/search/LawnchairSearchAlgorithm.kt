@@ -3,6 +3,7 @@ package app.lawnchair.search
 import android.content.Context
 import app.lawnchair.LawnchairApp
 import app.lawnchair.allapps.SearchItemBackground
+import app.lawnchair.preferences.PreferenceManager
 import com.android.app.search.LayoutType
 import com.android.app.search.LayoutType.*
 import com.android.launcher3.BuildConfig
@@ -60,9 +61,14 @@ abstract class LawnchairSearchAlgorithm(
     }
 
     companion object {
-        fun create(context: Context) = when {
-            Utilities.ATLEAST_S && LawnchairApp.isRecentsEnabled -> LawnchairDeviceSearchAlgorithm(context)
-            else -> LawnchairAppSearchAlgorithm(context)
+        fun create(context: Context): LawnchairSearchAlgorithm {
+            val prefs = PreferenceManager.getInstance(context)
+            val deviceSearchEnabled = prefs.deviceSearch.get()
+            return when {
+                deviceSearchEnabled && Utilities.ATLEAST_S && LawnchairApp.isRecentsEnabled ->
+                    LawnchairDeviceSearchAlgorithm(context)
+                else -> LawnchairAppSearchAlgorithm(context)
+            }
         }
     }
 }
