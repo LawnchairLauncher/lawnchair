@@ -25,6 +25,7 @@ import android.net.Uri;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import androidx.core.content.FileProvider;
 
@@ -53,7 +54,7 @@ public final class AppSharing {
      * With this flag enabled, the Share App button will be dynamically enabled/disabled based
      * on each app's shareability status.
      */
-    public static final boolean ENABLE_SHAREABILITY_CHECK = false;
+    public static final boolean ENABLE_SHAREABILITY_CHECK = true;
 
     private static final String TAG = "AppSharing";
     private static final String FILE_PROVIDER_SUFFIX = ".overview.fileprovider";
@@ -111,6 +112,11 @@ public final class AppSharing {
 
         @Override
         public void onClick(View view) {
+            if (!isEnabled()) {
+                showCannotShareToast(view.getContext());
+                return;
+            }
+
             Intent sendIntent = new Intent();
             sendIntent.setAction(Intent.ACTION_SEND);
 
@@ -162,6 +168,12 @@ public final class AppSharing {
             if (requestUpdateIfUnknown && status == ShareabilityStatus.UNKNOWN) {
                 mShareabilityMgr.requestAppStatusUpdate(packageName, this::onStatusUpdated);
             }
+        }
+
+        private void showCannotShareToast(Context context) {
+            CharSequence text = context.getText(R.string.toast_p2p_app_not_shareable);
+            int duration = Toast.LENGTH_SHORT;
+            Toast.makeText(context, text, duration).show();
         }
     }
 

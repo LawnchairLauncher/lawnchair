@@ -77,12 +77,15 @@ public abstract class SystemShortcut<T extends Context & ActivityContext> extend
 
     public void setIconAndLabelFor(View iconView, TextView labelView) {
         iconView.setBackgroundResource(mIconResId);
+        iconView.setEnabled(isEnabled);
         labelView.setText(mLabelResId);
+        labelView.setEnabled(isEnabled);
     }
 
     public void setIconAndContentDescriptionFor(ImageView view) {
         view.setImageResource(mIconResId);
         view.setContentDescription(view.getContext().getText(mLabelResId));
+        view.setEnabled(isEnabled);
     }
 
     public AccessibilityNodeInfo.AccessibilityAction createAccessibilityAction(Context context) {
