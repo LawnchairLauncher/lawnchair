@@ -408,10 +408,10 @@ public class TaskbarStashController {
     }
 
     /** Called when some system ui state has changed. (See SYSUI_STATE_... in QuickstepContract) */
-    public void updateStateForSysuiFlags(int systemUiStateFlags) {
+    public void updateStateForSysuiFlags(int systemUiStateFlags, boolean skipAnim) {
         updateStateForFlag(FLAG_STASHED_IN_APP_PINNED,
                 hasAnyFlag(systemUiStateFlags, SYSUI_STATE_SCREEN_PINNING));
-        applyState();
+        applyState(skipAnim ? 0 : TASKBAR_STASH_DURATION);
     }
 
     /**
