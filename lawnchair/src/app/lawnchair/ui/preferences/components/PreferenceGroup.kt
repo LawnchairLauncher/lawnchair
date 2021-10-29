@@ -43,29 +43,31 @@ fun PreferenceGroup(
     dividersToSkip: Int = 0,
     content: @Composable () -> Unit
 ) {
-    PreferenceGroupHeading(heading, isFirstChild)
-    val columnModifier = Modifier
-        .padding(horizontal = 16.dp)
-        .smartBorder(
-            1.dp,
-            color = Material3Theme.colorScheme.onBackground.copy(alpha = 0.16f),
-            shape = MaterialTheme.shapes.large
-        )
-        .clip(shape = MaterialTheme.shapes.large)
-    if (showDividers) {
-        DividerColumn(
-            modifier = columnModifier,
-            startIndent = dividerStartIndent,
-            endIndent = dividerEndIndent,
-            content = content,
-            dividersToSkip = dividersToSkip
-        )
-    } else {
-        Column(modifier = columnModifier) {
-            content()
+    Column {
+        PreferenceGroupHeading(heading, isFirstChild)
+        val columnModifier = Modifier
+            .padding(horizontal = 16.dp)
+            .smartBorder(
+                1.dp,
+                color = Material3Theme.colorScheme.onBackground.copy(alpha = 0.16f),
+                shape = MaterialTheme.shapes.large
+            )
+            .clip(shape = MaterialTheme.shapes.large)
+        if (showDividers) {
+            DividerColumn(
+                modifier = columnModifier,
+                startIndent = dividerStartIndent,
+                endIndent = dividerEndIndent,
+                content = content,
+                dividersToSkip = dividersToSkip
+            )
+        } else {
+            Column(modifier = columnModifier) {
+                content()
+            }
         }
+        PreferenceGroupDescription(description, showDescription)
     }
-    PreferenceGroupDescription(description, showDescription)
 }
 
 @Composable

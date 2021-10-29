@@ -24,16 +24,37 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
+import app.lawnchair.preferences.PreferenceChangeListener;
 import app.lawnchair.preferences.PreferenceManager;
 
-public class LawnchairDeviceSearchAlgorithm extends LawnchairSearchAlgorithm {
+public class LawnchairDeviceSearchAlgorithm extends LawnchairSearchAlgorithm implements PreferenceChangeListener {
 
+    private final PreferenceManager mPrefs;
     private SearchSession mSearchSession;
     private PendingQuery mActiveQuery;
 
     public LawnchairDeviceSearchAlgorithm(@NonNull Context context) {
         super(context);
+        mPrefs = PreferenceManager.getInstance(context);
+        createSearchSession();
+
+        mPrefs.getSearchResultShortcuts().addListener(this);
+        mPrefs.getSearchResultPeople().addListener(this);
+        mPrefs.getSearchResultPixelTips().addListener(this);
+    }
+
+    @Override
+    public void onPreferenceChange() {
+        createSearchSession();
+    }
+
+    private void createSearchSession() {
         UI_HELPER_EXECUTOR.execute(() -> {
+            if (mSearchSession != null) {
+                mSearchSession.destroy();
+            }
+
+            Context context = getContext();
             Bundle extras = new Bundle();
             InvariantDeviceProfile idp = LauncherAppState.getIDP(context);
             extras.putInt("launcher.gridSize", idp.numDatabaseAllAppsColumns);
@@ -42,15 +63,14 @@ public class LawnchairDeviceSearchAlgorithm extends LawnchairSearchAlgorithm {
             extras.putString("settings_source", "superpacks_settings_source");
             extras.putString("tips_source", "superpacks_tips_source");
 
-            PreferenceManager prefs = PreferenceManager.getInstance(context);
             int resultTypes = 1 /* apps */ | 2 /* shortcuts */;
-            if (prefs.getSearchResultShortcuts().get()) {
+            if (mPrefs.getSearchResultShortcuts().get()) {
                 resultTypes = resultTypes | 1546;
             }
-            if (prefs.getSearchResultPeople().get()) {
+            if (mPrefs.getSearchResultPeople().get()) {
                 resultTypes = resultTypes | 4;
             }
-            if (prefs.getSearchResultPixelTips().get()) {
+            if (mPrefs.getSearchResultPixelTips().get()) {
                 resultTypes = resultTypes | 8192;
             }
             SearchContext searchContext = new SearchContext(resultTypes, 200, extras);
@@ -88,6 +108,10 @@ public class LawnchairDeviceSearchAlgorithm extends LawnchairSearchAlgorithm {
                 mSearchSession.destroy();
             }
         });
+
+        mPrefs.getSearchResultShortcuts().removeListener(this);
+        mPrefs.getSearchResultPeople().removeListener(this);
+        mPrefs.getSearchResultPixelTips().removeListener(this);
     }
 
     private class PendingQuery implements Consumer<List<SearchTarget>> {

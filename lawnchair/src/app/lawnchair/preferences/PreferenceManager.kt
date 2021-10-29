@@ -117,9 +117,9 @@ class PreferenceManager private constructor(private val context: Context) : Base
     val workspaceFont = FontPref("pref_workspaceFont", fontCache.uiText, recreate)
 
     val deviceSearch = BoolPref("device_search", false, recreate)
-    val searchResultShortcuts = BoolPref("pref_searchResultShortcuts", true, recreate)
-    val searchResultPeople = BoolPref("pref_searchResultPeople", true, recreate)
-    val searchResultPixelTips = BoolPref("pref_searchResultPixelTips", true, recreate)
+    val searchResultShortcuts = BoolPref("pref_searchResultShortcuts", true)
+    val searchResultPeople = BoolPref("pref_searchResultPeople", true)
+    val searchResultPixelTips = BoolPref("pref_searchResultPixelTips", true)
 
     val enableIconSelection = BoolPref("pref_enableIconSelection", false)
     val themedIcons = BoolPref("themed_icons", false)

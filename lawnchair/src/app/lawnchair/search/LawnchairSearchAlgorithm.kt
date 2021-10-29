@@ -66,14 +66,14 @@ abstract class LawnchairSearchAlgorithm(
         private const val PACKAGE_SETTINGS = "com.android.settings"
         private const val PACKAGE_TIPS = "com.google.android.apps.tips"
 
-        fun create(context: Context): LawnchairSearchAlgorithm {
+        fun isDeviceSearchEnabled(context: Context): Boolean {
             val prefs = PreferenceManager.getInstance(context)
-            val deviceSearchEnabled = prefs.deviceSearch.get()
-            return when {
-                deviceSearchEnabled && Utilities.ATLEAST_S && LawnchairApp.isRecentsEnabled ->
-                    LawnchairDeviceSearchAlgorithm(context)
-                else -> LawnchairAppSearchAlgorithm(context)
-            }
+            return prefs.deviceSearch.get() && Utilities.ATLEAST_S && LawnchairApp.isRecentsEnabled
+        }
+
+        fun create(context: Context): LawnchairSearchAlgorithm = when {
+            isDeviceSearchEnabled(context) -> LawnchairDeviceSearchAlgorithm(context)
+            else -> LawnchairAppSearchAlgorithm(context)
         }
     }
 }
