@@ -96,7 +96,7 @@
     <string name="theme_label">Theme</string>
     <string name="theme_light">Light</string>
     <string name="theme_dark">Dark</string>
-    <string name="theme_system_default">Follow System</string>
+    <string name="theme_system_default">System</string>
     <string name="theme_follow_wallpaper">Match Wallpaper</string>
     <string name="quickstep_label">Recents</string>
     <string name="clear_all_as_action_label">Clear All Button at Bottom</string>
