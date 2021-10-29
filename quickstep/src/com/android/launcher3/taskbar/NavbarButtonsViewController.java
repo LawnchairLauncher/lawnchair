@@ -130,10 +130,9 @@ public class NavbarButtonsViewController {
     /**
      * Initializes the controller
      */
-    public void init(TaskbarControllers controllers, TaskbarSharedState sharedState) {
+    public void init(TaskbarControllers controllers) {
         mControllers = controllers;
         mNavButtonsView.getLayoutParams().height = mContext.getDeviceProfile().taskbarSize;
-        parseSystemUiFlags(sharedState.sysuiStateFlags);
         mNavButtonTranslationYMultiplier.value = 1;
 
         mA11yLongClickListener = view -> {
@@ -303,12 +302,15 @@ public class NavbarButtonsViewController {
         }
     }
 
-    public void updateStateForSysuiFlags(int systemUiStateFlags) {
+    public void updateStateForSysuiFlags(int systemUiStateFlags, boolean skipAnim) {
         if (systemUiStateFlags == mSysuiStateFlags) {
             return;
         }
         parseSystemUiFlags(systemUiStateFlags);
         applyState();
+        if (skipAnim) {
+            mPropertyHolders.forEach(StatePropertyHolder::endAnimation);
+        }
     }
 
     /**
