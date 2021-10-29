@@ -50,7 +50,6 @@ import android.view.SurfaceControl;
 import android.view.SurfaceControl.Transaction;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Utilities;
@@ -59,7 +58,6 @@ import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.anim.SpringAnimationBuilder;
 import com.android.quickstep.fallback.FallbackRecentsView;
 import com.android.quickstep.fallback.RecentsState;
-import com.android.quickstep.util.AppCloseConfig;
 import com.android.quickstep.util.RectFSpringAnim;
 import com.android.quickstep.util.TransformParams;
 import com.android.quickstep.util.TransformParams.BuilderProxy;
@@ -317,8 +315,7 @@ public class FallbackSwipeHandler extends
         }
 
         @Override
-        public void update(@Nullable AppCloseConfig config, RectF currentRect, float progress,
-                 float radius) {
+        public void update(RectF currentRect, float progress, float radius) {
             if (mSurfaceControl != null) {
                 currentRect.roundOut(mTempRect);
                 Transaction t = new Transaction();

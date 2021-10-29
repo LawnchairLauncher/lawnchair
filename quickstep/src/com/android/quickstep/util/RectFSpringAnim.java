@@ -328,7 +328,7 @@ public class RectFSpringAnim extends ReleaseCheck {
                     break;
             }
             for (OnUpdateListener onUpdateListener : mOnUpdateListeners) {
-                onUpdateListener.onUpdate(null, mCurrentRect, mCurrentScaleProgress);
+                onUpdateListener.onUpdate(mCurrentRect, mCurrentScaleProgress);
             }
         }
     }
@@ -353,7 +353,12 @@ public class RectFSpringAnim extends ReleaseCheck {
     }
 
     public interface OnUpdateListener {
-        void onUpdate(@Nullable AppCloseConfig values, RectF currentRect, float progress);
+        /**
+         * Called when an update is made to the animation.
+         * @param currentRect The rect of the window.
+         * @param progress [0, 1] The progress of the rect scale animation.
+         */
+        void onUpdate(RectF currentRect, float progress);
 
         default void onCancel() { }
     }

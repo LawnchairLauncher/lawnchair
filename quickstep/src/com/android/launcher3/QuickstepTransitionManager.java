@@ -110,7 +110,6 @@ import com.android.launcher3.widget.LauncherAppWidgetHostView;
 import com.android.quickstep.RemoteAnimationTargets;
 import com.android.quickstep.SystemUiProxy;
 import com.android.quickstep.TaskViewUtils;
-import com.android.quickstep.util.AppCloseConfig;
 import com.android.quickstep.util.MultiValueUpdateListener;
 import com.android.quickstep.util.RectFSpringAnim;
 import com.android.quickstep.util.RemoteAnimationProvider;
@@ -1338,12 +1337,11 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
 
             RectFSpringAnim.OnUpdateListener runner = new SpringAnimRunner(targets, targetRect) {
                 @Override
-                public void onUpdate(@Nullable AppCloseConfig values, RectF currentRectF,
-                        float progress) {
+                public void onUpdate(RectF currentRectF, float progress) {
                     finalFloatingIconView.update(1f, 255 /* fgAlpha */, currentRectF, progress,
                             windowAlphaThreshold, getCornerRadius(progress), false);
 
-                    super.onUpdate(values, currentRectF, progress);
+                    super.onUpdate(currentRectF, progress);
                 }
             };
             anim.addOnUpdateListener(runner);
@@ -1356,8 +1354,7 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
             FloatingWidgetView finalFloatingWidget = floatingWidget;
             RectFSpringAnim.OnUpdateListener  runner = new SpringAnimRunner(targets, targetRect) {
                 @Override
-                public void onUpdate(@Nullable AppCloseConfig values, RectF currentRectF,
-                        float progress) {
+                public void onUpdate(RectF currentRectF, float progress) {
                     final float fallbackBackgroundAlpha =
                             1 - mapBoundToRange(progress, 0.8f, 1, 0, 1, EXAGGERATED_EASE);
                     final float foregroundAlpha =
@@ -1365,7 +1362,7 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
                     finalFloatingWidget.update(currentRectF, floatingWidgetAlpha, foregroundAlpha,
                             fallbackBackgroundAlpha, 1 - progress);
 
-                    super.onUpdate(values, currentRectF, progress);
+                    super.onUpdate(currentRectF, progress);
                 }
             };
             anim.addOnUpdateListener(runner);
@@ -1776,7 +1773,7 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
         }
 
         @Override
-        public void onUpdate(@Nullable AppCloseConfig values, RectF currentRectF, float progress) {
+        public void onUpdate(RectF currentRectF, float progress) {
             SurfaceParams[] params = new SurfaceParams[mAppTargets.length];
             for (int i = mAppTargets.length - 1; i >= 0; i--) {
                 RemoteAnimationTargetCompat target = mAppTargets[i];
