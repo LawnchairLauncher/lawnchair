@@ -148,6 +148,8 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
     @ViewDebug.ExportedProperty(category = "launcher")
     private int mTextColor;
     @ViewDebug.ExportedProperty(category = "launcher")
+    private ColorStateList mTextColorStateList;
+    @ViewDebug.ExportedProperty(category = "launcher")
     private float mTextAlpha = 1;
 
     @ViewDebug.ExportedProperty(category = "launcher")
@@ -617,12 +619,14 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
     @Override
     public void setTextColor(int color) {
         mTextColor = color;
+        mTextColorStateList = null;
         super.setTextColor(getModifiedColor());
     }
 
     @Override
     public void setTextColor(ColorStateList colors) {
         mTextColor = colors.getDefaultColor();
+        mTextColorStateList = colors;
         if (Float.compare(mTextAlpha, 1) == 0) {
             super.setTextColor(colors);
         } else {
@@ -644,7 +648,11 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
 
     private void setTextAlpha(float alpha) {
         mTextAlpha = alpha;
-        super.setTextColor(getModifiedColor());
+        if (mTextColorStateList != null) {
+            setTextColor(mTextColorStateList);
+        } else {
+            super.setTextColor(getModifiedColor());
+        }
     }
 
     private int getModifiedColor() {
