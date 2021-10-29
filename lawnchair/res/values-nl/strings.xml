@@ -104,14 +104,14 @@
     <string name="custom_color">Gepersonaliseerde kleur</string>
     <string name="quickstep_description">Wis alles knop, hoek radius</string>
     <string name="wallpaper_scrolling_label">Scrollende achtergrond</string>
-    <string name="show_sys_ui_scrim">Schaduw bovenaan</string>
+    <string name="show_sys_ui_scrim">Bovenste Schaduw</string>
     <string name="show_status_bar">Statusbalk</string>
     <string name="what_to_show">Wat te tonen</string>
-    <string name="missing_notification_access_label">Notificatie toegang nodig</string>
+    <string name="missing_notification_access_label">Notificatie Toegang Nodig</string>
     <string name="missing_notification_access_description">Notificatie toegang vereist.</string>
     <string name="msg_missing_notification_access">Om meldingsstipjes te gebruiken, geef <xliff:g id="name" example="My App">%1$s</xliff:g> toegang tot meldingen.</string>
-    <string name="title_change_settings">Instellingen wijzigen</string>
-    <string name="debug_restart_launcher">Lawnchair herstarten</string>
+    <string name="title_change_settings">Wijzig Instellingen</string>
+    <string name="debug_restart_launcher">Herstart Lawnchair</string>
     <string name="pref_fonts_missing_font">Lettertype niet gevonden.</string>
     <string name="font_variant_italic">Cursief</string>
     <string name="font_weight_thin">Dun</string>
@@ -123,9 +123,9 @@
     <string name="font_weight_bold">Dikgedrukt</string>
     <string name="font_weight_extra_bold">Extra Bold</string>
     <string name="font_weight_extra_black">Zwart</string>
-    <string name="font_label">Lettertype (experimenteel)</string>
-    <string name="reset_font">Resetten</string>
-    <string name="search_bar_placeholder">Zoeken</string>
-    <string name="pref_category_search">Zoeken</string>
-    <string name="pref_search_auto_show_keyboard">Toetsenbord automatisch weergeven</string>
+    <string name="font_label">Lettertype (Experimenteel)</string>
+    <string name="reset_font">Reset</string>
+    <string name="search_bar_placeholder">Zoek</string>
+    <string name="pref_category_search">Zoek</string>
+    <string name="pref_search_auto_show_keyboard">Toetsenbord Automatisch Weergeven</string>
 </resources>
