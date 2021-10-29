@@ -220,6 +220,11 @@ abstract class TutorialController implements BackGestureAttemptCallback,
         return null;
     }
 
+    @StringRes
+    public Integer getSuccessFeedbackSubtitle() {
+        return null;
+    }
+
     void showFeedback() {
         if (mGestureCompleted) {
             mFeedbackView.setTranslationY(0);
@@ -230,6 +235,13 @@ abstract class TutorialController implements BackGestureAttemptCallback,
         if (gestureAnimation != null && edgeAnimation != null) {
             playFeedbackAnimation(gestureAnimation, edgeAnimation, mShowFeedbackRunnable, true);
         }
+    }
+
+    /**
+     * Show feedback reflecting a successful gesture attempt.
+     **/
+    void showSuccessFeedback() {
+        showFeedback(getSuccessFeedbackSubtitle(), true);
     }
 
     /**
