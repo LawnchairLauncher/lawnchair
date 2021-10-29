@@ -56,6 +56,7 @@ class DeviceProfileOverrides(context: Context) {
             idp.numRows = numRows
             idp.numColumns = numColumns
             idp.numAllAppsColumns = numAllAppsColumns
+            idp.numDatabaseAllAppsColumns = numAllAppsColumns
             idp.numFolderRows = numFolderRows
             idp.numFolderColumns = numFolderColumns
 
