@@ -64,7 +64,7 @@
     <string name="auto_adaptive_icons_description">Voor alle niet-adaptieve iconen.</string>
     <string name="support_and_pr">Ondersteuning &amp; PR</string>
     <string name="workspace_dt2s">Dubbel tik om te slapen</string>
-    <string name="smart_space_enable">Toon At a Glance widget</string>
+    <string name="smart_space_enable">At a Glance widget</string>
     <string name="design_and_development">Ontwerp &amp; ontwikkeling</string>
     <string name="translate">Vertalen</string>
     <string name="product">Product</string>
@@ -115,7 +115,7 @@
     <string name="pref_fonts_missing_font">Lettertype niet gevonden.</string>
     <string name="font_variant_italic">Cursief</string>
     <string name="font_weight_thin">Dun</string>
-    <string name="font_weight_extra_light">Extra Light</string>
+    <string name="font_weight_extra_light">Extra Licht</string>
     <string name="font_weight_light">Licht</string>
     <string name="font_weight_regular">Normaal</string>
     <string name="font_weight_medium">Medium</string>
