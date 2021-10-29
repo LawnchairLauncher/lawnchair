@@ -117,6 +117,17 @@ public class SystemUiProxy implements ISystemUiProxy,
     }
 
     @Override
+    public void onImeSwitcherPressed() {
+        if (mSystemUiProxy != null) {
+            try {
+                mSystemUiProxy.onImeSwitcherPressed();
+            } catch (RemoteException e) {
+                Log.w(TAG, "Failed call onImeSwitcherPressed", e);
+            }
+        }
+    }
+
+    @Override
     public void setHomeRotationEnabled(boolean enabled) {
         if (mSystemUiProxy != null) {
             try {

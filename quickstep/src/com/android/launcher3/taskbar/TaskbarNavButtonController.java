@@ -102,9 +102,7 @@ public class TaskbarNavButtonController {
     }
 
     private void showIMESwitcher() {
-        mService.getSystemService(InputMethodManager.class)
-                .showInputMethodPickerFromSystem(true /* showAuxiliarySubtypes */,
-                        DEFAULT_DISPLAY);
+        SystemUiProxy.INSTANCE.getNoCreate().onImeSwitcherPressed();
     }
 
     private void notifyImeClick(boolean longClick) {
