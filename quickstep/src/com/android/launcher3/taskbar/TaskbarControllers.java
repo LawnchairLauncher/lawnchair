@@ -79,7 +79,7 @@ public class TaskbarControllers {
      */
     public void init(TaskbarSharedState sharedState) {
         taskbarDragController.init(this);
-        navbarButtonsViewController.init(this, sharedState);
+        navbarButtonsViewController.init(this);
         if (taskbarActivityContext.isThreeButtonNav()) {
             rotationButtonController.init();
         }
