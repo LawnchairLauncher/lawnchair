@@ -196,6 +196,7 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) : LinearLayout(
         searchQueryBuilder.clearSpans()
         Selection.setSelection(searchQueryBuilder, 0)
         appsView.onClearSearchResult()
+        appsView.floatingHeaderView?.setCollapsed(false)
     }
 
     private fun notifyResultChanged() {
