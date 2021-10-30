@@ -101,7 +101,7 @@ public class TaskbarManager implements DisplayController.DisplayInfoChangeListen
             public void onConfigurationChanged(Configuration newConfig) {
                 int configDiff = mOldConfig.diff(newConfig);
                 int configsRequiringRecreate = ActivityInfo.CONFIG_ASSETS_PATHS
-                        | ActivityInfo.CONFIG_LAYOUT_DIRECTION;
+                        | ActivityInfo.CONFIG_LAYOUT_DIRECTION | ActivityInfo.CONFIG_UI_MODE;
                 if ((configDiff & configsRequiringRecreate) != 0) {
                     // Color has changed, recreate taskbar to reload background color & icons.
                     recreateTaskbar();
@@ -231,7 +231,7 @@ public class TaskbarManager implements DisplayController.DisplayInfoChangeListen
     public void onSystemUiFlagsChanged(int systemUiStateFlags) {
         mSharedState.sysuiStateFlags = systemUiStateFlags;
         if (mTaskbarActivityContext != null) {
-            mTaskbarActivityContext.updateSysuiStateFlags(systemUiStateFlags);
+            mTaskbarActivityContext.updateSysuiStateFlags(systemUiStateFlags, false /* fromInit */);
         }
     }
 

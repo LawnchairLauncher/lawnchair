@@ -28,7 +28,7 @@ import java.util.ArrayList;
 @ProvidesInterface(action = OneSearch.ACTION, version = OneSearch.VERSION)
 public interface OneSearch extends Plugin {
     String ACTION = "com.android.systemui.action.PLUGIN_ONE_SEARCH";
-    int VERSION = 3;
+    int VERSION = 4;
 
     /**
      * Get the content provider warmed up.
@@ -40,4 +40,7 @@ public interface OneSearch extends Plugin {
      * @param query The query to get the search suggests for.
      */
     ArrayList<Parcelable> getSuggests(Parcelable query);
+
+    /** Get image bitmap with the URL. */
+    Parcelable getImageBitmap(String imageUrl);
 }

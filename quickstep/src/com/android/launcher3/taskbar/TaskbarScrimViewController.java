@@ -62,7 +62,7 @@ public class TaskbarScrimViewController {
     /**
      * Updates the scrim state based on the flags.
      */
-    public void updateStateForSysuiFlags(int stateFlags) {
+    public void updateStateForSysuiFlags(int stateFlags, boolean skipAnim) {
         final boolean bubblesExpanded = (stateFlags & SYSUI_STATE_BUBBLES_EXPANDED) != 0;
         final boolean manageMenuExpanded =
                 (stateFlags & SYSUI_STATE_BUBBLES_MANAGE_MENU_EXPANDED) != 0;
@@ -73,15 +73,18 @@ public class TaskbarScrimViewController {
                 // what the total transparency would be.
                 ? (SCRIM_ALPHA + (SCRIM_ALPHA * (1 - SCRIM_ALPHA)))
                 : showScrim ? SCRIM_ALPHA : 0;
-        showScrim(showScrim, scrimAlpha);
+        showScrim(showScrim, scrimAlpha, skipAnim);
     }
 
-    private void showScrim(boolean showScrim, float alpha) {
+    private void showScrim(boolean showScrim, float alpha, boolean skipAnim) {
         mScrimView.setOnClickListener(showScrim ? (view) -> onClick() : null);
         mScrimView.setClickable(showScrim);
         ObjectAnimator anim = mScrimAlpha.animateToValue(showScrim ? alpha : 0);
         anim.setInterpolator(showScrim ? SCRIM_ALPHA_IN : SCRIM_ALPHA_OUT);
         anim.start();
+        if (skipAnim) {
+            anim.end();
+        }
     }
 
     private void updateScrimAlpha() {

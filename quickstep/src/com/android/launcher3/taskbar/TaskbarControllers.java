@@ -37,6 +37,7 @@ public class TaskbarControllers {
     public final StashedHandleViewController stashedHandleViewController;
     public final TaskbarStashController taskbarStashController;
     public final TaskbarEduController taskbarEduController;
+    public final TaskbarAutohideSuspendController taskbarAutohideSuspendController;
 
     /** Do not store this controller, as it may change at runtime. */
     @NonNull public TaskbarUIController uiController = TaskbarUIController.DEFAULT;
@@ -53,7 +54,8 @@ public class TaskbarControllers {
             TaskbarKeyguardController taskbarKeyguardController,
             StashedHandleViewController stashedHandleViewController,
             TaskbarStashController taskbarStashController,
-            TaskbarEduController taskbarEduController) {
+            TaskbarEduController taskbarEduController,
+            TaskbarAutohideSuspendController taskbarAutoHideSuspendController) {
         this.taskbarActivityContext = taskbarActivityContext;
         this.taskbarDragController = taskbarDragController;
         this.navButtonController = navButtonController;
@@ -67,6 +69,7 @@ public class TaskbarControllers {
         this.stashedHandleViewController = stashedHandleViewController;
         this.taskbarStashController = taskbarStashController;
         this.taskbarEduController = taskbarEduController;
+        this.taskbarAutohideSuspendController = taskbarAutoHideSuspendController;
     }
 
     /**
@@ -75,7 +78,8 @@ public class TaskbarControllers {
      * in constructors for now, as some controllers may still be waiting for init().
      */
     public void init(TaskbarSharedState sharedState) {
-        navbarButtonsViewController.init(this, sharedState);
+        taskbarDragController.init(this);
+        navbarButtonsViewController.init(this);
         if (taskbarActivityContext.isThreeButtonNav()) {
             rotationButtonController.init();
         }
@@ -101,5 +105,6 @@ public class TaskbarControllers {
         taskbarUnfoldAnimationController.onDestroy();
         taskbarViewController.onDestroy();
         stashedHandleViewController.onDestroy();
+        taskbarAutohideSuspendController.onDestroy();
     }
 }
