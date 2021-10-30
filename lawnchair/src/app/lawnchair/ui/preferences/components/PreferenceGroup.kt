@@ -48,7 +48,7 @@ fun PreferenceGroup(
         .padding(horizontal = 16.dp)
         .smartBorder(
             1.dp,
-            color = MaterialTheme.colors.onBackground.copy(alpha = 0.12F),
+            color = Material3Theme.colorScheme.onBackground.copy(alpha = 0.16f),
             shape = MaterialTheme.shapes.large
         )
         .clip(shape = MaterialTheme.shapes.large)

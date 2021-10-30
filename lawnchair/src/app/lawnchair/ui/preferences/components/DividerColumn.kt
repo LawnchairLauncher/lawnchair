@@ -1,6 +1,6 @@
 package app.lawnchair.ui.preferences.components
 
-import androidx.compose.material.MaterialTheme
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
@@ -16,7 +16,7 @@ import kotlin.math.roundToInt
 @Composable
 fun DividerColumn(
     modifier: Modifier = Modifier,
-    color: Color = MaterialTheme.colors.onSurface.copy(alpha = 0.12f),
+    color: Color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.16f),
     thickness: Dp = 1.dp,
     startIndent: Dp = 0.dp,
     endIndent: Dp = 0.dp,

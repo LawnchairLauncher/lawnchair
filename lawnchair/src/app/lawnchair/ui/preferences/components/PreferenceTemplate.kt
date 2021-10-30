@@ -51,6 +51,7 @@ fun PreferenceTemplate(
             Divider(
                 modifier = Modifier.padding(horizontal = 16.dp),
                 startIndent = dividerIndent,
+                color = Material3Theme.colorScheme.onBackground.copy(alpha = 0.16f)
             )
         }
         Row(

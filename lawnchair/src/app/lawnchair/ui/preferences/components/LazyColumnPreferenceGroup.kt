@@ -22,7 +22,6 @@ import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Divider
-import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -31,6 +30,7 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import app.lawnchair.util.smartBorder
+import androidx.compose.material3.MaterialTheme
 
 fun LazyListScope.preferenceGroupItems(
     count: Int,
@@ -49,8 +49,11 @@ fun LazyListScope.preferenceGroupItems(
         PreferenceGroupItem(cutTop = it > 0, cutBottom = it < count - 1) {
             if (showDividers && it > 0) {
                 Divider(
-                    modifier = Modifier
-                        .padding(start = actualStartIndent, end = actualEndIndent)
+                    color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.16f),
+                    modifier = Modifier.padding(
+                        start = actualStartIndent,
+                        end = actualEndIndent
+                    )
                 )
             }
             itemContent(it)
@@ -97,7 +100,7 @@ fun PreferenceGroupItem(
             .padding(start = 16.dp, end = 16.dp)
             .smartBorder(
                 1.dp,
-                brush = SolidColor(MaterialTheme.colors.onBackground.copy(alpha = 0.12F)),
+                brush = SolidColor(MaterialTheme.colorScheme.onBackground.copy(alpha = 0.16f)),
                 shape,
                 cutTop,
                 cutBottom,
