@@ -49,7 +49,7 @@ fun QuickstepPreferences() {
                     label = stringResource(id = R.string.window_corner_radius_label),
                     adapter = prefs.windowCornerRadius.getAdapter(),
                     step = 0,
-                    valueRange = 80..150
+                    valueRange = 70..150
                 )
             }
         }
