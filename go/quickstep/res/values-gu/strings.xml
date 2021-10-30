@@ -16,4 +16,6 @@
     <string name="assistant_not_supported_text" msgid="1708031078549268884">"તમારી સ્ક્રીન પર ટેક્સ્ટ સાંભળવા માટે અથવા તેનો અનુવાદ કરવા માટે, સેટિંગમાં જઈને તમારી ડિજિટલ આસિસ્ટંટ ઍપ બદલો"</string>
     <string name="tooltip_listen" msgid="7634466447860989102">"આ સ્ક્રીન પર ટેક્સ્ટ સાંભળવા માટે અહીં ટૅપ કરો"</string>
     <string name="tooltip_translate" msgid="4184845868901542567">"આ સ્ક્રીન પર ટેક્સ્ટનો અનુવાદ કરવા માટે અહીં ટૅપ કરો"</string>
+    <!-- no translation found for toast_p2p_app_not_shareable (7229739094132131536) -->
+    <skip />
 </resources>
