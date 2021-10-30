@@ -79,7 +79,7 @@ abstract class LawnchairSearchAlgorithm(
 }
 
 private fun Iterable<SearchTargetCompat>.removeDuplicateDividers(): List<SearchTargetCompat> {
-    var previousWasDivider = false
+    var previousWasDivider = true
     return filter { item ->
         val isDivider = item.layoutType == EMPTY_DIVIDER
         val remove = isDivider && previousWasDivider
