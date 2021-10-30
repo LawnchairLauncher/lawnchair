@@ -73,10 +73,6 @@ fun GeneralPreferences() {
         ) {
             ThemePreference()
             AccentColorPreference()
-            SwitchPreference(
-                adapter = prefs.enableColorfulTheme.getAdapter(),
-                label = stringResource(id = R.string.enable_colorful_theme)
-            )
         }
         val wrapAdaptiveIcons = prefs.wrapAdaptiveIcons.getAdapter()
         PreferenceGroup(

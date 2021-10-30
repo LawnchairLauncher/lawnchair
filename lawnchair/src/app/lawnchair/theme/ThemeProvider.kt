@@ -35,7 +35,6 @@ class ThemeProvider(private val context: Context) {
     private val prefs = PreferenceManager.getInstance(context)
     private val wallpaperManager = WallpaperManagerCompat.INSTANCE.get(context)
     private val accentColor by prefs.accentColor
-    private val enableColorfulTheme by prefs.enableColorfulTheme
 
     private val targets = MaterialYouTargets(1.0, false, viewingCondition)
     private val colorSchemeMap = SparseArray<ColorScheme>()
@@ -86,7 +85,7 @@ class ThemeProvider(private val context: Context) {
             getColorScheme(wallpaperPrimary ?: ColorOption.LawnchairBlue.color)
         }
         is ColorOption.CustomColor -> getColorScheme(accentColor.color)
-    }.let { if (!enableColorfulTheme) GrayColorScheme(it) else it }
+    }
 
     private val systemColorScheme get() = when {
         Utilities.ATLEAST_S -> getColorScheme(0)
