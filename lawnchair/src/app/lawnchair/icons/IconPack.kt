@@ -58,7 +58,11 @@ class IconPack(
     fun getIcon(iconEntry: IconEntry, iconDpi: Int): Drawable? {
         val id = getDrawableId(iconEntry.name)
         if (id == 0) return null
-        return packResources.getDrawableForDensity(id, iconDpi, null)
+        return try {
+            packResources.getDrawableForDensity(id, iconDpi, null)
+        } catch (e: Resources.NotFoundException) {
+            null
+        }
     }
 
     private fun getDrawableId(name: String) = idCache.getOrPut(name) {
