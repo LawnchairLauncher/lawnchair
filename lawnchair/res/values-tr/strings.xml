@@ -115,17 +115,17 @@
     <string name="pref_fonts_missing_font">Yazı tipi bulunamadı.</string>
     <string name="font_variant_italic">İtalik</string>
     <string name="font_weight_thin">İnce</string>
-    <string name="font_weight_extra_light">Extra Light</string>
+    <string name="font_weight_extra_light">Ekstra İnce</string>
     <string name="font_weight_light">Aydınlık</string>
     <string name="font_weight_regular">Normal</string>
     <string name="font_weight_medium">Orta</string>
     <string name="font_weight_semi_bold">Yarı Kalın</string>
     <string name="font_weight_bold">Kalın</string>
-    <string name="font_weight_extra_bold">Extra Bold</string>
+    <string name="font_weight_extra_bold">Ekstra Kalın</string>
     <string name="font_weight_extra_black">En Kalın</string>
-    <string name="font_label">Font (Experimental)</string>
+    <string name="font_label">Yazı Tipi (Deneysel)</string>
     <string name="reset_font">Sıfırla</string>
     <string name="search_bar_placeholder">Arama</string>
     <string name="pref_category_search">Arama</string>
-    <string name="pref_search_auto_show_keyboard">Automatically Show Keyboard</string>
+    <string name="pref_search_auto_show_keyboard">Klavyeyi Otomatik Göster</string>
 </resources>
