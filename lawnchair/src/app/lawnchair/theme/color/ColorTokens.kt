@@ -48,6 +48,7 @@ object ColorTokens {
     @JvmField val ColorAccent = DayNightColorToken(Accent1_600, Accent1_100)
     @JvmField val ColorBackground = DayNightColorToken(Neutral1_50, Neutral1_900)
     @JvmField val ColorBackgroundFloating = DayNightColorToken(Neutral1_50, Neutral1_900)
+    @JvmField val ColorPrimary = DayNightColorToken(Neutral1_50, Neutral1_900)
     @JvmField val TextColorPrimary = DayNightColorToken(Neutral1_900, Neutral1_50)
     @JvmField val TextColorPrimaryInverse = TextColorPrimary.inverse()
     @JvmField val TextColorSecondary = DayNightColorToken(StaticColorToken(0xde000000), Neutral2_200)
