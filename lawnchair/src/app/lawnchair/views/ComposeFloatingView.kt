@@ -11,8 +11,11 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.LocalContentColor
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ModalBottomSheetValue
+import androidx.compose.material3.LocalContentColor as M3LocalContentColor
+import androidx.compose.material3.MaterialTheme as Material3Theme
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
@@ -121,7 +124,12 @@ class ComposeFloatingView(context: Context) :
                 LawnchairTheme {
                     ProvideWindowInsets {
                         ProvideLifecycleState {
-                            content(view)
+                            CompositionLocalProvider(
+                                LocalContentColor provides MaterialTheme.colors.onSurface,
+                                M3LocalContentColor provides Material3Theme.colorScheme.onSurface
+                            ) {
+                                content(view)
+                            }
                         }
                     }
                 }
