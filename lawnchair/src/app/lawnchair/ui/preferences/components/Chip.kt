@@ -4,11 +4,8 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.ContentAlpha
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -16,6 +13,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.unit.dp
 import kotlin.math.abs
@@ -55,15 +53,15 @@ fun Chip(
     selectedProgress: Float,
     onClick: () -> Unit
 ) {
-    val backgroundColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.08f * selectedProgress)
+    val shape = RoundedCornerShape(8.dp)
     val textColor = lerp(
-        MaterialTheme.colorScheme.onBackground.copy(alpha = ContentAlpha.medium),
+        MaterialTheme.colorScheme.onBackground,
         MaterialTheme.colorScheme.primary,
         selectedProgress
     )
     val borderColor = lerp(
-        MaterialTheme.colorScheme.onBackground.copy(alpha = 0.12F),
-        MaterialTheme.colorScheme.primary,
+        MaterialTheme.colorScheme.outline,
+        Color.Transparent,
         selectedProgress
     )
 
@@ -71,11 +69,11 @@ fun Chip(
         contentAlignment = Alignment.Center,
         modifier = Modifier
             .height(32.dp)
-            .clip(CircleShape)
-            .border(width = 1.dp, color = borderColor, shape = CircleShape)
-            .background(backgroundColor)
+            .clip(shape)
+            .background(color = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = selectedProgress))
+            .border(width = 1.dp, color = borderColor, shape = shape)
             .clickable(onClick = onClick)
-            .padding(horizontal = 12.dp)
+            .padding(horizontal = 14.dp)
     ) {
         Text(
             text = label,
