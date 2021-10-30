@@ -11,7 +11,9 @@ import androidx.compose.material.RadioButton
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.key
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -19,7 +21,10 @@ import androidx.compose.ui.unit.dp
 import app.lawnchair.preferences.PreferenceAdapter
 import app.lawnchair.theme.color.ColorOption
 import app.lawnchair.ui.AlertBottomSheetContent
-import app.lawnchair.ui.preferences.components.*
+import app.lawnchair.ui.preferences.components.BottomSheet
+import app.lawnchair.ui.preferences.components.Chip
+import app.lawnchair.ui.preferences.components.PreferenceTemplate
+import app.lawnchair.ui.preferences.components.rememberBottomSheetState
 import app.lawnchair.ui.theme.lightenColor
 import com.android.launcher3.R
 import com.google.accompanist.pager.ExperimentalPagerApi
@@ -131,13 +136,15 @@ private fun PresetsList(
             .fillMaxHeight(),
         contentAlignment = Alignment.TopStart
     ) {
-        DividerColumn(modifier = Modifier.padding(top = 16.dp)) {
-            dynamicEntries.map { entry ->
+        Column(modifier = Modifier.padding(top = 16.dp)) {
+            dynamicEntries.mapIndexed { index, entry ->
                 key(entry) {
                     PreferenceTemplate(
                         title = { Text(text = entry.label()) },
                         verticalPadding = 12.dp,
                         modifier = Modifier.clickable { adapter.onChange(entry.value) },
+                        showDivider = index > 0,
+                        dividerIndent = 40.dp,
                         startWidget = {
                             RadioButton(
                                 selected = entry.value == adapter.state.value,
