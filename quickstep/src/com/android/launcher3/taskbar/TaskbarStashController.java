@@ -94,6 +94,7 @@ public class TaskbarStashController {
     private final SharedPreferences mPrefs;
     private final int mStashedHeight;
     private final int mUnstashedHeight;
+    private final SystemUiProxy mSystemUiProxy;
 
     // Initialized in init.
     private TaskbarControllers mControllers;
@@ -127,6 +128,7 @@ public class TaskbarStashController {
         mPrefs = Utilities.getPrefs(mActivity);
         final Resources resources = mActivity.getResources();
         mStashedHeight = resources.getDimensionPixelSize(R.dimen.taskbar_stashed_size);
+        mSystemUiProxy = SystemUiProxy.INSTANCE.get(activity);
         mUnstashedHeight = mActivity.getDeviceProfile().taskbarSize;
     }
 
@@ -155,8 +157,7 @@ public class TaskbarStashController {
                 !mActivity.isUserSetupComplete() || sharedState.setupUIVisible);
         applyState();
 
-        SystemUiProxy.INSTANCE.get(mActivity)
-                .notifyTaskbarStatus(/* visible */ false, /* stashed */ isStashedInApp());
+        notifyStashChange(/* visible */ false, /* stashed */ isStashedInApp());
     }
 
     /**
@@ -408,10 +409,10 @@ public class TaskbarStashController {
     }
 
     /** Called when some system ui state has changed. (See SYSUI_STATE_... in QuickstepContract) */
-    public void updateStateForSysuiFlags(int systemUiStateFlags) {
+    public void updateStateForSysuiFlags(int systemUiStateFlags, boolean skipAnim) {
         updateStateForFlag(FLAG_STASHED_IN_APP_PINNED,
                 hasAnyFlag(systemUiStateFlags, SYSUI_STATE_SCREEN_PINNING));
-        applyState();
+        applyState(skipAnim ? 0 : TASKBAR_STASH_DURATION);
     }
 
     /**
@@ -440,8 +441,7 @@ public class TaskbarStashController {
             mControllers.uiController.onStashedInAppChanged();
         }
         if (hasAnyFlag(changedFlags, FLAGS_STASHED_IN_APP | FLAG_IN_APP)) {
-            SystemUiProxy.INSTANCE.get(mActivity)
-                    .notifyTaskbarStatus(/* visible */ hasAnyFlag(FLAG_IN_APP),
+            notifyStashChange(/* visible */ hasAnyFlag(FLAG_IN_APP),
                             /* stashed */ isStashedInApp());
         }
         if (hasAnyFlag(changedFlags, FLAG_STASHED_IN_APP_MANUAL)) {
@@ -451,6 +451,11 @@ public class TaskbarStashController {
                 mActivity.getStatsLogManager().logger().log(LAUNCHER_TASKBAR_LONGPRESS_SHOW);
             }
         }
+    }
+
+    private void notifyStashChange(boolean visible, boolean stashed) {
+        mSystemUiProxy.notifyTaskbarStatus(visible, stashed);
+        mControllers.rotationButtonController.onTaskbarStateChange(visible, stashed);
     }
 
     private class StatePropertyHolder {

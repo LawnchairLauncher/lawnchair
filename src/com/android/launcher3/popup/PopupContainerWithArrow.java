@@ -364,11 +364,6 @@ public class PopupContainerWithArrow<T extends Context & ActivityContext>
     }
 
     private void initializeSystemShortcut(int resId, ViewGroup container, SystemShortcut info) {
-        if (!info.isEnabled()) {
-            // If the shortcut is disabled, do not display it
-            return;
-        }
-
         View view = inflateAndAdd(
                 resId, container, getInsertIndexForSystemShortcut(container, info));
         if (view instanceof DeepShortcutView) {

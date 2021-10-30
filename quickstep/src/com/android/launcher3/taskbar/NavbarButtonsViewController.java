@@ -15,6 +15,8 @@
  */
 package com.android.launcher3.taskbar;
 
+import static android.view.WindowManager.LayoutParams.TYPE_NAVIGATION_BAR_PANEL;
+
 import static com.android.launcher3.LauncherAnimUtils.VIEW_TRANSLATE_X;
 import static com.android.launcher3.taskbar.TaskbarNavButtonController.BUTTON_A11Y;
 import static com.android.launcher3.taskbar.TaskbarNavButtonController.BUTTON_A11Y_LONG_CLICK;
@@ -38,6 +40,7 @@ import android.animation.ObjectAnimator;
 import android.annotation.DrawableRes;
 import android.annotation.IdRes;
 import android.annotation.LayoutRes;
+import android.content.Context;
 import android.content.res.ColorStateList;
 import android.graphics.Rect;
 import android.graphics.Region;
@@ -45,6 +48,7 @@ import android.graphics.Region.Op;
 import android.graphics.drawable.AnimatedVectorDrawable;
 import android.util.Property;
 import android.view.Gravity;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnHoverListener;
@@ -57,11 +61,12 @@ import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AlphaUpdateListener;
 import com.android.launcher3.taskbar.TaskbarNavButtonController.TaskbarButton;
-import com.android.launcher3.taskbar.contextual.RotationButton;
-import com.android.launcher3.taskbar.contextual.RotationButtonController;
 import com.android.launcher3.util.MultiValueAlpha;
 import com.android.launcher3.util.Themes;
 import com.android.quickstep.AnimatedFloat;
+import com.android.systemui.shared.rotation.FloatingRotationButton;
+import com.android.systemui.shared.rotation.RotationButton;
+import com.android.systemui.shared.rotation.RotationButtonController;
 
 import java.util.ArrayList;
 import java.util.function.IntPredicate;
@@ -103,12 +108,16 @@ public class NavbarButtonsViewController {
             this::updateNavButtonTranslationY);
     private final AnimatedFloat mNavButtonTranslationYMultiplier = new AnimatedFloat(
             this::updateNavButtonTranslationY);
+    private final RotationButtonListener mRotationButtonListener = new RotationButtonListener();
+
+    private final Rect mFloatingRotationButtonBounds = new Rect();
 
     // Initialized in init.
     private TaskbarControllers mControllers;
     private View mA11yButton;
     private int mSysuiStateFlags;
     private View mBackButton;
+    private FloatingRotationButton mFloatingRotationButton;
 
     public NavbarButtonsViewController(TaskbarActivityContext context, FrameLayout navButtonsView) {
         mContext = context;
@@ -121,10 +130,9 @@ public class NavbarButtonsViewController {
     /**
      * Initializes the controller
      */
-    public void init(TaskbarControllers controllers, TaskbarSharedState sharedState) {
+    public void init(TaskbarControllers controllers) {
         mControllers = controllers;
         mNavButtonsView.getLayoutParams().height = mContext.getDeviceProfile().taskbarSize;
-        parseSystemUiFlags(sharedState.sysuiStateFlags);
         mNavButtonTranslationYMultiplier.value = 1;
 
         mA11yLongClickListener = view -> {
@@ -199,9 +207,13 @@ public class NavbarButtonsViewController {
                     addButton(mEndContextualContainer, R.id.rotate_suggestion,
                             R.layout.taskbar_contextual_button));
             rotationButton.hide();
-            mControllers.rotationButtonController.setRotationButton(rotationButton);
+            mControllers.rotationButtonController.setRotationButton(rotationButton, null);
         } else {
-            mControllers.rotationButtonController.setRotationButton(new RotationButton() {});
+            mFloatingRotationButton = new FloatingRotationButton(mContext,
+                    R.string.accessibility_rotate_button);
+            mControllers.rotationButtonController.setRotationButton(mFloatingRotationButton,
+                    mRotationButtonListener);
+
             View imeDownButton = addButton(R.drawable.ic_sysbar_back, BUTTON_BACK,
                     mStartContextualContainer, mControllers.navButtonController, R.id.back);
             imeDownButton.setRotation(Utilities.isRtl(mContext.getResources()) ? 90 : -90);
@@ -290,12 +302,15 @@ public class NavbarButtonsViewController {
         }
     }
 
-    public void updateStateForSysuiFlags(int systemUiStateFlags) {
+    public void updateStateForSysuiFlags(int systemUiStateFlags, boolean skipAnim) {
         if (systemUiStateFlags == mSysuiStateFlags) {
             return;
         }
         parseSystemUiFlags(systemUiStateFlags);
         applyState();
+        if (skipAnim) {
+            mPropertyHolders.forEach(StatePropertyHolder::endAnimation);
+        }
     }
 
     /**
@@ -403,8 +418,28 @@ public class NavbarButtonsViewController {
         return buttonView;
     }
 
+    public boolean isEventOverAnyItem(MotionEvent ev) {
+        return mFloatingRotationButtonBounds.contains((int) ev.getX(), (int) ev.getY());
+    }
+
     public void onDestroy() {
         mPropertyHolders.clear();
+        mControllers.rotationButtonController.unregisterListeners();
+        if (mFloatingRotationButton != null) {
+            mFloatingRotationButton.hide();
+        }
+    }
+
+    private class RotationButtonListener implements RotationButton.RotationButtonUpdatesCallback {
+        @Override
+        public void onVisibilityChanged(boolean isVisible) {
+            if (isVisible) {
+                mFloatingRotationButton.getCurrentView()
+                        .getBoundsOnScreen(mFloatingRotationButtonBounds);
+            } else {
+                mFloatingRotationButtonBounds.setEmpty();
+            }
+        }
     }
 
     private class RotationButtonImpl implements RotationButton {
@@ -422,6 +457,8 @@ public class NavbarButtonsViewController {
             mImageDrawable = (AnimatedVectorDrawable) mButton.getContext()
                     .getDrawable(rotationButtonController.getIconResId());
             mButton.setImageDrawable(mImageDrawable);
+            mButton.setContentDescription(mButton.getResources()
+                    .getString(R.string.accessibility_rotate_button));
             mImageDrawable.setCallback(mButton);
         }
 
@@ -431,17 +468,19 @@ public class NavbarButtonsViewController {
         }
 
         @Override
-        public void show() {
+        public boolean show() {
             mButton.setVisibility(View.VISIBLE);
             mState |= FLAG_ROTATION_BUTTON_VISIBLE;
             applyState();
+            return true;
         }
 
         @Override
-        public void hide() {
+        public boolean hide() {
             mButton.setVisibility(View.GONE);
             mState &= ~FLAG_ROTATION_BUTTON_VISIBLE;
             applyState();
+            return true;
         }
 
         @Override

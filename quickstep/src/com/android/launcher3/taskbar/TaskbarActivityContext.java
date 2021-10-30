@@ -60,7 +60,6 @@ import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.logger.LauncherAtom;
 import com.android.launcher3.model.data.FolderInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
-import com.android.launcher3.taskbar.contextual.RotationButtonController;
 import com.android.launcher3.touch.ItemClickHandler;
 import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.util.SettingsCache;
@@ -70,8 +69,8 @@ import com.android.launcher3.util.ViewCache;
 import com.android.launcher3.views.ActivityContext;
 import com.android.quickstep.SysUINavigationMode;
 import com.android.quickstep.SysUINavigationMode.Mode;
-import com.android.quickstep.SystemUiProxy;
 import com.android.systemui.shared.recents.model.Task;
+import com.android.systemui.shared.rotation.RotationButtonController;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.WindowManagerWrapper;
 import com.android.systemui.unfold.util.ScopedUnfoldTransitionProgressProvider;
@@ -148,8 +147,14 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
                 new TaskbarDragController(this),
                 buttonController,
                 new NavbarButtonsViewController(this, navButtonsView),
-                new RotationButtonController(this, R.color.popup_color_primary_light,
-                        R.color.popup_color_primary_light),
+                new RotationButtonController(this,
+                        c.getColor(R.color.rotation_button_light_color),
+                        c.getColor(R.color.rotation_button_dark_color),
+                        R.drawable.ic_sysbar_rotate_button_ccw_start_0,
+                        R.drawable.ic_sysbar_rotate_button_ccw_start_90,
+                        R.drawable.ic_sysbar_rotate_button_cw_start_0,
+                        R.drawable.ic_sysbar_rotate_button_cw_start_90,
+                        () -> getDisplay().getRotation()),
                 new TaskbarDragLayerController(this, mDragLayer),
                 new TaskbarViewController(this, taskbarView),
                 new TaskbarScrimViewController(this, taskbarScrimView),
@@ -158,7 +163,8 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
                 new TaskbarKeyguardController(this),
                 new StashedHandleViewController(this, stashedHandleView),
                 new TaskbarStashController(this),
-                new TaskbarEduController(this));
+                new TaskbarEduController(this),
+                new TaskbarAutohideSuspendController(this));
     }
 
     public void init(TaskbarSharedState sharedState) {
@@ -191,6 +197,7 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
 
         // Initialize controllers after all are constructed.
         mControllers.init(sharedState);
+        updateSysuiStateFlags(sharedState.sysuiStateFlags, true /* fromInit */);
 
         mWindowManager.addView(mDragLayer, mWindowLayoutParams);
     }
@@ -325,26 +332,28 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
         mWindowManager.removeViewImmediate(mDragLayer);
     }
 
-    public void updateSysuiStateFlags(int systemUiStateFlags) {
-        mControllers.navbarButtonsViewController.updateStateForSysuiFlags(systemUiStateFlags);
+    public void updateSysuiStateFlags(int systemUiStateFlags, boolean fromInit) {
+        mControllers.navbarButtonsViewController.updateStateForSysuiFlags(systemUiStateFlags,
+                fromInit);
         mControllers.taskbarViewController.setImeIsVisible(
                 mControllers.navbarButtonsViewController.isImeVisible());
         int shadeExpandedFlags = SYSUI_STATE_NOTIFICATION_PANEL_EXPANDED
                 | SYSUI_STATE_QUICK_SETTINGS_EXPANDED;
-        onNotificationShadeExpandChanged((systemUiStateFlags & shadeExpandedFlags) != 0);
+        onNotificationShadeExpandChanged((systemUiStateFlags & shadeExpandedFlags) != 0, fromInit);
         mControllers.taskbarViewController.setRecentsButtonDisabled(
                 mControllers.navbarButtonsViewController.isRecentsDisabled());
         mControllers.stashedHandleViewController.setIsHomeButtonDisabled(
                 mControllers.navbarButtonsViewController.isHomeDisabled());
         mControllers.taskbarKeyguardController.updateStateForSysuiFlags(systemUiStateFlags);
-        mControllers.taskbarStashController.updateStateForSysuiFlags(systemUiStateFlags);
-        mControllers.taskbarScrimViewController.updateStateForSysuiFlags(systemUiStateFlags);
+        mControllers.taskbarStashController.updateStateForSysuiFlags(systemUiStateFlags, fromInit);
+        mControllers.taskbarScrimViewController.updateStateForSysuiFlags(systemUiStateFlags,
+                fromInit);
     }
 
     /**
      * Hides the taskbar icons and background when the notication shade is expanded.
      */
-    private void onNotificationShadeExpandChanged(boolean isExpanded) {
+    private void onNotificationShadeExpandChanged(boolean isExpanded, boolean skipAnim) {
         float alpha = isExpanded ? 0 : 1;
         AnimatorSet anim = new AnimatorSet();
         anim.play(mControllers.taskbarViewController.getTaskbarIconAlpha().getProperty(
@@ -354,6 +363,9 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
                     .animateToValue(alpha));
         }
         anim.start();
+        if (skipAnim) {
+            anim.end();
+        }
     }
 
     public void onRotationProposal(int rotation, boolean isValid) {
@@ -375,7 +387,8 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
      * Updates the TaskbarContainer to MATCH_PARENT vs original Taskbar size.
      */
     public void setTaskbarWindowFullscreen(boolean fullscreen) {
-        SystemUiProxy.INSTANCE.getNoCreate().notifyTaskbarAutohideSuspend(fullscreen);
+        mControllers.taskbarAutohideSuspendController.updateFlag(
+                TaskbarAutohideSuspendController.FLAG_AUTOHIDE_SUSPEND_FULLSCREEN, fullscreen);
         mIsFullscreen = fullscreen;
         setTaskbarWindowHeight(fullscreen ? MATCH_PARENT : mLastRequestedNonFullscreenHeight);
     }
