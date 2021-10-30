@@ -30,7 +30,7 @@ class GestureController(private val launcher: LawnchairLauncher) {
         // TODO: proper gesture selection system
         if (prefs.workspaceDt2s.get()) {
             launcher.lifecycleScope.launch {
-                doubleTapHandler.onTrigger()
+                doubleTapHandler.onTrigger(launcher)
             }
         }
     }

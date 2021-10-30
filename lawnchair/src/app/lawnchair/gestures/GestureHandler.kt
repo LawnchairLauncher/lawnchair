@@ -16,7 +16,10 @@
 
 package app.lawnchair.gestures
 
-abstract class GestureHandler {
+import android.content.Context
+import app.lawnchair.LawnchairLauncher
 
-    abstract suspend fun onTrigger()
+abstract class GestureHandler(val context: Context) {
+
+    abstract suspend fun onTrigger(launcher: LawnchairLauncher)
 }
