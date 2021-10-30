@@ -101,7 +101,8 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) : LinearLayout(
     }
 
     private fun updateHint() {
-        val inputLowerCase = input.text.toString().lowercase(Locale.getDefault())
+        val inputString = input.text.toString()
+        val inputLowerCase = inputString.lowercase(Locale.getDefault())
         val focusedLowerCase = focusedResultTitle.lowercase(Locale.getDefault())
         if (canShowHint
             && !TextUtils.isEmpty(inputLowerCase) && !TextUtils.isEmpty(focusedLowerCase)
@@ -109,7 +110,7 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) : LinearLayout(
             && focusedLowerCase.startsWith(inputLowerCase)
         ) {
             val hintColor = Themes.getAttrColor(context, android.R.attr.textColorTertiary)
-            val hintText = SpannableStringBuilder(inputLowerCase)
+            val hintText = SpannableStringBuilder(inputString)
                 .append(focusedLowerCase.substring(inputLowerCase.length))
             hintText.setSpan(ForegroundColorSpan(Color.TRANSPARENT), 0, inputLowerCase.length, SPAN_POINT_MARK)
             hintText.setSpan(ForegroundColorSpan(hintColor), inputLowerCase.length, hintText.length, SPAN_POINT_MARK)
