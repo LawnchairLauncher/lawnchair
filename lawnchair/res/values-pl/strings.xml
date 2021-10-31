@@ -81,7 +81,7 @@
     <string name="dt2s_admin_hint">Aby korzystać z funkcji uśpienia dwukrotnym dotknięciem, przyznaj Lawnchair uprawnienia administratora urządzenia. Otwórz ustawienia, następnie dotknij \"Aktywuj tę aplikację do administrowania urządzeniem\".</string>
     <string name="dt2s_admin_warning">Opcja \"Dotknij dwa razy aby uśpić\" zostanie wyłączona.</string>
     <string name="dt2s_a11y_hint_title">Włącz usługę ułatwień dostępu</string>
-    <string name="dt2s_a11y_hint">Aby korzystać z funkcji uśpienia dwukrotnym dotknięciem, włącz usługi Lawnchair w ułatwieniach dostępu. Otwórz ustawienia (Ułatwienia dostępu), następnie włącz \"Używanie aplikacji Lawnchair\".</string>
+    <string name="dt2s_a11y_hint">Aby korzystać z funkcji uśpienia dwukrotnym dotknięciem, włącz usługi Lawnchair w ułatwieniach dostępu. Otwórz ustawienia - Ułatwienia dostępu, następnie włącz - Używanie aplikacji Lawnchair.</string>
     <string name="dt2s_warning_open_settings">Otwórz ustawienia</string>
     <string name="minus_one_enable">Kanał</string>
     <string name="minus_one_unavailable">Aplikacja aktualności \"Feed\" niezainstalowana.</string>
