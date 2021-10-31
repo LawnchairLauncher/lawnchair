@@ -22,6 +22,7 @@ import static com.android.launcher3.allapps.AllAppsStore.DEFER_UPDATES_TEST;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import android.util.Log;
 import android.view.View;
 
 import com.android.launcher3.R;
@@ -51,6 +52,7 @@ public class WorkProfileTest extends AbstractLauncherUiTest {
         String output =
                 mDevice.executeShellCommand(
                         "pm create-user --profileOf 0 --managed TestProfile");
+        Log.d("b/203817455", "pm create-user; output: " + output);
         assertTrue("Failed to create work profile", output.startsWith("Success"));
 
         String[] tokens = output.split("\\s+");
