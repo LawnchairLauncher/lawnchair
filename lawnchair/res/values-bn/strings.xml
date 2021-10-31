@@ -81,7 +81,7 @@
     <string name="dt2s_a11y_hint_title">অ্যাক্সেসিবিলিটি সার্ভিস চালু করুন</string>
     <string name="dt2s_a11y_hint">To use Double-Tap to Sleep, turn on the Lawnchair accessibility service. Tap Open Settings, then select Lawnchair and turn on Use Lawnchair.</string>
     <string name="dt2s_warning_open_settings">সেটিংস এ যান</string>
-    <string name="minus_one_enable">Feed</string>
+    <string name="minus_one_enable">ফিড</string>
     <string name="minus_one_unavailable">ফিড ইনস্টল করা হয়নি.</string>
     <string name="fuzzy_search_title">ফাজি সার্চ</string>
     <string name="fuzzy_search_desc">অ্যাপ্লিকেশন সার্চের জন্য আনুমানিক মিল.</string>
@@ -91,8 +91,8 @@
     <string name="theme_system_default">সিস্টেমকে অনুসরণ করুন</string>
     <string name="theme_follow_wallpaper">ওয়ালপেপার ম্যাচ করুন</string>
     <string name="quickstep_label">সাম্প্রতিক</string>
-    <string name="clear_all_as_action_label">Clear All Button at Bottom</string>
-    <string name="window_corner_radius_label">Screen Corner Radius</string>
+    <string name="clear_all_as_action_label">\'ক্লিয়ার অল\' বাটন একদম শেষে</string>
+    <string name="window_corner_radius_label">স্ক্রীনের কোনার মাপ</string>
     <string name="override_window_corner_radius_label">Custom Screen Corner Radius</string>
     <string name="window_corner_radius_description">When you swipe up to open Recents, the current app follows your finger, shrinking into a card. Use this slider to adjust the corner radius of the card when it’s nearly full-screen such that it matches the corners of your screen.</string>
     <string name="system_icons">সিস্টেম আইকনস</string>
