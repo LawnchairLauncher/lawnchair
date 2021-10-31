@@ -124,7 +124,7 @@ fun NotificationAccessConfirmation(
                 ) {
                     Text(text = stringResource(id = android.R.string.cancel))
                 }
-                Spacer(modifier = Modifier.requiredWidth(16.dp))
+                Spacer(modifier = Modifier.requiredWidth(8.dp))
                 Button(
                     onClick = {
                         onDismissRequest()
