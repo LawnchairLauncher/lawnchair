@@ -165,7 +165,7 @@
     <string name="status_channel_name">Stato del caricamento</string>
     <string name="bugreport_group_summary">%d nuove segnalazioni.</string>
     <string name="bugreport_group_summary_multiple">Molteplici nuove segnalazioni.</string>
-    <string name="themed_icon_title">Themed Icons</string>
+    <string name="themed_icon_title">Icone a tema</string>
     <string name="corner_radius_label">Raggio dell\'angolo</string>
     <string name="search_bar_label">Barra di ricerca</string>
     <string name="apply_accent_color_label">Applica colore d\'accento</string>
