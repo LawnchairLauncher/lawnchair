@@ -115,6 +115,7 @@ import java.util.stream.Stream;
 public class TaskView extends FrameLayout implements Reusable {
 
     private static final String TAG = TaskView.class.getSimpleName();
+    private static final boolean DEBUG = false;
 
     public static final int FLAG_UPDATE_ICON = 1;
     public static final int FLAG_UPDATE_THUMBNAIL = FLAG_UPDATE_ICON << 1;
@@ -808,6 +809,8 @@ public class TaskView extends FrameLayout implements Reusable {
     }
 
     protected boolean showTaskMenuWithContainer(IconView iconView) {
+        // TODO(http://b/193432925)
+        if (DEBUG) TaskMenuViewWithArrow.Companion.logSomething();
         return TaskMenuView.showForTask(mTaskIdAttributeContainer[0]);
     }
 
