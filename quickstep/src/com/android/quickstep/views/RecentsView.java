@@ -4390,7 +4390,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     public void finishRecentsAnimation(boolean toRecents, boolean shouldPip,
             Runnable onFinishComplete) {
         // TODO(b/197232424#comment#10) Move this back into onRecentsAnimationComplete(). Maybe?
-        mRemoteTargetHandles = null;
+        cleanupRemoteTargets();
         if (!toRecents && ENABLE_QUICKSTEP_LIVE_TILE.get()) {
             // Reset the minimized state since we force-toggled the minimized state when entering
             // overview, but never actually finished the recents animation.  This is a catch all for
@@ -4847,6 +4847,10 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     private boolean showAsFullscreen() {
         return mOverviewFullscreenEnabled
                 && mCurrentGestureEndTarget != GestureState.GestureEndTarget.RECENTS;
+    }
+
+    public void cleanupRemoteTargets() {
+        mRemoteTargetHandles = null;
     }
 
     /**
