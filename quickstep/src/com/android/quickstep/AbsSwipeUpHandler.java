@@ -961,8 +961,10 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
                 } else {
                     mStateCallback.setState(STATE_RESUME_LAST_TASK);
                 }
-                TaskViewUtils.setSplitAuxiliarySurfacesShown(
-                        mRecentsAnimationTargets.nonApps, true);
+                if (mRecentsAnimationTargets != null) {
+                    TaskViewUtils.setSplitAuxiliarySurfacesShown(
+                            mRecentsAnimationTargets.nonApps, true);
+                }
                 break;
         }
         ActiveGestureLog.INSTANCE.addLog("onSettledOnEndTarget " + endTarget);
@@ -1734,7 +1736,10 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
         endLauncherTransitionController();
         mRecentsView.onSwipeUpAnimationSuccess();
         if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
-            mTaskAnimationManager.setLiveTileCleanUpHandler(mInputConsumerProxy::destroy);
+            mTaskAnimationManager.setLiveTileCleanUpHandler(() -> {
+                mRecentsView.cleanupRemoteTargets();
+                mInputConsumerProxy.destroy();
+            });
             mTaskAnimationManager.enableLiveTileRestartListener();
         }
 

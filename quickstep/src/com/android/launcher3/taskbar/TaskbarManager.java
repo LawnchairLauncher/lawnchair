@@ -16,8 +16,7 @@
 package com.android.launcher3.taskbar;
 
 import static android.view.Display.DEFAULT_DISPLAY;
-import static android.view.WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
-
+import static android.view.WindowManager.LayoutParams.TYPE_NAVIGATION_BAR_PANEL;
 import static com.android.launcher3.util.DisplayController.CHANGE_ACTIVE_SCREEN;
 import static com.android.launcher3.util.DisplayController.CHANGE_DENSITY;
 import static com.android.launcher3.util.DisplayController.CHANGE_SUPPORTED_BOUNDS;
@@ -91,7 +90,7 @@ public class TaskbarManager implements DisplayController.DisplayInfoChangeListen
         mSysUINavigationMode = SysUINavigationMode.INSTANCE.get(service);
         Display display =
                 service.getSystemService(DisplayManager.class).getDisplay(DEFAULT_DISPLAY);
-        mContext = service.createWindowContext(display, TYPE_APPLICATION_OVERLAY, null);
+        mContext = service.createWindowContext(display, TYPE_NAVIGATION_BAR_PANEL, null);
         mNavButtonController = new TaskbarNavButtonController(service);
         mUserSetupCompleteListener = isUserSetupComplete -> recreateTaskbar();
         mComponentCallbacks = new ComponentCallbacks() {
