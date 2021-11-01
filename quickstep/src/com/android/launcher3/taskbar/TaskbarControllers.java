@@ -17,7 +17,7 @@ package com.android.launcher3.taskbar;
 
 import androidx.annotation.NonNull;
 
-import com.android.launcher3.taskbar.contextual.RotationButtonController;
+import com.android.systemui.shared.rotation.RotationButtonController;
 
 /**
  * Hosts various taskbar controllers to facilitate passing between one another.
@@ -80,9 +80,7 @@ public class TaskbarControllers {
     public void init(TaskbarSharedState sharedState) {
         taskbarDragController.init(this);
         navbarButtonsViewController.init(this);
-        if (taskbarActivityContext.isThreeButtonNav()) {
-            rotationButtonController.init();
-        }
+        rotationButtonController.init();
         taskbarDragLayerController.init(this);
         taskbarViewController.init(this);
         taskbarScrimViewController.init(this);
