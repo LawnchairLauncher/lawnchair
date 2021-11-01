@@ -1129,7 +1129,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             for (int i = 0; i < taskCount; i++) {
                 View v = getTaskViewAt(i);
                 if (!(v instanceof GroupedTaskView)) {
-                    return;
+                    continue;
                 }
                 GroupedTaskView gtv = (GroupedTaskView) v;
                 gtv.onTaskListVisibilityChanged(false);
