@@ -197,6 +197,19 @@
     <!-- Minimum distance to swipe to trigger accessibility gesture -->
     <dimen name="accessibility_gesture_min_swipe_distance">80dp</dimen>
 
+    <!-- The maximum width of the navigation bar ripples. -->
+    <dimen name="key_button_ripple_max_width">95dp</dimen>
+
+    <dimen name="rounded_corner_content_padding">0dp</dimen>
+
+    <dimen name="navigation_key_padding">0dp</dimen>
+
+    <!-- Floating rotation button -->
+    <dimen name="floating_rotation_button_diameter">40dp</dimen>
+    <dimen name="floating_rotation_button_min_margin">20dp</dimen>
+    <dimen name="floating_rotation_button_taskbar_left_margin">20dp</dimen>
+    <dimen name="floating_rotation_button_taskbar_bottom_margin">10dp</dimen>
+
     <!-- Taskbar -->
     <dimen name="taskbar_size">@*android:dimen/taskbar_frame_height</dimen>
     <dimen name="taskbar_icon_touch_size">48dp</dimen>
