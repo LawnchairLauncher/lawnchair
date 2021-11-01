@@ -152,9 +152,13 @@ android_app {
     ],
     srcs: [
         "src/**/*.java",
+        "src/**/*.kt",
         "src_shortcuts_overrides/**/*.java",
+        "src_shortcuts_overrides/**/*.kt",
         "src_ui_overrides/**/*.java",
+        "src_ui_overrides/**/*.kt",
         "ext_tests/src/**/*.java",
+        "ext_tests/src/**/*.kt",
     ],
     resource_dirs: [
         "ext_tests/res",
@@ -211,7 +215,10 @@ android_library {
 // Source code used for test helpers
 filegroup {
     name: "launcher-src-ext-tests",
-    srcs: ["ext_tests/src/**/*.java"],
+    srcs: [
+        "ext_tests/src/**/*.java",
+        "ext_tests/src/**/*.kt",
+    ],
 }
 
 // Common source files used to build launcher
@@ -219,8 +226,11 @@ filegroup {
     name: "launcher-src-no-build-config",
     srcs: [
         "src/**/*.java",
+        "src/**/*.kt",
         "src_shortcuts_overrides/**/*.java",
+        "src_shortcuts_overrides/**/*.kt",
         "quickstep/src/**/*.java",
+        "quickstep/src/**/*.kt",
     ],
 }
 
@@ -235,9 +245,13 @@ android_library {
     name: "LauncherGoResLib",
     srcs: [
         "src/**/*.java",
+        "src/**/*.kt",
         "quickstep/src/**/*.java",
+        "quickstep/src/**/*.kt",
         "go/src/**/*.java",
+        "go/src/**/*.kt",
         "go/quickstep/src/**/*.java",
+        "go/quickstep/src/**/*.kt",
     ],
     resource_dirs: [
         "go/res",
