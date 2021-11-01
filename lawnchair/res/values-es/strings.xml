@@ -40,7 +40,7 @@
     <string name="icons">Iconos</string>
     <string name="icon_size">Tamaño de Iconos</string>
     <string name="label_size">Tamaño de Etiqueta</string>
-    <string name="show_home_labels">Mostrar etiquetas</string>
+    <string name="show_home_labels">Mostrar la etiqueta</string>
     <string name="allow_empty_pages_label">Permitir Páginas Vacías</string>
     <string name="notification_dots">Puntos de Notificación</string>
     <string name="smartspace_preferences">Preferencias</string>
@@ -64,7 +64,7 @@
     <string name="auto_adaptive_icons_description">Para todos los iconos no adaptativos.</string>
     <string name="support_and_pr">Soporte &amp; Relaciones Públicas</string>
     <string name="workspace_dt2s">Doble toque para dormir</string>
-    <string name="smart_space_enable">Widget De un vistazo</string>
+    <string name="smart_space_enable">Widget de un vistazo</string>
     <string name="design_and_development">Diseño &amp; Desarrollo</string>
     <string name="translate">Traducir</string>
     <string name="product">Producto</string>
@@ -76,12 +76,12 @@
     </plurals>
     <string name="hotseat_qsb_label">Mostrar Barra de Búsqueda</string>
     <string name="dt2s_admin_hint_title">Permisos de administrador requeridos</string>
-    <string name="dt2s_admin_hint">Para usar el doble toque para dormir, establece a Lawnchair como una app de administrador de dispositivos. Toca en \"Abrir Configuración\", luego en \"Activar esta app de administrador de dispositivos.\"</string>
+    <string name="dt2s_admin_hint">Para usar el doble toque para apagar la pantalla, establece a Lawnchair como una app de administrador de dispositivos. Toca en \"Abrir Configuración\", luego en \"Activar esta app de administrador de dispositivos.\"</string>
     <string name="dt2s_admin_warning">Se desactivará el doble toque para dormir.</string>
     <string name="dt2s_a11y_hint_title">Activar el Servicio de Accesibilidad</string>
-    <string name="dt2s_a11y_hint">Para usar el doble toque para dormir, activa el servicio de accesibilidad de Lawnchair. Toca en \"Abrir Configuración\", luego selecciona \"Lawnchair\" y activa \"Usar Lawnchair\".</string>
+    <string name="dt2s_a11y_hint">Para usar el doble toque para apagar la pantalla, activa el servicio de accesibilidad de Lawnchair. Toca en \"Abrir Configuración\", luego selecciona \"Lawnchair\" y activa \"Usar Lawnchair\".</string>
     <string name="dt2s_warning_open_settings">Abrir Configuración</string>
-    <string name="minus_one_enable">Feed</string>
+    <string name="minus_one_enable">Alimentación</string>
     <string name="minus_one_unavailable">Feed no instalado.</string>
     <string name="fuzzy_search_title">Búsqueda Aproximada</string>
     <string name="fuzzy_search_desc">Coincidencia aproximada para búsqueda de aplicaciones.</string>
@@ -94,7 +94,7 @@
     <string name="clear_all_as_action_label">Botón \"Borrar todo\" al fondo</string>
     <string name="window_corner_radius_label">Radio de esquina de pantalla</string>
     <string name="override_window_corner_radius_label">Radio de esquina de pantalla personalizado</string>
-    <string name="window_corner_radius_description">Cuando deslizas hacia arriba para abrir Recientes, la aplicación actual sigue tu dedo, encogiéndose en una tarjeta. Utiliza este control deslizante para ajustar el radio de esquina de la tarjeta cuando es casi de pantalla completa de tal forma que coincida con las esquinas de tu pantalla.</string>
+    <string name="window_corner_radius_description">Cuando deslizas hacia abajo para abrir Recientes, la aplicación actual sigue tu dedo, encogiéndose en una tarjeta. Utiliza este control deslizante para ajustar el radio de esquina de la tarjeta cuando es casi de pantalla completa de tal forma que coincida con las esquinas de tu pantalla.</string>
     <string name="system_icons">Iconos del sistema</string>
     <string name="accent_color">Color de acento</string>
     <string name="done">Hecho</string>
@@ -121,11 +121,11 @@
     <string name="font_weight_medium">Media</string>
     <string name="font_weight_semi_bold">Seminegrita</string>
     <string name="font_weight_bold">Negrita</string>
-    <string name="font_weight_extra_bold">Extra Bold</string>
+    <string name="font_weight_extra_bold">Extra Negrita</string>
     <string name="font_weight_extra_black">Negra</string>
-    <string name="font_label">Font (Experimental)</string>
+    <string name="font_label">Fuente (Experimental)</string>
     <string name="reset_font">Restablecer</string>
-    <string name="search_bar_placeholder">Search</string>
-    <string name="pref_category_search">Search</string>
-    <string name="pref_search_auto_show_keyboard">Automatically Show Keyboard</string>
+    <string name="search_bar_placeholder">Buscar</string>
+    <string name="pref_category_search">Buscar</string>
+    <string name="pref_search_auto_show_keyboard">Mostrar teclado automáticamente</string>
 </resources>
