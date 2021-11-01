@@ -35,9 +35,9 @@
     <string name="max_folder_columns">Colonne massime per la cartella</string>
     <string name="max_folder_rows">Righe massime per la cartella</string>
     <string name="home_screen_grid">Home Screen Grid</string>
-    <string name="columns">Columns</string>
+    <string name="columns">Colonne</string>
     <string name="grid">Griglia</string>
-    <string name="rows">Rows</string>
+    <string name="rows">Righe</string>
     <string name="icons">Icone</string>
     <string name="icon_size">Dimensioni icona</string>
     <string name="label_size">Dimensioni etichetta</string>
@@ -100,7 +100,7 @@
     <string name="done">Fatto</string>
     <string name="loading">Caricamento…</string>
     <string name="system">Sistema</string>
-    <string name="wallpaper">Wallpaper</string>
+    <string name="wallpaper">Sfondo</string>
     <string name="custom">Personalizzato</string>
     <string name="quickstep_description">Pulsante \"Cancella tutto\", raggio dell\'angolo</string>
     <string name="wallpaper_scrolling_label">Scorrimento dello sfondo</string>
@@ -130,7 +130,7 @@
     <string name="pref_search_auto_show_keyboard">Mostra la tastiera automaticamente</string>
     <string name="label_search">Ricerca</string>
     <string name="label_lens">Google Lens</string>
-    <string name="label_voice_search">Voice Search</string>
+    <string name="label_voice_search">Ricerca vocale</string>
     <string name="apply_grid">Apply</string>
     <string name="x_by_y">%1$d × %2$d</string>
     <string name="folder_preview_bg_opacity_label">Icon Background Opacity</string>
