@@ -105,7 +105,7 @@ else
   LOCAL_SDK_VERSION := system_current
   LOCAL_MIN_SDK_VERSION := 26
 endif
-LOCAL_STATIC_ANDROID_LIBRARIES := Launcher3CommonDepsLib
+LOCAL_STATIC_ANDROID_LIBRARIES := LauncherGoResLib
 
 LOCAL_SRC_FILES := \
     $(call all-java-files-under, src) \
