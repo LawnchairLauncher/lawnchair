@@ -158,7 +158,7 @@ public class SwipePipToHomeAnimator extends RectFSpringAnim {
             t.reparent(mContentOverlay, mLeash);
             t.apply();
 
-            addOnUpdateListener((values, currentRect, progress) -> {
+            addOnUpdateListener((currentRect, progress) -> {
                 float alpha = progress < 0.5f
                         ? 0
                         : Utilities.mapToRange(Math.min(progress, 1f), 0.5f, 1f,
@@ -201,8 +201,7 @@ public class SwipePipToHomeAnimator extends RectFSpringAnim {
         addOnUpdateListener(this::onAnimationUpdate);
     }
 
-    private void onAnimationUpdate(@Nullable AppCloseConfig values, RectF currentRect,
-            float progress) {
+    private void onAnimationUpdate(RectF currentRect, float progress) {
         if (mHasAnimationEnded) return;
         final SurfaceControl.Transaction tx =
                 PipSurfaceTransactionHelper.newSurfaceControlTransaction();
