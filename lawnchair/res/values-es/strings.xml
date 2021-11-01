@@ -115,7 +115,7 @@
     <string name="pref_fonts_missing_font">Fuente no encontrada.</string>
     <string name="font_variant_italic">Cursiva</string>
     <string name="font_weight_thin">Delgada</string>
-    <string name="font_weight_extra_light">Extra Light</string>
+    <string name="font_weight_extra_light">Luz extra</string>
     <string name="font_weight_light">Claro</string>
     <string name="font_weight_regular">Regular</string>
     <string name="font_weight_medium">Media</string>
