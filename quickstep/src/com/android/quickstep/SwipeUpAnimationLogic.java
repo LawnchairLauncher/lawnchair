@@ -18,7 +18,6 @@ package com.android.quickstep;
 import static com.android.launcher3.anim.Interpolators.ACCEL_1_5;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_SPLIT_SELECT;
-import static com.android.launcher3.config.FeatureFlags.PROTOTYPE_APP_CLOSE;
 
 import android.animation.Animator;
 import android.content.Context;
@@ -28,7 +27,6 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
 
 import com.android.launcher3.DeviceProfile;
@@ -39,10 +37,8 @@ import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.touch.PagedOrientationHandler;
 import com.android.quickstep.RemoteTargetGluer.RemoteTargetHandle;
 import com.android.quickstep.util.AnimatorControllerWithResistance;
-import com.android.quickstep.util.AppCloseConfig;
 import com.android.quickstep.util.LauncherSplitScreenListener;
 import com.android.quickstep.util.RectFSpringAnim;
-import com.android.quickstep.util.RectFSpringAnim2;
 import com.android.quickstep.util.TaskViewSimulator;
 import com.android.quickstep.util.TransformParams;
 import com.android.quickstep.util.TransformParams.BuilderProxy;
@@ -189,8 +185,7 @@ public abstract class SwipeUpAnimationLogic implements
 
         public boolean keepWindowOpaque() { return false; }
 
-        public void update(@Nullable AppCloseConfig config, RectF currentRect, float progress,
-                float radius) { }
+        public void update(RectF currentRect, float progress, float radius) { }
 
         public void onCancel() { }
 
@@ -290,14 +285,7 @@ public abstract class SwipeUpAnimationLogic implements
         homeToWindowPositionMap.invert(windowToHomePositionMap);
         windowToHomePositionMap.mapRect(startRect);
 
-        RectFSpringAnim anim;
-        if (PROTOTYPE_APP_CLOSE.get()) {
-            anim = new RectFSpringAnim2(startRect, targetRect, mContext,
-                    taskViewSimulator.getCurrentCornerRadius(),
-                    homeAnimationFactory.getEndRadius(cropRectF));
-        } else {
-            anim = new RectFSpringAnim(startRect, targetRect, mContext, mDp);
-        }
+        RectFSpringAnim anim = new RectFSpringAnim(startRect, targetRect, mContext, mDp);
         homeAnimationFactory.setAnimation(anim);
 
         SpringAnimationRunner runner = new SpringAnimationRunner(
@@ -343,17 +331,13 @@ public abstract class SwipeUpAnimationLogic implements
         }
 
         @Override
-        public void onUpdate(@Nullable AppCloseConfig config, RectF currentRect, float progress) {
+        public void onUpdate(RectF currentRect, float progress) {
             mHomeAnim.setPlayFraction(progress);
             mHomeToWindowPositionMap.mapRect(mWindowCurrentRect, currentRect);
 
             mMatrix.setRectToRect(mCropRectF, mWindowCurrentRect, ScaleToFit.FILL);
             float cornerRadius = Utilities.mapRange(progress, mStartRadius, mEndRadius);
             float alpha = mAnimationFactory.getWindowAlpha(progress);
-            if (config != null && PROTOTYPE_APP_CLOSE.get()) {
-                alpha = config.getWindowAlpha();
-                cornerRadius = config.getCornerRadius();
-            }
             if (mAnimationFactory.keepWindowOpaque()) {
                 alpha = 1f;
             }
@@ -362,8 +346,7 @@ public abstract class SwipeUpAnimationLogic implements
                     .setCornerRadius(cornerRadius);
             mLocalTransformParams.applySurfaceParams(mLocalTransformParams
                     .createSurfaceParams(this));
-            mAnimationFactory.update(config, currentRect, progress,
-                    mMatrix.mapRadius(cornerRadius));
+            mAnimationFactory.update(currentRect, progress, mMatrix.mapRadius(cornerRadius));
         }
 
         @Override
