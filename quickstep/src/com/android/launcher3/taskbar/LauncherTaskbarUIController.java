@@ -345,7 +345,8 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
      * @return Whether any Taskbar item could handle the given MotionEvent if given the chance.
      */
     public boolean isEventOverAnyTaskbarItem(MotionEvent ev) {
-        return mControllers.taskbarViewController.isEventOverAnyItem(ev);
+        return mControllers.taskbarViewController.isEventOverAnyItem(ev)
+                || mControllers.navbarButtonsViewController.isEventOverAnyItem(ev);
     }
 
     public boolean isDraggingItem() {
