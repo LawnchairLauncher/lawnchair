@@ -677,6 +677,9 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
     public WindowInsets onApplyWindowInsets(View view, WindowInsets windowInsets) {
         WindowInsets result = view.onApplyWindowInsets(windowInsets);
         buildAnimationController();
+        // Reapply the current shift to ensure it takes new insets into account, e.g. when long
+        // pressing to stash taskbar without moving the finger.
+        updateFinalShift();
         return result;
     }
 
