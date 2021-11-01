@@ -152,7 +152,7 @@
     <string name="all_apps_search_market_message">搜索更多应用</string>
     <string name="show_app_search_bar">显示搜索栏</string>
     <string name="lawnchair_bug_report">Lawnchair Bug 报告</string>
-    <string name="crash_report_notif_title">%1$s 崩溃</string>
+    <string name="crash_report_notif_title">%1$s 已损坏</string>
     <string name="action_upload">上传到Dogbin</string>
     <string name="action_copy_link">复制链接</string>
     <string name="action_copy">复制</string>
