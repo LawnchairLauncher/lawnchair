@@ -4,17 +4,22 @@ import android.content.*
 import android.content.Intent.*
 import android.content.pm.ActivityInfo
 import android.content.pm.LauncherActivityInfo
+import android.content.res.Resources
 import android.graphics.drawable.Drawable
 import android.os.Handler
 import android.os.Process
 import android.os.UserHandle
 import android.os.UserManager
+import android.util.ArrayMap
+import android.util.Log
 import androidx.core.content.getSystemService
 import app.lawnchair.preferences.PreferenceManager
 import app.lawnchair.util.MultiSafeCloseable
+import app.lawnchair.util.isPackageInstalled
 import com.android.launcher3.icons.IconProvider
 import com.android.launcher3.icons.ThemedIconDrawable
 import com.android.launcher3.util.SafeCloseable
+import org.xmlpull.v1.XmlPullParser
 import java.util.function.Supplier
 
 class LawnchairIconProvider @JvmOverloads constructor(
@@ -169,5 +174,56 @@ class LawnchairIconProvider @JvmOverloads constructor(
         override fun close() {
             context.unregisterReceiver(this)
         }
+    }
+
+    override fun getThemedIconMap(): MutableMap<String, ThemedIconDrawable.ThemeData> {
+        if (mThemedIconMap != null) return mThemedIconMap
+        val map = ArrayMap<String, ThemedIconDrawable.ThemeData>()
+
+        fun updateMapFromResources(resources: Resources, packageName: String) {
+            try {
+                val xmlId = resources.getIdentifier(THEMED_ICON_MAP_FILE, "xml", packageName)
+                if (xmlId != 0) {
+                    val parser = resources.getXml(xmlId)
+                    val depth = parser.depth
+                    var type: Int
+                    while (
+                        (parser.next().also { type = it } != XmlPullParser.END_TAG || parser.depth > depth) &&
+                        type != XmlPullParser.END_DOCUMENT
+                    ) {
+                        if (type != XmlPullParser.START_TAG) continue
+                        if (TAG_ICON == parser.name) {
+                            val pkg = parser.getAttributeValue(null, ATTR_PACKAGE)
+                            val iconId = parser.getAttributeResourceValue(null, ATTR_DRAWABLE, 0)
+                            if (iconId != 0 && pkg.isNotEmpty()) {
+                                map[pkg] = ThemedIconDrawable.ThemeData(resources, iconId)
+                            }
+                        }
+                    }
+                }
+            } catch (e: Exception) {
+                Log.e(TAG, "Unable to parse icon map.", e)
+            }
+        }
+
+        updateMapFromResources(
+            resources = context.resources,
+            packageName = context.packageName
+        )
+
+        if (context.packageManager.isPackageInstalled(packageName = LAWNICONS_PACKAGE_NAME)) {
+            updateMapFromResources(
+                resources = context.packageManager.getResourcesForApplication(LAWNICONS_PACKAGE_NAME),
+                packageName = LAWNICONS_PACKAGE_NAME
+            )
+        }
+
+        mThemedIconMap = map
+        return mThemedIconMap
+    }
+
+    companion object {
+        const val LAWNICONS_PACKAGE_NAME = "app.lawnchair.lawnicons"
+        const val TAG = "LawnchairIconProvider"
     }
 }
