@@ -149,7 +149,7 @@
     <string name="label">लेबल</string>
     <string name="presets">पूर्व निर्धारित</string>
     <string name="colors">रंग</string>
-    <string name="dynamic">Dynamic</string>
+    <string name="dynamic">क्रियाशील</string>
     <string name="all_apps_search_market_message">और ऐप खोजें</string>
     <string name="show_app_search_bar">खोज बार दिखाएँ</string>
     <string name="lawnchair_bug_report">लॉन चेयर बग रिपोर्ट</string>
@@ -167,6 +167,6 @@
     <string name="bugreport_group_summary_multiple">बहुत सारी रिपोर्ट्स।</string>
     <string name="themed_icon_title">आइकन थीम करें</string>
     <string name="corner_radius_label">किनारे</string>
-    <string name="search_bar_label">Search Bar</string>
-    <string name="apply_accent_color_label">Apply Accent Color</string>
+    <string name="search_bar_label">सर्च बार</string>
+    <string name="apply_accent_color_label">असेंट रंग इस्तेमाल करें</string>
 </resources>
