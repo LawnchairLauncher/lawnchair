@@ -16,4 +16,6 @@
     <string name="assistant_not_supported_text" msgid="1708031078549268884">"ເພື່ອຟັງ ຫຼື ແປຂໍ້ຄວາມຢູ່ໜ້າຈໍຂອງທ່ານ, ໃຫ້ປ່ຽນຜູ້ຊ່ວຍດິຈິຕອນຂອງທ່ານໃນການຕັ້ງຄ່າ"</string>
     <string name="tooltip_listen" msgid="7634466447860989102">"ແຕະບ່ອນນີ້ເພື່ອຟັງຂໍ້ຄວາມຢູ່ໜ້າຈໍນີ້"</string>
     <string name="tooltip_translate" msgid="4184845868901542567">"ແຕະບ່ອນນີ້ເພື່ອແປຂໍ້ຄວາມຢູ່ໜ້າຈໍນີ້"</string>
+    <!-- no translation found for toast_p2p_app_not_shareable (7229739094132131536) -->
+    <skip />
 </resources>
