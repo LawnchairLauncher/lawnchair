@@ -961,8 +961,10 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
                 } else {
                     mStateCallback.setState(STATE_RESUME_LAST_TASK);
                 }
-                TaskViewUtils.setSplitAuxiliarySurfacesShown(
-                        mRecentsAnimationTargets.nonApps, true);
+                if (mRecentsAnimationTargets != null) {
+                    TaskViewUtils.setSplitAuxiliarySurfacesShown(
+                            mRecentsAnimationTargets.nonApps, true);
+                }
                 break;
         }
         ActiveGestureLog.INSTANCE.addLog("onSettledOnEndTarget " + endTarget);
