@@ -22,6 +22,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.staticCompositionLocalOf
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -61,10 +62,9 @@ val LocalPreferenceInteractor = staticCompositionLocalOf<PreferenceInteractor> {
 @Composable
 fun Preferences(interactor: PreferenceInteractor = viewModel<PreferenceViewModel>()) {
     val navController = rememberAnimatedNavController()
-    val slideDistance = rememberSlideDistance()
     val isRtl = LocalLayoutDirection.current == LayoutDirection.Rtl
-    val forwardSpec = materialSharedAxisX(forward = !isRtl, slideDistance = slideDistance)
-    val backwardSpec = materialSharedAxisX(forward = isRtl, slideDistance = slideDistance)
+    val motionSpec = materialSharedAxisX()
+    val density = LocalDensity.current
 
     SystemUi()
     Providers {
@@ -76,10 +76,10 @@ fun Preferences(interactor: PreferenceInteractor = viewModel<PreferenceViewModel
                 AnimatedNavHost(
                     navController = navController,
                     startDestination = "/",
-                    enterTransition = { _, _ -> forwardSpec.enter.transition },
-                    exitTransition = { _, _ -> forwardSpec.exit.transition },
-                    popEnterTransition = { _, _ -> backwardSpec.enter.transition },
-                    popExitTransition = { _, _ -> backwardSpec.exit.transition },
+                    enterTransition = { _, _ -> motionSpec.enter.transition(!isRtl, density) },
+                    exitTransition = { _, _ -> motionSpec.exit.transition(!isRtl, density) },
+                    popEnterTransition = { _, _ -> motionSpec.enter.transition(isRtl, density) },
+                    popExitTransition = { _, _ -> motionSpec.exit.transition(isRtl, density) },
                 ) {
                     preferenceGraph(route = "/", { PreferencesDashboard() }) { subRoute ->
                         generalGraph(route = subRoute(Routes.GENERAL))
