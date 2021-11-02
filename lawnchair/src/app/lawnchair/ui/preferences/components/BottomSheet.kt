@@ -71,7 +71,10 @@ fun StatusBarOffset(content: @Composable () -> Unit) {
                     minWidth = constraints.minWidth,
                     maxWidth = constraints.maxWidth,
                     minHeight = constraints.minHeight,
-                    maxHeight = constraints.maxHeight - topOffset
+                    maxHeight = when (constraints.maxHeight) {
+                        Constraints.Infinity -> Constraints.Infinity
+                        else -> constraints.maxHeight - topOffset
+                    }
                 )
                 val placeable = measurable.measure(newConstraints)
 
