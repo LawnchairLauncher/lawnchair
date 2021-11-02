@@ -205,6 +205,11 @@ public class GridSizeMigrationTaskV2 {
             }
 
             t.commit();
+
+            // reinitialize max ids
+            LauncherSettings.Settings.call(context.getContentResolver(),
+                    LauncherSettings.Settings.METHOD_RE_INITIALIZE_IDS);
+
             return true;
         } catch (Exception e) {
             Log.e(TAG, "Error during grid migration", e);

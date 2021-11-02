@@ -452,6 +452,10 @@ public class LauncherProvider extends ContentProvider {
                 }
                 return null;
             }
+            case LauncherSettings.Settings.METHOD_RE_INITIALIZE_IDS: {
+                mOpenHelper.reInitIds();
+                return null;
+            }
             case LauncherSettings.Settings.METHOD_PREP_FOR_PREVIEW: {
                 if (MULTI_DB_GRID_MIRATION_ALGO.get()) {
                     Bundle result = new Bundle();
@@ -702,6 +706,11 @@ public class LauncherProvider extends ContentProvider {
             if (mMaxScreenId == -1) {
                 mMaxScreenId = initializeMaxScreenId(getWritableDatabase());
             }
+        }
+
+        protected void reInitIds() {
+            mMaxItemId = initializeMaxItemId(getWritableDatabase());
+            mMaxScreenId = initializeMaxScreenId(getWritableDatabase());
         }
 
         @Override
