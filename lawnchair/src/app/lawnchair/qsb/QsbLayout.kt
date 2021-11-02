@@ -46,10 +46,10 @@ class QsbLayout(context: Context, attrs: AttributeSet?) : FrameLayout(context, a
 
         val searchPackage = getSearchPackageName(context)
         val isGoogle = searchPackage == GOOGLE_PACKAGE
+        preferenceManager.themedHotseatQsb.subscribeValues(this) {
+            setThemed(it, isGoogle)
+        }
         if (isGoogle) {
-            preferenceManager.themedHotseatQsb.subscribeValues(this) {
-                setThemed(it)
-            }
             setUpLensIcon()
         } else {
             micIcon.setIcon(isGoogle = false, themed = false)
@@ -80,11 +80,13 @@ class QsbLayout(context: Context, attrs: AttributeSet?) : FrameLayout(context, a
         }
     }
 
-    private fun setThemed(themed: Boolean) {
+    private fun setThemed(themed: Boolean, themeQsbIcons: Boolean) {
         setUpBackground(themed)
-        gIcon.setThemedIconResource(R.drawable.ic_super_g_color, themed)
-        micIcon.setIcon(isGoogle = true, themed)
-        lensIcon.setThemedIconResource(R.drawable.ic_lens_color, themed)
+        if (themeQsbIcons) {
+            gIcon.setThemedIconResource(R.drawable.ic_super_g_color, themed)
+            micIcon.setIcon(isGoogle = true, themed)
+            lensIcon.setThemedIconResource(R.drawable.ic_lens_color, themed)
+        }
     }
 
     private fun setUpMainSearch() {
