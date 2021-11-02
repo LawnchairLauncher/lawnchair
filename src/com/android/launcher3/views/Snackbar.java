@@ -35,6 +35,9 @@ import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.compat.AccessibilityManagerCompat;
 import com.android.launcher3.dragndrop.DragLayer;
 
+import app.lawnchair.theme.color.ColorTokens;
+import app.lawnchair.theme.drawable.DrawableTokens;
+
 /**
  * A toast-like UI at the bottom of the screen with a label, button action, and dismiss action.
  */
@@ -68,7 +71,7 @@ public class Snackbar extends AbstractFloatingView {
         snackbar.setElevation(res.getDimension(R.dimen.snackbar_elevation));
         int padding = res.getDimensionPixelSize(R.dimen.snackbar_padding);
         snackbar.setPadding(padding, padding, padding, padding);
-        snackbar.setBackgroundResource(R.drawable.round_rect_primary);
+        snackbar.setBackground(DrawableTokens.RoundRectPrimary.resolve(activity));
 
         snackbar.mIsOpen = true;
         BaseDragLayer dragLayer = activity.getDragLayer();
@@ -88,6 +91,8 @@ public class Snackbar extends AbstractFloatingView {
 
         TextView labelView = snackbar.findViewById(R.id.label);
         TextView actionView = snackbar.findViewById(R.id.action);
+        labelView.setTextColor(ColorTokens.TextColorPrimary.resolveColor(activity));
+        actionView.setTextColor(ColorTokens.ColorAccent.resolveColor(activity));
         String labelText = res.getString(labelStringResId);
         String actionText = res.getString(actionStringResId);
         int totalContentWidth = (int) (labelView.getPaint().measureText(labelText)

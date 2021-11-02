@@ -45,6 +45,10 @@ object DrawableTokens {
         .setColor(ColorTokens.FolderFillColor)
 
     @JvmField
+    val RoundRectPrimary = ResourceDrawableToken<GradientDrawable>(R.drawable.round_rect_primary)
+        .setColor(ColorTokens.ColorPrimary)
+
+    @JvmField
     val SearchInputFg = ResourceDrawableToken<LayerDrawable>(R.drawable.search_input_fg)
         .mutate { context, scheme, darkTheme ->
             val shape = getDrawable(0) as GradientDrawable
