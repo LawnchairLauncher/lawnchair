@@ -216,6 +216,8 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
+import app.lawnchair.LawnchairApp;
+
 /**
  * Default launcher application.
  */
@@ -1533,7 +1535,11 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
                 if (!isInState(NORMAL)) {
                     // Only change state, if not already the same. This prevents cancelling any
                     // animations running as part of resume
-                    mStateManager.goToState(NORMAL, mStateManager.shouldAnimateStateChange());
+                    boolean animate = mStateManager.shouldAnimateStateChange();
+                    if (!LawnchairApp.isRecentsEnabled()) {
+                        animate &= alreadyOnHome;
+                    }
+                    mStateManager.goToState(NORMAL, animate);
                 }
 
                 // Reset the apps view
