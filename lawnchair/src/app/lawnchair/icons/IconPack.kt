@@ -59,7 +59,11 @@ class IconPack(
         val id = getDrawableId(iconEntry.name)
         if (id == 0) return null
         return try {
-            packResources.getDrawableForDensity(id, iconDpi, null)
+            ExtendedBitmapDrawable.wrap(
+                packResources,
+                packResources.getDrawableForDensity(id, iconDpi, null),
+                true
+            )
         } catch (e: Resources.NotFoundException) {
             null
         }
