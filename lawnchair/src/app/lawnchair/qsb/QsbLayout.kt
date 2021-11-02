@@ -146,12 +146,12 @@ class QsbLayout(context: Context, attrs: AttributeSet?) : FrameLayout(context, a
         private const val LENS_ACTIVITY = "com.google.vr.apps.ornament.app.lens.LensLauncherActivity"
 
         fun getSearchPackageName(context: Context): String {
+            if (resolveSearchIntent(context, GOOGLE_PACKAGE)) {
+                return GOOGLE_PACKAGE
+            }
             val searchPackage = QsbContainerView.getSearchWidgetPackageName(context)
             if (!searchPackage.isNullOrEmpty()) {
                 return searchPackage
-            }
-            if (resolveSearchIntent(context, GOOGLE_PACKAGE)) {
-                return GOOGLE_PACKAGE
             }
             return ""
         }
