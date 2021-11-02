@@ -11,7 +11,13 @@ import com.android.launcher3.views.ScrimView
 
 class LawnchairScrimView(context: Context, attrs: AttributeSet?) : ScrimView(context, attrs) {
 
-    private val drawerOpacity = PreferenceManager.getInstance(context).drawerOpacity.get()
+    private var drawerOpacity = 0f
+
+    init {
+        PreferenceManager.getInstance(context).drawerOpacity.subscribeValues(this) {
+            drawerOpacity = it
+        }
+    }
 
     override fun updateSysUiColors() {
         val threshold = STATUS_BAR_COLOR_FORCE_UPDATE_THRESHOLD
