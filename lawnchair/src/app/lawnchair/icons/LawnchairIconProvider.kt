@@ -17,6 +17,7 @@ import app.lawnchair.preferences.PreferenceManager
 import app.lawnchair.util.MultiSafeCloseable
 import app.lawnchair.util.getPackageVersionCode
 import app.lawnchair.util.isPackageInstalled
+import com.android.launcher3.R
 import com.android.launcher3.icons.IconProvider
 import com.android.launcher3.icons.ThemedIconDrawable
 import com.android.launcher3.util.SafeCloseable
@@ -56,11 +57,17 @@ class LawnchairIconProvider @JvmOverloads constructor(
             if (iconEntry == null) {
                 iconEntry = iconPack.getIcon(componentName)
                 val clock = iconEntry?.let { iconPack.getClock(it) }
-                if (clock != null) {
-                    themeData = themedIconMap[mClock.packageName]
-                    iconType = ICON_TYPE_CLOCK
-                } else {
-                    themeData = themedIconMap[componentName.packageName]
+                when {
+                    clock != null -> {
+                        themeData = themedIconMap[mClock.packageName]
+                        iconType = ICON_TYPE_CLOCK
+                    }
+                    packageName == mClock.packageName -> {
+                        themeData = ThemedIconDrawable.ThemeData(context.resources, R.drawable.themed_icon_static_clock)
+                    }
+                    else -> {
+                        themeData = themedIconMap[componentName.packageName]
+                    }
                 }
             }
         }
