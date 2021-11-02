@@ -32,6 +32,7 @@ import com.android.launcher3.allapps.WorkAdapterProvider;
 import com.android.launcher3.allapps.WorkEduCard;
 import com.android.launcher3.allapps.WorkProfileManager;
 import com.android.launcher3.tapl.LauncherInstrumentation;
+import com.android.launcher3.util.rule.ScreenRecordRule.ScreenRecord;
 
 import org.junit.After;
 import org.junit.Before;
@@ -86,6 +87,7 @@ public class WorkProfileTest extends AbstractLauncherUiTest {
     }
 
     @Test
+    @ScreenRecord // b/202735477
     public void workTabExists() {
         mDevice.pressHome();
         waitForLauncherCondition("Launcher didn't start", Objects::nonNull);
