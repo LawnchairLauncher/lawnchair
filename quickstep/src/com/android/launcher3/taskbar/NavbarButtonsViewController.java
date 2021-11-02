@@ -210,7 +210,15 @@ public class NavbarButtonsViewController {
             mControllers.rotationButtonController.setRotationButton(rotationButton, null);
         } else {
             mFloatingRotationButton = new FloatingRotationButton(mContext,
-                    R.string.accessibility_rotate_button);
+                    R.string.accessibility_rotate_button,
+                    R.layout.rotate_suggestion,
+                    R.id.rotate_suggestion,
+                    R.dimen.floating_rotation_button_min_margin,
+                    R.dimen.rounded_corner_content_padding,
+                    R.dimen.floating_rotation_button_taskbar_left_margin,
+                    R.dimen.floating_rotation_button_taskbar_bottom_margin,
+                    R.dimen.floating_rotation_button_diameter,
+                    R.dimen.key_button_ripple_max_width);
             mControllers.rotationButtonController.setRotationButton(mFloatingRotationButton,
                     mRotationButtonListener);
 
@@ -224,6 +232,14 @@ public class NavbarButtonsViewController {
 
         applyState();
         mPropertyHolders.forEach(StatePropertyHolder::endAnimation);
+    }
+
+    public void onDestroy() {
+        mPropertyHolders.clear();
+        mControllers.rotationButtonController.unregisterListeners();
+        if (mFloatingRotationButton != null) {
+            mFloatingRotationButton.hide();
+        }
     }
 
     private void initButtons(ViewGroup navContainer, ViewGroup endContainer,
@@ -420,14 +436,6 @@ public class NavbarButtonsViewController {
 
     public boolean isEventOverAnyItem(MotionEvent ev) {
         return mFloatingRotationButtonBounds.contains((int) ev.getX(), (int) ev.getY());
-    }
-
-    public void onDestroy() {
-        mPropertyHolders.clear();
-        mControllers.rotationButtonController.unregisterListeners();
-        if (mFloatingRotationButton != null) {
-            mFloatingRotationButton.hide();
-        }
     }
 
     private class RotationButtonListener implements RotationButton.RotationButtonUpdatesCallback {
