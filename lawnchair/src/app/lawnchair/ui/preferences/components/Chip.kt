@@ -59,11 +59,8 @@ fun Chip(
         MaterialTheme.colorScheme.primary,
         selectedProgress
     )
-    val borderColor = lerp(
-        MaterialTheme.colorScheme.outline,
-        Color.Transparent,
-        selectedProgress
-    )
+    val outlineColor = MaterialTheme.colorScheme.outline
+    val borderColor = outlineColor.copy(alpha = outlineColor.alpha * selectedProgress)
 
     Box(
         contentAlignment = Alignment.Center,
