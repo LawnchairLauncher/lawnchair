@@ -57,8 +57,7 @@
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"\"<xliff:g id="QUERY">%1$s</xliff:g>\"થી મેળ ખાતી કોઈ ઍપ્લિકેશનો મળી નથી"</string>
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"વધુ ઍપ્લિકેશનો શોધો"</string>
     <string name="label_application" msgid="8531721983832654978">"ઍપ"</string>
-    <!-- no translation found for all_apps_label (5015784846527570951) -->
-    <skip />
+    <string name="all_apps_label" msgid="5015784846527570951">"બધી ઍપ"</string>
     <string name="notifications_header" msgid="1404149926117359025">"નોટિફિકેશન"</string>
     <string name="long_press_shortcut_to_add" msgid="5405328730817637737">"શૉર્ટકટ ખસેડવા ટચ કરીને થોડી વાર દબાવી રાખો."</string>
     <string name="long_accessible_way_to_add_shortcut" msgid="2199537273817090740">"શૉર્ટકટ ખસેડવા બે વાર ટૅપ કરીને દબાવી રાખો અથવા કસ્ટમ ક્રિયાઓનો ઉપયોગ કરો."</string>

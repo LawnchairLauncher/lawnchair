@@ -677,6 +677,9 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
     public WindowInsets onApplyWindowInsets(View view, WindowInsets windowInsets) {
         WindowInsets result = view.onApplyWindowInsets(windowInsets);
         buildAnimationController();
+        // Reapply the current shift to ensure it takes new insets into account, e.g. when long
+        // pressing to stash taskbar without moving the finger.
+        updateFinalShift();
         return result;
     }
 
@@ -961,8 +964,10 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
                 } else {
                     mStateCallback.setState(STATE_RESUME_LAST_TASK);
                 }
-                TaskViewUtils.setSplitAuxiliarySurfacesShown(
-                        mRecentsAnimationTargets.nonApps, true);
+                if (mRecentsAnimationTargets != null) {
+                    TaskViewUtils.setSplitAuxiliarySurfacesShown(
+                            mRecentsAnimationTargets.nonApps, true);
+                }
                 break;
         }
         ActiveGestureLog.INSTANCE.addLog("onSettledOnEndTarget " + endTarget);
@@ -1447,7 +1452,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
     }
 
     private void setupWindowAnimation(RectFSpringAnim[] anims) {
-        anims[0].addOnUpdateListener((v, r, p) -> {
+        anims[0].addOnUpdateListener((r, p) -> {
             updateSysUiFlags(Math.max(p, mCurrentShift.value));
         });
         anims[0].addAnimatorListener(new AnimationSuccessListener() {
@@ -1734,7 +1739,10 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
         endLauncherTransitionController();
         mRecentsView.onSwipeUpAnimationSuccess();
         if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
-            mTaskAnimationManager.setLiveTileCleanUpHandler(mInputConsumerProxy::destroy);
+            mTaskAnimationManager.setLiveTileCleanUpHandler(() -> {
+                mRecentsView.cleanupRemoteTargets();
+                mInputConsumerProxy.destroy();
+            });
             mTaskAnimationManager.enableLiveTileRestartListener();
         }
 

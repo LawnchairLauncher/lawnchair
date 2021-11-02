@@ -16,4 +16,6 @@
     <string name="assistant_not_supported_text" msgid="1708031078549268884">"Pour écouter ou traduire le texte affiché sur votre écran, modifiez l\'application de votre assistant numérique dans les paramètres"</string>
     <string name="tooltip_listen" msgid="7634466447860989102">"Touchez ce bouton pour écouter le texte affiché sur cet écran"</string>
     <string name="tooltip_translate" msgid="4184845868901542567">"Touchez ce bouton pour traduire le texte affiché sur cet écran"</string>
+    <!-- no translation found for toast_p2p_app_not_shareable (7229739094132131536) -->
+    <skip />
 </resources>

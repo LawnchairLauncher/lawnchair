@@ -53,7 +53,6 @@ import com.android.quickstep.RecentsAnimationDeviceState;
 import com.android.quickstep.RemoteTargetGluer;
 import com.android.quickstep.SwipeUpAnimationLogic;
 import com.android.quickstep.SwipeUpAnimationLogic.RunningWindowAnim;
-import com.android.quickstep.util.AppCloseConfig;
 import com.android.quickstep.util.RectFSpringAnim;
 import com.android.quickstep.util.TransformParams;
 import com.android.systemui.shared.system.SyncRtSurfaceTransactionApplierCompat.SurfaceParams;
@@ -331,8 +330,7 @@ abstract class SwipeUpGestureTutorialController extends TutorialController {
                 }
 
                 @Override
-                public void update(@Nullable AppCloseConfig config, RectF rect, float progress,
-                        float radius) {
+                public void update(RectF rect, float progress, float radius) {
                     mFakeIconView.setVisibility(View.VISIBLE);
                     mFakeIconView.update(rect, progress,
                             1f - SHAPE_PROGRESS_DURATION /* shapeProgressStart */,
