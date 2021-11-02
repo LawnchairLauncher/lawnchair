@@ -226,14 +226,6 @@ public class NavbarButtonsViewController {
         mPropertyHolders.forEach(StatePropertyHolder::endAnimation);
     }
 
-    public void onDestroy() {
-        mPropertyHolders.clear();
-        mControllers.rotationButtonController.unregisterListeners();
-        if (mFloatingRotationButton != null) {
-            mFloatingRotationButton.hide();
-        }
-    }
-
     private void initButtons(ViewGroup navContainer, ViewGroup endContainer,
             TaskbarNavButtonController navButtonController) {
 
@@ -428,6 +420,14 @@ public class NavbarButtonsViewController {
 
     public boolean isEventOverAnyItem(MotionEvent ev) {
         return mFloatingRotationButtonBounds.contains((int) ev.getX(), (int) ev.getY());
+    }
+
+    public void onDestroy() {
+        mPropertyHolders.clear();
+        mControllers.rotationButtonController.unregisterListeners();
+        if (mFloatingRotationButton != null) {
+            mFloatingRotationButton.hide();
+        }
     }
 
     private class RotationButtonListener implements RotationButton.RotationButtonUpdatesCallback {
