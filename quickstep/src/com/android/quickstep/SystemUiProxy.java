@@ -37,6 +37,7 @@ import android.view.RemoteAnimationAdapter;
 import android.view.RemoteAnimationTarget;
 import android.view.SurfaceControl;
 
+import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.util.MainThreadInitializedObject;
 import com.android.launcher3.util.SplitConfigurationOptions;
 import com.android.systemui.shared.recents.ISystemUiProxy;
@@ -444,6 +445,8 @@ public class SystemUiProxy implements ISystemUiProxy,
             } catch (RemoteException e) {
                 Log.w(TAG, "Failed call handleImageBundleAsScreenshot");
             }
+        } else if (TestProtocol.sDebugTracing) {
+            Log.d(TestProtocol.NO_SCREENSHOT, "sysuiproxy, no proxy available");
         }
     }
 
