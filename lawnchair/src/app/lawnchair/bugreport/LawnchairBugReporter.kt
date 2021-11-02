@@ -16,10 +16,7 @@ import java.util.*
 class LawnchairBugReporter(private val context: Context) {
 
     private val notificationManager = context.getSystemService<NotificationManager>()!!
-    private val cacheFolder by lazy { File(context.cacheDir, "logs").apply {
-        deleteRecursively()
-        mkdirs()
-    } }
+    private val logsFolder by lazy { File(context.cacheDir, "logs").apply { mkdirs() } }
     private val appName by lazy { context.getString(R.string.derived_app_name) }
 
     init {
@@ -43,6 +40,16 @@ class LawnchairBugReporter(private val context: Context) {
             sendNotification(throwable)
             defaultHandler?.uncaughtException(thread, throwable)
         }
+
+        removeDismissedLogs()
+    }
+
+    private fun removeDismissedLogs() {
+        val activeIds = notificationManager.activeNotifications
+            .mapTo(mutableSetOf()) { String.format("%x", it.id) }
+        (logsFolder.listFiles() as Array<File>)
+            .filter { it.name !in activeIds }
+            .forEach { it.deleteRecursively() }
     }
 
     private fun sendNotification(throwable: Throwable) {
@@ -64,8 +71,8 @@ class LawnchairBugReporter(private val context: Context) {
         fun generateBugReport(): BugReport? {
             val contents = writeContents()
             val contentsWithHeader = "$fileName\n$contents"
-            val reportFile = save(contentsWithHeader)
             val id = contents.hashCode()
+            val reportFile = save(contentsWithHeader, id)
 
             return BugReport(id, error, getDescription(throwable ?: return null), contentsWithHeader, reportFile)
         }
@@ -74,8 +81,9 @@ class LawnchairBugReporter(private val context: Context) {
             return "${throwable::class.java.name}: ${throwable.message}"
         }
 
-        private fun save(contents: String): File? {
-            val dest = cacheFolder
+        private fun save(contents: String, id: Int): File? {
+            val dest = File(logsFolder, String.format("%x", id))
+            dest.mkdirs()
 
             val file = File(dest, "$fileName.txt")
             if (!file.createNewFile()) return null
