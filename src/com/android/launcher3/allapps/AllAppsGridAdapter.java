@@ -42,6 +42,7 @@ import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.R;
 import com.android.launcher3.model.data.AppInfo;
+import com.android.launcher3.model.data.ItemInfoWithIcon;
 import com.android.launcher3.util.PackageManagerHelper;
 
 import java.util.Arrays;
@@ -95,16 +96,15 @@ public class AllAppsGridAdapter extends
         // The type of this item
         public int viewType;
 
-        /** App-only properties */
-        // The section name of this app.  Note that there can be multiple items with different
+        // The section name of this item.  Note that there can be multiple items with different
         // sectionNames in the same section
         public String sectionName = null;
         // The row that this item shows up on
         public int rowIndex;
         // The index of this app in the row
         public int rowAppIndex;
-        // The associated AppInfo for the app
-        public AppInfo appInfo = null;
+        // The associated ItemInfoWithIcon for the item
+        public ItemInfoWithIcon itemInfo = null;
         // The index of this app not including sections
         public int appIndex = -1;
         // Search section associated to result
@@ -119,7 +119,7 @@ public class AllAppsGridAdapter extends
             item.viewType = VIEW_TYPE_ICON;
             item.position = pos;
             item.sectionName = sectionName;
-            item.appInfo = appInfo;
+            item.itemInfo = appInfo;
             item.appIndex = appIndex;
             return item;
         }
@@ -373,7 +373,7 @@ public class AllAppsGridAdapter extends
                 if (adapterProvider != null) {
                     return adapterProvider.onCreateViewHolder(mLayoutInflater, parent, viewType);
                 }
-                throw new RuntimeException("Unexpected view type");
+                throw new RuntimeException("Unexpected view type" + viewType);
         }
     }
 
@@ -382,10 +382,13 @@ public class AllAppsGridAdapter extends
         switch (holder.getItemViewType()) {
             case VIEW_TYPE_ICON:
                 AdapterItem adapterItem = mApps.getAdapterItems().get(position);
-                AppInfo info = adapterItem.appInfo;
                 BubbleTextView icon = (BubbleTextView) holder.itemView;
                 icon.reset();
-                icon.applyFromApplicationInfo(info);
+                if (adapterItem.itemInfo instanceof AppInfo) {
+                    icon.applyFromApplicationInfo((AppInfo) adapterItem.itemInfo);
+                } else {
+                    icon.applyFromItemInfoWithIcon(adapterItem.itemInfo);
+                }
                 break;
             case VIEW_TYPE_EMPTY_SEARCH:
                 TextView emptyViewText = (TextView) holder.itemView;
