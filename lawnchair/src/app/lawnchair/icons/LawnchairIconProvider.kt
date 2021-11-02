@@ -15,6 +15,7 @@ import android.util.Log
 import androidx.core.content.getSystemService
 import app.lawnchair.preferences.PreferenceManager
 import app.lawnchair.util.MultiSafeCloseable
+import app.lawnchair.util.getPackageVersionCode
 import app.lawnchair.util.isPackageInstalled
 import com.android.launcher3.icons.IconProvider
 import com.android.launcher3.icons.ThemedIconDrawable
@@ -31,6 +32,7 @@ class LawnchairIconProvider @JvmOverloads constructor(
     private val iconPackPref = prefs.iconPackPackage
     private val iconPackProvider = IconPackProvider.INSTANCE.get(context)
     private val iconPack get() = iconPackProvider.getIconPack(iconPackPref.get())?.apply { loadBlocking() }
+    private var lawniconsVersion = context.packageManager.getPackageVersionCode(LAWNICONS_PACKAGE_NAME)
 
     override fun getIconWithOverrides(
         packageName: String,
@@ -87,7 +89,7 @@ class LawnchairIconProvider @JvmOverloads constructor(
     }
 
     override fun getSystemIconState(): String {
-        return super.getSystemIconState() + ",pack:${iconPackPref.get()}"
+        return super.getSystemIconState() + ",pack:${iconPackPref.get()},lawnicons:${lawniconsVersion}"
     }
 
     override fun registerIconChangeListener(
@@ -97,6 +99,7 @@ class LawnchairIconProvider @JvmOverloads constructor(
         return MultiSafeCloseable().apply {
             add(super.registerIconChangeListener(callback, handler))
             add(IconPackChangeReceiver(context, handler, callback))
+            add(LawniconsChangeReceiver(context, handler, callback))
         }
     }
 
@@ -168,6 +171,33 @@ class LawnchairIconProvider @JvmOverloads constructor(
                         }
                     }
                 }
+            }
+        }
+
+        override fun close() {
+            context.unregisterReceiver(this)
+        }
+    }
+
+    private inner class LawniconsChangeReceiver(
+        private val context: Context, handler: Handler,
+        private val callback: IconChangeListener
+    ) : BroadcastReceiver(), SafeCloseable {
+
+        init {
+            val filter = IntentFilter(ACTION_PACKAGE_ADDED)
+            filter.addAction(ACTION_PACKAGE_CHANGED)
+            filter.addAction(ACTION_PACKAGE_REMOVED)
+            filter.addDataScheme("package")
+            filter.addDataSchemeSpecificPart(LAWNICONS_PACKAGE_NAME, 0)
+            context.registerReceiver(this, filter, null, handler)
+        }
+
+        override fun onReceive(context: Context, intent: Intent) {
+            if (themedIconMap.isNotEmpty()) {
+            lawniconsVersion = context.packageManager.getPackageVersionCode(LAWNICONS_PACKAGE_NAME)
+                mThemedIconMap = null
+                callback.onSystemIconStateChanged(systemIconState)
             }
         }
 
