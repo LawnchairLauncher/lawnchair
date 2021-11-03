@@ -18,6 +18,7 @@ package app.lawnchair.search;
 
 import android.annotation.SuppressLint;
 import android.app.PendingIntent;
+import android.app.search.SearchAction;
 import android.content.Intent;
 import android.graphics.drawable.Icon;
 import android.os.Bundle;
@@ -106,6 +107,20 @@ public final class SearchActionCompat implements Parcelable {
         if (mPendingIntent != null && mIntent != null) {
             throw new IllegalStateException("Only one type of intent should be available.");
         }
+    }
+
+    private SearchActionCompat(SearchAction from) {
+        this(
+                from.getId(),
+                from.getTitle(),
+                from.getIcon(),
+                from.getSubtitle(),
+                from.getContentDescription(),
+                from.getPendingIntent(),
+                from.getIntent(),
+                from.getUserHandle(),
+                from.getExtras()
+        );
     }
 
     /**
@@ -214,6 +229,14 @@ public final class SearchActionCompat implements Parcelable {
                 + " intent=" + mIntent
                 + " userHandle=" + mUserHandle;
         return str;
+    }
+
+    public static SearchActionCompat wrap(SearchAction action) {
+        if (action != null) {
+            return new SearchActionCompat(action);
+        } else {
+            return null;
+        }
     }
 
     public static final @NonNull Parcelable.Creator<SearchActionCompat> CREATOR =

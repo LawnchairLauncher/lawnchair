@@ -54,7 +54,9 @@
     <dimen name="search_result_padding">16dp</dimen>
     <dimen name="search_result_radius">4dp</dimen>
     <dimen name="search_result_row_height">88dp</dimen>
+    <dimen name="search_result_row_medium_height">72dp</dimen>
     <dimen name="search_result_small_row_height">56dp</dimen>
+    <dimen name="search_result_subtitle_padding_start">4dp</dimen>
 
     <!-- smartspace -->
     <dimen name="smartspaceAmbientShadowBlur">1.5dp</dimen>

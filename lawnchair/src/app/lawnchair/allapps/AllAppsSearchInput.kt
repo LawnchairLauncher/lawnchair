@@ -21,7 +21,7 @@ import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import app.lawnchair.launcher
 import app.lawnchair.preferences.PreferenceManager
-import app.lawnchair.search.LawnchairAppSearchAlgorithm
+import app.lawnchair.search.LawnchairSearchAlgorithm
 import com.android.launcher3.Insettable
 import com.android.launcher3.LauncherState
 import com.android.launcher3.R
@@ -30,7 +30,6 @@ import com.android.launcher3.allapps.search.AllAppsSearchBarController
 import com.android.launcher3.search.SearchCallback
 import com.android.launcher3.util.Themes
 import java.util.*
-import kotlin.collections.ArrayList
 import kotlin.math.max
 
 class AllAppsSearchInput(context: Context, attrs: AttributeSet?) : LinearLayout(context, attrs),
@@ -139,7 +138,7 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) : LinearLayout(
         apps = appsView.apps
         this.appsView = appsView
         searchBarController.initialize(
-            LawnchairAppSearchAlgorithm(launcher),
+            LawnchairSearchAlgorithm.create(context),
             input, launcher, this
         )
         input.initialize(appsView)

@@ -2,6 +2,7 @@ package app.lawnchair.ui
 
 import android.util.TypedValue
 import android.widget.TextView
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -23,7 +24,7 @@ fun <T : TextView> AndroidText(
     style: TextStyle = LocalTextStyle.current
 ) {
     val mergedStyle = LocalTextStyle.current.merge(style)
-    val textColor = toIntColor(mergedStyle.color)
+    val textColor = toIntColor(LocalContentColor.current)
     val textSize = with(LocalDensity.current) { mergedStyle.fontSize.toPx() }
     AndroidView(
         factory = { textView.apply { text = "" } },

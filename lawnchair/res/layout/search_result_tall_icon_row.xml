@@ -26,7 +26,7 @@
         android:paddingStart="@dimen/search_result_padding">
 
         <TextView
-            android:id="@id/title"
+            android:id="@+id/title"
             style="@style/AllAppsSearchResult"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -39,7 +39,7 @@
             android:textSize="@dimen/search_result_hero_title_size" />
 
         <TextView
-            android:id="@id/subtitle"
+            android:id="@+id/subtitle"
             style="@style/AllAppsSearchResult"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

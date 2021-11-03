@@ -15,6 +15,8 @@
  */
 package app.lawnchair.search;
 
+import android.app.search.SearchAction;
+import android.app.search.SearchTarget;
 import android.app.slice.SliceManager;
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.pm.PackageManager;
@@ -187,6 +189,23 @@ public final class SearchTargetCompat implements Parcelable {
         }
     }
 
+    private SearchTargetCompat(SearchTarget from) {
+        this(
+                from.getResultType(),
+                from.getLayoutType(),
+                from.getId(),
+                from.getParentId(),
+                from.getScore(), from.isHidden(),
+                from.getPackageName(),
+                from.getUserHandle(),
+                SearchActionCompat.wrap(from.getSearchAction()),
+                from.getShortcutInfo(),
+                from.getSliceUri(),
+                from.getAppWidgetProviderInfo(),
+                from.getExtras()
+        );
+    }
+
     /**
      * Retrieves the result type {@see SearchResultType}.
      */
@@ -319,6 +338,10 @@ public final class SearchTargetCompat implements Parcelable {
         parcel.writeTypedObject(mAppWidgetProviderInfo, flags);
         parcel.writeTypedObject(mSliceUri, flags);
         parcel.writeBundle(mExtras);
+    }
+
+    public static SearchTargetCompat wrap(SearchTarget target) {
+        return new SearchTargetCompat(target);
     }
 
     /**

@@ -42,7 +42,7 @@ fun createSearchTarget(id: String, action: SearchActionCompat, extras: Bundle = 
         LayoutType.ICON_HORIZONTAL_TEXT,
         id
     )
-        .setPackageName(BuildConfig.APPLICATION_ID)
+        .setPackageName("")
         .setUserHandle(Process.myUserHandle())
         .setSearchAction(action)
         .setExtras(extras)
@@ -55,7 +55,7 @@ fun createDividerTarget(): SearchTargetCompat {
         LayoutType.DIVIDER,
         "divider"
     )
-        .setPackageName(BuildConfig.APPLICATION_ID)
+        .setPackageName("")
         .setUserHandle(Process.myUserHandle())
         .build()
 }

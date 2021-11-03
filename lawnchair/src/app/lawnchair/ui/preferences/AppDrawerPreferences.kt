@@ -24,6 +24,7 @@ import androidx.navigation.NavGraphBuilder
 import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences.not
 import app.lawnchair.preferences.preferenceManager
+import app.lawnchair.search.LawnchairSearchAlgorithm
 import app.lawnchair.ui.preferences.components.*
 import com.android.launcher3.R
 
@@ -59,8 +60,9 @@ fun AppDrawerPreferences() {
             )
             SuggestionsPreference()
         }
+        val deviceSearchEnabled = LawnchairSearchAlgorithm.isDeviceSearchEnabled(LocalContext.current)
+        val showSearchBar = !prefs.hideAppSearchBar.getAdapter()
         PreferenceGroup(heading = stringResource(id = R.string.pref_category_search)) {
-            val showSearchBar = !prefs.hideAppSearchBar.getAdapter()
             SwitchPreference(
                 label = stringResource(id = R.string.show_app_search_bar),
                 adapter = showSearchBar
@@ -75,10 +77,36 @@ fun AppDrawerPreferences() {
                         adapter = prefs.searchAutoShowKeyboard.getAdapter(),
                         label = stringResource(id = R.string.pref_search_auto_show_keyboard),
                     )
+                    if (!deviceSearchEnabled) {
+                        SwitchPreference(
+                            adapter = prefs.useFuzzySearch.getAdapter(),
+                            label = stringResource(id = R.string.fuzzy_search_title),
+                            description = stringResource(id = R.string.fuzzy_search_desc)
+                        )
+                    }
+                }
+            }
+        }
+        if (deviceSearchEnabled) {
+            AnimatedVisibility(
+                visible = showSearchBar.state.value,
+                enter = expandVertically() + fadeIn(),
+                exit = shrinkVertically() + fadeOut()
+            ) {
+                PreferenceGroup(heading = stringResource(id = R.string.show_search_result_types)) {
                     SwitchPreference(
-                        adapter = prefs.useFuzzySearch.getAdapter(),
-                        label = stringResource(id = R.string.fuzzy_search_title),
-                        description = stringResource(id = R.string.fuzzy_search_desc)
+                        adapter = prefs.searchResultShortcuts.getAdapter(),
+                        label = stringResource(id = R.string.search_pref_result_shortcuts_title),
+                        description = stringResource(id = R.string.search_pref_result_shortcuts_desc)
+                    )
+                    SwitchPreference(
+                        adapter = prefs.searchResultPeople.getAdapter(),
+                        label = stringResource(id = R.string.search_pref_result_people_title),
+                        description = stringResource(id = R.string.search_pref_result_people_desc)
+                    )
+                    SwitchPreference(
+                        adapter = prefs.searchResultPixelTips.getAdapter(),
+                        label = stringResource(id = R.string.search_pref_result_tips_title)
                     )
                 }
             }
