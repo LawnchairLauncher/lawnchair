@@ -44,7 +44,7 @@ public class QuickstepAccessibilityDelegate extends LauncherAccessibilityDelegat
 
     @Override
     protected boolean performAction(View host, ItemInfo item, int action, boolean fromKeyboard) {
-        QuickstepLauncher launcher = (QuickstepLauncher) mLauncher;
+        QuickstepLauncher launcher = (QuickstepLauncher) mContext;
         if (action == PIN_PREDICTION) {
             if (launcher.getHotseatPredictionController() == null) {
                 return false;

@@ -48,7 +48,7 @@ import android.widget.TextView;
 import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
 
-import com.android.launcher3.accessibility.LauncherAccessibilityDelegate;
+import com.android.launcher3.accessibility.BaseAccessibilityDelegate;
 import com.android.launcher3.dot.DotInfo;
 import com.android.launcher3.dragndrop.DraggableView;
 import com.android.launcher3.folder.FolderIcon;
@@ -296,7 +296,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
 
     @Override
     public void setAccessibilityDelegate(AccessibilityDelegate delegate) {
-        if (delegate instanceof LauncherAccessibilityDelegate) {
+        if (delegate instanceof BaseAccessibilityDelegate) {
             super.setAccessibilityDelegate(delegate);
         } else {
             // NO-OP
