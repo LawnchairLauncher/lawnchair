@@ -1,6 +1,7 @@
 package app.lawnchair.search
 
 import android.content.Context
+import android.util.Log
 import app.lawnchair.LawnchairApp
 import app.lawnchair.allapps.SearchItemBackground
 import app.lawnchair.preferences.PreferenceManager
@@ -61,9 +62,25 @@ abstract class LawnchairSearchAlgorithm(
 
     companion object {
 
+        private var hasSearchUiServiceResult: Boolean? = if (Utilities.ATLEAST_S) null else false
+
+        private fun hasSearchUiService(context: Context): Boolean {
+            if (hasSearchUiServiceResult != null) {
+                return hasSearchUiServiceResult!!
+            }
+            val id = context.resources.getIdentifier("config_defaultSearchUiService", "string", "android")
+            var result = false
+            if (id != 0) {
+                val searchUiService = context.resources.getString(id)
+                result = searchUiService.isNotEmpty()
+            }
+            hasSearchUiServiceResult = result
+            return result
+        }
+
         fun isDeviceSearchEnabled(context: Context): Boolean {
             val prefs = PreferenceManager.getInstance(context)
-            return prefs.deviceSearch.get() && Utilities.ATLEAST_S && LawnchairApp.isRecentsEnabled
+            return prefs.deviceSearch.get() && hasSearchUiService(context) && LawnchairApp.isRecentsEnabled
         }
 
         fun create(context: Context): LawnchairSearchAlgorithm = when {
