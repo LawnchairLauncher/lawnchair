@@ -39,11 +39,8 @@ abstract class LawnchairSearchAlgorithm(
     )
 
     protected fun transformSearchResults(results: List<SearchTargetCompat>): List<SearchAdapterItem> {
-        val tipsEnabled = PreferenceManager.getInstance(context).searchResultPixelTips.get()
         val filtered = results
             .filter { it.packageName != BuildConfig.APPLICATION_ID }
-            .filterNot { it.packageName == PACKAGE_SETTINGS && !it.isApp && !it.isShortcut }
-            .filterNot { !tipsEnabled && it.packageName == PACKAGE_TIPS && !it.isApp }
             .filter { LawnchairSearchAdapterProvider.viewTypeMap[it.layoutType] != null }
             .removeDuplicateDividers()
         return filtered
@@ -63,8 +60,6 @@ abstract class LawnchairSearchAlgorithm(
     }
 
     companion object {
-        private const val PACKAGE_SETTINGS = "com.android.settings"
-        private const val PACKAGE_TIPS = "com.google.android.apps.tips"
 
         fun isDeviceSearchEnabled(context: Context): Boolean {
             val prefs = PreferenceManager.getInstance(context)

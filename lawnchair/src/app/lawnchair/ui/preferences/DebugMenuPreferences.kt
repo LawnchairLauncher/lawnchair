@@ -64,5 +64,6 @@ private fun PreferenceManager.getDebugFlags(): List<PrefEntry<Boolean>> {
         searchResultShortcuts,
         searchResultPeople,
         searchResultPixelTips,
+        searchResultSettings,
     )
 }

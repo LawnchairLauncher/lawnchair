@@ -41,6 +41,7 @@ public class LawnchairDeviceSearchAlgorithm extends LawnchairSearchAlgorithm imp
         mPrefs.getSearchResultShortcuts().addListener(this);
         mPrefs.getSearchResultPeople().addListener(this);
         mPrefs.getSearchResultPixelTips().addListener(this);
+        mPrefs.getSearchResultSettings().addListener(this);
     }
 
     @Override
@@ -60,8 +61,6 @@ public class LawnchairDeviceSearchAlgorithm extends LawnchairSearchAlgorithm imp
             extras.putInt("launcher.gridSize", idp.numDatabaseAllAppsColumns);
             extras.putBoolean("allowlist_enabled", false);
             extras.putInt("launcher.maxInlineIcons", 3);
-            extras.putString("settings_source", "superpacks_settings_source");
-            extras.putString("tips_source", "superpacks_tips_source");
 
             int resultTypes = 1 /* apps */ | 2 /* shortcuts */;
             if (mPrefs.getSearchResultShortcuts().get()) {
@@ -72,6 +71,11 @@ public class LawnchairDeviceSearchAlgorithm extends LawnchairSearchAlgorithm imp
             }
             if (mPrefs.getSearchResultPixelTips().get()) {
                 resultTypes = resultTypes | 8192;
+                extras.putString("tips_source", "superpacks_tips_source");
+            }
+            if (mPrefs.getSearchResultSettings().get()) {
+                resultTypes = resultTypes | 80;
+                extras.putString("settings_source", "superpacks_settings_source");
             }
             SearchContext searchContext = new SearchContext(resultTypes, 200, extras);
             SearchUiManager searchManager = context.getSystemService(SearchUiManager.class);
@@ -112,6 +116,7 @@ public class LawnchairDeviceSearchAlgorithm extends LawnchairSearchAlgorithm imp
         mPrefs.getSearchResultShortcuts().removeListener(this);
         mPrefs.getSearchResultPeople().removeListener(this);
         mPrefs.getSearchResultPixelTips().removeListener(this);
+        mPrefs.getSearchResultSettings().removeListener(this);
     }
 
     private class PendingQuery implements Consumer<List<SearchTarget>> {

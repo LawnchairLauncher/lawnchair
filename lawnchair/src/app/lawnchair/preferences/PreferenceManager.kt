@@ -120,6 +120,7 @@ class PreferenceManager private constructor(private val context: Context) : Base
     val searchResultShortcuts = BoolPref("pref_searchResultShortcuts", true)
     val searchResultPeople = BoolPref("pref_searchResultPeople", true)
     val searchResultPixelTips = BoolPref("pref_searchResultPixelTips", true)
+    val searchResultSettings = BoolPref("pref_searchResultSettings", false)
 
     val enableIconSelection = BoolPref("pref_enableIconSelection", false)
     val themedIcons = BoolPref("themed_icons", false)
