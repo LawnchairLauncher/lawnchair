@@ -151,7 +151,7 @@
     <string name="label">Popisek</string>
     <string name="presets">Předvolby</string>
     <string name="colors">Barvy</string>
-    <string name="dynamic">Dynamický(á/é)</string>
+    <string name="dynamic">Dynamická</string>
     <string name="all_apps_search_market_message">Vyhledat další aplikace</string>
     <string name="show_app_search_bar">Zobrazit vyhledávací lištu</string>
     <string name="lawnchair_bug_report">Hlášení o chybě v Lawnchair</string>
