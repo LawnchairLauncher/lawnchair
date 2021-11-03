@@ -178,7 +178,8 @@ public class TaskAnimationManager implements RecentsAnimationCallbacks.RecentsAn
 
         if (ENABLE_SHELL_TRANSITIONS) {
             RemoteTransitionCompat transition = new RemoteTransitionCompat(mCallbacks,
-                    mController != null ? mController.getController() : null);
+                    mController != null ? mController.getController() : null,
+                    mCtx.getIApplicationThread());
             Bundle options = ActivityOptionsCompat.makeRemoteTransition(transition)
                     .setTransientLaunch().toBundle();
             mCtx.startActivity(intent, options);
