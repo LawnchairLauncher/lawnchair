@@ -1786,7 +1786,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
 
     boolean willCreateUserFolder(ItemInfo info, CellLayout target, int[] targetCell,
             float distance, boolean considerTimeout) {
-        if (distance > target.getFolderCreationRadius()) return false;
+        if (distance > target.getFolderCreationRadius(targetCell)) return false;
         View dropOverView = target.getChildAt(targetCell[0], targetCell[1]);
         return willCreateUserFolder(info, dropOverView, considerTimeout);
     }
@@ -1821,7 +1821,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
 
     boolean willAddToExistingUserFolder(ItemInfo dragInfo, CellLayout target, int[] targetCell,
             float distance) {
-        if (distance > target.getFolderCreationRadius()) return false;
+        if (distance > target.getFolderCreationRadius(targetCell)) return false;
         View dropOverView = target.getChildAt(targetCell[0], targetCell[1]);
         return willAddToExistingUserFolder(dragInfo, dropOverView);
 
@@ -1845,7 +1845,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
 
     boolean createUserFolderIfNecessary(View newView, int container, CellLayout target,
             int[] targetCell, float distance, boolean external, DragObject d) {
-        if (distance > target.getFolderCreationRadius()) return false;
+        if (distance > target.getFolderCreationRadius(targetCell)) return false;
         View v = target.getChildAt(targetCell[0], targetCell[1]);
 
         boolean hasntMoved = false;
@@ -1902,7 +1902,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
 
     boolean addToExistingFolderIfNecessary(View newView, CellLayout target, int[] targetCell,
             float distance, DragObject d, boolean external) {
-        if (distance > target.getFolderCreationRadius()) return false;
+        if (distance > target.getFolderCreationRadius(targetCell)) return false;
 
         View dropOverView = target.getChildAt(targetCell[0], targetCell[1]);
         if (!mAddToExistingFolderOnDrop) return false;
@@ -2408,8 +2408,9 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
                 mDragTargetLayout.visualizeDropLocation(mTargetCell[0], mTargetCell[1],
                         item.spanX, item.spanY, d);
             } else if ((mDragMode == DRAG_MODE_NONE || mDragMode == DRAG_MODE_REORDER)
-                    && !mReorderAlarm.alarmPending() && (mLastReorderX != reorderX ||
-                    mLastReorderY != reorderY)) {
+                    && !mReorderAlarm.alarmPending()
+                    && (mLastReorderX != reorderX || mLastReorderY != reorderY)
+                    && targetCellDistance < mDragTargetLayout.getReorderRadius(mTargetCell)) {
 
                 int[] resultSpan = new int[2];
                 mDragTargetLayout.performReorder((int) mDragViewVisualCenter[0],
@@ -2506,7 +2507,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
     }
 
     private void manageFolderFeedback(float distance, DragObject dragObject) {
-        if (distance > mDragTargetLayout.getFolderCreationRadius()) {
+        if (distance > mDragTargetLayout.getFolderCreationRadius(mTargetCell)) {
             if ((mDragMode == DRAG_MODE_ADD_TO_FOLDER
                     || mDragMode == DRAG_MODE_CREATE_FOLDER)) {
                 setDragMode(DRAG_MODE_NONE);
