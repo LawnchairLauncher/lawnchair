@@ -220,7 +220,6 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
     private FolderIcon mDragOverFolderIcon = null;
     private boolean mCreateUserFolderOnDrop = false;
     private boolean mAddToExistingFolderOnDrop = false;
-    private float mMaxDistanceForFolderCreation;
 
     // Variables relating to touch disambiguation (scrolling workspace vs. scrolling a widget)
     private float mXDown;
@@ -308,8 +307,6 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
     public void setInsets(Rect insets) {
         DeviceProfile grid = mLauncher.getDeviceProfile();
 
-        mMaxDistanceForFolderCreation = grid.isTablet
-                ? 0.75f * grid.iconSizePx : 0.55f * grid.iconSizePx;
         mWorkspaceFadeInAdjacentScreens = grid.shouldFadeAdjacentWorkspaceScreens();
 
         Rect padding = grid.workspacePadding;
@@ -1789,7 +1786,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
 
     boolean willCreateUserFolder(ItemInfo info, CellLayout target, int[] targetCell,
             float distance, boolean considerTimeout) {
-        if (distance > mMaxDistanceForFolderCreation) return false;
+        if (distance > target.getFolderCreationRadius()) return false;
         View dropOverView = target.getChildAt(targetCell[0], targetCell[1]);
         return willCreateUserFolder(info, dropOverView, considerTimeout);
     }
@@ -1824,7 +1821,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
 
     boolean willAddToExistingUserFolder(ItemInfo dragInfo, CellLayout target, int[] targetCell,
             float distance) {
-        if (distance > mMaxDistanceForFolderCreation) return false;
+        if (distance > target.getFolderCreationRadius()) return false;
         View dropOverView = target.getChildAt(targetCell[0], targetCell[1]);
         return willAddToExistingUserFolder(dragInfo, dropOverView);
 
@@ -1848,7 +1845,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
 
     boolean createUserFolderIfNecessary(View newView, int container, CellLayout target,
             int[] targetCell, float distance, boolean external, DragObject d) {
-        if (distance > mMaxDistanceForFolderCreation) return false;
+        if (distance > target.getFolderCreationRadius()) return false;
         View v = target.getChildAt(targetCell[0], targetCell[1]);
 
         boolean hasntMoved = false;
@@ -1905,7 +1902,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
 
     boolean addToExistingFolderIfNecessary(View newView, CellLayout target, int[] targetCell,
             float distance, DragObject d, boolean external) {
-        if (distance > mMaxDistanceForFolderCreation) return false;
+        if (distance > target.getFolderCreationRadius()) return false;
 
         View dropOverView = target.getChildAt(targetCell[0], targetCell[1]);
         if (!mAddToExistingFolderOnDrop) return false;
@@ -2509,7 +2506,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
     }
 
     private void manageFolderFeedback(float distance, DragObject dragObject) {
-        if (distance > mMaxDistanceForFolderCreation) {
+        if (distance > mDragTargetLayout.getFolderCreationRadius()) {
             if ((mDragMode == DRAG_MODE_ADD_TO_FOLDER
                     || mDragMode == DRAG_MODE_CREATE_FOLDER)) {
                 setDragMode(DRAG_MODE_NONE);
