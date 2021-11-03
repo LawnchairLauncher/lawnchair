@@ -78,10 +78,10 @@
     </plurals>
     <string name="hotseat_qsb_label">Zobrazit vyhledávací lištu</string>
     <string name="dt2s_admin_hint_title">Vyžadována oprávnění správce</string>
-    <string name="dt2s_admin_hint">K použití funkce dvojitého poklepání pro uspání zařízení, nastavte Lawnchair jako aplikaci administrátora. Klepněte na tlačítko \"Otevřít nastavení\" a poté na tlačítko „Aktivovat aplikaci správce zařízení.“</string>
+    <string name="dt2s_admin_hint">Chcete-li použít dvojité poklepání k uspání zařízení, nastavte Lawnchair jako aplikaci pro správu zařízení. Klepněte na tlačítko Otevřít nastavení a poté na tlačítko „Aktivovat aplikaci pro správu zařízení.“</string>
     <string name="dt2s_admin_warning">Uspání dvojitým poklepáním bude vypnuto.</string>
     <string name="dt2s_a11y_hint_title">Zapnout službu usnadnění</string>
-    <string name="dt2s_a11y_hint">Chcete-li použít dvojité poklepání k uspání zařízení, zapněte službu usnadnění přístupu k Lawnchair. Klepněte na \"Otevřít nastavení\" a aktivujte volbu Lawnchair jakožto službu poskytující uživatelská usnadnění.</string>
+    <string name="dt2s_a11y_hint">Chcete-li použít dvojité poklepání k uspání zařízení, zapněte službu usnadnění přístupu k aplikaci Lawnchair. Klepněte na tlačítko Otevřít nastavení a aktivujte volbu Lawnchair jakožto službu poskytující usnadnění přístupu.</string>
     <string name="dt2s_warning_open_settings">Otevřít nastavení</string>
     <string name="minus_one_enable">Kanál</string>
     <string name="minus_one_unavailable">Není nainstalován žádný kanál.</string>
@@ -108,10 +108,10 @@
     <string name="wallpaper_scrolling_label">Posouvat tapetu</string>
     <string name="show_sys_ui_scrim">Horní stín</string>
     <string name="show_status_bar">Stavový řádek</string>
-    <string name="what_to_show">Co ukázat</string>
+    <string name="what_to_show">Co zobrazit</string>
     <string name="missing_notification_access_label">Je vyžadován přístup k oznámením</string>
     <string name="missing_notification_access_description">Je vyžadován přístup k oznámením.</string>
-    <string name="msg_missing_notification_access">Chcete-li používat oznamovací tečky, udělte <xliff:g id="name" example="My App">%1$s</xliff:g> přístup k oznámením.</string>
+    <string name="msg_missing_notification_access">Chcete-li používat puntíky s oznámením, udělte <xliff:g id="name" example="My App">%1$s</xliff:g> přístup k oznámením.</string>
     <string name="title_change_settings">Změnit nastavení</string>
     <string name="debug_restart_launcher">Restartovat Lawnchair</string>
     <string name="pref_fonts_missing_font">Písmo nebylo nalezeno.</string>
@@ -124,7 +124,7 @@
     <string name="font_weight_semi_bold">Středně tučné</string>
     <string name="font_weight_bold">Tučné</string>
     <string name="font_weight_extra_bold">Velmi tučné</string>
-    <string name="font_weight_extra_black">Černé</string>
+    <string name="font_weight_extra_black">Black</string>
     <string name="font_label">Písmo (experimentální)</string>
     <string name="reset_font">Obnovit</string>
     <string name="search_input_action_clear_results">Vymazat vyhledávací pole</string>
@@ -171,4 +171,10 @@
     <string name="corner_radius_label">Poloměr rohů</string>
     <string name="search_bar_label">Vyhledávací lišta</string>
     <string name="apply_accent_color_label">Použít zvýrazňující barvu</string>
+    <string name="show_search_result_types">Show in Search Results</string>
+    <string name="search_pref_result_people_desc">Contacts, conversations, and more</string>
+    <string name="search_pref_result_people_title">People</string>
+    <string name="search_pref_result_shortcuts_desc">Show Shortcuts for Apps and People</string>
+    <string name="search_pref_result_shortcuts_title">Shortcuts</string>
+    <string name="search_pref_result_tips_title">Pixel Tips</string>
 </resources>
