@@ -126,6 +126,7 @@ class PreferenceManager private constructor(private val context: Context) : Base
     val themedIcons = BoolPref("themed_icons", false)
     val hotseatQsbCornerRadius = FloatPref("pref_hotseatQsbCornerRadius", 1F, recreate)
     val themedHotseatQsb = BoolPref("pref_themedHotseatQsb", false)
+    val allAppsCellHeightMultiplier = FloatPref("pref_allAppsCellHeightMultiplier", 1F, reloadGrid)
 
     init {
         sp.registerOnSharedPreferenceChangeListener(this)

@@ -118,6 +118,13 @@ fun AppDrawerPreferences() {
                 step = 1,
                 valueRange = 3..10,
             )
+            SliderPreference(
+                label = stringResource(id = R.string.row_height_label),
+                adapter = prefs.allAppsCellHeightMultiplier.getAdapter(),
+                valueRange = 0.7F..1.5F,
+                step = 0.1F,
+                showAsPercentage = true
+            )
         }
         PreferenceGroup(heading = stringResource(id = R.string.icons)) {
             SliderPreference(

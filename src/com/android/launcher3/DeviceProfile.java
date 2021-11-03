@@ -179,6 +179,7 @@ public class DeviceProfile {
     public int allAppsIconDrawablePaddingPx;
     public final int numShownAllAppsColumns;
     public float allAppsIconTextSizePx;
+    private float allAppsCellHeightMultiplier;
 
     // Overview
     public int overviewTaskMarginPx;
@@ -221,6 +222,9 @@ public class DeviceProfile {
             boolean isMultiWindowMode, boolean transposeLayoutWithOrientation,
             boolean useTwoPanels) {
         mContext = context;
+
+        PreferenceManager pm = PreferenceManager.INSTANCE.get(context);
+        allAppsCellHeightMultiplier = pm.getAllAppsCellHeightMultiplier().get();
 
         this.inv = inv;
         this.isLandscape = windowBounds.isLandscape();
@@ -538,12 +542,12 @@ public class DeviceProfile {
     public void autoResizeAllAppsCells() {
         int textHeight = Utilities.calculateTextHeight(allAppsIconTextSizePx);
         int topBottomPadding = textHeight;
-        allAppsCellHeightPx = allAppsIconSizePx + allAppsIconDrawablePaddingPx
-                + textHeight + (topBottomPadding * 2);
+        int baseCellHeight = allAppsIconSizePx + allAppsIconDrawablePaddingPx + textHeight + (topBottomPadding * 2);
+        allAppsCellHeightPx = (int) (baseCellHeight * allAppsCellHeightMultiplier);
         if (allAppsIconTextSizePx == 0) {
             int leftRightPadding = desiredWorkspaceLeftRightMarginPx + cellLayoutPaddingLeftRightPx;
             int drawerWidth = availableWidthPx - leftRightPadding * 2;
-            allAppsCellHeightPx = drawerWidth / inv.numAllAppsColumns;
+            allAppsCellHeightPx = (int) (drawerWidth / inv.numAllAppsColumns * allAppsCellHeightMultiplier);
             allAppsIconDrawablePaddingPx = 0;
         }
     }
