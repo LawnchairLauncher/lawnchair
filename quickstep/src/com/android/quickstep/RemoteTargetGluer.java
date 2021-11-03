@@ -85,13 +85,21 @@ public class RemoteTargetGluer {
 
     /**
      * Similar to {@link #assignTargets(RemoteAnimationTargets)}, except this matches the
-     * apps in targets.apps to that of the split screened tasks. If split screen is active, then
-     * {@link #mRemoteTargetHandles} index 0 will be the left/top task, index one right/bottom
+     * apps in targets.apps to that of the _active_ split screened tasks.
+     * See {@link #assignTargetsForSplitScreen(RemoteAnimationTargets, int[])}
      */
     public RemoteTargetHandle[] assignTargetsForSplitScreen(RemoteAnimationTargets targets) {
         int[] splitIds = LauncherSplitScreenListener.INSTANCE.getNoCreate()
                 .getRunningSplitTaskIds();
+        return assignTargetsForSplitScreen(targets, splitIds);
+    }
 
+    /**
+     * Assigns the provided splitIDs to the {@link #mRemoteTargetHandles}, with index 0 will beint
+     * the left/top task, index 1 right/bottom
+     */
+    public RemoteTargetHandle[] assignTargetsForSplitScreen(RemoteAnimationTargets targets,
+            int[] splitIds) {
         RemoteAnimationTargetCompat primaryTaskTarget;
         RemoteAnimationTargetCompat secondaryTaskTarget;
         if (mRemoteTargetHandles.length == 1) {
