@@ -16,6 +16,7 @@
 
 package com.android.quickstep.views;
 
+import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
 import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITION_BOTTOM_OR_RIGHT;
 import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITION_UNDEFINED;
 import static com.android.quickstep.views.TaskThumbnailView.DIM_ALPHA;
@@ -242,7 +243,17 @@ public class TaskMenuView extends AbstractFloatingView implements OnScrollChange
         LayoutParams lp = (LayoutParams) menuOptionView.getLayoutParams();
         mTaskView.getPagedOrientationHandler().setLayoutParamsForTaskMenuOptionItem(lp,
                 menuOptionView, mActivity.getDeviceProfile());
-        menuOptionView.setOnClickListener(menuOption::onClick);
+        menuOptionView.setOnClickListener(view -> {
+            if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
+                RecentsView recentsView = mTaskView.getRecentsView();
+                recentsView.switchToScreenshot(null,
+                        () -> recentsView.finishRecentsAnimation(true /* toRecents */,
+                                false /* shouldPip */,
+                                () -> menuOption.onClick(view)));
+            } else {
+                menuOption.onClick(view);
+            }
+        });
         mOptionLayout.addView(menuOptionView);
     }
 
