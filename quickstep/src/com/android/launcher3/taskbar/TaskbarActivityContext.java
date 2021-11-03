@@ -510,20 +510,4 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
     protected boolean isUserSetupComplete() {
         return mIsUserSetupComplete;
     }
-
-    /**
-     * Called when we determine the touchable region.
-     *
-     * @param exclude {@code true} then the magnification region computation will omit the window.
-     */
-    public void excludeFromMagnificationRegion(boolean exclude) {
-        if (exclude) {
-            mWindowLayoutParams.privateFlags |=
-                    WindowManager.LayoutParams.PRIVATE_FLAG_EXCLUDE_FROM_SCREEN_MAGNIFICATION;
-        } else {
-            mWindowLayoutParams.privateFlags &=
-                    ~WindowManager.LayoutParams.PRIVATE_FLAG_EXCLUDE_FROM_SCREEN_MAGNIFICATION;
-        }
-        mWindowManager.updateViewLayout(mDragLayer, mWindowLayoutParams);
-    }
 }
