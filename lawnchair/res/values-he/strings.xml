@@ -35,7 +35,7 @@
     <string name="max_folder_columns">מספר מרבי לטורים בתיקייה</string>
     <string name="max_folder_rows">מספר מרבי לשורות בתיקייה</string>
     <string name="home_screen_grid">Home Screen Grid</string>
-    <string name="columns">Columns</string>
+    <string name="columns">עמודות</string>
     <string name="grid">רשת</string>
     <string name="rows">Rows</string>
     <string name="icons">סמלים</string>
@@ -102,7 +102,7 @@
     <string name="done">סיום</string>
     <string name="loading">כעת בטעינה…</string>
     <string name="system">מערכת</string>
-    <string name="wallpaper">Wallpaper</string>
+    <string name="wallpaper">רקע</string>
     <string name="custom">התאמה אישית</string>
     <string name="quickstep_description">כפתור ניקוי הכל, רדיוס פינות</string>
     <string name="wallpaper_scrolling_label">גלילת טפט</string>
@@ -125,7 +125,7 @@
     <string name="font_weight_bold">מודגש</string>
     <string name="font_weight_extra_bold">Extra Bold</string>
     <string name="font_weight_extra_black">שחור</string>
-    <string name="font_label">Font (Experimental)</string>
+    <string name="font_label">פונט (ניסיוני)</string>
     <string name="reset_font">איפוס</string>
     <string name="search_input_action_clear_results">Clear Search Box</string>
     <string name="pref_category_search">חיפוש</string>
@@ -141,16 +141,16 @@
     <string name="icon_shape_circle">Circle</string>
     <string name="icon_shape_rounded_square">Rounded Square</string>
     <string name="icon_shape_squircle">Squircle</string>
-    <string name="customize_button_text">Customize</string>
-    <string name="app_title_label">Title</string>
+    <string name="customize_button_text">התאמה אישית</string>
+    <string name="app_title_label">כותרת</string>
     <string name="hide_from_drawer">Hide from App Drawer</string>
     <string name="action_lens">Lens</string>
     <string name="force_rounded_widgets">Rounded Corners</string>
-    <string name="suggestion_pref_screen_title">Suggestions</string>
+    <string name="suggestion_pref_screen_title">המלצות</string>
     <string name="n_percent">%1$d%%</string>
-    <string name="label">Label</string>
+    <string name="label">תוית</string>
     <string name="presets">Presets</string>
-    <string name="colors">Colors</string>
+    <string name="colors">צבעים</string>
     <string name="dynamic">Dynamic</string>
     <string name="all_apps_search_market_message">Search for More Apps</string>
     <string name="show_app_search_bar">הצגת סרגל חיפוש</string>
@@ -171,11 +171,11 @@
     <string name="corner_radius_label">רדיוס פינות</string>
     <string name="search_bar_label">Search Bar</string>
     <string name="apply_accent_color_label">Apply Accent Color</string>
-    <string name="show_search_result_types">Show in Search Results</string>
-    <string name="search_pref_result_people_desc">Contacts, conversations, and more</string>
-    <string name="search_pref_result_people_title">People</string>
-    <string name="search_pref_result_shortcuts_desc">Show Shortcuts for Apps and People</string>
-    <string name="search_pref_result_shortcuts_title">Shortcuts</string>
+    <string name="show_search_result_types">הצגה בתוצאות החיפוש</string>
+    <string name="search_pref_result_people_desc">אנשי קשר, שיחות, ועוד</string>
+    <string name="search_pref_result_people_title">אנשים</string>
+    <string name="search_pref_result_shortcuts_desc">הצגת קיצורי דרך לאפליקציות ואנשים</string>
+    <string name="search_pref_result_shortcuts_title">קיצורי דרך</string>
     <string name="search_pref_result_tips_title">Pixel Tips</string>
     <string name="row_height_label">Row Height</string>
 </resources>
