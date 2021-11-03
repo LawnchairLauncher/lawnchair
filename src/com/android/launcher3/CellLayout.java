@@ -461,7 +461,7 @@ public class CellLayout extends ViewGroup {
                     cellToRect(x, y, 1, 1, cellBounds);
                     cellBoundsWithSpacing.set(cellBounds);
                     cellBoundsWithSpacing.inset(-mBorderSpace.x / 2, -mBorderSpace.y / 2);
-                    cellToCenterPoint(x, y, cellCenter);
+                    getWorkspaceCellVisualCenter(x, y, cellCenter);
 
                     canvas.save();
                     canvas.clipRect(cellBoundsWithSpacing);
@@ -854,9 +854,28 @@ public class CellLayout extends ViewGroup {
         result[1] = mTempRect.centerY();
     }
 
-    public float getDistanceFromCell(float x, float y, int[] cell) {
-        cellToCenterPoint(cell[0], cell[1], mTmpPoint);
+    /**
+     * Returns the distance between the given coordinate and the visual center of the given cell.
+     */
+    public float getDistanceFromWorkspaceCellVisualCenter(float x, float y, int[] cell) {
+        getWorkspaceCellVisualCenter(cell[0], cell[1], mTmpPoint);
         return (float) Math.hypot(x - mTmpPoint[0], y - mTmpPoint[1]);
+    }
+
+    private void getWorkspaceCellVisualCenter(int cellX, int cellY, int[] outPoint) {
+        View child = getChildAt(cellX, cellY);
+        if (child instanceof DraggableView) {
+            DraggableView draggableChild = (DraggableView) child;
+            if (draggableChild.getViewType() == DRAGGABLE_ICON) {
+                cellToPoint(cellX, cellY, outPoint);
+                draggableChild.getWorkspaceVisualDragBounds(mTempRect);
+                mTempRect.offset(outPoint[0], outPoint[1]);
+                outPoint[0] = mTempRect.centerX();
+                outPoint[1] = mTempRect.centerY();
+                return;
+            }
+        }
+        cellToCenterPoint(cellX, cellY, outPoint);
     }
 
     /**
