@@ -133,23 +133,10 @@ public class LawnchairDeviceSearchAlgorithm extends LawnchairSearchAlgorithm imp
         @Override
         public void accept(List<SearchTarget> platformTargets) {
             if (!mCanceled) {
-                Log.d("DeviceSearchAlg", "got search results");
-                List<SearchTargetCompat> targets = platformTargets
-                        .stream()
-                        .map(SearchTargetCompat::wrap)
-                        .collect(Collectors.toList());
-                targets.forEach(target -> {
-                    //noinspection StringBufferReplaceableByString
-                    String itemInfo = new StringBuilder()
-                            .append("type=")
-                            .append(target.getResultType())
-                            .append(", layout=")
-                            .append(target.getLayoutType())
-                            .append(", id=")
-                            .append(target.getId())
-                            .toString();
-                    Log.d("DeviceSearchAlg", itemInfo);
-                });
+                List<SearchTargetCompat> targets = new ArrayList<>();
+                for (SearchTarget target : platformTargets) {
+                    targets.add(SearchTargetCompat.wrap(target));
+                }
                 List<SearchAdapterItem> adapterItems = transformSearchResults(targets);
                 LawnchairSearchAdapterProvider.setFirstItemQuickLaunch(adapterItems);
                 mCallback.onSearchResult(mQuery, new ArrayList<>(adapterItems));
