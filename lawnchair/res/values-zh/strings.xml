@@ -20,7 +20,7 @@
     <string name="home_screen_label">主螢幕</string>
     <string name="home_screen_description">動態消息、快速查看、網格、圖示</string>
     <string name="general_label">一般</string>
-    <string name="general_description">通知圆点、图标包</string>
+    <string name="general_description">通知圓點、圖示包</string>
     <string name="home_screen_rotation_label">旋轉主螢幕</string>
     <string name="home_screen_rotaton_description">當手機旋轉時</string>
     <string name="auto_add_shortcuts_label">將應用程式圖示新增到主螢幕</string>
