@@ -413,6 +413,27 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
         folder.close();
     }
 
+    @Test
+    @PortraitLandscape
+    public void testPressBack() throws Exception {
+        mLauncher.getWorkspace().switchToAllApps();
+        mLauncher.pressBack();
+        mLauncher.getWorkspace();
+        waitForState("Launcher internal state didn't switch to Home", () -> LauncherState.NORMAL);
+
+        AllApps allApps = mLauncher.getWorkspace().switchToAllApps();
+        allApps.freeze();
+        try {
+            allApps.getAppIcon(APP_NAME).dragToWorkspace(false, false);
+        } finally {
+            allApps.unfreeze();
+        }
+        mLauncher.getWorkspace().getWorkspaceAppIcon(APP_NAME).launch(getAppPackageName());
+        mLauncher.pressBack();
+        mLauncher.getWorkspace();
+        waitForState("Launcher internal state didn't switch to Home", () -> LauncherState.NORMAL);
+    }
+
     public static String getAppPackageName() {
         return getInstrumentation().getContext().getPackageName();
     }

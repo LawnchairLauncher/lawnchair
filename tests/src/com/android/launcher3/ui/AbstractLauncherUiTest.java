@@ -211,7 +211,8 @@ public abstract class AbstractLauncherUiTest {
     }
 
     protected TestRule getRulesInsideActivityMonitor() {
-        final RuleChain inner = RuleChain.outerRule(new PortraitLandscapeRunner(this))
+        final RuleChain inner = RuleChain
+                .outerRule(new PortraitLandscapeRunner(this))
                 .around(new FailureWatcher(mDevice, mLauncher));
 
         return TestHelpers.isInLauncherProcess()
