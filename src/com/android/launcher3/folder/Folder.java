@@ -78,6 +78,7 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.accessibility.AccessibleDragListenerAdapter;
 import com.android.launcher3.accessibility.FolderAccessibilityHelper;
 import com.android.launcher3.anim.KeyboardInsetAnimationCallback;
+import com.android.launcher3.compat.AccessibilityManagerCompat;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.dragndrop.DragController;
 import com.android.launcher3.dragndrop.DragController.DragListener;
@@ -687,6 +688,7 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
             public void onAnimationEnd(Animator animation) {
                 mState = STATE_OPEN;
                 announceAccessibilityChanges();
+                AccessibilityManagerCompat.sendFolderOpenedEventToTest(getContext());
 
                 mContent.setFocusOnFirstChild();
             }
@@ -1265,7 +1267,8 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
 
         PendingAddShortcutInfo pasi = d.dragInfo instanceof PendingAddShortcutInfo
                 ? (PendingAddShortcutInfo) d.dragInfo : null;
-        WorkspaceItemInfo pasiSi = pasi != null ? pasi.activityInfo.createWorkspaceItemInfo() : null;
+        WorkspaceItemInfo pasiSi =
+                pasi != null ? pasi.activityInfo.createWorkspaceItemInfo() : null;
         if (pasi != null && pasiSi == null) {
             // There is no WorkspaceItemInfo, so we have to go through a configuration activity.
             pasi.container = mInfo.id;

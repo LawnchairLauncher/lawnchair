@@ -21,6 +21,7 @@ import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Insets;
 import android.os.Build;
 import android.os.Bundle;
@@ -148,6 +149,14 @@ public class TestInformationHandler implements ResourceBasedOverride {
                         TestProtocol.TEST_INFO_RESPONSE_FIELD, TestLogging.sHadEventsNotFromTest);
                 return response;
 
+            case TestProtocol.REQUEST_START_DRAG_THRESHOLD: {
+                final Resources resources = mContext.getResources();
+                response.putInt(TestProtocol.TEST_INFO_RESPONSE_FIELD,
+                        resources.getDimensionPixelSize(R.dimen.deep_shortcuts_start_drag_threshold)
+                                + resources.getDimensionPixelSize(R.dimen.pre_drag_view_scale));
+                return response;
+            }
+
             default:
                 return null;
         }
@@ -193,6 +202,7 @@ public class TestInformationHandler implements ResourceBasedOverride {
 
     /**
      * Generic interface for setting a fiend in bundle
+     *
      * @param <T> the type of value being set
      */
     public interface BundleSetter<T> {
