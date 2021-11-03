@@ -34,10 +34,10 @@
     <string name="dock_icons">Dock-Symbole</string>
     <string name="max_folder_columns">Max. Ordnerspalten</string>
     <string name="max_folder_rows">Max. Ordnerzeilen</string>
-    <string name="home_screen_grid">Startbildschirm Raster</string>
+    <string name="home_screen_grid">Startbildschirm-Raster</string>
     <string name="columns">Spalten</string>
     <string name="grid">Raster</string>
-    <string name="rows">Reihen</string>
+    <string name="rows">Zeilen</string>
     <string name="icons">Symbole</string>
     <string name="icon_size">Symbolgröße</string>
     <string name="label_size">Labelgröße</string>
@@ -79,7 +79,7 @@
     <string name="dt2s_admin_hint">Um Double-Tap to Sleep zu verwenden, aktiviere Lawnchair als Verwaltungs-App. Öffne die Einstellungen und tippe auf „Diese App zur Geräteverwaltung aktivieren“.</string>
     <string name="dt2s_admin_warning">Doppeltes Tippen zum Schlafen wird deaktiviert.</string>
     <string name="dt2s_a11y_hint_title">Bedienungshilfen erforderlich</string>
-    <string name="dt2s_a11y_hint">Um Doppeltippen zum Display-Ausschalten zu verwenden, aktiviere die Bedienungshilfe für Lawnchair. Öffne die Einstellungen, wähle Lawnchair aus und aktiviere den Dienst.</string>
+    <string name="dt2s_a11y_hint">Um Doppeltippen zum Display Ausschalten zu verwenden, aktiviere die Bedienungshilfe für Lawnchair. Öffne die Einstellungen, wähle Lawnchair aus und aktiviere den Dienst.</string>
     <string name="dt2s_warning_open_settings">Einstellungen öffnen</string>
     <string name="minus_one_enable">Feed</string>
     <string name="minus_one_unavailable">Feed ist nicht verfügbar.</string>
@@ -133,7 +133,7 @@
     <string name="label_voice_search">Sprachsuche</string>
     <string name="apply_grid">Anwenden</string>
     <string name="x_by_y">%1$d × %2$d</string>
-    <string name="folder_preview_bg_opacity_label">Symbol Hintergrundtransparenz</string>
+    <string name="folder_preview_bg_opacity_label">Symbol-Hintergrunddeckkraft</string>
     <string name="icon_shape_label">Symbolform</string>
     <string name="icon_shape_system">System</string>
     <string name="icon_shape_circle">Kreis</string>
@@ -141,7 +141,7 @@
     <string name="icon_shape_squircle">Quadreis</string>
     <string name="customize_button_text">Anpassen</string>
     <string name="app_title_label">Titel</string>
-    <string name="hide_from_drawer">Im App-Drawer ausblenden</string>
+    <string name="hide_from_drawer">In der App-Übersicht ausblenden</string>
     <string name="action_lens">Linse</string>
     <string name="force_rounded_widgets">Abgerundete Ecken</string>
     <string name="suggestion_pref_screen_title">Vorschläge</string>
