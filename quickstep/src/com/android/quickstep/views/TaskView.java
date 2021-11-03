@@ -94,6 +94,7 @@ import com.android.quickstep.util.CancellableTask;
 import com.android.quickstep.util.LauncherSplitScreenListener;
 import com.android.quickstep.util.RecentsOrientedState;
 import com.android.quickstep.util.TaskCornerRadius;
+import com.android.quickstep.util.TaskViewSimulator;
 import com.android.quickstep.util.TransformParams;
 import com.android.quickstep.views.TaskThumbnailView.PreviewPositionHelper;
 import com.android.systemui.shared.recents.model.Task;
@@ -625,7 +626,21 @@ public class TaskView extends FrameLayout implements Reusable {
                     recentsView.getDepthController());
             anim.addListener(new AnimatorListenerAdapter() {
                 @Override
+                public void onAnimationStart(Animator animator) {
+                    recentsView.runActionOnRemoteHandles(
+                            (Consumer<RemoteTargetHandle>) remoteTargetHandle ->
+                                    remoteTargetHandle
+                                            .getTaskViewSimulator()
+                                            .setDrawsBelowRecents(false));
+                }
+
+                @Override
                 public void onAnimationEnd(Animator animator) {
+                    recentsView.runActionOnRemoteHandles(
+                            (Consumer<RemoteTargetHandle>) remoteTargetHandle ->
+                                    remoteTargetHandle
+                                            .getTaskViewSimulator()
+                                            .setDrawsBelowRecents(true));
                     mIsClickableAsLiveTile = true;
                 }
             });
@@ -821,15 +836,7 @@ public class TaskView extends FrameLayout implements Reusable {
                 if (confirmSecondSplitSelectApp()) {
                     return;
                 }
-                if (ENABLE_QUICKSTEP_LIVE_TILE.get() && isRunningTask()) {
-                    RecentsView recentsView = getRecentsView();
-                    recentsView.switchToScreenshot(
-                            () -> recentsView.finishRecentsAnimation(true /* toRecents */,
-                                    false /* shouldPip */,
-                                    () -> showTaskMenu(iconView)));
-                } else {
-                    showTaskMenu(iconView);
-                }
+                showTaskMenu(iconView);
             });
             iconView.setOnLongClickListener(v -> {
                 requestDisallowInterceptTouchEvent(true);
