@@ -1029,6 +1029,10 @@ public final class LauncherInstrumentation {
         waitUntilGoneBySelector(getLauncherObjectSelector(resId));
     }
 
+    void waitUntilOverviewObjectGone(String resId) {
+        waitUntilGoneBySelector(getOverviewObjectSelector(resId));
+    }
+
     void waitUntilLauncherObjectGone(BySelector selector) {
         waitUntilGoneBySelector(makeLauncherSelector(selector));
     }
