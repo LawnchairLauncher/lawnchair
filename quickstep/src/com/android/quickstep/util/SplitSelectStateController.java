@@ -94,7 +94,8 @@ public class SplitSelectStateController {
                     new RemoteSplitLaunchTransitionRunner(task1, task2);
             mSystemUiProxy.startTasks(taskIds[0], null /* mainOptions */, taskIds[1],
                     null /* sideOptions */, STAGE_POSITION_BOTTOM_OR_RIGHT,
-                    new RemoteTransitionCompat(animationRunner, MAIN_EXECUTOR));
+                    new RemoteTransitionCompat(animationRunner, MAIN_EXECUTOR,
+                            ActivityThread.currentActivityThread().getApplicationThread()));
         } else {
             RemoteSplitLaunchAnimationRunner animationRunner =
                     new RemoteSplitLaunchAnimationRunner(task1, task2, callback);

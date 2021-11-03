@@ -16,31 +16,13 @@
 package com.android.quickstep.util;
 
 import android.animation.AnimatorSet;
-import android.app.ActivityOptions;
-import android.content.Context;
-import android.os.Handler;
 
-import com.android.launcher3.LauncherAnimationRunner;
-import com.android.launcher3.LauncherAnimationRunner.RemoteAnimationFactory;
-import com.android.systemui.shared.system.ActivityOptionsCompat;
-import com.android.systemui.shared.system.RemoteAnimationAdapterCompat;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 
 public abstract class RemoteAnimationProvider {
 
-    RemoteAnimationFactory mAnimationRunner;
-
     public abstract AnimatorSet createWindowAnimation(RemoteAnimationTargetCompat[] appTargets,
             RemoteAnimationTargetCompat[] wallpaperTargets);
-
-    ActivityOptions toActivityOptions(Handler handler, long duration, Context context) {
-        mAnimationRunner = (transit, appTargets, wallpaperTargets, nonApps, result) ->
-                result.setAnimation(createWindowAnimation(appTargets, wallpaperTargets), context);
-        final LauncherAnimationRunner wrapper = new LauncherAnimationRunner(
-                handler, mAnimationRunner, false /* startAtFrontOfQueue */);
-        return ActivityOptionsCompat.makeRemoteAnimation(
-                new RemoteAnimationAdapterCompat(wrapper, duration, 0));
-    }
 
     /**
      * @return the target with the lowest opaque layer for a certain app animation, or null.

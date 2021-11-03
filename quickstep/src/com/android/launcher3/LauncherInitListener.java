@@ -17,11 +17,8 @@ package com.android.launcher3;
 
 import android.animation.AnimatorSet;
 import android.annotation.TargetApi;
-import android.content.Context;
-import android.content.Intent;
 import android.os.Build;
 import android.os.CancellationSignal;
-import android.os.Handler;
 
 import com.android.quickstep.util.ActivityInitListener;
 import com.android.quickstep.util.RemoteAnimationProvider;
@@ -77,12 +74,5 @@ public class LauncherInitListener extends ActivityInitListener<Launcher> {
     public void unregister() {
         mRemoteAnimationProvider = null;
         super.unregister();
-    }
-
-    @Override
-    public void registerAndStartActivity(Intent intent, RemoteAnimationProvider animProvider,
-            Context context, Handler handler, long duration) {
-        mRemoteAnimationProvider = animProvider;
-        super.registerAndStartActivity(intent, animProvider, context, handler, duration);
     }
 }
