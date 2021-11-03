@@ -169,10 +169,10 @@
     <string name="corner_radius_label">Eckradius</string>
     <string name="search_bar_label">Suchleiste</string>
     <string name="apply_accent_color_label">Akzentfarbe anwenden</string>
-    <string name="show_search_result_types">Show in Search Results</string>
-    <string name="search_pref_result_people_desc">Contacts, conversations, and more</string>
-    <string name="search_pref_result_people_title">People</string>
-    <string name="search_pref_result_shortcuts_desc">Show Shortcuts for Apps and People</string>
-    <string name="search_pref_result_shortcuts_title">Shortcuts</string>
-    <string name="search_pref_result_tips_title">Pixel Tips</string>
+    <string name="show_search_result_types">In Suchergebnissen anzeigen</string>
+    <string name="search_pref_result_people_desc">Kontakte, Konversationen und mehr</string>
+    <string name="search_pref_result_people_title">Personen</string>
+    <string name="search_pref_result_shortcuts_desc">Verknüpfungen für Apps und Personen anzeigen</string>
+    <string name="search_pref_result_shortcuts_title">Verknüpfungen</string>
+    <string name="search_pref_result_tips_title">Pixel Tipps</string>
 </resources>
