@@ -70,10 +70,12 @@ class SearchResultIcon(context: Context, attrs: AttributeSet?) : BubbleTextView(
         setForceHideDot(true)
 
         val extras = target.extras
+        val iconComponentKey = extras.getString(SearchResultView.EXTRA_ICON_COMPONENT_KEY)
+            ?.let { ComponentKey.fromString(it) }
         when {
             target.searchAction != null -> {
                 allowLongClick = false
-                bindFromAction(target)
+                bindFromAction(target, iconComponentKey == null)
             }
             target.shortcutInfo != null -> {
                 allowLongClick = true
@@ -86,8 +88,6 @@ class SearchResultIcon(context: Context, attrs: AttributeSet?) : BubbleTextView(
                 bindFromApp(componentName, target.userHandle)
             }
         }
-        val iconComponentKey = extras.getString(SearchResultView.EXTRA_ICON_COMPONENT_KEY)
-            ?.let { ComponentKey.fromString(it) }
         if (iconComponentKey != null) {
             bindIconComponentKey(iconComponentKey)
         }
@@ -111,7 +111,7 @@ class SearchResultIcon(context: Context, attrs: AttributeSet?) : BubbleTextView(
         }
     }
 
-    private fun bindFromAction(target: SearchTargetCompat) {
+    private fun bindFromAction(target: SearchTargetCompat, bindIcon: Boolean) {
         val action = target.searchAction ?: return
         val info = SearchActionItemInfo(
             action.icon,
@@ -144,9 +144,11 @@ class SearchResultIcon(context: Context, attrs: AttributeSet?) : BubbleTextView(
             }
         }
         notifyApplied(info)
-        MODEL_EXECUTOR.handler.postAtFrontOfQueue {
-            populateSearchActionItemInfo(target, info)
-            runOnMainThread { applyFromSearchActionItemInfo(info) }
+        if (bindIcon) {
+            MODEL_EXECUTOR.handler.postAtFrontOfQueue {
+                populateSearchActionItemInfo(target, info)
+                runOnMainThread { applyFromSearchActionItemInfo(info) }
+            }
         }
     }
 
