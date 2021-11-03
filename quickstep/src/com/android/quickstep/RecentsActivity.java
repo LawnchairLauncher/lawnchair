@@ -245,7 +245,7 @@ public final class RecentsActivity extends StatefulActivity<RecentsState> {
         RemoteAnimationAdapterCompat adapterCompat = new RemoteAnimationAdapterCompat(
                 wrapper, RECENTS_LAUNCH_DURATION,
                 RECENTS_LAUNCH_DURATION - STATUS_BAR_TRANSITION_DURATION
-                        - STATUS_BAR_TRANSITION_PRE_DELAY);
+                        - STATUS_BAR_TRANSITION_PRE_DELAY, getIApplicationThread());
         final ActivityOptionsWrapper activityOptions = new ActivityOptionsWrapper(
                 ActivityOptionsCompat.makeRemoteAnimation(adapterCompat),
                 onEndCallback);
@@ -394,7 +394,8 @@ public final class RecentsActivity extends StatefulActivity<RecentsState> {
         LauncherAnimationRunner runner = new LauncherAnimationRunner(
                 getMainThreadHandler(), mAnimationToHomeFactory, true);
         RemoteAnimationAdapterCompat adapterCompat =
-                new RemoteAnimationAdapterCompat(runner, HOME_APPEAR_DURATION, 0);
+                new RemoteAnimationAdapterCompat(runner, HOME_APPEAR_DURATION, 0,
+                        getIApplicationThread());
         startActivity(createHomeIntent(),
                 ActivityOptionsCompat.makeRemoteAnimation(adapterCompat).toBundle());
     }
