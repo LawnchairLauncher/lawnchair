@@ -7,7 +7,7 @@ import android.view.View
 import android.widget.EdgeEffect
 import androidx.recyclerview.widget.RecyclerView
 import com.android.launcher3.Utilities
-import com.android.launcher3.allapps.AllAppsPagedView
+import com.android.launcher3.workprofile.PersonalWorkPagedView
 
 open class StretchRecyclerViewContainer @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
@@ -16,7 +16,7 @@ open class StretchRecyclerViewContainer @JvmOverloads constructor(
     private val childEffect = StretchEdgeEffect(context, { invalidate() }, { postInvalidateOnAnimation() })
 
     override fun drawChild(canvas: Canvas, child: View, drawingTime: Long): Boolean {
-        if (Utilities.ATLEAST_S || (child !is RecyclerView && child !is AllAppsPagedView)) {
+        if (Utilities.ATLEAST_S || (child !is RecyclerView && child !is PersonalWorkPagedView)) {
             return super.drawChild(canvas, child, drawingTime)
         }
 
