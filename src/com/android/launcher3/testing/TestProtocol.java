@@ -25,6 +25,7 @@ public final class TestProtocol {
     public static final String SCROLL_FINISHED_MESSAGE = "TAPL_SCROLL_FINISHED";
     public static final String PAUSE_DETECTED_MESSAGE = "TAPL_PAUSE_DETECTED";
     public static final String DISMISS_ANIMATION_ENDS_MESSAGE = "TAPL_DISMISS_ANIMATION_ENDS";
+    public static final String FOLDER_OPENED_MESSAGE = "TAPL_FOLDER_OPENED";
     public static final int NORMAL_STATE_ORDINAL = 0;
     public static final int SPRING_LOADED_STATE_ORDINAL = 1;
     public static final int OVERVIEW_STATE_ORDINAL = 2;
@@ -99,6 +100,7 @@ public final class TestProtocol {
     public static final String REQUEST_CLEAR_DATA = "clear-data";
     public static final String REQUEST_IS_TABLET = "is-tablet";
     public static final String REQUEST_IS_TWO_PANELS = "is-two-panel";
+    public static final String REQUEST_START_DRAG_THRESHOLD = "start-drag-threshold";
     public static final String REQUEST_GET_ACTIVITIES_CREATED_COUNT =
             "get-activities-created-count";
     public static final String REQUEST_GET_ACTIVITIES = "get-activities";
@@ -122,4 +124,5 @@ public final class TestProtocol {
     public static final String TASK_VIEW_ID_CRASH = "b/195430732";
     public static final String NO_DROP_TARGET = "b/195031154";
     public static final String NULL_INT_SET = "b/200572078";
+    public static final String NO_SCREENSHOT = "b/202414125";
 }

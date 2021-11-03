@@ -21,6 +21,7 @@ import static android.content.pm.PackageManager.DONT_KILL_APP;
 import static android.content.pm.PackageManager.MATCH_ALL;
 import static android.content.pm.PackageManager.MATCH_DISABLED_COMPONENTS;
 
+import static com.android.launcher3.tapl.Folder.FOLDER_CONTENT_RES_ID;
 import static com.android.launcher3.tapl.TestHelpers.getOverviewPackageName;
 import static com.android.launcher3.testing.TestProtocol.NORMAL_STATE_ORDINAL;
 
@@ -75,11 +76,13 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.function.Consumer;
@@ -108,6 +111,9 @@ public final class LauncherInstrumentation {
     static final Pattern EVENT_TOUCH_DOWN_TIS = getTouchEventPatternTIS("ACTION_DOWN");
     static final Pattern EVENT_TOUCH_UP_TIS = getTouchEventPatternTIS("ACTION_UP");
 
+    static final Pattern EVENT_KEY_BACK_DOWN = getKeyEventPattern("ACTION_DOWN", "KEYCODE_BACK");
+    static final Pattern EVENT_KEY_BACK_UP = getKeyEventPattern("ACTION_UP", "KEYCODE_BACK");
+
     private final String mLauncherPackage;
     private Boolean mIsLauncher3;
     private long mTestStartTime = -1;
@@ -123,7 +129,8 @@ public final class LauncherInstrumentation {
     // Where the gesture happens: outside of Launcher, inside or from inside to outside and
     // whether the gesture recognition triggers pilfer.
     public enum GestureScope {
-        OUTSIDE_WITHOUT_PILFER, OUTSIDE_WITH_PILFER, INSIDE, INSIDE_TO_OUTSIDE
+        OUTSIDE_WITHOUT_PILFER, OUTSIDE_WITH_PILFER, INSIDE, INSIDE_TO_OUTSIDE,
+        INSIDE_TO_OUTSIDE_WITHOUT_PILFER,
     }
 
     // Base class for launcher containers.
@@ -191,6 +198,10 @@ public final class LauncherInstrumentation {
 
     private static Pattern getTouchEventPatternTIS(String action) {
         return getTouchEventPattern("TouchInteractionService.onInputEvent", action);
+    }
+
+    private static Pattern getKeyEventPattern(String action, String keyCode) {
+        return Pattern.compile("Key event: KeyEvent.*action=" + action + ".*keyCode=" + keyCode);
     }
 
     /**
@@ -768,6 +779,47 @@ public final class LauncherInstrumentation {
     }
 
     /**
+     * Get the resource ID of visible floating view.
+     */
+    private Optional<String> getFloatingResId() {
+        if (hasLauncherObject(CONTEXT_MENU_RES_ID)) {
+            return Optional.of(CONTEXT_MENU_RES_ID);
+        }
+        if (hasLauncherObject(FOLDER_CONTENT_RES_ID)) {
+            return Optional.of(FOLDER_CONTENT_RES_ID);
+        }
+        return Optional.empty();
+    }
+
+    /**
+     * Using swiping up gesture to dismiss closable floating views, such as Menu or Folder Content.
+     */
+    private void swipeUpToCloseFloatingView(boolean gestureStartFromLauncher) {
+        final Point displaySize = getRealDisplaySize();
+
+        final Optional<String> floatingRes = getFloatingResId();
+
+        if (!floatingRes.isPresent()) {
+            return;
+        }
+
+        GestureScope gestureScope = gestureStartFromLauncher
+                ? (isTablet() ? GestureScope.INSIDE : GestureScope.INSIDE_TO_OUTSIDE)
+                : GestureScope.OUTSIDE_WITH_PILFER;
+        linearGesture(
+                displaySize.x / 2, displaySize.y - 1,
+                displaySize.x / 2, 0,
+                ZERO_BUTTON_STEPS_FROM_BACKGROUND_TO_HOME,
+                false, gestureScope);
+
+        try (LauncherInstrumentation.Closable c1 = addContextLayer(
+                String.format("Swiped up from floating view %s to home", floatingRes.get()))) {
+            waitUntilLauncherObjectGone(floatingRes.get());
+            waitForLauncherObject(getAnyObjectSelector());
+        }
+    }
+
+    /**
      * Presses nav bar home button.
      *
      * @return the Workspace object.
@@ -791,21 +843,9 @@ public final class LauncherInstrumentation {
                         ? !isLauncher3() || hasLauncherObject(WORKSPACE_RES_ID)
                         : isLauncherVisible();
 
-                if (hasLauncherObject(CONTEXT_MENU_RES_ID)) {
-                    GestureScope gestureScope = gestureStartFromLauncher
-                            ? (isTablet() ? GestureScope.INSIDE : GestureScope.INSIDE_TO_OUTSIDE)
-                            : GestureScope.OUTSIDE_WITH_PILFER;
-                    linearGesture(
-                            displaySize.x / 2, displaySize.y - 1,
-                            displaySize.x / 2, 0,
-                            ZERO_BUTTON_STEPS_FROM_BACKGROUND_TO_HOME,
-                            false, gestureScope);
-                    try (LauncherInstrumentation.Closable c1 = addContextLayer(
-                            "Swiped up from context menu to home")) {
-                        waitUntilLauncherObjectGone(CONTEXT_MENU_RES_ID);
-                        waitForLauncherObject(getAnyObjectSelector());
-                    }
-                }
+                // CLose floating views before going back to home.
+                swipeUpToCloseFloatingView(gestureStartFromLauncher);
+
                 if (hasLauncherObject(WORKSPACE_RES_ID)) {
                     log(action = "already at home");
                 } else {
@@ -848,6 +888,38 @@ public final class LauncherInstrumentation {
         }
     }
 
+    /**
+     * Press navbar back button or swipe back if in gesture navigation mode.
+     */
+    public void pressBack() {
+        try (Closable e = eventsCheck(); Closable c = addContextLayer("want to press back")) {
+            waitForLauncherInitialized();
+            final boolean launcherVisible =
+                    isTablet() ? isLauncherContainerVisible() : isLauncherVisible();
+            if (getNavigationModel() == NavigationModel.ZERO_BUTTON) {
+                final Point displaySize = getRealDisplaySize();
+                final GestureScope gestureScope =
+                        launcherVisible ? GestureScope.INSIDE_TO_OUTSIDE_WITHOUT_PILFER
+                                : GestureScope.OUTSIDE_WITHOUT_PILFER;
+                linearGesture(0, displaySize.y / 2, displaySize.x / 2, displaySize.y / 2,
+                        10, false, gestureScope);
+            } else {
+                waitForNavigationUiObject("back").click();
+                if (isTablet()) {
+                    expectEvent(TestProtocol.SEQUENCE_MAIN, EVENT_TOUCH_DOWN);
+                    expectEvent(TestProtocol.SEQUENCE_MAIN, EVENT_TOUCH_UP);
+                } else if (!isLauncher3() && getNavigationModel() == NavigationModel.TWO_BUTTON) {
+                    expectEvent(TestProtocol.SEQUENCE_TIS, EVENT_TOUCH_DOWN_TIS);
+                    expectEvent(TestProtocol.SEQUENCE_TIS, EVENT_TOUCH_UP_TIS);
+                }
+            }
+            if (launcherVisible) {
+                expectEvent(TestProtocol.SEQUENCE_MAIN, EVENT_KEY_BACK_DOWN);
+                expectEvent(TestProtocol.SEQUENCE_MAIN, EVENT_KEY_BACK_UP);
+            }
+        }
+    }
+
     private static BySelector getAnyObjectSelector() {
         return By.textStartsWith("");
     }
@@ -855,6 +927,11 @@ public final class LauncherInstrumentation {
     boolean isLauncherVisible() {
         mDevice.waitForIdle();
         return hasLauncherObject(getAnyObjectSelector());
+    }
+
+    boolean isLauncherContainerVisible() {
+        final String[] containerResources = {WORKSPACE_RES_ID, OVERVIEW_RES_ID, APPS_RES_ID};
+        return Arrays.stream(containerResources).anyMatch(r -> hasLauncherObject(r));
     }
 
     /**
@@ -1383,6 +1460,7 @@ public final class LauncherInstrumentation {
                 break;
             case MotionEvent.ACTION_UP:
                 if (notLauncher3 && gestureScope != GestureScope.INSIDE
+                        && gestureScope != GestureScope.INSIDE_TO_OUTSIDE_WITHOUT_PILFER
                         && (gestureScope == GestureScope.OUTSIDE_WITH_PILFER
                         || gestureScope == GestureScope.INSIDE_TO_OUTSIDE)) {
                     expectEvent(TestProtocol.SEQUENCE_PILFER, EVENT_PILFER_POINTERS);
