@@ -78,7 +78,7 @@ class LawnchairSearchAdapterProvider(
 
         @JvmStatic
         fun setFirstItemQuickLaunch(items: List<SearchAdapterItem>) {
-            val hasQuickLaunch = items.any { it.searchTarget.extras.containsKey(EXTRA_QUICK_LAUNCH) }
+            val hasQuickLaunch = items.any { it.searchTarget.extras.getBoolean(EXTRA_QUICK_LAUNCH, false) }
             if (!hasQuickLaunch) {
                 items.firstOrNull()?.searchTarget?.extras?.apply {
                     putBoolean(EXTRA_QUICK_LAUNCH, true)
