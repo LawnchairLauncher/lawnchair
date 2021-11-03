@@ -76,6 +76,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Deque;
@@ -110,6 +111,9 @@ public final class LauncherInstrumentation {
     static final Pattern EVENT_TOUCH_DOWN_TIS = getTouchEventPatternTIS("ACTION_DOWN");
     static final Pattern EVENT_TOUCH_UP_TIS = getTouchEventPatternTIS("ACTION_UP");
 
+    static final Pattern EVENT_KEY_BACK_DOWN = getKeyEventPattern("ACTION_DOWN", "KEYCODE_BACK");
+    static final Pattern EVENT_KEY_BACK_UP = getKeyEventPattern("ACTION_UP", "KEYCODE_BACK");
+
     private final String mLauncherPackage;
     private Boolean mIsLauncher3;
     private long mTestStartTime = -1;
@@ -125,7 +129,8 @@ public final class LauncherInstrumentation {
     // Where the gesture happens: outside of Launcher, inside or from inside to outside and
     // whether the gesture recognition triggers pilfer.
     public enum GestureScope {
-        OUTSIDE_WITHOUT_PILFER, OUTSIDE_WITH_PILFER, INSIDE, INSIDE_TO_OUTSIDE
+        OUTSIDE_WITHOUT_PILFER, OUTSIDE_WITH_PILFER, INSIDE, INSIDE_TO_OUTSIDE,
+        INSIDE_TO_OUTSIDE_WITHOUT_PILFER,
     }
 
     // Base class for launcher containers.
@@ -193,6 +198,10 @@ public final class LauncherInstrumentation {
 
     private static Pattern getTouchEventPatternTIS(String action) {
         return getTouchEventPattern("TouchInteractionService.onInputEvent", action);
+    }
+
+    private static Pattern getKeyEventPattern(String action, String keyCode) {
+        return Pattern.compile("Key event: KeyEvent.*action=" + action + ".*keyCode=" + keyCode);
     }
 
     /**
@@ -879,6 +888,38 @@ public final class LauncherInstrumentation {
         }
     }
 
+    /**
+     * Press navbar back button or swipe back if in gesture navigation mode.
+     */
+    public void pressBack() {
+        try (Closable e = eventsCheck(); Closable c = addContextLayer("want to press back")) {
+            waitForLauncherInitialized();
+            final boolean launcherVisible =
+                    isTablet() ? isLauncherContainerVisible() : isLauncherVisible();
+            if (getNavigationModel() == NavigationModel.ZERO_BUTTON) {
+                final Point displaySize = getRealDisplaySize();
+                final GestureScope gestureScope =
+                        launcherVisible ? GestureScope.INSIDE_TO_OUTSIDE_WITHOUT_PILFER
+                                : GestureScope.OUTSIDE_WITHOUT_PILFER;
+                linearGesture(0, displaySize.y / 2, displaySize.x / 2, displaySize.y / 2,
+                        10, false, gestureScope);
+            } else {
+                waitForNavigationUiObject("back").click();
+                if (isTablet()) {
+                    expectEvent(TestProtocol.SEQUENCE_MAIN, EVENT_TOUCH_DOWN);
+                    expectEvent(TestProtocol.SEQUENCE_MAIN, EVENT_TOUCH_UP);
+                } else if (!isLauncher3() && getNavigationModel() == NavigationModel.TWO_BUTTON) {
+                    expectEvent(TestProtocol.SEQUENCE_TIS, EVENT_TOUCH_DOWN_TIS);
+                    expectEvent(TestProtocol.SEQUENCE_TIS, EVENT_TOUCH_UP_TIS);
+                }
+            }
+            if (launcherVisible) {
+                expectEvent(TestProtocol.SEQUENCE_MAIN, EVENT_KEY_BACK_DOWN);
+                expectEvent(TestProtocol.SEQUENCE_MAIN, EVENT_KEY_BACK_UP);
+            }
+        }
+    }
+
     private static BySelector getAnyObjectSelector() {
         return By.textStartsWith("");
     }
@@ -886,6 +927,11 @@ public final class LauncherInstrumentation {
     boolean isLauncherVisible() {
         mDevice.waitForIdle();
         return hasLauncherObject(getAnyObjectSelector());
+    }
+
+    boolean isLauncherContainerVisible() {
+        final String[] containerResources = {WORKSPACE_RES_ID, OVERVIEW_RES_ID, APPS_RES_ID};
+        return Arrays.stream(containerResources).anyMatch(r -> hasLauncherObject(r));
     }
 
     /**
@@ -1414,6 +1460,7 @@ public final class LauncherInstrumentation {
                 break;
             case MotionEvent.ACTION_UP:
                 if (notLauncher3 && gestureScope != GestureScope.INSIDE
+                        && gestureScope != GestureScope.INSIDE_TO_OUTSIDE_WITHOUT_PILFER
                         && (gestureScope == GestureScope.OUTSIDE_WITH_PILFER
                         || gestureScope == GestureScope.INSIDE_TO_OUTSIDE)) {
                     expectEvent(TestProtocol.SEQUENCE_PILFER, EVENT_PILFER_POINTERS);
