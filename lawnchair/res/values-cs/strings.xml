@@ -177,4 +177,5 @@
     <string name="search_pref_result_shortcuts_desc">Zobrazit zkratky pro aplikace a lidi</string>
     <string name="search_pref_result_shortcuts_title">Zkratky</string>
     <string name="search_pref_result_tips_title">Tipy Pixel</string>
+    <string name="row_height_label">Výška řádku</string>
 </resources>
