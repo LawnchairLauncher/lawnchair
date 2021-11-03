@@ -175,5 +175,5 @@
     <string name="search_pref_result_shortcuts_desc">Parancsikonok mutatása alkalmazásokhoz és emberekhez</string>
     <string name="search_pref_result_shortcuts_title">Parancsikonok</string>
     <string name="search_pref_result_tips_title">Pixel tippek</string>
-    <string name="row_height_label">Row Height</string>
+    <string name="row_height_label">Sor magasság</string>
 </resources>
