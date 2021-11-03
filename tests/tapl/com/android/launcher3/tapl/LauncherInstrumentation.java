@@ -21,6 +21,7 @@ import static android.content.pm.PackageManager.DONT_KILL_APP;
 import static android.content.pm.PackageManager.MATCH_ALL;
 import static android.content.pm.PackageManager.MATCH_DISABLED_COMPONENTS;
 
+import static com.android.launcher3.tapl.Folder.FOLDER_CONTENT_RES_ID;
 import static com.android.launcher3.tapl.TestHelpers.getOverviewPackageName;
 import static com.android.launcher3.testing.TestProtocol.NORMAL_STATE_ORDINAL;
 
@@ -80,6 +81,7 @@ import java.util.Collections;
 import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.function.Consumer;
@@ -768,6 +770,47 @@ public final class LauncherInstrumentation {
     }
 
     /**
+     * Get the resource ID of visible floating view.
+     */
+    private Optional<String> getFloatingResId() {
+        if (hasLauncherObject(CONTEXT_MENU_RES_ID)) {
+            return Optional.of(CONTEXT_MENU_RES_ID);
+        }
+        if (hasLauncherObject(FOLDER_CONTENT_RES_ID)) {
+            return Optional.of(FOLDER_CONTENT_RES_ID);
+        }
+        return Optional.empty();
+    }
+
+    /**
+     * Using swiping up gesture to dismiss closable floating views, such as Menu or Folder Content.
+     */
+    private void swipeUpToCloseFloatingView(boolean gestureStartFromLauncher) {
+        final Point displaySize = getRealDisplaySize();
+
+        final Optional<String> floatingRes = getFloatingResId();
+
+        if (!floatingRes.isPresent()) {
+            return;
+        }
+
+        GestureScope gestureScope = gestureStartFromLauncher
+                ? (isTablet() ? GestureScope.INSIDE : GestureScope.INSIDE_TO_OUTSIDE)
+                : GestureScope.OUTSIDE_WITH_PILFER;
+        linearGesture(
+                displaySize.x / 2, displaySize.y - 1,
+                displaySize.x / 2, 0,
+                ZERO_BUTTON_STEPS_FROM_BACKGROUND_TO_HOME,
+                false, gestureScope);
+
+        try (LauncherInstrumentation.Closable c1 = addContextLayer(
+                String.format("Swiped up from floating view %s to home", floatingRes.get()))) {
+            waitUntilLauncherObjectGone(floatingRes.get());
+            waitForLauncherObject(getAnyObjectSelector());
+        }
+    }
+
+    /**
      * Presses nav bar home button.
      *
      * @return the Workspace object.
@@ -791,21 +834,9 @@ public final class LauncherInstrumentation {
                         ? !isLauncher3() || hasLauncherObject(WORKSPACE_RES_ID)
                         : isLauncherVisible();
 
-                if (hasLauncherObject(CONTEXT_MENU_RES_ID)) {
-                    GestureScope gestureScope = gestureStartFromLauncher
-                            ? (isTablet() ? GestureScope.INSIDE : GestureScope.INSIDE_TO_OUTSIDE)
-                            : GestureScope.OUTSIDE_WITH_PILFER;
-                    linearGesture(
-                            displaySize.x / 2, displaySize.y - 1,
-                            displaySize.x / 2, 0,
-                            ZERO_BUTTON_STEPS_FROM_BACKGROUND_TO_HOME,
-                            false, gestureScope);
-                    try (LauncherInstrumentation.Closable c1 = addContextLayer(
-                            "Swiped up from context menu to home")) {
-                        waitUntilLauncherObjectGone(CONTEXT_MENU_RES_ID);
-                        waitForLauncherObject(getAnyObjectSelector());
-                    }
-                }
+                // CLose floating views before going back to home.
+                swipeUpToCloseFloatingView(gestureStartFromLauncher);
+
                 if (hasLauncherObject(WORKSPACE_RES_ID)) {
                     log(action = "already at home");
                 } else {

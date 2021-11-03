@@ -34,6 +34,8 @@ import com.android.launcher3.tapl.AllApps;
 import com.android.launcher3.tapl.AppIcon;
 import com.android.launcher3.tapl.AppIconMenu;
 import com.android.launcher3.tapl.AppIconMenuItem;
+import com.android.launcher3.tapl.Folder;
+import com.android.launcher3.tapl.FolderIcon;
 import com.android.launcher3.tapl.Widgets;
 import com.android.launcher3.tapl.Workspace;
 import com.android.launcher3.views.OptionsPopupView;
@@ -367,6 +369,48 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
         } finally {
             allApps.unfreeze();
         }
+    }
+
+    private AppIcon createShortcutIfNotExist(String name) {
+        AppIcon appIcon = mLauncher.getWorkspace().tryGetWorkspaceAppIcon(name);
+        if (appIcon == null) {
+            AllApps allApps = mLauncher.getWorkspace().switchToAllApps();
+            allApps.freeze();
+            try {
+                appIcon = allApps.getAppIcon(name);
+                appIcon.dragToWorkspace(false, false);
+            } finally {
+                allApps.unfreeze();
+            }
+            appIcon = mLauncher.getWorkspace().getWorkspaceAppIcon(name);
+        }
+        return appIcon;
+    }
+
+    @Test
+    @PortraitLandscape
+    public void testDragToFolder() throws Exception {
+        final AppIcon playStoreIcon = createShortcutIfNotExist("Play Store");
+        final AppIcon gmailIcon = createShortcutIfNotExist("Gmail");
+
+        FolderIcon folderIcon = gmailIcon.dragToIcon(playStoreIcon);
+
+        Folder folder = folderIcon.open();
+        folder.getAppIcon("Play Store");
+        folder.getAppIcon("Gmail");
+        Workspace workspace = folder.close();
+
+        assertNull("Gmail should be moved to a folder.",
+                workspace.tryGetWorkspaceAppIcon("Gmail"));
+        assertNull("Play Store should be moved to a folder.",
+                workspace.tryGetWorkspaceAppIcon("Play Store"));
+
+        final AppIcon youTubeIcon = createShortcutIfNotExist("YouTube");
+
+        folderIcon = youTubeIcon.dragToIcon(folderIcon);
+        folder = folderIcon.open();
+        folder.getAppIcon("YouTube");
+        folder.close();
     }
 
     public static String getAppPackageName() {
