@@ -34,7 +34,7 @@
     <string name="dock_icons">Ikon Dock</string>
     <string name="max_folder_columns">Maksimal Kolom Folder</string>
     <string name="max_folder_rows">Maksimal Baris Folder</string>
-    <string name="home_screen_grid">Baris Tampilan Utama</string>
+    <string name="home_screen_grid">Kisi Layar Utama</string>
     <string name="columns">Kolom</string>
     <string name="grid">Kisi</string>
     <string name="rows">Baris</string>
@@ -152,7 +152,7 @@
     <string name="all_apps_search_market_message">Cari Aplikasi Lainnya</string>
     <string name="show_app_search_bar">Tampilkan Bilah Pencarian</string>
     <string name="lawnchair_bug_report">Laporan Bug Lawnchair</string>
-    <string name="crash_report_notif_title">%1$s berhenti bekerja</string>
+    <string name="crash_report_notif_title">%1$s telah terhenti</string>
     <string name="action_upload">Unggah ke Dogbin</string>
     <string name="action_copy_link">Salin Tautan</string>
     <string name="action_copy">Salin</string>
