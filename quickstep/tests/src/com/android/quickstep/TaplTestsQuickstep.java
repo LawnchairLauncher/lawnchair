@@ -44,6 +44,7 @@ import com.android.quickstep.views.RecentsView;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -292,6 +293,7 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
 
     // TODO(b/204830798): test with all navigation modes(add @NavigationModeSwitch annotation)
     //  after the bug resolved.
+    @Ignore("b/205027405")
     @Test
     @PortraitLandscape
     @ScreenRecord
