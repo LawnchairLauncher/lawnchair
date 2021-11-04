@@ -527,6 +527,18 @@ public final class Utilities {
     }
 
     /**
+     * Using the view's bounds and icon size, calculate where the icon bounds will
+     * be if it was positioned at the center of the view.
+     */
+    public static void setRectToViewCenter(View iconView, int iconSize, Rect outBounds) {
+        int top = (iconView.getHeight() - iconSize) / 2;
+        int left = (iconView.getWidth() - iconSize) / 2;
+        int right = left + iconSize;
+        int bottom = top + iconSize;
+        outBounds.set(left, top, right, bottom);
+    }
+
+    /**
      * Ensures that a value is within given bounds. Specifically:
      * If value is less than lowerBound, return lowerBound; else if value is greater than upperBound,
      * return upperBound; else return value unchanged.
