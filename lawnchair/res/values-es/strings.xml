@@ -41,7 +41,7 @@
     <string name="icons">Iconos</string>
     <string name="icon_size">Tamaño de Iconos</string>
     <string name="label_size">Tamaño de Etiqueta</string>
-    <string name="show_home_labels">Mostrar la etiqueta</string>
+    <string name="show_home_labels">Mostrar etiquetas</string>
     <string name="notification_dots">Puntos de Notificación</string>
     <string name="smartspace_preferences">Preferencias</string>
     <string name="about_label">Acerca de</string>
@@ -76,7 +76,7 @@
     </plurals>
     <string name="hotseat_qsb_label">Mostrar Barra de Búsqueda</string>
     <string name="dt2s_admin_hint_title">Permisos de administrador requeridos</string>
-    <string name="dt2s_admin_hint">Para usar el doble toque para apagar la pantalla, establece a Lawnchair como una app de administrador de dispositivos. Toca en \"Abrir Configuración\", luego en \"Activar esta app de administrador de dispositivos.\"</string>
+    <string name="dt2s_admin_hint">Para usar el doble toque para apagar la pantalla, establece Lawnchair como una app de administrador de dispositivos. Pulsa en \"Abrir Configuración\", luego en \"Activar esta app de administrador de dispositivos.\"</string>
     <string name="dt2s_admin_warning">Se desactivará el doble toque para dormir.</string>
     <string name="dt2s_a11y_hint_title">Activar el Servicio de Accesibilidad</string>
     <string name="dt2s_a11y_hint">Para usar el doble toque para apagar la pantalla, activa el servicio de accesibilidad de Lawnchair. Toca en \"Abrir Configuración\", luego selecciona \"Lawnchair\" y activa \"Usar Lawnchair\".</string>
@@ -176,4 +176,5 @@
     <string name="search_pref_result_shortcuts_title">Atajos</string>
     <string name="search_pref_result_tips_title">Consejos de píxel</string>
     <string name="row_height_label">Altura de fila</string>
+    <string name="all_apps_device_search_hint">Buscar</string>
 </resources>
