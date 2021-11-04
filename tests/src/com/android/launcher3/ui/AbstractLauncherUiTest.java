@@ -346,11 +346,17 @@ public abstract class AbstractLauncherUiTest {
     }
 
     // Cannot be used in TaplTests between a Tapl call injecting a gesture and a tapl call
-    // expecting
-    // the results of that gesture because the wait can hide flakeness.
+    // expecting the results of that gesture because the wait can hide flakeness.
     protected void waitForState(String message, Supplier<LauncherState> state) {
         waitForLauncherCondition(message,
                 launcher -> launcher.getStateManager().getCurrentStableState() == state.get());
+    }
+
+    // Cannot be used in TaplTests between a Tapl call injecting a gesture and a tapl call
+    // expecting the results of that gesture because the wait can hide flakeness.
+    protected void waitForStableState(String message, Supplier<LauncherState> state) {
+        waitForLauncherCondition(message,
+                launcher -> launcher.getStateManager().isInStableState(state.get()));
     }
 
     protected void waitForResumed(String message) {
