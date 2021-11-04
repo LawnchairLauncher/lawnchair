@@ -144,11 +144,11 @@
     <string name="icon_shape_rounded_square">مربع ذو زوايا دائرية</string>
     <string name="icon_shape_squircle">Squircle</string>
     <string name="customize_button_text">تخصيص</string>
-    <string name="app_title_label">Title</string>
-    <string name="hide_from_drawer">Hide from App Drawer</string>
-    <string name="action_lens">Lens</string>
+    <string name="app_title_label">عنوان</string>
+    <string name="hide_from_drawer">إخفاء من قائمة التطبيقات</string>
+    <string name="action_lens">عدسة</string>
     <string name="force_rounded_widgets">زوايا دائرية</string>
-    <string name="suggestion_pref_screen_title">Suggestions</string>
+    <string name="suggestion_pref_screen_title">اقتراحات</string>
     <string name="n_percent">%1$d%%</string>
     <string name="label">Label</string>
     <string name="presets">Presets</string>
@@ -167,8 +167,8 @@
     <string name="dogbin_uploading">جارٍ التحميل…</string>
     <string name="bugreport_channel_name">تقارير الأخطاء</string>
     <string name="status_channel_name">حالة التحميل</string>
-    <string name="bugreport_group_summary">%d new reports.</string>
-    <string name="bugreport_group_summary_multiple">Multiple new reports.</string>
+    <string name="bugreport_group_summary">%d تقارير جديدة.</string>
+    <string name="bugreport_group_summary_multiple">تقارير جديدة متعددة.</string>
     <string name="themed_icon_title">أيقونات تستمد خصائصها و لونها من الثيم</string>
     <string name="corner_radius_label">نصف قطر الزاوية</string>
     <string name="search_bar_label">شريط البحث</string>
