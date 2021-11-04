@@ -97,6 +97,11 @@ fun ColorPreference(
                 }
                 HorizontalPager(
                     count = 2,
+                    modifier = Modifier
+                        .pagerHeight(
+                            dynamicCount = dynamicEntries.size,
+                            staticCount = staticEntries.size
+                        ),
                     state = pagerState,
                     verticalAlignment = Alignment.Top
                 ) { page ->
