@@ -178,4 +178,5 @@
     <string name="search_pref_result_shortcuts_title">Shortcuts</string>
     <string name="search_pref_result_tips_title">Pixel Tips</string>
     <string name="row_height_label">Row Height</string>
+    <string name="all_apps_device_search_hint">Search</string>
 </resources>
