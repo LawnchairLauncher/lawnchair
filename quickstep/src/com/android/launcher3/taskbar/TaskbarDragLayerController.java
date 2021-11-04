@@ -52,6 +52,9 @@ public class TaskbarDragLayerController {
 
     // Initialized in init.
     private TaskbarControllers mControllers;
+    private AnimatedFloat mNavButtonDarkIntensityMultiplier;
+
+    private float mLastSetBackgroundAlpha;
 
     public TaskbarDragLayerController(TaskbarActivityContext activity,
             TaskbarDragLayer taskbarDragLayer) {
@@ -64,6 +67,9 @@ public class TaskbarDragLayerController {
     public void init(TaskbarControllers controllers) {
         mControllers = controllers;
         mTaskbarDragLayer.init(new TaskbarDragLayerCallbacks());
+
+        mNavButtonDarkIntensityMultiplier = mControllers.navbarButtonsViewController
+                .getNavButtonDarkIntensityMultiplier();
 
         mBgTaskbar.value = 1;
         mKeyguardBgTaskbar.value = 1;
@@ -114,13 +120,22 @@ public class TaskbarDragLayerController {
         final float bgNavbar = mBgNavbar.value;
         final float bgTaskbar = mBgTaskbar.value * mKeyguardBgTaskbar.value
                 * mNotificationShadeBgTaskbar.value;
-        mTaskbarDragLayer.setTaskbarBackgroundAlpha(
-                mBgOverride.value * Math.max(bgNavbar, bgTaskbar)
-        );
+        mLastSetBackgroundAlpha = mBgOverride.value * Math.max(bgNavbar, bgTaskbar);
+        mTaskbarDragLayer.setTaskbarBackgroundAlpha(mLastSetBackgroundAlpha);
+
+        updateNavBarDarkIntensityMultiplier();
     }
 
     private void updateBackgroundOffset() {
         mTaskbarDragLayer.setTaskbarBackgroundOffset(mBgOffset.value);
+
+        updateNavBarDarkIntensityMultiplier();
+    }
+
+    private void updateNavBarDarkIntensityMultiplier() {
+        // Zero out the app-requested dark intensity when we're drawing our own background.
+        float effectiveBgAlpha = mLastSetBackgroundAlpha * (1 - mBgOffset.value);
+        mNavButtonDarkIntensityMultiplier.updateValue(1 - effectiveBgAlpha);
     }
 
     /**
