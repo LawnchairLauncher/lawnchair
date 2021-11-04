@@ -68,8 +68,6 @@ fun ColorPreference(
         val scope = rememberCoroutineScope()
         val scrollToPage = { page: Int -> scope.launch { pagerState.animateScrollToPage(page) } }
         AlertBottomSheetContent(
-            modifier = Modifier
-                .verticalScroll(rememberScrollState()),
             title = { Text(text = label) },
             buttons = {
                 Button(

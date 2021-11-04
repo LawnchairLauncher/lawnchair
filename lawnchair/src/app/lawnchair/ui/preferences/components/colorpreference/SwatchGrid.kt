@@ -40,12 +40,17 @@ fun <T> SwatchGrid(
 
             Row {
                 entries.slice(indices).forEachIndexed { index, colorOption ->
-                    ColorSwatch(
-                        entry = colorOption,
-                        onClick = { onSwatchClick(colorOption.value) },
-                        modifier = Modifier.weight(1F),
-                        selected = isSwatchSelected(colorOption.value)
-                    )
+                    Box(
+                        modifier = Modifier.weight(1f),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        ColorSwatch(
+                            entry = colorOption,
+                            onClick = { onSwatchClick(colorOption.value) },
+                            modifier = Modifier.widthIn(0.dp, 56.dp),
+                            selected = isSwatchSelected(colorOption.value)
+                        )
+                    }
                     if (index != columnCount - 1) {
                         Spacer(modifier = Modifier.width(gutter))
                     }
