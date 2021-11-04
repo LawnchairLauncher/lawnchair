@@ -16,6 +16,7 @@
 
 package com.android.launcher3.provider;
 
+import static com.android.launcher3.model.DeviceGridState.TYPE_MULTI_DISPLAY;
 import static com.android.launcher3.model.DeviceGridState.TYPE_PHONE;
 import static com.android.launcher3.provider.LauncherDbUtils.dropTable;
 
@@ -96,7 +97,7 @@ public class RestoreDbTask {
         try (SQLiteTransaction t = new SQLiteTransaction(db)) {
             RestoreDbTask task = new RestoreDbTask();
             task.backupWorkspace(context, db);
-            task.sanitizeDB(helper, db, new BackupManager(context));
+            task.sanitizeDB(context, helper, db, new BackupManager(context));
             task.restoreAppWidgetIdsIfExists(context);
             t.commit();
             return true;
@@ -139,7 +140,7 @@ public class RestoreDbTask {
         GridBackupTable backupTable = new GridBackupTable(context, db, idp.numDatabaseHotseatIcons,
                 idp.numColumns, idp.numRows);
         if (backupTable.restoreFromRawBackupIfAvailable(getDefaultProfileId(db))) {
-            int itemsDeleted = sanitizeDB(helper, db, backupManager);
+            int itemsDeleted = sanitizeDB(context, helper, db, backupManager);
             LauncherAppState.getInstance(context).getModel().forceReload();
             restoreAppWidgetIdsIfExists(context);
             if (itemsDeleted == 0) {
@@ -156,11 +157,12 @@ public class RestoreDbTask {
      *      the restored apps get installed.
      *   3. If the user serial for any restored profile is different than that of the previous
      *      device, update the entries to the new profile id.
+     *   4. If restored from a single display backup, remove gaps between screenIds
      *
      * @return number of items deleted.
      */
-    private int sanitizeDB(DatabaseHelper helper, SQLiteDatabase db, BackupManager backupManager)
-            throws Exception {
+    private int sanitizeDB(Context context, DatabaseHelper helper, SQLiteDatabase db,
+            BackupManager backupManager) throws Exception {
         // Primary user ids
         long myProfileId = helper.getDefaultUserSerial();
         long oldProfileId = getDefaultProfileId(db);
@@ -236,7 +238,40 @@ public class RestoreDbTask {
         if (myProfileId != oldProfileId) {
             changeDefaultColumn(db, myProfileId);
         }
+
+        // If restored from a single display backup, remove gaps between screenIds
+        if (Utilities.getPrefs(context).getInt(RESTORED_DEVICE_TYPE, TYPE_PHONE)
+                != TYPE_MULTI_DISPLAY) {
+            removeScreenIdGaps(db);
+        }
+
         return itemsDeleted;
+    }
+
+    /**
+     * Remove gaps between screenIds to make sure no empty pages are left in between.
+     *
+     * e.g. [0, 3, 4, 6, 7] -> [0, 1, 2, 3, 4]
+     */
+    protected void removeScreenIdGaps(SQLiteDatabase db) {
+        FileLog.d(TAG, "Removing gaps between screenIds");
+        IntArray distinctScreens = LauncherDbUtils.queryIntArray(true, db, Favorites.TABLE_NAME,
+                Favorites.SCREEN, Favorites.CONTAINER + " = " + Favorites.CONTAINER_DESKTOP, null,
+                Favorites.SCREEN);
+        if (distinctScreens.isEmpty()) {
+            return;
+        }
+
+        StringBuilder sql = new StringBuilder("UPDATE ").append(Favorites.TABLE_NAME)
+                .append(" SET ").append(Favorites.SCREEN).append(" =\nCASE\n");
+        int screenId = distinctScreens.contains(0) ? 0 : 1;
+        for (int i = 0; i < distinctScreens.size(); i++) {
+            sql.append("WHEN ").append(Favorites.SCREEN).append(" == ")
+                    .append(distinctScreens.get(i)).append(" THEN ").append(screenId++).append("\n");
+        }
+        sql.append("ELSE screen\nEND WHERE ").append(Favorites.CONTAINER).append(" = ")
+                .append(Favorites.CONTAINER_DESKTOP).append(";");
+        db.execSQL(sql.toString());
     }
 
     /**

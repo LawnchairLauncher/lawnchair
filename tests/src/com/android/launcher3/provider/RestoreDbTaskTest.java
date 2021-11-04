@@ -15,6 +15,7 @@
  */
 package com.android.launcher3.provider;
 
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 
 import android.content.ContentValues;
@@ -85,6 +86,56 @@ public class RestoreDbTaskTest {
         values.put(Favorites.TITLE, "item 100");
         db.insert(Favorites.TABLE_NAME, null, values);
         assertEquals(1, getCount(db, "select * from favorites where profileId = 33"));
+    }
+
+    @Test
+    public void testRemoveScreenIdGaps_firstScreenEmpty() {
+        runRemoveScreenIdGapsTest(
+                new int[]{1, 2, 5, 6, 6, 7, 9, 9},
+                new int[]{1, 2, 3, 4, 4, 5, 6, 6});
+    }
+
+    @Test
+    public void testRemoveScreenIdGaps_firstScreenOccupied() {
+        runRemoveScreenIdGapsTest(
+                new int[]{0, 2, 5, 6, 6, 7, 9, 9},
+                new int[]{0, 1, 2, 3, 3, 4, 5, 5});
+    }
+
+    @Test
+    public void testRemoveScreenIdGaps_noGap() {
+        runRemoveScreenIdGapsTest(
+                new int[]{0, 1, 1, 2, 3, 3, 4, 5},
+                new int[]{0, 1, 1, 2, 3, 3, 4, 5});
+    }
+
+    private void runRemoveScreenIdGapsTest(int[] screenIds, int[] expectedScreenIds) {
+        SQLiteDatabase db = new MyDatabaseHelper(42).getWritableDatabase();
+        // Add some mock data
+        for (int i = 0; i < screenIds.length; i++) {
+            ContentValues values = new ContentValues();
+            values.put(Favorites._ID, i);
+            values.put(Favorites.SCREEN, screenIds[i]);
+            values.put(Favorites.CONTAINER, Favorites.CONTAINER_DESKTOP);
+            db.insert(Favorites.TABLE_NAME, null, values);
+        }
+        // Verify items are added
+        assertEquals(screenIds.length,
+                getCount(db, "select * from favorites where container = -100"));
+
+        new RestoreDbTask().removeScreenIdGaps(db);
+
+        // verify screenId gaps removed
+        int[] resultScreenIds = new int[screenIds.length];
+        try (Cursor c = db.rawQuery(
+                "select screen from favorites where container = -100 order by screen", null)) {
+            int i = 0;
+            while (c.moveToNext()) {
+                resultScreenIds[i++] = c.getInt(0);
+            }
+        }
+
+        assertArrayEquals(expectedScreenIds, resultScreenIds);
     }
 
     private int getCount(SQLiteDatabase db, String sql) {
