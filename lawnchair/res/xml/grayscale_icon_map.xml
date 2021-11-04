@@ -52,4 +52,9 @@
     <icon drawable="@drawable/themed_icon_tasks" package="com.google.android.apps.tasks" />
     <icon drawable="@drawable/themed_icon_pixeltips" package="com.google.android.apps.tips" />
     <icon drawable="@drawable/themed_icon_wear_os" package="com.google.android.wearable.app" />
+    
+    <!-- AOSP/OEM variants -->
+    <icon drawable="@drawable/themed_icon_contacts" package="com.android.contacts" />
+    <icon drawable="@drawable/themed_icon_dialer" package="com.android.incallui" />
+    <icon drawable="@drawable/themed_icon_messages" package="com.android.mms" />
 </icons>
