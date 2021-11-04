@@ -39,4 +39,8 @@
     <string name="wellbeing_provider_pkg" translatable="false"/>
 
     <integer name="max_depth_blur_radius">23</integer>
+
+    <!-- Accessibility actions -->
+    <item type="id" name="action_move_to_top_or_left" />
+    <item type="id" name="action_move_to_bottom_or_right" />
 </resources>

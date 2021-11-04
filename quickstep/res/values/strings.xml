@@ -233,4 +233,9 @@
     <string name="taskbar_edu_close">Close</string>
     <!-- Text on button to finish a tutorial [CHAR_LIMIT=16] -->
     <string name="taskbar_edu_done">Done</string>
+
+    <!-- Label for moving drop target to the top or left side of the screen, depending on orientation (from the taskbar only). -->
+    <string name="move_drop_target_top_or_left">Move to top&#47;left</string>
+    <!-- Label for moving drop target to the bottom or right side of the screen, depending on orientation (from the taskbar only). -->
+    <string name="move_drop_target_bottom_or_right">Move to bottom&#47;right</string>
 </resources>
