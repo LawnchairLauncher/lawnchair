@@ -62,7 +62,11 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) : LinearLayout(
 
         input = ViewCompat.requireViewById(this, R.id.input)
         with(input) {
-            setHint(R.string.all_apps_search_bar_hint)
+            if (LawnchairSearchAlgorithm.isDeviceSearchEnabled(context)) {
+                setHint(R.string.all_apps_device_search_hint)
+            } else {
+                setHint(R.string.all_apps_search_bar_hint)
+            }
             addTextChangedListener {
                 actionButton.isVisible = !it.isNullOrEmpty()
             }
