@@ -1094,7 +1094,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             for (int i = 0; i < taskCount; i++) {
                 View v = getTaskViewAt(i);
                 if (!(v instanceof GroupedTaskView)) {
-                    continue;
+                    return;
                 }
                 GroupedTaskView gtv = (GroupedTaskView) v;
                 gtv.onTaskListVisibilityChanged(false);
@@ -1911,8 +1911,10 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             }
         }
         setEnableDrawingLiveTile(false);
-        runActionOnRemoteHandles(remoteTargetHandle -> remoteTargetHandle.getTransformParams()
-                .setTargetSet(null));
+        runActionOnRemoteHandles(remoteTargetHandle -> {
+            remoteTargetHandle.getTransformParams().setTargetSet(null);
+            remoteTargetHandle.getTaskViewSimulator().setDrawsBelowRecents(true);
+        });
 
         // These are relatively expensive and don't need to be done this frame (RecentsView isn't
         // visible anyway), so defer by a frame to get off the critical path, e.g. app to home.
@@ -4368,12 +4370,13 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             TaskViewSimulator tvs = remoteTargetHandle.getTaskViewSimulator();
             tvs.setOrientationState(mOrientationState);
             tvs.setDp(mActivity.getDeviceProfile());
+            tvs.setDrawsBelowRecents(true);
             tvs.recentsViewScale.value = 1;
         }
     }
 
     /** Helper to avoid writing some for-loops to iterate over {@link #mRemoteTargetHandles} */
-    private void runActionOnRemoteHandles(Consumer<RemoteTargetHandle> consumer) {
+    public void runActionOnRemoteHandles(Consumer<RemoteTargetHandle> consumer) {
         if (mRemoteTargetHandles == null) {
             return;
         }
