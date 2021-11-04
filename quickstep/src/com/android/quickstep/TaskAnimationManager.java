@@ -42,6 +42,8 @@ import com.android.systemui.shared.system.RemoteTransitionCompat;
 import com.android.systemui.shared.system.TaskStackChangeListener;
 import com.android.systemui.shared.system.TaskStackChangeListeners;
 
+import java.util.HashMap;
+
 public class TaskAnimationManager implements RecentsAnimationCallbacks.RecentsAnimationListener {
     public static final boolean ENABLE_SHELL_TRANSITIONS =
             SystemProperties.getBoolean("persist.debug.shell_transit", false);
@@ -135,7 +137,7 @@ public class TaskAnimationManager implements RecentsAnimationCallbacks.RecentsAn
             }
 
             @Override
-            public void onRecentsAnimationCanceled(ThumbnailData thumbnailData) {
+            public void onRecentsAnimationCanceled(HashMap<Integer, ThumbnailData> thumbnailDatas) {
                 cleanUpRecentsAnimation();
             }
 

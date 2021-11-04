@@ -66,6 +66,7 @@ import com.android.quickstep.views.TaskView;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 
+import java.util.HashMap;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
@@ -192,7 +193,8 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
 
     public void closeOverlay() { }
 
-    public void switchRunningTaskViewToScreenshot(ThumbnailData thumbnailData, Runnable runnable) {
+    public void switchRunningTaskViewToScreenshot(HashMap<Integer, ThumbnailData> thumbnailDatas,
+            Runnable runnable) {
         ACTIVITY_TYPE activity = getCreatedActivity();
         if (activity == null) {
             return;
@@ -204,7 +206,7 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
             }
             return;
         }
-        recentsView.switchToScreenshot(thumbnailData, runnable);
+        recentsView.switchToScreenshot(thumbnailDatas, runnable);
     }
 
     /**
