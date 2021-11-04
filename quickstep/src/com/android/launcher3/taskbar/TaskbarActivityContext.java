@@ -20,6 +20,7 @@ import static android.view.WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_M
 import static android.view.WindowManager.LayoutParams.TYPE_NAVIGATION_BAR_PANEL;
 
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_FOLDER_OPEN;
+import static com.android.launcher3.testing.TestProtocol.TASKBAR_WINDOW_CRASH;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_NOTIFICATION_PANEL_EXPANDED;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_QUICK_SETTINGS_EXPANDED;
 import static com.android.systemui.shared.system.WindowManagerWrapper.ITYPE_BOTTOM_TAPPABLE_ELEMENT;
@@ -60,6 +61,7 @@ import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.logger.LauncherAtom;
 import com.android.launcher3.model.data.FolderInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
+import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.touch.ItemClickHandler;
 import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.util.SettingsCache;
@@ -200,6 +202,9 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
         updateSysuiStateFlags(sharedState.sysuiStateFlags, true /* fromInit */);
 
         mWindowManager.addView(mDragLayer, mWindowLayoutParams);
+        if (TestProtocol.sDebugTracing) {
+            Log.e(TASKBAR_WINDOW_CRASH, "Adding taskbar window");
+        }
     }
 
     public boolean isThreeButtonNav() {
@@ -330,6 +335,9 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
         setUIController(TaskbarUIController.DEFAULT);
         mControllers.onDestroy();
         mWindowManager.removeViewImmediate(mDragLayer);
+        if (TestProtocol.sDebugTracing) {
+            Log.e(TASKBAR_WINDOW_CRASH, "Removing taskbar window");
+        }
     }
 
     public void updateSysuiStateFlags(int systemUiStateFlags, boolean fromInit) {

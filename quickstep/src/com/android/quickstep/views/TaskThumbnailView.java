@@ -31,6 +31,8 @@ import android.graphics.ColorFilter;
 import android.graphics.Insets;
 import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.Shader;
@@ -78,6 +80,7 @@ public class TaskThumbnailView extends View {
     private TaskOverlay mOverlay;
     private final Paint mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     private final Paint mBackgroundPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+    private final Paint mClearPaint = new Paint();
     private final Paint mDimmingPaintAfterClearing = new Paint();
     private final int mDimColor;
 
@@ -107,6 +110,7 @@ public class TaskThumbnailView extends View {
         super(context, attrs, defStyleAttr);
         mPaint.setFilterBitmap(true);
         mBackgroundPaint.setColor(Color.WHITE);
+        mClearPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.CLEAR));
         mActivity = BaseActivity.fromContext(context);
         // Initialize with placeholder value. It is overridden later by TaskView
         mFullscreenParams = TEMP_PARAMS.get(context);
@@ -271,6 +275,7 @@ public class TaskThumbnailView extends View {
             float cornerRadius) {
         if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
             if (mTask != null && getTaskView().isRunningTask() && !getTaskView().showScreenshot()) {
+                canvas.drawRoundRect(x, y, width, height, cornerRadius, cornerRadius, mClearPaint);
                 canvas.drawRoundRect(x, y, width, height, cornerRadius, cornerRadius,
                         mDimmingPaintAfterClearing);
                 return;
