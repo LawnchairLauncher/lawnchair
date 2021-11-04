@@ -47,7 +47,6 @@ public class FloatingHeaderView extends LinearLayout implements
         ValueAnimator.AnimatorUpdateListener, PluginListener<AllAppsRow>, Insettable,
         OnHeightUpdatedListener {
 
-    private static final long ALL_APPS_CONTENT_ANIM_DURATION = 150;
     private final Rect mRVClip = new Rect(0, 0, Integer.MAX_VALUE, Integer.MAX_VALUE);
     private final Rect mHeaderClip = new Rect(0, 0, Integer.MAX_VALUE, Integer.MAX_VALUE);
     private final ValueAnimator mAnimator = ValueAnimator.ofInt(0, 0);
@@ -110,13 +109,6 @@ public class FloatingHeaderView extends LinearLayout implements
     private FloatingHeaderRow[] mAllRows = FloatingHeaderRow.NO_ROWS;
 
 
-    // members for handling suggestion state
-    private final ValueAnimator mAllAppsContentAnimator = ValueAnimator.ofFloat(0, 0);
-    private View mAllAppsButton;
-    private int mAllAppsContentFadeInOffset;
-    private boolean mInSuggestionMode = false;
-
-
     public FloatingHeaderView(@NonNull Context context) {
         this(context, null);
     }
@@ -127,20 +119,12 @@ public class FloatingHeaderView extends LinearLayout implements
                 .getDimensionPixelSize(R.dimen.all_apps_header_top_padding);
         mHeaderProtectionSupported = context.getResources().getBoolean(
                 R.bool.config_header_protection_supported);
-        mAllAppsContentFadeInOffset = context.getResources()
-                .getDimensionPixelSize(R.dimen.all_apps_content_fade_in_offset);
-        mAllAppsContentAnimator.setDuration(ALL_APPS_CONTENT_ANIM_DURATION);
-        mAllAppsContentAnimator.addUpdateListener(this::onAllAppsContentAnimationUpdate);
     }
 
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
         mTabLayout = findViewById(R.id.tabs);
-        mAllAppsButton = findViewById(R.id.all_apps_button);
-        if (mAllAppsButton != null) {
-            mAllAppsButton.setOnClickListener(this::onAllAppsButtonClicked);
-        }
 
         // Find all floating header rows.
         ArrayList<FloatingHeaderRow> rows = new ArrayList<>();
@@ -329,7 +313,6 @@ public class FloatingHeaderView extends LinearLayout implements
         }
 
         mTabLayout.setTranslationY(mTranslationY);
-        setSuggestionMode(false);
 
         int clipHeight = mHeaderTopPadding - getPaddingBottom();
         mRVClip.top = mTabsHidden ? clipHeight : 0;
@@ -365,7 +348,6 @@ public class FloatingHeaderView extends LinearLayout implements
             mTranslationY = 0;
             applyVerticalMove();
         }
-        setSuggestionMode(false);
         mHeaderCollapsed = false;
         mSnappedScrolledY = -mMaxTranslation;
         mCurrentRV.scrollToTop();
@@ -461,38 +443,6 @@ public class FloatingHeaderView extends LinearLayout implements
         }
         return Math.max(getHeight() - getPaddingTop() + mTranslationY, 0);
     }
-
-    /**
-     * When suggestion mode is enabled, hides AllApps content view and shows AllApps button.
-     */
-    public void setSuggestionMode(boolean isSuggestMode) {
-        if (mInSuggestionMode == isSuggestMode || mAllAppsButton == null) return;
-        if (!FeatureFlags.ENABLE_ONE_SEARCH.get()) return;
-        AllAppsContainerView allApps = (AllAppsContainerView) getParent();
-        mInSuggestionMode = isSuggestMode;
-        if (isSuggestMode) {
-            mTabLayout.setVisibility(GONE);
-            mAllAppsButton.setVisibility(VISIBLE);
-            allApps.getContentView().setVisibility(GONE);
-        } else {
-            mTabLayout.setVisibility(mTabsHidden ? GONE : VISIBLE);
-            mAllAppsButton.setVisibility(GONE);
-            allApps.getContentView().setVisibility(VISIBLE);
-        }
-    }
-
-    private void onAllAppsButtonClicked(View view) {
-        setSuggestionMode(false);
-        mAllAppsContentAnimator.start();
-    }
-
-    private void onAllAppsContentAnimationUpdate(ValueAnimator valueAnimator) {
-        float prog = valueAnimator.getAnimatedFraction();
-        View allAppsList = ((AllAppsContainerView) getParent()).getContentView();
-        allAppsList.setAlpha(255 * prog);
-        allAppsList.setTranslationY((1 - prog) * mAllAppsContentFadeInOffset);
-    }
-
 }
 
 
