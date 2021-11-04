@@ -18,6 +18,7 @@ import androidx.compose.ui.unit.dp
 
 object SwatchGridDefaults {
     val GutterSize = 12.dp
+    val SwatchMaxWidth = 56.dp
     const val ColumnCount = 6
 }
 
@@ -47,7 +48,7 @@ fun <T> SwatchGrid(
                         ColorSwatch(
                             entry = colorOption,
                             onClick = { onSwatchClick(colorOption.value) },
-                            modifier = Modifier.widthIn(0.dp, 56.dp),
+                            modifier = Modifier.widthIn(0.dp, SwatchGridDefaults.SwatchMaxWidth),
                             selected = isSwatchSelected(colorOption.value)
                         )
                     }

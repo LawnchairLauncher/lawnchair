@@ -10,6 +10,7 @@ import androidx.compose.ui.unit.constrainHeight
 import androidx.compose.ui.unit.dp
 import java.util.*
 import kotlin.math.max
+import kotlin.math.min
 
 fun Modifier.pagerHeight(
     dynamicCount: Int,
@@ -43,7 +44,8 @@ class PagerHeightModifier(
         val gutterSizePx = SwatchGridDefaults.GutterSize.roundToPx()
         val totalGutterWidth = gutterSizePx * (columnCount - 1)
         val availableWidth = width - horizontalPadding - totalGutterWidth
-        val swatchWidth = availableWidth / columnCount
+        val swatchMaxWidth = SwatchGridDefaults.SwatchMaxWidth.roundToPx()
+        val swatchWidth = min(availableWidth / columnCount, swatchMaxWidth)
 
         val swatchGridVerticalPadding = 20.dp.roundToPx() + 16.dp.roundToPx()
         val swatchGridInnerHeight = swatchWidth * rowCount + gutterSizePx * (rowCount - 1)
