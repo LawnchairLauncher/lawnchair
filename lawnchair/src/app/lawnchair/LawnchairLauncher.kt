@@ -262,3 +262,11 @@ class LawnchairLauncher : QuickstepLauncher(), LifecycleOwner,
 
 val Context.launcher: LawnchairLauncher
     get() = BaseActivity.fromContext(this)
+
+val Context.launcherNullable: LawnchairLauncher? get() {
+    return try {
+        launcher
+    } catch (e: IllegalArgumentException) {
+        null
+    }
+}

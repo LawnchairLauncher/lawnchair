@@ -22,6 +22,7 @@ import android.app.PendingIntent.FLAG_CANCEL_CURRENT
 import android.app.PendingIntent.FLAG_IMMUTABLE
 import android.content.Context
 import android.content.Intent
+import android.content.res.Resources
 import android.os.Looper
 import android.view.View
 import android.view.ViewGroup
@@ -128,6 +129,10 @@ fun <T> JSONArray.toArrayList(): ArrayList<T> {
 
 val ViewGroup.recursiveChildren: Sequence<View> get() = children.flatMap {
     if (it is ViewGroup) {
-        it.recursiveChildren
+        it.recursiveChildren + sequenceOf(it)
     } else sequenceOf(it)
 }
+
+private val pendingIntentTagId = Resources.getSystem().getIdentifier("pending_intent_tag", "id", "android")
+
+val View?.pendingIntent get() = this?.getTag(pendingIntentTagId) as? PendingIntent

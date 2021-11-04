@@ -88,7 +88,10 @@ public class QsbContainerView extends FrameLayout {
      */
     @Nullable
     public static AppWidgetProviderInfo getSearchWidgetProviderInfo(@NonNull Context context) {
-        String providerPkg = getSearchWidgetPackageName(context);
+        return getSearchWidgetProviderInfo(context, getSearchWidgetPackageName(context));
+    }
+
+    public static AppWidgetProviderInfo getSearchWidgetProviderInfo(@NonNull Context context, String providerPkg) {
         if (providerPkg == null) {
             return null;
         }
