@@ -387,6 +387,7 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
         return appIcon;
     }
 
+    @Ignore("b/205014516")
     @Test
     @PortraitLandscape
     public void testDragToFolder() throws Exception {
@@ -413,6 +414,7 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
         folder.close();
     }
 
+    @Ignore("b/205027405")
     @Test
     @PortraitLandscape
     public void testPressBack() throws Exception {
