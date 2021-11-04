@@ -30,70 +30,78 @@ import android.app.ActivityManager;
 import androidx.test.filters.SmallTest;
 
 import com.android.launcher3.util.LooperExecutor;
+import com.android.systemui.shared.recents.model.GroupTask;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.KeyguardManagerCompat;
+import com.android.wm.shell.util.GroupedRecentTaskInfo;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 @SmallTest
 public class RecentTasksListTest {
 
-    private ActivityManagerWrapper mockActivityManagerWrapper;
+    @Mock
+    private SystemUiProxy mockSystemUiProxy;
 
     // Class under test
     private RecentTasksList mRecentTasksList;
 
     @Before
     public void setup() {
+        MockitoAnnotations.initMocks(this);
         LooperExecutor mockMainThreadExecutor = mock(LooperExecutor.class);
         KeyguardManagerCompat mockKeyguardManagerCompat = mock(KeyguardManagerCompat.class);
-        mockActivityManagerWrapper = mock(ActivityManagerWrapper.class);
         mRecentTasksList = new RecentTasksList(mockMainThreadExecutor, mockKeyguardManagerCompat,
-                mockActivityManagerWrapper);
+                mockSystemUiProxy);
     }
 
     @Test
-    public void onTaskRemoved_doesNotFetchTasks() {
-        mRecentTasksList.onTaskRemoved(0);
-        verify(mockActivityManagerWrapper, times(0))
-                .getRecentTasks(anyInt(), anyInt());
-    }
-
-    @Test
-    public void onTaskStackChanged_doesNotFetchTasks() {
-        mRecentTasksList.onTaskStackChanged();
-        verify(mockActivityManagerWrapper, times(0))
+    public void onRecentTasksChanged_doesNotFetchTasks() {
+        mRecentTasksList.onRecentTasksChanged();
+        verify(mockSystemUiProxy, times(0))
                 .getRecentTasks(anyInt(), anyInt());
     }
 
     @Test
     public void loadTasksInBackground_onlyKeys_noValidTaskDescription() {
-        ActivityManager.RecentTaskInfo recentTaskInfo = new ActivityManager.RecentTaskInfo();
-        when(mockActivityManagerWrapper.getRecentTasks(anyInt(), anyInt()))
-                .thenReturn(Collections.singletonList(recentTaskInfo));
+        GroupedRecentTaskInfo recentTaskInfos = new GroupedRecentTaskInfo(
+                new ActivityManager.RecentTaskInfo(), new ActivityManager.RecentTaskInfo());
+        when(mockSystemUiProxy.getRecentTasks(anyInt(), anyInt()))
+                .thenReturn(new ArrayList<>(Collections.singletonList(recentTaskInfos)));
 
-        List<Task> taskList = mRecentTasksList.loadTasksInBackground(Integer.MAX_VALUE, -1, true);
+        List<GroupTask> taskList = mRecentTasksList.loadTasksInBackground(Integer.MAX_VALUE, -1,
+                true);
 
         assertEquals(1, taskList.size());
-        assertNull(taskList.get(0).taskDescription.getLabel());
+        assertNull(taskList.get(0).task1.taskDescription.getLabel());
+        assertNull(taskList.get(0).task2.taskDescription.getLabel());
     }
 
     @Test
     public void loadTasksInBackground_moreThanKeys_hasValidTaskDescription() {
         String taskDescription = "Wheeee!";
-        ActivityManager.RecentTaskInfo recentTaskInfo = new ActivityManager.RecentTaskInfo();
-        recentTaskInfo.taskDescription = new ActivityManager.TaskDescription(taskDescription);
-        when(mockActivityManagerWrapper.getRecentTasks(anyInt(), anyInt()))
-                .thenReturn(Collections.singletonList(recentTaskInfo));
+        ActivityManager.RecentTaskInfo task1 = new ActivityManager.RecentTaskInfo();
+        task1.taskDescription = new ActivityManager.TaskDescription(taskDescription);
+        ActivityManager.RecentTaskInfo task2 = new ActivityManager.RecentTaskInfo();
+        task2.taskDescription = new ActivityManager.TaskDescription();
+        GroupedRecentTaskInfo recentTaskInfos = new GroupedRecentTaskInfo(
+                task1, task2);
+        when(mockSystemUiProxy.getRecentTasks(anyInt(), anyInt()))
+                .thenReturn(new ArrayList<>(Collections.singletonList(recentTaskInfos)));
 
-        List<Task> taskList = mRecentTasksList.loadTasksInBackground(Integer.MAX_VALUE, -1, false);
+        List<GroupTask> taskList = mRecentTasksList.loadTasksInBackground(Integer.MAX_VALUE, -1,
+                false);
 
         assertEquals(1, taskList.size());
-        assertEquals(taskDescription, taskList.get(0).taskDescription.getLabel());
+        assertEquals(taskDescription, taskList.get(0).task1.taskDescription.getLabel());
+        assertNull(taskList.get(0).task2.taskDescription.getLabel());
     }
 }
