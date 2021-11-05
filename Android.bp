@@ -258,8 +258,8 @@ android_library {
         "go/quickstep/res",
     ],
     static_libs: [
-        "Launcher3CommonDepsLib",
         "QuickstepResLib",
+        "Launcher3CommonDepsLib",
     ],
     manifest: "quickstep/AndroidManifest-launcher.xml",
     additional_manifests: [
@@ -278,16 +278,15 @@ android_library {
     srcs: [
         ":launcher-src-no-build-config",
     ],
-    resource_dirs: [
-        "quickstep/res",
-    ],
+    resource_dirs: [],
     libs: [
         "framework-statsd",
     ],
     static_libs: [
+        "QuickstepResLib",
         "SystemUI-statsd",
         "SystemUISharedLib",
-        "Launcher3CommonDepsLib"
+        "Launcher3CommonDepsLib",
     ],
     manifest: "quickstep/AndroidManifest.xml",
     platform_apis: true,
