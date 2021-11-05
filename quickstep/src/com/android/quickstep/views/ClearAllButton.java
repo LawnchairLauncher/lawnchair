@@ -21,6 +21,7 @@ import android.util.AttributeSet;
 import android.util.FloatProperty;
 import android.widget.Button;
 
+import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.statemanager.StatefulActivity;
 import com.android.launcher3.touch.PagedOrientationHandler;
 
@@ -245,6 +246,9 @@ public class ClearAllButton extends Button {
      * Get the Y translation that is set in the original layout position, before scrolling.
      */
     private float getOriginalTranslationY() {
-        return mActivity.getDeviceProfile().overviewTaskThumbnailTopMarginPx / 2.0f;
+        DeviceProfile deviceProfile = mActivity.getDeviceProfile();
+        return deviceProfile.overviewShowAsGrid
+                ? deviceProfile.overviewRowSpacing
+                : deviceProfile.overviewTaskThumbnailTopMarginPx / 2.0f;
     }
 }
