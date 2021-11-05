@@ -22,9 +22,11 @@ import static android.view.MotionEvent.ACTION_UP;
 
 import static com.android.launcher3.config.FeatureFlags.ASSISTANT_GIVES_LAUNCHER_FOCUS;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
+import static com.android.launcher3.testing.TestProtocol.TASKBAR_WINDOW_CRASH;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.quickstep.GestureState.DEFAULT_STATE;
 import static com.android.systemui.shared.system.ActivityManagerWrapper.CLOSE_SYSTEM_WINDOWS_REASON_RECENTS;
+import static com.android.systemui.shared.system.QuickStepContract.KEY_EXTRA_RECENT_TASKS;
 import static com.android.systemui.shared.system.QuickStepContract.KEY_EXTRA_SHELL_ONE_HANDED;
 import static com.android.systemui.shared.system.QuickStepContract.KEY_EXTRA_SHELL_PIP;
 import static com.android.systemui.shared.system.QuickStepContract.KEY_EXTRA_SHELL_SHELL_TRANSITIONS;
@@ -107,6 +109,7 @@ import com.android.systemui.shared.system.smartspace.ISmartspaceTransitionContro
 import com.android.systemui.shared.tracing.ProtoTraceable;
 import com.android.wm.shell.onehanded.IOneHanded;
 import com.android.wm.shell.pip.IPip;
+import com.android.wm.shell.recents.IRecentTasks;
 import com.android.wm.shell.splitscreen.ISplitScreen;
 import com.android.wm.shell.startingsurface.IStartingWindow;
 import com.android.wm.shell.transition.IShellTransitions;
@@ -162,9 +165,11 @@ public class TouchInteractionService extends Service
             ISmartspaceTransitionController smartspaceTransitionController =
                     ISmartspaceTransitionController.Stub.asInterface(
                             bundle.getBinder(KEY_EXTRA_SMARTSPACE_TRANSITION_CONTROLLER));
+            IRecentTasks recentTasks = IRecentTasks.Stub.asInterface(
+                    bundle.getBinder(KEY_EXTRA_RECENT_TASKS));
             MAIN_EXECUTOR.execute(() -> {
                 SystemUiProxy.INSTANCE.get(TouchInteractionService.this).setProxy(proxy, pip,
-                        splitscreen, onehanded, shellTransitions, startingWindow,
+                        splitscreen, onehanded, shellTransitions, startingWindow, recentTasks,
                         smartspaceTransitionController);
                 TouchInteractionService.this.initInputMonitor();
                 preloadOverview(true /* fromInit */);
@@ -342,6 +347,9 @@ public class TouchInteractionService extends Service
     @Override
     public void onCreate() {
         super.onCreate();
+        if (TestProtocol.sDebugTracing) {
+            Log.e(TASKBAR_WINDOW_CRASH, "TIS created");
+        }
         // Initialize anything here that is needed in direct boot mode.
         // Everything else should be initialized in onUserUnlocked() below.
         mMainChoreographer = Choreographer.getInstance();
@@ -503,6 +511,9 @@ public class TouchInteractionService extends Service
     @Override
     public void onDestroy() {
         Log.d(TAG, "Touch service destroyed: user=" + getUserId());
+        if (TestProtocol.sDebugTracing) {
+            Log.e(TASKBAR_WINDOW_CRASH, "TIS destroyed");
+        }
         sIsInitialized = false;
         if (mDeviceState.isUserUnlocked()) {
             mInputConsumer.unregisterInputConsumer();

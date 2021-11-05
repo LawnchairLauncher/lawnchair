@@ -49,8 +49,10 @@ abstract class TutorialFragment extends Fragment implements OnTouchListener {
 
     private static final String LOG_TAG = "TutorialFragment";
     static final String KEY_TUTORIAL_TYPE = "tutorial_type";
+    static final String KEY_GESTURE_COMPLETE = "gesture_complete";
 
     TutorialType mTutorialType;
+    boolean mGestureComplete = false;
     @Nullable TutorialController mTutorialController = null;
     RootSandboxLayout mRootView;
     View mFingerDotView;
@@ -67,7 +69,7 @@ abstract class TutorialFragment extends Fragment implements OnTouchListener {
 
     private boolean mIsLargeScreen;
 
-    public static TutorialFragment newInstance(TutorialType tutorialType) {
+    public static TutorialFragment newInstance(TutorialType tutorialType, boolean gestureComplete) {
         TutorialFragment fragment = getFragmentForTutorialType(tutorialType);
         if (fragment == null) {
             fragment = new BackGestureTutorialFragment();
@@ -76,6 +78,7 @@ abstract class TutorialFragment extends Fragment implements OnTouchListener {
 
         Bundle args = new Bundle();
         args.putSerializable(KEY_TUTORIAL_TYPE, tutorialType);
+        args.putBoolean(KEY_GESTURE_COMPLETE, gestureComplete);
         fragment.setArguments(args);
         return fragment;
     }
@@ -132,6 +135,7 @@ abstract class TutorialFragment extends Fragment implements OnTouchListener {
         super.onCreate(savedInstanceState);
         Bundle args = savedInstanceState != null ? savedInstanceState : getArguments();
         mTutorialType = (TutorialType) args.getSerializable(KEY_TUTORIAL_TYPE);
+        mGestureComplete = args.getBoolean(KEY_GESTURE_COMPLETE, false);
         mEdgeBackGestureHandler = new EdgeBackGestureHandler(getContext());
         mNavBarGestureHandler = new NavBarGestureHandler(getContext());
 
@@ -186,11 +190,13 @@ abstract class TutorialFragment extends Fragment implements OnTouchListener {
     }
 
     void initializeFeedbackVideoView() {
-        if (!updateFeedbackAnimation()) {
+        if (!updateFeedbackAnimation() || mTutorialController == null) {
             return;
         }
 
-        if (!mIntroductionShown && mTutorialController != null) {
+        if (isGestureComplete()) {
+            mTutorialController.showSuccessFeedback();
+        } else if (!mIntroductionShown) {
             Integer introTileStringResId = mTutorialController.getIntroductionTitle();
             Integer introSubtitleResId = mTutorialController.getIntroductionSubtitle();
             if (introTileStringResId != null && introSubtitleResId != null) {
@@ -370,6 +376,11 @@ abstract class TutorialFragment extends Fragment implements OnTouchListener {
 
     boolean isAtFinalStep() {
         return getCurrentStep() == getNumSteps();
+    }
+
+    boolean isGestureComplete() {
+        return mGestureComplete
+                || (mTutorialController != null && mTutorialController.isGestureCompleted());
     }
 
     @Nullable
