@@ -202,9 +202,7 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
         updateSysuiStateFlags(sharedState.sysuiStateFlags, true /* fromInit */);
 
         mWindowManager.addView(mDragLayer, mWindowLayoutParams);
-        if (TestProtocol.sDebugTracing) {
-            Log.e(TASKBAR_WINDOW_CRASH, "Adding taskbar window");
-        }
+        Log.d(TASKBAR_WINDOW_CRASH, "Adding taskbar window");
     }
 
     public boolean isThreeButtonNav() {
@@ -335,9 +333,7 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
         setUIController(TaskbarUIController.DEFAULT);
         mControllers.onDestroy();
         mWindowManager.removeViewImmediate(mDragLayer);
-        if (TestProtocol.sDebugTracing) {
-            Log.e(TASKBAR_WINDOW_CRASH, "Removing taskbar window");
-        }
+        Log.d(TASKBAR_WINDOW_CRASH, "Removing taskbar window");
     }
 
     public void updateSysuiStateFlags(int systemUiStateFlags, boolean fromInit) {

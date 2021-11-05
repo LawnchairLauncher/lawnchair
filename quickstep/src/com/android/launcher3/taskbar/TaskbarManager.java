@@ -207,10 +207,8 @@ public class TaskbarManager implements DisplayController.DisplayInfoChangeListen
     }
 
     private void recreateTaskbar() {
-        if (TestProtocol.sDebugTracing) {
-            Log.e(TASKBAR_WINDOW_CRASH, "Recreating taskbar: mTaskbarActivityContext="
-                    + mTaskbarActivityContext);
-        }
+        Log.d(TASKBAR_WINDOW_CRASH, "Recreating taskbar: mTaskbarActivityContext="
+                + mTaskbarActivityContext);
         destroyExistingTaskbar();
 
         DeviceProfile dp =
@@ -233,9 +231,7 @@ public class TaskbarManager implements DisplayController.DisplayInfoChangeListen
             mTaskbarActivityContext.setUIController(
                     createTaskbarUIControllerForActivity(mActivity));
         }
-        if (TestProtocol.sDebugTracing) {
-            Log.e(TASKBAR_WINDOW_CRASH, "Finished recreating taskbar");
-        }
+        Log.d(TASKBAR_WINDOW_CRASH, "Finished recreating taskbar");
     }
 
     public void onSystemUiFlagsChanged(int systemUiStateFlags) {
