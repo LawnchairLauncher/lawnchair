@@ -169,12 +169,12 @@
     <string name="corner_radius_label">Raio dos Cantos</string>
     <string name="search_bar_label">Barra de Pesquisa</string>
     <string name="apply_accent_color_label">Aplicar Cor de Destaque</string>
-    <string name="show_search_result_types">Show in Search Results</string>
-    <string name="search_pref_result_people_desc">Contacts, conversations, and more</string>
-    <string name="search_pref_result_people_title">People</string>
-    <string name="search_pref_result_shortcuts_desc">Show Shortcuts for Apps and People</string>
-    <string name="search_pref_result_shortcuts_title">Shortcuts</string>
-    <string name="search_pref_result_tips_title">Pixel Tips</string>
-    <string name="row_height_label">Row Height</string>
+    <string name="show_search_result_types">Mostrar nos Resultados da Pesquisa</string>
+    <string name="search_pref_result_people_desc">Contactos, conversas, e mais</string>
+    <string name="search_pref_result_people_title">Pessoas</string>
+    <string name="search_pref_result_shortcuts_desc">Mostrar Atalhos para Aplicações e Pessoas</string>
+    <string name="search_pref_result_shortcuts_title">Atalhos</string>
+    <string name="search_pref_result_tips_title">Dicas de Pixel</string>
+    <string name="row_height_label">Altura da Linha</string>
     <string name="all_apps_device_search_hint">Pesquisar</string>
 </resources>
