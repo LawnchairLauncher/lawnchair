@@ -157,6 +157,12 @@ public class TestInformationHandler implements ResourceBasedOverride {
                 return response;
             }
 
+            case TestProtocol.REQUEST_ENABLE_ROTATION:
+                MAIN_EXECUTOR.submit(() ->
+                        Launcher.ACTIVITY_TRACKER.getCreatedActivity().getRotationHelper()
+                                .forceAllowRotationForTesting(Boolean.parseBoolean(arg)));
+                return null;
+
             default:
                 return null;
         }
