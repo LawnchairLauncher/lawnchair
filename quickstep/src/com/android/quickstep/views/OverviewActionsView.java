@@ -127,6 +127,9 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
      * @param callbacks for callbacks, or {@code null} to clear the listener.
      */
     public void setCallbacks(T callbacks) {
+        if (TestProtocol.sDebugTracing) {
+            Log.d(TestProtocol.NO_SCREENSHOT, "OverviewActionsView setCallbacks: " + callbacks);
+        }
         mCallbacks = callbacks;
     }
 
