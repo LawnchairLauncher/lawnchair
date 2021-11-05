@@ -80,15 +80,13 @@
     <string name="action_screenshot" msgid="8171125848358142917">"Дэлгэцийн агшин дарах"</string>
     <string name="action_split" msgid="2098009717623550676">"Хуваах"</string>
     <string name="toast_split_select_app" msgid="5453865907322018352">"Дэлгэц хуваахыг ашиглах бол өөр аппыг товшино уу"</string>
-    <!-- no translation found for toast_split_app_unsupported (3271526028981899666) -->
-    <skip />
+    <string name="toast_split_app_unsupported" msgid="3271526028981899666">"Апп дэлгэцийг хуваах горимыг дэмждэггүй."</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"Энэ үйлдлийг апп эсвэл танай байгууллага зөвшөөрдөггүй"</string>
     <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"Навигацын практик хичээлийг алгасах уу?"</string>
     <string name="skip_tutorial_dialog_subtitle" msgid="544063326241955662">"Та үүнийг дараа нь <xliff:g id="NAME">%1$s</xliff:g> аппаас олох боломжтой"</string>
     <string name="gesture_tutorial_action_button_label_cancel" msgid="3809842569351264108">"Цуцлах"</string>
     <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"Алгасах"</string>
-    <!-- no translation found for accessibility_rotate_button (4771825231336502943) -->
-    <skip />
+    <string name="accessibility_rotate_button" msgid="4771825231336502943">"Дэлгэцийг эргүүлэх"</string>
     <string name="taskbar_edu_opened" msgid="3950252793551919129">"Боловсролын ажлын талбар гарч ирсэн"</string>
     <string name="taskbar_edu_closed" msgid="126643734478892862">"Боловсролын ажлын талбарыг хаасан"</string>
     <string name="taskbar_edu_stashing" msgid="5212374387411764031">"Ажлын талбарыг нуухын тулд хүрээд удаан дарна уу"</string>
