@@ -27,7 +27,7 @@
     <dimen name="task_menu_corner_radius">22dp</dimen>
     <dimen name="task_menu_item_corner_radius">4dp</dimen>
     <dimen name="task_menu_spacing">2dp</dimen>
-    <dimen name="task_menu_width_grid">200dp</dimen>
+    <dimen name="task_menu_width_grid">234dp</dimen>
     <dimen name="overview_proactive_row_height">48dp</dimen>
     <dimen name="overview_proactive_row_bottom_margin">16dp</dimen>
 
@@ -90,7 +90,7 @@
     <dimen name="task_menu_vertical_padding">8dp</dimen>
     <dimen name="task_card_margin">8dp</dimen>
     <dimen name="task_card_menu_shadow_height">3dp</dimen>
-    <dimen name="task_menu_option_start_margin">12dp</dimen>
+    <dimen name="task_menu_option_start_margin">16dp</dimen>
     <!-- Copied from framework resource:
        docked_stack_divider_thickness - 2 * docked_stack_divider_insets -->
     <dimen name="multi_window_task_divider_size">10dp</dimen>
