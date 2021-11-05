@@ -16,6 +16,5 @@
     <string name="assistant_not_supported_text" msgid="1708031078549268884">"如需收听或翻译屏幕上的文字，请在“设置”部分更改数字助理应用"</string>
     <string name="tooltip_listen" msgid="7634466447860989102">"点按此处即可收听屏幕上的文字"</string>
     <string name="tooltip_translate" msgid="4184845868901542567">"点按此处即可翻译屏幕上的文字"</string>
-    <!-- no translation found for toast_p2p_app_not_shareable (7229739094132131536) -->
-    <skip />
+    <string name="toast_p2p_app_not_shareable" msgid="7229739094132131536">"无法分享此应用"</string>
 </resources>

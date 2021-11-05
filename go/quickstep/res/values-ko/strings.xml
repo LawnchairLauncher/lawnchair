@@ -16,6 +16,5 @@
     <string name="assistant_not_supported_text" msgid="1708031078549268884">"화면에서 텍스트를 듣거나 번역하려면 설정에서 디지털 어시스턴트 앱을 변경하세요."</string>
     <string name="tooltip_listen" msgid="7634466447860989102">"화면에서 텍스트를 들으려면 여기를 탭하세요."</string>
     <string name="tooltip_translate" msgid="4184845868901542567">"화면에서 텍스트를 번역하려면 여기를 탭하세요."</string>
-    <!-- no translation found for toast_p2p_app_not_shareable (7229739094132131536) -->
-    <skip />
+    <string name="toast_p2p_app_not_shareable" msgid="7229739094132131536">"공유할 수 없는 앱입니다."</string>
 </resources>

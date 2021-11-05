@@ -16,6 +16,5 @@
     <string name="assistant_not_supported_text" msgid="1708031078549268884">"Да бисте чули текст са екрана или га превели, промените апликацију дигиталног помоћника у Подешавањима"</string>
     <string name="tooltip_listen" msgid="7634466447860989102">"Додирните овде да бисте чули текст са овог екрана"</string>
     <string name="tooltip_translate" msgid="4184845868901542567">"Додирните овде да бисте превели текст са овог екрана"</string>
-    <!-- no translation found for toast_p2p_app_not_shareable (7229739094132131536) -->
-    <skip />
+    <string name="toast_p2p_app_not_shareable" msgid="7229739094132131536">"Ова апликација не може да се дели"</string>
 </resources>
