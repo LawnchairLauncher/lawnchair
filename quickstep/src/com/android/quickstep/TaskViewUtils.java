@@ -28,6 +28,7 @@ import static com.android.launcher3.QuickstepTransitionManager.ANIMATION_NAV_FAD
 import static com.android.launcher3.QuickstepTransitionManager.NAV_FADE_IN_INTERPOLATOR;
 import static com.android.launcher3.QuickstepTransitionManager.NAV_FADE_OUT_INTERPOLATOR;
 import static com.android.launcher3.QuickstepTransitionManager.RECENTS_LAUNCH_DURATION;
+import static com.android.launcher3.QuickstepTransitionManager.SPLIT_LAUNCH_DURATION;
 import static com.android.launcher3.Utilities.getDescendantCoordRelativeToAncestor;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.anim.Interpolators.TOUCH_RESPONSE_INTERPOLATOR;
@@ -459,6 +460,7 @@ public final class TaskViewUtils {
 
         final SurfaceControl.Transaction t = new SurfaceControl.Transaction();
         ValueAnimator animator = ValueAnimator.ofFloat(0f, 1f);
+        animator.setDuration(SPLIT_LAUNCH_DURATION);
         animator.addUpdateListener(valueAnimator -> {
             float progress = valueAnimator.getAnimatedFraction();
             for (SurfaceControl leash: openingTargets) {
@@ -559,7 +561,7 @@ public final class TaskViewUtils {
         anim.addListener(windowAnimEndListener);
     }
 
-    static void setSplitAuxiliarySurfacesShown(RemoteAnimationTargetCompat[] nonApps,
+    public static void setSplitAuxiliarySurfacesShown(RemoteAnimationTargetCompat[] nonApps,
             boolean shown) {
         // TODO(b/182592057): make this part of the animations instead.
         if (nonApps != null && nonApps.length > 0) {
