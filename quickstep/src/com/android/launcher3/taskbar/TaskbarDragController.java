@@ -40,6 +40,7 @@ import com.android.launcher3.DropTarget;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.R;
 import com.android.launcher3.accessibility.DragViewStateAnnouncer;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.dragndrop.DragController;
 import com.android.launcher3.dragndrop.DragDriver;
 import com.android.launcher3.dragndrop.DragOptions;
@@ -49,6 +50,7 @@ import com.android.launcher3.graphics.DragPreviewProvider;
 import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
+import com.android.launcher3.popup.PopupContainerWithArrow;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.system.ClipDescriptionCompat;
 import com.android.systemui.shared.system.LauncherAppsCompat;
@@ -139,11 +141,13 @@ public class TaskbarDragController extends DragController<TaskbarActivityContext
                 mDragView = null;
             }
         };
-        // TODO: open popup/pre-drag
-        // PopupContainerWithArrow popupContainer = PopupContainerWithArrow.showForIcon(view);
-        // if (popupContainer != null) {
-        //     dragOptions.preDragCondition = popupContainer.createPreDragCondition();
-        // }
+        if (FeatureFlags.ENABLE_TASKBAR_POPUP_MENU.get()) {
+            PopupContainerWithArrow<TaskbarActivityContext> popupContainer =
+                    mControllers.taskbarPopupController.showForIcon(btv);
+            if (popupContainer != null) {
+                dragOptions.preDragCondition = popupContainer.createPreDragCondition();
+            }
+        }
 
         startDrag(
                 drawable,
