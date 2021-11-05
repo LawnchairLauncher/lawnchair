@@ -258,9 +258,9 @@ android_library {
         "go/quickstep/res",
     ],
     static_libs: [
+        "Launcher3CommonDepsLib",
         "QuickstepResLib",
         "androidx.room_room-runtime",
-        "Launcher3CommonDepsLib",
     ],
     plugins: ["androidx.room_room-compiler-plugin"],
     manifest: "quickstep/AndroidManifest-launcher.xml",
@@ -280,15 +280,16 @@ android_library {
     srcs: [
         ":launcher-src-no-build-config",
     ],
-    resource_dirs: [],
+    resource_dirs: [
+        "quickstep/res",
+    ],
     libs: [
         "framework-statsd",
     ],
     static_libs: [
-        "QuickstepResLib",
         "SystemUI-statsd",
         "SystemUISharedLib",
-        "Launcher3CommonDepsLib",
+        "Launcher3CommonDepsLib"
     ],
     manifest: "quickstep/AndroidManifest.xml",
     platform_apis: true,
