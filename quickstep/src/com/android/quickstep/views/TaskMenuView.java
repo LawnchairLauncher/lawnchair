@@ -270,9 +270,15 @@ public class TaskMenuView extends AbstractFloatingView implements OnScrollChange
         BaseDragLayer.LayoutParams params = (BaseDragLayer.LayoutParams) getLayoutParams();
         int padding = getResources()
                 .getDimensionPixelSize(R.dimen.task_menu_vertical_padding);
-        params.width = orientationHandler
-                .getTaskMenuWidth(taskContainer.getThumbnailView(),
-                        deviceProfile) - (2 * padding);
+        if (deviceProfile.overviewShowAsGrid) {
+            // TODO(b/193432925) temporary so it doesn't look terrible on large screen
+            params.width =
+                    getContext().getResources().getDimensionPixelSize(R.dimen.task_menu_width_grid);
+        } else {
+            params.width = orientationHandler
+                    .getTaskMenuWidth(taskContainer.getThumbnailView(),
+                            deviceProfile) - (2 * padding);
+        }
         // Gravity set to Left instead of Start as sTempRect.left measures Left distance not Start
         params.gravity = Gravity.LEFT;
         setLayoutParams(params);

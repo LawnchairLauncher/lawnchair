@@ -234,7 +234,7 @@ public abstract class ArrowPopup<T extends Context & ActivityContext>
      * @param backgroundColor When Color.TRANSPARENT, we get color from {@link #mColorIds}.
      *                        Otherwise, we will use this color for all child views.
      */
-    protected void assignMarginsAndBackgrounds(ViewGroup viewGroup, int backgroundColor) {
+    private void assignMarginsAndBackgrounds(ViewGroup viewGroup, int backgroundColor) {
         int[] colors = null;
         if (backgroundColor == Color.TRANSPARENT) {
             // Lazily get the colors so they match the current wallpaper colors.
@@ -445,7 +445,7 @@ public abstract class ArrowPopup<T extends Context & ActivityContext>
         animateOpen();
     }
 
-    protected void setupForDisplay() {
+    private void setupForDisplay() {
         setVisibility(View.INVISIBLE);
         mIsOpen = true;
         getPopupContainer().addView(this);
@@ -482,7 +482,7 @@ public abstract class ArrowPopup<T extends Context & ActivityContext>
         mArrow.setVisibility(show && shouldAddArrow() ? VISIBLE : INVISIBLE);
     }
 
-    protected void addArrow() {
+    private void addArrow() {
         getPopupContainer().addView(mArrow);
         mArrow.setX(getX() + getArrowLeft());
 
@@ -686,13 +686,12 @@ public abstract class ArrowPopup<T extends Context & ActivityContext>
         return getChildCount() > 0 ? getChildAt(0) : this;
     }
 
-    protected void animateOpen() {
+    private void animateOpen() {
         setVisibility(View.VISIBLE);
 
         mOpenCloseAnimator = getOpenCloseAnimator(true, OPEN_DURATION, OPEN_FADE_START_DELAY,
                 OPEN_FADE_DURATION, OPEN_CHILD_FADE_START_DELAY, OPEN_CHILD_FADE_DURATION,
                 DECELERATED_EASE);
-        onCreateOpenAnimation(mOpenCloseAnimator);
         mOpenCloseAnimator.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
@@ -784,11 +783,6 @@ public abstract class ArrowPopup<T extends Context & ActivityContext>
         });
         mOpenCloseAnimator.start();
     }
-
-    /**
-     * Called when creating the open transition allowing subclass can add additional animations.
-     */
-    protected void onCreateOpenAnimation(AnimatorSet anim) { }
 
     /**
      * Called when creating the close transition allowing subclass can add additional animations.
