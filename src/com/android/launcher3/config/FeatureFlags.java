@@ -204,6 +204,10 @@ public final class FeatureFlags {
     public static final BooleanFlag ENABLE_TASKBAR_EDU = getDebugFlag("ENABLE_TASKBAR_EDU", true,
             "Enables showing taskbar education the first time an app is opened.");
 
+    public static final BooleanFlag ENABLE_TASKBAR_POPUP_MENU = getDebugFlag(
+            "ENABLE_TASKBAR_POPUP_MENU", false, "Enables long pressing taskbar icons to show the"
+                    + " popup menu.");
+
     public static final BooleanFlag ENABLE_OVERVIEW_GRID = getDebugFlag(
             "ENABLE_OVERVIEW_GRID", true, "Uses grid overview layout. "
             + "Only applicable on large screen devices.");
