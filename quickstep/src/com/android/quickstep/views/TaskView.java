@@ -824,9 +824,11 @@ public class TaskView extends FrameLayout implements Reusable {
     }
 
     protected boolean showTaskMenuWithContainer(IconView iconView) {
-        // TODO(http://b/193432925)
-        if (DEBUG) TaskMenuViewWithArrow.Companion.logSomething();
-        return TaskMenuView.showForTask(mTaskIdAttributeContainer[0]);
+        if (mActivity.getDeviceProfile().overviewShowAsGrid) {
+            return TaskMenuViewWithArrow.Companion.showForTask(mTaskIdAttributeContainer[0]);
+        } else {
+            return TaskMenuView.showForTask(mTaskIdAttributeContainer[0]);
+        }
     }
 
     protected void setIcon(IconView iconView, Drawable icon) {
