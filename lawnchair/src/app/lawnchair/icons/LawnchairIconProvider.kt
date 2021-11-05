@@ -33,7 +33,27 @@ class LawnchairIconProvider @JvmOverloads constructor(
     private val iconPackPref = prefs.iconPackPackage
     private val iconPackProvider = IconPackProvider.INSTANCE.get(context)
     private val iconPack get() = iconPackProvider.getIconPack(iconPackPref.get())?.apply { loadBlocking() }
-    private var lawniconsVersion = context.packageManager.getPackageVersionCode(LAWNICONS_PACKAGE_NAME)
+    private var lawniconsVersion = 0L
+
+    private var _themeMap: Map<ComponentName, ThemedIconDrawable.ThemeData>? = null
+    private val themeMap: Map<ComponentName, ThemedIconDrawable.ThemeData>
+        get() {
+            if (_themeMap == null) {
+                _themeMap = createThemedIconMap()
+            }
+            return _themeMap!!
+        }
+
+    init {
+        setIconThemeSupported(supportsIconTheme)
+    }
+
+    override fun setIconThemeSupported(isSupported: Boolean) {
+        lawniconsVersion =
+            if (isSupported) context.packageManager.getPackageVersionCode(LAWNICONS_PACKAGE_NAME)
+            else 0L
+        _themeMap = if (isSupported) null else DISABLED_MAP
+    }
 
     override fun getIconWithOverrides(
         packageName: String,
@@ -51,7 +71,7 @@ class LawnchairIconProvider @JvmOverloads constructor(
         if (iconPack != null) {
             if (iconEntry == null) {
                 iconEntry = iconPack.getCalendar(componentName)?.getIconEntry(getDay())
-                themeData = themedIconMap[mCalendar.packageName]
+                themeData = getThemeData(mCalendar.packageName, "")
                 iconType = ICON_TYPE_CALENDAR
             }
             if (iconEntry == null) {
@@ -59,14 +79,14 @@ class LawnchairIconProvider @JvmOverloads constructor(
                 val clock = iconEntry?.let { iconPack.getClock(it) }
                 when {
                     clock != null -> {
-                        themeData = themedIconMap[mClock.packageName]
+                        themeData = getThemeData(mCalendar.packageName, "")
                         iconType = ICON_TYPE_CLOCK
                     }
                     packageName == mClock.packageName -> {
                         themeData = ThemedIconDrawable.ThemeData(context.resources, R.drawable.themed_icon_static_clock)
                     }
                     else -> {
-                        themeData = themedIconMap[componentName.packageName]
+                        themeData = getThemeData(componentName)
                     }
                 }
             }
@@ -77,6 +97,14 @@ class LawnchairIconProvider @JvmOverloads constructor(
             return if (td != null) td.wrapDrawable(icon, iconType) else icon
         }
         return super.getIconWithOverrides(packageName, component, user, iconDpi, fallback)
+    }
+
+    override fun isThemeEnabled(): Boolean {
+        return _themeMap != DISABLED_MAP
+    }
+
+    override fun getThemeData(componentName: ComponentName): ThemedIconDrawable.ThemeData? {
+        return themeMap[componentName] ?: themeMap[ComponentName(componentName.packageName, "")]
     }
 
     override fun getIcon(info: ActivityInfo?): Drawable {
@@ -201,9 +229,8 @@ class LawnchairIconProvider @JvmOverloads constructor(
         }
 
         override fun onReceive(context: Context, intent: Intent) {
-            if (themedIconMap.isNotEmpty()) {
-            lawniconsVersion = context.packageManager.getPackageVersionCode(LAWNICONS_PACKAGE_NAME)
-                mThemedIconMap = null
+            if (isThemeEnabled) {
+                setIconThemeSupported(true)
                 callback.onSystemIconStateChanged(systemIconState)
             }
         }
@@ -213,9 +240,8 @@ class LawnchairIconProvider @JvmOverloads constructor(
         }
     }
 
-    override fun getThemedIconMap(): MutableMap<String, ThemedIconDrawable.ThemeData> {
-        if (mThemedIconMap != null) return mThemedIconMap
-        val map = ArrayMap<String, ThemedIconDrawable.ThemeData>()
+    private fun createThemedIconMap(): MutableMap<ComponentName, ThemedIconDrawable.ThemeData> {
+        val map = ArrayMap<ComponentName, ThemedIconDrawable.ThemeData>()
 
         fun updateMapFromResources(resources: Resources, packageName: String) {
             try {
@@ -231,9 +257,10 @@ class LawnchairIconProvider @JvmOverloads constructor(
                         if (type != XmlPullParser.START_TAG) continue
                         if (TAG_ICON == parser.name) {
                             val pkg = parser.getAttributeValue(null, ATTR_PACKAGE)
+                            val cmp = parser.getAttributeValue(null, ATTR_COMPONENT) ?: ""
                             val iconId = parser.getAttributeResourceValue(null, ATTR_DRAWABLE, 0)
                             if (iconId != 0 && pkg.isNotEmpty()) {
-                                map[pkg] = ThemedIconDrawable.ThemeData(resources, iconId)
+                                map[ComponentName(pkg, cmp)] = ThemedIconDrawable.ThemeData(resources, iconId)
                             }
                         }
                     }
@@ -255,12 +282,13 @@ class LawnchairIconProvider @JvmOverloads constructor(
             )
         }
 
-        mThemedIconMap = map
-        return mThemedIconMap
+        return map
     }
 
     companion object {
         const val LAWNICONS_PACKAGE_NAME = "app.lawnchair.lawnicons"
         const val TAG = "LawnchairIconProvider"
+
+        val DISABLED_MAP = emptyMap<ComponentName, ThemedIconDrawable.ThemeData>()
     }
 }
