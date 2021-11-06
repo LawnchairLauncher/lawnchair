@@ -23,6 +23,7 @@ import com.android.launcher3.model.BgDataModel;
 import com.android.launcher3.model.BgDataModel.FixedContainerItems;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
+import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.IntSet;
 import com.android.launcher3.util.ItemInfoMatcher;
@@ -30,6 +31,7 @@ import com.android.launcher3.util.LauncherBindableItemsContainer;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
@@ -185,5 +187,10 @@ public class TaskbarModelCallbacks implements
         mControllers.taskbarStashController.updateStateForFlag(
                 TaskbarStashController.FLAG_STASHED_IN_APP_EMPTY, isHotseatEmpty);
         mControllers.taskbarStashController.applyState();
+    }
+
+    @Override
+    public void bindDeepShortcutMap(HashMap<ComponentKey, Integer> deepShortcutMapCopy) {
+        mControllers.taskbarPopupController.setDeepShortcutMap(deepShortcutMapCopy);
     }
 }

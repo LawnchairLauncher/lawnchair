@@ -166,7 +166,8 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
                 new StashedHandleViewController(this, stashedHandleView),
                 new TaskbarStashController(this),
                 new TaskbarEduController(this),
-                new TaskbarAutohideSuspendController(this));
+                new TaskbarAutohideSuspendController(this),
+                new TaskbarPopupController());
     }
 
     public void init(TaskbarSharedState sharedState) {
@@ -202,9 +203,7 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
         updateSysuiStateFlags(sharedState.sysuiStateFlags, true /* fromInit */);
 
         mWindowManager.addView(mDragLayer, mWindowLayoutParams);
-        if (TestProtocol.sDebugTracing) {
-            Log.e(TASKBAR_WINDOW_CRASH, "Adding taskbar window");
-        }
+        Log.d(TASKBAR_WINDOW_CRASH, "Adding taskbar window");
     }
 
     public boolean isThreeButtonNav() {
@@ -255,6 +254,11 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
         // flag when opening a floating view that needs IME (such as Folder), but then that means
         // Taskbar will be below IME and thus users can't click the back button.
         return false;
+    }
+
+    @Override
+    public View.OnClickListener getItemOnClickListener() {
+        return this::onTaskbarIconClicked;
     }
 
     /**
@@ -335,9 +339,7 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
         setUIController(TaskbarUIController.DEFAULT);
         mControllers.onDestroy();
         mWindowManager.removeViewImmediate(mDragLayer);
-        if (TestProtocol.sDebugTracing) {
-            Log.e(TASKBAR_WINDOW_CRASH, "Removing taskbar window");
-        }
+        Log.d(TASKBAR_WINDOW_CRASH, "Removing taskbar window");
     }
 
     public void updateSysuiStateFlags(int systemUiStateFlags, boolean fromInit) {

@@ -347,9 +347,7 @@ public class TouchInteractionService extends Service
     @Override
     public void onCreate() {
         super.onCreate();
-        if (TestProtocol.sDebugTracing) {
-            Log.e(TASKBAR_WINDOW_CRASH, "TIS created");
-        }
+        Log.d(TASKBAR_WINDOW_CRASH, "TIS created");
         // Initialize anything here that is needed in direct boot mode.
         // Everything else should be initialized in onUserUnlocked() below.
         mMainChoreographer = Choreographer.getInstance();
@@ -511,9 +509,7 @@ public class TouchInteractionService extends Service
     @Override
     public void onDestroy() {
         Log.d(TAG, "Touch service destroyed: user=" + getUserId());
-        if (TestProtocol.sDebugTracing) {
-            Log.e(TASKBAR_WINDOW_CRASH, "TIS destroyed");
-        }
+        Log.d(TASKBAR_WINDOW_CRASH, "TIS destroyed");
         sIsInitialized = false;
         if (mDeviceState.isUserUnlocked()) {
             mInputConsumer.unregisterInputConsumer();

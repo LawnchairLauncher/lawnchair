@@ -193,6 +193,7 @@ public class DeviceProfile {
     public final int overviewActionsBottomMarginGesturePx;
     public int overviewPageSpacing;
     public int overviewRowSpacing;
+    public int overviewGridSideMargin;
 
     // Widgets
     public final PointF appWidgetScale = new PointF(1.0f, 1.0f);
@@ -400,6 +401,9 @@ public class DeviceProfile {
         overviewRowSpacing = isLandscape
                 ? res.getDimensionPixelSize(R.dimen.overview_grid_row_spacing_landscape)
                 : res.getDimensionPixelSize(R.dimen.overview_grid_row_spacing_portrait);
+        overviewGridSideMargin = isLandscape
+                ? res.getDimensionPixelSize(R.dimen.overview_grid_side_margin_landscape)
+                : res.getDimensionPixelSize(R.dimen.overview_grid_side_margin_portrait);
 
         // Calculate all of the remaining variables.
         extraSpace = updateAvailableDimensions(res);

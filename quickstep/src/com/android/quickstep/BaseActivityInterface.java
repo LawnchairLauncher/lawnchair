@@ -308,7 +308,7 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
         Rect insets = dp.getInsets();
         int topMargin = dp.overviewTaskThumbnailTopMarginPx;
         int bottomMargin = getOverviewActionsHeight(context, dp);
-        int sideMargin = res.getDimensionPixelSize(R.dimen.overview_grid_side_margin);
+        int sideMargin = dp.overviewGridSideMargin;
 
         outRect.set(0, 0, dp.widthPx, dp.heightPx);
         outRect.inset(Math.max(insets.left, sideMargin), insets.top + topMargin,
