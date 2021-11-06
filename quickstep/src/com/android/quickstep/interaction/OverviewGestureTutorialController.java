@@ -52,6 +52,13 @@ final class OverviewGestureTutorialController extends SwipeUpGestureTutorialCont
     }
 
     @Override
+    public Integer getSuccessFeedbackSubtitle() {
+        return mTutorialFragment.getNumSteps() > 1 && mTutorialFragment.isAtFinalStep()
+                ? R.string.overview_gesture_feedback_complete_with_follow_up
+                : R.string.overview_gesture_feedback_complete_without_follow_up;
+    }
+
+    @Override
     protected int getMockAppTaskLayoutResId() {
         return mTutorialFragment.isLargeScreen()
                 ? R.layout.gesture_tutorial_foldable_mock_conversation_list
@@ -106,11 +113,7 @@ final class OverviewGestureTutorialController extends SwipeUpGestureTutorialCont
                         mTutorialFragment.releaseFeedbackAnimation();
                         animateTaskViewToOverview();
                         onMotionPaused(true /*arbitrary value*/);
-                        int subtitleResId = mTutorialFragment.getNumSteps() > 1
-                                && mTutorialFragment.isAtFinalStep()
-                                ? R.string.overview_gesture_feedback_complete_with_follow_up
-                                : R.string.overview_gesture_feedback_complete_without_follow_up;
-                        showFeedback(subtitleResId, true);
+                        showSuccessFeedback();
                         break;
                     case HOME_OR_OVERVIEW_NOT_STARTED_WRONG_SWIPE_DIRECTION:
                     case HOME_OR_OVERVIEW_CANCELLED:

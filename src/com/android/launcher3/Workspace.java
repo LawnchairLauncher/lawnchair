@@ -329,6 +329,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         }
 
         updateWorkspaceScreensPadding();
+        updateWorkspaceWidgetsSizes();
     }
 
     private void updateWorkspaceScreensPadding() {
@@ -357,6 +358,25 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
             // SparseArrayMap doesn't keep the order
             mWorkspaceScreens.get(mScreenOrder.get(i))
                     .setPadding(paddingLeft, 0, paddingRight, paddingBottom);
+        }
+    }
+
+    private void updateWorkspaceWidgetsSizes() {
+        int numberOfScreens = mScreenOrder.size();
+        for (int i = 0; i < numberOfScreens; i++) {
+            ShortcutAndWidgetContainer shortcutAndWidgetContainer =
+                    mWorkspaceScreens.get(mScreenOrder.get(i)).getShortcutsAndWidgets();
+            int shortcutsAndWidgetCount = shortcutAndWidgetContainer.getChildCount();
+            for (int j = 0; j < shortcutsAndWidgetCount; j++) {
+                View view = shortcutAndWidgetContainer.getChildAt(j);
+                if (view instanceof LauncherAppWidgetHostView
+                        && view.getTag() instanceof LauncherAppWidgetInfo) {
+                    LauncherAppWidgetInfo launcherAppWidgetInfo =
+                            (LauncherAppWidgetInfo) view.getTag();
+                    WidgetSizes.updateWidgetSizeRanges((LauncherAppWidgetHostView) view,
+                            mLauncher, launcherAppWidgetInfo.spanX, launcherAppWidgetInfo.spanY);
+                }
+            }
         }
     }
 
