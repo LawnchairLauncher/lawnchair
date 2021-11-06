@@ -175,6 +175,7 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
     public static final int RECENTS_LAUNCH_DURATION = 336;
     private static final int LAUNCHER_RESUME_START_DELAY = 100;
     private static final int CLOSING_TRANSITION_DURATION_MS = 250;
+    public static final int SPLIT_LAUNCH_DURATION = 370;
 
     public static final int CONTENT_ALPHA_DURATION = 217;
     protected static final int CONTENT_SCALE_DURATION = 350;

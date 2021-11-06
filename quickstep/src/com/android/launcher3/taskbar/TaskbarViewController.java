@@ -261,7 +261,7 @@ public class TaskbarViewController {
         private boolean mCanceledStashHint;
 
         public View.OnClickListener getIconOnClickListener() {
-            return mActivity::onTaskbarIconClicked;
+            return mActivity.getItemOnClickListener();
         }
 
         public View.OnLongClickListener getIconOnLongClickListener() {

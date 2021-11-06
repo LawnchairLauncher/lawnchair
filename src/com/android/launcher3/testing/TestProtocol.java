@@ -108,6 +108,7 @@ public final class TestProtocol {
             "get-focused-task-height-for-tablet";
     public static final String REQUEST_GET_GRID_TASK_SIZE_RECT_FOR_TABLET =
             "get-grid-task-size-rect-for-tablet";
+    public static final String REQUEST_ENABLE_ROTATION = "enable_rotation";
 
     public static Long sForcePauseTimeout;
     public static final String REQUEST_SET_FORCE_PAUSE_TIMEOUT = "set-force-pause-timeout";

@@ -91,9 +91,11 @@ public class WorkProfileTest extends AbstractLauncherUiTest {
     public void workTabExists() {
         mDevice.pressHome();
         waitForLauncherCondition("Launcher didn't start", Objects::nonNull);
-        waitForStableState("Launcher internal state didn't switch to Normal", () -> NORMAL);
+        waitForStateTransitionToEnd("Launcher internal state didn't switch to Normal",
+                () -> NORMAL);
         executeOnLauncher(launcher -> launcher.getStateManager().goToState(ALL_APPS));
-        waitForStableState("Launcher internal state didn't switch to All Apps", () -> ALL_APPS);
+        waitForStateTransitionToEnd("Launcher internal state didn't switch to All Apps",
+                () -> ALL_APPS);
         waitForLauncherCondition("Personal tab is missing",
                 launcher -> launcher.getAppsView().isPersonalTabVisible(),
                 LauncherInstrumentation.WAIT_TIME_MS);

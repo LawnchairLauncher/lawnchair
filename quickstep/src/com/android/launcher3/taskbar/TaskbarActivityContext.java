@@ -166,7 +166,8 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
                 new StashedHandleViewController(this, stashedHandleView),
                 new TaskbarStashController(this),
                 new TaskbarEduController(this),
-                new TaskbarAutohideSuspendController(this));
+                new TaskbarAutohideSuspendController(this),
+                new TaskbarPopupController());
     }
 
     public void init(TaskbarSharedState sharedState) {
@@ -253,6 +254,11 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
         // flag when opening a floating view that needs IME (such as Folder), but then that means
         // Taskbar will be below IME and thus users can't click the back button.
         return false;
+    }
+
+    @Override
+    public View.OnClickListener getItemOnClickListener() {
+        return this::onTaskbarIconClicked;
     }
 
     /**
