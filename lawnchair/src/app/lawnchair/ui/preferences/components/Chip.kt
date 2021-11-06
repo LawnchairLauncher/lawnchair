@@ -60,7 +60,7 @@ fun Chip(
         selectedProgress
     )
     val outlineColor = MaterialTheme.colorScheme.outline
-    val borderColor = outlineColor.copy(alpha = outlineColor.alpha * selectedProgress)
+    val borderColor = outlineColor.copy(alpha = outlineColor.alpha * (1f - selectedProgress))
 
     Box(
         contentAlignment = Alignment.Center,
