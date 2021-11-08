@@ -35,6 +35,7 @@ import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -139,7 +140,7 @@ public class GestureState implements RecentsAnimationCallbacks.RecentsAnimationL
     private Set<Integer> mPreviouslyAppearedTaskIds = new HashSet<>();
     private int mLastStartedTaskId = -1;
     private RecentsAnimationController mRecentsAnimationController;
-    private ThumbnailData mRecentsAnimationCanceledSnapshot;
+    private HashMap<Integer, ThumbnailData> mRecentsAnimationCanceledSnapshots;
 
     /** The time when the swipe up gesture is triggered. */
     private long mSwipeUpStartTimeMs;
@@ -354,16 +355,16 @@ public class GestureState implements RecentsAnimationCallbacks.RecentsAnimationL
     }
 
     @Override
-    public void onRecentsAnimationCanceled(ThumbnailData thumbnailData) {
-        mRecentsAnimationCanceledSnapshot = thumbnailData;
+    public void onRecentsAnimationCanceled(HashMap<Integer, ThumbnailData> thumbnailDatas) {
+        mRecentsAnimationCanceledSnapshots = thumbnailDatas;
         mStateCallback.setState(STATE_RECENTS_ANIMATION_CANCELED);
         mStateCallback.setState(STATE_RECENTS_ANIMATION_ENDED);
-        if (mRecentsAnimationCanceledSnapshot != null) {
+        if (mRecentsAnimationCanceledSnapshots != null) {
             // Clean up the screenshot to finalize the recents animation cancel
             if (mRecentsAnimationController != null) {
                 mRecentsAnimationController.cleanupScreenshot();
             }
-            mRecentsAnimationCanceledSnapshot = null;
+            mRecentsAnimationCanceledSnapshots = null;
         }
     }
 
@@ -378,9 +379,10 @@ public class GestureState implements RecentsAnimationCallbacks.RecentsAnimationL
      * while STATE_RECENTS_ANIMATION_CANCELED state is being set, and the caller is responsible for
      * calling {@link RecentsAnimationController#cleanupScreenshot()}.
      */
-    ThumbnailData consumeRecentsAnimationCanceledSnapshot() {
-        ThumbnailData data = mRecentsAnimationCanceledSnapshot;
-        mRecentsAnimationCanceledSnapshot = null;
+    HashMap<Integer, ThumbnailData> consumeRecentsAnimationCanceledSnapshot() {
+        HashMap<Integer, ThumbnailData> data =
+                new HashMap<Integer, ThumbnailData>(mRecentsAnimationCanceledSnapshots);
+        mRecentsAnimationCanceledSnapshots = null;
         return data;
     }
 
