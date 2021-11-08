@@ -118,7 +118,11 @@ public class GroupedTaskView extends TaskView {
     }
 
     protected boolean showTaskMenuWithContainer(IconView iconView) {
-        return TaskMenuView.showForTask(mTaskIdAttributeContainer[iconView == mIconView ? 0 : 1]);
+        if (mActivity.getDeviceProfile().overviewShowAsGrid) {
+            return TaskMenuViewWithArrow.Companion.showForTask(mTaskIdAttributeContainer[0]);
+        } else {
+            return TaskMenuView.showForTask(mTaskIdAttributeContainer[0]);
+        }
     }
 
     public void updateSplitBoundsConfig(StagedSplitBounds stagedSplitBounds) {
