@@ -61,6 +61,7 @@ import android.widget.Toast;
 
 import androidx.annotation.IntDef;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.DeviceProfile;
@@ -98,6 +99,7 @@ import com.android.quickstep.util.TaskViewSimulator;
 import com.android.quickstep.util.TransformParams;
 import com.android.quickstep.views.TaskThumbnailView.PreviewPositionHelper;
 import com.android.systemui.shared.recents.model.Task;
+import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.ActivityOptionsCompat;
 import com.android.systemui.shared.system.QuickStepContract;
@@ -106,6 +108,7 @@ import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 import java.lang.annotation.Retention;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
@@ -557,6 +560,18 @@ public class TaskView extends FrameLayout implements Reusable {
 
     public TaskThumbnailView getThumbnail() {
         return mSnapshotView;
+    }
+
+    void refreshThumbnails(@Nullable HashMap<Integer, ThumbnailData> thumbnailDatas) {
+        if (mTask != null && thumbnailDatas != null) {
+            final ThumbnailData thumbnailData = thumbnailDatas.get(mTask.key.id);
+            if (thumbnailData != null) {
+                mSnapshotView.setThumbnail(mTask, thumbnailData);
+                return;
+            }
+        }
+
+        mSnapshotView.refresh();
     }
 
     /** TODO(b/197033698) Remove all usages of above method and migrate to this one */
