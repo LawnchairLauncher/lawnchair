@@ -115,7 +115,7 @@ public abstract class HomeAppIcon extends AppIcon implements FolderDragTarget, W
                      String.format("want to drag the icon to cell(%d, %d)", cellX, cellY))
         ) {
             final Supplier<Point> dest = () -> Workspace.getCellCenter(mLauncher, cellX, cellY);
-            Workspace.dragIconToWorkspace(mLauncher, this, dest, true, getLongPressIndicator(),
+            Workspace.dragIconToWorkspace(mLauncher, this, dest, getLongPressIndicator(),
                     () -> addExpectedEventsForLongClick(), null);
             try (LauncherInstrumentation.Closable ignore = mLauncher.addContextLayer("dragged")) {
                 WorkspaceAppIcon appIcon =
