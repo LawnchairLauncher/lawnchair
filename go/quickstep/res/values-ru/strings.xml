@@ -16,6 +16,5 @@
     <string name="assistant_not_supported_text" msgid="1708031078549268884">"Чтобы слушать или переводить текст на экране, выберите другого цифрового помощника в настройках."</string>
     <string name="tooltip_listen" msgid="7634466447860989102">"Нажмите, чтобы прослушать текст на этой странице"</string>
     <string name="tooltip_translate" msgid="4184845868901542567">"Нажмите, чтобы перевести текст на этой странице"</string>
-    <!-- no translation found for toast_p2p_app_not_shareable (7229739094132131536) -->
-    <skip />
+    <string name="toast_p2p_app_not_shareable" msgid="7229739094132131536">"Невозможно предоставить доступ к этому приложению."</string>
 </resources>
