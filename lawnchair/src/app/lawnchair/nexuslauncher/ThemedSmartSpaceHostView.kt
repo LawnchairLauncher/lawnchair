@@ -5,6 +5,8 @@ import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.drawable.BitmapDrawable
 import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.RemoteViews
 import android.widget.TextView
@@ -25,10 +27,18 @@ class ThemedSmartSpaceHostView(context: Context) : SmartSpaceHostView(context) {
     private val templateTextView = LayoutInflater.from(context)
         .inflate(R.layout.smartspace_text_template, this, false) as DoubleShadowBubbleTextView
 
+    override fun getErrorView(): View {
+        return super.getErrorView().also { overrideStyles(it as ViewGroup) }
+    }
+
     override fun updateAppWidget(remoteViews: RemoteViews?) {
         super.updateAppWidget(remoteViews)
+        overrideStyles(this)
+    }
+
+    private fun overrideStyles(parent: ViewGroup) {
         val images = mutableListOf<ImageView>()
-        for (child in recursiveChildren) {
+        for (child in parent.recursiveChildren) {
             when (child) {
                 is TextView -> overrideTextView(child)
                 is ImageView -> images.add(child)
