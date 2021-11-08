@@ -1107,11 +1107,13 @@ public final class LauncherInstrumentation {
         }
     }
 
-    @NonNull UiObject2 waitForObjectInContainer(UiObject2 container, BySelector selector) {
+    @NonNull
+    UiObject2 waitForObjectInContainer(UiObject2 container, BySelector selector) {
         return waitForObjectsInContainer(container, selector).get(0);
     }
 
-    @NonNull List<UiObject2> waitForObjectsInContainer(
+    @NonNull
+    List<UiObject2> waitForObjectsInContainer(
             UiObject2 container, BySelector selector) {
         try {
             final List<UiObject2> objects = container.wait(
@@ -1406,13 +1408,13 @@ public final class LauncherInstrumentation {
         final Point end = new Point(endX, endY);
         sendPointer(downTime, downTime, MotionEvent.ACTION_DOWN, start, gestureScope);
         final long endTime = movePointer(
-                start, end, steps, false, downTime, slowDown, gestureScope);
+                start, end, steps, false, downTime, downTime, slowDown, gestureScope);
         sendPointer(downTime, endTime, MotionEvent.ACTION_UP, end, gestureScope);
     }
 
-    long movePointer(Point start, Point end, int steps, boolean isDecelerating,
-            long downTime, boolean slowDown, GestureScope gestureScope) {
-        long endTime = movePointer(downTime, downTime, steps * GESTURE_STEP_MS,
+    long movePointer(Point start, Point end, int steps, boolean isDecelerating, long downTime,
+            long startTime, boolean slowDown, GestureScope gestureScope) {
+        long endTime = movePointer(downTime, startTime, steps * GESTURE_STEP_MS,
                 isDecelerating, start, end, gestureScope);
         if (slowDown) {
             endTime = movePointer(downTime, endTime + GESTURE_STEP_MS, 5 * GESTURE_STEP_MS, end,

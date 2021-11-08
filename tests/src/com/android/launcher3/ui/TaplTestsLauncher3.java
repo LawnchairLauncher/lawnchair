@@ -365,27 +365,11 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
         }
     }
 
-    private HomeAppIcon createShortcutIfNotExist(String name) {
-        HomeAppIcon homeAppIcon = mLauncher.getWorkspace().tryGetWorkspaceAppIcon(name);
-        if (homeAppIcon == null) {
-            HomeAllApps allApps = mLauncher.getWorkspace().switchToAllApps();
-            allApps.freeze();
-            try {
-                allApps.getAppIcon(name).dragToWorkspace(false, false);
-            } finally {
-                allApps.unfreeze();
-            }
-            homeAppIcon = mLauncher.getWorkspace().getWorkspaceAppIcon(name);
-        }
-        return homeAppIcon;
-    }
-
-    @Ignore("b/205014516")
     @Test
     @PortraitLandscape
     public void testDragToFolder() throws Exception {
-        final HomeAppIcon playStoreIcon = createShortcutIfNotExist("Play Store");
-        final HomeAppIcon gmailIcon = createShortcutIfNotExist("Gmail");
+        final HomeAppIcon playStoreIcon = createShortcutIfNotExist("Play Store", 0, 1);
+        final HomeAppIcon gmailIcon = createShortcutIfNotExist("Gmail", 1, 1);
 
         FolderIcon folderIcon = gmailIcon.dragToIcon(playStoreIcon);
 
@@ -399,7 +383,7 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
         assertNull("Play Store should be moved to a folder.",
                 workspace.tryGetWorkspaceAppIcon("Play Store"));
 
-        final HomeAppIcon youTubeIcon = createShortcutIfNotExist("YouTube");
+        final HomeAppIcon youTubeIcon = createShortcutInCenterIfNotExist("YouTube");
 
         folderIcon = youTubeIcon.dragToIcon(folderIcon);
         folder = folderIcon.open();
@@ -433,8 +417,8 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
     @PortraitLandscape
     public void testDeleteFromWorkspace() throws Exception {
         // test delete both built-in apps and user-installed app from workspace
-        for (String appName : new String[] {"Gmail", "Play Store", APP_NAME}) {
-            final HomeAppIcon homeAppIcon = createShortcutIfNotExist(appName);
+        for (String appName : new String[]{"Gmail", "Play Store", APP_NAME}) {
+            final HomeAppIcon homeAppIcon = createShortcutInCenterIfNotExist(appName);
             Workspace workspace = mLauncher.getWorkspace().deleteAppIcon(homeAppIcon);
             assertNull(appName + " app was found after being deleted from workspace",
                     workspace.tryGetWorkspaceAppIcon(appName));
@@ -458,7 +442,7 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
         TestUtil.installDummyApp();
         try {
             verifyAppUninstalledFromAllApps(
-                    createShortcutIfNotExist(DUMMY_APP_NAME).uninstall(), DUMMY_APP_NAME);
+                    createShortcutInCenterIfNotExist(DUMMY_APP_NAME).uninstall(), DUMMY_APP_NAME);
         } finally {
             TestUtil.uninstallDummyApp();
         }
@@ -509,7 +493,7 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
         }
 
         // test to move a shortcut to other cell.
-        final HomeAppIcon launcherTestAppIcon = createShortcutIfNotExist(APP_NAME);
+        final HomeAppIcon launcherTestAppIcon = createShortcutInCenterIfNotExist(APP_NAME);
         for (Point target : targets) {
             launcherTestAppIcon.dragToWorkspace(target.x, target.y);
         }
