@@ -20,7 +20,7 @@
     <string name="home_screen_label">ホーム画面</string>
     <string name="home_screen_description">フィード、At a Glance、グリッド、アイコン</string>
     <string name="general_label">一般設定</string>
-    <string name="general_description">通知ドット、アイコンパック</string>
+    <string name="general_description">色、アイコンパック、通知ドット</string>
     <string name="home_screen_rotation_label">ホーム画面の回転</string>
     <string name="home_screen_rotaton_description">デバイスを回転させた時</string>
     <string name="auto_add_shortcuts_label">新しいアプリをホーム画面に追加</string>
