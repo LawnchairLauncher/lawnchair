@@ -63,6 +63,7 @@ import com.android.quickstep.views.RecentsView;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Set;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
@@ -459,7 +460,7 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
         }
 
         @Override
-        public void onRecentsAnimationCanceled(ThumbnailData thumbnailData) {
+        public void onRecentsAnimationCanceled(HashMap<Integer, ThumbnailData> thumbnailDatas) {
             endGestureStateOverride(true);
         }
 

@@ -24,6 +24,7 @@ import com.android.quickstep.util.RecentsOrientedState;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 
+import java.util.HashMap;
 import java.util.function.Consumer;
 
 /**
@@ -159,6 +160,20 @@ public class GroupedTaskView extends TaskView {
     public void launchTask(@NonNull Consumer<Boolean> callback, boolean freezeTaskList) {
         getRecentsView().getSplitPlaceholder().launchTasks(mTask, mSecondaryTask,
                 STAGE_POSITION_TOP_OR_LEFT, callback);
+    }
+
+    @Override
+    void refreshThumbnails(HashMap<Integer, ThumbnailData> thumbnailDatas) {
+        super.refreshThumbnails(thumbnailDatas);
+        if (mSecondaryTask != null && thumbnailDatas != null) {
+            final ThumbnailData thumbnailData = thumbnailDatas.get(mSecondaryTask.key.id);
+            if (thumbnailData != null) {
+                mSnapshotView2.setThumbnail(mSecondaryTask, thumbnailData);
+                return;
+            }
+        }
+
+        mSnapshotView2.refresh();
     }
 
     @Override
