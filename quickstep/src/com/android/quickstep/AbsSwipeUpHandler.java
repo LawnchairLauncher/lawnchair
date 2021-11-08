@@ -121,6 +121,7 @@ import com.android.systemui.shared.system.TaskStackChangeListener;
 import com.android.systemui.shared.system.TaskStackChangeListeners;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.function.Consumer;
 
 /**
@@ -399,9 +400,10 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
         // Set up a entire animation lifecycle callback to notify the current recents view when
         // the animation is canceled
         mGestureState.runOnceAtState(STATE_RECENTS_ANIMATION_CANCELED, () -> {
-                ThumbnailData snapshot = mGestureState.consumeRecentsAnimationCanceledSnapshot();
-                if (snapshot != null) {
-                    mRecentsView.switchToScreenshot(snapshot, () -> {
+                HashMap<Integer, ThumbnailData> snapshots =
+                        mGestureState.consumeRecentsAnimationCanceledSnapshot();
+                if (snapshots != null) {
+                    mRecentsView.switchToScreenshot(snapshots, () -> {
                         if (mRecentsAnimationController != null) {
                             mRecentsAnimationController.cleanupScreenshot();
                         }
@@ -809,7 +811,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
     }
 
     @Override
-    public void onRecentsAnimationCanceled(ThumbnailData thumbnailData) {
+    public void onRecentsAnimationCanceled(HashMap<Integer, ThumbnailData> thumbnailDatas) {
         ActiveGestureLog.INSTANCE.addLog("cancelRecentsAnimation");
         mActivityInitListener.unregister();
         mStateCallback.setStateOnUiThread(STATE_GESTURE_CANCELLED | STATE_HANDLER_INVALIDATED);

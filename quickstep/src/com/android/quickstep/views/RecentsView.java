@@ -180,6 +180,7 @@ import com.android.systemui.shared.system.TaskStackChangeListeners;
 import com.android.wm.shell.pip.IPipAnimationListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -4748,15 +4749,12 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
      *  from gesture state, which is a larger change of it having to keep track of multiple tasks.
      *  OR. Maybe it doesn't need to pass in a thumbnail and we can use the exact same flow as above
      */
-    public void switchToScreenshot(ThumbnailData thumbnailData, Runnable onFinishRunnable) {
-        TaskView taskView = getRunningTaskView();
+    public void switchToScreenshot(@Nullable HashMap<Integer, ThumbnailData> thumbnailDatas,
+            Runnable onFinishRunnable) {
+        final TaskView taskView = getRunningTaskView();
         if (taskView != null) {
             taskView.setShowScreenshot(true);
-            if (thumbnailData != null) {
-                taskView.getThumbnail().setThumbnail(taskView.getTask(), thumbnailData);
-            } else {
-                taskView.getThumbnail().refresh();
-            }
+            taskView.refreshThumbnails(thumbnailDatas);
             ViewUtils.postFrameDrawn(taskView, onFinishRunnable);
         } else {
             onFinishRunnable.run();
