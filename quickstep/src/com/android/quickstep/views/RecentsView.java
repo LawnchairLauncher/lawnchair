@@ -2768,6 +2768,9 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         boolean isSplitPlaceholderFirstInGrid = isSplitPlaceholderFirstInGrid();
         boolean isSplitPlaceholderLastInGrid = isSplitPlaceholderLastInGrid();
         TaskView lastGridTaskView = showAsGrid ? getLastGridTaskView() : null;
+        int currentPageScroll = getScrollForPage(mCurrentPage);
+        int lastGridTaskScroll = getScrollForPage(indexOfChild(lastGridTaskView));
+        boolean currentPageSnapsToEndOfGrid = currentPageScroll == lastGridTaskScroll;
         if (lastGridTaskView != null && lastGridTaskView.isVisibleToUser()) {
             // After dismissal, animate translation of the remaining tasks to fill any gap left
             // between the end of the grid and the clear all button. Only animate if the clear
@@ -2811,8 +2814,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                     // Shift all the tasks to make space for split placeholder.
                     longGridRowWidthDiff += mIsRtl ? mSplitPlaceholderSize : -mSplitPlaceholderSize;
                 }
-            } else if (isLandscapeSplit && getScrollForPage(mCurrentPage)
-                    == getScrollForPage(indexOfChild(lastGridTaskView))) {
+            } else if (isLandscapeSplit && currentPageSnapsToEndOfGrid) {
                 // Use last task as reference point for scroll diff and snapping calculation as it's
                 // the only invariant point in landscape split screen.
                 snapToLastTask = true;
@@ -3183,14 +3185,39 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                                 }
                             }
 
+                            TaskView newLastGridTaskView = getLastGridTaskView();
                             if (finalSnapToLastTask) {
                                 // If snapping to last task, find the last task after dismissal.
-                                pageToSnapTo = indexOfChild(getLastGridTaskView());
+                                pageToSnapTo = indexOfChild(newLastGridTaskView);
                             } else if (taskViewIdToSnapTo != -1) {
                                 // If snapping to another page due to indices rearranging, find
                                 // the new index after dismissal & rearrange using the task view id.
                                 pageToSnapTo = indexOfChild(
                                         getTaskViewFromTaskViewId(taskViewIdToSnapTo));
+                                int taskViewToSnapToScroll = getScrollForPage(pageToSnapTo);
+                                int lastGridTaskScroll = getScrollForPage(
+                                        indexOfChild(newLastGridTaskView));
+                                if (!currentPageSnapsToEndOfGrid
+                                        && taskViewToSnapToScroll == lastGridTaskScroll) {
+                                    // If it wasn't snapped to one of the last pages, but is now
+                                    // snapped to last pages, we'll need to compensate for the
+                                    // difference as last pages' scroll is the position where
+                                    // ClearAllButton is barely invisible, instead of aligned to
+                                    // mLastComputedTaskSize.
+                                    int normalTaskEnd = mIsRtl
+                                            ? mLastComputedTaskSize.right
+                                            : mLastComputedTaskSize.left;
+                                    int lastTaskStart = mIsRtl
+                                            ? mLastComputedGridSize.left
+                                            : mLastComputedGridSize.right;
+                                    // As snapped task is not the last task, it can only be the
+                                    // second last task.
+                                    int distanceToSnappedTaskEnd =
+                                            (mPageSpacing + mLastComputedGridTaskSize.width()) * 2;
+                                    int snappedTaskEnd = lastTaskStart + (mIsRtl
+                                            ? distanceToSnappedTaskEnd : -distanceToSnappedTaskEnd);
+                                    mCurrentPageScrollDiff += snappedTaskEnd - normalTaskEnd;
+                                }
                             }
                         }
                         setCurrentPage(pageToSnapTo);
@@ -3817,7 +3844,8 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
      * if RecentsView is in portrait or RecentsView isn't shown as grid.
      */
     private boolean isSplitPlaceholderFirstInGrid() {
-        if (!mActivity.getDeviceProfile().isLandscape || !showAsGrid()) {
+        if (!mActivity.getDeviceProfile().isLandscape || !showAsGrid()
+                || !isSplitSelectionActive()) {
             return false;
         }
         @StagePosition int position = mSplitSelectStateController.getActiveSplitStagePosition();
@@ -3831,7 +3859,8 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
      * RecentsView is in portrait or RecentsView isn't shown as grid.
      */
     private boolean isSplitPlaceholderLastInGrid() {
-        if (!mActivity.getDeviceProfile().isLandscape || !showAsGrid()) {
+        if (!mActivity.getDeviceProfile().isLandscape || !showAsGrid()
+                || !isSplitSelectionActive()) {
             return false;
         }
         @StagePosition int position = mSplitSelectStateController.getActiveSplitStagePosition();
