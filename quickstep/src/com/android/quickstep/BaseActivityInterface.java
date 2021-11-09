@@ -306,7 +306,6 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
      * Calculates the overview grid size for the provided device configuration.
      */
     public final void calculateGridSize(Context context, DeviceProfile dp, Rect outRect) {
-        Resources res = context.getResources();
         Rect insets = dp.getInsets();
         int topMargin = dp.overviewTaskThumbnailTopMarginPx;
         int bottomMargin = getOverviewActionsHeight(context, dp);
