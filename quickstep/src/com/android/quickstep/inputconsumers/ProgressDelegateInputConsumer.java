@@ -153,10 +153,8 @@ public class ProgressDelegateInputConsumer implements InputConsumer,
 
         ObjectAnimator anim = mProgress.animateToValue(endValue);
         anim.setDuration(duration).setInterpolator(scrollInterpolatorForVelocity(velocity));
-        if (mRecentsAnimationController != null) {
-            anim.addListener(AnimatorListeners.forSuccessCallback(
-                    () -> mStateCallback.setState(STATE_FLING_FINISHED)));
-        }
+        anim.addListener(AnimatorListeners.forSuccessCallback(
+                () -> mStateCallback.setState(STATE_FLING_FINISHED)));
         anim.start();
     }
 
