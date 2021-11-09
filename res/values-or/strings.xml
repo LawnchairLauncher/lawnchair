@@ -69,6 +69,7 @@
     <string name="out_of_space" msgid="6692471482459245734">"ଏହି ମୂଳସ୍କ୍ରିନରେ ଆଉ ଜାଗା ନାହିଁ"</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"ମନପସନ୍ଦ ଟ୍ରେରେ ଆଉ କୋଠରୀ ନାହିଁ"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"ଆପ୍‌ ତାଲିକା"</string>
+    <string name="all_apps_search_results" msgid="5889367432531296759">"ସନ୍ଧାନ ଫଳାଫଳ"</string>
     <string name="all_apps_button_personal_label" msgid="1315764287305224468">"ବ୍ୟକ୍ତିଗତ ଆପ୍ ତାଲିକା"</string>
     <string name="all_apps_button_work_label" msgid="7270707118948892488">"କାର୍ଯ୍ୟକାରୀ ଆପ୍‌ ତାଲିକା"</string>
     <string name="remove_drop_target_label" msgid="7812859488053230776">"ବାହାର କରନ୍ତୁ"</string>
@@ -85,7 +86,8 @@
     <string name="permdesc_write_settings" msgid="5440712911516509985">"ହୋମରେ ସେଟିଙ୍ଗ ଏବଂ ଶର୍ଟକଟ୍‌ ପରିବର୍ତ୍ତନ କରିବାକୁ ଆପକୁ ଅନୁମତି ଦିଏ।"</string>
     <string name="msg_no_phone_permission" msgid="9208659281529857371">"ଫୋନ୍‌ କଲ୍‌ କରିବାକୁ <xliff:g id="APP_NAME">%1$s</xliff:g>କୁ ଅନୁମତି ଦିଆଯାଇ ନାହିଁ"</string>
     <string name="gadget_error_text" msgid="740356548025791839">"ୱିଜେଟ୍ ଲୋଡ୍ କରାଯାଇପାରିବ ନାହିଁ"</string>
-    <string name="gadget_setup_text" msgid="1745356155479272374">"ସେଟ୍ ଅପ୍ ସମ୍ପୂର୍ଣ୍ଣ କରିବା ପାଇଁ ଟାପ୍ କରନ୍ତୁ"</string>
+    <string name="gadget_setup_text" msgid="8348374825537681407">"ୱିଜେଟ ସେଟିଂସ"</string>
+    <string name="gadget_complete_setup_text" msgid="309040266978007925">"ସେଟଅପ ସମ୍ପୂର୍ଣ୍ଣ କରିବାକୁ ଟାପ କରନ୍ତୁ"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"ଏହା ଏକ ସିଷ୍ଟମ୍‌ ଆପ୍‌ ଅଟେ ଏବଂ ଏହା ଅନଇନଷ୍ଟଲ୍‌ କରାଯାଇ ପାରିବ ନାହିଁ।"</string>
     <string name="folder_hint_text" msgid="5174843001373488816">"ନାମ ସମ୍ପାଦନ କରନ୍ତୁ"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"<xliff:g id="APP_NAME">%1$s</xliff:g> ଅକ୍ଷମ କରାଗଲା"</string>
@@ -120,7 +122,7 @@
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"ନୂଆ ଆପ୍‌ ପାଇଁ"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"ଅଜଣା"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"କାଢ଼ି ଦିଅନ୍ତୁ"</string>
-    <string name="abandoned_search" msgid="891119232568284442">"Search"</string>
+    <string name="abandoned_search" msgid="891119232568284442">"ସନ୍ଧାନ କରନ୍ତୁ"</string>
     <string name="abandoned_promises_title" msgid="7096178467971716750">"ଏହି ଆପ୍‌ ଇନଷ୍ଟଲ୍‌ ହୋଇନାହିଁ"</string>
     <string name="abandoned_promise_explanation" msgid="3990027586878167529">"ଏହି ଆଇକନ୍‌ ପାଇଁ ଆପ୍‌ ଇନଷ୍ଟଲ୍‌ ହୋଇନାହିଁ। ଏହାକୁ ଆପଣ ଆପ୍‌ ପାଇଁ ବାହାର କରିପାରିବେ କିମ୍ୱା ସର୍ଚ୍ଚ କରି ପାରିବେ ଏବଂ ଏହାକୁ ମାନୁଆଲ୍‌ ଭାବରେ ଇନଷ୍ଟଲ୍‌ କରିପାରିବେ।"</string>
     <string name="app_installing_title" msgid="5864044122733792085">"<xliff:g id="NAME">%1$s</xliff:g> ଇନଷ୍ଟଲ୍ କରାଯାଉଛି, <xliff:g id="PROGRESS">%2$s</xliff:g> ସମ୍ପୂର୍ଣ୍ଣ ହୋଇଛି"</string>

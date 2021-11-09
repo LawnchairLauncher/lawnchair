@@ -69,6 +69,7 @@
     <string name="out_of_space" msgid="6692471482459245734">"இந்த முகப்புத் திரையில் இடமில்லை"</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"பிடித்தவை ட்ரேயில் இடமில்லை"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"ஆப்ஸின் பட்டியல்"</string>
+    <string name="all_apps_search_results" msgid="5889367432531296759">"தேடல் முடிவுகள்"</string>
     <string name="all_apps_button_personal_label" msgid="1315764287305224468">"தனிப்பட்ட ஆப்ஸ் பட்டியல்"</string>
     <string name="all_apps_button_work_label" msgid="7270707118948892488">"பணி ஆப்ஸ் பட்டியல்"</string>
     <string name="remove_drop_target_label" msgid="7812859488053230776">"அகற்று"</string>
@@ -85,7 +86,8 @@
     <string name="permdesc_write_settings" msgid="5440712911516509985">"முகப்பில் உள்ள அமைப்பு மற்றும் குறுக்குவழிகளை மாற்ற ஆப்ஸை அனுமதிக்கிறது."</string>
     <string name="msg_no_phone_permission" msgid="9208659281529857371">"ஃபோன் அழைப்புகள் செய்ய, <xliff:g id="APP_NAME">%1$s</xliff:g> அனுமதிக்கப்படவில்லை"</string>
     <string name="gadget_error_text" msgid="740356548025791839">"விட்ஜெட்டை ஏற்ற முடியவில்லை"</string>
-    <string name="gadget_setup_text" msgid="1745356155479272374">"அமைவை நிறைவுசெய்யத் தட்டவும்"</string>
+    <string name="gadget_setup_text" msgid="8348374825537681407">"விட்ஜெட் அமைப்புகள்"</string>
+    <string name="gadget_complete_setup_text" msgid="309040266978007925">"அமைவை நிறைவுசெய்யத் தட்டவும்"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"இது அமைப்பு ஆப்ஸ் என்பதால் நிறுவல் நீக்கம் செய்ய முடியாது."</string>
     <string name="folder_hint_text" msgid="5174843001373488816">"பெயரைத் திருத்துதல்"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"<xliff:g id="APP_NAME">%1$s</xliff:g> முடக்கப்பட்டது"</string>
@@ -96,13 +98,13 @@
     <string name="default_scroll_format" msgid="7475544710230993317">"பக்கம் %1$d / %2$d"</string>
     <string name="workspace_scroll_format" msgid="8458889198184077399">"முகப்புத் திரை %1$d of %2$d"</string>
     <string name="workspace_new_page" msgid="257366611030256142">"புதிய முகப்புத் திரை பக்கம்"</string>
-    <string name="folder_opened" msgid="94695026776264709">"திறக்கப்பட்டக் கோப்புறை, <xliff:g id="WIDTH">%1$d</xliff:g> x <xliff:g id="HEIGHT">%2$d</xliff:g>"</string>
-    <string name="folder_tap_to_close" msgid="4625795376335528256">"கோப்புறையை மூட, தட்டவும்"</string>
+    <string name="folder_opened" msgid="94695026776264709">"திறக்கப்பட்ட ஃபோல்டர், <xliff:g id="WIDTH">%1$d</xliff:g> x <xliff:g id="HEIGHT">%2$d</xliff:g>"</string>
+    <string name="folder_tap_to_close" msgid="4625795376335528256">"ஃபோல்டரை மூட, தட்டவும்"</string>
     <string name="folder_tap_to_rename" msgid="4017685068016979677">"மாற்றிய பெயரைச் சேமிக்க, தட்டவும்"</string>
-    <string name="folder_closed" msgid="4100806530910930934">"கோப்புறை மூடப்பட்டது"</string>
-    <string name="folder_renamed" msgid="1794088362165669656">"கோப்புறை <xliff:g id="NAME">%1$s</xliff:g> என மறுபெயரிடப்பட்டது"</string>
-    <string name="folder_name_format_exact" msgid="8626242716117004803">"கோப்புறை: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> கோப்புகள்"</string>
-    <string name="folder_name_format_overflow" msgid="4270108890534995199">"கோப்புறை: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> அல்லது அதற்கு அதிகமான கோப்புகள்"</string>
+    <string name="folder_closed" msgid="4100806530910930934">"ஃபோல்டர் மூடப்பட்டது"</string>
+    <string name="folder_renamed" msgid="1794088362165669656">"ஃபோல்டர் <xliff:g id="NAME">%1$s</xliff:g> என மறுபெயரிடப்பட்டது"</string>
+    <string name="folder_name_format_exact" msgid="8626242716117004803">"ஃபோல்டர்: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> ஃபைல்கள்"</string>
+    <string name="folder_name_format_overflow" msgid="4270108890534995199">"ஃபோல்டர்: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> அல்லது அதற்கு அதிகமான ஃபைல்கள்"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"வால்பேப்பர்கள்"</string>
     <string name="styles_wallpaper_button_text" msgid="8216961355289236794">"வால்பேப்பர் &amp; ஸ்டைல்"</string>
     <string name="settings_button_text" msgid="8873672322605444408">"முகப்பு அமைப்புகள்"</string>
@@ -138,11 +140,11 @@
     <string name="move_to_position" msgid="6750008980455459790">"நிலை <xliff:g id="NUMBER">%1$s</xliff:g>க்கு நகர்த்து"</string>
     <string name="move_to_hotseat_position" msgid="6295412897075147808">"விரும்பும் நிலை <xliff:g id="NUMBER">%1$s</xliff:g>க்கு நகர்த்து"</string>
     <string name="item_moved" msgid="4606538322571412879">"உருப்படி நகர்த்தப்பட்டது"</string>
-    <string name="add_to_folder" msgid="9040534766770853243">"இந்தக் கோப்புறையில் சேர்க்கும்: <xliff:g id="NAME">%1$s</xliff:g>"</string>
-    <string name="add_to_folder_with_app" msgid="4534929978967147231">"<xliff:g id="NAME">%1$s</xliff:g> உள்ள கோப்புறையில் சேர்க்கும்"</string>
-    <string name="added_to_folder" msgid="4793259502305558003">"கோப்புறையில் உருப்படி சேர்க்கப்பட்டது"</string>
-    <string name="create_folder_with" msgid="4050141361160214248">"இதனுடன் கோப்புறையை உருவாக்கும்: <xliff:g id="NAME">%1$s</xliff:g>"</string>
-    <string name="folder_created" msgid="6409794597405184510">"கோப்புறை உருவாக்கப்பட்டது"</string>
+    <string name="add_to_folder" msgid="9040534766770853243">"இந்த ஃபோல்டரில் சேர்க்கும்: <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="add_to_folder_with_app" msgid="4534929978967147231">"<xliff:g id="NAME">%1$s</xliff:g> உள்ள ஃபோல்டரில் சேர்க்கும்"</string>
+    <string name="added_to_folder" msgid="4793259502305558003">"ஃபோல்டரில் உருப்படி சேர்க்கப்பட்டது"</string>
+    <string name="create_folder_with" msgid="4050141361160214248">"இதனுடன் ஃபோல்டரை உருவாக்கும்: <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="folder_created" msgid="6409794597405184510">"ஃபோல்டர் உருவாக்கப்பட்டது"</string>
     <string name="action_move_to_workspace" msgid="1603837886334246317">"முகப்புத் திரைக்கு நகர்த்து"</string>
     <string name="action_resize" msgid="1802976324781771067">"அளவு மாற்று"</string>
     <string name="action_increase_width" msgid="8773715375078513326">"அகலத்தை அதிகரி"</string>

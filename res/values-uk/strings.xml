@@ -73,6 +73,7 @@
     <string name="out_of_space" msgid="6692471482459245734">"На головному екрані немає місця"</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"В області \"Вибране\" немає місця"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"Список додатків"</string>
+    <string name="all_apps_search_results" msgid="5889367432531296759">"Результати пошуку"</string>
     <string name="all_apps_button_personal_label" msgid="1315764287305224468">"Список особистих додатків"</string>
     <string name="all_apps_button_work_label" msgid="7270707118948892488">"Список робочих додатків"</string>
     <string name="remove_drop_target_label" msgid="7812859488053230776">"Видалити"</string>
@@ -89,7 +90,8 @@
     <string name="permdesc_write_settings" msgid="5440712911516509985">"Дозволяє програмі змінювати налаштування та ярлики на головному екрані."</string>
     <string name="msg_no_phone_permission" msgid="9208659281529857371">"Додаток <xliff:g id="APP_NAME">%1$s</xliff:g> не має дозволу телефонувати"</string>
     <string name="gadget_error_text" msgid="740356548025791839">"Не вдається завантажити віджет"</string>
-    <string name="gadget_setup_text" msgid="1745356155479272374">"Торкніться, щоб завершити налаштування"</string>
+    <string name="gadget_setup_text" msgid="8348374825537681407">"Налаштування віджета"</string>
+    <string name="gadget_complete_setup_text" msgid="309040266978007925">"Торкніться, щоб завершити налаштування"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"Це системна програма, її неможливо видалити."</string>
     <string name="folder_hint_text" msgid="5174843001373488816">"Редагувати назву"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"<xliff:g id="APP_NAME">%1$s</xliff:g> вимкнено"</string>

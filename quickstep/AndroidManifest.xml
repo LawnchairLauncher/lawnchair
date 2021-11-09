@@ -22,11 +22,6 @@
      xmlns:tools="http://schemas.android.com/tools"
      package="com.android.launcher3">
 
-     <permission
-        android:name="${packageName}.permission.HOTSEAT_EDU"
-        android:permissionGroup="android.permission-group.SYSTEM_TOOLS"
-        android:protectionLevel="signatureOrSystem" />
-
     <uses-permission android:name="android.permission.BROADCAST_CLOSE_SYSTEM_DIALOGS" />
     <uses-permission android:name="android.permission.CONTROL_REMOTE_APP_TRANSITION_ANIMATIONS"/>
     <uses-permission android:name="android.permission.VIBRATE"/>
@@ -41,7 +36,6 @@
     <uses-permission android:name="android.permission.MANAGE_ACCESSIBILITY"/>
     <uses-permission android:name="android.permission.MONITOR_INPUT"/>
 
-    <uses-permission android:name="${packageName}.permission.HOTSEAT_EDU" />
     <uses-permission android:name="android.permission.SYSTEM_APPLICATION_OVERLAY" />
 
     <application android:backupAgent="com.android.launcher3.LauncherBackupAgent"
@@ -130,20 +124,6 @@
             <intent-filter>
                 <action android:name="com.android.quickstep.action.GESTURE_ONBOARDING_ALL_SET"/>
                 <category android:name="android.intent.category.DEFAULT"/>
-            </intent-filter>
-        </activity>
-
-        <activity
-            android:name=".hybridhotseat.HotseatEduActivity"
-            android:theme="@android:style/Theme.NoDisplay"
-            android:noHistory="true"
-            android:launchMode="singleTask"
-            android:clearTaskOnLaunch="true"
-            android:permission="${packageName}.permission.HOTSEAT_EDU"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="com.android.launcher3.action.SHOW_HYBRID_HOTSEAT_EDU"/>
-                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
 

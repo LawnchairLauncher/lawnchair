@@ -69,6 +69,7 @@
     <string name="out_of_space" msgid="6692471482459245734">"Ekkert pláss á þessum heimaskjá"</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"Ekki meira pláss í bakka fyrir uppáhald"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"Forritalisti"</string>
+    <string name="all_apps_search_results" msgid="5889367432531296759">"Leitarniðurstöður"</string>
     <string name="all_apps_button_personal_label" msgid="1315764287305224468">"Listi yfir eigin forrit"</string>
     <string name="all_apps_button_work_label" msgid="7270707118948892488">"Listi yfir vinnuforrit"</string>
     <string name="remove_drop_target_label" msgid="7812859488053230776">"Taka niður"</string>
@@ -85,7 +86,8 @@
     <string name="permdesc_write_settings" msgid="5440712911516509985">"Leyfir forriti að breyta stillingum og flýtileiðum heimaskjás."</string>
     <string name="msg_no_phone_permission" msgid="9208659281529857371">"<xliff:g id="APP_NAME">%1$s</xliff:g> hefur ekki leyfi til að hringja símtöl"</string>
     <string name="gadget_error_text" msgid="740356548025791839">"Ekki hægt að hlaða græju"</string>
-    <string name="gadget_setup_text" msgid="1745356155479272374">"Ýttu til að ljúka við uppsetningu"</string>
+    <string name="gadget_setup_text" msgid="8348374825537681407">"Græjustillingar"</string>
+    <string name="gadget_complete_setup_text" msgid="309040266978007925">"Ýttu til að ljúka við uppsetningu"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"Þetta er kerfisforrit sem ekki er hægt að fjarlægja."</string>
     <string name="folder_hint_text" msgid="5174843001373488816">"Breyta nafni"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"Óvirkt <xliff:g id="APP_NAME">%1$s</xliff:g>"</string>

@@ -69,6 +69,7 @@
     <string name="out_of_space" msgid="6692471482459245734">"홈 화면에 더 이상 공간이 없습니다."</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"즐겨찾기 트레이에 더 이상 공간이 없습니다."</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"앱 목록"</string>
+    <string name="all_apps_search_results" msgid="5889367432531296759">"검색결과"</string>
     <string name="all_apps_button_personal_label" msgid="1315764287305224468">"개인 앱 목록"</string>
     <string name="all_apps_button_work_label" msgid="7270707118948892488">"업무용 앱 목록"</string>
     <string name="remove_drop_target_label" msgid="7812859488053230776">"삭제"</string>
@@ -85,7 +86,8 @@
     <string name="permdesc_write_settings" msgid="5440712911516509985">"앱이 홈에 있는 설정 및 바로가기를 변경할 수 있도록 합니다."</string>
     <string name="msg_no_phone_permission" msgid="9208659281529857371">"<xliff:g id="APP_NAME">%1$s</xliff:g>에서 전화를 걸 수 없습니다."</string>
     <string name="gadget_error_text" msgid="740356548025791839">"위젯을 로드할 수 없습니다."</string>
-    <string name="gadget_setup_text" msgid="1745356155479272374">"탭하여 설정을 완료하세요."</string>
+    <string name="gadget_setup_text" msgid="8348374825537681407">"위젯 설정"</string>
+    <string name="gadget_complete_setup_text" msgid="309040266978007925">"탭하여 설정을 완료하세요."</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"시스템 앱은 제거할 수 없습니다."</string>
     <string name="folder_hint_text" msgid="5174843001373488816">"이름 수정"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"<xliff:g id="APP_NAME">%1$s</xliff:g> 사용 안함"</string>

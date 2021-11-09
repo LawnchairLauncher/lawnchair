@@ -58,7 +58,7 @@
     <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"გადაფურცლეთ ზემოთ."</string>
     <string name="home_gesture_feedback_complete_with_follow_up" msgid="1427872029729605034">"თქვენ შეასრულეთ მთავარ ეკრანზე დაბრუნების ჟესტი. ახლა კი შევიტყოთ, თუ როგორ დავბრუნდეთ უკან."</string>
     <string name="home_gesture_feedback_complete_without_follow_up" msgid="8049099486868933882">"თქვენ შეასრულეთ მთავარ ეკრანზე დაბრუნების ჟესტი."</string>
-    <string name="home_gesture_intro_title" msgid="836590312858441830">"მთავარ გვერდზე გადასასვლელად გადაფურცლეთ"</string>
+    <string name="home_gesture_intro_title" msgid="836590312858441830">"მთავარი გვერდის სანახავად გადაფურცლეთ"</string>
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"გადაფურცლეთ ეკრანის ქვედა კიდიდან ზემოთ. ამ ჟესტს ყოველთვის მთავარი გვერდის ეკრანზე გადაყავხართ."</string>
     <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"გადაფურცლეთ ეკრანის ქვედა კიდიდან ზემოთ."</string>
     <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"უფრო ხანგრძლივად დააჭირეთ თითი ფანჯარას, რომ არ დაიხუროს."</string>

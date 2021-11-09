@@ -181,7 +181,7 @@ public final class FeatureFlags {
                     + "Ignored if ENABLE_SMARTSPACE_UNIVERSAL is enabled.");
 
     public static final BooleanFlag ENABLE_SMARTSPACE_FEEDBACK = getDebugFlag(
-            "ENABLE_SMARTSPACE_FEEDBACK", true,
+            "ENABLE_SMARTSPACE_FEEDBACK", false,
             "Adds a menu option to send feedback for Enhanced Smartspace.");
 
     public static final BooleanFlag ENABLE_SMARTSPACE_DISMISS = getDebugFlag(
@@ -253,6 +253,10 @@ public final class FeatureFlags {
     public static final BooleanFlag ENABLE_WALLPAPER_SCRIM = getDebugFlag(
             "ENABLE_WALLPAPER_SCRIM", false,
             "Enables scrim over wallpaper for text protection.");
+
+    public static final BooleanFlag WIDGETS_IN_LAUNCHER_PREVIEW = getDebugFlag(
+            "WIDGETS_IN_LAUNCHER_PREVIEW", true,
+            "Enables widgets in Launcher preview for the Wallpaper app.");
 
     public static void initialize(Context context) {
         synchronized (sDebugFlags) {

@@ -69,6 +69,7 @@
     <string name="out_of_space" msgid="6692471482459245734">"គ្មានកន្លែង​នៅលើ​អេក្រង់ដើមនេះទេ"</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"គ្មាន​បន្ទប់​​ក្នុង​ថាស​និយម​ប្រើ"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"បញ្ជីកម្មវិធី"</string>
+    <string name="all_apps_search_results" msgid="5889367432531296759">"លទ្ធផលស្វែងរក"</string>
     <string name="all_apps_button_personal_label" msgid="1315764287305224468">"បញ្ជី​កម្មវិធី​ផ្ទាល់ខ្លួន"</string>
     <string name="all_apps_button_work_label" msgid="7270707118948892488">"បញ្ជី​កម្មវិធី​ការងារ"</string>
     <string name="remove_drop_target_label" msgid="7812859488053230776">"យកចេញ"</string>
@@ -85,7 +86,8 @@
     <string name="permdesc_write_settings" msgid="5440712911516509985">"អនុញ្ញាត​ឲ្យ​កម្មវិធី​ប្ដូរ​ការ​កំណត់ និង​ផ្លូវ​កាត់​ក្នុង​អេក្រង់​ដើម។"</string>
     <string name="msg_no_phone_permission" msgid="9208659281529857371">"<xliff:g id="APP_NAME">%1$s</xliff:g> មិនត្រូវបានអនុញ្ញាតឲ្យធ្វើការហៅទូរស័ព្ទទេ"</string>
     <string name="gadget_error_text" msgid="740356548025791839">"មិនអាចផ្ទុក​ធាតុក្រាហ្វិក​បានទេ"</string>
-    <string name="gadget_setup_text" msgid="1745356155479272374">"ចុច​ដើម្បី​បញ្ចប់​ការរៀបចំ"</string>
+    <string name="gadget_setup_text" msgid="8348374825537681407">"ការកំណត់​ធាតុក្រាហ្វិក"</string>
+    <string name="gadget_complete_setup_text" msgid="309040266978007925">"ចុច​ដើម្បី​បញ្ចប់​ការរៀបចំ"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"នេះ​​​ជា​កម្មវិធី​ប្រព័ន្ធ មិន​អាច​លុប​បាន​ទេ។"</string>
     <string name="folder_hint_text" msgid="5174843001373488816">"កែ​ឈ្មោះ"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"បានបិទដំណើរការ <xliff:g id="APP_NAME">%1$s</xliff:g>"</string>

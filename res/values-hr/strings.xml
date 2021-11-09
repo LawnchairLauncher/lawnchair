@@ -71,6 +71,7 @@
     <string name="out_of_space" msgid="6692471482459245734">"Na ovom početnom zaslonu više nema mjesta"</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"Nema više prostora na traci Favoriti"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"Popis aplikacija"</string>
+    <string name="all_apps_search_results" msgid="5889367432531296759">"Rezultati pretraživanja"</string>
     <string name="all_apps_button_personal_label" msgid="1315764287305224468">"Popis osobnih aplikacija"</string>
     <string name="all_apps_button_work_label" msgid="7270707118948892488">"Popis radnih aplikacija"</string>
     <string name="remove_drop_target_label" msgid="7812859488053230776">"Ukloni"</string>
@@ -87,7 +88,8 @@
     <string name="permdesc_write_settings" msgid="5440712911516509985">"Aplikaciji omogućuje promjenu postavki i prečaca na početnom zaslonu."</string>
     <string name="msg_no_phone_permission" msgid="9208659281529857371">"<xliff:g id="APP_NAME">%1$s</xliff:g> nema dopuštenje za telefonske pozive"</string>
     <string name="gadget_error_text" msgid="740356548025791839">"Widget se ne može učitati"</string>
-    <string name="gadget_setup_text" msgid="1745356155479272374">"Dodirnite da biste dovršili postavljanje"</string>
+    <string name="gadget_setup_text" msgid="8348374825537681407">"Postavke widgeta"</string>
+    <string name="gadget_complete_setup_text" msgid="309040266978007925">"Dodirnite da biste dovršili postavljanje"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"Ovo je aplikacija sustava i ne može se ukloniti."</string>
     <string name="folder_hint_text" msgid="5174843001373488816">"Uređivanje naziva"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"Aplikacija <xliff:g id="APP_NAME">%1$s</xliff:g> onemogućena"</string>

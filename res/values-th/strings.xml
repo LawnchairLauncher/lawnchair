@@ -69,6 +69,7 @@
     <string name="out_of_space" msgid="6692471482459245734">"ไม่มีที่ว่างในหน้าจอหลักนี้"</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"ไม่มีพื้นที่เหลือในถาดรายการโปรด"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"รายชื่อแอป"</string>
+    <string name="all_apps_search_results" msgid="5889367432531296759">"ผลการค้นหา"</string>
     <string name="all_apps_button_personal_label" msgid="1315764287305224468">"รายการแอปส่วนตัว"</string>
     <string name="all_apps_button_work_label" msgid="7270707118948892488">"รายการแอปสำหรับทำงาน"</string>
     <string name="remove_drop_target_label" msgid="7812859488053230776">"นำออก"</string>
@@ -85,7 +86,8 @@
     <string name="permdesc_write_settings" msgid="5440712911516509985">"อนุญาตให้แอปเปลี่ยนการตั้งค่าและทางลัดในหน้าแรก"</string>
     <string name="msg_no_phone_permission" msgid="9208659281529857371">"<xliff:g id="APP_NAME">%1$s</xliff:g> ไม่ได้รับอนุญาตให้โทรออก"</string>
     <string name="gadget_error_text" msgid="740356548025791839">"โหลดวิดเจ็ตไม่ได้"</string>
-    <string name="gadget_setup_text" msgid="1745356155479272374">"แตะเพื่อสิ้นสุดการตั้งค่า"</string>
+    <string name="gadget_setup_text" msgid="8348374825537681407">"การตั้งค่าวิดเจ็ต"</string>
+    <string name="gadget_complete_setup_text" msgid="309040266978007925">"แตะเพื่อสิ้นสุดการตั้งค่า"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"นี่เป็นแอประบบและไม่สามารถถอนการติดตั้งได้"</string>
     <string name="folder_hint_text" msgid="5174843001373488816">"แก้ไขชื่อ"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"ปิดใช้ <xliff:g id="APP_NAME">%1$s</xliff:g>"</string>

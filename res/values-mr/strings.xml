@@ -69,6 +69,7 @@
     <string name="out_of_space" msgid="6692471482459245734">"या होम स्क्रीनवर कोणतीही रूम नाही"</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"आवडीच्या ट्रे मध्ये आणखी जागा नाही"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"अ‍ॅप्स सूची"</string>
+    <string name="all_apps_search_results" msgid="5889367432531296759">"शोध परिणाम"</string>
     <string name="all_apps_button_personal_label" msgid="1315764287305224468">"वैयक्तिक अ‍ॅप्स सूची"</string>
     <string name="all_apps_button_work_label" msgid="7270707118948892488">"कामाच्या ठिकाणी वापरली जाणाऱ्या ॲप्सची सूची"</string>
     <string name="remove_drop_target_label" msgid="7812859488053230776">"काढा"</string>
@@ -85,7 +86,8 @@
     <string name="permdesc_write_settings" msgid="5440712911516509985">"मुख्यपृष्ठातील सेटिंग्ज आणि शॉर्टकट बदलण्यास अ‍ॅप ला अनुमती देते."</string>
     <string name="msg_no_phone_permission" msgid="9208659281529857371">"<xliff:g id="APP_NAME">%1$s</xliff:g> ला फोन कॉल करण्याची अनुमती नाही"</string>
     <string name="gadget_error_text" msgid="740356548025791839">"विजेट लोड करू शकत नाही"</string>
-    <string name="gadget_setup_text" msgid="1745356155479272374">"सेटअप पूर्ण करण्यासाठी टॅप करा"</string>
+    <string name="gadget_setup_text" msgid="8348374825537681407">"विजेटची सेटिंग्ज"</string>
+    <string name="gadget_complete_setup_text" msgid="309040266978007925">"सेटअप पूर्ण करण्‍यासाठी टॅप करा"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"हा सिस्टम अ‍ॅप आहे आणि अनइंस्टॉल केला जाऊ शकत नाही."</string>
     <string name="folder_hint_text" msgid="5174843001373488816">"नाव संपादित करा"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"<xliff:g id="APP_NAME">%1$s</xliff:g> अक्षम केला आहे"</string>
@@ -120,7 +122,7 @@
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"नवीन अ‍ॅप्ससाठी"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"अज्ञात"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"काढा"</string>
-    <string name="abandoned_search" msgid="891119232568284442">"Search"</string>
+    <string name="abandoned_search" msgid="891119232568284442">"शोधा"</string>
     <string name="abandoned_promises_title" msgid="7096178467971716750">"हा अ‍ॅप इंस्टॉल केलेला नाही"</string>
     <string name="abandoned_promise_explanation" msgid="3990027586878167529">"या चिन्हासाठी अ‍ॅप इंस्टॉल केलेला नाही. तुम्ही ते काढू शकता किंवा अ‍ॅपचा शोध घेऊ शकता आणि त्यास व्यक्तिचलितपणे इंस्टॉल करू शकता."</string>
     <string name="app_installing_title" msgid="5864044122733792085">"<xliff:g id="NAME">%1$s</xliff:g> इंस्टॉल करत आहे, <xliff:g id="PROGRESS">%2$s</xliff:g> पूर्ण झाले"</string>

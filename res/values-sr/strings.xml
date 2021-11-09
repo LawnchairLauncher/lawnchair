@@ -71,6 +71,7 @@
     <string name="out_of_space" msgid="6692471482459245734">"Нема простора на овом почетном екрану"</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"Нема више простора на траци Омиљено"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"Листа апликација"</string>
+    <string name="all_apps_search_results" msgid="5889367432531296759">"Резултати претраге"</string>
     <string name="all_apps_button_personal_label" msgid="1315764287305224468">"Листа личних апликација"</string>
     <string name="all_apps_button_work_label" msgid="7270707118948892488">"Листа пословних апликација"</string>
     <string name="remove_drop_target_label" msgid="7812859488053230776">"Уклони"</string>
@@ -87,7 +88,8 @@
     <string name="permdesc_write_settings" msgid="5440712911516509985">"Дозвољава апликацији да мења подешавања и пречице на почетном екрану."</string>
     <string name="msg_no_phone_permission" msgid="9208659281529857371">"<xliff:g id="APP_NAME">%1$s</xliff:g> нема дозволу за упућивање телефонских позива"</string>
     <string name="gadget_error_text" msgid="740356548025791839">"Учитавање виџета није успело"</string>
-    <string name="gadget_setup_text" msgid="1745356155479272374">"Додирните да бисте довршили подешавање"</string>
+    <string name="gadget_setup_text" msgid="8348374825537681407">"Подешавања виџета"</string>
+    <string name="gadget_complete_setup_text" msgid="309040266978007925">"Додирните да бисте довршили подешавање"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"Ово је системска апликација и не може да се деинсталира."</string>
     <string name="folder_hint_text" msgid="5174843001373488816">"Измените назив"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"Апликација <xliff:g id="APP_NAME">%1$s</xliff:g> је онемогућена"</string>

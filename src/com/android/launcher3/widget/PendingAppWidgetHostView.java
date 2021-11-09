@@ -85,7 +85,7 @@ public class PendingAppWidgetHostView extends LauncherAppWidgetHostView
         setBackgroundResource(R.drawable.pending_widget_bg);
         setWillNotDraw(false);
 
-        updateAppWidget(null);
+        super.updateAppWidget(null);
         setOnClickListener(ItemClickHandler.INSTANCE);
 
         if (info.pendingItemInfo == null) {
@@ -268,8 +268,8 @@ public class PendingAppWidgetHostView extends LauncherAppWidgetHostView
             if (availableWidth > 0) {
                 // Recreate the setup text.
                 mSetupTextLayout = new StaticLayout(
-                        getResources().getText(R.string.gadget_setup_text), mPaint, availableWidth,
-                        Layout.Alignment.ALIGN_CENTER, 1, 0, true);
+                        getResources().getText(R.string.gadget_complete_setup_text), mPaint,
+                        availableWidth, Layout.Alignment.ALIGN_CENTER, 1, 0, true);
                 int textHeight = mSetupTextLayout.getHeight();
 
                 // Extra icon size due to the setting icon

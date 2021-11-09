@@ -69,6 +69,7 @@
     <string name="out_of_space" msgid="6692471482459245734">"આ હોમ સ્ક્રીન પર વધુ જગ્યા નથી"</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"મનપસંદ ટ્રે પર વધુ જગ્યા નથી"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"ઍપ્લિકેશનોની સૂચિ"</string>
+    <string name="all_apps_search_results" msgid="5889367432531296759">"શોધ પરિણામો"</string>
     <string name="all_apps_button_personal_label" msgid="1315764287305224468">"વ્યક્તિગત ઍપની સૂચિ"</string>
     <string name="all_apps_button_work_label" msgid="7270707118948892488">"કાર્યસ્થળની ઍપની સૂચિ"</string>
     <string name="remove_drop_target_label" msgid="7812859488053230776">"દૂર કરો"</string>
@@ -85,7 +86,8 @@
     <string name="permdesc_write_settings" msgid="5440712911516509985">"ઍપને હોમમાં સેટિંગ અને શૉર્ટકટ બદલવાની મંજૂરી આપે છે."</string>
     <string name="msg_no_phone_permission" msgid="9208659281529857371">"<xliff:g id="APP_NAME">%1$s</xliff:g> ને ફોન કૉલ્સ કરવાની મંજૂરી નથી"</string>
     <string name="gadget_error_text" msgid="740356548025791839">"વિજેટ લોડ કરી શકાતું નથી"</string>
-    <string name="gadget_setup_text" msgid="1745356155479272374">"સેટઅપ પૂર્ણ કરવા માટે ટૅપ કરો"</string>
+    <string name="gadget_setup_text" msgid="8348374825537681407">"વિજેટ સેટિંગ"</string>
+    <string name="gadget_complete_setup_text" msgid="309040266978007925">"સેટઅપ પૂર્ણ કરવા માટે ટૅપ કરો"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"આ એક સિસ્ટમ ઍપ્લિકેશન છે અને અનઇન્સ્ટોલ કરી શકાતી નથી."</string>
     <string name="folder_hint_text" msgid="5174843001373488816">"નામમાં ફેરફાર કરો"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"<xliff:g id="APP_NAME">%1$s</xliff:g> અક્ષમ કરી"</string>

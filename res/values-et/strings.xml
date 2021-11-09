@@ -69,6 +69,7 @@
     <string name="out_of_space" msgid="6692471482459245734">"Sellel avakuval pole ruumi"</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"Salves Lemmikud pole rohkem ruumi"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"Rakenduste loend"</string>
+    <string name="all_apps_search_results" msgid="5889367432531296759">"Otsingutulemused"</string>
     <string name="all_apps_button_personal_label" msgid="1315764287305224468">"Isiklike rakenduste loend"</string>
     <string name="all_apps_button_work_label" msgid="7270707118948892488">"Töörakenduste loend"</string>
     <string name="remove_drop_target_label" msgid="7812859488053230776">"Eemalda"</string>
@@ -85,7 +86,8 @@
     <string name="permdesc_write_settings" msgid="5440712911516509985">"Võimaldab rakendusel muuta avaekraanil seadeid ja otseteid."</string>
     <string name="msg_no_phone_permission" msgid="9208659281529857371">"Rakendusel <xliff:g id="APP_NAME">%1$s</xliff:g> pole lubatud helistada"</string>
     <string name="gadget_error_text" msgid="740356548025791839">"Vidinat ei saa laadida"</string>
-    <string name="gadget_setup_text" msgid="1745356155479272374">"Puudutage seadistuse lõpuleviimiseks"</string>
+    <string name="gadget_setup_text" msgid="8348374825537681407">"Vidina seaded"</string>
+    <string name="gadget_complete_setup_text" msgid="309040266978007925">"Puudutage seadistuse lõpuleviimiseks"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"See on süsteemirakendus ja seda ei saa desinstallida."</string>
     <string name="folder_hint_text" msgid="5174843001373488816">"Muuda nime"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"Rakendus <xliff:g id="APP_NAME">%1$s</xliff:g> on keelatud"</string>

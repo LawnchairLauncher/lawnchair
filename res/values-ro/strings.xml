@@ -71,6 +71,7 @@
     <string name="out_of_space" msgid="6692471482459245734">"Nu există spațiu liber pe acest ecran de pornire"</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"Spațiu epuizat în bara Preferate"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"Lista de aplicații"</string>
+    <string name="all_apps_search_results" msgid="5889367432531296759">"Rezultatele căutării"</string>
     <string name="all_apps_button_personal_label" msgid="1315764287305224468">"Lista de aplicații personale"</string>
     <string name="all_apps_button_work_label" msgid="7270707118948892488">"Lista de aplicații de serviciu"</string>
     <string name="remove_drop_target_label" msgid="7812859488053230776">"Eliminați"</string>
@@ -87,7 +88,8 @@
     <string name="permdesc_write_settings" msgid="5440712911516509985">"Permite aplicației să modifice setările și comenzile rapide din ecranul de pornire."</string>
     <string name="msg_no_phone_permission" msgid="9208659281529857371">"<xliff:g id="APP_NAME">%1$s</xliff:g> nu are permisiunea de a apela"</string>
     <string name="gadget_error_text" msgid="740356548025791839">"Widgetul nu poate fi încărcat"</string>
-    <string name="gadget_setup_text" msgid="1745356155479272374">"Atingeți pentru a finaliza configurarea"</string>
+    <string name="gadget_setup_text" msgid="8348374825537681407">"Setări pentru widget"</string>
+    <string name="gadget_complete_setup_text" msgid="309040266978007925">"Atingeți pentru a finaliza configurarea"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"Aceasta este o aplicație de sistem și nu poate fi dezinstalată."</string>
     <string name="folder_hint_text" msgid="5174843001373488816">"Modificați numele"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"S-a dezactivat <xliff:g id="APP_NAME">%1$s</xliff:g>"</string>
