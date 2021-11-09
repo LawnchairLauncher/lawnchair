@@ -483,7 +483,7 @@ public class LauncherProvider extends ContentProvider {
                             LauncherSettings.Favorites.CONTAINER + " FROM "
                                 + Favorites.TABLE_NAME + ")";
 
-            IntArray folderIds = LauncherDbUtils.queryIntArray(db, Favorites.TABLE_NAME,
+            IntArray folderIds = LauncherDbUtils.queryIntArray(false, db, Favorites.TABLE_NAME,
                     Favorites._ID, selection, null, null);
             if (!folderIds.isEmpty()) {
                 db.delete(Favorites.TABLE_NAME, Utilities.createDbSelectionQuery(
@@ -835,8 +835,8 @@ public class LauncherProvider extends ContentProvider {
                 case 27: {
                     // Update the favorites table so that the screen ids are ordered based on
                     // workspace page rank.
-                    IntArray finalScreens = LauncherDbUtils.queryIntArray(db, "workspaceScreens",
-                            BaseColumns._ID, null, null, "screenRank");
+                    IntArray finalScreens = LauncherDbUtils.queryIntArray(false, db,
+                            "workspaceScreens", BaseColumns._ID, null, null, "screenRank");
                     int[] original = finalScreens.toArray();
                     Arrays.sort(original);
                     String updatemap = "";
@@ -919,7 +919,7 @@ public class LauncherProvider extends ContentProvider {
                 Log.e(TAG, "getAppWidgetIds not supported", e);
                 return;
             }
-            final IntSet validWidgets = IntSet.wrap(LauncherDbUtils.queryIntArray(db,
+            final IntSet validWidgets = IntSet.wrap(LauncherDbUtils.queryIntArray(false, db,
                     Favorites.TABLE_NAME, Favorites.APPWIDGET_ID,
                     "itemType=" + Favorites.ITEM_TYPE_APPWIDGET, null, null));
             for (int widgetId : allWidgets) {
