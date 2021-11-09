@@ -25,82 +25,100 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginStart="@dimen/allset_page_margin_horizontal"
-        android:layout_marginEnd="@dimen/allset_page_margin_horizontal"
-        android:layoutDirection="locale"
-        android:textDirection="locale"
         android:id="@+id/content_view"
-        android:forceHasOverlappingRendering="false"
-        android:fitsSystemWindows="true" >
+        android:fitsSystemWindows="true">
 
-        <ImageView
-            android:id="@+id/icon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/allset_title_icon_margin_top"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            android:src="@drawable/ic_all_set"/>
-
-        <TextView
-            android:id="@+id/title"
-            style="@style/TextAppearance.GestureTutorial.Feedback.Title"
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/animated_background"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/allset_title_margin_top"
-            app:layout_constraintTop_toBottomOf="@id/icon"
-            app:layout_constraintStart_toStartOf="parent"
-            android:gravity="start"
-            android:text="@string/allset_title"/>
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:scaleType="centerCrop"
 
-        <TextView
-            android:id="@+id/subtitle"
-            style="@style/TextAppearance.GestureTutorial.Feedback.Subtitle"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/allset_subtitle_margin_top"
-            app:layout_constraintTop_toBottomOf="@id/title"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintWidth_max="@dimen/allset_subtitle_width_max"
-            android:gravity="start"
-            android:text="@string/allset_description"/>
+            app:lottie_rawRes="@raw/all_set_page_bg"
+            app:lottie_autoPlay="true"
+            app:lottie_loop="true" />
 
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/navigation_settings_guideline_bottom"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:layout_constraintGuide_percent="0.83" />
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginStart="@dimen/allset_page_margin_horizontal"
+            android:layout_marginEnd="@dimen/allset_page_margin_horizontal"
+            android:layoutDirection="locale"
+            android:textDirection="locale"
+            android:forceHasOverlappingRendering="false"
+            android:fitsSystemWindows="true" >
 
-        <TextView
-            android:id="@+id/navigation_settings"
-            style="@style/TextAppearance.GestureTutorial.LinkText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toBottomOf="@id/navigation_settings_guideline_bottom"
-            android:minHeight="48dp"
-            android:background="?android:attr/selectableItemBackground"
-            android:text="@string/allset_navigation_settings" />
+            <ImageView
+                android:id="@+id/icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/allset_title_icon_margin_top"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                android:src="@drawable/ic_all_set"/>
 
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/hint_guideline_bottom"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:layout_constraintGuide_percent="0.94" />
+            <TextView
+                android:id="@+id/title"
+                style="@style/TextAppearance.GestureTutorial.Feedback.Title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/allset_title_margin_top"
+                app:layout_constraintTop_toBottomOf="@id/icon"
+                app:layout_constraintStart_toStartOf="parent"
+                android:gravity="start"
+                android:text="@string/allset_title"/>
 
-        <TextView
-            android:id="@+id/hint"
-            style="@style/TextAppearance.GestureTutorial.Feedback.Subtitle"
-            android:textSize="14sp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toBottomOf="@id/hint_guideline_bottom"
-            android:text="@string/allset_hint"/>
+            <TextView
+                android:id="@+id/subtitle"
+                style="@style/TextAppearance.GestureTutorial.Feedback.Subtitle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/allset_subtitle_margin_top"
+                app:layout_constraintTop_toBottomOf="@id/title"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintWidth_max="@dimen/allset_subtitle_width_max"
+                android:gravity="start"
+                android:text="@string/allset_description"/>
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/navigation_settings_guideline_bottom"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_percent="0.83" />
+
+            <TextView
+                android:id="@+id/navigation_settings"
+                style="@style/TextAppearance.GestureTutorial.LinkText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="@id/navigation_settings_guideline_bottom"
+                android:minHeight="48dp"
+                android:background="?android:attr/selectableItemBackground"
+                android:text="@string/allset_navigation_settings" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/hint_guideline_bottom"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_percent="0.94" />
+
+            <TextView
+                android:id="@+id/hint"
+                style="@style/TextAppearance.GestureTutorial.Feedback.Subtitle"
+                android:textSize="14sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="@id/hint_guideline_bottom"
+                android:text="@string/allset_hint"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </FrameLayout>
