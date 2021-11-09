@@ -136,6 +136,9 @@ public class AllSetActivity extends Activity {
     protected void onPause() {
         super.onPause();
         clearBinderOverride();
+        if (mSwipeProgress.value >= 1) {
+            finishAndRemoveTask();
+        }
     }
 
     private void clearBinderOverride() {
