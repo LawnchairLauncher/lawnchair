@@ -573,6 +573,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
 
     // Keeps track of task id whose visual state should not be reset
     private int mIgnoreResetTaskId = -1;
+    protected boolean mLoadPlanEverApplied;
 
     // Variables for empty state
     private final Drawable mEmptyIcon;
@@ -1451,6 +1452,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         resetTaskVisuals();
         onTaskStackUpdated();
         updateEnabledOverlays();
+        mLoadPlanEverApplied = true;
     }
 
     private boolean isModal() {
