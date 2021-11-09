@@ -16,6 +16,5 @@
     <string name="assistant_not_supported_text" msgid="1708031078549268884">"Էկրանի տեքստը լսելու կամ թարգմանելու համար կարգավորումներում փոխեք ձեր թվային օգնականի հավելվածը։"</string>
     <string name="tooltip_listen" msgid="7634466447860989102">"Հպեք այստեղ՝ այս էկրանի տեքստը լսելու համար"</string>
     <string name="tooltip_translate" msgid="4184845868901542567">"Հպեք այստեղ` այս էկրանի տեքստը թարգմանելու համար"</string>
-    <!-- no translation found for toast_p2p_app_not_shareable (7229739094132131536) -->
-    <skip />
+    <string name="toast_p2p_app_not_shareable" msgid="7229739094132131536">"Հնարավոր չէ կիսվել այս հավելվածով"</string>
 </resources>

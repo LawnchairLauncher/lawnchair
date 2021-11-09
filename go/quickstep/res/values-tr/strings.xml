@@ -16,6 +16,5 @@
     <string name="assistant_not_supported_text" msgid="1708031078549268884">"Ekranınızdaki metni dinlemek veya çevirmek için Ayarlar\'dan dijital asistan uygulamanızı değiştirin"</string>
     <string name="tooltip_listen" msgid="7634466447860989102">"Bu ekrandaki metni dinlemek için buraya dokunun"</string>
     <string name="tooltip_translate" msgid="4184845868901542567">"Bu ekrandaki metni çevirmek için buraya dokunun"</string>
-    <!-- no translation found for toast_p2p_app_not_shareable (7229739094132131536) -->
-    <skip />
+    <string name="toast_p2p_app_not_shareable" msgid="7229739094132131536">"Bu uygulama paylaşılamaz"</string>
 </resources>

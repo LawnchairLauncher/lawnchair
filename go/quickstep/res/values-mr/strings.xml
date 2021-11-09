@@ -16,6 +16,5 @@
     <string name="assistant_not_supported_text" msgid="1708031078549268884">"तुमच्या स्क्रीनवरील मजकूर ऐकण्यासाठी किंवा भाषांतर करण्यासाठी, सेटिंग्ज मध्ये तुमचे डिजिटल असिस्टंट अ‍ॅप बदला"</string>
     <string name="tooltip_listen" msgid="7634466447860989102">"या स्क्रीनवरील मजकूर ऐकण्यासाठी येथे टॅप करा"</string>
     <string name="tooltip_translate" msgid="4184845868901542567">"या स्क्रीनवरील मजकुराचे भाषांतर करण्यासाठी येथे टॅप करा"</string>
-    <!-- no translation found for toast_p2p_app_not_shareable (7229739094132131536) -->
-    <skip />
+    <string name="toast_p2p_app_not_shareable" msgid="7229739094132131536">"हे ॲप शेअर केले जाऊ शकत नाही"</string>
 </resources>
