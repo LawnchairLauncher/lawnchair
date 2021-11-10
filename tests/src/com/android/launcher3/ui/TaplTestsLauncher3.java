@@ -38,7 +38,6 @@ import com.android.launcher3.tapl.Folder;
 import com.android.launcher3.tapl.FolderIcon;
 import com.android.launcher3.tapl.Widgets;
 import com.android.launcher3.tapl.Workspace;
-import com.android.launcher3.views.OptionsPopupView;
 import com.android.launcher3.widget.picker.WidgetsFullSheet;
 import com.android.launcher3.widget.picker.WidgetsRecyclerView;
 
@@ -102,8 +101,8 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
         mDevice.pressMenu();
         mDevice.waitForIdle();
         executeOnLauncher(
-                launcher -> assertTrue("Launcher internal state didn't switch to Showing Menu",
-                        OptionsPopupView.getOptionsPopup(launcher) != null));
+                launcher -> assertNotNull("Launcher internal state didn't switch to Showing Menu",
+                        launcher.getOptionsPopup()));
         // Check that pressHome works when the menu is shown.
         mLauncher.pressHome();
     }
@@ -286,7 +285,7 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
     }
 
     private boolean isOptionsPopupVisible(Launcher launcher) {
-        final ArrowPopup popup = OptionsPopupView.getOptionsPopup(launcher);
+        final ArrowPopup<?> popup = launcher.getOptionsPopup();
         return popup != null && popup.isShown();
     }
 
