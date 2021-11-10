@@ -1729,10 +1729,10 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         int runningIndex = getCurrentPage();
         AnimatorSet as = new AnimatorSet();
         for (int i = 0; i < getTaskViewCount(); i++) {
-            if (runningIndex == i) {
+            View taskView = getTaskViewAt(i);
+            if (runningIndex == i && taskView.getAlpha() != 0) {
                 continue;
             }
-            View taskView = getTaskViewAt(i);
             as.play(ObjectAnimator.ofFloat(taskView, View.ALPHA, fadeInChildren ? 0 : 1));
         }
         return as;
@@ -1768,8 +1768,6 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             // When switching to tasks in quick switch, ensures the snapped page's scroll maintain
             // invariant between quick switch and overview, to ensure a smooth animation transition.
             updateGridProperties();
-        } else if (endTarget == GestureState.GestureEndTarget.RECENTS) {
-            setEnableFreeScroll(true);
         }
     }
 
@@ -1779,7 +1777,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     public void onGestureAnimationEnd() {
         mGestureActive = false;
         if (mOrientationState.setGestureActive(false)) {
-            updateOrientationHandler();
+            updateOrientationHandler(/* forceRecreateDragLayerControllers = */ false);
         }
 
         setEnableFreeScroll(true);
@@ -2910,8 +2908,11 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         boolean isStartShift;
         if (midpointIndex > -1) {
             // When there is a midpoint reference task, adjacent tasks have less distance to travel
-            // to reach offscreen. Offset the task position to the task's starting point.
-            int midpointScroll = getScrollForPage(midpointIndex);
+            // to reach offscreen. Offset the task position to the task's starting point, and offset
+            // by current page's scroll diff.
+            int midpointScroll = getScrollForPage(midpointIndex)
+                    + mOrientationHandler.getPrimaryScroll(this) - getScrollForPage(mCurrentPage);
+
             getPersistentChildPosition(midpointIndex, midpointScroll, taskPosition);
             float midpointStart = mOrientationHandler.getStart(taskPosition);
 

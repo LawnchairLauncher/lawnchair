@@ -200,6 +200,17 @@ public abstract class BaseQuickstepLauncher extends Launcher
         }
     }
 
+    /**
+     * {@code LauncherOverlayCallbacks} scroll amount.
+     * Indicates transition progress to -1 screen.
+     * @param progress From 0 to 1.
+     */
+    @Override
+    public void onScrollChanged(float progress) {
+        super.onScrollChanged(progress);
+        mDepthController.onOverlayScrollChanged(progress);
+    }
+
     @Override
     public void startIntentSenderForResult(IntentSender intent, int requestCode,
             Intent fillInIntent, int flagsMask, int flagsValues, int extraFlags, Bundle options) {

@@ -153,6 +153,7 @@
 
     <!-- All applications label -->
     <string name="all_apps_button_label">Apps list</string>
+    <string name="all_apps_search_results">Search results</string>
     <string name="all_apps_button_personal_label">Personal apps list</string>
     <string name="all_apps_button_work_label">Work apps list</string>
 
@@ -199,8 +200,11 @@
     <!-- Error text that lets a user know that the widget can't load. -->
     <string name="gadget_error_text">Can\'t load widget</string>
 
+    <!-- Button text. This button lets a user change a widget's settings. -->
+    <string name="gadget_setup_text">Widget settings</string>
+
     <!-- Instructional text to encourage a user to finish setting up the widget. -->
-    <string name="gadget_setup_text">Tap to finish setup</string>
+    <string name="gadget_complete_setup_text">Tap to finish setup</string>
 
     <!-- Text to inform the user that they can't uninstall a system application -->
     <string name="uninstall_system_app_text">This is a system app and can\'t be uninstalled.</string>
