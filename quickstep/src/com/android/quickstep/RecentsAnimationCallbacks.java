@@ -136,10 +136,10 @@ public class RecentsAnimationCallbacks implements
 
     @BinderThread
     @Override
-    public void onTaskAppeared(RemoteAnimationTargetCompat app) {
+    public void onTasksAppeared(RemoteAnimationTargetCompat[] apps) {
         Utilities.postAsyncCallback(MAIN_EXECUTOR.getHandler(), () -> {
             for (RecentsAnimationListener listener : getListeners()) {
-                listener.onTaskAppeared(app);
+                listener.onTasksAppeared(apps);
             }
         });
     }
@@ -177,6 +177,6 @@ public class RecentsAnimationCallbacks implements
         /**
          * Callback made when a task started from the recents is ready for an app transition.
          */
-        default void onTaskAppeared(RemoteAnimationTargetCompat appearedTaskTarget) {}
+        default void onTasksAppeared(RemoteAnimationTargetCompat[] appearedTaskTarget) {}
     }
 }
