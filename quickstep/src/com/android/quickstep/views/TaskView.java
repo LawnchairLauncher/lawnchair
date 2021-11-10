@@ -95,7 +95,6 @@ import com.android.quickstep.util.CancellableTask;
 import com.android.quickstep.util.LauncherSplitScreenListener;
 import com.android.quickstep.util.RecentsOrientedState;
 import com.android.quickstep.util.TaskCornerRadius;
-import com.android.quickstep.util.TaskViewSimulator;
 import com.android.quickstep.util.TransformParams;
 import com.android.quickstep.views.TaskThumbnailView.PreviewPositionHelper;
 import com.android.systemui.shared.recents.model.Task;
@@ -426,11 +425,11 @@ public class TaskView extends FrameLayout implements Reusable {
         this(context, null);
     }
 
-    public TaskView(Context context, AttributeSet attrs) {
+    public TaskView(Context context, @Nullable AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public TaskView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public TaskView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         mActivity = StatefulActivity.fromContext(context);
         setOnClickListener(this::onClick);
