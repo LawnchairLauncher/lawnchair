@@ -147,16 +147,16 @@ public class TaskAnimationManager implements RecentsAnimationCallbacks.RecentsAn
             }
 
             @Override
-            public void onTaskAppeared(RemoteAnimationTargetCompat appearedTaskTarget) {
+            public void onTasksAppeared(RemoteAnimationTargetCompat[] appearedTaskTargets) {
+                RemoteAnimationTargetCompat appearedTaskTarget = appearedTaskTargets[0];
                 BaseActivityInterface activityInterface = mLastGestureState.getActivityInterface();
                 if (ENABLE_QUICKSTEP_LIVE_TILE.get() && activityInterface.isInLiveTileMode()
                         && activityInterface.getCreatedActivity() != null) {
                     RecentsView recentsView =
                             activityInterface.getCreatedActivity().getOverviewPanel();
                     if (recentsView != null) {
-                        RemoteAnimationTargetCompat[] apps = new RemoteAnimationTargetCompat[1];
-                        apps[0] = appearedTaskTarget;
-                        recentsView.launchSideTaskInLiveTileMode(appearedTaskTarget.taskId, apps,
+                        recentsView.launchSideTaskInLiveTileMode(appearedTaskTarget.taskId,
+                                appearedTaskTargets,
                                 new RemoteAnimationTargetCompat[0] /* wallpaper */,
                                 new RemoteAnimationTargetCompat[0] /* nonApps */);
                         return;

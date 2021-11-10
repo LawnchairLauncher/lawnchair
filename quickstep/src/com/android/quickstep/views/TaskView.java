@@ -558,6 +558,10 @@ public class TaskView extends FrameLayout implements Reusable {
         return mTaskIdContainer;
     }
 
+    public boolean containsMultipleTasks() {
+        return mTaskIdContainer[1] != -1;
+    }
+
     public TaskThumbnailView getThumbnail() {
         return mSnapshotView;
     }
