@@ -20,19 +20,16 @@ import android.appwidget.AppWidgetProviderInfo;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.Canvas;
-import android.graphics.Outline;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.os.Handler;
 import android.os.SystemClock;
 import android.util.SparseBooleanArray;
 import android.util.SparseIntArray;
-import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewDebug;
 import android.view.ViewGroup;
-import android.view.ViewOutlineProvider;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.AdapterView;
 import android.widget.Advanceable;
@@ -40,7 +37,6 @@ import android.widget.RemoteViews;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.UiThread;
 
 import com.android.launcher3.CheckLongPressHelper;
 import com.android.launcher3.Launcher;
@@ -51,7 +47,6 @@ import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.keyboard.ViewGroupFocusHelper;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.LauncherAppWidgetInfo;
-import com.android.launcher3.util.Executors;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.views.BaseDragLayer.TouchCompleteListener;
 import com.android.launcher3.widget.dragndrop.AppWidgetHostViewDragListener;
@@ -61,7 +56,7 @@ import java.util.List;
 /**
  * {@inheritDoc}
  */
-public class LauncherAppWidgetHostView extends NavigableAppWidgetHostView
+public class LauncherAppWidgetHostView extends BaseLauncherAppWidgetHostView
         implements TouchCompleteListener, View.OnLongClickListener,
         LocalColorExtractor.Listener {
 
@@ -75,8 +70,6 @@ public class LauncherAppWidgetHostView extends NavigableAppWidgetHostView
     private static final SparseBooleanArray sAutoAdvanceWidgetIds = new SparseBooleanArray();
     // Maximum duration for which updates can be deferred.
     private static final long UPDATE_LOCK_TIMEOUT_MILLIS = 1000;
-
-    protected final LayoutInflater mInflater;
 
     private final CheckLongPressHelper mLongPressHelper;
     protected final Launcher mLauncher;
@@ -101,18 +94,6 @@ public class LauncherAppWidgetHostView extends NavigableAppWidgetHostView
     private final Rect mWidgetSizeAtDrag = new Rect();
 
     private final RectF mTempRectF = new RectF();
-    private final Rect mEnforcedRectangle = new Rect();
-    private final float mEnforcedCornerRadius;
-    private final ViewOutlineProvider mCornerRadiusEnforcementOutline = new ViewOutlineProvider() {
-        @Override
-        public void getOutline(View view, Outline outline) {
-            if (mEnforcedRectangle.isEmpty() || mEnforcedCornerRadius <= 0) {
-                outline.setEmpty();
-            } else {
-                outline.setRoundRect(mEnforcedRectangle, mEnforcedCornerRadius);
-            }
-        }
-    };
     private final Object mUpdateLock = new Object();
     private final ViewGroupFocusHelper mDragLayerRelativeCoordinateHelper;
     private long mDeferUpdatesUntilMillis = 0;
@@ -126,18 +107,15 @@ public class LauncherAppWidgetHostView extends NavigableAppWidgetHostView
         mLauncher = Launcher.getLauncher(context);
         mWorkspace = mLauncher.getWorkspace();
         mLongPressHelper = new CheckLongPressHelper(this, this);
-        mInflater = LayoutInflater.from(context);
         setAccessibilityDelegate(mLauncher.getAccessibilityDelegate());
         setBackgroundResource(R.drawable.widget_internal_focus_bg);
 
-        setExecutor(Executors.THREAD_POOL_EXECUTOR);
         if (Utilities.ATLEAST_Q && Themes.getAttrBoolean(mLauncher, R.attr.isWorkspaceDarkText)) {
             setOnLightBackground(true);
         }
         mColorExtractor = LocalColorExtractor.newInstance(getContext());
         mColorExtractor.setListener(this);
 
-        mEnforcedCornerRadius = RoundedCornerEnforcement.computeEnforcedRadius(getContext());
         mDragLayerRelativeCoordinateHelper = new ViewGroupFocusHelper(mLauncher.getDragLayer());
     }
 
@@ -166,11 +144,6 @@ public class LauncherAppWidgetHostView extends NavigableAppWidgetHostView
         }
         view.performLongClick();
         return true;
-    }
-
-    @Override
-    protected View getErrorView() {
-        return mInflater.inflate(R.layout.appwidget_error, this, false);
     }
 
     @Override
@@ -329,28 +302,12 @@ public class LauncherAppWidgetHostView extends NavigableAppWidgetHostView
         }
     }
 
-    public void switchToErrorView() {
-        // Update the widget with 0 Layout id, to reset the view to error view.
-        updateAppWidget(new RemoteViews(getAppWidgetInfo().provider.getPackageName(), 0));
-    }
-
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
-        try {
-            super.onLayout(changed, left, top, right, bottom);
-        } catch (final RuntimeException e) {
-            post(new Runnable() {
-                @Override
-                public void run() {
-                    switchToErrorView();
-                }
-            });
-        }
+        super.onLayout(changed, left, top, right, bottom);
 
         mIsScrollable = checkScrollableRecursively(this);
         updateColorExtraction();
-
-        enforceRoundedCorners();
     }
 
     /** Starts the drag mode. */
@@ -564,40 +521,4 @@ public class LauncherAppWidgetHostView extends NavigableAppWidgetHostView
         }
         return false;
     }
-
-    @UiThread
-    private void resetRoundedCorners() {
-        setOutlineProvider(ViewOutlineProvider.BACKGROUND);
-        setClipToOutline(false);
-    }
-
-    @UiThread
-    private void enforceRoundedCorners() {
-        if (mEnforcedCornerRadius <= 0 || !RoundedCornerEnforcement.isRoundedCornerEnabled()) {
-            resetRoundedCorners();
-            return;
-        }
-        View background = RoundedCornerEnforcement.findBackground(this);
-        if (background == null
-                || RoundedCornerEnforcement.hasAppWidgetOptedOut(this, background)) {
-            resetRoundedCorners();
-            return;
-        }
-        RoundedCornerEnforcement.computeRoundedRectangle(this,
-                background,
-                mEnforcedRectangle);
-        setOutlineProvider(mCornerRadiusEnforcementOutline);
-        setClipToOutline(true);
-    }
-
-    /** Returns the corner radius currently enforced, in pixels. */
-    public float getEnforcedCornerRadius() {
-        return mEnforcedCornerRadius;
-    }
-
-    /** Returns true if the corner radius are enforced for this App Widget. */
-    public boolean hasEnforcedCornerRadius() {
-        return getClipToOutline();
-    }
-
 }

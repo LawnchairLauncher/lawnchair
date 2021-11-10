@@ -69,6 +69,7 @@
     <string name="out_of_space" msgid="6692471482459245734">"這個主畫面已無空間"</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"「我的最愛」匣已無可用空間"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"應用程式清單"</string>
+    <string name="all_apps_search_results" msgid="5889367432531296759">"搜尋結果"</string>
     <string name="all_apps_button_personal_label" msgid="1315764287305224468">"個人應用程式清單"</string>
     <string name="all_apps_button_work_label" msgid="7270707118948892488">"辦公應用程式清單"</string>
     <string name="remove_drop_target_label" msgid="7812859488053230776">"移除"</string>
@@ -85,7 +86,8 @@
     <string name="permdesc_write_settings" msgid="5440712911516509985">"允許應用程式變更主畫面中的設定和捷徑。"</string>
     <string name="msg_no_phone_permission" msgid="9208659281529857371">"<xliff:g id="APP_NAME">%1$s</xliff:g> 無法撥打電話"</string>
     <string name="gadget_error_text" msgid="740356548025791839">"無法載入小工具"</string>
-    <string name="gadget_setup_text" msgid="1745356155479272374">"輕觸即可完成設定"</string>
+    <string name="gadget_setup_text" msgid="8348374825537681407">"小工具設定"</string>
+    <string name="gadget_complete_setup_text" msgid="309040266978007925">"輕觸即可完成設定"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"這是系統應用程式，不可解除安裝。"</string>
     <string name="folder_hint_text" msgid="5174843001373488816">"編輯名稱"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"已停用 <xliff:g id="APP_NAME">%1$s</xliff:g>"</string>

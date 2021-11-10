@@ -69,6 +69,7 @@
     <string name="out_of_space" msgid="6692471482459245734">"此主屏幕上已没有空间"</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"收藏栏已满"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"应用列表"</string>
+    <string name="all_apps_search_results" msgid="5889367432531296759">"搜索结果"</string>
     <string name="all_apps_button_personal_label" msgid="1315764287305224468">"个人应用列表"</string>
     <string name="all_apps_button_work_label" msgid="7270707118948892488">"工作应用列表"</string>
     <string name="remove_drop_target_label" msgid="7812859488053230776">"移除"</string>
@@ -85,7 +86,8 @@
     <string name="permdesc_write_settings" msgid="5440712911516509985">"允许应用更改主屏幕中的设置和快捷方式。"</string>
     <string name="msg_no_phone_permission" msgid="9208659281529857371">"不允许使用“<xliff:g id="APP_NAME">%1$s</xliff:g>”拨打电话"</string>
     <string name="gadget_error_text" msgid="740356548025791839">"无法加载微件"</string>
-    <string name="gadget_setup_text" msgid="1745356155479272374">"点按即可完成设置"</string>
+    <string name="gadget_setup_text" msgid="8348374825537681407">"微件设置"</string>
+    <string name="gadget_complete_setup_text" msgid="309040266978007925">"点按即可完成设置"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"这是系统应用，无法卸载。"</string>
     <string name="folder_hint_text" msgid="5174843001373488816">"修改名称"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"已停用<xliff:g id="APP_NAME">%1$s</xliff:g>"</string>

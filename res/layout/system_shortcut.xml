@@ -18,7 +18,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:launcher="http://schemas.android.com/apk/res-auto"
     android:layout_width="@dimen/bg_popup_item_width"
-    android:layout_height="@dimen/bg_popup_item_height"
+    android:layout_height="wrap_content"
+    android:minHeight="@dimen/bg_popup_item_height"
     android:elevation="@dimen/deep_shortcuts_elevation"
     android:background="@drawable/middle_item_primary"
     android:theme="@style/PopupItem" >

@@ -72,7 +72,7 @@
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"सेटिंग्ज"</string>
     <string name="gesture_tutorial_try_again" msgid="65962545858556697">"पुन्हा प्रयत्न करा"</string>
     <string name="gesture_tutorial_nice" msgid="2936275692616928280">"छान!"</string>
-    <string name="gesture_tutorial_step" msgid="1279786122817620968">"ट्युटोरियल <xliff:g id="CURRENT">%1$d</xliff:g>/<xliff:g id="TOTAL">%2$d</xliff:g>"</string>
+    <string name="gesture_tutorial_step" msgid="1279786122817620968">"ट्यूटोरियल <xliff:g id="CURRENT">%1$d</xliff:g>/<xliff:g id="TOTAL">%2$d</xliff:g>"</string>
     <string name="allset_title" msgid="5021126669778966707">"सर्व तयार आहे!"</string>
     <string name="allset_hint" msgid="2384632994739392447">"होम वर जाण्यासाठी वरती स्वाइप करा"</string>
     <string name="allset_description" msgid="6350320429953234580">"तुम्ही तुमचा फोन वापरण्यास सुरुवात करू शकता"</string>
@@ -80,7 +80,7 @@
     <string name="action_share" msgid="2648470652637092375">"शेअर करा"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"स्क्रीनशॉट"</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"अ‍ॅप किंवा तुमच्या संस्थेद्वारे ही क्रिया करण्याची अनुमती नाही"</string>
-    <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"नेव्हिगेशन ट्युटोरियल वगळायचे आहे का?"</string>
+    <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"नेव्हिगेशन ट्यूटोरियल वगळायचे आहे का?"</string>
     <string name="skip_tutorial_dialog_subtitle" msgid="544063326241955662">"तुम्हाला हे नंतर <xliff:g id="NAME">%1$s</xliff:g> ॲपमध्ये मिळेल"</string>
     <string name="gesture_tutorial_action_button_label_cancel" msgid="3809842569351264108">"रद्द करा"</string>
     <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"वगळा"</string>

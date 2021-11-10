@@ -69,6 +69,7 @@
     <string name="out_of_space" msgid="6692471482459245734">"Non queda espazo nesta pantalla de inicio"</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"Non hai máis espazo na bandexa de favoritos"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"Lista de aplicacións"</string>
+    <string name="all_apps_search_results" msgid="5889367432531296759">"Resultados da busca"</string>
     <string name="all_apps_button_personal_label" msgid="1315764287305224468">"Lista de aplicacións persoais"</string>
     <string name="all_apps_button_work_label" msgid="7270707118948892488">"Lista de aplicacións de traballo"</string>
     <string name="remove_drop_target_label" msgid="7812859488053230776">"Quitar"</string>
@@ -85,7 +86,8 @@
     <string name="permdesc_write_settings" msgid="5440712911516509985">"Permite a unha aplicación cambiar a configuración e os atallos da pantalla de inicio."</string>
     <string name="msg_no_phone_permission" msgid="9208659281529857371">"<xliff:g id="APP_NAME">%1$s</xliff:g> non ten permiso para facer chamadas telefónicas"</string>
     <string name="gadget_error_text" msgid="740356548025791839">"Non se puido cargar o widget"</string>
-    <string name="gadget_setup_text" msgid="1745356155479272374">"Toca para rematar a configuración"</string>
+    <string name="gadget_setup_text" msgid="8348374825537681407">"Configuración do widget"</string>
+    <string name="gadget_complete_setup_text" msgid="309040266978007925">"Toca para rematar a configuración"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"Esta aplicación é do sistema e non se pode desinstalar."</string>
     <string name="folder_hint_text" msgid="5174843001373488816">"Edita o nome"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"Desactivouse <xliff:g id="APP_NAME">%1$s</xliff:g>"</string>

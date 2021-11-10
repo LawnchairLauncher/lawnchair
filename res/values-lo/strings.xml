@@ -69,6 +69,7 @@
     <string name="out_of_space" msgid="6692471482459245734">"ບໍ່ມີບ່ອນຫວ່າງໃນໜ້າໂຮມສະກຣີນນີ້"</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"ບໍ່ມີບ່ອນຫວ່າງໃນຖາດສຳລັບເກັບສິ່ງທີ່ໃຊ້ເປັນປະຈຳ"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"ລາຍຊື່ແອັບ"</string>
+    <string name="all_apps_search_results" msgid="5889367432531296759">"ຜົນການຊອກຫາ"</string>
     <string name="all_apps_button_personal_label" msgid="1315764287305224468">"ລາຍຊື່ແອັບສ່ວນຕົວ"</string>
     <string name="all_apps_button_work_label" msgid="7270707118948892488">"ລາຍຊື່ແອັບເຮັດວຽກ"</string>
     <string name="remove_drop_target_label" msgid="7812859488053230776">"ເອົາ​ອອກ"</string>
@@ -85,7 +86,8 @@
     <string name="permdesc_write_settings" msgid="5440712911516509985">"ອະນຸຍາດໃຫ້ແອັບຯດັ່ງກ່າວ ປ່ຽນການຕັ້ງຄ່າ ແລະທາງລັດໃນໜ້າຫຼັກ."</string>
     <string name="msg_no_phone_permission" msgid="9208659281529857371">"<xliff:g id="APP_NAME">%1$s</xliff:g> ບໍ່​ໄດ້​ຮັບ​ອະ​ນຸ​ຍາດ​ໃຫ້​ໂທ"</string>
     <string name="gadget_error_text" msgid="740356548025791839">"ບໍ່ສາມາດໂຫຼດວິດເຈັດໄດ້"</string>
-    <string name="gadget_setup_text" msgid="1745356155479272374">"ແຕະເພື່ອຕັ້ງຄ່າໃຫ້ແລ້ວ"</string>
+    <string name="gadget_setup_text" msgid="8348374825537681407">"ການຕັ້ງຄ່າວິດເຈັດ"</string>
+    <string name="gadget_complete_setup_text" msgid="309040266978007925">"ແຕະເພື່ອຕັ້ງຄ່າໃຫ້ແລ້ວ"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"ນີ້ແມ່ນແອັບຯຂອງລະບົບ ແລະບໍ່ສາມາດຖອນການຕິດຕັ້ງອອກໄດ້."</string>
     <string name="folder_hint_text" msgid="5174843001373488816">"ແກ້ໄຂຊື່"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"ປິດການນຳໃຊ້ <xliff:g id="APP_NAME">%1$s</xliff:g> ແລ້ວ"</string>

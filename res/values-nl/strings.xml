@@ -69,6 +69,7 @@
     <string name="out_of_space" msgid="6692471482459245734">"Er is geen ruimte op dit startscherm"</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"Geen ruimte meer in het vak \'Favorieten\'"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"Lijst met apps"</string>
+    <string name="all_apps_search_results" msgid="5889367432531296759">"Zoekresultaten"</string>
     <string name="all_apps_button_personal_label" msgid="1315764287305224468">"Lijst met persoonlijke apps"</string>
     <string name="all_apps_button_work_label" msgid="7270707118948892488">"Lijst met werk-apps"</string>
     <string name="remove_drop_target_label" msgid="7812859488053230776">"Verwijderen"</string>
@@ -85,7 +86,8 @@
     <string name="permdesc_write_settings" msgid="5440712911516509985">"De app toestaan de instellingen en snelkoppelingen op de homepage te wijzigen."</string>
     <string name="msg_no_phone_permission" msgid="9208659281529857371">"<xliff:g id="APP_NAME">%1$s</xliff:g> mag niet bellen"</string>
     <string name="gadget_error_text" msgid="740356548025791839">"Kan widget niet laden"</string>
-    <string name="gadget_setup_text" msgid="1745356155479272374">"Tik om het instellen af te ronden"</string>
+    <string name="gadget_setup_text" msgid="8348374825537681407">"Widgetinstellingen"</string>
+    <string name="gadget_complete_setup_text" msgid="309040266978007925">"Tik om instellen af te ronden"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"Dit is een systeemapp die niet kan worden verwijderd."</string>
     <string name="folder_hint_text" msgid="5174843001373488816">"Naam bewerken"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"<xliff:g id="APP_NAME">%1$s</xliff:g> staat uit"</string>

@@ -69,6 +69,7 @@
     <string name="out_of_space" msgid="6692471482459245734">"Башкы экранда бош орун жок"</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"Тандамалдар тайпасында орун калган жок"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"Колдонмолор тизмеси"</string>
+    <string name="all_apps_search_results" msgid="5889367432531296759">"Табылган нерселер"</string>
     <string name="all_apps_button_personal_label" msgid="1315764287305224468">"Жеке колдономолордун тизмеси"</string>
     <string name="all_apps_button_work_label" msgid="7270707118948892488">"Жумуш колдонмолорунун тизмеси"</string>
     <string name="remove_drop_target_label" msgid="7812859488053230776">"Өчүрүү"</string>
@@ -85,7 +86,8 @@
     <string name="permdesc_write_settings" msgid="5440712911516509985">"Колдонмого Үйдүн тууралоолорун жана тез чакырмаларын өзгөртүүгө уруксат берет."</string>
     <string name="msg_no_phone_permission" msgid="9208659281529857371">"<xliff:g id="APP_NAME">%1$s</xliff:g> телефон чалууларды аткарууга уруксаты жок"</string>
     <string name="gadget_error_text" msgid="740356548025791839">"Виджет жүктөлбөй жатат"</string>
-    <string name="gadget_setup_text" msgid="1745356155479272374">"Жөндөп бүтүрүү үчүн таптап коюңуз"</string>
+    <string name="gadget_setup_text" msgid="8348374825537681407">"Виджеттин жөндөөлөрү"</string>
+    <string name="gadget_complete_setup_text" msgid="309040266978007925">"Жөндөп бүтүү үчүн таптап коюңуз"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"Бул системдик колдонмо жана аны чечкенге болбойт."</string>
     <string name="folder_hint_text" msgid="5174843001373488816">"Аталышын түзөтүү"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"<xliff:g id="APP_NAME">%1$s</xliff:g> өчүрүлгөн"</string>
@@ -114,7 +116,7 @@
     <string name="notification_dots_desc_off" msgid="1760796511504341095">"Өчүк"</string>
     <string name="title_missing_notification_access" msgid="7503287056163941064">"Эскертмелерге уруксат берилиши керек"</string>
     <string name="msg_missing_notification_access" msgid="281113995110910548">"Эскертме белгилерин көрсөтүү максатында, <xliff:g id="NAME">%1$s</xliff:g> үчүн колдонмонун билдирмелерин күйгүзүү керек"</string>
-    <string name="title_change_settings" msgid="1376365968844349552">"Жөндөөлөрдү өзгөртүү"</string>
+    <string name="title_change_settings" msgid="1376365968844349552">"Параметрлерди өзгөртүү"</string>
     <string name="notification_dots_service_title" msgid="4284221181793592871">"Билдирмелер белгилерин көрсөтүү"</string>
     <string name="auto_add_shortcuts_label" msgid="3698776050751790653">"Колдонмонун сүрөтчөсүн Башкы экранга кошуу"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"Жаңы колдонмолор үчүн"</string>

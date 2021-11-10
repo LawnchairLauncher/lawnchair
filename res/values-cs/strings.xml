@@ -73,6 +73,7 @@
     <string name="out_of_space" msgid="6692471482459245734">"Na této ploše není místo"</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"Na panelu Oblíbené položky již není místo."</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"Seznam aplikací"</string>
+    <string name="all_apps_search_results" msgid="5889367432531296759">"Výsledky vyhledávání"</string>
     <string name="all_apps_button_personal_label" msgid="1315764287305224468">"Seznam osobních aplikací"</string>
     <string name="all_apps_button_work_label" msgid="7270707118948892488">"Seznam pracovních aplikací"</string>
     <string name="remove_drop_target_label" msgid="7812859488053230776">"Odstranit"</string>
@@ -89,7 +90,8 @@
     <string name="permdesc_write_settings" msgid="5440712911516509985">"Umožňuje aplikaci změnit nastavení a odkazy na ploše."</string>
     <string name="msg_no_phone_permission" msgid="9208659281529857371">"Aplikace <xliff:g id="APP_NAME">%1$s</xliff:g> nemá oprávnění telefonovat"</string>
     <string name="gadget_error_text" msgid="740356548025791839">"Widget se nepodařilo načíst"</string>
-    <string name="gadget_setup_text" msgid="1745356155479272374">"Klepnutím dokončíte konfiguraci"</string>
+    <string name="gadget_setup_text" msgid="8348374825537681407">"Nastavení widgetů"</string>
+    <string name="gadget_complete_setup_text" msgid="309040266978007925">"Klepnutím dokončíte konfiguraci"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"Toto je systémová aplikace a nelze ji odinstalovat."</string>
     <string name="folder_hint_text" msgid="5174843001373488816">"Upravit název"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"Aplikace <xliff:g id="APP_NAME">%1$s</xliff:g> je zakázána"</string>

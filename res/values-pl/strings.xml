@@ -73,6 +73,7 @@
     <string name="out_of_space" msgid="6692471482459245734">"Brak miejsca na tym ekranie głównym"</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"Brak miejsca w Ulubionych"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"Lista aplikacji"</string>
+    <string name="all_apps_search_results" msgid="5889367432531296759">"Wyniki wyszukiwania"</string>
     <string name="all_apps_button_personal_label" msgid="1315764287305224468">"Lista aplikacji osobistych"</string>
     <string name="all_apps_button_work_label" msgid="7270707118948892488">"Lista aplikacji służbowych"</string>
     <string name="remove_drop_target_label" msgid="7812859488053230776">"Usuń"</string>
@@ -89,7 +90,8 @@
     <string name="permdesc_write_settings" msgid="5440712911516509985">"Umożliwia aplikacji zmianę ustawień i skrótów na ekranie głównym."</string>
     <string name="msg_no_phone_permission" msgid="9208659281529857371">"<xliff:g id="APP_NAME">%1$s</xliff:g> nie może wykonywać połączeń telefonicznych"</string>
     <string name="gadget_error_text" msgid="740356548025791839">"Nie udało się załadować widżetu"</string>
-    <string name="gadget_setup_text" msgid="1745356155479272374">"Kliknij, aby dokończyć konfigurację"</string>
+    <string name="gadget_setup_text" msgid="8348374825537681407">"Ustawienia widżetu"</string>
+    <string name="gadget_complete_setup_text" msgid="309040266978007925">"Kliknij, aby dokończyć konfigurację"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"To aplikacja systemowa i nie można jej odinstalować."</string>
     <string name="folder_hint_text" msgid="5174843001373488816">"Edytuj nazwę"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"Aplikacja <xliff:g id="APP_NAME">%1$s</xliff:g> jest wyłączona"</string>

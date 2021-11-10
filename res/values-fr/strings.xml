@@ -69,6 +69,7 @@
     <string name="out_of_space" msgid="6692471482459245734">"Espace insuffisant sur cet écran d\'accueil"</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"Plus d\'espace disponible dans la zone de favoris."</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"Liste d\'applications"</string>
+    <string name="all_apps_search_results" msgid="5889367432531296759">"Résultats de recherche"</string>
     <string name="all_apps_button_personal_label" msgid="1315764287305224468">"Liste des applications personnelles"</string>
     <string name="all_apps_button_work_label" msgid="7270707118948892488">"Liste des applications professionnelles"</string>
     <string name="remove_drop_target_label" msgid="7812859488053230776">"Supprimer"</string>
@@ -85,7 +86,8 @@
     <string name="permdesc_write_settings" msgid="5440712911516509985">"Permettre à l\'application de modifier les paramètres et les raccourcis de l\'écran d\'accueil"</string>
     <string name="msg_no_phone_permission" msgid="9208659281529857371">"L\'application <xliff:g id="APP_NAME">%1$s</xliff:g> n\'est pas autorisée à passer des appels téléphoniques."</string>
     <string name="gadget_error_text" msgid="740356548025791839">"Impossible de charger le widget"</string>
-    <string name="gadget_setup_text" msgid="1745356155479272374">"Appuyez pour terminer la configuration"</string>
+    <string name="gadget_setup_text" msgid="8348374825537681407">"Paramètres du widget"</string>
+    <string name="gadget_complete_setup_text" msgid="309040266978007925">"Appuyez pour terminer la configuration"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"Impossible de désinstaller cette application, car il s\'agit d\'une application système."</string>
     <string name="folder_hint_text" msgid="5174843001373488816">"Modifier le nom"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"<xliff:g id="APP_NAME">%1$s</xliff:g> est désactivé."</string>

@@ -69,6 +69,7 @@
     <string name="out_of_space" msgid="6692471482459245734">"Auf diesem Startbildschirm ist kein Platz mehr vorhanden"</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"Ablage \"Favoriten\" ist voll."</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"Liste der Apps"</string>
+    <string name="all_apps_search_results" msgid="5889367432531296759">"Suchergebnisse"</string>
     <string name="all_apps_button_personal_label" msgid="1315764287305224468">"Liste der privaten Apps"</string>
     <string name="all_apps_button_work_label" msgid="7270707118948892488">"Liste der geschäftlichen Apps"</string>
     <string name="remove_drop_target_label" msgid="7812859488053230776">"Entfernen"</string>
@@ -85,7 +86,8 @@
     <string name="permdesc_write_settings" msgid="5440712911516509985">"Ermöglicht der App, die Einstellungen und Verknüpfungen auf dem Startbildschirm zu ändern"</string>
     <string name="msg_no_phone_permission" msgid="9208659281529857371">"<xliff:g id="APP_NAME">%1$s</xliff:g> darf keine Telefonanrufe tätigen."</string>
     <string name="gadget_error_text" msgid="740356548025791839">"Widget kann nicht geladen werden"</string>
-    <string name="gadget_setup_text" msgid="1745356155479272374">"Tippen, um Einrichtung abzuschließen"</string>
+    <string name="gadget_setup_text" msgid="8348374825537681407">"Widget-Einstellungen"</string>
+    <string name="gadget_complete_setup_text" msgid="309040266978007925">"Tippen, um Einrichtung abzuschließen"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"Dies ist eine Systemanwendung, die nicht deinstalliert werden kann."</string>
     <string name="folder_hint_text" msgid="5174843001373488816">"Name bearbeiten"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"<xliff:g id="APP_NAME">%1$s</xliff:g> deaktiviert"</string>

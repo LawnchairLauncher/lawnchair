@@ -147,18 +147,18 @@
     <style name="AppTheme.Dark.DarkMainColor" parent="@style/LauncherTheme.Dark.DarkMainColor" />
     <style name="AppTheme.Dark.DarkText" parent="@style/LauncherTheme.Dark.DarkText" />
 
-    <style name="HomeSettingsTheme" parent="@android:style/Theme.DeviceDefault.Settings">
+    <style name="HomeSettings.Theme" parent="@android:style/Theme.DeviceDefault.Settings">
         <item name="android:navigationBarColor">?android:colorPrimaryDark</item>
         <item name="android:windowActionBar">false</item>
         <item name="android:windowNoTitle">true</item>
-        <item name="preferenceTheme">@style/HomeSettingsPreferenceTheme</item>
+        <item name="preferenceTheme">@style/HomeSettings.PreferenceTheme</item>
     </style>
 
-    <style name="HomeSettingsPreferenceTheme" parent="@style/PreferenceThemeOverlay.v14.Material">
-        <item name="preferenceFragmentCompatStyle">@style/HomeSettingsFragmentCompatStyle</item>
+    <style name="HomeSettings.PreferenceTheme" parent="@style/PreferenceThemeOverlay.v14.Material">
+        <item name="preferenceFragmentCompatStyle">@style/HomeSettings.FragmentCompatStyle</item>
     </style>
 
-    <style name="HomeSettingsFragmentCompatStyle" parent="@style/PreferenceFragment.Material">
+    <style name="HomeSettings.FragmentCompatStyle" parent="@style/PreferenceFragment.Material">
         <item name="android:layout">@layout/home_settings</item>
     </style>
 
@@ -259,7 +259,7 @@
 
     <!-- Drop targets -->
     <style name="DropTargetButtonBase" parent="@android:style/TextAppearance.DeviceDefault">
-        <item name="android:drawablePadding">8dp</item>
+        <item name="android:drawablePadding">@dimen/drop_target_button_drawable_padding</item>
         <item name="android:padding">14dp</item>
         <item name="android:textColor">@color/drop_target_text</item>
         <item name="android:textSize">@dimen/drop_target_text_size</item>
