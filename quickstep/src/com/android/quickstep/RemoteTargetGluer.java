@@ -20,7 +20,7 @@ import android.content.Context;
 
 import androidx.annotation.Nullable;
 
-import com.android.launcher3.util.SplitConfigurationOptions;
+import com.android.launcher3.util.SplitConfigurationOptions.StagedSplitBounds;
 import com.android.quickstep.util.AnimatorControllerWithResistance;
 import com.android.quickstep.util.LauncherSplitScreenListener;
 import com.android.quickstep.util.TaskViewSimulator;
@@ -33,7 +33,7 @@ import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
  */
 public class RemoteTargetGluer {
     private RemoteTargetHandle[] mRemoteTargetHandles;
-    private SplitConfigurationOptions.StagedSplitBounds mStagedSplitBounds;
+    private StagedSplitBounds mStagedSplitBounds;
 
     /**
      * Use this constructor if remote targets are split-screen independent
@@ -108,9 +108,9 @@ public class RemoteTargetGluer {
             primaryTaskTarget = targets.findTask(splitIds[0]);
             secondaryTaskTarget = targets.findTask(splitIds[1]);
 
-            mStagedSplitBounds = new SplitConfigurationOptions.StagedSplitBounds(
+            mStagedSplitBounds = new StagedSplitBounds(
                     primaryTaskTarget.screenSpaceBounds,
-                    secondaryTaskTarget.screenSpaceBounds);
+                    secondaryTaskTarget.screenSpaceBounds, splitIds[0], splitIds[1]);
             mRemoteTargetHandles[0].mTransformParams.setTargetSet(
                     createRemoteAnimationTargetsForTarget(primaryTaskTarget, targets));
             mRemoteTargetHandles[0].mTaskViewSimulator.setPreview(primaryTaskTarget,
@@ -135,7 +135,7 @@ public class RemoteTargetGluer {
         return mRemoteTargetHandles;
     }
 
-    public SplitConfigurationOptions.StagedSplitBounds getStagedSplitBounds() {
+    public StagedSplitBounds getStagedSplitBounds() {
         return mStagedSplitBounds;
     }
 

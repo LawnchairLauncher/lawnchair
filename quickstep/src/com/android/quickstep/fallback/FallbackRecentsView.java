@@ -42,7 +42,7 @@ import com.android.quickstep.util.TaskViewSimulator;
 import com.android.quickstep.views.OverviewActionsView;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
-import com.android.systemui.shared.recents.model.GroupTask;
+import com.android.quickstep.util.GroupTask;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.recents.model.Task.TaskKey;
 
@@ -175,7 +175,7 @@ public class FallbackRecentsView extends RecentsView<RecentsActivity, RecentsSta
                 newList.addAll(taskGroups);
                 newList.add(new GroupTask(
                         Task.from(new TaskKey(mHomeTaskInfo), mHomeTaskInfo, false),
-                        null));
+                        null, null));
                 taskGroups = newList;
             }
         }
