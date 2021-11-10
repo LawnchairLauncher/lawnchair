@@ -572,53 +572,6 @@ public class SystemUiProxy implements ISystemUiProxy,
         mPendingSplitScreenListener = null;
     }
 
-    public void setSideStageVisibility(boolean visible) {
-        if (mSplitScreen != null) {
-            try {
-                mSplitScreen.setSideStageVisibility(visible);
-            } catch (RemoteException e) {
-                Log.w(TAG, "Failed call setSideStageVisibility");
-            }
-        }
-    }
-
-    /**
-     * To be called whenever the user exits out of split screen apps (either by launching another
-     * app or by swiping home)
-     * @param topTaskId The taskId of the new app that was launched. System will then move this task
-     *                  to the front of what the user sees while removing all other split stages.
-     *                  If swiping to home (or there is no task to put at the top), can pass in -1.
-     */
-    public void exitSplitScreen(int topTaskId) {
-        if (mSplitScreen != null) {
-            try {
-                mSplitScreen.exitSplitScreen(topTaskId);
-            } catch (RemoteException e) {
-                Log.w(TAG, "Failed call exitSplitScreen");
-            }
-        }
-    }
-
-    public void exitSplitScreenOnHide(boolean exitSplitScreenOnHide) {
-        if (mSplitScreen != null) {
-            try {
-                mSplitScreen.exitSplitScreenOnHide(exitSplitScreenOnHide);
-            } catch (RemoteException e) {
-                Log.w(TAG, "Failed call exitSplitScreen");
-            }
-        }
-    }
-
-    public void startTask(int taskId, int stage, int position, Bundle options) {
-        if (mSplitScreen != null) {
-            try {
-                mSplitScreen.startTask(taskId, stage, position, options);
-            } catch (RemoteException e) {
-                Log.w(TAG, "Failed call startTask");
-            }
-        }
-    }
-
     /** Start multiple tasks in split-screen simultaneously. */
     public void startTasks(int mainTaskId, Bundle mainOptions, int sideTaskId, Bundle sideOptions,
             @SplitConfigurationOptions.StagePosition int sidePosition,

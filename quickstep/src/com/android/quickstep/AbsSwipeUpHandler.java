@@ -1809,13 +1809,8 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
                 mGestureState.updateLastStartedTaskId(taskId);
                 boolean hasTaskPreviouslyAppeared = mGestureState.getPreviouslyAppearedTaskIds()
                         .contains(taskId);
-                boolean isOldTaskSplit = LauncherSplitScreenListener.INSTANCE.getNoCreate()
-                        .getRunningSplitTaskIds().length > 0;
                 nextTask.launchTask(success -> {
                     resultCallback.accept(success);
-                    if (isOldTaskSplit) {
-                        SystemUiProxy.INSTANCE.getNoCreate().exitSplitScreen(taskId);
-                    }
                     if (success) {
                         if (hasTaskPreviouslyAppeared) {
                             onRestartPreviouslyAppearedTask();

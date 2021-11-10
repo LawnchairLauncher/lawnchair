@@ -16,7 +16,6 @@
 
 package com.android.launcher3.touch;
 
-import static android.view.Gravity.BOTTOM;
 import static android.view.Gravity.CENTER_HORIZONTAL;
 import static android.view.Gravity.START;
 import static android.view.Gravity.TOP;
@@ -477,7 +476,7 @@ public class PortraitPagedViewHandler implements PagedOrientationHandler {
     @Override
     public void measureGroupedTaskViewThumbnailBounds(View primarySnapshot, View secondarySnapshot,
             int parentWidth, int parentHeight,
-            SplitConfigurationOptions.StagedSplitBounds splitBoundsConfig, DeviceProfile dp) {
+            StagedSplitBounds splitBoundsConfig, DeviceProfile dp) {
         int spaceAboveSnapshot = dp.overviewTaskThumbnailTopMarginPx;
         int totalThumbnailHeight = parentHeight - spaceAboveSnapshot;
         int dividerBar = (splitBoundsConfig.appsStackedVertically ?
@@ -535,23 +534,27 @@ public class PortraitPagedViewHandler implements PagedOrientationHandler {
                 (FrameLayout.LayoutParams) primaryIconView.getLayoutParams();
         FrameLayout.LayoutParams secondaryIconParams =
                 new FrameLayout.LayoutParams(primaryIconParams);
+        int dividerBar = (splitConfig.appsStackedVertically ?
+                splitConfig.visualDividerBounds.height() :
+                splitConfig.visualDividerBounds.width());
 
+        int primaryWidth = primarySnapshotBounds.width();
         if (deviceProfile.isLandscape) {
-            int primaryWidth = primarySnapshotBounds.width();
-            int secondaryWidth = secondarySnapshotBounds.width();
             primaryIconParams.gravity = TOP | START;
-            primaryIconView.setTranslationX((primaryWidth - taskIconHeight) / 2f );
+            primaryIconView.setTranslationX(primaryWidth - primaryIconView.getWidth());
+            primaryIconView.setTranslationY(0);
 
             secondaryIconParams.gravity = TOP | START;
-            secondaryIconView.setTranslationX(primaryWidth
-                    + ((secondaryWidth - taskIconHeight) / 2f));
-        } else {
-            primaryIconView.setTranslationX(0);
-            secondaryIconView.setTranslationX(0);
-            primaryIconView.setTranslationY(0);
+            secondaryIconView.setTranslationX(primaryWidth + dividerBar);
             secondaryIconView.setTranslationY(0);
-            secondaryIconParams.gravity = BOTTOM | CENTER_HORIZONTAL;
-            secondaryIconParams.bottomMargin = -(secondaryIconParams.topMargin + taskIconHeight);
+        } else {
+            primaryIconParams.gravity = TOP | CENTER_HORIZONTAL;
+            primaryIconView.setTranslationX(-(primaryIconView.getWidth()) / 2f);
+            primaryIconView.setTranslationY(0);
+
+            secondaryIconParams.gravity = TOP | CENTER_HORIZONTAL;
+            secondaryIconView.setTranslationX(secondaryIconView.getWidth() / 2f);
+            secondaryIconView.setTranslationY(0);
         }
         primaryIconView.setLayoutParams(primaryIconParams);
         secondaryIconView.setLayoutParams(secondaryIconParams);
