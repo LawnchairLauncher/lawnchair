@@ -31,11 +31,11 @@ import com.android.launcher3.util.IntArray;
  */
 public class LauncherDbUtils {
 
-    public static IntArray queryIntArray(SQLiteDatabase db, String tableName, String columnName,
-            String selection, String groupBy, String orderBy) {
+    public static IntArray queryIntArray(boolean distinct, SQLiteDatabase db, String tableName,
+            String columnName, String selection, String groupBy, String orderBy) {
         IntArray out = new IntArray();
-        try (Cursor c = db.query(tableName, new String[] { columnName }, selection, null,
-                groupBy, null, orderBy)) {
+        try (Cursor c = db.query(distinct, tableName, new String[] { columnName }, selection, null,
+                groupBy, null, orderBy, null)) {
             while (c.moveToNext()) {
                 out.add(c.getInt(0));
             }
