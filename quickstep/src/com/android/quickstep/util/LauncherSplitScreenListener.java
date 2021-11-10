@@ -149,7 +149,6 @@ public class LauncherSplitScreenListener extends ISplitScreenListener.Stub {
             return;
         }
 
-        SystemUiProxy.INSTANCE.getNoCreate().exitSplitScreen(-1);
         mPersistentGroupedIds = EMPTY_ARRAY;
     }
 

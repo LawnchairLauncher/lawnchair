@@ -30,9 +30,7 @@ import android.app.ActivityManager;
 import androidx.test.filters.SmallTest;
 
 import com.android.launcher3.util.LooperExecutor;
-import com.android.systemui.shared.recents.model.GroupTask;
-import com.android.systemui.shared.recents.model.Task;
-import com.android.systemui.shared.system.ActivityManagerWrapper;
+import com.android.quickstep.util.GroupTask;
 import com.android.systemui.shared.system.KeyguardManagerCompat;
 import com.android.wm.shell.util.GroupedRecentTaskInfo;
 
@@ -73,7 +71,7 @@ public class RecentTasksListTest {
     @Test
     public void loadTasksInBackground_onlyKeys_noValidTaskDescription() {
         GroupedRecentTaskInfo recentTaskInfos = new GroupedRecentTaskInfo(
-                new ActivityManager.RecentTaskInfo(), new ActivityManager.RecentTaskInfo());
+                new ActivityManager.RecentTaskInfo(), new ActivityManager.RecentTaskInfo(), null);
         when(mockSystemUiProxy.getRecentTasks(anyInt(), anyInt()))
                 .thenReturn(new ArrayList<>(Collections.singletonList(recentTaskInfos)));
 
@@ -93,7 +91,7 @@ public class RecentTasksListTest {
         ActivityManager.RecentTaskInfo task2 = new ActivityManager.RecentTaskInfo();
         task2.taskDescription = new ActivityManager.TaskDescription();
         GroupedRecentTaskInfo recentTaskInfos = new GroupedRecentTaskInfo(
-                task1, task2);
+                task1, task2, null);
         when(mockSystemUiProxy.getRecentTasks(anyInt(), anyInt()))
                 .thenReturn(new ArrayList<>(Collections.singletonList(recentTaskInfos)));
 

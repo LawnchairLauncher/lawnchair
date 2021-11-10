@@ -85,6 +85,12 @@ public final class SplitConfigurationOptions {
         }
     }
 
+    /**
+     * NOTE: Engineers complained about too little ambiguity in the last survey, so there is a class
+     * with the same name/functionality in wm.shell.util (which launcher3 cannot be built against)
+     *
+     * If you make changes here, consider making the same changes there
+     */
     public static class StagedSplitBounds {
         public final Rect leftTopBounds;
         public final Rect rightBottomBounds;
@@ -100,10 +106,15 @@ public final class SplitConfigurationOptions {
          * the bounds were originally in
          */
         public final boolean appsStackedVertically;
+        public final int leftTopTaskId;
+        public final int rightBottomTaskId;
 
-        public StagedSplitBounds(Rect leftTopBounds, Rect rightBottomBounds) {
+        public StagedSplitBounds(Rect leftTopBounds, Rect rightBottomBounds, int leftTopTaskId,
+                int rightBottomTaskId) {
             this.leftTopBounds = leftTopBounds;
             this.rightBottomBounds = rightBottomBounds;
+            this.leftTopTaskId = leftTopTaskId;
+            this.rightBottomTaskId = rightBottomTaskId;
 
             if (rightBottomBounds.top > leftTopBounds.top) {
                 // vertical apps, horizontal divider
