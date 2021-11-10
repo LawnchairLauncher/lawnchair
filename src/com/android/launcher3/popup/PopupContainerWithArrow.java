@@ -152,6 +152,10 @@ public class PopupContainerWithArrow<T extends Context & ActivityContext>
         };
     }
 
+    public void setPopupItemDragHandler(PopupItemDragHandler popupItemDragHandler) {
+        mPopupItemDragHandler = popupItemDragHandler;
+    }
+
     public PopupItemDragHandler getItemDragHandler() {
         return mPopupItemDragHandler;
     }

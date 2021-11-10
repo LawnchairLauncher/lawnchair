@@ -51,6 +51,8 @@ import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.popup.PopupContainerWithArrow;
+import com.android.launcher3.shortcuts.DeepShortcutView;
+import com.android.launcher3.shortcuts.ShortcutDragPreviewProvider;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.system.ClipDescriptionCompat;
 import com.android.systemui.shared.system.LauncherAppsCompat;
@@ -88,6 +90,21 @@ public class TaskbarDragController extends DragController<TaskbarActivityContext
      * @return Whether {@link View#startDragAndDrop} started successfully.
      */
     protected boolean startDragOnLongClick(View view) {
+        return startDragOnLongClick(view, null, null);
+    }
+
+    protected boolean startDragOnLongClick(
+            DeepShortcutView shortcutView, Point iconShift) {
+        return startDragOnLongClick(
+                shortcutView.getBubbleText(),
+                new ShortcutDragPreviewProvider(shortcutView.getIconView(), iconShift),
+                iconShift);
+    }
+
+    private boolean startDragOnLongClick(
+            View view,
+            @Nullable DragPreviewProvider dragPreviewProvider,
+            @Nullable Point iconShift) {
         if (!(view instanceof BubbleTextView)) {
             return false;
         }
@@ -96,7 +113,10 @@ public class TaskbarDragController extends DragController<TaskbarActivityContext
 
         mActivity.setTaskbarWindowFullscreen(true);
         btv.post(() -> {
-            startInternalDrag(btv);
+            DragView dragView = startInternalDrag(btv, dragPreviewProvider);
+            if (iconShift != null) {
+                dragView.animateShift(-iconShift.x, -iconShift.y);
+            }
             btv.getIcon().setIsDisabled(true);
             mControllers.taskbarAutohideSuspendController.updateFlag(
                     TaskbarAutohideSuspendController.FLAG_AUTOHIDE_SUSPEND_DRAGGING, true);
@@ -104,7 +124,8 @@ public class TaskbarDragController extends DragController<TaskbarActivityContext
         return true;
     }
 
-    private void startInternalDrag(BubbleTextView btv) {
+    private DragView startInternalDrag(
+            BubbleTextView btv, @Nullable DragPreviewProvider dragPreviewProvider) {
         float iconScale = btv.getIcon().getAnimatedScale();
 
         // Clear the pressed state if necessary
@@ -112,7 +133,8 @@ public class TaskbarDragController extends DragController<TaskbarActivityContext
         btv.setPressed(false);
         btv.clearPressedBackground();
 
-        final DragPreviewProvider previewProvider = new DragPreviewProvider(btv);
+        final DragPreviewProvider previewProvider = dragPreviewProvider == null
+                ? new DragPreviewProvider(btv) : dragPreviewProvider;
         final Drawable drawable = previewProvider.createDrawable();
         final float scale = previewProvider.getScaleAndPosition(drawable, mTempXY);
         int dragLayerX = mTempXY[0];
@@ -149,7 +171,7 @@ public class TaskbarDragController extends DragController<TaskbarActivityContext
             }
         }
 
-        startDrag(
+        return startDrag(
                 drawable,
                 /* view = */ null,
                 /* originalView = */ btv,
@@ -241,7 +263,8 @@ public class TaskbarDragController extends DragController<TaskbarActivityContext
 
             @Override
             public void onProvideShadowMetrics(Point shadowSize, Point shadowTouchPoint) {
-                shadowSize.set(mDragIconSize, mDragIconSize);
+                int iconSize = Math.max(mDragIconSize, btv.getWidth());
+                shadowSize.set(iconSize, iconSize);
                 // The registration point was taken before the icon scaled to mDragIconSize, so
                 // offset the registration to where the touch is on the new size.
                 int offsetX = (mDragIconSize - mDragObject.dragView.getDragRegionWidth()) / 2;
@@ -273,6 +296,12 @@ public class TaskbarDragController extends DragController<TaskbarActivityContext
                     });
             intent = new Intent();
             if (item.itemType == LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT) {
+                intent.putExtra(ClipDescriptionCompat.EXTRA_PENDING_INTENT,
+                        launcherApps.getShortcutIntent(
+                                item.getIntent().getPackage(),
+                                item.getDeepShortcutId(),
+                                null,
+                                item.user));
                 intent.putExtra(Intent.EXTRA_PACKAGE_NAME, item.getIntent().getPackage());
                 intent.putExtra(Intent.EXTRA_SHORTCUT_ID, item.getDeepShortcutId());
             } else {
