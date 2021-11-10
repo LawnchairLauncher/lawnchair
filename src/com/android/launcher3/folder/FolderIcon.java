@@ -628,7 +628,10 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
     public void drawDot(Canvas canvas) {
         if (!mForceHideDot && ((mDotInfo != null && mDotInfo.hasDot()) || mDotScale > 0)) {
             Rect iconBounds = mDotParams.iconBounds;
-            BubbleTextView.getIconBounds(this, iconBounds, mActivity.getDeviceProfile().iconSizePx);
+
+            Utilities.setRectToViewCenter(this, mActivity.getDeviceProfile().iconSizePx,
+                    iconBounds);
+            iconBounds.offsetTo(iconBounds.left, getPaddingTop());
             float iconScale = (float) mBackground.previewSize / iconBounds.width();
             Utilities.scaleRectAboutCenter(iconBounds, iconScale);
 
