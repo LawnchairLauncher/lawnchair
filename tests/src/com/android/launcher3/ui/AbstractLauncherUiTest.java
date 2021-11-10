@@ -352,6 +352,14 @@ public abstract class AbstractLauncherUiTest {
                 launcher -> launcher.getStateManager().getCurrentStableState() == state.get());
     }
 
+    // Cannot be used in TaplTests between a Tapl call injecting a gesture and a tapl call
+    // expecting the results of that gesture because the wait can hide flakeness.
+    protected void waitForStateTransitionToEnd(String message, Supplier<LauncherState> state) {
+        waitForLauncherCondition(message,
+                launcher -> launcher.getStateManager().isInStableState(state.get())
+                        && !launcher.getStateManager().isInTransition());
+    }
+
     protected void waitForResumed(String message) {
         waitForLauncherCondition(message, launcher -> launcher.hasBeenResumed());
     }
