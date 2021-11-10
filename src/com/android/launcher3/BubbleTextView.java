@@ -141,6 +141,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
     private final CheckLongPressHelper mLongPressHelper;
 
     private final boolean mLayoutHorizontal;
+    private final boolean mIsRtl;
     private final int mIconSize;
 
     @ViewDebug.ExportedProperty(category = "launcher")
@@ -187,6 +188,8 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
         TypedArray a = context.obtainStyledAttributes(attrs,
                 R.styleable.BubbleTextView, defStyle, 0);
         mLayoutHorizontal = a.getBoolean(R.styleable.BubbleTextView_layoutHorizontal, false);
+        mIsRtl = (getResources().getConfiguration().getLayoutDirection()
+                == View.LAYOUT_DIRECTION_RTL);
         DeviceProfile grid = mActivity.getDeviceProfile();
 
         mDisplay = a.getInteger(R.styleable.BubbleTextView_iconDisplay, DISPLAY_WORKSPACE);
@@ -583,18 +586,28 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
         return mDotInfo != null;
     }
 
+    /**
+     * Get the icon bounds on the view depending on the layout type.
+     */
     public void getIconBounds(Rect outBounds) {
-        getIconBounds(this, outBounds, mIconSize);
+        getIconBounds(mIconSize, outBounds);
     }
 
-    public static void getIconBounds(View iconView, Rect outBounds, int iconSize) {
-        int top = iconView.getPaddingTop();
-        int left = (iconView.getWidth() - iconSize) / 2;
-        int right = left + iconSize;
-        int bottom = top + iconSize;
-        outBounds.set(left, top, right, bottom);
+    /**
+     * Get the icon bounds on the view depending on the layout type.
+     */
+    public void getIconBounds(int iconSize, Rect outBounds) {
+        Utilities.setRectToViewCenter(this, iconSize, outBounds);
+        if (mLayoutHorizontal) {
+            if (mIsRtl) {
+                outBounds.offsetTo(getWidth() - iconSize - getPaddingRight(), outBounds.top);
+            } else {
+                outBounds.offsetTo(getPaddingLeft(), outBounds.top);
+            }
+        } else {
+            outBounds.offsetTo(outBounds.left, getPaddingTop());
+        }
     }
-
 
     /**
      * Sets whether to vertically center the content.
@@ -988,8 +1001,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
 
     @Override
     public void getWorkspaceVisualDragBounds(Rect bounds) {
-        DeviceProfile grid = mActivity.getDeviceProfile();
-        BubbleTextView.getIconBounds(this, bounds, grid.iconSizePx);
+        getIconBounds(mIconSize, bounds);
     }
 
     private int getIconSizeForDisplay(int display) {
@@ -1006,7 +1018,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
     }
 
     public void getSourceVisualDragBounds(Rect bounds) {
-        BubbleTextView.getIconBounds(this, bounds, getIconSizeForDisplay(mDisplay));
+        getIconBounds(mIconSize, bounds);
     }
 
     @Override
