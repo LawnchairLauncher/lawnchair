@@ -145,9 +145,10 @@ public class FallbackRecentsView extends RecentsView<RecentsActivity, RecentsSta
         RunningTaskInfo runningTaskInfo = runningTaskInfos[0];
         if (mHomeTaskInfo != null && runningTaskInfo != null &&
                 mHomeTaskInfo.taskId == runningTaskInfo.taskId
-                && getTaskViewCount() == 0) {
+                && getTaskViewCount() == 0 && mLoadPlanEverApplied) {
             // Do not add a stub task if we are running over home with empty recents, so that we
             // show the empty recents message instead of showing a stub task and later removing it.
+            // Ignore empty task signal if applyLoadPlan has never run.
             return false;
         }
         return super.shouldAddStubTaskView(runningTaskInfos);
