@@ -177,8 +177,8 @@ public final class TaskViewUtils {
         } else {
             RemoteTargetGluer gluer = new RemoteTargetGluer(v.getContext(),
                     recentsView.getSizeStrategy(), targets);
-            if (recentsViewHandles != null && recentsViewHandles.length > 1) {
-                remoteTargetHandles = gluer.assignTargetsForSplitScreen(targets);
+            if (v.containsMultipleTasks()) {
+                remoteTargetHandles = gluer.assignTargetsForSplitScreen(targets, v.getTaskIds());
             } else {
                 remoteTargetHandles = gluer.assignTargets(targets);
             }
