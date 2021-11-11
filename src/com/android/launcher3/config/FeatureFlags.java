@@ -94,6 +94,9 @@ public final class FeatureFlags {
     public static final BooleanFlag ENABLE_ONE_SEARCH = new DeviceFlag("ENABLE_ONE_SEARCH", false,
             "Use homescreen search box to complete allApps searches");
 
+    public static final BooleanFlag ENABLE_TWOLINE_ALLAPPS = getDebugFlag(
+            "ENABLE_TWOLINE_ALLAPPS", false, "Enables two line label inside all apps.");
+
     public static final BooleanFlag ENABLE_DEVICE_SEARCH_PERFORMANCE_LOGGING = new DeviceFlag(
             "ENABLE_DEVICE_SEARCH_PERFORMANCE_LOGGING", true,
             "Allows on device search in all apps logging");
