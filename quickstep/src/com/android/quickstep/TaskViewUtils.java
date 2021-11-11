@@ -215,6 +215,7 @@ public final class TaskViewUtils {
                     tvsLocal.taskSecondaryTranslation.value = gridTranslationSecondary;
                 }
                 tvsLocal.setScroll(startScroll);
+                tvsLocal.setIsGridTask(v.isGridTask());
 
                 // Fade in the task during the initial 20% of the animation
                 out.addFloat(targetHandle.getTransformParams(), TransformParams.TARGET_ALPHA, 0, 1,

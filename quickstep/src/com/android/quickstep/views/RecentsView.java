@@ -157,6 +157,7 @@ import com.android.quickstep.TaskOverlayFactory;
 import com.android.quickstep.TaskThumbnailCache;
 import com.android.quickstep.TaskViewUtils;
 import com.android.quickstep.ViewUtils;
+import com.android.quickstep.util.GroupTask;
 import com.android.quickstep.util.LayoutUtils;
 import com.android.quickstep.util.RecentsOrientedState;
 import com.android.quickstep.util.SplitScreenBounds;
@@ -166,7 +167,6 @@ import com.android.quickstep.util.TaskViewSimulator;
 import com.android.quickstep.util.TransformParams;
 import com.android.quickstep.util.VibratorWrapper;
 import com.android.systemui.plugins.ResourceProvider;
-import com.android.quickstep.util.GroupTask;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.recents.model.Task.TaskKey;
 import com.android.systemui.shared.recents.model.ThumbnailData;
@@ -1018,8 +1018,10 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     }
 
     private TaskView getLastGridTaskView() {
-        IntArray topRowIdArray = getTopRowIdArray();
-        IntArray bottomRowIdArray = getBottomRowIdArray();
+        return getLastGridTaskView(getTopRowIdArray(), getBottomRowIdArray());
+    }
+
+    private TaskView getLastGridTaskView(IntArray topRowIdArray, IntArray bottomRowIdArray) {
         if (topRowIdArray.isEmpty() && bottomRowIdArray.isEmpty()) {
             return null;
         }
@@ -3145,38 +3147,23 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                                 }
                             }
 
-                            TaskView newLastGridTaskView = getLastGridTaskView();
+                            IntArray topRowIdArray = getTopRowIdArray();
+                            IntArray bottomRowIdArray = getBottomRowIdArray();
                             if (finalSnapToLastTask) {
                                 // If snapping to last task, find the last task after dismissal.
-                                pageToSnapTo = indexOfChild(newLastGridTaskView);
+                                pageToSnapTo = indexOfChild(
+                                        getLastGridTaskView(topRowIdArray, bottomRowIdArray));
                             } else if (taskViewIdToSnapTo != -1) {
                                 // If snapping to another page due to indices rearranging, find
                                 // the new index after dismissal & rearrange using the task view id.
                                 pageToSnapTo = indexOfChild(
                                         getTaskViewFromTaskViewId(taskViewIdToSnapTo));
-                                int taskViewToSnapToScroll = getScrollForPage(pageToSnapTo);
-                                int lastGridTaskScroll = getScrollForPage(
-                                        indexOfChild(newLastGridTaskView));
-                                if (!currentPageSnapsToEndOfGrid
-                                        && taskViewToSnapToScroll == lastGridTaskScroll) {
+                                if (!currentPageSnapsToEndOfGrid) {
                                     // If it wasn't snapped to one of the last pages, but is now
                                     // snapped to last pages, we'll need to compensate for the
-                                    // difference as last pages' scroll is the position where
-                                    // ClearAllButton is barely invisible, instead of aligned to
-                                    // mLastComputedTaskSize.
-                                    int normalTaskEnd = mIsRtl
-                                            ? mLastComputedTaskSize.right
-                                            : mLastComputedTaskSize.left;
-                                    int lastTaskStart = mIsRtl
-                                            ? mLastComputedGridSize.left
-                                            : mLastComputedGridSize.right;
-                                    // As snapped task is not the last task, it can only be the
-                                    // second last task.
-                                    int distanceToSnappedTaskEnd =
-                                            (mPageSpacing + mLastComputedGridTaskSize.width()) * 2;
-                                    int snappedTaskEnd = lastTaskStart + (mIsRtl
-                                            ? distanceToSnappedTaskEnd : -distanceToSnappedTaskEnd);
-                                    mCurrentPageScrollDiff += snappedTaskEnd - normalTaskEnd;
+                                    // offset from the page's scroll to its visual position.
+                                    mCurrentPageScrollDiff += getOffsetFromScrollPosition(
+                                            pageToSnapTo, topRowIdArray, bottomRowIdArray);
                                 }
                             }
                         }
@@ -4613,7 +4600,58 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                     overScrollShift, getUndampedOverScrollShift());
         }
         return getScrollForPage(pageIndex) - mOrientationHandler.getPrimaryScroll(this)
-                + overScrollShift;
+                + overScrollShift + getOffsetFromScrollPosition(pageIndex);
+    }
+
+    /**
+     * Returns how many pixels the page is offset from its scroll position.
+     */
+    private int getOffsetFromScrollPosition(int pageIndex) {
+        return getOffsetFromScrollPosition(pageIndex, getTopRowIdArray(), getBottomRowIdArray());
+    }
+
+    private int getOffsetFromScrollPosition(
+            int pageIndex, IntArray topRowIdArray, IntArray bottomRowIdArray) {
+        if (!showAsGrid()) {
+            return 0;
+        }
+
+        TaskView taskView = getTaskViewAt(pageIndex);
+        if (taskView == null) {
+            return 0;
+        }
+
+        TaskView lastGridTaskView = getLastGridTaskView(topRowIdArray, bottomRowIdArray);
+        if (lastGridTaskView == null) {
+            return 0;
+        }
+
+        if (getScrollForPage(pageIndex) != getScrollForPage(indexOfChild(lastGridTaskView))) {
+            return 0;
+        }
+
+        // Check distance from lastGridTaskView to taskView.
+        int lastGridTaskViewPosition =
+                getPositionInRow(lastGridTaskView, topRowIdArray, bottomRowIdArray);
+        int taskViewPosition = getPositionInRow(taskView, topRowIdArray, bottomRowIdArray);
+        int gridTaskSizeAndSpacing = mLastComputedGridTaskSize.width() + mPageSpacing;
+        int positionDiff = gridTaskSizeAndSpacing * (lastGridTaskViewPosition - taskViewPosition);
+
+        int lastTaskEnd = (mIsRtl
+                ? mLastComputedGridSize.left
+                : mLastComputedGridSize.right)
+                + (mIsRtl ? mPageSpacing : -mPageSpacing);
+        int taskEnd = lastTaskEnd + (mIsRtl ? positionDiff : -positionDiff);
+        int normalTaskEnd = mIsRtl
+                ? mLastComputedGridTaskSize.left
+                : mLastComputedGridTaskSize.right;
+        return taskEnd - normalTaskEnd;
+    }
+
+    private int getPositionInRow(
+            TaskView taskView, IntArray topRowIdArray, IntArray bottomRowIdArray) {
+        int position = topRowIdArray.indexOf(taskView.getTaskViewId());
+        return position != -1 ? position : bottomRowIdArray.indexOf(taskView.getTaskViewId());
     }
 
     /**
