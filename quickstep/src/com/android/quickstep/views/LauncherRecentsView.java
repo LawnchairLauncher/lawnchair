@@ -30,6 +30,8 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.Surface;
 
+import androidx.annotation.Nullable;
+
 import com.android.launcher3.BaseQuickstepLauncher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.statehandlers.DepthController;
@@ -49,11 +51,11 @@ public class LauncherRecentsView extends RecentsView<BaseQuickstepLauncher, Laun
         this(context, null);
     }
 
-    public LauncherRecentsView(Context context, AttributeSet attrs) {
+    public LauncherRecentsView(Context context, @Nullable AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public LauncherRecentsView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public LauncherRecentsView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr, LauncherActivityInterface.INSTANCE);
         mActivity.getStateManager().addStateListener(this);
     }
