@@ -518,7 +518,10 @@ public class StatsLogManager implements ResourceBasedOverride {
         LAUNCHER_TASKBAR_LONGPRESS_HIDE(896),
 
         @UiEvent(doc = "User long pressed on the taskbar gesture handle to show the taskbar")
-        LAUNCHER_TASKBAR_LONGPRESS_SHOW(897);
+        LAUNCHER_TASKBAR_LONGPRESS_SHOW(897),
+
+        @UiEvent(doc = "User clicks on the search icon on header to launch search in app.")
+        LAUNCHER_ALLAPPS_SEARCHINAPP_LAUNCH(913);
 
         // ADD MORE
 
