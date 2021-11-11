@@ -92,7 +92,6 @@ import com.android.quickstep.TaskThumbnailCache;
 import com.android.quickstep.TaskUtils;
 import com.android.quickstep.TaskViewUtils;
 import com.android.quickstep.util.CancellableTask;
-import com.android.quickstep.util.LauncherSplitScreenListener;
 import com.android.quickstep.util.RecentsOrientedState;
 import com.android.quickstep.util.TaskCornerRadius;
 import com.android.quickstep.util.TransformParams;
@@ -369,7 +368,7 @@ public class TaskView extends FrameLayout implements Reusable {
     private float mGridProgress;
     private float mNonGridScale = 1;
     private float mDismissScale = 1;
-    private final FullscreenDrawParams mCurrentFullscreenParams;
+    protected final FullscreenDrawParams mCurrentFullscreenParams;
     protected final StatefulActivity mActivity;
 
     // Various causes of changing primary translation, which we aggregate to setTranslationX/Y().
@@ -1374,7 +1373,7 @@ public class TaskView extends FrameLayout implements Reusable {
         invalidateOutline();
     }
 
-    void updateSnapshotRadius() {
+    protected void updateSnapshotRadius() {
         updateCurrentFullscreenParams(mSnapshotView.getPreviewPositionHelper());
         mSnapshotView.setFullscreenParams(mCurrentFullscreenParams);
     }
