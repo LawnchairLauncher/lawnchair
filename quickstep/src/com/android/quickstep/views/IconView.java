@@ -23,6 +23,8 @@ import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.View;
 
+import androidx.annotation.Nullable;
+
 import com.android.launcher3.Utilities;
 
 /**
@@ -31,6 +33,7 @@ import com.android.launcher3.Utilities;
  */
 public class IconView extends View {
 
+    @Nullable
     private Drawable mDrawable;
     private int mDrawableWidth, mDrawableHeight;
 
@@ -46,7 +49,10 @@ public class IconView extends View {
         super(context, attrs, defStyleAttr);
     }
 
-    public void setDrawable(Drawable d) {
+    /**
+     * Sets a {@link Drawable} to be displayed.
+     */
+    public void setDrawable(@Nullable Drawable d) {
         if (mDrawable != null) {
             mDrawable.setCallback(null);
         }
@@ -76,6 +82,7 @@ public class IconView extends View {
         mDrawable.setBounds(drawableRect);
     }
 
+    @Nullable
     public Drawable getDrawable() {
         return mDrawable;
     }

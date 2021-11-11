@@ -90,8 +90,10 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
     @ActionsDisabledFlags
     protected int mDisabledFlags;
 
+    @Nullable
     protected T mCallbacks;
 
+    @Nullable
     protected DeviceProfile mDp;
 
     public OverviewActionsView(Context context) {

@@ -360,6 +360,7 @@ public class TaskView extends FrameLayout implements Reusable {
 
     private final TaskOutlineProvider mOutlineProvider;
 
+    @Nullable
     protected Task mTask;
     protected TaskThumbnailView mSnapshotView;
     protected IconView mIconView;
@@ -394,6 +395,7 @@ public class TaskView extends FrameLayout implements Reusable {
     private float mSplitSelectTranslationX;
     private float mSplitSelectScrollOffsetPrimary;
 
+    @Nullable
     private ObjectAnimator mIconAndDimAnimator;
     private float mIconScaleAnimStartProgress = 0;
     private float mFocusTransitionProgress = 1;
@@ -411,7 +413,9 @@ public class TaskView extends FrameLayout implements Reusable {
     private boolean mShowScreenshot;
 
     // The current background requests to load the task thumbnail and icon
+    @Nullable
     private CancellableTask mThumbnailLoadRequest;
+    @Nullable
     private CancellableTask mIconLoadRequest;
 
     private boolean mEndQuickswitchCuj;
@@ -544,6 +548,7 @@ public class TaskView extends FrameLayout implements Reusable {
         return mTaskIdAttributeContainer;
     }
 
+    @Nullable
     public Task getTask() {
         return mTask;
     }
@@ -686,6 +691,7 @@ public class TaskView extends FrameLayout implements Reusable {
      * Starts the task associated with this view and animates the startup.
      * @return CompletionStage to indicate the animation completion or null if the launch failed.
      */
+    @Nullable
     public RunnableList launchTaskAnimated() {
         if (mTask != null) {
             TestLogging.recordEvent(
@@ -843,7 +849,7 @@ public class TaskView extends FrameLayout implements Reusable {
         }
     }
 
-    protected void setIcon(IconView iconView, Drawable icon) {
+    protected void setIcon(IconView iconView, @Nullable Drawable icon) {
         if (icon != null) {
             iconView.setDrawable(icon);
             iconView.setOnClickListener(v -> {
