@@ -14,7 +14,6 @@ import androidx.annotation.Nullable;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
 import com.android.launcher3.util.RunnableList;
-import com.android.launcher3.util.SplitConfigurationOptions;
 import com.android.launcher3.util.SplitConfigurationOptions.StagedSplitBounds;
 import com.android.launcher3.util.TransformingTouchDelegate;
 import com.android.quickstep.RecentsModel;
@@ -40,10 +39,13 @@ import java.util.function.Consumer;
  */
 public class GroupedTaskView extends TaskView {
 
+    @Nullable
     private Task mSecondaryTask;
     private TaskThumbnailView mSnapshotView2;
     private IconView mIconView2;
+    @Nullable
     private CancellableTask<ThumbnailData> mThumbnailLoadRequest2;
+    @Nullable
     private CancellableTask mIconLoadRequest2;
     private final float[] mIcon2CenterCoords = new float[2];
     private TransformingTouchDelegate mIcon2TouchDelegate;
@@ -154,6 +156,7 @@ public class GroupedTaskView extends TaskView {
         }
     }
 
+    @Nullable
     @Override
     public RunnableList launchTaskAnimated() {
         getRecentsView().getSplitPlaceholder().launchTasks(mTask, mSecondaryTask,
@@ -168,7 +171,7 @@ public class GroupedTaskView extends TaskView {
     }
 
     @Override
-    void refreshThumbnails(HashMap<Integer, ThumbnailData> thumbnailDatas) {
+    void refreshThumbnails(@Nullable HashMap<Integer, ThumbnailData> thumbnailDatas) {
         super.refreshThumbnails(thumbnailDatas);
         if (mSecondaryTask != null && thumbnailDatas != null) {
             final ThumbnailData thumbnailData = thumbnailDatas.get(mSecondaryTask.key.id);

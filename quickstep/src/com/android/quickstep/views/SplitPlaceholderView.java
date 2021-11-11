@@ -40,6 +40,7 @@ public class SplitPlaceholderView extends FrameLayout {
                 }
             };
 
+    @Nullable
     private IconView mIconView;
 
     public SplitPlaceholderView(Context context, AttributeSet attrs) {

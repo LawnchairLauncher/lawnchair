@@ -44,6 +44,7 @@ import android.view.ViewOutlineProvider;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 
 import com.android.launcher3.BaseActivity;
@@ -69,6 +70,7 @@ public final class DigitalWellBeingToast {
     private Task mTask;
     private boolean mHasLimit;
     private long mAppRemainingTimeMs;
+    @Nullable
     private View mBanner;
     private ViewOutlineProvider mOldBannerOutlineProvider;
     private float mBannerOffsetPercentage;
@@ -229,7 +231,7 @@ public final class DigitalWellBeingToast {
                 task.titleDescription;
     }
 
-    private void replaceBanner(View view) {
+    private void replaceBanner(@Nullable View view) {
         resetOldBanner();
         setBanner(view);
     }
@@ -243,7 +245,7 @@ public final class DigitalWellBeingToast {
         }
     }
 
-    private void setBanner(View view) {
+    private void setBanner(@Nullable View view) {
         mBanner = view;
         if (view != null) {
             setupAndAddBanner();
