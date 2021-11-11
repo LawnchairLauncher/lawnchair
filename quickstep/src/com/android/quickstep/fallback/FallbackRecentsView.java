@@ -42,7 +42,7 @@ import com.android.quickstep.util.TaskViewSimulator;
 import com.android.quickstep.views.OverviewActionsView;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
-import com.android.systemui.shared.recents.model.GroupTask;
+import com.android.quickstep.util.GroupTask;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.recents.model.Task.TaskKey;
 
@@ -145,9 +145,10 @@ public class FallbackRecentsView extends RecentsView<RecentsActivity, RecentsSta
         RunningTaskInfo runningTaskInfo = runningTaskInfos[0];
         if (mHomeTaskInfo != null && runningTaskInfo != null &&
                 mHomeTaskInfo.taskId == runningTaskInfo.taskId
-                && getTaskViewCount() == 0) {
+                && getTaskViewCount() == 0 && mLoadPlanEverApplied) {
             // Do not add a stub task if we are running over home with empty recents, so that we
             // show the empty recents message instead of showing a stub task and later removing it.
+            // Ignore empty task signal if applyLoadPlan has never run.
             return false;
         }
         return super.shouldAddStubTaskView(runningTaskInfos);
@@ -175,7 +176,7 @@ public class FallbackRecentsView extends RecentsView<RecentsActivity, RecentsSta
                 newList.addAll(taskGroups);
                 newList.add(new GroupTask(
                         Task.from(new TaskKey(mHomeTaskInfo), mHomeTaskInfo, false),
-                        null));
+                        null, null));
                 taskGroups = newList;
             }
         }

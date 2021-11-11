@@ -137,8 +137,8 @@ import com.android.launcher3.util.IntSet;
 import com.android.launcher3.util.MultiValueAlpha;
 import com.android.launcher3.util.ResourceBasedOverride.Overrides;
 import com.android.launcher3.util.RunnableList;
-import com.android.launcher3.util.SplitConfigurationOptions;
 import com.android.launcher3.util.SplitConfigurationOptions.StagePosition;
+import com.android.launcher3.util.SplitConfigurationOptions.StagedSplitBounds;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.util.TranslateEdgeEffect;
 import com.android.launcher3.util.ViewPool;
@@ -157,7 +157,6 @@ import com.android.quickstep.TaskOverlayFactory;
 import com.android.quickstep.TaskThumbnailCache;
 import com.android.quickstep.TaskViewUtils;
 import com.android.quickstep.ViewUtils;
-import com.android.quickstep.util.LauncherSplitScreenListener;
 import com.android.quickstep.util.LayoutUtils;
 import com.android.quickstep.util.RecentsOrientedState;
 import com.android.quickstep.util.SplitScreenBounds;
@@ -167,7 +166,7 @@ import com.android.quickstep.util.TaskViewSimulator;
 import com.android.quickstep.util.TransformParams;
 import com.android.quickstep.util.VibratorWrapper;
 import com.android.systemui.plugins.ResourceProvider;
-import com.android.systemui.shared.recents.model.GroupTask;
+import com.android.quickstep.util.GroupTask;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.recents.model.Task.TaskKey;
 import com.android.systemui.shared.recents.model.ThumbnailData;
@@ -573,6 +572,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
 
     // Keeps track of task id whose visual state should not be reset
     private int mIgnoreResetTaskId = -1;
+    protected boolean mLoadPlanEverApplied;
 
     // Variables for empty state
     private final Drawable mEmptyIcon;
@@ -598,7 +598,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
      */
     private TaskView mSplitHiddenTaskView;
     private TaskView mSecondSplitHiddenTaskView;
-    private SplitConfigurationOptions.StagedSplitBounds mSplitBoundsConfig;
+    private StagedSplitBounds mSplitBoundsConfig;
     private final Toast mSplitToast = Toast.makeText(getContext(),
             R.string.toast_split_select_app, Toast.LENGTH_SHORT);
     private final Toast mSplitUnsupportedToast = Toast.makeText(getContext(),
@@ -664,9 +664,8 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         mClearAllButton.setOnClickListener(this::dismissAllTasks);
         mTaskViewPool = new ViewPool<>(context, this, R.layout.task, 20 /* max size */,
                 10 /* initial size */);
-        // There's only one pair of grouped tasks we can envision at the moment
         mGroupedTaskViewPool = new ViewPool<>(context, this,
-                R.layout.task_grouped, 2 /* max size */, 1 /* initial size */);
+                R.layout.task_grouped, 20 /* max size */, 10 /* initial size */);
 
         mIsRtl = mOrientationHandler.getRecentsRtlSetting(getResources());
         setLayoutDirection(mIsRtl ? View.LAYOUT_DIRECTION_RTL : View.LAYOUT_DIRECTION_LTR);
@@ -1070,6 +1069,10 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     }
 
     public TaskView getTaskViewByTaskId(int taskId) {
+        if (taskId == -1) {
+            return null;
+        }
+
         for (int i = 0; i < getTaskViewCount(); i++) {
             TaskView taskView = getTaskViewAt(i);
             int[] taskIds = taskView.getTaskIds();
@@ -1322,72 +1325,34 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         TaskView ignoreResetTaskView =
                 mIgnoreResetTaskId == -1 ? null : getTaskViewByTaskId(mIgnoreResetTaskId);
 
-        int[] splitTaskIds =
-                LauncherSplitScreenListener.INSTANCE.getNoCreate().getPersistentSplitIds();
-        int requiredGroupTaskViews = splitTaskIds.length / 2;
-
-        // TODO(b/202740477): Update once grouped tasks are returned
-        // Subtract half the number of split tasks and not total number because we've already
-        // added a GroupedTaskView when swipe up gesture happens.
-        // This will need to change if we start showing GroupedTaskViews during swipe up from home
-        int requiredTaskViewCount = taskGroups.size() - requiredGroupTaskViews;
-
-        if (getTaskViewCount() != requiredTaskViewCount) {
-            if (indexOfChild(mClearAllButton) != -1) {
-                removeView(mClearAllButton);
-            }
-
-            for (int i = getTaskViewCount(); i < requiredTaskViewCount; i++) {
-                addView(getTaskViewFromPool(false));
-            }
-            while (getTaskViewCount() > requiredTaskViewCount) {
-                removeView(getChildAt(getChildCount() - 1));
-            }
-            int groupedTaskViewCount = getGroupedTaskViewCount();
-            while (requiredGroupTaskViews > groupedTaskViewCount) {
-                // Add to front of list
-                addView(getTaskViewFromPool(true), 0);
-                requiredGroupTaskViews--;
-            }
-            if (requiredTaskViewCount > 0) {
-                addView(mClearAllButton);
-            }
-        }
-
         // Save running task ID if it exists before rebinding all taskViews, otherwise the task from
         // the runningTaskView currently bound could get assigned to another TaskView
-        // TODO set these type to array and check all taskIDs? Maybe we can get away w/ only one
         int runningTaskId = getTaskIdsForTaskViewId(mRunningTaskViewId)[0];
         int focusedTaskId = getTaskIdsForTaskViewId(mFocusedTaskViewId)[0];
-        Log.d(TASK_VIEW_ID_CRASH, "runningTaskId beforeBind: " + runningTaskId
-                + " runningTaskViewId: " + mRunningTaskViewId
-                + " forTaskView: " + getTaskViewFromTaskViewId(mRunningTaskViewId));
 
-        for (int taskViewIndex = requiredTaskViewCount - 1, taskDataIndex = taskGroups.size() - 1;
-                taskViewIndex >= 0;
-                taskViewIndex--, taskDataIndex--) {
-            final int pageIndex = requiredTaskViewCount - taskViewIndex - 1;
-            // TODO(b/202740477): Temporary assumption, to be updated once groups are actually used
-            final Task task = taskGroups.get(taskDataIndex).task1;
-            final TaskView taskView = (TaskView) getChildAt(pageIndex);
-            if (taskView instanceof GroupedTaskView) {
-                Task leftTop;
-                Task rightBottom;
-                if (task.key.id == splitTaskIds[0]) {
-                    leftTop = task;
-                    taskDataIndex--;
-                    rightBottom = taskGroups.get(taskDataIndex).task1;
-                } else {
-                    rightBottom = task;
-                    taskDataIndex--;
-                    leftTop = taskGroups.get(taskDataIndex).task1;
-                }
-                ((GroupedTaskView) taskView).bind(leftTop, rightBottom, mOrientationState,
-                        mSplitBoundsConfig);
+        // Removing views sets the currentPage to 0, so we save this and restore it after
+        // the new set of views are added
+        int previousPage = mCurrentPage;
+        removeAllViews();
+
+        // Add views as children based on whether it's grouped or single task
+        for (int i = taskGroups.size() - 1; i >= 0; i--) {
+            GroupTask groupTask = taskGroups.get(i);
+            boolean hasMultipleTasks = groupTask.hasMultipleTasks();
+            TaskView taskView = getTaskViewFromPool(hasMultipleTasks);
+            addView(taskView);
+
+            if (hasMultipleTasks) {
+                ((GroupedTaskView) taskView).bind(groupTask.task1, groupTask.task2,
+                        mOrientationState, groupTask.mStagedSplitBounds);
             } else {
-                taskView.bind(task, mOrientationState);
+                taskView.bind(groupTask.task1, mOrientationState);
             }
         }
+        if (!taskGroups.isEmpty()) {
+            addView(mClearAllButton);
+        }
+        setCurrentPage(previousPage);
 
         // Keep same previous focused task
         TaskView newFocusedTaskView = getTaskViewByTaskId(focusedTaskId);
@@ -1405,21 +1370,10 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             // Update mRunningTaskViewId to be the new TaskView that was assigned by binding
             // the full list of tasks to taskViews
             newRunningTaskView = getTaskViewByTaskId(runningTaskId);
-            if (newRunningTaskView == null) {
-                StringBuilder sb = new StringBuilder();
-                for (int i = requiredTaskViewCount - 1; i >= 0; i--) {
-                    final int pageIndex = requiredTaskViewCount - i - 1;
-                    final TaskView taskView = (TaskView) getChildAt(pageIndex);
-                    int taskViewId = taskView.getTaskViewId();
-                    sb.append(" taskViewId: " + taskViewId
-                            + " taskId: " + getTaskIdsForTaskViewId(taskViewId)[0]
-                            + " for taskView: " + taskView + "\n");
-                }
-                Log.d(TASK_VIEW_ID_CRASH, "taskViewCount: " + getTaskViewCount()
-                        + " " + sb.toString());
-                mRunningTaskViewId = -1;
-            } else {
+            if (newRunningTaskView != null) {
                 mRunningTaskViewId = newRunningTaskView.getTaskViewId();
+            } else {
+                mRunningTaskViewId = -1;
             }
         }
 
@@ -1451,6 +1405,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         resetTaskVisuals();
         onTaskStackUpdated();
         updateEnabledOverlays();
+        mLoadPlanEverApplied = true;
     }
 
     private boolean isModal() {
@@ -1919,6 +1874,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             remoteTargetHandle.getTransformParams().setTargetSet(null);
             remoteTargetHandle.getTaskViewSimulator().setDrawsBelowRecents(true);
         });
+        mSplitSelectStateController.resetState();
 
         // These are relatively expensive and don't need to be done this frame (RecentsView isn't
         // visible anyway), so defer by a frame to get off the critical path, e.g. app to home.
@@ -4378,6 +4334,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     public void setRecentsAnimationTargets(RecentsAnimationController recentsAnimationController,
             RecentsAnimationTargets recentsAnimationTargets) {
         mRecentsAnimationController = recentsAnimationController;
+        mSplitSelectStateController.setRecentsAnimationRunning(true);
         if (recentsAnimationTargets == null || recentsAnimationTargets.apps.length == 0) {
             return;
         }
@@ -4477,6 +4434,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         // taps on QSB (3) user goes back to Overview and launch the most recent task.
         setCurrentTask(-1);
         mRecentsAnimationController = null;
+        mSplitSelectStateController.setRecentsAnimationRunning(false);
         executeSideTaskLaunchCallback();
     }
 

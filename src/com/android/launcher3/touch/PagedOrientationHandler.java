@@ -141,13 +141,12 @@ public interface PagedOrientationHandler {
      * @param desiredStagePosition Which stage position (topLeft/rightBottom) we want to resize
      *                           outRect for
      */
-    void setSplitTaskSwipeRect(DeviceProfile dp, Rect outRect,
-            StagedSplitBounds splitInfo,
+    void setSplitTaskSwipeRect(DeviceProfile dp, Rect outRect, StagedSplitBounds splitInfo,
             @SplitConfigurationOptions.StagePosition int desiredStagePosition);
 
     void measureGroupedTaskViewThumbnailBounds(View primarySnapshot, View secondarySnapshot,
             int parentWidth, int parentHeight,
-            SplitConfigurationOptions.StagedSplitBounds splitBoundsConfig, DeviceProfile dp);
+            StagedSplitBounds splitBoundsConfig, DeviceProfile dp);
 
     // Overview TaskMenuView methods
     void setIconAndSnapshotParams(View iconView, int taskIconMargin, int taskIconHeight,

@@ -95,7 +95,6 @@ import com.android.quickstep.util.CancellableTask;
 import com.android.quickstep.util.LauncherSplitScreenListener;
 import com.android.quickstep.util.RecentsOrientedState;
 import com.android.quickstep.util.TaskCornerRadius;
-import com.android.quickstep.util.TaskViewSimulator;
 import com.android.quickstep.util.TransformParams;
 import com.android.quickstep.views.TaskThumbnailView.PreviewPositionHelper;
 import com.android.systemui.shared.recents.model.Task;
@@ -558,6 +557,10 @@ public class TaskView extends FrameLayout implements Reusable {
         return mTaskIdContainer;
     }
 
+    public boolean containsMultipleTasks() {
+        return mTaskIdContainer[1] != -1;
+    }
+
     public TaskThumbnailView getThumbnail() {
         return mSnapshotView;
     }
@@ -690,13 +693,8 @@ public class TaskView extends FrameLayout implements Reusable {
                     TestProtocol.SEQUENCE_MAIN, "startActivityFromRecentsAsync", mTask);
             ActivityOptionsWrapper opts =  mActivity.getActivityLaunchOptions(this, null);
             opts.options.setLaunchDisplayId(getRootViewDisplayId());
-            boolean isOldTaskSplit = LauncherSplitScreenListener.INSTANCE.getNoCreate()
-                    .getPersistentSplitIds().length > 0;
             if (ActivityManagerWrapper.getInstance()
                     .startActivityFromRecents(mTask.key, opts.options)) {
-                if (isOldTaskSplit) {
-                    SystemUiProxy.INSTANCE.getNoCreate().exitSplitScreen(mTask.key.id);
-                }
                 RecentsView recentsView = getRecentsView();
                 if (ENABLE_QUICKSTEP_LIVE_TILE.get() && recentsView.getRunningTaskViewId() != -1) {
                     recentsView.onTaskLaunchedInLiveTileMode();
@@ -839,9 +837,11 @@ public class TaskView extends FrameLayout implements Reusable {
     }
 
     protected boolean showTaskMenuWithContainer(IconView iconView) {
-        // TODO(http://b/193432925)
-        if (DEBUG) TaskMenuViewWithArrow.Companion.logSomething();
-        return TaskMenuView.showForTask(mTaskIdAttributeContainer[0]);
+        if (mActivity.getDeviceProfile().overviewShowAsGrid) {
+            return TaskMenuViewWithArrow.Companion.showForTask(mTaskIdAttributeContainer[0]);
+        } else {
+            return TaskMenuView.showForTask(mTaskIdAttributeContainer[0]);
+        }
     }
 
     protected void setIcon(IconView iconView, Drawable icon) {

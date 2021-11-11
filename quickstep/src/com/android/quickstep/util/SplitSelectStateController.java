@@ -56,6 +56,7 @@ public class SplitSelectStateController {
     private Task mInitialTask;
     private Task mSecondTask;
     private Rect mInitialBounds;
+    private boolean mRecentsAnimationRunning;
 
     public SplitSelectStateController(Handler handler, SystemUiProxy systemUiProxy) {
         mHandler = handler;
@@ -111,6 +112,10 @@ public class SplitSelectStateController {
 
     public @StagePosition int getActiveSplitStagePosition() {
         return mStagePosition;
+    }
+
+    public void setRecentsAnimationRunning(boolean running) {
+        this.mRecentsAnimationRunning = running;
     }
 
     /**
@@ -172,7 +177,9 @@ public class SplitSelectStateController {
         public void onAnimationCancelled() {
             postAsyncCallback(mHandler, () -> {
                 if (mSuccessCallback != null) {
-                    mSuccessCallback.accept(false);
+                    // Launching legacy tasks while recents animation is running will always cause
+                    // onAnimationCancelled to be called (should be fixed w/ shell transitions?)
+                    mSuccessCallback.accept(mRecentsAnimationRunning);
                 }
                 resetState();
             });
@@ -187,6 +194,7 @@ public class SplitSelectStateController {
         mSecondTask = null;
         mStagePosition = SplitConfigurationOptions.STAGE_POSITION_UNDEFINED;
         mInitialBounds = null;
+        mRecentsAnimationRunning = false;
     }
 
     /**
