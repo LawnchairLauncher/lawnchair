@@ -46,6 +46,7 @@ public class SearchActionItemInfo extends ItemInfoWithIcon {
     public static final int FLAG_PRIMARY_ICON_FROM_TITLE = 1 << 4;
     public static final int FLAG_BADGE_WITH_COMPONENT_NAME = 1 << 5;
     public static final int FLAG_ALLOW_PINNING = 1 << 6;
+    public static final int FLAG_SEARCH_IN_APP = 1 << 7;
 
     private String mFallbackPackageName;
     private int mFlags = 0;
