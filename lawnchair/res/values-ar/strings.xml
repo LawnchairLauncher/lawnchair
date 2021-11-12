@@ -80,7 +80,7 @@
     </plurals>
     <string name="hotseat_qsb_label">إظهار شريط البحث</string>
     <string name="dt2s_admin_hint_title">تحتاج إلى إذونات مشرف</string>
-    <string name="dt2s_admin_hint">لاستخدام الضغط المزدوج لإطفاء الشاشة، عيّن Lawnchair كتطبيق مشرف للجهاز. انقر على فتح الاعدادات، ثم انقر على \"فعل التطبيق كمشرف على هذا الجهاز.\"</string>
+    <string name="dt2s_admin_hint">لاستخدام النقرة المزدوجة لإطفاء الشاشة، عيّن Lawnchair كتطبيق مشرف للجهاز. انقر على فتح الإعدادات، ثم انقر على \"فعِّل التطبيق كمشرف على الجهاز.\"</string>
     <string name="dt2s_admin_warning">Double Tap to Sleep will be disabled.</string>
     <string name="dt2s_a11y_hint_title">Accessibility service required</string>
     <string name="dt2s_a11y_hint">لاستخدام الضغط المزدوج لإغلاق الشاشة، قم بتشغيل خدمة الوصول إلى Lawnchair. اضغط على \"فتح الإعدادات\" ثم قم باختيار \"Lawnchair\" وفعِّل \"استخدم Lawnchair\".</string>
@@ -174,10 +174,8 @@
     <string name="search_bar_label">شريط البحث</string>
     <string name="apply_accent_color_label">Apply Accent Color</string>
     <string name="show_search_result_types">إظهار نتائج البحث</string>
-    <string name="search_pref_result_people_desc">جهات الاتصال، المحادثات، والمزيد</string>
     <string name="search_pref_result_people_title">الأشخاص</string>
-    <string name="search_pref_result_shortcuts_desc">عرض الاختصارات للتطبيقات والأشخاص</string>
-    <string name="search_pref_result_shortcuts_title">اختصارات</string>
+    <string name="search_pref_result_shortcuts_title">App Shortcuts</string>
     <string name="search_pref_result_tips_title">Pixel Tips</string>
     <string name="row_height_label">Row Height</string>
     <string name="all_apps_device_search_hint">البحث</string>
