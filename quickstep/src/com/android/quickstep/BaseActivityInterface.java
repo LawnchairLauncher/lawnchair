@@ -322,11 +322,11 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
     public final void calculateGridTaskSize(Context context, DeviceProfile dp, Rect outRect,
             PagedOrientationHandler orientedState) {
         Resources res = context.getResources();
-        Rect gridRect = new Rect();
-        calculateGridSize(context, dp, gridRect);
+        Rect taskRect = new Rect();
+        calculateTaskSize(context, dp, taskRect);
 
         float rowHeight =
-                (gridRect.height() + dp.overviewTaskThumbnailTopMarginPx - dp.overviewRowSpacing)
+                (taskRect.height() + dp.overviewTaskThumbnailTopMarginPx - dp.overviewRowSpacing)
                         / 2f;
 
         PointF taskDimension = getTaskDimension(context, dp);
@@ -336,7 +336,7 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
 
         int gravity = Gravity.TOP;
         gravity |= orientedState.getRecentsRtlSetting(res) ? Gravity.RIGHT : Gravity.LEFT;
-        Gravity.apply(gravity, outWidth, outHeight, gridRect, outRect);
+        Gravity.apply(gravity, outWidth, outHeight, taskRect, outRect);
     }
 
     /**

@@ -101,6 +101,7 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
     private int mOrientationStateId;
     private StagedSplitBounds mStagedSplitBounds;
     private boolean mDrawsBelowRecents;
+    private boolean mIsGridTask;
 
     public TaskViewSimulator(Context context, BaseActivityInterface sizeStrategy) {
         mContext = context;
@@ -140,18 +141,23 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
         if (mDp == null) {
             return 1;
         }
-        Rect fullTaskSize = new Rect();
-        mSizeStrategy.calculateTaskSize(mContext, mDp, fullTaskSize);
+        if (mIsGridTask) {
+            mSizeStrategy.calculateGridTaskSize(mContext, mDp, mTaskRect,
+                    mOrientationState.getOrientationHandler());
+        } else {
+            mSizeStrategy.calculateTaskSize(mContext, mDp, mTaskRect);
+        }
 
+        Rect fullTaskSize;
         if (mStagedSplitBounds != null) {
             // The task rect changes according to the staged split task sizes, but recents
             // fullscreen scale and pivot remains the same since the task fits into the existing
             // sized task space bounds
-            mSizeStrategy.calculateTaskSize(mContext, mDp, mTaskRect);
+            fullTaskSize = new Rect(mTaskRect);
             mOrientationState.getOrientationHandler()
                     .setSplitTaskSwipeRect(mDp, mTaskRect, mStagedSplitBounds, mStagePosition);
         } else {
-            mTaskRect.set(fullTaskSize);
+            fullTaskSize = mTaskRect;
         }
         return mOrientationState.getFullScreenScaleAndPivot(fullTaskSize, mDp, mPivot);
     }
@@ -202,6 +208,13 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
 
     public void setDrawsBelowRecents(boolean drawsBelowRecents) {
         mDrawsBelowRecents = drawsBelowRecents;
+    }
+
+    /**
+     * Sets whether the task is part of overview grid and not being focused.
+     */
+    public void setIsGridTask(boolean isGridTask) {
+        mIsGridTask = isGridTask;
     }
 
     /**
