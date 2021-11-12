@@ -15,6 +15,7 @@
  */
 package com.android.launcher3.graphics;
 
+import static android.app.WallpaperManager.FLAG_SYSTEM;
 import static android.view.View.MeasureSpec.EXACTLY;
 import static android.view.View.MeasureSpec.makeMeasureSpec;
 import static android.view.View.VISIBLE;
@@ -26,6 +27,8 @@ import static com.android.launcher3.model.ModelUtils.sortWorkspaceItemsSpatially
 
 import android.annotation.TargetApi;
 import android.app.Fragment;
+import android.app.WallpaperColors;
+import android.app.WallpaperManager;
 import android.appwidget.AppWidgetHostView;
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.Context;
@@ -41,8 +44,10 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Process;
 import android.util.AttributeSet;
+import android.util.SparseIntArray;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowInsets;
@@ -83,6 +88,7 @@ import com.android.launcher3.util.MainThreadInitializedObject;
 import com.android.launcher3.views.ActivityContext;
 import com.android.launcher3.views.BaseDragLayer;
 import com.android.launcher3.widget.LauncherAppWidgetProviderInfo;
+import com.android.launcher3.widget.LocalColorExtractor;
 import com.android.launcher3.widget.custom.CustomWidgetManager;
 
 import java.util.ArrayList;
@@ -200,8 +206,12 @@ public class LauncherPreviewRenderer extends ContextWrapper
     private final InsettableFrameLayout mRootView;
     private final Hotseat mHotseat;
     private final CellLayout mWorkspace;
+    private final SparseIntArray mWallpaperColorResources;
 
-    public LauncherPreviewRenderer(Context context, InvariantDeviceProfile idp) {
+    public LauncherPreviewRenderer(Context context,
+            InvariantDeviceProfile idp,
+            WallpaperColors wallpaperColorsOverride) {
+
         super(context);
         mUiHandler = new Handler(Looper.getMainLooper());
         mContext = context;
@@ -253,6 +263,16 @@ public class LauncherPreviewRenderer extends ContextWrapper
                 mDp.workspacePadding.top,
                 mDp.workspacePadding.right + mDp.cellLayoutPaddingLeftRightPx,
                 mDp.workspacePadding.bottom);
+
+        if (Utilities.ATLEAST_S) {
+            WallpaperColors wallpaperColors = wallpaperColorsOverride != null
+                    ? wallpaperColorsOverride
+                    : WallpaperManager.getInstance(context).getWallpaperColors(FLAG_SYSTEM);
+            mWallpaperColorResources = wallpaperColors != null ? LocalColorExtractor.newInstance(
+                    context).generateColorsOverride(wallpaperColors) : null;
+        } else {
+            mWallpaperColorResources = null;
+        }
     }
 
     /** Populate preview and render it. */
@@ -356,6 +376,11 @@ public class LauncherPreviewRenderer extends ContextWrapper
         view.setAppWidget(-1, providerInfo);
         view.updateAppWidget(null);
         view.setTag(info);
+
+        if (mWallpaperColorResources != null) {
+            view.setColorResources(mWallpaperColorResources);
+        }
+
         addInScreenFromBind(view, info);
     }
 
@@ -466,5 +491,17 @@ public class LauncherPreviewRenderer extends ContextWrapper
     private static void measureView(View view, int width, int height) {
         view.measure(makeMeasureSpec(width, EXACTLY), makeMeasureSpec(height, EXACTLY));
         view.layout(0, 0, width, height);
+    }
+
+    /** Root layout for launcher preview that intercepts all touch events. */
+    public static class LauncherPreviewLayout extends InsettableFrameLayout {
+        public LauncherPreviewLayout(Context context, AttributeSet attrs) {
+            super(context, attrs);
+        }
+
+        @Override
+        public boolean onInterceptTouchEvent(MotionEvent ev) {
+            return true;
+        }
     }
 }

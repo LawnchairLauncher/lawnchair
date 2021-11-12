@@ -132,7 +132,7 @@ public class AllAppsStore {
     }
 
     public void registerIconContainer(ViewGroup container) {
-        if (container != null) {
+        if (container != null && !mIconContainers.contains(container)) {
             mIconContainers.add(container);
         }
     }

@@ -91,16 +91,10 @@
     <!-- content description for hotseat items -->
     <string name="hotseat_prediction_content_description">Predicted app: <xliff:g id="title" example="Chrome">%1$s</xliff:g></string>
 
-    <!-- Feedback shown during interactive parts of Back gesture tutorial for left edge when the gesture is too far from the edge. [CHAR LIMIT=100] -->
-    <string name="back_gesture_feedback_swipe_too_far_from_left_edge">Make sure you swipe from the far-left edge.</string>
-    <!-- Feedback shown during interactive parts of Back gesture tutorial for left edge when the gesture is cancelled. [CHAR LIMIT=100] -->
-    <string name="back_gesture_feedback_cancelled_left_edge">Make sure you swipe from the left edge to the middle of the screen and let go.</string>
     <!-- Feedback shown during interactive parts of Back gesture tutorial for right edge when the gesture is too far from the edge. [CHAR LIMIT=100] -->
-    <string name="back_gesture_feedback_swipe_too_far_from_right_edge">Make sure you swipe from the far-right edge.</string>
+    <string name="back_gesture_feedback_swipe_too_far_from_edge">Make sure you swipe from the far-right or far-left edge.</string>
     <!-- Feedback shown during interactive parts of Back gesture tutorial for right edge when the gesture is cancelled. [CHAR LIMIT=100] -->
-    <string name="back_gesture_feedback_cancelled_right_edge">Make sure you swipe from the right edge to the middle of the screen and let go.</string>
-    <!-- Feedback shown after completing the back gesture step if the user is following the full gesture tutorial flow. [CHAR LIMIT=100] -->
-    <string name="back_gesture_feedback_complete_with_back_right_follow_up">You learned how to swipe from the left to go back.</string>
+    <string name="back_gesture_feedback_cancelled">Make sure you swipe from the right or left edge to the middle of the screen and let go.</string>
     <!-- Feedback shown after completing the back gesture step if the user is following the full gesture tutorial flow. [CHAR LIMIT=100] -->
     <string name="back_gesture_feedback_complete_with_overview_follow_up">You learned how to swipe from the right to go back. Next up, learn how to switch apps.</string>
     <!-- Feedback shown after completing the back gesture step if the user started this tutorial individually. [CHAR LIMIT=100] -->
@@ -110,14 +104,10 @@
     <!-- Subtitle shown on the confirmation screen after successful gesture. [CHAR LIMIT=60] -->
     <string name="back_gesture_tutorial_confirm_subtitle">To change the sensitivity of the back gesture, go to Settings</string>
     <!-- Feedback shown during interactive parts of Home gesture tutorial when the gesture is started too far from the edge. [CHAR LIMIT=100] -->
-    <!-- Introduction title for the left edge Back gesture tutorial. [CHAR LIMIT=100] -->
-    <string name="back_left_gesture_intro_title">Swipe from the left to go back</string>
-    <!-- Introduction title for the right edge Back gesture tutorial. [CHAR LIMIT=100] -->
-    <string name="back_right_gesture_intro_title">Swipe from the right to go back</string>
-    <!-- Introduction subtitle for the Back left gesture tutorial. [CHAR LIMIT=200] -->
-    <string name="back_left_gesture_intro_subtitle">To go back to the last screen you were on, swipe from the left edge to the middle of the screen.</string>
-    <!-- Introduction subtitle for the Back right gesture tutorial. [CHAR LIMIT=100] -->
-    <string name="back_right_gesture_intro_subtitle">You can also go back to the last screen by swiping from the right edge to the middle of the screen. Try it now.</string>
+    <!-- Introduction title for the Back gesture tutorial. [CHAR LIMIT=100] -->
+    <string name="back_gesture_intro_title">Swipe to go back</string>
+    <!-- Introduction subtitle for the Back gesture tutorial. [CHAR LIMIT=200] -->
+    <string name="back_gesture_intro_subtitle">To go back to the last screen, swipe from the left or right edge to the middle of the screen.</string>
 
     <string name="home_gesture_feedback_swipe_too_far_from_edge">Make sure you swipe up from the bottom edge of the screen.</string>
     <!-- Feedback shown during interactive parts of Home gesture tutorial when the Overview gesture is detected. [CHAR LIMIT=100] -->
@@ -146,7 +136,7 @@
     <!-- Introduction title for the Overview gesture tutorial. [CHAR LIMIT=100] -->
     <string name="overview_gesture_intro_title">Swipe to switch apps</string>
     <!-- Introduction subtitle for the Overview gesture tutorial. [CHAR LIMIT=100] -->
-    <string name="overview_gesture_intro_subtitle">Swipe up from the bottom of your screen, hold, then release.</string>
+    <string name="overview_gesture_intro_subtitle">To switch between apps, swipe up from the bottom of your screen, hold, then release.</string>
 
     <!-- Title shown during interactive part of Assistant gesture tutorial. [CHAR LIMIT=30] -->
     <string name="assistant_gesture_tutorial_playground_title" translatable="false">Tutorial: Assistant</string>
@@ -176,8 +166,8 @@
 
     <!-- Title shown on the confirmation screen after successful gesture. [CHAR LIMIT=30] -->
     <string name="gesture_tutorial_confirm_title">All set</string>
-    <!-- Button text shown on a button on the feedback popup to proceed to the next tutorial step. [CHAR LIMIT=14] -->
-    <string name="gesture_tutorial_action_button_label_next">Next</string>
+    <!-- Button text shown on a button on the feedback popup to complete the gesture tutorial. [CHAR LIMIT=14] -->
+    <string name="gesture_tutorial_action_button_label">Done</string>
     <!-- Button text shown on a button to go to Settings. [CHAR LIMIT=14] -->
     <string name="gesture_tutorial_action_button_label_settings">Settings</string>
     <!-- Feedback title to try again. [CHAR LIMIT=30] -->
@@ -190,11 +180,11 @@
     <!-- Title of "All Set" page [CHAR LIMIT=NONE] -->
     <string name="allset_title">All set!</string>
     <!-- Hint string at the bottom of "All Set" page [CHAR LIMIT=NONE] -->
-    <string name="allset_hint">Swipe up to go home</string>
+    <string name="allset_hint">Swipe up to go Home</string>
     <!-- Description of "All Set" page [CHAR LIMIT=NONE] -->
     <string name="allset_description">You\u2019re ready to start using your phone</string>
     <!-- String linking to navigation settings on "All Set" page [CHAR LIMIT=NONE] -->
-    <string name="allset_navigation_settings"><annotation id="link">Navigation settings for accessibility</annotation></string>
+    <string name="allset_navigation_settings"><annotation id="link">System navigation settings</annotation></string>
 
     <!-- ******* Overview ******* -->
     <!-- Label for a button that causes the current overview app to be shared. [CHAR_LIMIT=40] -->

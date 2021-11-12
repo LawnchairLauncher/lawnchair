@@ -122,7 +122,7 @@ public class ShortcutAndWidgetContainer extends ViewGroup implements FolderIcon.
 
     public int getCellContentHeight() {
         return Math.min(getMeasuredHeight(),
-                mActivity.getDeviceProfile().getCellHeight(mContainerType));
+                mActivity.getDeviceProfile().getCellContentHeight(mContainerType));
     }
 
     public void measureChild(View child) {

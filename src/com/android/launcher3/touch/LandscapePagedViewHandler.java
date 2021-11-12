@@ -29,6 +29,7 @@ import android.content.res.Resources;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.graphics.drawable.ShapeDrawable;
 import android.util.FloatProperty;
 import android.view.MotionEvent;
 import android.view.Surface;
@@ -269,8 +270,11 @@ public class LandscapePagedViewHandler implements PagedOrientationHandler {
 
     @Override
     public void setTaskOptionsMenuLayoutOrientation(DeviceProfile deviceProfile,
-        LinearLayout taskMenuLayout) {
+            LinearLayout taskMenuLayout, int dividerSpacing,
+            ShapeDrawable dividerDrawable) {
         taskMenuLayout.setOrientation(LinearLayout.HORIZONTAL);
+        dividerDrawable.setIntrinsicWidth(dividerSpacing);
+        taskMenuLayout.setDividerDrawable(dividerDrawable);
     }
 
     @Override

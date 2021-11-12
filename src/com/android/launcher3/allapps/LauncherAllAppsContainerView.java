@@ -15,8 +15,6 @@
  */
 package com.android.launcher3.allapps;
 
-import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ALLAPPS_KEYBOARD_CLOSED;
-
 import android.content.Context;
 import android.graphics.Rect;
 import android.util.AttributeSet;
@@ -87,11 +85,5 @@ public class LauncherAllAppsContainerView extends AllAppsContainerView {
     @Override
     public void onActivePageChanged(int currentActivePage) {
         super.onActivePageChanged(currentActivePage);
-    }
-
-    @Override
-    protected void hideIme() {
-        super.hideIme();
-        mLauncher.getStatsLogManager().logger().log(LAUNCHER_ALLAPPS_KEYBOARD_CLOSED);
     }
 }

@@ -16,7 +16,7 @@
 
 package com.android.quickstep;
 
-import static com.android.quickstep.util.NavigationModeFeatureFlag.LIVE_TILE;
+import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
 
 import static org.junit.Assert.assertTrue;
 
@@ -75,7 +75,7 @@ public abstract class AbstractQuickStepTest extends AbstractLauncherUiTest {
 
     private boolean isInLiveTileMode(Launcher launcher,
             LauncherInstrumentation.ContainerType expectedContainerType) {
-        if (!LIVE_TILE.get()
+        if (!ENABLE_QUICKSTEP_LIVE_TILE.get()
                 || expectedContainerType != LauncherInstrumentation.ContainerType.OVERVIEW) {
             return false;
         }

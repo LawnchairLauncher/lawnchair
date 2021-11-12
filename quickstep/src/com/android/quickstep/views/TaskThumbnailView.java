@@ -19,7 +19,8 @@ package com.android.quickstep.views;
 import static android.view.WindowInsetsController.APPEARANCE_LIGHT_NAVIGATION_BARS;
 import static android.view.WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS;
 
-import static com.android.quickstep.util.NavigationModeFeatureFlag.LIVE_TILE;
+import static com.android.launcher3.Utilities.comp;
+import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
 import static com.android.systemui.shared.system.WindowManagerWrapper.WINDOWING_MODE_FULLSCREEN;
 
 import android.content.Context;
@@ -306,10 +307,19 @@ public class TaskThumbnailView extends View implements PluginListener<OverviewSc
 
     public void drawOnCanvas(Canvas canvas, float x, float y, float width, float height,
             float cornerRadius) {
-        if (LIVE_TILE.get()) {
+        if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
             if (mTask != null && getTaskView().isRunningTask() && !getTaskView().showScreenshot()) {
-                canvas.drawRoundRect(x, y, width, height, cornerRadius, cornerRadius, mClearPaint);
-                canvas.drawRoundRect(x, y, width, height, cornerRadius, cornerRadius,
+                // TODO(b/189265196): Temporary fix to align the surface with the cutout perfectly.
+                // Round up only when the live tile task is displayed in Overview.
+                float rounding = comp(mFullscreenParams.mFullscreenProgress);
+                float left = x + rounding / 2;
+                float top = y + rounding / 2;
+                float right = width - rounding;
+                float bottom = height - rounding;
+
+                canvas.drawRoundRect(left, top, right, bottom, cornerRadius, cornerRadius,
+                        mClearPaint);
+                canvas.drawRoundRect(left, top, right, bottom, cornerRadius, cornerRadius,
                         mDimmingPaintAfterClearing);
                 return;
             }

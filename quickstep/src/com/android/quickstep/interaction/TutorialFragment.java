@@ -64,7 +64,7 @@ abstract class TutorialFragment extends Fragment implements OnTouchListener {
         TutorialFragment fragment = getFragmentForTutorialType(tutorialType);
         if (fragment == null) {
             fragment = new BackGestureTutorialFragment();
-            tutorialType = TutorialType.RIGHT_EDGE_BACK_NAVIGATION;
+            tutorialType = TutorialType.BACK_NAVIGATION;
         }
 
         Bundle args = new Bundle();
@@ -76,8 +76,7 @@ abstract class TutorialFragment extends Fragment implements OnTouchListener {
     @Nullable
     private static TutorialFragment getFragmentForTutorialType(TutorialType tutorialType) {
         switch (tutorialType) {
-            case RIGHT_EDGE_BACK_NAVIGATION:
-            case LEFT_EDGE_BACK_NAVIGATION:
+            case BACK_NAVIGATION:
             case BACK_NAVIGATION_COMPLETE:
                 return new BackGestureTutorialFragment();
             case HOME_NAVIGATION:
