@@ -107,14 +107,6 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
         mLauncher.pressHome();
     }
 
-    @Ignore
-    public void testOpenHomeSettingsFromWorkspace() {
-        mDevice.pressMenu();
-        mDevice.waitForIdle();
-        mLauncher.getOptionsPopupMenu().getMenuItem("Home settings")
-                .launch(mDevice.getLauncherPackageName());
-    }
-
     @Test
     public void testPressHomeOnAllAppsContextMenu() throws Exception {
         final AllApps allApps = mLauncher.getWorkspace().switchToAllApps();

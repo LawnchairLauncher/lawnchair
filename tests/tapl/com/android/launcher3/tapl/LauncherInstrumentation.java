@@ -1025,20 +1025,6 @@ public final class LauncherInstrumentation {
         }
     }
 
-    /**
-     * Gets the Options Popup Menu object if the current state is showing the popup menu. Fails if
-     * the launcher is not in that state.
-     *
-     * @return Options Popup Menu object.
-     */
-    @NonNull
-    public OptionsPopupMenu getOptionsPopupMenu() {
-        try (LauncherInstrumentation.Closable c = addContextLayer(
-                "want to get context menu object")) {
-            return new OptionsPopupMenu(this);
-        }
-    }
-
     void waitUntilLauncherObjectGone(String resId) {
         waitUntilGoneBySelector(getLauncherObjectSelector(resId));
     }
