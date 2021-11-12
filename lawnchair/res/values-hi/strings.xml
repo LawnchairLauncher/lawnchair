@@ -170,10 +170,8 @@
     <string name="search_bar_label">सर्च बार</string>
     <string name="apply_accent_color_label">असेंट रंग इस्तेमाल करें</string>
     <string name="show_search_result_types">खोज में दिखाएं</string>
-    <string name="search_pref_result_people_desc">फोन नंबर, संदेश, और अधिक</string>
     <string name="search_pref_result_people_title">व्यक्ति</string>
-    <string name="search_pref_result_shortcuts_desc">ऐप्स और व्यक्तियों के लिए शॉर्टकट्स दिखाएं</string>
-    <string name="search_pref_result_shortcuts_title">शॉर्टकट्स</string>
+    <string name="search_pref_result_shortcuts_title">App Shortcuts</string>
     <string name="search_pref_result_tips_title">पिक्सल टिप्स</string>
     <string name="row_height_label">रॉ की ऊंचाई</string>
     <string name="all_apps_device_search_hint">ऐप खोजें</string>
