@@ -329,6 +329,8 @@ public class QuickstepModelDelegate extends ModelDelegate {
         }
         if (state.predictor != null) {
             state.predictor.notifyAppTargetEvent(event);
+            Log.d(TAG, "notifyAppTargetEvent action=" + event.getAction()
+                    + " launchLocation=" + event.getLaunchLocation());
         }
     }
 

@@ -271,9 +271,6 @@ public class AppEventProducer implements StatsLogConsumer {
             case ALL_APPS_CONTAINER: {
                 return "all-apps";
             }
-            case SEARCH_RESULT_CONTAINER: {
-                return "search-results";
-            }
             case PREDICTED_HOTSEAT_CONTAINER: {
                 return "predictions/hotseat";
             }
@@ -293,6 +290,16 @@ public class AppEventProducer implements StatsLogConsumer {
                 }
                 return "folder";
             }
+            case SEARCH_RESULT_CONTAINER:
+                return "search-results";
+            case EXTENDED_CONTAINERS: {
+                switch(ci.getExtendedContainers().getContainerCase()) {
+                    case DEVICE_SEARCH_RESULT_CONTAINER:
+                    case CORRECTED_DEVICE_SEARCH_RESULT_CONTAINER:
+                        return "search-results";
+                }
+            }
+            default: // fall out
         }
         return "";
     }
