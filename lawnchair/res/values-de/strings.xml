@@ -171,7 +171,7 @@
     <string name="apply_accent_color_label">Akzentfarbe anwenden</string>
     <string name="show_search_result_types">In Suchergebnissen anzeigen</string>
     <string name="search_pref_result_people_title">Personen</string>
-    <string name="search_pref_result_shortcuts_title">App Shortcuts</string>
+    <string name="search_pref_result_shortcuts_title">App Verknüpfungen</string>
     <string name="search_pref_result_tips_title">Pixel-Tipps</string>
     <string name="row_height_label">Zeilenhöhe</string>
     <string name="all_apps_device_search_hint">Suchen</string>
