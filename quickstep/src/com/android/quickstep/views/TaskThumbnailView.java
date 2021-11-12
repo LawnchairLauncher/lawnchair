@@ -43,6 +43,7 @@ import android.util.Property;
 import android.view.Surface;
 import android.view.View;
 
+import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.core.graphics.ColorUtils;
 
@@ -102,11 +103,11 @@ public class TaskThumbnailView extends View {
         this(context, null);
     }
 
-    public TaskThumbnailView(Context context, AttributeSet attrs) {
+    public TaskThumbnailView(Context context, @Nullable AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public TaskThumbnailView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public TaskThumbnailView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         mPaint.setFilterBitmap(true);
         mBackgroundPaint.setColor(Color.WHITE);

@@ -15,6 +15,8 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
+import androidx.annotation.Nullable;
+
 import com.android.launcher3.InsettableFrameLayout;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAnimUtils;
@@ -51,11 +53,11 @@ public class FloatingTaskView extends FrameLayout {
         this(context, null);
     }
 
-    public FloatingTaskView(Context context, AttributeSet attrs) {
+    public FloatingTaskView(Context context, @Nullable AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public FloatingTaskView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public FloatingTaskView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         mLauncher = Launcher.getLauncher(context);
         mIsRtl = Utilities.isRtl(getResources());
