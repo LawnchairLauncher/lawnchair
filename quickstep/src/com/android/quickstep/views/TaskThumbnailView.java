@@ -78,6 +78,7 @@ public class TaskThumbnailView extends View {
             };
 
     private final BaseActivity mActivity;
+    @Nullable
     private TaskOverlay mOverlay;
     private final Paint mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     private final Paint mBackgroundPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -90,8 +91,11 @@ public class TaskThumbnailView extends View {
     private final PreviewPositionHelper mPreviewPositionHelper = new PreviewPositionHelper();
     private TaskView.FullscreenDrawParams mFullscreenParams;
 
+    @Nullable
     private Task mTask;
+    @Nullable
     private ThumbnailData mThumbnailData;
+    @Nullable
     protected BitmapShader mBitmapShader;
 
     /** How much this thumbnail is dimmed, 0 not dimmed at all, 1 totally dimmed. */
@@ -141,7 +145,8 @@ public class TaskThumbnailView extends View {
      *                   upon swipe up so that a usable screenshot is accessible immediately when
      *                   recents animation needs to be finished / cancelled.
      */
-    public void setThumbnail(Task task, ThumbnailData thumbnailData, boolean refreshNow) {
+    public void setThumbnail(@Nullable Task task, @Nullable ThumbnailData thumbnailData,
+            boolean refreshNow) {
         mTask = task;
         mThumbnailData =
                 (thumbnailData != null && thumbnailData.thumbnail != null) ? thumbnailData : null;
@@ -151,7 +156,7 @@ public class TaskThumbnailView extends View {
     }
 
     /** See {@link #setThumbnail(Task, ThumbnailData, boolean)} */
-    public void setThumbnail(Task task, ThumbnailData thumbnailData) {
+    public void setThumbnail(@Nullable Task task, @Nullable ThumbnailData thumbnailData) {
         setThumbnail(task, thumbnailData, true /* refreshNow */);
     }
 
@@ -366,6 +371,10 @@ public class TaskThumbnailView extends View {
         return Utilities.makeColorTintingColorFilter(mDimColor, dimAmount);
     }
 
+    /**
+     * Returns current thumbnail or null if none is set.
+     */
+    @Nullable
     public Bitmap getThumbnail() {
         if (mThumbnailData == null) {
             return null;
