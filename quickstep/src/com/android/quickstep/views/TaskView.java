@@ -883,7 +883,7 @@ public class TaskView extends FrameLayout implements Reusable {
         LayoutParams snapshotParams = (LayoutParams) mSnapshotView.getLayoutParams();
         DeviceProfile deviceProfile = mActivity.getDeviceProfile();
         snapshotParams.topMargin = deviceProfile.overviewTaskThumbnailTopMarginPx;
-        boolean isGridTask = deviceProfile.overviewShowAsGrid && !isFocusedTask();
+        boolean isGridTask = isGridTask();
         int taskIconHeight = deviceProfile.overviewTaskIconSizePx;
         int taskMargin = isGridTask ? deviceProfile.overviewTaskMarginGridPx
                 : deviceProfile.overviewTaskMarginPx;
@@ -901,6 +901,14 @@ public class TaskView extends FrameLayout implements Reusable {
         snapshotParams.topMargin = deviceProfile.overviewTaskThumbnailTopMarginPx;
         mSnapshotView.setLayoutParams(snapshotParams);
         mSnapshotView.getTaskOverlay().updateOrientationState(orientationState);
+    }
+
+    /**
+     * Returns whether the task is part of overview grid and not being focused.
+     */
+    public boolean isGridTask() {
+        DeviceProfile deviceProfile = mActivity.getDeviceProfile();
+        return deviceProfile.overviewShowAsGrid && !isFocusedTask();
     }
 
     private void setIconAndDimTransitionProgress(float progress, boolean invert) {
