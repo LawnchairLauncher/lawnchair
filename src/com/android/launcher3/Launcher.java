@@ -154,6 +154,7 @@ import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.notification.NotificationListener;
 import com.android.launcher3.pm.PinRequestHelper;
 import com.android.launcher3.pm.UserCache;
+import com.android.launcher3.popup.ArrowPopup;
 import com.android.launcher3.popup.PopupContainerWithArrow;
 import com.android.launcher3.popup.PopupDataProvider;
 import com.android.launcher3.popup.SystemShortcut;
@@ -3031,5 +3032,14 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
     @Override
     public StatsLogManager getStatsLogManager() {
         return super.getStatsLogManager().withDefaultInstanceId(mAllAppsSessionLogId);
+    }
+
+    /**
+     * Returns the current popup for testing, if any.
+     */
+    @VisibleForTesting
+    @Nullable
+    public ArrowPopup<?> getOptionsPopup() {
+        return findViewById(R.id.popup_container);
     }
 }

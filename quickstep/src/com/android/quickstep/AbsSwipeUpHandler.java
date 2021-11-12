@@ -122,6 +122,7 @@ import com.android.systemui.shared.system.TaskStackChangeListeners;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Arrays;
 import java.util.function.Consumer;
 
 /**
@@ -976,12 +977,13 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
     }
 
     /** @return Whether this was the task we were waiting to appear, and thus handled it. */
-    protected boolean handleTaskAppeared(RemoteAnimationTargetCompat appearedTaskTarget) {
+    protected boolean handleTaskAppeared(RemoteAnimationTargetCompat[] appearedTaskTarget) {
         if (mStateCallback.hasStates(STATE_HANDLER_INVALIDATED)) {
             return false;
         }
-        if (mStateCallback.hasStates(STATE_START_NEW_TASK)
-                && appearedTaskTarget.taskId == mGestureState.getLastStartedTaskId()) {
+        boolean hasStartedTaskBefore = Arrays.stream(appearedTaskTarget).anyMatch(
+                targetCompat -> targetCompat.taskId == mGestureState.getLastStartedTaskId());
+        if (mStateCallback.hasStates(STATE_START_NEW_TASK) && hasStartedTaskBefore) {
             reset();
             return true;
         }
@@ -1809,13 +1811,8 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
                 mGestureState.updateLastStartedTaskId(taskId);
                 boolean hasTaskPreviouslyAppeared = mGestureState.getPreviouslyAppearedTaskIds()
                         .contains(taskId);
-                boolean isOldTaskSplit = LauncherSplitScreenListener.INSTANCE.getNoCreate()
-                        .getRunningSplitTaskIds().length > 0;
                 nextTask.launchTask(success -> {
                     resultCallback.accept(success);
-                    if (isOldTaskSplit) {
-                        SystemUiProxy.INSTANCE.getNoCreate().exitSplitScreen(taskId);
-                    }
                     if (success) {
                         if (hasTaskPreviouslyAppeared) {
                             onRestartPreviouslyAppearedTask();
@@ -1871,9 +1868,9 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
     }
 
     @Override
-    public void onTaskAppeared(RemoteAnimationTargetCompat appearedTaskTarget) {
+    public void onTasksAppeared(RemoteAnimationTargetCompat[] appearedTaskTargets) {
         if (mRecentsAnimationController != null) {
-            if (handleTaskAppeared(appearedTaskTarget)) {
+            if (handleTaskAppeared(appearedTaskTargets)) {
                 mRecentsAnimationController.finish(false /* toRecents */,
                         null /* onFinishComplete */);
                 mActivityInterface.onLaunchTaskSuccess();

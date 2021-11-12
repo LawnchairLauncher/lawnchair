@@ -147,7 +147,7 @@ public class FallbackSwipeHandler extends
     }
 
     @Override
-    protected boolean handleTaskAppeared(RemoteAnimationTargetCompat appearedTaskTarget) {
+    protected boolean handleTaskAppeared(RemoteAnimationTargetCompat[] appearedTaskTarget) {
         if (mActiveAnimationFactory != null
                 && mActiveAnimationFactory.handleHomeTaskAppeared(appearedTaskTarget)) {
             mActiveAnimationFactory = null;
@@ -260,7 +260,8 @@ public class FallbackSwipeHandler extends
             }
         }
 
-        public boolean handleHomeTaskAppeared(RemoteAnimationTargetCompat appearedTaskTarget) {
+        public boolean handleHomeTaskAppeared(RemoteAnimationTargetCompat[] appearedTaskTargets) {
+            RemoteAnimationTargetCompat appearedTaskTarget = appearedTaskTargets[0];
             if (appearedTaskTarget.activityType == ACTIVITY_TYPE_HOME) {
                 RemoteAnimationTargets targets = new RemoteAnimationTargets(
                         new RemoteAnimationTargetCompat[] {appearedTaskTarget},

@@ -37,7 +37,6 @@ import android.view.View.OnLongClickListener;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
-import androidx.annotation.VisibleForTesting;
 import androidx.core.content.ContextCompat;
 
 import com.android.launcher3.AbstractFloatingView;
@@ -174,11 +173,6 @@ public class OptionsPopupView extends ArrowPopup<Launcher>
             children.add(getChildAt(i));
         }
         return children;
-    }
-
-    @VisibleForTesting
-    public static ArrowPopup getOptionsPopup(Launcher launcher) {
-        return launcher.findViewById(R.id.popup_container);
     }
 
     /**

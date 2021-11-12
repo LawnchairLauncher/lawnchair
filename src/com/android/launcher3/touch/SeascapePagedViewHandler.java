@@ -19,6 +19,7 @@ package com.android.launcher3.touch;
 import static android.view.Gravity.CENTER_VERTICAL;
 import static android.view.Gravity.END;
 import static android.view.Gravity.START;
+import static android.view.Gravity.TOP;
 
 import static com.android.launcher3.touch.SingleAxisSwipeDetector.HORIZONTAL;
 import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITION_BOTTOM_OR_RIGHT;
@@ -36,7 +37,9 @@ import android.widget.LinearLayout;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.util.SplitConfigurationOptions;
 import com.android.launcher3.util.SplitConfigurationOptions.SplitPositionOption;
+import com.android.launcher3.util.SplitConfigurationOptions.StagedSplitBounds;
 import com.android.launcher3.views.BaseDragLayer;
 
 import java.util.Collections;
@@ -125,6 +128,23 @@ public class SeascapePagedViewHandler extends LandscapePagedViewHandler {
         iconParams.leftMargin = -taskIconHeight - taskIconMargin / 2;
         iconParams.rightMargin = 0;
         iconParams.topMargin = snapshotParams.topMargin / 2;
+    }
+
+    @Override
+    public void setSplitIconParams(View primaryIconView, View secondaryIconView,
+            int taskIconHeight, Rect primarySnapshotBounds, Rect secondarySnapshotBounds,
+            boolean isRtl, DeviceProfile deviceProfile, StagedSplitBounds splitConfig) {
+        super.setSplitIconParams(primaryIconView, secondaryIconView, taskIconHeight,
+                primarySnapshotBounds, secondarySnapshotBounds, isRtl, deviceProfile, splitConfig);
+        FrameLayout.LayoutParams primaryIconParams =
+                (FrameLayout.LayoutParams) primaryIconView.getLayoutParams();
+        FrameLayout.LayoutParams secondaryIconParams =
+                (FrameLayout.LayoutParams) secondaryIconView.getLayoutParams();
+
+        primaryIconParams.gravity = (isRtl ? END : START) | TOP;
+        secondaryIconParams.gravity = (isRtl ? END : START) | TOP;
+        primaryIconView.setLayoutParams(primaryIconParams);
+        secondaryIconView.setLayoutParams(secondaryIconParams);
     }
 
     /* ---------- The following are only used by TaskViewTouchHandler. ---------- */

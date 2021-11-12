@@ -390,7 +390,7 @@ public class LandscapePagedViewHandler implements PagedOrientationHandler {
     @Override
     public void measureGroupedTaskViewThumbnailBounds(View primarySnapshot, View secondarySnapshot,
             int parentWidth, int parentHeight,
-            SplitConfigurationOptions.StagedSplitBounds splitBoundsConfig, DeviceProfile dp) {
+            StagedSplitBounds splitBoundsConfig, DeviceProfile dp) {
         int spaceAboveSnapshot = dp.overviewTaskThumbnailTopMarginPx;
         int totalThumbnailHeight = parentHeight - spaceAboveSnapshot;
         int dividerBar = splitBoundsConfig.visualDividerBounds.width();
@@ -435,15 +435,18 @@ public class LandscapePagedViewHandler implements PagedOrientationHandler {
                 (FrameLayout.LayoutParams) primaryIconView.getLayoutParams();
         FrameLayout.LayoutParams secondaryIconParams =
                 new FrameLayout.LayoutParams(primaryIconParams);
+        int dividerBar = (splitConfig.appsStackedVertically ?
+                splitConfig.visualDividerBounds.height() :
+                splitConfig.visualDividerBounds.width());
 
         int primaryHeight = primarySnapshotBounds.height();
-        int secondaryHeight = secondarySnapshotBounds.height();
         primaryIconParams.gravity = (isRtl ? START : END) | TOP;
-        primaryIconView.setTranslationY((primaryHeight + taskIconHeight) / 2f );
+        primaryIconView.setTranslationY(primaryHeight - primaryIconView.getHeight() / 2f);
+        primaryIconView.setTranslationX(0);
 
         secondaryIconParams.gravity = (isRtl ? START : END) | TOP;
-        secondaryIconView.setTranslationY(primaryHeight
-                + ((secondaryHeight + taskIconHeight) / 2f));
+        secondaryIconView.setTranslationY(primaryHeight + taskIconHeight + dividerBar);
+        secondaryIconView.setTranslationX(0);
         primaryIconView.setLayoutParams(primaryIconParams);
         secondaryIconView.setLayoutParams(secondaryIconParams);
     }
