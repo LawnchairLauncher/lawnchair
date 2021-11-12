@@ -424,11 +424,11 @@ public class TaskView extends FrameLayout implements Reusable {
         this(context, null);
     }
 
-    public TaskView(Context context, AttributeSet attrs) {
+    public TaskView(Context context, @Nullable AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public TaskView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public TaskView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         mActivity = StatefulActivity.fromContext(context);
         setOnClickListener(this::onClick);
