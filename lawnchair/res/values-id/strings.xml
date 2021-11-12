@@ -169,10 +169,8 @@
     <string name="search_bar_label">Bilah Pencarian</string>
     <string name="apply_accent_color_label">Terapkan Warna Aksen</string>
     <string name="show_search_result_types">Tampilkan pada Hasil Pencarian</string>
-    <string name="search_pref_result_people_desc">Kontak, percakapan, dan lainnya</string>
     <string name="search_pref_result_people_title">Orang</string>
-    <string name="search_pref_result_shortcuts_desc">Tampilkan Pintasan untuk Aplikasi dan Orang</string>
-    <string name="search_pref_result_shortcuts_title">Pintasan</string>
+    <string name="search_pref_result_shortcuts_title">App Shortcuts</string>
     <string name="search_pref_result_tips_title">Tips Pixel</string>
     <string name="row_height_label">Tinggi Baris</string>
     <string name="all_apps_device_search_hint">Pencarian</string>
