@@ -1343,8 +1343,12 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             addView(taskView);
 
             if (hasMultipleTasks) {
-                ((GroupedTaskView) taskView).bind(groupTask.task1, groupTask.task2,
-                        mOrientationState, groupTask.mStagedSplitBounds);
+                boolean firstTaskIsLeftTopTask =
+                        groupTask.mStagedSplitBounds.leftTopTaskId == groupTask.task1.key.id;
+                Task leftTopTask = firstTaskIsLeftTopTask ? groupTask.task1 : groupTask.task2;
+                Task rightBottomTask = firstTaskIsLeftTopTask ? groupTask.task2 : groupTask.task1;
+                ((GroupedTaskView) taskView).bind(leftTopTask, rightBottomTask, mOrientationState,
+                        groupTask.mStagedSplitBounds);
             } else {
                 taskView.bind(groupTask.task1, mOrientationState);
             }

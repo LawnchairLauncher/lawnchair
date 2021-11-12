@@ -92,7 +92,6 @@ import com.android.quickstep.TaskThumbnailCache;
 import com.android.quickstep.TaskUtils;
 import com.android.quickstep.TaskViewUtils;
 import com.android.quickstep.util.CancellableTask;
-import com.android.quickstep.util.LauncherSplitScreenListener;
 import com.android.quickstep.util.RecentsOrientedState;
 import com.android.quickstep.util.TaskCornerRadius;
 import com.android.quickstep.util.TransformParams;
@@ -369,7 +368,7 @@ public class TaskView extends FrameLayout implements Reusable {
     private float mGridProgress;
     private float mNonGridScale = 1;
     private float mDismissScale = 1;
-    private final FullscreenDrawParams mCurrentFullscreenParams;
+    protected final FullscreenDrawParams mCurrentFullscreenParams;
     protected final StatefulActivity mActivity;
 
     // Various causes of changing primary translation, which we aggregate to setTranslationX/Y().
@@ -425,11 +424,11 @@ public class TaskView extends FrameLayout implements Reusable {
         this(context, null);
     }
 
-    public TaskView(Context context, AttributeSet attrs) {
+    public TaskView(Context context, @Nullable AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public TaskView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public TaskView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         mActivity = StatefulActivity.fromContext(context);
         setOnClickListener(this::onClick);
@@ -851,7 +850,15 @@ public class TaskView extends FrameLayout implements Reusable {
                 if (confirmSecondSplitSelectApp()) {
                     return;
                 }
-                showTaskMenu(iconView);
+                if (ENABLE_QUICKSTEP_LIVE_TILE.get() && isRunningTask()) {
+                    RecentsView recentsView = getRecentsView();
+                    recentsView.switchToScreenshot(
+                            () -> recentsView.finishRecentsAnimation(true /* toRecents */,
+                                    false /* shouldPip */,
+                                    () -> showTaskMenu(iconView)));
+                } else {
+                    showTaskMenu(iconView);
+                }
             });
             iconView.setOnLongClickListener(v -> {
                 requestDisallowInterceptTouchEvent(true);
@@ -1366,7 +1373,7 @@ public class TaskView extends FrameLayout implements Reusable {
         invalidateOutline();
     }
 
-    void updateSnapshotRadius() {
+    protected void updateSnapshotRadius() {
         updateCurrentFullscreenParams(mSnapshotView.getPreviewPositionHelper());
         mSnapshotView.setFullscreenParams(mCurrentFullscreenParams);
     }
