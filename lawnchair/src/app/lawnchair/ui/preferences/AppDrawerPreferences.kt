@@ -96,13 +96,11 @@ fun AppDrawerPreferences() {
                 PreferenceGroup(heading = stringResource(id = R.string.show_search_result_types)) {
                     SwitchPreference(
                         adapter = prefs.searchResultShortcuts.getAdapter(),
-                        label = stringResource(id = R.string.search_pref_result_shortcuts_title),
-                        description = stringResource(id = R.string.search_pref_result_shortcuts_desc)
+                        label = stringResource(id = R.string.search_pref_result_shortcuts_title)
                     )
                     SwitchPreference(
                         adapter = prefs.searchResultPeople.getAdapter(),
-                        label = stringResource(id = R.string.search_pref_result_people_title),
-                        description = stringResource(id = R.string.search_pref_result_people_desc)
+                        label = stringResource(id = R.string.search_pref_result_people_title)
                     )
                     SwitchPreference(
                         adapter = prefs.searchResultPixelTips.getAdapter(),

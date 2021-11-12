@@ -192,10 +192,8 @@
     <string name="apply_accent_color_label">Apply Accent Color</string>
 
     <string name="show_search_result_types">Show in Search Results</string>
-    <string name="search_pref_result_people_desc">Contacts, conversations, and more</string>
     <string name="search_pref_result_people_title">People</string>
-    <string name="search_pref_result_shortcuts_desc">Show Shortcuts for Apps and People</string>
-    <string name="search_pref_result_shortcuts_title">Shortcuts</string>
+    <string name="search_pref_result_shortcuts_title">App Shortcuts</string>
     <string name="search_pref_result_tips_title">Pixel Tips</string>
     <string name="row_height_label">Row Height</string>
     <string name="all_apps_device_search_hint">Search</string>
