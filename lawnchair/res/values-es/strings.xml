@@ -136,12 +136,12 @@
     <string name="folder_preview_bg_opacity_label">Opacidad del fondo del icono</string>
     <string name="icon_shape_label">Forma del icono</string>
     <string name="icon_shape_system">Sistema</string>
-    <string name="icon_shape_circle">Ícono en forma de círculo</string>
+    <string name="icon_shape_circle">Circular</string>
     <string name="icon_shape_rounded_square">Cuadrado con esquinas redondeadas</string>
     <string name="icon_shape_squircle">Ardilla</string>
     <string name="customize_button_text">Personalizar</string>
     <string name="app_title_label">Título</string>
-    <string name="hide_from_drawer">Ocultar de App Drawer</string>
+    <string name="hide_from_drawer">Ocultar del cajón de aplicaciones</string>
     <string name="action_lens">Lentes</string>
     <string name="force_rounded_widgets">Esquinas redondeadas</string>
     <string name="suggestion_pref_screen_title">Sugerencias</string>
