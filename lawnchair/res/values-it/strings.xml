@@ -171,7 +171,7 @@
     <string name="apply_accent_color_label">Applica colore d\'accento</string>
     <string name="show_search_result_types">Mostra nei risultati di ricerca</string>
     <string name="search_pref_result_people_title">Persone</string>
-    <string name="search_pref_result_shortcuts_title">App Shortcuts</string>
+    <string name="search_pref_result_shortcuts_title">Scorciatoie app</string>
     <string name="search_pref_result_tips_title">Suggerimenti Pixel</string>
     <string name="row_height_label">Altezza riga</string>
     <string name="all_apps_device_search_hint">Ricerca</string>
