@@ -39,6 +39,8 @@ import android.view.ViewTreeObserver.OnScrollChangedListener;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
+
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.DeviceProfile;
@@ -67,6 +69,7 @@ public class TaskMenuView extends AbstractFloatingView implements OnScrollChange
 
     private BaseDraggingActivity mActivity;
     private TextView mTaskName;
+    @Nullable
     private AnimatorSet mOpenCloseAnimator;
     private TaskView mTaskView;
     private TaskIdAttributeContainer mTaskContainer;

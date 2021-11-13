@@ -57,10 +57,14 @@ public class FloatingWidgetView extends FrameLayout implements AnimatorListener,
     private LauncherAppWidgetHostView mAppWidgetView;
     private View mAppWidgetBackgroundView;
     private RectF mBackgroundPosition;
+    @Nullable
     private GhostView mForegroundOverlayView;
 
+    @Nullable
     private Runnable mEndRunnable;
+    @Nullable
     private Runnable mFastFinishRunnable;
+    @Nullable
     private Runnable mOnTargetChangeRunnable;
     private boolean mAppTargetIsTranslucent;
 
