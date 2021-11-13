@@ -155,7 +155,7 @@
     <string name="all_apps_search_market_message">Поиск дополнительных приложений</string>
     <string name="show_app_search_bar">Показать строку поиска</string>
     <string name="lawnchair_bug_report">Отчёт об ошибке в Lawnchair</string>
-    <string name="crash_report_notif_title">%1$s Crashed</string>
+    <string name="crash_report_notif_title">%1$s произошел сбой</string>
     <string name="action_upload">Загрузить на Dogbin</string>
     <string name="action_copy_link">Скопировать ссылку</string>
     <string name="action_copy">Скопировать</string>
@@ -166,15 +166,15 @@
     <string name="bugreport_channel_name">Отчёты об ошибках</string>
     <string name="status_channel_name">Статус загрузки</string>
     <string name="bugreport_group_summary">%d новых отчетов.</string>
-    <string name="bugreport_group_summary_multiple">Multiple new reports.</string>
-    <string name="themed_icon_title">Themed Icons</string>
+    <string name="bugreport_group_summary_multiple">Несколько новых отчетов.</string>
+    <string name="themed_icon_title">Тематические значки</string>
     <string name="corner_radius_label">Скругление углов</string>
-    <string name="search_bar_label">Search Bar</string>
-    <string name="apply_accent_color_label">Apply Accent Color</string>
-    <string name="show_search_result_types">Show in Search Results</string>
-    <string name="search_pref_result_people_title">People</string>
-    <string name="search_pref_result_shortcuts_title">App Shortcuts</string>
-    <string name="search_pref_result_tips_title">Pixel Tips</string>
-    <string name="row_height_label">Row Height</string>
+    <string name="search_bar_label">Панель поиска</string>
+    <string name="apply_accent_color_label">Применить цвет акцента</string>
+    <string name="show_search_result_types">Показывать в результатах поиска</string>
+    <string name="search_pref_result_people_title">Люди</string>
+    <string name="search_pref_result_shortcuts_title">Ярлыки приложений</string>
+    <string name="search_pref_result_tips_title">Советы Pixel</string>
+    <string name="row_height_label">Высота строки</string>
     <string name="all_apps_device_search_hint">Поиск</string>
 </resources>
