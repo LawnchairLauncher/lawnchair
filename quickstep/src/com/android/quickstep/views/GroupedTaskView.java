@@ -14,7 +14,6 @@ import androidx.annotation.Nullable;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
 import com.android.launcher3.util.RunnableList;
-import com.android.launcher3.util.SplitConfigurationOptions;
 import com.android.launcher3.util.SplitConfigurationOptions.StagedSplitBounds;
 import com.android.launcher3.util.TransformingTouchDelegate;
 import com.android.quickstep.RecentsModel;
@@ -157,14 +156,15 @@ public class GroupedTaskView extends TaskView {
     @Override
     public RunnableList launchTaskAnimated() {
         getRecentsView().getSplitPlaceholder().launchTasks(mTask, mSecondaryTask,
-                STAGE_POSITION_TOP_OR_LEFT, null /*callback*/);
+                STAGE_POSITION_TOP_OR_LEFT, null /*callback*/,
+                false /* freezeTaskList */);
         return null;
     }
 
     @Override
     public void launchTask(@NonNull Consumer<Boolean> callback, boolean freezeTaskList) {
         getRecentsView().getSplitPlaceholder().launchTasks(mTask, mSecondaryTask,
-                STAGE_POSITION_TOP_OR_LEFT, callback);
+                STAGE_POSITION_TOP_OR_LEFT, callback, freezeTaskList);
     }
 
     @Override
@@ -240,5 +240,11 @@ public class GroupedTaskView extends TaskView {
         getPagedOrientationHandler().setSplitIconParams(mIconView, mIconView2,
                 taskIconHeight, mPrimaryTempRect, mSecondaryTempRect,
                 isRtl, deviceProfile, mSplitBoundsConfig);
+    }
+
+    @Override
+    protected void updateSnapshotRadius() {
+        super.updateSnapshotRadius();
+        mSnapshotView2.setFullscreenParams(mCurrentFullscreenParams);
     }
 }
