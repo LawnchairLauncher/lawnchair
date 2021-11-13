@@ -27,6 +27,8 @@ import android.view.View;
 import android.view.ViewOutlineProvider;
 import android.widget.RemoteViews.RemoteViewOutlineProvider;
 
+import androidx.annotation.Nullable;
+
 import com.android.launcher3.widget.LauncherAppWidgetHostView;
 import com.android.launcher3.widget.RoundedCornerEnforcement;
 
@@ -42,7 +44,9 @@ final class FloatingWidgetBackgroundView extends View {
     private final DrawableProperties mForegroundProperties = new DrawableProperties();
     private final DrawableProperties mBackgroundProperties = new DrawableProperties();
 
+    @Nullable
     private Drawable mOriginalForeground;
+    @Nullable
     private Drawable mOriginalBackground;
     private float mFinalRadius;
     private float mInitialOutlineRadius;
@@ -50,7 +54,7 @@ final class FloatingWidgetBackgroundView extends View {
     private boolean mIsUsingFallback;
     private View mSourceView;
 
-    FloatingWidgetBackgroundView(Context context, AttributeSet attrs, int defStyleAttr) {
+    FloatingWidgetBackgroundView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         setOutlineProvider(new ViewOutlineProvider() {
             @Override
@@ -161,8 +165,10 @@ final class FloatingWidgetBackgroundView extends View {
 
     /** Stores and modifies a drawable's properties through an animation. */
     private static class DrawableProperties {
+        @Nullable
         private Drawable mDrawable;
         private float mOriginalRadius;
+        @Nullable
         private float[] mOriginalRadii;
         private final float[] mTmpRadii = new float[8];
 
