@@ -171,7 +171,7 @@
     <string name="apply_accent_color_label">Apply Accent Color</string>
     <string name="show_search_result_types">Mutassa a keresési találatok között</string>
     <string name="search_pref_result_people_title">Emberek</string>
-    <string name="search_pref_result_shortcuts_title">App Shortcuts</string>
+    <string name="search_pref_result_shortcuts_title">Alkalmazás parancsikonok</string>
     <string name="search_pref_result_tips_title">Pixel tippek</string>
     <string name="row_height_label">Sor magasság</string>
     <string name="all_apps_device_search_hint">Keresés</string>
