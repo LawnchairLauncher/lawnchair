@@ -128,7 +128,7 @@
     <string name="pref_category_search">搜索</string>
     <string name="pref_search_auto_show_keyboard">自动显示键盘</string>
     <string name="label_search">搜索</string>
-    <string name="label_lens">Google Lens</string>
+    <string name="label_lens">Google 智能镜头</string>
     <string name="label_voice_search">语音搜索</string>
     <string name="apply_grid">应用</string>
     <string name="x_by_y">%1$d × %2$d</string>
@@ -141,7 +141,7 @@
     <string name="customize_button_text">自定义</string>
     <string name="app_title_label">标题</string>
     <string name="hide_from_drawer">从应用抽屉隐藏</string>
-    <string name="action_lens">Lens</string>
+    <string name="action_lens">智能镜头</string>
     <string name="force_rounded_widgets">圆角</string>
     <string name="suggestion_pref_screen_title">建议</string>
     <string name="n_percent">%1$d%%</string>
