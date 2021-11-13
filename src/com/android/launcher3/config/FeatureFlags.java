@@ -157,15 +157,6 @@ public final class FeatureFlags {
             "ENABLE_DATABASE_RESTORE", false,
             "Enable database restore when new restore session is created");
 
-    public static final BooleanFlag ENABLE_SMARTSPACE_UNIVERSAL = getDebugFlag(
-            "ENABLE_SMARTSPACE_UNIVERSAL", false,
-            "Replace Smartspace with a version rendered by System UI.");
-
-    public static final BooleanFlag ENABLE_SMARTSPACE_ENHANCED = getDebugFlag(
-            "ENABLE_SMARTSPACE_ENHANCED", true,
-            "Replace Smartspace with the enhanced version. "
-                    + "Ignored if ENABLE_SMARTSPACE_UNIVERSAL is enabled.");
-
     public static final BooleanFlag ENABLE_SMARTSPACE_DISMISS = getDebugFlag(
             "ENABLE_SMARTSPACE_DISMISS", true,
             "Adds a menu option to dismiss the current Enhanced Smartspace card.");
