@@ -39,10 +39,13 @@ import java.util.function.Consumer;
  */
 public class GroupedTaskView extends TaskView {
 
+    @Nullable
     private Task mSecondaryTask;
     private TaskThumbnailView mSnapshotView2;
     private IconView mIconView2;
+    @Nullable
     private CancellableTask<ThumbnailData> mThumbnailLoadRequest2;
+    @Nullable
     private CancellableTask mIconLoadRequest2;
     private final float[] mIcon2CenterCoords = new float[2];
     private TransformingTouchDelegate mIcon2TouchDelegate;
@@ -153,21 +156,23 @@ public class GroupedTaskView extends TaskView {
         }
     }
 
+    @Nullable
     @Override
     public RunnableList launchTaskAnimated() {
         getRecentsView().getSplitPlaceholder().launchTasks(mTask, mSecondaryTask,
-                STAGE_POSITION_TOP_OR_LEFT, null /*callback*/);
+                STAGE_POSITION_TOP_OR_LEFT, null /*callback*/,
+                false /* freezeTaskList */);
         return null;
     }
 
     @Override
     public void launchTask(@NonNull Consumer<Boolean> callback, boolean freezeTaskList) {
         getRecentsView().getSplitPlaceholder().launchTasks(mTask, mSecondaryTask,
-                STAGE_POSITION_TOP_OR_LEFT, callback);
+                STAGE_POSITION_TOP_OR_LEFT, callback, freezeTaskList);
     }
 
     @Override
-    void refreshThumbnails(HashMap<Integer, ThumbnailData> thumbnailDatas) {
+    void refreshThumbnails(@Nullable HashMap<Integer, ThumbnailData> thumbnailDatas) {
         super.refreshThumbnails(thumbnailDatas);
         if (mSecondaryTask != null && thumbnailDatas != null) {
             final ThumbnailData thumbnailData = thumbnailDatas.get(mSecondaryTask.key.id);
