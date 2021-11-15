@@ -383,7 +383,9 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
 
     protected final RecentsOrientedState mOrientationState;
     protected final BaseActivityInterface<STATE_TYPE, ACTIVITY_TYPE> mSizeStrategy;
+    @Nullable
     protected RecentsAnimationController mRecentsAnimationController;
+    @Nullable
     protected SurfaceTransactionApplier mSyncTransactionApplier;
     protected int mTaskWidth;
     protected int mTaskHeight;
@@ -394,12 +396,15 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     // mTaskGridVerticalDiff and mTopBottomRowHeightDiff summed together provides the top
     // position for bottom row of grid tasks.
 
+    @Nullable
     protected RemoteTargetHandle[] mRemoteTargetHandles;
     protected final Rect mLastComputedTaskSize = new Rect();
     protected final Rect mLastComputedGridSize = new Rect();
     protected final Rect mLastComputedGridTaskSize = new Rect();
     // How much a task that is directly offscreen will be pushed out due to RecentsView scale/pivot.
+    @Nullable
     protected Float mLastComputedTaskStartPushOutDistance = null;
+    @Nullable
     protected Float mLastComputedTaskEndPushOutDistance = null;
     protected boolean mEnableDrawingLiveTile = false;
     protected final Rect mTempRect = new Rect();
@@ -454,11 +459,13 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     private final IntSet mTopRowIdSet = new IntSet();
 
     // The GestureEndTarget that is still in progress.
+    @Nullable
     protected GestureState.GestureEndTarget mCurrentGestureEndTarget;
 
     // TODO(b/187528071): Remove these and replace with a real scrim.
     private float mColorTint;
     private final int mTintingColor;
+    @Nullable
     private ObjectAnimator mTintingAnimator;
 
     private int mOverScrollShift = 0;
@@ -542,6 +549,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     private int mTaskViewIdCount;
     private final int[] INVALID_TASK_IDS = new int[]{-1, -1};
     protected boolean mRunningTaskTileHidden;
+    @Nullable
     private Task[] mTmpRunningTasks;
     protected int mFocusedTaskViewId = -1;
 
@@ -556,7 +564,9 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     private int mDownX;
     private int mDownY;
 
+    @Nullable
     private PendingAnimation mPendingAnimation;
+    @Nullable
     private LayoutTransition mLayoutTransition;
 
     @ViewDebug.ExportedProperty(category = "launcher")
@@ -581,7 +591,9 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     private final Point mLastMeasureSize = new Point();
     private final int mEmptyMessagePadding;
     private boolean mShowEmptyMessage;
+    @Nullable
     private OnEmptyMessageUpdatedListener mOnEmptyMessageUpdatedListener;
+    @Nullable
     private Layout mEmptyTextLayout;
 
     /**
@@ -596,8 +608,11 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
      * ensure this View doesn't go back into the {@link #mTaskViewPool},
      * see {@link #onViewRemoved(View)}
      */
+    @Nullable
     private TaskView mSplitHiddenTaskView;
+    @Nullable
     private TaskView mSecondSplitHiddenTaskView;
+    @Nullable
     private StagedSplitBounds mSplitBoundsConfig;
     private final Toast mSplitToast = Toast.makeText(getContext(),
             R.string.toast_split_select_app, Toast.LENGTH_SHORT);
@@ -613,12 +628,15 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
      * removed from recentsView
      */
     private int mSplitHiddenTaskViewIndex;
+    @Nullable
     private FloatingTaskView mFirstFloatingTaskView;
+    @Nullable
     private FloatingTaskView mSecondFloatingTaskView;
 
     /**
      * The task to be removed and immediately re-added. Should not be added to task pool.
      */
+    @Nullable
     private TaskView mMovingTaskView;
 
     private OverviewActionsView mActionsView;
@@ -638,10 +656,12 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                 }
             };
 
+    @Nullable
     private RunnableList mSideTaskLaunchCallback;
+    @Nullable
     private TaskLaunchListener mTaskLaunchListener;
 
-    public RecentsView(Context context, AttributeSet attrs, int defStyleAttr,
+    public RecentsView(Context context, @Nullable AttributeSet attrs, int defStyleAttr,
             BaseActivityInterface sizeStrategy) {
         super(context, attrs, defStyleAttr);
         setEnableFreeScroll(true);
@@ -782,6 +802,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     }
 
     @Override
+    @Nullable
     public Task onTaskThumbnailChanged(int taskId, ThumbnailData thumbnailData) {
         if (mHandleTaskStackChanges) {
             TaskView taskView = getTaskViewByTaskId(taskId);
@@ -1017,6 +1038,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         }
     }
 
+    @Nullable
     private TaskView getLastGridTaskView() {
         return getLastGridTaskView(getTopRowIdArray(), getBottomRowIdArray());
     }
@@ -1070,6 +1092,10 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         return getScrollForPage(taskIndex) == getPagedOrientationHandler().getPrimaryScroll(this);
     }
 
+    /**
+     * Returns a {@link TaskView} that has taskId matching {@code taskId} or null if no match.
+     */
+    @Nullable
     public TaskView getTaskViewByTaskId(int taskId) {
         if (taskId == -1) {
             return null;
@@ -1920,6 +1946,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         return getTaskViewFromTaskViewId(mFocusedTaskViewId);
     }
 
+    @Nullable
     private TaskView getTaskViewFromTaskViewId(int taskViewId) {
         if (taskViewId == -1) {
             return null;
@@ -4371,12 +4398,15 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         }
     }
 
-    public void finishRecentsAnimation(boolean toRecents, Runnable onFinishComplete) {
+    /**
+     * Finish recents animation.
+     */
+    public void finishRecentsAnimation(boolean toRecents, @Nullable Runnable onFinishComplete) {
         finishRecentsAnimation(toRecents, true /* shouldPip */, onFinishComplete);
     }
 
     public void finishRecentsAnimation(boolean toRecents, boolean shouldPip,
-            Runnable onFinishComplete) {
+            @Nullable Runnable onFinishComplete) {
         // TODO(b/197232424#comment#10) Move this back into onRecentsAnimationComplete(). Maybe?
         cleanupRemoteTargets();
         if (!toRecents && ENABLE_QUICKSTEP_LIVE_TILE.get()) {
@@ -4939,10 +4969,13 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
 
     private static class PinnedStackAnimationListener<T extends BaseActivity> extends
             IPipAnimationListener.Stub {
+        @Nullable
         private T mActivity;
+        @Nullable
         private RecentsView mRecentsView;
 
-        public void setActivityAndRecentsView(T activity, RecentsView recentsView) {
+        public void setActivityAndRecentsView(@Nullable T activity,
+                @Nullable RecentsView recentsView) {
             mActivity = activity;
             mRecentsView = recentsView;
         }
