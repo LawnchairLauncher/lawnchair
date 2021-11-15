@@ -838,6 +838,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
      * Update the thumbnail of the task.
      * @param refreshNow Refresh immediately if it's true.
      */
+    @Nullable
     public TaskView updateThumbnail(int taskId, ThumbnailData thumbnailData, boolean refreshNow) {
         TaskView taskView = getTaskViewByTaskId(taskId);
         if (taskView != null) {
@@ -1043,6 +1044,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         return getLastGridTaskView(getTopRowIdArray(), getBottomRowIdArray());
     }
 
+    @Nullable
     private TaskView getLastGridTaskView(IntArray topRowIdArray, IntArray bottomRowIdArray) {
         if (topRowIdArray.isEmpty() && bottomRowIdArray.isEmpty()) {
             return null;
