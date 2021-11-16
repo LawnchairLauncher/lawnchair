@@ -24,6 +24,7 @@ import android.view.View;
 import com.android.launcher3.anim.AlphaUpdateListener;
 
 import java.util.Arrays;
+import java.util.function.Consumer;
 
 /**
  * Utility class to handle separating a single value as a factor of multiple values
@@ -85,6 +86,8 @@ public class MultiValueAlpha {
         // Factor of all other alpha channels, only valid if mMyMask is present in mValidMask.
         private float mOthers = 1;
 
+        private Consumer<Float> mConsumer;
+
         AlphaProperty(int myMask) {
             mMyMask = myMask;
         }
@@ -109,14 +112,22 @@ public class MultiValueAlpha {
             mValidMask = mMyMask;
             mValue = value;
 
-            mView.setAlpha(mOthers * mValue);
+            final float alpha = mOthers * mValue;
+            mView.setAlpha(alpha);
             if (mUpdateVisibility) {
                 AlphaUpdateListener.updateVisibility(mView);
+            }
+            if (mConsumer != null) {
+                mConsumer.accept(mValue);
             }
         }
 
         public float getValue() {
             return mValue;
+        }
+
+        public void setConsumer(Consumer<Float> consumer) {
+            mConsumer = consumer;
         }
 
         @Override
