@@ -86,8 +86,6 @@ public class AddWorkspaceItemsTaskTest {
 
     @Test
     public void testFindSpaceForItem_prefers_second() throws Exception {
-        mIdp.isSplitDisplay = false;
-
         // First screen has only one hole of size 1
         int nextId = setupWorkspaceWithHoles(1, 1, new Rect(2, 2, 3, 3));
 
@@ -106,24 +104,6 @@ public class AddWorkspaceItemsTaskTest {
         assertEquals(2, spaceFound[0]);
         assertTrue(mScreenOccupancy.get(spaceFound[0])
                 .isRegionVacant(spaceFound[1], spaceFound[2], 2, 3));
-    }
-
-    @Test
-    public void testFindSpaceForItem_prefers_third_on_split_display() throws Exception {
-        mIdp.isSplitDisplay = true;
-        // First screen has only one hole of size 1
-        int nextId = setupWorkspaceWithHoles(1, 1, new Rect(2, 2, 3, 3));
-
-        // Second screen has 2 holes of sizes 3x2 and 2x3
-        setupWorkspaceWithHoles(nextId, 2, new Rect(2, 0, 5, 2), new Rect(0, 2, 2, 5));
-
-        int[] spaceFound = newTask().findSpaceForItem(
-                mAppState, mModelHelper.getBgDataModel(), mExistingScreens, mNewScreens, 1, 1);
-        // For split display, it picks the next screen, even if there is enough space
-        // on previous screen
-        assertEquals(2, spaceFound[0]);
-        assertTrue(mScreenOccupancy.get(spaceFound[0])
-                .isRegionVacant(spaceFound[1], spaceFound[2], 1, 1));
     }
 
     @Test
