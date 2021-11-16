@@ -869,13 +869,13 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         mWorkspaceScreens.remove(emptyScreenId);
         mScreenOrder.removeValue(emptyScreenId);
 
-        int newScreenId = -1;
+        int newScreenId = LauncherSettings.Settings.call(getContext().getContentResolver(),
+                LauncherSettings.Settings.METHOD_NEW_SCREEN_ID)
+                .getInt(LauncherSettings.Settings.EXTRA_VALUE);
         // Launcher database isn't aware of empty pages that are already bound, so we need to
         // skip those IDs manually.
-        while (newScreenId == -1 || mWorkspaceScreens.containsKey(newScreenId)) {
-            newScreenId = LauncherSettings.Settings.call(getContext().getContentResolver(),
-                    LauncherSettings.Settings.METHOD_NEW_SCREEN_ID)
-                    .getInt(LauncherSettings.Settings.EXTRA_VALUE);
+        while (mWorkspaceScreens.containsKey(newScreenId)) {
+            newScreenId++;
         }
 
         mWorkspaceScreens.put(newScreenId, cl);
