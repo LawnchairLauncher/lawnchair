@@ -1721,6 +1721,10 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
 
     @Override
     protected void onScrollChanged(int l, int t, int oldl, int oldt) {
+        if (mScroller.isFinished()) {
+            // This was not caused by the scroller, skip it.
+            return;
+        }
         int newDestinationPage = getDestinationPage();
         if (newDestinationPage >= 0 && newDestinationPage != mCurrentScrollOverPage) {
             mCurrentScrollOverPage = newDestinationPage;
