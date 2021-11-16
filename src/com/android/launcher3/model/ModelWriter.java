@@ -292,7 +292,7 @@ public class ModelWriter {
         FileLog.d(TAG, "removing items from db " + items.stream().map(
                 (item) -> item.getTargetComponent() == null ? ""
                         : item.getTargetComponent().getPackageName()).collect(
-                Collectors.joining(",")), new Exception());
+                Collectors.joining(",")));
         notifyDelete(items);
         enqueueDeleteRunnable(() -> {
             for (ItemInfo item : items) {
