@@ -171,7 +171,7 @@
     <string name="apply_accent_color_label">असेंट रंग इस्तेमाल करें</string>
     <string name="show_search_result_types">खोज में दिखाएं</string>
     <string name="search_pref_result_people_title">व्यक्ति</string>
-    <string name="search_pref_result_shortcuts_title">App Shortcuts</string>
+    <string name="search_pref_result_shortcuts_title">ऐप शॉर्टकट्स</string>
     <string name="search_pref_result_tips_title">पिक्सल टिप्स</string>
     <string name="row_height_label">रॉ की ऊंचाई</string>
     <string name="all_apps_device_search_hint">ऐप खोजें</string>
