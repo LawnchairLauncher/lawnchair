@@ -115,6 +115,7 @@ import java.util.function.Supplier;
         mIconAlignmentForGestureState.finishAnimation();
         mIconAlignmentForLauncherState.finishAnimation();
 
+        mIconAlphaForHome.setConsumer(null);
         mLauncher.getHotseat().setIconsAlpha(1f);
         mLauncher.getStateManager().removeStateListener(mStateListener);
     }
