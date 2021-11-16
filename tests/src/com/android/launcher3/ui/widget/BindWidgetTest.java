@@ -45,7 +45,6 @@ import com.android.launcher3.tapl.Widget;
 import com.android.launcher3.tapl.Workspace;
 import com.android.launcher3.ui.AbstractLauncherUiTest;
 import com.android.launcher3.ui.TestViewHelpers;
-import com.android.launcher3.util.rule.ScreenRecordRule.ScreenRecord;
 import com.android.launcher3.util.rule.ShellCommandRule;
 import com.android.launcher3.widget.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.widget.WidgetManagerHelper;
@@ -139,7 +138,6 @@ public class BindWidgetTest extends AbstractLauncherUiTest {
     }
 
     @Test
-    @ScreenRecord // b/204807156
     public void testPendingWidget_autoRestored() {
         // A non-restored widget with no config screen gets restored automatically.
         LauncherAppWidgetProviderInfo info = TestViewHelpers.findWidgetProvider(this, false);
