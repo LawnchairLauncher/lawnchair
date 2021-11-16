@@ -1335,6 +1335,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             return;
         }
 
+        mLoadPlanEverApplied = true;
         if (taskGroups == null || taskGroups.isEmpty()) {
             removeTasksViewsAndClearAllButton();
             onTaskStackUpdated();
@@ -1437,7 +1438,6 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         resetTaskVisuals();
         onTaskStackUpdated();
         updateEnabledOverlays();
-        mLoadPlanEverApplied = true;
     }
 
     private boolean isModal() {
@@ -3115,12 +3115,17 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                     } else if (dismissedIndex < pageToSnapTo || pageToSnapTo == taskCount - 1) {
                         pageToSnapTo--;
                     }
+                    boolean isHomeTaskDismissed = dismissedTaskView == getHomeTaskView();
                     removeViewInLayout(dismissedTaskView);
                     mTopRowIdSet.remove(dismissedTaskViewId);
 
                     if (taskCount == 1) {
                         removeViewInLayout(mClearAllButton);
-                        startHome();
+                        if (isHomeTaskDismissed) {
+                            updateEmptyMessage();
+                        } else {
+                            startHome();
+                        }
                     } else {
                         // Update focus task and its size.
                         if (finalIsFocusedTaskDismissed) {
