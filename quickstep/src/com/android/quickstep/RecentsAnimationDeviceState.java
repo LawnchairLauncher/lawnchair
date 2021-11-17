@@ -267,15 +267,6 @@ public class RecentsAnimationDeviceState implements
         runOnDestroy(() -> mSysUiNavMode.removeModeChangeListener(listener));
     }
 
-    /**
-     * Adds a listener for the one handed mode change,
-     * guaranteed to be called after the device state's mode has changed.
-     */
-    public void addOneHandedModeChangedCallback(OneHandedModeChangeListener listener) {
-        listener.onOneHandedModeChanged(mSysUiNavMode.addOneHandedOverlayChangeListener(listener));
-        runOnDestroy(() -> mSysUiNavMode.removeOneHandedOverlayChangeListener(listener));
-    }
-
     @Override
     public void onNavigationModeChanged(SysUINavigationMode.Mode newMode) {
         mDisplayController.removeChangeListener(this);
