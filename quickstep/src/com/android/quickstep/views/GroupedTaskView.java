@@ -74,7 +74,7 @@ public class GroupedTaskView extends TaskView {
     }
 
     public void bind(Task primary, Task secondary, RecentsOrientedState orientedState,
-            StagedSplitBounds splitBoundsConfig) {
+            @Nullable StagedSplitBounds splitBoundsConfig) {
         super.bind(primary, orientedState);
         mSecondaryTask = secondary;
         mTaskIdContainer[1] = secondary.key.id;
