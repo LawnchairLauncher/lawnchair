@@ -102,6 +102,7 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
     private StagedSplitBounds mStagedSplitBounds;
     private boolean mDrawsBelowRecents;
     private boolean mIsGridTask;
+    private float mGridTranslationY;
 
     public TaskViewSimulator(Context context, BaseActivityInterface sizeStrategy) {
         mContext = context;
@@ -156,8 +157,14 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
             fullTaskSize = new Rect(mTaskRect);
             mOrientationState.getOrientationHandler()
                     .setSplitTaskSwipeRect(mDp, mTaskRect, mStagedSplitBounds, mStagePosition);
+            if (mIsGridTask) {
+                mTaskRect.offset(0, (int) mGridTranslationY);
+            }
         } else {
             fullTaskSize = mTaskRect;
+        }
+        if (mIsGridTask) {
+            fullTaskSize.offset(0, (int) mGridTranslationY);
         }
         return mOrientationState.getFullScreenScaleAndPivot(fullTaskSize, mDp, mPivot);
     }
@@ -215,6 +222,13 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
      */
     public void setIsGridTask(boolean isGridTask) {
         mIsGridTask = isGridTask;
+    }
+
+    /**
+     * Sets the y-translation when overview is in grid.
+     */
+    public void setGridTranslationY(float gridTranslationY) {
+        mGridTranslationY = gridTranslationY;
     }
 
     /**
@@ -320,14 +334,12 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
         mMatrix.postTranslate(insets.left, insets.top);
         mMatrix.postScale(scale, scale);
 
-        // Apply TaskView matrix: translate, scroll
+        // Apply TaskView matrix: taskRect, translate
         mMatrix.postTranslate(mTaskRect.left, mTaskRect.top);
         mOrientationState.getOrientationHandler().set(mMatrix, MATRIX_POST_TRANSLATE,
                 taskPrimaryTranslation.value);
         mOrientationState.getOrientationHandler().setSecondary(mMatrix, MATRIX_POST_TRANSLATE,
                 taskSecondaryTranslation.value);
-        mOrientationState.getOrientationHandler().set(
-                mMatrix, MATRIX_POST_TRANSLATE, recentsViewScroll.value);
 
         // Apply RecentsView matrix
         mMatrix.postScale(recentsViewScale.value, recentsViewScale.value, mPivot.x, mPivot.y);
@@ -335,6 +347,8 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
                 recentsViewSecondaryTranslation.value);
         mOrientationState.getOrientationHandler().set(mMatrix, MATRIX_POST_TRANSLATE,
                 recentsViewPrimaryTranslation.value);
+        mOrientationState.getOrientationHandler().set(
+                mMatrix, MATRIX_POST_TRANSLATE, recentsViewScroll.value);
         applyWindowToHomeRotation(mMatrix);
 
         // Crop rect is the inverse of thumbnail matrix
