@@ -451,24 +451,19 @@ public class PortraitPagedViewHandler implements PagedOrientationHandler {
     public void setSplitTaskSwipeRect(DeviceProfile dp, Rect outRect,
             StagedSplitBounds splitInfo, int desiredStagePosition) {
         boolean isLandscape = dp.isLandscape;
-        float verticalDividerDiff = splitInfo.visualDividerBounds.height() / 2f;
-        float horizontalDividerDiff = splitInfo.visualDividerBounds.width() / 2f;
-        float diff;
         if (desiredStagePosition == SplitConfigurationOptions.STAGE_POSITION_TOP_OR_LEFT) {
             if (isLandscape) {
-                diff = outRect.width() * (1f - splitInfo.leftTaskPercent) + horizontalDividerDiff;
-                outRect.right -= diff;
+                outRect.right = outRect.left + (int) (outRect.width() * splitInfo.leftTaskPercent);
             } else {
-                diff = outRect.height() * (1f - splitInfo.topTaskPercent) + verticalDividerDiff;
-                outRect.bottom -= diff;
+                outRect.bottom = outRect.top + (int) (outRect.height() * splitInfo.topTaskPercent);
             }
         } else {
             if (isLandscape) {
-                diff = outRect.width() * splitInfo.leftTaskPercent + horizontalDividerDiff;
-                outRect.left += diff;
+                outRect.left += (int) (outRect.width() *
+                        (splitInfo.leftTaskPercent + splitInfo.dividerWidthPercent));
             } else {
-                diff = outRect.height() * splitInfo.topTaskPercent + verticalDividerDiff;
-                outRect.top += diff;
+                outRect.top += (int) (outRect.height() *
+                        (splitInfo.topTaskPercent + splitInfo.dividerHeightPercent));
             }
         }
     }
@@ -479,9 +474,9 @@ public class PortraitPagedViewHandler implements PagedOrientationHandler {
             StagedSplitBounds splitBoundsConfig, DeviceProfile dp) {
         int spaceAboveSnapshot = dp.overviewTaskThumbnailTopMarginPx;
         int totalThumbnailHeight = parentHeight - spaceAboveSnapshot;
-        int dividerBar = (splitBoundsConfig.appsStackedVertically ?
-                splitBoundsConfig.visualDividerBounds.height() :
-                splitBoundsConfig.visualDividerBounds.width());
+        int dividerBar = splitBoundsConfig.appsStackedVertically
+                ? (int) (splitBoundsConfig.dividerHeightPercent * parentHeight)
+                : (int) (splitBoundsConfig.dividerWidthPercent * parentWidth);
         int primarySnapshotHeight;
         int primarySnapshotWidth;
         int secondarySnapshotHeight;
