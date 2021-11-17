@@ -539,7 +539,7 @@ public class TaskView extends FrameLayout implements Reusable {
         mTask = task;
         mTaskIdContainer[0] = mTask.key.id;
         mTaskIdAttributeContainer[0] = new TaskIdAttributeContainer(task, mSnapshotView,
-                STAGE_POSITION_UNDEFINED);
+                mIconView, STAGE_POSITION_UNDEFINED);
         mSnapshotView.bind(task);
         setOrientationState(orientedState);
     }
@@ -837,10 +837,12 @@ public class TaskView extends FrameLayout implements Reusable {
     }
 
     protected boolean showTaskMenuWithContainer(IconView iconView) {
+        TaskIdAttributeContainer menuContainer =
+                mTaskIdAttributeContainer[iconView == mIconView ? 0 : 1];
         if (mActivity.getDeviceProfile().overviewShowAsGrid) {
-            return TaskMenuViewWithArrow.Companion.showForTask(mTaskIdAttributeContainer[0]);
+            return TaskMenuViewWithArrow.Companion.showForTask(menuContainer);
         } else {
-            return TaskMenuView.showForTask(mTaskIdAttributeContainer[0]);
+            return TaskMenuView.showForTask(menuContainer);
         }
     }
 
@@ -1562,13 +1564,15 @@ public class TaskView extends FrameLayout implements Reusable {
     public class TaskIdAttributeContainer {
         private final TaskThumbnailView mThumbnailView;
         private final Task mTask;
+        private final IconView mIconView;
         /** Defaults to STAGE_POSITION_UNDEFINED if in not a split screen task view */
         private @SplitConfigurationOptions.StagePosition int mStagePosition;
 
         public TaskIdAttributeContainer(Task task, TaskThumbnailView thumbnailView,
-                int stagePosition) {
+                IconView iconView, int stagePosition) {
             this.mTask = task;
             this.mThumbnailView = thumbnailView;
+            this.mIconView = iconView;
             this.mStagePosition = stagePosition;
         }
 
@@ -1586,6 +1590,10 @@ public class TaskView extends FrameLayout implements Reusable {
 
         public TaskView getTaskView() {
             return TaskView.this;
+        }
+
+        public IconView getIconView() {
+            return mIconView;
         }
 
         public int getStagePosition() {
