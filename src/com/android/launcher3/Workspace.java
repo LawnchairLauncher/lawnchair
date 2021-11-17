@@ -220,7 +220,6 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
     private FolderIcon mDragOverFolderIcon = null;
     private boolean mCreateUserFolderOnDrop = false;
     private boolean mAddToExistingFolderOnDrop = false;
-    private float mMaxDistanceForFolderCreation;
 
     // Variables relating to touch disambiguation (scrolling workspace vs. scrolling a widget)
     private float mXDown;
@@ -308,8 +307,6 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
     public void setInsets(Rect insets) {
         DeviceProfile grid = mLauncher.getDeviceProfile();
 
-        mMaxDistanceForFolderCreation = grid.isTablet
-                ? 0.75f * grid.iconSizePx : 0.55f * grid.iconSizePx;
         mWorkspaceFadeInAdjacentScreens = grid.shouldFadeAdjacentWorkspaceScreens();
 
         Rect padding = grid.workspacePadding;
@@ -1774,8 +1771,8 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
             mTargetCell = findNearestArea((int) mDragViewVisualCenter[0],
                     (int) mDragViewVisualCenter[1], minSpanX, minSpanY, dropTargetLayout,
                     mTargetCell);
-            float distance = dropTargetLayout.getDistanceFromCell(mDragViewVisualCenter[0],
-                    mDragViewVisualCenter[1], mTargetCell);
+            float distance = dropTargetLayout.getDistanceFromWorkspaceCellVisualCenter(
+                    mDragViewVisualCenter[0], mDragViewVisualCenter[1], mTargetCell);
             if (mCreateUserFolderOnDrop && willCreateUserFolder(d.dragInfo,
                     dropTargetLayout, mTargetCell, distance, true)) {
                 return true;
@@ -1809,7 +1806,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
 
     boolean willCreateUserFolder(ItemInfo info, CellLayout target, int[] targetCell,
             float distance, boolean considerTimeout) {
-        if (distance > mMaxDistanceForFolderCreation) return false;
+        if (distance > target.getFolderCreationRadius(targetCell)) return false;
         View dropOverView = target.getChildAt(targetCell[0], targetCell[1]);
         return willCreateUserFolder(info, dropOverView, considerTimeout);
     }
@@ -1844,7 +1841,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
 
     boolean willAddToExistingUserFolder(ItemInfo dragInfo, CellLayout target, int[] targetCell,
             float distance) {
-        if (distance > mMaxDistanceForFolderCreation) return false;
+        if (distance > target.getFolderCreationRadius(targetCell)) return false;
         View dropOverView = target.getChildAt(targetCell[0], targetCell[1]);
         return willAddToExistingUserFolder(dragInfo, dropOverView);
 
@@ -1868,7 +1865,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
 
     boolean createUserFolderIfNecessary(View newView, int container, CellLayout target,
             int[] targetCell, float distance, boolean external, DragObject d) {
-        if (distance > mMaxDistanceForFolderCreation) return false;
+        if (distance > target.getFolderCreationRadius(targetCell)) return false;
         View v = target.getChildAt(targetCell[0], targetCell[1]);
 
         boolean hasntMoved = false;
@@ -1925,7 +1922,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
 
     boolean addToExistingFolderIfNecessary(View newView, CellLayout target, int[] targetCell,
             float distance, DragObject d, boolean external) {
-        if (distance > mMaxDistanceForFolderCreation) return false;
+        if (distance > target.getFolderCreationRadius(targetCell)) return false;
 
         View dropOverView = target.getChildAt(targetCell[0], targetCell[1]);
         if (!mAddToExistingFolderOnDrop) return false;
@@ -1989,8 +1986,8 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
 
                 mTargetCell = findNearestArea((int) mDragViewVisualCenter[0], (int)
                         mDragViewVisualCenter[1], spanX, spanY, dropTargetLayout, mTargetCell);
-                float distance = dropTargetLayout.getDistanceFromCell(mDragViewVisualCenter[0],
-                        mDragViewVisualCenter[1], mTargetCell);
+                float distance = dropTargetLayout.getDistanceFromWorkspaceCellVisualCenter(
+                        mDragViewVisualCenter[0], mDragViewVisualCenter[1], mTargetCell);
 
                 // If the item being dropped is a shortcut and the nearest drop
                 // cell also contains a shortcut, then create a folder with the two shortcuts.
@@ -2418,7 +2415,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
 
             setCurrentDropOverCell(mTargetCell[0], mTargetCell[1]);
 
-            float targetCellDistance = mDragTargetLayout.getDistanceFromCell(
+            float targetCellDistance = mDragTargetLayout.getDistanceFromWorkspaceCellVisualCenter(
                     mDragViewVisualCenter[0], mDragViewVisualCenter[1], mTargetCell);
 
             manageFolderFeedback(targetCellDistance, d);
@@ -2431,8 +2428,9 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
                 mDragTargetLayout.visualizeDropLocation(mTargetCell[0], mTargetCell[1],
                         item.spanX, item.spanY, d);
             } else if ((mDragMode == DRAG_MODE_NONE || mDragMode == DRAG_MODE_REORDER)
-                    && !mReorderAlarm.alarmPending() && (mLastReorderX != reorderX ||
-                    mLastReorderY != reorderY)) {
+                    && !mReorderAlarm.alarmPending()
+                    && (mLastReorderX != reorderX || mLastReorderY != reorderY)
+                    && targetCellDistance < mDragTargetLayout.getReorderRadius(mTargetCell)) {
 
                 int[] resultSpan = new int[2];
                 mDragTargetLayout.performReorder((int) mDragViewVisualCenter[0],
@@ -2529,7 +2527,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
     }
 
     private void manageFolderFeedback(float distance, DragObject dragObject) {
-        if (distance > mMaxDistanceForFolderCreation) {
+        if (distance > mDragTargetLayout.getFolderCreationRadius(mTargetCell)) {
             if ((mDragMode == DRAG_MODE_ADD_TO_FOLDER
                     || mDragMode == DRAG_MODE_CREATE_FOLDER)) {
                 setDragMode(DRAG_MODE_NONE);
@@ -2674,8 +2672,8 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
             if (pendingInfo.itemType == LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT) {
                 mTargetCell = findNearestArea(touchXY[0], touchXY[1], spanX, spanY,
                         cellLayout, mTargetCell);
-                float distance = cellLayout.getDistanceFromCell(mDragViewVisualCenter[0],
-                        mDragViewVisualCenter[1], mTargetCell);
+                float distance = cellLayout.getDistanceFromWorkspaceCellVisualCenter(
+                        mDragViewVisualCenter[0], mDragViewVisualCenter[1], mTargetCell);
                 if (willCreateUserFolder(d.dragInfo, cellLayout, mTargetCell, distance, true)
                         || willAddToExistingUserFolder(
                                 d.dragInfo, cellLayout, mTargetCell, distance)) {
@@ -2774,8 +2772,8 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
             if (touchXY != null) {
                 mTargetCell = findNearestArea(touchXY[0], touchXY[1], spanX, spanY,
                         cellLayout, mTargetCell);
-                float distance = cellLayout.getDistanceFromCell(mDragViewVisualCenter[0],
-                        mDragViewVisualCenter[1], mTargetCell);
+                float distance = cellLayout.getDistanceFromWorkspaceCellVisualCenter(
+                        mDragViewVisualCenter[0], mDragViewVisualCenter[1], mTargetCell);
                 if (createUserFolderIfNecessary(view, container, cellLayout, mTargetCell, distance,
                         true, d)) {
                     return;
