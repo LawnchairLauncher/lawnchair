@@ -143,8 +143,7 @@ public class TaskbarDragLayerController {
                 // Let touches pass through us.
                 insetsInfo.setTouchableInsets(TOUCHABLE_INSETS_REGION);
             } else if (mControllers.navbarButtonsViewController.isImeVisible()) {
-                insetsInfo.setTouchableInsets(TOUCHABLE_INSETS_CONTENT);
-                insetsIsTouchableRegion = false;
+                insetsInfo.setTouchableInsets(TOUCHABLE_INSETS_REGION);
             } else if (!mControllers.uiController.isTaskbarTouchable()) {
                 // Let touches pass through us.
                 insetsInfo.setTouchableInsets(TOUCHABLE_INSETS_REGION);
