@@ -459,15 +459,36 @@ public class TaskThumbnailView extends View {
                 float availableHeight = surfaceHeight
                         - (thumbnailClipHint.top + thumbnailClipHint.bottom);
 
-                if (isRotated) {
-                    float canvasAspect = canvasWidth / (float) canvasHeight;
-                    float availableAspect = availableHeight / availableWidth;
+                float canvasAspect = canvasWidth / (float) canvasHeight;
+                float availableAspect = isRotated
+                        ? availableHeight / availableWidth
+                        : availableWidth / availableHeight;
+                boolean isAspectLargelyDifferent = Utilities.isRelativePercentDifferenceGreaterThan(
+                        canvasAspect, availableAspect, 0.1f);
+                if (isRotated && isAspectLargelyDifferent) {
                     // Do not rotate thumbnail if it would not improve fit
-                    if (Utilities.isRelativePercentDifferenceGreaterThan(canvasAspect,
-                            availableAspect, 0.1f)) {
-                        isRotated = false;
-                        isOrientationDifferent = false;
+                    isRotated = false;
+                    isOrientationDifferent = false;
+                }
+
+                if (isAspectLargelyDifferent) {
+                    // Crop letterbox insets if insets isn't already clipped
+                    if (!TaskView.clipLeft(dp)) {
+                        thumbnailClipHint.left = thumbnailData.letterboxInsets.left;
                     }
+                    if (!TaskView.clipRight(dp)) {
+                        thumbnailClipHint.right = thumbnailData.letterboxInsets.right;
+                    }
+                    if (!TaskView.clipTop(dp)) {
+                        thumbnailClipHint.top = thumbnailData.letterboxInsets.top;
+                    }
+                    if (!TaskView.clipBottom(dp)) {
+                        thumbnailClipHint.bottom = thumbnailData.letterboxInsets.bottom;
+                    }
+                    availableWidth = surfaceWidth
+                            - (thumbnailClipHint.left + thumbnailClipHint.right);
+                    availableHeight = surfaceHeight
+                            - (thumbnailClipHint.top + thumbnailClipHint.bottom);
                 }
 
                 final float targetW, targetH;
@@ -478,30 +499,25 @@ public class TaskThumbnailView extends View {
                     targetW = canvasWidth;
                     targetH = canvasHeight;
                 }
-                float canvasAspect = targetW / targetH;
+                float targetAspect = targetW / targetH;
 
                 // Update the clipHint such that
                 //   > the final clipped position has same aspect ratio as requested by canvas
-                //   > the clipped region is within the task insets if possible
-                //   > the clipped region is not scaled up when drawing. If that is not possible
-                //     while staying within the taskInsets, move outside the insets.
+                //   > first fit the width and crop the extra height
+                //   > if that will leave empty space, fit the height and crop the width instead
                 float croppedWidth = availableWidth;
-                if (croppedWidth < targetW) {
-                    croppedWidth = Math.min(targetW, surfaceWidth);
-                }
-
-                float croppedHeight = croppedWidth / canvasAspect;
+                float croppedHeight = croppedWidth / targetAspect;
                 if (croppedHeight > availableHeight) {
                     croppedHeight = availableHeight;
                     if (croppedHeight < targetH) {
                         croppedHeight = Math.min(targetH, surfaceHeight);
                     }
-                    croppedWidth = croppedHeight * canvasAspect;
+                    croppedWidth = croppedHeight * targetAspect;
 
                     // One last check in case the task aspect radio messed up something
                     if (croppedWidth > surfaceWidth) {
                         croppedWidth = surfaceWidth;
-                        croppedHeight = croppedWidth / canvasAspect;
+                        croppedHeight = croppedWidth / targetAspect;
                     }
                 }
 
