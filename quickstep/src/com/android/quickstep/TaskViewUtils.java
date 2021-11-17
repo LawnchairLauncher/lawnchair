@@ -32,7 +32,6 @@ import static com.android.launcher3.QuickstepTransitionManager.SPLIT_LAUNCH_DURA
 import static com.android.launcher3.Utilities.getDescendantCoordRelativeToAncestor;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.anim.Interpolators.TOUCH_RESPONSE_INTERPOLATOR;
-import static com.android.launcher3.anim.Interpolators.TOUCH_RESPONSE_INTERPOLATOR_ACCEL_DEACCEL;
 import static com.android.launcher3.anim.Interpolators.clampToProgress;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
 import static com.android.launcher3.statehandlers.DepthController.DEPTH;
@@ -193,7 +192,6 @@ public final class TaskViewUtils {
         boolean showAsGrid = dp.overviewShowAsGrid;
         boolean parallaxCenterAndAdjacentTask =
                 taskIndex != recentsView.getCurrentPage() && !showAsGrid;
-        float gridTranslationSecondary = recentsView.getGridTranslationSecondary(taskIndex);
         int startScroll = recentsView.getScrollOffset(taskIndex);
 
         RemoteTargetHandle[] topMostSimulators = null;
@@ -211,11 +209,9 @@ public final class TaskViewUtils {
 
                 tvsLocal.fullScreenProgress.value = 0;
                 tvsLocal.recentsViewScale.value = 1;
-                if (showAsGrid) {
-                    tvsLocal.taskSecondaryTranslation.value = gridTranslationSecondary;
-                }
                 tvsLocal.setScroll(startScroll);
                 tvsLocal.setIsGridTask(v.isGridTask());
+                tvsLocal.setGridTranslationY(v.getGridTranslationY());
 
                 // Fade in the task during the initial 20% of the animation
                 out.addFloat(targetHandle.getTransformParams(), TransformParams.TARGET_ALPHA, 0, 1,
@@ -230,10 +226,6 @@ public final class TaskViewUtils {
             out.setFloat(tvsLocal.recentsViewScale,
                     AnimatedFloat.VALUE, tvsLocal.getFullScreenScale(),
                     TOUCH_RESPONSE_INTERPOLATOR);
-            if (showAsGrid) {
-                out.setFloat(tvsLocal.taskSecondaryTranslation, AnimatedFloat.VALUE, 0,
-                        TOUCH_RESPONSE_INTERPOLATOR_ACCEL_DEACCEL);
-            }
             out.setFloat(tvsLocal.recentsViewScroll, AnimatedFloat.VALUE, 0,
                     TOUCH_RESPONSE_INTERPOLATOR);
 

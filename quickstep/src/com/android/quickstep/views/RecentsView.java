@@ -4679,20 +4679,6 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         return position != -1 ? position : bottomRowIdArray.indexOf(taskView.getTaskViewId());
     }
 
-    /**
-     * Returns how many pixels the task is offset on the currently laid out secondary axis
-     * according to {@link #mGridProgress}.
-     */
-    public float getGridTranslationSecondary(int pageIndex) {
-        TaskView taskView = getTaskViewAt(pageIndex);
-        if (taskView == null) {
-            return 0;
-        }
-
-        return mOrientationHandler.getSecondaryValue(taskView.getGridTranslationX(),
-                taskView.getGridTranslationY());
-    }
-
     public Consumer<MotionEvent> getEventDispatcher(float navbarRotation) {
         float degreesRotated;
         if (navbarRotation == 0) {
