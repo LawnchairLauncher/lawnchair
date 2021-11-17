@@ -3016,6 +3016,10 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
 
             @SuppressWarnings("WrongCall")
             private void onEnd(boolean success) {
+                // Reset task translations as they may have updated via animations in
+                // createTaskDismissAnimation
+                resetTaskVisuals();
+
                 if (success) {
                     if (shouldRemoveTask) {
                         if (dismissedTaskView.getTask() != null) {
@@ -3031,10 +3035,6 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                                     .log(LAUNCHER_TASK_DISMISS_SWIPE_UP);
                         }
                     }
-
-                    // Reset task translations as they may have updated via animations in
-                    // createTaskDismissAnimation
-                    resetTaskVisuals();
 
                     int pageToSnapTo = mCurrentPage;
                     mCurrentPageScrollDiff = 0;
