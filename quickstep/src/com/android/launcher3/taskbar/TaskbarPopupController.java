@@ -19,15 +19,25 @@ import androidx.annotation.NonNull;
 
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.R;
+import com.android.launcher3.dot.FolderDotInfo;
+import com.android.launcher3.folder.Folder;
+import com.android.launcher3.folder.FolderIcon;
+import com.android.launcher3.model.data.FolderInfo;
 import com.android.launcher3.model.data.ItemInfo;
+import com.android.launcher3.model.data.WorkspaceItemInfo;
+import com.android.launcher3.notification.NotificationListener;
 import com.android.launcher3.popup.PopupContainerWithArrow;
 import com.android.launcher3.popup.PopupDataProvider;
+import com.android.launcher3.popup.PopupLiveUpdateHandler;
 import com.android.launcher3.popup.SystemShortcut;
 import com.android.launcher3.util.ComponentKey;
+import com.android.launcher3.util.LauncherBindableItemsContainer;
+import com.android.launcher3.util.PackageUserKey;
 import com.android.launcher3.views.ActivityContext;
 
 import java.util.HashMap;
 import java.util.Objects;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -39,11 +49,25 @@ public class TaskbarPopupController {
     private static final SystemShortcut.Factory<TaskbarActivityContext>
             APP_INFO = SystemShortcut.AppInfo::new;
 
+    private final TaskbarActivityContext mContext;
     private final PopupDataProvider mPopupDataProvider;
 
-    public TaskbarPopupController() {
-        // TODO (b/198438631): add notifications dots change listener
-        mPopupDataProvider = new PopupDataProvider(packageUserKey -> {});
+    // Initialized in init.
+    private TaskbarControllers mControllers;
+
+    public TaskbarPopupController(TaskbarActivityContext context) {
+        mContext = context;
+        mPopupDataProvider = new PopupDataProvider(this::updateNotificationDots);
+    }
+
+    public void init(TaskbarControllers controllers) {
+        mControllers = controllers;
+
+        NotificationListener.addNotificationsChangedListener(mPopupDataProvider);
+    }
+
+    public void onDestroy() {
+        NotificationListener.removeNotificationsChangedListener(mPopupDataProvider);
     }
 
     @NonNull
@@ -53,6 +77,38 @@ public class TaskbarPopupController {
 
     public void setDeepShortcutMap(HashMap<ComponentKey, Integer> deepShortcutMapCopy) {
         mPopupDataProvider.setDeepShortcutMap(deepShortcutMapCopy);
+    }
+
+    private void updateNotificationDots(Predicate<PackageUserKey> updatedDots) {
+        final PackageUserKey packageUserKey = new PackageUserKey(null, null);
+        Predicate<ItemInfo> matcher = info -> !packageUserKey.updateFromItemInfo(info)
+                || updatedDots.test(packageUserKey);
+
+        LauncherBindableItemsContainer.ItemOperator op = (info, v) -> {
+            if (info instanceof WorkspaceItemInfo && v instanceof BubbleTextView) {
+                if (matcher.test(info)) {
+                    ((BubbleTextView) v).applyDotState(info, true /* animate */);
+                }
+            } else if (info instanceof FolderInfo && v instanceof FolderIcon) {
+                FolderInfo fi = (FolderInfo) info;
+                if (fi.contents.stream().anyMatch(matcher)) {
+                    FolderDotInfo folderDotInfo = new FolderDotInfo();
+                    for (WorkspaceItemInfo si : fi.contents) {
+                        folderDotInfo.addDotInfo(mPopupDataProvider.getDotInfoForItem(si));
+                    }
+                    ((FolderIcon) v).setDotInfo(folderDotInfo);
+                }
+            }
+
+            // process all the shortcuts
+            return false;
+        };
+
+        mControllers.taskbarViewController.mapOverItems(op);
+        Folder folder = Folder.getOpen(mContext);
+        if (folder != null) {
+            folder.iterateOverItems(op);
+        }
     }
 
     /**
@@ -74,6 +130,8 @@ public class TaskbarPopupController {
         final PopupContainerWithArrow<TaskbarActivityContext> container =
                 (PopupContainerWithArrow) context.getLayoutInflater().inflate(
                         R.layout.popup_container, context.getDragLayer(), false);
+        container.addOnAttachStateChangeListener(
+                new PopupLiveUpdateHandler<>(mContext, container));
         // TODO (b/198438631): configure for taskbar/context
 
         container.populateAndShow(icon,

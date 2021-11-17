@@ -56,11 +56,14 @@ import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.R;
+import com.android.launcher3.dot.DotInfo;
 import com.android.launcher3.folder.Folder;
 import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.logger.LauncherAtom;
 import com.android.launcher3.model.data.FolderInfo;
+import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
+import com.android.launcher3.popup.PopupDataProvider;
 import com.android.launcher3.touch.ItemClickHandler;
 import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.util.SettingsCache;
@@ -168,7 +171,7 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
                 new TaskbarStashController(this),
                 new TaskbarEduController(this),
                 new TaskbarAutohideSuspendController(this),
-                new TaskbarPopupController());
+                new TaskbarPopupController(this));
     }
 
     public void init(TaskbarSharedState sharedState) {
@@ -314,6 +317,17 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
             itemInfoBuilder.setContainerInfo(LauncherAtom.ContainerInfo.newBuilder()
                     .setFolder(folderBuilder));
         }
+    }
+
+    @Override
+    public DotInfo getDotInfoForItem(ItemInfo info) {
+        return getPopupDataProvider().getDotInfoForItem(info);
+    }
+
+    @NonNull
+    @Override
+    public PopupDataProvider getPopupDataProvider() {
+        return mControllers.taskbarPopupController.getPopupDataProvider();
     }
 
     /**

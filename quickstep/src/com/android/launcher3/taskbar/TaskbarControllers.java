@@ -92,6 +92,7 @@ public class TaskbarControllers {
         stashedHandleViewController.init(this);
         taskbarStashController.init(this, sharedState);
         taskbarEduController.init(this);
+        taskbarPopupController.init(this);
     }
 
     /**
@@ -107,5 +108,6 @@ public class TaskbarControllers {
         taskbarViewController.onDestroy();
         stashedHandleViewController.onDestroy();
         taskbarAutohideSuspendController.onDestroy();
+        taskbarPopupController.onDestroy();
     }
 }
