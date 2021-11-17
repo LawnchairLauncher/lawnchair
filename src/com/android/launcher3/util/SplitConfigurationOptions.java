@@ -99,6 +99,8 @@ public final class SplitConfigurationOptions {
         // This class is orientation-agnostic, so we compute both for later use
         public final float topTaskPercent;
         public final float leftTaskPercent;
+        public final float dividerWidthPercent;
+        public final float dividerHeightPercent;
         /**
          * If {@code true}, that means at the time of creation of this object, the
          * split-screened apps were vertically stacked. This is useful in scenarios like
@@ -130,6 +132,8 @@ public final class SplitConfigurationOptions {
 
             leftTaskPercent = this.leftTopBounds.width() / (float) rightBottomBounds.right;
             topTaskPercent = this.leftTopBounds.height() / (float) rightBottomBounds.bottom;
+            dividerWidthPercent = visualDividerBounds.width() / (float) rightBottomBounds.right;
+            dividerHeightPercent = visualDividerBounds.height() / (float) rightBottomBounds.bottom;
         }
     }
 
