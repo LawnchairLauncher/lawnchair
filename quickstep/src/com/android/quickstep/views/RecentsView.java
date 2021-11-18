@@ -838,6 +838,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
      * Update the thumbnail of the task.
      * @param refreshNow Refresh immediately if it's true.
      */
+    @Nullable
     public TaskView updateThumbnail(int taskId, ThumbnailData thumbnailData, boolean refreshNow) {
         TaskView taskView = getTaskViewByTaskId(taskId);
         if (taskView != null) {
@@ -1043,6 +1044,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         return getLastGridTaskView(getTopRowIdArray(), getBottomRowIdArray());
     }
 
+    @Nullable
     private TaskView getLastGridTaskView(IntArray topRowIdArray, IntArray bottomRowIdArray) {
         if (topRowIdArray.isEmpty() && bottomRowIdArray.isEmpty()) {
             return null;
@@ -3014,6 +3016,10 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
 
             @SuppressWarnings("WrongCall")
             private void onEnd(boolean success) {
+                // Reset task translations as they may have updated via animations in
+                // createTaskDismissAnimation
+                resetTaskVisuals();
+
                 if (success) {
                     if (shouldRemoveTask) {
                         if (dismissedTaskView.getTask() != null) {
@@ -3029,10 +3035,6 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                                     .log(LAUNCHER_TASK_DISMISS_SWIPE_UP);
                         }
                     }
-
-                    // Reset task translations as they may have updated via animations in
-                    // createTaskDismissAnimation
-                    resetTaskVisuals();
 
                     int pageToSnapTo = mCurrentPage;
                     mCurrentPageScrollDiff = 0;
