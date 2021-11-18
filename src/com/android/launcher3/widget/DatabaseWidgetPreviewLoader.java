@@ -98,12 +98,17 @@ public class DatabaseWidgetPreviewLoader implements WidgetPreviewLoader {
     private final IconCache mIconCache;
     private final UserCache mUserCache;
     private final CacheDb mDb;
+    private final float mPreviewBoxCornerRadius;
 
     public DatabaseWidgetPreviewLoader(Context context, IconCache iconCache) {
         mContext = context;
         mIconCache = iconCache;
         mUserCache = UserCache.INSTANCE.get(context);
         mDb = new CacheDb(context);
+        float previewCornerRadius = RoundedCornerEnforcement.computeEnforcedRadius(context);
+        mPreviewBoxCornerRadius = previewCornerRadius > 0
+                ? previewCornerRadius
+                : mContext.getResources().getDimension(R.dimen.widget_preview_corner_radius);
     }
 
     /**
@@ -412,7 +417,8 @@ public class DatabaseWidgetPreviewLoader implements WidgetPreviewLoader {
             previewHeight = drawable.getIntrinsicHeight();
         } else {
             DeviceProfile dp = launcher.getDeviceProfile();
-            Size widgetSize = WidgetSizes.getWidgetSizePx(dp, spanX, spanY);
+            Size widgetSize = WidgetSizes.getWidgetPaddedSizePx(mContext, info.provider, dp, spanX,
+                    spanY);
             previewWidth = widgetSize.getWidth();
             previewHeight = widgetSize.getHeight();
         }
@@ -521,7 +527,7 @@ public class DatabaseWidgetPreviewLoader implements WidgetPreviewLoader {
 
         ShadowGenerator.Builder builder = new ShadowGenerator.Builder(Color.WHITE);
         builder.shadowBlur = res.getDimension(R.dimen.widget_preview_shadow_blur);
-        builder.radius = res.getDimension(R.dimen.widget_preview_corner_radius);
+        builder.radius = mPreviewBoxCornerRadius;
         builder.keyShadowDistance = res.getDimension(R.dimen.widget_preview_key_shadow_distance);
 
         builder.bounds.set(builder.shadowBlur, builder.shadowBlur,

@@ -21,7 +21,7 @@
     android:orientation="vertical"
     android:paddingTop="@dimen/task_card_menu_option_vertical_padding"
     android:paddingBottom="@dimen/task_card_menu_option_vertical_padding"
-    android:background="?android:attr/colorPrimary"
+    android:background="@drawable/task_menu_item_bg"
     android:theme="@style/PopupItem" >
 
     <View

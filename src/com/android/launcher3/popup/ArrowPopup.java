@@ -16,9 +16,12 @@
 
 package com.android.launcher3.popup;
 
+import static androidx.core.content.ContextCompat.getColorStateList;
+
 import static com.android.launcher3.anim.Interpolators.ACCELERATED_EASE;
 import static com.android.launcher3.anim.Interpolators.DECELERATED_EASE;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
+import static com.android.launcher3.config.FeatureFlags.ENABLE_LOCAL_COLOR_POPUPS;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -28,6 +31,7 @@ import android.animation.ValueAnimator;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.ColorDrawable;
@@ -133,6 +137,8 @@ public abstract class ArrowPopup<T extends StatefulActivity<LauncherState>>
 
     private final String mIterateChildrenTag;
 
+    private final int[] mColors;
+
     public ArrowPopup(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         mInflater = LayoutInflater.from(context);
@@ -171,8 +177,18 @@ public abstract class ArrowPopup<T extends StatefulActivity<LauncherState>>
 
         boolean isAboveAnotherSurface = getTopOpenViewWithType(mLauncher, TYPE_FOLDER) != null
                 || mLauncher.getStateManager().getState() == LauncherState.ALL_APPS;
-        if (!isAboveAnotherSurface && Utilities.ATLEAST_S) {
+        if (!isAboveAnotherSurface && Utilities.ATLEAST_S && ENABLE_LOCAL_COLOR_POPUPS.get()) {
             setupColorExtraction();
+        }
+
+        if (isAboveAnotherSurface) {
+            mColors = new int[] {
+                    getColorStateList(context, R.color.popup_shade_first).getDefaultColor()};
+        } else {
+            mColors = new int[] {
+                    getColorStateList(context, R.color.popup_shade_first).getDefaultColor(),
+                    getColorStateList(context, R.color.popup_shade_second).getDefaultColor(),
+                    getColorStateList(context, R.color.popup_shade_third).getDefaultColor()};
         }
     }
 
@@ -220,6 +236,16 @@ public abstract class ArrowPopup<T extends StatefulActivity<LauncherState>>
      * Set the margins and radius of backgrounds after views are properly ordered.
      */
     public void assignMarginsAndBackgrounds(ViewGroup viewGroup) {
+        assignMarginsAndBackgrounds(viewGroup, Color.TRANSPARENT);
+    }
+
+    /**
+     * @param backgroundColor When Color.TRANSPARENT, we get color from {@link #mColors}.
+     *                        Otherwise, we will use this color for all child views.
+     */
+    private void assignMarginsAndBackgrounds(ViewGroup viewGroup, int backgroundColor) {
+        final boolean getColorFromColorArray = backgroundColor == Color.TRANSPARENT;
+
         int count = viewGroup.getChildCount();
         int totalVisibleShortcuts = 0;
         for (int i = 0; i < count; i++) {
@@ -229,8 +255,10 @@ public abstract class ArrowPopup<T extends StatefulActivity<LauncherState>>
             }
         }
 
+        int numVisibleChild = 0;
         int numVisibleShortcut = 0;
         View lastView = null;
+        AnimatorSet colorAnimator = new AnimatorSet();
         for (int i = 0; i < count; i++) {
             View view = viewGroup.getChildAt(i);
             if (view.getVisibility() == VISIBLE) {
@@ -242,8 +270,14 @@ public abstract class ArrowPopup<T extends StatefulActivity<LauncherState>>
                 MarginLayoutParams mlp = (MarginLayoutParams) lastView.getLayoutParams();
                 mlp.bottomMargin = 0;
 
+
+                if (getColorFromColorArray) {
+                    backgroundColor = mColors[numVisibleChild % mColors.length];
+                }
+
                 if (view instanceof ViewGroup && mIterateChildrenTag.equals(view.getTag())) {
-                    assignMarginsAndBackgrounds((ViewGroup) view);
+                    assignMarginsAndBackgrounds((ViewGroup) view, backgroundColor);
+                    numVisibleChild++;
                     continue;
                 }
 
@@ -261,8 +295,22 @@ public abstract class ArrowPopup<T extends StatefulActivity<LauncherState>>
                         numVisibleShortcut++;
                     }
                 }
+
+                if (!ENABLE_LOCAL_COLOR_POPUPS.get()) {
+                    setChildColor(view, backgroundColor, colorAnimator);
+                    // Arrow color matches the first child or the last child.
+                    if (!mIsAboveIcon && numVisibleChild == 0) {
+                        mArrowColor = backgroundColor;
+                    } else if (mIsAboveIcon) {
+                        mArrowColor = backgroundColor;
+                    }
+                }
+
+                numVisibleChild++;
             }
         }
+
+        colorAnimator.setDuration(0).start();
         measure(MeasureSpec.UNSPECIFIED, MeasureSpec.UNSPECIFIED);
     }
 
@@ -463,8 +511,8 @@ public abstract class ArrowPopup<T extends StatefulActivity<LauncherState>>
                     mArrowOffsetHorizontal, -mArrowOffsetVertical,
                     !mIsAboveIcon, mIsLeftAligned,
                     mArrowColor));
-            // TODO: Remove elevation when arrow is above as it casts a shadow on the container
-            mArrow.setElevation(mIsAboveIcon ? mElevation : 0);
+            setElevation(mElevation);
+            mArrow.setElevation(mElevation);
         }
     }
 

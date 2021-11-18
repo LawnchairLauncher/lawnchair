@@ -27,6 +27,7 @@ import android.content.res.Resources;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.graphics.drawable.ShapeDrawable;
 import android.util.FloatProperty;
 import android.view.MotionEvent;
 import android.view.Surface;
@@ -274,14 +275,18 @@ public class PortraitPagedViewHandler implements PagedOrientationHandler {
 
     @Override
     public void setTaskOptionsMenuLayoutOrientation(DeviceProfile deviceProfile,
-        LinearLayout taskMenuLayout) {
+            LinearLayout taskMenuLayout, int dividerSpacing,
+            ShapeDrawable dividerDrawable) {
         if (deviceProfile.isLandscape && !deviceProfile.isTablet) {
             // Phone landscape
             taskMenuLayout.setOrientation(LinearLayout.HORIZONTAL);
+            dividerDrawable.setIntrinsicWidth(dividerSpacing);
         } else {
             // Phone Portrait, LargeScreen Landscape/Portrait
             taskMenuLayout.setOrientation(LinearLayout.VERTICAL);
+            dividerDrawable.setIntrinsicHeight(dividerSpacing);
         }
+        taskMenuLayout.setDividerDrawable(dividerDrawable);
     }
 
     @Override

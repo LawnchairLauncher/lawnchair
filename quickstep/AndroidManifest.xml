@@ -103,16 +103,10 @@
              android:clearTaskOnLaunch="true"
              android:exported="false"/>
 
-        <!--
-        Activity for gesture nav onboarding.
-        It's protected by android.permission.REBOOT to ensure that only system apps can start it
-        (setup wizard already has this permission)
-        -->
         <activity android:name="com.android.quickstep.interaction.GestureSandboxActivity"
             android:autoRemoveFromRecents="true"
             android:excludeFromRecents="true"
             android:screenOrientation="portrait"
-            android:permission="android.permission.REBOOT"
             android:exported="true">
             <intent-filter>
                 <action android:name="com.android.quickstep.action.GESTURE_SANDBOX"/>
@@ -130,6 +124,8 @@
             android:excludeFromRecents="true"
             android:screenOrientation="portrait"
             android:permission="android.permission.REBOOT"
+            android:theme="@style/AllSetTheme"
+            android:label="@string/allset_title"
             android:exported="true">
             <intent-filter>
                 <action android:name="com.android.quickstep.action.GESTURE_ONBOARDING_ALL_SET"/>

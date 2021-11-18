@@ -36,7 +36,7 @@ public class OnboardingPrefs<T extends Launcher> {
     public static final String HOME_BOUNCE_COUNT = "launcher.home_bounce_count";
     public static final String HOTSEAT_DISCOVERY_TIP_COUNT = "launcher.hotseat_discovery_tip_count";
     public static final String HOTSEAT_LONGPRESS_TIP_SEEN = "launcher.hotseat_longpress_tip_seen";
-    public static final String SEARCH_EDU_SEEN = "launcher.search_edu";
+    public static final String SEARCH_EDU_SEEN = "launcher.search_edu_seen";
     public static final String SEARCH_SNACKBAR_COUNT = "launcher.keyboard_snackbar_count";
 
     /**

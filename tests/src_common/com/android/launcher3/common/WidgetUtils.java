@@ -56,7 +56,9 @@ public class WidgetUtils {
         item.container = LauncherSettings.Favorites.CONTAINER_DESKTOP;
 
         if (bindWidget) {
-            PendingAddWidgetInfo pendingInfo = new PendingAddWidgetInfo(info);
+            PendingAddWidgetInfo pendingInfo =
+                    new PendingAddWidgetInfo(
+                            info, LauncherSettings.Favorites.CONTAINER_WIDGETS_TRAY);
             pendingInfo.spanX = item.spanX;
             pendingInfo.spanY = item.spanY;
             pendingInfo.minSpanX = item.minSpanX;

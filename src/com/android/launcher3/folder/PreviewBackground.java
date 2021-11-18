@@ -16,6 +16,7 @@
 
 package com.android.launcher3.folder;
 
+import static com.android.launcher3.folder.ClippedFolderIconLayoutRule.ICON_OVERLAP_FACTOR;
 import static com.android.launcher3.graphics.IconShape.getShape;
 import static com.android.launcher3.icons.GraphicsUtils.setColorAlphaBound;
 
@@ -186,7 +187,7 @@ public class PreviewBackground extends CellLayout.DelegatedCellDrawing {
         outBounds.set(left, top, right, bottom);
     }
 
-    int getRadius() {
+    public int getRadius() {
         return previewSize / 2;
     }
 
@@ -348,7 +349,12 @@ public class PreviewBackground extends CellLayout.DelegatedCellDrawing {
 
     public Path getClipPath() {
         mPath.reset();
-        getShape().addToPath(mPath, getOffsetX(), getOffsetY(), getScaledRadius());
+        float radius = getScaledRadius() * ICON_OVERLAP_FACTOR;
+        // Find the difference in radius so that the clip path remains centered.
+        float radiusDifference = radius - getRadius();
+        float offsetX = basePreviewOffsetX - radiusDifference;
+        float offsetY = basePreviewOffsetY - radiusDifference;
+        getShape().addToPath(mPath, offsetX, offsetY, radius);
         return mPath;
     }
 

@@ -15,6 +15,10 @@
  */
 package com.android.launcher3.tapl;
 
+import static com.android.launcher3.testing.TestProtocol.SEQUENCE_MAIN;
+import static com.android.launcher3.testing.TestProtocol.SEQUENCE_PILFER;
+import static com.android.launcher3.testing.TestProtocol.SEQUENCE_TIS;
+
 import android.os.SystemClock;
 
 import com.android.launcher3.testing.TestProtocol;
@@ -87,6 +91,24 @@ public class LogEventChecker {
         final ListMap<String> actualEvents = finishSync(waitForExpectedCountMs);
         if (actualEvents == null) return "null event sequences because launcher likely died";
 
+        final String lowLevelDiags = lowLevelMismatchDiagnostics(actualEvents);
+        // If we have a sequence mismatch for a successful gesture, we want to provide all low-level
+        // details.
+        if (successfulGesture) {
+            return lowLevelDiags;
+        }
+
+        final String sequenceMismatchInEnglish = highLevelMismatchDiagnostics(actualEvents);
+
+        if (sequenceMismatchInEnglish != null) {
+            LauncherInstrumentation.log(lowLevelDiags);
+            return "Hint: " + sequenceMismatchInEnglish;
+        } else {
+            return lowLevelDiags;
+        }
+    }
+
+    private String lowLevelMismatchDiagnostics(ListMap<String> actualEvents) {
         final StringBuilder sb = new StringBuilder();
         boolean hasMismatches = false;
         for (Map.Entry<String, List<Pattern>> expectedEvents : mExpectedEvents.entrySet()) {
@@ -116,6 +138,42 @@ public class LogEventChecker {
         }
 
         return hasMismatches ? "Mismatching events: " + sb.toString() : null;
+    }
+
+    private String highLevelMismatchDiagnostics(ListMap<String> actualEvents) {
+        if (!mExpectedEvents.getNonNull(SEQUENCE_TIS).isEmpty()
+                && actualEvents.getNonNull(SEQUENCE_TIS).isEmpty()) {
+            return "TouchInteractionService didn't receive any of the touch events sent by the "
+                    + "test";
+        }
+        if (getMismatchPosition(mExpectedEvents.getNonNull(SEQUENCE_TIS),
+                actualEvents.getNonNull(SEQUENCE_TIS)) != -1) {
+            // If TIS has a mismatch that we can't convert to high-level diags, don't convert
+            // other sequences either.
+            return null;
+        }
+
+        if (mExpectedEvents.getNonNull(SEQUENCE_PILFER).size() == 1
+                && actualEvents.getNonNull(SEQUENCE_PILFER).isEmpty()) {
+            return "Launcher didn't detect the navigation gesture sent by the test";
+        }
+        if (mExpectedEvents.getNonNull(SEQUENCE_PILFER).isEmpty()
+                && actualEvents.getNonNull(SEQUENCE_PILFER).size() == 1) {
+            return "Launcher detected a navigation gesture, but the test didn't send one";
+        }
+        if (getMismatchPosition(mExpectedEvents.getNonNull(SEQUENCE_PILFER),
+                actualEvents.getNonNull(SEQUENCE_PILFER)) != -1) {
+            // If Pilfer has a mismatch that we can't convert to high-level diags, don't analyze
+            // other sequences.
+            return null;
+        }
+
+        if (!mExpectedEvents.getNonNull(SEQUENCE_MAIN).isEmpty()
+                && actualEvents.getNonNull(SEQUENCE_MAIN).isEmpty()) {
+            return "None of the touch or keyboard events sent by the test was received by "
+                    + "Launcher's main thread";
+        }
+        return null;
     }
 
     // If the list of actual events matches the list of expected events, returns -1, otherwise

@@ -36,11 +36,9 @@ public class SandboxModeTutorialController extends SwipeUpGestureTutorialControl
                 showRippleEffect(null);
                 showFeedback(R.string.sandbox_mode_back_gesture_feedback_successful);
                 break;
-            case BACK_CANCELLED_FROM_RIGHT:
-                showFeedback(R.string.back_gesture_feedback_cancelled_right_edge);
-                break;
             case BACK_CANCELLED_FROM_LEFT:
-                showFeedback(R.string.back_gesture_feedback_cancelled_left_edge);
+            case BACK_CANCELLED_FROM_RIGHT:
+                showFeedback(R.string.back_gesture_feedback_cancelled);
                 break;
             case BACK_NOT_STARTED_TOO_FAR_FROM_EDGE:
                 showFeedback(R.string.sandbox_mode_back_gesture_feedback_swipe_too_far_from_edge);

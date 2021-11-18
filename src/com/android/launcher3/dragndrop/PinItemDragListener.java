@@ -17,6 +17,8 @@
 package com.android.launcher3.dragndrop;
 
 
+import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_PIN_WIDGETS;
+
 import android.annotation.TargetApi;
 import android.appwidget.AppWidgetManager;
 import android.content.pm.LauncherApps.PinItemRequest;
@@ -84,7 +86,7 @@ public class PinItemDragListener extends BaseItemDragListener {
                             mLauncher, mRequest.getAppWidgetProviderInfo(mLauncher));
             final PinWidgetFlowHandler flowHandler =
                     new PinWidgetFlowHandler(providerInfo, mRequest);
-            item = new PendingAddWidgetInfo(providerInfo) {
+            item = new PendingAddWidgetInfo(providerInfo, CONTAINER_PIN_WIDGETS) {
                 @Override
                 public WidgetAddFlowHandler getHandler() {
                     return flowHandler;

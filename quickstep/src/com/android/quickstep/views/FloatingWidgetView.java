@@ -152,6 +152,7 @@ public class FloatingWidgetView extends FrameLayout implements AnimatorListener,
             RectF widgetBackgroundPosition, Size windowSize, float windowCornerRadius,
             boolean appTargetIsTranslucent, int fallbackBackgroundColor) {
         mAppWidgetView = originalView;
+        // Deferrals must begin before GhostView is created. See b/190818220
         mAppWidgetView.beginDeferringUpdates();
         mBackgroundPosition = widgetBackgroundPosition;
         mAppTargetIsTranslucent = appTargetIsTranslucent;
@@ -240,6 +241,7 @@ public class FloatingWidgetView extends FrameLayout implements AnimatorListener,
         ((ViewGroup) dragLayer.getParent()).removeView(this);
         dragLayer.removeView(mListenerView);
         mBackgroundView.finish();
+        // Removing GhostView must occur before ending deferrals. See b/190818220
         mAppWidgetView.endDeferringUpdates();
         recycle();
         mLauncher.getViewCache().recycleView(R.layout.floating_widget_view, this);

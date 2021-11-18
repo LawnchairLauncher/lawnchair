@@ -107,7 +107,7 @@ public class FallbackRecentsTest {
 
         mOrderSensitiveRules = RuleChain
                 .outerRule(new NavigationModeSwitchRule(mLauncher))
-                .around(new FailureWatcher(mDevice));
+                .around(new FailureWatcher(mDevice, mLauncher));
 
         mOtherLauncherActivity = context.getPackageManager().queryIntentActivities(
                 getHomeIntentInPackage(context),

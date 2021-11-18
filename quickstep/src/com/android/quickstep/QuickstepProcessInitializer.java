@@ -15,8 +15,6 @@
  */
 package com.android.quickstep;
 
-import static com.android.quickstep.util.NavigationModeFeatureFlag.LIVE_TILE;
-
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.pm.PackageManager;
@@ -60,8 +58,6 @@ public class QuickstepProcessInitializer extends MainProcessInitializer {
         }
 
         super.init(context);
-
-        LIVE_TILE.initialize(context);
 
         // Elevate GPU priority for Quickstep and Remote animations.
         ThreadedRendererCompat.setContextPriority(

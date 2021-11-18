@@ -92,7 +92,8 @@
         android:layout_marginStart="@dimen/gesture_tutorial_feedback_margin_start_end"
         android:layout_marginEnd="@dimen/gesture_tutorial_feedback_margin_start_end"
         android:layout_marginTop="24dp"
-        android:padding="24dp"
+        android:paddingTop="24dp"
+        android:paddingBottom="16dp"
         android:background="@drawable/bg_sandbox_feedback">
 
         <TextView
@@ -100,6 +101,8 @@
             style="@style/TextAppearance.GestureTutorial.Feedback.Title"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginEnd="24dp"
 
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -111,6 +114,8 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
+            android:layout_marginStart="24dp"
+            android:layout_marginEnd="24dp"
 
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -131,31 +136,36 @@
             style="@style/TextAppearance.GestureTutorial.ButtonLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:paddingTop="8dp"
-            android:paddingBottom="8dp"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp"
-            android:text="@string/gesture_tutorial_action_button_label_next"
+            android:layout_marginTop="32dp"
+            android:layout_marginEnd="16dp"
+            android:paddingTop="16dp"
+            android:paddingBottom="16dp"
+            android:paddingStart="26dp"
+            android:paddingEnd="26dp"
+            android:text="@string/gesture_tutorial_action_button_label"
             android:background="@drawable/gesture_tutorial_action_button_background"
             android:stateListAnimator="@null"
             android:visibility="invisible"
 
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/gesture_tutorial_fragment_feedback_subtitle"/>
+            app:layout_constraintTop_toBottomOf="@id/gesture_tutorial_fragment_feedback_subtitle"
+            app:layout_constraintEnd_toEndOf="parent"/>
 
         <Button
             style="@style/TextAppearance.GestureTutorial.Feedback.Subtext"
             android:id="@+id/gesture_tutorial_fragment_close_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:layout_marginEnd="16dp"
+            android:paddingTop="16dp"
+            android:paddingBottom="16dp"
+            android:paddingStart="26dp"
+            android:paddingEnd="26dp"
             android:text="@string/gesture_tutorial_action_button_label_skip"
             android:background="?android:attr/selectableItemBackgroundBorderless"
 
-            app:layout_constraintTop_toTopOf="@id/gesture_tutorial_fragment_action_button"
-            app:layout_constraintBottom_toBottomOf="@id/gesture_tutorial_fragment_action_button"
-            app:layout_constraintStart_toStartOf="@id/gesture_tutorial_fragment_action_button"
-            app:layout_constraintEnd_toEndOf="@id/gesture_tutorial_fragment_action_button"/>
+            app:layout_constraintTop_toBottomOf="@id/gesture_tutorial_fragment_feedback_subtitle"
+            app:layout_constraintStart_toStartOf="parent"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

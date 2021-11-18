@@ -16,6 +16,7 @@
 
 package com.android.launcher3.dragndrop;
 
+import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_PIN_WIDGETS;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ADD_EXTERNAL_ITEM_BACK;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ADD_EXTERNAL_ITEM_CANCELLED;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ADD_EXTERNAL_ITEM_DRAGGED;
@@ -26,10 +27,12 @@ import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
 import android.annotation.TargetApi;
 import android.app.ActivityOptions;
 import android.appwidget.AppWidgetManager;
+import android.appwidget.AppWidgetProviderInfo;
 import android.content.ClipData;
 import android.content.ClipDescription;
 import android.content.Intent;
 import android.content.pm.LauncherApps.PinItemRequest;
+import android.content.pm.ShortcutInfo;
 import android.content.res.Configuration;
 import android.graphics.Canvas;
 import android.graphics.Point;
@@ -38,12 +41,15 @@ import android.graphics.Rect;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.DragShadowBuilder;
 import android.view.View.OnLongClickListener;
 import android.view.View.OnTouchListener;
 import android.view.WindowManager;
+import android.view.accessibility.AccessibilityEvent;
+import android.view.accessibility.AccessibilityManager;
 import android.widget.TextView;
 
 import com.android.launcher3.BaseActivity;
@@ -91,6 +97,7 @@ public class AddItemActivity extends BaseActivity
     private InvariantDeviceProfile mIdp;
     private BaseDragLayer<AddItemActivity> mDragLayer;
     private AddItemWidgetsBottomSheet mSlideInView;
+    private AccessibilityManager mAccessibilityManager;
 
     private WidgetCell mWidgetCell;
 
@@ -126,6 +133,8 @@ public class AddItemActivity extends BaseActivity
         mDragLayer = findViewById(R.id.add_item_drag_layer);
         mDragLayer.recreateControllers();
         mWidgetCell = findViewById(R.id.widget_cell);
+        mAccessibilityManager =
+                getApplicationContext().getSystemService(AccessibilityManager.class);
 
         if (mRequest.getRequestType() == PinItemRequest.REQUEST_TYPE_SHORTCUT) {
             setupShortcut();
@@ -249,7 +258,8 @@ public class AddItemActivity extends BaseActivity
         mAppWidgetManager = new WidgetManagerHelper(this);
         mAppWidgetHost = new LauncherAppWidgetHost(this);
 
-        PendingAddWidgetInfo pendingInfo = new PendingAddWidgetInfo(widgetInfo);
+        PendingAddWidgetInfo pendingInfo =
+                new PendingAddWidgetInfo(widgetInfo, CONTAINER_PIN_WIDGETS);
         pendingInfo.spanX = Math.min(mIdp.numColumns, widgetInfo.spanX);
         pendingInfo.spanY = Math.min(mIdp.numRows, widgetInfo.spanY);
         mWidgetOptions = pendingInfo.getDefaultSizeOptions(this);
@@ -268,7 +278,7 @@ public class AddItemActivity extends BaseActivity
 
             @Override
             protected void onPostExecute(WidgetItem item) {
-                mWidgetCell.setPreviewSize(item.spanX, item.spanY);
+                mWidgetCell.setPreviewSize(item);
                 mWidgetCell.applyFromCellItem(item, mApp.getWidgetCache());
                 mWidgetCell.ensurePreview();
             }
@@ -289,17 +299,25 @@ public class AddItemActivity extends BaseActivity
      */
     public void onPlaceAutomaticallyClick(View v) {
         if (mRequest.getRequestType() == PinItemRequest.REQUEST_TYPE_SHORTCUT) {
-            ItemInstallQueue.INSTANCE.get(this).queueItem(mRequest.getShortcutInfo());
+            ShortcutInfo shortcutInfo = mRequest.getShortcutInfo();
+            ItemInstallQueue.INSTANCE.get(this).queueItem(shortcutInfo);
             logCommand(LAUNCHER_ADD_EXTERNAL_ITEM_PLACED_AUTOMATICALLY);
             mRequest.accept();
+            CharSequence label = shortcutInfo.getLongLabel();
+            if (TextUtils.isEmpty(label)) {
+                label = shortcutInfo.getShortLabel();
+            }
+            sendWidgetAddedToScreenAccessibilityEvent(label.toString());
             mSlideInView.close(/* animate= */ true);
             return;
         }
 
         mPendingBindWidgetId = mAppWidgetHost.allocateAppWidgetId();
+        AppWidgetProviderInfo widgetProviderInfo = mRequest.getAppWidgetProviderInfo(this);
         boolean success = mAppWidgetManager.bindAppWidgetIdIfAllowed(
-                mPendingBindWidgetId, mRequest.getAppWidgetProviderInfo(this), mWidgetOptions);
+                mPendingBindWidgetId, widgetProviderInfo, mWidgetOptions);
         if (success) {
+            sendWidgetAddedToScreenAccessibilityEvent(widgetProviderInfo.label);
             acceptWidget(mPendingBindWidgetId);
             return;
         }
@@ -371,6 +389,17 @@ public class AddItemActivity extends BaseActivity
         getSystemUiController().updateUiState(
                 SystemUiController.UI_STATE_BASE_WINDOW,
                 isSheetDark ? SystemUiController.FLAG_DARK_NAV : SystemUiController.FLAG_LIGHT_NAV);
+    }
+
+    private void sendWidgetAddedToScreenAccessibilityEvent(String widgetName) {
+        if (mAccessibilityManager.isEnabled()) {
+            AccessibilityEvent event =
+                    AccessibilityEvent.obtain(AccessibilityEvent.TYPE_ANNOUNCEMENT);
+            event.setContentDescription(
+                    getApplicationContext().getResources().getString(
+                            R.string.added_to_home_screen_accessibility_text, widgetName));
+            mAccessibilityManager.sendAccessibilityEvent(event);
+        }
     }
 
     private void logCommand(StatsLogManager.EventEnum command) {

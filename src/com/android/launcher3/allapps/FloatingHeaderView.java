@@ -154,6 +154,14 @@ public class FloatingHeaderView extends LinearLayout implements
         PluginManagerWrapper.INSTANCE.get(getContext()).removePluginListener(this);
     }
 
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        if (mMainRV != null) {
+            mTabLayout.getLayoutParams().width = mMainRV.getTabWidth();
+        }
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+    }
+
     private void recreateAllRowsArray() {
         int pluginCount = mPluginRows.size();
         if (pluginCount == 0) {
@@ -224,8 +232,6 @@ public class FloatingHeaderView extends LinearLayout implements
 
         mTabsHidden = tabsHidden;
         mTabLayout.setVisibility(tabsHidden ? View.GONE : View.VISIBLE);
-        mTabLayout.getLayoutParams().width =
-                mAH[AllAppsContainerView.AdapterHolder.MAIN].recyclerView.getTabWidth();
         mMainRV = setupRV(mMainRV, mAH[AllAppsContainerView.AdapterHolder.MAIN].recyclerView);
         mWorkRV = setupRV(mWorkRV, mAH[AllAppsContainerView.AdapterHolder.WORK].recyclerView);
         mParent = (ViewGroup) mMainRV.getParent();

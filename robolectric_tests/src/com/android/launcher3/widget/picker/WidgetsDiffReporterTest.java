@@ -58,7 +58,7 @@ import java.util.List;
 
 @RunWith(RobolectricTestRunner.class)
 public final class WidgetsDiffReporterTest {
-    private static final String TEST_PACKAGE_PREFIX = "com.google.test";
+    private static final String TEST_PACKAGE_PREFIX = "com.android.test";
     private static final WidgetListBaseRowEntryComparator COMPARATOR =
             new WidgetListBaseRowEntryComparator();
 
@@ -237,6 +237,30 @@ public final class WidgetsDiffReporterTest {
 
         // THEN notify "A" has been changed.
         verify(mAdapter).notifyItemChanged(/* position= */ 0);
+        // THEN the current list contains all elements from the new list.
+        assertThat(currentList).containsExactlyElementsIn(newList);
+    }
+
+    @Test
+    public void headersContentsMix_contentMaxSpanSizeModified_shouldInvokeCorrectCallbacks() {
+        // GIVEN the current list has app headers [A, B, E content].
+        ArrayList<WidgetsListBaseEntry> currentList = new ArrayList<>(
+                List.of(mHeaderA, mHeaderB, mContentE));
+        // GIVEN the new list has max span size in "E content" modified.
+        List<WidgetsListBaseEntry> newList = List.of(
+                mHeaderA,
+                mHeaderB,
+                new WidgetsListContentEntry(
+                        mContentE.mPkgItem,
+                        mContentE.mTitleSectionName,
+                        mContentE.mWidgets,
+                        mContentE.getMaxSpanSizeInCells() + 1));
+
+        // WHEN computing the list difference.
+        mWidgetsDiffReporter.process(currentList, newList, COMPARATOR);
+
+        // THEN notify "E content" has been changed.
+        verify(mAdapter).notifyItemChanged(/* position= */ 2);
         // THEN the current list contains all elements from the new list.
         assertThat(currentList).containsExactlyElementsIn(newList);
     }
