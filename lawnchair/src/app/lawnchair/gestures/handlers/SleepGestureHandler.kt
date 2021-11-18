@@ -32,7 +32,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -42,11 +41,9 @@ import app.lawnchair.gestures.GestureHandler
 import app.lawnchair.lawnchairApp
 import app.lawnchair.root.RootHelperManager
 import app.lawnchair.ui.AlertBottomSheetContent
-import app.lawnchair.ui.preferences.components.BottomSheetState
-import app.lawnchair.views.showBottomSheet
+import app.lawnchair.views.ComposeBottomSheet
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
-import kotlinx.coroutines.launch
 
 class SleepGestureHandler(context: Context) : GestureHandler(context) {
 
@@ -87,12 +84,12 @@ class SleepMethodPieAccessibility(context: Context) : SleepGestureHandler.SleepM
         if (!app.isAccessibilityServiceBound()) {
             val intent = Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            launcher.showBottomSheet { state ->
+            ComposeBottomSheet.show(launcher) {
                 ServiceWarningDialog(
                     title = R.string.dt2s_a11y_hint_title,
                     description = R.string.dt2s_a11y_hint,
                     settingsIntent = intent,
-                    sheetState = state
+                    handleClose = { close(true) }
                 )
             }
             return
@@ -114,12 +111,12 @@ class SleepMethodDeviceAdmin(context: Context) : SleepGestureHandler.SleepMethod
                 ComponentName(context, SleepDeviceAdmin::class.java)
             )
             intent.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION, launcher.getString(R.string.dt2s_admin_hint))
-            launcher.showBottomSheet { state ->
+            ComposeBottomSheet.show(launcher) {
                 ServiceWarningDialog(
                     title = R.string.dt2s_admin_hint_title,
                     description = R.string.dt2s_admin_hint,
                     settingsIntent = intent,
-                    sheetState = state
+                    handleClose = { close(true) }
                 )
             }
             return
@@ -141,18 +138,15 @@ fun ServiceWarningDialog(
     title: Int,
     description: Int,
     settingsIntent: Intent,
-    sheetState: BottomSheetState
+    handleClose: () -> Unit
 ) {
     val context = LocalContext.current
-    val scope = rememberCoroutineScope()
     AlertBottomSheetContent(
         title = { Text(text = stringResource(id = title)) },
         text = { Text(text = stringResource(id = description)) },
         buttons = {
             OutlinedButton(
-                onClick = {
-                    scope.launch { sheetState.hide() }
-                }
+                onClick = handleClose
             ) {
                 Text(text = stringResource(id = android.R.string.cancel))
             }
@@ -160,7 +154,7 @@ fun ServiceWarningDialog(
             Button(
                 onClick = {
                     context.startActivity(settingsIntent)
-                    scope.launch { sheetState.hide() }
+                    handleClose()
                 }
             ) {
                 Text(text = stringResource(id = R.string.dt2s_warning_open_settings))

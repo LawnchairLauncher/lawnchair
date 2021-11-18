@@ -7,7 +7,7 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.ui.unit.dp
 import app.lawnchair.LawnchairLauncher
 import app.lawnchair.override.CustomizeAppDialog
-import app.lawnchair.views.showBottomSheet
+import app.lawnchair.views.ComposeBottomSheet
 import com.android.launcher3.AbstractFloatingView
 import com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_APPLICATION
 import com.android.launcher3.R
@@ -43,7 +43,8 @@ class LawnchairShortcut {
             val defaultTitle = launcherActivityInfo.label.toString()
 
             AbstractFloatingView.closeAllOpenViews(launcher)
-            launcher.showBottomSheet(
+            ComposeBottomSheet.show(
+                context = launcher,
                 contentPaddings = PaddingValues(bottom = 64.dp)
             ) {
                 CustomizeAppDialog(
