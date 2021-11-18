@@ -152,7 +152,7 @@ public interface PagedOrientationHandler {
     void setIconAndSnapshotParams(View iconView, int taskIconMargin, int taskIconHeight,
             FrameLayout.LayoutParams snapshotParams, boolean isRtl);
     void setSplitIconParams(View primaryIconView, View secondaryIconView,
-            int taskIconHeight, Rect primarySnapshotBounds, Rect secondarySnapshotBounds,
+            int taskIconHeight, int primarySnapshotWidth, int primarySnapshotHeight,
             boolean isRtl, DeviceProfile deviceProfile, StagedSplitBounds splitConfig);
 
     /*

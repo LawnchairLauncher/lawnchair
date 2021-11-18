@@ -4,7 +4,6 @@ import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITIO
 import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITION_TOP_OR_LEFT;
 
 import android.content.Context;
-import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 
@@ -50,8 +49,6 @@ public class GroupedTaskView extends TaskView {
     private final float[] mIcon2CenterCoords = new float[2];
     private TransformingTouchDelegate mIcon2TouchDelegate;
     @Nullable private StagedSplitBounds mSplitBoundsConfig;
-    private final Rect mPrimaryTempRect = new Rect();
-    private final Rect mSecondaryTempRect = new Rect();
 
     public GroupedTaskView(Context context) {
         super(context);
@@ -239,10 +236,8 @@ public class GroupedTaskView extends TaskView {
         int taskIconHeight = deviceProfile.overviewTaskIconSizePx;
         boolean isRtl = getLayoutDirection() == LAYOUT_DIRECTION_RTL;
 
-        mSnapshotView.getBoundsOnScreen(mPrimaryTempRect);
-        mSnapshotView2.getBoundsOnScreen(mSecondaryTempRect);
         getPagedOrientationHandler().setSplitIconParams(mIconView, mIconView2,
-                taskIconHeight, mPrimaryTempRect, mSecondaryTempRect,
+                taskIconHeight, mSnapshotView.getWidth(), mSnapshotView.getHeight(),
                 isRtl, deviceProfile, mSplitBoundsConfig);
     }
 

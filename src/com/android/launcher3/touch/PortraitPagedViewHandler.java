@@ -523,7 +523,7 @@ public class PortraitPagedViewHandler implements PagedOrientationHandler {
 
     @Override
     public void setSplitIconParams(View primaryIconView, View secondaryIconView,
-            int taskIconHeight, Rect primarySnapshotBounds, Rect secondarySnapshotBounds,
+            int taskIconHeight, int primarySnapshotWidth, int primarySnapshotHeight,
             boolean isRtl, DeviceProfile deviceProfile, StagedSplitBounds splitConfig) {
         FrameLayout.LayoutParams primaryIconParams =
                 (FrameLayout.LayoutParams) primaryIconView.getLayoutParams();
@@ -533,15 +533,12 @@ public class PortraitPagedViewHandler implements PagedOrientationHandler {
                 splitConfig.visualDividerBounds.height() :
                 splitConfig.visualDividerBounds.width());
 
-        int primaryWidth = primarySnapshotBounds.width();
         if (deviceProfile.isLandscape) {
             primaryIconParams.gravity = TOP | START;
-            primaryIconView.setTranslationX(primaryWidth - primaryIconView.getWidth());
+            primaryIconView.setTranslationX(primarySnapshotWidth - primaryIconView.getWidth());
             primaryIconView.setTranslationY(0);
-
             secondaryIconParams.gravity = TOP | START;
-            secondaryIconView.setTranslationX(primaryWidth + dividerBar);
-            secondaryIconView.setTranslationY(0);
+            secondaryIconView.setTranslationX(primarySnapshotWidth + dividerBar);
         } else {
             primaryIconParams.gravity = TOP | CENTER_HORIZONTAL;
             primaryIconView.setTranslationX(-(primaryIconView.getWidth()) / 2f);
@@ -549,8 +546,8 @@ public class PortraitPagedViewHandler implements PagedOrientationHandler {
 
             secondaryIconParams.gravity = TOP | CENTER_HORIZONTAL;
             secondaryIconView.setTranslationX(secondaryIconView.getWidth() / 2f);
-            secondaryIconView.setTranslationY(0);
         }
+        secondaryIconView.setTranslationY(0);
         primaryIconView.setLayoutParams(primaryIconParams);
         secondaryIconView.setLayoutParams(secondaryIconParams);
     }

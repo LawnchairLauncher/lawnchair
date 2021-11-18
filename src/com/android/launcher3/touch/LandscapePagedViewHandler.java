@@ -429,7 +429,7 @@ public class LandscapePagedViewHandler implements PagedOrientationHandler {
 
     @Override
     public void setSplitIconParams(View primaryIconView, View secondaryIconView,
-            int taskIconHeight, Rect primarySnapshotBounds, Rect secondarySnapshotBounds,
+            int taskIconHeight, int primarySnapshotWidth, int primarySnapshotHeight,
             boolean isRtl, DeviceProfile deviceProfile, StagedSplitBounds splitConfig) {
         FrameLayout.LayoutParams primaryIconParams =
                 (FrameLayout.LayoutParams) primaryIconView.getLayoutParams();
@@ -439,13 +439,12 @@ public class LandscapePagedViewHandler implements PagedOrientationHandler {
                 splitConfig.visualDividerBounds.height() :
                 splitConfig.visualDividerBounds.width());
 
-        int primaryHeight = primarySnapshotBounds.height();
         primaryIconParams.gravity = (isRtl ? START : END) | TOP;
-        primaryIconView.setTranslationY(primaryHeight - primaryIconView.getHeight() / 2f);
+        primaryIconView.setTranslationY(primarySnapshotHeight - primaryIconView.getHeight() / 2f);
         primaryIconView.setTranslationX(0);
 
         secondaryIconParams.gravity = (isRtl ? START : END) | TOP;
-        secondaryIconView.setTranslationY(primaryHeight + taskIconHeight + dividerBar);
+        secondaryIconView.setTranslationY(primarySnapshotHeight + taskIconHeight + dividerBar);
         secondaryIconView.setTranslationX(0);
         primaryIconView.setLayoutParams(primaryIconParams);
         secondaryIconView.setLayoutParams(secondaryIconParams);
