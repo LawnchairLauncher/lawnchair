@@ -33,6 +33,14 @@
             android:layout_height="match_parent"
             android:importantForAccessibility="no"
             android:layout_gravity="fill"/>
+
+        <ImageView
+            android:id="@+id/widget_badge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:importantForAccessibility="no"
+            android:layout_gravity="end|bottom"
+            android:layout_margin="@dimen/profile_badge_margin"/>
     </com.android.launcher3.widget.WidgetCellPreview>
 
     <!-- The name of the widget. -->
