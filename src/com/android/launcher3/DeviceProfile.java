@@ -251,8 +251,7 @@ public class DeviceProfile {
         // Tablet UI does not support emulated landscape.
         isTablet = allowRotation && info.isTablet(windowBounds);
         isPhone = !isTablet;
-        isTwoPanels = isTablet && useTwoPanels
-                && (isLandscape || FeatureFlags.ENABLE_TWO_PANEL_HOME_IN_PORTRAIT.get());
+        isTwoPanels = isTablet && useTwoPanels;
 
         aspectRatio = ((float) Math.max(widthPx, heightPx)) / Math.min(widthPx, heightPx);
         boolean isTallDevice = Float.compare(aspectRatio, TALL_DEVICE_ASPECT_RATIO_THRESHOLD) >= 0;

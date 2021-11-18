@@ -19,6 +19,8 @@ package com.android.launcher3;
 import static android.animation.ValueAnimator.areAnimatorsEnabled;
 
 import static com.android.launcher3.anim.Interpolators.DEACCEL_1_5;
+import static com.android.launcher3.dragndrop.DraggableView.DRAGGABLE_ICON;
+import static com.android.launcher3.icons.IconNormalizer.ICON_VISIBLE_AREA_FACTOR;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -37,7 +39,6 @@ import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.RectF;
-import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Parcelable;
 import android.util.ArrayMap;
@@ -61,6 +62,7 @@ import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.accessibility.DragAndDropAccessibilityDelegate;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.config.FeatureFlags;
+import com.android.launcher3.dragndrop.DraggableView;
 import com.android.launcher3.folder.PreviewBackground;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.util.CellAndSpan;
@@ -442,18 +444,43 @@ public class CellLayout extends ViewGroup {
         }
 
         if (DEBUG_VISUALIZE_OCCUPIED) {
-            int[] pt = new int[2];
-            ColorDrawable cd = new ColorDrawable(Color.RED);
-            cd.setBounds(0, 0,  mCellWidth, mCellHeight);
-            for (int i = 0; i < mCountX; i++) {
-                for (int j = 0; j < mCountY; j++) {
-                    if (mOccupied.cells[i][j]) {
-                        cellToPoint(i, j, pt);
-                        canvas.save();
-                        canvas.translate(pt[0], pt[1]);
-                        cd.draw(canvas);
-                        canvas.restore();
+            Rect cellBounds = new Rect();
+            // Will contain the bounds of the cell including spacing between cells.
+            Rect cellBoundsWithSpacing = new Rect();
+            int[] targetCell = new int[2];
+            int[] cellCenter = new int[2];
+            Paint debugPaint = new Paint();
+            debugPaint.setStrokeWidth(Utilities.dpToPx(1));
+            for (int x = 0; x < mCountX; x++) {
+                for (int y = 0; y < mCountY; y++) {
+                    if (!mOccupied.cells[x][y]) {
+                        continue;
                     }
+                    targetCell[0] = x;
+                    targetCell[1] = y;
+
+                    boolean canCreateFolder = canCreateFolder(getChildAt(x, y));
+                    cellToRect(x, y, 1, 1, cellBounds);
+                    cellBoundsWithSpacing.set(cellBounds);
+                    cellBoundsWithSpacing.inset(-mBorderSpace.x / 2, -mBorderSpace.y / 2);
+                    getWorkspaceCellVisualCenter(x, y, cellCenter);
+
+                    canvas.save();
+                    canvas.clipRect(cellBoundsWithSpacing);
+
+                    // Draw reorder drag target.
+                    debugPaint.setColor(Color.RED);
+                    canvas.drawCircle(cellCenter[0], cellCenter[1], getReorderRadius(targetCell),
+                            debugPaint);
+
+                    // Draw folder creation drag target.
+                    if (canCreateFolder) {
+                        debugPaint.setColor(Color.GREEN);
+                        canvas.drawCircle(cellCenter[0], cellCenter[1],
+                                getFolderCreationRadius(targetCell), debugPaint);
+                    }
+
+                    canvas.restore();
                 }
             }
         }
@@ -479,6 +506,14 @@ public class CellLayout extends ViewGroup {
         if (mVisualizeCells || mVisualizeDropLocation) {
             visualizeGrid(canvas);
         }
+    }
+
+    /**
+     * Returns whether dropping an icon on the given View can create (or add to) a folder.
+     */
+    private boolean canCreateFolder(View child) {
+        return child instanceof DraggableView
+                && ((DraggableView) child).getViewType() == DRAGGABLE_ICON;
     }
 
     /**
@@ -817,7 +852,7 @@ public class CellLayout extends ViewGroup {
     }
 
     /**
-     * Given a cell coordinate and span return the point that represents the center of the regio
+     * Given a cell coordinate and span return the point that represents the center of the region
      *
      * @param cellX X coordinate of the cell
      * @param cellY Y coordinate of the cell
@@ -830,9 +865,63 @@ public class CellLayout extends ViewGroup {
         result[1] = mTempRect.centerY();
     }
 
-    public float getDistanceFromCell(float x, float y, int[] cell) {
-        cellToCenterPoint(cell[0], cell[1], mTmpPoint);
+    /**
+     * Returns the distance between the given coordinate and the visual center of the given cell.
+     */
+    public float getDistanceFromWorkspaceCellVisualCenter(float x, float y, int[] cell) {
+        getWorkspaceCellVisualCenter(cell[0], cell[1], mTmpPoint);
         return (float) Math.hypot(x - mTmpPoint[0], y - mTmpPoint[1]);
+    }
+
+    private void getWorkspaceCellVisualCenter(int cellX, int cellY, int[] outPoint) {
+        View child = getChildAt(cellX, cellY);
+        if (child instanceof DraggableView) {
+            DraggableView draggableChild = (DraggableView) child;
+            if (draggableChild.getViewType() == DRAGGABLE_ICON) {
+                cellToPoint(cellX, cellY, outPoint);
+                draggableChild.getWorkspaceVisualDragBounds(mTempRect);
+                mTempRect.offset(outPoint[0], outPoint[1]);
+                outPoint[0] = mTempRect.centerX();
+                outPoint[1] = mTempRect.centerY();
+                return;
+            }
+        }
+        cellToCenterPoint(cellX, cellY, outPoint);
+    }
+
+    /**
+     * Returns the max distance from the center of a cell that can accept a drop to create a folder.
+     */
+    public float getFolderCreationRadius(int[] targetCell) {
+        DeviceProfile grid = mActivity.getDeviceProfile();
+        float iconVisibleRadius = ICON_VISIBLE_AREA_FACTOR * grid.iconSizePx / 2;
+        // Halfway between reorder radius and icon.
+        return (getReorderRadius(targetCell) + iconVisibleRadius) / 2;
+    }
+
+    /**
+     * Returns the max distance from the center of a cell that will start to reorder on drag over.
+     */
+    public float getReorderRadius(int[] targetCell) {
+        int[] centerPoint = mTmpPoint;
+        getWorkspaceCellVisualCenter(targetCell[0], targetCell[1], centerPoint);
+
+        Rect cellBoundsWithSpacing = mTempRect;
+        cellToRect(targetCell[0], targetCell[1], 1, 1, cellBoundsWithSpacing);
+        cellBoundsWithSpacing.inset(-mBorderSpace.x / 2, -mBorderSpace.y / 2);
+
+        if (canCreateFolder(getChildAt(targetCell[0], targetCell[1]))) {
+            // Take only the circle in the smaller dimension, to ensure we don't start reordering
+            // too soon before accepting a folder drop.
+            int minRadius = centerPoint[0] - cellBoundsWithSpacing.left;
+            minRadius = Math.min(minRadius, centerPoint[1] - cellBoundsWithSpacing.top);
+            minRadius = Math.min(minRadius, cellBoundsWithSpacing.right - centerPoint[0]);
+            minRadius = Math.min(minRadius, cellBoundsWithSpacing.bottom - centerPoint[1]);
+            return minRadius;
+        }
+        // Take up the entire cell, including space between this cell and the adjacent ones.
+        return (float) Math.hypot(cellBoundsWithSpacing.width() / 2f,
+                cellBoundsWithSpacing.height() / 2f);
     }
 
     public int getCellWidth() {

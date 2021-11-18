@@ -669,6 +669,8 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
         return !isWorkspaceLoading();
     }
 
+    @NonNull
+    @Override
     public PopupDataProvider getPopupDataProvider() {
         return mPopupDataProvider;
     }
@@ -948,7 +950,7 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
         hideKeyboard();
         logStopAndResume(false /* isResume */);
         mAppWidgetHost.setActivityStarted(false);
-        NotificationListener.removeNotificationsChangedListener();
+        NotificationListener.removeNotificationsChangedListener(getPopupDataProvider());
     }
 
     @Override
@@ -977,7 +979,7 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
         mModel.validateModelDataOnResume();
 
         // Set the notification listener and fetch updated notifications when we resume
-        NotificationListener.setNotificationsChangedListener(mPopupDataProvider);
+        NotificationListener.addNotificationsChangedListener(mPopupDataProvider);
 
         DiscoveryBounce.showForHomeIfNeeded(this);
         mAppWidgetHost.setActivityResumed(true);

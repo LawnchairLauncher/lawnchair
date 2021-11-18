@@ -838,6 +838,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
      * Update the thumbnail of the task.
      * @param refreshNow Refresh immediately if it's true.
      */
+    @Nullable
     public TaskView updateThumbnail(int taskId, ThumbnailData thumbnailData, boolean refreshNow) {
         TaskView taskView = getTaskViewByTaskId(taskId);
         if (taskView != null) {
@@ -1043,6 +1044,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         return getLastGridTaskView(getTopRowIdArray(), getBottomRowIdArray());
     }
 
+    @Nullable
     private TaskView getLastGridTaskView(IntArray topRowIdArray, IntArray bottomRowIdArray) {
         if (topRowIdArray.isEmpty() && bottomRowIdArray.isEmpty()) {
             return null;
@@ -1506,17 +1508,6 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             }
         }
         if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
-            // Since we reuse the same mLiveTileTaskViewSimulator in the RecentsView, we need
-            // to reset the params after it settles in Overview from swipe up so that we don't
-            // render with obsolete param values.
-            runActionOnRemoteHandles(remoteTargetHandle -> {
-                TaskViewSimulator simulator = remoteTargetHandle.getTaskViewSimulator();
-                simulator.taskPrimaryTranslation.value = 0;
-                simulator.taskSecondaryTranslation.value = 0;
-                simulator.fullScreenProgress.value = 0;
-                simulator.recentsViewScale.value = 1;
-            });
-
             // Similar to setRunningTaskHidden below, reapply the state before runningTaskView is
             // null.
             if (!mRunningTaskShowScreenshot) {
@@ -1904,7 +1895,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         setEnableDrawingLiveTile(false);
         runActionOnRemoteHandles(remoteTargetHandle -> {
             remoteTargetHandle.getTransformParams().setTargetSet(null);
-            remoteTargetHandle.getTaskViewSimulator().setDrawsBelowRecents(true);
+            remoteTargetHandle.getTaskViewSimulator().setDrawsBelowRecents(false);
         });
         mSplitSelectStateController.resetState();
 
@@ -3014,6 +3005,10 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
 
             @SuppressWarnings("WrongCall")
             private void onEnd(boolean success) {
+                // Reset task translations as they may have updated via animations in
+                // createTaskDismissAnimation
+                resetTaskVisuals();
+
                 if (success) {
                     if (shouldRemoveTask) {
                         if (dismissedTaskView.getTask() != null) {
@@ -3029,10 +3024,6 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                                     .log(LAUNCHER_TASK_DISMISS_SWIPE_UP);
                         }
                     }
-
-                    // Reset task translations as they may have updated via animations in
-                    // createTaskDismissAnimation
-                    resetTaskVisuals();
 
                     int pageToSnapTo = mCurrentPage;
                     mCurrentPageScrollDiff = 0;
@@ -4387,7 +4378,6 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             TaskViewSimulator tvs = remoteTargetHandle.getTaskViewSimulator();
             tvs.setOrientationState(mOrientationState);
             tvs.setDp(mActivity.getDeviceProfile());
-            tvs.setDrawsBelowRecents(true);
             tvs.recentsViewScale.value = 1;
         }
     }
@@ -4687,20 +4677,6 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             TaskView taskView, IntArray topRowIdArray, IntArray bottomRowIdArray) {
         int position = topRowIdArray.indexOf(taskView.getTaskViewId());
         return position != -1 ? position : bottomRowIdArray.indexOf(taskView.getTaskViewId());
-    }
-
-    /**
-     * Returns how many pixels the task is offset on the currently laid out secondary axis
-     * according to {@link #mGridProgress}.
-     */
-    public float getGridTranslationSecondary(int pageIndex) {
-        TaskView taskView = getTaskViewAt(pageIndex);
-        if (taskView == null) {
-            return 0;
-        }
-
-        return mOrientationHandler.getSecondaryValue(taskView.getGridTranslationX(),
-                taskView.getGridTranslationY());
     }
 
     public Consumer<MotionEvent> getEventDispatcher(float navbarRotation) {

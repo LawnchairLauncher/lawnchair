@@ -36,6 +36,7 @@ import com.android.launcher3.model.data.FolderInfo;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.uioverrides.ApiWrapper;
+import com.android.launcher3.util.LauncherBindableItemsContainer;
 import com.android.launcher3.views.ActivityContext;
 
 /**
@@ -329,5 +330,15 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
     public boolean areIconsVisible() {
         // Consider the overall visibility
         return getVisibility() == VISIBLE;
+    }
+
+    protected void mapOverItems(LauncherBindableItemsContainer.ItemOperator op) {
+        // map over all the shortcuts on the taskbar
+        for (int i = 0; i < getChildCount(); i++) {
+            View item = getChildAt(i);
+            if (op.evaluate((ItemInfo) item.getTag(), item)) {
+                return;
+            }
+        }
     }
 }

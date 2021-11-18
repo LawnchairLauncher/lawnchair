@@ -74,6 +74,32 @@ public class FloatingTaskView extends FrameLayout {
         mSplitPlaceholderView.setBackgroundColor(getResources().getColor(android.R.color.white));
     }
 
+    private void init(StatefulActivity launcher, TaskView originalView, RectF positionOut) {
+        mStartingPosition = positionOut;
+        updateInitialPositionForView(originalView);
+        final InsettableFrameLayout.LayoutParams lp =
+                (InsettableFrameLayout.LayoutParams) getLayoutParams();
+
+        mSplitPlaceholderView.setLayoutParams(new FrameLayout.LayoutParams(lp.width, lp.height));
+        positionOut.round(mOutline);
+        setPivotX(0);
+        setPivotY(0);
+
+        // Copy bounds of exiting thumbnail into ImageView
+        TaskThumbnailView thumbnail = originalView.getThumbnail();
+        mImageView.setImageBitmap(thumbnail.getThumbnail());
+        mImageView.setVisibility(VISIBLE);
+
+        mOrientationHandler = originalView.getRecentsView().getPagedOrientationHandler();
+        mSplitPlaceholderView.setIconView(originalView.getIconView(),
+                launcher.getDeviceProfile().overviewTaskIconDrawableSizePx);
+        mSplitPlaceholderView.getIconView().setRotation(mOrientationHandler.getDegreesRotated());
+    }
+
+    /**
+     * Configures and returns a an instance of {@link FloatingTaskView} initially matching the
+     * appearance of {@code originalView}.
+     */
     public static FloatingTaskView getFloatingTaskView(StatefulActivity launcher,
             TaskView originalView, RectF positionOut) {
         final BaseDragLayer dragLayer = launcher.getDragLayer();
@@ -81,28 +107,7 @@ public class FloatingTaskView extends FrameLayout {
         final FloatingTaskView floatingView = (FloatingTaskView) launcher.getLayoutInflater()
                 .inflate(R.layout.floating_split_select_view, parent, false);
 
-        floatingView.mStartingPosition = positionOut;
-        floatingView.updateInitialPositionForView(originalView);
-        final InsettableFrameLayout.LayoutParams lp =
-                (InsettableFrameLayout.LayoutParams) floatingView.getLayoutParams();
-
-        floatingView.mSplitPlaceholderView.setLayoutParams(
-                new FrameLayout.LayoutParams(lp.width, lp.height));
-        positionOut.round(floatingView.mOutline);
-        floatingView.setPivotX(0);
-        floatingView.setPivotY(0);
-
-        // Copy bounds of exiting thumbnail into ImageView
-        TaskThumbnailView thumbnail = originalView.getThumbnail();
-        floatingView.mImageView.setImageBitmap(thumbnail.getThumbnail());
-        floatingView.mImageView.setVisibility(VISIBLE);
-
-        floatingView.mOrientationHandler =
-                originalView.getRecentsView().getPagedOrientationHandler();
-        floatingView.mSplitPlaceholderView.setIconView(originalView.getIconView(),
-                launcher.getDeviceProfile().overviewTaskIconDrawableSizePx);
-        floatingView.mSplitPlaceholderView.getIconView()
-                .setRotation(floatingView.mOrientationHandler.getDegreesRotated());
+        floatingView.init(launcher, originalView, positionOut);
         parent.addView(floatingView);
         return floatingView;
     }

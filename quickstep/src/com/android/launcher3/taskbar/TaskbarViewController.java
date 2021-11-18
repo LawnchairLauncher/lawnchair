@@ -35,6 +35,7 @@ import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.model.data.ItemInfo;
+import com.android.launcher3.util.LauncherBindableItemsContainer;
 import com.android.launcher3.util.MultiValueAlpha;
 import com.android.quickstep.AnimatedFloat;
 
@@ -241,6 +242,10 @@ public class TaskbarViewController {
             return;
         }
         mTaskbarNavButtonTranslationY.updateValue(-deviceProfile.getTaskbarOffsetY());
+    }
+
+    public void mapOverItems(LauncherBindableItemsContainer.ItemOperator op) {
+        mTaskbarView.mapOverItems(op);
     }
 
     /**

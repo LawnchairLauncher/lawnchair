@@ -16,6 +16,7 @@
 package com.android.quickstep.fallback;
 
 import static com.android.quickstep.GestureState.GestureEndTarget.RECENTS;
+import static com.android.quickstep.ViewUtils.postFrameDrawn;
 import static com.android.quickstep.fallback.RecentsState.DEFAULT;
 import static com.android.quickstep.fallback.RecentsState.HOME;
 import static com.android.quickstep.fallback.RecentsState.MODAL_TASK;
@@ -219,8 +220,14 @@ public class FallbackRecentsView extends RecentsView<RecentsActivity, RecentsSta
 
     @Override
     public void onStateTransitionComplete(RecentsState finalState) {
-        setOverlayEnabled(finalState == DEFAULT || finalState == MODAL_TASK);
+        boolean isOverlayEnabled = finalState == DEFAULT || finalState == MODAL_TASK;
+        setOverlayEnabled(isOverlayEnabled);
         setFreezeViewVisibility(false);
+
+        if (isOverlayEnabled) {
+            postFrameDrawn(this, () -> runActionOnRemoteHandles(remoteTargetHandle ->
+                    remoteTargetHandle.getTaskViewSimulator().setDrawsBelowRecents(true)));
+        }
     }
 
     @Override
