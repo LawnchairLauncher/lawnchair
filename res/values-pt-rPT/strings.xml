@@ -37,12 +37,12 @@
     <string name="add_to_home_screen" msgid="8631549138215492708">"Adicionar ao ecrã principal"</string>
     <string name="added_to_home_screen_accessibility_text" msgid="4451545765448884415">"Widget <xliff:g id="WIDGET_NAME">%1$s</xliff:g> adicionado ao ecrã principal"</string>
     <plurals name="widgets_count" formatted="false" msgid="656794749266073027">
-      <item quantity="other"><xliff:g id="WIDGETS_COUNT_1">%1$d</xliff:g> widgets</item>
       <item quantity="one"><xliff:g id="WIDGETS_COUNT_0">%1$d</xliff:g> widget</item>
+      <item quantity="other"><xliff:g id="WIDGETS_COUNT_1">%1$d</xliff:g> widgets</item>
     </plurals>
     <plurals name="shortcuts_count" formatted="false" msgid="8080294865447938455">
-      <item quantity="other"><xliff:g id="SHORTCUTS_COUNT_1">%1$d</xliff:g> atalhos</item>
       <item quantity="one"><xliff:g id="SHORTCUTS_COUNT_0">%1$d</xliff:g> atalho</item>
+      <item quantity="other"><xliff:g id="SHORTCUTS_COUNT_1">%1$d</xliff:g> atalhos</item>
     </plurals>
     <string name="widgets_and_shortcuts_count" msgid="7209136747878365116">"<xliff:g id="WIDGETS_COUNT">%1$s</xliff:g>, <xliff:g id="SHORTCUTS_COUNT">%2$s</xliff:g>"</string>
     <string name="widget_button_text" msgid="2880537293434387943">"Widgets"</string>
@@ -92,8 +92,8 @@
     <string name="folder_hint_text" msgid="5174843001373488816">"Edite o nome"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"<xliff:g id="APP_NAME">%1$s</xliff:g> desativado"</string>
     <plurals name="dotted_app_label" formatted="false" msgid="5194538107138265416">
-      <item quantity="other">A app <xliff:g id="APP_NAME_2">%1$s</xliff:g> tem <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> notificações.</item>
       <item quantity="one">A app <xliff:g id="APP_NAME_0">%1$s</xliff:g> tem <xliff:g id="NOTIFICATION_COUNT_1">%2$d</xliff:g> notificação</item>
+      <item quantity="other">A app <xliff:g id="APP_NAME_2">%1$s</xliff:g> tem <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> notificações.</item>
     </plurals>
     <string name="default_scroll_format" msgid="7475544710230993317">"Página %1$d de %2$d"</string>
     <string name="workspace_scroll_format" msgid="8458889198184077399">"Ecrã principal %1$d de %2$d"</string>
