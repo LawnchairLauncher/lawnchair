@@ -72,6 +72,7 @@ public final class FeatureFlags {
             "PROMISE_APPS_NEW_INSTALLS", true,
             "Adds a promise icon to the home screen for new install sessions.");
 
+    // TODO: b/206508141: Long pressing on some icons on home screen cause launcher to crash.
     public static final BooleanFlag ENABLE_LOCAL_COLOR_POPUPS = getDebugFlag(
             "ENABLE_LOCAL_COLOR_POPUPS", false, "Enable local color extraction for popups.");
 
