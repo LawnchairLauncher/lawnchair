@@ -24,14 +24,12 @@ import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITIO
 import android.app.ActivityOptions;
 import android.app.ActivityThread;
 import android.graphics.Rect;
-import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.view.RemoteAnimationAdapter;
 import android.view.SurfaceControl;
 import android.window.TransitionInfo;
 
-import com.android.launcher3.Utilities;
 import com.android.launcher3.util.SplitConfigurationOptions;
 import com.android.launcher3.util.SplitConfigurationOptions.StagePosition;
 import com.android.quickstep.SystemUiProxy;
