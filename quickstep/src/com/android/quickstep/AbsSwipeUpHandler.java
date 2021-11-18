@@ -818,7 +818,8 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
             mRecentsAnimationStartCallbacks.clear();
         }
 
-        TaskViewUtils.setSplitAuxiliarySurfacesShown(mRecentsAnimationTargets.nonApps, false);
+        TaskViewUtils.setSplitAuxiliarySurfacesShown(mRecentsAnimationTargets.nonApps,
+                false /*shown*/, true /*animate*/);
 
         // Only add the callback to enable the input consumer after we actually have the controller
         mStateCallback.runOnceAtState(STATE_APP_CONTROLLER_RECEIVED | STATE_GESTURE_STARTED,
@@ -835,7 +836,8 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
         mStateCallback.setStateOnUiThread(STATE_GESTURE_CANCELLED | STATE_HANDLER_INVALIDATED);
 
         if (mRecentsAnimationTargets != null) {
-            TaskViewUtils.setSplitAuxiliarySurfacesShown(mRecentsAnimationTargets.nonApps, true);
+            TaskViewUtils.setSplitAuxiliarySurfacesShown(mRecentsAnimationTargets.nonApps,
+                    true /*shown*/, true /*animate*/);
         }
 
         // Defer clearing the controller and the targets until after we've updated the state
@@ -985,8 +987,8 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
                     mStateCallback.setState(STATE_RESUME_LAST_TASK);
                 }
                 if (mRecentsAnimationTargets != null) {
-                    TaskViewUtils.setSplitAuxiliarySurfacesShown(
-                            mRecentsAnimationTargets.nonApps, true);
+                    TaskViewUtils.setSplitAuxiliarySurfacesShown(mRecentsAnimationTargets.nonApps,
+                            true /*shown*/, true /*animate*/);
                 }
                 break;
         }
@@ -1637,7 +1639,8 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
         mActivityInterface.onTransitionCancelled(wasVisible, mGestureState.getEndTarget());
 
         if (mRecentsAnimationTargets != null) {
-            TaskViewUtils.setSplitAuxiliarySurfacesShown(mRecentsAnimationTargets.nonApps, true);
+            TaskViewUtils.setSplitAuxiliarySurfacesShown(mRecentsAnimationTargets.nonApps,
+                    true /*shown*/, true /*animate*/);
         }
 
         // Leave the pending invisible flag, as it may be used by wallpaper open animation.
@@ -1878,7 +1881,8 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
     @Override
     public void onRecentsAnimationFinished(RecentsAnimationController controller) {
         if (!controller.getFinishTargetIsLauncher()) {
-            TaskViewUtils.setSplitAuxiliarySurfacesShown(mRecentsAnimationTargets.nonApps, true);
+            TaskViewUtils.setSplitAuxiliarySurfacesShown(mRecentsAnimationTargets.nonApps,
+                    true /*shown*/, true /*animate*/);
         }
         mRecentsAnimationController = null;
         mRecentsAnimationTargets = null;
