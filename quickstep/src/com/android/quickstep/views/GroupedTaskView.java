@@ -156,8 +156,8 @@ public class GroupedTaskView extends TaskView {
     @Nullable
     @Override
     public RunnableList launchTaskAnimated() {
-        getRecentsView().getSplitPlaceholder().launchTasks(mTask, mSecondaryTask,
-                STAGE_POSITION_TOP_OR_LEFT, null /*callback*/,
+        getRecentsView().getSplitPlaceholder().launchTasks(this /*groupedTaskView*/,
+                null /*callback*/,
                 false /* freezeTaskList */);
         return null;
     }
