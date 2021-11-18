@@ -28,6 +28,7 @@
     <dimen name="task_menu_item_corner_radius">4dp</dimen>
     <dimen name="task_menu_spacing">2dp</dimen>
     <dimen name="task_menu_width_grid">234dp</dimen>
+    <dimen name="task_menu_horizontal_padding">8dp</dimen>
     <dimen name="overview_proactive_row_height">48dp</dimen>
     <dimen name="overview_proactive_row_bottom_margin">16dp</dimen>
 
