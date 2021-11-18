@@ -1,14 +1,12 @@
 package app.lawnchair.search
 
 import android.content.Context
-import android.util.Log
-import app.lawnchair.LawnchairApp
 import app.lawnchair.allapps.SearchItemBackground
 import app.lawnchair.preferences.PreferenceManager
 import app.lawnchair.search.SearchTargetCompat.RESULT_TYPE_APPLICATION
 import app.lawnchair.search.SearchTargetCompat.RESULT_TYPE_SHORTCUT
-import com.android.app.search.LayoutType
-import com.android.app.search.LayoutType.*
+import com.android.app.search.LayoutType.EMPTY_DIVIDER
+import com.android.app.search.LayoutType.ICON_SINGLE_VERTICAL_TEXT
 import com.android.launcher3.BuildConfig
 import com.android.launcher3.Utilities
 import com.android.launcher3.allapps.AllAppsGridAdapter
@@ -62,25 +60,17 @@ abstract class LawnchairSearchAlgorithm(
 
     companion object {
 
-        private var hasSearchUiServiceResult: Boolean? = if (Utilities.ATLEAST_S) null else false
-
-        private fun hasSearchUiService(context: Context): Boolean {
-            if (hasSearchUiServiceResult != null) {
-                return hasSearchUiServiceResult!!
-            }
-            val id = context.resources.getIdentifier("config_defaultSearchUiService", "string", "android")
-            var result = false
-            if (id != 0) {
-                val searchUiService = context.resources.getString(id)
-                result = searchUiService.isNotEmpty()
-            }
-            hasSearchUiServiceResult = result
-            return result
-        }
+        private var ranCompatibilityCheck = false
 
         fun isDeviceSearchEnabled(context: Context): Boolean {
+            if (!Utilities.ATLEAST_S) return false
+
             val prefs = PreferenceManager.getInstance(context)
-            return prefs.deviceSearch.get() && hasSearchUiService(context) && LawnchairApp.isRecentsEnabled
+            if (!ranCompatibilityCheck) {
+                ranCompatibilityCheck = true
+                LawnchairDeviceSearchAlgorithm.checkSearchCompatibility(context)
+            }
+            return prefs.deviceSearch.get()
         }
 
         fun create(context: Context): LawnchairSearchAlgorithm = when {

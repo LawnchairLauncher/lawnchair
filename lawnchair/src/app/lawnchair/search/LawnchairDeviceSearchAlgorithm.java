@@ -10,7 +10,6 @@ import android.app.search.SearchTarget;
 import android.app.search.SearchUiManager;
 import android.content.Context;
 import android.os.Bundle;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 
@@ -146,5 +145,22 @@ public class LawnchairDeviceSearchAlgorithm extends LawnchairSearchAlgorithm imp
         public void cancel() {
             mCanceled = true;
         }
+    }
+
+    public static void checkSearchCompatibility(Context context) {
+        UI_HELPER_EXECUTOR.execute(() -> {
+            SearchContext searchContext = new SearchContext(1 | 2, 200, new Bundle());
+            SearchUiManager searchManager = context.getSystemService(SearchUiManager.class);
+            SearchSession searchSession = searchManager.createSearchSession(searchContext);
+            Query searchQuery = new Query("dummy", System.currentTimeMillis(), null);
+            searchSession.query(searchQuery, MAIN_EXECUTOR, targets -> {
+                boolean isCompatible = targets.size() != 0;
+                MAIN_EXECUTOR.execute(() -> {
+                    PreferenceManager prefs = PreferenceManager.getInstance(context);
+                    prefs.getDeviceSearch().set(isCompatible);
+                });
+                searchSession.destroy();
+            });
+        });
     }
 }
