@@ -1,6 +1,7 @@
 package app.lawnchair.search
 
 import android.content.Context
+import app.lawnchair.LawnchairApp
 import app.lawnchair.allapps.SearchItemBackground
 import app.lawnchair.preferences.PreferenceManager
 import app.lawnchair.search.SearchTargetCompat.RESULT_TYPE_APPLICATION
@@ -64,6 +65,7 @@ abstract class LawnchairSearchAlgorithm(
 
         fun isDeviceSearchEnabled(context: Context): Boolean {
             if (!Utilities.ATLEAST_S) return false
+            if (!LawnchairApp.isRecentsEnabled) return false
 
             val prefs = PreferenceManager.getInstance(context)
             if (!ranCompatibilityCheck) {
