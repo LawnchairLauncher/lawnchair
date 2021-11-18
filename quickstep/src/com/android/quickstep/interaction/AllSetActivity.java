@@ -19,6 +19,7 @@ import static com.android.launcher3.Utilities.mapBoundToRange;
 import static com.android.launcher3.Utilities.mapRange;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 
+import android.animation.Animator;
 import android.app.Activity;
 import android.app.ActivityManager.RunningTaskInfo;
 import android.content.Context;
@@ -38,6 +39,8 @@ import android.graphics.Rect;
 import android.graphics.Shader.TileMode;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
 import android.util.Log;
 import android.view.View;
 import android.view.View.AccessibilityDelegate;
@@ -55,6 +58,8 @@ import com.android.quickstep.AnimatedFloat;
 import com.android.quickstep.GestureState;
 import com.android.quickstep.TouchInteractionService.TISBinder;
 import com.android.quickstep.util.TISBindHelper;
+
+import com.airbnb.lottie.LottieAnimationView;
 
 import java.net.URISyntaxException;
 
@@ -79,6 +84,10 @@ public class AllSetActivity extends Activity {
     private BgDrawable mBackground;
     private View mContentView;
     private float mSwipeUpShift;
+
+    @Nullable private Vibrator mVibrator;
+    private LottieAnimationView mAnimatedBackground;
+    private Animator.AnimatorListener mBackgroundAnimatorListener;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -115,6 +124,52 @@ public class AllSetActivity extends Activity {
 
         findViewById(R.id.hint).setAccessibilityDelegate(new SkipButtonAccessibilityDelegate());
         mTISBindHelper = new TISBindHelper(this, this::onTISConnected);
+
+        mVibrator = getSystemService(Vibrator.class);
+        mAnimatedBackground = findViewById(R.id.animated_background);
+        startBackgroundAnimation();
+    }
+
+    private void startBackgroundAnimation() {
+        if (Utilities.ATLEAST_S && mVibrator != null && mVibrator.areAllPrimitivesSupported(
+                VibrationEffect.Composition.PRIMITIVE_THUD)) {
+            if (mBackgroundAnimatorListener == null) {
+                mBackgroundAnimatorListener =
+                        new Animator.AnimatorListener() {
+                            @Override
+                            public void onAnimationStart(Animator animation) {
+                                mVibrator.vibrate(getVibrationEffect());
+                            }
+
+                            @Override
+                            public void onAnimationRepeat(Animator animation) {
+                                mVibrator.vibrate(getVibrationEffect());
+                            }
+
+                            @Override
+                            public void onAnimationEnd(Animator animation) {
+                                mVibrator.cancel();
+                            }
+
+                            @Override
+                            public void onAnimationCancel(Animator animation) {
+                                mVibrator.cancel();
+                            }
+                        };
+            }
+            mAnimatedBackground.addAnimatorListener(mBackgroundAnimatorListener);
+        }
+        mAnimatedBackground.playAnimation();
+    }
+
+    /**
+     * Sets up the vibration effect for the next round of animation. The parameters vary between
+     * different illustrations.
+     */
+    private VibrationEffect getVibrationEffect() {
+        return VibrationEffect.startComposition()
+                .addPrimitive(VibrationEffect.Composition.PRIMITIVE_THUD, 1.0f, 50)
+                .compose();
     }
 
     @Override
@@ -153,6 +208,9 @@ public class AllSetActivity extends Activity {
         super.onDestroy();
         mTISBindHelper.onDestroy();
         clearBinderOverride();
+        if (mBackgroundAnimatorListener != null) {
+            mAnimatedBackground.removeAnimatorListener(mBackgroundAnimatorListener);
+        }
     }
 
     private AnimatedFloat createSwipeUpProxy(GestureState state) {
@@ -173,6 +231,12 @@ public class AllSetActivity extends Activity {
                 1, 0, LINEAR);
         mContentView.setAlpha(alpha);
         mContentView.setTranslationY((alpha - 1) * mSwipeUpShift);
+
+        if (alpha == 0f) {
+            mAnimatedBackground.pauseAnimation();
+        } else if (!mAnimatedBackground.isAnimating()) {
+            mAnimatedBackground.resumeAnimation();
+        }
     }
 
     /**
