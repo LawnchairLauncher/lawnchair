@@ -209,13 +209,6 @@ public class TaskOverlayFactory implements ResourceBasedOverride {
         }
 
         /**
-         * Called when the current task's thumbnail has changed.
-         */
-        public void refreshActionVisibility(ThumbnailData thumbnail) {
-            getActionsView().updateDisabledFlags(DISABLED_NO_THUMBNAIL, thumbnail == null);
-        }
-
-        /**
          * End rendering live tile in Overview.
          *
          * @param callback callback to run, after switching to screenshot
