@@ -148,10 +148,11 @@ public class TaskThumbnailView extends View {
     public void setThumbnail(@Nullable Task task, @Nullable ThumbnailData thumbnailData,
             boolean refreshNow) {
         mTask = task;
+        boolean thumbnailWasNull = mThumbnailData == null;
         mThumbnailData =
                 (thumbnailData != null && thumbnailData.thumbnail != null) ? thumbnailData : null;
         if (refreshNow) {
-            refresh();
+            refresh(thumbnailWasNull && mThumbnailData != null);
         }
     }
 
@@ -162,14 +163,22 @@ public class TaskThumbnailView extends View {
 
     /** Updates the shader, paint, matrix to redraw. */
     public void refresh() {
+        refresh(false);
+    }
+
+    /**
+     * Updates the shader, paint, matrix to redraw.
+     * @param shouldRefreshOverlay whether to re-initialize overlay
+     */
+    private void refresh(boolean shouldRefreshOverlay) {
         if (mThumbnailData != null && mThumbnailData.thumbnail != null) {
             Bitmap bm = mThumbnailData.thumbnail;
             bm.prepareToDraw();
             mBitmapShader = new BitmapShader(bm, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP);
             mPaint.setShader(mBitmapShader);
             updateThumbnailMatrix();
-            if (mOverlayEnabled) {
-                getTaskOverlay().refreshActionVisibility(mThumbnailData);
+            if (shouldRefreshOverlay) {
+                refreshOverlay();
             }
         } else {
             mBitmapShader = null;
