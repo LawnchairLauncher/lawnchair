@@ -77,44 +77,45 @@ public abstract class ArrowPopup<T extends Context & ActivityContext>
         extends AbstractFloatingView {
 
     // Duration values (ms) for popup open and close animations.
-    private static final int OPEN_DURATION = 276;
-    private static final int OPEN_FADE_START_DELAY = 0;
-    private static final int OPEN_FADE_DURATION = 38;
-    private static final int OPEN_CHILD_FADE_START_DELAY = 38;
-    private static final int OPEN_CHILD_FADE_DURATION = 76;
+    protected int OPEN_DURATION = 276;
+    protected int OPEN_FADE_START_DELAY = 0;
+    protected int OPEN_FADE_DURATION = 38;
+    protected int OPEN_CHILD_FADE_START_DELAY = 38;
+    protected int OPEN_CHILD_FADE_DURATION = 76;
 
-    private static final int CLOSE_DURATION = 200;
-    private static final int CLOSE_FADE_START_DELAY = 140;
-    private static final int CLOSE_FADE_DURATION = 50;
-    private static final int CLOSE_CHILD_FADE_START_DELAY = 0;
-    private static final int CLOSE_CHILD_FADE_DURATION = 140;
+    protected int CLOSE_DURATION = 200;
+    protected int CLOSE_FADE_START_DELAY = 140;
+    protected int CLOSE_FADE_DURATION = 50;
+    protected int CLOSE_CHILD_FADE_START_DELAY = 0;
+    protected int CLOSE_CHILD_FADE_DURATION = 140;
 
     // Index used to get background color when using local wallpaper color extraction,
     private static final int DARK_COLOR_EXTRACTION_INDEX = android.R.color.system_neutral2_800;
     private static final int LIGHT_COLOR_EXTRACTION_INDEX = android.R.color.system_accent2_50;
 
-    private final Rect mTempRect = new Rect();
+    protected final Rect mTempRect = new Rect();
 
     protected final LayoutInflater mInflater;
-    private final float mOutlineRadius;
+    protected final float mOutlineRadius;
     protected final T mActivityContext;
     protected final boolean mIsRtl;
 
-    private final int mArrowOffsetVertical;
-    private final int mArrowOffsetHorizontal;
-    private final int mArrowWidth;
-    private final int mArrowHeight;
-    private final int mArrowPointRadius;
-    private final View mArrow;
+    protected final int mArrowOffsetVertical;
+    protected final int mArrowOffsetHorizontal;
+    protected final int mArrowWidth;
+    protected final int mArrowHeight;
+    protected final int mArrowPointRadius;
+    protected final View mArrow;
 
     private final int mMargin;
 
     protected boolean mIsLeftAligned;
     protected boolean mIsAboveIcon;
-    private int mGravity;
+    protected int mGravity;
 
     protected AnimatorSet mOpenCloseAnimator;
     protected boolean mDeferContainerRemoval;
+    protected boolean shouldScaleArrow = false;
 
     private final GradientDrawable mRoundedTop;
     private final GradientDrawable mRoundedBottom;
@@ -122,10 +123,10 @@ public abstract class ArrowPopup<T extends Context & ActivityContext>
     private Runnable mOnCloseCallback = () -> { };
 
     // The rect string of the view that the arrow is attached to, in screen reference frame.
-    private int mArrowColor;
+    protected int mArrowColor;
     protected final List<LocalColorExtractor> mColorExtractors;
 
-    private final float mElevation;
+    protected final float mElevation;
     private final int mBackgroundColor;
 
     private final String mIterateChildrenTag;
@@ -728,6 +729,14 @@ public abstract class ArrowPopup<T extends Context & ActivityContext>
         scale.setDuration(totalDuration);
         scale.setInterpolator(interpolator);
         animatorSet.play(scale);
+
+        if (shouldScaleArrow) {
+            Animator arrowScaleAnimator = ObjectAnimator.ofFloat(mArrow, View.SCALE_Y,
+                    scaleValues);
+            arrowScaleAnimator.setDuration(totalDuration);
+            arrowScaleAnimator.setInterpolator(interpolator);
+            animatorSet.play(arrowScaleAnimator);
+        }
 
         fadeInChildViews(this, alphaValues, childFadeStartDelay, childFadeDuration, animatorSet);
 

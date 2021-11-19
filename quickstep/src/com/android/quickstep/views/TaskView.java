@@ -648,7 +648,7 @@ public class TaskView extends FrameLayout implements Reusable {
                     recentsView.getDepthController());
             anim.addListener(new AnimatorListenerAdapter() {
                 @Override
-                public void onAnimationStart(Animator animator) {
+                public void onAnimationStart(Animator animation) {
                     recentsView.runActionOnRemoteHandles(
                             (Consumer<RemoteTargetHandle>) remoteTargetHandle ->
                                     remoteTargetHandle
@@ -658,11 +658,6 @@ public class TaskView extends FrameLayout implements Reusable {
 
                 @Override
                 public void onAnimationEnd(Animator animator) {
-                    recentsView.runActionOnRemoteHandles(
-                            (Consumer<RemoteTargetHandle>) remoteTargetHandle ->
-                                    remoteTargetHandle
-                                            .getTaskViewSimulator()
-                                            .setDrawsBelowRecents(true));
                     mIsClickableAsLiveTile = true;
                 }
             });

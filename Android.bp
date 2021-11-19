@@ -204,6 +204,7 @@ android_library {
     ],
     static_libs: [
         "Launcher3ResLib",
+        "lottie",
         "SystemUISharedLib",
         "SystemUI-statsd",
     ],
