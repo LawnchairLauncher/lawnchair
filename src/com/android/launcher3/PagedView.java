@@ -252,7 +252,7 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
         if (0 <= mCurrentPage && mCurrentPage < getPageCount()) {
             newPosition = getScrollForPage(mCurrentPage) + mCurrentPageScrollDiff;
         }
-        mOrientationHandler.set(this, VIEW_SCROLL_TO, newPosition);
+        mOrientationHandler.setPrimary(this, VIEW_SCROLL_TO, newPosition);
         mScroller.startScroll(mScroller.getCurrX(), 0, newPosition - mScroller.getCurrX(), 0);
         forceFinishScroller();
     }
@@ -556,7 +556,7 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
             int oldPos = mOrientationHandler.getPrimaryScroll(this);
             int newPos = mScroller.getCurrX();
             if (oldPos != newPos) {
-                mOrientationHandler.set(this, VIEW_SCROLL_TO, mScroller.getCurrX());
+                mOrientationHandler.setPrimary(this, VIEW_SCROLL_TO, mScroller.getCurrX());
             }
 
             if (mAllowOverScroll) {
@@ -1280,7 +1280,7 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
                 mLastMotionRemainder = delta - movedDelta;
 
                 if (delta != 0) {
-                    mOrientationHandler.set(this, VIEW_SCROLL_BY, movedDelta);
+                    mOrientationHandler.setPrimary(this, VIEW_SCROLL_BY, movedDelta);
 
                     if (mAllowOverScroll) {
                         final float pulledToX = oldScroll + delta;
