@@ -163,6 +163,8 @@ dependencies {
     androidTestImplementation 'com.android.support.test:rules:1.0.0'
     androidTestImplementation 'com.android.support.test.uiautomator:uiautomator-v18:2.1.2'
     androidTestImplementation "androidx.annotation:annotation:${ANDROID_X_VERSION}"
+
+    api 'com.airbnb.android:lottie:3.3.0'
 }
 
 protobuf {

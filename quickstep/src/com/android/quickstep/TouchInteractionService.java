@@ -361,7 +361,6 @@ public class TouchInteractionService extends Service
         mDeviceState.runOnUserUnlocked(this::onUserUnlocked);
         mDeviceState.runOnUserUnlocked(mTaskbarManager::onUserUnlocked);
         mDeviceState.addNavigationModeChangedCallback(this::onNavigationModeChanged);
-        mDeviceState.addOneHandedModeChangedCallback(this::onOneHandedModeOverlayChanged);
 
         ProtoTracer.INSTANCE.get(this).add(this);
         LauncherSplitScreenListener.INSTANCE.get(this).init();
@@ -399,13 +398,6 @@ public class TouchInteractionService extends Service
     private void onNavigationModeChanged(SysUINavigationMode.Mode mode) {
         initInputMonitor();
         resetHomeBounceSeenOnQuickstepEnabledFirstTime();
-    }
-
-    /**
-     * Called when the one handed mode overlay package changes, to recreate touch region.
-     */
-    private void onOneHandedModeOverlayChanged(int newGesturalHeight) {
-        initInputMonitor();
     }
 
     @UiThread
