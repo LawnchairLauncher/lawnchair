@@ -94,7 +94,7 @@ class TaskMenuViewWithArrow<T : BaseDraggingActivity> : ArrowPopup<T> {
     override fun isOfType(type: Int): Boolean = type and TYPE_TASK_MENU != 0
 
     override fun getTargetObjectLocation(outPos: Rect?) {
-        popupContainer.getDescendantRectRelativeToSelf(taskView.iconView, outPos)
+        popupContainer.getDescendantRectRelativeToSelf(taskContainer.iconView, outPos)
     }
 
     override fun onControllerInterceptTouchEvent(ev: MotionEvent?): Boolean {

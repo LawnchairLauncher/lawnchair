@@ -76,7 +76,7 @@ public class GroupedTaskView extends TaskView {
         mSecondaryTask = secondary;
         mTaskIdContainer[1] = secondary.key.id;
         mTaskIdAttributeContainer[1] = new TaskIdAttributeContainer(secondary, mSnapshotView2,
-                STAGE_POSITION_BOTTOM_OR_RIGHT);
+                mIconView2, STAGE_POSITION_BOTTOM_OR_RIGHT);
         mTaskIdAttributeContainer[0].setStagePosition(STAGE_POSITION_TOP_OR_LEFT);
         mSnapshotView2.bind(secondary);
         mSplitBoundsConfig = splitBoundsConfig;
@@ -114,14 +114,6 @@ public class GroupedTaskView extends TaskView {
             if (needsUpdate(changes, FLAG_UPDATE_ICON)) {
                 setIcon(mIconView2, null);
             }
-        }
-    }
-
-    protected boolean showTaskMenuWithContainer(IconView iconView) {
-        if (mActivity.getDeviceProfile().overviewShowAsGrid) {
-            return TaskMenuViewWithArrow.Companion.showForTask(mTaskIdAttributeContainer[0]);
-        } else {
-            return TaskMenuView.showForTask(mTaskIdAttributeContainer[0]);
         }
     }
 
