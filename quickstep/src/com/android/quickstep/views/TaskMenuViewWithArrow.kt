@@ -61,13 +61,14 @@ class TaskMenuViewWithArrow<T : BaseDraggingActivity> : ArrowPopup<T> {
 
     private val menuWidth = context.resources.getDimensionPixelSize(R.dimen.task_menu_width_grid)
 
+    private lateinit var taskView: TaskView
     private lateinit var optionLayout: LinearLayout
     private lateinit var taskContainer: TaskIdAttributeContainer
 
     override fun isOfType(type: Int): Boolean = type and TYPE_TASK_MENU != 0
 
     override fun getTargetObjectLocation(outPos: Rect?) {
-        popupContainer.getDescendantRectRelativeToSelf(taskContainer.iconView, outPos)
+        popupContainer.getDescendantRectRelativeToSelf(taskView.iconView, outPos)
     }
 
     override fun onControllerInterceptTouchEvent(ev: MotionEvent?): Boolean {
@@ -90,6 +91,7 @@ class TaskMenuViewWithArrow<T : BaseDraggingActivity> : ArrowPopup<T> {
             return false
         }
 
+        taskView = taskContainer.taskView
         this.taskContainer = taskContainer
         if (!populateMenu()) return false
         show()
@@ -109,8 +111,7 @@ class TaskMenuViewWithArrow<T : BaseDraggingActivity> : ArrowPopup<T> {
     private fun addMenuOptions() {
         // Add the options
         TaskOverlayFactory
-            .getEnabledShortcuts(taskContainer.taskView, mActivityContext.deviceProfile,
-                    taskContainer)
+            .getEnabledShortcuts(taskView, mActivityContext.deviceProfile, taskContainer)
             .forEach { this.addMenuOption(it) }
 
         // Add the spaces between items
