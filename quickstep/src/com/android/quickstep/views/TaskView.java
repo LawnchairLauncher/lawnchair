@@ -30,6 +30,7 @@ import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCH
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASK_LAUNCH_TAP;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
+import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITION_BOTTOM_OR_RIGHT;
 import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITION_UNDEFINED;
 
 import static java.lang.annotation.RetentionPolicy.SOURCE;
@@ -38,6 +39,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
+import android.annotation.IdRes;
 import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
@@ -1300,10 +1302,14 @@ public class TaskView extends FrameLayout implements Reusable {
                         getContext().getText(R.string.accessibility_close)));
 
         final Context context = getContext();
-        // TODO(b/200609838) Determine which task to run A11y action on when in split screen
-        for (SystemShortcut s : TaskOverlayFactory.getEnabledShortcuts(this,
-                mActivity.getDeviceProfile(), mTaskIdAttributeContainer[0])) {
-            info.addAction(s.createAccessibilityAction(context));
+        for (TaskIdAttributeContainer taskContainer : mTaskIdAttributeContainer) {
+            if (taskContainer == null) {
+                continue;
+            }
+            for (SystemShortcut s : TaskOverlayFactory.getEnabledShortcuts(this,
+                    mActivity.getDeviceProfile(), taskContainer)) {
+                info.addAction(s.createAccessibilityAction(context));
+            }
         }
 
         if (mDigitalWellBeingToast.hasLimit()) {
@@ -1334,12 +1340,16 @@ public class TaskView extends FrameLayout implements Reusable {
             return true;
         }
 
-        // TODO(b/200609838) Determine which task to run A11y action on when in split screen
-        for (SystemShortcut s : TaskOverlayFactory.getEnabledShortcuts(this,
-                mActivity.getDeviceProfile(), mTaskIdAttributeContainer[0])) {
-            if (s.hasHandlerForAction(action)) {
-                s.onClick(this);
-                return true;
+        for (TaskIdAttributeContainer taskContainer : mTaskIdAttributeContainer) {
+            if (taskContainer == null) {
+                continue;
+            }
+            for (SystemShortcut s : TaskOverlayFactory.getEnabledShortcuts(this,
+                    mActivity.getDeviceProfile(), taskContainer)) {
+                if (s.hasHandlerForAction(action)) {
+                    s.onClick(this);
+                    return true;
+                }
             }
         }
 
@@ -1556,7 +1566,6 @@ public class TaskView extends FrameLayout implements Reusable {
                 mScale = previewWidth / (previewWidth + currentInsetsLeft + currentInsetsRight);
             }
         }
-
     }
 
     public class TaskIdAttributeContainer {
@@ -1564,12 +1573,16 @@ public class TaskView extends FrameLayout implements Reusable {
         private final Task mTask;
         /** Defaults to STAGE_POSITION_UNDEFINED if in not a split screen task view */
         private @SplitConfigurationOptions.StagePosition int mStagePosition;
+        @IdRes
+        private final int mA11yNodeId;
 
         public TaskIdAttributeContainer(Task task, TaskThumbnailView thumbnailView,
                 int stagePosition) {
             this.mTask = task;
             this.mThumbnailView = thumbnailView;
             this.mStagePosition = stagePosition;
+            this.mA11yNodeId = (stagePosition == STAGE_POSITION_BOTTOM_OR_RIGHT) ?
+                    R.id.split_bottomRight_appInfo : R.id.split_topLeft_appInfo;
         }
 
         public TaskThumbnailView getThumbnailView() {
@@ -1594,6 +1607,10 @@ public class TaskView extends FrameLayout implements Reusable {
 
         void setStagePosition(@SplitConfigurationOptions.StagePosition int stagePosition) {
             this.mStagePosition = stagePosition;
+        }
+
+        public int getA11yNodeId() {
+            return mA11yNodeId;
         }
     }
 }

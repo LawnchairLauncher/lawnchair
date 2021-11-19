@@ -72,7 +72,13 @@ public interface TaskShortcutFactory {
         @Override
         public SystemShortcut getShortcut(BaseDraggingActivity activity,
                 TaskIdAttributeContainer taskContainer) {
-            return new AppInfo(activity, taskContainer.getItemInfo());
+            TaskView taskView = taskContainer.getTaskView();
+            AppInfo.SplitAccessibilityInfo accessibilityInfo =
+                    new AppInfo.SplitAccessibilityInfo(taskView.containsMultipleTasks(),
+                            TaskUtils.getTitle(taskView.getContext(), taskContainer.getTask()),
+                            taskContainer.getA11yNodeId()
+                    );
+            return new AppInfo(activity, taskContainer.getItemInfo(), accessibilityInfo);
         }
 
         @Override
