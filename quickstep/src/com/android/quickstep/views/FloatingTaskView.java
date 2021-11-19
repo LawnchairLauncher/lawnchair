@@ -71,7 +71,6 @@ public class FloatingTaskView extends FrameLayout {
         mImageView.setLayerType(LAYER_TYPE_HARDWARE, null);
         mSplitPlaceholderView = findViewById(R.id.split_placeholder);
         mSplitPlaceholderView.setAlpha(0);
-        mSplitPlaceholderView.setBackgroundColor(getResources().getColor(android.R.color.white));
     }
 
     private void init(StatefulActivity launcher, TaskView originalView, RectF positionOut) {
