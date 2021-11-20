@@ -171,7 +171,7 @@
     <string name="apply_accent_color_label">Aplicar Cor de Destaque</string>
     <string name="show_search_result_types">Mostrar nos Resultados da Pesquisa</string>
     <string name="search_pref_result_people_title">Pessoas</string>
-    <string name="search_pref_result_shortcuts_title">Atalhos do aplicativo</string>
+    <string name="search_pref_result_shortcuts_title">Atalhos da Aplicação</string>
     <string name="search_pref_result_tips_title">Dicas de Pixel</string>
     <string name="row_height_label">Altura da Linha</string>
     <string name="all_apps_device_search_hint">Pesquisar</string>
