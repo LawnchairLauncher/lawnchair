@@ -56,6 +56,7 @@ import android.view.View;
 import android.window.TransitionInfo;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.android.launcher3.BaseActivity;
 import com.android.launcher3.DeviceProfile;
@@ -72,6 +73,7 @@ import com.android.quickstep.util.MultiValueUpdateListener;
 import com.android.quickstep.util.SurfaceTransactionApplier;
 import com.android.quickstep.util.TaskViewSimulator;
 import com.android.quickstep.util.TransformParams;
+import com.android.quickstep.views.GroupedTaskView;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskThumbnailView;
 import com.android.quickstep.views.TaskView;
@@ -149,10 +151,12 @@ public final class TaskViewUtils {
         return taskView;
     }
 
-    public static void createRecentsWindowAnimator(TaskView v, boolean skipViewChanges,
-            RemoteAnimationTargetCompat[] appTargets,
-            RemoteAnimationTargetCompat[] wallpaperTargets,
-            RemoteAnimationTargetCompat[] nonAppTargets, DepthController depthController,
+    public static void createRecentsWindowAnimator(
+            @NonNull TaskView v, boolean skipViewChanges,
+            @NonNull RemoteAnimationTargetCompat[] appTargets,
+            @NonNull RemoteAnimationTargetCompat[] wallpaperTargets,
+            @NonNull RemoteAnimationTargetCompat[] nonAppTargets,
+            @Nullable DepthController depthController,
             PendingAnimation out) {
         RecentsView recentsView = v.getRecentsView();
         boolean isQuickSwitch = v.isEndQuickswitchCuj();
@@ -418,15 +422,46 @@ public final class TaskViewUtils {
         finishCallback.run();
     }
 
-    /** Legacy version (until shell transitions are enabled) */
-    public static void composeRecentsSplitLaunchAnimatorLegacy(@NonNull Task initialTask,
+    /**
+     * Legacy version (until shell transitions are enabled)
+     *
+     * If {@param launchingTaskView} is not null, then this will play the tasks launch animation
+     * from the position of the GroupedTaskView (when user taps on the TaskView to start it).
+     * Technically this case should be taken care of by
+     * {@link #composeRecentsSplitLaunchAnimatorLegacy()} below, but the way we launch tasks whether
+     * it's a single task or multiple tasks results in different entry-points.
+     *
+     * If it is null, then it will simply fade in the starting apps and fade out launcher (for the
+     * case where launcher handles animating starting split tasks from app icon) */
+    public static void composeRecentsSplitLaunchAnimatorLegacy(
+            @Nullable GroupedTaskView launchingTaskView,
+            @NonNull Task initialTask,
             @NonNull Task secondTask, @NonNull RemoteAnimationTargetCompat[] appTargets,
             @NonNull RemoteAnimationTargetCompat[] wallpaperTargets,
             @NonNull RemoteAnimationTargetCompat[] nonAppTargets,
+            @NonNull StateManager stateManager,
+            @Nullable DepthController depthController,
             @NonNull Runnable finishCallback) {
+        if (launchingTaskView != null) {
+            AnimatorSet animatorSet = new AnimatorSet();
+            RecentsView recentsView = launchingTaskView.getRecentsView();
+            animatorSet.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    super.onAnimationEnd(animation);
+                    finishCallback.run();
+                }
+            });
+            composeRecentsLaunchAnimator(animatorSet, launchingTaskView,
+                    appTargets, wallpaperTargets, nonAppTargets,
+                    true, stateManager,
+                    recentsView, depthController);
+            animatorSet.start();
+            return;
+        }
+
         final ArrayList<SurfaceControl> openingTargets = new ArrayList<>();
         final ArrayList<SurfaceControl> closingTargets = new ArrayList<>();
-
         for (RemoteAnimationTargetCompat appTarget : appTargets) {
             final int taskId = appTarget.taskInfo != null ? appTarget.taskInfo.taskId : -1;
             final int mode = appTarget.mode;
@@ -490,7 +525,7 @@ public final class TaskViewUtils {
             @NonNull RemoteAnimationTargetCompat[] wallpaperTargets,
             @NonNull RemoteAnimationTargetCompat[] nonAppTargets, boolean launcherClosing,
             @NonNull StateManager stateManager, @NonNull RecentsView recentsView,
-            @NonNull DepthController depthController) {
+            @Nullable DepthController depthController) {
         boolean skipLauncherChanges = !launcherClosing;
 
         TaskView taskView = findTaskViewToLaunch(recentsView, v, appTargets);

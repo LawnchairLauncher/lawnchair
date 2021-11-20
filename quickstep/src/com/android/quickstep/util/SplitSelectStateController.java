@@ -24,19 +24,24 @@ import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITIO
 import android.app.ActivityOptions;
 import android.app.ActivityThread;
 import android.graphics.Rect;
-import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.view.RemoteAnimationAdapter;
 import android.view.SurfaceControl;
 import android.window.TransitionInfo;
 
-import com.android.launcher3.Utilities;
+
+import androidx.annotation.Nullable;
+
+import com.android.launcher3.statehandlers.DepthController;
+import com.android.launcher3.statemanager.StateManager;
 import com.android.launcher3.util.SplitConfigurationOptions;
 import com.android.launcher3.util.SplitConfigurationOptions.StagePosition;
 import com.android.quickstep.SystemUiProxy;
 import com.android.quickstep.TaskAnimationManager;
 import com.android.quickstep.TaskViewUtils;
+import com.android.quickstep.views.GroupedTaskView;
+import com.android.quickstep.views.TaskView;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.system.RemoteAnimationAdapterCompat;
 import com.android.systemui.shared.system.RemoteAnimationRunnerCompat;
@@ -54,23 +59,32 @@ public class SplitSelectStateController {
 
     private final Handler mHandler;
     private final SystemUiProxy mSystemUiProxy;
+    private final StateManager mStateManager;
+    private final DepthController mDepthController;
     private @StagePosition int mStagePosition;
     private Task mInitialTask;
     private Task mSecondTask;
     private Rect mInitialBounds;
     private boolean mRecentsAnimationRunning;
+    /** If not null, this is the TaskView we want to launch from */
+    @Nullable
+    private GroupedTaskView mLaunchingTaskView;
 
-    public SplitSelectStateController(Handler handler, SystemUiProxy systemUiProxy) {
+    public SplitSelectStateController(Handler handler, SystemUiProxy systemUiProxy,
+            StateManager stateManager,
+            DepthController depthController) {
         mHandler = handler;
         mSystemUiProxy = systemUiProxy;
+        mStateManager = stateManager;
+        mDepthController = depthController;
     }
 
     /**
      * To be called after first task selected
      */
-    public void setInitialTaskSelect(Task taskView, @StagePosition int stagePosition,
+    public void setInitialTaskSelect(Task task, @StagePosition int stagePosition,
             Rect initialBounds) {
-        mInitialTask = taskView;
+        mInitialTask = task;
         mStagePosition = stagePosition;
         mInitialBounds = initialBounds;
     }
@@ -78,10 +92,22 @@ public class SplitSelectStateController {
     /**
      * To be called after second task selected
      */
-    public void setSecondTaskId(Task taskView, Consumer<Boolean> callback) {
-        mSecondTask = taskView;
+    public void setSecondTaskId(Task task, Consumer<Boolean> callback) {
+        mSecondTask = task;
         launchTasks(mInitialTask, mSecondTask, mStagePosition, callback,
                 false /* freezeTaskList */);
+    }
+
+    /**
+     * To be called when we want to launch split pairs from an existing GroupedTaskView.
+     */
+    public void launchTasks(GroupedTaskView groupedTaskView,
+            Consumer<Boolean> callback, boolean freezeTaskList) {
+        mLaunchingTaskView = groupedTaskView;
+        TaskView.TaskIdAttributeContainer[] taskIdAttributeContainers =
+                groupedTaskView.getTaskIdAttributeContainers();
+        launchTasks(taskIdAttributeContainers[0].getTask(), taskIdAttributeContainers[1].getTask(),
+                taskIdAttributeContainers[0].getStagePosition(), callback, freezeTaskList);
     }
 
     /**
@@ -171,8 +197,9 @@ public class SplitSelectStateController {
                 RemoteAnimationTargetCompat[] wallpapers, RemoteAnimationTargetCompat[] nonApps,
                 Runnable finishedCallback) {
             postAsyncCallback(mHandler,
-                    () -> TaskViewUtils.composeRecentsSplitLaunchAnimatorLegacy(mInitialTask,
-                            mSecondTask, apps, wallpapers, nonApps, () -> {
+                    () -> TaskViewUtils.composeRecentsSplitLaunchAnimatorLegacy(
+                            mLaunchingTaskView, mInitialTask, mSecondTask, apps, wallpapers,
+                            nonApps, mStateManager, mDepthController, () -> {
                                 finishedCallback.run();
                                 if (mSuccessCallback != null) {
                                     mSuccessCallback.accept(true);
@@ -203,6 +230,7 @@ public class SplitSelectStateController {
         mStagePosition = SplitConfigurationOptions.STAGE_POSITION_UNDEFINED;
         mInitialBounds = null;
         mRecentsAnimationRunning = false;
+        mLaunchingTaskView = null;
     }
 
     /**
