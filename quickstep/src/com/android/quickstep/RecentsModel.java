@@ -24,6 +24,7 @@ import android.annotation.TargetApi;
 import android.app.ActivityManager;
 import android.content.ComponentCallbacks2;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Process;
 import android.os.UserHandle;
@@ -176,7 +177,7 @@ public class RecentsModel extends TaskStackChangeListener implements IconChangeL
 
     @Override
     public void onTaskRemoved(int taskId) {
-        Task.TaskKey stubKey = new Task.TaskKey(taskId, 0, null, null, 0, 0);
+        Task.TaskKey stubKey = new Task.TaskKey(taskId, 0, new Intent(), null, 0, 0);
         mThumbnailCache.remove(stubKey);
         mIconCache.onTaskRemoved(stubKey);
     }
