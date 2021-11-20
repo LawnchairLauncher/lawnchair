@@ -76,7 +76,7 @@ public class GroupedTaskView extends TaskView {
         mSecondaryTask = secondary;
         mTaskIdContainer[1] = secondary.key.id;
         mTaskIdAttributeContainer[1] = new TaskIdAttributeContainer(secondary, mSnapshotView2,
-                STAGE_POSITION_BOTTOM_OR_RIGHT);
+                mIconView2, STAGE_POSITION_BOTTOM_OR_RIGHT);
         mTaskIdAttributeContainer[0].setStagePosition(STAGE_POSITION_TOP_OR_LEFT);
         mSnapshotView2.bind(secondary);
         mSplitBoundsConfig = splitBoundsConfig;
@@ -117,14 +117,6 @@ public class GroupedTaskView extends TaskView {
         }
     }
 
-    protected boolean showTaskMenuWithContainer(IconView iconView) {
-        if (mActivity.getDeviceProfile().overviewShowAsGrid) {
-            return TaskMenuViewWithArrow.Companion.showForTask(mTaskIdAttributeContainer[0]);
-        } else {
-            return TaskMenuView.showForTask(mTaskIdAttributeContainer[0]);
-        }
-    }
-
     public void updateSplitBoundsConfig(StagedSplitBounds stagedSplitBounds) {
         mSplitBoundsConfig = stagedSplitBounds;
         invalidate();
@@ -156,8 +148,8 @@ public class GroupedTaskView extends TaskView {
     @Nullable
     @Override
     public RunnableList launchTaskAnimated() {
-        getRecentsView().getSplitPlaceholder().launchTasks(mTask, mSecondaryTask,
-                STAGE_POSITION_TOP_OR_LEFT, null /*callback*/,
+        getRecentsView().getSplitPlaceholder().launchTasks(this /*groupedTaskView*/,
+                null /*callback*/,
                 false /* freezeTaskList */);
         return null;
     }

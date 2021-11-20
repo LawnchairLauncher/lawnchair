@@ -14,7 +14,7 @@
         android:id="@+id/split_placeholder"
         android:layout_width="match_parent"
         android:layout_height="@dimen/split_placeholder_size"
-        android:background="@android:color/white"
+        android:background="?android:colorPrimary"
         android:visibility="gone" />
 
 </com.android.quickstep.views.FloatingTaskView>

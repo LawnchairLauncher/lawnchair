@@ -1897,6 +1897,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             remoteTargetHandle.getTransformParams().setTargetSet(null);
             remoteTargetHandle.getTaskViewSimulator().setDrawsBelowRecents(false);
         });
+        resetFromSplitSelectionState();
         mSplitSelectStateController.resetState();
 
         // These are relatively expensive and don't need to be done this frame (RecentsView isn't
@@ -4356,15 +4357,22 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         RemoteTargetGluer gluer = new RemoteTargetGluer(getContext(), getSizeStrategy());
         mRemoteTargetHandles = gluer.assignTargetsForSplitScreen(recentsAnimationTargets);
         mSplitBoundsConfig = gluer.getStagedSplitBounds();
-        if (mSyncTransactionApplier != null) {
-            // Add release check to the targets from the RemoteTargetGluer and not the targets
-            // passed in because in the event we're in split screen, we use the passed in targets
-            // to create new RemoteAnimationTargets in assignTargetsForSplitScreen(), and the
-            // mSyncTransactionApplier doesn't get transferred over
-            runActionOnRemoteHandles(remoteTargetHandle -> remoteTargetHandle
-                    .getTransformParams().getTargetSet()
-                    .addReleaseCheck(mSyncTransactionApplier));
-        }
+        // Add release check to the targets from the RemoteTargetGluer and not the targets
+        // passed in because in the event we're in split screen, we use the passed in targets
+        // to create new RemoteAnimationTargets in assignTargetsForSplitScreen(), and the
+        // mSyncTransactionApplier doesn't get transferred over
+        runActionOnRemoteHandles(remoteTargetHandle -> {
+            final TransformParams params = remoteTargetHandle.getTransformParams();
+            if (mSyncTransactionApplier != null) {
+                params.setSyncTransactionApplier(mSyncTransactionApplier);
+                params.getTargetSet().addReleaseCheck(mSyncTransactionApplier);
+            }
+
+            TaskViewSimulator tvs = remoteTargetHandle.getTaskViewSimulator();
+            tvs.setOrientationState(mOrientationState);
+            tvs.setDp(mActivity.getDeviceProfile());
+            tvs.recentsViewScale.value = 1;
+        });
 
         TaskView runningTaskView = getRunningTaskView();
         if (runningTaskView instanceof GroupedTaskView) {
@@ -4373,12 +4381,6 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             // in there is either null or outdated, so we need to update here as soon as we're
             // notified.
             ((GroupedTaskView) runningTaskView).updateSplitBoundsConfig(mSplitBoundsConfig);
-        }
-        for (RemoteTargetHandle remoteTargetHandle : mRemoteTargetHandles) {
-            TaskViewSimulator tvs = remoteTargetHandle.getTaskViewSimulator();
-            tvs.setOrientationState(mOrientationState);
-            tvs.setDp(mActivity.getDeviceProfile());
-            tvs.recentsViewScale.value = 1;
         }
     }
 

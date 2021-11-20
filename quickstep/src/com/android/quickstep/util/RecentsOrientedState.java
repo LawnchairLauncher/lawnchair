@@ -162,7 +162,7 @@ public class RecentsOrientedState implements
      */
     public void setDeviceProfile(DeviceProfile deviceProfile) {
         boolean oldMultipleOrientationsSupported = isMultipleOrientationSupportedByDevice();
-        setFlag(FLAG_MULTIPLE_ORIENTATION_SUPPORTED_BY_DENSITY, !deviceProfile.allowRotation);
+        setFlag(FLAG_MULTIPLE_ORIENTATION_SUPPORTED_BY_DENSITY, !deviceProfile.isTablet);
         if (mListenersInitialized) {
             boolean newMultipleOrientationsSupported = isMultipleOrientationSupportedByDevice();
             // If isMultipleOrientationSupportedByDevice is changed, init or destroy listeners
