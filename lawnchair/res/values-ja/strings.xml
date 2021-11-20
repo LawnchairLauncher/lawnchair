@@ -32,8 +32,8 @@
     <string name="folders_description">行と列の数</string>
     <string name="app_drawer_columns">アプリドロワーの列</string>
     <string name="dock_icons">ドックアイコン</string>
-    <string name="max_folder_columns">ブォルダ列の最大値</string>
-    <string name="max_folder_rows">ブォルダ行の最大値</string>
+    <string name="max_folder_columns">フォルダ列の最大値</string>
+    <string name="max_folder_rows">フォルダ行の最大値</string>
     <string name="home_screen_grid">ホーム画面のグリッド</string>
     <string name="columns">列数</string>
     <string name="grid">グリッド</string>
@@ -89,7 +89,7 @@
     <string name="theme_dark">ダーク</string>
     <string name="theme_system_default">システム</string>
     <string name="theme_follow_wallpaper">壁紙に合わせる</string>
-    <string name="quickstep_label">最新の</string>
+    <string name="quickstep_label">履歴</string>
     <string name="clear_all_as_action_label">下部にあるすべてのボタンをクリア</string>
     <string name="window_corner_radius_label">画面角の丸み</string>
     <string name="override_window_corner_radius_label">カスタムした画面角の丸み</string>
@@ -170,7 +170,7 @@
     <string name="apply_accent_color_label">アクセントカラーを適用</string>
     <string name="show_search_result_types">検索結果に表示</string>
     <string name="search_pref_result_people_title">人物</string>
-    <string name="search_pref_result_shortcuts_title">App Shortcuts</string>
+    <string name="search_pref_result_shortcuts_title">アプリのショートカット</string>
     <string name="search_pref_result_tips_title">Pixelのヒント</string>
     <string name="row_height_label">行の高さ</string>
     <string name="all_apps_device_search_hint">検索</string>
