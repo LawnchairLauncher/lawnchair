@@ -23,7 +23,7 @@ package {
 // Source code used for test
 filegroup {
     name: "launcher-tests-src",
-    srcs: ["src/**/*.java"],
+    srcs: ["src/**/*.java", "src/**/*.kt"],
 }
 
 // Source code used for oop test helpers
