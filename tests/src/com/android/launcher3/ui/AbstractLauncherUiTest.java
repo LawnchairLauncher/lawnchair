@@ -38,6 +38,7 @@ import android.os.Process;
 import android.os.RemoteException;
 import android.os.UserHandle;
 import android.os.UserManager;
+import android.system.OsConstants;
 import android.util.Log;
 
 import androidx.test.InstrumentationRegistry;
@@ -83,6 +84,7 @@ import java.lang.annotation.Target;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -327,7 +329,12 @@ public abstract class AbstractLauncherUiTest {
      */
     protected <T> T getOnUiThread(final Callable<T> callback) {
         try {
-            return mMainThreadExecutor.submit(callback).get();
+            return mMainThreadExecutor.submit(callback).get(DEFAULT_UI_TIMEOUT,
+                    TimeUnit.MILLISECONDS);
+        } catch (TimeoutException e) {
+            Log.e(TAG, "Timeout in getOnUiThread, sending SIGABRT", e);
+            Process.sendSignal(Process.myPid(), OsConstants.SIGABRT);
+            throw new RuntimeException(e);
         } catch (Throwable e) {
             throw new RuntimeException(e);
         }
