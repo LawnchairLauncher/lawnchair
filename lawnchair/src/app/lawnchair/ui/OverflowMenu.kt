@@ -1,5 +1,6 @@
 package app.lawnchair.ui
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.material.DropdownMenu
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.MoreVert
@@ -16,16 +17,18 @@ fun OverflowMenu(block: @Composable OverflowMenuScope.() -> Unit) {
     val showMenu = remember { mutableStateOf(false) }
     val overflowMenuScope = remember { OverflowMenuScopeImpl(showMenu) }
 
-    ClickableIcon(
-        imageVector = Icons.Rounded.MoreVert,
-        onClick = { showMenu.value = true }
-    )
-    DropdownMenu(
-        expanded = showMenu.value,
-        onDismissRequest = { showMenu.value = false },
-        offset = DpOffset(x = 8.dp, y = 0.dp)
-    ) {
-        block(overflowMenuScope)
+    Box {
+        ClickableIcon(
+            imageVector = Icons.Rounded.MoreVert,
+            onClick = { showMenu.value = true }
+        )
+        DropdownMenu(
+            expanded = showMenu.value,
+            onDismissRequest = { showMenu.value = false },
+            offset = DpOffset(x = 8.dp, y = -32.dp)
+        ) {
+            block(overflowMenuScope)
+        }
     }
 }
 
