@@ -281,6 +281,12 @@ public class TouchInteractionService extends Service
                     .onSystemBarAttributesChanged(displayId, behavior));
         }
 
+        @Override
+        public void onNavButtonsDarkIntensityChanged(float darkIntensity) {
+            executeForTaskbarManager(() -> mTaskbarManager
+                    .onNavButtonsDarkIntensityChanged(darkIntensity));
+        }
+
         private void executeForTaskbarManager(final Runnable r) {
             MAIN_EXECUTOR.execute(() -> {
                 if (mTaskbarManager == null) {
