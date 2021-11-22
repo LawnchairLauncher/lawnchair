@@ -65,9 +65,10 @@ public interface PagedOrientationHandler {
     Float2DAction<Canvas> CANVAS_TRANSLATE = Canvas::translate;
     Float2DAction<Matrix> MATRIX_POST_TRANSLATE = Matrix::postTranslate;
 
-    <T> void set(T target, Int2DAction<T> action, int param);
-    <T> void set(T target, Float2DAction<T> action, float param);
+    <T> void setPrimary(T target, Int2DAction<T> action, int param);
+    <T> void setPrimary(T target, Float2DAction<T> action, float param);
     <T> void setSecondary(T target, Float2DAction<T> action, float param);
+    <T> void set(T target, Int2DAction<T> action, int primaryParam, int secondaryParam);
     float getPrimaryDirection(MotionEvent event, int pointerIndex);
     float getPrimaryVelocity(VelocityTracker velocityTracker, int pointerId);
     int getMeasuredSize(View view);
