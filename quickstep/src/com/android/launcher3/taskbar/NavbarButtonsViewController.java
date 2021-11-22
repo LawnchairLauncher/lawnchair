@@ -15,8 +15,6 @@
  */
 package com.android.launcher3.taskbar;
 
-import static android.view.WindowManager.LayoutParams.TYPE_NAVIGATION_BAR_PANEL;
-
 import static com.android.launcher3.LauncherAnimUtils.VIEW_TRANSLATE_X;
 import static com.android.launcher3.taskbar.TaskbarNavButtonController.BUTTON_A11Y;
 import static com.android.launcher3.taskbar.TaskbarNavButtonController.BUTTON_A11Y_LONG_CLICK;
@@ -36,11 +34,11 @@ import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_N
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_OVERVIEW_DISABLED;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_QUICK_SETTINGS_EXPANDED;
 
+import android.animation.ArgbEvaluator;
 import android.animation.ObjectAnimator;
 import android.annotation.DrawableRes;
 import android.annotation.IdRes;
 import android.annotation.LayoutRes;
-import android.content.Context;
 import android.content.res.ColorStateList;
 import android.graphics.Rect;
 import android.graphics.Region;
@@ -94,7 +92,7 @@ public class NavbarButtonsViewController {
 
     private View.OnLongClickListener mA11yLongClickListener;
     private final ArrayList<StatePropertyHolder> mPropertyHolders = new ArrayList<>();
-    private final ArrayList<View> mAllButtons = new ArrayList<>();
+    private final ArrayList<ImageView> mAllButtons = new ArrayList<>();
     private int mState;
 
     private final TaskbarActivityContext mContext;
@@ -103,11 +101,17 @@ public class NavbarButtonsViewController {
     // Used for IME+A11Y buttons
     private final ViewGroup mEndContextualContainer;
     private final ViewGroup mStartContextualContainer;
+    private final int mLightIconColor;
+    private final int mDarkIconColor;
 
     private final AnimatedFloat mTaskbarNavButtonTranslationY = new AnimatedFloat(
             this::updateNavButtonTranslationY);
     private final AnimatedFloat mNavButtonTranslationYMultiplier = new AnimatedFloat(
             this::updateNavButtonTranslationY);
+    private final AnimatedFloat mTaskbarNavButtonDarkIntensity = new AnimatedFloat(
+            this::updateNavButtonDarkIntensity);
+    private final AnimatedFloat mNavButtonDarkIntensityMultiplier = new AnimatedFloat(
+            this::updateNavButtonDarkIntensity);
     private final RotationButtonListener mRotationButtonListener = new RotationButtonListener();
 
     private final Rect mFloatingRotationButtonBounds = new Rect();
@@ -125,6 +129,9 @@ public class NavbarButtonsViewController {
         mNavButtonContainer = mNavButtonsView.findViewById(R.id.end_nav_buttons);
         mEndContextualContainer = mNavButtonsView.findViewById(R.id.end_contextual_buttons);
         mStartContextualContainer = mNavButtonsView.findViewById(R.id.start_contextual_buttons);
+
+        mLightIconColor = context.getColor(R.color.taskbar_nav_icon_light_color);
+        mDarkIconColor = context.getColor(R.color.taskbar_nav_icon_dark_color);
     }
 
     /**
@@ -379,6 +386,16 @@ public class NavbarButtonsViewController {
         return mTaskbarNavButtonTranslationY;
     }
 
+    /** Use to set the dark intensity for the all nav+contextual buttons */
+    public AnimatedFloat getTaskbarNavButtonDarkIntensity() {
+        return mTaskbarNavButtonDarkIntensity;
+    }
+
+    /** Use to determine whether to use the dark intensity requested by the underlying app */
+    public AnimatedFloat getNavButtonDarkIntensityMultiplier() {
+        return mNavButtonDarkIntensityMultiplier;
+    }
+
     /**
      * Does not call {@link #applyState()}. Don't forget to!
      */
@@ -400,6 +417,16 @@ public class NavbarButtonsViewController {
     private void updateNavButtonTranslationY() {
         mNavButtonsView.setTranslationY(mTaskbarNavButtonTranslationY.value
                 * mNavButtonTranslationYMultiplier.value);
+    }
+
+    private void updateNavButtonDarkIntensity() {
+        float darkIntensity = mTaskbarNavButtonDarkIntensity.value
+                * mNavButtonDarkIntensityMultiplier.value;
+        int iconColor = (int) ArgbEvaluator.getInstance().evaluate(darkIntensity, mLightIconColor,
+                mDarkIconColor);
+        for (ImageView button : mAllButtons) {
+            button.setImageTintList(ColorStateList.valueOf(iconColor));
+        }
     }
 
     private ImageView addButton(@DrawableRes int drawableId, @TaskbarButton int buttonType,

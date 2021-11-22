@@ -25,13 +25,13 @@
 
     <!-- Taskbar -->
     <color name="taskbar_background">@color/overview_scrim_dark</color>
-    <color name="taskbar_icon_selection_ripple">#E0E0E0</color>
-
+    <color name="taskbar_nav_icon_selection_ripple">#E0E0E0</color>
+    <color name="taskbar_nav_icon_light_color">#ffffff</color>
+    <!-- The dark navigation button color is only used in the rare cases that taskbar isn't drawing
+    its background and the underlying app has requested dark buttons. -->
+    <color name="taskbar_nav_icon_dark_color">#99000000</color>
     <color name="taskbar_stashed_handle_light_color">#EBffffff</color>
     <color name="taskbar_stashed_handle_dark_color">#99000000</color>
-
-    <color name="rotation_button_light_color">#FFF</color>
-    <color name="rotation_button_dark_color">#99000000</color>
 
     <!-- Gesture navigation tutorial -->
     <color name="gesture_tutorial_back_arrow_color">#FFFFFFFF</color>
