@@ -261,6 +261,13 @@ public class DisplayController implements DisplayListener, ComponentCallbacks, S
             PortraitSize realSize = new PortraitSize(newInfo.currentSize.x, newInfo.currentSize.y);
             PortraitSize expectedSize = oldInfo.mInternalDisplays.get(
                     ApiWrapper.getUniqueId(display));
+            if (newInfo.supportedBounds.size() != oldInfo.supportedBounds.size()) {
+                Log.e("b/198965093",
+                        "Inconsistent number of displays"
+                                + "\ndisplay state: " + display.getState()
+                                + "\noldInfo.supportedBounds: " + oldInfo.supportedBounds
+                                + "\nnewInfo.supportedBounds: " + newInfo.supportedBounds);
+            }
             if (!realSize.equals(expectedSize) && display.getState() == Display.STATE_OFF) {
                 Log.e("b/198965093", "Display size changed while display is off, ignoring change");
                 return;
