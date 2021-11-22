@@ -196,7 +196,8 @@ public final class TaskViewUtils {
         boolean showAsGrid = dp.overviewShowAsGrid;
         boolean parallaxCenterAndAdjacentTask =
                 taskIndex != recentsView.getCurrentPage() && !showAsGrid;
-        int startScroll = recentsView.getScrollOffset(taskIndex);
+        int taskRectTranslationPrimary = recentsView.getScrollOffset(taskIndex);
+        int taskRectTranslationSecondary = showAsGrid ? (int) v.getGridTranslationY() : 0;
 
         RemoteTargetHandle[] topMostSimulators = null;
 
@@ -213,9 +214,10 @@ public final class TaskViewUtils {
 
                 tvsLocal.fullScreenProgress.value = 0;
                 tvsLocal.recentsViewScale.value = 1;
-                tvsLocal.setScroll(startScroll);
                 tvsLocal.setIsGridTask(v.isGridTask());
-                tvsLocal.setGridTranslationY(v.getGridTranslationY());
+                tvsLocal.getOrientationState().getOrientationHandler().set(tvsLocal,
+                        TaskViewSimulator::setTaskRectTranslation, taskRectTranslationPrimary,
+                        taskRectTranslationSecondary);
 
                 // Fade in the task during the initial 20% of the animation
                 out.addFloat(targetHandle.getTransformParams(), TransformParams.TARGET_ALPHA, 0, 1,
