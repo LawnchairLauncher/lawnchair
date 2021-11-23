@@ -63,6 +63,9 @@ public final class RecentsViewStateController extends
         }
         setAlphas(PropertySetter.NO_ANIM_PROPERTY_SETTER, new StateAnimationConfig(), state);
         mRecentsView.setFullscreenProgress(state.getOverviewFullscreenProgress());
+        // In Overview, we may be layering app surfaces behind Launcher, so we need to notify
+        // DepthController to prevent optimizations which might occlude the layers behind
+        mLauncher.getDepthController().setHasContentBehindLauncher(state.overviewUi);
     }
 
     @Override
@@ -78,6 +81,10 @@ public final class RecentsViewStateController extends
             builder.addListener(
                     AnimatorListeners.forSuccessCallback(mRecentsView::resetTaskVisuals));
         }
+        // In Overview, we may be layering app surfaces behind Launcher, so we need to notify
+        // DepthController to prevent optimizations which might occlude the layers behind
+        builder.addListener(AnimatorListeners.forSuccessCallback(() ->
+                mLauncher.getDepthController().setHasContentBehindLauncher(toState.overviewUi)));
 
         // Create or dismiss split screen select animations
         LauncherState currentState = mLauncher.getStateManager().getState();

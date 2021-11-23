@@ -21,7 +21,6 @@ import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.LauncherState.OVERVIEW_MODAL_TASK;
 import static com.android.launcher3.LauncherState.OVERVIEW_SPLIT_SELECT;
 import static com.android.launcher3.LauncherState.SPRING_LOADED;
-import static com.android.quickstep.ViewUtils.postFrameDrawn;
 
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -110,8 +109,8 @@ public class LauncherRecentsView extends RecentsView<BaseQuickstepLauncher, Laun
         setFreezeViewVisibility(false);
 
         if (isOverlayEnabled) {
-            postFrameDrawn(this, () -> runActionOnRemoteHandles(remoteTargetHandle ->
-                    remoteTargetHandle.getTaskViewSimulator().setDrawsBelowRecents(true)));
+            runActionOnRemoteHandles(remoteTargetHandle ->
+                    remoteTargetHandle.getTaskViewSimulator().setDrawsBelowRecents(true));
         }
     }
 
