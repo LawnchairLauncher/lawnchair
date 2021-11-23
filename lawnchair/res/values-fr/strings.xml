@@ -175,4 +175,5 @@
     <string name="search_pref_result_tips_title">Astuces Pixel</string>
     <string name="row_height_label">Hauteur de la ligne</string>
     <string name="all_apps_device_search_hint">Rechercher</string>
+    <string name="dark_status_bar_label">Dark Status Bar</string>
 </resources>
