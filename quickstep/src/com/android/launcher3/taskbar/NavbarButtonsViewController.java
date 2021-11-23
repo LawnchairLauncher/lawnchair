@@ -17,7 +17,6 @@ package com.android.launcher3.taskbar;
 
 import static com.android.launcher3.LauncherAnimUtils.VIEW_TRANSLATE_X;
 import static com.android.launcher3.taskbar.TaskbarNavButtonController.BUTTON_A11Y;
-import static com.android.launcher3.taskbar.TaskbarNavButtonController.BUTTON_A11Y_LONG_CLICK;
 import static com.android.launcher3.taskbar.TaskbarNavButtonController.BUTTON_BACK;
 import static com.android.launcher3.taskbar.TaskbarNavButtonController.BUTTON_HOME;
 import static com.android.launcher3.taskbar.TaskbarNavButtonController.BUTTON_IME_SWITCH;
@@ -90,7 +89,6 @@ public class NavbarButtonsViewController {
 
     private static final int MASK_IME_SWITCHER_VISIBLE = FLAG_SWITCHER_SUPPORTED | FLAG_IME_VISIBLE;
 
-    private View.OnLongClickListener mA11yLongClickListener;
     private final ArrayList<StatePropertyHolder> mPropertyHolders = new ArrayList<>();
     private final ArrayList<ImageView> mAllButtons = new ArrayList<>();
     private int mState;
@@ -141,11 +139,6 @@ public class NavbarButtonsViewController {
         mControllers = controllers;
         mNavButtonsView.getLayoutParams().height = mContext.getDeviceProfile().taskbarSize;
         mNavButtonTranslationYMultiplier.value = 1;
-
-        mA11yLongClickListener = view -> {
-            mControllers.navButtonController.onButtonClick(BUTTON_A11Y_LONG_CLICK);
-            return true;
-        };
 
         mPropertyHolders.add(new StatePropertyHolder(
                 mControllers.taskbarViewController.getTaskbarIconAlpha()
@@ -285,7 +278,6 @@ public class NavbarButtonsViewController {
         mPropertyHolders.add(new StatePropertyHolder(mA11yButton,
                 flags -> (flags & FLAG_A11Y_VISIBLE) != 0
                         && (flags & FLAG_ROTATION_BUTTON_VISIBLE) == 0));
-        mA11yButton.setOnLongClickListener(mA11yLongClickListener);
     }
 
     private void parseSystemUiFlags(int sysUiStateFlags) {
@@ -441,6 +433,8 @@ public class NavbarButtonsViewController {
         ImageView buttonView = addButton(parent, id, layoutId);
         buttonView.setImageResource(drawableId);
         buttonView.setOnClickListener(view -> navButtonController.onButtonClick(buttonType));
+        buttonView.setOnLongClickListener(view ->
+                navButtonController.onButtonLongClick(buttonType));
         return buttonView;
     }
 
