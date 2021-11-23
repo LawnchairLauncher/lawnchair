@@ -101,18 +101,24 @@ public class PortraitPagedViewHandler implements PagedOrientationHandler {
     }
 
     @Override
-    public <T> void set(T target, Int2DAction<T> action, int param) {
+    public <T> void setPrimary(T target, Int2DAction<T> action, int param) {
         action.call(target, param, 0);
     }
 
     @Override
-    public <T> void set(T target, Float2DAction<T> action, float param) {
+    public <T> void setPrimary(T target, Float2DAction<T> action, float param) {
         action.call(target, param, 0);
     }
 
     @Override
     public <T> void setSecondary(T target, Float2DAction<T> action, float param) {
         action.call(target, 0, param);
+    }
+
+    @Override
+    public <T> void set(T target, Int2DAction<T> action, int primaryParam,
+            int secondaryParam) {
+        action.call(target, primaryParam, secondaryParam);
     }
 
     @Override

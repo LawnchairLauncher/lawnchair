@@ -544,11 +544,11 @@ public final class LauncherInstrumentation {
                     : TestHelpers.getSystemHealthMessage(getContext(), mTestStartTime);
 
             if (systemHealth != null) {
-                return message
-                        + ";\nPerhaps linked to system health problems:\n<<<<<<<<<<<<<<<<<<\n"
+                message += ";\nPerhaps linked to system health problems:\n<<<<<<<<<<<<<<<<<<\n"
                         + systemHealth + "\n>>>>>>>>>>>>>>>>>>";
             }
         }
+        Log.d(TAG, "About to throw the error: " + message, new Exception());
         return message;
     }
 

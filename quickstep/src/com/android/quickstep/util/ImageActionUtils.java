@@ -49,7 +49,6 @@ import androidx.core.content.FileProvider;
 
 import com.android.internal.app.ChooserActivity;
 import com.android.launcher3.BuildConfig;
-import com.android.launcher3.testing.TestProtocol;
 import com.android.quickstep.SystemUiProxy;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.recents.utilities.BitmapUtil;
@@ -78,9 +77,6 @@ public class ImageActionUtils {
     public static void saveScreenshot(SystemUiProxy systemUiProxy, Bitmap screenshot,
             Rect screenshotBounds,
             Insets visibleInsets, Task.TaskKey task) {
-        if (TestProtocol.sDebugTracing) {
-            Log.d(TestProtocol.NO_SCREENSHOT, "image action utils calling into sysuiproxy");
-        }
         systemUiProxy.handleImageBundleAsScreenshot(BitmapUtil.hardwareBitmapToBundle(screenshot),
                 screenshotBounds, visibleInsets, task);
     }

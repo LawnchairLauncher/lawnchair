@@ -43,7 +43,6 @@ import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.statemanager.StatefulActivity;
-import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.DisplayController.Info;
 import com.android.launcher3.util.SettingsCache;
@@ -270,6 +269,12 @@ public class TaskbarManager implements DisplayController.DisplayInfoChangeListen
     public void onSystemBarAttributesChanged(int displayId, int behavior) {
         if (mTaskbarActivityContext != null) {
             mTaskbarActivityContext.onSystemBarAttributesChanged(displayId, behavior);
+        }
+    }
+
+    public void onNavButtonsDarkIntensityChanged(float darkIntensity) {
+        if (mTaskbarActivityContext != null) {
+            mTaskbarActivityContext.onNavButtonsDarkIntensityChanged(darkIntensity);
         }
     }
 

@@ -20,7 +20,6 @@ import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.Rect;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.FrameLayout;
@@ -31,7 +30,6 @@ import androidx.annotation.Nullable;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Insettable;
 import com.android.launcher3.R;
-import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.util.MultiValueAlpha;
 import com.android.launcher3.util.MultiValueAlpha.AlphaProperty;
 import com.android.quickstep.SysUINavigationMode;
@@ -114,10 +112,6 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
     protected void onFinishInflate() {
         super.onFinishInflate();
         findViewById(R.id.action_screenshot).setOnClickListener(this);
-        if (TestProtocol.sDebugTracing) {
-            Log.d(TestProtocol.NO_SCREENSHOT, "Inflated OverviewActionsView and added screenshot"
-                    + " listener.");
-        }
 
         mSplitButton = findViewById(R.id.action_split);
         mSplitButton.setOnClickListener(this);
@@ -129,19 +123,11 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
      * @param callbacks for callbacks, or {@code null} to clear the listener.
      */
     public void setCallbacks(T callbacks) {
-        if (TestProtocol.sDebugTracing) {
-            Log.d(TestProtocol.NO_SCREENSHOT, "OverviewActionsView setCallbacks: " + callbacks);
-        }
         mCallbacks = callbacks;
     }
 
     @Override
     public void onClick(View view) {
-        if (TestProtocol.sDebugTracing) {
-            Log.d(TestProtocol.NO_SCREENSHOT, "OverviewActionsView - onClick"
-                    + " callbacks: " + mCallbacks + "  view id: " + view.getId() + " "
-                    + " is screenshot? " + (view.getId() == R.id.action_screenshot));
-        }
         if (mCallbacks == null) {
             return;
         }

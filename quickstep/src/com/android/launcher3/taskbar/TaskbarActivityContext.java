@@ -154,8 +154,8 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
                 buttonController,
                 new NavbarButtonsViewController(this, navButtonsView),
                 new RotationButtonController(this,
-                        c.getColor(R.color.rotation_button_light_color),
-                        c.getColor(R.color.rotation_button_dark_color),
+                        c.getColor(R.color.taskbar_nav_icon_light_color),
+                        c.getColor(R.color.taskbar_nav_icon_dark_color),
                         R.drawable.ic_sysbar_rotate_button_ccw_start_0,
                         R.drawable.ic_sysbar_rotate_button_ccw_start_90,
                         R.drawable.ic_sysbar_rotate_button_cw_start_0,
@@ -406,6 +406,11 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
 
     public void onSystemBarAttributesChanged(int displayId, int behavior) {
         mControllers.rotationButtonController.onBehaviorChanged(displayId, behavior);
+    }
+
+    public void onNavButtonsDarkIntensityChanged(float darkIntensity) {
+        mControllers.navbarButtonsViewController.getTaskbarNavButtonDarkIntensity()
+                .updateValue(darkIntensity);
     }
 
     /**
