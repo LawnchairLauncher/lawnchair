@@ -41,8 +41,8 @@ public abstract class SystemShortcut<T extends Context & ActivityContext> extend
         implements View.OnClickListener {
 
     private final int mIconResId;
-    private final int mLabelResId;
-    private final int mAccessibilityActionId;
+    protected final int mLabelResId;
+    protected int mAccessibilityActionId;
 
     protected final T mTarget;
     protected final ItemInfo mItemInfo;
@@ -142,9 +142,41 @@ public abstract class SystemShortcut<T extends Context & ActivityContext> extend
 
     public static class AppInfo<T extends Context & ActivityContext> extends SystemShortcut<T> {
 
+        @Nullable
+        private SplitAccessibilityInfo mSplitA11yInfo;
+
         public AppInfo(T target, ItemInfo itemInfo) {
             super(R.drawable.ic_info_no_shadow, R.string.app_info_drop_target_label, target,
                     itemInfo);
+        }
+
+        /**
+         * Constructor used by overview for staged split to provide custom A11y information.
+         *
+         * Future improvements considerations:
+         * Have the logic in {@link #createAccessibilityAction(Context)} be moved to super
+         * call in {@link SystemShortcut#createAccessibilityAction(Context)} by having
+         * SystemShortcut be aware of TaskContainers and staged split.
+         * That way it could directly create the correct node info for any shortcut that supports
+         * split, but then we'll need custom resIDs for each pair of shortcuts.
+         */
+        public AppInfo(T target, ItemInfo itemInfo, SplitAccessibilityInfo accessibilityInfo) {
+            this(target, itemInfo);
+            mSplitA11yInfo = accessibilityInfo;
+            mAccessibilityActionId = accessibilityInfo.nodeId;
+        }
+
+        @Override
+        public AccessibilityNodeInfo.AccessibilityAction createAccessibilityAction(
+                Context context) {
+            if (mSplitA11yInfo != null && mSplitA11yInfo.containsMultipleTasks) {
+                String accessibilityLabel = context.getString(R.string.split_app_info_accessibility,
+                        mSplitA11yInfo.taskTitle);
+                return new AccessibilityNodeInfo.AccessibilityAction(mAccessibilityActionId,
+                        accessibilityLabel);
+            } else {
+                return super.createAccessibilityAction(context);
+            }
         }
 
         @Override
@@ -155,6 +187,19 @@ public abstract class SystemShortcut<T extends Context & ActivityContext> extend
                     mItemInfo, sourceBounds, ActivityOptions.makeBasic().toBundle());
             mTarget.getStatsLogManager().logger().withItemInfo(mItemInfo)
                     .log(LAUNCHER_SYSTEM_SHORTCUT_APP_INFO_TAP);
+        }
+
+        public static class SplitAccessibilityInfo {
+            public final boolean containsMultipleTasks;
+            public final CharSequence taskTitle;
+            public final int nodeId;
+
+            public SplitAccessibilityInfo(boolean containsMultipleTasks,
+                    CharSequence taskTitle, int nodeId) {
+                this.containsMultipleTasks = containsMultipleTasks;
+                this.taskTitle = taskTitle;
+                this.nodeId = nodeId;
+            }
         }
     }
 
