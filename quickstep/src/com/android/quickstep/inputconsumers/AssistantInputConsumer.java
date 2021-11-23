@@ -24,6 +24,8 @@ import static android.view.MotionEvent.ACTION_POINTER_DOWN;
 import static android.view.MotionEvent.ACTION_POINTER_UP;
 import static android.view.MotionEvent.ACTION_UP;
 
+import static com.android.internal.app.AssistUtils.INVOCATION_TYPE_GESTURE;
+import static com.android.internal.app.AssistUtils.INVOCATION_TYPE_KEY;
 import static com.android.launcher3.Utilities.squaredHypot;
 
 import android.animation.Animator;
@@ -64,8 +66,6 @@ public class AssistantInputConsumer extends DelegateInputConsumer {
     private static final String OPA_BUNDLE_TRIGGER = "triggered_by";
     // From //java/com/google/android/apps/gsa/assistant/shared/proto/opa_trigger.proto.
     private static final int OPA_BUNDLE_TRIGGER_DIAG_SWIPE_GESTURE = 83;
-    private static final String INVOCATION_TYPE_KEY = "invocation_type";
-    private static final int INVOCATION_TYPE_GESTURE = 1;
 
     private final PointF mDownPos = new PointF();
     private final PointF mLastPos = new PointF();
