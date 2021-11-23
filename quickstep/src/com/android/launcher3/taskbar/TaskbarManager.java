@@ -18,7 +18,6 @@ package com.android.launcher3.taskbar;
 import static android.view.Display.DEFAULT_DISPLAY;
 import static android.view.WindowManager.LayoutParams.TYPE_NAVIGATION_BAR_PANEL;
 
-import static com.android.launcher3.testing.TestProtocol.TASKBAR_WINDOW_CRASH;
 import static com.android.launcher3.util.DisplayController.CHANGE_ACTIVE_SCREEN;
 import static com.android.launcher3.util.DisplayController.CHANGE_DENSITY;
 import static com.android.launcher3.util.DisplayController.CHANGE_SUPPORTED_BOUNDS;
@@ -206,8 +205,6 @@ public class TaskbarManager implements DisplayController.DisplayInfoChangeListen
     }
 
     private void recreateTaskbar() {
-        Log.d(TASKBAR_WINDOW_CRASH, "Recreating taskbar: mTaskbarActivityContext="
-                + mTaskbarActivityContext);
         destroyExistingTaskbar();
 
         DeviceProfile dp =
@@ -230,7 +227,6 @@ public class TaskbarManager implements DisplayController.DisplayInfoChangeListen
             mTaskbarActivityContext.setUIController(
                     createTaskbarUIControllerForActivity(mActivity));
         }
-        Log.d(TASKBAR_WINDOW_CRASH, "Finished recreating taskbar");
     }
 
     public void onSystemUiFlagsChanged(int systemUiStateFlags) {
