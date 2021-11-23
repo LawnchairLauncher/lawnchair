@@ -174,4 +174,5 @@
     <string name="search_pref_result_tips_title">Pixelのヒント</string>
     <string name="row_height_label">行の高さ</string>
     <string name="all_apps_device_search_hint">検索</string>
+    <string name="dark_status_bar_label">Dark Status Bar</string>
 </resources>
