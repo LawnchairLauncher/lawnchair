@@ -175,4 +175,5 @@
     <string name="search_pref_result_tips_title">Pixel tippek</string>
     <string name="row_height_label">Sor magasság</string>
     <string name="all_apps_device_search_hint">Keresés</string>
+    <string name="dark_status_bar_label">Dark Status Bar</string>
 </resources>
