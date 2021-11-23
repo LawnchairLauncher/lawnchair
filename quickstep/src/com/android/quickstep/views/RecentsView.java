@@ -3120,14 +3120,10 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                         }
                     } else {
                         // Update focus task and its size.
-                        if (finalIsFocusedTaskDismissed) {
-                            if (finalNextFocusedTaskView != null) {
-                                mFocusedTaskViewId = finalNextFocusedTaskView.getTaskViewId();
-                                mTopRowIdSet.remove(mFocusedTaskViewId);
-                                finalNextFocusedTaskView.animateIconScaleAndDimIntoView();
-                            } else {
-                                mFocusedTaskViewId = -1;
-                            }
+                        if (finalIsFocusedTaskDismissed && finalNextFocusedTaskView != null) {
+                            mFocusedTaskViewId = finalNextFocusedTaskView.getTaskViewId();
+                            mTopRowIdSet.remove(mFocusedTaskViewId);
+                            finalNextFocusedTaskView.animateIconScaleAndDimIntoView();
                         }
                         updateTaskSize(/*isTaskDismissal=*/ true);
                         updateChildTaskOrientations();
@@ -4021,6 +4017,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                 //  * Focused Task
                 updateGridProperties();
                 resetFromSplitSelectionState();
+                updateScrollSynchronously();
             }
         });
 
@@ -4042,7 +4039,6 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         resetTaskVisuals();
         mSplitHiddenTaskViewIndex = -1;
         if (mSplitHiddenTaskView != null) {
-            mSplitHiddenTaskView.setTranslationY(0);
             mSplitHiddenTaskView.setVisibility(VISIBLE);
             mSplitHiddenTaskView = null;
         }
@@ -4503,9 +4499,8 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     }
 
     private int getFirstViewIndex() {
-        return mShowAsGridLastOnLayout && mFocusedTaskViewId != -1
-                ? indexOfChild(getFocusedTaskView())
-                : 0;
+        TaskView focusedTaskView = mShowAsGridLastOnLayout ? getFocusedTaskView() : null;
+        return focusedTaskView != null ? indexOfChild(focusedTaskView) : 0;
     }
 
     private int getLastViewIndex() {

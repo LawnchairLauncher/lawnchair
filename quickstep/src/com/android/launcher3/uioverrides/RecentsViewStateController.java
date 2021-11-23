@@ -83,8 +83,10 @@ public final class RecentsViewStateController extends
         LauncherState currentState = mLauncher.getStateManager().getState();
         if (isSplitSelectionState(toState) && !isSplitSelectionState(currentState)) {
             builder.add(mRecentsView.createSplitSelectInitAnimation().buildAnim());
+            mRecentsView.applySplitPrimaryScrollOffset();
         } else if (!isSplitSelectionState(toState) && isSplitSelectionState(currentState)) {
             builder.add(mRecentsView.cancelSplitSelect(true).buildAnim());
+            mRecentsView.resetSplitPrimaryScrollOffset();
         }
 
         setAlphas(builder, config, toState);
