@@ -177,4 +177,5 @@
     <string name="search_pref_result_tips_title">Tipy Pixel</string>
     <string name="row_height_label">Výška řádku</string>
     <string name="all_apps_device_search_hint">Vyhledávání</string>
+    <string name="dark_status_bar_label">Dark Status Bar</string>
 </resources>
