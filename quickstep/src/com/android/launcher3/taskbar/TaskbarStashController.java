@@ -282,6 +282,12 @@ public class TaskbarStashController {
             // Just hide/show the icons instead of stashing into a handle.
             mAnimator.play(mIconAlphaForStash.animateToValue(isStashed ? 0 : 1)
                     .setDuration(duration));
+            mAnimator.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    mAnimator = null;
+                }
+            });
             return;
         }
 
