@@ -68,11 +68,9 @@ import com.android.launcher3.uioverrides.touchcontrollers.StatusBarTouchControll
 import com.android.launcher3.uioverrides.touchcontrollers.TaskViewTouchController;
 import com.android.launcher3.uioverrides.touchcontrollers.TransposedQuickSwitchTouchController;
 import com.android.launcher3.uioverrides.touchcontrollers.TwoButtonNavbarTouchController;
-import com.android.launcher3.util.IntSet;
 import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.OnboardingPrefs;
 import com.android.launcher3.util.PendingRequestArgs;
-import com.android.launcher3.util.RunnableList;
 import com.android.launcher3.util.TouchController;
 import com.android.launcher3.util.UiThreadHelper;
 import com.android.launcher3.util.UiThreadHelper.AsyncCommand;
@@ -92,8 +90,6 @@ import java.util.Objects;
 import java.util.stream.Stream;
 
 public class QuickstepLauncher extends BaseQuickstepLauncher {
-
-    public static final String HOME_IS_READY = "com.android.launcher3.HOME_IS_READY";
 
     public static final boolean GO_LOW_RAM_RECENTS_ENABLED = false;
     /**
@@ -233,12 +229,6 @@ public class QuickstepLauncher extends BaseQuickstepLauncher {
         if (state == NORMAL && !inTransition) {
             ((RecentsView) getOverviewPanel()).setSwipeDownShouldLaunchApp(false);
         }
-    }
-
-    @Override
-    public void onInitialBindComplete(IntSet boundPages, RunnableList pendingTasks) {
-        super.onInitialBindComplete(boundPages, pendingTasks);
-        sendBroadcast(new Intent(HOME_IS_READY).setPackage("com.android.settings"));
     }
 
     @Override
