@@ -840,7 +840,9 @@ public class TaskView extends FrameLayout implements Reusable {
         TaskIdAttributeContainer menuContainer =
                 mTaskIdAttributeContainer[iconView == mIconView ? 0 : 1];
         if (mActivity.getDeviceProfile().overviewShowAsGrid) {
-            return TaskMenuViewWithArrow.Companion.showForTask(menuContainer);
+            boolean alignSecondRow = getRecentsView().isOnGridBottomRow(menuContainer.getTaskView())
+                    && mActivity.getDeviceProfile().isLandscape;
+            return TaskMenuViewWithArrow.Companion.showForTask(menuContainer, alignSecondRow);
         } else {
             return TaskMenuView.showForTask(menuContainer);
         }
