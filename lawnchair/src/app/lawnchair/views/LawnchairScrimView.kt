@@ -12,10 +12,15 @@ import com.android.launcher3.views.ScrimView
 class LawnchairScrimView(context: Context, attrs: AttributeSet?) : ScrimView(context, attrs) {
 
     private var drawerOpacity = 0f
+    private var darkStatusBar = false
 
     init {
-        PreferenceManager.getInstance(context).drawerOpacity.subscribeValues(this) {
+        val pm = PreferenceManager.getInstance(context)
+        pm.drawerOpacity.subscribeValues(this) {
             drawerOpacity = it
+        }
+        pm.darkStatusBar.subscribeValues(this) {
+            darkStatusBar = it
         }
     }
 
@@ -27,7 +32,7 @@ class LawnchairScrimView(context: Context, attrs: AttributeSet?) : ScrimView(con
             if (forceChange) {
                 updateUiState(SystemUiController.UI_STATE_SCRIM_VIEW, !isScrimDark)
             } else {
-                updateUiState(SystemUiController.UI_STATE_SCRIM_VIEW, 0)
+                updateUiState(SystemUiController.UI_STATE_SCRIM_VIEW, darkStatusBar)
             }
         }
     }

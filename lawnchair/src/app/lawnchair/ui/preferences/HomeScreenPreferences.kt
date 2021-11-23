@@ -57,6 +57,10 @@ fun HomeScreenPreferences() {
                 prefs.workspaceDt2s.getAdapter(),
                 label = stringResource(id = R.string.workspace_dt2s),
             )
+            SwitchPreference(
+                adapter = prefs.darkStatusBar.getAdapter(),
+                label = stringResource(id = R.string.dark_status_bar_label)
+            )
             val columns by prefs.workspaceColumns.getAdapter()
             val rows by prefs.workspaceRows.getAdapter()
             NavigationActionPreference(
