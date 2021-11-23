@@ -44,7 +44,6 @@ import com.android.launcher3.states.StateAnimationConfig;
 import com.android.systemui.shared.system.BlurUtils;
 import com.android.systemui.shared.system.WallpaperManagerCompat;
 
-import java.io.FileDescriptor;
 import java.io.PrintWriter;
 import java.util.function.Consumer;
 
@@ -156,6 +155,10 @@ public class DepthController implements StateHandler<LauncherState>,
     // Workaround for animating the depth when multiwindow mode changes.
     private boolean mIgnoreStateChangesDuringMultiWindowAnimation = false;
 
+    // Hints that there is potentially content behind Launcher and that we shouldn't optimize by
+    // marking the launcher surface as opaque.  Only used in certain Launcher states.
+    private boolean mHasContentBehindLauncher;
+
     private View.OnAttachStateChangeListener mOnAttachListener;
 
     public DepthController(Launcher l) {
@@ -197,6 +200,10 @@ public class DepthController implements StateHandler<LauncherState>,
         CrossWindowBlurListeners.getInstance().addListener(mLauncher.getMainExecutor(),
                 mCrossWindowBlurListener);
         mLauncher.getScrimView().addOpaquenessListener(mOpaquenessListener);
+    }
+
+    public void setHasContentBehindLauncher(boolean hasContentBehindLauncher) {
+        mHasContentBehindLauncher = hasContentBehindLauncher;
     }
 
     /**
@@ -311,13 +318,14 @@ public class DepthController implements StateHandler<LauncherState>,
         }
 
         if (supportsBlur) {
-            boolean opaque = mLauncher.getScrimView().isFullyOpaque();
+            boolean hasOpaqueBg = mLauncher.getScrimView().isFullyOpaque();
+            boolean isSurfaceOpaque = !mHasContentBehindLauncher && hasOpaqueBg;
 
-            mCurrentBlur = !mCrossWindowBlursEnabled || mBlurDisabledForAppLaunch
+            mCurrentBlur = !mCrossWindowBlursEnabled || mBlurDisabledForAppLaunch || hasOpaqueBg
                     ? 0 : (int) (depth * mMaxBlurRadius);
             SurfaceControl.Transaction transaction = new SurfaceControl.Transaction()
                     .setBackgroundBlurRadius(mSurface, mCurrentBlur)
-                    .setOpaque(mSurface, opaque);
+                    .setOpaque(mSurface, isSurfaceOpaque);
 
             // Set early wake-up flags when we know we're executing an expensive operation, this way
             // SurfaceFlinger will adjust its internal offsets to avoid jank.
