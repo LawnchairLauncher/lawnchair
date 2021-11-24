@@ -60,6 +60,7 @@ message ContainerInfo {
     PredictedHotseatContainer predicted_hotseat_container = 10;
     TaskSwitcherContainer task_switcher_container = 11;
     TaskBarContainer task_bar_container = 12;
+    WallpapersContainer wallpapers_container = 13;
     ExtendedContainers extended_containers = 20;
   }
 }
@@ -245,6 +246,12 @@ message FolderContainer {
     HotseatContainer hotseat = 5;
     TaskBarContainer taskbar = 6;
   }
+}
+
+// Represents wallpapers container for quick switching.
+message WallpapersContainer {
+  // Number of wallpapers in the container.
+  optional int32 cardinality = 1;
 }
 
 // Represents state of EditText field before update.
