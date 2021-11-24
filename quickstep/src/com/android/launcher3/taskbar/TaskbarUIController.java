@@ -16,6 +16,7 @@
 package com.android.launcher3.taskbar;
 
 import android.graphics.Rect;
+import android.view.View;
 
 import com.android.launcher3.model.data.ItemInfoWithIcon;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
@@ -29,7 +30,12 @@ public class TaskbarUIController {
 
     public static final TaskbarUIController DEFAULT = new TaskbarUIController();
 
-    protected void init(TaskbarControllers taskbarControllers) { }
+    // Initialized in init.
+    protected TaskbarControllers mControllers;
+
+    protected void init(TaskbarControllers taskbarControllers) {
+        mControllers = taskbarControllers;
+    }
 
     protected void onDestroy() { }
 
@@ -46,4 +52,16 @@ public class TaskbarUIController {
     }
 
     public void onTaskbarIconLaunched(WorkspaceItemInfo item) { }
+
+    public View getRootView() {
+        return mControllers.taskbarActivityContext.getDragLayer();
+    }
+
+    /**
+     * Called when swiping from the bottom nav region in fully gestural mode.
+     * @param inProgress True if the animation started, false if we just settled on an end target.
+     */
+    public void setSystemGestureInProgress(boolean inProgress) {
+        mControllers.taskbarStashController.setSystemGestureInProgress(inProgress);
+    }
 }
