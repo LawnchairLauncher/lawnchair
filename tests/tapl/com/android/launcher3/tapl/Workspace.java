@@ -145,22 +145,55 @@ public final class Workspace extends Home {
             if (!isWorkspaceScrollable(workspace)) {
                 try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
                         "dragging icon to a second page of workspace to make it scrollable")) {
-                    dragIconToWorkspace(
-                            mLauncher,
-                            getHotseatAppIcon("Chrome"),
-                            new Point(mLauncher.getDevice().getDisplayWidth(),
-                                    mLauncher.getVisibleBounds(workspace).centerY()),
-                            "popup_container",
-                            false,
-                            false,
-                            () -> mLauncher.expectEvent(
-                                    TestProtocol.SEQUENCE_MAIN, LONG_CLICK_EVENT));
+                    dragIcon(workspace, getHotseatAppIcon("Chrome"), pagesPerScreen());
                     verifyActiveContainer();
                 }
             }
             assertTrue("Home screen workspace didn't become scrollable",
                     isWorkspaceScrollable(workspace));
         }
+    }
+
+    /**
+     * Returns the number of pages that are visible on the screen simultaneously.
+     */
+    public int pagesPerScreen() {
+        return mLauncher.isTwoPanels() ? 2 : 1;
+    }
+
+    /**
+     * Drags an icon to the (currentPage + pageDelta) page if the page already exists.
+     * If the target page doesn't exist, the icon will be put onto an existing page that is the
+     * closest to the target page.
+     *
+     * @param appIcon   - icon to drag.
+     * @param pageDelta - how many pages should the icon be dragged from the current page.
+     *                    It can be a negative value.
+     */
+    public void dragIcon(AppIcon appIcon, int pageDelta) {
+        try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck()) {
+            final UiObject2 workspace = verifyActiveContainer();
+            try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
+                    "dragging icon to page with delta: " + pageDelta)) {
+                dragIcon(workspace, appIcon, pageDelta);
+                verifyActiveContainer();
+            }
+        }
+    }
+
+    private void dragIcon(UiObject2 workspace, AppIcon appIcon, int pageDelta) {
+        int pageWidth = mLauncher.getDevice().getDisplayWidth() / pagesPerScreen();
+        int targetX = (pageWidth / 2) + pageWidth * pageDelta;
+        dragIconToWorkspace(
+                mLauncher,
+                appIcon,
+                new Point(targetX, mLauncher.getVisibleBounds(workspace).centerY()),
+                "popup_container",
+                false,
+                false,
+                () -> mLauncher.expectEvent(
+                        TestProtocol.SEQUENCE_MAIN, LONG_CLICK_EVENT));
+        verifyActiveContainer();
     }
 
     private boolean isWorkspaceScrollable(UiObject2 workspace) {
@@ -258,10 +291,26 @@ public final class Workspace extends Home {
         try (LauncherInstrumentation.Closable ignored = launcher.addContextLayer(
                 "want to drag icon to workspace")) {
             final long downTime = SystemClock.uptimeMillis();
-            final Point dragStartCenter = dragIconToSpringLoaded(launcher, downTime,
+            Point dragStart = dragIconToSpringLoaded(launcher, downTime,
                     launchable.getObject(), longPressIndicator, expectLongClickEvents);
-            final Point targetDest = dest.get();
-            launcher.movePointer(dragStartCenter, targetDest, 10, downTime, true,
+            Point targetDest = dest.get();
+            int displayX = launcher.getRealDisplaySize().x;
+
+            // Since the destination can be on another page, we need to drag to the edge first
+            // until we reach the target page
+            while (targetDest.x > displayX || targetDest.x < 0) {
+                int edgeX = targetDest.x > 0 ? displayX : 0;
+                Point screenEdge = new Point(edgeX, targetDest.y);
+                launcher.movePointer(dragStart, screenEdge, 10, downTime, true,
+                        LauncherInstrumentation.GestureScope.INSIDE);
+                launcher.waitForIdle(); // Wait for the page change to happen
+                targetDest.x += displayX * (targetDest.x > 0 ? -1 : 1);
+                dragStart = screenEdge;
+            }
+
+            // targetDest.x is now between 0 and displayX so we found the target page,
+            // we just have to put move the icon to the destination and drop it
+            launcher.movePointer(dragStart, targetDest, 10, downTime, true,
                     LauncherInstrumentation.GestureScope.INSIDE);
             dropDraggedIcon(launcher, targetDest, downTime, expectDropEvents);
         }
