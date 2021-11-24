@@ -16,14 +16,14 @@
 package com.android.launcher3.taskbar;
 
 import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.ValueAnimator;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Outline;
 import android.graphics.Rect;
 import android.view.View;
 import android.view.ViewOutlineProvider;
-
-import androidx.annotation.Nullable;
 
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
@@ -66,7 +66,10 @@ public class StashedHandleViewController {
     private final Rect mStashedHandleBounds = new Rect();
     private float mStashedHandleRadius;
 
-    private boolean mIsAtStashedRevealBounds = true;
+    // When the reveal animation is cancelled, we can assume it's about to create a new animation,
+    // which should start off at the same point the cancelled one left off.
+    private float mStartProgressForNextRevealAnim;
+    private boolean mWasLastRevealAnimReversed;
 
     public StashedHandleViewController(TaskbarActivityContext activity,
             StashedHandleView stashedHandleView) {
@@ -148,15 +151,27 @@ public class StashedHandleViewController {
      * shape and size. When stashed, the shape is a thin rounded pill. When unstashed, the shape
      * morphs into the size of where the taskbar icons will be.
      */
-    public @Nullable Animator createRevealAnimToIsStashed(boolean isStashed) {
-        if (mIsAtStashedRevealBounds == isStashed) {
-            return null;
-        }
-        mIsAtStashedRevealBounds = isStashed;
+    public Animator createRevealAnimToIsStashed(boolean isStashed) {
         final RevealOutlineAnimation handleRevealProvider = new RoundedRectRevealOutlineProvider(
                 mStashedHandleRadius, mStashedHandleRadius,
                 mControllers.taskbarViewController.getIconLayoutBounds(), mStashedHandleBounds);
-        return handleRevealProvider.createRevealAnimator(mStashedHandleView, !isStashed);
+
+        boolean isReversed = !isStashed;
+        boolean changingDirection = mWasLastRevealAnimReversed != isReversed;
+        mWasLastRevealAnimReversed = isReversed;
+        if (changingDirection) {
+            mStartProgressForNextRevealAnim = 1f - mStartProgressForNextRevealAnim;
+        }
+
+        ValueAnimator revealAnim = handleRevealProvider.createRevealAnimator(mStashedHandleView,
+                isReversed, mStartProgressForNextRevealAnim);
+        revealAnim.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                mStartProgressForNextRevealAnim = ((ValueAnimator) animation).getAnimatedFraction();
+            }
+        });
+        return revealAnim;
     }
 
     public void onIsStashed(boolean isStashed) {

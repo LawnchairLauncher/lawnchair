@@ -21,7 +21,6 @@ import static com.android.launcher3.taskbar.TaskbarNavButtonController.BUTTON_BA
 import static com.android.launcher3.taskbar.TaskbarNavButtonController.BUTTON_HOME;
 import static com.android.launcher3.taskbar.TaskbarNavButtonController.BUTTON_IME_SWITCH;
 import static com.android.launcher3.taskbar.TaskbarNavButtonController.BUTTON_RECENTS;
-import static com.android.launcher3.taskbar.TaskbarViewController.ALPHA_INDEX_IME;
 import static com.android.launcher3.taskbar.TaskbarViewController.ALPHA_INDEX_KEYGUARD;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_A11Y_BUTTON_CLICKABLE;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_A11Y_BUTTON_LONG_CLICKABLE;
@@ -140,11 +139,6 @@ public class NavbarButtonsViewController {
         mNavButtonsView.getLayoutParams().height = mContext.getDeviceProfile().taskbarSize;
         mNavButtonTranslationYMultiplier.value = 1;
 
-        mPropertyHolders.add(new StatePropertyHolder(
-                mControllers.taskbarViewController.getTaskbarIconAlpha()
-                        .getProperty(ALPHA_INDEX_IME),
-                flags -> (flags & FLAG_IME_VISIBLE) == 0, MultiValueAlpha.VALUE, 1, 0));
-
         boolean isThreeButtonNav = mContext.isThreeButtonNav();
         // IME switcher
         View imeSwitcherButton = addButton(R.drawable.ic_ime_switcher, BUTTON_IME_SWITCH,
@@ -196,7 +190,7 @@ public class NavbarButtonsViewController {
             }
 
             // Animate taskbar background when any of these flags are enabled
-            int flagsToShowBg = FLAG_IME_VISIBLE | FLAG_ONLY_BACK_FOR_BOUNCER_VISIBLE
+            int flagsToShowBg = FLAG_ONLY_BACK_FOR_BOUNCER_VISIBLE
                     | FLAG_NOTIFICATION_SHADE_EXPANDED;
             mPropertyHolders.add(new StatePropertyHolder(
                     mControllers.taskbarDragLayerController.getNavbarBackgroundAlpha(),
