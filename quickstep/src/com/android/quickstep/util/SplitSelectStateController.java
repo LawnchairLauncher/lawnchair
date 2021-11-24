@@ -18,6 +18,7 @@ package com.android.quickstep.util;
 
 import static com.android.launcher3.Utilities.postAsyncCallback;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
+import static com.android.launcher3.util.SplitConfigurationOptions.DEFAULT_SPLIT_RATIO;
 import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITION_BOTTOM_OR_RIGHT;
 import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITION_TOP_OR_LEFT;
 
@@ -29,7 +30,6 @@ import android.os.IBinder;
 import android.view.RemoteAnimationAdapter;
 import android.view.SurfaceControl;
 import android.window.TransitionInfo;
-
 
 import androidx.annotation.Nullable;
 
@@ -95,7 +95,7 @@ public class SplitSelectStateController {
     public void setSecondTaskId(Task task, Consumer<Boolean> callback) {
         mSecondTask = task;
         launchTasks(mInitialTask, mSecondTask, mStagePosition, callback,
-                false /* freezeTaskList */);
+                false /* freezeTaskList */, DEFAULT_SPLIT_RATIO);
     }
 
     /**
@@ -107,14 +107,15 @@ public class SplitSelectStateController {
         TaskView.TaskIdAttributeContainer[] taskIdAttributeContainers =
                 groupedTaskView.getTaskIdAttributeContainers();
         launchTasks(taskIdAttributeContainers[0].getTask(), taskIdAttributeContainers[1].getTask(),
-                taskIdAttributeContainers[0].getStagePosition(), callback, freezeTaskList);
+                taskIdAttributeContainers[0].getStagePosition(), callback, freezeTaskList,
+                groupedTaskView.getSplitRatio());
     }
 
     /**
      * @param stagePosition representing location of task1
      */
     public void launchTasks(Task task1, Task task2, @StagePosition int stagePosition,
-            Consumer<Boolean> callback, boolean freezeTaskList) {
+            Consumer<Boolean> callback, boolean freezeTaskList, float splitRatio) {
         // Assume initial task is for top/left part of screen
         final int[] taskIds = stagePosition == STAGE_POSITION_TOP_OR_LEFT
                 ? new int[]{task1.key.id, task2.key.id}
@@ -123,7 +124,7 @@ public class SplitSelectStateController {
             RemoteSplitLaunchTransitionRunner animationRunner =
                     new RemoteSplitLaunchTransitionRunner(task1, task2);
             mSystemUiProxy.startTasks(taskIds[0], null /* mainOptions */, taskIds[1],
-                    null /* sideOptions */, STAGE_POSITION_BOTTOM_OR_RIGHT,
+                    null /* sideOptions */, STAGE_POSITION_BOTTOM_OR_RIGHT, splitRatio,
                     new RemoteTransitionCompat(animationRunner, MAIN_EXECUTOR,
                             ActivityThread.currentActivityThread().getApplicationThread()));
         } else {
@@ -140,7 +141,7 @@ public class SplitSelectStateController {
             }
             mSystemUiProxy.startTasksWithLegacyTransition(taskIds[0], mainOpts.toBundle(),
                     taskIds[1], null /* sideOptions */, STAGE_POSITION_BOTTOM_OR_RIGHT,
-                    adapter);
+                    splitRatio, adapter);
         }
     }
 
