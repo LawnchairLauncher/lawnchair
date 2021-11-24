@@ -16,9 +16,11 @@
 
 package com.android.launcher3.taskbar;
 
-import static android.view.Display.DEFAULT_DISPLAY;
 
-import android.view.inputmethod.InputMethodManager;
+import static com.android.internal.app.AssistUtils.INVOCATION_TYPE_HOME_BUTTON_LONG_PRESS;
+import static com.android.internal.app.AssistUtils.INVOCATION_TYPE_KEY;
+
+import android.os.Bundle;
 
 import androidx.annotation.IntDef;
 
@@ -35,11 +37,9 @@ import java.lang.annotation.RetentionPolicy;
  * Controller for 3 button mode in the taskbar.
  * Handles all the functionality of the various buttons, making/routing the right calls into
  * launcher or sysui/system.
- *
- * TODO: Create callbacks to hook into UI layer since state will change for more context buttons/
- *       assistant invocation.
  */
 public class TaskbarNavButtonController {
+
     @Retention(RetentionPolicy.SOURCE)
     @IntDef(value = {
             BUTTON_BACK,
@@ -47,7 +47,6 @@ public class TaskbarNavButtonController {
             BUTTON_RECENTS,
             BUTTON_IME_SWITCH,
             BUTTON_A11Y,
-            BUTTON_A11Y_LONG_CLICK
     })
 
     public @interface TaskbarButton {}
@@ -57,7 +56,6 @@ public class TaskbarNavButtonController {
     static final int BUTTON_RECENTS = BUTTON_HOME << 1;
     static final int BUTTON_IME_SWITCH = BUTTON_RECENTS << 1;
     static final int BUTTON_A11Y = BUTTON_IME_SWITCH << 1;
-    static final int BUTTON_A11Y_LONG_CLICK = BUTTON_A11Y << 1;
 
     private final TouchInteractionService mService;
 
@@ -82,9 +80,22 @@ public class TaskbarNavButtonController {
             case BUTTON_A11Y:
                 notifyImeClick(false /* longClick */);
                 break;
-            case BUTTON_A11Y_LONG_CLICK:
+        }
+    }
+
+    public boolean onButtonLongClick(@TaskbarButton int buttonType) {
+        switch (buttonType) {
+            case BUTTON_HOME:
+                startAssistant();
+                return true;
+            case BUTTON_A11Y:
                 notifyImeClick(true /* longClick */);
-                break;
+                return true;
+            case BUTTON_BACK:
+            case BUTTON_IME_SWITCH:
+            case BUTTON_RECENTS:
+            default:
+                return false;
         }
     }
 
@@ -112,5 +123,12 @@ public class TaskbarNavButtonController {
         } else {
             systemUiProxy.notifyAccessibilityButtonClicked(mService.getDisplayId());
         }
+    }
+
+    private void startAssistant() {
+        Bundle args = new Bundle();
+        args.putInt(INVOCATION_TYPE_KEY, INVOCATION_TYPE_HOME_BUTTON_LONG_PRESS);
+        SystemUiProxy systemUiProxy = SystemUiProxy.INSTANCE.getNoCreate();
+        systemUiProxy.startAssistant(args);
     }
 }
