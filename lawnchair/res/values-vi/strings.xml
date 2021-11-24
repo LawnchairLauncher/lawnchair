@@ -174,5 +174,5 @@
     <string name="search_pref_result_tips_title">Mẹo Pixel</string>
     <string name="row_height_label">Chiều cao hàng</string>
     <string name="all_apps_device_search_hint">Search</string>
-    <string name="dark_status_bar_label">Dark Status Bar</string>
+    <string name="dark_status_bar_label">Thanh trạng thái tối màu</string>
 </resources>
