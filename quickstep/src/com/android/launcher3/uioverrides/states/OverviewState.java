@@ -21,13 +21,11 @@ import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_OVERV
 import android.content.Context;
 import android.graphics.Rect;
 import android.os.SystemProperties;
-import android.view.View;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.R;
-import com.android.launcher3.Workspace;
 import com.android.launcher3.util.Themes;
 import com.android.quickstep.SysUINavigationMode;
 import com.android.quickstep.util.LayoutUtils;
@@ -66,10 +64,7 @@ public class OverviewState extends LauncherState {
     @Override
     public ScaleAndTranslation getWorkspaceScaleAndTranslation(Launcher launcher) {
         RecentsView recentsView = launcher.getOverviewPanel();
-        Workspace workspace = launcher.getWorkspace();
-        View workspacePage = workspace.getPageAt(workspace.getCurrentPage());
-        float workspacePageWidth = workspacePage != null && workspacePage.getWidth() != 0
-                ? workspacePage.getWidth() : launcher.getDeviceProfile().availableWidthPx;
+        float workspacePageWidth = launcher.getDeviceProfile().getWorkspaceWidth();
         recentsView.getTaskSize(sTempRect);
         float scale = (float) sTempRect.width() / workspacePageWidth;
         float parallaxFactor = 0.5f;
