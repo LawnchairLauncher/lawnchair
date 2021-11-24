@@ -2612,10 +2612,8 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                         clampToProgress(FINAL_FRAME, 0, 0.5f));
             });
         }
-        boolean isTaskInBottomGridRow = showAsGrid() && !mTopRowIdSet.contains(
-                taskView.getTaskViewId()) && taskView.getTaskViewId() != mFocusedTaskViewId;
         anim.setFloat(taskView, VIEW_ALPHA, 0,
-                clampToProgress(isTaskInBottomGridRow ? ACCEL : FINAL_FRAME, 0, 0.5f));
+                clampToProgress(isOnGridBottomRow(taskView) ? ACCEL : FINAL_FRAME, 0, 0.5f));
         FloatProperty<TaskView> secondaryViewTranslate =
                 taskView.getSecondaryDissmissTranslationProperty();
         int secondaryTaskDimension = mOrientationHandler.getSecondaryDimension(taskView);
@@ -4679,6 +4677,15 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             TaskView taskView, IntArray topRowIdArray, IntArray bottomRowIdArray) {
         int position = topRowIdArray.indexOf(taskView.getTaskViewId());
         return position != -1 ? position : bottomRowIdArray.indexOf(taskView.getTaskViewId());
+    }
+
+    /**
+     * @return true if the task in on the top of the grid
+     */
+    public boolean isOnGridBottomRow(TaskView taskView) {
+        return showAsGrid()
+                && !mTopRowIdSet.contains(taskView.getTaskViewId())
+                && taskView.getTaskViewId() != mFocusedTaskViewId;
     }
 
     public Consumer<MotionEvent> getEventDispatcher(float navbarRotation) {

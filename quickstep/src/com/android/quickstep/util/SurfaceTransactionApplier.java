@@ -22,10 +22,10 @@ import android.os.Message;
 import android.view.SurfaceControl;
 import android.view.SurfaceControl.Transaction;
 import android.view.View;
+import android.view.ViewRootImpl;
 
 import com.android.quickstep.RemoteAnimationTargets.ReleaseCheck;
 import com.android.systemui.shared.system.SyncRtSurfaceTransactionApplierCompat.SurfaceParams;
-import com.android.systemui.shared.system.ViewRootImplCompat;
 
 import java.util.function.Consumer;
 
@@ -41,7 +41,7 @@ public class SurfaceTransactionApplier extends ReleaseCheck {
     private static final int MSG_UPDATE_SEQUENCE_NUMBER = 0;
 
     private final SurfaceControl mBarrierSurfaceControl;
-    private final ViewRootImplCompat mTargetViewRootImpl;
+    private final ViewRootImpl mTargetViewRootImpl;
     private final Handler mApplyHandler;
 
     private int mLastSequenceNumber = 0;
@@ -50,8 +50,8 @@ public class SurfaceTransactionApplier extends ReleaseCheck {
      * @param targetView The view in the surface that acts as synchronization anchor.
      */
     public SurfaceTransactionApplier(View targetView) {
-        mTargetViewRootImpl = new ViewRootImplCompat(targetView);
-        mBarrierSurfaceControl = mTargetViewRootImpl.getRenderSurfaceControl();
+        mTargetViewRootImpl = targetView.getViewRootImpl();
+        mBarrierSurfaceControl = mTargetViewRootImpl.getSurfaceControl();
         mApplyHandler = new Handler(this::onApplyMessage);
     }
 
@@ -109,7 +109,7 @@ public class SurfaceTransactionApplier extends ReleaseCheck {
         if (targetView == null) {
             // No target view, no applier
             callback.accept(null);
-        } else if (new ViewRootImplCompat(targetView).isValid()) {
+        } else if (targetView.isAttachedToWindow()) {
             // Already attached, we're good to go
             callback.accept(new SurfaceTransactionApplier(targetView));
         } else {
