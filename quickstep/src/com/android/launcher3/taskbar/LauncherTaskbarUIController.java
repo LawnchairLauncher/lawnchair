@@ -25,7 +25,6 @@ import android.os.RemoteException;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.TaskTransitionSpec;
-import android.view.View;
 import android.view.WindowManagerGlobal;
 
 import androidx.annotation.NonNull;
@@ -62,7 +61,6 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
             this::onStashedInAppChanged;
 
     // Initialized in init.
-    private TaskbarControllers mControllers;
     private AnimatedFloat mTaskbarOverrideBackgroundAlpha;
     private TaskbarKeyguardController mKeyguardController;
     private final TaskbarLauncherStateController
@@ -83,7 +81,7 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
 
     @Override
     protected void init(TaskbarControllers taskbarControllers) {
-        mControllers = taskbarControllers;
+        super.init(taskbarControllers);
 
         mTaskbarLauncherStateController.init(mControllers, mLauncher);
         mTaskbarOverrideBackgroundAlpha = mControllers.taskbarDragLayerController
@@ -168,10 +166,6 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
         return mControllers.taskbarDragController.isDragging();
     }
 
-    public View getRootView() {
-        return mControllers.taskbarActivityContext.getDragLayer();
-    }
-
     @Override
     protected void onStashedInAppChanged() {
         onStashedInAppChanged(mLauncher.getDeviceProfile());
@@ -250,5 +244,13 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
         InstanceId instanceId = new InstanceIdSequence().newInstanceId();
         mLauncher.logAppLaunch(mControllers.taskbarActivityContext.getStatsLogManager(), item,
                 instanceId);
+    }
+
+    @Override
+    public void setSystemGestureInProgress(boolean inProgress) {
+        super.setSystemGestureInProgress(inProgress);
+        // Launcher's ScrimView will draw the background throughout the gesture. But once the
+        // gesture ends, start drawing taskbar's background again since launcher might stop drawing.
+        forceHideBackground(inProgress);
     }
 }

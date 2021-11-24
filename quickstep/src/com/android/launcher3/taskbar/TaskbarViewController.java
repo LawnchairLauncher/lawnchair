@@ -46,12 +46,11 @@ public class TaskbarViewController {
     private static final Runnable NO_OP = () -> { };
 
     public static final int ALPHA_INDEX_HOME = 0;
-    public static final int ALPHA_INDEX_IME = 1;
-    public static final int ALPHA_INDEX_KEYGUARD = 2;
-    public static final int ALPHA_INDEX_STASH = 3;
-    public static final int ALPHA_INDEX_RECENTS_DISABLED = 4;
-    public static final int ALPHA_INDEX_NOTIFICATION_EXPANDED = 5;
-    private static final int NUM_ALPHA_CHANNELS = 6;
+    public static final int ALPHA_INDEX_KEYGUARD = 1;
+    public static final int ALPHA_INDEX_STASH = 2;
+    public static final int ALPHA_INDEX_RECENTS_DISABLED = 3;
+    public static final int ALPHA_INDEX_NOTIFICATION_EXPANDED = 4;
+    private static final int NUM_ALPHA_CHANNELS = 5;
 
     private final TaskbarActivityContext mActivity;
     private final TaskbarView mTaskbarView;
