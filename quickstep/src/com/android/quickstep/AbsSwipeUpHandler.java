@@ -121,8 +121,8 @@ import com.android.systemui.shared.system.TaskStackChangeListener;
 import com.android.systemui.shared.system.TaskStackChangeListeners;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.function.Consumer;
 
 /**
@@ -687,14 +687,17 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
     }
 
     private void onAnimatorPlaybackControllerCreated(AnimatorControllerWithResistance anim) {
+        boolean isFirstCreation = mLauncherTransitionController == null;
         mLauncherTransitionController = anim;
-        mStateCallback.runOnceAtState(STATE_GESTURE_STARTED, () -> {
-            // Wait until the gesture is started (touch slop was passed) to start in sync with
-            // mWindowTransitionController. This ensures we don't hide the taskbar background when
-            // long pressing to stash it, for instance.
-            mLauncherTransitionController.getNormalController().dispatchOnStart();
-            updateLauncherTransitionProgress();
-        });
+        if (isFirstCreation) {
+            mStateCallback.runOnceAtState(STATE_GESTURE_STARTED, () -> {
+                // Wait until the gesture is started (touch slop was passed) to start in sync with
+                // mWindowTransitionController. This ensures we don't hide the taskbar background
+                // when long pressing to stash it, for instance.
+                mLauncherTransitionController.getNormalController().dispatchOnStart();
+                updateLauncherTransitionProgress();
+            });
+        }
     }
 
     public Intent getLaunchIntent() {

@@ -22,7 +22,6 @@ import static android.view.MotionEvent.ACTION_UP;
 
 import static com.android.launcher3.config.FeatureFlags.ASSISTANT_GIVES_LAUNCHER_FOCUS;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
-import static com.android.launcher3.testing.TestProtocol.TASKBAR_WINDOW_CRASH;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.quickstep.GestureState.DEFAULT_STATE;
 import static com.android.systemui.shared.system.ActivityManagerWrapper.CLOSE_SYSTEM_WINDOWS_REASON_RECENTS;
@@ -361,7 +360,6 @@ public class TouchInteractionService extends Service
     @Override
     public void onCreate() {
         super.onCreate();
-        Log.d(TASKBAR_WINDOW_CRASH, "TIS created");
         // Initialize anything here that is needed in direct boot mode.
         // Everything else should be initialized in onUserUnlocked() below.
         mMainChoreographer = Choreographer.getInstance();
@@ -523,7 +521,6 @@ public class TouchInteractionService extends Service
     @Override
     public void onDestroy() {
         Log.d(TAG, "Touch service destroyed: user=" + getUserId());
-        Log.d(TASKBAR_WINDOW_CRASH, "TIS destroyed");
         sIsInitialized = false;
         if (mDeviceState.isUserUnlocked()) {
             mInputConsumer.unregisterInputConsumer();
@@ -976,6 +973,7 @@ public class TouchInteractionService extends Service
             pw.println("  resumed=" + resumed);
             pw.println("  mConsumer=" + mConsumer.getName());
             ActiveGestureLog.INSTANCE.dump("", pw);
+            RecentsModel.INSTANCE.get(this).dump("", pw);
             pw.println("ProtoTrace:");
             pw.println("  file=" + ProtoTracer.INSTANCE.get(this).getTraceFile());
         }

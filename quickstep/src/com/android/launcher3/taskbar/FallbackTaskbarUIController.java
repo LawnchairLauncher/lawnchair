@@ -46,16 +46,13 @@ public class FallbackTaskbarUIController extends TaskbarUIController {
                 }
             };
 
-    // Initialized in init.
-    TaskbarControllers mControllers;
-
     public FallbackTaskbarUIController(RecentsActivity recentsActivity) {
         mRecentsActivity = recentsActivity;
     }
 
     @Override
     protected void init(TaskbarControllers taskbarControllers) {
-        mControllers = taskbarControllers;
+        super.init(taskbarControllers);
 
         mRecentsActivity.setTaskbarUIController(this);
         mRecentsActivity.getStateManager().addStateListener(mStateListener);

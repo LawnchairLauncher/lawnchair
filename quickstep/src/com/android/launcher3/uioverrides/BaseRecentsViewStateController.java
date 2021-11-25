@@ -16,7 +16,6 @@
 
 package com.android.launcher3.uioverrides;
 
-import static com.android.launcher3.LauncherState.OVERVIEW_SPLIT_SELECT;
 import static com.android.launcher3.anim.Interpolators.AGGRESSIVE_EASE_IN_OUT;
 import static com.android.launcher3.anim.Interpolators.FINAL_FRAME;
 import static com.android.launcher3.anim.Interpolators.INSTANT;
@@ -73,8 +72,6 @@ public abstract class BaseRecentsViewStateController<T extends RecentsView>
         getTaskModalnessProperty().set(mRecentsView, state.getOverviewModalness());
         RECENTS_GRID_PROGRESS.set(mRecentsView,
                 state.displayOverviewTasksAsGrid(mLauncher.getDeviceProfile()) ? 1f : 0f);
-
-        applySplitScrollOffset(state);
     }
 
     @Override
@@ -120,16 +117,6 @@ public abstract class BaseRecentsViewStateController<T extends RecentsView>
         boolean showAsGrid = toState.displayOverviewTasksAsGrid(mLauncher.getDeviceProfile());
         setter.setFloat(mRecentsView, RECENTS_GRID_PROGRESS, showAsGrid ? 1f : 0f,
                 showAsGrid ? INSTANT : FINAL_FRAME);
-
-        applySplitScrollOffset(toState);
-    }
-
-    private void applySplitScrollOffset(@NonNull final LauncherState state) {
-        if (state == OVERVIEW_SPLIT_SELECT) {
-            mRecentsView.applySplitPrimaryScrollOffset();
-        } else {
-            mRecentsView.resetSplitPrimaryScrollOffset();
-        }
     }
 
     abstract FloatProperty getTaskModalnessProperty();

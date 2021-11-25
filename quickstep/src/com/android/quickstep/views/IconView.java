@@ -87,6 +87,14 @@ public class IconView extends View {
         return mDrawable;
     }
 
+    public int getDrawableWidth() {
+        return mDrawableWidth;
+    }
+
+    public int getDrawableHeight() {
+        return mDrawableHeight;
+    }
+
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);

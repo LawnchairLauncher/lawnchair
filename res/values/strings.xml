@@ -40,9 +40,10 @@
     <!-- Options for recent tasks -->
     <!-- Title for an option to enter split screen mode for a given app -->
     <string name="recent_task_option_split_screen">Split screen</string>
-    <string translatable="false" name="split_screen_position_top">Split top</string>
-    <string translatable="false" name="split_screen_position_left">Split left</string>
-    <string translatable="false" name="split_screen_position_right">Split right</string>
+    <string name="split_screen_position_top">Split top</string>
+    <string name="split_screen_position_left">Split left</string>
+    <string name="split_screen_position_right">Split right</string>
+    <string name="split_app_info_accessibility">App info for %1$s</string>
 
     <!-- Widgets -->
     <!-- Message to tell the user to press and hold on a widget to add it [CHAR_LIMIT=50] -->

@@ -2612,10 +2612,8 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                         clampToProgress(FINAL_FRAME, 0, 0.5f));
             });
         }
-        boolean isTaskInBottomGridRow = showAsGrid() && !mTopRowIdSet.contains(
-                taskView.getTaskViewId()) && taskView.getTaskViewId() != mFocusedTaskViewId;
         anim.setFloat(taskView, VIEW_ALPHA, 0,
-                clampToProgress(isTaskInBottomGridRow ? ACCEL : FINAL_FRAME, 0, 0.5f));
+                clampToProgress(isOnGridBottomRow(taskView) ? ACCEL : FINAL_FRAME, 0, 0.5f));
         FloatProperty<TaskView> secondaryViewTranslate =
                 taskView.getSecondaryDissmissTranslationProperty();
         int secondaryTaskDimension = mOrientationHandler.getSecondaryDimension(taskView);
@@ -3120,14 +3118,10 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                         }
                     } else {
                         // Update focus task and its size.
-                        if (finalIsFocusedTaskDismissed) {
-                            if (finalNextFocusedTaskView != null) {
-                                mFocusedTaskViewId = finalNextFocusedTaskView.getTaskViewId();
-                                mTopRowIdSet.remove(mFocusedTaskViewId);
-                                finalNextFocusedTaskView.animateIconScaleAndDimIntoView();
-                            } else {
-                                mFocusedTaskViewId = -1;
-                            }
+                        if (finalIsFocusedTaskDismissed && finalNextFocusedTaskView != null) {
+                            mFocusedTaskViewId = finalNextFocusedTaskView.getTaskViewId();
+                            mTopRowIdSet.remove(mFocusedTaskViewId);
+                            finalNextFocusedTaskView.animateIconScaleAndDimIntoView();
                         }
                         updateTaskSize(/*isTaskDismissal=*/ true);
                         updateChildTaskOrientations();
@@ -4021,6 +4015,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                 //  * Focused Task
                 updateGridProperties();
                 resetFromSplitSelectionState();
+                updateScrollSynchronously();
             }
         });
 
@@ -4042,7 +4037,6 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         resetTaskVisuals();
         mSplitHiddenTaskViewIndex = -1;
         if (mSplitHiddenTaskView != null) {
-            mSplitHiddenTaskView.setTranslationY(0);
             mSplitHiddenTaskView.setVisibility(VISIBLE);
             mSplitHiddenTaskView = null;
         }
@@ -4503,9 +4497,8 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     }
 
     private int getFirstViewIndex() {
-        return mShowAsGridLastOnLayout && mFocusedTaskViewId != -1
-                ? indexOfChild(getFocusedTaskView())
-                : 0;
+        TaskView focusedTaskView = mShowAsGridLastOnLayout ? getFocusedTaskView() : null;
+        return focusedTaskView != null ? indexOfChild(focusedTaskView) : 0;
     }
 
     private int getLastViewIndex() {
@@ -4679,6 +4672,15 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             TaskView taskView, IntArray topRowIdArray, IntArray bottomRowIdArray) {
         int position = topRowIdArray.indexOf(taskView.getTaskViewId());
         return position != -1 ? position : bottomRowIdArray.indexOf(taskView.getTaskViewId());
+    }
+
+    /**
+     * @return true if the task in on the top of the grid
+     */
+    public boolean isOnGridBottomRow(TaskView taskView) {
+        return showAsGrid()
+                && !mTopRowIdSet.contains(taskView.getTaskViewId())
+                && taskView.getTaskViewId() != mFocusedTaskViewId;
     }
 
     public Consumer<MotionEvent> getEventDispatcher(float navbarRotation) {
