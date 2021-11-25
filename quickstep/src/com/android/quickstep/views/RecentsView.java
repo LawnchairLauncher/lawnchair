@@ -3187,6 +3187,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                                 }
                             }
                         }
+                        pageBeginTransition();
                         setCurrentPage(pageToSnapTo);
                         // Update various scroll-dependent UI.
                         dispatchScrollChanged();
@@ -4034,7 +4035,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
 
     /** TODO(b/181707736) More gracefully handle exiting split selection state */
     private void resetFromSplitSelectionState() {
-        if (!showAsGrid()) {
+        if (!mActivity.getDeviceProfile().overviewShowAsGrid) {
             int pageToSnapTo = mCurrentPage;
             if (mSplitHiddenTaskViewIndex <= pageToSnapTo) {
                 pageToSnapTo += 1;

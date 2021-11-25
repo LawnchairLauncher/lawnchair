@@ -37,12 +37,12 @@ import com.android.launcher3.statemanager.StateManager.StateListener;
 import com.android.quickstep.FallbackActivityInterface;
 import com.android.quickstep.GestureState;
 import com.android.quickstep.RecentsActivity;
+import com.android.quickstep.util.GroupTask;
 import com.android.quickstep.util.SplitSelectStateController;
 import com.android.quickstep.util.TaskViewSimulator;
 import com.android.quickstep.views.OverviewActionsView;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
-import com.android.quickstep.util.GroupTask;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.recents.model.Task.TaskKey;
 
@@ -207,10 +207,6 @@ public class FallbackRecentsView extends RecentsView<RecentsActivity, RecentsSta
 
     @Override
     public void onStateTransitionStart(RecentsState toState) {
-        if (toState == HOME) {
-            // Clean-up logic that occurs when recents is no longer in use/visible.
-            reset();
-        }
         setOverviewStateEnabled(true);
         setOverviewGridEnabled(toState.displayOverviewTasksAsGrid(mActivity.getDeviceProfile()));
         setOverviewFullscreenEnabled(toState.isFullScreen());
@@ -219,6 +215,10 @@ public class FallbackRecentsView extends RecentsView<RecentsActivity, RecentsSta
 
     @Override
     public void onStateTransitionComplete(RecentsState finalState) {
+        if (finalState == HOME) {
+            // Clean-up logic that occurs when recents is no longer in use/visible.
+            reset();
+        }
         boolean isOverlayEnabled = finalState == DEFAULT || finalState == MODAL_TASK;
         setOverlayEnabled(isOverlayEnabled);
         setFreezeViewVisibility(false);
