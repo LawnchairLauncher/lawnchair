@@ -212,7 +212,7 @@ public class BaseOverview extends LauncherInstrumentation.VisibleContainer {
         try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
                 "want to get overview actions")) {
             verifyActiveContainer();
-            UiObject2 overviewActions = mLauncher.waitForLauncherObject("action_buttons");
+            UiObject2 overviewActions = mLauncher.waitForOverviewObject("action_buttons");
             return new OverviewActions(overviewActions, mLauncher);
         }
     }
@@ -224,19 +224,16 @@ public class BaseOverview extends LauncherInstrumentation.VisibleContainer {
         return mLauncher.hasLauncherObject(mLauncher.getOverviewObjectSelector("clear_all"));
     }
 
-    /* TODO(b/197630182): Once b/188790554 is fixed, remove instanceof check. Currently, when
-        swiping from app to overview in Fallback Recents, taskbar remains and no action buttons
-        are visible, so we are only testing Overview for now, not BaseOverview. */
     private void verifyActionsViewVisibility() {
-        if (!(this instanceof Overview) || !hasTasks()) {
+        if (!hasTasks()) {
             return;
         }
         try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
                 "want to assert overview actions view visibility")) {
             if (mLauncher.isTablet() && !isOverviewSnappedToFocusedTaskForTablet()) {
-                mLauncher.waitUntilLauncherObjectGone("action_buttons");
+                mLauncher.waitUntilOverviewObjectGone("action_buttons");
             } else {
-                mLauncher.waitForLauncherObject("action_buttons");
+                mLauncher.waitForOverviewObject("action_buttons");
             }
         }
     }
