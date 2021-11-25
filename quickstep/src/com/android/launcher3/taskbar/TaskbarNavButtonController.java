@@ -19,8 +19,10 @@ package com.android.launcher3.taskbar;
 
 import static com.android.internal.app.AssistUtils.INVOCATION_TYPE_HOME_BUTTON_LONG_PRESS;
 import static com.android.internal.app.AssistUtils.INVOCATION_TYPE_KEY;
+import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_SCREEN_PINNING;
 
 import android.os.Bundle;
+import android.os.Handler;
 
 import androidx.annotation.IntDef;
 
@@ -40,6 +42,13 @@ import java.lang.annotation.RetentionPolicy;
  */
 public class TaskbarNavButtonController {
 
+    /** Allow some time in between the long press for back and recents. */
+    static final int SCREEN_PIN_LONG_PRESS_THRESHOLD = 200;
+    static final int SCREEN_PIN_LONG_PRESS_RESET = SCREEN_PIN_LONG_PRESS_THRESHOLD + 100;
+
+    private long mLastScreenPinLongPress;
+    private boolean mScreenPinned;
+
     @Retention(RetentionPolicy.SOURCE)
     @IntDef(value = {
             BUTTON_BACK,
@@ -57,10 +66,20 @@ public class TaskbarNavButtonController {
     static final int BUTTON_IME_SWITCH = BUTTON_RECENTS << 1;
     static final int BUTTON_A11Y = BUTTON_IME_SWITCH << 1;
 
-    private final TouchInteractionService mService;
+    private static final int SCREEN_UNPIN_COMBO = BUTTON_BACK | BUTTON_RECENTS;
+    private int mLongPressedButtons = 0;
 
-    public TaskbarNavButtonController(TouchInteractionService service) {
+    private final TouchInteractionService mService;
+    private final SystemUiProxy mSystemUiProxy;
+    private final Handler mHandler;
+
+    private final Runnable mResetLongPress = this::resetScreenUnpin;
+
+    public TaskbarNavButtonController(TouchInteractionService service,
+            SystemUiProxy systemUiProxy, Handler handler) {
         mService = service;
+        mSystemUiProxy = systemUiProxy;
+        mHandler = handler;
     }
 
     public void onButtonClick(@TaskbarButton int buttonType) {
@@ -72,13 +91,13 @@ public class TaskbarNavButtonController {
                 navigateHome();
                 break;
             case BUTTON_RECENTS:
-                navigateToOverview();;
+                navigateToOverview();
                 break;
             case BUTTON_IME_SWITCH:
                 showIMESwitcher();
                 break;
             case BUTTON_A11Y:
-                notifyImeClick(false /* longClick */);
+                notifyA11yClick(false /* longClick */);
                 break;
         }
     }
@@ -89,14 +108,62 @@ public class TaskbarNavButtonController {
                 startAssistant();
                 return true;
             case BUTTON_A11Y:
-                notifyImeClick(true /* longClick */);
+                notifyA11yClick(true /* longClick */);
                 return true;
             case BUTTON_BACK:
-            case BUTTON_IME_SWITCH:
             case BUTTON_RECENTS:
+                mLongPressedButtons |= buttonType;
+                return determineScreenUnpin();
+            case BUTTON_IME_SWITCH:
             default:
                 return false;
         }
+    }
+
+    /**
+     * Checks if the user has long pressed back and recents buttons
+     * "together" (within {@link #SCREEN_PIN_LONG_PRESS_THRESHOLD})ms
+     * If so, then requests the system to turn off screen pinning.
+     *
+     * @return true if the long press is a valid user action in attempting to unpin an app
+     *         Will always return {@code false} when screen pinning is not active.
+     *         NOTE: Returning true does not mean that screen pinning has stopped
+     */
+    private boolean determineScreenUnpin() {
+        long timeNow = System.currentTimeMillis();
+        if (!mScreenPinned) {
+            return false;
+        }
+
+        if (mLastScreenPinLongPress == 0) {
+            // First button long press registered, just mark time and wait for second button press
+            mLastScreenPinLongPress = System.currentTimeMillis();
+            mHandler.postDelayed(mResetLongPress, SCREEN_PIN_LONG_PRESS_RESET);
+            return true;
+        }
+
+        if ((timeNow - mLastScreenPinLongPress) > SCREEN_PIN_LONG_PRESS_THRESHOLD) {
+            // Too long in-between presses, reset the clock
+            resetScreenUnpin();
+            return false;
+        }
+
+        if ((mLongPressedButtons & SCREEN_UNPIN_COMBO) == SCREEN_UNPIN_COMBO) {
+            // Hooray! They did it (finally...)
+            mSystemUiProxy.stopScreenPinning();
+            mHandler.removeCallbacks(mResetLongPress);
+            resetScreenUnpin();
+        }
+        return true;
+    }
+
+    private void resetScreenUnpin() {
+        mLongPressedButtons = 0;
+        mLastScreenPinLongPress = 0;
+    }
+
+    public void updateSysuiFlags(int sysuiFlags) {
+        mScreenPinned = (sysuiFlags & SYSUI_STATE_SCREEN_PINNING) != 0;
     }
 
     private void navigateHome() {
@@ -104,31 +171,35 @@ public class TaskbarNavButtonController {
     }
 
     private void navigateToOverview() {
+        if (mScreenPinned) {
+            return;
+        }
         TestLogging.recordEvent(TestProtocol.SEQUENCE_MAIN, "onOverviewToggle");
         mService.getOverviewCommandHelper().addCommand(OverviewCommandHelper.TYPE_TOGGLE);
     }
 
     private void executeBack() {
-        SystemUiProxy.INSTANCE.getNoCreate().onBackPressed();
+        mSystemUiProxy.onBackPressed();
     }
 
     private void showIMESwitcher() {
-        SystemUiProxy.INSTANCE.getNoCreate().onImeSwitcherPressed();
+        mSystemUiProxy.onImeSwitcherPressed();
     }
 
-    private void notifyImeClick(boolean longClick) {
-        SystemUiProxy systemUiProxy = SystemUiProxy.INSTANCE.getNoCreate();
+    private void notifyA11yClick(boolean longClick) {
         if (longClick) {
-            systemUiProxy.notifyAccessibilityButtonLongClicked();
+            mSystemUiProxy.notifyAccessibilityButtonLongClicked();
         } else {
-            systemUiProxy.notifyAccessibilityButtonClicked(mService.getDisplayId());
+            mSystemUiProxy.notifyAccessibilityButtonClicked(mService.getDisplayId());
         }
     }
 
     private void startAssistant() {
+        if (mScreenPinned) {
+            return;
+        }
         Bundle args = new Bundle();
         args.putInt(INVOCATION_TYPE_KEY, INVOCATION_TYPE_HOME_BUTTON_LONG_PRESS);
-        SystemUiProxy systemUiProxy = SystemUiProxy.INSTANCE.getNoCreate();
-        systemUiProxy.startAssistant(args);
+        mSystemUiProxy.startAssistant(args);
     }
 }

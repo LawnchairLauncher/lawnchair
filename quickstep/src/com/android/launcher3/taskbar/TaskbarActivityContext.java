@@ -361,6 +361,7 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
         mControllers.taskbarStashController.updateStateForSysuiFlags(systemUiStateFlags, fromInit);
         mControllers.taskbarScrimViewController.updateStateForSysuiFlags(systemUiStateFlags,
                 fromInit);
+        mControllers.navButtonController.updateSysuiFlags(systemUiStateFlags);
     }
 
     /**
