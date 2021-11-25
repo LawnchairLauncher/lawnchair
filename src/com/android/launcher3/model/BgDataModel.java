@@ -31,6 +31,8 @@ import android.text.TextUtils;
 import android.util.ArraySet;
 import android.util.Log;
 
+import androidx.annotation.Nullable;
+
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.Workspace;
@@ -215,6 +217,19 @@ public class BgDataModel {
     }
 
     public synchronized void addItem(Context context, ItemInfo item, boolean newItem) {
+        addItem(context, item, newItem, null);
+    }
+
+    public synchronized void addItem(
+            Context context, ItemInfo item, boolean newItem, @Nullable LoaderMemoryLogger logger) {
+        if (logger != null) {
+            logger.addLog(
+                    Log.DEBUG,
+                    TAG,
+                    String.format("Adding item to ID map: %s", item.toString()),
+                    /* stackTrace= */ null);
+        }
+
         itemsIdMap.put(item.id, item);
         switch (item.itemType) {
             case LauncherSettings.Favorites.ITEM_TYPE_FOLDER:

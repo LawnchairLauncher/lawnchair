@@ -383,18 +383,23 @@ public class LoaderCursor extends CursorWrapper {
         info.cellY = getInt(cellYIndex);
     }
 
+    public void checkAndAddItem(ItemInfo info, BgDataModel dataModel) {
+        checkAndAddItem(info, dataModel, null);
+    }
+
     /**
      * Adds the {@param info} to {@param dataModel} if it does not overlap with any other item,
      * otherwise marks it for deletion.
      */
-    public void checkAndAddItem(ItemInfo info, BgDataModel dataModel) {
+    public void checkAndAddItem(
+            ItemInfo info, BgDataModel dataModel, LoaderMemoryLogger logger) {
         if (info.itemType == LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT) {
             // Ensure that it is a valid intent. An exception here will
             // cause the item loading to get skipped
             ShortcutKey.fromItemInfo(info);
         }
         if (checkItemPlacement(info)) {
-            dataModel.addItem(mContext, info, false);
+            dataModel.addItem(mContext, info, false, logger);
         } else {
             markDeleted("Item position overlap");
         }
