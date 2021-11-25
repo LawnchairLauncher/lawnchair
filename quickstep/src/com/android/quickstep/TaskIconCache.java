@@ -26,10 +26,8 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.os.UserHandle;
 import android.text.TextUtils;
-import android.util.SparseArray;
 import android.view.accessibility.AccessibilityManager;
 
 import androidx.annotation.WorkerThread;
@@ -37,6 +35,7 @@ import androidx.annotation.WorkerThread;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.icons.BaseIconFactory;
+import com.android.launcher3.icons.BaseIconFactory.IconOptions;
 import com.android.launcher3.icons.BitmapInfo;
 import com.android.launcher3.icons.IconProvider;
 import com.android.launcher3.util.DisplayController;
@@ -63,7 +62,7 @@ public class TaskIconCache implements DisplayInfoChangeListener {
 
     private final Context mContext;
     private final TaskKeyLruCache<TaskCacheEntry> mIconCache;
-    private final SparseArray<BitmapInfo> mDefaultIcons = new SparseArray<>();
+    private final BitmapInfo[] mDefaultIcons = new BitmapInfo[1];
     private final IconProvider mIconProvider;
 
     private BaseIconFactory mIconFactory;
@@ -154,7 +153,6 @@ public class TaskIconCache implements DisplayInfoChangeListener {
         // TODO: Load icon resource (b/143363444)
         Bitmap icon = TaskDescriptionCompat.getIcon(desc, key.userId);
         if (icon != null) {
-            /* isInstantApp */
             entry.icon = getBitmapInfo(
                     new BitmapDrawable(mContext.getResources(), icon),
                     key.userId,
@@ -210,14 +208,12 @@ public class TaskIconCache implements DisplayInfoChangeListener {
     @WorkerThread
     private Drawable getDefaultIcon(int userId) {
         synchronized (mDefaultIcons) {
-            BitmapInfo info = mDefaultIcons.get(userId);
-            if (info == null) {
+            if (mDefaultIcons[0] == null) {
                 try (BaseIconFactory bif = getIconFactory()) {
-                    info = bif.makeDefaultIcon(UserHandle.of(userId));
+                    mDefaultIcons[0] = bif.makeDefaultIcon();
                 }
-                mDefaultIcons.put(userId, info);
             }
-            return info.newIcon(mContext);
+            return mDefaultIcons[0].clone().withUser(UserHandle.of(userId)).newIcon(mContext);
         }
     }
 
@@ -229,8 +225,8 @@ public class TaskIconCache implements DisplayInfoChangeListener {
             bif.setWrapperBackgroundColor(primaryColor);
 
             // User version code O, so that the icon is always wrapped in an adaptive icon container
-            return bif.createBadgedIconBitmap(drawable, UserHandle.of(userId),
-                    Build.VERSION_CODES.O, isInstantApp);
+            return bif.createBadgedIconBitmap(drawable,
+                    new IconOptions().setUser(UserHandle.of(userId)).setInstantApp(isInstantApp));
         }
     }
 

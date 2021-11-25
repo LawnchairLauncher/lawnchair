@@ -72,6 +72,7 @@ public class DeepShortcutView extends FrameLayout implements BubbleTextHolder {
     protected void onFinishInflate() {
         super.onFinishInflate();
         mBubbleText = findViewById(R.id.bubble_text);
+        mBubbleText.setHideBadge(true);
         mIconView = findViewById(R.id.icon);
         tryUpdateTextBackground();
     }

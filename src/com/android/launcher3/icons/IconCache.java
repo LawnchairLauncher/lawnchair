@@ -216,14 +216,7 @@ public class IconCache extends BaseIconCache {
      * Fill in {@param info} with the icon for {@param si}
      */
     public void getShortcutIcon(ItemInfoWithIcon info, ShortcutInfo si) {
-        getShortcutIcon(info, si, true, mIsUsingFallbackOrNonDefaultIconCheck);
-    }
-
-    /**
-     * Fill in {@param info} with an unbadged icon for {@param si}
-     */
-    public void getUnbadgedShortcutIcon(ItemInfoWithIcon info, ShortcutInfo si) {
-        getShortcutIcon(info, si, false, mIsUsingFallbackOrNonDefaultIconCheck);
+        getShortcutIcon(info, si, mIsUsingFallbackOrNonDefaultIconCheck);
     }
 
     /**
@@ -232,11 +225,6 @@ public class IconCache extends BaseIconCache {
      */
     public <T extends ItemInfoWithIcon> void getShortcutIcon(T info, ShortcutInfo si,
             @NonNull Predicate<T> fallbackIconCheck) {
-        getShortcutIcon(info, si, true /* use badged */, fallbackIconCheck);
-    }
-
-    private synchronized <T extends ItemInfoWithIcon> void getShortcutIcon(T info, ShortcutInfo si,
-            boolean useBadged, @NonNull Predicate<T> fallbackIconCheck) {
         BitmapInfo bitmapInfo;
         if (FeatureFlags.ENABLE_DEEP_SHORTCUT_ICON_CACHE.get()) {
             bitmapInfo = cacheLocked(ShortcutKey.fromInfo(si).componentName, si.getUserHandle(),
@@ -252,13 +240,7 @@ public class IconCache extends BaseIconCache {
         if (isDefaultIcon(bitmapInfo, si.getUserHandle()) && fallbackIconCheck.test(info)) {
             return;
         }
-        info.bitmap = bitmapInfo;
-        if (useBadged) {
-            BitmapInfo badgeInfo = getShortcutInfoBadge(si);
-            try (LauncherIcons li = LauncherIcons.obtain(mContext)) {
-                info.bitmap = li.badgeBitmap(info.bitmap.icon, badgeInfo);
-            }
-        }
+        info.bitmap = bitmapInfo.withBadgeInfo(getShortcutInfoBadge(si));
     }
 
     /**

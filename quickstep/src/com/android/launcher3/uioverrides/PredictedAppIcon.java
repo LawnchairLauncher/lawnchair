@@ -16,6 +16,7 @@
 package com.android.launcher3.uioverrides;
 
 import static com.android.launcher3.anim.Interpolators.ACCEL_DEACCEL;
+import static com.android.launcher3.icons.BitmapInfo.FLAG_THEMED;
 
 import android.animation.Animator;
 import android.animation.AnimatorSet;
@@ -236,7 +237,7 @@ public class PredictedAppIcon extends DoubleShadowBubbleTextView {
         mSlotMachineIcons = new ArrayList<>(iconsToAnimate.size() + 2);
         mSlotMachineIcons.add(getIcon());
         iconsToAnimate.stream()
-                .map(iconInfo -> iconInfo.newThemedIcon(mContext))
+                .map(iconInfo -> iconInfo.newIcon(mContext, FLAG_THEMED))
                 .forEach(mSlotMachineIcons::add);
         if (endWithOriginalIcon) {
             mSlotMachineIcons.add(getIcon());
