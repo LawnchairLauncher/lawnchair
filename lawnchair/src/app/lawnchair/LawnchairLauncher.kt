@@ -45,6 +45,8 @@ import com.android.launcher3.popup.SystemShortcut
 import com.android.launcher3.statemanager.StateManager
 import com.android.launcher3.uioverrides.QuickstepLauncher
 import com.android.launcher3.uioverrides.states.OverviewState
+import com.android.launcher3.util.SystemUiController.UI_STATE_BASE_WINDOW
+import com.android.launcher3.util.Themes
 import com.android.launcher3.widget.RoundedCornerEnforcement
 import com.android.systemui.plugins.shared.LauncherOverlayManager
 import com.android.systemui.shared.system.QuickStepContract
@@ -116,6 +118,10 @@ class LawnchairLauncher : QuickstepLauncher(), LifecycleOwner,
         }
         prefs.roundedWidgets.subscribeValues(this) {
             RoundedCornerEnforcement.sRoundedCornerEnabled = it
+        }
+        val isWorkspaceDarkText = Themes.getAttrBoolean(this, R.attr.isWorkspaceDarkText)
+        prefs.darkStatusBar.subscribeValues(this) { darkStatusBar ->
+            systemUiController.updateUiState(UI_STATE_BASE_WINDOW, isWorkspaceDarkText || darkStatusBar)
         }
 
         colorScheme = themeProvider.colorScheme
