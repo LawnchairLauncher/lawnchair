@@ -52,6 +52,8 @@ import android.util.Log;
 import android.util.LongSparseArray;
 import android.util.TimingLogger;
 
+import androidx.annotation.Nullable;
+
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.LauncherAppState;
@@ -197,11 +199,12 @@ public class LoaderTask implements Runnable {
 
         Object traceToken = TraceHelper.INSTANCE.beginSection(TAG);
         TimingLogger logger = new TimingLogger(TAG, "run");
+        LoaderMemoryLogger memoryLogger = new LoaderMemoryLogger();
         try (LauncherModel.LoaderTransaction transaction = mApp.getModel().beginLoader(this)) {
             List<ShortcutInfo> allShortcuts = new ArrayList<>();
             Trace.beginSection("LoadWorkspace");
             try {
-                loadWorkspace(allShortcuts);
+                loadWorkspace(allShortcuts, memoryLogger);
             } finally {
                 Trace.endSection();
             }
@@ -311,9 +314,13 @@ public class LoaderTask implements Runnable {
 
             mModelDelegate.modelLoadComplete();
             transaction.commit();
+            memoryLogger.clearLogs();
         } catch (CancellationException e) {
             // Loader stopped, ignore
             logASplit(logger, "Cancelled");
+        } catch (Exception e) {
+            memoryLogger.printLogs();
+            throw e;
         } finally {
             logger.dumpToLog();
         }
@@ -325,13 +332,21 @@ public class LoaderTask implements Runnable {
         this.notify();
     }
 
-    private void loadWorkspace(List<ShortcutInfo> allDeepShortcuts) {
+    private void loadWorkspace(List<ShortcutInfo> allDeepShortcuts, LoaderMemoryLogger logger) {
         loadWorkspace(allDeepShortcuts, LauncherSettings.Favorites.CONTENT_URI,
-                null /* selection */);
+                null /* selection */, logger);
     }
 
-    protected void loadWorkspace(List<ShortcutInfo> allDeepShortcuts, Uri contentUri,
-            String selection) {
+    protected void loadWorkspace(
+            List<ShortcutInfo> allDeepShortcuts, Uri contentUri, String selection) {
+        loadWorkspace(allDeepShortcuts, contentUri, selection, null);
+    }
+
+    protected void loadWorkspace(
+            List<ShortcutInfo> allDeepShortcuts,
+            Uri contentUri,
+            String selection,
+            @Nullable LoaderMemoryLogger logger) {
         final Context context = mApp.getContext();
         final ContentResolver contentResolver = context.getContentResolver();
         final PackageManagerHelper pmHelper = new PackageManagerHelper(context);
@@ -635,7 +650,7 @@ public class LoaderTask implements Runnable {
                                         }
                                 }
 
-                                c.checkAndAddItem(info, mBgDataModel);
+                                c.checkAndAddItem(info, mBgDataModel, logger);
                             } else {
                                 throw new RuntimeException("Unexpected null WorkspaceItemInfo");
                             }
@@ -654,7 +669,7 @@ public class LoaderTask implements Runnable {
                             // no special handling required for restored folders
                             c.markRestored();
 
-                            c.checkAndAddItem(folderInfo, mBgDataModel);
+                            c.checkAndAddItem(folderInfo, mBgDataModel, logger);
                             break;
 
                         case LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET:
