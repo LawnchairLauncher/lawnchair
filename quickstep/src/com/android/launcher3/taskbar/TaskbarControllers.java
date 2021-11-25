@@ -19,6 +19,9 @@ import androidx.annotation.NonNull;
 
 import com.android.systemui.shared.rotation.RotationButtonController;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Hosts various taskbar controllers to facilitate passing between one another.
  */
@@ -42,6 +45,9 @@ public class TaskbarControllers {
 
     /** Do not store this controller, as it may change at runtime. */
     @NonNull public TaskbarUIController uiController = TaskbarUIController.DEFAULT;
+
+    private boolean mAreAllControllersInitialized;
+    private final List<Runnable> mPostInitCallbacks = new ArrayList<>();
 
     public TaskbarControllers(TaskbarActivityContext taskbarActivityContext,
             TaskbarDragController taskbarDragController,
@@ -81,6 +87,8 @@ public class TaskbarControllers {
      * in constructors for now, as some controllers may still be waiting for init().
      */
     public void init(TaskbarSharedState sharedState) {
+        mAreAllControllersInitialized = false;
+
         taskbarDragController.init(this);
         navbarButtonsViewController.init(this);
         rotationButtonController.init();
@@ -93,6 +101,12 @@ public class TaskbarControllers {
         taskbarStashController.init(this, sharedState);
         taskbarEduController.init(this);
         taskbarPopupController.init(this);
+
+        mAreAllControllersInitialized = true;
+        for (Runnable postInitCallback : mPostInitCallbacks) {
+            postInitCallback.run();
+        }
+        mPostInitCallbacks.clear();
     }
 
     /**
@@ -109,5 +123,18 @@ public class TaskbarControllers {
         stashedHandleViewController.onDestroy();
         taskbarAutohideSuspendController.onDestroy();
         taskbarPopupController.onDestroy();
+    }
+
+    /**
+     * If all controllers are already initialized, runs the given callback immediately. Otherwise,
+     * queues it to run after calling init() on all controllers. This should likely be used in any
+     * case where one controller is telling another controller to do something inside init().
+     */
+    public void runAfterInit(Runnable callback) {
+        if (mAreAllControllersInitialized) {
+            callback.run();
+        } else {
+            mPostInitCallbacks.add(callback);
+        }
     }
 }

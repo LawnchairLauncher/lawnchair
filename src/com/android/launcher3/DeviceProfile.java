@@ -814,13 +814,21 @@ public class DeviceProfile {
         Point padding = getTotalWorkspacePadding();
 
         int numColumns = isTwoPanels ? inv.numColumns * 2 : inv.numColumns;
-        int cellLayoutTotalPadding =
-                isTwoPanels ? 4 * cellLayoutPaddingLeftRightPx : 2 * cellLayoutPaddingLeftRightPx;
-        int screenWidthPx = availableWidthPx - padding.x - cellLayoutTotalPadding;
+        int screenWidthPx = getWorkspaceWidth(padding);
         result.x = calculateCellWidth(screenWidthPx, cellLayoutBorderSpacePx.x, numColumns);
         result.y = calculateCellHeight(availableHeightPx - padding.y
                 - cellLayoutBottomPaddingPx, cellLayoutBorderSpacePx.y, inv.numRows);
         return result;
+    }
+
+    public int getWorkspaceWidth() {
+        return getWorkspaceWidth(getTotalWorkspacePadding());
+    }
+
+    public int getWorkspaceWidth(Point workspacePadding) {
+        int cellLayoutTotalPadding =
+                isTwoPanels ? 4 * cellLayoutPaddingLeftRightPx : 2 * cellLayoutPaddingLeftRightPx;
+        return availableWidthPx - workspacePadding.x - cellLayoutTotalPadding;
     }
 
     public Point getTotalWorkspacePadding() {
