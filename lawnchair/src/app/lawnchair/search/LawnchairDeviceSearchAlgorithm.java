@@ -10,6 +10,7 @@ import android.app.search.SearchTarget;
 import android.app.search.SearchUiManager;
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
 
 import androidx.annotation.NonNull;
 
@@ -20,8 +21,8 @@ import com.android.launcher3.search.SearchCallback;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
-import java.util.stream.Collectors;
 
 import app.lawnchair.preferences.PreferenceChangeListener;
 import app.lawnchair.preferences.PreferenceManager;
@@ -153,14 +154,24 @@ public class LawnchairDeviceSearchAlgorithm extends LawnchairSearchAlgorithm imp
             SearchUiManager searchManager = context.getSystemService(SearchUiManager.class);
             SearchSession searchSession = searchManager.createSearchSession(searchContext);
             Query searchQuery = new Query("dummy", System.currentTimeMillis(), null);
+            PreferenceManager prefs = PreferenceManager.getInstance(context);
+            AtomicBoolean checkDone = new AtomicBoolean(false);
             searchSession.query(searchQuery, MAIN_EXECUTOR, targets -> {
-                boolean isCompatible = targets.size() != 0;
-                MAIN_EXECUTOR.execute(() -> {
-                    PreferenceManager prefs = PreferenceManager.getInstance(context);
-                    prefs.getDeviceSearch().set(isCompatible);
-                });
-                searchSession.destroy();
+                checkDone.set(true);
+                finishCompatibilityCheck(prefs, searchSession, targets.size() != 0);
             });
+            new Handler(UI_HELPER_EXECUTOR.getLooper()).postDelayed(() -> {
+                if (!checkDone.get()) {
+                    finishCompatibilityCheck(prefs, searchSession, false);
+                }
+            }, 300);
         });
+    }
+
+    private static void finishCompatibilityCheck(PreferenceManager prefs, SearchSession session, boolean isCompatible) {
+        MAIN_EXECUTOR.execute(() -> prefs.getDeviceSearch().set(isCompatible));
+        try {
+            session.destroy();
+        } catch (Exception ignore) { }
     }
 }
