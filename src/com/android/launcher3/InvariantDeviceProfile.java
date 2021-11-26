@@ -286,7 +286,11 @@ public class InvariantDeviceProfile {
         mExtraAttrs = closestProfile.extraAttrs;
 
         iconSize = displayOption.iconSizes;
-        iconBitmapSize = ResourceUtils.pxFromDp(iconSize[INDEX_DEFAULT], metrics);
+        float maxIconSize = iconSize[0];
+        for (int i = 1; i < iconSize.length; i++) {
+            maxIconSize = Math.max(maxIconSize, iconSize[i]);
+        }
+        iconBitmapSize = ResourceUtils.pxFromDp(maxIconSize, metrics);
         fillResIconDpi = getLauncherIconDensity(iconBitmapSize);
 
         iconTextSize = displayOption.textSizes;
@@ -555,13 +559,10 @@ public class InvariantDeviceProfile {
         }
         out.multiply(1.0f / weights);
 
-        // Since the bitmaps are persisted, ensure that the default bitmap size is same as
+        // Since the bitmaps are persisted, ensure that all bitmap sizes are not larger than
         // predefined size to avoid cache invalidation
-        out.iconSizes[INDEX_DEFAULT] =
-                closestPoint.iconSizes[INDEX_DEFAULT];
-        for (int i = INDEX_DEFAULT + 1; i < COUNT_SIZES; i++) {
-            out.iconSizes[i] = Math.min(out.iconSizes[i],
-                    out.iconSizes[INDEX_DEFAULT]);
+        for (int i = INDEX_DEFAULT; i < COUNT_SIZES; i++) {
+            out.iconSizes[i] = Math.min(out.iconSizes[i], closestPoint.iconSizes[i]);
         }
 
         return out;
