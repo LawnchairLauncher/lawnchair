@@ -35,6 +35,7 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.ShapeDrawable;
 import android.util.FloatProperty;
+import android.util.Pair;
 import android.view.MotionEvent;
 import android.view.Surface;
 import android.view.VelocityTracker;
@@ -571,12 +572,12 @@ public class PortraitPagedViewHandler implements PagedOrientationHandler {
     }
 
     @Override
-    public FloatProperty getSplitSelectTaskOffset(FloatProperty primary, FloatProperty secondary,
-            DeviceProfile dp) {
-        if (dp.isLandscape) { // or seascape
-            return primary;
+    public Pair<FloatProperty, FloatProperty> getSplitSelectTaskOffset(FloatProperty primary,
+            FloatProperty secondary, DeviceProfile deviceProfile) {
+        if (deviceProfile.isLandscape) { // or seascape
+            return new Pair<>(primary, secondary);
         } else {
-            return secondary;
+            return new Pair<>(secondary, primary);
         }
     }
 }
