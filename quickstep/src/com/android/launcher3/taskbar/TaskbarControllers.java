@@ -15,6 +15,8 @@
  */
 package com.android.launcher3.taskbar;
 
+import android.content.pm.ActivityInfo.Config;
+
 import androidx.annotation.NonNull;
 
 import com.android.systemui.shared.rotation.RotationButtonController;
@@ -92,6 +94,10 @@ public class TaskbarControllers {
         stashedHandleViewController.init(this);
         taskbarStashController.init(this, sharedState);
         taskbarEduController.init(this);
+    }
+
+    public void onConfigurationChanged(@Config int configChanges) {
+        navbarButtonsViewController.onConfigurationChanged(configChanges);
     }
 
     /**
