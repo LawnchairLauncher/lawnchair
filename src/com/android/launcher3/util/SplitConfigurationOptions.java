@@ -68,6 +68,11 @@ public final class SplitConfigurationOptions {
     public @interface StageType {}
     ///////////////////////////////////
 
+    /**
+     * Default split ratio for launching app pair from overview.
+     */
+    public static final float DEFAULT_SPLIT_RATIO = 0.5f;
+
     public static class SplitPositionOption {
         public final int iconResId;
         public final int textResId;
