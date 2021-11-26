@@ -174,5 +174,5 @@
     <string name="search_pref_result_tips_title">Tips Pixel</string>
     <string name="row_height_label">Tinggi Baris</string>
     <string name="all_apps_device_search_hint">Pencarian</string>
-    <string name="dark_status_bar_label">Dark Status Bar</string>
+    <string name="dark_status_bar_label">Tampilkan bar status</string>
 </resources>
