@@ -1,5 +1,6 @@
 package com.android.quickstep.views;
 
+import static com.android.launcher3.util.SplitConfigurationOptions.DEFAULT_SPLIT_RATIO;
 import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITION_BOTTOM_OR_RIGHT;
 import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITION_TOP_OR_LEFT;
 
@@ -122,6 +123,14 @@ public class GroupedTaskView extends TaskView {
         invalidate();
     }
 
+    public float getSplitRatio() {
+        if (mSplitBoundsConfig != null) {
+            return mSplitBoundsConfig.appsStackedVertically
+                    ? mSplitBoundsConfig.topTaskPercent : mSplitBoundsConfig.leftTaskPercent;
+        }
+        return DEFAULT_SPLIT_RATIO;
+    }
+
     @Override
     public boolean offerTouchToChildren(MotionEvent event) {
         computeAndSetIconTouchDelegate(mIconView2, mIcon2CenterCoords, mIcon2TouchDelegate);
@@ -157,7 +166,8 @@ public class GroupedTaskView extends TaskView {
     @Override
     public void launchTask(@NonNull Consumer<Boolean> callback, boolean freezeTaskList) {
         getRecentsView().getSplitPlaceholder().launchTasks(mTask, mSecondaryTask,
-                STAGE_POSITION_TOP_OR_LEFT, callback, freezeTaskList);
+                STAGE_POSITION_TOP_OR_LEFT, callback, freezeTaskList,
+                getSplitRatio());
     }
 
     @Override

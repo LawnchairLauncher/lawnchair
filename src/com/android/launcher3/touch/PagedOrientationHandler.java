@@ -24,6 +24,7 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.ShapeDrawable;
 import android.util.FloatProperty;
+import android.util.Pair;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
@@ -113,8 +114,8 @@ public interface PagedOrientationHandler {
     float getSecondaryValue(float x, float y);
 
     boolean isLayoutNaturalToLauncher();
-    FloatProperty getSplitSelectTaskOffset(FloatProperty primary, FloatProperty secondary,
-            DeviceProfile deviceProfile);
+    Pair<FloatProperty, FloatProperty> getSplitSelectTaskOffset(FloatProperty primary,
+            FloatProperty secondary, DeviceProfile deviceProfile);
     int getDistanceToBottomOfRect(DeviceProfile dp, Rect rect);
     List<SplitPositionOption> getSplitPositionOptions(DeviceProfile dp);
     /**

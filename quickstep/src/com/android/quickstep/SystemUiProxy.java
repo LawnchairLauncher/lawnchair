@@ -565,12 +565,12 @@ public class SystemUiProxy implements ISystemUiProxy,
 
     /** Start multiple tasks in split-screen simultaneously. */
     public void startTasks(int mainTaskId, Bundle mainOptions, int sideTaskId, Bundle sideOptions,
-            @SplitConfigurationOptions.StagePosition int sidePosition,
+            @SplitConfigurationOptions.StagePosition int sidePosition, float splitRatio,
             RemoteTransitionCompat remoteTransition) {
         if (mSystemUiProxy != null) {
             try {
                 mSplitScreen.startTasks(mainTaskId, mainOptions, sideTaskId, sideOptions,
-                        sidePosition, remoteTransition.getTransition());
+                        sidePosition, splitRatio, remoteTransition.getTransition());
             } catch (RemoteException e) {
                 Log.w(TAG, "Failed call startTask");
             }
@@ -582,11 +582,11 @@ public class SystemUiProxy implements ISystemUiProxy,
      */
     public void startTasksWithLegacyTransition(int mainTaskId, Bundle mainOptions, int sideTaskId,
             Bundle sideOptions, @SplitConfigurationOptions.StagePosition int sidePosition,
-            RemoteAnimationAdapter adapter) {
+            float splitRatio, RemoteAnimationAdapter adapter) {
         if (mSystemUiProxy != null) {
             try {
                 mSplitScreen.startTasksWithLegacyTransition(mainTaskId, mainOptions, sideTaskId,
-                        sideOptions, sidePosition, adapter);
+                        sideOptions, sidePosition, splitRatio, adapter);
             } catch (RemoteException e) {
                 Log.w(TAG, "Failed call startTasksWithLegacyTransition");
             }
