@@ -27,7 +27,7 @@ license {
         "SPDX-license-identifier-Apache-2.0",
     ],
     license_text: [
-        "NOTICE",
+        "LICENSE.txt",
     ],
 }
 
