@@ -37,6 +37,7 @@ import android.animation.ObjectAnimator;
 import android.annotation.DrawableRes;
 import android.annotation.IdRes;
 import android.annotation.LayoutRes;
+import android.content.pm.ActivityInfo.Config;
 import android.content.res.ColorStateList;
 import android.graphics.Rect;
 import android.graphics.Region;
@@ -443,6 +444,12 @@ public class NavbarButtonsViewController {
 
     public boolean isEventOverAnyItem(MotionEvent ev) {
         return mFloatingRotationButtonBounds.contains((int) ev.getX(), (int) ev.getY());
+    }
+
+    public void onConfigurationChanged(@Config int configChanges) {
+        if (mFloatingRotationButton != null) {
+            mFloatingRotationButton.onConfigurationChanged(configChanges);
+        }
     }
 
     public void onDestroy() {
