@@ -30,6 +30,7 @@ import android.app.ActivityOptions;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo.Config;
 import android.content.pm.LauncherApps;
 import android.graphics.Insets;
 import android.graphics.PixelFormat;
@@ -206,6 +207,10 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
         updateSysuiStateFlags(sharedState.sysuiStateFlags, true /* fromInit */);
 
         mWindowManager.addView(mDragLayer, mWindowLayoutParams);
+    }
+
+    public void onConfigurationChanged(@Config int configChanges) {
+        mControllers.onConfigurationChanged(configChanges);
     }
 
     public boolean isThreeButtonNav() {

@@ -15,6 +15,8 @@
  */
 package com.android.launcher3.taskbar;
 
+import android.content.pm.ActivityInfo.Config;
+
 import androidx.annotation.NonNull;
 
 import com.android.systemui.shared.rotation.RotationButtonController;
@@ -107,6 +109,10 @@ public class TaskbarControllers {
             postInitCallback.run();
         }
         mPostInitCallbacks.clear();
+    }
+
+    public void onConfigurationChanged(@Config int configChanges) {
+        navbarButtonsViewController.onConfigurationChanged(configChanges);
     }
 
     /**
