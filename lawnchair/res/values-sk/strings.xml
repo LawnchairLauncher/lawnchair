@@ -41,7 +41,7 @@
     <string name="icons">Ikony</string>
     <string name="icon_size">Veľkosť ikon</string>
     <string name="label_size">Veľkosť štítkov</string>
-    <string name="show_home_labels">Show Labels</string>
+    <string name="show_home_labels">Ukázať štítky</string>
     <string name="notification_dots">Notification Dots</string>
     <string name="smartspace_preferences">Preferences</string>
     <string name="about_label">About</string>
