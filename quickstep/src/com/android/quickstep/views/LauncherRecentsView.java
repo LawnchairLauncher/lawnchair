@@ -32,6 +32,7 @@ import android.view.Surface;
 
 import androidx.annotation.Nullable;
 
+import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.BaseQuickstepLauncher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.statehandlers.DepthController;
@@ -70,6 +71,7 @@ public class LauncherRecentsView extends RecentsView<BaseQuickstepLauncher, Laun
     @Override
     public void startHome() {
         mActivity.getStateManager().goToState(NORMAL);
+        AbstractFloatingView.closeAllOpenViews(mActivity, mActivity.isStarted());
     }
 
     @Override
