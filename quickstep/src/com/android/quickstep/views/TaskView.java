@@ -599,7 +599,9 @@ public class TaskView extends FrameLayout implements Reusable {
         if (confirmSecondSplitSelectApp()) {
             return;
         }
-        if (ENABLE_QUICKSTEP_LIVE_TILE.get() && isRunningTask()) {
+        RecentsView recentsView = getRecentsView();
+        RemoteTargetHandle[] remoteTargetHandles = recentsView.mRemoteTargetHandles;
+        if (ENABLE_QUICKSTEP_LIVE_TILE.get() && isRunningTask() && remoteTargetHandles != null) {
             if (!mIsClickableAsLiveTile) {
                 return;
             }
@@ -612,9 +614,7 @@ public class TaskView extends FrameLayout implements Reusable {
             }
 
             mIsClickableAsLiveTile = false;
-            RecentsView recentsView = getRecentsView();
             RemoteAnimationTargets targets;
-            RemoteTargetHandle[] remoteTargetHandles = recentsView.mRemoteTargetHandles;
             if (remoteTargetHandles.length == 1) {
                 targets = remoteTargetHandles[0].getTransformParams().getTargetSet();
             } else {
