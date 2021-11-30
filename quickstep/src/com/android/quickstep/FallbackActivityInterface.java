@@ -121,18 +121,6 @@ public final class FallbackActivityInterface extends
     }
 
     @Override
-    public Rect getOverviewWindowBounds(Rect homeBounds, RemoteAnimationTargetCompat target) {
-        // TODO: Remove this once b/77875376 is fixed
-        return target.screenSpaceBounds;
-    }
-
-    @Override
-    public boolean allowMinimizeSplitScreen() {
-        // TODO: Remove this once b/77875376 is fixed
-        return false;
-    }
-
-    @Override
     public boolean deferStartingActivity(RecentsAnimationDeviceState deviceState, MotionEvent ev) {
         // In non-gesture mode, user might be clicking on the home button which would directly
         // start the home activity instead of going through recents. In that case, defer starting
