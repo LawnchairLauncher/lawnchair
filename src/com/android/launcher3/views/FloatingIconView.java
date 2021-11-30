@@ -460,7 +460,7 @@ public class FloatingIconView extends FrameLayout implements
         if (mIconLoadResult != null && mIconLoadResult.isIconLoaded) {
             setVisibility(View.VISIBLE);
         }
-        if (!mIsOpening) {
+        if (!mIsOpening && mOriginalIcon != null) {
             // When closing an app, we want the item on the workspace to be invisible immediately
             setIconAndDotVisible(mOriginalIcon, false);
         }
