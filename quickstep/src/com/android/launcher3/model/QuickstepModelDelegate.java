@@ -161,7 +161,8 @@ public class QuickstepModelDelegate extends ModelDelegate {
             }
             InstanceId instanceId = new InstanceIdSequence().newInstanceId();
             for (ItemInfo info : itemsIdMap) {
-                FolderInfo parent = getContainer(info, itemsIdMap);
+                FolderInfo parent = info.container > 0
+                        ? (FolderInfo) itemsIdMap.get(info.container) : null;
                 StatsLogCompatManager.writeSnapshot(info.buildProto(parent), instanceId);
             }
             additionalSnapshotEvents(instanceId);
@@ -198,7 +199,8 @@ public class QuickstepModelDelegate extends ModelDelegate {
                         }
 
                         for (ItemInfo info : itemsIdMap) {
-                            FolderInfo parent = getContainer(info, itemsIdMap);
+                            FolderInfo parent = info.container > 0
+                                    ? (FolderInfo) itemsIdMap.get(info.container) : null;
                             LauncherAtom.ItemInfo itemInfo = info.buildProto(parent);
                             Log.d(TAG, itemInfo.toString());
                             StatsEvent statsEvent = StatsLogCompatManager.buildStatsEvent(itemInfo,
@@ -218,22 +220,6 @@ public class QuickstepModelDelegate extends ModelDelegate {
             Log.e(TAG, "Failed to register launcher snapshot logging callback with StatsManager",
                     e);
         }
-    }
-
-    private static FolderInfo getContainer(ItemInfo info, IntSparseArrayMap<ItemInfo> itemsIdMap) {
-        if (info.container > 0) {
-            ItemInfo containerInfo = itemsIdMap.get(info.container);
-
-            if (!(containerInfo instanceof FolderInfo)) {
-                Log.e(TAG, String.format(
-                        "Item info: %s found with invalid container: %s",
-                        info,
-                        containerInfo));
-            } else {
-                return (FolderInfo) containerInfo;
-            }
-        }
-        return null;
     }
 
     @Override
