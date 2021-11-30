@@ -95,6 +95,9 @@ public final class FeatureFlags {
     public static final BooleanFlag ENABLE_ONE_SEARCH = new DeviceFlag("ENABLE_ONE_SEARCH", false,
             "Use homescreen search box to complete allApps searches");
 
+    public static final BooleanFlag COLLECT_SEARCH_HISTORY = new DeviceFlag(
+            "COLLECT_SEARCH_HISTORY", false, "Allow launcher to collect search history for log");
+
     public static final BooleanFlag ENABLE_TWOLINE_ALLAPPS = getDebugFlag(
             "ENABLE_TWOLINE_ALLAPPS", false, "Enables two line label inside all apps.");
 
