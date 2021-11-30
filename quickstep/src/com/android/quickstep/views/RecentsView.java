@@ -1510,6 +1510,16 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             }
         }
         if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
+            // resetTaskVisuals is called at the end of dismiss animation which could update
+            // primary and secondary translation of the live tile cut out. We will need to do so
+            // here accordingly.
+            runActionOnRemoteHandles(remoteTargetHandle -> {
+                TaskViewSimulator simulator = remoteTargetHandle.getTaskViewSimulator();
+                simulator.taskPrimaryTranslation.value = 0;
+                simulator.taskSecondaryTranslation.value = 0;
+                simulator.fullScreenProgress.value = 0;
+                simulator.recentsViewScale.value = 1;
+            });
             // Similar to setRunningTaskHidden below, reapply the state before runningTaskView is
             // null.
             if (!mRunningTaskShowScreenshot) {
