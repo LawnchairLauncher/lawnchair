@@ -31,6 +31,7 @@ import android.view.MotionEvent;
 
 import androidx.annotation.Nullable;
 
+import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.statemanager.StateManager.StateListener;
@@ -73,6 +74,7 @@ public class FallbackRecentsView extends RecentsView<RecentsActivity, RecentsSta
     @Override
     public void startHome() {
         mActivity.startHome();
+        AbstractFloatingView.closeAllOpenViews(mActivity, mActivity.isStarted());
     }
 
     /**
