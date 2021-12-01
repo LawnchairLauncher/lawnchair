@@ -121,6 +121,7 @@ import java.util.function.Supplier;
         // If going home, align the icons to hotseat
         AnimatorSet animatorSet = new AnimatorSet();
 
+        // Update stashed flags first to ensure goingToUnstashedLauncherState() returns correctly.
         TaskbarStashController stashController = mControllers.taskbarStashController;
         stashController.updateStateForFlag(FLAG_IN_STASHED_LAUNCHER_STATE,
                 toState.isTaskbarStashed());
@@ -195,7 +196,8 @@ import java.util.function.Supplier;
         if (hasAnyFlag(changedFlags, FLAG_RESUMED)) {
             boolean isResumed = isResumed();
             ObjectAnimator anim = mIconAlignmentForResumedState
-                    .animateToValue(isResumed ? 1 : 0)
+                    .animateToValue(isResumed && goingToUnstashedLauncherState()
+                            ? 1 : 0)
                     .setDuration(duration);
 
             anim.addListener(new AnimatorListenerAdapter() {
@@ -219,7 +221,8 @@ import java.util.function.Supplier;
         if (hasAnyFlag(changedFlags, FLAG_RECENTS_ANIMATION_RUNNING)) {
             boolean isRecentsAnimationRunning = isRecentsAnimationRunning();
             Animator animator = mIconAlignmentForGestureState
-                    .animateToValue(isRecentsAnimationRunning ? 1 : 0);
+                    .animateToValue(isRecentsAnimationRunning && goingToUnstashedLauncherState()
+                            ? 1 : 0);
             if (isRecentsAnimationRunning) {
                 animator.setDuration(duration);
             }
@@ -251,6 +254,11 @@ import java.util.function.Supplier;
             animatorSet.start();
         }
         return animatorSet;
+    }
+
+    /** Returns whether we're going to a state where taskbar icons should align with launcher. */
+    private boolean goingToUnstashedLauncherState() {
+        return !mControllers.taskbarStashController.isInStashedLauncherState();
     }
 
     private void playStateTransitionAnim(boolean isTransitionStateStashed,
