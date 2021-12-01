@@ -229,7 +229,6 @@ public class BgDataModel {
                     String.format("Adding item to ID map: %s", item.toString()),
                     /* stackTrace= */ null);
         }
-
         itemsIdMap.put(item.id, item);
         switch (item.itemType) {
             case LauncherSettings.Favorites.ITEM_TYPE_FOLDER:

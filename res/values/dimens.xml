@@ -329,6 +329,9 @@
     <!-- Size of the maximum radius for the enforced rounded rectangles. -->
     <dimen name="enforced_rounded_corner_max_radius">16dp</dimen>
 
+<!-- Base Swipe Detector, speed in dp/s -->
+    <dimen name="base_swift_detector_fling_release_velocity">1dp</dimen>
+
 <!-- Overview placeholder to compile in Launcher3 without Quickstep -->
     <dimen name="task_thumbnail_icon_size">0dp</dimen>
     <dimen name="task_thumbnail_icon_drawable_size">0dp</dimen>

@@ -106,13 +106,15 @@ public class SingleAxisSwipeDetector extends BaseSwipeDetector {
 
     public SingleAxisSwipeDetector(@NonNull Context context, @NonNull Listener l,
             @NonNull Direction dir) {
-        this(ViewConfiguration.get(context), l, dir, Utilities.isRtl(context.getResources()));
+        super(context, ViewConfiguration.get(context),  Utilities.isRtl(context.getResources()));
+        mListener = l;
+        mDir = dir;
     }
 
     @VisibleForTesting
-    protected SingleAxisSwipeDetector(@NonNull ViewConfiguration config, @NonNull Listener l,
-            @NonNull Direction dir, boolean isRtl) {
-        super(config, isRtl);
+    protected SingleAxisSwipeDetector(@NonNull Context context, @NonNull ViewConfiguration config,
+            @NonNull Listener l, @NonNull Direction dir, boolean isRtl) {
+        super(context, config, isRtl);
         mListener = l;
         mDir = dir;
     }
