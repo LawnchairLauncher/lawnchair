@@ -184,7 +184,7 @@ public class TaskAnimationManager implements RecentsAnimationCallbacks.RecentsAn
                     mCtx.getIApplicationThread());
             Bundle options = ActivityOptionsCompat.makeRemoteTransition(transition)
                     .setTransientLaunch().toBundle();
-            mCtx.startActivity(intent, options);
+            UI_HELPER_EXECUTOR.execute(() -> mCtx.startActivity(intent, options));
         } else {
             UI_HELPER_EXECUTOR.execute(() -> ActivityManagerWrapper.getInstance()
                     .startRecentsActivity(intent, eventTime, mCallbacks, null, null));
