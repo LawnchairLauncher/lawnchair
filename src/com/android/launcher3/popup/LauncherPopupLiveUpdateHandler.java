@@ -18,6 +18,7 @@ package com.android.launcher3.popup;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.model.data.ItemInfo;
@@ -85,5 +86,10 @@ public class LauncherPopupLiveUpdateHandler extends PopupLiveUpdateHandler<Launc
                 PopupContainerWithArrow.showForIcon(mPopupContainerWithArrow.getOriginalIcon());
             }
         }
+    }
+
+    @Override
+    protected void showPopupContainerForIcon(BubbleTextView originalIcon) {
+        PopupContainerWithArrow.showForIcon(originalIcon);
     }
 }
