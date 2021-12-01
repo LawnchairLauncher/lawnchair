@@ -99,6 +99,7 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
 
     @Override
     protected void onDestroy() {
+        super.onDestroy();
         onLauncherResumedOrPaused(false);
         mTaskbarLauncherStateController.onDestroy();
 
