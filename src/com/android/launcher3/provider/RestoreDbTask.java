@@ -16,8 +16,8 @@
 
 package com.android.launcher3.provider;
 
-import static com.android.launcher3.model.DeviceGridState.TYPE_MULTI_DISPLAY;
-import static com.android.launcher3.model.DeviceGridState.TYPE_PHONE;
+import static com.android.launcher3.InvariantDeviceProfile.TYPE_MULTI_DISPLAY;
+import static com.android.launcher3.InvariantDeviceProfile.TYPE_PHONE;
 import static com.android.launcher3.provider.LauncherDbUtils.dropTable;
 
 import android.app.backup.BackupManager;
