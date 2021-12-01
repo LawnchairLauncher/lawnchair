@@ -157,10 +157,20 @@ public class GroupedTaskView extends TaskView {
     @Nullable
     @Override
     public RunnableList launchTaskAnimated() {
-        getRecentsView().getSplitPlaceholder().launchTasks(this /*groupedTaskView*/,
-                null /*callback*/,
+        if (mTask == null || mSecondaryTask == null) {
+            return null;
+        }
+
+        RunnableList endCallback = new RunnableList();
+        RecentsView recentsView = getRecentsView();
+        // Callbacks run from remote animation when recents animation not currently running
+        recentsView.getSplitPlaceholder().launchTasks(this /*groupedTaskView*/,
+                success -> endCallback.executeAllAndDestroy(),
                 false /* freezeTaskList */);
-        return null;
+
+        // Callbacks get run from recentsView for case when recents animation already running
+        recentsView.addSideTaskLaunchCallback(endCallback);
+        return endCallback;
     }
 
     @Override
