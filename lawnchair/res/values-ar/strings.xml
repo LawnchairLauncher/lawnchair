@@ -114,7 +114,7 @@
     <string name="missing_notification_access_label">الوصول إلى الإشعارات مطلوب</string>
     <string name="missing_notification_access_description">الوصول إلى الإشعارات مطلوب.</string>
     <string name="msg_missing_notification_access">لاستخدام نقاط الإشعارات، امنح <xliff:g id="name" example="My App">%1$s</xliff:g> حق الوصول إلى الإشعارات.</string>
-    <string name="title_change_settings">تغيير الإعدادات</string>
+    <string name="title_change_settings">تعديل الإعدادات</string>
     <string name="debug_restart_launcher">إعادة تشغيل Lawnchair</string>
     <string name="pref_fonts_missing_font">لم يتم العثور على الخط.</string>
     <string name="font_variant_italic">مائل</string>
@@ -129,7 +129,7 @@
     <string name="font_weight_extra_black">أسود</string>
     <string name="font_label">الخط (تجريبي)</string>
     <string name="reset_font">إعادة ضبط</string>
-    <string name="search_input_action_clear_results">Clear Search Box</string>
+    <string name="search_input_action_clear_results">حذف صندوق البحث</string>
     <string name="pref_category_search">البحث</string>
     <string name="pref_search_auto_show_keyboard">إظهار لوحة المفاتيح تلقائياً</string>
     <string name="label_search">البحث</string>
@@ -150,13 +150,13 @@
     <string name="force_rounded_widgets">زوايا دائرية</string>
     <string name="suggestion_pref_screen_title">اقتراحات</string>
     <string name="n_percent">%1$d%%</string>
-    <string name="label">Label</string>
-    <string name="presets">Presets</string>
+    <string name="label">العلامة</string>
+    <string name="presets">الإعدادات المسبقة</string>
     <string name="colors">الألوان</string>
-    <string name="dynamic">Dynamic</string>
+    <string name="dynamic">ديناميكية</string>
     <string name="all_apps_search_market_message">البحث عن مزيد من التطبيقات</string>
     <string name="show_app_search_bar">إظهار شريط البحث</string>
-    <string name="lawnchair_bug_report">Lawnchair Bug Report</string>
+    <string name="lawnchair_bug_report">تقرير الأخطاء Lawnchair</string>
     <string name="crash_report_notif_title">%1$s توقف عن العمل</string>
     <string name="action_upload">تحميل إلى Dogbin</string>
     <string name="action_copy_link">نسخ الرابط</string>
@@ -172,12 +172,12 @@
     <string name="themed_icon_title">أيقونات تستمد خصائصها و لونها من الثيم</string>
     <string name="corner_radius_label">نصف قطر الزاوية</string>
     <string name="search_bar_label">شريط البحث</string>
-    <string name="apply_accent_color_label">Apply Accent Color</string>
+    <string name="apply_accent_color_label">تطبيق الون المحدد</string>
     <string name="show_search_result_types">إظهار نتائج البحث</string>
     <string name="search_pref_result_people_title">الأشخاص</string>
-    <string name="search_pref_result_shortcuts_title">App Shortcuts</string>
-    <string name="search_pref_result_tips_title">Pixel Tips</string>
-    <string name="row_height_label">Row Height</string>
+    <string name="search_pref_result_shortcuts_title">اختصارات التطبيق</string>
+    <string name="search_pref_result_tips_title">نصائح بكسل</string>
+    <string name="row_height_label">ارتفاع الصف</string>
     <string name="all_apps_device_search_hint">البحث</string>
-    <string name="dark_status_bar_label">Dark Status Bar</string>
+    <string name="dark_status_bar_label">شريط الحالة المظلم</string>
 </resources>
