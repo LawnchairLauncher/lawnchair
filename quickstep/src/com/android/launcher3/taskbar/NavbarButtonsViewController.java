@@ -106,6 +106,10 @@ public class NavbarButtonsViewController implements TaskbarControllers.LoggableT
 
     private static final String NAV_BUTTONS_SEPARATE_WINDOW_TITLE = "Taskbar Nav Buttons";
 
+    public static final int ALPHA_INDEX_IMMERSIVE_MODE = 0;
+    public static final int ALPHA_INDEX_KEYGUARD_OR_DISABLE = 1;
+    private static final int NUM_ALPHA_CHANNELS = 2;
+
     private final ArrayList<StatePropertyHolder> mPropertyHolders = new ArrayList<>();
     private final ArrayList<ImageView> mAllButtons = new ArrayList<>();
     private int mState;
@@ -140,6 +144,8 @@ public class NavbarButtonsViewController implements TaskbarControllers.LoggableT
     private int mSysuiStateFlags;
     private View mBackButton;
     private View mHomeButton;
+    private MultiValueAlpha mBackButtonAlpha;
+    private MultiValueAlpha mHomeButtonAlpha;
     private FloatingRotationButton mFloatingRotationButton;
 
     // Variables for moving nav buttons to a separate window above IME
@@ -180,8 +186,7 @@ public class NavbarButtonsViewController implements TaskbarControllers.LoggableT
                 mControllers.taskbarViewController.getTaskbarIconAlpha()
                         .getProperty(ALPHA_INDEX_KEYGUARD),
                 flags -> (flags & FLAG_KEYGUARD_VISIBLE) == 0
-                        && (flags & FLAG_SCREEN_PINNING_ACTIVE) == 0,
-                MultiValueAlpha.VALUE, 1, 0));
+                        && (flags & FLAG_SCREEN_PINNING_ACTIVE) == 0));
 
         mPropertyHolders.add(new StatePropertyHolder(mControllers.taskbarDragLayerController
                 .getKeyguardBgTaskbar(),
@@ -347,7 +352,10 @@ public class NavbarButtonsViewController implements TaskbarControllers.LoggableT
 
         mBackButton = addButton(R.drawable.ic_sysbar_back, BUTTON_BACK,
                 mNavButtonContainer, mControllers.navButtonController, R.id.back);
-        mPropertyHolders.add(new StatePropertyHolder(mBackButton,
+        mBackButtonAlpha = new MultiValueAlpha(mBackButton, NUM_ALPHA_CHANNELS);
+        mBackButtonAlpha.setUpdateVisibility(true);
+        mPropertyHolders.add(new StatePropertyHolder(
+                mBackButtonAlpha.getProperty(ALPHA_INDEX_KEYGUARD_OR_DISABLE),
                 flags -> {
                     // Show only if not disabled, and if not on the keyguard or otherwise only when
                     // the bouncer or a lockscreen app is showing above the keyguard
@@ -373,7 +381,11 @@ public class NavbarButtonsViewController implements TaskbarControllers.LoggableT
         // home and recents buttons
         mHomeButton = addButton(R.drawable.ic_sysbar_home, BUTTON_HOME, navContainer,
                 navButtonController, R.id.home);
-        mPropertyHolders.add(new StatePropertyHolder(mHomeButton,
+        mHomeButtonAlpha = new MultiValueAlpha(mHomeButton, NUM_ALPHA_CHANNELS);
+        mHomeButtonAlpha.setUpdateVisibility(true);
+        mPropertyHolders.add(
+                new StatePropertyHolder(mHomeButtonAlpha.getProperty(
+                        ALPHA_INDEX_KEYGUARD_OR_DISABLE),
                 flags -> (flags & FLAG_KEYGUARD_VISIBLE) == 0 &&
                         (flags & FLAG_DISABLE_HOME) == 0));
         View recentsButton = addButton(R.drawable.ic_sysbar_recent, BUTTON_RECENTS,
@@ -484,6 +496,20 @@ public class NavbarButtonsViewController implements TaskbarControllers.LoggableT
                 outRegion.op(mTempRect, Op.UNION);
             }
         }
+    }
+
+    /**
+     * Returns multi-value alpha controller for back button.
+     */
+    public MultiValueAlpha getBackButtonAlpha() {
+        return mBackButtonAlpha;
+    }
+
+    /**
+     * Returns multi-value alpha controller for home button.
+     */
+    public MultiValueAlpha getHomeButtonAlpha() {
+        return mHomeButtonAlpha;
     }
 
     /** Use to set the translationY for the all nav+contextual buttons */
@@ -776,6 +802,11 @@ public class NavbarButtonsViewController implements TaskbarControllers.LoggableT
         StatePropertyHolder(View view, IntPredicate enableCondition) {
             this(view, enableCondition, LauncherAnimUtils.VIEW_ALPHA, 1, 0);
             mAnimator.addListener(new AlphaUpdateListener(view));
+        }
+
+        StatePropertyHolder(MultiValueAlpha.AlphaProperty alphaProperty,
+                IntPredicate enableCondition) {
+            this(alphaProperty, enableCondition, MultiValueAlpha.VALUE, 1, 0);
         }
 
         <T> StatePropertyHolder(T target, IntPredicate enabledCondition,

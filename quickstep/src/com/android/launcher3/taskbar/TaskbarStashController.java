@@ -197,7 +197,7 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
     /**
      * Returns whether the user can manually stash the taskbar based on the current device state.
      */
-    private boolean supportsManualStashing() {
+    protected boolean supportsManualStashing() {
         return supportsVisualStashing()
                 && (!Utilities.IS_RUNNING_IN_TEST_HARNESS || supportsStashingForTests());
     }
