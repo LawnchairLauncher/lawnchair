@@ -1123,9 +1123,6 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             // Reset the running task when leaving overview since it can still have a reference to
             // its thumbnail
             mTmpRunningTasks = null;
-            if (mSplitSelectStateController.isSplitSelectActive()) {
-                cancelSplitSelect(false);
-            }
             // Remove grouped tasks and recycle once we exit overview
             int taskCount = getTaskViewCount();
             for (int i = 0; i < taskCount; i++) {
@@ -3938,109 +3935,6 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         mSecondSplitHiddenTaskView = taskView;
         taskView.setVisibility(INVISIBLE);
         pendingAnimation.buildAnim().start();
-    }
-
-    public PendingAnimation cancelSplitSelect(boolean animate) {
-        SplitSelectStateController splitController = mSplitSelectStateController;
-        @StagePosition int stagePosition = splitController.getActiveSplitStagePosition();
-        Rect initialBounds = splitController.getInitialBounds();
-        splitController.resetState();
-        int duration = mActivity.getStateManager().getState().getTransitionDuration(getContext());
-        PendingAnimation pendingAnim = new PendingAnimation(duration);
-        mSplitToast.cancel();
-        mSplitUnsupportedToast.cancel();
-        if (!animate) {
-            resetFromSplitSelectionState();
-            return pendingAnim;
-        }
-
-        addViewInLayout(mSplitHiddenTaskView, mSplitHiddenTaskViewIndex,
-                mSplitHiddenTaskView.getLayoutParams());
-        mSplitHiddenTaskView.setAlpha(0);
-        int[] oldScroll = new int[getChildCount()];
-        getPageScrolls(oldScroll, false,
-                view -> view.getVisibility() != GONE && view != mSplitHiddenTaskView);
-
-        int[] newScroll = new int[getChildCount()];
-        getPageScrolls(newScroll, false, SIMPLE_SCROLL_LOGIC);
-
-        boolean needsCurveUpdates = false;
-        for (int i = mSplitHiddenTaskViewIndex; i >= 0; i--) {
-            View child = getChildAt(i);
-            if (child == mSplitHiddenTaskView) {
-                TaskView taskView = (TaskView) child;
-
-                int dir = mOrientationHandler.getSplitTaskViewDismissDirection(stagePosition,
-                        mActivity.getDeviceProfile());
-                FloatProperty<TaskView> dismissingTaskViewTranslate;
-                Rect hiddenBounds = new Rect(taskView.getLeft(), taskView.getTop(),
-                        taskView.getRight(), taskView.getBottom());
-                int distanceDelta = 0;
-                if (dir == PagedOrientationHandler.SPLIT_TRANSLATE_SECONDARY_NEGATIVE) {
-                    dismissingTaskViewTranslate = taskView
-                            .getSecondaryDissmissTranslationProperty();
-                    distanceDelta = initialBounds.top - hiddenBounds.top;
-                    taskView.layout(initialBounds.left, hiddenBounds.top, initialBounds.right,
-                            hiddenBounds.bottom);
-                } else {
-                    dismissingTaskViewTranslate = taskView
-                            .getPrimaryDismissTranslationProperty();
-                    distanceDelta = initialBounds.left - hiddenBounds.left;
-                    taskView.layout(hiddenBounds.left, initialBounds.top, hiddenBounds.right,
-                            initialBounds.bottom);
-                    if (dir == PagedOrientationHandler.SPLIT_TRANSLATE_PRIMARY_POSITIVE) {
-                        distanceDelta *= -1;
-                    }
-                }
-                pendingAnim.add(ObjectAnimator.ofFloat(mSplitHiddenTaskView,
-                        dismissingTaskViewTranslate,
-                        distanceDelta));
-                pendingAnim.add(ObjectAnimator.ofFloat(mSplitHiddenTaskView, ALPHA, 1));
-            } else {
-                // If insertion is on last index (furthest from clear all), we directly add the view
-                // else we translate all views to the right of insertion index further right,
-                // ignore views to left
-                if (showAsGrid()) {
-                    // TODO(b/186800707) handle more elegantly for grid
-                    continue;
-                }
-                int scrollDiff = newScroll[i] - oldScroll[i];
-                if (scrollDiff != 0) {
-                    FloatProperty translationProperty = child instanceof TaskView
-                            ? ((TaskView) child).getPrimaryDismissTranslationProperty()
-                            : mOrientationHandler.getPrimaryViewTranslate();
-
-                    ResourceProvider rp = DynamicResource.provider(mActivity);
-                    SpringProperty sp = new SpringProperty(SpringProperty.FLAG_CAN_SPRING_ON_END)
-                            .setDampingRatio(
-                                    rp.getFloat(R.dimen.dismiss_task_trans_x_damping_ratio))
-                            .setStiffness(rp.getFloat(R.dimen.dismiss_task_trans_x_stiffness));
-                    pendingAnim.add(ObjectAnimator.ofFloat(child, translationProperty, scrollDiff)
-                            .setDuration(duration), ACCEL, sp);
-                    needsCurveUpdates = true;
-                }
-            }
-        }
-
-        if (needsCurveUpdates) {
-            pendingAnim.addOnFrameCallback(this::updateCurveProperties);
-        }
-
-        pendingAnim.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                // TODO(b/186800707) Figure out how to undo for grid view
-                //  Need to handle cases where dismissed task is
-                //  * Top Row
-                //  * Bottom Row
-                //  * Focused Task
-                updateGridProperties();
-                resetFromSplitSelectionState();
-                updateScrollSynchronously();
-            }
-        });
-
-        return pendingAnim;
     }
 
     /** TODO(b/181707736) More gracefully handle exiting split selection state */
