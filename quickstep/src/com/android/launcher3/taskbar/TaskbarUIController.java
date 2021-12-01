@@ -18,6 +18,8 @@ package com.android.launcher3.taskbar;
 import android.graphics.Rect;
 import android.view.View;
 
+import androidx.annotation.CallSuper;
+
 import com.android.launcher3.model.data.ItemInfoWithIcon;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 
@@ -33,11 +35,15 @@ public class TaskbarUIController {
     // Initialized in init.
     protected TaskbarControllers mControllers;
 
+    @CallSuper
     protected void init(TaskbarControllers taskbarControllers) {
         mControllers = taskbarControllers;
     }
 
-    protected void onDestroy() { }
+    @CallSuper
+    protected void onDestroy() {
+        mControllers = null;
+    }
 
     protected boolean isTaskbarTouchable() {
         return true;
