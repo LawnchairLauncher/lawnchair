@@ -92,7 +92,6 @@ public final class RecentsViewStateController extends
             builder.add(mRecentsView.createSplitSelectInitAnimation().buildAnim());
             mRecentsView.applySplitPrimaryScrollOffset();
         } else if (!isSplitSelectionState(toState) && isSplitSelectionState(currentState)) {
-            builder.add(mRecentsView.cancelSplitSelect(true).buildAnim());
             mRecentsView.resetSplitPrimaryScrollOffset();
         }
 
