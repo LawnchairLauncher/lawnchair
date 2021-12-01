@@ -77,7 +77,8 @@ public final class Widgets extends LauncherInstrumentation.VisibleContainer {
             mLauncher.scroll(
                     widgetsContainer,
                     Direction.UP,
-                    new Rect(0, 0, mLauncher.getVisibleBounds(widgetsContainer).width(), 0),
+                    new Rect(0, 0, mLauncher.getRightGestureMarginInContainer(widgetsContainer) + 1,
+                            0),
                     FLING_STEPS, false);
             try (LauncherInstrumentation.Closable c1 = mLauncher.addContextLayer("flung back")) {
                 verifyActiveContainer();
