@@ -31,11 +31,6 @@ public class SplitScreenSelectState extends OverviewState {
     }
 
     @Override
-    public void onBackPressed(Launcher launcher) {
-        launcher.getStateManager().goToState(OVERVIEW);
-    }
-
-    @Override
     public int getVisibleElements(Launcher launcher) {
         return SPLIT_PLACHOLDER_VIEW;
     }
