@@ -31,6 +31,7 @@ import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_I
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_NOTIFICATION_PANEL_EXPANDED;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_OVERVIEW_DISABLED;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_QUICK_SETTINGS_EXPANDED;
+import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_SCREEN_PINNING;
 
 import android.animation.ArgbEvaluator;
 import android.animation.ObjectAnimator;
@@ -86,6 +87,7 @@ public class NavbarButtonsViewController {
     private static final int FLAG_DISABLE_RECENTS = 1 << 8;
     private static final int FLAG_DISABLE_BACK = 1 << 9;
     private static final int FLAG_NOTIFICATION_SHADE_EXPANDED = 1 << 10;
+    private static final int FLAG_SCREEN_PINNING_ACTIVE = 1 << 10;
 
     private static final int MASK_IME_SWITCHER_VISIBLE = FLAG_SWITCHER_SUPPORTED | FLAG_IME_VISIBLE;
 
@@ -152,7 +154,9 @@ public class NavbarButtonsViewController {
         mPropertyHolders.add(new StatePropertyHolder(
                 mControllers.taskbarViewController.getTaskbarIconAlpha()
                         .getProperty(ALPHA_INDEX_KEYGUARD),
-                flags -> (flags & FLAG_KEYGUARD_VISIBLE) == 0, MultiValueAlpha.VALUE, 1, 0));
+                flags -> (flags & FLAG_KEYGUARD_VISIBLE) == 0
+                        && (flags & FLAG_SCREEN_PINNING_ACTIVE) == 0,
+                MultiValueAlpha.VALUE, 1, 0));
 
         mPropertyHolders.add(new StatePropertyHolder(mControllers.taskbarDragLayerController
                 .getKeyguardBgTaskbar(),
@@ -286,6 +290,7 @@ public class NavbarButtonsViewController {
         int shadeExpandedFlags = SYSUI_STATE_NOTIFICATION_PANEL_EXPANDED
                 | SYSUI_STATE_QUICK_SETTINGS_EXPANDED;
         boolean isNotificationShadeExpanded = (sysUiStateFlags & shadeExpandedFlags) != 0;
+        boolean isScreenPinningActive = (sysUiStateFlags & SYSUI_STATE_SCREEN_PINNING) != 0;
 
         // TODO(b/202218289) we're getting IME as not visible on lockscreen from system
         updateStateForFlag(FLAG_IME_VISIBLE, isImeVisible);
@@ -295,6 +300,7 @@ public class NavbarButtonsViewController {
         updateStateForFlag(FLAG_DISABLE_RECENTS, isRecentsDisabled);
         updateStateForFlag(FLAG_DISABLE_BACK, isBackDisabled);
         updateStateForFlag(FLAG_NOTIFICATION_SHADE_EXPANDED, isNotificationShadeExpanded);
+        updateStateForFlag(FLAG_SCREEN_PINNING_ACTIVE, isScreenPinningActive);
 
         if (mA11yButton != null) {
             // Only used in 3 button
