@@ -316,7 +316,7 @@ public final class TaskViewUtils {
                 mt[i] = localMt;
 
                 Matrix localMti = new Matrix();
-                localMti.invert(localMt);
+                localMt.invert(localMti);
                 mti[i] = localMti;
             }
 
