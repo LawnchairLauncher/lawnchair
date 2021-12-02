@@ -28,8 +28,9 @@ import android.view.Gravity;
 import android.view.MotionEvent;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
+
 import com.android.launcher3.AbstractFloatingView;
-import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.R;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.compat.AccessibilityManagerCompat;
@@ -44,7 +45,7 @@ public class Snackbar extends AbstractFloatingView {
     private static final long HIDE_DURATION_MS = 180;
     private static final int TIMEOUT_DURATION_MS = 4000;
 
-    private final BaseDraggingActivity mActivity;
+    private final ActivityContext mActivity;
     private Runnable mOnDismissed;
 
     public Snackbar(Context context, AttributeSet attrs) {
@@ -53,12 +54,19 @@ public class Snackbar extends AbstractFloatingView {
 
     public Snackbar(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        mActivity = BaseDraggingActivity.fromContext(context);
+        mActivity = ActivityContext.lookupContext(context);
         inflate(context, R.layout.snackbar, this);
     }
 
-    public static void show(BaseDraggingActivity activity, int labelStringResId,
-            int actionStringResId, Runnable onDismissed, Runnable onActionClicked) {
+    /** Show a snackbar with just a label. */
+    public static <T extends Context & ActivityContext> void show(T activity, int labelStringRedId,
+            Runnable onDismissed) {
+        show(activity, labelStringRedId, NO_ID, onDismissed, null);
+    }
+
+    /** Show a snackbar with a label and action. */
+    public static <T extends Context & ActivityContext> void show(T activity, int labelStringResId,
+            int actionStringResId, Runnable onDismissed, @Nullable Runnable onActionClicked) {
         closeOpenViews(activity, true, TYPE_SNACKBAR);
         Snackbar snackbar = new Snackbar(activity, null);
         // Set some properties here since inflated xml only contains the children.
@@ -87,13 +95,30 @@ public class Snackbar extends AbstractFloatingView {
         params.setMargins(0, 0, 0, marginBottom + insets.bottom);
 
         TextView labelView = snackbar.findViewById(R.id.label);
-        TextView actionView = snackbar.findViewById(R.id.action);
         String labelText = res.getString(labelStringResId);
-        String actionText = res.getString(actionStringResId);
-        int totalContentWidth = (int) (labelView.getPaint().measureText(labelText)
-                + actionView.getPaint().measureText(actionText))
+        labelView.setText(labelText);
+
+        TextView actionView = snackbar.findViewById(R.id.action);
+        float actionWidth;
+        if (actionStringResId != NO_ID) {
+            String actionText = res.getString(actionStringResId);
+            actionWidth = actionView.getPaint().measureText(actionText)
+                    + actionView.getPaddingRight() + actionView.getPaddingLeft();
+            actionView.setText(actionText);
+            actionView.setOnClickListener(v -> {
+                if (onActionClicked != null) {
+                    onActionClicked.run();
+                }
+                snackbar.mOnDismissed = null;
+                snackbar.close(true);
+            });
+        } else {
+            actionWidth = 0;
+            actionView.setVisibility(GONE);
+        }
+
+        int totalContentWidth = (int) (labelView.getPaint().measureText(labelText) + actionWidth)
                 + labelView.getPaddingRight() + labelView.getPaddingLeft()
-                + actionView.getPaddingRight() + actionView.getPaddingLeft()
                 + padding * 2;
         if (totalContentWidth > params.width) {
             // The text doesn't fit in our standard width so update width to accommodate.
@@ -113,17 +138,8 @@ public class Snackbar extends AbstractFloatingView {
                 params.width = maxWidth;
             }
         }
-        labelView.setText(labelText);
-        actionView.setText(actionText);
-        actionView.setOnClickListener(v -> {
-            if (onActionClicked != null) {
-                onActionClicked.run();
-            }
-            snackbar.mOnDismissed = null;
-            snackbar.close(true);
-        });
-        snackbar.mOnDismissed = onDismissed;
 
+        snackbar.mOnDismissed = onDismissed;
         snackbar.setAlpha(0);
         snackbar.setScaleX(0.8f);
         snackbar.setScaleY(0.8f);

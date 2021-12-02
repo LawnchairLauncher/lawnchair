@@ -53,6 +53,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.android.launcher3.AbstractFloatingView;
+import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.R;
@@ -113,6 +114,8 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
     // The flag to know if the window is excluded from magnification region computation.
     private boolean mIsExcludeFromMagnificationRegion = false;
 
+    private final TaskbarShortcutMenuAccessibilityDelegate mAccessibilityDelegate;
+
     public TaskbarActivityContext(Context windowContext, DeviceProfile dp,
             TaskbarNavButtonController buttonController, ScopedUnfoldTransitionProgressProvider
             unfoldTransitionProgressProvider) {
@@ -147,6 +150,8 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
         mWindowManager = c.getSystemService(WindowManager.class);
         mLeftCorner = display.getRoundedCorner(RoundedCorner.POSITION_BOTTOM_LEFT);
         mRightCorner = display.getRoundedCorner(RoundedCorner.POSITION_BOTTOM_RIGHT);
+
+        mAccessibilityDelegate = new TaskbarShortcutMenuAccessibilityDelegate(this);
 
         // Construct controllers.
         mControllers = new TaskbarControllers(this,
@@ -333,6 +338,11 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
         return mControllers.taskbarPopupController.getPopupDataProvider();
     }
 
+    @Override
+    public View.AccessibilityDelegate getAccessibilityDelegate() {
+        return mAccessibilityDelegate;
+    }
+
     /**
      * Sets a new data-source for this taskbar instance
      */
@@ -375,6 +385,7 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
         mControllers.taskbarStashController.updateStateForSysuiFlags(systemUiStateFlags, fromInit);
         mControllers.taskbarScrimViewController.updateStateForSysuiFlags(systemUiStateFlags,
                 fromInit);
+        mControllers.navButtonController.updateSysuiFlags(systemUiStateFlags);
     }
 
     /**
@@ -562,5 +573,10 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
                     ~WindowManager.LayoutParams.PRIVATE_FLAG_EXCLUDE_FROM_SCREEN_MAGNIFICATION;
         }
         mWindowManager.updateViewLayout(mDragLayer, mWindowLayoutParams);
+    }
+
+    public void showPopupMenuForIcon(BubbleTextView btv) {
+        setTaskbarWindowFullscreen(true);
+        btv.post(() -> mControllers.taskbarPopupController.showForIcon(btv));
     }
 }

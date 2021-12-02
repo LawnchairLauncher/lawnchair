@@ -15,6 +15,10 @@
  */
 package com.android.launcher3.taskbar;
 
+import android.graphics.Point;
+import android.view.MotionEvent;
+import android.view.View;
+
 import androidx.annotation.NonNull;
 
 import com.android.launcher3.BubbleTextView;
@@ -30,6 +34,7 @@ import com.android.launcher3.popup.PopupContainerWithArrow;
 import com.android.launcher3.popup.PopupDataProvider;
 import com.android.launcher3.popup.PopupLiveUpdateHandler;
 import com.android.launcher3.popup.SystemShortcut;
+import com.android.launcher3.shortcuts.DeepShortcutView;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.LauncherBindableItemsContainer;
 import com.android.launcher3.util.PackageUserKey;
@@ -131,8 +136,14 @@ public class TaskbarPopupController {
                 (PopupContainerWithArrow) context.getLayoutInflater().inflate(
                         R.layout.popup_container, context.getDragLayer(), false);
         container.addOnAttachStateChangeListener(
-                new PopupLiveUpdateHandler<>(mContext, container));
+                new PopupLiveUpdateHandler<TaskbarActivityContext>(mContext, container) {
+                    @Override
+                    protected void showPopupContainerForIcon(BubbleTextView originalIcon) {
+                        showForIcon(originalIcon);
+                    }
+                });
         // TODO (b/198438631): configure for taskbar/context
+        container.setPopupItemDragHandler(new TaskbarPopupItemDragHandler());
 
         container.populateAndShow(icon,
                 mPopupDataProvider.getShortcutCountForItem(item),
@@ -144,5 +155,44 @@ public class TaskbarPopupController {
                         .collect(Collectors.toList()));
         container.requestFocus();
         return container;
+    }
+
+    private class TaskbarPopupItemDragHandler implements
+            PopupContainerWithArrow.PopupItemDragHandler {
+
+        protected final Point mIconLastTouchPos = new Point();
+
+        TaskbarPopupItemDragHandler() {}
+
+        @Override
+        public boolean onTouch(View view, MotionEvent ev) {
+            // Touched a shortcut, update where it was touched so we can drag from there on
+            // long click.
+            switch (ev.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+                case MotionEvent.ACTION_MOVE:
+                    mIconLastTouchPos.set((int) ev.getX(), (int) ev.getY());
+                    break;
+            }
+            return false;
+        }
+
+        @Override
+        public boolean onLongClick(View v) {
+            // Return early if not the correct view
+            if (!(v.getParent() instanceof DeepShortcutView)) return false;
+
+            DeepShortcutView sv = (DeepShortcutView) v.getParent();
+            sv.setWillDrawIcon(false);
+
+            // Move the icon to align with the center-top of the touch point
+            Point iconShift = new Point();
+            iconShift.x = mIconLastTouchPos.x - sv.getIconCenter().x;
+            iconShift.y = mIconLastTouchPos.y - mContext.getDeviceProfile().iconSizePx;
+
+            mControllers.taskbarDragController.startDragOnLongClick(sv, iconShift);
+
+            return false;
+        }
     }
 }

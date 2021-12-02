@@ -912,7 +912,7 @@ public class TaskView extends FrameLayout implements Reusable {
         return deviceProfile.overviewShowAsGrid && !isFocusedTask();
     }
 
-    private void setIconAndDimTransitionProgress(float progress, boolean invert) {
+    protected void setIconAndDimTransitionProgress(float progress, boolean invert) {
         if (invert) {
             progress = 1 - progress;
         }

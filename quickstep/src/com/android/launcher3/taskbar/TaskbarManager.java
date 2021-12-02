@@ -30,8 +30,8 @@ import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.hardware.display.DisplayManager;
 import android.net.Uri;
+import android.os.Handler;
 import android.provider.Settings;
-import android.util.Log;
 import android.view.Display;
 
 import androidx.annotation.NonNull;
@@ -94,7 +94,8 @@ public class TaskbarManager implements DisplayController.DisplayInfoChangeListen
         Display display =
                 service.getSystemService(DisplayManager.class).getDisplay(DEFAULT_DISPLAY);
         mContext = service.createWindowContext(display, TYPE_NAVIGATION_BAR_PANEL, null);
-        mNavButtonController = new TaskbarNavButtonController(service);
+        mNavButtonController = new TaskbarNavButtonController(service,
+                SystemUiProxy.INSTANCE.get(mContext), new Handler());
         mUserSetupCompleteListener = isUserSetupComplete -> recreateTaskbar();
         mComponentCallbacks = new ComponentCallbacks() {
             private Configuration mOldConfig = mContext.getResources().getConfiguration();

@@ -20,6 +20,7 @@ import static android.view.View.GONE;
 import android.content.Context;
 import android.view.View;
 
+import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.dot.DotInfo;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.notification.NotificationContainer;
@@ -36,7 +37,7 @@ import java.util.function.Predicate;
  *
  * @param <T> The activity on which the popup shows
  */
-public class PopupLiveUpdateHandler<T extends Context & ActivityContext> implements
+public abstract class PopupLiveUpdateHandler<T extends Context & ActivityContext> implements
         PopupDataProvider.PopupDataChangeListener, View.OnAttachStateChangeListener {
 
     protected final T mContext;
@@ -103,6 +104,8 @@ public class PopupLiveUpdateHandler<T extends Context & ActivityContext> impleme
     @Override
     public void onSystemShortcutsUpdated() {
         mPopupContainerWithArrow.close(true);
-        PopupContainerWithArrow.showForIcon(mPopupContainerWithArrow.getOriginalIcon());
+        showPopupContainerForIcon(mPopupContainerWithArrow.getOriginalIcon());
     }
+
+    protected abstract void showPopupContainerForIcon(BubbleTextView originalIcon);
 }

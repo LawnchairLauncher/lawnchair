@@ -22,7 +22,7 @@ import android.view.View;
 
 import com.android.launcher3.CellLayout;
 import com.android.launcher3.R;
-import com.android.launcher3.accessibility.LauncherAccessibilityDelegate.DragType;
+import com.android.launcher3.accessibility.BaseAccessibilityDelegate.DragType;
 import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.FolderInfo;
 import com.android.launcher3.model.data.ItemInfo;

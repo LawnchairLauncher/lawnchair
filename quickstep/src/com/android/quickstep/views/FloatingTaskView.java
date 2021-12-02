@@ -129,9 +129,7 @@ public class FloatingTaskView extends FrameLayout {
     public void update(RectF position, float progress, float windowRadius) {
         MarginLayoutParams lp = (MarginLayoutParams) getLayoutParams();
 
-        float dX = mIsRtl
-                ? position.left - (lp.getMarginStart() - lp.width)
-                : position.left - lp.getMarginStart();
+        float dX = position.left - lp.getMarginStart();
         float dY = position.top - lp.topMargin;
 
         setTranslationX(dX);
@@ -157,16 +155,10 @@ public class FloatingTaskView extends FrameLayout {
         lp.ignoreInsets = true;
         // Position the floating view exactly on top of the original
         lp.topMargin = Math.round(pos.top);
-        if (mIsRtl) {
-            lp.setMarginStart(Math.round(mLauncher.getDeviceProfile().widthPx - pos.right));
-        } else {
-            lp.setMarginStart(Math.round(pos.left));
-        }
+        lp.setMarginStart(Math.round(pos.left));
         // Set the properties here already to make sure they are available when running the first
         // animation frame.
-        int left = mIsRtl
-                ? mLauncher.getDeviceProfile().widthPx - lp.getMarginStart() - lp.width
-                : lp.leftMargin;
+        int left = lp.leftMargin;
         layout(left, lp.topMargin, left + lp.width, lp.topMargin + lp.height);
     }
 
