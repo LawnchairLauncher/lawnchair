@@ -52,10 +52,13 @@ import java.util.function.Supplier;
     public static final int FLAG_TRANSITION_STATE_START_STASHED = 1 << 2;
     public static final int FLAG_TRANSITION_STATE_COMMITTED_STASHED = 1 << 3;
 
+    /** Equivalent to an int with all 1s for binary operation purposes */
+    private static final int FLAGS_ALL = ~0;
+
     private final AnimatedFloat mIconAlignmentForResumedState =
-            new AnimatedFloat(this::onIconAlignmentRatioChanged);
+            new AnimatedFloat(this::onIconAlignmentRatioChangedForAppAndHomeTransition);
     private final AnimatedFloat mIconAlignmentForGestureState =
-            new AnimatedFloat(this::onIconAlignmentRatioChanged);
+            new AnimatedFloat(this::onIconAlignmentRatioChangedForAppAndHomeTransition);
     private final AnimatedFloat mIconAlignmentForLauncherState =
             new AnimatedFloat(this::onIconAlignmentRatioChangedForStateTransition);
 
@@ -64,7 +67,7 @@ import java.util.function.Supplier;
     private MultiValueAlpha.AlphaProperty mIconAlphaForHome;
     private BaseQuickstepLauncher mLauncher;
 
-    private int mPrevState;
+    private Integer mPrevState;
     private int mState;
 
     private boolean mIsAnimatingToLauncherViaGesture;
@@ -100,7 +103,7 @@ import java.util.function.Supplier;
                 (Consumer<Float>) alpha -> mLauncher.getHotseat().setIconsAlpha(alpha > 0 ? 0 : 1));
 
         mIconAlignmentForResumedState.finishAnimation();
-        onIconAlignmentRatioChanged();
+        onIconAlignmentRatioChangedForAppAndHomeTransition();
 
         mLauncher.getStateManager().addStateListener(mStateListener);
     }
@@ -183,8 +186,9 @@ import java.util.function.Supplier;
 
     public Animator applyState(long duration, boolean start) {
         Animator animator = null;
-        if (mPrevState != mState) {
-            int changedFlags = mPrevState ^ mState;
+        if (mPrevState == null || mPrevState != mState) {
+            // If this is our initial state, treat all flags as changed.
+            int changedFlags = mPrevState == null ? FLAGS_ALL : mPrevState ^ mState;
             animator = onStateChangeApplied(changedFlags, duration, start);
             mPrevState = mState;
         }
@@ -240,6 +244,12 @@ import java.util.function.Supplier;
             animatorSet.play(animator);
         }
 
+        if (hasAnyFlag(changedFlags, FLAG_RESUMED | FLAG_RECENTS_ANIMATION_RUNNING)) {
+            boolean goingToLauncher = hasAnyFlag(FLAG_RESUMED | FLAG_RECENTS_ANIMATION_RUNNING);
+            animatorSet.play(mTaskbarBackgroundAlpha.animateToValue(goingToLauncher ? 0 : 1)
+                    .setDuration(duration));
+        }
+
         if (hasAnyFlag(changedFlags, FLAG_TRANSITION_STATE_START_STASHED)) {
             playStateTransitionAnim(isTransitionStateStartStashed(), animatorSet, duration,
                     false /* committed */);
@@ -279,7 +289,9 @@ import java.util.function.Supplier;
 
                 @Override
                 public void onAnimationStart(Animator animation) {
-                    mIconAlphaForHome.setValue(mLauncher.getHotseat().getIconsAlpha());
+                    if (mLauncher.getHotseat().getIconsAlpha() > 0) {
+                        mIconAlphaForHome.setValue(mLauncher.getHotseat().getIconsAlpha());
+                    }
                 }
             });
             animatorSet.play(stashAnimator);
@@ -306,11 +318,14 @@ import java.util.function.Supplier;
     }
 
     private void onIconAlignmentRatioChangedForStateTransition() {
+        if (!isResumed()) {
+            return;
+        }
         onIconAlignmentRatioChanged(this::getCurrentIconAlignmentRatioForLauncherState);
     }
 
-    private void onIconAlignmentRatioChanged() {
-        onIconAlignmentRatioChanged(this::getCurrentIconAlignmentRatio);
+    private void onIconAlignmentRatioChangedForAppAndHomeTransition() {
+        onIconAlignmentRatioChanged(this::getCurrentIconAlignmentRatioBetweenAppAndHome);
     }
 
     private void onIconAlignmentRatioChanged(Supplier<Float> alignmentSupplier) {
@@ -321,13 +336,11 @@ import java.util.function.Supplier;
         mControllers.taskbarViewController.setLauncherIconAlignment(
                 alignment, mLauncher.getDeviceProfile());
 
-        mTaskbarBackgroundAlpha.updateValue(1 - alignment);
-
         // Switch taskbar and hotseat in last frame
         setTaskbarViewVisible(alignment < 1);
     }
 
-    private float getCurrentIconAlignmentRatio() {
+    private float getCurrentIconAlignmentRatioBetweenAppAndHome() {
         return Math.max(mIconAlignmentForResumedState.value, mIconAlignmentForGestureState.value);
     }
 
