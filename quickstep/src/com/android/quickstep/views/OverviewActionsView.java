@@ -22,6 +22,7 @@ import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.Button;
 import android.widget.FrameLayout;
 
 import androidx.annotation.IntDef;
@@ -80,7 +81,7 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
     private static final int INDEX_HIDDEN_FLAGS_ALPHA = 3;
 
     private final MultiValueAlpha mMultiValueAlpha;
-    private View mSplitButton;
+    private Button mSplitButton;
 
     @ActionsHiddenFlags
     private int mHiddenFlags;
@@ -215,6 +216,10 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
         mDp = dp;
         updateVerticalMargin(SysUINavigationMode.getMode(getContext()));
         requestLayout();
+
+        mSplitButton.setCompoundDrawablesWithIntrinsicBounds(
+                (dp.isLandscape ? R.drawable.ic_split_horizontal : R.drawable.ic_split_vertical),
+                0, 0, 0);
     }
 
     public void setSplitButtonVisible(boolean visible) {
