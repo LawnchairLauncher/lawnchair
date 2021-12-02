@@ -15,7 +15,6 @@
  */
 package com.android.launcher3.taskbar;
 
-import static com.android.launcher3.LauncherState.HOTSEAT_ICONS;
 import static com.android.launcher3.taskbar.TaskbarStashController.FLAG_IN_APP;
 import static com.android.launcher3.taskbar.TaskbarStashController.FLAG_IN_STASHED_LAUNCHER_STATE;
 import static com.android.launcher3.taskbar.TaskbarStashController.TASKBAR_STASH_DURATION;
@@ -68,9 +67,6 @@ import java.util.function.Supplier;
     private int mPrevState;
     private int mState;
 
-    private LauncherState mTargetStateOverride = null;
-    private LauncherState mTargetStateOverrideForStateTransition = null;
-
     private boolean mIsAnimatingToLauncherViaGesture;
     private boolean mIsAnimatingToLauncherViaResume;
 
@@ -79,7 +75,6 @@ import java.util.function.Supplier;
 
                 @Override
                 public void onStateTransitionStart(LauncherState toState) {
-                    mTargetStateOverrideForStateTransition = toState;
                     updateStateForFlag(FLAG_TRANSITION_STATE_START_STASHED,
                             toState.isTaskbarStashed());
                     applyState();
@@ -134,18 +129,6 @@ import java.util.function.Supplier;
         updateStateForFlag(FLAG_RECENTS_ANIMATION_RUNNING, true);
         animatorSet.play(stashController.applyStateWithoutStart(duration));
         animatorSet.play(applyState(duration, false));
-        animatorSet.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animator) {
-                mTargetStateOverride = null;
-                animator.removeListener(this);
-            }
-
-            @Override
-            public void onAnimationStart(Animator animator) {
-                mTargetStateOverride = toState;
-            }
-        });
 
         TaskBarRecentsAnimationListener listener = new TaskBarRecentsAnimationListener(callbacks);
         callbacks.addListener(listener);
@@ -284,7 +267,6 @@ import java.util.function.Supplier;
                         // Reset hotseat alpha to default
                         mLauncher.getHotseat().setIconsAlpha(1);
                     }
-                    mTargetStateOverrideForStateTransition = null;
                 }
 
                 @Override
@@ -296,8 +278,6 @@ import java.util.function.Supplier;
             animatorSet.play(mIconAlignmentForLauncherState.animateToValue(
                     getCurrentIconAlignmentRatioForLauncherState(),
                     isTransitionStateStashed ? 0 : 1));
-        } else {
-            mTargetStateOverrideForStateTransition = null;
         }
     }
 
@@ -318,20 +298,14 @@ import java.util.function.Supplier;
     }
 
     private void onIconAlignmentRatioChangedForStateTransition() {
-        onIconAlignmentRatioChanged(
-                mTargetStateOverrideForStateTransition != null
-                        ? mTargetStateOverrideForStateTransition
-                        : mLauncher.getStateManager().getState(),
-                this::getCurrentIconAlignmentRatioForLauncherState);
+        onIconAlignmentRatioChanged(this::getCurrentIconAlignmentRatioForLauncherState);
     }
 
     private void onIconAlignmentRatioChanged() {
-        onIconAlignmentRatioChanged(mTargetStateOverride != null ? mTargetStateOverride
-                : mLauncher.getStateManager().getState(), this::getCurrentIconAlignmentRatio);
+        onIconAlignmentRatioChanged(this::getCurrentIconAlignmentRatio);
     }
 
-    private void onIconAlignmentRatioChanged(LauncherState state,
-            Supplier<Float> alignmentSupplier) {
+    private void onIconAlignmentRatioChanged(Supplier<Float> alignmentSupplier) {
         if (mControllers == null) {
             return;
         }
@@ -341,7 +315,8 @@ import java.util.function.Supplier;
 
         mTaskbarBackgroundAlpha.updateValue(1 - alignment);
 
-        setIconAlpha(state, alignment);
+        // Switch taskbar and hotseat in last frame
+        setTaskbarViewVisible(alignment < 1);
     }
 
     private float getCurrentIconAlignmentRatio() {
@@ -350,15 +325,6 @@ import java.util.function.Supplier;
 
     private float getCurrentIconAlignmentRatioForLauncherState() {
         return mIconAlignmentForLauncherState.value;
-    }
-
-    private void setIconAlpha(LauncherState state, float progress) {
-        if ((state.getVisibleElements(mLauncher) & HOTSEAT_ICONS) != 0) {
-            // If the hotseat icons are visible, then switch taskbar in last frame
-            setTaskbarViewVisible(progress < 1);
-        } else {
-            mIconAlphaForHome.setValue(1 - progress);
-        }
     }
 
     private void setTaskbarViewVisible(boolean isVisible) {
