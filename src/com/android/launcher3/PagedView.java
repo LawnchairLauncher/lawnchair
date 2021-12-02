@@ -1749,20 +1749,23 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
     public void onInitializeAccessibilityNodeInfo(AccessibilityNodeInfo info) {
         super.onInitializeAccessibilityNodeInfo(info);
         final boolean pagesFlipped = isPageOrderFlipped();
-        int offset = (mAllowOverScroll ? 0 : 1);
-        info.setScrollable(getPageCount() > offset);
-        if (getCurrentPage() < getPageCount() - offset) {
+        info.setScrollable(getPageCount() > 0);
+        int primaryScroll = mOrientationHandler.getPrimaryScroll(this);
+        if (getCurrentPage() < getPageCount() - getPanelCount()
+                || (getCurrentPage() == getPageCount() - getPanelCount()
+                && primaryScroll != getScrollForPage(getPageCount() - getPanelCount()))) {
             info.addAction(pagesFlipped ?
-                AccessibilityNodeInfo.AccessibilityAction.ACTION_SCROLL_BACKWARD
-                : AccessibilityNodeInfo.AccessibilityAction.ACTION_SCROLL_FORWARD);
+                    AccessibilityNodeInfo.AccessibilityAction.ACTION_SCROLL_BACKWARD
+                    : AccessibilityNodeInfo.AccessibilityAction.ACTION_SCROLL_FORWARD);
             info.addAction(mIsRtl ?
                 AccessibilityNodeInfo.AccessibilityAction.ACTION_PAGE_LEFT
                 : AccessibilityNodeInfo.AccessibilityAction.ACTION_PAGE_RIGHT);
         }
-        if (getCurrentPage() >= offset) {
+        if (getCurrentPage() > 0
+                || (getCurrentPage() == 0 && primaryScroll != getScrollForPage(0))) {
             info.addAction(pagesFlipped ?
-                AccessibilityNodeInfo.AccessibilityAction.ACTION_SCROLL_FORWARD
-                : AccessibilityNodeInfo.AccessibilityAction.ACTION_SCROLL_BACKWARD);
+                    AccessibilityNodeInfo.AccessibilityAction.ACTION_SCROLL_FORWARD
+                    : AccessibilityNodeInfo.AccessibilityAction.ACTION_SCROLL_BACKWARD);
             info.addAction(mIsRtl ?
                 AccessibilityNodeInfo.AccessibilityAction.ACTION_PAGE_RIGHT
                 : AccessibilityNodeInfo.AccessibilityAction.ACTION_PAGE_LEFT);
@@ -1807,16 +1810,16 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
             } break;
             case android.R.id.accessibilityActionPageRight: {
                 if (!mIsRtl) {
-                  return scrollRight();
+                    return scrollRight();
                 } else {
-                  return scrollLeft();
+                    return scrollLeft();
                 }
             }
             case android.R.id.accessibilityActionPageLeft: {
                 if (!mIsRtl) {
-                  return scrollLeft();
+                    return scrollLeft();
                 } else {
-                  return scrollRight();
+                    return scrollRight();
                 }
             }
         }
