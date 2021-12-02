@@ -23,6 +23,7 @@ import android.util.ArraySet;
 import android.view.RemoteAnimationTarget;
 
 import androidx.annotation.BinderThread;
+import androidx.annotation.NonNull;
 import androidx.annotation.UiThread;
 
 import com.android.launcher3.Utilities;
@@ -77,7 +78,7 @@ public class RecentsAnimationCallbacks implements
 
     public void notifyAnimationCanceled() {
         mCancelled = true;
-        onAnimationCanceled(null);
+        onAnimationCanceled(new HashMap<>());
     }
 
     // Called only in Q platform
@@ -167,16 +168,17 @@ public class RecentsAnimationCallbacks implements
          * Callback from the system when the recents animation is canceled. {@param thumbnailData}
          * is passed back for rendering screenshot to replace live tile.
          */
-        default void onRecentsAnimationCanceled(HashMap<Integer, ThumbnailData> thumbnailDatas) {}
+        default void onRecentsAnimationCanceled(
+                @NonNull HashMap<Integer, ThumbnailData> thumbnailDatas) {}
 
         /**
          * Callback made whenever the recents animation is finished.
          */
-        default void onRecentsAnimationFinished(RecentsAnimationController controller) {}
+        default void onRecentsAnimationFinished(@NonNull RecentsAnimationController controller) {}
 
         /**
          * Callback made when a task started from the recents is ready for an app transition.
          */
-        default void onTasksAppeared(RemoteAnimationTargetCompat[] appearedTaskTarget) {}
+        default void onTasksAppeared(@NonNull RemoteAnimationTargetCompat[] appearedTaskTarget) {}
     }
 }
