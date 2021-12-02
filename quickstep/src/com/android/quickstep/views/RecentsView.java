@@ -1041,6 +1041,17 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         }
     }
 
+    public boolean isTaskViewFullyVisible(TaskView tv) {
+        if (showAsGrid()) {
+            int screenStart = mOrientationHandler.getPrimaryScroll(this);
+            int screenEnd = screenStart + mOrientationHandler.getMeasuredSize(this);
+            return isTaskViewFullyWithinBounds(tv, screenStart, screenEnd);
+        } else {
+            // For now, just check if it's the active task
+            return indexOfChild(tv) == getNextPage();
+        }
+    }
+
     @Nullable
     private TaskView getLastGridTaskView() {
         return getLastGridTaskView(getTopRowIdArray(), getBottomRowIdArray());
@@ -1085,6 +1096,15 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         int taskEnd = taskStart + taskSize;
         return (taskStart >= start && taskStart <= end) || (taskEnd >= start
                 && taskEnd <= end);
+    }
+
+    private boolean isTaskViewFullyWithinBounds(TaskView tv, int start, int end) {
+        int taskStart = mOrientationHandler.getChildStart(tv) + (int) tv.getOffsetAdjustment(
+                showAsFullscreen(), showAsGrid());
+        int taskSize = (int) (mOrientationHandler.getMeasuredSize(tv) * tv.getSizeAdjustment(
+                showAsFullscreen()));
+        int taskEnd = taskStart + taskSize;
+        return taskStart >= start && taskEnd <= end;
     }
 
     /**
@@ -4851,6 +4871,62 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
      */
     public int getPipCornerRadius() {
         return mPipCornerRadius;
+    }
+
+    @Override
+    public boolean scrollLeft() {
+        if (!showAsGrid()) {
+            return super.scrollLeft();
+        }
+
+        int targetPage = getNextPage();
+        if (targetPage >= 0) {
+            // Find the next page that is not fully visible.
+            TaskView taskView = getTaskViewAt(targetPage);
+            while ((taskView == null || isTaskViewFullyVisible(taskView)) && targetPage - 1 >= 0) {
+                taskView = getTaskViewAt(--targetPage);
+            }
+            // Target a scroll where targetPage is on left of screen but still fully visible.
+            int lastTaskEnd = (mIsRtl
+                    ? mLastComputedGridSize.left
+                    : mLastComputedGridSize.right)
+                    + (mIsRtl ? mPageSpacing : -mPageSpacing);
+            int normalTaskEnd = mIsRtl
+                    ? mLastComputedGridTaskSize.left
+                    : mLastComputedGridTaskSize.right;
+            int targetScroll = getScrollForPage(targetPage) + normalTaskEnd - lastTaskEnd;
+            // Find a page that is close to targetScroll while not over it.
+            while (targetPage - 1 >= 0
+                    && (mIsRtl
+                    ? getScrollForPage(targetPage - 1) < targetScroll
+                    : getScrollForPage(targetPage - 1) > targetScroll)) {
+                targetPage--;
+            }
+            snapToPage(targetPage);
+            return true;
+        }
+
+        return mAllowOverScroll;
+    }
+
+    @Override
+    public boolean scrollRight() {
+        if (!showAsGrid()) {
+            return super.scrollRight();
+        }
+
+        int targetPage = getNextPage();
+        if (targetPage < getChildCount()) {
+            // Find the next page that is not fully visible.
+            TaskView taskView = getTaskViewAt(targetPage);
+            while ((taskView != null && isTaskViewFullyVisible(taskView))
+                    && targetPage + 1 < getChildCount()) {
+                taskView = getTaskViewAt(++targetPage);
+            }
+            snapToPage(targetPage);
+            return true;
+        }
+        return mAllowOverScroll;
     }
 
     @Override
