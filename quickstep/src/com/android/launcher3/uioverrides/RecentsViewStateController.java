@@ -66,6 +66,12 @@ public final class RecentsViewStateController extends
         // In Overview, we may be layering app surfaces behind Launcher, so we need to notify
         // DepthController to prevent optimizations which might occlude the layers behind
         mLauncher.getDepthController().setHasContentBehindLauncher(state.overviewUi);
+
+        if (isSplitSelectionState(state)) {
+            mRecentsView.applySplitPrimaryScrollOffset();
+        } else {
+            mRecentsView.resetSplitPrimaryScrollOffset();
+        }
     }
 
     @Override
@@ -90,9 +96,10 @@ public final class RecentsViewStateController extends
         LauncherState currentState = mLauncher.getStateManager().getState();
         if (isSplitSelectionState(toState) && !isSplitSelectionState(currentState)) {
             builder.add(mRecentsView.createSplitSelectInitAnimation().buildAnim());
+        }
+        if (isSplitSelectionState(toState)) {
             mRecentsView.applySplitPrimaryScrollOffset();
-        } else if (!isSplitSelectionState(toState) && isSplitSelectionState(currentState)) {
-            builder.add(mRecentsView.cancelSplitSelect(true).buildAnim());
+        } else {
             mRecentsView.resetSplitPrimaryScrollOffset();
         }
 

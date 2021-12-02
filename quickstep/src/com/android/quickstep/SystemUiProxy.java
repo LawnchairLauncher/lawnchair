@@ -599,11 +599,11 @@ public class SystemUiProxy implements ISystemUiProxy,
         }
     }
 
-    public void startShortcut(String packageName, String shortcutId, int stage, int position,
+    public void startShortcut(String packageName, String shortcutId, int position,
             Bundle options, UserHandle user) {
         if (mSplitScreen != null) {
             try {
-                mSplitScreen.startShortcut(packageName, shortcutId, stage, position, options,
+                mSplitScreen.startShortcut(packageName, shortcutId, position, options,
                         user);
             } catch (RemoteException e) {
                 Log.w(TAG, "Failed call startShortcut");
@@ -611,11 +611,11 @@ public class SystemUiProxy implements ISystemUiProxy,
         }
     }
 
-    public void startIntent(PendingIntent intent, Intent fillInIntent, int stage, int position,
+    public void startIntent(PendingIntent intent, Intent fillInIntent, int position,
             Bundle options) {
         if (mSplitScreen != null) {
             try {
-                mSplitScreen.startIntent(intent, fillInIntent, stage, position, options);
+                mSplitScreen.startIntent(intent, fillInIntent, position, options);
             } catch (RemoteException e) {
                 Log.w(TAG, "Failed call startIntent");
             }
