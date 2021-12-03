@@ -258,4 +258,10 @@ public class GroupedTaskView extends TaskView {
         super.updateSnapshotRadius();
         mSnapshotView2.setFullscreenParams(mCurrentFullscreenParams);
     }
+
+    @Override
+    protected void setIconAndDimTransitionProgress(float progress, boolean invert) {
+        super.setIconAndDimTransitionProgress(progress, invert);
+        mIconView2.setAlpha(mIconView.getAlpha());
+    }
 }

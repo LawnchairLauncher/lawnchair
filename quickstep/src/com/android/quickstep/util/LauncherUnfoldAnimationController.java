@@ -18,14 +18,17 @@ package com.android.quickstep.util;
 import static com.android.launcher3.Utilities.comp;
 
 import android.annotation.Nullable;
-import android.view.ViewTreeObserver;
 import android.view.WindowManager;
+import android.view.WindowManagerGlobal;
+
+import androidx.core.view.OneShotPreDrawListener;
 
 import com.android.launcher3.Hotseat;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.util.HorizontalInsettableView;
 import com.android.systemui.unfold.UnfoldTransitionProgressProvider;
 import com.android.systemui.unfold.UnfoldTransitionProgressProvider.TransitionProgressListener;
+import com.android.systemui.unfold.util.NaturalRotationUnfoldProgressProvider;
 import com.android.systemui.unfold.util.ScopedUnfoldTransitionProgressProvider;
 
 /**
@@ -43,6 +46,7 @@ public class LauncherUnfoldAnimationController {
     private HorizontalInsettableView mQsbInsettable;
 
     private final ScopedUnfoldTransitionProgressProvider mProgressProvider;
+    private final NaturalRotationUnfoldProgressProvider mNaturalOrientationProgressProvider;
 
     public LauncherUnfoldAnimationController(
             Launcher launcher,
@@ -51,10 +55,19 @@ public class LauncherUnfoldAnimationController {
         mLauncher = launcher;
         mProgressProvider = new ScopedUnfoldTransitionProgressProvider(
                 unfoldTransitionProgressProvider);
+        mNaturalOrientationProgressProvider = new NaturalRotationUnfoldProgressProvider(launcher,
+                WindowManagerGlobal.getWindowManagerService(), mProgressProvider);
+        mNaturalOrientationProgressProvider.init();
 
+        // Animated in all orientations
         mProgressProvider.addCallback(new UnfoldMoveFromCenterWorkspaceAnimator(launcher,
                 windowManager));
-        mProgressProvider.addCallback(new QsbAnimationListener());
+
+        // Animated only in natural orientation
+        mNaturalOrientationProgressProvider
+                .addCallback(new QsbAnimationListener());
+        mNaturalOrientationProgressProvider
+                .addCallback(new UnfoldMoveFromCenterHotseatAnimator(launcher, windowManager));
     }
 
     /**
@@ -66,17 +79,8 @@ public class LauncherUnfoldAnimationController {
             mQsbInsettable = (HorizontalInsettableView) hotseat.getQsb();
         }
 
-        final ViewTreeObserver obs = mLauncher.getWorkspace().getViewTreeObserver();
-        obs.addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
-            @Override
-            public boolean onPreDraw() {
-                if (obs.isAlive()) {
-                    mProgressProvider.setReadyToHandleTransition(true);
-                    obs.removeOnPreDrawListener(this);
-                }
-                return true;
-            }
-        });
+        OneShotPreDrawListener.add(mLauncher.getWorkspace(),
+                () -> mProgressProvider.setReadyToHandleTransition(true));
     }
 
     /**
@@ -92,6 +96,7 @@ public class LauncherUnfoldAnimationController {
      */
     public void onDestroy() {
         mProgressProvider.destroy();
+        mNaturalOrientationProgressProvider.destroy();
     }
 
     private class QsbAnimationListener implements TransitionProgressListener {
