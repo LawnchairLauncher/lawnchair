@@ -541,17 +541,18 @@ public class PortraitPagedViewHandler implements PagedOrientationHandler {
 
         if (deviceProfile.isLandscape) {
             primaryIconParams.gravity = TOP | START;
-            primaryIconView.setTranslationX(primarySnapshotWidth - primaryIconView.getWidth());
+            primaryIconView.setTranslationX(
+                    primarySnapshotWidth - primaryIconView.getMeasuredWidth());
             primaryIconView.setTranslationY(0);
             secondaryIconParams.gravity = TOP | START;
             secondaryIconView.setTranslationX(primarySnapshotWidth + dividerBar);
         } else {
             primaryIconParams.gravity = TOP | CENTER_HORIZONTAL;
-            primaryIconView.setTranslationX(-(primaryIconView.getWidth()) / 2f);
+            primaryIconView.setTranslationX(-(primaryIconView.getMeasuredWidth()) / 2f);
             primaryIconView.setTranslationY(0);
 
             secondaryIconParams.gravity = TOP | CENTER_HORIZONTAL;
-            secondaryIconView.setTranslationX(secondaryIconView.getWidth() / 2f);
+            secondaryIconView.setTranslationX(secondaryIconView.getMeasuredWidth() / 2f);
         }
         secondaryIconView.setTranslationY(0);
         primaryIconView.setLayoutParams(primaryIconParams);
