@@ -249,7 +249,7 @@ public class GroupedTaskView extends TaskView {
         boolean isRtl = getLayoutDirection() == LAYOUT_DIRECTION_RTL;
 
         getPagedOrientationHandler().setSplitIconParams(mIconView, mIconView2,
-                taskIconHeight, mSnapshotView.getWidth(), mSnapshotView.getHeight(),
+                taskIconHeight, mSnapshotView.getMeasuredWidth(), mSnapshotView.getMeasuredHeight(),
                 isRtl, deviceProfile, mSplitBoundsConfig);
     }
 
