@@ -16,6 +16,7 @@
 
 package com.android.launcher3;
 
+import static com.android.launcher3.icons.BitmapInfo.FLAG_THEMED;
 import static com.android.launcher3.model.data.ItemInfoWithIcon.FLAG_ICON_BADGED;
 
 import android.annotation.TargetApi;
@@ -36,7 +37,6 @@ import android.content.pm.ShortcutInfo;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.database.ContentObserver;
-import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.ColorFilter;
 import android.graphics.LightingColorFilter;
@@ -48,12 +48,12 @@ import android.graphics.RectF;
 import android.graphics.drawable.AdaptiveIconDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
-import android.graphics.drawable.InsetDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.DeadObjectException;
 import android.os.Handler;
 import android.os.Message;
+import android.os.Process;
 import android.os.TransactionTooLargeException;
 import android.provider.Settings;
 import android.text.Spannable;
@@ -78,7 +78,6 @@ import com.android.launcher3.graphics.GridCustomizationsProvider;
 import com.android.launcher3.graphics.TintedDrawableSpan;
 import com.android.launcher3.icons.BitmapInfo;
 import com.android.launcher3.icons.FastBitmapDrawable;
-import com.android.launcher3.icons.LauncherIcons;
 import com.android.launcher3.icons.ShortcutCachingLogic;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.ItemInfoWithIcon;
@@ -109,8 +108,6 @@ public final class Utilities {
 
     private static final Pattern sTrimPattern =
             Pattern.compile("^[\\s|\\p{javaSpaceChar}]*(.*)[\\s|\\p{javaSpaceChar}]*$");
-
-    private static final float[] sTmpFloatArray = new float[4];
 
     private static final int[] sLoc0 = new int[2];
     private static final int[] sLoc1 = new int[2];
@@ -738,27 +735,23 @@ public final class Utilities {
     @TargetApi(Build.VERSION_CODES.O)
     public static Drawable getBadge(Context context, ItemInfo info, Object obj) {
         LauncherAppState appState = LauncherAppState.getInstance(context);
-        int iconSize = appState.getInvariantDeviceProfile().iconBitmapSize;
         if (info.itemType == LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT) {
             boolean iconBadged = (info instanceof ItemInfoWithIcon)
                     && (((ItemInfoWithIcon) info).runtimeStatusFlags & FLAG_ICON_BADGED) > 0;
             if ((info.id == ItemInfo.NO_ID && !iconBadged)
                     || !(obj instanceof ShortcutInfo)) {
                 // The item is not yet added on home screen.
-                return new FixedSizeEmptyDrawable(iconSize);
+                return new ColorDrawable(Color.TRANSPARENT);
             }
             ShortcutInfo si = (ShortcutInfo) obj;
-            Bitmap badge = LauncherAppState.getInstance(appState.getContext())
-                    .getIconCache().getShortcutInfoBadge(si).icon;
-            float badgeSize = LauncherIcons.getBadgeSizeForIconSize(iconSize);
-            float insetFraction = (iconSize - badgeSize) / iconSize;
-            return new InsetDrawable(new FastBitmapDrawable(badge),
-                    insetFraction, insetFraction, 0, 0);
+            return LauncherAppState.getInstance(appState.getContext())
+                    .getIconCache().getShortcutInfoBadge(si).newIcon(context, FLAG_THEMED);
         } else if (info.itemType == LauncherSettings.Favorites.ITEM_TYPE_FOLDER) {
             return ((FolderAdaptiveIcon) obj).getBadge();
         } else {
-            return context.getPackageManager()
-                    .getUserBadgedIcon(new FixedSizeEmptyDrawable(iconSize), info.user);
+            return Process.myUserHandle().equals(info.user)
+                    ? new ColorDrawable(Color.TRANSPARENT)
+                    : context.getDrawable(R.drawable.ic_work_app_badge);
         }
     }
 
@@ -863,25 +856,5 @@ public final class Utilities {
         int[] pos = new int[2];
         v.getLocationOnScreen(pos);
         return new Rect(pos[0], pos[1], pos[0] + v.getWidth(), pos[1] + v.getHeight());
-    }
-
-    private static class FixedSizeEmptyDrawable extends ColorDrawable {
-
-        private final int mSize;
-
-        public FixedSizeEmptyDrawable(int size) {
-            super(Color.TRANSPARENT);
-            mSize = size;
-        }
-
-        @Override
-        public int getIntrinsicHeight() {
-            return mSize;
-        }
-
-        @Override
-        public int getIntrinsicWidth() {
-            return mSize;
-        }
     }
 }
