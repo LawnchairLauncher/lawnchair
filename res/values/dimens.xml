@@ -308,6 +308,7 @@
     <dimen name="snackbar_elevation">3dp</dimen>
     <dimen name="snackbar_min_text_size">12sp</dimen>
     <dimen name="snackbar_max_text_size">14sp</dimen>
+    <dimen name="snackbar_max_width">504dp</dimen>
 
 <!-- Developer Options -->
     <dimen name="developer_options_filter_margins">10dp</dimen>
