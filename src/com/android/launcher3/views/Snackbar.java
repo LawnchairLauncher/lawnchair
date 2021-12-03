@@ -88,9 +88,14 @@ public class Snackbar extends AbstractFloatingView {
         int maxMarginLeftRight = res.getDimensionPixelSize(R.dimen.snackbar_max_margin_left_right);
         int minMarginLeftRight = res.getDimensionPixelSize(R.dimen.snackbar_min_margin_left_right);
         int marginBottom = res.getDimensionPixelSize(R.dimen.snackbar_margin_bottom);
+        int absoluteMaxWidth = res.getDimensionPixelSize(R.dimen.snackbar_max_width);
         Rect insets = activity.getDeviceProfile().getInsets();
-        int maxWidth = dragLayer.getWidth() - minMarginLeftRight * 2 - insets.left - insets.right;
-        int minWidth = dragLayer.getWidth() - maxMarginLeftRight * 2 - insets.left - insets.right;
+        int maxWidth = Math.min(
+                dragLayer.getWidth() - minMarginLeftRight * 2 - insets.left - insets.right,
+                absoluteMaxWidth);
+        int minWidth = Math.min(
+                dragLayer.getWidth() - maxMarginLeftRight * 2 - insets.left - insets.right,
+                absoluteMaxWidth);
         params.width = minWidth;
         params.setMargins(0, 0, 0, marginBottom + insets.bottom);
 
