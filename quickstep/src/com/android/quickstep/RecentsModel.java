@@ -43,6 +43,7 @@ import com.android.systemui.shared.system.KeyguardManagerCompat;
 import com.android.systemui.shared.system.TaskStackChangeListener;
 import com.android.systemui.shared.system.TaskStackChangeListeners;
 
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executor;
@@ -218,6 +219,11 @@ public class RecentsModel extends TaskStackChangeListener implements IconChangeL
      */
     public void removeThumbnailChangeListener(TaskVisualsChangeListener listener) {
         mThumbnailChangeListeners.remove(listener);
+    }
+
+    public void dump(String prefix, PrintWriter writer) {
+        writer.println(prefix + "RecentsModel:");
+        mTaskList.dump("  ", writer);
     }
 
     /**
