@@ -338,15 +338,13 @@ public class FloatingIconView extends FrameLayout implements
             setLayoutParams(lp);
 
             final LayoutParams clipViewLp = (LayoutParams) mClipIconView.getLayoutParams();
-            final int clipViewOgHeight = clipViewLp.height;
-            final int clipViewOgWidth = clipViewLp.width;
+            if (mBadge != null) {
+                Rect badgeBounds = new Rect(0, 0, clipViewLp.width, clipViewLp.height);
+                FastBitmapDrawable.setBadgeBounds(mBadge, badgeBounds);
+            }
             clipViewLp.width = lp.width;
             clipViewLp.height = lp.height;
             mClipIconView.setLayoutParams(clipViewLp);
-
-            if (mBadge != null) {
-                mBadge.setBounds(0, 0, clipViewOgWidth, clipViewOgHeight);
-            }
         }
 
         if (!mIsOpening && btvIcon != null) {

@@ -18,6 +18,8 @@ package com.android.launcher3;
 
 import static com.android.launcher3.config.FeatureFlags.ENABLE_ICON_LABEL_AUTO_SCALING;
 import static com.android.launcher3.graphics.PreloadIconDrawable.newPendingIcon;
+import static com.android.launcher3.icons.BitmapInfo.FLAG_NO_BADGE;
+import static com.android.launcher3.icons.BitmapInfo.FLAG_THEMED;
 import static com.android.launcher3.icons.GraphicsUtils.setColorAlphaBound;
 
 import android.animation.Animator;
@@ -145,6 +147,8 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
     private final int mIconSize;
 
     @ViewDebug.ExportedProperty(category = "launcher")
+    private boolean mHideBadge = false;
+    @ViewDebug.ExportedProperty(category = "launcher")
     private boolean mIsIconVisible = true;
     @ViewDebug.ExportedProperty(category = "launcher")
     private int mTextColor;
@@ -239,6 +243,10 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
         // Disable marques when not focused to that, so that updating text does not cause relayout.
         setEllipsize(focused ? TruncateAt.MARQUEE : TruncateAt.END);
         super.onFocusChanged(focused, direction, previouslyFocusedRect);
+    }
+
+    public void setHideBadge(boolean hideBadge) {
+        mHideBadge = hideBadge;
     }
 
     /**
@@ -364,7 +372,11 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
     protected void applyIconAndLabel(ItemInfoWithIcon info) {
         boolean useTheme = mDisplay == DISPLAY_WORKSPACE || mDisplay == DISPLAY_FOLDER
                 || mDisplay == DISPLAY_TASKBAR;
-        FastBitmapDrawable iconDrawable = info.newIcon(getContext(), useTheme);
+        int flags = useTheme ? FLAG_THEMED : 0;
+        if (mHideBadge) {
+            flags |= FLAG_NO_BADGE;
+        }
+        FastBitmapDrawable iconDrawable = info.newIcon(getContext(), flags);
         mDotParams.color = IconPalette.getMutedColor(iconDrawable.getIconColor(), 0.54f);
 
         setIcon(iconDrawable);

@@ -43,7 +43,6 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
-import android.os.Process;
 import android.util.AttributeSet;
 import android.util.SparseIntArray;
 import android.view.ContextThemeWrapper;
@@ -202,10 +201,10 @@ public class LauncherPreviewRenderer extends ContextWrapper
 
         BaseIconFactory iconFactory =
                 new BaseIconFactory(context, mIdp.fillResIconDpi, mIdp.iconBitmapSize) { };
-        BitmapInfo iconInfo = iconFactory.createBadgedIconBitmap(new AdaptiveIconDrawable(
-                        new ColorDrawable(Color.WHITE), new ColorDrawable(Color.WHITE)),
-                Process.myUserHandle(),
-                Build.VERSION.SDK_INT);
+        BitmapInfo iconInfo = iconFactory.createBadgedIconBitmap(
+                new AdaptiveIconDrawable(
+                        new ColorDrawable(Color.WHITE),
+                        new ColorDrawable(Color.WHITE)));
 
         mWorkspaceItemInfo = new WorkspaceItemInfo();
         mWorkspaceItemInfo.bitmap = iconInfo;

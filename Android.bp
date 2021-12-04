@@ -258,6 +258,10 @@ android_library {
         "go/res",
         "go/quickstep/res",
     ],
+    // Note the ordering here is important when it comes to resource
+    // overriding. We want the most specific resource overrides defined
+    // in QuickstepResLib to take precendece, so it should be the final
+    // dependency. See b/205278434 for how this can go wrong.
     static_libs: [
         "Launcher3CommonDepsLib",
         "QuickstepResLib",
@@ -285,11 +289,15 @@ android_library {
     libs: [
         "framework-statsd",
     ],
+    // Note the ordering here is important when it comes to resource
+    // overriding. We want the most specific resource overrides defined
+    // in QuickstepResLib to take precendece, so it should be the final
+    // dependency. See b/208647810 for how this can go wrong.
     static_libs: [
-        "QuickstepResLib",
         "SystemUI-statsd",
         "SystemUISharedLib",
         "Launcher3CommonDepsLib",
+        "QuickstepResLib",
     ],
     manifest: "quickstep/AndroidManifest.xml",
     platform_apis: true,

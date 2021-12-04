@@ -28,7 +28,6 @@ import androidx.annotation.Nullable;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherModel;
 import com.android.launcher3.LauncherSettings;
-import com.android.launcher3.icons.LauncherIcons;
 import com.android.launcher3.logger.LauncherAtom.ItemInfo;
 import com.android.launcher3.logger.LauncherAtom.SearchActionItem;
 import com.android.launcher3.model.AllAppsList;
@@ -176,9 +175,7 @@ public class SearchActionItemInfo extends ItemInfoWithIcon {
                 model.updateAndBindWorkspaceItem(() -> {
                     PackageItemInfo pkgInfo = new PackageItemInfo(getIntentPackageName(), user);
                     app.getIconCache().getTitleAndIconForApp(pkgInfo, false);
-                    try (LauncherIcons li = LauncherIcons.obtain(app.getContext())) {
-                        info.bitmap = li.badgeBitmap(info.bitmap.icon, pkgInfo.bitmap);
-                    }
+                    info.bitmap = info.bitmap.withBadgeInfo(pkgInfo.bitmap);
                     return info;
                 });
             }
