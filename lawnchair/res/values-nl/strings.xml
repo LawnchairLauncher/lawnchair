@@ -20,7 +20,7 @@
     <string name="home_screen_label">Startscherm</string>
     <string name="home_screen_description">Feed, At a Glance, raster, iconen</string>
     <string name="general_label">Algemeen</string>
-    <string name="general_description">Meldingsstipje, icoon pakket</string>
+    <string name="general_description">Kleuren, Icoon Pakket, Notificatie stippen</string>
     <string name="home_screen_rotation_label">Startpagina rotatie</string>
     <string name="home_screen_rotaton_description">Wanneer het apparaat is gedraaid.</string>
     <string name="auto_add_shortcuts_label">Voeg nieuwe apps toe aan startscherm</string>
@@ -34,7 +34,7 @@
     <string name="dock_icons">Dock iconen</string>
     <string name="max_folder_columns">Max. Aantal map kolommen</string>
     <string name="max_folder_rows">Max. Aantal map rijen</string>
-    <string name="home_screen_grid">Beginscherm Raster</string>
+    <string name="home_screen_grid">Startscherm raster</string>
     <string name="columns">Kolommen</string>
     <string name="grid">Raster</string>
     <string name="rows">Rijen</string>
@@ -171,9 +171,9 @@
     <string name="apply_accent_color_label">Pas Accent Kleur Toe</string>
     <string name="show_search_result_types">Toon in zoekresultaten</string>
     <string name="search_pref_result_people_title">Personen</string>
-    <string name="search_pref_result_shortcuts_title">App Shortcuts</string>
+    <string name="search_pref_result_shortcuts_title">App Snelkoppelingen</string>
     <string name="search_pref_result_tips_title">Pixel Tips</string>
     <string name="row_height_label">Rij hoogte</string>
     <string name="all_apps_device_search_hint">Zoek</string>
-    <string name="dark_status_bar_label">Dark Status Bar</string>
+    <string name="dark_status_bar_label">Donkere Status Balk</string>
 </resources>
