@@ -370,28 +370,27 @@ public class PortraitPagedViewHandler implements PagedOrientationHandler {
     public List<SplitPositionOption> getSplitPositionOptions(DeviceProfile dp) {
         List<SplitPositionOption> options = new ArrayList<>(1);
         // Add both left and right options if we're in tablet mode
-        // TODO: Add in correct icons
         if (dp.isTablet && dp.isLandscape) {
             options.add(new SplitPositionOption(
-                    R.drawable.ic_split_screen, R.string.split_screen_position_right,
+                    R.drawable.ic_split_right, R.string.split_screen_position_right,
                     STAGE_POSITION_BOTTOM_OR_RIGHT, STAGE_TYPE_MAIN));
             options.add(new SplitPositionOption(
-                    R.drawable.ic_split_screen, R.string.split_screen_position_left,
+                    R.drawable.ic_split_left, R.string.split_screen_position_left,
                     STAGE_POSITION_TOP_OR_LEFT, STAGE_TYPE_MAIN));
         } else {
             if (dp.isSeascape()) {
                 // Add left/right options
                 options.add(new SplitPositionOption(
-                        R.drawable.ic_split_screen, R.string.split_screen_position_right,
+                        R.drawable.ic_split_right, R.string.split_screen_position_right,
                         STAGE_POSITION_BOTTOM_OR_RIGHT, STAGE_TYPE_MAIN));
             } else if (dp.isLandscape) {
                 options.add(new SplitPositionOption(
-                        R.drawable.ic_split_screen, R.string.split_screen_position_left,
+                        R.drawable.ic_split_left, R.string.split_screen_position_left,
                         STAGE_POSITION_TOP_OR_LEFT, STAGE_TYPE_MAIN));
             } else {
                 // Only add top option
                 options.add(new SplitPositionOption(
-                        R.drawable.ic_split_screen, R.string.split_screen_position_top,
+                        R.drawable.ic_split_top, R.string.split_screen_position_top,
                         STAGE_POSITION_TOP_OR_LEFT, STAGE_TYPE_MAIN));
             }
         }
@@ -542,17 +541,18 @@ public class PortraitPagedViewHandler implements PagedOrientationHandler {
 
         if (deviceProfile.isLandscape) {
             primaryIconParams.gravity = TOP | START;
-            primaryIconView.setTranslationX(primarySnapshotWidth - primaryIconView.getWidth());
+            primaryIconView.setTranslationX(
+                    primarySnapshotWidth - primaryIconView.getMeasuredWidth());
             primaryIconView.setTranslationY(0);
             secondaryIconParams.gravity = TOP | START;
             secondaryIconView.setTranslationX(primarySnapshotWidth + dividerBar);
         } else {
             primaryIconParams.gravity = TOP | CENTER_HORIZONTAL;
-            primaryIconView.setTranslationX(-(primaryIconView.getWidth()) / 2f);
+            primaryIconView.setTranslationX(-(primaryIconView.getMeasuredWidth()) / 2f);
             primaryIconView.setTranslationY(0);
 
             secondaryIconParams.gravity = TOP | CENTER_HORIZONTAL;
-            secondaryIconView.setTranslationX(secondaryIconView.getWidth() / 2f);
+            secondaryIconView.setTranslationX(secondaryIconView.getMeasuredWidth() / 2f);
         }
         secondaryIconView.setTranslationY(0);
         primaryIconView.setLayoutParams(primaryIconParams);

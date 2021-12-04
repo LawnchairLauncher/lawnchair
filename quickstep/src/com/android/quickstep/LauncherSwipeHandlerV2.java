@@ -115,8 +115,6 @@ public class LauncherSwipeHandlerV2 extends
     }
 
     private HomeAnimationFactory createIconHomeAnimationFactory(View workspaceView) {
-        final ResourceProvider rp = DynamicResource.provider(mActivity);
-        final float transY = dpToPx(rp.getFloat(R.dimen.swipe_up_trans_y_dp));
         RectF iconLocation = new RectF();
         FloatingIconView floatingIconView = getFloatingIconView(mActivity, workspaceView,
                 true /* hideOriginal */, iconLocation, false /* isOpening */);
@@ -127,19 +125,15 @@ public class LauncherSwipeHandlerV2 extends
 
         return new FloatingViewHomeAnimationFactory(floatingIconView) {
 
-            // There is a delay in loading the icon, so we need to keep the window
-            // opaque until it is ready.
-            private boolean mIsFloatingIconReady = false;
-
             @Nullable
             @Override
             protected View getViewIgnoredInWorkspaceRevealAnimation() {
                 return workspaceView;
             }
 
+            @NonNull
             @Override
             public RectF getWindowTargetRect() {
-                super.getWindowTargetRect();
                 return iconLocation;
             }
 
@@ -149,15 +143,6 @@ public class LauncherSwipeHandlerV2 extends
                 anim.addAnimatorListener(floatingIconView);
                 floatingIconView.setOnTargetChangeListener(anim::onTargetPositionChanged);
                 floatingIconView.setFastFinishRunnable(anim::end);
-            }
-
-            @Override
-            public boolean keepWindowOpaque() {
-                if (mIsFloatingIconReady || floatingIconView.isVisibleToUser()) {
-                    mIsFloatingIconReady = true;
-                    return false;
-                }
-                return true;
             }
 
             @Override
@@ -212,11 +197,6 @@ public class LauncherSwipeHandlerV2 extends
                 anim.addAnimatorListener(floatingWidgetView);
                 floatingWidgetView.setOnTargetChangeListener(anim::onTargetPositionChanged);
                 floatingWidgetView.setFastFinishRunnable(anim::end);
-            }
-
-            @Override
-            public boolean keepWindowOpaque() {
-                return false;
             }
 
             @Override

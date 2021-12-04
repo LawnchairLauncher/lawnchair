@@ -183,8 +183,6 @@ public abstract class SwipeUpAnimationLogic implements
 
         public void setAnimation(RectFSpringAnim anim) { }
 
-        public boolean keepWindowOpaque() { return false; }
-
         public void update(RectF currentRect, float progress, float radius) { }
 
         public void onCancel() { }
@@ -338,9 +336,6 @@ public abstract class SwipeUpAnimationLogic implements
             mMatrix.setRectToRect(mCropRectF, mWindowCurrentRect, ScaleToFit.FILL);
             float cornerRadius = Utilities.mapRange(progress, mStartRadius, mEndRadius);
             float alpha = mAnimationFactory.getWindowAlpha(progress);
-            if (mAnimationFactory.keepWindowOpaque()) {
-                alpha = 1f;
-            }
             mLocalTransformParams
                     .setTargetAlpha(alpha)
                     .setCornerRadius(cornerRadius);
