@@ -20,7 +20,7 @@
     <string name="home_screen_label">Ana Ekran</string>
     <string name="home_screen_description">Akış, Bir Bakışta, Izgara, Simgeler</string>
     <string name="general_label">Genel</string>
-    <string name="general_description">Bildirim Noktaları, Simge Paketi</string>
+    <string name="general_description">Renkler, Bildirim Noktaları, Simge Paketi</string>
     <string name="home_screen_rotation_label">Ana Ekran Rotasyonu</string>
     <string name="home_screen_rotaton_description">Cihaz döndürüldüğü zaman.</string>
     <string name="auto_add_shortcuts_label">Ana Ekrana Yeni Uygulamalar Ekleyin</string>
@@ -126,15 +126,15 @@
     <string name="font_label">Yazı Tipi (Deneysel)</string>
     <string name="reset_font">Sıfırla</string>
     <string name="search_input_action_clear_results">Arama Kutusunu Temizle</string>
-    <string name="pref_category_search">Arama</string>
+    <string name="pref_category_search">Ara</string>
     <string name="pref_search_auto_show_keyboard">Klavyeyi Otomatik Göster</string>
     <string name="label_search">Arama</string>
     <string name="label_lens">Google Lens</string>
-    <string name="label_voice_search">Sesle Arama</string>
+    <string name="label_voice_search">Sesli Arama</string>
     <string name="apply_grid">Uygula</string>
     <string name="x_by_y">%1$d × %2$d</string>
-    <string name="folder_preview_bg_opacity_label">Simge Arka Plan Saydamlığı</string>
-    <string name="icon_shape_label">Simge Şekli</string>
+    <string name="folder_preview_bg_opacity_label">İkon Arka Plan Saydamlığı</string>
+    <string name="icon_shape_label">İkon Şekli</string>
     <string name="icon_shape_system">Sistem</string>
     <string name="icon_shape_circle">Yuvarlak</string>
     <string name="icon_shape_rounded_square">Yuvarlak Kare</string>
@@ -165,7 +165,7 @@
     <string name="status_channel_name">Yükleme Durumu</string>
     <string name="bugreport_group_summary">%d yeni bildiriler.</string>
     <string name="bugreport_group_summary_multiple">Birden fazla yeni bildiri.</string>
-    <string name="themed_icon_title">Temalı Simgeler</string>
+    <string name="themed_icon_title">Temalı İkonlar</string>
     <string name="corner_radius_label">Köşe Yarıçapı</string>
     <string name="search_bar_label">Arama Kutusu</string>
     <string name="apply_accent_color_label">Vurgu Rengini Uygula</string>
