@@ -948,6 +948,7 @@ public class TouchInteractionService extends Service
             pw.println("  resumed=" + resumed);
             pw.println("  mConsumer=" + mConsumer.getName());
             ActiveGestureLog.INSTANCE.dump("", pw);
+            RecentsModel.INSTANCE.get(this).dump("", pw);
             pw.println("ProtoTrace:");
             pw.println("  file=" + ProtoTracer.INSTANCE.get(this).getTraceFile());
         }

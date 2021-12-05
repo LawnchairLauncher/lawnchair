@@ -36,6 +36,7 @@ import com.android.wm.shell.recents.IRecentTasksListener;
 import com.android.wm.shell.util.GroupedRecentTaskInfo;
 import com.android.wm.shell.util.StagedSplitBounds;
 
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.function.Consumer;
@@ -217,6 +218,26 @@ public class RecentTasksList {
             newTasks.add(new GroupTask(tasks.get(i)));
         }
         return newTasks;
+    }
+
+    public void dump(String prefix, PrintWriter writer) {
+        writer.println(prefix + "RecentTasksList:");
+        writer.println(prefix + "  mChangeId=" + mChangeId);
+        writer.println(prefix + "  mResultsUi=[id=" + mResultsUi.mRequestId + ", tasks=");
+        for (GroupTask task : mResultsUi) {
+            writer.println(prefix + "    t1=" + task.task1.key.id
+                    + " t2=" + (task.hasMultipleTasks() ? task.task2.key.id : "-1"));
+        }
+        writer.println(prefix + "  ]");
+        int currentUserId = Process.myUserHandle().getIdentifier();
+        ArrayList<GroupedRecentTaskInfo> rawTasks =
+                mSysUiProxy.getRecentTasks(Integer.MAX_VALUE, currentUserId);
+        writer.println(prefix + "  rawTasks=[");
+        for (GroupedRecentTaskInfo task : rawTasks) {
+            writer.println(prefix + "    t1=" + task.mTaskInfo1.taskId
+                    + " t2=" + (task.mTaskInfo2 != null ? task.mTaskInfo2.taskId : "-1"));
+        }
+        writer.println(prefix + "  ]");
     }
 
     private static class TaskLoadResult extends ArrayList<GroupTask> {
