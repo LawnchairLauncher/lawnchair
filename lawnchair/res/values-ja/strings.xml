@@ -90,7 +90,7 @@
     <string name="theme_system_default">システム</string>
     <string name="theme_follow_wallpaper">壁紙に合わせる</string>
     <string name="quickstep_label">履歴</string>
-    <string name="clear_all_as_action_label">下部にあるすべてのボタンをクリア</string>
+    <string name="clear_all_as_action_label">画面下部の「すべてクリア」ボタン</string>
     <string name="window_corner_radius_label">画面角の丸み</string>
     <string name="override_window_corner_radius_label">カスタムした画面角の丸み</string>
     <string name="window_corner_radius_description">上にスワイプして「Recents」を開くと、現在のアプリが指の動きに沿ってカード状に縮小されます。このスライダーを使って、フルスクリーンに近い状態のカードの角の半径が、画面の角と一致するように調整します。</string>
@@ -101,7 +101,7 @@
     <string name="system">システム</string>
     <string name="wallpaper">壁紙</string>
     <string name="custom">カスタム</string>
-    <string name="quickstep_description">すべてのボタン、角の丸みをクリア</string>
+    <string name="quickstep_description">「すべてクリア」ボタン、角の丸み</string>
     <string name="wallpaper_scrolling_label">壁紙をスクロール</string>
     <string name="show_sys_ui_scrim">上部の影</string>
     <string name="show_status_bar">ステータスバー</string>
@@ -164,7 +164,7 @@
     <string name="status_channel_name">アップロード状況</string>
     <string name="bugreport_group_summary">%d 件の新しいレポート。</string>
     <string name="bugreport_group_summary_multiple">新しい複数のレポート。</string>
-    <string name="themed_icon_title">テーマ付きアイコン</string>
+    <string name="themed_icon_title">テーマアイコン</string>
     <string name="corner_radius_label">角の丸み</string>
     <string name="search_bar_label">検索バー</string>
     <string name="apply_accent_color_label">アクセントカラーを適用</string>
