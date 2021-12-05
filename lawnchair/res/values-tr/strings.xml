@@ -169,11 +169,11 @@
     <string name="corner_radius_label">Köşe Yarıçapı</string>
     <string name="search_bar_label">Arama Kutusu</string>
     <string name="apply_accent_color_label">Vurgu Rengini Uygula</string>
-    <string name="show_search_result_types">Show in Search Results</string>
-    <string name="search_pref_result_people_title">People</string>
-    <string name="search_pref_result_shortcuts_title">App Shortcuts</string>
-    <string name="search_pref_result_tips_title">Pixel Tips</string>
-    <string name="row_height_label">Row Height</string>
+    <string name="show_search_result_types">Arama sonuçlarında göster</string>
+    <string name="search_pref_result_people_title">İnsanlar</string>
+    <string name="search_pref_result_shortcuts_title">Uygulama kısayolları</string>
+    <string name="search_pref_result_tips_title">Pixel önerileri</string>
+    <string name="row_height_label">Satır yüksekliği</string>
     <string name="all_apps_device_search_hint">Arama</string>
-    <string name="dark_status_bar_label">Dark Status Bar</string>
+    <string name="dark_status_bar_label">Koyu durum çubuğu</string>
 </resources>
