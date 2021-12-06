@@ -150,6 +150,11 @@ public class FloatingTaskView extends FrameLayout {
         mOrientationHandler.setSecondaryScale(mSplitPlaceholderView.getIconView(), childScaleY);
     }
 
+    public void updateOrientationHandler(PagedOrientationHandler orientationHandler) {
+        mOrientationHandler = orientationHandler;
+        mSplitPlaceholderView.getIconView().setRotation(mOrientationHandler.getDegreesRotated());
+    }
+
     protected void initPosition(RectF pos, InsettableFrameLayout.LayoutParams lp) {
         mStartingPosition.set(pos);
         lp.ignoreInsets = true;
