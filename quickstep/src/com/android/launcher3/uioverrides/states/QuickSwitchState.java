@@ -53,6 +53,6 @@ public class QuickSwitchState extends BackgroundAppState {
 
     @Override
     public int getVisibleElements(Launcher launcher) {
-        return TASKBAR;
+        return NONE;
     }
 }
