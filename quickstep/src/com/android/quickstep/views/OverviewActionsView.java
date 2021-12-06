@@ -22,8 +22,10 @@ import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 
 import androidx.annotation.IntDef;
 import androidx.annotation.Nullable;
@@ -215,6 +217,13 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
     public void setDp(DeviceProfile dp) {
         mDp = dp;
         updateVerticalMargin(SysUINavigationMode.getMode(getContext()));
+
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                dp.isVerticalBarLayout() ? 0 : dp.overviewActionsButtonSpacing,
+                ViewGroup.LayoutParams.MATCH_PARENT);
+        params.weight = dp.isVerticalBarLayout() ? 1 : 0;
+        findViewById(R.id.action_split_space).setLayoutParams(params);
+
         requestLayout();
 
         mSplitButton.setCompoundDrawablesWithIntrinsicBounds(

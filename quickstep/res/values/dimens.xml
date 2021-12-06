@@ -39,6 +39,8 @@
 
     <!-- Overrideable in overlay that provides the Overview Actions. -->
     <dimen name="overview_actions_height">48dp</dimen>
+    <dimen name="overview_actions_button_spacing">32dp</dimen>
+    <dimen name="overview_actions_button_spacing_grid">36dp</dimen>
     <dimen name="overview_actions_margin_gesture">28dp</dimen>
     <dimen name="overview_actions_top_margin_gesture_grid_portrait">19.37dp</dimen>
     <dimen name="overview_actions_bottom_margin_gesture_grid_portrait">22dp</dimen>
