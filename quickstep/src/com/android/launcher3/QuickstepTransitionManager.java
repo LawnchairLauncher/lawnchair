@@ -1214,14 +1214,14 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
     }
 
     /**
-     * Returns view on the workspace that corresponds to the closing app in the list of app targets
+     * Returns view on launcher that corresponds to the closing app in the list of app targets
      */
-    private @Nullable View findWorkspaceView(RemoteAnimationTargetCompat[] appTargets) {
+    private @Nullable View findLauncherView(RemoteAnimationTargetCompat[] appTargets) {
         for (RemoteAnimationTargetCompat appTarget : appTargets) {
             if (appTarget.mode == MODE_CLOSING) {
-                View workspaceView = findWorkspaceView(appTarget);
-                if (workspaceView != null) {
-                    return workspaceView;
+                View launcherView = findLauncherView(appTarget);
+                if (launcherView != null) {
+                    return launcherView;
                 }
             }
         }
@@ -1229,9 +1229,9 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
     }
 
     /**
-     * Returns view on the workspace that corresponds to the {@param runningTaskTarget}.
+     * Returns view on launcher that corresponds to the {@param runningTaskTarget}.
      */
-    private @Nullable View findWorkspaceView(RemoteAnimationTargetCompat runningTaskTarget) {
+    private @Nullable View findLauncherView(RemoteAnimationTargetCompat runningTaskTarget) {
         if (runningTaskTarget == null || runningTaskTarget.taskInfo == null) {
             return null;
         }
@@ -1269,7 +1269,7 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
             }
         }
 
-        return mLauncher.getWorkspace().getFirstMatchForAppClose(launchCookieItemId,
+        return mLauncher.getFirstMatchForAppClose(launchCookieItemId,
                 packageName, UserHandle.of(runningTaskTarget.taskInfo.userId));
     }
 
@@ -1292,7 +1292,7 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
      * Closing animator that animates the window into its final location on the workspace.
      */
     private void getClosingWindowAnimators(AnimatorSet animation,
-            RemoteAnimationTargetCompat[] targets, View workspaceView) {
+            RemoteAnimationTargetCompat[] targets, View launcherView, PointF velocityPxPerS) {
         FloatingIconView floatingIconView = null;
         FloatingWidgetView floatingWidget = null;
         RectF targetRect = new RectF();
@@ -1308,17 +1308,17 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
         }
 
         // Get floating view and target rect.
-        if (workspaceView instanceof LauncherAppWidgetHostView) {
+        if (launcherView instanceof LauncherAppWidgetHostView) {
             Size windowSize = new Size(mDeviceProfile.availableWidthPx,
                     mDeviceProfile.availableHeightPx);
             int fallbackBackgroundColor =
                     FloatingWidgetView.getDefaultBackgroundColor(mLauncher, runningTaskTarget);
             floatingWidget = FloatingWidgetView.getFloatingWidgetView(mLauncher,
-                    (LauncherAppWidgetHostView) workspaceView, targetRect, windowSize,
+                    (LauncherAppWidgetHostView) launcherView, targetRect, windowSize,
                     mDeviceProfile.isMultiWindowMode ? 0 : getWindowCornerRadius(mLauncher),
                     isTransluscent, fallbackBackgroundColor);
-        } else if (workspaceView != null) {
-            floatingIconView = getFloatingIconView(mLauncher, workspaceView,
+        } else if (launcherView != null) {
+            floatingIconView = getFloatingIconView(mLauncher, launcherView,
                     true /* hideOriginal */, targetRect, false /* isOpening */);
         } else {
             targetRect.set(getDefaultWindowTargetRect());
@@ -1373,15 +1373,10 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
         }
 
         // Use a fixed velocity to start the animation.
-        float velocityPxPerS = DynamicResource.provider(mLauncher)
-                .getDimension(R.dimen.unlock_staggered_velocity_dp_per_s);
-        PointF velocity = new PointF(0, -velocityPxPerS);
-        animation.play(new StaggeredWorkspaceAnim(mLauncher, velocity.y,
-                true /* animateOverviewScrim */, workspaceView).getAnimators());
         animation.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationStart(Animator animation) {
-                anim.start(mLauncher, velocity);
+                anim.start(mLauncher, velocityPxPerS);
             }
         });
     }
@@ -1556,22 +1551,30 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
             if (anim == null) {
                 anim = new AnimatorSet();
 
-                View workspaceView = findWorkspaceView(appTargets);
-                boolean isWorkspaceViewVisible = workspaceView != null
-                        && !mLauncher.isInState(LauncherState.ALL_APPS)
-                        && !mLauncher.getWorkspace().isOverlayShown();
-                boolean playFallBackAnimation = !isWorkspaceViewVisible
-                        && (launcherIsATargetWithMode(appTargets, MODE_OPENING)
-                        || mLauncher.isForceInvisible());
+                final boolean launcherIsForceInvisibleOrOpening = mLauncher.isForceInvisible()
+                        || launcherIsATargetWithMode(appTargets, MODE_OPENING);
+
+                View launcherView = findLauncherView(appTargets);
+                boolean playFallBackAnimation = (launcherView == null
+                        && launcherIsForceInvisibleOrOpening)
+                        || mLauncher.getWorkspace().isOverlayShown();
 
                 boolean playWorkspaceReveal = true;
                 if (mFromUnlock) {
                     anim.play(getUnlockWindowAnimator(appTargets, wallpaperTargets));
                 } else if (ENABLE_BACK_SWIPE_HOME_ANIMATION.get()
                         && !playFallBackAnimation) {
-                    getClosingWindowAnimators(anim, appTargets, workspaceView);
-                    // We play StaggeredWorkspaceAnim as a part of the closing window animation.
-                    playWorkspaceReveal = false;
+                    // Use a fixed velocity to start the animation.
+                    float velocityPxPerS = DynamicResource.provider(mLauncher)
+                            .getDimension(R.dimen.unlock_staggered_velocity_dp_per_s);
+                    PointF velocity = new PointF(0, -velocityPxPerS);
+                    getClosingWindowAnimators(anim, appTargets, launcherView, velocity);
+                    if (!mLauncher.isInState(LauncherState.ALL_APPS)) {
+                        anim.play(new StaggeredWorkspaceAnim(mLauncher, velocity.y,
+                                true /* animateOverviewScrim */, launcherView).getAnimators());
+                        // We play StaggeredWorkspaceAnim as a part of the closing window animation.
+                        playWorkspaceReveal = false;
+                    }
                 } else {
                     anim.play(getFallbackClosingWindowAnimators(appTargets));
                 }
@@ -1584,8 +1587,7 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
                 // targets list because it is already visible). In that case, we force
                 // invisibility on touch down, and only reset it after the animation to home
                 // is initialized.
-                if (launcherIsATargetWithMode(appTargets, MODE_OPENING)
-                        || mLauncher.isForceInvisible()) {
+                if (launcherIsForceInvisibleOrOpening) {
                     addCujInstrumentation(
                             anim, InteractionJankMonitorWrapper.CUJ_APP_CLOSE_TO_HOME);
                     // Only register the content animation for cancellation when state changes
