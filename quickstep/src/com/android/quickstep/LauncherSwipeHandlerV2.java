@@ -244,7 +244,7 @@ public class LauncherSwipeHandlerV2 extends
             }
         }
 
-        return mActivity.getWorkspace().getFirstMatchForAppClose(launchCookieItemId,
+        return mActivity.getFirstMatchForAppClose(launchCookieItemId,
                 runningTaskView.getTask().key.getComponent().getPackageName(),
                 UserHandle.of(runningTaskView.getTask().key.userId));
     }
