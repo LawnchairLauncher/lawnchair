@@ -26,7 +26,6 @@ import static com.android.launcher3.LauncherState.HINT_STATE;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.SPRING_LOADED;
 import static com.android.launcher3.anim.AnimatorListeners.forSuccessCallback;
-import static com.android.launcher3.config.FeatureFlags.ADAPTIVE_ICON_WINDOW_ANIM;
 import static com.android.launcher3.dragndrop.DragLayer.ALPHA_INDEX_OVERLAY;
 import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_HOME;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_SWIPELEFT;
@@ -51,7 +50,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.Parcelable;
 import android.os.UserHandle;
-import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.util.SparseArray;
@@ -3146,62 +3144,6 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         return layouts;
     }
 
-    /**
-     * Similar to {@link #getFirstMatch} but optimized to finding a suitable view for the app close
-     * animation.
-     *
-     * @param preferredItemId The id of the preferred item to match to if it exists.
-     * @param packageName The package name of the app to match.
-     * @param user The user of the app to match.
-     */
-    public View getFirstMatchForAppClose(int preferredItemId, String packageName, UserHandle user) {
-        final ItemOperator preferredItem = (ItemInfo info, View view) ->
-                info != null && info.id == preferredItemId;
-        final ItemOperator preferredItemInFolder = (info, view) -> {
-            if (info instanceof FolderInfo) {
-                FolderInfo folderInfo = (FolderInfo) info;
-                for (WorkspaceItemInfo shortcutInfo : folderInfo.contents) {
-                    if (preferredItem.evaluate(shortcutInfo, view)) {
-                        return true;
-                    }
-                }
-            }
-            return false;
-        };
-        final ItemOperator packageAndUserAndApp = (ItemInfo info, View view) ->
-                info != null
-                        && info.itemType == ITEM_TYPE_APPLICATION
-                        && info.user.equals(user)
-                        && info.getTargetComponent() != null
-                        && TextUtils.equals(info.getTargetComponent().getPackageName(),
-                                packageName);
-        final ItemOperator packageAndUserAndAppInFolder = (info, view) -> {
-            if (info instanceof FolderInfo) {
-                FolderInfo folderInfo = (FolderInfo) info;
-                for (WorkspaceItemInfo shortcutInfo : folderInfo.contents) {
-                    if (packageAndUserAndApp.evaluate(shortcutInfo, view)) {
-                        return true;
-                    }
-                }
-            }
-            return false;
-        };
-
-        List<CellLayout> cellLayouts = new ArrayList<>(getPanelCount() + 1);
-        cellLayouts.add(getHotseat());
-        forEachVisiblePage(page -> cellLayouts.add((CellLayout) page));
-
-        // Order: Preferred item, App icons in hotseat/workspace, app in folder in hotseat/workspace
-        if (ADAPTIVE_ICON_WINDOW_ANIM.get()) {
-            return getFirstMatch(cellLayouts, preferredItem, preferredItemInFolder,
-                    packageAndUserAndApp, packageAndUserAndAppInFolder);
-        } else {
-            // Do not use Folder as a criteria, since it'll cause a crash when trying to draw
-            // FolderAdaptiveIcon as the background.
-            return getFirstMatch(cellLayouts, preferredItem, packageAndUserAndApp);
-        }
-    }
-
     public View getHomescreenIconByItemId(final int id) {
         return getFirstMatch((info, v) -> info != null && info.id == id);
     }
@@ -3225,23 +3167,6 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
             }
         });
         return value[0];
-    }
-
-    /**
-     * Finds the first view matching the ordered operators across the given cell layouts by order.
-     * @param cellLayouts List of CellLayouts to scan, in order of preference.
-     * @param operators List of operators, in order starting from best matching operator.
-     */
-    View getFirstMatch(Iterable<CellLayout> cellLayouts, final ItemOperator... operators) {
-        for (ItemOperator operator : operators) {
-            for (CellLayout cellLayout : cellLayouts) {
-                View match = mapOverCellLayout(cellLayout, operator);
-                if (match != null) {
-                    return match;
-                }
-            }
-        }
-        return null;
     }
 
     void clearDropTargets() {
