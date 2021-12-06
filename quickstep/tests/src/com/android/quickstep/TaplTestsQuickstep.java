@@ -324,14 +324,14 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
         if (!mLauncher.isTablet()) {
             return;
         }
-        for (int i = 2; i <= 12; i++) {
+        for (int i = 2; i <= 14; i++) {
             startTestActivity(i);
         }
 
         Overview overview = mLauncher.pressHome().switchToOverview();
         executeOnLauncher(
-                launcher -> assertTrue("Don't have at least 11 tasks",
-                        getTaskCount(launcher) >= 11));
+                launcher -> assertTrue("Don't have at least 13 tasks",
+                        getTaskCount(launcher) >= 13));
 
         // Test scroll the first task off screen
         overview.scrollCurrentTaskOffScreen();
