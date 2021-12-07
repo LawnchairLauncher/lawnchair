@@ -221,6 +221,7 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
 
             PointF taskDimension = getTaskDimension(context, dp);
             float scale = gridRect.height() / taskDimension.y;
+            scale = Math.min(scale, res.getFloat(R.dimen.overview_max_scale));
             int outWidth = Math.round(scale * taskDimension.x);
             int outHeight = Math.round(scale * taskDimension.y);
 

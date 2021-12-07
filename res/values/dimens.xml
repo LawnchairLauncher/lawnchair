@@ -350,10 +350,10 @@
     <dimen name="overview_actions_margin_three_button">0dp</dimen>
     <dimen name="overview_grid_side_margin_portrait">0dp</dimen>
     <dimen name="overview_grid_side_margin_landscape">0dp</dimen>
-    <dimen name="overview_grid_row_spacing_portrait">0dp</dimen>
-    <dimen name="overview_grid_row_spacing_landscape">0dp</dimen>
-    <dimen name="recents_page_spacing">0dp</dimen>
-    <dimen name="recents_page_spacing_grid">0dp</dimen>
+    <dimen name="overview_grid_row_spacing">0dp</dimen>
+    <dimen name="overview_page_spacing">0dp</dimen>
+    <dimen name="overview_page_spacing_grid_portrait">0dp</dimen>
+    <dimen name="overview_page_spacing_grid_landscape">0dp</dimen>
     <dimen name="split_placeholder_size">110dp</dimen>
     <dimen name="task_menu_width_grid">200dp</dimen>
 

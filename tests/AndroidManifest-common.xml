@@ -251,6 +251,22 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity-alias>
+        <activity-alias android:name="Activity13" android:exported="true"
+            android:label="TestActivity13"
+            android:targetActivity="com.android.launcher3.testcomponent.OtherBaseTestingActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity-alias>
+        <activity-alias android:name="Activity14" android:exported="true"
+            android:label="TestActivity14"
+            android:targetActivity="com.android.launcher3.testcomponent.OtherBaseTestingActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity-alias>
 
         <!-- [b/197780098] Disable eager initialization of Jetpack libraries. -->
         <provider

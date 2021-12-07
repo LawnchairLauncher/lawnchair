@@ -36,6 +36,7 @@
     <dimen name="overview_task_margin">16dp</dimen>
     <dimen name="overview_task_margin_focused">12dp</dimen>
     <dimen name="overview_task_margin_grid">4dp</dimen>
+    <item name="overview_max_scale" format="float" type="dimen">0.7</item>
 
     <!-- Overrideable in overlay that provides the Overview Actions. -->
     <dimen name="overview_actions_height">48dp</dimen>
@@ -51,9 +52,10 @@
 
     <dimen name="overview_grid_side_margin_portrait">60dp</dimen>
     <dimen name="overview_grid_side_margin_landscape">52dp</dimen>
-    <dimen name="overview_grid_row_spacing_portrait">17.13dp</dimen>
-    <dimen name="overview_grid_row_spacing_landscape">13.38dp</dimen>
-    <dimen name="overview_grid_focus_vertical_margin">0dp</dimen>
+    <dimen name="overview_grid_row_spacing">36dp</dimen>
+    <dimen name="overview_page_spacing">16dp</dimen>
+    <dimen name="overview_page_spacing_grid_portrait">36dp</dimen>
+    <dimen name="overview_page_spacing_grid_landscape">38dp</dimen>
 
     <!-- These speeds are in dp/s -->
     <dimen name="max_task_dismiss_drag_velocity">2.25dp</dimen>
@@ -61,8 +63,6 @@
     <dimen name="default_task_dismiss_drag_velocity_grid">1dp</dimen>
     <dimen name="default_task_dismiss_drag_velocity_grid_focus_task">5dp</dimen>
 
-    <dimen name="recents_page_spacing">16dp</dimen>
-    <dimen name="recents_page_spacing_grid">36dp</dimen>
     <dimen name="recents_clear_all_deadzone_vertical_margin">70dp</dimen>
 
     <!-- The speed in dp/s at which the user needs to be scrolling in recents such that we start
