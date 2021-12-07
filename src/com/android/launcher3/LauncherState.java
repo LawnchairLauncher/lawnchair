@@ -57,10 +57,9 @@ public abstract class LauncherState implements BaseState<LauncherState> {
     public static final int ALL_APPS_CONTENT = 1 << 1;
     public static final int VERTICAL_SWIPE_INDICATOR = 1 << 2;
     public static final int OVERVIEW_ACTIONS = 1 << 3;
-    public static final int TASKBAR = 1 << 4;
-    public static final int CLEAR_ALL_BUTTON = 1 << 5;
-    public static final int WORKSPACE_PAGE_INDICATOR = 1 << 6;
-    public static final int SPLIT_PLACHOLDER_VIEW = 1 << 7;
+    public static final int CLEAR_ALL_BUTTON = 1 << 4;
+    public static final int WORKSPACE_PAGE_INDICATOR = 1 << 5;
+    public static final int SPLIT_PLACHOLDER_VIEW = 1 << 6;
 
     // Flag indicating workspace has multiple pages visible.
     public static final int FLAG_MULTI_PAGE = BaseState.getFlag(0);
@@ -186,7 +185,7 @@ public abstract class LauncherState implements BaseState<LauncherState> {
     }
 
     public int getVisibleElements(Launcher launcher) {
-        return HOTSEAT_ICONS | WORKSPACE_PAGE_INDICATOR | VERTICAL_SWIPE_INDICATOR | TASKBAR;
+        return HOTSEAT_ICONS | WORKSPACE_PAGE_INDICATOR | VERTICAL_SWIPE_INDICATOR;
     }
 
     /**
