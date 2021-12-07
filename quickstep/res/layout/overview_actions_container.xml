@@ -38,13 +38,13 @@
             android:layout_height="wrap_content"
             android:drawableStart="@drawable/ic_screenshot"
             android:text="@string/action_screenshot"
-            android:theme="@style/ThemeControlHighlightWorkspaceColor"
-            android:visibility="gone" />
+            android:theme="@style/ThemeControlHighlightWorkspaceColor" />
 
         <Space
-            android:layout_width="0dp"
+            android:id="@+id/action_split_space"
+            android:layout_width="@dimen/overview_actions_button_spacing"
             android:layout_height="1dp"
-            android:layout_weight="1" />
+            android:visibility="gone" />
 
         <Button
             android:id="@+id/action_split"
@@ -56,11 +56,9 @@
             android:visibility="gone" />
 
         <Space
-            android:id="@+id/action_split_space"
             android:layout_width="0dp"
             android:layout_height="1dp"
-            android:layout_weight="1"
-            android:visibility="gone" />
+            android:layout_weight="1" />
 
         <Space
             android:id="@+id/oav_three_button_space"

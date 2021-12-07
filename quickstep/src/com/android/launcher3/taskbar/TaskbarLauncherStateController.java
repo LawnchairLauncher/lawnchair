@@ -195,7 +195,7 @@ import java.util.function.Supplier;
         if (hasAnyFlag(changedFlags, FLAG_RESUMED)) {
             boolean isResumed = isResumed();
             ObjectAnimator anim = mIconAlignmentForResumedState
-                    .animateToValue(getCurrentIconAlignmentRatio(), isResumed ? 1 : 0)
+                    .animateToValue(isResumed ? 1 : 0)
                     .setDuration(duration);
 
             anim.addListener(new AnimatorListenerAdapter() {
@@ -351,8 +351,15 @@ import java.util.function.Supplier;
 
         private void endGestureStateOverride(boolean finishedToApp) {
             mCallbacks.removeListener(this);
+
+            // Update the resumed state immediately to ensure a seamless handoff
+            boolean launcherResumed = !finishedToApp;
+            mIconAlignmentForResumedState.updateValue(launcherResumed ? 1 : 0);
+
             updateStateForFlag(FLAG_RECENTS_ANIMATION_RUNNING, false);
+            updateStateForFlag(FLAG_RESUMED, launcherResumed);
             applyState();
+
 
             TaskbarStashController controller = mControllers.taskbarStashController;
             controller.updateStateForFlag(FLAG_IN_APP, finishedToApp);
