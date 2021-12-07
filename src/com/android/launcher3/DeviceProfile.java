@@ -187,6 +187,7 @@ public class DeviceProfile {
     public final int overviewActionsMarginThreeButtonPx;
     public final int overviewActionsTopMarginGesturePx;
     public final int overviewActionsBottomMarginGesturePx;
+    public final int overviewActionsButtonSpacing;
     public int overviewPageSpacing;
     public int overviewRowSpacing;
     public int overviewGridSideMargin;
@@ -378,10 +379,14 @@ public class DeviceProfile {
                 overviewActionsBottomMarginGesturePx = res.getDimensionPixelSize(
                         R.dimen.overview_actions_bottom_margin_gesture_grid_portrait);
             }
+            overviewActionsButtonSpacing = res.getDimensionPixelSize(
+                    R.dimen.overview_actions_button_spacing_grid);
         } else {
             overviewActionsTopMarginGesturePx = res.getDimensionPixelSize(
                     R.dimen.overview_actions_margin_gesture);
             overviewActionsBottomMarginGesturePx = overviewActionsTopMarginGesturePx;
+            overviewActionsButtonSpacing = res.getDimensionPixelSize(
+                    R.dimen.overview_actions_button_spacing);
         }
         overviewActionsMarginThreeButtonPx = res.getDimensionPixelSize(
                 R.dimen.overview_actions_margin_three_button);

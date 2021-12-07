@@ -340,6 +340,8 @@
     <dimen name="overview_task_margin">0dp</dimen>
     <dimen name="overview_task_margin_focused">0dp</dimen>
     <dimen name="overview_task_margin_grid">0dp</dimen>
+    <dimen name="overview_actions_button_spacing">0dp</dimen>
+    <dimen name="overview_actions_button_spacing_grid">0dp</dimen>
     <dimen name="overview_actions_margin_gesture">0dp</dimen>
     <dimen name="overview_actions_top_margin_gesture_grid_portrait">0dp</dimen>
     <dimen name="overview_actions_bottom_margin_gesture_grid_portrait">0dp</dimen>

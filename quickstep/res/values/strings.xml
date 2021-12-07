@@ -218,10 +218,10 @@
     <string name="taskbar_edu_closed">Taskbar education closed</string>
     <!-- Text in dialog that lets a user know how they can use the taskbar to switch apps on their device.
          [CHAR_LIMIT=60] -->
-    <string name="taskbar_edu_switch_apps" translatable="false">Use the taskbar to switch apps</string>
+    <string name="taskbar_edu_switch_apps">Use the taskbar to switch apps</string>
     <!-- Text in dialog that lets a user know how they can use the taskbar to use multiple apps at once on their device.
          [CHAR_LIMIT=60] -->
-    <string name="taskbar_edu_splitscreen" translatable="false">Drag to the side to use two apps at once</string>
+    <string name="taskbar_edu_splitscreen">Drag to the side to use two apps at once</string>
     <!-- Text in dialog that lets a user know how they can hide the taskbar on their device.
          [CHAR_LIMIT=60] -->
     <string name="taskbar_edu_stashing">Touch &amp; hold to hide the taskbar</string>
