@@ -98,7 +98,7 @@ public class LauncherAppState implements SafeCloseable {
                 Intent.ACTION_MANAGED_PROFILE_UNAVAILABLE,
                 Intent.ACTION_MANAGED_PROFILE_UNLOCKED);
         if (FeatureFlags.IS_STUDIO_BUILD) {
-            modelChangeReceiver.register(mContext, ACTION_FORCE_ROLOAD);
+            modelChangeReceiver.register(mContext, Context.RECEIVER_EXPORTED, ACTION_FORCE_ROLOAD);
         }
         mOnTerminateCallback.add(() -> mContext.unregisterReceiver(modelChangeReceiver));
 
