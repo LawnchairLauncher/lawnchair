@@ -25,6 +25,7 @@ import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_SEARCH_
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_SETTINGS;
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_SHORTCUTS;
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_TASKSWITCHER;
+import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_WALLPAPERS;
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_WIDGETS_TRAY;
 import static com.android.launcher3.LauncherSettings.Favorites.EXTENDED_CONTAINERS;
 import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_APPLICATION;
@@ -55,6 +56,7 @@ import com.android.launcher3.logger.LauncherAtom.SettingsContainer;
 import com.android.launcher3.logger.LauncherAtom.Shortcut;
 import com.android.launcher3.logger.LauncherAtom.ShortcutsContainer;
 import com.android.launcher3.logger.LauncherAtom.TaskSwitcherContainer;
+import com.android.launcher3.logger.LauncherAtom.WallpapersContainer;
 import com.android.launcher3.logger.LauncherAtomExtensions.ExtendedContainers;
 import com.android.launcher3.model.ModelWriter;
 import com.android.launcher3.util.ContentWriter;
@@ -427,6 +429,10 @@ public class ItemInfo {
             case CONTAINER_TASKSWITCHER:
                 return ContainerInfo.newBuilder()
                         .setTaskSwitcherContainer(TaskSwitcherContainer.getDefaultInstance())
+                        .build();
+            case CONTAINER_WALLPAPERS:
+                return ContainerInfo.newBuilder()
+                        .setWallpapersContainer(WallpapersContainer.getDefaultInstance())
                         .build();
             case EXTENDED_CONTAINERS:
                 return ContainerInfo.newBuilder()
