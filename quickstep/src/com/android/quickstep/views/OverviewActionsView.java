@@ -16,6 +16,8 @@
 
 package com.android.quickstep.views;
 
+import static com.android.quickstep.SysUINavigationMode.Mode.THREE_BUTTONS;
+
 import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.Rect;
@@ -33,6 +35,7 @@ import androidx.annotation.Nullable;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Insettable;
 import com.android.launcher3.R;
+import com.android.launcher3.uioverrides.ApiWrapper;
 import com.android.launcher3.util.MultiValueAlpha;
 import com.android.launcher3.util.MultiValueAlpha.AlphaProperty;
 import com.android.quickstep.SysUINavigationMode;
@@ -152,7 +155,7 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
     public void setInsets(Rect insets) {
         mInsets.set(insets);
         updateVerticalMargin(SysUINavigationMode.getMode(getContext()));
-        updateHorizontalPadding();
+        updatePaddingAndTranslations();
     }
 
     public void updateHiddenFlags(@ActionsHiddenFlags int visibilityFlags, boolean enable) {
@@ -195,8 +198,37 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
         return mMultiValueAlpha.getProperty(INDEX_FULLSCREEN_ALPHA);
     }
 
-    private void updateHorizontalPadding() {
-        setPadding(mInsets.left, 0, mInsets.right, 0);
+    /**
+     * Aligns OverviewActionsView vertically with and offsets horizontal position based on
+     * 3 button nav container in taskbar.
+     */
+    private void updatePaddingAndTranslations() {
+        boolean alignFor3ButtonTaskbar = mDp.isTaskbarPresent &&
+                SysUINavigationMode.getMode(getContext()) == THREE_BUTTONS;
+        if (alignFor3ButtonTaskbar) {
+            // Add extra horizontal spacing
+            int additionalPadding = ApiWrapper.getHotseatEndOffset(getContext());
+            if (isLayoutRtl()) {
+                setPadding(mInsets.left + additionalPadding, 0, mInsets.right, 0);
+            } else {
+                setPadding(mInsets.left, 0, mInsets.right + additionalPadding, 0);
+            }
+
+            // Align vertically, using taskbar height + mDp.taskbarOffsetY() to guestimate
+            // where the button nav top is
+            View startActionView = findViewById(R.id.action_screenshot);
+            int marginBottom = getOverviewActionsBottomMarginPx(
+                    SysUINavigationMode.getMode(getContext()), mDp);
+            int actionsTop = (mDp.heightPx - marginBottom - mInsets.bottom);
+            int navTop = mDp.heightPx - (mDp.taskbarSize + mDp.getTaskbarOffsetY());
+            int transY = navTop - actionsTop
+                    + ((mDp.taskbarSize - startActionView.getHeight()) / 2);
+            setTranslationY(transY);
+        } else {
+            setPadding(mInsets.left, 0, mInsets.right, 0);
+            setTranslationX(0);
+            setTranslationY(0);
+        }
     }
 
     /** Updates vertical margins for different navigation mode or configuration changes. */
