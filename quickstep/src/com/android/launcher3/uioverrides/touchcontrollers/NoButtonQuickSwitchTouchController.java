@@ -236,8 +236,10 @@ public class NoButtonQuickSwitchTouchController implements TouchController,
         //   - RecentsView fade (if it's empty)
         PendingAnimation xAnim = new PendingAnimation((long) (mXRange * 2));
         xAnim.setFloat(mRecentsView, ADJACENT_PAGE_HORIZONTAL_OFFSET, scaleAndOffset[1], LINEAR);
+        // Use QuickSwitchState instead of OverviewState to determine scrim color,
+        // since we need to take potential taskbar into account.
         xAnim.setViewBackgroundColor(mLauncher.getScrimView(),
-                toState.getWorkspaceScrimColor(mLauncher), LINEAR);
+                QUICK_SWITCH.getWorkspaceScrimColor(mLauncher), LINEAR);
         if (mRecentsView.getTaskViewCount() == 0) {
             xAnim.addFloat(mRecentsView, CONTENT_ALPHA, 0f, 1f, LINEAR);
         }
@@ -310,6 +312,11 @@ public class NoButtonQuickSwitchTouchController implements TouchController,
                 }
             });
             overviewAnim.start();
+
+            // Create an empty state transition so StateListeners get onStateTransitionStart().
+            mLauncher.getStateManager().createAnimationToNewWorkspace(
+                    OVERVIEW, config.duration, StateAnimationConfig.SKIP_ALL_ANIMATIONS)
+                    .dispatchOnStart();
             return;
         }
 
@@ -384,6 +391,7 @@ public class NoButtonQuickSwitchTouchController implements TouchController,
             config.animFlags = SKIP_ALL_ANIMATIONS;
             updateNonOverviewAnim(targetState, config);
             nonOverviewAnim = mNonOverviewAnim.getAnimationPlayer();
+            mNonOverviewAnim.dispatchOnStart();
 
             new WorkspaceRevealAnim(mLauncher, false /* animateOverviewScrim */).start();
         } else {
