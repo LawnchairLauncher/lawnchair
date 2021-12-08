@@ -373,11 +373,15 @@ public class DeviceProfile {
                         R.dimen.overview_actions_top_margin_gesture_grid_landscape);
                 overviewActionsBottomMarginGesturePx = res.getDimensionPixelSize(
                         R.dimen.overview_actions_bottom_margin_gesture_grid_landscape);
+                overviewPageSpacing = res.getDimensionPixelSize(
+                        R.dimen.overview_page_spacing_grid_landscape);
             } else {
                 overviewActionsTopMarginGesturePx = res.getDimensionPixelSize(
                         R.dimen.overview_actions_top_margin_gesture_grid_portrait);
                 overviewActionsBottomMarginGesturePx = res.getDimensionPixelSize(
                         R.dimen.overview_actions_bottom_margin_gesture_grid_portrait);
+                overviewPageSpacing = res.getDimensionPixelSize(
+                        R.dimen.overview_page_spacing_grid_portrait);
             }
             overviewActionsButtonSpacing = res.getDimensionPixelSize(
                     R.dimen.overview_actions_button_spacing_grid);
@@ -385,17 +389,13 @@ public class DeviceProfile {
             overviewActionsTopMarginGesturePx = res.getDimensionPixelSize(
                     R.dimen.overview_actions_margin_gesture);
             overviewActionsBottomMarginGesturePx = overviewActionsTopMarginGesturePx;
+            overviewPageSpacing = res.getDimensionPixelSize(R.dimen.overview_page_spacing);
             overviewActionsButtonSpacing = res.getDimensionPixelSize(
                     R.dimen.overview_actions_button_spacing);
         }
         overviewActionsMarginThreeButtonPx = res.getDimensionPixelSize(
                 R.dimen.overview_actions_margin_three_button);
-        overviewPageSpacing = overviewShowAsGrid
-                ? res.getDimensionPixelSize(R.dimen.recents_page_spacing_grid)
-                : res.getDimensionPixelSize(R.dimen.recents_page_spacing);
-        overviewRowSpacing = isLandscape
-                ? res.getDimensionPixelSize(R.dimen.overview_grid_row_spacing_landscape)
-                : res.getDimensionPixelSize(R.dimen.overview_grid_row_spacing_portrait);
+        overviewRowSpacing = res.getDimensionPixelSize(R.dimen.overview_grid_row_spacing);
         overviewGridSideMargin = isLandscape
                 ? res.getDimensionPixelSize(R.dimen.overview_grid_side_margin_landscape)
                 : res.getDimensionPixelSize(R.dimen.overview_grid_side_margin_portrait);

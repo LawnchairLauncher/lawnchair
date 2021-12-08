@@ -90,9 +90,4 @@ public class SpringLoadedState extends LauncherState {
     public float getWorkspaceBackgroundAlpha(Launcher launcher) {
         return 0.2f;
     }
-
-    @Override
-    public int getVisibleElements(Launcher launcher) {
-        return (super.getVisibleElements(launcher) | HOTSEAT_ICONS) & ~TASKBAR;
-    }
 }
