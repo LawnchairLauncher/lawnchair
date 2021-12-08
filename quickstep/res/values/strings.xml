@@ -233,6 +233,16 @@
     <string name="taskbar_edu_close">Close</string>
     <!-- Text on button to finish a tutorial [CHAR_LIMIT=16] -->
     <string name="taskbar_edu_done">Done</string>
+        <!-- Content description for home button [CHAR_LIMIT=16] -->
+    <string name="taskbar_button_home">Home</string>
+    <!-- Content description for accessibility button [CHAR_LIMIT=16] -->
+    <string name="taskbar_button_a11y">Accessibility</string>
+    <!-- Content description for back button [CHAR_LIMIT=16] -->
+    <string name="taskbar_button_back">Back</string>
+    <!-- Content description for ime switcher button [CHAR_LIMIT=16] -->
+    <string name="taskbar_button_ime_switcher">IME switcher</string>
+    <!-- Content description for recents button [CHAR_LIMIT=16] -->
+    <string name="taskbar_button_recents">Recents</string>
 
     <!-- Label for moving drop target to the top or left side of the screen, depending on orientation (from the taskbar only). -->
     <string name="move_drop_target_top_or_left">Move to top&#47;left</string>
