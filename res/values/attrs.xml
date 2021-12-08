@@ -154,7 +154,15 @@
         <attr name="demoModeLayoutId" format="reference" />
         <attr name="isScalable" format="boolean" />
         <attr name="devicePaddingId" format="reference" />
-        <attr name="gridEnabled" format="boolean" />
+        <!-- By default all categories are enabled -->
+        <attr name="deviceCategory" format="integer" >
+            <!-- Enable on phone only -->
+            <flag name="phone" value="1" />
+            <!-- Enable on tablets only -->
+            <flag name="tablet" value="2" />
+            <!-- Enable on multi display devices only -->
+            <flag name="multi_display" value="4" />
+        </attr>
 
     </declare-styleable>
 

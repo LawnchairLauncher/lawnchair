@@ -133,4 +133,32 @@
 
     </grid-option>
 
+    <grid-option
+        launcher:name="6_by_5"
+        launcher:numRows="5"
+        launcher:numColumns="6"
+        launcher:numFolderRows="3"
+        launcher:numFolderColumns="3"
+        launcher:numHotseatIcons="6"
+        launcher:numAllAppsColumns="6"
+        launcher:dbFile="launcher_6_by_5.db"
+        launcher:defaultLayoutId="@xml/default_workspace_6x5"
+        launcher:deviceCategory="tablet">
+
+        <display-option
+            launcher:name="Tablet"
+            launcher:minWidthDps="900"
+            launcher:minHeightDps="820"
+            launcher:minCellHeightDps="104"
+            launcher:minCellWidthDps="80"
+            launcher:iconImageSize="60"
+            launcher:iconTextSize="14"
+            launcher:borderSpaceDps="16"
+            launcher:allAppsIconSize="60"
+            launcher:allAppsIconTextSize="14"
+            launcher:allAppsCellSpacingDps="16"
+            launcher:canBeDefault="true" />
+
+    </grid-option>
+
 </profiles>
