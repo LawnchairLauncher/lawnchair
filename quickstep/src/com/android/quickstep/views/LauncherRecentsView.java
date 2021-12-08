@@ -24,7 +24,6 @@ import static com.android.launcher3.LauncherState.SPRING_LOADED;
 
 import android.annotation.TargetApi;
 import android.content.Context;
-import android.content.res.Configuration;
 import android.os.Build;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
@@ -171,10 +170,13 @@ public class LauncherRecentsView extends RecentsView<BaseQuickstepLauncher, Laun
     }
 
     @Override
-    protected void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
+    protected void onOrientationChanged() {
+        super.onOrientationChanged();
         // If overview is in modal state when rotate, reset it to overview state without running
         // animation.
         setModalStateEnabled(false);
+        if (mActivity.isInState(OVERVIEW_SPLIT_SELECT)) {
+            onRotateInSplitSelectionState();
+        }
     }
 }

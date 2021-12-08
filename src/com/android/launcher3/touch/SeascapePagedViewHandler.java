@@ -37,7 +37,6 @@ import android.widget.LinearLayout;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.util.SplitConfigurationOptions;
 import com.android.launcher3.util.SplitConfigurationOptions.SplitPositionOption;
 import com.android.launcher3.util.SplitConfigurationOptions.StagedSplitBounds;
 import com.android.launcher3.views.BaseDragLayer;
@@ -53,7 +52,7 @@ public class SeascapePagedViewHandler extends LandscapePagedViewHandler {
     }
 
     @Override
-    public int getSplitTranslationDirectionFactor(int stagePosition) {
+    public int getSplitTranslationDirectionFactor(int stagePosition, DeviceProfile deviceProfile) {
         if (stagePosition == STAGE_POSITION_BOTTOM_OR_RIGHT) {
             return -1;
         } else {
