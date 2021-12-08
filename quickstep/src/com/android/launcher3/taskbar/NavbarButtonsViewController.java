@@ -433,6 +433,8 @@ public class NavbarButtonsViewController {
             @LayoutRes int layoutId) {
         ImageView buttonView = addButton(parent, id, layoutId);
         buttonView.setImageResource(drawableId);
+        buttonView.setContentDescription(parent.getContext().getString(
+                navButtonController.getButtonContentDescription(buttonType)));
         buttonView.setOnClickListener(view -> navButtonController.onButtonClick(buttonType));
         buttonView.setOnLongClickListener(view ->
                 navButtonController.onButtonLongClick(buttonType));
