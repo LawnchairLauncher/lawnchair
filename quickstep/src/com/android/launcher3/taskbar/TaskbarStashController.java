@@ -216,6 +216,13 @@ public class TaskbarStashController {
         return hasAnyFlag(FLAGS_STASHED_IN_APP);
     }
 
+    /**
+     * Returns whether the taskbar should be stashed in the current LauncherState.
+     */
+    public boolean isInStashedLauncherState() {
+        return hasAnyFlag(FLAG_IN_STASHED_LAUNCHER_STATE) && supportsVisualStashing();
+    }
+
     private boolean hasAnyFlag(int flagMask) {
         return hasAnyFlag(mState, flagMask);
     }
