@@ -1640,7 +1640,13 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         setCurrentPage(mCurrentPage);
     }
 
-    protected void onOrientationChanged() {
+    private void onOrientationChanged() {
+        // If overview is in modal state when rotate, reset it to overview state without running
+        // animation.
+        setModalStateEnabled(false);
+        if (isSplitSelectionActive()) {
+            onRotateInSplitSelectionState();
+        }
     }
 
     // Update task size and padding that are dependent on DeviceProfile and insets.
