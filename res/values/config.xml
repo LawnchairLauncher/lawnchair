@@ -139,18 +139,8 @@
 
     <item name="swipe_up_scale_start"  type="dimen" format="float">0.88</item>
 
-    <item name="swipe_up_trans_y_dp"  type="dimen" format="float">4.5</item>
-    <item name="swipe_up_trans_y_dp_per_s" type="dimen" format="float">3</item>
-
-    <item name="swipe_up_trans_y_damping" type="dimen" format="float">0.45</item>
-    <item name="swipe_up_trans_y_stiffness" type="dimen" format="float">200</item>
-
     <item name="swipe_up_rect_xy_damping_ratio" type="dimen" format="float">0.8</item>
     <item name="swipe_up_rect_xy_stiffness" type="dimen" format="float">200</item>
-
-    <item name="swipe_up_low_swipe_duration_multiplier"  type="dimen" format="float">1</item>
-
-    <item name="swipe_up_launcher_alpha_max_progress" type="dimen" format="float">0.85</item>
 
     <item name="staggered_damping_ratio" type="dimen" format="float">0.7</item>
     <item name="staggered_stiffness" type="dimen" format="float">150</item>
@@ -167,12 +157,6 @@
 
     <array name="dynamic_resources">
         <item>@dimen/swipe_up_scale_start</item>
-        <item>@dimen/swipe_up_trans_y_dp</item>
-        <item>@dimen/swipe_up_trans_y_dp_per_s</item>
-        <item>@dimen/swipe_up_trans_y_damping</item>
-        <item>@dimen/swipe_up_trans_y_stiffness</item>
-        <item>@dimen/swipe_up_launcher_alpha_max_progress</item>
-        <item>@dimen/swipe_up_low_swipe_duration_multiplier</item>
         <item>@dimen/swipe_up_max_velocity</item>
     </array>
 

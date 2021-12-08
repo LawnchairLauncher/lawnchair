@@ -15,10 +15,7 @@
  */
 package com.android.quickstep;
 
-import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
-import static com.android.launcher3.LauncherAnimUtils.VIEW_TRANSLATE_Y;
 import static com.android.launcher3.LauncherState.NORMAL;
-import static com.android.launcher3.Utilities.dpToPx;
 import static com.android.launcher3.Utilities.mapBoundToRange;
 import static com.android.launcher3.anim.Interpolators.EXAGGERATED_EASE;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
@@ -26,10 +23,7 @@ import static com.android.launcher3.model.data.ItemInfo.NO_MATCHING_ID;
 import static com.android.launcher3.views.FloatingIconView.SHAPE_PROGRESS_DURATION;
 import static com.android.launcher3.views.FloatingIconView.getFloatingIconView;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
-import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Rect;
 import android.graphics.RectF;
@@ -42,15 +36,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.android.launcher3.BaseQuickstepLauncher;
-import com.android.launcher3.Hotseat;
 import com.android.launcher3.LauncherState;
-import com.android.launcher3.R;
-import com.android.launcher3.Workspace;
 import com.android.launcher3.anim.AnimatorPlaybackController;
-import com.android.launcher3.anim.SpringAnimationBuilder;
-import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.states.StateAnimationConfig;
-import com.android.launcher3.util.DynamicResource;
 import com.android.launcher3.util.ObjectWrapper;
 import com.android.launcher3.views.FloatingIconView;
 import com.android.launcher3.views.FloatingView;
@@ -60,7 +48,6 @@ import com.android.quickstep.util.StaggeredWorkspaceAnim;
 import com.android.quickstep.views.FloatingWidgetView;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
-import com.android.systemui.plugins.ResourceProvider;
 import com.android.systemui.shared.system.InputConsumerController;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 
@@ -257,61 +244,15 @@ public class LauncherSwipeHandlerV2 extends
 
     private class FloatingViewHomeAnimationFactory extends LauncherHomeAnimationFactory {
 
-        private final float mTransY;
         private final FloatingView mFloatingView;
-        private ValueAnimator mBounceBackAnimator;
 
         FloatingViewHomeAnimationFactory(FloatingView floatingView) {
             mFloatingView = floatingView;
-
-            ResourceProvider rp = DynamicResource.provider(mActivity);
-            mTransY = dpToPx(rp.getFloat(R.dimen.swipe_up_trans_y_dp));
-        }
-
-        @Override
-        public boolean shouldPlayAtomicWorkspaceReveal() {
-            return false;
-        }
-
-        protected void bounceBackToRestingPosition() {
-            final float startValue = mTransY;
-            final float endValue = 0;
-            // Ensures the velocity is always aligned with the direction.
-            float pixelPerSecond = Math.abs(mSwipeVelocity) * Math.signum(endValue - mTransY);
-
-            DragLayer dl = mActivity.getDragLayer();
-            Workspace workspace = mActivity.getWorkspace();
-            Hotseat hotseat = mActivity.getHotseat();
-
-            ResourceProvider rp = DynamicResource.provider(mActivity);
-            ValueAnimator springTransY = new SpringAnimationBuilder(dl.getContext())
-                    .setStiffness(rp.getFloat(R.dimen.swipe_up_trans_y_stiffness))
-                    .setDampingRatio(rp.getFloat(R.dimen.swipe_up_trans_y_damping))
-                    .setMinimumVisibleChange(1f)
-                    .setStartValue(startValue)
-                    .setEndValue(endValue)
-                    .setStartVelocity(pixelPerSecond)
-                    .build(dl, VIEW_TRANSLATE_Y);
-            springTransY.addListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    dl.setTranslationY(0f);
-                    dl.setAlpha(1f);
-                    SCALE_PROPERTY.set(workspace, 1f);
-                    SCALE_PROPERTY.set(hotseat, 1f);
-                }
-            });
-
-            mBounceBackAnimator = springTransY;
-            mBounceBackAnimator.start();
         }
 
         @Override
         public void onCancel() {
             mFloatingView.fastFinish();
-            if (mBounceBackAnimator != null) {
-                mBounceBackAnimator.cancel();
-            }
         }
     }
 
