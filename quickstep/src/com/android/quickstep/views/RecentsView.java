@@ -630,7 +630,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
      * this doesn't get adjusted to reflect the new child count after the taskView is dismissed/
      * removed from recentsView
      */
-    private int mSplitHiddenTaskViewIndex;
+    private int mSplitHiddenTaskViewIndex = -1;
     @Nullable
     private FloatingTaskView mFirstFloatingTaskView;
     @Nullable
@@ -3969,6 +3969,9 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
 
     /** TODO(b/181707736) More gracefully handle exiting split selection state */
     private void resetFromSplitSelectionState() {
+        if (mSplitHiddenTaskViewIndex == -1) {
+            return;
+        }
         if (!mActivity.getDeviceProfile().overviewShowAsGrid) {
             int pageToSnapTo = mCurrentPage;
             if (mSplitHiddenTaskViewIndex <= pageToSnapTo) {
