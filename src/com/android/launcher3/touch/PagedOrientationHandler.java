@@ -95,7 +95,8 @@ public interface PagedOrientationHandler {
     int getScrollOffsetStart(View view, Rect insets);
     int getScrollOffsetEnd(View view, Rect insets);
     int getSecondaryTranslationDirectionFactor();
-    int getSplitTranslationDirectionFactor(@StagePosition int stagePosition);
+    int getSplitTranslationDirectionFactor(@StagePosition int stagePosition,
+            DeviceProfile deviceProfile);
     ChildBounds getChildBounds(View child, int childStart, int pageCenter, boolean layoutChild);
     void setMaxScroll(AccessibilityEvent event, int maxScroll);
     boolean getRecentsRtlSetting(Resources resources);

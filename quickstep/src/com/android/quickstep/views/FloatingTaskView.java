@@ -129,7 +129,7 @@ public class FloatingTaskView extends FrameLayout {
     public void update(RectF position, float progress, float windowRadius) {
         MarginLayoutParams lp = (MarginLayoutParams) getLayoutParams();
 
-        float dX = position.left - lp.getMarginStart();
+        float dX = position.left - mStartingPosition.left;
         float dY = position.top - lp.topMargin;
 
         setTranslationX(dX);
@@ -150,15 +150,25 @@ public class FloatingTaskView extends FrameLayout {
         mOrientationHandler.setSecondaryScale(mSplitPlaceholderView.getIconView(), childScaleY);
     }
 
+    public void updateOrientationHandler(PagedOrientationHandler orientationHandler) {
+        mOrientationHandler = orientationHandler;
+        mSplitPlaceholderView.getIconView().setRotation(mOrientationHandler.getDegreesRotated());
+    }
+
     protected void initPosition(RectF pos, InsettableFrameLayout.LayoutParams lp) {
         mStartingPosition.set(pos);
         lp.ignoreInsets = true;
         // Position the floating view exactly on top of the original
         lp.topMargin = Math.round(pos.top);
-        lp.setMarginStart(Math.round(pos.left));
+        if (mIsRtl) {
+            lp.setMarginStart(mLauncher.getDeviceProfile().widthPx - Math.round(pos.right));
+        } else {
+            lp.setMarginStart(Math.round(pos.left));
+        }
+
         // Set the properties here already to make sure they are available when running the first
         // animation frame.
-        int left = lp.leftMargin;
+        int left = (int) pos.left;
         layout(left, lp.topMargin, left + lp.width, lp.topMargin + lp.height);
     }
 
