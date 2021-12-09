@@ -261,8 +261,8 @@ public class PortraitPagedViewHandler implements PagedOrientationHandler {
     }
 
     @Override
-    public int getSplitTranslationDirectionFactor(int stagePosition) {
-        if (stagePosition == STAGE_POSITION_BOTTOM_OR_RIGHT) {
+    public int getSplitTranslationDirectionFactor(int stagePosition, DeviceProfile deviceProfile) {
+        if (deviceProfile.isLandscape && stagePosition == STAGE_POSITION_BOTTOM_OR_RIGHT) {
             return -1;
         } else {
             return 1;

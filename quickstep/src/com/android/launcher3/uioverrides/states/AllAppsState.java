@@ -69,7 +69,7 @@ public class AllAppsState extends LauncherState {
     }
 
     @Override
-    public boolean isTaskbarStashed() {
+    public boolean isTaskbarStashed(Launcher launcher) {
         return true;
     }
 

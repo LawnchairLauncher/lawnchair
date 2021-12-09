@@ -255,7 +255,7 @@ public class LandscapePagedViewHandler implements PagedOrientationHandler {
     }
 
     @Override
-    public int getSplitTranslationDirectionFactor(int stagePosition) {
+    public int getSplitTranslationDirectionFactor(int stagePosition, DeviceProfile deviceProfile) {
         if (stagePosition == STAGE_POSITION_BOTTOM_OR_RIGHT) {
             return -1;
         } else {
