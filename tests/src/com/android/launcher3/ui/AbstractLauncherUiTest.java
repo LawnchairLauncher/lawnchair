@@ -149,7 +149,7 @@ public abstract class AbstractLauncherUiTest {
                 }
                 sDumpWasGenerated = true;
                 Log.d("b/195319692", "sDumpWasGenerated := true", new Exception());
-                result = "memory dump filename: " + fileName;
+                result = "saved memory dump as an artifact";
             } catch (Throwable e) {
                 Log.e(TAG, "dumpHprofData failed", e);
                 result = "failed to save memory dump";
