@@ -64,7 +64,7 @@
     <string name="auto_adaptive_icons_description">Cho mọi biểu tượng không thích ứng.</string>
     <string name="support_and_pr">Hỗ trợ &amp; PR</string>
     <string name="workspace_dt2s">Chạm 2 lần để tắt màn hình</string>
-    <string name="smart_space_enable">At a Glance Widget</string>
+    <string name="smart_space_enable">Tiện ích Xem nhanh</string>
     <string name="design_and_development">Thiết kế &amp; Sự phát triển</string>
     <string name="translate">Dịch</string>
     <string name="product">Sản phẩm</string>
@@ -148,7 +148,7 @@
     <string name="label">Nhãn</string>
     <string name="presets">Thiết lập sẵn</string>
     <string name="colors">Màu</string>
-    <string name="dynamic">Động lực</string>
+    <string name="dynamic">Linh hoạt</string>
     <string name="all_apps_search_market_message">Tìm thêm ứng dụng</string>
     <string name="show_app_search_bar">Hiện thanh tìm kiếm</string>
     <string name="lawnchair_bug_report">Báo lỗi Lawnchair</string>
