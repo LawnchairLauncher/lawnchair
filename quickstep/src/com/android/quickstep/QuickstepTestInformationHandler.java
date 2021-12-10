@@ -74,6 +74,12 @@ public class QuickstepTestInformationHandler extends TestInformationHandler {
                 response.putParcelable(TestProtocol.TEST_INFO_RESPONSE_FIELD, gridTaskRect);
                 return response;
             }
+
+            case TestProtocol.REQUEST_GET_OVERVIEW_PAGE_SPACING: {
+                response.putInt(TestProtocol.TEST_INFO_RESPONSE_FIELD,
+                        mDeviceProfile.overviewPageSpacing);
+                return response;
+            }
         }
 
         return super.call(method, arg);
