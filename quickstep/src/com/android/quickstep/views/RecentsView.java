@@ -1279,6 +1279,9 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                             : getScrollForPage(mNextPage);
 
             if (showAsGrid()) {
+                if (isSplitSelectionActive()) {
+                    return;
+                }
                 TaskView taskView = getTaskViewAt(mNextPage);
                 // Only snap to fully visible focused task.
                 if (taskView == null
