@@ -51,6 +51,8 @@ public class RecentsState implements BaseState<RecentsState> {
             FLAG_DISABLE_RESTORE | FLAG_NON_INTERACTIVE | FLAG_FULL_SCREEN | FLAG_OVERVIEW_UI);
     public static final RecentsState HOME = new RecentsState(3, 0);
     public static final RecentsState BG_LAUNCHER = new LauncherState(4, 0);
+    public static final RecentsState OVERVIEW_SPLIT_SELECT = new RecentsState(5,
+            FLAG_SHOW_AS_GRID | FLAG_SCRIM | FLAG_OVERVIEW_UI);
 
     public final int ordinal;
     private final int mFlags;
