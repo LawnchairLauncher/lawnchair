@@ -42,6 +42,7 @@ import android.util.TypedValue;
 import android.util.Xml;
 import android.view.Display;
 
+import androidx.annotation.IntDef;
 import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
 
@@ -58,6 +59,8 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -69,6 +72,13 @@ public class InvariantDeviceProfile {
     // We do not need any synchronization for this variable as its only written on UI thread.
     public static final MainThreadInitializedObject<InvariantDeviceProfile> INSTANCE =
             new MainThreadInitializedObject<>(InvariantDeviceProfile::new);
+
+    @Retention(RetentionPolicy.SOURCE)
+    @IntDef({TYPE_PHONE, TYPE_MULTI_DISPLAY, TYPE_TABLET})
+    public @interface DeviceType{}
+    public static final int TYPE_PHONE = 0;
+    public static final int TYPE_MULTI_DISPLAY = 1;
+    public static final int TYPE_TABLET = 2;
 
     private static final String KEY_IDP_GRID_NAME = "idp_grid_name";
 
@@ -106,7 +116,7 @@ public class InvariantDeviceProfile {
     public float[] iconTextSize;
     public int iconBitmapSize;
     public int fillResIconDpi;
-    public boolean isSplitDisplay;
+    public @DeviceType int deviceType;
 
     public PointF[] minCellSize;
 
@@ -198,13 +208,21 @@ public class InvariantDeviceProfile {
         String gridName = getCurrentGridName(context);
 
         // Get the display info based on default display and interpolate it to existing display
+        Info defaultInfo = DisplayController.INSTANCE.get(context).getInfo();
+        @DeviceType int defaultDeviceType = getDeviceType(defaultInfo);
         DisplayOption defaultDisplayOption = invDistWeightedInterpolate(
-                DisplayController.INSTANCE.get(context).getInfo(),
-                getPredefinedDeviceProfiles(context, gridName, false, false), false);
+                defaultInfo,
+                getPredefinedDeviceProfiles(context, gridName, defaultDeviceType,
+                        /*allowDisabledGrid=*/false),
+                defaultDeviceType);
 
         Info myInfo = new Info(context, display);
+        @DeviceType int deviceType = getDeviceType(myInfo);
         DisplayOption myDisplayOption = invDistWeightedInterpolate(
-                myInfo, getPredefinedDeviceProfiles(context, gridName, false, false), false);
+                myInfo,
+                getPredefinedDeviceProfiles(context, gridName, deviceType,
+                        /*allowDisabledGrid=*/false),
+                deviceType);
 
         DisplayOption result = new DisplayOption(defaultDisplayOption.grid)
                 .add(myDisplayOption);
@@ -220,7 +238,7 @@ public class InvariantDeviceProfile {
         System.arraycopy(defaultDisplayOption.borderSpaces, 0, result.borderSpaces, 0,
                 COUNT_SIZES);
 
-        initGrid(context, myInfo, result, false);
+        initGrid(context, myInfo, result, deviceType);
     }
 
     /**
@@ -246,6 +264,18 @@ public class InvariantDeviceProfile {
         }
     }
 
+    private static @DeviceType int getDeviceType(Info displayInfo) {
+        // Each screen has two profiles (portrait/landscape), so devices with four or more
+        // supported profiles implies two or more internal displays.
+        if (displayInfo.supportedBounds.size() >= 4 && ENABLE_TWO_PANEL_HOME.get()) {
+            return TYPE_MULTI_DISPLAY;
+        } else if (displayInfo.supportedBounds.stream().allMatch(displayInfo::isTablet)) {
+            return TYPE_TABLET;
+        } else {
+            return TYPE_PHONE;
+        }
+    }
+
     public static String getCurrentGridName(Context context) {
         return Utilities.isGridOptionsEnabled(context)
                 ? Utilities.getPrefs(context).getString(KEY_IDP_GRID_NAME, null) : null;
@@ -253,23 +283,19 @@ public class InvariantDeviceProfile {
 
     private String initGrid(Context context, String gridName) {
         Info displayInfo = DisplayController.INSTANCE.get(context).getInfo();
-        // Each screen has two profiles (portrait/landscape), so devices with four or more
-        // supported profiles implies two or more internal displays.
-        boolean isSplitDisplay =
-                displayInfo.supportedBounds.size() >= 4 && ENABLE_TWO_PANEL_HOME.get();
+        @DeviceType int deviceType = getDeviceType(displayInfo);
 
         ArrayList<DisplayOption> allOptions =
-                getPredefinedDeviceProfiles(context, gridName, isSplitDisplay,
+                getPredefinedDeviceProfiles(context, gridName, deviceType,
                         RestoreDbTask.isPending(context));
         DisplayOption displayOption =
-                invDistWeightedInterpolate(displayInfo, allOptions, isSplitDisplay);
-        initGrid(context, displayInfo, displayOption, isSplitDisplay);
+                invDistWeightedInterpolate(displayInfo, allOptions, deviceType);
+        initGrid(context, displayInfo, displayOption, deviceType);
         return displayOption.grid.name;
     }
 
-    private void initGrid(
-            Context context, Info displayInfo, DisplayOption displayOption,
-            boolean isSplitDisplay) {
+    private void initGrid(Context context, Info displayInfo, DisplayOption displayOption,
+            @DeviceType int deviceType) {
         DisplayMetrics metrics = context.getResources().getDisplayMetrics();
         GridOption closestProfile = displayOption.grid;
         numRows = closestProfile.numRows;
@@ -281,7 +307,7 @@ public class InvariantDeviceProfile {
         numFolderColumns = closestProfile.numFolderColumns;
         isScalable = closestProfile.isScalable;
         devicePaddingId = closestProfile.devicePaddingId;
-        this.isSplitDisplay = isSplitDisplay;
+        this.deviceType = deviceType;
 
         mExtraAttrs = closestProfile.extraAttrs;
 
@@ -303,11 +329,11 @@ public class InvariantDeviceProfile {
         horizontalMargin = displayOption.horizontalMargin;
 
         numShownHotseatIcons = closestProfile.numHotseatIcons;
-        numDatabaseHotseatIcons = isSplitDisplay
+        numDatabaseHotseatIcons = deviceType == TYPE_MULTI_DISPLAY
                 ? closestProfile.numDatabaseHotseatIcons : closestProfile.numHotseatIcons;
 
         numAllAppsColumns = closestProfile.numAllAppsColumns;
-        numDatabaseAllAppsColumns = isSplitDisplay
+        numDatabaseAllAppsColumns = deviceType == TYPE_MULTI_DISPLAY
                 ? closestProfile.numDatabaseAllAppsColumns : closestProfile.numAllAppsColumns;
 
         if (!Utilities.isGridOptionsEnabled(context)) {
@@ -327,7 +353,7 @@ public class InvariantDeviceProfile {
         defaultWallpaperSize = new Point(displayInfo.currentSize);
         for (WindowBounds bounds : displayInfo.supportedBounds) {
             localSupportedProfiles.add(new DeviceProfile.Builder(context, this, displayInfo)
-                    .setUseTwoPanels(isSplitDisplay)
+                    .setUseTwoPanels(deviceType == TYPE_MULTI_DISPLAY)
                     .setWindowBounds(bounds).build());
 
             // Wallpaper size should be the maximum of the all possible sizes Launcher expects
@@ -348,11 +374,6 @@ public class InvariantDeviceProfile {
 
         ComponentName cn = new ComponentName(context.getPackageName(), getClass().getName());
         defaultWidgetPadding = AppWidgetHostView.getDefaultPaddingForWidget(context, cn, null);
-    }
-
-    @Nullable
-    public TypedValue getAttrValue(int attr) {
-        return mExtraAttrs == null ? null : mExtraAttrs.get(attr);
     }
 
     public void addOnChangeListener(OnIDPChangeListener listener) {
@@ -389,12 +410,11 @@ public class InvariantDeviceProfile {
         }
     }
 
-    private static ArrayList<DisplayOption> getPredefinedDeviceProfiles(
-            Context context, String gridName, boolean isSplitDisplay, boolean allowDisabledGrid) {
+    private static ArrayList<DisplayOption> getPredefinedDeviceProfiles(Context context,
+            String gridName, @DeviceType int deviceType, boolean allowDisabledGrid) {
         ArrayList<DisplayOption> profiles = new ArrayList<>();
-        int xmlResource = isSplitDisplay ? R.xml.device_profiles_split : R.xml.device_profiles;
 
-        try (XmlResourceParser parser = context.getResources().getXml(xmlResource)) {
+        try (XmlResourceParser parser = context.getResources().getXml(R.xml.device_profiles)) {
             final int depth = parser.getDepth();
             int type;
             while (((type = parser.next()) != XmlPullParser.END_TAG ||
@@ -402,8 +422,8 @@ public class InvariantDeviceProfile {
                 if ((type == XmlPullParser.START_TAG)
                         && GridOption.TAG_NAME.equals(parser.getName())) {
 
-                    GridOption gridOption =
-                            new GridOption(context, Xml.asAttributeSet(parser), isSplitDisplay);
+                    GridOption gridOption = new GridOption(context, Xml.asAttributeSet(parser),
+                            deviceType);
                     if (gridOption.isEnabled || allowDisabledGrid) {
                         final int displayDepth = parser.getDepth();
                         while (((type = parser.next()) != XmlPullParser.END_TAG
@@ -450,9 +470,8 @@ public class InvariantDeviceProfile {
      */
     public List<GridOption> parseAllGridOptions(Context context) {
         List<GridOption> result = new ArrayList<>();
-        int xmlResource = isSplitDisplay ? R.xml.device_profiles_split : R.xml.device_profiles;
 
-        try (XmlResourceParser parser = context.getResources().getXml(xmlResource)) {
+        try (XmlResourceParser parser = context.getResources().getXml(R.xml.device_profiles)) {
             final int depth = parser.getDepth();
             int type;
             while (((type = parser.next()) != XmlPullParser.END_TAG
@@ -460,7 +479,7 @@ public class InvariantDeviceProfile {
                 if ((type == XmlPullParser.START_TAG)
                         && GridOption.TAG_NAME.equals(parser.getName())) {
                     GridOption option =
-                            new GridOption(context, Xml.asAttributeSet(parser), isSplitDisplay);
+                            new GridOption(context, Xml.asAttributeSet(parser), deviceType);
                     if (option.isEnabled) {
                         result.add(option);
                     }
@@ -514,12 +533,12 @@ public class InvariantDeviceProfile {
     }
 
     private static DisplayOption invDistWeightedInterpolate(
-            Info displayInfo, ArrayList<DisplayOption> points, boolean isSplitDisplay) {
+            Info displayInfo, ArrayList<DisplayOption> points, @DeviceType int deviceType) {
         int minWidthPx = Integer.MAX_VALUE;
         int minHeightPx = Integer.MAX_VALUE;
         for (WindowBounds bounds : displayInfo.supportedBounds) {
             boolean isTablet = displayInfo.isTablet(bounds);
-            if (isTablet && isSplitDisplay) {
+            if (isTablet && deviceType == TYPE_MULTI_DISPLAY) {
                 // For split displays, take half width per page
                 minWidthPx = Math.min(minWidthPx, bounds.availableSize.x / 2);
                 minHeightPx = Math.min(minHeightPx, bounds.availableSize.y);
@@ -643,6 +662,12 @@ public class InvariantDeviceProfile {
 
         public static final String TAG_NAME = "grid-option";
 
+        private static final int DEVICE_CATEGORY_PHONE = 1 << 0;
+        private static final int DEVICE_CATEGORY_TABLET = 1 << 1;
+        private static final int DEVICE_CATEGORY_MULTI_DISPLAY = 1 << 2;
+        private static final int DEVICE_CATEGORY_ALL =
+                DEVICE_CATEGORY_PHONE | DEVICE_CATEGORY_TABLET | DEVICE_CATEGORY_MULTI_DISPLAY;
+
         public final String name;
         public final int numRows;
         public final int numColumns;
@@ -666,7 +691,7 @@ public class InvariantDeviceProfile {
 
         private final SparseArray<TypedValue> extraAttrs;
 
-        public GridOption(Context context, AttributeSet attrs, boolean isSplitDisplay) {
+        public GridOption(Context context, AttributeSet attrs, @DeviceType int deviceType) {
             TypedArray a = context.obtainStyledAttributes(
                     attrs, R.styleable.GridDisplayOption);
             name = a.getString(R.styleable.GridDisplayOption_name);
@@ -674,7 +699,7 @@ public class InvariantDeviceProfile {
             numColumns = a.getInt(R.styleable.GridDisplayOption_numColumns, 0);
 
             dbFile = a.getString(R.styleable.GridDisplayOption_dbFile);
-            defaultLayoutId = a.getResourceId(isSplitDisplay && a.hasValue(
+            defaultLayoutId = a.getResourceId(deviceType == TYPE_MULTI_DISPLAY && a.hasValue(
                     R.styleable.GridDisplayOption_defaultSplitDisplayLayoutId)
                     ? R.styleable.GridDisplayOption_defaultSplitDisplayLayoutId
                     : R.styleable.GridDisplayOption_defaultLayoutId, 0);
@@ -701,7 +726,15 @@ public class InvariantDeviceProfile {
             devicePaddingId = a.getResourceId(
                     R.styleable.GridDisplayOption_devicePaddingId, 0);
 
-            isEnabled = a.getBoolean(R.styleable.GridDisplayOption_gridEnabled, true);
+            int deviceCategory = a.getInt(R.styleable.GridDisplayOption_deviceCategory,
+                    DEVICE_CATEGORY_ALL);
+            isEnabled = (deviceType == TYPE_PHONE
+                        && ((deviceCategory & DEVICE_CATEGORY_PHONE) == DEVICE_CATEGORY_PHONE))
+                    || (deviceType == TYPE_TABLET
+                        && ((deviceCategory & DEVICE_CATEGORY_TABLET) == DEVICE_CATEGORY_TABLET))
+                    || (deviceType == TYPE_MULTI_DISPLAY
+                        && ((deviceCategory & DEVICE_CATEGORY_MULTI_DISPLAY)
+                            == DEVICE_CATEGORY_MULTI_DISPLAY));
 
             a.recycle();
             extraAttrs = Themes.createValueMap(context, attrs,
