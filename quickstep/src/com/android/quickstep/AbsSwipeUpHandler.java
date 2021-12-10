@@ -74,6 +74,7 @@ import android.view.ViewTreeObserver.OnScrollChangedListener;
 import android.view.WindowInsets;
 import android.view.animation.Interpolator;
 import android.widget.Toast;
+import android.window.PictureInPictureSurfaceTransaction;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
@@ -90,6 +91,7 @@ import com.android.launcher3.statemanager.BaseState;
 import com.android.launcher3.statemanager.StatefulActivity;
 import com.android.launcher3.tracing.InputConsumerProto;
 import com.android.launcher3.tracing.SwipeHandlerProto;
+import com.android.launcher3.util.ActivityLifecycleCallbacksAdapter;
 import com.android.launcher3.util.TraceHelper;
 import com.android.launcher3.util.WindowBounds;
 import com.android.quickstep.BaseActivityInterface.AnimationFactory;
@@ -97,7 +99,6 @@ import com.android.quickstep.GestureState.GestureEndTarget;
 import com.android.quickstep.RemoteTargetGluer.RemoteTargetHandle;
 import com.android.quickstep.util.ActiveGestureLog;
 import com.android.quickstep.util.ActivityInitListener;
-import com.android.launcher3.util.ActivityLifecycleCallbacksAdapter;
 import com.android.quickstep.util.AnimatorControllerWithResistance;
 import com.android.quickstep.util.InputConsumerProxy;
 import com.android.quickstep.util.InputProxyHandlerFactory;
@@ -1261,7 +1262,8 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
             HomeAnimationFactory homeAnimFactory =
                     createHomeAnimationFactory(cookies, duration, isTranslucent, appCanEnterPip,
                             runningTaskTarget);
-            mIsSwipingPipToHome = homeAnimFactory.supportSwipePipToHome() && appCanEnterPip;
+            mIsSwipingPipToHome = !mIsSwipeForStagedSplit
+                    && homeAnimFactory.supportSwipePipToHome() && appCanEnterPip;
             final RectFSpringAnim[] windowAnim;
             if (mIsSwipingPipToHome) {
                 mSwipePipToHomeAnimator = createWindowAnimationToPip(
@@ -1728,7 +1730,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
             // If there are no targets or the animation not started, then there is nothing to finish
             mStateCallback.setStateOnUiThread(STATE_CURRENT_TASK_FINISHED);
         } else {
-            maybeFinishSwipePipToHome();
+            maybeFinishSwipeToHome();
             finishRecentsControllerToHome(
                     () -> mStateCallback.setStateOnUiThread(STATE_CURRENT_TASK_FINISHED));
         }
@@ -1737,10 +1739,11 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
     }
 
     /**
-     * Resets the {@link #mIsSwipingPipToHome} and notifies SysUI that transition is finished
-     * if applicable. This should happen before {@link #finishRecentsControllerToHome(Runnable)}.
+     * Notifies SysUI that transition is finished if applicable and also pass leash transactions
+     * from Launcher to WM.
+     * This should happen before {@link #finishRecentsControllerToHome(Runnable)}.
      */
-    private void maybeFinishSwipePipToHome() {
+    private void maybeFinishSwipeToHome() {
         if (mIsSwipingPipToHome && mSwipePipToHomeAnimators[0] != null) {
             SystemUiProxy.INSTANCE.get(mContext).stopSwipePipToHome(
                     mSwipePipToHomeAnimator.getComponentName(),
@@ -1751,6 +1754,18 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
                     mSwipePipToHomeAnimator.getFinishTransaction(),
                     mSwipePipToHomeAnimator.getContentOverlay());
             mIsSwipingPipToHome = false;
+        } else if (mIsSwipeForStagedSplit) {
+            // Transaction to hide the task to avoid flicker for entering PiP from split-screen.
+            PictureInPictureSurfaceTransaction tx =
+                    new PictureInPictureSurfaceTransaction.Builder()
+                            .setAlpha(0f)
+                            .build();
+            int[] taskIds =
+                        LauncherSplitScreenListener.INSTANCE.getNoCreate().getRunningSplitTaskIds();
+            for (int taskId : taskIds) {
+                mRecentsAnimationController.setFinishTaskTransaction(taskId,
+                        tx, null /* overlay */);
+            }
         }
     }
 
