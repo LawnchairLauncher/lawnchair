@@ -25,7 +25,9 @@ import android.os.Bundle;
 import android.os.Handler;
 
 import androidx.annotation.IntDef;
+import androidx.annotation.StringRes;
 
+import com.android.launcher3.R;
 import com.android.launcher3.testing.TestLogging;
 import com.android.launcher3.testing.TestProtocol;
 import com.android.quickstep.OverviewCommandHelper;
@@ -117,6 +119,23 @@ public class TaskbarNavButtonController {
             case BUTTON_IME_SWITCH:
             default:
                 return false;
+        }
+    }
+
+    public @StringRes int getButtonContentDescription(@TaskbarButton int buttonType) {
+        switch (buttonType) {
+            case BUTTON_HOME:
+                return R.string.taskbar_button_home;
+            case BUTTON_A11Y:
+                return R.string.taskbar_button_a11y;
+            case BUTTON_BACK:
+                return R.string.taskbar_button_back;
+            case BUTTON_IME_SWITCH:
+                return R.string.taskbar_button_ime_switcher;
+            case BUTTON_RECENTS:
+                return R.string.taskbar_button_recents;
+            default:
+                return 0;
         }
     }
 

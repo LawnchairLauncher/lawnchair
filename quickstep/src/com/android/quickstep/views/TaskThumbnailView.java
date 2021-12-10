@@ -297,14 +297,15 @@ public class TaskThumbnailView extends View {
             }
         }
 
-        // Draw the background in all cases, except when the thumbnail data is opaque
+        // Always draw the background since the snapshots might be translucent or partially empty
+        // (For example, tasks been reparented out of dismissing split root when drag-to-dismiss
+        // split screen).
+        canvas.drawRoundRect(x, y, width, height, cornerRadius, cornerRadius, mBackgroundPaint);
+
         final boolean drawBackgroundOnly = mTask == null || mTask.isLocked || mBitmapShader == null
                 || mThumbnailData == null;
-        if (drawBackgroundOnly || mThumbnailData.isTranslucent) {
-            canvas.drawRoundRect(x, y, width, height, cornerRadius, cornerRadius, mBackgroundPaint);
-            if (drawBackgroundOnly) {
-                return;
-            }
+        if (drawBackgroundOnly) {
+            return;
         }
 
         canvas.drawRoundRect(x, y, width, height, cornerRadius, cornerRadius, mPaint);
