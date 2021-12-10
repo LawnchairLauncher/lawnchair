@@ -15,7 +15,6 @@
  */
 package com.android.launcher3.taskbar;
 
-import android.graphics.Rect;
 import android.view.View;
 
 import androidx.annotation.CallSuper;
@@ -48,8 +47,6 @@ public class TaskbarUIController {
     protected boolean isTaskbarTouchable() {
         return true;
     }
-
-    protected void updateContentInsets(Rect outContentInsets) { }
 
     protected void onStashedInAppChanged() { }
 
