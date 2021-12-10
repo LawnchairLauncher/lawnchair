@@ -168,15 +168,4 @@ public class LauncherRecentsView extends RecentsView<BaseQuickstepLauncher, Laun
         super.initiateSplitSelect(taskView, stagePosition);
         mActivity.getStateManager().goToState(LauncherState.OVERVIEW_SPLIT_SELECT);
     }
-
-    @Override
-    protected void onOrientationChanged() {
-        super.onOrientationChanged();
-        // If overview is in modal state when rotate, reset it to overview state without running
-        // animation.
-        setModalStateEnabled(false);
-        if (mActivity.isInState(OVERVIEW_SPLIT_SELECT)) {
-            onRotateInSplitSelectionState();
-        }
-    }
 }
