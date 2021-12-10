@@ -106,6 +106,9 @@ public class NavbarButtonsViewController {
 
     private final AnimatedFloat mTaskbarNavButtonTranslationY = new AnimatedFloat(
             this::updateNavButtonTranslationY);
+    private final AnimatedFloat mTaskbarNavButtonTranslationYForIme = new AnimatedFloat(
+            this::updateNavButtonTranslationY);
+    // Only applies to mTaskbarNavButtonTranslationY
     private final AnimatedFloat mNavButtonTranslationYMultiplier = new AnimatedFloat(
             this::updateNavButtonTranslationY);
     private final AnimatedFloat mTaskbarNavButtonDarkIntensity = new AnimatedFloat(
@@ -162,14 +165,26 @@ public class NavbarButtonsViewController {
                 .getKeyguardBgTaskbar(),
                 flags -> (flags & FLAG_KEYGUARD_VISIBLE) == 0, AnimatedFloat.VALUE, 1, 0));
 
-        // Make sure to remove nav bar buttons translation when notification shade is expanded.
-        mPropertyHolders.add(new StatePropertyHolder(mNavButtonTranslationYMultiplier,
-                flags -> (flags & FLAG_NOTIFICATION_SHADE_EXPANDED) != 0, AnimatedFloat.VALUE,
-                0, 1));
-
         // Force nav buttons (specifically back button) to be visible during setup wizard.
         boolean isInSetup = !mContext.isUserSetupComplete();
-        if (isThreeButtonNav || isInSetup) {
+        boolean alwaysShowButtons = isThreeButtonNav || isInSetup;
+
+        // Make sure to remove nav bar buttons translation when notification shade is expanded or
+        // IME is showing (add separate translation for IME).
+        int flagsToRemoveTranslation = FLAG_NOTIFICATION_SHADE_EXPANDED | FLAG_IME_VISIBLE;
+        mPropertyHolders.add(new StatePropertyHolder(mNavButtonTranslationYMultiplier,
+                flags -> (flags & flagsToRemoveTranslation) != 0, AnimatedFloat.VALUE,
+                0, 1));
+        // Center nav buttons in new height for IME.
+        float transForIme = (mContext.getDeviceProfile().taskbarSize
+                - mContext.getTaskbarHeightForIme()) / 2f;
+        // For gesture nav, nav buttons only show for IME anyway so keep them translated down.
+        float defaultButtonTransY = alwaysShowButtons ? 0 : transForIme;
+        mPropertyHolders.add(new StatePropertyHolder(mTaskbarNavButtonTranslationYForIme,
+                flags -> (flags & FLAG_IME_VISIBLE) != 0, AnimatedFloat.VALUE, transForIme,
+                defaultButtonTransY));
+
+        if (alwaysShowButtons) {
             initButtons(mNavButtonContainer, mEndContextualContainer,
                     mControllers.navButtonController);
 
@@ -408,8 +423,10 @@ public class NavbarButtonsViewController {
     }
 
     private void updateNavButtonTranslationY() {
-        mNavButtonsView.setTranslationY(mTaskbarNavButtonTranslationY.value
-                * mNavButtonTranslationYMultiplier.value);
+        float normalTranslationY = mTaskbarNavButtonTranslationY.value
+                * mNavButtonTranslationYMultiplier.value;
+        float otherTranslationY = mTaskbarNavButtonTranslationYForIme.value;
+        mNavButtonsView.setTranslationY(normalTranslationY + otherTranslationY);
     }
 
     private void updateNavButtonDarkIntensity() {
