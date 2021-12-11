@@ -677,7 +677,7 @@ public class TaskView extends FrameLayout implements Reusable {
      *         second app. {@code false} otherwise
      */
     private boolean confirmSecondSplitSelectApp() {
-        boolean isSelectingSecondSplitApp = mActivity.isInState(OVERVIEW_SPLIT_SELECT);
+        boolean isSelectingSecondSplitApp = getRecentsView().isSplitSelectionActive();
         if (isSelectingSecondSplitApp) {
             getRecentsView().confirmSplitSelect(this);
         }

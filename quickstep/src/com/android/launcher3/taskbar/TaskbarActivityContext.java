@@ -32,6 +32,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo.Config;
 import android.content.pm.LauncherApps;
+import android.content.res.Resources;
 import android.graphics.Insets;
 import android.graphics.PixelFormat;
 import android.graphics.Rect;
@@ -100,6 +101,7 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
 
     private final WindowManager mWindowManager;
     private final @Nullable RoundedCorner mLeftCorner, mRightCorner;
+    private final int mTaskbarHeightForIme;
     private WindowManager.LayoutParams mWindowLayoutParams;
     private boolean mIsFullscreen;
     // The size we should return to when we call setTaskbarWindowFullscreen(false)
@@ -128,10 +130,13 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
         mIsUserSetupComplete = SettingsCache.INSTANCE.get(this).getValue(
                 Settings.Secure.getUriFor(Settings.Secure.USER_SETUP_COMPLETE), 0);
 
-        float taskbarIconSize = getResources().getDimension(R.dimen.taskbar_icon_size);
-        mDeviceProfile.updateIconSize(1, getResources());
+        final Resources resources = getResources();
+        float taskbarIconSize = resources.getDimension(R.dimen.taskbar_icon_size);
+        mDeviceProfile.updateIconSize(1, resources);
         float iconScale = taskbarIconSize / mDeviceProfile.iconSizePx;
-        mDeviceProfile.updateIconSize(iconScale, getResources());
+        mDeviceProfile.updateIconSize(iconScale, resources);
+
+        mTaskbarHeightForIme = resources.getDimensionPixelSize(R.dimen.taskbar_ime_size);
 
         mLayoutInflater = LayoutInflater.from(this).cloneInContext(this);
 
@@ -205,7 +210,7 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
         // Adjust the frame by the rounded corners (ie. leaving just the bar as the inset) when
         // the IME is showing
         mWindowLayoutParams.providedInternalImeInsets = Insets.of(0,
-                getDefaultTaskbarWindowHeight() - mDeviceProfile.taskbarSize, 0, 0);
+                getDefaultTaskbarWindowHeight() - mTaskbarHeightForIme, 0, 0);
 
         // Initialize controllers after all are constructed.
         mControllers.init(sharedState);
@@ -447,7 +452,9 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
         if (mWindowLayoutParams.height == height || mIsDestroyed) {
             return;
         }
-        if (height != MATCH_PARENT) {
+        if (height == MATCH_PARENT) {
+            height = mDeviceProfile.heightPx;
+        } else {
             mLastRequestedNonFullscreenHeight = height;
             if (mIsFullscreen) {
                 // We still need to be fullscreen, so defer any change to our height until we call
@@ -458,6 +465,8 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
             }
         }
         mWindowLayoutParams.height = height;
+        mWindowLayoutParams.providedInternalImeInsets =
+                Insets.of(0, height - mTaskbarHeightForIme, 0, 0);
         mWindowManager.updateViewLayout(mDragLayer, mWindowLayoutParams);
     }
 
@@ -466,6 +475,13 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
      */
     public int getDefaultTaskbarWindowHeight() {
         return mDeviceProfile.taskbarSize + Math.max(getLeftCornerRadius(), getRightCornerRadius());
+    }
+
+    /**
+     * Returns the bottom insets taskbar provides to the IME when IME is visible.
+     */
+    public int getTaskbarHeightForIme() {
+        return mTaskbarHeightForIme;
     }
 
     protected void onTaskbarIconClicked(View view) {

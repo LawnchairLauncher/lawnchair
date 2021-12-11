@@ -1264,7 +1264,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     @Override
     protected void onNotSnappingToPageInFreeScroll() {
         int finalPos = mScroller.getFinalX();
-        if (!showAsGrid() && finalPos > mMinScroll && finalPos < mMaxScroll) {
+        if (finalPos > mMinScroll && finalPos < mMaxScroll) {
             int firstPageScroll = getScrollForPage(!mIsRtl ? 0 : getPageCount() - 1);
             int lastPageScroll = getScrollForPage(!mIsRtl ? getPageCount() - 1 : 0);
 
@@ -1277,6 +1277,19 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                     : finalPos > (lastPageScroll + mMaxScroll) / 2
                             ? mMaxScroll
                             : getScrollForPage(mNextPage);
+
+            if (showAsGrid()) {
+                if (isSplitSelectionActive()) {
+                    return;
+                }
+                TaskView taskView = getTaskViewAt(mNextPage);
+                // Only snap to fully visible focused task.
+                if (taskView == null
+                        || !taskView.isFocusedTask()
+                        || !isTaskViewFullyVisible(taskView)) {
+                    return;
+                }
+            }
 
             mScroller.setFinalX(pageSnapped);
             // Ensure the scroll/snap doesn't happen too fast;
@@ -1640,7 +1653,13 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         setCurrentPage(mCurrentPage);
     }
 
-    protected void onOrientationChanged() {
+    private void onOrientationChanged() {
+        // If overview is in modal state when rotate, reset it to overview state without running
+        // animation.
+        setModalStateEnabled(false);
+        if (isSplitSelectionActive()) {
+            onRotateInSplitSelectionState();
+        }
     }
 
     // Update task size and padding that are dependent on DeviceProfile and insets.

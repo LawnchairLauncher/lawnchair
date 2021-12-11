@@ -19,12 +19,12 @@ import static com.android.quickstep.GestureState.GestureEndTarget.RECENTS;
 import static com.android.quickstep.fallback.RecentsState.DEFAULT;
 import static com.android.quickstep.fallback.RecentsState.HOME;
 import static com.android.quickstep.fallback.RecentsState.MODAL_TASK;
+import static com.android.quickstep.fallback.RecentsState.OVERVIEW_SPLIT_SELECT;
 
 import android.animation.AnimatorSet;
 import android.annotation.TargetApi;
 import android.app.ActivityManager.RunningTaskInfo;
 import android.content.Context;
-import android.content.res.Configuration;
 import android.os.Build;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
@@ -35,6 +35,7 @@ import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.statemanager.StateManager.StateListener;
+import com.android.launcher3.util.SplitConfigurationOptions;
 import com.android.quickstep.FallbackActivityInterface;
 import com.android.quickstep.GestureState;
 import com.android.quickstep.RecentsActivity;
@@ -208,6 +209,13 @@ public class FallbackRecentsView extends RecentsView<RecentsActivity, RecentsSta
     }
 
     @Override
+    public void initiateSplitSelect(TaskView taskView,
+            @SplitConfigurationOptions.StagePosition int stagePosition) {
+        super.initiateSplitSelect(taskView, stagePosition);
+        mActivity.getStateManager().goToState(OVERVIEW_SPLIT_SELECT);
+    }
+
+    @Override
     public void onStateTransitionStart(RecentsState toState) {
         setOverviewStateEnabled(true);
         setOverviewGridEnabled(toState.displayOverviewTasksAsGrid(mActivity.getDeviceProfile()));
@@ -245,13 +253,5 @@ public class FallbackRecentsView extends RecentsView<RecentsActivity, RecentsSta
         boolean result = super.onTouchEvent(ev);
         // Do not let touch escape to siblings below this view.
         return result || mActivity.getStateManager().getState().overviewUi();
-    }
-
-    @Override
-    protected void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-
-        // Reset modal state if full configuration changes
-        setModalStateEnabled(false);
     }
 }

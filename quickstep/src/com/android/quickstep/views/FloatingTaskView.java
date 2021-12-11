@@ -17,8 +17,9 @@ import android.widget.ImageView;
 
 import androidx.annotation.Nullable;
 
+import com.android.launcher3.BaseActivity;
+import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.InsettableFrameLayout;
-import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAnimUtils;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
@@ -43,7 +44,7 @@ public class FloatingTaskView extends FrameLayout {
 
     private SplitPlaceholderView mSplitPlaceholderView;
     private RectF mStartingPosition;
-    private final Launcher mLauncher;
+    private final BaseDraggingActivity mActivity;
     private final boolean mIsRtl;
     private final Rect mOutline = new Rect();
     private PagedOrientationHandler mOrientationHandler;
@@ -59,7 +60,7 @@ public class FloatingTaskView extends FrameLayout {
 
     public FloatingTaskView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        mLauncher = Launcher.getLauncher(context);
+        mActivity = BaseActivity.fromContext(context);
         mIsRtl = Utilities.isRtl(getResources());
     }
 
@@ -114,7 +115,7 @@ public class FloatingTaskView extends FrameLayout {
     public void updateInitialPositionForView(TaskView originalView) {
         View thumbnail = originalView.getThumbnail();
         Rect viewBounds = new Rect(0, 0, thumbnail.getWidth(), thumbnail.getHeight());
-        Utilities.getBoundsForViewInDragLayer(mLauncher.getDragLayer(), thumbnail, viewBounds,
+        Utilities.getBoundsForViewInDragLayer(mActivity.getDragLayer(), thumbnail, viewBounds,
                 true /* ignoreTransform */, null /* recycle */,
                 mStartingPosition);
         mStartingPosition.offset(originalView.getTranslationX(), originalView.getTranslationY());
@@ -161,7 +162,7 @@ public class FloatingTaskView extends FrameLayout {
         // Position the floating view exactly on top of the original
         lp.topMargin = Math.round(pos.top);
         if (mIsRtl) {
-            lp.setMarginStart(mLauncher.getDeviceProfile().widthPx - Math.round(pos.right));
+            lp.setMarginStart(mActivity.getDeviceProfile().widthPx - Math.round(pos.right));
         } else {
             lp.setMarginStart(Math.round(pos.left));
         }
@@ -174,7 +175,7 @@ public class FloatingTaskView extends FrameLayout {
 
     public void addAnimation(PendingAnimation animation, RectF startingBounds, Rect endBounds,
             View viewToCover, boolean fadeWithThumbnail) {
-        final BaseDragLayer dragLayer = mLauncher.getDragLayer();
+        final BaseDragLayer dragLayer = mActivity.getDragLayer();
         int[] dragLayerBounds = new int[2];
         dragLayer.getLocationOnScreen(dragLayerBounds);
         SplitOverlayProperties prop = new SplitOverlayProperties(endBounds,

@@ -16,6 +16,7 @@
 
 package com.android.launcher3.anim;
 
+import android.animation.Animator;
 import android.animation.TimeInterpolator;
 import android.util.FloatProperty;
 import android.util.IntProperty;
@@ -63,5 +64,10 @@ public interface PropertySetter {
     default <T> void setInt(T target, IntProperty<T> property, int value,
             TimeInterpolator interpolator) {
         property.setValue(target, value);
+    }
+
+    default void add(Animator animatorSet) {
+        animatorSet.setDuration(0);
+        animatorSet.start();
     }
 }
