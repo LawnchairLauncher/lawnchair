@@ -181,10 +181,13 @@ public class TaskbarDragLayerController {
         }
 
         /**
-         * Called to update the {@link InsetsInfo#contentInsets}.
+         * Called to update the {@link InsetsInfo#contentInsets}. This is reported to apps but our
+         * internal launcher will ignore these insets.
          */
         public void updateContentInsets(Rect outContentInsets) {
-            mControllers.uiController.updateContentInsets(outContentInsets);
+            int contentHeight = mControllers.taskbarStashController
+                    .getContentHeightToReportToApps();
+            outContentInsets.top = mTaskbarDragLayer.getHeight() - contentHeight;
         }
 
         /**
