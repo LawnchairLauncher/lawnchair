@@ -478,6 +478,17 @@ public class SystemUiProxy implements ISystemUiProxy,
         }
     }
 
+    @Override
+    public void toggleNotificationPanel() {
+        if (mSystemUiProxy != null) {
+            try {
+                mSystemUiProxy.toggleNotificationPanel();
+            } catch (RemoteException e) {
+                Log.w(TAG, "Failed call toggleNotificationPanel", e);
+            }
+        }
+    }
+
     //
     // Pip
     //
