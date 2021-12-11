@@ -24,13 +24,21 @@ import static com.android.launcher3.states.StateAnimationConfig.ANIM_OVERVIEW_TR
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_OVERVIEW_TRANSLATE_Y;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_SCRIM_FADE;
 import static com.android.launcher3.states.StateAnimationConfig.SKIP_OVERVIEW;
+import static com.android.quickstep.fallback.RecentsState.OVERVIEW_SPLIT_SELECT;
 import static com.android.quickstep.views.RecentsView.ADJACENT_PAGE_HORIZONTAL_OFFSET;
 import static com.android.quickstep.views.RecentsView.FULLSCREEN_PROGRESS;
 import static com.android.quickstep.views.RecentsView.RECENTS_GRID_PROGRESS;
 import static com.android.quickstep.views.RecentsView.RECENTS_SCALE_PROPERTY;
 import static com.android.quickstep.views.RecentsView.TASK_MODALNESS;
+import static com.android.quickstep.views.RecentsView.TASK_PRIMARY_SPLIT_TRANSLATION;
+import static com.android.quickstep.views.RecentsView.TASK_SECONDARY_SPLIT_TRANSLATION;
 import static com.android.quickstep.views.RecentsView.TASK_SECONDARY_TRANSLATION;
 import static com.android.quickstep.views.TaskView.FLAG_UPDATE_ALL;
+
+import android.util.FloatProperty;
+import android.util.Pair;
+
+import androidx.annotation.NonNull;
 
 import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.anim.PropertySetter;
@@ -100,5 +108,31 @@ public class FallbackRecentsStateController implements StateHandler<RecentsState
 
         setter.setViewBackgroundColor(mActivity.getScrimView(), state.getScrimColor(mActivity),
                 config.getInterpolator(ANIM_SCRIM_FADE, LINEAR));
+
+        RecentsState currentState = mActivity.getStateManager().getState();
+        if (isSplitSelectionState(state) && !isSplitSelectionState(currentState)) {
+            setter.add(mRecentsView.createSplitSelectInitAnimation().buildAnim());
+        }
+
+        Pair<FloatProperty, FloatProperty> taskViewsFloat =
+                mRecentsView.getPagedOrientationHandler().getSplitSelectTaskOffset(
+                        TASK_PRIMARY_SPLIT_TRANSLATION, TASK_SECONDARY_SPLIT_TRANSLATION,
+                        mActivity.getDeviceProfile());
+        setter.setFloat(mRecentsView, taskViewsFloat.second, 0, LINEAR);
+        if (isSplitSelectionState(state)) {
+            mRecentsView.applySplitPrimaryScrollOffset();
+            setter.setFloat(mRecentsView, taskViewsFloat.first,
+                    mRecentsView.getSplitSelectTranslation(), LINEAR);
+        } else {
+            mRecentsView.resetSplitPrimaryScrollOffset();
+            setter.setFloat(mRecentsView, taskViewsFloat.first, 0, LINEAR);
+        }
+    }
+
+    /**
+     * @return true if {@param toState} is {@link RecentsState#OVERVIEW_SPLIT_SELECT}
+     */
+    private boolean isSplitSelectionState(@NonNull RecentsState toState) {
+        return toState == OVERVIEW_SPLIT_SELECT;
     }
 }
