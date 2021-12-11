@@ -37,6 +37,7 @@ import com.android.launcher3.tapl.LauncherInstrumentation.NavigationModel;
 import com.android.launcher3.tapl.Overview;
 import com.android.launcher3.tapl.OverviewActions;
 import com.android.launcher3.tapl.OverviewTask;
+import com.android.launcher3.tapl.TestHelpers;
 import com.android.launcher3.ui.TaplTestsLauncher3;
 import com.android.launcher3.util.rule.ScreenRecordRule.ScreenRecord;
 import com.android.quickstep.NavigationModeSwitchRule.NavigationModeSwitch;
@@ -321,7 +322,8 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
     @Test
     @PortraitLandscape
     public void testOverviewForTablet() throws Exception {
-        if (!mLauncher.isTablet()) {
+        // TODO(b/210158657): Re-enable for OOP
+        if (!mLauncher.isTablet() || !TestHelpers.isInLauncherProcess()) {
             return;
         }
         for (int i = 2; i <= 14; i++) {
