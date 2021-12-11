@@ -87,12 +87,6 @@ public class RestoreDbTask {
     }
 
     private static boolean performRestore(Context context, DatabaseHelper helper) {
-        if (!DeviceGridState.deviceTypeCompatible(
-                new DeviceGridState(LauncherAppState.getIDP(context)).getDeviceType(),
-                Utilities.getPrefs(context).getInt(RESTORED_DEVICE_TYPE, TYPE_PHONE))) {
-            // DO NOT restore if the device types are incompatible.
-            return false;
-        }
         SQLiteDatabase db = helper.getWritableDatabase();
         try (SQLiteTransaction t = new SQLiteTransaction(db)) {
             RestoreDbTask task = new RestoreDbTask();

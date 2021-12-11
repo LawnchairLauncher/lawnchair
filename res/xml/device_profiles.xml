@@ -25,7 +25,8 @@
         launcher:numFolderColumns="3"
         launcher:numHotseatIcons="3"
         launcher:dbFile="launcher_3_by_3.db"
-        launcher:defaultLayoutId="@xml/default_workspace_3x3" >
+        launcher:defaultLayoutId="@xml/default_workspace_3x3"
+        launcher:deviceCategory="phone|multi_display" >
 
         <display-option
             launcher:name="Super Short Stubby"
@@ -53,7 +54,8 @@
         launcher:numFolderColumns="4"
         launcher:numHotseatIcons="4"
         launcher:dbFile="launcher_4_by_4.db"
-        launcher:defaultLayoutId="@xml/default_workspace_4x4" >
+        launcher:defaultLayoutId="@xml/default_workspace_4x4"
+        launcher:deviceCategory="phone|multi_display" >
 
         <display-option
             launcher:name="Short Stubby"
@@ -105,7 +107,8 @@
         launcher:numFolderColumns="4"
         launcher:numHotseatIcons="5"
         launcher:dbFile="launcher.db"
-        launcher:defaultLayoutId="@xml/default_workspace_5x5" >
+        launcher:defaultLayoutId="@xml/default_workspace_5x5"
+        launcher:deviceCategory="phone|multi_display" >
 
         <display-option
             launcher:name="Large Phone"
@@ -143,7 +146,7 @@
         launcher:numAllAppsColumns="6"
         launcher:dbFile="launcher_6_by_5.db"
         launcher:defaultLayoutId="@xml/default_workspace_6x5"
-        launcher:deviceCategory="tablet">
+        launcher:deviceCategory="tablet" >
 
         <display-option
             launcher:name="Tablet"
