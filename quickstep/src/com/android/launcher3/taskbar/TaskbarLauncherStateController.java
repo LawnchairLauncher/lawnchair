@@ -375,12 +375,12 @@ import java.util.function.Supplier;
 
             // Update the resumed state immediately to ensure a seamless handoff
             boolean launcherResumed = !finishedToApp;
-            mIconAlignmentForResumedState.updateValue(launcherResumed ? 1 : 0);
-
             updateStateForFlag(FLAG_RECENTS_ANIMATION_RUNNING, false);
             updateStateForFlag(FLAG_RESUMED, launcherResumed);
             applyState();
-
+            // Set this last because applyState() might also animate it.
+            mIconAlignmentForResumedState.cancelAnimation();
+            mIconAlignmentForResumedState.updateValue(launcherResumed ? 1 : 0);
 
             TaskbarStashController controller = mControllers.taskbarStashController;
             controller.updateStateForFlag(FLAG_IN_APP, finishedToApp);
