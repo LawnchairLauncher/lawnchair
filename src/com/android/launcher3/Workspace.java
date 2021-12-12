@@ -1170,7 +1170,9 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
             @Override
             public void run() {
                 final Point size = LauncherAppState.getIDP(getContext()).defaultWallpaperSize;
-                if (size.x != mWallpaperManager.getDesiredMinimumWidth()
+                if (!mWallpaperManager.isWallpaperSupported()) {
+                    mWallpaperManager.suggestDesiredDimensions(0, 0);
+                } else if (size.x != mWallpaperManager.getDesiredMinimumWidth()
                         || size.y != mWallpaperManager.getDesiredMinimumHeight()) {
                     mWallpaperManager.suggestDesiredDimensions(size.x, size.y);
                 }
