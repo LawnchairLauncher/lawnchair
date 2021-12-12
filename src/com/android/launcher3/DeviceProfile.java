@@ -395,7 +395,13 @@ public class DeviceProfile {
         }
         overviewActionsMarginThreeButtonPx = res.getDimensionPixelSize(
                 R.dimen.overview_actions_margin_three_button);
-        overviewRowSpacing = res.getDimensionPixelSize(R.dimen.overview_grid_row_spacing);
+        // Grid task's top margin is only overviewTaskIconSizePx + overviewTaskMarginGridPx, but
+        // overviewTaskThumbnailTopMarginPx is applied to all TaskThumbnailView, so exclude the
+        // extra  margin when calculating row spacing.
+        int extraTopMargin = overviewTaskThumbnailTopMarginPx - overviewTaskIconSizePx
+                - overviewTaskMarginGridPx;
+        overviewRowSpacing = res.getDimensionPixelSize(R.dimen.overview_grid_row_spacing)
+                - extraTopMargin;
         overviewGridSideMargin = isLandscape
                 ? res.getDimensionPixelSize(R.dimen.overview_grid_side_margin_landscape)
                 : res.getDimensionPixelSize(R.dimen.overview_grid_side_margin_portrait);

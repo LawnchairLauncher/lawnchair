@@ -20,7 +20,6 @@ import static com.android.systemui.shared.system.WindowManagerWrapper.ITYPE_EXTR
 
 import android.animation.Animator;
 import android.annotation.ColorInt;
-import android.graphics.Rect;
 import android.os.RemoteException;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -112,13 +111,6 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
     @Override
     protected boolean isTaskbarTouchable() {
         return !mTaskbarLauncherStateController.isAnimatingToLauncher();
-    }
-
-    @Override
-    protected void updateContentInsets(Rect outContentInsets) {
-        int contentHeight = mControllers.taskbarStashController.getContentHeight();
-        TaskbarDragLayer dragLayer = mControllers.taskbarActivityContext.getDragLayer();
-        outContentInsets.top = dragLayer.getHeight() - contentHeight;
     }
 
     /**

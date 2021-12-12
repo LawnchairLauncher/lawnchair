@@ -88,7 +88,6 @@ public class FloatingIconView extends FrameLayout implements
 
     private IconLoadResult mIconLoadResult;
 
-    // Draw the drawable of the BubbleTextView behind ClipIconView to reveal the built in shadow.
     private View mBtvDrawable;
 
     private ClipIconView mClipIconView;
@@ -347,10 +346,23 @@ public class FloatingIconView extends FrameLayout implements
             mClipIconView.setLayoutParams(clipViewLp);
         }
 
-        if (!mIsOpening && btvIcon != null) {
+        setOriginalDrawableBackground(btvIcon);
+        invalidate();
+    }
+
+    /**
+     * Draws the drawable of the BubbleTextView behind ClipIconView
+     *
+     * This is used to:
+     * - Have icon displayed while Adaptive Icon is loading
+     * - Displays the built in shadow to ensure a clean handoff
+     *
+     * Allows nullable as this may be cleared when drawing is deferred to ClipIconView.
+     */
+    private void setOriginalDrawableBackground(@Nullable Drawable btvIcon) {
+        if (!mIsOpening) {
             mBtvDrawable.setBackground(btvIcon);
         }
-        invalidate();
     }
 
     /**
@@ -455,7 +467,9 @@ public class FloatingIconView extends FrameLayout implements
 
     @Override
     public void onAnimationStart(Animator animator) {
-        if (mIconLoadResult != null && mIconLoadResult.isIconLoaded) {
+        if ((mIconLoadResult != null && mIconLoadResult.isIconLoaded)
+                || (!mIsOpening && mBtvDrawable.getBackground() != null)) {
+            // No need to wait for icon load since we can display the BubbleTextView drawable.
             setVisibility(View.VISIBLE);
         }
         if (!mIsOpening && mOriginalIcon != null) {
@@ -518,6 +532,7 @@ public class FloatingIconView extends FrameLayout implements
 
         IconLoadResult result = new IconLoadResult(info,
                 btvIcon == null ? false : btvIcon.isThemed());
+        result.btvDrawable = btvIcon;
 
         final long fetchIconId = sFetchIconId++;
         MODEL_EXECUTOR.getHandler().postAtFrontOfQueue(() -> {
@@ -556,6 +571,7 @@ public class FloatingIconView extends FrameLayout implements
                 view.mIconLoadResult = fetchIcon(launcher, originalView,
                         (ItemInfo) originalView.getTag(), isOpening);
             }
+            view.setOriginalDrawableBackground(view.mIconLoadResult.btvDrawable);
         }
         sIconLoadResult = null;
 
