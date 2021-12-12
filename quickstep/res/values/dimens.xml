@@ -228,7 +228,7 @@
     <dimen name="taskbar_contextual_buttons_size">35dp</dimen>
     <dimen name="taskbar_stashed_size">24dp</dimen>
     <dimen name="taskbar_stashed_handle_width">220dp</dimen>
-    <dimen name="taskbar_stashed_handle_height">6dp</dimen>
+    <dimen name="taskbar_stashed_handle_height">4dp</dimen>
     <dimen name="taskbar_edu_wave_anim_trans_y">25dp</dimen>
     <dimen name="taskbar_edu_wave_anim_trans_y_return_overshoot">4dp</dimen>
 </resources>
