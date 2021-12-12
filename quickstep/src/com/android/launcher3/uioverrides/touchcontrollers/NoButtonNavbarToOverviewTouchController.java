@@ -18,6 +18,7 @@ package com.android.launcher3.uioverrides.touchcontrollers;
 
 import static com.android.launcher3.LauncherAnimUtils.VIEW_BACKGROUND_COLOR;
 import static com.android.launcher3.LauncherAnimUtils.newCancelListener;
+import static com.android.launcher3.LauncherState.ALL_APPS;
 import static com.android.launcher3.LauncherState.HINT_STATE;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.OVERVIEW;
@@ -33,11 +34,13 @@ import android.graphics.PointF;
 import android.view.MotionEvent;
 import android.view.ViewConfiguration;
 
+import com.android.launcher3.BaseQuickstepLauncher;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.states.StateAnimationConfig;
+import com.android.launcher3.taskbar.LauncherTaskbarUIController;
 import com.android.quickstep.SystemUiProxy;
 import com.android.quickstep.util.AnimatorControllerWithResistance;
 import com.android.quickstep.util.MotionPauseDetector;
@@ -109,6 +112,14 @@ public class NoButtonNavbarToOverviewTouchController extends PortraitStatesTouch
 
     @Override
     public void onDragStart(boolean start, float startDisplacement) {
+        if (mLauncher.isInState(ALL_APPS)) {
+            LauncherTaskbarUIController controller =
+                    ((BaseQuickstepLauncher) mLauncher).getTaskbarUIController();
+            if (controller != null) {
+                controller.setShouldDelayLauncherStateAnim(true);
+            }
+        }
+
         super.onDragStart(start, startDisplacement);
 
         mMotionPauseDetector.clear();
@@ -139,6 +150,12 @@ public class NoButtonNavbarToOverviewTouchController extends PortraitStatesTouch
 
     @Override
     public void onDragEnd(float velocity) {
+        LauncherTaskbarUIController controller =
+                ((BaseQuickstepLauncher) mLauncher).getTaskbarUIController();
+        if (controller != null) {
+            controller.setShouldDelayLauncherStateAnim(false);
+        }
+
         if (mStartedOverview) {
             goToOverviewOrHomeOnDragEnd(velocity);
         } else {
