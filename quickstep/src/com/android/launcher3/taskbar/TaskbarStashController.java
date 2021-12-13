@@ -535,6 +535,7 @@ public class TaskbarStashController {
 
     private void notifyStashChange(boolean visible, boolean stashed) {
         mSystemUiProxy.notifyTaskbarStatus(visible, stashed);
+        mControllers.taskbarActivityContext.updateInsetRoundedCornerFrame(visible && !stashed);
         mControllers.rotationButtonController.onTaskbarStateChange(visible, stashed);
     }
 
