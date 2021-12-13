@@ -1383,7 +1383,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
 
         // Removing views sets the currentPage to 0, so we save this and restore it after
         // the new set of views are added
-        int previousPage = mCurrentPage;
+        int previousCurrentPage = mCurrentPage;
         removeAllViews();
 
         // Add views as children based on whether it's grouped or single task
@@ -1407,7 +1407,14 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         if (!taskGroups.isEmpty()) {
             addView(mClearAllButton);
         }
-        setCurrentPage(previousPage);
+
+        boolean settlingOnNewTask = mNextPage != INVALID_PAGE;
+        if (settlingOnNewTask) {
+            // Restore mCurrentPage but don't call setCurrentPage() as that clobbers the scroll.
+            mCurrentPage = previousCurrentPage;
+        } else {
+            setCurrentPage(previousCurrentPage);
+        }
 
         // Keep same previous focused task
         TaskView newFocusedTaskView = getTaskViewByTaskId(focusedTaskId);
@@ -1433,7 +1440,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         }
 
         int targetPage = -1;
-        if (mNextPage == INVALID_PAGE) {
+        if (!settlingOnNewTask) {
             // Set the current page to the running task, but not if settling on new task.
             if (runningTaskId != -1) {
                 targetPage = indexOfChild(newRunningTaskView);
@@ -2235,7 +2242,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         updateChildTaskOrientations();
 
         // Reload the task list
-        mTaskListChangeId = mModel.getTasks(this::applyLoadPlan);
+        reloadIfNeeded();
     }
 
     /**
