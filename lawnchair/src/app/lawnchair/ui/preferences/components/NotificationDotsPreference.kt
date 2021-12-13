@@ -37,6 +37,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import app.lawnchair.ui.AlertBottomSheetContent
+import app.lawnchair.ui.util.bottomSheetHandler
 import app.lawnchair.util.lifecycleState
 import com.android.launcher3.R
 import com.android.launcher3.notification.NotificationListener
@@ -49,28 +50,16 @@ import kotlinx.coroutines.launch
 @Composable
 @ExperimentalMaterialApi
 fun NotificationDotsPreference() {
+    val bottomSheetHandler = bottomSheetHandler
     val context = LocalContext.current
-    val sheetState = rememberBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
-    val coroutineScope = rememberCoroutineScope()
-
     val enabled = notificationDotsEnabled()
     val serviceEnabled = notificationServiceEnabled()
-
     val showWarning = enabled && !serviceEnabled
     val summary = when {
         showWarning -> R.string.missing_notification_access_description
         enabled -> R.string.notification_dots_desc_on
         else -> R.string.notification_dots_desc_off
     }
-
-    NotificationAccessConfirmation(
-        sheetState = sheetState,
-        onDismissRequest = {
-            coroutineScope.launch {
-                sheetState.hide()
-            }
-        }
-    )
 
     PreferenceTemplate(
         title = { Text(text = stringResource(id = R.string.notification_dots)) },
@@ -88,8 +77,10 @@ fun NotificationDotsPreference() {
         modifier = Modifier
             .clickable {
                 if (showWarning) {
-                    coroutineScope.launch {
-                        sheetState.show()
+                    bottomSheetHandler.show {
+                        NotificationAccessConfirmation {
+                            bottomSheetHandler.hide()
+                        }
                     }
                 } else {
                     val extras = Bundle().apply {
@@ -105,49 +96,44 @@ fun NotificationDotsPreference() {
 
 @Composable
 @ExperimentalMaterialApi
-fun NotificationAccessConfirmation(
-    sheetState: BottomSheetState,
-    onDismissRequest: () -> Unit
-) {
+fun NotificationAccessConfirmation(onDismissRequest: () -> Unit) {
     val context = LocalContext.current
 
-    BottomSheet(sheetState = sheetState) {
-        AlertBottomSheetContent(
-            title = { Text(text = stringResource(id = R.string.missing_notification_access_label)) },
-            text = {
-                val appName = stringResource(id = R.string.derived_app_name)
-                Text(text = stringResource(id = R.string.msg_missing_notification_access, appName))
-            },
-            buttons = {
-                OutlinedButton(
-                    onClick = onDismissRequest
-                ) {
-                    Text(text = stringResource(id = android.R.string.cancel))
-                }
-                Spacer(modifier = Modifier.requiredWidth(8.dp))
-                Button(
-                    onClick = {
-                        onDismissRequest()
-
-                        val cn = ComponentName(context, NotificationListener::class.java)
-                        val showFragmentArgs = Bundle()
-                        showFragmentArgs.putString(
-                            EXTRA_FRAGMENT_ARG_KEY,
-                            cn.flattenToString()
-                        )
-
-                        val intent = Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS)
-                            .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                            .putExtra(EXTRA_FRAGMENT_ARG_KEY, cn.flattenToString())
-                            .putExtra(EXTRA_SHOW_FRAGMENT_ARGS, showFragmentArgs)
-                        context.startActivity(intent)
-                    }
-                ) {
-                    Text(text = stringResource(id = R.string.title_change_settings))
-                }
+    AlertBottomSheetContent(
+        title = { Text(text = stringResource(id = R.string.missing_notification_access_label)) },
+        text = {
+            val appName = stringResource(id = R.string.derived_app_name)
+            Text(text = stringResource(id = R.string.msg_missing_notification_access, appName))
+        },
+        buttons = {
+            OutlinedButton(
+                onClick = onDismissRequest
+            ) {
+                Text(text = stringResource(id = android.R.string.cancel))
             }
-        )
-    }
+            Spacer(modifier = Modifier.requiredWidth(8.dp))
+            Button(
+                onClick = {
+                    onDismissRequest()
+
+                    val cn = ComponentName(context, NotificationListener::class.java)
+                    val showFragmentArgs = Bundle()
+                    showFragmentArgs.putString(
+                        EXTRA_FRAGMENT_ARG_KEY,
+                        cn.flattenToString()
+                    )
+
+                    val intent = Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS)
+                        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                        .putExtra(EXTRA_FRAGMENT_ARG_KEY, cn.flattenToString())
+                        .putExtra(EXTRA_SHOW_FRAGMENT_ARGS, showFragmentArgs)
+                    context.startActivity(intent)
+                }
+            ) {
+                Text(text = stringResource(id = R.string.title_change_settings))
+            }
+        }
+    )
 }
 
 @Composable

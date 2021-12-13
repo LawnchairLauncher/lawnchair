@@ -18,10 +18,11 @@ package app.lawnchair.ui.preferences
 
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.ModalBottomSheetLayout
+import androidx.compose.material.ModalBottomSheetValue
+import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.material3.Surface
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.staticCompositionLocalOf
+import androidx.compose.runtime.*
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.LayoutDirection
@@ -29,12 +30,16 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import app.lawnchair.ui.preferences.about.aboutGraph
 import app.lawnchair.ui.preferences.components.SystemUi
+import app.lawnchair.ui.util.BottomSheetContent
+import app.lawnchair.ui.util.BottomSheetHandler
+import app.lawnchair.ui.util.ProvideBottomSheetHandler
+import app.lawnchair.ui.util.emptyBottomSheetContent
 import app.lawnchair.ui.util.portal.ProvidePortalNode
 import app.lawnchair.util.ProvideLifecycleState
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
+import kotlinx.coroutines.launch
 import soup.compose.material.motion.materialSharedAxisX
-import soup.compose.material.motion.rememberSlideDistance
 
 object Routes {
     const val GENERAL: String = "general"
@@ -65,33 +70,50 @@ fun Preferences(interactor: PreferenceInteractor = viewModel<PreferenceViewModel
     val isRtl = LocalLayoutDirection.current == LayoutDirection.Rtl
     val motionSpec = materialSharedAxisX()
     val density = LocalDensity.current
+    val coroutineScope = rememberCoroutineScope()
+    val bottomSheetState = rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
+    var bottomSheetContent by remember { mutableStateOf(emptyBottomSheetContent) }
+    val bottomSheetHandler = BottomSheetHandler(
+        show = { content ->
+            bottomSheetContent = BottomSheetContent(content = content)
+            coroutineScope.launch { bottomSheetState.show() }
+        },
+        hide = {
+            coroutineScope.launch { bottomSheetState.hide() }
+        }
+    )
 
     SystemUi()
-    Providers {
-        Surface {
-            CompositionLocalProvider(
-                LocalNavController provides navController,
-                LocalPreferenceInteractor provides interactor,
-            ) {
-                AnimatedNavHost(
-                    navController = navController,
-                    startDestination = "/",
-                    enterTransition = { _, _ -> motionSpec.enter.transition(!isRtl, density) },
-                    exitTransition = { _, _ -> motionSpec.exit.transition(!isRtl, density) },
-                    popEnterTransition = { _, _ -> motionSpec.enter.transition(isRtl, density) },
-                    popExitTransition = { _, _ -> motionSpec.exit.transition(isRtl, density) },
+    Providers(bottomSheetHandler = bottomSheetHandler) {
+        ModalBottomSheetLayout(
+            sheetContent = { bottomSheetContent.content() },
+            sheetState = bottomSheetState
+        ) {
+            Surface {
+                CompositionLocalProvider(
+                    LocalNavController provides navController,
+                    LocalPreferenceInteractor provides interactor,
                 ) {
-                    preferenceGraph(route = "/", { PreferencesDashboard() }) { subRoute ->
-                        generalGraph(route = subRoute(Routes.GENERAL))
-                        homeScreenGraph(route = subRoute(Routes.HOME_SCREEN))
-                        dockGraph(route = subRoute(Routes.DOCK))
-                        appDrawerGraph(route = subRoute(Routes.APP_DRAWER))
-                        folderGraph(route = subRoute(Routes.FOLDERS))
-                        quickstepGraph(route = subRoute(Routes.QUICKSTEP))
-                        aboutGraph(route = subRoute(Routes.ABOUT))
-                        fontSelectionGraph(route = subRoute(Routes.FONT_SELECTION))
-                        debugMenuGraph(route = subRoute(Routes.DEBUG_MENU))
-                        selectIconGraph(route = subRoute(Routes.SELECT_ICON))
+                    AnimatedNavHost(
+                        navController = navController,
+                        startDestination = "/",
+                        enterTransition = { motionSpec.enter.transition(!isRtl, density) },
+                        exitTransition = { motionSpec.exit.transition(!isRtl, density) },
+                        popEnterTransition = { motionSpec.enter.transition(isRtl, density) },
+                        popExitTransition = { motionSpec.exit.transition(isRtl, density) },
+                    ) {
+                        preferenceGraph(route = "/", { PreferencesDashboard() }) { subRoute ->
+                            generalGraph(route = subRoute(Routes.GENERAL))
+                            homeScreenGraph(route = subRoute(Routes.HOME_SCREEN))
+                            dockGraph(route = subRoute(Routes.DOCK))
+                            appDrawerGraph(route = subRoute(Routes.APP_DRAWER))
+                            folderGraph(route = subRoute(Routes.FOLDERS))
+                            quickstepGraph(route = subRoute(Routes.QUICKSTEP))
+                            aboutGraph(route = subRoute(Routes.ABOUT))
+                            fontSelectionGraph(route = subRoute(Routes.FONT_SELECTION))
+                            debugMenuGraph(route = subRoute(Routes.DEBUG_MENU))
+                            selectIconGraph(route = subRoute(Routes.SELECT_ICON))
+                        }
                     }
                 }
             }
@@ -100,10 +122,15 @@ fun Preferences(interactor: PreferenceInteractor = viewModel<PreferenceViewModel
 }
 
 @Composable
-private fun Providers(content: @Composable () -> Unit) {
+private fun Providers(
+    bottomSheetHandler: BottomSheetHandler,
+    content: @Composable () -> Unit
+) {
     ProvidePortalNode {
         ProvideLifecycleState {
-            content()
+            ProvideBottomSheetHandler(handler = bottomSheetHandler) {
+                content()
+            }
         }
     }
 }

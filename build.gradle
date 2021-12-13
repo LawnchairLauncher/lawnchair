@@ -1,8 +1,8 @@
 buildscript {
     ext {
-        kotlin_version = '1.5.31'
-        compose_version = '1.0.5'
-        accompanist_version = '0.21.0-beta'
+        kotlin_version = '1.6.0'
+        compose_version = '1.1.0-beta04'
+        accompanist_version = '0.21.3-beta'
         libsu_version = '3.1.2'
         protocVersion = '3.18.0'
     }
@@ -307,7 +307,7 @@ dependencies {
     implementation "androidx.compose.ui:ui-tooling:$compose_version"
     implementation "androidx.compose.foundation:foundation:$compose_version"
     implementation "androidx.compose.material:material:$compose_version"
-    implementation "androidx.compose.material3:material3:1.0.0-alpha01"
+    implementation "androidx.compose.material3:material3:1.0.0-alpha02"
     implementation "androidx.constraintlayout:constraintlayout:2.1.2"
     implementation 'androidx.activity:activity-compose:1.4.0'
     implementation 'androidx.lifecycle:lifecycle-viewmodel-compose:2.4.0'
