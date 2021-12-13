@@ -16,9 +16,11 @@
 
 package com.android.launcher3.touch;
 
+import static android.view.Gravity.BOTTOM;
 import static android.view.Gravity.CENTER_HORIZONTAL;
 import static android.view.Gravity.START;
 import static android.view.Gravity.TOP;
+import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 
 import static com.android.launcher3.LauncherAnimUtils.VIEW_TRANSLATE_X;
@@ -319,6 +321,50 @@ public class PortraitPagedViewHandler implements PagedOrientationHandler {
     @Override
     public PointF getAdditionalInsetForTaskMenu(float margin) {
         return new PointF(0, 0);
+    }
+
+    @Override
+    public Pair<Float, Float> setDwbLayoutParamsAndGetTranslations(int taskViewWidth,
+            int taskViewHeight, StagedSplitBounds splitBounds, DeviceProfile deviceProfile,
+            View[] thumbnailViews, int desiredTaskId, View banner) {
+        float translationX = 0;
+        float translationY = 0;
+        FrameLayout.LayoutParams bannerParams = (FrameLayout.LayoutParams) banner.getLayoutParams();
+        banner.setPivotX(0);
+        banner.setPivotY(0);
+        banner.setRotation(getDegreesRotated());
+        if (splitBounds == null) {
+            // Single, fullscreen case
+            bannerParams.width = MATCH_PARENT;
+            bannerParams.gravity = BOTTOM | CENTER_HORIZONTAL;
+            return new Pair<>(translationX, translationY);
+        }
+
+        bannerParams.gravity = BOTTOM | ((deviceProfile.isLandscape) ? START : CENTER_HORIZONTAL);
+
+        // Set correct width
+        if (desiredTaskId == splitBounds.leftTopTaskId) {
+            bannerParams.width = thumbnailViews[0].getMeasuredWidth();
+        } else {
+            bannerParams.width = thumbnailViews[1].getMeasuredWidth();
+        }
+
+        // Set translations
+        if (deviceProfile.isLandscape) {
+            if (desiredTaskId == splitBounds.rightBottomTaskId) {
+                translationX = ((taskViewWidth * splitBounds.leftTaskPercent)
+                                + (taskViewWidth * splitBounds.dividerWidthPercent));
+            }
+        } else {
+            if (desiredTaskId == splitBounds.leftTopTaskId) {
+                FrameLayout.LayoutParams snapshotParams =
+                        (FrameLayout.LayoutParams) thumbnailViews[0]
+                                .getLayoutParams();
+                translationY = -((taskViewHeight - snapshotParams.topMargin)
+                        * (1f - splitBounds.topTaskPercent));
+            }
+        }
+        return new Pair<>(translationX, translationY);
     }
 
     /* ---------- The following are only used by TaskViewTouchHandler. ---------- */
