@@ -111,6 +111,11 @@ import java.util.function.Supplier;
         onIconAlignmentRatioChangedForAppAndHomeTransition();
 
         mLauncher.getStateManager().addStateListener(mStateListener);
+
+        // Initialize to the current launcher state
+        updateStateForFlag(FLAG_RESUMED, launcher.hasBeenResumed());
+        mLauncherState = launcher.getStateManager().getState();
+        applyState(0);
     }
 
     public void onDestroy() {
