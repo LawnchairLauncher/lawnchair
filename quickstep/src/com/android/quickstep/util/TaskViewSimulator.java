@@ -44,6 +44,7 @@ import com.android.launcher3.util.SplitConfigurationOptions.StagedSplitBounds;
 import com.android.launcher3.util.TraceHelper;
 import com.android.quickstep.AnimatedFloat;
 import com.android.quickstep.BaseActivityInterface;
+import com.android.quickstep.TaskAnimationManager;
 import com.android.quickstep.views.TaskThumbnailView.PreviewPositionHelper;
 import com.android.quickstep.views.TaskView.FullscreenDrawParams;
 import com.android.systemui.shared.recents.model.ThumbnailData;
@@ -170,7 +171,7 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
      * Sets the targets which the simulator will control
      */
     public void setPreview(RemoteAnimationTargetCompat runningTarget) {
-        setPreviewBounds(runningTarget.screenSpaceBounds, runningTarget.contentInsets);
+        setPreviewBounds(runningTarget.startScreenSpaceBounds, runningTarget.contentInsets);
     }
 
     /**
@@ -304,7 +305,13 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
             mOrientationStateId = mOrientationState.getStateId();
 
             getFullScreenScale();
-            mThumbnailData.rotation = mOrientationState.getDisplayRotation();
+            if (TaskAnimationManager.ENABLE_SHELL_TRANSITIONS) {
+                // With shell transitions, the display is rotated early so we need to actually use
+                // the rotation when the gesture starts
+                mThumbnailData.rotation = mOrientationState.getTouchRotation();
+            } else {
+                mThumbnailData.rotation = mOrientationState.getDisplayRotation();
+            }
 
             // mIsRecentsRtl is the inverse of TaskView RTL.
             boolean isRtlEnabled = !mIsRecentsRtl;
