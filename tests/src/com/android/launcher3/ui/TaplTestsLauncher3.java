@@ -423,6 +423,18 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
         waitForState("Launcher internal state didn't switch to Home", () -> LauncherState.NORMAL);
     }
 
+    @Test
+    @PortraitLandscape
+    public void testDeleteFromWorkspace() throws Exception {
+        // test delete both built-in apps and user-installed app from workspace
+        for (String appName : new String[] {"Gmail", "Play Store", APP_NAME}) {
+            final AppIcon appIcon = createShortcutIfNotExist(appName);
+            Workspace workspace = mLauncher.getWorkspace().deleteAppIcon(appIcon);
+            assertNull(appName + " app was found after being deleted from workspace",
+                    workspace.tryGetWorkspaceAppIcon(appName));
+        }
+    }
+
     public static String getAppPackageName() {
         return getInstrumentation().getContext().getPackageName();
     }
