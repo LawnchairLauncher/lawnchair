@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Copyright (C) 2017 The Android Open Source Project
+<!-- Copyright (C) 2021 The Android Open Source Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -13,22 +13,18 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-
-<com.android.launcher3.shortcuts.DeepShortcutView
+<merge
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:launcher="http://schemas.android.com/apk/res-auto"
-    android:layout_width="@dimen/bg_popup_item_width"
-    android:layout_height="wrap_content"
-    android:minHeight="@dimen/bg_popup_item_height"
-    android:elevation="@dimen/deep_shortcuts_elevation"
-    android:background="@drawable/middle_item_primary"
-    android:theme="@style/PopupItem" >
+    xmlns:launcher="http://schemas.android.com/apk/res-auto" >
 
     <com.android.launcher3.BubbleTextView
         style="@style/BaseIconUnBounded"
         android:id="@+id/bubble_text"
         android:background="?android:attr/selectableItemBackground"
         android:gravity="start|center_vertical"
+        android:paddingTop="@dimen/bg_popup_item_vertical_padding"
+        android:paddingBottom="@dimen/bg_popup_item_vertical_padding"
+        android:minHeight="@dimen/bg_popup_item_height"
         android:textAlignment="viewStart"
         android:paddingStart="@dimen/deep_shortcuts_text_padding_start"
         android:paddingEnd="@dimen/popup_padding_end"
@@ -48,5 +44,4 @@
         android:layout_marginStart="@dimen/system_shortcut_margin_start"
         android:layout_gravity="start|center_vertical"
         android:backgroundTint="?android:attr/textColorPrimary"/>
-
-</com.android.launcher3.shortcuts.DeepShortcutView>
+</merge>
