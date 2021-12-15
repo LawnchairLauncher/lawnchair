@@ -251,6 +251,10 @@ public final class FeatureFlags {
             "ENABLE_ICON_LABEL_AUTO_SCALING", true,
             "Enables scaling/spacing for icon labels to make more characters visible");
 
+    public static final BooleanFlag ENABLE_ALL_APPS_IN_TASKBAR = getDebugFlag(
+            "ENABLE_ALL_APPS_IN_TASKBAR", false,
+            "Enables accessing All Apps from the system Taskbar.");
+
     public static void initialize(Context context) {
         synchronized (sDebugFlags) {
             for (DebugFlag flag : sDebugFlags) {
