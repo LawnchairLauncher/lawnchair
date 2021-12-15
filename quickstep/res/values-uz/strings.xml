@@ -89,6 +89,8 @@
     <string name="accessibility_rotate_button" msgid="4771825231336502943">"Ekranni burish"</string>
     <string name="taskbar_edu_opened" msgid="3950252793551919129">"Taʼlim vazifalar paneli chiqdi"</string>
     <string name="taskbar_edu_closed" msgid="126643734478892862">"Taʼlim vazifalar paneli yopildi"</string>
+    <string name="taskbar_edu_switch_apps" msgid="6942863327845784813">"Ilovalarni vazifalar panelida almashtirish mumkin"</string>
+    <string name="taskbar_edu_splitscreen" msgid="2663361731630346489">"Bir vaqtda ikkita ilova ochish uchun birini yoniga torting"</string>
     <string name="taskbar_edu_stashing" msgid="5212374387411764031">"Vazifalar panelini ustiga bosib turib yashirish mumkin"</string>
     <string name="taskbar_edu_next" msgid="4007618274426775841">"Keyingisi"</string>
     <string name="taskbar_edu_previous" msgid="459202320127201702">"Orqaga"</string>

@@ -89,6 +89,8 @@
     <string name="accessibility_rotate_button" msgid="4771825231336502943">"Obróć ekran"</string>
     <string name="taskbar_edu_opened" msgid="3950252793551919129">"Wskazówki na temat paska zadań zostały wyświetlone"</string>
     <string name="taskbar_edu_closed" msgid="126643734478892862">"Wskazówki na temat paska zadań zostały zamknięte"</string>
+    <string name="taskbar_edu_switch_apps" msgid="6942863327845784813">"Używaj paska zadań, aby przełączać aplikacje"</string>
+    <string name="taskbar_edu_splitscreen" msgid="2663361731630346489">"Przeciągnij w bok, aby używać 2 aplikacji jednocześnie"</string>
     <string name="taskbar_edu_stashing" msgid="5212374387411764031">"Naciśnij i przytrzymaj, aby ukryć pasek zadań"</string>
     <string name="taskbar_edu_next" msgid="4007618274426775841">"Dalej"</string>
     <string name="taskbar_edu_previous" msgid="459202320127201702">"Wstecz"</string>

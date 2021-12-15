@@ -89,6 +89,8 @@
     <string name="accessibility_rotate_button" msgid="4771825231336502943">"Pagriezt ekrānu"</string>
     <string name="taskbar_edu_opened" msgid="3950252793551919129">"Tika atvērta uzdevumjoslas apmācība"</string>
     <string name="taskbar_edu_closed" msgid="126643734478892862">"Tika aizvērta uzdevumjoslas apmācība"</string>
+    <string name="taskbar_edu_switch_apps" msgid="6942863327845784813">"Izmantojiet uzdevumjoslu, lai pārslēgtu lietotnes."</string>
+    <string name="taskbar_edu_splitscreen" msgid="2663361731630346489">"Velciet uz malu, lai izmantotu divas lietotnes vienlaikus."</string>
     <string name="taskbar_edu_stashing" msgid="5212374387411764031">"Pieskarieties un turiet, lai paslēptu uzdevumjoslu."</string>
     <string name="taskbar_edu_next" msgid="4007618274426775841">"Tālāk"</string>
     <string name="taskbar_edu_previous" msgid="459202320127201702">"Atpakaļ"</string>
