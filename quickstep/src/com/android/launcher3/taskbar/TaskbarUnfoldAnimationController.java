@@ -23,10 +23,13 @@ import com.android.systemui.shared.animation.UnfoldMoveFromCenterAnimator;
 import com.android.systemui.unfold.UnfoldTransitionProgressProvider.TransitionProgressListener;
 import com.android.systemui.unfold.util.ScopedUnfoldTransitionProgressProvider;
 
+import java.io.PrintWriter;
+
 /**
  * Controls animation of taskbar icons when unfolding foldable devices
  */
-public class TaskbarUnfoldAnimationController {
+public class TaskbarUnfoldAnimationController implements
+        TaskbarControllers.LoggableTaskbarController {
 
     private final ScopedUnfoldTransitionProgressProvider mUnfoldTransitionProgressProvider;
     private final UnfoldMoveFromCenterAnimator mMoveFromCenterAnimator;
@@ -57,6 +60,11 @@ public class TaskbarUnfoldAnimationController {
     public void onDestroy() {
         mUnfoldTransitionProgressProvider.setReadyToHandleTransition(false);
         mUnfoldTransitionProgressProvider.removeCallback(mTransitionListener);
+    }
+
+    @Override
+    public void dumpLogs(String prefix, PrintWriter pw) {
+        pw.println(prefix + "TaskbarUnfoldAnimationController:");
     }
 
     private class TransitionListener implements TransitionProgressListener {

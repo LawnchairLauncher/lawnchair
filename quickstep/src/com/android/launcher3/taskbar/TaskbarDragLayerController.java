@@ -29,10 +29,12 @@ import com.android.launcher3.anim.AlphaUpdateListener;
 import com.android.quickstep.AnimatedFloat;
 import com.android.systemui.shared.system.ViewTreeObserverWrapper.InsetsInfo;
 
+import java.io.PrintWriter;
+
 /**
  * Handles properties/data collection, then passes the results to TaskbarDragLayer to render.
  */
-public class TaskbarDragLayerController {
+public class TaskbarDragLayerController implements TaskbarControllers.LoggableTaskbarController {
 
     private final TaskbarActivityContext mActivity;
     private final TaskbarDragLayer mTaskbarDragLayer;
@@ -142,6 +144,16 @@ public class TaskbarDragLayerController {
         // Zero out the app-requested dark intensity when we're drawing our own background.
         float effectiveBgAlpha = mLastSetBackgroundAlpha * (1 - mBgOffset.value);
         mNavButtonDarkIntensityMultiplier.updateValue(1 - effectiveBgAlpha);
+    }
+
+    @Override
+    public void dumpLogs(String prefix, PrintWriter pw) {
+        pw.println(prefix + "TaskbarDragLayerController:");
+
+        pw.println(String.format("%s\tmBgOffset=%.2f", prefix, mBgOffset.value));
+        pw.println(String.format("%s\tmFolderMargin=%dpx", prefix, mFolderMargin));
+        pw.println(String.format(
+                "%s\tmLastSetBackgroundAlpha=%.2f", prefix, mLastSetBackgroundAlpha));
     }
 
     /**
