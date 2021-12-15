@@ -320,6 +320,11 @@ public abstract class BaseQuickstepLauncher extends Launcher
         mOverviewCommandHelper = binder.getOverviewCommandHelper();
     }
 
+    @Override
+    public void runOnBindToTouchInteractionService(Runnable r) {
+        mTISBindHelper.runOnBindToTouchInteractionService(r);
+    }
+
     private void initUnfoldTransitionProgressProvider() {
         final UnfoldTransitionConfig config = UnfoldTransitionFactory.createConfig(this);
         if (config.isEnabled()) {
