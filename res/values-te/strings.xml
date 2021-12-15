@@ -28,6 +28,10 @@
     <string name="shortcut_not_available" msgid="2536503539825726397">"షార్ట్‌కట్ అందుబాటులో లేదు"</string>
     <string name="home_screen" msgid="5629429142036709174">"మొదటి ట్యాబ్"</string>
     <string name="recent_task_option_split_screen" msgid="6690461455618725183">"స్క్రీన్‌ను విభజించు"</string>
+    <string name="split_screen_position_top" msgid="1504965011158689649">"స్ప్లిట్ ఎగువన"</string>
+    <string name="split_screen_position_left" msgid="7537793098851830883">"స్ప్లిట్ ఎడమవైపు"</string>
+    <string name="split_screen_position_right" msgid="1569377524925193369">"స్ప్లిట్ కుడివైపు"</string>
+    <string name="split_app_info_accessibility" msgid="5475288491241414932">"%1$s కోసం యాప్ సమాచారం"</string>
     <string name="long_press_widget_to_add" msgid="3587712543577675817">"విడ్జెట్‌ను తరలించడానికి తాకి &amp; నొక్కి ఉంచండి."</string>
     <string name="long_accessible_way_to_add" msgid="2733588281439571974">"విడ్జెట్‌ను తరలించడానికి లేదా అనుకూల చర్యలను ఉపయోగించడానికి రెండుసార్లు నొక్కండి &amp; హోల్డ్ చేయి."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
@@ -77,7 +81,7 @@
     <string name="permdesc_install_shortcut" msgid="923466509822011139">"వినియోగదారు ప్రమేయం లేకుండా షార్ట్‌కట్‌లను జోడించడానికి యాప్‌ను అనుమతిస్తుంది."</string>
     <string name="permlab_read_settings" msgid="1941457408239617576">"హోమ్ సెట్టింగ్‌లు మరియు షార్ట్‌కట్‌లను చదవడం"</string>
     <string name="permdesc_read_settings" msgid="5833423719057558387">"హోమ్‌లో సెట్టింగ్‌లు మరియు షార్ట్‌కట్‌లను చదవడానికి యాప్‌ను అనుమతిస్తుంది."</string>
-    <string name="permlab_write_settings" msgid="3574213698004620587">"హోమ్ సెట్టింగ్‌లు మరియు షార్ట్‌కట్‌లను వ్రాయడం"</string>
+    <string name="permlab_write_settings" msgid="3574213698004620587">"హోమ్ సెట్టింగ్‌లు మరియు షార్ట్‌కట్‌లను రాయడం"</string>
     <string name="permdesc_write_settings" msgid="5440712911516509985">"హోమ్‌లో సెట్టింగ్‌లు మరియు షార్ట్‌కట్‌లను మార్చడానికి యాప్‌ను అనుమతిస్తుంది."</string>
     <string name="msg_no_phone_permission" msgid="9208659281529857371">"ఫోన్ కాల్స్‌ను చేసేందుకు <xliff:g id="APP_NAME">%1$s</xliff:g>కి అనుమతి లేదు"</string>
     <string name="gadget_error_text" msgid="740356548025791839">"విడ్జెట్‌ను లోడ్ చేయడం సాధ్యం కాలేదు"</string>
