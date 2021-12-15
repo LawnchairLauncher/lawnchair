@@ -204,9 +204,11 @@ public class TaskbarViewController {
         PendingAnimation setter = new PendingAnimation(100);
         Rect hotseatPadding = launcherDp.getHotseatLayoutPadding(mActivity);
         float scaleUp = ((float) launcherDp.iconSizePx) / mActivity.getDeviceProfile().iconSizePx;
-        int hotseatCellSize =
-                (launcherDp.availableWidthPx - hotseatPadding.left - hotseatPadding.right)
-                        / launcherDp.numShownHotseatIcons;
+        int borderSpacing = launcherDp.cellLayoutBorderSpacePx.x;
+        int hotseatCellSize = DeviceProfile.calculateCellWidth(
+                launcherDp.availableWidthPx - hotseatPadding.left - hotseatPadding.right,
+                borderSpacing,
+                launcherDp.numShownHotseatIcons);
 
         int offsetY = launcherDp.getTaskbarOffsetY();
         setter.setFloat(mTaskbarIconTranslationYForHome, VALUE, -offsetY, LINEAR);
@@ -225,7 +227,8 @@ public class TaskbarViewController {
             setter.setFloat(child, SCALE_PROPERTY, scaleUp, LINEAR);
 
             float childCenter = (child.getLeft() + child.getRight()) / 2;
-            float hotseatIconCenter = hotseatPadding.left + hotseatCellSize * info.screenId
+            float hotseatIconCenter = hotseatPadding.left
+                    + (hotseatCellSize + borderSpacing) * info.screenId
                     + hotseatCellSize / 2;
             setter.setFloat(child, ICON_TRANSLATE_X, hotseatIconCenter - childCenter, LINEAR);
         }
