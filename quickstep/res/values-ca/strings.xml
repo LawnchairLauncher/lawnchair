@@ -89,9 +89,23 @@
     <string name="accessibility_rotate_button" msgid="4771825231336502943">"Gira la pantalla"</string>
     <string name="taskbar_edu_opened" msgid="3950252793551919129">"Ha aparegut el tauler educatiu de la barra de tasques"</string>
     <string name="taskbar_edu_closed" msgid="126643734478892862">"S\'ha tancat el tauler educatiu de la barra de tasques"</string>
+    <string name="taskbar_edu_switch_apps" msgid="6942863327845784813">"Utilitza la barra de tasques per canviar d\'aplicació"</string>
+    <string name="taskbar_edu_splitscreen" msgid="2663361731630346489">"Arrossega al costat per utilitzar dues aplicacions alhora"</string>
     <string name="taskbar_edu_stashing" msgid="5212374387411764031">"Mantén premut per amagar la barra de tasques"</string>
     <string name="taskbar_edu_next" msgid="4007618274426775841">"Següent"</string>
     <string name="taskbar_edu_previous" msgid="459202320127201702">"Enrere"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"Tanca"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"Fet"</string>
+    <!-- no translation found for taskbar_button_home (2151398979630664652) -->
+    <skip />
+    <!-- no translation found for taskbar_button_a11y (5241161324875094465) -->
+    <skip />
+    <!-- no translation found for taskbar_button_back (8558862226461164514) -->
+    <skip />
+    <!-- no translation found for taskbar_button_ime_switcher (1730244360907588541) -->
+    <skip />
+    <!-- no translation found for taskbar_button_recents (7273376136216613134) -->
+    <skip />
+    <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"Mou a la part superior o a l\'esquerra"</string>
+    <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"Mou a la part inferior o a la dreta"</string>
 </resources>

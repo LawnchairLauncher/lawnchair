@@ -89,9 +89,18 @@
     <string name="accessibility_rotate_button" msgid="4771825231336502943">"Дэлгэцийг эргүүлэх"</string>
     <string name="taskbar_edu_opened" msgid="3950252793551919129">"Боловсролын ажлын талбар гарч ирсэн"</string>
     <string name="taskbar_edu_closed" msgid="126643734478892862">"Боловсролын ажлын талбарыг хаасан"</string>
+    <string name="taskbar_edu_switch_apps" msgid="6942863327845784813">"Аппуудыг сэлгэхийн тулд талбарыг ашиглана уу"</string>
+    <string name="taskbar_edu_splitscreen" msgid="2663361731630346489">"Хоёр аппыг зэрэг ашиглахын тулд хажуу тал руу чирнэ үү"</string>
     <string name="taskbar_edu_stashing" msgid="5212374387411764031">"Ажлын талбарыг нуухын тулд хүрээд удаан дарна уу"</string>
     <string name="taskbar_edu_next" msgid="4007618274426775841">"Дараах"</string>
     <string name="taskbar_edu_previous" msgid="459202320127201702">"Буцах"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"Хаах"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"Дууссан"</string>
+    <string name="taskbar_button_home" msgid="2151398979630664652">"Гэр"</string>
+    <string name="taskbar_button_a11y" msgid="5241161324875094465">"Хандалт"</string>
+    <string name="taskbar_button_back" msgid="8558862226461164514">"Буцах"</string>
+    <string name="taskbar_button_ime_switcher" msgid="1730244360907588541">"IME сэлгэгч"</string>
+    <string name="taskbar_button_recents" msgid="7273376136216613134">"Саяхны"</string>
+    <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"Зүүн дээд хэсэг рүү зөөх"</string>
+    <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"Баруун доод хэсэг рүү зөөх"</string>
 </resources>

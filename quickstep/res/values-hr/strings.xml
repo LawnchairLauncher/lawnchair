@@ -89,9 +89,18 @@
     <string name="accessibility_rotate_button" msgid="4771825231336502943">"Zakretanje zaslona"</string>
     <string name="taskbar_edu_opened" msgid="3950252793551919129">"Upute za programsku traku su se pojavile"</string>
     <string name="taskbar_edu_closed" msgid="126643734478892862">"Upute za programsku traku su zatvorene"</string>
+    <string name="taskbar_edu_switch_apps" msgid="6942863327845784813">"Upotrijebite program. traku da biste promijenili aplikaciju"</string>
+    <string name="taskbar_edu_splitscreen" msgid="2663361731630346489">"Povucite u stranu da biste istovremeno koristili dvije aplikacije"</string>
     <string name="taskbar_edu_stashing" msgid="5212374387411764031">"Dodirnite i zadržite da biste sakrili programsku traku"</string>
     <string name="taskbar_edu_next" msgid="4007618274426775841">"Dalje"</string>
     <string name="taskbar_edu_previous" msgid="459202320127201702">"Natrag"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"Zatvori"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"Gotovo"</string>
+    <string name="taskbar_button_home" msgid="2151398979630664652">"Početna"</string>
+    <string name="taskbar_button_a11y" msgid="5241161324875094465">"Pristupačnost"</string>
+    <string name="taskbar_button_back" msgid="8558862226461164514">"Natrag"</string>
+    <string name="taskbar_button_ime_switcher" msgid="1730244360907588541">"IME prekidač"</string>
+    <string name="taskbar_button_recents" msgid="7273376136216613134">"Najnovije"</string>
+    <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"Premjesti gore/lijevo"</string>
+    <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"Premjesti dolje/desno"</string>
 </resources>

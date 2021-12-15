@@ -89,9 +89,18 @@
     <string name="accessibility_rotate_button" msgid="4771825231336502943">"ໝຸນໜ້າຈໍ"</string>
     <string name="taskbar_edu_opened" msgid="3950252793551919129">"ສະແດງການສຶກສາແຖບໜ້າວຽກແລ້ວ"</string>
     <string name="taskbar_edu_closed" msgid="126643734478892862">"ປິດການສຶກສາແຖບໜ້າວຽກແລ້ວ"</string>
+    <string name="taskbar_edu_switch_apps" msgid="6942863327845784813">"ໃຊ້ແຖບໜ້າວຽກເພື່ອສະຫຼັບແອັບ"</string>
+    <string name="taskbar_edu_splitscreen" msgid="2663361731630346489">"ລາກໄປທາງຂ້າງເພື່ອໃຊ້ສອງແອັບພ້ອມກັນ"</string>
     <string name="taskbar_edu_stashing" msgid="5212374387411764031">"ແຕະຄ້າງໄວ້ເພື່ອເຊື່ອງແຖບໜ້າວຽກ"</string>
     <string name="taskbar_edu_next" msgid="4007618274426775841">"ຕໍ່ໄປ"</string>
     <string name="taskbar_edu_previous" msgid="459202320127201702">"ກັບຄືນ"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"ປິດ"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"ແລ້ວໆ"</string>
+    <string name="taskbar_button_home" msgid="2151398979630664652">"ໜ້າຫຼັກ"</string>
+    <string name="taskbar_button_a11y" msgid="5241161324875094465">"ການຊ່ວຍເຂົ້າເຖິງ"</string>
+    <string name="taskbar_button_back" msgid="8558862226461164514">"ກັບຄືນ"</string>
+    <string name="taskbar_button_ime_switcher" msgid="1730244360907588541">"ຕົວສະຫຼັບ IME"</string>
+    <string name="taskbar_button_recents" msgid="7273376136216613134">"ຫຼ້າສຸດ"</string>
+    <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"ຍ້າຍໄປຊ້າຍ/ເທິງ"</string>
+    <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"ຍ້າຍໄປຂວາ/ລຸ່ມ"</string>
 </resources>

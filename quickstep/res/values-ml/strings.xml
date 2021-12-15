@@ -89,9 +89,18 @@
     <string name="accessibility_rotate_button" msgid="4771825231336502943">"സ്‌ക്രീൻ റൊട്ടേറ്റ് ചെയ്യുക"</string>
     <string name="taskbar_edu_opened" msgid="3950252793551919129">"ടാസ്ക്ക്ബാർ വിവര പാനൽ ദൃശ്യമായി"</string>
     <string name="taskbar_edu_closed" msgid="126643734478892862">"ടാസ്ക്ക്ബാർ വിവര പാനൽ അടച്ചു"</string>
+    <string name="taskbar_edu_switch_apps" msgid="6942863327845784813">"ആപ്പുകൾ മാറാൻ ടാസ്ക്ക്ബാർ ഉപയോഗിക്കുക"</string>
+    <string name="taskbar_edu_splitscreen" msgid="2663361731630346489">"രണ്ട് ആപ്പുകൾ ഒരുമിച്ച് ഉപയോഗിക്കാൻ അരികിലേക്ക് വലിച്ചിടുക"</string>
     <string name="taskbar_edu_stashing" msgid="5212374387411764031">"ടാസ്ക്ക്ബാർ മറയ്ക്കാൻ സ്‌പർശിച്ച് പിടിക്കുക"</string>
     <string name="taskbar_edu_next" msgid="4007618274426775841">"അടുത്തത്"</string>
     <string name="taskbar_edu_previous" msgid="459202320127201702">"മടങ്ങുക"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"അടയ്ക്കുക"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"പൂർത്തിയായി"</string>
+    <string name="taskbar_button_home" msgid="2151398979630664652">"ഹോം"</string>
+    <string name="taskbar_button_a11y" msgid="5241161324875094465">"ഉപയോഗസഹായി"</string>
+    <string name="taskbar_button_back" msgid="8558862226461164514">"മടങ്ങുക"</string>
+    <string name="taskbar_button_ime_switcher" msgid="1730244360907588541">"IME സ്വിച്ചർ"</string>
+    <string name="taskbar_button_recents" msgid="7273376136216613134">"അടുത്തിടെയുള്ളവ"</string>
+    <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"മുകളിലേക്കോ ഇടത്തേക്കോ നീക്കുക"</string>
+    <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"താഴേക്കോ വലത്തേക്കോ നീക്കുക"</string>
 </resources>

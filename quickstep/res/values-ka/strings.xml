@@ -89,9 +89,23 @@
     <string name="accessibility_rotate_button" msgid="4771825231336502943">"ეკრანის შეტრიალება"</string>
     <string name="taskbar_edu_opened" msgid="3950252793551919129">"ამოცანების ზოლის სასწავლო არე გამოჩნდა"</string>
     <string name="taskbar_edu_closed" msgid="126643734478892862">"ამოცანების ზოლის სასწავლო არე დაიხურა"</string>
+    <string name="taskbar_edu_switch_apps" msgid="6942863327845784813">"აპების გადასართავად გამოიყენეთ ამოცანათა ზოლი"</string>
+    <string name="taskbar_edu_splitscreen" msgid="2663361731630346489">"გადაათრიეთ კიდეზე ორი აპის ერთდოულად გამოსაყენებლად"</string>
     <string name="taskbar_edu_stashing" msgid="5212374387411764031">"ხანგრძლივად შეეხეთ ამოცანების ზოლის დასამალად"</string>
     <string name="taskbar_edu_next" msgid="4007618274426775841">"შემდეგი"</string>
     <string name="taskbar_edu_previous" msgid="459202320127201702">"უკან"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"დახურვა"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"მზადაა"</string>
+    <!-- no translation found for taskbar_button_home (2151398979630664652) -->
+    <skip />
+    <!-- no translation found for taskbar_button_a11y (5241161324875094465) -->
+    <skip />
+    <!-- no translation found for taskbar_button_back (8558862226461164514) -->
+    <skip />
+    <!-- no translation found for taskbar_button_ime_switcher (1730244360907588541) -->
+    <skip />
+    <!-- no translation found for taskbar_button_recents (7273376136216613134) -->
+    <skip />
+    <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"ზემოთ/მარცხნივ გადატანა"</string>
+    <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"ქვემოთ/მარჯვნივ გადატანა"</string>
 </resources>
