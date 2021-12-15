@@ -185,4 +185,11 @@ public abstract class StatefulActivity<STATE_TYPE extends BaseState<STATE_TYPE>>
     @RequiresApi(api = Build.VERSION_CODES.R)
     public void updateWindowInsets(WindowInsets.Builder updatedInsetsBuilder,
             WindowInsets oldInsets) { }
+
+    /**
+     * Runs the given {@param r} runnable when this activity binds to the touch interaction service.
+     */
+    public void runOnBindToTouchInteractionService(Runnable r) {
+        r.run();
+    }
 }
