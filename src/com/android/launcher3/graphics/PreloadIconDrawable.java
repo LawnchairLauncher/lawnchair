@@ -345,11 +345,10 @@ public class PreloadIconDrawable extends FastBitmapDrawable {
     }
 
     @Override
-    public ConstantState getConstantState() {
+    public FastBitmapConstantState newConstantState() {
         return new PreloadIconConstantState(
                 mBitmap,
                 mIconColor,
-                !mItem.isAppStartable(),
                 mItem,
                 mIndicatorColor,
                 new int[] {mSystemAccentColor, mSystemBackgroundColor},
@@ -367,12 +366,11 @@ public class PreloadIconDrawable extends FastBitmapDrawable {
         public PreloadIconConstantState(
                 Bitmap bitmap,
                 int iconColor,
-                boolean isDisabled,
                 ItemInfoWithIcon info,
                 int indicatorColor,
                 int[] preloadColors,
                 boolean isDarkMode) {
-            super(bitmap, iconColor, isDisabled);
+            super(bitmap, iconColor);
             mInfo = info;
             mIndicatorColor = indicatorColor;
             mPreloadColors = preloadColors;
@@ -381,17 +379,12 @@ public class PreloadIconDrawable extends FastBitmapDrawable {
         }
 
         @Override
-        public PreloadIconDrawable newDrawable() {
+        public PreloadIconDrawable createDrawable() {
             return new PreloadIconDrawable(
                     mInfo,
                     mIndicatorColor,
                     mPreloadColors,
                     mIsDarkMode);
-        }
-
-        @Override
-        public int getChangingConfigurations() {
-            return 0;
         }
     }
 }
