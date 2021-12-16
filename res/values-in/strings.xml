@@ -28,6 +28,10 @@
     <string name="shortcut_not_available" msgid="2536503539825726397">"Pintasan tidak tersedia"</string>
     <string name="home_screen" msgid="5629429142036709174">"Layar utama"</string>
     <string name="recent_task_option_split_screen" msgid="6690461455618725183">"Layar terpisah"</string>
+    <string name="split_screen_position_top" msgid="1504965011158689649">"Pisahkan ke atas"</string>
+    <string name="split_screen_position_left" msgid="7537793098851830883">"Pisahkan ke kiri"</string>
+    <string name="split_screen_position_right" msgid="1569377524925193369">"Pisahkan ke kanan"</string>
+    <string name="split_app_info_accessibility" msgid="5475288491241414932">"Info aplikasi untuk %1$s"</string>
     <string name="long_press_widget_to_add" msgid="3587712543577675817">"Sentuh lama untuk memindahkan widget."</string>
     <string name="long_accessible_way_to_add" msgid="2733588281439571974">"Ketuk dua kali &amp; tahan untuk memindahkan widget atau gunakan tindakan khusus."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
