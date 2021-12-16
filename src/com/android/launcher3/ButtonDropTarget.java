@@ -66,6 +66,8 @@ public abstract class ButtonDropTarget extends TextView
     private final int mDragDistanceThreshold;
     /** The size of the drawable shown in the drop target. */
     private final int mDrawableSize;
+    /** The padding, in pixels, between the text and drawable. */
+    private final int mDrawablePadding;
 
     protected CharSequence mText;
     protected Drawable mDrawable;
@@ -85,6 +87,8 @@ public abstract class ButtonDropTarget extends TextView
         Resources resources = getResources();
         mDragDistanceThreshold = resources.getDimensionPixelSize(R.dimen.drag_distanceThreshold);
         mDrawableSize = resources.getDimensionPixelSize(R.dimen.drop_target_text_size);
+        mDrawablePadding = resources.getDimensionPixelSize(
+                R.dimen.drop_target_button_drawable_padding);
     }
 
     @Override
@@ -303,6 +307,8 @@ public abstract class ButtonDropTarget extends TextView
             mTextVisible = isVisible;
             setText(newText);
             setCompoundDrawablesRelative(mDrawable, null, null, null);
+            int drawablePadding = mTextVisible ? mDrawablePadding : 0;
+            setCompoundDrawablePadding(drawablePadding);
         }
     }
 
