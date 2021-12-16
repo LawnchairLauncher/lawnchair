@@ -1276,7 +1276,7 @@ public final class LauncherInstrumentation {
     }
 
     int getRightGestureStartOnScreen() {
-        return getRealDisplaySize().x - getWindowInsets().right;
+        return getRealDisplaySize().x - getWindowInsets().right - 1;
     }
 
     void clickLauncherObject(UiObject2 object) {
