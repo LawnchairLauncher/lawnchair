@@ -82,7 +82,7 @@
     <string name="permdesc_install_shortcut" msgid="923466509822011139">"వినియోగదారు ప్రమేయం లేకుండా షార్ట్‌కట్‌లను జోడించడానికి యాప్‌ను అనుమతిస్తుంది."</string>
     <string name="permlab_read_settings" msgid="1941457408239617576">"హోమ్ సెట్టింగ్‌లు మరియు షార్ట్‌కట్‌లను చదవడం"</string>
     <string name="permdesc_read_settings" msgid="5833423719057558387">"హోమ్‌లో సెట్టింగ్‌లు మరియు షార్ట్‌కట్‌లను చదవడానికి యాప్‌ను అనుమతిస్తుంది."</string>
-    <string name="permlab_write_settings" msgid="3574213698004620587">"హోమ్ సెట్టింగ్‌లు మరియు షార్ట్‌కట్‌లను వ్రాయడం"</string>
+    <string name="permlab_write_settings" msgid="3574213698004620587">"హోమ్ సెట్టింగ్‌లు మరియు షార్ట్‌కట్‌లను రాయడం"</string>
     <string name="permdesc_write_settings" msgid="5440712911516509985">"హోమ్‌లో సెట్టింగ్‌లు మరియు షార్ట్‌కట్‌లను మార్చడానికి యాప్‌ను అనుమతిస్తుంది."</string>
     <string name="msg_no_phone_permission" msgid="9208659281529857371">"ఫోన్ కాల్స్‌ను చేసేందుకు <xliff:g id="APP_NAME">%1$s</xliff:g>కి అనుమతి లేదు"</string>
     <string name="gadget_error_text" msgid="740356548025791839">"విడ్జెట్‌ను లోడ్ చేయడం సాధ్యం కాలేదు"</string>
