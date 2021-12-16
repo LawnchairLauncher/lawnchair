@@ -89,6 +89,8 @@
     <string name="accessibility_rotate_button" msgid="4771825231336502943">"Girar la pantalla"</string>
     <string name="taskbar_edu_opened" msgid="3950252793551919129">"Ha aparecido una nota sobre la barra de tareas"</string>
     <string name="taskbar_edu_closed" msgid="126643734478892862">"Nota sobre la barra de tareas cerrada"</string>
+    <string name="taskbar_edu_switch_apps" msgid="6942863327845784813">"Usa la barra de tareas para cambiar de aplicación"</string>
+    <string name="taskbar_edu_splitscreen" msgid="2663361731630346489">"Arrastra hacia un lado para usar dos aplicaciones a la vez"</string>
     <string name="taskbar_edu_stashing" msgid="5212374387411764031">"Mantén pulsada la barra de tareas para ocultarla"</string>
     <string name="taskbar_edu_next" msgid="4007618274426775841">"Siguiente"</string>
     <string name="taskbar_edu_previous" msgid="459202320127201702">"Atrás"</string>

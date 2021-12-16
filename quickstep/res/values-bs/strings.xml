@@ -89,6 +89,8 @@
     <string name="accessibility_rotate_button" msgid="4771825231336502943">"Rotiranje ekrana"</string>
     <string name="taskbar_edu_opened" msgid="3950252793551919129">"Edukacija o programskoj traci je prikazana"</string>
     <string name="taskbar_edu_closed" msgid="126643734478892862">"Edukacija o programskoj traci je zatvorena"</string>
+    <string name="taskbar_edu_switch_apps" msgid="6942863327845784813">"Koristite programsku traku da promijenite aplikacije"</string>
+    <string name="taskbar_edu_splitscreen" msgid="2663361731630346489">"Prevucite u stranu da istovremeno koristite dvije aplikacije"</string>
     <string name="taskbar_edu_stashing" msgid="5212374387411764031">"Dodirnite i držite da sakrijete programsku traku"</string>
     <string name="taskbar_edu_next" msgid="4007618274426775841">"Naprijed"</string>
     <string name="taskbar_edu_previous" msgid="459202320127201702">"Nazad"</string>

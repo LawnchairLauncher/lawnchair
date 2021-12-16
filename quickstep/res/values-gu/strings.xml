@@ -89,6 +89,8 @@
     <string name="accessibility_rotate_button" msgid="4771825231336502943">"સ્ક્રીન ફેરવો"</string>
     <string name="taskbar_edu_opened" msgid="3950252793551919129">"ટાસ્કબારનું શિક્ષણ આપતી પૅનલ દેખાય છે"</string>
     <string name="taskbar_edu_closed" msgid="126643734478892862">"ટાસ્કબારનું શિક્ષણ આપતી પૅનલ બંધ થઈ છે"</string>
+    <string name="taskbar_edu_switch_apps" msgid="6942863327845784813">"ઍપ સ્વિચ કરવા માટે, ટાસ્કબારનો ઉપયોગ કરો"</string>
+    <string name="taskbar_edu_splitscreen" msgid="2663361731630346489">"એક જ સમયે બે ઍપનો ઉપયોગ કરવા માટે, ખેંચીને બાજુ પર લઈ જાઓ"</string>
     <string name="taskbar_edu_stashing" msgid="5212374387411764031">"ટાસ્કબાર છુપાવવા, તેને ટચ કરીને થોડીવાર દબાવી રાખો"</string>
     <string name="taskbar_edu_next" msgid="4007618274426775841">"આગળ"</string>
     <string name="taskbar_edu_previous" msgid="459202320127201702">"પાછળ"</string>

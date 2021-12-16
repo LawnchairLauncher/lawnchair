@@ -89,6 +89,8 @@
     <string name="accessibility_rotate_button" msgid="4771825231336502943">"स्क्रीन घुमाएं"</string>
     <string name="taskbar_edu_opened" msgid="3950252793551919129">"टास्कबार ट्यूटोरियल दिखाया गया"</string>
     <string name="taskbar_edu_closed" msgid="126643734478892862">"टास्कबार ट्यूटोरियल बंद किया गया"</string>
+    <string name="taskbar_edu_switch_apps" msgid="6942863327845784813">"ऐप्लिकेशन स्विच करने के लिए, टास्कबार का इस्तेमाल करें"</string>
+    <string name="taskbar_edu_splitscreen" msgid="2663361731630346489">"एक साथ दो ऐप्लिकेशन इस्तेमाल करने के लिए, उन्हें किनारे की ओर खींचें और छोड़ें"</string>
     <string name="taskbar_edu_stashing" msgid="5212374387411764031">"टास्कबार को छिपाने के लिए, उसे दबाकर रखें"</string>
     <string name="taskbar_edu_next" msgid="4007618274426775841">"आगे बढ़ें"</string>
     <string name="taskbar_edu_previous" msgid="459202320127201702">"वापस जाएं"</string>
