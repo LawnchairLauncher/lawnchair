@@ -91,7 +91,7 @@ public class NavbarButtonsViewController {
     private static final int FLAG_DISABLE_RECENTS = 1 << 8;
     private static final int FLAG_DISABLE_BACK = 1 << 9;
     private static final int FLAG_NOTIFICATION_SHADE_EXPANDED = 1 << 10;
-    private static final int FLAG_SCREEN_PINNING_ACTIVE = 1 << 10;
+    private static final int FLAG_SCREEN_PINNING_ACTIVE = 1 << 11;
 
     private static final int MASK_IME_SWITCHER_VISIBLE = FLAG_SWITCHER_SUPPORTED | FLAG_IME_VISIBLE;
 
@@ -266,16 +266,19 @@ public class NavbarButtonsViewController {
         mBackButton = addButton(R.drawable.ic_sysbar_back, BUTTON_BACK,
                 mNavButtonContainer, mControllers.navButtonController, R.id.back);
         mPropertyHolders.add(new StatePropertyHolder(mBackButton,
-                flags -> (flags & FLAG_DISABLE_BACK) == 0));
+                flags -> {
+                    // Show only if not disabled, and if not on the keyguard or otherwise only when
+                    // the bouncer or a lockscreen app is showing above the keyguard
+                    boolean showingOnKeyguard = (flags & FLAG_KEYGUARD_VISIBLE) == 0 ||
+                            (flags & FLAG_ONLY_BACK_FOR_BOUNCER_VISIBLE) != 0 ||
+                            (flags & FLAG_KEYGUARD_OCCLUDED) != 0;
+                    return (flags & FLAG_DISABLE_BACK) == 0
+                            && ((flags & FLAG_KEYGUARD_VISIBLE) == 0 || showingOnKeyguard);
+                }));
         boolean isRtl = Utilities.isRtl(mContext.getResources());
         mPropertyHolders.add(new StatePropertyHolder(
                 mBackButton, flags -> (flags & FLAG_IME_VISIBLE) != 0, View.ROTATION,
                 isRtl ? 90 : -90, 0));
-        // Hide when keyguard is showing, show when bouncer or lock screen app is showing
-        mPropertyHolders.add(new StatePropertyHolder(mBackButton,
-                flags -> (flags & FLAG_KEYGUARD_VISIBLE) == 0 ||
-                        (flags & FLAG_ONLY_BACK_FOR_BOUNCER_VISIBLE) != 0 ||
-                        (flags & FLAG_KEYGUARD_OCCLUDED) != 0));
         // Translate back button to be at end/start of other buttons for keyguard
         int navButtonSize = mContext.getResources().getDimensionPixelSize(
                 R.dimen.taskbar_nav_buttons_size);
