@@ -16,7 +16,6 @@
 
 package com.android.launcher3.taskbar;
 
-
 import static com.android.internal.app.AssistUtils.INVOCATION_TYPE_HOME_BUTTON_LONG_PRESS;
 import static com.android.internal.app.AssistUtils.INVOCATION_TYPE_KEY;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_SCREEN_PINNING;
@@ -58,6 +57,8 @@ public class TaskbarNavButtonController {
             BUTTON_RECENTS,
             BUTTON_IME_SWITCH,
             BUTTON_A11Y,
+            BUTTON_QUICK_SETTINGS,
+            BUTTON_NOTIFICATIONS,
     })
 
     public @interface TaskbarButton {}
@@ -67,6 +68,8 @@ public class TaskbarNavButtonController {
     static final int BUTTON_RECENTS = BUTTON_HOME << 1;
     static final int BUTTON_IME_SWITCH = BUTTON_RECENTS << 1;
     static final int BUTTON_A11Y = BUTTON_IME_SWITCH << 1;
+    static final int BUTTON_QUICK_SETTINGS = BUTTON_A11Y << 1;
+    static final int BUTTON_NOTIFICATIONS = BUTTON_QUICK_SETTINGS << 1;
 
     private static final int SCREEN_UNPIN_COMBO = BUTTON_BACK | BUTTON_RECENTS;
     private int mLongPressedButtons = 0;
@@ -100,6 +103,12 @@ public class TaskbarNavButtonController {
                 break;
             case BUTTON_A11Y:
                 notifyA11yClick(false /* longClick */);
+                break;
+            case BUTTON_QUICK_SETTINGS:
+                showQuickSettings();
+                break;
+            case BUTTON_NOTIFICATIONS:
+                showNotifications();
                 break;
         }
     }
@@ -220,5 +229,13 @@ public class TaskbarNavButtonController {
         Bundle args = new Bundle();
         args.putInt(INVOCATION_TYPE_KEY, INVOCATION_TYPE_HOME_BUTTON_LONG_PRESS);
         mSystemUiProxy.startAssistant(args);
+    }
+
+    private void showQuickSettings() {
+        mSystemUiProxy.toggleNotificationPanel();
+    }
+
+    private void showNotifications() {
+        mSystemUiProxy.toggleNotificationPanel();
     }
 }

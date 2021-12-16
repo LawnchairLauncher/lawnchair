@@ -106,6 +106,7 @@ import android.view.Menu;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.view.WindowManager.LayoutParams;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.animation.OvershootInterpolator;
@@ -503,6 +504,23 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
         setDefaultKeyMode(DEFAULT_KEYS_SEARCH_LOCAL);
 
         setContentView(getRootView());
+        getRootView().getViewTreeObserver().addOnPreDrawListener(
+                new ViewTreeObserver.OnPreDrawListener() {
+                    @Override
+                    public boolean onPreDraw() {
+                        // Checks the status of fade in animation.
+                        final AlphaProperty property =
+                                mDragLayer.getAlphaProperty(ALPHA_INDEX_LAUNCHER_LOAD);
+                        if (property.getValue() == 0) {
+                            // Animation haven't started yet; suspend.
+                            return false;
+                        } else {
+                            // The animation is started; start drawing.
+                            getRootView().getViewTreeObserver().removeOnPreDrawListener(this);
+                            return true;
+                        }
+                    }
+                });
         getRootView().dispatchInsets();
 
         // Listen for broadcasts
