@@ -31,7 +31,7 @@ import android.view.ViewGroup;
 import com.android.launcher3.CellLayout.ContainerType;
 import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.views.ActivityContext;
-import com.android.launcher3.widget.LauncherAppWidgetHostView;
+import com.android.launcher3.widget.NavigableAppWidgetHostView;
 
 public class ShortcutAndWidgetContainer extends ViewGroup implements FolderIcon.FolderIconParent {
     static final String TAG = "ShortcutAndWidgetContainer";
@@ -104,9 +104,9 @@ public class ShortcutAndWidgetContainer extends ViewGroup implements FolderIcon.
 
     public void setupLp(View child) {
         CellLayout.LayoutParams lp = (CellLayout.LayoutParams) child.getLayoutParams();
-        if (child instanceof LauncherAppWidgetHostView) {
+        if (child instanceof NavigableAppWidgetHostView) {
             DeviceProfile profile = mActivity.getDeviceProfile();
-            ((LauncherAppWidgetHostView) child).getWidgetInset(profile, mTempRect);
+            ((NavigableAppWidgetHostView) child).getWidgetInset(profile, mTempRect);
             lp.setup(mCellWidth, mCellHeight, invertLayoutHorizontally(), mCountX, mCountY,
                     profile.appWidgetScale.x, profile.appWidgetScale.y, mBorderSpacing, mTempRect);
         } else {
@@ -129,8 +129,8 @@ public class ShortcutAndWidgetContainer extends ViewGroup implements FolderIcon.
         CellLayout.LayoutParams lp = (CellLayout.LayoutParams) child.getLayoutParams();
         final DeviceProfile dp = mActivity.getDeviceProfile();
 
-        if (child instanceof LauncherAppWidgetHostView) {
-            ((LauncherAppWidgetHostView) child).getWidgetInset(dp, mTempRect);
+        if (child instanceof NavigableAppWidgetHostView) {
+            ((NavigableAppWidgetHostView) child).getWidgetInset(dp, mTempRect);
             lp.setup(mCellWidth, mCellHeight, invertLayoutHorizontally(), mCountX, mCountY,
                     dp.appWidgetScale.x, dp.appWidgetScale.y, mBorderSpacing, mTempRect);
         } else {
@@ -178,16 +178,16 @@ public class ShortcutAndWidgetContainer extends ViewGroup implements FolderIcon.
      */
     public void layoutChild(View child) {
         CellLayout.LayoutParams lp = (CellLayout.LayoutParams) child.getLayoutParams();
-        if (child instanceof LauncherAppWidgetHostView) {
-            LauncherAppWidgetHostView lahv = (LauncherAppWidgetHostView) child;
+        if (child instanceof NavigableAppWidgetHostView) {
+            NavigableAppWidgetHostView nahv = (NavigableAppWidgetHostView) child;
 
             // Scale and center the widget to fit within its cells.
             DeviceProfile profile = mActivity.getDeviceProfile();
             float scaleX = profile.appWidgetScale.x;
             float scaleY = profile.appWidgetScale.y;
 
-            lahv.setScaleToFit(Math.min(scaleX, scaleY));
-            lahv.setTranslationForCentering(-(lp.width - (lp.width * scaleX)) / 2.0f,
+            nahv.setScaleToFit(Math.min(scaleX, scaleY));
+            nahv.setTranslationForCentering(-(lp.width - (lp.width * scaleX)) / 2.0f,
                     -(lp.height - (lp.height * scaleY)) / 2.0f);
         }
 
