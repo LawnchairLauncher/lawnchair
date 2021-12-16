@@ -28,6 +28,10 @@
     <string name="shortcut_not_available" msgid="2536503539825726397">"میان‌بر دردسترس نیست"</string>
     <string name="home_screen" msgid="5629429142036709174">"صفحه اصلی"</string>
     <string name="recent_task_option_split_screen" msgid="6690461455618725183">"صفحهٔ دونیمه"</string>
+    <string name="split_screen_position_top" msgid="1504965011158689649">"تقسیم از بالا"</string>
+    <string name="split_screen_position_left" msgid="7537793098851830883">"تقسیم از چپ"</string>
+    <string name="split_screen_position_right" msgid="1569377524925193369">"تقسیم از راست"</string>
+    <string name="split_app_info_accessibility" msgid="5475288491241414932">"‏اطلاعات برنامه %1$s"</string>
     <string name="long_press_widget_to_add" msgid="3587712543577675817">"برای جابه‌جا کردن ابزارک، لمس کنید و نگه دارید."</string>
     <string name="long_accessible_way_to_add" msgid="2733588281439571974">"برای جابه‌جا کردن ابزارک یا استفاده از کنش‌های سفارشی، دوضربه بزنید و نگه دارید."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
