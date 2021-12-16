@@ -44,6 +44,7 @@ import android.annotation.IdRes;
 import android.annotation.LayoutRes;
 import android.content.pm.ActivityInfo.Config;
 import android.content.res.ColorStateList;
+import android.content.res.Configuration;
 import android.graphics.Rect;
 import android.graphics.Region;
 import android.graphics.Region.Op;
@@ -64,7 +65,6 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AlphaUpdateListener;
 import com.android.launcher3.taskbar.TaskbarNavButtonController.TaskbarButton;
 import com.android.launcher3.util.MultiValueAlpha;
-import com.android.launcher3.util.Themes;
 import com.android.quickstep.AnimatedFloat;
 import com.android.systemui.shared.rotation.FloatingRotationButton;
 import com.android.systemui.shared.rotation.RotationButton;
@@ -202,15 +202,12 @@ public class NavbarButtonsViewController {
                 navButtonsLayoutParams.gravity = Gravity.START;
                 mNavButtonContainer.requestLayout();
 
-                if (!isThreeButtonNav) {
-                    // Tint all the nav buttons since there's no taskbar background in SUW.
-                    for (int i = 0; i < mNavButtonContainer.getChildCount(); i++) {
-                        if (!(mNavButtonContainer.getChildAt(i) instanceof ImageView)) continue;
-                        ImageView button = (ImageView) mNavButtonContainer.getChildAt(i);
-                        button.setImageTintList(ColorStateList.valueOf(Themes.getAttrColor(
-                                button.getContext(), android.R.attr.textColorPrimary)));
-                    }
-                }
+                // TODO(b/210906568) Dark intensity is currently not propagated during setup, so set
+                //  it based on dark theme for now.
+                int mode = mContext.getResources().getConfiguration().uiMode
+                        & Configuration.UI_MODE_NIGHT_MASK;
+                boolean isDarkTheme = mode == Configuration.UI_MODE_NIGHT_YES;
+                mTaskbarNavButtonDarkIntensity.updateValue(isDarkTheme ? 0 : 1);
             }
 
             // Animate taskbar background when any of these flags are enabled
