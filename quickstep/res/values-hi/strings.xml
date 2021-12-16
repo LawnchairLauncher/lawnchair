@@ -89,9 +89,18 @@
     <string name="accessibility_rotate_button" msgid="4771825231336502943">"स्क्रीन घुमाएं"</string>
     <string name="taskbar_edu_opened" msgid="3950252793551919129">"टास्कबार ट्यूटोरियल दिखाया गया"</string>
     <string name="taskbar_edu_closed" msgid="126643734478892862">"टास्कबार ट्यूटोरियल बंद किया गया"</string>
+    <string name="taskbar_edu_switch_apps" msgid="6942863327845784813">"ऐप्लिकेशन स्विच करने के लिए, टास्कबार का इस्तेमाल करें"</string>
+    <string name="taskbar_edu_splitscreen" msgid="2663361731630346489">"एक साथ दो ऐप्लिकेशन इस्तेमाल करने के लिए, उन्हें किनारे की ओर खींचें और छोड़ें"</string>
     <string name="taskbar_edu_stashing" msgid="5212374387411764031">"टास्कबार को छिपाने के लिए, उसे दबाकर रखें"</string>
     <string name="taskbar_edu_next" msgid="4007618274426775841">"आगे बढ़ें"</string>
     <string name="taskbar_edu_previous" msgid="459202320127201702">"वापस जाएं"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"बंद करें"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"हो गया"</string>
+    <string name="taskbar_button_home" msgid="2151398979630664652">"होम"</string>
+    <string name="taskbar_button_a11y" msgid="5241161324875094465">"सुलभता"</string>
+    <string name="taskbar_button_back" msgid="8558862226461164514">"वापस जाएं"</string>
+    <string name="taskbar_button_ime_switcher" msgid="1730244360907588541">"IME स्विचर"</string>
+    <string name="taskbar_button_recents" msgid="7273376136216613134">"हाल ही के"</string>
+    <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"ऊपर/बाईं तरफ़ ले जाएं"</string>
+    <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"नीचे/दाईं तरफ़ ले जाएं"</string>
 </resources>

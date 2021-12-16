@@ -89,9 +89,23 @@
     <string name="accessibility_rotate_button" msgid="4771825231336502943">"Obróć ekran"</string>
     <string name="taskbar_edu_opened" msgid="3950252793551919129">"Wskazówki na temat paska zadań zostały wyświetlone"</string>
     <string name="taskbar_edu_closed" msgid="126643734478892862">"Wskazówki na temat paska zadań zostały zamknięte"</string>
+    <string name="taskbar_edu_switch_apps" msgid="6942863327845784813">"Używaj paska zadań, aby przełączać aplikacje"</string>
+    <string name="taskbar_edu_splitscreen" msgid="2663361731630346489">"Przeciągnij w bok, aby używać 2 aplikacji jednocześnie"</string>
     <string name="taskbar_edu_stashing" msgid="5212374387411764031">"Naciśnij i przytrzymaj, aby ukryć pasek zadań"</string>
     <string name="taskbar_edu_next" msgid="4007618274426775841">"Dalej"</string>
     <string name="taskbar_edu_previous" msgid="459202320127201702">"Wstecz"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"Zamknij"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"Gotowe"</string>
+    <!-- no translation found for taskbar_button_home (2151398979630664652) -->
+    <skip />
+    <!-- no translation found for taskbar_button_a11y (5241161324875094465) -->
+    <skip />
+    <!-- no translation found for taskbar_button_back (8558862226461164514) -->
+    <skip />
+    <!-- no translation found for taskbar_button_ime_switcher (1730244360907588541) -->
+    <skip />
+    <!-- no translation found for taskbar_button_recents (7273376136216613134) -->
+    <skip />
+    <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"Przesuń w górny lewy róg"</string>
+    <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"Przesuń w dolny prawy róg"</string>
 </resources>

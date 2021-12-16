@@ -89,9 +89,18 @@
     <string name="accessibility_rotate_button" msgid="4771825231336502943">"I-rotate ang screen"</string>
     <string name="taskbar_edu_opened" msgid="3950252793551919129">"Lumabas ang edukasyon sa taskbar"</string>
     <string name="taskbar_edu_closed" msgid="126643734478892862">"Sarado ang edukasyon sa taskbar"</string>
+    <string name="taskbar_edu_switch_apps" msgid="6942863327845784813">"Gamitin ang taskbar para magpalipat-lipat sa mga app"</string>
+    <string name="taskbar_edu_splitscreen" msgid="2663361731630346489">"I-drag sa gilid para makagamit ng dalawang app nang sabay"</string>
     <string name="taskbar_edu_stashing" msgid="5212374387411764031">"Pindutin nang matagal para itago ang taskbar"</string>
     <string name="taskbar_edu_next" msgid="4007618274426775841">"Susunod"</string>
     <string name="taskbar_edu_previous" msgid="459202320127201702">"Bumalik"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"Isara"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"Tapos na"</string>
+    <string name="taskbar_button_home" msgid="2151398979630664652">"Home"</string>
+    <string name="taskbar_button_a11y" msgid="5241161324875094465">"Accessibility"</string>
+    <string name="taskbar_button_back" msgid="8558862226461164514">"Bumalik"</string>
+    <string name="taskbar_button_ime_switcher" msgid="1730244360907588541">"IME switcher"</string>
+    <string name="taskbar_button_recents" msgid="7273376136216613134">"Mga Kamakailan"</string>
+    <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"Ilipat sa itaas/kaliwa"</string>
+    <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"Ilipat sa ibaba/kanan"</string>
 </resources>

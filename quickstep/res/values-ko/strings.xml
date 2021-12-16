@@ -89,9 +89,23 @@
     <string name="accessibility_rotate_button" msgid="4771825231336502943">"화면 회전"</string>
     <string name="taskbar_edu_opened" msgid="3950252793551919129">"작업 표시줄 튜토리얼 패널 표시됨"</string>
     <string name="taskbar_edu_closed" msgid="126643734478892862">"작업 표시줄 튜토리얼 패널 닫힘"</string>
+    <string name="taskbar_edu_switch_apps" msgid="6942863327845784813">"작업 표시줄을 사용하여 앱 전환"</string>
+    <string name="taskbar_edu_splitscreen" msgid="2663361731630346489">"옆으로 드래그하여 한 번에 앱 두 개 사용"</string>
     <string name="taskbar_edu_stashing" msgid="5212374387411764031">"작업 표시줄을 숨기려면 길게 터치하세요."</string>
     <string name="taskbar_edu_next" msgid="4007618274426775841">"다음"</string>
     <string name="taskbar_edu_previous" msgid="459202320127201702">"뒤로"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"닫기"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"완료"</string>
+    <!-- no translation found for taskbar_button_home (2151398979630664652) -->
+    <skip />
+    <!-- no translation found for taskbar_button_a11y (5241161324875094465) -->
+    <skip />
+    <!-- no translation found for taskbar_button_back (8558862226461164514) -->
+    <skip />
+    <!-- no translation found for taskbar_button_ime_switcher (1730244360907588541) -->
+    <skip />
+    <!-- no translation found for taskbar_button_recents (7273376136216613134) -->
+    <skip />
+    <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"상단/왼쪽으로 이동"</string>
+    <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"하단/오른쪽으로 이동"</string>
 </resources>

@@ -89,9 +89,18 @@
     <string name="accessibility_rotate_button" msgid="4771825231336502943">"اسکرین کو گھمائیں"</string>
     <string name="taskbar_edu_opened" msgid="3950252793551919129">"ٹاکس بار کا تعلیمی پینل ظاہر ہو گیا"</string>
     <string name="taskbar_edu_closed" msgid="126643734478892862">"ٹاسک بار کا تعلیمی پینل بند ہو گیا"</string>
+    <string name="taskbar_edu_switch_apps" msgid="6942863327845784813">"ایپس کو سوئچ کرنے کیلئے ٹاسک بار کا استعمال کریں"</string>
+    <string name="taskbar_edu_splitscreen" msgid="2663361731630346489">"ایک وقت میں دو ایپس استعمال کرنے کے لیے سائیڈ پر گھسیٹیں"</string>
     <string name="taskbar_edu_stashing" msgid="5212374387411764031">"ٹاسک بار کو کسی بھی وقت چھپانے کیلئے ٹچ کریں اور دبائے رکھیں"</string>
     <string name="taskbar_edu_next" msgid="4007618274426775841">"آگے"</string>
     <string name="taskbar_edu_previous" msgid="459202320127201702">"پیچھے"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"بند کریں"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"ہو گیا"</string>
+    <string name="taskbar_button_home" msgid="2151398979630664652">"ہوم"</string>
+    <string name="taskbar_button_a11y" msgid="5241161324875094465">"ایکسیسبیلٹی"</string>
+    <string name="taskbar_button_back" msgid="8558862226461164514">"پیچھے"</string>
+    <string name="taskbar_button_ime_switcher" msgid="1730244360907588541">"‏IME سوئچر"</string>
+    <string name="taskbar_button_recents" msgid="7273376136216613134">"حالیہ"</string>
+    <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"اوپر/بائیں طرف منتقل کریں"</string>
+    <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"نیچے/دائیں طرف منتقل کریں"</string>
 </resources>
