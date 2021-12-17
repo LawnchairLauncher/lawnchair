@@ -89,9 +89,18 @@
     <string name="accessibility_rotate_button" msgid="4771825231336502943">"স্ক্রিন ঘোরান"</string>
     <string name="taskbar_edu_opened" msgid="3950252793551919129">"টাস্কবার এডুকেশন দেখানো হয়েছে"</string>
     <string name="taskbar_edu_closed" msgid="126643734478892862">"টাস্কবার এডুকেশন বন্ধ করা আছে"</string>
+    <string name="taskbar_edu_switch_apps" msgid="6942863327845784813">"অ্যাপ পাল্টানোর জন্য টাস্কবার ব্যবহার করুন"</string>
+    <string name="taskbar_edu_splitscreen" msgid="2663361731630346489">"একসাথে দুটি অ্যাপ ব্যবহার করতে পাশে টেনে আনুন"</string>
     <string name="taskbar_edu_stashing" msgid="5212374387411764031">"টাস্কবার লুকানোর জন্য টাচ করে ধরে থাকুন"</string>
     <string name="taskbar_edu_next" msgid="4007618274426775841">"পরবর্তী"</string>
     <string name="taskbar_edu_previous" msgid="459202320127201702">"ফিরুন"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"বন্ধ করুন"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"হয়ে গেছে"</string>
+    <string name="taskbar_button_home" msgid="2151398979630664652">"হোম"</string>
+    <string name="taskbar_button_a11y" msgid="5241161324875094465">"অ্যাক্সেসিবিলিটি"</string>
+    <string name="taskbar_button_back" msgid="8558862226461164514">"ফিরে যান"</string>
+    <string name="taskbar_button_ime_switcher" msgid="1730244360907588541">"IME সুইচার"</string>
+    <string name="taskbar_button_recents" msgid="7273376136216613134">"সম্প্রতি"</string>
+    <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"উপরে/বাঁদিকে সরান"</string>
+    <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"নিচে/ডানদিকে সরান"</string>
 </resources>

@@ -28,6 +28,10 @@
     <string name="shortcut_not_available" msgid="2536503539825726397">"ಶಾರ್ಟ್‌ಕಟ್ ಲಭ್ಯವಿಲ್ಲ"</string>
     <string name="home_screen" msgid="5629429142036709174">"ಹೋಮ್"</string>
     <string name="recent_task_option_split_screen" msgid="6690461455618725183">"ಸ್ಪ್ಲಿಟ್ ಸ್ಕ್ರೀನ್"</string>
+    <string name="split_screen_position_top" msgid="1504965011158689649">"ಮೇಲಕ್ಕೆ ವಿಭಜಿಸಿ"</string>
+    <string name="split_screen_position_left" msgid="7537793098851830883">"ಎಡಕ್ಕೆ ವಿಭಜಿಸಿ"</string>
+    <string name="split_screen_position_right" msgid="1569377524925193369">"ಬಲಕ್ಕೆ ವಿಭಜಿಸಿ"</string>
+    <string name="split_app_info_accessibility" msgid="5475288491241414932">"%1$s ಗಾಗಿ ಆ್ಯಪ್ ಮಾಹಿತಿ"</string>
     <string name="long_press_widget_to_add" msgid="3587712543577675817">"ವಿಜೆಟ್ ಸರಿಸಲು ಸ್ಪರ್ಶಿಸಿ ಮತ್ತು ಹಿಡಿದುಕೊಳ್ಳಿ."</string>
     <string name="long_accessible_way_to_add" msgid="2733588281439571974">"ವಿಜೆಟ್ ಸರಿಸಲು ಅಥವಾ ಕಸ್ಟಮ್ ಕ್ರಿಯೆಗಳನ್ನು ಬಳಸಲು ಡಬಲ್-ಟ್ಯಾಪ್ ಮಾಡಿ ಮತ್ತು ಹಿಡಿದುಕೊಳ್ಳಿ."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>

@@ -89,9 +89,18 @@
     <string name="accessibility_rotate_button" msgid="4771825231336502943">"Xoay màn hình"</string>
     <string name="taskbar_edu_opened" msgid="3950252793551919129">"Đã hiện bảng hướng dẫn trên thanh tác vụ"</string>
     <string name="taskbar_edu_closed" msgid="126643734478892862">"Đã đóng bảng hướng dẫn trên thanh tác vụ"</string>
+    <string name="taskbar_edu_switch_apps" msgid="6942863327845784813">"Dùng thanh tác vụ để chuyển đổi ứng dụng"</string>
+    <string name="taskbar_edu_splitscreen" msgid="2663361731630346489">"Kéo sang bên để dùng hai ứng dụng cùng một lúc"</string>
     <string name="taskbar_edu_stashing" msgid="5212374387411764031">"Chạm và giữ để ẩn thanh tác vụ"</string>
     <string name="taskbar_edu_next" msgid="4007618274426775841">"Tiếp theo"</string>
     <string name="taskbar_edu_previous" msgid="459202320127201702">"Quay lại"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"Đóng"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"Xong"</string>
+    <string name="taskbar_button_home" msgid="2151398979630664652">"Màn hình chính"</string>
+    <string name="taskbar_button_a11y" msgid="5241161324875094465">"Hỗ trợ tiếp cận"</string>
+    <string name="taskbar_button_back" msgid="8558862226461164514">"Quay lại"</string>
+    <string name="taskbar_button_ime_switcher" msgid="1730244360907588541">"Trình chuyển đổi IME"</string>
+    <string name="taskbar_button_recents" msgid="7273376136216613134">"Gần đây"</string>
+    <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"Chuyển lên trên cùng/sang bên trái"</string>
+    <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"Chuyển xuống dưới cùng/sang bên phải"</string>
 </resources>

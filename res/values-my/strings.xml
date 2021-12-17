@@ -28,6 +28,10 @@
     <string name="shortcut_not_available" msgid="2536503539825726397">"ဖြတ်လမ်း မရနိုင်ပါ"</string>
     <string name="home_screen" msgid="5629429142036709174">"ပင်မစာမျက်နှာ"</string>
     <string name="recent_task_option_split_screen" msgid="6690461455618725183">"မျက်နှာပြင် ခွဲ၍ပြသခြင်း"</string>
+    <string name="split_screen_position_top" msgid="1504965011158689649">"ထိပ်ပိုင်း အခွဲ"</string>
+    <string name="split_screen_position_left" msgid="7537793098851830883">"ဘက်ဘက် အခွဲ"</string>
+    <string name="split_screen_position_right" msgid="1569377524925193369">"ညာဘက် အခွဲ"</string>
+    <string name="split_app_info_accessibility" msgid="5475288491241414932">"%1$s အတွက် အက်ပ်အချက်အလက်"</string>
     <string name="long_press_widget_to_add" msgid="3587712543577675817">"ဝိဂျက်ကို ရွှေ့ရန် တို့ပြီး ဖိထားပါ။"</string>
     <string name="long_accessible_way_to_add" msgid="2733588281439571974">"ဝိဂျက်ကို ရွှေ့ရန် (သို့) စိတ်ကြိုက်လုပ်ဆောင်ချက်များကို သုံးရန် နှစ်ချက်တို့ပြီး ဖိထားပါ။"</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
@@ -126,7 +130,7 @@
     <string name="action_move_here" msgid="2170188780612570250">"၎င်းအား ဤသို့ ရွှေ့ပါ"</string>
     <string name="item_added_to_workspace" msgid="4211073925752213539">"ပင်မ ဖန်မျက်နှာပြင်သို့ ထည့်ပြီး၏"</string>
     <string name="item_removed" msgid="851119963877842327">"၎င်းအား ဖယ်ရှားပြီး၏"</string>
-    <string name="undo" msgid="4151576204245173321">"နောက်ပြန်"</string>
+    <string name="undo" msgid="4151576204245173321">"နောက်ပြန်ရန်"</string>
     <string name="action_move" msgid="4339390619886385032">"၎င်းအား ရွှေ့ပါ"</string>
     <string name="move_to_empty_cell" msgid="2833711483015685619">"အတန်း <xliff:g id="NUMBER_0">%1$s</xliff:g> အတိုင် <xliff:g id="NUMBER_1">%2$s</xliff:g> သို့ ရွှေ့ပါ"</string>
     <string name="move_to_position" msgid="6750008980455459790">"<xliff:g id="NUMBER">%1$s</xliff:g> သို့ နေရာရွှေ့ပါ"</string>

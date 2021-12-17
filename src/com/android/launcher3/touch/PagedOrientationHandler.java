@@ -191,6 +191,10 @@ public interface PagedOrientationHandler {
      */
     PointF getAdditionalInsetForTaskMenu(float margin);
 
+    Pair<Float, Float> setDwbLayoutParamsAndGetTranslations(int taskViewWidth,
+            int taskViewHeight, StagedSplitBounds splitBounds, DeviceProfile deviceProfile,
+            View[] thumbnailViews, int desiredTaskId, View banner);
+
     // The following are only used by TaskViewTouchHandler.
     /** @return Either VERTICAL or HORIZONTAL. */
     SingleAxisSwipeDetector.Direction getUpDownSwipeDirection();

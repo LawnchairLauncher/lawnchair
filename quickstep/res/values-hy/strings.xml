@@ -89,9 +89,23 @@
     <string name="accessibility_rotate_button" msgid="4771825231336502943">"Պտտել էկրանը"</string>
     <string name="taskbar_edu_opened" msgid="3950252793551919129">"Խնդրագոտու «Կրթություն» վահանակը բացվեց"</string>
     <string name="taskbar_edu_closed" msgid="126643734478892862">"Խնդրագոտու «Կրթություն» վահանակը փակվեց"</string>
+    <string name="taskbar_edu_switch_apps" msgid="6942863327845784813">"Օգտագործեք խնդրագոտին՝ մի հավելվածից մյուսին անցնելու համար"</string>
+    <string name="taskbar_edu_splitscreen" msgid="2663361731630346489">"Քաշեք մի կողմ՝ միաժամանակ երկու հավելված օգտագործելու համար"</string>
     <string name="taskbar_edu_stashing" msgid="5212374387411764031">"Հպեք և պահեք՝ խնդրագոտին թաքցնելու համար"</string>
     <string name="taskbar_edu_next" msgid="4007618274426775841">"Առաջ"</string>
     <string name="taskbar_edu_previous" msgid="459202320127201702">"Հետ"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"Փակել"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"Պատրաստ է"</string>
+    <!-- no translation found for taskbar_button_home (2151398979630664652) -->
+    <skip />
+    <!-- no translation found for taskbar_button_a11y (5241161324875094465) -->
+    <skip />
+    <!-- no translation found for taskbar_button_back (8558862226461164514) -->
+    <skip />
+    <!-- no translation found for taskbar_button_ime_switcher (1730244360907588541) -->
+    <skip />
+    <!-- no translation found for taskbar_button_recents (7273376136216613134) -->
+    <skip />
+    <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"Տեղափոխել վերևի ձախ անկյուն"</string>
+    <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"Տեղափոխել ներքևի աջ անկյուն"</string>
 </resources>

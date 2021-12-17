@@ -89,9 +89,18 @@
     <string name="accessibility_rotate_button" msgid="4771825231336502943">"ဖန်သားပြင်လှည့်ရန်"</string>
     <string name="taskbar_edu_opened" msgid="3950252793551919129">"ပညာရေး လုပ်ဆောင်စရာဘား ပြထားသည်"</string>
     <string name="taskbar_edu_closed" msgid="126643734478892862">"ပညာရေး လုပ်ဆောင်စရာဘား ပိတ်ထားသည်"</string>
+    <string name="taskbar_edu_switch_apps" msgid="6942863327845784813">"အက်ပ်များပြောင်းရန် လုပ်ဆောင်စရာဘားကို သုံးပါ"</string>
+    <string name="taskbar_edu_splitscreen" msgid="2663361731630346489">"အက်ပ်နှစ်ခု တစ်ပြိုင်တည်းသုံးရန် တစ်ဖက်သို့ ဖိဆွဲပါ"</string>
     <string name="taskbar_edu_stashing" msgid="5212374387411764031">"လုပ်ဆောင်စရာဘားကို ဖျောက်ရန် ထိပြီးဖိထားနိုင်သည်"</string>
     <string name="taskbar_edu_next" msgid="4007618274426775841">"ရှေ့သို့"</string>
     <string name="taskbar_edu_previous" msgid="459202320127201702">"နောက်သို့"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"ပိတ်ရန်"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"ပြီးပြီ"</string>
+    <string name="taskbar_button_home" msgid="2151398979630664652">"ပင်မစာမျက်နှာ"</string>
+    <string name="taskbar_button_a11y" msgid="5241161324875094465">"အများသုံးစွဲနိုင်မှု"</string>
+    <string name="taskbar_button_back" msgid="8558862226461164514">"နောက်သို့"</string>
+    <string name="taskbar_button_ime_switcher" msgid="1730244360907588541">"IME ပြောင်းစနစ်"</string>
+    <string name="taskbar_button_recents" msgid="7273376136216613134">"လတ်တလောများ"</string>
+    <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"အပေါ်/ဘယ်ဘက်သို့ ရွှေ့ရန်"</string>
+    <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"အောက်ခြေ/ညာဘက်သို့ ရွှေ့ရန်"</string>
 </resources>

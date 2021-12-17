@@ -89,9 +89,18 @@
     <string name="accessibility_rotate_button" msgid="4771825231336502943">"چرخاندن صفحه"</string>
     <string name="taskbar_edu_opened" msgid="3950252793551919129">"پانل آموزشی نوار وظیفه نمایان شد"</string>
     <string name="taskbar_edu_closed" msgid="126643734478892862">"پانل آموزشی نوار وظیفه بسته شد"</string>
+    <string name="taskbar_edu_switch_apps" msgid="6942863327845784813">"برای جابه‌جایی بین برنامه‌ها، از نوار وظیفه استفاده کنید"</string>
+    <string name="taskbar_edu_splitscreen" msgid="2663361731630346489">"برای استفاده هم‌زمان از دو برنامه، آن را به کنار بکشید"</string>
     <string name="taskbar_edu_stashing" msgid="5212374387411764031">"برای پنهان کردن نوار وظیفه، لمس کنید و نگه دارید"</string>
     <string name="taskbar_edu_next" msgid="4007618274426775841">"بعدی"</string>
     <string name="taskbar_edu_previous" msgid="459202320127201702">"برگشت"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"بستن"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"تمام"</string>
+    <string name="taskbar_button_home" msgid="2151398979630664652">"صفحه اصلی"</string>
+    <string name="taskbar_button_a11y" msgid="5241161324875094465">"دسترس‌پذیری"</string>
+    <string name="taskbar_button_back" msgid="8558862226461164514">"برگشت"</string>
+    <string name="taskbar_button_ime_switcher" msgid="1730244360907588541">"‏تعویض‌کننده IME"</string>
+    <string name="taskbar_button_recents" msgid="7273376136216613134">"موارد اخیر"</string>
+    <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"انتقال به بالا/ چپ"</string>
+    <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"انتقال به پایین/ راست"</string>
 </resources>

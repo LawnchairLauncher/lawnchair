@@ -89,9 +89,18 @@
     <string name="accessibility_rotate_button" msgid="4771825231336502943">"Rotirajte ekran"</string>
     <string name="taskbar_edu_opened" msgid="3950252793551919129">"Edukativno okno iz trake zadataka se pojavilo"</string>
     <string name="taskbar_edu_closed" msgid="126643734478892862">"Edukativno okno iz trake zadataka je zatvoreno"</string>
+    <string name="taskbar_edu_switch_apps" msgid="6942863327845784813">"Koristite traku zadataka da biste menjali aplikacije"</string>
+    <string name="taskbar_edu_splitscreen" msgid="2663361731630346489">"Prevucite na stranu da koristite dve aplikacije odjednom"</string>
     <string name="taskbar_edu_stashing" msgid="5212374387411764031">"Dodirnite i zadržite za skrivanje trake zadataka"</string>
     <string name="taskbar_edu_next" msgid="4007618274426775841">"Dalje"</string>
     <string name="taskbar_edu_previous" msgid="459202320127201702">"Nazad"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"Zatvori"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"Gotovo"</string>
+    <string name="taskbar_button_home" msgid="2151398979630664652">"Početna"</string>
+    <string name="taskbar_button_a11y" msgid="5241161324875094465">"Pristupačnost"</string>
+    <string name="taskbar_button_back" msgid="8558862226461164514">"Nazad"</string>
+    <string name="taskbar_button_ime_switcher" msgid="1730244360907588541">"IME prebacivač"</string>
+    <string name="taskbar_button_recents" msgid="7273376136216613134">"Nedavno"</string>
+    <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"Premesti gore levo"</string>
+    <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"Premesti dole desno"</string>
 </resources>

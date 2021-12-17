@@ -89,9 +89,18 @@
     <string name="accessibility_rotate_button" msgid="4771825231336502943">"Ruota lo schermo"</string>
     <string name="taskbar_edu_opened" msgid="3950252793551919129">"Riquadro Formazione barra delle applicazioni visualizzato"</string>
     <string name="taskbar_edu_closed" msgid="126643734478892862">"Riquadro Formazione barra delle applicazioni chiuso"</string>
+    <string name="taskbar_edu_switch_apps" msgid="6942863327845784813">"Usa la barra delle applicazioni per cambiare app"</string>
+    <string name="taskbar_edu_splitscreen" msgid="2663361731630346489">"Trascina di lato per usare due app contemporaneamente"</string>
     <string name="taskbar_edu_stashing" msgid="5212374387411764031">"Tocca e tieni premuto per nascondere barra applicazioni"</string>
     <string name="taskbar_edu_next" msgid="4007618274426775841">"Avanti"</string>
     <string name="taskbar_edu_previous" msgid="459202320127201702">"Indietro"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"Chiudi"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"Fine"</string>
+    <string name="taskbar_button_home" msgid="2151398979630664652">"Home"</string>
+    <string name="taskbar_button_a11y" msgid="5241161324875094465">"Accessibilità"</string>
+    <string name="taskbar_button_back" msgid="8558862226461164514">"Indietro"</string>
+    <string name="taskbar_button_ime_switcher" msgid="1730244360907588541">"Selettore IME"</string>
+    <string name="taskbar_button_recents" msgid="7273376136216613134">"Recenti"</string>
+    <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"Sposta in alto/a sinistra"</string>
+    <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"Sposta in basso/a destra"</string>
 </resources>

@@ -89,9 +89,18 @@
     <string name="accessibility_rotate_button" msgid="4771825231336502943">"ಸ್ಕ್ರೀನ್ ತಿರುಗಿಸಿ"</string>
     <string name="taskbar_edu_opened" msgid="3950252793551919129">"ಟಾಸ್ಕ್‌ಬಾರ್ ಶಿಕ್ಷಣ ಕಾಣಿಸಿಕೊಂಡಿದೆ"</string>
     <string name="taskbar_edu_closed" msgid="126643734478892862">"ಟಾಸ್ಕ್‌ಬಾರ್ ಶಿಕ್ಷಣ ಮುಚ್ಚಿದೆ"</string>
+    <string name="taskbar_edu_switch_apps" msgid="6942863327845784813">"ಆ್ಯಪ್‌ಗಳನ್ನು ಬದಲಾಯಿಸಲು ಟಾಸ್ಕ್ ಬಾರ್ ಬಳಸಿ"</string>
+    <string name="taskbar_edu_splitscreen" msgid="2663361731630346489">"ಏಕಕಾಲದಲ್ಲಿ ಎರಡು ಆ್ಯಪ್‌ಗಳನ್ನು ಬಳಸಲು, ಬದಿಗೆ ಡ್ರ್ಯಾಗ್ ಮಾಡಿ"</string>
     <string name="taskbar_edu_stashing" msgid="5212374387411764031">"ಟಾಸ್ಕ್‌ಬಾರ್ ಅನ್ನು ಮರೆಮಾಡಲು ಸ್ಪರ್ಶಿಸಿ ಮತ್ತು ಹೋಲ್ಡ್ ಮಾಡಿ"</string>
     <string name="taskbar_edu_next" msgid="4007618274426775841">"ಮುಂದೆ"</string>
     <string name="taskbar_edu_previous" msgid="459202320127201702">"ಹಿಂದೆ"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"ಮುಚ್ಚಿರಿ"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"ಮುಗಿದಿದೆ"</string>
+    <string name="taskbar_button_home" msgid="2151398979630664652">"ಮುಖಪುಟ"</string>
+    <string name="taskbar_button_a11y" msgid="5241161324875094465">"ಪ್ರವೇಶಿಸುವಿಕೆ"</string>
+    <string name="taskbar_button_back" msgid="8558862226461164514">"ಹಿಂದೆ"</string>
+    <string name="taskbar_button_ime_switcher" msgid="1730244360907588541">"IME ಪರಿವರ್ತಕ"</string>
+    <string name="taskbar_button_recents" msgid="7273376136216613134">"ಇತ್ತೀಚಿನವು"</string>
+    <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"ಮೇಲಿನ/ಎಡಭಾಗಕ್ಕೆ ಸರಿಸಿ"</string>
+    <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"ಕೆಳಗಿನ/ಬಲಭಾಗಕ್ಕೆ ಸರಿಸಿ"</string>
 </resources>

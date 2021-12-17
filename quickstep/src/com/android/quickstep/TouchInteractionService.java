@@ -640,8 +640,8 @@ public class TouchInteractionService extends Service
             gestureState.updatePreviouslyAppearedTaskIds(
                     previousGestureState.getPreviouslyAppearedTaskIds());
         } else {
-            gestureState.updateRunningTask(TraceHelper.allowIpcs("getRunningTask.0",
-                    () -> mAM.getRunningTask(false /* filterOnlyVisibleRecents */)));
+            gestureState.updateRunningTasks(TraceHelper.allowIpcs("getRunningTask.0",
+                    () -> mAM.getRunningTasks(false /* filterOnlyVisibleRecents */)));
         }
         return gestureState;
     }

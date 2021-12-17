@@ -89,9 +89,23 @@
     <string name="accessibility_rotate_button" msgid="4771825231336502943">"સ્ક્રીન ફેરવો"</string>
     <string name="taskbar_edu_opened" msgid="3950252793551919129">"ટાસ્કબારનું શિક્ષણ આપતી પૅનલ દેખાય છે"</string>
     <string name="taskbar_edu_closed" msgid="126643734478892862">"ટાસ્કબારનું શિક્ષણ આપતી પૅનલ બંધ થઈ છે"</string>
+    <string name="taskbar_edu_switch_apps" msgid="6942863327845784813">"ઍપ સ્વિચ કરવા માટે, ટાસ્કબારનો ઉપયોગ કરો"</string>
+    <string name="taskbar_edu_splitscreen" msgid="2663361731630346489">"એક જ સમયે બે ઍપનો ઉપયોગ કરવા માટે, ખેંચીને બાજુ પર લઈ જાઓ"</string>
     <string name="taskbar_edu_stashing" msgid="5212374387411764031">"ટાસ્કબાર છુપાવવા, તેને ટચ કરીને થોડીવાર દબાવી રાખો"</string>
     <string name="taskbar_edu_next" msgid="4007618274426775841">"આગળ"</string>
     <string name="taskbar_edu_previous" msgid="459202320127201702">"પાછળ"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"બંધ કરો"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"થઈ ગયું"</string>
+    <!-- no translation found for taskbar_button_home (2151398979630664652) -->
+    <skip />
+    <!-- no translation found for taskbar_button_a11y (5241161324875094465) -->
+    <skip />
+    <!-- no translation found for taskbar_button_back (8558862226461164514) -->
+    <skip />
+    <!-- no translation found for taskbar_button_ime_switcher (1730244360907588541) -->
+    <skip />
+    <!-- no translation found for taskbar_button_recents (7273376136216613134) -->
+    <skip />
+    <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"સૌથી ઉપર ડાબી બાજુએ ખસેડો"</string>
+    <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"સૌથી નીચે જમણી બાજુએ ખસેડો"</string>
 </resources>

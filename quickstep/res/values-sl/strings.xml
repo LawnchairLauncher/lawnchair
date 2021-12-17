@@ -89,9 +89,18 @@
     <string name="accessibility_rotate_button" msgid="4771825231336502943">"Sukanje zaslona"</string>
     <string name="taskbar_edu_opened" msgid="3950252793551919129">"Poučni nasveti o opravilni vrstici so prikazani."</string>
     <string name="taskbar_edu_closed" msgid="126643734478892862">"Poučni nasveti o opravilni vrstici so zaprti."</string>
+    <string name="taskbar_edu_switch_apps" msgid="6942863327845784813">"Za preklop aplikacij uporabite opravilno vrstico."</string>
+    <string name="taskbar_edu_splitscreen" msgid="2663361731630346489">"Povlecite vstran za uporabo dveh aplikacij hkrati."</string>
     <string name="taskbar_edu_stashing" msgid="5212374387411764031">"Pridržite, če želite opravilno vrstico skriti."</string>
     <string name="taskbar_edu_next" msgid="4007618274426775841">"Naprej"</string>
     <string name="taskbar_edu_previous" msgid="459202320127201702">"Nazaj"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"Zapri"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"Končano"</string>
+    <string name="taskbar_button_home" msgid="2151398979630664652">"Začetni zaslon"</string>
+    <string name="taskbar_button_a11y" msgid="5241161324875094465">"Dostopnost"</string>
+    <string name="taskbar_button_back" msgid="8558862226461164514">"Nazaj"</string>
+    <string name="taskbar_button_ime_switcher" msgid="1730244360907588541">"Menjava UNV"</string>
+    <string name="taskbar_button_recents" msgid="7273376136216613134">"Nedavno"</string>
+    <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"Premakni na vrh/levo"</string>
+    <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"Premakni na dno/desno"</string>
 </resources>

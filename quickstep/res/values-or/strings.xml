@@ -89,9 +89,18 @@
     <string name="accessibility_rotate_button" msgid="4771825231336502943">"ସ୍କ୍ରିନ ଘୂରାନ୍ତୁ"</string>
     <string name="taskbar_edu_opened" msgid="3950252793551919129">"ଟାସ୍କବାର୍ ଶିକ୍ଷା ଦେଖାଯାଇଛି"</string>
     <string name="taskbar_edu_closed" msgid="126643734478892862">"ଟାସ୍କବାର୍ ଶିକ୍ଷା ବନ୍ଦ ହୋଇଯାଇଛି"</string>
+    <string name="taskbar_edu_switch_apps" msgid="6942863327845784813">"ଆପଗୁଡ଼ିକୁ ସ୍ୱିଚ କରିବା ପାଇଁ ଟାସ୍କବାର ବ୍ୟବହାର କରନ୍ତୁ"</string>
+    <string name="taskbar_edu_splitscreen" msgid="2663361731630346489">"ଥରକେ ଦୁଇଟି ଆପ ବ୍ୟବହାର କରିବା ପାଇଁ ପାର୍ଶ୍ୱକୁ ଡ୍ରାଗ କରନ୍ତୁ"</string>
     <string name="taskbar_edu_stashing" msgid="5212374387411764031">"ଟାସ୍କବାରକୁ ଲୁଚାଇବା ପାଇଁ ସ୍ପର୍ଶ କରି ଧରି ରଖନ୍ତୁ"</string>
     <string name="taskbar_edu_next" msgid="4007618274426775841">"ପରବର୍ତ୍ତୀ"</string>
     <string name="taskbar_edu_previous" msgid="459202320127201702">"ପଛକୁ ଫେରନ୍ତୁ"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"ବନ୍ଦ କରନ୍ତୁ"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"ହୋଇଗଲା"</string>
+    <string name="taskbar_button_home" msgid="2151398979630664652">"ମୂଳପୃଷ୍ଠା"</string>
+    <string name="taskbar_button_a11y" msgid="5241161324875094465">"ଆକ୍ସେସିବିଲିଟୀ"</string>
+    <string name="taskbar_button_back" msgid="8558862226461164514">"ପଛକୁ ଫେରନ୍ତୁ"</string>
+    <string name="taskbar_button_ime_switcher" msgid="1730244360907588541">"IME ସ୍ୱିଚର"</string>
+    <string name="taskbar_button_recents" msgid="7273376136216613134">"ବର୍ତ୍ତମାନର"</string>
+    <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"ଶୀର୍ଷ/ବାମକୁ ମୁଭ କରନ୍ତୁ"</string>
+    <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"ନିମ୍ନ/ଡାହାଣକୁ ମୁଭ କରନ୍ତୁ"</string>
 </resources>
