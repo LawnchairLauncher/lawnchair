@@ -89,6 +89,8 @@
     <string name="accessibility_rotate_button" msgid="4771825231336502943">"Faire pivoter l\'écran"</string>
     <string name="taskbar_edu_opened" msgid="3950252793551919129">"Infos sur la barre des tâches affichées"</string>
     <string name="taskbar_edu_closed" msgid="126643734478892862">"Infos sur la barre des tâches fermées"</string>
+    <string name="taskbar_edu_switch_apps" msgid="6942863327845784813">"Utilisez la barre des tâches pour changer d\'application"</string>
+    <string name="taskbar_edu_splitscreen" msgid="2663361731630346489">"Faites glisser sur côté pour utiliser deux applis à la fois"</string>
     <string name="taskbar_edu_stashing" msgid="5212374387411764031">"Appuyez de manière prolongée pour masquer barre des tâches"</string>
     <string name="taskbar_edu_next" msgid="4007618274426775841">"Suivant"</string>
     <string name="taskbar_edu_previous" msgid="459202320127201702">"Retour"</string>

@@ -40,6 +40,7 @@ import android.annotation.IdRes;
 import android.annotation.LayoutRes;
 import android.content.pm.ActivityInfo.Config;
 import android.content.res.ColorStateList;
+import android.content.res.Configuration;
 import android.graphics.Rect;
 import android.graphics.Region;
 import android.graphics.Region.Op;
@@ -60,7 +61,6 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AlphaUpdateListener;
 import com.android.launcher3.taskbar.TaskbarNavButtonController.TaskbarButton;
 import com.android.launcher3.util.MultiValueAlpha;
-import com.android.launcher3.util.Themes;
 import com.android.quickstep.AnimatedFloat;
 import com.android.systemui.shared.rotation.FloatingRotationButton;
 import com.android.systemui.shared.rotation.RotationButton;
@@ -87,7 +87,7 @@ public class NavbarButtonsViewController {
     private static final int FLAG_DISABLE_RECENTS = 1 << 8;
     private static final int FLAG_DISABLE_BACK = 1 << 9;
     private static final int FLAG_NOTIFICATION_SHADE_EXPANDED = 1 << 10;
-    private static final int FLAG_SCREEN_PINNING_ACTIVE = 1 << 10;
+    private static final int FLAG_SCREEN_PINNING_ACTIVE = 1 << 11;
 
     private static final int MASK_IME_SWITCHER_VISIBLE = FLAG_SWITCHER_SUPPORTED | FLAG_IME_VISIBLE;
 
@@ -198,15 +198,12 @@ public class NavbarButtonsViewController {
                 navButtonsLayoutParams.gravity = Gravity.START;
                 mNavButtonContainer.requestLayout();
 
-                if (!isThreeButtonNav) {
-                    // Tint all the nav buttons since there's no taskbar background in SUW.
-                    for (int i = 0; i < mNavButtonContainer.getChildCount(); i++) {
-                        if (!(mNavButtonContainer.getChildAt(i) instanceof ImageView)) continue;
-                        ImageView button = (ImageView) mNavButtonContainer.getChildAt(i);
-                        button.setImageTintList(ColorStateList.valueOf(Themes.getAttrColor(
-                                button.getContext(), android.R.attr.textColorPrimary)));
-                    }
-                }
+                // TODO(b/210906568) Dark intensity is currently not propagated during setup, so set
+                //  it based on dark theme for now.
+                int mode = mContext.getResources().getConfiguration().uiMode
+                        & Configuration.UI_MODE_NIGHT_MASK;
+                boolean isDarkTheme = mode == Configuration.UI_MODE_NIGHT_YES;
+                mTaskbarNavButtonDarkIntensity.updateValue(isDarkTheme ? 0 : 1);
             }
 
             // Animate taskbar background when any of these flags are enabled
@@ -254,16 +251,19 @@ public class NavbarButtonsViewController {
         mBackButton = addButton(R.drawable.ic_sysbar_back, BUTTON_BACK,
                 mNavButtonContainer, mControllers.navButtonController, R.id.back);
         mPropertyHolders.add(new StatePropertyHolder(mBackButton,
-                flags -> (flags & FLAG_DISABLE_BACK) == 0));
+                flags -> {
+                    // Show only if not disabled, and if not on the keyguard or otherwise only when
+                    // the bouncer or a lockscreen app is showing above the keyguard
+                    boolean showingOnKeyguard = (flags & FLAG_KEYGUARD_VISIBLE) == 0 ||
+                            (flags & FLAG_ONLY_BACK_FOR_BOUNCER_VISIBLE) != 0 ||
+                            (flags & FLAG_KEYGUARD_OCCLUDED) != 0;
+                    return (flags & FLAG_DISABLE_BACK) == 0
+                            && ((flags & FLAG_KEYGUARD_VISIBLE) == 0 || showingOnKeyguard);
+                }));
         boolean isRtl = Utilities.isRtl(mContext.getResources());
         mPropertyHolders.add(new StatePropertyHolder(
                 mBackButton, flags -> (flags & FLAG_IME_VISIBLE) != 0, View.ROTATION,
                 isRtl ? 90 : -90, 0));
-        // Hide when keyguard is showing, show when bouncer or lock screen app is showing
-        mPropertyHolders.add(new StatePropertyHolder(mBackButton,
-                flags -> (flags & FLAG_KEYGUARD_VISIBLE) == 0 ||
-                        (flags & FLAG_ONLY_BACK_FOR_BOUNCER_VISIBLE) != 0 ||
-                        (flags & FLAG_KEYGUARD_OCCLUDED) != 0));
         // Translate back button to be at end/start of other buttons for keyguard
         int navButtonSize = mContext.getResources().getDimensionPixelSize(
                 R.dimen.taskbar_nav_buttons_size);

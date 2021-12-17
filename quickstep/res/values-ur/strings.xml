@@ -89,6 +89,8 @@
     <string name="accessibility_rotate_button" msgid="4771825231336502943">"اسکرین کو گھمائیں"</string>
     <string name="taskbar_edu_opened" msgid="3950252793551919129">"ٹاکس بار کا تعلیمی پینل ظاہر ہو گیا"</string>
     <string name="taskbar_edu_closed" msgid="126643734478892862">"ٹاسک بار کا تعلیمی پینل بند ہو گیا"</string>
+    <string name="taskbar_edu_switch_apps" msgid="6942863327845784813">"ایپس کو سوئچ کرنے کیلئے ٹاسک بار کا استعمال کریں"</string>
+    <string name="taskbar_edu_splitscreen" msgid="2663361731630346489">"ایک وقت میں دو ایپس استعمال کرنے کے لیے سائیڈ پر گھسیٹیں"</string>
     <string name="taskbar_edu_stashing" msgid="5212374387411764031">"ٹاسک بار کو کسی بھی وقت چھپانے کیلئے ٹچ کریں اور دبائے رکھیں"</string>
     <string name="taskbar_edu_next" msgid="4007618274426775841">"آگے"</string>
     <string name="taskbar_edu_previous" msgid="459202320127201702">"پیچھے"</string>

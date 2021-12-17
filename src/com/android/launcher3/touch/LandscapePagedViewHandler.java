@@ -309,6 +309,46 @@ public class LandscapePagedViewHandler implements PagedOrientationHandler {
         return new PointF(margin, 0);
     }
 
+    @Override
+    public Pair<Float, Float> setDwbLayoutParamsAndGetTranslations(int taskViewWidth,
+            int taskViewHeight, StagedSplitBounds splitBounds, DeviceProfile deviceProfile,
+            View[] thumbnailViews, int desiredTaskId, View banner) {
+        float translationX = 0;
+        float translationY = 0;
+        FrameLayout.LayoutParams bannerParams = (FrameLayout.LayoutParams) banner.getLayoutParams();
+        banner.setPivotX(0);
+        banner.setPivotY(0);
+        banner.setRotation(getDegreesRotated());
+        translationX = banner.getHeight();
+        FrameLayout.LayoutParams snapshotParams =
+                (FrameLayout.LayoutParams) thumbnailViews[0]
+                        .getLayoutParams();
+        bannerParams.gravity = TOP | START;
+        if (splitBounds == null) {
+            // Single, fullscreen case
+            bannerParams.width = taskViewHeight - snapshotParams.topMargin;
+            return new Pair<>(translationX, Integer.valueOf(snapshotParams.topMargin).floatValue());
+        }
+
+        // Set correct width
+        if (desiredTaskId == splitBounds.leftTopTaskId) {
+            bannerParams.width = thumbnailViews[0].getMeasuredHeight();
+        } else {
+            bannerParams.width = thumbnailViews[1].getMeasuredHeight();
+        }
+
+        // Set translations
+        if (desiredTaskId == splitBounds.rightBottomTaskId) {
+            translationY = (snapshotParams.topMargin + taskViewHeight)
+                    * (splitBounds.leftTaskPercent) +
+                    (taskViewHeight * splitBounds.dividerWidthPercent);
+        }
+        if (desiredTaskId == splitBounds.leftTopTaskId) {
+            translationY = snapshotParams.topMargin;
+        }
+        return new Pair<>(translationX, translationY);
+    }
+
     /* ---------- The following are only used by TaskViewTouchHandler. ---------- */
 
     @Override

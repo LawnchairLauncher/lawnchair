@@ -89,6 +89,8 @@
     <string name="accessibility_rotate_button" msgid="4771825231336502943">"Roter skærm"</string>
     <string name="taskbar_edu_opened" msgid="3950252793551919129">"Vejledningen om proceslinjen blev åbnet"</string>
     <string name="taskbar_edu_closed" msgid="126643734478892862">"Vejledningen om proceslinjen blev lukket"</string>
+    <string name="taskbar_edu_switch_apps" msgid="6942863327845784813">"Skift mellem apps ved hjælp af proceslinjen"</string>
+    <string name="taskbar_edu_splitscreen" msgid="2663361731630346489">"Træk til siden for at bruge to apps samtidig"</string>
     <string name="taskbar_edu_stashing" msgid="5212374387411764031">"Du kan skjule proceslinjen ved at holde fingeren nede"</string>
     <string name="taskbar_edu_next" msgid="4007618274426775841">"Næste"</string>
     <string name="taskbar_edu_previous" msgid="459202320127201702">"Tilbage"</string>

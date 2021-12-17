@@ -89,6 +89,8 @@
     <string name="accessibility_rotate_button" msgid="4771825231336502943">"Экранды бұру"</string>
     <string name="taskbar_edu_opened" msgid="3950252793551919129">"Тапсырмалар тақтасы бойынша нұсқаулық ашылды."</string>
     <string name="taskbar_edu_closed" msgid="126643734478892862">"Тапсырмалар тақтасы бойынша нұсқаулық жабылды."</string>
+    <string name="taskbar_edu_switch_apps" msgid="6942863327845784813">"Қолданбаларды ауыстыру үшін тапсырма тақтасын пайдаланыңыз."</string>
+    <string name="taskbar_edu_splitscreen" msgid="2663361731630346489">"Екі қолданбаны бір уақытта пайдалану үшін шетке сүйреңіз."</string>
     <string name="taskbar_edu_stashing" msgid="5212374387411764031">"Тапсырмалар тақтасын жасыру үшін басып тұрыңыз."</string>
     <string name="taskbar_edu_next" msgid="4007618274426775841">"Келесі"</string>
     <string name="taskbar_edu_previous" msgid="459202320127201702">"Артқа"</string>

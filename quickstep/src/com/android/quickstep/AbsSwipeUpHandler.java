@@ -569,9 +569,14 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
             runningTasks = new ActivityManager.RunningTaskInfo[splitTaskIds.length];
             for (int i = 0; i < splitTaskIds.length; i++) {
                 int taskId = splitTaskIds[i];
-                ActivityManager.RunningTaskInfo rti = new ActivityManager.RunningTaskInfo();
-                rti.taskId = taskId;
-                runningTasks[i] = rti;
+                // Order matters here, we want first indexed RunningTaskInfo to be leftTop task
+                for (ActivityManager.RunningTaskInfo rti : mGestureState.getRunningTasks()) {
+                    if (taskId == rti.taskId) {
+                        runningTasks[i] = rti;
+                        break;
+                    }
+
+                }
             }
         } else {
             runningTasks = new ActivityManager.RunningTaskInfo[]{mGestureState.getRunningTask()};

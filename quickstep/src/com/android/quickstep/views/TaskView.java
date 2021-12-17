@@ -366,7 +366,7 @@ public class TaskView extends FrameLayout implements Reusable {
     protected Task mTask;
     protected TaskThumbnailView mSnapshotView;
     protected IconView mIconView;
-    private final DigitalWellBeingToast mDigitalWellBeingToast;
+    protected final DigitalWellBeingToast mDigitalWellBeingToast;
     private float mFullscreenProgress;
     private float mGridProgress;
     private float mNonGridScale = 1;

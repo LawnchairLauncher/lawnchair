@@ -89,6 +89,8 @@
     <string name="accessibility_rotate_button" msgid="4771825231336502943">"ಸ್ಕ್ರೀನ್ ತಿರುಗಿಸಿ"</string>
     <string name="taskbar_edu_opened" msgid="3950252793551919129">"ಟಾಸ್ಕ್‌ಬಾರ್ ಶಿಕ್ಷಣ ಕಾಣಿಸಿಕೊಂಡಿದೆ"</string>
     <string name="taskbar_edu_closed" msgid="126643734478892862">"ಟಾಸ್ಕ್‌ಬಾರ್ ಶಿಕ್ಷಣ ಮುಚ್ಚಿದೆ"</string>
+    <string name="taskbar_edu_switch_apps" msgid="6942863327845784813">"ಆ್ಯಪ್‌ಗಳನ್ನು ಬದಲಾಯಿಸಲು ಟಾಸ್ಕ್ ಬಾರ್ ಬಳಸಿ"</string>
+    <string name="taskbar_edu_splitscreen" msgid="2663361731630346489">"ಏಕಕಾಲದಲ್ಲಿ ಎರಡು ಆ್ಯಪ್‌ಗಳನ್ನು ಬಳಸಲು, ಬದಿಗೆ ಡ್ರ್ಯಾಗ್ ಮಾಡಿ"</string>
     <string name="taskbar_edu_stashing" msgid="5212374387411764031">"ಟಾಸ್ಕ್‌ಬಾರ್ ಅನ್ನು ಮರೆಮಾಡಲು ಸ್ಪರ್ಶಿಸಿ ಮತ್ತು ಹೋಲ್ಡ್ ಮಾಡಿ"</string>
     <string name="taskbar_edu_next" msgid="4007618274426775841">"ಮುಂದೆ"</string>
     <string name="taskbar_edu_previous" msgid="459202320127201702">"ಹಿಂದೆ"</string>

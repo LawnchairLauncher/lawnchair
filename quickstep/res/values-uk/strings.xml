@@ -89,6 +89,8 @@
     <string name="accessibility_rotate_button" msgid="4771825231336502943">"Обернути екран"</string>
     <string name="taskbar_edu_opened" msgid="3950252793551919129">"Панель завдань Education відкрито"</string>
     <string name="taskbar_edu_closed" msgid="126643734478892862">"Панель завдань Education закрито"</string>
+    <string name="taskbar_edu_switch_apps" msgid="6942863327845784813">"Переходьте між додатками за допомогою панелі завдань"</string>
+    <string name="taskbar_edu_splitscreen" msgid="2663361731630346489">"Перетягніть убік, щоб використовувати два додатки одночасно"</string>
     <string name="taskbar_edu_stashing" msgid="5212374387411764031">"Натисніть і втримуйте панель завдань, щоб сховати її"</string>
     <string name="taskbar_edu_next" msgid="4007618274426775841">"Далі"</string>
     <string name="taskbar_edu_previous" msgid="459202320127201702">"Назад"</string>

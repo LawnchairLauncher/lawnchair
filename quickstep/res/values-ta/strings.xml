@@ -89,6 +89,8 @@
     <string name="accessibility_rotate_button" msgid="4771825231336502943">"திரையைச் சுழற்றும்"</string>
     <string name="taskbar_edu_opened" msgid="3950252793551919129">"பணிப்பட்டியை எவ்வாறு பயன்படுத்துவது என்பது பற்றிய பலகம் காட்டப்படுகிறது"</string>
     <string name="taskbar_edu_closed" msgid="126643734478892862">"பணிப்பட்டியை எவ்வாறு பயன்படுத்துவது என்பது பற்றிய பலகம் மூடப்பட்டது"</string>
+    <string name="taskbar_edu_switch_apps" msgid="6942863327845784813">"ஆப்ஸிற்கு இடையே மாற பணிப்பட்டியைப் பயன்படுத்தவும்"</string>
+    <string name="taskbar_edu_splitscreen" msgid="2663361731630346489">"ஒரே நேரத்தில் இரு ஆப்ஸை உபயோகிக்க பக்கவாட்டிற்கு இழுக்கவும்"</string>
     <string name="taskbar_edu_stashing" msgid="5212374387411764031">"பணிப்பட்டியை மறைக்கத் தொட்டுப் பிடிக்கவும்"</string>
     <string name="taskbar_edu_next" msgid="4007618274426775841">"அடுத்து"</string>
     <string name="taskbar_edu_previous" msgid="459202320127201702">"பின்செல்"</string>
