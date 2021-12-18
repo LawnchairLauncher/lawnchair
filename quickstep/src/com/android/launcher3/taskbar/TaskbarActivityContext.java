@@ -429,6 +429,9 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
     }
 
     public void onNavButtonsDarkIntensityChanged(float darkIntensity) {
+        if (!isUserSetupComplete()) {
+            return;
+        }
         mControllers.navbarButtonsViewController.getTaskbarNavButtonDarkIntensity()
                 .updateValue(darkIntensity);
     }
