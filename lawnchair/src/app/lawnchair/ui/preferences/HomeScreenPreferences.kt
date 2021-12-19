@@ -57,10 +57,6 @@ fun HomeScreenPreferences() {
                 prefs.workspaceDt2s.getAdapter(),
                 label = stringResource(id = R.string.workspace_dt2s),
             )
-            SwitchPreference(
-                adapter = prefs.darkStatusBar.getAdapter(),
-                label = stringResource(id = R.string.dark_status_bar_label)
-            )
             val columns by prefs.workspaceColumns.getAdapter()
             val rows by prefs.workspaceRows.getAdapter()
             NavigationActionPreference(
@@ -81,14 +77,27 @@ fun HomeScreenPreferences() {
                 prefs.smartSpaceEnable.getAdapter(),
                 label = stringResource(id = R.string.smart_space_enable)
             )
+            DividerColumn {
             SwitchPreference(
                 prefs.showStatusBar.getAdapter(),
                 label = stringResource(id = R.string.show_status_bar),
             )
-            SwitchPreference(
-                prefs.showSysUiScrim.getAdapter(),
-                label = stringResource(id = R.string.show_sys_ui_scrim),
-            )
+            AnimatedVisibility(
+                visible = prefs.showStatusBar.getAdapter().state.value,
+                enter = expandVertically() + fadeIn(),
+                exit = shrinkVertically() + fadeOut()
+            ) {
+                SwitchPreference(
+                    adapter = prefs.darkStatusBar.getAdapter(),
+                    label = stringResource(id = R.string.dark_status_bar_label)
+                )
+                }
+        }
+                SwitchPreference(
+                    prefs.showSysUiScrim.getAdapter(),
+                    label = stringResource(id = R.string.show_sys_ui_scrim),
+                )
+
         }
         PreferenceGroup(heading = stringResource(id = R.string.icons)) {
             SliderPreference(
