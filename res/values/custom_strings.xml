@@ -27,4 +27,7 @@
     <string name="msg_minus_one_on_right">When you swipe right from main Home screen</string>
     <string name="pref_show_google_now_summary" translatable="false">@string/msg_minus_one_on_left</string>
 
+    <string name="pref_suggestions_title">Suggestions</string>
+    <string name="pref_suggestions_summary">For all apps and Home screen</string>
+
 </resources>

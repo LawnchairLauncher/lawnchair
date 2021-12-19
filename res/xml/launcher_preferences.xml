@@ -57,6 +57,16 @@
         android:title="@string/title_show_google_app"/>
 
     <androidx.preference.PreferenceScreen
+        android:key="pref_suggestions"
+        android:persistent="false"
+        android:title="@string/pref_suggestions_title"
+        android:summary="@string/pref_suggestions_summary">
+
+        <intent android:action="android.settings.ACTION_CONTENT_SUGGESTIONS_SETTINGS" />
+
+    </androidx.preference.PreferenceScreen>
+
+    <androidx.preference.PreferenceScreen
         android:key="pref_developer_options"
         android:persistent="false"
         android:title="Developer Options"
