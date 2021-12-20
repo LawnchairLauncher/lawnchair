@@ -19,6 +19,8 @@ package app.lawnchair.ui.preferences
 import androidx.compose.animation.*
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavGraphBuilder
 import app.lawnchair.preferences.getAdapter
@@ -43,6 +45,7 @@ fun NavGraphBuilder.generalGraph(route: String) {
 @Composable
 fun GeneralPreferences() {
     val prefs = preferenceManager()
+    val iconPacks by LocalPreferenceInteractor.current.iconPacks.collectAsState()
     PreferenceLayout(label = stringResource(id = R.string.general_label)) {
         PreferenceGroup(isFirstChild = true) {
             SwitchPreference(
@@ -54,9 +57,7 @@ fun GeneralPreferences() {
             NavigationActionPreference(
                 label = stringResource(id = R.string.icon_pack),
                 destination = subRoute(name = GeneralRoutes.ICON_PACK),
-                subtitle =
-                LocalPreferenceInteractor.current.getIconPacks()
-                    .find { it.packageName == preferenceManager().iconPackPackage.get() }?.name
+                subtitle = iconPacks.find { it.packageName == preferenceManager().iconPackPackage.get() }?.name
             )
             SwitchPreference(
                 adapter = prefs.themedIcons.getAdapter(),

@@ -18,14 +18,17 @@ package app.lawnchair.ui.preferences
 
 import android.app.Application
 import android.content.Intent
-import androidx.compose.runtime.mutableStateOf
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.viewModelScope
 import app.lawnchair.icons.CustomAdaptiveIconDrawable
 import app.lawnchair.ui.preferences.about.licenses.License
 import com.android.launcher3.R
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.stateIn
 import java.io.BufferedReader
 import java.io.InputStreamReader
 
@@ -36,11 +39,10 @@ private val iconPackIntents = listOf(
     Intent("android.intent.action.MAIN").addCategory("com.anddoes.launcher.THEME")
 )
 
-class PreferenceViewModel(application: Application) : AndroidViewModel(application), PreferenceInteractor {
-    override fun getIconPacks(): List<IconPackInfo> {
-        val context = getApplication<Application>()
-        val pm = context.packageManager
+class PreferenceViewModel(private val app: Application) : AndroidViewModel(app), PreferenceInteractor {
 
+    override val iconPacks = flow {
+        val pm = app.packageManager
         val iconPacks = iconPackIntents
             .flatMap { pm.queryIntentActivities(it, 0) }
             .associateBy { it.activityInfo.packageName }
@@ -51,32 +53,33 @@ class PreferenceViewModel(application: Application) : AndroidViewModel(applicati
                     CustomAdaptiveIconDrawable.wrapNonNull(info.loadIcon(pm))
                 )
             }
-
         val lawnchairIcon = CustomAdaptiveIconDrawable.wrapNonNull(
-            ContextCompat.getDrawable(context, R.drawable.ic_launcher_home)!!
+            ContextCompat.getDrawable(app, R.drawable.ic_launcher_home)!!
         )
-        val defaultIconPack = IconPackInfo(context.getString(R.string.system_icons), "", lawnchairIcon)
-
-        return listOf(defaultIconPack) + iconPacks.sortedBy { it.name }
+        val defaultIconPack = IconPackInfo(
+            name = app.getString(R.string.system_icons),
+            packageName = "",
+            icon = lawnchairIcon
+        )
+        val withSystemIcons = listOf(defaultIconPack) + iconPacks.sortedBy { it.name }
+        emit(withSystemIcons)
     }
+        .flowOn(Dispatchers.Default)
+        .stateIn(viewModelScope, SharingStarted.Lazily, listOf())
 
-    override val licenses by lazy {
-        runBlocking {
-            val licensesState = mutableStateOf<List<License>?>(null)
-            launch {
-                val res = application.resources
-                val reader = BufferedReader(InputStreamReader(res.openRawResource(R.raw.third_party_license_metadata)))
-                val licenses = reader.readLines().map { line ->
-                    val parts = line.split(" ")
-                    val startEnd = parts[0].split(":")
-                    val start = startEnd[0].toLong()
-                    val length = startEnd[1].toInt()
-                    val name = parts.subList(1, parts.size).joinToString(" ")
-                    License(name, start, length)
-                }.sortedBy { it.name.lowercase() }
-                licensesState.value = licenses
-            }
-            licensesState
-        }
+    override val licenses = flow {
+        val res = app.resources
+        val reader = BufferedReader(InputStreamReader(res.openRawResource(R.raw.third_party_license_metadata)))
+        val licenses = reader.readLines().map { line ->
+            val parts = line.split(" ")
+            val startEnd = parts[0].split(":")
+            val start = startEnd[0].toLong()
+            val length = startEnd[1].toInt()
+            val name = parts.subList(1, parts.size).joinToString(" ")
+            License(name, start, length)
+        }.sortedBy { it.name.lowercase() }
+        emit(licenses)
     }
+        .flowOn(Dispatchers.Default)
+        .stateIn(viewModelScope, SharingStarted.Lazily, null)
 }

@@ -16,11 +16,10 @@
 
 package app.lawnchair.ui.preferences
 
-import androidx.compose.runtime.State
 import app.lawnchair.ui.preferences.about.licenses.License
+import kotlinx.coroutines.flow.StateFlow
 
 interface PreferenceInteractor {
-    val licenses: State<List<License>?>
-
-    fun getIconPacks(): List<IconPackInfo>
+    val licenses: StateFlow<List<License>?>
+    val iconPacks: StateFlow<List<IconPackInfo>>
 }

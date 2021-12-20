@@ -7,10 +7,7 @@ import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalUriHandler
@@ -49,7 +46,7 @@ fun NavGraphBuilder.licensesGraph(route: String) {
 @ExperimentalAnimationApi
 @Composable
 fun Licenses() {
-    val optionalLicenses by LocalPreferenceInteractor.current.licenses
+    val optionalLicenses by LocalPreferenceInteractor.current.licenses.collectAsState()
     LoadingScreen(optionalLicenses) { licenses ->
         PreferenceLayoutLazyColumn(label = stringResource(id = R.string.acknowledgements)) {
             preferenceGroupItems(licenses, isFirstChild = true) { index, license ->
@@ -80,7 +77,7 @@ fun LicenseItem(license: License, index: Int) {
 @ExperimentalAnimationApi
 @Composable
 fun LicensePage(index: Int) {
-    val optionalLicenses by LocalPreferenceInteractor.current.licenses
+    val optionalLicenses by LocalPreferenceInteractor.current.licenses.collectAsState()
     val license = optionalLicenses?.get(index)
     val dataState = license?.let { loadLicense(license = license) }
     val data = dataState?.value
