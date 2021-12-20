@@ -38,10 +38,10 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowInsets;
+import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.StringRes;
 import androidx.annotation.VisibleForTesting;
 import androidx.core.graphics.ColorUtils;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -57,6 +57,7 @@ import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.allapps.search.SearchAdapterProvider;
 import com.android.launcher3.keyboard.FocusedItemDecorator;
+import com.android.launcher3.model.StringCache;
 import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.Themes;
@@ -298,25 +299,32 @@ public abstract class BaseAllAppsContainerView<T extends Context & ActivityConte
 
     /** Description of the container view based on its current state. */
     public String getDescription() {
-        @StringRes int descriptionRes;
+        StringCache cache = mActivityContext.getStringCache();
         if (mUsingTabs) {
-            descriptionRes =
-                    mViewPager.getNextPage() == 0
-                            ? R.string.all_apps_button_personal_label
-                            : R.string.all_apps_button_work_label;
-        } else {
-            descriptionRes = R.string.all_apps_button_label;
+            if (cache != null) {
+                return isPersonalTab()
+                        ? cache.allAppsPersonalTabAccessibility
+                        : cache.allAppsWorkTabAccessibility;
+            } else {
+                return isPersonalTab()
+                        ? getContext().getString(R.string.all_apps_button_personal_label)
+                        : getContext().getString(R.string.all_apps_button_work_label);
+            }
         }
-        return getContext().getString(descriptionRes);
+        return getContext().getString(R.string.all_apps_button_label);
     }
 
     /** The current recycler view visible in the container. */
     public AllAppsRecyclerView getActiveRecyclerView() {
-        if (!mUsingTabs || mViewPager.getNextPage() == 0) {
+        if (!mUsingTabs || isPersonalTab()) {
             return mAH.get(AdapterHolder.MAIN).mRecyclerView;
         } else {
             return mAH.get(AdapterHolder.WORK).mRecyclerView;
         }
+    }
+
+    protected boolean isPersonalTab() {
+        return mViewPager.getNextPage() == 0;
     }
 
     public LayoutInflater getLayoutInflater() {
@@ -440,6 +448,7 @@ public abstract class BaseAllAppsContainerView<T extends Context & ActivityConte
                                     .log(LAUNCHER_ALLAPPS_TAP_ON_WORK_TAB);
                         }
                     });
+            setDeviceManagementResources();
             onActivePageChanged(mViewPager.getNextPage());
         } else {
             mAH.get(AdapterHolder.MAIN).setup(findViewById(R.id.apps_list_view), null);
@@ -449,6 +458,16 @@ public abstract class BaseAllAppsContainerView<T extends Context & ActivityConte
 
         mAllAppsStore.registerIconContainer(mAH.get(AdapterHolder.MAIN).mRecyclerView);
         mAllAppsStore.registerIconContainer(mAH.get(AdapterHolder.WORK).mRecyclerView);
+    }
+
+    private void setDeviceManagementResources() {
+        if (mActivityContext.getStringCache() != null) {
+            Button personalTab = findViewById(R.id.tab_personal);
+            personalTab.setText(mActivityContext.getStringCache().allAppsPersonalTab);
+
+            Button workTab = findViewById(R.id.tab_work);
+            workTab.setText(mActivityContext.getStringCache().allAppsWorkTab);
+        }
     }
 
     protected boolean showTabs() {

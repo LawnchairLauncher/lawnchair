@@ -27,12 +27,14 @@ import com.android.launcher3.R;
 import com.android.launcher3.model.AllAppsList;
 import com.android.launcher3.model.BaseModelUpdateTask;
 import com.android.launcher3.model.BgDataModel;
+import com.android.launcher3.model.StringCache;
 import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.FolderInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.util.IntSparseArrayMap;
 import com.android.launcher3.util.Preconditions;
 import com.android.launcher3.util.ResourceBasedOverride;
+import com.android.launcher3.views.ActivityContext;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -101,13 +103,16 @@ public class FolderNameProvider implements ResourceBasedOverride {
         if (DEBUG) {
             Log.d(TAG, "getSuggestedFolderName:" + nameInfos.toString());
         }
+
         // If all the icons are from work profile,
         // Then, suggest "Work" as the folder name
         Set<UserHandle> users = workspaceItemInfos.stream().map(w -> w.user)
                 .collect(Collectors.toSet());
         if (users.size() == 1 && !users.contains(Process.myUserHandle())) {
-            setAsLastSuggestion(nameInfos,
-                    context.getResources().getString(R.string.work_folder_name));
+            StringCache cache = ActivityContext.lookupContext(context).getStringCache();
+            String workFolderName = cache != null
+                    ? cache.workFolderName : context.getString(R.string.work_folder_name);
+            setAsLastSuggestion(nameInfos, workFolderName);
         }
 
         // If all the icons are from same package (e.g., main icon, shortcut, shortcut)

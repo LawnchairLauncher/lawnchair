@@ -41,6 +41,7 @@ import android.view.ViewGroup;
 import android.view.WindowInsets;
 import android.view.animation.AnimationUtils;
 import android.view.animation.Interpolator;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
@@ -199,6 +200,7 @@ public class WidgetsFullSheet extends BaseWidgetSheet
             findViewById(R.id.tab_work)
                     .setOnClickListener((View view) -> mViewPager.snapToPage(1));
             mAdapters.get(AdapterHolder.WORK).setup(findViewById(R.id.work_widgets_list_view));
+            setDeviceManagementResources();
         } else {
             mViewPager = null;
         }
@@ -218,6 +220,16 @@ public class WidgetsFullSheet extends BaseWidgetSheet
                 mActivityContext.getPopupDataProvider(), /* searchModeListener= */ this);
 
         setUpEducationViewsIfNeeded();
+    }
+
+    private void setDeviceManagementResources() {
+        if (mActivityContext.getStringCache() != null) {
+            Button personalTab = findViewById(R.id.tab_personal);
+            personalTab.setText(mActivityContext.getStringCache().widgetsPersonalTab);
+
+            Button workTab = findViewById(R.id.tab_work);
+            workTab.setText(mActivityContext.getStringCache().widgetsWorkTab);
+        }
     }
 
     @Override

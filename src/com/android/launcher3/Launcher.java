@@ -149,6 +149,7 @@ import com.android.launcher3.model.BgDataModel.Callbacks;
 import com.android.launcher3.model.ItemInstallQueue;
 import com.android.launcher3.model.ModelUtils;
 import com.android.launcher3.model.ModelWriter;
+import com.android.launcher3.model.StringCache;
 import com.android.launcher3.model.WidgetsModel;
 import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.FolderInfo;
@@ -378,6 +379,8 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
     // session on the server side.
     protected InstanceId mAllAppsSessionLogId;
     private LauncherState mPrevLauncherState;
+
+    private StringCache mStringCache;
 
     @Override
     @TargetApi(Build.VERSION_CODES.S)
@@ -2870,6 +2873,16 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
     @Override
     public void bindAllWidgets(final List<WidgetsListBaseEntry> allWidgets) {
         mPopupDataProvider.setAllWidgets(allWidgets);
+    }
+
+    @Override
+    public void bindStringCache(StringCache cache) {
+        mStringCache = cache;
+    }
+
+    @Override
+    public StringCache getStringCache() {
+        return mStringCache;
     }
 
     /**
