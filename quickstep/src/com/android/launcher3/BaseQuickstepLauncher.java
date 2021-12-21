@@ -39,6 +39,7 @@ import android.hardware.SensorManager;
 import android.hardware.devicestate.DeviceStateManager;
 import android.os.Bundle;
 import android.os.CancellationSignal;
+import android.view.Display;
 import android.view.View;
 import android.view.WindowInsets;
 import android.window.SplashScreen;
@@ -509,6 +510,9 @@ public abstract class BaseQuickstepLauncher extends Launcher
                     activityOptions.options, mLastTouchUpTime);
         }
         activityOptions.options.setSplashScreenStyle(SplashScreen.SPLASH_SCREEN_STYLE_ICON);
+        activityOptions.options.setLaunchDisplayId(
+                (v != null && v.getDisplay() != null) ? v.getDisplay().getDisplayId()
+                        : Display.DEFAULT_DISPLAY);
         addLaunchCookie(item, activityOptions.options);
         return activityOptions;
     }

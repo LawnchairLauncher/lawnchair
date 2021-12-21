@@ -182,6 +182,10 @@ public abstract class BaseDraggingActivity extends BaseActivity
         }
         ActivityOptions options =
                 ActivityOptions.makeClipRevealAnimation(v, left, top, width, height);
+
+        options.setLaunchDisplayId(
+                (v != null && v.getDisplay() != null) ? v.getDisplay().getDisplayId()
+                        : Display.DEFAULT_DISPLAY);
         RunnableList callback = new RunnableList();
         addOnResumeCallback(callback::executeAllAndDestroy);
         return new ActivityOptionsWrapper(options, callback);
