@@ -42,7 +42,7 @@
     <string name="hotseat_tip_no_empty_slots" msgid="1325212677738179185">"Sleep apps weg van de onderste rij om app-suggesties te ontvangen"</string>
     <string name="hotseat_tip_gaps_filled" msgid="3035673010274223538">"App-suggesties toegevoegd aan lege ruimte"</string>
     <string name="hotsaet_tip_prediction_enabled" msgid="2233554377501347650">"App-suggesties staan aan"</string>
-    <string name="hotsaet_tip_prediction_disabled" msgid="1506426298884658491">"App-suggesties zijn uitgeschakeld"</string>
+    <string name="hotsaet_tip_prediction_disabled" msgid="1506426298884658491">"App-suggesties staan uit"</string>
     <string name="hotseat_prediction_content_description" msgid="4582028296938078419">"Voorspelde app: <xliff:g id="TITLE">%1$s</xliff:g>"</string>
     <string name="back_gesture_feedback_swipe_too_far_from_edge" msgid="1711645592102201538">"Swipe helemaal vanaf de rechter- of linkerrand."</string>
     <string name="back_gesture_feedback_cancelled" msgid="3274382913290074496">"Swipe vanaf de rechter- of linkerrand naar het midden van het scherm en laat los."</string>
