@@ -42,7 +42,7 @@
     <string name="hotseat_tip_no_empty_slots" msgid="1325212677738179185">"Sleep apps weg van de onderste rij om app-suggesties te ontvangen"</string>
     <string name="hotseat_tip_gaps_filled" msgid="3035673010274223538">"App-suggesties toegevoegd aan lege ruimte"</string>
     <string name="hotsaet_tip_prediction_enabled" msgid="2233554377501347650">"App-suggesties staan aan"</string>
-    <string name="hotsaet_tip_prediction_disabled" msgid="1506426298884658491">"App-suggesties zijn uitgeschakeld"</string>
+    <string name="hotsaet_tip_prediction_disabled" msgid="1506426298884658491">"App-suggesties staan uit"</string>
     <string name="hotseat_prediction_content_description" msgid="4582028296938078419">"Voorspelde app: <xliff:g id="TITLE">%1$s</xliff:g>"</string>
     <string name="back_gesture_feedback_swipe_too_far_from_edge" msgid="1711645592102201538">"Swipe helemaal vanaf de rechter- of linkerrand."</string>
     <string name="back_gesture_feedback_cancelled" msgid="3274382913290074496">"Swipe vanaf de rechter- of linkerrand naar het midden van het scherm en laat los."</string>
@@ -96,16 +96,11 @@
     <string name="taskbar_edu_previous" msgid="459202320127201702">"Terug"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"Sluiten"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"Klaar"</string>
-    <!-- no translation found for taskbar_button_home (2151398979630664652) -->
-    <skip />
-    <!-- no translation found for taskbar_button_a11y (5241161324875094465) -->
-    <skip />
-    <!-- no translation found for taskbar_button_back (8558862226461164514) -->
-    <skip />
-    <!-- no translation found for taskbar_button_ime_switcher (1730244360907588541) -->
-    <skip />
-    <!-- no translation found for taskbar_button_recents (7273376136216613134) -->
-    <skip />
+    <string name="taskbar_button_home" msgid="2151398979630664652">"Home"</string>
+    <string name="taskbar_button_a11y" msgid="5241161324875094465">"Toegankelijkheid"</string>
+    <string name="taskbar_button_back" msgid="8558862226461164514">"Terug"</string>
+    <string name="taskbar_button_ime_switcher" msgid="1730244360907588541">"IME-schakelaar"</string>
+    <string name="taskbar_button_recents" msgid="7273376136216613134">"Recent"</string>
     <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"Naar boven/links verplaatsen"</string>
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"Naar beneden/rechts verplaatsen"</string>
 </resources>
