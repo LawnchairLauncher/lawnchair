@@ -175,4 +175,5 @@
     <string name="row_height_label">行の高さ</string>
     <string name="all_apps_device_search_hint">検索</string>
     <string name="dark_status_bar_label">暗いステータスバー</string>
+    <string name="lawnicons_not_installed_description">Lawnicons not installed.</string>
 </resources>
