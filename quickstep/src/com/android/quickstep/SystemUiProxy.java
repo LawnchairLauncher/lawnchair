@@ -34,6 +34,7 @@ import android.os.IBinder.DeathRecipient;
 import android.os.RemoteException;
 import android.os.UserHandle;
 import android.util.Log;
+import android.util.Slog;
 import android.view.MotionEvent;
 import android.view.RemoteAnimationAdapter;
 import android.view.RemoteAnimationTarget;
@@ -771,8 +772,10 @@ public class SystemUiProxy implements ISystemUiProxy,
     public ArrayList<GroupedRecentTaskInfo> getRecentTasks(int numTasks, int userId) {
         if (mRecentTasks != null) {
             try {
-                return new ArrayList<>(Arrays.asList(mRecentTasks.getRecentTasks(numTasks,
-                        RECENT_IGNORE_UNAVAILABLE, userId)));
+                final GroupedRecentTaskInfo[] tasks = mRecentTasks.getRecentTasks(numTasks,
+                        RECENT_IGNORE_UNAVAILABLE, userId);
+                Log.d("b/206648922", "getRecentTasks(" + numTasks + "): result=" + tasks);
+                return new ArrayList<>(Arrays.asList(tasks));
             } catch (RemoteException e) {
                 Log.w(TAG, "Failed call getRecentTasks", e);
             }
