@@ -221,11 +221,23 @@
 
         <!-- defaults to borderSpace, if not specified -->
         <attr name="allAppsBorderSpace" format="float" />
+        <!-- defaults to allAppsBorderSpace, if not specified -->
+        <attr name="allAppsBorderSpaceTwoPanelPortrait" format="float" />
+        <!-- defaults to allAppsBorderSpace, if not specified -->
+        <attr name="allAppsBorderSpaceTwoPanelLandscape" format="float" />
         <!-- The following values are only enabled if grid is supported. -->
         <!-- defaults to iconImageSize, if not specified -->
         <attr name="allAppsIconSize" format="float" />
+        <!-- defaults to allAppsIconSize, if not specified -->
+        <attr name="allAppsIconSizeTwoPanelPortrait" format="float" />
+        <!-- defaults to allAppsIconSize, if not specified -->
+        <attr name="allAppsIconSizeTwoPanelLandscape" format="float" />
         <!-- defaults to iconTextSize, if not specified -->
         <attr name="allAppsIconTextSize" format="float" />
+        <!-- defaults to allAppsIconTextSize, if not specified -->
+        <attr name="allAppsIconTextSizeTwoPanelPortrait" format="float" />
+        <!-- defaults to allAppsIconTextSize, if not specified -->
+        <attr name="allAppsIconTextSizeTwoPanelLandscape" format="float" />
 
         <!-- defaults to borderSpaceDps, if not specified -->
         <attr name="hotseatBorderSpace" format="float" />
