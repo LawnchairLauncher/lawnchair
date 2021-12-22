@@ -64,6 +64,7 @@ import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.shortcuts.ShortcutKey;
 import com.android.launcher3.util.IntSparseArrayMap;
 import com.android.launcher3.util.PersistedItemArray;
+import com.android.quickstep.logging.SettingsChangeLogger;
 import com.android.quickstep.logging.StatsLogCompatManager;
 import com.android.systemui.shared.system.SysUiStatsLog;
 
@@ -97,10 +98,12 @@ public class QuickstepModelDelegate extends ModelDelegate {
     private final InvariantDeviceProfile mIDP;
     private final AppEventProducer mAppEventProducer;
     private final StatsManager mStatsManager;
+    private final Context mContext;
 
     protected boolean mActive = false;
 
     public QuickstepModelDelegate(Context context) {
+        mContext = context;
         mAppEventProducer = new AppEventProducer(context, this::onAppTargetEvent);
 
         mIDP = InvariantDeviceProfile.INSTANCE.get(context);
@@ -210,6 +213,7 @@ public class QuickstepModelDelegate extends ModelDelegate {
                                         "Successfully logged %d workspace items with instanceId=%d",
                                         itemsIdMap.size(), instanceId.getId()));
                         additionalSnapshotEvents(instanceId);
+                        SettingsChangeLogger.INSTANCE.get(mContext).logSnapshot(instanceId);
                         return StatsManager.PULL_SUCCESS;
                     }
             );
