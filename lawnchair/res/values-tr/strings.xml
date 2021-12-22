@@ -176,4 +176,5 @@
     <string name="row_height_label">Satır yüksekliği</string>
     <string name="all_apps_device_search_hint">Arama</string>
     <string name="dark_status_bar_label">Koyu durum çubuğu</string>
+    <string name="lawnicons_not_installed_description">Lawnicons not installed.</string>
 </resources>
