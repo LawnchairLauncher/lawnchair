@@ -64,7 +64,6 @@ public class SplitSelectStateController {
     private @StagePosition int mStagePosition;
     private Task mInitialTask;
     private Task mSecondTask;
-    private Rect mInitialBounds;
     private boolean mRecentsAnimationRunning;
     /** If not null, this is the TaskView we want to launch from */
     @Nullable
@@ -86,7 +85,6 @@ public class SplitSelectStateController {
             Rect initialBounds) {
         mInitialTask = task;
         mStagePosition = stagePosition;
-        mInitialBounds = initialBounds;
     }
 
     /**
@@ -229,7 +227,6 @@ public class SplitSelectStateController {
         mInitialTask = null;
         mSecondTask = null;
         mStagePosition = SplitConfigurationOptions.STAGE_POSITION_UNDEFINED;
-        mInitialBounds = null;
         mRecentsAnimationRunning = false;
         mLaunchingTaskView = null;
     }
@@ -240,9 +237,5 @@ public class SplitSelectStateController {
      */
     public boolean isSplitSelectActive() {
         return mInitialTask != null && mSecondTask == null;
-    }
-
-    public Rect getInitialBounds() {
-        return mInitialBounds;
     }
 }
