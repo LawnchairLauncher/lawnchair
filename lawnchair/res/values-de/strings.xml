@@ -176,5 +176,5 @@
     <string name="row_height_label">Zeilenhöhe</string>
     <string name="all_apps_device_search_hint">Suchen</string>
     <string name="dark_status_bar_label">Dunkle Statusleisten-Symbole</string>
-    <string name="lawnicons_not_installed_description">Lawnicons not installed.</string>
+    <string name="lawnicons_not_installed_description">Lawnicons ist nicht installiert.</string>
 </resources>
