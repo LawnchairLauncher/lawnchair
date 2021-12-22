@@ -20,6 +20,7 @@ import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 import static com.android.quickstep.GestureState.STATE_RECENTS_ANIMATION_INITIALIZED;
 import static com.android.quickstep.GestureState.STATE_RECENTS_ANIMATION_STARTED;
+import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.ACTIVITY_TYPE_HOME;
 
 import android.app.ActivityManager;
 import android.content.Context;
@@ -27,6 +28,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.SystemProperties;
 import android.util.Log;
+import android.view.RemoteAnimationTarget;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
@@ -42,6 +44,7 @@ import com.android.systemui.shared.system.RemoteTransitionCompat;
 import com.android.systemui.shared.system.TaskStackChangeListener;
 import com.android.systemui.shared.system.TaskStackChangeListeners;
 
+import java.util.Arrays;
 import java.util.HashMap;
 
 public class TaskAnimationManager implements RecentsAnimationCallbacks.RecentsAnimationListener {
@@ -150,6 +153,17 @@ public class TaskAnimationManager implements RecentsAnimationCallbacks.RecentsAn
             public void onTasksAppeared(RemoteAnimationTargetCompat[] appearedTaskTargets) {
                 RemoteAnimationTargetCompat appearedTaskTarget = appearedTaskTargets[0];
                 BaseActivityInterface activityInterface = mLastGestureState.getActivityInterface();
+                // Convert appTargets to type RemoteAnimationTarget for all apps except Home app
+                RemoteAnimationTarget[] nonHomeApps = Arrays.stream(appearedTaskTargets)
+                        .filter(remoteAnimationTarget ->
+                                remoteAnimationTarget.activityType != ACTIVITY_TYPE_HOME)
+                        .map(RemoteAnimationTargetCompat::unwrap)
+                        .toArray(RemoteAnimationTarget[]::new);
+
+                RemoteAnimationTarget[] nonAppTargets =
+                        SystemUiProxy.INSTANCE.getNoCreate()
+                                .onGoingToRecentsLegacy(false, nonHomeApps);
+
                 if (ENABLE_QUICKSTEP_LIVE_TILE.get() && activityInterface.isInLiveTileMode()
                         && activityInterface.getCreatedActivity() != null) {
                     RecentsView recentsView =
@@ -158,7 +172,7 @@ public class TaskAnimationManager implements RecentsAnimationCallbacks.RecentsAn
                         recentsView.launchSideTaskInLiveTileMode(appearedTaskTarget.taskId,
                                 appearedTaskTargets,
                                 new RemoteAnimationTargetCompat[0] /* wallpaper */,
-                                new RemoteAnimationTargetCompat[0] /* nonApps */);
+                                RemoteAnimationTargetCompat.wrap(nonAppTargets) /* nonApps */);
                         return;
                     }
                 }
