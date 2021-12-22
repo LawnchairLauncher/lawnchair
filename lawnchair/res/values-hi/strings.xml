@@ -176,4 +176,5 @@
     <string name="row_height_label">रॉ की ऊंचाई</string>
     <string name="all_apps_device_search_hint">ऐप खोजें</string>
     <string name="dark_status_bar_label">गहरा स्टेट्स बार</string>
+    <string name="lawnicons_not_installed_description">Lawnicons not installed.</string>
 </resources>
