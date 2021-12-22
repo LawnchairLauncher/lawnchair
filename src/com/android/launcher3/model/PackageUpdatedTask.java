@@ -21,6 +21,8 @@ import static com.android.launcher3.model.BgDataModel.Callbacks.FLAG_QUIET_MODE_
 import static com.android.launcher3.model.data.WorkspaceItemInfo.FLAG_AUTOINSTALL_ICON;
 import static com.android.launcher3.model.data.WorkspaceItemInfo.FLAG_RESTORED_ICON;
 
+import static app.lawnchair.util.Constants.LAWNICONS_PACKAGE_NAME;
+
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -149,6 +151,9 @@ public class PackageUpdatedTask extends BaseModelUpdateTask {
                     if (packages[i].equals(pm.getIconPackPackage().get())) {
                         pm.getIconPackPackage().set("");
                     };
+                    if (packages[i].equals(LAWNICONS_PACKAGE_NAME)) {
+                        pm.getThemedIcons().set(false);
+                    }
                 }
                 // Fall through
             }

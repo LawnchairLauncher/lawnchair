@@ -14,6 +14,7 @@ import android.util.ArrayMap
 import android.util.Log
 import androidx.core.content.getSystemService
 import app.lawnchair.preferences.PreferenceManager
+import app.lawnchair.util.Constants.LAWNICONS_PACKAGE_NAME
 import app.lawnchair.util.MultiSafeCloseable
 import app.lawnchair.util.getPackageVersionCode
 import app.lawnchair.util.isPackageInstalled
@@ -286,7 +287,6 @@ class LawnchairIconProvider @JvmOverloads constructor(
     }
 
     companion object {
-        const val LAWNICONS_PACKAGE_NAME = "app.lawnchair.lawnicons"
         const val TAG = "LawnchairIconProvider"
 
         val DISABLED_MAP = emptyMap<ComponentName, ThemedIconDrawable.ThemeData>()
