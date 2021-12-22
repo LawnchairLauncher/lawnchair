@@ -20,7 +20,7 @@
     <string name="home_screen_label">Schermata home</string>
     <string name="home_screen_description">Feed, At a Glance, Griglia, Icone</string>
     <string name="general_label">Generale</string>
-    <string name="general_description">Badge di notifica, pacchetto icone</string>
+    <string name="general_description">Colori, Pacchetto Icone, Badge di notifica</string>
     <string name="home_screen_rotation_label">Rotazione schermata home</string>
     <string name="home_screen_rotaton_description">Quando il dispositivo viene ruotato.</string>
     <string name="auto_add_shortcuts_label">Aggiungi le nuove applicazioni alla schermata home</string>
@@ -125,7 +125,7 @@
     <string name="font_weight_extra_black">Nero</string>
     <string name="font_label">Tipo di carattere (Sperimentale)</string>
     <string name="reset_font">Reset</string>
-    <string name="search_input_action_clear_results">Pulisci i risultati di ricerca</string>
+    <string name="search_input_action_clear_results">Pulisci barra di ricerca</string>
     <string name="pref_category_search">Ricerca</string>
     <string name="pref_search_auto_show_keyboard">Mostra la tastiera automaticamente</string>
     <string name="label_search">Ricerca</string>
@@ -133,7 +133,7 @@
     <string name="label_voice_search">Ricerca vocale</string>
     <string name="apply_grid">Applica</string>
     <string name="x_by_y">%1$d × %2$d</string>
-    <string name="folder_preview_bg_opacity_label">Opacità dello sfondo dell\'icona</string>
+    <string name="folder_preview_bg_opacity_label">Opacità sfondo dell\'icona</string>
     <string name="icon_shape_label">Forma dell\'icona</string>
     <string name="icon_shape_system">Sistema</string>
     <string name="icon_shape_circle">Cerchio</string>
@@ -176,5 +176,5 @@
     <string name="row_height_label">Altezza riga</string>
     <string name="all_apps_device_search_hint">Ricerca</string>
     <string name="dark_status_bar_label">Barra di stato scura</string>
-    <string name="lawnicons_not_installed_description">Lawnicons not installed.</string>
+    <string name="lawnicons_not_installed_description">Lawnicons non installato.</string>
 </resources>
