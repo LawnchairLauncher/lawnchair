@@ -345,7 +345,7 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
         // Test opening the task.
         overview.getCurrentTask().open();
         assertTrue("Test activity didn't open from Overview",
-                mDevice.wait(Until.hasObject(By.pkg(getAppPackageName()).text("TestActivity8")),
+                mDevice.wait(Until.hasObject(By.pkg(getAppPackageName()).text("TestActivity10")),
                         DEFAULT_UI_TIMEOUT));
 
         // Scroll the task offscreen as it is now first

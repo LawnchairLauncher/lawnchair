@@ -342,6 +342,11 @@ public final class LauncherInstrumentation {
                 .getParcelable(TestProtocol.TEST_INFO_RESPONSE_FIELD));
     }
 
+    int getOverviewPageSpacing() {
+        return getTestInfo(TestProtocol.REQUEST_GET_OVERVIEW_PAGE_SPACING)
+                .getInt(TestProtocol.TEST_INFO_RESPONSE_FIELD);
+    }
+
     float getExactScreenCenterX() {
         return getRealDisplaySize().x / 2f;
     }
@@ -1323,14 +1328,12 @@ public final class LauncherInstrumentation {
     void scrollLeftByDistance(UiObject2 container, int distance) {
         final Rect containerRect = getVisibleBounds(container);
         final int rightGestureMarginInContainer = getRightGestureMarginInContainer(container);
+        final int leftGestureMargin = getTargetInsets().left + getEdgeSensitivityWidth();
         scroll(
                 container,
                 Direction.LEFT,
-                new Rect(
-                        0,
-                        containerRect.width() - distance - rightGestureMarginInContainer,
-                        0,
-                        rightGestureMarginInContainer),
+                new Rect(leftGestureMargin, 0,
+                        containerRect.width() - distance - rightGestureMarginInContainer, 0),
                 10,
                 true);
     }
