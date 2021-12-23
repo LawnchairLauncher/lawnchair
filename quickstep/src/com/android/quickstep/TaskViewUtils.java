@@ -28,6 +28,7 @@ import static com.android.launcher3.QuickstepTransitionManager.ANIMATION_NAV_FAD
 import static com.android.launcher3.QuickstepTransitionManager.NAV_FADE_IN_INTERPOLATOR;
 import static com.android.launcher3.QuickstepTransitionManager.NAV_FADE_OUT_INTERPOLATOR;
 import static com.android.launcher3.QuickstepTransitionManager.RECENTS_LAUNCH_DURATION;
+import static com.android.launcher3.QuickstepTransitionManager.SPLIT_DIVIDER_ANIM_DURATION;
 import static com.android.launcher3.QuickstepTransitionManager.SPLIT_LAUNCH_DURATION;
 import static com.android.launcher3.Utilities.getDescendantCoordRelativeToAncestor;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
@@ -536,7 +537,8 @@ public final class TaskViewUtils {
                 nonAppTargets, depthController, pa);
         if (launcherClosing) {
             // TODO(b/182592057): differentiate between "restore split" vs "launch fullscreen app"
-            TaskViewUtils.setSplitAuxiliarySurfacesShown(nonAppTargets, true);
+            TaskViewUtils.setSplitAuxiliarySurfacesShown(nonAppTargets,
+                    true /*shown*/, true /*animate*/, pa);
         }
 
         Animator childStateAnimation = null;
@@ -592,19 +594,88 @@ public final class TaskViewUtils {
     }
 
     public static void setSplitAuxiliarySurfacesShown(RemoteAnimationTargetCompat[] nonApps,
-            boolean shown) {
-        // TODO(b/182592057): make this part of the animations instead.
-        if (nonApps != null && nonApps.length > 0) {
-            SurfaceControl.Transaction t = new SurfaceControl.Transaction();
-            for (int i = 0; i < nonApps.length; ++i) {
-                final RemoteAnimationTargetCompat targ = nonApps[i];
-                final SurfaceControl leash = targ.leash.getSurfaceControl();
-                if (targ.windowType == TYPE_DOCK_DIVIDER && leash != null) {
-                    t.setVisibility(leash, shown);
+            boolean shown, boolean animate) {
+        setSplitAuxiliarySurfacesShown(nonApps, shown, animate,null);
+    }
+
+    private static void setSplitAuxiliarySurfacesShown(
+            @NonNull RemoteAnimationTargetCompat[] nonApps, boolean shown, boolean animate,
+            @Nullable PendingAnimation splitLaunchAnimation) {
+        if (nonApps == null || nonApps.length == 0) {
+            return;
+        }
+
+        SurfaceControl.Transaction t = new SurfaceControl.Transaction();
+        SurfaceControl[] auxiliarySurfaces = new SurfaceControl[nonApps.length];
+        boolean hasSurfaceToAnimate = false;
+        for (int i = 0; i < nonApps.length; ++i) {
+            final RemoteAnimationTargetCompat targ = nonApps[i];
+            final SurfaceControl leash = targ.leash.getSurfaceControl();
+            if (targ.windowType == TYPE_DOCK_DIVIDER && leash != null) {
+                auxiliarySurfaces[i] = leash;
+                hasSurfaceToAnimate = true;
+            }
+        }
+        if (!hasSurfaceToAnimate) {
+            return;
+        }
+
+        if (!animate) {
+            for (SurfaceControl leash : auxiliarySurfaces) {
+                t.setAlpha(leash, shown ? 1 : 0);
+                if (shown) {
+                    t.show(leash);
+                } else {
+                    t.hide(leash);
                 }
             }
             t.apply();
-            t.close();
+            return;
+        }
+
+        ValueAnimator dockFadeAnimator = ValueAnimator.ofFloat(0f, 1f);
+        dockFadeAnimator.addUpdateListener(valueAnimator -> {
+            float progress = valueAnimator.getAnimatedFraction();
+            for (SurfaceControl leash : auxiliarySurfaces) {
+                t.setAlpha(leash, shown ? progress : 1 - progress);
+            }
+            t.apply();
+        });
+        dockFadeAnimator.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+                super.onAnimationStart(animation);
+                if (shown) {
+                    for (SurfaceControl leash : auxiliarySurfaces) {
+                        t.setAlpha(leash, 0);
+                        t.show(leash);
+                    }
+                    t.apply();
+                }
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                super.onAnimationEnd(animation);
+                if (!shown) {
+                    for (SurfaceControl leash : auxiliarySurfaces) {
+                        t.hide(leash);
+                    }
+                    t.apply();
+                }
+                t.close();
+            }
+        });
+        dockFadeAnimator.setDuration(SPLIT_DIVIDER_ANIM_DURATION);
+        if (splitLaunchAnimation != null) {
+            // If split apps are launching, we want to delay showing the divider bar until the very
+            // end once the apps are mostly in place. This is because we aren't moving the divider
+            // leash in the relative position with the launching apps.
+            dockFadeAnimator.setStartDelay(
+                    splitLaunchAnimation.getDuration() - SPLIT_DIVIDER_ANIM_DURATION);
+            splitLaunchAnimation.add(dockFadeAnimator);
+        } else {
+            dockFadeAnimator.start();
         }
     }
 }
