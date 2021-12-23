@@ -628,11 +628,8 @@ public class TaskView extends FrameLayout implements Reusable {
                         Arrays.stream(topLeftParams.getTargetSet().wallpapers),
                         Arrays.stream(rightBottomParams.getTargetSet().wallpapers))
                         .toArray(RemoteAnimationTargetCompat[]::new);
-                RemoteAnimationTargetCompat[] nonApps = Stream.concat(
-                        Arrays.stream(topLeftParams.getTargetSet().nonApps),
-                        Arrays.stream(rightBottomParams.getTargetSet().nonApps))
-                        .toArray(RemoteAnimationTargetCompat[]::new);
-                targets = new RemoteAnimationTargets(apps, wallpapers, nonApps,
+                targets = new RemoteAnimationTargets(apps, wallpapers,
+                        topLeftParams.getTargetSet().nonApps,
                         topLeftParams.getTargetSet().targetMode);
             }
             if (targets == null) {
