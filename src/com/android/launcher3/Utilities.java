@@ -76,9 +76,8 @@ import androidx.core.os.BuildCompat;
 import com.android.launcher3.dragndrop.FolderAdaptiveIcon;
 import com.android.launcher3.graphics.GridCustomizationsProvider;
 import com.android.launcher3.graphics.TintedDrawableSpan;
-import com.android.launcher3.icons.BitmapInfo;
-import com.android.launcher3.icons.FastBitmapDrawable;
 import com.android.launcher3.icons.ShortcutCachingLogic;
+import com.android.launcher3.icons.ThemedIconDrawable;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.ItemInfoWithIcon;
 import com.android.launcher3.model.data.SearchActionItemInfo;
@@ -87,6 +86,7 @@ import com.android.launcher3.shortcuts.ShortcutKey;
 import com.android.launcher3.shortcuts.ShortcutRequest;
 import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.PackageManagerHelper;
+import com.android.launcher3.util.Themes;
 import com.android.launcher3.views.ActivityContext;
 import com.android.launcher3.views.BaseDragLayer;
 import com.android.launcher3.widget.PendingAddShortcutInfo;
@@ -123,8 +123,9 @@ public final class Utilities {
 
     public static final boolean ATLEAST_R = Build.VERSION.SDK_INT >= Build.VERSION_CODES.R;
 
-    public static final boolean ATLEAST_S = BuildCompat.isAtLeastS()
-            || Build.VERSION.SDK_INT >= Build.VERSION_CODES.S;
+    public static final boolean ATLEAST_S = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S;
+
+    public static final boolean ATLEAST_T = BuildCompat.isAtLeastT();
 
     /**
      * Set on a motion event dispatched from the nav bar. See {@link MotionEvent#setEdgeFlags(int)}.
@@ -672,11 +673,19 @@ public final class Utilities {
      * @param outObj this is set to the internal data associated with {@param info},
      *               eg {@link LauncherActivityInfo} or {@link ShortcutInfo}.
      */
+    @TargetApi(Build.VERSION_CODES.TIRAMISU)
     public static Drawable getFullDrawable(Context context, ItemInfo info, int width, int height,
             Object[] outObj) {
         Drawable icon = loadFullDrawableWithoutTheme(context, info, width, height, outObj);
-        if (icon instanceof BitmapInfo.Extender) {
-            icon = ((BitmapInfo.Extender) icon).getThemedDrawable(context);
+        if (ATLEAST_T && icon instanceof AdaptiveIconDrawable) {
+            AdaptiveIconDrawable aid = (AdaptiveIconDrawable) icon.mutate();
+            Drawable mono = aid.getMonochrome();
+            if (mono != null && Themes.isThemedIconEnabled(context)) {
+                int[] colors = ThemedIconDrawable.getColors(context);
+                mono = mono.mutate();
+                mono.setTint(colors[1]);
+                return new AdaptiveIconDrawable(new ColorDrawable(colors[0]), mono);
+            }
         }
         return icon;
     }
@@ -719,8 +728,7 @@ public final class Utilities {
             return icon;
         } else if (info.itemType == LauncherSettings.Favorites.ITEM_TYPE_SEARCH_ACTION
                 && info instanceof SearchActionItemInfo) {
-            return new AdaptiveIconDrawable(
-                    new FastBitmapDrawable(((SearchActionItemInfo) info).bitmap), null);
+            return ((SearchActionItemInfo) info).bitmap.newIcon(context);
         } else {
             return null;
         }
