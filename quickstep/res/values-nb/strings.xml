@@ -96,16 +96,11 @@
     <string name="taskbar_edu_previous" msgid="459202320127201702">"Tilbake"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"Lukk"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"Ferdig"</string>
-    <!-- no translation found for taskbar_button_home (2151398979630664652) -->
-    <skip />
-    <!-- no translation found for taskbar_button_a11y (5241161324875094465) -->
-    <skip />
-    <!-- no translation found for taskbar_button_back (8558862226461164514) -->
-    <skip />
-    <!-- no translation found for taskbar_button_ime_switcher (1730244360907588541) -->
-    <skip />
-    <!-- no translation found for taskbar_button_recents (7273376136216613134) -->
-    <skip />
+    <string name="taskbar_button_home" msgid="2151398979630664652">"Hjem"</string>
+    <string name="taskbar_button_a11y" msgid="5241161324875094465">"Tilgjengelighet"</string>
+    <string name="taskbar_button_back" msgid="8558862226461164514">"Tilbake"</string>
+    <string name="taskbar_button_ime_switcher" msgid="1730244360907588541">"IME-veksler"</string>
+    <string name="taskbar_button_recents" msgid="7273376136216613134">"Nylige"</string>
     <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"Flytt til øverst/venstre"</string>
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"Flytt til nederst/høyre"</string>
 </resources>
