@@ -26,6 +26,8 @@ import androidx.core.graphics.ColorUtils;
 import com.android.launcher3.R;
 import com.android.launcher3.util.Themes;
 
+import java.lang.IllegalArgumentException;
+
 /**
  * Contains colors based on the dominant color of an icon.
  */
@@ -107,7 +109,15 @@ public class IconPalette {
      * This was copied from com.android.internal.util.NotificationColorUtil.
      */
     private static int ensureTextContrast(int color, int bg) {
-        return findContrastColor(color, bg, 4.5);
+        int res = color;
+        try {
+            res = findContrastColor(color, bg, 4.5);
+        } catch (IllegalArgumentException e) {
+            // Just returning the same color in this case
+            Log.e(TAG, "ensureTextContrast: Invalid fg/bg color int."
+                    + " fg=" + color + " bg=" + bg);
+        }
+        return res;
     }
     /**
      * Finds a suitable color such that there's enough contrast.
