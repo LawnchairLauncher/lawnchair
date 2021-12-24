@@ -64,7 +64,7 @@
     <string name="auto_adaptive_icons_description">Para todos os ícones não adaptáveis.</string>
     <string name="support_and_pr">Suporte e RP</string>
     <string name="workspace_dt2s">Toque duplo para desligar a tela</string>
-    <string name="smart_space_enable">Widget At a Glance</string>
+    <string name="smart_space_enable">Mostrar o widget de resumo</string>
     <string name="design_and_development">Design e desenvolvimento</string>
     <string name="translate">Traduzir</string>
     <string name="product">Produto</string>
@@ -92,9 +92,9 @@
     <string name="theme_follow_wallpaper">Corresponder ao Papel de Parede</string>
     <string name="quickstep_label">Recentes</string>
     <string name="clear_all_as_action_label">Botão Limpar Tudo na Parte Inferior</string>
-    <string name="window_corner_radius_label">Tamanho do Arredondamento da Tela</string>
-    <string name="override_window_corner_radius_label">Tamanho do Arredondamento da Tela Personalizado</string>
-    <string name="window_corner_radius_description">Quando você desliza pra cima para abrir os Recentes, o aplicativo atual segue o seu dedo, diminuindo em um cartão. Use este controle deslizante para ajustar o tamanho do arredondamento do cartão quando estiver quase em tela cheia de forma que corresponda aos cantos da sua tela.</string>
+    <string name="window_corner_radius_label">Raio dos cantos da tela</string>
+    <string name="override_window_corner_radius_label">Raio dos cantos da tela personalizada</string>
+    <string name="window_corner_radius_description">Ao deslizar para cima para abrir as mudanças recentes, o aplicativo atual segue o seu dedo, diminuindo em um cartão. Utilize este controle deslizante para ajustar o raio de curvatura do cartão quando este estiver quase em tela cheia, de modo a que corresponda aos cantos da sua tela.</string>
     <string name="system_icons">Ícones do Sistema</string>
     <string name="accent_color">Cor de Destaque</string>
     <string name="done">Concluído</string>
@@ -115,7 +115,7 @@
     <string name="pref_fonts_missing_font">Fonte não encontrada.</string>
     <string name="font_variant_italic">Itálico</string>
     <string name="font_weight_thin">Fino</string>
-    <string name="font_weight_extra_light">Extra Leve</string>
+    <string name="font_weight_extra_light">Fonte extra fina</string>
     <string name="font_weight_light">Claro</string>
     <string name="font_weight_regular">Normal</string>
     <string name="font_weight_medium">Médio</string>
