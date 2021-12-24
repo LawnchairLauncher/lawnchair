@@ -40,10 +40,11 @@ import android.util.Xml;
 import com.android.launcher3.AutoInstallsLayout;
 import com.android.launcher3.R;
 import com.android.launcher3.config.FeatureFlags;
-import com.android.launcher3.logging.InstanceIdSequence;
+import com.android.launcher3.logging.InstanceId;
 import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.logging.StatsLogManager.StatsLogger;
 import com.android.launcher3.model.DeviceGridState;
+import com.android.launcher3.util.MainThreadInitializedObject;
 import com.android.launcher3.util.SettingsCache;
 import com.android.quickstep.SysUINavigationMode;
 import com.android.quickstep.SysUINavigationMode.Mode;
@@ -53,12 +54,19 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
+import java.util.Optional;
 
 /**
  * Utility class to log launcher settings changes
  */
 public class SettingsChangeLogger implements
         NavigationModeChangeListener, OnSharedPreferenceChangeListener {
+  
+    /**
+     * Singleton instance
+     */
+    public static MainThreadInitializedObject<SettingsChangeLogger> INSTANCE =
+            new MainThreadInitializedObject<>(SettingsChangeLogger::new);
 
     private static final String TAG = "SettingsChangeLogger";
     private static final String ROOT_TAG = "androidx.preference.PreferenceScreen";
@@ -66,12 +74,15 @@ public class SettingsChangeLogger implements
 
     private final Context mContext;
     private final ArrayMap<String, LoggablePref> mLoggablePrefs;
+    private final StatsLogManager mStatsLogManager;
 
     private Mode mNavMode;
-    private boolean mNotificationDotsEnabled;
+    private StatsLogManager.LauncherEvent mNotificationDotsEvent;
+    private StatsLogManager.LauncherEvent mHomeScreenSuggestionEvent;
 
-    public SettingsChangeLogger(Context context) {
+    private SettingsChangeLogger(Context context) {
         mContext = context;
+        mStatsLogManager = StatsLogManager.newInstance(mContext);
         mLoggablePrefs = loadPrefKeys(context);
         mNavMode = SysUINavigationMode.INSTANCE.get(context).addModeChangeListener(this);
 
@@ -118,14 +129,21 @@ public class SettingsChangeLogger implements
     }
 
     private void onNotificationDotsChanged(boolean isDotsEnabled) {
-        mNotificationDotsEnabled = isDotsEnabled;
-        dispatchUserEvent();
+        StatsLogManager.LauncherEvent mEvent =
+                isDotsEnabled ? LAUNCHER_NOTIFICATION_DOT_ENABLED
+                        : LAUNCHER_NOTIFICATION_DOT_DISABLED;
+
+        // Log only when the setting is actually changed and not during initialization.
+        if (mNotificationDotsEvent != null && mNotificationDotsEvent != mEvent) {
+            mStatsLogManager.logger().log(mNotificationDotsEvent);
+        }
+        mNotificationDotsEvent = mEvent;
     }
 
     @Override
     public void onNavigationModeChanged(Mode newMode) {
         mNavMode = newMode;
-        dispatchUserEvent();
+        mStatsLogManager.logger().log(newMode.launcherEvent);
     }
 
     @Override
@@ -134,27 +152,27 @@ public class SettingsChangeLogger implements
                 || KEY_WORKSPACE_SIZE.equals(key)
                 || KEY_THEMED_ICONS.equals(key)
                 || mLoggablePrefs.containsKey(key)) {
-            dispatchUserEvent();
+
+            mHomeScreenSuggestionEvent = getDevicePrefs(mContext)
+                    .getBoolean(LAST_PREDICTION_ENABLED_STATE, true)
+                    ? LAUNCHER_HOME_SCREEN_SUGGESTIONS_ENABLED
+                    : LAUNCHER_HOME_SCREEN_SUGGESTIONS_DISABLED;
+
+            mStatsLogManager.logger().log(mHomeScreenSuggestionEvent);
         }
     }
 
-    private void dispatchUserEvent() {
-        StatsLogger logger = StatsLogManager.newInstance(mContext).logger()
-                .withInstanceId(new InstanceIdSequence().newInstanceId());
+    /**
+     * Takes snapshot of all eligible launcher settings and log them with the provided instance ID.
+     */
+    public void logSnapshot(InstanceId snapshotInstanceId) {
+        StatsLogger logger = mStatsLogManager.logger().withInstanceId(snapshotInstanceId);
 
-        logger.log(mNotificationDotsEnabled
-                ? LAUNCHER_NOTIFICATION_DOT_ENABLED
-                : LAUNCHER_NOTIFICATION_DOT_DISABLED);
-        logger.log(mNavMode.launcherEvent);
-        logger.log(getDevicePrefs(mContext).getBoolean(LAST_PREDICTION_ENABLED_STATE, true)
-                ? LAUNCHER_HOME_SCREEN_SUGGESTIONS_ENABLED
-                : LAUNCHER_HOME_SCREEN_SUGGESTIONS_DISABLED);
-
-        StatsLogManager.LauncherEvent gridSizeChangedEvent =
-                new DeviceGridState(mContext).getWorkspaceSizeEvent();
-        if (gridSizeChangedEvent != null) {
-            logger.log(gridSizeChangedEvent);
-        }
+        Optional.ofNullable(mNotificationDotsEvent).ifPresent(logger::log);
+        Optional.ofNullable(mNavMode).map(mode -> mode.launcherEvent).ifPresent(logger::log);
+        Optional.ofNullable(mHomeScreenSuggestionEvent).ifPresent(logger::log);
+        Optional.ofNullable(new DeviceGridState(mContext).getWorkspaceSizeEvent()).ifPresent(
+                logger::log);
 
         SharedPreferences prefs = getPrefs(mContext);
         if (FeatureFlags.ENABLE_THEMED_ICONS.get()) {
