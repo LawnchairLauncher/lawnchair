@@ -127,7 +127,8 @@ public class BaseOverview extends LauncherInstrumentation.VisibleContainer {
 
             OverviewTask task = getCurrentTask();
             mLauncher.assertNotNull("current task is null", task);
-            mLauncher.scrollLeftByDistance(verifyActiveContainer(), task.getVisibleWidth());
+            mLauncher.scrollLeftByDistance(verifyActiveContainer(),
+                    task.getVisibleWidth() + mLauncher.getOverviewPageSpacing());
 
             try (LauncherInstrumentation.Closable c2 =
                          mLauncher.addContextLayer("scrolled task off screen")) {
