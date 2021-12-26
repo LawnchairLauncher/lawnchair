@@ -175,6 +175,6 @@
     <string name="search_pref_result_tips_title">Consejos de píxel</string>
     <string name="row_height_label">Altura de fila</string>
     <string name="all_apps_device_search_hint">Buscar</string>
-    <string name="dark_status_bar_label">Dark Status Bar</string>
+    <string name="dark_status_bar_label">Barra de estado oscura</string>
     <string name="lawnicons_not_installed_description">Lawnicons no está instalado.</string>
 </resources>
