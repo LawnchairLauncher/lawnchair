@@ -48,6 +48,14 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+        <activity android:exported="true"
+            android:name="app.lawnchair.ui.preferences.ApplyIconPackActivity"
+            android:theme="@style/ApplyIconPackDialog">
+            <intent-filter>
+                <action android:name="app.lawnchair.APPLY_ICONS"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </activity>
         <receiver
             android:name="app.lawnchair.gestures.handlers.SleepMethodDeviceAdmin$SleepDeviceAdmin"
             android:label="@string/derived_app_name"

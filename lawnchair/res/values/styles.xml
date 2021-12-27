@@ -177,4 +177,15 @@
         <item name="keyShadowOffsetX">@dimen/smartspaceKeyShadowOffset</item>
         <item name="keyShadowOffsetY">@dimen/smartspaceKeyShadowOffset</item>
     </style>
+
+    <style name="ApplyIconPackDialog" parent="Theme.Lawnchair">
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:backgroundDimEnabled">true</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:windowIsFloating">false</item>
+    </style>
+
 </resources>
