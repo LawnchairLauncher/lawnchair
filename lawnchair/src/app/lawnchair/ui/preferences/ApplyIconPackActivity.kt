@@ -8,20 +8,16 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Surface
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
@@ -34,12 +30,10 @@ import androidx.compose.ui.unit.sp
 import androidx.core.graphics.drawable.toBitmap
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
-import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences.preferenceManager
 import app.lawnchair.ui.theme.LawnchairTheme
 import app.lawnchair.util.navigationBarsOrDisplayCutoutPadding
 import coil.annotation.ExperimentalCoilApi
-import coil.compose.rememberImagePainter
 import com.android.launcher3.R
 import com.google.accompanist.insets.ProvideWindowInsets
 import java.util.*
@@ -70,7 +64,7 @@ class ApplyIconPackActivity : AppCompatActivity() {
                         val isIconPackValid = iconPacks.any { it.packageName == packPackageName }
                         Box(modifier = Modifier.fillMaxSize()) {
                             Surface(
-                                shape = RoundedCornerShape(topStart = 25.dp, topEnd = 25.dp),
+                                shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp),
                                 color = MaterialTheme.colorScheme.surface,
                                 modifier = Modifier
                                     .fillMaxWidth()
@@ -111,10 +105,10 @@ class ApplyIconPackActivity : AppCompatActivity() {
 
     @OptIn(ExperimentalCoilApi::class)
     @Composable
-    private fun ColumnScope.CircularIcon(bitmap: Bitmap?) {
-        if (bitmap != null)
+    private fun ColumnScope.ShowcaseIcon(bitmap: Bitmap?) {
+        if (bitmap != null) {
+            HorizontalSpacer(height = 8.dp)
             Surface(
-                shape = CircleShape,
                 modifier = Modifier
                     .height(80.dp)
                     .aspectRatio(1f)
@@ -122,11 +116,13 @@ class ApplyIconPackActivity : AppCompatActivity() {
                 color = MaterialTheme.colorScheme.surface
             ) {
                 Image(
-                    painter = rememberImagePainter(bitmap),
+                    bitmap = bitmap.asImageBitmap(),
                     contentDescription = null,
                     modifier = Modifier.fillMaxSize(),
                 )
             }
+            HorizontalSpacer(height = 8.dp)
+        }
     }
 
     @Composable
@@ -134,8 +130,7 @@ class ApplyIconPackActivity : AppCompatActivity() {
         iconPackName: String?,
         iconPackIcon: Bitmap?
     ) {
-        CircularIcon(bitmap = iconPackIcon)
-        HorizontalSpacer()
+        ShowcaseIcon(bitmap = iconPackIcon)
         Text(
             text = stringResource(R.string.invalid_icon_pack_description).format(
                 Locale.getDefault(),
@@ -161,9 +156,8 @@ class ApplyIconPackActivity : AppCompatActivity() {
         iconPackIcon: Bitmap?
     ) {
         val hapticFeedback = LocalHapticFeedback.current
-        var iconPacksPreference by preferenceManager().iconPackPackage.getAdapter()
-        CircularIcon(bitmap = iconPackIcon)
-        HorizontalSpacer(height = 8.dp)
+        var iconPacksPreference by preferenceManager().iconPackPackage
+        ShowcaseIcon(bitmap = iconPackIcon)
         Text(
             text = iconPackName,
             modifier = Modifier.fillMaxWidth(),
@@ -174,14 +168,13 @@ class ApplyIconPackActivity : AppCompatActivity() {
             textAlign = TextAlign.Center,
             color = MaterialTheme.colorScheme.onSurface
         )
-        HorizontalSpacer(height = 8.dp)
+        HorizontalSpacer()
         Text(
             text = formattedIconPackApplyMessage(iconPackName = iconPackName),
             modifier = Modifier.fillMaxWidth(),
             textAlign = TextAlign.Center,
             color = MaterialTheme.colorScheme.onSurface
         )
-
         HorizontalSpacer()
         FullWidthButton(text = stringResource(id = R.string.apply_grid)) {
             if (iconPacksPreference == iconPackPackageName) {
