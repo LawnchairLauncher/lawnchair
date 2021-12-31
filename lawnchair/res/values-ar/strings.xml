@@ -20,7 +20,7 @@
     <string name="home_screen_label">الشاشة الرئيسة</string>
     <string name="home_screen_description">حصاد، في لمحة، شبكة، أيقونات</string>
     <string name="general_label">عام</string>
-    <string name="general_description">نقط الإشعارات، حزمة الأيقونات</string>
+    <string name="general_description">الألوان، حزمة الأيقونة، نقاط الإشعار</string>
     <string name="home_screen_rotation_label">تدوير الشاشة الرئيسة</string>
     <string name="home_screen_rotaton_description">عندما يُدَوَّر الجهاز.</string>
     <string name="auto_add_shortcuts_label">إضافة التطبيقات الجديدة إلى الشاشة الرئيسة</string>
@@ -34,10 +34,10 @@
     <string name="dock_icons">أيقونات المرسى</string>
     <string name="max_folder_columns">عدد الأعمدة الأقصى للمجلدات</string>
     <string name="max_folder_rows">عدد الصفوف الأقصى للمجلدات</string>
-    <string name="home_screen_grid">شبكة الشاشة الرئيسية</string>
-    <string name="columns">الأعمدة</string>
+    <string name="home_screen_grid">صفوف الشاشة الرئيسية</string>
+    <string name="columns">أعمدة</string>
     <string name="grid">شبكة</string>
-    <string name="rows">الصفوف</string>
+    <string name="rows">صفوف</string>
     <string name="icons">الأيقونات</string>
     <string name="icon_size">حجم الأيقونات</string>
     <string name="label_size">حجم التسمية</string>
@@ -104,7 +104,7 @@
     <string name="done">تمّ</string>
     <string name="loading">يتم التحميل…</string>
     <string name="system">نظام</string>
-    <string name="wallpaper">الخلفية</string>
+    <string name="wallpaper">خلفية الخلفية</string>
     <string name="custom">تخصيص</string>
     <string name="quickstep_description">نصف قطر زاوية زر \"مسح الكل\"</string>
     <string name="wallpaper_scrolling_label">تحريك الخلفية</string>
@@ -180,5 +180,5 @@
     <string name="row_height_label">ارتفاع الصف</string>
     <string name="all_apps_device_search_hint">البحث</string>
     <string name="dark_status_bar_label">شريط الحالة المظلم</string>
-    <string name="lawnicons_not_installed_description">Lawnicons not installed.</string>
+    <string name="lawnicons_not_installed_description">لم يتم تثبيت لونكون.</string>
 </resources>
