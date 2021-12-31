@@ -152,14 +152,14 @@
             launcher:name="Tablet"
             launcher:minWidthDps="900"
             launcher:minHeightDps="820"
-            launcher:minCellHeightDps="104"
-            launcher:minCellWidthDps="80"
+            launcher:minCellHeight="104"
+            launcher:minCellWidth="80"
             launcher:iconImageSize="60"
             launcher:iconTextSize="14"
-            launcher:borderSpaceDps="16"
+            launcher:borderSpace="16"
             launcher:allAppsIconSize="60"
             launcher:allAppsIconTextSize="14"
-            launcher:allAppsCellSpacingDps="16"
+            launcher:allAppsBorderSpace="16"
             launcher:canBeDefault="true" />
 
     </grid-option>

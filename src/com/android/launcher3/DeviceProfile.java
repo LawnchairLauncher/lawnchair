@@ -166,7 +166,7 @@ public class DeviceProfile {
     public int qsbBottomMarginPx;
 
     // All apps
-    public Point allAppsCellSpacePx;
+    public Point allAppsBorderSpacePx;
     public int allAppsOpenVerticalTranslate;
     public int allAppsCellHeightPx;
     public int allAppsCellWidthPx;
@@ -290,7 +290,7 @@ public class DeviceProfile {
         folderContentPaddingTop = res.getDimensionPixelSize(R.dimen.folder_content_padding_top);
 
         cellLayoutBorderSpacePx = getCellLayoutBorderSpace(inv);
-        allAppsCellSpacePx = new Point(
+        allAppsBorderSpacePx = new Point(
                 pxFromDp(inv.borderSpaces[InvariantDeviceProfile.INDEX_ALL_APPS].x, mMetrics, 1f),
                 pxFromDp(inv.borderSpaces[InvariantDeviceProfile.INDEX_ALL_APPS].y, mMetrics, 1f));
         cellLayoutBorderSpaceOriginalPx = new Point(cellLayoutBorderSpacePx);
@@ -596,7 +596,7 @@ public class DeviceProfile {
     private void updateAllAppsWidth() {
         if (isTwoPanels) {
             int usedWidth = (allAppsCellWidthPx * numShownAllAppsColumns)
-                    + (allAppsCellSpacePx.x * (numShownAllAppsColumns + 1));
+                    + (allAppsBorderSpacePx.x * (numShownAllAppsColumns + 1));
             allAppsLeftRightPadding = Math.max(1, (availableWidthPx - usedWidth) / 2);
         } else {
             allAppsLeftRightPadding =
