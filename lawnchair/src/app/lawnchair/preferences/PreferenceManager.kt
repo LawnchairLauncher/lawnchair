@@ -129,6 +129,8 @@ class PreferenceManager private constructor(private val context: Context) : Base
     val allAppsCellHeightMultiplier = FloatPref("pref_allAppsCellHeightMultiplier", 1F, reloadGrid)
     val darkStatusBar = BoolPref("pref_darkStatusBar", false)
 
+    val showWorkModeSwitch = BoolPref("pref_showWorkModeSwitch", true, restart)
+
     init {
         sp.registerOnSharedPreferenceChangeListener(this)
         initializeIconShape()

@@ -90,6 +90,11 @@ public class AllAppsContainerView extends StretchRecyclerViewContainer implement
 
     private static final String BUNDLE_KEY_CURRENT_PAGE = "launcher.allapps.current_page";
 
+    // Preference key for displaying work mode switch on app drawer.
+    public static final String SHOW_WORK_MODE_SWITCH = "pref_showWorkModeSwitch";
+
+    private final Context mContext;
+
     public static final float PULL_MULTIPLIER = .02f;
     public static final float FLING_VELOCITY_MULTIPLIER = 1200f;
 
@@ -149,6 +154,8 @@ public class AllAppsContainerView extends StretchRecyclerViewContainer implement
 
     public AllAppsContainerView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+
+        mContext = context;
 
         mLauncher = BaseDraggingActivity.fromContext(context);
 
@@ -495,7 +502,7 @@ public class AllAppsContainerView extends StretchRecyclerViewContainer implement
     }
 
     private void setupWorkToggle() {
-        if (Utilities.ATLEAST_P) {
+        if (Utilities.ATLEAST_P && Utilities.getPrefs(mContext).getBoolean(SHOW_WORK_MODE_SWITCH, true)) {
             mWorkModeSwitch = (WorkModeSwitch) mLauncher.getLayoutInflater().inflate(
                     R.layout.work_mode_fab, this, false);
             this.addView(mWorkModeSwitch);

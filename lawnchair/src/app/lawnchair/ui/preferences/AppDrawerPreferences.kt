@@ -44,6 +44,7 @@ fun NavGraphBuilder.appDrawerGraph(route: String) {
 fun AppDrawerPreferences() {
     val prefs = preferenceManager()
     val resources = LocalContext.current.resources
+    val showWorkModeSwitch = prefs.showWorkModeSwitch.getAdapter()
     PreferenceLayout(label = stringResource(id = R.string.app_drawer_label)) {
         PreferenceGroup(heading = stringResource(id = R.string.general_label), isFirstChild = true) {
             NavigationActionPreference(
@@ -57,6 +58,10 @@ fun AppDrawerPreferences() {
                 step = 0.1f,
                 valueRange = 0F..1F,
                 showAsPercentage = true,
+            )
+            SwitchPreference(
+                label = stringResource(id = R.string.showWorkModeSwitch),
+                adapter = showWorkModeSwitch
             )
             SuggestionsPreference()
         }
