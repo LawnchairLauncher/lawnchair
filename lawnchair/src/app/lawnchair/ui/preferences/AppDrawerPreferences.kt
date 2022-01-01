@@ -60,7 +60,7 @@ fun AppDrawerPreferences() {
                 showAsPercentage = true,
             )
             SwitchPreference(
-                label = stringResource(id = R.string.showWorkModeSwitch),
+                label = stringResource(id = R.string.show_work_mode_switch),
                 adapter = showWorkModeSwitch
             )
             SuggestionsPreference()
