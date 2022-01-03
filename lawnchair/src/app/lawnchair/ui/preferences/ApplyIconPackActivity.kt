@@ -62,36 +62,35 @@ class ApplyIconPackActivity : AppCompatActivity() {
                     CompositionLocalProvider(LocalPreferenceInteractor provides viewModel<PreferenceViewModel>()) {
                         val iconPacks by LocalPreferenceInteractor.current.iconPacks.collectAsState()
                         val isIconPackValid = iconPacks.any { it.packageName == packPackageName }
-                        Box(modifier = Modifier.fillMaxSize()) {
-                            Surface(
-                                shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp),
-                                color = MaterialTheme.colorScheme.surface,
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .align(Alignment.BottomCenter)
-                            ) {
-                                Box(
-                                    Modifier
+                        if (iconPacks.isNotEmpty()) {
+                            Box(modifier = Modifier.fillMaxSize()) {
+                                Surface(
+                                    shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp),
+                                    color = MaterialTheme.colorScheme.surface,
+                                    modifier = Modifier
                                         .fillMaxWidth()
-                                        .navigationBarsOrDisplayCutoutPadding()
+                                        .align(Alignment.BottomCenter)
                                 ) {
-                                    Column(
-                                        modifier = Modifier
+                                    Box(
+                                        Modifier
                                             .fillMaxWidth()
-                                            .padding(25.dp)
-                                            .verticalScroll(rememberScrollState())
+                                            .navigationBarsOrDisplayCutoutPadding()
                                     ) {
-                                        if (isIconPackValid && packPackageName != null) {
-                                            ApplyIconPackShowcase(
-                                                iconPackPackageName = packPackageName,
-                                                iconPackName = packName,
-                                                iconPackIcon = packIcon
-                                            )
-                                        } else {
-                                            InvalidIconPackPlaceholder(
-                                                iconPackName = packName,
-                                                iconPackIcon = packIcon
-                                            )
+                                        Column(
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .padding(25.dp)
+                                                .verticalScroll(rememberScrollState())
+                                        ) {
+                                            if (isIconPackValid && packPackageName != null) {
+                                                ApplyIconPackShowcase(
+                                                    iconPackPackageName = packPackageName,
+                                                    iconPackName = packName,
+                                                    iconPackIcon = packIcon
+                                                )
+                                            } else {
+                                                finish()
+                                            }
                                         }
                                     }
                                 }
@@ -122,30 +121,6 @@ class ApplyIconPackActivity : AppCompatActivity() {
                 )
             }
             HorizontalSpacer(height = 8.dp)
-        }
-    }
-
-    @Composable
-    private fun ColumnScope.InvalidIconPackPlaceholder(
-        iconPackName: String?,
-        iconPackIcon: Bitmap?
-    ) {
-        ShowcaseIcon(bitmap = iconPackIcon)
-        Text(
-            text = stringResource(R.string.invalid_icon_pack_description).format(
-                Locale.getDefault(),
-                iconPackName
-            ),
-            modifier = Modifier.fillMaxWidth(),
-            textAlign = TextAlign.Center,
-            color = MaterialTheme.colorScheme.onSurface
-        )
-        HorizontalSpacer()
-        FullWidthButton(
-            muted = true,
-            text = stringResource(id = android.R.string.cancel)
-        ) {
-            finish()
         }
     }
 
