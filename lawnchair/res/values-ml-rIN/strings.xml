@@ -110,7 +110,7 @@
     <string name="missing_notification_access_label">Notification Access Needed</string>
     <string name="missing_notification_access_description">Notification access needed.</string>
     <string name="msg_missing_notification_access">To use Notification Dots, grant <xliff:g id="name" example="My App">%1$s</xliff:g> access to notifications.</string>
-    <string name="title_change_settings">Change Settings</string>
+    <string name="title_change_settings">സെറ്റിംഗ്സ് മാറ്റുക</string>
     <string name="debug_restart_launcher">Restart Lawnchair</string>
     <string name="pref_fonts_missing_font">Font not found.</string>
     <string name="font_variant_italic">Italic</string>
