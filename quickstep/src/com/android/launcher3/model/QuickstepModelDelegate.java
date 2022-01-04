@@ -119,18 +119,19 @@ public class QuickstepModelDelegate extends ModelDelegate {
 
         WorkspaceItemFactory allAppsFactory = new WorkspaceItemFactory(
                 mApp, ums, pinnedShortcuts, mIDP.numDatabaseAllAppsColumns);
-        mAllAppsState.items.setItems(
+        FixedContainerItems allAppsItems = new FixedContainerItems(mAllAppsState.containerId,
                 mAllAppsState.storage.read(mApp.getContext(), allAppsFactory, ums.allUsers::get));
-        mDataModel.extraItems.put(CONTAINER_PREDICTION, mAllAppsState.items);
+        mDataModel.extraItems.put(mAllAppsState.containerId, allAppsItems);
 
         WorkspaceItemFactory hotseatFactory =
                 new WorkspaceItemFactory(mApp, ums, pinnedShortcuts, mIDP.numDatabaseHotseatIcons);
-        mHotseatState.items.setItems(
+        FixedContainerItems hotseatItems = new FixedContainerItems(mHotseatState.containerId,
                 mHotseatState.storage.read(mApp.getContext(), hotseatFactory, ums.allUsers::get));
-        mDataModel.extraItems.put(CONTAINER_HOTSEAT_PREDICTION, mHotseatState.items);
+        mDataModel.extraItems.put(mHotseatState.containerId, hotseatItems);
 
         // Widgets prediction isn't used frequently. And thus, it is not persisted on disk.
-        mDataModel.extraItems.put(CONTAINER_WIDGETS_PREDICTION, mWidgetsRecommendationState.items);
+        mDataModel.extraItems.put(mWidgetsRecommendationState.containerId,
+                new FixedContainerItems(mWidgetsRecommendationState.containerId));
         mActive = true;
     }
 
@@ -371,14 +372,14 @@ public class QuickstepModelDelegate extends ModelDelegate {
 
     static class PredictorState {
 
-        public final FixedContainerItems items;
+        public final int containerId;
         public final PersistedItemArray<ItemInfo> storage;
         public AppPredictor predictor;
 
         private List<AppTarget> mLastTargets;
 
-        PredictorState(int container, String storageName) {
-            items = new FixedContainerItems(container);
+        PredictorState(int containerId, String storageName) {
+            this.containerId = containerId;
             storage = new PersistedItemArray<>(storageName);
             mLastTargets = Collections.emptyList();
         }

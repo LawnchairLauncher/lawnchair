@@ -34,7 +34,6 @@ import com.android.launcher3.model.QuickstepModelDelegate.PredictorState;
 import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -60,13 +59,13 @@ public class PredictionUpdateTask extends BaseModelUpdateTask {
         Utilities.getDevicePrefs(context).edit()
                 .putBoolean(LAST_PREDICTION_ENABLED_STATE, !mTargets.isEmpty()).apply();
 
-        FixedContainerItems fci = mPredictorState.items;
-        Set<UserHandle> usersForChangedShortcuts = new HashSet<>(fci.items.stream()
-                .filter(info -> info.itemType == ITEM_TYPE_DEEP_SHORTCUT)
-                .map(info -> info.user)
-                .collect(Collectors.toSet()));
-        fci.items.clear();
+        Set<UserHandle> usersForChangedShortcuts =
+                dataModel.extraItems.get(mPredictorState.containerId).items.stream()
+                        .filter(info -> info.itemType == ITEM_TYPE_DEEP_SHORTCUT)
+                        .map(info -> info.user)
+                        .collect(Collectors.toSet());
 
+        FixedContainerItems fci = new FixedContainerItems(mPredictorState.containerId);
         for (AppTarget target : mTargets) {
             WorkspaceItemInfo itemInfo;
             ShortcutInfo si = target.getShortcutInfo();
@@ -109,6 +108,7 @@ public class PredictionUpdateTask extends BaseModelUpdateTask {
             fci.items.add(itemInfo);
         }
 
+        dataModel.extraItems.put(fci.containerId, fci);
         bindExtraContainerItems(fci);
         usersForChangedShortcuts.forEach(
                 u -> dataModel.updateShortcutPinnedState(app.getContext(), u));
