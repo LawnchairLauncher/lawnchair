@@ -18,14 +18,14 @@
     <string name="icon_pack">ഐക്കൺ പായ്ക്ക്</string>
     <string name="settings">ക്രമീകരണം</string>
     <string name="home_screen_label">Home Screen</string>
-    <string name="home_screen_description">Feed, At a Glance, Grid, Icons</string>
+    <string name="home_screen_description">ഫീഡ്, ഒറ്റ നോട്ടത്തിൽ, ഐകൺസ്</string>
     <string name="general_label">General</string>
     <string name="general_description">Notification Dots, Icon Pack</string>
     <string name="home_screen_rotation_label">Home Screen Rotation</string>
     <string name="home_screen_rotaton_description">ഉപകരണം കറക്ക്‌ബോൾ.</string>
     <string name="auto_add_shortcuts_label">Add New Apps to Home Screen</string>
     <string name="dock_label">താഴത്തെ വരി</string>
-    <string name="dock_description">Search Bar, Icon Count</string>
+    <string name="dock_description">തിരയൽ ബാർ, ഐക്കൺ എണ്ണം</string>
     <string name="app_drawer_label">ആപ്പ് ഡ്രോയർ</string>
     <string name="app_drawer_description">ഒളിപ്പിച്ച ആപ്പുകൾ, നിരകളുടെ എണ്ണം, ഐക്കണുകൾ</string>
     <string name="folders_label">Folders</string>
@@ -36,7 +36,7 @@
     <string name="max_folder_rows">പരമാവധി ഫോൾഡർ വരികൾ</string>
     <string name="home_screen_grid">Home Screen Grid</string>
     <string name="columns">Columns</string>
-    <string name="grid">Grid</string>
+    <string name="grid">കളം</string>
     <string name="rows">Rows</string>
     <string name="icons">Icons</string>
     <string name="icon_size">Icon Size</string>
@@ -48,7 +48,7 @@
     <string name="news">വാര്‍ത്ത</string>
     <string name="support">പിന്തുണ</string>
     <string name="acknowledgements">അംഗീകാരങ്ങൾ</string>
-    <string name="devops">DevOps</string>
+    <string name="devops">വികസന പ്രവർത്തനങ്ങൾ</string>
     <string name="quickswitch_maintenance">QuickSwitch Maintenance</string>
     <string name="all_apps_search_bar_hint">ആപ്പുകൾ തിരയുക</string>
     <string name="settings_button_text">Home Settings</string>
@@ -67,7 +67,7 @@
     <string name="smart_space_enable">ഒറ്റനോട്ടത്തിൽ വിജറ്റ്</string>
     <string name="design_and_development">Design &amp; Development</string>
     <string name="translate">പരിഭാഷപ്പെടുത്തുക</string>
-    <string name="product">Product</string>
+    <string name="product">ഉൽപ്പന്നം</string>
     <string name="hidden_apps_label">മറച്ച ആപ്പുകൾ</string>
     <string name="hidden_apps_label_with_count">മറച്ച ആപ്പുകൾ (%1$d)</string>
     <plurals name="apps_count">
