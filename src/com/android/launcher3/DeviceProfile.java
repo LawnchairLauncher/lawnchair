@@ -161,6 +161,7 @@ public class DeviceProfile {
     public final int hotseatBarSidePaddingStartPx;
     public final int hotseatBarSidePaddingEndPx;
     public final int hotseatQsbHeight;
+    public final int hotseatBorderSpace;
 
     public final float qsbBottomMarginOriginalPx;
     public int qsbBottomMarginPx;
@@ -349,8 +350,9 @@ public class DeviceProfile {
         hotseatBarSidePaddingStartPx = isVerticalBarLayout() ? workspacePageIndicatorHeight : 0;
         hotseatExtraVerticalSize =
                 res.getDimensionPixelSize(R.dimen.dynamic_grid_hotseat_extra_vertical_size);
+        hotseatBorderSpace = pxFromDp(inv.hotseatBorderSpaces[mTypeIndex], mMetrics);
         updateHotseatIconSize(
-                pxFromDp(inv.iconSize[InvariantDeviceProfile.INDEX_DEFAULT], mMetrics, 1f));
+                pxFromDp(inv.iconSize[InvariantDeviceProfile.INDEX_DEFAULT], mMetrics));
 
         qsbBottomMarginOriginalPx = isScalableGrid
                 ? res.getDimensionPixelSize(R.dimen.scalable_grid_qsb_bottom_margin)
@@ -895,14 +897,10 @@ public class DeviceProfile {
             int hotseatTopDiff = hotseatHeight - taskbarOffset;
 
             int endOffset = ApiWrapper.getHotseatEndOffset(context);
-            int requiredWidth = iconSizePx * numShownHotseatIcons;
+            int requiredWidth = iconSizePx * numShownHotseatIcons
+                    + hotseatBorderSpace * (numShownHotseatIcons - 1);
 
-            Resources res = context.getResources();
-            float taskbarIconSize = res.getDimension(R.dimen.taskbar_icon_size);
-            float taskbarIconSpacing = 2 * res.getDimension(R.dimen.taskbar_icon_spacing);
-            int maxSize = (int) (requiredWidth
-                    * (taskbarIconSize + taskbarIconSpacing) / taskbarIconSize);
-            int hotseatSize = Math.min(maxSize, availableWidthPx - endOffset);
+            int hotseatSize = Math.min(requiredWidth, availableWidthPx - endOffset);
             int sideSpacing = (availableWidthPx - hotseatSize) / 2;
             mHotseatPadding.set(sideSpacing, hotseatTopDiff, sideSpacing, taskbarOffset);
 

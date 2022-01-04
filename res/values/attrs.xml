@@ -227,6 +227,13 @@
         <!-- defaults to iconTextSize, if not specified -->
         <attr name="allAppsIconTextSize" format="float" />
 
+        <!-- defaults to borderSpaceDps, if not specified -->
+        <attr name="hotseatBorderSpace" format="float" />
+        <!-- defaults to hotseatBorderSpace, if not specified -->
+        <attr name="hotseatBorderSpaceTwoPanelLandscape" format="float" />
+        <!-- defaults to hotseatBorderSpace, if not specified -->
+        <attr name="hotseatBorderSpaceTwoPanelPortrait" format="float" />
+
         <attr name="iconImageSize" format="float" />
         <!-- defaults to iconImageSize, if not specified -->
         <attr name="iconSizeLandscape" format="float" />

@@ -122,6 +122,7 @@ public class InvariantDeviceProfile {
 
     public PointF[] borderSpaces;
     public float folderBorderSpace;
+    public float[] hotseatBorderSpaces;
 
     public float[] horizontalMargin;
 
@@ -331,6 +332,7 @@ public class InvariantDeviceProfile {
         numShownHotseatIcons = closestProfile.numHotseatIcons;
         numDatabaseHotseatIcons = deviceType == TYPE_MULTI_DISPLAY
                 ? closestProfile.numDatabaseHotseatIcons : closestProfile.numHotseatIcons;
+        hotseatBorderSpaces = displayOption.hotseatBorderSpaces;
 
         numAllAppsColumns = closestProfile.numAllAppsColumns;
         numDatabaseAllAppsColumns = deviceType == TYPE_MULTI_DISPLAY
@@ -756,6 +758,7 @@ public class InvariantDeviceProfile {
         private float folderBorderSpace;
         private final PointF[] borderSpaces = new PointF[COUNT_SIZES];
         private final float[] horizontalMargin = new float[COUNT_SIZES];
+        private final float[] hotseatBorderSpaces = new float[COUNT_SIZES];
 
         private final float[] iconSizes = new float[COUNT_SIZES];
         private final float[] textSizes = new float[COUNT_SIZES];
@@ -864,6 +867,17 @@ public class InvariantDeviceProfile {
                     R.styleable.ProfileDisplayOption_horizontalMarginTwoPanelPortrait,
                     horizontalMargin[INDEX_DEFAULT]);
 
+            hotseatBorderSpaces[INDEX_DEFAULT] = a.getFloat(
+                    R.styleable.ProfileDisplayOption_hotseatBorderSpace, borderSpace);
+            hotseatBorderSpaces[INDEX_LANDSCAPE] = hotseatBorderSpaces[INDEX_DEFAULT];
+            hotseatBorderSpaces[INDEX_ALL_APPS] = hotseatBorderSpaces[INDEX_DEFAULT];
+            hotseatBorderSpaces[INDEX_TWO_PANEL_LANDSCAPE] = a.getFloat(
+                    R.styleable.ProfileDisplayOption_hotseatBorderSpaceTwoPanelLandscape,
+                    hotseatBorderSpaces[INDEX_DEFAULT]);
+            hotseatBorderSpaces[INDEX_TWO_PANEL_PORTRAIT] = a.getFloat(
+                    R.styleable.ProfileDisplayOption_hotseatBorderSpaceTwoPanelPortrait,
+                    hotseatBorderSpaces[INDEX_DEFAULT]);
+
             a.recycle();
         }
 
@@ -893,6 +907,7 @@ public class InvariantDeviceProfile {
                 minCellSize[i].x *= w;
                 minCellSize[i].y *= w;
                 horizontalMargin[i] *= w;
+                hotseatBorderSpaces[i] *= w;
             }
 
             folderBorderSpace *= w;
@@ -909,6 +924,7 @@ public class InvariantDeviceProfile {
                 minCellSize[i].x += p.minCellSize[i].x;
                 minCellSize[i].y += p.minCellSize[i].y;
                 horizontalMargin[i] += p.horizontalMargin[i];
+                hotseatBorderSpaces[i] += p.hotseatBorderSpaces[i];
             }
 
             folderBorderSpace += p.folderBorderSpace;
