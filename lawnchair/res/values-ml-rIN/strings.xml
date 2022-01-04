@@ -26,7 +26,7 @@
     <string name="auto_add_shortcuts_label">Add New Apps to Home Screen</string>
     <string name="dock_label">Dock</string>
     <string name="dock_description">Search Bar, Icon Count</string>
-    <string name="app_drawer_label">App Drawer</string>
+    <string name="app_drawer_label">ആപ്പ് ഡ്രോയർ</string>
     <string name="app_drawer_description">Hidden Apps, Column Count, Icons</string>
     <string name="folders_label">Folders</string>
     <string name="folders_description">Row and Column Count</string>
@@ -56,15 +56,15 @@
     <string name="app_info_drop_target_label">ആപ്പ് വിവരം</string>
     <string name="item_removed">ഇനം നീക്കംചെയ്തു.</string>
     <string name="all_apps_no_search_results">No apps found matching “<xliff:g example="Android" id="query">%1$s</xliff:g>”.</string>
-    <string name="background_opacity">Background Opacity</string>
-    <string name="background_lightness_label">Background Lightness</string>
-    <string name="adaptive_icons">Adaptive Icons</string>
-    <string name="adaptive_icon_background_description">Use 100% background lightness for white.</string>
-    <string name="auto_adaptive_icons_label">Auto Adaptive Icons</string>
-    <string name="auto_adaptive_icons_description">For all non-Adaptive icons.</string>
+    <string name="background_opacity">പശ്ചാത്തല അതാര്യത</string>
+    <string name="background_lightness_label">പശ്ചാത്തല ലാഘവത്വം</string>
+    <string name="adaptive_icons">അഡാപ്റ്റീവ് ഐക്കണുകൾ</string>
+    <string name="adaptive_icon_background_description">വെളുപ്പിന് 100% പശ്ചാത്തല ഭാരം ഉപയോഗിക്കുക.</string>
+    <string name="auto_adaptive_icons_label">ഓട്ടോ അഡാപ്റ്റീവ് ഐക്കണുകൾ</string>
+    <string name="auto_adaptive_icons_description">അഡാപ്റ്റീവ് അല്ലാത്ത എല്ലാ ഐക്കണുകൾക്കും.</string>
     <string name="support_and_pr">Support &amp; PR</string>
-    <string name="workspace_dt2s">Double-Tap to Sleep</string>
-    <string name="smart_space_enable">At a Glance Widget</string>
+    <string name="workspace_dt2s">ഉറങ്ങാൻ രണ്ടുതവണ ടാപ്പ് ചെയ്യുക</string>
+    <string name="smart_space_enable">ഒറ്റനോട്ടത്തിൽ വിജറ്റ്</string>
     <string name="design_and_development">Design &amp; Development</string>
     <string name="translate">പരിഭാഷപ്പെടുത്തുക</string>
     <string name="product">Product</string>
