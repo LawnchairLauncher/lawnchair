@@ -76,7 +76,7 @@
     </plurals>
     <string name="hotseat_qsb_label">തിരയൽ ബാർ കാണിക്കുക</string>
     <string name="dt2s_admin_hint_title">കാര്യസ്ത്യാധികാരം ആവശ്യമാണ്</string>
-    <string name="dt2s_admin_hint">To use Double-Tap to Sleep, set Lawnchair as a device admin app. Tap Open Settings, then tap “Activate this device admin app.”</string>
+    <string name="dt2s_admin_hint">ഉറങ്ങാൻ രണ്ടുതവണ ടാപ്പ് ചെയ്യാൻ, ലോൺചെയർ ഒരു ഉപകരണ അഡ്‌മിൻ ആപ്പായി സജ്ജീകരിക്കുക. ക്രമീകരണങ്ങൾ തുറക്കുക ടാപ്പ് ചെയ്യുക, തുടർന്ന് \"ഈ ഉപകരണ അഡ്‌മിൻ ആപ്പ് സജീവമാക്കുക\" ടാപ്പ് ചെയ്യുക</string>
     <string name="dt2s_admin_warning">ഉറങ്ങാൻ രണ്ടുതവണ ടാപ്പ് ചെയ്യുന്നത് ഓഫാകും.</string>
     <string name="dt2s_a11y_hint_title">Turn on Accessibility Service</string>
     <string name="dt2s_a11y_hint">To use Double-Tap to Sleep, turn on the Lawnchair accessibility service. Tap Open Settings, then select Lawnchair and turn on Use Lawnchair.</string>
