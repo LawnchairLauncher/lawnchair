@@ -20,7 +20,7 @@
     <string name="home_screen_label">Home Screen</string>
     <string name="home_screen_description">ഫീഡ്, ഒറ്റ നോട്ടത്തിൽ, കളം, ഐകൺസ്</string>
     <string name="general_label">പൊതുവായ</string>
-    <string name="general_description">Notification Dots, Icon Pack</string>
+    <string name="general_description">നിറങ്ങൾ, ഐക്കൺ പായ്ക്ക്, അറിയിപ്പ് ഡോട്ടുകൾ</string>
     <string name="home_screen_rotation_label">ഹോം സ്ക്രീൻ റൊട്ടേഷൻ</string>
     <string name="home_screen_rotaton_description">ഉപകരണം കറക്ക്‌ബോൾ.</string>
     <string name="auto_add_shortcuts_label">പുതിയ ആപ്പുകൾ ഹോം സ്ക്രീനിൽ ചേർക്കുക</string>
@@ -49,7 +49,7 @@
     <string name="support">പിന്തുണ</string>
     <string name="acknowledgements">അംഗീകാരങ്ങൾ</string>
     <string name="devops">വികസന പ്രവർത്തനങ്ങൾ</string>
-    <string name="quickswitch_maintenance">QuickSwitch Maintenance</string>
+    <string name="quickswitch_maintenance">ക്വിക്ക്സ്വിച്ച് മെയിന്റനൻസ്</string>
     <string name="all_apps_search_bar_hint">ആപ്പുകൾ തിരയുക</string>
     <string name="settings_button_text">ഹോം ക്രമീകരണങ്ങൾ</string>
     <string name="development">വികസനം</string>
@@ -62,7 +62,7 @@
     <string name="adaptive_icon_background_description">വെളുപ്പിന് 100% പശ്ചാത്തല ഭാരം ഉപയോഗിക്കുക.</string>
     <string name="auto_adaptive_icons_label">ഓട്ടോ അഡാപ്റ്റീവ് ഐക്കണുകൾ</string>
     <string name="auto_adaptive_icons_description">അഡാപ്റ്റീവ് അല്ലാത്ത എല്ലാ ഐക്കണുകൾക്കും.</string>
-    <string name="support_and_pr">Support &amp; PR</string>
+    <string name="support_and_pr">പിന്തുണ &amp; പി. ആർ</string>
     <string name="workspace_dt2s">ഉറങ്ങാൻ രണ്ടുതവണ ടാപ്പ് ചെയ്യുക</string>
     <string name="smart_space_enable">ഒറ്റനോട്ടത്തിൽ വിഡ്ജറ്റ്</string>
     <string name="design_and_development">Design &amp; Development</string>
@@ -86,10 +86,10 @@
     <string name="fuzzy_search_title">അവ്യക്തമായ തിരയൽ</string>
     <string name="fuzzy_search_desc">ആപ്പ് തിരയലുകളുടെ ഏകദേശ പൊരുത്തപ്പെടുത്തൽ.</string>
     <string name="theme_label">തീം</string>
-    <string name="theme_light">Light</string>
-    <string name="theme_dark">ഇരുട്ട്</string>
+    <string name="theme_light">ലൈറ്റ്</string>
+    <string name="theme_dark">ഇരുണ്ട</string>
     <string name="theme_system_default">സിസ്റ്റം</string>
-    <string name="theme_follow_wallpaper">Match Wallpaper</string>
+    <string name="theme_follow_wallpaper">വാൾപേപ്പറിന് പൊരുത്തപ്പെടുത്തുക</string>
     <string name="quickstep_label">സമീപകാലത്തെ</string>
     <string name="clear_all_as_action_label">Clear All Button at Bottom</string>
     <string name="window_corner_radius_label">സ്ക്രീൻ മൂലയുടെ ആരം</string>
@@ -103,14 +103,14 @@
     <string name="wallpaper">വാൾപേപ്പർ</string>
     <string name="custom">ഇഷ്ടാനുസൃതം</string>
     <string name="quickstep_description">എല്ലാം മായികാനുള്ള ബട്ടൺ, മൂലയുടെ ആരം</string>
-    <string name="wallpaper_scrolling_label">വാൾപേപ്പർ സ്ക്രോൾ ചെയുക</string>
+    <string name="wallpaper_scrolling_label">വാൾപേപ്പർ സ്ക്രോൾ ചെയ്യുക</string>
     <string name="show_sys_ui_scrim">മുകളിലെ നിഴൽ</string>
     <string name="show_status_bar">സ്റ്റാറ്റസ് ബാർ</string>
-    <string name="what_to_show">What to Show</string>
+    <string name="what_to_show">എന്തു കാണികണം</string>
     <string name="missing_notification_access_label">നോട്ടിഫിക്കേഷൻ അക്സസ്സ് ആവശ്യമാണ്</string>
     <string name="missing_notification_access_description">നോട്ടിഫിക്കേഷൻ അക്സസ്സ് ആവശ്യമാണ്.</string>
     <string name="msg_missing_notification_access">To use Notification Dots, grant <xliff:g id="name" example="My App">%1$s</xliff:g> access to notifications.</string>
-    <string name="title_change_settings">സെറ്റിംഗ്സ് മാറ്റുക</string>
+    <string name="title_change_settings">ക്രമീകരണങ്ങൾ മാറ്റുക</string>
     <string name="debug_restart_launcher">ലോൺചെയർ പുനരാരംഭിക്കുക</string>
     <string name="pref_fonts_missing_font">ഫോണ്ട് കണ്ടെത്തിയില്ല.</string>
     <string name="font_variant_italic">ഇറ്റാലിക്</string>
