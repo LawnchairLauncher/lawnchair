@@ -173,8 +173,8 @@
     <string name="search_pref_result_people_title">Mga tao</string>
     <string name="search_pref_result_shortcuts_title">Mga Shortcut ng App</string>
     <string name="search_pref_result_tips_title">Mga Tip sa Pixel</string>
-    <string name="row_height_label">Row Height</string>
+    <string name="row_height_label">Taas ng hilera</string>
     <string name="all_apps_device_search_hint">Maghanap</string>
-    <string name="dark_status_bar_label">Dark Status Bar</string>
-    <string name="lawnicons_not_installed_description">Lawnicons not installed.</string>
+    <string name="dark_status_bar_label">Madilim na Status Bar</string>
+    <string name="lawnicons_not_installed_description">Hindi naka-install ang mga lawnicon.</string>
 </resources>
