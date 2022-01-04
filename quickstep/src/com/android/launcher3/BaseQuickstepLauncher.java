@@ -336,7 +336,8 @@ public abstract class BaseQuickstepLauncher extends Launcher
                             getSystemService(DeviceStateManager.class),
                             getSystemService(SensorManager.class),
                             getMainThreadHandler(),
-                            getMainExecutor()
+                            getMainExecutor(),
+                            /* tracingTagPrefix= */ "launcher"
                     );
 
             mLauncherUnfoldAnimationController = new LauncherUnfoldAnimationController(
