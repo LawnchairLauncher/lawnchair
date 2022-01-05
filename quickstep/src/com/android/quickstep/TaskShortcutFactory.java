@@ -242,6 +242,7 @@ public interface TaskShortcutFactory {
         }
     }
 
+    /** @Deprecated */
     TaskShortcutFactory SPLIT_SCREEN = new MultiWindowFactory(R.drawable.ic_split_screen,
             R.string.recent_task_option_split_screen, LAUNCHER_SYSTEM_SHORTCUT_SPLIT_SCREEN_TAP) {
 
