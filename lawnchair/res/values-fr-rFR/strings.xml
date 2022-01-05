@@ -34,8 +34,8 @@
     <string name="dock_icons">Icônes dans la zone d\'ancrage</string>
     <string name="max_folder_columns">Nombre maximum de colonnes des dossiers</string>
     <string name="max_folder_rows">Nombre maximum de lignes des dossiers</string>
-    <string name="home_screen_grid">Home Screen Grid</string>
-    <string name="columns">Columns</string>
+    <string name="home_screen_grid">Grille de l\'écran d\'accueil</string>
+    <string name="columns">Colonnes</string>
     <string name="grid">Grille</string>
     <string name="rows">Rows</string>
     <string name="icons">Icônes</string>
@@ -176,5 +176,5 @@
     <string name="row_height_label">Row Height</string>
     <string name="all_apps_device_search_hint">Search</string>
     <string name="dark_status_bar_label">Dark Status Bar</string>
-    <string name="lawnicons_not_installed_description">Lawnicons not installed.</string>
+    <string name="lawnicons_not_installed_description">Lawnicons n\'est pas installé.</string>
 </resources>
