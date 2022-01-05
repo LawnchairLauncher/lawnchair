@@ -3994,7 +3994,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     }
 
     /** TODO(b/181707736) More gracefully handle exiting split selection state */
-    private void resetFromSplitSelectionState() {
+    protected void resetFromSplitSelectionState() {
         if (mSplitHiddenTaskViewIndex == -1) {
             return;
         }
