@@ -182,76 +182,95 @@
         <attr name="minHeightDps" format="float" />
 
         <!-- These min cell values are only used if GridDisplayOption#isScalable is true -->
-        <attr name="minCellHeightDps" format="float" />
-        <attr name="minCellWidthDps" format="float" />
-        <!-- twoPanelPortraitMinCellWidthDps defaults to minCellHeightDps, if not specified -->
-        <attr name="twoPanelPortraitMinCellHeightDps" format="float" />
-        <!-- twoPanelPortraitMinCellHeightDps defaults to minCellWidthDps, if not specified -->
-        <attr name="twoPanelPortraitMinCellWidthDps" format="float" />
-        <!-- twoPanelLandscapeMinCellHeightDps defaults to minCellHeightDps, if not specified -->
-        <attr name="twoPanelLandscapeMinCellHeightDps" format="float" />
-        <!-- twoPanelLandscapeMinCellWidthDps defaults to minCellWidthDps, if not specified -->
-        <attr name="twoPanelLandscapeMinCellWidthDps" format="float" />
+        <attr name="minCellHeight" format="float" />
+        <attr name="minCellWidth" format="float" />
+        <!-- defaults to minCellHeight, if not specified -->
+        <attr name="minCellHeightTwoPanelPortrait" format="float" />
+        <!-- defaults to minCellWidth, if not specified -->
+        <attr name="minCellWidthTwoPanelPortrait" format="float" />
+        <!-- defaults to minCellHeight, if not specified -->
+        <attr name="minCellHeightTwoPanelLandscape" format="float" />
+        <!-- defaults to minCellWidth, if not specified -->
+        <attr name="minCellWidthTwoPanelLandscape" format="float" />
 
         <!-- These border spaces are only used if GridDisplayOption#isScalable is true -->
         <!-- space to be used horizontally and vertically -->
-        <attr name="borderSpaceDps" format="float" />
-        <!-- space to the right of the cell, defaults to borderSpaceDps if not specified -->
-        <attr name="borderSpaceHorizontalDps" format="float" />
-        <!-- space below the cell, defaults to borderSpaceDps if not specified -->
-        <attr name="borderSpaceVerticalDps" format="float" />
+        <attr name="borderSpace" format="float" />
+        <!-- space to the right of the cell, defaults to borderSpace if not specified -->
+        <attr name="borderSpaceHorizontal" format="float" />
+        <!-- space below the cell, defaults to borderSpace if not specified -->
+        <attr name="borderSpaceVertical" format="float" />
         <!-- space to be used horizontally and vertically in two panels,
-        defaults to borderSpaceDps if not specified -->
-        <attr name="twoPanelPortraitBorderSpaceDps" format="float" />
+        defaults to borderSpace if not specified -->
+        <attr name="borderSpaceTwoPanelPortrait" format="float" />
         <!-- space to the right of the cell in two panels, defaults to
-        twoPanelPortraitBorderSpaceDps if not specified -->
-        <attr name="twoPanelPortraitBorderSpaceHorizontalDps" format="float" />
-        <!-- space below the cell in two panels, defaults to twoPanelPortraitBorderSpaceDps
+        borderSpaceTwoPanelPortrait if not specified -->
+        <attr name="borderSpaceTwoPanelPortraitHorizontal" format="float" />
+        <!-- space below the cell in two panels, defaults to borderSpaceTwoPanelPortrait
         if not specified -->
-        <attr name="twoPanelPortraitBorderSpaceVerticalDps" format="float" />
+        <attr name="borderSpaceTwoPanelPortraitVertical" format="float" />
         <!-- space to be used horizontally and vertically in two panels,
-        defaults to borderSpaceDps if not specified -->
-        <attr name="twoPanelLandscapeBorderSpaceDps" format="float" />
+        defaults to borderSpace if not specified -->
+        <attr name="borderSpaceTwoPanelLandscape" format="float" />
         <!-- space to the right of the cell in two panels, defaults to
-        twoPanelLandscapeBorderSpaceDps if not specified -->
-        <attr name="twoPanelLandscapeBorderSpaceHorizontalDps" format="float" />
-        <!-- space below the cell in two panels, defaults to twoPanelLandscapeBorderSpaceDps
+        borderSpaceTwoPanelLandscape if not specified -->
+        <attr name="borderSpaceTwoPanelLandscapeHorizontal" format="float" />
+        <!-- space below the cell in two panels, defaults to borderSpaceTwoPanelLandscape
         if not specified -->
-        <attr name="twoPanelLandscapeBorderSpaceVerticalDps" format="float" />
+        <attr name="borderSpaceTwoPanelLandscapeVertical" format="float" />
 
-        <!-- allAppsCellSpacingDps defaults to borderSpaceDps, if not specified -->
-        <attr name="allAppsCellSpacingDps" format="float" />
+        <!-- defaults to borderSpace, if not specified -->
+        <attr name="allAppsBorderSpace" format="float" />
+        <!-- defaults to allAppsBorderSpace, if not specified -->
+        <attr name="allAppsBorderSpaceTwoPanelPortrait" format="float" />
+        <!-- defaults to allAppsBorderSpace, if not specified -->
+        <attr name="allAppsBorderSpaceTwoPanelLandscape" format="float" />
         <!-- The following values are only enabled if grid is supported. -->
-        <!-- allAppsIconSize defaults to iconSize, if not specified -->
+        <!-- defaults to iconImageSize, if not specified -->
         <attr name="allAppsIconSize" format="float" />
-        <!-- allAppsIconTextSize defaults to iconTextSize, if not specified -->
+        <!-- defaults to allAppsIconSize, if not specified -->
+        <attr name="allAppsIconSizeTwoPanelPortrait" format="float" />
+        <!-- defaults to allAppsIconSize, if not specified -->
+        <attr name="allAppsIconSizeTwoPanelLandscape" format="float" />
+        <!-- defaults to iconTextSize, if not specified -->
         <attr name="allAppsIconTextSize" format="float" />
+        <!-- defaults to allAppsIconTextSize, if not specified -->
+        <attr name="allAppsIconTextSizeTwoPanelPortrait" format="float" />
+        <!-- defaults to allAppsIconTextSize, if not specified -->
+        <attr name="allAppsIconTextSizeTwoPanelLandscape" format="float" />
+
+        <!-- defaults to borderSpaceDps, if not specified -->
+        <attr name="hotseatBorderSpace" format="float" />
+        <!-- defaults to hotseatBorderSpace, if not specified -->
+        <attr name="hotseatBorderSpaceTwoPanelLandscape" format="float" />
+        <!-- defaults to hotseatBorderSpace, if not specified -->
+        <attr name="hotseatBorderSpaceTwoPanelPortrait" format="float" />
 
         <attr name="iconImageSize" format="float" />
-        <!-- landscapeIconSize defaults to iconImageSize, if not specified -->
-        <attr name="landscapeIconSize" format="float" />
-        <!-- twoPanelPortraitIconSize defaults to iconImageSize, if not specified -->
-        <attr name="twoPanelPortraitIconSize" format="float" />
-        <!-- twoPanelLandscapeIconSize defaults to iconImageSize, if not specified -->
-        <attr name="twoPanelLandscapeIconSize" format="float" />
+        <!-- defaults to iconImageSize, if not specified -->
+        <attr name="iconSizeLandscape" format="float" />
+        <!-- defaults to iconSize, if not specified -->
+        <attr name="iconSizeTwoPanelPortrait" format="float" />
+        <!-- defaults to iconSize, if not specified -->
+        <attr name="iconSizeTwoPanelLandscape" format="float" />
 
         <attr name="iconTextSize" format="float" />
-        <!-- landscapeIconTextSize defaults to iconTextSize, if not specified -->
-        <attr name="landscapeIconTextSize" format="float" />
-        <!-- twoPanelPortraitIconTextSize defaults to iconTextSize, if not specified -->
-        <attr name="twoPanelPortraitIconTextSize" format="float" />
-        <!-- twoPanelLandscapeIconTextSize defaults to iconTextSize, if not specified -->
-        <attr name="twoPanelLandscapeIconTextSize" format="float" />
+        <!-- defaults to iconTextSize, if not specified -->
+        <attr name="iconTextSizeLandscape" format="float" />
+        <!-- defaults to iconTextSize, if not specified -->
+        <attr name="iconTextSizeTwoPanelPortrait" format="float" />
+        <!-- defaults to iconTextSize, if not specified -->
+        <attr name="iconTextSizeTwoPanelLandscape" format="float" />
 
         <!-- If set, this display option is used to determine the default grid -->
         <attr name="canBeDefault" format="boolean" />
 
         <!-- Margin on left and right of the workspace when GridDisplayOption#isScalable is true -->
         <attr name="horizontalMargin" format="float"/>
-        <!-- twoPanelLandscapeHorizontalMargin defaults to horizontalMargin if not specified -->
-        <attr name="twoPanelLandscapeHorizontalMargin" format="float"/>
-        <!-- twoPanelPortraitHorizontalMargin defaults to horizontalMargin if not specified -->
-        <attr name="twoPanelPortraitHorizontalMargin" format="float"/>
+        <!-- defaults to horizontalMargin if not specified -->
+        <attr name="horizontalMarginTwoPanelLandscape" format="float"/>
+        <!-- defaults to horizontalMargin if not specified -->
+        <attr name="horizontalMarginTwoPanelPortrait" format="float"/>
     </declare-styleable>
 
     <declare-styleable name="CellLayout">

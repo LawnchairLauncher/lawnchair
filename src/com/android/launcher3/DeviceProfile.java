@@ -161,12 +161,13 @@ public class DeviceProfile {
     public final int hotseatBarSidePaddingStartPx;
     public final int hotseatBarSidePaddingEndPx;
     public final int hotseatQsbHeight;
+    public final int hotseatBorderSpace;
 
     public final float qsbBottomMarginOriginalPx;
     public int qsbBottomMarginPx;
 
     // All apps
-    public Point allAppsCellSpacePx;
+    public Point allAppsBorderSpacePx;
     public int allAppsOpenVerticalTranslate;
     public int allAppsCellHeightPx;
     public int allAppsCellWidthPx;
@@ -290,9 +291,9 @@ public class DeviceProfile {
         folderContentPaddingTop = res.getDimensionPixelSize(R.dimen.folder_content_padding_top);
 
         cellLayoutBorderSpacePx = getCellLayoutBorderSpace(inv);
-        allAppsCellSpacePx = new Point(
-                pxFromDp(inv.borderSpaces[InvariantDeviceProfile.INDEX_ALL_APPS].x, mMetrics, 1f),
-                pxFromDp(inv.borderSpaces[InvariantDeviceProfile.INDEX_ALL_APPS].y, mMetrics, 1f));
+        allAppsBorderSpacePx = new Point(
+                pxFromDp(inv.allAppsBorderSpaces[mTypeIndex].x, mMetrics),
+                pxFromDp(inv.allAppsBorderSpaces[mTypeIndex].y, mMetrics));
         cellLayoutBorderSpaceOriginalPx = new Point(cellLayoutBorderSpacePx);
         folderCellLayoutBorderSpaceOriginalPx = pxFromDp(inv.folderBorderSpace, mMetrics, 1f);
         folderCellLayoutBorderSpacePx = new Point(folderCellLayoutBorderSpaceOriginalPx,
@@ -349,8 +350,9 @@ public class DeviceProfile {
         hotseatBarSidePaddingStartPx = isVerticalBarLayout() ? workspacePageIndicatorHeight : 0;
         hotseatExtraVerticalSize =
                 res.getDimensionPixelSize(R.dimen.dynamic_grid_hotseat_extra_vertical_size);
+        hotseatBorderSpace = pxFromDp(inv.hotseatBorderSpaces[mTypeIndex], mMetrics);
         updateHotseatIconSize(
-                pxFromDp(inv.iconSize[InvariantDeviceProfile.INDEX_DEFAULT], mMetrics, 1f));
+                pxFromDp(inv.iconSize[InvariantDeviceProfile.INDEX_DEFAULT], mMetrics));
 
         qsbBottomMarginOriginalPx = isScalableGrid
                 ? res.getDimensionPixelSize(R.dimen.scalable_grid_qsb_bottom_margin)
@@ -596,7 +598,7 @@ public class DeviceProfile {
     private void updateAllAppsWidth() {
         if (isTwoPanels) {
             int usedWidth = (allAppsCellWidthPx * numShownAllAppsColumns)
-                    + (allAppsCellSpacePx.x * (numShownAllAppsColumns + 1));
+                    + (allAppsBorderSpacePx.x * (numShownAllAppsColumns + 1));
             allAppsLeftRightPadding = Math.max(1, (availableWidthPx - usedWidth) / 2);
         } else {
             allAppsLeftRightPadding =
@@ -695,9 +697,9 @@ public class DeviceProfile {
         // All apps
         if (numShownAllAppsColumns != inv.numColumns) {
             allAppsIconSizePx =
-                    pxFromDp(inv.iconSize[InvariantDeviceProfile.INDEX_ALL_APPS], mMetrics);
+                    pxFromDp(inv.allAppsIconSize[mTypeIndex], mMetrics);
             allAppsIconTextSizePx =
-                    pxFromSp(inv.iconTextSize[InvariantDeviceProfile.INDEX_ALL_APPS], mMetrics);
+                    pxFromSp(inv.allAppsIconTextSize[mTypeIndex], mMetrics);
             allAppsIconDrawablePaddingPx = iconDrawablePaddingOriginalPx;
             autoResizeAllAppsCells();
         } else {
@@ -706,7 +708,7 @@ public class DeviceProfile {
             allAppsIconDrawablePaddingPx = iconDrawablePaddingPx;
             allAppsCellHeightPx = getCellSize().y;
         }
-        allAppsCellWidthPx = allAppsIconSizePx + allAppsIconDrawablePaddingPx;
+        allAppsCellWidthPx = allAppsIconSizePx + (2 * allAppsIconDrawablePaddingPx);
         updateAllAppsWidth();
 
         if (isVerticalLayout) {
@@ -895,14 +897,10 @@ public class DeviceProfile {
             int hotseatTopDiff = hotseatHeight - taskbarOffset;
 
             int endOffset = ApiWrapper.getHotseatEndOffset(context);
-            int requiredWidth = iconSizePx * numShownHotseatIcons;
+            int requiredWidth = iconSizePx * numShownHotseatIcons
+                    + hotseatBorderSpace * (numShownHotseatIcons - 1);
 
-            Resources res = context.getResources();
-            float taskbarIconSize = res.getDimension(R.dimen.taskbar_icon_size);
-            float taskbarIconSpacing = 2 * res.getDimension(R.dimen.taskbar_icon_spacing);
-            int maxSize = (int) (requiredWidth
-                    * (taskbarIconSize + taskbarIconSpacing) / taskbarIconSize);
-            int hotseatSize = Math.min(maxSize, availableWidthPx - endOffset);
+            int hotseatSize = Math.min(requiredWidth, availableWidthPx - endOffset);
             int sideSpacing = (availableWidthPx - hotseatSize) / 2;
             mHotseatPadding.set(sideSpacing, hotseatTopDiff, sideSpacing, taskbarOffset);
 
