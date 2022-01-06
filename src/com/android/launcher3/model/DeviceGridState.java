@@ -22,6 +22,7 @@ import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCH
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_GRID_SIZE_3;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_GRID_SIZE_4;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_GRID_SIZE_5;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_GRID_SIZE_6;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -84,6 +85,8 @@ public class DeviceGridState {
     public LauncherEvent getWorkspaceSizeEvent() {
         if (!TextUtils.isEmpty(mGridSizeString)) {
             switch (mGridSizeString.charAt(0)) {
+                case '6':
+                    return LAUNCHER_GRID_SIZE_6;
                 case '5':
                     return LAUNCHER_GRID_SIZE_5;
                 case '4':
