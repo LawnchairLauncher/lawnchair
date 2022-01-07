@@ -372,6 +372,9 @@ public class StatsLogManager implements ResourceBasedOverride {
         @UiEvent(doc = "Notification dismissed by swiping right.")
         LAUNCHER_NOTIFICATION_DISMISSED(652),
 
+        @UiEvent(doc = "Current grid size is changed to 6.")
+        LAUNCHER_GRID_SIZE_6(930),
+
         @UiEvent(doc = "Current grid size is changed to 5.")
         LAUNCHER_GRID_SIZE_5(662),
 

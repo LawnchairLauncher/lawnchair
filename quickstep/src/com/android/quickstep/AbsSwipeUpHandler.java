@@ -1001,7 +1001,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
                 }
                 if (mRecentsAnimationTargets != null) {
                     TaskViewUtils.setSplitAuxiliarySurfacesShown(mRecentsAnimationTargets.nonApps,
-                            true /*shown*/, true /*animate*/);
+                            true /*shown*/, false /*animate*/);
                 }
                 break;
         }
@@ -1654,7 +1654,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
 
         if (mRecentsAnimationTargets != null) {
             TaskViewUtils.setSplitAuxiliarySurfacesShown(mRecentsAnimationTargets.nonApps,
-                    true /*shown*/, true /*animate*/);
+                    true /*shown*/, false /*animate*/);
         }
 
         // Leave the pending invisible flag, as it may be used by wallpaper open animation.
