@@ -238,9 +238,19 @@ public class CellLayout extends ViewGroup {
         mActivity = ActivityContext.lookupContext(context);
         DeviceProfile deviceProfile = mActivity.getDeviceProfile();
 
-        mBorderSpace = mContainerType == FOLDER
-                ? new Point(deviceProfile.folderCellLayoutBorderSpacePx)
-                : new Point(deviceProfile.cellLayoutBorderSpacePx);
+        switch (mContainerType) {
+            case FOLDER:
+                mBorderSpace = new Point(deviceProfile.folderCellLayoutBorderSpacePx);
+                break;
+            case HOTSEAT:
+                mBorderSpace = new Point(deviceProfile.hotseatBorderSpace,
+                        deviceProfile.hotseatBorderSpace);
+                break;
+            case WORKSPACE:
+            default:
+                mBorderSpace = new Point(deviceProfile.cellLayoutBorderSpacePx);
+                break;
+        }
 
         mCellWidth = mCellHeight = -1;
         mFixedCellWidth = mFixedCellHeight = -1;

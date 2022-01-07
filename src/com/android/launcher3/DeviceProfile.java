@@ -161,7 +161,7 @@ public class DeviceProfile {
     public final int hotseatBarSidePaddingStartPx;
     public final int hotseatBarSidePaddingEndPx;
     public final int hotseatQsbHeight;
-    public final int hotseatBorderSpace;
+    public int hotseatBorderSpace;
 
     public final float qsbBottomMarginOriginalPx;
     public int qsbBottomMarginPx;
@@ -716,6 +716,7 @@ public class DeviceProfile {
         }
 
         // Hotseat
+        hotseatBorderSpace = pxFromDp(inv.hotseatBorderSpaces[mTypeIndex], mMetrics, scale);
         updateHotseatIconSize(iconSizePx);
 
         if (!isVerticalLayout) {
