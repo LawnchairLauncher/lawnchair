@@ -105,6 +105,7 @@ public class InvariantDeviceProfile {
      */
     public int numRows;
     public int numColumns;
+    public int numSearchContainerColumns;
 
     /**
      * Number of icons per row and column in the folder.
@@ -304,6 +305,7 @@ public class InvariantDeviceProfile {
         GridOption closestProfile = displayOption.grid;
         numRows = closestProfile.numRows;
         numColumns = closestProfile.numColumns;
+        numSearchContainerColumns = closestProfile.numSearchContainerColumns;
         dbFile = closestProfile.dbFile;
         defaultLayoutId = closestProfile.defaultLayoutId;
         demoModeLayoutId = closestProfile.demoModeLayoutId;
@@ -401,8 +403,8 @@ public class InvariantDeviceProfile {
 
     private Object[] toModelState() {
         return new Object[]{
-                numColumns, numRows, numDatabaseHotseatIcons, iconBitmapSize, fillResIconDpi,
-                numDatabaseAllAppsColumns, dbFile};
+                numColumns, numRows, numSearchContainerColumns, numDatabaseHotseatIcons,
+                iconBitmapSize, fillResIconDpi, numDatabaseAllAppsColumns, dbFile};
     }
 
     private void onConfigChanged(Context context) {
@@ -679,6 +681,7 @@ public class InvariantDeviceProfile {
         public final String name;
         public final int numRows;
         public final int numColumns;
+        public final int numSearchContainerColumns;
         public final boolean isEnabled;
 
         private final int numFolderRows;
@@ -705,6 +708,8 @@ public class InvariantDeviceProfile {
             name = a.getString(R.styleable.GridDisplayOption_name);
             numRows = a.getInt(R.styleable.GridDisplayOption_numRows, 0);
             numColumns = a.getInt(R.styleable.GridDisplayOption_numColumns, 0);
+            numSearchContainerColumns = a.getInt(
+                    R.styleable.GridDisplayOption_numSearchContainerColumns, numColumns);
 
             dbFile = a.getString(R.styleable.GridDisplayOption_dbFile);
             defaultLayoutId = a.getResourceId(deviceType == TYPE_MULTI_DISPLAY && a.hasValue(
