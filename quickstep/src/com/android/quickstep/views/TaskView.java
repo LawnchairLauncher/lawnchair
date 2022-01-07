@@ -470,7 +470,9 @@ public class TaskView extends FrameLayout implements Reusable {
         stubInfo.user = componentKey.user;
         stubInfo.intent = new Intent().setComponent(componentKey.componentName);
         stubInfo.title = task.title;
-        stubInfo.screenId = getRecentsView().indexOfChild(this);
+        if (getRecentsView() != null) {
+            stubInfo.screenId = getRecentsView().indexOfChild(this);
+        }
         return stubInfo;
     }
 
