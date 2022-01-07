@@ -84,6 +84,7 @@ import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 import com.android.systemui.shared.system.SyncRtSurfaceTransactionApplierCompat.SurfaceParams;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Utility class for helpful methods related to {@link TaskView} objects and their tasks.
@@ -606,13 +607,13 @@ public final class TaskViewUtils {
         }
 
         SurfaceControl.Transaction t = new SurfaceControl.Transaction();
-        SurfaceControl[] auxiliarySurfaces = new SurfaceControl[nonApps.length];
+        List<SurfaceControl> auxiliarySurfaces = new ArrayList<>(nonApps.length);
         boolean hasSurfaceToAnimate = false;
         for (int i = 0; i < nonApps.length; ++i) {
             final RemoteAnimationTargetCompat targ = nonApps[i];
             final SurfaceControl leash = targ.leash.getSurfaceControl();
             if (targ.windowType == TYPE_DOCK_DIVIDER && leash != null) {
-                auxiliarySurfaces[i] = leash;
+                auxiliarySurfaces.add(leash);
                 hasSurfaceToAnimate = true;
             }
         }
