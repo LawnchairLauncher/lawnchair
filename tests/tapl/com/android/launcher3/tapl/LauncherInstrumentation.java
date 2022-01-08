@@ -426,7 +426,7 @@ public final class LauncherInstrumentation {
         }
     }
 
-    private String getSystemAnomalyMessage(
+    public String getSystemAnomalyMessage(
             boolean ignoreNavmodeChangeStates, boolean ignoreOnlySystemUiViews) {
         try {
             {

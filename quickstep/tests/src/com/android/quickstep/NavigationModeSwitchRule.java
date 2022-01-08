@@ -220,7 +220,7 @@ public class NavigationModeSwitchRule implements TestRule {
         if (!condition) {
             final AssertionError assertionError = new AssertionError(message);
             if (description != null) {
-                FailureWatcher.onError(launcher.getDevice(), description, assertionError);
+                FailureWatcher.onError(launcher, description, assertionError);
             }
             throw assertionError;
         }
