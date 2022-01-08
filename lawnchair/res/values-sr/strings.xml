@@ -34,10 +34,10 @@
     <string name="dock_icons">Иконице доњег реда</string>
     <string name="max_folder_columns">Максимални број колона у фолдеру</string>
     <string name="max_folder_rows">Максимални број редова у фолдеру</string>
-    <string name="home_screen_grid">Home Screen Grid</string>
-    <string name="columns">Columns</string>
+    <string name="home_screen_grid">Мрежа почетног екрана</string>
+    <string name="columns">Колоне</string>
     <string name="grid">Мрежа</string>
-    <string name="rows">Rows</string>
+    <string name="rows">Редови</string>
     <string name="icons">Иконице</string>
     <string name="icon_size">Величина иконица</string>
     <string name="label_size">Величина етикете</string>
