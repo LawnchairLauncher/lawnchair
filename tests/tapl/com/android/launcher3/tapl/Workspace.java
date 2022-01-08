@@ -16,6 +16,8 @@
 
 package com.android.launcher3.tapl;
 
+import static android.view.accessibility.AccessibilityEvent.TYPE_VIEW_SCROLLED;
+
 import static com.android.launcher3.testing.TestProtocol.ALL_APPS_STATE_ORDINAL;
 import static com.android.launcher3.testing.TestProtocol.NORMAL_STATE_ORDINAL;
 import static com.android.launcher3.testing.TestProtocol.SPRING_LOADED_STATE_ORDINAL;
@@ -165,15 +167,22 @@ public final class Workspace extends Home {
     }
 
     /**
-     * Drags an icon to the (currentPage + pageDelta) page if the page already exists.
-     * If the target page doesn't exist, the icon will be put onto an existing page that is the
-     * closest to the target page.
+     * Drags an icon to the (currentPage + pageDelta) page.
+     * If the target page doesn't exist yet, a new page will be created.
+     * In case the target page can't be created (e.g. existing pages are 0, 1, current: 0,
+     * pageDelta: 3, the latest page that can be created is 2) the icon will be dragged onto the
+     * page that can be created and is closest to the target page.
      *
      * @param appIcon   - icon to drag.
      * @param pageDelta - how many pages should the icon be dragged from the current page.
-     *                    It can be a negative value.
+     *                    It can be a negative value. currentPage + pageDelta should be greater
+     *                    than or equal to 0.
      */
     public void dragIcon(AppIcon appIcon, int pageDelta) {
+        if (mHotseat.getVisibleBounds().height() > mHotseat.getVisibleBounds().width()) {
+            throw new UnsupportedOperationException(
+                    "dragIcon does NOT support dragging when the hotseat is on the side.");
+        }
         try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck()) {
             final UiObject2 workspace = verifyActiveContainer();
             try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
@@ -338,9 +347,11 @@ public final class Workspace extends Home {
             while (targetDest.x > displayX || targetDest.x < 0) {
                 int edgeX = targetDest.x > 0 ? displayX : 0;
                 Point screenEdge = new Point(edgeX, targetDest.y);
-                launcher.movePointer(dragStart, screenEdge, DEFAULT_DRAG_STEPS, isDecelerating,
-                        downTime, true, LauncherInstrumentation.GestureScope.INSIDE);
-                launcher.waitForIdle(); // Wait for the page change to happen
+                Point finalDragStart = dragStart;
+                executeAndWaitForPageScroll(launcher,
+                        () -> launcher.movePointer(finalDragStart, screenEdge, DEFAULT_DRAG_STEPS,
+                                isDecelerating, downTime, true,
+                                LauncherInstrumentation.GestureScope.INSIDE));
                 targetDest.x += displayX * (targetDest.x > 0 ? -1 : 1);
                 dragStart = screenEdge;
             }
@@ -351,6 +362,13 @@ public final class Workspace extends Home {
                     downTime, true, LauncherInstrumentation.GestureScope.INSIDE);
             dropDraggedIcon(launcher, targetDest, downTime, expectDropEvents);
         }
+    }
+
+    private static void executeAndWaitForPageScroll(LauncherInstrumentation launcher,
+            Runnable command) {
+        launcher.executeAndWaitForEvent(command,
+                event -> event.getEventType() == TYPE_VIEW_SCROLLED,
+                () -> "Page scroll didn't happen", "Scrolling page");
     }
 
     /**

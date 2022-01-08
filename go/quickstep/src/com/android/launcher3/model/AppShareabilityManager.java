@@ -47,7 +47,7 @@ import java.util.function.Consumer;
  * Each app's status is retrieved from the Play Store's API. Statuses are cached in order
  * to limit extraneous calls to that API (which can be time-consuming).
  */
-public final class AppShareabilityManager {
+public class AppShareabilityManager {
     @Retention(SOURCE)
     @IntDef({
         ShareabilityStatus.UNKNOWN,

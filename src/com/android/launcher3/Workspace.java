@@ -585,8 +585,8 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
 
         int cellVSpan = FeatureFlags.EXPANDED_SMARTSPACE.get()
                 ? EXPANDED_SMARTSPACE_HEIGHT : DEFAULT_SMARTSPACE_HEIGHT;
-        CellLayout.LayoutParams lp = new CellLayout.LayoutParams(0, 0, firstPage.getCountX(),
-                cellVSpan);
+        int cellHSpan = mLauncher.getDeviceProfile().inv.numSearchContainerColumns;
+        CellLayout.LayoutParams lp = new CellLayout.LayoutParams(0, 0, cellHSpan, cellVSpan);
         lp.canReorder = false;
         if (!firstPage.addViewToCellLayout(mQsb, 0, R.id.search_container_workspace, lp, true)) {
             Log.e(TAG, "Failed to add to item at (0, 0) to CellLayout");

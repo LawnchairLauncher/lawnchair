@@ -140,6 +140,7 @@
         launcher:name="6_by_5"
         launcher:numRows="5"
         launcher:numColumns="6"
+        launcher:numSearchContainerColumns="3"
         launcher:numFolderRows="3"
         launcher:numFolderColumns="3"
         launcher:numHotseatIcons="6"
