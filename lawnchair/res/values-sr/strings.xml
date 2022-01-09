@@ -138,8 +138,8 @@
     <string name="icon_shape_label">Облик икона</string>
     <string name="icon_shape_system">Систем</string>
     <string name="icon_shape_circle">Круг</string>
-    <string name="icon_shape_rounded_square">Rounded Square</string>
-    <string name="icon_shape_squircle">Squircle</string>
+    <string name="icon_shape_rounded_square">Заобљени квадрат</string>
+    <string name="icon_shape_squircle">Заокругљени квадрат</string>
     <string name="customize_button_text">Customize</string>
     <string name="app_title_label">Title</string>
     <string name="hide_from_drawer">Hide from App Drawer</string>
