@@ -157,10 +157,10 @@
     <string name="action_upload">Puja a Dogbin</string>
     <string name="action_copy_link">Copia l\'enllaç</string>
     <string name="action_copy">Copia</string>
-    <string name="copied_toast">Copied to clipboard.</string>
+    <string name="copied_toast">S\'ha copiat al porta-retalls.</string>
     <string name="action_share">Comparteix</string>
-    <string name="action_upload_error">Upload failed</string>
-    <string name="dogbin_uploading">Uploading…</string>
+    <string name="action_upload_error">La pujada ha fallat</string>
+    <string name="dogbin_uploading">Pujant…</string>
     <string name="bugreport_channel_name">Informes d\'error</string>
     <string name="status_channel_name">Upload Status</string>
     <string name="bugreport_group_summary">%d nous informes.</string>
