@@ -20,7 +20,7 @@
     <string name="home_screen_label">主屏幕</string>
     <string name="home_screen_description">订阅、At a Glance、网格、图标</string>
     <string name="general_label">通用</string>
-    <string name="general_description">颜色、图标包、通知圆点</string>
+    <string name="general_description">颜色、图标包与通知圆点</string>
     <string name="home_screen_rotation_label">主屏幕旋转</string>
     <string name="home_screen_rotaton_description">当设备旋转时</string>
     <string name="auto_add_shortcuts_label">向主屏幕添加新应用</string>
@@ -34,7 +34,7 @@
     <string name="dock_icons">Dock 栏图标</string>
     <string name="max_folder_columns">最大文件夹列数</string>
     <string name="max_folder_rows">最大文件夹行数</string>
-    <string name="home_screen_grid">主屏幕网格</string>
+    <string name="home_screen_grid">桌面图标行列数</string>
     <string name="columns">列数</string>
     <string name="grid">网格</string>
     <string name="rows">行数</string>
@@ -64,7 +64,7 @@
     <string name="auto_adaptive_icons_description">为未适配的图标启用自适应</string>
     <string name="support_and_pr">支持和公关</string>
     <string name="workspace_dt2s">双击息屏</string>
-    <string name="smart_space_enable">速览微件</string>
+    <string name="smart_space_enable">显示 At a Glance 小部件</string>
     <string name="design_and_development">设计 &amp; 开发</string>
     <string name="translate">翻译</string>
     <string name="product">产品</string>
@@ -93,7 +93,7 @@
     <string name="clear_all_as_action_label">清除底部的所有按钮</string>
     <string name="window_corner_radius_label">屏幕圆角半径</string>
     <string name="override_window_corner_radius_label">自定义屏幕圆角半径</string>
-    <string name="window_corner_radius_description">当您向上滑动以打开最近应用菜单时，当前的应用程序跟随您的手指，缩进卡片。 使用滑块来调整卡片的圆角半径，直到它接近全屏，贴合您屏幕的角落。</string>
+    <string name="window_corner_radius_description">当您向上滑动以打开最近应用菜单时，当前应用程序显示会跟随您的手指移动。 使用滑块以调整卡片的圆角半径，使它接近全屏，贴合您屏幕的边缘。</string>
     <string name="system_icons">系统图标</string>
     <string name="accent_color">强调颜色</string>
     <string name="done">完成</string>
@@ -122,7 +122,7 @@
     <string name="font_weight_bold">粗体</string>
     <string name="font_weight_extra_bold">极粗</string>
     <string name="font_weight_extra_black">黑体</string>
-    <string name="font_label">字体(实验性)</string>
+    <string name="font_label">字体(实验性功能)</string>
     <string name="reset_font">重置</string>
     <string name="search_input_action_clear_results">清除搜索框</string>
     <string name="pref_category_search">搜索</string>
@@ -137,7 +137,7 @@
     <string name="icon_shape_system">系统</string>
     <string name="icon_shape_circle">圆形</string>
     <string name="icon_shape_rounded_square">圆角方形</string>
-    <string name="icon_shape_squircle">方圆形</string>
+    <string name="icon_shape_squircle">大圆角</string>
     <string name="customize_button_text">自定义</string>
     <string name="app_title_label">标题</string>
     <string name="hide_from_drawer">从应用抽屉隐藏</string>
