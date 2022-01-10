@@ -187,22 +187,7 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
 
     public void init(TaskbarSharedState sharedState) {
         mLastRequestedNonFullscreenHeight = getDefaultTaskbarWindowHeight();
-        mWindowLayoutParams = new WindowManager.LayoutParams(
-                MATCH_PARENT,
-                mLastRequestedNonFullscreenHeight,
-                TYPE_NAVIGATION_BAR_PANEL,
-                WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
-                        | WindowManager.LayoutParams.FLAG_SLIPPERY,
-                PixelFormat.TRANSLUCENT);
-        mWindowLayoutParams.setTitle(WINDOW_TITLE);
-        mWindowLayoutParams.packageName = getPackageName();
-        mWindowLayoutParams.gravity = Gravity.BOTTOM;
-        mWindowLayoutParams.setFitInsetsTypes(0);
-        mWindowLayoutParams.receiveInsetsIgnoringZOrder = true;
-        mWindowLayoutParams.softInputMode = WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING;
-        mWindowLayoutParams.layoutInDisplayCutoutMode = LAYOUT_IN_DISPLAY_CUTOUT_MODE_ALWAYS;
-        mWindowLayoutParams.privateFlags =
-                WindowManager.LayoutParams.PRIVATE_FLAG_NO_MOVE_ANIMATION;
+        mWindowLayoutParams = createDefaultWindowLayoutParams();
 
         WindowManagerWrapper wmWrapper = WindowManagerWrapper.getInstance();
         wmWrapper.setProvidesInsetsTypes(
@@ -221,6 +206,27 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
         updateSysuiStateFlags(sharedState.sysuiStateFlags, true /* fromInit */);
 
         mWindowManager.addView(mDragLayer, mWindowLayoutParams);
+    }
+
+    /** Creates LayoutParams for adding a view directly to WindowManager as a new window */
+    public WindowManager.LayoutParams createDefaultWindowLayoutParams() {
+        WindowManager.LayoutParams windowLayoutParams = new WindowManager.LayoutParams(
+                MATCH_PARENT,
+                mLastRequestedNonFullscreenHeight,
+                TYPE_NAVIGATION_BAR_PANEL,
+                WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
+                        | WindowManager.LayoutParams.FLAG_SLIPPERY,
+                PixelFormat.TRANSLUCENT);
+        windowLayoutParams.setTitle(WINDOW_TITLE);
+        windowLayoutParams.packageName = getPackageName();
+        windowLayoutParams.gravity = Gravity.BOTTOM;
+        windowLayoutParams.setFitInsetsTypes(0);
+        windowLayoutParams.receiveInsetsIgnoringZOrder = true;
+        windowLayoutParams.softInputMode = WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING;
+        windowLayoutParams.layoutInDisplayCutoutMode = LAYOUT_IN_DISPLAY_CUTOUT_MODE_ALWAYS;
+        windowLayoutParams.privateFlags =
+                WindowManager.LayoutParams.PRIVATE_FLAG_NO_MOVE_ANIMATION;
+        return windowLayoutParams;
     }
 
     public void onConfigurationChanged(@Config int configChanges) {
@@ -497,15 +503,27 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
 
     /**
      * Either adds or removes {@link WindowManager.LayoutParams#FLAG_NOT_FOCUSABLE} on the taskbar
-     * window.
+     * window. If we're now focusable, also move nav buttons to a separate window above IME.
      */
     public void setTaskbarWindowFocusableForIme(boolean focusable) {
         if (focusable) {
             mWindowLayoutParams.flags &= ~FLAG_NOT_FOCUSABLE;
+            mControllers.navbarButtonsViewController.moveNavButtonsToNewWindow();
         } else {
             mWindowLayoutParams.flags |= FLAG_NOT_FOCUSABLE;
+            mControllers.navbarButtonsViewController.moveNavButtonsBackToTaskbarWindow();
         }
         mWindowManager.updateViewLayout(mDragLayer, mWindowLayoutParams);
+    }
+
+    /** Adds the given view to WindowManager with the provided LayoutParams (creates new window). */
+    public void addWindowView(View view, WindowManager.LayoutParams windowLayoutParams) {
+        mWindowManager.addView(view, windowLayoutParams);
+    }
+
+    /** Removes the given view from WindowManager. See {@link #addWindowView}. */
+    public void removeWindowView(View view) {
+        mWindowManager.removeViewImmediate(view);
     }
 
     protected void onTaskbarIconClicked(View view) {
