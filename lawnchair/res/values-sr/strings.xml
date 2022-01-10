@@ -144,7 +144,7 @@
     <string name="app_title_label">Назив</string>
     <string name="hide_from_drawer">Сакриј са листе апликација</string>
     <string name="action_lens">Објектив</string>
-    <string name="force_rounded_widgets">Rounded Corners</string>
+    <string name="force_rounded_widgets">Заобљени углови</string>
     <string name="suggestion_pref_screen_title">Suggestions</string>
     <string name="n_percent">%1$d%%</string>
     <string name="label">Label</string>
