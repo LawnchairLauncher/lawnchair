@@ -145,12 +145,12 @@
     <string name="hide_from_drawer">Сакриј са листе апликација</string>
     <string name="action_lens">Објектив</string>
     <string name="force_rounded_widgets">Заобљени углови</string>
-    <string name="suggestion_pref_screen_title">Suggestions</string>
+    <string name="suggestion_pref_screen_title">Предлози</string>
     <string name="n_percent">%1$d%%</string>
-    <string name="label">Label</string>
+    <string name="label">Ознака</string>
     <string name="presets">Presets</string>
-    <string name="colors">Colors</string>
-    <string name="dynamic">Dynamic</string>
+    <string name="colors">Боје</string>
+    <string name="dynamic">Динамичка</string>
     <string name="all_apps_search_market_message">Search for More Apps</string>
     <string name="show_app_search_bar">Прикажи траку за претрагу</string>
     <string name="lawnchair_bug_report">Lawnchair Bug Report</string>
