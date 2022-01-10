@@ -142,8 +142,8 @@
     <string name="icon_shape_squircle">Заокругљени квадрат</string>
     <string name="customize_button_text">Прилагоди</string>
     <string name="app_title_label">Назив</string>
-    <string name="hide_from_drawer">Hide from App Drawer</string>
-    <string name="action_lens">Lens</string>
+    <string name="hide_from_drawer">Сакриј са листе апликација</string>
+    <string name="action_lens">Објектив</string>
     <string name="force_rounded_widgets">Rounded Corners</string>
     <string name="suggestion_pref_screen_title">Suggestions</string>
     <string name="n_percent">%1$d%%</string>
