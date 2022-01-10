@@ -112,6 +112,7 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
 
     private final boolean mIsSafeModeEnabled;
     private final boolean mIsUserSetupComplete;
+    private final boolean mIsNavBarKidsMode;
     private boolean mIsDestroyed = false;
     // The flag to know if the window is excluded from magnification region computation.
     private boolean mIsExcludeFromMagnificationRegion = false;
@@ -129,6 +130,8 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
                 () -> getPackageManager().isSafeMode());
         mIsUserSetupComplete = SettingsCache.INSTANCE.get(this).getValue(
                 Settings.Secure.getUriFor(Settings.Secure.USER_SETUP_COMPLETE), 0);
+        mIsNavBarKidsMode = SettingsCache.INSTANCE.get(this).getValue(
+                Settings.Secure.getUriFor(Settings.Secure.NAV_BAR_KIDS_MODE), 0);
 
         final Resources resources = getResources();
         float taskbarIconSize = resources.getDimension(R.dimen.taskbar_icon_size);
@@ -385,7 +388,8 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
                 | SYSUI_STATE_QUICK_SETTINGS_EXPANDED;
         onNotificationShadeExpandChanged((systemUiStateFlags & shadeExpandedFlags) != 0, fromInit);
         mControllers.taskbarViewController.setRecentsButtonDisabled(
-                mControllers.navbarButtonsViewController.isRecentsDisabled());
+                mControllers.navbarButtonsViewController.isRecentsDisabled()
+                        || isNavBarKidsModeActive());
         mControllers.stashedHandleViewController.setIsHomeButtonDisabled(
                 mControllers.navbarButtonsViewController.isHomeDisabled());
         mControllers.taskbarKeyguardController.updateStateForSysuiFlags(systemUiStateFlags);
@@ -585,6 +589,10 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
 
     protected boolean isUserSetupComplete() {
         return mIsUserSetupComplete;
+    }
+
+    protected boolean isNavBarKidsModeActive() {
+        return mIsNavBarKidsMode && isThreeButtonNav();
     }
 
     /**
