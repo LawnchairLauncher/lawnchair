@@ -16,6 +16,7 @@
 
 package app.lawnchair.ui.preferences
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ModalBottomSheetLayout
@@ -86,7 +87,13 @@ fun Preferences(interactor: PreferenceInteractor = viewModel<PreferenceViewModel
     SystemUi()
     Providers(bottomSheetHandler = bottomSheetHandler) {
         ModalBottomSheetLayout(
-            sheetContent = { bottomSheetContent.content() },
+            sheetContent = {
+                val isSheetShown = bottomSheetState.isAnimationRunning || bottomSheetState.isVisible
+                BackHandler(enabled = isSheetShown) {
+                    bottomSheetHandler.hide()
+                }
+                bottomSheetContent.content()
+            },
             sheetState = bottomSheetState
         ) {
             Surface {
