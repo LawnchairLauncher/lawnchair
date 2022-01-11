@@ -16,10 +16,15 @@
 
 package app.lawnchair.ui.util
 
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.ReadOnlyComposable
-import androidx.compose.runtime.staticCompositionLocalOf
+import androidx.activity.compose.BackHandler
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.ModalBottomSheetLayout
+import androidx.compose.material.ModalBottomSheetValue
+import androidx.compose.material.rememberModalBottomSheetState
+import androidx.compose.material3.LocalContentColor
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.runtime.*
+import kotlinx.coroutines.launch
 
 internal val LocalBottomSheetHandler = staticCompositionLocalOf { BottomSheetHandler() }
 
@@ -28,13 +33,39 @@ val bottomSheetHandler: BottomSheetHandler
     @ReadOnlyComposable
     get() = LocalBottomSheetHandler.current
 
+@ExperimentalMaterialApi
 @Composable
 fun ProvideBottomSheetHandler(
-    handler: BottomSheetHandler,
     content: @Composable () -> Unit
 ) {
-    CompositionLocalProvider(LocalBottomSheetHandler provides handler) {
-        content()
+    val coroutineScope = rememberCoroutineScope()
+    val bottomSheetState = rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
+    var bottomSheetContent by remember { mutableStateOf(emptyBottomSheetContent) }
+    val bottomSheetHandler = BottomSheetHandler(
+        show = { sheetContent ->
+            bottomSheetContent = BottomSheetContent(content = sheetContent)
+            coroutineScope.launch { bottomSheetState.show() }
+        },
+        hide = {
+            coroutineScope.launch { bottomSheetState.hide() }
+        }
+    )
+
+    ModalBottomSheetLayout(
+        sheetContent = {
+            val isSheetShown = bottomSheetState.isAnimationRunning || bottomSheetState.isVisible
+            BackHandler(enabled = isSheetShown) {
+                bottomSheetHandler.hide()
+            }
+            CompositionLocalProvider(LocalContentColor provides MaterialTheme.colorScheme.onSurface) {
+                bottomSheetContent.content()
+            }
+        },
+        sheetState = bottomSheetState
+    ) {
+        CompositionLocalProvider(LocalBottomSheetHandler provides bottomSheetHandler) {
+            content()
+        }
     }
 }
 
