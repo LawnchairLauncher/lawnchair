@@ -346,8 +346,8 @@ public class GestureState implements RecentsAnimationCallbacks.RecentsAnimationL
      * @return whether the recents animation is started but not yet ended
      */
     public boolean isRecentsAnimationRunning() {
-        return mStateCallback.hasStates(STATE_RECENTS_ANIMATION_INITIALIZED) &&
-                !mStateCallback.hasStates(STATE_RECENTS_ANIMATION_ENDED);
+        return mStateCallback.hasStates(STATE_RECENTS_ANIMATION_STARTED)
+                && !mStateCallback.hasStates(STATE_RECENTS_ANIMATION_ENDED);
     }
 
     @Override
