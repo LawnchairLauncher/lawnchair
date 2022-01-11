@@ -32,6 +32,7 @@ filegroup {
     srcs: [
       "src/com/android/launcher3/ui/AbstractLauncherUiTest.java",
       "src/com/android/launcher3/ui/PortraitLandscapeRunner.java",
+      "src/com/android/launcher3/util/TestUtil.java",
       "src/com/android/launcher3/util/Wait.java",
       "src/com/android/launcher3/util/WidgetUtils.java",
       "src/com/android/launcher3/util/rule/FailureWatcher.java",
@@ -69,6 +70,11 @@ android_library {
     ],
     manifest: "AndroidManifest-common.xml",
     platform_apis: true,
+}
+
+android_library {
+    name: "Launcher3TestResources",
+    resource_dirs: ["res"],
 }
 
 android_test {

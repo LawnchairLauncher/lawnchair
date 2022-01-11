@@ -1284,15 +1284,19 @@ public final class LauncherInstrumentation {
         return getRealDisplaySize().x - getWindowInsets().right - 1;
     }
 
-    void clickLauncherObject(UiObject2 object) {
-        waitForObjectEnabled(object, "clickLauncherObject");
-        expectEvent(TestProtocol.SEQUENCE_MAIN, LauncherInstrumentation.EVENT_TOUCH_DOWN);
-        expectEvent(TestProtocol.SEQUENCE_MAIN, LauncherInstrumentation.EVENT_TOUCH_UP);
+    void clickObject(UiObject2 object) {
+        waitForObjectEnabled(object, "clickObject");
         if (!isLauncher3() && getNavigationModel() != NavigationModel.THREE_BUTTON) {
             expectEvent(TestProtocol.SEQUENCE_TIS, LauncherInstrumentation.EVENT_TOUCH_DOWN_TIS);
             expectEvent(TestProtocol.SEQUENCE_TIS, LauncherInstrumentation.EVENT_TOUCH_UP_TIS);
         }
         object.click();
+    }
+
+    void clickLauncherObject(UiObject2 object) {
+        expectEvent(TestProtocol.SEQUENCE_MAIN, LauncherInstrumentation.EVENT_TOUCH_DOWN);
+        expectEvent(TestProtocol.SEQUENCE_MAIN, LauncherInstrumentation.EVENT_TOUCH_UP);
+        clickObject(object);
     }
 
     void scrollToLastVisibleRow(
