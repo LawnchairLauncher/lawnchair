@@ -4,13 +4,18 @@ import android.content.Intent
 import android.content.pm.LauncherApps
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.getSystemService
+import androidx.core.graphics.drawable.toBitmap
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
-import app.lawnchair.ui.preferences.components.PreferenceLayout
+import app.lawnchair.ui.preferences.components.AppItem
+import app.lawnchair.ui.preferences.components.PreferenceLayoutLazyColumn
+import app.lawnchair.ui.preferences.components.preferenceGroupItems
 import com.android.launcher3.util.ComponentKey
 import com.google.accompanist.navigation.animation.composable
 
@@ -43,10 +48,20 @@ fun SelectIconPreference(componentKey: ComponentKey) {
         val activity = launcherApps.resolveActivity(intent, componentKey.user)
         activity.label.toString()
     }
-    PreferenceLayout(
-        label = label,
-        backArrowVisible = true
-    ) {
+    val iconPacks by LocalPreferenceInteractor.current.iconPacks.collectAsState()
+    val navController = LocalNavController.current
 
+    PreferenceLayoutLazyColumn(label = label) {
+        preferenceGroupItems(
+            heading = { "Choose icon from" },
+            items = iconPacks,
+            isFirstChild = true
+        ) { _, iconPack ->
+            AppItem(
+                label = iconPack.name,
+                icon = remember(iconPack) { iconPack.icon.toBitmap() },
+                onClick = { navController.navigate("/${Routes.ICON_PICKER}/${iconPack.packageName}/") }
+            )
+        }
     }
 }

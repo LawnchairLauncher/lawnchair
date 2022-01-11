@@ -22,6 +22,9 @@ class IconPack(
     private var waiter: Semaphore? = Semaphore(0)
     private val deferredLoad: Deferred<Unit>
 
+    private var _label: String = ""
+    val label get() = _label
+
     private val componentMap = mutableMapOf<ComponentName, IconEntry>()
     private val calendarMap = mutableMapOf<ComponentName, CalendarIconEntry>()
     private val clockMap = mutableMapOf<ComponentName, IconEntry>()
@@ -75,6 +78,8 @@ class IconPack(
 
     @Suppress("BlockingMethodInNonBlockingContext")
     private fun loadInternal() {
+        val pm = context.packageManager
+        _label = pm.getApplicationInfo(packPackageName, 0).loadLabel(pm).toString()
         val parseXml = getXml("appfilter") ?: return
         val compStart = "ComponentInfo{"
         val compStartLength = compStart.length

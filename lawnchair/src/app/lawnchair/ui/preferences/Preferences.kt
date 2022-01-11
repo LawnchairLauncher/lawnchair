@@ -47,6 +47,7 @@ object Routes {
     const val FONT_SELECTION: String = "fontSelection"
     const val DEBUG_MENU: String = "debugMenu"
     const val SELECT_ICON: String = "selectIcon"
+    const val ICON_PICKER: String = "iconPicker"
 }
 
 val LocalNavController = staticCompositionLocalOf<NavController> {
@@ -92,6 +93,7 @@ fun Preferences(interactor: PreferenceInteractor = viewModel<PreferenceViewModel
                         fontSelectionGraph(route = subRoute(Routes.FONT_SELECTION))
                         debugMenuGraph(route = subRoute(Routes.DEBUG_MENU))
                         selectIconGraph(route = subRoute(Routes.SELECT_ICON))
+                        iconPickerGraph(route = subRoute(Routes.ICON_PICKER))
                     }
                 }
             }
