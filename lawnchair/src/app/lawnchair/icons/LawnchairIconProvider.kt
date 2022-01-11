@@ -71,24 +71,32 @@ class LawnchairIconProvider @JvmOverloads constructor(
         var iconType = ICON_TYPE_DEFAULT
         var themeData: ThemedIconDrawable.ThemeData? = null
         if (iconPack != null) {
-            if (iconEntry == null) {
-                iconEntry = iconPack.getCalendar(componentName)?.getIconEntry(getDay())
+            // check if supports dynamic calendar
+            val calendarEntry = iconPack.getCalendar(componentName)
+            if (calendarEntry != null) {
+                iconEntry = calendarEntry.getIconEntry(getDay())
                 themeData = getThemeData(mCalendar.packageName, "")
                 iconType = ICON_TYPE_CALENDAR
             }
+            // doesn't support dynamic calendar
             if (iconEntry == null) {
                 iconEntry = iconPack.getIcon(componentName)
                 val clock = iconEntry?.let { iconPack.getClock(it) }
                 when {
-                    !supportsIconTheme -> {}
+                    !supportsIconTheme -> {
+                        // theming is disable, don't populate theme data
+                    }
                     clock != null -> {
-                        themeData = getThemeData(mCalendar.packageName, "")
+                        // the icon supports dynamic clock, use dynamic themed clock
+                        themeData = getThemeData(mClock.packageName, "")
                         iconType = ICON_TYPE_CLOCK
                     }
                     packageName == mClock.packageName -> {
+                        // is clock app but icon might not be adaptive, fallback to static themed clock
                         themeData = ThemedIconDrawable.ThemeData(context.resources, R.drawable.themed_icon_static_clock)
                     }
                     else -> {
+                        // regular app
                         themeData = getThemeData(componentName)
                     }
                 }
