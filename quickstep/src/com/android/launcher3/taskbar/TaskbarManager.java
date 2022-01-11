@@ -63,11 +63,15 @@ public class TaskbarManager implements DisplayController.DisplayInfoChangeListen
     private static final Uri USER_SETUP_COMPLETE_URI = Settings.Secure.getUriFor(
             Settings.Secure.USER_SETUP_COMPLETE);
 
+    private static final Uri NAV_BAR_KIDS_MODE = Settings.Secure.getUriFor(
+            Settings.Secure.NAV_BAR_KIDS_MODE);
+
     private final Context mContext;
     private final DisplayController mDisplayController;
     private final SysUINavigationMode mSysUINavigationMode;
     private final TaskbarNavButtonController mNavButtonController;
     private final SettingsCache.OnChangeListener mUserSetupCompleteListener;
+    private final SettingsCache.OnChangeListener mNavBarKidsModeListener;
     private final ComponentCallbacks mComponentCallbacks;
     private final SimpleBroadcastReceiver mShutdownReceiver;
 
@@ -97,6 +101,7 @@ public class TaskbarManager implements DisplayController.DisplayInfoChangeListen
         mNavButtonController = new TaskbarNavButtonController(service,
                 SystemUiProxy.INSTANCE.get(mContext), new Handler());
         mUserSetupCompleteListener = isUserSetupComplete -> recreateTaskbar();
+        mNavBarKidsModeListener = isNavBarKidsMode -> recreateTaskbar();
         mComponentCallbacks = new ComponentCallbacks() {
             private Configuration mOldConfig = mContext.getResources().getConfiguration();
 
@@ -126,6 +131,8 @@ public class TaskbarManager implements DisplayController.DisplayInfoChangeListen
         mSysUINavigationMode.addModeChangeListener(this);
         SettingsCache.INSTANCE.get(mContext).register(USER_SETUP_COMPLETE_URI,
                 mUserSetupCompleteListener);
+        SettingsCache.INSTANCE.get(mContext).register(NAV_BAR_KIDS_MODE,
+                mNavBarKidsModeListener);
         mContext.registerComponentCallbacks(mComponentCallbacks);
         mShutdownReceiver.register(mContext, Intent.ACTION_SHUTDOWN);
 
@@ -289,6 +296,8 @@ public class TaskbarManager implements DisplayController.DisplayInfoChangeListen
         mSysUINavigationMode.removeModeChangeListener(this);
         SettingsCache.INSTANCE.get(mContext).unregister(USER_SETUP_COMPLETE_URI,
                 mUserSetupCompleteListener);
+        SettingsCache.INSTANCE.get(mContext).unregister(NAV_BAR_KIDS_MODE,
+                mNavBarKidsModeListener);
         mContext.unregisterComponentCallbacks(mComponentCallbacks);
         mContext.unregisterReceiver(mShutdownReceiver);
     }

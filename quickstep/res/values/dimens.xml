@@ -231,4 +231,10 @@
     <dimen name="taskbar_stashed_handle_height">4dp</dimen>
     <dimen name="taskbar_edu_wave_anim_trans_y">25dp</dimen>
     <dimen name="taskbar_edu_wave_anim_trans_y_return_overshoot">4dp</dimen>
+    <dimen name="taskbar_nav_buttons_width_kids">88dp</dimen>
+    <dimen name="taskbar_nav_buttons_height_kids">40dp</dimen>
+    <dimen name="taskbar_nav_buttons_corner_radius_kids">40dp</dimen>
+    <dimen name="taskbar_back_button_left_margin_kids">96dp</dimen>
+    <dimen name="taskbar_home_button_left_margin_kids">48dp</dimen>
+    <dimen name="taskbar_icon_size_kids">32dp</dimen>
 </resources>

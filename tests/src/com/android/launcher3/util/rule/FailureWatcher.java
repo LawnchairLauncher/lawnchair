@@ -84,7 +84,7 @@ public class FailureWatcher extends TestWatcher {
 
     @Override
     protected void failed(Throwable e, Description description) {
-        onError(mDevice, description, e);
+        onError(mLauncher, description, e);
     }
 
     static File diagFile(Description description, String prefix, String ext) {
@@ -93,7 +93,9 @@ public class FailureWatcher extends TestWatcher {
                         + description.getMethodName() + "." + ext);
     }
 
-    public static void onError(UiDevice device, Description description, Throwable e) {
+    public static void onError(LauncherInstrumentation launcher, Description description,
+            Throwable e) {
+        final UiDevice device = launcher.getDevice();
         Log.d("b/196820244", "onError 1");
         if (device == null) return;
         Log.d("b/196820244", "onError 2");
@@ -128,6 +130,11 @@ public class FailureWatcher extends TestWatcher {
         }
 
         dumpCommand("logcat -d -s TestRunner", diagFile(description, "FilteredLogcat", "txt"));
+
+        // Dump bugreport
+        if (launcher.getSystemAnomalyMessage(false, false) != null) {
+            dumpCommand("bugreportz -s", diagFile(description, "Bugreport", "zip"));
+        }
     }
 
     private static void dumpStringCommand(String cmd, OutputStream out) throws IOException {
