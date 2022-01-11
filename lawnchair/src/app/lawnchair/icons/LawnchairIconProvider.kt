@@ -44,7 +44,7 @@ class LawnchairIconProvider @JvmOverloads constructor(
             }
             return _themeMap!!
         }
-    val supportsIconTheme get() = themeMap == DISABLED_MAP
+    val supportsIconTheme get() = themeMap != DISABLED_MAP
 
     init {
         setIconThemeSupported(supportsIconTheme)
@@ -84,7 +84,7 @@ class LawnchairIconProvider @JvmOverloads constructor(
                 val clock = iconEntry?.let { iconPack.getClock(it) }
                 when {
                     !supportsIconTheme -> {
-                        // theming is disable, don't populate theme data
+                        // theming is disabled, don't populate theme data
                     }
                     clock != null -> {
                         // the icon supports dynamic clock, use dynamic themed clock
