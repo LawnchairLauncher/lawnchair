@@ -44,6 +44,7 @@ class LawnchairIconProvider @JvmOverloads constructor(
             }
             return _themeMap!!
         }
+    val supportsIconTheme get() = themeMap == DISABLED_MAP
 
     init {
         setIconThemeSupported(supportsIconTheme)
@@ -79,6 +80,7 @@ class LawnchairIconProvider @JvmOverloads constructor(
                 iconEntry = iconPack.getIcon(componentName)
                 val clock = iconEntry?.let { iconPack.getClock(it) }
                 when {
+                    !supportsIconTheme -> {}
                     clock != null -> {
                         themeData = getThemeData(mCalendar.packageName, "")
                         iconType = ICON_TYPE_CLOCK
