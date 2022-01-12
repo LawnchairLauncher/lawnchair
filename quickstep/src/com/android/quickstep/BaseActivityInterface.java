@@ -77,12 +77,14 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
 
     public final boolean rotationSupportedByActivity;
 
-    private final STATE_TYPE mOverviewState, mBackgroundState;
+    private final STATE_TYPE mBackgroundState;
+
+    private STATE_TYPE mTargetState;
 
     protected BaseActivityInterface(boolean rotationSupportedByActivity,
             STATE_TYPE overviewState, STATE_TYPE backgroundState) {
         this.rotationSupportedByActivity = rotationSupportedByActivity;
-        mOverviewState = overviewState;
+        mTargetState = overviewState;
         mBackgroundState = backgroundState;
     }
 
@@ -399,6 +401,9 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
         default boolean isRecentsAttachedToAppWindow() {
             return false;
         }
+
+        /** Called when the gesture ends and we know what state it is going towards */
+        default void setEndTarget(GestureState.GestureEndTarget endTarget) { }
     }
 
     class DefaultAnimationFactory implements AnimationFactory {
@@ -435,7 +440,7 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
 
             // Since we are changing the start position of the UI, reapply the state, at the end
             controller.setEndAction(() -> mActivity.getStateManager().goToState(
-                    controller.getInterpolatedProgress() > 0.5 ? mOverviewState : mBackgroundState,
+                    controller.getInterpolatedProgress() > 0.5 ? mTargetState : mBackgroundState,
                     false));
 
             RecentsView recentsView = mActivity.getOverviewPanel();
@@ -488,6 +493,11 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
         @Override
         public boolean isRecentsAttachedToAppWindow() {
             return mIsAttachedToWindow;
+        }
+
+        @Override
+        public void setEndTarget(GestureState.GestureEndTarget endTarget) {
+            mTargetState = stateFromGestureEndTarget(endTarget);
         }
 
         protected void createBackgroundToOverviewAnim(ACTIVITY_TYPE activity, PendingAnimation pa) {
