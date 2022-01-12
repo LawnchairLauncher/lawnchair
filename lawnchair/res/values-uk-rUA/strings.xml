@@ -180,4 +180,5 @@
     <string name="dark_status_bar_label">Темний рядок стану</string>
     <string name="lawnicons_not_installed_description">Lawnicons не встановлені.</string>
     <string name="icon_picker_default_category">Значки</string>
+    <string name="icon_picker_reset_to_default">Reset to default</string>
 </resources>
