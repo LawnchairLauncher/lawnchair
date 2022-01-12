@@ -44,8 +44,9 @@ import com.android.launcher3.util.SplitConfigurationOptions;
 import com.android.systemui.shared.recents.ISystemUiProxy;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.system.RemoteTransitionCompat;
-import com.android.systemui.shared.system.smartspace.ISmartspaceCallback;
-import com.android.systemui.shared.system.smartspace.ISmartspaceTransitionController;
+import com.android.systemui.shared.system.smartspace.ILauncherUnlockAnimationController;
+import com.android.systemui.shared.system.smartspace.ISysuiUnlockAnimationController;
+import com.android.systemui.shared.system.smartspace.SmartspaceState;
 import com.android.wm.shell.onehanded.IOneHanded;
 import com.android.wm.shell.pip.IPip;
 import com.android.wm.shell.pip.IPipAnimationListener;
@@ -73,7 +74,7 @@ public class SystemUiProxy implements ISystemUiProxy,
 
     private ISystemUiProxy mSystemUiProxy;
     private IPip mPip;
-    private ISmartspaceTransitionController mSmartspaceTransitionController;
+    private ISysuiUnlockAnimationController mSysuiUnlockAnimationController;
     private ISplitScreen mSplitScreen;
     private IOneHanded mOneHanded;
     private IShellTransitions mShellTransitions;
@@ -90,7 +91,7 @@ public class SystemUiProxy implements ISystemUiProxy,
     private IPipAnimationListener mPipAnimationListener;
     private ISplitScreenListener mSplitScreenListener;
     private IStartingWindowListener mStartingWindowListener;
-    private ISmartspaceCallback mSmartspaceCallback;
+    private ILauncherUnlockAnimationController mPendingLauncherUnlockAnimationController;
     private IRecentTasksListener mRecentTasksListener;
     private final ArrayList<RemoteTransitionCompat> mRemoteTransitions = new ArrayList<>();
 
@@ -157,7 +158,8 @@ public class SystemUiProxy implements ISystemUiProxy,
     public void setProxy(ISystemUiProxy proxy, IPip pip, ISplitScreen splitScreen,
             IOneHanded oneHanded, IShellTransitions shellTransitions,
             IStartingWindow startingWindow, IRecentTasks recentTasks,
-            ISmartspaceTransitionController smartSpaceTransitionController) {
+            ISysuiUnlockAnimationController sysuiUnlockAnimationController) {
+
         unlinkToDeath();
         mSystemUiProxy = proxy;
         mPip = pip;
@@ -165,7 +167,7 @@ public class SystemUiProxy implements ISystemUiProxy,
         mOneHanded = oneHanded;
         mShellTransitions = shellTransitions;
         mStartingWindow = startingWindow;
-        mSmartspaceTransitionController = smartSpaceTransitionController;
+        mSysuiUnlockAnimationController = sysuiUnlockAnimationController;
         mRecentTasks = recentTasks;
         linkToDeath();
         // re-attach the listeners once missing due to setProxy has not been initialized yet.
@@ -178,8 +180,10 @@ public class SystemUiProxy implements ISystemUiProxy,
         if (mStartingWindowListener != null && mStartingWindow != null) {
             setStartingWindowListener(mStartingWindowListener);
         }
-        if (mSmartspaceCallback != null && mSmartspaceTransitionController != null) {
-            setSmartspaceCallback(mSmartspaceCallback);
+        if (mPendingLauncherUnlockAnimationController != null
+                && mSysuiUnlockAnimationController != null) {
+            setLauncherUnlockAnimationController(mPendingLauncherUnlockAnimationController);
+            mPendingLauncherUnlockAnimationController = null;
         }
         for (int i = mRemoteTransitions.size() - 1; i >= 0; --i) {
             registerRemoteTransition(mRemoteTransitions.get(i));
@@ -731,15 +735,42 @@ public class SystemUiProxy implements ISystemUiProxy,
     // SmartSpace transitions
     //
 
-    public void setSmartspaceCallback(ISmartspaceCallback callback) {
-        if (mSmartspaceTransitionController != null) {
+    /**
+     * Sets the instance of {@link ILauncherUnlockAnimationController} that System UI should use to
+     * control the launcher side of the unlock animation. This will also cause us to dispatch the
+     * current state of the smartspace to System UI (this will subsequently happen if the state
+     * changes).
+     */
+    public void setLauncherUnlockAnimationController(
+            ILauncherUnlockAnimationController controller) {
+        if (mSysuiUnlockAnimationController != null) {
             try {
-                mSmartspaceTransitionController.setSmartspace(callback);
+                mSysuiUnlockAnimationController.setLauncherUnlockController(controller);
+
+                if (controller != null) {
+                    controller.dispatchSmartspaceStateToSysui();
+                }
             } catch (RemoteException e) {
                 Log.w(TAG, "Failed call setStartingWindowListener", e);
             }
+        } else {
+            mPendingLauncherUnlockAnimationController = controller;
         }
-        mSmartspaceCallback = callback;
+    }
+
+    /**
+     * Tells System UI that the Launcher's smartspace state has been updated, so that it can prepare
+     * the unlock animation accordingly.
+     */
+    public void notifySysuiSmartspaceStateUpdated(SmartspaceState state) {
+        if (mSysuiUnlockAnimationController != null) {
+            try {
+                mSysuiUnlockAnimationController.onLauncherSmartspaceStateUpdated(state);
+            } catch (RemoteException e) {
+                Log.w(TAG, "Failed call notifySysuiSmartspaceStateUpdated", e);
+                e.printStackTrace();
+            }
+        }
     }
 
     //
