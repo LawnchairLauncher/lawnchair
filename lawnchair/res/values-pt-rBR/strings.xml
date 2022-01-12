@@ -177,4 +177,5 @@
     <string name="all_apps_device_search_hint">Pesquisar</string>
     <string name="dark_status_bar_label">Barra de Status Escura</string>
     <string name="lawnicons_not_installed_description">Lawnicons não instalado.</string>
+    <string name="icon_picker_default_category">Ícones</string>
 </resources>
