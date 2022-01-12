@@ -15,7 +15,7 @@ class IconPackProvider(private val context: Context) {
         return iconPacks.getOrPut(packageName) {
             try {
                 val packResources = context.packageManager.getResourcesForApplication(packageName)
-                IconPack(context, packageName, packResources)
+                CustomIconPack(context, packageName)
             } catch (e: PackageManager.NameNotFoundException) {
                 null
             }
