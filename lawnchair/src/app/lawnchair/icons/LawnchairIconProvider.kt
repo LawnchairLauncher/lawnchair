@@ -102,7 +102,7 @@ class LawnchairIconProvider @JvmOverloads constructor(
                 }
             }
         }
-        val icon = iconEntry?.getDrawable(iconDpi, user)
+        val icon = iconEntry?.let { iconPackProvider.getDrawable(iconEntry, iconDpi, user) }
         val td = themeData
         if (icon != null) {
             return if (td != null) td.wrapDrawable(icon, iconType) else icon

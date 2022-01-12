@@ -2,16 +2,8 @@ package app.lawnchair.icons
 
 import android.content.ComponentName
 import android.content.Context
-import android.content.pm.PackageManager
-import android.content.res.Resources
-import android.content.res.XmlResourceParser
 import android.graphics.drawable.Drawable
-import android.util.Xml
 import kotlinx.coroutines.*
-import org.xmlpull.v1.XmlPullParser
-import org.xmlpull.v1.XmlPullParserException
-import org.xmlpull.v1.XmlPullParserFactory
-import java.io.IOException
 import java.util.concurrent.Semaphore
 
 abstract class IconPack(
