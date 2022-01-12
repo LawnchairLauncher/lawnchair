@@ -154,6 +154,15 @@ public class TaskbarPopupController {
                         .filter(Objects::nonNull)
                         .collect(Collectors.toList()));
         container.requestFocus();
+
+        // Make focusable to receive back events
+        mControllers.taskbarActivityContext.setTaskbarWindowFocusable(true);
+        container.setOnCloseCallback(() -> {
+            mControllers.taskbarActivityContext.getDragLayer().post(
+                    () -> mControllers.taskbarActivityContext.setTaskbarWindowFocusable(false));
+            container.setOnCloseCallback(null);
+        });
+
         return container;
     }
 

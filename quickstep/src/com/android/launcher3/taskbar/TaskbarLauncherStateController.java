@@ -27,6 +27,7 @@ import android.animation.ObjectAnimator;
 
 import androidx.annotation.NonNull;
 
+import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.BaseQuickstepLauncher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.statemanager.StateManager;
@@ -256,6 +257,10 @@ import java.util.function.Supplier;
 
         if (hasAnyFlag(changedFlags, FLAG_RESUMED | FLAG_RECENTS_ANIMATION_RUNNING)) {
             boolean goingToLauncher = hasAnyFlag(FLAG_RESUMED | FLAG_RECENTS_ANIMATION_RUNNING);
+            if (goingToLauncher) {
+                // Handle closing open popups when going home/overview
+                AbstractFloatingView.closeAllOpenViews(mControllers.taskbarActivityContext);
+            }
             animatorSet.play(mTaskbarBackgroundAlpha.animateToValue(goingToLauncher ? 0 : 1)
                     .setDuration(duration));
         }
