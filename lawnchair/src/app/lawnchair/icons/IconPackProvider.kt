@@ -33,12 +33,12 @@ class IconPackProvider(private val context: Context) {
     }
 
     fun getClockMetadata(iconEntry: IconEntry): ClockMetadata? {
-        val iconPack = getIconPack(iconEntry.packPackageName) ?: return null
+        val iconPack = getIconPackOrSystem(iconEntry.packPackageName) ?: return null
         return iconPack.getClock(iconEntry)
     }
 
     fun getDrawable(iconEntry: IconEntry, iconDpi: Int, user: UserHandle): Drawable? {
-        val iconPack = getIconPack(iconEntry.packPackageName) ?: return null
+        val iconPack = getIconPackOrSystem(iconEntry.packPackageName) ?: return null
         val drawable = iconPack.getIcon(iconEntry, iconDpi) ?: return null
         val clockMetadata = if (user == Process.myUserHandle()) iconPack.getClock(iconEntry) else null
         if (clockMetadata != null) {
