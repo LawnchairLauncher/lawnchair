@@ -20,7 +20,7 @@
     <string name="home_screen_label">Pantalla de Inicio</string>
     <string name="home_screen_description">Feed, De un vistazo, Cuadrícula, iconos</string>
     <string name="general_label">General</string>
-    <string name="general_description">Puntos de notificación, Paquete de iconos</string>
+    <string name="general_description">Colores, Puntos de notificación, Paquete de iconos</string>
     <string name="home_screen_rotation_label">Rotación de Pantalla de Inicio</string>
     <string name="home_screen_rotaton_description">Cuando se rota el dispositivo.</string>
     <string name="auto_add_shortcuts_label">Añadir Nuevas Aplicaciones a la Pantalla de Inicio</string>
@@ -92,8 +92,8 @@
     <string name="theme_follow_wallpaper">Coincidir con fondo</string>
     <string name="quickstep_label">Recientes</string>
     <string name="clear_all_as_action_label">Botón \"Borrar todo\" al fondo</string>
-    <string name="window_corner_radius_label">Radio de esquina de pantalla</string>
-    <string name="override_window_corner_radius_label">Radio de esquina de pantalla personalizado</string>
+    <string name="window_corner_radius_label">Radio de esquina de la pantalla</string>
+    <string name="override_window_corner_radius_label">Radio de esquina de la pantalla personalizado</string>
     <string name="window_corner_radius_description">Cuando deslizas hacia abajo para abrir Recientes, la aplicación actual sigue tu dedo, encogiéndose en una tarjeta. Utiliza este control deslizante para ajustar el radio de esquina de la tarjeta cuando es casi de pantalla completa de tal forma que coincida con las esquinas de tu pantalla.</string>
     <string name="system_icons">Iconos del sistema</string>
     <string name="accent_color">Color de acento</string>
@@ -142,7 +142,7 @@
     <string name="customize_button_text">Personalizar</string>
     <string name="app_title_label">Título</string>
     <string name="hide_from_drawer">Ocultar del Cajón</string>
-    <string name="action_lens">Lentes</string>
+    <string name="action_lens">Lens</string>
     <string name="force_rounded_widgets">Esquinas redondeadas</string>
     <string name="suggestion_pref_screen_title">Sugerencias</string>
     <string name="n_percent">%1$d%%</string>
