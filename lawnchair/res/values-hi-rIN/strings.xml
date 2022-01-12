@@ -177,4 +177,5 @@
     <string name="all_apps_device_search_hint">ऐप खोजें</string>
     <string name="dark_status_bar_label">गहरा स्टेट्स बार</string>
     <string name="lawnicons_not_installed_description">लॉन आइकन्स ऐप इंस्टॉल नहीं है।</string>
+    <string name="icon_picker_default_category">चिह्न</string>
 </resources>
