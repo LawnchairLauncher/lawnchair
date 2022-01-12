@@ -289,9 +289,8 @@ public class DepthController implements StateHandler<LauncherState>,
         if (Float.compare(mDepth, depthF) == 0) {
             return;
         }
-        if (dispatchTransactionSurface(depthF)) {
-            mDepth = depthF;
-        }
+        dispatchTransactionSurface(depthF);
+        mDepth = depthF;
     }
 
     public void onOverlayScrollChanged(float progress) {
