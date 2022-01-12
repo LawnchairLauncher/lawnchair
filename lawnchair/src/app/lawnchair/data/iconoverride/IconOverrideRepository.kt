@@ -3,13 +3,14 @@ package app.lawnchair.data.iconoverride
 import android.content.Context
 import app.lawnchair.data.AppDatabase
 import app.lawnchair.icons.IconPickerItem
+import com.android.launcher3.LauncherAppState
 import com.android.launcher3.util.ComponentKey
 import com.android.launcher3.util.MainThreadInitializedObject
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flowOn
 
-class IconOverrideRepository(context: Context) {
+class IconOverrideRepository(private val context: Context) {
 
     private val scope = MainScope() + CoroutineName("IconOverrideRepository")
     private val dao = AppDatabase.INSTANCE.get(context).iconOverrideDao()
@@ -18,7 +19,7 @@ class IconOverrideRepository(context: Context) {
 
     init {
         scope.launch {
-            dao.getAll()
+            dao.observeAll()
                 .flowOn(Dispatchers.Main)
                 .collect { overrides ->
                     _overridesMap = overrides.associateBy(
@@ -29,8 +30,22 @@ class IconOverrideRepository(context: Context) {
         }
     }
 
-    suspend fun setOverride(key: ComponentKey, item: IconPickerItem) {
-        dao.insert(IconOverride(key, item))
+    suspend fun setOverride(target: ComponentKey, item: IconPickerItem) {
+        dao.insert(IconOverride(target, item))
+        reloadIcons()
+    }
+
+    suspend fun deleteOverride(target: ComponentKey) {
+        dao.delete(target)
+        reloadIcons()
+    }
+
+    fun observeTarget(target: ComponentKey) = dao.observeTarget(target)
+
+    private fun reloadIcons() {
+        val las = LauncherAppState.getInstance(context)
+        val idp = las.invariantDeviceProfile
+        idp.onPreferencesChanged(context.applicationContext)
     }
 
     companion object {

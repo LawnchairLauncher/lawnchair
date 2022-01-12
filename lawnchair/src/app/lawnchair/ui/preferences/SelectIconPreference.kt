@@ -6,6 +6,7 @@ import android.content.pm.LauncherApps
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.runtime.*
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.core.content.getSystemService
 import androidx.core.graphics.drawable.toBitmap
 import androidx.navigation.NavGraphBuilder
@@ -14,10 +15,12 @@ import androidx.navigation.navArgument
 import app.lawnchair.data.iconoverride.IconOverrideRepository
 import app.lawnchair.icons.IconPickerItem
 import app.lawnchair.ui.preferences.components.AppItem
+import app.lawnchair.ui.preferences.components.ClickablePreference
 import app.lawnchair.ui.preferences.components.PreferenceLayoutLazyColumn
 import app.lawnchair.ui.preferences.components.preferenceGroupItems
 import app.lawnchair.ui.util.OnResult
 import com.android.launcher3.LauncherAppState
+import com.android.launcher3.R
 import com.android.launcher3.util.ComponentKey
 import com.google.accompanist.navigation.animation.composable
 import kotlinx.coroutines.launch
@@ -55,22 +58,35 @@ fun SelectIconPreference(componentKey: ComponentKey) {
     val navController = LocalNavController.current
     val scope = rememberCoroutineScope()
 
+    val repo = IconOverrideRepository.INSTANCE.get(context)
     OnResult<IconPickerItem> { item ->
         scope.launch {
-            val repo = IconOverrideRepository.INSTANCE.get(context)
             repo.setOverride(componentKey, item)
-            val las = LauncherAppState.getInstance(context)
-            val idp = las.invariantDeviceProfile
-            idp.onPreferencesChanged(context.applicationContext)
             (context as Activity).finish()
         }
     }
 
+    val overrideItem by repo.observeTarget(componentKey).collectAsState(initial = null)
+    val hasOverride = overrideItem != null
+
     PreferenceLayoutLazyColumn(label = label) {
+        if (hasOverride) {
+            preferenceGroupItems(1, isFirstChild = true) {
+                ClickablePreference(
+                    label = stringResource(id = R.string.icon_picker_reset_to_default),
+                    onClick = {
+                        scope.launch {
+                            repo.deleteOverride(componentKey)
+                            (context as Activity).finish()
+                        }
+                    }
+                )
+            }
+        }
         preferenceGroupItems(
             heading = { "Choose icon from" },
             items = iconPacks,
-            isFirstChild = true
+            isFirstChild = !hasOverride
         ) { _, iconPack ->
             AppItem(
                 label = iconPack.name,
