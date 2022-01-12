@@ -81,7 +81,7 @@
     <string name="dt2s_a11y_hint_title">Activar el Servicio de Accesibilidad</string>
     <string name="dt2s_a11y_hint">Para usar el doble toque para apagar la pantalla, activa el servicio de accesibilidad de Lawnchair. Toca en \"Abrir Configuración\", luego selecciona \"Lawnchair\" y activa \"Usar Lawnchair\".</string>
     <string name="dt2s_warning_open_settings">Abrir Configuración</string>
-    <string name="minus_one_enable">Alimentación</string>
+    <string name="minus_one_enable">Feed</string>
     <string name="minus_one_unavailable">Feed no instalado.</string>
     <string name="fuzzy_search_title">Búsqueda Aproximada</string>
     <string name="fuzzy_search_desc">Coincidencia aproximada para búsqueda de aplicaciones.</string>
@@ -177,4 +177,5 @@
     <string name="all_apps_device_search_hint">Buscar</string>
     <string name="dark_status_bar_label">Barra de estado oscura</string>
     <string name="lawnicons_not_installed_description">Lawnicons no está instalado.</string>
+    <string name="icon_picker_default_category">Iconos</string>
 </resources>
