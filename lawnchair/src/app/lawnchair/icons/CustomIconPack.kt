@@ -147,7 +147,7 @@ class CustomIconPack(context: Context, packPackageName: String) :
                         val drawableName = parser["drawable"]!!
                         val resId = getDrawableId(drawableName)
                         if (resId != 0) {
-                            val item = IconPickerItem(packPackageName, drawableName, drawableName, resId)
+                            val item = IconPickerItem(packPackageName, drawableName, drawableName)
                             currentItems.add(item)
                         }
                     }

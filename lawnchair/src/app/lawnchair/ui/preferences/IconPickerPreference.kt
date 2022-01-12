@@ -32,7 +32,9 @@ import java.util.*
 
 @ExperimentalAnimationApi
 fun NavGraphBuilder.iconPickerGraph(route: String) {
-    preferenceGraph(route, { }) { subRoute ->
+    preferenceGraph(route, {
+        IconPickerPreference(packageName = "")
+    }) { subRoute ->
         composable(
             route = subRoute("{packageName}"),
             arguments = listOf(
@@ -177,7 +179,7 @@ fun IconPreview(
 fun loadIconPack(packPackageName: String): Optional<IconPack>? {
     val context = LocalContext.current
     return produceState<Optional<IconPack>?>(initialValue = null) {
-        val iconPack = IconPackProvider.INSTANCE.get(context).getIconPack(packPackageName)
+        val iconPack = IconPackProvider.INSTANCE.get(context).getIconPackOrSystem(packPackageName)
         iconPack?.load()
         value = Optional.ofNullable(iconPack)
     }.value

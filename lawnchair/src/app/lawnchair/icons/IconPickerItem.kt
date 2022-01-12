@@ -7,8 +7,7 @@ import kotlinx.parcelize.Parcelize
 data class IconPickerItem(
     val packPackageName: String,
     val drawableName: String,
-    val label: String,
-    val resId: Int
+    val label: String
 ) : Parcelable {
     fun toIconEntry(): IconEntry {
         return IconEntry(

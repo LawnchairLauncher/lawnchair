@@ -11,7 +11,13 @@ import com.android.launcher3.util.MainThreadInitializedObject
 
 class IconPackProvider(private val context: Context) {
 
+    private val systemIconPack = SystemIconPack(context)
     private val iconPacks = mutableMapOf<String, IconPack?>()
+
+    fun getIconPackOrSystem(packageName: String): IconPack? {
+        if (packageName == "") return systemIconPack
+        return getIconPack(packageName)
+    }
 
     fun getIconPack(packageName: String): IconPack? {
         if (packageName == "") {
@@ -19,7 +25,6 @@ class IconPackProvider(private val context: Context) {
         }
         return iconPacks.getOrPut(packageName) {
             try {
-                val packResources = context.packageManager.getResourcesForApplication(packageName)
                 CustomIconPack(context, packageName)
             } catch (e: PackageManager.NameNotFoundException) {
                 null

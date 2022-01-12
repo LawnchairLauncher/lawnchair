@@ -69,7 +69,13 @@ fun SelectIconPreference(componentKey: ComponentKey) {
             AppItem(
                 label = iconPack.name,
                 icon = remember(iconPack) { iconPack.icon.toBitmap() },
-                onClick = { navController.navigate("/${Routes.ICON_PICKER}/${iconPack.packageName}/") }
+                onClick = {
+                    if (iconPack.packageName == "") {
+                        navController.navigate("/${Routes.ICON_PICKER}/")
+                    } else {
+                        navController.navigate("/${Routes.ICON_PICKER}/${iconPack.packageName}/")
+                    }
+                }
             )
         }
     }
