@@ -3,25 +3,24 @@ package app.lawnchair.ui.preferences
 import android.app.Activity
 import android.content.Intent
 import android.content.pm.LauncherApps
-import android.util.Log
 import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.getSystemService
 import androidx.core.graphics.drawable.toBitmap
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
+import app.lawnchair.data.iconoverride.IconOverrideRepository
 import app.lawnchair.icons.IconPickerItem
 import app.lawnchair.ui.preferences.components.AppItem
 import app.lawnchair.ui.preferences.components.PreferenceLayoutLazyColumn
 import app.lawnchair.ui.preferences.components.preferenceGroupItems
 import app.lawnchair.ui.util.OnResult
+import com.android.launcher3.LauncherAppState
 import com.android.launcher3.util.ComponentKey
 import com.google.accompanist.navigation.animation.composable
+import kotlinx.coroutines.launch
 
 @ExperimentalAnimationApi
 fun NavGraphBuilder.selectIconGraph(route: String) {
@@ -54,10 +53,17 @@ fun SelectIconPreference(componentKey: ComponentKey) {
     }
     val iconPacks by LocalPreferenceInteractor.current.iconPacks.collectAsState()
     val navController = LocalNavController.current
+    val scope = rememberCoroutineScope()
 
-    OnResult<IconPickerItem> {
-        Log.d("SelectIconPreference", "result: $it")
-        (context as Activity).finish()
+    OnResult<IconPickerItem> { item ->
+        scope.launch {
+            val repo = IconOverrideRepository.INSTANCE.get(context)
+            repo.setOverride(componentKey, item)
+            val las = LauncherAppState.getInstance(context)
+            val idp = las.invariantDeviceProfile
+            idp.onPreferencesChanged(context.applicationContext)
+            (context as Activity).finish()
+        }
     }
 
     PreferenceLayoutLazyColumn(label = label) {

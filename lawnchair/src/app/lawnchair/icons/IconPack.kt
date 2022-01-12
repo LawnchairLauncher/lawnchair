@@ -36,7 +36,7 @@ abstract class IconPack(
     }
 
     abstract fun getIcon(componentName: ComponentName): IconEntry?
-    abstract fun getCalendar(componentName: ComponentName): CalendarIconEntry?
+    abstract fun getCalendar(componentName: ComponentName): IconEntry?
     abstract fun getClock(entry: IconEntry): ClockMetadata?
 
     abstract fun getCalendars(): MutableSet<ComponentName>

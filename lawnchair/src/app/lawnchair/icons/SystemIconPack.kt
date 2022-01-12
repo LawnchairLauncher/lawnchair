@@ -26,8 +26,8 @@ class SystemIconPack(context: Context) : IconPack(context, "") {
     }
 
     override fun getIcon(componentName: ComponentName) =
-        IconEntry(packPackageName, ComponentKey(componentName, Process.myUserHandle()).toString())
-    override fun getCalendar(componentName: ComponentName): CalendarIconEntry? = null
+        IconEntry(packPackageName, ComponentKey(componentName, Process.myUserHandle()).toString(), IconType.Normal)
+    override fun getCalendar(componentName: ComponentName): IconEntry? = null
     override fun getClock(entry: IconEntry): ClockMetadata? = null
 
     override fun getCalendars(): MutableSet<ComponentName> = mutableSetOf()
@@ -49,7 +49,8 @@ class SystemIconPack(context: Context) : IconPack(context, "") {
                 IconPickerItem(
                     packPackageName = packPackageName,
                     drawableName = key.toString(),
-                    label = info.label.toString()
+                    label = info.label.toString(),
+                    IconType.Normal
                 )
             }
             .sortedBy { it.label.lowercase() }

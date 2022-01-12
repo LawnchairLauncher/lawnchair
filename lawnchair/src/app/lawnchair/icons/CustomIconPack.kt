@@ -6,14 +6,12 @@ import android.content.pm.PackageManager
 import android.content.res.Resources
 import android.content.res.XmlResourceParser
 import android.graphics.drawable.Drawable
-import android.util.Log
 import android.util.Xml
 import com.android.launcher3.R
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.withContext
 import org.xmlpull.v1.XmlPullParser
 import org.xmlpull.v1.XmlPullParserException
 import org.xmlpull.v1.XmlPullParserFactory
@@ -25,7 +23,7 @@ class CustomIconPack(context: Context, packPackageName: String) :
 
     private val packResources = context.packageManager.getResourcesForApplication(packPackageName)
     private val componentMap = mutableMapOf<ComponentName, IconEntry>()
-    private val calendarMap = mutableMapOf<ComponentName, CalendarIconEntry>()
+    private val calendarMap = mutableMapOf<ComponentName, IconEntry>()
     private val clockMap = mutableMapOf<ComponentName, IconEntry>()
     private val clockMetas = mutableMapOf<IconEntry, ClockMetadata>()
 
@@ -79,9 +77,9 @@ class CustomIconPack(context: Context, packPackageName: String) :
                             val parsed = ComponentName.unflattenFromString(componentName)
                             if (parsed != null) {
                                 if (isCalendar) {
-                                    calendarMap[parsed] = CalendarIconEntry(packPackageName, drawableName)
+                                    calendarMap[parsed] = IconEntry(packPackageName, drawableName, IconType.Calendar)
                                 } else {
-                                    componentMap[parsed] = IconEntry(packPackageName, drawableName)
+                                    componentMap[parsed] = IconEntry(packPackageName, drawableName, IconType.Normal)
                                 }
                             }
                         }
@@ -90,7 +88,7 @@ class CustomIconPack(context: Context, packPackageName: String) :
                         val drawableName = parseXml["drawable"]
                         if (drawableName != null) {
                             if (parseXml is XmlResourceParser) {
-                                clockMetas[IconEntry(packPackageName, drawableName)] = ClockMetadata(
+                                clockMetas[IconEntry(packPackageName, drawableName, IconType.Normal)] = ClockMetadata(
                                     parseXml.getAttributeIntValue(null, "hourLayerIndex", -1),
                                     parseXml.getAttributeIntValue(null, "minuteLayerIndex", -1),
                                     parseXml.getAttributeIntValue(null, "secondLayerIndex", -1),
@@ -147,7 +145,7 @@ class CustomIconPack(context: Context, packPackageName: String) :
                         val drawableName = parser["drawable"]!!
                         val resId = getDrawableId(drawableName)
                         if (resId != 0) {
-                            val item = IconPickerItem(packPackageName, drawableName, drawableName)
+                            val item = IconPickerItem(packPackageName, drawableName, drawableName, IconType.Normal)
                             currentItems.add(item)
                         }
                     }
