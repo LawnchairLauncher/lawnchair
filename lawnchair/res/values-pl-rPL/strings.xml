@@ -180,5 +180,5 @@
     <string name="dark_status_bar_label">Ciemny pasek statusu</string>
     <string name="lawnicons_not_installed_description">Lawnikony nie zainstalowane.</string>
     <string name="icon_picker_default_category">Ikony</string>
-    <string name="icon_picker_reset_to_default">Reset to default</string>
+    <string name="icon_picker_reset_to_default">Przywróć domyślne</string>
 </resources>
