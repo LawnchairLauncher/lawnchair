@@ -179,4 +179,5 @@
     <string name="all_apps_device_search_hint">Search</string>
     <string name="dark_status_bar_label">Темний рядок стану</string>
     <string name="lawnicons_not_installed_description">Lawnicons не встановлені.</string>
+    <string name="icon_picker_default_category">Значки</string>
 </resources>
