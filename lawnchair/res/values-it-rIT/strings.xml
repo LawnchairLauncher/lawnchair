@@ -178,4 +178,5 @@
     <string name="dark_status_bar_label">Barra di stato scura</string>
     <string name="lawnicons_not_installed_description">Lawnicons non installato.</string>
     <string name="icon_picker_default_category">Icone</string>
+    <string name="icon_picker_reset_to_default">Reset to default</string>
 </resources>
