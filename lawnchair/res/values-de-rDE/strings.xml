@@ -178,4 +178,5 @@
     <string name="dark_status_bar_label">Dunkle Statusleisten-Symbole</string>
     <string name="lawnicons_not_installed_description">Lawnicons ist nicht installiert.</string>
     <string name="icon_picker_default_category">Symbole</string>
+    <string name="icon_picker_reset_to_default">Reset to default</string>
 </resources>
