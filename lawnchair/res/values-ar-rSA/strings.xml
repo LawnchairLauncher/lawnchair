@@ -182,4 +182,5 @@
     <string name="dark_status_bar_label">شريط الحالة المظلم</string>
     <string name="lawnicons_not_installed_description">لم يتم تثبيت لونكون.</string>
     <string name="icon_picker_default_category">الأيقونات</string>
+    <string name="icon_picker_reset_to_default">Reset to default</string>
 </resources>
