@@ -1,7 +1,9 @@
 package app.lawnchair.ui.preferences
 
+import android.app.Activity
 import android.content.Intent
 import android.content.pm.LauncherApps
+import android.util.Log
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -13,9 +15,11 @@ import androidx.core.graphics.drawable.toBitmap
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
+import app.lawnchair.icons.IconPickerItem
 import app.lawnchair.ui.preferences.components.AppItem
 import app.lawnchair.ui.preferences.components.PreferenceLayoutLazyColumn
 import app.lawnchair.ui.preferences.components.preferenceGroupItems
+import app.lawnchair.ui.util.OnResult
 import com.android.launcher3.util.ComponentKey
 import com.google.accompanist.navigation.animation.composable
 
@@ -50,6 +54,11 @@ fun SelectIconPreference(componentKey: ComponentKey) {
     }
     val iconPacks by LocalPreferenceInteractor.current.iconPacks.collectAsState()
     val navController = LocalNavController.current
+
+    OnResult<IconPickerItem> {
+        Log.d("SelectIconPreference", "result: $it")
+        (context as Activity).finish()
+    }
 
     PreferenceLayoutLazyColumn(label = label) {
         preferenceGroupItems(

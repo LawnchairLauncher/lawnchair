@@ -37,3 +37,18 @@ fun LazyListScope.verticalGridItems(
         }
     }
 }
+
+fun <T> LazyListScope.verticalGridItems(
+    items: List<T>,
+    numColumns: Int,
+    gap: Dp,
+    itemContent: @Composable (index: Int, item: T) -> Unit
+) {
+    verticalGridItems(
+        count = items.size,
+        numColumns = numColumns,
+        gap = gap
+    ) { index ->
+        itemContent(index, items[index])
+    }
+}

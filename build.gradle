@@ -55,6 +55,7 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'com.google.protobuf'
 apply plugin: 'com.google.android.gms.oss-licenses-plugin'
+apply plugin: 'kotlin-parcelize'
 
 final def commitHash = { ->
     final def stdout = new ByteArrayOutputStream()

@@ -4,6 +4,7 @@ import android.content.ComponentName
 import android.content.Context
 import android.graphics.drawable.Drawable
 import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.Flow
 import java.util.concurrent.Semaphore
 
 abstract class IconPack(
@@ -42,6 +43,8 @@ abstract class IconPack(
     abstract fun getClocks(): MutableSet<ComponentName>
 
     abstract fun getIcon(iconEntry: IconEntry, iconDpi: Int): Drawable?
+
+    abstract fun getAllIcons(): Flow<List<IconPickerCategory>>
 
     @Suppress("BlockingMethodInNonBlockingContext")
     protected abstract fun loadInternal()

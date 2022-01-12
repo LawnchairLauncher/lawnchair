@@ -6,11 +6,19 @@ import android.content.pm.PackageManager
 import android.content.res.Resources
 import android.content.res.XmlResourceParser
 import android.graphics.drawable.Drawable
+import android.util.Log
 import android.util.Xml
+import com.android.launcher3.R
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.withContext
 import org.xmlpull.v1.XmlPullParser
 import org.xmlpull.v1.XmlPullParserException
 import org.xmlpull.v1.XmlPullParserFactory
 import java.io.IOException
+import java.lang.Exception
 
 class CustomIconPack(context: Context, packPackageName: String) :
     IconPack(context, packPackageName) {
@@ -109,6 +117,47 @@ class CustomIconPack(context: Context, packPackageName: String) :
             e.printStackTrace()
         }
     }
+
+    @Suppress("BlockingMethodInNonBlockingContext")
+    override fun getAllIcons(): Flow<List<IconPickerCategory>> = flow {
+        val result = mutableListOf<IconPickerCategory>()
+
+        var currentTitle: String? = null
+        val currentItems = mutableListOf<IconPickerItem>()
+
+        suspend fun endCategory() {
+            if (currentItems.isEmpty()) return
+            val title = currentTitle ?: context.getString(R.string.icon_picker_default_category)
+            result.add(IconPickerCategory(title, ArrayList(currentItems)))
+            currentTitle = null
+            currentItems.clear()
+            emit(ArrayList(result))
+        }
+
+        try {
+            val parser = getXml("drawable")
+            while (parser != null && parser.next() != XmlPullParser.END_DOCUMENT) {
+                if (parser.eventType != XmlPullParser.START_TAG) continue
+                when (parser.name) {
+                    "category" -> {
+                        endCategory()
+                        currentTitle = parser["title"]!!
+                    }
+                    "item" -> {
+                        val drawableName = parser["drawable"]!!
+                        val resId = getDrawableId(drawableName)
+                        if (resId != 0) {
+                            val item = IconPickerItem(packPackageName, drawableName, drawableName, resId)
+                            currentItems.add(item)
+                        }
+                    }
+                }
+            }
+            endCategory()
+        } catch (e: Exception) {
+
+        }
+    }.flowOn(Dispatchers.IO)
 
     private fun getDrawableId(name: String) = idCache.getOrPut(name) {
         packResources.getIdentifier(name, "drawable", packPackageName)
