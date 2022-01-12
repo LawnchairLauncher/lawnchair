@@ -64,7 +64,7 @@
     <string name="auto_adaptive_icons_description">Per a totes les icones no Adaptables.</string>
     <string name="support_and_pr">Suport &amp; RRPP</string>
     <string name="workspace_dt2s">Toca dos cops per apagar la pantalla</string>
-    <string name="smart_space_enable">Mostra el Widget \"D\'una ullada\"</string>
+    <string name="smart_space_enable">Giny «D\'una ullada»</string>
     <string name="design_and_development">Disseny &amp; Desenvolupament</string>
     <string name="translate">Tradueix</string>
     <string name="product">Producte</string>
@@ -76,12 +76,12 @@
     </plurals>
     <string name="hotseat_qsb_label">Mostra la Barra de Cerca</string>
     <string name="dt2s_admin_hint_title">Es necessiten permisos d\'administrador</string>
-    <string name="dt2s_admin_hint">Per a utilitzar \"Toca dos cops per apagar la pantalla\", selecciona Lawnchair com a aplicació administradora del dispositiu. Toca \"Obre la Configuració\", i toca \"Activa aquesta aplicació administradora del dispositiu.\"</string>
+    <string name="dt2s_admin_hint">Per a utilitzar «Doble toc per a adormir», selecciona Lawnchair com a aplicació administradora del dispositiu. Toca «Obre la Configuració», i toca «Activa aquesta aplicació administradora del dispositiu»</string>
     <string name="dt2s_admin_warning">\"Toca dos cops per apagar la pantalla\" s\'apagarà.</string>
     <string name="dt2s_a11y_hint_title">Cal activar el Servei d\'Accessibilitat</string>
-    <string name="dt2s_a11y_hint">Per a utilitzar Toca dos \"vegades\" per apagar la pantalla, \"encén\" el servei d\'accessibilitat de Lawnchair. Toca \"Obre la Configuració\", selecciona \"Lawnchair\" i activa \"Utilitza Lawnchair.\"</string>
+    <string name="dt2s_a11y_hint">Per a utilitzar «Doble toc per a adormir», activa el servei d\'accessibilitat de Lawnchair. Toca «Obre la Configuració», selecciona «Lawnchair» i activa «Utilitza Lawnchair».</string>
     <string name="dt2s_warning_open_settings">Obre la configuració</string>
-    <string name="minus_one_enable">Feed</string>
+    <string name="minus_one_enable">Canal de notícies</string>
     <string name="minus_one_unavailable">No hi ha cap Feed instal·lat.</string>
     <string name="fuzzy_search_title">Cerca aproximada</string>
     <string name="fuzzy_search_desc">Aparellament aproximat per a cerques d\'aplicacions.</string>
@@ -91,7 +91,7 @@
     <string name="theme_system_default">Sistema</string>
     <string name="theme_follow_wallpaper">Segueix el Fons de Pantalla</string>
     <string name="quickstep_label">Recents</string>
-    <string name="clear_all_as_action_label">Botó \"Esborrar tot\" al fons</string>
+    <string name="clear_all_as_action_label">Botó «Esborra-ho tot» baix</string>
     <string name="window_corner_radius_label">Radi de cantonada de pantalla</string>
     <string name="override_window_corner_radius_label">Radi de cantonada de pantalla personalitzat</string>
     <string name="window_corner_radius_description">Quan llisques per a obrir Recents, la aplicació actual segueix el teu dit, reduint-se a una tarjeta. Utilitza aquest control lliscant per a ajustar el radi de la cantonada de la tarjeta quan està prop de la pantalla completa, de manera que coincideix amb la teua pantalla.</string>
@@ -138,7 +138,7 @@
     <string name="icon_shape_system">Sistema</string>
     <string name="icon_shape_circle">Cercle</string>
     <string name="icon_shape_rounded_square">Quadrat arrodonit</string>
-    <string name="icon_shape_squircle">Squircle</string>
+    <string name="icon_shape_squircle">Cercle quadrat </string>
     <string name="customize_button_text">Personalitza</string>
     <string name="app_title_label">Títol</string>
     <string name="hide_from_drawer">Oculta del calaix d\'aplicacions</string>
