@@ -180,4 +180,5 @@
     <string name="dark_status_bar_label">Темная строка состояния</string>
     <string name="lawnicons_not_installed_description">Не установлены Lawnicons.</string>
     <string name="icon_picker_default_category">Иконки</string>
+    <string name="icon_picker_reset_to_default">Reset to default</string>
 </resources>
