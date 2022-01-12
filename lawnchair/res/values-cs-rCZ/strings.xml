@@ -180,5 +180,5 @@
     <string name="dark_status_bar_label">Tmavý stavový řádek</string>
     <string name="lawnicons_not_installed_description">Lawnicons nejsou nainstalované.</string>
     <string name="icon_picker_default_category">Ikony</string>
-    <string name="icon_picker_reset_to_default">Reset to default</string>
+    <string name="icon_picker_reset_to_default">Obnovit výchozí</string>
 </resources>
