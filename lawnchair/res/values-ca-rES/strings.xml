@@ -138,7 +138,7 @@
     <string name="icon_shape_system">Sistema</string>
     <string name="icon_shape_circle">Cercle</string>
     <string name="icon_shape_rounded_square">Quadrat arrodonit</string>
-    <string name="icon_shape_squircle">Cercle quadrat </string>
+    <string name="icon_shape_squircle">Quadrat Superellipse</string>
     <string name="customize_button_text">Personalitza</string>
     <string name="app_title_label">Títol</string>
     <string name="hide_from_drawer">Oculta del calaix d\'aplicacions</string>
