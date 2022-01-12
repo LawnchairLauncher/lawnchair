@@ -177,4 +177,5 @@
     <string name="all_apps_device_search_hint">തിരയുക</string>
     <string name="dark_status_bar_label">ഇരുണ്ട സ്റ്റാറ്റസ് ബാർ</string>
     <string name="lawnicons_not_installed_description">ലോൺഐകൺസ് ഇൻസ്റ്റാൾ ചെയ്തിട്ടില്ല.</string>
+    <string name="icon_picker_default_category">ഐക്കണുകൾ</string>
 </resources>
