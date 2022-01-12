@@ -38,6 +38,7 @@ import com.android.launcher3.tapl.Folder;
 import com.android.launcher3.tapl.FolderIcon;
 import com.android.launcher3.tapl.Widgets;
 import com.android.launcher3.tapl.Workspace;
+import com.android.launcher3.util.TestUtil;
 import com.android.launcher3.widget.picker.WidgetsFullSheet;
 import com.android.launcher3.widget.picker.WidgetsRecyclerView;
 
@@ -50,6 +51,7 @@ import org.junit.runner.RunWith;
 @RunWith(AndroidJUnit4.class)
 public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
     private static final String APP_NAME = "LauncherTestApp";
+    private static final String DUMMY_APP_NAME = "Aardwolf";
 
     @Before
     public void setUp() throws Exception {
@@ -432,6 +434,48 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
             Workspace workspace = mLauncher.getWorkspace().deleteAppIcon(appIcon);
             assertNull(appName + " app was found after being deleted from workspace",
                     workspace.tryGetWorkspaceAppIcon(appName));
+        }
+    }
+
+    private void verifyAppUninstalledFromAllApps(Workspace workspace, String appName) {
+        final AllApps allApps = workspace.switchToAllApps();
+        allApps.freeze();
+        try {
+            assertNull(appName + " app was found on all apps after being uninstalled",
+                    allApps.tryGetAppIcon(appName));
+        } finally {
+            allApps.unfreeze();
+        }
+    }
+
+    @Test
+    @PortraitLandscape
+    public void testUninstallFromWorkspace() throws Exception {
+        TestUtil.installDummyApp();
+        try {
+            verifyAppUninstalledFromAllApps(
+                    createShortcutIfNotExist(DUMMY_APP_NAME).uninstall(), DUMMY_APP_NAME);
+        } finally {
+            TestUtil.uninstallDummyApp();
+        }
+    }
+
+    @Test
+    @PortraitLandscape
+    public void testUninstallFromAllApps() throws Exception {
+        TestUtil.installDummyApp();
+        try {
+            Workspace workspace = mLauncher.getWorkspace();
+            final AllApps allApps = workspace.switchToAllApps();
+            allApps.freeze();
+            try {
+                workspace = allApps.getAppIcon(DUMMY_APP_NAME).uninstall();
+            } finally {
+                allApps.unfreeze();
+            }
+            verifyAppUninstalledFromAllApps(workspace, DUMMY_APP_NAME);
+        } finally {
+            TestUtil.uninstallDummyApp();
         }
     }
 
