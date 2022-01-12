@@ -1144,17 +1144,6 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             // Reset the running task when leaving overview since it can still have a reference to
             // its thumbnail
             mTmpRunningTasks = null;
-            // Remove grouped tasks and recycle once we exit overview
-            int taskCount = getTaskViewCount();
-            for (int i = 0; i < taskCount; i++) {
-                View v = getTaskViewAt(i);
-                if (!(v instanceof GroupedTaskView)) {
-                    return;
-                }
-                GroupedTaskView gtv = (GroupedTaskView) v;
-                gtv.onTaskListVisibilityChanged(false);
-                removeView(gtv);
-            }
             mSplitBoundsConfig = null;
         }
         updateLocusId();
@@ -2185,17 +2174,14 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
      */
     protected boolean shouldAddStubTaskView(RunningTaskInfo[] runningTaskInfos) {
         if (runningTaskInfos.length > 1) {
-            // * Always create new view for GroupedTaskView
-            // * Remove existing associated taskViews for tasks currently in split
-            for (RunningTaskInfo rti : runningTaskInfos) {
-                TaskView taskView = getTaskViewByTaskId(rti.taskId);
-                if (taskView == null) {
-                    continue;
-                }
-                taskView.onTaskListVisibilityChanged(false);
-                removeView(taskView);
-            }
-            return true;
+            TaskView primaryTaskView = getTaskViewByTaskId(runningTaskInfos[0].taskId);
+            TaskView secondaryTaskView = getTaskViewByTaskId(runningTaskInfos[1].taskId);
+            int leftTopTaskViewId =
+                    (primaryTaskView == null) ? -1 : primaryTaskView.getTaskViewId();
+            int rightBottomTaskViewId =
+                    (secondaryTaskView == null) ? -1 : secondaryTaskView.getTaskViewId();
+            // Add a new stub view if both taskIds don't match any taskViews
+            return leftTopTaskViewId != rightBottomTaskViewId || leftTopTaskViewId == -1;
         }
         RunningTaskInfo runningTaskInfo = runningTaskInfos[0];
         return runningTaskInfo != null && getTaskViewByTaskId(runningTaskInfo.taskId) == null;
@@ -2246,7 +2232,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             measure(makeMeasureSpec(getMeasuredWidth(), EXACTLY),
                     makeMeasureSpec(getMeasuredHeight(), EXACTLY));
             layout(getLeft(), getTop(), getRight(), getBottom());
-        } else if (!needGroupTaskView && getTaskViewByTaskId(taskInfo.taskId) != null) {
+        } else if (getTaskViewByTaskId(taskInfo.taskId) != null) {
             runningTaskViewId = getTaskViewByTaskId(taskInfo.taskId).getTaskViewId();
         }
 
