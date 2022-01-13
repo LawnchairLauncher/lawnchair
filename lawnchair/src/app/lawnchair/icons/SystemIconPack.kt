@@ -53,10 +53,6 @@ class SystemIconPack(context: Context) : IconPack(context, "") {
                     IconType.Normal
                 )
             }
-            .sortedBy { it.label.lowercase() }
-        emit(listOf(IconPickerCategory(
-            title = context.getString(R.string.icon_picker_default_category),
-            items = items
-        )))
+        emit(categorize(items))
     }.flowOn(Dispatchers.IO)
 }

@@ -3,6 +3,7 @@ package app.lawnchair.icons
 import android.content.ComponentName
 import android.content.Context
 import android.graphics.drawable.Drawable
+import com.android.launcher3.compat.AlphabeticIndexCompat
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
 import java.util.concurrent.Semaphore
@@ -15,6 +16,8 @@ abstract class IconPack(
     private val deferredLoad: Deferred<Unit>
 
     abstract val label: String
+
+    private val alphabeticIndexCompat by lazy { AlphabeticIndexCompat(context) }
 
     init {
         deferredLoad = scope.async(Dispatchers.IO) {
@@ -48,6 +51,30 @@ abstract class IconPack(
 
     @Suppress("BlockingMethodInNonBlockingContext")
     protected abstract fun loadInternal()
+
+    protected fun removeDuplicates(items: List<IconPickerItem>): List<IconPickerItem> {
+        var previous = ""
+        val filtered = ArrayList<IconPickerItem>()
+        items.sortedBy { it.drawableName }.forEach {
+            if (it.drawableName != previous) {
+                previous = it.drawableName
+                filtered.add(it)
+            }
+        }
+        return filtered
+    }
+
+    protected fun categorize(allItems: List<IconPickerItem>): List<IconPickerCategory> {
+        return allItems
+            .groupBy { alphabeticIndexCompat.computeSectionName(it.label) }
+            .map { (sectionName, items) ->
+                IconPickerCategory(
+                    title = sectionName,
+                    items = items
+                )
+            }
+            .sortedBy { it.title }
+    }
 
     companion object {
         private val scope = CoroutineScope(Dispatchers.IO) + CoroutineName("IconPack")
