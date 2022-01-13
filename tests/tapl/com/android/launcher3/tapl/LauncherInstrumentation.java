@@ -864,7 +864,7 @@ public final class LauncherInstrumentation {
 
                     swipeToState(
                             displaySize.x / 2, displaySize.y - 1,
-                            displaySize.x / 2, 0,
+                            displaySize.x / 2, displaySize.y / 2,
                             ZERO_BUTTON_STEPS_FROM_BACKGROUND_TO_HOME, NORMAL_STATE_ORDINAL,
                             gestureStartFromLauncher ? GestureScope.INSIDE_TO_OUTSIDE
                                     : GestureScope.OUTSIDE_WITH_PILFER);
