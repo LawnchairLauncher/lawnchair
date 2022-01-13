@@ -181,4 +181,5 @@
     <string name="lawnicons_not_installed_description">Lawnicons не встановлені.</string>
     <string name="icon_picker_default_category">Значки</string>
     <string name="icon_picker_reset_to_default">Відновити параметри</string>
+    <string name="icon_pack_external_picker">Open external picker</string>
 </resources>
