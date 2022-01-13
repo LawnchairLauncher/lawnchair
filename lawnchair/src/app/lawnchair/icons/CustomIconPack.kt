@@ -2,6 +2,7 @@ package app.lawnchair.icons
 
 import android.content.ComponentName
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.Resources
 import android.content.res.XmlResourceParser
@@ -56,6 +57,13 @@ class CustomIconPack(context: Context, packPackageName: String) :
         } catch (e: Resources.NotFoundException) {
             null
         }
+    }
+
+    fun createFromExternalPicker(icon: Intent.ShortcutIconResource): IconPickerItem? {
+        val id = packResources.getIdentifier(icon.resourceName, null, null)
+        if (id == 0) return null
+        val simpleName = packResources.getResourceEntryName(id)
+        return IconPickerItem(packPackageName, simpleName, simpleName, IconType.Normal)
     }
 
     override fun loadInternal() {

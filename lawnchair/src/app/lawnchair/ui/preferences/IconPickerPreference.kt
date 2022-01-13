@@ -1,7 +1,12 @@
 package app.lawnchair.ui.preferences
 
+import android.content.Intent
+import android.content.pm.LauncherApps
 import android.graphics.drawable.Drawable
+import android.os.Process
 import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
@@ -9,22 +14,24 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.core.content.getSystemService
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
-import app.lawnchair.icons.IconPack
-import app.lawnchair.icons.IconPackProvider
-import app.lawnchair.icons.IconPickerItem
-import app.lawnchair.icons.filter
+import app.lawnchair.icons.*
+import app.lawnchair.ui.OverflowMenu
 import app.lawnchair.ui.preferences.components.*
 import app.lawnchair.ui.util.resultSender
+import com.android.launcher3.R
 import com.google.accompanist.drawablepainter.rememberDrawablePainter
 import com.google.accompanist.insets.ui.LocalScaffoldPadding
 import com.google.accompanist.navigation.animation.composable
@@ -67,6 +74,18 @@ fun IconPickerPreference(packageName: String) {
     var searchQuery by remember { mutableStateOf("") }
     val onClickItem = resultSender<IconPickerItem>()
 
+    val pickerComponent = remember {
+        val launcherApps = context.getSystemService<LauncherApps>()!!
+        launcherApps
+            .getActivityList(iconPack.packPackageName, Process.myUserHandle()).firstOrNull()?.componentName
+    }
+    val pickerLauncher = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+        val icon = it.data?.getParcelableExtra<Intent.ShortcutIconResource>(
+            Intent.EXTRA_SHORTCUT_ICON_RESOURCE) ?: return@rememberLauncherForActivityResult
+        val entry = (iconPack as CustomIconPack).createFromExternalPicker(icon) ?: return@rememberLauncherForActivityResult
+        onClickItem(entry)
+    }
+
     PreferenceSearchScaffold(
         searchInput = {
             SearchTextField(
@@ -76,7 +95,22 @@ fun IconPickerPreference(packageName: String) {
                 placeholder = { Text(iconPack.label) },
                 singleLine = true
             )
-        }
+        },
+        actions = {
+            if (pickerComponent != null) {
+                OverflowMenu {
+                    DropdownMenuItem(onClick = {
+                        val intent = Intent("com.novalauncher.THEME")
+                            .addCategory("com.novalauncher.category.CUSTOM_ICON_PICKER")
+                            .setComponent(pickerComponent)
+                        pickerLauncher.launch(intent)
+                        hideMenu()
+                    }) {
+                        Text(text = stringResource(id = R.string.icon_pack_external_picker))
+                    }
+                }
+            }
+        },
     ) {
         val scaffoldPadding = LocalScaffoldPadding.current
         val innerPadding = remember { MutablePaddingValues() }
