@@ -133,23 +133,25 @@ public class LauncherPreviewRenderer extends ContextWrapper
             mObjectMap.put(InvariantDeviceProfile.INSTANCE, idp);
             mObjectMap.put(LauncherAppState.INSTANCE,
                     new LauncherAppState(this, null /* iconCacheFileName */));
-
         }
 
-        public LauncherIcons newLauncherIcons(Context context, boolean shapeDetection) {
+        /**
+         * Creates a new LauncherIcons for the preview, skipping the global pool
+         */
+        public LauncherIcons newLauncherIcons(Context context) {
             LauncherIconsForPreview launcherIconsForPreview = mIconPool.poll();
             if (launcherIconsForPreview != null) {
                 return launcherIconsForPreview;
             }
             return new LauncherIconsForPreview(context, mIdp.fillResIconDpi, mIdp.iconBitmapSize,
-                    -1 /* poolId */, shapeDetection);
+                    -1 /* poolId */);
         }
 
         private final class LauncherIconsForPreview extends LauncherIcons {
 
             private LauncherIconsForPreview(Context context, int fillResIconDpi, int iconBitmapSize,
-                    int poolId, boolean shapeDetection) {
-                super(context, fillResIconDpi, iconBitmapSize, poolId, shapeDetection);
+                    int poolId) {
+                super(context, fillResIconDpi, iconBitmapSize, poolId);
             }
 
             @Override
