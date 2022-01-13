@@ -178,4 +178,5 @@
     <string name="lawnicons_not_installed_description">Lawnicons가 설치되지 않았습니다.</string>
     <string name="icon_picker_default_category">아이콘</string>
     <string name="icon_picker_reset_to_default">기본값으로 초기화하기</string>
+    <string name="icon_pack_external_picker">Open external picker</string>
 </resources>
