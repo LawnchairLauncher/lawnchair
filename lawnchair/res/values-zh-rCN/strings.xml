@@ -178,4 +178,5 @@
     <string name="lawnicons_not_installed_description">未安装 Lawnicons 应用</string>
     <string name="icon_picker_default_category">图标</string>
     <string name="icon_picker_reset_to_default">重置为默认</string>
+    <string name="icon_pack_external_picker">Open external picker</string>
 </resources>
