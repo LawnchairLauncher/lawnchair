@@ -143,6 +143,10 @@ public class TaskbarNavButtonController {
                 return R.string.taskbar_button_ime_switcher;
             case BUTTON_RECENTS:
                 return R.string.taskbar_button_recents;
+            case BUTTON_NOTIFICATIONS:
+                return R.string.taskbar_button_notifications;
+            case BUTTON_QUICK_SETTINGS:
+                return R.string.taskbar_button_quick_settings;
             default:
                 return 0;
         }

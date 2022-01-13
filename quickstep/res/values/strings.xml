@@ -246,6 +246,10 @@
     <string name="taskbar_button_ime_switcher">IME switcher</string>
     <!-- Content description for recents button [CHAR_LIMIT=16] -->
     <string name="taskbar_button_recents">Recents</string>
+    <!-- Content description for notifications button [CHAR_LIMIT=16] -->
+    <string name="taskbar_button_notifications">Notifications</string>
+    <!-- Content description for quick settings button [CHAR_LIMIT=16] -->
+    <string name="taskbar_button_quick_settings">Quick Settings</string>
 
     <!-- Label for moving drop target to the top or left side of the screen, depending on orientation (from the taskbar only). -->
     <string name="move_drop_target_top_or_left">Move to top&#47;left</string>
