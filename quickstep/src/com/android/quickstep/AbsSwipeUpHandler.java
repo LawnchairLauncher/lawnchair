@@ -428,6 +428,10 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
                 mAnimationFactory = mActivityInterface.prepareRecentsUI(mDeviceState,
                         mWasLauncherAlreadyVisible, this::onAnimatorPlaybackControllerCreated);
                 maybeUpdateRecentsAttachedState(false /* animate */);
+                if (mGestureState.getEndTarget() != null) {
+                    // Update the end target in case the gesture ended before we init.
+                    mAnimationFactory.setEndTarget(mGestureState.getEndTarget());
+                }
             };
             if (mWasLauncherAlreadyVisible) {
                 // Launcher is visible, but might be about to stop. Thus, if we prepare recents
@@ -976,6 +980,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
                 isFling, isCancel);
         // Set the state, but don't notify until the animation completes
         mGestureState.setEndTarget(endTarget, false /* isAtomic */);
+        mAnimationFactory.setEndTarget(endTarget);
 
         float endShift = endTarget.isLauncher ? 1 : 0;
         final float startShift;
@@ -1360,7 +1365,9 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
             mActivity.clearRunOnceOnStartCallback();
             resetLauncherListeners();
         }
-        if (mGestureState.getEndTarget() != null && !mGestureState.isRunningAnimationToLauncher()) {
+        if (mGestureState.isRecentsAnimationRunning() && mGestureState.getEndTarget() != null
+                && !mGestureState.getEndTarget().isLauncher) {
+            // Continued quick switch.
             cancelCurrentAnimation();
         } else {
             mStateCallback.setStateOnUiThread(STATE_FINISH_WITH_NO_END);
