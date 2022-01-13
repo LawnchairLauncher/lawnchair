@@ -29,8 +29,9 @@ class CustomIconPack(context: Context, packPackageName: String) :
 
     private val idCache = mutableMapOf<String, Int>()
 
-    private var _label: String = ""
-    override val label get() = _label
+    override val label = context.packageManager.let { pm ->
+        pm.getApplicationInfo(packPackageName, 0).loadLabel(pm).toString()
+    }
 
     override fun getIcon(componentName: ComponentName) = componentMap[componentName]
     override fun getCalendar(componentName: ComponentName) = calendarMap[componentName]
@@ -54,8 +55,6 @@ class CustomIconPack(context: Context, packPackageName: String) :
     }
 
     override fun loadInternal() {
-        val pm = context.packageManager
-        _label = pm.getApplicationInfo(packPackageName, 0).loadLabel(pm).toString()
         val parseXml = getXml("appfilter") ?: return
         val compStart = "ComponentInfo{"
         val compStartLength = compStart.length
@@ -118,6 +117,8 @@ class CustomIconPack(context: Context, packPackageName: String) :
 
     @Suppress("BlockingMethodInNonBlockingContext")
     override fun getAllIcons(): Flow<List<IconPickerCategory>> = flow {
+        load()
+
         val result = mutableListOf<IconPickerCategory>()
 
         var currentTitle: String? = null

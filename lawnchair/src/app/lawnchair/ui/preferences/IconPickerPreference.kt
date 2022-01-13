@@ -19,16 +19,17 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
-import app.lawnchair.icons.*
+import app.lawnchair.icons.IconPack
+import app.lawnchair.icons.IconPackProvider
+import app.lawnchair.icons.IconPickerItem
+import app.lawnchair.icons.filter
 import app.lawnchair.ui.preferences.components.*
 import app.lawnchair.ui.util.resultSender
-import app.lawnchair.util.value
 import com.google.accompanist.drawablepainter.rememberDrawablePainter
 import com.google.accompanist.insets.ui.LocalScaffoldPadding
 import com.google.accompanist.navigation.animation.composable
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.util.*
 
 @ExperimentalAnimationApi
 fun NavGraphBuilder.iconPickerGraph(route: String) {
@@ -51,8 +52,11 @@ fun NavGraphBuilder.iconPickerGraph(route: String) {
 @ExperimentalAnimationApi
 @Composable
 fun IconPickerPreference(packageName: String) {
-    val optionalIconPack = loadIconPack(packPackageName = packageName)
-    if (optionalIconPack?.isPresent == false) {
+    val context = LocalContext.current
+    val iconPack = remember {
+        IconPackProvider.INSTANCE.get(context).getIconPackOrSystem(packageName)
+    }
+    if (iconPack == null) {
         val backDispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
         SideEffect {
             backDispatcher?.onBackPressed()
@@ -60,9 +64,7 @@ fun IconPickerPreference(packageName: String) {
         return
     }
 
-    val iconPack = optionalIconPack?.value
     var searchQuery by remember { mutableStateOf("") }
-
     val onClickItem = resultSender<IconPickerItem>()
 
     PreferenceSearchScaffold(
@@ -71,7 +73,7 @@ fun IconPickerPreference(packageName: String) {
                 value = searchQuery,
                 onValueChange = { searchQuery = it },
                 modifier = Modifier.fillMaxSize(),
-                placeholder = { Text(iconPack?.label ?: "") },
+                placeholder = { Text(iconPack.label) },
                 singleLine = true
             )
         }
@@ -86,16 +88,14 @@ fun IconPickerPreference(packageName: String) {
         val topPadding = scaffoldPadding.calculateTopPadding()
 
         CompositionLocalProvider(LocalScaffoldPadding provides innerPadding) {
-            if (iconPack != null) {
-                IconPickerGrid(
-                    iconPack = iconPack,
-                    searchQuery = searchQuery,
-                    onClickItem = onClickItem,
-                    modifier = Modifier
-                        .padding(horizontal = 16.dp)
-                        .padding(top = topPadding)
-                )
-            }
+            IconPickerGrid(
+                iconPack = iconPack,
+                searchQuery = searchQuery,
+                onClickItem = onClickItem,
+                modifier = Modifier
+                    .padding(horizontal = 16.dp)
+                    .padding(top = topPadding)
+            )
         }
         Spacer(
             modifier = Modifier
@@ -173,14 +173,4 @@ fun IconPreview(
                 onClick = onClick
             )
     )
-}
-
-@Composable
-fun loadIconPack(packPackageName: String): Optional<IconPack>? {
-    val context = LocalContext.current
-    return produceState<Optional<IconPack>?>(initialValue = null) {
-        val iconPack = IconPackProvider.INSTANCE.get(context).getIconPackOrSystem(packPackageName)
-        iconPack?.load()
-        value = Optional.ofNullable(iconPack)
-    }.value
 }
