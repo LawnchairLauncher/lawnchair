@@ -2783,6 +2783,8 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             }
         }
 
+        announceForAccessibility(getResources().getString(R.string.task_view_closed));
+
         float dismissTranslationInterpolationEnd = 1;
         boolean closeGapBetweenClearAll = false;
         boolean isClearAllHidden = isClearAllHidden();
