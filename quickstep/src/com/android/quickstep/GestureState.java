@@ -20,6 +20,7 @@ import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_HOME;
 import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_OVERVIEW;
 import static com.android.quickstep.MultiStateCallback.DEBUG_STATES;
 
+import android.annotation.Nullable;
 import android.annotation.TargetApi;
 import android.app.ActivityManager;
 import android.content.Intent;
@@ -397,11 +398,15 @@ public class GestureState implements RecentsAnimationCallbacks.RecentsAnimationL
      * while STATE_RECENTS_ANIMATION_CANCELED state is being set, and the caller is responsible for
      * calling {@link RecentsAnimationController#cleanupScreenshot()}.
      */
+    @Nullable
     HashMap<Integer, ThumbnailData> consumeRecentsAnimationCanceledSnapshot() {
-        HashMap<Integer, ThumbnailData> data =
-                new HashMap<Integer, ThumbnailData>(mRecentsAnimationCanceledSnapshots);
-        mRecentsAnimationCanceledSnapshots = null;
-        return data;
+        if (mRecentsAnimationCanceledSnapshots != null) {
+            HashMap<Integer, ThumbnailData> data =
+                    new HashMap<Integer, ThumbnailData>(mRecentsAnimationCanceledSnapshots);
+            mRecentsAnimationCanceledSnapshots = null;
+            return data;
+        }
+        return null;
     }
 
     void setSwipeUpStartTimeMs(long uptimeMs) {
