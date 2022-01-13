@@ -134,31 +134,6 @@ public class Background extends LauncherInstrumentation.VisibleContainer {
                 break;
             }
 
-            case TWO_BUTTON: {
-                final int startX;
-                final int startY;
-                final int endX;
-                final int endY;
-                final int swipeLength = mLauncher.getTestInfo(getSwipeHeightRequestName()).
-                        getInt(TestProtocol.TEST_INFO_RESPONSE_FIELD) + mLauncher.getTouchSlop();
-
-                if (mLauncher.getDevice().isNaturalOrientation()) {
-                    startX = endX = mLauncher.getDevice().getDisplayWidth() / 2;
-                    startY = getSwipeStartY();
-                    endY = startY - swipeLength;
-                } else {
-                    startX = getSwipeStartX();
-                    // TODO(b/184059820) make horizontal swipe use swipe width not height, for the
-                    // moment just double the swipe length.
-                    endX = startX - swipeLength * 2;
-                    startY = endY = mLauncher.getDevice().getDisplayHeight() / 2;
-                }
-
-                mLauncher.swipeToState(startX, startY, endX, endY, 10, OVERVIEW_STATE_ORDINAL,
-                        LauncherInstrumentation.GestureScope.OUTSIDE_WITH_PILFER);
-                break;
-            }
-
             case THREE_BUTTON:
                 if (mLauncher.isTablet()) {
                     mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN,
@@ -253,11 +228,7 @@ public class Background extends LauncherInstrumentation.VisibleContainer {
                      "want to quick switch to the previous app")) {
             verifyActiveContainer();
             final boolean launcherWasVisible = mLauncher.isLauncherVisible();
-            boolean transposeInLandscape = false;
             switch (mLauncher.getNavigationModel()) {
-                case TWO_BUTTON:
-                    transposeInLandscape = true;
-                    // Fall through, zero button and two button modes behave the same.
                 case ZERO_BUTTON: {
                     final int startX;
                     final int startY;
@@ -265,33 +236,17 @@ public class Background extends LauncherInstrumentation.VisibleContainer {
                     final int endY;
                     final int cornerRadius = (int) Math.ceil(mLauncher.getWindowCornerRadius());
                     if (toRight) {
-                        if (mLauncher.getDevice().isNaturalOrientation() || !transposeInLandscape) {
-                            // Swipe from the bottom left to the bottom right of the screen.
-                            startX = cornerRadius;
-                            startY = getSwipeStartY();
-                            endX = mLauncher.getDevice().getDisplayWidth() - cornerRadius;
-                            endY = startY;
-                        } else {
-                            // Swipe from the bottom right to the top right of the screen.
-                            startX = getSwipeStartX();
-                            startY = mLauncher.getRealDisplaySize().y - 1 - cornerRadius;
-                            endX = startX;
-                            endY = cornerRadius;
-                        }
+                        // Swipe from the bottom left to the bottom right of the screen.
+                        startX = cornerRadius;
+                        startY = getSwipeStartY();
+                        endX = mLauncher.getDevice().getDisplayWidth() - cornerRadius;
+                        endY = startY;
                     } else {
-                        if (mLauncher.getDevice().isNaturalOrientation() || !transposeInLandscape) {
-                            // Swipe from the bottom right to the bottom left of the screen.
-                            startX = mLauncher.getDevice().getDisplayWidth() - cornerRadius;
-                            startY = getSwipeStartY();
-                            endX = cornerRadius;
-                            endY = startY;
-                        } else {
-                            // Swipe from the bottom left to the top left of the screen.
-                            startX = getSwipeStartX();
-                            startY = cornerRadius;
-                            endX = startX;
-                            endY = mLauncher.getRealDisplaySize().y - 1 - cornerRadius;
-                        }
+                        // Swipe from the bottom right to the bottom left of the screen.
+                        startX = mLauncher.getDevice().getDisplayWidth() - cornerRadius;
+                        startY = getSwipeStartY();
+                        endX = cornerRadius;
+                        endY = startY;
                     }
 
                     final boolean isZeroButton = mLauncher.getNavigationModel()
