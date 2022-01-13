@@ -179,4 +179,5 @@
     <string name="lawnicons_not_installed_description">Lawnicons not installed.</string>
     <string name="icon_picker_default_category">చిహ్నాలు</string>
     <string name="icon_picker_reset_to_default">Reset to default</string>
+    <string name="icon_pack_external_picker">Open external picker</string>
 </resources>
