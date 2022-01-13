@@ -1,6 +1,9 @@
 package app.lawnchair.override
 
+import android.app.Activity
 import android.graphics.drawable.Drawable
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -96,11 +99,17 @@ fun CustomizeDialog(
 fun CustomizeAppDialog(
     icon: Drawable,
     defaultTitle: String,
-    componentKey: ComponentKey
+    componentKey: ComponentKey,
+    onClose: () -> Unit
 ) {
     val prefs = preferenceManager()
     val context = LocalContext.current
     var title by remember { mutableStateOf("") }
+
+    val request = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+        if (it.resultCode != Activity.RESULT_OK) return@rememberLauncherForActivityResult
+        onClose()
+    }
 
     DisposableEffect(key1 = null) {
         title = prefs.customAppName[componentKey] ?: defaultTitle
@@ -127,7 +136,7 @@ fun CustomizeAppDialog(
         launchSelectIcon = {
             if (prefs.enableIconSelection.get()) {
                 val destination = "/${Routes.SELECT_ICON}/$componentKey/"
-                context.startActivity(PreferenceActivity.createIntent(context, destination))
+                request.launch(PreferenceActivity.createIntent(context, destination))
             }
         }
     ) {

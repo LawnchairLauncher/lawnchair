@@ -62,7 +62,10 @@ fun SelectIconPreference(componentKey: ComponentKey) {
     OnResult<IconPickerItem> { item ->
         scope.launch {
             repo.setOverride(componentKey, item)
-            (context as Activity).finish()
+            (context as Activity).let {
+                it.setResult(Activity.RESULT_OK)
+                it.finish()
+            }
         }
     }
 
@@ -77,7 +80,10 @@ fun SelectIconPreference(componentKey: ComponentKey) {
                     onClick = {
                         scope.launch {
                             repo.deleteOverride(componentKey)
-                            (context as Activity).finish()
+                            (context as Activity).let {
+                                it.setResult(Activity.RESULT_OK)
+                                it.finish()
+                            }
                         }
                     }
                 )

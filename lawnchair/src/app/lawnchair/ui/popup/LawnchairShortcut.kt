@@ -50,7 +50,8 @@ class LawnchairShortcut {
                 CustomizeAppDialog(
                     icon = icon,
                     defaultTitle = defaultTitle,
-                    componentKey = key
+                    componentKey = key,
+                    onClose = { close(true) }
                 )
             }
         }
