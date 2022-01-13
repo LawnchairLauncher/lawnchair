@@ -179,4 +179,5 @@
     <string name="lawnicons_not_installed_description">Lawnicons ist nicht installiert.</string>
     <string name="icon_picker_default_category">Symbole</string>
     <string name="icon_picker_reset_to_default">Zurücksetzen auf Standard</string>
+    <string name="icon_pack_external_picker">Open external picker</string>
 </resources>
