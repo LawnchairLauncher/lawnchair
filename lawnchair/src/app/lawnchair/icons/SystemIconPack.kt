@@ -25,6 +25,10 @@ class SystemIconPack(context: Context) : IconPack(context, "") {
             .associateBy { ComponentKey(it.componentName, it.user) }
     }
 
+    init {
+        startLoad()
+    }
+
     override fun getIcon(componentName: ComponentName) =
         IconEntry(packPackageName, ComponentKey(componentName, Process.myUserHandle()).toString(), IconType.Normal)
     override fun getCalendar(componentName: ComponentName): IconEntry? = null

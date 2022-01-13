@@ -33,6 +33,10 @@ class CustomIconPack(context: Context, packPackageName: String) :
         pm.getApplicationInfo(packPackageName, 0).loadLabel(pm).toString()
     }
 
+    init {
+        startLoad()
+    }
+
     override fun getIcon(componentName: ComponentName) = componentMap[componentName]
     override fun getCalendar(componentName: ComponentName) = calendarMap[componentName]
     override fun getClock(entry: IconEntry) = clockMetas[entry]

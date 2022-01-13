@@ -13,13 +13,13 @@ abstract class IconPack(
     val packPackageName: String,
 ) {
     private var waiter: Semaphore? = Semaphore(0)
-    private val deferredLoad: Deferred<Unit>
+    private lateinit var deferredLoad: Deferred<Unit>
 
     abstract val label: String
 
     private val alphabeticIndexCompat by lazy { AlphabeticIndexCompat(context) }
 
-    init {
+    protected fun startLoad() {
         deferredLoad = scope.async(Dispatchers.IO) {
             loadInternal()
             waiter?.release()
