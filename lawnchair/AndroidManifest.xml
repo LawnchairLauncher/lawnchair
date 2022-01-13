@@ -42,7 +42,8 @@
             android:autoRemoveFromRecents="true"
             android:label="@string/settings_button_text"
             android:theme="@style/Theme.Lawnchair"
-            android:exported="true">
+            android:exported="true"
+            android:windowSoftInputMode="adjustResize">
             <intent-filter android:priority="1">
                 <action android:name="android.intent.action.APPLICATION_PREFERENCES" />
                 <category android:name="android.intent.category.DEFAULT" />

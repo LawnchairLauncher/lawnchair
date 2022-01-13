@@ -79,16 +79,7 @@ fun PreferenceSearchScaffold(
                 }
             }
         },
-        bottomBar = {
-            Spacer(
-                Modifier
-                    .navigationBarsHeight()
-                    .fillMaxWidth()
-                    .addIf(navigationMode() != SysUINavigationMode.Mode.NO_BUTTON) {
-                        background(color = MaterialTheme.colors.background.copy(alpha = 0.9f))
-                    }
-            )
-        },
+        bottomBar = { BottomSpacer() },
         contentPadding = rememberInsetsPaddingValues(
             insets = LocalWindowInsets.current.systemBars,
             applyTop = false,
