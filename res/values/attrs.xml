@@ -187,6 +187,10 @@
         <attr name="minCellHeight" format="float" />
         <attr name="minCellWidth" format="float" />
         <!-- defaults to minCellHeight, if not specified -->
+        <attr name="minCellHeightLandscape" format="float" />
+        <!-- defaults to minCellWidth, if not specified -->
+        <attr name="minCellWidthLandscape" format="float" />
+        <!-- defaults to minCellHeight, if not specified -->
         <attr name="minCellHeightTwoPanelPortrait" format="float" />
         <!-- defaults to minCellWidth, if not specified -->
         <attr name="minCellWidthTwoPanelPortrait" format="float" />
@@ -244,6 +248,8 @@
         <!-- defaults to borderSpaceDps, if not specified -->
         <attr name="hotseatBorderSpace" format="float" />
         <!-- defaults to hotseatBorderSpace, if not specified -->
+        <attr name="hotseatBorderSpaceLandscape" format="float" />
+        <!-- defaults to hotseatBorderSpace, if not specified -->
         <attr name="hotseatBorderSpaceTwoPanelLandscape" format="float" />
         <!-- defaults to hotseatBorderSpace, if not specified -->
         <attr name="hotseatBorderSpaceTwoPanelPortrait" format="float" />
@@ -269,6 +275,8 @@
 
         <!-- Margin on left and right of the workspace when GridDisplayOption#isScalable is true -->
         <attr name="horizontalMargin" format="float"/>
+        <!-- defaults to horizontalMargin if not specified -->
+        <attr name="horizontalMarginLandscape" format="float"/>
         <!-- defaults to horizontalMargin if not specified -->
         <attr name="horizontalMarginTwoPanelLandscape" format="float"/>
         <!-- defaults to horizontalMargin if not specified -->

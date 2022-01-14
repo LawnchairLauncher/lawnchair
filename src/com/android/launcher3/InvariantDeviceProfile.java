@@ -794,6 +794,11 @@ public class InvariantDeviceProfile {
             x = a.getFloat(R.styleable.ProfileDisplayOption_minCellWidth, 0);
             y = a.getFloat(R.styleable.ProfileDisplayOption_minCellHeight, 0);
             minCellSize[INDEX_DEFAULT] = new PointF(x, y);
+
+            x = a.getFloat(R.styleable.ProfileDisplayOption_minCellWidthLandscape,
+                    minCellSize[INDEX_DEFAULT].x);
+            y = a.getFloat(R.styleable.ProfileDisplayOption_minCellHeightLandscape,
+                    minCellSize[INDEX_DEFAULT].y);
             minCellSize[INDEX_LANDSCAPE] = new PointF(x, y);
 
             x = a.getFloat(R.styleable.ProfileDisplayOption_minCellWidthTwoPanelPortrait,
@@ -896,7 +901,9 @@ public class InvariantDeviceProfile {
 
             horizontalMargin[INDEX_DEFAULT] = a.getFloat(
                     R.styleable.ProfileDisplayOption_horizontalMargin, 0);
-            horizontalMargin[INDEX_LANDSCAPE] = horizontalMargin[INDEX_DEFAULT];
+            horizontalMargin[INDEX_LANDSCAPE] = a.getFloat(
+                    R.styleable.ProfileDisplayOption_horizontalMarginLandscape,
+                    horizontalMargin[INDEX_DEFAULT]);
             horizontalMargin[INDEX_TWO_PANEL_LANDSCAPE] = a.getFloat(
                     R.styleable.ProfileDisplayOption_horizontalMarginTwoPanelLandscape,
                     horizontalMargin[INDEX_DEFAULT]);
@@ -906,7 +913,9 @@ public class InvariantDeviceProfile {
 
             hotseatBorderSpaces[INDEX_DEFAULT] = a.getFloat(
                     R.styleable.ProfileDisplayOption_hotseatBorderSpace, borderSpace);
-            hotseatBorderSpaces[INDEX_LANDSCAPE] = hotseatBorderSpaces[INDEX_DEFAULT];
+            hotseatBorderSpaces[INDEX_LANDSCAPE] = a.getFloat(
+                    R.styleable.ProfileDisplayOption_hotseatBorderSpaceLandscape,
+                    hotseatBorderSpaces[INDEX_DEFAULT]);
             hotseatBorderSpaces[INDEX_TWO_PANEL_LANDSCAPE] = a.getFloat(
                     R.styleable.ProfileDisplayOption_hotseatBorderSpaceTwoPanelLandscape,
                     hotseatBorderSpaces[INDEX_DEFAULT]);
