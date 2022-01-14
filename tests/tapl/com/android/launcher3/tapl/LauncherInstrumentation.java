@@ -430,12 +430,13 @@ public final class LauncherInstrumentation {
             {
                 final StringBuilder sb = new StringBuilder();
 
-                UiObject2 object = mDevice.findObject(By.res("android", "alertTitle"));
+                UiObject2 object =
+                        mDevice.findObject(By.res("android", "alertTitle").pkg("android"));
                 if (object != null) {
                     sb.append("TITLE: ").append(object.getText());
                 }
 
-                object = mDevice.findObject(By.res("android", "message"));
+                object = mDevice.findObject(By.res("android", "message").pkg("android"));
                 if (object != null) {
                     sb.append(" PACKAGE: ").append(object.getApplicationPackage())
                             .append(" MESSAGE: ").append(object.getText());
