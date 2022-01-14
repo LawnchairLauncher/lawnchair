@@ -174,6 +174,7 @@ public class DeviceProfile {
     public int allAppsIconSizePx;
     public int allAppsIconDrawablePaddingPx;
     public int allAppsLeftRightPadding;
+    public int allAppsLeftRightMargin;
     public final int numShownAllAppsColumns;
     public float allAppsIconTextSizePx;
 
@@ -595,11 +596,16 @@ public class DeviceProfile {
                 + textHeight + (topBottomPadding * 2);
     }
 
-    private void updateAllAppsWidth() {
-        if (isTwoPanels) {
+    private void updateAllAppsWidth(Resources res) {
+
+        if (isTablet) {
+            allAppsLeftRightPadding =
+                    res.getDimensionPixelSize(R.dimen.all_apps_bottom_sheet_horizontal_padding)
+                            + cellLayoutPaddingLeftRightPx;
             int usedWidth = (allAppsCellWidthPx * numShownAllAppsColumns)
-                    + (allAppsBorderSpacePx.x * (numShownAllAppsColumns + 1));
-            allAppsLeftRightPadding = Math.max(1, (availableWidthPx - usedWidth) / 2);
+                    + (allAppsBorderSpacePx.x * (numShownAllAppsColumns + 1))
+                    + allAppsLeftRightPadding * 2;
+            allAppsLeftRightMargin = Math.max(1, (availableWidthPx - usedWidth) / 2);
         } else {
             allAppsLeftRightPadding =
                     desiredWorkspaceHorizontalMarginPx + cellLayoutPaddingLeftRightPx;
@@ -709,7 +715,7 @@ public class DeviceProfile {
             allAppsCellHeightPx = getCellSize().y;
         }
         allAppsCellWidthPx = allAppsIconSizePx + (2 * allAppsIconDrawablePaddingPx);
-        updateAllAppsWidth();
+        updateAllAppsWidth(res);
 
         if (isVerticalLayout) {
             hideWorkspaceLabelsIfNotEnoughSpace();
@@ -1102,7 +1108,10 @@ public class DeviceProfile {
         writer.println(prefix + pxToDpStr("allAppsIconDrawablePaddingPx",
                 allAppsIconDrawablePaddingPx));
         writer.println(prefix + pxToDpStr("allAppsCellHeightPx", allAppsCellHeightPx));
+        writer.println(prefix + pxToDpStr("allAppsCellWidthPx", allAppsCellWidthPx));
         writer.println(prefix + "\tnumShownAllAppsColumns: " + numShownAllAppsColumns);
+        writer.println(prefix + pxToDpStr("allAppsLeftRightPadding", allAppsLeftRightPadding));
+        writer.println(prefix + pxToDpStr("allAppsLeftRightMargin", allAppsLeftRightMargin));
 
         writer.println(prefix + pxToDpStr("hotseatBarSizePx", hotseatBarSizePx));
         writer.println(prefix + pxToDpStr("hotseatCellHeightPx", hotseatCellHeightPx));
