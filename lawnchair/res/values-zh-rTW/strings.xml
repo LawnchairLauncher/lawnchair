@@ -177,6 +177,6 @@
     <string name="dark_status_bar_label">深色狀態列</string>
     <string name="lawnicons_not_installed_description">Lawnicons 未安裝。</string>
     <string name="icon_picker_default_category">圖示</string>
-    <string name="icon_picker_reset_to_default">還原預設</string>
-    <string name="icon_pack_external_picker">Open external picker</string>
+    <string name="icon_picker_reset_to_default">還原預設設定</string>
+    <string name="icon_pack_external_picker">開啟外部選擇器</string>
 </resources>
