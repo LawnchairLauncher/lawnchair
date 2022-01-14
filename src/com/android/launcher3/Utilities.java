@@ -229,7 +229,7 @@ public final class Utilities {
             offsetPoints(coord, v.getLeft(), v.getTop());
             scale *= v.getScaleX();
 
-            v = (View) v.getParent();
+            v = v.getParent() instanceof View ? (View) v.getParent() : null;
         }
         return scale;
     }
