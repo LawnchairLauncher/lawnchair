@@ -419,7 +419,7 @@ public final class RecentsActivity extends StatefulActivity<RecentsState> {
             RemoteAnimationTargets targets = new RemoteAnimationTargets(
                     appTargets, wallpaperTargets, nonAppTargets, MODE_OPENING);
             for (RemoteAnimationTargetCompat app : targets.apps) {
-                new Transaction().setAlpha(app.leash.getSurfaceControl(), 1).apply();
+                new Transaction().setAlpha(app.leash, 1).apply();
             }
             AnimatorSet anim = new AnimatorSet();
             anim.play(controller.getAnimationPlayer());

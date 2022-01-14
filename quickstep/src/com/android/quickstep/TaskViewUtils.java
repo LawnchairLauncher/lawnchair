@@ -469,7 +469,7 @@ public final class TaskViewUtils {
         for (RemoteAnimationTargetCompat appTarget : appTargets) {
             final int taskId = appTarget.taskInfo != null ? appTarget.taskInfo.taskId : -1;
             final int mode = appTarget.mode;
-            final SurfaceControl leash = appTarget.leash.getSurfaceControl();
+            final SurfaceControl leash = appTarget.leash;
             if (leash == null) {
                 continue;
             }
@@ -484,7 +484,7 @@ public final class TaskViewUtils {
         }
 
         for (int i = 0; i < nonAppTargets.length; ++i) {
-            final SurfaceControl leash = appTargets[i].leash.getSurfaceControl();
+            final SurfaceControl leash = appTargets[i].leash;
             if (nonAppTargets[i].windowType == TYPE_DOCK_DIVIDER && leash != null) {
                 openingTargets.add(leash);
             }
@@ -611,7 +611,7 @@ public final class TaskViewUtils {
         boolean hasSurfaceToAnimate = false;
         for (int i = 0; i < nonApps.length; ++i) {
             final RemoteAnimationTargetCompat targ = nonApps[i];
-            final SurfaceControl leash = targ.leash.getSurfaceControl();
+            final SurfaceControl leash = targ.leash;
             if (targ.windowType == TYPE_DOCK_DIVIDER && leash != null) {
                 auxiliarySurfaces.add(leash);
                 hasSurfaceToAnimate = true;
