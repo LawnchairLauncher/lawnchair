@@ -124,7 +124,7 @@ public final class LauncherInstrumentation {
         WORKSPACE, ALL_APPS, OVERVIEW, WIDGETS, BACKGROUND, FALLBACK_OVERVIEW
     }
 
-    public enum NavigationModel {ZERO_BUTTON, TWO_BUTTON, THREE_BUTTON}
+    public enum NavigationModel {ZERO_BUTTON, THREE_BUTTON}
 
     // Where the gesture happens: outside of Launcher, inside or from inside to outside and
     // whether the gesture recognition triggers pilfer.
@@ -391,8 +391,6 @@ public final class LauncherInstrumentation {
     public static NavigationModel getNavigationModel(int currentInteractionMode) {
         if (QuickStepContract.isGesturalMode(currentInteractionMode)) {
             return NavigationModel.ZERO_BUTTON;
-        } else if (QuickStepContract.isSwipeUpMode(currentInteractionMode)) {
-            return NavigationModel.TWO_BUTTON;
         } else if (QuickStepContract.isLegacyMode(currentInteractionMode)) {
             return NavigationModel.THREE_BUTTON;
         }
@@ -864,7 +862,7 @@ public final class LauncherInstrumentation {
 
                     swipeToState(
                             displaySize.x / 2, displaySize.y - 1,
-                            displaySize.x / 2, 0,
+                            displaySize.x / 2, displaySize.y / 2,
                             ZERO_BUTTON_STEPS_FROM_BACKGROUND_TO_HOME, NORMAL_STATE_ORDINAL,
                             gestureStartFromLauncher ? GestureScope.INSIDE_TO_OUTSIDE
                                     : GestureScope.OUTSIDE_WITH_PILFER);
@@ -873,10 +871,6 @@ public final class LauncherInstrumentation {
                 log("Hierarchy before clicking home:");
                 dumpViewHierarchy();
                 action = "clicking home button";
-                if (!isLauncher3() && getNavigationModel() == NavigationModel.TWO_BUTTON) {
-                    expectEvent(TestProtocol.SEQUENCE_TIS, EVENT_TOUCH_DOWN_TIS);
-                    expectEvent(TestProtocol.SEQUENCE_TIS, EVENT_TOUCH_UP_TIS);
-                }
                 if (isTablet()) {
                     expectEvent(TestProtocol.SEQUENCE_MAIN, EVENT_TOUCH_DOWN);
                     expectEvent(TestProtocol.SEQUENCE_MAIN, EVENT_TOUCH_UP);
@@ -917,9 +911,6 @@ public final class LauncherInstrumentation {
                 if (isTablet()) {
                     expectEvent(TestProtocol.SEQUENCE_MAIN, EVENT_TOUCH_DOWN);
                     expectEvent(TestProtocol.SEQUENCE_MAIN, EVENT_TOUCH_UP);
-                } else if (!isLauncher3() && getNavigationModel() == NavigationModel.TWO_BUTTON) {
-                    expectEvent(TestProtocol.SEQUENCE_TIS, EVENT_TOUCH_DOWN_TIS);
-                    expectEvent(TestProtocol.SEQUENCE_TIS, EVENT_TOUCH_UP_TIS);
                 }
             }
             if (launcherVisible) {

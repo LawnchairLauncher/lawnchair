@@ -20,9 +20,7 @@ import static androidx.test.InstrumentationRegistry.getInstrumentation;
 
 import static com.android.quickstep.NavigationModeSwitchRule.Mode.ALL;
 import static com.android.quickstep.NavigationModeSwitchRule.Mode.THREE_BUTTON;
-import static com.android.quickstep.NavigationModeSwitchRule.Mode.TWO_BUTTON;
 import static com.android.quickstep.NavigationModeSwitchRule.Mode.ZERO_BUTTON;
-import static com.android.systemui.shared.system.QuickStepContract.NAV_BAR_MODE_2BUTTON_OVERLAY;
 import static com.android.systemui.shared.system.QuickStepContract.NAV_BAR_MODE_3BUTTON_OVERLAY;
 import static com.android.systemui.shared.system.QuickStepContract.NAV_BAR_MODE_GESTURAL_OVERLAY;
 
@@ -61,7 +59,7 @@ public class NavigationModeSwitchRule implements TestRule {
     public static final int WAIT_TIME_MS = 10000;
 
     public enum Mode {
-        THREE_BUTTON, TWO_BUTTON, ZERO_BUTTON, ALL
+        THREE_BUTTON, ZERO_BUTTON, ALL
     }
 
     // Annotation for tests that need to be run with quickstep enabled and disabled.
@@ -99,9 +97,6 @@ public class NavigationModeSwitchRule implements TestRule {
                         if (mode == ZERO_BUTTON || mode == ALL) {
                             evaluateWithZeroButtons();
                         }
-                        if (mode == TWO_BUTTON || mode == ALL) {
-                            evaluateWithTwoButtons();
-                        }
                         if (mode == THREE_BUTTON || mode == ALL) {
                             evaluateWithThreeButtons();
                         }
@@ -123,13 +118,6 @@ public class NavigationModeSwitchRule implements TestRule {
                     }
                 }
 
-                private void evaluateWithTwoButtons() throws Throwable {
-                    if (setActiveOverlay(mLauncher, NAV_BAR_MODE_2BUTTON_OVERLAY,
-                            LauncherInstrumentation.NavigationModel.TWO_BUTTON, description)) {
-                        base.evaluate();
-                    }
-                }
-
                 private void evaluateWithZeroButtons() throws Throwable {
                     if (setActiveOverlay(mLauncher, NAV_BAR_MODE_GESTURAL_OVERLAY,
                             LauncherInstrumentation.NavigationModel.ZERO_BUTTON, description)) {
@@ -145,9 +133,7 @@ public class NavigationModeSwitchRule implements TestRule {
     public static String getCurrentOverlayPackage(int currentInteractionMode) {
         return QuickStepContract.isGesturalMode(currentInteractionMode)
                 ? NAV_BAR_MODE_GESTURAL_OVERLAY
-                : QuickStepContract.isSwipeUpMode(currentInteractionMode)
-                        ? NAV_BAR_MODE_2BUTTON_OVERLAY
-                        : NAV_BAR_MODE_3BUTTON_OVERLAY;
+                : NAV_BAR_MODE_3BUTTON_OVERLAY;
     }
 
     private static LauncherInstrumentation.NavigationModel currentSysUiNavigationMode() {
