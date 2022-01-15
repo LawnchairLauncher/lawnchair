@@ -507,17 +507,28 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
 
     /**
      * Either adds or removes {@link WindowManager.LayoutParams#FLAG_NOT_FOCUSABLE} on the taskbar
+     * window.
+     */
+    public void setTaskbarWindowFocusable(boolean focusable) {
+        if (focusable) {
+            mWindowLayoutParams.flags &= ~FLAG_NOT_FOCUSABLE;
+        } else {
+            mWindowLayoutParams.flags |= FLAG_NOT_FOCUSABLE;
+        }
+        mWindowManager.updateViewLayout(mDragLayer, mWindowLayoutParams);
+    }
+
+    /**
+     * Either adds or removes {@link WindowManager.LayoutParams#FLAG_NOT_FOCUSABLE} on the taskbar
      * window. If we're now focusable, also move nav buttons to a separate window above IME.
      */
     public void setTaskbarWindowFocusableForIme(boolean focusable) {
         if (focusable) {
-            mWindowLayoutParams.flags &= ~FLAG_NOT_FOCUSABLE;
             mControllers.navbarButtonsViewController.moveNavButtonsToNewWindow();
         } else {
-            mWindowLayoutParams.flags |= FLAG_NOT_FOCUSABLE;
             mControllers.navbarButtonsViewController.moveNavButtonsBackToTaskbarWindow();
         }
-        mWindowManager.updateViewLayout(mDragLayer, mWindowLayoutParams);
+        setTaskbarWindowFocusable(focusable);
     }
 
     /** Adds the given view to WindowManager with the provided LayoutParams (creates new window). */
