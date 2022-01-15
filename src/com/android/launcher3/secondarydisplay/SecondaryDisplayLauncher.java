@@ -30,7 +30,7 @@ import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherModel;
 import com.android.launcher3.R;
-import com.android.launcher3.allapps.AllAppsContainerView;
+import com.android.launcher3.allapps.ActivityAllAppsContainerView;
 import com.android.launcher3.model.BgDataModel;
 import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.ItemInfo;
@@ -52,7 +52,8 @@ public class SecondaryDisplayLauncher extends BaseDraggingActivity
     private LauncherModel mModel;
 
     private BaseDragLayer mDragLayer;
-    private AllAppsContainerView mAppsView;
+    // TODO(b/216191717): Verify all apps works on secondary display.
+    private ActivityAllAppsContainerView<SecondaryDisplayLauncher> mAppsView;
     private View mAppsButton;
 
     private PopupDataProvider mPopupDataProvider;
@@ -143,7 +144,8 @@ public class SecondaryDisplayLauncher extends BaseDraggingActivity
         return mAppDrawerShown;
     }
 
-    public AllAppsContainerView getAppsView() {
+    @Override
+    public ActivityAllAppsContainerView<SecondaryDisplayLauncher> getAppsView() {
         return mAppsView;
     }
 

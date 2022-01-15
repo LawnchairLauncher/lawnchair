@@ -25,6 +25,7 @@ import android.view.View.AccessibilityDelegate;
 import androidx.annotation.Nullable;
 
 import com.android.launcher3.DeviceProfile;
+import com.android.launcher3.allapps.BaseAllAppsContainerView;
 import com.android.launcher3.dot.DotInfo;
 import com.android.launcher3.dragndrop.DragController;
 import com.android.launcher3.folder.FolderIcon;
@@ -92,6 +93,13 @@ public interface ActivityContext {
      * The root view to support drag-and-drop and popup support.
      */
     BaseDragLayer getDragLayer();
+
+    /**
+     * The all apps container, if it exists in this context.
+     */
+    default BaseAllAppsContainerView<?> getAppsView() {
+        return null;
+    }
 
     DeviceProfile getDeviceProfile();
 

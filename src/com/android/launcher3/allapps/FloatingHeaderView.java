@@ -41,6 +41,7 @@ import com.android.systemui.plugins.AllAppsRow.OnHeightUpdatedListener;
 import com.android.systemui.plugins.PluginListener;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class FloatingHeaderView extends LinearLayout implements
@@ -72,7 +73,8 @@ public class FloatingHeaderView extends LinearLayout implements
                     moved(current);
                     applyVerticalMove();
                     if (headerCollapsed != mHeaderCollapsed) {
-                        AllAppsContainerView parent = (AllAppsContainerView) getParent();
+                        BaseAllAppsContainerView<?> parent =
+                                (BaseAllAppsContainerView<?>) getParent();
                         parent.invalidateHeader();
                     }
                 }
@@ -195,7 +197,7 @@ public class FloatingHeaderView extends LinearLayout implements
         updateExpectedHeight();
 
         if (mMaxTranslation != oldMaxHeight) {
-            AllAppsContainerView parent = (AllAppsContainerView) getParent();
+            BaseAllAppsContainerView<?> parent = (BaseAllAppsContainerView<?>) getParent();
             if (parent != null) {
                 parent.setupHeader();
             }
@@ -224,7 +226,8 @@ public class FloatingHeaderView extends LinearLayout implements
         return super.getFocusedChild();
     }
 
-    public void setup(AllAppsContainerView.AdapterHolder[] mAH, boolean tabsHidden) {
+    <T extends Context & ActivityContext> void setup(
+            List<BaseAllAppsContainerView<T>.AdapterHolder> mAH, boolean tabsHidden) {
         for (FloatingHeaderRow row : mAllRows) {
             row.setup(this, mAllRows, tabsHidden);
         }
@@ -232,8 +235,10 @@ public class FloatingHeaderView extends LinearLayout implements
 
         mTabsHidden = tabsHidden;
         mTabLayout.setVisibility(tabsHidden ? View.GONE : View.VISIBLE);
-        mMainRV = setupRV(mMainRV, mAH[AllAppsContainerView.AdapterHolder.MAIN].recyclerView);
-        mWorkRV = setupRV(mWorkRV, mAH[AllAppsContainerView.AdapterHolder.WORK].recyclerView);
+        mMainRV = setupRV(mMainRV,
+                mAH.get(BaseAllAppsContainerView.AdapterHolder.MAIN).mRecyclerView);
+        mWorkRV = setupRV(mWorkRV,
+                mAH.get(BaseAllAppsContainerView.AdapterHolder.WORK).mRecyclerView);
         mParent = (ViewGroup) mMainRV.getParent();
         setMainActive(mMainRVActive || mWorkRV == null);
         reset(false);

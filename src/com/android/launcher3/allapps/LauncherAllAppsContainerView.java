@@ -26,9 +26,7 @@ import com.android.launcher3.LauncherState;
 /**
  * AllAppsContainerView with launcher specific callbacks
  */
-public class LauncherAllAppsContainerView extends AllAppsContainerView {
-
-    private final Launcher mLauncher;
+public class LauncherAllAppsContainerView extends ActivityAllAppsContainerView<Launcher> {
 
     public LauncherAllAppsContainerView(Context context) {
         this(context, null);
@@ -40,14 +38,13 @@ public class LauncherAllAppsContainerView extends AllAppsContainerView {
 
     public LauncherAllAppsContainerView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        mLauncher = Launcher.getLauncher(context);
     }
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
         // The AllAppsContainerView houses the QSB and is hence visible from the Workspace
         // Overview states. We shouldn't intercept for the scrubber in these cases.
-        if (!mLauncher.isInState(LauncherState.ALL_APPS)) {
+        if (!mActivityContext.isInState(LauncherState.ALL_APPS)) {
             mTouchHandler = null;
             return false;
         }
@@ -57,7 +54,7 @@ public class LauncherAllAppsContainerView extends AllAppsContainerView {
 
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
-        if (!mLauncher.isInState(LauncherState.ALL_APPS)) {
+        if (!mActivityContext.isInState(LauncherState.ALL_APPS)) {
             return false;
         }
         return super.onTouchEvent(ev);
@@ -66,13 +63,8 @@ public class LauncherAllAppsContainerView extends AllAppsContainerView {
     @Override
     public void setInsets(Rect insets) {
         super.setInsets(insets);
-        int allAppsStartingPositionY = mLauncher.getDeviceProfile().availableHeightPx
-                - mLauncher.getDeviceProfile().allAppsOpenVerticalTranslate;
-        mLauncher.getAllAppsController().setScrollRangeDelta(allAppsStartingPositionY);
-    }
-
-    @Override
-    public void onActivePageChanged(int currentActivePage) {
-        super.onActivePageChanged(currentActivePage);
+        int allAppsStartingPositionY = mActivityContext.getDeviceProfile().availableHeightPx
+                - mActivityContext.getDeviceProfile().allAppsOpenVerticalTranslate;
+        mActivityContext.getAllAppsController().setScrollRangeDelta(allAppsStartingPositionY);
     }
 }
