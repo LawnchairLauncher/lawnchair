@@ -36,6 +36,7 @@ import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_N
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_OVERVIEW_DISABLED;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_QUICK_SETTINGS_EXPANDED;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_SCREEN_PINNING;
+import static com.android.systemui.shared.system.ViewTreeObserverWrapper.InsetsInfo.TOUCHABLE_INSETS_REGION;
 
 import android.animation.ArgbEvaluator;
 import android.animation.ObjectAnimator;
@@ -55,9 +56,11 @@ import android.util.Property;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnAttachStateChangeListener;
 import android.view.View.OnClickListener;
 import android.view.View.OnHoverListener;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -68,10 +71,13 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AlphaUpdateListener;
 import com.android.launcher3.taskbar.TaskbarNavButtonController.TaskbarButton;
 import com.android.launcher3.util.MultiValueAlpha;
+import com.android.launcher3.util.TouchController;
+import com.android.launcher3.views.BaseDragLayer;
 import com.android.quickstep.AnimatedFloat;
 import com.android.systemui.shared.rotation.FloatingRotationButton;
 import com.android.systemui.shared.rotation.RotationButton;
 import com.android.systemui.shared.rotation.RotationButtonController;
+import com.android.systemui.shared.system.ViewTreeObserverWrapper;
 
 import java.util.ArrayList;
 import java.util.function.IntPredicate;
@@ -97,6 +103,8 @@ public class NavbarButtonsViewController {
     private static final int FLAG_SCREEN_PINNING_ACTIVE = 1 << 11;
 
     private static final int MASK_IME_SWITCHER_VISIBLE = FLAG_SWITCHER_SUPPORTED | FLAG_IME_VISIBLE;
+
+    private static final String NAV_BUTTONS_SEPARATE_WINDOW_TITLE = "Taskbar Nav Buttons";
 
     private final ArrayList<StatePropertyHolder> mPropertyHolders = new ArrayList<>();
     private final ArrayList<ImageView> mAllButtons = new ArrayList<>();
@@ -133,6 +141,12 @@ public class NavbarButtonsViewController {
     private View mBackButton;
     private View mHomeButton;
     private FloatingRotationButton mFloatingRotationButton;
+
+    // Variables for moving nav buttons to a separate window above IME
+    private boolean mAreNavButtonsInSeparateWindow = false;
+    private BaseDragLayer<TaskbarActivityContext> mSeparateWindowParent; // Initialized in init.
+    private final ViewTreeObserverWrapper.OnComputeInsetsListener mSeparateWindowInsetsComputer =
+            this::onComputeInsetsForSeparateWindow;
 
     public NavbarButtonsViewController(TaskbarActivityContext context, FrameLayout navButtonsView) {
         mContext = context;
@@ -321,6 +335,21 @@ public class NavbarButtonsViewController {
                     R.id.notifications_button);
         }
 
+        // Initialize things needed to move nav buttons to separate window.
+        mSeparateWindowParent = new BaseDragLayer<TaskbarActivityContext>(mContext, null, 0) {
+            @Override
+            public void recreateControllers() {
+                mControllers = new TouchController[0];
+            }
+
+            @Override
+            protected boolean canFindActiveController() {
+                // We don't have any controllers, but we don't want any floating views such as
+                // folder to intercept, either. This ensures nav buttons can always be pressed.
+                return false;
+            }
+        };
+        mSeparateWindowParent.recreateControllers();
     }
 
     private void initButtons(ViewGroup navContainer, ViewGroup endContainer,
@@ -456,7 +485,7 @@ public class NavbarButtonsViewController {
     /**
      * Adds the bounds corresponding to all visible buttons to provided region
      */
-    public void addVisibleButtonsRegion(TaskbarDragLayer parent, Region outRegion) {
+    public void addVisibleButtonsRegion(BaseDragLayer<?> parent, Region outRegion) {
         int count = mAllButtons.size();
         for (int i = 0; i < count; i++) {
             View button = mAllButtons.get(i);
@@ -561,6 +590,59 @@ public class NavbarButtonsViewController {
         if (mFloatingRotationButton != null) {
             mFloatingRotationButton.hide();
         }
+
+        moveNavButtonsBackToTaskbarWindow();
+    }
+
+    /**
+     * Moves mNavButtonsView from TaskbarDragLayer to a placeholder BaseDragLayer on a new window.
+     */
+    public void moveNavButtonsToNewWindow() {
+        if (mAreNavButtonsInSeparateWindow) {
+            return;
+        }
+
+        mSeparateWindowParent.addOnAttachStateChangeListener(new OnAttachStateChangeListener() {
+            @Override
+            public void onViewAttachedToWindow(View view) {
+                ViewTreeObserverWrapper.addOnComputeInsetsListener(
+                        mSeparateWindowParent.getViewTreeObserver(), mSeparateWindowInsetsComputer);
+            }
+
+            @Override
+            public void onViewDetachedFromWindow(View view) {
+                mSeparateWindowParent.removeOnAttachStateChangeListener(this);
+                ViewTreeObserverWrapper.removeOnComputeInsetsListener(
+                        mSeparateWindowInsetsComputer);
+            }
+        });
+
+        mAreNavButtonsInSeparateWindow = true;
+        mContext.getDragLayer().removeView(mNavButtonsView);
+        mSeparateWindowParent.addView(mNavButtonsView);
+        WindowManager.LayoutParams windowLayoutParams = mContext.createDefaultWindowLayoutParams();
+        windowLayoutParams.setTitle(NAV_BUTTONS_SEPARATE_WINDOW_TITLE);
+        mContext.addWindowView(mSeparateWindowParent, windowLayoutParams);
+
+    }
+
+    /**
+     * Moves mNavButtonsView from its temporary window and reattaches it to TaskbarDragLayer.
+     */
+    public void moveNavButtonsBackToTaskbarWindow() {
+        if (!mAreNavButtonsInSeparateWindow) {
+            return;
+        }
+
+        mAreNavButtonsInSeparateWindow = false;
+        mContext.removeWindowView(mSeparateWindowParent);
+        mSeparateWindowParent.removeView(mNavButtonsView);
+        mContext.getDragLayer().addView(mNavButtonsView);
+    }
+
+    private void onComputeInsetsForSeparateWindow(ViewTreeObserverWrapper.InsetsInfo insetsInfo) {
+        addVisibleButtonsRegion(mSeparateWindowParent, insetsInfo.touchableRegion);
+        insetsInfo.setTouchableInsets(TOUCHABLE_INSETS_REGION);
     }
 
     private class RotationButtonListener implements RotationButton.RotationButtonUpdatesCallback {

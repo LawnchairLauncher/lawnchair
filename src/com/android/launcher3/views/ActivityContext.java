@@ -125,13 +125,6 @@ public interface ActivityContext {
     }
 
     /**
-     * Returns whether we can show the IME for elements hosted by this ActivityContext.
-     */
-    default boolean supportsIme() {
-        return true;
-    }
-
-    /**
      * Called just before logging the given item.
      */
     default void applyOverwritesToLogItem(LauncherAtom.ItemInfo.Builder itemInfoBuilder) { }
