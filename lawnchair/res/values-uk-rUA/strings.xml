@@ -96,9 +96,9 @@
     <string name="clear_all_as_action_label">Кнопка \"Очистити все\" внизу</string>
     <string name="window_corner_radius_label">Радіус кута екрану</string>
     <string name="override_window_corner_radius_label">Користувацький радіус кута екрана</string>
-    <string name="window_corner_radius_description">When you swipe up to open Recents, the current app follows your finger, shrinking into a card. Use this slider to adjust the corner radius of the card when it’s nearly full-screen such that it matches the corners of your screen.</string>
+    <string name="window_corner_radius_description">Проведіть пальцем угору, щоб відкрити Нещодавні, поточний додаток слідує за вашим пальцем, стихаючи на картці. Використовуйте цей повзунок, щоб налаштувати радіус кута карти, коли він майже повноекранний режим, так щоб він співпадав з кутами вашого екрану.</string>
     <string name="system_icons">Системні іконки</string>
-    <string name="accent_color">Accent Color</string>
+    <string name="accent_color">Колір акценту</string>
     <string name="done">Виконано</string>
     <string name="loading">Завантаження…</string>
     <string name="system">System</string>
