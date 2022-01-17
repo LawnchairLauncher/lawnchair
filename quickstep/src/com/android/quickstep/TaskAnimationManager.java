@@ -106,6 +106,13 @@ public class TaskAnimationManager implements RecentsAnimationCallbacks.RecentsAn
         // But force-finish it anyways
         finishRunningRecentsAnimation(false /* toHome */);
 
+        if (mCallbacks != null) {
+            // If mCallbacks still != null, that means we are getting this startRecentsAnimation()
+            // before the previous one got onRecentsAnimationStart(). In that case, cleanup the
+            // previous animation so it doesn't mess up/listen to state changes in this animation.
+            cleanUpRecentsAnimation();
+        }
+
         final BaseActivityInterface activityInterface = gestureState.getActivityInterface();
         mLastGestureState = gestureState;
         mCallbacks = new RecentsAnimationCallbacks(activityInterface.allowMinimizeSplitScreen());
