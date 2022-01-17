@@ -35,9 +35,9 @@
     <string name="max_folder_columns">Max. Počet stĺpcov v priečinku</string>
     <string name="max_folder_rows">Max. počet riadkov v priečinku</string>
     <string name="home_screen_grid">Mriežka na Domovskej obrazovke</string>
-    <string name="columns">Columns</string>
+    <string name="columns">Stĺpce</string>
     <string name="grid">Mriežka</string>
-    <string name="rows">Rows</string>
+    <string name="rows">Riadky</string>
     <string name="icons">Ikony</string>
     <string name="icon_size">Veľkosť ikon</string>
     <string name="label_size">Veľkosť štítkov</string>
@@ -102,7 +102,7 @@
     <string name="done">Hotový</string>
     <string name="loading">Načitáva sa…</string>
     <string name="system">Systém</string>
-    <string name="wallpaper">Wallpaper</string>
+    <string name="wallpaper">Tapeta</string>
     <string name="custom">Vlastné</string>
     <string name="quickstep_description">Vymazať tlačidlo All, Polomery rohov</string>
     <string name="wallpaper_scrolling_label">Pretáčať tapetu</string>
