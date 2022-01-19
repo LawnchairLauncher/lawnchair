@@ -27,6 +27,8 @@ import com.android.quickstep.util.TaskViewSimulator;
 import com.android.quickstep.util.TransformParams;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 
+import java.util.ArrayList;
+
 /**
  * Glues together the necessary components to animate a remote target using a
  * {@link TaskViewSimulator}
@@ -144,20 +146,29 @@ public class RemoteTargetGluer {
      */
     private RemoteAnimationTargets createRemoteAnimationTargetsForTarget(
             RemoteAnimationTargets targets,
-            @Nullable RemoteAnimationTargetCompat targetToExclude) {
-        int finalLength = targets.unfilteredApps.length - (targetToExclude == null ? 0 : 1);
-        RemoteAnimationTargetCompat[] targetsWithoutExcluded =
-                new RemoteAnimationTargetCompat[finalLength];
-        int i = 0;
+            RemoteAnimationTargetCompat targetToExclude) {
+        ArrayList<RemoteAnimationTargetCompat> targetsWithoutExcluded =
+                new ArrayList<RemoteAnimationTargetCompat>();
+
         for (RemoteAnimationTargetCompat targetCompat : targets.unfilteredApps) {
             if (targetCompat == targetToExclude) {
                 continue;
             }
-            targetsWithoutExcluded[i] = targetCompat;
-            i++;
+            if (targetToExclude != null
+                    && targetToExclude.taskInfo != null
+                    && targetCompat.taskInfo != null
+                    && targetToExclude.taskInfo.parentTaskId == targetCompat.taskInfo.taskId) {
+                // Also exclude corresponding parent task
+                continue;
+            }
+
+            targetsWithoutExcluded.add(targetCompat);
         }
-        return new RemoteAnimationTargets(targetsWithoutExcluded,
-                targets.wallpapers, targets.nonApps, targets.targetMode);
+        final RemoteAnimationTargetCompat[] filteredApps =
+                targetsWithoutExcluded.toArray(
+                        new RemoteAnimationTargetCompat[targetsWithoutExcluded.size()]);
+        return new RemoteAnimationTargets(
+                filteredApps, targets.wallpapers, targets.nonApps, targets.targetMode);
     }
 
     public RemoteTargetHandle[] getRemoteTargetHandles() {
