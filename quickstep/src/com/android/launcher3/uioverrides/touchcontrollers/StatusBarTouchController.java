@@ -19,6 +19,7 @@ import static android.view.MotionEvent.ACTION_DOWN;
 import static android.view.MotionEvent.ACTION_MOVE;
 import static android.view.MotionEvent.ACTION_UP;
 import static android.view.MotionEvent.ACTION_CANCEL;
+import static android.view.WindowManager.LayoutParams.FLAG_SLIPPERY;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_SWIPE_DOWN_WORKSPACE_NOTISHADE_OPEN;
 
 import android.graphics.PointF;
@@ -48,17 +49,6 @@ import java.io.PrintWriter;
 public class StatusBarTouchController implements TouchController {
 
     private static final String TAG = "StatusBarController";
-
-    /**
-     * Window flag: Enable touches to slide out of a window into neighboring
-     * windows in mid-gesture instead of being captured for the duration of
-     * the gesture.
-     *
-     * This flag changes the behavior of touch focus for this window only.
-     * Touches can slide out of the window but they cannot necessarily slide
-     * back in (unless the other window with touch focus permits it).
-     */
-    private static final int FLAG_SLIPPERY = 0x20000000;
 
     private final Launcher mLauncher;
     private final SystemUiProxy mSystemUiProxy;
@@ -145,6 +135,15 @@ public class StatusBarTouchController implements TouchController {
         return true;
     }
 
+    /**
+     * FLAG_SLIPPERY enables touches to slide out of a window into neighboring
+     * windows in mid-gesture instead of being captured for the duration of
+     * the gesture.
+     *
+     * This flag changes the behavior of touch focus for this window only.
+     * Touches can slide out of the window but they cannot necessarily slide
+     * back in (unless the other window with touch focus permits it).
+     */
     private void setWindowSlippery(boolean enable) {
         Window w = mLauncher.getWindow();
         WindowManager.LayoutParams wlp = w.getAttributes();
