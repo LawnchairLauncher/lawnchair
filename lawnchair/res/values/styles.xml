@@ -8,6 +8,7 @@
         <item name="android:colorBackgroundFloating">@color/background_floating_device_default_light</item>
         <item name="android:dialogCornerRadius" tools:ignore="NewApi">@dimen/lawnchair_dialog_corner_radius</item>
         <item name="android:textAppearance">@style/TextAppearance.Lawnchair</item>
+        <item name="android:forceDarkAllowed">false</item>
 
         <item name="colorAccentPrimary">@color/accent_primary_device_default</item>
         <item name="textColorOnAccent">@color/text_color_on_accent_device_default</item>
