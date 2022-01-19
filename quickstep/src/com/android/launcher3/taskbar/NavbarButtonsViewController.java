@@ -15,15 +15,11 @@
  */
 package com.android.launcher3.taskbar;
 
-import static android.content.pm.PackageManager.FEATURE_PC;
-
 import static com.android.launcher3.LauncherAnimUtils.VIEW_TRANSLATE_X;
 import static com.android.launcher3.taskbar.TaskbarNavButtonController.BUTTON_A11Y;
 import static com.android.launcher3.taskbar.TaskbarNavButtonController.BUTTON_BACK;
 import static com.android.launcher3.taskbar.TaskbarNavButtonController.BUTTON_HOME;
 import static com.android.launcher3.taskbar.TaskbarNavButtonController.BUTTON_IME_SWITCH;
-import static com.android.launcher3.taskbar.TaskbarNavButtonController.BUTTON_NOTIFICATIONS;
-import static com.android.launcher3.taskbar.TaskbarNavButtonController.BUTTON_QUICK_SETTINGS;
 import static com.android.launcher3.taskbar.TaskbarNavButtonController.BUTTON_RECENTS;
 import static com.android.launcher3.taskbar.TaskbarViewController.ALPHA_INDEX_KEYGUARD;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_A11Y_BUTTON_CLICKABLE;
@@ -325,16 +321,6 @@ public class NavbarButtonsViewController {
         applyState();
         mPropertyHolders.forEach(StatePropertyHolder::endAnimation);
 
-        // quick setting and notification buttons
-        if (mContext.getPackageManager().hasSystemFeature(FEATURE_PC)) {
-            addButton(R.drawable.ic_sysbar_quick_settings, BUTTON_QUICK_SETTINGS,
-                    mNavButtonContainer, mControllers.navButtonController,
-                    R.id.quick_settings_button);
-            addButton(R.drawable.ic_sysbar_notifications, BUTTON_NOTIFICATIONS,
-                    mNavButtonContainer, mControllers.navButtonController,
-                    R.id.notifications_button);
-        }
-
         // Initialize things needed to move nav buttons to separate window.
         mSeparateWindowParent = new BaseDragLayer<TaskbarActivityContext>(mContext, null, 0) {
             @Override
@@ -546,7 +532,7 @@ public class NavbarButtonsViewController {
         }
     }
 
-    private ImageView addButton(@DrawableRes int drawableId, @TaskbarButton int buttonType,
+    protected ImageView addButton(@DrawableRes int drawableId, @TaskbarButton int buttonType,
             ViewGroup parent, TaskbarNavButtonController navButtonController, @IdRes int id) {
         return addButton(drawableId, buttonType, parent, navButtonController, id,
                 R.layout.taskbar_nav_button);

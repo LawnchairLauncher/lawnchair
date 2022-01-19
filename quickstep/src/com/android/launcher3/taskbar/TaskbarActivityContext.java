@@ -15,6 +15,7 @@
  */
 package com.android.launcher3.taskbar;
 
+import static android.content.pm.PackageManager.FEATURE_PC;
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
 import static android.view.WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_ALWAYS;
@@ -166,7 +167,9 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
         mControllers = new TaskbarControllers(this,
                 new TaskbarDragController(this),
                 buttonController,
-                new NavbarButtonsViewController(this, navButtonsView),
+                getPackageManager().hasSystemFeature(FEATURE_PC)
+                        ? new DesktopNavbarButtonsViewController(this, navButtonsView) :
+                        new NavbarButtonsViewController(this, navButtonsView),
                 new RotationButtonController(this,
                         c.getColor(R.color.taskbar_nav_icon_light_color),
                         c.getColor(R.color.taskbar_nav_icon_dark_color),
