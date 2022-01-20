@@ -219,6 +219,7 @@ public class DeviceProfile {
     // Whether Taskbar will inset the bottom of apps by taskbarSize.
     public boolean isTaskbarPresentInApps;
     public int taskbarSize;
+    public int stashedTaskbarSize;
 
     // DragController
     public int flingToDeleteThresholdVelocity;
@@ -256,12 +257,7 @@ public class DeviceProfile {
         widthPx = windowBounds.bounds.width();
         heightPx = windowBounds.bounds.height();
         availableWidthPx = windowBounds.availableSize.x;
-        int taskbarInset = isTaskbarPresent
-                ? ResourceUtils.getNavbarSize(
-                        isLandscape ? "navigation_bar_height_landscape" : "navigation_bar_height",
-                        res)
-                : 0;
-        availableHeightPx =  windowBounds.availableSize.y - taskbarInset;
+        availableHeightPx =  windowBounds.availableSize.y;
 
         aspectRatio = ((float) Math.max(widthPx, heightPx)) / Math.min(widthPx, heightPx);
         boolean isTallDevice = Float.compare(aspectRatio, TALL_DEVICE_ASPECT_RATIO_THRESHOLD) >= 0;
@@ -283,6 +279,7 @@ public class DeviceProfile {
 
         if (isTaskbarPresent) {
             taskbarSize = res.getDimensionPixelSize(R.dimen.taskbar_size);
+            stashedTaskbarSize = res.getDimensionPixelSize(R.dimen.taskbar_stashed_size);
         }
 
         edgeMarginPx = res.getDimensionPixelSize(R.dimen.dynamic_grid_edge_margin);

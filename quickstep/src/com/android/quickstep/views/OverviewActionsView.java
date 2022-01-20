@@ -214,12 +214,13 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
                 setPadding(mInsets.left, 0, mInsets.right + additionalPadding, 0);
             }
 
-            // Align vertically, using taskbar height + mDp.taskbarOffsetY() to guestimate
-            // where the button nav top is
+            // Align vertically, using taskbar height + mDp.taskbarOffsetY() to estimate where
+            // the button nav top is.
             View startActionView = findViewById(R.id.action_screenshot);
             int marginBottom = getOverviewActionsBottomMarginPx(
                     SysUINavigationMode.getMode(getContext()), mDp);
-            int actionsTop = (mDp.heightPx - marginBottom - mInsets.bottom);
+            int actionsTop =
+                    (mDp.heightPx - marginBottom - mInsets.bottom) - startActionView.getHeight();
             int navTop = mDp.heightPx - (mDp.taskbarSize + mDp.getTaskbarOffsetY());
             int transY = navTop - actionsTop
                     + ((mDp.taskbarSize - startActionView.getHeight()) / 2);
@@ -296,10 +297,13 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
             return inset;
         }
 
+        // Actions button will be aligned with nav buttons in updatePaddingAndTranslations().
         if (mode == SysUINavigationMode.Mode.THREE_BUTTONS) {
             return dp.overviewActionsMarginThreeButtonPx + inset;
         }
 
-        return dp.overviewActionsBottomMarginGesturePx + inset;
+        // There is no bottom inset when taskbar is present, use stashed taskbar as padding instead.
+        return dp.overviewActionsBottomMarginGesturePx
+                + (dp.isTaskbarPresent ? dp.stashedTaskbarSize : inset);
     }
 }
