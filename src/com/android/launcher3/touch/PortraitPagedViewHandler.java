@@ -581,26 +581,15 @@ public class PortraitPagedViewHandler implements PagedOrientationHandler {
                 (FrameLayout.LayoutParams) primaryIconView.getLayoutParams();
         FrameLayout.LayoutParams secondaryIconParams =
                 new FrameLayout.LayoutParams(primaryIconParams);
-        int dividerBar = (splitConfig.appsStackedVertically ?
-                splitConfig.visualDividerBounds.height() :
-                splitConfig.visualDividerBounds.width());
 
-        if (deviceProfile.isLandscape) {
-            primaryIconParams.gravity = TOP | START;
-            primaryIconView.setTranslationX(
-                    primarySnapshotWidth - primaryIconView.getMeasuredWidth());
-            primaryIconView.setTranslationY(0);
-            secondaryIconParams.gravity = TOP | START;
-            secondaryIconView.setTranslationX(primarySnapshotWidth + dividerBar);
-        } else {
-            primaryIconParams.gravity = TOP | CENTER_HORIZONTAL;
-            primaryIconView.setTranslationX(-(primaryIconView.getMeasuredWidth()) / 2f);
-            primaryIconView.setTranslationY(0);
-
-            secondaryIconParams.gravity = TOP | CENTER_HORIZONTAL;
-            secondaryIconView.setTranslationX(secondaryIconView.getMeasuredWidth() / 2f);
-        }
+        primaryIconParams.gravity = TOP | CENTER_HORIZONTAL;
+        // shifts icon half a width left (height is used conveniently here since icons are square)
+        primaryIconView.setTranslationX(-(taskIconHeight / 2f));
+        primaryIconView.setTranslationY(0);
+        secondaryIconParams.gravity = TOP | CENTER_HORIZONTAL;
+        secondaryIconView.setTranslationX(taskIconHeight / 2f);
         secondaryIconView.setTranslationY(0);
+
         primaryIconView.setLayoutParams(primaryIconParams);
         secondaryIconView.setLayoutParams(secondaryIconParams);
     }
