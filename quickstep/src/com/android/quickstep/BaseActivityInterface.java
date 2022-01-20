@@ -167,7 +167,7 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
     public abstract boolean allowMinimizeSplitScreen();
 
     public boolean deferStartingActivity(RecentsAnimationDeviceState deviceState, MotionEvent ev) {
-        return deviceState.isInDeferredGestureRegion(ev);
+        return deviceState.isInDeferredGestureRegion(ev) || deviceState.isImeRenderingNavButtons();
     }
 
     /**
