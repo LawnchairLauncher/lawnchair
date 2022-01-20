@@ -203,7 +203,7 @@ public final class FeatureFlags {
             "Enables showing taskbar education the first time an app is opened.");
 
     public static final BooleanFlag ENABLE_TASKBAR_POPUP_MENU = getDebugFlag(
-            "ENABLE_TASKBAR_POPUP_MENU", false, "Enables long pressing taskbar icons to show the"
+            "ENABLE_TASKBAR_POPUP_MENU", true, "Enables long pressing taskbar icons to show the"
                     + " popup menu.");
 
     public static final BooleanFlag ENABLE_OVERVIEW_GRID = getDebugFlag(
