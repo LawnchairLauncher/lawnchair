@@ -17,10 +17,23 @@
 package app.lawnchair
 
 import android.content.Context
+import android.content.Intent
+import android.content.IntentSender
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.ViewTreeObserver
 import androidx.activity.OnBackPressedDispatcher
 import androidx.activity.OnBackPressedDispatcherOwner
+import androidx.activity.result.ActivityResultRegistry
+import androidx.activity.result.ActivityResultRegistryOwner
+import androidx.activity.result.IntentSenderRequest
+import androidx.activity.result.contract.ActivityResultContract
+import androidx.activity.result.contract.ActivityResultContracts.RequestMultiplePermissions
+import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
+import androidx.activity.result.contract.ActivityResultContracts.StartIntentSenderForResult
+import androidx.core.app.ActivityCompat
+import androidx.core.app.ActivityOptionsCompat
 import androidx.core.graphics.ColorUtils
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
@@ -56,10 +69,79 @@ import java.util.stream.Stream
 import kotlin.math.roundToInt
 
 class LawnchairLauncher : QuickstepLauncher(), LifecycleOwner,
-    SavedStateRegistryOwner, OnBackPressedDispatcherOwner {
+    SavedStateRegistryOwner, ActivityResultRegistryOwner, OnBackPressedDispatcherOwner {
 
     private val lifecycleRegistry = LifecycleRegistry(this)
     private val savedStateRegistryController = SavedStateRegistryController.create(this)
+    private val activityResultRegistry = object : ActivityResultRegistry() {
+        override fun <I : Any?, O : Any?> onLaunch(
+            requestCode: Int,
+            contract: ActivityResultContract<I, O>,
+            input: I,
+            options: ActivityOptionsCompat?
+        ) {
+            val activity = this@LawnchairLauncher
+
+            // Immediate result path
+            val synchronousResult = contract.getSynchronousResult(activity, input)
+            if (synchronousResult != null) {
+                Handler(Looper.getMainLooper()).post {
+                    dispatchResult(
+                        requestCode,
+                        synchronousResult.value
+                    )
+                }
+                return
+            }
+
+            // Start activity path
+            val intent = contract.createIntent(activity, input)
+            var optionsBundle: Bundle? = null
+            // If there are any extras, we should defensively set the classLoader
+            if (intent.extras != null && intent.extras!!.classLoader == null) {
+                intent.setExtrasClassLoader(activity.classLoader)
+            }
+            if (intent.hasExtra(StartActivityForResult.EXTRA_ACTIVITY_OPTIONS_BUNDLE)) {
+                optionsBundle =
+                    intent.getBundleExtra(StartActivityForResult.EXTRA_ACTIVITY_OPTIONS_BUNDLE)
+                intent.removeExtra(StartActivityForResult.EXTRA_ACTIVITY_OPTIONS_BUNDLE)
+            } else if (options != null) {
+                optionsBundle = options.toBundle()
+            }
+            if (RequestMultiplePermissions.ACTION_REQUEST_PERMISSIONS == intent.action) {
+                // requestPermissions path
+                var permissions =
+                    intent.getStringArrayExtra(RequestMultiplePermissions.EXTRA_PERMISSIONS)
+                if (permissions == null) {
+                    permissions = arrayOfNulls(0)
+                }
+                ActivityCompat.requestPermissions(activity, permissions, requestCode)
+            } else if (StartIntentSenderForResult.ACTION_INTENT_SENDER_REQUEST == intent.action) {
+                val request: IntentSenderRequest =
+                    intent.getParcelableExtra(StartIntentSenderForResult.EXTRA_INTENT_SENDER_REQUEST)!!
+                try {
+                    // startIntentSenderForResult path
+                    ActivityCompat.startIntentSenderForResult(
+                        activity, request.intentSender,
+                        requestCode, request.fillInIntent, request.flagsMask,
+                        request.flagsValues, 0, optionsBundle
+                    )
+                } catch (e: IntentSender.SendIntentException) {
+                    Handler(Looper.getMainLooper()).post {
+                        dispatchResult(
+                            requestCode, RESULT_CANCELED,
+                            Intent()
+                                .setAction(StartIntentSenderForResult.ACTION_INTENT_SENDER_REQUEST)
+                                .putExtra(StartIntentSenderForResult.EXTRA_SEND_INTENT_EXCEPTION, e)
+                        )
+                    }
+                }
+            } else {
+                // startActivityForResult path
+                ActivityCompat.startActivityForResult(activity, intent, requestCode, optionsBundle)
+            }
+        }
+    }
     private val _onBackPressedDispatcher = OnBackPressedDispatcher {
         super.onBackPressed()
     }
@@ -209,12 +291,22 @@ class LawnchairLauncher : QuickstepLauncher(), LifecycleOwner,
         savedStateRegistryController.performSave(outState)
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (!activityResultRegistry.dispatchResult(requestCode, resultCode, data)) {
+            super.onActivityResult(requestCode, resultCode, data)
+        }
+    }
+
     override fun getLifecycle(): Lifecycle {
         return lifecycleRegistry
     }
 
     override fun getSavedStateRegistry(): SavedStateRegistry {
         return savedStateRegistryController.savedStateRegistry
+    }
+
+    override fun getActivityResultRegistry(): ActivityResultRegistry {
+        return activityResultRegistry
     }
 
     override fun getOnBackPressedDispatcher(): OnBackPressedDispatcher {
