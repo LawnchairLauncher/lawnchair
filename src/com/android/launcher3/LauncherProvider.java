@@ -97,7 +97,7 @@ public class LauncherProvider extends ContentProvider {
      * Represents the schema of the database. Changes in scheme need not be backwards compatible.
      * When increasing the scheme version, ensure that downgrade_schema.json is updated
      */
-    public static final int SCHEMA_VERSION = 31;
+    public static final int SCHEMA_VERSION = 30;
 
     public static final String AUTHORITY = BuildConfig.APPLICATION_ID + ".settings";
     public static final String KEY_LAYOUT_PROVIDER_AUTHORITY = "KEY_LAYOUT_PROVIDER_AUTHORITY";
@@ -864,19 +864,6 @@ public class LauncherProvider extends ContentProvider {
                             Favorites.SCREEN, IntArray.wrap(-777, -778)), null);
                 }
                 case 30: {
-                    if (FeatureFlags.QSB_ON_FIRST_SCREEN) {
-                        // Clean up first row in screen 0 as it might contain junk data.
-                        Log.d(TAG, "Cleaning up first row");
-                        db.delete(Favorites.TABLE_NAME,
-                                String.format(Locale.ENGLISH,
-                                        "%1$s = %2$d AND %3$s = %4$d AND %5$s = %6$d",
-                                        Favorites.SCREEN, 0,
-                                        Favorites.CONTAINER, Favorites.CONTAINER_DESKTOP,
-                                        Favorites.CELLY, 0), null);
-                    }
-                    return;
-                }
-                case 31: {
                     // DB Upgraded successfully
                     return;
                 }
