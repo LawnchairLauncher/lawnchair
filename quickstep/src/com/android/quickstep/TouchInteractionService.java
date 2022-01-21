@@ -942,6 +942,9 @@ public class TouchInteractionService extends Service
             if (mOverviewComponentObserver != null) {
                 mOverviewComponentObserver.dump(pw);
             }
+            if (mOverviewCommandHelper != null) {
+                mOverviewCommandHelper.dump(pw);
+            }
             if (mGestureState != null) {
                 mGestureState.dump(pw);
             }

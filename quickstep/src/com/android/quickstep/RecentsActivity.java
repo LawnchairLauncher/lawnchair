@@ -100,6 +100,7 @@ public final class RecentsActivity extends StatefulActivity<RecentsState> {
     private Handler mUiHandler = new Handler(Looper.getMainLooper());
 
     private static final long HOME_APPEAR_DURATION = 250;
+    private static final long RECENTS_ANIMATION_TIMEOUT = 1000;
 
     private RecentsDragLayer mDragLayer;
     private ScrimView mScrimView;
@@ -115,6 +116,11 @@ public final class RecentsActivity extends StatefulActivity<RecentsState> {
 
     // Strong refs to runners which are cleared when the activity is destroyed
     private RemoteAnimationFactory mActivityLaunchAnimationRunner;
+
+    // For handling degenerate cases where starting an activity doesn't actually trigger the remote
+    // animation callback
+    private final Handler mHandler = new Handler();
+    private final Runnable mAnimationStartTimeoutRunnable = this::onAnimationStartTimeout;
 
     /**
      * Init drag layer and overview panel views.
@@ -220,6 +226,16 @@ public final class RecentsActivity extends StatefulActivity<RecentsState> {
         // TODO(b/137318995) This should go home, but doing so removes freeform windows
     }
 
+    /**
+     * Called if the remote animation callback from #getActivityLaunchOptions() hasn't called back
+     * in a reasonable time due to a conflict with the recents animation.
+     */
+    private void onAnimationStartTimeout() {
+        if (mActivityLaunchAnimationRunner != null) {
+            mActivityLaunchAnimationRunner.onAnimationCancelled();
+        }
+    }
+
     @Override
     public ActivityOptionsWrapper getActivityLaunchOptions(final View v, @Nullable ItemInfo item) {
         if (!(v instanceof TaskView)) {
@@ -234,6 +250,7 @@ public final class RecentsActivity extends StatefulActivity<RecentsState> {
             public void onCreateAnimation(int transit, RemoteAnimationTargetCompat[] appTargets,
                     RemoteAnimationTargetCompat[] wallpaperTargets,
                     RemoteAnimationTargetCompat[] nonAppTargets, AnimationResult result) {
+                mHandler.removeCallbacks(mAnimationStartTimeoutRunnable);
                 AnimatorSet anim = composeRecentsLaunchAnimator(taskView, appTargets,
                         wallpaperTargets, nonAppTargets);
                 anim.addListener(resetStateListener());
@@ -243,6 +260,7 @@ public final class RecentsActivity extends StatefulActivity<RecentsState> {
 
             @Override
             public void onAnimationCancelled() {
+                mHandler.removeCallbacks(mAnimationStartTimeoutRunnable);
                 onEndCallback.executeAllAndDestroy();
             }
         };
@@ -260,6 +278,7 @@ public final class RecentsActivity extends StatefulActivity<RecentsState> {
         activityOptions.options.setLaunchDisplayId(
                 (v != null && v.getDisplay() != null) ? v.getDisplay().getDisplayId()
                         : Display.DEFAULT_DISPLAY);
+        mHandler.postDelayed(mAnimationStartTimeoutRunnable, RECENTS_ANIMATION_TIMEOUT);
         return activityOptions;
     }
 
