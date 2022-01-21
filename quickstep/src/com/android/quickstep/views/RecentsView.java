@@ -4139,8 +4139,10 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             anim.play(ObjectAnimator.ofFloat(getPageAt(centerTaskIndex),
                     mOrientationHandler.getPrimaryViewTranslate(), primaryTranslation));
             int runningTaskIndex = recentsView.getRunningTaskIndex();
-            if (ENABLE_QUICKSTEP_LIVE_TILE.get() && runningTaskIndex != -1
-                    && runningTaskIndex != taskIndex) {
+            if (ENABLE_QUICKSTEP_LIVE_TILE.get()
+                    && runningTaskIndex != -1
+                    && runningTaskIndex != taskIndex
+                    && recentsView.getRemoteTargetHandles() != null) {
                 for (RemoteTargetHandle remoteHandle : recentsView.getRemoteTargetHandles()) {
                     anim.play(ObjectAnimator.ofFloat(
                             remoteHandle.getTaskViewSimulator().taskPrimaryTranslation,
