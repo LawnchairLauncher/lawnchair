@@ -52,6 +52,7 @@ import android.graphics.Region;
 import android.graphics.Region.Op;
 import android.graphics.drawable.AnimatedVectorDrawable;
 import android.graphics.drawable.PaintDrawable;
+import android.inputmethodservice.InputMethodService;
 import android.util.Property;
 import android.view.Gravity;
 import android.view.MotionEvent;
@@ -599,6 +600,11 @@ public class NavbarButtonsViewController {
      */
     public void moveNavButtonsToNewWindow() {
         if (mAreNavButtonsInSeparateWindow) {
+            return;
+        }
+
+        if (InputMethodService.canImeRenderGesturalNavButtons() && mContext.isGestureNav()) {
+            // IME is rendering the nav buttons, so we don't need to create a new layer for them.
             return;
         }
 

@@ -240,6 +240,10 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
         return mNavMode == Mode.THREE_BUTTONS;
     }
 
+    public boolean isGestureNav() {
+        return mNavMode == Mode.NO_BUTTON;
+    }
+
     public int getLeftCornerRadius() {
         return mLeftCorner == null ? 0 : mLeftCorner.getRadius();
     }
