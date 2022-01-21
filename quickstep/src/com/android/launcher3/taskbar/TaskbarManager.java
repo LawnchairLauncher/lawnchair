@@ -54,6 +54,8 @@ import com.android.quickstep.TouchInteractionService;
 import com.android.systemui.unfold.UnfoldTransitionProgressProvider;
 import com.android.systemui.unfold.util.ScopedUnfoldTransitionProgressProvider;
 
+import java.io.PrintWriter;
+
 /**
  * Class to manage taskbar lifecycle
  */
@@ -304,5 +306,14 @@ public class TaskbarManager implements DisplayController.DisplayInfoChangeListen
 
     public @Nullable TaskbarActivityContext getCurrentActivityContext() {
         return mTaskbarActivityContext;
+    }
+
+    public void dumpLogs(String prefix, PrintWriter pw) {
+        pw.println(prefix + "TaskbarManager:");
+        if (mTaskbarActivityContext == null) {
+            pw.println(prefix + "\tTaskbarActivityContext: null");
+        } else {
+            mTaskbarActivityContext.dumpLogs(prefix + "\t", pw);
+        }
     }
 }

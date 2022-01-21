@@ -14,10 +14,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 
+import com.android.systemui.shared.system.QuickStepContract;
+
+import java.io.PrintWriter;
+
 /**
  * Controller for managing keyguard state for taskbar
  */
-public class TaskbarKeyguardController {
+public class TaskbarKeyguardController implements TaskbarControllers.LoggableTaskbarController {
 
     private static final int KEYGUARD_SYSUI_FLAGS = SYSUI_STATE_BOUNCER_SHOWING |
             SYSUI_STATE_STATUS_BAR_KEYGUARD_SHOWING | SYSUI_STATE_DEVICE_DOZING |
@@ -94,5 +98,17 @@ public class TaskbarKeyguardController {
 
     public void onDestroy() {
         mContext.unregisterReceiver(mScreenOffReceiver);
+    }
+
+    @Override
+    public void dumpLogs(String prefix, PrintWriter pw) {
+        pw.println(prefix + "TaskbarKeyguardController:");
+
+        pw.println(String.format(
+                "%s\tmKeyguardSysuiFlags=%s",
+                prefix,
+                QuickStepContract.getSystemUiStateString(mKeyguardSysuiFlags)));
+        pw.println(String.format("%s\tmBouncerShowing=%b", prefix, mBouncerShowing));
+        pw.println(String.format("%s\tmIsScreenOff=%b", prefix, mIsScreenOff));
     }
 }

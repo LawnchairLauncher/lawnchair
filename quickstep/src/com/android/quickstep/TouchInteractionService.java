@@ -961,6 +961,7 @@ public class TouchInteractionService extends Service
             RecentsModel.INSTANCE.get(this).dump("", pw);
             pw.println("ProtoTrace:");
             pw.println("  file=" + ProtoTracer.INSTANCE.get(this).getTraceFile());
+            mTaskbarManager.dumpLogs("", pw);
         }
     }
 

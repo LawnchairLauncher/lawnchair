@@ -83,6 +83,8 @@ import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.WindowManagerWrapper;
 import com.android.systemui.unfold.util.ScopedUnfoldTransitionProgressProvider;
 
+import java.io.PrintWriter;
+
 /**
  * The {@link ActivityContext} with which we inflate Taskbar-related Views. This allows UI elements
  * that are used by both Launcher and Taskbar (such as Folder) to reference a generic
@@ -669,5 +671,17 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
     public void showPopupMenuForIcon(BubbleTextView btv) {
         setTaskbarWindowFullscreen(true);
         btv.post(() -> mControllers.taskbarPopupController.showForIcon(btv));
+    }
+
+    protected void dumpLogs(String prefix, PrintWriter pw) {
+        pw.println(prefix + "TaskbarActivityContext:");
+
+        pw.println(String.format(
+                "%s\tmNavMode=%s", prefix, mNavMode));
+        pw.println(String.format(
+                "%s\tmIsUserSetupComplete=%b", prefix, mIsUserSetupComplete));
+        pw.println(String.format(
+                "%s\tmWindowLayoutParams.height=%dpx", prefix, mWindowLayoutParams.height));
+        mControllers.dumpLogs(prefix + "\t", pw);
     }
 }

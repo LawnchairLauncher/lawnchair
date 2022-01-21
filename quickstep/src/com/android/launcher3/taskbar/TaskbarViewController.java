@@ -39,10 +39,12 @@ import com.android.launcher3.util.LauncherBindableItemsContainer;
 import com.android.launcher3.util.MultiValueAlpha;
 import com.android.quickstep.AnimatedFloat;
 
+import java.io.PrintWriter;
+
 /**
  * Handles properties/data collection, then passes the results to TaskbarView to render.
  */
-public class TaskbarViewController {
+public class TaskbarViewController implements TaskbarControllers.LoggableTaskbarController {
     private static final Runnable NO_OP = () -> { };
 
     public static final int ALPHA_INDEX_HOME = 0;
@@ -256,6 +258,12 @@ public class TaskbarViewController {
      */
     public boolean isEventOverAnyItem(MotionEvent ev) {
         return mTaskbarView.isEventOverAnyItem(ev);
+    }
+
+    @Override
+    public void dumpLogs(String prefix, PrintWriter pw) {
+        pw.println(prefix + "TaskbarViewController:");
+        mModelCallbacks.dumpLogs(prefix + "\t", pw);
     }
 
     /**

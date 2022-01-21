@@ -57,10 +57,14 @@ import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.system.ClipDescriptionCompat;
 import com.android.systemui.shared.system.LauncherAppsCompat;
 
+import java.io.PrintWriter;
+import java.util.Arrays;
+
 /**
  * Handles long click on Taskbar items to start a system drag and drop operation.
  */
-public class TaskbarDragController extends DragController<TaskbarActivityContext>  {
+public class TaskbarDragController extends DragController<TaskbarActivityContext> implements
+        TaskbarControllers.LoggableTaskbarController {
 
     private final int mDragIconSize;
     private final int[] mTempXY = new int[2];
@@ -414,5 +418,19 @@ public class TaskbarDragController extends DragController<TaskbarActivityContext
     @Override
     protected DropTarget getDefaultDropTarget(int[] dropCoordinates) {
         return null;
+    }
+
+    @Override
+    public void dumpLogs(String prefix, PrintWriter pw) {
+        pw.println(prefix + "TaskbarDragController:");
+
+        pw.println(String.format("%s\tmDragIconSize=%dpx", prefix, mDragIconSize));
+        pw.println(String.format("%s\tmTempXY=%s", prefix, Arrays.toString(mTempXY)));
+        pw.println(String.format("%s\tmRegistrationX=%d", prefix, mRegistrationX));
+        pw.println(String.format("%s\tmRegistrationY=%d", prefix, mRegistrationY));
+        pw.println(String.format(
+                "%s\tmIsSystemDragInProgress=%b", prefix, mIsSystemDragInProgress));
+        pw.println(String.format(
+                "%s\tisInternalDragInProgess=%b", prefix, super.isDragging()));
     }
 }
