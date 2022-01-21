@@ -161,6 +161,8 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
         mNavBarScrimPaint.setColor(Themes.getAttrColor(context, R.attr.allAppsNavBarScrimColor));
 
         mAllAppsStore.addUpdateListener(this::onAppsUpdated);
+
+        updateBackground(mLauncher.getDeviceProfile());
     }
 
     @Override
@@ -224,6 +226,13 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
                 holder.recyclerView.getRecycledViewPool().clear();
             }
         }
+        updateBackground(dp);
+    }
+
+    private void updateBackground(DeviceProfile deviceProfile) {
+        setBackground(deviceProfile.isTablet
+                ? getContext().getDrawable(R.drawable.bg_all_apps_bottom_sheet)
+                : null);
     }
 
     private void onAppsUpdated() {
@@ -389,8 +398,10 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
         }
 
         ViewGroup.MarginLayoutParams mlp = (MarginLayoutParams) getLayoutParams();
-        mlp.leftMargin = insets.left;
-        mlp.rightMargin = insets.right;
+        mlp.topMargin = grid.isTablet ? insets.top : 0;
+        int leftRightMargin = grid.allAppsLeftRightMargin;
+        mlp.leftMargin = insets.left + leftRightMargin;
+        mlp.rightMargin = insets.right + leftRightMargin;
         setLayoutParams(mlp);
 
         if (grid.isVerticalBarLayout()) {
