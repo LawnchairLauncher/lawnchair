@@ -29,6 +29,7 @@ import com.android.launcher3.util.IntSet;
 import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.LauncherBindableItemsContainer;
 
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -195,5 +196,16 @@ public class TaskbarModelCallbacks implements
     @Override
     public void bindDeepShortcutMap(HashMap<ComponentKey, Integer> deepShortcutMapCopy) {
         mControllers.taskbarPopupController.setDeepShortcutMap(deepShortcutMapCopy);
+    }
+
+    protected void dumpLogs(String prefix, PrintWriter pw) {
+        pw.println(prefix + "TaskbarModelCallbacks:");
+
+        pw.println(String.format("%s\thotseat items count=%s", prefix, mHotseatItems.size()));
+        if (mPredictedItems != null) {
+            pw.println(
+                    String.format("%s\tpredicted items count=%s", prefix, mPredictedItems.size()));
+        }
+        pw.println(String.format("%s\tmBindInProgress=%b", prefix, mBindInProgress));
     }
 }

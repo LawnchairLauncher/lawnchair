@@ -33,6 +33,7 @@ import com.android.quickstep.OverviewCommandHelper;
 import com.android.quickstep.SystemUiProxy;
 import com.android.quickstep.TouchInteractionService;
 
+import java.io.PrintWriter;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
@@ -41,7 +42,7 @@ import java.lang.annotation.RetentionPolicy;
  * Handles all the functionality of the various buttons, making/routing the right calls into
  * launcher or sysui/system.
  */
-public class TaskbarNavButtonController {
+public class TaskbarNavButtonController implements TaskbarControllers.LoggableTaskbarController {
 
     /** Allow some time in between the long press for back and recents. */
     static final int SCREEN_PIN_LONG_PRESS_THRESHOLD = 200;
@@ -49,6 +50,15 @@ public class TaskbarNavButtonController {
 
     private long mLastScreenPinLongPress;
     private boolean mScreenPinned;
+
+    @Override
+    public void dumpLogs(String prefix, PrintWriter pw) {
+        pw.println(prefix + "TaskbarNavButtonController:");
+
+        pw.println(String.format(
+                "%s\tmLastScreenPinLongPress=%dms", prefix, mLastScreenPinLongPress));
+        pw.println(String.format("%s\tmScreenPinned=%b", prefix, mScreenPinned));
+    }
 
     @Retention(RetentionPolicy.SOURCE)
     @IntDef(value = {

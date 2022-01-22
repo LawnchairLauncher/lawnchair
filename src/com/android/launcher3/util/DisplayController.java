@@ -353,6 +353,8 @@ public class DisplayController implements DisplayListener, ComponentCallbacks, S
                     mPerDisplayBounds.put(displayKey, displayBounds);
                 }
             }
+            Log.d("b/211775278", "displayId: " + displayId + ", currentSize: " + currentSize);
+            Log.d("b/211775278", "perDisplayBounds: " + mPerDisplayBounds);
         }
 
         private static Set<WindowBounds> getSupportedBoundsForDisplay(Display display, Point size) {

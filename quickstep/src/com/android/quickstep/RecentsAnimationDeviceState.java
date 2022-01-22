@@ -34,6 +34,7 @@ import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_A
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_BUBBLES_EXPANDED;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_GLOBAL_ACTIONS_SHOWING;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_HOME_DISABLED;
+import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_IME_SHOWING;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_MAGNIFICATION_OVERLAP;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_NAV_BAR_HIDDEN;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_NOTIFICATION_PANEL_EXPANDED;
@@ -52,6 +53,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Resources;
 import android.graphics.Region;
+import android.inputmethodservice.InputMethodService;
 import android.net.Uri;
 import android.os.Process;
 import android.os.RemoteException;
@@ -590,6 +592,12 @@ public class RecentsAnimationDeviceState implements
 
     public RotationTouchHelper getRotationTouchHelper() {
         return mRotationTouchHelper;
+    }
+
+    /** Returns whether IME is rendering nav buttons, and IME is currently showing. */
+    public boolean isImeRenderingNavButtons() {
+        return InputMethodService.canImeRenderGesturalNavButtons() && mMode == NO_BUTTON
+                && ((mSystemUiStateFlags & SYSUI_STATE_IME_SHOWING) != 0);
     }
 
     public void dump(PrintWriter pw) {

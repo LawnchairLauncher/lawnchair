@@ -326,7 +326,8 @@ public final class LauncherActivityInterface extends
         if (uiController == null) {
             return super.deferStartingActivity(deviceState, ev);
         }
-        return uiController.isEventOverAnyTaskbarItem(ev);
+        return uiController.isEventOverAnyTaskbarItem(ev)
+                || super.deferStartingActivity(deviceState, ev);
     }
 
     @Override

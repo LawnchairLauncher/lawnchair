@@ -73,15 +73,18 @@ import com.android.quickstep.AnimatedFloat;
 import com.android.systemui.shared.rotation.FloatingRotationButton;
 import com.android.systemui.shared.rotation.RotationButton;
 import com.android.systemui.shared.rotation.RotationButtonController;
+import com.android.systemui.shared.system.QuickStepContract;
 import com.android.systemui.shared.system.ViewTreeObserverWrapper;
 
+import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.StringJoiner;
 import java.util.function.IntPredicate;
 
 /**
  * Controller for managing nav bar buttons in taskbar
  */
-public class NavbarButtonsViewController {
+public class NavbarButtonsViewController implements TaskbarControllers.LoggableTaskbarController {
 
     private final Rect mTempRect = new Rect();
 
@@ -629,6 +632,42 @@ public class NavbarButtonsViewController {
     private void onComputeInsetsForSeparateWindow(ViewTreeObserverWrapper.InsetsInfo insetsInfo) {
         addVisibleButtonsRegion(mSeparateWindowParent, insetsInfo.touchableRegion);
         insetsInfo.setTouchableInsets(TOUCHABLE_INSETS_REGION);
+    }
+
+    @Override
+    public void dumpLogs(String prefix, PrintWriter pw) {
+        pw.println(prefix + "NavbarButtonsViewController:");
+
+        pw.println(String.format("%s\tmState=%s", prefix, getStateString(mState)));
+        pw.println(String.format(
+                "%s\tmLightIconColor=0x%s", prefix, Integer.toHexString(mLightIconColor)));
+        pw.println(String.format(
+                "%s\tmDarkIconColor=0x%s", prefix, Integer.toHexString(mDarkIconColor)));
+        pw.println(String.format(
+                "%s\tmFloatingRotationButtonBounds=%s", prefix, mFloatingRotationButtonBounds));
+        pw.println(String.format(
+                "%s\tmSysuiStateFlags=%s",
+                prefix,
+                QuickStepContract.getSystemUiStateString(mSysuiStateFlags)));
+    }
+
+    private static String getStateString(int flags) {
+        StringJoiner str = new StringJoiner("|");
+        str.add((flags & FLAG_SWITCHER_SUPPORTED) != 0 ? "FLAG_SWITCHER_SUPPORTED" : "");
+        str.add((flags & FLAG_IME_VISIBLE) != 0 ? "FLAG_IME_VISIBLE" : "");
+        str.add((flags & FLAG_ROTATION_BUTTON_VISIBLE) != 0 ? "FLAG_ROTATION_BUTTON_VISIBLE" : "");
+        str.add((flags & FLAG_A11Y_VISIBLE) != 0 ? "FLAG_A11Y_VISIBLE" : "");
+        str.add((flags & FLAG_ONLY_BACK_FOR_BOUNCER_VISIBLE) != 0
+                ? "FLAG_ONLY_BACK_FOR_BOUNCER_VISIBLE" : "");
+        str.add((flags & FLAG_KEYGUARD_VISIBLE) != 0 ? "FLAG_KEYGUARD_VISIBLE" : "");
+        str.add((flags & FLAG_KEYGUARD_OCCLUDED) != 0 ? "FLAG_KEYGUARD_OCCLUDED" : "");
+        str.add((flags & FLAG_DISABLE_HOME) != 0 ? "FLAG_DISABLE_HOME" : "");
+        str.add((flags & FLAG_DISABLE_RECENTS) != 0 ? "FLAG_DISABLE_RECENTS" : "");
+        str.add((flags & FLAG_DISABLE_BACK) != 0 ? "FLAG_DISABLE_BACK" : "");
+        str.add((flags & FLAG_NOTIFICATION_SHADE_EXPANDED) != 0
+                ? "FLAG_NOTIFICATION_SHADE_EXPANDED" : "");
+        str.add((flags & FLAG_SCREEN_PINNING_ACTIVE) != 0 ? "FLAG_SCREEN_PINNING_ACTIVE" : "");
+        return str.toString();
     }
 
     private class RotationButtonListener implements RotationButton.RotationButtonUpdatesCallback {

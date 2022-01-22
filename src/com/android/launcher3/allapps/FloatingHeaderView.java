@@ -30,12 +30,12 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Insettable;
 import com.android.launcher3.R;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.uioverrides.plugins.PluginManagerWrapper;
+import com.android.launcher3.views.ActivityContext;
 import com.android.systemui.plugins.AllAppsRow;
 import com.android.systemui.plugins.AllAppsRow.OnHeightUpdatedListener;
 import com.android.systemui.plugins.PluginListener;
@@ -118,7 +118,9 @@ public class FloatingHeaderView extends LinearLayout implements
         mHeaderTopPadding = context.getResources()
                 .getDimensionPixelSize(R.dimen.all_apps_header_top_padding);
         mHeaderProtectionSupported = context.getResources().getBoolean(
-                R.bool.config_header_protection_supported);
+                R.bool.config_header_protection_supported)
+                // TODO(b/208599118) Support header protection for bottom sheet.
+                && !ActivityContext.lookupContext(context).getDeviceProfile().isTablet;
     }
 
     @Override
@@ -413,7 +415,7 @@ public class FloatingHeaderView extends LinearLayout implements
 
     @Override
     public void setInsets(Rect insets) {
-        DeviceProfile grid = BaseDraggingActivity.fromContext(getContext()).getDeviceProfile();
+        DeviceProfile grid = ActivityContext.lookupContext(getContext()).getDeviceProfile();
         for (FloatingHeaderRow row : mAllRows) {
             row.setInsets(insets, grid);
         }

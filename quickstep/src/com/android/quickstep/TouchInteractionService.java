@@ -33,6 +33,7 @@ import static com.android.systemui.shared.system.QuickStepContract.KEY_EXTRA_SHE
 import static com.android.systemui.shared.system.QuickStepContract.KEY_EXTRA_SHELL_STARTING_WINDOW;
 import static com.android.systemui.shared.system.QuickStepContract.KEY_EXTRA_SMARTSPACE_TRANSITION_CONTROLLER;
 import static com.android.systemui.shared.system.QuickStepContract.KEY_EXTRA_SYSUI_PROXY;
+import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_NOTIFICATION_PANEL_EXPANDED;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_TRACING_ENABLED;
 
 import android.annotation.TargetApi;
@@ -478,6 +479,15 @@ public class TouchInteractionService extends Service
             SystemUiProxy.INSTANCE.get(this).setLastSystemUiStateFlags(systemUiStateFlags);
             mOverviewComponentObserver.onSystemUiStateChanged();
             mTaskbarManager.onSystemUiFlagsChanged(systemUiStateFlags);
+
+            boolean wasExpanded = (lastSysUIFlags & SYSUI_STATE_NOTIFICATION_PANEL_EXPANDED) != 0;
+            boolean isExpanded =
+                    (systemUiStateFlags & SYSUI_STATE_NOTIFICATION_PANEL_EXPANDED) != 0;
+            if (wasExpanded != isExpanded && isExpanded) {
+                // End live tile when expanding the notification panel for the first time from
+                // overview.
+                mTaskAnimationManager.endLiveTile();
+            }
 
             if ((lastSysUIFlags & SYSUI_STATE_TRACING_ENABLED) !=
                     (systemUiStateFlags & SYSUI_STATE_TRACING_ENABLED)) {
@@ -951,6 +961,7 @@ public class TouchInteractionService extends Service
             RecentsModel.INSTANCE.get(this).dump("", pw);
             pw.println("ProtoTrace:");
             pw.println("  file=" + ProtoTracer.INSTANCE.get(this).getTraceFile());
+            mTaskbarManager.dumpLogs("", pw);
         }
     }
 

@@ -209,7 +209,7 @@ public class AppsDividerView extends View implements StateListener<LauncherState
     private Layout getAllAppsLabelLayout() {
         if (mAllAppsLabelLayout == null) {
             mPaint.setAntiAlias(true);
-            mPaint.setTypeface(Typeface.create("sans-serif-medium", Typeface.NORMAL));
+            mPaint.setTypeface(Typeface.create("google-sans", Typeface.NORMAL));
             mPaint.setTextSize(
                     getResources().getDimensionPixelSize(R.dimen.all_apps_label_text_size));
 
