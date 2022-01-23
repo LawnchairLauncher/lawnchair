@@ -2366,6 +2366,9 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
                 CellLayout cl = mWorkspace.getScreenWithId(item.screenId);
                 if (cl != null && cl.isOccupied(item.cellX, item.cellY)) {
                     View v = cl.getChildAt(item.cellX, item.cellY);
+                    if (v == null) {
+                        Log.e(TAG, "bindItems failed when removing colliding item=" + item);
+                    }
                     Object tag = v.getTag();
                     String desc = "Collision while binding workspace item: " + item
                             + ". Collides with " + tag;
