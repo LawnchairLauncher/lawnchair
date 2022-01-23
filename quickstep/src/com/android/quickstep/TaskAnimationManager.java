@@ -220,6 +220,22 @@ public class TaskAnimationManager implements RecentsAnimationCallbacks.RecentsAn
         return mCallbacks;
     }
 
+    public void endLiveTile() {
+        if (mLastGestureState == null) {
+            return;
+        }
+        BaseActivityInterface activityInterface = mLastGestureState.getActivityInterface();
+        if (ENABLE_QUICKSTEP_LIVE_TILE.get() && activityInterface.isInLiveTileMode()
+                && activityInterface.getCreatedActivity() != null) {
+            RecentsView recentsView = activityInterface.getCreatedActivity().getOverviewPanel();
+            if (recentsView != null) {
+                recentsView.switchToScreenshot(null,
+                        () -> recentsView.finishRecentsAnimation(true /* toRecents */,
+                                false /* shouldPip */, null));
+            }
+        }
+    }
+
     public void setLiveTileCleanUpHandler(Runnable cleanUpHandler) {
         mLiveTileCleanUpHandler = cleanUpHandler;
     }
