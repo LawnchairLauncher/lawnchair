@@ -39,6 +39,7 @@ import com.android.launcher3.tapl.FolderIcon;
 import com.android.launcher3.tapl.Widgets;
 import com.android.launcher3.tapl.Workspace;
 import com.android.launcher3.util.TestUtil;
+import com.android.launcher3.util.rule.ScreenRecordRule.ScreenRecord;
 import com.android.launcher3.widget.picker.WidgetsFullSheet;
 import com.android.launcher3.widget.picker.WidgetsRecyclerView;
 
@@ -176,6 +177,7 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
     }
 
     @Test
+    @ScreenRecord // b/202433017
     public void testWorkspace() throws Exception {
         final Workspace workspace = mLauncher.getWorkspace();
 
