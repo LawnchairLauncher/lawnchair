@@ -79,9 +79,6 @@ public final class FeatureFlags {
     public static final BooleanFlag KEYGUARD_ANIMATION = getDebugFlag(
             "KEYGUARD_ANIMATION", false, "Enable animation for keyguard going away on wallpaper");
 
-    public static final BooleanFlag ADAPTIVE_ICON_WINDOW_ANIM = getDebugFlag(
-            "ADAPTIVE_ICON_WINDOW_ANIM", true, "Use adaptive icons for window animations.");
-
     public static final BooleanFlag ENABLE_QUICKSTEP_LIVE_TILE = getDebugFlag(
             "ENABLE_QUICKSTEP_LIVE_TILE", true, "Enable live tile in Quickstep overview");
 
