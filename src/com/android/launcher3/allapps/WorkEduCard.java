@@ -23,16 +23,18 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
 
-import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
+import com.android.launcher3.Utilities;
+import com.android.launcher3.views.ActivityContext;
 
 /**
  * Work profile toggle switch shown at the bottom of AllApps work tab
  */
-public class WorkEduCard extends FrameLayout implements View.OnClickListener,
+public class WorkEduCard extends FrameLayout implements
+        View.OnClickListener,
         Animation.AnimationListener {
 
-    private final Launcher mLauncher;
+    private final ActivityContext mActivityContext;
     Animation mDismissAnim;
     private int mPosition = -1;
 
@@ -46,7 +48,7 @@ public class WorkEduCard extends FrameLayout implements View.OnClickListener,
 
     public WorkEduCard(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        mLauncher = Launcher.getLauncher(getContext());
+        mActivityContext = ActivityContext.lookupContext(getContext());
         mDismissAnim = AnimationUtils.loadAnimation(context, android.R.anim.fade_out);
         mDismissAnim.setDuration(500);
         mDismissAnim.setAnimationListener(this);
@@ -69,13 +71,14 @@ public class WorkEduCard extends FrameLayout implements View.OnClickListener,
         super.onFinishInflate();
         findViewById(R.id.action_btn).setOnClickListener(this);
         MarginLayoutParams lp = ((MarginLayoutParams) findViewById(R.id.wrapper).getLayoutParams());
-        lp.width = mLauncher.getAppsView().getActiveRecyclerView().getTabWidth();
+        lp.width = mActivityContext.getAppsView().getActiveRecyclerView().getTabWidth();
     }
 
     @Override
     public void onClick(View view) {
         startAnimation(mDismissAnim);
-        mLauncher.getSharedPrefs().edit().putInt(WorkAdapterProvider.KEY_WORK_EDU_STEP, 1).apply();
+        Utilities.getPrefs(getContext()).edit().putInt(WorkAdapterProvider.KEY_WORK_EDU_STEP,
+                1).apply();
     }
 
     @Override
@@ -97,8 +100,8 @@ public class WorkEduCard extends FrameLayout implements View.OnClickListener,
         if (mPosition == -1) {
             if (getParent() != null) ((ViewGroup) getParent()).removeView(WorkEduCard.this);
         } else {
-            AllAppsRecyclerView rv = mLauncher.getAppsView()
-                    .mAH[AllAppsContainerView.AdapterHolder.WORK].recyclerView;
+            AllAppsRecyclerView rv = mActivityContext.getAppsView().mAH.get(
+                    ActivityAllAppsContainerView.AdapterHolder.WORK).mRecyclerView;
             rv.getApps().getAdapterItems().remove(mPosition);
             rv.getAdapter().notifyItemRemoved(mPosition);
         }

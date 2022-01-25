@@ -26,12 +26,11 @@ import android.view.ViewGroup;
 import android.view.WindowInsets;
 import android.widget.Button;
 
-import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Insettable;
-import com.android.launcher3.Launcher;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.KeyboardInsetAnimationCallback;
+import com.android.launcher3.views.ActivityContext;
 import com.android.launcher3.workprofile.PersonalWorkSlidingTabStrip;
 
 /**
@@ -73,7 +72,7 @@ public class WorkModeSwitch extends Button implements Insettable, View.OnClickLi
                     new KeyboardInsetAnimationCallback(this);
             setWindowInsetsAnimationCallback(keyboardInsetAnimationCallback);
         }
-        DeviceProfile grid = BaseDraggingActivity.fromContext(getContext()).getDeviceProfile();
+        DeviceProfile grid = ActivityContext.lookupContext(getContext()).getDeviceProfile();
         setInsets(grid.getInsets());
     }
 
@@ -91,7 +90,7 @@ public class WorkModeSwitch extends Button implements Insettable, View.OnClickLi
 
     @Override
     public void onActivePageChanged(int page) {
-        mOnWorkTab = page == AllAppsContainerView.AdapterHolder.WORK;
+        mOnWorkTab = page == ActivityAllAppsContainerView.AdapterHolder.WORK;
         updateVisibility();
     }
 
@@ -99,9 +98,9 @@ public class WorkModeSwitch extends Button implements Insettable, View.OnClickLi
     public void onClick(View view) {
         if (Utilities.ATLEAST_P && isEnabled()) {
             setFlag(FLAG_PROFILE_TOGGLE_ONGOING);
-            Launcher launcher = Launcher.getLauncher(getContext());
-            launcher.getStatsLogManager().logger().log(LAUNCHER_TURN_OFF_WORK_APPS_TAP);
-            launcher.getAppsView().getWorkManager().setWorkProfileEnabled(false);
+            ActivityContext activityContext = ActivityContext.lookupContext(getContext());
+            activityContext.getStatsLogManager().logger().log(LAUNCHER_TURN_OFF_WORK_APPS_TAP);
+            activityContext.getAppsView().getWorkManager().setWorkProfileEnabled(false);
         }
     }
 

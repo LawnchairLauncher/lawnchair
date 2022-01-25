@@ -37,7 +37,7 @@ import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.ExtendedEditText;
 import com.android.launcher3.Insettable;
 import com.android.launcher3.R;
-import com.android.launcher3.allapps.AllAppsContainerView;
+import com.android.launcher3.allapps.ActivityAllAppsContainerView;
 import com.android.launcher3.allapps.AllAppsGridAdapter.AdapterItem;
 import com.android.launcher3.allapps.AllAppsStore;
 import com.android.launcher3.allapps.AlphabeticalAppsList;
@@ -57,8 +57,8 @@ public class AppsSearchContainerLayout extends ExtendedEditText
     private final AllAppsSearchBarController mSearchBarController;
     private final SpannableStringBuilder mSearchQueryBuilder;
 
-    private AlphabeticalAppsList mApps;
-    private AllAppsContainerView mAppsView;
+    private AlphabeticalAppsList<?> mApps;
+    private ActivityAllAppsContainerView<?> mAppsView;
 
     // The amount of pixels to shift down and overlap with the rest of the content.
     private final int mContentOverlap;
@@ -130,7 +130,7 @@ public class AppsSearchContainerLayout extends ExtendedEditText
     }
 
     @Override
-    public void initializeSearch(AllAppsContainerView appsView) {
+    public void initializeSearch(ActivityAllAppsContainerView<?> appsView) {
         mApps = appsView.getApps();
         mAppsView = appsView;
         mSearchBarController.initialize(

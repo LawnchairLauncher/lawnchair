@@ -49,7 +49,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.android.launcher3.LauncherSettings.Favorites;
-import com.android.launcher3.allapps.AllAppsContainerView;
+import com.android.launcher3.allapps.ActivityAllAppsContainerView;
 import com.android.launcher3.allapps.search.DefaultSearchAdapterProvider;
 import com.android.launcher3.allapps.search.SearchAdapterProvider;
 import com.android.launcher3.logging.InstanceId;
@@ -340,7 +340,8 @@ public abstract class BaseDraggingActivity extends BaseActivity
      * Creates and returns {@link SearchAdapterProvider} for build variant specific search result
      * views
      */
-    public SearchAdapterProvider createSearchAdapterProvider(AllAppsContainerView allapps) {
-        return new DefaultSearchAdapterProvider(this, allapps);
+    public SearchAdapterProvider<?> createSearchAdapterProvider(
+            ActivityAllAppsContainerView<?> allApps) {
+        return new DefaultSearchAdapterProvider(this);
     }
 }

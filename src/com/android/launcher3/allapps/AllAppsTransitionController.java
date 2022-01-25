@@ -75,7 +75,7 @@ public class AllAppsTransitionController
                 }
             };
 
-    private AllAppsContainerView mAppsView;
+    private ActivityAllAppsContainerView<Launcher> mAppsView;
 
     private final Launcher mLauncher;
     private boolean mIsVerticalLayout;
@@ -201,7 +201,7 @@ public class AllAppsTransitionController
     /**
      * see Launcher#setupViews
      */
-    public void setupViews(ScrimView scrimView, AllAppsContainerView appsView) {
+    public void setupViews(ScrimView scrimView, ActivityAllAppsContainerView<Launcher> appsView) {
         mScrimView = scrimView;
         mAppsView = appsView;
         if (FeatureFlags.ENABLE_DEVICE_SEARCH.get() && Utilities.ATLEAST_R) {
