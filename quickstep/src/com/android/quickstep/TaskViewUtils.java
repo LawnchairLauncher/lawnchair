@@ -36,6 +36,7 @@ import static com.android.launcher3.anim.Interpolators.TOUCH_RESPONSE_INTERPOLAT
 import static com.android.launcher3.anim.Interpolators.clampToProgress;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
 import static com.android.launcher3.statehandlers.DepthController.DEPTH;
+import static com.android.quickstep.TaskAnimationManager.ENABLE_SHELL_TRANSITIONS;
 import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.MODE_CLOSING;
 import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.MODE_OPENING;
 
@@ -168,7 +169,7 @@ public final class TaskViewUtils {
                 ENABLE_QUICKSTEP_LIVE_TILE.get() && v.getRecentsView().getRunningTaskIndex() != -1;
         final RemoteAnimationTargets targets =
                 new RemoteAnimationTargets(appTargets, wallpaperTargets, nonAppTargets,
-                        inLiveTileMode ? MODE_CLOSING : MODE_OPENING);
+                        !ENABLE_SHELL_TRANSITIONS && inLiveTileMode ? MODE_CLOSING : MODE_OPENING);
         final RemoteAnimationTargetCompat navBarTarget = targets.getNavBarRemoteAnimationTarget();
 
         SurfaceTransactionApplier applier = new SurfaceTransactionApplier(v);
@@ -282,7 +283,8 @@ public final class TaskViewUtils {
             topMostSimulators = remoteTargetHandles;
         }
 
-        if (!skipViewChanges && parallaxCenterAndAdjacentTask && topMostSimulators.length > 0) {
+        if (!skipViewChanges && parallaxCenterAndAdjacentTask && topMostSimulators != null
+                && topMostSimulators.length > 0) {
             out.addFloat(v, VIEW_ALPHA, 1, 0, clampToProgress(LINEAR, 0.2f, 0.4f));
 
             RemoteTargetHandle[] simulatorCopies = topMostSimulators;

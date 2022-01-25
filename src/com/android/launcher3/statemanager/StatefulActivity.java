@@ -152,7 +152,7 @@ public abstract class StatefulActivity<STATE_TYPE extends BaseState<STATE_TYPE>>
     /**
      * Called if the Activity UI changed while the activity was not visible
      */
-    protected void onUiChangedWhileSleeping() { }
+    public void onUiChangedWhileSleeping() { }
 
     private void handleDeferredResume() {
         if (hasBeenResumed() && !getStateManager().getState().hasFlag(FLAG_NON_INTERACTIVE)) {

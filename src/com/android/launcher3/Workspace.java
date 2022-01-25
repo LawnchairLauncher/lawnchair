@@ -1135,6 +1135,10 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
             stripEmptyScreens();
             mStripScreensOnPageStopMoving = false;
         }
+
+        // Inform the Launcher activity that the page transition ended so that it can react to the
+        // newly visible page if it wants to.
+        mLauncher.onPageEndTransition();
     }
 
     public void setLauncherOverlay(LauncherOverlay overlay) {
@@ -1211,6 +1215,10 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
                         .log(LAUNCHER_SWIPELEFT);
             }
             mOverlayShown = true;
+
+            // Let the Launcher activity know that the overlay is now visible.
+            mLauncher.onOverlayVisibilityChanged(mOverlayShown);
+
             // Not announcing the overlay page for accessibility since it announces itself.
         } else if (Float.compare(scroll, 0f) == 0) {
             if (mOverlayShown) {
@@ -1234,6 +1242,10 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
                 announcePageForAccessibility();
             }
             mOverlayShown = false;
+
+            // Let the Launcher activity know that the overlay is no longer visible.
+            mLauncher.onOverlayVisibilityChanged(mOverlayShown);
+
             tryRunOverlayCallback();
         }
 

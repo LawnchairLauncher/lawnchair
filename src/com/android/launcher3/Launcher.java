@@ -2790,6 +2790,17 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
     }
 
     /**
+     * Informs us that the overlay (-1 screen, typically), has either become visible or invisible.
+     */
+    public void onOverlayVisibilityChanged(boolean visible) {}
+
+    /**
+     * Informs us that the page transition has ended, so that we can react to the newly selected
+     * page if we want to.
+     */
+    public void onPageEndTransition() {}
+
+    /**
      * Add the icons for all apps.
      *
      * Implementation of the method from LauncherModel.Callbacks.
