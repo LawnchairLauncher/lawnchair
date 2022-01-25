@@ -48,6 +48,7 @@ public class TaskbarControllers {
     public final TaskbarAutohideSuspendController taskbarAutohideSuspendController;
     public final TaskbarPopupController taskbarPopupController;
     public final TaskbarForceVisibleImmersiveController taskbarForceVisibleImmersiveController;
+    public final TaskbarAllAppsViewController taskbarAllAppsViewController;
 
     @Nullable private LoggableTaskbarController[] mControllersToLog = null;
 
@@ -72,7 +73,8 @@ public class TaskbarControllers {
             TaskbarEduController taskbarEduController,
             TaskbarAutohideSuspendController taskbarAutoHideSuspendController,
             TaskbarPopupController taskbarPopupController,
-            TaskbarForceVisibleImmersiveController taskbarForceVisibleImmersiveController) {
+            TaskbarForceVisibleImmersiveController taskbarForceVisibleImmersiveController,
+            TaskbarAllAppsViewController taskbarAllAppsViewController) {
         this.taskbarActivityContext = taskbarActivityContext;
         this.taskbarDragController = taskbarDragController;
         this.navButtonController = navButtonController;
@@ -89,6 +91,7 @@ public class TaskbarControllers {
         this.taskbarAutohideSuspendController = taskbarAutoHideSuspendController;
         this.taskbarPopupController = taskbarPopupController;
         this.taskbarForceVisibleImmersiveController = taskbarForceVisibleImmersiveController;
+        this.taskbarAllAppsViewController = taskbarAllAppsViewController;
     }
 
     /**
@@ -112,6 +115,7 @@ public class TaskbarControllers {
         taskbarEduController.init(this);
         taskbarPopupController.init(this);
         taskbarForceVisibleImmersiveController.init(this);
+        taskbarAllAppsViewController.init(this);
 
         mControllersToLog = new LoggableTaskbarController[] {
                 taskbarDragController, navButtonController, navbarButtonsViewController,
