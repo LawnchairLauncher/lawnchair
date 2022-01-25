@@ -33,6 +33,7 @@
     <dimen name="dynamic_grid_hotseat_top_padding">8dp</dimen>
     <dimen name="dynamic_grid_hotseat_bottom_padding">2dp</dimen>
     <dimen name="dynamic_grid_hotseat_bottom_tall_padding">0dp</dimen>
+    <dimen name="inline_qsb_bottom_margin">0dp</dimen>
 
     <!-- Qsb -->
     <!-- Used for adjusting the position of QSB when placed in hotseat. This is a ratio and a higher
