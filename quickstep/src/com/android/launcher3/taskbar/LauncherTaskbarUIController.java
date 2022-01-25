@@ -113,6 +113,11 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
         return !mTaskbarLauncherStateController.isAnimatingToLauncher();
     }
 
+    public void setShouldDelayLauncherStateAnim(boolean shouldDelayLauncherStateAnim) {
+        mTaskbarLauncherStateController.setShouldDelayLauncherStateAnim(
+                shouldDelayLauncherStateAnim);
+    }
+
     /**
      * Should be called from onResume() and onPause(), and animates the Taskbar accordingly.
      */
