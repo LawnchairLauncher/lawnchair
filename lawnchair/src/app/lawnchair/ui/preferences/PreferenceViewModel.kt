@@ -1,5 +1,5 @@
 /*
- * Copyright 2021, Lawnchair
+ * Copyright 2022, Lawnchair
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,15 +22,13 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import app.lawnchair.icons.CustomAdaptiveIconDrawable
-import app.lawnchair.ui.preferences.about.licenses.License
+import app.lawnchair.ossnotices.getOssLibraries
 import com.android.launcher3.R
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.stateIn
-import java.io.BufferedReader
-import java.io.InputStreamReader
 
 private val iconPackIntents = listOf(
     Intent("com.novalauncher.THEME"),
@@ -67,18 +65,9 @@ class PreferenceViewModel(private val app: Application) : AndroidViewModel(app),
         .flowOn(Dispatchers.Default)
         .stateIn(viewModelScope, SharingStarted.Lazily, listOf())
 
-    override val licenses = flow {
-        val res = app.resources
-        val reader = BufferedReader(InputStreamReader(res.openRawResource(R.raw.third_party_license_metadata)))
-        val licenses = reader.readLines().map { line ->
-            val parts = line.split(" ")
-            val startEnd = parts[0].split(":")
-            val start = startEnd[0].toLong()
-            val length = startEnd[1].toInt()
-            val name = parts.subList(1, parts.size).joinToString(" ")
-            License(name, start, length)
-        }.sortedBy { it.name.lowercase() }
-        emit(licenses)
+    override val ossLibraries = flow {
+        val ossLibraries = app.getOssLibraries(thirdPartyLicenseMetadataId = R.raw.third_party_license_metadata)
+        emit(ossLibraries)
     }
         .flowOn(Dispatchers.Default)
         .stateIn(viewModelScope, SharingStarted.Lazily, null)

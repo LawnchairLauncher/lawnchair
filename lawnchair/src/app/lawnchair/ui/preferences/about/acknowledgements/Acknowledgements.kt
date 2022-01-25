@@ -1,4 +1,20 @@
-package app.lawnchair.ui.preferences.about.licenses
+/*
+ * Copyright 2022, Lawnchair
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package app.lawnchair.ui.preferences.about.acknowledgements
 
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.ExperimentalAnimationApi
@@ -20,6 +36,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
+import app.lawnchair.ossnotices.OssLibrary
 import app.lawnchair.ui.preferences.LocalNavController
 import app.lawnchair.ui.preferences.LocalPreferenceInteractor
 import app.lawnchair.ui.preferences.components.*
@@ -33,38 +50,41 @@ import com.google.accompanist.placeholder.material.placeholder
 
 @ExperimentalAnimationApi
 fun NavGraphBuilder.licensesGraph(route: String) {
-    preferenceGraph(route, { Licenses() }) { subRoute ->
+    preferenceGraph(route, { Acknowledgements() }) { subRoute ->
         composable(
             route = subRoute("{licenseIndex}"),
             arguments = listOf(navArgument("licenseIndex") { type = NavType.IntType })
         ) { backStackEntry ->
-            LicensePage(index = backStackEntry.arguments!!.getInt("licenseIndex"))
+            NoticePage(index = backStackEntry.arguments!!.getInt("licenseIndex"))
         }
     }
 }
 
 @ExperimentalAnimationApi
 @Composable
-fun Licenses() {
-    val optionalLicenses by LocalPreferenceInteractor.current.licenses.collectAsState()
-    LoadingScreen(optionalLicenses) { licenses ->
+fun Acknowledgements() {
+    val ossLibraries by LocalPreferenceInteractor.current.ossLibraries.collectAsState()
+    LoadingScreen(ossLibraries) { libraries ->
         PreferenceLayoutLazyColumn(label = stringResource(id = R.string.acknowledgements)) {
-            preferenceGroupItems(licenses, isFirstChild = true) { index, license ->
-                LicenseItem(license = license, index = index)
+            preferenceGroupItems(libraries, isFirstChild = true) { index, library ->
+                OssLibraryItem(
+                    ossLibrary = library,
+                    index = index,
+                )
             }
         }
     }
 }
 
 @Composable
-fun LicenseItem(license: License, index: Int) {
+fun OssLibraryItem(ossLibrary: OssLibrary, index: Int) {
     val navController = LocalNavController.current
     val destination = subRoute(name = "$index")
 
     PreferenceTemplate(
         title = {
             Text(
-                text = license.name,
+                text = ossLibrary.name,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
@@ -76,14 +96,14 @@ fun LicenseItem(license: License, index: Int) {
 
 @ExperimentalAnimationApi
 @Composable
-fun LicensePage(index: Int) {
-    val optionalLicenses by LocalPreferenceInteractor.current.licenses.collectAsState()
-    val license = optionalLicenses?.get(index)
-    val dataState = license?.let { loadLicense(license = license) }
+fun NoticePage(index: Int) {
+    val ossLibraries by LocalPreferenceInteractor.current.ossLibraries.collectAsState()
+    val ossLibrary = ossLibraries?.get(index)
+    val dataState = ossLibrary?.let { loadNotice(ossLibrary = it) }
     val data = dataState?.value
 
     PreferenceLayout(
-        label = license?.name ?: stringResource(id = R.string.loading)
+        label = ossLibrary?.name ?: stringResource(id = R.string.loading)
     ) {
         Crossfade(targetState = data) { it ->
             if (it != null) {
@@ -94,7 +114,7 @@ fun LicensePage(index: Int) {
                         layoutResult.value?.let { layoutResult ->
                             val position = layoutResult.getOffsetForPosition(pos)
                             val annotation =
-                                it.data.getStringAnnotations(position, position).firstOrNull()
+                                it.notice.getStringAnnotations(position, position).firstOrNull()
                             if (annotation?.tag == "URL") {
                                 uriHandler.openUri(annotation.item)
                             }
@@ -107,7 +127,7 @@ fun LicensePage(index: Int) {
                         .fillMaxWidth()
                         .padding(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 16.dp)
                         .then(pressIndicator),
-                    text = it.data,
+                    text = it.notice,
                     fontFamily = FontFamily.Monospace,
                     fontSize = 14.sp,
                     onTextLayout = {
@@ -122,7 +142,7 @@ fun LicensePage(index: Int) {
                             visible = true,
                             highlight = PlaceholderHighlight.fade(),
                         ),
-                    text = "a".repeat(license?.length ?: 20),
+                    text = "a".repeat(ossLibrary?.noticeLength ?: 20),
                     fontFamily = FontFamily.Monospace,
                     fontSize = 14.sp
                 )

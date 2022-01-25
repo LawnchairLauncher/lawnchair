@@ -345,6 +345,7 @@ dependencies {
     implementation "com.github.topjohnwu.libsu:service:$libsu_version"
 
     implementation 'com.google.protobuf:protobuf-javalite:3.8.0'
+    implementation 'com.github.LawnchairLauncher:oss-notices:v1.0.1'
 }
 
 protobuf {

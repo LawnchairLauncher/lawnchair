@@ -1,4 +1,20 @@
-package app.lawnchair.ui.preferences.about.licenses
+/*
+ * Copyright 2022, Lawnchair
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package app.lawnchair.ui.preferences.about.acknowledgements
 
 import android.text.SpannableString
 import android.text.style.URLSpan
@@ -10,20 +26,16 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextDecoration
+import app.lawnchair.ossnotices.OssLibrary
 import com.android.launcher3.R
 
 @Composable
-fun loadLicense(license: License): State<LicenseData?> {
-    val res = LocalContext.current.resources
-    val licenseStringState = remember { mutableStateOf<LicenseData?>(null) }
+fun loadNotice(ossLibrary: OssLibrary): State<OssLibraryWithNotice?> {
+    val context = LocalContext.current
+    val noticeStringState = remember { mutableStateOf<OssLibraryWithNotice?>(null) }
     val accentColor = MaterialTheme.colorScheme.primary
     DisposableEffect(Unit) {
-        val reader = res.openRawResource(R.raw.third_party_licenses)
-        reader.skip(license.start)
-        val bytes = ByteArray(license.length)
-        reader.read(bytes, 0, license.length)
-
-        val string = String(bytes)
+        val string = ossLibrary.getNotice(context = context, thirdPartyLicensesId = R.raw.third_party_licenses)
         val spannable = SpannableString(string)
         Linkify.addLinks(spannable, Linkify.WEB_URLS)
         val spans = spannable.getSpans(0, string.length, URLSpan::class.java)
@@ -48,10 +60,13 @@ fun loadLicense(license: License): State<LicenseData?> {
                 )
             }
         }
-        licenseStringState.value = LicenseData(license, annotatedString)
+        noticeStringState.value = OssLibraryWithNotice(ossLibrary, annotatedString)
         onDispose { }
     }
-    return licenseStringState
+    return noticeStringState
 }
 
-data class LicenseData(val license: License, val data: AnnotatedString)
+data class OssLibraryWithNotice(
+    val ossLibrary: OssLibrary,
+    val notice: AnnotatedString,
+)
