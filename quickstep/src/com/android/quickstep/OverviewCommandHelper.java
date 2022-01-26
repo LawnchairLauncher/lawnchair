@@ -38,6 +38,7 @@ import com.android.quickstep.views.TaskView;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.InteractionJankMonitorWrapper;
 
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -269,6 +270,14 @@ public class OverviewCommandHelper {
             }
         }
         scheduleNextTask(cmd);
+    }
+
+    public void dump(PrintWriter pw) {
+        pw.println("OverviewCommandHelper:");
+        pw.println("  mPendingCommands=" + mPendingCommands.size());
+        if (!mPendingCommands.isEmpty()) {
+            pw.println("    pendingCommandType=" + mPendingCommands.get(0).type);
+        }
     }
 
     private static class CommandInfo {
