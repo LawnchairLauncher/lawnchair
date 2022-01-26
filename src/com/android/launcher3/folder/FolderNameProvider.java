@@ -121,7 +121,8 @@ public class FolderNameProvider implements ResourceBasedOverride {
         if (packageNames.size() == 1) {
             Optional<AppInfo> info = getAppInfoByPackageName(packageNames.iterator().next());
             // Place it as first viable suggestion and shift everything else
-            info.ifPresent(i -> setAsFirstSuggestion(nameInfos, i.title.toString()));
+            info.ifPresent(i -> setAsFirstSuggestion(
+                    nameInfos, i.title == null ? "" : i.title.toString()));
         }
         if (DEBUG) {
             Log.d(TAG, "getSuggestedFolderName:" + nameInfos.toString());
