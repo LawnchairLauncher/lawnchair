@@ -29,6 +29,7 @@ import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.IntSet;
 import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.LauncherBindableItemsContainer;
+import com.android.quickstep.RecentsModel;
 
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -41,7 +42,7 @@ import java.util.List;
  * Launcher model Callbacks for rendering taskbar.
  */
 public class TaskbarModelCallbacks implements
-        BgDataModel.Callbacks, LauncherBindableItemsContainer {
+        BgDataModel.Callbacks, LauncherBindableItemsContainer, RecentsModel.RunningTasksListener {
 
     private final SparseArray<ItemInfo> mHotseatItems = new SparseArray<>();
     private List<ItemInfo> mPredictedItems = Collections.emptyList();
@@ -60,6 +61,16 @@ public class TaskbarModelCallbacks implements
 
     public void init(TaskbarControllers controllers) {
         mControllers = controllers;
+        if (mControllers.taskbarRecentAppsController.isEnabled()) {
+            RecentsModel.INSTANCE.get(mContext).registerRunningTasksListener(this);
+        }
+    }
+
+    /**
+     * Unregisters listeners in this class.
+     */
+    public void unregisterListeners() {
+        RecentsModel.INSTANCE.get(mContext).unregisterRunningTasksListener();
     }
 
     @Override
@@ -184,6 +195,8 @@ public class TaskbarModelCallbacks implements
                 isHotseatEmpty = false;
             }
         }
+        hotseatItemInfos = mControllers.taskbarRecentAppsController
+                .updateHotseatItemInfos(hotseatItemInfos);
         mContainer.updateHotseatItems(hotseatItemInfos);
 
         final boolean finalIsHotseatEmpty = isHotseatEmpty;
@@ -195,6 +208,21 @@ public class TaskbarModelCallbacks implements
     }
 
     @Override
+    public void onRunningTasksChanged() {
+        updateRunningApps();
+    }
+
+    /** Called when there's a change in running apps to update the UI. */
+    public void commitRunningAppsToUI() {
+        commitItemsToUI();
+    }
+
+    /** Call TaskbarRecentAppsController to update running apps with mHotseatItems. */
+    public void updateRunningApps() {
+        mControllers.taskbarRecentAppsController.updateRunningApps(mHotseatItems);
+    }
+
+    @Override
     public void bindDeepShortcutMap(HashMap<ComponentKey, Integer> deepShortcutMapCopy) {
         mControllers.taskbarPopupController.setDeepShortcutMap(deepShortcutMapCopy);
     }
@@ -202,6 +230,7 @@ public class TaskbarModelCallbacks implements
     @Override
     public void bindAllApplications(AppInfo[] apps, int flags) {
         mControllers.taskbarAllAppsController.setApps(apps, flags);
+        mControllers.taskbarRecentAppsController.setApps(apps);
     }
 
     protected void dumpLogs(String prefix, PrintWriter pw) {

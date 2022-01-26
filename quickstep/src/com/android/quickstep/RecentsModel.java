@@ -241,4 +241,35 @@ public class RecentsModel extends TaskStackChangeListener implements IconChangeL
          */
         void onTaskIconChanged(String pkg, UserHandle user);
     }
+
+    /**
+     * Registers a listener for running tasks
+     */
+    public void registerRunningTasksListener(RunningTasksListener listener) {
+        mTaskList.registerRunningTasksListener(listener);
+    }
+
+    /**
+     * Removes the previously registered running tasks listener
+     */
+    public void unregisterRunningTasksListener() {
+        mTaskList.unregisterRunningTasksListener();
+    }
+
+    /**
+     * Gets the set of running tasks.
+     */
+    public ArrayList<ActivityManager.RunningTaskInfo> getRunningTasks() {
+        return mTaskList.getRunningTasks();
+    }
+
+    /**
+     * Listener for receiving running tasks changes
+     */
+    public interface RunningTasksListener {
+        /**
+         * Called when there's a change to running tasks
+         */
+        void onRunningTasksChanged();
+    }
 }
