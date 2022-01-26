@@ -1,18 +1,18 @@
 buildscript {
     ext {
-        kotlin_version = '1.6.0'
-        compose_version = '1.1.0-rc01'
-        accompanist_version = '0.21.3-beta'
+        kotlin_version = '1.6.10'
+        compose_version = '1.2.0-alpha01'
+        accompanist_version = '0.24.0-alpha'
         libsu_version = '3.1.2'
         protocVersion = '3.18.0'
-        room_version = '2.4.0'
+        room_version = '2.4.1'
     }
     repositories {
         mavenCentral()
         google()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:7.2.0-alpha06'
+        classpath 'com.android.tools.build:gradle:7.2.0-alpha07'
         classpath PROTOBUF_CLASS_PATH
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath 'com.google.android.gms:oss-licenses-plugin:0.10.4'
@@ -313,8 +313,8 @@ dependencies {
     implementation "androidx.compose.ui:ui-tooling:$compose_version"
     implementation "androidx.compose.foundation:foundation:$compose_version"
     implementation "androidx.compose.material:material:$compose_version"
-    implementation "androidx.compose.material3:material3:1.0.0-alpha02"
-    implementation "androidx.constraintlayout:constraintlayout:2.1.2"
+    implementation "androidx.compose.material3:material3:1.0.0-alpha03"
+    implementation "androidx.constraintlayout:constraintlayout:2.1.3"
     implementation 'androidx.activity:activity-compose:1.4.0'
     implementation 'androidx.lifecycle:lifecycle-viewmodel-compose:2.4.0'
     implementation "androidx.compose.runtime:runtime-livedata:$compose_version"
@@ -334,7 +334,7 @@ dependencies {
     implementation "com.github.devsideal:VectorChildFinder:1.0.0"
     implementation "com.github.fornewid:material-motion-compose:0.8.0-beta01"
     implementation 'dev.kdrag0n:colorkt:1.0.3'
-    implementation "io.coil-kt:coil-compose:1.3.1"
+    implementation "io.coil-kt:coil-compose:1.4.0"
     implementation 'me.xdrop:fuzzywuzzy:1.3.1'
 
     implementation "androidx.room:room-runtime:$room_version"
@@ -345,7 +345,7 @@ dependencies {
     implementation "com.github.topjohnwu.libsu:service:$libsu_version"
 
     implementation 'com.google.protobuf:protobuf-javalite:3.8.0'
-    implementation 'com.github.LawnchairLauncher:oss-notices:v1.0.1'
+    implementation 'com.github.LawnchairLauncher:oss-notices:1.0.2'
 }
 
 protobuf {

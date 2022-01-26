@@ -46,6 +46,7 @@ fun PreferenceTemplate(
     verticalPadding: Dp = 16.dp,
     verticalAlignment: Alignment.Vertical = Alignment.CenterVertically,
 ) {
+    val contentAlphaDisabled = ContentAlpha.disabled
     Column {
         if (showDivider) {
             Divider(
@@ -72,7 +73,7 @@ fun PreferenceTemplate(
                 modifier = Modifier
                     .weight(1f)
                     .addIf(!enabled) {
-                        alpha(ContentAlpha.disabled)
+                        alpha(contentAlphaDisabled)
                     }
             ) {
                 CompositionLocalProvider(
