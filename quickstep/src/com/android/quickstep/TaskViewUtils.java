@@ -196,7 +196,7 @@ public final class TaskViewUtils {
         int taskIndex = recentsView.indexOfChild(v);
         Context context = v.getContext();
         DeviceProfile dp = BaseActivity.fromContext(context).getDeviceProfile();
-        boolean showAsGrid = dp.overviewShowAsGrid;
+        boolean showAsGrid = dp.isTablet;
         boolean parallaxCenterAndAdjacentTask =
                 taskIndex != recentsView.getCurrentPage() && !showAsGrid;
         int taskRectTranslationPrimary = recentsView.getScrollOffset(taskIndex);
@@ -551,7 +551,7 @@ public final class TaskViewUtils {
         if (launcherClosing) {
             Context context = v.getContext();
             DeviceProfile dp = BaseActivity.fromContext(context).getDeviceProfile();
-            launcherAnim = dp.overviewShowAsGrid
+            launcherAnim = dp.isTablet
                     ? ObjectAnimator.ofFloat(recentsView, RecentsView.CONTENT_ALPHA, 0)
                     : recentsView.createAdjacentPageAnimForTaskLaunch(taskView);
             launcherAnim.setInterpolator(Interpolators.TOUCH_RESPONSE_INTERPOLATOR);

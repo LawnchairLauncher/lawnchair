@@ -17,9 +17,6 @@
 package com.android.quickstep.views;
 
 import static android.provider.Settings.ACTION_APP_USAGE_SETTINGS;
-import static android.view.Gravity.BOTTOM;
-import static android.view.Gravity.CENTER_HORIZONTAL;
-import static android.view.Gravity.START;
 
 import static com.android.launcher3.Utilities.prefixTextWithIcon;
 import static com.android.launcher3.util.Executors.THREAD_POOL_EXECUTOR;
@@ -170,9 +167,9 @@ public final class DigitalWellBeingToast {
 
     public void setSplitConfiguration(StagedSplitBounds stagedSplitBounds) {
         mStagedSplitBounds = stagedSplitBounds;
-        if (mStagedSplitBounds == null ||
-                !mActivity.getDeviceProfile().overviewShowAsGrid ||
-                mTaskView.isFocusedTask()) {
+        if (mStagedSplitBounds == null
+                || !mActivity.getDeviceProfile().isTablet
+                || mTaskView.isFocusedTask()) {
             mSplitBannerConfig = SPLIT_BANNER_FULLSCREEN;
             return;
         }

@@ -23,4 +23,16 @@
 
 <!-- AllApps -->
     <dimen name="all_apps_bottom_sheet_horizontal_padding">32dp</dimen>
+
+<!-- Fast scroll -->
+    <dimen name="fastscroll_popup_width">75dp</dimen>
+    <dimen name="fastscroll_popup_height">62dp</dimen>
+    <dimen name="fastscroll_popup_padding">13dp</dimen>
+    <dimen name="fastscroll_popup_text_size">32dp</dimen>
+
+<!-- Dynamic grid -->
+    <dimen name="dynamic_grid_icon_drawable_padding">7dp</dimen>
+
+<!-- Hotseat -->
+    <dimen name="dynamic_grid_hotseat_side_padding">0dp</dimen>
 </resources>

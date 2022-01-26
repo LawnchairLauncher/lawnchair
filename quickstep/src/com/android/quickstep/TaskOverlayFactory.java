@@ -55,7 +55,6 @@ import com.android.quickstep.views.TaskView;
 import com.android.quickstep.views.TaskView.TaskIdAttributeContainer;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.recents.model.ThumbnailData;
-import com.android.systemui.shared.system.ActivityManagerWrapper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -130,7 +129,7 @@ public class TaskOverlayFactory implements ResourceBasedOverride {
         boolean taskViewHasMultipleTasks = taskViewTaskIds[0] != -1 &&
                 taskViewTaskIds[1] != -1;
         boolean notEnoughTasksToSplit = recentsView.getTaskViewCount() < 2;
-        boolean isFocusedTask = deviceProfile.overviewShowAsGrid && taskView.isFocusedTask();
+        boolean isFocusedTask = deviceProfile.isTablet && taskView.isFocusedTask();
         boolean isTaskInExpectedScrollPosition =
                 recentsView.isTaskInExpectedScrollPosition(recentsView.indexOfChild(taskView));
         ActivityManager activityManager =
