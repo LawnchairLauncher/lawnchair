@@ -16,12 +16,16 @@
 
 package com.android.launcher3.widget;
 
+import android.annotation.TargetApi;
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.Rect;
+import android.os.Build;
 import android.os.Handler;
 import android.os.SystemClock;
+import android.os.Trace;
+import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.util.SparseIntArray;
 import android.view.MotionEvent;
@@ -52,6 +56,8 @@ public class LauncherAppWidgetHostView extends BaseLauncherAppWidgetHostView
         implements TouchCompleteListener, View.OnLongClickListener,
         LocalColorExtractor.Listener {
 
+    private static final String TAG = "LauncherAppWidgetHostView";
+
     // Related to the auto-advancing of widgets
     private static final long ADVANCE_INTERVAL = 20000;
     private static final long ADVANCE_STAGGER = 250;
@@ -60,6 +66,8 @@ public class LauncherAppWidgetHostView extends BaseLauncherAppWidgetHostView
     private static final SparseBooleanArray sAutoAdvanceWidgetIds = new SparseBooleanArray();
     // Maximum duration for which updates can be deferred.
     private static final long UPDATE_LOCK_TIMEOUT_MILLIS = 1000;
+
+    private static final String TRACE_METHOD_NAME = "appwidget load-widget ";
 
     private final Rect mTempRect = new Rect();
     private final CheckLongPressHelper mLongPressHelper;
@@ -87,6 +95,8 @@ public class LauncherAppWidgetHostView extends BaseLauncherAppWidgetHostView
     private int mDragContentWidth = 0;
     /** The drag content height which is only set when the drag content scale is not 1f. */
     private int mDragContentHeight = 0;
+
+    private boolean mTrackingWidgetUpdate = false;
 
     public LauncherAppWidgetHostView(Context context) {
         super(context);
@@ -121,7 +131,25 @@ public class LauncherAppWidgetHostView extends BaseLauncherAppWidgetHostView
     }
 
     @Override
+    @TargetApi(Build.VERSION_CODES.Q)
+    public void setAppWidget(int appWidgetId, AppWidgetProviderInfo info) {
+        super.setAppWidget(appWidgetId, info);
+        if (!mTrackingWidgetUpdate && Utilities.ATLEAST_Q) {
+            mTrackingWidgetUpdate = true;
+            Trace.beginAsyncSection(TRACE_METHOD_NAME + info.provider, appWidgetId);
+            Log.i(TAG, "App widget created with id: " + appWidgetId);
+        }
+    }
+
+    @Override
+    @TargetApi(Build.VERSION_CODES.Q)
     public void updateAppWidget(RemoteViews remoteViews) {
+        if (mTrackingWidgetUpdate && remoteViews != null && Utilities.ATLEAST_Q) {
+            Log.i(TAG, "App widget with id: " + getAppWidgetId() + " loaded");
+            Trace.endAsyncSection(
+                    TRACE_METHOD_NAME + getAppWidgetInfo().provider, getAppWidgetId());
+            mTrackingWidgetUpdate = false;
+        }
         if (isDeferringUpdates()) {
             mDeferredRemoteViews = remoteViews;
             return;
