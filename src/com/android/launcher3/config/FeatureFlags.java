@@ -99,7 +99,7 @@ public final class FeatureFlags {
             "ENABLE_TWOLINE_ALLAPPS", false, "Enables two line label inside all apps.");
 
     public static final BooleanFlag ENABLE_DEVICE_SEARCH_PERFORMANCE_LOGGING = new DeviceFlag(
-            "ENABLE_DEVICE_SEARCH_PERFORMANCE_LOGGING", true,
+            "ENABLE_DEVICE_SEARCH_PERFORMANCE_LOGGING", false,
             "Allows on device search in all apps logging");
 
     public static final BooleanFlag IME_STICKY_SNACKBAR_EDU = getDebugFlag(
