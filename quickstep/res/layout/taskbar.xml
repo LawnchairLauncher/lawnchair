@@ -82,8 +82,4 @@
         android:clipToOutline="true"
         android:layout_gravity="bottom"/>
 
-    <include
-        layout="@layout/taskbar_all_apps"
-        android:visibility="gone" />
-
 </com.android.launcher3.taskbar.TaskbarDragLayer>

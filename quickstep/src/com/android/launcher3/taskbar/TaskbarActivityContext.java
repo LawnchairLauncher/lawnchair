@@ -154,7 +154,11 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
         TaskbarScrimView taskbarScrimView = mDragLayer.findViewById(R.id.taskbar_scrim);
         FrameLayout navButtonsView = mDragLayer.findViewById(R.id.navbuttons_view);
         StashedHandleView stashedHandleView = mDragLayer.findViewById(R.id.stashed_handle);
-        mAppsView = mDragLayer.findViewById(R.id.apps_view);
+
+        TaskbarAllAppsSlideInView appsSlideInView =
+                (TaskbarAllAppsSlideInView) mLayoutInflater.inflate(R.layout.taskbar_all_apps,
+                        mDragLayer, false);
+        mAppsView = appsSlideInView.getAppsView();
 
         Display display = windowContext.getDisplay();
         Context c = display.getDisplayId() == Display.DEFAULT_DISPLAY
@@ -193,7 +197,7 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
                 new TaskbarAutohideSuspendController(this),
                 new TaskbarPopupController(this),
                 new TaskbarForceVisibleImmersiveController(this),
-                new TaskbarAllAppsViewController(this, mAppsView));
+                new TaskbarAllAppsViewController(this, appsSlideInView));
     }
 
     public void init(TaskbarSharedState sharedState) {
@@ -646,7 +650,6 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
         }
 
         AbstractFloatingView.closeAllOpenViews(this);
-        mControllers.taskbarAllAppsViewController.hide();
     }
 
     private void startItemInfoActivity(ItemInfo info) {

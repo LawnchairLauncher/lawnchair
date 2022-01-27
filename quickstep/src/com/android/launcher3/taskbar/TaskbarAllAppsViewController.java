@@ -15,28 +15,22 @@
  */
 package com.android.launcher3.taskbar;
 
-import android.view.View;
-
-import com.android.launcher3.DropTarget;
 import com.android.launcher3.R;
 import com.android.launcher3.config.FeatureFlags;
-import com.android.launcher3.dragndrop.DragController;
-import com.android.launcher3.dragndrop.DragOptions;
 import com.android.launcher3.model.data.AppInfo;
 
 /** Handles the {@link TaskbarAllAppsContainerView} initialization and updates. */
-public final class TaskbarAllAppsViewController implements DragController.DragListener {
+public final class TaskbarAllAppsViewController {
 
     private final TaskbarActivityContext mContext;
+    private final TaskbarAllAppsSlideInView mSlideInView;
     private final TaskbarAllAppsContainerView mAppsView;
 
-    private TaskbarControllers mControllers; // Initialized in init.
-    private boolean mIsOpen;
-
     public TaskbarAllAppsViewController(
-            TaskbarActivityContext context, TaskbarAllAppsContainerView appsView) {
+            TaskbarActivityContext context, TaskbarAllAppsSlideInView slideInView) {
         mContext = context;
-        mAppsView = appsView;
+        mSlideInView = slideInView;
+        mAppsView = mSlideInView.getAppsView();
     }
 
     /** Initialize the controller. */
@@ -44,27 +38,12 @@ public final class TaskbarAllAppsViewController implements DragController.DragLi
         if (!FeatureFlags.ENABLE_ALL_APPS_IN_TASKBAR.get()) {
             return;
         }
-        mControllers = controllers;
 
-        mAppsView.setOnIconLongClickListener(icon -> {
-            mControllers.taskbarDragController.addDragListener(this);
-            mControllers.taskbarDragController.startDragOnLongClick(icon);
-            return true;
-        });
+        mAppsView.setOnIconLongClickListener(
+                controllers.taskbarDragController::startDragOnLongClick);
 
         // TODO(b/205803230): Remove once entry point button is implemented.
-        mContext.getDragLayer().findViewById(R.id.taskbar_view).setOnClickListener(v -> {
-            if (mIsOpen) {
-                hide();
-            } else {
-                show();
-            }
-        });
-    }
-
-    /** The taskbar apps view. */
-    public TaskbarAllAppsContainerView getAppsView() {
-        return mAppsView;
+        mContext.getDragLayer().findViewById(R.id.taskbar_view).setOnClickListener(v -> show());
     }
 
     /** Binds the current {@link AppInfo} instances to the {@link TaskbarAllAppsContainerView}. */
@@ -77,28 +56,8 @@ public final class TaskbarAllAppsViewController implements DragController.DragLi
     /** Opens the {@link TaskbarAllAppsContainerView}. */
     public void show() {
         if (FeatureFlags.ENABLE_ALL_APPS_IN_TASKBAR.get()) {
-            mIsOpen = true;
             mContext.setTaskbarWindowFullscreen(true);
-            mAppsView.setVisibility(View.VISIBLE);
+            mSlideInView.show();
         }
     }
-
-    /** Hides the {@link TaskbarAllAppsContainerView}. */
-    public void hide() {
-        if (FeatureFlags.ENABLE_ALL_APPS_IN_TASKBAR.get()) {
-            mIsOpen = false;
-            mContext.setTaskbarWindowFullscreen(false);
-            mAppsView.setVisibility(View.GONE);
-        }
-    }
-
-    @Override
-    public void onDragStart(DropTarget.DragObject dragObject, DragOptions options) {
-        mControllers.taskbarDragController.removeDragListener(this);
-        mIsOpen = false;
-        mAppsView.setVisibility(View.GONE);
-    }
-
-    @Override
-    public void onDragEnd() { }
 }
