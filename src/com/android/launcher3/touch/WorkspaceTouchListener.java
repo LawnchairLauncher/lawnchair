@@ -21,6 +21,7 @@ import static android.view.MotionEvent.ACTION_MOVE;
 import static android.view.MotionEvent.ACTION_POINTER_UP;
 import static android.view.MotionEvent.ACTION_UP;
 
+import static com.android.launcher3.LauncherState.ALL_APPS;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_WORKSPACE_LONGPRESS;
 
@@ -149,6 +150,11 @@ public class WorkspaceTouchListener extends GestureDetector.SimpleOnGestureListe
 
         if (action == ACTION_UP || action == ACTION_CANCEL) {
             cancelLongPress();
+        }
+        if (action == ACTION_UP
+                && mLauncher.isInState(ALL_APPS)
+                && mLauncher.getDeviceProfile().isTablet) {
+            mLauncher.getStateManager().goToState(NORMAL);
         }
 
         return result;
