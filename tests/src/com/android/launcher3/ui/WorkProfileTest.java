@@ -26,7 +26,7 @@ import android.util.Log;
 import android.view.View;
 
 import com.android.launcher3.R;
-import com.android.launcher3.allapps.AllAppsContainerView;
+import com.android.launcher3.allapps.ActivityAllAppsContainerView;
 import com.android.launcher3.allapps.AllAppsPagedView;
 import com.android.launcher3.allapps.WorkAdapterProvider;
 import com.android.launcher3.allapps.WorkEduCard;
@@ -41,7 +41,7 @@ import java.util.Objects;
 
 public class WorkProfileTest extends AbstractLauncherUiTest {
 
-    private static final int WORK_PAGE = AllAppsContainerView.AdapterHolder.WORK;
+    private static final int WORK_PAGE = ActivityAllAppsContainerView.AdapterHolder.WORK;
 
     private int mProfileUserId;
 
@@ -132,7 +132,7 @@ public class WorkProfileTest extends AbstractLauncherUiTest {
 
         // start work profile toggle ON test
         executeOnLauncher(l -> {
-            AllAppsContainerView allApps = l.getAppsView();
+            ActivityAllAppsContainerView<?> allApps = l.getAppsView();
             assertEquals("Work tab is not focused", allApps.getCurrentPage(), WORK_PAGE);
             View workPausedCard = allApps.getActiveRecyclerView().findViewHolderForAdapterPosition(
                     0).itemView;

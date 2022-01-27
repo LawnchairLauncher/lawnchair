@@ -4,11 +4,11 @@ import android.content.Context;
 import android.icu.text.AlphabeticIndex;
 import android.os.LocaleList;
 
+import androidx.annotation.NonNull;
+
 import com.android.launcher3.Utilities;
 
 import java.util.Locale;
-
-import androidx.annotation.NonNull;
 
 public class AlphabeticIndexCompat {
 

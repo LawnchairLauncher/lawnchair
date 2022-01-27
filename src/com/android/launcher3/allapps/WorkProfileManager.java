@@ -39,7 +39,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 /**
- * Companion class for {@link AllAppsContainerView} to manage work tab and personal tab related
+ * Companion class for {@link BaseAllAppsContainerView} to manage work tab and personal tab
+ * related
  * logic based on {@link WorkProfileState}?
  */
 public class WorkProfileManager implements PersonalWorkSlidingTabStrip.OnActivePageChangedListener {
@@ -49,7 +50,6 @@ public class WorkProfileManager implements PersonalWorkSlidingTabStrip.OnActiveP
     public static final int STATE_ENABLED = 1;
     public static final int STATE_DISABLED = 2;
     public static final int STATE_TRANSITION = 3;
-
 
     private final UserManager mUserManager;
 
@@ -65,7 +65,7 @@ public class WorkProfileManager implements PersonalWorkSlidingTabStrip.OnActiveP
     public @interface WorkProfileState {
     }
 
-    private final AllAppsContainerView mAllApps;
+    private final BaseAllAppsContainerView<?> mAllApps;
     private final WorkAdapterProvider mAdapterProvider;
     private final ItemInfoMatcher mMatcher;
 
@@ -75,7 +75,7 @@ public class WorkProfileManager implements PersonalWorkSlidingTabStrip.OnActiveP
     private int mCurrentState;
 
 
-    public WorkProfileManager(UserManager userManager, AllAppsContainerView allApps,
+    public WorkProfileManager(UserManager userManager, BaseAllAppsContainerView<?> allApps,
             SharedPreferences preferences) {
         mUserManager = userManager;
         mAllApps = allApps;
@@ -118,7 +118,7 @@ public class WorkProfileManager implements PersonalWorkSlidingTabStrip.OnActiveP
         mCurrentState = currentState;
         mAdapterProvider.updateCurrentState(currentState);
         if (getAH() != null) {
-            getAH().appsList.updateAdapterItems();
+            getAH().mAppsList.updateAdapterItems();
         }
         if (mWorkModeSwitch != null) {
             mWorkModeSwitch.updateCurrentState(currentState == STATE_ENABLED);
@@ -126,7 +126,7 @@ public class WorkProfileManager implements PersonalWorkSlidingTabStrip.OnActiveP
     }
 
     /**
-     * Creates and attaches for profile toggle button to {@link AllAppsContainerView}
+     * Creates and attaches for profile toggle button to {@link BaseAllAppsContainerView}
      */
     public boolean attachWorkModeSwitch() {
         if (!mAllApps.getAppsStore().hasModelFlag(
@@ -149,7 +149,7 @@ public class WorkProfileManager implements PersonalWorkSlidingTabStrip.OnActiveP
     }
 
     /**
-     * Removes work profile toggle button from {@link AllAppsContainerView}
+     * Removes work profile toggle button from {@link BaseAllAppsContainerView}
      */
     public void detachWorkModeSwitch() {
         if (mWorkModeSwitch != null && mWorkModeSwitch.getParent() == mAllApps) {
@@ -172,8 +172,8 @@ public class WorkProfileManager implements PersonalWorkSlidingTabStrip.OnActiveP
         return mWorkModeSwitch;
     }
 
-    private AllAppsContainerView.AdapterHolder getAH() {
-        return mAllApps.mAH[AllAppsContainerView.AdapterHolder.WORK];
+    private BaseAllAppsContainerView<?>.AdapterHolder getAH() {
+        return mAllApps.mAH.get(BaseAllAppsContainerView.AdapterHolder.WORK);
     }
 
     public int getCurrentState() {

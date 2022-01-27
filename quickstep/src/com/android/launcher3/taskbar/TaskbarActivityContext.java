@@ -98,10 +98,11 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
 
     private static final String WINDOW_TITLE = "Taskbar";
 
-    private final DeviceProfile mDeviceProfile;
     private final LayoutInflater mLayoutInflater;
     private final TaskbarDragLayer mDragLayer;
     private final TaskbarControllers mControllers;
+
+    private DeviceProfile mDeviceProfile;
 
     private final WindowManager mWindowManager;
     private final @Nullable RoundedCorner mLeftCorner, mRightCorner;
@@ -138,10 +139,7 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
                 Settings.Secure.getUriFor(Settings.Secure.NAV_BAR_KIDS_MODE), 0);
 
         final Resources resources = getResources();
-        float taskbarIconSize = resources.getDimension(R.dimen.taskbar_icon_size);
-        mDeviceProfile.updateIconSize(1, resources);
-        float iconScale = taskbarIconSize / mDeviceProfile.iconSizePx;
-        mDeviceProfile.updateIconSize(iconScale, resources);
+        updateIconSize(resources);
 
         mTaskbarHeightForIme = resources.getDimensionPixelSize(R.dimen.taskbar_ime_size);
 
@@ -216,6 +214,19 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
         mWindowManager.addView(mDragLayer, mWindowLayoutParams);
     }
 
+    /** Updates the Device profile instance to the latest representation of the screen. */
+    public void updateDeviceProfile(DeviceProfile dp) {
+        mDeviceProfile = dp;
+        updateIconSize(getResources());
+    }
+
+    private void updateIconSize(Resources resources) {
+        float taskbarIconSize = resources.getDimension(R.dimen.taskbar_icon_size);
+        mDeviceProfile.updateIconSize(1, resources);
+        float iconScale = taskbarIconSize / mDeviceProfile.iconSizePx;
+        mDeviceProfile.updateIconSize(iconScale, resources);
+    }
+
     /** Creates LayoutParams for adding a view directly to WindowManager as a new window */
     public WindowManager.LayoutParams createDefaultWindowLayoutParams() {
         WindowManager.LayoutParams windowLayoutParams = new WindowManager.LayoutParams(
@@ -243,6 +254,10 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
 
     public boolean isThreeButtonNav() {
         return mNavMode == Mode.THREE_BUTTONS;
+    }
+
+    public boolean isGestureNav() {
+        return mNavMode == Mode.NO_BUTTON;
     }
 
     public int getLeftCornerRadius() {

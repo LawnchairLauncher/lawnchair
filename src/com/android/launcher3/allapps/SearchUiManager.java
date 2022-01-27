@@ -29,7 +29,7 @@ public interface SearchUiManager {
     /**
      * Initializes the search manager.
      */
-    void initializeSearch(AllAppsContainerView containerView);
+    void initializeSearch(ActivityAllAppsContainerView<?> containerView);
 
     /**
      * Notifies the search manager to close any active search session.

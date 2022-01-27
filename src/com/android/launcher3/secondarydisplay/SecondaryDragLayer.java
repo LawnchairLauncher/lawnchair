@@ -30,7 +30,7 @@ import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
-import com.android.launcher3.allapps.AllAppsContainerView;
+import com.android.launcher3.allapps.ActivityAllAppsContainerView;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.popup.PopupContainerWithArrow;
 import com.android.launcher3.popup.PopupDataProvider;
@@ -47,7 +47,7 @@ import java.util.Collections;
 public class SecondaryDragLayer extends BaseDragLayer<SecondaryDisplayLauncher> {
 
     private View mAllAppsButton;
-    private AllAppsContainerView mAppsView;
+    private ActivityAllAppsContainerView<SecondaryDisplayLauncher> mAppsView;
 
     private GridView mWorkspace;
     private PinnedAppsAdapter mPinnedAppsAdapter;

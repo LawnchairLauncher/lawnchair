@@ -238,27 +238,35 @@ public class DeviceProfile {
 
         isScalableGrid = inv.isScalable && !isVerticalBarLayout() && !isMultiWindowMode;
 
-        // Determine sizes.
-        widthPx = windowBounds.bounds.width();
-        heightPx = windowBounds.bounds.height();
-        availableWidthPx = windowBounds.availableSize.x;
-        availableHeightPx = windowBounds.availableSize.y;
-
+        // Determine device posture.
         mInfo = info;
         isTablet = info.isTablet(windowBounds);
         isPhone = !isTablet;
         isTwoPanels = isTablet && useTwoPanels;
+        isTaskbarPresent = isTablet && ApiWrapper.TASKBAR_DRAWN_IN_PROCESS
+                && FeatureFlags.ENABLE_TASKBAR.get();
 
-
-        aspectRatio = ((float) Math.max(widthPx, heightPx)) / Math.min(widthPx, heightPx);
-        boolean isTallDevice = Float.compare(aspectRatio, TALL_DEVICE_ASPECT_RATIO_THRESHOLD) >= 0;
-        mQsbCenterFactor = context.getResources().getFloat(R.dimen.qsb_center_factor);
-        // Some more constants
+        // Some more constants.
         context = getContext(context, info, isVerticalBarLayout()
                 ? Configuration.ORIENTATION_LANDSCAPE
                 : Configuration.ORIENTATION_PORTRAIT);
-        mMetrics = context.getResources().getDisplayMetrics();
         final Resources res = context.getResources();
+        mMetrics = res.getDisplayMetrics();
+
+        // Determine sizes.
+        widthPx = windowBounds.bounds.width();
+        heightPx = windowBounds.bounds.height();
+        availableWidthPx = windowBounds.availableSize.x;
+        int taskbarInset = isTaskbarPresent
+                ? ResourceUtils.getNavbarSize(
+                        isLandscape ? "navigation_bar_height_landscape" : "navigation_bar_height",
+                        res)
+                : 0;
+        availableHeightPx =  windowBounds.availableSize.y - taskbarInset;
+
+        aspectRatio = ((float) Math.max(widthPx, heightPx)) / Math.min(widthPx, heightPx);
+        boolean isTallDevice = Float.compare(aspectRatio, TALL_DEVICE_ASPECT_RATIO_THRESHOLD) >= 0;
+        mQsbCenterFactor = res.getFloat(R.dimen.qsb_center_factor);
 
         if (isTwoPanels) {
             if (isLandscape) {
@@ -274,8 +282,6 @@ public class DeviceProfile {
             }
         }
 
-        isTaskbarPresent = isTablet && ApiWrapper.TASKBAR_DRAWN_IN_PROCESS
-                && FeatureFlags.ENABLE_TASKBAR.get();
         if (isTaskbarPresent) {
             taskbarSize = res.getDimensionPixelSize(R.dimen.taskbar_size);
         }

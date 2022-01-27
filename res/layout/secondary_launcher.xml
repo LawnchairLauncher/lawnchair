@@ -41,7 +41,8 @@
         android:contentDescription="@string/all_apps_button_label"
         android:onClick="onAppsButtonClicked" />
 
-    <com.android.launcher3.allapps.AllAppsContainerView
+    <view
+        class="com.android.launcher3.allapps.ActivityAllAppsContainerView"
         android:id="@+id/apps_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -121,5 +122,5 @@
             android:textSize="16sp" />
 
         <include layout="@layout/all_apps_fast_scroller" />
-    </com.android.launcher3.allapps.AllAppsContainerView>
+    </view>
 </com.android.launcher3.secondarydisplay.SecondaryDragLayer>

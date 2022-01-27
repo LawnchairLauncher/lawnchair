@@ -74,6 +74,8 @@ import java.util.function.Supplier;
     private boolean mIsAnimatingToLauncherViaGesture;
     private boolean mIsAnimatingToLauncherViaResume;
 
+    private boolean mShouldDelayLauncherStateAnim;
+
     private final StateManager.StateListener<LauncherState> mStateListener =
             new StateManager.StateListener<LauncherState>() {
 
@@ -86,7 +88,9 @@ import java.util.function.Supplier;
                         mLauncherState = toState;
                     }
                     updateStateForFlag(FLAG_TRANSITION_STATE_RUNNING, true);
-                    applyState();
+                    if (!mShouldDelayLauncherStateAnim) {
+                        applyState();
+                    }
                 }
 
                 @Override
@@ -157,6 +161,15 @@ import java.util.function.Supplier;
 
     public boolean isAnimatingToLauncher() {
         return mIsAnimatingToLauncherViaResume || mIsAnimatingToLauncherViaGesture;
+    }
+
+    public void setShouldDelayLauncherStateAnim(boolean shouldDelayLauncherStateAnim) {
+        if (!shouldDelayLauncherStateAnim && mShouldDelayLauncherStateAnim) {
+            // Animate the animation we have delayed immediately. This is usually triggered when
+            // the user has released their finger.
+            applyState();
+        }
+        mShouldDelayLauncherStateAnim = shouldDelayLauncherStateAnim;
     }
 
     /**

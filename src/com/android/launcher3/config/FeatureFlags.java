@@ -135,12 +135,12 @@ public final class FeatureFlags {
 
     public static final BooleanFlag ENABLE_BULK_WORKSPACE_ICON_LOADING = getDebugFlag(
             "ENABLE_BULK_WORKSPACE_ICON_LOADING",
-            false,
+            true,
             "Enable loading workspace icons in bulk.");
 
     public static final BooleanFlag ENABLE_BULK_ALL_APPS_ICON_LOADING = getDebugFlag(
             "ENABLE_BULK_ALL_APPS_ICON_LOADING",
-            false,
+            true,
             "Enable loading all apps icons in bulk.");
 
     // Keep as DeviceFlag for remote disable in emergency.
@@ -200,7 +200,7 @@ public final class FeatureFlags {
             "Enables showing taskbar education the first time an app is opened.");
 
     public static final BooleanFlag ENABLE_TASKBAR_POPUP_MENU = getDebugFlag(
-            "ENABLE_TASKBAR_POPUP_MENU", false, "Enables long pressing taskbar icons to show the"
+            "ENABLE_TASKBAR_POPUP_MENU", true, "Enables long pressing taskbar icons to show the"
                     + " popup menu.");
 
     public static final BooleanFlag ENABLE_OVERVIEW_GRID = getDebugFlag(
