@@ -175,8 +175,7 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
                 && mPrefs.getBoolean(SHARED_PREFS_STASHED_KEY, DEFAULT_STASHED_PREF);
         boolean isInSetup = !mActivity.isUserSetupComplete() || sharedState.setupUIVisible;
         updateStateForFlag(FLAG_STASHED_IN_APP_MANUAL, isManuallyStashedInApp);
-        // TODO(b/204384193): Temporarily disable SUW specific logic
-        // updateStateForFlag(FLAG_STASHED_IN_APP_SETUP, isInSetup);
+        updateStateForFlag(FLAG_STASHED_IN_APP_SETUP, isInSetup);
         if (isInSetup) {
             // Update the in-app state to ensure isStashed() reflects right state during SUW
             updateStateForFlag(FLAG_IN_APP, true);
