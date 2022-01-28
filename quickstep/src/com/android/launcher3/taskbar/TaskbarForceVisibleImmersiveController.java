@@ -16,6 +16,9 @@
 
 package com.android.launcher3.taskbar;
 
+import static android.view.accessibility.AccessibilityManager.FLAG_CONTENT_CONTROLS;
+import static android.view.accessibility.AccessibilityManager.FLAG_CONTENT_ICONS;
+
 import static com.android.launcher3.taskbar.NavbarButtonsViewController.ALPHA_INDEX_IMMERSIVE_MODE;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_IMMERSIVE_MODE;
 
@@ -23,6 +26,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.view.MotionEvent;
 
+import com.android.launcher3.compat.AccessibilityManagerCompat;
 import com.android.launcher3.util.MultiValueAlpha;
 import com.android.launcher3.util.TouchController;
 import com.android.quickstep.AnimatedFloat;
@@ -94,7 +98,10 @@ public class TaskbarForceVisibleImmersiveController implements TouchController {
 
     private void startIconDimming() {
         mHandler.removeCallbacks(mDimmingRunnable);
-        mHandler.postDelayed(mDimmingRunnable, NAV_BAR_ICONS_DIM_ANIMATION_START_DELAY_MS);
+        int accessibilityDimmingTimeout = AccessibilityManagerCompat.getRecommendedTimeoutMillis(
+                mContext, NAV_BAR_ICONS_DIM_ANIMATION_START_DELAY_MS,
+                (FLAG_CONTENT_ICONS | FLAG_CONTENT_CONTROLS));
+        mHandler.postDelayed(mDimmingRunnable, accessibilityDimmingTimeout);
     }
 
     private void dimIcons() {
