@@ -25,8 +25,7 @@
     <string name="accessibility_app_usage_settings" msgid="6312864233673544149">"Configuración de uso de la app"</string>
     <string name="recents_clear_all" msgid="5328176793634888831">"Borrar todo"</string>
     <string name="accessibility_recent_apps" msgid="4058661986695117371">"Apps recientes"</string>
-    <!-- no translation found for task_view_closed (9170038230110856166) -->
-    <skip />
+    <string name="task_view_closed" msgid="9170038230110856166">"Se cerró la tarea"</string>
     <string name="task_contents_description_with_remaining_time" msgid="4479688746574672685">"<xliff:g id="TASK_DESCRIPTION">%1$s</xliff:g> (<xliff:g id="REMAINING_TIME">%2$s</xliff:g>)"</string>
     <string name="shorter_duration_less_than_one_minute" msgid="4722015666335015336">"&lt; 1 minuto"</string>
     <string name="time_left_for_app" msgid="3111996412933644358">"Tiempo restante: <xliff:g id="TIME">%1$s</xliff:g>"</string>
@@ -103,6 +102,8 @@
     <string name="taskbar_button_back" msgid="8558862226461164514">"Atrás"</string>
     <string name="taskbar_button_ime_switcher" msgid="1730244360907588541">"Botón de IME"</string>
     <string name="taskbar_button_recents" msgid="7273376136216613134">"Recientes"</string>
+    <string name="taskbar_button_notifications" msgid="7471740351507357318">"Notificaciones"</string>
+    <string name="taskbar_button_quick_settings" msgid="227662894293189391">"Config. rápida"</string>
     <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"Mover a la parte superior o izquierda"</string>
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"Mover a la parte inferior o derecha"</string>
 </resources>

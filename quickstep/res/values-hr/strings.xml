@@ -25,8 +25,7 @@
     <string name="accessibility_app_usage_settings" msgid="6312864233673544149">"Postavke upotrebe aplikacija"</string>
     <string name="recents_clear_all" msgid="5328176793634888831">"Izbriši sve"</string>
     <string name="accessibility_recent_apps" msgid="4058661986695117371">"Nedavne aplikacije"</string>
-    <!-- no translation found for task_view_closed (9170038230110856166) -->
-    <skip />
+    <string name="task_view_closed" msgid="9170038230110856166">"Zadatak je zatvoren"</string>
     <string name="task_contents_description_with_remaining_time" msgid="4479688746574672685">"<xliff:g id="TASK_DESCRIPTION">%1$s</xliff:g>, <xliff:g id="REMAINING_TIME">%2$s</xliff:g>"</string>
     <string name="shorter_duration_less_than_one_minute" msgid="4722015666335015336">"&lt; 1 min"</string>
     <string name="time_left_for_app" msgid="3111996412933644358">"Još <xliff:g id="TIME">%1$s</xliff:g> danas"</string>
@@ -103,6 +102,8 @@
     <string name="taskbar_button_back" msgid="8558862226461164514">"Natrag"</string>
     <string name="taskbar_button_ime_switcher" msgid="1730244360907588541">"IME prekidač"</string>
     <string name="taskbar_button_recents" msgid="7273376136216613134">"Najnovije"</string>
+    <string name="taskbar_button_notifications" msgid="7471740351507357318">"Obavijesti"</string>
+    <string name="taskbar_button_quick_settings" msgid="227662894293189391">"Brze postavke"</string>
     <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"Premjesti gore/lijevo"</string>
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"Premjesti dolje/desno"</string>
 </resources>
