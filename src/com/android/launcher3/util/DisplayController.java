@@ -67,12 +67,11 @@ public class DisplayController implements DisplayListener, ComponentCallbacks, S
 
     public static final int CHANGE_ACTIVE_SCREEN = 1 << 0;
     public static final int CHANGE_ROTATION = 1 << 1;
-    public static final int CHANGE_FRAME_DELAY = 1 << 2;
-    public static final int CHANGE_DENSITY = 1 << 3;
-    public static final int CHANGE_SUPPORTED_BOUNDS = 1 << 4;
+    public static final int CHANGE_DENSITY = 1 << 2;
+    public static final int CHANGE_SUPPORTED_BOUNDS = 1 << 3;
 
     public static final int CHANGE_ALL = CHANGE_ACTIVE_SCREEN | CHANGE_ROTATION
-            | CHANGE_FRAME_DELAY | CHANGE_DENSITY | CHANGE_SUPPORTED_BOUNDS;
+            | CHANGE_DENSITY | CHANGE_SUPPORTED_BOUNDS;
 
     private final Context mContext;
     private final DisplayManager mDM;
@@ -149,16 +148,15 @@ public class DisplayController implements DisplayListener, ComponentCallbacks, S
             return;
         }
         if (Utilities.ATLEAST_S) {
-            // Only check for refresh rate. Everything else comes from component callbacks
-            if (getSingleFrameMs(display) == mInfo.singleFrameMs) {
-                return;
-            }
+            // Only update refresh rate. Everything else comes from component callbacks
+            mInfo.mSingleFrameMs = getSingleFrameMs(display);
+            return;
         }
         handleInfoChange(display);
     }
 
     public static int getSingleFrameMs(Context context) {
-        return INSTANCE.get(context).getInfo().singleFrameMs;
+        return INSTANCE.get(context).getInfo().mSingleFrameMs;
     }
 
     /**
@@ -249,9 +247,6 @@ public class DisplayController implements DisplayListener, ComponentCallbacks, S
         if (newInfo.rotation != oldInfo.rotation) {
             change |= CHANGE_ROTATION;
         }
-        if (newInfo.singleFrameMs != oldInfo.singleFrameMs) {
-            change |= CHANGE_FRAME_DELAY;
-        }
         if (newInfo.densityDpi != oldInfo.densityDpi || newInfo.fontScale != oldInfo.fontScale) {
             change |= CHANGE_DENSITY;
         }
@@ -292,7 +287,7 @@ public class DisplayController implements DisplayListener, ComponentCallbacks, S
 
     public static class Info {
 
-        public final int singleFrameMs;
+        private int mSingleFrameMs;
 
         // Configuration properties
         public final int rotation;
@@ -323,7 +318,7 @@ public class DisplayController implements DisplayListener, ComponentCallbacks, S
             densityDpi = config.densityDpi;
             mScreenSizeDp = new PortraitSize(config.screenHeightDp, config.screenWidthDp);
 
-            singleFrameMs = getSingleFrameMs(display);
+            mSingleFrameMs = getSingleFrameMs(display);
             currentSize = new Point();
             display.getRealSize(currentSize);
 
