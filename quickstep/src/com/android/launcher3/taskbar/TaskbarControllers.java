@@ -47,6 +47,7 @@ public class TaskbarControllers {
     public final TaskbarEduController taskbarEduController;
     public final TaskbarAutohideSuspendController taskbarAutohideSuspendController;
     public final TaskbarPopupController taskbarPopupController;
+    public final TaskbarForceVisibleImmersiveController taskbarForceVisibleImmersiveController;
 
     @Nullable private LoggableTaskbarController[] mControllersToLog = null;
 
@@ -70,7 +71,8 @@ public class TaskbarControllers {
             TaskbarStashController taskbarStashController,
             TaskbarEduController taskbarEduController,
             TaskbarAutohideSuspendController taskbarAutoHideSuspendController,
-            TaskbarPopupController taskbarPopupController) {
+            TaskbarPopupController taskbarPopupController,
+            TaskbarForceVisibleImmersiveController taskbarForceVisibleImmersiveController) {
         this.taskbarActivityContext = taskbarActivityContext;
         this.taskbarDragController = taskbarDragController;
         this.navButtonController = navButtonController;
@@ -86,6 +88,7 @@ public class TaskbarControllers {
         this.taskbarEduController = taskbarEduController;
         this.taskbarAutohideSuspendController = taskbarAutoHideSuspendController;
         this.taskbarPopupController = taskbarPopupController;
+        this.taskbarForceVisibleImmersiveController = taskbarForceVisibleImmersiveController;
     }
 
     /**
@@ -108,6 +111,7 @@ public class TaskbarControllers {
         taskbarStashController.init(this, sharedState);
         taskbarEduController.init(this);
         taskbarPopupController.init(this);
+        taskbarForceVisibleImmersiveController.init(this);
 
         mControllersToLog = new LoggableTaskbarController[] {
                 taskbarDragController, navButtonController, navbarButtonsViewController,
@@ -142,6 +146,7 @@ public class TaskbarControllers {
         stashedHandleViewController.onDestroy();
         taskbarAutohideSuspendController.onDestroy();
         taskbarPopupController.onDestroy();
+        taskbarForceVisibleImmersiveController.onDestroy();
 
         mControllersToLog = null;
     }

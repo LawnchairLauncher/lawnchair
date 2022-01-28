@@ -26,6 +26,7 @@ import android.graphics.Rect;
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.R;
 import com.android.launcher3.anim.AlphaUpdateListener;
+import com.android.launcher3.util.TouchController;
 import com.android.quickstep.AnimatedFloat;
 import com.android.systemui.shared.system.ViewTreeObserverWrapper.InsetsInfo;
 
@@ -181,7 +182,8 @@ public class TaskbarDragLayerController implements TaskbarControllers.LoggableTa
                 // Let touches pass through us.
                 insetsInfo.setTouchableInsets(TOUCHABLE_INSETS_REGION);
             } else if (mControllers.taskbarViewController.areIconsVisible()
-                    || AbstractFloatingView.getOpenView(mActivity, TYPE_ALL) != null) {
+                    || AbstractFloatingView.getOpenView(mActivity, TYPE_ALL) != null
+                    || mActivity.isNavBarKidsModeActive()) {
                 // Taskbar has some touchable elements, take over the full taskbar area
                 insetsInfo.setTouchableInsets(mActivity.isTaskbarWindowFullscreen()
                         ? TOUCHABLE_INSETS_FRAME : TOUCHABLE_INSETS_CONTENT);
@@ -216,6 +218,14 @@ public class TaskbarDragLayerController implements TaskbarControllers.LoggableTa
          */
         public int getTaskbarBackgroundHeight() {
             return mActivity.getDeviceProfile().taskbarSize;
+        }
+
+        /**
+         * Returns touch controllers.
+         */
+        public TouchController[] getTouchControllers() {
+            return new TouchController[]{mActivity.getDragController(),
+                    mControllers.taskbarForceVisibleImmersiveController};
         }
     }
 }

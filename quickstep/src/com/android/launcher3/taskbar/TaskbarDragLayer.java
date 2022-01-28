@@ -34,7 +34,6 @@ import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.R;
 import com.android.launcher3.testing.TestLogging;
 import com.android.launcher3.testing.TestProtocol;
-import com.android.launcher3.util.TouchController;
 import com.android.launcher3.views.BaseDragLayer;
 import com.android.systemui.shared.system.ViewTreeObserverWrapper;
 import com.android.systemui.shared.system.ViewTreeObserverWrapper.InsetsInfo;
@@ -105,7 +104,7 @@ public class TaskbarDragLayer extends BaseDragLayer<TaskbarActivityContext> {
 
     @Override
     public void recreateControllers() {
-        mControllers = new TouchController[] {mActivity.getDragController()};
+        mControllers = mControllerCallbacks.getTouchControllers();
     }
 
     private void onComputeTaskbarInsets(InsetsInfo insetsInfo) {

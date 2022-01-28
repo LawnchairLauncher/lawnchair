@@ -188,7 +188,8 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
                 new TaskbarStashController(this),
                 new TaskbarEduController(this),
                 new TaskbarAutohideSuspendController(this),
-                new TaskbarPopupController(this));
+                new TaskbarPopupController(this),
+                new TaskbarForceVisibleImmersiveController(this));
     }
 
     public void init(TaskbarSharedState sharedState) {
@@ -417,6 +418,7 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
         mControllers.taskbarScrimViewController.updateStateForSysuiFlags(systemUiStateFlags,
                 fromInit);
         mControllers.navButtonController.updateSysuiFlags(systemUiStateFlags);
+        mControllers.taskbarForceVisibleImmersiveController.updateSysuiFlags(systemUiStateFlags);
     }
 
     /**
