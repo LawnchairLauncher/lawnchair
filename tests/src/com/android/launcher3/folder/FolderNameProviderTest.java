@@ -30,6 +30,7 @@ import androidx.test.filters.SmallTest;
 
 import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
+import com.android.launcher3.util.ActivityContextWrapper;
 import com.android.launcher3.util.Executors;
 
 import org.junit.Before;
@@ -47,7 +48,7 @@ public final class FolderNameProviderTest {
 
     @Before
     public void setUp() {
-        mContext = getApplicationContext();
+        mContext = new ActivityContextWrapper(getApplicationContext());
         mItem1 = new WorkspaceItemInfo(new AppInfo(
                 new ComponentName("a.b.c", "a.b.c/a.b.c.d"),
                 "title1",

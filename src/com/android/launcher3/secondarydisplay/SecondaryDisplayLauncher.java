@@ -32,6 +32,7 @@ import com.android.launcher3.LauncherModel;
 import com.android.launcher3.R;
 import com.android.launcher3.allapps.ActivityAllAppsContainerView;
 import com.android.launcher3.model.BgDataModel;
+import com.android.launcher3.model.StringCache;
 import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.ItemInfoWithIcon;
@@ -59,6 +60,8 @@ public class SecondaryDisplayLauncher extends BaseDraggingActivity
     private PopupDataProvider mPopupDataProvider;
 
     private boolean mAppDrawerShown = false;
+
+    private StringCache mStringCache;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -225,6 +228,16 @@ public class SecondaryDisplayLauncher extends BaseDraggingActivity
     public void bindAllApplications(AppInfo[] apps, int flags) {
         mAppsView.getAppsStore().setApps(apps, flags);
         PopupContainerWithArrow.dismissInvalidPopup(this);
+    }
+
+    @Override
+    public StringCache getStringCache() {
+        return mStringCache;
+    }
+
+    @Override
+    public void bindStringCache(StringCache cache) {
+        mStringCache = cache;
     }
 
     public PopupDataProvider getPopupDataProvider() {

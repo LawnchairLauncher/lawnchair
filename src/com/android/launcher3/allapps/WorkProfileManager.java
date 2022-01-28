@@ -79,7 +79,7 @@ public class WorkProfileManager implements PersonalWorkSlidingTabStrip.OnActiveP
             SharedPreferences preferences) {
         mUserManager = userManager;
         mAllApps = allApps;
-        mAdapterProvider = new WorkAdapterProvider(preferences);
+        mAdapterProvider = new WorkAdapterProvider(allApps.mActivityContext, preferences);
         mMatcher = mAllApps.mPersonalMatcher.negate();
     }
 

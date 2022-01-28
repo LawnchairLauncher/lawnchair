@@ -114,6 +114,11 @@ public class BgDataModel {
     public final WidgetsModel widgetsModel = new WidgetsModel();
 
     /**
+     * Cache for strings used in launcher
+     */
+    public final StringCache stringCache = new StringCache();
+
+    /**
      * Id when the model was last bound
      */
     public int lastBindId = 0;
@@ -505,5 +510,10 @@ public class BgDataModel {
         default void bindExtraContainerItems(FixedContainerItems item) { }
 
         default void bindAllApplications(AppInfo[] apps, int flags) { }
+
+        /**
+         * Binds the cache of string resources
+         */
+        default void bindStringCache(StringCache cache) { }
     }
 }

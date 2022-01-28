@@ -30,6 +30,7 @@ import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Insettable;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.KeyboardInsetAnimationCallback;
+import com.android.launcher3.model.StringCache;
 import com.android.launcher3.views.ActivityContext;
 import com.android.launcher3.workprofile.PersonalWorkSlidingTabStrip;
 
@@ -72,8 +73,14 @@ public class WorkModeSwitch extends Button implements Insettable, View.OnClickLi
                     new KeyboardInsetAnimationCallback(this);
             setWindowInsetsAnimationCallback(keyboardInsetAnimationCallback);
         }
-        DeviceProfile grid = ActivityContext.lookupContext(getContext()).getDeviceProfile();
+        ActivityContext activityContext = ActivityContext.lookupContext(getContext());
+        DeviceProfile grid = activityContext.getDeviceProfile();
         setInsets(grid.getInsets());
+
+        StringCache cache = activityContext.getStringCache();
+        if (cache != null) {
+            setText(cache.workProfilePauseButton);
+        }
     }
 
     @Override
@@ -119,7 +126,6 @@ public class WorkModeSwitch extends Button implements Insettable, View.OnClickLi
             updateVisibility();
         }
     }
-
 
     private void updateVisibility() {
         clearAnimation();
