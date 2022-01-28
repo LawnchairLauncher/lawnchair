@@ -204,8 +204,8 @@ public class NavbarButtonsViewController implements TaskbarControllers.LoggableT
         // For gesture nav, nav buttons only show for IME anyway so keep them translated down.
         float defaultButtonTransY = alwaysShowButtons ? 0 : transForIme;
         mPropertyHolders.add(new StatePropertyHolder(mTaskbarNavButtonTranslationYForIme,
-                flags -> (flags & FLAG_IME_VISIBLE) != 0, AnimatedFloat.VALUE, transForIme,
-                defaultButtonTransY));
+                flags -> (flags & FLAG_IME_VISIBLE) != 0 && !isInKidsMode, AnimatedFloat.VALUE,
+                transForIme, defaultButtonTransY));
 
         if (alwaysShowButtons) {
             initButtons(mNavButtonContainer, mEndContextualContainer,
