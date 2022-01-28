@@ -136,6 +136,7 @@ public class NavbarButtonsViewController implements TaskbarControllers.LoggableT
 
     // Initialized in init.
     private TaskbarControllers mControllers;
+    private boolean mIsImeRenderingNavButtons;
     private View mA11yButton;
     private int mSysuiStateFlags;
     private View mBackButton;
@@ -168,13 +169,17 @@ public class NavbarButtonsViewController implements TaskbarControllers.LoggableT
         mNavButtonTranslationYMultiplier.value = 1;
 
         boolean isThreeButtonNav = mContext.isThreeButtonNav();
-        // IME switcher
-        View imeSwitcherButton = addButton(R.drawable.ic_ime_switcher, BUTTON_IME_SWITCH,
-                isThreeButtonNav ? mStartContextualContainer : mEndContextualContainer,
-                mControllers.navButtonController, R.id.ime_switcher);
-        mPropertyHolders.add(new StatePropertyHolder(imeSwitcherButton,
-                flags -> ((flags & MASK_IME_SWITCHER_VISIBLE) == MASK_IME_SWITCHER_VISIBLE)
-                        && ((flags & FLAG_ROTATION_BUTTON_VISIBLE) == 0)));
+        mIsImeRenderingNavButtons =
+                InputMethodService.canImeRenderGesturalNavButtons() && mContext.isGestureNav();
+        if (!mIsImeRenderingNavButtons) {
+            // IME switcher
+            View imeSwitcherButton = addButton(R.drawable.ic_ime_switcher, BUTTON_IME_SWITCH,
+                    isThreeButtonNav ? mStartContextualContainer : mEndContextualContainer,
+                    mControllers.navButtonController, R.id.ime_switcher);
+            mPropertyHolders.add(new StatePropertyHolder(imeSwitcherButton,
+                    flags -> ((flags & MASK_IME_SWITCHER_VISIBLE) == MASK_IME_SWITCHER_VISIBLE)
+                            && ((flags & FLAG_ROTATION_BUTTON_VISIBLE) == 0)));
+        }
 
         mPropertyHolders.add(new StatePropertyHolder(
                 mControllers.taskbarViewController.getTaskbarIconAlpha()
@@ -314,12 +319,14 @@ public class NavbarButtonsViewController implements TaskbarControllers.LoggableT
             mControllers.rotationButtonController.setRotationButton(mFloatingRotationButton,
                     mRotationButtonListener);
 
-            View imeDownButton = addButton(R.drawable.ic_sysbar_back, BUTTON_BACK,
-                    mStartContextualContainer, mControllers.navButtonController, R.id.back);
-            imeDownButton.setRotation(Utilities.isRtl(mContext.getResources()) ? 90 : -90);
-            // Rotate when Ime visible
-            mPropertyHolders.add(new StatePropertyHolder(imeDownButton,
-                    flags -> (flags & FLAG_IME_VISIBLE) != 0));
+            if (!mIsImeRenderingNavButtons) {
+                View imeDownButton = addButton(R.drawable.ic_sysbar_back, BUTTON_BACK,
+                        mStartContextualContainer, mControllers.navButtonController, R.id.back);
+                imeDownButton.setRotation(Utilities.isRtl(mContext.getResources()) ? 90 : -90);
+                // Only show when IME is visible.
+                mPropertyHolders.add(new StatePropertyHolder(imeDownButton,
+                        flags -> (flags & FLAG_IME_VISIBLE) != 0));
+            }
         }
 
         applyState();
@@ -592,7 +599,7 @@ public class NavbarButtonsViewController implements TaskbarControllers.LoggableT
             return;
         }
 
-        if (InputMethodService.canImeRenderGesturalNavButtons() && mContext.isGestureNav()) {
+        if (mIsImeRenderingNavButtons) {
             // IME is rendering the nav buttons, so we don't need to create a new layer for them.
             return;
         }

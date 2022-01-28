@@ -103,6 +103,9 @@ public class RecentsAnimationDeviceState implements
     private final RotationTouchHelper mRotationTouchHelper;
     private final TaskStackChangeListener mPipListener;
     private final List<ComponentName> mGestureBlockedActivities;
+    // Cache for better performance since it doesn't change at runtime.
+    private final boolean mCanImeRenderGesturalNavButtons =
+            InputMethodService.canImeRenderGesturalNavButtons();
 
     private final ArrayList<Runnable> mOnDestroyActions = new ArrayList<>();
 
@@ -596,7 +599,7 @@ public class RecentsAnimationDeviceState implements
 
     /** Returns whether IME is rendering nav buttons, and IME is currently showing. */
     public boolean isImeRenderingNavButtons() {
-        return InputMethodService.canImeRenderGesturalNavButtons() && mMode == NO_BUTTON
+        return mCanImeRenderGesturalNavButtons && mMode == NO_BUTTON
                 && ((mSystemUiStateFlags & SYSUI_STATE_IME_SHOWING) != 0);
     }
 
