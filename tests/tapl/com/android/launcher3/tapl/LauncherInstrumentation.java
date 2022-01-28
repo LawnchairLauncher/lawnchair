@@ -98,7 +98,7 @@ import java.util.stream.Collectors;
 public final class LauncherInstrumentation {
 
     private static final String TAG = "Tapl";
-    private static final int ZERO_BUTTON_STEPS_FROM_BACKGROUND_TO_HOME = 20;
+    private static final int ZERO_BUTTON_STEPS_FROM_BACKGROUND_TO_HOME = 15;
     private static final int GESTURE_STEP_MS = 16;
     private static final long FORCE_PAUSE_TIMEOUT_MS = TimeUnit.SECONDS.toMillis(2);
 
