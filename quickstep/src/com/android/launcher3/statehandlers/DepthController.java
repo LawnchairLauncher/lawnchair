@@ -294,6 +294,11 @@ public class DepthController implements StateHandler<LauncherState>,
     }
 
     public void onOverlayScrollChanged(float progress) {
+        // Add some padding to the progress, such we don't change the depth on the last frames of
+        // the animation. It's possible that a user flinging the feed quickly would scroll
+        // horizontally by accident, causing the device to enter client composition unnecessarily.
+        progress = Math.min(progress * 1.1f, 1f);
+
         // Round out the progress to dedupe frequent, non-perceptable updates
         int progressI = (int) (progress * 256);
         float progressF = Utilities.boundToRange(progressI / 256f, 0f, 1f);
