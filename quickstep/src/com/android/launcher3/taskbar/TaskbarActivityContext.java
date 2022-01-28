@@ -234,6 +234,7 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
         mDeviceProfile.updateIconSize(1, resources);
         float iconScale = taskbarIconSize / mDeviceProfile.iconSizePx;
         mDeviceProfile.updateIconSize(iconScale, resources);
+        mDeviceProfile.updateAllAppsIconSize(1, resources); // Leave all apps unscaled.
     }
 
     /** Creates LayoutParams for adding a view directly to WindowManager as a new window */
