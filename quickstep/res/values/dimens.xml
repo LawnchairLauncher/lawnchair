@@ -17,7 +17,6 @@
 <resources>
     <dimen name="task_thumbnail_icon_size">48dp</dimen>
     <dimen name="task_thumbnail_icon_drawable_size">48dp</dimen>
-    <dimen name="task_thumbnail_icon_drawable_size_grid">32dp</dimen>
     <!-- For screens without rounded corners -->
     <dimen name="task_corner_radius_small">2dp</dimen>
     <!-- For Launchers that want to override the default dialog corner radius -->
@@ -34,28 +33,18 @@
 
     <dimen name="overview_minimum_next_prev_size">50dp</dimen>
     <dimen name="overview_task_margin">16dp</dimen>
-    <dimen name="overview_task_margin_focused">12dp</dimen>
-    <dimen name="overview_task_margin_grid">4dp</dimen>
+    <dimen name="overview_task_margin_grid">0dp</dimen>
     <item name="overview_max_scale" format="float" type="dimen">0.7</item>
 
     <!-- Overrideable in overlay that provides the Overview Actions. -->
     <dimen name="overview_actions_height">48dp</dimen>
     <dimen name="overview_actions_button_spacing">32dp</dimen>
-    <dimen name="overview_actions_button_spacing_grid">36dp</dimen>
-    <dimen name="overview_actions_margin_gesture">28dp</dimen>
-    <dimen name="overview_actions_top_margin_gesture_grid_portrait">19.37dp</dimen>
-    <dimen name="overview_actions_bottom_margin_gesture_grid_portrait">22dp</dimen>
-    <dimen name="overview_actions_top_margin_gesture_grid_landscape">19.1dp</dimen>
-    <dimen name="overview_actions_bottom_margin_gesture_grid_landscape">10dp</dimen>
+    <dimen name="overview_actions_top_margin_gesture">28dp</dimen>
+    <dimen name="overview_actions_bottom_margin_gesture">28dp</dimen>
     <dimen name="overview_actions_margin_three_button">8dp</dimen>
     <dimen name="overview_actions_horizontal_margin">16dp</dimen>
 
-    <dimen name="overview_grid_side_margin_portrait">60dp</dimen>
-    <dimen name="overview_grid_side_margin_landscape">52dp</dimen>
-    <dimen name="overview_grid_row_spacing">36dp</dimen>
     <dimen name="overview_page_spacing">16dp</dimen>
-    <dimen name="overview_page_spacing_grid_portrait">36dp</dimen>
-    <dimen name="overview_page_spacing_grid_landscape">38dp</dimen>
 
     <!-- These speeds are in dp/s -->
     <dimen name="max_task_dismiss_drag_velocity">2.25dp</dimen>

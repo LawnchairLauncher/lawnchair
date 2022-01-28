@@ -215,7 +215,7 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
      */
     public final void calculateTaskSize(Context context, DeviceProfile dp, Rect outRect) {
         Resources res = context.getResources();
-        if (dp.overviewShowAsGrid) {
+        if (dp.isTablet) {
             Rect gridRect = new Rect();
             calculateGridSize(context, dp, gridRect);
 

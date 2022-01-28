@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?><!--
- * Copyright (c) 2021, The Android Open Source Project
+ * Copyright (c) 2022, The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,8 @@
 */
 -->
 <resources>
-    <dimen name="overview_grid_row_spacing">44dp</dimen>
-    <dimen name="overview_page_spacing">44dp</dimen>
+    <dimen name="overview_actions_top_margin_gesture">19.1dp</dimen>
+    <dimen name="overview_actions_bottom_margin_gesture">10dp</dimen>
+    <dimen name="overview_grid_side_margin">52dp</dimen>
+    <dimen name="overview_page_spacing">38dp</dimen>
 </resources>

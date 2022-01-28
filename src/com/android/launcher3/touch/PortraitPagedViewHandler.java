@@ -289,9 +289,9 @@ public class PortraitPagedViewHandler implements PagedOrientationHandler {
 
     @Override
     public int getTaskMenuWidth(View view, DeviceProfile deviceProfile) {
-        return deviceProfile.isLandscape && !deviceProfile.overviewShowAsGrid ?
-                view.getMeasuredHeight() :
-                view.getMeasuredWidth();
+        return deviceProfile.isLandscape && !deviceProfile.isTablet
+                ? view.getMeasuredHeight()
+                : view.getMeasuredWidth();
     }
 
     @Override

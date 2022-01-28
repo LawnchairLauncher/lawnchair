@@ -146,7 +146,7 @@ public class TaskMenuView extends AbstractFloatingView implements OnScrollChange
         // NOTE: Changing the pivots means the rotated view gets rotated about the new pivots set,
         // which would render the X and Y position set here incorrect
         setPivotX(0);
-        if (deviceProfile.overviewShowAsGrid) {
+        if (deviceProfile.isTablet) {
             // In tablet, set pivotY to original position without mThumbnailTopMargin adjustment.
             setPivotY(-taskTopMargin);
         } else {

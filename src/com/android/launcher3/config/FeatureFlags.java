@@ -203,10 +203,6 @@ public final class FeatureFlags {
             "ENABLE_TASKBAR_POPUP_MENU", true, "Enables long pressing taskbar icons to show the"
                     + " popup menu.");
 
-    public static final BooleanFlag ENABLE_OVERVIEW_GRID = getDebugFlag(
-            "ENABLE_OVERVIEW_GRID", true, "Uses grid overview layout. "
-            + "Only applicable on large screen devices.");
-
     public static final BooleanFlag ENABLE_TWO_PANEL_HOME = getDebugFlag(
             "ENABLE_TWO_PANEL_HOME", true,
             "Uses two panel on home screen. Only applicable on large screen devices.");
