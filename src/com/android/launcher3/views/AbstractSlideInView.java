@@ -203,6 +203,7 @@ public abstract class AbstractSlideInView<T extends Context & ActivityContext>
         mOpenCloseAnimator.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
+                mOpenCloseAnimator.removeListener(this);
                 onCloseComplete();
             }
         });

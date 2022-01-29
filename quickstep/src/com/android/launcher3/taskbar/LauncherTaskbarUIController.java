@@ -37,8 +37,8 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.logging.InstanceId;
 import com.android.launcher3.logging.InstanceIdSequence;
+import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.ItemInfoWithIcon;
-import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.util.OnboardingPrefs;
 import com.android.quickstep.AnimatedFloat;
 import com.android.quickstep.RecentsAnimationCallbacks;
@@ -238,7 +238,7 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
     }
 
     @Override
-    public void onTaskbarIconLaunched(WorkspaceItemInfo item) {
+    public void onTaskbarIconLaunched(ItemInfo item) {
         InstanceId instanceId = new InstanceIdSequence().newInstanceId();
         mLauncher.logAppLaunch(mControllers.taskbarActivityContext.getStatsLogManager(), item,
                 instanceId);

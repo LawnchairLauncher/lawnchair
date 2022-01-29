@@ -21,6 +21,7 @@ import android.view.View;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.model.BgDataModel;
 import com.android.launcher3.model.BgDataModel.FixedContainerItems;
+import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.util.ComponentKey;
@@ -196,6 +197,11 @@ public class TaskbarModelCallbacks implements
     @Override
     public void bindDeepShortcutMap(HashMap<ComponentKey, Integer> deepShortcutMapCopy) {
         mControllers.taskbarPopupController.setDeepShortcutMap(deepShortcutMapCopy);
+    }
+
+    @Override
+    public void bindAllApplications(AppInfo[] apps, int flags) {
+        mControllers.taskbarAllAppsViewController.setApps(apps, flags);
     }
 
     protected void dumpLogs(String prefix, PrintWriter pw) {

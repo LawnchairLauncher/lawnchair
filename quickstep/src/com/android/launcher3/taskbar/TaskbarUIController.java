@@ -19,8 +19,8 @@ import android.view.View;
 
 import androidx.annotation.CallSuper;
 
+import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.ItemInfoWithIcon;
-import com.android.launcher3.model.data.WorkspaceItemInfo;
 
 import java.util.stream.Stream;
 
@@ -54,7 +54,8 @@ public class TaskbarUIController {
         return Stream.empty();
     }
 
-    public void onTaskbarIconLaunched(WorkspaceItemInfo item) { }
+    /** Called when an icon is launched. */
+    public void onTaskbarIconLaunched(ItemInfo item) { }
 
     public View getRootView() {
         return mControllers.taskbarActivityContext.getDragLayer();

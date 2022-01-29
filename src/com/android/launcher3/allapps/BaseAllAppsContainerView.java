@@ -249,6 +249,10 @@ public abstract class BaseAllAppsContainerView<T extends Context & ActivityConte
      * Returns whether the view itself will handle the touch event or not.
      */
     public boolean shouldContainerScroll(MotionEvent ev) {
+        // Scroll if not within the container view (e.g. over large-screen scrim).
+        if (!mActivityContext.getDragLayer().isEventOverView(this, ev)) {
+            return true;
+        }
         // TODO(b/216203409) Support dragging down from bottom sheet divider, if present.
         AllAppsRecyclerView rv = getActiveRecyclerView();
         if (rv == null) {
