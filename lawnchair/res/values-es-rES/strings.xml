@@ -180,4 +180,5 @@
     <string name="icon_picker_default_category">Iconos</string>
     <string name="icon_picker_reset_to_default">Restablecer a lo predeterminado</string>
     <string name="icon_pack_external_picker">Abrir selector externo</string>
+    <string name="recents_actions_label">Quick Actions</string>
 </resources>
