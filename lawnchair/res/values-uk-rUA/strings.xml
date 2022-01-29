@@ -182,5 +182,5 @@
     <string name="icon_picker_default_category">Значки</string>
     <string name="icon_picker_reset_to_default">Відновити параметри</string>
     <string name="icon_pack_external_picker">Відкрити зовнішній засіб вибору</string>
-    <string name="recents_actions_label">Quick Actions</string>
+    <string name="recents_actions_label">Швидкі дії</string>
 </resources>
