@@ -19,7 +19,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -155,31 +157,43 @@ fun IconPickerGrid(
             .filter { it.items.isNotEmpty() }
     }
 
-    PreferenceLazyColumn(modifier = modifier) {
-        filteredCategories.forEach { category ->
-            stickyHeader {
-                Text(
-                    text = category.title,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(MaterialTheme.colorScheme.background)
-                        .padding(vertical = 16.dp),
-                    style = MaterialTheme.typography.titleSmall,
-                    color = MaterialTheme.colorScheme.primary
-                )
-            }
-            verticalGridItems(
-                items = category.items,
-                numColumns = 5,
-                gap = 16.dp
-            ) { _, item ->
-                IconPreview(
-                    iconPack = iconPack,
-                    iconItem = item,
-                    onClick = {
-                        onClickItem(item)
-                    }
-                )
+    var numColumns by remember { mutableStateOf(0) }
+    val density = LocalDensity.current
+    PreferenceLazyColumn(modifier = modifier.onSizeChanged {
+        with(density) {
+            val minWidth = 56.dp.roundToPx()
+            val gapWidth = 16.dp.roundToPx()
+            val availableWidth = (it.width - minWidth).coerceAtLeast(0)
+            val additionalCols = availableWidth / (minWidth + gapWidth)
+            numColumns = 1 + additionalCols
+        }
+    }) {
+        if (numColumns != 0) {
+            filteredCategories.forEach { category ->
+                stickyHeader {
+                    Text(
+                        text = category.title,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(MaterialTheme.colorScheme.background)
+                            .padding(vertical = 16.dp),
+                        style = MaterialTheme.typography.titleSmall,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                }
+                verticalGridItems(
+                    items = category.items,
+                    numColumns = numColumns,
+                    gap = 16.dp
+                ) { _, item ->
+                    IconPreview(
+                        iconPack = iconPack,
+                        iconItem = item,
+                        onClick = {
+                            onClickItem(item)
+                        }
+                    )
+                }
             }
         }
     }
