@@ -179,5 +179,5 @@
     <string name="icon_picker_default_category">图标</string>
     <string name="icon_picker_reset_to_default">重置为默认</string>
     <string name="icon_pack_external_picker">打开外部选择器</string>
-    <string name="recents_actions_label">Quick Actions</string>
+    <string name="recents_actions_label">快速操作</string>
 </resources>
