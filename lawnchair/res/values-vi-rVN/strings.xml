@@ -179,4 +179,5 @@
     <string name="icon_picker_default_category">Biểu tượng</string>
     <string name="icon_picker_reset_to_default">Đặt lại về mặc định</string>
     <string name="icon_pack_external_picker">Open external picker</string>
+    <string name="recents_actions_label">Quick Actions</string>
 </resources>
