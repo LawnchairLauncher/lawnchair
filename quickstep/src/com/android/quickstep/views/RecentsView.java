@@ -1322,7 +1322,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
      * required to focus the task in grid.
      */
     public void moveFocusedTaskToFront() {
-        if (!mActivity.getDeviceProfile().overviewShowAsGrid) {
+        if (!mActivity.getDeviceProfile().isTablet) {
             return;
         }
 
@@ -1795,7 +1795,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
 
     @Override
     protected int getDestinationPage(int scaledScroll) {
-        if (!mActivity.getDeviceProfile().overviewShowAsGrid) {
+        if (!mActivity.getDeviceProfile().isTablet) {
             return super.getDestinationPage(scaledScroll);
         }
 
@@ -3264,7 +3264,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             return;
         }
         mActionsView.setSplitButtonVisible(
-                mActivity.getDeviceProfile().overviewShowAsGrid && getTaskViewCount() > 1);
+                mActivity.getDeviceProfile().isTablet && getTaskViewCount() > 1);
     }
 
     /**
@@ -3986,7 +3986,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         if (mSplitHiddenTaskViewIndex == -1) {
             return;
         }
-        if (!mActivity.getDeviceProfile().overviewShowAsGrid) {
+        if (!mActivity.getDeviceProfile().isTablet) {
             int pageToSnapTo = mCurrentPage;
             if (mSplitHiddenTaskViewIndex <= pageToSnapTo) {
                 pageToSnapTo += 1;

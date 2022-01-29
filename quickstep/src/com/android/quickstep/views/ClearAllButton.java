@@ -247,7 +247,7 @@ public class ClearAllButton extends Button {
      */
     private float getOriginalTranslationY() {
         DeviceProfile deviceProfile = mActivity.getDeviceProfile();
-        return deviceProfile.overviewShowAsGrid
+        return deviceProfile.isTablet
                 ? deviceProfile.overviewRowSpacing
                 : deviceProfile.overviewTaskThumbnailTopMarginPx / 2.0f;
     }

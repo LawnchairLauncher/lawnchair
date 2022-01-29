@@ -857,6 +857,9 @@ public class LoaderTask implements Runnable {
             // Load delegate items
             mModelDelegate.loadItems(mUserManagerState, shortcutKeyToPinnedShortcuts);
 
+            // Load string cache
+            mModelDelegate.loadStringCache(mBgDataModel.stringCache);
+
             // Break early if we've stopped loading
             if (mStopped) {
                 mBgDataModel.clear();

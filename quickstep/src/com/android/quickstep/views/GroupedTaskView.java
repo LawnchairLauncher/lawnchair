@@ -236,7 +236,7 @@ public class GroupedTaskView extends TaskView {
     public void setOrientationState(RecentsOrientedState orientationState) {
         super.setOrientationState(orientationState);
         DeviceProfile deviceProfile = mActivity.getDeviceProfile();
-        boolean isGridTask = deviceProfile.overviewShowAsGrid && !isFocusedTask();
+        boolean isGridTask = deviceProfile.isTablet && !isFocusedTask();
         int iconDrawableSize = isGridTask ? deviceProfile.overviewTaskIconDrawableSizeGridPx
                 : deviceProfile.overviewTaskIconDrawableSizePx;
         mIconView2.setDrawableSize(iconDrawableSize, iconDrawableSize);

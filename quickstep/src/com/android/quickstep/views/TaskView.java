@@ -832,7 +832,7 @@ public class TaskView extends FrameLayout implements Reusable {
             return true;
         }
 
-        if (!mActivity.getDeviceProfile().overviewShowAsGrid
+        if (!mActivity.getDeviceProfile().isTablet
                 && !getRecentsView().isClearAllHidden()) {
             getRecentsView().snapToPage(getRecentsView().indexOfChild(this));
             return false;
@@ -846,7 +846,7 @@ public class TaskView extends FrameLayout implements Reusable {
     protected boolean showTaskMenuWithContainer(IconView iconView) {
         TaskIdAttributeContainer menuContainer =
                 mTaskIdAttributeContainer[iconView == mIconView ? 0 : 1];
-        if (mActivity.getDeviceProfile().overviewShowAsGrid) {
+        if (mActivity.getDeviceProfile().isTablet) {
             boolean alignSecondRow = getRecentsView().isOnGridBottomRow(menuContainer.getTaskView())
                     && mActivity.getDeviceProfile().isLandscape;
             return TaskMenuViewWithArrow.Companion.showForTask(menuContainer, alignSecondRow);
@@ -914,7 +914,7 @@ public class TaskView extends FrameLayout implements Reusable {
      */
     public boolean isGridTask() {
         DeviceProfile deviceProfile = mActivity.getDeviceProfile();
-        return deviceProfile.overviewShowAsGrid && !isFocusedTask();
+        return deviceProfile.isTablet && !isFocusedTask();
     }
 
     protected void setIconAndDimTransitionProgress(float progress, boolean invert) {
@@ -1008,7 +1008,7 @@ public class TaskView extends FrameLayout implements Reusable {
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
-        if (mActivity.getDeviceProfile().overviewShowAsGrid) {
+        if (mActivity.getDeviceProfile().isTablet) {
             setPivotX(getLayoutDirection() == LAYOUT_DIRECTION_RTL ? 0 : right - left);
             setPivotY(mSnapshotView.getTop());
         } else {
@@ -1025,7 +1025,7 @@ public class TaskView extends FrameLayout implements Reusable {
      * How much to scale down pages near the edge of the screen.
      */
     public static float getEdgeScaleDownFactor(DeviceProfile deviceProfile) {
-        return deviceProfile.overviewShowAsGrid ? EDGE_SCALE_DOWN_FACTOR_GRID
+        return deviceProfile.isTablet ? EDGE_SCALE_DOWN_FACTOR_GRID
                 : EDGE_SCALE_DOWN_FACTOR_CAROUSEL;
     }
 
@@ -1425,7 +1425,7 @@ public class TaskView extends FrameLayout implements Reusable {
         int expectedWidth;
         int expectedHeight;
         DeviceProfile deviceProfile = mActivity.getDeviceProfile();
-        if (deviceProfile.overviewShowAsGrid) {
+        if (deviceProfile.isTablet) {
             final int thumbnailPadding = deviceProfile.overviewTaskThumbnailTopMarginPx;
             final Rect lastComputedTaskSize = getRecentsView().getLastComputedTaskSize();
             final int taskWidth = lastComputedTaskSize.width();

@@ -99,7 +99,7 @@ public final class FeatureFlags {
             "ENABLE_TWOLINE_ALLAPPS", false, "Enables two line label inside all apps.");
 
     public static final BooleanFlag ENABLE_DEVICE_SEARCH_PERFORMANCE_LOGGING = new DeviceFlag(
-            "ENABLE_DEVICE_SEARCH_PERFORMANCE_LOGGING", true,
+            "ENABLE_DEVICE_SEARCH_PERFORMANCE_LOGGING", false,
             "Allows on device search in all apps logging");
 
     public static final BooleanFlag IME_STICKY_SNACKBAR_EDU = getDebugFlag(
@@ -202,10 +202,6 @@ public final class FeatureFlags {
     public static final BooleanFlag ENABLE_TASKBAR_POPUP_MENU = getDebugFlag(
             "ENABLE_TASKBAR_POPUP_MENU", true, "Enables long pressing taskbar icons to show the"
                     + " popup menu.");
-
-    public static final BooleanFlag ENABLE_OVERVIEW_GRID = getDebugFlag(
-            "ENABLE_OVERVIEW_GRID", true, "Uses grid overview layout. "
-            + "Only applicable on large screen devices.");
 
     public static final BooleanFlag ENABLE_TWO_PANEL_HOME = getDebugFlag(
             "ENABLE_TWO_PANEL_HOME", true,

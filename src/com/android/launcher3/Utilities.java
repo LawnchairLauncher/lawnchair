@@ -458,9 +458,10 @@ public final class Utilities {
      * Trims the string, removing all whitespace at the beginning and end of the string.
      * Non-breaking whitespaces are also removed.
      */
+    @NonNull
     public static String trim(CharSequence s) {
         if (s == null) {
-            return null;
+            return "";
         }
 
         // Just strip any sequence of whitespace or java space characters from the beginning and end

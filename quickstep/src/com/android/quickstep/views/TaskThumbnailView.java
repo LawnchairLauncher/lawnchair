@@ -451,7 +451,7 @@ public class TaskThumbnailView extends View {
             // Note: Disable rotation in grid layout.
             boolean windowingModeSupportsRotation = !dp.isMultiWindowMode
                     && thumbnailData.windowingMode == WINDOWING_MODE_FULLSCREEN
-                    && !dp.overviewShowAsGrid;
+                    && !dp.isTablet;
             isOrientationDifferent = isOrientationChange(deltaRotate)
                     && windowingModeSupportsRotation;
             if (canvasWidth == 0 || canvasHeight == 0 || scale == 0) {
