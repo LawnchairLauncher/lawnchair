@@ -179,4 +179,5 @@
     <string name="icon_picker_default_category">Ikon</string>
     <string name="icon_picker_reset_to_default">Atur ulang ke default</string>
     <string name="icon_pack_external_picker">Buka pemilih eksternal</string>
+    <string name="recents_actions_label">Quick Actions</string>
 </resources>
