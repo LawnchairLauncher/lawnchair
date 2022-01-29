@@ -182,4 +182,5 @@
     <string name="icon_picker_default_category">Иконки</string>
     <string name="icon_picker_reset_to_default">Сбросить настройки</string>
     <string name="icon_pack_external_picker">Открыть внешний подборщик</string>
+    <string name="recents_actions_label">Quick Actions</string>
 </resources>
