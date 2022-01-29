@@ -179,4 +179,5 @@
     <string name="icon_picker_default_category">圖示</string>
     <string name="icon_picker_reset_to_default">還原預設設定</string>
     <string name="icon_pack_external_picker">開啟外部選擇器</string>
+    <string name="recents_actions_label">Quick Actions</string>
 </resources>
