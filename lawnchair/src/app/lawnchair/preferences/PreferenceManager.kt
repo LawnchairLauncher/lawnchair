@@ -25,6 +25,7 @@ import app.lawnchair.icons.CustomAdaptiveIconDrawable
 import app.lawnchair.icons.shape.IconShape
 import app.lawnchair.icons.shape.IconShapeManager
 import app.lawnchair.theme.color.ColorOption
+import app.lawnchair.util.isOnePlusStock
 import com.android.launcher3.InvariantDeviceProfile
 import com.android.launcher3.Utilities
 import com.android.launcher3.util.ComponentKey
@@ -76,7 +77,6 @@ class PreferenceManager private constructor(private val context: Context) : Base
     val ignoreFeedWhitelist = BoolPref("pref_ignoreFeedWhitelist", false)
     val workspaceDt2s = BoolPref("pref_doubleTap2Sleep", true)
     val launcherTheme = StringPref("pref_launcherTheme", "system")
-    val clearAllAsAction = BoolPref("pref_clearAllAsAction", false)
     val overrideWindowCornerRadius = BoolPref("pref_overrideWindowCornerRadius", false, recreate)
     val windowCornerRadius = IntPref("pref_windowCornerRadius", 80, recreate)
     val autoLaunchRoot = BoolPref("pref_autoLaunchRoot", false)
@@ -128,6 +128,11 @@ class PreferenceManager private constructor(private val context: Context) : Base
     val themedHotseatQsb = BoolPref("pref_themedHotseatQsb", false)
     val allAppsCellHeightMultiplier = FloatPref("pref_allAppsCellHeightMultiplier", 1F, reloadGrid)
     val darkStatusBar = BoolPref("pref_darkStatusBar", false)
+
+    val recentsActionScreenshot = BoolPref("pref_recentsActionScreenshot", !isOnePlusStock)
+    val recentsActionShare = BoolPref("pref_recentsActionShare", isOnePlusStock)
+    val recentsActionLens = BoolPref("pref_recentsActionLens", true)
+    val recentsActionClearAll = BoolPref("pref_clearAllAsAction", false)
 
     init {
         sp.registerOnSharedPreferenceChangeListener(this)

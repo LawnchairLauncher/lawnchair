@@ -44,7 +44,6 @@ import com.android.quickstep.util.LayoutUtils;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
-import app.lawnchair.preferences.PrefEntry;
 import app.lawnchair.preferences.PreferenceManager;
 
 /**
@@ -125,18 +124,6 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
             findViewById(R.id.oav_three_button_space).setVisibility(VISIBLE);
         }
         mClearAllButton = findViewById(R.id.action_clear_all);
-        View clearAllSpace = findViewById(R.id.clear_all_space);
-
-        PreferenceManager prefs = PreferenceManager.getInstance(getContext());
-        prefs.getClearAllAsAction().subscribeValues(this, enabled -> {
-            if (enabled) {
-                mClearAllButton.setVisibility(View.VISIBLE);
-                clearAllSpace.setVisibility(View.VISIBLE);
-            } else {
-                mClearAllButton.setVisibility(View.GONE);
-                clearAllSpace.setVisibility(View.GONE);
-            }
-        });
     }
 
     /**
