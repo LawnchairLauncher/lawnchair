@@ -180,5 +180,5 @@
     <string name="icon_picker_default_category">Symbole</string>
     <string name="icon_picker_reset_to_default">Zurücksetzen auf Standard</string>
     <string name="icon_pack_external_picker">Externe Auswahlfunktion öffnen</string>
-    <string name="recents_actions_label">Quick Actions</string>
+    <string name="recents_actions_label">Schnelle Aktionen</string>
 </resources>
