@@ -64,6 +64,7 @@ import com.android.launcher3.dot.DotInfo;
 import com.android.launcher3.folder.Folder;
 import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.logger.LauncherAtom;
+import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.FolderInfo;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
@@ -100,6 +101,7 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
 
     private final LayoutInflater mLayoutInflater;
     private final TaskbarDragLayer mDragLayer;
+    private final TaskbarAllAppsContainerView mAppsView;
     private final TaskbarControllers mControllers;
 
     private DeviceProfile mDeviceProfile;
@@ -153,6 +155,11 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
         FrameLayout navButtonsView = mDragLayer.findViewById(R.id.navbuttons_view);
         StashedHandleView stashedHandleView = mDragLayer.findViewById(R.id.stashed_handle);
 
+        TaskbarAllAppsSlideInView appsSlideInView =
+                (TaskbarAllAppsSlideInView) mLayoutInflater.inflate(R.layout.taskbar_all_apps,
+                        mDragLayer, false);
+        mAppsView = appsSlideInView.getAppsView();
+
         Display display = windowContext.getDisplay();
         Context c = display.getDisplayId() == Display.DEFAULT_DISPLAY
                 ? windowContext.getApplicationContext()
@@ -189,7 +196,8 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
                 new TaskbarEduController(this),
                 new TaskbarAutohideSuspendController(this),
                 new TaskbarPopupController(this),
-                new TaskbarForceVisibleImmersiveController(this));
+                new TaskbarForceVisibleImmersiveController(this),
+                new TaskbarAllAppsViewController(this, appsSlideInView));
     }
 
     public void init(TaskbarSharedState sharedState) {
@@ -226,6 +234,7 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
         mDeviceProfile.updateIconSize(1, resources);
         float iconScale = taskbarIconSize / mDeviceProfile.iconSizePx;
         mDeviceProfile.updateIconSize(iconScale, resources);
+        mDeviceProfile.updateAllAppsIconSize(1, resources); // Leave all apps unscaled.
     }
 
     /** Creates LayoutParams for adding a view directly to WindowManager as a new window */
@@ -277,6 +286,11 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
     @Override
     public TaskbarDragLayer getDragLayer() {
         return mDragLayer;
+    }
+
+    @Override
+    public TaskbarAllAppsContainerView getAppsView() {
+        return mAppsView;
     }
 
     @Override
@@ -619,11 +633,8 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
                         String packageName = intent.getPackage();
                         getSystemService(LauncherApps.class)
                                 .startShortcut(packageName, id, null, null, info.user);
-                    } else if (info.user.equals(Process.myUserHandle())) {
-                        startActivity(intent);
                     } else {
-                        getSystemService(LauncherApps.class).startMainActivity(
-                                intent.getComponent(), info.user, intent.getSourceBounds(), null);
+                        startItemInfoActivity(info);
                     }
 
                     mControllers.uiController.onTaskbarIconLaunched(info);
@@ -633,11 +644,31 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
                     Log.e(TAG, "Unable to launch. tag=" + info + " intent=" + intent, e);
                 }
             }
+        } else if (tag instanceof AppInfo) {
+            startItemInfoActivity((AppInfo) tag);
         } else {
             Log.e(TAG, "Unknown type clicked: " + tag);
         }
 
         AbstractFloatingView.closeAllOpenViews(this);
+    }
+
+    private void startItemInfoActivity(ItemInfo info) {
+        Intent intent = new Intent(info.getIntent())
+                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        try {
+            if (info.user.equals(Process.myUserHandle())) {
+                // TODO(b/216683257): Use startActivityForResult for search results that require it.
+                startActivity(intent);
+            } else {
+                getSystemService(LauncherApps.class).startMainActivity(
+                        intent.getComponent(), info.user, intent.getSourceBounds(), null);
+            }
+        } catch (NullPointerException | ActivityNotFoundException | SecurityException e) {
+            Toast.makeText(this, R.string.activity_not_found, Toast.LENGTH_SHORT)
+                    .show();
+            Log.e(TAG, "Unable to launch. tag=" + info + " intent=" + intent, e);
+        }
     }
 
     /**

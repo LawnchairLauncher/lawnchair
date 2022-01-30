@@ -182,7 +182,7 @@ public class TaskbarDragController extends DragController<TaskbarActivityContext
                 dragLayerX,
                 dragLayerY,
                 (View target, DropTarget.DragObject d, boolean success) -> {} /* DragSource */,
-                (WorkspaceItemInfo) btv.getTag(),
+                (ItemInfo) btv.getTag(),
                 /* dragVisualizeOffset = */ null,
                 dragRect,
                 scale * iconScale,
@@ -289,8 +289,8 @@ public class TaskbarDragController extends DragController<TaskbarActivityContext
         Object tag = btv.getTag();
         ClipDescription clipDescription = null;
         Intent intent = null;
-        if (tag instanceof WorkspaceItemInfo) {
-            WorkspaceItemInfo item = (WorkspaceItemInfo) tag;
+        if (tag instanceof ItemInfo) {
+            ItemInfo item = (ItemInfo) tag;
             LauncherApps launcherApps = mActivity.getSystemService(LauncherApps.class);
             clipDescription = new ClipDescription(item.title,
                     new String[] {
@@ -300,14 +300,15 @@ public class TaskbarDragController extends DragController<TaskbarActivityContext
                     });
             intent = new Intent();
             if (item.itemType == LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT) {
+                String deepShortcutId = ((WorkspaceItemInfo) item).getDeepShortcutId();
                 intent.putExtra(ClipDescriptionCompat.EXTRA_PENDING_INTENT,
                         launcherApps.getShortcutIntent(
                                 item.getIntent().getPackage(),
-                                item.getDeepShortcutId(),
+                                deepShortcutId,
                                 null,
                                 item.user));
                 intent.putExtra(Intent.EXTRA_PACKAGE_NAME, item.getIntent().getPackage());
-                intent.putExtra(Intent.EXTRA_SHORTCUT_ID, item.getDeepShortcutId());
+                intent.putExtra(Intent.EXTRA_SHORTCUT_ID, deepShortcutId);
             } else {
                 intent.putExtra(ClipDescriptionCompat.EXTRA_PENDING_INTENT,
                         LauncherAppsCompat.getMainActivityLaunchIntent(launcherApps,

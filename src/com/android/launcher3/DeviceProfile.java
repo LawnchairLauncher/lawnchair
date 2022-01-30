@@ -701,25 +701,7 @@ public class DeviceProfile {
         }
 
         // All apps
-        if (numShownAllAppsColumns != inv.numColumns) {
-            allAppsIconSizePx =
-                    pxFromDp(inv.allAppsIconSize[mTypeIndex], mMetrics);
-            allAppsIconTextSizePx =
-                    pxFromSp(inv.allAppsIconTextSize[mTypeIndex], mMetrics);
-            allAppsIconDrawablePaddingPx = iconDrawablePaddingOriginalPx;
-            autoResizeAllAppsCells();
-        } else {
-            allAppsIconSizePx = iconSizePx;
-            allAppsIconTextSizePx = iconTextSizePx;
-            allAppsIconDrawablePaddingPx = iconDrawablePaddingPx;
-            allAppsCellHeightPx = getCellSize().y;
-        }
-        allAppsCellWidthPx = allAppsIconSizePx + (2 * allAppsIconDrawablePaddingPx);
-        updateAllAppsWidth(res);
-
-        if (isVerticalLayout) {
-            hideWorkspaceLabelsIfNotEnoughSpace();
-        }
+        updateAllAppsIconSize(scale, res);
 
         // Hotseat
         hotseatBorderSpace = pxFromDp(inv.hotseatBorderSpaces[mTypeIndex], mMetrics, scale);
@@ -745,6 +727,34 @@ public class DeviceProfile {
         // Folder icon
         folderIconSizePx = IconNormalizer.getNormalizedCircleSize(iconSizePx);
         folderIconOffsetYPx = (iconSizePx - folderIconSizePx) / 2;
+    }
+
+
+    /**
+     * Updates the iconSize for allApps* variants.
+     */
+    public void updateAllAppsIconSize(float scale, Resources res) {
+        if (numShownAllAppsColumns != inv.numColumns) {
+            allAppsIconSizePx =
+                    pxFromDp(inv.allAppsIconSize[mTypeIndex], mMetrics);
+            allAppsIconTextSizePx =
+                    pxFromSp(inv.allAppsIconTextSize[mTypeIndex], mMetrics);
+            allAppsIconDrawablePaddingPx = iconDrawablePaddingOriginalPx;
+            autoResizeAllAppsCells();
+        } else {
+            float invIconSizeDp = inv.iconSize[mTypeIndex];
+            float invIconTextSizeSp = inv.iconTextSize[mTypeIndex];
+            allAppsIconSizePx = Math.max(1, pxFromDp(invIconSizeDp, mMetrics, scale));
+            allAppsIconTextSizePx = (int) (pxFromSp(invIconTextSizeSp, mMetrics) * scale);
+            allAppsIconDrawablePaddingPx = (int) (iconDrawablePaddingOriginalPx * scale);
+            allAppsCellHeightPx = getCellSize().y;
+        }
+
+        allAppsCellWidthPx = allAppsIconSizePx + (2 * allAppsIconDrawablePaddingPx);
+        updateAllAppsWidth(res);
+        if (isVerticalBarLayout()) {
+            hideWorkspaceLabelsIfNotEnoughSpace();
+        }
     }
 
     private void updateAvailableFolderCellDimensions(Resources res) {
