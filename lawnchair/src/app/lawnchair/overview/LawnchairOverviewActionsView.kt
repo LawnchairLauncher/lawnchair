@@ -35,6 +35,8 @@ class LawnchairOverviewActionsView @JvmOverloads constructor(
         lensAction = ViewCompat.requireViewById(this, R.id.action_lens)
         screenshotAction = ViewCompat.requireViewById(this, R.id.action_screenshot)
         shareAction = ViewCompat.requireViewById(this, R.id.action_share)
+        
+        lensAction.setOnClickListener { mCallbacks?.onLens() }
 
         prefs.recentsActionClearAll.subscribeChanges(this, ::updateVisibilities)
         prefs.recentsActionLens.subscribeChanges(this, ::updateVisibilities)
