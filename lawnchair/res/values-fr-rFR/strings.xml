@@ -20,7 +20,7 @@
     <string name="home_screen_label">Écran d\'accueil</string>
     <string name="home_screen_description">Fil, Coup d\'œil, Grille, Icônes</string>
     <string name="general_label">Général</string>
-    <string name="general_description">Colors, Icon Pack, Notification Dots</string>
+    <string name="general_description">Couleurs, Pack d\'icônes, Pastilles de notification</string>
     <string name="home_screen_rotation_label">Rotation de l\'écran d\'accueil</string>
     <string name="home_screen_rotaton_description">Lorsque l\'appareil est tourné.</string>
     <string name="auto_add_shortcuts_label">Ajouter les nouvelles applications à l\'écran d\'accueil</string>
@@ -37,7 +37,7 @@
     <string name="home_screen_grid">Grille de l\'écran d\'accueil</string>
     <string name="columns">Colonnes</string>
     <string name="grid">Grille</string>
-    <string name="rows">Rows</string>
+    <string name="rows">Rangées</string>
     <string name="icons">Icônes</string>
     <string name="icon_size">Taille des icônes</string>
     <string name="label_size">Taille du libellé</string>
@@ -100,7 +100,7 @@
     <string name="done">Terminé</string>
     <string name="loading">Chargement…</string>
     <string name="system">Système</string>
-    <string name="wallpaper">Wallpaper</string>
+    <string name="wallpaper">Fond d\'écran</string>
     <string name="custom">Personnalisé</string>
     <string name="quickstep_description">Bouton \"Tout effacer\", Courbure des coins</string>
     <string name="wallpaper_scrolling_label">Scroll Wallpaper</string>
@@ -180,5 +180,5 @@
     <string name="icon_picker_default_category">Icônes</string>
     <string name="icon_picker_reset_to_default">Reset to default</string>
     <string name="icon_pack_external_picker">Open external picker</string>
-    <string name="recents_actions_label">Quick Actions</string>
+    <string name="recents_actions_label">Actions rapides</string>
 </resources>
