@@ -35,6 +35,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.icu.text.MessageFormat;
 import android.text.TextPaint;
+import android.text.TextUtils;
 import android.text.TextUtils.TruncateAt;
 import android.util.AttributeSet;
 import android.util.Property;
@@ -785,7 +786,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
                     invalidate();
                 }
             }
-            if (itemInfo.contentDescription != null) {
+            if (!TextUtils.isEmpty(itemInfo.contentDescription)) {
                 if (itemInfo.isDisabled()) {
                     setContentDescription(getContext().getString(R.string.disabled_app_label,
                             itemInfo.contentDescription));
