@@ -178,7 +178,7 @@
     <string name="dark_status_bar_label">Dark Status Bar</string>
     <string name="lawnicons_not_installed_description">Lawnicons n\'est pas installé.</string>
     <string name="icon_picker_default_category">Icônes</string>
-    <string name="icon_picker_reset_to_default">Reset to default</string>
-    <string name="icon_pack_external_picker">Open external picker</string>
+    <string name="icon_picker_reset_to_default">Réinitialiser</string>
+    <string name="icon_pack_external_picker">Ouvrir le sélecteur externe</string>
     <string name="recents_actions_label">Actions rapides</string>
 </resources>
