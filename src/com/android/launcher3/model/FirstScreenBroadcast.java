@@ -135,6 +135,13 @@ public class FirstScreenBroadcast {
             printList(installerPackageName, "Widget item", widgetItems);
         }
 
+        if (folderItems.isEmpty()
+                && workspaceItems.isEmpty()
+                && hotseatItems.isEmpty()
+                && widgetItems.isEmpty()) {
+            // Avoid sending broadcast if there is nothing to send.
+            return;
+        }
         context.sendBroadcast(new Intent(ACTION_FIRST_SCREEN_ACTIVE_INSTALLS)
                 .setPackage(installerPackageName)
                 .putStringArrayListExtra(FOLDER_ITEM_EXTRA, new ArrayList<>(folderItems))
