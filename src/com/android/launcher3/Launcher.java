@@ -351,7 +351,7 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
     // We only want to get the SharedPreferences once since it does an FS stat each time we get
     // it from the context.
     private SharedPreferences mSharedPrefs;
-    private OnboardingPrefs mOnboardingPrefs;
+    private OnboardingPrefs<? extends Launcher> mOnboardingPrefs;
 
     // Activity result which needs to be processed after workspace has loaded.
     private ActivityResultInfo mPendingActivityResult;
@@ -557,11 +557,12 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
         return new LauncherOverlayManager() { };
     }
 
-    protected OnboardingPrefs createOnboardingPrefs(SharedPreferences sharedPrefs) {
+    protected OnboardingPrefs<? extends Launcher> createOnboardingPrefs(
+            SharedPreferences sharedPrefs) {
         return new OnboardingPrefs<>(this, sharedPrefs);
     }
 
-    public OnboardingPrefs getOnboardingPrefs() {
+    public OnboardingPrefs<? extends Launcher> getOnboardingPrefs() {
         return mOnboardingPrefs;
     }
 
@@ -588,7 +589,7 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
     }
 
     @Override
-    protected void dispatchDeviceProfileChanged() {
+    public void dispatchDeviceProfileChanged() {
         super.dispatchDeviceProfileChanged();
         mOverlayManager.onDeviceProvideChanged();
     }
@@ -1779,6 +1780,11 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
     }
 
     public boolean isWorkspaceLoading() {
+        return mWorkspaceLoading;
+    }
+
+    @Override
+    public boolean isBindingItems() {
         return mWorkspaceLoading;
     }
 

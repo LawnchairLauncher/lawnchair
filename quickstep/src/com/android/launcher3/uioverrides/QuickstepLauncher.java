@@ -69,7 +69,6 @@ import com.android.launcher3.uioverrides.touchcontrollers.TaskViewTouchControlle
 import com.android.launcher3.uioverrides.touchcontrollers.TransposedQuickSwitchTouchController;
 import com.android.launcher3.uioverrides.touchcontrollers.TwoButtonNavbarTouchController;
 import com.android.launcher3.util.ItemInfoMatcher;
-import com.android.launcher3.util.OnboardingPrefs;
 import com.android.launcher3.util.PendingRequestArgs;
 import com.android.launcher3.util.TouchController;
 import com.android.launcher3.util.UiThreadHelper;
@@ -162,7 +161,7 @@ public class QuickstepLauncher extends BaseQuickstepLauncher {
     }
 
     @Override
-    protected OnboardingPrefs createOnboardingPrefs(SharedPreferences sharedPrefs) {
+    protected QuickstepOnboardingPrefs createOnboardingPrefs(SharedPreferences sharedPrefs) {
         return new QuickstepOnboardingPrefs(this, sharedPrefs);
     }
 
@@ -235,8 +234,10 @@ public class QuickstepLauncher extends BaseQuickstepLauncher {
     public void bindExtraContainerItems(FixedContainerItems item) {
         if (item.containerId == Favorites.CONTAINER_PREDICTION) {
             mAllAppsPredictions = item;
-            getAppsView().getFloatingHeaderView().findFixedRowByType(PredictionRowView.class)
-                    .setPredictedApps(item.items);
+            PredictionRowView<?> predictionRowView =
+                    getAppsView().getFloatingHeaderView().findFixedRowByType(
+                            PredictionRowView.class);
+            predictionRowView.setPredictedApps(item.items);
         } else if (item.containerId == Favorites.CONTAINER_HOTSEAT_PREDICTION) {
             mHotseatPredictionController.setPredictedItems(item);
         } else if (item.containerId == Favorites.CONTAINER_WIDGETS_PREDICTION) {
