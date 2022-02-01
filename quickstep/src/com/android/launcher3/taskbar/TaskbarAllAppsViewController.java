@@ -15,7 +15,6 @@
  */
 package com.android.launcher3.taskbar;
 
-import com.android.launcher3.R;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.model.data.AppInfo;
 
@@ -41,9 +40,6 @@ public final class TaskbarAllAppsViewController {
 
         mAppsView.setOnIconLongClickListener(
                 controllers.taskbarDragController::startDragOnLongClick);
-
-        // TODO(b/205803230): Remove once entry point button is implemented.
-        mContext.getDragLayer().findViewById(R.id.taskbar_view).setOnClickListener(v -> show());
     }
 
     /** Binds the current {@link AppInfo} instances to the {@link TaskbarAllAppsContainerView}. */

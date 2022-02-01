@@ -135,7 +135,7 @@ public class InvariantDeviceProfile {
     /**
      * Number of icons inside the hotseat area.
      */
-    protected int numShownHotseatIcons;
+    public int numShownHotseatIcons;
 
     /**
      * Number of icons inside the hotseat area that is stored in the database. This is greater than
