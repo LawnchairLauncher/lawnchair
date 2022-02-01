@@ -39,5 +39,8 @@ message DeviceSearchResultContainer{
 
     // True if results are based on spell corrected query
     optional bool corrected_query = 1;
+
+    // True if the item's title/content is a direct match to the search query, false otherwise.
+    optional bool direct_match = 2;
   }
 }

@@ -94,6 +94,7 @@ public class StatsLogCompatManager extends StatsLogManager {
      * Flags for converting SearchAttribute to integer value.
      */
     private static final int SEARCH_ATTRIBUTES_CORRECTED_QUERY = 1;
+    private static final int SEARCH_ATTRIBUTES_DIRECT_MATCH = 1 << 1;
 
     public static final CopyOnWriteArrayList<StatsLogConsumer> LOGS_CONSUMER =
             new CopyOnWriteArrayList<>();
@@ -583,6 +584,9 @@ public class StatsLogCompatManager extends StatsLogManager {
         int response = 0;
         if (searchAttributes.getCorrectedQuery()) {
             response = response | SEARCH_ATTRIBUTES_CORRECTED_QUERY;
+        }
+        if (searchAttributes.getDirectMatch()) {
+            response = response | SEARCH_ATTRIBUTES_DIRECT_MATCH;
         }
         return response;
     }
