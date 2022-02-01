@@ -245,7 +245,7 @@ public final class FeatureFlags {
             "Enables scaling/spacing for icon labels to make more characters visible");
 
     public static final BooleanFlag ENABLE_ALL_APPS_IN_TASKBAR = getDebugFlag(
-            "ENABLE_ALL_APPS_IN_TASKBAR", false,
+            "ENABLE_ALL_APPS_IN_TASKBAR", true,
             "Enables accessing All Apps from the system Taskbar.");
 
     public static void initialize(Context context) {
