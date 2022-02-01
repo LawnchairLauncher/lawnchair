@@ -22,6 +22,7 @@ import static com.android.quickstep.AnimatedFloat.VALUE;
 
 import android.graphics.Rect;
 import android.util.FloatProperty;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewTreeObserver;
@@ -33,6 +34,7 @@ import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.PendingAnimation;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.util.LauncherBindableItemsContainer;
@@ -45,6 +47,9 @@ import java.io.PrintWriter;
  * Handles properties/data collection, then passes the results to TaskbarView to render.
  */
 public class TaskbarViewController implements TaskbarControllers.LoggableTaskbarController {
+
+    private static final String TAG = TaskbarViewController.class.getSimpleName();
+
     private static final Runnable NO_OP = () -> { };
 
     public static final int ALPHA_INDEX_HOME = 0;
@@ -225,14 +230,29 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
         int count = mTaskbarView.getChildCount();
         for (int i = 0; i < count; i++) {
             View child = mTaskbarView.getChildAt(i);
-            ItemInfo info = (ItemInfo) child.getTag();
-            setter.setFloat(child, SCALE_PROPERTY, scaleUp, LINEAR);
+
+            int positionInHotseat = -1;
+            if (FeatureFlags.ENABLE_ALL_APPS_IN_TASKBAR.get() && i == count - 1) {
+                // Note that there is no All Apps button in the hotseat, this position is only used
+                // as its convenient for animation purposes.
+                positionInHotseat = mActivity.getDeviceProfile().inv.numShownHotseatIcons;
+
+                setter.setViewAlpha(child, 0, LINEAR);
+            } else if (child.getTag() instanceof ItemInfo) {
+                positionInHotseat = ((ItemInfo) child.getTag()).screenId;
+            } else {
+                Log.w(TAG, "Unsupported view found in createIconAlignmentController, v=" + child);
+                continue;
+            }
+
+            float hotseatIconCenter = hotseatPadding.left
+                    + (hotseatCellSize + borderSpacing) * positionInHotseat
+                    + hotseatCellSize / 2;
 
             float childCenter = (child.getLeft() + child.getRight()) / 2;
-            float hotseatIconCenter = hotseatPadding.left
-                    + (hotseatCellSize + borderSpacing) * info.screenId
-                    + hotseatCellSize / 2;
             setter.setFloat(child, ICON_TRANSLATE_X, hotseatIconCenter - childCenter, LINEAR);
+
+            setter.setFloat(child, SCALE_PROPERTY, scaleUp, LINEAR);
         }
 
         AnimatorPlaybackController controller = setter.createPlaybackController();
@@ -277,6 +297,10 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
 
         public View.OnClickListener getIconOnClickListener() {
             return mActivity.getItemOnClickListener();
+        }
+
+        public View.OnClickListener getAllAppsButtonClickListener() {
+            return v -> mControllers.taskbarAllAppsViewController.show();
         }
 
         public View.OnLongClickListener getIconOnLongClickListener() {

@@ -22,6 +22,7 @@ import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import androidx.annotation.LayoutRes;
@@ -31,6 +32,7 @@ import androidx.annotation.Nullable;
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.Insettable;
 import com.android.launcher3.R;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.model.data.FolderInfo;
 import com.android.launcher3.model.data.ItemInfo;
@@ -38,6 +40,7 @@ import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.uioverrides.ApiWrapper;
 import com.android.launcher3.util.LauncherBindableItemsContainer;
 import com.android.launcher3.views.ActivityContext;
+import com.android.launcher3.views.AllAppsButton;
 
 /**
  * Hosts the Taskbar content such as Hotseat and Recent Apps. Drawn on top of other apps.
@@ -63,6 +66,9 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
 
     // Only non-null when the corresponding Folder is open.
     private @Nullable FolderIcon mLeaveBehindFolderIcon;
+
+    // Only non-null when device supports having an All Apps button.
+    private @Nullable AllAppsButton mAllAppsButton;
 
     public TaskbarView(@NonNull Context context) {
         this(context, null);
@@ -94,6 +100,13 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
 
         // Needed to draw folder leave-behind when opening one.
         setWillNotDraw(false);
+
+        if (FeatureFlags.ENABLE_ALL_APPS_IN_TASKBAR.get()) {
+            mAllAppsButton = new AllAppsButton(context);
+            mAllAppsButton.setLayoutParams(
+                    new ViewGroup.LayoutParams(mIconTouchSize, mIconTouchSize));
+            mAllAppsButton.setPadding(mItemPadding, mItemPadding, mItemPadding, mItemPadding);
+        }
     }
 
     protected void init(TaskbarViewController.TaskbarViewCallbacks callbacks) {
@@ -102,6 +115,10 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
         mIconLongClickListener = mControllerCallbacks.getIconOnLongClickListener();
 
         setOnLongClickListener(mControllerCallbacks.getBackgroundOnLongClickListener());
+
+        if (mAllAppsButton != null) {
+            mAllAppsButton.setOnClickListener(mControllerCallbacks.getAllAppsButtonClickListener());
+        }
     }
 
     private void removeAndRecycle(View view) {
@@ -120,6 +137,10 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
     protected void updateHotseatItems(ItemInfo[] hotseatItemInfos) {
         int nextViewIndex = 0;
         int numViewsAnimated = 0;
+
+        if (mAllAppsButton != null) {
+            removeView(mAllAppsButton);
+        }
 
         for (int i = 0; i < hotseatItemInfos.length; i++) {
             ItemInfo hotseatItemInfo = hotseatItemInfos[i];
@@ -190,6 +211,10 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
         // Remove remaining views
         while (nextViewIndex < getChildCount()) {
             removeAndRecycle(getChildAt(nextViewIndex));
+        }
+
+        if (mAllAppsButton != null) {
+            addView(mAllAppsButton);
         }
     }
 
