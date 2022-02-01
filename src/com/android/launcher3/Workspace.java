@@ -1686,7 +1686,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
             PopupContainerWithArrow<Launcher> popupContainer = PopupContainerWithArrow
                     .showForIcon((BubbleTextView) child);
             if (popupContainer != null) {
-                dragOptions.preDragCondition = popupContainer.createPreDragCondition();
+                dragOptions.preDragCondition = popupContainer.createPreDragCondition(true);
             }
         }
 
