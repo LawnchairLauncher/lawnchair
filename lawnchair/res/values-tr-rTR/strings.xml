@@ -176,9 +176,9 @@
     <string name="row_height_label">Satır yüksekliği</string>
     <string name="all_apps_device_search_hint">Arama</string>
     <string name="dark_status_bar_label">Koyu durum çubuğu</string>
-    <string name="lawnicons_not_installed_description">Lawnicons not installed.</string>
+    <string name="lawnicons_not_installed_description">Lawnicons yüklü değil.</string>
     <string name="icon_picker_default_category">Simgeler</string>
-    <string name="icon_picker_reset_to_default">Reset to default</string>
+    <string name="icon_picker_reset_to_default">Varsayılanlara sıfırla</string>
     <string name="icon_pack_external_picker">Open external picker</string>
     <string name="recents_actions_label">Quick Actions</string>
 </resources>
