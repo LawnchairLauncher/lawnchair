@@ -19,7 +19,6 @@
     android:id="@+id/apps_list_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_below="@id/search_container_all_apps"
     android:clipToPadding="false"
     android:descendantFocusability="afterDescendants"
     android:focusable="true" />
