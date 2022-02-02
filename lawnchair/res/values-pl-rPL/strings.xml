@@ -180,14 +180,14 @@
     <string name="dark_status_bar_label">Ciemny pasek statusu</string>
     <string name="lawnicons_not_installed_description">Lawnikony nie zainstalowane.</string>
     <string name="icon_picker_default_category">Ikony</string>
-    <string name="icon_picker_reset_to_default">Reset to Default</string>
-    <string name="icon_pack_external_picker">Open External Picker</string>
+    <string name="icon_picker_reset_to_default">Przywróć domyślne</string>
+    <string name="icon_pack_external_picker">Otwórz zewnętrzny selektor</string>
     <string name="recents_actions_label">Szybkie działania</string>
-    <string name="recents_clear_all">Clear All</string>
-    <string name="pick_icon_from_label">Pick Icon From</string>
-    <string name="experimental_features_label">Experimental Features</string>
-    <string name="icon_picker_label">Per-App Icon Customization</string>
-    <string name="icon_picker_description">May cause Lawnchair to freeze.</string>
-    <string name="font_picker_label">Font Customization</string>
-    <string name="font_picker_description">Some text remains unchanged.</string>
+    <string name="recents_clear_all">Wyczyść wszystko</string>
+    <string name="pick_icon_from_label">Wybierz ikonę z</string>
+    <string name="experimental_features_label">Funkcje eksperymentalne</string>
+    <string name="icon_picker_label">Dostosowywanie ikon do aplikacji</string>
+    <string name="icon_picker_description">Może spowodować zamrożenie Lawnchair.</string>
+    <string name="font_picker_label">Dostosowywanie czcionek</string>
+    <string name="font_picker_description">Niektóre teksty pozostają niezmienione.</string>
 </resources>
