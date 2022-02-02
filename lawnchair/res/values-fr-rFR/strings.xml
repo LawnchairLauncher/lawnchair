@@ -41,7 +41,7 @@
     <string name="icons">Icônes</string>
     <string name="icon_size">Taille des icônes</string>
     <string name="label_size">Taille du libellé</string>
-    <string name="show_home_labels">Montrer les étiquettes</string>
+    <string name="show_home_labels">Afficher les étiquettes</string>
     <string name="notification_dots">Pastilles de notification</string>
     <string name="smartspace_preferences">Préférences</string>
     <string name="about_label">À propos</string>
@@ -106,7 +106,7 @@
     <string name="wallpaper_scrolling_label">Défiler le fond d\'écran</string>
     <string name="show_sys_ui_scrim">Ombre du haut</string>
     <string name="show_status_bar">Barre d\'état</string>
-    <string name="what_to_show">Quoi afficher</string>
+    <string name="what_to_show">Qu\'afficher</string>
     <string name="missing_notification_access_label">Accès aux notifications requis</string>
     <string name="missing_notification_access_description">Accès aux notifications requis.</string>
     <string name="msg_missing_notification_access">Pour utiliser les points de notification, accordez <xliff:g id="name" example="My App">%1$s</xliff:g> l\'accès aux notifications.</string>
@@ -168,7 +168,7 @@
     <string name="themed_icon_title">Icônes thématiques</string>
     <string name="corner_radius_label">Courbure des coins</string>
     <string name="search_bar_label">Barre de recherche</string>
-    <string name="apply_accent_color_label">Appliquer la couleur d\'accent</string>
+    <string name="apply_accent_color_label">Appliquer la couleur d\'accentuation</string>
     <string name="show_search_result_types">Afficher dans les résultats de recherche</string>
     <string name="search_pref_result_people_title">Personnes</string>
     <string name="search_pref_result_shortcuts_title">Raccourcis d\'application</string>
