@@ -179,7 +179,7 @@
     <string name="lawnicons_not_installed_description">Lawnicons ist nicht installiert.</string>
     <string name="icon_picker_default_category">Symbole</string>
     <string name="icon_picker_reset_to_default">Auf Standard zurücksetzen</string>
-    <string name="icon_pack_external_picker">Externe Auswahlfunktion öffnen</string>
+    <string name="icon_pack_external_picker">Externe Auswahl öffnen</string>
     <string name="recents_actions_label">Schnelle Aktionen</string>
     <string name="recents_clear_all">Alle löschen</string>
     <string name="pick_icon_from_label">Pick Icon From</string>
