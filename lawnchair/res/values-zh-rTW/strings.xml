@@ -177,14 +177,14 @@
     <string name="dark_status_bar_label">深色狀態列</string>
     <string name="lawnicons_not_installed_description">Lawnicons 未安裝。</string>
     <string name="icon_picker_default_category">圖示</string>
-    <string name="icon_picker_reset_to_default">Reset to Default</string>
-    <string name="icon_pack_external_picker">Open External Picker</string>
+    <string name="icon_picker_reset_to_default">還原預設設定</string>
+    <string name="icon_pack_external_picker">開啟外部選擇器</string>
     <string name="recents_actions_label">快速操作</string>
-    <string name="recents_clear_all">Clear All</string>
-    <string name="pick_icon_from_label">Pick Icon From</string>
-    <string name="experimental_features_label">Experimental Features</string>
-    <string name="icon_picker_label">Per-App Icon Customization</string>
-    <string name="icon_picker_description">May cause Lawnchair to freeze.</string>
-    <string name="font_picker_label">Font Customization</string>
-    <string name="font_picker_description">Some text remains unchanged.</string>
+    <string name="recents_clear_all">全部清除</string>
+    <string name="pick_icon_from_label">選擇圖示...</string>
+    <string name="experimental_features_label">實驗性功能</string>
+    <string name="icon_picker_label">自訂個別應用程式</string>
+    <string name="icon_picker_description">可能導致 Lawnchair 畫面凍結</string>
+    <string name="font_picker_label">自訂字型</string>
+    <string name="font_picker_description">部分文字可能無法套用。</string>
 </resources>
