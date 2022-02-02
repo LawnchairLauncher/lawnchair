@@ -12,19 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+package {
+    // See: http://go/android-license-faq
+    default_applicable_licenses: ["Android-Apache-2.0"],
+}
+
 //
 // Launcher Robolectric test target.
 //
 //        "robolectric_android-all-stub", not needed, we write our own stubs
-package {
-    // See: http://go/android-license-faq
-    // A large-scale-change added 'default_applicable_licenses' to import
-    // all of the 'license_kinds' from "packages_apps_Launcher3_license"
-    // to get the below license kinds:
-    //   SPDX-license-identifier-Apache-2.0
-    default_applicable_licenses: ["packages_apps_Launcher3_license"],
-}
-
 filegroup {
     name: "launcher3-robolectric-resources",
     path: "resources",
