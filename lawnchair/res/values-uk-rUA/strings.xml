@@ -180,7 +180,14 @@
     <string name="dark_status_bar_label">Темний рядок стану</string>
     <string name="lawnicons_not_installed_description">Lawnicons не встановлені.</string>
     <string name="icon_picker_default_category">Значки</string>
-    <string name="icon_picker_reset_to_default">Відновити параметри</string>
-    <string name="icon_pack_external_picker">Відкрити зовнішній засіб вибору</string>
+    <string name="icon_picker_reset_to_default">Reset to Default</string>
+    <string name="icon_pack_external_picker">Open External Picker</string>
     <string name="recents_actions_label">Швидкі дії</string>
+    <string name="recents_clear_all">Clear All</string>
+    <string name="pick_icon_from_label">Pick Icon From</string>
+    <string name="experimental_features_label">Experimental Features</string>
+    <string name="icon_picker_label">Per-App Icon Customization</string>
+    <string name="icon_picker_description">May cause Lawnchair to freeze.</string>
+    <string name="font_picker_label">Font Customization</string>
+    <string name="font_picker_description">Some text remains unchanged.</string>
 </resources>
