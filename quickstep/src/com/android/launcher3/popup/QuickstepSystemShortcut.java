@@ -15,13 +15,22 @@
  */
 package com.android.launcher3.popup;
 
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.util.Log;
 import android.view.View;
 
 import com.android.launcher3.BaseQuickstepLauncher;
 import com.android.launcher3.model.data.ItemInfo;
+import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.util.SplitConfigurationOptions.SplitPositionOption;
+import com.android.quickstep.views.RecentsView;
 
 public interface QuickstepSystemShortcut {
+
+    String TAG = QuickstepSystemShortcut.class.getSimpleName();
 
     static SystemShortcut.Factory<BaseQuickstepLauncher> getSplitSelectShortcutByPosition(
             SplitPositionOption position) {
@@ -46,6 +55,41 @@ public interface QuickstepSystemShortcut {
 
         @Override
         public void onClick(View view) {
+            Bitmap bitmap;
+            Intent intent;
+            if (mItemInfo instanceof WorkspaceItemInfo) {
+                final WorkspaceItemInfo workspaceItemInfo = (WorkspaceItemInfo) mItemInfo;
+                bitmap = workspaceItemInfo.bitmap.icon;
+                intent = workspaceItemInfo.intent;
+            } else if (mItemInfo instanceof com.android.launcher3.model.data.AppInfo) {
+                final com.android.launcher3.model.data.AppInfo appInfo =
+                        (com.android.launcher3.model.data.AppInfo) mItemInfo;
+                bitmap = appInfo.bitmap.icon;
+                intent = appInfo.intent;
+            } else {
+                Log.e(TAG, "unknown item type");
+                return;
+            }
+
+            RecentsView recentsView = mLauncher.getOverviewPanel();
+            recentsView.initiateSplitSelect(
+                    new SplitSelectSource(view, new BitmapDrawable(bitmap), intent, mPosition));
+        }
+    }
+
+    class SplitSelectSource {
+
+        public final View view;
+        public final Drawable drawable;
+        public final Intent intent;
+        public final SplitPositionOption position;
+
+        public SplitSelectSource(View view, Drawable drawable, Intent intent,
+                SplitPositionOption position) {
+            this.view = view;
+            this.drawable = drawable;
+            this.intent = intent;
+            this.position = position;
         }
     }
 }

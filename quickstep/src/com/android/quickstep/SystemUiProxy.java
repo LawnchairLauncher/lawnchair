@@ -608,6 +608,21 @@ public class SystemUiProxy implements ISystemUiProxy,
         }
     }
 
+    public void startIntentAndTaskWithLegacyTransition(PendingIntent pendingIntent,
+            Intent fillInIntent, int taskId, boolean intentFirst, Bundle mainOptions,
+            Bundle sideOptions, @SplitConfigurationOptions.StagePosition int sidePosition,
+            float splitRatio, RemoteAnimationAdapter adapter) {
+        if (mSystemUiProxy != null) {
+            try {
+                mSplitScreen.startIntentAndTaskWithLegacyTransition(pendingIntent, fillInIntent,
+                        taskId, intentFirst, mainOptions, sideOptions, sidePosition, splitRatio,
+                        adapter);
+            } catch (RemoteException e) {
+                Log.w(TAG, "Failed call startTasksWithLegacyTransition");
+            }
+        }
+    }
+
     public void startShortcut(String packageName, String shortcutId, int position,
             Bundle options, UserHandle user) {
         if (mSplitScreen != null) {

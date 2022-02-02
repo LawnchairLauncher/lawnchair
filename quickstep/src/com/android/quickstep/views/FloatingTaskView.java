@@ -7,8 +7,10 @@ import static com.android.systemui.shared.system.QuickStepContract.supportsRound
 
 import android.animation.ValueAnimator;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,7 +20,6 @@ import android.widget.ImageView;
 import androidx.annotation.Nullable;
 
 import com.android.launcher3.BaseActivity;
-import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.InsettableFrameLayout;
 import com.android.launcher3.LauncherAnimUtils;
 import com.android.launcher3.R;
@@ -30,7 +31,8 @@ import com.android.launcher3.views.BaseDragLayer;
 import com.android.quickstep.util.MultiValueUpdateListener;
 
 /**
- * Create an instance via {@link #getFloatingTaskView(StatefulActivity, TaskView, RectF)} to
+ * Create an instance via
+ * {@link #getFloatingTaskView(StatefulActivity, View, Bitmap, Drawable, RectF)} to
  * which will have the thumbnail from the provided existing TaskView overlaying the taskview itself.
  *
  * Can then animate the taskview using
@@ -44,7 +46,7 @@ public class FloatingTaskView extends FrameLayout {
 
     private SplitPlaceholderView mSplitPlaceholderView;
     private RectF mStartingPosition;
-    private final BaseDraggingActivity mActivity;
+    private final StatefulActivity mActivity;
     private final boolean mIsRtl;
     private final Rect mOutline = new Rect();
     private PagedOrientationHandler mOrientationHandler;
@@ -74,7 +76,8 @@ public class FloatingTaskView extends FrameLayout {
         mSplitPlaceholderView.setAlpha(0);
     }
 
-    private void init(StatefulActivity launcher, TaskView originalView, RectF positionOut) {
+    private void init(StatefulActivity launcher, View originalView, @Nullable Bitmap thumbnail,
+            Drawable icon, RectF positionOut) {
         mStartingPosition = positionOut;
         updateInitialPositionForView(originalView);
         final InsettableFrameLayout.LayoutParams lp =
@@ -86,12 +89,12 @@ public class FloatingTaskView extends FrameLayout {
         setPivotY(0);
 
         // Copy bounds of exiting thumbnail into ImageView
-        TaskThumbnailView thumbnail = originalView.getThumbnail();
-        mImageView.setImageBitmap(thumbnail.getThumbnail());
+        mImageView.setImageBitmap(thumbnail);
         mImageView.setVisibility(VISIBLE);
 
-        mOrientationHandler = originalView.getRecentsView().getPagedOrientationHandler();
-        mSplitPlaceholderView.setIconView(originalView.getIconView(),
+        RecentsView recentsView = launcher.getOverviewPanel();
+        mOrientationHandler = recentsView.getPagedOrientationHandler();
+        mSplitPlaceholderView.setIcon(icon,
                 launcher.getDeviceProfile().overviewTaskIconDrawableSizePx);
         mSplitPlaceholderView.getIconView().setRotation(mOrientationHandler.getDegreesRotated());
     }
@@ -101,21 +104,20 @@ public class FloatingTaskView extends FrameLayout {
      * appearance of {@code originalView}.
      */
     public static FloatingTaskView getFloatingTaskView(StatefulActivity launcher,
-            TaskView originalView, RectF positionOut) {
+            View originalView, @Nullable Bitmap thumbnail, Drawable icon, RectF positionOut) {
         final BaseDragLayer dragLayer = launcher.getDragLayer();
         ViewGroup parent = (ViewGroup) dragLayer.getParent();
         final FloatingTaskView floatingView = (FloatingTaskView) launcher.getLayoutInflater()
                 .inflate(R.layout.floating_split_select_view, parent, false);
 
-        floatingView.init(launcher, originalView, positionOut);
+        floatingView.init(launcher, originalView, thumbnail, icon, positionOut);
         parent.addView(floatingView);
         return floatingView;
     }
 
-    public void updateInitialPositionForView(TaskView originalView) {
-        View thumbnail = originalView.getThumbnail();
-        Rect viewBounds = new Rect(0, 0, thumbnail.getWidth(), thumbnail.getHeight());
-        Utilities.getBoundsForViewInDragLayer(mActivity.getDragLayer(), thumbnail, viewBounds,
+    public void updateInitialPositionForView(View originalView) {
+        Rect viewBounds = new Rect(0, 0, originalView.getWidth(), originalView.getHeight());
+        Utilities.getBoundsForViewInDragLayer(mActivity.getDragLayer(), originalView, viewBounds,
                 true /* ignoreTransform */, null /* recycle */,
                 mStartingPosition);
         mStartingPosition.offset(originalView.getTranslationX(), originalView.getTranslationY());
