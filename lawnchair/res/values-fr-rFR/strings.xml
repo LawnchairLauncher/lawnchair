@@ -130,7 +130,7 @@
     <string name="pref_search_auto_show_keyboard">Afficher automatiquement le clavier</string>
     <string name="label_search">Rechercher</string>
     <string name="label_lens">Google Lens</string>
-    <string name="label_voice_search">Recherche Vocale</string>
+    <string name="label_voice_search">Recherche vocale</string>
     <string name="apply_grid">Appliquer</string>
     <string name="x_by_y">%1$d × %2$d</string>
     <string name="folder_preview_bg_opacity_label">Opacité de l\'arrière-plan de l\'icône</string>
@@ -175,7 +175,7 @@
     <string name="search_pref_result_tips_title">Astuces Pixel</string>
     <string name="row_height_label">Hauteur de la rangée</string>
     <string name="all_apps_device_search_hint">Rechercher</string>
-    <string name="dark_status_bar_label">Dark Status Bar</string>
+    <string name="dark_status_bar_label">Barre d\'état sombre</string>
     <string name="lawnicons_not_installed_description">Lawnicons n\'est pas installé.</string>
     <string name="icon_picker_default_category">Icônes</string>
     <string name="icon_picker_reset_to_default">Réinitialiser</string>
