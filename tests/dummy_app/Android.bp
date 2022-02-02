@@ -15,7 +15,8 @@
 //
 
 package {
-    default_applicable_licenses:   ["packages_apps_Launcher3_license"],
+    // See: http://go/android-license-faq
+    default_applicable_licenses: ["Android-Apache-2.0"],
 }
 
 android_app {
