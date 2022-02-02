@@ -48,6 +48,7 @@ object Routes {
     const val DEBUG_MENU: String = "debugMenu"
     const val SELECT_ICON: String = "selectIcon"
     const val ICON_PICKER: String = "iconPicker"
+    const val EXPERIMENTAL_FEATURES: String = "experimentalFeatures"
 }
 
 val LocalNavController = staticCompositionLocalOf<NavController> {
@@ -94,6 +95,7 @@ fun Preferences(interactor: PreferenceInteractor = viewModel<PreferenceViewModel
                         debugMenuGraph(route = subRoute(Routes.DEBUG_MENU))
                         selectIconGraph(route = subRoute(Routes.SELECT_ICON))
                         iconPickerGraph(route = subRoute(Routes.ICON_PICKER))
+                        experimentalFeaturesGraph(route = subRoute(Routes.EXPERIMENTAL_FEATURES))
                     }
                 }
             }

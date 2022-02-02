@@ -42,6 +42,11 @@ class IconOverrideRepository(private val context: Context) {
 
     fun observeTarget(target: ComponentKey) = dao.observeTarget(target)
 
+    fun deleteAll() {
+        dao.deleteAll()
+        reloadIcons()
+    }
+
     private fun reloadIcons() {
         val las = LauncherAppState.getInstance(context)
         val idp = las.invariantDeviceProfile

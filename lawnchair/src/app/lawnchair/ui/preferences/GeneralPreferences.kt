@@ -70,10 +70,12 @@ fun GeneralPreferences() {
                 description = if (!themedIconsAvailable) stringResource(id = R.string.lawnicons_not_installed_description) else null
             )
             IconShapePreference()
-            FontPreference(
-                adapter = prefs.workspaceFont.getAdapter(),
-                label = stringResource(id = R.string.font_label)
-            )
+            if (prefs.enableFontSelection.get()) {
+                FontPreference(
+                    adapter = prefs.workspaceFont.getAdapter(),
+                    label = stringResource(id = R.string.font_label),
+                )
+            }
         }
         PreferenceGroup(
             heading = stringResource(id = R.string.colors)

@@ -19,7 +19,6 @@ import app.lawnchair.ui.preferences.components.ClickablePreference
 import app.lawnchair.ui.preferences.components.PreferenceLayoutLazyColumn
 import app.lawnchair.ui.preferences.components.preferenceGroupItems
 import app.lawnchair.ui.util.OnResult
-import com.android.launcher3.LauncherAppState
 import com.android.launcher3.R
 import com.android.launcher3.util.ComponentKey
 import com.google.accompanist.navigation.animation.composable
@@ -90,7 +89,7 @@ fun SelectIconPreference(componentKey: ComponentKey) {
             }
         }
         preferenceGroupItems(
-            heading = { "Choose icon from" },
+            heading = { stringResource(id = R.string.pick_icon_from_label) },
             items = iconPacks,
             isFirstChild = !hasOverride
         ) { _, iconPack ->
