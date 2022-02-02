@@ -51,6 +51,8 @@ import app.lawnchair.search.LawnchairSearchAdapterProvider
 import app.lawnchair.theme.ThemeProvider
 import app.lawnchair.theme.color.ColorTokens
 import app.lawnchair.ui.popup.LawnchairShortcut
+import app.lawnchair.util.Constants.LAWNICONS_PACKAGE_NAME
+import app.lawnchair.util.isPackageInstalled
 import com.android.launcher3.*
 import com.android.launcher3.allapps.AllAppsContainerView
 import com.android.launcher3.allapps.search.SearchAdapterProvider
@@ -204,6 +206,14 @@ class LawnchairLauncher : QuickstepLauncher(), LifecycleOwner,
         val isWorkspaceDarkText = Themes.getAttrBoolean(this, R.attr.isWorkspaceDarkText)
         prefs.darkStatusBar.subscribeValues(this) { darkStatusBar ->
             systemUiController.updateUiState(UI_STATE_BASE_WINDOW, isWorkspaceDarkText || darkStatusBar)
+        }
+
+        // Handle update from version 12 Alpha 4 to version 12 Alpha 5.
+        if (
+            prefs.themedIcons.get() &&
+            !packageManager.isPackageInstalled(packageName = LAWNICONS_PACKAGE_NAME)
+        ) {
+            prefs.themedIcons.set(newValue = false)
         }
 
         colorScheme = themeProvider.colorScheme
