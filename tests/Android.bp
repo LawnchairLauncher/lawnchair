@@ -11,13 +11,10 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 package {
     // See: http://go/android-license-faq
-    // A large-scale-change added 'default_applicable_licenses' to import
-    // all of the 'license_kinds' from "packages_apps_Launcher3_license"
-    // to get the below license kinds:
-    //   SPDX-license-identifier-Apache-2.0
-    default_applicable_licenses: ["packages_apps_Launcher3_license"],
+    default_applicable_licenses: ["Android-Apache-2.0"],
 }
 
 // Source code used for test
@@ -46,6 +43,7 @@ filegroup {
       "src/com/android/launcher3/util/rule/TestStabilityRule.java",
       "src/com/android/launcher3/ui/TaplTestsLauncher3.java",
       "src/com/android/launcher3/testcomponent/BaseTestingActivity.java",
+      "src/com/android/launcher3/testcomponent/OtherBaseTestingActivity.java",
       "src/com/android/launcher3/testcomponent/CustomShortcutConfigActivity.java",
       "src/com/android/launcher3/testcomponent/TestCommandReceiver.java",
       "src/com/android/launcher3/testcomponent/TestLauncherActivity.java",
