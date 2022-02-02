@@ -81,10 +81,10 @@
     <string name="dt2s_a11y_hint_title">Accessibility service required</string>
     <string name="dt2s_a11y_hint">To use Double-Tap to Sleep, turn on the Lawnchair accessibility service. Tap Open Settings, then select Lawnchair and turn on Use Lawnchair.</string>
     <string name="dt2s_warning_open_settings">அமைப்புகளை திறக்க</string>
-    <string name="minus_one_enable">Feed</string>
+    <string name="minus_one_enable">செய்தியோடை</string>
     <string name="minus_one_unavailable">Feed is not available</string>
-    <string name="fuzzy_search_title">Fuzzy Search</string>
-    <string name="fuzzy_search_desc">Approximate matching for app searches.</string>
+    <string name="fuzzy_search_title">தெளிவறு தேடல்</string>
+    <string name="fuzzy_search_desc">செயலி தேடல்களுக்குத் தோராய பொருத்தம்.</string>
     <string name="theme_label">தோற்றம்</string>
     <string name="theme_light">வெளிர்ந்த</string>
     <string name="theme_dark">இருண்ட</string>
@@ -93,7 +93,7 @@
     <string name="quickstep_label">அண்மையவை</string>
     <string name="clear_all_as_action_label">கீழ்ப்புறத்தில் எல்லாம் துடை பொத்தான்</string>
     <string name="window_corner_radius_label">திரை மூலை ஆரம்</string>
-    <string name="override_window_corner_radius_label">Custom Screen Corner Radius</string>
+    <string name="override_window_corner_radius_label">தனிப்பயன் திரை மூலை ஆரம்</string>
     <string name="window_corner_radius_description">When you swipe up to open Recents, the current app follows your finger, shrinking into a card. Use this slider to adjust the corner radius of the card when it’s nearly full-screen such that it matches the corners of your screen.</string>
     <string name="system_icons">சாதனச் சின்னங்கள்</string>
     <string name="accent_color">உரப்பு நிறம்</string>
@@ -101,17 +101,17 @@
     <string name="loading">ஏற்றுகிறது…</string>
     <string name="system">இயங்குதளம்</string>
     <string name="wallpaper">Wallpaper</string>
-    <string name="custom">Custom</string>
-    <string name="quickstep_description">Clear All Button, Corner Radius</string>
+    <string name="custom">தனிப்பயன்</string>
+    <string name="quickstep_description">எல்லாம் அழி பொத்தான், மூலை ஆரம்</string>
     <string name="wallpaper_scrolling_label">Scroll Wallpaper</string>
-    <string name="show_sys_ui_scrim">Top Shadow</string>
+    <string name="show_sys_ui_scrim">மேற்புற நிழல்</string>
     <string name="show_status_bar">நிலைப்பட்டி</string>
     <string name="what_to_show">எதைக் காடட</string>
     <string name="missing_notification_access_label">அறிவிப்பணுகல் தேவை</string>
     <string name="missing_notification_access_description">அறிவிப்பணுகல் தேவை.</string>
     <string name="msg_missing_notification_access">To use Notification Dots, grant <xliff:g id="name" example="My App">%1$s</xliff:g> access to notifications.</string>
     <string name="title_change_settings">அமைவுகளை மாற்று</string>
-    <string name="debug_restart_launcher">Restart Lawnchair</string>
+    <string name="debug_restart_launcher">Lawnchairஐ மறுதுவக்கு</string>
     <string name="pref_fonts_missing_font">Font not found.</string>
     <string name="font_variant_italic">Italic</string>
     <string name="font_weight_thin">மெல்லிய</string>
