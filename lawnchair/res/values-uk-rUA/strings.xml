@@ -187,7 +187,7 @@
     <string name="pick_icon_from_label">Обрати іконку з</string>
     <string name="experimental_features_label">Експериментальні можливості</string>
     <string name="icon_picker_label">Налаштування іконок для кожного додатку</string>
-    <string name="icon_picker_description">May cause Lawnchair to freeze.</string>
-    <string name="font_picker_label">Font Customization</string>
-    <string name="font_picker_description">Some text remains unchanged.</string>
+    <string name="icon_picker_description">Може спричинити замирання Lawnchair.</string>
+    <string name="font_picker_label">Налаштування шрифту</string>
+    <string name="font_picker_description">Деякий текст залишається незмінним.</string>
 </resources>
