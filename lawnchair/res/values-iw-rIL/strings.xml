@@ -180,14 +180,14 @@
     <string name="dark_status_bar_label">שורת מצב כהה</string>
     <string name="lawnicons_not_installed_description">Lawnicons not installed.</string>
     <string name="icon_picker_default_category">סמלים</string>
-    <string name="icon_picker_reset_to_default">Reset to Default</string>
-    <string name="icon_pack_external_picker">Open External Picker</string>
-    <string name="recents_actions_label">Quick Actions</string>
-    <string name="recents_clear_all">Clear All</string>
-    <string name="pick_icon_from_label">Pick Icon From</string>
-    <string name="experimental_features_label">Experimental Features</string>
-    <string name="icon_picker_label">Per-App Icon Customization</string>
-    <string name="icon_picker_description">May cause Lawnchair to freeze.</string>
-    <string name="font_picker_label">Font Customization</string>
-    <string name="font_picker_description">Some text remains unchanged.</string>
+    <string name="icon_picker_reset_to_default">איפוס לברירת מחדל</string>
+    <string name="icon_pack_external_picker">פתיחת בחירה חיצונית</string>
+    <string name="recents_actions_label">פעולות מהירות</string>
+    <string name="recents_clear_all">ניקוי הכל</string>
+    <string name="pick_icon_from_label">בחירת אייקון מתוך</string>
+    <string name="experimental_features_label">אפשרויות ניסויות</string>
+    <string name="icon_picker_label">התאמת אייקון לפי אפליקציה</string>
+    <string name="icon_picker_description">עלול לגרום ל-Lawnchair להתקע.</string>
+    <string name="font_picker_label">התאמת גופן</string>
+    <string name="font_picker_description">טקסט מסוים נותר ללא שינוי.</string>
 </resources>
