@@ -17,6 +17,7 @@
 package com.android.quickstep.views;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.util.FloatProperty;
 import android.view.Gravity;
@@ -52,14 +53,14 @@ public class SplitPlaceholderView extends FrameLayout {
         return mIconView;
     }
 
-    public void setIconView(IconView iconView, int iconSize) {
+    public void setIcon(Drawable drawable, int iconSize) {
         if (mIconView == null) {
             mIconView = new IconView(getContext());
             addView(mIconView);
         }
-        mIconView.setDrawable(iconView.getDrawable());
+        mIconView.setDrawable(drawable);
         mIconView.setDrawableSize(iconSize, iconSize);
-        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(iconView.getLayoutParams());
+        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(iconSize, iconSize);
         params.gravity = Gravity.CENTER;
         mIconView.setLayoutParams(params);
     }
