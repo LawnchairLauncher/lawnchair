@@ -331,6 +331,16 @@ public abstract class BaseAllAppsContainerView<T extends Context & ActivityConte
         return mViewPager.getNextPage() == 0;
     }
 
+    /**
+     * Switches the current page to the provided {@code tab} if tabs are supported, otherwise does
+     * nothing.
+     */
+    public void switchToTab(int tab) {
+        if (mUsingTabs) {
+            mViewPager.setCurrentPage(tab);
+        }
+    }
+
     public LayoutInflater getLayoutInflater() {
         return LayoutInflater.from(getContext());
     }
