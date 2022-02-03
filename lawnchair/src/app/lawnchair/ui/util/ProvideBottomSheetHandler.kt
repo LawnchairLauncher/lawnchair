@@ -18,6 +18,7 @@ package app.lawnchair.ui.util
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ModalBottomSheetLayout
 import androidx.compose.material.ModalBottomSheetState
@@ -33,6 +34,7 @@ import androidx.compose.ui.unit.dp
 import com.google.accompanist.insets.LocalWindowInsets
 import kotlinx.coroutines.launch
 import kotlin.math.max
+import androidx.compose.material.MaterialTheme as Material2Theme
 
 internal val LocalBottomSheetHandler = staticCompositionLocalOf { BottomSheetHandler() }
 
@@ -73,7 +75,11 @@ fun ProvideBottomSheetHandler(
                 }
             }
         },
-        sheetState = bottomSheetState
+        sheetState = bottomSheetState,
+        sheetShape = Material2Theme.shapes.large.copy(
+            bottomStart = CornerSize(0.dp),
+            bottomEnd = CornerSize(0.dp),
+        ),
     ) {
         CompositionLocalProvider(LocalBottomSheetHandler provides bottomSheetHandler) {
             content()

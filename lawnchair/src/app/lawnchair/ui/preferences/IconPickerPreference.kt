@@ -14,6 +14,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.ContentAlpha
 import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -94,7 +95,12 @@ fun IconPickerPreference(packageName: String) {
                 value = searchQuery,
                 onValueChange = { searchQuery = it },
                 modifier = Modifier.fillMaxSize(),
-                placeholder = { Text(iconPack.label) },
+                placeholder = {
+                    Text(
+                        text = iconPack.label,
+                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = ContentAlpha.medium),
+                    )
+                },
                 singleLine = true
             )
         },
