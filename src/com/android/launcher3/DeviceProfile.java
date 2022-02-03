@@ -1151,6 +1151,7 @@ public class DeviceProfile {
         writer.println(prefix + pxToDpStr("hotseatBarSidePaddingEndPx",
                 hotseatBarSidePaddingEndPx));
         writer.println(prefix + "\tnumShownHotseatIcons: " + numShownHotseatIcons);
+        writer.println(prefix + pxToDpStr("hotseatBorderSpace", hotseatBorderSpace));
         writer.println(prefix + "\tisQsbInline: " + isQsbInline);
         writer.println(prefix + pxToDpStr("qsbWidth", qsbWidth));
 
