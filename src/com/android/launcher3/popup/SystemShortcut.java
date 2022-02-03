@@ -7,6 +7,7 @@ import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Rect;
+import android.net.Uri;
 import android.view.View;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.ImageView;
@@ -29,6 +30,7 @@ import com.android.launcher3.views.ActivityContext;
 import com.android.launcher3.widget.WidgetsBottomSheet;
 import com.patrykmichalik.opto.core.PreferenceExtensionsKt;
 
+import java.net.URISyntaxException;
 import java.util.List;
 
 import app.lawnchair.preferences2.PreferenceManager2;
@@ -257,11 +259,15 @@ public abstract class SystemShortcut<T extends Context & ActivityContext> extend
 
         @Override
         public void onClick(View view) {
-            String packageName = mItemInfo.getTargetComponent().getPackageName();
-            Intent intent = new PackageManagerHelper(
-                    view.getContext()).getUninstallIntent(packageName);
-            mTarget.startActivitySafely(view, intent, mItemInfo);
-            AbstractFloatingView.closeAllOpenViews(mTarget);
+            try {
+                Intent intent = Intent.parseUri(view.getContext().getString(R.string.delete_package_intent), 0)
+                    .setData(Uri.fromParts("package", mItemInfo.getTargetComponent().getPackageName(),
+                    mItemInfo.getTargetComponent().getClassName())).putExtra(Intent.EXTRA_USER, mItemInfo.user);
+                mTarget.startActivitySafely(view, intent, mItemInfo);
+                AbstractFloatingView.closeAllOpenViews(mTarget);
+            } catch (URISyntaxException e) {
+                // Do nothing.
+            }
         }
     }
 

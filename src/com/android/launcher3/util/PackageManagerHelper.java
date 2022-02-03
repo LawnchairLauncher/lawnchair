@@ -183,12 +183,6 @@ public class PackageManagerHelper {
                         .authority(mContext.getPackageName()).build());
     }
 
-    public Intent getUninstallIntent(String packageName) {
-        return new Intent(Intent.ACTION_UNINSTALL_PACKAGE)
-                .setData(Uri.parse("package:" + packageName))
-                .putExtra(Intent.EXTRA_RETURN_RESULT, true);
-    }
-
     /**
      * Creates a new market search intent.
      */
