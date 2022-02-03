@@ -105,8 +105,9 @@ public class LauncherRootView extends InsettableFrameLayout {
                     resources,
                     INVALID_RESOURCE_HANDLE) == 2;
             if (dp.isTablet || isGesturalMode) {
-                newNavInsets.bottom = ResourceUtils.getNavbarSize(
-                        "navigation_bar_height_landscape", resources);
+                newNavInsets.bottom = dp.isTaskbarPresent
+                        ? 0
+                        : ResourceUtils.getNavbarSize("navigation_bar_height_landscape", resources);
             } else {
                 int navWidth = ResourceUtils.getNavbarSize("navigation_bar_width", resources);
                 if (dp.isSeascape()) {
@@ -116,7 +117,9 @@ public class LauncherRootView extends InsettableFrameLayout {
                 }
             }
         } else {
-            newNavInsets.bottom = ResourceUtils.getNavbarSize("navigation_bar_height", resources);
+            newNavInsets.bottom = dp.isTaskbarPresent
+                    ? 0
+                    : ResourceUtils.getNavbarSize("navigation_bar_height", resources);
         }
         updatedInsetsBuilder.setInsets(WindowInsets.Type.navigationBars(), Insets.of(newNavInsets));
         updatedInsetsBuilder.setInsetsIgnoringVisibility(WindowInsets.Type.navigationBars(),

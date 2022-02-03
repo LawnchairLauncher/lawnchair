@@ -27,10 +27,8 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.annotation.Nullable;
 import android.content.SharedPreferences;
-import android.content.res.Resources;
 import android.view.ViewConfiguration;
 
-import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.util.MultiValueAlpha.AlphaProperty;
 import com.android.quickstep.AnimatedFloat;
@@ -146,10 +144,9 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
     public TaskbarStashController(TaskbarActivityContext activity) {
         mActivity = activity;
         mPrefs = Utilities.getPrefs(mActivity);
-        final Resources resources = mActivity.getResources();
-        mStashedHeight = resources.getDimensionPixelSize(R.dimen.taskbar_stashed_size);
         mSystemUiProxy = SystemUiProxy.INSTANCE.get(activity);
         mUnstashedHeight = mActivity.getDeviceProfile().taskbarSize;
+        mStashedHeight = mActivity.getDeviceProfile().stashedTaskbarSize;
     }
 
     public void init(TaskbarControllers controllers, TaskbarSharedState sharedState) {
