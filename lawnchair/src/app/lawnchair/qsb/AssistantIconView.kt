@@ -7,7 +7,6 @@ import android.util.AttributeSet
 import android.widget.ImageButton
 import androidx.core.view.isVisible
 import com.android.launcher3.R
-import com.android.launcher3.qsb.QsbContainerView
 import com.android.launcher3.util.Themes
 
 @SuppressLint("AppCompatCustomView")

@@ -4,7 +4,6 @@ import android.content.pm.ShortcutInfo
 import android.os.Bundle
 import android.os.Process
 import com.android.app.search.LayoutType
-import com.android.launcher3.BuildConfig
 import com.android.launcher3.model.data.AppInfo
 import com.android.launcher3.util.ComponentKey
 

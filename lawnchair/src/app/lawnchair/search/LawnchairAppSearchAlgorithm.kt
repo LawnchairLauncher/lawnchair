@@ -26,7 +26,6 @@ import com.android.launcher3.util.PackageManagerHelper
 import me.xdrop.fuzzywuzzy.FuzzySearch
 import me.xdrop.fuzzywuzzy.algorithms.WeightedRatio
 import java.util.*
-import kotlin.collections.ArrayList
 
 class LawnchairAppSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm(context) {
 

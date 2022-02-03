@@ -27,9 +27,11 @@ import androidx.compose.foundation.layout.requiredWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -45,7 +47,6 @@ import com.android.launcher3.settings.SettingsActivity.EXTRA_FRAGMENT_ARG_KEY
 import com.android.launcher3.settings.SettingsActivity.EXTRA_SHOW_FRAGMENT_ARGS
 import com.android.launcher3.util.SettingsCache
 import com.android.launcher3.util.SettingsCache.NOTIFICATION_BADGING_URI
-import kotlinx.coroutines.launch
 
 @Composable
 @ExperimentalMaterialApi

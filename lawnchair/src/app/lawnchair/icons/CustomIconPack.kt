@@ -17,7 +17,6 @@ import org.xmlpull.v1.XmlPullParser
 import org.xmlpull.v1.XmlPullParserException
 import org.xmlpull.v1.XmlPullParserFactory
 import java.io.IOException
-import java.lang.Exception
 
 class CustomIconPack(context: Context, packPackageName: String) :
     IconPack(context, packPackageName) {

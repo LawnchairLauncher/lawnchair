@@ -1,7 +1,7 @@
 buildscript {
     ext {
         kotlin_version = '1.6.10'
-        compose_version = '1.2.0-alpha01'
+        compose_version = '1.2.0-alpha02'
         accompanist_version = '0.24.0-alpha'
         libsu_version = '3.1.2'
         protocVersion = '3.18.0'
@@ -83,7 +83,7 @@ if (ciBuild) {
     devReleaseName = "Dev (${buildCommit})"
 }
 
-def version = "12.0"
+def version = "12.0.0"
 def releaseName = "Alpha 5"
 def versionDisplayName = "${version} ${isReleaseBuild ? releaseName : devReleaseName}"
 def majorVersion = versionDisplayName.split("\\.")[0]

@@ -26,8 +26,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavGraphBuilder
 import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences.preferenceManager
-import app.lawnchair.util.Constants.LAWNICONS_PACKAGE_NAME
 import app.lawnchair.ui.preferences.components.*
+import app.lawnchair.util.Constants.LAWNICONS_PACKAGE_NAME
 import app.lawnchair.util.isPackageInstalled
 import com.android.launcher3.R
 

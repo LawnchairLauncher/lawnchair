@@ -15,7 +15,6 @@
  */
 package app.lawnchair.search;
 
-import android.app.search.SearchAction;
 import android.app.search.SearchTarget;
 import android.app.slice.SliceManager;
 import android.appwidget.AppWidgetProviderInfo;

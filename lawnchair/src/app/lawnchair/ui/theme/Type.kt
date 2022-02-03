@@ -17,13 +17,13 @@
 package app.lawnchair.ui.theme
 
 import androidx.compose.material.Typography
-import androidx.compose.material3.Typography as Material3Typography
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import com.android.launcher3.R
+import androidx.compose.material3.Typography as Material3Typography
 
 private val InterFontFamily = FontFamily(
     Font(R.font.inter_regular, FontWeight.Normal),

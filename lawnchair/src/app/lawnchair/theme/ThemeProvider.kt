@@ -28,7 +28,6 @@ import dev.kdrag0n.colorkt.tristimulus.CieXyzAbs.Companion.toAbs
 import dev.kdrag0n.colorkt.ucs.lab.CieLab
 import dev.kdrag0n.monet.theme.ColorScheme
 import dev.kdrag0n.monet.theme.DynamicColorScheme
-import dev.kdrag0n.monet.theme.GrayColorScheme
 import dev.kdrag0n.monet.theme.MaterialYouTargets
 
 class ThemeProvider(private val context: Context) {
