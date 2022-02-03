@@ -20,7 +20,7 @@
     <string name="home_screen_label">Pantalla de Inicio</string>
     <string name="home_screen_description">Feed, De un vistazo, Cuadrícula, iconos</string>
     <string name="general_label">General</string>
-    <string name="general_description">Puntos de notificación, Paquete de iconos</string>
+    <string name="general_description">Colores, Puntos de notificación, Paquete de iconos</string>
     <string name="home_screen_rotation_label">Rotación de Pantalla de Inicio</string>
     <string name="home_screen_rotaton_description">Cuando se rota el dispositivo.</string>
     <string name="auto_add_shortcuts_label">Añadir Nuevas Aplicaciones a la Pantalla de Inicio</string>
@@ -81,7 +81,7 @@
     <string name="dt2s_a11y_hint_title">Activar el Servicio de Accesibilidad</string>
     <string name="dt2s_a11y_hint">Para usar el doble toque para apagar la pantalla, activa el servicio de accesibilidad de Lawnchair. Toca en \"Abrir Configuración\", luego selecciona \"Lawnchair\" y activa \"Usar Lawnchair\".</string>
     <string name="dt2s_warning_open_settings">Abrir Configuración</string>
-    <string name="minus_one_enable">Alimentación</string>
+    <string name="minus_one_enable">Feed</string>
     <string name="minus_one_unavailable">Feed no instalado.</string>
     <string name="fuzzy_search_title">Búsqueda Aproximada</string>
     <string name="fuzzy_search_desc">Coincidencia aproximada para búsqueda de aplicaciones.</string>
@@ -92,8 +92,8 @@
     <string name="theme_follow_wallpaper">Coincidir con fondo</string>
     <string name="quickstep_label">Recientes</string>
     <string name="clear_all_as_action_label">Botón \"Borrar todo\" al fondo</string>
-    <string name="window_corner_radius_label">Radio de esquina de pantalla</string>
-    <string name="override_window_corner_radius_label">Radio de esquina de pantalla personalizado</string>
+    <string name="window_corner_radius_label">Radio de esquina de la pantalla</string>
+    <string name="override_window_corner_radius_label">Radio de esquina de la pantalla personalizado</string>
     <string name="window_corner_radius_description">Cuando deslizas hacia abajo para abrir Recientes, la aplicación actual sigue tu dedo, encogiéndose en una tarjeta. Utiliza este control deslizante para ajustar el radio de esquina de la tarjeta cuando es casi de pantalla completa de tal forma que coincida con las esquinas de tu pantalla.</string>
     <string name="system_icons">Iconos del sistema</string>
     <string name="accent_color">Color de acento</string>
@@ -142,7 +142,7 @@
     <string name="customize_button_text">Personalizar</string>
     <string name="app_title_label">Título</string>
     <string name="hide_from_drawer">Ocultar del Cajón</string>
-    <string name="action_lens">Lentes</string>
+    <string name="action_lens">Lens</string>
     <string name="force_rounded_widgets">Esquinas redondeadas</string>
     <string name="suggestion_pref_screen_title">Sugerencias</string>
     <string name="n_percent">%1$d%%</string>
@@ -177,4 +177,15 @@
     <string name="all_apps_device_search_hint">Buscar</string>
     <string name="dark_status_bar_label">Barra de estado oscura</string>
     <string name="lawnicons_not_installed_description">Lawnicons no está instalado.</string>
+    <string name="icon_picker_default_category">Iconos</string>
+    <string name="icon_picker_reset_to_default">Reset to Default</string>
+    <string name="icon_pack_external_picker">Open External Picker</string>
+    <string name="recents_actions_label">Acciones rápidas</string>
+    <string name="recents_clear_all">Clear All</string>
+    <string name="pick_icon_from_label">Pick Icon From</string>
+    <string name="experimental_features_label">Experimental Features</string>
+    <string name="icon_picker_label">Per-App Icon Customization</string>
+    <string name="icon_picker_description">May cause Lawnchair to freeze.</string>
+    <string name="font_picker_label">Font Customization</string>
+    <string name="font_picker_description">Some text remains unchanged.</string>
 </resources>

@@ -177,4 +177,15 @@
     <string name="all_apps_device_search_hint">Ricerca</string>
     <string name="dark_status_bar_label">Barra di stato scura</string>
     <string name="lawnicons_not_installed_description">Lawnicons non installato.</string>
+    <string name="icon_picker_default_category">Icone</string>
+    <string name="icon_picker_reset_to_default">Reimposta a predefinito</string>
+    <string name="icon_pack_external_picker">Apri selettore esterno</string>
+    <string name="recents_actions_label">Azioni rapide</string>
+    <string name="recents_clear_all">Cancella tutto</string>
+    <string name="pick_icon_from_label">Scegli icona da</string>
+    <string name="experimental_features_label">Funzioni sperimentali</string>
+    <string name="icon_picker_label">Personalizzazione Icona per-app</string>
+    <string name="icon_picker_description">Può causare il blocco di Lawnchair.</string>
+    <string name="font_picker_label">Personalizzazione carattere</string>
+    <string name="font_picker_description">Alcuni testi rimangono invariati.</string>
 </resources>
