@@ -48,7 +48,8 @@ LOCAL_COMPATIBILITY_SUPPORT_FILES := $(call intermediates-dir-for,APPS,Launcher3
 
 LOCAL_LICENSE_KINDS := SPDX-license-identifier-Apache-2.0
 LOCAL_LICENSE_CONDITIONS := notice
-LOCAL_NOTICE_FILE := $(LOCAL_PATH)/../NOTICE
+LOCAL_LICENSE_PACKAGE_NAME := Android Launcher3
+LOCAL_NOTICE_FILE := build/soong/licenses/LICENSE
 include $(BUILD_PACKAGE)
 
 include $(call all-makefiles-under,$(LOCAL_PATH))
