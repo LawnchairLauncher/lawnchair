@@ -27,7 +27,7 @@ import app.lawnchair.ui.preferences.Routes
 import app.lawnchair.ui.preferences.components.ClickableIcon
 import app.lawnchair.ui.preferences.components.PreferenceGroup
 import app.lawnchair.ui.preferences.components.SwitchPreference
-import app.lawnchair.ui.util.addIf
+import app.lawnchair.ui.util.addIfNotNull
 import app.lawnchair.util.navigationBarsOrDisplayCutoutPadding
 import com.android.launcher3.LauncherAppState
 import com.android.launcher3.R
@@ -55,8 +55,8 @@ fun CustomizeDialog(
                 .align(Alignment.CenterHorizontally)
                 .padding(vertical = 24.dp)
                 .clip(MaterialTheme.shapes.small)
-                .addIf(launchSelectIcon != null) {
-                    clickable { launchSelectIcon!!() }
+                .addIfNotNull(launchSelectIcon) {
+                    clickable(onClick = it)
                 }
                 .padding(all = 8.dp),
         ) {
