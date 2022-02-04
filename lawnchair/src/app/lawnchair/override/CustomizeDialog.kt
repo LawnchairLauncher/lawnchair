@@ -7,16 +7,13 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -30,6 +27,7 @@ import app.lawnchair.ui.preferences.Routes
 import app.lawnchair.ui.preferences.components.ClickableIcon
 import app.lawnchair.ui.preferences.components.PreferenceGroup
 import app.lawnchair.ui.preferences.components.SwitchPreference
+import app.lawnchair.ui.util.addIf
 import app.lawnchair.util.navigationBarsOrDisplayCutoutPadding
 import com.android.launcher3.LauncherAppState
 import com.android.launcher3.R
@@ -43,7 +41,7 @@ fun CustomizeDialog(
     title: String,
     onTitleChange: (String) -> Unit,
     defaultTitle: String,
-    launchSelectIcon: () -> Unit,
+    launchSelectIcon: (() -> Unit)?,
     content: (@Composable () -> Unit)? = null
 ) {
     Column(
@@ -52,20 +50,22 @@ fun CustomizeDialog(
             .fillMaxWidth()
     ) {
         val iconPainter = rememberDrawablePainter(drawable = icon)
-        Image(
-            painter = iconPainter,
-            contentDescription = "",
+        Box(
             modifier = Modifier
-                .padding(vertical = 32.dp)
-                .size(54.dp)
                 .align(Alignment.CenterHorizontally)
-                .clickable(
-                    interactionSource = remember { MutableInteractionSource() },
-                    indication = null
-                ) {
-                    launchSelectIcon()
+                .padding(vertical = 24.dp)
+                .clip(MaterialTheme.shapes.small)
+                .addIf(launchSelectIcon != null) {
+                    clickable { launchSelectIcon!!() }
                 }
-        )
+                .padding(all = 8.dp),
+        ) {
+            Image(
+                painter = iconPainter,
+                contentDescription = "",
+                modifier = Modifier.size(54.dp),
+            )
+        }
         OutlinedTextField(
             value = title,
             onValueChange = onTitleChange,
@@ -111,6 +111,11 @@ fun CustomizeAppDialog(
         onClose()
     }
 
+    val openIconPicker = {
+        val destination = "/${Routes.SELECT_ICON}/$componentKey/"
+        request.launch(PreferenceActivity.createIntent(context, destination))
+    }
+
     DisposableEffect(key1 = null) {
         title = prefs.customAppName[componentKey] ?: defaultTitle
         onDispose {
@@ -133,12 +138,7 @@ fun CustomizeAppDialog(
         title = title,
         onTitleChange = { title = it },
         defaultTitle = defaultTitle,
-        launchSelectIcon = {
-            if (prefs.enableIconSelection.get()) {
-                val destination = "/${Routes.SELECT_ICON}/$componentKey/"
-                request.launch(PreferenceActivity.createIntent(context, destination))
-            }
-        }
+        launchSelectIcon = if (prefs.enableIconSelection.get()) openIconPicker else null,
     ) {
         PreferenceGroup {
             val stringKey = componentKey.toString()

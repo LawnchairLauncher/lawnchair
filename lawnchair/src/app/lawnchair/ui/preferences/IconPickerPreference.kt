@@ -12,7 +12,6 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.DropdownMenuItem
@@ -20,6 +19,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
@@ -40,6 +40,7 @@ import com.google.accompanist.insets.ui.LocalScaffoldPadding
 import com.google.accompanist.navigation.animation.composable
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import androidx.compose.material.MaterialTheme as Material2Theme
 
 @ExperimentalAnimationApi
 fun NavGraphBuilder.iconPickerGraph(route: String) {
@@ -135,7 +136,7 @@ fun IconPickerPreference(packageName: String) {
                 searchQuery = searchQuery,
                 onClickItem = onClickItem,
                 modifier = Modifier
-                    .padding(horizontal = 16.dp)
+                    .padding(horizontal = 8.dp)
                     .padding(top = topPadding)
             )
         }
@@ -182,7 +183,10 @@ fun IconPickerGrid(
                         modifier = Modifier
                             .fillMaxWidth()
                             .background(MaterialTheme.colorScheme.background)
-                            .padding(vertical = 16.dp),
+                            .padding(
+                                vertical = 16.dp,
+                                horizontal = 8.dp,
+                            ),
                         style = MaterialTheme.typography.titleSmall,
                         color = MaterialTheme.colorScheme.primary
                     )
@@ -190,7 +194,7 @@ fun IconPickerGrid(
                 verticalGridItems(
                     items = category.items,
                     numColumns = numColumns,
-                    gap = 16.dp
+                    gap = 0.dp,
                 ) { _, item ->
                     IconPreview(
                         iconPack = iconPack,
@@ -216,15 +220,16 @@ fun IconPreview(
             value = iconPack.getIcon(iconItem.toIconEntry(), 0)
         }
     }
-    Image(
-        painter = rememberDrawablePainter(drawable),
-        contentDescription = iconItem.drawableName,
+    Box(
         modifier = Modifier
-            .aspectRatio(1f)
-            .clickable(
-                interactionSource = remember { MutableInteractionSource() },
-                indication = null,
-                onClick = onClick
-            )
-    )
+            .clip(Material2Theme.shapes.small)
+            .clickable(onClick = onClick)
+            .padding(8.dp),
+    ) {
+        Image(
+            painter = rememberDrawablePainter(drawable),
+            contentDescription = iconItem.drawableName,
+            modifier = Modifier.aspectRatio(1f),
+        )
+    }
 }
