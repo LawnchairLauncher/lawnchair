@@ -106,8 +106,8 @@
                 android:layout_width="0dp"
                 android:layout_height="112dp"
                 android:layout_marginBottom="@dimen/gesture_tutorial_message_large_margin_bottom"
-                android:layout_marginStart="445dp"
-                android:layout_marginEnd="@dimen/gesture_tutorial_foldable_message_padding_start_end"
+                android:layout_marginStart="@dimen/gesture_tutorial_tablet_message_1_margin"
+                android:layout_marginEnd="@dimen/gesture_tutorial_tablet_message_padding_start_end"
 
                 app:cardElevation="0dp"
                 app:cardCornerRadius="18dp"
@@ -121,7 +121,7 @@
                 android:layout_width="@dimen/gesture_tutorial_message_icon_size"
                 android:layout_height="@dimen/gesture_tutorial_message_icon_size"
                 android:layout_marginBottom="@dimen/gesture_tutorial_message_large_margin_bottom"
-                android:layout_marginStart="@dimen/gesture_tutorial_foldable_message_padding_start_end"
+                android:layout_marginStart="@dimen/gesture_tutorial_tablet_message_padding_start_end"
 
                 app:cardElevation="0dp"
                 app:cardCornerRadius="@dimen/gesture_tutorial_message_icon_corner_radius"
@@ -134,7 +134,7 @@
                 android:layout_width="0dp"
                 android:layout_height="36dp"
                 android:layout_marginStart="17dp"
-                android:layout_marginEnd="441dp"
+                android:layout_marginEnd="@dimen/gesture_tutorial_tablet_reply_1_margin"
 
                 app:cardElevation="0dp"
                 app:cardCornerRadius="18dp"
@@ -149,8 +149,8 @@
                 android:layout_width="0dp"
                 android:layout_height="36dp"
                 android:layout_marginBottom="@dimen/gesture_tutorial_message_small_margin_bottom"
-                android:layout_marginStart="601dp"
-                android:layout_marginEnd="@dimen/gesture_tutorial_foldable_message_padding_start_end"
+                android:layout_marginStart="@dimen/gesture_tutorial_tablet_message_2_margin"
+                android:layout_marginEnd="@dimen/gesture_tutorial_tablet_message_padding_start_end"
 
                 app:cardElevation="0dp"
                 app:cardCornerRadius="18dp"
@@ -164,8 +164,8 @@
                 android:layout_width="0dp"
                 android:layout_height="74dp"
                 android:layout_marginBottom="@dimen/gesture_tutorial_message_large_margin_bottom"
-                android:layout_marginStart="445dp"
-                android:layout_marginEnd="@dimen/gesture_tutorial_foldable_message_padding_start_end"
+                android:layout_marginStart="@dimen/gesture_tutorial_tablet_message_3_margin"
+                android:layout_marginEnd="@dimen/gesture_tutorial_tablet_message_padding_start_end"
 
                 app:cardElevation="0dp"
                 app:cardCornerRadius="18dp"
@@ -179,7 +179,7 @@
                 android:layout_width="@dimen/gesture_tutorial_message_icon_size"
                 android:layout_height="@dimen/gesture_tutorial_message_icon_size"
                 android:layout_marginBottom="32dp"
-                android:layout_marginStart="@dimen/gesture_tutorial_foldable_message_padding_start_end"
+                android:layout_marginStart="@dimen/gesture_tutorial_tablet_message_padding_start_end"
 
                 app:cardElevation="0dp"
                 app:cardCornerRadius="@dimen/gesture_tutorial_message_icon_corner_radius"
@@ -192,7 +192,7 @@
                 android:layout_width="0dp"
                 android:layout_height="36dp"
                 android:layout_marginStart="17dp"
-                android:layout_marginEnd="473dp"
+                android:layout_marginEnd="@dimen/gesture_tutorial_tablet_reply_2_margin"
 
                 app:cardElevation="0dp"
                 app:cardCornerRadius="18dp"
@@ -206,8 +206,8 @@
                 android:id="@+id/message_4"
                 android:layout_width="0dp"
                 android:layout_height="74dp"
-                android:layout_marginStart="445dp"
-                android:layout_marginEnd="@dimen/gesture_tutorial_foldable_message_padding_start_end"
+                android:layout_marginStart="345dp"
+                android:layout_marginEnd="@dimen/gesture_tutorial_tablet_message_padding_start_end"
 
                 app:cardElevation="0dp"
                 app:cardCornerRadius="18dp"

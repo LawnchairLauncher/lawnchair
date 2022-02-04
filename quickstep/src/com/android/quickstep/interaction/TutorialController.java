@@ -49,6 +49,7 @@ import androidx.annotation.StringRes;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.content.res.AppCompatResources;
 
+import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimatorListeners;
@@ -73,7 +74,7 @@ abstract class TutorialController implements BackGestureAttemptCallback,
     private static final int FEEDBACK_ANIMATION_MS = 133;
     private static final int RIPPLE_VISIBLE_MS = 300;
     private static final int GESTURE_ANIMATION_DELAY_MS = 1500;
-    private static final int ADVANCE_TUTORIAL_TIMEOUT_MS = 4000;
+    private static final int ADVANCE_TUTORIAL_TIMEOUT_MS = 2000;
     private static final long GESTURE_ANIMATION_PAUSE_DURATION_MILLIS = 1000;
 
     final TutorialFragment mTutorialFragment;
@@ -185,7 +186,9 @@ abstract class TutorialController implements BackGestureAttemptCallback,
     @LayoutRes
     protected int getMockHotseatResId() {
         return mTutorialFragment.isLargeScreen()
-                ? R.layout.gesture_tutorial_foldable_mock_hotseat
+                ? (mTutorialFragment.isFoldable()
+                        ? R.layout.gesture_tutorial_foldable_mock_hotseat
+                        : R.layout.gesture_tutorial_tablet_mock_hotseat)
                 : R.layout.gesture_tutorial_mock_hotseat;
     }
 
@@ -319,6 +322,9 @@ abstract class TutorialController implements BackGestureAttemptCallback,
     }
 
     void hideFeedback() {
+        if (mFeedbackView.getVisibility() != View.VISIBLE) {
+            return;
+        }
         cancelQueuedGestureAnimation();
         mFeedbackView.clearAnimation();
         mFeedbackView.setVisibility(View.INVISIBLE);
@@ -515,20 +521,45 @@ abstract class TutorialController implements BackGestureAttemptCallback,
     }
 
     private void updateLayout() {
-        if (mContext != null) {
-            RelativeLayout.LayoutParams feedbackLayoutParams =
-                    (RelativeLayout.LayoutParams) mFeedbackView.getLayoutParams();
-            feedbackLayoutParams.setMarginStart(mContext.getResources().getDimensionPixelSize(
-                    mTutorialFragment.isLargeScreen()
-                            ? R.dimen.gesture_tutorial_foldable_feedback_margin_start_end
-                            : R.dimen.gesture_tutorial_feedback_margin_start_end));
-            feedbackLayoutParams.setMarginEnd(mContext.getResources().getDimensionPixelSize(
-                    mTutorialFragment.isLargeScreen()
-                            ? R.dimen.gesture_tutorial_foldable_feedback_margin_start_end
-                            : R.dimen.gesture_tutorial_feedback_margin_start_end));
-
-            mFakeTaskbarView.setVisibility(mTutorialFragment.isLargeScreen() ? View.VISIBLE : GONE);
+        if (mContext == null) {
+            return;
         }
+        RelativeLayout.LayoutParams feedbackLayoutParams =
+                (RelativeLayout.LayoutParams) mFeedbackView.getLayoutParams();
+        feedbackLayoutParams.setMarginStart(mContext.getResources().getDimensionPixelSize(
+                mTutorialFragment.isLargeScreen()
+                        ? R.dimen.gesture_tutorial_tablet_feedback_margin_start_end
+                        : R.dimen.gesture_tutorial_feedback_margin_start_end));
+        feedbackLayoutParams.setMarginEnd(mContext.getResources().getDimensionPixelSize(
+                mTutorialFragment.isLargeScreen()
+                        ? R.dimen.gesture_tutorial_tablet_feedback_margin_start_end
+                        : R.dimen.gesture_tutorial_feedback_margin_start_end));
+        feedbackLayoutParams.topMargin = mContext.getResources().getDimensionPixelSize(
+                mTutorialFragment.isLargeScreen()
+                        ? R.dimen.gesture_tutorial_tablet_feedback_margin_top
+                        : R.dimen.gesture_tutorial_feedback_margin_top);
+
+        mFakeTaskbarView.setVisibility(mTutorialFragment.isLargeScreen() ? View.VISIBLE : GONE);
+
+        RelativeLayout.LayoutParams hotseatLayoutParams =
+                (RelativeLayout.LayoutParams) mFakeHotseatView.getLayoutParams();
+        if (!mTutorialFragment.isLargeScreen()) {
+            DeviceProfile dp = mTutorialFragment.getDeviceProfile();
+            dp.updateIsSeascape(mContext);
+
+            hotseatLayoutParams.addRule(dp.isLandscape
+                    ? (dp.isSeascape()
+                            ? RelativeLayout.ALIGN_PARENT_START
+                            : RelativeLayout.ALIGN_PARENT_END)
+                    : RelativeLayout.ALIGN_PARENT_BOTTOM);
+        } else {
+            hotseatLayoutParams.width = RelativeLayout.LayoutParams.MATCH_PARENT;
+            hotseatLayoutParams.height = RelativeLayout.LayoutParams.WRAP_CONTENT;
+            hotseatLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+            hotseatLayoutParams.removeRule(RelativeLayout.ALIGN_PARENT_START);
+            hotseatLayoutParams.removeRule(RelativeLayout.ALIGN_PARENT_END);
+        }
+        mFakeHotseatView.setLayoutParams(hotseatLayoutParams);
     }
 
     private AlertDialog createSkipTutorialDialog() {

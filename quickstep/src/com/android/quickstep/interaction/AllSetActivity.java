@@ -52,6 +52,7 @@ import android.widget.TextView;
 import androidx.annotation.Nullable;
 import androidx.core.graphics.ColorUtils;
 
+import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.quickstep.AnimatedFloat;
@@ -109,6 +110,12 @@ public class AllSetActivity extends Activity {
         findViewById(R.id.root_view).setBackground(mBackground);
         mContentView = findViewById(R.id.content_view);
         mSwipeUpShift = getResources().getDimension(R.dimen.allset_swipe_up_shift);
+
+        boolean isTablet = InvariantDeviceProfile.INSTANCE.get(getApplicationContext())
+                .getDeviceProfile(this).isTablet;
+        TextView subtitle = findViewById(R.id.subtitle);
+        subtitle.setText(isTablet
+                ? R.string.allset_description_tablet : R.string.allset_description);
 
         TextView tv = findViewById(R.id.navigation_settings);
         tv.setTextColor(accentColor);
