@@ -15,6 +15,7 @@
  */
 package com.android.quickstep;
 
+import static android.app.ActivityTaskManager.INVALID_TASK_ID;
 import static android.view.WindowManager.LayoutParams.TYPE_DOCK_DIVIDER;
 import static android.view.WindowManager.TRANSIT_OPEN;
 import static android.view.WindowManager.TRANSIT_TO_FRONT;
@@ -46,6 +47,7 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.annotation.TargetApi;
+import android.app.PendingIntent;
 import android.content.ComponentName;
 import android.content.Context;
 import android.graphics.Matrix;
@@ -389,18 +391,20 @@ public final class TaskViewUtils {
      * device is considered in multiWindowMode and things like insets and stuff change
      * and calculations have to be adjusted in the animations for that
      */
-    public static void composeRecentsSplitLaunchAnimator(@NonNull Task initalTask,
-            @NonNull Task secondTask, @NonNull TransitionInfo transitionInfo,
-            SurfaceControl.Transaction t, @NonNull Runnable finishCallback) {
-
-        final TransitionInfo.Change[] splitRoots = new TransitionInfo.Change[2];
+    public static void composeRecentsSplitLaunchAnimator(int initialTaskId,
+            @Nullable PendingIntent initialTaskPendingIntent, int secondTaskId,
+            @NonNull TransitionInfo transitionInfo, SurfaceControl.Transaction t,
+            @NonNull Runnable finishCallback) {
+        // TODO: consider initialTaskPendingIntent
+        TransitionInfo.Change splitRoot1 = null;
+        TransitionInfo.Change splitRoot2 = null;
         for (int i = 0; i < transitionInfo.getChanges().size(); ++i) {
             final TransitionInfo.Change change = transitionInfo.getChanges().get(i);
             final int taskId = change.getTaskInfo() != null ? change.getTaskInfo().taskId : -1;
             final int mode = change.getMode();
             // Find the target tasks' root tasks since those are the split stages that need to
             // be animated (the tasks themselves are children and thus inherit animation).
-            if (taskId == initalTask.key.id || taskId == secondTask.key.id) {
+            if (taskId == initialTaskId || taskId == secondTaskId) {
                 if (!(mode == TRANSIT_OPEN || mode == TRANSIT_TO_FRONT)) {
                     throw new IllegalStateException(
                             "Expected task to be showing, but it is " + mode);
@@ -409,16 +413,18 @@ public final class TaskViewUtils {
                     throw new IllegalStateException("Initiating multi-split launch but the split"
                             + "root of " + taskId + " is already visible or has broken hierarchy.");
                 }
-                splitRoots[taskId == initalTask.key.id ? 0 : 1] =
-                        transitionInfo.getChange(change.getParent());
+            }
+            if (taskId == initialTaskId && initialTaskId != INVALID_TASK_ID) {
+                splitRoot1 = transitionInfo.getChange(change.getParent());
+            }
+            if (taskId == secondTaskId) {
+                splitRoot2 = transitionInfo.getChange(change.getParent());
             }
         }
 
         // This is where we should animate the split roots. For now, though, just make them visible.
-        for (int i = 0; i < 2; ++i) {
-            t.show(splitRoots[i].getLeash());
-            t.setAlpha(splitRoots[i].getLeash(), 1.f);
-        }
+        animateSplitRoot(t, splitRoot1);
+        animateSplitRoot(t, splitRoot2);
 
         // This contains the initial state (before animation), so apply this at the beginning of
         // the animation.
@@ -426,6 +432,14 @@ public final class TaskViewUtils {
 
         // Once there is an animation, this should be called AFTER the animation completes.
         finishCallback.run();
+    }
+
+    private static void animateSplitRoot(SurfaceControl.Transaction t,
+            TransitionInfo.Change splitRoot) {
+        if (splitRoot != null) {
+            t.show(splitRoot.getLeash());
+            t.setAlpha(splitRoot.getLeash(), 1.f);
+        }
     }
 
     /**
@@ -440,9 +454,9 @@ public final class TaskViewUtils {
      * If it is null, then it will simply fade in the starting apps and fade out launcher (for the
      * case where launcher handles animating starting split tasks from app icon) */
     public static void composeRecentsSplitLaunchAnimatorLegacy(
-            @Nullable GroupedTaskView launchingTaskView,
-            @NonNull Task initialTask,
-            @NonNull Task secondTask, @NonNull RemoteAnimationTargetCompat[] appTargets,
+            @Nullable GroupedTaskView launchingTaskView, int initialTaskId,
+            @Nullable PendingIntent initialTaskPendingIntent, int secondTaskId,
+            @NonNull RemoteAnimationTargetCompat[] appTargets,
             @NonNull RemoteAnimationTargetCompat[] wallpaperTargets,
             @NonNull RemoteAnimationTargetCompat[] nonAppTargets,
             @NonNull StateManager stateManager,
@@ -478,7 +492,7 @@ public final class TaskViewUtils {
 
             if (mode == MODE_OPENING) {
                 openingTargets.add(leash);
-            } else if (taskId == initialTask.key.id || taskId == secondTask.key.id) {
+            } else if (taskId == initialTaskId || taskId == secondTaskId) {
                 throw new IllegalStateException("Expected task to be opening, but it is " + mode);
             } else if (mode == MODE_CLOSING) {
                 closingTargets.add(leash);

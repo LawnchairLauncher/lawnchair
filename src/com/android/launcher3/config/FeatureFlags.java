@@ -248,6 +248,10 @@ public final class FeatureFlags {
             "ENABLE_ALL_APPS_IN_TASKBAR", true,
             "Enables accessing All Apps from the system Taskbar.");
 
+    public static final BooleanFlag ENABLE_SPLIT_FROM_WORKSPACE = getDebugFlag(
+            "ENABLE_SPLIT_FROM_WORKSPACE", false,
+            "Enable initiating split screen from workspace.");
+
     public static void initialize(Context context) {
         synchronized (sDebugFlags) {
             for (DebugFlag flag : sDebugFlags) {

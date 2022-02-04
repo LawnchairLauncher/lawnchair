@@ -16,6 +16,7 @@
 
 package com.android.quickstep.views;
 
+import static android.app.PendingIntent.FLAG_MUTABLE;
 import static android.view.Surface.ROTATION_0;
 import static android.view.View.MeasureSpec.EXACTLY;
 import static android.view.View.MeasureSpec.makeMeasureSpec;
@@ -27,6 +28,7 @@ import static com.android.launcher3.LauncherAnimUtils.SUCCESS_TRANSITION_PROGRES
 import static com.android.launcher3.LauncherAnimUtils.VIEW_ALPHA;
 import static com.android.launcher3.LauncherState.BACKGROUND_APP;
 import static com.android.launcher3.QuickstepTransitionManager.RECENTS_LAUNCH_DURATION;
+import static com.android.launcher3.QuickstepTransitionManager.SPLIT_LAUNCH_DURATION;
 import static com.android.launcher3.Utilities.EDGE_NAV_BAR;
 import static com.android.launcher3.Utilities.mapToRange;
 import static com.android.launcher3.Utilities.squaredHypot;
@@ -67,6 +69,8 @@ import android.animation.PropertyValuesHolder;
 import android.animation.ValueAnimator;
 import android.annotation.TargetApi;
 import android.app.ActivityManager.RunningTaskInfo;
+import android.app.PendingIntent;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.LocusId;
 import android.content.res.Configuration;
@@ -128,6 +132,7 @@ import com.android.launcher3.anim.SpringProperty;
 import com.android.launcher3.compat.AccessibilityManagerCompat;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.icons.cache.HandlerRunnable;
+import com.android.launcher3.popup.QuickstepSystemShortcut;
 import com.android.launcher3.statehandlers.DepthController;
 import com.android.launcher3.statemanager.BaseState;
 import com.android.launcher3.statemanager.StatefulActivity;
@@ -621,6 +626,9 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             R.string.toast_split_select_app, Toast.LENGTH_SHORT);
     private final Toast mSplitUnsupportedToast = Toast.makeText(getContext(),
             R.string.toast_split_app_unsupported, Toast.LENGTH_SHORT);
+
+    @Nullable
+    private QuickstepSystemShortcut.SplitSelectSource mSplitSelectSource;
 
     /**
      * Keeps track of the index of the TaskView that split screen was initialized with so we know
@@ -2001,6 +2009,22 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         return null;
     }
 
+    @Nullable
+    private TaskView getTaskViewByComponentName(ComponentName componentName) {
+        if (componentName == null) {
+            return null;
+        }
+
+        for (int i = 0; i < getTaskViewCount(); i++) {
+            TaskView taskView = requireTaskViewAt(i);
+            if (taskView.getItemInfo().getIntent().getComponent().getPackageName().equals(
+                    componentName.getPackageName())) {
+                return taskView;
+            }
+        }
+        return null;
+    }
+
     public int getRunningTaskIndex() {
         TaskView taskView = getRunningTaskView();
         return taskView == null ? -1 : indexOfChild(taskView);
@@ -2696,12 +2720,23 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                 mSplitSelectStateController.getActiveSplitStagePosition(), mTempRect);
 
         RectF startingTaskRect = new RectF();
-        mSplitHiddenTaskView.setVisibility(INVISIBLE);
-        mFirstFloatingTaskView = FloatingTaskView.getFloatingTaskView(mActivity,
-                mSplitHiddenTaskView, startingTaskRect);
-        mFirstFloatingTaskView.setAlpha(1);
-        mFirstFloatingTaskView.addAnimation(anim, startingTaskRect,
-                mTempRect, mSplitHiddenTaskView, true /*fadeWithThumbnail*/);
+        if (mSplitHiddenTaskView != null) {
+            mSplitHiddenTaskView.setVisibility(INVISIBLE);
+            mFirstFloatingTaskView = FloatingTaskView.getFloatingTaskView(mActivity,
+                    mSplitHiddenTaskView, mSplitHiddenTaskView.getThumbnail().getThumbnail(),
+                    mSplitHiddenTaskView.getIconView().getDrawable(), startingTaskRect);
+            mFirstFloatingTaskView.setAlpha(1);
+            mFirstFloatingTaskView.addAnimation(anim, startingTaskRect,
+                    mTempRect, mSplitHiddenTaskView, true /*fadeWithThumbnail*/);
+        } else {
+            mSplitSelectSource.view.setVisibility(INVISIBLE);
+            mFirstFloatingTaskView = FloatingTaskView.getFloatingTaskView(mActivity,
+                    mSplitSelectSource.view, null,
+                    mSplitSelectSource.drawable, startingTaskRect);
+            mFirstFloatingTaskView.setAlpha(1);
+            mFirstFloatingTaskView.addAnimation(anim, startingTaskRect,
+                    mTempRect, mSplitSelectSource.view, true /*fadeWithThumbnail*/);
+        }
         anim.addEndListener(success -> {
             if (success) {
                 mSplitToast.show();
@@ -3924,20 +3959,40 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
 
     public void initiateSplitSelect(TaskView taskView, @StagePosition int stagePosition) {
         mSplitHiddenTaskView = taskView;
-        Rect initialBounds = new Rect(taskView.getLeft(), taskView.getTop(), taskView.getRight(),
-                taskView.getBottom());
-        mSplitSelectStateController.setInitialTaskSelect(taskView.getTask(),
-                stagePosition, initialBounds);
+        mSplitSelectStateController.setInitialTaskSelect(taskView.getTask().key.id,
+                stagePosition);
         mSplitHiddenTaskViewIndex = indexOfChild(taskView);
         if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
             finishRecentsAnimation(true, null);
         }
     }
 
+    public void initiateSplitSelect(QuickstepSystemShortcut.SplitSelectSource splitSelectSource) {
+        // Remove the task if it exists in Overview
+        TaskView matchingTaskView = getTaskViewByComponentName(
+                splitSelectSource.intent.getComponent());
+        if (matchingTaskView != null) {
+            removeTaskInternal(matchingTaskView.getTaskViewId());
+        }
+
+        mSplitSelectSource = splitSelectSource;
+        mSplitSelectStateController.setInitialTaskSelect(
+                PendingIntent.getActivity(
+                        mContext, 0, splitSelectSource.intent, FLAG_MUTABLE),
+                splitSelectSource.position.stagePosition);
+    }
+
     public PendingAnimation createSplitSelectInitAnimation() {
-        int duration = mActivity.getStateManager().getState().getTransitionDuration(getContext());
-        return createTaskDismissAnimation(mSplitHiddenTaskView, true, false, duration,
-                true /* dismissingForSplitSelection*/);
+        if (mSplitHiddenTaskView != null) {
+            int duration = mActivity.getStateManager().getState().getTransitionDuration(
+                    getContext());
+            return createTaskDismissAnimation(mSplitHiddenTaskView, true, false, duration,
+                    true /* dismissingForSplitSelection*/);
+        } else {
+            PendingAnimation anim = new PendingAnimation(SPLIT_LAUNCH_DURATION);
+            createInitialSplitSelectAnimation(anim);
+            return anim;
+        }
     }
 
     public void confirmSplitSelect(TaskView taskView) {
@@ -3968,13 +4023,14 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                 false /*fadeWithThumbnail*/);
 
         mSecondFloatingTaskView = FloatingTaskView.getFloatingTaskView(mActivity,
-                taskView, secondTaskStartingBounds);
+                taskView, taskView.getThumbnail().getThumbnail(),
+                taskView.getIconView().getDrawable(), secondTaskStartingBounds);
         mSecondFloatingTaskView.setAlpha(1);
         mSecondFloatingTaskView.addAnimation(pendingAnimation, secondTaskStartingBounds,
                 secondTaskEndingBounds, taskView.getThumbnail(),
                 true /*fadeWithThumbnail*/);
         pendingAnimation.addEndListener(aBoolean ->
-                mSplitSelectStateController.setSecondTaskId(taskView.getTask(),
+                mSplitSelectStateController.setSecondTaskId(taskView.getTask().key.id,
                 aBoolean1 -> RecentsView.this.resetFromSplitSelectionState()));
         mSecondSplitHiddenTaskView = taskView;
         taskView.setVisibility(INVISIBLE);
@@ -3983,6 +4039,20 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
 
     /** TODO(b/181707736) More gracefully handle exiting split selection state */
     protected void resetFromSplitSelectionState() {
+        if (mSplitSelectSource != null || mSplitHiddenTaskViewIndex != -1) {
+            if (mFirstFloatingTaskView != null) {
+                mActivity.getRootView().removeView(mFirstFloatingTaskView);
+                mFirstFloatingTaskView = null;
+            }
+            if (mSecondFloatingTaskView != null) {
+                mActivity.getRootView().removeView(mSecondFloatingTaskView);
+                mSecondFloatingTaskView = null;
+                mSecondSplitHiddenTaskView.setVisibility(VISIBLE);
+                mSecondSplitHiddenTaskView = null;
+            }
+            mSplitSelectSource = null;
+        }
+
         if (mSplitHiddenTaskViewIndex == -1) {
             return;
         }
@@ -4001,16 +4071,6 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         if (mSplitHiddenTaskView != null) {
             mSplitHiddenTaskView.setVisibility(VISIBLE);
             mSplitHiddenTaskView = null;
-        }
-        if (mFirstFloatingTaskView != null) {
-            mActivity.getRootView().removeView(mFirstFloatingTaskView);
-            mFirstFloatingTaskView = null;
-        }
-        if (mSecondFloatingTaskView != null) {
-            mActivity.getRootView().removeView(mSecondFloatingTaskView);
-            mSecondFloatingTaskView = null;
-            mSecondSplitHiddenTaskView.setVisibility(VISIBLE);
-            mSecondSplitHiddenTaskView = null;
         }
     }
 

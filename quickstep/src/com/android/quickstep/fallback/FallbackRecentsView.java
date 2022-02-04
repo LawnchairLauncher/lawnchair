@@ -34,6 +34,7 @@ import androidx.annotation.Nullable;
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.PendingAnimation;
+import com.android.launcher3.popup.QuickstepSystemShortcut;
 import com.android.launcher3.statemanager.StateManager.StateListener;
 import com.android.launcher3.util.SplitConfigurationOptions;
 import com.android.quickstep.FallbackActivityInterface;
@@ -253,5 +254,11 @@ public class FallbackRecentsView extends RecentsView<RecentsActivity, RecentsSta
         boolean result = super.onTouchEvent(ev);
         // Do not let touch escape to siblings below this view.
         return result || mActivity.getStateManager().getState().overviewUi();
+    }
+
+    @Override
+    public void initiateSplitSelect(QuickstepSystemShortcut.SplitSelectSource splitSelectSource) {
+        super.initiateSplitSelect(splitSelectSource);
+        mActivity.getStateManager().goToState(OVERVIEW_SPLIT_SELECT);
     }
 }
