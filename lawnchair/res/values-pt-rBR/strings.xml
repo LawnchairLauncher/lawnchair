@@ -139,10 +139,10 @@
     <string name="icon_shape_circle">Círculo</string>
     <string name="icon_shape_rounded_square">Quadrado Arredondado</string>
     <string name="icon_shape_squircle">Squircle</string>
-    <string name="customize_button_text">Customizar</string>
+    <string name="customize_button_text">Personalizar</string>
     <string name="app_title_label">Título</string>
     <string name="hide_from_drawer">Esconder da Gaveta de Aplicativos</string>
-    <string name="action_lens">Lente</string>
+    <string name="action_lens">Lens</string>
     <string name="force_rounded_widgets">Cantos Arredondados</string>
     <string name="suggestion_pref_screen_title">Sugestões</string>
     <string name="n_percent">%1$d%%</string>
@@ -178,14 +178,14 @@
     <string name="dark_status_bar_label">Barra de Status Escura</string>
     <string name="lawnicons_not_installed_description">Lawnicons não instalado.</string>
     <string name="icon_picker_default_category">Ícones</string>
-    <string name="icon_picker_reset_to_default">Reset to Default</string>
-    <string name="icon_pack_external_picker">Open External Picker</string>
+    <string name="icon_picker_reset_to_default">Restaurar ao padrão</string>
+    <string name="icon_pack_external_picker">Abrir Seletor Externo</string>
     <string name="recents_actions_label">Ações Rápidas</string>
-    <string name="recents_clear_all">Clear All</string>
-    <string name="pick_icon_from_label">Pick Icon From</string>
-    <string name="experimental_features_label">Experimental Features</string>
-    <string name="icon_picker_label">Per-App Icon Customization</string>
-    <string name="icon_picker_description">May cause Lawnchair to freeze.</string>
-    <string name="font_picker_label">Font Customization</string>
-    <string name="font_picker_description">Some text remains unchanged.</string>
+    <string name="recents_clear_all">Limpar tudo</string>
+    <string name="pick_icon_from_label">Escolher ícone de</string>
+    <string name="experimental_features_label">Recursos Experimentais</string>
+    <string name="icon_picker_label">Personalização de ícones por aplicativo</string>
+    <string name="icon_picker_description">Pode fazer com que o Lawnchair trave.</string>
+    <string name="font_picker_label">Personalização de fonte</string>
+    <string name="font_picker_description">Algum texto permanece inalterado.</string>
 </resources>
