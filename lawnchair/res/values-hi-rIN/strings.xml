@@ -182,10 +182,10 @@
     <string name="icon_pack_external_picker">अन्य आइकॉन पिकर खोलें</string>
     <string name="recents_actions_label">क्विक एक्शंस</string>
     <string name="recents_clear_all">सभी हटाएं</string>
-    <string name="pick_icon_from_label">Pick Icon From</string>
-    <string name="experimental_features_label">Experimental Features</string>
-    <string name="icon_picker_label">Per-App Icon Customization</string>
-    <string name="icon_picker_description">May cause Lawnchair to freeze.</string>
-    <string name="font_picker_label">Font Customization</string>
-    <string name="font_picker_description">Some text remains unchanged.</string>
+    <string name="pick_icon_from_label">से आइकन चुनें</string>
+    <string name="experimental_features_label">प्रायोगिक फीचर</string>
+    <string name="icon_picker_label">हर आइकॉन को अलग से बदलें</string>
+    <string name="icon_picker_description">लॉन्चेयर रूक सकता है।</string>
+    <string name="font_picker_label">फॉन्ट बदलें</string>
+    <string name="font_picker_description">कुछ शब्द नहीं बदलेंगे</string>
 </resources>
