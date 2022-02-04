@@ -177,14 +177,14 @@
     <string name="dark_status_bar_label">Tingkat Kegelapan Bar Status</string>
     <string name="lawnicons_not_installed_description">Lawnicons tidak terpasang.</string>
     <string name="icon_picker_default_category">Ikon</string>
-    <string name="icon_picker_reset_to_default">Reset to Default</string>
-    <string name="icon_pack_external_picker">Open External Picker</string>
+    <string name="icon_picker_reset_to_default">setel ulang ke default</string>
+    <string name="icon_pack_external_picker">Buka Pemilih Eksternal</string>
     <string name="recents_actions_label">Tindakan Cepat</string>
-    <string name="recents_clear_all">Clear All</string>
-    <string name="pick_icon_from_label">Pick Icon From</string>
-    <string name="experimental_features_label">Experimental Features</string>
-    <string name="icon_picker_label">Per-App Icon Customization</string>
-    <string name="icon_picker_description">May cause Lawnchair to freeze.</string>
-    <string name="font_picker_label">Font Customization</string>
+    <string name="recents_clear_all">Hapus Semua</string>
+    <string name="pick_icon_from_label">Pilih Ikon Dari</string>
+    <string name="experimental_features_label">Fitur Eksperimental</string>
+    <string name="icon_picker_label">Kustomisasi Ikon Per-Aplikasi</string>
+    <string name="icon_picker_description">Dapat menyebabkan Lawnchair membeku.</string>
+    <string name="font_picker_label">Kustomisasi Font</string>
     <string name="font_picker_description">Some text remains unchanged.</string>
 </resources>
