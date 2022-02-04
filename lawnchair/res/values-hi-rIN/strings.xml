@@ -178,10 +178,10 @@
     <string name="dark_status_bar_label">गहरा स्टेट्स बार</string>
     <string name="lawnicons_not_installed_description">लॉन आइकन्स ऐप इंस्टॉल नहीं है।</string>
     <string name="icon_picker_default_category">चिह्न</string>
-    <string name="icon_picker_reset_to_default">Reset to Default</string>
-    <string name="icon_pack_external_picker">Open External Picker</string>
-    <string name="recents_actions_label">Quick Actions</string>
-    <string name="recents_clear_all">Clear All</string>
+    <string name="icon_picker_reset_to_default">डिफॉल्ट पर रीसेट करें</string>
+    <string name="icon_pack_external_picker">अन्य आइकॉन पिकर खोलें</string>
+    <string name="recents_actions_label">क्विक एक्शंस</string>
+    <string name="recents_clear_all">सभी हटाएं</string>
     <string name="pick_icon_from_label">Pick Icon From</string>
     <string name="experimental_features_label">Experimental Features</string>
     <string name="icon_picker_label">Per-App Icon Customization</string>
