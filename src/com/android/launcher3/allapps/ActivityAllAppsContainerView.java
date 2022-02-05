@@ -21,6 +21,7 @@ import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.RelativeLayout;
 
 import androidx.core.graphics.ColorUtils;
 import androidx.recyclerview.widget.RecyclerView;
@@ -177,6 +178,28 @@ public class ActivityAllAppsContainerView<T extends BaseDraggingActivity> extend
     }
 
     @Override
+    protected View replaceRVContainer(boolean showTabs) {
+        View rvContainer = super.replaceRVContainer(showTabs);
+        if (FeatureFlags.ENABLE_FLOATING_SEARCH_BAR.get()) {
+            alignParentTop(rvContainer);
+            layoutAboveSearchContainer(rvContainer);
+        } else {
+            layoutBelowSearchContainer(rvContainer);
+        }
+        return rvContainer;
+    }
+
+    @Override
+    void setupHeader() {
+        super.setupHeader();
+        if (FeatureFlags.ENABLE_FLOATING_SEARCH_BAR.get()) {
+            alignParentTop(mHeader);
+        } else {
+            layoutBelowSearchContainer(mHeader);
+        }
+    }
+
+    @Override
     protected void updateHeaderScroll(int scrolledOffset) {
         super.updateHeaderScroll(scrolledOffset);
         if (mSearchUiManager.getEditText() == null) {
@@ -202,6 +225,36 @@ public class ActivityAllAppsContainerView<T extends BaseDraggingActivity> extend
 
     @Override
     protected int getHeaderBottom() {
+        if (FeatureFlags.ENABLE_FLOATING_SEARCH_BAR.get()) {
+            return super.getHeaderBottom();
+        }
         return super.getHeaderBottom() + mSearchContainer.getBottom();
+    }
+
+    private void layoutBelowSearchContainer(View v) {
+        if (!(v.getLayoutParams() instanceof RelativeLayout.LayoutParams)) {
+            return;
+        }
+        RelativeLayout.LayoutParams layoutParams = (LayoutParams) v.getLayoutParams();
+        layoutParams.removeRule(RelativeLayout.ALIGN_PARENT_TOP);
+        layoutParams.removeRule(RelativeLayout.ABOVE);
+        layoutParams.addRule(RelativeLayout.BELOW, R.id.search_container_all_apps);
+    }
+
+    private void layoutAboveSearchContainer(View v) {
+        if (!(v.getLayoutParams() instanceof RelativeLayout.LayoutParams)) {
+            return;
+        }
+        RelativeLayout.LayoutParams layoutParams = (LayoutParams) v.getLayoutParams();
+        layoutParams.addRule(RelativeLayout.ABOVE, R.id.search_container_all_apps);
+    }
+
+    private void alignParentTop(View v) {
+        if (!(v.getLayoutParams() instanceof RelativeLayout.LayoutParams)) {
+            return;
+        }
+        RelativeLayout.LayoutParams layoutParams = (LayoutParams) v.getLayoutParams();
+        layoutParams.removeRule(RelativeLayout.BELOW);
+        layoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP);
     }
 }

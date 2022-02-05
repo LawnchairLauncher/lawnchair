@@ -368,8 +368,7 @@ public abstract class BaseAllAppsContainerView<T extends Context & ActivityConte
     }
 
     @Override
-    public void onDropCompleted(View target, DragObject d, boolean success) {
-    }
+    public void onDropCompleted(View target, DragObject d, boolean success) {}
 
     @Override
     public void setInsets(Rect insets) {
@@ -478,7 +477,7 @@ public abstract class BaseAllAppsContainerView<T extends Context & ActivityConte
         return mHasWorkApps;
     }
 
-    private void replaceRVContainer(boolean showTabs) {
+    protected View replaceRVContainer(boolean showTabs) {
         for (AdapterHolder adapterHolder : mAH) {
             if (adapterHolder.mRecyclerView != null) {
                 adapterHolder.mRecyclerView.setLayoutManager(null);
@@ -503,6 +502,7 @@ public abstract class BaseAllAppsContainerView<T extends Context & ActivityConte
             mWorkManager.detachWorkModeSwitch();
             mViewPager = null;
         }
+        return newView;
     }
 
     public View getRecyclerViewContainer() {
@@ -634,7 +634,9 @@ public abstract class BaseAllAppsContainerView<T extends Context & ActivityConte
 
     @Override
     public void drawOnScrim(Canvas canvas) {
-        if (!mHeader.isHeaderProtectionSupported()) return;
+        if (!mHeader.isHeaderProtectionSupported()) {
+            return;
+        }
         mHeaderPaint.setColor(mHeaderColor);
         mHeaderPaint.setAlpha((int) (getAlpha() * Color.alpha(mHeaderColor)));
         if (mHeaderPaint.getColor() != mScrimColor && mHeaderPaint.getColor() != 0) {

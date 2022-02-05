@@ -26,12 +26,14 @@ import android.os.Process;
 import android.os.UserHandle;
 import android.os.UserManager;
 import android.util.Log;
+import android.view.ViewGroup;
 
 import androidx.annotation.IntDef;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 
 import com.android.launcher3.R;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.workprofile.PersonalWorkSlidingTabStrip;
 
@@ -138,6 +140,15 @@ public class WorkProfileManager implements PersonalWorkSlidingTabStrip.OnActiveP
             mWorkModeSwitch = (WorkModeSwitch) mAllApps.getLayoutInflater().inflate(
                     R.layout.work_mode_fab, mAllApps, false);
         }
+        int workFabMarginBottom =
+                mWorkModeSwitch.getResources().getDimensionPixelSize(R.dimen.work_fab_margin);
+        if (FeatureFlags.ENABLE_FLOATING_SEARCH_BAR.get()) {
+            workFabMarginBottom <<= 1;  // Double margin to add space above search bar.
+            workFabMarginBottom +=
+                    mWorkModeSwitch.getResources().getDimensionPixelSize(R.dimen.qsb_widget_height);
+        }
+        ((ViewGroup.MarginLayoutParams) mWorkModeSwitch.getLayoutParams()).bottomMargin =
+                workFabMarginBottom;
         if (mWorkModeSwitch.getParent() != mAllApps) {
             mAllApps.addView(mWorkModeSwitch);
         }
@@ -157,7 +168,6 @@ public class WorkProfileManager implements PersonalWorkSlidingTabStrip.OnActiveP
         }
         mWorkModeSwitch = null;
     }
-
 
     public WorkAdapterProvider getAdapterProvider() {
         return mAdapterProvider;
