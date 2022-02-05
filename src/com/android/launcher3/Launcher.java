@@ -41,6 +41,7 @@ import static com.android.launcher3.LauncherState.SPRING_LOADED;
 import static com.android.launcher3.Utilities.postAsyncCallback;
 import static com.android.launcher3.accessibility.LauncherAccessibilityDelegate.getSupportedActions;
 import static com.android.launcher3.dragndrop.DragLayer.ALPHA_INDEX_LAUNCHER_LOAD;
+import static com.android.launcher3.logging.StatsLogManager.EventEnum;
 import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_BACKGROUND;
 import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_HOME;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ALLAPPS_ENTRY;
@@ -141,6 +142,8 @@ import com.android.launcher3.icons.BitmapRenderer;
 import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.keyboard.ViewGroupFocusHelper;
 import com.android.launcher3.logger.LauncherAtom;
+import com.android.launcher3.logger.LauncherAtom.ContainerInfo;
+import com.android.launcher3.logger.LauncherAtom.WorkspaceContainer;
 import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.logging.InstanceId;
 import com.android.launcher3.logging.InstanceIdSequence;
@@ -1103,12 +1106,21 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
                 && mAllAppsSessionLogId == null) {
             // creates new instance ID since new all apps session is started.
             mAllAppsSessionLogId = new InstanceIdSequence().newInstanceId();
-            getStatsLogManager()
-                    .logger()
-                    .log(FeatureFlags.ENABLE_DEVICE_SEARCH.get()
-                            ? LAUNCHER_ALLAPPS_ENTRY_WITH_DEVICE_SEARCH
-                            : LAUNCHER_ALLAPPS_ENTRY);
+            getStatsLogManager().logger().withContainerInfo(
+                    ContainerInfo.newBuilder().setWorkspace(
+                            WorkspaceContainer.newBuilder().setPageIndex(
+                                    getWorkspace().getCurrentPage())).build())
+                    .log(getAllAppsEntryEvent());
         }
+    }
+
+    /**
+     * Returns {@link EventEnum} that should be logged when Launcher enters into AllApps state.
+     */
+    protected EventEnum getAllAppsEntryEvent() {
+        return FeatureFlags.ENABLE_DEVICE_SEARCH.get()
+                ? LAUNCHER_ALLAPPS_ENTRY_WITH_DEVICE_SEARCH
+                : LAUNCHER_ALLAPPS_ENTRY;
     }
 
     @Override
