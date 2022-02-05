@@ -48,7 +48,7 @@
     <string name="news">செய்தி</string>
     <string name="support">ஆதரவு</string>
     <string name="acknowledgements">ஒப்புதல்</string>
-    <string name="devops">DevOps</string>
+    <string name="devops">டெவ்ஆப்ஸ்</string>
     <string name="quickswitch_maintenance">விரைமாற்று பராமரிப்பு</string>
     <string name="all_apps_search_bar_hint">செயலிகளை தேட</string>
     <string name="settings_button_text">முகப்பின் அமைப்புகள்</string>
@@ -57,7 +57,7 @@
     <string name="item_removed">பொருள் நீக்கப்பட்டது.</string>
     <string name="all_apps_no_search_results">எந்த செயலியும் பொருந்தவில்லை “<xliff:g example="Android" id="query">%1$s</xliff:g>”.</string>
     <string name="background_opacity">பின்னணி ஒளிபுகாமை</string>
-    <string name="background_lightness_label">Background Lightness</string>
+    <string name="background_lightness_label">பின்புல வெளிச்சம்</string>
     <string name="adaptive_icons">தகவமைப்பு சின்னங்கள்</string>
     <string name="adaptive_icon_background_description">Use 100% background lightness for white.</string>
     <string name="auto_adaptive_icons_label">தகவமைப்பு சின்னங்கள்</string>
