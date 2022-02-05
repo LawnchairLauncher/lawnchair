@@ -443,4 +443,7 @@
     <!-- Default Ime height. Used only for logging purposes.
     Assume this is default keyboard height in EN locale in case the keyboard height is not known when queried.-->
     <dimen name="default_ime_height">300dp</dimen>
+
+    <!-- Overview scrolling scale animation -->
+    <dimen name="overview_scroll_scale">0.9</dimen>
 </resources>
