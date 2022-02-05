@@ -57,14 +57,14 @@
     <string name="item_removed">பொருள் நீக்கப்பட்டது.</string>
     <string name="all_apps_no_search_results">எந்த செயலியும் பொருந்தவில்லை “<xliff:g example="Android" id="query">%1$s</xliff:g>”.</string>
     <string name="background_opacity">பின்னணி ஒளிபுகாமை</string>
-    <string name="background_lightness_label">பின்புல வெளிச்சம்</string>
+    <string name="background_lightness_label">பின்புல வெளிச்சத்தை குறைக்க</string>
     <string name="adaptive_icons">தகவமைப்பு சின்னங்கள்</string>
-    <string name="adaptive_icon_background_description">Use 100% background lightness for white.</string>
+    <string name="adaptive_icon_background_description">100% பின்புல வெளிச்சத்தை குறைத்து வெள்ளையாக்க.</string>
     <string name="auto_adaptive_icons_label">தகவமைப்பு சின்னங்கள்</string>
     <string name="auto_adaptive_icons_description">எல்லா தகவமையா சின்னங்களுக்கும்.</string>
     <string name="support_and_pr">ஆதரவு &amp; மக்கள் தொடர்பு</string>
     <string name="workspace_dt2s">தூங்க இரு முறை தட்டவும்</string>
-    <string name="smart_space_enable">At a Glance Widget</string>
+    <string name="smart_space_enable">கண்ணோட்ட விட்ஜெட்</string>
     <string name="design_and_development">வடிவமைப்பு &amp; உருவாக்கம்</string>
     <string name="translate">மொழிபெயர்</string>
     <string name="product">தயாரிப்பு</string>
@@ -76,7 +76,7 @@
     </plurals>
     <string name="hotseat_qsb_label">தேடல் பட்டை காட்டு</string>
     <string name="dt2s_admin_hint_title">Admin permission required</string>
-    <string name="dt2s_admin_hint">To use Double-Tap to Sleep, set Lawnchair as a device admin app. Tap Open Settings, then tap “Activate this device admin app.”</string>
+    <string name="dt2s_admin_hint">இருமுறை தட்டியதும் திரையை அணைக்க லான்சேரை கருவியின் அட்மின் செயலியாக செட் செய்யவும். செட்டிங் பகுதிக்குள் சென்று, “இந்த கருவி அட்மின் செயலியை செயல்படுத்தவும்.” என்பதை தொடவும்</string>
     <string name="dt2s_admin_warning">Double Tap to Sleep will be disabled.</string>
     <string name="dt2s_a11y_hint_title">Accessibility service required</string>
     <string name="dt2s_a11y_hint">To use Double-Tap to Sleep, turn on the Lawnchair accessibility service. Tap Open Settings, then select Lawnchair and turn on Use Lawnchair.</string>
