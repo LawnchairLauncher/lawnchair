@@ -316,6 +316,13 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
         return icons;
     }
 
+    /**
+     * Returns the all apps button in the taskbar.
+     */
+    public View getAllAppsButtonView() {
+        return mAllAppsButton;
+    }
+
     // FolderIconParent implemented methods.
 
     @Override
@@ -357,13 +364,18 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
         return getVisibility() == VISIBLE;
     }
 
-    protected void mapOverItems(LauncherBindableItemsContainer.ItemOperator op) {
+    /**
+     * Maps {@code op} over all the child views, returning the view that {@code op} evaluates
+     * {@code true} for, or {@code null} if none satisfy {@code op}.
+     */
+    protected View mapOverItems(LauncherBindableItemsContainer.ItemOperator op) {
         // map over all the shortcuts on the taskbar
         for (int i = 0; i < getChildCount(); i++) {
             View item = getChildAt(i);
             if (op.evaluate((ItemInfo) item.getTag(), item)) {
-                return;
+                return item;
             }
         }
+        return null;
     }
 }
