@@ -18,17 +18,25 @@ package com.android.launcher3.tapl;
 
 import static android.view.accessibility.AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED;
 
+import static com.android.launcher3.testing.TestProtocol.SPRING_LOADED_STATE_ORDINAL;
+
 import android.graphics.Point;
+import android.view.MotionEvent;
 
 import androidx.test.uiautomator.By;
 import androidx.test.uiautomator.BySelector;
 import androidx.test.uiautomator.UiObject2;
 import androidx.test.uiautomator.Until;
 
+import com.android.launcher3.testing.TestProtocol;
+
 /**
  * Ancestor for AppIcon and AppMenuItem.
  */
 abstract class Launchable {
+
+    protected static final int DEFAULT_DRAG_STEPS = 10;
+
     protected final LauncherInstrumentation mLauncher;
 
     protected final UiObject2 mObject;
@@ -45,7 +53,7 @@ abstract class Launchable {
     /**
      * Clicks the object to launch its app.
      */
-    public Background launch(String expectedPackageName) {
+    public LaunchedAppState launch(String expectedPackageName) {
         try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck()) {
             return launch(By.pkg(expectedPackageName));
         }
@@ -55,56 +63,88 @@ abstract class Launchable {
 
     protected abstract String launchableType();
 
-    private Background launch(BySelector selector) {
+    private LaunchedAppState launch(BySelector selector) {
         try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
                 "want to launch an app from " + launchableType())) {
             LauncherInstrumentation.log("Launchable.launch before click "
                     + mObject.getVisibleCenter() + " in " + mLauncher.getVisibleBounds(mObject));
             final String label = mObject.getText();
 
-            mLauncher.executeAndWaitForEvent(
-                    () -> {
-                        mLauncher.clickLauncherObject(mObject);
-                        expectActivityStartEvents();
-                    },
-                    event -> event.getEventType() == TYPE_WINDOW_STATE_CHANGED,
-                    () -> "Launching an app didn't open a new window: " + label,
-                    "clicking " + launchableType());
+            executeAndWaitForWindowChange(() -> {
+                mLauncher.clickLauncherObject(mObject);
+                expectActivityStartEvents();
+            }, label, "clicking " + launchableType());
 
             try (LauncherInstrumentation.Closable c1 = mLauncher.addContextLayer("clicked")) {
-                mLauncher.assertTrue(
-                        "App didn't start: " + label + " (" + selector + ")",
-                        TestHelpers.wait(Until.hasObject(selector),
-                                LauncherInstrumentation.WAIT_TIME_MS));
-                return new Background(mLauncher);
+                return assertAppLaunched(label, selector);
             }
         }
     }
 
-    /**
-     * Drags an object to the center of homescreen.
-     *
-     * @param startsActivity   whether it's expected to start an activity.
-     * @param isWidgetShortcut whether we drag a widget shortcut
-     */
-    public void dragToWorkspace(boolean startsActivity, boolean isWidgetShortcut) {
-        try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck()) {
-            final Point launchableCenter = getObject().getVisibleCenter();
-            final Point displaySize = mLauncher.getRealDisplaySize();
-            final int width = displaySize.x / 2;
-            Workspace.dragIconToWorkspace(
-                    mLauncher,
-                    this,
-                    new Point(
-                            launchableCenter.x >= width
-                                    ? launchableCenter.x - width / 2
-                                    : launchableCenter.x + width / 2,
-                            displaySize.y / 2),
-                    getLongPressIndicator(),
-                    startsActivity,
-                    isWidgetShortcut,
-                    () -> addExpectedEventsForLongClick());
+    protected void executeAndWaitForWindowChange(Runnable command, String label, String action) {
+        mLauncher.executeAndWaitForEvent(
+                command,
+                event -> event.getEventType() == TYPE_WINDOW_STATE_CHANGED,
+                () -> "Launching an app didn't open a new window: " + label,
+                action);
+    }
+
+    protected LaunchedAppState assertAppLaunched(String label, BySelector selector) {
+        mLauncher.assertTrue(
+                "App didn't start: " + label + " (" + selector + ")",
+                TestHelpers.wait(Until.hasObject(selector),
+                        LauncherInstrumentation.WAIT_TIME_MS));
+        return new LaunchedAppState(mLauncher);
+    }
+
+    Point startDrag(long downTime, String longPressIndicator,
+            Runnable expectLongClickEvents, boolean runToSpringLoadedState) {
+        final Point iconCenter = getObject().getVisibleCenter();
+        final Point dragStartCenter = new Point(iconCenter.x,
+                iconCenter.y - getStartDragThreshold());
+
+        if (runToSpringLoadedState) {
+            mLauncher.runToState(() -> movePointerForStartDrag(
+                    downTime,
+                    iconCenter,
+                    dragStartCenter,
+                    longPressIndicator,
+                    expectLongClickEvents),
+                    SPRING_LOADED_STATE_ORDINAL, "long-pressing and triggering drag start");
+        } else {
+            movePointerForStartDrag(
+                    downTime,
+                    iconCenter,
+                    dragStartCenter,
+                    longPressIndicator,
+                    expectLongClickEvents);
         }
+
+
+        return dragStartCenter;
+    }
+
+    /**
+     * Drags this Launchable a short distance before starting a full drag.
+     *
+     * This is necessary for shortcuts, which require being dragged beyond a threshold to close
+     * their container and start drag callbacks.
+     */
+    private void movePointerForStartDrag(long downTime, Point iconCenter, Point dragStartCenter,
+            String longPressIndicator, Runnable expectLongClickEvents) {
+        mLauncher.sendPointer(downTime, downTime, MotionEvent.ACTION_DOWN,
+                iconCenter, LauncherInstrumentation.GestureScope.INSIDE);
+        LauncherInstrumentation.log("movePointerForStartDrag: sent down");
+        expectLongClickEvents.run();
+        mLauncher.waitForLauncherObject(longPressIndicator);
+        LauncherInstrumentation.log("movePointerForStartDrag: indicator");
+        mLauncher.movePointer(iconCenter, dragStartCenter, DEFAULT_DRAG_STEPS, false,
+                downTime, true, LauncherInstrumentation.GestureScope.INSIDE);
+    }
+
+    private int getStartDragThreshold() {
+        return mLauncher.getTestInfo(TestProtocol.REQUEST_START_DRAG_THRESHOLD).getInt(
+                TestProtocol.TEST_INFO_RESPONSE_FIELD);
     }
 
     protected abstract void addExpectedEventsForLongClick();

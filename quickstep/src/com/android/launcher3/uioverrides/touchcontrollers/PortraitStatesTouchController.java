@@ -221,13 +221,9 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
      * @return true if the event is over the hotseat
      */
     static boolean isTouchOverHotseat(Launcher launcher, MotionEvent ev) {
-        return (ev.getY() >= getHotseatTop(launcher));
-    }
-
-    public static int getHotseatTop(Launcher launcher) {
         DeviceProfile dp = launcher.getDeviceProfile();
         int hotseatHeight = dp.hotseatBarSizePx + dp.getInsets().bottom;
-        return launcher.getDragLayer().getHeight() - hotseatHeight;
+        return (ev.getY() >= (launcher.getDragLayer().getHeight() - hotseatHeight));
     }
 
     @Override

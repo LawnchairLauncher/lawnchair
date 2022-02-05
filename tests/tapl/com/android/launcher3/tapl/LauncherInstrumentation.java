@@ -91,6 +91,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * The main tapl object. The only object that can be explicitly constructed by the using code. It
@@ -122,7 +123,7 @@ public final class LauncherInstrumentation {
     // Types for launcher containers that the user is interacting with. "Background" is a
     // pseudo-container corresponding to inactive launcher covered by another app.
     public enum ContainerType {
-        WORKSPACE, ALL_APPS, OVERVIEW, WIDGETS, BACKGROUND, FALLBACK_OVERVIEW
+        WORKSPACE, HOME_ALL_APPS, OVERVIEW, WIDGETS, FALLBACK_OVERVIEW, LAUNCHED_APP
     }
 
     public enum NavigationModel {ZERO_BUTTON, THREE_BUTTON}
@@ -135,7 +136,7 @@ public final class LauncherInstrumentation {
     }
 
     // Base class for launcher containers.
-    static abstract class VisibleContainer {
+    abstract static class VisibleContainer {
         protected final LauncherInstrumentation mLauncher;
 
         protected VisibleContainer(LauncherInstrumentation launcher) {
@@ -500,15 +501,18 @@ public final class LauncherInstrumentation {
     }
 
     private String getVisiblePackages() {
-        final String apps = mDevice.findObjects(getAnyObjectSelector())
-                .stream()
-                .map(LauncherInstrumentation::getApplicationPackageSafe)
-                .distinct()
-                .filter(pkg -> pkg != null && !SYSTEMUI_PACKAGE.equals(pkg))
-                .collect(Collectors.joining(", "));
+        final String apps = getVisiblePackagesStream().collect(Collectors.joining(", "));
         return !apps.isEmpty()
                 ? "active app: " + apps
                 : "the test doesn't see views from any app, including Launcher";
+    }
+
+    private Stream<String> getVisiblePackagesStream() {
+        return mDevice.findObjects(getAnyObjectSelector())
+                .stream()
+                .map(LauncherInstrumentation::getApplicationPackageSafe)
+                .distinct()
+                .filter(pkg -> pkg != null && !SYSTEMUI_PACKAGE.equals(pkg));
     }
 
     private static String getApplicationPackageSafe(UiObject2 object) {
@@ -526,7 +530,7 @@ public final class LauncherInstrumentation {
         if (hasLauncherObject(OVERVIEW_RES_ID)) return "Overview";
         if (hasLauncherObject(WORKSPACE_RES_ID)) return "Workspace";
         if (hasLauncherObject(APPS_RES_ID)) return "AllApps";
-        return "Background (" + getVisiblePackages() + ")";
+        return "LaunchedApp (" + getVisiblePackages() + ")";
     }
 
     public void setSystemHealthSupplier(Function<Long, String> supplier) {
@@ -726,7 +730,7 @@ public final class LauncherInstrumentation {
                     waitUntilLauncherObjectGone(OVERVIEW_RES_ID);
                     return waitForLauncherObject(WIDGETS_RES_ID);
                 }
-                case ALL_APPS: {
+                case HOME_ALL_APPS: {
                     waitUntilLauncherObjectGone(WORKSPACE_RES_ID);
                     waitUntilLauncherObjectGone(OVERVIEW_RES_ID);
                     waitUntilLauncherObjectGone(WIDGETS_RES_ID);
@@ -736,13 +740,12 @@ public final class LauncherInstrumentation {
                     waitUntilLauncherObjectGone(APPS_RES_ID);
                     waitUntilLauncherObjectGone(WORKSPACE_RES_ID);
                     waitUntilLauncherObjectGone(WIDGETS_RES_ID);
-
                     return waitForLauncherObject(OVERVIEW_RES_ID);
                 }
                 case FALLBACK_OVERVIEW: {
                     return waitForFallbackLauncherObject(OVERVIEW_RES_ID);
                 }
-                case BACKGROUND: {
+                case LAUNCHED_APP: {
                     waitUntilLauncherObjectGone(WORKSPACE_RES_ID);
                     waitUntilLauncherObjectGone(APPS_RES_ID);
                     waitUntilLauncherObjectGone(OVERVIEW_RES_ID);
@@ -823,6 +826,8 @@ public final class LauncherInstrumentation {
         }
 
         GestureScope gestureScope = gestureStartFromLauncher
+                // Without the navigation bar layer, the gesture scope on tablets remains inside the
+                // launcher process.
                 ? (isTablet() ? GestureScope.INSIDE : GestureScope.INSIDE_TO_OUTSIDE)
                 : GestureScope.OUTSIDE_WITH_PILFER;
         linearGesture(
@@ -960,14 +965,14 @@ public final class LauncherInstrumentation {
     }
 
     /**
-     * Gets the Workspace object if the current state is "background home", i.e. some other app is
-     * active. Fails if the launcher is not in that state.
+     * Gets the LaunchedApp object if another app is active. Fails if the launcher is not in that
+     * state.
      *
-     * @return Background object.
+     * @return LaunchedApp object.
      */
     @NonNull
-    public Background getBackground() {
-        return new Background(this);
+    public LaunchedAppState getLaunchedAppState() {
+        return new LaunchedAppState(this);
     }
 
     /**
@@ -1004,32 +1009,17 @@ public final class LauncherInstrumentation {
     }
 
     /**
-     * Gets the All Apps object if the current state is showing the all apps panel opened by swiping
-     * from workspace. Fails if the launcher is not in that state. Please don't call this method if
-     * App Apps was opened by swiping up from Overview, as it won't fail and will return an
-     * incorrect object.
+     * Gets the homescreen All Apps object if the current state is showing the all apps panel opened
+     * by swiping from workspace. Fails if the launcher is not in that state. Please don't call this
+     * method if App Apps was opened by swiping up from Overview, as it won't fail and will return
+     * an incorrect object.
      *
-     * @return All Aps object.
+     * @return Home All Apps object.
      */
     @NonNull
-    public AllApps getAllApps() {
+    public HomeAllApps getAllApps() {
         try (LauncherInstrumentation.Closable c = addContextLayer("want to get all apps object")) {
-            return new AllApps(this);
-        }
-    }
-
-    /**
-     * Gets the All Apps object if the current state is showing the all apps panel opened by swiping
-     * from overview. Fails if the launcher is not in that state. Please don't call this method if
-     * App Apps was opened by swiping up from home, as it won't fail and will return an
-     * incorrect object.
-     *
-     * @return All Aps object.
-     */
-    @NonNull
-    public AllAppsFromOverview getAllAppsFromOverview() {
-        try (LauncherInstrumentation.Closable c = addContextLayer("want to get all apps object")) {
-            return new AllAppsFromOverview(this);
+            return new HomeAllApps(this);
         }
     }
 
@@ -1117,15 +1107,21 @@ public final class LauncherInstrumentation {
         }
     }
 
-    @NonNull
-    UiObject2 waitForObjectInContainer(UiObject2 container, BySelector selector) {
+    @NonNull UiObject2 waitForObjectInContainer(UiObject2 container, BySelector selector) {
+        return waitForObjectsInContainer(container, selector).get(0);
+    }
+
+    @NonNull List<UiObject2> waitForObjectsInContainer(
+            UiObject2 container, BySelector selector) {
         try {
-            final UiObject2 object = container.wait(
-                    Until.findObject(selector),
+            final List<UiObject2> objects = container.wait(
+                    Until.findObjects(selector),
                     WAIT_TIME_MS);
-            assertNotNull("Can't find a view in Launcher, id: " + selector + " in container: "
-                    + container.getResourceName(), object);
-            return object;
+            assertNotNull("Can't find views in Launcher, id: " + selector + " in container: "
+                    + container.getResourceName(), objects);
+            assertTrue("Can't find views in Launcher, id: " + selector + " in container: "
+                    + container.getResourceName(), objects.size() > 0);
+            return objects;
         } catch (StaleObjectException e) {
             fail("The container disappeared from screen");
             return null;
