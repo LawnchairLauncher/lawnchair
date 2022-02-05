@@ -79,7 +79,7 @@
     <string name="dt2s_admin_hint">Pour utiliser le double appui pour mettre en veille, définissez Lawnchair avec les permissions d\'administrateur. Appuyez sur \"Ouvrir les paramètres\", puis appuyez sur \"Activer l\'application avec les permissions d\'administrateur\"</string>
     <string name="dt2s_admin_warning">Double Tap to Sleep will be disabled.</string>
     <string name="dt2s_a11y_hint_title">Accessibility service required</string>
-    <string name="dt2s_a11y_hint">Pour utiliser la veille sur double tape, activez le service d\'accessibilité Lawnchair. Appuyez sur \"Ouvrir paramètres\", sélectionnez ensuite “Lawnchair” et activez “Utiliser Lawnchair”.</string>
+    <string name="dt2s_a11y_hint">Pour utiliser la veille sur double tape, activez le service d\'accessibilité Lawnchair. Appuyez sur Ouvrir Paramètres, sélectionnez ensuite Lawnchair et activez Utiliser Lawnchair.</string>
     <string name="dt2s_warning_open_settings">Ouvrir les paramètres</string>
     <string name="minus_one_enable">Fil</string>
     <string name="minus_one_unavailable">Aucun fil installé.</string>
@@ -154,7 +154,7 @@
     <string name="show_app_search_bar">Afficher la barre de recherche</string>
     <string name="lawnchair_bug_report">Rapport de bug Lawnchair</string>
     <string name="crash_report_notif_title">%1$s a planté</string>
-    <string name="action_upload">Télécharger vers Dogbin</string>
+    <string name="action_upload">Télécharger à Dogbin</string>
     <string name="action_copy_link">Copier le lien</string>
     <string name="action_copy">Copier</string>
     <string name="copied_toast">Copié dans le presse-papiers.</string>
