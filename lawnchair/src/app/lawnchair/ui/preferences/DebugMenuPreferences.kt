@@ -59,6 +59,7 @@ fun DebugMenuPreferences() {
 private fun PreferenceManager.getDebugFlags(): List<PrefEntry<Boolean>> {
     return listOf(
         enableIconSelection,
+        showComponentName,
         themedIcons,
         deviceSearch,
         searchResultShortcuts,
