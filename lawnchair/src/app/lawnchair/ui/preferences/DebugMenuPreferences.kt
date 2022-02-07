@@ -5,6 +5,7 @@ import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavGraphBuilder
 import app.lawnchair.preferences.PrefEntry
@@ -29,42 +30,40 @@ fun NavGraphBuilder.debugMenuGraph(route: String) {
 @Composable
 fun DebugMenuPreferences() {
     val prefs = preferenceManager()
-    val flags = remember { prefs.getDebugFlags() }
-    PreferenceLayout(
-        label = "Debug Menu"
-    ) {
+    val flags = rememberSaveable { prefs.getDebugFlags() }
+    val context = LocalContext.current
+    PreferenceLayout(label = "Debug Menu") {
         PreferenceGroup {
-            val context = LocalContext.current
-            ClickablePreference(label = "Feature flags", onClick = {
-                val intent = Intent(context, SettingsActivity::class.java)
-                    .putExtra(":settings:fragment", DeveloperOptionsFragment::class.java.name)
-                context.startActivity(intent)
-            })
-            IconShapePreference()
-            ClickablePreference(label = "Crash launcher", onClick = {
-                throw RuntimeException("User triggered crash")
-            })
+            ClickablePreference(
+                label = "Feature Flags",
+                onClick = {
+                    Intent(context, SettingsActivity::class.java)
+                        .putExtra(":settings:fragment", DeveloperOptionsFragment::class.java.name)
+                        .also { context.startActivity(it) }
+                },
+            )
+            ClickablePreference(
+                label = "Crash Launcher",
+                onClick = { throw RuntimeException("User triggered crash") },
+            )
         }
-        PreferenceGroup(heading = "Debug flags") {
+        PreferenceGroup(heading = "Debug Flags") {
             flags.forEach {
                 SwitchPreference(
                     adapter = it.getAdapter(),
-                    label = it.key
+                    label = it.key,
                 )
             }
         }
     }
 }
 
-private fun PreferenceManager.getDebugFlags(): List<PrefEntry<Boolean>> {
-    return listOf(
-        enableIconSelection,
+private fun PreferenceManager.getDebugFlags() =
+    listOf(
         showComponentName,
-        themedIcons,
         deviceSearch,
         searchResultShortcuts,
         searchResultPeople,
         searchResultPixelTips,
         searchResultSettings,
     )
-}
