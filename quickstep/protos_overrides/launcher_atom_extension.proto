@@ -23,20 +23,24 @@ option java_outer_classname = "LauncherAtomExtensions";
 // Message name should match with launcher_atom_extension.proto message at
 // the AOSP level.
 message ExtendedContainers {
+  reserved 2; // Deleted fields
 
   oneof Container{
     DeviceSearchResultContainer device_search_result_container = 1;
-    CorrectedDeviceSearchResultContainer corrected_device_search_result_container = 2;
   }
 }
 
 // Represents on-device search result container.
 message DeviceSearchResultContainer{
   optional int32 query_length = 1;
-}
+  optional SearchAttributes search_attributes = 2;
 
-// Represents on-device search result container with results from spell-corrected query.
-message CorrectedDeviceSearchResultContainer{
-  optional int32 query_length = 1;
-}
+  message SearchAttributes{
 
+    // True if results are based on spell corrected query
+    optional bool corrected_query = 1;
+
+    // True if the item's title/content is a direct match to the search query, false otherwise.
+    optional bool direct_match = 2;
+  }
+}

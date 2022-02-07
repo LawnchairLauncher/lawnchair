@@ -23,6 +23,7 @@ import static android.app.prediction.AppTargetEvent.ACTION_UNPIN;
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_HOTSEAT_PREDICTION;
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_PREDICTION;
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_WIDGETS_PREDICTION;
+import static com.android.launcher3.logger.LauncherAtomExtensions.ExtendedContainers.ContainerCase.DEVICE_SEARCH_RESULT_CONTAINER;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_APP_LAUNCH_TAP;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_FOLDER_CONVERTED_TO_ICON;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_HOTSEAT_PREDICTION_PINNED;
@@ -293,10 +294,9 @@ public class AppEventProducer implements StatsLogConsumer {
             case SEARCH_RESULT_CONTAINER:
                 return "search-results";
             case EXTENDED_CONTAINERS: {
-                switch(ci.getExtendedContainers().getContainerCase()) {
-                    case DEVICE_SEARCH_RESULT_CONTAINER:
-                    case CORRECTED_DEVICE_SEARCH_RESULT_CONTAINER:
-                        return "search-results";
+                if (ci.getExtendedContainers().getContainerCase()
+                        == DEVICE_SEARCH_RESULT_CONTAINER) {
+                    return "search-results";
                 }
             }
             default: // fall out
