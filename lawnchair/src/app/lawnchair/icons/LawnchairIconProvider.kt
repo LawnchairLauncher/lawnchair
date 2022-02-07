@@ -19,6 +19,7 @@ import app.lawnchair.util.Constants.LAWNICONS_PACKAGE_NAME
 import app.lawnchair.util.MultiSafeCloseable
 import app.lawnchair.util.getPackageVersionCode
 import app.lawnchair.util.isPackageInstalled
+import com.android.launcher3.BuildConfig
 import com.android.launcher3.R
 import com.android.launcher3.icons.IconProvider
 import com.android.launcher3.icons.ThemedIconDrawable
@@ -108,7 +109,7 @@ class LawnchairIconProvider @JvmOverloads constructor(
                 }
                 packageName == mClock.packageName -> {
                     // is clock app but icon might not be adaptive, fallback to static themed clock
-                    themeData = ThemedIconDrawable.ThemeData(context.resources, R.drawable.themed_icon_static_clock)
+                    themeData = ThemedIconDrawable.ThemeData(context.resources, BuildConfig.APPLICATION_ID, R.drawable.themed_icon_static_clock)
                 }
                 else -> {
                     // regular icon
@@ -285,7 +286,7 @@ class LawnchairIconProvider @JvmOverloads constructor(
                             val cmp = parser.getAttributeValue(null, ATTR_COMPONENT) ?: ""
                             val iconId = parser.getAttributeResourceValue(null, ATTR_DRAWABLE, 0)
                             if (iconId != 0 && pkg.isNotEmpty()) {
-                                map[ComponentName(pkg, cmp)] = ThemedIconDrawable.ThemeData(resources, iconId)
+                                map[ComponentName(pkg, cmp)] = ThemedIconDrawable.ThemeData(resources, packageName, iconId)
                             }
                         }
                     }
