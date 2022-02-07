@@ -140,7 +140,10 @@ fun CustomizeAppDialog(
         defaultTitle = defaultTitle,
         launchSelectIcon = if (prefs.enableIconSelection.get()) openIconPicker else null,
     ) {
-        PreferenceGroup {
+        PreferenceGroup(
+            description = componentKey.componentName.flattenToString(),
+            showDescription = prefs.showComponentName.get()
+        ) {
             val stringKey = componentKey.toString()
             var hiddenApps by prefs.hiddenAppSet.getAdapter()
             val adapter = customPreferenceAdapter(
