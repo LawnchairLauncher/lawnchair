@@ -24,6 +24,7 @@ import app.lawnchair.font.FontCache
 import app.lawnchair.icons.CustomAdaptiveIconDrawable
 import app.lawnchair.icons.shape.IconShape
 import app.lawnchair.icons.shape.IconShapeManager
+import app.lawnchair.qsb.QsbSearchProvider
 import app.lawnchair.theme.color.ColorOption
 import app.lawnchair.util.isOnePlusStock
 import com.android.launcher3.InvariantDeviceProfile
@@ -126,6 +127,7 @@ class PreferenceManager private constructor(private val context: Context) : Base
     val showComponentName = BoolPref("pref_showComponentName", false)
     val themedIcons = BoolPref("themed_icons", false)
     val hotseatQsbCornerRadius = FloatPref("pref_hotseatQsbCornerRadius", 1F, recreate)
+    val hotseatQsbProvider = IntPref("pref_hotseatQsbProvider", QsbSearchProvider.Google.index, recreate)
     val themedHotseatQsb = BoolPref("pref_themedHotseatQsb", false)
     val allAppsCellHeightMultiplier = FloatPref("pref_allAppsCellHeightMultiplier", 1F, reloadGrid)
     val darkStatusBar = BoolPref("pref_darkStatusBar", false)
