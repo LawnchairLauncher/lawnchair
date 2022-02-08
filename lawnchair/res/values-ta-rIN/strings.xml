@@ -20,7 +20,7 @@
     <string name="home_screen_label">முகப்புத் திரை</string>
     <string name="home_screen_description">செய்தியோடை, At a Glance, கட்டம், சின்னங்கள்</string>
     <string name="general_label">பொது</string>
-    <string name="general_description">இத்திலா புள்ளிகள், சின்னத் தொகுதி</string>
+    <string name="general_description">நிறங்கள், அறிவிப்பு புள்ளிகள், சின்னச்சிப்பம்</string>
     <string name="home_screen_rotation_label">முகப்புத் திரைச் சுழற்சி</string>
     <string name="home_screen_rotaton_description">கருவி சுழற்றப்படும் போது.</string>
     <string name="auto_add_shortcuts_label">முகப்புத் திரையில் புதிய செயலிகளை சேர்</string>
@@ -110,7 +110,7 @@
     <string name="missing_notification_access_label">அறிவிப்பணுகல் தேவை</string>
     <string name="missing_notification_access_description">அறிவிப்பணுகல் தேவை.</string>
     <string name="msg_missing_notification_access">அறிவிப்புப் புள்ளிகள் பயன்படுத்த, அறிவிப்புகளுக்கு <xliff:g id="name" example="My App">%1$s</xliff:g> அணுகலை வழங்கு.</string>
-    <string name="title_change_settings">அமைவுகளை மாற்று</string>
+    <string name="title_change_settings">அமைவை மாற்று</string>
     <string name="debug_restart_launcher">Lawnchairஐ மறுதுவக்கு</string>
     <string name="pref_fonts_missing_font">எழுத்துரு எதுவுமில்லை.</string>
     <string name="font_variant_italic">வலச்சாய்வு</string>
@@ -183,7 +183,7 @@
     <string name="recents_actions_label">விரைவு செயல்கள்</string>
     <string name="recents_clear_all">Clear All</string>
     <string name="pick_icon_from_label">Pick Icon From</string>
-    <string name="experimental_features_label">Experimental Features</string>
+    <string name="experimental_features_label">பரீட்சார்த்த அம்சங்கள்</string>
     <string name="icon_picker_label">Per-App Icon Customization</string>
     <string name="icon_picker_description">May cause Lawnchair to freeze.</string>
     <string name="font_picker_label">Font Customization</string>
