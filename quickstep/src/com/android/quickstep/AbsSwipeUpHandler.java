@@ -1198,10 +1198,10 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
             // We probably never received an animation controller, skip logging.
             return;
         }
-        int pageIndex = endTarget == LAST_TASK
+        int pageIndex = endTarget == LAST_TASK || mRecentsView == null
                 ? LOG_NO_OP_PAGE_INDEX
                 : mRecentsView.getNextPage();
-        // TODO: set correct container using the pageIndex
+        logger.withRank(pageIndex);
         logger.log(event);
     }
 
