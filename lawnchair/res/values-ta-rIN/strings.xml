@@ -57,9 +57,9 @@
     <string name="item_removed">பொருள் நீக்கப்பட்டது.</string>
     <string name="all_apps_no_search_results">எந்த செயலியும் பொருந்தவில்லை “<xliff:g example="Android" id="query">%1$s</xliff:g>”.</string>
     <string name="background_opacity">பின்னணி ஒளிபுகாமை</string>
-    <string name="background_lightness_label">பின்புல வெளிச்சத்தை குறைக்க</string>
+    <string name="background_lightness_label">பின்புல இலேசுத்தன்மை</string>
     <string name="adaptive_icons">தகவமைப்பு சின்னங்கள்</string>
-    <string name="adaptive_icon_background_description">100% பின்புல வெளிச்சத்தை குறைத்து வெள்ளையாக்க.</string>
+    <string name="adaptive_icon_background_description">வெள்ளைக்கு 100% பின்புல இலேசுத்தன்மை பயன்படுத்து.</string>
     <string name="auto_adaptive_icons_label">தகவமைப்பு சின்னங்கள்</string>
     <string name="auto_adaptive_icons_description">எல்லா தகவமையா சின்னங்களுக்கும்.</string>
     <string name="support_and_pr">ஆதரவு &amp; மக்கள் தொடர்பு</string>
@@ -103,7 +103,7 @@
     <string name="wallpaper">சுவர்த்தாள்</string>
     <string name="custom">தனிப்பயன்</string>
     <string name="quickstep_description">எல்லாம் அழி பொத்தான், மூலை ஆரம்</string>
-    <string name="wallpaper_scrolling_label">Scroll Wallpaper</string>
+    <string name="wallpaper_scrolling_label">சுவர்த்தாளைத் திரையுருட்டு</string>
     <string name="show_sys_ui_scrim">மேற்புற நிழல்</string>
     <string name="show_status_bar">நிலைப்பட்டி</string>
     <string name="what_to_show">எதைக் காடட</string>
@@ -165,7 +165,7 @@
     <string name="status_channel_name">பதிவேற்ற நிலை</string>
     <string name="bugreport_group_summary">%d புதிய அறிக்கைகள்.</string>
     <string name="bugreport_group_summary_multiple">பல புதிய அறிக்கைகள்.</string>
-    <string name="themed_icon_title">Themed Icons</string>
+    <string name="themed_icon_title">தோற்றமிகுச் சின்னங்கள்</string>
     <string name="corner_radius_label">மூலை ஆரம்</string>
     <string name="search_bar_label">தேடல் பட்டை</string>
     <string name="apply_accent_color_label">உரப்பு நிறத்தைச் செயற்படுத்து</string>
@@ -178,14 +178,14 @@
     <string name="dark_status_bar_label">இருண்ட நிலைப்பட்டி</string>
     <string name="lawnicons_not_installed_description">Lawnicons நிறுவப்படவில்லை.</string>
     <string name="icon_picker_default_category">சின்னங்கள்</string>
-    <string name="icon_picker_reset_to_default">Reset to Default</string>
-    <string name="icon_pack_external_picker">Open External Picker</string>
+    <string name="icon_picker_reset_to_default">இயல்பிருப்பிற்கு அகரமாக்கு</string>
+    <string name="icon_pack_external_picker">வெளிப்புற தெரிவியைத் திற</string>
     <string name="recents_actions_label">விரைவு செயல்கள்</string>
-    <string name="recents_clear_all">Clear All</string>
-    <string name="pick_icon_from_label">Pick Icon From</string>
+    <string name="recents_clear_all">அனைத்தயுந்துடை</string>
+    <string name="pick_icon_from_label">சின்னத்தை இதிலிருந்துப் பொறுக்கு</string>
     <string name="experimental_features_label">பரீட்சார்த்த அம்சங்கள்</string>
-    <string name="icon_picker_label">Per-App Icon Customization</string>
-    <string name="icon_picker_description">May cause Lawnchair to freeze.</string>
-    <string name="font_picker_label">Font Customization</string>
-    <string name="font_picker_description">Some text remains unchanged.</string>
+    <string name="icon_picker_label">செயலியொன்றின் சின்னத் தனிப்பயனாக்கம்</string>
+    <string name="icon_picker_description">Lawnchairஐ உறையச்செய்யலாம்.</string>
+    <string name="font_picker_label">எழுத்துரு தனிப்பயனாக்கம்</string>
+    <string name="font_picker_description">சில சொற்சரம் மாறாதிருக்கும்.</string>
 </resources>
