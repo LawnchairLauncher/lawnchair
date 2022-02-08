@@ -30,7 +30,7 @@ fun NavGraphBuilder.debugMenuGraph(route: String) {
 @Composable
 fun DebugMenuPreferences() {
     val prefs = preferenceManager()
-    val flags = rememberSaveable { prefs.getDebugFlags() }
+    val flags = remember { prefs.getDebugFlags() }
     val context = LocalContext.current
     PreferenceLayout(label = "Debug Menu") {
         PreferenceGroup {
