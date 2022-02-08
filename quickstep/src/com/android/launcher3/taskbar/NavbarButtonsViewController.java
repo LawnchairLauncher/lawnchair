@@ -176,7 +176,7 @@ public class NavbarButtonsViewController implements TaskbarControllers.LoggableT
 
         boolean isThreeButtonNav = mContext.isThreeButtonNav();
         mIsImeRenderingNavButtons =
-                InputMethodService.canImeRenderGesturalNavButtons() && mContext.isGestureNav();
+                InputMethodService.canImeRenderGesturalNavButtons() && mContext.imeDrawsImeNavBar();
         if (!mIsImeRenderingNavButtons) {
             // IME switcher
             View imeSwitcherButton = addButton(R.drawable.ic_ime_switcher, BUTTON_IME_SWITCH,
