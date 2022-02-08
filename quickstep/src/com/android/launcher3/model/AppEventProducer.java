@@ -138,11 +138,11 @@ public class AppEventProducer implements StatsLogConsumer {
             if (mLastDragItem == null) {
                 return;
             }
-            if (isTrackedForHotseatPrediction(atomInfo)) {
-                sendEvent(atomInfo, ACTION_PIN, CONTAINER_HOTSEAT_PREDICTION);
-            }
             if (isTrackedForHotseatPrediction(mLastDragItem)) {
                 sendEvent(mLastDragItem, ACTION_UNPIN, CONTAINER_HOTSEAT_PREDICTION);
+            }
+            if (isTrackedForHotseatPrediction(atomInfo)) {
+                sendEvent(atomInfo, ACTION_PIN, CONTAINER_HOTSEAT_PREDICTION);
             }
             if (isTrackedForWidgetPrediction(atomInfo)) {
                 sendEvent(atomInfo, ACTION_PIN, CONTAINER_WIDGETS_PREDICTION);
