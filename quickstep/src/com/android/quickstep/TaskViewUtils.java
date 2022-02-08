@@ -88,6 +88,7 @@ import com.android.systemui.shared.system.SyncRtSurfaceTransactionApplierCompat.
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 /**
  * Utility class for helpful methods related to {@link TaskView} objects and their tasks.
@@ -554,8 +555,16 @@ public final class TaskViewUtils {
                 nonAppTargets, depthController, pa);
         if (launcherClosing) {
             // TODO(b/182592057): differentiate between "restore split" vs "launch fullscreen app"
-            TaskViewUtils.setSplitAuxiliarySurfacesShown(nonAppTargets,
-                    true /*shown*/, true /*animate*/, pa);
+            TaskViewUtils.createSplitAuxiliarySurfacesAnimator(nonAppTargets, true /*shown*/,
+                    (dividerAnimator) -> {
+                        // If split apps are launching, we want to delay showing the divider bar
+                        // until the very end once the apps are mostly in place. This is because we
+                        // aren't moving the divider leash in the relative position with the
+                        // launching apps.
+                        dividerAnimator.setStartDelay(pa.getDuration()
+                                - SPLIT_DIVIDER_ANIM_DURATION);
+                        pa.add(dividerAnimator);
+                    });
         }
 
         Animator childStateAnimation = null;
@@ -610,16 +619,17 @@ public final class TaskViewUtils {
         anim.addListener(windowAnimEndListener);
     }
 
-    public static void setSplitAuxiliarySurfacesShown(RemoteAnimationTargetCompat[] nonApps,
-            boolean shown, boolean animate) {
-        setSplitAuxiliarySurfacesShown(nonApps, shown, animate,null);
-    }
-
-    private static void setSplitAuxiliarySurfacesShown(
-            @NonNull RemoteAnimationTargetCompat[] nonApps, boolean shown, boolean animate,
-            @Nullable PendingAnimation splitLaunchAnimation) {
+    /**
+     * Creates an animation to show/hide the auxiliary surfaces (aka. divider bar), only calling
+     * {@param animatorHandler} if there are valid surfaces to animate.
+     *
+     * @return the animator animating the surfaces
+     */
+    public static ValueAnimator createSplitAuxiliarySurfacesAnimator(
+            RemoteAnimationTargetCompat[] nonApps, boolean shown,
+            Consumer<ValueAnimator> animatorHandler) {
         if (nonApps == null || nonApps.length == 0) {
-            return;
+            return null;
         }
 
         SurfaceControl.Transaction t = new SurfaceControl.Transaction();
@@ -634,20 +644,7 @@ public final class TaskViewUtils {
             }
         }
         if (!hasSurfaceToAnimate) {
-            return;
-        }
-
-        if (!animate) {
-            for (SurfaceControl leash : auxiliarySurfaces) {
-                t.setAlpha(leash, shown ? 1 : 0);
-                if (shown) {
-                    t.show(leash);
-                } else {
-                    t.hide(leash);
-                }
-            }
-            t.apply();
-            return;
+            return null;
         }
 
         ValueAnimator dockFadeAnimator = ValueAnimator.ofFloat(0f, 1f);
@@ -684,15 +681,7 @@ public final class TaskViewUtils {
             }
         });
         dockFadeAnimator.setDuration(SPLIT_DIVIDER_ANIM_DURATION);
-        if (splitLaunchAnimation != null) {
-            // If split apps are launching, we want to delay showing the divider bar until the very
-            // end once the apps are mostly in place. This is because we aren't moving the divider
-            // leash in the relative position with the launching apps.
-            dockFadeAnimator.setStartDelay(
-                    splitLaunchAnimation.getDuration() - SPLIT_DIVIDER_ANIM_DURATION);
-            splitLaunchAnimation.add(dockFadeAnimator);
-        } else {
-            dockFadeAnimator.start();
-        }
+        animatorHandler.accept(dockFadeAnimator);
+        return dockFadeAnimator;
     }
 }
