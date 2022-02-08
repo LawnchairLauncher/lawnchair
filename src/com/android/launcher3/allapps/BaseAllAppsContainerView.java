@@ -110,6 +110,8 @@ public abstract class BaseAllAppsContainerView<T extends Context & ActivityConte
     private AllAppsPagedView mViewPager;
 
     protected FloatingHeaderView mHeader;
+    private View mBottomSheetBackground;
+    private View mBottomSheetHandleArea;
 
     protected boolean mUsingTabs;
     private boolean mHasWorkApps;
@@ -146,8 +148,6 @@ public abstract class BaseAllAppsContainerView<T extends Context & ActivityConte
         mNavBarScrimPaint.setColor(Themes.getAttrColor(context, R.attr.allAppsNavBarScrimColor));
 
         mAllAppsStore.addUpdateListener(this::onAppsUpdated);
-
-        updateBackground(mActivityContext.getDeviceProfile());
     }
 
     /** Creates the adapter provider for the main section. */
@@ -222,10 +222,8 @@ public abstract class BaseAllAppsContainerView<T extends Context & ActivityConte
         updateBackground(dp);
     }
 
-    private void updateBackground(DeviceProfile deviceProfile) {
-        setBackground(deviceProfile.isTablet
-                ? getContext().getDrawable(R.drawable.bg_all_apps_bottom_sheet)
-                : null);
+    protected void updateBackground(DeviceProfile deviceProfile) {
+        mBottomSheetBackground.setVisibility(deviceProfile.isTablet ? View.VISIBLE : View.GONE);
     }
 
     private void onAppsUpdated() {
@@ -253,7 +251,9 @@ public abstract class BaseAllAppsContainerView<T extends Context & ActivityConte
         if (!mActivityContext.getDragLayer().isEventOverView(this, ev)) {
             return true;
         }
-        // TODO(b/216203409) Support dragging down from bottom sheet divider, if present.
+        if (mActivityContext.getDragLayer().isEventOverView(mBottomSheetHandleArea, ev)) {
+            return true;
+        }
         AllAppsRecyclerView rv = getActiveRecyclerView();
         if (rv == null) {
             return true;
@@ -375,6 +375,11 @@ public abstract class BaseAllAppsContainerView<T extends Context & ActivityConte
 
         mHeader = findViewById(R.id.all_apps_header);
         rebindAdapters(true /* force */);
+
+        mBottomSheetBackground = findViewById(R.id.bottom_sheet_background);
+        updateBackground(mActivityContext.getDeviceProfile());
+
+        mBottomSheetHandleArea = findViewById(R.id.bottom_sheet_handle_area);
     }
 
     @Override
@@ -392,7 +397,6 @@ public abstract class BaseAllAppsContainerView<T extends Context & ActivityConte
         }
 
         MarginLayoutParams mlp = (MarginLayoutParams) getLayoutParams();
-        mlp.topMargin = grid.isTablet ? insets.top : 0;
         int leftRightMargin = grid.allAppsLeftRightMargin;
         mlp.leftMargin = insets.left + leftRightMargin;
         mlp.rightMargin = insets.right + leftRightMargin;
@@ -401,7 +405,7 @@ public abstract class BaseAllAppsContainerView<T extends Context & ActivityConte
         if (grid.isVerticalBarLayout()) {
             setPadding(grid.workspacePadding.left, 0, grid.workspacePadding.right, 0);
         } else {
-            setPadding(0, 0, 0, 0);
+            setPadding(0, grid.isTablet ? insets.top : 0, 0, 0);
         }
 
         InsettableFrameLayout.dispatchInsets(this, insets);
