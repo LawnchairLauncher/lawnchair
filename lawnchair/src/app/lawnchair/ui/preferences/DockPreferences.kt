@@ -61,6 +61,7 @@ fun DockPreferences() {
                         valueRange = 0F..1F,
                         showAsPercentage = true
                     )
+                    QsbProviderPreference()
                 }
             }
         }
