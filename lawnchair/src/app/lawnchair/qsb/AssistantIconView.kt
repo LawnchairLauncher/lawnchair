@@ -15,7 +15,7 @@ class AssistantIconView(context: Context, attrs: AttributeSet?) : ImageButton(co
     init {
         val intent = Intent(Intent.ACTION_VOICE_COMMAND)
             .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
-            .setPackage(QsbLayout.getSearchPackageName(context))
+            .setPackage(QsbLayout.getSearchProvider(context).packageName)
         if (context.packageManager.resolveActivity(intent, 0) == null) {
             isVisible = false
         }

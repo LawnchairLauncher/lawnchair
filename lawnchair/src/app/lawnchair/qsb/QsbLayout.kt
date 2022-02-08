@@ -50,12 +50,12 @@ class QsbLayout(context: Context, attrs: AttributeSet?) : FrameLayout(context, a
         inner = ViewCompat.requireViewById(this, R.id.inner)
         preferenceManager = PreferenceManager.getInstance(context)
 
-        val searchPackage = getSearchPackageName(context)
+        val searchPackage = getSearchProvider(context, preferenceManager)
         setUpMainSearch(searchPackage)
         setUpBackground()
         clipIconRipples()
 
-        val isGoogle = searchPackage == GOOGLE_PACKAGE
+        val isGoogle = searchPackage == QsbSearchProvider.Google
         preferenceManager.themedHotseatQsb.subscribeValues(this) {
             setThemed(it, isGoogle)
         }
@@ -120,8 +120,8 @@ class QsbLayout(context: Context, attrs: AttributeSet?) : FrameLayout(context, a
         }
     }
 
-    private fun setUpMainSearch(searchPackage: String) {
-        subscribeSearchWidget(searchPackage)
+    private fun setUpMainSearch(searchProvider: QsbSearchProvider) {
+        subscribeSearchWidget(searchProvider.packageName)
         setOnClickListener {
             val pendingIntent = searchPendingIntent
             if (pendingIntent != null) {
@@ -135,9 +135,7 @@ class QsbLayout(context: Context, attrs: AttributeSet?) : FrameLayout(context, a
                 return@setOnClickListener
             }
 
-            val intent = Intent("android.search.action.GLOBAL_SEARCH")
-                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
-                .setPackage(searchPackage)
+            val intent = searchProvider.createIntent()
             if (context.packageManager.resolveActivity(intent, 0) != null) {
                 context.startActivity(intent)
             } else {
@@ -184,27 +182,29 @@ class QsbLayout(context: Context, attrs: AttributeSet?) : FrameLayout(context, a
     }
 
     companion object {
-        private const val GOOGLE_PACKAGE = "com.google.android.googlequicksearchbox"
         private const val LENS_PACKAGE = "com.google.ar.lens"
         private const val LENS_ACTIVITY = "com.google.vr.apps.ornament.app.lens.LensLauncherActivity"
 
-        fun getSearchPackageName(context: Context): String {
-            if (resolveSearchIntent(context, GOOGLE_PACKAGE)) {
-                return GOOGLE_PACKAGE
+        fun getSearchProvider(
+            context: Context,
+            preferenceManager: PreferenceManager? = null
+        ): QsbSearchProvider {
+            val provider = if (preferenceManager != null) {
+                QsbSearchProvider.resolve(preferenceManager.hotseatQsbProvider.get())
+            } else QsbSearchProvider.Google
+
+            return if (resolveSearchIntent(context, provider)) provider else {
+                val searchPackage = QsbContainerView.getSearchWidgetPackageName(context)
+                return if (!searchPackage.isNullOrEmpty()) {
+                    QsbSearchProvider.resolve(searchPackage)
+                } else {
+                    QsbSearchProvider.None
+                }
             }
-            val searchPackage = QsbContainerView.getSearchWidgetPackageName(context)
-            if (!searchPackage.isNullOrEmpty()) {
-                return searchPackage
-            }
-            return ""
         }
 
-        private fun resolveSearchIntent(context: Context, searchPackage: String): Boolean {
-            val intent = Intent("android.search.action.GLOBAL_SEARCH")
-                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
-                .setPackage(searchPackage)
-            return context.packageManager.resolveActivity(intent, 0) != null
-        }
+        fun resolveSearchIntent(context: Context, provider: QsbSearchProvider): Boolean =
+            context.packageManager.resolveActivity(provider.createIntent(), 0) != null
 
         private fun getCornerRadius(
             context: Context,
