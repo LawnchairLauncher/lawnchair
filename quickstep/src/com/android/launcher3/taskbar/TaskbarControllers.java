@@ -20,6 +20,7 @@ import android.content.pm.ActivityInfo.Config;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.android.launcher3.taskbar.allapps.TaskbarAllAppsController;
 import com.android.systemui.shared.rotation.RotationButtonController;
 
 import java.io.PrintWriter;
@@ -48,7 +49,7 @@ public class TaskbarControllers {
     public final TaskbarAutohideSuspendController taskbarAutohideSuspendController;
     public final TaskbarPopupController taskbarPopupController;
     public final TaskbarForceVisibleImmersiveController taskbarForceVisibleImmersiveController;
-    public final TaskbarAllAppsViewController taskbarAllAppsViewController;
+    public final TaskbarAllAppsController taskbarAllAppsController;
 
     @Nullable private LoggableTaskbarController[] mControllersToLog = null;
 
@@ -74,7 +75,7 @@ public class TaskbarControllers {
             TaskbarAutohideSuspendController taskbarAutoHideSuspendController,
             TaskbarPopupController taskbarPopupController,
             TaskbarForceVisibleImmersiveController taskbarForceVisibleImmersiveController,
-            TaskbarAllAppsViewController taskbarAllAppsViewController) {
+            TaskbarAllAppsController taskbarAllAppsController) {
         this.taskbarActivityContext = taskbarActivityContext;
         this.taskbarDragController = taskbarDragController;
         this.navButtonController = navButtonController;
@@ -91,7 +92,7 @@ public class TaskbarControllers {
         this.taskbarAutohideSuspendController = taskbarAutoHideSuspendController;
         this.taskbarPopupController = taskbarPopupController;
         this.taskbarForceVisibleImmersiveController = taskbarForceVisibleImmersiveController;
-        this.taskbarAllAppsViewController = taskbarAllAppsViewController;
+        this.taskbarAllAppsController = taskbarAllAppsController;
     }
 
     /**
@@ -115,7 +116,7 @@ public class TaskbarControllers {
         taskbarEduController.init(this);
         taskbarPopupController.init(this);
         taskbarForceVisibleImmersiveController.init(this);
-        taskbarAllAppsViewController.init(this);
+        taskbarAllAppsController.init(this);
 
         mControllersToLog = new LoggableTaskbarController[] {
                 taskbarDragController, navButtonController, navbarButtonsViewController,

@@ -42,10 +42,8 @@ import android.os.Process;
 import android.os.SystemProperties;
 import android.provider.Settings;
 import android.util.Log;
-import android.view.ContextThemeWrapper;
 import android.view.Display;
 import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.RoundedCorner;
 import android.view.View;
 import android.view.WindowManager;
@@ -58,11 +56,8 @@ import androidx.annotation.Nullable;
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.DeviceProfile;
-import com.android.launcher3.DeviceProfile.DeviceProfileListenable;
-import com.android.launcher3.DeviceProfile.OnDeviceProfileChangeListener;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.R;
-import com.android.launcher3.Utilities;
 import com.android.launcher3.dot.DotInfo;
 import com.android.launcher3.folder.Folder;
 import com.android.launcher3.folder.FolderIcon;
@@ -72,11 +67,10 @@ import com.android.launcher3.model.data.FolderInfo;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.popup.PopupDataProvider;
+import com.android.launcher3.taskbar.allapps.TaskbarAllAppsController;
 import com.android.launcher3.touch.ItemClickHandler;
-import com.android.launcher3.util.OnboardingPrefs;
 import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.util.SettingsCache;
-import com.android.launcher3.util.Themes;
 import com.android.launcher3.util.TraceHelper;
 import com.android.launcher3.util.ViewCache;
 import com.android.launcher3.views.ActivityContext;
@@ -89,16 +83,13 @@ import com.android.systemui.shared.system.WindowManagerWrapper;
 import com.android.systemui.unfold.util.ScopedUnfoldTransitionProgressProvider;
 
 import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * The {@link ActivityContext} with which we inflate Taskbar-related Views. This allows UI elements
  * that are used by both Launcher and Taskbar (such as Folder) to reference a generic
  * ActivityContext and BaseDragLayer instead of the Launcher activity and its DragLayer.
  */
-public class TaskbarActivityContext extends ContextThemeWrapper implements ActivityContext,
-        DeviceProfileListenable {
+public class TaskbarActivityContext extends BaseTaskbarContext {
 
     private static final boolean ENABLE_THREE_BUTTON_TASKBAR =
             SystemProperties.getBoolean("persist.debug.taskbar_three_button", false);
@@ -106,13 +97,8 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
 
     private static final String WINDOW_TITLE = "Taskbar";
 
-    private final LayoutInflater mLayoutInflater;
     private final TaskbarDragLayer mDragLayer;
-    private final TaskbarAllAppsContainerView mAppsView;
     private final TaskbarControllers mControllers;
-    private final List<OnDeviceProfileChangeListener> mDPChangeListeners = new ArrayList<>();
-
-    private DeviceProfile mDeviceProfile;
 
     private final WindowManager mWindowManager;
     private final @Nullable RoundedCorner mLeftCorner, mRightCorner;
@@ -135,14 +121,12 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
     private boolean mBindingItems = false;
 
     private final TaskbarShortcutMenuAccessibilityDelegate mAccessibilityDelegate;
-    private final OnboardingPrefs<TaskbarActivityContext> mOnboardingPrefs;
 
     public TaskbarActivityContext(Context windowContext, DeviceProfile dp,
             TaskbarNavButtonController buttonController, ScopedUnfoldTransitionProgressProvider
             unfoldTransitionProgressProvider) {
-        super(windowContext, Themes.getActivityThemeRes(windowContext));
+        super(windowContext);
         mDeviceProfile = dp;
-        mOnboardingPrefs = new OnboardingPrefs<>(this, Utilities.getPrefs(this));
 
         mNavMode = SysUINavigationMode.getMode(windowContext);
         mImeDrawsImeNavBar = SysUINavigationMode.getImeDrawsImeNavBar(windowContext);
@@ -158,8 +142,6 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
 
         mTaskbarHeightForIme = resources.getDimensionPixelSize(R.dimen.taskbar_ime_size);
 
-        mLayoutInflater = LayoutInflater.from(this).cloneInContext(this);
-
         // Inflate views.
         mDragLayer = (TaskbarDragLayer) mLayoutInflater.inflate(
                 R.layout.taskbar, null, false);
@@ -167,11 +149,6 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
         TaskbarScrimView taskbarScrimView = mDragLayer.findViewById(R.id.taskbar_scrim);
         FrameLayout navButtonsView = mDragLayer.findViewById(R.id.navbuttons_view);
         StashedHandleView stashedHandleView = mDragLayer.findViewById(R.id.stashed_handle);
-
-        TaskbarAllAppsSlideInView appsSlideInView =
-                (TaskbarAllAppsSlideInView) mLayoutInflater.inflate(R.layout.taskbar_all_apps,
-                        mDragLayer, false);
-        mAppsView = appsSlideInView.getAppsView();
 
         Display display = windowContext.getDisplay();
         Context c = display.getDisplayId() == Display.DEFAULT_DISPLAY
@@ -210,7 +187,7 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
                 new TaskbarAutohideSuspendController(this),
                 new TaskbarPopupController(this),
                 new TaskbarForceVisibleImmersiveController(this),
-                new TaskbarAllAppsViewController(this, appsSlideInView));
+                new TaskbarAllAppsController(this));
     }
 
     public void init(TaskbarSharedState sharedState) {
@@ -236,7 +213,7 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
         mWindowManager.addView(mDragLayer, mWindowLayoutParams);
     }
 
-    /** Updates the Device profile instance to the latest representation of the screen. */
+    @Override
     public void updateDeviceProfile(DeviceProfile dp) {
         mDeviceProfile = dp;
         updateIconSize(getResources());
@@ -297,28 +274,8 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
     }
 
     @Override
-    public LayoutInflater getLayoutInflater() {
-        return mLayoutInflater;
-    }
-
-    @Override
     public TaskbarDragLayer getDragLayer() {
         return mDragLayer;
-    }
-
-    @Override
-    public TaskbarAllAppsContainerView getAppsView() {
-        return mAppsView;
-    }
-
-    @Override
-    public DeviceProfile getDeviceProfile() {
-        return mDeviceProfile;
-    }
-
-    @Override
-    public List<OnDeviceProfileChangeListener> getOnDeviceProfileChangeListeners() {
-        return mDPChangeListeners;
     }
 
     @Override
@@ -412,17 +369,22 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
     }
 
     @Override
-    public OnboardingPrefs<TaskbarActivityContext> getOnboardingPrefs() {
-        return mOnboardingPrefs;
-    }
-
-    @Override
     public boolean isBindingItems() {
         return mBindingItems;
     }
 
     public void setBindingItems(boolean bindingItems) {
         mBindingItems = bindingItems;
+    }
+
+    @Override
+    public void onDragStart() {
+        setTaskbarWindowFullscreen(true);
+    }
+
+    @Override
+    public void onPopupVisibilityChanged(boolean isVisible) {
+        setTaskbarWindowFocusable(isVisible);
     }
 
     /**

@@ -52,7 +52,7 @@ import java.util.stream.Stream;
  */
 public class TaskbarPopupController implements TaskbarControllers.LoggableTaskbarController {
 
-    private static final SystemShortcut.Factory<TaskbarActivityContext>
+    private static final SystemShortcut.Factory<BaseTaskbarContext>
             APP_INFO = SystemShortcut.AppInfo::new;
 
     private final TaskbarActivityContext mContext;
@@ -121,8 +121,8 @@ public class TaskbarPopupController implements TaskbarControllers.LoggableTaskba
      * Shows the notifications and deep shortcuts associated with a Taskbar {@param icon}.
      * @return the container if shown or null.
      */
-    public PopupContainerWithArrow<TaskbarActivityContext> showForIcon(BubbleTextView icon) {
-        TaskbarActivityContext context = ActivityContext.lookupContext(icon.getContext());
+    public PopupContainerWithArrow<BaseTaskbarContext> showForIcon(BubbleTextView icon) {
+        BaseTaskbarContext context = ActivityContext.lookupContext(icon.getContext());
         if (PopupContainerWithArrow.getOpen(context) != null) {
             // There is already an items container open, so don't open this one.
             icon.clearFocus();
@@ -133,11 +133,11 @@ public class TaskbarPopupController implements TaskbarControllers.LoggableTaskba
             return null;
         }
 
-        final PopupContainerWithArrow<TaskbarActivityContext> container =
-                (PopupContainerWithArrow) context.getLayoutInflater().inflate(
+        final PopupContainerWithArrow<BaseTaskbarContext> container =
+                (PopupContainerWithArrow<BaseTaskbarContext>) context.getLayoutInflater().inflate(
                         R.layout.popup_container, context.getDragLayer(), false);
         container.addOnAttachStateChangeListener(
-                new PopupLiveUpdateHandler<TaskbarActivityContext>(mContext, container) {
+                new PopupLiveUpdateHandler<BaseTaskbarContext>(context, container) {
                     @Override
                     protected void showPopupContainerForIcon(BubbleTextView originalIcon) {
                         showForIcon(originalIcon);
@@ -157,10 +157,9 @@ public class TaskbarPopupController implements TaskbarControllers.LoggableTaskba
         container.requestFocus();
 
         // Make focusable to receive back events
-        mControllers.taskbarActivityContext.setTaskbarWindowFocusable(true);
+        context.onPopupVisibilityChanged(true);
         container.setOnCloseCallback(() -> {
-            mControllers.taskbarActivityContext.getDragLayer().post(
-                    () -> mControllers.taskbarActivityContext.setTaskbarWindowFocusable(false));
+            context.getDragLayer().post(() -> context.onPopupVisibilityChanged(false));
             container.setOnCloseCallback(null);
         });
 
@@ -207,7 +206,8 @@ public class TaskbarPopupController implements TaskbarControllers.LoggableTaskba
             iconShift.x = mIconLastTouchPos.x - sv.getIconCenter().x;
             iconShift.y = mIconLastTouchPos.y - mContext.getDeviceProfile().iconSizePx;
 
-            mControllers.taskbarDragController.startDragOnLongClick(sv, iconShift);
+            ((TaskbarDragController) ActivityContext.lookupContext(
+                    v.getContext()).getDragController()).startDragOnLongClick(sv, iconShift);
 
             return false;
         }

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.android.launcher3.taskbar;
+package com.android.launcher3.taskbar.allapps;
 
 import static com.android.launcher3.anim.Interpolators.AGGRESSIVE_EASE;
 
@@ -27,14 +27,17 @@ import com.android.launcher3.Insettable;
 import com.android.launcher3.R;
 import com.android.launcher3.views.AbstractSlideInView;
 
+import java.util.Optional;
+
 /** Wrapper for taskbar all apps with slide-in behavior. */
 public class TaskbarAllAppsSlideInView extends
-        AbstractSlideInView<TaskbarActivityContext> implements Insettable {
+        AbstractSlideInView<TaskbarAllAppsContext> implements Insettable {
 
-    private static final int DEFAULT_OPEN_DURATION = 500;
-    private static final int DEFAULT_CLOSE_DURATION = 200;
+    static final int DEFAULT_OPEN_DURATION = 500;
+    static final int DEFAULT_CLOSE_DURATION = 200;
 
     private TaskbarAllAppsContainerView mAppsView;
+    private OnCloseListener mOnCloseBeginListener;
 
     public TaskbarAllAppsSlideInView(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
@@ -46,7 +49,7 @@ public class TaskbarAllAppsSlideInView extends
     }
 
     /** Opens the all apps view. */
-    public void show() {
+    void show() {
         if (mIsOpen || mOpenCloseAnimator.isRunning()) {
             return;
         }
@@ -60,12 +63,18 @@ public class TaskbarAllAppsSlideInView extends
     }
 
     /** The apps container inside this view. */
-    public TaskbarAllAppsContainerView getAppsView() {
+    TaskbarAllAppsContainerView getAppsView() {
         return mAppsView;
+    }
+
+    /** Callback invoked when the view is beginning to close (e.g. close animation is started). */
+    void setOnCloseBeginListener(OnCloseListener onCloseBeginListener) {
+        mOnCloseBeginListener = onCloseBeginListener;
     }
 
     @Override
     protected void handleClose(boolean animate) {
+        Optional.ofNullable(mOnCloseBeginListener).ifPresent(OnCloseListener::onSlideInViewClosed);
         handleClose(animate, DEFAULT_CLOSE_DURATION);
     }
 
@@ -79,6 +88,12 @@ public class TaskbarAllAppsSlideInView extends
         super.onFinishInflate();
         mAppsView = findViewById(R.id.apps_view);
         mContent = mAppsView;
+    }
+
+    @Override
+    protected void onLayout(boolean changed, int l, int t, int r, int b) {
+        super.onLayout(changed, l, t, r, b);
+        setTranslationShift(mTranslationShift);
     }
 
     @Override
