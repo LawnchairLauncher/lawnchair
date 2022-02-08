@@ -306,7 +306,7 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
         }
 
         public View.OnClickListener getAllAppsButtonClickListener() {
-            return v -> mControllers.taskbarAllAppsViewController.show();
+            return v -> mControllers.taskbarAllAppsController.show();
         }
 
         public View.OnLongClickListener getIconOnLongClickListener() {
