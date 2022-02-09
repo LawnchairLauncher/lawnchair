@@ -897,6 +897,7 @@ public class TaskView extends FrameLayout implements Reusable {
         LayoutParams iconParams = (LayoutParams) mIconView.getLayoutParams();
         orientationHandler.setIconAndSnapshotParams(mIconView, taskIconMargin, taskIconHeight,
                 snapshotParams, isRtl);
+        updateDwbPlacement();
         mSnapshotView.setLayoutParams(snapshotParams);
         iconParams.width = iconParams.height = taskIconHeight;
         mIconView.setLayoutParams(iconParams);
@@ -907,6 +908,10 @@ public class TaskView extends FrameLayout implements Reusable {
         snapshotParams.topMargin = deviceProfile.overviewTaskThumbnailTopMarginPx;
         mSnapshotView.setLayoutParams(snapshotParams);
         mSnapshotView.getTaskOverlay().updateOrientationState(orientationState);
+    }
+
+    private void updateDwbPlacement() {
+        mDigitalWellBeingToast.initialize(mTask);
     }
 
     /**
