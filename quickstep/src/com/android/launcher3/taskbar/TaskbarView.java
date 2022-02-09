@@ -32,6 +32,7 @@ import androidx.annotation.Nullable;
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.Insettable;
 import com.android.launcher3.R;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.model.data.FolderInfo;
@@ -214,7 +215,8 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
         }
 
         if (mAllAppsButton != null) {
-            addView(mAllAppsButton);
+            int index = Utilities.isRtl(getResources()) ? 0 : getChildCount();
+            addView(mAllAppsButton, index);
         }
     }
 
