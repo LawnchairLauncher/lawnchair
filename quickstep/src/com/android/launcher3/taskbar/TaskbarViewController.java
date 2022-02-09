@@ -164,6 +164,10 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
         return mTaskbarView.getIconViews();
     }
 
+    public View getAllAppsButtonView() {
+        return mTaskbarView.getAllAppsButtonView();
+    }
+
     public AnimatedFloat getTaskbarIconScaleForStash() {
         return mTaskbarIconScaleForStash;
     }
@@ -270,8 +274,8 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
         mTaskbarNavButtonTranslationY.updateValue(-deviceProfile.getTaskbarOffsetY());
     }
 
-    public void mapOverItems(LauncherBindableItemsContainer.ItemOperator op) {
-        mTaskbarView.mapOverItems(op);
+    public View mapOverItems(LauncherBindableItemsContainer.ItemOperator op) {
+        return mTaskbarView.mapOverItems(op);
     }
 
     /**
