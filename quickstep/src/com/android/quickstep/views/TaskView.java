@@ -462,11 +462,15 @@ public class TaskView extends FrameLayout implements Reusable {
         return getItemInfo(mTask);
     }
 
-    protected WorkspaceItemInfo getItemInfo(Task task) {
-        ComponentKey componentKey = TaskUtils.getLaunchComponentKeyForTask(task.key);
+    protected WorkspaceItemInfo getItemInfo(@Nullable Task task) {
         WorkspaceItemInfo stubInfo = new WorkspaceItemInfo();
         stubInfo.itemType = LauncherSettings.Favorites.ITEM_TYPE_TASK;
         stubInfo.container = LauncherSettings.Favorites.CONTAINER_TASKSWITCHER;
+        if (task == null) {
+            return stubInfo;
+        }
+
+        ComponentKey componentKey = TaskUtils.getLaunchComponentKeyForTask(task.key);
         stubInfo.user = componentKey.user;
         stubInfo.intent = new Intent().setComponent(componentKey.componentName);
         stubInfo.title = task.title;
