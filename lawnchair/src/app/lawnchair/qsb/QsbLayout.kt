@@ -50,24 +50,25 @@ class QsbLayout(context: Context, attrs: AttributeSet?) : FrameLayout(context, a
         inner = ViewCompat.requireViewById(this, R.id.inner)
         preferenceManager = PreferenceManager.getInstance(context)
 
-        val searchPackage = getSearchProvider(context, preferenceManager)
-        setUpMainSearch(searchPackage)
+        val searchProvider = getSearchProvider(context, preferenceManager)
+        setUpMainSearch(searchProvider)
         setUpBackground()
         clipIconRipples()
 
-        val isGoogle = searchPackage == QsbSearchProvider.Google
-        preferenceManager.themedHotseatQsb.subscribeValues(this) {
-            setThemed(it, isGoogle)
-        }
-        if (isGoogle) {
-            setUpLensIcon()
-        } else {
-            micIcon.setIcon(isGoogle = false, themed = false)
-            with(gIcon) {
-                setImageResource(R.drawable.ic_qsb_search)
-                setColorFilter(Themes.getColorAccent(context))
+        val isGoogle = searchProvider == QsbSearchProvider.Google
+        preferenceManager.themedHotseatQsb.subscribeValues(this) { themed ->
+            setUpBackground(themed)
+
+            val iconRes = if (themed) searchProvider.themedIcon else searchProvider.icon
+            gIcon.setThemedIconResource(iconRes, themed, searchProvider.themingMethod)
+
+            micIcon.setIcon(isGoogle, themed)
+            if (isGoogle) {
+                lensIcon.setThemedIconResource(R.drawable.ic_lens_color, themed)
             }
         }
+
+        if (isGoogle) setUpLensIcon()
     }
 
     private fun subscribeSearchWidget(searchPackage: String) {
@@ -108,15 +109,6 @@ class QsbLayout(context: Context, attrs: AttributeSet?) : FrameLayout(context, a
 
         children.forEach { child ->
             measureChildWithMargins(child, widthMeasureSpec, widthReduction, heightMeasureSpec, 0)
-        }
-    }
-
-    private fun setThemed(themed: Boolean, themeQsbIcons: Boolean) {
-        setUpBackground(themed)
-        if (themeQsbIcons) {
-            gIcon.setThemedIconResource(R.drawable.ic_super_g_color, themed)
-            micIcon.setIcon(isGoogle = true, themed)
-            lensIcon.setThemedIconResource(R.drawable.ic_lens_color, themed)
         }
     }
 

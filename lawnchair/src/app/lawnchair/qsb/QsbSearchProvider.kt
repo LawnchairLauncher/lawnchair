@@ -1,9 +1,14 @@
 package app.lawnchair.qsb
 
 import android.content.Intent
+import androidx.annotation.DrawableRes
+import com.android.launcher3.R
 
 sealed class QsbSearchProvider(
     val name: String,
+    @DrawableRes val icon: Int = R.drawable.ic_qsb_search,
+    @DrawableRes val themedIcon: Int = icon,
+    val themingMethod: ThemingMethod = ThemingMethod.TINT,
     open val packageName: String,
     open val action: String? = null
 ) {
@@ -20,27 +25,34 @@ sealed class QsbSearchProvider(
     val index
         get() = values().indexOf(this)
 
-    object None: QsbSearchProvider("", "", "")
+    object None : QsbSearchProvider(name = "", packageName = "")
 
     data class UnknownProvider(
         override val packageName: String,
         override val action: String? = null
-    ) : QsbSearchProvider("", packageName, action)
+    ) : QsbSearchProvider(name = "", packageName = packageName, action = action)
 
     object Google : QsbSearchProvider(
-        "Google",
+        name = "Google",
+        icon = R.drawable.ic_super_g_color,
+        themingMethod = ThemingMethod.THEME_BY_NAME,
         packageName = "com.google.android.googlequicksearchbox",
         action = "android.search.action.GLOBAL_SEARCH",
     )
 
     object GoogleGo : QsbSearchProvider(
-        "Google Go",
+        name = "Google Go",
+        icon = R.drawable.ic_super_g_color,
+        themingMethod = ThemingMethod.THEME_BY_NAME,
         packageName = "com.google.android.apps.searchlite",
         action = "android.search.action.GLOBAL_SEARCH",
     )
 
     object Duck : QsbSearchProvider(
         name = "DuckDuckGo",
+        icon = R.drawable.ic_duckduckgo,
+        themedIcon = R.drawable.ic_duckduckgo_tinted,
+        themingMethod = ThemingMethod.TINT,
         packageName = "com.duckduckgo.mobile.android",
         action = "com.duckduckgo.mobile.android.NEW_SEARCH"
     )
