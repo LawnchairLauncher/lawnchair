@@ -23,9 +23,9 @@ import static com.android.quickstep.GestureState.STATE_RECENTS_ANIMATION_STARTED
 import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.ACTIVITY_TYPE_HOME;
 
 import android.app.ActivityManager;
+import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 import android.os.SystemProperties;
 import android.util.Log;
 import android.view.RemoteAnimationTarget;
@@ -196,9 +196,10 @@ public class TaskAnimationManager implements RecentsAnimationCallbacks.RecentsAn
             RemoteTransitionCompat transition = new RemoteTransitionCompat(mCallbacks,
                     mController != null ? mController.getController() : null,
                     mCtx.getIApplicationThread());
-            Bundle options = ActivityOptionsCompat.makeRemoteTransition(transition)
-                    .setTransientLaunch().toBundle();
-            UI_HELPER_EXECUTOR.execute(() -> mCtx.startActivity(intent, options));
+            final ActivityOptions options = ActivityOptionsCompat.makeRemoteTransition(transition)
+                    .setTransientLaunch();
+            options.setSourceInfo(ActivityOptions.SourceInfo.TYPE_RECENTS_ANIMATION, eventTime);
+            UI_HELPER_EXECUTOR.execute(() -> mCtx.startActivity(intent, options.toBundle()));
         } else {
             UI_HELPER_EXECUTOR.execute(() -> ActivityManagerWrapper.getInstance()
                     .startRecentsActivity(intent, eventTime, mCallbacks, null, null));
