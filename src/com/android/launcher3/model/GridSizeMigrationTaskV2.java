@@ -38,6 +38,7 @@ import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.graphics.LauncherPreviewRenderer;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.pm.InstallSessionHelper;
@@ -225,13 +226,21 @@ public class GridSizeMigrationTaskV2 {
             screens.add(screenId);
         }
 
+        boolean preservePages = false;
+        if (screens.isEmpty() && FeatureFlags.ENABLE_NEW_MIGRATION_LOGIC.get()) {
+            DeviceGridState srcDeviceState = new DeviceGridState(mContext);
+            DeviceGridState destDeviceState = new DeviceGridState(idp);
+            preservePages = destDeviceState.compareTo(srcDeviceState) >= 0
+                    && destDeviceState.getColumns() - srcDeviceState.getColumns() <= 2;
+        }
+
         // Then we place the items on the screens
         for (int screenId : screens) {
             if (DEBUG) {
                 Log.d(TAG, "Migrating " + screenId);
             }
             GridPlacementSolution workspaceSolution = new GridPlacementSolution(mDb, mSrcReader,
-                    mDestReader, mContext, screenId, mTrgX, mTrgY, mWorkspaceDiff);
+                    mDestReader, mContext, screenId, mTrgX, mTrgY, mWorkspaceDiff, false);
             workspaceSolution.find();
             if (mWorkspaceDiff.isEmpty()) {
                 break;
@@ -243,10 +252,12 @@ public class GridSizeMigrationTaskV2 {
         int screenId = mDestReader.mLastScreenId + 1;
         while (!mWorkspaceDiff.isEmpty()) {
             GridPlacementSolution workspaceSolution = new GridPlacementSolution(mDb, mSrcReader,
-                    mDestReader, mContext, screenId, mTrgX, mTrgY, mWorkspaceDiff);
+                    mDestReader, mContext, screenId, mTrgX, mTrgY, mWorkspaceDiff,
+                    preservePages);
             workspaceSolution.find();
             screenId++;
         }
+
         return true;
     }
 
@@ -363,13 +374,15 @@ public class GridSizeMigrationTaskV2 {
         private final int mScreenId;
         private final int mTrgX;
         private final int mTrgY;
-        private final List<DbEntry> mItemsToPlace;
+        private final List<DbEntry> mSortedItemsToPlace;
+        private final boolean mMatchingScreenIdOnly;
 
         private int mNextStartX;
         private int mNextStartY;
 
         GridPlacementSolution(SQLiteDatabase db, DbReader srcReader, DbReader destReader,
-                Context context, int screenId, int trgX, int trgY, List<DbEntry> itemsToPlace) {
+                Context context, int screenId, int trgX, int trgY, List<DbEntry> sortedItemsToPlace,
+                boolean matchingScreenIdOnly) {
             mDb = db;
             mSrcReader = srcReader;
             mDestReader = destReader;
@@ -386,13 +399,16 @@ public class GridSizeMigrationTaskV2 {
                     mOccupied.markCells(entry, true);
                 }
             }
-            mItemsToPlace = itemsToPlace;
+            mSortedItemsToPlace = sortedItemsToPlace;
+            mMatchingScreenIdOnly = matchingScreenIdOnly;
         }
 
         public void find() {
-            Iterator<DbEntry> iterator = mItemsToPlace.iterator();
+            Iterator<DbEntry> iterator = mSortedItemsToPlace.iterator();
             while (iterator.hasNext()) {
                 final DbEntry entry = iterator.next();
+                if (mMatchingScreenIdOnly && entry.screenId < mScreenId) continue;
+                if (mMatchingScreenIdOnly && entry.screenId > mScreenId) break;
                 if (entry.minSpanX > mTrgX || entry.minSpanY > mTrgY) {
                     iterator.remove();
                     continue;
@@ -494,7 +510,7 @@ public class GridSizeMigrationTaskV2 {
         private final SQLiteDatabase mDb;
         private final String mTableName;
         private final Context mContext;
-        private final HashSet<String> mValidPackages;
+        private final Set<String> mValidPackages;
         private int mLastScreenId = -1;
 
         private final ArrayList<DbEntry> mHotseatEntries = new ArrayList<>();
@@ -503,7 +519,7 @@ public class GridSizeMigrationTaskV2 {
                 new ArrayMap<>();
 
         DbReader(SQLiteDatabase db, String tableName, Context context,
-                HashSet<String> validPackages) {
+                Set<String> validPackages) {
             mDb = db;
             mTableName = tableName;
             mContext = context;

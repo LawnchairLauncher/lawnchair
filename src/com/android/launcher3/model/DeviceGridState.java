@@ -38,7 +38,7 @@ import java.util.Objects;
 /**
  * Utility class representing persisted grid properties.
  */
-public class DeviceGridState {
+public class DeviceGridState implements Comparable<DeviceGridState> {
 
     public static final String KEY_WORKSPACE_SIZE = "migration_src_workspace_size";
     public static final String KEY_HOTSEAT_COUNT = "migration_src_hotseat_count";
@@ -84,16 +84,16 @@ public class DeviceGridState {
      */
     public LauncherEvent getWorkspaceSizeEvent() {
         if (!TextUtils.isEmpty(mGridSizeString)) {
-            switch (mGridSizeString.charAt(0)) {
-                case '6':
+            switch (getColumns()) {
+                case 6:
                     return LAUNCHER_GRID_SIZE_6;
-                case '5':
+                case 5:
                     return LAUNCHER_GRID_SIZE_5;
-                case '4':
+                case 4:
                     return LAUNCHER_GRID_SIZE_4;
-                case '3':
+                case 3:
                     return LAUNCHER_GRID_SIZE_3;
-                case '2':
+                case 2:
                     return LAUNCHER_GRID_SIZE_2;
             }
         }
@@ -119,4 +119,21 @@ public class DeviceGridState {
         return mNumHotseat == other.mNumHotseat
                 && Objects.equals(mGridSizeString, other.mGridSizeString);
     }
+
+    public Integer getColumns() {
+        return Integer.parseInt(String.valueOf(mGridSizeString.charAt(0)));
+    }
+
+    public Integer getRows() {
+        return Integer.parseInt(String.valueOf(mGridSizeString.charAt(2)));
+    }
+
+    @Override
+    public int compareTo(DeviceGridState other) {
+        Integer size = getColumns() * getRows();
+        Integer otherSize = other.getColumns() * other.getRows();
+
+        return size.compareTo(otherSize);
+    }
+
 }
