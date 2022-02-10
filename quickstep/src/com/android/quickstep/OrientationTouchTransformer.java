@@ -23,6 +23,7 @@ import static android.view.MotionEvent.ACTION_POINTER_DOWN;
 import static android.view.MotionEvent.ACTION_UP;
 
 import static com.android.launcher3.states.RotationHelper.deltaRotation;
+
 import android.content.res.Resources;
 import android.graphics.Point;
 import android.graphics.RectF;
@@ -359,7 +360,7 @@ class OrientationTouchTransformer {
                 if (mLastRectTouched == null) {
                     return;
                 }
-                if (TaskAnimationManager.ENABLE_SHELL_TRANSITIONS) {
+                if (TaskAnimationManager.SHELL_TRANSITIONS_ROTATION) {
                     if (event.getSurfaceRotation() != mActiveTouchRotation) {
                         // With Shell transitions, we should rotated to the orientation at the start
                         // of the gesture not the current display rotation which will happen early
@@ -378,7 +379,7 @@ class OrientationTouchTransformer {
                 if (mLastRectTouched == null) {
                     return;
                 }
-                if (TaskAnimationManager.ENABLE_SHELL_TRANSITIONS) {
+                if (TaskAnimationManager.SHELL_TRANSITIONS_ROTATION) {
                     if (event.getSurfaceRotation() != mActiveTouchRotation) {
                         // With Shell transitions, we should rotated to the orientation at the start
                         // of the gesture not the current display rotation which will happen early
