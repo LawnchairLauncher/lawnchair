@@ -250,11 +250,12 @@ public class InvariantDeviceProfile {
      * Reinitialize the current grid after a restore, where some grids might now be disabled.
      */
     public void reinitializeAfterRestore(Context context) {
+        String currentGridName = getCurrentGridName(context);
         String currentDbFile = dbFile;
-        String gridName = getCurrentGridName(context);
-        String newGridName = initGrid(context, gridName);
-        if (!newGridName.equals(gridName)) {
-            Log.d(TAG, "Restored grid is disabled : " + gridName
+        String newGridName = initGrid(context, currentGridName);
+        String newDbFile = dbFile;
+        if (!newDbFile.equals(currentDbFile)) {
+            Log.d(TAG, "Restored grid is disabled : " + currentGridName
                     + ", migrating to: " + newGridName
                     + ", removing all other grid db files");
             for (String gridDbFile : LauncherFiles.GRID_DB_FILES) {
@@ -265,7 +266,7 @@ public class InvariantDeviceProfile {
                     Log.d(TAG, "Removed old grid db file: " + gridDbFile);
                 }
             }
-            setCurrentGrid(context, gridName);
+            setCurrentGrid(context, newGridName);
         }
     }
 

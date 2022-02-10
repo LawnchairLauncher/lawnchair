@@ -79,11 +79,15 @@ public class RestoreDbTask {
             helper.createEmptyDB(helper.getWritableDatabase());
         }
 
+        // Obtain InvariantDeviceProfile first before setting pending to false, so
+        // InvariantDeviceProfile won't switch to new grid when initializing.
+        InvariantDeviceProfile idp = InvariantDeviceProfile.INSTANCE.get(context);
+
         // Set is pending to false irrespective of the result, so that it doesn't get
         // executed again.
         Utilities.getPrefs(context).edit().remove(RESTORED_DEVICE_TYPE).commit();
 
-        InvariantDeviceProfile.INSTANCE.get(context).reinitializeAfterRestore(context);
+        idp.reinitializeAfterRestore(context);
     }
 
     private static boolean performRestore(Context context, DatabaseHelper helper) {
