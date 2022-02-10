@@ -32,6 +32,7 @@ import androidx.annotation.Nullable;
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.Insettable;
 import com.android.launcher3.R;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.model.data.FolderInfo;
@@ -214,7 +215,8 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
         }
 
         if (mAllAppsButton != null) {
-            addView(mAllAppsButton);
+            int index = Utilities.isRtl(getResources()) ? 0 : getChildCount();
+            addView(mAllAppsButton, index);
         }
     }
 
@@ -316,6 +318,13 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
         return icons;
     }
 
+    /**
+     * Returns the all apps button in the taskbar.
+     */
+    public View getAllAppsButtonView() {
+        return mAllAppsButton;
+    }
+
     // FolderIconParent implemented methods.
 
     @Override
@@ -357,13 +366,18 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
         return getVisibility() == VISIBLE;
     }
 
-    protected void mapOverItems(LauncherBindableItemsContainer.ItemOperator op) {
+    /**
+     * Maps {@code op} over all the child views, returning the view that {@code op} evaluates
+     * {@code true} for, or {@code null} if none satisfy {@code op}.
+     */
+    protected View mapOverItems(LauncherBindableItemsContainer.ItemOperator op) {
         // map over all the shortcuts on the taskbar
         for (int i = 0; i < getChildCount(); i++) {
             View item = getChildAt(i);
             if (op.evaluate((ItemInfo) item.getTag(), item)) {
-                return;
+                return item;
             }
         }
+        return null;
     }
 }

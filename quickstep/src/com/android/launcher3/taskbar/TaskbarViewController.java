@@ -164,6 +164,10 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
         return mTaskbarView.getIconViews();
     }
 
+    public View getAllAppsButtonView() {
+        return mTaskbarView.getAllAppsButtonView();
+    }
+
     public AnimatedFloat getTaskbarIconScaleForStash() {
         return mTaskbarIconScaleForStash;
     }
@@ -235,7 +239,9 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
             if (FeatureFlags.ENABLE_ALL_APPS_IN_TASKBAR.get() && i == count - 1) {
                 // Note that there is no All Apps button in the hotseat, this position is only used
                 // as its convenient for animation purposes.
-                positionInHotseat = mActivity.getDeviceProfile().inv.numShownHotseatIcons;
+                positionInHotseat = Utilities.isRtl(child.getResources())
+                        ? -1
+                        : mActivity.getDeviceProfile().inv.numShownHotseatIcons;
 
                 setter.setViewAlpha(child, 0, LINEAR);
             } else if (child.getTag() instanceof ItemInfo) {
@@ -268,8 +274,8 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
         mTaskbarNavButtonTranslationY.updateValue(-deviceProfile.getTaskbarOffsetY());
     }
 
-    public void mapOverItems(LauncherBindableItemsContainer.ItemOperator op) {
-        mTaskbarView.mapOverItems(op);
+    public View mapOverItems(LauncherBindableItemsContainer.ItemOperator op) {
+        return mTaskbarView.mapOverItems(op);
     }
 
     /**
