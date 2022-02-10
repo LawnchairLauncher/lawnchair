@@ -25,10 +25,12 @@ import android.content.pm.PackageInstaller;
 import android.content.pm.PackageInstaller.SessionInfo;
 import android.os.Build;
 import android.os.UserHandle;
+import android.util.Log;
 import android.util.SparseArray;
 
 import androidx.annotation.WorkerThread;
 
+import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.util.PackageUserKey;
 
 import java.lang.ref.WeakReference;
@@ -57,10 +59,19 @@ public class InstallSessionTracker extends PackageInstaller.SessionCallback {
     public void onCreated(int sessionId) {
         InstallSessionHelper helper = mWeakHelper.get();
         Callback callback = mWeakCallback.get();
+        if (TestProtocol.sDebugTracing) {
+            Log.d(TestProtocol.MISSING_PROMISE_ICON, "Session created sessionId=" + sessionId
+                    + ", callback=" + callback
+                    + ", helper=" + helper);
+        }
         if (callback == null || helper == null) {
             return;
         }
         SessionInfo sessionInfo = pushSessionDisplayToLauncher(sessionId, helper, callback);
+        if (TestProtocol.sDebugTracing) {
+            Log.d(TestProtocol.MISSING_PROMISE_ICON, "Session created sessionId=" + sessionId
+                    + ", sessionInfo=" + sessionInfo);
+        }
         if (sessionInfo != null) {
             callback.onInstallSessionCreated(PackageInstallInfo.fromInstallingState(sessionInfo));
         }
