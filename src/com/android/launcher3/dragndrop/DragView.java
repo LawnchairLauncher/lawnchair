@@ -98,6 +98,7 @@ public abstract class DragView<T extends Context & ActivityContext> extends Fram
     final ValueAnimator mAnim;
     // Whether mAnim has started. Unlike mAnim.isStarted(), this is true even after mAnim ends.
     private boolean mAnimStarted;
+    private Runnable mOnAnimEndCallback = null;
 
     private int mLastTouchX;
     private int mLastTouchY;
@@ -180,6 +181,14 @@ public abstract class DragView<T extends Context & ActivityContext> extends Fram
             public void onAnimationStart(Animator animation) {
                 mAnimStarted = true;
             }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                super.onAnimationEnd(animation);
+                if (mOnAnimEndCallback != null) {
+                    mOnAnimEndCallback.run();
+                }
+            }
         });
 
         setDragRegion(new Rect(0, 0, width, height));
@@ -197,6 +206,10 @@ public abstract class DragView<T extends Context & ActivityContext> extends Fram
         mBlurSizeOutline = getResources().getDimensionPixelSize(R.dimen.blur_size_medium_outline);
         setElevation(getResources().getDimension(R.dimen.drag_elevation));
         setWillNotDraw(false);
+    }
+
+    public void setOnAnimationEndCallback(Runnable callback) {
+        mOnAnimEndCallback = callback;
     }
 
     /**

@@ -97,8 +97,7 @@ abstract class Launchable {
         return new LaunchedAppState(mLauncher);
     }
 
-    Point startDrag(long downTime, String longPressIndicator,
-            Runnable expectLongClickEvents, boolean runToSpringLoadedState) {
+    Point startDrag(long downTime, Runnable expectLongClickEvents, boolean runToSpringLoadedState) {
         final Point iconCenter = getObject().getVisibleCenter();
         final Point dragStartCenter = new Point(iconCenter.x,
                 iconCenter.y - getStartDragThreshold());
@@ -108,7 +107,6 @@ abstract class Launchable {
                     downTime,
                     iconCenter,
                     dragStartCenter,
-                    longPressIndicator,
                     expectLongClickEvents),
                     SPRING_LOADED_STATE_ORDINAL, "long-pressing and triggering drag start");
         } else {
@@ -116,7 +114,6 @@ abstract class Launchable {
                     downTime,
                     iconCenter,
                     dragStartCenter,
-                    longPressIndicator,
                     expectLongClickEvents);
         }
 
@@ -125,21 +122,43 @@ abstract class Launchable {
     }
 
     /**
+     * Waits for a confirmation that a long press has successfully been triggered.
+     *
+     * This method waits for a view to either appear or disappear to confirm that the long press
+     * has been triggered and fails if no confirmation is received before the default timeout.
+     */
+    protected abstract void waitForLongPressConfirmation();
+
+    /**
      * Drags this Launchable a short distance before starting a full drag.
      *
      * This is necessary for shortcuts, which require being dragged beyond a threshold to close
      * their container and start drag callbacks.
      */
-    private void movePointerForStartDrag(long downTime, Point iconCenter, Point dragStartCenter,
-            String longPressIndicator, Runnable expectLongClickEvents) {
-        mLauncher.sendPointer(downTime, downTime, MotionEvent.ACTION_DOWN,
-                iconCenter, LauncherInstrumentation.GestureScope.INSIDE);
+    private void movePointerForStartDrag(
+            long downTime,
+            Point iconCenter,
+            Point dragStartCenter,
+            Runnable expectLongClickEvents) {
+        mLauncher.sendPointer(
+                downTime,
+                downTime,
+                MotionEvent.ACTION_DOWN,
+                iconCenter,
+                LauncherInstrumentation.GestureScope.INSIDE);
         LauncherInstrumentation.log("movePointerForStartDrag: sent down");
         expectLongClickEvents.run();
-        mLauncher.waitForLauncherObject(longPressIndicator);
+        waitForLongPressConfirmation();
         LauncherInstrumentation.log("movePointerForStartDrag: indicator");
-        mLauncher.movePointer(iconCenter, dragStartCenter, DEFAULT_DRAG_STEPS, false,
-                downTime, downTime, true, LauncherInstrumentation.GestureScope.INSIDE);
+        mLauncher.movePointer(
+                iconCenter,
+                dragStartCenter,
+                DEFAULT_DRAG_STEPS,
+                /* isDecelerating= */ false,
+                downTime,
+                downTime,
+                /* slowDown= */ true,
+                LauncherInstrumentation.GestureScope.INSIDE);
     }
 
     private int getStartDragThreshold() {
@@ -148,6 +167,4 @@ abstract class Launchable {
     }
 
     protected abstract void addExpectedEventsForLongClick();
-
-    protected abstract String getLongPressIndicator();
 }
