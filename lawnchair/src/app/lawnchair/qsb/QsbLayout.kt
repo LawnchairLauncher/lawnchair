@@ -59,7 +59,7 @@ class QsbLayout(context: Context, attrs: AttributeSet?) : FrameLayout(context, a
                 searchProvider == QsbSearchProvider.GoogleGo
 
         val supportsLens = searchProvider == QsbSearchProvider.Google
-        
+
         preferenceManager.themedHotseatQsb.subscribeValues(this) { themed ->
             setUpBackground(themed)
 
@@ -185,7 +185,7 @@ class QsbLayout(context: Context, attrs: AttributeSet?) : FrameLayout(context, a
             context: Context,
             preferenceManager: PreferenceManager
         ): QsbSearchProvider {
-            val provider = QsbSearchProvider.resolve(preferenceManager.hotseatQsbProvider.get())
+            val provider = QsbSearchProvider.fromId(preferenceManager.hotseatQsbProvider.get())
 
             return if (resolveSearchIntent(context, provider)) provider else {
                 val searchPackage = QsbContainerView.getSearchWidgetPackageName(context)

@@ -18,7 +18,7 @@ fun QsbProviderPreference() {
     val entries = remember {
         QsbSearchProvider.values()
             .filter { QsbLayout.resolveSearchIntent(context, it) }
-            .map { ListPreferenceEntry(it.index) { it.name } }
+            .map { ListPreferenceEntry(it.id) { it.name } }
     }
 
     val prefs = preferenceManager()

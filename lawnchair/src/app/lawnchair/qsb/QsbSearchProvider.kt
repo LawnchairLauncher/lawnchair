@@ -5,6 +5,7 @@ import androidx.annotation.DrawableRes
 import com.android.launcher3.R
 
 sealed class QsbSearchProvider(
+    val id: String,
     val name: String,
     @DrawableRes val icon: Int = R.drawable.ic_qsb_search,
     @DrawableRes val themedIcon: Int = icon,
@@ -29,22 +30,15 @@ sealed class QsbSearchProvider(
             .addFlags(INTENT_FLAGS)
             .setPackage(packageName)
 
-    /**
-     * Index should only be used on known providers, otherwise it returns -1
-     *
-     * @see [QsbSearchProvider.values]
-     */
-    val index
-        get() = values().indexOf(this)
-
-    object None : QsbSearchProvider(name = "", packageName = "")
+    object None : QsbSearchProvider(id = "", name = "", packageName = "")
 
     data class UnknownProvider(
         override val packageName: String,
         override val action: String? = null
-    ) : QsbSearchProvider(name = "", packageName = packageName, action = action)
+    ) : QsbSearchProvider(id = "", name = "", packageName = packageName, action = action)
 
     object Google : QsbSearchProvider(
+        id = "google",
         name = "Google",
         icon = R.drawable.ic_super_g_color,
         themingMethod = ThemingMethod.THEME_BY_NAME,
@@ -54,6 +48,7 @@ sealed class QsbSearchProvider(
     )
 
     object GoogleGo : QsbSearchProvider(
+        id = "google_go",
         name = "Google Go",
         icon = R.drawable.ic_super_g_color,
         themingMethod = ThemingMethod.THEME_BY_NAME,
@@ -67,6 +62,7 @@ sealed class QsbSearchProvider(
     }
 
     object Duck : QsbSearchProvider(
+        id = "duckduckgo",
         name = "DuckDuckGo",
         icon = R.drawable.ic_duckduckgo,
         themedIcon = R.drawable.ic_duckduckgo_tinted,
@@ -87,10 +83,10 @@ sealed class QsbSearchProvider(
         )
 
         /**
-         * Resolve the search provider using its index, or use Google as a fallback.
+         * Resolve the search provider using its ID, or use Google as a fallback.
          */
-        fun resolve(value: Int): QsbSearchProvider =
-            values().getOrElse(value) { Google }
+        fun fromId(id: String): QsbSearchProvider =
+            values().firstOrNull { it.id == id } ?: Google
 
         fun resolve(packageName: String): QsbSearchProvider =
             values().firstOrNull { it.packageName == packageName } ?: UnknownProvider(packageName)

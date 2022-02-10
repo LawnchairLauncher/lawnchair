@@ -127,7 +127,7 @@ class PreferenceManager private constructor(private val context: Context) : Base
     val showComponentName = BoolPref("pref_showComponentName", false)
     val themedIcons = BoolPref("themed_icons", false)
     val hotseatQsbCornerRadius = FloatPref("pref_hotseatQsbCornerRadius", 1F, recreate)
-    val hotseatQsbProvider = IntPref("pref_hotseatQsbProvider", QsbSearchProvider.Google.index, recreate)
+    val hotseatQsbProvider = StringPref("pref_hotseatQsbProvider", QsbSearchProvider.Google.id, recreate)
     val themedHotseatQsb = BoolPref("pref_themedHotseatQsb", false)
     val allAppsCellHeightMultiplier = FloatPref("pref_allAppsCellHeightMultiplier", 1F, reloadGrid)
     val darkStatusBar = BoolPref("pref_darkStatusBar", false)
