@@ -412,9 +412,8 @@ public class StatsLogCompatManager extends StatsLogManager {
                     atomInfo.getFolderIcon().getToLabelState().getNumber() /* toState */,
                     atomInfo.getFolderIcon().getLabelInfo() /* edittext */,
                     getCardinality(atomInfo) /* cardinality */,
-                    getFeatures(atomInfo) /* features */
-                    // TODO(b/217753033) : Add SearchAttributes field after necessary approval
-                    // getSearchAttributes(atomInfo) /* searchAttributes */
+                    getFeatures(atomInfo) /* features */,
+                    getSearchAttributes(atomInfo) /* searchAttributes */
             );
         }
     }
