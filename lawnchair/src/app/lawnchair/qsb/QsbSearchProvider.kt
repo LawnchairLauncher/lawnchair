@@ -10,12 +10,24 @@ sealed class QsbSearchProvider(
     @DrawableRes val themedIcon: Int = icon,
     val themingMethod: ThemingMethod = ThemingMethod.TINT,
     open val packageName: String,
-    open val action: String? = null
+    open val action: String? = null,
+    open val supportVoiceIntent: Boolean = false
 ) {
 
-    fun createIntent() = Intent(action)
-        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+    fun createSearchIntent() = Intent(action)
+        .addFlags(INTENT_FLAGS)
         .setPackage(packageName)
+
+    fun createVoiceIntent(): Intent = if (supportVoiceIntent) {
+        handleCreateVoiceIntent()
+    } else {
+        error("supportVoiceIntent is false but createVoiceIntent() was called for $name")
+    }
+
+    open fun handleCreateVoiceIntent(): Intent =
+        Intent(Intent.ACTION_VOICE_COMMAND)
+            .addFlags(INTENT_FLAGS)
+            .setPackage(packageName)
 
     /**
      * Index should only be used on known providers, otherwise it returns -1
@@ -38,6 +50,7 @@ sealed class QsbSearchProvider(
         themingMethod = ThemingMethod.THEME_BY_NAME,
         packageName = "com.google.android.googlequicksearchbox",
         action = "android.search.action.GLOBAL_SEARCH",
+        supportVoiceIntent = true
     )
 
     object GoogleGo : QsbSearchProvider(
@@ -46,7 +59,12 @@ sealed class QsbSearchProvider(
         themingMethod = ThemingMethod.THEME_BY_NAME,
         packageName = "com.google.android.apps.searchlite",
         action = "android.search.action.GLOBAL_SEARCH",
-    )
+        supportVoiceIntent = true
+    ) {
+
+        override fun handleCreateVoiceIntent(): Intent =
+            createSearchIntent().putExtra("openMic", true)
+    }
 
     object Duck : QsbSearchProvider(
         name = "DuckDuckGo",
@@ -58,6 +76,9 @@ sealed class QsbSearchProvider(
     )
 
     companion object {
+
+        internal const val INTENT_FLAGS =
+            Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
 
         fun values() = listOf(
             Google,

@@ -55,7 +55,11 @@ class QsbLayout(context: Context, attrs: AttributeSet?) : FrameLayout(context, a
         setUpBackground()
         clipIconRipples()
 
-        val isGoogle = searchProvider == QsbSearchProvider.Google
+        val isGoogle = searchProvider == QsbSearchProvider.Google ||
+                searchProvider == QsbSearchProvider.GoogleGo
+
+        val supportsLens = searchProvider == QsbSearchProvider.Google
+        
         preferenceManager.themedHotseatQsb.subscribeValues(this) { themed ->
             setUpBackground(themed)
 
@@ -63,12 +67,12 @@ class QsbLayout(context: Context, attrs: AttributeSet?) : FrameLayout(context, a
             gIcon.setThemedIconResource(iconRes, themed, searchProvider.themingMethod)
 
             micIcon.setIcon(isGoogle, themed)
-            if (isGoogle) {
+            if (supportsLens) {
                 lensIcon.setThemedIconResource(R.drawable.ic_lens_color, themed)
             }
         }
 
-        if (isGoogle) setUpLensIcon()
+        if (supportsLens) setUpLensIcon()
     }
 
     private fun subscribeSearchWidget(searchPackage: String) {
@@ -127,7 +131,7 @@ class QsbLayout(context: Context, attrs: AttributeSet?) : FrameLayout(context, a
                 return@setOnClickListener
             }
 
-            val intent = searchProvider.createIntent()
+            val intent = searchProvider.createSearchIntent()
             if (context.packageManager.resolveActivity(intent, 0) != null) {
                 context.startActivity(intent)
             } else {
@@ -179,11 +183,9 @@ class QsbLayout(context: Context, attrs: AttributeSet?) : FrameLayout(context, a
 
         fun getSearchProvider(
             context: Context,
-            preferenceManager: PreferenceManager? = null
+            preferenceManager: PreferenceManager
         ): QsbSearchProvider {
-            val provider = if (preferenceManager != null) {
-                QsbSearchProvider.resolve(preferenceManager.hotseatQsbProvider.get())
-            } else QsbSearchProvider.Google
+            val provider = QsbSearchProvider.resolve(preferenceManager.hotseatQsbProvider.get())
 
             return if (resolveSearchIntent(context, provider)) provider else {
                 val searchPackage = QsbContainerView.getSearchWidgetPackageName(context)
@@ -196,7 +198,7 @@ class QsbLayout(context: Context, attrs: AttributeSet?) : FrameLayout(context, a
         }
 
         fun resolveSearchIntent(context: Context, provider: QsbSearchProvider): Boolean =
-            context.packageManager.resolveActivity(provider.createIntent(), 0) != null
+            context.packageManager.resolveActivity(provider.createSearchIntent(), 0) != null
 
         private fun getCornerRadius(
             context: Context,

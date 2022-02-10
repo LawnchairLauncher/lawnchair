@@ -2,10 +2,10 @@ package app.lawnchair.qsb
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.Intent
 import android.util.AttributeSet
 import android.widget.ImageButton
 import androidx.core.view.isVisible
+import app.lawnchair.preferences.PreferenceManager
 import com.android.launcher3.R
 import com.android.launcher3.util.Themes
 
@@ -13,10 +13,10 @@ import com.android.launcher3.util.Themes
 class AssistantIconView(context: Context, attrs: AttributeSet?) : ImageButton(context, attrs) {
 
     init {
-        val intent = Intent(Intent.ACTION_VOICE_COMMAND)
-            .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
-            .setPackage(QsbLayout.getSearchProvider(context).packageName)
-        if (context.packageManager.resolveActivity(intent, 0) == null) {
+        val provider = QsbLayout.getSearchProvider(context, PreferenceManager.getInstance(context))
+
+        val intent = if (provider.supportVoiceIntent) provider.createVoiceIntent() else null
+        if (intent == null || context.packageManager.resolveActivity(intent, 0) == null) {
             isVisible = false
         }
 
