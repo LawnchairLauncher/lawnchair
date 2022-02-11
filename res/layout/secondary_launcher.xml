@@ -42,7 +42,7 @@
         android:onClick="onAppsButtonClicked" />
 
     <view
-        class="com.android.launcher3.allapps.ActivityAllAppsContainerView"
+        class="com.android.launcher3.allapps.SecondaryLauncherAllAppsContainerView"
         android:id="@+id/apps_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -54,6 +54,10 @@
         android:background="@drawable/round_rect_primary"
         android:elevation="2dp"
         android:visibility="invisible" >
+
+        <include
+            layout="@layout/all_apps_bottom_sheet_background"
+            android:visibility="gone" />
 
         <include
             layout="@layout/all_apps_rv_layout"
