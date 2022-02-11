@@ -701,7 +701,7 @@ public class TouchInteractionService extends Service
 
             // If Bubbles is expanded, use the overlay input consumer, which will close Bubbles
             // instead of going all the way home when a swipe up is detected.
-            if (mDeviceState.isBubblesExpanded() || mDeviceState.isGlobalActionsShowing()) {
+            if (mDeviceState.isBubblesExpanded() || mDeviceState.isSystemUiDialogShowing()) {
                 base = new SysUiOverlayInputConsumer(
                         getBaseContext(), mDeviceState, mInputMonitorCompat);
             }
