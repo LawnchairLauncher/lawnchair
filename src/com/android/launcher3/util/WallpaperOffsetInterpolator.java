@@ -63,31 +63,37 @@ public class WallpaperOffsetInterpolator extends BroadcastReceiver {
      *
      * TODO: do different behavior if it's  a live wallpaper?
      */
-    private void wallpaperOffsetForScroll(int scroll, int numScrollingPages, final int[] out) {
+    private void wallpaperOffsetForScroll(int scroll, int numScrollableScreens, final int[] out) {
         out[1] = 1;
 
         // To match the default wallpaper behavior in the system, we default to either the left
         // or right edge on initialization
-        if (mLockedToDefaultPage || numScrollingPages <= 1) {
+        if (mLockedToDefaultPage || numScrollableScreens <= 1) {
             out[0] =  mIsRtl ? 1 : 0;
             return;
         }
 
         // Distribute the wallpaper parallax over a minimum of MIN_PARALLAX_PAGE_SPAN workspace
         // screens, not including the custom screen, and empty screens (if > MIN_PARALLAX_PAGE_SPAN)
-        int numPagesForWallpaperParallax = mWallpaperIsLiveWallpaper ? numScrollingPages :
-                        Math.max(MIN_PARALLAX_PAGE_SPAN, numScrollingPages);
+        int numScreensForWallpaperParallax = mWallpaperIsLiveWallpaper ? numScrollableScreens :
+                        Math.max(MIN_PARALLAX_PAGE_SPAN, numScrollableScreens);
 
         // Offset by the custom screen
-        int leftPageIndex;
-        int rightPageIndex;
-        if (mIsRtl) {
-            rightPageIndex = 0;
-            leftPageIndex = rightPageIndex + numScrollingPages - 1;
-        } else {
-            leftPageIndex = 0;
-            rightPageIndex = leftPageIndex + numScrollingPages - 1;
-        }
+
+        // Don't confuse screens & pages in this function. In a phone UI, we often use screens &
+        // pages interchangeably. However, in a n-panels UI, where n > 1, the screen in this class
+        // means the scrollable screen. Each screen can consist of at most n panels.
+        // Each panel has at most 1 page. Take 5 pages in 2 panels UI as an example, the Workspace
+        // looks as follow:
+        //
+        // S: scrollable screen, P: page, <E>: empty
+        //   S0        S1         S2
+        // _______   _______   ________
+        // |P0|P1|   |P2|P3|   |P4|<E>|
+        // ¯¯¯¯¯¯¯   ¯¯¯¯¯¯¯   ¯¯¯¯¯¯¯¯
+        int endIndex = getNumPagesExcludingEmpty() - 1;
+        final int leftPageIndex = mIsRtl ? endIndex : 0;
+        final int rightPageIndex = mIsRtl ? 0 : endIndex;
 
         // Calculate the scroll range
         int leftPageScrollX = mWorkspace.getScrollForPage(leftPageIndex);
@@ -103,34 +109,56 @@ public class WallpaperOffsetInterpolator extends BroadcastReceiver {
         int adjustedScroll = scroll - leftPageScrollX -
                 mWorkspace.getLayoutTransitionOffsetForPage(0);
         adjustedScroll = Utilities.boundToRange(adjustedScroll, 0, scrollRange);
-        out[1] = (numPagesForWallpaperParallax - 1) * scrollRange;
+        out[1] = (numScreensForWallpaperParallax - 1) * scrollRange;
 
         // The offset is now distributed 0..1 between the left and right pages that we care about,
         // so we just map that between the pages that we are using for parallax
         int rtlOffset = 0;
         if (mIsRtl) {
             // In RTL, the pages are right aligned, so adjust the offset from the end
-            rtlOffset = out[1] - (numScrollingPages - 1) * scrollRange;
+            rtlOffset = out[1] - (numScrollableScreens - 1) * scrollRange;
         }
-        out[0] = rtlOffset + adjustedScroll * (numScrollingPages - 1);
+        out[0] = rtlOffset + adjustedScroll * (numScrollableScreens - 1);
     }
 
     public float wallpaperOffsetForScroll(int scroll) {
-        wallpaperOffsetForScroll(scroll, getNumScreensExcludingEmpty(), sTempInt);
+        wallpaperOffsetForScroll(scroll, getNumScrollableScreensExcludingEmpty(), sTempInt);
         return ((float) sTempInt[0]) / sTempInt[1];
     }
 
-    private int getNumScreensExcludingEmpty() {
-        int numScrollingPages = mWorkspace.getChildCount();
-        if (numScrollingPages >= MIN_PARALLAX_PAGE_SPAN && mWorkspace.hasExtraEmptyScreen()) {
-            return numScrollingPages - 1;
+    /**
+     * Returns the number of screens that can be scrolled.
+     *
+     * <p>In an usual phone UI, the number of scrollable screens is equal to the number of
+     * CellLayouts because each screen has exactly 1 CellLayout.
+     *
+     * <p>In a n-panels UI, a screen shows n panels. Each panel has at most 1 CellLayout. Take
+     * 2-panels UI as an example: let's say there are 5 CellLayouts in the Workspace. the number of
+     * scrollable screens will be 3 = ⌈5 / 2⌉.
+     */
+    private int getNumScrollableScreensExcludingEmpty() {
+        float numOfPages = getNumPagesExcludingEmpty();
+        return (int) Math.ceil(numOfPages / mWorkspace.getPanelCount());
+    }
+
+    /**
+     * Returns the number of non-empty pages in the Workspace.
+     *
+     * <p>If a user starts dragging on the rightmost (or leftmost in RTL), an empty CellLayout is
+     * added to the Workspace. This empty CellLayout add as a hover-over target for adding a new
+     * page. To avoid janky motion effect, we ignore this empty CellLayout.
+     */
+    private int getNumPagesExcludingEmpty() {
+        int numOfPages = mWorkspace.getChildCount();
+        if (numOfPages >= MIN_PARALLAX_PAGE_SPAN && mWorkspace.hasExtraEmptyScreens()) {
+            return numOfPages - mWorkspace.getPanelCount();
         } else {
-            return numScrollingPages;
+            return numOfPages;
         }
     }
 
     public void syncWithScroll() {
-        int numScreens = getNumScreensExcludingEmpty();
+        int numScreens = getNumScrollableScreensExcludingEmpty();
         wallpaperOffsetForScroll(mWorkspace.getScrollX(), numScreens, sTempInt);
         Message msg = Message.obtain(mHandler, MSG_UPDATE_OFFSET, sTempInt[0], sTempInt[1],
                 mWindowToken);

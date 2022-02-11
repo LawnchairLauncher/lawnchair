@@ -72,12 +72,7 @@ public final class FeatureFlags {
             "PROMISE_APPS_NEW_INSTALLS", true,
             "Adds a promise icon to the home screen for new install sessions.");
 
-    public static final BooleanFlag QUICKSTEP_SPRINGS = getDebugFlag(
-            "QUICKSTEP_SPRINGS", true, "Enable springs for quickstep animations");
-
-    public static final BooleanFlag UNSTABLE_SPRINGS = getDebugFlag(
-            "UNSTABLE_SPRINGS", false, "Enable unstable springs for quickstep animations");
-
+    // TODO: b/206508141: Long pressing on some icons on home screen cause launcher to crash.
     public static final BooleanFlag ENABLE_LOCAL_COLOR_POPUPS = getDebugFlag(
             "ENABLE_LOCAL_COLOR_POPUPS", false, "Enable local color extraction for popups.");
 
@@ -94,13 +89,11 @@ public final class FeatureFlags {
             "ENABLE_QUICKSTEP_WIDGET_APP_START", true,
             "Enable Quickstep animation when launching activities from an app widget");
 
-    // Keep as DeviceFlag to allow remote disable in emergency.
-    public static final BooleanFlag ENABLE_SUGGESTED_ACTIONS_OVERVIEW = new DeviceFlag(
-            "ENABLE_SUGGESTED_ACTIONS_OVERVIEW", false, "Show chip hints on the overview screen");
-
-
     public static final BooleanFlag ENABLE_DEVICE_SEARCH = new DeviceFlag(
             "ENABLE_DEVICE_SEARCH", true, "Allows on device search in all apps");
+
+    public static final BooleanFlag ENABLE_TWOLINE_ALLAPPS = getDebugFlag(
+            "ENABLE_TWOLINE_ALLAPPS", false, "Enables two line label inside all apps.");
 
     public static final BooleanFlag ENABLE_DEVICE_SEARCH_PERFORMANCE_LOGGING = new DeviceFlag(
             "ENABLE_DEVICE_SEARCH_PERFORMANCE_LOGGING", true,
@@ -124,16 +117,6 @@ public final class FeatureFlags {
     public static final BooleanFlag ENABLE_PREDICTION_DISMISS = getDebugFlag(
             "ENABLE_PREDICTION_DISMISS", true, "Allow option to dimiss apps from predicted list");
 
-    public static final BooleanFlag ENABLE_QUICK_CAPTURE_GESTURE = getDebugFlag(
-            "ENABLE_QUICK_CAPTURE_GESTURE", true, "Swipe from right to left to quick capture");
-
-    public static final BooleanFlag ENABLE_QUICK_CAPTURE_WINDOW = getDebugFlag(
-            "ENABLE_QUICK_CAPTURE_WINDOW", false, "Use window to host quick capture");
-
-    public static final BooleanFlag FORCE_LOCAL_OVERSCROLL_PLUGIN = getDebugFlag(
-            "FORCE_LOCAL_OVERSCROLL_PLUGIN", false,
-            "Use a launcher-provided OverscrollPlugin if available");
-
     public static final BooleanFlag ASSISTANT_GIVES_LAUNCHER_FOCUS = getDebugFlag(
             "ASSISTANT_GIVES_LAUNCHER_FOCUS", false,
             "Allow Launcher to handle nav bar gestures while Assistant is running over it");
@@ -144,45 +127,33 @@ public final class FeatureFlags {
     public static final BooleanFlag ENABLE_DEEP_SHORTCUT_ICON_CACHE = getDebugFlag(
             "ENABLE_DEEP_SHORTCUT_ICON_CACHE", true, "R/W deep shortcut in IconCache");
 
-    public static final BooleanFlag MULTI_DB_GRID_MIRATION_ALGO = getDebugFlag(
-            "MULTI_DB_GRID_MIRATION_ALGO", true, "Use the multi-db grid migration algorithm");
-
     public static final BooleanFlag ENABLE_THEMED_ICONS = getDebugFlag(
             "ENABLE_THEMED_ICONS", true, "Enable themed icons on workspace");
+
+    public static final BooleanFlag ENABLE_BULK_WORKSPACE_ICON_LOADING = getDebugFlag(
+            "ENABLE_BULK_WORKSPACE_ICON_LOADING",
+            false,
+            "Enable loading workspace icons in bulk.");
+
+    public static final BooleanFlag ENABLE_BULK_ALL_APPS_ICON_LOADING = getDebugFlag(
+            "ENABLE_BULK_ALL_APPS_ICON_LOADING",
+            false,
+            "Enable loading all apps icons in bulk.");
 
     // Keep as DeviceFlag for remote disable in emergency.
     public static final BooleanFlag ENABLE_OVERVIEW_SELECTIONS = new DeviceFlag(
             "ENABLE_OVERVIEW_SELECTIONS", true, "Show Select Mode button in Overview Actions");
 
     public static final BooleanFlag ENABLE_WIDGETS_PICKER_AIAI_SEARCH = new DeviceFlag(
-            "ENABLE_WIDGETS_PICKER_AIAI_SEARCH", false, "Enable AiAi search in the widgets picker");
-
-    public static final BooleanFlag ENABLE_OVERVIEW_SHARE = getDebugFlag(
-            "ENABLE_OVERVIEW_SHARE", false, "Show Share button in Overview Actions");
+            "ENABLE_WIDGETS_PICKER_AIAI_SEARCH", true, "Enable AiAi search in the widgets picker");
 
     public static final BooleanFlag ENABLE_OVERVIEW_SHARING_TO_PEOPLE = getDebugFlag(
             "ENABLE_OVERVIEW_SHARING_TO_PEOPLE", true,
             "Show indicators for content on Overview to share with top people. ");
 
-    public static final BooleanFlag ENABLE_OVERVIEW_CONTENT_PUSH = getDebugFlag(
-            "ENABLE_OVERVIEW_CONTENT_PUSH", false, "Show Content Push button in Overview Actions");
-
     public static final BooleanFlag ENABLE_DATABASE_RESTORE = getDebugFlag(
             "ENABLE_DATABASE_RESTORE", false,
             "Enable database restore when new restore session is created");
-
-    public static final BooleanFlag ENABLE_SMARTSPACE_UNIVERSAL = getDebugFlag(
-            "ENABLE_SMARTSPACE_UNIVERSAL", false,
-            "Replace Smartspace with a version rendered by System UI.");
-
-    public static final BooleanFlag ENABLE_SMARTSPACE_ENHANCED = getDebugFlag(
-            "ENABLE_SMARTSPACE_ENHANCED", true,
-            "Replace Smartspace with the enhanced version. "
-                    + "Ignored if ENABLE_SMARTSPACE_UNIVERSAL is enabled.");
-
-    public static final BooleanFlag ENABLE_SMARTSPACE_FEEDBACK = getDebugFlag(
-            "ENABLE_SMARTSPACE_FEEDBACK", false,
-            "Adds a menu option to send feedback for Enhanced Smartspace.");
 
     public static final BooleanFlag ENABLE_SMARTSPACE_DISMISS = getDebugFlag(
             "ENABLE_SMARTSPACE_DISMISS", true,
@@ -220,14 +191,21 @@ public final class FeatureFlags {
             + "predictions to be updated while they are visible to the user.");
 
     public static final BooleanFlag ENABLE_TASKBAR = getDebugFlag(
-            "ENABLE_TASKBAR", false, "Allows a system Taskbar to be shown on larger devices.");
+            "ENABLE_TASKBAR", true, "Allows a system Taskbar to be shown on larger devices.");
+
+    public static final BooleanFlag ENABLE_TASKBAR_EDU = getDebugFlag("ENABLE_TASKBAR_EDU", true,
+            "Enables showing taskbar education the first time an app is opened.");
+
+    public static final BooleanFlag ENABLE_TASKBAR_POPUP_MENU = getDebugFlag(
+            "ENABLE_TASKBAR_POPUP_MENU", false, "Enables long pressing taskbar icons to show the"
+                    + " popup menu.");
 
     public static final BooleanFlag ENABLE_OVERVIEW_GRID = getDebugFlag(
-            "ENABLE_OVERVIEW_GRID", false, "Uses grid overview layout. "
+            "ENABLE_OVERVIEW_GRID", true, "Uses grid overview layout. "
             + "Only applicable on large screen devices.");
 
     public static final BooleanFlag ENABLE_TWO_PANEL_HOME = getDebugFlag(
-            "ENABLE_TWO_PANEL_HOME", false,
+            "ENABLE_TWO_PANEL_HOME", true,
             "Uses two panel on home screen. Only applicable on large screen devices.");
 
     public static final BooleanFlag ENABLE_SCRIM_FOR_APP_LAUNCH = getDebugFlag(
@@ -235,7 +213,7 @@ public final class FeatureFlags {
             "Enables scrim during app launch animation.");
 
     public static final BooleanFlag ENABLE_SPLIT_SELECT = getDebugFlag(
-            "ENABLE_SPLIT_SELECT", false, "Uses new split screen selection overview UI");
+            "ENABLE_SPLIT_SELECT", true, "Uses new split screen selection overview UI");
 
     public static final BooleanFlag ENABLE_ENFORCED_ROUNDED_CORNERS = new DeviceFlag(
             "ENABLE_ENFORCED_ROUNDED_CORNERS", true, "Enforce rounded corners on all App Widgets");
@@ -247,9 +225,6 @@ public final class FeatureFlags {
     public static final BooleanFlag NOTIFY_CRASHES = getDebugFlag("NOTIFY_CRASHES", false,
             "Sends a notification whenever launcher encounters an uncaught exception.");
 
-    public static final BooleanFlag PROTOTYPE_APP_CLOSE = getDebugFlag(
-            "PROTOTYPE_APP_CLOSE", false, "Enables new app close");
-
     public static final BooleanFlag ENABLE_WALLPAPER_SCRIM = getDebugFlag(
             "ENABLE_WALLPAPER_SCRIM", false,
             "Enables scrim over wallpaper for text protection.");
@@ -257,6 +232,18 @@ public final class FeatureFlags {
     public static final BooleanFlag WIDGETS_IN_LAUNCHER_PREVIEW = getDebugFlag(
             "WIDGETS_IN_LAUNCHER_PREVIEW", true,
             "Enables widgets in Launcher preview for the Wallpaper app.");
+
+    public static final BooleanFlag QUICK_WALLPAPER_PICKER = getDebugFlag(
+            "QUICK_WALLPAPER_PICKER", true,
+            "Shows quick wallpaper picker in long-press menu");
+
+    public static final BooleanFlag ENABLE_BACK_SWIPE_HOME_ANIMATION = getDebugFlag(
+            "ENABLE_BACK_SWIPE_HOME_ANIMATION", true,
+            "Enables home animation to icon when user swipes back.");
+
+    public static final BooleanFlag ENABLE_ICON_LABEL_AUTO_SCALING = getDebugFlag(
+            "ENABLE_ICON_LABEL_AUTO_SCALING", true,
+            "Enables scaling/spacing for icon labels to make more characters visible");
 
     public static void initialize(Context context) {
         synchronized (sDebugFlags) {
@@ -295,7 +282,7 @@ public final class FeatureFlags {
     public static class BooleanFlag {
 
         public final String key;
-        public boolean defaultValue;
+        public final boolean defaultValue;
 
         public BooleanFlag(String key, boolean defaultValue) {
             this.key = key;
@@ -314,16 +301,12 @@ public final class FeatureFlags {
         protected StringBuilder appendProps(StringBuilder src) {
             return src.append(key).append(", defaultValue=").append(defaultValue);
         }
-
-        public void addChangeListener(Context context, Runnable r) { }
-
-        public void removeChangeListener(Runnable r) {}
     }
 
     public static class DebugFlag extends BooleanFlag {
 
         public final String description;
-        private boolean mCurrentValue;
+        protected boolean mCurrentValue;
 
         public DebugFlag(String key, boolean defaultValue, String description) {
             super(key, defaultValue);

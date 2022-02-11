@@ -23,7 +23,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import android.content.Intent;
-import android.util.Log;
 
 import androidx.test.filters.LargeTest;
 import androidx.test.runner.AndroidJUnit4;
@@ -32,24 +31,30 @@ import androidx.test.uiautomator.Until;
 
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
+import com.android.launcher3.tapl.AllApps;
 import com.android.launcher3.tapl.Background;
 import com.android.launcher3.tapl.LauncherInstrumentation.NavigationModel;
 import com.android.launcher3.tapl.Overview;
 import com.android.launcher3.tapl.OverviewActions;
 import com.android.launcher3.tapl.OverviewTask;
-import com.android.launcher3.testing.TestProtocol;
+import com.android.launcher3.tapl.TestHelpers;
 import com.android.launcher3.ui.TaplTestsLauncher3;
+import com.android.launcher3.util.rule.ScreenRecordRule.ScreenRecord;
 import com.android.quickstep.NavigationModeSwitchRule.NavigationModeSwitch;
 import com.android.quickstep.views.RecentsView;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 @LargeTest
 @RunWith(AndroidJUnit4.class)
 public class TaplTestsQuickstep extends AbstractQuickStepTest {
+
+    private static final String APP_NAME = "LauncherTestApp";
+
     @Before
     public void setUp() throws Exception {
         super.setUp();
@@ -145,13 +150,10 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
                 launcher -> assertEquals("Dismissing a task didn't remove 1 task from Overview",
                         numTasks - 1, getTaskCount(launcher)));
 
-        // Test UIDevice.pressHome, once we are in AllApps.
-        mDevice.pressHome();
-        waitForState("Launcher internal state didn't switch to Home", () -> LauncherState.NORMAL);
-
         // Test dismissing all tasks.
-        mLauncher.getWorkspace().switchToOverview().dismissAllTasks();
-        waitForState("Launcher internal state didn't switch to Home", () -> LauncherState.NORMAL);
+        mLauncher.pressHome().switchToOverview().dismissAllTasks();
+        assertTrue("Launcher internal state is not Home",
+                isInState(() -> LauncherState.NORMAL));
         executeOnLauncher(
                 launcher -> assertEquals("Still have tasks after dismissing all",
                         0, getTaskCount(launcher)));
@@ -163,6 +165,7 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
     @Test
     @NavigationModeSwitch
     @PortraitLandscape
+    @ScreenRecord // b/195673272
     public void testOverviewActions() throws Exception {
         // Experimenting for b/165029151:
         final Overview overview = mLauncher.pressHome().switchToOverview();
@@ -174,7 +177,6 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
         OverviewActions actionsView =
                 mLauncher.pressHome().switchToOverview().getOverviewActions();
         actionsView.clickAndDismissScreenshot();
-        actionsView.clickAndDismissShare();
     }
 
     private int getCurrentOverviewPage(Launcher launcher) {
@@ -183,6 +185,14 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
 
     private int getTaskCount(Launcher launcher) {
         return launcher.<RecentsView>getOverviewPanel().getTaskViewCount();
+    }
+
+    private int getTopRowTaskCountForTablet(Launcher launcher) {
+        return launcher.<RecentsView>getOverviewPanel().getTopRowTaskCountForTablet();
+    }
+
+    private int getBottomRowTaskCountForTablet(Launcher launcher) {
+        return launcher.<RecentsView>getOverviewPanel().getBottomRowTaskCountForTablet();
     }
 
     @Test
@@ -262,7 +272,9 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
         background.quickSwitchToPreviousAppSwipeLeft();
         assertTrue("The 2nd app we should have quick switched to is not running",
                 isTestActivityRunning(3));
-        getAndAssertBackground();
+
+        background = getAndAssertBackground();
+        background.switchToOverview();
     }
 
     private boolean isTestActivityRunning(int activityNumber) {
@@ -280,5 +292,97 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
         assertTrue("The most recent task is not running after quick switching from home",
                 isTestActivityRunning(2));
         getAndAssertBackground();
+    }
+
+    // TODO(b/204830798): test with all navigation modes(add @NavigationModeSwitch annotation)
+    //  after the bug resolved.
+    @Ignore("b/205027405")
+    @Test
+    @PortraitLandscape
+    @ScreenRecord
+    public void testPressBack() throws Exception {
+        mLauncher.getWorkspace().switchToAllApps();
+        mLauncher.pressBack();
+        mLauncher.getWorkspace();
+        waitForState("Launcher internal state didn't switch to Home", () -> LauncherState.NORMAL);
+
+        AllApps allApps = mLauncher.getWorkspace().switchToAllApps();
+        allApps.freeze();
+        try {
+            allApps.getAppIcon(APP_NAME).dragToWorkspace(false, false);
+        } finally {
+            allApps.unfreeze();
+        }
+        mLauncher.getWorkspace().getWorkspaceAppIcon(APP_NAME).launch(getAppPackageName());
+        mLauncher.pressBack();
+        mLauncher.getWorkspace();
+        waitForState("Launcher internal state didn't switch to Home", () -> LauncherState.NORMAL);
+    }
+
+    @Test
+    @PortraitLandscape
+    public void testOverviewForTablet() throws Exception {
+        // TODO(b/210158657): Re-enable for OOP
+        if (!mLauncher.isTablet() || !TestHelpers.isInLauncherProcess()) {
+            return;
+        }
+        for (int i = 2; i <= 14; i++) {
+            startTestActivity(i);
+        }
+
+        Overview overview = mLauncher.pressHome().switchToOverview();
+        executeOnLauncher(
+                launcher -> assertTrue("Don't have at least 13 tasks",
+                        getTaskCount(launcher) >= 13));
+
+        // Test scroll the first task off screen
+        overview.scrollCurrentTaskOffScreen();
+        assertTrue("Launcher internal state is not Overview",
+                isInState(() -> LauncherState.OVERVIEW));
+        executeOnLauncher(launcher -> assertTrue("Current task in Overview is still 0",
+                getCurrentOverviewPage(launcher) > 0));
+
+        // Test opening the task.
+        overview.getCurrentTask().open();
+        assertTrue("Test activity didn't open from Overview",
+                mDevice.wait(Until.hasObject(By.pkg(getAppPackageName()).text("TestActivity8")),
+                        DEFAULT_UI_TIMEOUT));
+
+        // Scroll the task offscreen as it is now first
+        overview = mLauncher.pressHome().switchToOverview();
+        overview.scrollCurrentTaskOffScreen();
+        assertTrue("Launcher internal state is not Overview",
+                isInState(() -> LauncherState.OVERVIEW));
+        executeOnLauncher(launcher -> assertTrue("Current task in Overview is still 0",
+                getCurrentOverviewPage(launcher) > 0));
+
+        // Test dismissing the later task.
+        final Integer numTasks = getFromLauncher(this::getTaskCount);
+        overview.getCurrentTask().dismiss();
+        executeOnLauncher(
+                launcher -> assertEquals("Dismissing a task didn't remove 1 task from Overview",
+                        numTasks - 1, getTaskCount(launcher)));
+        executeOnLauncher(launcher -> assertTrue("Grid did not rebalance after dismissal",
+                (Math.abs(getTopRowTaskCountForTablet(launcher) - getBottomRowTaskCountForTablet(
+                        launcher)) <= 1)));
+
+        // Test dismissing more tasks.
+        assertTrue("Launcher internal state didn't remain in Overview",
+                isInState(() -> LauncherState.OVERVIEW));
+        overview.getCurrentTask().dismiss();
+        assertTrue("Launcher internal state didn't remain in Overview",
+                isInState(() -> LauncherState.OVERVIEW));
+        overview.getCurrentTask().dismiss();
+        executeOnLauncher(launcher -> assertTrue("Grid did not rebalance after multiple dismissals",
+                (Math.abs(getTopRowTaskCountForTablet(launcher) - getBottomRowTaskCountForTablet(
+                        launcher)) <= 1)));
+
+        // Test dismissing all tasks.
+        mLauncher.pressHome().switchToOverview().dismissAllTasks();
+        assertTrue("Launcher internal state is not Home",
+                isInState(() -> LauncherState.NORMAL));
+        executeOnLauncher(
+                launcher -> assertEquals("Still have tasks after dismissing all",
+                        0, getTaskCount(launcher)));
     }
 }

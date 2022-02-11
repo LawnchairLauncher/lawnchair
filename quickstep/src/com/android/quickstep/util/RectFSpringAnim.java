@@ -15,24 +15,31 @@
  */
 package com.android.quickstep.util;
 
+import static java.lang.annotation.RetentionPolicy.SOURCE;
+
 import android.animation.Animator;
 import android.content.Context;
 import android.graphics.PointF;
+import android.graphics.Rect;
 import android.graphics.RectF;
 
+import androidx.annotation.IntDef;
 import androidx.annotation.Nullable;
 import androidx.dynamicanimation.animation.DynamicAnimation.OnAnimationEndListener;
 import androidx.dynamicanimation.animation.FloatPropertyCompat;
 import androidx.dynamicanimation.animation.SpringAnimation;
 import androidx.dynamicanimation.animation.SpringForce;
 
+import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.FlingSpringAnim;
+import com.android.launcher3.touch.OverScroll;
 import com.android.launcher3.util.DynamicResource;
 import com.android.quickstep.RemoteAnimationTargets.ReleaseCheck;
 import com.android.systemui.plugins.ResourceProvider;
 
+import java.lang.annotation.Retention;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -94,7 +101,6 @@ public class RectFSpringAnim extends ReleaseCheck {
     private float mCurrentCenterX;
     private float mCurrentY;
     // If true, tracking the bottom of the rects, else tracking the top.
-    private boolean mTrackingBottomY;
     private float mCurrentScaleProgress;
     private FlingSpringAnim mRectXAnim;
     private FlingSpringAnim mRectYAnim;
@@ -105,20 +111,68 @@ public class RectFSpringAnim extends ReleaseCheck {
     private boolean mRectScaleAnimEnded;
 
     private float mMinVisChange;
-    private float mYOvershoot;
+    private int mMaxVelocityPxPerS;
 
-    public RectFSpringAnim(RectF startRect, RectF targetRect, Context context) {
+    /**
+     * Indicates which part of the start & target rects we are interpolating between.
+     */
+    public static final int TRACKING_TOP = 0;
+    public static final int TRACKING_CENTER = 1;
+    public static final int TRACKING_BOTTOM = 2;
+
+    @Retention(SOURCE)
+    @IntDef(value = {TRACKING_TOP,
+                    TRACKING_CENTER,
+                    TRACKING_BOTTOM})
+    public @interface Tracking{}
+
+    @Tracking
+    public final int mTracking;
+
+    public RectFSpringAnim(RectF startRect, RectF targetRect, Context context,
+            @Nullable DeviceProfile deviceProfile) {
         mStartRect = startRect;
         mTargetRect = targetRect;
         mCurrentCenterX = mStartRect.centerX();
 
-        mTrackingBottomY = startRect.bottom < targetRect.bottom;
-        mCurrentY = mTrackingBottomY ? mStartRect.bottom : mStartRect.top;
-
         ResourceProvider rp = DynamicResource.provider(context);
         mMinVisChange = rp.getDimension(R.dimen.swipe_up_fling_min_visible_change);
-        mYOvershoot = rp.getDimension(R.dimen.swipe_up_y_overshoot);
+        mMaxVelocityPxPerS = (int) rp.getDimension(R.dimen.swipe_up_max_velocity);
         setCanRelease(true);
+
+        if (deviceProfile == null) {
+            mTracking = startRect.bottom < targetRect.bottom
+                    ? TRACKING_BOTTOM
+                    : TRACKING_TOP;
+        } else {
+            int heightPx = deviceProfile.heightPx;
+            Rect padding = deviceProfile.workspacePadding;
+
+            final float topThreshold = heightPx / 3f;
+            final float bottomThreshold = deviceProfile.heightPx - padding.bottom;
+
+            if (targetRect.bottom > bottomThreshold) {
+                mTracking = TRACKING_BOTTOM;
+            } else if (targetRect.top < topThreshold) {
+                mTracking = TRACKING_TOP;
+            } else {
+                mTracking = TRACKING_CENTER;
+            }
+        }
+
+        mCurrentY = getTrackedYFromRect(mStartRect);
+    }
+
+    private float getTrackedYFromRect(RectF rect) {
+        switch (mTracking) {
+            case TRACKING_TOP:
+                return rect.top;
+            case TRACKING_BOTTOM:
+                return rect.bottom;
+            case TRACKING_CENTER:
+            default:
+                return rect.centerY();
+        }
     }
 
     public void onTargetPositionChanged() {
@@ -127,10 +181,22 @@ public class RectFSpringAnim extends ReleaseCheck {
         }
 
         if (mRectYAnim != null) {
-            if (mTrackingBottomY && mRectYAnim.getTargetPosition() != mTargetRect.bottom) {
-                mRectYAnim.updatePosition(mCurrentY, mTargetRect.bottom);
-            } else if (!mTrackingBottomY && mRectYAnim.getTargetPosition() != mTargetRect.top) {
-                mRectYAnim.updatePosition(mCurrentY, mTargetRect.top);
+            switch (mTracking) {
+                case TRACKING_TOP:
+                    if (mRectYAnim.getTargetPosition() != mTargetRect.top) {
+                        mRectYAnim.updatePosition(mCurrentY, mTargetRect.top);
+                    }
+                    break;
+                case TRACKING_BOTTOM:
+                    if (mRectYAnim.getTargetPosition() != mTargetRect.bottom) {
+                        mRectYAnim.updatePosition(mCurrentY, mTargetRect.bottom);
+                    }
+                    break;
+                case TRACKING_CENTER:
+                    if (mRectYAnim.getTargetPosition() != mTargetRect.centerY()) {
+                        mRectYAnim.updatePosition(mCurrentY, mTargetRect.centerY());
+                    }
+                    break;
             }
         }
     }
@@ -159,22 +225,29 @@ public class RectFSpringAnim extends ReleaseCheck {
             maybeOnEnd();
         });
 
+        // We dampen the user velocity here to keep the natural feeling and to prevent the
+        // rect from straying too from a linear path.
+        final float xVelocityPxPerS = velocityPxPerMs.x * 1000;
+        final float yVelocityPxPerS = velocityPxPerMs.y * 1000;
+        final float dampedXVelocityPxPerS = OverScroll.dampedScroll(
+                Math.abs(xVelocityPxPerS), mMaxVelocityPxPerS) * Math.signum(xVelocityPxPerS);
+        final float dampedYVelocityPxPerS = OverScroll.dampedScroll(
+                Math.abs(yVelocityPxPerS), mMaxVelocityPxPerS) * Math.signum(yVelocityPxPerS);
+
         float startX = mCurrentCenterX;
         float endX = mTargetRect.centerX();
         float minXValue = Math.min(startX, endX);
         float maxXValue = Math.max(startX, endX);
-        mRectXAnim = new FlingSpringAnim(this, context, RECT_CENTER_X, startX, endX,
-                velocityPxPerMs.x * 1000, mMinVisChange, minXValue, maxXValue, 1f, onXEndListener);
 
-        float startVelocityY = velocityPxPerMs.y * 1000;
-        // Scale the Y velocity based on the initial velocity to tune the curves.
-        float springVelocityFactor = 0.1f + 0.9f * Math.abs(startVelocityY) / 20000.0f;
+        mRectXAnim = new FlingSpringAnim(this, context, RECT_CENTER_X, startX, endX,
+                dampedXVelocityPxPerS, mMinVisChange, minXValue, maxXValue, onXEndListener);
+
         float startY = mCurrentY;
-        float endY = mTrackingBottomY ? mTargetRect.bottom : mTargetRect.top;
-        float minYValue = Math.min(startY, endY - mYOvershoot);
+        float endY = getTrackedYFromRect(mTargetRect);
+        float minYValue = Math.min(startY, endY);
         float maxYValue = Math.max(startY, endY);
-        mRectYAnim = new FlingSpringAnim(this, context, RECT_Y, startY, endY, startVelocityY,
-                mMinVisChange, minYValue, maxYValue, springVelocityFactor, onYEndListener);
+        mRectYAnim = new FlingSpringAnim(this, context, RECT_Y, startY, endY, dampedYVelocityPxPerS,
+                mMinVisChange, minYValue, maxYValue, onYEndListener);
 
         float minVisibleChange = Math.abs(1f / mStartRect.height());
         ResourceProvider rp = DynamicResource.provider(context);
@@ -234,15 +307,28 @@ public class RectFSpringAnim extends ReleaseCheck {
                     mTargetRect.width());
             float currentHeight = Utilities.mapRange(mCurrentScaleProgress, mStartRect.height(),
                     mTargetRect.height());
-            if (mTrackingBottomY) {
-                mCurrentRect.set(mCurrentCenterX - currentWidth / 2, mCurrentY - currentHeight,
-                        mCurrentCenterX + currentWidth / 2, mCurrentY);
-            } else {
-                mCurrentRect.set(mCurrentCenterX - currentWidth / 2, mCurrentY,
-                        mCurrentCenterX + currentWidth / 2, mCurrentY + currentHeight);
+            switch (mTracking) {
+                case TRACKING_TOP:
+                    mCurrentRect.set(mCurrentCenterX - currentWidth / 2,
+                            mCurrentY,
+                            mCurrentCenterX + currentWidth / 2,
+                            mCurrentY + currentHeight);
+                    break;
+                case TRACKING_BOTTOM:
+                    mCurrentRect.set(mCurrentCenterX - currentWidth / 2,
+                            mCurrentY - currentHeight,
+                            mCurrentCenterX + currentWidth / 2,
+                            mCurrentY);
+                    break;
+                case TRACKING_CENTER:
+                    mCurrentRect.set(mCurrentCenterX - currentWidth / 2,
+                            mCurrentY - currentHeight / 2,
+                            mCurrentCenterX + currentWidth / 2,
+                            mCurrentY + currentHeight / 2);
+                    break;
             }
             for (OnUpdateListener onUpdateListener : mOnUpdateListeners) {
-                onUpdateListener.onUpdate(null, mCurrentRect, mCurrentScaleProgress);
+                onUpdateListener.onUpdate(mCurrentRect, mCurrentScaleProgress);
             }
         }
     }
@@ -267,7 +353,12 @@ public class RectFSpringAnim extends ReleaseCheck {
     }
 
     public interface OnUpdateListener {
-        void onUpdate(@Nullable AppCloseConfig values, RectF currentRect, float progress);
+        /**
+         * Called when an update is made to the animation.
+         * @param currentRect The rect of the window.
+         * @param progress [0, 1] The progress of the rect scale animation.
+         */
+        void onUpdate(RectF currentRect, float progress);
 
         default void onCancel() { }
     }

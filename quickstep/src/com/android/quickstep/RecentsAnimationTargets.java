@@ -31,9 +31,9 @@ public class RecentsAnimationTargets extends RemoteAnimationTargets {
     public final Rect minimizedHomeBounds;
 
     public RecentsAnimationTargets(RemoteAnimationTargetCompat[] apps,
-            RemoteAnimationTargetCompat[] wallpapers, Rect homeContentInsets,
-            Rect minimizedHomeBounds) {
-        super(apps, wallpapers, new RemoteAnimationTargetCompat[0], MODE_CLOSING);
+            RemoteAnimationTargetCompat[] wallpapers, RemoteAnimationTargetCompat[] nonApps,
+            Rect homeContentInsets, Rect minimizedHomeBounds) {
+        super(apps, wallpapers, nonApps, MODE_CLOSING);
         this.homeContentInsets = homeContentInsets;
         this.minimizedHomeBounds = minimizedHomeBounds;
     }

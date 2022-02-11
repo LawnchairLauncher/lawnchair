@@ -53,6 +53,16 @@ public class AnimatedFloat {
         mUpdateCallback = updateCallback;
     }
 
+    /**
+     * Returns an animation from the current value to the given value.
+     */
+    public ObjectAnimator animateToValue(float end) {
+        return animateToValue(value, end);
+    }
+
+    /**
+     * Returns an animation from the given start value to the given end value.
+     */
     public ObjectAnimator animateToValue(float start, float end) {
         cancelAnimation();
         mValueAnimator = ObjectAnimator.ofFloat(this, VALUE, start, end);

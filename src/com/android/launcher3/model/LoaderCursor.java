@@ -16,13 +16,10 @@
 
 package com.android.launcher3.model;
 
-import static android.graphics.BitmapFactory.decodeByteArray;
-
 import android.content.ComponentName;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
-import android.content.Intent.ShortcutIconResource;
 import android.content.pm.LauncherActivityInfo;
 import android.content.pm.LauncherApps;
 import android.content.pm.PackageManager;
@@ -45,11 +42,10 @@ import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.config.FeatureFlags;
-import com.android.launcher3.icons.BitmapInfo;
 import com.android.launcher3.icons.IconCache;
-import com.android.launcher3.icons.LauncherIcons;
 import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.model.data.AppInfo;
+import com.android.launcher3.model.data.IconRequestInfo;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.shortcuts.ShortcutKey;
@@ -184,32 +180,22 @@ public class LoaderCursor extends CursorWrapper {
      * Loads the icon from the cursor and updates the {@param info} if the icon is an app resource.
      */
     protected boolean loadIcon(WorkspaceItemInfo info) {
-        try (LauncherIcons li = LauncherIcons.obtain(mContext)) {
-            if (itemType == LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT) {
-                String packageName = getString(iconPackageIndex);
-                String resourceName = getString(iconResourceIndex);
-                if (!TextUtils.isEmpty(packageName) || !TextUtils.isEmpty(resourceName)) {
-                    info.iconResource = new ShortcutIconResource();
-                    info.iconResource.packageName = packageName;
-                    info.iconResource.resourceName = resourceName;
-                    BitmapInfo iconInfo = li.createIconBitmap(info.iconResource);
-                    if (iconInfo != null) {
-                        info.bitmap = iconInfo;
-                        return true;
-                    }
-                }
-            }
+        return createIconRequestInfo(info, false).loadWorkspaceIcon(mContext);
+    }
 
-            // Failed to load from resource, try loading from DB.
-            byte[] data = getBlob(iconIndex);
-            try {
-                info.bitmap = li.createIconBitmap(decodeByteArray(data, 0, data.length));
-                return true;
-            } catch (Exception e) {
-                Log.e(TAG, "Failed to decode byte array for info " + info, e);
-                return false;
-            }
-        }
+    public IconRequestInfo<WorkspaceItemInfo> createIconRequestInfo(
+            WorkspaceItemInfo wai, boolean useLowResIcon) {
+        String packageName = itemType == LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT
+                ? getString(iconPackageIndex) : null;
+        String resourceName = itemType == LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT
+                ? getString(iconResourceIndex) : null;
+        byte[] iconBlob = itemType == LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT
+                || itemType == Favorites.ITEM_TYPE_DEEP_SHORTCUT
+                || restoreFlag != 0
+                ? getBlob(iconIndex) : null;
+
+        return new IconRequestInfo<>(
+                wai, mActivityInfo, packageName, resourceName, iconBlob, useLowResIcon);
     }
 
     /**
@@ -262,6 +248,11 @@ public class LoaderCursor extends CursorWrapper {
      */
     public WorkspaceItemInfo getAppShortcutInfo(
             Intent intent, boolean allowMissingTarget, boolean useLowResIcon) {
+        return getAppShortcutInfo(intent, allowMissingTarget, useLowResIcon, true);
+    }
+
+    public WorkspaceItemInfo getAppShortcutInfo(
+            Intent intent, boolean allowMissingTarget, boolean useLowResIcon, boolean loadIcon) {
         if (user == null) {
             Log.d(TAG, "Null user found in getShortcutInfo");
             return null;
@@ -288,9 +279,11 @@ public class LoaderCursor extends CursorWrapper {
         info.user = user;
         info.intent = newIntent;
 
-        mIconCache.getTitleAndIcon(info, mActivityInfo, useLowResIcon);
-        if (mIconCache.isDefaultIcon(info.bitmap, user)) {
-            loadIcon(info);
+        if (loadIcon) {
+            mIconCache.getTitleAndIcon(info, mActivityInfo, useLowResIcon);
+            if (mIconCache.isDefaultIcon(info.bitmap, user)) {
+                loadIcon(info);
+            }
         }
 
         if (mActivityInfo != null) {
@@ -390,18 +383,23 @@ public class LoaderCursor extends CursorWrapper {
         info.cellY = getInt(cellYIndex);
     }
 
+    public void checkAndAddItem(ItemInfo info, BgDataModel dataModel) {
+        checkAndAddItem(info, dataModel, null);
+    }
+
     /**
      * Adds the {@param info} to {@param dataModel} if it does not overlap with any other item,
      * otherwise marks it for deletion.
      */
-    public void checkAndAddItem(ItemInfo info, BgDataModel dataModel) {
+    public void checkAndAddItem(
+            ItemInfo info, BgDataModel dataModel, LoaderMemoryLogger logger) {
         if (info.itemType == LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT) {
             // Ensure that it is a valid intent. An exception here will
             // cause the item loading to get skipped
             ShortcutKey.fromItemInfo(info);
         }
         if (checkItemPlacement(info)) {
-            dataModel.addItem(mContext, info, false);
+            dataModel.addItem(mContext, info, false, logger);
         } else {
             markDeleted("Item position overlap");
         }

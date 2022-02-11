@@ -56,24 +56,29 @@ abstract class Launchable {
     protected abstract String launchableType();
 
     private Background launch(BySelector selector) {
-        LauncherInstrumentation.log("Launchable.launch before click "
-                + mObject.getVisibleCenter() + " in " + mLauncher.getVisibleBounds(mObject));
-        final String label = mObject.getText();
+        try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
+                "want to launch an app from " + launchableType())) {
+            LauncherInstrumentation.log("Launchable.launch before click "
+                    + mObject.getVisibleCenter() + " in " + mLauncher.getVisibleBounds(mObject));
+            final String label = mObject.getText();
 
-        mLauncher.executeAndWaitForEvent(
-                () -> {
-                    mLauncher.clickLauncherObject(mObject);
-                    expectActivityStartEvents();
-                },
-                event -> event.getEventType() == TYPE_WINDOW_STATE_CHANGED,
-                () -> "Launching an app didn't open a new window: " + label,
-                "clicking " + launchableType());
+            mLauncher.executeAndWaitForEvent(
+                    () -> {
+                        mLauncher.clickLauncherObject(mObject);
+                        expectActivityStartEvents();
+                    },
+                    event -> event.getEventType() == TYPE_WINDOW_STATE_CHANGED,
+                    () -> "Launching an app didn't open a new window: " + label,
+                    "clicking " + launchableType());
 
-        mLauncher.assertTrue(
-                "App didn't start: " + label + " (" + selector + ")",
-                TestHelpers.wait(Until.hasObject(selector),
-                        LauncherInstrumentation.WAIT_TIME_MS));
-        return new Background(mLauncher);
+            try (LauncherInstrumentation.Closable c1 = mLauncher.addContextLayer("clicked")) {
+                mLauncher.assertTrue(
+                        "App didn't start: " + label + " (" + selector + ")",
+                        TestHelpers.wait(Until.hasObject(selector),
+                                LauncherInstrumentation.WAIT_TIME_MS));
+                return new Background(mLauncher);
+            }
+        }
     }
 
     /**

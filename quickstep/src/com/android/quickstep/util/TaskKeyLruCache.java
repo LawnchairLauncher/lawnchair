@@ -20,6 +20,7 @@ import android.util.Log;
 import com.android.systemui.shared.recents.model.Task.TaskKey;
 
 import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.function.Predicate;
 
 /**
@@ -117,7 +118,7 @@ public class TaskKeyLruCache<V> {
         }
 
         @Override
-        protected boolean removeEldestEntry(Entry<Integer, TaskKeyLruCache.Entry<V>> eldest) {
+        protected boolean removeEldestEntry(Map.Entry<Integer, TaskKeyLruCache.Entry<V>> eldest) {
             return size() > mMaxSize;
         }
     }

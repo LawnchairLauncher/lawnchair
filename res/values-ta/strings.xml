@@ -32,10 +32,8 @@
     <string name="long_accessible_way_to_add" msgid="2733588281439571974">"விட்ஜெட்டை நகர்த்த இருமுறை தட்டிப் பிடிக்கவும் அல்லது பிரத்தியேகச் செயல்களைப் பயன்படுத்தவும்."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"%1$d அகலத்திற்கு %2$d உயரம்"</string>
-    <string name="widget_preview_context_description" msgid="9045841361655787574">"<xliff:g id="WIDGET_NAME">%1$s</xliff:g> விட்ஜெட்"</string>
-    <string name="add_item_request_drag_hint" msgid="5653291305078645405">"முகப்புத் திரைக்கு விட்ஜெட்டை நகர்த்த அதைத் தொட்டுப் பிடிக்கவும்"</string>
-    <string name="add_to_home_screen" msgid="8631549138215492708">"முகப்புத் திரையில் சேர்"</string>
-    <string name="added_to_home_screen_accessibility_text" msgid="4451545765448884415">"<xliff:g id="WIDGET_NAME">%1$s</xliff:g> விட்ஜெட் முகப்புத் திரையில் சேர்க்கப்பட்டது"</string>
+    <string name="add_item_request_drag_hint" msgid="5899764264480397019">"நீங்களே சேர்க்க, தொட்டுப் பிடித்திருக்கவும்"</string>
+    <string name="place_automatically" msgid="8064208734425456485">"தானாகவே சேர்"</string>
     <plurals name="widgets_count" formatted="false" msgid="656794749266073027">
       <item quantity="other"><xliff:g id="WIDGETS_COUNT_1">%1$d</xliff:g> விட்ஜெட்டுகள்</item>
       <item quantity="one"><xliff:g id="WIDGETS_COUNT_0">%1$d</xliff:g> விட்ஜெட்</item>
@@ -48,17 +46,12 @@
     <string name="widget_button_text" msgid="2880537293434387943">"விட்ஜெட்கள்"</string>
     <string name="widgets_full_sheet_search_bar_hint" msgid="8484659090860596457">"தேடுக"</string>
     <string name="widgets_full_sheet_cancel_button_description" msgid="5766167035728653605">"தேடல் பெட்டியிலுள்ள உரையை அழிக்கும்"</string>
-    <string name="no_widgets_available" msgid="4337693382501046170">"விட்ஜெட்டுகளும் ஷார்ட்கட்களும் கிடைக்கவில்லை"</string>
-    <string name="no_search_results" msgid="3787956167293097509">"விட்ஜெட்டுகள்/ஷார்ட்கட்டுகள் எதுவும் இல்லை"</string>
+    <string name="no_widgets_available" msgid="9140948620298620513">"விட்ஜெட்டுகள் எதுவுமில்லை"</string>
+    <string name="no_search_results" msgid="6518732304311458580">"தேடல் முடிவுகள் இல்லை"</string>
     <string name="widgets_full_sheet_personal_tab" msgid="2743540105607120182">"தனிப்பட்டவை"</string>
     <string name="widgets_full_sheet_work_tab" msgid="3767150027110633765">"பணி"</string>
     <string name="widget_category_conversations" msgid="8894438636213590446">"உரையாடல்கள்"</string>
-    <string name="widget_education_header" msgid="4874760613775913787">"விரல்நுனியில் பயனுள்ள தகவல்களைப் பெறுங்கள்"</string>
-    <string name="widget_education_content" msgid="745542879510751525">"ஆப்ஸைத் திறக்காமல் தகவல்களைப் பெற, முகப்புத் திரையில் விட்ஜெட்டுகளைச் சேர்க்கலாம்"</string>
-    <string name="reconfigurable_widget_education_tip" msgid="6336962690888067057">"விட்ஜெட் அமைப்புகளை மாற்றத் தட்டவும்"</string>
-    <string name="widget_education_close_button" msgid="8676165703104836580">"சரி"</string>
-    <string name="widget_reconfigure_button_content_description" msgid="8811472721881205250">"விட்ஜெட் அமைப்புகளை மாற்றும்"</string>
-    <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"ஆப்ஸில் தேடுக"</string>
+    <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"பயன்பாடுகளில் தேடுக"</string>
     <string name="all_apps_loading_message" msgid="5813968043155271636">"ஆப்ஸை ஏற்றுகிறது…"</string>
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"\"<xliff:g id="QUERY">%1$s</xliff:g>\" உடன் பொருந்தும் ஆப்ஸ் இல்லை"</string>
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"கூடுதல் பயன்பாடுகளைத் தேடு"</string>
@@ -66,10 +59,9 @@
     <string name="notifications_header" msgid="1404149926117359025">"அறிவிப்புகள்"</string>
     <string name="long_press_shortcut_to_add" msgid="5405328730817637737">"ஷார்ட்கட்டை நகர்த்தத் தொட்டுப் பிடிக்கவும்."</string>
     <string name="long_accessible_way_to_add_shortcut" msgid="2199537273817090740">"ஷார்ட்கட்டை நகர்த்த இருமுறை தட்டிப் பிடிக்கவும் அல்லது பிரத்தியேகச் செயல்களைப் பயன்படுத்தவும்."</string>
-    <string name="out_of_space" msgid="6692471482459245734">"இந்த முகப்புத் திரையில் இடமில்லை"</string>
+    <string name="out_of_space" msgid="4691004494942118364">"முகப்புத் திரையில் இடமில்லை."</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"பிடித்தவை ட்ரேயில் இடமில்லை"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"ஆப்ஸின் பட்டியல்"</string>
-    <string name="all_apps_search_results" msgid="5889367432531296759">"தேடல் முடிவுகள்"</string>
     <string name="all_apps_button_personal_label" msgid="1315764287305224468">"தனிப்பட்ட ஆப்ஸ் பட்டியல்"</string>
     <string name="all_apps_button_work_label" msgid="7270707118948892488">"பணி ஆப்ஸ் பட்டியல்"</string>
     <string name="remove_drop_target_label" msgid="7812859488053230776">"அகற்று"</string>
@@ -85,9 +77,8 @@
     <string name="permlab_write_settings" msgid="3574213698004620587">"முகப்பின் அமைப்பு மற்றும் குறுக்குவழிகளை எழுதுதல்"</string>
     <string name="permdesc_write_settings" msgid="5440712911516509985">"முகப்பில் உள்ள அமைப்பு மற்றும் குறுக்குவழிகளை மாற்ற ஆப்ஸை அனுமதிக்கிறது."</string>
     <string name="msg_no_phone_permission" msgid="9208659281529857371">"ஃபோன் அழைப்புகள் செய்ய, <xliff:g id="APP_NAME">%1$s</xliff:g> அனுமதிக்கப்படவில்லை"</string>
-    <string name="gadget_error_text" msgid="740356548025791839">"விட்ஜெட்டை ஏற்ற முடியவில்லை"</string>
-    <string name="gadget_setup_text" msgid="8348374825537681407">"விட்ஜெட் அமைப்புகள்"</string>
-    <string name="gadget_complete_setup_text" msgid="309040266978007925">"அமைவை நிறைவுசெய்யத் தட்டவும்"</string>
+    <string name="gadget_error_text" msgid="6081085226050792095">"விட்ஜெட்டை ஏற்றுவதில் சிக்கல்"</string>
+    <string name="gadget_setup_text" msgid="8274003207686040488">"அமைவு"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"இது அமைப்பு ஆப்ஸ் என்பதால் நிறுவல் நீக்கம் செய்ய முடியாது."</string>
     <string name="folder_hint_text" msgid="5174843001373488816">"பெயரைத் திருத்துதல்"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"<xliff:g id="APP_NAME">%1$s</xliff:g> முடக்கப்பட்டது"</string>
@@ -98,15 +89,15 @@
     <string name="default_scroll_format" msgid="7475544710230993317">"பக்கம் %1$d / %2$d"</string>
     <string name="workspace_scroll_format" msgid="8458889198184077399">"முகப்புத் திரை %1$d of %2$d"</string>
     <string name="workspace_new_page" msgid="257366611030256142">"புதிய முகப்புத் திரை பக்கம்"</string>
-    <string name="folder_opened" msgid="94695026776264709">"திறக்கப்பட்ட ஃபோல்டர், <xliff:g id="WIDTH">%1$d</xliff:g> x <xliff:g id="HEIGHT">%2$d</xliff:g>"</string>
-    <string name="folder_tap_to_close" msgid="4625795376335528256">"ஃபோல்டரை மூட, தட்டவும்"</string>
+    <string name="folder_opened" msgid="94695026776264709">"திறக்கப்பட்டக் கோப்புறை, <xliff:g id="WIDTH">%1$d</xliff:g> x <xliff:g id="HEIGHT">%2$d</xliff:g>"</string>
+    <string name="folder_tap_to_close" msgid="4625795376335528256">"கோப்புறையை மூட, தட்டவும்"</string>
     <string name="folder_tap_to_rename" msgid="4017685068016979677">"மாற்றிய பெயரைச் சேமிக்க, தட்டவும்"</string>
-    <string name="folder_closed" msgid="4100806530910930934">"ஃபோல்டர் மூடப்பட்டது"</string>
-    <string name="folder_renamed" msgid="1794088362165669656">"ஃபோல்டர் <xliff:g id="NAME">%1$s</xliff:g> என மறுபெயரிடப்பட்டது"</string>
-    <string name="folder_name_format_exact" msgid="8626242716117004803">"ஃபோல்டர்: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> ஃபைல்கள்"</string>
-    <string name="folder_name_format_overflow" msgid="4270108890534995199">"ஃபோல்டர்: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> அல்லது அதற்கு அதிகமான ஃபைல்கள்"</string>
+    <string name="folder_closed" msgid="4100806530910930934">"கோப்புறை மூடப்பட்டது"</string>
+    <string name="folder_renamed" msgid="1794088362165669656">"கோப்புறை <xliff:g id="NAME">%1$s</xliff:g> என மறுபெயரிடப்பட்டது"</string>
+    <string name="folder_name_format_exact" msgid="8626242716117004803">"கோப்புறை: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> கோப்புகள்"</string>
+    <string name="folder_name_format_overflow" msgid="4270108890534995199">"கோப்புறை: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> அல்லது அதற்கு அதிகமான கோப்புகள்"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"வால்பேப்பர்கள்"</string>
-    <string name="styles_wallpaper_button_text" msgid="8216961355289236794">"வால்பேப்பர் &amp; ஸ்டைல்"</string>
+    <string name="styles_wallpaper_button_text" msgid="4342122323125579619">"ஸ்டைல்கள் &amp; வால்பேப்பர்கள்"</string>
     <string name="settings_button_text" msgid="8873672322605444408">"முகப்பு அமைப்புகள்"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"உங்கள் நிர்வாகி முடக்கியுள்ளார்"</string>
     <string name="allow_rotation_title" msgid="7728578836261442095">"முகப்புத் திரை சுழற்சியை அனுமதி"</string>
@@ -140,11 +131,11 @@
     <string name="move_to_position" msgid="6750008980455459790">"நிலை <xliff:g id="NUMBER">%1$s</xliff:g>க்கு நகர்த்து"</string>
     <string name="move_to_hotseat_position" msgid="6295412897075147808">"விரும்பும் நிலை <xliff:g id="NUMBER">%1$s</xliff:g>க்கு நகர்த்து"</string>
     <string name="item_moved" msgid="4606538322571412879">"உருப்படி நகர்த்தப்பட்டது"</string>
-    <string name="add_to_folder" msgid="9040534766770853243">"இந்த ஃபோல்டரில் சேர்க்கும்: <xliff:g id="NAME">%1$s</xliff:g>"</string>
-    <string name="add_to_folder_with_app" msgid="4534929978967147231">"<xliff:g id="NAME">%1$s</xliff:g> உள்ள ஃபோல்டரில் சேர்க்கும்"</string>
-    <string name="added_to_folder" msgid="4793259502305558003">"ஃபோல்டரில் உருப்படி சேர்க்கப்பட்டது"</string>
-    <string name="create_folder_with" msgid="4050141361160214248">"இதனுடன் ஃபோல்டரை உருவாக்கும்: <xliff:g id="NAME">%1$s</xliff:g>"</string>
-    <string name="folder_created" msgid="6409794597405184510">"ஃபோல்டர் உருவாக்கப்பட்டது"</string>
+    <string name="add_to_folder" msgid="9040534766770853243">"இந்தக் கோப்புறையில் சேர்க்கும்: <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="add_to_folder_with_app" msgid="4534929978967147231">"<xliff:g id="NAME">%1$s</xliff:g> உள்ள கோப்புறையில் சேர்க்கும்"</string>
+    <string name="added_to_folder" msgid="4793259502305558003">"கோப்புறையில் உருப்படி சேர்க்கப்பட்டது"</string>
+    <string name="create_folder_with" msgid="4050141361160214248">"இதனுடன் கோப்புறையை உருவாக்கும்: <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="folder_created" msgid="6409794597405184510">"கோப்புறை உருவாக்கப்பட்டது"</string>
     <string name="action_move_to_workspace" msgid="1603837886334246317">"முகப்புத் திரைக்கு நகர்த்து"</string>
     <string name="action_resize" msgid="1802976324781771067">"அளவு மாற்று"</string>
     <string name="action_increase_width" msgid="8773715375078513326">"அகலத்தை அதிகரி"</string>
@@ -160,15 +151,18 @@
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"தனிப்பட்டவை"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"பணி"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"பணிக் கணக்கு"</string>
-    <string name="work_profile_edu_work_apps" msgid="7895468576497746520">"பணி ஆப்ஸில் பேட்ஜ் இடப்பட்டுள்ளன. உங்கள் IT நிர்வாகியால் அவற்றைப் பார்க்க முடியும்"</string>
+    <string name="work_profile_edu_personal_apps" msgid="4155536355149317441">"தனிப்பட்ட தரவு பணி ஆப்ஸுடன் சேர்ந்ததல்ல என்பதோடு பணி ஆப்ஸில் இருந்து அவை மறைக்கப்பட்டிருக்கும்"</string>
+    <string name="work_profile_edu_work_apps" msgid="237051938268703058">"பணி ஆப்ஸையும் தரவையும் உங்கள் IT நிர்வாகியால் பார்க்க முடியும்"</string>
+    <string name="work_profile_edu_next" msgid="8783418929296503629">"அடுத்து"</string>
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"முடிந்தது"</string>
-    <string name="work_apps_paused_title" msgid="3040901117349444598">"பணி ஆப்ஸ் இடைநிறுத்தப்பட்டுள்ளன"</string>
-    <string name="work_apps_paused_body" msgid="261634750995824906">"பணி ஆப்ஸால் உங்களுக்கு அறிவிப்புகளை அனுப்பவோ பேட்டரியைப் பயன்படுத்தவோ உங்கள் இருப்பிடத்தை அணுகவோ முடியாது"</string>
-    <string name="work_apps_paused_content_description" msgid="5149623040804051095">"பணி ஆப்ஸ் முடக்கப்பட்டுள்ளன. அவற்றால் உங்களுக்கு அறிவிப்புகளை அனுப்பவோ பேட்டரியைப் பயன்படுத்தவோ உங்கள் இருப்பிடத்தை அணுகவோ முடியாது"</string>
+    <string name="work_apps_paused_title" msgid="2389865654362803723">"பணிக் கணக்கு இடைநிறுத்தப்பட்டது"</string>
+    <string name="work_apps_paused_body" msgid="4209084728264328628">"பணி ஆப்ஸால் அறிவிப்புகளை அனுப்பவோ பேட்டரியைப் பயன்படுத்தவோ இருப்பிடத்தை அணுகவோ முடியாது"</string>
+    <string name="work_apps_paused_content_description" msgid="4473292417145736203">"பணிக் கணக்கு இடைநிறுத்தப்பட்டது. பணி ஆப்ஸால் அறிவிப்புகளை அனுப்பவோ பேட்டரியைப் பயன்படுத்தவோ இருப்பிடத்தை அணுகவோ முடியாது"</string>
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"பணி ஆப்ஸ் பேட்ஜ் குறியிடப்பட்டுள்ளன. மேலும் உங்கள் IT நிர்வாகியால் அவற்றைப் பார்க்க முடியும்"</string>
     <string name="work_apps_paused_edu_accept" msgid="6377476824357318532">"சரி"</string>
-    <string name="work_apps_pause_btn_text" msgid="1921059713673767460">"பணி ஆப்ஸை முடக்கு"</string>
-    <string name="work_apps_enable_btn_text" msgid="1156432622148413741">"பணி ஆப்ஸை இயக்கு"</string>
+    <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"பணி ஆப்ஸை இடைநிறுத்து"</string>
+    <string name="work_apps_enable_btn_text" msgid="82111102541971856">"இயக்கு"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"வடிப்பான்"</string>
+    <string name="work_switch_tip" msgid="808075064383839144">"பணி தொடர்பான ஆப்ஸையும் அறிவிப்புகளையும் இடைநிறுத்தும்"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"தோல்வி: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
 </resources>

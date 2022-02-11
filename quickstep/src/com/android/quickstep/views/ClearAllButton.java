@@ -21,6 +21,7 @@ import android.util.AttributeSet;
 import android.util.FloatProperty;
 import android.widget.Button;
 
+import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.statemanager.StatefulActivity;
 import com.android.launcher3.touch.PagedOrientationHandler;
 
@@ -39,10 +40,24 @@ public class ClearAllButton extends Button {
                 }
             };
 
+    public static final FloatProperty<ClearAllButton> DISMISS_ALPHA =
+            new FloatProperty<ClearAllButton>("dismissAlpha") {
+                @Override
+                public Float get(ClearAllButton view) {
+                    return view.mDismissAlpha;
+                }
+
+                @Override
+                public void setValue(ClearAllButton view, float v) {
+                    view.setDismissAlpha(v);
+                }
+            };
+
     private final StatefulActivity mActivity;
     private float mScrollAlpha = 1;
     private float mContentAlpha = 1;
     private float mVisibilityAlpha = 1;
+    private float mDismissAlpha = 1;
     private float mFullscreenProgress = 1;
     private float mGridProgress = 1;
 
@@ -52,6 +67,7 @@ public class ClearAllButton extends Button {
     private float mGridTranslationPrimary;
     private float mGridScrollOffset;
     private float mScrollOffsetPrimary;
+    private float mSplitSelectScrollOffsetPrimary;
 
     private int mSidePadding;
 
@@ -97,6 +113,13 @@ public class ClearAllButton extends Button {
         }
     }
 
+    public void setDismissAlpha(float alpha) {
+        if (mDismissAlpha != alpha) {
+            mDismissAlpha = alpha;
+            updateAlpha();
+        }
+    }
+
     public void onRecentsViewScroll(int scroll, boolean gridEnabled) {
         RecentsView recentsView = getRecentsView();
         if (recentsView == null) {
@@ -123,7 +146,7 @@ public class ClearAllButton extends Button {
     }
 
     private void updateAlpha() {
-        final float alpha = mScrollAlpha * mContentAlpha * mVisibilityAlpha;
+        final float alpha = mScrollAlpha * mContentAlpha * mVisibilityAlpha * mDismissAlpha;
         setAlpha(alpha);
         setClickable(Math.min(alpha, 1) == 1);
     }
@@ -146,6 +169,10 @@ public class ClearAllButton extends Button {
         mScrollOffsetPrimary = scrollOffsetPrimary;
     }
 
+    public void setSplitSelectScrollOffsetPrimary(float splitSelectScrollOffsetPrimary) {
+        mSplitSelectScrollOffsetPrimary = splitSelectScrollOffsetPrimary;
+    }
+
     public float getScrollAdjustment(boolean fullscreenEnabled, boolean gridEnabled) {
         float scrollAdjustment = 0;
         if (fullscreenEnabled) {
@@ -155,6 +182,7 @@ public class ClearAllButton extends Button {
             scrollAdjustment += mGridTranslationPrimary + mGridScrollOffset;
         }
         scrollAdjustment += mScrollOffsetPrimary;
+        scrollAdjustment += mSplitSelectScrollOffsetPrimary;
         return scrollAdjustment;
     }
 
@@ -218,6 +246,9 @@ public class ClearAllButton extends Button {
      * Get the Y translation that is set in the original layout position, before scrolling.
      */
     private float getOriginalTranslationY() {
-        return mActivity.getDeviceProfile().overviewTaskThumbnailTopMarginPx / 2.0f;
+        DeviceProfile deviceProfile = mActivity.getDeviceProfile();
+        return deviceProfile.overviewShowAsGrid
+                ? deviceProfile.overviewRowSpacing
+                : deviceProfile.overviewTaskThumbnailTopMarginPx / 2.0f;
     }
 }

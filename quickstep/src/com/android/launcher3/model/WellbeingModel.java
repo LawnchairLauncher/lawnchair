@@ -377,7 +377,7 @@ public final class WellbeingModel extends BgObjectWithLooper {
     /**
      * Shortcut factory for generating wellbeing action
      */
-    public static final SystemShortcut.Factory SHORTCUT_FACTORY =
+    public static final SystemShortcut.Factory<BaseDraggingActivity> SHORTCUT_FACTORY =
             (activity, info) -> (info.getTargetComponent() == null) ? null : INSTANCE.get(activity)
                     .getShortcutForApp(
                             info.getTargetComponent().getPackageName(), info.user.getIdentifier(),

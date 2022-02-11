@@ -83,7 +83,7 @@ public final class WidgetsPredictionUpdateTask extends BaseModelUpdateTask {
             }
         } else {
             Map<ComponentKey, WidgetItem> widgetItems =
-                    allWidgets.values().stream().flatMap(List::stream)
+                    allWidgets.values().stream().flatMap(List::stream).distinct()
                             .collect(Collectors.toMap(widget -> (ComponentKey) widget,
                                     widget -> widget));
             for (AppTarget app : mTargets) {

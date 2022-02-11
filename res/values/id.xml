@@ -17,7 +17,21 @@
 <resources>
     <item type="id" name="apps_list_view_work" />
     <item type="id" name="tag_widget_entry" />
+    <item type="id" name="view_type_widgets_space" />
     <item type="id" name="view_type_widgets_list" />
     <item type="id" name="view_type_widgets_header" />
     <item type="id" name="view_type_widgets_search_header" />
+    <!--  Used for A11y actions in staged split to identify each task uniquely  -->
+    <item type="id" name="split_topLeft_appInfo" />
+    <item type="id" name="split_bottomRight_appInfo" />
+
+
+    <!--  Do not change, must be kept in sync with sysui navbar button IDs for tests!  -->
+    <item type="id" name="home" />
+    <item type="id" name="recent_apps" />
+    <item type="id" name="back" />
+    <item type="id" name="ime_switcher" />
+    <item type="id" name="accessibility_button" />
+    <item type="id" name="rotate_suggestion" />
+    <!--  /Do not change, must be kept in sync with sysui navbar button IDs for tests!  -->
 </resources>

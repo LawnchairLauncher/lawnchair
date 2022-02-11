@@ -41,11 +41,10 @@ public class AccessibilityManagerCompat {
     }
 
     /**
-     *
      * @param target The view the accessibility event is initialized on.
      *               If null, this method has no effect.
-     * @param type See TYPE_ constants defined in {@link AccessibilityEvent}.
-     * @param text Optional text to add to the event, which will be announced to the user.
+     * @param type   See TYPE_ constants defined in {@link AccessibilityEvent}.
+     * @param text   Optional text to add to the event, which will be announced to the user.
      */
     public static void sendCustomAccessibilityEvent(@Nullable View target, int type,
             @Nullable String text) {
@@ -87,6 +86,24 @@ public class AccessibilityManagerCompat {
         if (accessibilityManager == null) return;
 
         sendEventToTest(accessibilityManager, context, TestProtocol.PAUSE_DETECTED_MESSAGE, null);
+    }
+
+    public static void sendDismissAnimationEndsEventToTest(Context context) {
+        final AccessibilityManager accessibilityManager = getAccessibilityManagerForTest(context);
+        if (accessibilityManager == null) return;
+
+        sendEventToTest(accessibilityManager, context, TestProtocol.DISMISS_ANIMATION_ENDS_MESSAGE,
+                null);
+    }
+
+    /**
+     * Notify running tests of a folder opened.
+     */
+    public static void sendFolderOpenedEventToTest(Context context) {
+        final AccessibilityManager accessibilityManager = getAccessibilityManagerForTest(context);
+        if (accessibilityManager == null) return;
+
+        sendEventToTest(accessibilityManager, context, TestProtocol.FOLDER_OPENED_MESSAGE, null);
     }
 
     private static void sendEventToTest(

@@ -130,30 +130,54 @@ public class AllAppsList {
      * If the app is already in the list, doesn't add it.
      */
     public void add(AppInfo info, LauncherActivityInfo activityInfo) {
+        add(info, activityInfo, true);
+    }
+
+    public void add(AppInfo info, LauncherActivityInfo activityInfo, boolean loadIcon) {
         if (!mAppFilter.shouldShowApp(info.componentName)) {
             return;
         }
         if (findAppInfo(info.componentName, info.user) != null) {
             return;
         }
-        mIconCache.getTitleAndIcon(info, activityInfo, false /* useLowResIcon */);
-        info.sectionName = mIndex.computeSectionName(info.title);
+        if (loadIcon) {
+            mIconCache.getTitleAndIcon(info, activityInfo, false /* useLowResIcon */);
+            info.sectionName = mIndex.computeSectionName(info.title);
+        }
 
         data.add(info);
         mDataChanged = true;
     }
 
-    public void addPromiseApp(Context context, PackageInstallInfo installInfo) {
-        // only if not yet installed
-        if (!new PackageManagerHelper(context)
-                .isAppInstalled(installInfo.packageName, installInfo.user)) {
-            AppInfo info = new AppInfo(installInfo);
-            mIconCache.getTitleAndIcon(info, info.usingLowResIcon());
-            info.sectionName = mIndex.computeSectionName(info.title);
+    @Nullable
+    public AppInfo addPromiseApp(Context context, PackageInstallInfo installInfo) {
+        return addPromiseApp(context, installInfo, true);
+    }
 
-            data.add(info);
-            mDataChanged = true;
+    @Nullable
+    public AppInfo addPromiseApp(
+            Context context, PackageInstallInfo installInfo, boolean loadIcon) {
+        // only if not yet installed
+        if (new PackageManagerHelper(context)
+                .isAppInstalled(installInfo.packageName, installInfo.user)) {
+            return null;
         }
+        AppInfo promiseAppInfo = new AppInfo(installInfo);
+
+        if (loadIcon) {
+            mIconCache.getTitleAndIcon(promiseAppInfo, promiseAppInfo.usingLowResIcon());
+            promiseAppInfo.sectionName = mIndex.computeSectionName(promiseAppInfo.title);
+        }
+
+        data.add(promiseAppInfo);
+        mDataChanged = true;
+
+        return promiseAppInfo;
+    }
+
+    public void updateSectionName(AppInfo appInfo) {
+        appInfo.sectionName = mIndex.computeSectionName(appInfo.title);
+
     }
 
     /** Updates the given PackageInstallInfo's associated AppInfo's installation info. */

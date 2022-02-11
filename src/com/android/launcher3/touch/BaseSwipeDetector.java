@@ -17,6 +17,7 @@ package com.android.launcher3.touch;
 
 import static android.view.MotionEvent.INVALID_POINTER_ID;
 
+import android.content.Context;
 import android.graphics.PointF;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -25,6 +26,8 @@ import android.view.ViewConfiguration;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.VisibleForTesting;
+
+import com.android.launcher3.R;
 
 import java.util.LinkedList;
 import java.util.Queue;
@@ -44,10 +47,9 @@ public abstract class BaseSwipeDetector {
     private static final boolean DBG = false;
     private static final String TAG = "BaseSwipeDetector";
     private static final float ANIMATION_DURATION = 1200;
-    /** The minimum release velocity in pixels per millisecond that triggers fling.*/
-    private static final float RELEASE_VELOCITY_PX_MS = 1.0f;
     private static final PointF sTempPoint = new PointF();
 
+    private final float mReleaseVelocity;
     private final PointF mDownPos = new PointF();
     private final PointF mLastPos = new PointF();
     protected final boolean mIsRtl;
@@ -64,6 +66,7 @@ public abstract class BaseSwipeDetector {
     private boolean mIsSettingState;
 
     protected boolean mIgnoreSlopWhenSettling;
+    protected Context mContext;
 
     private enum ScrollState {
         IDLE,
@@ -71,10 +74,14 @@ public abstract class BaseSwipeDetector {
         SETTLING       // onDragEnd
     }
 
-    protected BaseSwipeDetector(@NonNull ViewConfiguration config, boolean isRtl) {
+    protected BaseSwipeDetector(@NonNull Context context, @NonNull ViewConfiguration config,
+            boolean isRtl) {
         mTouchSlop = config.getScaledTouchSlop();
         mMaxVelocity = config.getScaledMaximumFlingVelocity();
         mIsRtl = isRtl;
+        mContext = context;
+        mReleaseVelocity = mContext.getResources()
+                .getDimensionPixelSize(R.dimen.base_swift_detector_fling_release_velocity);
     }
 
     public static long calculateDuration(float velocity, float progressNeeded) {
@@ -120,7 +127,7 @@ public abstract class BaseSwipeDetector {
     }
 
     public boolean isFling(float velocity) {
-        return Math.abs(velocity) > RELEASE_VELOCITY_PX_MS;
+        return Math.abs(velocity) > mReleaseVelocity;
     }
 
     public boolean onTouchEvent(MotionEvent ev) {
@@ -236,7 +243,7 @@ public abstract class BaseSwipeDetector {
         } else {
             mSubtractDisplacement.x = mDisplacement.x > 0 ? mTouchSlop : -mTouchSlop;
             mSubtractDisplacement.y = mDisplacement.y > 0 ? mTouchSlop : -mTouchSlop;
-        } 
+        }
     }
 
     protected abstract boolean shouldScrollStart(PointF displacement);

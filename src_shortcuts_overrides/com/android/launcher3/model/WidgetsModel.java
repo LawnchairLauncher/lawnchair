@@ -4,7 +4,10 @@ package com.android.launcher3.model;
 import static android.appwidget.AppWidgetProviderInfo.WIDGET_FEATURE_HIDE_FROM_PICKER;
 
 import static com.android.launcher3.pm.ShortcutConfigActivityInfo.queryList;
+import static com.android.launcher3.widget.WidgetSections.NO_CATEGORY;
 
+import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.mapping;
 import static java.util.stream.Collectors.toList;
 
 import android.appwidget.AppWidgetProviderInfo;
@@ -13,6 +16,7 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.UserHandle;
 import android.util.Log;
+import android.util.Pair;
 
 import androidx.annotation.Nullable;
 import androidx.collection.ArrayMap;
@@ -27,10 +31,12 @@ import com.android.launcher3.icons.ComponentWithLabelAndIcon;
 import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.model.data.PackageItemInfo;
 import com.android.launcher3.pm.ShortcutConfigActivityInfo;
+import com.android.launcher3.util.IntSet;
 import com.android.launcher3.util.PackageUserKey;
 import com.android.launcher3.util.Preconditions;
 import com.android.launcher3.widget.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.widget.WidgetManagerHelper;
+import com.android.launcher3.widget.WidgetSections;
 import com.android.launcher3.widget.model.WidgetsListBaseEntry;
 import com.android.launcher3.widget.model.WidgetsListContentEntry;
 import com.android.launcher3.widget.model.WidgetsListHeaderEntry;
@@ -40,12 +46,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 /**
  * Widgets data model that is used by the adapters of the widget views and controllers.
@@ -60,9 +66,6 @@ public class WidgetsModel {
 
     private static final String TAG = "WidgetsModel";
     private static final boolean DEBUG = false;
-
-    private static final ComponentName CONVERSATION_WIDGET = ComponentName.createRelative(
-            "com.android.systemui", ".people.widget.PeopleSpaceWidgetProvider");
 
     /* Map of widgets and shortcuts that are tracked per package. */
     private final Map<PackageItemInfo, List<WidgetItem>> mWidgetsList = new HashMap<>();
@@ -150,7 +153,6 @@ public class WidgetsModel {
             }
         }
 
-        app.getWidgetCache().removeObsoletePreviews(widgetsAndShortcuts, packageUser);
         return updatedItems;
     }
 
@@ -169,16 +171,15 @@ public class WidgetsModel {
             mWidgetsList.clear();
         } else {
             // Otherwise, only clear the widgets and shortcuts for the changed package.
-            mWidgetsList.remove(
-                    packageItemInfoCache.getOrCreate(new WidgetPackageOrCategoryKey(packageUser)));
+            mWidgetsList.remove(packageItemInfoCache.getOrCreate(packageUser));
         }
 
         // add and update.
         mWidgetsList.putAll(rawWidgetsShortcuts.stream()
                 .filter(new WidgetValidityCheck(app))
-                .collect(Collectors.groupingBy(item ->
-                        packageItemInfoCache.getOrCreate(getWidgetPackageOrCategoryKey(item))
-                )));
+                .flatMap(widgetItem -> getPackageUserKeys(app.getContext(), widgetItem).stream()
+                        .map(key -> new Pair<>(packageItemInfoCache.getOrCreate(key), widgetItem)))
+                .collect(groupingBy(pair -> pair.first, mapping(pair -> pair.second, toList()))));
 
         // Update each package entry
         IconCache iconCache = app.getIconCache();
@@ -210,9 +211,9 @@ public class WidgetsModel {
     }
 
     public WidgetItem getWidgetProviderInfoByProviderName(
-            ComponentName providerName) {
+            ComponentName providerName, UserHandle user) {
         List<WidgetItem> widgetsList = mWidgetsList.get(
-                new PackageItemInfo(providerName.getPackageName()));
+                new PackageItemInfo(providerName.getPackageName(), user));
         if (widgetsList == null) {
             return null;
         }
@@ -226,18 +227,40 @@ public class WidgetsModel {
     }
 
     /** Returns {@link PackageItemInfo} of a pending widget. */
-    public static PackageItemInfo newPendingItemInfo(ComponentName provider) {
-        if (CONVERSATION_WIDGET.equals(provider)) {
-            return new PackageItemInfo(provider.getPackageName(), PackageItemInfo.CONVERSATIONS);
+    public static PackageItemInfo newPendingItemInfo(Context context, ComponentName provider,
+            UserHandle user) {
+        Map<ComponentName, IntSet> widgetsToCategories =
+                WidgetSections.getWidgetsToCategory(context);
+        if (widgetsToCategories.containsKey(provider)) {
+            Iterator<Integer> categoriesIterator = widgetsToCategories.get(provider).iterator();
+            int firstCategory = NO_CATEGORY;
+            while (categoriesIterator.hasNext() && firstCategory == NO_CATEGORY) {
+                firstCategory = categoriesIterator.next();
+            }
+            return new PackageItemInfo(provider.getPackageName(), firstCategory, user);
         }
-        return new PackageItemInfo(provider.getPackageName());
+        return new PackageItemInfo(provider.getPackageName(), user);
     }
 
-    private WidgetPackageOrCategoryKey getWidgetPackageOrCategoryKey(WidgetItem item) {
-        if (CONVERSATION_WIDGET.equals(item.componentName)) {
-            return new WidgetPackageOrCategoryKey(PackageItemInfo.CONVERSATIONS, item.user);
+    private List<PackageUserKey> getPackageUserKeys(Context context, WidgetItem item) {
+        Map<ComponentName, IntSet> widgetsToCategories =
+                WidgetSections.getWidgetsToCategory(context);
+        IntSet categories = widgetsToCategories.get(item.componentName);
+        if (categories == null || categories.isEmpty()) {
+            return Arrays.asList(
+                    new PackageUserKey(item.componentName.getPackageName(), item.user));
         }
-        return new WidgetPackageOrCategoryKey(item.componentName.getPackageName(), item.user);
+        List<PackageUserKey> packageUserKeys = new ArrayList<>();
+        categories.forEach(category -> {
+            if (category == NO_CATEGORY) {
+                packageUserKeys.add(
+                        new PackageUserKey(item.componentName.getPackageName(),
+                                item.user));
+            } else {
+                packageUserKeys.add(new PackageUserKey(category, item.user));
+            }
+        });
+        return packageUserKeys;
     }
 
     private static class WidgetValidityCheck implements Predicate<WidgetItem> {
@@ -280,53 +303,13 @@ public class WidgetsModel {
         }
     }
 
-    /** A hash key for grouping widgets by package name or category. */
-    private static class WidgetPackageOrCategoryKey {
-        /**
-         * The package name of the widget provider.
-         *
-         * <p>This shouldn't be empty if {@link #mCategory} has a value,
-         * {@link PackageItemInfo#NO_CATEGORY}.
-         */
-        public final String mPackage;
-        /** A widget category. */
-        @PackageItemInfo.Category public final int mCategory;
-        public final UserHandle mUser;
-        private final int mHashCode;
-
-        WidgetPackageOrCategoryKey(PackageUserKey key) {
-            this(key.mPackageName, key.mUser);
-        }
-
-        WidgetPackageOrCategoryKey(String packageName, UserHandle user) {
-            this(packageName,  PackageItemInfo.NO_CATEGORY, user);
-        }
-
-        WidgetPackageOrCategoryKey(@PackageItemInfo.Category int category, UserHandle user) {
-            this("", category, user);
-        }
-
-        private WidgetPackageOrCategoryKey(String packageName,
-                @PackageItemInfo.Category int category, UserHandle user) {
-            mPackage = packageName;
-            mCategory = category;
-            mUser = user;
-            mHashCode = Arrays.hashCode(new Object[]{mPackage, mCategory, mUser});
-        }
-
-        @Override
-        public int hashCode() {
-            return mHashCode;
-        }
-    }
-
     private static final class PackageItemInfoCache {
-        private final Map<WidgetPackageOrCategoryKey, PackageItemInfo> mMap = new ArrayMap<>();
+        private final Map<PackageUserKey, PackageItemInfo> mMap = new ArrayMap<>();
 
-        PackageItemInfo getOrCreate(WidgetPackageOrCategoryKey key) {
+        PackageItemInfo getOrCreate(PackageUserKey key) {
             PackageItemInfo pInfo = mMap.get(key);
             if (pInfo == null) {
-                pInfo = new PackageItemInfo(key.mPackage, key.mCategory);
+                pInfo = new PackageItemInfo(key.mPackageName, key.mWidgetCategory, key.mUser);
                 pInfo.user = key.mUser;
                 mMap.put(key,  pInfo);
             }

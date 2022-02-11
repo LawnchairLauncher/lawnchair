@@ -78,6 +78,32 @@ public class RoundedArrowDrawable extends Drawable {
         mPath.transform(pathTransform);
     }
 
+    /**
+     * Constructor for an arrow that points to the left or right.
+     *
+     * @param width        of the arrow.
+     * @param height       of the arrow.
+     * @param radius       of the tip of the arrow.
+     * @param isPointingLeft or not.
+     * @param color        to draw the triangle.
+     */
+    public RoundedArrowDrawable(float width, float height, float radius, boolean isPointingLeft,
+            int color) {
+        mPath = new Path();
+        mPaint = new Paint();
+        mPaint.setColor(color);
+        mPaint.setStyle(Paint.Style.FILL);
+        mPaint.setAntiAlias(true);
+
+        // Make the drawable with the triangle pointing down...
+        addDownPointingRoundedTriangleToPath(width, height, radius, mPath);
+
+        // ... then rotate it to the side it needs to point.
+        Matrix pathTransform = new Matrix();
+        pathTransform.setRotate(isPointingLeft ? 90 : -90, width * 0.5f, height * 0.5f);
+        mPath.transform(pathTransform);
+    }
+
     @Override
     public void draw(Canvas canvas) {
         canvas.drawPath(mPath, mPaint);

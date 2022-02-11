@@ -16,6 +16,6 @@
 -->
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
        android:shape="rectangle">
-    <solid android:color="?attr/folderFillColor" />
+    <solid android:color="?attr/folderBackgroundColor" />
     <corners android:radius="?android:attr/dialogCornerRadius" />
 </shape>

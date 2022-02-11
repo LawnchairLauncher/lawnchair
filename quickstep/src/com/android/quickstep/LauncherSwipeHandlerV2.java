@@ -18,17 +18,13 @@ package com.android.quickstep;
 import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
 import static com.android.launcher3.LauncherAnimUtils.VIEW_TRANSLATE_Y;
 import static com.android.launcher3.LauncherState.NORMAL;
-import static com.android.launcher3.Utilities.boundToRange;
 import static com.android.launcher3.Utilities.dpToPx;
 import static com.android.launcher3.Utilities.mapBoundToRange;
 import static com.android.launcher3.anim.Interpolators.EXAGGERATED_EASE;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
-import static com.android.launcher3.config.FeatureFlags.PROTOTYPE_APP_CLOSE;
 import static com.android.launcher3.model.data.ItemInfo.NO_MATCHING_ID;
 import static com.android.launcher3.views.FloatingIconView.SHAPE_PROGRESS_DURATION;
 import static com.android.launcher3.views.FloatingIconView.getFloatingIconView;
-
-import static java.lang.Math.round;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -59,10 +55,8 @@ import com.android.launcher3.util.ObjectWrapper;
 import com.android.launcher3.views.FloatingIconView;
 import com.android.launcher3.views.FloatingView;
 import com.android.launcher3.widget.LauncherAppWidgetHostView;
-import com.android.quickstep.util.AppCloseConfig;
 import com.android.quickstep.util.RectFSpringAnim;
 import com.android.quickstep.util.StaggeredWorkspaceAnim;
-import com.android.quickstep.util.WorkspaceRevealAnim;
 import com.android.quickstep.views.FloatingWidgetView;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
@@ -106,9 +100,11 @@ public class LauncherSwipeHandlerV2 extends
         boolean canUseWorkspaceView = workspaceView != null && workspaceView.isAttachedToWindow();
 
         mActivity.getRootView().setForceHideBackArrow(true);
-        mActivity.setHintUserWillBeActive();
+        if (!TaskAnimationManager.ENABLE_SHELL_TRANSITIONS) {
+            mActivity.setHintUserWillBeActive();
+        }
 
-        if (!canUseWorkspaceView || appCanEnterPip) {
+        if (!canUseWorkspaceView || appCanEnterPip || mIsSwipeForStagedSplit) {
             return new LauncherHomeAnimationFactory();
         }
         if (workspaceView instanceof LauncherAppWidgetHostView) {
@@ -119,8 +115,6 @@ public class LauncherSwipeHandlerV2 extends
     }
 
     private HomeAnimationFactory createIconHomeAnimationFactory(View workspaceView) {
-        final ResourceProvider rp = DynamicResource.provider(mActivity);
-        final float transY = dpToPx(rp.getFloat(R.dimen.swipe_up_trans_y_dp));
         RectF iconLocation = new RectF();
         FloatingIconView floatingIconView = getFloatingIconView(mActivity, workspaceView,
                 true /* hideOriginal */, iconLocation, false /* isOpening */);
@@ -131,13 +125,15 @@ public class LauncherSwipeHandlerV2 extends
 
         return new FloatingViewHomeAnimationFactory(floatingIconView) {
 
-            // There is a delay in loading the icon, so we need to keep the window
-            // opaque until it is ready.
-            private boolean mIsFloatingIconReady = false;
+            @Nullable
+            @Override
+            protected View getViewIgnoredInWorkspaceRevealAnimation() {
+                return workspaceView;
+            }
 
+            @NonNull
             @Override
             public RectF getWindowTargetRect() {
-                super.getWindowTargetRect();
                 return iconLocation;
             }
 
@@ -150,24 +146,9 @@ public class LauncherSwipeHandlerV2 extends
             }
 
             @Override
-            public boolean keepWindowOpaque() {
-                if (mIsFloatingIconReady || floatingIconView.isVisibleToUser()) {
-                    mIsFloatingIconReady = true;
-                    return false;
-                }
-                return true;
-            }
-
-            @Override
-            public void update(@Nullable AppCloseConfig config, RectF currentRect,
-                    float progress, float radius) {
-                super.update(config, currentRect, progress, radius);
-                int fgAlpha = 255;
-                if (config != null && PROTOTYPE_APP_CLOSE.get()) {
-                    progress = config.getInterpolatedProgress();
-                    fgAlpha = config.getFgAlpha();
-                }
-                floatingIconView.update(1f, fgAlpha, currentRect, progress,
+            public void update(RectF currentRect, float progress, float radius) {
+                super.update(currentRect, progress, radius);
+                floatingIconView.update(1f /* alpha */, 255 /* fgAlpha */, currentRect, progress,
                         windowAlphaThreshold, radius, false);
             }
         };
@@ -179,14 +160,16 @@ public class LauncherSwipeHandlerV2 extends
         final float floatingWidgetAlpha = isTargetTranslucent ? 0 : 1;
         RectF backgroundLocation = new RectF();
         Rect crop = new Rect();
-        mTaskViewSimulator.getCurrentCropRect().roundOut(crop);
+        // We can assume there is only one remote target here because staged split never animates
+        // into the app icon, only into the homescreen
+        mRemoteTargetHandles[0].getTaskViewSimulator().getCurrentCropRect().roundOut(crop);
         Size windowSize = new Size(crop.width(), crop.height());
         int fallbackBackgroundColor =
                 FloatingWidgetView.getDefaultBackgroundColor(mContext, runningTaskTarget);
         FloatingWidgetView floatingWidgetView = FloatingWidgetView.getFloatingWidgetView(mActivity,
                 hostView, backgroundLocation, windowSize,
-                mTaskViewSimulator.getCurrentCornerRadius(), isTargetTranslucent,
-                fallbackBackgroundColor);
+                mRemoteTargetHandles[0].getTaskViewSimulator().getCurrentCornerRadius(),
+                isTargetTranslucent, fallbackBackgroundColor);
 
         return new FloatingViewHomeAnimationFactory(floatingWidgetView) {
 
@@ -217,14 +200,8 @@ public class LauncherSwipeHandlerV2 extends
             }
 
             @Override
-            public boolean keepWindowOpaque() {
-                return false;
-            }
-
-            @Override
-            public void update(@Nullable AppCloseConfig config, RectF currentRect, float progress,
-                    float radius) {
-                super.update(config, currentRect, progress, radius);
+            public void update(RectF currentRect, float progress, float radius) {
+                super.update(currentRect, progress, radius);
                 final float fallbackBackgroundAlpha =
                         1 - mapBoundToRange(progress, 0.8f, 1, 0, 1, EXAGGERATED_EASE);
                 final float foregroundAlpha =
@@ -267,7 +244,7 @@ public class LauncherSwipeHandlerV2 extends
             }
         }
 
-        return mActivity.getWorkspace().getFirstMatchForAppClose(launchCookieItemId,
+        return mActivity.getFirstMatchForAppClose(launchCookieItemId,
                 runningTaskView.getTask().key.getComponent().getPackageName(),
                 UserHandle.of(runningTaskView.getTask().key.userId));
     }
@@ -283,46 +260,17 @@ public class LauncherSwipeHandlerV2 extends
         private final float mTransY;
         private final FloatingView mFloatingView;
         private ValueAnimator mBounceBackAnimator;
-        private final AnimatorSet mWorkspaceReveal;
 
         FloatingViewHomeAnimationFactory(FloatingView floatingView) {
             mFloatingView = floatingView;
 
             ResourceProvider rp = DynamicResource.provider(mActivity);
             mTransY = dpToPx(rp.getFloat(R.dimen.swipe_up_trans_y_dp));
-
-            mWorkspaceReveal = PROTOTYPE_APP_CLOSE.get()
-                    ? new WorkspaceRevealAnim(mActivity, true /* animateScrim */).getAnimators()
-                    : null;
-        }
-
-        @Override
-        public @NonNull RectF getWindowTargetRect() {
-            if (PROTOTYPE_APP_CLOSE.get()) {
-                // We want the target rect to be at this offset position, so that all
-                // launcher content can spring back upwards.
-                mFloatingView.setPositionOffsetY(mTransY);
-            }
-            return super.getWindowTargetRect();
         }
 
         @Override
         public boolean shouldPlayAtomicWorkspaceReveal() {
             return false;
-        }
-
-        @Override
-        public void update(@Nullable AppCloseConfig config, RectF currentRect, float progress,
-                float radius) {
-            if (config != null && PROTOTYPE_APP_CLOSE.get()) {
-                DragLayer dl = mActivity.getDragLayer();
-                float translationY = config.getWorkspaceTransY();
-                dl.setTranslationY(translationY);
-
-                long duration = mWorkspaceReveal.getDuration();
-                long playTime = boundToRange(round(duration * progress), 0, duration);
-                mWorkspaceReveal.setCurrentPlayTime(playTime);
-            }
         }
 
         protected void bounceBackToRestingPosition() {
@@ -359,31 +307,6 @@ public class LauncherSwipeHandlerV2 extends
         }
 
         @Override
-        public void setAnimation(RectFSpringAnim anim) {
-            if (PROTOTYPE_APP_CLOSE.get()) {
-                // Use a spring to put drag layer translation back to 0.
-                anim.addAnimatorListener(new AnimatorListenerAdapter() {
-                    @Override
-                    public void onAnimationEnd(Animator animation) {
-                        mFloatingView.setPositionOffsetY(0);
-                        bounceBackToRestingPosition();
-                    }
-                });
-
-                // Will be updated manually below so that the two animations are in sync.
-                mWorkspaceReveal.start();
-                mWorkspaceReveal.pause();
-
-                anim.addAnimatorListener(new AnimatorListenerAdapter() {
-                    @Override
-                    public void onAnimationEnd(Animator animation) {
-                        mWorkspaceReveal.end();
-                    }
-                });
-            }
-        }
-
-        @Override
         public void onCancel() {
             mFloatingView.fastFinish();
             if (mBounceBackAnimator != null) {
@@ -415,13 +338,9 @@ public class LauncherSwipeHandlerV2 extends
 
         @Override
         public void playAtomicAnimation(float velocity) {
-            if (!PROTOTYPE_APP_CLOSE.get()) {
-                new StaggeredWorkspaceAnim(mActivity, velocity, true /* animateOverviewScrim */,
-                        getViewIgnoredInWorkspaceRevealAnimation())
-                        .start();
-            } else if (shouldPlayAtomicWorkspaceReveal()) {
-                new WorkspaceRevealAnim(mActivity, true).start();
-            }
+            new StaggeredWorkspaceAnim(mActivity, velocity, true /* animateOverviewScrim */,
+                    getViewIgnoredInWorkspaceRevealAnimation())
+                    .start();
         }
 
         @Override

@@ -16,7 +16,8 @@
 
 <resources>
     <dimen name="task_thumbnail_icon_size">48dp</dimen>
-    <dimen name="task_thumbnail_icon_size_grid">32dp</dimen>
+    <dimen name="task_thumbnail_icon_drawable_size">48dp</dimen>
+    <dimen name="task_thumbnail_icon_drawable_size_grid">32dp</dimen>
     <!-- For screens without rounded corners -->
     <dimen name="task_corner_radius_small">2dp</dimen>
     <!-- For Launchers that want to override the default dialog corner radius -->
@@ -26,24 +27,35 @@
     <dimen name="task_menu_corner_radius">22dp</dimen>
     <dimen name="task_menu_item_corner_radius">4dp</dimen>
     <dimen name="task_menu_spacing">2dp</dimen>
+    <dimen name="task_menu_width_grid">234dp</dimen>
+    <dimen name="task_menu_horizontal_padding">8dp</dimen>
     <dimen name="overview_proactive_row_height">48dp</dimen>
     <dimen name="overview_proactive_row_bottom_margin">16dp</dimen>
 
     <dimen name="overview_minimum_next_prev_size">50dp</dimen>
     <dimen name="overview_task_margin">16dp</dimen>
+    <dimen name="overview_task_margin_focused">12dp</dimen>
+    <dimen name="overview_task_margin_grid">4dp</dimen>
+    <item name="overview_max_scale" format="float" type="dimen">0.7</item>
 
     <!-- Overrideable in overlay that provides the Overview Actions. -->
     <dimen name="overview_actions_height">48dp</dimen>
-    <dimen name="overview_actions_bottom_margin_gesture">28dp</dimen>
-    <dimen name="overview_actions_bottom_margin_three_button">8dp</dimen>
+    <dimen name="overview_actions_button_spacing">32dp</dimen>
+    <dimen name="overview_actions_button_spacing_grid">36dp</dimen>
+    <dimen name="overview_actions_margin_gesture">28dp</dimen>
+    <dimen name="overview_actions_top_margin_gesture_grid_portrait">19.37dp</dimen>
+    <dimen name="overview_actions_bottom_margin_gesture_grid_portrait">22dp</dimen>
+    <dimen name="overview_actions_top_margin_gesture_grid_landscape">19.1dp</dimen>
+    <dimen name="overview_actions_bottom_margin_gesture_grid_landscape">10dp</dimen>
+    <dimen name="overview_actions_margin_three_button">8dp</dimen>
     <dimen name="overview_actions_horizontal_margin">16dp</dimen>
 
-    <dimen name="overview_grid_top_margin">77dp</dimen>
-    <dimen name="overview_grid_bottom_margin">90dp</dimen>
-    <dimen name="overview_grid_side_margin">54dp</dimen>
-    <dimen name="overview_grid_row_spacing">42dp</dimen>
-    <dimen name="overview_grid_focus_vertical_margin">90dp</dimen>
-    <dimen name="split_placeholder_size">110dp</dimen>
+    <dimen name="overview_grid_side_margin_portrait">60dp</dimen>
+    <dimen name="overview_grid_side_margin_landscape">52dp</dimen>
+    <dimen name="overview_grid_row_spacing">36dp</dimen>
+    <dimen name="overview_page_spacing">16dp</dimen>
+    <dimen name="overview_page_spacing_grid_portrait">36dp</dimen>
+    <dimen name="overview_page_spacing_grid_landscape">38dp</dimen>
 
     <!-- These speeds are in dp/s -->
     <dimen name="max_task_dismiss_drag_velocity">2.25dp</dimen>
@@ -51,7 +63,6 @@
     <dimen name="default_task_dismiss_drag_velocity_grid">1dp</dimen>
     <dimen name="default_task_dismiss_drag_velocity_grid_focus_task">5dp</dimen>
 
-    <dimen name="recents_page_spacing">16dp</dimen>
     <dimen name="recents_clear_all_deadzone_vertical_margin">70dp</dimen>
 
     <!-- The speed in dp/s at which the user needs to be scrolling in recents such that we start
@@ -70,6 +81,8 @@
     <item name="content_scale" format="float" type="dimen">0.97</item>
     <dimen name="closing_window_trans_y">115dp</dimen>
 
+    <dimen name="quick_switch_scaling_scroll_threshold">100dp</dimen>
+
     <dimen name="recents_empty_message_text_size">16sp</dimen>
     <dimen name="recents_empty_message_text_padding">16dp</dimen>
 
@@ -81,7 +94,7 @@
     <dimen name="task_menu_vertical_padding">8dp</dimen>
     <dimen name="task_card_margin">8dp</dimen>
     <dimen name="task_card_menu_shadow_height">3dp</dimen>
-    <dimen name="task_menu_option_start_margin">12dp</dimen>
+    <dimen name="task_menu_option_start_margin">16dp</dimen>
     <!-- Copied from framework resource:
        docked_stack_divider_thickness - 2 * docked_stack_divider_insets -->
     <dimen name="multi_window_task_divider_size">10dp</dimen>
@@ -108,17 +121,57 @@
     <dimen name="gestures_overscroll_finish_threshold">136dp</dimen>
 
     <!-- Tips Gesture Tutorial -->
-    <dimen name="gesture_tutorial_title_margin_start_end">40dp</dimen>
-    <dimen name="gesture_tutorial_subtitle_margin_start_end">16dp</dimen>
     <dimen name="gesture_tutorial_feedback_margin_start_end">24dp</dimen>
-    <dimen name="gesture_tutorial_button_margin_start_end">18dp</dimen>
+    <dimen name="gesture_tutorial_foldable_feedback_margin_start_end">140dp</dimen>
+    <dimen name="gesture_tutorial_multi_row_task_view_spacing">72dp</dimen>
+    <dimen name="gesture_tutorial_small_task_view_corner_radius">18dp</dimen>
+    <dimen name="gesture_tutorial_mock_taskbar_height">80dp</dimen>
+
+    <!-- Gesture Tutorial mock conversations -->
+    <dimen name="gesture_tutorial_message_icon_size">44dp</dimen>
+    <dimen name="gesture_tutorial_message_icon_corner_radius">100dp</dimen>
+    <dimen name="gesture_tutorial_message_input_margin_top">36dp</dimen>
+    <dimen name="gesture_tutorial_message_large_margin_bottom">32dp</dimen>
+    <dimen name="gesture_tutorial_message_small_margin_bottom">4dp</dimen>
+    <dimen name="gesture_tutorial_message_padding_start">26dp</dimen>
+    <dimen name="gesture_tutorial_message_padding_end">18dp</dimen>
+    <dimen name="gesture_tutorial_foldable_message_padding_start_end">126dp</dimen>
+
+    <!-- Gesture Tutorial mock conversation lists -->
+    <dimen name="gesture_tutorial_conversation_icon_size">56dp</dimen>
+    <dimen name="gesture_tutorial_conversation_icon_corner_radius">100dp</dimen>
+    <dimen name="gesture_tutorial_conversation_list_padding_top">28dp</dimen>
+    <dimen name="gesture_tutorial_conversation_line_padding_start">20dp</dimen>
+
+    <!-- Gesture Tutorial mock hotseats -->
+    <dimen name="gesture_tutorial_hotseat_icon_size">60dp</dimen>
+    <dimen name="gesture_tutorial_hotseat_icon_corner_radius">100dp</dimen>
+    <dimen name="gesture_tutorial_hotseat_search_height">50dp</dimen>
+    <dimen name="gesture_tutorial_hotseat_search_corner_radius">100dp</dimen>
+    <dimen name="gesture_tutorial_hotseat_icon_search_margin">36dp</dimen>
+
+    <!-- Gesture Tutorial mock webpages -->
+    <dimen name="gesture_tutorial_webpage_padding_top">32dp</dimen>
+    <dimen name="gesture_tutorial_webpage_large_margin_top">24dp</dimen>
+    <dimen name="gesture_tutorial_webpage_small_margin_top">8dp</dimen>
+    <dimen name="gesture_tutorial_webpage_large_corner_radius">22dp</dimen>
+    <dimen name="gesture_tutorial_webpage_medium_corner_radius">8dp</dimen>
+    <dimen name="gesture_tutorial_webpage_small_corner_radius">4dp</dimen>
+    <dimen name="gesture_tutorial_webpage_large_line_height">36dp</dimen>
+    <dimen name="gesture_tutorial_webpage_small_line_height">22dp</dimen>
+
+    <!-- Gesture Tutorial mock taskbar -->
+    <dimen name="gesture_tutorial_taskbar_icon_size">44dp</dimen>
+    <dimen name="gesture_tutorial_taskbar_icon_corner_radius">100dp</dimen>
+    <dimen name="gesture_tutorial_taskbar_padding_start_end">218dp</dimen>
 
     <!-- All Set page -->
     <dimen name="allset_page_margin_horizontal">40dp</dimen>
     <dimen name="allset_title_margin_top">24dp</dimen>
     <dimen name="allset_title_icon_margin_top">32dp</dimen>
-    <dimen name="allset_hint_margin_bottom">52dp</dimen>
     <dimen name="allset_subtitle_margin_top">24dp</dimen>
+    <dimen name="allset_subtitle_width_max">348dp</dimen>
+    <dimen name="allset_swipe_up_shift">10dp</dimen>
 
     <!-- All Apps Education tutorial -->
     <dimen name="swipe_edu_padding">8dp</dimen>
@@ -148,13 +201,34 @@
     <!-- Minimum distance to swipe to trigger accessibility gesture -->
     <dimen name="accessibility_gesture_min_swipe_distance">80dp</dimen>
 
+    <!-- The maximum width of the navigation bar ripples. -->
+    <dimen name="key_button_ripple_max_width">95dp</dimen>
+
+    <dimen name="rounded_corner_content_padding">0dp</dimen>
+
+    <dimen name="navigation_key_padding">0dp</dimen>
+
+    <!-- Floating rotation button -->
+    <dimen name="floating_rotation_button_diameter">40dp</dimen>
+    <dimen name="floating_rotation_button_min_margin">20dp</dimen>
+    <dimen name="floating_rotation_button_taskbar_left_margin">20dp</dimen>
+    <dimen name="floating_rotation_button_taskbar_bottom_margin">10dp</dimen>
+
     <!-- Taskbar -->
-    <dimen name="taskbar_size">60dp</dimen>
-    <dimen name="taskbar_icon_size">44dp</dimen>
+    <dimen name="taskbar_size">@*android:dimen/taskbar_frame_height</dimen>
+    <dimen name="taskbar_ime_size">48dp</dimen>
     <dimen name="taskbar_icon_touch_size">48dp</dimen>
     <dimen name="taskbar_icon_drag_icon_size">54dp</dimen>
-    <!-- Note that this applies to both sides of all icons, so visible space is double this. -->
-    <dimen name="taskbar_icon_spacing">8dp</dimen>
     <dimen name="taskbar_folder_margin">16dp</dimen>
     <dimen name="taskbar_nav_buttons_spacing">16dp</dimen>
+    <dimen name="taskbar_contextual_padding_top">8dp</dimen>
+    <dimen name="taskbar_nav_buttons_size">44dp</dimen>
+    <dimen name="taskbar_contextual_button_margin">40dp</dimen>
+    <dimen name="taskbar_hotseat_nav_spacing">42dp</dimen>
+    <dimen name="taskbar_contextual_buttons_size">35dp</dimen>
+    <dimen name="taskbar_stashed_size">24dp</dimen>
+    <dimen name="taskbar_stashed_handle_width">220dp</dimen>
+    <dimen name="taskbar_stashed_handle_height">6dp</dimen>
+    <dimen name="taskbar_edu_wave_anim_trans_y">25dp</dimen>
+    <dimen name="taskbar_edu_wave_anim_trans_y_return_overshoot">4dp</dimen>
 </resources>

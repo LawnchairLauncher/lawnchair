@@ -25,7 +25,8 @@
         launcher:numFolderColumns="3"
         launcher:numHotseatIcons="3"
         launcher:dbFile="launcher_3_by_3.db"
-        launcher:defaultLayoutId="@xml/default_workspace_3x3" >
+        launcher:defaultLayoutId="@xml/default_workspace_3x3"
+        launcher:deviceCategory="phone|multi_display" >
 
         <display-option
             launcher:name="Super Short Stubby"
@@ -53,7 +54,8 @@
         launcher:numFolderColumns="4"
         launcher:numHotseatIcons="4"
         launcher:dbFile="launcher_4_by_4.db"
-        launcher:defaultLayoutId="@xml/default_workspace_4x4" >
+        launcher:defaultLayoutId="@xml/default_workspace_4x4"
+        launcher:deviceCategory="phone|multi_display" >
 
         <display-option
             launcher:name="Short Stubby"
@@ -105,7 +107,8 @@
         launcher:numFolderColumns="4"
         launcher:numHotseatIcons="5"
         launcher:dbFile="launcher.db"
-        launcher:defaultLayoutId="@xml/default_workspace_5x5" >
+        launcher:defaultLayoutId="@xml/default_workspace_5x5"
+        launcher:deviceCategory="phone|multi_display" >
 
         <display-option
             launcher:name="Large Phone"
@@ -121,7 +124,7 @@
             launcher:minHeightDps="694"
             launcher:iconImageSize="56"
             launcher:iconTextSize="14.4"
-            launcher:canBeDefault="split_display" />
+            launcher:canBeDefault="true" />
 
         <display-option
             launcher:name="Shorter Stubby"
@@ -129,6 +132,34 @@
             launcher:minHeightDps="400"
             launcher:iconImageSize="48"
             launcher:iconTextSize="13.0"
+            launcher:canBeDefault="true" />
+
+    </grid-option>
+
+    <grid-option
+        launcher:name="6_by_5"
+        launcher:numRows="5"
+        launcher:numColumns="6"
+        launcher:numFolderRows="3"
+        launcher:numFolderColumns="3"
+        launcher:numHotseatIcons="6"
+        launcher:numAllAppsColumns="6"
+        launcher:dbFile="launcher_6_by_5.db"
+        launcher:defaultLayoutId="@xml/default_workspace_6x5"
+        launcher:deviceCategory="tablet" >
+
+        <display-option
+            launcher:name="Tablet"
+            launcher:minWidthDps="900"
+            launcher:minHeightDps="820"
+            launcher:minCellHeightDps="104"
+            launcher:minCellWidthDps="80"
+            launcher:iconImageSize="60"
+            launcher:iconTextSize="14"
+            launcher:borderSpaceDps="16"
+            launcher:allAppsIconSize="60"
+            launcher:allAppsIconTextSize="14"
+            launcher:allAppsCellSpacingDps="16"
             launcher:canBeDefault="true" />
 
     </grid-option>

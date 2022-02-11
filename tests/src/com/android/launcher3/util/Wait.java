@@ -52,7 +52,7 @@ public class Wait {
             throw new RuntimeException(t);
         }
         Log.d("Wait", "atMost: timed out: " + SystemClock.uptimeMillis());
-        launcher.checkForAnomaly();
+        launcher.checkForAnomaly(false, false);
         Assert.fail(message.get());
     }
 

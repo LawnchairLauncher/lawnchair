@@ -36,9 +36,10 @@ public interface InputConsumer {
     int TYPE_SCREEN_PINNED = 1 << 6;
     int TYPE_OVERVIEW_WITHOUT_FOCUS = 1 << 7;
     int TYPE_RESET_GESTURE = 1 << 8;
-    int TYPE_OVERSCROLL = 1 << 9;
+    int TYPE_PROGRESS_DELEGATE = 1 << 9;
     int TYPE_SYSUI_OVERLAY = 1 << 10;
     int TYPE_ONE_HANDED = 1 << 11;
+    int TYPE_TASKBAR_STASH = 1 << 12;
 
     String[] NAMES = new String[] {
            "TYPE_NO_OP",                    // 0
@@ -50,9 +51,10 @@ public interface InputConsumer {
             "TYPE_SCREEN_PINNED",           // 6
             "TYPE_OVERVIEW_WITHOUT_FOCUS",  // 7
             "TYPE_RESET_GESTURE",           // 8
-            "TYPE_OVERSCROLL",              // 9
+            "TYPE_PROGRESS_DELEGATE",       // 9
             "TYPE_SYSUI_OVERLAY",           // 10
             "TYPE_ONE_HANDED",              // 11
+            "TYPE_TASKBAR_STASH",           // 12
     };
 
     InputConsumer NO_OP = () -> TYPE_NO_OP;

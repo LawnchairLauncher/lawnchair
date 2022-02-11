@@ -19,11 +19,17 @@ import android.content.Context;
 import android.content.ContextWrapper;
 import android.graphics.Rect;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.View.AccessibilityDelegate;
+
+import androidx.annotation.Nullable;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.dot.DotInfo;
 import com.android.launcher3.dragndrop.DragController;
+import com.android.launcher3.folder.FolderIcon;
+import com.android.launcher3.logger.LauncherAtom;
+import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.util.ViewCache;
 
@@ -100,15 +106,64 @@ public interface ActivityContext {
     }
 
     /**
-     * Returns the ActivityContext associated with the given Context.
+     * Returns the FolderIcon with the given item id, if it exists.
+     */
+    default @Nullable FolderIcon findFolderIcon(final int folderIconId) {
+        return null;
+    }
+
+    default StatsLogManager getStatsLogManager() {
+        return StatsLogManager.newInstance((Context) this);
+    }
+
+    /**
+     * Returns {@code true} if popups should use color extraction.
+     */
+    default boolean shouldUseColorExtractionForPopup() {
+        return true;
+    }
+
+    /**
+     * Returns whether we can show the IME for elements hosted by this ActivityContext.
+     */
+    default boolean supportsIme() {
+        return true;
+    }
+
+    /**
+     * Called just before logging the given item.
+     */
+    default void applyOverwritesToLogItem(LauncherAtom.ItemInfo.Builder itemInfoBuilder) { }
+
+    /**
+     * Returns the ActivityContext associated with the given Context, or throws an exception if
+     * the Context is not associated with any ActivityContext.
      */
     static <T extends Context & ActivityContext> T lookupContext(Context context) {
+        T activityContext = lookupContextNoThrow(context);
+        if (activityContext == null) {
+            throw new IllegalArgumentException("Cannot find ActivityContext in parent tree");
+        }
+        return activityContext;
+    }
+
+    /**
+     * Returns the ActivityContext associated with the given Context, or null if
+     * the Context is not associated with any ActivityContext.
+     */
+    static <T extends Context & ActivityContext> T lookupContextNoThrow(Context context) {
         if (context instanceof ActivityContext) {
             return (T) context;
         } else if (context instanceof ContextWrapper) {
-            return lookupContext(((ContextWrapper) context).getBaseContext());
+            return lookupContextNoThrow(((ContextWrapper) context).getBaseContext());
         } else {
-            throw new IllegalArgumentException("Cannot find ActivityContext in parent tree");
+            return null;
         }
+    }
+
+    default View.OnClickListener getItemOnClickListener() {
+        return v -> {
+            // No op.
+        };
     }
 }

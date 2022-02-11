@@ -15,6 +15,15 @@
  */
 package com.android.launcher3.taskbar;
 
+import android.view.View;
+
+import androidx.annotation.CallSuper;
+
+import com.android.launcher3.model.data.ItemInfoWithIcon;
+import com.android.launcher3.model.data.WorkspaceItemInfo;
+
+import java.util.stream.Stream;
+
 /**
  * Base class for providing different taskbar UI
  */
@@ -22,20 +31,40 @@ public class TaskbarUIController {
 
     public static final TaskbarUIController DEFAULT = new TaskbarUIController();
 
-    /**
-     * Pads the Hotseat to line up exactly with Taskbar's copy of the Hotseat.
-     */
-    public void alignRealHotseatWithTaskbar() { }
+    // Initialized in init.
+    protected TaskbarControllers mControllers;
 
-    protected void onCreate() { }
+    @CallSuper
+    protected void init(TaskbarControllers taskbarControllers) {
+        mControllers = taskbarControllers;
+    }
 
-    protected void onDestroy() { }
+    @CallSuper
+    protected void onDestroy() {
+        mControllers = null;
+    }
 
     protected boolean isTaskbarTouchable() {
         return true;
     }
 
-    protected void onImeVisible(TaskbarDragLayer container, boolean isVisible) {
-        container.updateImeBarVisibilityAlpha(isVisible ? 1 : 0);
+    protected void onStashedInAppChanged() { }
+
+    public Stream<ItemInfoWithIcon> getAppIconsForEdu() {
+        return Stream.empty();
+    }
+
+    public void onTaskbarIconLaunched(WorkspaceItemInfo item) { }
+
+    public View getRootView() {
+        return mControllers.taskbarActivityContext.getDragLayer();
+    }
+
+    /**
+     * Called when swiping from the bottom nav region in fully gestural mode.
+     * @param inProgress True if the animation started, false if we just settled on an end target.
+     */
+    public void setSystemGestureInProgress(boolean inProgress) {
+        mControllers.taskbarStashController.setSystemGestureInProgress(inProgress);
     }
 }
