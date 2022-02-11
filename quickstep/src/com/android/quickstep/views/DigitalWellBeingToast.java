@@ -144,7 +144,6 @@ public final class DigitalWellBeingToast {
 
     public void initialize(Task task) {
         mTask = task;
-
         THREAD_POOL_EXECUTOR.execute(() -> {
             final AppUsageLimit usageLimit = mLauncherApps.getAppUsageLimit(
                     task.getTopComponent().getPackageName(),
@@ -321,7 +320,7 @@ public final class DigitalWellBeingToast {
                 mTaskView.getThumbnail().getLayoutParams()).bottomMargin;
         PagedOrientationHandler orientationHandler = mTaskView.getPagedOrientationHandler();
         Pair<Float, Float> translations = orientationHandler
-                .setDwbLayoutParamsAndGetTranslations(mTaskView.getMeasuredWidth(),
+                .getDwbLayoutTranslations(mTaskView.getMeasuredWidth(),
                         mTaskView.getMeasuredHeight(), mStagedSplitBounds, deviceProfile,
                         mTaskView.getThumbnails(), mTask.key.id, mBanner);
         mSplitOffsetTranslationX = translations.first;

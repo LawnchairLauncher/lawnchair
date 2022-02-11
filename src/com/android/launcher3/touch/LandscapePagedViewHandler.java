@@ -310,9 +310,10 @@ public class LandscapePagedViewHandler implements PagedOrientationHandler {
     }
 
     @Override
-    public Pair<Float, Float> setDwbLayoutParamsAndGetTranslations(int taskViewWidth,
+    public Pair<Float, Float> getDwbLayoutTranslations(int taskViewWidth,
             int taskViewHeight, StagedSplitBounds splitBounds, DeviceProfile deviceProfile,
             View[] thumbnailViews, int desiredTaskId, View banner) {
+        boolean isRtl = banner.getLayoutDirection() == View.LAYOUT_DIRECTION_RTL;
         float translationX = 0;
         float translationY = 0;
         FrameLayout.LayoutParams bannerParams = (FrameLayout.LayoutParams) banner.getLayoutParams();
@@ -323,7 +324,7 @@ public class LandscapePagedViewHandler implements PagedOrientationHandler {
         FrameLayout.LayoutParams snapshotParams =
                 (FrameLayout.LayoutParams) thumbnailViews[0]
                         .getLayoutParams();
-        bannerParams.gravity = TOP | START;
+        bannerParams.gravity = TOP | (isRtl ? END : START);
         if (splitBounds == null) {
             // Single, fullscreen case
             bannerParams.width = taskViewHeight - snapshotParams.topMargin;
@@ -339,9 +340,11 @@ public class LandscapePagedViewHandler implements PagedOrientationHandler {
 
         // Set translations
         if (desiredTaskId == splitBounds.rightBottomTaskId) {
-            translationY = (snapshotParams.topMargin + taskViewHeight)
-                    * (splitBounds.leftTaskPercent) +
-                    (taskViewHeight * splitBounds.dividerWidthPercent);
+            float topLeftTaskPlusDividerPercent = splitBounds.appsStackedVertically
+                    ? (splitBounds.topTaskPercent + splitBounds.dividerHeightPercent)
+                    : (splitBounds.leftTaskPercent + splitBounds.dividerWidthPercent);
+            translationY = snapshotParams.topMargin
+                    + ((taskViewHeight - snapshotParams.topMargin) * topLeftTaskPlusDividerPercent);
         }
         if (desiredTaskId == splitBounds.leftTopTaskId) {
             translationY = snapshotParams.topMargin;
@@ -440,7 +443,9 @@ public class LandscapePagedViewHandler implements PagedOrientationHandler {
             StagedSplitBounds splitBoundsConfig, DeviceProfile dp) {
         int spaceAboveSnapshot = dp.overviewTaskThumbnailTopMarginPx;
         int totalThumbnailHeight = parentHeight - spaceAboveSnapshot;
-        int dividerBar = splitBoundsConfig.visualDividerBounds.width();
+        int dividerBar = splitBoundsConfig.appsStackedVertically
+                ? splitBoundsConfig.visualDividerBounds.height()
+                : splitBoundsConfig.visualDividerBounds.width();
         int primarySnapshotHeight;
         int primarySnapshotWidth;
         int secondarySnapshotHeight;

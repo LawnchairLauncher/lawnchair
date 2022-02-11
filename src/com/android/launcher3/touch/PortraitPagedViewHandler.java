@@ -324,7 +324,7 @@ public class PortraitPagedViewHandler implements PagedOrientationHandler {
     }
 
     @Override
-    public Pair<Float, Float> setDwbLayoutParamsAndGetTranslations(int taskViewWidth,
+    public Pair<Float, Float> getDwbLayoutTranslations(int taskViewWidth,
             int taskViewHeight, StagedSplitBounds splitBounds, DeviceProfile deviceProfile,
             View[] thumbnailViews, int desiredTaskId, View banner) {
         float translationX = 0;
@@ -360,8 +360,11 @@ public class PortraitPagedViewHandler implements PagedOrientationHandler {
                 FrameLayout.LayoutParams snapshotParams =
                         (FrameLayout.LayoutParams) thumbnailViews[0]
                                 .getLayoutParams();
+                float bottomRightTaskPlusDividerPercent = splitBounds.appsStackedVertically
+                        ? (1f - splitBounds.topTaskPercent)
+                        : (1f - splitBounds.leftTaskPercent);
                 translationY = -((taskViewHeight - snapshotParams.topMargin)
-                        * (1f - splitBounds.topTaskPercent));
+                        * bottomRightTaskPlusDividerPercent);
             }
         }
         return new Pair<>(translationX, translationY);
