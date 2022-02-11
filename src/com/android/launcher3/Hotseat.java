@@ -12,6 +12,8 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ *
+ * Modifications copyright 2022 Lawnchair
  */
 
 package com.android.launcher3;
@@ -29,9 +31,11 @@ import android.widget.FrameLayout;
 
 import androidx.annotation.Nullable;
 
+import com.patrykmichalik.preferencemanager.PreferenceExtensionsKt;
+
 import java.util.function.Consumer;
 
-import app.lawnchair.preferences.PreferenceManager;
+import app.lawnchair.preferences2.PreferenceManager2;
 
 /**
  * View class that represents the bottom row of the home screen.
@@ -64,8 +68,9 @@ public class Hotseat extends CellLayout implements Insettable {
     public Hotseat(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
 
-        boolean enableQsb = PreferenceManager.getInstance(context).getEnableHotseatQsb().get();
-        int layoutId = enableQsb ? R.layout.search_container_hotseat : R.layout.empty_view;
+        PreferenceManager2 preferenceManager2 = PreferenceManager2.getInstance(context);
+        boolean hotseatQsb = PreferenceExtensionsKt.firstBlocking(preferenceManager2.getHotseatQsb());
+        int layoutId = hotseatQsb ? R.layout.search_container_hotseat : R.layout.empty_view;
         mQsb = LayoutInflater.from(context).inflate(layoutId, this, false);
         mQsbHeight = mQsb.getLayoutParams().height;
         addView(mQsb);

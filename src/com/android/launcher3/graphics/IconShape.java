@@ -47,6 +47,7 @@ import com.android.launcher3.anim.RoundedRectRevealOutlineProvider;
 import com.android.launcher3.icons.GraphicsUtils;
 import com.android.launcher3.icons.IconNormalizer;
 import com.android.launcher3.views.ClipPathView;
+import com.patrykmichalik.preferencemanager.PreferenceExtensionsKt;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -56,7 +57,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import app.lawnchair.icons.CustomAdaptiveIconDrawable;
-import app.lawnchair.preferences.PreferenceManager;
+import app.lawnchair.preferences2.PreferenceManager2;
 
 /**
  * Abstract representation of the shape of an icon shape
@@ -165,7 +166,8 @@ public abstract class IconShape {
         private final app.lawnchair.icons.shape.IconShape mIconShape;
 
         public AdaptiveIconShape(Context context) {
-            mIconShape = PreferenceManager.getInstance(context).getIconShape().get();
+            PreferenceManager2 preferenceManager2 = PreferenceManager2.getInstance(context);
+            mIconShape = PreferenceExtensionsKt.firstBlocking(preferenceManager2.getIconShape());
         }
 
         @Override

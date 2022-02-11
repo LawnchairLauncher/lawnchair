@@ -1,5 +1,5 @@
 /*
- * Copyright 2021, Lawnchair
+ * Copyright 2022, Lawnchair
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,16 +21,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import app.lawnchair.LawnchairLauncher
 import app.lawnchair.font.FontCache
-import app.lawnchair.icons.CustomAdaptiveIconDrawable
-import app.lawnchair.icons.shape.IconShape
-import app.lawnchair.icons.shape.IconShapeManager
 import app.lawnchair.theme.color.ColorOption
 import app.lawnchair.util.isOnePlusStock
 import com.android.launcher3.InvariantDeviceProfile
 import com.android.launcher3.Utilities
 import com.android.launcher3.util.ComponentKey
 import com.android.launcher3.util.MainThreadInitializedObject
-import com.android.launcher3.graphics.IconShape as L3IconShape
 
 class PreferenceManager private constructor(private val context: Context) : BasePreferenceManager(context) {
     private val idp get() = InvariantDeviceProfile.INSTANCE.get(context)
@@ -52,7 +48,6 @@ class PreferenceManager private constructor(private val context: Context) : Base
     val allowRotation = BoolPref("pref_allowRotation", false)
     val wrapAdaptiveIcons = BoolPref("prefs_wrapAdaptive", false, reloadIcons)
     val addIconToHome = BoolPref("pref_add_icon_to_home", true)
-    val enableHotseatQsb = BoolPref("pref_dockSearchBar", true, restart)
     val hotseatColumns = IdpIntPref("pref_hotseatColumns", { numHotseatIcons }, reloadGrid)
     val workspaceColumns = IdpIntPref("pref_workspaceColumns", { numColumns }, reloadGrid)
     val workspaceRows = IdpIntPref("pref_workspaceRows", { numRows }, reloadGrid)
@@ -98,13 +93,6 @@ class PreferenceManager private constructor(private val context: Context) : Base
     val searchAutoShowKeyboard = BoolPref("pref_searchAutoShowKeyboard", false)
     val enableDebugMenu = BoolPref("pref_enableDebugMenu", false)
     val folderPreviewBgOpacity = FloatPref("pref_folderPreviewBgOpacity", 1F, reloadIcons)
-    val iconShape = ObjectPref(
-        "pref_iconShape",
-        IconShape.Circle,
-        { IconShape.fromString(it) ?: IconShapeManager.getSystemIconShape(context) },
-        { it.toString() },
-        this::onIconShapeChanged
-    )
     val customAppName = object : MutableMapPref<ComponentKey, String>("pref_appNameMap", reloadGrid) {
         override fun flattenKey(key: ComponentKey) = key.toString()
         override fun unflattenKey(key: String) = ComponentKey.fromString(key)!!
@@ -126,9 +114,7 @@ class PreferenceManager private constructor(private val context: Context) : Base
     val showComponentName = BoolPref("pref_showComponentName", false)
     val themedIcons = BoolPref("themed_icons", false)
     val hotseatQsbCornerRadius = FloatPref("pref_hotseatQsbCornerRadius", 1F, recreate)
-    val themedHotseatQsb = BoolPref("pref_themedHotseatQsb", false)
     val allAppsCellHeightMultiplier = FloatPref("pref_allAppsCellHeightMultiplier", 1F, reloadGrid)
-    val darkStatusBar = BoolPref("pref_darkStatusBar", false)
 
     val recentsActionScreenshot = BoolPref("pref_recentsActionScreenshot", !isOnePlusStock)
     val recentsActionShare = BoolPref("pref_recentsActionShare", isOnePlusStock)
@@ -138,21 +124,6 @@ class PreferenceManager private constructor(private val context: Context) : Base
 
     init {
         sp.registerOnSharedPreferenceChangeListener(this)
-        initializeIconShape()
-    }
-
-    // TODO: move these somewhere else
-    private fun initializeIconShape() {
-        val shape = iconShape.get()
-        CustomAdaptiveIconDrawable.sInitialized = true
-        CustomAdaptiveIconDrawable.sMaskId = shape.getHashString()
-        CustomAdaptiveIconDrawable.sMask = shape.getMaskPath()
-    }
-
-    private fun onIconShapeChanged() {
-        initializeIconShape()
-        L3IconShape.init(context)
-        idp.onPreferencesChanged(context)
     }
 
     companion object {

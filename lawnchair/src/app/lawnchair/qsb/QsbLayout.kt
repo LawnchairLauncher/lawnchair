@@ -18,8 +18,10 @@ import app.lawnchair.HeadlessWidgetsManager
 import app.lawnchair.launcher
 import app.lawnchair.launcherNullable
 import app.lawnchair.preferences.PreferenceManager
+import app.lawnchair.preferences2.PreferenceManager2
 import app.lawnchair.util.pendingIntent
 import app.lawnchair.util.recursiveChildren
+import app.lawnchair.util.viewAttachedScope
 import com.android.launcher3.BaseActivity
 import com.android.launcher3.DeviceProfile
 import com.android.launcher3.LauncherState
@@ -28,7 +30,7 @@ import com.android.launcher3.anim.AnimatorListeners.forSuccessCallback
 import com.android.launcher3.qsb.QsbContainerView
 import com.android.launcher3.util.Themes
 import com.android.launcher3.views.ActivityContext
-import kotlinx.coroutines.flow.collect
+import com.patrykmichalik.preferencemanager.onEach
 import kotlinx.coroutines.launch
 
 class QsbLayout(context: Context, attrs: AttributeSet?) : FrameLayout(context, attrs) {
@@ -39,6 +41,7 @@ class QsbLayout(context: Context, attrs: AttributeSet?) : FrameLayout(context, a
     private lateinit var lensIcon: ImageView
     private lateinit var inner: FrameLayout
     private lateinit var preferenceManager: PreferenceManager
+    private lateinit var preferenceManager2: PreferenceManager2
     private var searchPendingIntent: PendingIntent? = null
 
     override fun onFinishInflate() {
@@ -49,6 +52,7 @@ class QsbLayout(context: Context, attrs: AttributeSet?) : FrameLayout(context, a
         lensIcon = ViewCompat.requireViewById(this, R.id.lens_icon)
         inner = ViewCompat.requireViewById(this, R.id.inner)
         preferenceManager = PreferenceManager.getInstance(context)
+        preferenceManager2 = PreferenceManager2.getInstance(context)
 
         val searchPackage = getSearchPackageName(context)
         setUpMainSearch(searchPackage)
@@ -56,9 +60,10 @@ class QsbLayout(context: Context, attrs: AttributeSet?) : FrameLayout(context, a
         clipIconRipples()
 
         val isGoogle = searchPackage == GOOGLE_PACKAGE
-        preferenceManager.themedHotseatQsb.subscribeValues(this) {
-            setThemed(it, isGoogle)
+        preferenceManager2.themedHotseatQsb.onEach(launchIn = viewAttachedScope) { themedHotseatQsb ->
+            setThemed(themedHotseatQsb, isGoogle)
         }
+
         if (isGoogle) {
             setUpLensIcon()
         } else {
