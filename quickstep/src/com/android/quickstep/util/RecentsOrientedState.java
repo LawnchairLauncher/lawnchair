@@ -341,7 +341,7 @@ public class RecentsOrientedState implements
 
     @SurfaceRotation
     public int getDisplayRotation() {
-        if (TaskAnimationManager.ENABLE_SHELL_TRANSITIONS) {
+        if (TaskAnimationManager.SHELL_TRANSITIONS_ROTATION) {
             // When shell transitions are enabled, both the display and activity rotations should
             // be the same once the gesture starts
             return mRecentsActivityRotation;

@@ -305,7 +305,7 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
             mOrientationStateId = mOrientationState.getStateId();
 
             getFullScreenScale();
-            if (TaskAnimationManager.ENABLE_SHELL_TRANSITIONS) {
+            if (TaskAnimationManager.SHELL_TRANSITIONS_ROTATION) {
                 // With shell transitions, the display is rotated early so we need to actually use
                 // the rotation when the gesture starts
                 mThumbnailData.rotation = mOrientationState.getTouchRotation();
