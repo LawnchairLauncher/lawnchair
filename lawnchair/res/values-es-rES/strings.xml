@@ -138,7 +138,7 @@
     <string name="icon_shape_system">Sistema</string>
     <string name="icon_shape_circle">Circular</string>
     <string name="icon_shape_rounded_square">Cuadrado redondeado</string>
-    <string name="icon_shape_squircle">Cuadrado circular</string>
+    <string name="icon_shape_squircle">Squircle</string>
     <string name="customize_button_text">Personalizar</string>
     <string name="app_title_label">Título</string>
     <string name="hide_from_drawer">Ocultar del Cajón</string>
