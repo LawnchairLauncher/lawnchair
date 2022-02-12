@@ -30,6 +30,7 @@ import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences.preferenceManager
 import app.lawnchair.preferences2.PreferenceCollectorScope
 import app.lawnchair.preferences2.preferenceManager2
+import app.lawnchair.theme.color.ColorOption
 import app.lawnchair.ui.preferences.components.*
 import app.lawnchair.util.Constants.LAWNICONS_PACKAGE_NAME
 import app.lawnchair.util.ifNotNull
@@ -51,15 +52,18 @@ fun NavGraphBuilder.generalGraph(route: String) {
 
 interface GeneralPreferenceCollectorScope : PreferenceCollectorScope {
     val iconShape: IconShape
+    val accentColor: ColorOption
 }
 
 @Composable
 fun GeneralPreferenceCollector(content: @Composable GeneralPreferenceCollectorScope.() -> Unit) {
     val preferenceManager = preferenceManager2()
     val iconShape by preferenceManager.iconShape.state()
-    ifNotNull(iconShape) {
+    val accentColor by preferenceManager.accentColor.state()
+    ifNotNull(iconShape, accentColor) {
         object : GeneralPreferenceCollectorScope {
             override val iconShape = it[0] as IconShape
+            override val accentColor = it[1] as ColorOption
             override val coroutineScope = rememberCoroutineScope()
             override val preferenceManager = preferenceManager
         }.content()
@@ -106,7 +110,10 @@ fun GeneralPreferences() {
             }
             PreferenceGroup(heading = stringResource(id = R.string.colors)) {
                 ThemePreference()
-                AccentColorPreference()
+                AccentColorPreference(
+                    value = accentColor,
+                    edit = { accentColor.set(value = it) },
+                )
             }
             val wrapAdaptiveIcons = prefs.wrapAdaptiveIcons.getAdapter()
             PreferenceGroup(

@@ -24,6 +24,8 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import app.lawnchair.icons.shape.IconShape
 import app.lawnchair.icons.shape.IconShapeManager
+import app.lawnchair.theme.color.ColorOption
+import com.android.launcher3.Utilities
 import com.android.launcher3.util.MainThreadInitializedObject
 import com.patrykmichalik.preferencemanager.PreferenceManager
 
@@ -53,6 +55,18 @@ class PreferenceManager2(private val context: Context) : PreferenceManager {
     val themedHotseatQsb = preference(
         key = booleanPreferencesKey(name = "themed_hotseat_qsb"),
         defaultValue = false,
+    )
+
+    val accentColor = preference(
+        key = stringPreferencesKey(name = "accent_color"),
+        parse = ColorOption::fromString,
+        save = ColorOption::toString,
+        onSet = reloadHelper::recreate,
+        defaultValue = when {
+            Utilities.ATLEAST_S -> ColorOption.SystemAccent
+            Utilities.ATLEAST_O_MR1 -> ColorOption.WallpaperPrimary
+            else -> ColorOption.LawnchairBlue
+        },
     )
 
     companion object {

@@ -29,6 +29,7 @@ class SharedPreferencesMigration(private val context: Context) {
     private val keys = mapOf(
         "pref_darkStatusBar" to "dark_status_bar", "pref_dockSearchBar" to "dock_search_bar",
         "pref_iconShape" to "icon_shape", "pref_themedHotseatQsb" to "themed_hotseat_qsb",
+        "pref_accentColor2" to "accent_color",
     )
 
     fun produceMigration() = androidx.datastore.migrations.SharedPreferencesMigration(

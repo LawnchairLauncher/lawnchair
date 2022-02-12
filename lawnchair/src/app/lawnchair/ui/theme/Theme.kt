@@ -21,15 +21,16 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material3.ColorScheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.platform.LocalContext
-import app.lawnchair.preferences.PreferenceManager
 import app.lawnchair.preferences.observeAsState
 import app.lawnchair.preferences.preferenceManager
+import app.lawnchair.preferences2.preferenceManager2
 import app.lawnchair.theme.ThemeProvider
 import app.lawnchair.theme.m3ColorScheme
 import app.lawnchair.theme.materialColors
 import app.lawnchair.ui.preferences.components.ThemeChoice
 import app.lawnchair.wallpaper.WallpaperManagerCompat
 import com.android.launcher3.Utilities
+import com.patrykmichalik.preferencemanager.state
 import androidx.compose.material3.MaterialTheme as Material3Theme
 
 @Composable
@@ -54,8 +55,8 @@ fun LawnchairTheme(
 @Composable
 fun getColorScheme(darkTheme: Boolean): ColorScheme {
     val context = LocalContext.current
-    val prefs = PreferenceManager.getInstance(context)
-    val accentColor = prefs.accentColor.observeAsState().value
+    val preferenceManager2 = preferenceManager2()
+    val accentColor by preferenceManager2.accentColor.state()
     val colorScheme = remember(accentColor) {
         ThemeProvider.INSTANCE.get(context).colorScheme
     }
