@@ -26,6 +26,10 @@
     android:saveEnabled="false">
 
     <include
+        layout="@layout/all_apps_bottom_sheet_background"
+        android:visibility="gone" />
+
+    <include
         layout="@layout/all_apps_rv_layout"
         android:visibility="gone" />
 
