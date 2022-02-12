@@ -275,11 +275,24 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
             // taskbar, we use an OnLongClickListener on TaskbarView instead.
             return false;
         }
+        if (!canCurrentlyManuallyUnstash()) {
+            return false;
+        }
         if (updateAndAnimateIsManuallyStashedInApp(false)) {
             mControllers.taskbarActivityContext.getDragLayer().performHapticFeedback(LONG_PRESS);
             return true;
         }
         return false;
+    }
+
+    /**
+     * Returns whether taskbar will unstash when long pressing it based on the current state. The
+     * only time this is true is if the user is in an app and the taskbar is only stashed because
+     * the user previously long pressed to manually stash (not due to other reasons like IME).
+     */
+    private boolean canCurrentlyManuallyUnstash() {
+        return (mState & (FLAG_IN_APP | FLAGS_STASHED_IN_APP))
+                == (FLAG_IN_APP | FLAG_STASHED_IN_APP_MANUAL);
     }
 
     /**
@@ -421,6 +434,11 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
     public void startUnstashHint(boolean animateForward) {
         if (!isStashed()) {
             // Already unstashed, no need to hint in that direction.
+            return;
+        }
+        if (!canCurrentlyManuallyUnstash()) {
+            // If any other flags are causing us to be stashed, long press won't cause us to
+            // unstash, so don't hint that it will.
             return;
         }
         mTaskbarStashedHandleHintScale.animateToValue(
