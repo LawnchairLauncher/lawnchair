@@ -75,17 +75,6 @@ class PreferenceManager private constructor(private val context: Context) : Base
     val overrideWindowCornerRadius = BoolPref("pref_overrideWindowCornerRadius", false, recreate)
     val windowCornerRadius = IntPref("pref_windowCornerRadius", 80, recreate)
     val autoLaunchRoot = BoolPref("pref_autoLaunchRoot", false)
-    val accentColor = ObjectPref(
-        "pref_accentColor2",
-        when {
-            Utilities.ATLEAST_S -> ColorOption.SystemAccent
-            Utilities.ATLEAST_O_MR1 -> ColorOption.WallpaperPrimary
-            else -> ColorOption.LawnchairBlue
-        },
-        ColorOption::fromString,
-        ColorOption::toString,
-        recreate
-    )
     val wallpaperScrolling = BoolPref("pref_wallpaperScrolling", true)
     val showSysUiScrim = BoolPref("pref_showSysUiScrim", true)
     val showStatusBar = BoolPref("pref_showStatusBar", true, recreate)
