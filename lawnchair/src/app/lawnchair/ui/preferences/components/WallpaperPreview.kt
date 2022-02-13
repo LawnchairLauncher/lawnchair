@@ -11,8 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import com.google.accompanist.drawablepainter.rememberDrawablePainter
-import com.google.accompanist.permissions.ExperimentalPermissionsApi
-import com.google.accompanist.permissions.rememberPermissionState
+import com.google.accompanist.permissions.*
 
 @Composable
 fun WallpaperPreview(modifier: Modifier = Modifier) {
@@ -32,15 +31,13 @@ fun wallpaperDrawable(): Drawable? {
     val context = LocalContext.current
     val wallpaperManager = remember { WallpaperManager.getInstance(context) }
     val wallpaperInfo = wallpaperManager.wallpaperInfo
-
     val permissionState = rememberPermissionState(android.Manifest.permission.READ_EXTERNAL_STORAGE)
+
     return when {
         wallpaperInfo != null -> remember { wallpaperInfo.loadThumbnail(context.packageManager) }
-        permissionState.hasPermission -> remember { wallpaperManager.drawable }
-        permissionState.shouldShowRationale || !permissionState.permissionRequested -> {
-            SideEffect {
-                permissionState.launchPermissionRequest()
-            }
+        permissionState.status.isGranted -> remember { wallpaperManager.drawable }
+        permissionState.status.isGranted.not() -> {
+            SideEffect { permissionState.launchPermissionRequest() }
             null
         }
         else -> null
