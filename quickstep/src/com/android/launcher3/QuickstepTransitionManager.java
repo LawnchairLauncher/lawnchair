@@ -16,6 +16,7 @@
 
 package com.android.launcher3;
 
+import static android.provider.Settings.Secure.LAUNCHER_TASKBAR_EDUCATION_SHOWING;
 import static android.window.StartingWindowInfo.STARTING_WINDOW_TYPE_NONE;
 import static android.window.StartingWindowInfo.STARTING_WINDOW_TYPE_SPLASH_SCREEN;
 
@@ -75,6 +76,7 @@ import android.os.IBinder;
 import android.os.Looper;
 import android.os.SystemProperties;
 import android.os.UserHandle;
+import android.provider.Settings;
 import android.util.Pair;
 import android.util.Size;
 import android.view.SurfaceControl;
@@ -682,6 +684,18 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
         appAnimator.setInterpolator(LINEAR);
         appAnimator.addListener(floatingView);
         appAnimator.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+                LauncherTaskbarUIController taskbarController = mLauncher.getTaskbarUIController();
+                if (taskbarController != null && taskbarController.shouldShowEdu()) {
+                    // LAUNCHER_TASKBAR_EDUCATION_SHOWING is set to true here, when the education
+                    // flow is about to start, to avoid a race condition with other components
+                    // that would show something else to the user as soon as the app is opened.
+                    Settings.Secure.putInt(mLauncher.getContentResolver(),
+                            LAUNCHER_TASKBAR_EDUCATION_SHOWING, 1);
+                }
+            }
+
             @Override
             public void onAnimationEnd(Animator animation) {
                 if (v instanceof BubbleTextView) {
