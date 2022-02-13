@@ -75,6 +75,12 @@ class PreferenceManager2(private val context: Context) : PreferenceManager {
         defaultValue = setOf(),
     )
 
+    val roundedWidgets = preference(
+        key = booleanPreferencesKey(name = "rounded_widgets"),
+        defaultValue = true,
+        onSet = reloadHelper::reloadGrid,
+    )
+
     companion object {
         private val Context.preferencesDataStore by preferencesDataStore(
             name = "preferences",

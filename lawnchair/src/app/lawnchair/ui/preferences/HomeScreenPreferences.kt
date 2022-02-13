@@ -47,15 +47,18 @@ fun NavGraphBuilder.homeScreenGraph(route: String) {
 
 interface HomeScreenPreferenceCollectorScope : PreferenceCollectorScope {
     val darkStatusBar: Boolean
+    val roundedWidgets: Boolean
 }
 
 @Composable
 fun HomeScreenPreferenceCollector(content: @Composable HomeScreenPreferenceCollectorScope.() -> Unit) {
     val preferenceManager = preferenceManager2()
     val darkStatusBar by preferenceManager.darkStatusBar.state()
-    ifNotNull(darkStatusBar) {
+    val roundedWidgets by preferenceManager.roundedWidgets.state()
+    ifNotNull(darkStatusBar, roundedWidgets) {
         object : HomeScreenPreferenceCollectorScope {
             override val darkStatusBar = it[0] as Boolean
+            override val roundedWidgets = it[1] as Boolean
             override val coroutineScope = rememberCoroutineScope()
             override val preferenceManager = preferenceManager
         }.content()
@@ -147,9 +150,10 @@ fun HomeScreenPreferences() {
             }
             if (!Utilities.ATLEAST_S) {
                 PreferenceGroup(heading = stringResource(id = R.string.widget_button_text)) {
-                    SwitchPreference(
-                        adapter = prefs.roundedWidgets.getAdapter(),
+                    SwitchPreference2(
+                        checked = roundedWidgets,
                         label = stringResource(id = R.string.force_rounded_widgets),
+                        edit = { roundedWidgets.set(value = it) },
                     )
                 }
             }
