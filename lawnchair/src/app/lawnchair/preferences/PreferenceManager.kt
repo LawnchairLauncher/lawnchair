@@ -43,7 +43,6 @@ class PreferenceManager private constructor(private val context: Context) : Base
         recreate()
     }
 
-    val hiddenAppSet = StringSetPref("hidden-app-set", setOf())
     val iconPackPackage = StringPref("pref_iconPackPackage", "", reloadIcons)
     val allowRotation = BoolPref("pref_allowRotation", false)
     val wrapAdaptiveIcons = BoolPref("prefs_wrapAdaptive", false, reloadIcons)

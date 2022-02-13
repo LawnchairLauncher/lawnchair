@@ -19,20 +19,21 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import app.lawnchair.launcher
-import app.lawnchair.preferences.customPreferenceAdapter
-import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences.preferenceManager
+import app.lawnchair.preferences2.preferenceManager2
 import app.lawnchair.ui.preferences.PreferenceActivity
 import app.lawnchair.ui.preferences.Routes
 import app.lawnchair.ui.preferences.components.ClickableIcon
 import app.lawnchair.ui.preferences.components.PreferenceGroup
-import app.lawnchair.ui.preferences.components.SwitchPreference
+import app.lawnchair.ui.preferences.components.SwitchPreference2
 import app.lawnchair.ui.util.addIfNotNull
 import app.lawnchair.util.navigationBarsOrDisplayCutoutPadding
 import com.android.launcher3.LauncherAppState
 import com.android.launcher3.R
 import com.android.launcher3.util.ComponentKey
 import com.google.accompanist.drawablepainter.rememberDrawablePainter
+import com.patrykmichalik.preferencemanager.state
+import kotlinx.coroutines.launch
 
 @ExperimentalMaterialApi
 @Composable
@@ -103,6 +104,8 @@ fun CustomizeAppDialog(
     onClose: () -> Unit
 ) {
     val prefs = preferenceManager()
+    val preferenceManager2 = preferenceManager2()
+    val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
     var title by remember { mutableStateOf("") }
 
@@ -127,7 +130,7 @@ fun CustomizeAppDialog(
                 val idp = las.invariantDeviceProfile
                 las.iconCache.updateIconsForPkg(
                     componentKey.componentName.packageName,
-                    componentKey.user
+                    componentKey.user,
                 )
                 context.launcher.onIdpChanged(idp)
             }
@@ -142,26 +145,22 @@ fun CustomizeAppDialog(
     ) {
         PreferenceGroup(
             description = componentKey.componentName.flattenToString(),
-            showDescription = prefs.showComponentName.get()
+            showDescription = prefs.showComponentName.get(),
         ) {
             val stringKey = componentKey.toString()
-            var hiddenApps by prefs.hiddenAppSet.getAdapter()
-            val adapter = customPreferenceAdapter(
-                value = hiddenApps.contains(stringKey),
-                onValueChange = { isHidden ->
-                    val newSet = hiddenApps.toMutableSet()
-                    if (isHidden) {
-                        newSet.add(stringKey)
-                    } else {
-                        newSet.remove(stringKey)
-                    }
-                    hiddenApps = newSet
-                }
-            )
-            SwitchPreference(
-                adapter = adapter,
-                label = stringResource(id = R.string.hide_from_drawer)
-            )
+            preferenceManager2.hiddenApps.state().value?.let { hiddenApps ->
+                SwitchPreference2(
+                    checked = hiddenApps.contains(stringKey),
+                    label = stringResource(id = R.string.hide_from_drawer),
+                    onCheckedChange = {
+                        val newSet = hiddenApps.toMutableSet()
+                        if (it) newSet.add(stringKey) else newSet.remove(stringKey)
+                        coroutineScope.launch {
+                            preferenceManager2.hiddenApps.set(value = newSet)
+                        }
+                    },
+                )
+            }
         }
     }
 }

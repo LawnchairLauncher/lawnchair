@@ -18,15 +18,21 @@ package app.lawnchair.ui.preferences
 
 import androidx.compose.animation.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavGraphBuilder
 import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences.not
 import app.lawnchair.preferences.preferenceManager
+import app.lawnchair.preferences2.PreferenceCollectorScope
+import app.lawnchair.preferences2.preferenceManager2
 import app.lawnchair.search.LawnchairSearchAlgorithm
 import app.lawnchair.ui.preferences.components.*
+import app.lawnchair.util.ifNotNull
 import com.android.launcher3.R
+import com.patrykmichalik.preferencemanager.state
 
 object AppDrawerRoutes {
     const val HIDDEN_APPS = "hiddenApps"
@@ -39,116 +45,135 @@ fun NavGraphBuilder.appDrawerGraph(route: String) {
     }
 }
 
+interface AppDrawerPreferenceCollectorScope : PreferenceCollectorScope {
+    val hiddenApps: Set<String>
+}
+
+@Composable
+fun AppDrawerPreferenceCollector(content: @Composable AppDrawerPreferenceCollectorScope.() -> Unit) {
+    val preferenceManager = preferenceManager2()
+    val hiddenApps by preferenceManager.hiddenApps.state()
+    ifNotNull(hiddenApps) {
+        object : AppDrawerPreferenceCollectorScope {
+            override val hiddenApps = it[0] as Set<String>
+            override val coroutineScope = rememberCoroutineScope()
+            override val preferenceManager = preferenceManager
+        }.content()
+    }
+}
+
 @ExperimentalAnimationApi
 @Composable
 fun AppDrawerPreferences() {
-    val prefs = preferenceManager()
-    val resources = LocalContext.current.resources
-    PreferenceLayout(label = stringResource(id = R.string.app_drawer_label)) {
-        PreferenceGroup(heading = stringResource(id = R.string.general_label), isFirstChild = true) {
-            NavigationActionPreference(
-                label = stringResource(id = R.string.hidden_apps_label),
-                subtitle = resources.getQuantityString(R.plurals.apps_count, hiddenAppsCount(), hiddenAppsCount()),
-                destination = subRoute(name = AppDrawerRoutes.HIDDEN_APPS),
-            )
-            SliderPreference(
-                label = stringResource(id = R.string.background_opacity),
-                adapter = prefs.drawerOpacity.getAdapter(),
-                step = 0.1f,
-                valueRange = 0F..1F,
-                showAsPercentage = true,
-            )
-            SuggestionsPreference()
-        }
-        val deviceSearchEnabled = LawnchairSearchAlgorithm.isDeviceSearchEnabled(LocalContext.current)
-        val showSearchBar = !prefs.hideAppSearchBar.getAdapter()
-        PreferenceGroup(heading = stringResource(id = R.string.pref_category_search)) {
-            SwitchPreference(
-                label = stringResource(id = R.string.show_app_search_bar),
-                adapter = showSearchBar
-            )
-            AnimatedVisibility(
-                visible = showSearchBar.state.value,
-                enter = expandVertically() + fadeIn(),
-                exit = shrinkVertically() + fadeOut()
-            ) {
-                DividerColumn {
-                    SwitchPreference(
-                        adapter = prefs.searchAutoShowKeyboard.getAdapter(),
-                        label = stringResource(id = R.string.pref_search_auto_show_keyboard),
-                    )
-                    if (!deviceSearchEnabled) {
+    AppDrawerPreferenceCollector {
+        val prefs = preferenceManager()
+        val resources = LocalContext.current.resources
+        PreferenceLayout(label = stringResource(id = R.string.app_drawer_label)) {
+            PreferenceGroup(heading = stringResource(id = R.string.general_label), isFirstChild = true) {
+                NavigationActionPreference(
+                    label = stringResource(id = R.string.hidden_apps_label),
+                    subtitle = resources.getQuantityString(R.plurals.apps_count, hiddenApps.size, hiddenApps.size),
+                    destination = subRoute(name = AppDrawerRoutes.HIDDEN_APPS),
+                )
+                SliderPreference(
+                    label = stringResource(id = R.string.background_opacity),
+                    adapter = prefs.drawerOpacity.getAdapter(),
+                    step = 0.1f,
+                    valueRange = 0F..1F,
+                    showAsPercentage = true,
+                )
+                SuggestionsPreference()
+            }
+            val deviceSearchEnabled = LawnchairSearchAlgorithm.isDeviceSearchEnabled(LocalContext.current)
+            val showSearchBar = !prefs.hideAppSearchBar.getAdapter()
+            PreferenceGroup(heading = stringResource(id = R.string.pref_category_search)) {
+                SwitchPreference(
+                    label = stringResource(id = R.string.show_app_search_bar),
+                    adapter = showSearchBar
+                )
+                AnimatedVisibility(
+                    visible = showSearchBar.state.value,
+                    enter = expandVertically() + fadeIn(),
+                    exit = shrinkVertically() + fadeOut()
+                ) {
+                    DividerColumn {
                         SwitchPreference(
-                            adapter = prefs.useFuzzySearch.getAdapter(),
-                            label = stringResource(id = R.string.fuzzy_search_title),
-                            description = stringResource(id = R.string.fuzzy_search_desc)
+                            adapter = prefs.searchAutoShowKeyboard.getAdapter(),
+                            label = stringResource(id = R.string.pref_search_auto_show_keyboard),
+                        )
+                        if (!deviceSearchEnabled) {
+                            SwitchPreference(
+                                adapter = prefs.useFuzzySearch.getAdapter(),
+                                label = stringResource(id = R.string.fuzzy_search_title),
+                                description = stringResource(id = R.string.fuzzy_search_desc)
+                            )
+                        }
+                    }
+                }
+            }
+            if (deviceSearchEnabled) {
+                AnimatedVisibility(
+                    visible = showSearchBar.state.value,
+                    enter = expandVertically() + fadeIn(),
+                    exit = shrinkVertically() + fadeOut()
+                ) {
+                    PreferenceGroup(heading = stringResource(id = R.string.show_search_result_types)) {
+                        SwitchPreference(
+                            adapter = prefs.searchResultShortcuts.getAdapter(),
+                            label = stringResource(id = R.string.search_pref_result_shortcuts_title)
+                        )
+                        SwitchPreference(
+                            adapter = prefs.searchResultPeople.getAdapter(),
+                            label = stringResource(id = R.string.search_pref_result_people_title)
+                        )
+                        SwitchPreference(
+                            adapter = prefs.searchResultPixelTips.getAdapter(),
+                            label = stringResource(id = R.string.search_pref_result_tips_title)
                         )
                     }
                 }
             }
-        }
-        if (deviceSearchEnabled) {
-            AnimatedVisibility(
-                visible = showSearchBar.state.value,
-                enter = expandVertically() + fadeIn(),
-                exit = shrinkVertically() + fadeOut()
-            ) {
-                PreferenceGroup(heading = stringResource(id = R.string.show_search_result_types)) {
-                    SwitchPreference(
-                        adapter = prefs.searchResultShortcuts.getAdapter(),
-                        label = stringResource(id = R.string.search_pref_result_shortcuts_title)
-                    )
-                    SwitchPreference(
-                        adapter = prefs.searchResultPeople.getAdapter(),
-                        label = stringResource(id = R.string.search_pref_result_people_title)
-                    )
-                    SwitchPreference(
-                        adapter = prefs.searchResultPixelTips.getAdapter(),
-                        label = stringResource(id = R.string.search_pref_result_tips_title)
-                    )
-                }
-            }
-        }
-        PreferenceGroup(heading = stringResource(id = R.string.grid)) {
-            SliderPreference(
-                label = stringResource(id = R.string.app_drawer_columns),
-                adapter = prefs.allAppsColumns.getAdapter(),
-                step = 1,
-                valueRange = 3..10,
-            )
-            SliderPreference(
-                label = stringResource(id = R.string.row_height_label),
-                adapter = prefs.allAppsCellHeightMultiplier.getAdapter(),
-                valueRange = 0.7F..1.5F,
-                step = 0.1F,
-                showAsPercentage = true
-            )
-        }
-        PreferenceGroup(heading = stringResource(id = R.string.icons)) {
-            SliderPreference(
-                label = stringResource(id = R.string.icon_size),
-                adapter = prefs.allAppsIconSizeFactor.getAdapter(),
-                step = 0.1f,
-                valueRange = 0.5F..1.5F,
-                showAsPercentage = true,
-            )
-            val allAppsIconLabels = prefs.allAppsIconLabels.getAdapter()
-            SwitchPreference(
-                allAppsIconLabels,
-                label = stringResource(id = R.string.show_home_labels),
-            )
-            AnimatedVisibility(
-                visible = allAppsIconLabels.state.value,
-                enter = expandVertically() + fadeIn(),
-                exit = shrinkVertically() + fadeOut()
-            ) {
+            PreferenceGroup(heading = stringResource(id = R.string.grid)) {
                 SliderPreference(
-                    label = stringResource(id = R.string.label_size),
-                    adapter = prefs.allAppsTextSizeFactor.getAdapter(),
+                    label = stringResource(id = R.string.app_drawer_columns),
+                    adapter = prefs.allAppsColumns.getAdapter(),
+                    step = 1,
+                    valueRange = 3..10,
+                )
+                SliderPreference(
+                    label = stringResource(id = R.string.row_height_label),
+                    adapter = prefs.allAppsCellHeightMultiplier.getAdapter(),
+                    valueRange = 0.7F..1.5F,
                     step = 0.1F,
+                    showAsPercentage = true
+                )
+            }
+            PreferenceGroup(heading = stringResource(id = R.string.icons)) {
+                SliderPreference(
+                    label = stringResource(id = R.string.icon_size),
+                    adapter = prefs.allAppsIconSizeFactor.getAdapter(),
+                    step = 0.1f,
                     valueRange = 0.5F..1.5F,
                     showAsPercentage = true,
                 )
+                val allAppsIconLabels = prefs.allAppsIconLabels.getAdapter()
+                SwitchPreference(
+                    allAppsIconLabels,
+                    label = stringResource(id = R.string.show_home_labels),
+                )
+                AnimatedVisibility(
+                    visible = allAppsIconLabels.state.value,
+                    enter = expandVertically() + fadeIn(),
+                    exit = shrinkVertically() + fadeOut()
+                ) {
+                    SliderPreference(
+                        label = stringResource(id = R.string.label_size),
+                        adapter = prefs.allAppsTextSizeFactor.getAdapter(),
+                        step = 0.1F,
+                        valueRange = 0.5F..1.5F,
+                        showAsPercentage = true,
+                    )
+                }
             }
         }
     }

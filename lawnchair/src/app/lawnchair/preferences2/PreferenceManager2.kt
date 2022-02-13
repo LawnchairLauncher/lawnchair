@@ -21,6 +21,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
+import androidx.datastore.preferences.core.stringSetPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import app.lawnchair.icons.shape.IconShape
 import app.lawnchair.icons.shape.IconShapeManager
@@ -67,6 +68,11 @@ class PreferenceManager2(private val context: Context) : PreferenceManager {
             Utilities.ATLEAST_O_MR1 -> ColorOption.WallpaperPrimary
             else -> ColorOption.LawnchairBlue
         },
+    )
+
+    val hiddenApps = preference(
+        key = stringSetPreferencesKey(name = "hidden_apps"),
+        defaultValue = setOf(),
     )
 
     companion object {
