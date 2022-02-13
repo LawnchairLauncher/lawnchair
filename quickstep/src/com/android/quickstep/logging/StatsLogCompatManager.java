@@ -571,13 +571,16 @@ public class StatsLogCompatManager extends StatsLogManager {
     }
 
     private static int getSearchAttributes(LauncherAtom.ItemInfo info) {
-    /* TODO(b/218973952):Uncomment the logic after broken test is fixed.
-            if (info.getContainerInfo().getExtendedContainers().getDeviceSearchResultContainer()
-                    .hasSearchAttributes()) {
-                return searchAttributesToInt(info.getContainerInfo().getExtendedContainers()
-                        .getDeviceSearchResultContainer().getSearchAttributes());
-            }
-    */
+        ContainerInfo containerInfo = info.getContainerInfo();
+        if (containerInfo.getContainerCase() == EXTENDED_CONTAINERS
+                && containerInfo.getExtendedContainers().getContainerCase()
+                == DEVICE_SEARCH_RESULT_CONTAINER
+                && containerInfo.getExtendedContainers()
+                .getDeviceSearchResultContainer().hasSearchAttributes()
+        ) {
+            return searchAttributesToInt(containerInfo.getExtendedContainers()
+                    .getDeviceSearchResultContainer().getSearchAttributes());
+        }
         return 0;
     }
 
