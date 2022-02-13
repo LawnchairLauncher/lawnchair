@@ -67,7 +67,10 @@ fun ProvideBottomSheetHandler(
                 if (bottomSheetState.isVisible.not()) coroutineScope.launch { bottomSheetState.show() }
             },
             hide = {
-                coroutineScope.launch { bottomSheetState.hide() }
+                onDismiss()
+                coroutineScope.launch {
+                    bottomSheetState.hide()
+                }
             },
             onDismiss = {
                 onDismiss = it
