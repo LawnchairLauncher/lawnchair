@@ -16,6 +16,5 @@
 
 <resources>
 <!-- AllApps -->
-    <dimen name="all_apps_top_padding">300dp</dimen>
-    <dimen name="all_apps_bottom_sheet_horizontal_padding">65dp</dimen>
+    <dimen name="all_apps_top_padding">0dp</dimen>
 </resources>

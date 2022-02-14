@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
-     Copyright (C) 2022 The Android Open Source Project
+<!-- Copyright (C) 2022 The Android Open Source Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -14,16 +13,10 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<ripple android:color="?android:attr/colorControlHighlight"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:androidprv="http://schemas.android.com/apk/prv/res/android">
-    <item>
-        <shape android:shape="rectangle"
-            android:tint="?colorButtonNormal">
-            <corners
-                android:topLeftRadius="@dimen/dialogCornerRadius"
-                android:topRightRadius="@dimen/dialogCornerRadius"/>
-            <solid android:color="?attr/allAppsScrimColor" />
-        </shape>
-    </item>
-</ripple>
+
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:androidprv="http://schemas.android.com/apk/prv/res/android"
+    android:shape="rectangle" >
+    <solid android:color="?androidprv:attr/colorSurfaceVariant"/>
+    <corners android:radius="@dimen/bottom_sheet_handle_corner_radius" />
+</shape>

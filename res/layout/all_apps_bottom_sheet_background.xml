@@ -17,19 +17,19 @@
     android:id="@+id/bottom_sheet_background"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/bg_all_apps_bottom_sheet">
+    android:background="@drawable/bg_rounded_corner_bottom_sheet">
 
     <View
         android:id="@+id/bottom_sheet_handle_area"
         android:layout_width="match_parent"
-        android:layout_height="34dp" />
+        android:layout_height="36dp" />
 
     <View
         android:id="@+id/bottom_sheet_handle"
-        android:layout_width="48dp"
-        android:layout_height="2dp"
+        android:layout_width="@dimen/bottom_sheet_handle_width"
+        android:layout_height="@dimen/bottom_sheet_handle_height"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="16dp"
-        android:background="?android:attr/textColorSecondary" />
+        android:layout_marginTop="@dimen/bottom_sheet_handle_margin"
+        android:layout_marginBottom="@dimen/bottom_sheet_handle_margin"
+        android:background="@drawable/bg_rounded_corner_bottom_sheet_handle" />
 </FrameLayout>

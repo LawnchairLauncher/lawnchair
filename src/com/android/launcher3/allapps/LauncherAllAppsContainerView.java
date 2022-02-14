@@ -16,7 +16,6 @@
 package com.android.launcher3.allapps;
 
 import android.content.Context;
-import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 
@@ -58,13 +57,5 @@ public class LauncherAllAppsContainerView extends ActivityAllAppsContainerView<L
             return false;
         }
         return super.onTouchEvent(ev);
-    }
-
-    @Override
-    public void setInsets(Rect insets) {
-        super.setInsets(insets);
-        int allAppsStartingPositionY = mActivityContext.getDeviceProfile().availableHeightPx
-                - mActivityContext.getDeviceProfile().allAppsOpenVerticalTranslate;
-        mActivityContext.getAllAppsController().setScrollRangeDelta(allAppsStartingPositionY);
     }
 }

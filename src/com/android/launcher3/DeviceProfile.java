@@ -171,7 +171,8 @@ public class DeviceProfile {
 
     // All apps
     public Point allAppsBorderSpacePx;
-    public int allAppsOpenVerticalTranslate;
+    public int allAppsShiftRange;
+    public int allAppsTopPadding;
     public int allAppsCellHeightPx;
     public int allAppsCellWidthPx;
     public int allAppsIconSizePx;
@@ -288,8 +289,11 @@ public class DeviceProfile {
         desiredWorkspaceHorizontalMarginPx = getHorizontalMarginPx(inv, res);
         desiredWorkspaceHorizontalMarginOriginalPx = desiredWorkspaceHorizontalMarginPx;
 
-        allAppsOpenVerticalTranslate = res.getDimensionPixelSize(
-                R.dimen.all_apps_open_vertical_translate);
+        allAppsTopPadding = res.getDimensionPixelSize(R.dimen.all_apps_top_padding)
+                + (isTablet ? heightPx - availableHeightPx : 0);
+        allAppsShiftRange = isTablet
+                ? heightPx - allAppsTopPadding
+                : res.getDimensionPixelSize(R.dimen.all_apps_starting_vertical_translate);
 
         folderLabelTextScale = res.getFloat(R.dimen.folder_label_text_scale);
         folderContentPaddingLeftRight =

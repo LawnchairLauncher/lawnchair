@@ -23,6 +23,7 @@ import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 
+import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Insettable;
 import com.android.launcher3.R;
 import com.android.launcher3.views.AbstractSlideInView;
@@ -30,14 +31,14 @@ import com.android.launcher3.views.AbstractSlideInView;
 import java.util.Optional;
 
 /** Wrapper for taskbar all apps with slide-in behavior. */
-public class TaskbarAllAppsSlideInView extends
-        AbstractSlideInView<TaskbarAllAppsContext> implements Insettable {
-
+public class TaskbarAllAppsSlideInView extends AbstractSlideInView<TaskbarAllAppsContext>
+        implements Insettable, DeviceProfile.OnDeviceProfileChangeListener {
     static final int DEFAULT_OPEN_DURATION = 500;
     static final int DEFAULT_CLOSE_DURATION = 200;
 
     private TaskbarAllAppsContainerView mAppsView;
     private OnCloseListener mOnCloseBeginListener;
+    private float mShiftRange;
 
     public TaskbarAllAppsSlideInView(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
@@ -88,6 +89,11 @@ public class TaskbarAllAppsSlideInView extends
         super.onFinishInflate();
         mAppsView = findViewById(R.id.apps_view);
         mContent = mAppsView;
+
+        DeviceProfile dp = mActivityContext.getDeviceProfile();
+        setShiftRange(dp.allAppsShiftRange);
+
+        mActivityContext.addOnDeviceProfileChangeListener(this);
     }
 
     @Override
@@ -112,5 +118,25 @@ public class TaskbarAllAppsSlideInView extends
     @Override
     public void setInsets(Rect insets) {
         mAppsView.setInsets(insets);
+    }
+
+    @Override
+    public void onDeviceProfileChanged(DeviceProfile dp) {
+        setShiftRange(dp.allAppsShiftRange);
+        setTranslationShift(TRANSLATION_SHIFT_OPENED);
+    }
+
+    private void setShiftRange(float shiftRange) {
+        mShiftRange = shiftRange;
+    }
+
+    @Override
+    protected float getShiftRange() {
+        return mShiftRange;
+    }
+
+    @Override
+    protected boolean isEventOverContent(MotionEvent ev) {
+        return getPopupContainer().isEventOverView(mAppsView.getVisibleContainerView(), ev);
     }
 }
