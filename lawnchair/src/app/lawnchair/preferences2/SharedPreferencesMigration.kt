@@ -30,6 +30,7 @@ class SharedPreferencesMigration(private val context: Context) {
         "pref_darkStatusBar" to "dark_status_bar", "pref_dockSearchBar" to "dock_search_bar",
         "pref_iconShape" to "icon_shape", "pref_themedHotseatQsb" to "themed_hotseat_qsb",
         "pref_accentColor2" to "accent_color", "hidden-app-set" to "hidden_apps",
+        "pref_showStatusBar" to "show_status_bar",
     )
 
     fun produceMigration() = androidx.datastore.migrations.SharedPreferencesMigration(

@@ -81,6 +81,11 @@ class PreferenceManager2(private val context: Context) : PreferenceManager {
         onSet = reloadHelper::reloadGrid,
     )
 
+    val showStatusBar = preference(
+        key = booleanPreferencesKey(name = "show_status_bar"),
+        defaultValue = true,
+    )
+
     companion object {
         private val Context.preferencesDataStore by preferencesDataStore(
             name = "preferences",

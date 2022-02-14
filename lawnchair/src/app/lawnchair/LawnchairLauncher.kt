@@ -68,6 +68,7 @@ import com.android.systemui.plugins.shared.LauncherOverlayManager
 import com.android.systemui.shared.system.QuickStepContract
 import com.patrykmichalik.preferencemanager.onEach
 import dev.kdrag0n.monet.theme.ColorScheme
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -156,10 +157,24 @@ class LawnchairLauncher : QuickstepLauncher(), LifecycleOwner,
     private val prefs by lazy { PreferenceManager.getInstance(this) }
     private val preferenceManager2 by lazy { PreferenceManager2.getInstance(this) }
     private val invariantDeviceProfile by lazy { InvariantDeviceProfile.INSTANCE.get(this) }
+    private val insetsController by lazy { WindowInsetsControllerCompat(launcher.window, rootView) }
     var allAppsScrimColor = 0
 
     private val themeProvider by lazy { ThemeProvider.INSTANCE.get(this) }
     private lateinit var colorScheme: ColorScheme
+
+    private val noStatusBarStateListener = object : StateManager.StateListener<LauncherState> {
+        override fun onStateTransitionStart(toState: LauncherState) {
+            if (toState is OverviewState) {
+                insetsController.show(WindowInsetsCompat.Type.statusBars())
+            }
+        }
+        override fun onStateTransitionComplete(finalState: LauncherState) {
+            if (finalState !is OverviewState) {
+                insetsController.hide(WindowInsetsCompat.Type.statusBars())
+            }
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         layoutInflater.factory2 = LawnchairLayoutFactory(this)
@@ -183,23 +198,18 @@ class LawnchairLauncher : QuickstepLauncher(), LifecycleOwner,
                 }
             }
         }
-        if (!prefs.showStatusBar.get()) {
-            val insetsController = WindowInsetsControllerCompat(launcher.window, rootView)
-            insetsController.hide(WindowInsetsCompat.Type.statusBars())
-            launcher.stateManager.addStateListener(object : StateManager.StateListener<LauncherState> {
-                override fun onStateTransitionStart(toState: LauncherState) {
-                    if (toState is OverviewState) {
-                        insetsController.show(WindowInsetsCompat.Type.statusBars())
-                    }
-                }
 
-                override fun onStateTransitionComplete(finalState: LauncherState) {
-                    if (finalState !is OverviewState) {
-                        insetsController.hide(WindowInsetsCompat.Type.statusBars())
-                    }
-                }
-            })
-        }
+        preferenceManager2.showStatusBar.get().distinctUntilChanged().onEach {
+            with (insetsController) {
+                if (it) show(WindowInsetsCompat.Type.statusBars())
+                else hide(WindowInsetsCompat.Type.statusBars())
+            }
+            with (launcher.stateManager) {
+                if (it) removeStateListener(noStatusBarStateListener)
+                else addStateListener(noStatusBarStateListener)
+            }
+        }.launchIn(scope = lifecycleScope)
+
         prefs.overrideWindowCornerRadius.subscribeValues(this) {
             QuickStepContract.sHasCustomCornerRadius = it
         }
