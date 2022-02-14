@@ -2401,6 +2401,10 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
                     } else {
                         Log.d(TAG, desc);
                         getModelWriter().deleteItemFromDatabase(item);
+                        if (TestProtocol.sDebugTracing) {
+                            Log.d(TestProtocol.MISSING_PROMISE_ICON,
+                                    TAG + "bindItems failed for item=" + item);
+                        }
                         continue;
                     }
                 }
