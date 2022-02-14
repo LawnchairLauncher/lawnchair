@@ -111,7 +111,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  *   3) Place appropriate elements like icons and first-page qsb
  *   4) Measure and draw the view on a canvas
  */
-@TargetApi(Build.VERSION_CODES.O)
+@TargetApi(Build.VERSION_CODES.R)
 public class LauncherPreviewRenderer extends ContextWrapper
         implements ActivityContext, WorkspaceLayoutManager, LayoutInflater.Factory2 {
 
@@ -186,19 +186,13 @@ public class LauncherPreviewRenderer extends ContextWrapper
         mIdp = idp;
         mDp = idp.getDeviceProfile(context).copy(context);
 
-        if (Utilities.ATLEAST_R) {
-            WindowInsets currentWindowInsets = context.getSystemService(WindowManager.class)
-                    .getCurrentWindowMetrics().getWindowInsets();
-            mInsets = new Rect(
-                    currentWindowInsets.getSystemWindowInsetLeft(),
-                    currentWindowInsets.getSystemWindowInsetTop(),
-                    currentWindowInsets.getSystemWindowInsetRight(),
-                    currentWindowInsets.getSystemWindowInsetBottom());
-        } else {
-            mInsets = new Rect();
-            mInsets.left = mInsets.right = (mDp.widthPx - mDp.availableWidthPx) / 2;
-            mInsets.top = mInsets.bottom = (mDp.heightPx - mDp.availableHeightPx) / 2;
-        }
+        WindowInsets currentWindowInsets = context.getSystemService(WindowManager.class)
+                .getCurrentWindowMetrics().getWindowInsets();
+        mInsets = new Rect(
+                currentWindowInsets.getSystemWindowInsetLeft(),
+                currentWindowInsets.getSystemWindowInsetTop(),
+                currentWindowInsets.getSystemWindowInsetRight(),
+                mDp.isTaskbarPresent ? 0 : currentWindowInsets.getSystemWindowInsetBottom());
         mDp.updateInsets(mInsets);
 
         BaseIconFactory iconFactory =
