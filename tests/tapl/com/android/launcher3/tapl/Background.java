@@ -80,7 +80,8 @@ public class Background extends LauncherInstrumentation.VisibleContainer {
     protected void goToOverviewUnchecked() {
         switch (mLauncher.getNavigationModel()) {
             case ZERO_BUTTON: {
-                sendDownPointerToEnterOverviewToLauncher();
+                final long downTime = SystemClock.uptimeMillis();
+                sendDownPointerToEnterOverviewToLauncher(downTime);
                 String swipeAndHoldToEnterOverviewActionName =
                         "swiping and holding to enter overview";
                 // If swiping from an app (e.g. Overview is in Background), we pause and hold on
@@ -89,16 +90,17 @@ public class Background extends LauncherInstrumentation.VisibleContainer {
                 // Workspace state where the below condition is true), there is no need to pause,
                 // and we will not test for an intermediate carousel as one will not exist.
                 if (zeroButtonToOverviewGestureStateTransitionWhileHolding()) {
-                    mLauncher.runToState(this::sendSwipeUpAndHoldToEnterOverviewGestureToLauncher,
+                    mLauncher.runToState(
+                            () -> sendSwipeUpAndHoldToEnterOverviewGestureToLauncher(downTime),
                             OVERVIEW_STATE_ORDINAL, swipeAndHoldToEnterOverviewActionName);
-                    sendUpPointerToEnterOverviewToLauncher();
+                    sendUpPointerToEnterOverviewToLauncher(downTime);
                 } else {
                     // If swiping up from an app to overview, pause on intermediate carousel
                     // until snapshots are visible. No intermediate carousel when swiping from
                     // Home. The task swiped up is not a snapshot but the TaskViewSimulator. If
                     // only a single task exists, no snapshots will be available during swipe up.
                     mLauncher.executeAndWaitForLauncherEvent(
-                            this::sendSwipeUpAndHoldToEnterOverviewGestureToLauncher,
+                            () -> sendSwipeUpAndHoldToEnterOverviewGestureToLauncher(downTime),
                             event -> TestProtocol.PAUSE_DETECTED_MESSAGE.equals(
                                     event.getClassName().toString()),
                             () -> "Pause wasn't detected",
@@ -127,7 +129,7 @@ public class Background extends LauncherInstrumentation.VisibleContainer {
                         }
                         String upPointerToEnterOverviewActionName =
                                 "sending UP pointer to enter overview";
-                        mLauncher.runToState(this::sendUpPointerToEnterOverviewToLauncher,
+                        mLauncher.runToState(() -> sendUpPointerToEnterOverviewToLauncher(downTime),
                                 OVERVIEW_STATE_ORDINAL, upPointerToEnterOverviewActionName);
                     }
                 }
@@ -153,21 +155,24 @@ public class Background extends LauncherInstrumentation.VisibleContainer {
     private void expectSwitchToOverviewEvents() {
     }
 
-    private void sendDownPointerToEnterOverviewToLauncher() {
+    private void sendDownPointerToEnterOverviewToLauncher(long downTime) {
         final int centerX = mLauncher.getDevice().getDisplayWidth() / 2;
         final int startY = getSwipeStartY();
         final Point start = new Point(centerX, startY);
-        final long downTime = SystemClock.uptimeMillis();
         final LauncherInstrumentation.GestureScope gestureScope =
                 zeroButtonToOverviewGestureStartsInLauncher()
                         ? LauncherInstrumentation.GestureScope.INSIDE_TO_OUTSIDE
                         : LauncherInstrumentation.GestureScope.OUTSIDE_WITH_PILFER;
 
-        mLauncher.sendPointer(
-                downTime, downTime, MotionEvent.ACTION_DOWN, start, gestureScope);
+        mLauncher.sendPointer(downTime, downTime, MotionEvent.ACTION_DOWN, start, gestureScope);
+
+        if (!mLauncher.isLauncher3()) {
+            mLauncher.expectEvent(TestProtocol.SEQUENCE_PILFER,
+                    LauncherInstrumentation.EVENT_PILFER_POINTERS);
+        }
     }
 
-    private void sendSwipeUpAndHoldToEnterOverviewGestureToLauncher() {
+    private void sendSwipeUpAndHoldToEnterOverviewGestureToLauncher(long downTime) {
         final int centerX = mLauncher.getDevice().getDisplayWidth() / 2;
         final int startY = getSwipeStartY();
         final int swipeHeight = mLauncher.getTestInfo(getSwipeHeightRequestName()).getInt(
@@ -175,7 +180,6 @@ public class Background extends LauncherInstrumentation.VisibleContainer {
         final Point start = new Point(centerX, startY);
         final Point end =
                 new Point(centerX, startY - swipeHeight - mLauncher.getTouchSlop());
-        final long downTime = SystemClock.uptimeMillis();
         final LauncherInstrumentation.GestureScope gestureScope =
                 zeroButtonToOverviewGestureStartsInLauncher()
                         ? LauncherInstrumentation.GestureScope.INSIDE_TO_OUTSIDE
@@ -190,18 +194,18 @@ public class Background extends LauncherInstrumentation.VisibleContainer {
                 gestureScope);
     }
 
-    private void sendUpPointerToEnterOverviewToLauncher() {
+    private void sendUpPointerToEnterOverviewToLauncher(long downTime) {
         final int centerX = mLauncher.getDevice().getDisplayWidth() / 2;
         final int startY = getSwipeStartY();
         final int swipeHeight = mLauncher.getTestInfo(getSwipeHeightRequestName()).getInt(
                 TestProtocol.TEST_INFO_RESPONSE_FIELD);
         final Point end =
                 new Point(centerX, startY - swipeHeight - mLauncher.getTouchSlop());
-        final long downTime = SystemClock.uptimeMillis();
+
         final LauncherInstrumentation.GestureScope gestureScope =
                 zeroButtonToOverviewGestureStartsInLauncher()
-                        ? LauncherInstrumentation.GestureScope.INSIDE_TO_OUTSIDE
-                        : LauncherInstrumentation.GestureScope.OUTSIDE_WITH_PILFER;
+                        ? LauncherInstrumentation.GestureScope.INSIDE_TO_OUTSIDE_WITHOUT_PILFER
+                        : LauncherInstrumentation.GestureScope.OUTSIDE_WITHOUT_PILFER;
 
         mLauncher.sendPointer(downTime, SystemClock.uptimeMillis(),
                 MotionEvent.ACTION_UP, end, gestureScope);

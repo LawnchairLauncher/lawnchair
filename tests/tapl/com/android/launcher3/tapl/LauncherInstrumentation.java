@@ -105,7 +105,7 @@ public final class LauncherInstrumentation {
     static final Pattern EVENT_TOUCH_DOWN = getTouchEventPattern("ACTION_DOWN");
     static final Pattern EVENT_TOUCH_UP = getTouchEventPattern("ACTION_UP");
     private static final Pattern EVENT_TOUCH_CANCEL = getTouchEventPattern("ACTION_CANCEL");
-    private static final Pattern EVENT_PILFER_POINTERS = Pattern.compile("pilferPointers");
+    static final Pattern EVENT_PILFER_POINTERS = Pattern.compile("pilferPointers");
     static final Pattern EVENT_START = Pattern.compile("start:");
 
     static final Pattern EVENT_TOUCH_DOWN_TIS = getTouchEventPatternTIS("ACTION_DOWN");

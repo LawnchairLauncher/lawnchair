@@ -215,7 +215,7 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
         PendingAnimation setter = new PendingAnimation(100);
         Rect hotseatPadding = launcherDp.getHotseatLayoutPadding(mActivity);
         float scaleUp = ((float) launcherDp.iconSizePx) / mActivity.getDeviceProfile().iconSizePx;
-        int borderSpacing = launcherDp.cellLayoutBorderSpacePx.x;
+        int borderSpacing = launcherDp.hotseatBorderSpace;
         int hotseatCellSize = DeviceProfile.calculateCellWidth(
                 launcherDp.availableWidthPx - hotseatPadding.left - hotseatPadding.right,
                 borderSpacing,
@@ -253,9 +253,9 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
 
             float hotseatIconCenter = hotseatPadding.left
                     + (hotseatCellSize + borderSpacing) * positionInHotseat
-                    + hotseatCellSize / 2;
+                    + hotseatCellSize / 2f;
 
-            float childCenter = (child.getLeft() + child.getRight()) / 2;
+            float childCenter = (child.getLeft() + child.getRight()) / 2f;
             setter.setFloat(child, ICON_TRANSLATE_X, hotseatIconCenter - childCenter, LINEAR);
 
             setter.setFloat(child, SCALE_PROPERTY, scaleUp, LINEAR);
