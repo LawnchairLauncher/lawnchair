@@ -177,14 +177,14 @@
     <string name="dark_status_bar_label">暗いステータスバー</string>
     <string name="lawnicons_not_installed_description">Lawnicons がインストールされていません。</string>
     <string name="icon_picker_default_category">アイコン</string>
-    <string name="icon_picker_reset_to_default">Reset to Default</string>
-    <string name="icon_pack_external_picker">Open External Picker</string>
-    <string name="recents_actions_label">Quick Actions</string>
-    <string name="recents_clear_all">Clear All</string>
-    <string name="pick_icon_from_label">Pick Icon From</string>
-    <string name="experimental_features_label">Experimental Features</string>
-    <string name="icon_picker_label">Per-App Icon Customization</string>
-    <string name="icon_picker_description">May cause Lawnchair to freeze.</string>
-    <string name="font_picker_label">Font Customization</string>
-    <string name="font_picker_description">Some text remains unchanged.</string>
+    <string name="icon_picker_reset_to_default">デフォルトにリセット</string>
+    <string name="icon_pack_external_picker">外部ピッカーを開く</string>
+    <string name="recents_actions_label">クイック アクション</string>
+    <string name="recents_clear_all">すべてクリア</string>
+    <string name="pick_icon_from_label">アイコンを選択</string>
+    <string name="experimental_features_label">実験的機能</string>
+    <string name="icon_picker_label">アプリごとのアイコンカスタマイズ</string>
+    <string name="icon_picker_description">Lawnchair がフリーズする原因になる可能性があります。</string>
+    <string name="font_picker_label">フォントのカスタマイズ</string>
+    <string name="font_picker_description">一部のテキストは変更されません。</string>
 </resources>
