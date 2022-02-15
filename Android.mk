@@ -49,7 +49,8 @@ LOCAL_MANIFEST_FILE := go/AndroidManifest.xml
 LOCAL_JACK_COVERAGE_INCLUDE_FILTER := com.android.launcher3.*
 LOCAL_LICENSE_KINDS := SPDX-license-identifier-Apache-2.0
 LOCAL_LICENSE_CONDITIONS := notice
-LOCAL_NOTICE_FILE := $(LOCAL_PATH)/NOTICE
+LOCAL_LICENSE_PACKAGE_NAME := Android Launcher3
+LOCAL_NOTICE_FILE := build/soong/licenses/LICENSE
 include $(BUILD_PACKAGE)
 
 #
@@ -85,7 +86,8 @@ LOCAL_JACK_COVERAGE_INCLUDE_FILTER := com.android.launcher3.*
 
 LOCAL_LICENSE_KINDS := SPDX-license-identifier-Apache-2.0
 LOCAL_LICENSE_CONDITIONS := notice
-LOCAL_NOTICE_FILE := $(LOCAL_PATH)/NOTICE
+LOCAL_LICENSE_PACKAGE_NAME := Android Launcher3
+LOCAL_NOTICE_FILE := build/soong/licenses/LICENSE
 include $(BUILD_PACKAGE)
 
 
@@ -136,7 +138,8 @@ LOCAL_MANIFEST_FILE := quickstep/AndroidManifest.xml
 LOCAL_JACK_COVERAGE_INCLUDE_FILTER := com.android.launcher3.*
 LOCAL_LICENSE_KINDS := SPDX-license-identifier-Apache-2.0
 LOCAL_LICENSE_CONDITIONS := notice
-LOCAL_NOTICE_FILE := $(LOCAL_PATH)/NOTICE
+LOCAL_LICENSE_PACKAGE_NAME := Android Launcher3
+LOCAL_NOTICE_FILE := build/soong/licenses/LICENSE
 include $(BUILD_PACKAGE)
 
 

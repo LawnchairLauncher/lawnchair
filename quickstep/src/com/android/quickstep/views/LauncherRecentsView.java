@@ -34,6 +34,7 @@ import androidx.annotation.Nullable;
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.BaseQuickstepLauncher;
 import com.android.launcher3.LauncherState;
+import com.android.launcher3.popup.QuickstepSystemShortcut;
 import com.android.launcher3.statehandlers.DepthController;
 import com.android.launcher3.statemanager.StateManager.StateListener;
 import com.android.launcher3.util.SplitConfigurationOptions;
@@ -166,6 +167,12 @@ public class LauncherRecentsView extends RecentsView<BaseQuickstepLauncher, Laun
     public void initiateSplitSelect(TaskView taskView,
             @SplitConfigurationOptions.StagePosition int stagePosition) {
         super.initiateSplitSelect(taskView, stagePosition);
+        mActivity.getStateManager().goToState(LauncherState.OVERVIEW_SPLIT_SELECT);
+    }
+
+    @Override
+    public void initiateSplitSelect(QuickstepSystemShortcut.SplitSelectSource splitSelectSource) {
+        super.initiateSplitSelect(splitSelectSource);
         mActivity.getStateManager().goToState(LauncherState.OVERVIEW_SPLIT_SELECT);
     }
 }

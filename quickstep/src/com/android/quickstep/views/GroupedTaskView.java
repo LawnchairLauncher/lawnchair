@@ -50,17 +50,20 @@ public class GroupedTaskView extends TaskView {
     private final float[] mIcon2CenterCoords = new float[2];
     private TransformingTouchDelegate mIcon2TouchDelegate;
     @Nullable private StagedSplitBounds mSplitBoundsConfig;
+    private final DigitalWellBeingToast mDigitalWellBeingToast2;
+
 
     public GroupedTaskView(Context context) {
-        super(context);
+        this(context, null);
     }
 
     public GroupedTaskView(Context context, AttributeSet attrs) {
-        super(context, attrs);
+        this(context, attrs, 0);
     }
 
     public GroupedTaskView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        mDigitalWellBeingToast2 = new DigitalWellBeingToast(mActivity, this);
     }
 
     @Override
@@ -102,7 +105,9 @@ public class GroupedTaskView extends TaskView {
                 mIconLoadRequest2 = iconCache.updateIconInBackground(mSecondaryTask,
                         (task) -> {
                             setIcon(mIconView2, task.icon);
-                            // TODO(199936292) Digital Wellbeing for individual tasks?
+                            mDigitalWellBeingToast2.initialize(mSecondaryTask);
+                            mDigitalWellBeingToast2.setSplitConfiguration(mSplitBoundsConfig);
+                            mDigitalWellBeingToast.setSplitConfiguration(mSplitBoundsConfig);
                         });
             }
         } else {
@@ -175,8 +180,8 @@ public class GroupedTaskView extends TaskView {
 
     @Override
     public void launchTask(@NonNull Consumer<Boolean> callback, boolean freezeTaskList) {
-        getRecentsView().getSplitPlaceholder().launchTasks(mTask, mSecondaryTask,
-                STAGE_POSITION_TOP_OR_LEFT, callback, freezeTaskList,
+        getRecentsView().getSplitPlaceholder().launchTasks(mTask.key.id, null,
+                mSecondaryTask.key.id, STAGE_POSITION_TOP_OR_LEFT, callback, freezeTaskList,
                 getSplitRatio());
     }
 
@@ -231,12 +236,13 @@ public class GroupedTaskView extends TaskView {
     public void setOrientationState(RecentsOrientedState orientationState) {
         super.setOrientationState(orientationState);
         DeviceProfile deviceProfile = mActivity.getDeviceProfile();
-        boolean isGridTask = deviceProfile.overviewShowAsGrid && !isFocusedTask();
+        boolean isGridTask = deviceProfile.isTablet && !isFocusedTask();
         int iconDrawableSize = isGridTask ? deviceProfile.overviewTaskIconDrawableSizeGridPx
                 : deviceProfile.overviewTaskIconDrawableSizePx;
         mIconView2.setDrawableSize(iconDrawableSize, iconDrawableSize);
         mIconView2.setRotation(getPagedOrientationHandler().getDegreesRotated());
         updateIconPlacement();
+        updateSecondaryDwbPlacement();
     }
 
     private void updateIconPlacement() {
@@ -253,6 +259,13 @@ public class GroupedTaskView extends TaskView {
                 isRtl, deviceProfile, mSplitBoundsConfig);
     }
 
+    private void updateSecondaryDwbPlacement() {
+        if (mSecondaryTask == null) {
+            return;
+        }
+        mDigitalWellBeingToast2.initialize(mSecondaryTask);
+    }
+
     @Override
     protected void updateSnapshotRadius() {
         super.updateSnapshotRadius();
@@ -262,6 +275,19 @@ public class GroupedTaskView extends TaskView {
     @Override
     protected void setIconAndDimTransitionProgress(float progress, boolean invert) {
         super.setIconAndDimTransitionProgress(progress, invert);
-        mIconView2.setAlpha(mIconView.getAlpha());
+        // Value set by super call
+        float scale = mIconView.getAlpha();
+        mIconView2.setAlpha(scale);
+        mDigitalWellBeingToast2.updateBannerOffset(1f - scale,
+                mCurrentFullscreenParams.mCurrentDrawnInsets.top
+                        + mCurrentFullscreenParams.mCurrentDrawnInsets.bottom);
+    }
+
+    @Override
+    public void setColorTint(float amount, int tintColor) {
+        super.setColorTint(amount, tintColor);
+        mIconView2.setIconColorTint(tintColor, amount);
+        mSnapshotView2.setDimAlpha(amount);
+        mDigitalWellBeingToast2.setBannerColorTint(tintColor, amount);
     }
 }

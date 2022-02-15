@@ -16,6 +16,7 @@
 
 package com.android.quickstep.views;
 
+import static android.view.Display.DEFAULT_DISPLAY;
 import static android.widget.Toast.LENGTH_SHORT;
 
 import static com.android.launcher3.AbstractFloatingView.TYPE_TASK_MENU;
@@ -51,6 +52,7 @@ import android.os.Bundle;
 import android.util.AttributeSet;
 import android.util.FloatProperty;
 import android.util.Log;
+import android.view.Display;
 import android.view.MotionEvent;
 import android.view.TouchDelegate;
 import android.view.View;
@@ -366,7 +368,7 @@ public class TaskView extends FrameLayout implements Reusable {
     protected Task mTask;
     protected TaskThumbnailView mSnapshotView;
     protected IconView mIconView;
-    private final DigitalWellBeingToast mDigitalWellBeingToast;
+    protected final DigitalWellBeingToast mDigitalWellBeingToast;
     private float mFullscreenProgress;
     private float mGridProgress;
     private float mNonGridScale = 1;
@@ -470,7 +472,9 @@ public class TaskView extends FrameLayout implements Reusable {
         stubInfo.user = componentKey.user;
         stubInfo.intent = new Intent().setComponent(componentKey.componentName);
         stubInfo.title = task.title;
-        stubInfo.screenId = getRecentsView().indexOfChild(this);
+        if (getRecentsView() != null) {
+            stubInfo.screenId = getRecentsView().indexOfChild(this);
+        }
         return stubInfo;
     }
 
@@ -628,17 +632,15 @@ public class TaskView extends FrameLayout implements Reusable {
                         Arrays.stream(topLeftParams.getTargetSet().wallpapers),
                         Arrays.stream(rightBottomParams.getTargetSet().wallpapers))
                         .toArray(RemoteAnimationTargetCompat[]::new);
-                RemoteAnimationTargetCompat[] nonApps = Stream.concat(
-                        Arrays.stream(topLeftParams.getTargetSet().nonApps),
-                        Arrays.stream(rightBottomParams.getTargetSet().nonApps))
-                        .toArray(RemoteAnimationTargetCompat[]::new);
-                targets = new RemoteAnimationTargets(apps, wallpapers, nonApps,
+                targets = new RemoteAnimationTargets(apps, wallpapers,
+                        topLeftParams.getTargetSet().nonApps,
                         topLeftParams.getTargetSet().targetMode);
             }
             if (targets == null) {
                 // If the recents animation is cancelled somehow between the parent if block and
                 // here, try to launch the task as a non live tile task.
                 launchTaskAnimated();
+                mIsClickableAsLiveTile = true;
                 return;
             }
 
@@ -660,6 +662,9 @@ public class TaskView extends FrameLayout implements Reusable {
 
                 @Override
                 public void onAnimationEnd(Animator animator) {
+                    if (mTask != null && mTask.key.displayId != getRootViewDisplayId()) {
+                        launchTaskAnimated();
+                    }
                     mIsClickableAsLiveTile = true;
                 }
             });
@@ -827,7 +832,7 @@ public class TaskView extends FrameLayout implements Reusable {
             return true;
         }
 
-        if (!mActivity.getDeviceProfile().overviewShowAsGrid
+        if (!mActivity.getDeviceProfile().isTablet
                 && !getRecentsView().isClearAllHidden()) {
             getRecentsView().snapToPage(getRecentsView().indexOfChild(this));
             return false;
@@ -841,7 +846,7 @@ public class TaskView extends FrameLayout implements Reusable {
     protected boolean showTaskMenuWithContainer(IconView iconView) {
         TaskIdAttributeContainer menuContainer =
                 mTaskIdAttributeContainer[iconView == mIconView ? 0 : 1];
-        if (mActivity.getDeviceProfile().overviewShowAsGrid) {
+        if (mActivity.getDeviceProfile().isTablet) {
             boolean alignSecondRow = getRecentsView().isOnGridBottomRow(menuContainer.getTaskView())
                     && mActivity.getDeviceProfile().isLandscape;
             return TaskMenuViewWithArrow.Companion.showForTask(menuContainer, alignSecondRow);
@@ -892,6 +897,7 @@ public class TaskView extends FrameLayout implements Reusable {
         LayoutParams iconParams = (LayoutParams) mIconView.getLayoutParams();
         orientationHandler.setIconAndSnapshotParams(mIconView, taskIconMargin, taskIconHeight,
                 snapshotParams, isRtl);
+        updateDwbPlacement();
         mSnapshotView.setLayoutParams(snapshotParams);
         iconParams.width = iconParams.height = taskIconHeight;
         mIconView.setLayoutParams(iconParams);
@@ -904,12 +910,16 @@ public class TaskView extends FrameLayout implements Reusable {
         mSnapshotView.getTaskOverlay().updateOrientationState(orientationState);
     }
 
+    private void updateDwbPlacement() {
+        mDigitalWellBeingToast.initialize(mTask);
+    }
+
     /**
      * Returns whether the task is part of overview grid and not being focused.
      */
     public boolean isGridTask() {
         DeviceProfile deviceProfile = mActivity.getDeviceProfile();
-        return deviceProfile.overviewShowAsGrid && !isFocusedTask();
+        return deviceProfile.isTablet && !isFocusedTask();
     }
 
     protected void setIconAndDimTransitionProgress(float progress, boolean invert) {
@@ -1003,7 +1013,7 @@ public class TaskView extends FrameLayout implements Reusable {
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
-        if (mActivity.getDeviceProfile().overviewShowAsGrid) {
+        if (mActivity.getDeviceProfile().isTablet) {
             setPivotX(getLayoutDirection() == LAYOUT_DIRECTION_RTL ? 0 : right - left);
             setPivotY(mSnapshotView.getTop());
         } else {
@@ -1020,7 +1030,7 @@ public class TaskView extends FrameLayout implements Reusable {
      * How much to scale down pages near the edge of the screen.
      */
     public static float getEdgeScaleDownFactor(DeviceProfile deviceProfile) {
-        return deviceProfile.overviewShowAsGrid ? EDGE_SCALE_DOWN_FACTOR_GRID
+        return deviceProfile.isTablet ? EDGE_SCALE_DOWN_FACTOR_GRID
                 : EDGE_SCALE_DOWN_FACTOR_CAROUSEL;
     }
 
@@ -1420,7 +1430,7 @@ public class TaskView extends FrameLayout implements Reusable {
         int expectedWidth;
         int expectedHeight;
         DeviceProfile deviceProfile = mActivity.getDeviceProfile();
-        if (deviceProfile.overviewShowAsGrid) {
+        if (deviceProfile.isTablet) {
             final int thumbnailPadding = deviceProfile.overviewTaskThumbnailTopMarginPx;
             final Rect lastComputedTaskSize = getRecentsView().getLastComputedTaskSize();
             final int taskWidth = lastComputedTaskSize.width();
@@ -1520,7 +1530,8 @@ public class TaskView extends FrameLayout implements Reusable {
 
 
     private int getRootViewDisplayId() {
-        return getRootView().getDisplay().getDisplayId();
+        Display  display = getRootView().getDisplay();
+        return display != null ? display.getDisplayId() : DEFAULT_DISPLAY;
     }
 
     /**

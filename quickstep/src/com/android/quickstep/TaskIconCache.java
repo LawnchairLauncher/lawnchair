@@ -28,6 +28,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.UserHandle;
 import android.text.TextUtils;
+import android.util.SparseArray;
 import android.view.accessibility.AccessibilityManager;
 
 import androidx.annotation.WorkerThread;
@@ -62,7 +63,9 @@ public class TaskIconCache implements DisplayInfoChangeListener {
 
     private final Context mContext;
     private final TaskKeyLruCache<TaskCacheEntry> mIconCache;
-    private final BitmapInfo[] mDefaultIcons = new BitmapInfo[1];
+    private final SparseArray<BitmapInfo> mDefaultIcons = new SparseArray<>();
+    private BitmapInfo mDefaultIconBase = null;
+
     private final IconProvider mIconProvider;
 
     private BaseIconFactory mIconFactory;
@@ -208,12 +211,23 @@ public class TaskIconCache implements DisplayInfoChangeListener {
     @WorkerThread
     private Drawable getDefaultIcon(int userId) {
         synchronized (mDefaultIcons) {
-            if (mDefaultIcons[0] == null) {
+            if (mDefaultIconBase == null) {
                 try (BaseIconFactory bif = getIconFactory()) {
-                    mDefaultIcons[0] = bif.makeDefaultIcon();
+                    mDefaultIconBase = bif.makeDefaultIcon();
                 }
             }
-            return mDefaultIcons[0].clone().withUser(UserHandle.of(userId)).newIcon(mContext);
+
+            int index;
+            if ((index = mDefaultIcons.indexOfKey(userId)) >= 0) {
+                return mDefaultIcons.valueAt(index).newIcon(mContext);
+            } else {
+                try (BaseIconFactory li = getIconFactory()) {
+                    BitmapInfo info = mDefaultIconBase.withFlags(
+                            li.getBitmapFlagOp(new IconOptions().setUser(UserHandle.of(userId))));
+                    mDefaultIcons.put(userId, info);
+                    return info.newIcon(mContext);
+                }
+            }
         }
     }
 

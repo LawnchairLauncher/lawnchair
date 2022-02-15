@@ -26,6 +26,7 @@ import android.util.Log;
 import com.android.quickstep.TouchInteractionService;
 import com.android.quickstep.TouchInteractionService.TISBinder;
 
+import java.util.ArrayList;
 import java.util.function.Consumer;
 
 /**
@@ -44,9 +45,11 @@ public class TISBindHelper implements ServiceConnection {
     private final Runnable mConnectionRunnable = this::internalBindToTIS;
     private final Context mContext;
     private final Consumer<TISBinder> mConnectionCallback;
+    private final ArrayList<Runnable> mPendingConnectedCallbacks = new ArrayList<>();
 
     private short mConnectionAttempts;
     private boolean mTisServiceBound;
+    private boolean mIsConnected;
 
     public TISBindHelper(Context context, Consumer<TISBinder> connectionCallback) {
         mContext = context;
@@ -66,7 +69,13 @@ public class TISBindHelper implements ServiceConnection {
         }
 
         Log.d(TAG, "TIS service connected");
+        mIsConnected = true;
         mConnectionCallback.accept((TISBinder) iBinder);
+        // Flush the pending callbacks
+        for (Runnable r : mPendingConnectedCallbacks) {
+            r.run();
+        }
+        mPendingConnectedCallbacks.clear();
         resetServiceBindRetryState();
     }
 
@@ -79,6 +88,16 @@ public class TISBindHelper implements ServiceConnection {
         internalBindToTIS();
     }
 
+    /**
+     * Runs the given {@param r} runnable when the service is connected.
+     */
+    public void runOnBindToTouchInteractionService(Runnable r) {
+        if (mIsConnected) {
+            r.run();
+        } else {
+            mPendingConnectedCallbacks.add(r);
+        }
+    }
 
     /**
      * Binds to {@link TouchInteractionService}. If the binding fails, attempts to retry via
@@ -120,5 +139,7 @@ public class TISBindHelper implements ServiceConnection {
     public void onDestroy() {
         internalUnbindToTIS();
         resetServiceBindRetryState();
+        mIsConnected = false;
+        mPendingConnectedCallbacks.clear();
     }
 }

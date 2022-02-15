@@ -48,7 +48,7 @@ import android.view.ViewTreeObserver;
 import android.view.animation.Interpolator;
 import android.widget.FrameLayout;
 
-import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.InsettableFrameLayout;
@@ -120,7 +120,7 @@ public abstract class ArrowPopup<T extends Context & ActivityContext>
     private final GradientDrawable mRoundedTop;
     private final GradientDrawable mRoundedBottom;
 
-    private Runnable mOnCloseCallback = () -> { };
+    @Nullable private Runnable mOnCloseCallback = null;
 
     // The rect string of the view that the arrow is attached to, in screen reference frame.
     protected int mArrowColor;
@@ -766,7 +766,6 @@ public abstract class ArrowPopup<T extends Context & ActivityContext>
         }
     }
 
-
     protected void animateClose() {
         if (!mIsOpen) {
             return;
@@ -816,7 +815,9 @@ public abstract class ArrowPopup<T extends Context & ActivityContext>
         mDeferContainerRemoval = false;
         getPopupContainer().removeView(this);
         getPopupContainer().removeView(mArrow);
-        mOnCloseCallback.run();
+        if (mOnCloseCallback != null) {
+            mOnCloseCallback.run();
+        }
         if (mColorExtractors != null) {
             mColorExtractors.forEach(e -> e.setListener(null));
         }
@@ -825,7 +826,7 @@ public abstract class ArrowPopup<T extends Context & ActivityContext>
     /**
      * Callback to be called when the popup is closed
      */
-    public void setOnCloseCallback(@NonNull Runnable callback) {
+    public void setOnCloseCallback(@Nullable Runnable callback) {
         mOnCloseCallback = callback;
     }
 

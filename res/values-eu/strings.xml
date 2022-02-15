@@ -28,6 +28,10 @@
     <string name="shortcut_not_available" msgid="2536503539825726397">"Lasterbideak ez daude erabilgarri"</string>
     <string name="home_screen" msgid="5629429142036709174">"Hasierako pantaila"</string>
     <string name="recent_task_option_split_screen" msgid="6690461455618725183">"Zatitu pantaila"</string>
+    <string name="split_screen_position_top" msgid="1504965011158689649">"Zatitu goialdean"</string>
+    <string name="split_screen_position_left" msgid="7537793098851830883">"Zatitu ezkerraldean"</string>
+    <string name="split_screen_position_right" msgid="1569377524925193369">"Zatitu eskuinaldean"</string>
+    <string name="split_app_info_accessibility" msgid="5475288491241414932">"%1$s aplikazioari buruzko informazioa"</string>
     <string name="long_press_widget_to_add" msgid="3587712543577675817">"Eduki sakatuta widget bat mugitzeko."</string>
     <string name="long_accessible_way_to_add" msgid="2733588281439571974">"Sakatu birritan eta eduki sakatuta widget bat mugitzeko edo ekintza pertsonalizatuak erabiltzeko."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>

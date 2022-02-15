@@ -48,6 +48,7 @@ import com.android.launcher3.logger.LauncherAtom.FolderIcon;
 import com.android.launcher3.logger.LauncherAtom.FromState;
 import com.android.launcher3.logger.LauncherAtom.ToState;
 import com.android.launcher3.logger.LauncherAtomExtensions.DeviceSearchResultContainer;
+import com.android.launcher3.logger.LauncherAtomExtensions.DeviceSearchResultContainer.SearchAttributes;
 import com.android.launcher3.logger.LauncherAtomExtensions.ExtendedContainers;
 import com.android.launcher3.logging.InstanceId;
 import com.android.launcher3.logging.StatsLogManager;
@@ -88,6 +89,12 @@ public class StatsLogCompatManager extends StatsLogManager {
     private static final int SEARCH_RESULT_HIERARCHY_OFFSET = 200;
     private static final int EXTENDED_CONTAINERS_HIERARCHY_OFFSET = 300;
     private static final int ATTRIBUTE_MULTIPLIER = 100;
+
+    /**
+     * Flags for converting SearchAttribute to integer value.
+     */
+    private static final int SEARCH_ATTRIBUTES_CORRECTED_QUERY = 1;
+    private static final int SEARCH_ATTRIBUTES_DIRECT_MATCH = 1 << 1;
 
     public static final CopyOnWriteArrayList<StatsLogConsumer> LOGS_CONSUMER =
             new CopyOnWriteArrayList<>();
@@ -405,7 +412,9 @@ public class StatsLogCompatManager extends StatsLogManager {
                     atomInfo.getFolderIcon().getToLabelState().getNumber() /* toState */,
                     atomInfo.getFolderIcon().getLabelInfo() /* edittext */,
                     getCardinality(atomInfo) /* cardinality */,
-                    getFeatures(atomInfo) /* features */);
+                    getFeatures(atomInfo) /* features */,
+                    getSearchAttributes(atomInfo) /* searchAttributes */
+            );
         }
     }
 
@@ -561,6 +570,30 @@ public class StatsLogCompatManager extends StatsLogManager {
         return 0;
     }
 
+    private static int getSearchAttributes(LauncherAtom.ItemInfo info) {
+        ContainerInfo containerInfo = info.getContainerInfo();
+        if (containerInfo.getContainerCase() == EXTENDED_CONTAINERS
+                && containerInfo.getExtendedContainers().getContainerCase()
+                == DEVICE_SEARCH_RESULT_CONTAINER
+                && containerInfo.getExtendedContainers()
+                .getDeviceSearchResultContainer().hasSearchAttributes()
+        ) {
+            return searchAttributesToInt(containerInfo.getExtendedContainers()
+                    .getDeviceSearchResultContainer().getSearchAttributes());
+        }
+        return 0;
+    }
+
+    private static int searchAttributesToInt(SearchAttributes searchAttributes) {
+        int response = 0;
+        if (searchAttributes.getCorrectedQuery()) {
+            response = response | SEARCH_ATTRIBUTES_CORRECTED_QUERY;
+        }
+        if (searchAttributes.getDirectMatch()) {
+            response = response | SEARCH_ATTRIBUTES_DIRECT_MATCH;
+        }
+        return response;
+    }
 
     /**
      * Interface to get stats log while it is dispatched to the system

@@ -25,21 +25,19 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.BubbleTextView;
-import com.android.launcher3.allapps.AllAppsContainerView;
 import com.android.launcher3.allapps.AllAppsGridAdapter;
 import com.android.launcher3.model.data.ItemInfo;
 
 /**
  * Provides views for local search results
  */
-public class DefaultSearchAdapterProvider extends SearchAdapterProvider {
+public class DefaultSearchAdapterProvider extends SearchAdapterProvider<BaseDraggingActivity> {
 
     private final RecyclerView.ItemDecoration mDecoration;
     private View mHighlightedView;
 
-    public DefaultSearchAdapterProvider(BaseDraggingActivity launcher,
-            AllAppsContainerView appsContainerView) {
-        super(launcher, appsContainerView);
+    public DefaultSearchAdapterProvider(BaseDraggingActivity launcher) {
+        super(launcher);
         mDecoration = new RecyclerView.ItemDecoration() {
             @Override
             public void onDraw(@NonNull Canvas c, @NonNull RecyclerView parent,

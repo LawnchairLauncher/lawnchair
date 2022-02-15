@@ -18,7 +18,6 @@ package com.android.launcher3.allapps;
 import static com.android.launcher3.touch.ItemLongClickListener.INSTANCE_ALL_APPS;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.res.Resources;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -38,21 +37,22 @@ import androidx.core.view.accessibility.AccessibilityRecordCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.R;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.ItemInfoWithIcon;
-import com.android.launcher3.util.PackageManagerHelper;
+import com.android.launcher3.views.ActivityContext;
 
 import java.util.Arrays;
 import java.util.List;
 
 /**
  * The grid view adapter of all the apps.
+ *
+ * @param <T> Type of context inflating all apps.
  */
-public class AllAppsGridAdapter extends
+public class AllAppsGridAdapter<T extends Context & ActivityContext> extends
         RecyclerView.Adapter<AllAppsGridAdapter.ViewHolder> {
 
     public static final String TAG = "AppsGridAdapter";
@@ -256,9 +256,9 @@ public class AllAppsGridAdapter extends
         }
     }
 
-    private final BaseDraggingActivity mLauncher;
+    private final T mActivityContext;
     private final LayoutInflater mLayoutInflater;
-    private final AlphabeticalAppsList mApps;
+    private final AlphabeticalAppsList<T> mApps;
     private final GridLayoutManager mGridLayoutMgr;
     private final GridSpanSizer mGridSizer;
 
@@ -271,27 +271,28 @@ public class AllAppsGridAdapter extends
 
     // The text to show when there are no search results and no market search handler.
     protected String mEmptySearchMessage;
-    // The intent to send off to the market app, updated each time the search query changes.
-    private Intent mMarketSearchIntent;
+    // The click listener to send off to the market app, updated each time the search query changes.
+    private OnClickListener mMarketSearchClickListener;
 
     private final int mExtraHeight;
 
-    public AllAppsGridAdapter(BaseDraggingActivity launcher, LayoutInflater inflater,
-            AlphabeticalAppsList apps, BaseAdapterProvider[] adapterProviders) {
-        Resources res = launcher.getResources();
-        mLauncher = launcher;
+    public AllAppsGridAdapter(T activityContext, LayoutInflater inflater,
+            AlphabeticalAppsList<T> apps, BaseAdapterProvider[] adapterProviders) {
+        Resources res = activityContext.getResources();
+        mActivityContext = activityContext;
         mApps = apps;
         mEmptySearchMessage = res.getString(R.string.all_apps_loading_message);
         mGridSizer = new GridSpanSizer();
-        mGridLayoutMgr = new AppsGridLayoutManager(launcher);
+        mGridLayoutMgr = new AppsGridLayoutManager(mActivityContext);
         mGridLayoutMgr.setSpanSizeLookup(mGridSizer);
         mLayoutInflater = inflater;
 
-        mOnIconClickListener = launcher.getItemOnClickListener();
+        mOnIconClickListener = mActivityContext.getItemOnClickListener();
 
         mAdapterProviders = adapterProviders;
-        setAppsPerRow(mLauncher.getDeviceProfile().numShownAllAppsColumns);
-        mExtraHeight = launcher.getResources().getDimensionPixelSize(R.dimen.all_apps_height_extra);
+        setAppsPerRow(mActivityContext.getDeviceProfile().numShownAllAppsColumns);
+        mExtraHeight = mActivityContext.getResources().getDimensionPixelSize(
+                R.dimen.all_apps_height_extra);
     }
 
     public void setAppsPerRow(int appsPerRow) {
@@ -334,10 +335,10 @@ public class AllAppsGridAdapter extends
      * Sets the last search query that was made, used to show when there are no results and to also
      * seed the intent for searching the market.
      */
-    public void setLastSearchQuery(String query) {
-        Resources res = mLauncher.getResources();
+    public void setLastSearchQuery(String query, OnClickListener marketSearchClickListener) {
+        Resources res = mActivityContext.getResources();
         mEmptySearchMessage = res.getString(R.string.all_apps_no_search_results, query);
-        mMarketSearchIntent = PackageManagerHelper.getMarketSearchIntent(mLauncher, query);
+        mMarketSearchClickListener = marketSearchClickListener;
     }
 
     /**
@@ -360,7 +361,8 @@ public class AllAppsGridAdapter extends
                 icon.setOnClickListener(mOnIconClickListener);
                 icon.setOnLongClickListener(mOnIconLongClickListener);
                 // Ensure the all apps icon height matches the workspace icons in portrait mode.
-                icon.getLayoutParams().height = mLauncher.getDeviceProfile().allAppsCellHeightPx;
+                icon.getLayoutParams().height =
+                        mActivityContext.getDeviceProfile().allAppsCellHeightPx;
                 if (FeatureFlags.ENABLE_TWOLINE_ALLAPPS.get()) {
                     icon.getLayoutParams().height += mExtraHeight;
                 }
@@ -371,8 +373,7 @@ public class AllAppsGridAdapter extends
             case VIEW_TYPE_SEARCH_MARKET:
                 View searchMarketView = mLayoutInflater.inflate(R.layout.all_apps_search_market,
                         parent, false);
-                searchMarketView.setOnClickListener(v -> mLauncher.startActivitySafely(
-                        v, mMarketSearchIntent, null));
+                searchMarketView.setOnClickListener(mMarketSearchClickListener);
                 return new ViewHolder(searchMarketView);
             case VIEW_TYPE_ALL_APPS_DIVIDER:
                 return new ViewHolder(mLayoutInflater.inflate(
@@ -407,7 +408,7 @@ public class AllAppsGridAdapter extends
                 break;
             case VIEW_TYPE_SEARCH_MARKET:
                 TextView searchView = (TextView) holder.itemView;
-                if (mMarketSearchIntent != null) {
+                if (mMarketSearchClickListener != null) {
                     searchView.setVisibility(View.VISIBLE);
                 } else {
                     searchView.setVisibility(View.GONE);

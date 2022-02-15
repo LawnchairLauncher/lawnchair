@@ -25,6 +25,7 @@
     <string name="accessibility_app_usage_settings" msgid="6312864233673544149">"Mipangilio ya matumizi ya programu"</string>
     <string name="recents_clear_all" msgid="5328176793634888831">"Ondoa zote"</string>
     <string name="accessibility_recent_apps" msgid="4058661986695117371">"Programu za hivi karibuni"</string>
+    <string name="task_view_closed" msgid="9170038230110856166">"Jukumu Limefungwa"</string>
     <string name="task_contents_description_with_remaining_time" msgid="4479688746574672685">"<xliff:g id="TASK_DESCRIPTION">%1$s</xliff:g>, <xliff:g id="REMAINING_TIME">%2$s</xliff:g>"</string>
     <string name="shorter_duration_less_than_one_minute" msgid="4722015666335015336">"&lt; dak 1"</string>
     <string name="time_left_for_app" msgid="3111996412933644358">"Umebakisha <xliff:g id="TIME">%1$s</xliff:g> leo"</string>
@@ -89,9 +90,20 @@
     <string name="accessibility_rotate_button" msgid="4771825231336502943">"Zungusha skrini"</string>
     <string name="taskbar_edu_opened" msgid="3950252793551919129">"Paneli ya elimu kwenye upau wa shughuli inaonyeshwa"</string>
     <string name="taskbar_edu_closed" msgid="126643734478892862">"Paneli ya elimu kwenye upau wa shughuli imefungwa"</string>
+    <string name="taskbar_edu_switch_apps" msgid="6942863327845784813">"Tumia upau wa shughuli kubadilisha programu"</string>
+    <string name="taskbar_edu_splitscreen" msgid="2663361731630346489">"Buruta pembeni ili utumie programu mbili kwa wakati mmoja"</string>
     <string name="taskbar_edu_stashing" msgid="5212374387411764031">"Gusa na ushikilie ili ufiche upau wa shughuli"</string>
     <string name="taskbar_edu_next" msgid="4007618274426775841">"Endelea"</string>
     <string name="taskbar_edu_previous" msgid="459202320127201702">"Nyuma"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"Funga"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"Imemaliza"</string>
+    <string name="taskbar_button_home" msgid="2151398979630664652">"Mwanzo"</string>
+    <string name="taskbar_button_a11y" msgid="5241161324875094465">"Ufikivu"</string>
+    <string name="taskbar_button_back" msgid="8558862226461164514">"Nyuma"</string>
+    <string name="taskbar_button_ime_switcher" msgid="1730244360907588541">"Kibadilishaji cha IME"</string>
+    <string name="taskbar_button_recents" msgid="7273376136216613134">"Vilivyotumika majuzi"</string>
+    <string name="taskbar_button_notifications" msgid="7471740351507357318">"Arifa"</string>
+    <string name="taskbar_button_quick_settings" msgid="227662894293189391">"Mipangilio ya Haraka"</string>
+    <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"Sogeza juu/kushoto"</string>
+    <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"Sogeza chini/kulia"</string>
 </resources>

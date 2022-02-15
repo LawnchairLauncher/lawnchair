@@ -177,10 +177,6 @@ public abstract class SwipeUpAnimationLogic implements
             // No-op
         }
 
-        public boolean shouldPlayAtomicWorkspaceReveal() {
-            return true;
-        }
-
         public void setAnimation(RectFSpringAnim anim) { }
 
         public void update(RectF currentRect, float progress, float radius) { }

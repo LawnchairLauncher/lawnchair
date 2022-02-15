@@ -40,6 +40,7 @@ import com.android.launcher3.util.LauncherBindableItemsContainer;
 import com.android.launcher3.util.PackageUserKey;
 import com.android.launcher3.views.ActivityContext;
 
+import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Objects;
 import java.util.function.Predicate;
@@ -49,7 +50,7 @@ import java.util.stream.Stream;
 /**
  * Implements interfaces required to show and allow interacting with a PopupContainerWithArrow.
  */
-public class TaskbarPopupController {
+public class TaskbarPopupController implements TaskbarControllers.LoggableTaskbarController {
 
     private static final SystemShortcut.Factory<TaskbarActivityContext>
             APP_INFO = SystemShortcut.AppInfo::new;
@@ -154,7 +155,23 @@ public class TaskbarPopupController {
                         .filter(Objects::nonNull)
                         .collect(Collectors.toList()));
         container.requestFocus();
+
+        // Make focusable to receive back events
+        mControllers.taskbarActivityContext.setTaskbarWindowFocusable(true);
+        container.setOnCloseCallback(() -> {
+            mControllers.taskbarActivityContext.getDragLayer().post(
+                    () -> mControllers.taskbarActivityContext.setTaskbarWindowFocusable(false));
+            container.setOnCloseCallback(null);
+        });
+
         return container;
+    }
+
+    @Override
+    public void dumpLogs(String prefix, PrintWriter pw) {
+        pw.println(prefix + "TaskbarPopupController:");
+
+        mPopupDataProvider.dump(prefix + "\t", pw);
     }
 
     private class TaskbarPopupItemDragHandler implements

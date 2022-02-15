@@ -39,10 +39,17 @@ public class SimpleBroadcastReceiver extends BroadcastReceiver {
      * Helper method to register multiple actions
      */
     public void register(Context context, String... actions) {
+        register(context, 0, actions);
+    }
+
+    /**
+     * Helper method to register multiple actions with one or more {@code flags}.
+     */
+    public void register(Context context, int flags, String... actions) {
         IntentFilter filter = new IntentFilter();
         for (String action : actions) {
             filter.addAction(action);
         }
-        context.registerReceiver(this, filter);
+        context.registerReceiver(this, filter, flags);
     }
 }

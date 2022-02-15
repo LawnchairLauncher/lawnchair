@@ -585,8 +585,8 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
 
         int cellVSpan = FeatureFlags.EXPANDED_SMARTSPACE.get()
                 ? EXPANDED_SMARTSPACE_HEIGHT : DEFAULT_SMARTSPACE_HEIGHT;
-        CellLayout.LayoutParams lp = new CellLayout.LayoutParams(0, 0, firstPage.getCountX(),
-                cellVSpan);
+        int cellHSpan = mLauncher.getDeviceProfile().inv.numSearchContainerColumns;
+        CellLayout.LayoutParams lp = new CellLayout.LayoutParams(0, 0, cellHSpan, cellVSpan);
         lp.canReorder = false;
         if (!firstPage.addViewToCellLayout(mQsb, 0, R.id.search_container_workspace, lp, true)) {
             Log.e(TAG, "Failed to add to item at (0, 0) to CellLayout");
@@ -1135,6 +1135,10 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
             stripEmptyScreens();
             mStripScreensOnPageStopMoving = false;
         }
+
+        // Inform the Launcher activity that the page transition ended so that it can react to the
+        // newly visible page if it wants to.
+        mLauncher.onPageEndTransition();
     }
 
     public void setLauncherOverlay(LauncherOverlay overlay) {
@@ -1211,6 +1215,10 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
                         .log(LAUNCHER_SWIPELEFT);
             }
             mOverlayShown = true;
+
+            // Let the Launcher activity know that the overlay is now visible.
+            mLauncher.onOverlayVisibilityChanged(mOverlayShown);
+
             // Not announcing the overlay page for accessibility since it announces itself.
         } else if (Float.compare(scroll, 0f) == 0) {
             if (mOverlayShown) {
@@ -1234,6 +1242,10 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
                 announcePageForAccessibility();
             }
             mOverlayShown = false;
+
+            // Let the Launcher activity know that the overlay is no longer visible.
+            mLauncher.onOverlayVisibilityChanged(mOverlayShown);
+
             tryRunOverlayCallback();
         }
 
@@ -1686,7 +1698,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
             PopupContainerWithArrow<Launcher> popupContainer = PopupContainerWithArrow
                     .showForIcon((BubbleTextView) child);
             if (popupContainer != null) {
-                dragOptions.preDragCondition = popupContainer.createPreDragCondition();
+                dragOptions.preDragCondition = popupContainer.createPreDragCondition(true);
             }
         }
 

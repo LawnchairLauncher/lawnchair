@@ -15,21 +15,25 @@
  */
 package com.android.launcher3.taskbar;
 
+import static android.view.KeyEvent.ACTION_UP;
+import static android.view.KeyEvent.KEYCODE_BACK;
+
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.util.AttributeSet;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.R;
 import com.android.launcher3.testing.TestLogging;
 import com.android.launcher3.testing.TestProtocol;
-import com.android.launcher3.util.TouchController;
 import com.android.launcher3.views.BaseDragLayer;
 import com.android.systemui.shared.system.ViewTreeObserverWrapper;
 import com.android.systemui.shared.system.ViewTreeObserverWrapper.InsetsInfo;
@@ -100,7 +104,7 @@ public class TaskbarDragLayer extends BaseDragLayer<TaskbarActivityContext> {
 
     @Override
     public void recreateControllers() {
-        mControllers = new TouchController[] {mActivity.getDragController()};
+        mControllers = mControllerCallbacks.getTouchControllers();
     }
 
     private void onComputeTaskbarInsets(InsetsInfo insetsInfo) {
@@ -186,5 +190,18 @@ public class TaskbarDragLayer extends BaseDragLayer<TaskbarActivityContext> {
     public boolean dispatchTouchEvent(MotionEvent ev) {
         TestLogging.recordMotionEvent(TestProtocol.SEQUENCE_MAIN, "Touch event", ev);
         return super.dispatchTouchEvent(ev);
+    }
+
+    /** Called while Taskbar window is focusable, e.g. when pressing back while a folder is open */
+    @Override
+    public boolean dispatchKeyEvent(KeyEvent event) {
+        if (event.getAction() == ACTION_UP && event.getKeyCode() == KEYCODE_BACK) {
+            AbstractFloatingView topView = AbstractFloatingView.getTopOpenView(mActivity);
+            if (topView != null && topView.onBackPressed()) {
+                // Handled by the floating view.
+                return true;
+            }
+        }
+        return super.dispatchKeyEvent(event);
     }
 }

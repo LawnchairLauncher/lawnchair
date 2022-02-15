@@ -98,14 +98,14 @@ import java.util.stream.Collectors;
 public final class LauncherInstrumentation {
 
     private static final String TAG = "Tapl";
-    private static final int ZERO_BUTTON_STEPS_FROM_BACKGROUND_TO_HOME = 20;
+    private static final int ZERO_BUTTON_STEPS_FROM_BACKGROUND_TO_HOME = 15;
     private static final int GESTURE_STEP_MS = 16;
     private static final long FORCE_PAUSE_TIMEOUT_MS = TimeUnit.SECONDS.toMillis(2);
 
     static final Pattern EVENT_TOUCH_DOWN = getTouchEventPattern("ACTION_DOWN");
     static final Pattern EVENT_TOUCH_UP = getTouchEventPattern("ACTION_UP");
     private static final Pattern EVENT_TOUCH_CANCEL = getTouchEventPattern("ACTION_CANCEL");
-    private static final Pattern EVENT_PILFER_POINTERS = Pattern.compile("pilferPointers");
+    static final Pattern EVENT_PILFER_POINTERS = Pattern.compile("pilferPointers");
     static final Pattern EVENT_START = Pattern.compile("start:");
 
     static final Pattern EVENT_TOUCH_DOWN_TIS = getTouchEventPatternTIS("ACTION_DOWN");
@@ -124,7 +124,7 @@ public final class LauncherInstrumentation {
         WORKSPACE, ALL_APPS, OVERVIEW, WIDGETS, BACKGROUND, FALLBACK_OVERVIEW
     }
 
-    public enum NavigationModel {ZERO_BUTTON, TWO_BUTTON, THREE_BUTTON}
+    public enum NavigationModel {ZERO_BUTTON, THREE_BUTTON}
 
     // Where the gesture happens: outside of Launcher, inside or from inside to outside and
     // whether the gesture recognition triggers pilfer.
@@ -342,6 +342,11 @@ public final class LauncherInstrumentation {
                 .getParcelable(TestProtocol.TEST_INFO_RESPONSE_FIELD));
     }
 
+    int getOverviewPageSpacing() {
+        return getTestInfo(TestProtocol.REQUEST_GET_OVERVIEW_PAGE_SPACING)
+                .getInt(TestProtocol.TEST_INFO_RESPONSE_FIELD);
+    }
+
     float getExactScreenCenterX() {
         return getRealDisplaySize().x / 2f;
     }
@@ -386,8 +391,6 @@ public final class LauncherInstrumentation {
     public static NavigationModel getNavigationModel(int currentInteractionMode) {
         if (QuickStepContract.isGesturalMode(currentInteractionMode)) {
             return NavigationModel.ZERO_BUTTON;
-        } else if (QuickStepContract.isSwipeUpMode(currentInteractionMode)) {
-            return NavigationModel.TWO_BUTTON;
         } else if (QuickStepContract.isLegacyMode(currentInteractionMode)) {
             return NavigationModel.THREE_BUTTON;
         }
@@ -421,18 +424,19 @@ public final class LauncherInstrumentation {
         }
     }
 
-    private String getSystemAnomalyMessage(
+    public String getSystemAnomalyMessage(
             boolean ignoreNavmodeChangeStates, boolean ignoreOnlySystemUiViews) {
         try {
             {
                 final StringBuilder sb = new StringBuilder();
 
-                UiObject2 object = mDevice.findObject(By.res("android", "alertTitle"));
+                UiObject2 object =
+                        mDevice.findObject(By.res("android", "alertTitle").pkg("android"));
                 if (object != null) {
                     sb.append("TITLE: ").append(object.getText());
                 }
 
-                object = mDevice.findObject(By.res("android", "message"));
+                object = mDevice.findObject(By.res("android", "message").pkg("android"));
                 if (object != null) {
                     sb.append(" PACKAGE: ").append(object.getApplicationPackage())
                             .append(" MESSAGE: ").append(object.getText());
@@ -859,7 +863,7 @@ public final class LauncherInstrumentation {
 
                     swipeToState(
                             displaySize.x / 2, displaySize.y - 1,
-                            displaySize.x / 2, 0,
+                            displaySize.x / 2, displaySize.y / 2,
                             ZERO_BUTTON_STEPS_FROM_BACKGROUND_TO_HOME, NORMAL_STATE_ORDINAL,
                             gestureStartFromLauncher ? GestureScope.INSIDE_TO_OUTSIDE
                                     : GestureScope.OUTSIDE_WITH_PILFER);
@@ -868,10 +872,6 @@ public final class LauncherInstrumentation {
                 log("Hierarchy before clicking home:");
                 dumpViewHierarchy();
                 action = "clicking home button";
-                if (!isLauncher3() && getNavigationModel() == NavigationModel.TWO_BUTTON) {
-                    expectEvent(TestProtocol.SEQUENCE_TIS, EVENT_TOUCH_DOWN_TIS);
-                    expectEvent(TestProtocol.SEQUENCE_TIS, EVENT_TOUCH_UP_TIS);
-                }
                 if (isTablet()) {
                     expectEvent(TestProtocol.SEQUENCE_MAIN, EVENT_TOUCH_DOWN);
                     expectEvent(TestProtocol.SEQUENCE_MAIN, EVENT_TOUCH_UP);
@@ -912,9 +912,6 @@ public final class LauncherInstrumentation {
                 if (isTablet()) {
                     expectEvent(TestProtocol.SEQUENCE_MAIN, EVENT_TOUCH_DOWN);
                     expectEvent(TestProtocol.SEQUENCE_MAIN, EVENT_TOUCH_UP);
-                } else if (!isLauncher3() && getNavigationModel() == NavigationModel.TWO_BUTTON) {
-                    expectEvent(TestProtocol.SEQUENCE_TIS, EVENT_TOUCH_DOWN_TIS);
-                    expectEvent(TestProtocol.SEQUENCE_TIS, EVENT_TOUCH_UP_TIS);
                 }
             }
             if (launcherVisible) {
@@ -1276,18 +1273,22 @@ public final class LauncherInstrumentation {
     }
 
     int getRightGestureStartOnScreen() {
-        return getRealDisplaySize().x - getWindowInsets().right;
+        return getRealDisplaySize().x - getWindowInsets().right - 1;
     }
 
-    void clickLauncherObject(UiObject2 object) {
-        waitForObjectEnabled(object, "clickLauncherObject");
-        expectEvent(TestProtocol.SEQUENCE_MAIN, LauncherInstrumentation.EVENT_TOUCH_DOWN);
-        expectEvent(TestProtocol.SEQUENCE_MAIN, LauncherInstrumentation.EVENT_TOUCH_UP);
+    void clickObject(UiObject2 object) {
+        waitForObjectEnabled(object, "clickObject");
         if (!isLauncher3() && getNavigationModel() != NavigationModel.THREE_BUTTON) {
             expectEvent(TestProtocol.SEQUENCE_TIS, LauncherInstrumentation.EVENT_TOUCH_DOWN_TIS);
             expectEvent(TestProtocol.SEQUENCE_TIS, LauncherInstrumentation.EVENT_TOUCH_UP_TIS);
         }
         object.click();
+    }
+
+    void clickLauncherObject(UiObject2 object) {
+        expectEvent(TestProtocol.SEQUENCE_MAIN, LauncherInstrumentation.EVENT_TOUCH_DOWN);
+        expectEvent(TestProtocol.SEQUENCE_MAIN, LauncherInstrumentation.EVENT_TOUCH_UP);
+        clickObject(object);
     }
 
     void scrollToLastVisibleRow(
@@ -1323,14 +1324,12 @@ public final class LauncherInstrumentation {
     void scrollLeftByDistance(UiObject2 container, int distance) {
         final Rect containerRect = getVisibleBounds(container);
         final int rightGestureMarginInContainer = getRightGestureMarginInContainer(container);
+        final int leftGestureMargin = getTargetInsets().left + getEdgeSensitivityWidth();
         scroll(
                 container,
                 Direction.LEFT,
-                new Rect(
-                        0,
-                        containerRect.width() - distance - rightGestureMarginInContainer,
-                        0,
-                        rightGestureMarginInContainer),
+                new Rect(leftGestureMargin, 0,
+                        containerRect.width() - distance - rightGestureMarginInContainer, 0),
                 10,
                 true);
     }

@@ -128,6 +128,9 @@ public class MultiValueAlpha {
 
         public void setConsumer(Consumer<Float> consumer) {
             mConsumer = consumer;
+            if (mConsumer != null) {
+                mConsumer.accept(mValue);
+            }
         }
 
         @Override

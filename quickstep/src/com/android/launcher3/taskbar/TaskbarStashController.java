@@ -27,22 +27,22 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.annotation.Nullable;
 import android.content.SharedPreferences;
-import android.content.res.Resources;
 import android.view.ViewConfiguration;
 
-import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.util.MultiValueAlpha.AlphaProperty;
 import com.android.quickstep.AnimatedFloat;
 import com.android.quickstep.SystemUiProxy;
 
+import java.io.PrintWriter;
+import java.util.StringJoiner;
 import java.util.function.IntPredicate;
 
 /**
  * Coordinates between controllers such as TaskbarViewController and StashedHandleViewController to
  * create a cohesive animation between stashed/unstashed states.
  */
-public class TaskbarStashController {
+public class TaskbarStashController implements TaskbarControllers.LoggableTaskbarController {
 
     public static final int FLAG_IN_APP = 1 << 0;
     public static final int FLAG_STASHED_IN_APP_MANUAL = 1 << 1; // long press, persisted
@@ -144,10 +144,9 @@ public class TaskbarStashController {
     public TaskbarStashController(TaskbarActivityContext activity) {
         mActivity = activity;
         mPrefs = Utilities.getPrefs(mActivity);
-        final Resources resources = mActivity.getResources();
-        mStashedHeight = resources.getDimensionPixelSize(R.dimen.taskbar_stashed_size);
         mSystemUiProxy = SystemUiProxy.INSTANCE.get(activity);
         mUnstashedHeight = mActivity.getDeviceProfile().taskbarSize;
+        mStashedHeight = mActivity.getDeviceProfile().stashedTaskbarSize;
     }
 
     public void init(TaskbarControllers controllers, TaskbarSharedState sharedState) {
@@ -171,9 +170,13 @@ public class TaskbarStashController {
 
         boolean isManuallyStashedInApp = supportsManualStashing()
                 && mPrefs.getBoolean(SHARED_PREFS_STASHED_KEY, DEFAULT_STASHED_PREF);
+        boolean isInSetup = !mActivity.isUserSetupComplete() || sharedState.setupUIVisible;
         updateStateForFlag(FLAG_STASHED_IN_APP_MANUAL, isManuallyStashedInApp);
-        updateStateForFlag(FLAG_STASHED_IN_APP_SETUP,
-                !mActivity.isUserSetupComplete() || sharedState.setupUIVisible);
+        updateStateForFlag(FLAG_STASHED_IN_APP_SETUP, isInSetup);
+        if (isInSetup) {
+            // Update the in-app state to ensure isStashed() reflects right state during SUW
+            updateStateForFlag(FLAG_IN_APP, true);
+        }
         applyState();
 
         notifyStashChange(/* visible */ false, /* stashed */ isStashedInApp());
@@ -190,7 +193,7 @@ public class TaskbarStashController {
     /**
      * Returns whether the user can manually stash the taskbar based on the current device state.
      */
-    private boolean supportsManualStashing() {
+    protected boolean supportsManualStashing() {
         return supportsVisualStashing()
                 && (!Utilities.IS_RUNNING_IN_TEST_HARNESS || supportsStashingForTests());
     }
@@ -272,11 +275,24 @@ public class TaskbarStashController {
             // taskbar, we use an OnLongClickListener on TaskbarView instead.
             return false;
         }
+        if (!canCurrentlyManuallyUnstash()) {
+            return false;
+        }
         if (updateAndAnimateIsManuallyStashedInApp(false)) {
             mControllers.taskbarActivityContext.getDragLayer().performHapticFeedback(LONG_PRESS);
             return true;
         }
         return false;
+    }
+
+    /**
+     * Returns whether taskbar will unstash when long pressing it based on the current state. The
+     * only time this is true is if the user is in an app and the taskbar is only stashed because
+     * the user previously long pressed to manually stash (not due to other reasons like IME).
+     */
+    private boolean canCurrentlyManuallyUnstash() {
+        return (mState & (FLAG_IN_APP | FLAGS_STASHED_IN_APP))
+                == (FLAG_IN_APP | FLAG_STASHED_IN_APP_MANUAL);
     }
 
     /**
@@ -420,6 +436,11 @@ public class TaskbarStashController {
             // Already unstashed, no need to hint in that direction.
             return;
         }
+        if (!canCurrentlyManuallyUnstash()) {
+            // If any other flags are causing us to be stashed, long press won't cause us to
+            // unstash, so don't hint that it will.
+            return;
+        }
         mTaskbarStashedHandleHintScale.animateToValue(
                 animateForward ? UNSTASHED_TASKBAR_HANDLE_HINT_SCALE : 1)
                 .setDuration(TASKBAR_HINT_STASH_DURATION).start();
@@ -537,6 +558,34 @@ public class TaskbarStashController {
         mSystemUiProxy.notifyTaskbarStatus(visible, stashed);
         mControllers.taskbarActivityContext.updateInsetRoundedCornerFrame(visible && !stashed);
         mControllers.rotationButtonController.onTaskbarStateChange(visible, stashed);
+    }
+
+    @Override
+    public void dumpLogs(String prefix, PrintWriter pw) {
+        pw.println(prefix + "TaskbarStashController:");
+
+        pw.println(String.format("%s\tmStashedHeight=%dpx", prefix, mStashedHeight));
+        pw.println(String.format("%s\tmUnstashedHeight=%dpx", prefix, mUnstashedHeight));
+        pw.println(String.format("%s\tmIsStashed=%b", prefix, mIsStashed));
+        pw.println(String.format(
+                "%s\tappliedState=%s", prefix, getStateString(mStatePropertyHolder.mPrevFlags)));
+        pw.println(String.format("%s\tmState=%s", prefix, getStateString(mState)));
+        pw.println(String.format(
+                "%s\tmIsSystemGestureInProgress=%b", prefix, mIsSystemGestureInProgress));
+        pw.println(String.format("%s\tmIsImeShowing=%b", prefix, mIsImeShowing));
+    }
+
+    private static String getStateString(int flags) {
+        StringJoiner str = new StringJoiner("|");
+        str.add((flags & FLAG_IN_APP) != 0 ? "FLAG_IN_APP" : "");
+        str.add((flags & FLAG_STASHED_IN_APP_MANUAL) != 0 ? "FLAG_STASHED_IN_APP_MANUAL" : "");
+        str.add((flags & FLAG_STASHED_IN_APP_PINNED) != 0 ? "FLAG_STASHED_IN_APP_PINNED" : "");
+        str.add((flags & FLAG_STASHED_IN_APP_EMPTY) != 0 ? "FLAG_STASHED_IN_APP_EMPTY" : "");
+        str.add((flags & FLAG_STASHED_IN_APP_SETUP) != 0 ? "FLAG_STASHED_IN_APP_SETUP" : "");
+        str.add((flags & FLAG_STASHED_IN_APP_IME) != 0 ? "FLAG_STASHED_IN_APP_IME" : "");
+        str.add((flags & FLAG_IN_STASHED_LAUNCHER_STATE) != 0
+                ? "FLAG_IN_STASHED_LAUNCHER_STATE" : "");
+        return str.toString();
     }
 
     private class StatePropertyHolder {

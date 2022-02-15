@@ -97,7 +97,7 @@ public class FloatingSurfaceView extends AbstractFloatingView implements
 
         // Remove after some time, to avoid flickering
         Executors.MAIN_EXECUTOR.getHandler().postDelayed(mRemoveViewRunnable,
-                DisplayController.INSTANCE.get(mLauncher).getInfo().singleFrameMs);
+                DisplayController.getSingleFrameMs(mLauncher));
     }
 
     private void removeViewFromParent() {

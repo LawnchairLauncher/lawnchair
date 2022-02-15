@@ -37,8 +37,8 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.logging.InstanceId;
 import com.android.launcher3.logging.InstanceIdSequence;
+import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.ItemInfoWithIcon;
-import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.util.OnboardingPrefs;
 import com.android.quickstep.AnimatedFloat;
 import com.android.quickstep.RecentsAnimationCallbacks;
@@ -111,6 +111,11 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
     @Override
     protected boolean isTaskbarTouchable() {
         return !mTaskbarLauncherStateController.isAnimatingToLauncher();
+    }
+
+    public void setShouldDelayLauncherStateAnim(boolean shouldDelayLauncherStateAnim) {
+        mTaskbarLauncherStateController.setShouldDelayLauncherStateAnim(
+                shouldDelayLauncherStateAnim);
     }
 
     /**
@@ -211,14 +216,21 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
      * Starts the taskbar education flow, if the user hasn't seen it yet.
      */
     public void showEdu() {
-        if (!FeatureFlags.ENABLE_TASKBAR_EDU.get()
-                || Utilities.IS_RUNNING_IN_TEST_HARNESS
-                || mLauncher.getOnboardingPrefs().getBoolean(OnboardingPrefs.TASKBAR_EDU_SEEN)) {
+        if (!shouldShowEdu()) {
             return;
         }
         mLauncher.getOnboardingPrefs().markChecked(OnboardingPrefs.TASKBAR_EDU_SEEN);
 
         mControllers.taskbarEduController.showEdu();
+    }
+
+    /**
+     * Whether the taskbar education should be shown.
+     */
+    public boolean shouldShowEdu() {
+        return FeatureFlags.ENABLE_TASKBAR_EDU.get()
+                && !Utilities.IS_RUNNING_IN_TEST_HARNESS
+                && !mLauncher.getOnboardingPrefs().getBoolean(OnboardingPrefs.TASKBAR_EDU_SEEN);
     }
 
     /**
@@ -233,7 +245,7 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
     }
 
     @Override
-    public void onTaskbarIconLaunched(WorkspaceItemInfo item) {
+    public void onTaskbarIconLaunched(ItemInfo item) {
         InstanceId instanceId = new InstanceIdSequence().newInstanceId();
         mLauncher.logAppLaunch(mControllers.taskbarActivityContext.getStatsLogManager(), item,
                 instanceId);

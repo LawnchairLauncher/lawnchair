@@ -16,7 +16,6 @@
 
 package com.android.launcher3.taskbar;
 
-
 import static com.android.internal.app.AssistUtils.INVOCATION_TYPE_HOME_BUTTON_LONG_PRESS;
 import static com.android.internal.app.AssistUtils.INVOCATION_TYPE_KEY;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_SCREEN_PINNING;
@@ -34,6 +33,7 @@ import com.android.quickstep.OverviewCommandHelper;
 import com.android.quickstep.SystemUiProxy;
 import com.android.quickstep.TouchInteractionService;
 
+import java.io.PrintWriter;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
@@ -42,7 +42,7 @@ import java.lang.annotation.RetentionPolicy;
  * Handles all the functionality of the various buttons, making/routing the right calls into
  * launcher or sysui/system.
  */
-public class TaskbarNavButtonController {
+public class TaskbarNavButtonController implements TaskbarControllers.LoggableTaskbarController {
 
     /** Allow some time in between the long press for back and recents. */
     static final int SCREEN_PIN_LONG_PRESS_THRESHOLD = 200;
@@ -51,6 +51,15 @@ public class TaskbarNavButtonController {
     private long mLastScreenPinLongPress;
     private boolean mScreenPinned;
 
+    @Override
+    public void dumpLogs(String prefix, PrintWriter pw) {
+        pw.println(prefix + "TaskbarNavButtonController:");
+
+        pw.println(String.format(
+                "%s\tmLastScreenPinLongPress=%dms", prefix, mLastScreenPinLongPress));
+        pw.println(String.format("%s\tmScreenPinned=%b", prefix, mScreenPinned));
+    }
+
     @Retention(RetentionPolicy.SOURCE)
     @IntDef(value = {
             BUTTON_BACK,
@@ -58,6 +67,8 @@ public class TaskbarNavButtonController {
             BUTTON_RECENTS,
             BUTTON_IME_SWITCH,
             BUTTON_A11Y,
+            BUTTON_QUICK_SETTINGS,
+            BUTTON_NOTIFICATIONS,
     })
 
     public @interface TaskbarButton {}
@@ -67,6 +78,8 @@ public class TaskbarNavButtonController {
     static final int BUTTON_RECENTS = BUTTON_HOME << 1;
     static final int BUTTON_IME_SWITCH = BUTTON_RECENTS << 1;
     static final int BUTTON_A11Y = BUTTON_IME_SWITCH << 1;
+    static final int BUTTON_QUICK_SETTINGS = BUTTON_A11Y << 1;
+    static final int BUTTON_NOTIFICATIONS = BUTTON_QUICK_SETTINGS << 1;
 
     private static final int SCREEN_UNPIN_COMBO = BUTTON_BACK | BUTTON_RECENTS;
     private int mLongPressedButtons = 0;
@@ -101,6 +114,12 @@ public class TaskbarNavButtonController {
             case BUTTON_A11Y:
                 notifyA11yClick(false /* longClick */);
                 break;
+            case BUTTON_QUICK_SETTINGS:
+                showQuickSettings();
+                break;
+            case BUTTON_NOTIFICATIONS:
+                showNotifications();
+                break;
         }
     }
 
@@ -134,6 +153,10 @@ public class TaskbarNavButtonController {
                 return R.string.taskbar_button_ime_switcher;
             case BUTTON_RECENTS:
                 return R.string.taskbar_button_recents;
+            case BUTTON_NOTIFICATIONS:
+                return R.string.taskbar_button_notifications;
+            case BUTTON_QUICK_SETTINGS:
+                return R.string.taskbar_button_quick_settings;
             default:
                 return 0;
         }
@@ -220,5 +243,13 @@ public class TaskbarNavButtonController {
         Bundle args = new Bundle();
         args.putInt(INVOCATION_TYPE_KEY, INVOCATION_TYPE_HOME_BUTTON_LONG_PRESS);
         mSystemUiProxy.startAssistant(args);
+    }
+
+    private void showQuickSettings() {
+        mSystemUiProxy.toggleNotificationPanel();
+    }
+
+    private void showNotifications() {
+        mSystemUiProxy.toggleNotificationPanel();
     }
 }

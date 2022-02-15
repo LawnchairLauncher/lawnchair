@@ -40,8 +40,8 @@ import static com.android.launcher3.LauncherState.NO_SCALE;
 import static com.android.launcher3.LauncherState.SPRING_LOADED;
 import static com.android.launcher3.Utilities.postAsyncCallback;
 import static com.android.launcher3.accessibility.LauncherAccessibilityDelegate.getSupportedActions;
-import static com.android.launcher3.config.FeatureFlags.ADAPTIVE_ICON_WINDOW_ANIM;
 import static com.android.launcher3.dragndrop.DragLayer.ALPHA_INDEX_LAUNCHER_LOAD;
+import static com.android.launcher3.logging.StatsLogManager.EventEnum;
 import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_BACKGROUND;
 import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_HOME;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ALLAPPS_ENTRY;
@@ -106,6 +106,7 @@ import android.view.Menu;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.view.WindowManager.LayoutParams;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.animation.OvershootInterpolator;
@@ -121,9 +122,10 @@ import androidx.annotation.VisibleForTesting;
 import com.android.launcher3.DropTarget.DragObject;
 import com.android.launcher3.accessibility.BaseAccessibilityDelegate.LauncherAction;
 import com.android.launcher3.accessibility.LauncherAccessibilityDelegate;
-import com.android.launcher3.allapps.AllAppsContainerView;
+import com.android.launcher3.allapps.ActivityAllAppsContainerView;
 import com.android.launcher3.allapps.AllAppsStore;
 import com.android.launcher3.allapps.AllAppsTransitionController;
+import com.android.launcher3.allapps.BaseAllAppsContainerView;
 import com.android.launcher3.allapps.DiscoveryBounce;
 import com.android.launcher3.anim.AnimatorListeners;
 import com.android.launcher3.anim.PropertyListBuilder;
@@ -141,6 +143,8 @@ import com.android.launcher3.icons.BitmapRenderer;
 import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.keyboard.ViewGroupFocusHelper;
 import com.android.launcher3.logger.LauncherAtom;
+import com.android.launcher3.logger.LauncherAtom.ContainerInfo;
+import com.android.launcher3.logger.LauncherAtom.WorkspaceContainer;
 import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.logging.InstanceId;
 import com.android.launcher3.logging.InstanceIdSequence;
@@ -149,6 +153,7 @@ import com.android.launcher3.model.BgDataModel.Callbacks;
 import com.android.launcher3.model.ItemInstallQueue;
 import com.android.launcher3.model.ModelUtils;
 import com.android.launcher3.model.ModelWriter;
+import com.android.launcher3.model.StringCache;
 import com.android.launcher3.model.WidgetsModel;
 import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.FolderInfo;
@@ -208,7 +213,7 @@ import com.android.launcher3.widget.WidgetManagerHelper;
 import com.android.launcher3.widget.custom.CustomWidgetManager;
 import com.android.launcher3.widget.model.WidgetsListBaseEntry;
 import com.android.launcher3.widget.picker.WidgetsFullSheet;
-import com.android.systemui.plugins.OverlayPlugin;
+import com.android.systemui.plugins.LauncherOverlayPlugin;
 import com.android.systemui.plugins.PluginListener;
 import com.android.systemui.plugins.shared.LauncherExterns;
 import com.android.systemui.plugins.shared.LauncherOverlayManager;
@@ -231,8 +236,8 @@ import java.util.stream.Stream;
  * Default launcher application.
  */
 public class Launcher extends StatefulActivity<LauncherState> implements LauncherExterns,
-        Callbacks, InvariantDeviceProfile.OnIDPChangeListener, PluginListener<OverlayPlugin>,
-        LauncherOverlayCallbacks {
+        Callbacks, InvariantDeviceProfile.OnIDPChangeListener,
+        PluginListener<LauncherOverlayPlugin>, LauncherOverlayCallbacks {
     public static final String TAG = "Launcher";
 
     public static final ActivityTracker<Launcher> ACTIVITY_TRACKER = new ActivityTracker<>();
@@ -314,7 +319,7 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
 
     // Main container view for the all apps screen.
     @Thunk
-    AllAppsContainerView mAppsView;
+    ActivityAllAppsContainerView<Launcher> mAppsView;
     AllAppsTransitionController mAllAppsController;
 
     // Scrim view for the all apps and overview state.
@@ -378,6 +383,8 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
     // session on the server side.
     protected InstanceId mAllAppsSessionLogId;
     private LauncherState mPrevLauncherState;
+
+    private StringCache mStringCache;
 
     @Override
     @TargetApi(Build.VERSION_CODES.S)
@@ -503,6 +510,23 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
         setDefaultKeyMode(DEFAULT_KEYS_SEARCH_LOCAL);
 
         setContentView(getRootView());
+        getRootView().getViewTreeObserver().addOnPreDrawListener(
+                new ViewTreeObserver.OnPreDrawListener() {
+                    @Override
+                    public boolean onPreDraw() {
+                        // Checks the status of fade in animation.
+                        final AlphaProperty property =
+                                mDragLayer.getAlphaProperty(ALPHA_INDEX_LAUNCHER_LOAD);
+                        if (property.getValue() == 0) {
+                            // Animation haven't started yet; suspend.
+                            return false;
+                        } else {
+                            // The animation is started; start drawing.
+                            getRootView().getViewTreeObserver().removeOnPreDrawListener(this);
+                            return true;
+                        }
+                    }
+                });
         getRootView().dispatchInsets();
 
         // Listen for broadcasts
@@ -516,7 +540,7 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
         }
         mOverlayManager = getDefaultOverlay();
         PluginManagerWrapper.INSTANCE.get(this).addPluginListener(this,
-                OverlayPlugin.class, false /* allowedMultiple */);
+                LauncherOverlayPlugin.class, false /* allowedMultiple */);
 
         mRotationHelper.initialize();
         TraceHelper.INSTANCE.endSection(traceToken);
@@ -542,12 +566,12 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
     }
 
     @Override
-    public void onPluginConnected(OverlayPlugin overlayManager, Context context) {
+    public void onPluginConnected(LauncherOverlayPlugin overlayManager, Context context) {
         switchOverlay(() -> overlayManager.createOverlayManager(this, this));
     }
 
     @Override
-    public void onPluginDisconnected(OverlayPlugin plugin) {
+    public void onPluginDisconnected(LauncherOverlayPlugin plugin) {
         switchOverlay(this::getDefaultOverlay);
     }
 
@@ -1083,12 +1107,21 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
                 && mAllAppsSessionLogId == null) {
             // creates new instance ID since new all apps session is started.
             mAllAppsSessionLogId = new InstanceIdSequence().newInstanceId();
-            getStatsLogManager()
-                    .logger()
-                    .log(FeatureFlags.ENABLE_DEVICE_SEARCH.get()
-                            ? LAUNCHER_ALLAPPS_ENTRY_WITH_DEVICE_SEARCH
-                            : LAUNCHER_ALLAPPS_ENTRY);
+            getStatsLogManager().logger().withContainerInfo(
+                    ContainerInfo.newBuilder().setWorkspace(
+                            WorkspaceContainer.newBuilder().setPageIndex(
+                                    getWorkspace().getCurrentPage())).build())
+                    .log(getAllAppsEntryEvent());
         }
+    }
+
+    /**
+     * Returns {@link EventEnum} that should be logged when Launcher enters into AllApps state.
+     */
+    protected EventEnum getAllAppsEntryEvent() {
+        return FeatureFlags.ENABLE_DEVICE_SEARCH.get()
+                ? LAUNCHER_ALLAPPS_ENTRY_WITH_DEVICE_SEARCH
+                : LAUNCHER_ALLAPPS_ENTRY;
     }
 
     @Override
@@ -1472,7 +1505,8 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
         return mDragLayer;
     }
 
-    public AllAppsContainerView getAppsView() {
+    @Override
+    public ActivityAllAppsContainerView<Launcher> getAppsView() {
         return mAppsView;
     }
 
@@ -1546,6 +1580,7 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
         boolean isActionMain = Intent.ACTION_MAIN.equals(intent.getAction());
         boolean internalStateHandled = ACTIVITY_TRACKER.handleNewIntent(this);
         hideKeyboard();
+
         if (isActionMain) {
             if (!internalStateHandled) {
                 // In all these cases, only animate if we're already on home
@@ -1574,6 +1609,8 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
             handleGestureContract(intent);
         } else if (Intent.ACTION_ALL_APPS.equals(intent.getAction())) {
             showAllAppsFromIntent(alreadyOnHome);
+        } else if (Intent.ACTION_SHOW_WORK_APPS.equals(intent.getAction())) {
+            showAllAppsWorkTabFromIntent(alreadyOnHome);
         }
 
         TraceHelper.INSTANCE.endSection(traceToken);
@@ -1582,6 +1619,11 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
     protected void showAllAppsFromIntent(boolean alreadyOnHome) {
         AbstractFloatingView.closeAllOpenViews(this);
         getStateManager().goToState(ALL_APPS, alreadyOnHome);
+    }
+
+    private void showAllAppsWorkTabFromIntent(boolean alreadyOnHome) {
+        showAllAppsFromIntent(alreadyOnHome);
+        mAppsView.switchToTab(BaseAllAppsContainerView.AdapterHolder.WORK);
     }
 
     /**
@@ -2348,6 +2390,9 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
                 CellLayout cl = mWorkspace.getScreenWithId(item.screenId);
                 if (cl != null && cl.isOccupied(item.cellX, item.cellY)) {
                     View v = cl.getChildAt(item.cellX, item.cellY);
+                    if (v == null) {
+                        Log.e(TAG, "bindItems failed when removing colliding item=" + item);
+                    }
                     Object tag = v.getTag();
                     String desc = "Collision while binding workspace item: " + item
                             + ". Collides with " + tag;
@@ -2356,6 +2401,10 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
                     } else {
                         Log.d(TAG, desc);
                         getModelWriter().deleteItemFromDatabase(item);
+                        if (TestProtocol.sDebugTracing) {
+                            Log.d(TestProtocol.MISSING_PROMISE_ICON,
+                                    TAG + "bindItems failed for item=" + item);
+                        }
                         continue;
                     }
                 }
@@ -2712,14 +2761,8 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
                     -> containers.add(((CellLayout) page).getShortcutsAndWidgets()));
 
             // Order: Preferred item by itself or in folder, then by matching package/user
-            if (ADAPTIVE_ICON_WINDOW_ANIM.get()) {
-                return getFirstMatch(containers, preferredItem, forFolderMatch(preferredItem),
-                        packageAndUserAndApp, forFolderMatch(packageAndUserAndApp));
-            } else {
-                // Do not use Folder as a criteria, since it'll cause a crash when trying to draw
-                // FolderAdaptiveIcon as the background.
-                return getFirstMatch(containers, preferredItem, packageAndUserAndApp);
-            }
+            return getFirstMatch(containers, preferredItem, forFolderMatch(preferredItem),
+                    packageAndUserAndApp, forFolderMatch(packageAndUserAndApp));
         }
     }
 
@@ -2767,6 +2810,17 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
     private void announceForAccessibility(@StringRes int stringResId) {
         getDragLayer().announceForAccessibility(getString(stringResId));
     }
+
+    /**
+     * Informs us that the overlay (-1 screen, typically), has either become visible or invisible.
+     */
+    public void onOverlayVisibilityChanged(boolean visible) {}
+
+    /**
+     * Informs us that the page transition has ended, so that we can react to the newly selected
+     * page if we want to.
+     */
+    public void onPageEndTransition() {}
 
     /**
      * Add the icons for all apps.
@@ -2844,6 +2898,16 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
     @Override
     public void bindAllWidgets(final List<WidgetsListBaseEntry> allWidgets) {
         mPopupDataProvider.setAllWidgets(allWidgets);
+    }
+
+    @Override
+    public void bindStringCache(StringCache cache) {
+        mStringCache = cache;
+    }
+
+    @Override
+    public StringCache getStringCache() {
+        return mStringCache;
     }
 
     /**

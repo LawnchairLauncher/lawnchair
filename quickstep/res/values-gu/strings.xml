@@ -25,6 +25,7 @@
     <string name="accessibility_app_usage_settings" msgid="6312864233673544149">"ઍપ વપરાશનું સેટિંગ"</string>
     <string name="recents_clear_all" msgid="5328176793634888831">"બધું સાફ કરો"</string>
     <string name="accessibility_recent_apps" msgid="4058661986695117371">"તાજેતરની ઍપ"</string>
+    <string name="task_view_closed" msgid="9170038230110856166">"કાર્ય બંધ કર્યું"</string>
     <string name="task_contents_description_with_remaining_time" msgid="4479688746574672685">"<xliff:g id="TASK_DESCRIPTION">%1$s</xliff:g>, <xliff:g id="REMAINING_TIME">%2$s</xliff:g>"</string>
     <string name="shorter_duration_less_than_one_minute" msgid="4722015666335015336">"&lt; 1 મિનિટ"</string>
     <string name="time_left_for_app" msgid="3111996412933644358">"<xliff:g id="TIME">%1$s</xliff:g> આજે બાકી"</string>
@@ -89,9 +90,20 @@
     <string name="accessibility_rotate_button" msgid="4771825231336502943">"સ્ક્રીન ફેરવો"</string>
     <string name="taskbar_edu_opened" msgid="3950252793551919129">"ટાસ્કબારનું શિક્ષણ આપતી પૅનલ દેખાય છે"</string>
     <string name="taskbar_edu_closed" msgid="126643734478892862">"ટાસ્કબારનું શિક્ષણ આપતી પૅનલ બંધ થઈ છે"</string>
+    <string name="taskbar_edu_switch_apps" msgid="6942863327845784813">"ઍપ સ્વિચ કરવા માટે, ટાસ્કબારનો ઉપયોગ કરો"</string>
+    <string name="taskbar_edu_splitscreen" msgid="2663361731630346489">"એક જ સમયે બે ઍપનો ઉપયોગ કરવા માટે, ખેંચીને બાજુ પર લઈ જાઓ"</string>
     <string name="taskbar_edu_stashing" msgid="5212374387411764031">"ટાસ્કબાર છુપાવવા, તેને ટચ કરીને થોડીવાર દબાવી રાખો"</string>
     <string name="taskbar_edu_next" msgid="4007618274426775841">"આગળ"</string>
     <string name="taskbar_edu_previous" msgid="459202320127201702">"પાછળ"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"બંધ કરો"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"થઈ ગયું"</string>
+    <string name="taskbar_button_home" msgid="2151398979630664652">"હોમ"</string>
+    <string name="taskbar_button_a11y" msgid="5241161324875094465">"ઍક્સેસિબિલિટી"</string>
+    <string name="taskbar_button_back" msgid="8558862226461164514">"પાછળ"</string>
+    <string name="taskbar_button_ime_switcher" msgid="1730244360907588541">"IME સ્વિચર"</string>
+    <string name="taskbar_button_recents" msgid="7273376136216613134">"તાજેતરના"</string>
+    <string name="taskbar_button_notifications" msgid="7471740351507357318">"નોટિફિકેશન"</string>
+    <string name="taskbar_button_quick_settings" msgid="227662894293189391">"ઝડપી સેટિંગ"</string>
+    <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"સૌથી ઉપર ડાબી બાજુએ ખસેડો"</string>
+    <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"સૌથી નીચે જમણી બાજુએ ખસેડો"</string>
 </resources>

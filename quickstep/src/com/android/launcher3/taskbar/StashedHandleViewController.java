@@ -34,10 +34,12 @@ import com.android.launcher3.util.MultiValueAlpha;
 import com.android.quickstep.AnimatedFloat;
 import com.android.systemui.shared.navigationbar.RegionSamplingHelper;
 
+import java.io.PrintWriter;
+
 /**
  * Handles properties/data collection, then passes the results to our stashed handle View to render.
  */
-public class StashedHandleViewController {
+public class StashedHandleViewController implements TaskbarControllers.LoggableTaskbarController {
 
     public static final int ALPHA_INDEX_STASHED = 0;
     public static final int ALPHA_INDEX_HOME_DISABLED = 1;
@@ -199,5 +201,16 @@ public class StashedHandleViewController {
 
     public boolean isStashedHandleVisible() {
         return mStashedHandleView.getVisibility() == View.VISIBLE;
+    }
+
+    @Override
+    public void dumpLogs(String prefix, PrintWriter pw) {
+        pw.println(prefix + "StashedHandleViewController:");
+
+        pw.println(String.format(
+                "%s\tisStashedHandleVisible=%b", prefix, isStashedHandleVisible()));
+        pw.println(String.format("%s\tmStashedHandleWidth=%dpx", prefix, mStashedHandleWidth));
+        pw.println(String.format("%s\tmStashedHandleHeight=%dpx", prefix, mStashedHandleHeight));
+        mRegionSamplingHelper.dump(prefix, pw);
     }
 }

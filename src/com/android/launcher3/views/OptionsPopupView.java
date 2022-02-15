@@ -240,7 +240,10 @@ public class OptionsPopupView extends ArrowPopup<Launcher>
     private static boolean startWallpaperPicker(View v) {
         Launcher launcher = Launcher.getLauncher(v.getContext());
         if (!Utilities.isWallpaperAllowed(launcher)) {
-            Toast.makeText(launcher, R.string.msg_disabled_by_admin, Toast.LENGTH_SHORT).show();
+            String message = launcher.getStringCache() != null
+                    ? launcher.getStringCache().disabledByAdminMessage
+                    : launcher.getString(R.string.msg_disabled_by_admin);
+            Toast.makeText(launcher, message, Toast.LENGTH_SHORT).show();
             return false;
         }
         Intent intent = new Intent(Intent.ACTION_SET_WALLPAPER)

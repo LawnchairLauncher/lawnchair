@@ -21,6 +21,7 @@ import static com.android.launcher3.ui.TaplTestsLauncher3.getAppPackageName;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assume.assumeTrue;
 
 import android.content.Intent;
 
@@ -37,7 +38,6 @@ import com.android.launcher3.tapl.LauncherInstrumentation.NavigationModel;
 import com.android.launcher3.tapl.Overview;
 import com.android.launcher3.tapl.OverviewActions;
 import com.android.launcher3.tapl.OverviewTask;
-import com.android.launcher3.tapl.TestHelpers;
 import com.android.launcher3.ui.TaplTestsLauncher3;
 import com.android.launcher3.util.rule.ScreenRecordRule.ScreenRecord;
 import com.android.quickstep.NavigationModeSwitchRule.NavigationModeSwitch;
@@ -322,10 +322,8 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
     @Test
     @PortraitLandscape
     public void testOverviewForTablet() throws Exception {
-        // TODO(b/210158657): Re-enable for OOP
-        if (!mLauncher.isTablet() || !TestHelpers.isInLauncherProcess()) {
-            return;
-        }
+        assumeTrue(mLauncher.isTablet());
+
         for (int i = 2; i <= 14; i++) {
             startTestActivity(i);
         }
@@ -345,7 +343,7 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
         // Test opening the task.
         overview.getCurrentTask().open();
         assertTrue("Test activity didn't open from Overview",
-                mDevice.wait(Until.hasObject(By.pkg(getAppPackageName()).text("TestActivity8")),
+                mDevice.wait(Until.hasObject(By.pkg(getAppPackageName()).text("TestActivity10")),
                         DEFAULT_UI_TIMEOUT));
 
         // Scroll the task offscreen as it is now first

@@ -52,22 +52,22 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
     /**
      * The progress at which all apps content will be fully visible.
      */
-    protected static final float ALL_APPS_CONTENT_FADE_MAX_CLAMPING_THRESHOLD = 0.8f;
+    public static final float ALL_APPS_CONTENT_FADE_MAX_CLAMPING_THRESHOLD = 0.8f;
 
     /**
      * Minimum clamping progress for fading in all apps content
      */
-    protected static final float ALL_APPS_CONTENT_FADE_MIN_CLAMPING_THRESHOLD = 0.5f;
+    public static final float ALL_APPS_CONTENT_FADE_MIN_CLAMPING_THRESHOLD = 0.5f;
 
     /**
      * Minimum clamping progress for fading in all apps scrim
      */
-    protected static final float ALL_APPS_SCRIM_VISIBLE_THRESHOLD = .1f;
+    public static final float ALL_APPS_SCRIM_VISIBLE_THRESHOLD = .1f;
 
     /**
      * Maximum clamping progress for opaque all apps scrim
      */
-    protected static final float ALL_APPS_SCRIM_OPAQUE_THRESHOLD = .5f;
+    public static final float ALL_APPS_SCRIM_OPAQUE_THRESHOLD = .5f;
 
     private final PortraitOverviewStateTouchHelper mOverviewPortraitStateTouchHelper;
 

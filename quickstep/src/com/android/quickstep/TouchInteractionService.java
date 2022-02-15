@@ -31,8 +31,9 @@ import static com.android.systemui.shared.system.QuickStepContract.KEY_EXTRA_SHE
 import static com.android.systemui.shared.system.QuickStepContract.KEY_EXTRA_SHELL_SHELL_TRANSITIONS;
 import static com.android.systemui.shared.system.QuickStepContract.KEY_EXTRA_SHELL_SPLIT_SCREEN;
 import static com.android.systemui.shared.system.QuickStepContract.KEY_EXTRA_SHELL_STARTING_WINDOW;
-import static com.android.systemui.shared.system.QuickStepContract.KEY_EXTRA_SMARTSPACE_TRANSITION_CONTROLLER;
 import static com.android.systemui.shared.system.QuickStepContract.KEY_EXTRA_SYSUI_PROXY;
+import static com.android.systemui.shared.system.QuickStepContract.KEY_EXTRA_UNLOCK_ANIMATION_CONTROLLER;
+import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_NOTIFICATION_PANEL_EXPANDED;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_TRACING_ENABLED;
 
 import android.annotation.TargetApi;
@@ -104,7 +105,7 @@ import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.InputChannelCompat.InputEventReceiver;
 import com.android.systemui.shared.system.InputConsumerController;
 import com.android.systemui.shared.system.InputMonitorCompat;
-import com.android.systemui.shared.system.smartspace.ISmartspaceTransitionController;
+import com.android.systemui.shared.system.smartspace.ISysuiUnlockAnimationController;
 import com.android.systemui.shared.tracing.ProtoTraceable;
 import com.android.wm.shell.onehanded.IOneHanded;
 import com.android.wm.shell.pip.IPip;
@@ -161,15 +162,15 @@ public class TouchInteractionService extends Service
                     bundle.getBinder(KEY_EXTRA_SHELL_SHELL_TRANSITIONS));
             IStartingWindow startingWindow = IStartingWindow.Stub.asInterface(
                     bundle.getBinder(KEY_EXTRA_SHELL_STARTING_WINDOW));
-            ISmartspaceTransitionController smartspaceTransitionController =
-                    ISmartspaceTransitionController.Stub.asInterface(
-                            bundle.getBinder(KEY_EXTRA_SMARTSPACE_TRANSITION_CONTROLLER));
+            ISysuiUnlockAnimationController launcherUnlockAnimationController =
+                    ISysuiUnlockAnimationController.Stub.asInterface(
+                            bundle.getBinder(KEY_EXTRA_UNLOCK_ANIMATION_CONTROLLER));
             IRecentTasks recentTasks = IRecentTasks.Stub.asInterface(
                     bundle.getBinder(KEY_EXTRA_RECENT_TASKS));
             MAIN_EXECUTOR.execute(() -> {
                 SystemUiProxy.INSTANCE.get(TouchInteractionService.this).setProxy(proxy, pip,
                         splitscreen, onehanded, shellTransitions, startingWindow, recentTasks,
-                        smartspaceTransitionController);
+                        launcherUnlockAnimationController);
                 TouchInteractionService.this.initInputMonitor();
                 preloadOverview(true /* fromInit */);
             });
@@ -479,6 +480,15 @@ public class TouchInteractionService extends Service
             mOverviewComponentObserver.onSystemUiStateChanged();
             mTaskbarManager.onSystemUiFlagsChanged(systemUiStateFlags);
 
+            boolean wasExpanded = (lastSysUIFlags & SYSUI_STATE_NOTIFICATION_PANEL_EXPANDED) != 0;
+            boolean isExpanded =
+                    (systemUiStateFlags & SYSUI_STATE_NOTIFICATION_PANEL_EXPANDED) != 0;
+            if (wasExpanded != isExpanded && isExpanded) {
+                // End live tile when expanding the notification panel for the first time from
+                // overview.
+                mTaskAnimationManager.endLiveTile();
+            }
+
             if ((lastSysUIFlags & SYSUI_STATE_TRACING_ENABLED) !=
                     (systemUiStateFlags & SYSUI_STATE_TRACING_ENABLED)) {
                 // Update the tracing state
@@ -640,8 +650,8 @@ public class TouchInteractionService extends Service
             gestureState.updatePreviouslyAppearedTaskIds(
                     previousGestureState.getPreviouslyAppearedTaskIds());
         } else {
-            gestureState.updateRunningTask(TraceHelper.allowIpcs("getRunningTask.0",
-                    () -> mAM.getRunningTask(false /* filterOnlyVisibleRecents */)));
+            gestureState.updateRunningTasks(TraceHelper.allowIpcs("getRunningTask.0",
+                    () -> mAM.getRunningTasks(false /* filterOnlyVisibleRecents */)));
         }
         return gestureState;
     }
@@ -932,6 +942,9 @@ public class TouchInteractionService extends Service
             if (mOverviewComponentObserver != null) {
                 mOverviewComponentObserver.dump(pw);
             }
+            if (mOverviewCommandHelper != null) {
+                mOverviewCommandHelper.dump(pw);
+            }
             if (mGestureState != null) {
                 mGestureState.dump(pw);
             }
@@ -951,6 +964,7 @@ public class TouchInteractionService extends Service
             RecentsModel.INSTANCE.get(this).dump("", pw);
             pw.println("ProtoTrace:");
             pw.println("  file=" + ProtoTracer.INSTANCE.get(this).getTraceFile());
+            mTaskbarManager.dumpLogs("", pw);
         }
     }
 

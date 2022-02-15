@@ -258,6 +258,9 @@ public class StatsLogManager implements ResourceBasedOverride {
         @UiEvent(doc = "User swipes or fling in DOWN direction to close apps drawer.")
         LAUNCHER_ALLAPPS_CLOSE_DOWN(569),
 
+        @UiEvent(doc = "User tap outside apps drawer sheet to close apps drawer.")
+        LAUNCHER_ALLAPPS_CLOSE_TAP_OUTSIDE(941),
+
         @UiEvent(doc = "User swipes or fling in UP direction and hold from the bottom bazel area")
         LAUNCHER_OVERVIEW_GESTURE(570),
 
@@ -371,6 +374,9 @@ public class StatsLogManager implements ResourceBasedOverride {
 
         @UiEvent(doc = "Notification dismissed by swiping right.")
         LAUNCHER_NOTIFICATION_DISMISSED(652),
+
+        @UiEvent(doc = "Current grid size is changed to 6.")
+        LAUNCHER_GRID_SIZE_6(930),
 
         @UiEvent(doc = "Current grid size is changed to 5.")
         LAUNCHER_GRID_SIZE_5(662),

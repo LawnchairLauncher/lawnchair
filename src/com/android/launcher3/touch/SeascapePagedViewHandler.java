@@ -16,10 +16,10 @@
 
 package com.android.launcher3.touch;
 
+import static android.view.Gravity.BOTTOM;
 import static android.view.Gravity.CENTER_VERTICAL;
 import static android.view.Gravity.END;
 import static android.view.Gravity.START;
-import static android.view.Gravity.TOP;
 
 import static com.android.launcher3.touch.SingleAxisSwipeDetector.HORIZONTAL;
 import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITION_BOTTOM_OR_RIGHT;
@@ -29,6 +29,7 @@ import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_TYPE_MA
 import android.content.res.Resources;
 import android.graphics.PointF;
 import android.graphics.Rect;
+import android.util.Pair;
 import android.view.Surface;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -105,6 +106,54 @@ public class SeascapePagedViewHandler extends LandscapePagedViewHandler {
         return new PointF(-margin, margin);
     }
 
+
+
+    @Override
+    public Pair<Float, Float> getDwbLayoutTranslations(int taskViewWidth,
+            int taskViewHeight, StagedSplitBounds splitBounds, DeviceProfile deviceProfile,
+            View[] thumbnailViews, int desiredTaskId, View banner) {
+        boolean isRtl = banner.getLayoutDirection() == View.LAYOUT_DIRECTION_RTL;
+        float translationX = 0;
+        float translationY = 0;
+        FrameLayout.LayoutParams bannerParams = (FrameLayout.LayoutParams) banner.getLayoutParams();
+        banner.setPivotX(0);
+        banner.setPivotY(0);
+        banner.setRotation(getDegreesRotated());
+        translationX = taskViewWidth - banner.getHeight();
+        FrameLayout.LayoutParams snapshotParams =
+                (FrameLayout.LayoutParams) thumbnailViews[0]
+                        .getLayoutParams();
+        bannerParams.gravity = BOTTOM | (isRtl ? END : START);
+
+        if (splitBounds == null) {
+            // Single, fullscreen case
+            bannerParams.width = taskViewHeight - snapshotParams.topMargin;
+            translationY = banner.getHeight();
+            return new Pair<>(translationX, translationY);
+        }
+
+        // Set correct width
+        if (desiredTaskId == splitBounds.leftTopTaskId) {
+            bannerParams.width = thumbnailViews[0].getMeasuredHeight();
+        } else {
+            bannerParams.width = thumbnailViews[1].getMeasuredHeight();
+        }
+
+        // Set translations
+        if (desiredTaskId == splitBounds.rightBottomTaskId) {
+            translationY = banner.getHeight();
+        }
+        if (desiredTaskId == splitBounds.leftTopTaskId) {
+            float bottomRightTaskPlusDividerPercent = splitBounds.appsStackedVertically
+                    ? (1f - splitBounds.topTaskPercent)
+                    : (1f - splitBounds.leftTaskPercent);
+            translationY = banner.getHeight()
+                    - ((taskViewHeight - snapshotParams.topMargin)
+                    * bottomRightTaskPlusDividerPercent);
+        }
+        return new Pair<>(translationX, translationY);
+    }
+
     @Override
     public int getDistanceToBottomOfRect(DeviceProfile dp, Rect rect) {
         return dp.widthPx - rect.right;
@@ -140,8 +189,8 @@ public class SeascapePagedViewHandler extends LandscapePagedViewHandler {
         FrameLayout.LayoutParams secondaryIconParams =
                 (FrameLayout.LayoutParams) secondaryIconView.getLayoutParams();
 
-        primaryIconParams.gravity = (isRtl ? END : START) | TOP;
-        secondaryIconParams.gravity = (isRtl ? END : START) | TOP;
+        primaryIconParams.gravity = CENTER_VERTICAL | (isRtl ? END : START);
+        secondaryIconParams.gravity = CENTER_VERTICAL | (isRtl ? END : START);
         primaryIconView.setLayoutParams(primaryIconParams);
         secondaryIconView.setLayoutParams(secondaryIconParams);
     }

@@ -17,7 +17,6 @@ package com.android.launcher3.views;
 
 import static com.android.launcher3.Utilities.getBadge;
 import static com.android.launcher3.Utilities.getFullDrawable;
-import static com.android.launcher3.config.FeatureFlags.ADAPTIVE_ICON_WINDOW_ANIM;
 import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
 import static com.android.launcher3.views.IconLabelDotView.setIconAndDotVisible;
 
@@ -254,8 +253,7 @@ public class FloatingIconView extends FrameLayout implements
     private static void getIconResult(Launcher l, View originalView, ItemInfo info, RectF pos,
             Drawable btvIcon, IconLoadResult iconLoadResult) {
         Drawable drawable;
-        boolean supportsAdaptiveIcons = ADAPTIVE_ICON_WINDOW_ANIM.get()
-                && !info.isDisabled(); // Use original icon for disabled icons.
+        boolean supportsAdaptiveIcons = !info.isDisabled(); // Use original icon for disabled icons.
 
         Drawable badge = null;
         if (info instanceof SystemShortcut) {

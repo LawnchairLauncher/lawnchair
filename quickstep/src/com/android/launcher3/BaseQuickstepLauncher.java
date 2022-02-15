@@ -21,7 +21,9 @@ import static com.android.launcher3.LauncherState.FLAG_HIDE_BACK_BUTTON;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.NO_OFFSET;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
+import static com.android.launcher3.config.FeatureFlags.ENABLE_SPLIT_FROM_WORKSPACE;
 import static com.android.launcher3.model.data.ItemInfo.NO_MATCHING_ID;
+import static com.android.launcher3.popup.QuickstepSystemShortcut.getSplitSelectShortcutByPosition;
 import static com.android.launcher3.util.DisplayController.CHANGE_ACTIVE_SCREEN;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 import static com.android.quickstep.SysUINavigationMode.Mode.NO_BUTTON;
@@ -39,6 +41,7 @@ import android.hardware.SensorManager;
 import android.hardware.devicestate.DeviceStateManager;
 import android.os.Bundle;
 import android.os.CancellationSignal;
+import android.view.Display;
 import android.view.View;
 import android.view.WindowInsets;
 import android.window.SplashScreen;
@@ -62,6 +65,7 @@ import com.android.launcher3.util.ActivityOptionsWrapper;
 import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.IntSet;
 import com.android.launcher3.util.ObjectWrapper;
+import com.android.launcher3.util.SplitConfigurationOptions.SplitPositionOption;
 import com.android.launcher3.util.UiThreadHelper;
 import com.android.quickstep.OverviewCommandHelper;
 import com.android.quickstep.RecentsModel;
@@ -88,6 +92,7 @@ import com.android.systemui.unfold.config.UnfoldTransitionConfig;
 
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -320,6 +325,11 @@ public abstract class BaseQuickstepLauncher extends Launcher
         mOverviewCommandHelper = binder.getOverviewCommandHelper();
     }
 
+    @Override
+    public void runOnBindToTouchInteractionService(Runnable r) {
+        mTISBindHelper.runOnBindToTouchInteractionService(r);
+    }
+
     private void initUnfoldTransitionProgressProvider() {
         final UnfoldTransitionConfig config = UnfoldTransitionFactory.createConfig(this);
         if (config.isEnabled()) {
@@ -331,7 +341,8 @@ public abstract class BaseQuickstepLauncher extends Launcher
                             getSystemService(DeviceStateManager.class),
                             getSystemService(SensorManager.class),
                             getMainThreadHandler(),
-                            getMainExecutor()
+                            getMainExecutor(),
+                            /* tracingTagPrefix= */ "launcher"
                     );
 
             mLauncherUnfoldAnimationController = new LauncherUnfoldAnimationController(
@@ -379,8 +390,7 @@ public abstract class BaseQuickstepLauncher extends Launcher
 
     @Override
     public boolean supportsAdaptiveIconAnimation(View clickedView) {
-        return mAppTransitionManager.hasControlRemoteAppTransitionPermission()
-                && FeatureFlags.ADAPTIVE_ICON_WINDOW_ANIM.get();
+        return mAppTransitionManager.hasControlRemoteAppTransitionPermission();
     }
 
     @Override
@@ -488,8 +498,20 @@ public abstract class BaseQuickstepLauncher extends Launcher
 
     @Override
     public Stream<SystemShortcut.Factory> getSupportedShortcuts() {
-        return Stream.concat(Stream.of(WellbeingModel.SHORTCUT_FACTORY),
-                super.getSupportedShortcuts());
+        Stream<SystemShortcut.Factory> base = Stream.of(WellbeingModel.SHORTCUT_FACTORY);
+        if (ENABLE_SPLIT_FROM_WORKSPACE.get() && mDeviceProfile.isTablet) {
+            RecentsView recentsView = getOverviewPanel();
+            // TODO: Pull it out of PagedOrentationHandler for split from workspace.
+            List<SplitPositionOption> positions =
+                    recentsView.getPagedOrientationHandler().getSplitPositionOptions(
+                            mDeviceProfile);
+            List<SystemShortcut.Factory<BaseQuickstepLauncher>> splitShortcuts = new ArrayList<>();
+            for (SplitPositionOption position : positions) {
+                splitShortcuts.add(getSplitSelectShortcutByPosition(position));
+            }
+            base = Stream.concat(base, splitShortcuts.stream());
+        }
+        return Stream.concat(base, super.getSupportedShortcuts());
     }
 
     @Override
@@ -502,7 +524,10 @@ public abstract class BaseQuickstepLauncher extends Launcher
             ActivityOptionsCompat.setLauncherSourceInfo(
                     activityOptions.options, mLastTouchUpTime);
         }
-        activityOptions.options.setSplashscreenStyle(SplashScreen.SPLASH_SCREEN_STYLE_ICON);
+        activityOptions.options.setSplashScreenStyle(SplashScreen.SPLASH_SCREEN_STYLE_ICON);
+        activityOptions.options.setLaunchDisplayId(
+                (v != null && v.getDisplay() != null) ? v.getDisplay().getDisplayId()
+                        : Display.DEFAULT_DISPLAY);
         addLaunchCookie(item, activityOptions.options);
         return activityOptions;
     }

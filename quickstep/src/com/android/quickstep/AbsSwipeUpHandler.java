@@ -180,45 +180,51 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
             getFlagForIndex(0, "STATE_LAUNCHER_PRESENT");
     protected static final int STATE_LAUNCHER_STARTED =
             getFlagForIndex(1, "STATE_LAUNCHER_STARTED");
-    protected static final int STATE_LAUNCHER_DRAWN = getFlagForIndex(2, "STATE_LAUNCHER_DRAWN");
+    protected static final int STATE_LAUNCHER_DRAWN =
+            getFlagForIndex(2, "STATE_LAUNCHER_DRAWN");
+    // Called when the Launcher has connected to the touch interaction service (and the taskbar
+    // ui controller is initialized)
+    protected static final int STATE_LAUNCHER_BIND_TO_SERVICE =
+            getFlagForIndex(3, "STATE_LAUNCHER_BIND_TO_SERVICE");
 
     // Internal initialization states
     private static final int STATE_APP_CONTROLLER_RECEIVED =
-            getFlagForIndex(3, "STATE_APP_CONTROLLER_RECEIVED");
+            getFlagForIndex(4, "STATE_APP_CONTROLLER_RECEIVED");
 
     // Interaction finish states
     private static final int STATE_SCALED_CONTROLLER_HOME =
-            getFlagForIndex(4, "STATE_SCALED_CONTROLLER_HOME");
+            getFlagForIndex(5, "STATE_SCALED_CONTROLLER_HOME");
     private static final int STATE_SCALED_CONTROLLER_RECENTS =
-            getFlagForIndex(5, "STATE_SCALED_CONTROLLER_RECENTS");
+            getFlagForIndex(6, "STATE_SCALED_CONTROLLER_RECENTS");
 
     protected static final int STATE_HANDLER_INVALIDATED =
-            getFlagForIndex(6, "STATE_HANDLER_INVALIDATED");
+            getFlagForIndex(7, "STATE_HANDLER_INVALIDATED");
     private static final int STATE_GESTURE_STARTED =
-            getFlagForIndex(7, "STATE_GESTURE_STARTED");
+            getFlagForIndex(8, "STATE_GESTURE_STARTED");
     private static final int STATE_GESTURE_CANCELLED =
-            getFlagForIndex(8, "STATE_GESTURE_CANCELLED");
+            getFlagForIndex(9, "STATE_GESTURE_CANCELLED");
     private static final int STATE_GESTURE_COMPLETED =
-            getFlagForIndex(9, "STATE_GESTURE_COMPLETED");
+            getFlagForIndex(10, "STATE_GESTURE_COMPLETED");
 
     private static final int STATE_CAPTURE_SCREENSHOT =
-            getFlagForIndex(10, "STATE_CAPTURE_SCREENSHOT");
+            getFlagForIndex(11, "STATE_CAPTURE_SCREENSHOT");
     protected static final int STATE_SCREENSHOT_CAPTURED =
-            getFlagForIndex(11, "STATE_SCREENSHOT_CAPTURED");
+            getFlagForIndex(12, "STATE_SCREENSHOT_CAPTURED");
     private static final int STATE_SCREENSHOT_VIEW_SHOWN =
-            getFlagForIndex(12, "STATE_SCREENSHOT_VIEW_SHOWN");
+            getFlagForIndex(13, "STATE_SCREENSHOT_VIEW_SHOWN");
 
     private static final int STATE_RESUME_LAST_TASK =
-            getFlagForIndex(13, "STATE_RESUME_LAST_TASK");
+            getFlagForIndex(14, "STATE_RESUME_LAST_TASK");
     private static final int STATE_START_NEW_TASK =
-            getFlagForIndex(14, "STATE_START_NEW_TASK");
+            getFlagForIndex(15, "STATE_START_NEW_TASK");
     private static final int STATE_CURRENT_TASK_FINISHED =
-            getFlagForIndex(15, "STATE_CURRENT_TASK_FINISHED");
+            getFlagForIndex(16, "STATE_CURRENT_TASK_FINISHED");
     private static final int STATE_FINISH_WITH_NO_END =
-            getFlagForIndex(16, "STATE_FINISH_WITH_NO_END");
+            getFlagForIndex(17, "STATE_FINISH_WITH_NO_END");
 
     private static final int LAUNCHER_UI_STATES =
-            STATE_LAUNCHER_PRESENT | STATE_LAUNCHER_DRAWN | STATE_LAUNCHER_STARTED;
+            STATE_LAUNCHER_PRESENT | STATE_LAUNCHER_DRAWN | STATE_LAUNCHER_STARTED |
+                    STATE_LAUNCHER_BIND_TO_SERVICE;
 
     public static final long MAX_SWIPE_DURATION = 350;
     public static final long HOME_DURATION = StaggeredWorkspaceAnim.DURATION_MS;
@@ -243,6 +249,8 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
     private RunningWindowAnim[] mRunningWindowAnim;
     // Possible second animation running at the same time as mRunningWindowAnim
     private Animator mParallelRunningAnim;
+    // Current running divider animation
+    private ValueAnimator mDividerAnimator;
     private boolean mIsMotionPaused;
     private boolean mHasMotionEverBeenPaused;
 
@@ -429,6 +437,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
 
         setupRecentsViewUi();
         linkRecentsViewScroll();
+        activity.runOnBindToTouchInteractionService(this::onLauncherBindToService);
 
         mActivity.registerActivityLifecycleCallbacks(mLifecycleCallbacks);
         return true;
@@ -510,6 +519,11 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
         mStateCallback.setState(STATE_LAUNCHER_STARTED);
     }
 
+    private void onLauncherBindToService() {
+        mStateCallback.setState(STATE_LAUNCHER_BIND_TO_SERVICE);
+        flushOnRecentsAnimationAndLauncherBound();
+    }
+
     private void onLauncherPresentAndGestureStarted() {
         // Re-setup the recents UI when gesture starts, as the state could have been changed during
         // that time by a previous window transition.
@@ -557,9 +571,14 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
             runningTasks = new ActivityManager.RunningTaskInfo[splitTaskIds.length];
             for (int i = 0; i < splitTaskIds.length; i++) {
                 int taskId = splitTaskIds[i];
-                ActivityManager.RunningTaskInfo rti = new ActivityManager.RunningTaskInfo();
-                rti.taskId = taskId;
-                runningTasks[i] = rti;
+                // Order matters here, we want first indexed RunningTaskInfo to be leftTop task
+                for (ActivityManager.RunningTaskInfo rti : mGestureState.getRunningTasks()) {
+                    if (taskId == rti.taskId) {
+                        runningTasks[i] = rti;
+                        break;
+                    }
+
+                }
             }
         } else {
             runningTasks = new ActivityManager.RunningTaskInfo[]{mGestureState.getRunningTask()};
@@ -812,14 +831,10 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
         }
 
         // Notify when the animation starts
-        if (!mRecentsAnimationStartCallbacks.isEmpty()) {
-            for (Runnable action : new ArrayList<>(mRecentsAnimationStartCallbacks)) {
-                action.run();
-            }
-            mRecentsAnimationStartCallbacks.clear();
-        }
+        flushOnRecentsAnimationAndLauncherBound();
 
-        TaskViewUtils.setSplitAuxiliarySurfacesShown(mRecentsAnimationTargets.nonApps, false);
+        // Start hiding the divider
+        setDividerShown(false /* shown */, false /* immediate */);
 
         // Only add the callback to enable the input consumer after we actually have the controller
         mStateCallback.runOnceAtState(STATE_APP_CONTROLLER_RECEIVED | STATE_GESTURE_STARTED,
@@ -836,7 +851,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
         mStateCallback.setStateOnUiThread(STATE_GESTURE_CANCELLED | STATE_HANDLER_INVALIDATED);
 
         if (mRecentsAnimationTargets != null) {
-            TaskViewUtils.setSplitAuxiliarySurfacesShown(mRecentsAnimationTargets.nonApps, true);
+            setDividerShown(true /* shown */, false /* immediate */);
         }
 
         // Defer clearing the controller and the targets until after we've updated the state
@@ -986,8 +1001,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
                     mStateCallback.setState(STATE_RESUME_LAST_TASK);
                 }
                 if (mRecentsAnimationTargets != null) {
-                    TaskViewUtils.setSplitAuxiliarySurfacesShown(
-                            mRecentsAnimationTargets.nonApps, true);
+                    setDividerShown(true /* shown */, true /* immediate */);
                 }
                 break;
         }
@@ -1184,10 +1198,10 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
             // We probably never received an animation controller, skip logging.
             return;
         }
-        int pageIndex = endTarget == LAST_TASK
+        int pageIndex = endTarget == LAST_TASK || mRecentsView == null
                 ? LOG_NO_OP_PAGE_INDEX
                 : mRecentsView.getNextPage();
-        // TODO: set correct container using the pageIndex
+        logger.withRank(pageIndex);
         logger.log(event);
     }
 
@@ -1195,7 +1209,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
     @UiThread
     private void animateToProgress(float start, float end, long duration, Interpolator interpolator,
             GestureEndTarget target, PointF velocityPxPerMs) {
-        runOnRecentsAnimationStart(() -> animateToProgressInternal(start, end, duration,
+        runOnRecentsAnimationAndLauncherBound(() -> animateToProgressInternal(start, end, duration,
                 interpolator, target, velocityPxPerMs));
     }
 
@@ -1396,7 +1410,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
                 .setContext(mContext)
                 .setTaskId(runningTaskTarget.taskId)
                 .setComponentName(taskInfo.topActivity)
-                .setLeash(runningTaskTarget.leash.getSurfaceControl())
+                .setLeash(runningTaskTarget.leash)
                 .setSourceRectHint(
                         runningTaskTarget.taskInfo.pictureInPictureParams.getSourceRectHint())
                 .setAppBounds(taskInfo.configuration.windowConfiguration.getBounds())
@@ -1639,7 +1653,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
         mActivityInterface.onTransitionCancelled(wasVisible, mGestureState.getEndTarget());
 
         if (mRecentsAnimationTargets != null) {
-            TaskViewUtils.setSplitAuxiliarySurfacesShown(mRecentsAnimationTargets.nonApps, true);
+            setDividerShown(true /* shown */, true /* immediate */);
         }
 
         // Leave the pending invisible flag, as it may be used by wallpaper open animation.
@@ -1820,12 +1834,12 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
         SurfaceTransactionApplier.create(mRecentsView, applier -> {
             runActionOnRemoteHandles(remoteTargetHandle -> remoteTargetHandle.getTransformParams()
                             .setSyncTransactionApplier(applier));
-            runOnRecentsAnimationStart(() ->
+            runOnRecentsAnimationAndLauncherBound(() ->
                     mRecentsAnimationTargets.addReleaseCheck(applier));
         });
 
         mRecentsView.addOnScrollChangedListener(mOnRecentsScrollListener);
-        runOnRecentsAnimationStart(() ->
+        runOnRecentsAnimationAndLauncherBound(() ->
                 mRecentsView.setRecentsAnimationTargets(mRecentsAnimationController,
                         mRecentsAnimationTargets));
         mRecentsViewScrollLinked = true;
@@ -1871,14 +1885,26 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
     }
 
     /**
-     * Runs the given {@param action} if the recents animation has already started, or queues it to
-     * be run when it is next started.
+     * Runs the given {@param action} if the recents animation has already started and Launcher has
+     * been created and bound to the TouchInteractionService, or queues it to be run when it this
+     * next happens.
      */
-    protected void runOnRecentsAnimationStart(Runnable action) {
-        if (mRecentsAnimationTargets == null) {
-            mRecentsAnimationStartCallbacks.add(action);
-        } else {
-            action.run();
+    private void runOnRecentsAnimationAndLauncherBound(Runnable action) {
+        mRecentsAnimationStartCallbacks.add(action);
+        flushOnRecentsAnimationAndLauncherBound();
+    }
+
+    private void flushOnRecentsAnimationAndLauncherBound() {
+        if (mRecentsAnimationTargets == null ||
+                !mStateCallback.hasStates(STATE_LAUNCHER_BIND_TO_SERVICE)) {
+            return;
+        }
+
+        if (!mRecentsAnimationStartCallbacks.isEmpty()) {
+            for (Runnable action : new ArrayList<>(mRecentsAnimationStartCallbacks)) {
+                action.run();
+            }
+            mRecentsAnimationStartCallbacks.clear();
         }
     }
 
@@ -1893,7 +1919,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
     @Override
     public void onRecentsAnimationFinished(RecentsAnimationController controller) {
         if (!controller.getFinishTargetIsLauncher()) {
-            TaskViewUtils.setSplitAuxiliarySurfacesShown(mRecentsAnimationTargets.nonApps, true);
+            setDividerShown(true /* shown */, false /* immediate */);
         }
         mRecentsAnimationController = null;
         mRecentsAnimationTargets = null;
@@ -1996,6 +2022,19 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
         }
 
         return scaleProgress;
+    }
+
+    private void setDividerShown(boolean shown, boolean immediate) {
+        if (mDividerAnimator != null) {
+            mDividerAnimator.cancel();
+        }
+        mDividerAnimator = TaskViewUtils.createSplitAuxiliarySurfacesAnimator(
+                mRecentsAnimationTargets.nonApps, shown, (dividerAnimator) -> {
+                    dividerAnimator.start();
+                    if (immediate) {
+                        dividerAnimator.end();
+                    }
+                });
     }
 
     /**

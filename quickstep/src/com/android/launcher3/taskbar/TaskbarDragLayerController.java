@@ -26,13 +26,16 @@ import android.graphics.Rect;
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.R;
 import com.android.launcher3.anim.AlphaUpdateListener;
+import com.android.launcher3.util.TouchController;
 import com.android.quickstep.AnimatedFloat;
 import com.android.systemui.shared.system.ViewTreeObserverWrapper.InsetsInfo;
+
+import java.io.PrintWriter;
 
 /**
  * Handles properties/data collection, then passes the results to TaskbarDragLayer to render.
  */
-public class TaskbarDragLayerController {
+public class TaskbarDragLayerController implements TaskbarControllers.LoggableTaskbarController {
 
     private final TaskbarActivityContext mActivity;
     private final TaskbarDragLayer mTaskbarDragLayer;
@@ -144,6 +147,16 @@ public class TaskbarDragLayerController {
         mNavButtonDarkIntensityMultiplier.updateValue(1 - effectiveBgAlpha);
     }
 
+    @Override
+    public void dumpLogs(String prefix, PrintWriter pw) {
+        pw.println(prefix + "TaskbarDragLayerController:");
+
+        pw.println(String.format("%s\tmBgOffset=%.2f", prefix, mBgOffset.value));
+        pw.println(String.format("%s\tmFolderMargin=%dpx", prefix, mFolderMargin));
+        pw.println(String.format(
+                "%s\tmLastSetBackgroundAlpha=%.2f", prefix, mLastSetBackgroundAlpha));
+    }
+
     /**
      * Callbacks for {@link TaskbarDragLayer} to interact with its controller.
      */
@@ -169,7 +182,8 @@ public class TaskbarDragLayerController {
                 // Let touches pass through us.
                 insetsInfo.setTouchableInsets(TOUCHABLE_INSETS_REGION);
             } else if (mControllers.taskbarViewController.areIconsVisible()
-                    || AbstractFloatingView.getOpenView(mActivity, TYPE_ALL) != null) {
+                    || AbstractFloatingView.getOpenView(mActivity, TYPE_ALL) != null
+                    || mActivity.isNavBarKidsModeActive()) {
                 // Taskbar has some touchable elements, take over the full taskbar area
                 insetsInfo.setTouchableInsets(mActivity.isTaskbarWindowFullscreen()
                         ? TOUCHABLE_INSETS_FRAME : TOUCHABLE_INSETS_CONTENT);
@@ -204,6 +218,14 @@ public class TaskbarDragLayerController {
          */
         public int getTaskbarBackgroundHeight() {
             return mActivity.getDeviceProfile().taskbarSize;
+        }
+
+        /**
+         * Returns touch controllers.
+         */
+        public TouchController[] getTouchControllers() {
+            return new TouchController[]{mActivity.getDragController(),
+                    mControllers.taskbarForceVisibleImmersiveController};
         }
     }
 }

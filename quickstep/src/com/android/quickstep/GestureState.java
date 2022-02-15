@@ -20,6 +20,7 @@ import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_HOME;
 import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_OVERVIEW;
 import static com.android.quickstep.MultiStateCallback.DEBUG_STATES;
 
+import android.annotation.Nullable;
 import android.annotation.TargetApi;
 import android.app.ActivityManager;
 import android.content.Intent;
@@ -135,6 +136,7 @@ public class GestureState implements RecentsAnimationCallbacks.RecentsAnimationL
     private final int mGestureId;
 
     private ActivityManager.RunningTaskInfo mRunningTask;
+    private ActivityManager.RunningTaskInfo[] mRunningTasks;
     private GestureEndTarget mEndTarget;
     private RemoteAnimationTargetCompat mLastAppearedTaskTarget;
     private Set<Integer> mPreviouslyAppearedTaskIds = new HashSet<>();
@@ -235,6 +237,14 @@ public class GestureState implements RecentsAnimationCallbacks.RecentsAnimationL
     }
 
     /**
+     * This will array will contain the task returned by {@link #getRunningTask()}
+     * @return the running tasks for this gesture.
+     */
+    public ActivityManager.RunningTaskInfo[] getRunningTasks() {
+        return mRunningTasks;
+    }
+
+    /**
      * @return the running task id for this gesture.
      */
     public int getRunningTaskId() {
@@ -246,6 +256,15 @@ public class GestureState implements RecentsAnimationCallbacks.RecentsAnimationL
      */
     public void updateRunningTask(ActivityManager.RunningTaskInfo runningTask) {
         mRunningTask = runningTask;
+    }
+
+    /**
+     * TODO(b/210903248) refactor to consolidate w/ method above
+     * Updates the running task for the gesture to be the given {@param runningTask}.
+     */
+    public void updateRunningTasks(ActivityManager.RunningTaskInfo[] runningTasks) {
+        mRunningTasks = runningTasks;
+        updateRunningTask(runningTasks[0]);
     }
 
     /**
@@ -379,11 +398,15 @@ public class GestureState implements RecentsAnimationCallbacks.RecentsAnimationL
      * while STATE_RECENTS_ANIMATION_CANCELED state is being set, and the caller is responsible for
      * calling {@link RecentsAnimationController#cleanupScreenshot()}.
      */
+    @Nullable
     HashMap<Integer, ThumbnailData> consumeRecentsAnimationCanceledSnapshot() {
-        HashMap<Integer, ThumbnailData> data =
-                new HashMap<Integer, ThumbnailData>(mRecentsAnimationCanceledSnapshots);
-        mRecentsAnimationCanceledSnapshots = null;
-        return data;
+        if (mRecentsAnimationCanceledSnapshots != null) {
+            HashMap<Integer, ThumbnailData> data =
+                    new HashMap<Integer, ThumbnailData>(mRecentsAnimationCanceledSnapshots);
+            mRecentsAnimationCanceledSnapshots = null;
+            return data;
+        }
+        return null;
     }
 
     void setSwipeUpStartTimeMs(long uptimeMs) {

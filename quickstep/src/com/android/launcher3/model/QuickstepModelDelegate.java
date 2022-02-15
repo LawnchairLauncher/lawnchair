@@ -15,6 +15,20 @@
  */
 package com.android.launcher3.model;
 
+import static android.app.admin.DevicePolicyResources.Strings.Launcher.ALL_APPS_PERSONAL_TAB;
+import static android.app.admin.DevicePolicyResources.Strings.Launcher.ALL_APPS_PERSONAL_TAB_ACCESSIBILITY;
+import static android.app.admin.DevicePolicyResources.Strings.Launcher.ALL_APPS_WORK_TAB;
+import static android.app.admin.DevicePolicyResources.Strings.Launcher.ALL_APPS_WORK_TAB_ACCESSIBILITY;
+import static android.app.admin.DevicePolicyResources.Strings.Launcher.DISABLED_BY_ADMIN_MESSAGE;
+import static android.app.admin.DevicePolicyResources.Strings.Launcher.WIDGETS_PERSONAL_TAB;
+import static android.app.admin.DevicePolicyResources.Strings.Launcher.WIDGETS_WORK_TAB;
+import static android.app.admin.DevicePolicyResources.Strings.Launcher.WORK_FOLDER_NAME;
+import static android.app.admin.DevicePolicyResources.Strings.Launcher.WORK_PROFILE_EDU;
+import static android.app.admin.DevicePolicyResources.Strings.Launcher.WORK_PROFILE_EDU_ACCEPT;
+import static android.app.admin.DevicePolicyResources.Strings.Launcher.WORK_PROFILE_ENABLE_BUTTON;
+import static android.app.admin.DevicePolicyResources.Strings.Launcher.WORK_PROFILE_PAUSED_DESCRIPTION;
+import static android.app.admin.DevicePolicyResources.Strings.Launcher.WORK_PROFILE_PAUSED_TITLE;
+import static android.app.admin.DevicePolicyResources.Strings.Launcher.WORK_PROFILE_PAUSE_BUTTON;
 import static android.text.format.DateUtils.DAY_IN_MILLIS;
 import static android.text.format.DateUtils.formatElapsedTime;
 
@@ -32,6 +46,7 @@ import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
 import static java.util.stream.Collectors.toCollection;
 
 import android.app.StatsManager;
+import android.app.admin.DevicePolicyManager;
 import android.app.prediction.AppPredictionContext;
 import android.app.prediction.AppPredictionManager;
 import android.app.prediction.AppPredictor;
@@ -119,19 +134,56 @@ public class QuickstepModelDelegate extends ModelDelegate {
 
         WorkspaceItemFactory allAppsFactory = new WorkspaceItemFactory(
                 mApp, ums, pinnedShortcuts, mIDP.numDatabaseAllAppsColumns);
-        mAllAppsState.items.setItems(
+        FixedContainerItems allAppsItems = new FixedContainerItems(mAllAppsState.containerId,
                 mAllAppsState.storage.read(mApp.getContext(), allAppsFactory, ums.allUsers::get));
-        mDataModel.extraItems.put(CONTAINER_PREDICTION, mAllAppsState.items);
+        mDataModel.extraItems.put(mAllAppsState.containerId, allAppsItems);
 
         WorkspaceItemFactory hotseatFactory =
                 new WorkspaceItemFactory(mApp, ums, pinnedShortcuts, mIDP.numDatabaseHotseatIcons);
-        mHotseatState.items.setItems(
+        FixedContainerItems hotseatItems = new FixedContainerItems(mHotseatState.containerId,
                 mHotseatState.storage.read(mApp.getContext(), hotseatFactory, ums.allUsers::get));
-        mDataModel.extraItems.put(CONTAINER_HOTSEAT_PREDICTION, mHotseatState.items);
+        mDataModel.extraItems.put(mHotseatState.containerId, hotseatItems);
 
         // Widgets prediction isn't used frequently. And thus, it is not persisted on disk.
-        mDataModel.extraItems.put(CONTAINER_WIDGETS_PREDICTION, mWidgetsRecommendationState.items);
+        mDataModel.extraItems.put(mWidgetsRecommendationState.containerId,
+                new FixedContainerItems(mWidgetsRecommendationState.containerId));
         mActive = true;
+    }
+
+    @Override
+    @WorkerThread
+    public void loadStringCache(StringCache cache) {
+        cache.loadDefaultStrings(mContext);
+
+        cache.workProfileEdu = getEnterpriseString(WORK_PROFILE_EDU, cache.workProfileEdu);
+        cache.workProfileEduAccept = getEnterpriseString(
+                WORK_PROFILE_EDU_ACCEPT, cache.workProfileEduAccept);
+        cache.workProfilePausedTitle = getEnterpriseString(
+                WORK_PROFILE_PAUSED_TITLE, cache.workProfilePausedTitle);
+        cache.workProfilePausedDescription = getEnterpriseString(
+                WORK_PROFILE_PAUSED_DESCRIPTION, cache.workProfilePausedDescription);
+        cache.workProfilePauseButton = getEnterpriseString(
+                WORK_PROFILE_PAUSE_BUTTON, cache.workProfilePauseButton);
+        cache.workProfileEnableButton = getEnterpriseString(
+                WORK_PROFILE_ENABLE_BUTTON, cache.workProfileEnableButton);
+        cache.allAppsWorkTab = getEnterpriseString(ALL_APPS_WORK_TAB, cache.allAppsWorkTab);
+        cache.allAppsPersonalTab = getEnterpriseString(
+                ALL_APPS_PERSONAL_TAB, cache.allAppsPersonalTab);
+        cache.allAppsWorkTabAccessibility = getEnterpriseString(
+                ALL_APPS_WORK_TAB_ACCESSIBILITY, cache.allAppsWorkTabAccessibility);
+        cache.allAppsPersonalTabAccessibility = getEnterpriseString(
+                ALL_APPS_PERSONAL_TAB_ACCESSIBILITY, cache.allAppsPersonalTabAccessibility);
+        cache.workFolderName = getEnterpriseString(WORK_FOLDER_NAME, cache.workFolderName);
+        cache.widgetsWorkTab = getEnterpriseString(WIDGETS_WORK_TAB, cache.widgetsWorkTab);
+        cache.widgetsPersonalTab = getEnterpriseString(
+                WIDGETS_PERSONAL_TAB, cache.widgetsPersonalTab);
+        cache.disabledByAdminMessage = getEnterpriseString(
+                DISABLED_BY_ADMIN_MESSAGE, cache.disabledByAdminMessage);
+    }
+
+    private String getEnterpriseString(String updatableStringId, String defaultString) {
+        DevicePolicyManager dpm = mContext.getSystemService(DevicePolicyManager.class);
+        return dpm.getString(updatableStringId, () -> defaultString);
     }
 
     @Override
@@ -371,14 +423,14 @@ public class QuickstepModelDelegate extends ModelDelegate {
 
     static class PredictorState {
 
-        public final FixedContainerItems items;
+        public final int containerId;
         public final PersistedItemArray<ItemInfo> storage;
         public AppPredictor predictor;
 
         private List<AppTarget> mLastTargets;
 
-        PredictorState(int container, String storageName) {
-            items = new FixedContainerItems(container);
+        PredictorState(int containerId, String storageName) {
+            this.containerId = containerId;
             storage = new PersistedItemArray<>(storageName);
             mLastTargets = Collections.emptyList();
         }

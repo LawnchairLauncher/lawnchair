@@ -23,6 +23,7 @@ import static com.android.quickstep.views.OverviewActionsView.DISABLED_NO_THUMBN
 import static com.android.quickstep.views.OverviewActionsView.DISABLED_ROTATED;
 
 import android.annotation.SuppressLint;
+import android.app.ActivityManager;
 import android.content.Context;
 import android.graphics.Insets;
 import android.graphics.Matrix;
@@ -115,8 +116,9 @@ public class TaskOverlayFactory implements ResourceBasedOverride {
      * Does NOT add split options in the following scenarios:
      * * The taskView to add split options is already showing split screen tasks
      * * There aren't at least 2 tasks in overview to show split options for
+     * * Device is in "Lock task mode"
      * * The taskView to show split options for is the focused task AND we haven't started
-     *   scrolling in overview (if we haven't scrolled, there's a split overview action so
+     *   scrolling in overview (if we haven't scrolled, there's a split overview action button so
      *   we don't need this menu option)
      */
     private static void addSplitOptions(List<SystemShortcut> outShortcuts,
@@ -127,10 +129,14 @@ public class TaskOverlayFactory implements ResourceBasedOverride {
         boolean taskViewHasMultipleTasks = taskViewTaskIds[0] != -1 &&
                 taskViewTaskIds[1] != -1;
         boolean notEnoughTasksToSplit = recentsView.getTaskViewCount() < 2;
-        boolean isFocusedTask = deviceProfile.overviewShowAsGrid && taskView.isFocusedTask();
+        boolean isFocusedTask = deviceProfile.isTablet && taskView.isFocusedTask();
         boolean isTaskInExpectedScrollPosition =
                 recentsView.isTaskInExpectedScrollPosition(recentsView.indexOfChild(taskView));
-        if (taskViewHasMultipleTasks || notEnoughTasksToSplit ||
+        ActivityManager activityManager =
+                (ActivityManager) taskView.getContext().getSystemService(Context.ACTIVITY_SERVICE);
+        boolean isLockTaskMode = activityManager.isInLockTaskMode();
+
+        if (taskViewHasMultipleTasks || notEnoughTasksToSplit || isLockTaskMode ||
                 (isFocusedTask && isTaskInExpectedScrollPosition)) {
             return;
         }

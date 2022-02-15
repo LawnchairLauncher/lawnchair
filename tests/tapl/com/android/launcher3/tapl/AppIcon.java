@@ -32,9 +32,7 @@ import java.util.regex.Pattern;
 /**
  * App icon, whether in all apps or in workspace/
  */
-public final class AppIcon extends Launchable implements FolderDragTarget {
-
-    private static final Pattern LONG_CLICK_EVENT = Pattern.compile("onAllAppsItemLongClick");
+public abstract class AppIcon extends Launchable implements FolderDragTarget {
 
     AppIcon(LauncherInstrumentation launcher, UiObject2 icon) {
         super(launcher, icon);
@@ -44,13 +42,15 @@ public final class AppIcon extends Launchable implements FolderDragTarget {
         return By.clazz(TextView.class).text(appName).pkg(launcher.getLauncherPackageName());
     }
 
+    protected abstract Pattern getLongClickEvent();
+
     /**
      * Long-clicks the icon to open its menu.
      */
     public AppIconMenu openMenu() {
         try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck()) {
             return new AppIconMenu(mLauncher, mLauncher.clickAndGet(
-                    mObject, "popup_container", LONG_CLICK_EVENT));
+                    mObject, "popup_container", getLongClickEvent()));
         }
     }
 
@@ -60,7 +60,7 @@ public final class AppIcon extends Launchable implements FolderDragTarget {
     public AppIconMenu openDeepShortcutMenu() {
         try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck()) {
             return new AppIconMenu(mLauncher, mLauncher.clickAndGet(
-                    mObject, "deep_shortcuts_container", LONG_CLICK_EVENT));
+                    mObject, "deep_shortcuts_container", getLongClickEvent()));
         }
     }
 
@@ -89,7 +89,7 @@ public final class AppIcon extends Launchable implements FolderDragTarget {
 
     @Override
     protected void addExpectedEventsForLongClick() {
-        mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN, LONG_CLICK_EVENT);
+        mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN, getLongClickEvent());
     }
 
     @Override
@@ -121,5 +121,21 @@ public final class AppIcon extends Launchable implements FolderDragTarget {
             }
         }
         return null;
+    }
+
+    /**
+     * Uninstall the appIcon by dragging it to the 'uninstall' drop point of the drop_target_bar.
+     *
+     * @return validated workspace after the existing appIcon being uninstalled.
+     */
+    public Workspace uninstall() {
+        try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck();
+             LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
+                     "uninstalling app icon")) {
+            return Workspace.uninstallAppIcon(
+                    mLauncher, this,
+                    this::addExpectedEventsForLongClick
+            );
+        }
     }
 }

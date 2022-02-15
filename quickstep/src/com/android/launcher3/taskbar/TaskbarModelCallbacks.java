@@ -21,6 +21,7 @@ import android.view.View;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.model.BgDataModel;
 import com.android.launcher3.model.BgDataModel.FixedContainerItems;
+import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.util.ComponentKey;
@@ -29,6 +30,7 @@ import com.android.launcher3.util.IntSet;
 import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.LauncherBindableItemsContainer;
 
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -195,5 +197,21 @@ public class TaskbarModelCallbacks implements
     @Override
     public void bindDeepShortcutMap(HashMap<ComponentKey, Integer> deepShortcutMapCopy) {
         mControllers.taskbarPopupController.setDeepShortcutMap(deepShortcutMapCopy);
+    }
+
+    @Override
+    public void bindAllApplications(AppInfo[] apps, int flags) {
+        mControllers.taskbarAllAppsViewController.setApps(apps, flags);
+    }
+
+    protected void dumpLogs(String prefix, PrintWriter pw) {
+        pw.println(prefix + "TaskbarModelCallbacks:");
+
+        pw.println(String.format("%s\thotseat items count=%s", prefix, mHotseatItems.size()));
+        if (mPredictedItems != null) {
+            pw.println(
+                    String.format("%s\tpredicted items count=%s", prefix, mPredictedItems.size()));
+        }
+        pw.println(String.format("%s\tmBindInProgress=%b", prefix, mBindInProgress));
     }
 }

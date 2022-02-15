@@ -16,6 +16,5 @@
 -->
 <resources>
     <dimen name="overview_grid_row_spacing">44dp</dimen>
-    <dimen name="overview_page_spacing_grid_portrait">44dp</dimen>
-    <dimen name="overview_page_spacing_grid_landscape">44dp</dimen>
+    <dimen name="overview_page_spacing">44dp</dimen>
 </resources>

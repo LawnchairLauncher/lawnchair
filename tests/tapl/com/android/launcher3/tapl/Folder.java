@@ -43,7 +43,7 @@ public class Folder {
     public AppIcon getAppIcon(String appName) {
         try (LauncherInstrumentation.Closable ignored = mLauncher.addContextLayer(
                 "Want to get app icon in folder")) {
-            return new AppIcon(mLauncher,
+            return new WorkspaceAppIcon(mLauncher,
                     mLauncher.waitForObjectInContainer(
                             mContainer,
                             AppIcon.getAppIconSelector(appName, mLauncher)));

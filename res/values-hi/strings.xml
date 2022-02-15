@@ -28,6 +28,10 @@
     <string name="shortcut_not_available" msgid="2536503539825726397">"शॉर्टकट उपलब्ध नहीं है"</string>
     <string name="home_screen" msgid="5629429142036709174">"होम स्क्रीन"</string>
     <string name="recent_task_option_split_screen" msgid="6690461455618725183">"स्प्लिट स्क्रीन"</string>
+    <string name="split_screen_position_top" msgid="1504965011158689649">"स्क्रीन को ऊपर के हिस्से में स्प्लिट करें"</string>
+    <string name="split_screen_position_left" msgid="7537793098851830883">"स्क्रीन को बाएं हिस्से में स्प्लिट करें"</string>
+    <string name="split_screen_position_right" msgid="1569377524925193369">"स्क्रीन को दाएं हिस्से में स्प्लिट करें"</string>
+    <string name="split_app_info_accessibility" msgid="5475288491241414932">"%1$s के लिए ऐप्लिकेशन की जानकारी"</string>
     <string name="long_press_widget_to_add" msgid="3587712543577675817">"किसी विजेट को एक से दूसरी जगह ले जाने के लिए, उसे दबाकर रखें."</string>
     <string name="long_accessible_way_to_add" msgid="2733588281439571974">"किसी विजेट को एक से दूसरी जगह ले जाने के लिए, उस पर दो बार टैप करके दबाकर रखें या पसंद के मुताबिक कार्रवाइयां इस्तेमाल करें."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>

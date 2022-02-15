@@ -22,6 +22,7 @@ import static com.android.quickstep.AnimatedFloat.VALUE;
 
 import android.graphics.Rect;
 import android.util.FloatProperty;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewTreeObserver;
@@ -33,16 +34,22 @@ import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.PendingAnimation;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.util.LauncherBindableItemsContainer;
 import com.android.launcher3.util.MultiValueAlpha;
 import com.android.quickstep.AnimatedFloat;
 
+import java.io.PrintWriter;
+
 /**
  * Handles properties/data collection, then passes the results to TaskbarView to render.
  */
-public class TaskbarViewController {
+public class TaskbarViewController implements TaskbarControllers.LoggableTaskbarController {
+
+    private static final String TAG = TaskbarViewController.class.getSimpleName();
+
     private static final Runnable NO_OP = () -> { };
 
     public static final int ALPHA_INDEX_HOME = 0;
@@ -157,6 +164,10 @@ public class TaskbarViewController {
         return mTaskbarView.getIconViews();
     }
 
+    public View getAllAppsButtonView() {
+        return mTaskbarView.getAllAppsButtonView();
+    }
+
     public AnimatedFloat getTaskbarIconScaleForStash() {
         return mTaskbarIconScaleForStash;
     }
@@ -204,9 +215,11 @@ public class TaskbarViewController {
         PendingAnimation setter = new PendingAnimation(100);
         Rect hotseatPadding = launcherDp.getHotseatLayoutPadding(mActivity);
         float scaleUp = ((float) launcherDp.iconSizePx) / mActivity.getDeviceProfile().iconSizePx;
-        int hotseatCellSize =
-                (launcherDp.availableWidthPx - hotseatPadding.left - hotseatPadding.right)
-                        / launcherDp.numShownHotseatIcons;
+        int borderSpacing = launcherDp.hotseatBorderSpace;
+        int hotseatCellSize = DeviceProfile.calculateCellWidth(
+                launcherDp.availableWidthPx - hotseatPadding.left - hotseatPadding.right,
+                borderSpacing,
+                launcherDp.numShownHotseatIcons);
 
         int offsetY = launcherDp.getTaskbarOffsetY();
         setter.setFloat(mTaskbarIconTranslationYForHome, VALUE, -offsetY, LINEAR);
@@ -221,13 +234,31 @@ public class TaskbarViewController {
         int count = mTaskbarView.getChildCount();
         for (int i = 0; i < count; i++) {
             View child = mTaskbarView.getChildAt(i);
-            ItemInfo info = (ItemInfo) child.getTag();
-            setter.setFloat(child, SCALE_PROPERTY, scaleUp, LINEAR);
 
-            float childCenter = (child.getLeft() + child.getRight()) / 2;
-            float hotseatIconCenter = hotseatPadding.left + hotseatCellSize * info.screenId
-                    + hotseatCellSize / 2;
+            int positionInHotseat = -1;
+            if (FeatureFlags.ENABLE_ALL_APPS_IN_TASKBAR.get() && i == count - 1) {
+                // Note that there is no All Apps button in the hotseat, this position is only used
+                // as its convenient for animation purposes.
+                positionInHotseat = Utilities.isRtl(child.getResources())
+                        ? -1
+                        : mActivity.getDeviceProfile().inv.numShownHotseatIcons;
+
+                setter.setViewAlpha(child, 0, LINEAR);
+            } else if (child.getTag() instanceof ItemInfo) {
+                positionInHotseat = ((ItemInfo) child.getTag()).screenId;
+            } else {
+                Log.w(TAG, "Unsupported view found in createIconAlignmentController, v=" + child);
+                continue;
+            }
+
+            float hotseatIconCenter = hotseatPadding.left
+                    + (hotseatCellSize + borderSpacing) * positionInHotseat
+                    + hotseatCellSize / 2f;
+
+            float childCenter = (child.getLeft() + child.getRight()) / 2f;
             setter.setFloat(child, ICON_TRANSLATE_X, hotseatIconCenter - childCenter, LINEAR);
+
+            setter.setFloat(child, SCALE_PROPERTY, scaleUp, LINEAR);
         }
 
         AnimatorPlaybackController controller = setter.createPlaybackController();
@@ -243,8 +274,8 @@ public class TaskbarViewController {
         mTaskbarNavButtonTranslationY.updateValue(-deviceProfile.getTaskbarOffsetY());
     }
 
-    public void mapOverItems(LauncherBindableItemsContainer.ItemOperator op) {
-        mTaskbarView.mapOverItems(op);
+    public View mapOverItems(LauncherBindableItemsContainer.ItemOperator op) {
+        return mTaskbarView.mapOverItems(op);
     }
 
     /**
@@ -253,6 +284,12 @@ public class TaskbarViewController {
      */
     public boolean isEventOverAnyItem(MotionEvent ev) {
         return mTaskbarView.isEventOverAnyItem(ev);
+    }
+
+    @Override
+    public void dumpLogs(String prefix, PrintWriter pw) {
+        pw.println(prefix + "TaskbarViewController:");
+        mModelCallbacks.dumpLogs(prefix + "\t", pw);
     }
 
     /**
@@ -266,6 +303,10 @@ public class TaskbarViewController {
 
         public View.OnClickListener getIconOnClickListener() {
             return mActivity.getItemOnClickListener();
+        }
+
+        public View.OnClickListener getAllAppsButtonClickListener() {
+            return v -> mControllers.taskbarAllAppsViewController.show();
         }
 
         public View.OnLongClickListener getIconOnLongClickListener() {

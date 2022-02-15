@@ -79,9 +79,6 @@ public final class FeatureFlags {
     public static final BooleanFlag KEYGUARD_ANIMATION = getDebugFlag(
             "KEYGUARD_ANIMATION", false, "Enable animation for keyguard going away on wallpaper");
 
-    public static final BooleanFlag ADAPTIVE_ICON_WINDOW_ANIM = getDebugFlag(
-            "ADAPTIVE_ICON_WINDOW_ANIM", true, "Use adaptive icons for window animations.");
-
     public static final BooleanFlag ENABLE_QUICKSTEP_LIVE_TILE = getDebugFlag(
             "ENABLE_QUICKSTEP_LIVE_TILE", true, "Enable live tile in Quickstep overview");
 
@@ -95,6 +92,10 @@ public final class FeatureFlags {
     public static final BooleanFlag ENABLE_ONE_SEARCH = new DeviceFlag("ENABLE_ONE_SEARCH", false,
             "Use homescreen search box to complete allApps searches");
 
+    public static final BooleanFlag ENABLE_FLOATING_SEARCH_BAR =
+            getDebugFlag("ENABLE_FLOATING_SEARCH_BAR", false,
+                    "Keep All Apps search bar at the bottom (but above keyboard if open)");
+
     public static final BooleanFlag COLLECT_SEARCH_HISTORY = new DeviceFlag(
             "COLLECT_SEARCH_HISTORY", false, "Allow launcher to collect search history for log");
 
@@ -102,7 +103,7 @@ public final class FeatureFlags {
             "ENABLE_TWOLINE_ALLAPPS", false, "Enables two line label inside all apps.");
 
     public static final BooleanFlag ENABLE_DEVICE_SEARCH_PERFORMANCE_LOGGING = new DeviceFlag(
-            "ENABLE_DEVICE_SEARCH_PERFORMANCE_LOGGING", true,
+            "ENABLE_DEVICE_SEARCH_PERFORMANCE_LOGGING", false,
             "Allows on device search in all apps logging");
 
     public static final BooleanFlag IME_STICKY_SNACKBAR_EDU = getDebugFlag(
@@ -203,12 +204,8 @@ public final class FeatureFlags {
             "Enables showing taskbar education the first time an app is opened.");
 
     public static final BooleanFlag ENABLE_TASKBAR_POPUP_MENU = getDebugFlag(
-            "ENABLE_TASKBAR_POPUP_MENU", false, "Enables long pressing taskbar icons to show the"
+            "ENABLE_TASKBAR_POPUP_MENU", true, "Enables long pressing taskbar icons to show the"
                     + " popup menu.");
-
-    public static final BooleanFlag ENABLE_OVERVIEW_GRID = getDebugFlag(
-            "ENABLE_OVERVIEW_GRID", true, "Uses grid overview layout. "
-            + "Only applicable on large screen devices.");
 
     public static final BooleanFlag ENABLE_TWO_PANEL_HOME = getDebugFlag(
             "ENABLE_TWO_PANEL_HOME", true,
@@ -250,6 +247,14 @@ public final class FeatureFlags {
     public static final BooleanFlag ENABLE_ICON_LABEL_AUTO_SCALING = getDebugFlag(
             "ENABLE_ICON_LABEL_AUTO_SCALING", true,
             "Enables scaling/spacing for icon labels to make more characters visible");
+
+    public static final BooleanFlag ENABLE_ALL_APPS_IN_TASKBAR = getDebugFlag(
+            "ENABLE_ALL_APPS_IN_TASKBAR", true,
+            "Enables accessing All Apps from the system Taskbar.");
+
+    public static final BooleanFlag ENABLE_SPLIT_FROM_WORKSPACE = getDebugFlag(
+            "ENABLE_SPLIT_FROM_WORKSPACE", true,
+            "Enable initiating split screen from workspace.");
 
     public static void initialize(Context context) {
         synchronized (sDebugFlags) {

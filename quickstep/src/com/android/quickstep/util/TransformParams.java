@@ -174,10 +174,10 @@ public class TransformParams {
             RemoteAnimationTargetCompat app = targets.unfilteredApps[i];
             if (app.mode == targets.targetMode) {
                 if (app.activityType == RemoteAnimationTargetCompat.ACTIVITY_TYPE_RECENTS) {
-                    return app.leash.getSurfaceControl();
+                    return app.leash;
                 }
             } else {
-                return app.leash.getSurfaceControl();
+                return app.leash;
             }
         }
         return null;

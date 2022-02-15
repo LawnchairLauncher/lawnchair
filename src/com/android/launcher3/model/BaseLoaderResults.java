@@ -226,6 +226,8 @@ public abstract class BaseLoaderResults {
                         MODEL_EXECUTOR.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND);
                         c.onInitialBindComplete(currentScreenIds, pendingTasks);
                     }, mUiExecutor);
+
+            mCallbacks.bindStringCache(mBgDataModel.stringCache.clone());
         }
 
         private void bindWorkspaceItems(

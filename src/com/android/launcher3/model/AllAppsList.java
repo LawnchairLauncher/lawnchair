@@ -143,6 +143,8 @@ public class AllAppsList {
         if (loadIcon) {
             mIconCache.getTitleAndIcon(info, activityInfo, false /* useLowResIcon */);
             info.sectionName = mIndex.computeSectionName(info.title);
+        } else {
+            info.title = "";
         }
 
         data.add(info);
@@ -167,6 +169,8 @@ public class AllAppsList {
         if (loadIcon) {
             mIconCache.getTitleAndIcon(promiseAppInfo, promiseAppInfo.usingLowResIcon());
             promiseAppInfo.sectionName = mIndex.computeSectionName(promiseAppInfo.title);
+        } else {
+            promiseAppInfo.title = "";
         }
 
         data.add(promiseAppInfo);

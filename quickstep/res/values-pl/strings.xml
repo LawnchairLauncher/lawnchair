@@ -25,6 +25,7 @@
     <string name="accessibility_app_usage_settings" msgid="6312864233673544149">"Ustawienia użycia aplikacji"</string>
     <string name="recents_clear_all" msgid="5328176793634888831">"Wyczyść wszystko"</string>
     <string name="accessibility_recent_apps" msgid="4058661986695117371">"Ostatnie aplikacje"</string>
+    <string name="task_view_closed" msgid="9170038230110856166">"Zadanie zamknięte"</string>
     <string name="task_contents_description_with_remaining_time" msgid="4479688746574672685">"<xliff:g id="TASK_DESCRIPTION">%1$s</xliff:g>, <xliff:g id="REMAINING_TIME">%2$s</xliff:g>"</string>
     <string name="shorter_duration_less_than_one_minute" msgid="4722015666335015336">"&gt; 1 min"</string>
     <string name="time_left_for_app" msgid="3111996412933644358">"Na dziś zostało <xliff:g id="TIME">%1$s</xliff:g>"</string>
@@ -89,9 +90,20 @@
     <string name="accessibility_rotate_button" msgid="4771825231336502943">"Obróć ekran"</string>
     <string name="taskbar_edu_opened" msgid="3950252793551919129">"Wskazówki na temat paska zadań zostały wyświetlone"</string>
     <string name="taskbar_edu_closed" msgid="126643734478892862">"Wskazówki na temat paska zadań zostały zamknięte"</string>
+    <string name="taskbar_edu_switch_apps" msgid="6942863327845784813">"Używaj paska zadań, aby przełączać aplikacje"</string>
+    <string name="taskbar_edu_splitscreen" msgid="2663361731630346489">"Przeciągnij w bok, aby używać 2 aplikacji jednocześnie"</string>
     <string name="taskbar_edu_stashing" msgid="5212374387411764031">"Naciśnij i przytrzymaj, aby ukryć pasek zadań"</string>
     <string name="taskbar_edu_next" msgid="4007618274426775841">"Dalej"</string>
     <string name="taskbar_edu_previous" msgid="459202320127201702">"Wstecz"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"Zamknij"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"Gotowe"</string>
+    <string name="taskbar_button_home" msgid="2151398979630664652">"Ekran główny"</string>
+    <string name="taskbar_button_a11y" msgid="5241161324875094465">"Ułatwienia dostępu"</string>
+    <string name="taskbar_button_back" msgid="8558862226461164514">"Wstecz"</string>
+    <string name="taskbar_button_ime_switcher" msgid="1730244360907588541">"Przełącznik IME"</string>
+    <string name="taskbar_button_recents" msgid="7273376136216613134">"Ostatnie"</string>
+    <string name="taskbar_button_notifications" msgid="7471740351507357318">"Powiadomienia"</string>
+    <string name="taskbar_button_quick_settings" msgid="227662894293189391">"Szybkie ustawienia"</string>
+    <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"Przesuń w górny lewy róg"</string>
+    <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"Przesuń w dolny prawy róg"</string>
 </resources>

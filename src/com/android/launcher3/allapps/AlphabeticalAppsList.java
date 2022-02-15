@@ -18,12 +18,12 @@ package com.android.launcher3.allapps;
 
 import android.content.Context;
 
-import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.allapps.AllAppsGridAdapter.AdapterItem;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.LabelComparator;
+import com.android.launcher3.views.ActivityContext;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -35,8 +35,11 @@ import java.util.TreeMap;
 
 /**
  * The alphabetically sorted list of applications.
+ *
+ * @param <T> Type of context inflating this view.
  */
-public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
+public class AlphabeticalAppsList<T extends Context & ActivityContext> implements
+        AllAppsStore.OnUpdateListener {
 
     public static final String TAG = "AlphabeticalAppsList";
 
@@ -64,7 +67,7 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
     }
 
 
-    private final BaseDraggingActivity mLauncher;
+    private final T mActivityContext;
 
     // The set of apps from the system
     private final List<AppInfo> mApps = new ArrayList<>();
@@ -79,7 +82,7 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
 
     // The of ordered component names as a result of a search query
     private ArrayList<AdapterItem> mSearchResults;
-    private AllAppsGridAdapter mAdapter;
+    private AllAppsGridAdapter<T> mAdapter;
     private AppInfoComparator mAppNameComparator;
     private final int mNumAppsPerRow;
     private int mNumAppRowsInAdapter;
@@ -88,10 +91,10 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
     public AlphabeticalAppsList(Context context, AllAppsStore appsStore,
             WorkAdapterProvider adapterProvider) {
         mAllAppsStore = appsStore;
-        mLauncher = BaseDraggingActivity.fromContext(context);
+        mActivityContext = ActivityContext.lookupContext(context);
         mAppNameComparator = new AppInfoComparator(context);
         mWorkAdapterProvider = adapterProvider;
-        mNumAppsPerRow = mLauncher.getDeviceProfile().inv.numColumns;
+        mNumAppsPerRow = mActivityContext.getDeviceProfile().inv.numColumns;
         mAllAppsStore.addUpdateListener(this);
     }
 
@@ -103,7 +106,7 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
     /**
      * Sets the adapter to notify when this dataset changes.
      */
-    public void setAdapter(AllAppsGridAdapter adapter) {
+    public void setAdapter(AllAppsGridAdapter<T> adapter) {
         mAdapter = adapter;
     }
 
@@ -229,7 +232,7 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
 
         // As a special case for some languages (currently only Simplified Chinese), we may need to
         // coalesce sections
-        Locale curLocale = mLauncher.getResources().getConfiguration().locale;
+        Locale curLocale = mActivityContext.getResources().getConfiguration().locale;
         boolean localeRequiresSectionSorting = curLocale.equals(Locale.SIMPLIFIED_CHINESE);
         if (localeRequiresSectionSorting) {
             // Compute the section headers. We use a TreeMap with the section name comparator to

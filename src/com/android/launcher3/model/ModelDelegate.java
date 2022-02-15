@@ -48,9 +48,11 @@ public class ModelDelegate implements ResourceBasedOverride {
         delegate.mAppsList = appsList;
         delegate.mDataModel = dataModel;
         delegate.mIsPrimaryInstance = isPrimaryInstance;
+        delegate.mContext = context;
         return delegate;
     }
 
+    protected Context mContext;
     protected LauncherAppState mApp;
     protected AllAppsList mAppsList;
     protected BgDataModel mDataModel;
@@ -74,6 +76,15 @@ public class ModelDelegate implements ResourceBasedOverride {
      */
     @WorkerThread
     public void loadItems(UserManagerState ums, Map<ShortcutKey, ShortcutInfo> pinnedShortcuts) { }
+
+    /**
+     * Load String cache
+     */
+    @WorkerThread
+    public void loadStringCache(StringCache cache) {
+        cache.loadDefaultStrings(mContext);
+    }
+
 
     /**
      * Called during loader after workspace loading is complete
