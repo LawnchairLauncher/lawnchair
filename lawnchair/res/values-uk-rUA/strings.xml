@@ -90,7 +90,7 @@
     <string name="theme_label">Тема</string>
     <string name="theme_light">Світла</string>
     <string name="theme_dark">Темна</string>
-    <string name="theme_system_default">System</string>
+    <string name="theme_system_default">Системна</string>
     <string name="theme_follow_wallpaper">Відповідно до шпалер</string>
     <string name="quickstep_label">Нещодавні</string>
     <string name="clear_all_as_action_label">Кнопка \"Очистити все\" внизу</string>
@@ -101,20 +101,20 @@
     <string name="accent_color">Колір акценту</string>
     <string name="done">Виконано</string>
     <string name="loading">Завантаження…</string>
-    <string name="system">System</string>
+    <string name="system">Системна</string>
     <string name="wallpaper">Шпалери</string>
-    <string name="custom">Custom</string>
-    <string name="quickstep_description">Clear All Button, Corner Radius</string>
-    <string name="wallpaper_scrolling_label">Scroll Wallpaper</string>
-    <string name="show_sys_ui_scrim">Top Shadow</string>
+    <string name="custom">Користувацькі налаштування</string>
+    <string name="quickstep_description">Очистити всі кнопки, Радіус заокруглення</string>
+    <string name="wallpaper_scrolling_label">Пролистати Шпалери</string>
+    <string name="show_sys_ui_scrim">Найвища тінь</string>
     <string name="show_status_bar">Рядок стану</string>
-    <string name="what_to_show">What to Show</string>
-    <string name="missing_notification_access_label">Notification Access Needed</string>
-    <string name="missing_notification_access_description">Notification access needed.</string>
-    <string name="msg_missing_notification_access">To use Notification Dots, grant <xliff:g id="name" example="My App">%1$s</xliff:g> access to notifications.</string>
-    <string name="title_change_settings">Change Settings</string>
-    <string name="debug_restart_launcher">Restart Lawnchair</string>
-    <string name="pref_fonts_missing_font">Font not found.</string>
+    <string name="what_to_show">Що показати</string>
+    <string name="missing_notification_access_label">Необхідний доступ до сповіщень</string>
+    <string name="missing_notification_access_description">Потрібний доступ до сповіщень.</string>
+    <string name="msg_missing_notification_access">Щоб використовувати значки сповіщень, дозвольте <xliff:g id="name" example="My App">%1$s</xliff:g> доступ до сповіщень.</string>
+    <string name="title_change_settings">Змінити Налаштування</string>
+    <string name="debug_restart_launcher">Перезавантажте Lawnchair</string>
+    <string name="pref_fonts_missing_font">Шрифт не знайдено.</string>
     <string name="font_variant_italic">Italic</string>
     <string name="font_weight_thin">Thin</string>
     <string name="font_weight_extra_light">Extra Light</string>
@@ -137,7 +137,7 @@
     <string name="x_by_y">%1$d × %2$d</string>
     <string name="folder_preview_bg_opacity_label">Прозорість фону значка</string>
     <string name="icon_shape_label">Форма значка</string>
-    <string name="icon_shape_system">System</string>
+    <string name="icon_shape_system">Системна</string>
     <string name="icon_shape_circle">Коло</string>
     <string name="icon_shape_rounded_square">Закруглений квадрат</string>
     <string name="icon_shape_squircle">Квадрокруг</string>
