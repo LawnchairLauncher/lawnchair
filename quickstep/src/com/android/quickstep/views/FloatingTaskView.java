@@ -30,9 +30,11 @@ import com.android.launcher3.touch.PagedOrientationHandler;
 import com.android.launcher3.views.BaseDragLayer;
 import com.android.quickstep.util.MultiValueUpdateListener;
 
+import java.util.function.Consumer;
+
 /**
  * Create an instance via
- * {@link #getFloatingTaskView(StatefulActivity, View, Bitmap, Drawable, RectF)} to
+ * {@link #getFloatingTaskView(StatefulActivity, View, Bitmap, Drawable, RectF, Consumer)} to
  * which will have the thumbnail from the provided existing TaskView overlaying the taskview itself.
  *
  * Can then animate the taskview using
@@ -46,6 +48,8 @@ public class FloatingTaskView extends FrameLayout {
 
     private SplitPlaceholderView mSplitPlaceholderView;
     private RectF mStartingPosition;
+    @Nullable
+    private Consumer<RectF> mAdditionalOffsetter;
     private final StatefulActivity mActivity;
     private final boolean mIsRtl;
     private final Rect mOutline = new Rect();
@@ -77,8 +81,9 @@ public class FloatingTaskView extends FrameLayout {
     }
 
     private void init(StatefulActivity launcher, View originalView, @Nullable Bitmap thumbnail,
-            Drawable icon, RectF positionOut) {
+            Drawable icon, RectF positionOut, Consumer<RectF> additionalOffsetter) {
         mStartingPosition = positionOut;
+        mAdditionalOffsetter = additionalOffsetter;
         updateInitialPositionForView(originalView);
         final InsettableFrameLayout.LayoutParams lp =
                 (InsettableFrameLayout.LayoutParams) getLayoutParams();
@@ -102,15 +107,21 @@ public class FloatingTaskView extends FrameLayout {
     /**
      * Configures and returns a an instance of {@link FloatingTaskView} initially matching the
      * appearance of {@code originalView}.
+     *
+     * @param additionalOffsetter optional, to set additional offsets to the FloatingTaskView
+     *                               to account for translations. If {@code null} then the
+     *                               translation values from originalView will be used
      */
     public static FloatingTaskView getFloatingTaskView(StatefulActivity launcher,
-            View originalView, @Nullable Bitmap thumbnail, Drawable icon, RectF positionOut) {
+            View originalView, @Nullable Bitmap thumbnail, Drawable icon, RectF positionOut,
+            @Nullable Consumer<RectF> additionalOffsetter) {
         final BaseDragLayer dragLayer = launcher.getDragLayer();
         ViewGroup parent = (ViewGroup) dragLayer.getParent();
         final FloatingTaskView floatingView = (FloatingTaskView) launcher.getLayoutInflater()
                 .inflate(R.layout.floating_split_select_view, parent, false);
 
-        floatingView.init(launcher, originalView, thumbnail, icon, positionOut);
+        floatingView.init(launcher, originalView, thumbnail, icon, positionOut,
+                additionalOffsetter);
         parent.addView(floatingView);
         return floatingView;
     }
@@ -120,7 +131,12 @@ public class FloatingTaskView extends FrameLayout {
         Utilities.getBoundsForViewInDragLayer(mActivity.getDragLayer(), originalView, viewBounds,
                 true /* ignoreTransform */, null /* recycle */,
                 mStartingPosition);
-        mStartingPosition.offset(originalView.getTranslationX(), originalView.getTranslationY());
+        if (mAdditionalOffsetter != null) {
+            mAdditionalOffsetter.accept(mStartingPosition);
+        } else {
+            mStartingPosition.offset(originalView.getTranslationX(),
+                    originalView.getTranslationY());
+        }
         final InsettableFrameLayout.LayoutParams lp = new InsettableFrameLayout.LayoutParams(
                 Math.round(mStartingPosition.width()),
                 Math.round(mStartingPosition.height()));
