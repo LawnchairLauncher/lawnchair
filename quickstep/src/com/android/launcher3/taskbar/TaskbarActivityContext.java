@@ -115,6 +115,7 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
     private int mLastRequestedNonFullscreenHeight;
 
     private final SysUINavigationMode.Mode mNavMode;
+    private final boolean mImeDrawsImeNavBar;
     private final ViewCache mViewCache = new ViewCache();
 
     private final boolean mIsSafeModeEnabled;
@@ -133,6 +134,7 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
         mDeviceProfile = dp;
 
         mNavMode = SysUINavigationMode.getMode(windowContext);
+        mImeDrawsImeNavBar = SysUINavigationMode.getImeDrawsImeNavBar(windowContext);
         mIsSafeModeEnabled = TraceHelper.allowIpcs("isSafeMode",
                 () -> getPackageManager().isSafeMode());
         mIsUserSetupComplete = SettingsCache.INSTANCE.get(this).getValue(
@@ -268,6 +270,10 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
 
     public boolean isGestureNav() {
         return mNavMode == Mode.NO_BUTTON;
+    }
+
+    public boolean imeDrawsImeNavBar() {
+        return mImeDrawsImeNavBar;
     }
 
     public int getLeftCornerRadius() {
@@ -726,6 +732,8 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
 
         pw.println(String.format(
                 "%s\tmNavMode=%s", prefix, mNavMode));
+        pw.println(String.format(
+                "%s\tmImeDrawsImeNavBar=%b", prefix, mImeDrawsImeNavBar));
         pw.println(String.format(
                 "%s\tmIsUserSetupComplete=%b", prefix, mIsUserSetupComplete));
         pw.println(String.format(
