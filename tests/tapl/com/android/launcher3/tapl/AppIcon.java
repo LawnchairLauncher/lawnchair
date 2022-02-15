@@ -27,6 +27,7 @@ import androidx.test.uiautomator.UiObject2;
 
 import com.android.launcher3.testing.TestProtocol;
 
+import java.util.function.Supplier;
 import java.util.regex.Pattern;
 
 /**
@@ -34,8 +35,11 @@ import java.util.regex.Pattern;
  */
 public abstract class AppIcon extends Launchable implements FolderDragTarget {
 
+    private final String mAppName;
+
     AppIcon(LauncherInstrumentation launcher, UiObject2 icon) {
         super(launcher, icon);
+        mAppName = icon.getText();
     }
 
     static BySelector getAppIconSelector(String appName, LauncherInstrumentation launcher) {
@@ -136,6 +140,33 @@ public abstract class AppIcon extends Launchable implements FolderDragTarget {
                     mLauncher, this,
                     this::addExpectedEventsForLongClick
             );
+        }
+    }
+
+    /**
+     * Drag an object to the given cell in workspace. The target cell must be empty.
+     *
+     * @param cellX zero based column number, starting from the left of the screen.
+     * @param cellY zero based row number, starting from the top of the screen.
+     */
+    public AppIcon dragToWorkspace(int cellX, int cellY) {
+        try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck();
+             LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
+                     String.format("want to drag the icon to cell(%d, %d)", cellX, cellY))
+        ) {
+            final Supplier<Point> dest = () -> Workspace.getCellCenter(mLauncher, cellX, cellY);
+            Workspace.dragIconToWorkspace(mLauncher, this, dest, true, getLongPressIndicator(),
+                    () -> addExpectedEventsForLongClick(), null);
+            try (LauncherInstrumentation.Closable ignore = mLauncher.addContextLayer("dragged")) {
+                WorkspaceAppIcon appIcon =
+                        (WorkspaceAppIcon) mLauncher.getWorkspace().getWorkspaceAppIcon(mAppName);
+                mLauncher.assertTrue(
+                        String.format(
+                                "The %s icon should be in the cell (%d, %d).", mAppName, cellX,
+                                cellY),
+                        appIcon.isInCell(cellX, cellY));
+                return appIcon;
+            }
         }
     }
 }
