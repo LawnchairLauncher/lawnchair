@@ -237,6 +237,12 @@ public class NavbarButtonsViewController implements TaskbarControllers.LoggableT
                         & Configuration.UI_MODE_NIGHT_MASK;
                 boolean isDarkTheme = mode == Configuration.UI_MODE_NIGHT_YES;
                 mTaskbarNavButtonDarkIntensity.updateValue(isDarkTheme ? 0 : 1);
+
+                if (mIsImeRenderingNavButtons) {
+                    // Hide the back button while the IME is visible during SUW
+                    mPropertyHolders.add(new StatePropertyHolder(mBackButton,
+                            flags -> (flags & FLAG_IME_VISIBLE) == 0));
+                }
             } else if (isInKidsMode) {
                 int iconSize = mContext.getResources().getDimensionPixelSize(
                         R.dimen.taskbar_icon_size_kids);
