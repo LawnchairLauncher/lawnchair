@@ -62,7 +62,6 @@ public class ActivityAllAppsContainerView<T extends BaseDraggingActivity> extend
 
     public ActivityAllAppsContainerView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        mActivityContext.addOnDeviceProfileChangeListener(this);
     }
 
     public SearchUiManager getSearchUiManager() {

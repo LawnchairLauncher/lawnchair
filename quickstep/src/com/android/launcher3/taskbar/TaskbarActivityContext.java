@@ -58,8 +58,11 @@ import androidx.annotation.Nullable;
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.DeviceProfile;
+import com.android.launcher3.DeviceProfile.DeviceProfileListenable;
+import com.android.launcher3.DeviceProfile.OnDeviceProfileChangeListener;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.R;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.dot.DotInfo;
 import com.android.launcher3.folder.Folder;
 import com.android.launcher3.folder.FolderIcon;
@@ -70,6 +73,7 @@ import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.popup.PopupDataProvider;
 import com.android.launcher3.touch.ItemClickHandler;
+import com.android.launcher3.util.OnboardingPrefs;
 import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.util.SettingsCache;
 import com.android.launcher3.util.Themes;
@@ -85,13 +89,16 @@ import com.android.systemui.shared.system.WindowManagerWrapper;
 import com.android.systemui.unfold.util.ScopedUnfoldTransitionProgressProvider;
 
 import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * The {@link ActivityContext} with which we inflate Taskbar-related Views. This allows UI elements
  * that are used by both Launcher and Taskbar (such as Folder) to reference a generic
  * ActivityContext and BaseDragLayer instead of the Launcher activity and its DragLayer.
  */
-public class TaskbarActivityContext extends ContextThemeWrapper implements ActivityContext {
+public class TaskbarActivityContext extends ContextThemeWrapper implements ActivityContext,
+        DeviceProfileListenable {
 
     private static final boolean ENABLE_THREE_BUTTON_TASKBAR =
             SystemProperties.getBoolean("persist.debug.taskbar_three_button", false);
@@ -103,6 +110,7 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
     private final TaskbarDragLayer mDragLayer;
     private final TaskbarAllAppsContainerView mAppsView;
     private final TaskbarControllers mControllers;
+    private final List<OnDeviceProfileChangeListener> mDPChangeListeners = new ArrayList<>();
 
     private DeviceProfile mDeviceProfile;
 
@@ -124,14 +132,17 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
     private boolean mIsDestroyed = false;
     // The flag to know if the window is excluded from magnification region computation.
     private boolean mIsExcludeFromMagnificationRegion = false;
+    private boolean mBindingItems = false;
 
     private final TaskbarShortcutMenuAccessibilityDelegate mAccessibilityDelegate;
+    private final OnboardingPrefs<TaskbarActivityContext> mOnboardingPrefs;
 
     public TaskbarActivityContext(Context windowContext, DeviceProfile dp,
             TaskbarNavButtonController buttonController, ScopedUnfoldTransitionProgressProvider
             unfoldTransitionProgressProvider) {
         super(windowContext, Themes.getActivityThemeRes(windowContext));
         mDeviceProfile = dp;
+        mOnboardingPrefs = new OnboardingPrefs<>(this, Utilities.getPrefs(this));
 
         mNavMode = SysUINavigationMode.getMode(windowContext);
         mImeDrawsImeNavBar = SysUINavigationMode.getImeDrawsImeNavBar(windowContext);
@@ -229,6 +240,7 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
     public void updateDeviceProfile(DeviceProfile dp) {
         mDeviceProfile = dp;
         updateIconSize(getResources());
+        dispatchDeviceProfileChanged();
     }
 
     private void updateIconSize(Resources resources) {
@@ -302,6 +314,11 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
     @Override
     public DeviceProfile getDeviceProfile() {
         return mDeviceProfile;
+    }
+
+    @Override
+    public List<OnDeviceProfileChangeListener> getOnDeviceProfileChangeListeners() {
+        return mDPChangeListeners;
     }
 
     @Override
@@ -392,6 +409,20 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
     @Override
     public View.AccessibilityDelegate getAccessibilityDelegate() {
         return mAccessibilityDelegate;
+    }
+
+    @Override
+    public OnboardingPrefs<TaskbarActivityContext> getOnboardingPrefs() {
+        return mOnboardingPrefs;
+    }
+
+    @Override
+    public boolean isBindingItems() {
+        return mBindingItems;
+    }
+
+    public void setBindingItems(boolean bindingItems) {
+        mBindingItems = bindingItems;
     }
 
     /**
@@ -738,6 +769,8 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
                 "%s\tmIsUserSetupComplete=%b", prefix, mIsUserSetupComplete));
         pw.println(String.format(
                 "%s\tmWindowLayoutParams.height=%dpx", prefix, mWindowLayoutParams.height));
+        pw.println(String.format(
+                "%s\tmBindInProgress=%b", prefix, mBindingItems));
         mControllers.dumpLogs(prefix + "\t", pw);
     }
 }

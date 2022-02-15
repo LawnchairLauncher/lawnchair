@@ -44,6 +44,7 @@ import com.android.launcher3.util.DisplayController.Info;
 import com.android.launcher3.util.WindowBounds;
 
 import java.io.PrintWriter;
+import java.util.List;
 
 @SuppressLint("NewApi")
 public class DeviceProfile {
@@ -1221,6 +1222,35 @@ public class DeviceProfile {
          * a one time operation.
          */
         void onDeviceProfileChanged(DeviceProfile dp);
+    }
+
+    /** Allows registering listeners for {@link DeviceProfile} changes. */
+    public interface DeviceProfileListenable {
+
+        /** The current device profile. */
+        DeviceProfile getDeviceProfile();
+
+        /** Registered {@link OnDeviceProfileChangeListener} instances. */
+        List<OnDeviceProfileChangeListener> getOnDeviceProfileChangeListeners();
+
+        /** Notifies listeners of a {@link DeviceProfile} change. */
+        default void dispatchDeviceProfileChanged() {
+            DeviceProfile deviceProfile = getDeviceProfile();
+            List<OnDeviceProfileChangeListener> listeners = getOnDeviceProfileChangeListeners();
+            for (int i = listeners.size() - 1; i >= 0; i--) {
+                listeners.get(i).onDeviceProfileChanged(deviceProfile);
+            }
+        }
+
+        /** Register listener for {@link DeviceProfile} changes. */
+        default void addOnDeviceProfileChangeListener(OnDeviceProfileChangeListener listener) {
+            getOnDeviceProfileChangeListeners().add(listener);
+        }
+
+        /** Unregister listener for {@link DeviceProfile} changes. */
+        default void removeOnDeviceProfileChangeListener(OnDeviceProfileChangeListener listener) {
+            getOnDeviceProfileChangeListeners().remove(listener);
+        }
     }
 
     public static class Builder {

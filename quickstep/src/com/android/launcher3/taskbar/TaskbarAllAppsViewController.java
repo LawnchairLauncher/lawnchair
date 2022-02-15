@@ -15,8 +15,15 @@
  */
 package com.android.launcher3.taskbar;
 
+import static com.android.launcher3.util.OnboardingPrefs.ALL_APPS_VISITED_COUNT;
+
+import com.android.launcher3.appprediction.AppsDividerView;
+import com.android.launcher3.appprediction.PredictionRowView;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.model.data.AppInfo;
+import com.android.launcher3.model.data.ItemInfo;
+
+import java.util.List;
 
 /** Handles the {@link TaskbarAllAppsContainerView} initialization and updates. */
 public final class TaskbarAllAppsViewController {
@@ -40,6 +47,9 @@ public final class TaskbarAllAppsViewController {
 
         mAppsView.setOnIconLongClickListener(
                 controllers.taskbarDragController::startDragOnLongClick);
+        mAppsView.getFloatingHeaderView().findFixedRowByType(
+                PredictionRowView.class).setOnIconLongClickListener(
+                controllers.taskbarDragController::startDragOnLongClick);
     }
 
     /** Binds the current {@link AppInfo} instances to the {@link TaskbarAllAppsContainerView}. */
@@ -49,11 +59,26 @@ public final class TaskbarAllAppsViewController {
         }
     }
 
+    /** Binds the current app predictions to all apps {@link PredictionRowView}. */
+    public void setPredictedApps(List<ItemInfo> predictedApps) {
+        if (FeatureFlags.ENABLE_ALL_APPS_IN_TASKBAR.get()) {
+            PredictionRowView<?> predictionRowView =
+                    mAppsView.getFloatingHeaderView().findFixedRowByType(PredictionRowView.class);
+            predictionRowView.setPredictedApps(predictedApps);
+        }
+    }
+
     /** Opens the {@link TaskbarAllAppsContainerView}. */
     public void show() {
-        if (FeatureFlags.ENABLE_ALL_APPS_IN_TASKBAR.get()) {
-            mContext.setTaskbarWindowFullscreen(true);
-            mSlideInView.show();
+        if (!FeatureFlags.ENABLE_ALL_APPS_IN_TASKBAR.get()) {
+            return;
         }
+
+        mAppsView.getFloatingHeaderView().findFixedRowByType(AppsDividerView.class)
+                .setShowAllAppsLabel(
+                        !mContext.getOnboardingPrefs().hasReachedMaxCount(ALL_APPS_VISITED_COUNT));
+        mContext.getOnboardingPrefs().incrementEventCount(ALL_APPS_VISITED_COUNT);
+        mContext.setTaskbarWindowFullscreen(true);
+        mSlideInView.show();
     }
 }

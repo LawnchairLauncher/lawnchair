@@ -48,6 +48,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.launcher3.DeviceProfile;
+import com.android.launcher3.DeviceProfile.DeviceProfileListenable;
 import com.android.launcher3.DeviceProfile.OnDeviceProfileChangeListener;
 import com.android.launcher3.DragSource;
 import com.android.launcher3.DropTarget.DragObject;
@@ -75,9 +76,10 @@ import java.util.List;
  *
  * @param <T> Type of context inflating all apps.
  */
-public abstract class BaseAllAppsContainerView<T extends Context & ActivityContext> extends
-        SpringRelativeLayout implements DragSource, Insettable, OnDeviceProfileChangeListener,
-        OnActivePageChangedListener, ScrimView.ScrimDrawingController {
+public abstract class BaseAllAppsContainerView<T extends Context & ActivityContext
+        & DeviceProfileListenable> extends SpringRelativeLayout implements DragSource, Insettable,
+        OnDeviceProfileChangeListener, OnActivePageChangedListener,
+        ScrimView.ScrimDrawingController {
 
     private static final String BUNDLE_KEY_CURRENT_PAGE = "launcher.allapps.current_page";
 
@@ -148,6 +150,7 @@ public abstract class BaseAllAppsContainerView<T extends Context & ActivityConte
         mNavBarScrimPaint.setColor(Themes.getAttrColor(context, R.attr.allAppsNavBarScrimColor));
 
         mAllAppsStore.addUpdateListener(this::onAppsUpdated);
+        mActivityContext.addOnDeviceProfileChangeListener(this);
     }
 
     /** Creates the adapter provider for the main section. */
@@ -580,7 +583,10 @@ public abstract class BaseAllAppsContainerView<T extends Context & ActivityConte
 
     void setupHeader() {
         mHeader.setVisibility(View.VISIBLE);
-        mHeader.setup(mAH, mAH.get(AdapterHolder.WORK).mRecyclerView == null);
+        mHeader.setup(
+                mAH.get(AdapterHolder.MAIN).mRecyclerView,
+                mAH.get(AdapterHolder.WORK).mRecyclerView,
+                mAH.get(AdapterHolder.WORK).mRecyclerView == null);
 
         int padding = mHeader.getMaxTranslation();
         for (int i = 0; i < mAH.size(); i++) {

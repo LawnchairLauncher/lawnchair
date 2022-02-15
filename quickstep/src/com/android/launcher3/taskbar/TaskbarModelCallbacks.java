@@ -52,8 +52,6 @@ public class TaskbarModelCallbacks implements
     // Initialized in init.
     private TaskbarControllers mControllers;
 
-    private boolean mBindInProgress = false;
-
     public TaskbarModelCallbacks(
             TaskbarActivityContext context, TaskbarView container) {
         mContext = context;
@@ -66,14 +64,14 @@ public class TaskbarModelCallbacks implements
 
     @Override
     public void startBinding() {
-        mBindInProgress = true;
+        mContext.setBindingItems(true);
         mHotseatItems.clear();
         mPredictedItems = Collections.emptyList();
     }
 
     @Override
     public void finishBindingItems(IntSet pagesBoundFirst) {
-        mBindInProgress = false;
+        mContext.setBindingItems(false);
         commitItemsToUI();
     }
 
@@ -159,11 +157,13 @@ public class TaskbarModelCallbacks implements
         if (item.containerId == Favorites.CONTAINER_HOTSEAT_PREDICTION) {
             mPredictedItems = item.items;
             commitItemsToUI();
+        } else if (item.containerId == Favorites.CONTAINER_PREDICTION) {
+            mControllers.taskbarAllAppsViewController.setPredictedApps(item.items);
         }
     }
 
     private void commitItemsToUI() {
-        if (mBindInProgress) {
+        if (mContext.isBindingItems()) {
             return;
         }
 
@@ -212,6 +212,5 @@ public class TaskbarModelCallbacks implements
             pw.println(
                     String.format("%s\tpredicted items count=%s", prefix, mPredictedItems.size()));
         }
-        pw.println(String.format("%s\tmBindInProgress=%b", prefix, mBindInProgress));
     }
 }

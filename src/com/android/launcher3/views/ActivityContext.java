@@ -34,6 +34,7 @@ import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.model.StringCache;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.popup.PopupDataProvider;
+import com.android.launcher3.util.OnboardingPrefs;
 import com.android.launcher3.util.ViewCache;
 
 /**
@@ -137,6 +138,16 @@ public interface ActivityContext {
      * Called just before logging the given item.
      */
     default void applyOverwritesToLogItem(LauncherAtom.ItemInfo.Builder itemInfoBuilder) { }
+
+    /** Onboarding preferences for any onboarding data within this context. */
+    default OnboardingPrefs<?> getOnboardingPrefs() {
+        return null;
+    }
+
+    /** Returns {@code true} if items are currently being bound within this context. */
+    default boolean isBindingItems() {
+        return false;
+    }
 
     /**
      * Returns the ActivityContext associated with the given Context, or throws an exception if
