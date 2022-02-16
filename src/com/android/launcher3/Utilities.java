@@ -671,14 +671,15 @@ public final class Utilities {
     /**
      * Returns the full drawable for info without any flattening or pre-processing.
      *
-     * @param outObj this is set to the internal data associated with {@param info},
+     * @param shouldThemeIcon If true, will theme icons when applicable
+     * @param outObj this is set to the internal data associated with {@code info},
      *               eg {@link LauncherActivityInfo} or {@link ShortcutInfo}.
      */
     @TargetApi(Build.VERSION_CODES.TIRAMISU)
     public static Drawable getFullDrawable(Context context, ItemInfo info, int width, int height,
-            Object[] outObj) {
+            boolean shouldThemeIcon, Object[] outObj) {
         Drawable icon = loadFullDrawableWithoutTheme(context, info, width, height, outObj);
-        if (ATLEAST_T && icon instanceof AdaptiveIconDrawable) {
+        if (ATLEAST_T && icon instanceof AdaptiveIconDrawable && shouldThemeIcon) {
             AdaptiveIconDrawable aid = (AdaptiveIconDrawable) icon.mutate();
             Drawable mono = aid.getMonochrome();
             if (mono != null && Themes.isThemedIconEnabled(context)) {

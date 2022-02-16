@@ -247,11 +247,13 @@ public class FloatingIconView extends FrameLayout implements
      * @param originalView The View that the FloatingIconView will replace.
      * @param info ItemInfo of the originalView
      * @param pos The position of the view.
+     * @param btvIcon The drawable of the BubbleTextView. May be null if original view is not a BTV
+     * @param outIconLoadResult We store the icon results into this object.
      */
     @WorkerThread
     @SuppressWarnings("WrongThread")
     private static void getIconResult(Launcher l, View originalView, ItemInfo info, RectF pos,
-            Drawable btvIcon, IconLoadResult iconLoadResult) {
+            @Nullable Drawable btvIcon, IconLoadResult outIconLoadResult) {
         Drawable drawable;
         boolean supportsAdaptiveIcons = !info.isDisabled(); // Use original icon for disabled icons.
 
@@ -271,7 +273,9 @@ public class FloatingIconView extends FrameLayout implements
             int width = (int) pos.width();
             int height = (int) pos.height();
             if (supportsAdaptiveIcons) {
-                drawable = getFullDrawable(l, info, width, height, sTmpObjArray);
+                boolean shouldThemeIcon = btvIcon instanceof FastBitmapDrawable
+                        && ((FastBitmapDrawable) btvIcon).isThemed();
+                drawable = getFullDrawable(l, info, width, height, shouldThemeIcon, sTmpObjArray);
                 if (drawable instanceof AdaptiveIconDrawable) {
                     badge = getBadge(l, info, sTmpObjArray[0]);
                 } else {
@@ -284,24 +288,25 @@ public class FloatingIconView extends FrameLayout implements
                     // Similar to DragView, we simply use the BubbleTextView icon here.
                     drawable = btvIcon;
                 } else {
-                    drawable = getFullDrawable(l, info, width, height, sTmpObjArray);
+                    drawable = getFullDrawable(l, info, width, height, true /* shouldThemeIcon */,
+                            sTmpObjArray);
                 }
             }
         }
 
         drawable = drawable == null ? null : drawable.getConstantState().newDrawable();
         int iconOffset = getOffsetForIconBounds(l, drawable, pos);
-        synchronized (iconLoadResult) {
-            iconLoadResult.btvDrawable = btvIcon == null || drawable == btvIcon
+        synchronized (outIconLoadResult) {
+            outIconLoadResult.btvDrawable = btvIcon == null || drawable == btvIcon
                     ? null : btvIcon.getConstantState().newDrawable();
-            iconLoadResult.drawable = drawable;
-            iconLoadResult.badge = badge;
-            iconLoadResult.iconOffset = iconOffset;
-            if (iconLoadResult.onIconLoaded != null) {
-                l.getMainExecutor().execute(iconLoadResult.onIconLoaded);
-                iconLoadResult.onIconLoaded = null;
+            outIconLoadResult.drawable = drawable;
+            outIconLoadResult.badge = badge;
+            outIconLoadResult.iconOffset = iconOffset;
+            if (outIconLoadResult.onIconLoaded != null) {
+                l.getMainExecutor().execute(outIconLoadResult.onIconLoaded);
+                outIconLoadResult.onIconLoaded = null;
             }
-            iconLoadResult.isIconLoaded = true;
+            outIconLoadResult.isIconLoaded = true;
         }
     }
 
@@ -528,8 +533,7 @@ public class FloatingIconView extends FrameLayout implements
             btvIcon = null;
         }
 
-        IconLoadResult result = new IconLoadResult(info,
-                btvIcon == null ? false : btvIcon.isThemed());
+        IconLoadResult result = new IconLoadResult(info, btvIcon != null && btvIcon.isThemed());
         result.btvDrawable = btvIcon;
 
         final long fetchIconId = sFetchIconId++;
