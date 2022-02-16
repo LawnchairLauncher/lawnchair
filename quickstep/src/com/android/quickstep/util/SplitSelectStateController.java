@@ -156,9 +156,8 @@ public class SplitSelectStateController {
                         splitRatio, adapter);
             } else {
                 mSystemUiProxy.startIntentAndTaskWithLegacyTransition(taskPendingIntent,
-                        new Intent(), taskId2, stagePosition == STAGE_POSITION_TOP_OR_LEFT,
-                        mainOpts.toBundle(), null /* sideOptions */, STAGE_POSITION_BOTTOM_OR_RIGHT,
-                        splitRatio, adapter);
+                        new Intent(), taskId2, mainOpts.toBundle(), null /* sideOptions */,
+                        stagePosition, splitRatio, adapter);
             }
         }
     }
