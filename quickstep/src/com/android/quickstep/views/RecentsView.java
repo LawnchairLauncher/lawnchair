@@ -992,13 +992,17 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
      */
     public void launchSideTaskInLiveTileModeForRestartedApp(int taskId) {
         int runningTaskViewId = getTaskViewIdFromTaskId(taskId);
-        if (mRunningTaskViewId != -1 && mRunningTaskViewId == runningTaskViewId) {
-            TransformParams params = mRemoteTargetHandles[0].getTransformParams();
-            RemoteAnimationTargets targets = params.getTargetSet();
-            if (targets != null && targets.findTask(taskId) != null) {
-                launchSideTaskInLiveTileMode(taskId, targets.apps, targets.wallpapers,
-                        targets.nonApps);
-            }
+        if (mRunningTaskViewId == -1 ||
+                mRunningTaskViewId != runningTaskViewId ||
+                mRemoteTargetHandles == null) {
+            return;
+        }
+
+        TransformParams params = mRemoteTargetHandles[0].getTransformParams();
+        RemoteAnimationTargets targets = params.getTargetSet();
+        if (targets != null && targets.findTask(taskId) != null) {
+            launchSideTaskInLiveTileMode(taskId, targets.apps, targets.wallpapers,
+                    targets.nonApps);
         }
     }
 
@@ -2723,8 +2727,13 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         if (mSplitHiddenTaskView != null) {
             mSplitHiddenTaskView.setVisibility(INVISIBLE);
             mFirstFloatingTaskView = FloatingTaskView.getFloatingTaskView(mActivity,
-                    mSplitHiddenTaskView, mSplitHiddenTaskView.getThumbnail().getThumbnail(),
-                    mSplitHiddenTaskView.getIconView().getDrawable(), startingTaskRect);
+                    mSplitHiddenTaskView.getThumbnail(),
+                    mSplitHiddenTaskView.getThumbnail().getThumbnail(),
+                    mSplitHiddenTaskView.getIconView().getDrawable(), startingTaskRect,
+                    floatingTaskViewStartingPosition -> floatingTaskViewStartingPosition.offset(
+                            mSplitHiddenTaskView.getTranslationX(),
+                            mSplitHiddenTaskView.getTranslationY()
+                    ));
             mFirstFloatingTaskView.setAlpha(1);
             mFirstFloatingTaskView.addAnimation(anim, startingTaskRect,
                     mTempRect, mSplitHiddenTaskView, true /*fadeWithThumbnail*/);
@@ -2732,7 +2741,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             mSplitSelectSource.view.setVisibility(INVISIBLE);
             mFirstFloatingTaskView = FloatingTaskView.getFloatingTaskView(mActivity,
                     mSplitSelectSource.view, null,
-                    mSplitSelectSource.drawable, startingTaskRect);
+                    mSplitSelectSource.drawable, startingTaskRect, null /*additionalOffsetter*/);
             mFirstFloatingTaskView.setAlpha(1);
             mFirstFloatingTaskView.addAnimation(anim, startingTaskRect,
                     mTempRect, mSplitSelectSource.view, true /*fadeWithThumbnail*/);
@@ -4023,8 +4032,12 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                 false /*fadeWithThumbnail*/);
 
         mSecondFloatingTaskView = FloatingTaskView.getFloatingTaskView(mActivity,
-                taskView, taskView.getThumbnail().getThumbnail(),
-                taskView.getIconView().getDrawable(), secondTaskStartingBounds);
+                taskView.getThumbnail(), taskView.getThumbnail().getThumbnail(),
+                taskView.getIconView().getDrawable(), secondTaskStartingBounds,
+                floatingTaskViewStartingPosition -> floatingTaskViewStartingPosition.offset(
+                        taskView.getTranslationX(),
+                        taskView.getTranslationY()
+                ));
         mSecondFloatingTaskView.setAlpha(1);
         mSecondFloatingTaskView.addAnimation(pendingAnimation, secondTaskStartingBounds,
                 secondTaskEndingBounds, taskView.getThumbnail(),

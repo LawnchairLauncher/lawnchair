@@ -41,7 +41,6 @@ import com.android.systemui.plugins.AllAppsRow.OnHeightUpdatedListener;
 import com.android.systemui.plugins.PluginListener;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 public class FloatingHeaderView extends LinearLayout implements
@@ -226,8 +225,7 @@ public class FloatingHeaderView extends LinearLayout implements
         return super.getFocusedChild();
     }
 
-    <T extends Context & ActivityContext> void setup(
-            List<BaseAllAppsContainerView<T>.AdapterHolder> mAH, boolean tabsHidden) {
+    void setup(AllAppsRecyclerView mainRV, AllAppsRecyclerView workRV, boolean tabsHidden) {
         for (FloatingHeaderRow row : mAllRows) {
             row.setup(this, mAllRows, tabsHidden);
         }
@@ -235,10 +233,8 @@ public class FloatingHeaderView extends LinearLayout implements
 
         mTabsHidden = tabsHidden;
         mTabLayout.setVisibility(tabsHidden ? View.GONE : View.VISIBLE);
-        mMainRV = setupRV(mMainRV,
-                mAH.get(BaseAllAppsContainerView.AdapterHolder.MAIN).mRecyclerView);
-        mWorkRV = setupRV(mWorkRV,
-                mAH.get(BaseAllAppsContainerView.AdapterHolder.WORK).mRecyclerView);
+        mMainRV = setupRV(mMainRV, mainRV);
+        mWorkRV = setupRV(mWorkRV, workRV);
         mParent = (ViewGroup) mMainRV.getParent();
         setMainActive(mMainRVActive || mWorkRV == null);
         reset(false);

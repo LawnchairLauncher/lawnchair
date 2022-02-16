@@ -51,8 +51,7 @@ public class AllApps extends LauncherInstrumentation.VisibleContainer {
         // Wait for the recycler to populate.
         mLauncher.waitForObjectInContainer(appListRecycler, By.clazz(TextView.class));
         verifyNotFrozen("All apps freeze flags upon opening all apps");
-        mIconHeight = mLauncher.getTestInfo(
-                        TestProtocol.REQUEST_ICON_HEIGHT)
+        mIconHeight = mLauncher.getTestInfo(TestProtocol.REQUEST_ICON_HEIGHT)
                 .getInt(TestProtocol.TEST_INFO_RESPONSE_FIELD);
     }
 
@@ -211,7 +210,7 @@ public class AllApps extends LauncherInstrumentation.VisibleContainer {
 
     private int getAllAppsScroll() {
         return mLauncher.getTestInfo(
-                        TestProtocol.REQUEST_APPS_LIST_SCROLL_Y)
+                TestProtocol.REQUEST_APPS_LIST_SCROLL_Y)
                 .getInt(TestProtocol.TEST_INFO_RESPONSE_FIELD);
     }
 

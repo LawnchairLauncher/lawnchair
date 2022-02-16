@@ -5,6 +5,8 @@ import android.content.Context;
 import android.graphics.Rect;
 import android.os.Bundle;
 
+import androidx.annotation.Nullable;
+
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.testing.TestInformationHandler;
 import com.android.launcher3.testing.TestProtocol;
@@ -21,7 +23,7 @@ public class QuickstepTestInformationHandler extends TestInformationHandler {
     }
 
     @Override
-    public Bundle call(String method, String arg) {
+    public Bundle call(String method, String arg, @Nullable Bundle extras) {
         final Bundle response = new Bundle();
         switch (method) {
             case TestProtocol.REQUEST_ALL_APPS_TO_OVERVIEW_SWIPE_HEIGHT: {
@@ -82,7 +84,7 @@ public class QuickstepTestInformationHandler extends TestInformationHandler {
             }
         }
 
-        return super.call(method, arg);
+        return super.call(method, arg, extras);
     }
 
     @Override

@@ -34,6 +34,7 @@ import android.util.Log;
 
 import androidx.annotation.IntDef;
 
+import com.android.launcher3.DeviceProfile.DeviceProfileListenable;
 import com.android.launcher3.DeviceProfile.OnDeviceProfileChangeListener;
 import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.util.SystemUiController;
@@ -44,11 +45,13 @@ import com.android.launcher3.views.ScrimView;
 import java.io.PrintWriter;
 import java.lang.annotation.Retention;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Launcher BaseActivity
  */
-public abstract class BaseActivity extends Activity implements ActivityContext {
+public abstract class BaseActivity extends Activity implements ActivityContext,
+        DeviceProfileListenable {
 
     private static final String TAG = "BaseActivity";
 
@@ -140,6 +143,11 @@ public abstract class BaseActivity extends Activity implements ActivityContext {
     @Override
     public DeviceProfile getDeviceProfile() {
         return mDeviceProfile;
+    }
+
+    @Override
+    public List<OnDeviceProfileChangeListener> getOnDeviceProfileChangeListeners() {
+        return mDPChangeListeners;
     }
 
     /**
@@ -260,20 +268,6 @@ public abstract class BaseActivity extends Activity implements ActivityContext {
     }
 
     protected void onActivityFlagsChanged(int changeBits) { }
-
-    public void addOnDeviceProfileChangeListener(OnDeviceProfileChangeListener listener) {
-        mDPChangeListeners.add(listener);
-    }
-
-    public void removeOnDeviceProfileChangeListener(OnDeviceProfileChangeListener listener) {
-        mDPChangeListeners.remove(listener);
-    }
-
-    protected void dispatchDeviceProfileChanged() {
-        for (int i = mDPChangeListeners.size() - 1; i >= 0; i--) {
-            mDPChangeListeners.get(i).onDeviceProfileChanged(mDeviceProfile);
-        }
-    }
 
     public void addMultiWindowModeChangedListener(MultiWindowModeChangedListener listener) {
         mMultiWindowModeChangedListeners.add(listener);

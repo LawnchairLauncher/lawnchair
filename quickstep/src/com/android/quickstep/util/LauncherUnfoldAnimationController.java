@@ -15,9 +15,14 @@
  */
 package com.android.quickstep.util;
 
+import static com.android.launcher3.LauncherAnimUtils.SCALE_INDEX_UNFOLD_ANIMATION;
+import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY_FACTORY;
 import static com.android.launcher3.Utilities.comp;
 
 import android.annotation.Nullable;
+import android.util.FloatProperty;
+import android.util.MathUtils;
+import android.view.View;
 import android.view.WindowManager;
 import android.view.WindowManagerGlobal;
 
@@ -39,6 +44,8 @@ public class LauncherUnfoldAnimationController {
     // Percentage of the width of the quick search bar that will be reduced
     // from the both sides of the bar when progress is 0
     private static final float MAX_WIDTH_INSET_FRACTION = 0.15f;
+    private static final FloatProperty<View> UNFOLD_SCALE_PROPERTY =
+            SCALE_PROPERTY_FACTORY.get(SCALE_INDEX_UNFOLD_ANIMATION);
 
     private final Launcher mLauncher;
 
@@ -62,6 +69,8 @@ public class LauncherUnfoldAnimationController {
         // Animated in all orientations
         mProgressProvider.addCallback(new UnfoldMoveFromCenterWorkspaceAnimator(launcher,
                 windowManager));
+        mProgressProvider
+                .addCallback(new LauncherScaleAnimationListener());
 
         // Animated only in natural orientation
         mNaturalOrientationProgressProvider
@@ -118,6 +127,28 @@ public class LauncherUnfoldAnimationController {
                 float insetPercentage = comp(progress) * MAX_WIDTH_INSET_FRACTION;
                 mQsbInsettable.setHorizontalInsets(insetPercentage);
             }
+        }
+    }
+
+    private class LauncherScaleAnimationListener implements TransitionProgressListener {
+
+        @Override
+        public void onTransitionStarted() {
+        }
+
+        @Override
+        public void onTransitionFinished() {
+            setScale(1);
+        }
+
+        @Override
+        public void onTransitionProgress(float progress) {
+            setScale(MathUtils.constrainedMap(0.85f, 1, 0, 1, progress));
+        }
+
+        private void setScale(float value) {
+            UNFOLD_SCALE_PROPERTY.setValue(mLauncher.getWorkspace(), value);
+            UNFOLD_SCALE_PROPERTY.setValue(mLauncher.getHotseat(), value);
         }
     }
 }

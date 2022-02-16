@@ -27,6 +27,8 @@ import android.util.IntProperty;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
 
+import com.android.launcher3.util.MultiScalePropertyFactory;
+
 public class LauncherAnimUtils {
     /**
      * Durations for various state animations. These are not defined in resources to allow
@@ -63,6 +65,25 @@ public class LauncherAnimUtils {
                     view.setScaleY(scale);
                 }
             };
+
+    /**
+     * Property to set the scale of workspace and hotseat. The value is based on a combination
+     * of all the ones set, to have a smooth experience even in the case of overlapping scaling
+     * animation.
+     */
+    public static final MultiScalePropertyFactory<View> SCALE_PROPERTY_FACTORY =
+            new MultiScalePropertyFactory<View>("scale_property") {
+                @Override
+                protected void apply(View view, float scale) {
+                    view.setScaleX(scale);
+                    view.setScaleY(scale);
+                }
+            };
+
+    public static final int SCALE_INDEX_UNFOLD_ANIMATION = 1;
+    public static final int SCALE_INDEX_UNLOCK_ANIMATION = 2;
+    public static final int SCALE_INDEX_WORKSPACE_STATE = 3;
+    public static final int SCALE_INDEX_REVEAL_ANIM = 4;
 
     /** Increase the duration if we prevented the fling, as we are going against a high velocity. */
     public static int blockedFlingDurationFactor(float velocity) {

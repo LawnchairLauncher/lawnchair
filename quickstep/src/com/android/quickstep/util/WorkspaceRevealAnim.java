@@ -15,7 +15,8 @@
  */
 package com.android.quickstep.util;
 
-import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
+import static com.android.launcher3.LauncherAnimUtils.SCALE_INDEX_REVEAL_ANIM;
+import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY_FACTORY;
 import static com.android.launcher3.LauncherState.BACKGROUND_APP;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.anim.PropertySetter.NO_ANIM_PROPERTY_SETTER;
@@ -27,6 +28,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
+import android.util.FloatProperty;
 import android.view.View;
 
 import com.android.launcher3.BaseQuickstepLauncher;
@@ -49,6 +51,8 @@ public class WorkspaceRevealAnim {
 
     // Should be used for animations running alongside this WorkspaceRevealAnim.
     public static final int DURATION_MS = 350;
+    private static final FloatProperty<View> REVEAL_SCALE_PROPERTY =
+            SCALE_PROPERTY_FACTORY.get(SCALE_INDEX_REVEAL_ANIM);
 
     private final float mScaleStart;
     private final AnimatorSet mAnimators = new AnimatorSet();
@@ -90,7 +94,7 @@ public class WorkspaceRevealAnim {
     }
 
     private void addRevealAnimatorsForView(View v) {
-        ObjectAnimator scale = ObjectAnimator.ofFloat(v, SCALE_PROPERTY, mScaleStart, 1f);
+        ObjectAnimator scale = ObjectAnimator.ofFloat(v, REVEAL_SCALE_PROPERTY, mScaleStart, 1f);
         scale.setDuration(DURATION_MS);
         scale.setInterpolator(Interpolators.DECELERATED_EASE);
         mAnimators.play(scale);
@@ -103,7 +107,7 @@ public class WorkspaceRevealAnim {
         mAnimators.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
-                SCALE_PROPERTY.set(v, 1f);
+                REVEAL_SCALE_PROPERTY.set(v, 1f);
                 v.setAlpha(1f);
             }
         });
