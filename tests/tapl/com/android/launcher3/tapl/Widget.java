@@ -30,7 +30,7 @@ import java.util.regex.Pattern;
 /**
  * Widget in workspace or a widget list.
  */
-public final class Widget extends Launchable {
+public final class Widget extends Launchable implements WorkspaceDragSource {
 
     private static final Pattern LONG_CLICK_EVENT = Pattern.compile("Widgets.onLongClick");
 
@@ -55,6 +55,12 @@ public final class Widget extends Launchable {
     @Override
     protected String launchableType() {
         return "widget";
+    }
+
+    /** This method requires public access, however should not be called in tests. */
+    @Override
+    public Launchable getLaunchable() {
+        return this;
     }
 
     /**

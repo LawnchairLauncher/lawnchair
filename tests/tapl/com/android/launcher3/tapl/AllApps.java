@@ -36,7 +36,7 @@ import java.util.stream.Collectors;
 /**
  * Operations on AllApps opened from Home. Also a parent for All Apps opened from Overview.
  */
-public class AllApps extends LauncherInstrumentation.VisibleContainer {
+public abstract class AllApps extends LauncherInstrumentation.VisibleContainer {
     private static final int MAX_SCROLL_ATTEMPTS = 40;
 
     private final int mHeight;
@@ -53,11 +53,6 @@ public class AllApps extends LauncherInstrumentation.VisibleContainer {
         verifyNotFrozen("All apps freeze flags upon opening all apps");
         mIconHeight = mLauncher.getTestInfo(TestProtocol.REQUEST_ICON_HEIGHT)
                 .getInt(TestProtocol.TEST_INFO_RESPONSE_FIELD);
-    }
-
-    @Override
-    protected LauncherInstrumentation.ContainerType getContainerType() {
-        return LauncherInstrumentation.ContainerType.ALL_APPS;
     }
 
     private boolean hasClickableIcon(UiObject2 allAppsContainer, UiObject2 appListRecycler,
@@ -157,7 +152,7 @@ public class AllApps extends LauncherInstrumentation.VisibleContainer {
 
                 final UiObject2 appIcon = mLauncher.waitForObjectInContainer(appListRecycler,
                         appIconSelector);
-                return new AllAppsAppIcon(mLauncher, appIcon);
+                return createAppIcon(appIcon);
             } else {
                 return null;
             }
@@ -177,6 +172,8 @@ public class AllApps extends LauncherInstrumentation.VisibleContainer {
         mLauncher.assertNotNull("Unable to scroll to a clickable icon: " + appName, appIcon);
         return appIcon;
     }
+
+    protected abstract AppIcon createAppIcon(UiObject2 icon);
 
     private void scrollBackToBeginning() {
         try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(

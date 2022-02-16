@@ -509,7 +509,7 @@ public abstract class AbstractLauncherUiTest {
                 "Launcher still active", launcher -> launcher == null, DEFAULT_UI_TIMEOUT);
     }
 
-    protected boolean isInBackground(Launcher launcher) {
+    protected boolean isInLaunchedApp(Launcher launcher) {
         return launcher == null || !launcher.hasBeenResumed();
     }
 
@@ -549,7 +549,7 @@ public abstract class AbstractLauncherUiTest {
                             ordinal == TestProtocol.NORMAL_STATE_ORDINAL);
                     break;
                 }
-                case ALL_APPS: {
+                case HOME_ALL_APPS: {
                     assertTrue(
                             "Launcher is not resumed in state: " + expectedContainerType,
                             isResumed);
@@ -564,7 +564,7 @@ public abstract class AbstractLauncherUiTest {
                             ordinal == TestProtocol.OVERVIEW_STATE_ORDINAL);
                     break;
                 }
-                case BACKGROUND: {
+                case LAUNCHED_APP: {
                     assertTrue("Launcher is resumed in state: " + expectedContainerType,
                             !isResumed);
                     assertTrue(TestProtocol.stateOrdinalToString(ordinal),
@@ -577,10 +577,10 @@ public abstract class AbstractLauncherUiTest {
             }
         } else {
             assertTrue(
-                    "Container type is not BACKGROUND or FALLBACK_OVERVIEW: "
+                    "Container type is not LAUNCHED_APP or FALLBACK_OVERVIEW: "
                             + expectedContainerType,
-                    expectedContainerType == ContainerType.BACKGROUND ||
-                            expectedContainerType == ContainerType.FALLBACK_OVERVIEW);
+                    expectedContainerType == ContainerType.LAUNCHED_APP
+                            || expectedContainerType == ContainerType.FALLBACK_OVERVIEW);
         }
     }
 
