@@ -168,13 +168,13 @@
     <string name="bugreport_group_summary_multiple">Више нових извештаја.</string>
     <string name="themed_icon_title">Тематске иконе</string>
     <string name="corner_radius_label">Corner Radius</string>
-    <string name="search_bar_label">Search Bar</string>
+    <string name="search_bar_label">Поље за претрагу</string>
     <string name="apply_accent_color_label">Apply Accent Color</string>
     <string name="show_search_result_types">Show in Search Results</string>
-    <string name="search_pref_result_people_title">People</string>
+    <string name="search_pref_result_people_title">Људи</string>
     <string name="search_pref_result_shortcuts_title">App Shortcuts</string>
-    <string name="search_pref_result_tips_title">Pixel Tips</string>
-    <string name="row_height_label">Row Height</string>
+    <string name="search_pref_result_tips_title">Pixel савети</string>
+    <string name="row_height_label">Висина реда</string>
     <string name="all_apps_device_search_hint">Search</string>
     <string name="dark_status_bar_label">Dark Status Bar</string>
     <string name="lawnicons_not_installed_description">Lawnicons not installed.</string>
