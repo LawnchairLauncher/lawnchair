@@ -77,10 +77,10 @@
     </plurals>
     <string name="hotseat_qsb_label">Прикажи траку за претрагу</string>
     <string name="dt2s_admin_hint_title">Потребне су дозволе за администрацију</string>
-    <string name="dt2s_admin_hint">To use Double-Tap to Sleep, set Lawnchair as a device admin app. Tap Open Settings, then tap “Activate this device admin app.”</string>
+    <string name="dt2s_admin_hint">Да бисте користили функцију „Додирните двапут за стање спавања”, подесите Lawnchair као апликацију за администратора уређаја. У подешавањима додирните „Активирај ову апликацију за администратора уређаја”.</string>
     <string name="dt2s_admin_warning">Double Tap to Sleep will be disabled.</string>
     <string name="dt2s_a11y_hint_title">Accessibility service required</string>
-    <string name="dt2s_a11y_hint">To use Double-Tap to Sleep, turn on the Lawnchair accessibility service. Tap Open Settings, then select Lawnchair and turn on Use Lawnchair.</string>
+    <string name="dt2s_a11y_hint">Да бисте користили функцију „Додирните двапут за стање спавања”, укључите услугу приступачности Lawnchair-а. У подешавањима изаберите Lawnchair и додирните „Користи Lawnchair”.</string>
     <string name="dt2s_warning_open_settings">Отвори подешавања</string>
     <string name="minus_one_enable">Фид</string>
     <string name="minus_one_unavailable">\"Feed\" није инсталиран.</string>
@@ -95,7 +95,7 @@
     <string name="clear_all_as_action_label">Дугме „Обриши све” у дну</string>
     <string name="window_corner_radius_label">Радијус угла екрана</string>
     <string name="override_window_corner_radius_label">Прилагођени радијус угла екрана</string>
-    <string name="window_corner_radius_description">When you swipe up to open Recents, the current app follows your finger, shrinking into a card. Use this slider to adjust the corner radius of the card when it’s nearly full-screen such that it matches the corners of your screen.</string>
+    <string name="window_corner_radius_description">Када превучете нагоре и отворите Недавно, тренутна апликација ће пратити ваш прст и смањити се у картицу. Помоћу овог клизача подесите радијус угла картице када је готово у режиму целог екрана како би одговарала угловима екрана.</string>
     <string name="system_icons">Системске иконице</string>
     <string name="accent_color">Акцентна боја</string>
     <string name="done">Готово</string>
@@ -107,23 +107,23 @@
     <string name="wallpaper_scrolling_label">Листање позадине</string>
     <string name="show_sys_ui_scrim">Горња сенка</string>
     <string name="show_status_bar">Статусна трака</string>
-    <string name="what_to_show">What to Show</string>
-    <string name="missing_notification_access_label">Notification Access Needed</string>
-    <string name="missing_notification_access_description">Notification access needed.</string>
-    <string name="msg_missing_notification_access">To use Notification Dots, grant <xliff:g id="name" example="My App">%1$s</xliff:g> access to notifications.</string>
+    <string name="what_to_show">Шта се приказује</string>
+    <string name="missing_notification_access_label">Приступ обавештењима</string>
+    <string name="missing_notification_access_description">Потребан је приступ обавештењима.</string>
+    <string name="msg_missing_notification_access">Да бисте користили тачке за обавештења, доделите апликацији <xliff:g id="name" example="My App">%1$s</xliff:g> приступ обавештењима.</string>
     <string name="title_change_settings">Промените подешавања</string>
     <string name="debug_restart_launcher">Рестартуј Lawnchair</string>
     <string name="pref_fonts_missing_font">Фонт није пронађен.</string>
     <string name="font_variant_italic">Курзив</string>
-    <string name="font_weight_thin">Thin</string>
-    <string name="font_weight_extra_light">Extra Light</string>
+    <string name="font_weight_thin">Најтањи</string>
+    <string name="font_weight_extra_light">Веома танки</string>
     <string name="font_weight_light">Светло</string>
-    <string name="font_weight_regular">Regular</string>
+    <string name="font_weight_regular">Нормал</string>
     <string name="font_weight_medium">Средњи</string>
-    <string name="font_weight_semi_bold">Semibold</string>
-    <string name="font_weight_bold">Bold</string>
-    <string name="font_weight_extra_bold">Extra Bold</string>
-    <string name="font_weight_extra_black">Black</string>
+    <string name="font_weight_semi_bold">Полумасни</string>
+    <string name="font_weight_bold">Масни</string>
+    <string name="font_weight_extra_bold">Веома масни</string>
+    <string name="font_weight_extra_black">Дебели</string>
     <string name="font_label">Фонт (експериментално)</string>
     <string name="reset_font">Ресетуј</string>
     <string name="search_input_action_clear_results">Обриши поље за претрагу</string>
