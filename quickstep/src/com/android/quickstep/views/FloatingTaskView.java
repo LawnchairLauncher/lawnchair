@@ -192,13 +192,12 @@ public class FloatingTaskView extends FrameLayout {
     }
 
     public void addAnimation(PendingAnimation animation, RectF startingBounds, Rect endBounds,
-            View viewToCover, boolean fadeWithThumbnail) {
+            boolean fadeWithThumbnail) {
         final BaseDragLayer dragLayer = mActivity.getDragLayer();
         int[] dragLayerBounds = new int[2];
         dragLayer.getLocationOnScreen(dragLayerBounds);
         SplitOverlayProperties prop = new SplitOverlayProperties(endBounds,
-                startingBounds, viewToCover, dragLayerBounds[0],
-                dragLayerBounds[1]);
+                startingBounds, dragLayerBounds[0], dragLayerBounds[1]);
 
         ValueAnimator transitionAnimator = ValueAnimator.ofFloat(0, 1);
         animation.add(transitionAnimator);
@@ -221,10 +220,10 @@ public class FloatingTaskView extends FrameLayout {
                     initialWindowRadius, 0, animDuration, LINEAR);
             final FloatProp mDx = new FloatProp(0, prop.dX, 0, animDuration, LINEAR);
             final FloatProp mDy = new FloatProp(0, prop.dY, 0, animDuration, LINEAR);
-            final FloatProp mTaskViewScaleX = new FloatProp(prop.initialTaskViewScaleX,
-                    prop.finalTaskViewScaleX, 0, animDuration, LINEAR);
-            final FloatProp mTaskViewScaleY = new FloatProp(prop.initialTaskViewScaleY,
-                    prop.finalTaskViewScaleY, 0, animDuration, LINEAR);
+            final FloatProp mTaskViewScaleX = new FloatProp(1f, prop.finalTaskViewScaleX, 0,
+                    animDuration, LINEAR);
+            final FloatProp mTaskViewScaleY = new FloatProp(1f, prop.finalTaskViewScaleY, 0,
+                    animDuration, LINEAR);
             @Override
             public void onUpdate(float percent, boolean initOnly) {
                 // Calculate the icon position.
@@ -241,24 +240,20 @@ public class FloatingTaskView extends FrameLayout {
 
     private static class SplitOverlayProperties {
 
-        private final float initialTaskViewScaleX;
-        private final float initialTaskViewScaleY;
         private final float finalTaskViewScaleX;
         private final float finalTaskViewScaleY;
         private final float dX;
         private final float dY;
 
-        SplitOverlayProperties(Rect endBounds, RectF startTaskViewBounds, View view,
+        SplitOverlayProperties(Rect endBounds, RectF startTaskViewBounds,
                 int dragLayerLeft, int dragLayerTop) {
             float maxScaleX = endBounds.width() / startTaskViewBounds.width();
             float maxScaleY = endBounds.height() / startTaskViewBounds.height();
 
-            initialTaskViewScaleX = view.getScaleX();
-            initialTaskViewScaleY = view.getScaleY();
             finalTaskViewScaleX = maxScaleX;
             finalTaskViewScaleY = maxScaleY;
 
-            // Animate the app icon to the center of the window bounds in screen coordinates.
+            // Animate to the center of the window bounds in screen coordinates.
             float centerX = endBounds.centerX() - dragLayerLeft;
             float centerY = endBounds.centerY() - dragLayerTop;
 
