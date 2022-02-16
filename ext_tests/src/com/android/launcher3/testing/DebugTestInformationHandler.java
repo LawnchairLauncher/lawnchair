@@ -27,6 +27,7 @@ import android.system.Os;
 import android.view.View;
 
 import androidx.annotation.Keep;
+import androidx.annotation.Nullable;
 
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherSettings;
@@ -124,7 +125,7 @@ public class DebugTestInformationHandler extends TestInformationHandler {
     }
 
     @Override
-    public Bundle call(String method, String arg) {
+    public Bundle call(String method, String arg, @Nullable Bundle extras) {
         final Bundle response = new Bundle();
         switch (method) {
             case TestProtocol.REQUEST_APP_LIST_FREEZE_FLAGS: {
@@ -219,7 +220,7 @@ public class DebugTestInformationHandler extends TestInformationHandler {
             }
 
             default:
-                return super.call(method, arg);
+                return super.call(method, arg, extras);
         }
     }
 }

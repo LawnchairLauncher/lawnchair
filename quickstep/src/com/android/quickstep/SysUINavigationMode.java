@@ -60,17 +60,22 @@ public class SysUINavigationMode {
         return INSTANCE.get(context).getMode();
     }
 
+    public static boolean getImeDrawsImeNavBar(Context context) {
+        return INSTANCE.get(context).getImeDrawsImeNavBar();
+    }
+
     public static final MainThreadInitializedObject<SysUINavigationMode> INSTANCE =
             new MainThreadInitializedObject<>(SysUINavigationMode::new);
 
     private static final String TAG = "SysUINavigationMode";
     private static final String ACTION_OVERLAY_CHANGED = "android.intent.action.OVERLAY_CHANGED";
-    private static final String NAV_BAR_INTERACTION_MODE_RES_NAME =
-            "config_navBarInteractionMode";
+    private static final String NAV_BAR_INTERACTION_MODE_RES_NAME = "config_navBarInteractionMode";
+    private static final String IME_DRAWS_IME_NAV_BAR_RES_NAME = "config_imeDrawsImeNavBar";
     private static final String TARGET_OVERLAY_PACKAGE = "android";
 
     private final Context mContext;
     private Mode mMode;
+    private boolean mImeDrawsImeNavBar;
 
     private int mNavBarGesturalHeight;
     private int mNavBarLargerGesturalHeight;
@@ -135,6 +140,8 @@ public class SysUINavigationMode {
         mNavBarLargerGesturalHeight = ResourceUtils.getDimenByName(
                 ResourceUtils.NAVBAR_BOTTOM_GESTURE_LARGER_SIZE, mContext.getResources(),
                 mNavBarGesturalHeight);
+        mImeDrawsImeNavBar = ResourceUtils.getBoolByName(IME_DRAWS_IME_NAV_BAR_RES_NAME,
+                mContext.getResources(), false);
 
         if (modeInt == INVALID_RESOURCE_HANDLE) {
             Log.e(TAG, "Failed to get system resource ID. Incompatible framework version?");
@@ -167,9 +174,14 @@ public class SysUINavigationMode {
         return mMode;
     }
 
+    public boolean getImeDrawsImeNavBar() {
+        return mImeDrawsImeNavBar;
+    }
+
     public void dump(PrintWriter pw) {
         pw.println("SysUINavigationMode:");
         pw.println("  mode=" + mMode.name());
+        pw.println("  mImeDrawsImeNavBar=:" + mImeDrawsImeNavBar);
         pw.println("  mNavBarGesturalHeight=:" + mNavBarGesturalHeight);
     }
 

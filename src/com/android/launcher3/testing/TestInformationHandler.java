@@ -23,16 +23,23 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Insets;
+import android.graphics.Point;
+import android.graphics.Rect;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.WindowInsets;
 
+import androidx.annotation.Nullable;
+
+import com.android.launcher3.CellLayout;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.R;
+import com.android.launcher3.Workspace;
+import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.util.ResourceBasedOverride;
 import com.android.launcher3.widget.picker.WidgetsFullSheet;
 
@@ -62,12 +69,18 @@ public class TestInformationHandler implements ResourceBasedOverride {
         mLauncherAppState = LauncherAppState.getInstanceNoCreate();
     }
 
-    public Bundle call(String method) {
-        return call(method, /*arg=*/ null);
-    }
-
-    public Bundle call(String method, String arg) {
+    /**
+     * handle a request and return result Bundle.
+     *
+     * @param method request name.
+     * @param arg    optional single string argument.
+     * @param extra  extra request payload.
+     */
+    public Bundle call(String method, String arg, @Nullable Bundle extra) {
         final Bundle response = new Bundle();
+        if (extra != null && extra.getClassLoader() == null) {
+            extra.setClassLoader(getClass().getClassLoader());
+        }
         switch (method) {
             case TestProtocol.REQUEST_HOME_TO_ALL_APPS_SWIPE_HEIGHT: {
                 return getLauncherUIProperty(Bundle::putInt, l -> {
@@ -163,9 +176,46 @@ public class TestInformationHandler implements ResourceBasedOverride {
                                 .forceAllowRotationForTesting(Boolean.parseBoolean(arg)));
                 return null;
 
+            case TestProtocol.REQUEST_WORKSPACE_CELL_LAYOUT_SIZE:
+                return getLauncherUIProperty(Bundle::putIntArray, launcher -> {
+                    final Workspace workspace = launcher.getWorkspace();
+                    final int screenId = workspace.getScreenIdForPageIndex(
+                            workspace.getCurrentPage());
+                    final CellLayout cellLayout = workspace.getScreenWithId(screenId);
+                    return new int[]{cellLayout.getCountX(), cellLayout.getCountY()};
+                });
+
+            case TestProtocol.REQUEST_WORKSPACE_CELL_CENTER:
+                final WorkspaceCellCenterRequest request = extra.getParcelable(
+                        TestProtocol.TEST_INFO_REQUEST_FIELD);
+                return getLauncherUIProperty(Bundle::putParcelable, launcher -> {
+                    final Workspace workspace = launcher.getWorkspace();
+                    // TODO(b/216387249): allow caller selecting different pages.
+                    CellLayout cellLayout = (CellLayout) workspace.getPageAt(
+                            workspace.getCurrentPage());
+                    final Rect cellRect = getDescendantRectRelativeToDragLayerForCell(launcher,
+                            cellLayout, request.cellX, request.cellY, request.spanX, request.spanY);
+                    return new Point(cellRect.centerX(), cellRect.centerY());
+                });
+
             default:
                 return null;
         }
+    }
+
+    private static Rect getDescendantRectRelativeToDragLayerForCell(Launcher launcher,
+            CellLayout cellLayout, int cellX, int cellY, int spanX, int spanY) {
+        final DragLayer dragLayer = launcher.getDragLayer();
+        final Rect target = new Rect();
+
+        cellLayout.cellToRect(cellX, cellY, spanX, spanY, target);
+        int[] leftTop = {target.left, target.top};
+        int[] rightBottom = {target.right, target.bottom};
+        dragLayer.getDescendantCoordRelativeToSelf(cellLayout, leftTop);
+        dragLayer.getDescendantCoordRelativeToSelf(cellLayout, rightBottom);
+
+        target.set(leftTop[0], leftTop[1], rightBottom[0], rightBottom[1]);
+        return target;
     }
 
     protected boolean isLauncherInitialized() {
