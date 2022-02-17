@@ -54,6 +54,12 @@
     <attr name="workspaceAccentColor" format="color" />
     <attr name="dropTargetHoverTextColor" format="color" />
 
+    <attr name="allAppsButtonBgColor" format="color" />
+    <attr name="allAppsButtonColor1" format="color" />
+    <attr name="allAppsButtonColor2" format="color" />
+    <attr name="allAppsButtonColor3" format="color" />
+    <attr name="allAppsButtonColor4" format="color" />
+
     <!-- BubbleTextView specific attributes. -->
     <declare-styleable name="BubbleTextView">
         <attr name="layoutHorizontal" format="boolean" />
