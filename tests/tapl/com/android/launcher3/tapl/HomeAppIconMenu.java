@@ -13,31 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.android.launcher3.tapl;
-
-import android.graphics.Point;
 
 import androidx.test.uiautomator.UiObject2;
 
-import java.util.regex.Pattern;
-
 /**
- * App icon in workspace.
+ * Context menu of a home screen app icon.
  */
-final class WorkspaceAppIcon extends HomeAppIcon {
+public final class HomeAppIconMenu extends AppIconMenu {
 
-    WorkspaceAppIcon(LauncherInstrumentation launcher, UiObject2 icon) {
-        super(launcher, icon);
+    HomeAppIconMenu(LauncherInstrumentation launcher,
+            UiObject2 deepShortcutsContainer) {
+        super(launcher, deepShortcutsContainer);
     }
 
     @Override
-    protected Pattern getLongClickEvent() {
-        return Workspace.LONG_CLICK_EVENT;
+    public HomeAppIconMenuItem getMenuItem(int itemNumber) {
+        return (HomeAppIconMenuItem) super.getMenuItem(itemNumber);
     }
 
-    boolean isInCell(int cellX, int cellY) {
-        final Point center = Workspace.getCellCenter(mLauncher, cellX, cellY);
-        return mObject.getParent().getVisibleBounds().contains(center.x, center.y);
+    @Override
+    protected HomeAppIconMenuItem createMenuItem(UiObject2 menuItem) {
+        return new HomeAppIconMenuItem(mLauncher, menuItem);
     }
 }

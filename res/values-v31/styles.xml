@@ -87,6 +87,7 @@
     <style name="HomeSettings.CollapsedToolbarTitle"
             parent="@android:style/TextAppearance.DeviceDefault.Widget.ActionBar.Title">
         <item name="android:fontFamily">google-sans</item>
+        <item name="android:textSize">20sp</item>
     </style>
 
     <style name="HomeSettings.ExpandedToolbarTitle" parent="HomeSettings.CollapsedToolbarTitle">

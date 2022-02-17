@@ -23,7 +23,7 @@ import com.android.launcher3.testing.TestProtocol;
 /**
  * Menu item in an app icon menu.
  */
-public class AppIconMenuItem extends Launchable {
+public abstract class AppIconMenuItem extends Launchable {
 
     AppIconMenuItem(LauncherInstrumentation launcher, UiObject2 shortcut) {
         super(launcher, shortcut);

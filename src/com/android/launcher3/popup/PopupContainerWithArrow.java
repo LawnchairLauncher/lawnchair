@@ -508,6 +508,7 @@ public class PopupContainerWithArrow<T extends Context & ActivityContext>
     @Override
     protected void closeComplete() {
         super.closeComplete();
+        mActivityContext.getDragController().removeDragListener(this);
         PopupContainerWithArrow openPopup = getOpen(mActivityContext);
         if (openPopup == null || openPopup.mOriginalIcon != mOriginalIcon) {
             mOriginalIcon.setTextVisibility(mOriginalIcon.shouldTextBeVisible());

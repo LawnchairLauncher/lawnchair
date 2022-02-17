@@ -13,31 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.android.launcher3.tapl;
 
-import android.graphics.Point;
-
+import androidx.annotation.NonNull;
 import androidx.test.uiautomator.UiObject2;
 
-import java.util.regex.Pattern;
+public class HomeAllApps extends AllApps {
 
-/**
- * App icon in workspace.
- */
-final class WorkspaceAppIcon extends HomeAppIcon {
-
-    WorkspaceAppIcon(LauncherInstrumentation launcher, UiObject2 icon) {
-        super(launcher, icon);
+    HomeAllApps(LauncherInstrumentation launcher) {
+        super(launcher);
     }
 
     @Override
-    protected Pattern getLongClickEvent() {
-        return Workspace.LONG_CLICK_EVENT;
+    protected LauncherInstrumentation.ContainerType getContainerType() {
+        return LauncherInstrumentation.ContainerType.HOME_ALL_APPS;
     }
 
-    boolean isInCell(int cellX, int cellY) {
-        final Point center = Workspace.getCellCenter(mLauncher, cellX, cellY);
-        return mObject.getParent().getVisibleBounds().contains(center.x, center.y);
+    @NonNull
+    @Override
+    public HomeAppIcon getAppIcon(String appName) {
+        return (AllAppsAppIcon) super.getAppIcon(appName);
+    }
+
+    @Override
+    protected HomeAppIcon createAppIcon(UiObject2 icon) {
+        return new AllAppsAppIcon(mLauncher, icon);
     }
 }
