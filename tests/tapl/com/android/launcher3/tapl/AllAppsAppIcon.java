@@ -23,7 +23,7 @@ import java.util.regex.Pattern;
 /**
  * App icon in all apps.
  */
-final class AllAppsAppIcon extends AppIcon {
+final class AllAppsAppIcon extends HomeAppIcon {
 
     private static final Pattern LONG_CLICK_EVENT = Pattern.compile("onAllAppsItemLongClick");
 

@@ -278,7 +278,7 @@ public class SwipePipToHomeAnimator extends RectFSpringAnim {
 
     private RotatedPosition getRotatedPosition(float progress) {
         final float degree, positionX, positionY;
-        if (TaskAnimationManager.ENABLE_SHELL_TRANSITIONS) {
+        if (TaskAnimationManager.SHELL_TRANSITIONS_ROTATION) {
             if (mFromRotation == Surface.ROTATION_90) {
                 degree = -90 * (1 - progress);
                 positionX = progress * (mDestinationBoundsTransformed.left - mStartBounds.left)

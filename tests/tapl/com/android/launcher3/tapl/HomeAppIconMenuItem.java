@@ -13,31 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.android.launcher3.tapl;
-
-import android.graphics.Point;
 
 import androidx.test.uiautomator.UiObject2;
 
-import java.util.regex.Pattern;
-
 /**
- * App icon in workspace.
+ * Menu item in a home screen app icon menu.
  */
-final class WorkspaceAppIcon extends HomeAppIcon {
+public final class HomeAppIconMenuItem extends AppIconMenuItem implements WorkspaceDragSource {
 
-    WorkspaceAppIcon(LauncherInstrumentation launcher, UiObject2 icon) {
-        super(launcher, icon);
+    HomeAppIconMenuItem(LauncherInstrumentation launcher,
+            UiObject2 shortcut) {
+        super(launcher, shortcut);
     }
 
+    /** This method requires public access, however should not be called in tests. */
     @Override
-    protected Pattern getLongClickEvent() {
-        return Workspace.LONG_CLICK_EVENT;
-    }
-
-    boolean isInCell(int cellX, int cellY) {
-        final Point center = Workspace.getCellCenter(mLauncher, cellX, cellY);
-        return mObject.getParent().getVisibleBounds().contains(center.x, center.y);
+    public Launchable getLaunchable() {
+        return this;
     }
 }

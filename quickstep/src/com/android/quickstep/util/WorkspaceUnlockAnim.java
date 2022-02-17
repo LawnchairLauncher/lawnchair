@@ -21,6 +21,7 @@ import com.android.launcher3.Utilities;
 /**
  * Animation to animate in a workspace during the unlock transition.
  */
+// TODO(b/219444608): use SCALE_PROPERTY_FACTORY once the scale is reset to 1.0 after unlocking.
 public class WorkspaceUnlockAnim {
     /** Scale for the workspace icons at the beginning of the animation. */
     private static final float START_SCALE = 0.9f;
