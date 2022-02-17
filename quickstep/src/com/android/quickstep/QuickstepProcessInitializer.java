@@ -23,11 +23,11 @@ import android.os.Build;
 import android.os.RemoteException;
 import android.os.UserManager;
 import android.util.Log;
+import android.view.ThreadedRenderer;
 
 import com.android.launcher3.BuildConfig;
 import com.android.launcher3.MainProcessInitializer;
 import com.android.systemui.shared.system.InteractionJankMonitorWrapper;
-import com.android.systemui.shared.system.ThreadedRendererCompat;
 
 @SuppressWarnings("unused")
 @TargetApi(Build.VERSION_CODES.R)
@@ -60,8 +60,8 @@ public class QuickstepProcessInitializer extends MainProcessInitializer {
         super.init(context);
 
         // Elevate GPU priority for Quickstep and Remote animations.
-        ThreadedRendererCompat.setContextPriority(
-                ThreadedRendererCompat.EGL_CONTEXT_PRIORITY_HIGH_IMG);
+        ThreadedRenderer.setContextPriority(
+                ThreadedRenderer.EGL_CONTEXT_PRIORITY_HIGH_IMG);
 
         // Enable binder tracing on system server for calls originating from Launcher
         try {
