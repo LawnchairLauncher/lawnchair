@@ -725,7 +725,8 @@ public class TaskView extends FrameLayout implements Reusable {
             TestLogging.recordEvent(
                     TestProtocol.SEQUENCE_MAIN, "startActivityFromRecentsAsync", mTask);
             ActivityOptionsWrapper opts =  mActivity.getActivityLaunchOptions(this, null);
-            opts.options.setLaunchDisplayId(getRootViewDisplayId());
+            opts.options.setLaunchDisplayId(
+                    getDisplay() == null ? DEFAULT_DISPLAY : getDisplay().getDisplayId());
             if (ActivityManagerWrapper.getInstance()
                     .startActivityFromRecents(mTask.key, opts.options)) {
                 RecentsView recentsView = getRecentsView();
@@ -766,7 +767,8 @@ public class TaskView extends FrameLayout implements Reusable {
             // Indicate success once the system has indicated that the transition has started
             ActivityOptions opts = ActivityOptionsCompat.makeCustomAnimation(
                     getContext(), 0, 0, () -> callback.accept(true), MAIN_EXECUTOR.getHandler());
-            opts.setLaunchDisplayId(getRootViewDisplayId());
+            opts.setLaunchDisplayId(
+                    getDisplay() == null ? DEFAULT_DISPLAY : getDisplay().getDisplayId());
             if (freezeTaskList) {
                 ActivityOptionsCompat.setFreezeRecentTasksList(opts);
             }
