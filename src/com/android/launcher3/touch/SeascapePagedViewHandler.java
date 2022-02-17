@@ -164,7 +164,7 @@ public class SeascapePagedViewHandler extends LandscapePagedViewHandler {
         // Add "right" option which is actually the top
         return Collections.singletonList(new SplitPositionOption(
                 R.drawable.ic_split_right, R.string.split_screen_position_right,
-                STAGE_POSITION_TOP_OR_LEFT, STAGE_TYPE_MAIN));
+                STAGE_POSITION_BOTTOM_OR_RIGHT, STAGE_TYPE_MAIN));
     }
 
     @Override
