@@ -565,19 +565,4 @@ public abstract class DragView<T extends Context & ActivityContext> extends Fram
         iv.setImageDrawable(drawable);
         return iv;
     }
-
-    /**
-     * Removes any stray DragView from the DragLayer.
-     */
-    public static void removeAllViews(ActivityContext activity) {
-        BaseDragLayer dragLayer = activity.getDragLayer();
-        // Iterate in reverse order. DragView is added later to the dragLayer,
-        // and will be one of the last views.
-        for (int i = dragLayer.getChildCount() - 1; i >= 0; i--) {
-            View child = dragLayer.getChildAt(i);
-            if (child instanceof DragView) {
-                dragLayer.removeView(child);
-            }
-        }
-    }
 }
