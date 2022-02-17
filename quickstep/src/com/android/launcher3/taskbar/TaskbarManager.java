@@ -236,8 +236,7 @@ public class TaskbarManager implements DisplayController.DisplayInfoChangeListen
         DeviceProfile dp =
                 mUserUnlocked ? LauncherAppState.getIDP(mContext).getDeviceProfile(mContext) : null;
 
-        boolean isTaskBarEnabled =
-                FeatureFlags.ENABLE_TASKBAR.get() && dp != null && dp.isTaskbarPresent;
+        boolean isTaskBarEnabled = dp != null && dp.isTaskbarPresent;
 
         if (!isTaskBarEnabled) {
             SystemUiProxy.INSTANCE.get(mContext)
