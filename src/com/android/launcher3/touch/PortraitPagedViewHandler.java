@@ -421,11 +421,11 @@ public class PortraitPagedViewHandler implements PagedOrientationHandler {
         // Add both left and right options if we're in tablet mode
         if (dp.isTablet && dp.isLandscape) {
             options.add(new SplitPositionOption(
-                    R.drawable.ic_split_right, R.string.split_screen_position_right,
-                    STAGE_POSITION_BOTTOM_OR_RIGHT, STAGE_TYPE_MAIN));
-            options.add(new SplitPositionOption(
                     R.drawable.ic_split_left, R.string.split_screen_position_left,
                     STAGE_POSITION_TOP_OR_LEFT, STAGE_TYPE_MAIN));
+            options.add(new SplitPositionOption(
+                    R.drawable.ic_split_right, R.string.split_screen_position_right,
+                    STAGE_POSITION_BOTTOM_OR_RIGHT, STAGE_TYPE_MAIN));
         } else {
             if (dp.isSeascape()) {
                 // Add left/right options
