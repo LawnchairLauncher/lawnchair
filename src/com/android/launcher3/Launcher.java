@@ -1682,8 +1682,6 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
         AbstractFloatingView.closeOpenViews(this, false, TYPE_ALL & ~TYPE_REBIND_SAFE);
         finishAutoCancelActionMode();
 
-        DragView.removeAllViews(this);
-
         if (mPendingRequestArgs != null) {
             outState.putParcelable(RUNTIME_STATE_PENDING_REQUEST_ARGS, mPendingRequestArgs);
         }

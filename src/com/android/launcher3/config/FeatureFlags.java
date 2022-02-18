@@ -139,12 +139,12 @@ public final class FeatureFlags {
 
     public static final BooleanFlag ENABLE_BULK_WORKSPACE_ICON_LOADING = getDebugFlag(
             "ENABLE_BULK_WORKSPACE_ICON_LOADING",
-            false,
+            true,
             "Enable loading workspace icons in bulk.");
 
     public static final BooleanFlag ENABLE_BULK_ALL_APPS_ICON_LOADING = getDebugFlag(
             "ENABLE_BULK_ALL_APPS_ICON_LOADING",
-            false,
+            true,
             "Enable loading all apps icons in bulk.");
 
     // Keep as DeviceFlag for remote disable in emergency.
