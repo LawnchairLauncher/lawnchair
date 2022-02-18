@@ -197,12 +197,6 @@ public final class FeatureFlags {
             "ENABLE_APP_PREDICTIONS_WHILE_VISIBLE", true, "Allows app "
             + "predictions to be updated while they are visible to the user.");
 
-    public static final BooleanFlag ENABLE_TASKBAR = getDebugFlag(
-            "ENABLE_TASKBAR", true, "Allows a system Taskbar to be shown on larger devices.");
-
-    public static final BooleanFlag ENABLE_TASKBAR_EDU = getDebugFlag("ENABLE_TASKBAR_EDU", true,
-            "Enables showing taskbar education the first time an app is opened.");
-
     public static final BooleanFlag ENABLE_TASKBAR_POPUP_MENU = getDebugFlag(
             "ENABLE_TASKBAR_POPUP_MENU", true, "Enables long pressing taskbar icons to show the"
                     + " popup menu.");
