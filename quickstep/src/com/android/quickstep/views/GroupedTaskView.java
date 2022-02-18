@@ -5,14 +5,17 @@ import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITIO
 import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITION_TOP_OR_LEFT;
 
 import android.content.Context;
+import android.graphics.PointF;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
+import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.util.RunnableList;
 import com.android.launcher3.util.SplitConfigurationOptions.StagedSplitBounds;
 import com.android.launcher3.util.TransformingTouchDelegate;
@@ -51,7 +54,6 @@ public class GroupedTaskView extends TaskView {
     private TransformingTouchDelegate mIcon2TouchDelegate;
     @Nullable private StagedSplitBounds mSplitBoundsConfig;
     private final DigitalWellBeingToast mDigitalWellBeingToast2;
-
 
     public GroupedTaskView(Context context) {
         this(context, null);
@@ -202,6 +204,20 @@ public class GroupedTaskView extends TaskView {
     @Override
     public TaskThumbnailView[] getThumbnails() {
         return new TaskThumbnailView[]{mSnapshotView, mSnapshotView2};
+    }
+
+    @Override
+    protected int getChildTaskIndexAtPosition(PointF position) {
+        if (isCoordInView(mIconView2, position) || isCoordInView(mSnapshotView2, position)) {
+            return 1;
+        }
+        return super.getChildTaskIndexAtPosition(position);
+    }
+
+    private boolean isCoordInView(View v, PointF position) {
+        float[] localPos = new float[]{position.x, position.y};
+        Utilities.mapCoordInSelfToDescendant(v, this, localPos);
+        return Utilities.pointInView(v, localPos[0], localPos[1], 0f /* slop */);
     }
 
     @Override
