@@ -22,6 +22,7 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.provider.Settings;
 import android.util.SparseIntArray;
 import android.view.View;
 import android.widget.RemoteViews;
@@ -30,6 +31,9 @@ import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.widget.LocalColorExtractor;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import dev.kdrag0n.colorkt.Color;
 import dev.kdrag0n.colorkt.cam.Zcam;
@@ -46,6 +50,8 @@ import java.util.Map;
 
 public class ThemedLocalColorExtractor extends LocalColorExtractor implements
         WallpaperManager.LocalWallpaperColorConsumer {
+    private static final String KEY_COLOR_SOURCE = "android.theme.customization.color_source";
+
     // Shade number -> color resource ID maps
     private static final SparseIntArray ACCENT1_RES = new SparseIntArray(13);
     private static final SparseIntArray ACCENT2_RES = new SparseIntArray(13);
@@ -66,6 +72,8 @@ public class ThemedLocalColorExtractor extends LocalColorExtractor implements
 
     private final WallpaperManager wallpaperManager;
     private Listener listener;
+
+    private boolean applyOverlay = true;
 
     // For calculating and returning bounds
     private final float[] tempFloatArray = new float[4];
@@ -146,6 +154,16 @@ public class ThemedLocalColorExtractor extends LocalColorExtractor implements
 
     public ThemedLocalColorExtractor(Context context) {
         wallpaperManager = (WallpaperManager) context.getSystemService(Context.WALLPAPER_SERVICE);
+
+        try {
+            String json = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.THEME_CUSTOMIZATION_OVERLAY_PACKAGES);
+            if (json != null && !json.isEmpty()) {
+                JSONObject packages = new JSONObject(json);
+                applyOverlay = !"preset".equals(packages.getString(KEY_COLOR_SOURCE));
+            }
+        } catch (JSONException e) {
+            // Ignore: enabled by default
+        }
     }
 
     private static void addColorsToArray(Map<Integer, Color> swatch,
@@ -177,6 +195,10 @@ public class ThemedLocalColorExtractor extends LocalColorExtractor implements
 
     @Override
     public SparseIntArray generateColorsOverride(WallpaperColors colors) {
+        if (!applyOverlay) {
+            return null;
+        }
+
         SparseIntArray colorRes = new SparseIntArray(5 * 13);
         Color color = new Srgb(colors.getPrimaryColor().toArgb());
         ColorScheme colorScheme = new DynamicColorScheme(targets, color, 1.0, cond, true);
@@ -192,6 +214,10 @@ public class ThemedLocalColorExtractor extends LocalColorExtractor implements
 
     @Override
     public void applyColorsOverride(Context base, WallpaperColors colors) {
+        if (!applyOverlay) {
+            return;
+        }
+
         RemoteViews.ColorResources res =
                 RemoteViews.ColorResources.create(base, generateColorsOverride(colors));
         if (res != null) {
