@@ -469,13 +469,19 @@ public class TaskbarDragController extends DragController<TaskbarActivityContext
             }
         });
         mReturnAnimator.addListener(new AnimatorListenerAdapter() {
+            private boolean mCanceled = false;
+
             @Override
             public void onAnimationCancel(Animator animation) {
                 cleanUpSurface();
+                mCanceled = true;
             }
 
             @Override
             public void onAnimationEnd(Animator animation) {
+                if (mCanceled) {
+                    return;
+                }
                 cleanUpSurface();
             }
 
