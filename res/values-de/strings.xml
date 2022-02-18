@@ -103,7 +103,7 @@
     <string name="folder_name_format_overflow" msgid="4270108890534995199">"Ordner: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> oder mehr Elemente"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"Hintergründe"</string>
     <string name="styles_wallpaper_button_text" msgid="8216961355289236794">"Hintergrund &amp; Stil"</string>
-    <string name="settings_button_text" msgid="8873672322605444408">"Startbildschirm-Einstellungen"</string>
+    <string name="settings_button_text" msgid="8873672322605444408">"Einstellungen"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"Von deinem Administrator deaktiviert"</string>
     <string name="allow_rotation_title" msgid="7728578836261442095">"Drehen des Startbildschirms zulassen"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"Beim Drehen des Smartphones"</string>
