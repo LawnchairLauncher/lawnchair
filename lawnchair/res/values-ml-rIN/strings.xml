@@ -178,14 +178,14 @@
     <string name="dark_status_bar_label">ഇരുണ്ട സ്റ്റാറ്റസ് ബാർ</string>
     <string name="lawnicons_not_installed_description">ലോൺഐകൺസ് ഇൻസ്റ്റാൾ ചെയ്തിട്ടില്ല.</string>
     <string name="icon_picker_default_category">ഐക്കണുകൾ</string>
-    <string name="icon_picker_reset_to_default">Reset to Default</string>
+    <string name="icon_picker_reset_to_default">പഴയ പോലെ ആക്കുവാൻ റീസെറ്റ് ചെയ്യുക</string>
     <string name="icon_pack_external_picker">Open External Picker</string>
-    <string name="recents_actions_label">Quick Actions</string>
-    <string name="recents_clear_all">Clear All</string>
+    <string name="recents_actions_label">ക്വിക്ക് ഏക്ഷനുകൾ</string>
+    <string name="recents_clear_all">എല്ലാം മായ്ക്കുക</string>
     <string name="pick_icon_from_label">Pick Icon From</string>
-    <string name="experimental_features_label">Experimental Features</string>
+    <string name="experimental_features_label">പരീക്ഷണാത്മക സവിശേഷതകൾ</string>
     <string name="icon_picker_label">Per-App Icon Customization</string>
-    <string name="icon_picker_description">May cause Lawnchair to freeze.</string>
-    <string name="font_picker_label">Font Customization</string>
-    <string name="font_picker_description">Some text remains unchanged.</string>
+    <string name="icon_picker_description">Lawnchair മരവിപ്പിക്കാൻ കാരണമായേക്കാം.</string>
+    <string name="font_picker_label">ഫോണ്ട് കസ്റ്റമൈസേഷൻ</string>
+    <string name="font_picker_description">ചില വാചകങ്ങൾ മാറ്റമില്ലാതെ തുടരും.</string>
 </resources>
