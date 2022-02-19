@@ -67,7 +67,8 @@ android_library {
         "androidx.test.uiautomator_uiautomator",
         "mockito-target-inline-minus-junit4",
         "launcher_log_protos_lite",
-        "truth-prebuilt"
+        "truth-prebuilt",
+        "platform-test-rules",
     ],
     manifest: "AndroidManifest-common.xml",
     platform_apis: true,
