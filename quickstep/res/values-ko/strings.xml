@@ -102,10 +102,8 @@
     <string name="taskbar_button_back" msgid="8558862226461164514">"뒤로"</string>
     <string name="taskbar_button_ime_switcher" msgid="1730244360907588541">"IME 전환기"</string>
     <string name="taskbar_button_recents" msgid="7273376136216613134">"최근 항목"</string>
-    <!-- no translation found for taskbar_button_notifications (7471740351507357318) -->
-    <skip />
-    <!-- no translation found for taskbar_button_quick_settings (227662894293189391) -->
-    <skip />
+    <string name="taskbar_button_notifications" msgid="7471740351507357318">"알림"</string>
+    <string name="taskbar_button_quick_settings" msgid="227662894293189391">"빠른 설정"</string>
     <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"상단/왼쪽으로 이동"</string>
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"하단/오른쪽으로 이동"</string>
 </resources>

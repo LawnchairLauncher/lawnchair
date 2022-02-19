@@ -102,10 +102,8 @@
     <string name="taskbar_button_back" msgid="8558862226461164514">"Enrere"</string>
     <string name="taskbar_button_ime_switcher" msgid="1730244360907588541">"Selector d\'IME"</string>
     <string name="taskbar_button_recents" msgid="7273376136216613134">"Recents"</string>
-    <!-- no translation found for taskbar_button_notifications (7471740351507357318) -->
-    <skip />
-    <!-- no translation found for taskbar_button_quick_settings (227662894293189391) -->
-    <skip />
+    <string name="taskbar_button_notifications" msgid="7471740351507357318">"Notificacions"</string>
+    <string name="taskbar_button_quick_settings" msgid="227662894293189391">"Config. ràpida"</string>
     <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"Mou a la part superior o a l\'esquerra"</string>
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"Mou a la part inferior o a la dreta"</string>
 </resources>

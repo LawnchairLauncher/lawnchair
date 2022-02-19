@@ -35,7 +35,6 @@ import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.notification.NotificationListener;
 import com.android.launcher3.util.ShortcutUtil;
 import com.android.quickstep.SystemUiProxy;
-import com.android.systemui.shared.system.LauncherAppsCompat;
 
 import java.util.List;
 
@@ -94,8 +93,7 @@ public class TaskbarShortcutMenuAccessibilityDelegate
                         info.user);
             } else {
                 SystemUiProxy.INSTANCE.get(mContext).startIntent(
-                        LauncherAppsCompat.getMainActivityLaunchIntent(
-                                mLauncherApps,
+                        mLauncherApps.getMainActivityLaunchIntent(
                                 item.getIntent().getComponent(),
                                 /* startActivityOptions= */null,
                                 item.user),
