@@ -75,7 +75,6 @@ class PreferenceManager private constructor(private val context: Context) : Base
     val windowCornerRadius = IntPref("pref_windowCornerRadius", 80, recreate)
     val autoLaunchRoot = BoolPref("pref_autoLaunchRoot", false)
     val wallpaperScrolling = BoolPref("pref_wallpaperScrolling", true)
-    val showSysUiScrim = BoolPref("pref_showSysUiScrim", true)
     val allAppsIconLabels = BoolPref("pref_allAppsIconLabels", true, reloadGrid)
     val searchAutoShowKeyboard = BoolPref("pref_searchAutoShowKeyboard", false)
     val enableDebugMenu = BoolPref("pref_enableDebugMenu", false)

@@ -86,6 +86,11 @@ class PreferenceManager2(private val context: Context) : PreferenceManager {
         defaultValue = true,
     )
 
+    val showTopShadow = preference(
+        key = booleanPreferencesKey(name = "show_top_shadow"),
+        defaultValue = true,
+    )
+
     companion object {
         private val Context.preferencesDataStore by preferencesDataStore(
             name = "preferences",

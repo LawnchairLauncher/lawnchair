@@ -12,6 +12,8 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ *
+ * Modifications copyright 2022, Lawnchair
  */
 
 package com.android.launcher3.graphics;
@@ -49,8 +51,10 @@ import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.util.DynamicResource;
 import com.android.launcher3.util.Themes;
 import com.android.systemui.plugins.ResourceProvider;
+import com.patrykmichalik.preferencemanager.PreferenceExtensionsKt;
 
-import app.lawnchair.preferences.PreferenceManager;
+import app.lawnchair.preferences2.PreferenceManager2;
+import app.lawnchair.util.ViewExtensionsKt;
 
 /**
  * View scrim which draws behind hotseat and workspace
@@ -145,11 +149,16 @@ public class SysUiScrim implements View.OnAttachStateChangeListener {
 
         view.addOnAttachStateChangeListener(this);
 
-        PreferenceManager prefs = PreferenceManager.getInstance(mRoot.getContext());
-        prefs.getShowSysUiScrim().subscribeValues(mRoot, (show) -> {
-            mHideSysUiScrim = !show;
-            mRoot.invalidate();
-        });
+        PreferenceManager2 preferenceManager2 = PreferenceManager2.getInstance(mRoot.getContext());
+        PreferenceExtensionsKt.onEach(
+            preferenceManager2.getShowTopShadow(),
+            ViewExtensionsKt.getViewAttachedScope(mRoot),
+            (showTopShadow) -> {
+                mHideSysUiScrim = !showTopShadow;
+                mRoot.invalidate();
+                return null;
+            }
+        );
     }
 
     /**
