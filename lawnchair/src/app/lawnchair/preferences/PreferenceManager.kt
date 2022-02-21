@@ -21,6 +21,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import app.lawnchair.LawnchairLauncher
 import app.lawnchair.font.FontCache
+import app.lawnchair.qsb.QsbSearchProvider
 import app.lawnchair.theme.color.ColorOption
 import app.lawnchair.util.isOnePlusStock
 import com.android.launcher3.InvariantDeviceProfile
