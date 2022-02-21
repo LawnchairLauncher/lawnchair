@@ -40,6 +40,7 @@ fun NavGraphBuilder.dockGraph(route: String) {
 interface DockPreferenceCollectorScope : PreferenceCollectorScope {
     val hotseatQsb: Boolean
     val themedHotseatQsb: Boolean
+    val hotseatQsbUseWebsite: Boolean
     val hotseatQsbProvider: QsbSearchProvider
 }
 
@@ -48,17 +49,20 @@ fun DockPreferenceCollector(content: @Composable DockPreferenceCollectorScope.()
     val preferenceManager = preferenceManager2()
     val hotseatQsb by preferenceManager.hotseatQsb.state()
     val themedHotseatQsb by preferenceManager.themedHotseatQsb.state()
+    val hotseatQsbUseWebsite by preferenceManager.hotseatQsbUseWebsite.state()
     val hotseatQsbProvider by preferenceManager.hotseatQsbProvider.state()
 
     ifNotNull(
         hotseatQsb,
         themedHotseatQsb,
+        hotseatQsbUseWebsite,
         hotseatQsbProvider,
     ) { preferences ->
         object : DockPreferenceCollectorScope {
             override val hotseatQsb = preferences[0] as Boolean
             override val themedHotseatQsb = preferences[1] as Boolean
-            override val hotseatQsbProvider = preferences[2] as QsbSearchProvider
+            override val hotseatQsbUseWebsite = preferences[2] as Boolean
+            override val hotseatQsbProvider = preferences[3] as QsbSearchProvider
             override val coroutineScope = rememberCoroutineScope()
             override val preferenceManager = preferenceManager
         }.content()
@@ -97,6 +101,11 @@ fun DockPreferences() {
                             step = 0.1F,
                             valueRange = 0F..1F,
                             showAsPercentage = true,
+                        )
+                        SwitchPreference2(
+                            checked = hotseatQsbUseWebsite,
+                            label = "Use website",
+                            edit = { hotseatQsbUseWebsite.set(value = it) },
                         )
                         QsbProviderPreference(
                             value = hotseatQsbProvider,

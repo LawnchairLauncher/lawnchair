@@ -67,6 +67,12 @@ class PreferenceManager2(private val context: Context) : PreferenceManager {
         onSet = reloadHelper::recreate
     )
 
+    val hotseatQsbUseWebsite = preference(
+        key = booleanPreferencesKey(name = "dock_search_bar_use_website"),
+        defaultValue = false,
+        onSet = reloadHelper::recreate
+    )
+
     val accentColor = preference(
         key = stringPreferencesKey(name = "accent_color"),
         parse = ColorOption::fromString,

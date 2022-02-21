@@ -1,6 +1,7 @@
 package app.lawnchair.qsb
 
 import android.content.Intent
+import android.net.Uri
 import androidx.annotation.DrawableRes
 import com.android.launcher3.R
 
@@ -12,7 +13,8 @@ sealed class QsbSearchProvider(
     val themingMethod: ThemingMethod = ThemingMethod.TINT,
     open val packageName: String,
     open val action: String? = null,
-    open val supportVoiceIntent: Boolean = false
+    open val supportVoiceIntent: Boolean = false,
+    open val website: String
 ) {
 
     fun createSearchIntent() = Intent(action)
@@ -25,17 +27,26 @@ sealed class QsbSearchProvider(
         error("supportVoiceIntent is false but createVoiceIntent() was called for $name")
     }
 
+    fun createWebsiteIntent() = Intent(Intent.ACTION_VIEW, Uri.parse(website))
+        .addFlags(INTENT_FLAGS)
+
     open fun handleCreateVoiceIntent(): Intent =
         Intent(Intent.ACTION_VOICE_COMMAND)
             .addFlags(INTENT_FLAGS)
             .setPackage(packageName)
 
-    object None : QsbSearchProvider(id = "", name = "", packageName = "")
+    object None : QsbSearchProvider(id = "", name = "", packageName = "", website = "")
 
     data class UnknownProvider(
         override val packageName: String,
         override val action: String? = null
-    ) : QsbSearchProvider(id = "", name = "", packageName = packageName, action = action)
+    ) : QsbSearchProvider(
+        id = "",
+        name = "",
+        packageName = packageName,
+        action = action,
+        website = ""
+    )
 
     object Google : QsbSearchProvider(
         id = "google",
@@ -44,7 +55,8 @@ sealed class QsbSearchProvider(
         themingMethod = ThemingMethod.THEME_BY_NAME,
         packageName = "com.google.android.googlequicksearchbox",
         action = "android.search.action.GLOBAL_SEARCH",
-        supportVoiceIntent = true
+        supportVoiceIntent = true,
+        website = "https://www.google.com/"
     )
 
     object GoogleGo : QsbSearchProvider(
@@ -54,7 +66,8 @@ sealed class QsbSearchProvider(
         themingMethod = ThemingMethod.THEME_BY_NAME,
         packageName = "com.google.android.apps.searchlite",
         action = "android.search.action.GLOBAL_SEARCH",
-        supportVoiceIntent = true
+        supportVoiceIntent = true,
+        website = "https://www.google.com/"
     ) {
 
         override fun handleCreateVoiceIntent(): Intent =
@@ -68,7 +81,8 @@ sealed class QsbSearchProvider(
         themedIcon = R.drawable.ic_duckduckgo_tinted,
         themingMethod = ThemingMethod.TINT,
         packageName = "com.duckduckgo.mobile.android",
-        action = "com.duckduckgo.mobile.android.NEW_SEARCH"
+        action = "com.duckduckgo.mobile.android.NEW_SEARCH",
+        website = "https://duckduckgo.com/"
     )
 
     companion object {

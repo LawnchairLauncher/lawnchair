@@ -56,7 +56,8 @@ class QsbLayout(context: Context, attrs: AttributeSet?) : FrameLayout(context, a
         preferenceManager2 = PreferenceManager2.getInstance(context)
 
         val searchProvider = getSearchProvider(context, preferenceManager2)
-        setUpMainSearch(searchProvider)
+        val useWebsite = preferenceManager2.hotseatQsbUseWebsite.firstBlocking()
+        setUpMainSearch(searchProvider, useWebsite)
         setUpBackground()
         clipIconRipples()
 
@@ -121,7 +122,27 @@ class QsbLayout(context: Context, attrs: AttributeSet?) : FrameLayout(context, a
         }
     }
 
-    private fun setUpMainSearch(searchProvider: QsbSearchProvider) {
+    private fun setUpMainSearch(searchProvider: QsbSearchProvider, useWebsite: Boolean) {
+        if (useWebsite) {
+            val intent = searchProvider.createWebsiteIntent()
+            setOnClickListener {
+                if (context.packageManager.resolveActivity(intent, 0) != null) {
+                    context.startActivity(intent)
+                } else {
+                    val launcher = context.launcher
+                    launcher.stateManager.goToState(
+                        LauncherState.ALL_APPS,
+                        true,
+                        forSuccessCallback {
+                            launcher.appsView.searchUiManager.editText?.showKeyboard()
+                        }
+                    )
+                }
+            }
+            return
+        }
+
+
         subscribeSearchWidget(searchProvider.packageName)
         setOnClickListener {
             val pendingIntent = searchPendingIntent
