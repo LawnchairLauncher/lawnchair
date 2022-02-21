@@ -5,7 +5,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.widget.ImageButton
 import androidx.core.view.isVisible
-import app.lawnchair.preferences.PreferenceManager
+import app.lawnchair.preferences2.PreferenceManager2
 import com.android.launcher3.R
 import com.android.launcher3.util.Themes
 
@@ -13,7 +13,7 @@ import com.android.launcher3.util.Themes
 class AssistantIconView(context: Context, attrs: AttributeSet?) : ImageButton(context, attrs) {
 
     init {
-        val provider = QsbLayout.getSearchProvider(context, PreferenceManager.getInstance(context))
+        val provider = QsbLayout.getSearchProvider(context, PreferenceManager2.getInstance(context))
 
         val intent = if (provider.supportVoiceIntent) provider.createVoiceIntent() else null
         if (intent == null || context.packageManager.resolveActivity(intent, 0) == null) {

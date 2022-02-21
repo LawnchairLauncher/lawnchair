@@ -30,6 +30,7 @@ import com.android.launcher3.anim.AnimatorListeners.forSuccessCallback
 import com.android.launcher3.qsb.QsbContainerView
 import com.android.launcher3.util.Themes
 import com.android.launcher3.views.ActivityContext
+import com.patrykmichalik.preferencemanager.firstBlocking
 import com.patrykmichalik.preferencemanager.onEach
 import kotlinx.coroutines.launch
 
@@ -54,7 +55,7 @@ class QsbLayout(context: Context, attrs: AttributeSet?) : FrameLayout(context, a
         preferenceManager = PreferenceManager.getInstance(context)
         preferenceManager2 = PreferenceManager2.getInstance(context)
 
-        val searchProvider = getSearchProvider(context, preferenceManager)
+        val searchProvider = getSearchProvider(context, preferenceManager2)
         setUpMainSearch(searchProvider)
         setUpBackground()
         clipIconRipples()
@@ -187,9 +188,9 @@ class QsbLayout(context: Context, attrs: AttributeSet?) : FrameLayout(context, a
 
         fun getSearchProvider(
             context: Context,
-            preferenceManager: PreferenceManager
+            preferenceManager: PreferenceManager2
         ): QsbSearchProvider {
-            val provider = QsbSearchProvider.fromId(preferenceManager.hotseatQsbProvider.get())
+            val provider = preferenceManager.hotseatQsbProvider.firstBlocking()
 
             return if (resolveSearchIntent(context, provider)) provider else {
                 val searchPackage = QsbContainerView.getSearchWidgetPackageName(context)

@@ -25,6 +25,7 @@ import androidx.datastore.preferences.core.stringSetPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import app.lawnchair.icons.shape.IconShape
 import app.lawnchair.icons.shape.IconShapeManager
+import app.lawnchair.qsb.QsbSearchProvider
 import app.lawnchair.theme.color.ColorOption
 import com.android.launcher3.Utilities
 import com.android.launcher3.util.MainThreadInitializedObject
@@ -56,6 +57,14 @@ class PreferenceManager2(private val context: Context) : PreferenceManager {
     val themedHotseatQsb = preference(
         key = booleanPreferencesKey(name = "themed_hotseat_qsb"),
         defaultValue = false,
+    )
+
+    val hotseatQsbProvider = preference(
+        key = stringPreferencesKey("dock_search_bar_provider"),
+        defaultValue = QsbSearchProvider.Google,
+        parse = { QsbSearchProvider.fromId(it) },
+        save = { it.id },
+        onSet = reloadHelper::recreate
     )
 
     val accentColor = preference(
