@@ -21,7 +21,9 @@ import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import app.lawnchair.launcher
 import app.lawnchair.preferences.PreferenceManager
+import app.lawnchair.preferences2.PreferenceManager2
 import app.lawnchair.search.LawnchairSearchAlgorithm
+import app.lawnchair.util.viewAttachedScope
 import com.android.launcher3.Insettable
 import com.android.launcher3.LauncherState
 import com.android.launcher3.R
@@ -29,6 +31,7 @@ import com.android.launcher3.allapps.*
 import com.android.launcher3.allapps.search.AllAppsSearchBarController
 import com.android.launcher3.search.SearchCallback
 import com.android.launcher3.util.Themes
+import com.patrykmichalik.preferencemanager.onEach
 import java.util.*
 import kotlin.math.max
 
@@ -94,8 +97,10 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) : LinearLayout(
             }
         )
 
-        val prefs = PreferenceManager.getInstance(context)
-        isVisible = !prefs.hideAppSearchBar.get()
+        val preferenceManager2 = PreferenceManager2.getInstance(context)
+        preferenceManager2.hideAppDrawerSearchBar.onEach(launchIn = viewAttachedScope) { hideAppDrawerSearchBar ->
+            isVisible = !hideAppDrawerSearchBar
+        }
     }
 
     override fun setFocusedResultTitle(title: CharSequence?) {

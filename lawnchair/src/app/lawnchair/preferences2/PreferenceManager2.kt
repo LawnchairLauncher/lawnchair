@@ -91,6 +91,11 @@ class PreferenceManager2(private val context: Context) : PreferenceManager {
         defaultValue = true,
     )
 
+    val hideAppDrawerSearchBar = preference(
+        key = booleanPreferencesKey(name = "hide_app_drawer_search_bar"),
+        defaultValue = false,
+    )
+
     companion object {
         private val Context.preferencesDataStore by preferencesDataStore(
             name = "preferences",

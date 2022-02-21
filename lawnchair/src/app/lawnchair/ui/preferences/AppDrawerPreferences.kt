@@ -24,7 +24,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavGraphBuilder
 import app.lawnchair.preferences.getAdapter
-import app.lawnchair.preferences.not
 import app.lawnchair.preferences.preferenceManager
 import app.lawnchair.preferences2.PreferenceCollectorScope
 import app.lawnchair.preferences2.preferenceManager2
@@ -47,15 +46,18 @@ fun NavGraphBuilder.appDrawerGraph(route: String) {
 
 interface AppDrawerPreferenceCollectorScope : PreferenceCollectorScope {
     val hiddenApps: Set<String>
+    val hideAppDrawerSearchBar: Boolean
 }
 
 @Composable
 fun AppDrawerPreferenceCollector(content: @Composable AppDrawerPreferenceCollectorScope.() -> Unit) {
     val preferenceManager = preferenceManager2()
     val hiddenApps by preferenceManager.hiddenApps.state()
-    ifNotNull(hiddenApps) {
+    val hideAppDrawerSearchBar by preferenceManager.hideAppDrawerSearchBar.state()
+    ifNotNull(hiddenApps, hideAppDrawerSearchBar) {
         object : AppDrawerPreferenceCollectorScope {
             override val hiddenApps = it[0] as Set<String>
+            override val hideAppDrawerSearchBar = it[1] as Boolean
             override val coroutineScope = rememberCoroutineScope()
             override val preferenceManager = preferenceManager
         }.content()
@@ -85,14 +87,14 @@ fun AppDrawerPreferences() {
                 SuggestionsPreference()
             }
             val deviceSearchEnabled = LawnchairSearchAlgorithm.isDeviceSearchEnabled(LocalContext.current)
-            val showSearchBar = !prefs.hideAppSearchBar.getAdapter()
             PreferenceGroup(heading = stringResource(id = R.string.pref_category_search)) {
-                SwitchPreference(
+                SwitchPreference2(
                     label = stringResource(id = R.string.show_app_search_bar),
-                    adapter = showSearchBar
+                    checked = !hideAppDrawerSearchBar,
+                    edit = { hideAppDrawerSearchBar.set(value = !it) },
                 )
                 AnimatedVisibility(
-                    visible = showSearchBar.state.value,
+                    visible = !hideAppDrawerSearchBar,
                     enter = expandVertically() + fadeIn(),
                     exit = shrinkVertically() + fadeOut()
                 ) {
@@ -113,7 +115,7 @@ fun AppDrawerPreferences() {
             }
             if (deviceSearchEnabled) {
                 AnimatedVisibility(
-                    visible = showSearchBar.state.value,
+                    visible = !hideAppDrawerSearchBar,
                     enter = expandVertically() + fadeIn(),
                     exit = shrinkVertically() + fadeOut()
                 ) {
