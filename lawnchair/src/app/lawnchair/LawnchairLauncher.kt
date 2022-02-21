@@ -1,5 +1,5 @@
 /*
- * Copyright 2021, Lawnchair
+ * Copyright 2022, Lawnchair
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,8 +41,10 @@ import androidx.savedstate.SavedStateRegistryController
 import androidx.savedstate.SavedStateRegistryOwner
 import androidx.savedstate.ViewTreeSavedStateRegistryOwner
 import app.lawnchair.gestures.GestureController
+import app.lawnchair.icons.CustomAdaptiveIconDrawable
 import app.lawnchair.nexuslauncher.OverlayCallbackImpl
 import app.lawnchair.preferences.PreferenceManager
+import app.lawnchair.preferences2.PreferenceManager2
 import app.lawnchair.root.RootHelperManager
 import app.lawnchair.root.RootNotAvailableException
 import app.lawnchair.search.LawnchairSearchAdapterProvider
@@ -54,6 +56,7 @@ import app.lawnchair.util.isPackageInstalled
 import com.android.launcher3.*
 import com.android.launcher3.allapps.AllAppsContainerView
 import com.android.launcher3.allapps.search.SearchAdapterProvider
+import com.android.launcher3.graphics.IconShape
 import com.android.launcher3.popup.SystemShortcut
 import com.android.launcher3.statemanager.StateManager
 import com.android.launcher3.uioverrides.QuickstepLauncher
@@ -63,7 +66,11 @@ import com.android.launcher3.util.Themes
 import com.android.launcher3.widget.RoundedCornerEnforcement
 import com.android.systemui.plugins.shared.LauncherOverlayManager
 import com.android.systemui.shared.system.QuickStepContract
+import com.patrykmichalik.preferencemanager.onEach
 import dev.kdrag0n.monet.theme.ColorScheme
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import java.util.stream.Stream
 import kotlin.math.roundToInt
@@ -148,10 +155,26 @@ class LawnchairLauncher : QuickstepLauncher(), LifecycleOwner,
     val gestureController by lazy { GestureController(this) }
     private val defaultOverlay by lazy { OverlayCallbackImpl(this) }
     private val prefs by lazy { PreferenceManager.getInstance(this) }
+    private val preferenceManager2 by lazy { PreferenceManager2.getInstance(this) }
+    private val invariantDeviceProfile by lazy { InvariantDeviceProfile.INSTANCE.get(this) }
+    private val insetsController by lazy { WindowInsetsControllerCompat(launcher.window, rootView) }
     var allAppsScrimColor = 0
 
     private val themeProvider by lazy { ThemeProvider.INSTANCE.get(this) }
     private lateinit var colorScheme: ColorScheme
+
+    private val noStatusBarStateListener = object : StateManager.StateListener<LauncherState> {
+        override fun onStateTransitionStart(toState: LauncherState) {
+            if (toState is OverviewState) {
+                insetsController.show(WindowInsetsCompat.Type.statusBars())
+            }
+        }
+        override fun onStateTransitionComplete(finalState: LauncherState) {
+            if (finalState !is OverviewState) {
+                insetsController.hide(WindowInsetsCompat.Type.statusBars())
+            }
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         layoutInflater.factory2 = LawnchairLayoutFactory(this)
@@ -175,35 +198,38 @@ class LawnchairLauncher : QuickstepLauncher(), LifecycleOwner,
                 }
             }
         }
-        if (!prefs.showStatusBar.get()) {
-            val insetsController = WindowInsetsControllerCompat(launcher.window, rootView)
-            insetsController.hide(WindowInsetsCompat.Type.statusBars())
-            launcher.stateManager.addStateListener(object : StateManager.StateListener<LauncherState> {
-                override fun onStateTransitionStart(toState: LauncherState) {
-                    if (toState is OverviewState) {
-                        insetsController.show(WindowInsetsCompat.Type.statusBars())
-                    }
-                }
 
-                override fun onStateTransitionComplete(finalState: LauncherState) {
-                    if (finalState !is OverviewState) {
-                        insetsController.hide(WindowInsetsCompat.Type.statusBars())
-                    }
-                }
-            })
-        }
+        preferenceManager2.showStatusBar.get().distinctUntilChanged().onEach {
+            with (insetsController) {
+                if (it) show(WindowInsetsCompat.Type.statusBars())
+                else hide(WindowInsetsCompat.Type.statusBars())
+            }
+            with (launcher.stateManager) {
+                if (it) removeStateListener(noStatusBarStateListener)
+                else addStateListener(noStatusBarStateListener)
+            }
+        }.launchIn(scope = lifecycleScope)
+
         prefs.overrideWindowCornerRadius.subscribeValues(this) {
             QuickStepContract.sHasCustomCornerRadius = it
         }
         prefs.windowCornerRadius.subscribeValues(this) {
             QuickStepContract.sCustomCornerRadius = it.toFloat()
         }
-        prefs.roundedWidgets.subscribeValues(this) {
+        preferenceManager2.roundedWidgets.onEach(launchIn = lifecycleScope) {
             RoundedCornerEnforcement.sRoundedCornerEnabled = it
         }
         val isWorkspaceDarkText = Themes.getAttrBoolean(this, R.attr.isWorkspaceDarkText)
-        prefs.darkStatusBar.subscribeValues(this) { darkStatusBar ->
+        preferenceManager2.darkStatusBar.onEach(launchIn = lifecycleScope) { darkStatusBar ->
             systemUiController.updateUiState(UI_STATE_BASE_WINDOW, isWorkspaceDarkText || darkStatusBar)
+        }
+
+        preferenceManager2.iconShape.onEach(launchIn = lifecycleScope) { iconShape ->
+            CustomAdaptiveIconDrawable.sInitialized = true
+            CustomAdaptiveIconDrawable.sMaskId = iconShape.getHashString()
+            CustomAdaptiveIconDrawable.sMask = iconShape.getMaskPath()
+            IconShape.init(this)
+            invariantDeviceProfile.onPreferencesChanged(this)
         }
 
         // Handle update from version 12 Alpha 4 to version 12 Alpha 5.

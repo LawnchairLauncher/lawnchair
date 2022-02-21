@@ -49,17 +49,32 @@ fun ProvideBottomSheetHandler(
     content: @Composable () -> Unit
 ) {
     val coroutineScope = rememberCoroutineScope()
-    val bottomSheetState = remember { ModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden) }
+    var onDismiss by remember { mutableStateOf({}) }
+    val bottomSheetState = remember {
+        ModalBottomSheetState(
+            initialValue = ModalBottomSheetValue.Hidden,
+            confirmStateChange = {
+                if (it == ModalBottomSheetValue.Hidden) onDismiss()
+                true
+            },
+        )
+    }
     var bottomSheetContent by remember { mutableStateOf(emptyBottomSheetContent) }
     val bottomSheetHandler = remember {
         BottomSheetHandler(
             show = { sheetContent ->
                 bottomSheetContent = BottomSheetContent(content = sheetContent)
-                coroutineScope.launch { bottomSheetState.show() }
+                if (bottomSheetState.isVisible.not()) coroutineScope.launch { bottomSheetState.show() }
             },
             hide = {
-                coroutineScope.launch { bottomSheetState.hide() }
-            }
+                onDismiss()
+                coroutineScope.launch {
+                    bottomSheetState.hide()
+                }
+            },
+            onDismiss = {
+                onDismiss = it
+            },
         )
     }
 
@@ -87,9 +102,10 @@ fun ProvideBottomSheetHandler(
     }
 }
 
-data class BottomSheetHandler(
+class BottomSheetHandler(
     val show: (@Composable () -> Unit) -> Unit = {},
-    val hide: () -> Unit = {}
+    val hide: () -> Unit = {},
+    val onDismiss: (() -> Unit) -> Unit = {},
 )
 
 @Composable

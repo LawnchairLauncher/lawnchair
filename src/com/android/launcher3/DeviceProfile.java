@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Modifications copyright 2021, Lawnchair
+ * Modifications copyright 2022, Lawnchair
  */
 
 package com.android.launcher3;
@@ -50,10 +50,12 @@ import com.android.launcher3.icons.IconNormalizer;
 import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.DisplayController.Info;
 import com.android.launcher3.util.WindowBounds;
+import com.patrykmichalik.preferencemanager.PreferenceExtensionsKt;
 
 import java.io.PrintWriter;
 
 import app.lawnchair.preferences.PreferenceManager;
+import app.lawnchair.preferences2.PreferenceManager2;
 
 @SuppressLint("NewApi")
 public class DeviceProfile {
@@ -335,13 +337,14 @@ public class DeviceProfile {
         workspaceCellPaddingXPx = res.getDimensionPixelSize(R.dimen.dynamic_grid_cell_padding_x);
 
         // Lawnchair prefs
-        PreferenceManager prefs = PreferenceManager.getInstance(mContext);
+        PreferenceManager2 preferenceManager2 = PreferenceManager2.getInstance(context);
 
         int hotseatTopPaddingRes;
         int hotseatBottomPaddingRes;
         int hotseatBottomNonTallPaddingRes;
         int hotseatExtraVerticalSizeRes;
-        if (prefs.getEnableHotseatQsb().get()) {
+        boolean hotseatQsb = PreferenceExtensionsKt.firstBlocking(preferenceManager2.getHotseatQsb());
+        if (hotseatQsb) {
             hotseatTopPaddingRes = R.dimen.dynamic_grid_hotseat_top_padding;
             hotseatBottomPaddingRes = R.dimen.dynamic_grid_hotseat_bottom_padding;
             hotseatBottomNonTallPaddingRes = R.dimen.dynamic_grid_hotseat_bottom_non_tall_padding;

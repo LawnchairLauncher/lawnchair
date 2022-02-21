@@ -23,11 +23,12 @@ import android.content.Context
 import android.graphics.Path
 import android.graphics.Region
 import android.graphics.drawable.AdaptiveIconDrawable
-import app.lawnchair.preferences.PreferenceManager
+import app.lawnchair.preferences2.PreferenceManager2
 import com.android.launcher3.Utilities
 import com.android.launcher3.icons.GraphicsUtils
 import com.android.launcher3.icons.IconProvider
 import com.android.launcher3.util.MainThreadInitializedObject
+import com.patrykmichalik.preferencemanager.firstBlocking
 
 class IconShapeManager(private val context: Context) {
 
@@ -90,8 +91,7 @@ class IconShapeManager(private val context: Context) {
         fun getSystemIconShape(context: Context) = INSTANCE.get(context).systemIconShape
 
         @JvmStatic
-        fun getWindowTransitionRadius(context: Context): Float {
-            return PreferenceManager.getInstance(context).iconShape.get().windowTransitionRadius
-        }
+        fun getWindowTransitionRadius(context: Context) =
+            PreferenceManager2.getInstance(context).iconShape.firstBlocking().windowTransitionRadius
     }
 }
