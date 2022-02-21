@@ -18,6 +18,8 @@ package com.android.launcher3.util;
 
 import android.util.ArrayMap;
 import android.util.FloatProperty;
+import android.util.Log;
+import android.view.View;
 
 import com.android.launcher3.Utilities;
 
@@ -33,8 +35,10 @@ import com.android.launcher3.Utilities;
  *
  * @param <T> Type where to apply the property.
  */
-public abstract class MultiScalePropertyFactory<T> {
+public class MultiScalePropertyFactory<T extends View> {
 
+    private static final boolean DEBUG = false;
+    private static final String TAG = "MultiScaleProperty";
     private final String mName;
     private final ArrayMap<Integer, MultiScaleProperty> mProperties =
             new ArrayMap<Integer, MultiScaleProperty>();
@@ -55,7 +59,6 @@ public abstract class MultiScalePropertyFactory<T> {
         return mProperties.computeIfAbsent(index,
                 (k) -> new MultiScaleProperty(index, mName + "_" + index));
     }
-
 
     /**
      * Each [setValue] will be aggregated with the other properties values created by the
@@ -91,11 +94,22 @@ public abstract class MultiScalePropertyFactory<T> {
             mLastAggregatedValue = Utilities.boundToRange(multValue, minValue, maxValue);
             mValue = newValue;
             apply(obj, mLastAggregatedValue);
+
+            if (DEBUG) {
+                Log.d(TAG, "name=" + mName
+                        + " newValue=" + newValue + " mInx=" + mInx
+                        + " aggregated=" + mLastAggregatedValue + " others= " + mProperties);
+            }
         }
 
         @Override
-        public Float get(T t) {
-            return mLastAggregatedValue;
+        public Float get(T view) {
+            // The scale of the view should match mLastAggregatedValue. Still, if it has been
+            // changed without using this property, it can differ. As this get method is usually
+            // used to set the starting point on an animation, this would result in some jumps
+            // when the view scale is different than the last aggregated value. To stay on the
+            // safe side, let's return the real view scale.
+            return view.getScaleX();
         }
 
         @Override
@@ -104,6 +118,8 @@ public abstract class MultiScalePropertyFactory<T> {
         }
     }
 
-    /** Applies value to object after setValue method is called. */
-    protected abstract void apply(T obj, float value);
+    protected void apply(View view, float value) {
+        view.setScaleX(value);
+        view.setScaleY(value);
+    }
 }
