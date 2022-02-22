@@ -10,6 +10,7 @@ import app.lawnchair.preferences2.PreferenceManager2
 import app.lawnchair.qsb.QsbLayout
 import app.lawnchair.qsb.providers.GoogleGo
 import app.lawnchair.qsb.providers.QsbSearchProvider
+import com.android.launcher3.R
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -30,7 +31,7 @@ fun PreferenceCollectorScope.QsbProviderPreference(
     ListPreference2(
         value = value,
         entries = entries,
-        label = "Search Provider",
+        label = stringResource(R.string.search_provider),
         onValueChange = { edit { this.edit(it) } },
     )
 }

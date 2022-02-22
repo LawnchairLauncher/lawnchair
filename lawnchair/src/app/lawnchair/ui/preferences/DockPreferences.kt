@@ -108,7 +108,7 @@ fun DockPreferences() {
                         )
                         SwitchPreference2(
                             checked = hotseatQsbUseWebsite,
-                            label = "Always Open Website",
+                            label = stringResource(R.string.always_open_website),
                             edit = { hotseatQsbForceWebsite.set(value = it) },
                         )
                     }
