@@ -23,12 +23,14 @@ import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.core.stringSetPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
+import app.lawnchair.font.FontCache
 import app.lawnchair.icons.shape.IconShape
 import app.lawnchair.icons.shape.IconShapeManager
 import app.lawnchair.theme.color.ColorOption
 import com.android.launcher3.Utilities
 import com.android.launcher3.util.MainThreadInitializedObject
 import com.patrykmichalik.preferencemanager.PreferenceManager
+import app.lawnchair.preferences.PreferenceManager as LawnchairPreferenceManager
 
 class PreferenceManager2(private val context: Context) : PreferenceManager {
 
@@ -43,7 +45,7 @@ class PreferenceManager2(private val context: Context) : PreferenceManager {
     val hotseatQsb = preference(
         key = booleanPreferencesKey(name = "dock_search_bar"),
         defaultValue = true,
-        onSet = reloadHelper::restart,
+        onSet = { reloadHelper.restart() },
     )
 
     val iconShape = preference(
@@ -62,7 +64,7 @@ class PreferenceManager2(private val context: Context) : PreferenceManager {
         key = stringPreferencesKey(name = "accent_color"),
         parse = ColorOption::fromString,
         save = ColorOption::toString,
-        onSet = reloadHelper::recreate,
+        onSet = { reloadHelper.recreate() },
         defaultValue = when {
             Utilities.ATLEAST_S -> ColorOption.SystemAccent
             Utilities.ATLEAST_O_MR1 -> ColorOption.WallpaperPrimary
@@ -78,7 +80,7 @@ class PreferenceManager2(private val context: Context) : PreferenceManager {
     val roundedWidgets = preference(
         key = booleanPreferencesKey(name = "rounded_widgets"),
         defaultValue = true,
-        onSet = reloadHelper::reloadGrid,
+        onSet = { reloadHelper.reloadGrid() },
     )
 
     val showStatusBar = preference(
@@ -94,6 +96,17 @@ class PreferenceManager2(private val context: Context) : PreferenceManager {
     val hideAppDrawerSearchBar = preference(
         key = booleanPreferencesKey(name = "hide_app_drawer_search_bar"),
         defaultValue = false,
+    )
+
+    val enableFontSelection = preference(
+        key = booleanPreferencesKey(name = "enable_font_selection"),
+        defaultValue = true,
+        onSet = { newValue ->
+            if (!newValue) {
+                val fontCache = FontCache.INSTANCE.get(context)
+                LawnchairPreferenceManager.getInstance(context).workspaceFont.set(newValue = fontCache.uiText)
+            }
+        },
     )
 
     companion object {
