@@ -67,8 +67,8 @@ class PreferenceManager2(private val context: Context) : PreferenceManager {
         onSet = reloadHelper::recreate
     )
 
-    val hotseatQsbUseWebsite = preference(
-        key = booleanPreferencesKey(name = "dock_search_bar_use_website"),
+    val hotseatQsbForceWebsite = preference(
+        key = booleanPreferencesKey(name = "dock_search_bar_force_website"),
         defaultValue = false,
         onSet = reloadHelper::recreate
     )

@@ -13,10 +13,7 @@ import android.widget.ImageView
 import androidx.core.view.ViewCompat
 import androidx.core.view.children
 import androidx.core.view.isVisible
-import androidx.lifecycle.lifecycleScope
-import app.lawnchair.HeadlessWidgetsManager
 import app.lawnchair.launcher
-import app.lawnchair.launcherNullable
 import app.lawnchair.preferences.PreferenceManager
 import app.lawnchair.preferences2.PreferenceManager2
 import app.lawnchair.util.pendingIntent
@@ -32,7 +29,6 @@ import com.android.launcher3.util.Themes
 import com.android.launcher3.views.ActivityContext
 import com.patrykmichalik.preferencemanager.firstBlocking
 import com.patrykmichalik.preferencemanager.onEach
-import kotlinx.coroutines.launch
 
 class QsbLayout(context: Context, attrs: AttributeSet?) : FrameLayout(context, attrs) {
 
@@ -56,8 +52,8 @@ class QsbLayout(context: Context, attrs: AttributeSet?) : FrameLayout(context, a
         preferenceManager2 = PreferenceManager2.getInstance(context)
 
         val searchProvider = getSearchProvider(context, preferenceManager2)
-        val useWebsite = preferenceManager2.hotseatQsbUseWebsite.firstBlocking()
-        setUpMainSearch(searchProvider, useWebsite)
+        val forceWebsite = preferenceManager2.hotseatQsbForceWebsite.firstBlocking()
+        setUpMainSearch(searchProvider, forceWebsite)
         setUpBackground()
         clipIconRipples()
 
@@ -81,27 +77,6 @@ class QsbLayout(context: Context, attrs: AttributeSet?) : FrameLayout(context, a
         if (supportsLens) setUpLensIcon()
     }
 
-    private fun subscribeSearchWidget(searchPackage: String) {
-        val info = QsbContainerView.getSearchWidgetProviderInfo(context, searchPackage) ?: return
-        context.launcherNullable?.lifecycleScope?.launch {
-            val headlessWidgetsManager = HeadlessWidgetsManager.INSTANCE.get(context)
-            headlessWidgetsManager.subscribeUpdates(info, "hotseatWidgetId")
-                .collect { findSearchIntent(it) }
-        }
-    }
-
-    private fun findSearchIntent(view: AppWidgetHostView) {
-        view.measure(
-            MeasureSpec.makeMeasureSpec(1000, MeasureSpec.EXACTLY),
-            MeasureSpec.makeMeasureSpec(100, MeasureSpec.EXACTLY)
-        )
-        searchPendingIntent = view.recursiveChildren
-            .filter { it.pendingIntent != null }
-            .sortedByDescending { it.measuredWidth * it.measuredHeight }
-            .firstOrNull()
-            ?.pendingIntent
-    }
-
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         val requestedWidth = MeasureSpec.getSize(widthMeasureSpec)
         val height = MeasureSpec.getSize(heightMeasureSpec)
@@ -122,51 +97,31 @@ class QsbLayout(context: Context, attrs: AttributeSet?) : FrameLayout(context, a
         }
     }
 
-    private fun setUpMainSearch(searchProvider: QsbSearchProvider, useWebsite: Boolean) {
-        if (useWebsite) {
-            val intent = searchProvider.createWebsiteIntent()
-            setOnClickListener {
-                if (context.packageManager.resolveActivity(intent, 0) != null) {
+    private fun setUpMainSearch(searchProvider: QsbSearchProvider, forceWebsite: Boolean) {
+        setOnClickListener {
+            if (!forceWebsite) {
+                val intent = searchProvider.createSearchIntent()
+                if (resolveIntent(context, intent)) {
                     context.startActivity(intent)
-                } else {
-                    val launcher = context.launcher
-                    launcher.stateManager.goToState(
-                        LauncherState.ALL_APPS,
-                        true,
-                        forSuccessCallback {
-                            launcher.appsView.searchUiManager.editText?.showKeyboard()
-                        }
-                    )
+                    return@setOnClickListener
                 }
             }
-            return
-        }
 
-
-        subscribeSearchWidget(searchProvider.packageName)
-        setOnClickListener {
-            val pendingIntent = searchPendingIntent
-            if (pendingIntent != null) {
-                val launcher = context.launcher
-                launcher.startIntentSender(
-                    pendingIntent.intentSender, null,
-                    Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK,
-                    Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK,
-                    0
-                )
-                return@setOnClickListener
-            }
-
-            val intent = searchProvider.createSearchIntent()
-            if (context.packageManager.resolveActivity(intent, 0) != null) {
+            val intent = searchProvider.createWebsiteIntent()
+            if (resolveIntent(context, intent)) {
                 context.startActivity(intent)
             } else {
                 val launcher = context.launcher
-                launcher.stateManager.goToState(LauncherState.ALL_APPS, true, forSuccessCallback {
-                    launcher.appsView.searchUiManager.editText?.showKeyboard()
-                })
+                launcher.stateManager.goToState(
+                    LauncherState.ALL_APPS,
+                    true,
+                    forSuccessCallback {
+                        launcher.appsView.searchUiManager.editText?.showKeyboard()
+                    }
+                )
             }
         }
+        return
     }
 
     private fun setUpLensIcon() {
@@ -213,7 +168,11 @@ class QsbLayout(context: Context, attrs: AttributeSet?) : FrameLayout(context, a
         ): QsbSearchProvider {
             val provider = preferenceManager.hotseatQsbProvider.firstBlocking()
 
-            return if (resolveSearchIntent(context, provider)) provider else {
+            return if (resolveIntent(context, provider.createSearchIntent()) ||
+                resolveIntent(context, provider.createWebsiteIntent())
+            ) {
+                provider
+            } else {
                 val searchPackage = QsbContainerView.getSearchWidgetPackageName(context)
                 return if (!searchPackage.isNullOrEmpty()) {
                     QsbSearchProvider.resolve(searchPackage)
@@ -223,8 +182,8 @@ class QsbLayout(context: Context, attrs: AttributeSet?) : FrameLayout(context, a
             }
         }
 
-        fun resolveSearchIntent(context: Context, provider: QsbSearchProvider): Boolean =
-            context.packageManager.resolveActivity(provider.createSearchIntent(), 0) != null
+        fun resolveIntent(context: Context, intent: Intent): Boolean =
+            context.packageManager.resolveActivity(intent, 0) != null
 
         private fun getCornerRadius(
             context: Context,

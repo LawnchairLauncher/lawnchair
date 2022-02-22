@@ -49,7 +49,7 @@ fun DockPreferenceCollector(content: @Composable DockPreferenceCollectorScope.()
     val preferenceManager = preferenceManager2()
     val hotseatQsb by preferenceManager.hotseatQsb.state()
     val themedHotseatQsb by preferenceManager.themedHotseatQsb.state()
-    val hotseatQsbUseWebsite by preferenceManager.hotseatQsbUseWebsite.state()
+    val hotseatQsbUseWebsite by preferenceManager.hotseatQsbForceWebsite.state()
     val hotseatQsbProvider by preferenceManager.hotseatQsbProvider.state()
 
     ifNotNull(
@@ -102,14 +102,14 @@ fun DockPreferences() {
                             valueRange = 0F..1F,
                             showAsPercentage = true,
                         )
-                        SwitchPreference2(
-                            checked = hotseatQsbUseWebsite,
-                            label = "Use website",
-                            edit = { hotseatQsbUseWebsite.set(value = it) },
-                        )
                         QsbProviderPreference(
                             value = hotseatQsbProvider,
                             edit = { hotseatQsbProvider.set(value = it) },
+                        )
+                        SwitchPreference2(
+                            checked = hotseatQsbUseWebsite,
+                            label = "Always Open Website",
+                            edit = { hotseatQsbForceWebsite.set(value = it) },
                         )
                     }
                 }

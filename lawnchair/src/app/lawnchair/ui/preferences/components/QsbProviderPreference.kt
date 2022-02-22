@@ -3,10 +3,8 @@ package app.lawnchair.ui.preferences.components
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
-import androidx.compose.ui.platform.LocalContext
 import app.lawnchair.preferences2.PreferenceCollectorScope
 import app.lawnchair.preferences2.PreferenceManager2
-import app.lawnchair.qsb.QsbLayout
 import app.lawnchair.qsb.QsbSearchProvider
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -15,11 +13,8 @@ fun PreferenceCollectorScope.QsbProviderPreference(
     value: QsbSearchProvider,
     edit: suspend PreferenceManager2.(QsbSearchProvider) -> Unit,
 ) {
-    val context = LocalContext.current
     val entries = remember {
-        QsbSearchProvider.values()
-            .filter { QsbLayout.resolveSearchIntent(context, it) }
-            .map { ListPreferenceEntry2(it) { it.name } }
+        QsbSearchProvider.values().map { ListPreferenceEntry2(it) { it.name } }
     }
 
     ListPreference2(
