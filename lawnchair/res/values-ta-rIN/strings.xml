@@ -64,7 +64,7 @@
     <string name="auto_adaptive_icons_description">எல்லா தகவமையா சின்னங்களுக்கும்.</string>
     <string name="support_and_pr">ஆதரவு &amp; மக்கள் தொடர்பு</string>
     <string name="workspace_dt2s">தூங்க இரு முறை தட்டவும்</string>
-    <string name="smart_space_enable">கண்ணோட்ட விட்ஜெட்</string>
+    <string name="smart_space_enable">கண்ணோட்ட இடுக்கை</string>
     <string name="design_and_development">வடிவமைப்பு &amp; உருவாக்கம்</string>
     <string name="translate">மொழிபெயர்</string>
     <string name="product">தயாரிப்பு</string>
@@ -79,7 +79,7 @@
     <string name="dt2s_admin_hint">இருமுறை தட்டியதும் திரையை அணைக்க லான்சேரை கருவியின் அட்மின் செயலியாக செட் செய்யவும். செட்டிங் பகுதிக்குள் சென்று, “இந்த கருவி அட்மின் செயலியை செயல்படுத்தவும்.” என்பதை தொடவும்</string>
     <string name="dt2s_admin_warning">Double Tap to Sleep will be disabled.</string>
     <string name="dt2s_a11y_hint_title">Accessibility service required</string>
-    <string name="dt2s_a11y_hint">To use Double-Tap to Sleep, turn on the Lawnchair accessibility service. Tap Open Settings, then select Lawnchair and turn on Use Lawnchair.</string>
+    <string name="dt2s_a11y_hint">தூங்க இரட்டை-தட்டலைப் பயன்படுத்த, Lawnchair அணுகல்தன்மை சேவையை இயக்கு. அமைப்புகளைத் திற என்பதைத் தட்டி, Lawnchairஐத் தேர்ந்தெடுத்து Lawnchairஐப் பயன்படுத்து என்பதை இயக்கு.</string>
     <string name="dt2s_warning_open_settings">அமைப்புகளை திறக்க</string>
     <string name="minus_one_enable">செய்தியோடை</string>
     <string name="minus_one_unavailable">Feed is not available</string>
