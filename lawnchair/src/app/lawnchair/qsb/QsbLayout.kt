@@ -52,8 +52,6 @@ class QsbLayout(context: Context, attrs: AttributeSet?) : FrameLayout(context, a
         preferenceManager2 = PreferenceManager2.getInstance(context)
 
         val searchProvider = getSearchProvider(context, preferenceManager2)
-        val forceWebsite = preferenceManager2.hotseatQsbForceWebsite.firstBlocking()
-        setUpMainSearch(searchProvider, forceWebsite)
         setUpBackground()
         clipIconRipples()
 
@@ -66,7 +64,7 @@ class QsbLayout(context: Context, attrs: AttributeSet?) : FrameLayout(context, a
             setUpBackground(themed)
 
             val iconRes = if (themed) searchProvider.themedIcon else searchProvider.icon
-            
+
             // The default search icon should always be themed
             gIcon.setThemedIconResource(
                 resId = iconRes,
@@ -81,6 +79,13 @@ class QsbLayout(context: Context, attrs: AttributeSet?) : FrameLayout(context, a
         }
 
         if (supportsLens) setUpLensIcon()
+
+        preferenceManager2.hotseatQsbForceWebsite.onEach(launchIn = viewAttachedScope) { force ->
+            setUpMainSearch(
+                searchProvider = searchProvider,
+                forceWebsite = force,
+            )
+        }
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
