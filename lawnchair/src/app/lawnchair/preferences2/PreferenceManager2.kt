@@ -67,13 +67,13 @@ class PreferenceManager2(private val context: Context) : PreferenceManager {
         defaultValue = Google,
         parse = { QsbSearchProvider.fromId(it) },
         save = { it.id },
-        onSet = reloadHelper::recreate
+        onSet = { reloadHelper.recreate() }
     )
 
     val hotseatQsbForceWebsite = preference(
         key = booleanPreferencesKey(name = "dock_search_bar_force_website"),
         defaultValue = false,
-        onSet = reloadHelper::recreate
+        onSet = { reloadHelper.recreate() }
     )
 
     val accentColor = preference(
