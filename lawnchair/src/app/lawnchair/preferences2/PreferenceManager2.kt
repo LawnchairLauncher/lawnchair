@@ -64,7 +64,7 @@ class PreferenceManager2(private val context: Context) : PreferenceManager {
 
     val hotseatQsbProvider = preference(
         key = stringPreferencesKey(name = "dock_search_bar_provider"),
-        defaultValue = Google,
+        defaultValue = QsbSearchProvider.resolveDefault(context),
         parse = { QsbSearchProvider.fromId(it) },
         save = { it.id },
         onSet = { reloadHelper.recreate() }

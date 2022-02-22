@@ -1,10 +1,11 @@
 package app.lawnchair.qsb.providers
 
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import androidx.annotation.DrawableRes
-import androidx.annotation.IntegerRes
 import androidx.annotation.StringRes
+import app.lawnchair.qsb.QsbLayout
 import app.lawnchair.qsb.ThemingMethod
 import com.android.launcher3.R
 
@@ -67,9 +68,15 @@ open class QsbSearchProvider(
          * Resolve the search provider using its ID, or use Google as a fallback.
          */
         fun fromId(id: String): QsbSearchProvider =
-            values().firstOrNull { it.id == id } ?: Google
+            values().firstOrNull { it.id == id } ?: AppSearch
 
         fun resolve(packageName: String): QsbSearchProvider =
             values().firstOrNull { it.packageName == packageName } ?: UnknownProvider(packageName)
+
+        fun resolveDefault(context: Context): QsbSearchProvider =
+            values()
+                .filterNot { it == AppSearch }
+                .firstOrNull { QsbLayout.resolveIntent(context, it.createSearchIntent()) }
+                ?: AppSearch
     }
 }
