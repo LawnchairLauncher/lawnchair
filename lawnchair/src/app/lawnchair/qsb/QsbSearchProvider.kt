@@ -48,6 +48,15 @@ sealed class QsbSearchProvider(
         website = ""
     )
 
+    object AppSearch : QsbSearchProvider(
+        id = "app-search",
+        name = "App Search",
+        icon = R.drawable.ic_qsb_search,
+        themingMethod = ThemingMethod.TINT,
+        packageName = "",
+        website = ""
+    )
+
     object Google : QsbSearchProvider(
         id = "google",
         name = "Google",
@@ -91,6 +100,7 @@ sealed class QsbSearchProvider(
             Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
 
         fun values() = listOf(
+            AppSearch,
             Google,
             GoogleGo,
             Duck

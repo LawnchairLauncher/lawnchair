@@ -1,7 +1,6 @@
 package app.lawnchair.qsb
 
 import android.app.PendingIntent
-import android.appwidget.AppWidgetHostView
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
@@ -16,15 +15,12 @@ import androidx.core.view.isVisible
 import app.lawnchair.launcher
 import app.lawnchair.preferences.PreferenceManager
 import app.lawnchair.preferences2.PreferenceManager2
-import app.lawnchair.util.pendingIntent
-import app.lawnchair.util.recursiveChildren
 import app.lawnchair.util.viewAttachedScope
 import com.android.launcher3.BaseActivity
 import com.android.launcher3.DeviceProfile
 import com.android.launcher3.LauncherState
 import com.android.launcher3.R
 import com.android.launcher3.anim.AnimatorListeners.forSuccessCallback
-import com.android.launcher3.qsb.QsbContainerView
 import com.android.launcher3.util.Themes
 import com.android.launcher3.views.ActivityContext
 import com.patrykmichalik.preferencemanager.firstBlocking
@@ -98,8 +94,10 @@ class QsbLayout(context: Context, attrs: AttributeSet?) : FrameLayout(context, a
     }
 
     private fun setUpMainSearch(searchProvider: QsbSearchProvider, forceWebsite: Boolean) {
+        val isAppSearch = searchProvider == QsbSearchProvider.AppSearch
+
         setOnClickListener {
-            if (!forceWebsite) {
+            if (!forceWebsite && !isAppSearch) {
                 val intent = searchProvider.createSearchIntent()
                 if (resolveIntent(context, intent)) {
                     context.startActivity(intent)
@@ -108,7 +106,7 @@ class QsbLayout(context: Context, attrs: AttributeSet?) : FrameLayout(context, a
             }
 
             val intent = searchProvider.createWebsiteIntent()
-            if (resolveIntent(context, intent)) {
+            if (!isAppSearch && resolveIntent(context, intent)) {
                 context.startActivity(intent)
             } else {
                 val launcher = context.launcher
@@ -168,18 +166,10 @@ class QsbLayout(context: Context, attrs: AttributeSet?) : FrameLayout(context, a
         ): QsbSearchProvider {
             val provider = preferenceManager.hotseatQsbProvider.firstBlocking()
 
-            return if (resolveIntent(context, provider.createSearchIntent()) ||
+            return if (provider == QsbSearchProvider.AppSearch ||
+                resolveIntent(context, provider.createSearchIntent()) ||
                 resolveIntent(context, provider.createWebsiteIntent())
-            ) {
-                provider
-            } else {
-                val searchPackage = QsbContainerView.getSearchWidgetPackageName(context)
-                return if (!searchPackage.isNullOrEmpty()) {
-                    QsbSearchProvider.resolve(searchPackage)
-                } else {
-                    QsbSearchProvider.None
-                }
-            }
+            ) provider else QsbSearchProvider.AppSearch
         }
 
         fun resolveIntent(context: Context, intent: Intent): Boolean =
