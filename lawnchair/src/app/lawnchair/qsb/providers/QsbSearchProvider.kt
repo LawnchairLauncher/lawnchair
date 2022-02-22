@@ -1,8 +1,9 @@
-package app.lawnchair.qsb
+package app.lawnchair.qsb.providers
 
 import android.content.Intent
 import android.net.Uri
 import androidx.annotation.DrawableRes
+import app.lawnchair.qsb.ThemingMethod
 import com.android.launcher3.R
 
 sealed class QsbSearchProvider(

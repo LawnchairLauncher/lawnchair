@@ -5,7 +5,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import app.lawnchair.preferences2.PreferenceCollectorScope
 import app.lawnchair.preferences2.PreferenceManager2
-import app.lawnchair.qsb.QsbSearchProvider
+import app.lawnchair.qsb.providers.QsbSearchProvider
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable

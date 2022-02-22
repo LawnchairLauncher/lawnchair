@@ -26,7 +26,7 @@ import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences.preferenceManager
 import app.lawnchair.preferences2.PreferenceCollectorScope
 import app.lawnchair.preferences2.preferenceManager2
-import app.lawnchair.qsb.QsbSearchProvider
+import app.lawnchair.qsb.providers.QsbSearchProvider
 import app.lawnchair.ui.preferences.components.*
 import app.lawnchair.util.ifNotNull
 import com.android.launcher3.R
