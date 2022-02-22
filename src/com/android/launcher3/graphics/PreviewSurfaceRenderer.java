@@ -47,7 +47,6 @@ import com.android.launcher3.graphics.LauncherPreviewRenderer.PreviewContext;
 import com.android.launcher3.model.BgDataModel;
 import com.android.launcher3.model.GridSizeMigrationTaskV2;
 import com.android.launcher3.model.LoaderTask;
-import com.android.launcher3.model.ModelDelegate;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.RunnableList;
 import com.android.launcher3.util.Themes;
@@ -156,9 +155,10 @@ public class PreviewSurfaceRenderer {
             PreviewContext previewContext = new PreviewContext(inflationContext, mIdp);
             new LoaderTask(
                     LauncherAppState.getInstance(previewContext),
-                    null,
+                    /* bgAllAppsList= */ null,
                     new BgDataModel(),
-                    new ModelDelegate(), null) {
+                    LauncherAppState.getInstance(previewContext).getModel().getModelDelegate(),
+                    /* results= */ null) {
 
                 @Override
                 public void run() {
