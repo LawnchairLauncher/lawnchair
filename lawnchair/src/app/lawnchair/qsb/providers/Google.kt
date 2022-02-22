@@ -5,7 +5,7 @@ import com.android.launcher3.R
 
 object Google : QsbSearchProvider(
     id = "google",
-    name = "Google",
+    name = R.string.search_provider_google,
     icon = R.drawable.ic_super_g_color,
     themingMethod = ThemingMethod.THEME_BY_NAME,
     packageName = "com.google.android.googlequicksearchbox",

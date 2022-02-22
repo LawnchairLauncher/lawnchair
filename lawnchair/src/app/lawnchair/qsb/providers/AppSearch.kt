@@ -5,7 +5,7 @@ import com.android.launcher3.R
 
 object AppSearch : QsbSearchProvider(
     id = "app-search",
-    name = "App Search",
+    name = R.string.search_provider_app_search,
     icon = R.drawable.ic_qsb_search,
     themingMethod = ThemingMethod.TINT,
     packageName = "",

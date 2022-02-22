@@ -5,7 +5,7 @@ import com.android.launcher3.R
 
 object DuckDuckGo : QsbSearchProvider(
     id = "duckduckgo",
-    name = "DuckDuckGo",
+    name = R.string.search_provider_duckduckgo,
     icon = R.drawable.ic_duckduckgo,
     themedIcon = R.drawable.ic_duckduckgo_tinted,
     themingMethod = ThemingMethod.TINT,

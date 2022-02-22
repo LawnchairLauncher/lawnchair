@@ -3,12 +3,14 @@ package app.lawnchair.qsb.providers
 import android.content.Intent
 import android.net.Uri
 import androidx.annotation.DrawableRes
+import androidx.annotation.IntegerRes
+import androidx.annotation.StringRes
 import app.lawnchair.qsb.ThemingMethod
 import com.android.launcher3.R
 
 open class QsbSearchProvider(
     val id: String,
-    val name: String,
+    @StringRes val name: Int,
     @DrawableRes val icon: Int = R.drawable.ic_qsb_search,
     @DrawableRes val themedIcon: Int = icon,
     val themingMethod: ThemingMethod = ThemingMethod.TINT,
@@ -36,14 +38,14 @@ open class QsbSearchProvider(
             .addFlags(INTENT_FLAGS)
             .setPackage(packageName)
 
-    object None : QsbSearchProvider(id = "", name = "", packageName = "", website = "")
+    object None : QsbSearchProvider(id = "", name = -1, packageName = "", website = "")
 
     data class UnknownProvider(
         override val packageName: String,
         override val action: String? = null
     ) : QsbSearchProvider(
         id = "",
-        name = "",
+        name = -1,
         packageName = packageName,
         action = action,
         website = ""

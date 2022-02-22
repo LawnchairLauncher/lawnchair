@@ -6,7 +6,7 @@ import com.android.launcher3.R
 
 object GoogleGo : QsbSearchProvider(
     id = "google_go",
-    name = "Google Go",
+    name = R.string.search_provider_google_go,
     icon = R.drawable.ic_super_g_color,
     themingMethod = ThemingMethod.THEME_BY_NAME,
     packageName = "com.google.android.apps.searchlite",
