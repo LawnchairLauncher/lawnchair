@@ -67,6 +67,9 @@ class QsbLayout(context: Context, attrs: AttributeSet?) : FrameLayout(context, a
 
             val iconRes = if (themed) searchProvider.themedIcon else searchProvider.icon
             gIcon.setThemedIconResource(iconRes, themed, searchProvider.themingMethod)
+            if (!themed && iconRes == R.drawable.ic_qsb_search) {
+                gIcon.setColorFilter(Themes.getColorAccent(context))
+            }
 
             micIcon.setIcon(isGoogle, themed)
             if (supportsLens) {
