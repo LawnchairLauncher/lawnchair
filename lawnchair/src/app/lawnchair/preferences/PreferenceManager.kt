@@ -59,7 +59,6 @@ class PreferenceManager private constructor(private val context: Context) : Base
     val smartSpaceEnable = BoolPref("pref_smartSpaceEnable", true, restart)
     val minusOneEnable = BoolPref("pref_enableMinusOne", true, recreate)
     val useFuzzySearch = BoolPref("pref_useFuzzySearch", false)
-    val hideAppSearchBar = BoolPref("pref_hideAppSearchBar", false, recreate)
 
     // TODO: Add the ability to manually delete empty pages.
     val allowEmptyPages = BoolPref("pref_allowEmptyPages", false)
@@ -103,7 +102,6 @@ class PreferenceManager private constructor(private val context: Context) : Base
     val recentsActionShare = BoolPref("pref_recentsActionShare", isOnePlusStock)
     val recentsActionLens = BoolPref("pref_recentsActionLens", true)
     val recentsActionClearAll = BoolPref("pref_clearAllAsAction", false)
-    val enableFontSelection = BoolPref("pref_enableFontSelection", true)
 
     init {
         sp.registerOnSharedPreferenceChangeListener(this)

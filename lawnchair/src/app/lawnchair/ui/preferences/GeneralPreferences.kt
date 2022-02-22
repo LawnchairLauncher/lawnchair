@@ -53,6 +53,7 @@ fun NavGraphBuilder.generalGraph(route: String) {
 interface GeneralPreferenceCollectorScope : PreferenceCollectorScope {
     val iconShape: IconShape
     val accentColor: ColorOption
+    val enableFontSelection: Boolean
 }
 
 @Composable
@@ -60,10 +61,12 @@ fun GeneralPreferenceCollector(content: @Composable GeneralPreferenceCollectorSc
     val preferenceManager = preferenceManager2()
     val iconShape by preferenceManager.iconShape.state()
     val accentColor by preferenceManager.accentColor.state()
-    ifNotNull(iconShape, accentColor) {
+    val enableFontSelection by preferenceManager.enableFontSelection.state()
+    ifNotNull(iconShape, accentColor, enableFontSelection) {
         object : GeneralPreferenceCollectorScope {
             override val iconShape = it[0] as IconShape
             override val accentColor = it[1] as ColorOption
+            override val enableFontSelection = it[2] as Boolean
             override val coroutineScope = rememberCoroutineScope()
             override val preferenceManager = preferenceManager
         }.content()
@@ -101,7 +104,7 @@ fun GeneralPreferences() {
                     value = iconShape,
                     edit = { iconShape.set(value = it) },
                 )
-                if (prefs.enableFontSelection.get()) {
+                if (enableFontSelection) {
                     FontPreference(
                         adapter = prefs.workspaceFont.getAdapter(),
                         label = stringResource(id = R.string.font_label),
