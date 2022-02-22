@@ -38,20 +38,7 @@ open class QsbSearchProvider(
         Intent(Intent.ACTION_VOICE_COMMAND)
             .addFlags(INTENT_FLAGS)
             .setPackage(packageName)
-
-    object None : QsbSearchProvider(id = "", name = -1, packageName = "", website = "")
-
-    data class UnknownProvider(
-        override val packageName: String,
-        override val action: String? = null
-    ) : QsbSearchProvider(
-        id = "",
-        name = -1,
-        packageName = packageName,
-        action = action,
-        website = ""
-    )
-
+    
     companion object {
 
         internal const val INTENT_FLAGS =
@@ -69,9 +56,6 @@ open class QsbSearchProvider(
          */
         fun fromId(id: String): QsbSearchProvider =
             values().firstOrNull { it.id == id } ?: AppSearch
-
-        fun resolve(packageName: String): QsbSearchProvider =
-            values().firstOrNull { it.packageName == packageName } ?: UnknownProvider(packageName)
 
         fun resolveDefault(context: Context): QsbSearchProvider =
             values()
