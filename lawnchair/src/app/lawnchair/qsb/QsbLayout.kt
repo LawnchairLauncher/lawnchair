@@ -66,10 +66,13 @@ class QsbLayout(context: Context, attrs: AttributeSet?) : FrameLayout(context, a
             setUpBackground(themed)
 
             val iconRes = if (themed) searchProvider.themedIcon else searchProvider.icon
-            gIcon.setThemedIconResource(iconRes, themed, searchProvider.themingMethod)
-            if (!themed && iconRes == R.drawable.ic_qsb_search) {
-                gIcon.setColorFilter(Themes.getColorAccent(context))
-            }
+            
+            // The default search icon should always be themed
+            gIcon.setThemedIconResource(
+                resId = iconRes,
+                themed = themed || iconRes == R.drawable.ic_qsb_search,
+                method = searchProvider.themingMethod
+            )
 
             micIcon.setIcon(isGoogle, themed)
             if (supportsLens) {
