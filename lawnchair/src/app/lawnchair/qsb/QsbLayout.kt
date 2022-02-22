@@ -39,7 +39,6 @@ class QsbLayout(context: Context, attrs: AttributeSet?) : FrameLayout(context, a
     private lateinit var inner: FrameLayout
     private lateinit var preferenceManager: PreferenceManager
     private lateinit var preferenceManager2: PreferenceManager2
-    private var searchPendingIntent: PendingIntent? = null
 
     override fun onFinishInflate() {
         super.onFinishInflate()
