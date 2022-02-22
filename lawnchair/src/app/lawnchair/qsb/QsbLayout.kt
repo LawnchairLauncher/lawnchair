@@ -15,6 +15,9 @@ import androidx.core.view.isVisible
 import app.lawnchair.launcher
 import app.lawnchair.preferences.PreferenceManager
 import app.lawnchair.preferences2.PreferenceManager2
+import app.lawnchair.qsb.providers.AppSearch
+import app.lawnchair.qsb.providers.Google
+import app.lawnchair.qsb.providers.GoogleGo
 import app.lawnchair.qsb.providers.QsbSearchProvider
 import app.lawnchair.util.viewAttachedScope
 import com.android.launcher3.BaseActivity
@@ -54,10 +57,10 @@ class QsbLayout(context: Context, attrs: AttributeSet?) : FrameLayout(context, a
         setUpBackground()
         clipIconRipples()
 
-        val isGoogle = searchProvider == QsbSearchProvider.Google ||
-                searchProvider == QsbSearchProvider.GoogleGo
+        val isGoogle = searchProvider == Google ||
+                searchProvider == GoogleGo
 
-        val supportsLens = searchProvider == QsbSearchProvider.Google
+        val supportsLens = searchProvider == Google
 
         preferenceManager2.themedHotseatQsb.onEach(launchIn = viewAttachedScope) { themed ->
             setUpBackground(themed)
@@ -95,7 +98,7 @@ class QsbLayout(context: Context, attrs: AttributeSet?) : FrameLayout(context, a
     }
 
     private fun setUpMainSearch(searchProvider: QsbSearchProvider, forceWebsite: Boolean) {
-        val isAppSearch = searchProvider == QsbSearchProvider.AppSearch
+        val isAppSearch = searchProvider == AppSearch
 
         setOnClickListener {
             if (!forceWebsite && !isAppSearch) {
@@ -167,10 +170,10 @@ class QsbLayout(context: Context, attrs: AttributeSet?) : FrameLayout(context, a
         ): QsbSearchProvider {
             val provider = preferenceManager.hotseatQsbProvider.firstBlocking()
 
-            return if (provider == QsbSearchProvider.AppSearch ||
+            return if (provider == AppSearch ||
                 resolveIntent(context, provider.createSearchIntent()) ||
                 resolveIntent(context, provider.createWebsiteIntent())
-            ) provider else QsbSearchProvider.AppSearch
+            ) provider else AppSearch
         }
 
         fun resolveIntent(context: Context, intent: Intent): Boolean =

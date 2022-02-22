@@ -6,7 +6,7 @@ import androidx.annotation.DrawableRes
 import app.lawnchair.qsb.ThemingMethod
 import com.android.launcher3.R
 
-sealed class QsbSearchProvider(
+open class QsbSearchProvider(
     val id: String,
     val name: String,
     @DrawableRes val icon: Int = R.drawable.ic_qsb_search,
@@ -49,52 +49,6 @@ sealed class QsbSearchProvider(
         website = ""
     )
 
-    object AppSearch : QsbSearchProvider(
-        id = "app-search",
-        name = "App Search",
-        icon = R.drawable.ic_qsb_search,
-        themingMethod = ThemingMethod.TINT,
-        packageName = "",
-        website = ""
-    )
-
-    object Google : QsbSearchProvider(
-        id = "google",
-        name = "Google",
-        icon = R.drawable.ic_super_g_color,
-        themingMethod = ThemingMethod.THEME_BY_NAME,
-        packageName = "com.google.android.googlequicksearchbox",
-        action = "android.search.action.GLOBAL_SEARCH",
-        supportVoiceIntent = true,
-        website = "https://www.google.com/"
-    )
-
-    object GoogleGo : QsbSearchProvider(
-        id = "google_go",
-        name = "Google Go",
-        icon = R.drawable.ic_super_g_color,
-        themingMethod = ThemingMethod.THEME_BY_NAME,
-        packageName = "com.google.android.apps.searchlite",
-        action = "android.search.action.GLOBAL_SEARCH",
-        supportVoiceIntent = true,
-        website = "https://www.google.com/"
-    ) {
-
-        override fun handleCreateVoiceIntent(): Intent =
-            createSearchIntent().putExtra("openMic", true)
-    }
-
-    object Duck : QsbSearchProvider(
-        id = "duckduckgo",
-        name = "DuckDuckGo",
-        icon = R.drawable.ic_duckduckgo,
-        themedIcon = R.drawable.ic_duckduckgo_tinted,
-        themingMethod = ThemingMethod.TINT,
-        packageName = "com.duckduckgo.mobile.android",
-        action = "com.duckduckgo.mobile.android.NEW_SEARCH",
-        website = "https://duckduckgo.com/"
-    )
-
     companion object {
 
         internal const val INTENT_FLAGS =
@@ -104,7 +58,7 @@ sealed class QsbSearchProvider(
             AppSearch,
             Google,
             GoogleGo,
-            Duck
+            DuckDuckGo
         )
 
         /**
