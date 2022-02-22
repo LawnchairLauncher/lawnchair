@@ -107,7 +107,7 @@
     <string name="show_sys_ui_scrim">Sombra superior</string>
     <string name="show_status_bar">Barra de estado</string>
     <string name="what_to_show">Qué mostrar</string>
-    <string name="missing_notification_access_label">Acceso a las Notificaciones Requerido</string>
+    <string name="missing_notification_access_label">Acceso a las notificaciones requerido</string>
     <string name="missing_notification_access_description">Acceso a las notificaciones requerido.</string>
     <string name="msg_missing_notification_access">Para usar puntos de notificación, concede acceso a las notificaciones a <xliff:g id="name" example="My App">%1$s</xliff:g>.</string>
     <string name="title_change_settings">Cambiar ajustes</string>
