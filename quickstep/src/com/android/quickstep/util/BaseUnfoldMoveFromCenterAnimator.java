@@ -36,6 +36,8 @@ public abstract class BaseUnfoldMoveFromCenterAnimator implements TransitionProg
     private final Map<ViewGroup, Boolean> mOriginalClipToPadding = new HashMap<>();
     private final Map<ViewGroup, Boolean> mOriginalClipChildren = new HashMap<>();
 
+    private boolean mAnimationInProgress = false;
+
     public BaseUnfoldMoveFromCenterAnimator(WindowManager windowManager) {
         mMoveFromCenterAnimation = new UnfoldMoveFromCenterAnimator(windowManager,
                 new LauncherViewsMoveFromCenterTranslationApplier());
@@ -44,6 +46,7 @@ public abstract class BaseUnfoldMoveFromCenterAnimator implements TransitionProg
     @CallSuper
     @Override
     public void onTransitionStarted() {
+        mAnimationInProgress = true;
         mMoveFromCenterAnimation.updateDisplayProperties();
         onPrepareViewsForAnimation();
         onTransitionProgress(0f);
@@ -58,7 +61,23 @@ public abstract class BaseUnfoldMoveFromCenterAnimator implements TransitionProg
     @CallSuper
     @Override
     public void onTransitionFinished() {
+        mAnimationInProgress = false;
         mMoveFromCenterAnimation.onTransitionFinished();
+        clearRegisteredViews();
+    }
+
+    /**
+     * Re-prepares views for animation. This is useful in case views are re-bound while the
+     * animation is in progress.
+     */
+    public void updateRegisteredViewsIfNeeded() {
+        if (mAnimationInProgress) {
+            clearRegisteredViews();
+            onPrepareViewsForAnimation();
+        }
+    }
+
+    private void clearRegisteredViews() {
         mMoveFromCenterAnimation.clearRegisteredViews();
 
         mOriginalClipChildren.clear();

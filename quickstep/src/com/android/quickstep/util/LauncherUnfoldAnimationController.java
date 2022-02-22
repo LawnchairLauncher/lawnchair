@@ -48,12 +48,13 @@ public class LauncherUnfoldAnimationController {
             SCALE_PROPERTY_FACTORY.get(SCALE_INDEX_UNFOLD_ANIMATION);
 
     private final Launcher mLauncher;
+    private final ScopedUnfoldTransitionProgressProvider mProgressProvider;
+    private final NaturalRotationUnfoldProgressProvider mNaturalOrientationProgressProvider;
+    private final UnfoldMoveFromCenterHotseatAnimator mUnfoldMoveFromCenterHotseatAnimator;
+    private final UnfoldMoveFromCenterWorkspaceAnimator mUnfoldMoveFromCenterWorkspaceAnimator;
 
     @Nullable
     private HorizontalInsettableView mQsbInsettable;
-
-    private final ScopedUnfoldTransitionProgressProvider mProgressProvider;
-    private final NaturalRotationUnfoldProgressProvider mNaturalOrientationProgressProvider;
 
     public LauncherUnfoldAnimationController(
             Launcher launcher,
@@ -62,21 +63,21 @@ public class LauncherUnfoldAnimationController {
         mLauncher = launcher;
         mProgressProvider = new ScopedUnfoldTransitionProgressProvider(
                 unfoldTransitionProgressProvider);
+        mUnfoldMoveFromCenterHotseatAnimator = new UnfoldMoveFromCenterHotseatAnimator(launcher,
+                windowManager);
+        mUnfoldMoveFromCenterWorkspaceAnimator = new UnfoldMoveFromCenterWorkspaceAnimator(launcher,
+                windowManager);
         mNaturalOrientationProgressProvider = new NaturalRotationUnfoldProgressProvider(launcher,
                 WindowManagerGlobal.getWindowManagerService(), mProgressProvider);
         mNaturalOrientationProgressProvider.init();
 
         // Animated in all orientations
-        mProgressProvider.addCallback(new UnfoldMoveFromCenterWorkspaceAnimator(launcher,
-                windowManager));
-        mProgressProvider
-                .addCallback(new LauncherScaleAnimationListener());
+        mProgressProvider.addCallback(mUnfoldMoveFromCenterWorkspaceAnimator);
+        mProgressProvider.addCallback(new LauncherScaleAnimationListener());
 
         // Animated only in natural orientation
-        mNaturalOrientationProgressProvider
-                .addCallback(new QsbAnimationListener());
-        mNaturalOrientationProgressProvider
-                .addCallback(new UnfoldMoveFromCenterHotseatAnimator(launcher, windowManager));
+        mNaturalOrientationProgressProvider.addCallback(new QsbAnimationListener());
+        mNaturalOrientationProgressProvider.addCallback(mUnfoldMoveFromCenterHotseatAnimator);
     }
 
     /**
@@ -106,6 +107,12 @@ public class LauncherUnfoldAnimationController {
     public void onDestroy() {
         mProgressProvider.destroy();
         mNaturalOrientationProgressProvider.destroy();
+    }
+
+    /** Called when launcher finished binding its items. */
+    public void updateRegisteredViewsIfNeeded() {
+        mUnfoldMoveFromCenterHotseatAnimator.updateRegisteredViewsIfNeeded();
+        mUnfoldMoveFromCenterWorkspaceAnimator.updateRegisteredViewsIfNeeded();
     }
 
     private class QsbAnimationListener implements TransitionProgressListener {
