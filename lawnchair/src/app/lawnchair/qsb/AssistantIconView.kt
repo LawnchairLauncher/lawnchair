@@ -14,11 +14,9 @@ class AssistantIconView(context: Context, attrs: AttributeSet?) : ImageButton(co
 
     init {
         val provider = QsbLayout.getSearchProvider(context, PreferenceManager2.getInstance(context))
-
         val intent = if (provider.supportVoiceIntent) provider.createVoiceIntent() else null
-        if (intent == null || context.packageManager.resolveActivity(intent, 0) == null) {
-            isVisible = false
-        }
+
+        if (intent == null || !QsbLayout.resolveIntent(context, intent)) isVisible = false
 
         setOnClickListener {
             context.startActivity(intent)
@@ -27,11 +25,14 @@ class AssistantIconView(context: Context, attrs: AttributeSet?) : ImageButton(co
 
     fun setIcon(isGoogle: Boolean, themed: Boolean) {
         clearColorFilter()
-        if (isGoogle) {
-            setThemedIconResource(R.drawable.ic_mic_color, themed)
-        } else {
-            setImageResource(R.drawable.ic_mic_flat)
-            setColorFilter(Themes.getColorAccent(context))
-        }
+
+        val iconRes = if (isGoogle) R.drawable.ic_mic_color else R.drawable.ic_mic_flat
+        val themingMethod = if (isGoogle) ThemingMethod.THEME_BY_NAME else ThemingMethod.TINT
+
+        setThemedIconResource(
+            resId = iconRes,
+            themed = isGoogle && themed || !isGoogle,
+            method = themingMethod
+        )
     }
 }
