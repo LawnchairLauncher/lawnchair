@@ -15,10 +15,10 @@ open class QsbSearchProvider(
     @DrawableRes val icon: Int = R.drawable.ic_qsb_search,
     @DrawableRes val themedIcon: Int = icon,
     val themingMethod: ThemingMethod = ThemingMethod.TINT,
-    open val packageName: String,
-    open val action: String? = null,
-    open val supportVoiceIntent: Boolean = false,
-    open val website: String
+    val packageName: String,
+    val action: String? = null,
+    val supportVoiceIntent: Boolean = false,
+    val website: String
 ) {
 
     fun createSearchIntent() = Intent(action)
@@ -38,7 +38,7 @@ open class QsbSearchProvider(
         Intent(Intent.ACTION_VOICE_COMMAND)
             .addFlags(INTENT_FLAGS)
             .setPackage(packageName)
-    
+
     companion object {
 
         internal const val INTENT_FLAGS =
