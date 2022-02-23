@@ -18,11 +18,12 @@ package com.android.launcher3;
 
 import static androidx.dynamicanimation.animation.DynamicAnimation.MIN_VISIBLE_CHANGE_SCALE;
 
+import static com.android.launcher3.LauncherAnimUtils.HOTSEAT_SCALE_PROPERTY_FACTORY;
 import static com.android.launcher3.LauncherAnimUtils.SCALE_INDEX_WORKSPACE_STATE;
-import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY_FACTORY;
 import static com.android.launcher3.LauncherAnimUtils.VIEW_ALPHA;
 import static com.android.launcher3.LauncherAnimUtils.VIEW_TRANSLATE_X;
 import static com.android.launcher3.LauncherAnimUtils.VIEW_TRANSLATE_Y;
+import static com.android.launcher3.LauncherAnimUtils.WORKSPACE_SCALE_PROPERTY_FACTORY;
 import static com.android.launcher3.LauncherState.FLAG_HAS_SYS_UI_SCRIM;
 import static com.android.launcher3.LauncherState.HINT_STATE;
 import static com.android.launcher3.LauncherState.HOTSEAT_ICONS;
@@ -64,8 +65,11 @@ import com.android.systemui.plugins.ResourceProvider;
  */
 public class WorkspaceStateTransitionAnimation {
 
-    private static final FloatProperty<View> WORKSPACE_STATE_SCALE_PROPERTY =
-            SCALE_PROPERTY_FACTORY.get(SCALE_INDEX_WORKSPACE_STATE);
+    private static final FloatProperty<Workspace> WORKSPACE_SCALE_PROPERTY =
+            WORKSPACE_SCALE_PROPERTY_FACTORY.get(SCALE_INDEX_WORKSPACE_STATE);
+
+    private static final FloatProperty<Hotseat> HOTSEAT_SCALE_PROPERTY =
+            HOTSEAT_SCALE_PROPERTY_FACTORY.get(SCALE_INDEX_WORKSPACE_STATE);
 
     private final Launcher mLauncher;
     private final Workspace mWorkspace;
@@ -120,9 +124,9 @@ public class WorkspaceStateTransitionAnimation {
                 && fromState == HINT_STATE && state == NORMAL;
         if (shouldSpring) {
             ((PendingAnimation) propertySetter).add(getSpringScaleAnimator(mLauncher,
-                    mWorkspace, mNewScale));
+                    mWorkspace, mNewScale, WORKSPACE_SCALE_PROPERTY));
         } else {
-            propertySetter.setFloat(mWorkspace, WORKSPACE_STATE_SCALE_PROPERTY, mNewScale,
+            propertySetter.setFloat(mWorkspace, WORKSPACE_SCALE_PROPERTY, mNewScale,
                     scaleInterpolator);
         }
 
@@ -130,11 +134,12 @@ public class WorkspaceStateTransitionAnimation {
         float hotseatScale = hotseatScaleAndTranslation.scale;
         if (shouldSpring) {
             PendingAnimation pa = (PendingAnimation) propertySetter;
-            pa.add(getSpringScaleAnimator(mLauncher, hotseat, hotseatScale));
+            pa.add(getSpringScaleAnimator(mLauncher, hotseat, hotseatScale,
+                    HOTSEAT_SCALE_PROPERTY));
         } else {
             Interpolator hotseatScaleInterpolator = config.getInterpolator(ANIM_HOTSEAT_SCALE,
                     scaleInterpolator);
-            propertySetter.setFloat(hotseat, WORKSPACE_STATE_SCALE_PROPERTY, hotseatScale,
+            propertySetter.setFloat(hotseat, HOTSEAT_SCALE_PROPERTY, hotseatScale,
                     hotseatScaleInterpolator);
         }
 
@@ -198,9 +203,18 @@ public class WorkspaceStateTransitionAnimation {
     }
 
     /**
+     * Returns a spring based animator for the scale property of {@param workspace}.
+     */
+    public static ValueAnimator getWorkspaceSpringScaleAnimator(Launcher launcher,
+            Workspace workspace, float scale) {
+        return getSpringScaleAnimator(launcher, workspace, scale, WORKSPACE_SCALE_PROPERTY);
+    }
+
+    /**
      * Returns a spring based animator for the scale property of {@param v}.
      */
-    public static ValueAnimator getSpringScaleAnimator(Launcher launcher, View v, float scale) {
+    public static <T extends View> ValueAnimator getSpringScaleAnimator(Launcher launcher, T v,
+            float scale, FloatProperty<T> property) {
         ResourceProvider rp = DynamicResource.provider(launcher);
         float damping = rp.getFloat(R.dimen.hint_scale_damping_ratio);
         float stiffness = rp.getFloat(R.dimen.hint_scale_stiffness);
@@ -211,9 +225,9 @@ public class WorkspaceStateTransitionAnimation {
                 .setDampingRatio(damping)
                 .setMinimumVisibleChange(MIN_VISIBLE_CHANGE_SCALE)
                 .setEndValue(scale)
-                .setStartValue(WORKSPACE_STATE_SCALE_PROPERTY.get(v))
+                .setStartValue(property.get(v))
                 .setStartVelocity(velocityPxPerS)
-                .build(v, WORKSPACE_STATE_SCALE_PROPERTY);
+                .build(v, property);
 
     }
 }
