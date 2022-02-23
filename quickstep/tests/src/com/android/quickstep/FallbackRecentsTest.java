@@ -61,6 +61,7 @@ import com.android.quickstep.views.RecentsView;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.RuleChain;
@@ -205,6 +206,7 @@ public class FallbackRecentsTest {
 
     // b/143488140
     //@NavigationModeSwitch
+    @Ignore("b/218403080")
     @Test
     public void testOverview() {
         startAppFast(getAppPackageName());
