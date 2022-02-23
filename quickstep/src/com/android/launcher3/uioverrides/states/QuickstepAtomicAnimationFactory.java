@@ -22,7 +22,7 @@ import static com.android.launcher3.LauncherState.HINT_STATE;
 import static com.android.launcher3.LauncherState.HINT_STATE_TWO_BUTTON;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.OVERVIEW;
-import static com.android.launcher3.WorkspaceStateTransitionAnimation.getSpringScaleAnimator;
+import static com.android.launcher3.WorkspaceStateTransitionAnimation.getWorkspaceSpringScaleAnimator;
 import static com.android.launcher3.anim.Interpolators.ACCEL;
 import static com.android.launcher3.anim.Interpolators.ACCEL_DEACCEL;
 import static com.android.launcher3.anim.Interpolators.DEACCEL;
@@ -172,7 +172,8 @@ public class QuickstepAtomicAnimationFactory extends
         } else if (fromState == HINT_STATE && toState == NORMAL) {
             config.setInterpolator(ANIM_DEPTH, DEACCEL_3);
             if (mHintToNormalDuration == -1) {
-                ValueAnimator va = getSpringScaleAnimator(mActivity, mActivity.getWorkspace(),
+                ValueAnimator va = getWorkspaceSpringScaleAnimator(mActivity,
+                        mActivity.getWorkspace(),
                         toState.getWorkspaceScaleAndTranslation(mActivity).scale);
                 mHintToNormalDuration = (int) va.getDuration();
             }
