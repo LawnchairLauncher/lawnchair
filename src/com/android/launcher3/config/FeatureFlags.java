@@ -256,6 +256,10 @@ public final class FeatureFlags {
             "ENABLE_SPLIT_FROM_WORKSPACE", true,
             "Enable initiating split screen from workspace.");
 
+    public static final BooleanFlag ENABLE_NEW_MIGRATION_LOGIC = getDebugFlag(
+            "ENABLE_NEW_MIGRATION_LOGIC", true,
+            "Enable the new grid migration logic, keeping pages when src < dest");
+
     public static void initialize(Context context) {
         synchronized (sDebugFlags) {
             for (DebugFlag flag : sDebugFlags) {
