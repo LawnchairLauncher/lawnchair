@@ -408,7 +408,7 @@ public abstract class BaseAllAppsContainerView<T extends Context & ActivityConte
         if (grid.isVerticalBarLayout()) {
             setPadding(grid.workspacePadding.left, 0, grid.workspacePadding.right, 0);
         } else {
-            setPadding(0, grid.isTablet ? insets.top : 0, 0, 0);
+            setPadding(0, grid.allAppsTopPadding, 0, 0);
         }
 
         InsettableFrameLayout.dispatchInsets(this, insets);
@@ -764,5 +764,12 @@ public abstract class BaseAllAppsContainerView<T extends Context & ActivityConte
             mAH.get(AdapterHolder.MAIN).mRecyclerView.setVerticalFadingEdgeEnabled(!mUsingTabs
                     && mVerticalFadingEdge);
         }
+    }
+
+    /**
+     * Returns a view that denotes the visible part of all apps container view.
+     */
+    public View getVisibleContainerView() {
+        return mActivityContext.getDeviceProfile().isTablet ? mBottomSheetBackground : this;
     }
 }
