@@ -65,6 +65,7 @@ import com.android.launcher3.util.ActivityOptionsWrapper;
 import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.IntSet;
 import com.android.launcher3.util.ObjectWrapper;
+import com.android.launcher3.util.RunnableList;
 import com.android.launcher3.util.SplitConfigurationOptions.SplitPositionOption;
 import com.android.launcher3.util.UiThreadHelper;
 import com.android.quickstep.OverviewCommandHelper;
@@ -494,6 +495,20 @@ public abstract class BaseQuickstepLauncher extends Launcher
         // populating workspace.
         // TODO: Find a better place for this
         WellbeingModel.INSTANCE.get(this);
+    }
+
+    @Override
+    public void onInitialBindComplete(IntSet boundPages, RunnableList pendingTasks) {
+        pendingTasks.add(() -> {
+            // This is added in pending task as we need to wait for views to be positioned
+            // correctly before registering them for the animation.
+            if (mLauncherUnfoldAnimationController != null) {
+                // This is needed in case items are rebound while the unfold animation is in
+                // progress.
+                mLauncherUnfoldAnimationController.updateRegisteredViewsIfNeeded();
+            }
+        });
+        super.onInitialBindComplete(boundPages, pendingTasks);
     }
 
     @Override
