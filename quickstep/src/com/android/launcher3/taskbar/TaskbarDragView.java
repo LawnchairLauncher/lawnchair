@@ -25,8 +25,8 @@ import com.android.launcher3.dragndrop.DragView;
  * while the pre-drag is still in progress (i.e. when the long press popup is still open). After
  * that ends, we switch to a system drag and drop view instead.
  */
-public class TaskbarDragView extends DragView<TaskbarActivityContext> {
-    public TaskbarDragView(TaskbarActivityContext launcher, Drawable drawable, int registrationX,
+public class TaskbarDragView extends DragView<BaseTaskbarContext> {
+    public TaskbarDragView(BaseTaskbarContext launcher, Drawable drawable, int registrationX,
             int registrationY, float initialScale, float scaleOnDrop, float finalScaleDps) {
         super(launcher, drawable, registrationX, registrationY, initialScale, scaleOnDrop,
                 finalScaleDps);
