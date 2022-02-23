@@ -55,8 +55,15 @@ public class AllAppsState extends LauncherState {
 
     @Override
     public ScaleAndTranslation getWorkspaceScaleAndTranslation(Launcher launcher) {
-        return new ScaleAndTranslation(1f, 0,
-                -launcher.getAllAppsController().getShiftRange() * PARALLAX_COEFFICIENT);
+        ScaleAndTranslation scaleAndTranslation =
+                new ScaleAndTranslation(NO_SCALE, NO_OFFSET, NO_OFFSET);
+        if (launcher.getDeviceProfile().isTablet) {
+            scaleAndTranslation.scale = 0.97f;
+        } else {
+            scaleAndTranslation.translationY =
+                    -launcher.getAllAppsController().getShiftRange() * PARALLAX_COEFFICIENT;
+        }
+        return scaleAndTranslation;
     }
 
     @Override

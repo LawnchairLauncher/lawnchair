@@ -51,11 +51,12 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
     public static final int FLAG_STASHED_IN_APP_SETUP = 1 << 4; // setup wizard and AllSetActivity
     public static final int FLAG_STASHED_IN_APP_IME = 1 << 5; // IME is visible
     public static final int FLAG_IN_STASHED_LAUNCHER_STATE = 1 << 6;
+    public static final int FLAG_STASHED_IN_APP_ALL_APPS = 1 << 7; // All apps is visible.
 
     // If we're in an app and any of these flags are enabled, taskbar should be stashed.
     private static final int FLAGS_STASHED_IN_APP = FLAG_STASHED_IN_APP_MANUAL
             | FLAG_STASHED_IN_APP_PINNED | FLAG_STASHED_IN_APP_EMPTY | FLAG_STASHED_IN_APP_SETUP
-            | FLAG_STASHED_IN_APP_IME;
+            | FLAG_STASHED_IN_APP_IME | FLAG_STASHED_IN_APP_ALL_APPS;
 
     // If any of these flags are enabled, inset apps by our stashed height instead of our unstashed
     // height. This way the reported insets are consistent even during transitions out of the app.
@@ -585,6 +586,7 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
         str.add((flags & FLAG_STASHED_IN_APP_IME) != 0 ? "FLAG_STASHED_IN_APP_IME" : "");
         str.add((flags & FLAG_IN_STASHED_LAUNCHER_STATE) != 0
                 ? "FLAG_IN_STASHED_LAUNCHER_STATE" : "");
+        str.add((flags & FLAG_STASHED_IN_APP_ALL_APPS) != 0 ? "FLAG_STASHED_IN_APP_ALL_APPS" : "");
         return str.toString();
     }
 
