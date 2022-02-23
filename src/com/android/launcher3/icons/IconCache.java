@@ -41,9 +41,9 @@ import android.os.Trace;
 import android.os.UserHandle;
 import android.text.TextUtils;
 import android.util.Log;
-import android.util.Pair;
 
 import androidx.annotation.NonNull;
+import androidx.core.util.Pair;
 
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.LauncherFiles;
@@ -339,6 +339,16 @@ public class IconCache extends BaseIconCache {
             List<IconRequestInfo<T>> iconRequestInfos) {
         Map<Pair<UserHandle, Boolean>, List<IconRequestInfo<T>>> iconLoadSubsectionsMap =
                 iconRequestInfos.stream()
+                        .filter(iconRequest -> {
+                            if (iconRequest.itemInfo.getTargetComponent() != null) {
+                                return true;
+                            }
+                            Log.i(TAG,
+                                    "Skipping Item info with null component name: "
+                                            + iconRequest.itemInfo);
+                            iconRequest.itemInfo.bitmap = getDefaultIcon(iconRequest.itemInfo.user);
+                            return false;
+                        })
                         .collect(groupingBy(iconRequest ->
                                 Pair.create(iconRequest.itemInfo.user, iconRequest.useLowResIcon)));
 
