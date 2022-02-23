@@ -3398,7 +3398,10 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
             // When the workspace is not loaded, we do not know how many screen will be bound.
             return getContext().getString(R.string.home_screen);
         }
-        return getContext().getString(R.string.workspace_scroll_format, page + 1, nScreens);
+        int panelCount = getPanelCount();
+        int currentPage = (page / panelCount) + 1;
+        int totalPages = nScreens / panelCount + nScreens % panelCount;
+        return getContext().getString(R.string.workspace_scroll_format, currentPage, totalPages);
     }
 
     /**
