@@ -67,11 +67,6 @@ public class AllAppsState extends LauncherState {
     }
 
     @Override
-    public boolean isTaskbarStashed(Launcher launcher) {
-        return true;
-    }
-
-    @Override
     protected float getDepthUnchecked(Context context) {
         // The scrim fades in at approximately 50% of the swipe gesture.
         // This means that the depth should be greater than 1, in order to fully zoom out.
@@ -93,7 +88,7 @@ public class AllAppsState extends LauncherState {
 
     @Override
     public int getVisibleElements(Launcher launcher) {
-        return ALL_APPS_CONTENT;
+        return ALL_APPS_CONTENT | HOTSEAT_ICONS;
     }
 
     @Override
