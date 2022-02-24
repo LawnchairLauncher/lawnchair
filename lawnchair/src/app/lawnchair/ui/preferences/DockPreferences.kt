@@ -26,6 +26,7 @@ import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences.preferenceManager
 import app.lawnchair.preferences2.PreferenceCollectorScope
 import app.lawnchair.preferences2.preferenceManager2
+import app.lawnchair.qsb.providers.QsbSearchProvider
 import app.lawnchair.ui.preferences.components.*
 import app.lawnchair.util.ifNotNull
 import com.android.launcher3.R
@@ -39,6 +40,8 @@ fun NavGraphBuilder.dockGraph(route: String) {
 interface DockPreferenceCollectorScope : PreferenceCollectorScope {
     val hotseatQsb: Boolean
     val themedHotseatQsb: Boolean
+    val hotseatQsbUseWebsite: Boolean
+    val hotseatQsbProvider: QsbSearchProvider
 }
 
 @Composable
@@ -46,13 +49,20 @@ fun DockPreferenceCollector(content: @Composable DockPreferenceCollectorScope.()
     val preferenceManager = preferenceManager2()
     val hotseatQsb by preferenceManager.hotseatQsb.state()
     val themedHotseatQsb by preferenceManager.themedHotseatQsb.state()
+    val hotseatQsbUseWebsite by preferenceManager.hotseatQsbForceWebsite.state()
+    val hotseatQsbProvider by preferenceManager.hotseatQsbProvider.state()
+
     ifNotNull(
         hotseatQsb,
         themedHotseatQsb,
+        hotseatQsbUseWebsite,
+        hotseatQsbProvider,
     ) { preferences ->
         object : DockPreferenceCollectorScope {
             override val hotseatQsb = preferences[0] as Boolean
             override val themedHotseatQsb = preferences[1] as Boolean
+            override val hotseatQsbUseWebsite = preferences[2] as Boolean
+            override val hotseatQsbProvider = preferences[3] as QsbSearchProvider
             override val coroutineScope = rememberCoroutineScope()
             override val preferenceManager = preferenceManager
         }.content()
@@ -91,6 +101,16 @@ fun DockPreferences() {
                             step = 0.1F,
                             valueRange = 0F..1F,
                             showAsPercentage = true,
+                        )
+                        QsbProviderPreference(
+                            value = hotseatQsbProvider,
+                            edit = { hotseatQsbProvider.set(value = it) },
+                        )
+                        SwitchPreference2(
+                            checked = hotseatQsbUseWebsite,
+                            label = stringResource(R.string.always_open_website_label),
+                            description = stringResource(R.string.always_open_website_description),
+                            edit = { hotseatQsbForceWebsite.set(value = it) },
                         )
                     }
                 }
