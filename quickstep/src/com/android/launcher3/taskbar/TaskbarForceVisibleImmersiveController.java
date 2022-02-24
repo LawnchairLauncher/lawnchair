@@ -71,7 +71,7 @@ public class TaskbarForceVisibleImmersiveController implements TouchController {
     /** Update values tracked via sysui flags. */
     public void updateSysuiFlags(int sysuiFlags) {
         mIsImmersiveMode = (sysuiFlags & SYSUI_STATE_IMMERSIVE_MODE) != 0;
-        if (mContext.isNavBarKidsModeActive()) {
+        if (mContext.isNavBarForceVisible()) {
             if (mIsImmersiveMode) {
                 startIconDimming();
             } else {
@@ -113,7 +113,7 @@ public class TaskbarForceVisibleImmersiveController implements TouchController {
      * Returns whether the taskbar is always visible in immersive mode.
      */
     private boolean isNavbarShownInImmersiveMode() {
-        return mIsImmersiveMode && mContext.isNavBarKidsModeActive();
+        return mIsImmersiveMode && mContext.isNavBarForceVisible();
     }
 
     private void updateIconDimmingAlpha() {
