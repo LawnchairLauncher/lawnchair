@@ -191,5 +191,5 @@
     <string name="search_provider_app_search">App Search</string>
     <string name="always_open_website_label">Always Open Website</string>
     <string name="always_open_website_description">Open search provider’s website even if their app is installed.</string>
-    <string name="search_provider">Search Provider</string>
+    <string name="search_provider">Proveedor de búsqueda</string>
 </resources>
