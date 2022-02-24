@@ -188,8 +188,8 @@
     <string name="icon_picker_description">Può causare il blocco di Lawnchair.</string>
     <string name="font_picker_label">Personalizzazione carattere</string>
     <string name="font_picker_description">Alcuni testi rimangono invariati.</string>
-    <string name="search_provider_app_search">App Search</string>
-    <string name="always_open_website_label">Always Open Website</string>
-    <string name="always_open_website_description">Open search provider’s website even if their app is installed.</string>
-    <string name="search_provider">Search Provider</string>
+    <string name="search_provider_app_search">Ricerca app</string>
+    <string name="always_open_website_label">Apri sempre Il sito</string>
+    <string name="always_open_website_description">Apri il sito web del provider di ricerca anche se la loro app è installata.</string>
+    <string name="search_provider">Provider di ricerca</string>
 </resources>
