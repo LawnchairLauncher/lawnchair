@@ -66,8 +66,6 @@ import com.android.launcher3.shortcuts.DeepShortcutView;
 import com.android.launcher3.shortcuts.ShortcutDragPreviewProvider;
 import com.android.launcher3.util.LauncherBindableItemsContainer;
 import com.android.systemui.shared.recents.model.Task;
-import com.android.systemui.shared.system.ClipDescriptionCompat;
-import com.android.systemui.shared.system.LauncherAppsCompat;
 
 import java.io.PrintWriter;
 import java.util.Arrays;
@@ -314,13 +312,13 @@ public class TaskbarDragController extends DragController<BaseTaskbarContext> im
             clipDescription = new ClipDescription(item.title,
                     new String[] {
                             item.itemType == LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT
-                                    ? ClipDescriptionCompat.MIMETYPE_APPLICATION_SHORTCUT
-                                    : ClipDescriptionCompat.MIMETYPE_APPLICATION_ACTIVITY
+                                    ? ClipDescription.MIMETYPE_APPLICATION_SHORTCUT
+                                    : ClipDescription.MIMETYPE_APPLICATION_ACTIVITY
                     });
             intent = new Intent();
             if (item.itemType == LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT) {
                 String deepShortcutId = ((WorkspaceItemInfo) item).getDeepShortcutId();
-                intent.putExtra(ClipDescriptionCompat.EXTRA_PENDING_INTENT,
+                intent.putExtra(ClipDescription.EXTRA_PENDING_INTENT,
                         launcherApps.getShortcutIntent(
                                 item.getIntent().getPackage(),
                                 deepShortcutId,
@@ -329,19 +327,19 @@ public class TaskbarDragController extends DragController<BaseTaskbarContext> im
                 intent.putExtra(Intent.EXTRA_PACKAGE_NAME, item.getIntent().getPackage());
                 intent.putExtra(Intent.EXTRA_SHORTCUT_ID, deepShortcutId);
             } else {
-                intent.putExtra(ClipDescriptionCompat.EXTRA_PENDING_INTENT,
-                        LauncherAppsCompat.getMainActivityLaunchIntent(launcherApps,
-                                item.getIntent().getComponent(), null, item.user));
+                intent.putExtra(ClipDescription.EXTRA_PENDING_INTENT,
+                        launcherApps.getMainActivityLaunchIntent(item.getIntent().getComponent(),
+                                null, item.user));
             }
             intent.putExtra(Intent.EXTRA_USER, item.user);
         } else if (tag instanceof Task) {
             Task task = (Task) tag;
             clipDescription = new ClipDescription(task.titleDescription,
                     new String[] {
-                            ClipDescriptionCompat.MIMETYPE_APPLICATION_TASK
+                            ClipDescription.MIMETYPE_APPLICATION_TASK
                     });
             intent = new Intent();
-            intent.putExtra(ClipDescriptionCompat.EXTRA_TASK_ID, task.key.id);
+            intent.putExtra(Intent.EXTRA_TASK_ID, task.key.id);
             intent.putExtra(Intent.EXTRA_USER, UserHandle.of(task.key.userId));
         }
 

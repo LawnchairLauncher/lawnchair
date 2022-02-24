@@ -23,6 +23,7 @@ import static com.android.launcher3.states.StateAnimationConfig.SKIP_DEPTH_CONTR
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
+import android.app.WallpaperManager;
 import android.os.IBinder;
 import android.os.SystemProperties;
 import android.util.FloatProperty;
@@ -42,7 +43,6 @@ import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.statemanager.StateManager.StateHandler;
 import com.android.launcher3.states.StateAnimationConfig;
 import com.android.systemui.shared.system.BlurUtils;
-import com.android.systemui.shared.system.WallpaperManagerCompat;
 
 import java.io.PrintWriter;
 import java.util.function.Consumer;
@@ -127,7 +127,7 @@ public class DepthController implements StateHandler<LauncherState>,
      */
     private int mMaxBlurRadius;
     private boolean mCrossWindowBlursEnabled;
-    private WallpaperManagerCompat mWallpaperManager;
+    private WallpaperManager mWallpaperManager;
     private SurfaceControl mSurface;
     /**
      * How visible the -1 overlay is, from 0 to 1.
@@ -168,7 +168,7 @@ public class DepthController implements StateHandler<LauncherState>,
     private void ensureDependencies() {
         if (mWallpaperManager == null) {
             mMaxBlurRadius = mLauncher.getResources().getInteger(R.integer.max_depth_blur_radius);
-            mWallpaperManager = new WallpaperManagerCompat(mLauncher);
+            mWallpaperManager = mLauncher.getSystemService(WallpaperManager.class);
         }
 
         if (mLauncher.getRootView() != null && mOnAttachListener == null) {

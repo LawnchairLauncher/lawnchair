@@ -258,9 +258,8 @@ public interface TaskShortcutFactory {
 
         @Override
         protected ActivityOptions makeLaunchOptions(Activity activity) {
-            final ActivityCompat act = new ActivityCompat(activity);
             final int navBarPosition = WindowManagerWrapper.getInstance().getNavBarPosition(
-                    act.getDisplayId());
+                    activity.getDisplayId());
             if (navBarPosition == WindowManagerWrapper.NAV_BAR_POS_INVALID) {
                 return null;
             }
