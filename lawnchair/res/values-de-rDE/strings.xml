@@ -184,12 +184,12 @@
     <string name="recents_clear_all">Alle löschen</string>
     <string name="pick_icon_from_label">Symbol auswählen von</string>
     <string name="experimental_features_label">Experimentelle Funktionen</string>
-    <string name="icon_picker_label">App-spezifische Icon-Auswahl</string>
+    <string name="icon_picker_label">App-spezifische Symbol-Anpassung</string>
     <string name="icon_picker_description">Kann Lawnchair zum Einfrieren bringen.</string>
     <string name="font_picker_label">Schriftart anpassen</string>
     <string name="font_picker_description">Manche Texte bleiben unverändert.</string>
-    <string name="search_provider_app_search">App Search</string>
-    <string name="always_open_website_label">Always Open Website</string>
-    <string name="always_open_website_description">Open search provider’s website even if their app is installed.</string>
-    <string name="search_provider">Search Provider</string>
+    <string name="search_provider_app_search">App-Suche</string>
+    <string name="always_open_website_label">Website immer öffnen</string>
+    <string name="always_open_website_description">Website des Suchanbieters auch öffnen, wenn dessen App installiert ist.</string>
+    <string name="search_provider">Suchanbieter</string>
 </resources>
