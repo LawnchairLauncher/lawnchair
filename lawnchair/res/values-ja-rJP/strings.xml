@@ -187,4 +187,8 @@
     <string name="icon_picker_description">Lawnchair がフリーズする原因になる可能性があります。</string>
     <string name="font_picker_label">フォントのカスタマイズ</string>
     <string name="font_picker_description">一部のテキストは変更されません。</string>
+    <string name="search_provider_app_search">App Search</string>
+    <string name="always_open_website_label">Always Open Website</string>
+    <string name="always_open_website_description">Open search provider’s website even if their app is installed.</string>
+    <string name="search_provider">Search Provider</string>
 </resources>
