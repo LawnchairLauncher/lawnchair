@@ -1169,9 +1169,7 @@ public class CellLayout extends ViewGroup {
         // Apply local extracted color if the DragView is an AppWidgetHostViewDrawable.
         View view = dragObject.dragView.getContentView();
         if (view instanceof LauncherAppWidgetHostView) {
-            Launcher launcher = Launcher.getLauncher(getContext());
-            Workspace workspace = launcher.getWorkspace();
-            int screenId = workspace.getIdForScreen(this);
+            int screenId = getWorkspace().getIdForScreen(this);
             cellToRect(targetCell[0], targetCell[1], spanX, spanY, mTempRect);
 
             ((LauncherAppWidgetHostView) view).handleDrag(mTempRect, this, screenId);
@@ -1184,9 +1182,22 @@ public class CellLayout extends ViewGroup {
             return getContext().getString(R.string.move_to_hotseat_position,
                     Math.max(cellX, cellY) + 1);
         } else {
-            return getContext().getString(R.string.move_to_empty_cell,
-                    cellY + 1, cellX + 1);
+            Workspace workspace = getWorkspace();
+            int row = cellY + 1;
+            int col = workspace.mIsRtl ? mCountX - cellX : cellX + 1;
+            int panelCount = workspace.getPanelCount();
+            if (panelCount > 1) {
+                // Increment the column if the target is on the right side of a two panel home
+                int screenId = workspace.getIdForScreen(this);
+                int pageIndex = workspace.getPageIndexForScreenId(screenId);
+                col += (pageIndex % panelCount) * mCountX;
+            }
+            return getContext().getString(R.string.move_to_empty_cell, row, col);
         }
+    }
+
+    private Workspace getWorkspace() {
+        return Launcher.cast(mActivity).getWorkspace();
     }
 
     public void clearDragOutlines() {
@@ -2243,7 +2254,7 @@ public class CellLayout extends ViewGroup {
     private void commitTempPlacement(View dragView) {
         mTmpOccupied.copyTo(mOccupied);
 
-        int screenId = Launcher.cast(mActivity).getWorkspace().getIdForScreen(this);
+        int screenId = getWorkspace().getIdForScreen(this);
         int container = Favorites.CONTAINER_DESKTOP;
 
         if (mContainerType == HOTSEAT) {
