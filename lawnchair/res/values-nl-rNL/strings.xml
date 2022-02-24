@@ -188,8 +188,8 @@
     <string name="icon_picker_description">Kan Lawnchair laten vastlopen.</string>
     <string name="font_picker_label">Lettertype aanpassen</string>
     <string name="font_picker_description">Sommige teksten blijven ongewijzigd.</string>
-    <string name="search_provider_app_search">App Search</string>
-    <string name="always_open_website_label">Always Open Website</string>
-    <string name="always_open_website_description">Open search provider’s website even if their app is installed.</string>
-    <string name="search_provider">Search Provider</string>
+    <string name="search_provider_app_search">Apps Doorzoeken</string>
+    <string name="always_open_website_label">Altijd de website openen</string>
+    <string name="always_open_website_description">Altijd de website openen van de zoek provider, ook al is de app geïnstalleerd.</string>
+    <string name="search_provider">Zoek Provider</string>
 </resources>
