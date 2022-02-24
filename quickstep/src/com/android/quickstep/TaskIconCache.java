@@ -18,6 +18,7 @@ package com.android.quickstep;
 import static com.android.launcher3.uioverrides.QuickstepLauncher.GO_LOW_RAM_RECENTS_ENABLED;
 import static com.android.launcher3.util.DisplayController.CHANGE_DENSITY;
 
+import android.app.ActivityManager;
 import android.app.ActivityManager.TaskDescription;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
@@ -48,7 +49,6 @@ import com.android.quickstep.util.TaskKeyLruCache;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.recents.model.Task.TaskKey;
 import com.android.systemui.shared.system.PackageManagerWrapper;
-import com.android.systemui.shared.system.TaskDescriptionCompat;
 
 import java.util.concurrent.Executor;
 import java.util.function.Consumer;
@@ -154,7 +154,7 @@ public class TaskIconCache implements DisplayInfoChangeListener {
 
         // Load icon
         // TODO: Load icon resource (b/143363444)
-        Bitmap icon = TaskDescriptionCompat.getIcon(desc, key.userId);
+        Bitmap icon = getIcon(desc, key.userId);
         if (icon != null) {
             entry.icon = getBitmapInfo(
                     new BitmapDrawable(mContext.getResources(), icon),
@@ -191,6 +191,14 @@ public class TaskIconCache implements DisplayInfoChangeListener {
 
         mIconCache.put(task.key, entry);
         return entry;
+    }
+
+    private Bitmap getIcon(ActivityManager.TaskDescription desc, int userId) {
+        if (desc.getInMemoryIcon() != null) {
+            return desc.getInMemoryIcon();
+        }
+        return ActivityManager.TaskDescription.loadTaskDescriptionIcon(
+                desc.getIconFilename(), userId);
     }
 
     private String getBadgedContentDescription(ActivityInfo info, int userId, TaskDescription td) {
