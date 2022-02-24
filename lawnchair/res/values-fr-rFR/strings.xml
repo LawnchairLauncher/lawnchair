@@ -188,8 +188,8 @@
     <string name="icon_picker_description">Pourrait causer le gel de Lawnchair.</string>
     <string name="font_picker_label">Personnalisation de la police</string>
     <string name="font_picker_description">Certains textes restent inchangés.</string>
-    <string name="search_provider_app_search">App Search</string>
-    <string name="always_open_website_label">Always Open Website</string>
-    <string name="always_open_website_description">Open search provider’s website even if their app is installed.</string>
-    <string name="search_provider">Search Provider</string>
+    <string name="search_provider_app_search">Recherche d\'appli</string>
+    <string name="always_open_website_label">Toujours ouvrir le site web</string>
+    <string name="always_open_website_description">Ouvrir le site web du fournisseur de recherche même si son appli est installée.</string>
+    <string name="search_provider">Fournisseur de recherche</string>
 </resources>
