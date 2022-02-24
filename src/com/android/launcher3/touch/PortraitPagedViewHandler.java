@@ -352,8 +352,14 @@ public class PortraitPagedViewHandler implements PagedOrientationHandler {
         // Set translations
         if (deviceProfile.isLandscape) {
             if (desiredTaskId == splitBounds.rightBottomTaskId) {
-                translationX = ((taskViewWidth * splitBounds.leftTaskPercent)
-                                + (taskViewWidth * splitBounds.dividerWidthPercent));
+                float leftTopTaskPercent = splitBounds.appsStackedVertically
+                        ? splitBounds.topTaskPercent
+                        : splitBounds.leftTaskPercent;
+                float dividerThicknessPercent = splitBounds.appsStackedVertically
+                        ? splitBounds.dividerHeightPercent
+                        : splitBounds.dividerWidthPercent;
+                translationX = ((taskViewWidth * leftTopTaskPercent)
+                        + (taskViewWidth * dividerThicknessPercent));
             }
         } else {
             if (desiredTaskId == splitBounds.leftTopTaskId) {
