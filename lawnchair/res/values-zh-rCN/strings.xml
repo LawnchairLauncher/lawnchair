@@ -78,9 +78,9 @@
     <string name="dt2s_admin_hint">若要使用双击息屏，请设置Lawnchair 为设备管理应用。点击\"打开设置\"，然后点击\"启用此设备管理应用\"。</string>
     <string name="dt2s_admin_warning">双击息屏功能将被关闭。</string>
     <string name="dt2s_a11y_hint_title">启用无障碍服务</string>
-    <string name="dt2s_a11y_hint">若要使用双击息屏，请为Lawnchair 启用无障碍服务。点击\"打开设置\"，然后选择 \"Lawnchair \"并打开\"使用Lawnchair\"。</string>
+    <string name="dt2s_a11y_hint">若要使用双击息屏，请先启用 Lawnchair 无障碍服务。点击\"打开设置\"，然后选择 \"Lawnchair \"并启用 Lawnchair 无障碍服务。</string>
     <string name="dt2s_warning_open_settings">打开设置</string>
-    <string name="minus_one_enable">订阅</string>
+    <string name="minus_one_enable">订阅内容</string>
     <string name="minus_one_unavailable">未安装订阅源。</string>
     <string name="fuzzy_search_title">模糊搜索</string>
     <string name="fuzzy_search_desc">搜索应用时显示近似结果</string>
@@ -105,7 +105,7 @@
     <string name="wallpaper_scrolling_label">滚动壁纸</string>
     <string name="show_sys_ui_scrim">顶部阴影</string>
     <string name="show_status_bar">状态栏</string>
-    <string name="what_to_show">显示内容</string>
+    <string name="what_to_show">选择要显示的项目</string>
     <string name="missing_notification_access_label">需要通知权限</string>
     <string name="missing_notification_access_description">需要通知权限。</string>
     <string name="msg_missing_notification_access">要使用通知圆点，请授予 <xliff:g id="name" example="My App">%1$s</xliff:g> 对通知的访问。</string>
@@ -114,13 +114,13 @@
     <string name="pref_fonts_missing_font">未找到字体。</string>
     <string name="font_variant_italic">斜体</string>
     <string name="font_weight_thin">细体</string>
-    <string name="font_weight_extra_light">极细</string>
+    <string name="font_weight_extra_light">超细</string>
     <string name="font_weight_light">浅色</string>
     <string name="font_weight_regular">常规</string>
-    <string name="font_weight_medium">中等</string>
-    <string name="font_weight_semi_bold">半粗</string>
+    <string name="font_weight_medium">略粗</string>
+    <string name="font_weight_semi_bold">中粗</string>
     <string name="font_weight_bold">粗体</string>
-    <string name="font_weight_extra_bold">极粗</string>
+    <string name="font_weight_extra_bold">加粗</string>
     <string name="font_weight_extra_black">黑体</string>
     <string name="font_label">字体(实验性功能)</string>
     <string name="reset_font">重置</string>
@@ -187,4 +187,8 @@
     <string name="icon_picker_description">可能会导致Lawnchair冻结。</string>
     <string name="font_picker_label">字体自定义</string>
     <string name="font_picker_description">部分文本保持不变。</string>
+    <string name="search_provider_app_search">App Search</string>
+    <string name="always_open_website_label">Always Open Website</string>
+    <string name="always_open_website_description">Open search provider’s website even if their app is installed.</string>
+    <string name="search_provider">Search Provider</string>
 </resources>
