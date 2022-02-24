@@ -190,8 +190,8 @@
     <string name="icon_picker_description">Может привести к замиранию Lawnchair.</string>
     <string name="font_picker_label">Настройка шрифта</string>
     <string name="font_picker_description">Некоторый текст останется без изменений.</string>
-    <string name="search_provider_app_search">App Search</string>
-    <string name="always_open_website_label">Always Open Website</string>
-    <string name="always_open_website_description">Open search provider’s website even if their app is installed.</string>
-    <string name="search_provider">Search Provider</string>
+    <string name="search_provider_app_search">Поиск приложений</string>
+    <string name="always_open_website_label">Всегда открывать сайт</string>
+    <string name="always_open_website_description">Открывать сайт поставщика поиска, даже если установлено приложение.</string>
+    <string name="search_provider">Поисковик</string>
 </resources>
