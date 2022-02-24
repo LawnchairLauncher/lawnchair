@@ -89,15 +89,15 @@ public class AllAppsTransitionController
     private float mShiftRange;      // changes depending on the orientation
     private float mProgress;        // [0, 1], mShiftRange * mProgress = shiftCurrent
 
-    private float mScrollRangeDelta = 0;
     private ScrimView mScrimView;
 
     public AllAppsTransitionController(Launcher l) {
         mLauncher = l;
-        mShiftRange = mLauncher.getDeviceProfile().heightPx;
+        DeviceProfile dp = mLauncher.getDeviceProfile();
+        setShiftRange(dp.allAppsShiftRange);
         mProgress = 1f;
 
-        mIsVerticalLayout = mLauncher.getDeviceProfile().isVerticalBarLayout();
+        mIsVerticalLayout = dp.isVerticalBarLayout();
         mLauncher.addOnDeviceProfileChangeListener(this);
     }
 
@@ -108,7 +108,7 @@ public class AllAppsTransitionController
     @Override
     public void onDeviceProfileChanged(DeviceProfile dp) {
         mIsVerticalLayout = dp.isVerticalBarLayout();
-        setScrollRangeDelta(mScrollRangeDelta);
+        setShiftRange(dp.allAppsShiftRange);
 
         if (mIsVerticalLayout) {
             mLauncher.getHotseat().setTranslationY(0);
@@ -160,12 +160,14 @@ public class AllAppsTransitionController
         }
 
         // need to decide depending on the release velocity
-        Interpolator interpolator = (config.userControlled ? LINEAR : DEACCEL_1_7);
-
+        Interpolator verticalProgressInterpolator = config.getInterpolator(ANIM_VERTICAL_PROGRESS,
+                config.userControlled ? LINEAR : DEACCEL_1_7);
         Animator anim = createSpringAnimation(mProgress, targetProgress);
-        anim.setInterpolator(config.getInterpolator(ANIM_VERTICAL_PROGRESS, interpolator));
+        anim.setInterpolator(verticalProgressInterpolator);
         anim.addListener(getProgressAnimatorListener());
         builder.add(anim);
+        // Use ANIM_VERTICAL_PROGRESS's interpolator to determine state transition threshold.
+        builder.setInterpolator(verticalProgressInterpolator);
 
         setAlphas(toState, config, builder);
 
@@ -215,9 +217,8 @@ public class AllAppsTransitionController
     /**
      * Updates the total scroll range but does not update the UI.
      */
-    public void setScrollRangeDelta(float delta) {
-        mScrollRangeDelta = delta;
-        mShiftRange = mLauncher.getDeviceProfile().heightPx - mScrollRangeDelta;
+    public void setShiftRange(float shiftRange) {
+        mShiftRange = shiftRange;
     }
 
     /**

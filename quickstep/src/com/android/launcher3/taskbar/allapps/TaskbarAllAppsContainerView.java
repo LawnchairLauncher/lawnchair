@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.android.launcher3.taskbar;
+package com.android.launcher3.taskbar.allapps;
 
 import android.content.Context;
 import android.util.AttributeSet;
@@ -29,10 +29,7 @@ import com.android.launcher3.allapps.BaseAllAppsContainerView;
 import com.android.launcher3.allapps.search.SearchAdapterProvider;
 
 /** All apps container accessible from taskbar. */
-public class TaskbarAllAppsContainerView extends BaseAllAppsContainerView<TaskbarActivityContext> {
-    public TaskbarAllAppsContainerView(Context context) {
-        this(context, null);
-    }
+public class TaskbarAllAppsContainerView extends BaseAllAppsContainerView<TaskbarAllAppsContext> {
 
     public TaskbarAllAppsContainerView(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
@@ -44,8 +41,8 @@ public class TaskbarAllAppsContainerView extends BaseAllAppsContainerView<Taskba
 
     @Override
     protected SearchAdapterProvider<?> createMainAdapterProvider() {
-        // Task bar all apps does not yet support search, so this implementation is minimal.
-        return new SearchAdapterProvider<TaskbarActivityContext>(mActivityContext) {
+        // Taskbar all apps does not yet support search, so this implementation is minimal.
+        return new SearchAdapterProvider<TaskbarAllAppsContext>(mActivityContext) {
             @Override
             public boolean launchHighlightedItem() {
                 return false;
@@ -79,8 +76,7 @@ public class TaskbarAllAppsContainerView extends BaseAllAppsContainerView<Taskba
 
     @Override
     public WindowInsets onApplyWindowInsets(WindowInsets insets) {
-        // TODO(b/204696617): Switch to status bar insets once they work.
-        setInsets(insets.getInsets(WindowInsets.Type.tappableElement()).toRect());
+        setInsets(insets.getInsets(WindowInsets.Type.systemBars()).toRect());
         return super.onApplyWindowInsets(insets);
     }
 }

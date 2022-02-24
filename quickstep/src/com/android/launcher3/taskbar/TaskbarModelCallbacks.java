@@ -158,7 +158,7 @@ public class TaskbarModelCallbacks implements
             mPredictedItems = item.items;
             commitItemsToUI();
         } else if (item.containerId == Favorites.CONTAINER_PREDICTION) {
-            mControllers.taskbarAllAppsViewController.setPredictedApps(item.items);
+            mControllers.taskbarAllAppsController.setPredictedApps(item.items);
         }
     }
 
@@ -201,7 +201,7 @@ public class TaskbarModelCallbacks implements
 
     @Override
     public void bindAllApplications(AppInfo[] apps, int flags) {
-        mControllers.taskbarAllAppsViewController.setApps(apps, flags);
+        mControllers.taskbarAllAppsController.setApps(apps, flags);
     }
 
     protected void dumpLogs(String prefix, PrintWriter pw) {

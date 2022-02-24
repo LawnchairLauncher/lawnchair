@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.android.launcher3.taskbar;
+package com.android.launcher3.taskbar.allapps;
 
 import static com.android.launcher3.anim.Interpolators.AGGRESSIVE_EASE;
 
@@ -23,18 +23,22 @@ import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 
+import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Insettable;
 import com.android.launcher3.R;
 import com.android.launcher3.views.AbstractSlideInView;
 
-/** Wrapper for taskbar all apps with slide-in behavior. */
-public class TaskbarAllAppsSlideInView extends
-        AbstractSlideInView<TaskbarActivityContext> implements Insettable {
+import java.util.Optional;
 
-    private static final int DEFAULT_OPEN_DURATION = 500;
-    private static final int DEFAULT_CLOSE_DURATION = 200;
+/** Wrapper for taskbar all apps with slide-in behavior. */
+public class TaskbarAllAppsSlideInView extends AbstractSlideInView<TaskbarAllAppsContext>
+        implements Insettable, DeviceProfile.OnDeviceProfileChangeListener {
+    static final int DEFAULT_OPEN_DURATION = 500;
+    static final int DEFAULT_CLOSE_DURATION = 200;
 
     private TaskbarAllAppsContainerView mAppsView;
+    private OnCloseListener mOnCloseBeginListener;
+    private float mShiftRange;
 
     public TaskbarAllAppsSlideInView(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
@@ -46,7 +50,7 @@ public class TaskbarAllAppsSlideInView extends
     }
 
     /** Opens the all apps view. */
-    public void show() {
+    void show() {
         if (mIsOpen || mOpenCloseAnimator.isRunning()) {
             return;
         }
@@ -60,12 +64,18 @@ public class TaskbarAllAppsSlideInView extends
     }
 
     /** The apps container inside this view. */
-    public TaskbarAllAppsContainerView getAppsView() {
+    TaskbarAllAppsContainerView getAppsView() {
         return mAppsView;
+    }
+
+    /** Callback invoked when the view is beginning to close (e.g. close animation is started). */
+    void setOnCloseBeginListener(OnCloseListener onCloseBeginListener) {
+        mOnCloseBeginListener = onCloseBeginListener;
     }
 
     @Override
     protected void handleClose(boolean animate) {
+        Optional.ofNullable(mOnCloseBeginListener).ifPresent(OnCloseListener::onSlideInViewClosed);
         handleClose(animate, DEFAULT_CLOSE_DURATION);
     }
 
@@ -79,6 +89,17 @@ public class TaskbarAllAppsSlideInView extends
         super.onFinishInflate();
         mAppsView = findViewById(R.id.apps_view);
         mContent = mAppsView;
+
+        DeviceProfile dp = mActivityContext.getDeviceProfile();
+        setShiftRange(dp.allAppsShiftRange);
+
+        mActivityContext.addOnDeviceProfileChangeListener(this);
+    }
+
+    @Override
+    protected void onLayout(boolean changed, int l, int t, int r, int b) {
+        super.onLayout(changed, l, t, r, b);
+        setTranslationShift(mTranslationShift);
     }
 
     @Override
@@ -97,5 +118,25 @@ public class TaskbarAllAppsSlideInView extends
     @Override
     public void setInsets(Rect insets) {
         mAppsView.setInsets(insets);
+    }
+
+    @Override
+    public void onDeviceProfileChanged(DeviceProfile dp) {
+        setShiftRange(dp.allAppsShiftRange);
+        setTranslationShift(TRANSLATION_SHIFT_OPENED);
+    }
+
+    private void setShiftRange(float shiftRange) {
+        mShiftRange = shiftRange;
+    }
+
+    @Override
+    protected float getShiftRange() {
+        return mShiftRange;
+    }
+
+    @Override
+    protected boolean isEventOverContent(MotionEvent ev) {
+        return getPopupContainer().isEventOverView(mAppsView.getVisibleContainerView(), ev);
     }
 }

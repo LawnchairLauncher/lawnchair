@@ -82,7 +82,7 @@ public class AppsSearchContainerLayout extends ExtendedEditText
         setHint(prefixTextWithIcon(getContext(), R.drawable.ic_allapps_search, getHint()));
 
         mContentOverlap =
-                getResources().getDimensionPixelSize(R.dimen.all_apps_search_bar_field_height) / 2;
+                getResources().getDimensionPixelSize(R.dimen.all_apps_search_bar_content_overlap);
     }
 
     @Override

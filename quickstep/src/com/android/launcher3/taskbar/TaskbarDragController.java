@@ -75,7 +75,7 @@ import java.util.Arrays;
 /**
  * Handles long click on Taskbar items to start a system drag and drop operation.
  */
-public class TaskbarDragController extends DragController<TaskbarActivityContext> implements
+public class TaskbarDragController extends DragController<BaseTaskbarContext> implements
         TaskbarControllers.LoggableTaskbarController {
 
     private static boolean DEBUG_DRAG_SHADOW_SURFACE = false;
@@ -95,7 +95,7 @@ public class TaskbarDragController extends DragController<TaskbarActivityContext
     // Animation for the drag shadow back into position after an unsuccessful drag
     private ValueAnimator mReturnAnimator;
 
-    public TaskbarDragController(TaskbarActivityContext activity) {
+    public TaskbarDragController(BaseTaskbarContext activity) {
         super(activity);
         Resources resources = mActivity.getResources();
         mDragIconSize = resources.getDimensionPixelSize(R.dimen.taskbar_icon_drag_icon_size);
@@ -110,7 +110,7 @@ public class TaskbarDragController extends DragController<TaskbarActivityContext
      * generate the ClipDescription and Intent.
      * @return Whether {@link View#startDragAndDrop} started successfully.
      */
-    protected boolean startDragOnLongClick(View view) {
+    public boolean startDragOnLongClick(View view) {
         return startDragOnLongClick(view, null, null);
     }
 
@@ -131,8 +131,7 @@ public class TaskbarDragController extends DragController<TaskbarActivityContext
         }
 
         BubbleTextView btv = (BubbleTextView) view;
-
-        mActivity.setTaskbarWindowFullscreen(true);
+        mActivity.onDragStart();
         btv.post(() -> {
             DragView dragView = startInternalDrag(btv, dragPreviewProvider);
             if (iconShift != null) {
@@ -185,7 +184,7 @@ public class TaskbarDragController extends DragController<TaskbarActivityContext
             }
         };
         if (FeatureFlags.ENABLE_TASKBAR_POPUP_MENU.get()) {
-            PopupContainerWithArrow<TaskbarActivityContext> popupContainer =
+            PopupContainerWithArrow<BaseTaskbarContext> popupContainer =
                     mControllers.taskbarPopupController.showForIcon(btv);
             if (popupContainer != null) {
                 dragOptions.preDragCondition = popupContainer.createPreDragCondition(false);
