@@ -188,4 +188,8 @@
     <string name="icon_picker_description">Lawnchair മരവിപ്പിക്കാൻ കാരണമായേക്കാം.</string>
     <string name="font_picker_label">ഫോണ്ട് കസ്റ്റമൈസേഷൻ</string>
     <string name="font_picker_description">ചില വാചകങ്ങൾ മാറ്റമില്ലാതെ തുടരും.</string>
+    <string name="search_provider_app_search">App Search</string>
+    <string name="always_open_website_label">Always Open Website</string>
+    <string name="always_open_website_description">Open search provider’s website even if their app is installed.</string>
+    <string name="search_provider">Search Provider</string>
 </resources>
