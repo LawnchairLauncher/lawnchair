@@ -18,6 +18,7 @@ package com.android.launcher3.views;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.util.AttributeSet;
+import android.view.ContextThemeWrapper;
 
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.LauncherAppState;
@@ -40,8 +41,9 @@ public class AllAppsButton extends BubbleTextView {
     public AllAppsButton(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
 
+        Context theme = new ContextThemeWrapper(context, R.style.AllAppsButtonTheme);
         Bitmap bitmap = LauncherAppState.getInstance(context).getIconCache().getIconFactory()
-                .createScaledBitmapWithShadow(context.getDrawable(R.drawable.ic_all_apps_button));
+                .createScaledBitmapWithShadow(theme.getDrawable(R.drawable.ic_all_apps_button));
         setIcon(new FastBitmapDrawable(bitmap));
     }
 }
