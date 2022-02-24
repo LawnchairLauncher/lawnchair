@@ -100,7 +100,14 @@ public class LauncherModel extends LauncherApps.Callback implements InstallSessi
     private boolean mModelDestroyed = false;
     public boolean isModelLoaded() {
         synchronized (mLock) {
-            return mModelLoaded && mLoaderTask == null && !mModelDestroyed;
+            boolean isModelLoaded = mModelLoaded && mLoaderTask == null && !mModelDestroyed;
+            if (Utilities.IS_RUNNING_IN_TEST_HARNESS && !isModelLoaded) {
+                Log.d(TestProtocol.LAUNCHER_NOT_INITIALIZED,
+                        "Model not loaded - mModelLoaded: " + mModelLoaded
+                                + ", mLoaderTask: " + mLoaderTask
+                                + ", mModelDestroyed: " + mModelDestroyed);
+            }
+            return isModelLoaded;
         }
     }
 
@@ -249,6 +256,9 @@ public class LauncherModel extends LauncherApps.Callback implements InstallSessi
      * Called when the model is destroyed
      */
     public void destroy() {
+        if (Utilities.IS_RUNNING_IN_TEST_HARNESS) {
+            Log.d(TestProtocol.LAUNCHER_NOT_INITIALIZED, "destroying model", new Exception());
+        }
         mModelDestroyed = true;
         MODEL_EXECUTOR.execute(mModelDelegate::destroy);
     }
@@ -396,6 +406,9 @@ public class LauncherModel extends LauncherApps.Callback implements InstallSessi
                     return true;
                 } else {
                     stopLoader();
+                    if (Utilities.IS_RUNNING_IN_TEST_HARNESS) {
+                        Log.d(TestProtocol.LAUNCHER_NOT_INITIALIZED, "starting loader");
+                    }
                     mLoaderTask = new LoaderTask(
                             mApp, mBgAllAppsList, mBgDataModel, mModelDelegate, loaderResults);
 
@@ -413,6 +426,9 @@ public class LauncherModel extends LauncherApps.Callback implements InstallSessi
      * @return true if an existing loader was stopped.
      */
     private boolean stopLoader() {
+        if (Utilities.IS_RUNNING_IN_TEST_HARNESS) {
+            Log.d(TestProtocol.LAUNCHER_NOT_INITIALIZED, "stopping loader");
+        }
         synchronized (mLock) {
             LoaderTask oldTask = mLoaderTask;
             mLoaderTask = null;
@@ -512,6 +528,9 @@ public class LauncherModel extends LauncherApps.Callback implements InstallSessi
         }
 
         public void commit() {
+            if (Utilities.IS_RUNNING_IN_TEST_HARNESS) {
+                Log.d(TestProtocol.LAUNCHER_NOT_INITIALIZED, "committing model");
+            }
             synchronized (mLock) {
                 // Everything loaded bind the data.
                 mModelLoaded = true;
@@ -520,6 +539,9 @@ public class LauncherModel extends LauncherApps.Callback implements InstallSessi
 
         @Override
         public void close() {
+            if (Utilities.IS_RUNNING_IN_TEST_HARNESS) {
+                Log.d(TestProtocol.LAUNCHER_NOT_INITIALIZED, "closing model");
+            }
             synchronized (mLock) {
                 // If we are still the last one to be scheduled, remove ourselves.
                 if (mLoaderTask == mTask) {

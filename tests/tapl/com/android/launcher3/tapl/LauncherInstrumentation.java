@@ -766,6 +766,8 @@ public final class LauncherInstrumentation {
                     getBoolean(TestProtocol.TEST_INFO_RESPONSE_FIELD)) {
                 return;
             }
+            Log.d(TestProtocol.LAUNCHER_NOT_INITIALIZED,
+                    "Launcher not yet initialized in attempt: " + i);
             SystemClock.sleep(100);
         }
         checkForAnomaly();
