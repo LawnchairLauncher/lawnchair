@@ -226,6 +226,21 @@ filegroup {
     ],
 }
 
+// Common source files used to build go launcher
+filegroup {
+    name: "launcher-go-src-no-build-config",
+    srcs: [
+        "src/**/*.java",
+        "src/**/*.kt",
+        "quickstep/src/**/*.java",
+        "quickstep/src/**/*.kt",
+        "go/src/**/*.java",
+        "go/src/**/*.kt",
+        "go/quickstep/src/**/*.java",
+        "go/quickstep/src/**/*.kt",
+    ],
+}
+
 // Proguard files for Launcher3
 filegroup {
     name: "launcher-proguard-rules",
