@@ -1,5 +1,6 @@
 package com.android.launcher3.util
 
+import android.view.View
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
 import com.google.common.truth.Truth.assertThat
@@ -14,8 +15,8 @@ class MultiScalePropertyTest {
     private val received = mutableListOf<Float>()
 
     private val factory =
-        object : MultiScalePropertyFactory<Int?>("Test") {
-            override fun apply(obj: Int?, value: Float) {
+        object : MultiScalePropertyFactory<View?>("Test") {
+            override fun apply(obj: View?, value: Float) {
                 received.add(value)
             }
         }

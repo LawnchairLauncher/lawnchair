@@ -15,8 +15,9 @@
  */
 package com.android.quickstep.util;
 
+import static com.android.launcher3.LauncherAnimUtils.HOTSEAT_SCALE_PROPERTY_FACTORY;
 import static com.android.launcher3.LauncherAnimUtils.SCALE_INDEX_REVEAL_ANIM;
-import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY_FACTORY;
+import static com.android.launcher3.LauncherAnimUtils.WORKSPACE_SCALE_PROPERTY_FACTORY;
 import static com.android.launcher3.LauncherState.BACKGROUND_APP;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.anim.PropertySetter.NO_ANIM_PROPERTY_SETTER;
@@ -32,6 +33,7 @@ import android.util.FloatProperty;
 import android.view.View;
 
 import com.android.launcher3.BaseQuickstepLauncher;
+import com.android.launcher3.Hotseat;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.Workspace;
@@ -51,8 +53,11 @@ public class WorkspaceRevealAnim {
 
     // Should be used for animations running alongside this WorkspaceRevealAnim.
     public static final int DURATION_MS = 350;
-    private static final FloatProperty<View> REVEAL_SCALE_PROPERTY =
-            SCALE_PROPERTY_FACTORY.get(SCALE_INDEX_REVEAL_ANIM);
+    private static final FloatProperty<Workspace> WORKSPACE_SCALE_PROPERTY =
+            WORKSPACE_SCALE_PROPERTY_FACTORY.get(SCALE_INDEX_REVEAL_ANIM);
+
+    private static final FloatProperty<Hotseat> HOTSEAT_SCALE_PROPERTY =
+            HOTSEAT_SCALE_PROPERTY_FACTORY.get(SCALE_INDEX_REVEAL_ANIM);
 
     private final float mScaleStart;
     private final AnimatorSet mAnimators = new AnimatorSet();
@@ -67,8 +72,8 @@ public class WorkspaceRevealAnim {
         workspace.setPivotToScaleWithSelf(launcher.getHotseat());
 
         // Add reveal animations.
-        addRevealAnimatorsForView(workspace);
-        addRevealAnimatorsForView(launcher.getHotseat());
+        addRevealAnimatorsForView(workspace, WORKSPACE_SCALE_PROPERTY);
+        addRevealAnimatorsForView(launcher.getHotseat(), HOTSEAT_SCALE_PROPERTY);
 
         // Add overview scrim animation.
         if (animateOverviewScrim) {
@@ -93,8 +98,8 @@ public class WorkspaceRevealAnim {
         mAnimators.setInterpolator(Interpolators.DECELERATED_EASE);
     }
 
-    private void addRevealAnimatorsForView(View v) {
-        ObjectAnimator scale = ObjectAnimator.ofFloat(v, REVEAL_SCALE_PROPERTY, mScaleStart, 1f);
+    private <T extends View>  void addRevealAnimatorsForView(T v, FloatProperty<T> scaleProperty) {
+        ObjectAnimator scale = ObjectAnimator.ofFloat(v, scaleProperty, mScaleStart, 1f);
         scale.setDuration(DURATION_MS);
         scale.setInterpolator(Interpolators.DECELERATED_EASE);
         mAnimators.play(scale);
@@ -107,7 +112,7 @@ public class WorkspaceRevealAnim {
         mAnimators.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
-                REVEAL_SCALE_PROPERTY.set(v, 1f);
+                scaleProperty.set(v, 1f);
                 v.setAlpha(1f);
             }
         });

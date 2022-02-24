@@ -130,6 +130,23 @@ public class Interpolators {
         }
     };
 
+    public static final Interpolator LINEAR_TELEPORT = t -> {
+        float startTeleport = 0.2f;
+        float endTeleport = 0.4f;
+        float teleportProgress = 0.5f;
+        float v;
+        if (t < startTeleport) {
+            v = LINEAR.getInterpolation(t);
+        } else if (t < endTeleport) {
+            v = Utilities.mapToRange(t, startTeleport, endTeleport, startTeleport,
+                    endTeleport + teleportProgress, ACCEL_DEACCEL);
+        } else {
+            v = LINEAR.getInterpolation(t) + teleportProgress;
+        }
+        v = Utilities.boundToRange(v, 0f, 1f);
+        return v;
+    };
+
     private static final float FAST_FLING_PX_MS = 10;
 
     public static Interpolator scrollInterpolatorForVelocity(float velocity) {

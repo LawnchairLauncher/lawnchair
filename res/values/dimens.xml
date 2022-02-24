@@ -93,8 +93,11 @@
     <dimen name="fastscroll_end_margin">-26dp</dimen>
 
     <!-- All Apps -->
-    <dimen name="all_apps_open_vertical_translate">320dp</dimen>
+    <dimen name="all_apps_starting_vertical_translate">320dp</dimen>
+    <dimen name="all_apps_top_padding">0dp</dimen>
     <dimen name="all_apps_search_bar_field_height">48dp</dimen>
+    <!-- all_apps_search_bar_field_height / 2 -->
+    <dimen name="all_apps_search_bar_content_overlap">24dp</dimen>
     <dimen name="all_apps_search_bar_bottom_padding">30dp</dimen>
     <dimen name="all_apps_empty_search_message_top_offset">40dp</dimen>
     <dimen name="all_apps_empty_search_bg_top_offset">144dp</dimen>
@@ -363,4 +366,9 @@
     <dimen name="search_row_small_icon_size">32dp</dimen>
     <dimen name="padded_rounded_button_padding">8dp</dimen>
 
+<!-- Bottom sheet related parameters -->
+    <dimen name="bottom_sheet_handle_width">32dp</dimen>
+    <dimen name="bottom_sheet_handle_height">4dp</dimen>
+    <dimen name="bottom_sheet_handle_margin">16dp</dimen>
+    <dimen name="bottom_sheet_handle_corner_radius">2dp</dimen>
 </resources>

@@ -19,16 +19,16 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/bg_rounded_corner_bottom_sheet"
-        android:paddingTop="16dp"
+        android:paddingTop="@dimen/bottom_sheet_handle_margin"
         android:orientation="vertical">
         <View
             android:id="@+id/collapse_handle"
-            android:layout_width="48dp"
-            android:layout_height="2dp"
+            android:layout_width="@dimen/bottom_sheet_handle_width"
+            android:layout_height="@dimen/bottom_sheet_handle_height"
             android:layout_gravity="center_horizontal"
-            android:layout_marginBottom="16dp"
+            android:layout_marginBottom="@dimen/bottom_sheet_handle_margin"
             android:visibility="gone"
-            android:background="?android:attr/textColorSecondary"/>
+            android:background="@drawable/bg_rounded_corner_bottom_sheet_handle"/>
         <TextView
             style="@style/TextHeadline"
             android:id="@+id/title"

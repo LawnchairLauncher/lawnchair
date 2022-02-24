@@ -77,6 +77,13 @@ public class PendingAnimation implements PropertySetter {
         addAnimationHoldersRecur(a, mDuration, springProperty, mAnimHolders);
     }
 
+    /**
+     * Configures interpolator of the underlying AnimatorSet.
+     */
+    public void setInterpolator(TimeInterpolator interpolator) {
+        mAnim.setInterpolator(interpolator);
+    }
+
     @Override
     public void setViewAlpha(View view, float alpha, TimeInterpolator interpolator) {
         if (view == null || view.getAlpha() == alpha) {
