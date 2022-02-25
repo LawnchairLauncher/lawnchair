@@ -187,8 +187,8 @@
     <string name="icon_picker_description">可能会导致Lawnchair冻结。</string>
     <string name="font_picker_label">字体自定义</string>
     <string name="font_picker_description">部分文本保持不变。</string>
-    <string name="search_provider_app_search">App Search</string>
-    <string name="always_open_website_label">Always Open Website</string>
-    <string name="always_open_website_description">Open search provider’s website even if their app is installed.</string>
-    <string name="search_provider">Search Provider</string>
+    <string name="search_provider_app_search">应用搜索</string>
+    <string name="always_open_website_label">始终打开网站</string>
+    <string name="always_open_website_description">即使安装了搜索提供商的应用，也打开搜索提供商的网站。</string>
+    <string name="search_provider">搜索提供商</string>
 </resources>
