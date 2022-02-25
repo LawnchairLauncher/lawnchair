@@ -816,8 +816,12 @@ public class SystemUiProxy implements ISystemUiProxy,
     public ArrayList<GroupedRecentTaskInfo> getRecentTasks(int numTasks, int userId) {
         if (mRecentTasks != null) {
             try {
-                return new ArrayList<>(Arrays.asList(mRecentTasks.getRecentTasks(numTasks,
-                        RECENT_IGNORE_UNAVAILABLE, userId)));
+                final GroupedRecentTaskInfo[] rawTasks = mRecentTasks.getRecentTasks(numTasks,
+                        RECENT_IGNORE_UNAVAILABLE, userId);
+                if (rawTasks == null) {
+                    return new ArrayList<>();
+                }
+                return new ArrayList<>(Arrays.asList(rawTasks));
             } catch (RemoteException e) {
                 Log.w(TAG, "Failed call getRecentTasks", e);
             }
