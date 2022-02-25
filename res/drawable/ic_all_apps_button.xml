@@ -18,26 +18,27 @@
     android:width="80dp"
     android:height="80dp"
     android:viewportWidth="80"
-    android:viewportHeight="80">
+    android:viewportHeight="80"
+    android:theme="@style/AllAppsTheme">
   <path
       android:pathData="M40,0.5L40,0.5c21.8,0 39.5,17.7 39.5,39.5l0,0c0,21.8 -17.7,39.5 -39.5,39.5l0,0C18.2,79.5 0.5,61.8 0.5,40l0,0C0.5,18.2 18.2,0.5 40,0.5z"
-      android:fillColor="#F7F9FA"/>
+      android:fillColor="?attr/allAppsButtonBgColor"/>
   <path
       android:pathData="M26.8,32.1m-5.3,0a5.3,5.3 0,1 1,10.6 0a5.3,5.3 0,1 1,-10.6 0"
-      android:fillColor="#00677E"/>
+      android:fillColor="?attr/allAppsButtonColor1"/>
   <path
       android:pathData="M26.8,47.9m-5.3,0a5.3,5.3 0,1 1,10.6 0a5.3,5.3 0,1 1,-10.6 0"
-      android:fillColor="#5F757E"/>
+      android:fillColor="?attr/allAppsButtonColor2"/>
   <path
       android:pathData="M40,32.1m-5.3,0a5.3,5.3 0,1 1,10.6 0a5.3,5.3 0,1 1,-10.6 0"
-      android:fillColor="#5F757E"/>
+      android:fillColor="?attr/allAppsButtonColor3"/>
   <path
       android:pathData="M40,47.9m-5.3,0a5.3,5.3 0,1 1,10.6 0a5.3,5.3 0,1 1,-10.6 0"
-      android:fillColor="#6C6F93"/>
+      android:fillColor="?attr/allAppsButtonColor2"/>
   <path
       android:pathData="M53.2,32.1m-5.3,0a5.3,5.3 0,1 1,10.6 0a5.3,5.3 0,1 1,-10.6 0"
-      android:fillColor="#005A6E"/>
+      android:fillColor="?attr/allAppsButtonColor4"/>
   <path
       android:pathData="M53.2,47.9m-5.3,0a5.3,5.3 0,1 1,10.6 0a5.3,5.3 0,1 1,-10.6 0"
-      android:fillColor="#5F757E"/>
+      android:fillColor="?attr/allAppsButtonColor2"/>
 </vector>
