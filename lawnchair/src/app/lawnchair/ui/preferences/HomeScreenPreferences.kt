@@ -50,6 +50,7 @@ interface HomeScreenPreferenceCollectorScope : PreferenceCollectorScope {
     val roundedWidgets: Boolean
     val showStatusBar: Boolean
     val showTopShadow: Boolean
+    val dt2s: Boolean
 }
 
 @Composable
@@ -59,15 +60,18 @@ fun HomeScreenPreferenceCollector(content: @Composable HomeScreenPreferenceColle
     val roundedWidgets by preferenceManager.roundedWidgets.state()
     val showStatusBar by preferenceManager.showStatusBar.state()
     val showTopShadow by preferenceManager.showTopShadow.state()
+    val dt2s by preferenceManager.dt2s.state()
     ifNotNull(
         darkStatusBar, roundedWidgets,
         showStatusBar, showTopShadow,
+        dt2s,
     ) {
         object : HomeScreenPreferenceCollectorScope {
             override val darkStatusBar = it[0] as Boolean
             override val roundedWidgets = it[1] as Boolean
             override val showStatusBar = it[2] as Boolean
-            override val showTopShadow: Boolean = it[3] as Boolean
+            override val showTopShadow = it[3] as Boolean
+            override val dt2s = it[4] as Boolean
             override val coroutineScope = rememberCoroutineScope()
             override val preferenceManager = preferenceManager
         }.content()
@@ -92,8 +96,9 @@ fun HomeScreenPreferences() {
                     prefs.wallpaperScrolling.getAdapter(),
                     label = stringResource(id = R.string.wallpaper_scrolling_label),
                 )
-                SwitchPreference(
-                    prefs.workspaceDt2s.getAdapter(),
+                SwitchPreference2(
+                    checked = dt2s,
+                    edit = { dt2s.set(value = it) },
                     label = stringResource(id = R.string.workspace_dt2s),
                 )
                 SwitchPreference2(

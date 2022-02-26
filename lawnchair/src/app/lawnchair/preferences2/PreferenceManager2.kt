@@ -124,6 +124,11 @@ class PreferenceManager2(private val context: Context) : PreferenceManager {
         },
     )
 
+    val dt2s = preference(
+        key = booleanPreferencesKey(name = "dt2s"),
+        defaultValue = true,
+    )
+
     companion object {
         private val Context.preferencesDataStore by preferencesDataStore(
             name = "preferences",
