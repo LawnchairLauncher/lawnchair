@@ -2484,21 +2484,27 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
             }
         }
 
+        // Note, centerX represents the center of the object that is being dragged, visually. d.x
+        // represents the location of the finger within the dragged item.
+        float touchX;
+        float touchY = d.y;
+
+        // Go through the pages and check if the dragged item is inside one of them. This block
+        // is responsible for  determining whether we need to snap to a different screen.
         int nextPage = getNextPage();
-        IntSet pageIndexesToVerify = IntSet.wrap(nextPage - 1, nextPage + 1);
-        if (isTwoPanelEnabled()) {
-            // If two panel is enabled, users can also drag items to nextPage + 2
-            pageIndexesToVerify.add(nextPage + 2);
-        }
-
-        int touchX = (int) Math.min(centerX, d.x);
-        int touchY = d.y;
-
-        // Go through the pages and check if the dragged item is inside one of them
+        IntSet pageIndexesToVerify = IntSet.wrap(nextPage - 1, nextPage
+                + (isTwoPanelEnabled() ? 2 : 1));
         for (int pageIndex : pageIndexesToVerify) {
             if (layout != null || isPageInTransition()) {
                 break;
             }
+
+            // When deciding whether to perform a page switch, we need to consider the most extreme
+            // X coordinate between the finger location and the center of the object being dragged.
+            // This is either the max or the min of the two depending on whether dragging to the
+            // left / right, respectively.
+            touchX = ((((pageIndex < nextPage) && !mIsRtl) || pageIndex > nextPage && mIsRtl)
+                    ? Math.min(d.x, centerX) : Math.max(d.x, centerX));
             layout = verifyInsidePage(pageIndex, touchX, touchY);
         }
 
@@ -2507,12 +2513,16 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         // on one panel just choose the current page.
         if (layout == null && nextPage >= 0 && nextPage < getPageCount()) {
             if (isTwoPanelEnabled()) {
+                // When determining which panel to use within a single screen, we always use
+                // the centroid of the object rather than the finger.
+                touchX = centerX;
                 nextPage = getScreenCenter(getScrollX()) > touchX
                         ? (mIsRtl ? nextPage + 1 : nextPage) // left side
                         : (mIsRtl ? nextPage : nextPage + 1); // right side
             }
             layout = (CellLayout) getChildAt(nextPage);
         }
+
         if (layout != mDragTargetLayout) {
             setCurrentDropLayout(layout);
             setCurrentDragOverlappingLayout(layout);
