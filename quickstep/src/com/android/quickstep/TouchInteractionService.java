@@ -959,6 +959,9 @@ public class TouchInteractionService extends Service
             pw.println("ProtoTrace:");
             pw.println("  file=" + ProtoTracer.INSTANCE.get(this).getTraceFile());
             mTaskbarManager.dumpLogs("", pw);
+            if (createdOverviewActivity != null) {
+                createdOverviewActivity.getDeviceProfile().dump("", pw);
+            }
         }
     }
 
