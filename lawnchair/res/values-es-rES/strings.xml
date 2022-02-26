@@ -20,7 +20,7 @@
     <string name="home_screen_label">Pantalla de Inicio</string>
     <string name="home_screen_description">Feed, De un vistazo, Cuadrícula, iconos</string>
     <string name="general_label">General</string>
-    <string name="general_description">Colores, Puntos de notificación, Paquete de iconos</string>
+    <string name="general_description">Colores, Paquete de Íconos, Puntos de Notificación</string>
     <string name="home_screen_rotation_label">Rotación de Pantalla de Inicio</string>
     <string name="home_screen_rotaton_description">Cuando se rota el dispositivo.</string>
     <string name="auto_add_shortcuts_label">Añadir Nuevas Aplicaciones a la Pantalla de Inicio</string>
@@ -188,8 +188,8 @@
     <string name="icon_picker_description">Puede hacer que Lawnchair se congele.</string>
     <string name="font_picker_label">Personalización de fuente</string>
     <string name="font_picker_description">Algunos textos permanecen sin cambios.</string>
-    <string name="search_provider_app_search">App Search</string>
-    <string name="always_open_website_label">Always Open Website</string>
-    <string name="always_open_website_description">Open search provider’s website even if their app is installed.</string>
+    <string name="search_provider_app_search">Búsqueda de Aplicaciones</string>
+    <string name="always_open_website_label">Siempre Abrir Sitio Web</string>
+    <string name="always_open_website_description">Abrir siempre Sitio web del proveedor aunque la app ya está instalada.</string>
     <string name="search_provider">Proveedor de búsqueda</string>
 </resources>
