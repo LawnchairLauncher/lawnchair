@@ -32,7 +32,7 @@ class SharedPreferencesMigration(private val context: Context) {
         "pref_accentColor2" to "accent_color", "hidden-app-set" to "hidden_apps",
         "pref_showStatusBar" to "show_status_bar", "pref_showSysUiScrim" to "show_top_shadow",
         "pref_hideAppSearchBar" to "hide_app_drawer_search_bar", "pref_enableFontSelection" to "enable_font_selection",
-        "pref_doubleTap2Sleep" to "dt2s",
+        "pref_doubleTap2Sleep" to "dt2s", "pref_searchAutoShowKeyboard" to "auto_show_keyboard_in_drawer",
     )
 
     fun produceMigration() = androidx.datastore.migrations.SharedPreferencesMigration(

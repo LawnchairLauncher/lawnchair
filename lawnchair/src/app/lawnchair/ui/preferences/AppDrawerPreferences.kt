@@ -47,6 +47,7 @@ fun NavGraphBuilder.appDrawerGraph(route: String) {
 interface AppDrawerPreferenceCollectorScope : PreferenceCollectorScope {
     val hiddenApps: Set<String>
     val hideAppDrawerSearchBar: Boolean
+    val autoShowKeyboardInDrawer: Boolean
 }
 
 @Composable
@@ -54,10 +55,15 @@ fun AppDrawerPreferenceCollector(content: @Composable AppDrawerPreferenceCollect
     val preferenceManager = preferenceManager2()
     val hiddenApps by preferenceManager.hiddenApps.state()
     val hideAppDrawerSearchBar by preferenceManager.hideAppDrawerSearchBar.state()
-    ifNotNull(hiddenApps, hideAppDrawerSearchBar) {
+    val autoShowKeyboardInDrawer by preferenceManager.autoShowKeyboardInDrawer.state()
+    ifNotNull(
+        hiddenApps, hideAppDrawerSearchBar,
+        autoShowKeyboardInDrawer,
+    ) {
         object : AppDrawerPreferenceCollectorScope {
             override val hiddenApps = it[0] as Set<String>
             override val hideAppDrawerSearchBar = it[1] as Boolean
+            override val autoShowKeyboardInDrawer = it[2] as Boolean
             override val coroutineScope = rememberCoroutineScope()
             override val preferenceManager = preferenceManager
         }.content()
@@ -99,8 +105,9 @@ fun AppDrawerPreferences() {
                     exit = shrinkVertically() + fadeOut()
                 ) {
                     DividerColumn {
-                        SwitchPreference(
-                            adapter = prefs.searchAutoShowKeyboard.getAdapter(),
+                        SwitchPreference2(
+                            checked = autoShowKeyboardInDrawer,
+                            edit = { autoShowKeyboardInDrawer.set(value = it) },
                             label = stringResource(id = R.string.pref_search_auto_show_keyboard),
                         )
                         if (!deviceSearchEnabled) {

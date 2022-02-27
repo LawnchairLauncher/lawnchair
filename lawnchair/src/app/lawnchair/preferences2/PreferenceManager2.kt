@@ -129,6 +129,11 @@ class PreferenceManager2(private val context: Context) : PreferenceManager {
         defaultValue = true,
     )
 
+    val autoShowKeyboardInDrawer = preference(
+        key = booleanPreferencesKey(name = "auto_show_keyboard_in_drawer"),
+        defaultValue = false,
+    )
+
     companion object {
         private val Context.preferencesDataStore by preferencesDataStore(
             name = "preferences",
