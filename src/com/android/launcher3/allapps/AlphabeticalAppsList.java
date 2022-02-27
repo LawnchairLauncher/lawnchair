@@ -84,7 +84,7 @@ public class AlphabeticalAppsList<T extends Context & ActivityContext> implement
     private final ArrayList<AdapterItem> mSearchResults = new ArrayList<>();
     private BaseAllAppsAdapter<T> mAdapter;
     private AppInfoComparator mAppNameComparator;
-    private final int mNumAppsPerRow;
+    private final int mNumAppsPerRowAllApps;
     private int mNumAppRowsInAdapter;
     private ItemInfoMatcher mItemFilter;
 
@@ -94,7 +94,7 @@ public class AlphabeticalAppsList<T extends Context & ActivityContext> implement
         mActivityContext = ActivityContext.lookupContext(context);
         mAppNameComparator = new AppInfoComparator(context);
         mWorkAdapterProvider = adapterProvider;
-        mNumAppsPerRow = mActivityContext.getDeviceProfile().inv.numColumns;
+        mNumAppsPerRowAllApps = mActivityContext.getDeviceProfile().inv.numAllAppsColumns;
         mAllAppsStore.addUpdateListener(this);
     }
 
@@ -336,7 +336,7 @@ public class AlphabeticalAppsList<T extends Context & ActivityContext> implement
 
             }
         }
-        if (mNumAppsPerRow != 0) {
+        if (mNumAppsPerRowAllApps != 0) {
             // Update the number of rows in the adapter after we do all the merging (otherwise, we
             // would have to shift the values again)
             int numAppsInSection = 0;
@@ -344,10 +344,10 @@ public class AlphabeticalAppsList<T extends Context & ActivityContext> implement
             int rowIndex = -1;
             for (AdapterItem item : mAdapterItems) {
                 item.rowIndex = 0;
-                if (AllAppsGridAdapter.isDividerViewType(item.viewType)) {
+                if (BaseAllAppsAdapter.isDividerViewType(item.viewType)) {
                     numAppsInSection = 0;
-                } else if (AllAppsGridAdapter.isIconViewType(item.viewType)) {
-                    if (numAppsInSection % mNumAppsPerRow == 0) {
+                } else if (BaseAllAppsAdapter.isIconViewType(item.viewType)) {
+                    if (numAppsInSection % mNumAppsPerRowAllApps == 0) {
                         numAppsInRow = 0;
                         rowIndex++;
                     }
@@ -365,12 +365,13 @@ public class AlphabeticalAppsList<T extends Context & ActivityContext> implement
                     float rowFraction = 1f / mNumAppRowsInAdapter;
                     for (FastScrollSectionInfo info : mFastScrollerSections) {
                         AdapterItem item = info.fastScrollToItem;
-                        if (!AllAppsGridAdapter.isIconViewType(item.viewType)) {
+                        if (!BaseAllAppsAdapter.isIconViewType(item.viewType)) {
                             info.touchFraction = 0f;
                             continue;
                         }
 
-                        float subRowFraction = item.rowAppIndex * (rowFraction / mNumAppsPerRow);
+                        float subRowFraction =
+                                item.rowAppIndex * (rowFraction / mNumAppsPerRowAllApps);
                         info.touchFraction = item.rowIndex * rowFraction + subRowFraction;
                     }
                     break;
@@ -379,7 +380,7 @@ public class AlphabeticalAppsList<T extends Context & ActivityContext> implement
                     float cumulativeTouchFraction = 0f;
                     for (FastScrollSectionInfo info : mFastScrollerSections) {
                         AdapterItem item = info.fastScrollToItem;
-                        if (!AllAppsGridAdapter.isIconViewType(item.viewType)) {
+                        if (!BaseAllAppsAdapter.isIconViewType(item.viewType)) {
                             info.touchFraction = 0f;
                             continue;
                         }
