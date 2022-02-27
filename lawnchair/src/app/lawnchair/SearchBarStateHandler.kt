@@ -3,7 +3,6 @@ package app.lawnchair
 import android.os.CancellationSignal
 import android.view.WindowInsets
 import androidx.core.view.WindowInsetsCompat
-import app.lawnchair.preferences.PreferenceManager
 import app.lawnchair.preferences2.PreferenceManager2
 import com.android.launcher3.LauncherState
 import com.android.launcher3.Utilities
