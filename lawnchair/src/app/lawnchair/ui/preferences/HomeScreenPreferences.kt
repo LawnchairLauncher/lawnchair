@@ -51,6 +51,7 @@ interface HomeScreenPreferenceCollectorScope : PreferenceCollectorScope {
     val showStatusBar: Boolean
     val showTopShadow: Boolean
     val dt2s: Boolean
+    val homeIconSizeFactor: Float
 }
 
 @Composable
@@ -61,10 +62,11 @@ fun HomeScreenPreferenceCollector(content: @Composable HomeScreenPreferenceColle
     val showStatusBar by preferenceManager.showStatusBar.state()
     val showTopShadow by preferenceManager.showTopShadow.state()
     val dt2s by preferenceManager.dt2s.state()
+    val homeIconSizeFactor by preferenceManager.homeIconSizeFactor.state()
     ifNotNull(
         darkStatusBar, roundedWidgets,
         showStatusBar, showTopShadow,
-        dt2s,
+        dt2s, homeIconSizeFactor,
     ) {
         object : HomeScreenPreferenceCollectorScope {
             override val darkStatusBar = it[0] as Boolean
@@ -72,6 +74,7 @@ fun HomeScreenPreferenceCollector(content: @Composable HomeScreenPreferenceColle
             override val showStatusBar = it[2] as Boolean
             override val showTopShadow = it[3] as Boolean
             override val dt2s = it[4] as Boolean
+            override val homeIconSizeFactor = it[5] as Float
             override val coroutineScope = rememberCoroutineScope()
             override val preferenceManager = preferenceManager
         }.content()
@@ -138,12 +141,13 @@ fun HomeScreenPreferences() {
                 )
             }
             PreferenceGroup(heading = stringResource(id = R.string.icons)) {
-                SliderPreference(
+                SliderPreference2(
                     label = stringResource(id = R.string.icon_size),
-                    adapter = prefs.iconSizeFactor.getAdapter(),
+                    value = homeIconSizeFactor,
                     step = 0.1f,
                     valueRange = 0.5F..1.5F,
                     showAsPercentage = true,
+                    edit = { homeIconSizeFactor.set(value = it) },
                 )
                 val showHomeLabels = prefs.showHomeLabels.getAdapter()
                 SwitchPreference(

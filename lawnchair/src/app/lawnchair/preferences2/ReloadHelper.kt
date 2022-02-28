@@ -37,4 +37,8 @@ class ReloadHelper(private val context: Context) {
         reloadGrid()
         recreate()
     }
+
+    fun reloadIcons() {
+        idp.onPreferencesChanged(context)
+    }
 }

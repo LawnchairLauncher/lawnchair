@@ -2,13 +2,21 @@ package app.lawnchair
 
 import android.content.Context
 import app.lawnchair.preferences.PreferenceManager
+import app.lawnchair.preferences2.PreferenceManager2
 import com.android.launcher3.InvariantDeviceProfile
 import com.android.launcher3.util.MainThreadInitializedObject
+import com.patrykmichalik.preferencemanager.firstBlocking
 
 class DeviceProfileOverrides(context: Context) {
     private val prefs = PreferenceManager.getInstance(context)
+    private val preferenceManager2 = PreferenceManager2.getInstance(context)
 
-    fun getOverrides(defaultGrid: InvariantDeviceProfile.GridOption) = Options(prefs, defaultGrid)
+    fun getOverrides(defaultGrid: InvariantDeviceProfile.GridOption) =
+        Options(
+            prefs = prefs,
+            preferenceManager2 = preferenceManager2,
+            defaultGrid = defaultGrid,
+        )
 
     data class Options(
         var numHotseatColumns: Int,
@@ -31,6 +39,7 @@ class DeviceProfileOverrides(context: Context) {
 
         constructor(
             prefs: PreferenceManager,
+            preferenceManager2: PreferenceManager2,
             defaultGrid: InvariantDeviceProfile.GridOption,
         ) : this(
             numHotseatColumns = prefs.hotseatColumns.get(defaultGrid),
@@ -40,7 +49,7 @@ class DeviceProfileOverrides(context: Context) {
             numFolderRows = prefs.folderRows.get(defaultGrid),
             numFolderColumns = prefs.folderColumns.get(defaultGrid),
 
-            iconSizeFactor = prefs.iconSizeFactor.get(),
+            iconSizeFactor = preferenceManager2.homeIconSizeFactor.firstBlocking(),
             enableIconText = prefs.showHomeLabels.get(),
             iconTextSizeFactor = prefs.textSizeFactor.get(),
 
