@@ -178,18 +178,6 @@ public class LandscapePagedViewHandler implements PagedOrientationHandler {
     }
 
     @Override
-    public int getSplitTaskViewDismissDirection(@StagePosition int stagePosition,
-            DeviceProfile dp) {
-        // Don't use device profile here because we know we're in fake landscape, only split option
-        // available is top/left
-        if (stagePosition == STAGE_POSITION_TOP_OR_LEFT) {
-            // Top (visually left) side
-            return SPLIT_TRANSLATE_PRIMARY_NEGATIVE;
-        }
-        throw new IllegalStateException("Invalid split stage position: " + stagePosition);
-    }
-
-    @Override
     public int getPrimaryScroll(View view) {
         return view.getScrollY();
     }
@@ -469,14 +457,12 @@ public class LandscapePagedViewHandler implements PagedOrientationHandler {
     }
 
     @Override
-    public void setIconAndSnapshotParams(View iconView, int taskIconMargin, int taskIconHeight,
-            FrameLayout.LayoutParams snapshotParams, boolean isRtl) {
-        FrameLayout.LayoutParams iconParams =
-                (FrameLayout.LayoutParams) iconView.getLayoutParams();
+    public void setTaskIconParams(FrameLayout.LayoutParams iconParams, int taskIconMargin,
+            int taskIconHeight, int thumbnailTopMargin, boolean isRtl) {
         iconParams.gravity = (isRtl ? START : END) | CENTER_VERTICAL;
         iconParams.rightMargin = -taskIconHeight - taskIconMargin / 2;
         iconParams.leftMargin = 0;
-        iconParams.topMargin = snapshotParams.topMargin / 2;
+        iconParams.topMargin = thumbnailTopMargin / 2;
     }
 
     @Override
