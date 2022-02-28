@@ -529,6 +529,27 @@ public class StatsLogManager implements ResourceBasedOverride {
         @UiEvent(doc = "User clicks on the search icon on header to launch search in app.")
         LAUNCHER_ALLAPPS_SEARCHINAPP_LAUNCH(913),
 
+        @UiEvent(doc = "User is shown the back gesture navigation tutorial step.")
+        LAUNCHER_GESTURE_TUTORIAL_BACK_STEP_SHOWN(959),
+
+        @UiEvent(doc = "User is shown the home gesture navigation tutorial step.")
+        LAUNCHER_GESTURE_TUTORIAL_HOME_STEP_SHOWN(960),
+
+        @UiEvent(doc = "User is shown the overview gesture navigation tutorial step.")
+        LAUNCHER_GESTURE_TUTORIAL_OVERVIEW_STEP_SHOWN(961),
+
+        @UiEvent(doc = "User completed the back gesture navigation tutorial step.")
+        LAUNCHER_GESTURE_TUTORIAL_BACK_STEP_COMPLETED(962),
+
+        @UiEvent(doc = "User completed the home gesture navigation tutorial step.")
+        LAUNCHER_GESTURE_TUTORIAL_HOME_STEP_COMPLETED(963),
+
+        @UiEvent(doc = "User completed the overview gesture navigation tutorial step.")
+        LAUNCHER_GESTURE_TUTORIAL_OVERVIEW_STEP_COMPLETED(964),
+
+        @UiEvent(doc = "User skips the gesture navigation tutorial.")
+        LAUNCHER_GESTURE_TUTORIAL_SKIPPED(965),
+
         @UiEvent(doc = "User scrolled on one of the all apps surfaces such as A-Z list, search "
                 + "result page etc.")
         LAUNCHER_ALLAPPS_SCROLLED(985);
