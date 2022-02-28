@@ -180,24 +180,6 @@ public class PortraitPagedViewHandler implements PagedOrientationHandler {
     }
 
     @Override
-    public int getSplitTaskViewDismissDirection(@StagePosition int stagePosition,
-            DeviceProfile dp) {
-        if (stagePosition == STAGE_POSITION_TOP_OR_LEFT) {
-            if (dp.isLandscape) {
-                // Left side
-                return SPLIT_TRANSLATE_PRIMARY_NEGATIVE;
-            } else {
-                // Top side
-                return SPLIT_TRANSLATE_SECONDARY_NEGATIVE;
-            }
-        } else if (stagePosition == STAGE_POSITION_BOTTOM_OR_RIGHT) {
-            // We don't have a bottom option, so should be right
-            return SPLIT_TRANSLATE_PRIMARY_POSITIVE;
-        }
-        throw new IllegalStateException("Invalid split stage position: " + stagePosition);
-    }
-
-    @Override
     public int getPrimaryScroll(View view) {
         return view.getScrollX();
     }
@@ -567,10 +549,8 @@ public class PortraitPagedViewHandler implements PagedOrientationHandler {
     }
 
     @Override
-    public void setIconAndSnapshotParams(View iconView, int taskIconMargin, int taskIconHeight,
-            FrameLayout.LayoutParams snapshotParams, boolean isRtl) {
-        FrameLayout.LayoutParams iconParams =
-                (FrameLayout.LayoutParams) iconView.getLayoutParams();
+    public void setTaskIconParams(FrameLayout.LayoutParams iconParams, int taskIconMargin,
+            int taskIconHeight, int thumbnailTopMargin, boolean isRtl) {
         iconParams.gravity = TOP | CENTER_HORIZONTAL;
         iconParams.leftMargin = iconParams.rightMargin = 0;
         iconParams.topMargin = taskIconMargin;

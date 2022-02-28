@@ -47,10 +47,6 @@ import java.util.List;
  */
 public interface PagedOrientationHandler {
 
-    int SPLIT_TRANSLATE_PRIMARY_POSITIVE = 0;
-    int SPLIT_TRANSLATE_PRIMARY_NEGATIVE = 1;
-    int SPLIT_TRANSLATE_SECONDARY_NEGATIVE = 2;
-
     PagedOrientationHandler PORTRAIT = new PortraitPagedViewHandler();
     PagedOrientationHandler LANDSCAPE = new LandscapePagedViewHandler();
     PagedOrientationHandler SEASCAPE = new SeascapePagedViewHandler();
@@ -82,12 +78,6 @@ public interface PagedOrientationHandler {
     FloatProperty<View> getPrimaryViewTranslate();
     FloatProperty<View> getSecondaryViewTranslate();
 
-    /**
-     * @param stagePosition The position where the view to be split will go
-     * @return {@link #SPLIT_TRANSLATE_*} constants to indicate which direction the
-     * dismissal should happen
-     */
-    int getSplitTaskViewDismissDirection(@StagePosition int stagePosition, DeviceProfile dp);
     int getPrimaryScroll(View view);
     float getPrimaryScale(View view);
     int getChildStart(View view);
@@ -152,8 +142,8 @@ public interface PagedOrientationHandler {
             StagedSplitBounds splitBoundsConfig, DeviceProfile dp);
 
     // Overview TaskMenuView methods
-    void setIconAndSnapshotParams(View iconView, int taskIconMargin, int taskIconHeight,
-            FrameLayout.LayoutParams snapshotParams, boolean isRtl);
+    void setTaskIconParams(FrameLayout.LayoutParams iconParams,
+            int taskIconMargin, int taskIconHeight, int thumbnailTopMargin, boolean isRtl);
     void setSplitIconParams(View primaryIconView, View secondaryIconView,
             int taskIconHeight, int primarySnapshotWidth, int primarySnapshotHeight,
             boolean isRtl, DeviceProfile deviceProfile, StagedSplitBounds splitConfig);

@@ -912,31 +912,31 @@ public class TaskView extends FrameLayout implements Reusable {
     public void setOrientationState(RecentsOrientedState orientationState) {
         PagedOrientationHandler orientationHandler = orientationState.getOrientationHandler();
         boolean isRtl = getLayoutDirection() == LAYOUT_DIRECTION_RTL;
-        LayoutParams snapshotParams = (LayoutParams) mSnapshotView.getLayoutParams();
         DeviceProfile deviceProfile = mActivity.getDeviceProfile();
-        snapshotParams.topMargin = deviceProfile.overviewTaskThumbnailTopMarginPx;
+
         boolean isGridTask = isGridTask();
+        LayoutParams iconParams = (LayoutParams) mIconView.getLayoutParams();
+
+        int thumbnailTopMargin = deviceProfile.overviewTaskThumbnailTopMarginPx;
         int taskIconHeight = deviceProfile.overviewTaskIconSizePx;
         int taskMargin = isGridTask ? deviceProfile.overviewTaskMarginGridPx
                 : deviceProfile.overviewTaskMarginPx;
-        int taskIconMargin = snapshotParams.topMargin - taskIconHeight - taskMargin;
-        LayoutParams iconParams = (LayoutParams) mIconView.getLayoutParams();
-        orientationHandler.setIconAndSnapshotParams(mIconView, taskIconMargin, taskIconHeight,
-                snapshotParams, isRtl);
-        updateDwbPlacement();
-        mSnapshotView.setLayoutParams(snapshotParams);
+        int taskIconMargin = thumbnailTopMargin - taskIconHeight - taskMargin;
+        orientationHandler.setTaskIconParams(iconParams, taskIconMargin, taskIconHeight,
+                thumbnailTopMargin, isRtl);
         iconParams.width = iconParams.height = taskIconHeight;
         mIconView.setLayoutParams(iconParams);
+
         mIconView.setRotation(orientationHandler.getDegreesRotated());
         int iconDrawableSize = isGridTask ? deviceProfile.overviewTaskIconDrawableSizeGridPx
                 : deviceProfile.overviewTaskIconDrawableSizePx;
         mIconView.setDrawableSize(iconDrawableSize, iconDrawableSize);
-        snapshotParams.topMargin = deviceProfile.overviewTaskThumbnailTopMarginPx;
-        mSnapshotView.setLayoutParams(snapshotParams);
-        mSnapshotView.getTaskOverlay().updateOrientationState(orientationState);
-    }
 
-    private void updateDwbPlacement() {
+        LayoutParams snapshotParams = (LayoutParams) mSnapshotView.getLayoutParams();
+        snapshotParams.topMargin = thumbnailTopMargin;
+        mSnapshotView.setLayoutParams(snapshotParams);
+
+        mSnapshotView.getTaskOverlay().updateOrientationState(orientationState);
         mDigitalWellBeingToast.initialize(mTask);
     }
 
