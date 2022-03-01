@@ -33,7 +33,7 @@ class SharedPreferencesMigration(private val context: Context) {
         "pref_showStatusBar" to "show_status_bar", "pref_showSysUiScrim" to "show_top_shadow",
         "pref_hideAppSearchBar" to "hide_app_drawer_search_bar", "pref_enableFontSelection" to "enable_font_selection",
         "pref_doubleTap2Sleep" to "dt2s", "pref_searchAutoShowKeyboard" to "auto_show_keyboard_in_drawer",
-        "pref_iconSizeFactor" to "home_icon_size_factor",
+        "pref_iconSizeFactor" to "home_icon_size_factor", "pref_folderPreviewBgOpacity" to "folder_preview_background_opacity",
     )
 
     fun produceMigration() = androidx.datastore.migrations.SharedPreferencesMigration(

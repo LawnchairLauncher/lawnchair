@@ -71,7 +71,6 @@ class PreferenceManager private constructor(private val context: Context) : Base
     val wallpaperScrolling = BoolPref("pref_wallpaperScrolling", true)
     val allAppsIconLabels = BoolPref("pref_allAppsIconLabels", true, reloadGrid)
     val enableDebugMenu = BoolPref("pref_enableDebugMenu", false)
-    val folderPreviewBgOpacity = FloatPref("pref_folderPreviewBgOpacity", 1F, reloadIcons)
     val customAppName = object : MutableMapPref<ComponentKey, String>("pref_appNameMap", reloadGrid) {
         override fun flattenKey(key: ComponentKey) = key.toString()
         override fun unflattenKey(key: String) = ComponentKey.fromString(key)!!

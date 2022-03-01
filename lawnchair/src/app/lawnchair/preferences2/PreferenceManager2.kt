@@ -140,6 +140,12 @@ class PreferenceManager2(private val context: Context) : PreferenceManager {
         onSet = { reloadHelper.reloadIcons() },
     )
 
+    val folderPreviewBackgroundOpacity = preference(
+        key = floatPreferencesKey(name = "folder_preview_background_opacity"),
+        defaultValue = 1F,
+        onSet = { reloadHelper.reloadIcons() },
+    )
+
     companion object {
         private val Context.preferencesDataStore by preferencesDataStore(
             name = "preferences",
