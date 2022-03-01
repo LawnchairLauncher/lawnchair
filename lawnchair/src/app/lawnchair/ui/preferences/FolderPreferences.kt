@@ -18,6 +18,7 @@ package app.lawnchair.ui.preferences
 
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavGraphBuilder
@@ -45,7 +46,7 @@ interface FolderPreferenceCollectorScope : PreferenceCollectorScope {
 @Composable
 fun FolderPreferenceCollector(content: @Composable FolderPreferenceCollectorScope.() -> Unit) {
     val preferenceManager = preferenceManager2()
-    val folderPreviewBackgroundOpacity = preferenceManager.folderPreviewBackgroundOpacity.state()
+    val folderPreviewBackgroundOpacity by preferenceManager.folderPreviewBackgroundOpacity.state()
     ifNotNull(folderPreviewBackgroundOpacity) {
         object : FolderPreferenceCollectorScope {
             override val folderPreviewBackgroundOpacity = it[0] as Float
