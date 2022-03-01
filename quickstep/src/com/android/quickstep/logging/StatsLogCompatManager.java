@@ -139,9 +139,11 @@ public class StatsLogCompatManager extends StatsLogManager {
                 info.getIsWork() /* is_work_profile */,
                 info.getAttribute().getNumber() /* origin */,
                 getCardinality(info) /* cardinality */,
-                info.getWidget().getSpanX(),
-                info.getWidget().getSpanY(),
-                getFeatures(info));
+                info.getWidget().getSpanX() /* span_x */,
+                info.getWidget().getSpanY() /* span_y */,
+                getFeatures(info) /* features */,
+                null/*itemAttributes*/
+        );
     }
 
     /**
@@ -170,7 +172,9 @@ public class StatsLogCompatManager extends StatsLogManager {
                 info.getAttribute().getNumber(), // attribute_id = 15;
                 getCardinality(info), // cardinality = 16;
                 info.getWidget().getSpanX(), // span_x = 17 [default = 1];
-                info.getWidget().getSpanY() // span_y = 18 [default = 1];
+                info.getWidget().getSpanY(), // span_y = 18 [default = 1];
+                0, // int32 features = 19;
+                null // repeated int32 item_attributes = 20;
         );
     }
 
@@ -413,7 +417,8 @@ public class StatsLogCompatManager extends StatsLogManager {
                     atomInfo.getFolderIcon().getLabelInfo() /* edittext */,
                     getCardinality(atomInfo) /* cardinality */,
                     getFeatures(atomInfo) /* features */,
-                    getSearchAttributes(atomInfo) /* searchAttributes */
+                    getSearchAttributes(atomInfo) /* searchAttributes */,
+                    null/*itemAttributes*/
             );
         }
     }
