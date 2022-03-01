@@ -17,9 +17,13 @@ package com.android.quickstep;
 
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
+import static com.android.quickstep.TaskAnimationManager.ENABLE_SHELL_TRANSITIONS;
 
+import android.os.RemoteException;
+import android.util.Log;
 import android.view.IRecentsAnimationController;
 import android.view.SurfaceControl;
+import android.view.WindowManagerGlobal;
 import android.window.PictureInPictureSurfaceTransaction;
 
 import androidx.annotation.NonNull;
@@ -39,6 +43,7 @@ import java.util.function.Consumer;
  */
 public class RecentsAnimationController {
 
+    private static final String TAG = "RecentsAnimationController";
     private final RecentsAnimationControllerCompat mController;
     private final Consumer<RecentsAnimationController> mOnFinishedListener;
     private final boolean mAllowMinimizeSplitScreen;
@@ -74,7 +79,16 @@ public class RecentsAnimationController {
         if (mUseLauncherSysBarFlags != useLauncherSysBarFlags) {
             mUseLauncherSysBarFlags = useLauncherSysBarFlags;
             UI_HELPER_EXECUTOR.execute(() -> {
-                mController.setAnimationTargetsBehindSystemBars(!useLauncherSysBarFlags);
+                if (!ENABLE_SHELL_TRANSITIONS) {
+                    mController.setAnimationTargetsBehindSystemBars(!useLauncherSysBarFlags);
+                } else {
+                    try {
+                        WindowManagerGlobal.getWindowManagerService().setRecentsAppBehindSystemBars(
+                                useLauncherSysBarFlags);
+                    } catch (RemoteException e) {
+                        Log.e(TAG, "Unable to reach window manager", e);
+                    }
+                }
             });
         }
     }
