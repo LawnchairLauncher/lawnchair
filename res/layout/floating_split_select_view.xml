@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <ImageView
+    <com.android.quickstep.views.FloatingTaskThumbnailView
         android:id="@+id/thumbnail"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -14,7 +14,6 @@
         android:id="@+id/split_placeholder"
         android:layout_width="match_parent"
         android:layout_height="@dimen/split_placeholder_size"
-        android:background="?android:colorPrimary"
         android:visibility="gone" />
 
 </com.android.quickstep.views.FloatingTaskView>
