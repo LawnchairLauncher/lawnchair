@@ -20,7 +20,6 @@ import static android.view.WindowManager.LayoutParams.TYPE_APPLICATION;
 
 import static com.android.launcher3.Utilities.dpiFromPx;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
-import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 import static com.android.launcher3.util.WindowManagerCompat.MIN_TABLET_WIDTH;
 
 import static java.util.Collections.emptyMap;
@@ -34,7 +33,6 @@ import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.graphics.Point;
 import android.hardware.display.DisplayManager;
-import android.hardware.display.DisplayManager.DisplayListener;
 import android.os.Build;
 import android.text.TextUtils;
 import android.util.ArrayMap;
@@ -44,7 +42,6 @@ import android.view.Display;
 
 import androidx.annotation.AnyThread;
 import androidx.annotation.UiThread;
-import androidx.annotation.WorkerThread;
 
 import com.android.launcher3.Utilities;
 import com.android.launcher3.uioverrides.ApiWrapper;
@@ -58,7 +55,7 @@ import java.util.Set;
  * Utility class to cache properties of default display to avoid a system RPC on every call.
  */
 @SuppressLint("NewApi")
-public class DisplayController implements DisplayListener, ComponentCallbacks, SafeCloseable {
+public class DisplayController implements ComponentCallbacks, SafeCloseable {
 
     private static final String TAG = "DisplayController";
 
@@ -102,7 +99,6 @@ public class DisplayController implements DisplayListener, ComponentCallbacks, S
         }
         mInfo = new Info(getDisplayInfoContext(display), display,
                 getInternalDisplays(mDM), emptyMap());
-        mDM.registerDisplayListener(this, UI_HELPER_EXECUTOR.getHandler());
     }
 
     private static ArrayMap<String, PortraitSize> getInternalDisplays(
@@ -128,35 +124,6 @@ public class DisplayController implements DisplayListener, ComponentCallbacks, S
         } else {
             // TODO: unregister broadcast receiver
         }
-        mDM.unregisterDisplayListener(this);
-    }
-
-    @Override
-    public final void onDisplayAdded(int displayId) { }
-
-    @Override
-    public final void onDisplayRemoved(int displayId) { }
-
-    @WorkerThread
-    @Override
-    public final void onDisplayChanged(int displayId) {
-        if (displayId != DEFAULT_DISPLAY) {
-            return;
-        }
-        Display display = mDM.getDisplay(DEFAULT_DISPLAY);
-        if (display == null) {
-            return;
-        }
-        if (Utilities.ATLEAST_S) {
-            // Only update refresh rate. Everything else comes from component callbacks
-            mInfo.mSingleFrameMs = getSingleFrameMs(display);
-            return;
-        }
-        handleInfoChange(display);
-    }
-
-    public static int getSingleFrameMs(Context context) {
-        return INSTANCE.get(context).getInfo().mSingleFrameMs;
     }
 
     /**
@@ -287,8 +254,6 @@ public class DisplayController implements DisplayListener, ComponentCallbacks, S
 
     public static class Info {
 
-        private int mSingleFrameMs;
-
         // Configuration properties
         public final int rotation;
         public final float fontScale;
@@ -318,7 +283,6 @@ public class DisplayController implements DisplayListener, ComponentCallbacks, S
             densityDpi = config.densityDpi;
             mScreenSizeDp = new PortraitSize(config.screenHeightDp, config.screenWidthDp);
 
-            mSingleFrameMs = getSingleFrameMs(display);
             currentSize = new Point();
             display.getRealSize(currentSize);
 
@@ -399,10 +363,5 @@ public class DisplayController implements DisplayListener, ComponentCallbacks, S
         public int hashCode() {
             return Objects.hash(width, height);
         }
-    }
-
-    private static int getSingleFrameMs(Display display) {
-        float refreshRate = display.getRefreshRate();
-        return refreshRate > 0 ? (int) (1000 / refreshRate) : 16;
     }
 }
