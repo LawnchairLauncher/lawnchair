@@ -144,6 +144,7 @@ public class LauncherUnfoldAnimationController {
 
         @Override
         public void onTransitionStarted() {
+            mLauncher.getWorkspace().setPivotToScaleWithSelf(mLauncher.getHotseat());
         }
 
         @Override
