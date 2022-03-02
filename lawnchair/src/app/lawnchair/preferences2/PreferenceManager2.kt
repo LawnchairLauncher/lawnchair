@@ -146,6 +146,12 @@ class PreferenceManager2(private val context: Context) : PreferenceManager {
         onSet = { reloadHelper.reloadIcons() },
     )
 
+    val showIconLabelsOnHomeScreen = preference(
+        key = booleanPreferencesKey(name = "show_icon_labels_on_home_screen"),
+        defaultValue = true,
+        onSet = { reloadHelper.reloadGrid() },
+    )
+
     companion object {
         private val Context.preferencesDataStore by preferencesDataStore(
             name = "preferences",

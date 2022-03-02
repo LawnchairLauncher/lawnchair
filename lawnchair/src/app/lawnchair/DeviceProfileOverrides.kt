@@ -50,7 +50,7 @@ class DeviceProfileOverrides(context: Context) {
             numFolderColumns = prefs.folderColumns.get(defaultGrid),
 
             iconSizeFactor = preferenceManager2.homeIconSizeFactor.firstBlocking(),
-            enableIconText = prefs.showHomeLabels.get(),
+            enableIconText = preferenceManager2.showIconLabelsOnHomeScreen.firstBlocking(),
             iconTextSizeFactor = prefs.textSizeFactor.get(),
 
             allAppsIconSizeFactor = prefs.allAppsIconSizeFactor.get(),

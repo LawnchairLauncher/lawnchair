@@ -52,6 +52,7 @@ interface HomeScreenPreferenceCollectorScope : PreferenceCollectorScope {
     val showTopShadow: Boolean
     val dt2s: Boolean
     val homeIconSizeFactor: Float
+    val showIconLabelsOnHomeScreen: Boolean
 }
 
 @Composable
@@ -63,10 +64,12 @@ fun HomeScreenPreferenceCollector(content: @Composable HomeScreenPreferenceColle
     val showTopShadow by preferenceManager.showTopShadow.state()
     val dt2s by preferenceManager.dt2s.state()
     val homeIconSizeFactor by preferenceManager.homeIconSizeFactor.state()
+    val showIconLabelsOnHomeScreen by preferenceManager.showIconLabelsOnHomeScreen.state()
     ifNotNull(
         darkStatusBar, roundedWidgets,
         showStatusBar, showTopShadow,
         dt2s, homeIconSizeFactor,
+        showIconLabelsOnHomeScreen,
     ) {
         object : HomeScreenPreferenceCollectorScope {
             override val darkStatusBar = it[0] as Boolean
@@ -75,6 +78,7 @@ fun HomeScreenPreferenceCollector(content: @Composable HomeScreenPreferenceColle
             override val showTopShadow = it[3] as Boolean
             override val dt2s = it[4] as Boolean
             override val homeIconSizeFactor = it[5] as Float
+            override val showIconLabelsOnHomeScreen = it[6] as Boolean
             override val coroutineScope = rememberCoroutineScope()
             override val preferenceManager = preferenceManager
         }.content()
@@ -149,13 +153,13 @@ fun HomeScreenPreferences() {
                     showAsPercentage = true,
                     edit = { homeIconSizeFactor.set(value = it) },
                 )
-                val showHomeLabels = prefs.showHomeLabels.getAdapter()
-                SwitchPreference(
-                    showHomeLabels,
+                SwitchPreference2(
+                    checked = showIconLabelsOnHomeScreen,
+                    edit = { showIconLabelsOnHomeScreen.set(value = it) },
                     label = stringResource(id = R.string.show_home_labels),
                 )
                 AnimatedVisibility(
-                    visible = showHomeLabels.state.value,
+                    visible = showIconLabelsOnHomeScreen,
                     enter = expandVertically() + fadeIn(),
                     exit = shrinkVertically() + fadeOut(),
                 ) {
