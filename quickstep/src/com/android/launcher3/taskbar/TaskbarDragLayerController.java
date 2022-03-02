@@ -181,6 +181,9 @@ public class TaskbarDragLayerController implements TaskbarControllers.LoggableTa
             } else if (!mControllers.uiController.isTaskbarTouchable()) {
                 // Let touches pass through us.
                 insetsInfo.setTouchableInsets(TOUCHABLE_INSETS_REGION);
+            } else if (mControllers.taskbarDragController.isSystemDragInProgress()) {
+                // Let touches pass through us.
+                insetsInfo.setTouchableInsets(TOUCHABLE_INSETS_REGION);
             } else if (mControllers.taskbarViewController.areIconsVisible()
                     || AbstractFloatingView.getOpenView(mActivity, TYPE_ALL) != null
                     || mActivity.isNavBarKidsModeActive()) {
@@ -208,9 +211,7 @@ public class TaskbarDragLayerController implements TaskbarControllers.LoggableTa
          * Called when a child is removed from TaskbarDragLayer.
          */
         public void onDragLayerViewRemoved() {
-            if (AbstractFloatingView.getAnyView(mActivity, TYPE_ALL) == null) {
-                mActivity.setTaskbarWindowFullscreen(false);
-            }
+            mActivity.maybeSetTaskbarWindowNotFullscreen();
         }
 
         /**
