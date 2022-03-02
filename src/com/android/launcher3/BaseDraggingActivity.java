@@ -29,7 +29,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.LauncherApps;
 import android.content.res.Configuration;
-import android.graphics.Insets;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
@@ -41,8 +40,6 @@ import android.util.Log;
 import android.view.ActionMode;
 import android.view.Display;
 import android.view.View;
-import android.view.WindowInsets.Type;
-import android.view.WindowMetrics;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -322,11 +319,7 @@ public abstract class BaseDraggingActivity extends BaseActivity
 
     protected WindowBounds getMultiWindowDisplaySize() {
         if (Utilities.ATLEAST_R) {
-            WindowMetrics wm = getWindowManager().getCurrentWindowMetrics();
-
-            Insets insets = wm.getWindowInsets().getInsets(Type.systemBars());
-            return new WindowBounds(wm.getBounds(),
-                    new Rect(insets.left, insets.top, insets.right, insets.bottom));
+            return WindowBounds.fromWindowMetrics(getWindowManager().getCurrentWindowMetrics());
         }
         // Note: Calls to getSize() can't rely on our cached DefaultDisplay since it can return
         // the app window size
