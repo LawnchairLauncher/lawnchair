@@ -762,7 +762,10 @@ public class TouchInteractionService extends Service
         } else if (gestureState.getRunningTask() == null) {
             return getDefaultInputConsumer();
         } else if (previousGestureState.isRunningAnimationToLauncher()
-                || gestureState.getActivityInterface().isResumed()
+                || (gestureState.getActivityInterface().isResumed()
+                        // with shell-transitions, home is resumed during recents animation, so
+                        // explicitly check against recents animation too.
+                        && !previousGestureState.isRecentsAnimationRunning())
                 || forceOverviewInputConsumer) {
             return createOverviewInputConsumer(
                     previousGestureState, gestureState, event, forceOverviewInputConsumer);
