@@ -19,6 +19,8 @@ import static android.view.KeyEvent.ACTION_UP;
 import static android.view.KeyEvent.KEYCODE_BACK;
 import static android.view.WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
 
+import static com.android.systemui.shared.system.ViewTreeObserverWrapper.InsetsInfo.TOUCHABLE_INSETS_REGION;
+
 import android.content.Context;
 import android.view.KeyEvent;
 import android.view.View;
@@ -37,6 +39,9 @@ import com.android.launcher3.taskbar.TaskbarStashController;
 import com.android.launcher3.util.OnboardingPrefs;
 import com.android.launcher3.util.TouchController;
 import com.android.launcher3.views.BaseDragLayer;
+import com.android.systemui.shared.system.ViewTreeObserverWrapper;
+import com.android.systemui.shared.system.ViewTreeObserverWrapper.InsetsInfo;
+import com.android.systemui.shared.system.ViewTreeObserverWrapper.OnComputeInsetsListener;
 
 /**
  * Window context for the taskbar all apps overlay.
@@ -48,6 +53,7 @@ class TaskbarAllAppsContext extends BaseTaskbarContext {
     private final TaskbarActivityContext mTaskbarContext;
     private final OnboardingPrefs<TaskbarAllAppsContext> mOnboardingPrefs;
 
+    private final TaskbarAllAppsController mWindowController;
     private final TaskbarAllAppsViewController mAllAppsViewController;
     private final TaskbarDragController mDragController;
     private final TaskbarAllAppsDragLayer mDragLayer;
@@ -66,6 +72,7 @@ class TaskbarAllAppsContext extends BaseTaskbarContext {
         mDragLayer = new TaskbarAllAppsDragLayer(this);
         TaskbarAllAppsSlideInView slideInView = (TaskbarAllAppsSlideInView) mLayoutInflater.inflate(
                 R.layout.taskbar_all_apps, mDragLayer, false);
+        mWindowController = windowController;
         mAllAppsViewController = new TaskbarAllAppsViewController(
                 this,
                 slideInView,
@@ -128,10 +135,16 @@ class TaskbarAllAppsContext extends BaseTaskbarContext {
     public void onDragStart() {}
 
     @Override
+    public void onDragEnd() {
+        mWindowController.maybeCloseWindow();
+    }
+
+    @Override
     public void onPopupVisibilityChanged(boolean isVisible) {}
 
     /** Root drag layer for this context. */
-    private static class TaskbarAllAppsDragLayer extends BaseDragLayer<TaskbarAllAppsContext> {
+    private static class TaskbarAllAppsDragLayer extends
+            BaseDragLayer<TaskbarAllAppsContext> implements OnComputeInsetsListener {
 
         private TaskbarAllAppsDragLayer(Context context) {
             super(context, null, 1);
@@ -142,7 +155,15 @@ class TaskbarAllAppsContext extends BaseTaskbarContext {
         @Override
         protected void onAttachedToWindow() {
             super.onAttachedToWindow();
+            ViewTreeObserverWrapper.addOnComputeInsetsListener(
+                    getViewTreeObserver(), this);
             mActivity.mAllAppsViewController.show();
+        }
+
+        @Override
+        protected void onDetachedFromWindow() {
+            super.onDetachedFromWindow();
+            ViewTreeObserverWrapper.removeOnComputeInsetsListener(this);
         }
 
         @Override
@@ -159,6 +180,14 @@ class TaskbarAllAppsContext extends BaseTaskbarContext {
                 }
             }
             return super.dispatchKeyEvent(event);
+        }
+
+        @Override
+        public void onComputeInsets(InsetsInfo inoutInfo) {
+            if (mActivity.mDragController.isSystemDragInProgress()) {
+                inoutInfo.touchableRegion.setEmpty();
+                inoutInfo.setTouchableInsets(TOUCHABLE_INSETS_REGION);
+            }
         }
     }
 }
