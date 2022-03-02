@@ -178,16 +178,46 @@ public class SeascapePagedViewHandler extends LandscapePagedViewHandler {
     @Override
     public void setSplitIconParams(View primaryIconView, View secondaryIconView,
             int taskIconHeight, int primarySnapshotWidth, int primarySnapshotHeight,
-            boolean isRtl, DeviceProfile deviceProfile, StagedSplitBounds splitConfig) {
+            int groupedTaskViewHeight, int groupedTaskViewWidth, boolean isRtl,
+            DeviceProfile deviceProfile, StagedSplitBounds splitConfig) {
         super.setSplitIconParams(primaryIconView, secondaryIconView, taskIconHeight,
-                primarySnapshotWidth, primarySnapshotHeight, isRtl, deviceProfile, splitConfig);
+                primarySnapshotWidth, primarySnapshotHeight, groupedTaskViewHeight,
+                groupedTaskViewWidth, isRtl, deviceProfile, splitConfig);
         FrameLayout.LayoutParams primaryIconParams =
                 (FrameLayout.LayoutParams) primaryIconView.getLayoutParams();
         FrameLayout.LayoutParams secondaryIconParams =
                 (FrameLayout.LayoutParams) secondaryIconView.getLayoutParams();
 
-        primaryIconParams.gravity = CENTER_VERTICAL | (isRtl ? END : START);
-        secondaryIconParams.gravity = CENTER_VERTICAL | (isRtl ? END : START);
+        // We calculate the "midpoint" of the thumbnail area, and place the icons there.
+        // This is the place where the thumbnail area splits by default, in a near-50/50 split.
+        // It is usually not exactly 50/50, due to insets/screen cutouts.
+        int fullscreenInsetThickness = deviceProfile.getInsets().top;
+        int fullscreenMidpointFromBottom = ((deviceProfile.heightPx
+                - fullscreenInsetThickness) / 2);
+        float midpointFromBottomPct = (float) fullscreenMidpointFromBottom / deviceProfile.heightPx;
+        float insetPct = (float) fullscreenInsetThickness / deviceProfile.heightPx;
+        int spaceAboveSnapshots = deviceProfile.overviewTaskThumbnailTopMarginPx;
+        int overviewThumbnailAreaThickness = groupedTaskViewHeight - spaceAboveSnapshots;
+        int bottomToMidpointOffset = (int) (overviewThumbnailAreaThickness * midpointFromBottomPct);
+        int insetOffset = (int) (overviewThumbnailAreaThickness * insetPct);
+
+        primaryIconParams.gravity = BOTTOM | (isRtl ? END : START);
+        secondaryIconParams.gravity = BOTTOM | (isRtl ? END : START);
+        primaryIconView.setTranslationX(0);
+        secondaryIconView.setTranslationX(0);
+        if (splitConfig.initiatedFromSeascape) {
+            // if the split was initiated from seascape,
+            // the task on the right (secondary) is slightly larger
+            primaryIconView.setTranslationY(-bottomToMidpointOffset - insetOffset);
+            secondaryIconView.setTranslationY(-bottomToMidpointOffset - insetOffset
+                    + taskIconHeight);
+        } else {
+            // if not,
+            // the task on the left (primary) is slightly larger
+            primaryIconView.setTranslationY(-bottomToMidpointOffset);
+            secondaryIconView.setTranslationY(-bottomToMidpointOffset + taskIconHeight);
+        }
+
         primaryIconView.setLayoutParams(primaryIconParams);
         secondaryIconView.setLayoutParams(secondaryIconParams);
     }

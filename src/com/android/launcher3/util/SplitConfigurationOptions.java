@@ -113,6 +113,14 @@ public final class SplitConfigurationOptions {
          * the bounds were originally in
          */
         public final boolean appsStackedVertically;
+        /**
+         * If {@code true}, that means at the time of creation of this object, the phone was in
+         * seascape orientation. This is important on devices with insets, because they do not split
+         * evenly -- one of the insets must be slightly larger to account for the inset.
+         * From landscape, it is the leftTop task that expands slightly.
+         * From seascape, it is the rightBottom task that expands slightly.
+         */
+        public final boolean initiatedFromSeascape;
         public final int leftTopTaskId;
         public final int rightBottomTaskId;
 
@@ -128,11 +136,22 @@ public final class SplitConfigurationOptions {
                 this.visualDividerBounds = new Rect(leftTopBounds.left, leftTopBounds.bottom,
                         leftTopBounds.right, rightBottomBounds.top);
                 appsStackedVertically = true;
+                initiatedFromSeascape = false;
             } else {
                 // horizontal apps, vertical divider
                 this.visualDividerBounds = new Rect(leftTopBounds.right, leftTopBounds.top,
                         rightBottomBounds.left, leftTopBounds.bottom);
                 appsStackedVertically = false;
+                // The following check is unreliable on devices without insets
+                // (initiatedFromSeascape will always be set to false.) This happens to be OK for
+                // all our current uses, but should be refactored.
+                // TODO: Create a more reliable check, or refactor how splitting works on devices
+                //  with insets.
+                if (rightBottomBounds.width() > leftTopBounds.width()) {
+                    initiatedFromSeascape = true;
+                } else {
+                    initiatedFromSeascape = false;
+                }
             }
 
             leftTaskPercent = this.leftTopBounds.width() / (float) rightBottomBounds.right;
