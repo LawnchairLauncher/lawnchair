@@ -141,7 +141,9 @@ public class StatsLogCompatManager extends StatsLogManager {
                 getCardinality(info) /* cardinality */,
                 info.getWidget().getSpanX(),
                 info.getWidget().getSpanY(),
-                getFeatures(info));
+                getFeatures(info),
+                null /* attributes */
+        );
     }
 
     /**
@@ -170,7 +172,8 @@ public class StatsLogCompatManager extends StatsLogManager {
                 info.getAttribute().getNumber(), // attribute_id = 15;
                 getCardinality(info), // cardinality = 16;
                 info.getWidget().getSpanX(), // span_x = 17 [default = 1];
-                info.getWidget().getSpanY() // span_y = 18 [default = 1];
+                info.getWidget().getSpanY(), // span_y = 18 [default = 1];
+                null /* attributes */
         );
     }
 
@@ -413,7 +416,8 @@ public class StatsLogCompatManager extends StatsLogManager {
                     atomInfo.getFolderIcon().getLabelInfo() /* edittext */,
                     getCardinality(atomInfo) /* cardinality */,
                     getFeatures(atomInfo) /* features */,
-                    getSearchAttributes(atomInfo) /* searchAttributes */
+                    getSearchAttributes(atomInfo) /* searchAttributes */,
+                    null /* attributes */
             );
         }
     }
