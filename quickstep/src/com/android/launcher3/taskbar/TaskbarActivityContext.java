@@ -114,6 +114,7 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
 
     private final boolean mIsSafeModeEnabled;
     private final boolean mIsUserSetupComplete;
+    private final boolean mIsNavBarForceVisible;
     private final boolean mIsNavBarKidsMode;
     private boolean mIsDestroyed = false;
     // The flag to know if the window is excluded from magnification region computation.
@@ -134,6 +135,8 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
                 () -> getPackageManager().isSafeMode());
         mIsUserSetupComplete = SettingsCache.INSTANCE.get(this).getValue(
                 Settings.Secure.getUriFor(Settings.Secure.USER_SETUP_COMPLETE), 0);
+        mIsNavBarForceVisible = SettingsCache.INSTANCE.get(this).getValue(
+                Settings.Secure.getUriFor(Settings.Secure.NAV_BAR_FORCE_VISIBLE), 0);
         mIsNavBarKidsMode = SettingsCache.INSTANCE.get(this).getValue(
                 Settings.Secure.getUriFor(Settings.Secure.NAV_BAR_KIDS_MODE), 0);
 
@@ -692,6 +695,10 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
 
     protected boolean isNavBarKidsModeActive() {
         return mIsNavBarKidsMode && isThreeButtonNav();
+    }
+
+    protected boolean isNavBarForceVisible() {
+        return mIsNavBarForceVisible;
     }
 
     /**
