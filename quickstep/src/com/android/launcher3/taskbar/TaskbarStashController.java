@@ -60,10 +60,10 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
 
     // If any of these flags are enabled, inset apps by our stashed height instead of our unstashed
     // height. This way the reported insets are consistent even during transitions out of the app.
-    // Currently any flag that causes us to stash in an app is included, except for IME since that
-    // covers the underlying app anyway and thus the app shouldn't change insets.
+    // Currently any flag that causes us to stash in an app is included, except for IME or All Apps
+    // since those cover the underlying app anyway and thus the app shouldn't change insets.
     private static final int FLAGS_REPORT_STASHED_INSETS_TO_APP = FLAGS_STASHED_IN_APP
-            & ~FLAG_STASHED_IN_APP_IME;
+            & ~FLAG_STASHED_IN_APP_IME & ~FLAG_STASHED_IN_APP_ALL_APPS;
 
     /**
      * How long to stash/unstash when manually invoked via long press.
@@ -187,7 +187,7 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
      * Returns whether the taskbar can visually stash into a handle based on the current device
      * state.
      */
-    private boolean supportsVisualStashing() {
+    public boolean supportsVisualStashing() {
         return !mActivity.isThreeButtonNav();
     }
 
@@ -254,7 +254,7 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
      * Returns the height that taskbar will inset when inside apps.
      */
     public int getContentHeightToReportToApps() {
-        if (hasAnyFlag(FLAGS_REPORT_STASHED_INSETS_TO_APP)) {
+        if (supportsVisualStashing() && hasAnyFlag(FLAGS_REPORT_STASHED_INSETS_TO_APP)) {
             boolean isAnimating = mAnimator != null && mAnimator.isStarted();
             return mControllers.stashedHandleViewController.isStashedHandleVisible() || isAnimating
                     ? mStashedHeight : 0;

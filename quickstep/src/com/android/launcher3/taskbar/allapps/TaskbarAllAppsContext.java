@@ -22,8 +22,10 @@ import static android.view.WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
 import static com.android.systemui.shared.system.ViewTreeObserverWrapper.InsetsInfo.TOUCHABLE_INSETS_REGION;
 
 import android.content.Context;
+import android.graphics.Insets;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.WindowInsets;
 
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.DeviceProfile;
@@ -59,6 +61,10 @@ class TaskbarAllAppsContext extends BaseTaskbarContext {
     private final TaskbarAllAppsDragLayer mDragLayer;
     private final TaskbarAllAppsContainerView mAppsView;
 
+    // We automatically stash taskbar when all apps is opened in gesture navigation mode.
+    private final boolean mWillTaskbarBeVisuallyStashed;
+    private final int mStashedTaskbarHeight;
+
     TaskbarAllAppsContext(
             TaskbarActivityContext taskbarContext,
             TaskbarAllAppsController windowController,
@@ -79,6 +85,9 @@ class TaskbarAllAppsContext extends BaseTaskbarContext {
                 windowController,
                 taskbarStashController);
         mAppsView = slideInView.getAppsView();
+
+        mWillTaskbarBeVisuallyStashed = taskbarStashController.supportsVisualStashing();
+        mStashedTaskbarHeight = taskbarStashController.getStashedHeight();
     }
 
     TaskbarAllAppsViewController getAllAppsViewController() {
@@ -188,6 +197,38 @@ class TaskbarAllAppsContext extends BaseTaskbarContext {
                 inoutInfo.touchableRegion.setEmpty();
                 inoutInfo.setTouchableInsets(TOUCHABLE_INSETS_REGION);
             }
+        }
+
+        @Override
+        public WindowInsets onApplyWindowInsets(WindowInsets insets) {
+            return updateInsetsDueToStashing(insets);
+        }
+
+        /**
+         * Taskbar automatically stashes when opening all apps, but we don't report the insets as
+         * changing to avoid moving the underlying app. But internally, the apps view should still
+         * layout according to the stashed insets rather than the unstashed insets. So this method
+         * does two things:
+         * 1) Sets navigationBars bottom inset to stashedHeight.
+         * 2) Sets tappableInsets bottom inset to 0.
+         */
+        private WindowInsets updateInsetsDueToStashing(WindowInsets oldInsets) {
+            if (!mActivity.mWillTaskbarBeVisuallyStashed) {
+                return oldInsets;
+            }
+            WindowInsets.Builder updatedInsetsBuilder = new WindowInsets.Builder(oldInsets);
+
+            Insets oldNavInsets = oldInsets.getInsets(WindowInsets.Type.navigationBars());
+            Insets newNavInsets = Insets.of(oldNavInsets.left, oldNavInsets.top, oldNavInsets.right,
+                    mActivity.mStashedTaskbarHeight);
+            updatedInsetsBuilder.setInsets(WindowInsets.Type.navigationBars(), newNavInsets);
+
+            Insets oldTappableInsets = oldInsets.getInsets(WindowInsets.Type.tappableElement());
+            Insets newTappableInsets = Insets.of(oldTappableInsets.left, oldTappableInsets.top,
+                    oldTappableInsets.right, 0);
+            updatedInsetsBuilder.setInsets(WindowInsets.Type.tappableElement(), newTappableInsets);
+
+            return updatedInsetsBuilder.build();
         }
     }
 }
