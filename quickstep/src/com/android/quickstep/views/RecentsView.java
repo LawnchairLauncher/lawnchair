@@ -16,7 +16,6 @@
 
 package com.android.quickstep.views;
 
-import static android.app.PendingIntent.FLAG_MUTABLE;
 import static android.view.Surface.ROTATION_0;
 import static android.view.View.MeasureSpec.EXACTLY;
 import static android.view.View.MeasureSpec.makeMeasureSpec;
@@ -69,8 +68,6 @@ import android.animation.PropertyValuesHolder;
 import android.animation.ValueAnimator;
 import android.annotation.TargetApi;
 import android.app.ActivityManager.RunningTaskInfo;
-import android.app.PendingIntent;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.LocusId;
 import android.content.res.Configuration;
@@ -2007,22 +2004,6 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         for (int i = 0; i < getTaskViewCount(); i++) {
             TaskView taskView = requireTaskViewAt(i);
             if (taskView.getTaskViewId() == taskViewId) {
-                return taskView;
-            }
-        }
-        return null;
-    }
-
-    @Nullable
-    private TaskView getTaskViewByComponentName(ComponentName componentName) {
-        if (componentName == null) {
-            return null;
-        }
-
-        for (int i = 0; i < getTaskViewCount(); i++) {
-            TaskView taskView = requireTaskViewAt(i);
-            if (taskView.getItemInfo().getIntent().getComponent().getPackageName().equals(
-                    componentName.getPackageName())) {
                 return taskView;
             }
         }
@@ -3973,17 +3954,8 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     }
 
     public void initiateSplitSelect(QuickstepSystemShortcut.SplitSelectSource splitSelectSource) {
-        // Remove the task if it exists in Overview
-        TaskView matchingTaskView = getTaskViewByComponentName(
-                splitSelectSource.intent.getComponent());
-        if (matchingTaskView != null) {
-            removeTaskInternal(matchingTaskView.getTaskViewId());
-        }
-
         mSplitSelectSource = splitSelectSource;
-        mSplitSelectStateController.setInitialTaskSelect(
-                PendingIntent.getActivity(
-                        mContext, 0, splitSelectSource.intent, FLAG_MUTABLE),
+        mSplitSelectStateController.setInitialTaskSelect(splitSelectSource.intent,
                 splitSelectSource.position.stagePosition);
     }
 
@@ -4039,8 +4011,8 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         mSecondFloatingTaskView.addAnimation(pendingAnimation, secondTaskStartingBounds,
                 secondTaskEndingBounds, true /* fadeWithThumbnail */, false /* isInitialSplit */);
         pendingAnimation.addEndListener(aBoolean ->
-                mSplitSelectStateController.setSecondTaskId(task.key.id,
-                aBoolean1 -> RecentsView.this.resetFromSplitSelectionState()));
+                mSplitSelectStateController.setSecondTask(
+                        task, aBoolean1 -> RecentsView.this.resetFromSplitSelectionState()));
         if (containerTaskView.containsMultipleTasks()) {
             // If we are launching from a child task, then only hide the thumbnail itself
             mSecondSplitHiddenView = thumbnailView;
