@@ -24,7 +24,7 @@ import static com.android.launcher3.compat.AccessibilityManagerCompat.sendCustom
 import static com.android.launcher3.config.FeatureFlags.ALWAYS_USE_HARDWARE_OPTIMIZATION_FOR_FOLDER_ANIMATIONS;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_FOLDER_LABEL_UPDATED;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ITEM_DROP_COMPLETED;
-import static com.android.launcher3.util.DisplayController.getSingleFrameMs;
+import static com.android.launcher3.util.window.RefreshRateTracker.getSingleFrameMs;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;

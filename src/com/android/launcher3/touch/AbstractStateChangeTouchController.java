@@ -26,7 +26,7 @@ import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_HOME;
 import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_OVERVIEW;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_UNKNOWN_SWIPEDOWN;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_UNKNOWN_SWIPEUP;
-import static com.android.launcher3.util.DisplayController.getSingleFrameMs;
+import static com.android.launcher3.util.window.RefreshRateTracker.getSingleFrameMs;
 
 import android.animation.Animator.AnimatorListener;
 import android.animation.ValueAnimator;
