@@ -42,6 +42,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.RemoteException;
+import android.platform.test.rule.CrashDetector;
 
 import androidx.test.filters.LargeTest;
 import androidx.test.runner.AndroidJUnit4;
@@ -61,7 +62,6 @@ import com.android.quickstep.views.RecentsView;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.RuleChain;
@@ -106,7 +106,8 @@ public class FallbackRecentsTest {
         }
 
         mOrderSensitiveRules = RuleChain
-                .outerRule(new NavigationModeSwitchRule(mLauncher))
+                .outerRule(new CrashDetector("com.android.systemui"))
+                .around(new NavigationModeSwitchRule(mLauncher))
                 .around(new FailureWatcher(mDevice, mLauncher));
 
         mOtherLauncherActivity = context.getPackageManager().queryIntentActivities(
@@ -206,7 +207,6 @@ public class FallbackRecentsTest {
 
     // b/143488140
     //@NavigationModeSwitch
-    @Ignore("b/218403080")
     @Test
     public void testOverview() {
         startAppFast(getAppPackageName());
