@@ -53,7 +53,7 @@ class DeviceProfileOverrides(context: Context) {
             enableIconText = preferenceManager2.showIconLabelsOnHomeScreen.firstBlocking(),
             iconTextSizeFactor = prefs.textSizeFactor.get(),
 
-            allAppsIconSizeFactor = prefs.allAppsIconSizeFactor.get(),
+            allAppsIconSizeFactor = preferenceManager2.drawerIconSizeFactor.firstBlocking(),
             enableAllAppsIconText = prefs.allAppsIconLabels.get(),
             allAppsIconTextSizeFactor = prefs.allAppsTextSizeFactor.get()
         )

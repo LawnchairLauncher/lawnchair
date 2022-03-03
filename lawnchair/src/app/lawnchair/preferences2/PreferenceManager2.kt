@@ -152,6 +152,12 @@ class PreferenceManager2(private val context: Context) : PreferenceManager {
         onSet = { reloadHelper.reloadGrid() },
     )
 
+    val drawerIconSizeFactor = preference(
+        key = floatPreferencesKey(name = "drawer_icon_size_factor"),
+        defaultValue = 1F,
+        onSet = { reloadHelper.reloadIcons() },
+    )
+
     companion object {
         private val Context.preferencesDataStore by preferencesDataStore(
             name = "preferences",
