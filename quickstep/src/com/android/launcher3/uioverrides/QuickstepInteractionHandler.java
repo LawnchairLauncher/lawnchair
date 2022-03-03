@@ -79,7 +79,7 @@ class QuickstepInteractionHandler implements RemoteViews.InteractionHandler {
             }
         }
         activityOptions.options.setPendingIntentLaunchFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        activityOptions.options.setSplashScreenStyle(SplashScreen.SPLASH_SCREEN_STYLE_EMPTY);
+        activityOptions.options.setSplashScreenStyle(SplashScreen.SPLASH_SCREEN_STYLE_SOLID_COLOR);
         options = Pair.create(options.first, activityOptions.options);
         if (pendingIntent.isActivity()) {
             logAppLaunch(itemInfo);
