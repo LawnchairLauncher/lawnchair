@@ -833,12 +833,9 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
         // Notify when the animation starts
         flushOnRecentsAnimationAndLauncherBound();
 
-        // Start hiding the divider
-        setDividerShown(false /* shown */, false /* immediate */);
-
         // Only add the callback to enable the input consumer after we actually have the controller
         mStateCallback.runOnceAtState(STATE_APP_CONTROLLER_RECEIVED | STATE_GESTURE_STARTED,
-                mRecentsAnimationController::enableInputConsumer);
+                this::startInterceptingTouchesForGesture);
         mStateCallback.setStateOnUiThread(STATE_APP_CONTROLLER_RECEIVED);
 
         mPassedOverviewThreshold = false;
@@ -1455,6 +1452,17 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
         });
         setupWindowAnimation(new RectFSpringAnim[]{swipePipToHomeAnimator});
         return swipePipToHomeAnimator;
+    }
+
+    private void startInterceptingTouchesForGesture() {
+        if (mRecentsAnimationController == null) {
+            return;
+        }
+
+        mRecentsAnimationController.enableInputConsumer();
+
+        // Start hiding the divider
+        setDividerShown(false /* shown */, true /* immediate */);
     }
 
     private void computeRecentsScrollIfInvisible() {
