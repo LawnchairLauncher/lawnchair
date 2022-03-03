@@ -29,6 +29,7 @@ import android.annotation.Nullable;
 import android.content.SharedPreferences;
 import android.view.ViewConfiguration;
 
+import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.util.MultiValueAlpha.AlphaProperty;
 import com.android.quickstep.AnimatedFloat;
@@ -255,6 +256,13 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
      */
     public int getContentHeightToReportToApps() {
         if (supportsVisualStashing() && hasAnyFlag(FLAGS_REPORT_STASHED_INSETS_TO_APP)) {
+            DeviceProfile dp = mActivity.getDeviceProfile();
+            if (hasAnyFlag(FLAG_STASHED_IN_APP_SETUP) && dp.isTaskbarPresent && !dp.isLandscape) {
+                // We always show the back button in SUW but in portrait the SUW layout may not
+                // be wide enough to support overlapping the nav bar with its content.  For now,
+                // just inset by the bar height.
+                return mUnstashedHeight;
+            }
             boolean isAnimating = mAnimator != null && mAnimator.isStarted();
             return mControllers.stashedHandleViewController.isStashedHandleVisible() || isAnimating
                     ? mStashedHeight : 0;
