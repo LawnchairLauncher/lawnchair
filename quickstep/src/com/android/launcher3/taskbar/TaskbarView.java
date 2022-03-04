@@ -39,6 +39,7 @@ import com.android.launcher3.model.data.FolderInfo;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.uioverrides.ApiWrapper;
+import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.LauncherBindableItemsContainer;
 import com.android.launcher3.views.ActivityContext;
 import com.android.launcher3.views.AllAppsButton;
@@ -367,17 +368,36 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
     }
 
     /**
-     * Maps {@code op} over all the child views, returning the view that {@code op} evaluates
-     * {@code true} for, or {@code null} if none satisfy {@code op}.
+     * Maps {@code op} over all the child views.
      */
-    protected View mapOverItems(LauncherBindableItemsContainer.ItemOperator op) {
+    public void mapOverItems(LauncherBindableItemsContainer.ItemOperator op) {
         // map over all the shortcuts on the taskbar
         for (int i = 0; i < getChildCount(); i++) {
             View item = getChildAt(i);
             if (op.evaluate((ItemInfo) item.getTag(), item)) {
-                return item;
+                return;
             }
         }
-        return null;
+    }
+
+    /**
+     * Finds the first icon to match one of the given matchers, from highest to lowest priority.
+     * @return The first match, or All Apps button if no match was found.
+     */
+    public View getFirstMatch(ItemInfoMatcher... matchers) {
+        for (ItemInfoMatcher matcher : matchers) {
+            for (int i = 0; i < getChildCount(); i++) {
+                View item = getChildAt(i);
+                if (!(item.getTag() instanceof ItemInfo)) {
+                    // Should only happen for All Apps button.
+                    continue;
+                }
+                ItemInfo info = (ItemInfo) item.getTag();
+                if (matcher.matchesInfo(info)) {
+                    return item;
+                }
+            }
+        }
+        return mAllAppsButton;
     }
 }
