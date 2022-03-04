@@ -110,6 +110,11 @@ public class StatsLogCompatManager extends StatsLogManager {
         return new StatsCompatLogger(mContext, mActivityContext);
     }
 
+    @Override
+    protected StatsLatencyLogger createLatencyLogger() {
+        return new StatsCompatLatencyLogger(mContext, mActivityContext);
+    }
+
     /**
      * Synchronously writes an itemInfo to stats log
      */
@@ -414,6 +419,61 @@ public class StatsLogCompatManager extends StatsLogManager {
                     getCardinality(atomInfo) /* cardinality */,
                     getFeatures(atomInfo) /* features */,
                     getSearchAttributes(atomInfo) /* searchAttributes */
+            );
+        }
+    }
+
+    /**
+     * Helps to construct and log statsd compatible latency events.
+     */
+    private static class StatsCompatLatencyLogger implements StatsLatencyLogger {
+        private final Context mContext;
+        private final Optional<ActivityContext> mActivityContext;
+        private InstanceId mInstanceId = DEFAULT_INSTANCE_ID;
+        private LatencyType mType = LatencyType.UNKNOWN;
+        private long mLatencyInMillis;
+
+        StatsCompatLatencyLogger(Context context, ActivityContext activityContext) {
+            mContext = context;
+            mActivityContext = Optional.ofNullable(activityContext);
+        }
+
+        @Override
+        public StatsLatencyLogger withInstanceId(InstanceId instanceId) {
+            this.mInstanceId = instanceId;
+            return this;
+        }
+
+        @Override
+        public StatsLatencyLogger withType(LatencyType type) {
+            this.mType = type;
+            return this;
+        }
+
+        @Override
+        public StatsLatencyLogger withLatency(long latencyInMillis) {
+            this.mLatencyInMillis = latencyInMillis;
+            return this;
+        }
+
+        @Override
+        public void log(EventEnum event) {
+            if (IS_VERBOSE) {
+                String name = (event instanceof Enum) ? ((Enum) event).name() :
+                        event.getId() + "";
+
+                Log.d(TAG, mInstanceId == DEFAULT_INSTANCE_ID
+                        ? String.format("\n%s = %dms\n", name, mLatencyInMillis)
+                        : String.format("\n%s = %dms (InstanceId:%s)\n", name,
+                                mLatencyInMillis, mInstanceId));
+            }
+
+            SysUiStatsLog.write(SysUiStatsLog.LAUNCHER_LATENCY,
+                    event.getId(), // event_id
+                    mInstanceId.getId(), // instance_id
+                    0, // package_id
+                    mLatencyInMillis, // latency_in_millis
+                    mType.getId() //type
             );
         }
     }
