@@ -16,6 +16,7 @@
 package com.android.launcher3.taskbar;
 
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_ALL_APPS;
+import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -55,20 +56,20 @@ import com.android.launcher3.dragndrop.DragDriver;
 import com.android.launcher3.dragndrop.DragOptions;
 import com.android.launcher3.dragndrop.DragView;
 import com.android.launcher3.dragndrop.DraggableView;
-import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.graphics.DragPreviewProvider;
 import com.android.launcher3.logging.StatsLogManager;
-import com.android.launcher3.model.data.FolderInfo;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.popup.PopupContainerWithArrow;
 import com.android.launcher3.shortcuts.DeepShortcutView;
 import com.android.launcher3.shortcuts.ShortcutDragPreviewProvider;
-import com.android.launcher3.util.LauncherBindableItemsContainer;
+import com.android.launcher3.util.IntSet;
+import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.systemui.shared.recents.model.Task;
 
 import java.io.PrintWriter;
 import java.util.Arrays;
+import java.util.Collections;
 
 /**
  * Handles long click on Taskbar items to start a system drag and drop operation.
@@ -422,23 +423,18 @@ public class TaskbarDragController extends DragController<BaseTaskbarContext> im
             ItemInfo item = (ItemInfo) tag;
             TaskbarViewController taskbarViewController = mControllers.taskbarViewController;
             if (item.container == CONTAINER_ALL_APPS) {
-                // Since all apps closes when the drag starts, target the all apps button instead
+                // Since all apps closes when the drag starts, target the all apps button instead.
                 target = taskbarViewController.getAllAppsButtonView();
             } else if (item.container >= 0) {
-                // Since folders close when the drag starts, target the folder icon instead
-                LauncherBindableItemsContainer.ItemOperator op = (info, v) -> {
-                    if (info instanceof FolderInfo && v instanceof FolderIcon) {
-                        FolderInfo fi = (FolderInfo) info;
-                        for (WorkspaceItemInfo si : fi.contents) {
-                            if (si.id == item.id) {
-                                // Found the parent
-                                return true;
-                            }
-                        }
-                    }
-                    return false;
-                };
-                target = taskbarViewController.mapOverItems(op);
+                // Since folders close when the drag starts, target the folder icon instead.
+                ItemInfoMatcher matcher = ItemInfoMatcher.forFolderMatch(
+                        ItemInfoMatcher.ofItemIds(IntSet.wrap(item.id)));
+                target = taskbarViewController.getFirstIconMatch(matcher);
+            } else if (item.itemType == ITEM_TYPE_DEEP_SHORTCUT) {
+                // Find first icon with same package/user as the deep shortcut.
+                ItemInfoMatcher packageUserMatcher = ItemInfoMatcher.ofPackages(
+                        Collections.singleton(item.getTargetPackage()), item.user);
+                target = taskbarViewController.getFirstIconMatch(packageUserMatcher);
             }
         }
 
