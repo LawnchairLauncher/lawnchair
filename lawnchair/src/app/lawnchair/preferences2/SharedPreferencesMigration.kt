@@ -35,6 +35,7 @@ class SharedPreferencesMigration(private val context: Context) {
         "pref_doubleTap2Sleep" to "dt2s", "pref_searchAutoShowKeyboard" to "auto_show_keyboard_in_drawer",
         "pref_iconSizeFactor" to "home_icon_size_factor", "pref_folderPreviewBgOpacity" to "folder_preview_background_opacity",
         "pref_showHomeLabels" to "show_icon_labels_on_home_screen", "pref_allAppsIconSizeFactor" to "drawer_icon_size_factor",
+        "pref_allAppsIconLabels" to "show_icon_labels_in_drawer",
     )
 
     fun produceMigration() = androidx.datastore.migrations.SharedPreferencesMigration(

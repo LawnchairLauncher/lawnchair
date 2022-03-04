@@ -49,6 +49,7 @@ interface AppDrawerPreferenceCollectorScope : PreferenceCollectorScope {
     val hideAppDrawerSearchBar: Boolean
     val autoShowKeyboardInDrawer: Boolean
     val drawerIconSizeFactor: Float
+    val showIconLabelsInDrawer: Boolean
 }
 
 @Composable
@@ -58,15 +59,18 @@ fun AppDrawerPreferenceCollector(content: @Composable AppDrawerPreferenceCollect
     val hideAppDrawerSearchBar by preferenceManager.hideAppDrawerSearchBar.state()
     val autoShowKeyboardInDrawer by preferenceManager.autoShowKeyboardInDrawer.state()
     val drawerIconSizeFactor by preferenceManager.drawerIconSizeFactor.state()
+    val showIconLabelsInDrawer by preferenceManager.showIconLabelsInDrawer.state()
     ifNotNull(
         hiddenApps, hideAppDrawerSearchBar,
         autoShowKeyboardInDrawer, drawerIconSizeFactor,
+        showIconLabelsInDrawer,
     ) {
         object : AppDrawerPreferenceCollectorScope {
             override val hiddenApps = it[0] as Set<String>
             override val hideAppDrawerSearchBar = it[1] as Boolean
             override val autoShowKeyboardInDrawer = it[2] as Boolean
             override val drawerIconSizeFactor = it[3] as Float
+            override val showIconLabelsInDrawer = it[4] as Boolean
             override val coroutineScope = rememberCoroutineScope()
             override val preferenceManager = preferenceManager
         }.content()
@@ -169,13 +173,13 @@ fun AppDrawerPreferences() {
                     valueRange = 0.5F..1.5F,
                     showAsPercentage = true,
                 )
-                val allAppsIconLabels = prefs.allAppsIconLabels.getAdapter()
-                SwitchPreference(
-                    allAppsIconLabels,
+                SwitchPreference2(
+                    checked = showIconLabelsInDrawer,
+                    edit = { showIconLabelsInDrawer.set(value = it) },
                     label = stringResource(id = R.string.show_home_labels),
                 )
                 AnimatedVisibility(
-                    visible = allAppsIconLabels.state.value,
+                    visible = showIconLabelsInDrawer,
                     enter = expandVertically() + fadeIn(),
                     exit = shrinkVertically() + fadeOut()
                 ) {
