@@ -278,6 +278,7 @@ public final class LauncherActivityInterface extends
 
     @Override
     public void closeOverlay() {
+        super.closeOverlay();
         Launcher launcher = getCreatedActivity();
         if (launcher == null) {
             return;
