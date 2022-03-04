@@ -15,6 +15,7 @@
  */
 package com.android.launcher3.taskbar.allapps;
 
+import static android.view.WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_ALWAYS;
 import static android.view.WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
 
 import static com.android.launcher3.AbstractFloatingView.TYPE_ALL;
@@ -158,6 +159,7 @@ public final class TaskbarAllAppsController implements OnDeviceProfileChangeList
         layoutParams.gravity = Gravity.BOTTOM;
         layoutParams.packageName = mTaskbarContext.getPackageName();
         layoutParams.setFitInsetsTypes(0); // Handled by container view.
+        layoutParams.layoutInDisplayCutoutMode = LAYOUT_IN_DISPLAY_CUTOUT_MODE_ALWAYS;
         layoutParams.setSystemApplicationOverlay(true);
         return layoutParams;
     }
