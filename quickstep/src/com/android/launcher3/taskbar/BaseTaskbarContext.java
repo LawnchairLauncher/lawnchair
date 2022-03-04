@@ -64,6 +64,9 @@ public abstract class BaseTaskbarContext extends ContextThemeWrapper implements 
     /** Callback invoked when a drag is initiated within this context. */
     public abstract void onDragStart();
 
+    /** Callback invoked when a drag is finished within this context. */
+    public abstract void onDragEnd();
+
     /** Callback invoked when a popup is shown or closed within this context. */
     public abstract void onPopupVisibilityChanged(boolean isVisible);
 }

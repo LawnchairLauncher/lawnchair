@@ -391,11 +391,17 @@ public class TaskbarDragController extends DragController<BaseTaskbarContext> im
         return super.isDragging() || mIsSystemDragInProgress;
     }
 
+    /** {@code true} if the system is currently handling the drag. */
+    public boolean isSystemDragInProgress() {
+        return mIsSystemDragInProgress;
+    }
+
     private void maybeOnDragEnd() {
         if (!isDragging()) {
             ((BubbleTextView) mDragObject.originalView).getIcon().setIsDisabled(false);
             mControllers.taskbarAutohideSuspendController.updateFlag(
                     TaskbarAutohideSuspendController.FLAG_AUTOHIDE_SUSPEND_DRAGGING, false);
+            mActivity.onDragEnd();
         }
     }
 

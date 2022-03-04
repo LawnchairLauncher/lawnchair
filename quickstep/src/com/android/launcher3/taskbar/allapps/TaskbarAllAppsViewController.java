@@ -49,7 +49,7 @@ final class TaskbarAllAppsViewController {
         setUpIconLongClick();
         setUpAppDivider();
         setUpTaskbarStashing();
-        mSlideInView.addOnCloseListener(windowController::closeWindow);
+        mSlideInView.addOnCloseListener(windowController::maybeCloseWindow);
     }
 
     /** Starts the {@link TaskbarAllAppsSlideInView} enter transition. */
