@@ -562,7 +562,7 @@ public class StatsLogManager implements ResourceBasedOverride {
     }
 
     /**
-     * Helps to construct and write the log message.
+     * Helps to construct and log launcher event.
      */
     public interface StatsLogger {
 
@@ -662,6 +662,58 @@ public class StatsLogManager implements ResourceBasedOverride {
     }
 
     /**
+     * Helps to construct and log latency event.
+     */
+    public interface StatsLatencyLogger {
+
+        enum LatencyType {
+            UNKNOWN(0),
+            COLD(1),
+            HOT(2);
+
+            private final int mId;
+
+            LatencyType(int id) {
+                this.mId = id;
+            }
+
+            public int getId() {
+                return mId;
+            }
+
+        }
+
+        /**
+         * Sets {@link InstanceId} of log message.
+         */
+        default StatsLatencyLogger withInstanceId(InstanceId instanceId) {
+            return this;
+        }
+
+
+        /**
+         * Sets latency of the event.
+         */
+        default StatsLatencyLogger withLatency(long latencyInMillis) {
+            return this;
+        }
+
+        /**
+         * Sets {@link LatencyType} of log message.
+         */
+        default StatsLatencyLogger withType(LatencyType type) {
+            return this;
+        }
+
+
+        /**
+         * Builds the final message and logs it as {@link EventEnum}.
+         */
+        default void log(EventEnum event) {
+        }
+    }
+
+    /**
      * Returns new logger object.
      */
     public StatsLogger logger() {
@@ -672,8 +724,24 @@ public class StatsLogManager implements ResourceBasedOverride {
         return logger;
     }
 
+    /**
+     * Returns new latency logger object.
+     */
+    public StatsLatencyLogger latencyLogger() {
+        StatsLatencyLogger logger = createLatencyLogger();
+        if (mInstanceId != null) {
+            logger.withInstanceId(mInstanceId);
+        }
+        return logger;
+    }
+
     protected StatsLogger createLogger() {
         return new StatsLogger() {
+        };
+    }
+
+    protected StatsLatencyLogger createLatencyLogger() {
+        return new StatsLatencyLogger() {
         };
     }
 
