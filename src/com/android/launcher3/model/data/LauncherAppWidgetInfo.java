@@ -288,7 +288,7 @@ public class LauncherAppWidgetInfo extends ItemInfo {
         LauncherAtom.ItemInfo info = super.buildProto(folderInfo);
         return info.toBuilder()
                 .setWidget(info.getWidget().toBuilder().setWidgetFeatures(widgetFeatures))
-                .setAttribute(getAttribute(sourceContainer))
+                .addItemAttributes(getAttribute(sourceContainer))
                 .build();
     }
 }
