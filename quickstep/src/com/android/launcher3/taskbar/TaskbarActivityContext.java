@@ -21,6 +21,7 @@ import static android.view.WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
 import static android.view.WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_ALWAYS;
 import static android.view.WindowManager.LayoutParams.TYPE_NAVIGATION_BAR_PANEL;
 
+import static com.android.launcher3.AbstractFloatingView.TYPE_ALL;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_FOLDER_OPEN;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_NOTIFICATION_PANEL_EXPANDED;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_QUICK_SETTINGS_EXPANDED;
@@ -386,6 +387,11 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
     }
 
     @Override
+    public void onDragEnd() {
+        maybeSetTaskbarWindowNotFullscreen();
+    }
+
+    @Override
     public void onPopupVisibilityChanged(boolean isVisible) {
         setTaskbarWindowFocusable(isVisible);
     }
@@ -486,6 +492,17 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
                 TaskbarAutohideSuspendController.FLAG_AUTOHIDE_SUSPEND_FULLSCREEN, fullscreen);
         mIsFullscreen = fullscreen;
         setTaskbarWindowHeight(fullscreen ? MATCH_PARENT : mLastRequestedNonFullscreenHeight);
+    }
+
+    /**
+     * Reverts Taskbar window to its original size, if all floating views are closed and there is
+     * no system drag operation in progress.
+     */
+    void maybeSetTaskbarWindowNotFullscreen() {
+        if (AbstractFloatingView.getAnyView(this, TYPE_ALL) == null
+                && !mControllers.taskbarDragController.isSystemDragInProgress()) {
+            setTaskbarWindowFullscreen(false);
+        }
     }
 
     public boolean isTaskbarWindowFullscreen() {
