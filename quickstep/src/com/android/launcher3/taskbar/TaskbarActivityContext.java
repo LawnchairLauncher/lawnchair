@@ -47,6 +47,7 @@ import android.view.Gravity;
 import android.view.RoundedCorner;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.WindowManagerGlobal;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
@@ -178,8 +179,8 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
                 new TaskbarDragLayerController(this, mDragLayer),
                 new TaskbarViewController(this, taskbarView),
                 new TaskbarScrimViewController(this, taskbarScrimView),
-                new TaskbarUnfoldAnimationController(unfoldTransitionProgressProvider,
-                        mWindowManager),
+                new TaskbarUnfoldAnimationController(this, unfoldTransitionProgressProvider,
+                        mWindowManager, WindowManagerGlobal.getWindowManagerService()),
                 new TaskbarKeyguardController(this),
                 new StashedHandleViewController(this, stashedHandleView),
                 new TaskbarStashController(this),

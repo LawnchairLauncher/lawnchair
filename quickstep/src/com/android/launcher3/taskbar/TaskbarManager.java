@@ -40,8 +40,8 @@ import androidx.annotation.Nullable;
 import com.android.launcher3.BaseQuickstepLauncher;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.LauncherAppState;
-import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.statemanager.StatefulActivity;
+import com.android.launcher3.taskbar.unfold.NonDestroyableScopedUnfoldTransitionProgressProvider;
 import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.DisplayController.Info;
 import com.android.launcher3.util.SettingsCache;
@@ -78,8 +78,11 @@ public class TaskbarManager implements DisplayController.DisplayInfoChangeListen
     private final SimpleBroadcastReceiver mShutdownReceiver;
 
     // The source for this provider is set when Launcher is available
+    // We use 'non-destroyable' version here so the original provider won't be destroyed
+    // as it is tied to the activity lifecycle, not the taskbar lifecycle.
+    // It's destruction/creation will be managed by the activity.
     private final ScopedUnfoldTransitionProgressProvider mUnfoldProgressProvider =
-            new ScopedUnfoldTransitionProgressProvider();
+            new NonDestroyableScopedUnfoldTransitionProgressProvider();
 
     private TaskbarActivityContext mTaskbarActivityContext;
     private StatefulActivity mActivity;
