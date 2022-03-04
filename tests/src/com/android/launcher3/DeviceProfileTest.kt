@@ -39,6 +39,7 @@ class DeviceProfileTest {
     private var isMultiWindowMode: Boolean = false
     private var transposeLayoutWithOrientation: Boolean = false
     private var useTwoPanels: Boolean = false
+    private var isGestureMode: Boolean = true
 
     @Before
     fun setUp() {
@@ -58,7 +59,8 @@ class DeviceProfileTest {
             windowBounds,
             isMultiWindowMode,
             transposeLayoutWithOrientation,
-            useTwoPanels
+            useTwoPanels,
+            isGestureMode
         )
 
         assertThat(dp.isQsbInline).isFalse()
@@ -67,7 +69,7 @@ class DeviceProfileTest {
 
     @Test
     fun qsbWidth_is_match_parent_for_tablet_portrait() {
-        initializeVarsForTablet()
+        initializeVarsForLargeTablet()
 
         val dp = DeviceProfile(
             context,
@@ -76,7 +78,8 @@ class DeviceProfileTest {
             windowBounds,
             isMultiWindowMode,
             transposeLayoutWithOrientation,
-            useTwoPanels
+            useTwoPanels,
+            isGestureMode
         )
 
         assertThat(dp.isQsbInline).isFalse()
@@ -84,8 +87,8 @@ class DeviceProfileTest {
     }
 
     @Test
-    fun qsbWidth_has_size_for_tablet_landscape() {
-        initializeVarsForTablet(true)
+    fun qsbWidth_has_size_for_large_tablet_landscape() {
+        initializeVarsForLargeTablet(true)
 
         val dp = DeviceProfile(
             context,
@@ -94,7 +97,8 @@ class DeviceProfileTest {
             windowBounds,
             isMultiWindowMode,
             transposeLayoutWithOrientation,
-            useTwoPanels
+            useTwoPanels,
+            isGestureMode
         )
 
         if (dp.hotseatQsbHeight > 0) {
@@ -110,8 +114,8 @@ class DeviceProfileTest {
      * This test is to make sure that two panels don't inline the QSB as tablets do
      */
     @Test
-    fun qsbWidth_is_match_parent_for_two_panel_landscape() {
-        initializeVarsForTablet(true)
+    fun qsbWidth_is_match_parent_for_small_two_panel_landscape() {
+        initializeVarsForSmallTablet(true)
         useTwoPanels = true
 
         val dp = DeviceProfile(
@@ -121,7 +125,8 @@ class DeviceProfileTest {
             windowBounds,
             isMultiWindowMode,
             transposeLayoutWithOrientation,
-            useTwoPanels
+            useTwoPanels,
+            isGestureMode
         )
 
         assertThat(dp.isQsbInline).isFalse()
@@ -137,11 +142,12 @@ class DeviceProfileTest {
         windowBounds = WindowBounds(x, y, x, y - 100)
 
         `when`(info.isTablet(any())).thenReturn(false)
+        `when`(info.isLargeTablet(any())).thenReturn(false)
 
         scalableInvariantDeviceProfile()
     }
 
-    private fun initializeVarsForTablet(isLandscape: Boolean = false) {
+    private fun initializeVarsForSmallTablet(isLandscape: Boolean = false) {
         val (x, y) = if (isLandscape)
             Pair(2560, 1600)
         else
@@ -150,6 +156,21 @@ class DeviceProfileTest {
         windowBounds = WindowBounds(x, y, x, y - 100)
 
         `when`(info.isTablet(any())).thenReturn(true)
+        `when`(info.isLargeTablet(any())).thenReturn(false)
+
+        scalableInvariantDeviceProfile()
+    }
+
+    private fun initializeVarsForLargeTablet(isLandscape: Boolean = false) {
+        val (x, y) = if (isLandscape)
+            Pair(2560, 1600)
+        else
+            Pair(1600, 2560)
+
+        windowBounds = WindowBounds(x, y, x, y - 100)
+
+        `when`(info.isTablet(any())).thenReturn(true)
+        `when`(info.isLargeTablet(any())).thenReturn(true)
 
         scalableInvariantDeviceProfile()
     }
