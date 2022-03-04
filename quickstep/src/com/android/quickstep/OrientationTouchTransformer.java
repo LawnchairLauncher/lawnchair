@@ -34,6 +34,7 @@ import android.view.Surface;
 import com.android.launcher3.R;
 import com.android.launcher3.ResourceUtils;
 import com.android.launcher3.util.DisplayController.Info;
+import com.android.launcher3.util.DisplayController.NavigationMode;
 
 import java.io.PrintWriter;
 import java.util.HashMap;
@@ -112,7 +113,7 @@ class OrientationTouchTransformer {
      * mQuickstepStartingRotation only updates when device rotation matches touch rotation.
      */
     private int mActiveTouchRotation;
-    private SysUINavigationMode.Mode mMode;
+    private NavigationMode mMode;
     private QuickStepContractInfo mContractInfo;
 
     /**
@@ -135,7 +136,7 @@ class OrientationTouchTransformer {
     }
 
 
-    OrientationTouchTransformer(Resources resources, SysUINavigationMode.Mode mode,
+    OrientationTouchTransformer(Resources resources, NavigationMode mode,
             QuickStepContractInfo contractInfo) {
         mResources = resources;
         mMode = mode;
@@ -155,7 +156,7 @@ class OrientationTouchTransformer {
         resetSwipeRegions(info);
     }
 
-    void setNavigationMode(SysUINavigationMode.Mode newMode, Info info, Resources newRes) {
+    void setNavigationMode(NavigationMode newMode, Info info, Resources newRes) {
         if (DEBUG) {
             Log.d(TAG, "setNavigationMode new: " + newMode + " oldMode: " + mMode + " " + this);
         }
@@ -212,8 +213,7 @@ class OrientationTouchTransformer {
      * @param info The current displayInfo which will be the start of the quickswitch gesture
      */
     void enableMultipleRegions(boolean enableMultipleRegions, Info info) {
-        mEnableMultipleRegions = enableMultipleRegions &&
-                mMode != SysUINavigationMode.Mode.TWO_BUTTONS;
+        mEnableMultipleRegions = enableMultipleRegions && mMode != NavigationMode.TWO_BUTTONS;
         if (mEnableMultipleRegions) {
             mQuickStepStartingRotation = info.rotation;
         } else {
@@ -276,9 +276,8 @@ class OrientationTouchTransformer {
         Point size = display.currentSize;
         int rotation = display.rotation;
         int touchHeight = mNavBarGesturalHeight;
-        OrientationRectF orientationRectF =
-                new OrientationRectF(0, 0, size.x, size.y, rotation);
-        if (mMode == SysUINavigationMode.Mode.NO_BUTTON) {
+        OrientationRectF orientationRectF = new OrientationRectF(0, 0, size.x, size.y, rotation);
+        if (mMode == NavigationMode.NO_BUTTON) {
             orientationRectF.top = orientationRectF.bottom - touchHeight;
             updateAssistantRegions(orientationRectF);
         } else {

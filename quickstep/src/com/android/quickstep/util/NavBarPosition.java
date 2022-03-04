@@ -15,27 +15,27 @@
  */
 package com.android.quickstep.util;
 
-import static com.android.quickstep.SysUINavigationMode.Mode.NO_BUTTON;
+import static com.android.launcher3.util.DisplayController.NavigationMode.NO_BUTTON;
 
 import android.view.Surface;
 
 import com.android.launcher3.util.DisplayController.Info;
-import com.android.quickstep.SysUINavigationMode;
+import com.android.launcher3.util.DisplayController.NavigationMode;
 
 /**
  * Utility class to check nav bar position.
  */
 public class NavBarPosition {
 
-    private final SysUINavigationMode.Mode mMode;
+    private final NavigationMode mMode;
     private final int mDisplayRotation;
 
-    public NavBarPosition(SysUINavigationMode.Mode mode, Info info) {
+    public NavBarPosition(NavigationMode mode, Info info) {
         mMode = mode;
         mDisplayRotation = info.rotation;
     }
 
-    public NavBarPosition(SysUINavigationMode.Mode mode, int displayRotation) {
+    public NavBarPosition(NavigationMode mode, int displayRotation) {
         mMode = mode;
         mDisplayRotation = displayRotation;
     }

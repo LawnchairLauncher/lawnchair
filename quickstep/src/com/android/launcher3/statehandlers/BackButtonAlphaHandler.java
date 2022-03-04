@@ -17,17 +17,17 @@
 package com.android.launcher3.statehandlers;
 
 import static com.android.launcher3.anim.Interpolators.LINEAR;
+import static com.android.launcher3.util.DisplayController.NavigationMode.TWO_BUTTONS;
 import static com.android.quickstep.AnimatedFloat.VALUE;
-import static com.android.quickstep.SysUINavigationMode.Mode.TWO_BUTTONS;
 
 import com.android.launcher3.BaseQuickstepLauncher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.statemanager.StateManager.StateHandler;
 import com.android.launcher3.states.StateAnimationConfig;
+import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.UiThreadHelper;
 import com.android.quickstep.AnimatedFloat;
-import com.android.quickstep.SysUINavigationMode;
 import com.android.quickstep.SystemUiProxy;
 
 /**
@@ -48,7 +48,7 @@ public class BackButtonAlphaHandler implements StateHandler<LauncherState> {
     @Override
     public void setStateWithAnimation(LauncherState toState, StateAnimationConfig config,
             PendingAnimation animation) {
-        if (SysUINavigationMode.getMode(mLauncher) != TWO_BUTTONS) {
+        if (DisplayController.getNavigationMode(mLauncher) != TWO_BUTTONS) {
             return;
         }
 

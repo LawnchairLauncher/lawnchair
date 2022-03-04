@@ -20,9 +20,10 @@ import static android.view.Surface.ROTATION_0;
 
 import static com.android.launcher3.util.DisplayController.CHANGE_ACTIVE_SCREEN;
 import static com.android.launcher3.util.DisplayController.CHANGE_ALL;
+import static com.android.launcher3.util.DisplayController.CHANGE_NAVIGATION_MODE;
 import static com.android.launcher3.util.DisplayController.CHANGE_ROTATION;
+import static com.android.launcher3.util.DisplayController.NavigationMode.THREE_BUTTONS;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
-import static com.android.quickstep.SysUINavigationMode.Mode.THREE_BUTTONS;
 
 import android.content.Context;
 import android.content.res.Resources;
@@ -33,6 +34,7 @@ import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.DisplayController.DisplayInfoChangeListener;
 import com.android.launcher3.util.DisplayController.Info;
+import com.android.launcher3.util.DisplayController.NavigationMode;
 import com.android.launcher3.util.MainThreadInitializedObject;
 import com.android.quickstep.util.RecentsOrientedState;
 import com.android.systemui.shared.system.QuickStepContract;
@@ -42,22 +44,22 @@ import com.android.systemui.shared.system.TaskStackChangeListeners;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 
-public class RotationTouchHelper implements
-        SysUINavigationMode.NavigationModeChangeListener,
-        DisplayInfoChangeListener {
+/**
+ * Helper class for transforming touch events
+ */
+public class RotationTouchHelper implements DisplayInfoChangeListener {
 
     public static final MainThreadInitializedObject<RotationTouchHelper> INSTANCE =
             new MainThreadInitializedObject<>(RotationTouchHelper::new);
 
     private OrientationTouchTransformer mOrientationTouchTransformer;
     private DisplayController mDisplayController;
-    private SysUINavigationMode mSysUiNavMode;
     private int mDisplayId;
     private int mDisplayRotation;
 
     private final ArrayList<Runnable> mOnDestroyActions = new ArrayList<>();
 
-    private SysUINavigationMode.Mode mMode = THREE_BUTTONS;
+    private NavigationMode mMode = THREE_BUTTONS;
 
     private TaskStackChangeListener mFrozenTaskListener = new TaskStackChangeListener() {
         @Override
@@ -144,16 +146,16 @@ public class RotationTouchHelper implements
         }
         mDisplayController = DisplayController.INSTANCE.get(mContext);
         Resources resources = mContext.getResources();
-        mSysUiNavMode = SysUINavigationMode.INSTANCE.get(mContext);
         mDisplayId = DEFAULT_DISPLAY;
 
         mOrientationTouchTransformer = new OrientationTouchTransformer(resources, mMode,
                 () -> QuickStepContract.getWindowCornerRadius(mContext));
 
         // Register for navigation mode changes
-        SysUINavigationMode.Mode newMode = mSysUiNavMode.addModeChangeListener(this);
-        onNavModeChangedInternal(newMode, newMode.hasGestures);
-        runOnDestroy(() -> mSysUiNavMode.removeModeChangeListener(this));
+        mDisplayController.addChangeListener(this);
+        DisplayController.Info info = mDisplayController.getInfo();
+        onDisplayInfoChangedInternal(info, CHANGE_ALL, info.navigationMode.hasGestures);
+        runOnDestroy(() -> mDisplayController.removeChangeListener(this));
 
         mOrientationListener = new OrientationEventListener(mContext) {
             @Override
@@ -242,64 +244,54 @@ public class RotationTouchHelper implements
                 event.getY(pointerIndex));
     }
 
-
     @Override
-    public void onNavigationModeChanged(SysUINavigationMode.Mode newMode) {
-        onNavModeChangedInternal(newMode, false);
+    public void onDisplayInfoChanged(Context context, Info info, int flags) {
+        onDisplayInfoChangedInternal(info, flags, false);
     }
 
-    /**
-     * @param forceRegister if {@code true}, this will register {@link #mFrozenTaskListener} via
-     *                      {@link #setupOrientationSwipeHandler()}
-     */
-    private void onNavModeChangedInternal(SysUINavigationMode.Mode newMode, boolean forceRegister) {
-        mDisplayController.removeChangeListener(this);
-        mDisplayController.addChangeListener(this);
-        onDisplayInfoChanged(mContext, mDisplayController.getInfo(), CHANGE_ALL);
+    private void onDisplayInfoChangedInternal(Info info, int flags, boolean forceRegister) {
+        if ((flags & (CHANGE_ROTATION | CHANGE_ACTIVE_SCREEN | CHANGE_NAVIGATION_MODE)) != 0) {
+            mDisplayRotation = info.rotation;
 
-        mOrientationTouchTransformer.setNavigationMode(newMode, mDisplayController.getInfo(),
-                mContext.getResources());
+            if (mMode.hasGestures) {
+                updateGestureTouchRegions();
+                mOrientationTouchTransformer.createOrAddTouchRegion(info);
+                mCurrentAppRotation = mDisplayRotation;
 
-        if (forceRegister || (!mMode.hasGestures && newMode.hasGestures)) {
-            setupOrientationSwipeHandler();
-        } else if (mMode.hasGestures && !newMode.hasGestures){
-            destroyOrientationSwipeHandlerCallback();
+                /* Update nav bars on the following:
+                 * a) if this is coming from an activity rotation OR
+                 *   aa) we launch an app in the orientation that user is already in
+                 * b) We're not in overview, since overview will always be portrait (w/o home
+                 *   rotation)
+                 * c) We're actively in quickswitch mode
+                 */
+                if ((mPrioritizeDeviceRotation
+                        || mCurrentAppRotation == mSensorRotation)
+                        // switch to an app of orientation user is in
+                        && !mInOverview
+                        && mTaskListFrozen) {
+                    toggleSecondaryNavBarsForRotation();
+                }
+            }
         }
 
-        mMode = newMode;
+        if ((flags & CHANGE_NAVIGATION_MODE) != 0) {
+            NavigationMode newMode = info.navigationMode;
+            mOrientationTouchTransformer.setNavigationMode(newMode, mDisplayController.getInfo(),
+                    mContext.getResources());
+
+            if (forceRegister || (!mMode.hasGestures && newMode.hasGestures)) {
+                setupOrientationSwipeHandler();
+            } else if (mMode.hasGestures && !newMode.hasGestures) {
+                destroyOrientationSwipeHandlerCallback();
+            }
+
+            mMode = newMode;
+        }
     }
 
     public int getDisplayRotation() {
         return mDisplayRotation;
-    }
-
-    @Override
-    public void onDisplayInfoChanged(Context context, Info info, int flags) {
-        if ((flags & (CHANGE_ROTATION | CHANGE_ACTIVE_SCREEN)) == 0) {
-            return;
-        }
-
-        mDisplayRotation = info.rotation;
-
-        if (!mMode.hasGestures) {
-            return;
-        }
-        updateGestureTouchRegions();
-        mOrientationTouchTransformer.createOrAddTouchRegion(info);
-        mCurrentAppRotation = mDisplayRotation;
-
-        /* Update nav bars on the following:
-         * a) if this is coming from an activity rotation OR
-         *   aa) we launch an app in the orientation that user is already in
-         * b) We're not in overview, since overview will always be portrait (w/o home rotation)
-         * c) We're actively in quickswitch mode
-         */
-        if ((mPrioritizeDeviceRotation
-                || mCurrentAppRotation == mSensorRotation) // switch to an app of orientation user is in
-                && !mInOverview
-                && mTaskListFrozen) {
-            toggleSecondaryNavBarsForRotation();
-        }
     }
 
     /**

@@ -17,6 +17,7 @@ package com.android.quickstep;
 
 import static android.app.ActivityManager.RECENT_IGNORE_UNAVAILABLE;
 
+import static com.android.launcher3.util.DisplayController.CHANGE_NAVIGATION_MODE;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 
 import android.app.PendingIntent;
@@ -39,6 +40,8 @@ import android.view.RemoteAnimationAdapter;
 import android.view.RemoteAnimationTarget;
 import android.view.SurfaceControl;
 
+import com.android.launcher3.util.DisplayController;
+import com.android.launcher3.util.DisplayController.Info;
 import com.android.launcher3.util.MainThreadInitializedObject;
 import com.android.launcher3.util.SplitConfigurationOptions;
 import com.android.systemui.shared.recents.ISystemUiProxy;
@@ -65,8 +68,7 @@ import java.util.Arrays;
 /**
  * Holds the reference to SystemUI.
  */
-public class SystemUiProxy implements ISystemUiProxy,
-        SysUINavigationMode.NavigationModeChangeListener {
+public class SystemUiProxy implements ISystemUiProxy, DisplayController.DisplayInfoChangeListener {
     private static final String TAG = SystemUiProxy.class.getSimpleName();
 
     public static final MainThreadInitializedObject<SystemUiProxy> INSTANCE =
@@ -107,13 +109,15 @@ public class SystemUiProxy implements ISystemUiProxy,
     private int mLastSystemUiStateFlags;
 
     public SystemUiProxy(Context context) {
-        SysUINavigationMode.INSTANCE.get(context).addModeChangeListener(this);
+        DisplayController.INSTANCE.get(context).addChangeListener(this);
     }
 
     @Override
-    public void onNavigationModeChanged(SysUINavigationMode.Mode newMode) {
-        // Whenever the nav mode changes, force reset the nav button alpha
-        setNavBarButtonAlpha(1f, false);
+    public void onDisplayInfoChanged(Context context, Info info, int flags) {
+        if ((flags & CHANGE_NAVIGATION_MODE) != 0) {
+            // Whenever the nav mode changes, force reset the nav button alpha
+            setNavBarButtonAlpha(1f, false);
+        }
     }
 
     @Override
