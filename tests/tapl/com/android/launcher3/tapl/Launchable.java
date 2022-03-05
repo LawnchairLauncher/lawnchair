@@ -139,7 +139,7 @@ abstract class Launchable {
         mLauncher.waitForLauncherObject(longPressIndicator);
         LauncherInstrumentation.log("movePointerForStartDrag: indicator");
         mLauncher.movePointer(iconCenter, dragStartCenter, DEFAULT_DRAG_STEPS, false,
-                downTime, true, LauncherInstrumentation.GestureScope.INSIDE);
+                downTime, downTime, true, LauncherInstrumentation.GestureScope.INSIDE);
     }
 
     private int getStartDragThreshold() {
