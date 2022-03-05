@@ -1768,6 +1768,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
     private void maybeFinishSwipeToHome() {
         if (mIsSwipingPipToHome && mSwipePipToHomeAnimators[0] != null) {
             SystemUiProxy.INSTANCE.get(mContext).stopSwipePipToHome(
+                    mSwipePipToHomeAnimator.getTaskId(),
                     mSwipePipToHomeAnimator.getComponentName(),
                     mSwipePipToHomeAnimator.getDestinationBounds(),
                     mSwipePipToHomeAnimator.getContentOverlay());
