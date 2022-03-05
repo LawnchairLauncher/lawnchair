@@ -42,5 +42,18 @@ message DeviceSearchResultContainer{
 
     // True if the item's title/content is a direct match to the search query, false otherwise.
     optional bool direct_match = 2;
+
+    // Entry point for this on-device search session
+    optional EntryState entry_state = 3;
+
+    enum EntryState{
+      ENTRY_STATE_UNKNOWN = 0;
+
+      // User entered using swipe-up gesture from homescreen and searchbox in AllApps drawer.
+      ALL_APPS = 1;
+
+      // User entered by tapping on QSB bar on homescreen.
+      QSB = 2;
+    }
   }
 }

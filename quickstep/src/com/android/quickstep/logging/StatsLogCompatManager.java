@@ -93,8 +93,10 @@ public class StatsLogCompatManager extends StatsLogManager {
     /**
      * Flags for converting SearchAttribute to integer value.
      */
-    private static final int SEARCH_ATTRIBUTES_CORRECTED_QUERY = 1;
+    private static final int SEARCH_ATTRIBUTES_CORRECTED_QUERY = 1 << 0;
     private static final int SEARCH_ATTRIBUTES_DIRECT_MATCH = 1 << 1;
+    private static final int SEARCH_ATTRIBUTES_ENTRY_STATE_ALL_APPS = 1 << 2;
+    private static final int SEARCH_ATTRIBUTES_ENTRY_STATE_QSB = 1 << 3;
 
     public static final CopyOnWriteArrayList<StatsLogConsumer> LOGS_CONSUMER =
             new CopyOnWriteArrayList<>();
@@ -656,6 +658,12 @@ public class StatsLogCompatManager extends StatsLogManager {
         if (searchAttributes.getDirectMatch()) {
             response = response | SEARCH_ATTRIBUTES_DIRECT_MATCH;
         }
+        if (searchAttributes.getEntryState() == SearchAttributes.EntryState.ALL_APPS) {
+            response = response | SEARCH_ATTRIBUTES_ENTRY_STATE_ALL_APPS;
+        } else if (searchAttributes.getEntryState() == SearchAttributes.EntryState.QSB) {
+            response = response | SEARCH_ATTRIBUTES_ENTRY_STATE_QSB;
+        }
+
         return response;
     }
 
