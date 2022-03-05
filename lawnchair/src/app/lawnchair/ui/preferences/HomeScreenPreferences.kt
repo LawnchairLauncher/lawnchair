@@ -53,6 +53,7 @@ interface HomeScreenPreferenceCollectorScope : PreferenceCollectorScope {
     val dt2s: Boolean
     val homeIconSizeFactor: Float
     val showIconLabelsOnHomeScreen: Boolean
+    val homeIconLabelSizeFactor: Float
 }
 
 @Composable
@@ -65,11 +66,12 @@ fun HomeScreenPreferenceCollector(content: @Composable HomeScreenPreferenceColle
     val dt2s by preferenceManager.dt2s.state()
     val homeIconSizeFactor by preferenceManager.homeIconSizeFactor.state()
     val showIconLabelsOnHomeScreen by preferenceManager.showIconLabelsOnHomeScreen.state()
+    val homeIconLabelSizeFactor by preferenceManager.homeIconLabelSizeFactor.state()
     ifNotNull(
         darkStatusBar, roundedWidgets,
         showStatusBar, showTopShadow,
         dt2s, homeIconSizeFactor,
-        showIconLabelsOnHomeScreen,
+        showIconLabelsOnHomeScreen, homeIconLabelSizeFactor,
     ) {
         object : HomeScreenPreferenceCollectorScope {
             override val darkStatusBar = it[0] as Boolean
@@ -79,6 +81,7 @@ fun HomeScreenPreferenceCollector(content: @Composable HomeScreenPreferenceColle
             override val dt2s = it[4] as Boolean
             override val homeIconSizeFactor = it[5] as Float
             override val showIconLabelsOnHomeScreen = it[6] as Boolean
+            override val homeIconLabelSizeFactor = it[7] as Float
             override val coroutineScope = rememberCoroutineScope()
             override val preferenceManager = preferenceManager
         }.content()
@@ -163,9 +166,10 @@ fun HomeScreenPreferences() {
                     enter = expandVertically() + fadeIn(),
                     exit = shrinkVertically() + fadeOut(),
                 ) {
-                    SliderPreference(
+                    SliderPreference2(
                         label = stringResource(id = R.string.label_size),
-                        adapter = prefs.textSizeFactor.getAdapter(),
+                        value = homeIconLabelSizeFactor,
+                        edit = { homeIconLabelSizeFactor.set(value = it) },
                         step = 0.1f,
                         valueRange = 0.5F..1.5F,
                         showAsPercentage = true,

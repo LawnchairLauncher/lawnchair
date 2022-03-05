@@ -50,7 +50,6 @@ class PreferenceManager private constructor(private val context: Context) : Base
     val workspaceRows = IdpIntPref("pref_workspaceRows", { numRows }, reloadGrid)
     val folderColumns = IdpIntPref("pref_folderColumns", { numFolderColumns }, reloadGrid)
     val folderRows = IdpIntPref("pref_folderRows", { numFolderRows }, reloadGrid)
-    val textSizeFactor = FloatPref("pref_textSizeFactor", 1F, reloadGrid)
     val allAppsTextSizeFactor = FloatPref("pref_allAppsTextSizeFactor", 1F, reloadGrid)
     val allAppsColumns = IdpIntPref("pref_allAppsColumns", { numAllAppsColumns }, reloadGrid)
     val smartSpaceEnable = BoolPref("pref_smartSpaceEnable", true, restart)
