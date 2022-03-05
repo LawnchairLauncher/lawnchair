@@ -443,8 +443,8 @@ public abstract class BaseAllAppsContainerView<T extends Context & ActivityConte
         if (showTabs == mUsingTabs && !force) {
             return;
         }
-        replaceRVContainer(showTabs);
         mUsingTabs = showTabs;
+        replaceRVContainer(mUsingTabs);
 
         mAllAppsStore.unregisterIconContainer(mAH.get(AdapterHolder.MAIN).mRecyclerView);
         mAllAppsStore.unregisterIconContainer(mAH.get(AdapterHolder.WORK).mRecyclerView);
