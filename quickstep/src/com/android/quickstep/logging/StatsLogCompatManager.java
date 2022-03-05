@@ -93,8 +93,10 @@ public class StatsLogCompatManager extends StatsLogManager {
     /**
      * Flags for converting SearchAttribute to integer value.
      */
-    private static final int SEARCH_ATTRIBUTES_CORRECTED_QUERY = 1;
+    private static final int SEARCH_ATTRIBUTES_CORRECTED_QUERY = 1 << 0;
     private static final int SEARCH_ATTRIBUTES_DIRECT_MATCH = 1 << 1;
+    private static final int SEARCH_ATTRIBUTES_ENTRY_STATE_ALL_APPS = 1 << 2;
+    private static final int SEARCH_ATTRIBUTES_ENTRY_STATE_QSB = 1 << 3;
 
     public static final CopyOnWriteArrayList<StatsLogConsumer> LOGS_CONSUMER =
             new CopyOnWriteArrayList<>();
@@ -108,6 +110,11 @@ public class StatsLogCompatManager extends StatsLogManager {
     @Override
     protected StatsLogger createLogger() {
         return new StatsCompatLogger(mContext, mActivityContext);
+    }
+
+    @Override
+    protected StatsLatencyLogger createLatencyLogger() {
+        return new StatsCompatLatencyLogger(mContext, mActivityContext);
     }
 
     /**
@@ -422,6 +429,61 @@ public class StatsLogCompatManager extends StatsLogManager {
         }
     }
 
+    /**
+     * Helps to construct and log statsd compatible latency events.
+     */
+    private static class StatsCompatLatencyLogger implements StatsLatencyLogger {
+        private final Context mContext;
+        private final Optional<ActivityContext> mActivityContext;
+        private InstanceId mInstanceId = DEFAULT_INSTANCE_ID;
+        private LatencyType mType = LatencyType.UNKNOWN;
+        private long mLatencyInMillis;
+
+        StatsCompatLatencyLogger(Context context, ActivityContext activityContext) {
+            mContext = context;
+            mActivityContext = Optional.ofNullable(activityContext);
+        }
+
+        @Override
+        public StatsLatencyLogger withInstanceId(InstanceId instanceId) {
+            this.mInstanceId = instanceId;
+            return this;
+        }
+
+        @Override
+        public StatsLatencyLogger withType(LatencyType type) {
+            this.mType = type;
+            return this;
+        }
+
+        @Override
+        public StatsLatencyLogger withLatency(long latencyInMillis) {
+            this.mLatencyInMillis = latencyInMillis;
+            return this;
+        }
+
+        @Override
+        public void log(EventEnum event) {
+            if (IS_VERBOSE) {
+                String name = (event instanceof Enum) ? ((Enum) event).name() :
+                        event.getId() + "";
+
+                Log.d(TAG, mInstanceId == DEFAULT_INSTANCE_ID
+                        ? String.format("\n%s = %dms\n", name, mLatencyInMillis)
+                        : String.format("\n%s = %dms (InstanceId:%s)\n", name,
+                                mLatencyInMillis, mInstanceId));
+            }
+
+            SysUiStatsLog.write(SysUiStatsLog.LAUNCHER_LATENCY,
+                    event.getId(), // event_id
+                    mInstanceId.getId(), // instance_id
+                    0, // package_id
+                    mLatencyInMillis, // latency_in_millis
+                    mType.getId() //type
+            );
+        }
+    }
+
     private static int getCardinality(LauncherAtom.ItemInfo info) {
         switch (info.getContainerInfo().getContainerCase()) {
             case PREDICTED_HOTSEAT_CONTAINER:
@@ -596,6 +658,12 @@ public class StatsLogCompatManager extends StatsLogManager {
         if (searchAttributes.getDirectMatch()) {
             response = response | SEARCH_ATTRIBUTES_DIRECT_MATCH;
         }
+        if (searchAttributes.getEntryState() == SearchAttributes.EntryState.ALL_APPS) {
+            response = response | SEARCH_ATTRIBUTES_ENTRY_STATE_ALL_APPS;
+        } else if (searchAttributes.getEntryState() == SearchAttributes.EntryState.QSB) {
+            response = response | SEARCH_ATTRIBUTES_ENTRY_STATE_QSB;
+        }
+
         return response;
     }
 

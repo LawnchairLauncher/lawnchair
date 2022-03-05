@@ -44,7 +44,7 @@ import com.android.systemui.shared.system.RemoteTransitionCompat;
 import com.android.systemui.shared.system.TaskStackChangeListener;
 import com.android.systemui.shared.system.TaskStackChangeListeners;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class TaskAnimationManager implements RecentsAnimationCallbacks.RecentsAnimationListener {
@@ -156,12 +156,26 @@ public class TaskAnimationManager implements RecentsAnimationCallbacks.RecentsAn
                 RemoteAnimationTargetCompat appearedTaskTarget = appearedTaskTargets[0];
                 BaseActivityInterface activityInterface = mLastGestureState.getActivityInterface();
                 // Convert appTargets to type RemoteAnimationTarget for all apps except Home app
-                RemoteAnimationTarget[] nonHomeApps = Arrays.stream(appearedTaskTargets)
-                        .filter(remoteAnimationTarget ->
-                                remoteAnimationTarget.activityType != ACTIVITY_TYPE_HOME)
+                final ArrayList<RemoteAnimationTargetCompat> tmpNonHomeApps = new ArrayList<>();
+                final ArrayList<RemoteAnimationTargetCompat> tmpHomeApps = new ArrayList<>();
+                for (RemoteAnimationTargetCompat compat : appearedTaskTargets) {
+                    if (compat.activityType != ACTIVITY_TYPE_HOME) {
+                        tmpNonHomeApps.add(compat);
+                    } else {
+                        tmpHomeApps.add(compat);
+                    }
+                }
+                RemoteAnimationTarget[] nonHomeApps = tmpNonHomeApps.stream()
                         .map(RemoteAnimationTargetCompat::unwrap)
                         .toArray(RemoteAnimationTarget[]::new);
-
+                RemoteAnimationTarget[] homeApps = tmpHomeApps.stream()
+                        .map(RemoteAnimationTargetCompat::unwrap)
+                        .toArray(RemoteAnimationTarget[]::new);
+                if (homeApps.length > 0
+                        && activityInterface.getCreatedActivity() instanceof RecentsActivity) {
+                    ((RecentsActivity) activityInterface.getCreatedActivity()).startHome();
+                    return;
+                }
                 RemoteAnimationTarget[] nonAppTargets =
                         SystemUiProxy.INSTANCE.getNoCreate()
                                 .onGoingToRecentsLegacy(false, nonHomeApps);
@@ -198,8 +212,16 @@ public class TaskAnimationManager implements RecentsAnimationCallbacks.RecentsAn
             RemoteTransitionCompat transition = new RemoteTransitionCompat(mCallbacks,
                     mController != null ? mController.getController() : null,
                     mCtx.getIApplicationThread());
-            final ActivityOptions options = ActivityOptionsCompat.makeRemoteTransition(transition)
-                    .setTransientLaunch();
+            final ActivityOptions options = ActivityOptionsCompat.makeRemoteTransition(transition);
+            // Allowing to pause Home if Home is top activity and Recents is not Home. So when user
+            // start home when recents animation is playing, the home activity can be resumed again
+            // to let the transition controller collect Home activity.
+            ActivityManager.RunningTaskInfo rti = gestureState.getRunningTask();
+            boolean homeIsOnTop = rti != null && rti.topActivity != null
+                    && rti.topActivity.equals(gestureState.getHomeIntent().getComponent());
+            if (!homeIsOnTop) {
+                options.setTransientLaunch();
+            }
             options.setSourceInfo(ActivityOptions.SourceInfo.TYPE_RECENTS_ANIMATION, eventTime);
             UI_HELPER_EXECUTOR.execute(() -> mCtx.startActivity(intent, options.toBundle()));
         } else {

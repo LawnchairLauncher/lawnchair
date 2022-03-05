@@ -37,6 +37,7 @@ import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.model.data.ItemInfo;
+import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.LauncherBindableItemsContainer;
 import com.android.launcher3.util.MultiValueAlpha;
 import com.android.quickstep.AnimatedFloat;
@@ -274,8 +275,22 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
         mTaskbarNavButtonTranslationY.updateValue(-deviceProfile.getTaskbarOffsetY());
     }
 
-    public View mapOverItems(LauncherBindableItemsContainer.ItemOperator op) {
-        return mTaskbarView.mapOverItems(op);
+    /**
+     * Maps the given operator to all the top-level children of TaskbarView.
+     */
+    public void mapOverItems(LauncherBindableItemsContainer.ItemOperator op) {
+        mTaskbarView.mapOverItems(op);
+    }
+
+    /**
+     * Returns the first icon to match the given parameter, in priority from:
+     * 1) Icons directly on Taskbar
+     * 2) FolderIcon of the Folder containing the given icon
+     * 3) All Apps button
+     */
+    public View getFirstIconMatch(ItemInfoMatcher matcher) {
+        ItemInfoMatcher folderMatcher = ItemInfoMatcher.forFolderMatch(matcher);
+        return mTaskbarView.getFirstMatch(matcher, folderMatcher);
     }
 
     /**
