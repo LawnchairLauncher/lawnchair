@@ -541,11 +541,16 @@ public class SystemUiProxy implements ISystemUiProxy,
         return null;
     }
 
-    public void stopSwipePipToHome(ComponentName componentName, Rect destinationBounds,
+    /**
+     * Notifies WM Shell that launcher has finished all the animation for swipe to home. WM Shell
+     * can choose to fade out the overlay when entering PIP is finished, and WM Shell should be
+     * responsible for cleaning up the overlay.
+     */
+    public void stopSwipePipToHome(int taskId, ComponentName componentName, Rect destinationBounds,
             SurfaceControl overlay) {
         if (mPip != null) {
             try {
-                mPip.stopSwipePipToHome(componentName, destinationBounds, overlay);
+                mPip.stopSwipePipToHome(taskId, componentName, destinationBounds, overlay);
             } catch (RemoteException e) {
                 Log.w(TAG, "Failed call stopSwipePipToHome");
             }
