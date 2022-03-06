@@ -50,6 +50,7 @@ interface AppDrawerPreferenceCollectorScope : PreferenceCollectorScope {
     val autoShowKeyboardInDrawer: Boolean
     val drawerIconSizeFactor: Float
     val showIconLabelsInDrawer: Boolean
+    val drawerIconLabelSizeFactor: Float
 }
 
 @Composable
@@ -60,10 +61,11 @@ fun AppDrawerPreferenceCollector(content: @Composable AppDrawerPreferenceCollect
     val autoShowKeyboardInDrawer by preferenceManager.autoShowKeyboardInDrawer.state()
     val drawerIconSizeFactor by preferenceManager.drawerIconSizeFactor.state()
     val showIconLabelsInDrawer by preferenceManager.showIconLabelsInDrawer.state()
+    val drawerIconLabelSizeFactor by preferenceManager.drawerIconLabelSizeFactor.state()
     ifNotNull(
         hiddenApps, hideAppDrawerSearchBar,
         autoShowKeyboardInDrawer, drawerIconSizeFactor,
-        showIconLabelsInDrawer,
+        showIconLabelsInDrawer, drawerIconLabelSizeFactor,
     ) {
         object : AppDrawerPreferenceCollectorScope {
             override val hiddenApps = it[0] as Set<String>
@@ -71,6 +73,7 @@ fun AppDrawerPreferenceCollector(content: @Composable AppDrawerPreferenceCollect
             override val autoShowKeyboardInDrawer = it[2] as Boolean
             override val drawerIconSizeFactor = it[3] as Float
             override val showIconLabelsInDrawer = it[4] as Boolean
+            override val drawerIconLabelSizeFactor = it[5] as Float
             override val coroutineScope = rememberCoroutineScope()
             override val preferenceManager = preferenceManager
         }.content()
@@ -183,9 +186,10 @@ fun AppDrawerPreferences() {
                     enter = expandVertically() + fadeIn(),
                     exit = shrinkVertically() + fadeOut()
                 ) {
-                    SliderPreference(
+                    SliderPreference2(
                         label = stringResource(id = R.string.label_size),
-                        adapter = prefs.allAppsTextSizeFactor.getAdapter(),
+                        value = drawerIconLabelSizeFactor,
+                        edit = { drawerIconLabelSizeFactor.set(value = it) },
                         step = 0.1F,
                         valueRange = 0.5F..1.5F,
                         showAsPercentage = true,

@@ -55,7 +55,7 @@ class DeviceProfileOverrides(context: Context) {
 
             allAppsIconSizeFactor = preferenceManager2.drawerIconSizeFactor.firstBlocking(),
             enableAllAppsIconText = preferenceManager2.showIconLabelsInDrawer.firstBlocking(),
-            allAppsIconTextSizeFactor = prefs.allAppsTextSizeFactor.get()
+            allAppsIconTextSizeFactor = preferenceManager2.drawerIconLabelSizeFactor.firstBlocking(),
         )
 
         fun apply(idp: InvariantDeviceProfile) {
