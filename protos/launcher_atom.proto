@@ -23,6 +23,8 @@ import "launcher_atom_extension.proto";
 //
 // ItemInfos
 message ItemInfo {
+  reserved 8;
+
   oneof Item {
     Application application = 1;
     Task task = 2;
@@ -42,7 +44,14 @@ message ItemInfo {
   optional ContainerInfo container_info = 7;
 
   // Stores the origin of the Item
-  optional Attribute attribute = 8;
+  repeated Attribute item_attributes = 12;
+}
+
+message LauncherAttributes{
+
+  // Integer value of item attribute enum
+  // (e.g. SUGGESTED_LABEL, ALL_APPS_SEARCH_RESULT_SETTING etc)
+  repeated int32 item_attributes = 1;
 }
 
 // Represents various launcher surface where items are placed.
@@ -161,6 +170,7 @@ enum Attribute {
   ONE_SEARCH_WEB_TRENDING = 33;
   ONE_SEARCH_WEB_ENTITY = 34;
   ONE_SEARCH_WEB_ANSWER = 35;
+  ONE_SEARCH_WEB_PERSONAL = 36;
 
   WIDGETS_BOTTOM_TRAY = 28;
   WIDGETS_TRAY_PREDICTION = 29;

@@ -42,10 +42,12 @@ import androidx.slice.SliceItem;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.logger.LauncherAtom;
+import com.android.launcher3.logger.LauncherAtom.Attribute;
 import com.android.launcher3.logger.LauncherAtom.ContainerInfo;
 import com.android.launcher3.logger.LauncherAtom.FolderContainer.ParentContainerCase;
 import com.android.launcher3.logger.LauncherAtom.FolderIcon;
 import com.android.launcher3.logger.LauncherAtom.FromState;
+import com.android.launcher3.logger.LauncherAtom.LauncherAttributes;
 import com.android.launcher3.logger.LauncherAtom.ToState;
 import com.android.launcher3.logger.LauncherAtomExtensions.DeviceSearchResultContainer;
 import com.android.launcher3.logger.LauncherAtomExtensions.DeviceSearchResultContainer.SearchAttributes;
@@ -88,13 +90,14 @@ public class StatsLogCompatManager extends StatsLogManager {
     private static final int FOLDER_HIERARCHY_OFFSET = 100;
     private static final int SEARCH_RESULT_HIERARCHY_OFFSET = 200;
     private static final int EXTENDED_CONTAINERS_HIERARCHY_OFFSET = 300;
-    private static final int ATTRIBUTE_MULTIPLIER = 100;
 
     /**
      * Flags for converting SearchAttribute to integer value.
      */
-    private static final int SEARCH_ATTRIBUTES_CORRECTED_QUERY = 1;
+    private static final int SEARCH_ATTRIBUTES_CORRECTED_QUERY = 1 << 0;
     private static final int SEARCH_ATTRIBUTES_DIRECT_MATCH = 1 << 1;
+    private static final int SEARCH_ATTRIBUTES_ENTRY_STATE_ALL_APPS = 1 << 2;
+    private static final int SEARCH_ATTRIBUTES_ENTRY_STATE_QSB = 1 << 3;
 
     public static final CopyOnWriteArrayList<StatsLogConsumer> LOGS_CONSUMER =
             new CopyOnWriteArrayList<>();
@@ -110,6 +113,11 @@ public class StatsLogCompatManager extends StatsLogManager {
         return new StatsCompatLogger(mContext, mActivityContext);
     }
 
+    @Override
+    protected StatsLatencyLogger createLatencyLogger() {
+        return new StatsCompatLatencyLogger(mContext, mActivityContext);
+    }
+
     /**
      * Synchronously writes an itemInfo to stats log
      */
@@ -123,8 +131,7 @@ public class StatsLogCompatManager extends StatsLogManager {
         }
         SysUiStatsLog.write(SysUiStatsLog.LAUNCHER_SNAPSHOT,
                 LAUNCHER_WORKSPACE_SNAPSHOT.getId() /* event_id */,
-                info.getAttribute().getNumber() * ATTRIBUTE_MULTIPLIER
-                        + info.getItemCase().getNumber()  /* target_id */,
+                info.getItemCase().getNumber()  /* target_id */,
                 instanceId.getId() /* instance_id */,
                 0 /* uid */,
                 getPackageName(info) /* package_name */,
@@ -137,13 +144,20 @@ public class StatsLogCompatManager extends StatsLogManager {
                 getParentPageId(info) /* page_id_parent */,
                 getHierarchy(info) /* hierarchy */,
                 info.getIsWork() /* is_work_profile */,
-                info.getAttribute().getNumber() /* origin */,
+                0 /* origin */,
                 getCardinality(info) /* cardinality */,
                 info.getWidget().getSpanX(),
                 info.getWidget().getSpanY(),
                 getFeatures(info),
-                null /* attributes */
+                getAttributes(info) /* attributes */
         );
+    }
+
+    private static byte[] getAttributes(LauncherAtom.ItemInfo itemInfo) {
+        LauncherAttributes.Builder responseBuilder = LauncherAttributes.newBuilder();
+        itemInfo.getItemAttributesList().stream().map(Attribute::getNumber).forEach(
+                responseBuilder::addItemAttributes);
+        return responseBuilder.build().toByteArray();
     }
 
     /**
@@ -155,8 +169,7 @@ public class StatsLogCompatManager extends StatsLogManager {
         return SysUiStatsLog.buildStatsEvent(
                 SysUiStatsLog.LAUNCHER_LAYOUT_SNAPSHOT, // atom ID,
                 LAUNCHER_WORKSPACE_SNAPSHOT.getId(), // event_id = 1;
-                info.getAttribute().getNumber() * ATTRIBUTE_MULTIPLIER
-                        + info.getItemCase().getNumber(), // item_id = 2;
+                info.getItemCase().getNumber(), // item_id = 2;
                 instanceId == null ? 0 : instanceId.getId(), //instance_id = 3;
                 0, //uid = 4 [(is_uid) = true];
                 getPackageName(info), // package_name = 5;
@@ -169,11 +182,11 @@ public class StatsLogCompatManager extends StatsLogManager {
                 getParentPageId(info), //page_id_parent = 12 [default = -2];
                 getHierarchy(info), // container_id = 13;
                 info.getIsWork(), // is_work_profile = 14;
-                info.getAttribute().getNumber(), // attribute_id = 15;
+                0, // attribute_id = 15;
                 getCardinality(info), // cardinality = 16;
                 info.getWidget().getSpanX(), // span_x = 17 [default = 1];
                 info.getWidget().getSpanY(), // span_y = 18 [default = 1];
-                null /* attributes */
+                getAttributes(info) /* attributes */
         );
     }
 
@@ -396,8 +409,7 @@ public class StatsLogCompatManager extends StatsLogManager {
                     null /* launcher extensions, deprecated */,
                     false /* quickstep_enabled, deprecated */,
                     event.getId() /* event_id */,
-                    atomInfo.getAttribute().getNumber() * ATTRIBUTE_MULTIPLIER
-                            + atomInfo.getItemCase().getNumber() /* target_id */,
+                    atomInfo.getItemCase().getNumber() /* target_id */,
                     instanceId.getId() /* instance_id TODO */,
                     0 /* uid TODO */,
                     getPackageName(atomInfo) /* package_name */,
@@ -417,7 +429,62 @@ public class StatsLogCompatManager extends StatsLogManager {
                     getCardinality(atomInfo) /* cardinality */,
                     getFeatures(atomInfo) /* features */,
                     getSearchAttributes(atomInfo) /* searchAttributes */,
-                    null /* attributes */
+                    getAttributes(atomInfo) /* attributes */
+            );
+        }
+    }
+
+    /**
+     * Helps to construct and log statsd compatible latency events.
+     */
+    private static class StatsCompatLatencyLogger implements StatsLatencyLogger {
+        private final Context mContext;
+        private final Optional<ActivityContext> mActivityContext;
+        private InstanceId mInstanceId = DEFAULT_INSTANCE_ID;
+        private LatencyType mType = LatencyType.UNKNOWN;
+        private long mLatencyInMillis;
+
+        StatsCompatLatencyLogger(Context context, ActivityContext activityContext) {
+            mContext = context;
+            mActivityContext = Optional.ofNullable(activityContext);
+        }
+
+        @Override
+        public StatsLatencyLogger withInstanceId(InstanceId instanceId) {
+            this.mInstanceId = instanceId;
+            return this;
+        }
+
+        @Override
+        public StatsLatencyLogger withType(LatencyType type) {
+            this.mType = type;
+            return this;
+        }
+
+        @Override
+        public StatsLatencyLogger withLatency(long latencyInMillis) {
+            this.mLatencyInMillis = latencyInMillis;
+            return this;
+        }
+
+        @Override
+        public void log(EventEnum event) {
+            if (IS_VERBOSE) {
+                String name = (event instanceof Enum) ? ((Enum) event).name() :
+                        event.getId() + "";
+
+                Log.d(TAG, mInstanceId == DEFAULT_INSTANCE_ID
+                        ? String.format("\n%s = %dms\n", name, mLatencyInMillis)
+                        : String.format("\n%s = %dms (InstanceId:%s)\n", name,
+                                mLatencyInMillis, mInstanceId));
+            }
+
+            SysUiStatsLog.write(SysUiStatsLog.LAUNCHER_LATENCY,
+                    event.getId(), // event_id
+                    mInstanceId.getId(), // instance_id
+                    0, // package_id
+                    mLatencyInMillis, // latency_in_millis
+                    mType.getId() //type
             );
         }
     }
@@ -596,6 +663,12 @@ public class StatsLogCompatManager extends StatsLogManager {
         if (searchAttributes.getDirectMatch()) {
             response = response | SEARCH_ATTRIBUTES_DIRECT_MATCH;
         }
+        if (searchAttributes.getEntryState() == SearchAttributes.EntryState.ALL_APPS) {
+            response = response | SEARCH_ATTRIBUTES_ENTRY_STATE_ALL_APPS;
+        } else if (searchAttributes.getEntryState() == SearchAttributes.EntryState.QSB) {
+            response = response | SEARCH_ATTRIBUTES_ENTRY_STATE_QSB;
+        }
+
         return response;
     }
 
