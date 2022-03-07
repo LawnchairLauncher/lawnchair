@@ -21,7 +21,7 @@ import static android.view.Display.DEFAULT_DISPLAY;
 
 import static androidx.test.core.app.ApplicationProvider.getApplicationContext;
 
-import static com.android.quickstep.SysUINavigationMode.Mode.NO_BUTTON;
+import static com.android.launcher3.util.DisplayController.NavigationMode.NO_BUTTON;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;

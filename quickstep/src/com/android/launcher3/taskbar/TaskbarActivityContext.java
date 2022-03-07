@@ -22,6 +22,7 @@ import static android.view.WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_M
 import static android.view.WindowManager.LayoutParams.TYPE_NAVIGATION_BAR_PANEL;
 
 import static com.android.launcher3.AbstractFloatingView.TYPE_ALL;
+import static com.android.launcher3.ResourceUtils.getBoolByName;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_FOLDER_OPEN;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_NOTIFICATION_PANEL_EXPANDED;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_QUICK_SETTINGS_EXPANDED;
@@ -70,13 +71,13 @@ import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.popup.PopupDataProvider;
 import com.android.launcher3.taskbar.allapps.TaskbarAllAppsController;
 import com.android.launcher3.touch.ItemClickHandler;
+import com.android.launcher3.util.DisplayController;
+import com.android.launcher3.util.DisplayController.NavigationMode;
 import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.util.SettingsCache;
 import com.android.launcher3.util.TraceHelper;
 import com.android.launcher3.util.ViewCache;
 import com.android.launcher3.views.ActivityContext;
-import com.android.quickstep.SysUINavigationMode;
-import com.android.quickstep.SysUINavigationMode.Mode;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.rotation.RotationButtonController;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
@@ -91,6 +92,8 @@ import java.io.PrintWriter;
  * ActivityContext and BaseDragLayer instead of the Launcher activity and its DragLayer.
  */
 public class TaskbarActivityContext extends BaseTaskbarContext {
+
+    private static final String IME_DRAWS_IME_NAV_BAR_RES_NAME = "config_imeDrawsImeNavBar";
 
     private static final boolean ENABLE_THREE_BUTTON_TASKBAR =
             SystemProperties.getBoolean("persist.debug.taskbar_three_button", false);
@@ -109,7 +112,7 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
     // The size we should return to when we call setTaskbarWindowFullscreen(false)
     private int mLastRequestedNonFullscreenHeight;
 
-    private final SysUINavigationMode.Mode mNavMode;
+    private final NavigationMode mNavMode;
     private final boolean mImeDrawsImeNavBar;
     private final ViewCache mViewCache = new ViewCache();
 
@@ -130,8 +133,10 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
         super(windowContext);
         mDeviceProfile = dp;
 
-        mNavMode = SysUINavigationMode.getMode(windowContext);
-        mImeDrawsImeNavBar = SysUINavigationMode.getImeDrawsImeNavBar(windowContext);
+        final Resources resources = getResources();
+
+        mNavMode = DisplayController.getNavigationMode(windowContext);
+        mImeDrawsImeNavBar = getBoolByName(IME_DRAWS_IME_NAV_BAR_RES_NAME, resources, false);
         mIsSafeModeEnabled = TraceHelper.allowIpcs("isSafeMode",
                 () -> getPackageManager().isSafeMode());
         mIsUserSetupComplete = SettingsCache.INSTANCE.get(this).getValue(
@@ -141,9 +146,7 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
         mIsNavBarKidsMode = SettingsCache.INSTANCE.get(this).getValue(
                 Settings.Secure.getUriFor(Settings.Secure.NAV_BAR_KIDS_MODE), 0);
 
-        final Resources resources = getResources();
         updateIconSize(resources);
-
         mTaskbarHeightForIme = resources.getDimensionPixelSize(R.dimen.taskbar_ime_size);
 
         // Inflate views.
@@ -258,11 +261,11 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
     }
 
     public boolean isThreeButtonNav() {
-        return mNavMode == Mode.THREE_BUTTONS;
+        return mNavMode == NavigationMode.THREE_BUTTONS;
     }
 
     public boolean isGestureNav() {
-        return mNavMode == Mode.NO_BUTTON;
+        return mNavMode == NavigationMode.NO_BUTTON;
     }
 
     public boolean imeDrawsImeNavBar() {

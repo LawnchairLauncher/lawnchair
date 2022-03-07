@@ -39,7 +39,6 @@ import com.android.launcher3.util.DisplayController.Info;
 import com.android.launcher3.util.LauncherModelHelper;
 import com.android.launcher3.util.ReflectionHelpers;
 import com.android.quickstep.FallbackActivityInterface;
-import com.android.quickstep.SysUINavigationMode;
 import com.android.quickstep.SystemUiProxy;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 import com.android.systemui.shared.system.SyncRtSurfaceTransactionApplierCompat.SurfaceParams;
@@ -143,7 +142,6 @@ public class TaskViewSimulatorTest {
             LauncherModelHelper helper = new LauncherModelHelper();
             try {
                 helper.sandboxContext.allow(SystemUiProxy.INSTANCE);
-                helper.sandboxContext.allow(SysUINavigationMode.INSTANCE);
 
                 Display display = mock(Display.class);
                 doReturn(DEFAULT_DISPLAY).when(display).getDisplayId();
