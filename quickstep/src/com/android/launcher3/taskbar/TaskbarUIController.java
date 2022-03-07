@@ -68,4 +68,11 @@ public class TaskbarUIController {
     public void setSystemGestureInProgress(boolean inProgress) {
         mControllers.taskbarStashController.setSystemGestureInProgress(inProgress);
     }
+
+    /**
+     * Manually closes the all apps window.
+     */
+    public void hideAllApps() {
+        mControllers.taskbarAllAppsController.hide();
+    }
 }
