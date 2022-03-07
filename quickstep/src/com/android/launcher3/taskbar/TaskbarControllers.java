@@ -192,9 +192,12 @@ public class TaskbarControllers {
             return;
         }
 
+        pw.println(String.format(
+                "%s\tmAreAllControllersInitialized=%b", prefix, mAreAllControllersInitialized));
         for (LoggableTaskbarController controller : mControllersToLog) {
             controller.dumpLogs(prefix + "\t", pw);
         }
+        uiController.dumpLogs(prefix + "\t", pw);
         rotationButtonController.dumpLogs(prefix + "\t", pw);
     }
 

@@ -275,7 +275,7 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
         return !mIsStashed && isInApp();
     }
 
-    private boolean isInApp() {
+    public boolean isInApp() {
         return hasAnyFlag(FLAGS_IN_APP);
     }
 
