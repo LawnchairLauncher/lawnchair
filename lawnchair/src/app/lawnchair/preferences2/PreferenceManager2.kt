@@ -176,6 +176,12 @@ class PreferenceManager2(private val context: Context) : PreferenceManager {
         onSet = { reloadHelper.reloadGrid() },
     )
 
+    val drawerCellHeightFactor = preference(
+        key = floatPreferencesKey(name = "drawer_cell_height_factor"),
+        defaultValue = 1F,
+        onSet = { reloadHelper.reloadGrid() },
+    )
+
     companion object {
         private val Context.preferencesDataStore by preferencesDataStore(
             name = "preferences",

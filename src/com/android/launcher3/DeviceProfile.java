@@ -54,7 +54,6 @@ import com.patrykmichalik.preferencemanager.PreferenceExtensionsKt;
 
 import java.io.PrintWriter;
 
-import app.lawnchair.preferences.PreferenceManager;
 import app.lawnchair.preferences2.PreferenceManager2;
 
 @SuppressLint("NewApi")
@@ -225,8 +224,8 @@ public class DeviceProfile {
             boolean useTwoPanels) {
         mContext = context;
 
-        PreferenceManager pm = PreferenceManager.INSTANCE.get(context);
-        allAppsCellHeightMultiplier = pm.getAllAppsCellHeightMultiplier().get();
+        PreferenceManager2 preferenceManager2 = PreferenceManager2.INSTANCE.get(context);
+        allAppsCellHeightMultiplier = PreferenceExtensionsKt.firstBlocking(preferenceManager2.getDrawerCellHeightFactor());
 
         this.inv = inv;
         this.isLandscape = windowBounds.isLandscape();
@@ -335,9 +334,6 @@ public class DeviceProfile {
                 res.getDimensionPixelSize(R.dimen.dynamic_grid_min_spring_loaded_space);
 
         workspaceCellPaddingXPx = res.getDimensionPixelSize(R.dimen.dynamic_grid_cell_padding_x);
-
-        // Lawnchair prefs
-        PreferenceManager2 preferenceManager2 = PreferenceManager2.getInstance(context);
 
         int hotseatTopPaddingRes;
         int hotseatBottomPaddingRes;

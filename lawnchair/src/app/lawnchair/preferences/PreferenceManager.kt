@@ -86,7 +86,6 @@ class PreferenceManager private constructor(private val context: Context) : Base
     val showComponentName = BoolPref("pref_showComponentName", false)
     val themedIcons = BoolPref("themed_icons", false)
     val hotseatQsbCornerRadius = FloatPref("pref_hotseatQsbCornerRadius", 1F, recreate)
-    val allAppsCellHeightMultiplier = FloatPref("pref_allAppsCellHeightMultiplier", 1F, reloadGrid)
 
     val recentsActionScreenshot = BoolPref("pref_recentsActionScreenshot", !isOnePlusStock)
     val recentsActionShare = BoolPref("pref_recentsActionShare", isOnePlusStock)

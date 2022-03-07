@@ -51,6 +51,7 @@ interface AppDrawerPreferenceCollectorScope : PreferenceCollectorScope {
     val drawerIconSizeFactor: Float
     val showIconLabelsInDrawer: Boolean
     val drawerIconLabelSizeFactor: Float
+    val drawerCellHeightFactor: Float
 }
 
 @Composable
@@ -62,10 +63,12 @@ fun AppDrawerPreferenceCollector(content: @Composable AppDrawerPreferenceCollect
     val drawerIconSizeFactor by preferenceManager.drawerIconSizeFactor.state()
     val showIconLabelsInDrawer by preferenceManager.showIconLabelsInDrawer.state()
     val drawerIconLabelSizeFactor by preferenceManager.drawerIconLabelSizeFactor.state()
+    val drawerCellHeightFactor by preferenceManager.drawerCellHeightFactor.state()
     ifNotNull(
         hiddenApps, hideAppDrawerSearchBar,
         autoShowKeyboardInDrawer, drawerIconSizeFactor,
         showIconLabelsInDrawer, drawerIconLabelSizeFactor,
+        drawerCellHeightFactor,
     ) {
         object : AppDrawerPreferenceCollectorScope {
             override val hiddenApps = it[0] as Set<String>
@@ -74,6 +77,7 @@ fun AppDrawerPreferenceCollector(content: @Composable AppDrawerPreferenceCollect
             override val drawerIconSizeFactor = it[3] as Float
             override val showIconLabelsInDrawer = it[4] as Boolean
             override val drawerIconLabelSizeFactor = it[5] as Float
+            override val drawerCellHeightFactor = it[6] as Float
             override val coroutineScope = rememberCoroutineScope()
             override val preferenceManager = preferenceManager
         }.content()
@@ -159,9 +163,10 @@ fun AppDrawerPreferences() {
                     step = 1,
                     valueRange = 3..10,
                 )
-                SliderPreference(
+                SliderPreference2(
+                    value = drawerCellHeightFactor,
+                    edit = { drawerCellHeightFactor.set(value = it) },
                     label = stringResource(id = R.string.row_height_label),
-                    adapter = prefs.allAppsCellHeightMultiplier.getAdapter(),
                     valueRange = 0.7F..1.5F,
                     step = 0.1F,
                     showAsPercentage = true
