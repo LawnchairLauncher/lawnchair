@@ -56,6 +56,7 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.anim.SpringAnimationBuilder;
+import com.android.launcher3.util.DisplayController;
 import com.android.quickstep.fallback.FallbackRecentsView;
 import com.android.quickstep.fallback.RecentsState;
 import com.android.quickstep.util.RectFSpringAnim;
@@ -176,7 +177,7 @@ public class FallbackSwipeHandler extends
     @Override
     protected void notifyGestureAnimationStartToRecents() {
         if (mRunningOverHome) {
-            if (SysUINavigationMode.getMode(mContext).hasGestures) {
+            if (DisplayController.getNavigationMode(mContext).hasGestures) {
                 mRecentsView.onGestureAnimationStartOnHome(
                         new ActivityManager.RunningTaskInfo[]{mGestureState.getRunningTask()});
             }
