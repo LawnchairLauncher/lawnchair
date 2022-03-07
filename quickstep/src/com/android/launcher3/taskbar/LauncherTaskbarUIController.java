@@ -34,7 +34,6 @@ import com.android.launcher3.LauncherState;
 import com.android.launcher3.QuickstepTransitionManager;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.logging.InstanceId;
 import com.android.launcher3.logging.InstanceIdSequence;
 import com.android.launcher3.model.data.ItemInfo;

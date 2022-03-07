@@ -131,6 +131,11 @@ public final class TaskbarAllAppsController implements OnDeviceProfileChangeList
                 .setPredictedApps(mPredictedApps);
     }
 
+    /** Closes the {@link TaskbarAllAppsContainerView}. */
+    public void hide() {
+        mProxyView.close(true);
+    }
+
     /**
      * Removes the all apps window from the hierarchy, if all floating views are closed and there is
      * no system drag operation in progress.

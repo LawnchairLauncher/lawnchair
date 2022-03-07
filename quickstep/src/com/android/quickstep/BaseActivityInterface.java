@@ -69,6 +69,7 @@ import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 
 import java.util.HashMap;
+import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
@@ -193,7 +194,12 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
         activity.getStateManager().moveToRestState();
     }
 
-    public void closeOverlay() { }
+    /**
+     * Closes any overlays.
+     */
+    public void closeOverlay() {
+        Optional.ofNullable(getTaskbarController()).ifPresent(TaskbarUIController::hideAllApps);
+    }
 
     public void switchRunningTaskViewToScreenshot(HashMap<Integer, ThumbnailData> thumbnailDatas,
             Runnable runnable) {
