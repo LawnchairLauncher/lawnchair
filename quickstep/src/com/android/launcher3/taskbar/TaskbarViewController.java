@@ -289,10 +289,12 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
     }
 
     public void onRotationChanged(DeviceProfile deviceProfile) {
-        if (areIconsVisible()) {
+        if (mControllers.taskbarStashController.isInApp()) {
             // We only translate on rotation when on home
             return;
         }
+        mActivity.setTaskbarWindowHeight(
+                deviceProfile.taskbarSize + deviceProfile.getTaskbarOffsetY());
         mTaskbarNavButtonTranslationY.updateValue(-deviceProfile.getTaskbarOffsetY());
     }
 
