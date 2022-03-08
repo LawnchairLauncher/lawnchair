@@ -52,6 +52,7 @@ interface AppDrawerPreferenceCollectorScope : PreferenceCollectorScope {
     val showIconLabelsInDrawer: Boolean
     val drawerIconLabelSizeFactor: Float
     val drawerCellHeightFactor: Float
+    val enableFuzzySearch: Boolean
 }
 
 @Composable
@@ -64,11 +65,12 @@ fun AppDrawerPreferenceCollector(content: @Composable AppDrawerPreferenceCollect
     val showIconLabelsInDrawer by preferenceManager.showIconLabelsInDrawer.state()
     val drawerIconLabelSizeFactor by preferenceManager.drawerIconLabelSizeFactor.state()
     val drawerCellHeightFactor by preferenceManager.drawerCellHeightFactor.state()
+    val enableFuzzySearch by preferenceManager.enableFuzzySearch.state()
     ifNotNull(
         hiddenApps, hideAppDrawerSearchBar,
         autoShowKeyboardInDrawer, drawerIconSizeFactor,
         showIconLabelsInDrawer, drawerIconLabelSizeFactor,
-        drawerCellHeightFactor,
+        drawerCellHeightFactor, enableFuzzySearch,
     ) {
         object : AppDrawerPreferenceCollectorScope {
             override val hiddenApps = it[0] as Set<String>
@@ -78,6 +80,7 @@ fun AppDrawerPreferenceCollector(content: @Composable AppDrawerPreferenceCollect
             override val showIconLabelsInDrawer = it[4] as Boolean
             override val drawerIconLabelSizeFactor = it[5] as Float
             override val drawerCellHeightFactor = it[6] as Float
+            override val enableFuzzySearch = it[7] as Boolean
             override val coroutineScope = rememberCoroutineScope()
             override val preferenceManager = preferenceManager
         }.content()
@@ -125,8 +128,9 @@ fun AppDrawerPreferences() {
                             label = stringResource(id = R.string.pref_search_auto_show_keyboard),
                         )
                         if (!deviceSearchEnabled) {
-                            SwitchPreference(
-                                adapter = prefs.useFuzzySearch.getAdapter(),
+                            SwitchPreference2(
+                                checked = enableFuzzySearch,
+                                edit = { enableFuzzySearch.set(value = it) },
                                 label = stringResource(id = R.string.fuzzy_search_title),
                                 description = stringResource(id = R.string.fuzzy_search_desc)
                             )

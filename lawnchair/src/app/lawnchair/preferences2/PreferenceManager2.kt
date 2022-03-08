@@ -182,6 +182,11 @@ class PreferenceManager2(private val context: Context) : PreferenceManager {
         onSet = { reloadHelper.reloadGrid() },
     )
 
+    val enableFuzzySearch = preference(
+        key = booleanPreferencesKey(name = "enable_fuzzy_search"),
+        defaultValue = false,
+    )
+
     companion object {
         private val Context.preferencesDataStore by preferencesDataStore(
             name = "preferences",
