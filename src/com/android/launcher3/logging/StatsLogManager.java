@@ -705,6 +705,12 @@ public class StatsLogManager implements ResourceBasedOverride {
             return this;
         }
 
+        /**
+         * Sets packageId of log message.
+         */
+        default StatsLatencyLogger withPackageId(int packageId) {
+            return this;
+        }
 
         /**
          * Builds the final message and logs it as {@link EventEnum}.
