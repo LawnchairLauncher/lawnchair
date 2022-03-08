@@ -16,7 +16,6 @@
 
 package com.android.launcher3.model;
 
-import static com.android.launcher3.config.FeatureFlags.MULTI_DB_GRID_MIRATION_ALGO;
 import static com.android.launcher3.model.BgDataModel.Callbacks.FLAG_HAS_SHORTCUT_PERMISSION;
 import static com.android.launcher3.model.BgDataModel.Callbacks.FLAG_QUIET_MODE_CHANGE_PERMISSION;
 import static com.android.launcher3.model.BgDataModel.Callbacks.FLAG_QUIET_MODE_ENABLED;
@@ -44,6 +43,7 @@ import android.content.pm.ShortcutInfo;
 import android.graphics.Point;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Trace;
 import android.os.UserHandle;
 import android.os.UserManager;
 import android.text.TextUtils;
@@ -51,6 +51,8 @@ import android.util.ArrayMap;
 import android.util.Log;
 import android.util.LongSparseArray;
 import android.util.TimingLogger;
+
+import androidx.annotation.Nullable;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.InvariantDeviceProfile;
@@ -72,6 +74,7 @@ import com.android.launcher3.icons.cache.IconCacheUpdateHandler;
 import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.FolderInfo;
+import com.android.launcher3.model.data.IconRequestInfo;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.ItemInfoWithIcon;
 import com.android.launcher3.model.data.LauncherAppWidgetInfo;
@@ -79,13 +82,14 @@ import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.pm.InstallSessionHelper;
 import com.android.launcher3.pm.PackageInstallInfo;
 import com.android.launcher3.pm.UserCache;
-import com.android.launcher3.provider.ImportDataTask;
 import com.android.launcher3.qsb.QsbContainerView;
 import com.android.launcher3.shortcuts.ShortcutKey;
 import com.android.launcher3.shortcuts.ShortcutRequest;
 import com.android.launcher3.shortcuts.ShortcutRequest.QueryResult;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.IOUtils;
+import com.android.launcher3.util.IntArray;
+import com.android.launcher3.util.IntSet;
 import com.android.launcher3.util.LooperIdleLock;
 import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.util.PackageUserKey;
@@ -174,10 +178,13 @@ public class LoaderTask implements Runnable {
     private void sendFirstScreenActiveInstallsBroadcast() {
         ArrayList<ItemInfo> firstScreenItems = new ArrayList<>();
         ArrayList<ItemInfo> allItems = mBgDataModel.getAllWorkspaceItems();
-        // Screen set is never empty
-        final int firstScreen = mBgDataModel.collectWorkspaceScreens().get(0);
 
-        filterCurrentWorkspaceItems(firstScreen, allItems, firstScreenItems,
+        // Screen set is never empty
+        IntArray allScreens = mBgDataModel.collectWorkspaceScreens();
+        final int firstScreen = allScreens.get(0);
+        IntSet firstScreens = IntSet.wrap(firstScreen);
+
+        filterCurrentWorkspaceItems(firstScreens, allItems, firstScreenItems,
                 new ArrayList<>() /* otherScreenItems are ignored */);
         mFirstScreenBroadcast.sendBroadcasts(mApp.getContext(), firstScreenItems);
     }
@@ -192,9 +199,15 @@ public class LoaderTask implements Runnable {
 
         Object traceToken = TraceHelper.INSTANCE.beginSection(TAG);
         TimingLogger logger = new TimingLogger(TAG, "run");
+        LoaderMemoryLogger memoryLogger = new LoaderMemoryLogger();
         try (LauncherModel.LoaderTransaction transaction = mApp.getModel().beginLoader(this)) {
             List<ShortcutInfo> allShortcuts = new ArrayList<>();
-            loadWorkspace(allShortcuts);
+            Trace.beginSection("LoadWorkspace");
+            try {
+                loadWorkspace(allShortcuts, memoryLogger);
+            } finally {
+                Trace.endSection();
+            }
             logASplit(logger, "loadWorkspace");
 
             // Sanitize data re-syncs widgets/shortcuts based on the workspace loaded from db.
@@ -208,7 +221,7 @@ public class LoaderTask implements Runnable {
             }
 
             verifyNotStopped();
-            mResults.bindWorkspace();
+            mResults.bindWorkspace(true /* incrementBindId */);
             logASplit(logger, "bindWorkspace");
 
             mModelDelegate.workspaceLoadComplete();
@@ -222,7 +235,13 @@ public class LoaderTask implements Runnable {
             verifyNotStopped();
 
             // second step
-            List<LauncherActivityInfo> allActivityList = loadAllApps();
+            Trace.beginSection("LoadAllApps");
+            List<LauncherActivityInfo> allActivityList;
+            try {
+               allActivityList = loadAllApps();
+            } finally {
+                Trace.endSection();
+            }
             logASplit(logger, "loadAllApps");
 
             verifyNotStopped();
@@ -295,9 +314,13 @@ public class LoaderTask implements Runnable {
 
             mModelDelegate.modelLoadComplete();
             transaction.commit();
+            memoryLogger.clearLogs();
         } catch (CancellationException e) {
             // Loader stopped, ignore
             logASplit(logger, "Cancelled");
+        } catch (Exception e) {
+            memoryLogger.printLogs();
+            throw e;
         } finally {
             logger.dumpToLog();
         }
@@ -309,13 +332,21 @@ public class LoaderTask implements Runnable {
         this.notify();
     }
 
-    private void loadWorkspace(List<ShortcutInfo> allDeepShortcuts) {
+    private void loadWorkspace(List<ShortcutInfo> allDeepShortcuts, LoaderMemoryLogger logger) {
         loadWorkspace(allDeepShortcuts, LauncherSettings.Favorites.CONTENT_URI,
-                null /* selection */);
+                null /* selection */, logger);
     }
 
-    protected void loadWorkspace(List<ShortcutInfo> allDeepShortcuts, Uri contentUri,
-            String selection) {
+    protected void loadWorkspace(
+            List<ShortcutInfo> allDeepShortcuts, Uri contentUri, String selection) {
+        loadWorkspace(allDeepShortcuts, contentUri, selection, null);
+    }
+
+    protected void loadWorkspace(
+            List<ShortcutInfo> allDeepShortcuts,
+            Uri contentUri,
+            String selection,
+            @Nullable LoaderMemoryLogger logger) {
         final Context context = mApp.getContext();
         final ContentResolver contentResolver = context.getContentResolver();
         final PackageManagerHelper pmHelper = new PackageManagerHelper(context);
@@ -324,16 +355,7 @@ public class LoaderTask implements Runnable {
         final WidgetManagerHelper widgetHelper = new WidgetManagerHelper(context);
 
         boolean clearDb = false;
-        try {
-            ImportDataTask.performImportIfPossible(context);
-        } catch (Exception e) {
-            // Migration failed. Clear workspace.
-            clearDb = true;
-        }
-
-        if (!clearDb && (MULTI_DB_GRID_MIRATION_ALGO.get()
-                ? !GridSizeMigrationTaskV2.migrateGridIfNeeded(context)
-                : !GridSizeMigrationTask.migrateGridIfNeeded(context))) {
+        if (!GridSizeMigrationTaskV2.migrateGridIfNeeded(context)) {
             // Migration failed. Clear workspace.
             clearDb = true;
         }
@@ -414,6 +436,7 @@ public class LoaderTask implements Runnable {
                 LauncherAppWidgetProviderInfo widgetProviderInfo;
                 Intent intent;
                 String targetPkg;
+                List<IconRequestInfo<WorkspaceItemInfo>> iconRequestInfos = new ArrayList<>();
 
                 while (!mStopped && c.moveToNext()) {
                     try {
@@ -536,7 +559,10 @@ public class LoaderTask implements Runnable {
                             } else if (c.itemType ==
                                     LauncherSettings.Favorites.ITEM_TYPE_APPLICATION) {
                                 info = c.getAppShortcutInfo(
-                                        intent, allowMissingTarget, useLowResIcon);
+                                        intent,
+                                        allowMissingTarget,
+                                        useLowResIcon,
+                                        !FeatureFlags.ENABLE_BULK_WORKSPACE_ICON_LOADING.get());
                             } else if (c.itemType ==
                                     LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT) {
 
@@ -573,6 +599,7 @@ public class LoaderTask implements Runnable {
                                         && pmHelper.isAppSuspended(targetPkg, c.user)) {
                                     disabledState |= FLAG_DISABLED_SUSPENDED;
                                 }
+                                info.options = c.getInt(optionsIndex);
 
                                 // App shortcuts that used to be automatically added to Launcher
                                 // didn't always have the correct intent flags set, so do that
@@ -588,6 +615,8 @@ public class LoaderTask implements Runnable {
                             }
 
                             if (info != null) {
+                                iconRequestInfos.add(c.createIconRequestInfo(info, useLowResIcon));
+
                                 c.applyCommonProperties(info);
 
                                 info.intent = intent;
@@ -621,7 +650,7 @@ public class LoaderTask implements Runnable {
                                         }
                                 }
 
-                                c.checkAndAddItem(info, mBgDataModel);
+                                c.checkAndAddItem(info, mBgDataModel, logger);
                             } else {
                                 throw new RuntimeException("Unexpected null WorkspaceItemInfo");
                             }
@@ -640,7 +669,7 @@ public class LoaderTask implements Runnable {
                             // no special handling required for restored folders
                             c.markRestored();
 
-                            c.checkAndAddItem(folderInfo, mBgDataModel);
+                            c.checkAndAddItem(folderInfo, mBgDataModel, logger);
                             break;
 
                         case LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET:
@@ -791,8 +820,9 @@ public class LoaderTask implements Runnable {
                                 if (appWidgetInfo.restoreStatus !=
                                         LauncherAppWidgetInfo.RESTORE_COMPLETED) {
                                     appWidgetInfo.pendingItemInfo = WidgetsModel.newPendingItemInfo(
-                                            appWidgetInfo.providerName);
-                                    appWidgetInfo.pendingItemInfo.user = appWidgetInfo.user;
+                                            mApp.getContext(),
+                                            appWidgetInfo.providerName,
+                                            appWidgetInfo.user);
                                     mIconCache.getTitleAndIconForApp(
                                             appWidgetInfo.pendingItemInfo, false);
                                 }
@@ -803,6 +833,21 @@ public class LoaderTask implements Runnable {
                         }
                     } catch (Exception e) {
                         Log.e(TAG, "Desktop items loading interrupted", e);
+                    }
+                }
+                if (FeatureFlags.ENABLE_BULK_WORKSPACE_ICON_LOADING.get()) {
+                    Trace.beginSection("LoadWorkspaceIconsInBulk");
+                    try {
+                        mIconCache.getTitlesAndIconsInBulk(iconRequestInfos);
+                        for (IconRequestInfo<WorkspaceItemInfo> iconRequestInfo :
+                                iconRequestInfos) {
+                            WorkspaceItemInfo wai = iconRequestInfo.itemInfo;
+                            if (mIconCache.isDefaultIcon(wai.bitmap, wai.user)) {
+                                iconRequestInfo.loadWorkspaceIcon(mApp.getContext());
+                            }
+                        }
+                    } finally {
+                        Trace.endSection();
                     }
                 }
             } finally {
@@ -908,6 +953,8 @@ public class LoaderTask implements Runnable {
         List<LauncherActivityInfo> allActivityList = new ArrayList<>();
         // Clear the list of apps
         mBgAllAppsList.clear();
+
+        List<IconRequestInfo<AppInfo>> iconRequestInfos = new ArrayList<>();
         for (UserHandle user : profiles) {
             // Query for the set of apps
             final List<LauncherActivityInfo> apps = mLauncherApps.getActivityList(null, user);
@@ -920,18 +967,43 @@ public class LoaderTask implements Runnable {
             // Create the ApplicationInfos
             for (int i = 0; i < apps.size(); i++) {
                 LauncherActivityInfo app = apps.get(i);
-                // This builds the icon bitmaps.
-                mBgAllAppsList.add(new AppInfo(app, user, quietMode), app);
+                AppInfo appInfo = new AppInfo(app, user, quietMode);
+
+                iconRequestInfos.add(new IconRequestInfo<>(
+                        appInfo, app, /* useLowResIcon= */ false));
+                mBgAllAppsList.add(
+                        appInfo, app, !FeatureFlags.ENABLE_BULK_ALL_APPS_ICON_LOADING.get());
             }
             allActivityList.addAll(apps);
         }
+
 
         if (FeatureFlags.PROMISE_APPS_IN_ALL_APPS.get()) {
             // get all active sessions and add them to the all apps list
             for (PackageInstaller.SessionInfo info :
                     mSessionHelper.getAllVerifiedSessions()) {
-                mBgAllAppsList.addPromiseApp(mApp.getContext(),
-                        PackageInstallInfo.fromInstallingState(info));
+                AppInfo promiseAppInfo = mBgAllAppsList.addPromiseApp(
+                        mApp.getContext(),
+                        PackageInstallInfo.fromInstallingState(info),
+                        !FeatureFlags.ENABLE_BULK_ALL_APPS_ICON_LOADING.get());
+
+                if (promiseAppInfo != null) {
+                    iconRequestInfos.add(new IconRequestInfo<>(
+                            promiseAppInfo,
+                            /* launcherActivityInfo= */ null,
+                            promiseAppInfo.usingLowResIcon()));
+                }
+            }
+        }
+
+        if (FeatureFlags.ENABLE_BULK_ALL_APPS_ICON_LOADING.get()) {
+            Trace.beginSection("LoadAllAppsIconsInBulk");
+            try {
+                mIconCache.getTitlesAndIconsInBulk(iconRequestInfos);
+                iconRequestInfos.forEach(iconRequestInfo ->
+                        mBgAllAppsList.updateSectionName(iconRequestInfo.itemInfo));
+            } finally {
+                Trace.endSection();
             }
         }
 
@@ -994,7 +1066,10 @@ public class LoaderTask implements Runnable {
             deviceProfile.getCellSize(cellSize);
             FileLog.d(TAG, "DeviceProfile available width: " + deviceProfile.availableWidthPx
                     + ", available height: " + deviceProfile.availableHeightPx
-                    + ", cellLayoutBorderSpacingPx: " + deviceProfile.cellLayoutBorderSpacingPx
+                    + ", cellLayoutBorderSpacePx Horizontal: "
+                    + deviceProfile.cellLayoutBorderSpacePx.x
+                    + ", cellLayoutBorderSpacePx Vertical: "
+                    + deviceProfile.cellLayoutBorderSpacePx.y
                     + ", cellSize: " + cellSize);
         }
 

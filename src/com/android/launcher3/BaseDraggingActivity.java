@@ -41,7 +41,6 @@ import android.util.Log;
 import android.view.ActionMode;
 import android.view.Display;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.WindowInsets.Type;
 import android.view.WindowMetrics;
 import android.widget.Toast;
@@ -55,6 +54,7 @@ import com.android.launcher3.allapps.search.DefaultSearchAdapterProvider;
 import com.android.launcher3.allapps.search.SearchAdapterProvider;
 import com.android.launcher3.logging.InstanceId;
 import com.android.launcher3.logging.InstanceIdSequence;
+import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.touch.ItemClickHandler;
@@ -165,12 +165,6 @@ public abstract class BaseDraggingActivity extends BaseActivity
         // no-op
     }
 
-    public Rect getViewBounds(View v) {
-        int[] pos = new int[2];
-        v.getLocationOnScreen(pos);
-        return new Rect(pos[0], pos[1], pos[0] + v.getWidth(), pos[1] + v.getHeight());
-    }
-
     @NonNull
     public ActivityOptionsWrapper getActivityLaunchOptions(View v, @Nullable ItemInfo item) {
         int left = 0, top = 0;
@@ -205,7 +199,7 @@ public abstract class BaseDraggingActivity extends BaseActivity
         // Prepare intent
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         if (v != null) {
-            intent.setSourceBounds(getViewBounds(v));
+            intent.setSourceBounds(Utilities.getViewBounds(v));
         }
         try {
             boolean isShortcut = (item instanceof WorkspaceItemInfo)
@@ -224,7 +218,7 @@ public abstract class BaseDraggingActivity extends BaseActivity
             }
             if (item != null) {
                 InstanceId instanceId = new InstanceIdSequence().newInstanceId();
-                logAppLaunch(item, instanceId);
+                logAppLaunch(getStatsLogManager(), item, instanceId);
             }
             return true;
         } catch (NullPointerException | ActivityNotFoundException | SecurityException e) {
@@ -234,8 +228,12 @@ public abstract class BaseDraggingActivity extends BaseActivity
         return false;
     }
 
-    protected void logAppLaunch(ItemInfo info, InstanceId instanceId) {
-        getStatsLogManager().logger().withItemInfo(info).withInstanceId(instanceId)
+    /**
+     * Creates and logs a new app launch event.
+     */
+    public void logAppLaunch(StatsLogManager statsLogManager, ItemInfo info,
+            InstanceId instanceId) {
+        statsLogManager.logger().withItemInfo(info).withInstanceId(instanceId)
                 .log(LAUNCHER_APP_LAUNCH_TAP);
     }
 
@@ -311,7 +309,8 @@ public abstract class BaseDraggingActivity extends BaseActivity
         }
     }
 
-    public OnClickListener getItemOnClickListener() {
+    @Override
+    public View.OnClickListener getItemOnClickListener() {
         return ItemClickHandler.INSTANCE;
     }
 

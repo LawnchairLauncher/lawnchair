@@ -123,7 +123,6 @@ public class PackageUpdatedTask extends BaseModelUpdateTask {
                         iconCache.updateIconsForPkg(packages[i], mUser);
                         activitiesLists.put(
                                 packages[i], appsList.updatePackage(context, packages[i], mUser));
-                        app.getWidgetCache().removePackage(packages[i], mUser);
 
                         // The update may have changed which shortcuts/widgets are available.
                         // Refresh the widgets for the package if we have an activity running.
@@ -148,7 +147,6 @@ public class PackageUpdatedTask extends BaseModelUpdateTask {
                 for (int i = 0; i < N; i++) {
                     if (DEBUG) Log.d(TAG, "mAllAppsList.removePackage " + packages[i]);
                     appsList.removePackage(packages[i], mUser);
-                    app.getWidgetCache().removePackage(packages[i], mUser);
                 }
                 flagOp = FlagOp.addFlag(WorkspaceItemInfo.FLAG_DISABLED_NOT_AVAILABLE);
                 break;

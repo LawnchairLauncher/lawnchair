@@ -17,14 +17,19 @@
 
 package com.android.launcher3.dragndrop;
 
+import static android.animation.ObjectAnimator.ofFloat;
+
+import static com.android.launcher3.LauncherAnimUtils.VIEW_TRANSLATE_X;
+import static com.android.launcher3.LauncherAnimUtils.VIEW_TRANSLATE_Y;
+import static com.android.launcher3.Utilities.mapRange;
+import static com.android.launcher3.anim.AnimatorListeners.forEndCallback;
 import static com.android.launcher3.anim.Interpolators.DEACCEL_1_5;
 import static com.android.launcher3.compat.AccessibilityManagerCompat.sendCustomAccessibilityEvent;
 
 import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
+import android.animation.ObjectAnimator;
 import android.animation.TimeInterpolator;
-import android.animation.ValueAnimator;
-import android.animation.ValueAnimator.AnimatorUpdateListener;
+import android.animation.TypeEvaluator;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Canvas;
@@ -44,10 +49,11 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.ShortcutAndWidgetContainer;
 import com.android.launcher3.Workspace;
+import com.android.launcher3.anim.PendingAnimation;
+import com.android.launcher3.anim.SpringProperty;
 import com.android.launcher3.folder.Folder;
 import com.android.launcher3.graphics.Scrim;
 import com.android.launcher3.keyboard.ViewGroupFocusHelper;
-import com.android.launcher3.util.Thunk;
 import com.android.launcher3.util.TouchController;
 import com.android.launcher3.views.BaseDragLayer;
 
@@ -69,11 +75,9 @@ public class DragLayer extends BaseDragLayer<Launcher> {
     private DragController mDragController;
 
     // Variables relating to animation of views after drop
-    private ValueAnimator mDropAnim = null;
+    private Animator mDropAnim = null;
 
-    @Thunk DragView mDropView = null;
-    @Thunk int mAnchorViewInitialScrollX = 0;
-    @Thunk View mAnchorView = null;
+    private DragView mDropView = null;
 
     private boolean mHoverPointClosesFolder = false;
 
@@ -220,12 +224,7 @@ public class DragLayer extends BaseDragLayer<Launcher> {
     public void animateViewIntoPosition(DragView dragView, final int[] pos, float alpha,
             float scaleX, float scaleY, int animationEndStyle, Runnable onFinishRunnable,
             int duration) {
-        Rect r = new Rect();
-        getViewRectRelativeToSelf(dragView, r);
-        final int fromX = r.left;
-        final int fromY = r.top;
-
-        animateViewIntoPosition(dragView, fromX, fromY, pos[0], pos[1], alpha, 1, 1, scaleX, scaleY,
+        animateViewIntoPosition(dragView, pos[0], pos[1], alpha, scaleX, scaleY,
                 onFinishRunnable, animationEndStyle, duration, null);
     }
 
@@ -240,11 +239,6 @@ public class DragLayer extends BaseDragLayer<Launcher> {
         CellLayout.LayoutParams lp =  (CellLayout.LayoutParams) child.getLayoutParams();
         parentChildren.measureChild(child);
         parentChildren.layoutChild(child);
-
-        Rect dragViewBounds = new Rect();
-        getViewRectRelativeToSelf(dragView, dragViewBounds);
-        final int fromX = dragViewBounds.left;
-        final int fromY = dragViewBounds.top;
 
         float coord[] = new float[2];
         float childScale = child.getScaleX();
@@ -288,51 +282,50 @@ public class DragLayer extends BaseDragLayer<Launcher> {
 
         child.setVisibility(INVISIBLE);
         Runnable onCompleteRunnable = () -> child.setVisibility(VISIBLE);
-        animateViewIntoPosition(dragView, fromX, fromY, toX, toY, 1, 1, 1, toScale, toScale,
+        animateViewIntoPosition(dragView, toX, toY, 1, toScale, toScale,
                 onCompleteRunnable, ANIMATION_END_DISAPPEAR, duration, anchorView);
-    }
-
-    public void animateViewIntoPosition(final DragView view, final int fromX, final int fromY,
-            final int toX, final int toY, float finalAlpha, float initScaleX, float initScaleY,
-            float finalScaleX, float finalScaleY, Runnable onCompleteRunnable,
-            int animationEndStyle, int duration, View anchorView) {
-        Rect from = new Rect(fromX, fromY, fromX +
-                view.getMeasuredWidth(), fromY + view.getMeasuredHeight());
-        Rect to = new Rect(toX, toY, toX + view.getMeasuredWidth(), toY + view.getMeasuredHeight());
-        animateView(view, from, to, finalAlpha, initScaleX, initScaleY, finalScaleX, finalScaleY, duration,
-                null, null, onCompleteRunnable, animationEndStyle, anchorView);
     }
 
     /**
      * This method animates a view at the end of a drag and drop animation.
-     *
+     */
+    public void animateViewIntoPosition(final DragView view,
+            final int toX, final int toY, float finalAlpha,
+            float finalScaleX, float finalScaleY, Runnable onCompleteRunnable,
+            int animationEndStyle, int duration, View anchorView) {
+        Rect to = new Rect(toX, toY, toX + view.getMeasuredWidth(), toY + view.getMeasuredHeight());
+        animateView(view, to, finalAlpha, finalScaleX, finalScaleY, duration,
+                null, onCompleteRunnable, animationEndStyle, anchorView);
+    }
+
+    /**
+     * This method animates a view at the end of a drag and drop animation.
      * @param view The view to be animated. This view is drawn directly into DragLayer, and so
      *        doesn't need to be a child of DragLayer.
-     * @param from The initial location of the view. Only the left and top parameters are used.
      * @param to The final location of the view. Only the left and top parameters are used. This
-     *        location doesn't account for scaling, and so should be centered about the desired
-     *        final location (including scaling).
+*        location doesn't account for scaling, and so should be centered about the desired
+*        final location (including scaling).
      * @param finalAlpha The final alpha of the view, in case we want it to fade as it animates.
      * @param finalScaleX The final scale of the view. The view is scaled about its center.
      * @param finalScaleY The final scale of the view. The view is scaled about its center.
      * @param duration The duration of the animation.
      * @param motionInterpolator The interpolator to use for the location of the view.
-     * @param alphaInterpolator The interpolator to use for the alpha of the view.
      * @param onCompleteRunnable Optional runnable to run on animation completion.
      * @param animationEndStyle Whether or not to fade out the view once the animation completes.
-     *        {@link #ANIMATION_END_DISAPPEAR} or {@link #ANIMATION_END_REMAIN_VISIBLE}.
+*        {@link #ANIMATION_END_DISAPPEAR} or {@link #ANIMATION_END_REMAIN_VISIBLE}.
      * @param anchorView If not null, this represents the view which the animated view stays
-     *        anchored to in case scrolling is currently taking place. Note: currently this is
-     *        only used for the X dimension for the case of the workspace.
      */
-    public void animateView(final DragView view, final Rect from, final Rect to,
-            final float finalAlpha, final float initScaleX, final float initScaleY,
-            final float finalScaleX, final float finalScaleY, int duration,
-            final Interpolator motionInterpolator, final Interpolator alphaInterpolator,
-            final Runnable onCompleteRunnable, final int animationEndStyle, View anchorView) {
+    public void animateView(final DragView view, final Rect to,
+            final float finalAlpha, final float finalScaleX, final float finalScaleY, int duration,
+            final Interpolator motionInterpolator, final Runnable onCompleteRunnable,
+            final int animationEndStyle, View anchorView) {
+        view.cancelAnimation();
+        view.requestLayout();
+
+        final int[] from = getViewLocationRelativeToSelf(view);
 
         // Calculate the duration of the animation based on the object's distance
-        final float dist = (float) Math.hypot(to.left - from.left, to.top - from.top);
+        final float dist = (float) Math.hypot(to.left - from[0], to.top - from[1]);
         final Resources res = getResources();
         final float maxDist = (float) res.getInteger(R.integer.config_dropAnimMaxDist);
 
@@ -346,93 +339,45 @@ public class DragLayer extends BaseDragLayer<Launcher> {
         }
 
         // Fall back to cubic ease out interpolator for the animation if none is specified
-        TimeInterpolator interpolator = null;
-        if (alphaInterpolator == null || motionInterpolator == null) {
-            interpolator = DEACCEL_1_5;
-        }
+        TimeInterpolator interpolator =
+                motionInterpolator == null ? DEACCEL_1_5 : motionInterpolator;
 
         // Animate the view
-        final float initAlpha = view.getAlpha();
-        final float dropViewScale = view.getScaleX();
-        AnimatorUpdateListener updateCb = new AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                final float percent = (Float) animation.getAnimatedValue();
-                final int width = view.getMeasuredWidth();
-                final int height = view.getMeasuredHeight();
+        PendingAnimation anim = new PendingAnimation(duration);
+        anim.add(ofFloat(view, View.SCALE_X, finalScaleX), interpolator, SpringProperty.DEFAULT);
+        anim.add(ofFloat(view, View.SCALE_Y, finalScaleY), interpolator, SpringProperty.DEFAULT);
+        anim.setViewAlpha(view, finalAlpha, interpolator);
+        anim.setFloat(view, VIEW_TRANSLATE_Y, to.top, interpolator);
 
-                float alphaPercent = alphaInterpolator == null ? percent :
-                        alphaInterpolator.getInterpolation(percent);
-                float motionPercent = motionInterpolator == null ? percent :
-                        motionInterpolator.getInterpolation(percent);
-
-                float initialScaleX = initScaleX * dropViewScale;
-                float initialScaleY = initScaleY * dropViewScale;
-                float scaleX = finalScaleX * percent + initialScaleX * (1 - percent);
-                float scaleY = finalScaleY * percent + initialScaleY * (1 - percent);
-                float alpha = finalAlpha * alphaPercent + initAlpha * (1 - alphaPercent);
-
-                float fromLeft = from.left + (initialScaleX - 1f) * width / 2;
-                float fromTop = from.top + (initialScaleY - 1f) * height / 2;
-
-                int x = (int) (fromLeft + Math.round(((to.left - fromLeft) * motionPercent)));
-                int y = (int) (fromTop + Math.round(((to.top - fromTop) * motionPercent)));
-
-                int anchorAdjust = mAnchorView == null ? 0 : (int) (mAnchorView.getScaleX() *
-                    (mAnchorViewInitialScrollX - mAnchorView.getScrollX()));
-
-                int xPos = x - mDropView.getScrollX() + anchorAdjust;
-                int yPos = y - mDropView.getScrollY();
-
-                mDropView.setTranslationX(xPos);
-                mDropView.setTranslationY(yPos);
-                mDropView.setScaleX(scaleX);
-                mDropView.setScaleY(scaleY);
-                mDropView.setAlpha(alpha);
-            }
-        };
-        animateView(view, updateCb, duration, interpolator, onCompleteRunnable, animationEndStyle,
-                anchorView);
+        ObjectAnimator xMotion = ofFloat(view, VIEW_TRANSLATE_X, to.left);
+        if (anchorView != null) {
+            final int startScroll = anchorView.getScrollX();
+            TypeEvaluator<Float> evaluator = (f, s, e) -> mapRange(f, s, e)
+                    + (anchorView.getScaleX() * (startScroll - anchorView.getScrollX()));
+            xMotion.setEvaluator(evaluator);
+        }
+        anim.add(xMotion, interpolator, SpringProperty.DEFAULT);
+        if (onCompleteRunnable != null) {
+            anim.addListener(forEndCallback(onCompleteRunnable));
+        }
+        playDropAnimation(view, anim.buildAnim(), animationEndStyle);
     }
 
-    public void animateView(final DragView view, AnimatorUpdateListener updateCb, int duration,
-            TimeInterpolator interpolator, final Runnable onCompleteRunnable,
-            final int animationEndStyle, View anchorView) {
+    /**
+     * Runs a previously constructed drop animation
+     */
+    public void playDropAnimation(final DragView view, Animator animator, int animationEndStyle) {
         // Clean up the previous animations
         if (mDropAnim != null) mDropAnim.cancel();
 
         // Show the drop view if it was previously hidden
         mDropView = view;
-        mDropView.cancelAnimation();
-        mDropView.requestLayout();
-
-        // Set the anchor view if the page is scrolling
-        if (anchorView != null) {
-            mAnchorViewInitialScrollX = anchorView.getScrollX();
-        }
-        mAnchorView = anchorView;
-
         // Create and start the animation
-        mDropAnim = new ValueAnimator();
-        mDropAnim.setInterpolator(interpolator);
-        mDropAnim.setDuration(duration);
-        mDropAnim.setFloatValues(0f, 1f);
-        mDropAnim.addUpdateListener(updateCb);
-        mDropAnim.addListener(new AnimatorListenerAdapter() {
-            public void onAnimationEnd(Animator animation) {
-                if (onCompleteRunnable != null) {
-                    onCompleteRunnable.run();
-                }
-                switch (animationEndStyle) {
-                case ANIMATION_END_DISAPPEAR:
-                    clearAnimatedView();
-                    break;
-                case ANIMATION_END_REMAIN_VISIBLE:
-                    break;
-                }
-                mDropAnim = null;
-            }
-        });
+        mDropAnim = animator;
+        mDropAnim.addListener(forEndCallback(() -> mDropAnim = null));
+        if (animationEndStyle == ANIMATION_END_DISAPPEAR) {
+            mDropAnim.addListener(forEndCallback(this::clearAnimatedView));
+        }
         mDropAnim.start();
     }
 

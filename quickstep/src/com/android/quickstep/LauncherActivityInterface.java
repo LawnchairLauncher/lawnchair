@@ -71,7 +71,7 @@ public final class LauncherActivityInterface extends
     @Override
     public int getSwipeUpDestinationAndLength(DeviceProfile dp, Context context, Rect outRect,
             PagedOrientationHandler orientationHandler) {
-        calculateTaskSize(context, dp, outRect, orientationHandler);
+        calculateTaskSize(context, dp, outRect);
         if (dp.isVerticalBarLayout() && SysUINavigationMode.getMode(context) != Mode.NO_BUTTON) {
             return dp.isSeascape() ? outRect.left : (dp.widthPx - outRect.right);
         } else {
@@ -130,7 +130,6 @@ public final class LauncherActivityInterface extends
                 pa.addFloat(getDepthController(),
                         new ClampedDepthProperty(fromDepthRatio, toDepthRatio),
                         fromDepthRatio, toDepthRatio, LINEAR);
-
             }
         };
 
@@ -173,7 +172,8 @@ public final class LauncherActivityInterface extends
     }
 
     @Nullable
-    private LauncherTaskbarUIController getTaskbarController() {
+    @Override
+    public LauncherTaskbarUIController getTaskbarController() {
         BaseQuickstepLauncher launcher = getCreatedActivity();
         if (launcher == null) {
             return null;
@@ -189,7 +189,7 @@ public final class LauncherActivityInterface extends
                 launcher != null && launcher.getStateManager().getState().overviewUi
                         ? launcher.getOverviewPanel() : null;
         if (recentsView == null || (!launcher.hasBeenResumed()
-                && recentsView.getRunningTaskId() == -1)) {
+                && recentsView.getRunningTaskViewId() == -1)) {
             // If live tile has ended, return null.
             return null;
         }
@@ -288,25 +288,23 @@ public final class LauncherActivityInterface extends
         } else {
             om.hideOverlay(150);
         }
-    }
-
-    @Override
-    void onOverviewServiceBound() {
-        final BaseQuickstepLauncher activity = getCreatedActivity();
-        if (activity == null) return;
-        activity.getAppTransitionManager().registerRemoteTransitions();
+        LauncherTaskbarUIController taskbarController = getTaskbarController();
+        if (taskbarController != null) {
+            taskbarController.hideEdu();
+        }
     }
 
     @Override
     public @Nullable Animator getParallelAnimationToLauncher(GestureEndTarget endTarget,
-            long duration) {
+            long duration, RecentsAnimationCallbacks callbacks) {
         LauncherTaskbarUIController uiController = getTaskbarController();
-        Animator superAnimator = super.getParallelAnimationToLauncher(endTarget, duration);
-        if (uiController == null) {
+        Animator superAnimator = super.getParallelAnimationToLauncher(
+                endTarget, duration, callbacks);
+        if (uiController == null || callbacks == null) {
             return superAnimator;
         }
         LauncherState toState = stateFromGestureEndTarget(endTarget);
-        Animator taskbarAnimator = uiController.createAnimToLauncher(toState, duration);
+        Animator taskbarAnimator = uiController.createAnimToLauncher(toState, callbacks, duration);
         if (superAnimator == null) {
             return taskbarAnimator;
         } else {

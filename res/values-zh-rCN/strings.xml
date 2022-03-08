@@ -32,10 +32,8 @@
     <string name="long_accessible_way_to_add" msgid="2733588281439571974">"点按两次并按住微件即可移动该微件或使用自定义操作。"</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"宽 %1$d，高 %2$d"</string>
-    <string name="widget_preview_context_description" msgid="9045841361655787574">"“<xliff:g id="WIDGET_NAME">%1$s</xliff:g>”微件"</string>
-    <string name="add_item_request_drag_hint" msgid="5653291305078645405">"轻触并按住该微件即可将其在主屏幕上四处移动"</string>
-    <string name="add_to_home_screen" msgid="8631549138215492708">"添加到主屏幕"</string>
-    <string name="added_to_home_screen_accessibility_text" msgid="4451545765448884415">"已将“<xliff:g id="WIDGET_NAME">%1$s</xliff:g>”微件添加到主屏幕"</string>
+    <string name="add_item_request_drag_hint" msgid="5899764264480397019">"轻触并按住即可手动放置"</string>
+    <string name="place_automatically" msgid="8064208734425456485">"自动添加"</string>
     <plurals name="widgets_count" formatted="false" msgid="656794749266073027">
       <item quantity="other"><xliff:g id="WIDGETS_COUNT_1">%1$d</xliff:g> 个微件</item>
       <item quantity="one"><xliff:g id="WIDGETS_COUNT_0">%1$d</xliff:g> 个微件</item>
@@ -48,16 +46,11 @@
     <string name="widget_button_text" msgid="2880537293434387943">"微件"</string>
     <string name="widgets_full_sheet_search_bar_hint" msgid="8484659090860596457">"搜索"</string>
     <string name="widgets_full_sheet_cancel_button_description" msgid="5766167035728653605">"清除搜索框中的文字"</string>
-    <string name="no_widgets_available" msgid="4337693382501046170">"无法使用微件和快捷方式"</string>
-    <string name="no_search_results" msgid="3787956167293097509">"未找到任何微件或快捷方式"</string>
+    <string name="no_widgets_available" msgid="9140948620298620513">"没有可用的微件"</string>
+    <string name="no_search_results" msgid="6518732304311458580">"无搜索结果"</string>
     <string name="widgets_full_sheet_personal_tab" msgid="2743540105607120182">"个人"</string>
     <string name="widgets_full_sheet_work_tab" msgid="3767150027110633765">"工作"</string>
     <string name="widget_category_conversations" msgid="8894438636213590446">"对话"</string>
-    <string name="widget_education_header" msgid="4874760613775913787">"实用信息触手可及"</string>
-    <string name="widget_education_content" msgid="745542879510751525">"要想不打开应用就能获取信息，您可以将相应微件添加到主屏幕"</string>
-    <string name="reconfigurable_widget_education_tip" msgid="6336962690888067057">"点按即可更改微件设置"</string>
-    <string name="widget_education_close_button" msgid="8676165703104836580">"知道了"</string>
-    <string name="widget_reconfigure_button_content_description" msgid="8811472721881205250">"更改微件设置"</string>
     <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"搜索应用"</string>
     <string name="all_apps_loading_message" msgid="5813968043155271636">"正在加载应用…"</string>
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"未找到与“<xliff:g id="QUERY">%1$s</xliff:g>”相符的应用"</string>
@@ -66,10 +59,9 @@
     <string name="notifications_header" msgid="1404149926117359025">"通知"</string>
     <string name="long_press_shortcut_to_add" msgid="5405328730817637737">"轻触并按住快捷方式即可移动该快捷方式。"</string>
     <string name="long_accessible_way_to_add_shortcut" msgid="2199537273817090740">"点按两次并按住快捷方式即可移动该快捷方式或使用自定义操作。"</string>
-    <string name="out_of_space" msgid="6692471482459245734">"此主屏幕上已没有空间"</string>
+    <string name="out_of_space" msgid="4691004494942118364">"此主屏幕上已没有空间。"</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"收藏栏已满"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"应用列表"</string>
-    <string name="all_apps_search_results" msgid="5889367432531296759">"搜索结果"</string>
     <string name="all_apps_button_personal_label" msgid="1315764287305224468">"个人应用列表"</string>
     <string name="all_apps_button_work_label" msgid="7270707118948892488">"工作应用列表"</string>
     <string name="remove_drop_target_label" msgid="7812859488053230776">"移除"</string>
@@ -85,9 +77,8 @@
     <string name="permlab_write_settings" msgid="3574213698004620587">"写入主屏幕设置和快捷方式"</string>
     <string name="permdesc_write_settings" msgid="5440712911516509985">"允许应用更改主屏幕中的设置和快捷方式。"</string>
     <string name="msg_no_phone_permission" msgid="9208659281529857371">"不允许使用“<xliff:g id="APP_NAME">%1$s</xliff:g>”拨打电话"</string>
-    <string name="gadget_error_text" msgid="740356548025791839">"无法加载微件"</string>
-    <string name="gadget_setup_text" msgid="8348374825537681407">"微件设置"</string>
-    <string name="gadget_complete_setup_text" msgid="309040266978007925">"点按即可完成设置"</string>
+    <string name="gadget_error_text" msgid="6081085226050792095">"加载微件时出现问题"</string>
+    <string name="gadget_setup_text" msgid="8274003207686040488">"设置"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"这是系统应用，无法卸载。"</string>
     <string name="folder_hint_text" msgid="5174843001373488816">"修改名称"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"已停用<xliff:g id="APP_NAME">%1$s</xliff:g>"</string>
@@ -106,14 +97,14 @@
     <string name="folder_name_format_exact" msgid="8626242716117004803">"文件夹：<xliff:g id="NAME">%1$s</xliff:g>，<xliff:g id="SIZE">%2$d</xliff:g> 个项目"</string>
     <string name="folder_name_format_overflow" msgid="4270108890534995199">"文件夹：<xliff:g id="NAME">%1$s</xliff:g>，<xliff:g id="SIZE">%2$d</xliff:g> 个或更多项目"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"壁纸"</string>
-    <string name="styles_wallpaper_button_text" msgid="8216961355289236794">"壁纸和样式"</string>
+    <string name="styles_wallpaper_button_text" msgid="4342122323125579619">"样式和壁纸"</string>
     <string name="settings_button_text" msgid="8873672322605444408">"主屏幕设置"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"已被您的管理员停用"</string>
     <string name="allow_rotation_title" msgid="7728578836261442095">"允许旋转主屏幕"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"手机旋转时"</string>
     <string name="notification_dots_title" msgid="9062440428204120317">"通知圆点"</string>
-    <string name="notification_dots_desc_on" msgid="1679848116452218908">"已开启"</string>
-    <string name="notification_dots_desc_off" msgid="1760796511504341095">"已关闭"</string>
+    <string name="notification_dots_desc_on" msgid="1679848116452218908">"开启"</string>
+    <string name="notification_dots_desc_off" msgid="1760796511504341095">"关闭"</string>
     <string name="title_missing_notification_access" msgid="7503287056163941064">"需要获取通知使用权"</string>
     <string name="msg_missing_notification_access" msgid="281113995110910548">"要显示通知圆点，请开启<xliff:g id="NAME">%1$s</xliff:g>的应用通知功能"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"更改设置"</string>
@@ -160,15 +151,18 @@
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"个人"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"工作"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"工作资料"</string>
-    <string name="work_profile_edu_work_apps" msgid="7895468576497746520">"工作应用带有标志，您的 IT 管理员可以看到此类应用"</string>
+    <string name="work_profile_edu_personal_apps" msgid="4155536355149317441">"工作应用与个人数据相互独立，它们无法获取此类数据"</string>
+    <string name="work_profile_edu_work_apps" msgid="237051938268703058">"您的 IT 管理员可以查看工作应用和工作数据"</string>
+    <string name="work_profile_edu_next" msgid="8783418929296503629">"继续"</string>
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"知道了"</string>
-    <string name="work_apps_paused_title" msgid="3040901117349444598">"工作应用已暂停"</string>
-    <string name="work_apps_paused_body" msgid="261634750995824906">"工作应用无法向您发送通知、不能耗用电池电量，也无法获取您的位置信息"</string>
-    <string name="work_apps_paused_content_description" msgid="5149623040804051095">"工作应用已关闭。工作应用无法向您发送通知、不能耗用电池电量，也无法获取您的位置信息"</string>
+    <string name="work_apps_paused_title" msgid="2389865654362803723">"工作资料已被暂停"</string>
+    <string name="work_apps_paused_body" msgid="4209084728264328628">"现在，工作应用无法向您发送通知、不能耗用电池电量，也无法获取您的位置信息"</string>
+    <string name="work_apps_paused_content_description" msgid="4473292417145736203">"工作资料已暂停使用。现在，工作应用无法向您发送通知、不能耗用电池电量，也无法获取您的位置信息"</string>
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"工作应用带有标志，您的 IT 管理员可以看到工作应用"</string>
     <string name="work_apps_paused_edu_accept" msgid="6377476824357318532">"知道了"</string>
-    <string name="work_apps_pause_btn_text" msgid="1921059713673767460">"关闭工作应用"</string>
-    <string name="work_apps_enable_btn_text" msgid="1156432622148413741">"开启工作应用"</string>
+    <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"暂停工作应用"</string>
+    <string name="work_apps_enable_btn_text" msgid="82111102541971856">"开启"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"过滤器"</string>
+    <string name="work_switch_tip" msgid="808075064383839144">"暂停工作应用及其通知"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"失败：<xliff:g id="WHAT">%1$s</xliff:g>"</string>
 </resources>

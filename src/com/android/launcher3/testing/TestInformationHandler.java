@@ -21,6 +21,7 @@ import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Insets;
 import android.os.Build;
 import android.os.Bundle;
@@ -62,6 +63,10 @@ public class TestInformationHandler implements ResourceBasedOverride {
     }
 
     public Bundle call(String method) {
+        return call(method, /*arg=*/ null);
+    }
+
+    public Bundle call(String method, String arg) {
         final Bundle response = new Bundle();
         switch (method) {
             case TestProtocol.REQUEST_HOME_TO_ALL_APPS_SWIPE_HEIGHT: {
@@ -98,12 +103,21 @@ public class TestInformationHandler implements ResourceBasedOverride {
                         l -> WidgetsFullSheet.getWidgetsView(l).getCurrentScrollY());
             }
 
-            case TestProtocol.REQUEST_WINDOW_INSETS: {
-                return getUIProperty(Bundle::putParcelable, a -> {
-                    WindowInsets insets = a.getWindow()
+            case TestProtocol.REQUEST_TARGET_INSETS: {
+                return getUIProperty(Bundle::putParcelable, activity -> {
+                    WindowInsets insets = activity.getWindow()
                             .getDecorView().getRootWindowInsets();
                     return Insets.max(
-                            insets.getSystemGestureInsets(), insets.getSystemWindowInsets());
+                            insets.getSystemGestureInsets(),
+                            insets.getSystemWindowInsets());
+                }, this::getCurrentActivity);
+            }
+
+            case TestProtocol.REQUEST_WINDOW_INSETS: {
+                return getUIProperty(Bundle::putParcelable, activity -> {
+                    WindowInsets insets = activity.getWindow()
+                            .getDecorView().getRootWindowInsets();
+                    return insets.getSystemWindowInsets();
                 }, this::getCurrentActivity);
             }
 
@@ -116,6 +130,38 @@ public class TestInformationHandler implements ResourceBasedOverride {
             case TestProtocol.REQUEST_MOCK_SENSOR_ROTATION:
                 TestProtocol.sDisableSensorRotation = true;
                 return response;
+
+            case TestProtocol.REQUEST_IS_TABLET:
+                response.putBoolean(TestProtocol.TEST_INFO_RESPONSE_FIELD, mDeviceProfile.isTablet);
+                return response;
+
+            case TestProtocol.REQUEST_IS_TWO_PANELS:
+                response.putBoolean(TestProtocol.TEST_INFO_RESPONSE_FIELD,
+                        mDeviceProfile.isTwoPanels);
+                return response;
+
+            case TestProtocol.REQUEST_SET_FORCE_PAUSE_TIMEOUT:
+                TestProtocol.sForcePauseTimeout = Long.parseLong(arg);
+                return response;
+
+            case TestProtocol.REQUEST_GET_HAD_NONTEST_EVENTS:
+                response.putBoolean(
+                        TestProtocol.TEST_INFO_RESPONSE_FIELD, TestLogging.sHadEventsNotFromTest);
+                return response;
+
+            case TestProtocol.REQUEST_START_DRAG_THRESHOLD: {
+                final Resources resources = mContext.getResources();
+                response.putInt(TestProtocol.TEST_INFO_RESPONSE_FIELD,
+                        resources.getDimensionPixelSize(R.dimen.deep_shortcuts_start_drag_threshold)
+                                + resources.getDimensionPixelSize(R.dimen.pre_drag_view_scale));
+                return response;
+            }
+
+            case TestProtocol.REQUEST_ENABLE_ROTATION:
+                MAIN_EXECUTOR.submit(() ->
+                        Launcher.ACTIVITY_TRACKER.getCreatedActivity().getRotationHelper()
+                                .forceAllowRotationForTesting(Boolean.parseBoolean(arg)));
+                return null;
 
             default:
                 return null;
@@ -162,6 +208,7 @@ public class TestInformationHandler implements ResourceBasedOverride {
 
     /**
      * Generic interface for setting a fiend in bundle
+     *
      * @param <T> the type of value being set
      */
     public interface BundleSetter<T> {

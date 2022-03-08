@@ -19,7 +19,6 @@
     android:id="@+id/widgets_list_header"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginHorizontal="@dimen/widget_list_horizontal_margin"
     android:paddingVertical="@dimen/widget_list_header_view_vertical_padding"
     android:orientation="horizontal"
     launcher:appIconSize="48dp">

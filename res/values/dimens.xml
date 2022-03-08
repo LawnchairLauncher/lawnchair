@@ -29,8 +29,6 @@
     <dimen name="dynamic_grid_cell_layout_padding">5.5dp</dimen>
     <dimen name="dynamic_grid_cell_padding_x">8dp</dimen>
 
-    <dimen name="two_panel_home_side_padding">18dp</dimen>
-
     <!-- Hotseat -->
     <dimen name="dynamic_grid_hotseat_top_padding">8dp</dimen>
     <dimen name="dynamic_grid_hotseat_bottom_padding">2dp</dimen>
@@ -40,7 +38,6 @@
     <dimen name="dynamic_grid_hotseat_side_padding">0dp</dimen>
 
     <!-- Scalable Grid -->
-    <dimen name="scalable_grid_left_right_margin">22dp</dimen>
     <dimen name="scalable_grid_qsb_bottom_margin">42dp</dimen>
 
     <!-- Workspace page indicator -->
@@ -56,6 +53,7 @@
     <dimen name="widget_handle_margin">13dp</dimen>
     <dimen name="resize_frame_background_padding">24dp</dimen>
     <dimen name="resize_frame_margin">22dp</dimen>
+    <dimen name="resize_frame_invalid_drag_across_two_panel_opacity_margin">24dp</dimen>
 
     <!-- App widget reconfigure button -->
     <dimen name="widget_reconfigure_button_corner_radius">14dp</dimen>
@@ -105,8 +103,10 @@
     <dimen name="all_apps_tabs_vertical_padding">6dp</dimen>
     <dimen name="all_apps_divider_height">2dp</dimen>
     <dimen name="all_apps_divider_width">128dp</dimen>
-
+    <dimen name="all_apps_content_fade_in_offset">150dp</dimen>
     <dimen name="all_apps_tip_bottom_margin">8dp</dimen>
+    <dimen name="all_apps_height_extra">6dp</dimen>
+
     <!-- The size of corner radius of the arrow in the arrow toast. -->
     <dimen name="arrow_toast_corner_radius">2dp</dimen>
     <dimen name="arrow_toast_elevation">2dp</dimen>
@@ -126,7 +126,6 @@
     <dimen name="work_card_button_height">52dp</dimen>
     <dimen name="work_fab_margin">16dp</dimen>
     <dimen name="work_profile_footer_padding">20dp</dimen>
-    <dimen name="work_profile_footer_text_size">16sp</dimen>
     <dimen name="work_edu_card_margin">16dp</dimen>
     <dimen name="work_edu_card_radius">28dp</dimen>
 
@@ -143,8 +142,7 @@
     <dimen name="widget_cell_font_size">14sp</dimen>
 
     <dimen name="widget_tabs_button_horizontal_padding">4dp</dimen>
-    <dimen name="widget_tabs_horizontal_margin">32dp</dimen>
-    <dimen name="widget_apps_header_pill_height">48dp</dimen>
+    <dimen name="widget_tabs_horizontal_padding">16dp</dimen>
     <dimen name="widget_apps_tabs_vertical_padding">6dp</dimen>
 
     <dimen name="recommended_widgets_table_vertical_padding">8dp</dimen>
@@ -177,8 +175,6 @@
 
     <dimen name="widget_picker_education_tip_max_width">308dp</dimen>
     <dimen name="widget_picker_education_tip_min_margin">4dp</dimen>
-
-    <dimen name="widget_picker_view_pager_top_padding">10dp</dimen>
 
     <!-- Padding applied to shortcut previews -->
     <dimen name="shortcut_preview_padding_left">0dp</dimen>
@@ -304,6 +300,7 @@
     <dimen name="snackbar_elevation">3dp</dimen>
     <dimen name="snackbar_min_text_size">12sp</dimen>
     <dimen name="snackbar_max_text_size">14sp</dimen>
+    <dimen name="snackbar_max_width">504dp</dimen>
 
 <!-- Developer Options -->
     <dimen name="developer_options_filter_margins">10dp</dimen>
@@ -317,16 +314,41 @@
 
 <!-- Taskbar related (placeholders to compile in Launcher3 without Quickstep) -->
     <dimen name="taskbar_size">0dp</dimen>
+    <dimen name="qsb_widget_height">0dp</dimen>
+    <dimen name="taskbar_icon_size">44dp</dimen>
+    <!-- Note that this applies to both sides of all icons, so visible space is double this. -->
+    <dimen name="taskbar_icon_spacing">8dp</dimen>
 
     <!-- Size of the maximum radius for the enforced rounded rectangles. -->
     <dimen name="enforced_rounded_corner_max_radius">16dp</dimen>
 
-<!-- Overview placeholder to compile in Launcer3 without Quickstep -->
+<!-- Base Swipe Detector, speed in dp/s -->
+    <dimen name="base_swift_detector_fling_release_velocity">1dp</dimen>
+
+<!-- Overview placeholder to compile in Launcher3 without Quickstep -->
     <dimen name="task_thumbnail_icon_size">0dp</dimen>
-    <dimen name="task_thumbnail_icon_size_grid">0dp</dimen>
+    <dimen name="task_thumbnail_icon_drawable_size">0dp</dimen>
+    <dimen name="task_thumbnail_icon_drawable_size_grid">0dp</dimen>
     <dimen name="overview_task_margin">0dp</dimen>
-    <dimen name="overview_actions_bottom_margin_gesture">0dp</dimen>
-    <dimen name="overview_actions_bottom_margin_three_button">0dp</dimen>
+    <dimen name="overview_task_margin_focused">0dp</dimen>
+    <dimen name="overview_task_margin_grid">0dp</dimen>
+    <dimen name="overview_actions_button_spacing">0dp</dimen>
+    <dimen name="overview_actions_button_spacing_grid">0dp</dimen>
+    <dimen name="overview_actions_margin_gesture">0dp</dimen>
+    <dimen name="overview_actions_top_margin_gesture_grid_portrait">0dp</dimen>
+    <dimen name="overview_actions_bottom_margin_gesture_grid_portrait">0dp</dimen>
+    <dimen name="overview_actions_top_margin_gesture_grid_landscape">0dp</dimen>
+    <dimen name="overview_actions_bottom_margin_gesture_grid_landscape">0dp</dimen>
+    <dimen name="overview_actions_margin_three_button">0dp</dimen>
+    <dimen name="overview_grid_side_margin_portrait">0dp</dimen>
+    <dimen name="overview_grid_side_margin_landscape">0dp</dimen>
+    <dimen name="overview_grid_row_spacing">0dp</dimen>
+    <dimen name="overview_page_spacing">0dp</dimen>
+    <dimen name="overview_page_spacing_grid_portrait">0dp</dimen>
+    <dimen name="overview_page_spacing_grid_landscape">0dp</dimen>
+    <dimen name="split_placeholder_size">110dp</dimen>
+    <dimen name="task_menu_width_grid">200dp</dimen>
+
 
 <!-- Workspace grid visualization parameters -->
     <dimen name="grid_visualization_rounding_radius">22dp</dimen>

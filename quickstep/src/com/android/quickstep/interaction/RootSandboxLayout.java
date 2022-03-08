@@ -16,8 +16,10 @@
 package com.android.quickstep.interaction;
 
 import android.content.Context;
+import android.graphics.Insets;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
+import android.view.WindowInsets;
 import android.widget.RelativeLayout;
 
 import androidx.fragment.app.FragmentManager;
@@ -40,5 +42,14 @@ public class RootSandboxLayout extends RelativeLayout {
     public boolean onInterceptTouchEvent(MotionEvent motionEvent) {
         return ((TutorialFragment) FragmentManager.findFragment(this))
                 .onInterceptTouch(motionEvent);
+    }
+
+    /**
+     * Returns this view's fullscreen height. This method is agnostic of this view's actual height.
+     */
+    public int getFullscreenHeight() {
+        Insets insets = getRootWindowInsets().getInsets(WindowInsets.Type.systemBars());
+
+        return getHeight() + insets.top + insets.bottom;
     }
 }

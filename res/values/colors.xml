@@ -36,15 +36,6 @@
 
     <color name="icon_background">#E0E0E0</color> <!-- Gray 300 -->
 
-    <color name="gesture_tutorial_ripple_color">#A0C2F9</color> <!-- Light Blue -->
-    <color name="gesture_tutorial_fake_task_view_color">#6DA1FF</color> <!-- Light Blue -->
-    <color name="fake_wallpaper_color_dark_mode">#000000</color> <!-- Black -->
-    <color name="fake_wallpaper_color_light_mode">#f9f9f9</color> <!-- White -->
-    <!-- Must contrast fake_wallpaper_color_dark_mode and fake_wallpaper_color_light_mode -->
-    <color name="gesture_tutorial_fake_previous_task_view_color">#3C4043</color> <!-- Gray -->
-    <color name="gesture_tutorial_action_button_label_color">#FF000000</color>
-    <color name="gesture_tutorial_primary_color">#B7F29F</color> <!-- Light Green -->
-
     <color name="popup_color_primary_light">#FFF</color>
     <color name="popup_color_secondary_light">#F1F3F4</color>
     <color name="popup_color_tertiary_light">#E0E0E0</color> <!-- Gray 300 -->
@@ -72,7 +63,12 @@
     <color name="folder_background_light">#F9F9F9</color>
     <color name="folder_background_dark">#464746</color>
 
+    <color name="folder_preview_light">#F9F9F9</color>
+    <color name="folder_preview_dark">#464746</color>
+
     <color name="folder_dot_color">?attr/colorPrimary</color>
+    <color name="folder_pagination_color_light">#ff006c5f</color>
+    <color name="folder_pagination_color_dark">#ffbfebe3</color>
 
     <color name="text_color_primary_dark">#FFFFFFFF</color>
     <color name="text_color_secondary_dark">#FFFFFFFF</color>

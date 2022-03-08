@@ -34,10 +34,10 @@ import com.android.launcher3.tapl.AllApps;
 import com.android.launcher3.tapl.AppIcon;
 import com.android.launcher3.tapl.AppIconMenu;
 import com.android.launcher3.tapl.AppIconMenuItem;
+import com.android.launcher3.tapl.Folder;
+import com.android.launcher3.tapl.FolderIcon;
 import com.android.launcher3.tapl.Widgets;
 import com.android.launcher3.tapl.Workspace;
-import com.android.launcher3.util.rule.ScreenRecordRule.ScreenRecord;
-import com.android.launcher3.views.OptionsPopupView;
 import com.android.launcher3.widget.picker.WidgetsFullSheet;
 import com.android.launcher3.widget.picker.WidgetsRecyclerView;
 
@@ -80,8 +80,8 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
         assertTrue(message, failed);
     }
 
-    private boolean isWorkspaceScrollable(Launcher launcher) {
-        return launcher.getWorkspace().getPageCount() > 1;
+    public static boolean isWorkspaceScrollable(Launcher launcher) {
+        return launcher.getWorkspace().getPageCount() > launcher.getWorkspace().getPanelCount();
     }
 
     private int getCurrentWorkspacePage(Launcher launcher) {
@@ -93,23 +93,14 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
     }
 
     @Test
-    @ScreenRecord //b/187080582
     public void testDevicePressMenu() throws Exception {
         mDevice.pressMenu();
         mDevice.waitForIdle();
         executeOnLauncher(
-                launcher -> assertTrue("Launcher internal state didn't switch to Showing Menu",
-                        OptionsPopupView.getOptionsPopup(launcher) != null));
+                launcher -> assertNotNull("Launcher internal state didn't switch to Showing Menu",
+                        launcher.getOptionsPopup()));
         // Check that pressHome works when the menu is shown.
         mLauncher.pressHome();
-    }
-
-    @Ignore
-    public void testOpenHomeSettingsFromWorkspace() {
-        mDevice.pressMenu();
-        mDevice.waitForIdle();
-        mLauncher.getOptionsPopupMenu().getMenuItem("Home settings")
-                .launch(mDevice.getLauncherPackageName());
     }
 
     @Test
@@ -195,8 +186,9 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
         workspace.ensureWorkspaceIsScrollable();
 
         executeOnLauncher(
-                launcher -> assertEquals("Ensuring workspace scrollable didn't switch to page #1",
-                        1, getCurrentWorkspacePage(launcher)));
+                launcher -> assertEquals(
+                        "Ensuring workspace scrollable didn't switch to next screen",
+                        workspace.pagesPerScreen(), getCurrentWorkspacePage(launcher)));
         executeOnLauncher(
                 launcher -> assertTrue("ensureScrollable didn't make workspace scrollable",
                         isWorkspaceScrollable(launcher)));
@@ -212,8 +204,8 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
 
         workspace.flingForward();
         executeOnLauncher(
-                launcher -> assertEquals("Flinging forward didn't switch workspace to page #1",
-                        1, getCurrentWorkspacePage(launcher)));
+                launcher -> assertEquals("Flinging forward didn't switch workspace to next screen",
+                        workspace.pagesPerScreen(), getCurrentWorkspacePage(launcher)));
         assertTrue("Launcher internal state is not Home", isInState(() -> LauncherState.NORMAL));
 
         // Test starting a workspace app.
@@ -281,7 +273,7 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
     }
 
     private boolean isOptionsPopupVisible(Launcher launcher) {
-        final ArrowPopup popup = OptionsPopupView.getOptionsPopup(launcher);
+        final ArrowPopup<?> popup = launcher.getOptionsPopup();
         return popup != null && popup.isShown();
     }
 
@@ -363,6 +355,83 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
                     .launch(getAppPackageName());
         } finally {
             allApps.unfreeze();
+        }
+    }
+
+    private AppIcon createShortcutIfNotExist(String name) {
+        AppIcon appIcon = mLauncher.getWorkspace().tryGetWorkspaceAppIcon(name);
+        if (appIcon == null) {
+            AllApps allApps = mLauncher.getWorkspace().switchToAllApps();
+            allApps.freeze();
+            try {
+                appIcon = allApps.getAppIcon(name);
+                appIcon.dragToWorkspace(false, false);
+            } finally {
+                allApps.unfreeze();
+            }
+            appIcon = mLauncher.getWorkspace().getWorkspaceAppIcon(name);
+        }
+        return appIcon;
+    }
+
+    @Ignore("b/205014516")
+    @Test
+    @PortraitLandscape
+    public void testDragToFolder() throws Exception {
+        final AppIcon playStoreIcon = createShortcutIfNotExist("Play Store");
+        final AppIcon gmailIcon = createShortcutIfNotExist("Gmail");
+
+        FolderIcon folderIcon = gmailIcon.dragToIcon(playStoreIcon);
+
+        Folder folder = folderIcon.open();
+        folder.getAppIcon("Play Store");
+        folder.getAppIcon("Gmail");
+        Workspace workspace = folder.close();
+
+        assertNull("Gmail should be moved to a folder.",
+                workspace.tryGetWorkspaceAppIcon("Gmail"));
+        assertNull("Play Store should be moved to a folder.",
+                workspace.tryGetWorkspaceAppIcon("Play Store"));
+
+        final AppIcon youTubeIcon = createShortcutIfNotExist("YouTube");
+
+        folderIcon = youTubeIcon.dragToIcon(folderIcon);
+        folder = folderIcon.open();
+        folder.getAppIcon("YouTube");
+        folder.close();
+    }
+
+    @Ignore("b/205027405")
+    @Test
+    @PortraitLandscape
+    public void testPressBack() throws Exception {
+        mLauncher.getWorkspace().switchToAllApps();
+        mLauncher.pressBack();
+        mLauncher.getWorkspace();
+        waitForState("Launcher internal state didn't switch to Home", () -> LauncherState.NORMAL);
+
+        AllApps allApps = mLauncher.getWorkspace().switchToAllApps();
+        allApps.freeze();
+        try {
+            allApps.getAppIcon(APP_NAME).dragToWorkspace(false, false);
+        } finally {
+            allApps.unfreeze();
+        }
+        mLauncher.getWorkspace().getWorkspaceAppIcon(APP_NAME).launch(getAppPackageName());
+        mLauncher.pressBack();
+        mLauncher.getWorkspace();
+        waitForState("Launcher internal state didn't switch to Home", () -> LauncherState.NORMAL);
+    }
+
+    @Test
+    @PortraitLandscape
+    public void testDeleteFromWorkspace() throws Exception {
+        // test delete both built-in apps and user-installed app from workspace
+        for (String appName : new String[] {"Gmail", "Play Store", APP_NAME}) {
+            final AppIcon appIcon = createShortcutIfNotExist(appName);
+            Workspace workspace = mLauncher.getWorkspace().deleteAppIcon(appIcon);
+            assertNull(appName + " app was found after being deleted from workspace",
+                    workspace.tryGetWorkspaceAppIcon(appName));
         }
     }
 

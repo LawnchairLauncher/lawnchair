@@ -13,9 +13,54 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<com.android.launcher3.widget.picker.WidgetsRecyclerView
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/primary_widgets_list_view"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:clipToPadding="false" />
+<merge xmlns:android="http://schemas.android.com/apk/res/android">
+    <com.android.launcher3.widget.picker.WidgetsRecyclerView
+        android:id="@+id/primary_widgets_list_view"
+        android:layout_below="@id/collapse_handle"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingHorizontal="@dimen/widget_list_horizontal_margin"
+        android:clipToPadding="false" />
+
+    <!-- SearchAndRecommendationsView without the tab layout as well -->
+    <com.android.launcher3.widget.picker.SearchAndRecommendationsView
+        android:id="@+id/search_and_recommendations_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/widget_list_horizontal_margin"
+        android:layout_below="@id/collapse_handle"
+        android:paddingBottom="16dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:textSize="24sp"
+            android:layout_marginTop="24dp"
+            android:textColor="?android:attr/textColorSecondary"
+            android:text="@string/widget_button_text"/>
+
+        <FrameLayout
+            android:id="@+id/search_bar_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:elevation="0.1dp"
+            android:background="?android:attr/colorBackground"
+            android:paddingBottom="8dp"
+            android:clipToPadding="false">
+            <include layout="@layout/widgets_search_bar" />
+        </FrameLayout>
+
+        <com.android.launcher3.widget.picker.WidgetsRecommendationTableLayout
+            android:id="@+id/recommended_widget_table"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/widgets_recommendation_background"
+            android:paddingVertical="@dimen/recommended_widgets_table_vertical_padding"
+            android:visibility="gone" />
+    </com.android.launcher3.widget.picker.SearchAndRecommendationsView>
+
+</merge>

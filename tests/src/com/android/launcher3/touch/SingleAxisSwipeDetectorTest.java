@@ -30,6 +30,7 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
+import android.content.Context;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.ViewConfiguration;
@@ -58,6 +59,7 @@ public class SingleAxisSwipeDetectorTest {
     private TouchEventGenerator mGenerator;
     private SingleAxisSwipeDetector mDetector;
     private int mTouchSlop;
+    Context mContext;
 
     @Mock
     private SingleAxisSwipeDetector.Listener mMockListener;
@@ -69,12 +71,13 @@ public class SingleAxisSwipeDetectorTest {
     public void setup() {
         MockitoAnnotations.initMocks(this);
         mGenerator = new TouchEventGenerator((ev) -> mDetector.onTouchEvent(ev));
-        ViewConfiguration orgConfig = ViewConfiguration
-                .get(InstrumentationRegistry.getTargetContext());
+        mContext = InstrumentationRegistry.getTargetContext();
+        ViewConfiguration orgConfig = ViewConfiguration.get(mContext);
         doReturn(orgConfig.getScaledMaximumFlingVelocity()).when(mMockConfig)
                 .getScaledMaximumFlingVelocity();
 
-        mDetector = new SingleAxisSwipeDetector(mMockConfig, mMockListener, VERTICAL, false);
+        mDetector = new SingleAxisSwipeDetector(mContext,
+                mMockConfig, mMockListener, VERTICAL, false);
         mDetector.setDetectableScrollConditions(DIRECTION_BOTH, false);
         mTouchSlop = orgConfig.getScaledTouchSlop();
         doReturn(mTouchSlop).when(mMockConfig).getScaledTouchSlop();
@@ -84,7 +87,8 @@ public class SingleAxisSwipeDetectorTest {
 
     @Test
     public void testDragStart_verticalPositive() {
-        mDetector = new SingleAxisSwipeDetector(mMockConfig, mMockListener, VERTICAL, false);
+        mDetector = new SingleAxisSwipeDetector(mContext,
+                mMockConfig, mMockListener, VERTICAL, false);
         mDetector.setDetectableScrollConditions(DIRECTION_POSITIVE, false);
         mGenerator.put(0, 100, 100);
         mGenerator.move(0, 100, 100 - mTouchSlop);
@@ -94,7 +98,8 @@ public class SingleAxisSwipeDetectorTest {
 
     @Test
     public void testDragStart_verticalNegative() {
-        mDetector = new SingleAxisSwipeDetector(mMockConfig, mMockListener, VERTICAL, false);
+        mDetector = new SingleAxisSwipeDetector(mContext,
+                mMockConfig, mMockListener, VERTICAL, false);
         mDetector.setDetectableScrollConditions(DIRECTION_NEGATIVE, false);
         mGenerator.put(0, 100, 100);
         mGenerator.move(0, 100, 100 + mTouchSlop);
@@ -112,7 +117,8 @@ public class SingleAxisSwipeDetectorTest {
 
     @Test
     public void testDragStart_horizontalPositive() {
-        mDetector = new SingleAxisSwipeDetector(mMockConfig, mMockListener, HORIZONTAL, false);
+        mDetector = new SingleAxisSwipeDetector(mContext,
+                mMockConfig, mMockListener, HORIZONTAL, false);
         mDetector.setDetectableScrollConditions(DIRECTION_POSITIVE, false);
 
         mGenerator.put(0, 100, 100);
@@ -123,7 +129,8 @@ public class SingleAxisSwipeDetectorTest {
 
     @Test
     public void testDragStart_horizontalNegative() {
-        mDetector = new SingleAxisSwipeDetector(mMockConfig, mMockListener, HORIZONTAL, false);
+        mDetector = new SingleAxisSwipeDetector(mContext,
+                mMockConfig, mMockListener, HORIZONTAL, false);
         mDetector.setDetectableScrollConditions(DIRECTION_NEGATIVE, false);
 
         mGenerator.put(0, 100, 100);
@@ -134,7 +141,8 @@ public class SingleAxisSwipeDetectorTest {
 
     @Test
     public void testDragStart_horizontalRtlPositive() {
-        mDetector = new SingleAxisSwipeDetector(mMockConfig, mMockListener, HORIZONTAL, true);
+        mDetector = new SingleAxisSwipeDetector(mContext,
+                mMockConfig, mMockListener, HORIZONTAL, true);
         mDetector.setDetectableScrollConditions(DIRECTION_POSITIVE, false);
 
         mGenerator.put(0, 100, 100);
@@ -145,7 +153,8 @@ public class SingleAxisSwipeDetectorTest {
 
     @Test
     public void testDragStart_horizontalRtlNegative() {
-        mDetector = new SingleAxisSwipeDetector(mMockConfig, mMockListener, HORIZONTAL, true);
+        mDetector = new SingleAxisSwipeDetector(mContext,
+                mMockConfig, mMockListener, HORIZONTAL, true);
         mDetector.setDetectableScrollConditions(DIRECTION_NEGATIVE, false);
 
         mGenerator.put(0, 100, 100);

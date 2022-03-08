@@ -24,22 +24,21 @@ import static com.android.launcher3.LauncherState.SPRING_LOADED;
 
 import android.annotation.TargetApi;
 import android.content.Context;
-import android.content.res.Configuration;
 import android.os.Build;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.Surface;
-import android.widget.FrameLayout;
 
+import androidx.annotation.Nullable;
+
+import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.BaseQuickstepLauncher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.statehandlers.DepthController;
 import com.android.launcher3.statemanager.StateManager.StateListener;
-import com.android.launcher3.uioverrides.plugins.PluginManagerWrapper;
 import com.android.launcher3.util.SplitConfigurationOptions;
 import com.android.quickstep.LauncherActivityInterface;
-import com.android.systemui.plugins.PluginListener;
-import com.android.systemui.plugins.RecentsExtraCard;
+import com.android.quickstep.util.SplitSelectStateController;
 
 /**
  * {@link RecentsView} used in Launcher activity
@@ -48,40 +47,22 @@ import com.android.systemui.plugins.RecentsExtraCard;
 public class LauncherRecentsView extends RecentsView<BaseQuickstepLauncher, LauncherState>
         implements StateListener<LauncherState> {
 
-    private RecentsExtraCard mRecentsExtraCardPlugin;
-    private RecentsExtraViewContainer mRecentsExtraViewContainer;
-    private PluginListener<RecentsExtraCard> mRecentsExtraCardPluginListener =
-            new PluginListener<RecentsExtraCard>() {
-        @Override
-        public void onPluginConnected(RecentsExtraCard recentsExtraCard, Context context) {
-            createRecentsExtraCard();
-            mRecentsExtraCardPlugin = recentsExtraCard;
-            mRecentsExtraCardPlugin.setupView(context, mRecentsExtraViewContainer, mActivity);
-        }
-
-        @Override
-        public void onPluginDisconnected(RecentsExtraCard plugin) {
-            removeView(mRecentsExtraViewContainer);
-            mRecentsExtraCardPlugin = null;
-            mRecentsExtraViewContainer = null;
-        }
-    };
-
     public LauncherRecentsView(Context context) {
         this(context, null);
     }
 
-    public LauncherRecentsView(Context context, AttributeSet attrs) {
+    public LauncherRecentsView(Context context, @Nullable AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public LauncherRecentsView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public LauncherRecentsView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr, LauncherActivityInterface.INSTANCE);
         mActivity.getStateManager().addStateListener(this);
     }
 
     @Override
-    public void init(OverviewActionsView actionsView, SplitPlaceholderView splitPlaceholderView) {
+    public void init(OverviewActionsView actionsView,
+            SplitSelectStateController splitPlaceholderView) {
         super.init(actionsView, splitPlaceholderView);
         setContentAlpha(0);
     }
@@ -89,6 +70,7 @@ public class LauncherRecentsView extends RecentsView<BaseQuickstepLauncher, Laun
     @Override
     public void startHome() {
         mActivity.getStateManager().goToState(NORMAL);
+        AbstractFloatingView.closeAllOpenViews(mActivity, mActivity.isStarted());
     }
 
     @Override
@@ -123,8 +105,14 @@ public class LauncherRecentsView extends RecentsView<BaseQuickstepLauncher, Laun
             // Clean-up logic that occurs when recents is no longer in use/visible.
             reset();
         }
-        setOverlayEnabled(finalState == OVERVIEW || finalState == OVERVIEW_MODAL_TASK);
+        boolean isOverlayEnabled = finalState == OVERVIEW || finalState == OVERVIEW_MODAL_TASK;
+        setOverlayEnabled(isOverlayEnabled);
         setFreezeViewVisibility(false);
+
+        if (isOverlayEnabled) {
+            runActionOnRemoteHandles(remoteTargetHandle ->
+                    remoteTargetHandle.getTaskViewSimulator().setDrawsBelowRecents(true));
+        }
     }
 
     @Override
@@ -146,73 +134,6 @@ public class LauncherRecentsView extends RecentsView<BaseQuickstepLauncher, Laun
     }
 
     @Override
-    protected void onAttachedToWindow() {
-        super.onAttachedToWindow();
-        PluginManagerWrapper.INSTANCE.get(getContext()).addPluginListener(
-                mRecentsExtraCardPluginListener, RecentsExtraCard.class);
-    }
-
-    @Override
-    protected void onDetachedFromWindow() {
-        super.onDetachedFromWindow();
-        PluginManagerWrapper.INSTANCE.get(getContext()).removePluginListener(
-                mRecentsExtraCardPluginListener);
-    }
-
-    @Override
-    protected int computeMinScroll() {
-        if (canComputeScrollX() && !mIsRtl) {
-            return computeScrollX();
-        }
-        return super.computeMinScroll();
-    }
-
-    @Override
-    protected int computeMaxScroll() {
-        if (canComputeScrollX() && mIsRtl) {
-            return computeScrollX();
-        }
-        return super.computeMaxScroll();
-    }
-
-    private boolean canComputeScrollX() {
-        return mRecentsExtraCardPlugin != null && getTaskViewCount() > 0
-                && !mDisallowScrollToClearAll;
-    }
-
-    private int computeScrollX() {
-        int scrollIndex = getTaskViewStartIndex() - 1;
-        while (scrollIndex >= 0 && getChildAt(scrollIndex) instanceof RecentsExtraViewContainer
-                && ((RecentsExtraViewContainer) getChildAt(scrollIndex)).isScrollable()) {
-            scrollIndex--;
-        }
-        return getScrollForPage(scrollIndex + 1);
-    }
-
-    private void createRecentsExtraCard() {
-        mRecentsExtraViewContainer = new RecentsExtraViewContainer(getContext());
-        FrameLayout.LayoutParams helpCardParams =
-                new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT,
-                        FrameLayout.LayoutParams.MATCH_PARENT);
-        mRecentsExtraViewContainer.setLayoutParams(helpCardParams);
-        mRecentsExtraViewContainer.setScrollable(true);
-        addView(mRecentsExtraViewContainer, 0);
-    }
-
-    @Override
-    public boolean hasRecentsExtraCard() {
-        return mRecentsExtraViewContainer != null;
-    }
-
-    @Override
-    public void setContentAlpha(float alpha) {
-        super.setContentAlpha(alpha);
-        if (mRecentsExtraViewContainer != null) {
-            mRecentsExtraViewContainer.setAlpha(alpha);
-        }
-    }
-
-    @Override
     protected DepthController getDepthController() {
         return mActivity.getDepthController();
     }
@@ -225,6 +146,7 @@ public class LauncherRecentsView extends RecentsView<BaseQuickstepLauncher, Laun
         } else {
             if (mActivity.isInState(LauncherState.OVERVIEW_MODAL_TASK)) {
                 mActivity.getStateManager().goToState(LauncherState.OVERVIEW);
+                resetModalVisuals();
             }
         }
     }
@@ -242,19 +164,8 @@ public class LauncherRecentsView extends RecentsView<BaseQuickstepLauncher, Laun
 
     @Override
     public void initiateSplitSelect(TaskView taskView,
-            SplitConfigurationOptions.SplitPositionOption splitPositionOption) {
-        super.initiateSplitSelect(taskView, splitPositionOption);
+            @SplitConfigurationOptions.StagePosition int stagePosition) {
+        super.initiateSplitSelect(taskView, stagePosition);
         mActivity.getStateManager().goToState(LauncherState.OVERVIEW_SPLIT_SELECT);
-    }
-
-    @Override
-    protected void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        // If overview is in modal state when rotate, reset it to overview state without running
-        // animation.
-        if (mActivity.isInState(OVERVIEW_MODAL_TASK)) {
-            mActivity.getStateManager().goToState(LauncherState.OVERVIEW, false);
-            resetModalVisuals();
-        }
     }
 }

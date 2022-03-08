@@ -142,7 +142,7 @@ public class PreloadIconDrawable extends FastBitmapDrawable {
         mSystemBackgroundColor = preloadColors[PRELOAD_BACKGROUND_COLOR_INDEX];
         mIsDarkMode = isDarkMode;
 
-        setInternalProgress(info.getProgressLevel());
+        setLevel(info.getProgressLevel());
         setIsStartable(info.isAppStartable());
     }
 

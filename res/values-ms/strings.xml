@@ -32,10 +32,8 @@
     <string name="long_accessible_way_to_add" msgid="2733588281439571974">"Ketik dua kali &amp; tahan untuk menggerakkan widget atau menggunakan tindakan tersuai."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"Lebar %1$d kali tinggi %2$d"</string>
-    <string name="widget_preview_context_description" msgid="9045841361655787574">"Widget <xliff:g id="WIDGET_NAME">%1$s</xliff:g>"</string>
-    <string name="add_item_request_drag_hint" msgid="5653291305078645405">"Sentuh &amp; tahan widget untuk menggerakkan widget di sekitar Skrin utama"</string>
-    <string name="add_to_home_screen" msgid="8631549138215492708">"Tambahkan pada Skrin utama"</string>
-    <string name="added_to_home_screen_accessibility_text" msgid="4451545765448884415">"Widget <xliff:g id="WIDGET_NAME">%1$s</xliff:g> ditambahkan pada skrin utama"</string>
+    <string name="add_item_request_drag_hint" msgid="5899764264480397019">"Sentuh &amp; tahan untuk meletakkan widget/ikon secara manual"</string>
+    <string name="place_automatically" msgid="8064208734425456485">"Tambahkan secara automatik"</string>
     <plurals name="widgets_count" formatted="false" msgid="656794749266073027">
       <item quantity="other"><xliff:g id="WIDGETS_COUNT_1">%1$d</xliff:g> widget</item>
       <item quantity="one"><xliff:g id="WIDGETS_COUNT_0">%1$d</xliff:g> widget</item>
@@ -48,16 +46,11 @@
     <string name="widget_button_text" msgid="2880537293434387943">"Widget"</string>
     <string name="widgets_full_sheet_search_bar_hint" msgid="8484659090860596457">"Cari"</string>
     <string name="widgets_full_sheet_cancel_button_description" msgid="5766167035728653605">"Kosongkan teks daripada kotak carian"</string>
-    <string name="no_widgets_available" msgid="4337693382501046170">"Widget dan pintasan tidak tersedia"</string>
-    <string name="no_search_results" msgid="3787956167293097509">"Tiada widget atau pintasan yang dijumpai"</string>
+    <string name="no_widgets_available" msgid="9140948620298620513">"Widget tidak tersedia"</string>
+    <string name="no_search_results" msgid="6518732304311458580">"Tiada hasil carian"</string>
     <string name="widgets_full_sheet_personal_tab" msgid="2743540105607120182">"Peribadi"</string>
     <string name="widgets_full_sheet_work_tab" msgid="3767150027110633765">"Tempat kerja"</string>
     <string name="widget_category_conversations" msgid="8894438636213590446">"Perbualan"</string>
-    <string name="widget_education_header" msgid="4874760613775913787">"Maklumat berguna di hujung jari anda"</string>
-    <string name="widget_education_content" msgid="745542879510751525">"Untuk mendapatkan maklumat tanpa membuka apl, anda boleh menambahkan widget pada skrin Utama anda"</string>
-    <string name="reconfigurable_widget_education_tip" msgid="6336962690888067057">"Ketik untuk menukar tetapan widget"</string>
-    <string name="widget_education_close_button" msgid="8676165703104836580">"OK"</string>
-    <string name="widget_reconfigure_button_content_description" msgid="8811472721881205250">"Tukar tetapan widget"</string>
     <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"Cari apl"</string>
     <string name="all_apps_loading_message" msgid="5813968043155271636">"Memuatkan apl…"</string>
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"Tiada apl yang ditemui sepadan dengan \"<xliff:g id="QUERY">%1$s</xliff:g>\""</string>
@@ -66,10 +59,9 @@
     <string name="notifications_header" msgid="1404149926117359025">"Pemberitahuan"</string>
     <string name="long_press_shortcut_to_add" msgid="5405328730817637737">"Sentuh &amp; tahan untuk menggerakkan pintasan."</string>
     <string name="long_accessible_way_to_add_shortcut" msgid="2199537273817090740">"Ketik dua kali &amp; tahan untuk menggerakkan pintasan atau menggunakan tindakan tersuai."</string>
-    <string name="out_of_space" msgid="6692471482459245734">"Tiada ruang di skrin Utama ini"</string>
+    <string name="out_of_space" msgid="4691004494942118364">"Tiada lagi ruang pada skrin Laman Utama ini."</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"Tiada ruang dalam dulang Kegemaran lagi"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"Senarai apl"</string>
-    <string name="all_apps_search_results" msgid="5889367432531296759">"Hasil carian"</string>
     <string name="all_apps_button_personal_label" msgid="1315764287305224468">"Senarai apl peribadi"</string>
     <string name="all_apps_button_work_label" msgid="7270707118948892488">"Senarai apl kerja"</string>
     <string name="remove_drop_target_label" msgid="7812859488053230776">"Alih keluar"</string>
@@ -85,9 +77,8 @@
     <string name="permlab_write_settings" msgid="3574213698004620587">"tulis tetapan dan pintasan Laman Utama"</string>
     <string name="permdesc_write_settings" msgid="5440712911516509985">"Membenarkan apl menukar tetapan dan pintasan di Laman Utama."</string>
     <string name="msg_no_phone_permission" msgid="9208659281529857371">"<xliff:g id="APP_NAME">%1$s</xliff:g> tidak dibenarkan membuat panggilan telefon"</string>
-    <string name="gadget_error_text" msgid="740356548025791839">"Tidak dapat memuatkan widget"</string>
-    <string name="gadget_setup_text" msgid="8348374825537681407">"Tetapan widget"</string>
-    <string name="gadget_complete_setup_text" msgid="309040266978007925">"Ketik untuk menyelesaikan persediaan"</string>
+    <string name="gadget_error_text" msgid="6081085226050792095">"Masalah memuatkan widget"</string>
+    <string name="gadget_setup_text" msgid="8274003207686040488">"Persediaan"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"Ini ialah apl sistem dan tidak boleh dinyahpasang."</string>
     <string name="folder_hint_text" msgid="5174843001373488816">"Edit Nama"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"<xliff:g id="APP_NAME">%1$s</xliff:g> dilumpuhkan"</string>
@@ -106,7 +97,7 @@
     <string name="folder_name_format_exact" msgid="8626242716117004803">"Folder: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> item"</string>
     <string name="folder_name_format_overflow" msgid="4270108890534995199">"Folder: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> atau lebih banyak item"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"Kertas dinding"</string>
-    <string name="styles_wallpaper_button_text" msgid="8216961355289236794">"Kertas dinding &amp; gaya"</string>
+    <string name="styles_wallpaper_button_text" msgid="4342122323125579619">"Gaya &amp; kertas dinding"</string>
     <string name="settings_button_text" msgid="8873672322605444408">"Tetapan laman utama"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"Dilumpuhkan oleh pentadbir anda"</string>
     <string name="allow_rotation_title" msgid="7728578836261442095">"Benarkan putaran Skrin Utama"</string>
@@ -160,15 +151,18 @@
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"Peribadi"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"Kerja"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"Profil kerja"</string>
-    <string name="work_profile_edu_work_apps" msgid="7895468576497746520">"Apl kerja mempunyai lencana dan kelihatan kepada pentadbir IT anda"</string>
+    <string name="work_profile_edu_personal_apps" msgid="4155536355149317441">"Data peribadi adalah berasingan &amp; disembunyikan daripada apl kerja"</string>
+    <string name="work_profile_edu_work_apps" msgid="237051938268703058">"Apl &amp; data kerja kelihatan kepada pentadbir IT anda"</string>
+    <string name="work_profile_edu_next" msgid="8783418929296503629">"Seterusnya"</string>
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"OK"</string>
-    <string name="work_apps_paused_title" msgid="3040901117349444598">"Apl kerja dijeda"</string>
-    <string name="work_apps_paused_body" msgid="261634750995824906">"Apl kerja anda tidak boleh menghantar pemberitahuan kepada anda, menggunakan bateri anda atau mengakses lokasi anda"</string>
-    <string name="work_apps_paused_content_description" msgid="5149623040804051095">"Apl kerja dimatikan. Apl kerja anda tidak boleh menghantar pemberitahuan kepada anda, menggunakan bateri anda atau mengakses lokasi anda"</string>
+    <string name="work_apps_paused_title" msgid="2389865654362803723">"Profil kerja dijeda"</string>
+    <string name="work_apps_paused_body" msgid="4209084728264328628">"Apl kerja tidak boleh menghantar pemberitahuan kepada anda, menggunakan bateri anda atau mengakses lokasi anda"</string>
+    <string name="work_apps_paused_content_description" msgid="4473292417145736203">"Profil kerja dijeda. Apl kerja tidak boleh menghantar pemberitahuan kepada anda, menggunakan bateri anda atau mengakses lokasi anda"</string>
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"Apl kerja mempunyai lencana dan kelihatan kepada pentadbir IT anda"</string>
     <string name="work_apps_paused_edu_accept" msgid="6377476824357318532">"OK"</string>
-    <string name="work_apps_pause_btn_text" msgid="1921059713673767460">"Matikan apl kerja"</string>
-    <string name="work_apps_enable_btn_text" msgid="1156432622148413741">"Hidupkan apl kerja"</string>
+    <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"Jeda apl kerja"</string>
+    <string name="work_apps_enable_btn_text" msgid="82111102541971856">"Hidupkan"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"Tapis"</string>
+    <string name="work_switch_tip" msgid="808075064383839144">"Jeda apl kerja dan pemberitahuan"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"Gagal: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
 </resources>

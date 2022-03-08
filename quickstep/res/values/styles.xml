@@ -115,7 +115,7 @@
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:enforceNavigationBarContrast">false</item>
         <item name="android:windowLightStatusBar">true</item>
-        <item name="android:windowBackground">#FFFFFFFF</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
     </style>
 
     <!--
@@ -135,8 +135,39 @@
         <item name="android:textAllCaps">false</item>
     </style>
 
+    <style name="OverviewClearAllButton" parent="@android:style/Widget.DeviceDefault.Button">
+        <item name="android:background">@drawable/bg_overview_clear_all_button</item>
+        <item name="android:minWidth">96dp</item>
+        <item name="android:minHeight">48dp</item>
+        <item name="android:stateListAnimator">@null</item>
+    </style>
+
     <!-- Icon displayed on the taskbar -->
     <style name="BaseIcon.Workspace.Taskbar" >
         <item name="iconDisplay">taskbar</item>
+    </style>
+
+    <style name="TaskbarEdu.Button.Close" parent="@android:style/Widget.Material.Button">
+        <item name="android:background">@drawable/button_taskbar_edu_bordered</item>
+        <item name="android:stateListAnimator">@null</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:padding">4dp</item>
+    </style>
+
+    <style name="TaskbarEdu.Button.Next" parent="@android:style/Widget.Material.Button">
+        <item name="android:background">@drawable/button_taskbar_edu_colored</item>
+        <item name="android:stateListAnimator">@null</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:padding">4dp</item>
+    </style>
+
+    <style name="TextAppearance.TaskbarEdu.Title"
+        parent="@android:style/TextAppearance.DeviceDefault.DialogWindowTitle" >
+        <item name="android:layout_marginHorizontal">16dp</item>
+        <item name="android:gravity">center_horizontal</item>
+        <item name="android:fontFamily">google-sans</item>
+        <item name="android:textColor">?android:attr/textColorPrimary</item>
+        <item name="android:textSize">24sp</item>
+        <item name="android:lines">2</item>
     </style>
 </resources>

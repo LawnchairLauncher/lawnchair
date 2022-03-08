@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
 /*
 * Copyright (C) 2008 The Android Open Source Project
 *
@@ -41,9 +40,10 @@
     <!-- Options for recent tasks -->
     <!-- Title for an option to enter split screen mode for a given app -->
     <string name="recent_task_option_split_screen">Split screen</string>
-    <string translatable="false" name="split_screen_position_top">Pin to top</string>
-    <string translatable="false" name="split_screen_position_left">Pin to left</string>
-    <string translatable="false" name="split_screen_position_right">Pin to right</string>
+    <string name="split_screen_position_top">Split top</string>
+    <string name="split_screen_position_left">Split left</string>
+    <string name="split_screen_position_right">Split right</string>
+    <string name="split_app_info_accessibility">App info for %1$s</string>
 
     <!-- Widgets -->
     <!-- Message to tell the user to press and hold on a widget to add it [CHAR_LIMIT=50] -->
@@ -67,17 +67,15 @@
          button in a dialog. [CHAR_LIMIT=none] -->
     <string name="added_to_home_screen_accessibility_text"><xliff:g id="widget_name" example="Calendar month view">%1$s</xliff:g> widget added to home screen</string>
     <!-- Label for showing the number of widgets an app has in the full widgets picker.
-         [CHAR_LIMIT=25] -->
-    <plurals name="widgets_count">
-        <item quantity="one"><xliff:g id="widgets_count" example="1">%1$d</xliff:g> widget</item>
-        <item quantity="other"><xliff:g id="widgets_count" example="2">%1$d</xliff:g> widgets</item>
-    </plurals>
+         [CHAR_LIMIT=25][ICU SYNTAX] -->
+    <string name="widgets_count">
+        {count, plural, =1{# widget} other{# widgets}}
+    </string>
     <!-- Label for showing the number of shortcut an app has in the full widgets picker.
-         [CHAR_LIMIT=25] -->
-    <plurals name="shortcuts_count">
-        <item quantity="one"><xliff:g id="shortcuts_count" example="1">%1$d</xliff:g> shortcut</item>
-        <item quantity="other"><xliff:g id="shortcuts_count" example="2">%1$d</xliff:g> shortcuts</item>
-    </plurals>
+         [CHAR_LIMIT=25][ICU SYNTAX] -->
+    <string name="shortcuts_count">
+        {count, plural, =1{# shortcut} other{# shortcuts}}
+    </string>
     <!-- Label for showing both the number of widgets and shortcuts an app has in the full widgets
          picker. [CHAR_LIMIT=50] -->
     <string name="widgets_and_shortcuts_count"><xliff:g id="widgets_count" example="5 widgets">%1$s</xliff:g>, <xliff:g id="shortcuts_count" example="1 shortcut">%2$s</xliff:g></string>
@@ -134,6 +132,8 @@
     <string name="all_apps_search_market_message">Search for more apps</string>
     <!-- Label for an icon representing any generic app. [CHAR_LIMIT=50] -->
     <string name="label_application">App</string>
+    <!-- Label for the header text of the All Apps section in All Apps view, used to separate Predicted Apps and Actions section from All Apps section. [CHAR_LIMIT=50] -->
+    <string name="all_apps_label">All apps</string>
 
     <!-- Popup items -->
     <!-- Text to display as the header above notifications. [CHAR_LIMIT=30] -->
@@ -195,7 +195,7 @@
     <string name="msg_no_phone_permission"><xliff:g id="app_name" example="Launcher3">%1$s</xliff:g> is not allowed to make phone calls</string>
 
     <!-- Widgets: -->
-    <skip />    
+    <skip />
 
     <!-- Error text that lets a user know that the widget can't load. -->
     <string name="gadget_error_text">Can\'t load widget</string>
@@ -215,11 +215,13 @@
     <!-- Accessibility -->
     <!-- The format string for when an app is temporarily disabled. -->
     <string name="disabled_app_label">Disabled <xliff:g id="app_name" example="Messenger">%1$s</xliff:g></string>
-    <!-- The format string for when an app has a notification dot (meaning it has associated notifications). -->
-    <plurals name="dotted_app_label">
-        <item quantity="one"><xliff:g id="app_name" example="Messenger">%1$s</xliff:g>, has <xliff:g id="notification_count" example="1">%2$d</xliff:g> notification</item>
-        <item quantity="other"><xliff:g id="app_name" example="Messenger">%1$s</xliff:g>, has <xliff:g id="notification_count" example="3">%2$d</xliff:g> notifications</item>
-    </plurals>
+    <!-- The format string for when an app has a notification dot (meaning it has associated notifications). [ICU_FORMAT]-->
+    <string name="dotted_app_label">
+        {count, plural, offset:1
+            =1      {{app_name} has # notification}
+            other   {{app_name} has # notifications}
+        }
+    </string>
     <skip />
 
     <!-- The format string for default page scroll text [CHAR_LIMIT=none] -->
@@ -250,7 +252,7 @@
     <string name="wallpaper_button_text">Wallpapers</string>
     <!-- Text for wallpaper change button [CHAR LIMIT=30]-->
     <string name="styles_wallpaper_button_text">Wallpaper &amp; style</string>
-    <!-- Text for settings button [CHAR LIMIT=30]-->
+    <!-- Text for settings button [CHAR LIMIT=20]-->
     <string name="settings_button_text">Home settings</string>
     <!-- Message shown when a feature is disabled by the administrator -->
     <string name="msg_disabled_by_admin">Disabled by your admin</string>
@@ -308,7 +310,7 @@
     <!-- Text announced by accessibility when the popup containing the list of widgets is closed. [CHAR_LIMIT=100] -->
     <string name="widgets_list_closed">Widgets list closed</string>
 
-<!-- Strings for accessibility actions -->
+    <!-- Strings for accessibility actions -->
     <!-- Accessibility action to add an app to workspace. [CHAR_LIMIT=30] -->
     <string name="action_add_to_workspace">Add to Home screen</string>
 

@@ -41,7 +41,7 @@ import static com.android.launcher3.states.StateAnimationConfig.SKIP_SCRIM;
 import static com.android.launcher3.touch.BothAxesSwipeDetector.DIRECTION_RIGHT;
 import static com.android.launcher3.touch.BothAxesSwipeDetector.DIRECTION_UP;
 import static com.android.launcher3.util.DisplayController.getSingleFrameMs;
-import static com.android.launcher3.util.VibratorWrapper.OVERVIEW_HAPTIC;
+import static com.android.quickstep.util.VibratorWrapper.OVERVIEW_HAPTIC;
 import static com.android.quickstep.views.RecentsView.ADJACENT_PAGE_HORIZONTAL_OFFSET;
 import static com.android.quickstep.views.RecentsView.CONTENT_ALPHA;
 import static com.android.quickstep.views.RecentsView.FULLSCREEN_PROGRESS;
@@ -67,14 +67,15 @@ import com.android.launcher3.states.StateAnimationConfig;
 import com.android.launcher3.touch.BaseSwipeDetector;
 import com.android.launcher3.touch.BothAxesSwipeDetector;
 import com.android.launcher3.util.TouchController;
-import com.android.launcher3.util.VibratorWrapper;
 import com.android.quickstep.AnimatedFloat;
 import com.android.quickstep.SystemUiProxy;
 import com.android.quickstep.util.AnimatorControllerWithResistance;
 import com.android.quickstep.util.LayoutUtils;
 import com.android.quickstep.util.MotionPauseDetector;
+import com.android.quickstep.util.VibratorWrapper;
 import com.android.quickstep.util.WorkspaceRevealAnim;
 import com.android.quickstep.views.LauncherRecentsView;
+import com.android.quickstep.views.RecentsView;
 
 /**
  * Handles quick switching to a recent task from the home screen. To give as much flexibility to
@@ -235,8 +236,10 @@ public class NoButtonQuickSwitchTouchController implements TouchController,
         //   - RecentsView fade (if it's empty)
         PendingAnimation xAnim = new PendingAnimation((long) (mXRange * 2));
         xAnim.setFloat(mRecentsView, ADJACENT_PAGE_HORIZONTAL_OFFSET, scaleAndOffset[1], LINEAR);
+        // Use QuickSwitchState instead of OverviewState to determine scrim color,
+        // since we need to take potential taskbar into account.
         xAnim.setViewBackgroundColor(mLauncher.getScrimView(),
-                toState.getWorkspaceScrimColor(mLauncher), LINEAR);
+                QUICK_SWITCH.getWorkspaceScrimColor(mLauncher), LINEAR);
         if (mRecentsView.getTaskViewCount() == 0) {
             xAnim.addFloat(mRecentsView, CONTENT_ALPHA, 0f, 1f, LINEAR);
         }
@@ -309,6 +312,11 @@ public class NoButtonQuickSwitchTouchController implements TouchController,
                 }
             });
             overviewAnim.start();
+
+            // Create an empty state transition so StateListeners get onStateTransitionStart().
+            mLauncher.getStateManager().createAnimationToNewWorkspace(
+                    OVERVIEW, config.duration, StateAnimationConfig.SKIP_ALL_ANIMATIONS)
+                    .dispatchOnStart();
             return;
         }
 
@@ -383,6 +391,7 @@ public class NoButtonQuickSwitchTouchController implements TouchController,
             config.animFlags = SKIP_ALL_ANIMATIONS;
             updateNonOverviewAnim(targetState, config);
             nonOverviewAnim = mNonOverviewAnim.getAnimationPlayer();
+            mNonOverviewAnim.dispatchOnStart();
 
             new WorkspaceRevealAnim(mLauncher, false /* animateOverviewScrim */).start();
         } else {
@@ -397,6 +406,14 @@ public class NoButtonQuickSwitchTouchController implements TouchController,
             float endProgress = canceled ? 0 : 1;
             nonOverviewAnim.setFloatValues(startProgress, endProgress);
             mNonOverviewAnim.dispatchOnStart();
+        }
+        if (targetState == QUICK_SWITCH) {
+            // Navigating to quick switch, add scroll feedback since the first time is not
+            // considered a scroll by the RecentsView.
+            VibratorWrapper.INSTANCE.get(mLauncher).vibrate(
+                    RecentsView.SCROLL_VIBRATION_PRIMITIVE,
+                    RecentsView.SCROLL_VIBRATION_PRIMITIVE_SCALE,
+                    RecentsView.SCROLL_VIBRATION_FALLBACK);
         }
 
         nonOverviewAnim.setDuration(Math.max(xDuration, yDuration));

@@ -18,12 +18,14 @@ import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.model.WidgetItem;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.util.InstantAppResolver;
 import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.util.PackageUserKey;
+import com.android.launcher3.views.ActivityContext;
 import com.android.launcher3.widget.WidgetsBottomSheet;
 
 import java.util.List;
@@ -35,12 +37,12 @@ import java.util.List;
  * Example system shortcuts, defined as inner classes, include Widgets and AppInfo.
  * @param <T>
  */
-public abstract class SystemShortcut<T extends BaseDraggingActivity> extends ItemInfo
+public abstract class SystemShortcut<T extends Context & ActivityContext> extends ItemInfo
         implements View.OnClickListener {
 
     private final int mIconResId;
-    private final int mLabelResId;
-    private final int mAccessibilityActionId;
+    protected final int mLabelResId;
+    protected int mAccessibilityActionId;
 
     protected final T mTarget;
     protected final ItemInfo mItemInfo;
@@ -49,8 +51,6 @@ public abstract class SystemShortcut<T extends BaseDraggingActivity> extends Ite
      * Indicates if it's invokable or not through some disabled UI
      */
     private boolean isEnabled = true;
-
-    private boolean mHasFinishRecentsInAction = false;
 
     public SystemShortcut(int iconResId, int labelResId, T target, ItemInfo itemInfo) {
         mIconResId = iconResId;
@@ -102,15 +102,7 @@ public abstract class SystemShortcut<T extends BaseDraggingActivity> extends Ite
         return mAccessibilityActionId == action;
     }
 
-    public void setHasFinishRecentsInAction(boolean hasFinishRecentsInAction) {
-        mHasFinishRecentsInAction = hasFinishRecentsInAction;
-    }
-
-    public boolean hasFinishRecentsInAction() {
-        return mHasFinishRecentsInAction;
-    }
-
-    public interface Factory<T extends BaseDraggingActivity> {
+    public interface Factory<T extends Context & ActivityContext> {
 
         @Nullable SystemShortcut<T> getShortcut(T activity, ItemInfo itemInfo);
     }
@@ -145,21 +137,66 @@ public abstract class SystemShortcut<T extends BaseDraggingActivity> extends Ite
 
     public static final Factory<BaseDraggingActivity> APP_INFO = AppInfo::new;
 
-    public static class AppInfo extends SystemShortcut {
+    public static class AppInfo<T extends Context & ActivityContext> extends SystemShortcut<T> {
 
-        public AppInfo(BaseDraggingActivity target, ItemInfo itemInfo) {
+        @Nullable
+        private SplitAccessibilityInfo mSplitA11yInfo;
+
+        public AppInfo(T target, ItemInfo itemInfo) {
             super(R.drawable.ic_info_no_shadow, R.string.app_info_drop_target_label, target,
                     itemInfo);
+        }
+
+        /**
+         * Constructor used by overview for staged split to provide custom A11y information.
+         *
+         * Future improvements considerations:
+         * Have the logic in {@link #createAccessibilityAction(Context)} be moved to super
+         * call in {@link SystemShortcut#createAccessibilityAction(Context)} by having
+         * SystemShortcut be aware of TaskContainers and staged split.
+         * That way it could directly create the correct node info for any shortcut that supports
+         * split, but then we'll need custom resIDs for each pair of shortcuts.
+         */
+        public AppInfo(T target, ItemInfo itemInfo, SplitAccessibilityInfo accessibilityInfo) {
+            this(target, itemInfo);
+            mSplitA11yInfo = accessibilityInfo;
+            mAccessibilityActionId = accessibilityInfo.nodeId;
+        }
+
+        @Override
+        public AccessibilityNodeInfo.AccessibilityAction createAccessibilityAction(
+                Context context) {
+            if (mSplitA11yInfo != null && mSplitA11yInfo.containsMultipleTasks) {
+                String accessibilityLabel = context.getString(R.string.split_app_info_accessibility,
+                        mSplitA11yInfo.taskTitle);
+                return new AccessibilityNodeInfo.AccessibilityAction(mAccessibilityActionId,
+                        accessibilityLabel);
+            } else {
+                return super.createAccessibilityAction(context);
+            }
         }
 
         @Override
         public void onClick(View view) {
             dismissTaskMenuView(mTarget);
-            Rect sourceBounds = mTarget.getViewBounds(view);
+            Rect sourceBounds = Utilities.getViewBounds(view);
             new PackageManagerHelper(mTarget).startDetailsActivityForInfo(
                     mItemInfo, sourceBounds, ActivityOptions.makeBasic().toBundle());
             mTarget.getStatsLogManager().logger().withItemInfo(mItemInfo)
                     .log(LAUNCHER_SYSTEM_SHORTCUT_APP_INFO_TAP);
+        }
+
+        public static class SplitAccessibilityInfo {
+            public final boolean containsMultipleTasks;
+            public final CharSequence taskTitle;
+            public final int nodeId;
+
+            public SplitAccessibilityInfo(boolean containsMultipleTasks,
+                    CharSequence taskTitle, int nodeId) {
+                this.containsMultipleTasks = containsMultipleTasks;
+                this.taskTitle = taskTitle;
+                this.nodeId = nodeId;
+            }
         }
     }
 
@@ -180,7 +217,7 @@ public abstract class SystemShortcut<T extends BaseDraggingActivity> extends Ite
         return new Install(activity, itemInfo);
     };
 
-    public static class Install extends SystemShortcut {
+    public static class Install extends SystemShortcut<BaseDraggingActivity> {
 
         public Install(BaseDraggingActivity target, ItemInfo itemInfo) {
             super(R.drawable.ic_install_no_shadow, R.string.install_drop_target_label,
@@ -196,7 +233,7 @@ public abstract class SystemShortcut<T extends BaseDraggingActivity> extends Ite
         }
     }
 
-    public static void dismissTaskMenuView(BaseDraggingActivity activity) {
+    public static <T extends Context & ActivityContext> void dismissTaskMenuView(T activity) {
         AbstractFloatingView.closeOpenViews(activity, true,
             AbstractFloatingView.TYPE_ALL & ~AbstractFloatingView.TYPE_REBIND_SAFE);
     }

@@ -32,10 +32,8 @@
     <string name="long_accessible_way_to_add" msgid="2733588281439571974">"ចុចពីរដង រួចសង្កត់ឱ្យជាប់ ដើម្បីផ្លាស់ទី​ធាតុក្រាហ្វិក ឬប្រើ​សកម្មភាព​តាមបំណង​។"</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"ទទឺង %1$d គុណនឹងកម្ពស់ %2$d"</string>
-    <string name="widget_preview_context_description" msgid="9045841361655787574">"ធាតុ​ក្រាហ្វិក <xliff:g id="WIDGET_NAME">%1$s</xliff:g>"</string>
-    <string name="add_item_request_drag_hint" msgid="5653291305078645405">"ចុចធាតុក្រាហ្វិក​ឱ្យជាប់ ដើម្បីផ្លាស់ទីវា​ជុំវិញអេក្រង់ដើម"</string>
-    <string name="add_to_home_screen" msgid="8631549138215492708">"បញ្ចូល​ទៅអេក្រង់ដើម"</string>
-    <string name="added_to_home_screen_accessibility_text" msgid="4451545765448884415">"បានបញ្ចូល​ធាតុក្រាហ្វិក <xliff:g id="WIDGET_NAME">%1$s</xliff:g> ទៅ​អេក្រង់ដើម"</string>
+    <string name="add_item_request_drag_hint" msgid="5899764264480397019">"ចុច​ឲ្យជាប់​ដើម្បី​បញ្ចូលវា​ដោយផ្ទាល់"</string>
+    <string name="place_automatically" msgid="8064208734425456485">"បញ្ចូល​ដោយ​ស្វ័យ​ប្រវត្តិ"</string>
     <plurals name="widgets_count" formatted="false" msgid="656794749266073027">
       <item quantity="other">ធាតុ​ក្រាហ្វិក <xliff:g id="WIDGETS_COUNT_1">%1$d</xliff:g></item>
       <item quantity="one">ធាតុ​ក្រាហ្វិក <xliff:g id="WIDGETS_COUNT_0">%1$d</xliff:g></item>
@@ -48,16 +46,11 @@
     <string name="widget_button_text" msgid="2880537293434387943">"ធាតុ​ក្រាហ្វិក"</string>
     <string name="widgets_full_sheet_search_bar_hint" msgid="8484659090860596457">"ស្វែងរក"</string>
     <string name="widgets_full_sheet_cancel_button_description" msgid="5766167035728653605">"សម្អាត​ពាក្យឬឃ្លា​ចេញពី​ប្រអប់ស្វែងរក"</string>
-    <string name="no_widgets_available" msgid="4337693382501046170">"មិនមាន​ធាតុក្រាហ្វិក និងផ្លូវកាត់​បានទេ"</string>
-    <string name="no_search_results" msgid="3787956167293097509">"រកមិនឃើញ​ធាតុក្រាហ្វិក ឬផ្លូវកាត់​ទេ"</string>
+    <string name="no_widgets_available" msgid="9140948620298620513">"គ្មាន​ធាតុក្រាហ្វិក​ទេ"</string>
+    <string name="no_search_results" msgid="6518732304311458580">"គ្មាន​លទ្ធផល​ស្វែងរក​ទេ"</string>
     <string name="widgets_full_sheet_personal_tab" msgid="2743540105607120182">"ផ្ទាល់ខ្លួន"</string>
     <string name="widgets_full_sheet_work_tab" msgid="3767150027110633765">"ការងារ"</string>
     <string name="widget_category_conversations" msgid="8894438636213590446">"ការសន្ទនា"</string>
-    <string name="widget_education_header" msgid="4874760613775913787">"ទទួលបាន​ព័ត៌មានដែលមានប្រយោជន៍​យ៉ាងងាយស្រួល"</string>
-    <string name="widget_education_content" msgid="745542879510751525">"ដើម្បីទទួលបាន​ព័ត៌មាន​ដោយមិនចាំបាច់​បើកកម្មវិធី អ្នកអាចបញ្ចូលធាតុ​ក្រាហ្វិកទៅក្នុង​អេក្រង់ដើម​របស់អ្នក"</string>
-    <string name="reconfigurable_widget_education_tip" msgid="6336962690888067057">"ចុចដើម្បីប្ដូរការកំណត់ធាតុ​ក្រាហ្វិក"</string>
-    <string name="widget_education_close_button" msgid="8676165703104836580">"យល់ហើយ"</string>
-    <string name="widget_reconfigure_button_content_description" msgid="8811472721881205250">"ប្ដូរការកំណត់ធាតុ​ក្រាហ្វិក"</string>
     <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"ស្វែងរក​កម្មវិធី"</string>
     <string name="all_apps_loading_message" msgid="5813968043155271636">"កំពុងផ្ទុកកម្មវិធី…"</string>
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"រកមិនឃើញកម្មវិធី​ដែលត្រូវគ្នាជាមួយ \"<xliff:g id="QUERY">%1$s</xliff:g>\" ទេ"</string>
@@ -66,10 +59,9 @@
     <string name="notifications_header" msgid="1404149926117359025">"ការ​ជូនដំណឹង"</string>
     <string name="long_press_shortcut_to_add" msgid="5405328730817637737">"ចុចឱ្យជាប់​ដើម្បីផ្លាស់ទី​ផ្លូវកាត់​។"</string>
     <string name="long_accessible_way_to_add_shortcut" msgid="2199537273817090740">"ចុចពីរដង រួចសង្កត់ឱ្យជាប់ ដើម្បីផ្លាស់ទី​ផ្លូវកាត់ ឬប្រើ​សកម្មភាព​តាមបំណង​។"</string>
-    <string name="out_of_space" msgid="6692471482459245734">"គ្មានកន្លែង​នៅលើ​អេក្រង់ដើមនេះទេ"</string>
+    <string name="out_of_space" msgid="4691004494942118364">"គ្មាន​បន្ទប់​នៅ​លើ​អេក្រង់​ដើម​នេះ​ទៀត​ទេ។"</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"គ្មាន​បន្ទប់​​ក្នុង​ថាស​និយម​ប្រើ"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"បញ្ជីកម្មវិធី"</string>
-    <string name="all_apps_search_results" msgid="5889367432531296759">"លទ្ធផលស្វែងរក"</string>
     <string name="all_apps_button_personal_label" msgid="1315764287305224468">"បញ្ជី​កម្មវិធី​ផ្ទាល់ខ្លួន"</string>
     <string name="all_apps_button_work_label" msgid="7270707118948892488">"បញ្ជី​កម្មវិធី​ការងារ"</string>
     <string name="remove_drop_target_label" msgid="7812859488053230776">"យកចេញ"</string>
@@ -85,9 +77,8 @@
     <string name="permlab_write_settings" msgid="3574213698004620587">"សរសេរ​ការ​កំណត់ ​និង​ផ្លូវកាត់​​លើ​អេក្រង់​ដើម"</string>
     <string name="permdesc_write_settings" msgid="5440712911516509985">"អនុញ្ញាត​ឲ្យ​កម្មវិធី​ប្ដូរ​ការ​កំណត់ និង​ផ្លូវ​កាត់​ក្នុង​អេក្រង់​ដើម។"</string>
     <string name="msg_no_phone_permission" msgid="9208659281529857371">"<xliff:g id="APP_NAME">%1$s</xliff:g> មិនត្រូវបានអនុញ្ញាតឲ្យធ្វើការហៅទូរស័ព្ទទេ"</string>
-    <string name="gadget_error_text" msgid="740356548025791839">"មិនអាចផ្ទុក​ធាតុក្រាហ្វិក​បានទេ"</string>
-    <string name="gadget_setup_text" msgid="8348374825537681407">"ការកំណត់​ធាតុក្រាហ្វិក"</string>
-    <string name="gadget_complete_setup_text" msgid="309040266978007925">"ចុច​ដើម្បី​បញ្ចប់​ការរៀបចំ"</string>
+    <string name="gadget_error_text" msgid="6081085226050792095">"បញ្ហា​ក្នុង​ការ​ផ្ទុក​ធាតុ​​ក្រាហ្វិក"</string>
+    <string name="gadget_setup_text" msgid="8274003207686040488">"រៀបចំ"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"នេះ​​​ជា​កម្មវិធី​ប្រព័ន្ធ មិន​អាច​លុប​បាន​ទេ។"</string>
     <string name="folder_hint_text" msgid="5174843001373488816">"កែ​ឈ្មោះ"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"បានបិទដំណើរការ <xliff:g id="APP_NAME">%1$s</xliff:g>"</string>
@@ -106,7 +97,7 @@
     <string name="folder_name_format_exact" msgid="8626242716117004803">"ថត៖ <xliff:g id="NAME">%1$s</xliff:g>, ធាតុ <xliff:g id="SIZE">%2$d</xliff:g>"</string>
     <string name="folder_name_format_overflow" msgid="4270108890534995199">"ថត៖ <xliff:g id="NAME">%1$s</xliff:g>, ធាតុ <xliff:g id="SIZE">%2$d</xliff:g> ឬច្រើនជាងនេះ"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"ផ្ទាំង​រូបភាព"</string>
-    <string name="styles_wallpaper_button_text" msgid="8216961355289236794">"ផ្ទាំងរូបភាព និងរចនាប័ទ្ម"</string>
+    <string name="styles_wallpaper_button_text" msgid="4342122323125579619">"រចនាប័ទ្ម និង​ផ្ទាំង​រូបភាព"</string>
     <string name="settings_button_text" msgid="8873672322605444408">"ការកំណត់​ទំព័រដើម"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"បានបិទដំណើរការដោយអ្នកគ្រប់គ្រងរបស់អ្នក"</string>
     <string name="allow_rotation_title" msgid="7728578836261442095">"អនុញ្ញាតការបងិ្វលអេក្រង់ដើម"</string>
@@ -160,15 +151,18 @@
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"ផ្ទាល់ខ្លួន"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"ការងារ"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"កម្រងព័ត៌មានការងារ"</string>
-    <string name="work_profile_edu_work_apps" msgid="7895468576497746520">"កម្មវិធីការងារ​ត្រូវបានដាក់​គ្រឿងសម្គាល់ ហើយ​អ្នកគ្រប់គ្រង​ផ្នែកព័ត៌មានវិទ្យា​របស់អ្នក​អាចមើលឃើញ"</string>
+    <string name="work_profile_edu_personal_apps" msgid="4155536355149317441">"ទិន្នន័យ​ផ្ទាល់ខ្លួន​ស្ថិតនៅ​ដាច់ដោយឡែក និង​ត្រូវបាន​លាក់ពី​កម្មវិធី​ការងារ"</string>
+    <string name="work_profile_edu_work_apps" msgid="237051938268703058">"ទិន្នន័យ និង​កម្មវិធី​ការងារ​គឺអាចមើលឃើញដោយ​អ្នកគ្រប់គ្រង​ផ្នែកព័ត៌មានវិទ្យា​របស់អ្នក"</string>
+    <string name="work_profile_edu_next" msgid="8783418929296503629">"បន្ទាប់"</string>
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"យល់ហើយ"</string>
-    <string name="work_apps_paused_title" msgid="3040901117349444598">"កម្មវិធី​ការងារ​ត្រូវបានផ្អាក"</string>
-    <string name="work_apps_paused_body" msgid="261634750995824906">"កម្មវិធី​ការងារ​របស់អ្នក​មិនអាចផ្ញើ​ការជូនដំណឹង​ទៅអ្នក ប្រើប្រាស់ថ្ម​របស់អ្នក ឬ​ចូលប្រើ​ទីតាំង​របស់អ្នក​បានទេ"</string>
-    <string name="work_apps_paused_content_description" msgid="5149623040804051095">"កម្មវិធីការងារ​ត្រូវបានបិទ។ កម្មវិធីការងារ​របស់អ្នកមិនអាចផ្ញើ​ការជូនដំណឹង​ទៅអ្នក ប្រើប្រាស់ថ្ម​របស់អ្នក ឬ​ចូលប្រើ​ទីតាំង​របស់អ្នក​បានទេ"</string>
+    <string name="work_apps_paused_title" msgid="2389865654362803723">"កម្រងព័ត៌មានការងារត្រូវបាន​ផ្អាក"</string>
+    <string name="work_apps_paused_body" msgid="4209084728264328628">"កម្មវិធី​ការងារ​មិនអាចផ្ញើ​ការជូនដំណឹង​ទៅអ្នក ប្រើប្រាស់ថ្ម​របស់អ្នក ឬ​ចូលប្រើ​ទីតាំង​របស់អ្នក​បានទេ"</string>
+    <string name="work_apps_paused_content_description" msgid="4473292417145736203">"កម្រងព័ត៌មាន​ការងារ​ត្រូវបាន​ផ្អាក។ កម្មវិធី​ការងារ​មិនអាចផ្ញើ​ការជូនដំណឹង​ទៅអ្នក ប្រើប្រាស់ថ្ម​របស់អ្នក ឬ​ចូលប្រើ​ទីតាំង​របស់អ្នក​បានទេ"</string>
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"កម្មវិធីការងារ​ត្រូវបានដាក់​គ្រឿងសម្គាល់ ហើយ​អ្នកគ្រប់គ្រង​ផ្នែកព័ត៌មានវិទ្យា​របស់អ្នក​អាចមើលឃើញ"</string>
     <string name="work_apps_paused_edu_accept" msgid="6377476824357318532">"យល់ហើយ"</string>
-    <string name="work_apps_pause_btn_text" msgid="1921059713673767460">"បិទ​កម្មវិធីការងារ"</string>
-    <string name="work_apps_enable_btn_text" msgid="1156432622148413741">"បើក​កម្មវិធី​ការងារ"</string>
+    <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"ផ្អាក​កម្មវិធី​ការងារ"</string>
+    <string name="work_apps_enable_btn_text" msgid="82111102541971856">"បើក"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"តម្រង"</string>
+    <string name="work_switch_tip" msgid="808075064383839144">"ផ្អាក​ការជូនដំណឹង និង​កម្មវិធី​ការងារ"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"បានបរាជ័យ៖ <xliff:g id="WHAT">%1$s</xliff:g>"</string>
 </resources>

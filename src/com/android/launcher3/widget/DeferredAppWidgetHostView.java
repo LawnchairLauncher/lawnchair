@@ -16,6 +16,7 @@
 
 package com.android.launcher3.widget;
 
+import android.annotation.SuppressLint;
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.Context;
 import android.graphics.Canvas;
@@ -25,9 +26,13 @@ import android.text.StaticLayout;
 import android.text.TextPaint;
 import android.text.TextUtils;
 import android.util.TypedValue;
+import android.view.View;
 import android.widget.RemoteViews;
 
 import com.android.launcher3.R;
+
+import java.io.PrintWriter;
+import java.io.StringWriter;
 
 /**
  * A widget host views created while the host has not bind to the system service.
@@ -55,6 +60,11 @@ public class DeferredAppWidgetHostView extends LauncherAppWidgetHostView {
     }
 
     @Override
+    public void addView(View child) {
+        // Not allowed
+    }
+
+    @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 
@@ -69,8 +79,22 @@ public class DeferredAppWidgetHostView extends LauncherAppWidgetHostView {
                 && mSetupTextLayout.getWidth() == availableWidth) {
             return;
         }
-        mSetupTextLayout = new StaticLayout(info.label, mPaint, availableWidth,
-                Layout.Alignment.ALIGN_CENTER, 1, 0, true);
+        try {
+            mSetupTextLayout = new StaticLayout(info.label, mPaint, availableWidth,
+                    Layout.Alignment.ALIGN_CENTER, 1, 0, true);
+        } catch (IllegalArgumentException e) {
+            @SuppressLint("DrawAllocation") StringWriter stringWriter = new StringWriter();
+            @SuppressLint("DrawAllocation") PrintWriter printWriter = new PrintWriter(stringWriter);
+            mActivity.getDeviceProfile().dump(/*prefix=*/"", printWriter);
+            printWriter.flush();
+            String message = "b/203530620 "
+                    + "- availableWidth: " + availableWidth
+                    + ", getMeasuredWidth: " + getMeasuredWidth()
+                    + ", getPaddingLeft: " + getPaddingLeft()
+                    + ", getPaddingRight: " + getPaddingRight()
+                    + ", deviceProfile: " + stringWriter.toString();
+            throw new IllegalArgumentException(message, e);
+        }
     }
 
     @Override

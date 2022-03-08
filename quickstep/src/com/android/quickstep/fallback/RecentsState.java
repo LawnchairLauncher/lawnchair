@@ -23,7 +23,6 @@ import android.graphics.Color;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
-import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.statemanager.BaseState;
 import com.android.launcher3.util.Themes;
 import com.android.quickstep.RecentsActivity;
@@ -40,17 +39,20 @@ public class RecentsState implements BaseState<RecentsState> {
     private static final int FLAG_SHOW_AS_GRID = BaseState.getFlag(4);
     private static final int FLAG_SCRIM = BaseState.getFlag(5);
     private static final int FLAG_LIVE_TILE = BaseState.getFlag(6);
+    private static final int FLAG_OVERVIEW_UI = BaseState.getFlag(7);
 
     public static final RecentsState DEFAULT = new RecentsState(0,
-            FLAG_CLEAR_ALL_BUTTON | FLAG_OVERVIEW_ACTIONS | FLAG_SHOW_AS_GRID | FLAG_SCRIM
-                    | FLAG_LIVE_TILE);
+            FLAG_DISABLE_RESTORE | FLAG_CLEAR_ALL_BUTTON | FLAG_OVERVIEW_ACTIONS | FLAG_SHOW_AS_GRID
+                    | FLAG_SCRIM | FLAG_LIVE_TILE | FLAG_OVERVIEW_UI);
     public static final RecentsState MODAL_TASK = new ModalState(1,
             FLAG_DISABLE_RESTORE | FLAG_CLEAR_ALL_BUTTON | FLAG_OVERVIEW_ACTIONS | FLAG_MODAL
-                    | FLAG_SHOW_AS_GRID | FLAG_SCRIM | FLAG_LIVE_TILE);
+                    | FLAG_SHOW_AS_GRID | FLAG_SCRIM | FLAG_LIVE_TILE | FLAG_OVERVIEW_UI);
     public static final RecentsState BACKGROUND_APP = new BackgroundAppState(2,
-            FLAG_DISABLE_RESTORE | FLAG_NON_INTERACTIVE | FLAG_FULL_SCREEN);
+            FLAG_DISABLE_RESTORE | FLAG_NON_INTERACTIVE | FLAG_FULL_SCREEN | FLAG_OVERVIEW_UI);
     public static final RecentsState HOME = new RecentsState(3, 0);
     public static final RecentsState BG_LAUNCHER = new LauncherState(4, 0);
+    public static final RecentsState OVERVIEW_SPLIT_SELECT = new RecentsState(5,
+            FLAG_SHOW_AS_GRID | FLAG_SCRIM | FLAG_OVERVIEW_UI);
 
     public final int ordinal;
     private final int mFlags;
@@ -133,11 +135,14 @@ public class RecentsState implements BaseState<RecentsState> {
      * For this state, whether tasks should layout as a grid rather than a list.
      */
     public boolean displayOverviewTasksAsGrid(DeviceProfile deviceProfile) {
-        return hasFlag(FLAG_SHOW_AS_GRID) && showAsGrid(deviceProfile);
+        return hasFlag(FLAG_SHOW_AS_GRID) && deviceProfile.overviewShowAsGrid;
     }
 
-    private boolean showAsGrid(DeviceProfile deviceProfile) {
-        return deviceProfile.isTablet && FeatureFlags.ENABLE_OVERVIEW_GRID.get();
+    /**
+     * True if the state has overview panel visible.
+     */
+    public boolean overviewUi() {
+        return hasFlag(FLAG_OVERVIEW_UI);
     }
 
     private static class ModalState extends RecentsState {

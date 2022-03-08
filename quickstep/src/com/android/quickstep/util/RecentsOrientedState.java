@@ -162,7 +162,7 @@ public class RecentsOrientedState implements
      */
     public void setDeviceProfile(DeviceProfile deviceProfile) {
         boolean oldMultipleOrientationsSupported = isMultipleOrientationSupportedByDevice();
-        setFlag(FLAG_MULTIPLE_ORIENTATION_SUPPORTED_BY_DENSITY, !deviceProfile.allowRotation);
+        setFlag(FLAG_MULTIPLE_ORIENTATION_SUPPORTED_BY_DENSITY, !deviceProfile.isTablet);
         if (mListenersInitialized) {
             boolean newMultipleOrientationsSupported = isMultipleOrientationSupportedByDevice();
             // If isMultipleOrientationSupportedByDevice is changed, init or destroy listeners
@@ -218,8 +218,8 @@ public class RecentsOrientedState implements
 
     private boolean updateHandler() {
         mRecentsActivityRotation = inferRecentsActivityRotation(mDisplayRotation);
-        if (mRecentsActivityRotation == mTouchRotation
-                || (canRecentsActivityRotate() && (mFlags & FLAG_SWIPE_UP_NOT_RUNNING) != 0)) {
+        if (mRecentsActivityRotation == mTouchRotation || (isRecentsActivityRotationAllowed()
+                && (mFlags & FLAG_SWIPE_UP_NOT_RUNNING) != 0)) {
             mOrientationHandler = PagedOrientationHandler.PORTRAIT;
         } else if (mTouchRotation == ROTATION_90) {
             mOrientationHandler = PagedOrientationHandler.LANDSCAPE;
@@ -253,7 +253,7 @@ public class RecentsOrientedState implements
     private boolean setFlag(int mask, boolean enabled) {
         boolean wasRotationEnabled = !TestProtocol.sDisableSensorRotation
                 && (mFlags & VALUE_ROTATION_WATCHER_ENABLED) == VALUE_ROTATION_WATCHER_ENABLED
-                && !canRecentsActivityRotate();
+                && !isRecentsActivityRotationAllowed();
         if (enabled) {
             mFlags |= mask;
         } else {
@@ -262,7 +262,7 @@ public class RecentsOrientedState implements
 
         boolean isRotationEnabled = !TestProtocol.sDisableSensorRotation
                 && (mFlags & VALUE_ROTATION_WATCHER_ENABLED) == VALUE_ROTATION_WATCHER_ENABLED
-                && !canRecentsActivityRotate();
+                && !isRecentsActivityRotationAllowed();
         if (wasRotationEnabled != isRotationEnabled) {
             UI_HELPER_EXECUTOR.execute(() -> {
                 if (isRotationEnabled) {
@@ -376,13 +376,6 @@ public class RecentsOrientedState implements
     }
 
     /**
-     * Returns true if the activity can rotate, if allowed by system rotation settings
-     */
-    public boolean canRecentsActivityRotate() {
-        return (mFlags & FLAG_SYSTEM_ROTATION_ALLOWED) != 0 && isRecentsActivityRotationAllowed();
-    }
-
-    /**
      * Enables or disables the rotation watcher for listening to rotation callbacks
      */
     public void setRotationWatcherEnabled(boolean isEnabled) {
@@ -396,9 +389,17 @@ public class RecentsOrientedState implements
         Rect insets = dp.getInsets();
         float fullWidth = dp.widthPx;
         float fullHeight = dp.heightPx;
-        if (TaskView.CLIP_STATUS_AND_NAV_BARS) {
-            fullWidth -= insets.left + insets.right;
-            fullHeight -= insets.top + insets.bottom;
+        if (TaskView.clipLeft(dp)) {
+            fullWidth -= insets.left;
+        }
+        if (TaskView.clipRight(dp)) {
+            fullWidth -= insets.right;
+        }
+        if (TaskView.clipTop(dp)) {
+            fullHeight -= insets.top;
+        }
+        if (TaskView.clipBottom(dp)) {
+            fullHeight -= insets.bottom;
         }
 
         getTaskDimension(mContext, dp, outPivot);
@@ -592,17 +593,7 @@ public class RecentsOrientedState implements
             width = Math.min(currentSize.x, currentSize.y);
             height = Math.max(currentSize.x, currentSize.y);
         }
-
-        DeviceProfile bestMatch = idp.supportedProfiles.get(0);
-        float minDiff = Float.MAX_VALUE;
-        for (DeviceProfile profile : idp.supportedProfiles) {
-            float diff = Math.abs(profile.widthPx - width) + Math.abs(profile.heightPx - height);
-            if (diff < minDiff) {
-                minDiff = diff;
-                bestMatch = profile;
-            }
-        }
-        return bestMatch;
+        return idp.getBestMatch(width, height);
     }
 
     private static String nameAndAddress(Object obj) {

@@ -25,6 +25,7 @@ import androidx.test.filters.LargeTest;
 import androidx.test.runner.AndroidJUnit4;
 
 import com.android.launcher3.Launcher;
+import com.android.launcher3.ui.TaplTestsLauncher3;
 import com.android.launcher3.util.RaceConditionReproducer;
 import com.android.quickstep.NavigationModeSwitchRule.Mode;
 import com.android.quickstep.NavigationModeSwitchRule.NavigationModeSwitch;
@@ -45,6 +46,7 @@ public class StartLauncherViaGestureTests extends AbstractQuickStepTest {
     @Before
     public void setUp() throws Exception {
         super.setUp();
+        TaplTestsLauncher3.initialize(this);
         // b/143488140
         mLauncher.pressHome();
         // Start an activity where the gestures start.

@@ -1,0 +1,246 @@
+/*
+ * Copyright (C) 2020 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.android.quickstep.util;
+
+import static android.view.Display.DEFAULT_DISPLAY;
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+
+import android.graphics.Point;
+import android.graphics.Rect;
+import android.graphics.RectF;
+import android.view.Display;
+import android.view.Surface;
+import android.view.SurfaceControl;
+
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+import androidx.test.filters.SmallTest;
+
+import com.android.launcher3.DeviceProfile;
+import com.android.launcher3.InvariantDeviceProfile;
+import com.android.launcher3.util.DisplayController;
+import com.android.launcher3.util.DisplayController.Info;
+import com.android.launcher3.util.LauncherModelHelper;
+import com.android.launcher3.util.ReflectionHelpers;
+import com.android.quickstep.FallbackActivityInterface;
+import com.android.quickstep.SysUINavigationMode;
+import com.android.quickstep.SystemUiProxy;
+import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
+import com.android.systemui.shared.system.SyncRtSurfaceTransactionApplierCompat.SurfaceParams;
+
+import org.hamcrest.Description;
+import org.hamcrest.TypeSafeMatcher;
+import org.junit.Assert;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+@SmallTest
+@RunWith(AndroidJUnit4.class)
+public class TaskViewSimulatorTest {
+
+    @Test
+    public void taskProperlyScaled_portrait_noRotation_sameInsets1() {
+        new TaskMatrixVerifier()
+                .withLauncherSize(1200, 2450)
+                .withInsets(new Rect(0, 80, 0, 120))
+                .verifyNoTransforms();
+    }
+
+    @Test
+    public void taskProperlyScaled_portrait_noRotation_sameInsets2() {
+        new TaskMatrixVerifier()
+                .withLauncherSize(1200, 2450)
+                .withInsets(new Rect(55, 80, 55, 120))
+                .verifyNoTransforms();
+    }
+
+    @Test
+    public void taskProperlyScaled_landscape_noRotation_sameInsets1() {
+        new TaskMatrixVerifier()
+                .withLauncherSize(2450, 1250)
+                .withInsets(new Rect(0, 80, 0, 40))
+                .verifyNoTransforms();
+    }
+
+    @Test
+    public void taskProperlyScaled_landscape_noRotation_sameInsets2() {
+        new TaskMatrixVerifier()
+                .withLauncherSize(2450, 1250)
+                .withInsets(new Rect(0, 80, 120, 0))
+                .verifyNoTransforms();
+    }
+
+    @Test
+    public void taskProperlyScaled_landscape_noRotation_sameInsets3() {
+        new TaskMatrixVerifier()
+                .withLauncherSize(2450, 1250)
+                .withInsets(new Rect(55, 80, 55, 120))
+                .verifyNoTransforms();
+    }
+
+    @Test
+    public void taskProperlyScaled_landscape_rotated() {
+        new TaskMatrixVerifier()
+                .withLauncherSize(1200, 2450)
+                .withInsets(new Rect(0, 80, 0, 120))
+                .withAppBounds(
+                        new Rect(0, 0, 2450, 1200),
+                        new Rect(0, 80, 0, 120),
+                        Surface.ROTATION_90)
+                .verifyNoTransforms();
+    }
+
+    private static class TaskMatrixVerifier extends TransformParams {
+
+        private Point mDisplaySize = new Point();
+        private Rect mDisplayInsets = new Rect();
+        private Rect mAppBounds = new Rect();
+        private Rect mLauncherInsets = new Rect();
+
+        private Rect mAppInsets;
+
+        private int mAppRotation = -1;
+        private DeviceProfile mDeviceProfile;
+
+        TaskMatrixVerifier withLauncherSize(int width, int height) {
+            mDisplaySize.set(width, height);
+            if (mAppBounds.isEmpty()) {
+                mAppBounds.set(0, 0, width, height);
+            }
+            return this;
+        }
+
+        TaskMatrixVerifier withInsets(Rect insets) {
+            mDisplayInsets.set(insets);
+            mLauncherInsets.set(insets);
+            return this;
+        }
+
+        TaskMatrixVerifier withAppBounds(Rect bounds, Rect insets, int appRotation) {
+            mAppBounds.set(bounds);
+            mAppInsets = insets;
+            mAppRotation = appRotation;
+            return this;
+        }
+
+        void verifyNoTransforms() {
+            LauncherModelHelper helper = new LauncherModelHelper();
+            try {
+                helper.sandboxContext.allow(SystemUiProxy.INSTANCE);
+                helper.sandboxContext.allow(SysUINavigationMode.INSTANCE);
+
+                Display display = mock(Display.class);
+                doReturn(DEFAULT_DISPLAY).when(display).getDisplayId();
+                doReturn(mDisplaySize.x > mDisplaySize.y ? Surface.ROTATION_90 : Surface.ROTATION_0)
+                        .when(display).getRotation();
+                doAnswer(i -> {
+                    ((Point) i.getArgument(0)).set(mDisplaySize.x, mDisplaySize.y);
+                    return null;
+                }).when(display).getRealSize(any());
+                doAnswer(i -> {
+                    Point smallestSize = i.getArgument(0);
+                    Point largestSize = i.getArgument(1);
+                    smallestSize.x = smallestSize.y = Math.min(mDisplaySize.x, mDisplaySize.y);
+                    largestSize.x = largestSize.y = Math.max(mDisplaySize.x, mDisplaySize.y);
+
+                    smallestSize.x -= mDisplayInsets.left + mDisplayInsets.right;
+                    largestSize.x -= mDisplayInsets.left + mDisplayInsets.right;
+
+                    smallestSize.y -= mDisplayInsets.top + mDisplayInsets.bottom;
+                    largestSize.y -= mDisplayInsets.top + mDisplayInsets.bottom;
+                    return null;
+                }).when(display).getCurrentSizeRange(any(), any());
+                DisplayController.Info mockInfo = new Info(helper.sandboxContext, display);
+
+                DisplayController controller =
+                        DisplayController.INSTANCE.get(helper.sandboxContext);
+                controller.close();
+                ReflectionHelpers.setField(controller, "mInfo", mockInfo);
+
+                mDeviceProfile = InvariantDeviceProfile.INSTANCE.get(helper.sandboxContext)
+                        .getBestMatch(mAppBounds.width(), mAppBounds.height());
+                mDeviceProfile.updateInsets(mLauncherInsets);
+
+                TaskViewSimulator tvs = new TaskViewSimulator(helper.sandboxContext,
+                        FallbackActivityInterface.INSTANCE);
+                tvs.setDp(mDeviceProfile);
+
+                int launcherRotation = mockInfo.rotation;
+                if (mAppRotation < 0) {
+                    mAppRotation = launcherRotation;
+                }
+
+                tvs.getOrientationState().update(launcherRotation, mAppRotation);
+                if (mAppInsets == null) {
+                    mAppInsets = new Rect(mLauncherInsets);
+                }
+                tvs.setPreviewBounds(mAppBounds, mAppInsets);
+
+                tvs.fullScreenProgress.value = 1;
+                tvs.recentsViewScale.value = tvs.getFullScreenScale();
+                tvs.apply(this);
+            } finally {
+                helper.destroy();
+            }
+        }
+
+        @Override
+        public SurfaceParams[] createSurfaceParams(BuilderProxy proxy) {
+            SurfaceParams.Builder builder = new SurfaceParams.Builder((SurfaceControl) null);
+            proxy.onBuildTargetParams(builder, mock(RemoteAnimationTargetCompat.class), this);
+            return new SurfaceParams[] {builder.build()};
+        }
+
+        @Override
+        public void applySurfaceParams(SurfaceParams[] params) {
+            // Verify that the task position remains the same
+            RectF newAppBounds = new RectF(mAppBounds);
+            params[0].matrix.mapRect(newAppBounds);
+            Assert.assertThat(newAppBounds, new AlmostSame(mAppBounds));
+
+            System.err.println("Bounds mapped: " + mAppBounds + " => " + newAppBounds);
+        }
+    }
+
+    private static class AlmostSame extends TypeSafeMatcher<RectF>  {
+
+        // Allow .1% error margin to account for float to int conversions
+        private final float mErrorFactor = .001f;
+        private final Rect mExpected;
+
+        AlmostSame(Rect expected) {
+            mExpected = expected;
+        }
+
+        @Override
+        protected boolean matchesSafely(RectF item) {
+            float errorWidth = mErrorFactor * mExpected.width();
+            float errorHeight = mErrorFactor * mExpected.height();
+            return Math.abs(item.left - mExpected.left) < errorWidth
+                    && Math.abs(item.top - mExpected.top) < errorHeight
+                    && Math.abs(item.right - mExpected.right) < errorWidth
+                    && Math.abs(item.bottom - mExpected.bottom) < errorHeight;
+        }
+
+        @Override
+        public void describeTo(Description description) {
+            description.appendValue(mExpected);
+        }
+    }
+}

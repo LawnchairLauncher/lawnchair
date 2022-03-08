@@ -90,7 +90,7 @@ public abstract class BaseModelUpdateTask implements ModelUpdateTask {
     public ModelWriter getModelWriter() {
         // Updates from model task, do not deal with icon position in hotseat. Also no need to
         // verify changes as the ModelTasks always push the changes to callbacks
-        return mModel.getWriter(false /* hasVerticalHotseat */, false /* verifyChanges */);
+        return mModel.getWriter(false /* hasVerticalHotseat */, false /* verifyChanges */, null);
     }
 
     public void bindUpdatedWorkspaceItems(List<WorkspaceItemInfo> allUpdates) {

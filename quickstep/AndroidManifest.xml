@@ -28,6 +28,7 @@
     <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES"/>
     <uses-permission android:name="android.permission.START_TASKS_FROM_RECENTS"/>
     <uses-permission android:name="android.permission.REMOVE_TASKS"/>
+    <uses-permission android:name="android.permission.WRITE_SECURE_SETTINGS"/>
     <uses-permission android:name="android.permission.MANAGE_ACTIVITY_TASKS"/>
     <uses-permission android:name="android.permission.STATUS_BAR"/>
     <uses-permission android:name="android.permission.STOP_APP_SWITCHES"/>
@@ -35,6 +36,7 @@
     <uses-permission android:name="android.permission.READ_FRAME_BUFFER"/>
     <uses-permission android:name="android.permission.MANAGE_ACCESSIBILITY"/>
     <uses-permission android:name="android.permission.MONITOR_INPUT"/>
+    <uses-permission android:name="android.permission.ALLOW_SLIPPERY_TOUCHES"/>
 
     <uses-permission android:name="android.permission.SYSTEM_APPLICATION_OVERLAY" />
 
@@ -65,7 +67,7 @@
              android:stateNotNeeded="true"
              android:theme="@style/LauncherTheme"
              android:screenOrientation="unspecified"
-             android:configChanges="keyboard|keyboardHidden|mcc|mnc|navigation|orientation|screenSize|screenLayout|smallestScreenSize|density"
+             android:configChanges="keyboard|keyboardHidden|mcc|mnc|navigation|orientation|screenSize|screenLayout|smallestScreenSize"
              android:resizeableActivity="true"
              android:resumeWhilePausing="true"
              android:taskAffinity=""/>
@@ -100,7 +102,6 @@
         <activity android:name="com.android.quickstep.interaction.GestureSandboxActivity"
             android:autoRemoveFromRecents="true"
             android:excludeFromRecents="true"
-            android:screenOrientation="portrait"
             android:exported="true">
             <intent-filter>
                 <action android:name="com.android.quickstep.action.GESTURE_SANDBOX"/>
@@ -116,7 +117,6 @@
         <activity android:name="com.android.quickstep.interaction.AllSetActivity"
             android:autoRemoveFromRecents="true"
             android:excludeFromRecents="true"
-            android:screenOrientation="portrait"
             android:permission="android.permission.REBOOT"
             android:theme="@style/AllSetTheme"
             android:label="@string/allset_title"

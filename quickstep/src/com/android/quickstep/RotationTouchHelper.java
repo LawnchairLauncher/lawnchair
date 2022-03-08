@@ -15,6 +15,7 @@
  */
 package com.android.quickstep;
 
+import static android.view.Display.DEFAULT_DISPLAY;
 import static android.view.Surface.ROTATION_0;
 
 import static com.android.launcher3.util.DisplayController.CHANGE_ACTIVE_SCREEN;
@@ -25,7 +26,6 @@ import static com.android.quickstep.SysUINavigationMode.Mode.THREE_BUTTONS;
 
 import android.content.Context;
 import android.content.res.Resources;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.OrientationEventListener;
 
@@ -35,7 +35,6 @@ import com.android.launcher3.util.DisplayController.DisplayInfoChangeListener;
 import com.android.launcher3.util.DisplayController.Info;
 import com.android.launcher3.util.MainThreadInitializedObject;
 import com.android.quickstep.util.RecentsOrientedState;
-import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.QuickStepContract;
 import com.android.systemui.shared.system.TaskStackChangeListener;
 import com.android.systemui.shared.system.TaskStackChangeListeners;
@@ -146,10 +145,10 @@ public class RotationTouchHelper implements
         mDisplayController = DisplayController.INSTANCE.get(mContext);
         Resources resources = mContext.getResources();
         mSysUiNavMode = SysUINavigationMode.INSTANCE.get(mContext);
-        mDisplayId = mDisplayController.getInfo().id;
+        mDisplayId = DEFAULT_DISPLAY;
 
         mOrientationTouchTransformer = new OrientationTouchTransformer(resources, mMode,
-                () -> QuickStepContract.getWindowCornerRadius(resources));
+                () -> QuickStepContract.getWindowCornerRadius(mContext));
 
         // Register for navigation mode changes
         SysUINavigationMode.Mode newMode = mSysUiNavMode.addModeChangeListener(this);

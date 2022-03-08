@@ -17,13 +17,10 @@
 package com.android.launcher3.uioverrides;
 
 import android.annotation.TargetApi;
-import android.content.Context;
 import android.os.Build;
 import android.provider.DeviceConfig;
 
 import com.android.launcher3.config.FeatureFlags.DebugFlag;
-
-import java.util.ArrayList;
 
 @TargetApi(Build.VERSION_CODES.P)
 public class DeviceFlag extends DebugFlag {
@@ -31,7 +28,6 @@ public class DeviceFlag extends DebugFlag {
     public static final String NAMESPACE_LAUNCHER = "launcher";
 
     private final boolean mDefaultValueInCode;
-    ArrayList<Runnable> mListeners;
 
     public DeviceFlag(String key, boolean defaultValue, String description) {
         super(key, getDeviceValue(key, defaultValue), description);
@@ -44,51 +40,9 @@ public class DeviceFlag extends DebugFlag {
     }
 
     @Override
-    public void initialize(Context context) {
-        super.initialize(context);
-        if (mListeners == null) {
-            mListeners = new ArrayList<>();
-            registerDeviceConfigChangedListener(context);
-        }
-    }
-
-    @Override
-    public void addChangeListener(Context context, Runnable r) {
-        if (mListeners == null) {
-            initialize(context);
-        }
-        mListeners.add(r);
-    }
-
-    @Override
-    public void removeChangeListener(Runnable r) {
-        if (mListeners == null) {
-            return;
-        }
-        mListeners.remove(r);
-    }
-
-    @Override
     public boolean get() {
         // Override this method in order to let Robolectric ShadowDeviceFlag to stub it.
         return super.get();
-    }
-
-    private void registerDeviceConfigChangedListener(Context context) {
-        DeviceConfig.addOnPropertiesChangedListener(
-                NAMESPACE_LAUNCHER,
-                context.getMainExecutor(),
-                properties -> {
-                    if (!NAMESPACE_LAUNCHER.equals(properties.getNamespace())
-                            || !properties.getKeyset().contains(key)) {
-                        return;
-                    }
-                    defaultValue = getDeviceValue(key, mDefaultValueInCode);
-                    initialize(context);
-                    for (Runnable r: mListeners) {
-                        r.run();
-                    }
-                });
     }
 
     protected static boolean getDeviceValue(String key, boolean defaultValue) {
