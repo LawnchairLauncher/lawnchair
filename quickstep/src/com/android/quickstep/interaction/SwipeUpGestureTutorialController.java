@@ -336,8 +336,7 @@ abstract class SwipeUpGestureTutorialController extends TutorialController {
                             1f - SHAPE_PROGRESS_DURATION /* shapeProgressStart */,
                             radius, 255,
                             false, /* isOpening */
-                            mFakeIconView, mDp,
-                            false /* isVerticalBarLayout */);
+                            mFakeIconView, mDp);
                     mFakeIconView.setAlpha(1);
                     mFakeTaskView.setAlpha(getWindowAlpha(progress));
                     mFakePreviousTaskView.setAlpha(getWindowAlpha(progress));
