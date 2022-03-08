@@ -47,7 +47,7 @@ import androidx.annotation.Nullable;
 import com.android.launcher3.R;
 import com.android.launcher3.ResourceUtils;
 import com.android.launcher3.anim.Interpolators;
-import com.android.quickstep.SysUINavigationMode.Mode;
+import com.android.launcher3.util.DisplayController.NavigationMode;
 import com.android.quickstep.util.MotionPauseDetector;
 import com.android.quickstep.util.NavBarPosition;
 import com.android.quickstep.util.TriggerSwipeUpTouchTracker;
@@ -101,7 +101,7 @@ public class NavBarGestureHandler implements OnTouchListener,
         }
         mSwipeUpTouchTracker =
                 new TriggerSwipeUpTouchTracker(context, true /*disableHorizontalSwipe*/,
-                        new NavBarPosition(Mode.NO_BUTTON, displayRotation),
+                        new NavBarPosition(NavigationMode.NO_BUTTON, displayRotation),
                         null /*onInterceptTouch*/, this);
         mMotionPauseDetector = new MotionPauseDetector(context);
 

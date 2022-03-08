@@ -68,14 +68,14 @@ import com.android.launcher3.uioverrides.touchcontrollers.StatusBarTouchControll
 import com.android.launcher3.uioverrides.touchcontrollers.TaskViewTouchController;
 import com.android.launcher3.uioverrides.touchcontrollers.TransposedQuickSwitchTouchController;
 import com.android.launcher3.uioverrides.touchcontrollers.TwoButtonNavbarTouchController;
+import com.android.launcher3.util.DisplayController;
+import com.android.launcher3.util.DisplayController.NavigationMode;
 import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.PendingRequestArgs;
 import com.android.launcher3.util.TouchController;
 import com.android.launcher3.util.UiThreadHelper;
 import com.android.launcher3.util.UiThreadHelper.AsyncCommand;
 import com.android.launcher3.widget.LauncherAppWidgetHost;
-import com.android.quickstep.SysUINavigationMode;
-import com.android.quickstep.SysUINavigationMode.Mode;
 import com.android.quickstep.SystemUiProxy;
 import com.android.quickstep.TaskUtils;
 import com.android.quickstep.util.QuickstepOnboardingPrefs;
@@ -303,7 +303,7 @@ public class QuickstepLauncher extends BaseQuickstepLauncher {
 
     @Override
     public TouchController[] createTouchControllers() {
-        Mode mode = SysUINavigationMode.getMode(this);
+        NavigationMode mode = DisplayController.getNavigationMode(this);
 
         ArrayList<TouchController> list = new ArrayList<>();
         list.add(getDragController());

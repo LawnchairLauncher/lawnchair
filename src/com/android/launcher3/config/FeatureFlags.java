@@ -103,6 +103,9 @@ public final class FeatureFlags {
             "USE_FALLBACK_APP_SEARCH", false,
             "Use fallback launcher app search results instead of AiAi app results");
 
+    public static final BooleanFlag ENABLE_QUICK_SEARCH = new DeviceFlag("ENABLE_QUICK_SEARCH",
+            true, "Use quick search behavior.");
+
     public static final BooleanFlag COLLECT_SEARCH_HISTORY = new DeviceFlag(
             "COLLECT_SEARCH_HISTORY", false, "Allow launcher to collect search history for log");
 
