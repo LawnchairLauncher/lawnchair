@@ -108,6 +108,7 @@ public class FloatingHeaderView extends LinearLayout implements
     // enabled or disabled, and represent the current set of all rows.
     private FloatingHeaderRow[] mAllRows = FloatingHeaderRow.NO_ROWS;
 
+
     public FloatingHeaderView(@NonNull Context context) {
         this(context, null);
     }

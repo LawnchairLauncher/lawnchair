@@ -19,12 +19,14 @@ import static android.view.MotionEvent.ACTION_CANCEL;
 import static android.view.MotionEvent.ACTION_DOWN;
 import static android.view.MotionEvent.ACTION_UP;
 
+import android.content.Context;
 import android.util.Log;
 import android.view.InputEvent;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 
 import com.android.quickstep.InputConsumer;
+import com.android.quickstep.SimpleOrientationTouchTransformer;
 import com.android.systemui.shared.system.InputConsumerController;
 
 import java.util.function.Supplier;
@@ -37,6 +39,8 @@ public class InputConsumerProxy {
 
     private static final String TAG = "InputConsumerProxy";
 
+    private final Context mContext;
+    private final Supplier<Integer> mRotationSupplier;
     private final InputConsumerController mInputConsumerController;
     private Runnable mCallback;
     private Supplier<InputConsumer> mConsumerSupplier;
@@ -48,8 +52,11 @@ public class InputConsumerProxy {
     private boolean mTouchInProgress = false;
     private boolean mDestroyPending = false;
 
-    public InputConsumerProxy(InputConsumerController inputConsumerController,
+    public InputConsumerProxy(Context context, Supplier<Integer> rotationSupplier,
+            InputConsumerController inputConsumerController,
             Runnable callback, Supplier<InputConsumer> consumerSupplier) {
+        mContext = context;
+        mRotationSupplier = rotationSupplier;
         mInputConsumerController = inputConsumerController;
         mCallback = callback;
         mConsumerSupplier = consumerSupplier;
@@ -98,6 +105,8 @@ public class InputConsumerProxy {
             }
         }
         if (mInputConsumer != null) {
+            SimpleOrientationTouchTransformer.INSTANCE.get(mContext).transform(ev,
+                    mRotationSupplier.get());
             mInputConsumer.onMotionEvent(ev);
         }
 

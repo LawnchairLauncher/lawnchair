@@ -35,4 +35,9 @@ public class LogConfig {
      * When turned on, we enable doodle related logging.
      */
     public static final String DOODLE_LOGGING = "DoodleLogging";
+
+    /**
+     * When turned on, we enable suggest related logging.
+     */
+    public static final String SEARCH_LOGGING = "SearchLogging";
 }

@@ -22,6 +22,8 @@ import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
+import android.util.Size;
 import android.view.View;
 import android.view.View.MeasureSpec;
 import android.widget.RemoteViews;
@@ -40,7 +42,9 @@ import com.android.launcher3.graphics.DragPreviewProvider;
 import com.android.launcher3.icons.FastBitmapDrawable;
 import com.android.launcher3.icons.LauncherIcons;
 import com.android.launcher3.icons.RoundDrawableWrapper;
+import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.widget.dragndrop.AppWidgetHostViewDragListener;
+import com.android.launcher3.widget.util.WidgetSizes;
 
 /**
  * Extension of {@link DragPreviewProvider} with logic specific to pending widgets/shortcuts
@@ -54,6 +58,7 @@ public class PendingItemDragHelper extends DragPreviewProvider {
     private int[] mEstimatedCellSize;
 
     @Nullable private RemoteViews mRemoteViewsPreview;
+    private float mRemoteViewsPreviewScale = 1f;
     @Nullable private NavigableAppWidgetHostView mAppWidgetHostViewPreview;
     private final float mEnforcedRoundedCornersForWidget;
 
@@ -68,8 +73,10 @@ public class PendingItemDragHelper extends DragPreviewProvider {
      * Sets a {@link RemoteViews} which shows an app widget preview provided by app developers in
      * the pin widget flow.
      */
-    public void setRemoteViewsPreview(@Nullable RemoteViews remoteViewsPreview) {
+    public void setRemoteViewsPreview(@Nullable RemoteViews remoteViewsPreview,
+            float previewScale) {
         mRemoteViewsPreview = remoteViewsPreview;
+        mRemoteViewsPreviewScale = previewScale;
     }
 
     /** Sets a {@link NavigableAppWidgetHostView} which shows a preview layout of an app widget. */
@@ -89,6 +96,9 @@ public class PendingItemDragHelper extends DragPreviewProvider {
      */
     public void startDrag(Rect previewBounds, int previewBitmapWidth, int previewViewWidth,
             Point screenPos, DragSource source, DragOptions options) {
+        if (TestProtocol.sDebugTracing) {
+            Log.d(TestProtocol.NO_DROP_TARGET, "3");
+        }
         final Launcher launcher = Launcher.getLauncher(mView.getContext());
         LauncherAppState app = LauncherAppState.getInstance(launcher);
 
@@ -120,13 +130,14 @@ public class PendingItemDragHelper extends DragPreviewProvider {
                 mAppWidgetHostViewPreview.setPadding(padding.left, padding.top, padding.right,
                         padding.bottom);
                 mAppWidgetHostViewPreview.updateAppWidget(/* remoteViews= */ mRemoteViewsPreview);
-                int width =
-                        deviceProfile.cellWidthPx * mAddInfo.spanX + padding.left + padding.right;
-                int height =
-                        deviceProfile.cellHeightPx * mAddInfo.spanY + padding.top + padding.bottom;
+                Size widgetSizes = WidgetSizes.getWidgetPaddedSizePx(launcher,
+                        mAddInfo.componentName, deviceProfile, mAddInfo.spanX, mAddInfo.spanY);
                 mAppWidgetHostViewPreview.measure(
-                        MeasureSpec.makeMeasureSpec(width, MeasureSpec.EXACTLY),
-                        MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY));
+                        MeasureSpec.makeMeasureSpec(widgetSizes.getWidth(), MeasureSpec.EXACTLY),
+                        MeasureSpec.makeMeasureSpec(widgetSizes.getHeight(), MeasureSpec.EXACTLY));
+                mAppWidgetHostViewPreview.setClipChildren(false);
+                mAppWidgetHostViewPreview.setClipToPadding(false);
+                mAppWidgetHostViewPreview.setScaleToFit(mRemoteViewsPreviewScale);
             }
             if (mAppWidgetHostViewPreview != null) {
                 previewSizeBeforeScale[0] = mAppWidgetHostViewPreview.getMeasuredWidth();
@@ -134,10 +145,9 @@ public class PendingItemDragHelper extends DragPreviewProvider {
                         .addDragListener(new AppWidgetHostViewDragListener(launcher));
             }
             if (preview == null && mAppWidgetHostViewPreview == null) {
-                Drawable p = new FastBitmapDrawable(
-                        app.getWidgetCache().generateWidgetPreview(launcher,
-                                createWidgetInfo.info, maxWidth, null,
-                                previewSizeBeforeScale).first);
+                Drawable p = new FastBitmapDrawable(new DatabaseWidgetPreviewLoader(launcher)
+                        .generateWidgetPreview(
+                                createWidgetInfo.info, maxWidth, previewSizeBeforeScale));
                 if (RoundedCornerEnforcement.isRoundedCornerEnabled()) {
                     p = new RoundDrawableWrapper(p, mEnforcedRoundedCornersForWidget);
                 }
@@ -198,10 +208,6 @@ public class PendingItemDragHelper extends DragPreviewProvider {
             dragRegion.bottom = dragRegion.top + iconSize;
             draggableView = DraggableView.ofType(DraggableView.DRAGGABLE_ICON);
         }
-
-        // Since we are not going through the workspace for starting the drag, set drag related
-        // information on the workspace before starting the drag.
-        launcher.getWorkspace().prepareDragWithProvider(this);
 
         int dragLayerX = screenPos.x + previewBounds.left
                 + (int) ((scale * previewWidth - previewWidth) / 2);

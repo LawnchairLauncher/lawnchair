@@ -50,7 +50,9 @@
         <item name="workspaceStatusBarScrim">@drawable/workspace_bg</item>
         <item name="widgetsTheme">@style/WidgetContainerTheme</item>
         <item name="folderDotColor">@color/folder_dot_color</item>
-        <item name="folderFillColor">@color/folder_background_light</item>
+        <item name="folderPaginationColor">@color/folder_pagination_color_light</item>
+        <item name="folderPreviewColor">@color/folder_preview_light</item>
+        <item name="folderBackgroundColor">@color/folder_background_light</item>
         <item name="folderIconBorderColor">?android:attr/colorPrimary</item>
         <item name="folderTextColor">@color/workspace_text_color_dark</item>
         <item name="isFolderDarkText">true</item>
@@ -108,7 +110,9 @@
         <item name="popupShadeThird">@color/popup_shade_third_dark</item>
         <item name="widgetsTheme">@style/WidgetContainerTheme.Dark</item>
         <item name="folderDotColor">@color/folder_dot_color</item>
-        <item name="folderFillColor">@color/folder_background_dark</item>
+        <item name="folderPaginationColor">@color/folder_pagination_color_dark</item>
+        <item name="folderPreviewColor">@color/folder_preview_dark</item>
+        <item name="folderBackgroundColor">@color/folder_background_dark</item>
         <item name="folderIconBorderColor">?android:attr/colorPrimary</item>
         <item name="folderTextColor">@color/workspace_text_color_light</item>
         <item name="isFolderDarkText">false</item>

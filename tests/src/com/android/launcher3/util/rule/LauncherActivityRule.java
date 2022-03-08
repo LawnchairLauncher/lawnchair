@@ -18,7 +18,7 @@ package com.android.launcher3.util.rule;
 import android.app.Activity;
 
 import com.android.launcher3.Launcher;
-import com.android.launcher3.Workspace.ItemOperator;
+import com.android.launcher3.util.LauncherBindableItemsContainer.ItemOperator;
 
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;

@@ -42,7 +42,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.RemoteException;
-import android.util.Log;
 
 import androidx.test.filters.LargeTest;
 import androidx.test.runner.AndroidJUnit4;
@@ -56,7 +55,6 @@ import com.android.launcher3.tapl.LauncherInstrumentation;
 import com.android.launcher3.tapl.OverviewTask;
 import com.android.launcher3.tapl.TestHelpers;
 import com.android.launcher3.testcomponent.TestCommandReceiver;
-import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.util.Wait;
 import com.android.launcher3.util.rule.FailureWatcher;
 import com.android.quickstep.views.RecentsView;
@@ -98,6 +96,7 @@ public class FallbackRecentsTest {
         mDevice = UiDevice.getInstance(instrumentation);
         mDevice.setOrientationNatural();
         mLauncher = new LauncherInstrumentation();
+        mLauncher.enableDebugTracing();
         // b/143488140
         //mLauncher.enableCheckEventsForSuccessfulGestures();
 
@@ -187,15 +186,9 @@ public class FallbackRecentsTest {
 
     protected <T> T getFromRecents(Function<RecentsActivity, T> f) {
         if (!TestHelpers.isInLauncherProcess()) return null;
-        if (TestProtocol.sDebugTracing) {
-            Log.d(TestProtocol.FALLBACK_ACTIVITY_NO_SET, "getFromRecents");
-        }
         Object[] result = new Object[1];
         Wait.atMost("Failed to get from recents", () -> MAIN_EXECUTOR.submit(() -> {
             RecentsActivity activity = RecentsActivity.ACTIVITY_TRACKER.getCreatedActivity();
-            if (TestProtocol.sDebugTracing) {
-                Log.d(TestProtocol.FALLBACK_ACTIVITY_NO_SET, "activity=" + activity);
-            }
             if (activity == null) {
                 return false;
             }

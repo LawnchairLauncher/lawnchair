@@ -17,6 +17,7 @@ package com.android.launcher3.uioverrides.states;
 
 import static android.view.View.VISIBLE;
 
+import static com.android.launcher3.LauncherState.ALL_APPS;
 import static com.android.launcher3.LauncherState.HINT_STATE;
 import static com.android.launcher3.LauncherState.HINT_STATE_TWO_BUTTON;
 import static com.android.launcher3.LauncherState.NORMAL;
@@ -44,6 +45,10 @@ import static com.android.launcher3.states.StateAnimationConfig.ANIM_SCRIM_FADE;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_WORKSPACE_FADE;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_WORKSPACE_SCALE;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_WORKSPACE_TRANSLATE;
+import static com.android.launcher3.uioverrides.touchcontrollers.PortraitStatesTouchController.ALL_APPS_CONTENT_FADE_MAX_CLAMPING_THRESHOLD;
+import static com.android.launcher3.uioverrides.touchcontrollers.PortraitStatesTouchController.ALL_APPS_CONTENT_FADE_MIN_CLAMPING_THRESHOLD;
+import static com.android.launcher3.uioverrides.touchcontrollers.PortraitStatesTouchController.ALL_APPS_SCRIM_OPAQUE_THRESHOLD;
+import static com.android.launcher3.uioverrides.touchcontrollers.PortraitStatesTouchController.ALL_APPS_SCRIM_VISIBLE_THRESHOLD;
 import static com.android.quickstep.views.RecentsView.RECENTS_SCALE_PROPERTY;
 
 import android.animation.ValueAnimator;
@@ -52,6 +57,7 @@ import com.android.launcher3.CellLayout;
 import com.android.launcher3.Hotseat;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.Workspace;
+import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.states.StateAnimationConfig;
 import com.android.launcher3.uioverrides.QuickstepLauncher;
 import com.android.quickstep.SysUINavigationMode;
@@ -171,6 +177,13 @@ public class QuickstepAtomicAnimationFactory extends
                 mHintToNormalDuration = (int) va.getDuration();
             }
             config.duration = Math.max(config.duration, mHintToNormalDuration);
+        } else if (fromState == ALL_APPS && toState == NORMAL) {
+            config.setInterpolator(ANIM_ALL_APPS_FADE, Interpolators.clampToProgress(DEACCEL,
+                    1 - ALL_APPS_CONTENT_FADE_MAX_CLAMPING_THRESHOLD,
+                    1 - ALL_APPS_CONTENT_FADE_MIN_CLAMPING_THRESHOLD));
+            config.setInterpolator(ANIM_SCRIM_FADE, Interpolators.clampToProgress(DEACCEL,
+                    1 - ALL_APPS_SCRIM_OPAQUE_THRESHOLD,
+                    1 - ALL_APPS_SCRIM_VISIBLE_THRESHOLD));
         }
     }
 }

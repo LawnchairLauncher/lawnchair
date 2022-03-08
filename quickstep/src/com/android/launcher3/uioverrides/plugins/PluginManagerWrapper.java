@@ -16,21 +16,29 @@ package com.android.launcher3.uioverrides.plugins;
 
 import static android.content.pm.PackageManager.MATCH_DISABLED_COMPONENTS;
 
+import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
+
+import android.app.NotificationManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ResolveInfo;
 
+import com.android.launcher3.Utilities;
 import com.android.launcher3.util.MainThreadInitializedObject;
 import com.android.systemui.plugins.Plugin;
 import com.android.systemui.plugins.PluginListener;
+import com.android.systemui.shared.plugins.PluginActionManager;
+import com.android.systemui.shared.plugins.PluginInstance;
 import com.android.systemui.shared.plugins.PluginManager;
 import com.android.systemui.shared.plugins.PluginManagerImpl;
 import com.android.systemui.shared.plugins.PluginPrefs;
 
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 public class PluginManagerWrapper {
@@ -46,21 +54,36 @@ public class PluginManagerWrapper {
 
     private PluginManagerWrapper(Context c) {
         mContext = c;
-        PluginInitializerImpl pluginInitializer  = new PluginInitializerImpl();
-        mPluginManager = new PluginManagerImpl(c, pluginInitializer);
-        mPluginEnabler = pluginInitializer.getPluginEnabler(c);
+        mPluginEnabler = new PluginEnablerImpl(c);
+        List<String> privilegedPlugins = Collections.emptyList();
+        PluginInstance.Factory instanceFactory = new PluginInstance.Factory(
+                getClass().getClassLoader(), new PluginInstance.InstanceFactory<>(),
+                new PluginInstance.VersionChecker(), privilegedPlugins,
+                Utilities.IS_DEBUG_DEVICE);
+        PluginActionManager.Factory instanceManagerFactory = new PluginActionManager.Factory(
+                c, c.getPackageManager(), c.getMainExecutor(), MODEL_EXECUTOR,
+                c.getSystemService(NotificationManager.class), mPluginEnabler,
+                privilegedPlugins, instanceFactory);
+
+        mPluginManager = new PluginManagerImpl(c, instanceManagerFactory,
+                Utilities.IS_DEBUG_DEVICE,
+                Optional.ofNullable(Thread.getDefaultUncaughtExceptionHandler()), mPluginEnabler,
+                new PluginPrefs(c), privilegedPlugins);
     }
 
     public PluginEnablerImpl getPluginEnabler() {
         return mPluginEnabler;
     }
 
-    public void addPluginListener(PluginListener<? extends Plugin> listener, Class<?> pluginClass) {
+    /** */
+    public <T extends Plugin> void addPluginListener(
+            PluginListener<T> listener, Class<T> pluginClass) {
         addPluginListener(listener, pluginClass, false);
     }
 
-    public void addPluginListener(PluginListener<? extends Plugin> listener, Class<?> pluginClass,
-            boolean allowMultiple) {
+    /** */
+    public <T extends Plugin> void addPluginListener(
+            PluginListener<T> listener, Class<T> pluginClass, boolean allowMultiple) {
         mPluginManager.addPluginListener(listener, pluginClass, allowMultiple);
     }
 

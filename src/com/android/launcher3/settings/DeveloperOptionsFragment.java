@@ -20,6 +20,7 @@ import static android.content.pm.PackageManager.MATCH_DISABLED_COMPONENTS;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 
+import static com.android.launcher3.settings.SettingsActivity.EXTRA_FRAGMENT_ARG_KEY;
 import static com.android.launcher3.uioverrides.plugins.PluginManagerWrapper.PLUGIN_CHANGED;
 import static com.android.launcher3.uioverrides.plugins.PluginManagerWrapper.pluginEnabledKey;
 
@@ -29,6 +30,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
@@ -44,6 +46,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -57,12 +60,15 @@ import androidx.preference.PreferenceViewHolder;
 import androidx.preference.SwitchPreference;
 
 import com.android.launcher3.R;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.config.FlagTogglerPrefUi;
 import com.android.launcher3.uioverrides.plugins.PluginManagerWrapper;
+import com.android.launcher3.util.OnboardingPrefs;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -104,6 +110,7 @@ public class DeveloperOptionsFragment extends PreferenceFragmentCompat {
         initFlags();
         loadPluginPrefs();
         maybeAddSandboxCategory();
+        addOnboardingPrefsCatergory();
 
         if (getActivity() != null) {
             getActivity().setTitle("Developer Options");
@@ -152,6 +159,15 @@ public class DeveloperOptionsFragment extends PreferenceFragmentCompat {
                 filterPreferences(query, mPreferenceScreen);
             }
         });
+
+        if (getArguments() != null) {
+            String filter = getArguments().getString(EXTRA_FRAGMENT_ARG_KEY);
+            // Normally EXTRA_FRAGMENT_ARG_KEY is used to highlight the preference with the given
+            // key. This is a slight variation where we instead filter by the human-readable titles.
+            if (filter != null) {
+                filterBox.setText(filter);
+            }
+        }
 
         View listView = getListView();
         final int bottomPadding = listView.getPaddingBottom();
@@ -353,6 +369,28 @@ public class DeveloperOptionsFragment extends PreferenceFragmentCompat {
             return true;
         });
         sandboxCategory.addPreference(launchSandboxModeTutorialPreference);
+    }
+
+    private void addOnboardingPrefsCatergory() {
+        PreferenceCategory onboardingCategory = newCategory("Onboarding Flows");
+        onboardingCategory.setSummary("Reset these if you want to see the education again.");
+        for (Map.Entry<String, String[]> titleAndKeys : OnboardingPrefs.ALL_PREF_KEYS.entrySet()) {
+            String title = titleAndKeys.getKey();
+            String[] keys = titleAndKeys.getValue();
+            Preference onboardingPref = new Preference(getContext());
+            onboardingPref.setTitle(title);
+            onboardingPref.setSummary("Tap to reset");
+            onboardingPref.setOnPreferenceClickListener(preference -> {
+                SharedPreferences.Editor sharedPrefsEdit = Utilities.getPrefs(getContext()).edit();
+                for (String key : keys) {
+                    sharedPrefsEdit.remove(key);
+                }
+                sharedPrefsEdit.apply();
+                Toast.makeText(getContext(), "Reset " + title, Toast.LENGTH_SHORT).show();
+                return true;
+            });
+            onboardingCategory.addPreference(onboardingPref);
+        }
     }
 
     private String toName(String action) {

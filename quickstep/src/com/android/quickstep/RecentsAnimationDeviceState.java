@@ -18,6 +18,7 @@ package com.android.quickstep;
 import static android.app.WindowConfiguration.ACTIVITY_TYPE_UNDEFINED;
 import static android.app.WindowConfiguration.WINDOWING_MODE_PINNED;
 import static android.content.Intent.ACTION_USER_UNLOCKED;
+import static android.view.Display.DEFAULT_DISPLAY;
 
 import static com.android.launcher3.util.DisplayController.CHANGE_ALL;
 import static com.android.launcher3.util.DisplayController.CHANGE_ROTATION;
@@ -58,8 +59,6 @@ import android.os.SystemProperties;
 import android.os.UserManager;
 import android.provider.Settings;
 import android.text.TextUtils;
-import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.Surface;
 
@@ -67,7 +66,6 @@ import androidx.annotation.BinderThread;
 
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.DisplayController.DisplayInfoChangeListener;
 import com.android.launcher3.util.DisplayController.Info;
@@ -85,7 +83,6 @@ import com.android.systemui.shared.system.TaskStackChangeListeners;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Manages the state of the system during a swipe up gesture.
@@ -147,7 +144,7 @@ public class RecentsAnimationDeviceState implements
         mContext = context;
         mDisplayController = DisplayController.INSTANCE.get(context);
         mSysUiNavMode = SysUINavigationMode.INSTANCE.get(context);
-        mDisplayId = mDisplayController.getInfo().id;
+        mDisplayId = DEFAULT_DISPLAY;
         mIsOneHandedModeSupported = SystemProperties.getBoolean(SUPPORT_ONE_HANDED_MODE, false);
         runOnDestroy(() -> mDisplayController.removeChangeListener(this));
         mRotationTouchHelper = RotationTouchHelper.INSTANCE.get(context);
@@ -399,14 +396,6 @@ public class RecentsAnimationDeviceState implements
     }
 
     /**
-     * @return the packages of gesture-blocked activities.
-     */
-    public List<String> getGestureBlockedActivityPackages() {
-        return mGestureBlockedActivities.stream().map(ComponentName::getPackageName)
-                .collect(Collectors.toList());
-    }
-
-    /**
      * Updates the system ui state flags from SystemUI.
      */
     public void setSystemUiFlags(int stateFlags) {
@@ -591,8 +580,7 @@ public class RecentsAnimationDeviceState implements
             final Info displayInfo = mDisplayController.getInfo();
             return (mRotationTouchHelper.touchInOneHandedModeRegion(ev)
                 && displayInfo.rotation != Surface.ROTATION_90
-                && displayInfo.rotation != Surface.ROTATION_270
-                && displayInfo.densityDpi < DisplayMetrics.DENSITY_600);
+                && displayInfo.rotation != Surface.ROTATION_270);
         }
         return false;
     }

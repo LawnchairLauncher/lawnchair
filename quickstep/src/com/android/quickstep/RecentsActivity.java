@@ -22,8 +22,8 @@ import static com.android.launcher3.QuickstepTransitionManager.RECENTS_LAUNCH_DU
 import static com.android.launcher3.QuickstepTransitionManager.STATUS_BAR_TRANSITION_DURATION;
 import static com.android.launcher3.QuickstepTransitionManager.STATUS_BAR_TRANSITION_PRE_DELAY;
 import static com.android.launcher3.Utilities.createHomeIntent;
-import static com.android.launcher3.graphics.SysUiScrim.SYSUI_PROGRESS;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
+import static com.android.launcher3.graphics.SysUiScrim.SYSUI_PROGRESS;
 import static com.android.launcher3.testing.TestProtocol.OVERVIEW_STATE_ORDINAL;
 import static com.android.quickstep.TaskUtils.taskIsATargetWithMode;
 import static com.android.quickstep.TaskViewUtils.createRecentsWindowAnimator;
@@ -60,6 +60,8 @@ import com.android.launcher3.statemanager.StateManager;
 import com.android.launcher3.statemanager.StateManager.AtomicAnimationFactory;
 import com.android.launcher3.statemanager.StateManager.StateHandler;
 import com.android.launcher3.statemanager.StatefulActivity;
+import com.android.launcher3.taskbar.FallbackTaskbarUIController;
+import com.android.launcher3.taskbar.TaskbarManager;
 import com.android.launcher3.util.ActivityOptionsWrapper;
 import com.android.launcher3.util.ActivityTracker;
 import com.android.launcher3.util.RunnableList;
@@ -73,9 +75,9 @@ import com.android.quickstep.fallback.RecentsDragLayer;
 import com.android.quickstep.fallback.RecentsState;
 import com.android.quickstep.util.RecentsAtomicAnimationFactory;
 import com.android.quickstep.util.SplitSelectStateController;
+import com.android.quickstep.util.TISBindHelper;
 import com.android.quickstep.views.OverviewActionsView;
 import com.android.quickstep.views.RecentsView;
-import com.android.quickstep.views.SplitPlaceholderView;
 import com.android.quickstep.views.TaskView;
 import com.android.systemui.shared.system.ActivityOptionsCompat;
 import com.android.systemui.shared.system.RemoteAnimationAdapterCompat;
@@ -102,6 +104,9 @@ public final class RecentsActivity extends StatefulActivity<RecentsState> {
     private ScrimView mScrimView;
     private FallbackRecentsView mFallbackRecentsView;
     private OverviewActionsView mActionsView;
+    private TISBindHelper mTISBindHelper;
+    private @Nullable TaskbarManager mTaskbarManager;
+    private @Nullable FallbackTaskbarUIController mTaskbarUIController;
 
     private Configuration mOldConfig;
 
@@ -122,13 +127,31 @@ public final class RecentsActivity extends StatefulActivity<RecentsState> {
         mActionsView = findViewById(R.id.overview_actions_view);
         SYSUI_PROGRESS.set(getRootView().getSysUiScrim(), 0f);
 
-        SplitPlaceholderView splitPlaceholderView = findViewById(R.id.split_placeholder);
-        splitPlaceholderView.init(
-                new SplitSelectStateController(mUiHandler, SystemUiProxy.INSTANCE.get(this))
-        );
-
+        SplitSelectStateController controller =
+                new SplitSelectStateController(mHandler, SystemUiProxy.INSTANCE.get(this),
+                        getStateManager(), null /*depthController*/);
         mDragLayer.recreateControllers();
-        mFallbackRecentsView.init(mActionsView, splitPlaceholderView);
+        mFallbackRecentsView.init(mActionsView, controller);
+
+        mTISBindHelper = new TISBindHelper(this, this::onTISConnected);
+    }
+
+    private void onTISConnected(TouchInteractionService.TISBinder binder) {
+        mTaskbarManager = binder.getTaskbarManager();
+        mTaskbarManager.setActivity(this);
+    }
+
+    @Override
+    public void runOnBindToTouchInteractionService(Runnable r) {
+        mTISBindHelper.runOnBindToTouchInteractionService(r);
+    }
+
+    public void setTaskbarUIController(FallbackTaskbarUIController taskbarUIController) {
+        mTaskbarUIController = taskbarUIController;
+    }
+
+    public FallbackTaskbarUIController getTaskbarUIController() {
+        return mTaskbarUIController;
     }
 
     @Override
@@ -228,7 +251,7 @@ public final class RecentsActivity extends StatefulActivity<RecentsState> {
         RemoteAnimationAdapterCompat adapterCompat = new RemoteAnimationAdapterCompat(
                 wrapper, RECENTS_LAUNCH_DURATION,
                 RECENTS_LAUNCH_DURATION - STATUS_BAR_TRANSITION_DURATION
-                        - STATUS_BAR_TRANSITION_PRE_DELAY);
+                        - STATUS_BAR_TRANSITION_PRE_DELAY, getIApplicationThread());
         final ActivityOptionsWrapper activityOptions = new ActivityOptionsWrapper(
                 ActivityOptionsCompat.makeRemoteAnimation(adapterCompat),
                 onEndCallback);
@@ -290,7 +313,7 @@ public final class RecentsActivity extends StatefulActivity<RecentsState> {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mStateManager = new StateManager<>(this, RecentsState.DEFAULT);
+        mStateManager = new StateManager<>(this, RecentsState.BG_LAUNCHER);
 
         mOldConfig = new Configuration(getResources().getConfiguration());
         initDeviceProfile();
@@ -350,6 +373,11 @@ public final class RecentsActivity extends StatefulActivity<RecentsState> {
         super.onDestroy();
         ACTIVITY_TRACKER.onActivityDestroyed(this);
         mActivityLaunchAnimationRunner = null;
+
+        mTISBindHelper.onDestroy();
+        if (mTaskbarManager != null) {
+            mTaskbarManager.clearActivity(this);
+        }
     }
 
     @Override
@@ -372,7 +400,8 @@ public final class RecentsActivity extends StatefulActivity<RecentsState> {
         LauncherAnimationRunner runner = new LauncherAnimationRunner(
                 getMainThreadHandler(), mAnimationToHomeFactory, true);
         RemoteAnimationAdapterCompat adapterCompat =
-                new RemoteAnimationAdapterCompat(runner, HOME_APPEAR_DURATION, 0);
+                new RemoteAnimationAdapterCompat(runner, HOME_APPEAR_DURATION, 0,
+                        getIApplicationThread());
         startActivity(createHomeIntent(),
                 ActivityOptionsCompat.makeRemoteAnimation(adapterCompat).toBundle());
     }

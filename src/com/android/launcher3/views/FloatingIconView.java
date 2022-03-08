@@ -70,6 +70,8 @@ public class FloatingIconView extends FrameLayout implements
 
     // Manages loading the icon on a worker thread
     private static @Nullable IconLoadResult sIconLoadResult;
+    private static long sFetchIconId = 0;
+    private static long sRecycledFetchIconId = sFetchIconId;
 
     public static final float SHAPE_PROGRESS_DURATION = 0.10f;
     private static final RectF sTmpRectF = new RectF();
@@ -86,7 +88,6 @@ public class FloatingIconView extends FrameLayout implements
 
     private IconLoadResult mIconLoadResult;
 
-    // Draw the drawable of the BubbleTextView behind ClipIconView to reveal the built in shadow.
     private View mBtvDrawable;
 
     private ClipIconView mClipIconView;
@@ -347,10 +348,23 @@ public class FloatingIconView extends FrameLayout implements
             }
         }
 
-        if (!mIsOpening && btvIcon != null) {
+        setOriginalDrawableBackground(btvIcon);
+        invalidate();
+    }
+
+    /**
+     * Draws the drawable of the BubbleTextView behind ClipIconView
+     *
+     * This is used to:
+     * - Have icon displayed while Adaptive Icon is loading
+     * - Displays the built in shadow to ensure a clean handoff
+     *
+     * Allows nullable as this may be cleared when drawing is deferred to ClipIconView.
+     */
+    private void setOriginalDrawableBackground(@Nullable Drawable btvIcon) {
+        if (!mIsOpening) {
             mBtvDrawable.setBackground(btvIcon);
         }
-        invalidate();
     }
 
     /**
@@ -455,10 +469,12 @@ public class FloatingIconView extends FrameLayout implements
 
     @Override
     public void onAnimationStart(Animator animator) {
-        if (mIconLoadResult != null && mIconLoadResult.isIconLoaded) {
+        if ((mIconLoadResult != null && mIconLoadResult.isIconLoaded)
+                || (!mIsOpening && mBtvDrawable.getBackground() != null)) {
+            // No need to wait for icon load since we can display the BubbleTextView drawable.
             setVisibility(View.VISIBLE);
         }
-        if (!mIsOpening) {
+        if (!mIsOpening && mOriginalIcon != null) {
             // When closing an app, we want the item on the workspace to be invisible immediately
             setIconAndDotVisible(mOriginalIcon, false);
         }
@@ -518,9 +534,15 @@ public class FloatingIconView extends FrameLayout implements
 
         IconLoadResult result = new IconLoadResult(info,
                 btvIcon == null ? false : btvIcon.isThemed());
+        result.btvDrawable = btvIcon;
 
-        MODEL_EXECUTOR.getHandler().postAtFrontOfQueue(() ->
-                getIconResult(l, v, info, position, btvIcon, result));
+        final long fetchIconId = sFetchIconId++;
+        MODEL_EXECUTOR.getHandler().postAtFrontOfQueue(() -> {
+            if (fetchIconId < sRecycledFetchIconId) {
+                return;
+            }
+            getIconResult(l, v, info, position, btvIcon, result);
+        });
 
         sIconLoadResult = result;
         return result;
@@ -551,6 +573,7 @@ public class FloatingIconView extends FrameLayout implements
                 view.mIconLoadResult = fetchIcon(launcher, originalView,
                         (ItemInfo) originalView.getTag(), isOpening);
             }
+            view.setOriginalDrawableBackground(view.mIconLoadResult.btvDrawable);
         }
         sIconLoadResult = null;
 
@@ -622,6 +645,7 @@ public class FloatingIconView extends FrameLayout implements
         mOnTargetChangeRunnable = null;
         mBadge = null;
         sTmpObjArray[0] = null;
+        sRecycledFetchIconId = sFetchIconId;
         mIconLoadResult = null;
         mClipIconView.recycle();
         mBtvDrawable.setBackground(null);

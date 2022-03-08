@@ -21,7 +21,6 @@ import android.view.MotionEvent;
 import android.view.ViewConfiguration;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.VisibleForTesting;
 
 import com.android.launcher3.Utilities;
 
@@ -43,13 +42,7 @@ public class BothAxesSwipeDetector extends BaseSwipeDetector {
     private int mScrollDirections;
 
     public BothAxesSwipeDetector(@NonNull Context context, @NonNull Listener l) {
-        this(ViewConfiguration.get(context), l, Utilities.isRtl(context.getResources()));
-    }
-
-    @VisibleForTesting
-    protected BothAxesSwipeDetector(@NonNull ViewConfiguration config, @NonNull Listener l,
-            boolean isRtl) {
-        super(config, isRtl);
+        super(context, ViewConfiguration.get(context), Utilities.isRtl(context.getResources()));
         mListener = l;
     }
 

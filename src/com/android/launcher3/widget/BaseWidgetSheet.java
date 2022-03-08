@@ -19,6 +19,7 @@ import android.content.Context;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
@@ -51,6 +52,13 @@ import com.android.launcher3.views.ArrowTipView;
 public abstract class BaseWidgetSheet extends AbstractSlideInView<Launcher>
         implements OnClickListener, OnLongClickListener, DragSource,
         PopupDataProvider.PopupDataChangeListener, Insettable {
+    /** The default number of cells that can fit horizontally in a widget sheet. */
+    protected static final int DEFAULT_MAX_HORIZONTAL_SPANS = 4;
+    /**
+     * The maximum scale, [0, 1], of the device screen width that the widgets picker can consume
+     * on large screen devices.
+     */
+    protected static final float MAX_WIDTH_SCALE_FOR_LARGER_SCREEN = 0.89f;
 
     protected static final String KEY_WIDGETS_EDUCATION_TIP_SEEN =
             "launcher.widgets_education_tip_seen";
@@ -59,8 +67,12 @@ public abstract class BaseWidgetSheet extends AbstractSlideInView<Launcher>
     /* Touch handling related member variables. */
     private Toast mWidgetInstructionToast;
 
+    private int mContentHorizontalMarginInPx;
+
     public BaseWidgetSheet(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        mContentHorizontalMarginInPx = getResources().getDimensionPixelSize(
+                R.dimen.widget_list_horizontal_margin);
     }
 
     protected int getScrimColor(Context context) {
@@ -97,6 +109,9 @@ public abstract class BaseWidgetSheet extends AbstractSlideInView<Launcher>
 
     @Override
     public boolean onLongClick(View v) {
+        if (TestProtocol.sDebugTracing) {
+            Log.d(TestProtocol.NO_DROP_TARGET, "1");
+        }
         TestLogging.recordEvent(TestProtocol.SEQUENCE_MAIN, "Widgets.onLongClick");
         v.cancelLongPress();
         if (!ItemLongClickListener.canStartDrag(mActivityContext)) return false;
@@ -112,8 +127,16 @@ public abstract class BaseWidgetSheet extends AbstractSlideInView<Launcher>
     @Override
     public void setInsets(Rect insets) {
         mInsets.set(insets);
+        int contentHorizontalMarginInPx = getResources().getDimensionPixelSize(
+                R.dimen.widget_list_horizontal_margin);
+        if (contentHorizontalMarginInPx != mContentHorizontalMarginInPx) {
+            onContentHorizontalMarginChanged(contentHorizontalMarginInPx);
+            mContentHorizontalMarginInPx = contentHorizontalMarginInPx;
+        }
     }
 
+    /** Called when the horizontal margin of the content view has changed. */
+    protected abstract void onContentHorizontalMarginChanged(int contentHorizontalMarginInPx);
 
     /**
      * Measures the dimension of this view and its children by taking system insets, navigation bar,
@@ -131,6 +154,15 @@ public abstract class BaseWidgetSheet extends AbstractSlideInView<Launcher>
                     2 * (mInsets.left + mInsets.right));
         }
 
+        if (deviceProfile.isTablet || deviceProfile.isTwoPanels) {
+            // In large screen devices, we restrict the width of the widgets picker to show part of
+            // the home screen. Let's ensure the minimum width used is at least the minimum width
+            // that isn't taken by the widgets picker.
+            int minUsedWidth = (int) (deviceProfile.availableWidthPx
+                    * (1 - MAX_WIDTH_SCALE_FOR_LARGER_SCREEN));
+            widthUsed = Math.max(widthUsed, minUsedWidth);
+        }
+
         int heightUsed = mInsets.top + deviceProfile.edgeMarginPx;
         measureChildWithMargins(mContent, widthMeasureSpec,
                 widthUsed, heightMeasureSpec, heightUsed);
@@ -138,7 +170,21 @@ public abstract class BaseWidgetSheet extends AbstractSlideInView<Launcher>
                 MeasureSpec.getSize(heightMeasureSpec));
     }
 
+    /** Returns the number of cells that can fit horizontally in a given {@code content}. */
+    protected int computeMaxHorizontalSpans(View content, int contentHorizontalPaddingPx) {
+        DeviceProfile deviceProfile = mActivityContext.getDeviceProfile();
+        int availableWidth = content.getMeasuredWidth() - contentHorizontalPaddingPx;
+        Point cellSize = deviceProfile.getCellSize();
+        if (cellSize.x > 0) {
+            return availableWidth / cellSize.x;
+        }
+        return DEFAULT_MAX_HORIZONTAL_SPANS;
+    }
+
     private boolean beginDraggingWidget(WidgetCell v) {
+        if (TestProtocol.sDebugTracing) {
+            Log.d(TestProtocol.NO_DROP_TARGET, "2");
+        }
         // Get the widget preview as the drag representation
         WidgetImageView image = v.getWidgetView();
 
@@ -149,7 +195,9 @@ public abstract class BaseWidgetSheet extends AbstractSlideInView<Launcher>
         }
 
         PendingItemDragHelper dragHelper = new PendingItemDragHelper(v);
-        dragHelper.setRemoteViewsPreview(v.getRemoteViewsPreview());
+        // RemoteViews are being rendered in AppWidgetHostView in WidgetCell. And thus, the scale of
+        // RemoteViews is equivalent to the AppWidgetHostView scale.
+        dragHelper.setRemoteViewsPreview(v.getRemoteViewsPreview(), v.getAppWidgetHostViewScale());
         dragHelper.setAppWidgetHostViewPreview(v.getAppWidgetHostViewPreview());
 
         if (image.getDrawable() != null) {
@@ -159,11 +207,11 @@ public abstract class BaseWidgetSheet extends AbstractSlideInView<Launcher>
             dragHelper.startDrag(image.getBitmapBounds(), image.getDrawable().getIntrinsicWidth(),
                     image.getWidth(), new Point(loc[0], loc[1]), this, new DragOptions());
         } else {
-            View preview = v.getAppWidgetHostViewPreview();
+            NavigableAppWidgetHostView preview = v.getAppWidgetHostViewPreview();
             int[] loc = new int[2];
             getPopupContainer().getLocationInDragLayer(preview, loc);
-
-            Rect r = new Rect(0, 0, preview.getWidth(), preview.getHeight());
+            Rect r = new Rect();
+            preview.getWorkspaceVisualDragBounds(r);
             dragHelper.startDrag(r, preview.getMeasuredWidth(), preview.getMeasuredWidth(),
                     new Point(loc[0], loc[1]), this, new DragOptions());
         }

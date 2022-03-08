@@ -21,6 +21,9 @@ min_launcher3_sdk_version = "26"
 
 android_library {
     name: "launcher-aosp-tapl",
+    libs: [
+        "framework-statsd",
+    ],
     static_libs: [
         "androidx.annotation_annotation",
         "androidx.test.runner",
@@ -137,9 +140,13 @@ android_app {
     ],
     srcs: [
         "src/**/*.java",
+        "src/**/*.kt",
         "src_shortcuts_overrides/**/*.java",
+        "src_shortcuts_overrides/**/*.kt",
         "src_ui_overrides/**/*.java",
+        "src_ui_overrides/**/*.kt",
         "ext_tests/src/**/*.java",
+        "ext_tests/src/**/*.kt",
     ],
     resource_dirs: [
         "ext_tests/res",
@@ -180,8 +187,12 @@ android_library {
     resource_dirs: [
         "quickstep/res",
     ],
+    libs: [
+        "framework-statsd",
+    ],
     static_libs: [
         "Launcher3ResLib",
+        "lottie",
         "SystemUISharedLib",
         "SystemUI-statsd",
     ],
@@ -193,7 +204,10 @@ android_library {
 // Source code used for test helpers
 filegroup {
     name: "launcher-src-ext-tests",
-    srcs: ["ext_tests/src/**/*.java"],
+    srcs: [
+        "ext_tests/src/**/*.java",
+        "ext_tests/src/**/*.kt",
+    ],
 }
 
 // Common source files used to build launcher
@@ -201,8 +215,11 @@ filegroup {
     name: "launcher-src-no-build-config",
     srcs: [
         "src/**/*.java",
+        "src/**/*.kt",
         "src_shortcuts_overrides/**/*.java",
+        "src_shortcuts_overrides/**/*.kt",
         "quickstep/src/**/*.java",
+        "quickstep/src/**/*.kt",
     ],
 }
 
@@ -212,20 +229,27 @@ filegroup {
     srcs: ["proguard.flags"],
 }
 
-
 // Library with all the dependencies for building Launcher Go
 android_library {
     name: "LauncherGoResLib",
     srcs: [
         "src/**/*.java",
+        "src/**/*.kt",
         "quickstep/src/**/*.java",
+        "quickstep/src/**/*.kt",
         "go/src/**/*.java",
+        "go/src/**/*.kt",
         "go/quickstep/src/**/*.java",
+        "go/quickstep/src/**/*.kt",
     ],
     resource_dirs: [
         "go/res",
         "go/quickstep/res",
     ],
+    // Note the ordering here is important when it comes to resource
+    // overriding. We want the most specific resource overrides defined
+    // in QuickstepResLib to take precendece, so it should be the final
+    // dependency. See b/205278434 for how this can go wrong.
     static_libs: [
         "Launcher3CommonDepsLib",
         "QuickstepResLib",
@@ -241,3 +265,30 @@ android_library {
     },
 }
 
+// Build rule for Quickstep library
+android_library {
+    name: "Launcher3QuickStepLib",
+    srcs: [
+        ":launcher-src-no-build-config",
+    ],
+    resource_dirs: [],
+    libs: [
+        "framework-statsd",
+    ],
+    // Note the ordering here is important when it comes to resource
+    // overriding. We want the most specific resource overrides defined
+    // in QuickstepResLib to take precendece, so it should be the final
+    // dependency. See b/208647810 for how this can go wrong.
+    static_libs: [
+        "SystemUI-statsd",
+        "SystemUISharedLib",
+        "Launcher3CommonDepsLib",
+        "QuickstepResLib",
+    ],
+    manifest: "quickstep/AndroidManifest.xml",
+    platform_apis: true,
+    min_sdk_version: "current",
+    lint: {
+        baseline_filename: "lint-baseline-launcher3.xml",
+    },
+}

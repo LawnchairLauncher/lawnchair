@@ -32,13 +32,13 @@ import android.view.View;
 import androidx.annotation.Nullable;
 
 import com.android.launcher3.BubbleTextView;
-import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.dragndrop.DraggableView;
 import com.android.launcher3.icons.BitmapRenderer;
 import com.android.launcher3.icons.FastBitmapDrawable;
 import com.android.launcher3.util.SafeCloseable;
+import com.android.launcher3.views.ActivityContext;
 import com.android.launcher3.widget.LauncherAppWidgetHostView;
 
 import java.nio.ByteBuffer;
@@ -150,7 +150,7 @@ public class DragPreviewProvider {
     }
 
     public float getScaleAndPosition(Drawable preview, int[] outPos) {
-        float scale = Launcher.getLauncher(mView.getContext())
+        float scale = ActivityContext.lookupContext(mView.getContext())
                 .getDragLayer().getLocationInDragLayer(mView, outPos);
         if (mView instanceof LauncherAppWidgetHostView) {
             // App widgets are technically scaled, but are drawn at their expected size -- so the
@@ -167,7 +167,7 @@ public class DragPreviewProvider {
 
     /** Returns the scale and position of a given view for drag-n-drop. */
     public float getScaleAndPosition(View view, int[] outPos) {
-        float scale = Launcher.getLauncher(mView.getContext())
+        float scale = ActivityContext.lookupContext(mView.getContext())
                 .getDragLayer().getLocationInDragLayer(mView, outPos);
         if (mView instanceof LauncherAppWidgetHostView) {
             // App widgets are technically scaled, but are drawn at their expected size -- so the
@@ -201,7 +201,7 @@ public class DragPreviewProvider {
         public void run() {
             Bitmap preview = convertPreviewToAlphaBitmap(mPreviewSnapshot);
             if (mIsIcon) {
-                int size = Launcher.getLauncher(mContext).getDeviceProfile().iconSizePx;
+                int size = ActivityContext.lookupContext(mContext).getDeviceProfile().iconSizePx;
                 preview = Bitmap.createScaledBitmap(preview, size, size, false);
             }
             //else case covers AppWidgetHost (doesn't drag/drop across different device profiles)

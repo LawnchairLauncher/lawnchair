@@ -17,6 +17,8 @@
 package com.android.launcher3.uioverrides;
 
 import static com.android.launcher3.anim.Interpolators.AGGRESSIVE_EASE_IN_OUT;
+import static com.android.launcher3.anim.Interpolators.FINAL_FRAME;
+import static com.android.launcher3.anim.Interpolators.INSTANT;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_OVERVIEW_FADE;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_OVERVIEW_MODAL;
@@ -27,8 +29,6 @@ import static com.android.launcher3.states.StateAnimationConfig.SKIP_OVERVIEW;
 import static com.android.quickstep.views.RecentsView.ADJACENT_PAGE_HORIZONTAL_OFFSET;
 import static com.android.quickstep.views.RecentsView.RECENTS_GRID_PROGRESS;
 import static com.android.quickstep.views.RecentsView.RECENTS_SCALE_PROPERTY;
-import static com.android.quickstep.views.RecentsView.TASK_PRIMARY_SPLIT_TRANSLATION;
-import static com.android.quickstep.views.RecentsView.TASK_SECONDARY_SPLIT_TRANSLATION;
 import static com.android.quickstep.views.RecentsView.TASK_SECONDARY_TRANSLATION;
 
 import android.util.FloatProperty;
@@ -40,7 +40,6 @@ import com.android.launcher3.LauncherState;
 import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.statemanager.StateManager.StateHandler;
 import com.android.launcher3.states.StateAnimationConfig;
-import com.android.launcher3.touch.PagedOrientationHandler;
 import com.android.quickstep.views.RecentsView;
 
 /**
@@ -97,13 +96,6 @@ public abstract class BaseRecentsViewStateController<T extends RecentsView>
                 config.getInterpolator(ANIM_OVERVIEW_TRANSLATE_X, LINEAR));
         setter.setFloat(mRecentsView, TASK_SECONDARY_TRANSLATION, 0f,
                 config.getInterpolator(ANIM_OVERVIEW_TRANSLATE_Y, LINEAR));
-        PagedOrientationHandler orientationHandler =
-                ((RecentsView) mLauncher.getOverviewPanel()).getPagedOrientationHandler();
-        FloatProperty taskViewsFloat = orientationHandler.getSplitSelectTaskOffset(
-                TASK_PRIMARY_SPLIT_TRANSLATION, TASK_SECONDARY_SPLIT_TRANSLATION,
-                mLauncher.getDeviceProfile());
-        setter.setFloat(mRecentsView, taskViewsFloat,
-                toState.getSplitSelectTranslation(mLauncher), LINEAR);
 
         setter.setFloat(mRecentsView, getContentAlphaProperty(), toState.overviewUi ? 1 : 0,
                 config.getInterpolator(ANIM_OVERVIEW_FADE, AGGRESSIVE_EASE_IN_OUT));
@@ -112,8 +104,9 @@ public abstract class BaseRecentsViewStateController<T extends RecentsView>
                 mRecentsView, getTaskModalnessProperty(),
                 toState.getOverviewModalness(),
                 config.getInterpolator(ANIM_OVERVIEW_MODAL, LINEAR));
-        setter.setFloat(mRecentsView, RECENTS_GRID_PROGRESS,
-                toState.displayOverviewTasksAsGrid(mLauncher.getDeviceProfile()) ? 1f : 0f, LINEAR);
+        boolean showAsGrid = toState.displayOverviewTasksAsGrid(mLauncher.getDeviceProfile());
+        setter.setFloat(mRecentsView, RECENTS_GRID_PROGRESS, showAsGrid ? 1f : 0f,
+                showAsGrid ? INSTANT : FINAL_FRAME);
     }
 
     abstract FloatProperty getTaskModalnessProperty();

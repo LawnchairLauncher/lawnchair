@@ -1,19 +1,24 @@
 package com.android.launcher3.util;
 
+import static com.android.launcher3.widget.WidgetSections.NO_CATEGORY;
+
 import android.os.UserHandle;
 import android.service.notification.StatusBarNotification;
+import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.android.launcher3.model.data.ItemInfo;
+import com.android.launcher3.model.data.PackageItemInfo;
 
-import java.util.Arrays;
+import java.util.Objects;
 
-/** Creates a hash key based on package name and user. */
+/** Creates a hash key based on package name, widget category, and user. */
 public class PackageUserKey {
 
     public String mPackageName;
+    public int mWidgetCategory;
     public UserHandle mUser;
     private int mHashCode;
 
@@ -27,14 +32,31 @@ public class PackageUserKey {
         return new PackageUserKey(notification.getPackageName(), notification.getUser());
     }
 
+    /** Creates a {@link PackageUserKey} from {@link PackageItemInfo}. */
+    public static PackageUserKey fromPackageItemInfo(PackageItemInfo info) {
+        if (TextUtils.isEmpty(info.packageName) && info.widgetCategory != NO_CATEGORY) {
+            return new PackageUserKey(info.widgetCategory, info.user);
+        }
+        return new PackageUserKey(info.packageName, info.user);
+    }
+
     public PackageUserKey(String packageName, UserHandle user) {
         update(packageName, user);
     }
 
+    public PackageUserKey(int widgetCategory, UserHandle user) {
+        update(/* packageName= */ "", widgetCategory, user);
+    }
+
     public void update(String packageName, UserHandle user) {
+        update(packageName, NO_CATEGORY, user);
+    }
+
+    private void update(String packageName, int widgetCategory, UserHandle user) {
         mPackageName = packageName;
+        mWidgetCategory = widgetCategory;
         mUser = user;
-        mHashCode = Arrays.hashCode(new Object[] {packageName, user});
+        mHashCode = Objects.hash(packageName, widgetCategory, user);
     }
 
     /**
@@ -59,12 +81,14 @@ public class PackageUserKey {
     public boolean equals(Object obj) {
         if (!(obj instanceof PackageUserKey)) return false;
         PackageUserKey otherKey = (PackageUserKey) obj;
-        return mPackageName.equals(otherKey.mPackageName) && mUser.equals(otherKey.mUser);
+        return Objects.equals(mPackageName, otherKey.mPackageName)
+                && mWidgetCategory == otherKey.mWidgetCategory
+                && Objects.equals(mUser, otherKey.mUser);
     }
 
     @NonNull
     @Override
     public String toString() {
-        return mPackageName + "#" + mUser;
+        return mPackageName + "#" + mUser + ",category=" + mWidgetCategory;
     }
 }
