@@ -19,6 +19,7 @@ import static android.view.View.MeasureSpec.EXACTLY;
 import static android.view.View.MeasureSpec.UNSPECIFIED;
 import static android.view.View.MeasureSpec.makeMeasureSpec;
 
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ALLAPPS_SCROLLED;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ALLAPPS_VERTICAL_SWIPE_BEGIN;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ALLAPPS_VERTICAL_SWIPE_END;
 import static com.android.launcher3.util.LogConfig.SEARCH_LOGGING;
@@ -203,6 +204,7 @@ public class AllAppsRecyclerView extends BaseRecyclerView {
         StatsLogManager mgr = ActivityContext.lookupContext(getContext()).getStatsLogManager();
         switch (state) {
             case SCROLL_STATE_DRAGGING:
+                mgr.logger().log(LAUNCHER_ALLAPPS_SCROLLED);
                 requestFocus();
                 mgr.logger().sendToInteractionJankMonitor(
                         LAUNCHER_ALLAPPS_VERTICAL_SWIPE_BEGIN, this);

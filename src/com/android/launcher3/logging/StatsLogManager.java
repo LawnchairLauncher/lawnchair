@@ -527,7 +527,11 @@ public class StatsLogManager implements ResourceBasedOverride {
         LAUNCHER_TASKBAR_LONGPRESS_SHOW(897),
 
         @UiEvent(doc = "User clicks on the search icon on header to launch search in app.")
-        LAUNCHER_ALLAPPS_SEARCHINAPP_LAUNCH(913);
+        LAUNCHER_ALLAPPS_SEARCHINAPP_LAUNCH(913),
+
+        @UiEvent(doc = "User scrolled on one of the all apps surfaces such as A-Z list, search "
+                + "result page etc.")
+        LAUNCHER_ALLAPPS_SCROLLED(985);
 
         // ADD MORE
 

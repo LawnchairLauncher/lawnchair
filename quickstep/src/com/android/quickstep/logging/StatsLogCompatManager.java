@@ -19,6 +19,7 @@ package com.android.quickstep.logging;
 import static androidx.core.util.Preconditions.checkNotNull;
 import static androidx.core.util.Preconditions.checkState;
 
+import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_NON_ACTIONABLE;
 import static com.android.launcher3.logger.LauncherAtom.ContainerInfo.ContainerCase.EXTENDED_CONTAINERS;
 import static com.android.launcher3.logger.LauncherAtom.ContainerInfo.ContainerCase.FOLDER;
 import static com.android.launcher3.logger.LauncherAtom.ContainerInfo.ContainerCase.SEARCH_RESULT_CONTAINER;
@@ -82,6 +83,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class StatsLogCompatManager extends StatsLogManager {
 
     private static final String TAG = "StatsLog";
+    private static final String LATENCY_TAG = "StatsLatencyLog";
     private static final boolean IS_VERBOSE = Utilities.isPropertyEnabled(LogConfig.STATSLOG);
     private static final InstanceId DEFAULT_INSTANCE_ID = InstanceId.fakeInstanceId(0);
     // LauncherAtom.ItemInfo.getDefaultInstance() should be used but until launcher proto migrates
@@ -196,7 +198,9 @@ public class StatsLogCompatManager extends StatsLogManager {
     private static class StatsCompatLogger implements StatsLogger {
 
         private static final ItemInfo DEFAULT_ITEM_INFO = new ItemInfo();
-
+        static {
+            DEFAULT_ITEM_INFO.itemType = ITEM_TYPE_NON_ACTIONABLE;
+        }
         private final Context mContext;
         private final Optional<ActivityContext> mActivityContext;
         private ItemInfo mItemInfo = DEFAULT_ITEM_INFO;
@@ -388,13 +392,21 @@ public class StatsLogCompatManager extends StatsLogManager {
             if (IS_VERBOSE) {
                 String name = (event instanceof Enum) ? ((Enum) event).name() :
                         event.getId() + "";
-
-                Log.d(TAG, instanceId == DEFAULT_INSTANCE_ID
-                        ? String.format("\n%s (State:%s->%s)\n%s", name, getStateString(srcState),
-                        getStateString(dstState), atomInfo)
-                        : String.format("\n%s (State:%s->%s) (InstanceId:%s)\n%s", name,
-                                getStateString(srcState), getStateString(dstState), instanceId,
-                                atomInfo));
+                StringBuilder logStringBuilder = new StringBuilder("\n");
+                if (instanceId != DEFAULT_INSTANCE_ID) {
+                    logStringBuilder.append(String.format("InstanceId:%s ", instanceId));
+                }
+                logStringBuilder.append(name);
+                if (srcState != LAUNCHER_STATE_UNSPECIFIED
+                        || dstState != LAUNCHER_STATE_UNSPECIFIED) {
+                    logStringBuilder.append(
+                            String.format("(State:%s->%s)", getStateString(srcState),
+                                    getStateString(dstState)));
+                }
+                if (mItemInfo != DEFAULT_ITEM_INFO) {
+                    logStringBuilder.append("\n").append(atomInfo);
+                }
+                Log.d(TAG, logStringBuilder.toString());
             }
 
             for (StatsLogConsumer consumer : LOGS_CONSUMER) {
@@ -479,11 +491,12 @@ public class StatsLogCompatManager extends StatsLogManager {
             if (IS_VERBOSE) {
                 String name = (event instanceof Enum) ? ((Enum) event).name() :
                         event.getId() + "";
-
-                Log.d(TAG, mInstanceId == DEFAULT_INSTANCE_ID
-                        ? String.format("\n%s = %dms\n", name, mLatencyInMillis)
-                        : String.format("\n%s = %dms (InstanceId:%s)\n", name,
-                                mLatencyInMillis, mInstanceId));
+                StringBuilder logStringBuilder = new StringBuilder("\n");
+                if (mInstanceId != DEFAULT_INSTANCE_ID) {
+                    logStringBuilder.append(String.format("InstanceId:%s ", mInstanceId));
+                }
+                logStringBuilder.append(String.format("%s=%sms", name, mLatencyInMillis));
+                Log.d(LATENCY_TAG, logStringBuilder.toString());
             }
 
             SysUiStatsLog.write(SysUiStatsLog.LAUNCHER_LATENCY,
