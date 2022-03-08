@@ -587,7 +587,7 @@ public class FloatingIconView extends FrameLayout implements
         view.matchPositionOf(launcher, originalView, isOpening, positionOut);
 
         // We need to add it to the overlay, but keep it invisible until animation starts..
-        view.setVisibility(INVISIBLE);
+        setIconAndDotVisible(view, false);
         parent.addView(view);
         dragLayer.addView(view.mListenerView);
         view.mListenerView.setListener(view::fastFinish);
@@ -596,16 +596,8 @@ public class FloatingIconView extends FrameLayout implements
             view.mEndRunnable = null;
 
             if (hideOriginal) {
-                if (isOpening) {
-                    setIconAndDotVisible(originalView, true);
-                    view.finish(dragLayer);
-                } else {
-                    originalView.setVisibility(VISIBLE);
-                    if (originalView instanceof IconLabelDotView) {
-                        setIconAndDotVisible(originalView, true);
-                    }
-                    view.finish(dragLayer);
-                }
+                setIconAndDotVisible(originalView, true);
+                view.finish(dragLayer);
             } else {
                 view.finish(dragLayer);
             }
