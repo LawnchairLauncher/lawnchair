@@ -43,15 +43,18 @@ public class DeviceGridState implements Comparable<DeviceGridState> {
     public static final String KEY_WORKSPACE_SIZE = "migration_src_workspace_size";
     public static final String KEY_HOTSEAT_COUNT = "migration_src_hotseat_count";
     public static final String KEY_DEVICE_TYPE = "migration_src_device_type";
+    public static final String KEY_DB_FILE = "migration_src_db_file";
 
     private final String mGridSizeString;
     private final int mNumHotseat;
     private final @DeviceType int mDeviceType;
+    private final String mDbFile;
 
     public DeviceGridState(InvariantDeviceProfile idp) {
         mGridSizeString = String.format(Locale.ENGLISH, "%d,%d", idp.numColumns, idp.numRows);
         mNumHotseat = idp.numDatabaseHotseatIcons;
         mDeviceType = idp.deviceType;
+        mDbFile = idp.dbFile;
     }
 
     public DeviceGridState(Context context) {
@@ -59,6 +62,7 @@ public class DeviceGridState implements Comparable<DeviceGridState> {
         mGridSizeString = prefs.getString(KEY_WORKSPACE_SIZE, "");
         mNumHotseat = prefs.getInt(KEY_HOTSEAT_COUNT, -1);
         mDeviceType = prefs.getInt(KEY_DEVICE_TYPE, TYPE_PHONE);
+        mDbFile = prefs.getString(KEY_DB_FILE, "");
     }
 
     /**
@@ -69,6 +73,20 @@ public class DeviceGridState implements Comparable<DeviceGridState> {
     }
 
     /**
+     * Returns the databaseFile for the grid.
+     */
+    public String getDbFile() {
+        return mDbFile;
+    }
+
+    /**
+     * Returns the number of hotseat icons.
+     */
+    public int getNumHotseat() {
+        return mNumHotseat;
+    }
+
+    /**
      * Stores the device state to shared preferences
      */
     public void writeToPrefs(Context context) {
@@ -76,6 +94,7 @@ public class DeviceGridState implements Comparable<DeviceGridState> {
                 .putString(KEY_WORKSPACE_SIZE, mGridSizeString)
                 .putInt(KEY_HOTSEAT_COUNT, mNumHotseat)
                 .putInt(KEY_DEVICE_TYPE, mDeviceType)
+                .putString(KEY_DB_FILE, mDbFile)
                 .apply();
     }
 
@@ -106,6 +125,7 @@ public class DeviceGridState implements Comparable<DeviceGridState> {
                 + "mGridSizeString='" + mGridSizeString + '\''
                 + ", mNumHotseat=" + mNumHotseat
                 + ", mDeviceType=" + mDeviceType
+                + ", mDbFile=" + mDbFile
                 + '}';
     }
 
