@@ -45,6 +45,7 @@ import java.util.Set;
 public class WindowManagerCompat {
 
     public static final int MIN_TABLET_WIDTH = 600;
+    public static final int MIN_LARGE_TABLET_WIDTH = 720;
 
     /**
      * Returns a set of supported render sizes for a internal display.
