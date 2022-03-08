@@ -442,6 +442,7 @@ public class StatsLogCompatManager extends StatsLogManager {
         private final Optional<ActivityContext> mActivityContext;
         private InstanceId mInstanceId = DEFAULT_INSTANCE_ID;
         private LatencyType mType = LatencyType.UNKNOWN;
+        private int mPackageId = 0;
         private long mLatencyInMillis;
 
         StatsCompatLatencyLogger(Context context, ActivityContext activityContext) {
@@ -458,6 +459,12 @@ public class StatsLogCompatManager extends StatsLogManager {
         @Override
         public StatsLatencyLogger withType(LatencyType type) {
             this.mType = type;
+            return this;
+        }
+
+        @Override
+        public StatsLatencyLogger withPackageId(int packageId) {
+            this.mPackageId = packageId;
             return this;
         }
 
@@ -482,7 +489,7 @@ public class StatsLogCompatManager extends StatsLogManager {
             SysUiStatsLog.write(SysUiStatsLog.LAUNCHER_LATENCY,
                     event.getId(), // event_id
                     mInstanceId.getId(), // instance_id
-                    0, // package_id
+                    mPackageId, // package_id
                     mLatencyInMillis, // latency_in_millis
                     mType.getId() //type
             );
