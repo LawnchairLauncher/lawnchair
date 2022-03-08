@@ -22,7 +22,7 @@ import com.android.launcher3.model.data.ItemInfoWithIcon;
 /**
  * Views that contain {@link BubbleTextView} should implement this interface.
  */
-public interface BubbleTextHolder {
+public interface BubbleTextHolder extends IconLabelDotView {
     BubbleTextView getBubbleText();
 
     /**
@@ -31,5 +31,15 @@ public interface BubbleTextHolder {
      * @param itemInfo the new itemInfo
      */
     default void onItemInfoUpdated(ItemInfoWithIcon itemInfo) {
+    }
+
+    @Override
+    default void setIconVisible(boolean visible) {
+        getBubbleText().setIconVisible(visible);
+    }
+
+    @Override
+    default void setForceHideDot(boolean hide) {
+        getBubbleText().setForceHideDot(hide);
     }
 }
