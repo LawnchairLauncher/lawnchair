@@ -3192,4 +3192,15 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
     public ArrowPopup<?> getOptionsPopup() {
         return findViewById(R.id.popup_container);
     }
+
+    /** Pauses view updates that should not be run during the app launch animation. */
+    public void pauseExpensiveViewUpdates() {
+        // Pause page indicator animations as they lead to layer trashing.
+        getWorkspace().getPageIndicator().pauseAnimations();
+    }
+
+    /** Resumes view updates at the end of the app launch animation. */
+    public void resumeExpensiveViewUpdates() {
+        getWorkspace().getPageIndicator().skipAnimationsToEnd();
+    }
 }
