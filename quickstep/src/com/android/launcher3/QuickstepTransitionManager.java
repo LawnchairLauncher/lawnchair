@@ -579,8 +579,8 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
                 }
             }
 
-            // Pause page indicator animations as they lead to layer trashing.
-            mLauncher.getWorkspace().getPageIndicator().pauseAnimations();
+            // Pause expensive view updates as they can lead to layer thrashing and skipped frames.
+            mLauncher.pauseExpensiveViewUpdates();
 
             endListener = () -> {
                 viewsToAnimate.forEach(view -> {
@@ -590,7 +590,7 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
                 if (scrimEnabled) {
                     mLauncher.getScrimView().setBackgroundColor(Color.TRANSPARENT);
                 }
-                mLauncher.getWorkspace().getPageIndicator().skipAnimationsToEnd();
+                mLauncher.resumeExpensiveViewUpdates();
             };
         }
 
