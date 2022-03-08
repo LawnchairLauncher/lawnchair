@@ -19,9 +19,9 @@ import static com.android.launcher3.LauncherAnimUtils.VIEW_BACKGROUND_COLOR;
 import static com.android.launcher3.anim.Interpolators.ACCEL_2;
 import static com.android.launcher3.anim.Interpolators.INSTANT;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
+import static com.android.launcher3.util.DisplayController.getNavigationMode;
 import static com.android.quickstep.AbsSwipeUpHandler.RECENTS_ATTACH_DURATION;
 import static com.android.quickstep.GestureState.GestureEndTarget.RECENTS;
-import static com.android.quickstep.SysUINavigationMode.getMode;
 import static com.android.quickstep.util.RecentsAtomicAnimationFactory.INDEX_RECENTS_FADE_ANIM;
 import static com.android.quickstep.util.RecentsAtomicAnimationFactory.INDEX_RECENTS_TRANSLATE_X_ANIM;
 import static com.android.quickstep.views.RecentsView.ADJACENT_PAGE_HORIZONTAL_OFFSET;
@@ -55,9 +55,10 @@ import com.android.launcher3.statemanager.BaseState;
 import com.android.launcher3.statemanager.StatefulActivity;
 import com.android.launcher3.taskbar.TaskbarUIController;
 import com.android.launcher3.touch.PagedOrientationHandler;
+import com.android.launcher3.util.DisplayController;
+import com.android.launcher3.util.DisplayController.NavigationMode;
 import com.android.launcher3.util.WindowBounds;
 import com.android.launcher3.views.ScrimView;
-import com.android.quickstep.SysUINavigationMode.Mode;
 import com.android.quickstep.util.ActivityInitListener;
 import com.android.quickstep.util.AnimatorControllerWithResistance;
 import com.android.quickstep.util.SplitScreenBounds;
@@ -68,6 +69,7 @@ import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 
 import java.util.HashMap;
+import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
@@ -192,7 +194,12 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
         activity.getStateManager().moveToRestState();
     }
 
-    public void closeOverlay() { }
+    /**
+     * Closes any overlays.
+     */
+    public void closeOverlay() {
+        Optional.ofNullable(getTaskbarController()).ifPresent(TaskbarUIController::hideAllApps);
+    }
 
     public void switchRunningTaskViewToScreenshot(HashMap<Integer, ThumbnailData> thumbnailDatas,
             Runnable runnable) {
@@ -356,8 +363,8 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
     /** Gets the space that the overview actions will take, including bottom margin. */
     private int getOverviewActionsHeight(Context context, DeviceProfile dp) {
         Resources res = context.getResources();
-        return OverviewActionsView.getOverviewActionsBottomMarginPx(getMode(context), dp)
-                + OverviewActionsView.getOverviewActionsTopMarginPx(getMode(context), dp)
+        return OverviewActionsView.getOverviewActionsBottomMarginPx(getNavigationMode(context), dp)
+                + OverviewActionsView.getOverviewActionsTopMarginPx(getNavigationMode(context), dp)
                 + res.getDimensionPixelSize(R.dimen.overview_actions_height);
     }
 
@@ -480,7 +487,7 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
             // Creating the activity controller animation sometimes reapplies the launcher state
             // (because we set the animation as the current state animation), so we reapply the
             // attached state here as well to ensure recents is shown/hidden appropriately.
-            if (SysUINavigationMode.getMode(mActivity) == Mode.NO_BUTTON) {
+            if (DisplayController.getNavigationMode(mActivity) == NavigationMode.NO_BUTTON) {
                 setRecentsAttachedToAppWindow(mIsAttachedToWindow, false);
             }
         }

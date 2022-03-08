@@ -21,6 +21,7 @@ import static android.view.WindowManager.LayoutParams.TYPE_NAVIGATION_BAR_PANEL;
 
 import static com.android.launcher3.util.DisplayController.CHANGE_ACTIVE_SCREEN;
 import static com.android.launcher3.util.DisplayController.CHANGE_DENSITY;
+import static com.android.launcher3.util.DisplayController.CHANGE_NAVIGATION_MODE;
 import static com.android.launcher3.util.DisplayController.CHANGE_SUPPORTED_BOUNDS;
 
 import android.content.ComponentCallbacks;
@@ -40,15 +41,12 @@ import androidx.annotation.Nullable;
 import com.android.launcher3.BaseQuickstepLauncher;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.LauncherAppState;
-import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.statemanager.StatefulActivity;
 import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.DisplayController.Info;
 import com.android.launcher3.util.SettingsCache;
 import com.android.launcher3.util.SimpleBroadcastReceiver;
 import com.android.quickstep.RecentsActivity;
-import com.android.quickstep.SysUINavigationMode;
-import com.android.quickstep.SysUINavigationMode.Mode;
 import com.android.quickstep.SystemUiProxy;
 import com.android.quickstep.TouchInteractionService;
 import com.android.systemui.unfold.UnfoldTransitionProgressProvider;
@@ -59,8 +57,7 @@ import java.io.PrintWriter;
 /**
  * Class to manage taskbar lifecycle
  */
-public class TaskbarManager implements DisplayController.DisplayInfoChangeListener,
-        SysUINavigationMode.NavigationModeChangeListener {
+public class TaskbarManager implements DisplayController.DisplayInfoChangeListener {
 
     private static final Uri USER_SETUP_COMPLETE_URI = Settings.Secure.getUriFor(
             Settings.Secure.USER_SETUP_COMPLETE);
@@ -70,7 +67,6 @@ public class TaskbarManager implements DisplayController.DisplayInfoChangeListen
 
     private final Context mContext;
     private final DisplayController mDisplayController;
-    private final SysUINavigationMode mSysUINavigationMode;
     private final TaskbarNavButtonController mNavButtonController;
     private final SettingsCache.OnChangeListener mUserSetupCompleteListener;
     private final SettingsCache.OnChangeListener mNavBarKidsModeListener;
@@ -89,14 +85,13 @@ public class TaskbarManager implements DisplayController.DisplayInfoChangeListen
      */
     private final TaskbarSharedState mSharedState = new TaskbarSharedState();
 
-    private static final int CHANGE_FLAGS =
-            CHANGE_ACTIVE_SCREEN | CHANGE_DENSITY | CHANGE_SUPPORTED_BOUNDS;
+    private static final int CHANGE_FLAGS = CHANGE_ACTIVE_SCREEN | CHANGE_DENSITY
+            | CHANGE_SUPPORTED_BOUNDS | CHANGE_NAVIGATION_MODE;
 
     private boolean mUserUnlocked = false;
 
     public TaskbarManager(TouchInteractionService service) {
         mDisplayController = DisplayController.INSTANCE.get(service);
-        mSysUINavigationMode = SysUINavigationMode.INSTANCE.get(service);
         Display display =
                 service.getSystemService(DisplayManager.class).getDisplay(DEFAULT_DISPLAY);
         mContext = service.createWindowContext(display, TYPE_NAVIGATION_BAR_PANEL, null);
@@ -137,7 +132,6 @@ public class TaskbarManager implements DisplayController.DisplayInfoChangeListen
         mShutdownReceiver = new SimpleBroadcastReceiver(i -> destroyExistingTaskbar());
 
         mDisplayController.addChangeListener(this);
-        mSysUINavigationMode.addModeChangeListener(this);
         SettingsCache.INSTANCE.get(mContext).register(USER_SETUP_COMPLETE_URI,
                 mUserSetupCompleteListener);
         SettingsCache.INSTANCE.get(mContext).register(NAV_BAR_KIDS_MODE,
@@ -145,11 +139,6 @@ public class TaskbarManager implements DisplayController.DisplayInfoChangeListen
         mContext.registerComponentCallbacks(mComponentCallbacks);
         mShutdownReceiver.register(mContext, Intent.ACTION_SHUTDOWN);
 
-        recreateTaskbar();
-    }
-
-    @Override
-    public void onNavigationModeChanged(Mode newMode) {
         recreateTaskbar();
     }
 
@@ -301,7 +290,6 @@ public class TaskbarManager implements DisplayController.DisplayInfoChangeListen
     public void destroy() {
         destroyExistingTaskbar();
         mDisplayController.removeChangeListener(this);
-        mSysUINavigationMode.removeModeChangeListener(this);
         SettingsCache.INSTANCE.get(mContext).unregister(USER_SETUP_COMPLETE_URI,
                 mUserSetupCompleteListener);
         SettingsCache.INSTANCE.get(mContext).unregister(NAV_BAR_KIDS_MODE,

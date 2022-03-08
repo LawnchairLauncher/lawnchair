@@ -16,7 +16,7 @@
 
 package com.android.quickstep.views;
 
-import static com.android.quickstep.SysUINavigationMode.Mode.THREE_BUTTONS;
+import static com.android.launcher3.util.DisplayController.NavigationMode.THREE_BUTTONS;
 
 import android.content.Context;
 import android.content.res.Configuration;
@@ -36,10 +36,10 @@ import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Insettable;
 import com.android.launcher3.R;
 import com.android.launcher3.uioverrides.ApiWrapper;
+import com.android.launcher3.util.DisplayController;
+import com.android.launcher3.util.DisplayController.NavigationMode;
 import com.android.launcher3.util.MultiValueAlpha;
 import com.android.launcher3.util.MultiValueAlpha.AlphaProperty;
-import com.android.quickstep.SysUINavigationMode;
-import com.android.quickstep.SysUINavigationMode.Mode;
 import com.android.quickstep.TaskOverlayFactory.OverlayUICallbacks;
 import com.android.quickstep.util.LayoutUtils;
 
@@ -148,13 +148,13 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
     @Override
     protected void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        updateVerticalMargin(SysUINavigationMode.getMode(getContext()));
+        updateVerticalMargin(DisplayController.getNavigationMode(getContext()));
     }
 
     @Override
     public void setInsets(Rect insets) {
         mInsets.set(insets);
-        updateVerticalMargin(SysUINavigationMode.getMode(getContext()));
+        updateVerticalMargin(DisplayController.getNavigationMode(getContext()));
         updatePaddingAndTranslations();
     }
 
@@ -204,7 +204,7 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
      */
     private void updatePaddingAndTranslations() {
         boolean alignFor3ButtonTaskbar = mDp.isTaskbarPresent &&
-                SysUINavigationMode.getMode(getContext()) == THREE_BUTTONS;
+                DisplayController.getNavigationMode(getContext()) == THREE_BUTTONS;
         if (alignFor3ButtonTaskbar) {
             // Add extra horizontal spacing
             int additionalPadding = ApiWrapper.getHotseatEndOffset(getContext());
@@ -218,7 +218,7 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
             // the button nav top is.
             View startActionView = findViewById(R.id.action_screenshot);
             int marginBottom = getOverviewActionsBottomMarginPx(
-                    SysUINavigationMode.getMode(getContext()), mDp);
+                    DisplayController.getNavigationMode(getContext()), mDp);
             int actionsTop =
                     (mDp.heightPx - marginBottom - mInsets.bottom) - startActionView.getHeight();
             int navTop = mDp.heightPx - (mDp.taskbarSize + mDp.getTaskbarOffsetY());
@@ -233,7 +233,7 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
     }
 
     /** Updates vertical margins for different navigation mode or configuration changes. */
-    public void updateVerticalMargin(Mode mode) {
+    public void updateVerticalMargin(NavigationMode mode) {
         if (mDp == null) {
             return;
         }
@@ -249,7 +249,7 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
      */
     public void setDp(DeviceProfile dp) {
         mDp = dp;
-        updateVerticalMargin(SysUINavigationMode.getMode(getContext()));
+        updateVerticalMargin(DisplayController.getNavigationMode(getContext()));
 
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                 dp.isVerticalBarLayout() ? 0 : dp.overviewActionsButtonSpacing,
@@ -274,14 +274,13 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
     }
 
     /** Get the top margin associated with the action buttons in Overview. */
-    public static int getOverviewActionsTopMarginPx(
-            SysUINavigationMode.Mode mode, DeviceProfile dp) {
+    public static int getOverviewActionsTopMarginPx(NavigationMode mode, DeviceProfile dp) {
         // In vertical bar, use the smaller task margin for the top regardless of mode
         if (dp.isVerticalBarLayout()) {
             return dp.overviewTaskMarginPx;
         }
 
-        if (mode == SysUINavigationMode.Mode.THREE_BUTTONS) {
+        if (mode == NavigationMode.THREE_BUTTONS) {
             return dp.overviewActionsMarginThreeButtonPx;
         }
 
@@ -289,8 +288,7 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
     }
 
     /** Get the bottom margin associated with the action buttons in Overview. */
-    public static int getOverviewActionsBottomMarginPx(
-            SysUINavigationMode.Mode mode, DeviceProfile dp) {
+    public static int getOverviewActionsBottomMarginPx(NavigationMode mode, DeviceProfile dp) {
         int inset = dp.getInsets().bottom;
 
         if (dp.isVerticalBarLayout()) {
@@ -298,7 +296,7 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
         }
 
         // Actions button will be aligned with nav buttons in updatePaddingAndTranslations().
-        if (mode == SysUINavigationMode.Mode.THREE_BUTTONS) {
+        if (mode == NavigationMode.THREE_BUTTONS) {
             return dp.overviewActionsMarginThreeButtonPx + inset;
         }
 

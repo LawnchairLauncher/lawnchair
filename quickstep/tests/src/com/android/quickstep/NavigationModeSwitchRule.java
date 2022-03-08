@@ -33,6 +33,7 @@ import androidx.test.uiautomator.UiDevice;
 import com.android.launcher3.tapl.LauncherInstrumentation;
 import com.android.launcher3.tapl.TestHelpers;
 import com.android.launcher3.ui.AbstractLauncherUiTest;
+import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.Wait;
 import com.android.launcher3.util.rule.FailureWatcher;
 import com.android.systemui.shared.system.QuickStepContract;
@@ -71,8 +72,8 @@ public class NavigationModeSwitchRule implements TestRule {
 
     private final LauncherInstrumentation mLauncher;
 
-    static final SysUINavigationMode SYS_UI_NAVIGATION_MODE =
-            SysUINavigationMode.INSTANCE.get(getInstrumentation().getTargetContext());
+    static final DisplayController DISPLAY_CONTROLLER =
+            DisplayController.INSTANCE.get(getInstrumentation().getTargetContext());
 
     public NavigationModeSwitchRule(LauncherInstrumentation launcher) {
         mLauncher = launcher;
@@ -138,7 +139,7 @@ public class NavigationModeSwitchRule implements TestRule {
 
     private static LauncherInstrumentation.NavigationModel currentSysUiNavigationMode() {
         return LauncherInstrumentation.getNavigationModel(
-                SysUINavigationMode.getMode(
+                DisplayController.getNavigationMode(
                         getInstrumentation().
                                 getTargetContext()).
                         resValue);
@@ -159,18 +160,18 @@ public class NavigationModeSwitchRule implements TestRule {
         if (currentSysUiNavigationMode() != expectedMode) {
             final CountDownLatch latch = new CountDownLatch(1);
             final Context targetContext = getInstrumentation().getTargetContext();
-            final SysUINavigationMode.NavigationModeChangeListener listener =
-                    newMode -> {
-                        if (LauncherInstrumentation.getNavigationModel(newMode.resValue)
+            final DisplayController.DisplayInfoChangeListener listener =
+                    (context, info, flags) -> {
+                        if (LauncherInstrumentation.getNavigationModel(info.navigationMode.resValue)
                                 == expectedMode) {
                             latch.countDown();
                         }
                     };
             targetContext.getMainExecutor().execute(() ->
-                    SYS_UI_NAVIGATION_MODE.addModeChangeListener(listener));
+                    DISPLAY_CONTROLLER.addChangeListener(listener));
             latch.await(60, TimeUnit.SECONDS);
             targetContext.getMainExecutor().execute(() ->
-                    SYS_UI_NAVIGATION_MODE.removeModeChangeListener(listener));
+                    DISPLAY_CONTROLLER.removeChangeListener(listener));
 
             assertTrue(launcher, "Navigation mode didn't change to " + expectedMode,
                     currentSysUiNavigationMode() == expectedMode, description);

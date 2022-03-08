@@ -42,7 +42,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.RemoteException;
-import android.platform.test.rule.CrashDetector;
 
 import androidx.test.filters.LargeTest;
 import androidx.test.runner.AndroidJUnit4;
@@ -106,8 +105,7 @@ public class FallbackRecentsTest {
         }
 
         mOrderSensitiveRules = RuleChain
-                .outerRule(new CrashDetector("com.android.systemui"))
-                .around(new NavigationModeSwitchRule(mLauncher))
+                .outerRule(new NavigationModeSwitchRule(mLauncher))
                 .around(new FailureWatcher(mDevice, mLauncher));
 
         mOtherLauncherActivity = context.getPackageManager().queryIntentActivities(

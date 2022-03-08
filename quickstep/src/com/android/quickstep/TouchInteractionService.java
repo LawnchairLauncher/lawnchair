@@ -47,7 +47,6 @@ import android.content.res.Configuration;
 import android.graphics.Rect;
 import android.graphics.Region;
 import android.graphics.drawable.Icon;
-import android.hardware.display.DisplayManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -77,6 +76,7 @@ import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.tracing.LauncherTraceProto;
 import com.android.launcher3.tracing.TouchInteractionServiceProto;
 import com.android.launcher3.uioverrides.plugins.PluginManagerWrapper;
+import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.OnboardingPrefs;
 import com.android.launcher3.util.TraceHelper;
 import com.android.launcher3.util.WindowBounds;
@@ -344,8 +344,6 @@ public class TouchInteractionService extends Service
     private InputMonitorCompat mInputMonitorCompat;
     private InputEventReceiver mInputEventReceiver;
 
-    private DisplayManager mDisplayManager;
-
     private TaskbarManager mTaskbarManager;
     private Function<GestureState, AnimatedFloat> mSwipeUpProxyProvider = i -> null;
 
@@ -357,7 +355,6 @@ public class TouchInteractionService extends Service
         mMainChoreographer = Choreographer.getInstance();
         mAM = ActivityManagerWrapper.getInstance();
         mDeviceState = new RecentsAnimationDeviceState(this, true);
-        mDisplayManager = getSystemService(DisplayManager.class);
         mTaskbarManager = new TaskbarManager(this);
         mRotationTouchHelper = mDeviceState.getRotationTouchHelper();
 
@@ -399,7 +396,7 @@ public class TouchInteractionService extends Service
     /**
      * Called when the navigation mode changes, guaranteed to be after the device state has updated.
      */
-    private void onNavigationModeChanged(SysUINavigationMode.Mode mode) {
+    private void onNavigationModeChanged() {
         initInputMonitor();
         resetHomeBounceSeenOnQuickstepEnabledFirstTime();
     }
@@ -948,7 +945,7 @@ public class TouchInteractionService extends Service
             pw.println("Input state:");
             pw.println("  mInputMonitorCompat=" + mInputMonitorCompat);
             pw.println("  mInputEventReceiver=" + mInputEventReceiver);
-            SysUINavigationMode.INSTANCE.get(this).dump(pw);
+            DisplayController.INSTANCE.get(this).dump(pw);
             pw.println("TouchState:");
             BaseDraggingActivity createdOverviewActivity = mOverviewComponentObserver == null ? null
                     : mOverviewComponentObserver.getActivityInterface().getCreatedActivity();

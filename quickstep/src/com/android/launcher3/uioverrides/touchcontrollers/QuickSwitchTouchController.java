@@ -44,8 +44,8 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.states.StateAnimationConfig;
 import com.android.launcher3.touch.AbstractStateChangeTouchController;
 import com.android.launcher3.touch.SingleAxisSwipeDetector;
-import com.android.quickstep.SysUINavigationMode;
-import com.android.quickstep.SysUINavigationMode.Mode;
+import com.android.launcher3.util.DisplayController;
+import com.android.launcher3.util.DisplayController.NavigationMode;
 import com.android.quickstep.SystemUiProxy;
 import com.android.quickstep.TaskUtils;
 import com.android.quickstep.views.RecentsView;
@@ -125,7 +125,7 @@ public class QuickSwitchTouchController extends AbstractStateChangeTouchControll
     private void setupInterpolators(StateAnimationConfig stateAnimationConfig) {
         stateAnimationConfig.setInterpolator(ANIM_WORKSPACE_FADE, DEACCEL_2);
         stateAnimationConfig.setInterpolator(ANIM_ALL_APPS_FADE, DEACCEL_2);
-        if (SysUINavigationMode.getMode(mLauncher) == Mode.NO_BUTTON) {
+        if (DisplayController.getNavigationMode(mLauncher) == NavigationMode.NO_BUTTON) {
             // Overview lives to the left of workspace, so translate down later than over
             stateAnimationConfig.setInterpolator(ANIM_WORKSPACE_TRANSLATE, ACCEL_2);
             stateAnimationConfig.setInterpolator(ANIM_VERTICAL_PROGRESS, ACCEL_2);
