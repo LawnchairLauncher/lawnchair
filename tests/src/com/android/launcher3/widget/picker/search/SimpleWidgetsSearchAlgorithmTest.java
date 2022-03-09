@@ -163,7 +163,7 @@ public class SimpleWidgetsSearchAlgorithmTest {
                 mCameraContentEntry, mClockHeaderEntry, mClockContentEntry))
                 .when(mDataProvider)
                 .getAllWidgets();
-        mSimpleWidgetsSearchAlgorithm.doSearch("Ca", mSearchCallback);
+        mSimpleWidgetsSearchAlgorithm.doSearch("Ca", 2, mSearchCallback);
         MAIN_EXECUTOR.submit(() -> { }).get();
         verify(mSearchCallback).onSearchResult(
                 matches("Ca"), argThat(a -> a != null && !a.isEmpty()));
