@@ -30,6 +30,7 @@ import android.widget.RemoteViews;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.views.ActivityContext;
 import com.android.launcher3.widget.LocalColorExtractor;
 
 import org.json.JSONException;
@@ -45,7 +46,7 @@ import dev.kdrag0n.monet.theme.ColorScheme;
 import dev.kdrag0n.monet.theme.DynamicColorScheme;
 import dev.kdrag0n.monet.theme.MaterialYouTargets;
 
-import java.util.List;
+import java.util.Collections;
 import java.util.Map;
 
 public class ThemedLocalColorExtractor extends LocalColorExtractor implements
@@ -156,7 +157,8 @@ public class ThemedLocalColorExtractor extends LocalColorExtractor implements
         wallpaperManager = (WallpaperManager) context.getSystemService(Context.WALLPAPER_SERVICE);
 
         try {
-            String json = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.THEME_CUSTOMIZATION_OVERLAY_PACKAGES);
+            String json = Settings.Secure.getString(context.getContentResolver(),
+                    Settings.Secure.THEME_CUSTOMIZATION_OVERLAY_PACKAGES);
             if (json != null && !json.isEmpty()) {
                 JSONObject packages = new JSONObject(json);
                 applyOverlay = !"preset".equals(packages.getString(KEY_COLOR_SOURCE));
@@ -184,13 +186,13 @@ public class ThemedLocalColorExtractor extends LocalColorExtractor implements
     }
 
     @Override
-    public void addLocation(List<RectF> locations) {
-        wallpaperManager.addOnColorsChangedListener(this, locations);
-    }
+    public void setWorkspaceLocation(Rect pos, View child, int screenId) {
+        Launcher launcher = ActivityContext.lookupContext(child.getContext());
+        getExtractedRectForViewRect(launcher, screenId, pos, tempRectF);
 
-    @Override
-    public void removeLocations() {
+        // Refresh listener
         wallpaperManager.removeOnColorsChangedListener(this);
+        wallpaperManager.addOnColorsChangedListener(this, Collections.singletonList(tempRectF));
     }
 
     @Override
@@ -218,26 +220,13 @@ public class ThemedLocalColorExtractor extends LocalColorExtractor implements
             return;
         }
 
-        RemoteViews.ColorResources res =
-                RemoteViews.ColorResources.create(base, generateColorsOverride(colors));
+        RemoteViews.ColorResources res = RemoteViews.ColorResources.create(base, generateColorsOverride(colors));
         if (res != null) {
             res.apply(base);
         }
     }
 
-    @Override
-    public void getExtractedRectForView(Launcher launcher, int pageId, View v,
-            RectF colorExtractionRectOut) {
-        Rect viewRect = tempRect;
-        viewRect.set(0, 0, v.getWidth(), v.getHeight());
-        Utilities.getBoundsForViewInDragLayer(launcher.getDragLayer(), v, viewRect, false,
-                tempFloatArray, tempRectF);
-        Utilities.setRect(tempRectF, viewRect);
-        getExtractedRectForViewRect(launcher, pageId, viewRect, colorExtractionRectOut);
-    }
-
-    @Override
-    public void getExtractedRectForViewRect(Launcher launcher, int pageId, Rect rectInDragLayer,
+    private void getExtractedRectForViewRect(Launcher launcher, int pageId, Rect rectInDragLayer,
             RectF colorExtractionRectOut) {
         // If the view hasn't been measured and laid out, we cannot do this.
         if (rectInDragLayer.isEmpty()) {
@@ -285,7 +274,7 @@ public class ThemedLocalColorExtractor extends LocalColorExtractor implements
     @Override
     public void onColorsChanged(RectF area, WallpaperColors colors) {
         if (listener != null) {
-            listener.onColorsChanged(area, generateColorsOverride(colors));
+            listener.onColorsChanged(generateColorsOverride(colors));
         }
     }
 }
