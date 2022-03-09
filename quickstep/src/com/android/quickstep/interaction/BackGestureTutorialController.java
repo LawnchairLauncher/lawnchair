@@ -57,14 +57,14 @@ final class BackGestureTutorialController extends TutorialController {
     @LayoutRes
     int getMockAppTaskCurrentPageLayoutResId() {
         return mTutorialFragment.isLargeScreen()
-                ? R.layout.gesture_tutorial_foldable_mock_conversation
+                ? R.layout.gesture_tutorial_tablet_mock_conversation
                 : R.layout.gesture_tutorial_mock_conversation;
     }
 
     @LayoutRes
     int getMockAppTaskPreviousPageLayoutResId() {
         return mTutorialFragment.isLargeScreen()
-                ? R.layout.gesture_tutorial_foldable_mock_conversation_list
+                ? R.layout.gesture_tutorial_tablet_mock_conversation_list
                 : R.layout.gesture_tutorial_mock_conversation_list;
     }
 

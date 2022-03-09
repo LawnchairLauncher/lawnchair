@@ -60,7 +60,7 @@
 
             <TextView
                 android:id="@+id/title"
-                style="@style/TextAppearance.GestureTutorial.Feedback.Title"
+                style="@style/TextAppearance.GestureTutorial.Feedback.Title.AllSet"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/allset_title_margin_top"
@@ -71,15 +71,14 @@
 
             <TextView
                 android:id="@+id/subtitle"
-                style="@style/TextAppearance.GestureTutorial.Feedback.Subtitle"
+                style="@style/TextAppearance.GestureTutorial.Feedback.Subtitle.AllSet"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/allset_subtitle_margin_top"
                 app:layout_constraintTop_toBottomOf="@id/title"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintWidth_max="@dimen/allset_subtitle_width_max"
-                android:gravity="start"
-                android:text="@string/allset_description"/>
+                android:gravity="start"/>
 
             <androidx.constraintlayout.widget.Guideline
                 android:id="@+id/navigation_settings_guideline_bottom"

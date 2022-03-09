@@ -16,4 +16,61 @@
 -->
 <resources>
     <dimen name="overview_task_margin">8dp</dimen>
+
+    <!-- Tips Gesture Tutorial -->
+    <dimen name="gesture_tutorial_feedback_margin_start_end">126dp</dimen>
+    <dimen name="gesture_tutorial_feedback_margin_top">24dp</dimen>
+
+    <!-- Gesture Tutorial mock conversations -->
+    <dimen name="gesture_tutorial_message_padding_start">42dp</dimen>
+    <dimen name="gesture_tutorial_message_padding_end">60dp</dimen>
+    <dimen name="gesture_tutorial_top_bar_margin_start">42dp</dimen>
+    <dimen name="gesture_tutorial_top_bar_margin_end">683dp</dimen>
+    <dimen name="gesture_tutorial_top_bar_button_margin_end">42dp</dimen>
+    <dimen name="gesture_tutorial_conversation_bottom_padding">35dp</dimen>
+    <integer name="gesture_tutorial_extra_messages_visibility">2</integer> <!-- GONE -->
+    <dimen name="gesture_tutorial_message_margin_start">505dp</dimen>
+    <dimen name="gesture_tutorial_reply_margin_end">462dp</dimen>
+    <dimen name="gesture_tutorial_input_margin_start">103dp</dimen>
+    <dimen name="gesture_tutorial_input_margin_end">103dp</dimen>
+    <dimen name="gesture_tutorial_tablet_message_1_margin">345dp</dimen>
+    <dimen name="gesture_tutorial_tablet_reply_1_margin">341dp</dimen>
+    <dimen name="gesture_tutorial_tablet_message_2_margin">501dp</dimen>
+    <dimen name="gesture_tutorial_tablet_message_3_margin">345dp</dimen>
+    <dimen name="gesture_tutorial_tablet_reply_2_margin">373dp</dimen>
+
+    <!-- Gesture Tutorial mock conversation lists -->
+    <dimen name="gesture_tutorial_conversation_line_1_margin_end">607dp</dimen>
+    <dimen name="gesture_tutorial_conversation_line_2_margin_end">460dp</dimen>
+    <dimen name="gesture_tutorial_conversation_line_3_margin_end">554dp</dimen>
+    <dimen name="gesture_tutorial_conversation_line_4_margin_end">517dp</dimen>
+    <dimen name="gesture_tutorial_conversation_line_5_margin_end">570dp</dimen>
+    <dimen name="gesture_tutorial_conversation_line_6_margin_end">336dp</dimen>
+    <dimen name="gesture_tutorial_conversation_line_7_margin_end">523dp</dimen>
+    <dimen name="gesture_tutorial_conversation_line_8_margin_end">500dp</dimen>
+    <dimen name="gesture_tutorial_tablet_conversation_line_6_margin_end">15dp</dimen>
+    <dimen name="gesture_tutorial_tablet_conversation_line_8_margin_end">72dp</dimen>
+    <dimen name="gesture_tutorial_tablet_conversation_line_10_margin_end">111dp</dimen>
+    <integer name="gesture_tutorial_extra_conversations_visibility">2</integer> <!-- GONE -->
+    <dimen name="gesture_tutorial_mock_button_margin_end">34dp</dimen>
+    <dimen name="gesture_tutorial_mock_button_margin_bottom">42dp</dimen>
+
+    <!-- Gesture Tutorial mock hotseats -->
+    <dimen name="gesture_tutorial_hotseat_width">-2px</dimen> <!-- wrap_content -->
+    <dimen name="gesture_tutorial_hotseat_height">-1px</dimen> <!-- match_parent -->
+    <dimen name="gesture_tutorial_hotseat_padding_start_end">170dp</dimen>
+
+    <!-- Gesture Tutorial mock webpages -->
+    <dimen name="gesture_tutorial_webpage_url_margin_start_end">24dp</dimen>
+    <dimen name="gesture_tutorial_webpage_top_bar_button_margin_start">48dp</dimen>
+    <dimen name="gesture_tutorial_webpage_top_bar_margin_start">121dp</dimen>
+    <dimen name="gesture_tutorial_webpage_top_bar_margin_end">355dp</dimen>
+    <dimen name="gesture_tutorial_webpage_line_1_margin_end">355dp</dimen>
+    <dimen name="gesture_tutorial_webpage_line_2_margin_end">208dp</dimen>
+    <dimen name="gesture_tutorial_webpage_line_3_margin_end">439dp</dimen>
+    <dimen name="gesture_tutorial_webpage_block_margin_end">311dp</dimen>
+    <integer name="gesture_tutorial_webpage_extra_lines_visibility">2</integer> <!-- GONE -->
+
+    <!-- Gesture Tutorial mock taskbar -->
+    <dimen name="gesture_tutorial_taskbar_padding_start_end">218dp</dimen>
 </resources>
