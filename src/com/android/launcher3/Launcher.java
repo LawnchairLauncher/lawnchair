@@ -2688,8 +2688,11 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
      * @param preferredItemId The id of the preferred item to match to if it exists.
      * @param packageName The package name of the app to match.
      * @param user The user of the app to match.
+     * @param supportsAllAppsState If true and we are in All Apps state, looks for view in All Apps.
+     *                             Else we only looks on the workspace.
      */
-    public View getFirstMatchForAppClose(int preferredItemId, String packageName, UserHandle user) {
+    public View getFirstMatchForAppClose(int preferredItemId, String packageName, UserHandle user,
+            boolean supportsAllAppsState) {
         final ItemInfoMatcher preferredItem = (info, cn) ->
                 info != null && info.id == preferredItemId;
         final ItemInfoMatcher packageAndUserAndApp = (info, cn) ->
@@ -2700,7 +2703,7 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
                         && TextUtils.equals(info.getTargetComponent().getPackageName(),
                         packageName);
 
-        if (isInState(LauncherState.ALL_APPS)) {
+        if (supportsAllAppsState && isInState(LauncherState.ALL_APPS)) {
             return getFirstMatch(Collections.singletonList(mAppsView.getActiveRecyclerView()),
                     preferredItem, packageAndUserAndApp);
         } else {
