@@ -25,9 +25,6 @@ import android.view.WindowInsets;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.launcher3.allapps.AllAppsGridAdapter;
-import com.android.launcher3.allapps.AlphabeticalAppsList;
-import com.android.launcher3.allapps.BaseAdapterProvider;
-import com.android.launcher3.allapps.BaseAllAppsAdapter;
 import com.android.launcher3.allapps.BaseAllAppsContainerView;
 import com.android.launcher3.allapps.search.SearchAdapterProvider;
 
@@ -81,12 +78,5 @@ public class TaskbarAllAppsContainerView extends BaseAllAppsContainerView<Taskba
     public WindowInsets onApplyWindowInsets(WindowInsets insets) {
         setInsets(insets.getInsets(WindowInsets.Type.systemBars()).toRect());
         return super.onApplyWindowInsets(insets);
-    }
-
-    @Override
-    protected BaseAllAppsAdapter getAdapter(AlphabeticalAppsList<TaskbarAllAppsContext> mAppsList,
-            BaseAdapterProvider[] adapterProviders) {
-        return new AllAppsGridAdapter<>(mActivityContext, getLayoutInflater(), mAppsList,
-                adapterProviders);
     }
 }
