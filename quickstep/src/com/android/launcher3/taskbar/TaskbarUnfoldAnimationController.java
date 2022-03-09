@@ -15,12 +15,14 @@
  */
 package com.android.launcher3.taskbar;
 
+import android.view.IWindowManager;
 import android.view.View;
 import android.view.WindowManager;
 
 import com.android.quickstep.util.LauncherViewsMoveFromCenterTranslationApplier;
 import com.android.systemui.shared.animation.UnfoldMoveFromCenterAnimator;
 import com.android.systemui.unfold.UnfoldTransitionProgressProvider.TransitionProgressListener;
+import com.android.systemui.unfold.util.NaturalRotationUnfoldProgressProvider;
 import com.android.systemui.unfold.util.ScopedUnfoldTransitionProgressProvider;
 
 import java.io.PrintWriter;
@@ -31,14 +33,18 @@ import java.io.PrintWriter;
 public class TaskbarUnfoldAnimationController implements
         TaskbarControllers.LoggableTaskbarController {
 
-    private final ScopedUnfoldTransitionProgressProvider mUnfoldTransitionProgressProvider;
+    private final ScopedUnfoldTransitionProgressProvider mScopedUnfoldTransitionProgressProvider;
+    private final NaturalRotationUnfoldProgressProvider mNaturalUnfoldTransitionProgressProvider;
     private final UnfoldMoveFromCenterAnimator mMoveFromCenterAnimator;
     private final TransitionListener mTransitionListener = new TransitionListener();
     private TaskbarViewController mTaskbarViewController;
 
-    public TaskbarUnfoldAnimationController(ScopedUnfoldTransitionProgressProvider
-            unfoldTransitionProgressProvider, WindowManager windowManager) {
-        mUnfoldTransitionProgressProvider = unfoldTransitionProgressProvider;
+    public TaskbarUnfoldAnimationController(BaseTaskbarContext context,
+            ScopedUnfoldTransitionProgressProvider source,
+            WindowManager windowManager, IWindowManager iWindowManager) {
+        mScopedUnfoldTransitionProgressProvider = source;
+        mNaturalUnfoldTransitionProgressProvider =
+                new NaturalRotationUnfoldProgressProvider(context, iWindowManager, source);
         mMoveFromCenterAnimator = new UnfoldMoveFromCenterAnimator(windowManager,
                 new LauncherViewsMoveFromCenterTranslationApplier());
     }
@@ -48,18 +54,21 @@ public class TaskbarUnfoldAnimationController implements
      * @param taskbarControllers references to all other taskbar controllers
      */
     public void init(TaskbarControllers taskbarControllers) {
+        mNaturalUnfoldTransitionProgressProvider.init();
         mTaskbarViewController = taskbarControllers.taskbarViewController;
         mTaskbarViewController.addOneTimePreDrawListener(() ->
-                mUnfoldTransitionProgressProvider.setReadyToHandleTransition(true));
-        mUnfoldTransitionProgressProvider.addCallback(mTransitionListener);
+                mScopedUnfoldTransitionProgressProvider.setReadyToHandleTransition(true));
+        mNaturalUnfoldTransitionProgressProvider.addCallback(mTransitionListener);
     }
 
     /**
      * Destroys the controller
      */
     public void onDestroy() {
-        mUnfoldTransitionProgressProvider.setReadyToHandleTransition(false);
-        mUnfoldTransitionProgressProvider.removeCallback(mTransitionListener);
+        mScopedUnfoldTransitionProgressProvider.setReadyToHandleTransition(false);
+        mNaturalUnfoldTransitionProgressProvider.removeCallback(mTransitionListener);
+        mNaturalUnfoldTransitionProgressProvider.destroy();
+        mTaskbarViewController = null;
     }
 
     @Override
