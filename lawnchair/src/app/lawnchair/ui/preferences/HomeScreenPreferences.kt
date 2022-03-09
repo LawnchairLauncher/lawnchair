@@ -54,6 +54,7 @@ interface HomeScreenPreferenceCollectorScope : PreferenceCollectorScope {
     val homeIconSizeFactor: Float
     val showIconLabelsOnHomeScreen: Boolean
     val homeIconLabelSizeFactor: Float
+    val enableSmartspace: Boolean
 }
 
 @Composable
@@ -67,11 +68,13 @@ fun HomeScreenPreferenceCollector(content: @Composable HomeScreenPreferenceColle
     val homeIconSizeFactor by preferenceManager.homeIconSizeFactor.state()
     val showIconLabelsOnHomeScreen by preferenceManager.showIconLabelsOnHomeScreen.state()
     val homeIconLabelSizeFactor by preferenceManager.homeIconLabelSizeFactor.state()
+    val enableSmartspace by preferenceManager.enableSmartspace.state()
     ifNotNull(
         darkStatusBar, roundedWidgets,
         showStatusBar, showTopShadow,
         dt2s, homeIconSizeFactor,
         showIconLabelsOnHomeScreen, homeIconLabelSizeFactor,
+        enableSmartspace,
     ) {
         object : HomeScreenPreferenceCollectorScope {
             override val darkStatusBar = it[0] as Boolean
@@ -82,6 +85,7 @@ fun HomeScreenPreferenceCollector(content: @Composable HomeScreenPreferenceColle
             override val homeIconSizeFactor = it[5] as Float
             override val showIconLabelsOnHomeScreen = it[6] as Boolean
             override val homeIconLabelSizeFactor = it[7] as Float
+            override val enableSmartspace = it[8] as Boolean
             override val coroutineScope = rememberCoroutineScope()
             override val preferenceManager = preferenceManager
         }.content()
@@ -132,8 +136,9 @@ fun HomeScreenPreferences() {
                     description = if (feedAvailable) null else stringResource(id = R.string.minus_one_unavailable),
                     enabled = feedAvailable,
                 )
-                SwitchPreference(
-                    prefs.smartSpaceEnable.getAdapter(),
+                SwitchPreference2(
+                    checked = enableSmartspace,
+                    edit = { enableSmartspace.set(value = it) },
                     label = stringResource(id = R.string.smart_space_enable),
                 )
                 SwitchPreference2(

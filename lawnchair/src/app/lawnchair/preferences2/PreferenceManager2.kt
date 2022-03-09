@@ -187,6 +187,12 @@ class PreferenceManager2(private val context: Context) : PreferenceManager {
         defaultValue = false,
     )
 
+    val enableSmartspace = preference(
+        key = booleanPreferencesKey(name = "enable_smartspace"),
+        defaultValue = true,
+        onSet = { reloadHelper.restart() },
+    )
+
     companion object {
         private val Context.preferencesDataStore by preferencesDataStore(
             name = "preferences",

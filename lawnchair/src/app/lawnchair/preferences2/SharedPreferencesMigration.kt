@@ -37,7 +37,7 @@ class SharedPreferencesMigration(private val context: Context) {
         "pref_showHomeLabels" to "show_icon_labels_on_home_screen", "pref_allAppsIconSizeFactor" to "drawer_icon_size_factor",
         "pref_allAppsIconLabels" to "show_icon_labels_in_drawer", "pref_textSizeFactor" to "home_icon_label_size_factor",
         "pref_allAppsTextSizeFactor" to "drawer_icon_label_size_factor", "pref_allAppsCellHeightMultiplier" to "drawer_cell_height_factor",
-        "pref_useFuzzySearch" to "enable_fuzzy_search",
+        "pref_useFuzzySearch" to "enable_fuzzy_search", "pref_smartSpaceEnable" to "enable_smartspace",
     )
 
     fun produceMigration() = androidx.datastore.migrations.SharedPreferencesMigration(
