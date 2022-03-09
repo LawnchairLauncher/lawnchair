@@ -44,6 +44,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
 import androidx.core.graphics.ColorUtils;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.launcher3.DeviceProfile;
@@ -696,21 +697,18 @@ public abstract class BaseAllAppsContainerView<T extends Context & ActivityConte
         return ColorUtils.blendARGB(mScrimColor, mHeaderProtectionColor, blendRatio);
     }
 
-    protected abstract BaseAllAppsAdapter getAdapter(AlphabeticalAppsList<T> mAppsList,
-            BaseAdapterProvider[] adapterProviders);
-
     protected int getHeaderBottom() {
         return (int) getTranslationY();
     }
 
-    /** Holds a {@link BaseAllAppsAdapter} and related fields. */
+    /** Holds a {@link AllAppsGridAdapter} and related fields. */
     public class AdapterHolder {
         public static final int MAIN = 0;
         public static final int WORK = 1;
 
         private final boolean mIsWork;
-        public final BaseAllAppsAdapter<T> adapter;
-        final RecyclerView.LayoutManager mLayoutManager;
+        public final AllAppsGridAdapter<T> adapter;
+        final LinearLayoutManager mLayoutManager;
         final AlphabeticalAppsList<T> mAppsList;
         final Rect mPadding = new Rect();
         AllAppsRecyclerView mRecyclerView;
@@ -726,7 +724,8 @@ public abstract class BaseAllAppsContainerView<T extends Context & ActivityConte
                             mWorkManager.getAdapterProvider()}
                             : new BaseAdapterProvider[]{mMainAdapterProvider};
 
-            adapter = getAdapter(mAppsList, adapterProviders);
+            adapter = new AllAppsGridAdapter<>(mActivityContext, getLayoutInflater(), mAppsList,
+                    adapterProviders);
             mAppsList.setAdapter(adapter);
             mLayoutManager = adapter.getLayoutManager();
         }
