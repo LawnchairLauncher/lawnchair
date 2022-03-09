@@ -45,7 +45,6 @@ import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCH
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASK_DISMISS_SWIPE_UP;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASK_LAUNCH_SWIPE_DOWN;
 import static com.android.launcher3.statehandlers.DepthController.DEPTH;
-import static com.android.launcher3.testing.TestProtocol.TASK_VIEW_ID_CRASH;
 import static com.android.launcher3.touch.PagedOrientationHandler.CANVAS_TRANSLATE;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
@@ -2282,8 +2281,6 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
      * Sets the running task id, cleaning up the old running task if necessary.
      */
     public void setCurrentTask(int runningTaskViewId) {
-        Log.d(TASK_VIEW_ID_CRASH, "currentRunningTaskViewId: " + mRunningTaskViewId
-                + " requestedTaskViewId: " + runningTaskViewId);
         if (mRunningTaskViewId == runningTaskViewId) {
             return;
         }
