@@ -280,6 +280,15 @@ abstract class SwipeUpGestureTutorialController extends TutorialController {
             super(context, deviceState, gestureState);
             mRemoteTargetHandles[0] = new RemoteTargetGluer.RemoteTargetHandle(
                     mRemoteTargetHandles[0].getTaskViewSimulator(), new FakeTransformParams());
+
+            for (RemoteTargetGluer.RemoteTargetHandle handle
+                    : mTargetGluer.getRemoteTargetHandles()) {
+                // Override home screen rotation preference so that home and overview animations
+                // work properly
+                handle.getTaskViewSimulator()
+                        .getOrientationState()
+                        .ignoreAllowHomeRotationPreference();
+            }
         }
 
         void initDp(DeviceProfile dp) {
