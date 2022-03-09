@@ -139,7 +139,7 @@ class DeviceProfileTest {
         else
             Pair(1440, 3120)
 
-        windowBounds = WindowBounds(x, y, x, y - 100)
+        windowBounds = WindowBounds(x, y, x, y - 100, 0)
 
         `when`(info.isTablet(any())).thenReturn(false)
         `when`(info.isLargeTablet(any())).thenReturn(false)
@@ -153,7 +153,7 @@ class DeviceProfileTest {
         else
             Pair(1600, 2560)
 
-        windowBounds = WindowBounds(x, y, x, y - 100)
+        windowBounds = WindowBounds(x, y, x, y - 100, 0)
 
         `when`(info.isTablet(any())).thenReturn(true)
         `when`(info.isLargeTablet(any())).thenReturn(false)
@@ -167,7 +167,7 @@ class DeviceProfileTest {
         else
             Pair(1600, 2560)
 
-        windowBounds = WindowBounds(x, y, x, y - 100)
+        windowBounds = WindowBounds(x, y, x, y - 100, 0)
 
         `when`(info.isTablet(any())).thenReturn(true)
         `when`(info.isLargeTablet(any())).thenReturn(true)

@@ -26,7 +26,6 @@ import static com.android.launcher3.model.data.ItemInfo.NO_MATCHING_ID;
 import static com.android.launcher3.popup.QuickstepSystemShortcut.getSplitSelectShortcutByPosition;
 import static com.android.launcher3.util.DisplayController.CHANGE_ACTIVE_SCREEN;
 import static com.android.launcher3.util.DisplayController.CHANGE_NAVIGATION_MODE;
-import static com.android.launcher3.util.DisplayController.NavigationMode.NO_BUTTON;
 import static com.android.launcher3.util.DisplayController.NavigationMode.TWO_BUTTONS;
 import static com.android.launcher3.util.Executors.THREAD_POOL_EXECUTOR;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
@@ -38,7 +37,6 @@ import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
-import android.graphics.Insets;
 import android.hardware.SensorManager;
 import android.hardware.devicestate.DeviceStateManager;
 import android.os.Bundle;
@@ -46,7 +44,6 @@ import android.os.CancellationSignal;
 import android.os.IBinder;
 import android.view.Display;
 import android.view.View;
-import android.view.WindowInsets;
 import android.window.SplashScreen;
 
 import androidx.annotation.Nullable;
@@ -612,19 +609,6 @@ public abstract class BaseQuickstepLauncher extends Launcher {
         super.dump(prefix, fd, writer, args);
         if (mDepthController != null) {
             mDepthController.dump(prefix, writer);
-        }
-    }
-
-    @Override
-    public void updateWindowInsets(WindowInsets.Builder updatedInsetsBuilder,
-            WindowInsets oldInsets) {
-        // Override the tappable insets to be 0 on the bottom for gesture nav (otherwise taskbar
-        // would count towards it). This is used for the bottom protection in All Apps for example.
-        if (DisplayController.getNavigationMode(this) == NO_BUTTON) {
-            Insets oldTappableInsets = oldInsets.getInsets(WindowInsets.Type.tappableElement());
-            Insets newTappableInsets = Insets.of(oldTappableInsets.left, oldTappableInsets.top,
-                    oldTappableInsets.right, 0);
-            updatedInsetsBuilder.setInsets(WindowInsets.Type.tappableElement(), newTappableInsets);
         }
     }
 }
