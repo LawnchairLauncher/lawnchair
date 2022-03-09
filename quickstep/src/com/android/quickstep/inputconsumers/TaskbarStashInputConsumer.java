@@ -48,7 +48,7 @@ public class TaskbarStashInputConsumer extends DelegateInputConsumer {
         super(delegate, inputMonitor);
         mTaskbarActivityContext = taskbarActivityContext;
         mSquaredTouchSlop = Utilities.squaredTouchSlop(context);
-        mScreenWidth = context.getResources().getDisplayMetrics().widthPixels;
+        mScreenWidth = taskbarActivityContext.getDeviceProfile().widthPx;
         mUnstashArea = context.getResources()
                 .getDimensionPixelSize(R.dimen.taskbar_unstash_input_area);
 
