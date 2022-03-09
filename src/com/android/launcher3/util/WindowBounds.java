@@ -33,19 +33,27 @@ public class WindowBounds {
     public final Rect bounds;
     public final Rect insets;
     public final Point availableSize;
+    public final int rotationHint;
 
     public WindowBounds(Rect bounds, Rect insets) {
+        this(bounds, insets, -1);
+    }
+
+    public WindowBounds(Rect bounds, Rect insets, int rotationHint) {
         this.bounds = bounds;
         this.insets = insets;
+        this.rotationHint = rotationHint;
         availableSize = new Point(bounds.width() - insets.left - insets.right,
                 bounds.height() - insets.top - insets.bottom);
     }
 
-    public WindowBounds(int width, int height, int availableWidth, int availableHeight) {
+    public WindowBounds(int width, int height, int availableWidth, int availableHeight,
+            int rotationHint) {
         this.bounds = new Rect(0, 0, width, height);
         this.availableSize = new Point(availableWidth, availableHeight);
         // We don't care about insets in this case
         this.insets = new Rect(0, 0, width - availableWidth, height - availableHeight);
+        this.rotationHint = rotationHint;
     }
 
     @Override

@@ -35,11 +35,11 @@ import com.android.launcher3.R;
 import com.android.launcher3.ResourceUtils;
 import com.android.launcher3.util.DisplayController.Info;
 import com.android.launcher3.util.DisplayController.NavigationMode;
+import com.android.launcher3.util.window.CachedDisplayInfo;
 
 import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 /**
  * Maintains state for supporting nav bars and tracking their gestures in multiple orientations.
@@ -51,55 +51,17 @@ import java.util.Objects;
  */
 class OrientationTouchTransformer {
 
-    private static class CurrentDisplay {
-        public Point size;
-        public int rotation;
-
-        CurrentDisplay() {
-            this.size = new Point(0, 0);
-            this.rotation = 0;
-        }
-
-        CurrentDisplay(Point size, int rotation) {
-            this.size = size;
-            this.rotation = rotation;
-        }
-
-        @Override
-        public String toString() {
-            return "CurrentDisplay:"
-                    + " rotation: " + rotation
-                    + " size: " + size;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-
-            CurrentDisplay display = (CurrentDisplay) o;
-            if (rotation != display.rotation) return false;
-
-            return Objects.equals(size, display.size);
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(size, rotation);
-        }
-    };
-
     private static final String TAG = "OrientationTouchTransformer";
     private static final boolean DEBUG = false;
 
     private static final int QUICKSTEP_ROTATION_UNINITIALIZED = -1;
 
-    private final Map<CurrentDisplay, OrientationRectF> mSwipeTouchRegions =
-            new HashMap<CurrentDisplay, OrientationRectF>();
+    private final Map<CachedDisplayInfo, OrientationRectF> mSwipeTouchRegions =
+            new HashMap<CachedDisplayInfo, OrientationRectF>();
     private final RectF mAssistantLeftRegion = new RectF();
     private final RectF mAssistantRightRegion = new RectF();
     private final RectF mOneHandedModeRegion = new RectF();
-    private CurrentDisplay mCurrentDisplay = new CurrentDisplay();
+    private CachedDisplayInfo mCachedDisplayInfo = new CachedDisplayInfo();
     private int mNavBarGesturalHeight;
     private final int mNavBarLargerGesturalHeight;
     private boolean mEnableMultipleRegions;
@@ -184,22 +146,22 @@ class OrientationTouchTransformer {
      * @see #enableMultipleRegions(boolean, Info)
      */
     void createOrAddTouchRegion(Info info) {
-        mCurrentDisplay = new CurrentDisplay(info.currentSize, info.rotation);
+        mCachedDisplayInfo = new CachedDisplayInfo(info.currentSize, info.rotation);
 
         if (mQuickStepStartingRotation > QUICKSTEP_ROTATION_UNINITIALIZED
-                && mCurrentDisplay.rotation == mQuickStepStartingRotation) {
+                && mCachedDisplayInfo.rotation == mQuickStepStartingRotation) {
             // User already was swiping and the current screen is same rotation as the starting one
             // Remove active nav bars in other rotations except for the one we started out in
             resetSwipeRegions(info);
             return;
         }
-        OrientationRectF region = mSwipeTouchRegions.get(mCurrentDisplay);
+        OrientationRectF region = mSwipeTouchRegions.get(mCachedDisplayInfo);
         if (region != null) {
             return;
         }
 
         if (mEnableMultipleRegions) {
-            mSwipeTouchRegions.put(mCurrentDisplay, createRegionForDisplay(info));
+            mSwipeTouchRegions.put(mCachedDisplayInfo, createRegionForDisplay(info));
         } else {
             resetSwipeRegions(info);
         }
@@ -245,31 +207,31 @@ class OrientationTouchTransformer {
      */
     private void resetSwipeRegions(Info region) {
         if (DEBUG) {
-            Log.d(TAG, "clearing all regions except rotation: " + mCurrentDisplay.rotation);
+            Log.d(TAG, "clearing all regions except rotation: " + mCachedDisplayInfo.rotation);
         }
 
-        mCurrentDisplay = new CurrentDisplay(region.currentSize, region.rotation);
-        OrientationRectF regionToKeep = mSwipeTouchRegions.get(mCurrentDisplay);
+        mCachedDisplayInfo = new CachedDisplayInfo(region.currentSize, region.rotation);
+        OrientationRectF regionToKeep = mSwipeTouchRegions.get(mCachedDisplayInfo);
         if (regionToKeep == null) {
             regionToKeep = createRegionForDisplay(region);
         }
         mSwipeTouchRegions.clear();
-        mSwipeTouchRegions.put(mCurrentDisplay, regionToKeep);
+        mSwipeTouchRegions.put(mCachedDisplayInfo, regionToKeep);
         updateAssistantRegions(regionToKeep);
     }
 
     private void resetSwipeRegions() {
-        OrientationRectF regionToKeep = mSwipeTouchRegions.get(mCurrentDisplay);
+        OrientationRectF regionToKeep = mSwipeTouchRegions.get(mCachedDisplayInfo);
         mSwipeTouchRegions.clear();
         if (regionToKeep != null) {
-            mSwipeTouchRegions.put(mCurrentDisplay, regionToKeep);
+            mSwipeTouchRegions.put(mCachedDisplayInfo, regionToKeep);
             updateAssistantRegions(regionToKeep);
         }
     }
 
     private OrientationRectF createRegionForDisplay(Info display) {
         if (DEBUG) {
-            Log.d(TAG, "creating rotation region for: " + mCurrentDisplay.rotation
+            Log.d(TAG, "creating rotation region for: " + mCachedDisplayInfo.rotation
             + " with mode: " + mMode + " displayRotation: " + display.rotation);
         }
 
@@ -368,7 +330,7 @@ class OrientationTouchTransformer {
                                 true);
                     }
                 } else {
-                    mLastRectTouched.applyTransformFromRotation(event, mCurrentDisplay.rotation,
+                    mLastRectTouched.applyTransformFromRotation(event, mCachedDisplayInfo.rotation,
                             true);
                 }
                 break;
@@ -387,7 +349,7 @@ class OrientationTouchTransformer {
                                 true);
                     }
                 } else {
-                    mLastRectTouched.applyTransformFromRotation(event, mCurrentDisplay.rotation,
+                    mLastRectTouched.applyTransformFromRotation(event, mCachedDisplayInfo.rotation,
                             true);
                 }
                 mLastRectTouched = null;
@@ -403,11 +365,12 @@ class OrientationTouchTransformer {
                     if (rect == null) {
                         continue;
                     }
-                    if (rect.applyTransformFromRotation(event, mCurrentDisplay.rotation, false)) {
+                    if (rect.applyTransformFromRotation(
+                            event, mCachedDisplayInfo.rotation, false)) {
                         mLastRectTouched = rect;
                         mActiveTouchRotation = rect.getRotation();
                         if (mEnableMultipleRegions
-                                && mCurrentDisplay.rotation == mActiveTouchRotation) {
+                                && mCachedDisplayInfo.rotation == mActiveTouchRotation) {
                             // TODO(b/154580671) might make this block unnecessary
                             // Start a touch session for the default nav region for the display
                             mQuickStepStartingRotation = mLastRectTouched.getRotation();
@@ -430,7 +393,7 @@ class OrientationTouchTransformer {
         pw.println("  lastTouchedRegion=" + mLastRectTouched);
         pw.println("  multipleRegionsEnabled=" + mEnableMultipleRegions);
         StringBuilder regions = new StringBuilder("  currentTouchableRotations=");
-        for (CurrentDisplay key: mSwipeTouchRegions.keySet()) {
+        for (CachedDisplayInfo key: mSwipeTouchRegions.keySet()) {
             OrientationRectF rectF = mSwipeTouchRegions.get(key);
             regions.append(rectF).append(" ");
         }
