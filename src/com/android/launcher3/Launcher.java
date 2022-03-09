@@ -228,6 +228,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
@@ -1108,21 +1109,23 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
                 && mAllAppsSessionLogId == null) {
             // creates new instance ID since new all apps session is started.
             mAllAppsSessionLogId = new InstanceIdSequence().newInstanceId();
-            getStatsLogManager().logger().withContainerInfo(
-                    ContainerInfo.newBuilder().setWorkspace(
-                            WorkspaceContainer.newBuilder().setPageIndex(
-                                    getWorkspace().getCurrentPage())).build())
-                    .log(getAllAppsEntryEvent());
+            if (getAllAppsEntryEvent().isPresent()) {
+                getStatsLogManager().logger()
+                        .withContainerInfo(ContainerInfo.newBuilder()
+                                .setWorkspace(WorkspaceContainer.newBuilder()
+                                        .setPageIndex(getWorkspace().getCurrentPage())).build())
+                        .log(getAllAppsEntryEvent().get());
+            }
         }
     }
 
     /**
      * Returns {@link EventEnum} that should be logged when Launcher enters into AllApps state.
      */
-    protected EventEnum getAllAppsEntryEvent() {
-        return FeatureFlags.ENABLE_DEVICE_SEARCH.get()
+    protected Optional<EventEnum> getAllAppsEntryEvent() {
+        return Optional.of(FeatureFlags.ENABLE_DEVICE_SEARCH.get()
                 ? LAUNCHER_ALLAPPS_ENTRY_WITH_DEVICE_SEARCH
-                : LAUNCHER_ALLAPPS_ENTRY;
+                : LAUNCHER_ALLAPPS_ENTRY);
     }
 
     @Override
@@ -1151,15 +1154,16 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
                 // Making sure mAllAppsSessionLogId is not null to avoid double logging.
                 && mAllAppsSessionLogId != null) {
             getAppsView().reset(false);
-            getStatsLogManager().logger()
-                    .withContainerInfo(LauncherAtom.ContainerInfo.newBuilder()
-                            .setWorkspace(
-                                    LauncherAtom.WorkspaceContainer.newBuilder()
-                                            .setPageIndex(getWorkspace().getCurrentPage()))
-                            .build())
-                    .log(LAUNCHER_ALLAPPS_EXIT);
+            getAllAppsExitEvent().ifPresent(getStatsLogManager().logger()::log);
             mAllAppsSessionLogId = null;
         }
+    }
+
+    /**
+     * Returns {@link EventEnum} that should be logged when Launcher exists from AllApps state.
+     */
+    protected Optional<EventEnum> getAllAppsExitEvent() {
+        return Optional.of(LAUNCHER_ALLAPPS_EXIT);
     }
 
     @Override
