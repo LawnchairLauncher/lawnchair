@@ -19,6 +19,7 @@ package com.android.launcher3;
 import static com.android.launcher3.Utilities.dpiFromPx;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_TWO_PANEL_HOME;
 import static com.android.launcher3.util.DisplayController.CHANGE_DENSITY;
+import static com.android.launcher3.util.DisplayController.CHANGE_NAVIGATION_MODE;
 import static com.android.launcher3.util.DisplayController.CHANGE_SUPPORTED_BOUNDS;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 
@@ -138,6 +139,11 @@ public class InvariantDeviceProfile {
     public int numShownHotseatIcons;
 
     /**
+     * Number of icons inside the hotseat area when using 3 buttons navigation.
+     */
+    public int numShrunkenHotseatIcons;
+
+    /**
      * Number of icons inside the hotseat area that is stored in the database. This is greater than
      * or equal to numnShownHotseatIcons, allowing for a seamless transition between two hotseat
      * sizes that share the same DB.
@@ -188,7 +194,8 @@ public class InvariantDeviceProfile {
 
         DisplayController.INSTANCE.get(context).setPriorityListener(
                 (displayContext, info, flags) -> {
-                    if ((flags & (CHANGE_DENSITY | CHANGE_SUPPORTED_BOUNDS)) != 0) {
+                    if ((flags & (CHANGE_DENSITY | CHANGE_SUPPORTED_BOUNDS
+                            | CHANGE_NAVIGATION_MODE)) != 0) {
                         onConfigChanged(displayContext);
                     }
                 });
@@ -336,6 +343,7 @@ public class InvariantDeviceProfile {
         horizontalMargin = displayOption.horizontalMargin;
 
         numShownHotseatIcons = closestProfile.numHotseatIcons;
+        numShrunkenHotseatIcons = closestProfile.numShrunkenHotseatIcons;
         numDatabaseHotseatIcons = deviceType == TYPE_MULTI_DISPLAY
                 ? closestProfile.numDatabaseHotseatIcons : closestProfile.numHotseatIcons;
         hotseatBorderSpaces = displayOption.hotseatBorderSpaces;
@@ -365,7 +373,8 @@ public class InvariantDeviceProfile {
         for (WindowBounds bounds : displayInfo.supportedBounds) {
             localSupportedProfiles.add(new DeviceProfile.Builder(context, this, displayInfo)
                     .setUseTwoPanels(deviceType == TYPE_MULTI_DISPLAY)
-                    .setWindowBounds(bounds).build());
+                    .setWindowBounds(bounds)
+                    .build());
 
             // Wallpaper size should be the maximum of the all possible sizes Launcher expects
             int displayWidth = bounds.bounds.width();
@@ -691,6 +700,7 @@ public class InvariantDeviceProfile {
         private final int numAllAppsColumns;
         private final int numDatabaseAllAppsColumns;
         private final int numHotseatIcons;
+        private final int numShrunkenHotseatIcons;
         private final int numDatabaseHotseatIcons;
 
         private final String dbFile;
@@ -727,6 +737,8 @@ public class InvariantDeviceProfile {
 
             numHotseatIcons = a.getInt(
                     R.styleable.GridDisplayOption_numHotseatIcons, numColumns);
+            numShrunkenHotseatIcons = a.getInt(
+                    R.styleable.GridDisplayOption_numShrunkenHotseatIcons, numHotseatIcons / 2);
             numDatabaseHotseatIcons = a.getInt(
                     R.styleable.GridDisplayOption_numExtendedHotseatIcons, 2 * numHotseatIcons);
 

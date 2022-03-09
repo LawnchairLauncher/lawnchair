@@ -39,7 +39,6 @@ import android.os.Process;
 import android.os.RemoteException;
 import android.os.UserHandle;
 import android.os.UserManager;
-import android.platform.test.rule.CrashDetector;
 import android.system.OsConstants;
 import android.util.Log;
 
@@ -229,7 +228,6 @@ public abstract class AbstractLauncherUiTest {
     @Rule
     public TestRule mOrderSensitiveRules = RuleChain
             .outerRule(new TestStabilityRule())
-            .around(new CrashDetector("com.android.systemui"))
             .around(mActivityMonitor)
             .around(getRulesInsideActivityMonitor());
 

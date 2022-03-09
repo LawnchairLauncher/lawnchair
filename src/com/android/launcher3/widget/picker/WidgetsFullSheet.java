@@ -31,6 +31,7 @@ import android.content.res.Resources;
 import android.graphics.Rect;
 import android.os.Process;
 import android.os.UserHandle;
+import android.os.UserManager;
 import android.util.AttributeSet;
 import android.util.Pair;
 import android.util.SparseArray;
@@ -55,7 +56,9 @@ import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.compat.AccessibilityManagerCompat;
+import com.android.launcher3.model.UserManagerState;
 import com.android.launcher3.model.WidgetItem;
+import com.android.launcher3.pm.UserCache;
 import com.android.launcher3.views.ArrowTipView;
 import com.android.launcher3.views.RecyclerViewFastScroller;
 import com.android.launcher3.views.SpringRelativeLayout;
@@ -94,13 +97,17 @@ public class WidgetsFullSheet extends BaseWidgetSheet
             "launcher.widgets_education_dialog_seen";
 
     private final Rect mInsets = new Rect();
+
+    private final UserManagerState mUserManagerState = new UserManagerState();
+
     private final boolean mHasWorkProfile;
     private final SparseArray<AdapterHolder> mAdapters = new SparseArray();
     private final UserHandle mCurrentUser = Process.myUserHandle();
     private final Predicate<WidgetsListBaseEntry> mPrimaryWidgetsFilter =
             entry -> mCurrentUser.equals(entry.mPkgItem.user);
     private final Predicate<WidgetsListBaseEntry> mWorkWidgetsFilter =
-            mPrimaryWidgetsFilter.negate();
+            entry -> !mCurrentUser.equals(entry.mPkgItem.user)
+                    && !mUserManagerState.isUserQuiet(entry.mPkgItem.user);
     @Nullable private ArrowTipView mLatestEducationalTip;
     private final OnLayoutChangeListener mLayoutChangeListenerToShowTips =
             new OnLayoutChangeListener() {
@@ -171,6 +178,9 @@ public class WidgetsFullSheet extends BaseWidgetSheet
                 : 0;
         mWidgetSheetContentHorizontalPadding = 2 * resources.getDimensionPixelSize(
                 R.dimen.widget_cell_horizontal_padding);
+
+        mUserManagerState.init(UserCache.INSTANCE.get(context),
+                context.getSystemService(UserManager.class));
     }
 
     public WidgetsFullSheet(Context context, AttributeSet attrs) {
@@ -259,10 +269,15 @@ public class WidgetsFullSheet extends BaseWidgetSheet
         boolean isWidgetAvailable = adapterHolder.mWidgetsListAdapter.hasVisibleEntries();
         adapterHolder.mWidgetsRecyclerView.setVisibility(isWidgetAvailable ? VISIBLE : GONE);
 
-        mNoWidgetsView.setText(
-                adapterHolder.mAdapterType == AdapterHolder.SEARCH
-                        ? R.string.no_search_results
-                        : R.string.no_widgets_available);
+        if (adapterHolder.mAdapterType == AdapterHolder.SEARCH) {
+            mNoWidgetsView.setText(R.string.no_search_results);
+        } else if (adapterHolder.mAdapterType == AdapterHolder.WORK
+                && mUserManagerState.isAnyProfileQuietModeEnabled()
+                && mActivityContext.getStringCache() != null) {
+            mNoWidgetsView.setText(mActivityContext.getStringCache().workProfilePausedTitle);
+        } else {
+            mNoWidgetsView.setText(R.string.no_widgets_available);
+        }
         mNoWidgetsView.setVisibility(isWidgetAvailable ? GONE : VISIBLE);
     }
 
