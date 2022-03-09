@@ -47,6 +47,12 @@
         <item name="android:lineHeight">44sp</item>
     </style>
 
+    <style name="TextAppearance.GestureTutorial.Feedback.Title.AllSet"
+        parent="TextAppearance.GestureTutorial.Feedback.Title">
+        <item name="android:letterSpacing">0.03</item>
+        <item name="android:lineHeight">44sp</item>
+    </style>
+
     <style name="TextAppearance.GestureTutorial.Dialog.Title"
         parent="TextAppearance.GestureTutorial.Feedback.Title">
         <item name="android:gravity">center_horizontal</item>
@@ -61,6 +67,12 @@
         <item name="android:textColor">?android:attr/textColorPrimary</item>
         <item name="android:fontFamily">google-sans-text</item>
         <item name="android:letterSpacing">0.03</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:lineHeight">20sp</item>
+    </style>
+
+    <style name="TextAppearance.GestureTutorial.Feedback.Subtitle.AllSet"
+        parent="TextAppearance.GestureTutorial.Feedback.Subtitle">
         <item name="android:textSize">18sp</item>
         <item name="android:lineHeight">24sp</item>
     </style>
@@ -76,9 +88,8 @@
 
     <style name="TextAppearance.GestureTutorial.Feedback.Subtext"
         parent="TextAppearance.GestureTutorial.Feedback.Subtitle">
-        <item name="android:textSize">16sp</item>
         <item name="android:textColor">@color/gesture_tutorial_primary_color</item>
-        <item name="android:gravity">center</item>
+        <item name="android:gravity">start</item>
     </style>
 
     <style name="TextAppearance.GestureTutorial.Feedback.Subtext.Dark"
