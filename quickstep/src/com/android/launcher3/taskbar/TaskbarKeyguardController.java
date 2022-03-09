@@ -1,5 +1,6 @@
 package com.android.launcher3.taskbar;
 
+import static com.android.launcher3.AbstractFloatingView.TYPE_ALL;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_BACK_DISABLED;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_BOUNCER_SHOWING;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_DEVICE_DOZING;
@@ -14,6 +15,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 
+import com.android.launcher3.AbstractFloatingView;
 import com.android.systemui.shared.system.QuickStepContract;
 
 import java.io.PrintWriter;
@@ -39,6 +41,7 @@ public class TaskbarKeyguardController implements TaskbarControllers.LoggableTas
         @Override
         public void onReceive(Context context, Intent intent) {
             mIsScreenOff = true;
+            AbstractFloatingView.closeOpenViews(mContext, false, TYPE_ALL);
         }
     };
 
@@ -71,6 +74,10 @@ public class TaskbarKeyguardController implements TaskbarControllers.LoggableTas
         mNavbarButtonsViewController.setKeyguardVisible(keyguardShowing || dozing,
                 keyguardOccluded);
         updateIconsForBouncer();
+
+        if (keyguardShowing) {
+            AbstractFloatingView.closeOpenViews(mContext, true, TYPE_ALL);
+        }
     }
 
     public boolean isScreenOff() {
