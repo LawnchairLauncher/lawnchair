@@ -22,6 +22,7 @@ import android.view.GestureDetector;
 import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.MotionEvent;
 
+import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.taskbar.TaskbarActivityContext;
 import com.android.quickstep.InputConsumer;
@@ -36,14 +37,20 @@ public class TaskbarStashInputConsumer extends DelegateInputConsumer {
     private final GestureDetector mLongPressDetector;
     private final float mSquaredTouchSlop;
 
+
     private float mDownX, mDownY;
     private boolean mCanceledUnstashHint;
+    private final float mUnstashArea;
+    private final float mScreenWidth;
 
     public TaskbarStashInputConsumer(Context context, InputConsumer delegate,
             InputMonitorCompat inputMonitor, TaskbarActivityContext taskbarActivityContext) {
         super(delegate, inputMonitor);
         mTaskbarActivityContext = taskbarActivityContext;
         mSquaredTouchSlop = Utilities.squaredTouchSlop(context);
+        mScreenWidth = context.getResources().getDisplayMetrics().widthPixels;
+        mUnstashArea = context.getResources()
+                .getDimensionPixelSize(R.dimen.taskbar_unstash_input_area);
 
         mLongPressDetector = new GestureDetector(context, new SimpleOnGestureListener() {
             @Override
@@ -69,11 +76,13 @@ public class TaskbarStashInputConsumer extends DelegateInputConsumer {
                 final float y = ev.getRawY();
                 switch (ev.getAction()) {
                     case MotionEvent.ACTION_DOWN:
-                        mDownX = x;
-                        mDownY = y;
-                        mTaskbarActivityContext.startTaskbarUnstashHint(
-                                /* animateForward = */ true);
-                        mCanceledUnstashHint = false;
+                        if (isInArea(x)) {
+                            mDownX = x;
+                            mDownY = y;
+                            mTaskbarActivityContext.startTaskbarUnstashHint(
+                                    /* animateForward = */ true);
+                            mCanceledUnstashHint = false;
+                        }
                         break;
                     case MotionEvent.ACTION_MOVE:
                         if (!mCanceledUnstashHint
@@ -95,10 +104,18 @@ public class TaskbarStashInputConsumer extends DelegateInputConsumer {
         }
     }
 
+    private boolean isInArea(float x) {
+        float areaFromMiddle = mUnstashArea / 2.0f;
+        float distFromMiddle = Math.abs(mScreenWidth / 2.0f - x);
+        return distFromMiddle < areaFromMiddle;
+    }
+
     private void onLongPressDetected(MotionEvent motionEvent) {
-        if (mTaskbarActivityContext != null
-                && mTaskbarActivityContext.onLongPressToUnstashTaskbar()) {
-            setActive(motionEvent);
+        if (mTaskbarActivityContext != null && isInArea(motionEvent.getRawX())) {
+            boolean taskBarPressed = mTaskbarActivityContext.onLongPressToUnstashTaskbar();
+            if (taskBarPressed) {
+                setActive(motionEvent);
+            }
         }
     }
 }
