@@ -127,4 +127,6 @@ public final class TestProtocol {
     public static final String PERMANENT_DIAG_TAG = "TaplTarget";
     public static final String NO_DROP_TARGET = "b/195031154";
     public static final String MISSING_PROMISE_ICON = "b/202985412";
+
+    public static final String BAD_STATE = "b/223498680";
 }
