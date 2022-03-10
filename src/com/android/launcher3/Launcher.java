@@ -57,6 +57,7 @@ import static com.android.launcher3.popup.SystemShortcut.INSTALL;
 import static com.android.launcher3.popup.SystemShortcut.WIDGETS;
 import static com.android.launcher3.states.RotationHelper.REQUEST_LOCK;
 import static com.android.launcher3.states.RotationHelper.REQUEST_NONE;
+import static com.android.launcher3.testing.TestProtocol.BAD_STATE;
 import static com.android.launcher3.util.ItemInfoMatcher.forFolderMatch;
 
 import android.animation.Animator;
@@ -500,6 +501,8 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
 
         if (!mModel.addCallbacksAndLoad(this)) {
             if (!internalStateHandled) {
+                Log.d(BAD_STATE, "Launcher onCreate not binding sync, setting DragLayer alpha "
+                        + "ALPHA_INDEX_LAUNCHER_LOAD to 0");
                 // If we are not binding synchronously, show a fade in animation when
                 // the first page bind completes.
                 mDragLayer.getAlphaProperty(ALPHA_INDEX_LAUNCHER_LOAD).setValue(0);
@@ -518,6 +521,8 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
                         final AlphaProperty property =
                                 mDragLayer.getAlphaProperty(ALPHA_INDEX_LAUNCHER_LOAD);
                         if (property.getValue() == 0) {
+                            Log.d(BAD_STATE, "Launcher onPreDraw ALPHA_INDEX_LAUNCHER_LOAD not"
+                                    + " started yet, cancelling draw.");
                             // Animation haven't started yet; suspend.
                             return false;
                         } else {
@@ -2681,6 +2686,28 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
         AlphaProperty property = mDragLayer.getAlphaProperty(ALPHA_INDEX_LAUNCHER_LOAD);
         if (property.getValue() < 1) {
             ObjectAnimator anim = ObjectAnimator.ofFloat(property, MultiValueAlpha.VALUE, 1);
+
+            Log.d(BAD_STATE, "Launcher onInitialBindComplete toAlpha=" + 1);
+            anim.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationStart(Animator animation) {
+                    Log.d(BAD_STATE, "Launcher onInitialBindComplete onStart");
+                }
+
+                @Override
+                public void onAnimationCancel(Animator animation) {
+                    float alpha = mDragLayer == null
+                            ? -1
+                            : mDragLayer.getAlphaProperty(ALPHA_INDEX_LAUNCHER_LOAD).getValue();
+                    Log.d(BAD_STATE, "Launcher onInitialBindComplete onCancel, alpha=" + alpha);
+                }
+
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    Log.d(BAD_STATE, "Launcher onInitialBindComplete onEnd");
+                }
+            });
+
             anim.addListener(AnimatorListeners.forEndCallback(executor::onLoadAnimationCompleted));
             anim.start();
         } else {
