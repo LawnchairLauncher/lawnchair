@@ -1274,8 +1274,8 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
             }
         }
 
-        return mLauncher.getFirstMatchForAppClose(launchCookieItemId,
-                packageName, UserHandle.of(runningTaskTarget.taskInfo.userId));
+        return mLauncher.getFirstMatchForAppClose(launchCookieItemId, packageName,
+                UserHandle.of(runningTaskTarget.taskInfo.userId), true /* supportsAllAppsState */);
     }
 
     private @NonNull RectF getDefaultWindowTargetRect() {
