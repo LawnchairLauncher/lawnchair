@@ -18,7 +18,7 @@ package com.android.launcher3.allapps;
 
 import android.content.Context;
 
-import com.android.launcher3.allapps.AllAppsGridAdapter.AdapterItem;
+import com.android.launcher3.allapps.BaseAllAppsAdapter.AdapterItem;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.util.ItemInfoMatcher;
@@ -82,7 +82,7 @@ public class AlphabeticalAppsList<T extends Context & ActivityContext> implement
 
     // The of ordered component names as a result of a search query
     private ArrayList<AdapterItem> mSearchResults;
-    private AllAppsGridAdapter<T> mAdapter;
+    private BaseAllAppsAdapter<T> mAdapter;
     private AppInfoComparator mAppNameComparator;
     private final int mNumAppsPerRow;
     private int mNumAppRowsInAdapter;
@@ -106,7 +106,7 @@ public class AlphabeticalAppsList<T extends Context & ActivityContext> implement
     /**
      * Sets the adapter to notify when this dataset changes.
      */
-    public void setAdapter(AllAppsGridAdapter<T> adapter) {
+    public void setAdapter(BaseAllAppsAdapter<T> adapter) {
         mAdapter = adapter;
     }
 
