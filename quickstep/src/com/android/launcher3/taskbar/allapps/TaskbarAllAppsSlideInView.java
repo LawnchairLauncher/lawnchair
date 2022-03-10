@@ -50,17 +50,21 @@ public class TaskbarAllAppsSlideInView extends AbstractSlideInView<TaskbarAllApp
     }
 
     /** Opens the all apps view. */
-    void show() {
+    void show(boolean animate) {
         if (mIsOpen || mOpenCloseAnimator.isRunning()) {
             return;
         }
         mIsOpen = true;
         attachToContainer();
 
-        mOpenCloseAnimator.setValues(
-                PropertyValuesHolder.ofFloat(TRANSLATION_SHIFT, TRANSLATION_SHIFT_OPENED));
-        mOpenCloseAnimator.setInterpolator(AGGRESSIVE_EASE);
-        mOpenCloseAnimator.setDuration(DEFAULT_OPEN_DURATION).start();
+        if (animate) {
+            mOpenCloseAnimator.setValues(
+                    PropertyValuesHolder.ofFloat(TRANSLATION_SHIFT, TRANSLATION_SHIFT_OPENED));
+            mOpenCloseAnimator.setInterpolator(AGGRESSIVE_EASE);
+            mOpenCloseAnimator.setDuration(DEFAULT_OPEN_DURATION).start();
+        } else {
+            mTranslationShift = TRANSLATION_SHIFT_OPENED;
+        }
     }
 
     /** The apps container inside this view. */
