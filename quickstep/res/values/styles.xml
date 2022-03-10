@@ -88,7 +88,8 @@
 
     <style name="TextAppearance.GestureTutorial.Feedback.Subtext"
         parent="TextAppearance.GestureTutorial.Feedback.Subtitle">
-        <item name="android:textColor">@color/gesture_tutorial_primary_color</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">?android:attr/colorAccent</item>
         <item name="android:gravity">start</item>
     </style>
 
@@ -100,7 +101,7 @@
     <style name="TextAppearance.GestureTutorial.ButtonLabel"
         parent="TextAppearance.GestureTutorial.CallToAction">
         <item name="android:gravity">center</item>
-        <item name="android:textColor">@color/gesture_tutorial_action_button_label_color</item>
+        <item name="android:textColor">?android:attr/textColorPrimaryInverse</item>
         <item name="android:letterSpacing">0.02</item>
         <item name="android:textSize">16sp</item>
         <item name="android:textAllCaps">false</item>
@@ -108,12 +109,12 @@
 
     <style name="TextAppearance.GestureTutorial.CancelButtonLabel"
         parent="TextAppearance.GestureTutorial.ButtonLabel">
-        <item name="android:textColor">?android:attr/textColorPrimary</item>
+        <item name="android:textColor">?android:attr/colorAccent</item>
     </style>
 
     <style name="TextAppearance.GestureTutorial.TextButtonLabel"
         parent="TextAppearance.GestureTutorial.ButtonLabel">
-        <item name="android:textColor">@color/gesture_tutorial_primary_color</item>
+        <item name="android:textColor">?android:attr/colorAccent</item>
     </style>
 
     <style name="TextAppearance.GestureTutorial.LinkText"

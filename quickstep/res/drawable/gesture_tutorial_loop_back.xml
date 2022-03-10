@@ -85,7 +85,7 @@
                     <path
                         android:name="_R_G_L_0_G_D_0_P_0"
                         android:fillAlpha="0.25"
-                        android:fillColor="@color/gesture_tutorial_primary_color"
+                        android:fillColor="?android:attr/colorAccent"
                         android:fillType="nonZero"
                         android:pathData=" M12.5 -446 C12.5,-446 12.5,446 12.5,446 C12.5,446 -12.5,446 -12.5,446 C-12.5,446 -12.5,-446 -12.5,-446 C-12.5,-446 12.5,-446 12.5,-446c " />
                 </group>
