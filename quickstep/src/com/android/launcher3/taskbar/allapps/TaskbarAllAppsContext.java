@@ -166,7 +166,6 @@ class TaskbarAllAppsContext extends BaseTaskbarContext {
             super.onAttachedToWindow();
             ViewTreeObserverWrapper.addOnComputeInsetsListener(
                     getViewTreeObserver(), this);
-            mActivity.mAllAppsViewController.show();
         }
 
         @Override
