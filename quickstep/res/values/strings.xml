@@ -182,8 +182,10 @@
     <string name="allset_title">All set!</string>
     <!-- Hint string at the bottom of "All Set" page [CHAR LIMIT=NONE] -->
     <string name="allset_hint">Swipe up to go Home</string>
-    <!-- Description of "All Set" page [CHAR LIMIT=NONE] -->
+    <!-- Description of "All Set" page on phones [CHAR LIMIT=NONE] -->
     <string name="allset_description">You\u2019re ready to start using your phone</string>
+    <!-- Description of "All Set" page on tablets [CHAR LIMIT=NONE] -->
+    <string name="allset_description_tablet">You\u2019re ready to start using your tablet</string>
     <!-- String linking to navigation settings on "All Set" page [CHAR LIMIT=NONE] -->
     <string name="allset_navigation_settings"><annotation id="link">System navigation settings</annotation></string>
 

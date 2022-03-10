@@ -28,6 +28,9 @@ public class ResourceUtils {
     public static final String NAVBAR_BOTTOM_GESTURE_LARGER_SIZE =
             "navigation_bar_gesture_larger_height";
 
+    public static final String NAVBAR_HEIGHT = "navigation_bar_height";
+    public static final String NAVBAR_HEIGHT_LANDSCAPE = "navigation_bar_height_landscape";
+
     public static int getNavbarSize(String resName, Resources res) {
         return getDimenByName(resName, res, DEFAULT_NAVBAR_VALUE);
     }

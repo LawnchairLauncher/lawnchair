@@ -75,6 +75,7 @@ public class DeviceProfile {
     public final int heightPx;
     public final int availableWidthPx;
     public final int availableHeightPx;
+    public final int rotationHint;
 
     public final float aspectRatio;
 
@@ -239,6 +240,7 @@ public class DeviceProfile {
         this.isGestureMode = isGestureMode;
         windowX = windowBounds.bounds.left;
         windowY = windowBounds.bounds.top;
+        this.rotationHint = windowBounds.rotationHint;
 
         isScalableGrid = inv.isScalable && !isVerticalBarLayout() && !isMultiWindowMode;
 
@@ -346,9 +348,14 @@ public class DeviceProfile {
         workspaceCellPaddingXPx = res.getDimensionPixelSize(R.dimen.dynamic_grid_cell_padding_x);
 
         hotseatQsbHeight = res.getDimensionPixelSize(R.dimen.qsb_widget_height);
-        isQsbInline = isLargeTablet && isLandscape && hotseatQsbHeight > 0;
+        // Whether QSB might be inline in appropriate orientation (landscape).
+        boolean canQsbInline = isLargeTablet && hotseatQsbHeight > 0;
+        isQsbInline = canQsbInline && isLandscape;
 
-        if (isTaskbarPresent && !isGestureMode && isQsbInline) {
+        // We shrink hotseat sizes regardless of orientation, if nav buttons are inline and QSB
+        // might be inline in either orientations, to keep hotseat size consistent across rotation.
+        boolean areNavButtonsInline = isTaskbarPresent && !isGestureMode;
+        if (areNavButtonsInline && canQsbInline) {
             numShownHotseatIcons = inv.numShrunkenHotseatIcons;
         } else {
             numShownHotseatIcons =
@@ -543,8 +550,8 @@ public class DeviceProfile {
     }
 
     public Builder toBuilder(Context context) {
-        WindowBounds bounds =
-                new WindowBounds(widthPx, heightPx, availableWidthPx, availableHeightPx);
+        WindowBounds bounds = new WindowBounds(
+                widthPx, heightPx, availableWidthPx, availableHeightPx, rotationHint);
         bounds.bounds.offsetTo(windowX, windowY);
         return new Builder(context, inv, mInfo)
                 .setWindowBounds(bounds)

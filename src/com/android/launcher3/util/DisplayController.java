@@ -26,10 +26,8 @@ import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCH
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_NAVIGATION_MODE_GESTURE_BUTTON;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.PackageManagerHelper.getPackageFilter;
-import static com.android.launcher3.util.WindowManagerCompat.MIN_LARGE_TABLET_WIDTH;
-import static com.android.launcher3.util.WindowManagerCompat.MIN_TABLET_WIDTH;
-
-import static java.util.Collections.emptyMap;
+import static com.android.launcher3.util.window.WindowManagerProxy.MIN_LARGE_TABLET_WIDTH;
+import static com.android.launcher3.util.window.WindowManagerProxy.MIN_TABLET_WIDTH;
 
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
@@ -38,12 +36,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Point;
+import android.graphics.Rect;
 import android.hardware.display.DisplayManager;
 import android.os.Build;
-import android.text.TextUtils;
 import android.util.ArrayMap;
 import android.util.ArraySet;
 import android.util.Log;
+import android.util.Pair;
 import android.view.Display;
 
 import androidx.annotation.AnyThread;
@@ -52,11 +51,12 @@ import androidx.annotation.UiThread;
 import com.android.launcher3.ResourceUtils;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.logging.StatsLogManager.LauncherEvent;
-import com.android.launcher3.uioverrides.ApiWrapper;
+import com.android.launcher3.util.window.CachedDisplayInfo;
+import com.android.launcher3.util.window.WindowManagerProxy;
 
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.Map;
+import java.util.Collections;
 import java.util.Objects;
 import java.util.Set;
 
@@ -89,6 +89,7 @@ public class DisplayController implements ComponentCallbacks, SafeCloseable {
 
     // Null for SDK < S
     private final Context mWindowContext;
+
     // The callback in this listener updates DeviceProfile, which other listeners might depend on
     private DisplayInfoChangeListener mPriorityListener;
     private final ArrayList<DisplayInfoChangeListener> mListeners = new ArrayList<>();
@@ -115,23 +116,9 @@ public class DisplayController implements ComponentCallbacks, SafeCloseable {
         mContext.registerReceiver(mReceiver,
                 getPackageFilter(TARGET_OVERLAY_PACKAGE, ACTION_OVERLAY_CHANGED));
 
+        WindowManagerProxy wmProxy = WindowManagerProxy.INSTANCE.get(context);
         mInfo = new Info(getDisplayInfoContext(display), display,
-                getInternalDisplays(mDM), emptyMap());
-    }
-
-    private static ArrayMap<String, PortraitSize> getInternalDisplays(
-            DisplayManager displayManager) {
-        Display[] displays = displayManager.getDisplays();
-        ArrayMap<String, PortraitSize> internalDisplays = new ArrayMap<>();
-        for (Display display : displays) {
-            if (ApiWrapper.isInternalDisplay(display)) {
-                Point size = new Point();
-                display.getRealSize(size);
-                internalDisplays.put(ApiWrapper.getUniqueId(display),
-                        new PortraitSize(size.x, size.y));
-            }
-        }
-        return internalDisplays;
+                wmProxy, wmProxy.estimateInternalDisplayBounds(context));
     }
 
     /**
@@ -226,16 +213,17 @@ public class DisplayController implements ComponentCallbacks, SafeCloseable {
 
     @AnyThread
     private void handleInfoChange(Display display) {
+        WindowManagerProxy wmProxy = WindowManagerProxy.INSTANCE.get(mContext);
         Info oldInfo = mInfo;
 
         Context displayContext = getDisplayInfoContext(display);
-        Info newInfo = new Info(displayContext, display,
-                oldInfo.mInternalDisplays, oldInfo.mPerDisplayBounds);
+        Info newInfo = new Info(displayContext, display, wmProxy, oldInfo.mPerDisplayBounds);
 
         if (newInfo.densityDpi != oldInfo.densityDpi || newInfo.fontScale != oldInfo.fontScale
                 || newInfo.navigationMode != oldInfo.navigationMode) {
             // Cache may not be valid anymore, recreate without cache
-            newInfo = new Info(displayContext, display, getInternalDisplays(mDM), emptyMap());
+            newInfo = new Info(displayContext, display, wmProxy,
+                    wmProxy.estimateInternalDisplayBounds(displayContext));
         }
 
         int change = 0;
@@ -254,9 +242,8 @@ public class DisplayController implements ComponentCallbacks, SafeCloseable {
         if (!newInfo.supportedBounds.equals(oldInfo.supportedBounds)) {
             change |= CHANGE_SUPPORTED_BOUNDS;
 
-            PortraitSize realSize = new PortraitSize(newInfo.currentSize.x, newInfo.currentSize.y);
-            PortraitSize expectedSize = oldInfo.mInternalDisplays.get(
-                    ApiWrapper.getUniqueId(display));
+            Point currentS = newInfo.currentSize;
+            Point expectedS = oldInfo.mPerDisplayBounds.get(newInfo.displayId).first.size;
             if (newInfo.supportedBounds.size() != oldInfo.supportedBounds.size()) {
                 Log.e("b/198965093",
                         "Inconsistent number of displays"
@@ -264,7 +251,9 @@ public class DisplayController implements ComponentCallbacks, SafeCloseable {
                                 + "\noldInfo.supportedBounds: " + oldInfo.supportedBounds
                                 + "\nnewInfo.supportedBounds: " + newInfo.supportedBounds);
             }
-            if (!realSize.equals(expectedSize) && display.getState() == Display.STATE_OFF) {
+            if ((Math.min(currentS.x, currentS.y) != Math.min(expectedS.x, expectedS.y)
+                    || Math.max(currentS.x, currentS.y) != Math.max(expectedS.x, expectedS.y))
+                    && display.getState() == Display.STATE_OFF) {
                 Log.e("b/198965093", "Display size changed while display is off, ignoring change");
                 return;
             }
@@ -290,30 +279,38 @@ public class DisplayController implements ComponentCallbacks, SafeCloseable {
 
     public static class Info {
 
-        // Configuration properties
+        // Cached property
         public final int rotation;
+        public final String displayId;
+        public final Point currentSize;
+        public final Rect cutout;
+
+        // Configuration property
         public final float fontScale;
         public final int densityDpi;
         public final NavigationMode navigationMode;
 
         private final PortraitSize mScreenSizeDp;
 
-        public final Point currentSize;
-
-        public String displayId;
         public final Set<WindowBounds> supportedBounds = new ArraySet<>();
-        private final Map<String, Set<WindowBounds>> mPerDisplayBounds = new ArrayMap<>();
-        private final ArrayMap<String, PortraitSize> mInternalDisplays;
+
+        private final ArrayMap<String, Pair<CachedDisplayInfo, WindowBounds[]>> mPerDisplayBounds =
+                new ArrayMap<>();
 
         public Info(Context context, Display display) {
-            this(context, display, new ArrayMap<>(), emptyMap());
+            /* don't need system overrides for external displays */
+            this(context, display, new WindowManagerProxy(), new ArrayMap<>());
         }
 
-        private Info(Context context, Display display,
-                ArrayMap<String, PortraitSize> internalDisplays,
-                Map<String, Set<WindowBounds>> perDisplayBoundsCache) {
-            mInternalDisplays = internalDisplays;
-            rotation = display.getRotation();
+        // Used for testing
+        public Info(Context context, Display display,
+                WindowManagerProxy wmProxy,
+                ArrayMap<String, Pair<CachedDisplayInfo, WindowBounds[]>> perDisplayBoundsCache) {
+            CachedDisplayInfo displayInfo = wmProxy.getDisplayInfo(display);
+            rotation = displayInfo.rotation;
+            currentSize = displayInfo.size;
+            displayId = displayInfo.id;
+            cutout = displayInfo.cutout;
 
             Configuration config = context.getResources().getConfiguration();
             fontScale = config.fontScale;
@@ -321,52 +318,27 @@ public class DisplayController implements ComponentCallbacks, SafeCloseable {
             mScreenSizeDp = new PortraitSize(config.screenHeightDp, config.screenWidthDp);
             navigationMode = parseNavigationMode(context);
 
-            currentSize = new Point();
-            display.getRealSize(currentSize);
+            mPerDisplayBounds.putAll(perDisplayBoundsCache);
+            Pair<CachedDisplayInfo, WindowBounds[]> cachedValue = mPerDisplayBounds.get(displayId);
 
-            displayId = ApiWrapper.getUniqueId(display);
-            Set<WindowBounds> currentSupportedBounds =
-                    getSupportedBoundsForDisplay(display, currentSize);
-            mPerDisplayBounds.put(displayId, currentSupportedBounds);
-            supportedBounds.addAll(currentSupportedBounds);
-
-            if (ApiWrapper.isInternalDisplay(display) && internalDisplays.size() > 1) {
-                int displayCount = internalDisplays.size();
-                for (int i = 0; i < displayCount; i++) {
-                    String displayKey = internalDisplays.keyAt(i);
-                    if (TextUtils.equals(displayId, displayKey)) {
-                        continue;
-                    }
-
-                    Set<WindowBounds> displayBounds = perDisplayBoundsCache.get(displayKey);
-                    if (displayBounds == null) {
-                        // We assume densityDpi is the same across all internal displays
-                        displayBounds = WindowManagerCompat.estimateDisplayProfiles(
-                                context, internalDisplays.valueAt(i), densityDpi,
-                                ApiWrapper.TASKBAR_DRAWN_IN_PROCESS);
-                    }
-
-                    supportedBounds.addAll(displayBounds);
-                    mPerDisplayBounds.put(displayKey, displayBounds);
+            WindowBounds realBounds = wmProxy.getRealBounds(context, display, displayInfo);
+            if (cachedValue == null) {
+                supportedBounds.add(realBounds);
+            } else {
+                // Verify that the real bounds are a match
+                WindowBounds expectedBounds = cachedValue.second[displayInfo.rotation];
+                if (!realBounds.equals(expectedBounds)) {
+                    WindowBounds[] clone = new WindowBounds[4];
+                    System.arraycopy(cachedValue.second, 0, clone, 0, 4);
+                    clone[displayInfo.rotation] = realBounds;
+                    cachedValue = Pair.create(displayInfo.normalize(), clone);
+                    mPerDisplayBounds.put(displayId, cachedValue);
                 }
             }
+            mPerDisplayBounds.values().forEach(
+                    pair -> Collections.addAll(supportedBounds, pair.second));
             Log.d("b/211775278", "displayId: " + displayId + ", currentSize: " + currentSize);
             Log.d("b/211775278", "perDisplayBounds: " + mPerDisplayBounds);
-        }
-
-        private static Set<WindowBounds> getSupportedBoundsForDisplay(Display display, Point size) {
-            Point smallestSize = new Point();
-            Point largestSize = new Point();
-            display.getCurrentSizeRange(smallestSize, largestSize);
-
-            int portraitWidth = Math.min(size.x, size.y);
-            int portraitHeight = Math.max(size.x, size.y);
-            Set<WindowBounds> result = new ArraySet<>();
-            result.add(new WindowBounds(portraitWidth, portraitHeight,
-                    smallestSize.x, largestSize.y));
-            result.add(new WindowBounds(portraitHeight, portraitWidth,
-                    largestSize.x, smallestSize.y));
-            return result;
         }
 
         /**

@@ -28,7 +28,6 @@ import static com.android.launcher3.LauncherAnimUtils.SUCCESS_TRANSITION_PROGRES
 import static com.android.launcher3.LauncherAnimUtils.VIEW_ALPHA;
 import static com.android.launcher3.LauncherState.BACKGROUND_APP;
 import static com.android.launcher3.QuickstepTransitionManager.RECENTS_LAUNCH_DURATION;
-import static com.android.launcher3.QuickstepTransitionManager.SPLIT_LAUNCH_DURATION;
 import static com.android.launcher3.Utilities.EDGE_NAV_BAR;
 import static com.android.launcher3.Utilities.mapToRange;
 import static com.android.launcher3.Utilities.squaredHypot;
@@ -45,7 +44,6 @@ import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCH
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASK_DISMISS_SWIPE_UP;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASK_LAUNCH_SWIPE_DOWN;
 import static com.android.launcher3.statehandlers.DepthController.DEPTH;
-import static com.android.launcher3.testing.TestProtocol.TASK_VIEW_ID_CRASH;
 import static com.android.launcher3.touch.PagedOrientationHandler.CANVAS_TRANSLATE;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
@@ -2282,8 +2280,6 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
      * Sets the running task id, cleaning up the old running task if necessary.
      */
     public void setCurrentTask(int runningTaskViewId) {
-        Log.d(TASK_VIEW_ID_CRASH, "currentRunningTaskViewId: " + mRunningTaskViewId
-                + " requestedTaskViewId: " + runningTaskViewId);
         if (mRunningTaskViewId == runningTaskViewId) {
             return;
         }
@@ -3987,14 +3983,12 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                 splitSelectSource.position.stagePosition);
     }
 
-    public PendingAnimation createSplitSelectInitAnimation() {
+    public PendingAnimation createSplitSelectInitAnimation(int duration) {
         if (mSplitHiddenTaskView != null) {
-            int duration = mActivity.getStateManager().getState().getTransitionDuration(
-                    getContext());
             return createTaskDismissAnimation(mSplitHiddenTaskView, true, false, duration,
                     true /* dismissingForSplitSelection*/);
         } else {
-            PendingAnimation anim = new PendingAnimation(SPLIT_LAUNCH_DURATION);
+            PendingAnimation anim = new PendingAnimation(duration);
             createInitialSplitSelectAnimation(anim);
             return anim;
         }
