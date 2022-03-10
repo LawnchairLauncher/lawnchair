@@ -194,7 +194,7 @@ public class AppsDividerView extends View implements FloatingHeaderRow {
     @Override
     protected void onDraw(Canvas canvas) {
         if (mDividerType == DividerType.LINE) {
-            int l = (getWidth() - getPaddingLeft() - mDividerSize[0]) / 2;
+            int l = (getWidth() - mDividerSize[0]) / 2;
             int t = getHeight() - (getPaddingBottom() / 2);
             int radius = mDividerSize[1];
             canvas.drawRoundRect(l, t, l + mDividerSize[0], t + mDividerSize[1], radius, radius,
