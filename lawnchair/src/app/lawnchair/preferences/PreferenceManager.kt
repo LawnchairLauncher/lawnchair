@@ -36,11 +36,6 @@ class PreferenceManager private constructor(private val context: Context) : Base
         Unit
     }
 
-    private val restart = {
-        reloadGrid()
-        recreate()
-    }
-
     val iconPackPackage = StringPref("pref_iconPackPackage", "", reloadIcons)
     val allowRotation = BoolPref("pref_allowRotation", false)
     val wrapAdaptiveIcons = BoolPref("prefs_wrapAdaptive", false, reloadIcons)
@@ -51,7 +46,6 @@ class PreferenceManager private constructor(private val context: Context) : Base
     val folderColumns = IdpIntPref("pref_folderColumns", { numFolderColumns }, reloadGrid)
     val folderRows = IdpIntPref("pref_folderRows", { numFolderRows }, reloadGrid)
     val allAppsColumns = IdpIntPref("pref_allAppsColumns", { numAllAppsColumns }, reloadGrid)
-    val minusOneEnable = BoolPref("pref_enableMinusOne", true, recreate)
 
     // TODO: Add the ability to manually delete empty pages.
     val allowEmptyPages = BoolPref("pref_allowEmptyPages", false)

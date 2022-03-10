@@ -15,11 +15,11 @@ import com.google.android.libraries.launcherclient.ISerializableScrollCallback;
 import com.google.android.libraries.launcherclient.LauncherClient;
 import com.google.android.libraries.launcherclient.LauncherClientCallbacks;
 import com.google.android.libraries.launcherclient.StaticInteger;
+import com.patrykmichalik.preferencemanager.PreferenceExtensionsKt;
 
 import app.lawnchair.FeedBridge;
 import app.lawnchair.LawnchairLauncher;
-import app.lawnchair.preferences.PrefEntry;
-import app.lawnchair.preferences.PreferenceManager;
+import app.lawnchair.preferences2.PreferenceManager2;
 
 /**
  * Implements {@link LauncherOverlay} and passes all the corresponding events to {@link
@@ -42,12 +42,12 @@ public class OverlayCallbackImpl
     private int mFlags;
 
     public OverlayCallbackImpl(LawnchairLauncher launcher) {
-        PreferenceManager prefs = PreferenceManager.getInstance(launcher);
-        PrefEntry<Boolean> minusOnePref = prefs.getMinusOneEnable();
+        PreferenceManager2 preferenceManager2 = PreferenceManager2.getInstance(launcher);
+        Boolean enableFeed = PreferenceExtensionsKt.firstBlocking(preferenceManager2.getEnableFeed());
 
         mLauncher = launcher;
         mClient = new LauncherClient(mLauncher, this, new StaticInteger(
-                (minusOnePref.get() ? 1 : 0) | 2 | 4 | 8));
+                (enableFeed ? 1 : 0) | 2 | 4 | 8));
     }
 
     public static boolean minusOneAvailable(Context context) {

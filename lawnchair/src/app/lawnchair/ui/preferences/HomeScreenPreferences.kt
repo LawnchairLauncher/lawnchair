@@ -55,6 +55,7 @@ interface HomeScreenPreferenceCollectorScope : PreferenceCollectorScope {
     val showIconLabelsOnHomeScreen: Boolean
     val homeIconLabelSizeFactor: Float
     val enableSmartspace: Boolean
+    val enableFeed: Boolean
 }
 
 @Composable
@@ -69,12 +70,13 @@ fun HomeScreenPreferenceCollector(content: @Composable HomeScreenPreferenceColle
     val showIconLabelsOnHomeScreen by preferenceManager.showIconLabelsOnHomeScreen.state()
     val homeIconLabelSizeFactor by preferenceManager.homeIconLabelSizeFactor.state()
     val enableSmartspace by preferenceManager.enableSmartspace.state()
+    val enableFeed by preferenceManager.enableFeed.state()
     ifNotNull(
         darkStatusBar, roundedWidgets,
         showStatusBar, showTopShadow,
         dt2s, homeIconSizeFactor,
         showIconLabelsOnHomeScreen, homeIconLabelSizeFactor,
-        enableSmartspace,
+        enableSmartspace, enableFeed,
     ) {
         object : HomeScreenPreferenceCollectorScope {
             override val darkStatusBar = it[0] as Boolean
@@ -86,6 +88,7 @@ fun HomeScreenPreferenceCollector(content: @Composable HomeScreenPreferenceColle
             override val showIconLabelsOnHomeScreen = it[6] as Boolean
             override val homeIconLabelSizeFactor = it[7] as Float
             override val enableSmartspace = it[8] as Boolean
+            override val enableFeed = it[9] as Boolean
             override val coroutineScope = rememberCoroutineScope()
             override val preferenceManager = preferenceManager
         }.content()
@@ -130,8 +133,9 @@ fun HomeScreenPreferences() {
             }
             PreferenceGroup(heading = stringResource(id = R.string.what_to_show)) {
                 val feedAvailable = OverlayCallbackImpl.minusOneAvailable(LocalContext.current)
-                SwitchPreference(
-                    prefs.minusOneEnable.getAdapter(),
+                SwitchPreference2(
+                    checked = enableFeed,
+                    edit = { enableFeed.set(value = it) },
                     label = stringResource(id = R.string.minus_one_enable),
                     description = if (feedAvailable) null else stringResource(id = R.string.minus_one_unavailable),
                     enabled = feedAvailable,

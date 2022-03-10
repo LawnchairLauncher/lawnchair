@@ -193,6 +193,12 @@ class PreferenceManager2(private val context: Context) : PreferenceManager {
         onSet = { reloadHelper.restart() },
     )
 
+    val enableFeed = preference(
+        key = booleanPreferencesKey(name = "enable_feed"),
+        defaultValue = true,
+        onSet = { reloadHelper.recreate() },
+    )
+
     companion object {
         private val Context.preferencesDataStore by preferencesDataStore(
             name = "preferences",
