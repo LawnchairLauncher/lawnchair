@@ -118,8 +118,8 @@ public final class RecentsViewStateController extends
 
         if (isSplitSelectionState(currentState, toState)) {
             // Animation to "dismiss" selected taskView
-            PendingAnimation splitSelectInitAnimation =
-                    mRecentsView.createSplitSelectInitAnimation();
+            PendingAnimation splitSelectInitAnimation = mRecentsView.createSplitSelectInitAnimation(
+                    toState.getTransitionDuration(mLauncher));
             // Add properties to shift remaining taskViews to get out of placeholder view
             splitSelectInitAnimation.setFloat(mRecentsView, taskViewsFloat.first,
                     toState.getSplitSelectTranslation(mLauncher), LINEAR);
