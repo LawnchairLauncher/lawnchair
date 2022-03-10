@@ -20,13 +20,14 @@ import static com.android.launcher3.Utilities.squaredHypot;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.quickstep.AnimatedFloat.VALUE;
 
+import android.annotation.NonNull;
 import android.graphics.Rect;
 import android.util.FloatProperty;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewTreeObserver;
-import android.view.ViewTreeObserver.OnPreDrawListener;
+
+import androidx.core.view.OneShotPreDrawListener;
 
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.DeviceProfile;
@@ -143,18 +144,8 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
      * drawing a frame and invoked only once
      * @param listener callback that will be invoked before drawing the next frame
      */
-    public void addOneTimePreDrawListener(Runnable listener) {
-        mTaskbarView.getViewTreeObserver().addOnPreDrawListener(new OnPreDrawListener() {
-            @Override
-            public boolean onPreDraw() {
-                final ViewTreeObserver viewTreeObserver = mTaskbarView.getViewTreeObserver();
-                if (viewTreeObserver.isAlive()) {
-                    listener.run();
-                    viewTreeObserver.removeOnPreDrawListener(this);
-                }
-                return true;
-            }
-        });
+    public void addOneTimePreDrawListener(@NonNull Runnable listener) {
+        OneShotPreDrawListener.add(mTaskbarView, listener);
     }
 
     public Rect getIconLayoutBounds() {
@@ -192,23 +183,15 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
     }
 
     /**
-     * Creates the icon alignment controller if it does not already exist.
-     * @param launcherDp Launcher device profile.
-     */
-    public void createIconAlignmentControllerIfNotExists(DeviceProfile launcherDp) {
-        if (mIconAlignControllerLazy == null) {
-            mIconAlignControllerLazy = createIconAlignmentController(launcherDp);
-        }
-    }
-
-    /**
      * Sets the taskbar icon alignment relative to Launcher hotseat icons
      * @param alignmentRatio [0, 1]
      *                       0 => not aligned
      *                       1 => fully aligned
      */
     public void setLauncherIconAlignment(float alignmentRatio, DeviceProfile launcherDp) {
-        createIconAlignmentControllerIfNotExists(launcherDp);
+        if (mIconAlignControllerLazy == null) {
+            mIconAlignControllerLazy = createIconAlignmentController(launcherDp);
+        }
         mIconAlignControllerLazy.setPlayFraction(alignmentRatio);
         if (alignmentRatio <= 0 || alignmentRatio >= 1) {
             // Cleanup lazy controller so that it is created again in next animation

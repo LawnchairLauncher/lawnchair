@@ -20,7 +20,6 @@ import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.ActivityInfo;
 import android.graphics.Insets;
 import android.graphics.drawable.Animatable2;
 import android.graphics.drawable.AnimatedVectorDrawable;
@@ -41,6 +40,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 
+import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.R;
 import com.android.quickstep.interaction.TutorialController.TutorialType;
@@ -67,7 +67,9 @@ abstract class TutorialFragment extends Fragment implements OnTouchListener {
 
     private boolean mFragmentStopped = false;
 
+    private DeviceProfile mDeviceProfile;
     private boolean mIsLargeScreen;
+    private boolean mIsFoldable;
 
     public static TutorialFragment newInstance(TutorialType tutorialType, boolean gestureComplete) {
         TutorialFragment fragment = getFragmentForTutorialType(tutorialType);
@@ -139,20 +141,22 @@ abstract class TutorialFragment extends Fragment implements OnTouchListener {
         mEdgeBackGestureHandler = new EdgeBackGestureHandler(getContext());
         mNavBarGestureHandler = new NavBarGestureHandler(getContext());
 
-        mIsLargeScreen = InvariantDeviceProfile.INSTANCE.get(getContext())
-                .getDeviceProfile(getContext()).isTablet;
-
-        if (mIsLargeScreen) {
-            ((Activity) getContext()).setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_USER);
-        } else {
-            // Temporary until UI mocks for landscape mode for phones are created.
-            ((Activity) getContext()).setRequestedOrientation(
-                    ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        }
+        mDeviceProfile = InvariantDeviceProfile.INSTANCE.get(getContext())
+                .getDeviceProfile(getContext());
+        mIsLargeScreen = mDeviceProfile.isTablet;
+        mIsFoldable = mDeviceProfile.isTwoPanels;
     }
 
     public boolean isLargeScreen() {
         return mIsLargeScreen;
+    }
+
+    public boolean isFoldable() {
+        return mIsFoldable;
+    }
+
+    DeviceProfile getDeviceProfile() {
+        return mDeviceProfile;
     }
 
     @Override
@@ -296,6 +300,9 @@ abstract class TutorialFragment extends Fragment implements OnTouchListener {
 
     @Override
     public boolean onTouch(View view, MotionEvent motionEvent) {
+        if (mTutorialController != null) {
+            mTutorialController.hideFeedback();
+        }
         // Note: Using logical-or to ensure both functions get called.
         return mEdgeBackGestureHandler.onTouch(view, motionEvent)
                 | mNavBarGestureHandler.onTouch(view, motionEvent);

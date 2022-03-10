@@ -110,8 +110,10 @@
     <dimen name="gestures_overscroll_finish_threshold">136dp</dimen>
 
     <!-- Tips Gesture Tutorial -->
-    <dimen name="gesture_tutorial_feedback_margin_start_end">24dp</dimen>
-    <dimen name="gesture_tutorial_foldable_feedback_margin_start_end">140dp</dimen>
+    <dimen name="gesture_tutorial_feedback_margin_start_end">8dp</dimen>
+    <dimen name="gesture_tutorial_tablet_feedback_margin_start_end">140dp</dimen>
+    <dimen name="gesture_tutorial_feedback_margin_top">16dp</dimen>
+    <dimen name="gesture_tutorial_tablet_feedback_margin_top">24dp</dimen>
     <dimen name="gesture_tutorial_multi_row_task_view_spacing">72dp</dimen>
     <dimen name="gesture_tutorial_small_task_view_corner_radius">18dp</dimen>
     <dimen name="gesture_tutorial_mock_taskbar_height">80dp</dimen>
@@ -124,15 +126,46 @@
     <dimen name="gesture_tutorial_message_small_margin_bottom">4dp</dimen>
     <dimen name="gesture_tutorial_message_padding_start">26dp</dimen>
     <dimen name="gesture_tutorial_message_padding_end">18dp</dimen>
-    <dimen name="gesture_tutorial_foldable_message_padding_start_end">126dp</dimen>
+    <dimen name="gesture_tutorial_top_bar_margin_start">34dp</dimen>
+    <dimen name="gesture_tutorial_top_bar_margin_end">211dp</dimen>
+    <dimen name="gesture_tutorial_top_bar_button_margin_end">24dp</dimen>
+    <dimen name="gesture_tutorial_conversation_bottom_padding">66dp</dimen>
+    <integer name="gesture_tutorial_extra_messages_visibility">0</integer> <!-- VISIBLE -->
+    <dimen name="gesture_tutorial_message_margin_start">124dp</dimen>
+    <dimen name="gesture_tutorial_reply_margin_end">144dp</dimen>
+    <dimen name="gesture_tutorial_input_margin_start">34dp</dimen>
+    <dimen name="gesture_tutorial_input_margin_end">24dp</dimen>
+    <dimen name="gesture_tutorial_tablet_message_padding_start_end">126dp</dimen>
+    <dimen name="gesture_tutorial_tablet_message_1_margin">245dp</dimen>
+    <dimen name="gesture_tutorial_tablet_reply_1_margin">241dp</dimen>
+    <dimen name="gesture_tutorial_tablet_message_2_margin">401dp</dimen>
+    <dimen name="gesture_tutorial_tablet_message_3_margin">245dp</dimen>
+    <dimen name="gesture_tutorial_tablet_reply_2_margin">273dp</dimen>
 
     <!-- Gesture Tutorial mock conversation lists -->
     <dimen name="gesture_tutorial_conversation_icon_size">56dp</dimen>
     <dimen name="gesture_tutorial_conversation_icon_corner_radius">100dp</dimen>
     <dimen name="gesture_tutorial_conversation_list_padding_top">28dp</dimen>
     <dimen name="gesture_tutorial_conversation_line_padding_start">20dp</dimen>
+    <dimen name="gesture_tutorial_conversation_line_1_margin_end">217dp</dimen>
+    <dimen name="gesture_tutorial_conversation_line_2_margin_end">142dp</dimen>
+    <dimen name="gesture_tutorial_conversation_line_3_margin_end">190dp</dimen>
+    <dimen name="gesture_tutorial_conversation_line_4_margin_end">171dp</dimen>
+    <dimen name="gesture_tutorial_conversation_line_5_margin_end">198dp</dimen>
+    <dimen name="gesture_tutorial_conversation_line_6_margin_end">79dp</dimen>
+    <dimen name="gesture_tutorial_conversation_line_7_margin_end">174dp</dimen>
+    <dimen name="gesture_tutorial_conversation_line_8_margin_end">117dp</dimen>
+    <dimen name="gesture_tutorial_tablet_conversation_line_6_margin_end">65dp</dimen>
+    <dimen name="gesture_tutorial_tablet_conversation_line_8_margin_end">132dp</dimen>
+    <dimen name="gesture_tutorial_tablet_conversation_line_10_margin_end">161dp</dimen>
+    <integer name="gesture_tutorial_extra_conversations_visibility">0</integer> <!-- VISIBLE -->
+    <dimen name="gesture_tutorial_mock_button_margin_end">24dp</dimen>
+    <dimen name="gesture_tutorial_mock_button_margin_bottom">66dp</dimen>
 
     <!-- Gesture Tutorial mock hotseats -->
+    <dimen name="gesture_tutorial_hotseat_width">-1px</dimen> <!-- match_parent -->
+    <dimen name="gesture_tutorial_hotseat_height">-2px</dimen> <!-- wrap_content -->
+    <dimen name="gesture_tutorial_hotseat_padding_start_end">26dp</dimen>
     <dimen name="gesture_tutorial_hotseat_icon_size">60dp</dimen>
     <dimen name="gesture_tutorial_hotseat_icon_corner_radius">100dp</dimen>
     <dimen name="gesture_tutorial_hotseat_search_height">50dp</dimen>
@@ -148,11 +181,20 @@
     <dimen name="gesture_tutorial_webpage_small_corner_radius">4dp</dimen>
     <dimen name="gesture_tutorial_webpage_large_line_height">36dp</dimen>
     <dimen name="gesture_tutorial_webpage_small_line_height">22dp</dimen>
+    <dimen name="gesture_tutorial_webpage_url_margin_start_end">16dp</dimen>
+    <dimen name="gesture_tutorial_webpage_top_bar_button_margin_start">24dp</dimen>
+    <dimen name="gesture_tutorial_webpage_top_bar_margin_start">97dp</dimen>
+    <dimen name="gesture_tutorial_webpage_top_bar_margin_end">97dp</dimen>
+    <dimen name="gesture_tutorial_webpage_line_1_margin_end">126dp</dimen>
+    <dimen name="gesture_tutorial_webpage_line_2_margin_end">64dp</dimen>
+    <dimen name="gesture_tutorial_webpage_line_3_margin_end">151dp</dimen>
+    <dimen name="gesture_tutorial_webpage_block_margin_end">24dp</dimen>
+    <integer name="gesture_tutorial_webpage_extra_lines_visibility">0</integer> <!-- VISIBLE -->
 
     <!-- Gesture Tutorial mock taskbar -->
     <dimen name="gesture_tutorial_taskbar_icon_size">44dp</dimen>
     <dimen name="gesture_tutorial_taskbar_icon_corner_radius">100dp</dimen>
-    <dimen name="gesture_tutorial_taskbar_padding_start_end">218dp</dimen>
+    <dimen name="gesture_tutorial_taskbar_padding_start_end">52dp</dimen>
 
     <!-- All Set page -->
     <dimen name="allset_page_margin_horizontal">40dp</dimen>
@@ -217,6 +259,7 @@
     <dimen name="taskbar_contextual_buttons_size">35dp</dimen>
     <dimen name="taskbar_stashed_size">24dp</dimen>
     <dimen name="taskbar_stashed_handle_width">220dp</dimen>
+    <dimen name="taskbar_unstash_input_area">316dp</dimen>
     <dimen name="taskbar_stashed_handle_height">4dp</dimen>
     <dimen name="taskbar_edu_wave_anim_trans_y">25dp</dimen>
     <dimen name="taskbar_edu_wave_anim_trans_y_return_overshoot">4dp</dimen>
