@@ -81,7 +81,7 @@ public class AlphabeticalAppsList<T extends Context & ActivityContext> implement
     private final List<FastScrollSectionInfo> mFastScrollerSections = new ArrayList<>();
 
     // The of ordered component names as a result of a search query
-    private ArrayList<AdapterItem> mSearchResults;
+    private final ArrayList<AdapterItem> mSearchResults = new ArrayList<>();
     private BaseAllAppsAdapter<T> mAdapter;
     private AppInfoComparator mAppNameComparator;
     private final int mNumAppsPerRow;
@@ -171,30 +171,33 @@ public class AlphabeticalAppsList<T extends Context & ActivityContext> implement
      * Returns whether there are is a filter set.
      */
     public boolean hasFilter() {
-        return (mSearchResults != null);
+        return !mSearchResults.isEmpty();
     }
 
     /**
      * Returns whether there are no filtered results.
      */
     public boolean hasNoFilteredResults() {
-        return (mSearchResults != null) && mAccessibilityResultsCount == 0;
+        return hasFilter() && mAccessibilityResultsCount == 0;
     }
 
     /**
      * Sets results list for search
      */
     public boolean setSearchResults(ArrayList<AdapterItem> results) {
-        if (!Objects.equals(results, mSearchResults)) {
-            mSearchResults = results;
-            updateAdapterItems();
-            return true;
+        if (Objects.equals(results, mSearchResults)) {
+            return false;
         }
-        return false;
+        mSearchResults.clear();
+        if (results != null) {
+            mSearchResults.addAll(results);
+        }
+        updateAdapterItems();
+        return true;
     }
 
     public boolean appendSearchResults(ArrayList<AdapterItem> results) {
-        if (mSearchResults != null && results != null && results.size() > 0) {
+        if (hasFilter() && results != null && results.size() > 0) {
             updateSearchAdapterItems(results, mSearchResults.size());
             refreshRecyclerView();
             return true;
@@ -259,7 +262,7 @@ public class AlphabeticalAppsList<T extends Context & ActivityContext> implement
         }
 
         // Recompose the set of adapter items from the current set of apps
-        if (mSearchResults == null) {
+        if (mSearchResults.isEmpty()) {
             updateAdapterItems();
         }
     }
