@@ -100,12 +100,14 @@ public class AllAppsSearchBarController
     @Override
     public void afterTextChanged(final Editable s) {
         mQuery = s.toString();
+        mInput.getSelectionStart();
         if (mQuery.isEmpty()) {
             mSearchAlgorithm.cancel(true);
             mCallback.clearSearchResult();
         } else {
             mSearchAlgorithm.cancel(false);
-            mSearchAlgorithm.doSearch(mQuery, mTextConversions, mCallback);
+            mSearchAlgorithm.doSearch(mQuery, mInput.getSelectionStart(), mTextConversions,
+                    mCallback);
         }
     }
 
@@ -115,7 +117,7 @@ public class AllAppsSearchBarController
         }
         // If play store continues auto updating an app, we want to show partial result.
         mSearchAlgorithm.cancel(false);
-        mSearchAlgorithm.doSearch(mQuery, mCallback);
+        mSearchAlgorithm.doSearch(mQuery, mInput.getSelectionStart(), mCallback);
     }
 
     @Override
