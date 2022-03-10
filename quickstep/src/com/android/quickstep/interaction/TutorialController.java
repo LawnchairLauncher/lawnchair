@@ -64,7 +64,7 @@ abstract class TutorialController implements BackGestureAttemptCallback,
 
     private static final String TAG = "TutorialController";
 
-    private static final float FINGER_DOT_VISIBLE_ALPHA = 0.6f;
+    private static final float FINGER_DOT_VISIBLE_ALPHA = 0.7f;
     private static final float FINGER_DOT_SMALL_SCALE = 0.7f;
     private static final int FINGER_DOT_ANIMATION_DURATION_MILLIS = 500;
 
