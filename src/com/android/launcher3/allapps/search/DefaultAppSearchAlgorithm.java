@@ -58,7 +58,7 @@ public class DefaultAppSearchAlgorithm implements SearchAlgorithm<AdapterItem> {
     }
 
     @Override
-    public void doSearch(String query, int cursorLocation, SearchCallback<AdapterItem> callback) {
+    public void doSearch(String query, SearchCallback<AdapterItem> callback) {
         mAppState.getModel().enqueueModelUpdateTask(new BaseModelUpdateTask() {
             @Override
             public void execute(LauncherAppState app, BgDataModel dataModel, AllAppsList apps) {

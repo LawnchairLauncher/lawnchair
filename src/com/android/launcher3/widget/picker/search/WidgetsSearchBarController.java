@@ -71,7 +71,7 @@ public class WidgetsSearchBarController implements TextWatcher,
         } else {
             mSearchAlgorithm.cancel(/* interruptActiveRequests= */ false);
             mSearchModeListener.enterSearchMode();
-            mSearchAlgorithm.doSearch(mQuery, mInput.getSelectionStart(), this);
+            mSearchAlgorithm.doSearch(mQuery, this);
             mCancelButton.setVisibility(VISIBLE);
         }
     }
