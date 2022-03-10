@@ -159,7 +159,8 @@ public class FloatingSurfaceView extends AbstractFloatingView implements
             return;
         }
         View icon = mLauncher.getFirstMatchForAppClose(-1,
-                mContract.componentName.getPackageName(), mContract.user);
+                mContract.componentName.getPackageName(), mContract.user,
+                false /* supportsAllAppsState */);
 
         boolean iconChanged = mIcon != icon;
         if (iconChanged) {
