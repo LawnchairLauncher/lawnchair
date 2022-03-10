@@ -183,23 +183,15 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
     }
 
     /**
-     * Creates the icon alignment controller if it does not already exist.
-     * @param launcherDp Launcher device profile.
-     */
-    public void createIconAlignmentControllerIfNotExists(DeviceProfile launcherDp) {
-        if (mIconAlignControllerLazy == null) {
-            mIconAlignControllerLazy = createIconAlignmentController(launcherDp);
-        }
-    }
-
-    /**
      * Sets the taskbar icon alignment relative to Launcher hotseat icons
      * @param alignmentRatio [0, 1]
      *                       0 => not aligned
      *                       1 => fully aligned
      */
     public void setLauncherIconAlignment(float alignmentRatio, DeviceProfile launcherDp) {
-        createIconAlignmentControllerIfNotExists(launcherDp);
+        if (mIconAlignControllerLazy == null) {
+            mIconAlignControllerLazy = createIconAlignmentController(launcherDp);
+        }
         mIconAlignControllerLazy.setPlayFraction(alignmentRatio);
         if (alignmentRatio <= 0 || alignmentRatio >= 1) {
             // Cleanup lazy controller so that it is created again in next animation
