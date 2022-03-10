@@ -29,16 +29,13 @@ import androidx.annotation.NonNull;
 
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.BaseQuickstepLauncher;
-import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.LauncherState;
-import com.android.launcher3.Utilities;
 import com.android.launcher3.statemanager.StateManager;
 import com.android.launcher3.util.MultiValueAlpha;
 import com.android.quickstep.AnimatedFloat;
 import com.android.quickstep.RecentsAnimationCallbacks;
 import com.android.quickstep.RecentsAnimationController;
 import com.android.quickstep.views.RecentsView;
-import com.android.systemui.animation.ViewRootSync;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 
 import java.util.HashMap;
@@ -79,9 +76,6 @@ import java.util.function.Supplier;
 
     private boolean mShouldDelayLauncherStateAnim;
 
-    // We skip any view synchronizations during init/destroy.
-    private boolean mCanSyncViews;
-
     private final StateManager.StateListener<LauncherState> mStateListener =
             new StateManager.StateListener<LauncherState>() {
 
@@ -108,8 +102,6 @@ import java.util.function.Supplier;
             };
 
     public void init(TaskbarControllers controllers, BaseQuickstepLauncher launcher) {
-        mCanSyncViews = false;
-
         mControllers = controllers;
         mLauncher = launcher;
 
@@ -129,13 +121,9 @@ import java.util.function.Supplier;
         updateStateForFlag(FLAG_RESUMED, launcher.hasBeenResumed());
         mLauncherState = launcher.getStateManager().getState();
         applyState(0);
-
-        mCanSyncViews = true;
     }
 
     public void onDestroy() {
-        mCanSyncViews = false;
-
         mIconAlignmentForResumedState.finishAnimation();
         mIconAlignmentForGestureState.finishAnimation();
         mIconAlignmentForLauncherState.finishAnimation();
@@ -143,8 +131,6 @@ import java.util.function.Supplier;
         mIconAlphaForHome.setConsumer(null);
         mLauncher.getHotseat().setIconsAlpha(1f);
         mLauncher.getStateManager().removeStateListener(mStateListener);
-
-        mCanSyncViews = true;
     }
 
     public Animator createAnimToLauncher(@NonNull LauncherState toState,
@@ -394,27 +380,6 @@ import java.util.function.Supplier;
             return;
         }
         float alignment = alignmentSupplier.get();
-        float currentValue = mIconAlphaForHome.getValue();
-        boolean taskbarWillBeVisible = alignment < 1;
-        boolean firstFrameVisChanged = (taskbarWillBeVisible && Float.compare(currentValue, 1) != 0)
-                || (!taskbarWillBeVisible && Float.compare(currentValue, 0) != 0);
-
-        // Sync the first frame where we swap taskbar and hotseat.
-        if (firstFrameVisChanged && mCanSyncViews && !Utilities.IS_RUNNING_IN_TEST_HARNESS) {
-            DeviceProfile dp = mLauncher.getDeviceProfile();
-
-            // Do all the heavy work before the sync.
-            mControllers.taskbarViewController.createIconAlignmentControllerIfNotExists(dp);
-
-            ViewRootSync.synchronizeNextDraw(mLauncher.getHotseat(),
-                    mControllers.taskbarActivityContext.getDragLayer(),
-                    () -> updateIconAlignment(alignment));
-        } else {
-            updateIconAlignment(alignment);
-        }
-    }
-
-    private void updateIconAlignment(float alignment) {
         mControllers.taskbarViewController.setLauncherIconAlignment(
                 alignment, mLauncher.getDeviceProfile());
 

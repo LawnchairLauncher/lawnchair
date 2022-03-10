@@ -31,7 +31,6 @@ android_library {
         "androidx.test.uiautomator_uiautomator",
         "androidx.preference_preference",
         "SystemUISharedLib",
-        "SystemUIAnimationLib",
     ],
     srcs: [
         "tests/tapl/**/*.java",
@@ -197,7 +196,6 @@ android_library {
         "lottie",
         "SystemUISharedLib",
         "SystemUI-statsd",
-        "SystemUIAnimationLib",
     ],
     manifest: "quickstep/AndroidManifest.xml",
     min_sdk_version: "current",
@@ -289,7 +287,6 @@ android_library {
         "SystemUISharedLib",
         "Launcher3CommonDepsLib",
         "QuickstepResLib",
-        "SystemUIAnimationLib",
     ],
     manifest: "quickstep/AndroidManifest.xml",
     platform_apis: true,
