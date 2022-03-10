@@ -23,7 +23,7 @@
 
 <!-- AllApps -->
     <dimen name="all_apps_search_bar_content_overlap">0dp</dimen>
-    <dimen name="all_apps_bottom_sheet_horizontal_padding">46dp</dimen>
+    <dimen name="all_apps_bottom_sheet_horizontal_padding">48dp</dimen>
 
 <!-- Fast scroll -->
     <dimen name="fastscroll_popup_width">75dp</dimen>

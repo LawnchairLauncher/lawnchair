@@ -208,6 +208,12 @@ class DeviceProfileTest {
                 PointF(64f, 83f),
                 PointF(64f, 83f)
             ).toTypedArray()
+            allAppsCellSize = listOf(
+                PointF(64f, 83f),
+                PointF(64f, 83f),
+                PointF(64f, 83f),
+                PointF(64f, 83f)
+            ).toTypedArray()
         }
     }
 }
