@@ -48,8 +48,7 @@ public final class SimpleWidgetsSearchAlgorithm implements SearchAlgorithm<Widge
     }
 
     @Override
-    public void doSearch(String query, int cursorLocation,
-            SearchCallback<WidgetsListBaseEntry> callback) {
+    public void doSearch(String query, SearchCallback<WidgetsListBaseEntry> callback) {
         ArrayList<WidgetsListBaseEntry> result = getFilteredWidgets(mDataProvider, query);
         mResultHandler.post(() -> callback.onSearchResult(query, result));
     }
