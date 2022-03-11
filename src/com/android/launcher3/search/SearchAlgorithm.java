@@ -25,14 +25,13 @@ public interface SearchAlgorithm<T> {
     /**
      * Performs search and sends the result to {@link SearchCallback}.
      */
-    void doSearch(String query, int cursorLocation, SearchCallback<T> callback);
+    void doSearch(String query, SearchCallback<T> callback);
 
     /**
      * Performs search with {@code query} and the {@code suggestedQueries}/
      */
-    default void doSearch(String query, int cursorLocation, String[] suggestedQueries,
-            SearchCallback<T> callback) {
-        doSearch(query, cursorLocation, callback);
+    default void doSearch(String query, String[] suggestedQueries, SearchCallback<T> callback) {
+        doSearch(query, callback);
     }
 
     /**

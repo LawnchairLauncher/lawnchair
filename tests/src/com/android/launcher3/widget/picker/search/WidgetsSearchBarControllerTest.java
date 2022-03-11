@@ -86,7 +86,7 @@ public class WidgetsSearchBarControllerTest {
     public void afterTextChanged_shouldDoSearch() {
         mEditText.setText("abc");
 
-        verify(mSearchAlgorithm).doSearch(eq("abc"), 3, any());
+        verify(mSearchAlgorithm).doSearch(eq("abc"), any());
     }
 
     @Test
