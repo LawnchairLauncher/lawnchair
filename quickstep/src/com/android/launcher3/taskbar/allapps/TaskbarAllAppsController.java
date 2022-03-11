@@ -39,6 +39,8 @@ import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.taskbar.TaskbarActivityContext;
 import com.android.launcher3.taskbar.TaskbarControllers;
 import com.android.launcher3.taskbar.TaskbarSharedState;
+import com.android.systemui.shared.system.TaskStackChangeListener;
+import com.android.systemui.shared.system.TaskStackChangeListeners;
 
 import java.util.List;
 import java.util.Optional;
@@ -61,6 +63,13 @@ public final class TaskbarAllAppsController implements OnDeviceProfileChangeList
     private final TaskbarActivityContext mTaskbarContext;
     private final TaskbarAllAppsProxyView mProxyView;
     private final LayoutParams mLayoutParams;
+
+    private final TaskStackChangeListener mTaskStackListener = new TaskStackChangeListener() {
+        @Override
+        public void onTaskStackChanged() {
+            mProxyView.close(false);
+        }
+    };
 
     private TaskbarControllers mControllers;
     private TaskbarSharedState mSharedState;
@@ -139,6 +148,7 @@ public final class TaskbarAllAppsController implements OnDeviceProfileChangeList
                 mControllers.taskbarStashController);
         mAllAppsContext.getDragController().init(mControllers);
         mTaskbarContext.addOnDeviceProfileChangeListener(this);
+        TaskStackChangeListeners.getInstance().registerTaskStackListener(mTaskStackListener);
         Optional.ofNullable(mAllAppsContext.getSystemService(WindowManager.class))
                 .ifPresent(m -> m.addView(mAllAppsContext.getDragLayer(), mLayoutParams));
 
@@ -172,6 +182,7 @@ public final class TaskbarAllAppsController implements OnDeviceProfileChangeList
 
     /** Destroys the controller and any All Apps window if present. */
     public void onDestroy() {
+        TaskStackChangeListeners.getInstance().unregisterTaskStackListener(mTaskStackListener);
         mTaskbarContext.removeOnDeviceProfileChangeListener(this);
         Optional.ofNullable(mAllAppsContext)
                 .map(c -> c.getSystemService(WindowManager.class))
