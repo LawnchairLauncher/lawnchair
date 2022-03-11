@@ -39,6 +39,7 @@ import android.view.MotionEvent;
 import android.view.RemoteAnimationAdapter;
 import android.view.RemoteAnimationTarget;
 import android.view.SurfaceControl;
+import android.window.IOnBackInvokedCallback;
 
 import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.DisplayController.Info;
@@ -50,6 +51,7 @@ import com.android.systemui.shared.system.RemoteTransitionCompat;
 import com.android.systemui.shared.system.smartspace.ILauncherUnlockAnimationController;
 import com.android.systemui.shared.system.smartspace.ISysuiUnlockAnimationController;
 import com.android.systemui.shared.system.smartspace.SmartspaceState;
+import com.android.wm.shell.back.IBackAnimation;
 import com.android.wm.shell.onehanded.IOneHanded;
 import com.android.wm.shell.pip.IPip;
 import com.android.wm.shell.pip.IPipAnimationListener;
@@ -82,6 +84,7 @@ public class SystemUiProxy implements ISystemUiProxy, DisplayController.DisplayI
     private IShellTransitions mShellTransitions;
     private IStartingWindow mStartingWindow;
     private IRecentTasks mRecentTasks;
+    private IBackAnimation mBackAnimation;
     private final DeathRecipient mSystemUiProxyDeathRecipient = () -> {
         MAIN_EXECUTOR.execute(() -> clearProxy());
     };
@@ -96,6 +99,7 @@ public class SystemUiProxy implements ISystemUiProxy, DisplayController.DisplayI
     private ILauncherUnlockAnimationController mPendingLauncherUnlockAnimationController;
     private IRecentTasksListener mRecentTasksListener;
     private final ArrayList<RemoteTransitionCompat> mRemoteTransitions = new ArrayList<>();
+    private IOnBackInvokedCallback mBackToLaunchCallback;
 
     // Used to dedupe calls to SystemUI
     private int mLastShelfHeight;
@@ -162,8 +166,8 @@ public class SystemUiProxy implements ISystemUiProxy, DisplayController.DisplayI
     public void setProxy(ISystemUiProxy proxy, IPip pip, ISplitScreen splitScreen,
             IOneHanded oneHanded, IShellTransitions shellTransitions,
             IStartingWindow startingWindow, IRecentTasks recentTasks,
-            ISysuiUnlockAnimationController sysuiUnlockAnimationController) {
-
+            ISysuiUnlockAnimationController sysuiUnlockAnimationController,
+            IBackAnimation backAnimation) {
         unlinkToDeath();
         mSystemUiProxy = proxy;
         mPip = pip;
@@ -173,6 +177,7 @@ public class SystemUiProxy implements ISystemUiProxy, DisplayController.DisplayI
         mStartingWindow = startingWindow;
         mSysuiUnlockAnimationController = sysuiUnlockAnimationController;
         mRecentTasks = recentTasks;
+        mBackAnimation = backAnimation;
         linkToDeath();
         // re-attach the listeners once missing due to setProxy has not been initialized yet.
         if (mPipAnimationListener != null && mPip != null) {
@@ -195,6 +200,9 @@ public class SystemUiProxy implements ISystemUiProxy, DisplayController.DisplayI
         if (mRecentTasksListener != null && mRecentTasks != null) {
             registerRecentTasksListener(mRecentTasksListener);
         }
+        if (mBackAnimation != null && mBackToLaunchCallback != null) {
+            setBackToLauncherCallback(mBackToLaunchCallback);
+        }
 
         if (mPendingSetNavButtonAlpha != null) {
             mPendingSetNavButtonAlpha.run();
@@ -203,7 +211,7 @@ public class SystemUiProxy implements ISystemUiProxy, DisplayController.DisplayI
     }
 
     public void clearProxy() {
-        setProxy(null, null, null, null, null, null, null, null);
+        setProxy(null, null, null, null, null, null, null, null, null);
     }
 
     // TODO(141886704): Find a way to remove this
@@ -820,6 +828,49 @@ public class SystemUiProxy implements ISystemUiProxy, DisplayController.DisplayI
             }
         }
         mRecentTasksListener = null;
+    }
+
+    //
+    // Back navigation transitions
+    //
+
+    /** Sets the launcher {@link android.window.IOnBackInvokedCallback} to shell */
+    public void setBackToLauncherCallback(IOnBackInvokedCallback callback) {
+        mBackToLaunchCallback = callback;
+        if (mBackAnimation == null) {
+            return;
+        }
+        try {
+            mBackAnimation.setBackToLauncherCallback(callback);
+        } catch (RemoteException e) {
+            Log.e(TAG, "Failed call setBackToLauncherCallback", e);
+        }
+    }
+
+    /** Clears the previously registered {@link IOnBackInvokedCallback}. */
+    public void clearBackToLauncherCallback() {
+        if (mBackAnimation == null) {
+            return;
+        }
+        try {
+            mBackAnimation.clearBackToLauncherCallback();
+        } catch (RemoteException e) {
+            Log.e(TAG, "Failed call clearBackToLauncherCallback", e);
+        }
+    }
+
+    /**
+     * Notifies shell that all back to launcher animations have finished (including the transition
+     * that plays after the gesture is committed and before the app is closed.
+     */
+    public void onBackToLauncherAnimationFinished() {
+        if (mBackAnimation != null) {
+            try {
+                mBackAnimation.onBackToLauncherAnimationFinished();
+            } catch (RemoteException e) {
+                Log.w(TAG, "Failed call onBackAnimationFinished", e);
+            }
+        }
     }
 
     public ArrayList<GroupedRecentTaskInfo> getRecentTasks(int numTasks, int userId) {
