@@ -75,6 +75,7 @@ public class DeviceProfile {
     public final int heightPx;
     public final int availableWidthPx;
     public final int availableHeightPx;
+    public final int rotationHint;
 
     public final float aspectRatio;
 
@@ -239,6 +240,7 @@ public class DeviceProfile {
         this.isGestureMode = isGestureMode;
         windowX = windowBounds.bounds.left;
         windowY = windowBounds.bounds.top;
+        this.rotationHint = windowBounds.rotationHint;
 
         isScalableGrid = inv.isScalable && !isVerticalBarLayout() && !isMultiWindowMode;
 
@@ -548,8 +550,8 @@ public class DeviceProfile {
     }
 
     public Builder toBuilder(Context context) {
-        WindowBounds bounds =
-                new WindowBounds(widthPx, heightPx, availableWidthPx, availableHeightPx);
+        WindowBounds bounds = new WindowBounds(
+                widthPx, heightPx, availableWidthPx, availableHeightPx, rotationHint);
         bounds.bounds.offsetTo(windowX, windowY);
         return new Builder(context, inv, mInfo)
                 .setWindowBounds(bounds)

@@ -606,7 +606,7 @@ public class RecentsOrientedState implements
             width = Math.min(currentSize.x, currentSize.y);
             height = Math.max(currentSize.x, currentSize.y);
         }
-        return idp.getBestMatch(width, height);
+        return idp.getBestMatch(width, height, mRecentsActivityRotation);
     }
 
     private static String nameAndAddress(Object obj) {

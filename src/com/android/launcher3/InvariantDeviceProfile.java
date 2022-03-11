@@ -55,6 +55,7 @@ import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.MainThreadInitializedObject;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.util.WindowBounds;
+import com.android.launcher3.util.window.WindowManagerProxy;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -180,8 +181,7 @@ public class InvariantDeviceProfile {
     private final ArrayList<OnIDPChangeListener> mChangeListeners = new ArrayList<>();
 
     @VisibleForTesting
-    public InvariantDeviceProfile() {
-    }
+    public InvariantDeviceProfile() { }
 
     @TargetApi(23)
     private InvariantDeviceProfile(Context context) {
@@ -278,11 +278,16 @@ public class InvariantDeviceProfile {
     }
 
     private static @DeviceType int getDeviceType(Info displayInfo) {
-        // Each screen has two profiles (portrait/landscape), so devices with four or more
-        // supported profiles implies two or more internal displays.
-        if (displayInfo.supportedBounds.size() >= 4 && ENABLE_TWO_PANEL_HOME.get()) {
+        int flagPhone = 1 << 0;
+        int flagTablet = 1 << 1;
+
+        int type = displayInfo.supportedBounds.stream()
+                .mapToInt(bounds -> displayInfo.isTablet(bounds) ? flagTablet : flagPhone)
+                .reduce(0, (a, b) -> a | b);
+        if ((type == (flagPhone | flagTablet)) && ENABLE_TWO_PANEL_HOME.get()) {
+            // device has profiles supporting both phone and table modes
             return TYPE_MULTI_DISPLAY;
-        } else if (displayInfo.supportedBounds.stream().allMatch(displayInfo::isTablet)) {
+        } else if (type == flagTablet) {
             return TYPE_TABLET;
         } else {
             return TYPE_PHONE;
@@ -613,10 +618,14 @@ public class InvariantDeviceProfile {
 
         float screenWidth = config.screenWidthDp * res.getDisplayMetrics().density;
         float screenHeight = config.screenHeightDp * res.getDisplayMetrics().density;
-        return getBestMatch(screenWidth, screenHeight);
+        return getBestMatch(screenWidth, screenHeight,
+                WindowManagerProxy.INSTANCE.get(context).getRotation(context));
     }
 
-    public DeviceProfile getBestMatch(float screenWidth, float screenHeight) {
+    /**
+     * Returns the device profile matching the provided screen configuration
+     */
+    public DeviceProfile getBestMatch(float screenWidth, float screenHeight, int rotation) {
         DeviceProfile bestMatch = supportedProfiles.get(0);
         float minDiff = Float.MAX_VALUE;
 
@@ -625,6 +634,8 @@ public class InvariantDeviceProfile {
                     + Math.abs(profile.heightPx - screenHeight);
             if (diff < minDiff) {
                 minDiff = diff;
+                bestMatch = profile;
+            } else if (diff == minDiff && profile.rotationHint == rotation) {
                 bestMatch = profile;
             }
         }

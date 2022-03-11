@@ -116,7 +116,7 @@ public class TaskbarControllers {
         taskbarEduController.init(this);
         taskbarPopupController.init(this);
         taskbarForceVisibleImmersiveController.init(this);
-        taskbarAllAppsController.init(this);
+        taskbarAllAppsController.init(this, sharedState);
 
         mControllersToLog = new LoggableTaskbarController[] {
                 taskbarDragController, navButtonController, navbarButtonsViewController,
@@ -152,6 +152,7 @@ public class TaskbarControllers {
         taskbarAutohideSuspendController.onDestroy();
         taskbarPopupController.onDestroy();
         taskbarForceVisibleImmersiveController.onDestroy();
+        taskbarAllAppsController.onDestroy();
 
         mControllersToLog = null;
     }
