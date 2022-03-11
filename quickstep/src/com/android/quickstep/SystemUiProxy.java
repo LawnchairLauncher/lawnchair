@@ -99,7 +99,7 @@ public class SystemUiProxy implements ISystemUiProxy, DisplayController.DisplayI
     private ILauncherUnlockAnimationController mPendingLauncherUnlockAnimationController;
     private IRecentTasksListener mRecentTasksListener;
     private final ArrayList<RemoteTransitionCompat> mRemoteTransitions = new ArrayList<>();
-    private IOnBackInvokedCallback mBackToLaunchCallback;
+    private IOnBackInvokedCallback mBackToLauncherCallback;
 
     // Used to dedupe calls to SystemUI
     private int mLastShelfHeight;
@@ -200,8 +200,8 @@ public class SystemUiProxy implements ISystemUiProxy, DisplayController.DisplayI
         if (mRecentTasksListener != null && mRecentTasks != null) {
             registerRecentTasksListener(mRecentTasksListener);
         }
-        if (mBackAnimation != null && mBackToLaunchCallback != null) {
-            setBackToLauncherCallback(mBackToLaunchCallback);
+        if (mBackAnimation != null && mBackToLauncherCallback != null) {
+            setBackToLauncherCallback(mBackToLauncherCallback);
         }
 
         if (mPendingSetNavButtonAlpha != null) {
@@ -836,7 +836,7 @@ public class SystemUiProxy implements ISystemUiProxy, DisplayController.DisplayI
 
     /** Sets the launcher {@link android.window.IOnBackInvokedCallback} to shell */
     public void setBackToLauncherCallback(IOnBackInvokedCallback callback) {
-        mBackToLaunchCallback = callback;
+        mBackToLauncherCallback = callback;
         if (mBackAnimation == null) {
             return;
         }
@@ -849,6 +849,7 @@ public class SystemUiProxy implements ISystemUiProxy, DisplayController.DisplayI
 
     /** Clears the previously registered {@link IOnBackInvokedCallback}. */
     public void clearBackToLauncherCallback() {
+        mBackToLauncherCallback = null;
         if (mBackAnimation == null) {
             return;
         }
