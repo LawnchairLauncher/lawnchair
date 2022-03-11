@@ -102,12 +102,16 @@ public class LauncherProvider extends ContentProvider {
     public static final String AUTHORITY = BuildConfig.APPLICATION_ID + ".settings";
     public static final String KEY_LAYOUT_PROVIDER_AUTHORITY = "KEY_LAYOUT_PROVIDER_AUTHORITY";
 
+    private static final int TEST_WORKSPACE_LAYOUT_RES_XML = R.xml.default_test_workspace;
+
     static final String EMPTY_DATABASE_CREATED = "EMPTY_DATABASE_CREATED";
 
     protected DatabaseHelper mOpenHelper;
     protected String mProviderAuthority;
 
     private long mLastRestoreTimestamp = 0L;
+
+    private boolean mUseTestWorkspaceLayout;
 
     /**
      * $ adb shell dumpsys activity provider com.android.launcher3
@@ -390,6 +394,14 @@ public class LauncherProvider extends ContentProvider {
                 mOpenHelper.createEmptyDB(mOpenHelper.getWritableDatabase());
                 return null;
             }
+            case LauncherSettings.Settings.METHOD_SET_USE_TEST_WORKSPACE_LAYOUT_FLAG: {
+                mUseTestWorkspaceLayout = true;
+                return null;
+            }
+            case LauncherSettings.Settings.METHOD_CLEAR_USE_TEST_WORKSPACE_LAYOUT_FLAG: {
+                mUseTestWorkspaceLayout = false;
+                return null;
+            }
             case LauncherSettings.Settings.METHOD_LOAD_DEFAULT_FAVORITES: {
                 loadDefaultFavoritesIfNecessary();
                 return null;
@@ -609,7 +621,8 @@ public class LauncherProvider extends ContentProvider {
 
     private DefaultLayoutParser getDefaultLayoutParser(AppWidgetHost widgetHost) {
         InvariantDeviceProfile idp = LauncherAppState.getIDP(getContext());
-        int defaultLayout = idp.defaultLayoutId;
+        int defaultLayout = mUseTestWorkspaceLayout
+                ? TEST_WORKSPACE_LAYOUT_RES_XML : idp.defaultLayoutId;
 
         if (getContext().getSystemService(UserManager.class).isDemoUser()
                 && idp.demoModeLayoutId != 0) {

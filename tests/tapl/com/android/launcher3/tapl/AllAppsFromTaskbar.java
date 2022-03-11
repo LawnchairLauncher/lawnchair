@@ -18,31 +18,34 @@ package com.android.launcher3.tapl;
 import androidx.annotation.NonNull;
 import androidx.test.uiautomator.UiObject2;
 
-public class HomeAllApps extends AllApps {
+/**
+ * Operations on AllApps opened from the Taskbar.
+ */
+public class AllAppsFromTaskbar extends AllApps {
 
-    HomeAllApps(LauncherInstrumentation launcher) {
+    AllAppsFromTaskbar(LauncherInstrumentation launcher) {
         super(launcher);
     }
 
     @Override
     protected LauncherInstrumentation.ContainerType getContainerType() {
-        return LauncherInstrumentation.ContainerType.HOME_ALL_APPS;
+        return LauncherInstrumentation.ContainerType.TASKBAR_ALL_APPS;
     }
 
     @NonNull
     @Override
-    public HomeAppIcon getAppIcon(String appName) {
-        return (AllAppsAppIcon) super.getAppIcon(appName);
+    public TaskbarAppIcon getAppIcon(String appName) {
+        return (TaskbarAppIcon) super.getAppIcon(appName);
     }
 
     @NonNull
     @Override
-    protected HomeAppIcon createAppIcon(UiObject2 icon) {
-        return new AllAppsAppIcon(mLauncher, icon);
+    protected TaskbarAppIcon createAppIcon(UiObject2 icon) {
+        return new TaskbarAppIcon(mLauncher, icon);
     }
 
     @Override
     protected boolean hasSearchBox() {
-        return true;
+        return false;
     }
 }

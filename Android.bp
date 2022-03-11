@@ -208,6 +208,8 @@ filegroup {
     srcs: [
         "ext_tests/src/**/*.java",
         "ext_tests/src/**/*.kt",
+        "quickstep/ext_tests/src/**/*.java",
+        "quickstep/ext_tests/src/**/*.kt",
     ],
 }
 

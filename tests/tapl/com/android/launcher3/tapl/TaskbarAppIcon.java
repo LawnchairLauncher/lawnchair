@@ -15,34 +15,38 @@
  */
 package com.android.launcher3.tapl;
 
-import androidx.annotation.NonNull;
 import androidx.test.uiautomator.UiObject2;
 
-public class HomeAllApps extends AllApps {
+import java.util.regex.Pattern;
 
-    HomeAllApps(LauncherInstrumentation launcher) {
-        super(launcher);
+/**
+ * App icon specifically on the Taskbar.
+ */
+public final class TaskbarAppIcon extends AppIcon implements SplitscreenDragSource {
+
+    private static final Pattern LONG_CLICK_EVENT = Pattern.compile("onTaskbarItemLongClick");
+
+    TaskbarAppIcon(LauncherInstrumentation launcher, UiObject2 icon) {
+        super(launcher, icon);
     }
 
     @Override
-    protected LauncherInstrumentation.ContainerType getContainerType() {
-        return LauncherInstrumentation.ContainerType.HOME_ALL_APPS;
-    }
-
-    @NonNull
-    @Override
-    public HomeAppIcon getAppIcon(String appName) {
-        return (AllAppsAppIcon) super.getAppIcon(appName);
-    }
-
-    @NonNull
-    @Override
-    protected HomeAppIcon createAppIcon(UiObject2 icon) {
-        return new AllAppsAppIcon(mLauncher, icon);
+    protected Pattern getLongClickEvent() {
+        return LONG_CLICK_EVENT;
     }
 
     @Override
-    protected boolean hasSearchBox() {
-        return true;
+    public TaskbarAppIconMenu openDeepShortcutMenu() {
+        return (TaskbarAppIconMenu) super.openDeepShortcutMenu();
+    }
+
+    @Override
+    protected TaskbarAppIconMenu createMenu(UiObject2 menu) {
+        return new TaskbarAppIconMenu(mLauncher, menu);
+    }
+
+    @Override
+    public Launchable getLaunchable() {
+        return this;
     }
 }
