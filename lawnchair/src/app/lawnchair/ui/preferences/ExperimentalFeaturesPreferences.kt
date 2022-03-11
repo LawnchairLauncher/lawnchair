@@ -30,15 +30,18 @@ fun NavGraphBuilder.experimentalFeaturesGraph(route: String) {
 
 interface ExperimentalPreferenceCollectorScope : PreferenceCollectorScope {
     val enableFontSelection: Boolean
+    val enableIconSelection: Boolean
 }
 
 @Composable
 fun ExperimentalPreferenceCollector(content: @Composable ExperimentalPreferenceCollectorScope.() -> Unit) {
     val preferenceManager = preferenceManager2()
     val enableFontSelection by preferenceManager.enableFontSelection.state()
-    ifNotNull(enableFontSelection) {
+    val enableIconSelection by preferenceManager.enableIconSelection.state()
+    ifNotNull(enableFontSelection, enableIconSelection) {
         object : ExperimentalPreferenceCollectorScope {
             override val enableFontSelection = it[0] as Boolean
+            override val enableIconSelection = it[1] as Boolean
             override val coroutineScope = rememberCoroutineScope()
             override val preferenceManager = preferenceManager
         }.content()
@@ -48,9 +51,6 @@ fun ExperimentalPreferenceCollector(content: @Composable ExperimentalPreferenceC
 @Composable
 @OptIn(ExperimentalAnimationApi::class)
 fun ExperimentalFeaturesPreferences() {
-    val preferenceManager = preferenceManager()
-    val context = LocalContext.current
-
     ExperimentalPreferenceCollector {
         PreferenceLayout(label = stringResource(id = R.string.experimental_features_label)) {
             PreferenceGroup(isFirstChild = true) {
@@ -60,19 +60,11 @@ fun ExperimentalFeaturesPreferences() {
                     description = stringResource(id = R.string.font_picker_description),
                     edit = { enableFontSelection.set(value = it) },
                 )
-                SwitchPreference(
-                    adapter = preferenceManager.enableIconSelection.getAdapter(),
+                SwitchPreference2(
+                    checked = enableIconSelection,
                     label = stringResource(id = R.string.icon_picker_label),
                     description = stringResource(id = R.string.icon_picker_description),
-                    onChange = {
-                        if (!it) {
-                            val iconOverrideRepository = IconOverrideRepository.INSTANCE.get(context)
-
-                            CoroutineScope(Dispatchers.IO).launch {
-                                iconOverrideRepository.deleteAll()
-                            }
-                        }
-                    }
+                    edit = { enableIconSelection.set(value = it) },
                 )
             }
         }
