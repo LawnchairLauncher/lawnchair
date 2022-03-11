@@ -567,6 +567,7 @@ public abstract class AbstractLauncherUiTest {
                             ordinal == TestProtocol.OVERVIEW_STATE_ORDINAL);
                     break;
                 }
+                case TASKBAR_ALL_APPS:
                 case LAUNCHED_APP: {
                     assertTrue("Launcher is resumed in state: " + expectedContainerType,
                             !isResumed);
@@ -580,9 +581,10 @@ public abstract class AbstractLauncherUiTest {
             }
         } else {
             assertTrue(
-                    "Container type is not LAUNCHED_APP or FALLBACK_OVERVIEW: "
-                            + expectedContainerType,
+                    "Container type is not LAUNCHED_APP, TASKBAR_ALL_APPS "
+                            + "or FALLBACK_OVERVIEW: " + expectedContainerType,
                     expectedContainerType == ContainerType.LAUNCHED_APP
+                            || expectedContainerType == ContainerType.TASKBAR_ALL_APPS
                             || expectedContainerType == ContainerType.FALLBACK_OVERVIEW);
         }
     }

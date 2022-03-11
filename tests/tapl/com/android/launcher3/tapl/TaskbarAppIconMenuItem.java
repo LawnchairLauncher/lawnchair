@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 The Android Open Source Project
+ * Copyright (C) 2022 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,45 +13,45 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.android.launcher3.tapl;
 
 import androidx.test.uiautomator.UiObject2;
 
 import com.android.launcher3.testing.TestProtocol;
 
+import java.util.regex.Pattern;
+
 /**
- * Menu item in an app icon menu.
+ * Menu item in a Taskbar app icon menu.
  */
-public abstract class AppIconMenuItem extends Launchable {
+public final class TaskbarAppIconMenuItem extends AppIconMenuItem implements SplitscreenDragSource {
 
-    AppIconMenuItem(LauncherInstrumentation launcher, UiObject2 shortcut) {
+    private static final Pattern LONG_CLICK_EVENT = Pattern.compile("onTaskbarItemLongClick");
+
+    TaskbarAppIconMenuItem(
+            LauncherInstrumentation launcher, UiObject2 shortcut) {
         super(launcher, shortcut);
-    }
-
-    /**
-     * Returns the visible text of the menu item.
-     */
-    public String getText() {
-        return mObject.getText();
     }
 
     @Override
     protected void addExpectedEventsForLongClick() {
+        mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN, LONG_CLICK_EVENT);
     }
 
     @Override
     protected void waitForLongPressConfirmation() {
-        mLauncher.waitForLauncherObject("drop_target_bar");
-    }
-
-    @Override
-    protected void expectActivityStartEvents() {
-        mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN, LauncherInstrumentation.EVENT_START);
+        // On long-press, the popup container closes and the system drag-and-drop begins. This
+        // only leaves launcher views that were previously visible.
+        mLauncher.waitUntilLauncherObjectGone("popup_container");
     }
 
     @Override
     protected String launchableType() {
-        return "app icon menu item";
+        return "taskbar app icon menu item";
+    }
+
+    @Override
+    public Launchable getLaunchable() {
+        return this;
     }
 }

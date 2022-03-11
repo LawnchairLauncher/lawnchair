@@ -136,6 +136,8 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
     private boolean mIsSystemGestureInProgress;
     private boolean mIsImeShowing;
 
+    private boolean mEnableManualStashingForTests = false;
+
     // Evaluate whether the handle should be stashed
     private final StatePropertyHolder mStatePropertyHolder = new StatePropertyHolder(
             flags -> {
@@ -199,12 +201,15 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
      */
     protected boolean supportsManualStashing() {
         return supportsVisualStashing()
-                && (!Utilities.IS_RUNNING_IN_TEST_HARNESS || supportsStashingForTests());
+                && (!Utilities.IS_RUNNING_IN_TEST_HARNESS || mEnableManualStashingForTests);
     }
 
-    private boolean supportsStashingForTests() {
-        // TODO: enable this for tests that specifically check stash/unstash behavior.
-        return false;
+    /**
+     * Enables support for manual stashing. This should only be used to add this functionality
+     * to Launcher specific tests.
+     */
+    public void enableManualStashingForTests(boolean enableManualStashing) {
+        mEnableManualStashingForTests = enableManualStashing;
     }
 
     /**
