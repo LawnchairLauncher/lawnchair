@@ -38,6 +38,7 @@
         <item name="preferenceScreenStyle">@style/HomeSettings.PreferenceScreenStyle</item>
         <item name="preferenceStyle">@style/HomeSettings.PreferenceStyle</item>
         <item name="switchPreferenceStyle">@style/HomeSettings.SwitchPreferenceStyle</item>
+        <item name="android:fontFamily">google-sans-text</item>
     </style>
 
     <style name="HomeSettings.CategoryStyle" parent="@style/Preference.Category.Material">
