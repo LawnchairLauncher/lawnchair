@@ -205,7 +205,6 @@ public final class Workspace extends Home {
                 mLauncher,
                 homeAppIcon,
                 new Point(targetX, mLauncher.getVisibleBounds(workspace).centerY()),
-                "popup_container",
                 false,
                 false,
                 () -> mLauncher.expectEvent(
@@ -244,11 +243,11 @@ public final class Workspace extends Home {
              LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
                      "removing app icon from workspace")) {
             dragIconToWorkspace(
-                    mLauncher, homeAppIcon,
+                    mLauncher,
+                    homeAppIcon,
                     () -> getDropPointFromDropTargetBar(mLauncher, DELETE_TARGET_TEXT_ID),
-                    homeAppIcon.getLongPressIndicator(),
                     () -> mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN, LONG_CLICK_EVENT),
-                    null);
+                    /* expectDropEvents= */ null);
 
             try (LauncherInstrumentation.Closable c1 = mLauncher.addContextLayer(
                     "dragged the app to the drop bar")) {
@@ -274,11 +273,11 @@ public final class Workspace extends Home {
         try (LauncherInstrumentation.Closable c = launcher.addContextLayer(
                 "uninstalling app icon")) {
             dragIconToWorkspace(
-                    launcher, homeAppIcon,
+                    launcher,
+                    homeAppIcon,
                     () -> getDropPointFromDropTargetBar(launcher, UNINSTALL_TARGET_TEXT_ID),
-                    homeAppIcon.getLongPressIndicator(),
                     expectLongClickEvents,
-                    null);
+                    /* expectDropEvents= */null);
 
             launcher.waitUntilLauncherObjectGone(DROP_BAR_RES_ID);
 
@@ -345,15 +344,15 @@ public final class Workspace extends Home {
     }
 
     static void dragIconToWorkspace(LauncherInstrumentation launcher, Launchable launchable,
-            Point dest, String longPressIndicator, boolean startsActivity, boolean isWidgetShortcut,
+            Point dest, boolean startsActivity, boolean isWidgetShortcut,
             Runnable expectLongClickEvents) {
         Runnable expectDropEvents = null;
         if (startsActivity || isWidgetShortcut) {
             expectDropEvents = () -> launcher.expectEvent(TestProtocol.SEQUENCE_MAIN,
                     LauncherInstrumentation.EVENT_START);
         }
-        dragIconToWorkspace(launcher, launchable, () -> dest, longPressIndicator,
-                expectLongClickEvents, expectDropEvents);
+        dragIconToWorkspace(
+                launcher, launchable, () -> dest, expectLongClickEvents, expectDropEvents);
     }
 
     /**
@@ -361,22 +360,27 @@ public final class Workspace extends Home {
      * (There is no slow down time before drop event)
      * This function expects the launchable is inside the workspace and there is no drop event.
      */
-    static void dragIconToWorkspace(LauncherInstrumentation launcher, Launchable launchable,
-            Supplier<Point> destSupplier, String longPressIndicator) {
-        dragIconToWorkspace(launcher, launchable, destSupplier, longPressIndicator,
-                () -> launcher.expectEvent(TestProtocol.SEQUENCE_MAIN, LONG_CLICK_EVENT), null);
+    static void dragIconToWorkspace(
+            LauncherInstrumentation launcher, Launchable launchable, Supplier<Point> destSupplier) {
+        dragIconToWorkspace(
+                launcher,
+                launchable,
+                destSupplier,
+                () -> launcher.expectEvent(TestProtocol.SEQUENCE_MAIN, LONG_CLICK_EVENT),
+                /* expectDropEvents= */ null);
     }
 
     static void dragIconToWorkspace(
-            LauncherInstrumentation launcher, Launchable launchable, Supplier<Point> dest,
-            String longPressIndicator, Runnable expectLongClickEvents,
+            LauncherInstrumentation launcher,
+            Launchable launchable,
+            Supplier<Point> dest,
+            Runnable expectLongClickEvents,
             @Nullable Runnable expectDropEvents) {
         try (LauncherInstrumentation.Closable ignored = launcher.addContextLayer(
                 "want to drag icon to workspace")) {
             final long downTime = SystemClock.uptimeMillis();
             Point dragStart = launchable.startDrag(
                     downTime,
-                    longPressIndicator,
                     expectLongClickEvents,
                     /* runToSpringLoadedState= */ true);
             Point targetDest = dest.get();
