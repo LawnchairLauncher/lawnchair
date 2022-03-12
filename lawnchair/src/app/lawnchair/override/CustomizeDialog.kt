@@ -27,6 +27,7 @@ import app.lawnchair.ui.preferences.components.ClickableIcon
 import app.lawnchair.ui.preferences.components.PreferenceGroup
 import app.lawnchair.ui.preferences.components.SwitchPreference2
 import app.lawnchair.ui.util.addIfNotNull
+import app.lawnchair.util.ifNotNull
 import app.lawnchair.util.navigationBarsOrDisplayCutoutPadding
 import com.android.launcher3.LauncherAppState
 import com.android.launcher3.R
@@ -107,6 +108,8 @@ fun CustomizeAppDialog(
     val preferenceManager2 = preferenceManager2()
     val coroutineScope = rememberCoroutineScope()
     val enableIconSelection by preferenceManager2.enableIconSelection.state()
+    val showComponentNames by preferenceManager2.showComponentNames.state()
+    val hiddenApps by preferenceManager2.hiddenApps.state()
     val context = LocalContext.current
     var title by remember { mutableStateOf("") }
 
@@ -144,18 +147,20 @@ fun CustomizeAppDialog(
         defaultTitle = defaultTitle,
         launchSelectIcon = if (enableIconSelection == true) openIconPicker else null,
     ) {
-        PreferenceGroup(
-            description = componentKey.componentName.flattenToString(),
-            showDescription = prefs.showComponentName.get(),
-        ) {
-            val stringKey = componentKey.toString()
-            preferenceManager2.hiddenApps.state().value?.let { hiddenApps ->
+        ifNotNull(showComponentNames, hiddenApps) {
+            val collectedShowComponentNames = it[0] as Boolean
+            val collectedHiddenApps = it[1] as Set<String>
+            PreferenceGroup(
+                description = componentKey.componentName.flattenToString(),
+                showDescription = collectedShowComponentNames,
+            ) {
+                val stringKey = componentKey.toString()
                 SwitchPreference2(
-                    checked = hiddenApps.contains(stringKey),
+                    checked = collectedHiddenApps.contains(stringKey),
                     label = stringResource(id = R.string.hide_from_drawer),
-                    onCheckedChange = {
-                        val newSet = hiddenApps.toMutableSet()
-                        if (it) newSet.add(stringKey) else newSet.remove(stringKey)
+                    onCheckedChange = { newValue ->
+                        val newSet = collectedHiddenApps.toMutableSet()
+                        if (newValue) newSet.add(stringKey) else newSet.remove(stringKey)
                         coroutineScope.launch {
                             preferenceManager2.hiddenApps.set(value = newSet)
                         }

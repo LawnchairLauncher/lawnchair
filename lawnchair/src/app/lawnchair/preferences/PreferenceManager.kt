@@ -74,7 +74,6 @@ class PreferenceManager private constructor(private val context: Context) : Base
     val searchResultPixelTips = BoolPref("pref_searchResultPixelTips", false)
     val searchResultSettings = BoolPref("pref_searchResultSettings", false)
 
-    val showComponentName = BoolPref("pref_showComponentName", false)
     val themedIcons = BoolPref("themed_icons", false)
     val hotseatQsbCornerRadius = FloatPref("pref_hotseatQsbCornerRadius", 1F, recreate)
 

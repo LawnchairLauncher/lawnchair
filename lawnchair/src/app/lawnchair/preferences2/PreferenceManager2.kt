@@ -216,6 +216,11 @@ class PreferenceManager2(private val context: Context) : PreferenceManager {
         }
     )
 
+    val showComponentNames = preference(
+        key = booleanPreferencesKey(name = "show_component_names"),
+        defaultValue = false,
+    )
+
     companion object {
         private val Context.preferencesDataStore by preferencesDataStore(
             name = "preferences",
