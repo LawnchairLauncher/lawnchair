@@ -125,4 +125,6 @@ public final class TestProtocol {
     public static final String TASK_VIEW_ID_CRASH = "b/195430732";
     public static final String NO_DROP_TARGET = "b/195031154";
     public static final String NULL_INT_SET = "b/200572078";
+
+    public static final String BAD_STATE = "b/223498680";
 }
