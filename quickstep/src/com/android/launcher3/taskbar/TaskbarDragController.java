@@ -63,6 +63,8 @@ import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.popup.PopupContainerWithArrow;
 import com.android.launcher3.shortcuts.DeepShortcutView;
 import com.android.launcher3.shortcuts.ShortcutDragPreviewProvider;
+import com.android.launcher3.testing.TestLogging;
+import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.util.IntSet;
 import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.systemui.shared.recents.model.Task;
@@ -128,7 +130,7 @@ public class TaskbarDragController extends DragController<BaseTaskbarContext> im
         if (!(view instanceof BubbleTextView)) {
             return false;
         }
-
+        TestLogging.recordEvent(TestProtocol.SEQUENCE_MAIN, "onTaskbarItemLongClick");
         BubbleTextView btv = (BubbleTextView) view;
         mActivity.onDragStart();
         btv.post(() -> {
@@ -164,30 +166,39 @@ public class TaskbarDragController extends DragController<BaseTaskbarContext> im
         dragLayerY += dragRect.top;
 
         DragOptions dragOptions = new DragOptions();
-        dragOptions.preDragCondition = new DragOptions.PreDragCondition() {
-            private DragView mDragView;
-
-            @Override
-            public boolean shouldStartDrag(double distanceDragged) {
-                return mDragView != null && mDragView.isAnimationFinished();
-            }
-
-            @Override
-            public void onPreDragStart(DropTarget.DragObject dragObject) {
-                mDragView = dragObject.dragView;
-            }
-
-            @Override
-            public void onPreDragEnd(DropTarget.DragObject dragObject, boolean dragStarted) {
-                mDragView = null;
-            }
-        };
+        dragOptions.preDragCondition = null;
         if (FeatureFlags.ENABLE_TASKBAR_POPUP_MENU.get()) {
             PopupContainerWithArrow<BaseTaskbarContext> popupContainer =
                     mControllers.taskbarPopupController.showForIcon(btv);
             if (popupContainer != null) {
                 dragOptions.preDragCondition = popupContainer.createPreDragCondition(false);
             }
+        }
+        if (dragOptions.preDragCondition == null) {
+            dragOptions.preDragCondition = new DragOptions.PreDragCondition() {
+                private DragView mDragView;
+
+                @Override
+                public boolean shouldStartDrag(double distanceDragged) {
+                    return mDragView != null && mDragView.isAnimationFinished();
+                }
+
+                @Override
+                public void onPreDragStart(DropTarget.DragObject dragObject) {
+                    mDragView = dragObject.dragView;
+
+                    if (FeatureFlags.ENABLE_TASKBAR_POPUP_MENU.get()
+                            && !shouldStartDrag(0)) {
+                        // Immediately close the popup menu.
+                        mDragView.setOnAnimationEndCallback(() -> callOnDragStart());
+                    }
+                }
+
+                @Override
+                public void onPreDragEnd(DropTarget.DragObject dragObject, boolean dragStarted) {
+                    mDragView = null;
+                }
+            };
         }
 
         return startDrag(

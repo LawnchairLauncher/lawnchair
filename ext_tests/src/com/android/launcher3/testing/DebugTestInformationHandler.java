@@ -29,8 +29,10 @@ import android.view.View;
 import androidx.annotation.Keep;
 import androidx.annotation.Nullable;
 
+import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherSettings;
+import com.android.launcher3.ShortcutAndWidgetContainer;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -205,6 +207,32 @@ public class DebugTestInformationHandler extends TestInformationHandler {
                 }
             }
 
+            case TestProtocol.REQUEST_USE_TEST_WORKSPACE_LAYOUT: {
+                useTestWorkspaceLayout(true);
+                return response;
+            }
+
+            case TestProtocol.REQUEST_USE_DEFAULT_WORKSPACE_LAYOUT: {
+                useTestWorkspaceLayout(false);
+                return response;
+            }
+
+            case TestProtocol.REQUEST_HOTSEAT_ICON_NAMES: {
+                return getLauncherUIProperty(Bundle::putStringArrayList, l -> {
+                    ShortcutAndWidgetContainer hotseatIconsContainer =
+                            l.getHotseat().getShortcutsAndWidgets();
+                    ArrayList<String> hotseatIconNames = new ArrayList<>();
+
+                    for (int i = 0; i < hotseatIconsContainer.getChildCount(); i++) {
+                        // Use unchecked cast to catch changes in hotseat layout
+                        BubbleTextView icon = (BubbleTextView) hotseatIconsContainer.getChildAt(i);
+                        hotseatIconNames.add((String) icon.getText());
+                    }
+
+                    return hotseatIconNames;
+                });
+            }
+
             case TestProtocol.REQUEST_GET_ACTIVITIES_CREATED_COUNT: {
                 response.putInt(TestProtocol.TEST_INFO_RESPONSE_FIELD, sActivitiesCreatedCount);
                 return response;
@@ -221,6 +249,17 @@ public class DebugTestInformationHandler extends TestInformationHandler {
 
             default:
                 return super.call(method, arg, extras);
+        }
+    }
+
+    private void useTestWorkspaceLayout(boolean useTestWorkspaceLayout) {
+        final long identity = Binder.clearCallingIdentity();
+        try {
+            LauncherSettings.Settings.call(mContext.getContentResolver(), useTestWorkspaceLayout
+                    ? LauncherSettings.Settings.METHOD_SET_USE_TEST_WORKSPACE_LAYOUT_FLAG
+                    : LauncherSettings.Settings.METHOD_CLEAR_USE_TEST_WORKSPACE_LAYOUT_FLAG);
+        } finally {
+            Binder.restoreCallingIdentity(identity);
         }
     }
 }

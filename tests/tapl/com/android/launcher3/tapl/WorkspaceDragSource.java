@@ -41,7 +41,6 @@ interface WorkspaceDragSource {
                                     ? launchableCenter.x - width / 2
                                     : launchableCenter.x + width / 2,
                             displaySize.y / 2),
-                    launchable.getLongPressIndicator(),
                     startsActivity,
                     isWidgetShortcut,
                     launchable::addExpectedEventsForLongClick);
