@@ -24,6 +24,7 @@ import static com.android.systemui.shared.system.ViewTreeObserverWrapper.InsetsI
 import android.content.Context;
 import android.graphics.Insets;
 import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowInsets;
 
@@ -38,6 +39,8 @@ import com.android.launcher3.taskbar.BaseTaskbarContext;
 import com.android.launcher3.taskbar.TaskbarActivityContext;
 import com.android.launcher3.taskbar.TaskbarDragController;
 import com.android.launcher3.taskbar.TaskbarStashController;
+import com.android.launcher3.testing.TestLogging;
+import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.util.OnboardingPrefs;
 import com.android.launcher3.util.TouchController;
 import com.android.launcher3.views.BaseDragLayer;
@@ -166,7 +169,6 @@ class TaskbarAllAppsContext extends BaseTaskbarContext {
             super.onAttachedToWindow();
             ViewTreeObserverWrapper.addOnComputeInsetsListener(
                     getViewTreeObserver(), this);
-            mActivity.mAllAppsViewController.show();
         }
 
         @Override
@@ -178,6 +180,12 @@ class TaskbarAllAppsContext extends BaseTaskbarContext {
         @Override
         public void recreateControllers() {
             mControllers = new TouchController[]{mActivity.mDragController};
+        }
+
+        @Override
+        public boolean dispatchTouchEvent(MotionEvent ev) {
+            TestLogging.recordMotionEvent(TestProtocol.SEQUENCE_MAIN, "Touch event", ev);
+            return super.dispatchTouchEvent(ev);
         }
 
         @Override

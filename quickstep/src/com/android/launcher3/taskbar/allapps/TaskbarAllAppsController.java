@@ -38,6 +38,9 @@ import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.taskbar.TaskbarActivityContext;
 import com.android.launcher3.taskbar.TaskbarControllers;
+import com.android.launcher3.taskbar.TaskbarSharedState;
+import com.android.systemui.shared.system.TaskStackChangeListener;
+import com.android.systemui.shared.system.TaskStackChangeListeners;
 
 import java.util.List;
 import java.util.Optional;
@@ -61,7 +64,15 @@ public final class TaskbarAllAppsController implements OnDeviceProfileChangeList
     private final TaskbarAllAppsProxyView mProxyView;
     private final LayoutParams mLayoutParams;
 
+    private final TaskStackChangeListener mTaskStackListener = new TaskStackChangeListener() {
+        @Override
+        public void onTaskStackChanged() {
+            mProxyView.close(false);
+        }
+    };
+
     private TaskbarControllers mControllers;
+    private TaskbarSharedState mSharedState;
     /** Window context for all apps if it is open. */
     private @Nullable TaskbarAllAppsContext mAllAppsContext;
 
@@ -77,9 +88,19 @@ public final class TaskbarAllAppsController implements OnDeviceProfileChangeList
     }
 
     /** Initialize the controller. */
-    public void init(TaskbarControllers controllers) {
-        if (FeatureFlags.ENABLE_ALL_APPS_IN_TASKBAR.get()) {
-            mControllers = controllers;
+    public void init(TaskbarControllers controllers, TaskbarSharedState sharedState) {
+        if (!FeatureFlags.ENABLE_ALL_APPS_IN_TASKBAR.get()) {
+            return;
+        }
+        mControllers = controllers;
+        mSharedState = sharedState;
+
+        /*
+         * Recreate All Apps if it was open in the previous Taskbar instance (e.g. the configuration
+         * changed).
+         */
+        if (mSharedState.allAppsVisible) {
+            show(false);
         }
     }
 
@@ -112,16 +133,22 @@ public final class TaskbarAllAppsController implements OnDeviceProfileChangeList
 
     /** Opens the {@link TaskbarAllAppsContainerView} in a new window. */
     public void show() {
+        show(true);
+    }
+
+    private void show(boolean animate) {
         if (mProxyView.isOpen()) {
             return;
         }
         mProxyView.show();
+        mSharedState.allAppsVisible = true;
 
         mAllAppsContext = new TaskbarAllAppsContext(mTaskbarContext,
                 this,
                 mControllers.taskbarStashController);
         mAllAppsContext.getDragController().init(mControllers);
         mTaskbarContext.addOnDeviceProfileChangeListener(this);
+        TaskStackChangeListeners.getInstance().registerTaskStackListener(mTaskStackListener);
         Optional.ofNullable(mAllAppsContext.getSystemService(WindowManager.class))
                 .ifPresent(m -> m.addView(mAllAppsContext.getDragLayer(), mLayoutParams));
 
@@ -129,6 +156,7 @@ public final class TaskbarAllAppsController implements OnDeviceProfileChangeList
         mAllAppsContext.getAppsView().getFloatingHeaderView()
                 .findFixedRowByType(PredictionRowView.class)
                 .setPredictedApps(mPredictedApps);
+        mAllAppsContext.getAllAppsViewController().show(animate);
     }
 
     /** Closes the {@link TaskbarAllAppsContainerView}. */
@@ -148,6 +176,13 @@ public final class TaskbarAllAppsController implements OnDeviceProfileChangeList
             return;
         }
         mProxyView.close(false);
+        mSharedState.allAppsVisible = false;
+        onDestroy();
+    }
+
+    /** Destroys the controller and any All Apps window if present. */
+    public void onDestroy() {
+        TaskStackChangeListeners.getInstance().unregisterTaskStackListener(mTaskStackListener);
         mTaskbarContext.removeOnDeviceProfileChangeListener(this);
         Optional.ofNullable(mAllAppsContext)
                 .map(c -> c.getSystemService(WindowManager.class))

@@ -13,7 +13,7 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<resources>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
 
     <color name="chip_hint_foreground_color">#fff</color>
     <color name="chip_scrim_start_color">#39000000</color>
@@ -41,8 +41,6 @@
     <color name="gesture_tutorial_fake_task_view_color">#6DA1FF</color> <!-- Light Blue -->
     <!-- Must contrast gesture_tutorial_fake_wallpaper_color -->
     <color name="gesture_tutorial_fake_previous_task_view_color">#3C4043</color> <!-- Gray -->
-    <color name="gesture_tutorial_action_button_label_color">#FF000000</color>
-    <color name="gesture_tutorial_primary_color">#B7F29F</color> <!-- Light Green -->
     <color name="gesture_tutorial_taskbar_color">#202124</color>
 
     <!-- Mock hotseat -->

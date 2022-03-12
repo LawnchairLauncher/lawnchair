@@ -15,34 +15,24 @@
  */
 package com.android.launcher3.tapl;
 
-import androidx.annotation.NonNull;
 import androidx.test.uiautomator.UiObject2;
 
-public class HomeAllApps extends AllApps {
+/**
+ * Context menu of a Taskbar app icon.
+ */
+public final class TaskbarAppIconMenu extends AppIconMenu {
 
-    HomeAllApps(LauncherInstrumentation launcher) {
-        super(launcher);
+    TaskbarAppIconMenu(LauncherInstrumentation launcher, UiObject2 deepShortcutsContainer) {
+        super(launcher, deepShortcutsContainer);
     }
 
     @Override
-    protected LauncherInstrumentation.ContainerType getContainerType() {
-        return LauncherInstrumentation.ContainerType.HOME_ALL_APPS;
-    }
-
-    @NonNull
-    @Override
-    public HomeAppIcon getAppIcon(String appName) {
-        return (AllAppsAppIcon) super.getAppIcon(appName);
-    }
-
-    @NonNull
-    @Override
-    protected HomeAppIcon createAppIcon(UiObject2 icon) {
-        return new AllAppsAppIcon(mLauncher, icon);
+    public TaskbarAppIconMenuItem getMenuItem(String shortcutText) {
+        return (TaskbarAppIconMenuItem) super.getMenuItem(shortcutText);
     }
 
     @Override
-    protected boolean hasSearchBox() {
-        return true;
+    protected TaskbarAppIconMenuItem createMenuItem(UiObject2 menuItem) {
+        return new TaskbarAppIconMenuItem(mLauncher, menuItem);
     }
 }

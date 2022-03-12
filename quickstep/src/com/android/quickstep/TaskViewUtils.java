@@ -37,6 +37,7 @@ import static com.android.launcher3.anim.Interpolators.TOUCH_RESPONSE_INTERPOLAT
 import static com.android.launcher3.anim.Interpolators.clampToProgress;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
 import static com.android.launcher3.statehandlers.DepthController.DEPTH;
+import static com.android.launcher3.testing.TestProtocol.BAD_STATE;
 import static com.android.quickstep.TaskAnimationManager.ENABLE_SHELL_TRANSITIONS;
 import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.MODE_CLOSING;
 import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.MODE_OPENING;
@@ -55,6 +56,7 @@ import android.graphics.Matrix.ScaleToFit;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.os.Build;
+import android.util.Log;
 import android.view.SurfaceControl;
 import android.view.View;
 import android.window.TransitionInfo;
@@ -577,6 +579,29 @@ public final class TaskViewUtils {
             launcherAnim = dp.isTablet
                     ? ObjectAnimator.ofFloat(recentsView, RecentsView.CONTENT_ALPHA, 0)
                     : recentsView.createAdjacentPageAnimForTaskLaunch(taskView);
+            if (dp.isTablet) {
+                Log.d(BAD_STATE, "TVU composeRecentsLaunchAnimator alpha=" + 0);
+                launcherAnim.addListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationStart(Animator animation) {
+                        Log.d(BAD_STATE, "TVU composeRecentsLaunchAnimator onStart");
+                    }
+
+                    @Override
+                    public void onAnimationCancel(Animator animation) {
+                        float alpha = recentsView == null
+                                ? -1
+                                : RecentsView.CONTENT_ALPHA.get(recentsView);
+                        Log.d(BAD_STATE, "TVU composeRecentsLaunchAnimator onCancel, alpha="
+                                + alpha);
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        Log.d(BAD_STATE, "TVU composeRecentsLaunchAnimator onEnd");
+                    }
+                });
+            }
             launcherAnim.setInterpolator(Interpolators.TOUCH_RESPONSE_INTERPOLATOR);
             launcherAnim.setDuration(RECENTS_LAUNCH_DURATION);
 

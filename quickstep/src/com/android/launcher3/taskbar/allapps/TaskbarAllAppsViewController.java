@@ -53,8 +53,8 @@ final class TaskbarAllAppsViewController {
     }
 
     /** Starts the {@link TaskbarAllAppsSlideInView} enter transition. */
-    void show() {
-        mSlideInView.show();
+    void show(boolean animate) {
+        mSlideInView.show(animate);
     }
 
     /** Closes the {@link TaskbarAllAppsSlideInView}. */
