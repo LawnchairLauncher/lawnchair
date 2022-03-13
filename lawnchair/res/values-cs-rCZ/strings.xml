@@ -107,7 +107,7 @@
     <string name="quickstep_description">Tlačítko „Vyčistit vše“, Poloměr rohů</string>
     <string name="wallpaper_scrolling_label">Posouvat tapetu</string>
     <string name="show_sys_ui_scrim">Horní stín</string>
-    <string name="show_status_bar">Stavový řádek</string>
+    <string name="show_status_bar">Show Status Bar</string>
     <string name="what_to_show">Co zobrazit</string>
     <string name="missing_notification_access_label">Je vyžadován přístup k oznámením</string>
     <string name="missing_notification_access_description">Je vyžadován přístup k oznámením.</string>
@@ -194,4 +194,5 @@
     <string name="always_open_website_label">Vždy otevřít webovou stránku</string>
     <string name="always_open_website_description">Otevřít webovou stránku poskytovatele vyhledávání, i když je jejich aplikace nainstalována.</string>
     <string name="search_provider">Poskytovatel vyhledávání</string>
+    <string name="status_bar_label">Stavový řádek</string>
 </resources>
