@@ -107,7 +107,7 @@
     <string name="quickstep_description">Очистити всі кнопки, Радіус заокруглення</string>
     <string name="wallpaper_scrolling_label">Пролистати Шпалери</string>
     <string name="show_sys_ui_scrim">Найвища тінь</string>
-    <string name="show_status_bar">Рядок стану</string>
+    <string name="show_status_bar">Show Status Bar</string>
     <string name="what_to_show">Що показати</string>
     <string name="missing_notification_access_label">Необхідний доступ до сповіщень</string>
     <string name="missing_notification_access_description">Потрібний доступ до сповіщень.</string>
@@ -194,4 +194,5 @@
     <string name="always_open_website_label">Завжди відкривати сайт</string>
     <string name="always_open_website_description">Відкрити сайт пошукового запиту, навіть якщо встановлено додаток.</string>
     <string name="search_provider">Постачальник пошуку</string>
+    <string name="status_bar_label">Рядок стану</string>
 </resources>
