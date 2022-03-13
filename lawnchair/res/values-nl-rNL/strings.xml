@@ -105,7 +105,7 @@
     <string name="quickstep_description">Wis alles knop, hoek radius</string>
     <string name="wallpaper_scrolling_label">Scrollende achtergrond</string>
     <string name="show_sys_ui_scrim">Bovenste Schaduw</string>
-    <string name="show_status_bar">Statusbalk</string>
+    <string name="show_status_bar">Statusbalk weergeven</string>
     <string name="what_to_show">Wat te tonen</string>
     <string name="missing_notification_access_label">Notificatie Toegang Nodig</string>
     <string name="missing_notification_access_description">Notificatie toegang vereist.</string>
@@ -192,4 +192,5 @@
     <string name="always_open_website_label">Altijd de website openen</string>
     <string name="always_open_website_description">Altijd de website openen van de zoek provider, ook al is de app geïnstalleerd.</string>
     <string name="search_provider">Zoek Provider</string>
+    <string name="status_bar_label">Statusbalk</string>
 </resources>
