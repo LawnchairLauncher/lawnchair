@@ -3,7 +3,7 @@ package app.lawnchair
 import android.os.CancellationSignal
 import android.view.WindowInsets
 import androidx.core.view.WindowInsetsCompat
-import app.lawnchair.preferences.PreferenceManager
+import app.lawnchair.preferences2.PreferenceManager2
 import com.android.launcher3.LauncherState
 import com.android.launcher3.Utilities
 import com.android.launcher3.anim.AnimatorListeners.forEndCallback
@@ -13,14 +13,25 @@ import com.android.launcher3.anim.PendingAnimation
 import com.android.launcher3.statemanager.StateManager
 import com.android.launcher3.states.StateAnimationConfig
 import com.android.quickstep.AnimatedFloat
+import com.patrykmichalik.preferencemanager.onEach
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 
 class SearchBarStateHandler(private val launcher: LawnchairLauncher) :
     StateManager.StateHandler<LauncherState> {
 
-    private val autoShowKeyboard = PreferenceManager.getInstance(launcher).searchAutoShowKeyboard
+    private val coroutineScope = CoroutineScope(Dispatchers.IO)
+    private val preferenceManager2 = PreferenceManager2.getInstance(launcher)
+    private var autoShowKeyboard = false
+
+    init {
+        preferenceManager2.autoShowKeyboardInDrawer.onEach(launchIn = coroutineScope) {
+            autoShowKeyboard = it
+        }
+    }
 
     override fun setState(state: LauncherState) {
-        if (launcher.isInState(LauncherState.NORMAL) && state == LauncherState.ALL_APPS && autoShowKeyboard.get()) {
+        if (launcher.isInState(LauncherState.NORMAL) && state == LauncherState.ALL_APPS && autoShowKeyboard) {
             showKeyboard()
         }
     }
@@ -59,7 +70,7 @@ class SearchBarStateHandler(private val launcher: LawnchairLauncher) :
             }
         }
         if (launcher.isInState(LauncherState.NORMAL) && toState == LauncherState.ALL_APPS) {
-            if (autoShowKeyboard.get()) {
+            if (autoShowKeyboard) {
                 val progress = AnimatedFloat()
                 animation.setFloat(progress, AnimatedFloat.VALUE, 1f, Interpolators.LINEAR)
                 animation.addListener(forSuccessCallback {

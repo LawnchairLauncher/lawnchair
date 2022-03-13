@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright 2021, Lawnchair
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="icon_pack">Tema ikonica</string>
+    <string name="settings">Podešavanja</string>
+    <string name="home_screen_label">Početna stranica</string>
+    <string name="home_screen_description">Vesti, \"At a Glance\", Mreža, Ikonice</string>
+    <string name="general_label">Opšte</string>
+    <string name="general_description">Simboli obaveštenja, Tema ikonica</string>
+    <string name="home_screen_rotation_label">Rotacija početne stranice</string>
+    <string name="home_screen_rotaton_description">Kada se uređaj rotira.</string>
+    <string name="auto_add_shortcuts_label">Dodaj nove aplikacije na početnu stranicu</string>
+    <string name="dock_label">Donji red</string>
+    <string name="dock_description">Traka za pretragu, Broj ikonica</string>
+    <string name="app_drawer_label">Fioka aplikacija</string>
+    <string name="app_drawer_description">Skrivene aplikacije, Broj kolona, Ikonice</string>
+    <string name="folders_label">Folderi</string>
+    <string name="folders_description">Broj redova i kolona</string>
+    <string name="app_drawer_columns">Kolone fioke aplikacija</string>
+    <string name="dock_icons">Ikonice u donjem redu</string>
+    <string name="max_folder_columns">Najveći broj kolona u folderu</string>
+    <string name="max_folder_rows">Najveći broj redova u folderu</string>
+    <string name="home_screen_grid">Home Screen Grid</string>
+    <string name="columns">Columns</string>
+    <string name="grid">Mreža</string>
+    <string name="rows">Rows</string>
+    <string name="icons">Ikonice</string>
+    <string name="icon_size">Veličina ikonica</string>
+    <string name="label_size">Veličina teksta</string>
+    <string name="show_home_labels">Show Labels</string>
+    <string name="notification_dots">Simboli obaveštenja</string>
+    <string name="smartspace_preferences">Postavke</string>
+    <string name="about_label">Informacije</string>
+    <string name="news">Novosti</string>
+    <string name="support">Podrška</string>
+    <string name="acknowledgements">Priznanja</string>
+    <string name="devops">DevOps</string>
+    <string name="quickswitch_maintenance">QuickSwitch održavanje</string>
+    <string name="all_apps_search_bar_hint">Pretraži aplikacije</string>
+    <string name="settings_button_text">Podešavanja početne</string>
+    <string name="development">Razvoj</string>
+    <string name="app_info_drop_target_label">Informacije</string>
+    <string name="item_removed">Stavka je uklonjena.</string>
+    <string name="all_apps_no_search_results">Nije pronađena aplikacija koja se podudara sa “<xliff:g example="Android" id="query">%1$s</xliff:g>”.</string>
+    <string name="background_opacity">Prozirnost pozadine</string>
+    <string name="background_lightness_label">Osvetljenost pozadine</string>
+    <string name="adaptive_icons">Adaptivne ikonice</string>
+    <string name="adaptive_icon_background_description">Koristiti 100% osvetljenja za belu pozadinu.</string>
+    <string name="auto_adaptive_icons_label">Auto-adaptivne ikonice</string>
+    <string name="auto_adaptive_icons_description">Za sve neadaptivne ikonice.</string>
+    <string name="support_and_pr">Podrška &amp; Odnosi sa javnošću</string>
+    <string name="workspace_dt2s">Dvaput dodirnite da biste isključili ekran</string>
+    <string name="smart_space_enable">At a Glance Widget</string>
+    <string name="design_and_development">Dizajn &amp; Razvoj</string>
+    <string name="translate">Prevedi</string>
+    <string name="product">Proizvod</string>
+    <string name="hidden_apps_label">Skrivene aplikacije</string>
+    <string name="hidden_apps_label_with_count">Skrivene aplikacije (%1$d)</string>
+    <plurals name="apps_count">
+        <item quantity="one">%1$d Aplikacija</item>
+        <item quantity="few">%1$d Aplikacije</item>
+        <item quantity="other">%1$d Aplikacije</item>
+    </plurals>
+    <string name="hotseat_qsb_label">Prikaži traku za pretragu</string>
+    <string name="dt2s_admin_hint_title">Potrebne su dozvole za administraciju</string>
+    <string name="dt2s_admin_hint">To use Double-Tap to Sleep, set Lawnchair as a device admin app. Tap Open Settings, then tap “Activate this device admin app.”</string>
+    <string name="dt2s_admin_warning">Double-Tap to Sleep will be turned off.</string>
+    <string name="dt2s_a11y_hint_title">Uključi usluge pristupačnosti</string>
+    <string name="dt2s_a11y_hint">To use Double-Tap to Sleep, turn on the Lawnchair accessibility service. Tap Open Settings, then select Lawnchair and turn on Use Lawnchair.</string>
+    <string name="dt2s_warning_open_settings">Otvori podešavanja</string>
+    <string name="minus_one_enable">Feed</string>
+    <string name="minus_one_unavailable">\"Feed\" nije instaliran.</string>
+    <string name="fuzzy_search_title">\"Fuzzy\" Pretraga</string>
+    <string name="fuzzy_search_desc">Approximate matching for app searches.</string>
+    <string name="theme_label">Tema</string>
+    <string name="theme_light">Svetlo</string>
+    <string name="theme_dark">Tamno</string>
+    <string name="theme_system_default">Sistem</string>
+    <string name="theme_follow_wallpaper">Prilagodi pozadini</string>
+    <string name="quickstep_label">Recents</string>
+    <string name="clear_all_as_action_label">Clear All Button at Bottom</string>
+    <string name="window_corner_radius_label">Screen Corner Radius</string>
+    <string name="override_window_corner_radius_label">Custom Screen Corner Radius</string>
+    <string name="window_corner_radius_description">When you swipe up to open Recents, the current app follows your finger, shrinking into a card. Use this slider to adjust the corner radius of the card when it’s nearly full-screen such that it matches the corners of your screen.</string>
+    <string name="system_icons">Sistemske ikonice</string>
+    <string name="accent_color">Akcentna boja</string>
+    <string name="done">Gotovo</string>
+    <string name="loading">Učitavanje…</string>
+    <string name="system">Sistem</string>
+    <string name="wallpaper">Wallpaper</string>
+    <string name="custom">Proizvoljno</string>
+    <string name="quickstep_description">Clear All Button, Corner Radius</string>
+    <string name="wallpaper_scrolling_label">Scroll Wallpaper</string>
+    <string name="show_sys_ui_scrim">Top Shadow</string>
+    <string name="show_status_bar">Status Bar</string>
+    <string name="what_to_show">What to Show</string>
+    <string name="missing_notification_access_label">Notification Access Needed</string>
+    <string name="missing_notification_access_description">Notification access needed.</string>
+    <string name="msg_missing_notification_access">To use Notification Dots, grant <xliff:g id="name" example="My App">%1$s</xliff:g> access to notifications.</string>
+    <string name="title_change_settings">Change Settings</string>
+    <string name="debug_restart_launcher">Restart Lawnchair</string>
+    <string name="pref_fonts_missing_font">Font not found.</string>
+    <string name="font_variant_italic">Italic</string>
+    <string name="font_weight_thin">Thin</string>
+    <string name="font_weight_extra_light">Extra Light</string>
+    <string name="font_weight_light">Svetlo</string>
+    <string name="font_weight_regular">Regular</string>
+    <string name="font_weight_medium">Medium</string>
+    <string name="font_weight_semi_bold">Semibold</string>
+    <string name="font_weight_bold">Bold</string>
+    <string name="font_weight_extra_bold">Extra Bold</string>
+    <string name="font_weight_extra_black">Black</string>
+    <string name="font_label">Font (Experimental)</string>
+    <string name="reset_font">Reset</string>
+    <string name="search_input_action_clear_results">Clear Search Box</string>
+    <string name="pref_category_search">Search</string>
+    <string name="pref_search_auto_show_keyboard">Automatically Show Keyboard</string>
+    <string name="label_search">Search</string>
+    <string name="label_lens">Google Lens</string>
+    <string name="label_voice_search">Voice Search</string>
+    <string name="apply_grid">Apply</string>
+    <string name="x_by_y">%1$d × %2$d</string>
+    <string name="folder_preview_bg_opacity_label">Icon Background Opacity</string>
+    <string name="icon_shape_label">Icon Shape</string>
+    <string name="icon_shape_system">Sistem</string>
+    <string name="icon_shape_circle">Circle</string>
+    <string name="icon_shape_rounded_square">Rounded Square</string>
+    <string name="icon_shape_squircle">Squircle</string>
+    <string name="customize_button_text">Customize</string>
+    <string name="app_title_label">Title</string>
+    <string name="hide_from_drawer">Hide from App Drawer</string>
+    <string name="action_lens">Lens</string>
+    <string name="force_rounded_widgets">Rounded Corners</string>
+    <string name="suggestion_pref_screen_title">Suggestions</string>
+    <string name="n_percent">%1$d%%</string>
+    <string name="label">Label</string>
+    <string name="presets">Presets</string>
+    <string name="colors">Colors</string>
+    <string name="dynamic">Dynamic</string>
+    <string name="all_apps_search_market_message">Search for More Apps</string>
+    <string name="show_app_search_bar">Prikaži traku za pretragu</string>
+    <string name="lawnchair_bug_report">Lawnchair Bug Report</string>
+    <string name="crash_report_notif_title">%1$s Crashed</string>
+    <string name="action_upload">Upload to Dogbin</string>
+    <string name="action_copy_link">Copy Link</string>
+    <string name="action_copy">Copy</string>
+    <string name="copied_toast">Copied to clipboard.</string>
+    <string name="action_share">Share</string>
+    <string name="action_upload_error">Upload failed</string>
+    <string name="dogbin_uploading">Uploading…</string>
+    <string name="bugreport_channel_name">Bug Reports</string>
+    <string name="status_channel_name">Upload Status</string>
+    <string name="bugreport_group_summary">%d new reports.</string>
+    <string name="bugreport_group_summary_multiple">Multiple new reports.</string>
+    <string name="themed_icon_title">Themed Icons</string>
+    <string name="corner_radius_label">Corner Radius</string>
+    <string name="search_bar_label">Search Bar</string>
+    <string name="apply_accent_color_label">Apply Accent Color</string>
+    <string name="show_search_result_types">Show in Search Results</string>
+    <string name="search_pref_result_people_title">People</string>
+    <string name="search_pref_result_shortcuts_title">App Shortcuts</string>
+    <string name="search_pref_result_tips_title">Pixel Tips</string>
+    <string name="row_height_label">Row Height</string>
+    <string name="all_apps_device_search_hint">Search</string>
+    <string name="dark_status_bar_label">Dark Status Bar</string>
+    <string name="lawnicons_not_installed_description">Lawnicons not installed.</string>
+    <string name="icon_picker_default_category">Ikonice</string>
+    <string name="icon_picker_reset_to_default">Reset to Default</string>
+    <string name="icon_pack_external_picker">Open External Picker</string>
+    <string name="recents_actions_label">Quick Actions</string>
+    <string name="recents_clear_all">Clear All</string>
+    <string name="pick_icon_from_label">Pick Icon From</string>
+    <string name="experimental_features_label">Experimental Features</string>
+    <string name="icon_picker_label">Per-App Icon Customization</string>
+    <string name="icon_picker_description">May cause Lawnchair to freeze.</string>
+    <string name="font_picker_label">Font Customization</string>
+    <string name="font_picker_description">Some text remains unchanged.</string>
+</resources>

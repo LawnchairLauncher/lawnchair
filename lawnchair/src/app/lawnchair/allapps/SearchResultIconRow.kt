@@ -8,7 +8,6 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.view.ViewCompat
 import androidx.core.view.isVisible
-import androidx.core.view.setPadding
 import app.lawnchair.allapps.SearchResultView.Companion.FLAG_HIDE_SUBTITLE
 import app.lawnchair.search.SearchTargetCompat
 import com.android.app.search.LayoutType

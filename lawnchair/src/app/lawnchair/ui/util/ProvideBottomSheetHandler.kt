@@ -16,10 +16,25 @@
 
 package app.lawnchair.ui.util
 
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.ReadOnlyComposable
-import androidx.compose.runtime.staticCompositionLocalOf
+import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.shape.CornerSize
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.ModalBottomSheetLayout
+import androidx.compose.material.ModalBottomSheetState
+import androidx.compose.material.ModalBottomSheetValue
+import androidx.compose.material3.LocalContentColor
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.runtime.*
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.layout
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.unit.Constraints
+import androidx.compose.ui.unit.dp
+import com.google.accompanist.insets.LocalWindowInsets
+import kotlinx.coroutines.launch
+import kotlin.math.max
+import androidx.compose.material.MaterialTheme as Material2Theme
 
 internal val LocalBottomSheetHandler = staticCompositionLocalOf { BottomSheetHandler() }
 
@@ -28,17 +43,96 @@ val bottomSheetHandler: BottomSheetHandler
     @ReadOnlyComposable
     get() = LocalBottomSheetHandler.current
 
+@ExperimentalMaterialApi
 @Composable
 fun ProvideBottomSheetHandler(
-    handler: BottomSheetHandler,
     content: @Composable () -> Unit
 ) {
-    CompositionLocalProvider(LocalBottomSheetHandler provides handler) {
-        content()
+    val coroutineScope = rememberCoroutineScope()
+    var onDismiss by remember { mutableStateOf({}) }
+    val bottomSheetState = remember {
+        ModalBottomSheetState(
+            initialValue = ModalBottomSheetValue.Hidden,
+            confirmStateChange = {
+                if (it == ModalBottomSheetValue.Hidden) onDismiss()
+                true
+            },
+        )
+    }
+    var bottomSheetContent by remember { mutableStateOf(emptyBottomSheetContent) }
+    val bottomSheetHandler = remember {
+        BottomSheetHandler(
+            show = { sheetContent ->
+                bottomSheetContent = BottomSheetContent(content = sheetContent)
+                if (bottomSheetState.isVisible.not()) coroutineScope.launch { bottomSheetState.show() }
+            },
+            hide = {
+                onDismiss()
+                coroutineScope.launch {
+                    bottomSheetState.hide()
+                }
+            },
+            onDismiss = {
+                onDismiss = it
+            },
+        )
+    }
+
+    ModalBottomSheetLayout(
+        sheetContent = {
+            val isSheetShown = bottomSheetState.isAnimationRunning || bottomSheetState.isVisible
+            BackHandler(enabled = isSheetShown) {
+                bottomSheetHandler.hide()
+            }
+            CompositionLocalProvider(LocalContentColor provides MaterialTheme.colorScheme.onSurface) {
+                StatusBarOffset {
+                    bottomSheetContent.content()
+                }
+            }
+        },
+        sheetState = bottomSheetState,
+        sheetShape = Material2Theme.shapes.large.copy(
+            bottomStart = CornerSize(0.dp),
+            bottomEnd = CornerSize(0.dp),
+        ),
+    ) {
+        CompositionLocalProvider(LocalBottomSheetHandler provides bottomSheetHandler) {
+            content()
+        }
     }
 }
 
-data class BottomSheetHandler(
+class BottomSheetHandler(
     val show: (@Composable () -> Unit) -> Unit = {},
-    val hide: () -> Unit = {}
+    val hide: () -> Unit = {},
+    val onDismiss: (() -> Unit) -> Unit = {},
 )
+
+@Composable
+fun StatusBarOffset(content: @Composable () -> Unit) {
+    val windowInsets = LocalWindowInsets.current
+    val statusBarHeight = max(windowInsets.statusBars.top, windowInsets.displayCutout.top)
+    val topOffset = statusBarHeight + with(LocalDensity.current) { 8.dp.roundToPx() }
+
+    Box(
+        modifier = Modifier
+            .layout { measurable, constraints ->
+                val newConstraints = Constraints(
+                    minWidth = constraints.minWidth,
+                    maxWidth = constraints.maxWidth,
+                    minHeight = constraints.minHeight,
+                    maxHeight = when (constraints.maxHeight) {
+                        Constraints.Infinity -> Constraints.Infinity
+                        else -> constraints.maxHeight - topOffset
+                    }
+                )
+                val placeable = measurable.measure(newConstraints)
+
+                layout(placeable.width, placeable.height) {
+                    placeable.placeRelative(0, 0)
+                }
+            }
+    ) {
+        content()
+    }
+}

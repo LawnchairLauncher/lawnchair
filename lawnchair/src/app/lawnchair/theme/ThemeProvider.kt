@@ -9,8 +9,7 @@ import android.os.Looper
 import android.os.PatternMatcher
 import android.util.SparseArray
 import androidx.core.graphics.ColorUtils
-import app.lawnchair.preferences.PreferenceChangeListener
-import app.lawnchair.preferences.PreferenceManager
+import app.lawnchair.preferences2.PreferenceManager2
 import app.lawnchair.theme.color.AndroidColor
 import app.lawnchair.theme.color.ColorOption
 import app.lawnchair.theme.color.SystemColorScheme
@@ -18,6 +17,8 @@ import app.lawnchair.ui.theme.getSystemAccent
 import app.lawnchair.wallpaper.WallpaperManagerCompat
 import com.android.launcher3.Utilities
 import com.android.launcher3.util.MainThreadInitializedObject
+import com.patrykmichalik.preferencemanager.firstBlocking
+import com.patrykmichalik.preferencemanager.onEach
 import dev.kdrag0n.colorkt.Color
 import dev.kdrag0n.colorkt.cam.Zcam
 import dev.kdrag0n.colorkt.conversion.ConversionGraph.convert
@@ -28,13 +29,15 @@ import dev.kdrag0n.colorkt.tristimulus.CieXyzAbs.Companion.toAbs
 import dev.kdrag0n.colorkt.ucs.lab.CieLab
 import dev.kdrag0n.monet.theme.ColorScheme
 import dev.kdrag0n.monet.theme.DynamicColorScheme
-import dev.kdrag0n.monet.theme.GrayColorScheme
 import dev.kdrag0n.monet.theme.MaterialYouTargets
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 
 class ThemeProvider(private val context: Context) {
-    private val prefs = PreferenceManager.getInstance(context)
+    private val preferenceManager2 = PreferenceManager2.getInstance(context)
     private val wallpaperManager = WallpaperManagerCompat.INSTANCE.get(context)
-    private val accentColor by prefs.accentColor
+    private val coroutineScope = CoroutineScope(Dispatchers.Default)
+    private var accentColor: ColorOption = preferenceManager2.accentColor.firstBlocking()
 
     private val targets = MaterialYouTargets(1.0, false, viewingCondition)
     private val colorSchemeMap = SparseArray<ColorScheme>()
@@ -52,11 +55,10 @@ class ThemeProvider(private val context: Context) {
                 }
             }
         })
-        prefs.accentColor.addListener(object : PreferenceChangeListener {
-            override fun onPreferenceChange() {
-                notifyColorSchemeChanged()
-            }
-        })
+        preferenceManager2.accentColor.onEach(launchIn = coroutineScope) {
+            accentColor = it
+            notifyColorSchemeChanged()
+        }
     }
 
     private fun registerOverlayChangedListener() {

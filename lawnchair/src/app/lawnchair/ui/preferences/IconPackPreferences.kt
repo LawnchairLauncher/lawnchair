@@ -20,6 +20,8 @@ import android.graphics.drawable.Drawable
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.material.RadioButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -46,8 +48,7 @@ fun NavGraphBuilder.iconPackGraph(route: String) {
 @ExperimentalAnimationApi
 @Composable
 fun IconPackPreferences() {
-    val interactor = LocalPreferenceInteractor.current
-    val iconPacks = remember { interactor.getIconPacks() }
+    val iconPacks by LocalPreferenceInteractor.current.iconPacks.collectAsState()
     var iconPackPackage by preferenceManager().iconPackPackage.getAdapter()
 
     PreferenceLayoutLazyColumn(label = stringResource(id = R.string.icon_pack)) {

@@ -1,37 +1,40 @@
 package app.lawnchair.override
 
+import android.app.Activity
 import android.graphics.drawable.Drawable
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import app.lawnchair.launcher
-import app.lawnchair.preferences.customPreferenceAdapter
-import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences.preferenceManager
+import app.lawnchair.preferences2.preferenceManager2
 import app.lawnchair.ui.preferences.PreferenceActivity
 import app.lawnchair.ui.preferences.Routes
 import app.lawnchair.ui.preferences.components.ClickableIcon
 import app.lawnchair.ui.preferences.components.PreferenceGroup
-import app.lawnchair.ui.preferences.components.SwitchPreference
+import app.lawnchair.ui.preferences.components.SwitchPreference2
+import app.lawnchair.ui.util.addIfNotNull
+import app.lawnchair.util.ifNotNull
 import app.lawnchair.util.navigationBarsOrDisplayCutoutPadding
 import com.android.launcher3.LauncherAppState
 import com.android.launcher3.R
 import com.android.launcher3.util.ComponentKey
 import com.google.accompanist.drawablepainter.rememberDrawablePainter
+import com.patrykmichalik.preferencemanager.state
+import kotlinx.coroutines.launch
 
 @ExperimentalMaterialApi
 @Composable
@@ -40,7 +43,7 @@ fun CustomizeDialog(
     title: String,
     onTitleChange: (String) -> Unit,
     defaultTitle: String,
-    launchSelectIcon: () -> Unit,
+    launchSelectIcon: (() -> Unit)?,
     content: (@Composable () -> Unit)? = null
 ) {
     Column(
@@ -49,20 +52,22 @@ fun CustomizeDialog(
             .fillMaxWidth()
     ) {
         val iconPainter = rememberDrawablePainter(drawable = icon)
-        Image(
-            painter = iconPainter,
-            contentDescription = "",
+        Box(
             modifier = Modifier
-                .padding(vertical = 32.dp)
-                .size(54.dp)
                 .align(Alignment.CenterHorizontally)
-                .clickable(
-                    interactionSource = remember { MutableInteractionSource() },
-                    indication = null
-                ) {
-                    launchSelectIcon()
+                .padding(vertical = 24.dp)
+                .clip(MaterialTheme.shapes.small)
+                .addIfNotNull(launchSelectIcon) {
+                    clickable(onClick = it)
                 }
-        )
+                .padding(all = 8.dp),
+        ) {
+            Image(
+                painter = iconPainter,
+                contentDescription = "",
+                modifier = Modifier.size(54.dp),
+            )
+        }
         OutlinedTextField(
             value = title,
             onValueChange = onTitleChange,
@@ -96,11 +101,27 @@ fun CustomizeDialog(
 fun CustomizeAppDialog(
     icon: Drawable,
     defaultTitle: String,
-    componentKey: ComponentKey
+    componentKey: ComponentKey,
+    onClose: () -> Unit
 ) {
     val prefs = preferenceManager()
+    val preferenceManager2 = preferenceManager2()
+    val coroutineScope = rememberCoroutineScope()
+    val enableIconSelection by preferenceManager2.enableIconSelection.state()
+    val showComponentNames by preferenceManager2.showComponentNames.state()
+    val hiddenApps by preferenceManager2.hiddenApps.state()
     val context = LocalContext.current
     var title by remember { mutableStateOf("") }
+
+    val request = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+        if (it.resultCode != Activity.RESULT_OK) return@rememberLauncherForActivityResult
+        onClose()
+    }
+
+    val openIconPicker = {
+        val destination = "/${Routes.SELECT_ICON}/$componentKey/"
+        request.launch(PreferenceActivity.createIntent(context, destination))
+    }
 
     DisposableEffect(key1 = null) {
         title = prefs.customAppName[componentKey] ?: defaultTitle
@@ -113,7 +134,7 @@ fun CustomizeAppDialog(
                 val idp = las.invariantDeviceProfile
                 las.iconCache.updateIconsForPkg(
                     componentKey.componentName.packageName,
-                    componentKey.user
+                    componentKey.user,
                 )
                 context.launcher.onIdpChanged(idp)
             }
@@ -124,32 +145,28 @@ fun CustomizeAppDialog(
         title = title,
         onTitleChange = { title = it },
         defaultTitle = defaultTitle,
-        launchSelectIcon = {
-            if (prefs.enableIconSelection.get()) {
-                val destination = "/${Routes.SELECT_ICON}/$componentKey/"
-                context.startActivity(PreferenceActivity.createIntent(context, destination))
-            }
-        }
+        launchSelectIcon = if (enableIconSelection == true) openIconPicker else null,
     ) {
-        PreferenceGroup {
-            val stringKey = componentKey.toString()
-            var hiddenApps by prefs.hiddenAppSet.getAdapter()
-            val adapter = customPreferenceAdapter(
-                value = hiddenApps.contains(stringKey),
-                onValueChange = { isHidden ->
-                    val newSet = hiddenApps.toMutableSet()
-                    if (isHidden) {
-                        newSet.add(stringKey)
-                    } else {
-                        newSet.remove(stringKey)
-                    }
-                    hiddenApps = newSet
-                }
-            )
-            SwitchPreference(
-                adapter = adapter,
-                label = stringResource(id = R.string.hide_from_drawer)
-            )
+        ifNotNull(showComponentNames, hiddenApps) {
+            val collectedShowComponentNames = it[0] as Boolean
+            val collectedHiddenApps = it[1] as Set<String>
+            PreferenceGroup(
+                description = componentKey.componentName.flattenToString(),
+                showDescription = collectedShowComponentNames,
+            ) {
+                val stringKey = componentKey.toString()
+                SwitchPreference2(
+                    checked = collectedHiddenApps.contains(stringKey),
+                    label = stringResource(id = R.string.hide_from_drawer),
+                    onCheckedChange = { newValue ->
+                        val newSet = collectedHiddenApps.toMutableSet()
+                        if (newValue) newSet.add(stringKey) else newSet.remove(stringKey)
+                        coroutineScope.launch {
+                            preferenceManager2.hiddenApps.set(value = newSet)
+                        }
+                    },
+                )
+            }
         }
     }
 }

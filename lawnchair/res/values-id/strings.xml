@@ -132,7 +132,7 @@
     <string name="label_voice_search">Penelusuran Suara</string>
     <string name="apply_grid">Terapkan</string>
     <string name="x_by_y">%1$d × %2$d</string>
-    <string name="folder_preview_bg_opacity_label">Tingkat Gelapnya Latar Belakang</string>
+    <string name="folder_preview_bg_opacity_label">Ketebalan Transparansi Latar Belakang Ikon</string>
     <string name="icon_shape_label">Ukuran Ikon</string>
     <string name="icon_shape_system">Sistem</string>
     <string name="icon_shape_circle">Lingkaran</string>
@@ -152,7 +152,7 @@
     <string name="all_apps_search_market_message">Cari Aplikasi Lainnya</string>
     <string name="show_app_search_bar">Tampilkan Bilah Pencarian</string>
     <string name="lawnchair_bug_report">Laporan Bug Lawnchair</string>
-    <string name="crash_report_notif_title">%1$s telah terhenti</string>
+    <string name="crash_report_notif_title">%1$s berhenti</string>
     <string name="action_upload">Unggah ke Dogbin</string>
     <string name="action_copy_link">Salin Tautan</string>
     <string name="action_copy">Salin</string>
@@ -170,8 +170,10 @@
     <string name="apply_accent_color_label">Terapkan Warna Aksen</string>
     <string name="show_search_result_types">Tampilkan pada Hasil Pencarian</string>
     <string name="search_pref_result_people_title">Orang</string>
-    <string name="search_pref_result_shortcuts_title">App Shortcuts</string>
+    <string name="search_pref_result_shortcuts_title">Pintasan Aplikasi</string>
     <string name="search_pref_result_tips_title">Tips Pixel</string>
     <string name="row_height_label">Tinggi Baris</string>
     <string name="all_apps_device_search_hint">Pencarian</string>
+    <string name="dark_status_bar_label">Tingkat Kegelapan Bar Status</string>
+    <string name="lawnicons_not_installed_description">Lawnicons tidak terpasang.</string>
 </resources>

@@ -1,0 +1,69 @@
+name: Bug report
+description: Create a report to help us address issues you are facing with the app
+title: "[BUG] "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to file this issue! Here are a few things to check before clicking the submit button :)
+        1. Make sure you're on the latest version of the app. The current release can be found here: https://github.com/LawnchairLauncher/lawnchair/releases.
+        2. Search through **both** open and closed issues for your bug: https://github.com/LawnchairLauncher/lawnchair/issues?q=is%3Aissue+sort%3Aupdated-desc+.
+        3. ALWAYS fill this template. If you fail to do so, your issue will be immediately closed with no response. Maintaining open source projects for free is hard work, and we expect users to respect that time and effort by putting in a little bit of their own. That helps us fix these problems faster and in return you get a better app — everybody wins.
+
+  - type: textarea
+    id: bug-description
+    attributes:
+      label: Describe the bug
+      description: A clear and concise description of what the bug is.
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps-to-reproduce
+    attributes:
+      label: Steps to reproduce
+      description: Steps to reproduce the bug
+      value: |
+        Steps to reproduce the behavior:
+        1. Go to '...'
+        2. Click on '....'
+        3. Scroll down to '....'
+        4. See error
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected-behavior
+    attributes:
+      label: Expected behavior
+      description: A clear and concise description of what you expected to happen.
+    validations:
+      required: true
+
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: Screenshots
+      description: If applicable, add screenshots to help explain your problem.
+    validations:
+      required: false
+
+  - type: textarea
+    id: device-info
+    attributes:
+      label: Device information
+      description: Provide details about your device, OS, app version, etc.
+      value: |
+        - Device: [e.g. Google Pixel 6]
+        - OS: [e.g. stock ROM Android version 12.0]
+        - App version [e.g. 12.0.0 Alpha 5]
+    validations:
+      required: true
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional context
+      description: Add any other context about the problem here.
+    validations:
+      required: false

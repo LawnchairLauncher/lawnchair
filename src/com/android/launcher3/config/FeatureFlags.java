@@ -21,12 +21,14 @@ import android.content.Context;
 import com.android.launcher3.BuildConfig;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.uioverrides.DeviceFlag;
+import com.patrykmichalik.preferencemanager.PreferenceExtensionsKt;
 
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
 import app.lawnchair.preferences.PreferenceManager;
+import app.lawnchair.preferences2.PreferenceManager2;
 
 /**
  * Defines a set of flags used to control various launcher behaviors.
@@ -55,8 +57,8 @@ public final class FeatureFlags {
      * and should be modified at a project level.
      */
     public static boolean topQsbOnFirstScreenEnabled(Context context) {
-        PreferenceManager prefs = PreferenceManager.getInstance(context);
-        return prefs.getSmartSpaceEnable().get();
+        PreferenceManager2 preferenceManager2 = PreferenceManager2.getInstance(context);
+        return PreferenceExtensionsKt.firstBlocking(preferenceManager2.getEnableSmartspace());
     }
 
     /**

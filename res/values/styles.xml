@@ -41,6 +41,7 @@
         <item name="popupShadeSecond">@color/popup_shade_second_light</item>
         <item name="popupShadeThird">@color/popup_shade_third_light</item>
         <item name="popupNotificationDotColor">@color/popup_notification_dot_light</item>
+        <item name="android:forceDarkAllowed">false</item>
         <item name="isMainColorDark">false</item>
         <item name="isWorkspaceDarkText">false</item>
         <item name="workspaceTextColor">@color/workspace_text_color_light</item>

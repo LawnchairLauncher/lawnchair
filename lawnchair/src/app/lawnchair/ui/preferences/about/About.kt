@@ -1,5 +1,5 @@
 /*
- * Copyright 2021, Lawnchair
+ * Copyright 2022, Lawnchair
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,7 +38,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavGraphBuilder
 import app.lawnchair.preferences.Versioning
-import app.lawnchair.ui.preferences.about.licenses.licensesGraph
+import app.lawnchair.ui.preferences.about.acknowledgements.licensesGraph
 import app.lawnchair.ui.preferences.components.ClickablePreference
 import app.lawnchair.ui.preferences.components.NavigationActionPreference
 import app.lawnchair.ui.preferences.components.PreferenceGroup
@@ -193,22 +193,23 @@ fun About() {
         horizontalAlignment = Alignment.CenterHorizontally,
         label = stringResource(id = R.string.about_label)
     ) {
-        Spacer(modifier = Modifier.requiredHeight(24.dp))
+        Spacer(modifier = Modifier.requiredHeight(8.dp))
         Image(
             painter = painterResource(id = R.drawable.ic_launcher_home_comp),
             contentDescription = null,
             modifier = Modifier
-                .width(96.dp)
-                .height(96.dp)
+                .width(72.dp)
+                .height(72.dp)
                 .clip(CircleShape)
         )
-        Spacer(modifier = Modifier.requiredHeight(16.dp))
+        Spacer(modifier = Modifier.requiredHeight(12.dp))
         Text(
             text = stringResource(id = R.string.derived_app_name),
-            style = MaterialTheme.typography.headlineSmall
+            style = MaterialTheme.typography.titleLarge,
         )
         Text(
             text = Versioning.versionName,
+            style = MaterialTheme.typography.bodyLarge,
             color = LocalContentColor.current.copy(alpha = ContentAlpha.medium)
         )
         Spacer(modifier = Modifier.requiredHeight(16.dp))

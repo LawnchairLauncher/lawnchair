@@ -2,24 +2,21 @@ package app.lawnchair.qsb
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.Intent
 import android.util.AttributeSet
 import android.widget.ImageButton
 import androidx.core.view.isVisible
+import app.lawnchair.preferences2.PreferenceManager2
 import com.android.launcher3.R
-import com.android.launcher3.qsb.QsbContainerView
 import com.android.launcher3.util.Themes
 
 @SuppressLint("AppCompatCustomView")
 class AssistantIconView(context: Context, attrs: AttributeSet?) : ImageButton(context, attrs) {
 
     init {
-        val intent = Intent(Intent.ACTION_VOICE_COMMAND)
-            .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
-            .setPackage(QsbLayout.getSearchPackageName(context))
-        if (context.packageManager.resolveActivity(intent, 0) == null) {
-            isVisible = false
-        }
+        val provider = QsbLayout.getSearchProvider(context, PreferenceManager2.getInstance(context))
+        val intent = if (provider.supportVoiceIntent) provider.createVoiceIntent() else null
+
+        if (intent == null || !QsbLayout.resolveIntent(context, intent)) isVisible = false
 
         setOnClickListener {
             context.startActivity(intent)
@@ -28,11 +25,14 @@ class AssistantIconView(context: Context, attrs: AttributeSet?) : ImageButton(co
 
     fun setIcon(isGoogle: Boolean, themed: Boolean) {
         clearColorFilter()
-        if (isGoogle) {
-            setThemedIconResource(R.drawable.ic_mic_color, themed)
-        } else {
-            setImageResource(R.drawable.ic_mic_flat)
-            setColorFilter(Themes.getColorAccent(context))
-        }
+
+        val iconRes = if (isGoogle) R.drawable.ic_mic_color else R.drawable.ic_mic_flat
+        val themingMethod = if (isGoogle) ThemingMethod.THEME_BY_NAME else ThemingMethod.TINT
+
+        setThemedIconResource(
+            resId = iconRes,
+            themed = isGoogle && themed || !isGoogle,
+            method = themingMethod
+        )
     }
 }

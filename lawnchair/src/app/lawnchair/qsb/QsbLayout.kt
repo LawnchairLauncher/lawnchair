@@ -1,7 +1,6 @@
 package app.lawnchair.qsb
 
 import android.app.PendingIntent
-import android.appwidget.AppWidgetHostView
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
@@ -13,23 +12,23 @@ import android.widget.ImageView
 import androidx.core.view.ViewCompat
 import androidx.core.view.children
 import androidx.core.view.isVisible
-import androidx.lifecycle.lifecycleScope
-import app.lawnchair.HeadlessWidgetsManager
 import app.lawnchair.launcher
-import app.lawnchair.launcherNullable
 import app.lawnchair.preferences.PreferenceManager
-import app.lawnchair.util.pendingIntent
-import app.lawnchair.util.recursiveChildren
+import app.lawnchair.preferences2.PreferenceManager2
+import app.lawnchair.qsb.providers.AppSearch
+import app.lawnchair.qsb.providers.Google
+import app.lawnchair.qsb.providers.GoogleGo
+import app.lawnchair.qsb.providers.QsbSearchProvider
+import app.lawnchair.util.viewAttachedScope
 import com.android.launcher3.BaseActivity
 import com.android.launcher3.DeviceProfile
 import com.android.launcher3.LauncherState
 import com.android.launcher3.R
 import com.android.launcher3.anim.AnimatorListeners.forSuccessCallback
-import com.android.launcher3.qsb.QsbContainerView
 import com.android.launcher3.util.Themes
 import com.android.launcher3.views.ActivityContext
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.launch
+import com.patrykmichalik.preferencemanager.firstBlocking
+import com.patrykmichalik.preferencemanager.onEach
 
 class QsbLayout(context: Context, attrs: AttributeSet?) : FrameLayout(context, attrs) {
 
@@ -39,7 +38,7 @@ class QsbLayout(context: Context, attrs: AttributeSet?) : FrameLayout(context, a
     private lateinit var lensIcon: ImageView
     private lateinit var inner: FrameLayout
     private lateinit var preferenceManager: PreferenceManager
-    private var searchPendingIntent: PendingIntent? = null
+    private lateinit var preferenceManager2: PreferenceManager2
 
     override fun onFinishInflate() {
         super.onFinishInflate()
@@ -49,46 +48,43 @@ class QsbLayout(context: Context, attrs: AttributeSet?) : FrameLayout(context, a
         lensIcon = ViewCompat.requireViewById(this, R.id.lens_icon)
         inner = ViewCompat.requireViewById(this, R.id.inner)
         preferenceManager = PreferenceManager.getInstance(context)
+        preferenceManager2 = PreferenceManager2.getInstance(context)
 
-        val searchPackage = getSearchPackageName(context)
-        setUpMainSearch(searchPackage)
+        val searchProvider = getSearchProvider(context, preferenceManager2)
         setUpBackground()
         clipIconRipples()
 
-        val isGoogle = searchPackage == GOOGLE_PACKAGE
-        preferenceManager.themedHotseatQsb.subscribeValues(this) {
-            setThemed(it, isGoogle)
-        }
-        if (isGoogle) {
-            setUpLensIcon()
-        } else {
-            micIcon.setIcon(isGoogle = false, themed = false)
-            with(gIcon) {
-                setImageResource(R.drawable.ic_qsb_search)
-                setColorFilter(Themes.getColorAccent(context))
+        val isGoogle = searchProvider == Google ||
+                searchProvider == GoogleGo
+
+        val supportsLens = searchProvider == Google
+
+        preferenceManager2.themedHotseatQsb.onEach(launchIn = viewAttachedScope) { themed ->
+            setUpBackground(themed)
+
+            val iconRes = if (themed) searchProvider.themedIcon else searchProvider.icon
+
+            // The default search icon should always be themed
+            gIcon.setThemedIconResource(
+                resId = iconRes,
+                themed = themed || iconRes == R.drawable.ic_qsb_search,
+                method = searchProvider.themingMethod
+            )
+
+            micIcon.setIcon(isGoogle, themed)
+            if (supportsLens) {
+                lensIcon.setThemedIconResource(R.drawable.ic_lens_color, themed)
             }
         }
-    }
 
-    private fun subscribeSearchWidget(searchPackage: String) {
-        val info = QsbContainerView.getSearchWidgetProviderInfo(context, searchPackage) ?: return
-        context.launcherNullable?.lifecycleScope?.launch {
-            val headlessWidgetsManager = HeadlessWidgetsManager.INSTANCE.get(context)
-            headlessWidgetsManager.subscribeUpdates(info, "hotseatWidgetId")
-                .collect { findSearchIntent(it) }
+        if (supportsLens) setUpLensIcon()
+
+        preferenceManager2.hotseatQsbForceWebsite.onEach(launchIn = viewAttachedScope) { force ->
+            setUpMainSearch(
+                searchProvider = searchProvider,
+                forceWebsite = force,
+            )
         }
-    }
-
-    private fun findSearchIntent(view: AppWidgetHostView) {
-        view.measure(
-            MeasureSpec.makeMeasureSpec(1000, MeasureSpec.EXACTLY),
-            MeasureSpec.makeMeasureSpec(100, MeasureSpec.EXACTLY)
-        )
-        searchPendingIntent = view.recursiveChildren
-            .filter { it.pendingIntent != null }
-            .sortedByDescending { it.measuredWidth * it.measuredHeight }
-            .firstOrNull()
-            ?.pendingIntent
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
@@ -111,42 +107,33 @@ class QsbLayout(context: Context, attrs: AttributeSet?) : FrameLayout(context, a
         }
     }
 
-    private fun setThemed(themed: Boolean, themeQsbIcons: Boolean) {
-        setUpBackground(themed)
-        if (themeQsbIcons) {
-            gIcon.setThemedIconResource(R.drawable.ic_super_g_color, themed)
-            micIcon.setIcon(isGoogle = true, themed)
-            lensIcon.setThemedIconResource(R.drawable.ic_lens_color, themed)
-        }
-    }
+    private fun setUpMainSearch(searchProvider: QsbSearchProvider, forceWebsite: Boolean) {
+        val isAppSearch = searchProvider == AppSearch
 
-    private fun setUpMainSearch(searchPackage: String) {
-        subscribeSearchWidget(searchPackage)
         setOnClickListener {
-            val pendingIntent = searchPendingIntent
-            if (pendingIntent != null) {
-                val launcher = context.launcher
-                launcher.startIntentSender(
-                    pendingIntent.intentSender, null,
-                    Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK,
-                    Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK,
-                    0
-                )
-                return@setOnClickListener
+            if (!forceWebsite && !isAppSearch) {
+                val intent = searchProvider.createSearchIntent()
+                if (resolveIntent(context, intent)) {
+                    context.startActivity(intent)
+                    return@setOnClickListener
+                }
             }
 
-            val intent = Intent("android.search.action.GLOBAL_SEARCH")
-                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
-                .setPackage(searchPackage)
-            if (context.packageManager.resolveActivity(intent, 0) != null) {
+            val intent = searchProvider.createWebsiteIntent()
+            if (!isAppSearch && resolveIntent(context, intent)) {
                 context.startActivity(intent)
             } else {
                 val launcher = context.launcher
-                launcher.stateManager.goToState(LauncherState.ALL_APPS, true, forSuccessCallback {
-                    launcher.appsView.searchUiManager.editText?.showKeyboard()
-                })
+                launcher.stateManager.goToState(
+                    LauncherState.ALL_APPS,
+                    true,
+                    forSuccessCallback {
+                        launcher.appsView.searchUiManager.editText?.showKeyboard()
+                    }
+                )
             }
         }
+        return
     }
 
     private fun setUpLensIcon() {
@@ -184,27 +171,23 @@ class QsbLayout(context: Context, attrs: AttributeSet?) : FrameLayout(context, a
     }
 
     companion object {
-        private const val GOOGLE_PACKAGE = "com.google.android.googlequicksearchbox"
         private const val LENS_PACKAGE = "com.google.ar.lens"
         private const val LENS_ACTIVITY = "com.google.vr.apps.ornament.app.lens.LensLauncherActivity"
 
-        fun getSearchPackageName(context: Context): String {
-            if (resolveSearchIntent(context, GOOGLE_PACKAGE)) {
-                return GOOGLE_PACKAGE
-            }
-            val searchPackage = QsbContainerView.getSearchWidgetPackageName(context)
-            if (!searchPackage.isNullOrEmpty()) {
-                return searchPackage
-            }
-            return ""
+        fun getSearchProvider(
+            context: Context,
+            preferenceManager: PreferenceManager2
+        ): QsbSearchProvider {
+            val provider = preferenceManager.hotseatQsbProvider.firstBlocking()
+
+            return if (provider == AppSearch ||
+                resolveIntent(context, provider.createSearchIntent()) ||
+                resolveIntent(context, provider.createWebsiteIntent())
+            ) provider else AppSearch
         }
 
-        private fun resolveSearchIntent(context: Context, searchPackage: String): Boolean {
-            val intent = Intent("android.search.action.GLOBAL_SEARCH")
-                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
-                .setPackage(searchPackage)
-            return context.packageManager.resolveActivity(intent, 0) != null
-        }
+        fun resolveIntent(context: Context, intent: Intent): Boolean =
+            context.packageManager.resolveActivity(intent, 0) != null
 
         private fun getCornerRadius(
             context: Context,

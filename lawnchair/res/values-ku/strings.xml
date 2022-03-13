@@ -175,4 +175,6 @@
     <string name="search_pref_result_tips_title">Pixel Tips</string>
     <string name="row_height_label">Row Height</string>
     <string name="all_apps_device_search_hint">Search</string>
+    <string name="dark_status_bar_label">Dark Status Bar</string>
+    <string name="lawnicons_not_installed_description">Lawnicons not installed.</string>
 </resources>

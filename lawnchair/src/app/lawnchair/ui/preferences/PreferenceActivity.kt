@@ -36,7 +36,7 @@ class PreferenceActivity : AppCompatActivity() {
         WindowCompat.setDecorFitsSystemWindows(window, false)
         setContent {
             LawnchairTheme {
-                ProvideWindowInsets {
+                ProvideWindowInsets(windowInsetsAnimationsEnabled = true) {
                     Preferences()
                 }
             }

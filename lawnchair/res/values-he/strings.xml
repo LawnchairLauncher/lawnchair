@@ -37,7 +37,7 @@
     <string name="home_screen_grid">Home Screen Grid</string>
     <string name="columns">עמודות</string>
     <string name="grid">רשת</string>
-    <string name="rows">Rows</string>
+    <string name="rows">שורות</string>
     <string name="icons">סמלים</string>
     <string name="icon_size">גודל סמל</string>
     <string name="label_size">גודל טקסט</string>
@@ -136,9 +136,9 @@
     <string name="apply_grid">Apply</string>
     <string name="x_by_y">%1$d × %2$d</string>
     <string name="folder_preview_bg_opacity_label">Icon Background Opacity</string>
-    <string name="icon_shape_label">Icon Shape</string>
+    <string name="icon_shape_label">צורת האייקון</string>
     <string name="icon_shape_system">מערכת</string>
-    <string name="icon_shape_circle">Circle</string>
+    <string name="icon_shape_circle">עיגול</string>
     <string name="icon_shape_rounded_square">Rounded Square</string>
     <string name="icon_shape_squircle">Squircle</string>
     <string name="customize_button_text">התאמה אישית</string>
@@ -157,13 +157,13 @@
     <string name="lawnchair_bug_report">Lawnchair Bug Report</string>
     <string name="crash_report_notif_title">%1$s Crashed</string>
     <string name="action_upload">Upload to Dogbin</string>
-    <string name="action_copy_link">Copy Link</string>
-    <string name="action_copy">Copy</string>
-    <string name="copied_toast">Copied to clipboard.</string>
-    <string name="action_share">Share</string>
-    <string name="action_upload_error">Upload failed</string>
+    <string name="action_copy_link">העתקת קישור</string>
+    <string name="action_copy">העתקה</string>
+    <string name="copied_toast">הועתק ללוח הכתיבה.</string>
+    <string name="action_share">שיתוף</string>
+    <string name="action_upload_error">העלאה נכשלה</string>
     <string name="dogbin_uploading">Uploading…</string>
-    <string name="bugreport_channel_name">Bug Reports</string>
+    <string name="bugreport_channel_name">דיווחי באגים</string>
     <string name="status_channel_name">Upload Status</string>
     <string name="bugreport_group_summary">%d new reports.</string>
     <string name="bugreport_group_summary_multiple">Multiple new reports.</string>
@@ -177,4 +177,6 @@
     <string name="search_pref_result_tips_title">Pixel Tips</string>
     <string name="row_height_label">Row Height</string>
     <string name="all_apps_device_search_hint">חיפוש</string>
+    <string name="dark_status_bar_label">שורת מצב כהה</string>
+    <string name="lawnicons_not_installed_description">Lawnicons not installed.</string>
 </resources>

@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright 2021, Lawnchair
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="icon_pack">Набор иконок</string>
+    <string name="settings">Настройки</string>
+    <string name="home_screen_label">Домашний экран</string>
+    <string name="home_screen_description">Новости, Виджет \"At a Glance\", Сетка, Иконки</string>
+    <string name="general_label">Общие</string>
+    <string name="general_description">Значки уведомлений, Набор иконок</string>
+    <string name="home_screen_rotation_label">Поворачивать домашний экран</string>
+    <string name="home_screen_rotaton_description">При повороте устройства.</string>
+    <string name="auto_add_shortcuts_label">Добавлять новые приложения на домашний экран</string>
+    <string name="dock_label">Док-панель</string>
+    <string name="dock_description">Строка поиска, Количество значков</string>
+    <string name="app_drawer_label">Меню приложений</string>
+    <string name="app_drawer_description">Скрытые приложения, Число столбцов, Иконки</string>
+    <string name="folders_label">Папки</string>
+    <string name="folders_description">Количество строк и столбцов</string>
+    <string name="app_drawer_columns">Количество столбцов в меню приложений</string>
+    <string name="dock_icons">Иконки в доке</string>
+    <string name="max_folder_columns">Макс. количество столбцов в папке</string>
+    <string name="max_folder_rows">Макс. количество строк в папке</string>
+    <string name="home_screen_grid">Сетка главного экрана</string>
+    <string name="columns">Столбцы</string>
+    <string name="grid">Сетка</string>
+    <string name="rows">Строки</string>
+    <string name="icons">Иконки</string>
+    <string name="icon_size">Размер иконок</string>
+    <string name="label_size">Размер подписи</string>
+    <string name="show_home_labels">Показывать названия</string>
+    <string name="notification_dots">Значки уведомлений</string>
+    <string name="smartspace_preferences">Настройки</string>
+    <string name="about_label">О программе</string>
+    <string name="news">Новости</string>
+    <string name="support">Поддержка</string>
+    <string name="acknowledgements">Лицензии</string>
+    <string name="devops">DevOps-инженер</string>
+    <string name="quickswitch_maintenance">Поддержка QuickSwitch</string>
+    <string name="all_apps_search_bar_hint">Поиск по приложениям</string>
+    <string name="settings_button_text">Главный экран</string>
+    <string name="development">Разработчик</string>
+    <string name="app_info_drop_target_label">О приложении</string>
+    <string name="item_removed">Элемент удален.</string>
+    <string name="all_apps_no_search_results">Не найдено приложений по запросу “<xliff:g example="Android" id="query">%1$s</xliff:g>”.</string>
+    <string name="background_opacity">Прозрачность фона</string>
+    <string name="background_lightness_label">Яркость фона</string>
+    <string name="adaptive_icons">Адаптивные иконки</string>
+    <string name="adaptive_icon_background_description">Белый фон при 100% яркости.</string>
+    <string name="auto_adaptive_icons_label">Создавать адаптивные иконки</string>
+    <string name="auto_adaptive_icons_description">Для всех не адаптивных иконок.</string>
+    <string name="support_and_pr">Поддержка и PR</string>
+    <string name="workspace_dt2s">Двойной тап для блокировки</string>
+    <string name="smart_space_enable">Виджет \"At a Glance\"</string>
+    <string name="design_and_development">Дизайн и Разработка</string>
+    <string name="translate">Помочь с переводом</string>
+    <string name="product">Продукт</string>
+    <string name="hidden_apps_label">Скрытые приложения</string>
+    <string name="hidden_apps_label_with_count">Скрытые приложения (%1$d)</string>
+    <plurals name="apps_count">
+        <item quantity="one">%1$d Приложение</item>
+        <item quantity="few">%1$d Приложений</item>
+        <item quantity="many">%1$d Приложений</item>
+        <item quantity="other">%1$d Приложения</item>
+    </plurals>
+    <string name="hotseat_qsb_label">Показать строку поиска</string>
+    <string name="dt2s_admin_hint_title">Необходимы права администратора</string>
+    <string name="dt2s_admin_hint">Чтобы использовать функцию \"Нажмите дважды для выключения\", выберите Lawnchair как приложение администратора устройства. Для этого откройте Настройки, потом нажмите на \"Активировать приложение администратора устройства.\"</string>
+    <string name="dt2s_admin_warning">Двойной тап для блокировки будет отключен.</string>
+    <string name="dt2s_a11y_hint_title">Требуются спец. возможности</string>
+    <string name="dt2s_a11y_hint">Чтобы использовать функцию \"Нажмите дважды для выключения\", выберите Lawnchair в меню спец. возможностей. Для этого откройте Настройки, потом выберите \"Lawnchair\" и нажмите \"Использовать Lawnchair\".</string>
+    <string name="dt2s_warning_open_settings">Открыть настройки</string>
+    <string name="minus_one_enable">Лента Google</string>
+    <string name="minus_one_unavailable">Лента новостей не установлена.</string>
+    <string name="fuzzy_search_title">Поиск по сходству</string>
+    <string name="fuzzy_search_desc">Поиск приложений по похожему запросу.</string>
+    <string name="theme_label">Тема</string>
+    <string name="theme_light">Светлая</string>
+    <string name="theme_dark">Тёмная</string>
+    <string name="theme_system_default">Система</string>
+    <string name="theme_follow_wallpaper">На основе обоев</string>
+    <string name="quickstep_label">Недавние</string>
+    <string name="clear_all_as_action_label">Кнопка \"Очистить всё\" внизу</string>
+    <string name="window_corner_radius_label">Радиус скругления краёв экрана</string>
+    <string name="override_window_corner_radius_label">Задать радиус скругления краёв экрана</string>
+    <string name="window_corner_radius_description">Когда вы проводите вверх, чтобы открыть Недавние, текущее приложение следует за пальцем, уменьшаясь в карточку. Используйте этот ползунок для настройки радиуса угла карточки, когда она почти развернута, чтобы она соответствовала углам экрана.</string>
+    <string name="system_icons">Системные иконки</string>
+    <string name="accent_color">Цветовой акцент</string>
+    <string name="done">Готово</string>
+    <string name="loading">Загрузка…</string>
+    <string name="system">Система</string>
+    <string name="wallpaper">Обои</string>
+    <string name="custom">Настраиваемый</string>
+    <string name="quickstep_description">Радиус углов кнопки \"Очистить всё\"</string>
+    <string name="wallpaper_scrolling_label">Прокрутка обоев</string>
+    <string name="show_sys_ui_scrim">Тень под строкой состояния</string>
+    <string name="show_status_bar">Строка состояния</string>
+    <string name="what_to_show">Что показывать</string>
+    <string name="missing_notification_access_label">Доступ к уведомлениям</string>
+    <string name="missing_notification_access_description">Необходимо разрешение доступа к уведомлениям.</string>
+    <string name="msg_missing_notification_access">Чтобы использовать значки уведомлений, предоставте <xliff:g id="name" example="My App">%1$s</xliff:g> доступ к уведомлениям.</string>
+    <string name="title_change_settings">Изменить параметры</string>
+    <string name="debug_restart_launcher">Перезапустить Lawnchair</string>
+    <string name="pref_fonts_missing_font">Шрифт не найден</string>
+    <string name="font_variant_italic">Курсив</string>
+    <string name="font_weight_thin">Тонкий</string>
+    <string name="font_weight_extra_light">Экстра тонкий</string>
+    <string name="font_weight_light">Светлая</string>
+    <string name="font_weight_regular">Стандартный</string>
+    <string name="font_weight_medium">Средний</string>
+    <string name="font_weight_semi_bold">Полужирный</string>
+    <string name="font_weight_bold">Жирный</string>
+    <string name="font_weight_extra_bold">Экстра толстый</string>
+    <string name="font_weight_extra_black">Сверхжирный</string>
+    <string name="font_label">Шрифт (экспериментально)</string>
+    <string name="reset_font">Сброс</string>
+    <string name="search_input_action_clear_results">Очистить строку поиска</string>
+    <string name="pref_category_search">Поиск</string>
+    <string name="pref_search_auto_show_keyboard">Автоматически Показывать Клавиатуру</string>
+    <string name="label_search">Поиск</string>
+    <string name="label_lens">Google Lens</string>
+    <string name="label_voice_search">Голосовой поиск</string>
+    <string name="apply_grid">Применить</string>
+    <string name="x_by_y">%1$d × %2$d</string>
+    <string name="folder_preview_bg_opacity_label">Прозрачность фона значка</string>
+    <string name="icon_shape_label">Форма значка</string>
+    <string name="icon_shape_system">Система</string>
+    <string name="icon_shape_circle">Круг</string>
+    <string name="icon_shape_rounded_square">Скруглённый квадрат</string>
+    <string name="icon_shape_squircle">Квадрокруг</string>
+    <string name="customize_button_text">Настроить</string>
+    <string name="app_title_label">Заголовок</string>
+    <string name="hide_from_drawer">Скрыть из меню приложений</string>
+    <string name="action_lens">Lens</string>
+    <string name="force_rounded_widgets">Скруглённые углы</string>
+    <string name="suggestion_pref_screen_title">Рекомендации</string>
+    <string name="n_percent">%1$d%%</string>
+    <string name="label">Метка</string>
+    <string name="presets">Предустановки</string>
+    <string name="colors">Цвета</string>
+    <string name="dynamic">Динамический</string>
+    <string name="all_apps_search_market_message">Поиск дополнительных приложений</string>
+    <string name="show_app_search_bar">Показать строку поиска</string>
+    <string name="lawnchair_bug_report">Отчёт об ошибке в Lawnchair</string>
+    <string name="crash_report_notif_title">%1$s произошел сбой</string>
+    <string name="action_upload">Загрузить на Dogbin</string>
+    <string name="action_copy_link">Скопировать ссылку</string>
+    <string name="action_copy">Скопировать</string>
+    <string name="copied_toast">Скопировано в буфер обмена.</string>
+    <string name="action_share">Поделиться</string>
+    <string name="action_upload_error">Загрузка не удалась</string>
+    <string name="dogbin_uploading">Загрузка…</string>
+    <string name="bugreport_channel_name">Отчёты об ошибках</string>
+    <string name="status_channel_name">Статус загрузки</string>
+    <string name="bugreport_group_summary">%d новых отчетов.</string>
+    <string name="bugreport_group_summary_multiple">Несколько новых отчетов.</string>
+    <string name="themed_icon_title">Тематические значки</string>
+    <string name="corner_radius_label">Скругление углов</string>
+    <string name="search_bar_label">Панель поиска</string>
+    <string name="apply_accent_color_label">Применить цвет акцента</string>
+    <string name="show_search_result_types">Показывать в результатах поиска</string>
+    <string name="search_pref_result_people_title">Люди</string>
+    <string name="search_pref_result_shortcuts_title">Ярлыки приложений</string>
+    <string name="search_pref_result_tips_title">Советы Pixel</string>
+    <string name="row_height_label">Высота строки</string>
+    <string name="all_apps_device_search_hint">Поиск</string>
+    <string name="dark_status_bar_label">Темная строка состояния</string>
+    <string name="lawnicons_not_installed_description">Не установлены Lawnicons.</string>
+    <string name="icon_picker_default_category">Иконки</string>
+    <string name="icon_picker_reset_to_default">Сбросить настройки</string>
+    <string name="icon_pack_external_picker">Открыть внешний подборщик</string>
+    <string name="recents_actions_label">Быстрые действия</string>
+    <string name="recents_clear_all">Очистить все</string>
+    <string name="pick_icon_from_label">Выбрать иконку от</string>
+    <string name="experimental_features_label">Экспериментальные возможности</string>
+    <string name="icon_picker_label">Настройка иконок для каждого приложения</string>
+    <string name="icon_picker_description">Может привести к замиранию Lawnchair.</string>
+    <string name="font_picker_label">Настройка шрифта</string>
+    <string name="font_picker_description">Некоторый текст останется без изменений.</string>
+</resources>

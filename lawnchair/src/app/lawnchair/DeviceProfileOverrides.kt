@@ -2,13 +2,21 @@ package app.lawnchair
 
 import android.content.Context
 import app.lawnchair.preferences.PreferenceManager
+import app.lawnchair.preferences2.PreferenceManager2
 import com.android.launcher3.InvariantDeviceProfile
 import com.android.launcher3.util.MainThreadInitializedObject
+import com.patrykmichalik.preferencemanager.firstBlocking
 
 class DeviceProfileOverrides(context: Context) {
     private val prefs = PreferenceManager.getInstance(context)
+    private val preferenceManager2 = PreferenceManager2.getInstance(context)
 
-    fun getOverrides(defaultGrid: InvariantDeviceProfile.GridOption) = Options(prefs, defaultGrid)
+    fun getOverrides(defaultGrid: InvariantDeviceProfile.GridOption) =
+        Options(
+            prefs = prefs,
+            preferenceManager2 = preferenceManager2,
+            defaultGrid = defaultGrid,
+        )
 
     data class Options(
         var numHotseatColumns: Int,
@@ -31,6 +39,7 @@ class DeviceProfileOverrides(context: Context) {
 
         constructor(
             prefs: PreferenceManager,
+            preferenceManager2: PreferenceManager2,
             defaultGrid: InvariantDeviceProfile.GridOption,
         ) : this(
             numHotseatColumns = prefs.hotseatColumns.get(defaultGrid),
@@ -40,13 +49,13 @@ class DeviceProfileOverrides(context: Context) {
             numFolderRows = prefs.folderRows.get(defaultGrid),
             numFolderColumns = prefs.folderColumns.get(defaultGrid),
 
-            iconSizeFactor = prefs.iconSizeFactor.get(),
-            enableIconText = prefs.showHomeLabels.get(),
-            iconTextSizeFactor = prefs.textSizeFactor.get(),
+            iconSizeFactor = preferenceManager2.homeIconSizeFactor.firstBlocking(),
+            enableIconText = preferenceManager2.showIconLabelsOnHomeScreen.firstBlocking(),
+            iconTextSizeFactor = preferenceManager2.homeIconLabelSizeFactor.firstBlocking(),
 
-            allAppsIconSizeFactor = prefs.allAppsIconSizeFactor.get(),
-            enableAllAppsIconText = prefs.allAppsIconLabels.get(),
-            allAppsIconTextSizeFactor = prefs.allAppsTextSizeFactor.get()
+            allAppsIconSizeFactor = preferenceManager2.drawerIconSizeFactor.firstBlocking(),
+            enableAllAppsIconText = preferenceManager2.showIconLabelsInDrawer.firstBlocking(),
+            allAppsIconTextSizeFactor = preferenceManager2.drawerIconLabelSizeFactor.firstBlocking(),
         )
 
         fun apply(idp: InvariantDeviceProfile) {

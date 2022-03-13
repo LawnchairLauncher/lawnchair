@@ -22,6 +22,7 @@ import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Divider
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -30,11 +31,10 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import app.lawnchair.util.smartBorder
-import androidx.compose.material3.MaterialTheme
 
 fun LazyListScope.preferenceGroupItems(
     count: Int,
-    heading: String? = null,
+    heading: (@Composable () -> String)? = null,
     isFirstChild: Boolean,
     key: ((index: Int) -> Any)? = null,
     showDividers: Boolean = true,
@@ -44,7 +44,7 @@ fun LazyListScope.preferenceGroupItems(
 ) {
     val actualStartIndent = 16.dp + dividerStartIndent
     val actualEndIndent = 16.dp + dividerEndIndent
-    item { PreferenceGroupHeading(heading, isFirstChild) }
+    item { PreferenceGroupHeading(heading?.let { it() }, isFirstChild) }
     items(count, key) {
         PreferenceGroupItem(cutTop = it > 0, cutBottom = it < count - 1) {
             if (showDividers && it > 0) {
@@ -63,7 +63,7 @@ fun LazyListScope.preferenceGroupItems(
 
 inline fun <T> LazyListScope.preferenceGroupItems(
     items: List<T>,
-    heading: String? = null,
+    noinline heading: (@Composable () -> String)? = null,
     isFirstChild: Boolean,
     noinline key: ((index: Int, item: T) -> Any)? = null,
     showDividers: Boolean = true,

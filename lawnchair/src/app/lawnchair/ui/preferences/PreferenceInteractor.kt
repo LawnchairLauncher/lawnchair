@@ -1,5 +1,5 @@
 /*
- * Copyright 2021, Lawnchair
+ * Copyright 2022, Lawnchair
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,11 +16,10 @@
 
 package app.lawnchair.ui.preferences
 
-import androidx.compose.runtime.State
-import app.lawnchair.ui.preferences.about.licenses.License
+import app.lawnchair.ossnotices.OssLibrary
+import kotlinx.coroutines.flow.StateFlow
 
 interface PreferenceInteractor {
-    val licenses: State<List<License>?>
-
-    fun getIconPacks(): List<IconPackInfo>
+    val ossLibraries: StateFlow<List<OssLibrary>?>
+    val iconPacks: StateFlow<List<IconPackInfo>>
 }

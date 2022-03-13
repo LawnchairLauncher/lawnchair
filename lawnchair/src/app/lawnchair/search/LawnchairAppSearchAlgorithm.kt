@@ -8,7 +8,7 @@ import android.os.Handler
 import android.os.Process
 import app.lawnchair.allapps.SearchResultView
 import app.lawnchair.launcher
-import app.lawnchair.preferences.PreferenceManager
+import app.lawnchair.preferences2.PreferenceManager2
 import com.android.launcher3.LauncherAppState
 import com.android.launcher3.R
 import com.android.launcher3.allapps.AllAppsGridAdapter
@@ -23,17 +23,26 @@ import com.android.launcher3.shortcuts.ShortcutRequest
 import com.android.launcher3.util.ComponentKey
 import com.android.launcher3.util.Executors
 import com.android.launcher3.util.PackageManagerHelper
+import com.patrykmichalik.preferencemanager.onEach
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import me.xdrop.fuzzywuzzy.FuzzySearch
 import me.xdrop.fuzzywuzzy.algorithms.WeightedRatio
 import java.util.*
-import kotlin.collections.ArrayList
 
 class LawnchairAppSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm(context) {
 
     private val appState = LauncherAppState.getInstance(context)
     private val resultHandler = Handler(Executors.MAIN_EXECUTOR.looper)
-    private val useFuzzySearch by PreferenceManager.getInstance(context).useFuzzySearch
+    private var enableFuzzySearch = false
     private val marketSearchComponent = resolveMarketSearchActivity()
+    private val coroutineScope = CoroutineScope(context = Dispatchers.IO)
+
+    init {
+        PreferenceManager2.getInstance(context).enableFuzzySearch.onEach(launchIn = coroutineScope) {
+            enableFuzzySearch = it
+        }
+    }
 
     override fun doSearch(query: String, callback: SearchCallback<AllAppsGridAdapter.AdapterItem>) {
         appState.model.enqueueModelUpdateTask(object : BaseModelUpdateTask() {
@@ -58,7 +67,7 @@ class LawnchairAppSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm(c
         apps: MutableList<AppInfo>,
         query: String
     ): ArrayList<AllAppsGridAdapter.AdapterItem> {
-        val appResults = if (useFuzzySearch) {
+        val appResults = if (enableFuzzySearch) {
             fuzzySearch(apps, query)
         } else {
             normalSearch(apps, query)

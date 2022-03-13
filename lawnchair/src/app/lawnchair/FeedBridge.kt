@@ -121,7 +121,6 @@ class FeedBridge(private val context: Context) {
 
     private inner class CustomBridgeInfo(packageName: String) : BridgeInfo(packageName, 0) {
         override val signatureHash = whitelist[packageName]?.toInt() ?: -1
-        private val disableWhitelist = prefs.ignoreFeedWhitelist.get()
         override fun isSigned(): Boolean {
             if (signatureHash == -1 && Utilities.ATLEAST_P) {
                 val info = context.packageManager
@@ -133,7 +132,7 @@ class FeedBridge(private val context: Context) {
                     Log.d(TAG, "Feed provider $packageName(0x$hash) isn't whitelisted")
                 }
             }
-            return disableWhitelist || signatureHash != -1 && super.isSigned()
+            return signatureHash != -1 && super.isSigned()
         }
     }
 

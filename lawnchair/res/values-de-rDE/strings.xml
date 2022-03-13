@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright 2021, Lawnchair
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="icon_pack">Symbol-Paket</string>
+    <string name="settings">Einstellungen</string>
+    <string name="home_screen_label">Startseite</string>
+    <string name="home_screen_description">Feed, auf einen Blick, Gitter, Symbole</string>
+    <string name="general_label">Allgemein</string>
+    <string name="general_description">Farben, Symbolpaket, Benachrichtigungspunkte</string>
+    <string name="home_screen_rotation_label">Startbildschirm-Drehung</string>
+    <string name="home_screen_rotaton_description">Wenn Gerät gedreht wird.</string>
+    <string name="auto_add_shortcuts_label">Neue Apps zum Startbildschirm hinzufügen</string>
+    <string name="dock_label">Dock</string>
+    <string name="dock_description">Suchzeile, Symbolanzahl</string>
+    <string name="app_drawer_label">App-Übersicht</string>
+    <string name="app_drawer_description">Versteckte Apps, Spaltenanzahl, Symbole</string>
+    <string name="folders_label">Ordner</string>
+    <string name="folders_description">Zeilen- und Spaltenanzahl</string>
+    <string name="app_drawer_columns">Spalten der App-Übersicht</string>
+    <string name="dock_icons">Dock-Symbole</string>
+    <string name="max_folder_columns">Max. Ordnerspalten</string>
+    <string name="max_folder_rows">Max. Ordnerzeilen</string>
+    <string name="home_screen_grid">Startbildschirm-Raster</string>
+    <string name="columns">Spalten</string>
+    <string name="grid">Raster</string>
+    <string name="rows">Zeilen</string>
+    <string name="icons">Symbole</string>
+    <string name="icon_size">Symbolgröße</string>
+    <string name="label_size">Labelgröße</string>
+    <string name="show_home_labels">Beschriftung anzeigen</string>
+    <string name="notification_dots">Benachrichtigungspunkte</string>
+    <string name="smartspace_preferences">Voreinstellungen</string>
+    <string name="about_label">Über</string>
+    <string name="news">Neuigkeiten</string>
+    <string name="support">Support</string>
+    <string name="acknowledgements">Danksagungen</string>
+    <string name="devops">DevOps</string>
+    <string name="quickswitch_maintenance">QuickSwitch-Betreuer</string>
+    <string name="all_apps_search_bar_hint">Apps durchsuchen</string>
+    <string name="settings_button_text">Home Einstellungen</string>
+    <string name="development">Entwicklung</string>
+    <string name="app_info_drop_target_label">App Info</string>
+    <string name="item_removed">Element entfernt.</string>
+    <string name="all_apps_no_search_results">Keine Apps gefunden mit “<xliff:g example="Android" id="query">%1$s</xliff:g>”.</string>
+    <string name="background_opacity">Hintergrundtransparenz</string>
+    <string name="background_lightness_label">Hintergrundbeleuchtung</string>
+    <string name="adaptive_icons">Adaptive Symbole</string>
+    <string name="adaptive_icon_background_description">Verwende 100% Hintergrundhelligkeit für Weiß.</string>
+    <string name="auto_adaptive_icons_label">Automatische Adaptive Symbole</string>
+    <string name="auto_adaptive_icons_description">Für alle nicht adaptiven Symbole.</string>
+    <string name="support_and_pr">Support &amp; PR</string>
+    <string name="workspace_dt2s">Doppeltippen zum Schlafen</string>
+    <string name="smart_space_enable">Auf-einen-Blick-Widget</string>
+    <string name="design_and_development">Design &amp; Entwicklung</string>
+    <string name="translate">Übersetzen</string>
+    <string name="product">Produkt</string>
+    <string name="hidden_apps_label">Versteckte Apps</string>
+    <string name="hidden_apps_label_with_count">Versteckte Apps (%1$d)</string>
+    <plurals name="apps_count">
+        <item quantity="one">%1$d App</item>
+        <item quantity="other">%1$d Apps</item>
+    </plurals>
+    <string name="hotseat_qsb_label">Suchleiste anzeigen</string>
+    <string name="dt2s_admin_hint_title">Adminberechtigung erforderlich</string>
+    <string name="dt2s_admin_hint">Um Doppeltippen zum Display Ausschalten zu verwenden, aktiviere Lawnchair als App zur Geräteverwaltung. Öffne die Einstellungen und tippe auf „Diese App zur Geräteverwaltung aktivieren“</string>
+    <string name="dt2s_admin_warning">Doppeltes Tippen zum Schlafen wird deaktiviert.</string>
+    <string name="dt2s_a11y_hint_title">Bedienungshilfen erforderlich</string>
+    <string name="dt2s_a11y_hint">Um Doppel-Tippen zum Display Ausschalten zu verwenden, aktiviere die Bedienungshilfe für Lawnchair. Öffne die Einstellungen, wähle Lawnchair aus und aktiviere den Dienst.</string>
+    <string name="dt2s_warning_open_settings">Einstellungen öffnen</string>
+    <string name="minus_one_enable">Feed</string>
+    <string name="minus_one_unavailable">Feed ist nicht verfügbar.</string>
+    <string name="fuzzy_search_title">Unscharfe Suche</string>
+    <string name="fuzzy_search_desc">Ungefähre Übereinstimmung für Appsuche.</string>
+    <string name="theme_label">Design</string>
+    <string name="theme_light">Hell</string>
+    <string name="theme_dark">Dunkel</string>
+    <string name="theme_system_default">System</string>
+    <string name="theme_follow_wallpaper">Hintergrund übereinstimmen</string>
+    <string name="quickstep_label">Kürzliche</string>
+    <string name="clear_all_as_action_label">Alles entfernen Taste unten</string>
+    <string name="window_corner_radius_label">Radius der Bildschirmecken</string>
+    <string name="override_window_corner_radius_label">Benutzerdefinierter Radius der Bildschirmecken</string>
+    <string name="window_corner_radius_description">Wenn du nach oben wischst, um die zuletzt verwendeten Apps zu öffnen, folgt die aktuelle App deinem Finger und verkleinert sich zu einer Karte. Verwende diesen Regler, um den Eckenradius der Karte anzupassen, wenn sie fast im Vollbildmodus ist, sodass er mit den Ecken deines Bildschirms übereinstimmt.</string>
+    <string name="system_icons">System-Symbole</string>
+    <string name="accent_color">Akzentfarbe</string>
+    <string name="done">Erledigt</string>
+    <string name="loading">Laden…</string>
+    <string name="system">System</string>
+    <string name="wallpaper">Hintergrund</string>
+    <string name="custom">Benutzerdefiniert</string>
+    <string name="quickstep_description">Alles entfernen Taste, Eckradius</string>
+    <string name="wallpaper_scrolling_label">Hintergrund scrollen</string>
+    <string name="show_sys_ui_scrim">Oberer Schatten</string>
+    <string name="show_status_bar">Statusleiste</string>
+    <string name="what_to_show">Was soll angezeigt werden</string>
+    <string name="missing_notification_access_label">Benachrichtigungszugriff erforderlich</string>
+    <string name="missing_notification_access_description">Benachrichtigungszugriff erforderlich.</string>
+    <string name="msg_missing_notification_access">Um Benachrichtigungspunkte zu verwenden, gewähre <xliff:g id="name" example="My App">%1$s</xliff:g> Zugriff auf Benachrichtigungen.</string>
+    <string name="title_change_settings">Einstellungen ändern</string>
+    <string name="debug_restart_launcher">Lawnchair neustarten</string>
+    <string name="pref_fonts_missing_font">Schriftart nicht gefunden.</string>
+    <string name="font_variant_italic">Kursiv</string>
+    <string name="font_weight_thin">Dünn</string>
+    <string name="font_weight_extra_light">Sehr dünn</string>
+    <string name="font_weight_light">Hell</string>
+    <string name="font_weight_regular">Normal</string>
+    <string name="font_weight_medium">Mittel</string>
+    <string name="font_weight_semi_bold">Halbfett</string>
+    <string name="font_weight_bold">Fett</string>
+    <string name="font_weight_extra_bold">Extra fett</string>
+    <string name="font_weight_extra_black">Schwarz</string>
+    <string name="font_label">Schriftart (experimentell)</string>
+    <string name="reset_font">Zurücksetzen</string>
+    <string name="search_input_action_clear_results">Suchfeld leeren</string>
+    <string name="pref_category_search">Suchen</string>
+    <string name="pref_search_auto_show_keyboard">Tastatur automatisch anzeigen</string>
+    <string name="label_search">Suchen</string>
+    <string name="label_lens">Google Lens</string>
+    <string name="label_voice_search">Sprachsuche</string>
+    <string name="apply_grid">Anwenden</string>
+    <string name="x_by_y">%1$d × %2$d</string>
+    <string name="folder_preview_bg_opacity_label">Symbol-Hintergrunddeckkraft</string>
+    <string name="icon_shape_label">Symbolform</string>
+    <string name="icon_shape_system">System</string>
+    <string name="icon_shape_circle">Kreis</string>
+    <string name="icon_shape_rounded_square">Abgerundetes Quadrat</string>
+    <string name="icon_shape_squircle">Quadreis</string>
+    <string name="customize_button_text">Anpassen</string>
+    <string name="app_title_label">Name</string>
+    <string name="hide_from_drawer">Aus der App-Übersicht ausblenden</string>
+    <string name="action_lens">Lens</string>
+    <string name="force_rounded_widgets">Abgerundete Ecken</string>
+    <string name="suggestion_pref_screen_title">Vorschläge</string>
+    <string name="n_percent">%1$d%%</string>
+    <string name="label">Titel</string>
+    <string name="presets">Voreinstellungen</string>
+    <string name="colors">Farben</string>
+    <string name="dynamic">Dynamisch</string>
+    <string name="all_apps_search_market_message">Weitere Apps suchen</string>
+    <string name="show_app_search_bar">Suchleiste anzeigen</string>
+    <string name="lawnchair_bug_report">Lawnchair-Fehlerbericht</string>
+    <string name="crash_report_notif_title">%1$s abgestürzt</string>
+    <string name="action_upload">Hochladen auf Dogbin</string>
+    <string name="action_copy_link">Link kopieren</string>
+    <string name="action_copy">Kopieren</string>
+    <string name="copied_toast">In Zwischenablage kopiert.</string>
+    <string name="action_share">Teilen</string>
+    <string name="action_upload_error">Upload fehlgeschlagen</string>
+    <string name="dogbin_uploading">Lädt hoch…</string>
+    <string name="bugreport_channel_name">Fehlerberichte</string>
+    <string name="status_channel_name">Upload-Status</string>
+    <string name="bugreport_group_summary">%d neue Berichte.</string>
+    <string name="bugreport_group_summary_multiple">Mehrere neue Berichte.</string>
+    <string name="themed_icon_title">Symboldesigns</string>
+    <string name="corner_radius_label">Eckradius</string>
+    <string name="search_bar_label">Suchleiste</string>
+    <string name="apply_accent_color_label">Akzentfarbe anwenden</string>
+    <string name="show_search_result_types">In Suchergebnissen anzeigen</string>
+    <string name="search_pref_result_people_title">Personen</string>
+    <string name="search_pref_result_shortcuts_title">App-Verknüpfungen</string>
+    <string name="search_pref_result_tips_title">Pixel-Tipps</string>
+    <string name="row_height_label">Zeilenhöhe</string>
+    <string name="all_apps_device_search_hint">Suchen</string>
+    <string name="dark_status_bar_label">Dunkle Statusleiste</string>
+    <string name="lawnicons_not_installed_description">Lawnicons ist nicht installiert.</string>
+    <string name="icon_picker_default_category">Symbole</string>
+    <string name="icon_picker_reset_to_default">Auf Standard zurücksetzen</string>
+    <string name="icon_pack_external_picker">Externe Auswahl öffnen</string>
+    <string name="recents_actions_label">Schnelle Aktionen</string>
+    <string name="recents_clear_all">Alle löschen</string>
+    <string name="pick_icon_from_label">Symbol auswählen von</string>
+    <string name="experimental_features_label">Experimentelle Funktionen</string>
+    <string name="icon_picker_label">App-spezifische Icon-Auswahl</string>
+    <string name="icon_picker_description">Kann Lawnchair zum Einfrieren bringen.</string>
+    <string name="font_picker_label">Schriftart anpassen</string>
+    <string name="font_picker_description">Manche Texte bleiben unverändert.</string>
+</resources>

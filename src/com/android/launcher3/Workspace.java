@@ -126,9 +126,6 @@ import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import app.lawnchair.preferences.BasePreferenceManager;
-import app.lawnchair.preferences.PreferenceManager;
-
 /**
  * The workspace is a wide area with a wallpaper and a finite number of pages.
  * Each page contains a number of icons, folders or widgets the user can
@@ -268,9 +265,6 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
 
     private final StatsLogManager mStatsLogManager;
 
-    // Lawnchair: Create boolean to indicate if empty pages are allowed.
-    BasePreferenceManager.BoolPref emptyScreensAllowed;
-
     /**
      * Used to inflate the Workspace from XML.
      *
@@ -304,10 +298,6 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         setMotionEventSplittingEnabled(true);
         setOnTouchListener(new WorkspaceTouchListener(mLauncher, this));
         mStatsLogManager = StatsLogManager.newInstance(context);
-
-        // Lawnchair: Get instance of `SharedPreferences`, assign value to `emptyScreensAllowed`.
-        PreferenceManager prefs = PreferenceManager.getInstance(getContext());
-        emptyScreensAllowed = prefs.getAllowEmptyPages();
     }
 
     @Override
@@ -694,12 +684,6 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         }
 
         if (hasExtraEmptyScreen() || mScreenOrder.size() == 0) return;
-
-        // Lawnchair: Stop execution if empty pages are allowed.
-        if (emptyScreensAllowed.get()) {
-            return;
-        }
-
         int finalScreenId = mScreenOrder.get(mScreenOrder.size() - 1);
 
         CellLayout finalScreen = mWorkspaceScreens.get(finalScreenId);
@@ -820,12 +804,6 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
             // This is dangerous and can result in data loss.
             return;
         }
-
-        // Lawnchair: Stop execution if empty pages are allowed.
-        if (emptyScreensAllowed.get()) {
-            return;
-        }
-
         if (isPageInTransition()) {
             mStripScreensOnPageStopMoving = true;
             return;
@@ -1170,7 +1148,9 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
             @Override
             public void run() {
                 final Point size = LauncherAppState.getIDP(getContext()).defaultWallpaperSize;
-                if (size.x != mWallpaperManager.getDesiredMinimumWidth()
+                if (!mWallpaperManager.isWallpaperSupported()) {
+                    mWallpaperManager.suggestDesiredDimensions(0, 0);
+                } else if (size.x != mWallpaperManager.getDesiredMinimumWidth()
                         || size.y != mWallpaperManager.getDesiredMinimumHeight()) {
                     mWallpaperManager.suggestDesiredDimensions(size.x, size.y);
                 }

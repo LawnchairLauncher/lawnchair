@@ -2,7 +2,6 @@ package app.lawnchair.ui.preferences.components
 
 import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.LocalContentAlpha
@@ -16,9 +15,10 @@ import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
-import app.lawnchair.ui.util.addIf
-import com.android.quickstep.SysUINavigationMode
-import com.google.accompanist.insets.*
+import com.google.accompanist.insets.LocalWindowInsets
+import com.google.accompanist.insets.navigationBarsPadding
+import com.google.accompanist.insets.rememberInsetsPaddingValues
+import com.google.accompanist.insets.statusBarsPadding
 import com.google.accompanist.insets.ui.LocalScaffoldPadding
 import com.google.accompanist.insets.ui.Scaffold
 
@@ -79,16 +79,7 @@ fun PreferenceSearchScaffold(
                 }
             }
         },
-        bottomBar = {
-            Spacer(
-                Modifier
-                    .navigationBarsHeight()
-                    .fillMaxWidth()
-                    .addIf(navigationMode() != SysUINavigationMode.Mode.NO_BUTTON) {
-                        background(color = MaterialTheme.colors.background.copy(alpha = 0.9f))
-                    }
-            )
-        },
+        bottomBar = { BottomSpacer() },
         contentPadding = rememberInsetsPaddingValues(
             insets = LocalWindowInsets.current.systemBars,
             applyTop = false,

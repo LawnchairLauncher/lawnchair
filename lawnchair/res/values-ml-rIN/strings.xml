@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright 2021, Lawnchair
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="icon_pack">ഐക്കൺ പായ്ക്ക്</string>
+    <string name="settings">ക്രമീകരണം</string>
+    <string name="home_screen_label">Home Screen</string>
+    <string name="home_screen_description">ഫീഡ്, ഒറ്റ നോട്ടത്തിൽ, കളം, ഐകൺസ്</string>
+    <string name="general_label">പൊതുവായ</string>
+    <string name="general_description">നിറങ്ങൾ, ഐക്കൺ പായ്ക്ക്, അറിയിപ്പ് ഡോട്ടുകൾ</string>
+    <string name="home_screen_rotation_label">ഹോം സ്ക്രീൻ റൊട്ടേഷൻ</string>
+    <string name="home_screen_rotaton_description">ഉപകരണം കറക്ക്‌ബോൾ.</string>
+    <string name="auto_add_shortcuts_label">പുതിയ ആപ്പുകൾ ഹോം സ്ക്രീനിൽ ചേർക്കുക</string>
+    <string name="dock_label">താഴത്തെ വരി</string>
+    <string name="dock_description">തിരയൽ ബാർ, ഐക്കണുകളുടെ എണ്ണം</string>
+    <string name="app_drawer_label">ആപ്പ് ഡ്രോയർ</string>
+    <string name="app_drawer_description">മറച്ച ആപ്പുകൾ, നിരകളുടെ എണ്ണം, ഐക്കണുകൾ</string>
+    <string name="folders_label">ഫോൾഡറുകൾ</string>
+    <string name="folders_description">വരികളുടെയും നിരകളുടെയും എണ്ണം</string>
+    <string name="app_drawer_columns">ആപ്പ് ഡ്രോയർ കോളങ്ങൾ</string>
+    <string name="dock_icons">താഴത്തെ വരിയിലെ ഐക്കണുകൾ</string>
+    <string name="max_folder_columns">ഫോൾഡറിലെ പരമാവധി നിരകൾ</string>
+    <string name="max_folder_rows">ഫോൾഡറിലെ പരമാവധി വരികൾ</string>
+    <string name="home_screen_grid">ഹോം സ്ക്രീനിലെ കളം</string>
+    <string name="columns">നിരകൾ</string>
+    <string name="grid">കളം</string>
+    <string name="rows">വരികൾ</string>
+    <string name="icons">ഐക്കണുകൾ</string>
+    <string name="icon_size">ഐകോണുകളുടെ വലിപ്പം</string>
+    <string name="label_size">ലേബലുകളുടെ വലുപ്പം</string>
+    <string name="show_home_labels">ലേബലുകൾ കാണിക്കുക</string>
+    <string name="notification_dots">അറിയിപ്പ് ഡോട്ടുകൾ</string>
+    <string name="smartspace_preferences">മുൻഗണനകൾ</string>
+    <string name="about_label">കുറിച്ച്</string>
+    <string name="news">വാര്‍ത്ത</string>
+    <string name="support">പിന്തുണ</string>
+    <string name="acknowledgements">അംഗീകാരങ്ങൾ</string>
+    <string name="devops">വികസന പ്രവർത്തനങ്ങൾ</string>
+    <string name="quickswitch_maintenance">ക്വിക്ക്സ്വിച്ച് മെയിന്റനൻസ്</string>
+    <string name="all_apps_search_bar_hint">ആപ്പുകൾ തിരയുക</string>
+    <string name="settings_button_text">ഹോം ക്രമീകരണങ്ങൾ</string>
+    <string name="development">വികസനം</string>
+    <string name="app_info_drop_target_label">ആപ്പ് വിവരം</string>
+    <string name="item_removed">ഇനം നീക്കംചെയ്തു.</string>
+    <string name="all_apps_no_search_results">No apps found matching “<xliff:g example="Android" id="query">%1$s</xliff:g>”.</string>
+    <string name="background_opacity">പശ്ചാത്തല ഒപാസിറ്റി</string>
+    <string name="background_lightness_label">പശ്ചാത്തല ലാഘവത്വം</string>
+    <string name="adaptive_icons">അഡാപ്റ്റീവ് ഐക്കണുകൾ</string>
+    <string name="adaptive_icon_background_description">വെളുപ്പിന് 100% പശ്ചാത്തല ഭാരം ഉപയോഗിക്കുക.</string>
+    <string name="auto_adaptive_icons_label">ഓട്ടോ അഡാപ്റ്റീവ് ഐക്കണുകൾ</string>
+    <string name="auto_adaptive_icons_description">അഡാപ്റ്റീവ് അല്ലാത്ത എല്ലാ ഐക്കണുകൾക്കും.</string>
+    <string name="support_and_pr">പിന്തുണ &amp; പി. ആർ</string>
+    <string name="workspace_dt2s">ഉറങ്ങാൻ രണ്ടുതവണ ടാപ്പ് ചെയ്യുക</string>
+    <string name="smart_space_enable">ഒറ്റനോട്ടത്തിൽ വിഡ്ജറ്റ്</string>
+    <string name="design_and_development">രൂപകൽപ്പന &amp; വികസനം</string>
+    <string name="translate">പരിഭാഷപ്പെടുത്തുക</string>
+    <string name="product">ഉൽപ്പന്നം</string>
+    <string name="hidden_apps_label">മറച്ച ആപ്പുകൾ</string>
+    <string name="hidden_apps_label_with_count">മറച്ച ആപ്പുകൾ (%1$d)</string>
+    <plurals name="apps_count">
+        <item quantity="one">%1$d ആപ്പ്</item>
+        <item quantity="other">%1$d ആപ്പുകൾ</item>
+    </plurals>
+    <string name="hotseat_qsb_label">തിരയൽ ബാർ കാണിക്കുക</string>
+    <string name="dt2s_admin_hint_title">കാര്യസ്ത്യാധികാരം ആവശ്യമാണ്</string>
+    <string name="dt2s_admin_hint">ഉറങ്ങാൻ രണ്ടുതവണ ടാപ്പ് ചെയ്യാൻ, ലോൺചെയർ ഒരു ഉപകരണ അഡ്‌മിൻ ആപ്പായി സജ്ജീകരിക്കുക. ക്രമീകരണങ്ങൾ തുറക്കുക, തുടർന്ന് \"ഈ ഉപകരണ അഡ്‌മിൻ ആപ്പ് സജീവമാക്കുക\" ടാപ്പ് ചെയ്യുക</string>
+    <string name="dt2s_admin_warning">ഉറങ്ങാൻ രണ്ടുതവണ ടാപ്പ് ചെയ്യുന്നത് ഓഫാകും.</string>
+    <string name="dt2s_a11y_hint_title">അക്സസ്സിബിലിറ്റി സേവനം ഓൺ ചെയ്യുക</string>
+    <string name="dt2s_a11y_hint">ഉറങ്ങാൻ രണ്ടുതവണ ടാപ്പ് ചെയ്യാൻ, ലോൺചെയർ ആക്‌സസിബിലിറ്റി സേവനം ഓണാക്കുക. ഓപ്പൺ സെറ്റിംഗ്സ് ടാപ്പ് ചെയ്യുക, തുടർന്ന് ലോൺചെയർ തിരഞ്ഞെടുത്ത് ലോൺചെയർ ഉപയോഗിക്കുക ഓണാക്കുക.</string>
+    <string name="dt2s_warning_open_settings">ക്രമീകരണങ്ങൾ തുറക്കുക</string>
+    <string name="minus_one_enable">ഫീഡ്</string>
+    <string name="minus_one_unavailable">ഒരു ഫീടും ഇൻസ്റ്റാൾ ചെയ്തിട്ടില്ല.</string>
+    <string name="fuzzy_search_title">അവ്യക്തമായ തിരയൽ</string>
+    <string name="fuzzy_search_desc">ആപ്പ് തിരയലുകളുടെ ഏകദേശ പൊരുത്തപ്പെടുത്തൽ.</string>
+    <string name="theme_label">തീം</string>
+    <string name="theme_light">ലൈറ്റ്</string>
+    <string name="theme_dark">ഇരുണ്ട</string>
+    <string name="theme_system_default">സിസ്റ്റം</string>
+    <string name="theme_follow_wallpaper">വാൾപേപ്പറിന് പൊരുത്തപ്പെടുത്തുക</string>
+    <string name="quickstep_label">സമീപകാലത്തെ</string>
+    <string name="clear_all_as_action_label">എല്ലാം മായ്‌ക്കുക ബട്ടൺ ചുവടെ</string>
+    <string name="window_corner_radius_label">സ്ക്രീൻ മൂലയുടെ ആരം</string>
+    <string name="override_window_corner_radius_label">ഇഷ്ടാനുസൃത സ്ക്രീൻ മൂലയുടെ ആരം</string>
+    <string name="window_corner_radius_description">സമീപകാലങ്ങൾ തുറക്കാൻ നിങ്ങൾ മുകളിലേക്ക് സ്വൈപ്പ് ചെയ്യുമ്പോൾ, നിലവിലെ ആപ്പ് നിങ്ങളുടെ വിരലിനെ പിന്തുടരുന്നു, ഒരു കാർഡായി ചുരുങ്ങുന്നു. നിങ്ങളുടെ സ്‌ക്രീനിന്റെ കോണുകളുമായി പൊരുത്തപ്പെടുന്ന തരത്തിൽ ഏതാണ്ട് പൂർണ്ണ സ്‌ക്രീൻ ആയിരിക്കുമ്പോൾ കാർഡിന്റെ കോർണർ ആരം ക്രമീകരിക്കാൻ ഈ സ്ലൈഡർ ഉപയോഗിക്കുക.</string>
+    <string name="system_icons">സിസ്റ്റം ഐക്കണുകൾ</string>
+    <string name="accent_color">ആക്സന്റ് നിറം</string>
+    <string name="done">ചെയ്തു</string>
+    <string name="loading">ലോഡ് ചെയുന്നു…</string>
+    <string name="system">സിസ്റ്റം</string>
+    <string name="wallpaper">വാൾപേപ്പർ</string>
+    <string name="custom">ഇഷ്ടാനുസൃതം</string>
+    <string name="quickstep_description">എല്ലാം മായികാനുള്ള ബട്ടൺ, മൂലയുടെ ആരം</string>
+    <string name="wallpaper_scrolling_label">വാൾപേപ്പർ സ്ക്രോൾ ചെയ്യുക</string>
+    <string name="show_sys_ui_scrim">മുകളിലെ നിഴൽ</string>
+    <string name="show_status_bar">സ്റ്റാറ്റസ് ബാർ</string>
+    <string name="what_to_show">എന്തു കാണികണം</string>
+    <string name="missing_notification_access_label">നോട്ടിഫിക്കേഷൻ അക്സസ്സ് ആവശ്യമാണ്</string>
+    <string name="missing_notification_access_description">നോട്ടിഫിക്കേഷൻ അക്സസ്സ് ആവശ്യമാണ്.</string>
+    <string name="msg_missing_notification_access">അറിയിപ്പ് ഡോട്ടുകൾ ഉപയോഗിക്കാൻ <xliff:g id="name" example="My App">%1$s</xliff:g> അറിയിപ്പ് ആക്സസ്സ് അനുവദിക്കുക.</string>
+    <string name="title_change_settings">ക്രമീകരണങ്ങൾ മാറ്റുക</string>
+    <string name="debug_restart_launcher">ലോൺചെയർ പുനരാരംഭിക്കുക</string>
+    <string name="pref_fonts_missing_font">ഫോണ്ട് കണ്ടെത്തിയില്ല.</string>
+    <string name="font_variant_italic">ഇറ്റാലിക്</string>
+    <string name="font_weight_thin">നേർത്ത</string>
+    <string name="font_weight_extra_light">അധിക നേർത്ത</string>
+    <string name="font_weight_light">നേരിയ</string>
+    <string name="font_weight_regular">സാധാരണ</string>
+    <string name="font_weight_medium">ഇടത്തരം</string>
+    <string name="font_weight_semi_bold">സെമിബോൾഡ്</string>
+    <string name="font_weight_bold">ബോൾഡ്</string>
+    <string name="font_weight_extra_bold">അധിക ബോൾഡ്</string>
+    <string name="font_weight_extra_black">കറുത്ത</string>
+    <string name="font_label">ഫോണ്ട് (പരീക്ഷണാത്മക)</string>
+    <string name="reset_font">പുനഃക്രമീകരിക്കുക</string>
+    <string name="search_input_action_clear_results">തിരയൽ ബോക്സ് മായ്‌ക്കുക</string>
+    <string name="pref_category_search">തിരയുക</string>
+    <string name="pref_search_auto_show_keyboard">കീബോർഡ് സ്വയമേവ കാണിക്കുക</string>
+    <string name="label_search">തിരയുക</string>
+    <string name="label_lens">ഗൂഗിൾ ലെൻസ്</string>
+    <string name="label_voice_search">ശബ്ദ തിരയൽ</string>
+    <string name="apply_grid">പ്രയോഗിക്കുക</string>
+    <string name="x_by_y">%1$d × %2$d</string>
+    <string name="folder_preview_bg_opacity_label">ഐക്കണിൻ്റെ പശ്ചാത്തല ഒപാസിറ്റി</string>
+    <string name="icon_shape_label">ഐകോണുകളുടെ ആകൃതി</string>
+    <string name="icon_shape_system">സിസ്റ്റം</string>
+    <string name="icon_shape_circle">വട്ടം</string>
+    <string name="icon_shape_rounded_square">വൃത്താകൃതിയിലുള്ള ചതുരം</string>
+    <string name="icon_shape_squircle">ചതുരാകൃതിയിലുള്ള വൃത്തം</string>
+    <string name="customize_button_text">ഇഷ്ടാനുസൃതമാക്കുക</string>
+    <string name="app_title_label">തലക്കെട്ട്</string>
+    <string name="hide_from_drawer">ആപ്പ് ഡ്രോയറിൽ നിന്ന് മറയ്ക്കുക</string>
+    <string name="action_lens">ലെൻസ്</string>
+    <string name="force_rounded_widgets">വൃത്താകൃതിയിലുള്ള കോണുകൾ</string>
+    <string name="suggestion_pref_screen_title">നിർദ്ദേശങ്ങൾ</string>
+    <string name="n_percent">%1$d%%</string>
+    <string name="label">ലേബൽ</string>
+    <string name="presets">പ്രീസെറ്റുകൾ</string>
+    <string name="colors">നിറങ്ങൾ</string>
+    <string name="dynamic">ഡൈനാമിക്</string>
+    <string name="all_apps_search_market_message">കൂടുതൽ ആപ്പുകൾക്കായി തിരയുക</string>
+    <string name="show_app_search_bar">തിരയൽ ബാർ കാണിക്കുക</string>
+    <string name="lawnchair_bug_report">ലോൺചൈറിലെ ബഗ് റിപ്പോർട്ട് ചെയ്യുക</string>
+    <string name="crash_report_notif_title">%1$s തകർന്നു</string>
+    <string name="action_upload">ഡോഗ്ബിനിലേക്ക് അപ്‌ലോഡ് ചെയ്യുക</string>
+    <string name="action_copy_link">ലിങ്ക് കോപ്പി ചെയ്യുക</string>
+    <string name="action_copy">കോപ്പി</string>
+    <string name="copied_toast">ക്ലിപ്പ്ബോർഡിലേക്ക് പകർത്തി.</string>
+    <string name="action_share">പങ്കിടുക</string>
+    <string name="action_upload_error">അപ്‌ലോഡ് പരാജയപ്പെട്ടു</string>
+    <string name="dogbin_uploading">അപ്‌ലോഡ് ചെയ്യുന്നു…</string>
+    <string name="bugreport_channel_name">ബഗ് റിപ്പോർട്ടുകൾ</string>
+    <string name="status_channel_name">അപ്‌ലോഡ് സ്റ്റാറ്റസ്</string>
+    <string name="bugreport_group_summary">%d പുതിയ റിപ്പോർട്ടുകൾ.</string>
+    <string name="bugreport_group_summary_multiple">ഒന്നിലധികം പുതിയ റിപ്പോർട്ടുകൾ.</string>
+    <string name="themed_icon_title">തീം ചെയ്ത ഐക്കണുകൾ</string>
+    <string name="corner_radius_label">കോണുകളുടെ ആരം</string>
+    <string name="search_bar_label">തിരയൽ ബാർ</string>
+    <string name="apply_accent_color_label">ആക്സൻ്റ് നിറം പ്രയോഗിക്കുക</string>
+    <string name="show_search_result_types">തിരയൽ ഫലങ്ങളിൽ കാണിക്കുക</string>
+    <string name="search_pref_result_people_title">ആളുകൾ</string>
+    <string name="search_pref_result_shortcuts_title">ആപ്പ് കുറുക്കുവഴികൾ</string>
+    <string name="search_pref_result_tips_title">പിക്സൽ നുറുങ്ങുകൾ</string>
+    <string name="row_height_label">വരിയുടെ ഉയരം</string>
+    <string name="all_apps_device_search_hint">തിരയുക</string>
+    <string name="dark_status_bar_label">ഇരുണ്ട സ്റ്റാറ്റസ് ബാർ</string>
+    <string name="lawnicons_not_installed_description">ലോൺഐകൺസ് ഇൻസ്റ്റാൾ ചെയ്തിട്ടില്ല.</string>
+    <string name="icon_picker_default_category">ഐക്കണുകൾ</string>
+    <string name="icon_picker_reset_to_default">Reset to Default</string>
+    <string name="icon_pack_external_picker">Open External Picker</string>
+    <string name="recents_actions_label">Quick Actions</string>
+    <string name="recents_clear_all">Clear All</string>
+    <string name="pick_icon_from_label">Pick Icon From</string>
+    <string name="experimental_features_label">Experimental Features</string>
+    <string name="icon_picker_label">Per-App Icon Customization</string>
+    <string name="icon_picker_description">May cause Lawnchair to freeze.</string>
+    <string name="font_picker_label">Font Customization</string>
+    <string name="font_picker_description">Some text remains unchanged.</string>
+</resources>

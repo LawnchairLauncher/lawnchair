@@ -18,6 +18,7 @@ import androidx.lifecycle.Lifecycle
 import app.lawnchair.DeviceProfileOverrides
 import app.lawnchair.LauncherPreviewManager
 import app.lawnchair.preferences.preferenceManager
+import app.lawnchair.preferences2.preferenceManager2
 import app.lawnchair.util.lifecycleState
 import com.android.launcher3.InvariantDeviceProfile
 
@@ -57,6 +58,7 @@ fun previewOverrideOptions(
 ): View? {
     val context = LocalContext.current
     val prefs = preferenceManager()
+    val preferenceManager2 = preferenceManager2()
     val defaultGrid = idp.closestProfile
     val lifecycleState = lifecycleState()
     if (!lifecycleState.isAtLeast(Lifecycle.State.RESUMED)) {
@@ -65,7 +67,7 @@ fun previewOverrideOptions(
     val previewManager = remember { LauncherPreviewManager(context) }
     val previewView by remember {
         derivedStateOf {
-            val options = DeviceProfileOverrides.Options(prefs, defaultGrid)
+            val options = DeviceProfileOverrides.Options(prefs, preferenceManager2, defaultGrid)
             updateGridOptions(options)
             previewManager.createPreviewView(options)
         }

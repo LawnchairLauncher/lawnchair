@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright 2021, Lawnchair
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="icon_pack">图标包</string>
+    <string name="settings">设置</string>
+    <string name="home_screen_label">主屏幕</string>
+    <string name="home_screen_description">订阅、At a Glance、网格、图标</string>
+    <string name="general_label">通用</string>
+    <string name="general_description">颜色、图标包与通知圆点</string>
+    <string name="home_screen_rotation_label">主屏幕旋转</string>
+    <string name="home_screen_rotaton_description">当设备旋转时</string>
+    <string name="auto_add_shortcuts_label">向主屏幕添加新应用</string>
+    <string name="dock_label">Dock 栏</string>
+    <string name="dock_description">搜索栏、图标数量</string>
+    <string name="app_drawer_label">应用抽屉</string>
+    <string name="app_drawer_description">隐藏应用、列数、图标</string>
+    <string name="folders_label">文件夹</string>
+    <string name="folders_description">行和列数</string>
+    <string name="app_drawer_columns">应用抽屉列数</string>
+    <string name="dock_icons">Dock 栏图标</string>
+    <string name="max_folder_columns">最大文件夹列数</string>
+    <string name="max_folder_rows">最大文件夹行数</string>
+    <string name="home_screen_grid">桌面图标行列数</string>
+    <string name="columns">列数</string>
+    <string name="grid">网格</string>
+    <string name="rows">行数</string>
+    <string name="icons">图标</string>
+    <string name="icon_size">图标大小</string>
+    <string name="label_size">标签大小</string>
+    <string name="show_home_labels">显示标签</string>
+    <string name="notification_dots">通知圆点</string>
+    <string name="smartspace_preferences">首选项</string>
+    <string name="about_label">关于</string>
+    <string name="news">新闻</string>
+    <string name="support">支持</string>
+    <string name="acknowledgements">鸣谢</string>
+    <string name="devops">开发维护人员</string>
+    <string name="quickswitch_maintenance">QuickSwitch 维护者</string>
+    <string name="all_apps_search_bar_hint">搜索应用</string>
+    <string name="settings_button_text">主页设置</string>
+    <string name="development">开发者</string>
+    <string name="app_info_drop_target_label">应用信息</string>
+    <string name="item_removed">该项已被删除</string>
+    <string name="all_apps_no_search_results">没有找到匹配 “<xliff:g example="Android" id="query">%1$s</xliff:g>” 的应用。</string>
+    <string name="background_opacity">背景不透明度</string>
+    <string name="background_lightness_label">背景亮度</string>
+    <string name="adaptive_icons">自适应图标</string>
+    <string name="adaptive_icon_background_description">100%背景亮度即为白色。</string>
+    <string name="auto_adaptive_icons_label">自适应图标</string>
+    <string name="auto_adaptive_icons_description">为未适配的图标启用自适应</string>
+    <string name="support_and_pr">支持和公关</string>
+    <string name="workspace_dt2s">双击息屏</string>
+    <string name="smart_space_enable">“快速查看”微件</string>
+    <string name="design_and_development">设计 &amp; 开发</string>
+    <string name="translate">翻译</string>
+    <string name="product">产品</string>
+    <string name="hidden_apps_label">隐藏的应用</string>
+    <string name="hidden_apps_label_with_count">隐藏的应用 (%1$d)</string>
+    <plurals name="apps_count">
+        <item quantity="other">%1$d 个应用</item>
+    </plurals>
+    <string name="hotseat_qsb_label">显示搜索栏</string>
+    <string name="dt2s_admin_hint_title">需要管理员权限</string>
+    <string name="dt2s_admin_hint">若要使用双击息屏，请设置Lawnchair 为设备管理应用。点击\"打开设置\"，然后点击\"启用此设备管理应用\"。</string>
+    <string name="dt2s_admin_warning">双击息屏功能将被关闭。</string>
+    <string name="dt2s_a11y_hint_title">启用无障碍服务</string>
+    <string name="dt2s_a11y_hint">若要使用双击息屏，请为Lawnchair 启用无障碍服务。点击\"打开设置\"，然后选择 \"Lawnchair \"并打开\"使用Lawnchair\"。</string>
+    <string name="dt2s_warning_open_settings">打开设置</string>
+    <string name="minus_one_enable">订阅</string>
+    <string name="minus_one_unavailable">未安装订阅源。</string>
+    <string name="fuzzy_search_title">模糊搜索</string>
+    <string name="fuzzy_search_desc">搜索应用时显示近似结果</string>
+    <string name="theme_label">主题</string>
+    <string name="theme_light">浅色</string>
+    <string name="theme_dark">深色</string>
+    <string name="theme_system_default">系统</string>
+    <string name="theme_follow_wallpaper">匹配壁纸</string>
+    <string name="quickstep_label">最近任务</string>
+    <string name="clear_all_as_action_label">清除底部的所有按钮</string>
+    <string name="window_corner_radius_label">屏幕圆角半径</string>
+    <string name="override_window_corner_radius_label">自定义屏幕圆角半径</string>
+    <string name="window_corner_radius_description">当您向上滑动以打开最近应用菜单时，当前应用程序显示会跟随您的手指移动。 使用滑块以调整卡片的圆角半径，使它接近全屏，贴合您屏幕的边缘。</string>
+    <string name="system_icons">系统图标</string>
+    <string name="accent_color">强调颜色</string>
+    <string name="done">完成</string>
+    <string name="loading">正在加载……</string>
+    <string name="system">系统</string>
+    <string name="wallpaper">壁纸</string>
+    <string name="custom">自定</string>
+    <string name="quickstep_description">清除所有按钮，圆角半径</string>
+    <string name="wallpaper_scrolling_label">滚动壁纸</string>
+    <string name="show_sys_ui_scrim">顶部阴影</string>
+    <string name="show_status_bar">状态栏</string>
+    <string name="what_to_show">显示内容</string>
+    <string name="missing_notification_access_label">需要通知权限</string>
+    <string name="missing_notification_access_description">需要通知权限。</string>
+    <string name="msg_missing_notification_access">要使用通知圆点，请授予 <xliff:g id="name" example="My App">%1$s</xliff:g> 对通知的访问。</string>
+    <string name="title_change_settings">更改设置</string>
+    <string name="debug_restart_launcher">重启 Lawnchair</string>
+    <string name="pref_fonts_missing_font">未找到字体。</string>
+    <string name="font_variant_italic">斜体</string>
+    <string name="font_weight_thin">细体</string>
+    <string name="font_weight_extra_light">极细</string>
+    <string name="font_weight_light">浅色</string>
+    <string name="font_weight_regular">常规</string>
+    <string name="font_weight_medium">中等</string>
+    <string name="font_weight_semi_bold">半粗</string>
+    <string name="font_weight_bold">粗体</string>
+    <string name="font_weight_extra_bold">极粗</string>
+    <string name="font_weight_extra_black">黑体</string>
+    <string name="font_label">字体(实验性功能)</string>
+    <string name="reset_font">重置</string>
+    <string name="search_input_action_clear_results">清除搜索框</string>
+    <string name="pref_category_search">搜索</string>
+    <string name="pref_search_auto_show_keyboard">自动显示键盘</string>
+    <string name="label_search">搜索</string>
+    <string name="label_lens">Google 智能镜头</string>
+    <string name="label_voice_search">语音搜索</string>
+    <string name="apply_grid">应用</string>
+    <string name="x_by_y">%1$d × %2$d</string>
+    <string name="folder_preview_bg_opacity_label">图标背景不透明度</string>
+    <string name="icon_shape_label">图标形状</string>
+    <string name="icon_shape_system">系统</string>
+    <string name="icon_shape_circle">圆形</string>
+    <string name="icon_shape_rounded_square">圆角方形</string>
+    <string name="icon_shape_squircle">大圆角</string>
+    <string name="customize_button_text">自定义</string>
+    <string name="app_title_label">标题</string>
+    <string name="hide_from_drawer">从应用抽屉隐藏</string>
+    <string name="action_lens">智能镜头</string>
+    <string name="force_rounded_widgets">圆角</string>
+    <string name="suggestion_pref_screen_title">建议</string>
+    <string name="n_percent">%1$d%%</string>
+    <string name="label">标签</string>
+    <string name="presets">预设</string>
+    <string name="colors">颜色</string>
+    <string name="dynamic">动态的</string>
+    <string name="all_apps_search_market_message">搜索更多应用</string>
+    <string name="show_app_search_bar">显示搜索栏</string>
+    <string name="lawnchair_bug_report">Lawnchair 错误报告</string>
+    <string name="crash_report_notif_title">%1$s 已崩溃</string>
+    <string name="action_upload">上传到 Dogbin</string>
+    <string name="action_copy_link">复制链接</string>
+    <string name="action_copy">复制</string>
+    <string name="copied_toast">已复制到剪切板。</string>
+    <string name="action_share">分享</string>
+    <string name="action_upload_error">上传失败</string>
+    <string name="dogbin_uploading">正在上传…</string>
+    <string name="bugreport_channel_name">错误报告</string>
+    <string name="status_channel_name">上传状态</string>
+    <string name="bugreport_group_summary">%d 个新报告。</string>
+    <string name="bugreport_group_summary_multiple">多个新报告。</string>
+    <string name="themed_icon_title">带主题的图标</string>
+    <string name="corner_radius_label">圆角半径</string>
+    <string name="search_bar_label">搜索栏</string>
+    <string name="apply_accent_color_label">使用强调色</string>
+    <string name="show_search_result_types">显示在搜索结果中</string>
+    <string name="search_pref_result_people_title">联系人</string>
+    <string name="search_pref_result_shortcuts_title">应用快捷方式</string>
+    <string name="search_pref_result_tips_title">Pixel 提示</string>
+    <string name="row_height_label">行高度</string>
+    <string name="all_apps_device_search_hint">搜索</string>
+    <string name="dark_status_bar_label">深色状态栏</string>
+    <string name="lawnicons_not_installed_description">未安装 Lawnicons 应用</string>
+    <string name="icon_picker_default_category">图标</string>
+    <string name="icon_picker_reset_to_default">恢复默认</string>
+    <string name="icon_pack_external_picker">打开外部选择器</string>
+    <string name="recents_actions_label">快捷操作</string>
+    <string name="recents_clear_all">全部清除</string>
+    <string name="pick_icon_from_label">选择图标来源于</string>
+    <string name="experimental_features_label">实验性功能</string>
+    <string name="icon_picker_label">单应用图标自定义</string>
+    <string name="icon_picker_description">可能会导致Lawnchair冻结。</string>
+    <string name="font_picker_label">字体自定义</string>
+    <string name="font_picker_description">部分文本保持不变。</string>
+</resources>

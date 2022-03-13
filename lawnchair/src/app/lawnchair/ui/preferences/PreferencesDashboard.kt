@@ -91,9 +91,10 @@ fun PreferencesDashboard() {
 
 @Composable
 fun PreferencesOverflowMenu() {
+    val navController = LocalNavController.current
     val enableDebug by preferenceManager().enableDebugMenu.observeAsState()
+    val experimentalFeaturesRoute = subRoute(name = Routes.EXPERIMENTAL_FEATURES)
     if (enableDebug) {
-        val navController = LocalNavController.current
         val resolvedRoute = subRoute(name = Routes.DEBUG_MENU)
         ClickableIcon(
             imageVector = Icons.Rounded.Build,
@@ -113,6 +114,12 @@ fun PreferencesOverflowMenu() {
             hideMenu()
         }) {
             Text(text = stringResource(id = R.string.debug_restart_launcher))
+        }
+        DropdownMenuItem(onClick = {
+            navController.navigate(experimentalFeaturesRoute)
+            hideMenu()
+        }) {
+            Text(text = stringResource(id = R.string.experimental_features_label))
         }
     }
 }
