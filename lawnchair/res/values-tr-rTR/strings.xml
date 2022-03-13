@@ -105,7 +105,7 @@
     <string name="quickstep_description">Tümünü Temizle Tuşu, Köşe Yarıçapı</string>
     <string name="wallpaper_scrolling_label">Duvar Kağıdını Kaydır</string>
     <string name="show_sys_ui_scrim">Üst Gölge</string>
-    <string name="show_status_bar">Show Status Bar</string>
+    <string name="show_status_bar">Durum Çubuğunu Göster</string>
     <string name="what_to_show">Gösterilecekler</string>
     <string name="missing_notification_access_label">Bildirim Erişimi Gerekli</string>
     <string name="missing_notification_access_description">Bildirim erişimi gerekli.</string>
