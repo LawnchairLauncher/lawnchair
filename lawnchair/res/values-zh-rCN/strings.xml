@@ -104,7 +104,7 @@
     <string name="quickstep_description">清除所有按钮，圆角半径</string>
     <string name="wallpaper_scrolling_label">滚动壁纸</string>
     <string name="show_sys_ui_scrim">顶部阴影</string>
-    <string name="show_status_bar">状态栏</string>
+    <string name="show_status_bar">显示状态栏</string>
     <string name="what_to_show">选择要显示的项目</string>
     <string name="missing_notification_access_label">需要通知权限</string>
     <string name="missing_notification_access_description">需要通知权限。</string>
@@ -191,4 +191,5 @@
     <string name="always_open_website_label">始终打开网站</string>
     <string name="always_open_website_description">即使安装了搜索提供商的应用，也打开搜索提供商的网站。</string>
     <string name="search_provider">搜索提供商</string>
+    <string name="status_bar_label">状态栏</string>
 </resources>
