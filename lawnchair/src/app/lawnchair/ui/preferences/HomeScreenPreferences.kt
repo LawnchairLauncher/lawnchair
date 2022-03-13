@@ -126,20 +126,7 @@ fun HomeScreenPreferences() {
                     subtitle = stringResource(id = R.string.x_by_y, columns, rows),
                 )
             }
-            PreferenceGroup(heading = stringResource(id = R.string.what_to_show)) {
-                val feedAvailable = OverlayCallbackImpl.minusOneAvailable(LocalContext.current)
-                SwitchPreference2(
-                    checked = enableFeed,
-                    edit = { enableFeed.set(value = it) },
-                    label = stringResource(id = R.string.minus_one_enable),
-                    description = if (feedAvailable) null else stringResource(id = R.string.minus_one_unavailable),
-                    enabled = feedAvailable,
-                )
-                SwitchPreference2(
-                    checked = enableSmartspace,
-                    edit = { enableSmartspace.set(value = it) },
-                    label = stringResource(id = R.string.smart_space_enable),
-                )
+            PreferenceGroup(heading = stringResource(id = R.string.status_bar_label)) {
                 SwitchPreference2(
                     checked = showStatusBar,
                     label = stringResource(id = R.string.show_status_bar),
@@ -156,6 +143,21 @@ fun HomeScreenPreferences() {
                         edit = { darkStatusBar.set(value = it) },
                     )
                 }
+            }
+            PreferenceGroup(heading = stringResource(id = R.string.what_to_show)) {
+                val feedAvailable = OverlayCallbackImpl.minusOneAvailable(LocalContext.current)
+                SwitchPreference2(
+                    checked = enableFeed,
+                    edit = { enableFeed.set(value = it) },
+                    label = stringResource(id = R.string.minus_one_enable),
+                    description = if (feedAvailable) null else stringResource(id = R.string.minus_one_unavailable),
+                    enabled = feedAvailable,
+                )
+                SwitchPreference2(
+                    checked = enableSmartspace,
+                    edit = { enableSmartspace.set(value = it) },
+                    label = stringResource(id = R.string.smart_space_enable),
+                )
                 SwitchPreference2(
                     checked = showTopShadow,
                     label = stringResource(id = R.string.show_sys_ui_scrim),
