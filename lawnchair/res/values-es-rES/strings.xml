@@ -105,7 +105,7 @@
     <string name="quickstep_description">Botón \"Borrar todo\", Radio de esquina</string>
     <string name="wallpaper_scrolling_label">Desplazar fondo</string>
     <string name="show_sys_ui_scrim">Sombra superior</string>
-    <string name="show_status_bar">Barra de estado</string>
+    <string name="show_status_bar">Mostrar Barra de estado</string>
     <string name="what_to_show">Qué mostrar</string>
     <string name="missing_notification_access_label">Acceso a las notificaciones requerido</string>
     <string name="missing_notification_access_description">Acceso a las notificaciones requerido.</string>
@@ -192,4 +192,5 @@
     <string name="always_open_website_label">Siempre Abrir Sitio Web</string>
     <string name="always_open_website_description">Abrir siempre Sitio web del proveedor aunque la app ya está instalada.</string>
     <string name="search_provider">Proveedor de Búsqueda</string>
+    <string name="status_bar_label">Barra de estado</string>
 </resources>
