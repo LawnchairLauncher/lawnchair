@@ -118,11 +118,6 @@ fun HomeScreenPreferences() {
                     edit = { dt2s.set(value = it) },
                     label = stringResource(id = R.string.workspace_dt2s),
                 )
-                SwitchPreference2(
-                    checked = darkStatusBar,
-                    label = stringResource(id = R.string.dark_status_bar_label),
-                    edit = { darkStatusBar.set(value = it) },
-                )
                 val columns by prefs.workspaceColumns.getAdapter()
                 val rows by prefs.workspaceRows.getAdapter()
                 NavigationActionPreference(
@@ -130,6 +125,24 @@ fun HomeScreenPreferences() {
                     destination = subRoute(name = HomeScreenRoutes.GRID),
                     subtitle = stringResource(id = R.string.x_by_y, columns, rows),
                 )
+            }
+            PreferenceGroup(heading = stringResource(id = R.string.status_bar_label)) {
+                SwitchPreference2(
+                    checked = showStatusBar,
+                    label = stringResource(id = R.string.show_status_bar),
+                    edit = { showStatusBar.set(value = it) },
+                )
+                AnimatedVisibility(
+                    visible = showStatusBar,
+                    enter = expandVertically() + fadeIn(),
+                    exit = shrinkVertically() + fadeOut(),
+                ) {
+                    SwitchPreference2(
+                        checked = darkStatusBar,
+                        label = stringResource(id = R.string.dark_status_bar_label),
+                        edit = { darkStatusBar.set(value = it) },
+                    )
+                }
             }
             PreferenceGroup(heading = stringResource(id = R.string.what_to_show)) {
                 val feedAvailable = OverlayCallbackImpl.minusOneAvailable(LocalContext.current)
@@ -144,11 +157,6 @@ fun HomeScreenPreferences() {
                     checked = enableSmartspace,
                     edit = { enableSmartspace.set(value = it) },
                     label = stringResource(id = R.string.smart_space_enable),
-                )
-                SwitchPreference2(
-                    checked = showStatusBar,
-                    label = stringResource(id = R.string.show_status_bar),
-                    edit = { showStatusBar.set(value = it) },
                 )
                 SwitchPreference2(
                     checked = showTopShadow,
