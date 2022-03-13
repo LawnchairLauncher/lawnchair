@@ -23,7 +23,7 @@
     <string name="general_description">Farby, Balíčky ikon, Bodky upozornení</string>
     <string name="home_screen_rotation_label">Rotácia domovskej obrazovky</string>
     <string name="home_screen_rotaton_description">Keď je zariadenie otočené.</string>
-    <string name="auto_add_shortcuts_label">Pridať nové aplikácie na Domovskú obrazovku</string>
+    <string name="auto_add_shortcuts_label">Pridať nové aplikácie na domovskú obrazovku</string>
     <string name="dock_label">Dok</string>
     <string name="dock_description">Vyhľadávací panel, Počet ikon</string>
     <string name="app_drawer_label">Ponuka aplikácií</string>
@@ -107,7 +107,7 @@
     <string name="quickstep_description">Vymazať tlačidlo All, Polomery rohov</string>
     <string name="wallpaper_scrolling_label">Pretáčať tapetu</string>
     <string name="show_sys_ui_scrim">Vrchný tieň</string>
-    <string name="show_status_bar">Stavový riadok</string>
+    <string name="show_status_bar">Show Status Bar</string>
     <string name="what_to_show">Čo ukázať</string>
     <string name="missing_notification_access_label">Potrebný prístup k upozorneniam</string>
     <string name="missing_notification_access_description">Potrebný prístup k upozorneniam.</string>
@@ -194,4 +194,5 @@
     <string name="always_open_website_label">Always Open Website</string>
     <string name="always_open_website_description">Open search provider’s website even if their app is installed.</string>
     <string name="search_provider">Search Provider</string>
+    <string name="status_bar_label">Stavový riadok</string>
 </resources>
