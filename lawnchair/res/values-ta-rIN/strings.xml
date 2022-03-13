@@ -105,7 +105,7 @@
     <string name="quickstep_description">அனைத்தயுந்துடை பொத்தான், மூலை ஆரம்</string>
     <string name="wallpaper_scrolling_label">சுவர்த்தாளைத் திரையுருட்டு</string>
     <string name="show_sys_ui_scrim">மேற்புற நிழல்</string>
-    <string name="show_status_bar">நிலைப்பட்டி</string>
+    <string name="show_status_bar">Show Status Bar</string>
     <string name="what_to_show">எதைக் காடட</string>
     <string name="missing_notification_access_label">அறிவிப்பணுகல் தேவை</string>
     <string name="missing_notification_access_description">அறிவிப்பணுகல் தேவை.</string>
@@ -192,4 +192,5 @@
     <string name="always_open_website_label">எப்போதும் வலைத்தளத்தைத் திற</string>
     <string name="always_open_website_description">தேடல் வழங்கியின் செயலி நிறுவப்பட்டிருந்தாலும் அவரின் வலைத்தளத்தைத் திற.</string>
     <string name="search_provider">தேடல் வழங்கி</string>
+    <string name="status_bar_label">நிலைப்பட்டி</string>
 </resources>
