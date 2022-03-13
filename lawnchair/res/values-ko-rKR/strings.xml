@@ -104,7 +104,7 @@
     <string name="quickstep_description">모두 닫기 버튼, 가장자리 둥글기</string>
     <string name="wallpaper_scrolling_label">배경화면 움직이기</string>
     <string name="show_sys_ui_scrim">상태표시줄 그림자</string>
-    <string name="show_status_bar">상태표시줄</string>
+    <string name="show_status_bar">Show Status Bar</string>
     <string name="what_to_show">표시할 항목</string>
     <string name="missing_notification_access_label">알림 권한이 필요함</string>
     <string name="missing_notification_access_description">알림 권한이 필요함</string>
@@ -191,4 +191,5 @@
     <string name="always_open_website_label">Always Open Website</string>
     <string name="always_open_website_description">Open search provider’s website even if their app is installed.</string>
     <string name="search_provider">Search Provider</string>
+    <string name="status_bar_label">상태표시줄</string>
 </resources>
