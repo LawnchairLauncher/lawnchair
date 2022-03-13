@@ -105,7 +105,7 @@
     <string name="quickstep_description">Bouton \"Tout effacer\", Courbure des coins</string>
     <string name="wallpaper_scrolling_label">Défiler le fond d\'écran</string>
     <string name="show_sys_ui_scrim">Ombre du haut</string>
-    <string name="show_status_bar">Show Status Bar</string>
+    <string name="show_status_bar">Afficher la barre d\'état</string>
     <string name="what_to_show">Qu\'afficher</string>
     <string name="missing_notification_access_label">Accès aux notifications requis</string>
     <string name="missing_notification_access_description">Accès aux notifications requis.</string>
