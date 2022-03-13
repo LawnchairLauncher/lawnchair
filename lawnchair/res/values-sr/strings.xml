@@ -106,7 +106,7 @@
     <string name="quickstep_description">Дугме „Обриши све”, радијус угла</string>
     <string name="wallpaper_scrolling_label">Листање позадине</string>
     <string name="show_sys_ui_scrim">Горња сенка</string>
-    <string name="show_status_bar">Статусна трака</string>
+    <string name="show_status_bar">Show Status Bar</string>
     <string name="what_to_show">Шта се приказује</string>
     <string name="missing_notification_access_label">Приступ обавештењима</string>
     <string name="missing_notification_access_description">Потребан је приступ обавештењима.</string>
@@ -193,4 +193,5 @@
     <string name="always_open_website_label">Увек отварај веб-сајт</string>
     <string name="always_open_website_description">Отвара веб-сајт претраживача чак и када је инсталирана апликација.</string>
     <string name="search_provider">Претраживач</string>
+    <string name="status_bar_label">Статусна трака</string>
 </resources>
