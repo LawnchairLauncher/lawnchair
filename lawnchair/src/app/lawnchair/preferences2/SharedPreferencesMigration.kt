@@ -58,7 +58,7 @@ class SharedPreferencesMigration(private val context: Context) {
     private fun produceMigrationFunction(): suspend (SharedPreferencesView, Preferences) -> Preferences =
         { sharedPreferences: SharedPreferencesView, currentData: Preferences ->
             val currentKeys = currentData.asMap().keys.map { it.name }
-            val migratedKeys = currentKeys.map { currentKey -> keys.entries.first { entry -> entry.value == currentKey }.key }
+            val migratedKeys = currentKeys.mapNotNull { currentKey -> keys.entries.find { entry -> entry.value == currentKey }?.key }
             val filteredSharedPreferences = sharedPreferences.getAll().filter { (key, _) -> key !in migratedKeys }
             val mutablePreferences = currentData.toMutablePreferences()
 
