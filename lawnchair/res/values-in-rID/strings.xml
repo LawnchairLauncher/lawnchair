@@ -104,7 +104,7 @@
     <string name="quickstep_description">Tombol Hapus Semua, Radius Sudut</string>
     <string name="wallpaper_scrolling_label">Latar Bergulir</string>
     <string name="show_sys_ui_scrim">Bayangan Atas</string>
-    <string name="show_status_bar">Bar Status</string>
+    <string name="show_status_bar">Tampilkan bar status</string>
     <string name="what_to_show">Yang Ditampilkan</string>
     <string name="missing_notification_access_label">Akses Notifikasi Diperlukan</string>
     <string name="missing_notification_access_description">Akses notifikasi diperlukan.</string>
@@ -191,4 +191,5 @@
     <string name="always_open_website_label">Selalu Buka Laman Web</string>
     <string name="always_open_website_description">Buka situs web pencarian bahkan jika aplikasi telah terinstal.</string>
     <string name="search_provider">Penyedia Pencarian</string>
+    <string name="status_bar_label">Bar Status</string>
 </resources>
