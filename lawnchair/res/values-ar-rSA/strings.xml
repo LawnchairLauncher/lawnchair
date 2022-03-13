@@ -109,7 +109,7 @@
     <string name="quickstep_description">نصف قطر زاوية زر \"مسح الكل\"</string>
     <string name="wallpaper_scrolling_label">تحريك الخلفية</string>
     <string name="show_sys_ui_scrim">الظل العلوي</string>
-    <string name="show_status_bar">شريط الحالة</string>
+    <string name="show_status_bar">إظهار شريط الحالة</string>
     <string name="what_to_show">ماذا تريد أن تُظهر</string>
     <string name="missing_notification_access_label">الوصول إلى الإشعارات مطلوب</string>
     <string name="missing_notification_access_description">الوصول إلى الإشعارات مطلوب.</string>
@@ -196,4 +196,5 @@
     <string name="always_open_website_label">Always Open Website</string>
     <string name="always_open_website_description">Open search provider’s website even if their app is installed.</string>
     <string name="search_provider">Search Provider</string>
+    <string name="status_bar_label">شريط الحالة</string>
 </resources>
