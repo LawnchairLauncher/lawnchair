@@ -105,7 +105,7 @@
     <string name="quickstep_description">\"सभी हटाएं\" बटन के किनारे</string>
     <string name="wallpaper_scrolling_label">स्क्रॉल वॉलपेपर</string>
     <string name="show_sys_ui_scrim">ऊपरी हिस्से पर प्रतिछाया</string>
-    <string name="show_status_bar">स्टेटस बार</string>
+    <string name="show_status_bar">Show Status Bar</string>
     <string name="what_to_show">क्या क्या दिखाना है</string>
     <string name="missing_notification_access_label">नोटिफिकेशन परमिशन चाहिए</string>
     <string name="missing_notification_access_description">नोटिफिकेशन परमिशन चाहिए.</string>
@@ -192,4 +192,5 @@
     <string name="always_open_website_label">Always Open Website</string>
     <string name="always_open_website_description">Open search provider’s website even if their app is installed.</string>
     <string name="search_provider">Search Provider</string>
+    <string name="status_bar_label">स्टेटस बार</string>
 </resources>
