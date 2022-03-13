@@ -47,8 +47,6 @@ class PreferenceManager private constructor(private val context: Context) : Base
     val folderRows = IdpIntPref("pref_folderRows", { numFolderRows }, reloadGrid)
     val allAppsColumns = IdpIntPref("pref_allAppsColumns", { numAllAppsColumns }, reloadGrid)
 
-    // TODO: Add the ability to manually delete empty pages.
-    val allowEmptyPages = BoolPref("pref_allowEmptyPages", false)
     val drawerOpacity = FloatPref("pref_drawerOpacity", 1F, reloadGrid)
     val coloredBackgroundLightness = FloatPref("pref_coloredBackgroundLightness", 0.9F, reloadIcons)
     val feedProvider = StringPref("pref_feedProvider", "")
