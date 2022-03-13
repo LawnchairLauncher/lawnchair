@@ -104,7 +104,7 @@
     <string name="quickstep_description">Nút xoá tất cả, độ cong của góc</string>
     <string name="wallpaper_scrolling_label">Hình nền cuộn</string>
     <string name="show_sys_ui_scrim">Top Shadow</string>
-    <string name="show_status_bar">Thanh trạng thái</string>
+    <string name="show_status_bar">Show Status Bar</string>
     <string name="what_to_show">What to Show</string>
     <string name="missing_notification_access_label">Cần quyền truy cập thông báo</string>
     <string name="missing_notification_access_description">Cần quyền truy cập thông báo.</string>
@@ -191,4 +191,5 @@
     <string name="always_open_website_label">Luôn mở trang web</string>
     <string name="always_open_website_description">Mở trang web của nhà cung cấp dịch vụ tìm kiếm cho dù ứng dụng của họ đã được cài đặt.</string>
     <string name="search_provider">Nhà cung cấp dịch vụ tìm kiếm</string>
+    <string name="status_bar_label">Thanh trạng thái</string>
 </resources>
