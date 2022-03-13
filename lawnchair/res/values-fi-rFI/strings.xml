@@ -105,7 +105,7 @@
     <string name="quickstep_description">Tyhjennä kaikki painikkeet, Kulman pyöristys</string>
     <string name="wallpaper_scrolling_label">Vieritä taustakuvaa</string>
     <string name="show_sys_ui_scrim">Yläosan varjo</string>
-    <string name="show_status_bar">Tilapalkki</string>
+    <string name="show_status_bar">Show Status Bar</string>
     <string name="what_to_show">Mitä näytetään</string>
     <string name="missing_notification_access_label">Ilmoitusten käyttöoikeus vaaditaan</string>
     <string name="missing_notification_access_description">Ilmoitusten käyttöoikeus vaaditaan.</string>
@@ -192,4 +192,5 @@
     <string name="always_open_website_label">Always Open Website</string>
     <string name="always_open_website_description">Open search provider’s website even if their app is installed.</string>
     <string name="search_provider">Search Provider</string>
+    <string name="status_bar_label">Tilapalkki</string>
 </resources>
