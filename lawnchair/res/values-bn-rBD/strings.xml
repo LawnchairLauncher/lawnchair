@@ -105,7 +105,7 @@
     <string name="quickstep_description">Clear All বাটনের কোণার ব্যাসার্ধ</string>
     <string name="wallpaper_scrolling_label">স্ক্রোল ওয়ালপেপার</string>
     <string name="show_sys_ui_scrim">শীর্ষ ছায়া</string>
-    <string name="show_status_bar">স্ট্যাটাস বার</string>
+    <string name="show_status_bar">Show Status Bar</string>
     <string name="what_to_show">কি দেখাতে হবে</string>
     <string name="missing_notification_access_label">বিজ্ঞপ্তি অ্যাক্সেস প্রয়োজন</string>
     <string name="missing_notification_access_description">বিজ্ঞপ্তি অ্যাক্সেস প্রয়োজন.</string>
@@ -192,4 +192,5 @@
     <string name="always_open_website_label">Always Open Website</string>
     <string name="always_open_website_description">Open search provider’s website even if their app is installed.</string>
     <string name="search_provider">Search Provider</string>
+    <string name="status_bar_label">স্ট্যাটাস বার</string>
 </resources>
