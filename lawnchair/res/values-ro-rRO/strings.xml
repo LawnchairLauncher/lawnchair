@@ -106,7 +106,7 @@
     <string name="quickstep_description">Buton “Șterge tot”, Raza colțurilor</string>
     <string name="wallpaper_scrolling_label">Derulează imaginea de fundal</string>
     <string name="show_sys_ui_scrim">Umbra de sus</string>
-    <string name="show_status_bar">Bară de stare</string>
+    <string name="show_status_bar">Show Status Bar</string>
     <string name="what_to_show">Ce trebuie afișat</string>
     <string name="missing_notification_access_label">Acces la notificări necesar</string>
     <string name="missing_notification_access_description">Acces la notificări necesar.</string>
@@ -193,4 +193,5 @@
     <string name="always_open_website_label">Always Open Website</string>
     <string name="always_open_website_description">Open search provider’s website even if their app is installed.</string>
     <string name="search_provider">Search Provider</string>
+    <string name="status_bar_label">Bară de stare</string>
 </resources>
