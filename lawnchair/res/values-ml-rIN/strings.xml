@@ -105,7 +105,7 @@
     <string name="quickstep_description">എല്ലാം മായികാനുള്ള ബട്ടൺ, മൂലയുടെ ആരം</string>
     <string name="wallpaper_scrolling_label">വാൾപേപ്പർ സ്ക്രോൾ ചെയ്യുക</string>
     <string name="show_sys_ui_scrim">മുകളിലെ നിഴൽ</string>
-    <string name="show_status_bar">സ്റ്റാറ്റസ് ബാർ</string>
+    <string name="show_status_bar">Show Status Bar</string>
     <string name="what_to_show">എന്തു കാണികണം</string>
     <string name="missing_notification_access_label">നോട്ടിഫിക്കേഷൻ അക്സസ്സ് ആവശ്യമാണ്</string>
     <string name="missing_notification_access_description">നോട്ടിഫിക്കേഷൻ അക്സസ്സ് ആവശ്യമാണ്.</string>
@@ -192,4 +192,5 @@
     <string name="always_open_website_label">Always Open Website</string>
     <string name="always_open_website_description">Open search provider’s website even if their app is installed.</string>
     <string name="search_provider">Search Provider</string>
+    <string name="status_bar_label">സ്റ്റാറ്റസ് ബാർ</string>
 </resources>
