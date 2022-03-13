@@ -105,7 +105,7 @@
     <string name="quickstep_description">Bouton \"Tout effacer\", Courbure des coins</string>
     <string name="wallpaper_scrolling_label">Défiler le fond d\'écran</string>
     <string name="show_sys_ui_scrim">Ombre du haut</string>
-    <string name="show_status_bar">Barre d\'état</string>
+    <string name="show_status_bar">Show Status Bar</string>
     <string name="what_to_show">Qu\'afficher</string>
     <string name="missing_notification_access_label">Accès aux notifications requis</string>
     <string name="missing_notification_access_description">Accès aux notifications requis.</string>
@@ -192,4 +192,5 @@
     <string name="always_open_website_label">Toujours ouvrir le site web</string>
     <string name="always_open_website_description">Ouvrir le site web du fournisseur de recherche même si son appli est installée.</string>
     <string name="search_provider">Fournisseur de recherche</string>
+    <string name="status_bar_label">Barre d\'état</string>
 </resources>
