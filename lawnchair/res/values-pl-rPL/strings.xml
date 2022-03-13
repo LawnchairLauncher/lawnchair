@@ -107,7 +107,7 @@
     <string name="quickstep_description">Przycisk \"Wyczyść wszystko\", promień narożnika</string>
     <string name="wallpaper_scrolling_label">Przewiń tapetę</string>
     <string name="show_sys_ui_scrim">Górny cień</string>
-    <string name="show_status_bar">Pasek stanu</string>
+    <string name="show_status_bar">Show Status Bar</string>
     <string name="what_to_show">Co wyświetlić</string>
     <string name="missing_notification_access_label">Wymagany dostęp do powiadomień</string>
     <string name="missing_notification_access_description">Wymagany dostęp do powiadomień.</string>
@@ -194,4 +194,5 @@
     <string name="always_open_website_label">Zawsze otwieraj stronę internetową</string>
     <string name="always_open_website_description">Otwórz stronę internetową dostawcy wyszukiwania, nawet jeśli ich aplikacja jest zainstalowana.</string>
     <string name="search_provider">Dostawca wyszukiwania</string>
+    <string name="status_bar_label">Pasek stanu</string>
 </resources>
