@@ -105,7 +105,7 @@
     <string name="quickstep_description">Ryd alle knap, Hjørne radius</string>
     <string name="wallpaper_scrolling_label">Rul Baggrund</string>
     <string name="show_sys_ui_scrim">Top Skygge</string>
-    <string name="show_status_bar">Status Bar</string>
+    <string name="show_status_bar">Vis Statuslinje</string>
     <string name="what_to_show">Hvad skal vises</string>
     <string name="missing_notification_access_label">Notifikationsadgang krævet</string>
     <string name="missing_notification_access_description">Notifikationsadgang krævet.</string>
@@ -192,4 +192,5 @@
     <string name="always_open_website_label">Always Open Website</string>
     <string name="always_open_website_description">Open search provider’s website even if their app is installed.</string>
     <string name="search_provider">Search Provider</string>
+    <string name="status_bar_label">Status Bar</string>
 </resources>
