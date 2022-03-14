@@ -169,7 +169,7 @@ public class RequestPinItemTest extends AbstractLauncherUiTest {
         }
 
         // Go back to home
-        mLauncher.pressHome();
+        mLauncher.goHome();
         Wait.atMost("", new ItemSearchCondition(itemMatcher), DEFAULT_ACTIVITY_TIMEOUT,
                 mLauncher);
     }
