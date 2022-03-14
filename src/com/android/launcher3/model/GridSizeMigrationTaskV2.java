@@ -22,7 +22,6 @@ import android.content.ComponentName;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -104,13 +103,16 @@ public class GridSizeMigrationTaskV2 {
      * Check given a new IDP, if migration is necessary.
      */
     public static boolean needsToMigrate(Context context, InvariantDeviceProfile idp) {
-        DeviceGridState idpGridState = new DeviceGridState(idp);
-        DeviceGridState contextGridState = new DeviceGridState(context);
-        boolean needsToMigrate = !idpGridState.isCompatible(contextGridState);
+        return needsToMigrate(new DeviceGridState(context), new DeviceGridState(idp));
+    }
+
+    private static boolean needsToMigrate(
+            DeviceGridState srcDeviceState, DeviceGridState destDeviceState) {
+        boolean needsToMigrate = !destDeviceState.isCompatible(srcDeviceState);
         // TODO(b/198965093): Revert this change after bug is fixed
         if (needsToMigrate) {
-            Log.d("b/198965093", "Migration is needed. idpGridState: " + idpGridState
-                    + ", contextGridState: " + contextGridState);
+            Log.d("b/198965093", "Migration is needed. destDeviceState: " + destDeviceState
+                    + ", srcDeviceState: " + srcDeviceState);
         }
         return needsToMigrate;
     }
@@ -143,23 +145,26 @@ public class GridSizeMigrationTaskV2 {
             idp = LauncherAppState.getIDP(context);
         }
 
-        if (!needsToMigrate(context, idp)) {
+        DeviceGridState srcDeviceState = new DeviceGridState(context);
+        DeviceGridState destDeviceState = new DeviceGridState(idp);
+        if (!needsToMigrate(srcDeviceState, destDeviceState)) {
             return true;
         }
 
-        SharedPreferences prefs = Utilities.getPrefs(context);
         HashSet<String> validPackages = getValidPackages(context);
 
         if (migrateForPreview) {
             if (!LauncherSettings.Settings.call(
                     context.getContentResolver(),
-                    LauncherSettings.Settings.METHOD_PREP_FOR_PREVIEW, idp.dbFile).getBoolean(
+                    LauncherSettings.Settings.METHOD_PREP_FOR_PREVIEW,
+                    destDeviceState.getDbFile()).getBoolean(
                     LauncherSettings.Settings.EXTRA_VALUE)) {
                 return false;
             }
         } else if (!LauncherSettings.Settings.call(
                 context.getContentResolver(),
-                LauncherSettings.Settings.METHOD_UPDATE_CURRENT_OPEN_HELPER).getBoolean(
+                LauncherSettings.Settings.METHOD_UPDATE_CURRENT_OPEN_HELPER,
+                destDeviceState.getDbFile()).getBoolean(
                 LauncherSettings.Settings.EXTRA_VALUE)) {
             return false;
         }
@@ -179,10 +184,10 @@ public class GridSizeMigrationTaskV2 {
                             : LauncherSettings.Favorites.TABLE_NAME,
                     context, validPackages);
 
-            Point targetSize = new Point(idp.numColumns, idp.numRows);
+            Point targetSize = new Point(destDeviceState.getColumns(), destDeviceState.getRows());
             GridSizeMigrationTaskV2 task = new GridSizeMigrationTaskV2(context, t.getDb(),
-                    srcReader, destReader, idp.numDatabaseHotseatIcons, targetSize);
-            task.migrate(idp);
+                    srcReader, destReader, destDeviceState.getNumHotseat(), targetSize);
+            task.migrate(srcDeviceState, destDeviceState);
 
             if (!migrateForPreview) {
                 dropTable(t.getDb(), LauncherSettings.Favorites.TMP_TABLE);
@@ -200,13 +205,13 @@ public class GridSizeMigrationTaskV2 {
 
             if (!migrateForPreview) {
                 // Save current configuration, so that the migration does not run again.
-                new DeviceGridState(idp).writeToPrefs(context);
+                destDeviceState.writeToPrefs(context);
             }
         }
     }
 
     @VisibleForTesting
-    protected boolean migrate(InvariantDeviceProfile idp) {
+    protected boolean migrate(DeviceGridState srcDeviceState, DeviceGridState destDeviceState) {
         if (mHotseatDiff.isEmpty() && mWorkspaceDiff.isEmpty()) {
             return false;
         }
@@ -228,8 +233,6 @@ public class GridSizeMigrationTaskV2 {
 
         boolean preservePages = false;
         if (screens.isEmpty() && FeatureFlags.ENABLE_NEW_MIGRATION_LOGIC.get()) {
-            DeviceGridState srcDeviceState = new DeviceGridState(mContext);
-            DeviceGridState destDeviceState = new DeviceGridState(idp);
             preservePages = destDeviceState.compareTo(srcDeviceState) >= 0
                     && destDeviceState.getColumns() - srcDeviceState.getColumns() <= 2;
         }
