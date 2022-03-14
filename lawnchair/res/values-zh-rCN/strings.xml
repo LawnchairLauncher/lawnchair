@@ -181,7 +181,7 @@
     <string name="icon_pack_external_picker">打开外部选择器</string>
     <string name="recents_actions_label">快捷操作</string>
     <string name="recents_clear_all">全部清除</string>
-    <string name="pick_icon_from_label">选择图标来源于</string>
+    <string name="pick_icon_from_label">选择图标包</string>
     <string name="experimental_features_label">实验性功能</string>
     <string name="icon_picker_label">单应用图标自定义</string>
     <string name="icon_picker_description">可能会导致Lawnchair冻结。</string>
@@ -189,7 +189,7 @@
     <string name="font_picker_description">部分文本保持不变。</string>
     <string name="search_provider_app_search">应用搜索</string>
     <string name="always_open_website_label">始终打开网站</string>
-    <string name="always_open_website_description">即使安装了搜索提供商的应用，也打开搜索提供商的网站。</string>
+    <string name="always_open_website_description">使用网页搜索（即使已安装相应应用）。</string>
     <string name="search_provider">搜索提供商</string>
     <string name="status_bar_label">状态栏</string>
 </resources>
