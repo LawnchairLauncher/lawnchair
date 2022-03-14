@@ -107,6 +107,7 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
 
     public void onDestroy() {
         LauncherAppState.getInstance(mActivity).getModel().removeCallbacks(mModelCallbacks);
+        mModelCallbacks.unregisterListeners();
     }
 
     public boolean areIconsVisible() {
@@ -296,6 +297,16 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
     public void dumpLogs(String prefix, PrintWriter pw) {
         pw.println(prefix + "TaskbarViewController:");
         mModelCallbacks.dumpLogs(prefix + "\t", pw);
+    }
+
+    /** Called when there's a change in running apps to update the UI. */
+    public void commitRunningAppsToUI() {
+        mModelCallbacks.commitRunningAppsToUI();
+    }
+
+    /** Call TaskbarModelCallbacks to update running apps. */
+    public void updateRunningApps() {
+        mModelCallbacks.updateRunningApps();
     }
 
     /**
