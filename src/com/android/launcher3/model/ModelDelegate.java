@@ -90,9 +90,8 @@ public class ModelDelegate implements ResourceBasedOverride {
      */
     @WorkerThread
     public void loadStringCache(StringCache cache) {
-        cache.loadDefaultStrings(mContext);
+        cache.loadStrings(mContext);
     }
-
 
     /**
      * Called during loader after workspace loading is complete
