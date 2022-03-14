@@ -102,7 +102,7 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
     public void testOverview() throws Exception {
         startTestAppsWithCheck();
         // mLauncher.pressHome() also tests an important case of pressing home while in background.
-        Overview overview = mLauncher.pressHome().switchToOverview();
+        Overview overview = mLauncher.goHome().switchToOverview();
         assertTrue("Launcher internal state didn't switch to Overview",
                 isInState(() -> LauncherState.OVERVIEW));
         executeOnLauncher(
@@ -127,7 +127,7 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
                 getCurrentOverviewPage(launcher) < currentTaskAfterFlingForward));
 
         // Test opening a task.
-        OverviewTask task = mLauncher.pressHome().switchToOverview().getCurrentTask();
+        OverviewTask task = mLauncher.goHome().switchToOverview().getCurrentTask();
         assertNotNull("overview.getCurrentTask() returned null (1)", task);
         assertNotNull("OverviewTask.open returned null", task.open());
         assertTrue("Test activity didn't open from Overview", mDevice.wait(Until.hasObject(
@@ -139,7 +139,7 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
                 isInLaunchedApp(launcher)));
 
         // Test dismissing a task.
-        overview = mLauncher.pressHome().switchToOverview();
+        overview = mLauncher.goHome().switchToOverview();
         assertTrue("Launcher internal state didn't switch to Overview",
                 isInState(() -> LauncherState.OVERVIEW));
         final Integer numTasks = getFromLauncher(launcher -> getTaskCount(launcher));
@@ -151,7 +151,7 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
                         numTasks - 1, getTaskCount(launcher)));
 
         // Test dismissing all tasks.
-        mLauncher.pressHome().switchToOverview().dismissAllTasks();
+        mLauncher.goHome().switchToOverview().dismissAllTasks();
         assertTrue("Launcher internal state is not Home",
                 isInState(() -> LauncherState.NORMAL));
         executeOnLauncher(
@@ -168,14 +168,14 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
     @ScreenRecord // b/195673272
     public void testOverviewActions() throws Exception {
         // Experimenting for b/165029151:
-        final Overview overview = mLauncher.pressHome().switchToOverview();
+        final Overview overview = mLauncher.goHome().switchToOverview();
         if (overview.hasTasks()) overview.dismissAllTasks();
-        mLauncher.pressHome();
+        mLauncher.goHome();
         //
 
         startTestAppsWithCheck();
         OverviewActions actionsView =
-                mLauncher.pressHome().switchToOverview().getOverviewActions();
+                mLauncher.goHome().switchToOverview().getOverviewActions();
         actionsView.clickAndDismissScreenshot();
     }
 
@@ -200,7 +200,7 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
     @PortraitLandscape
     public void testSwitchToOverview() throws Exception {
         assertNotNull("Workspace.switchToOverview() returned null",
-                mLauncher.pressHome().switchToOverview());
+                mLauncher.goHome().switchToOverview());
         assertTrue("Launcher internal state didn't switch to Overview",
                 isInState(() -> LauncherState.OVERVIEW));
     }
@@ -240,7 +240,7 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
         // Testing pressHome.
         assertTrue("Launcher internal state is not All Apps",
                 isInState(() -> LauncherState.ALL_APPS));
-        assertNotNull("pressHome returned null", mLauncher.pressHome());
+        assertNotNull("pressHome returned null", mLauncher.goHome());
         assertTrue("Launcher internal state is not Home",
                 isInState(() -> LauncherState.NORMAL));
         assertNotNull("getHome returned null", mLauncher.getWorkspace());
@@ -289,7 +289,7 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
     @PortraitLandscape
     public void testQuickSwitchFromHome() throws Exception {
         startTestActivity(2);
-        mLauncher.pressHome().quickSwitchToPreviousApp();
+        mLauncher.goHome().quickSwitchToPreviousApp();
         assertTrue("The most recent task is not running after quick switching from home",
                 isTestActivityRunning(2));
         getAndAssertLaunchedApp();
@@ -329,7 +329,7 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
             startTestActivity(i);
         }
 
-        Overview overview = mLauncher.pressHome().switchToOverview();
+        Overview overview = mLauncher.goHome().switchToOverview();
         executeOnLauncher(
                 launcher -> assertTrue("Don't have at least 13 tasks",
                         getTaskCount(launcher) >= 13));
@@ -348,7 +348,7 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
                         DEFAULT_UI_TIMEOUT));
 
         // Scroll the task offscreen as it is now first
-        overview = mLauncher.pressHome().switchToOverview();
+        overview = mLauncher.goHome().switchToOverview();
         overview.scrollCurrentTaskOffScreen();
         assertTrue("Launcher internal state is not Overview",
                 isInState(() -> LauncherState.OVERVIEW));
@@ -377,7 +377,7 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
                         launcher)) <= 1)));
 
         // Test dismissing all tasks.
-        mLauncher.pressHome().switchToOverview().dismissAllTasks();
+        mLauncher.goHome().switchToOverview().dismissAllTasks();
         assertTrue("Launcher internal state is not Home",
                 isInState(() -> LauncherState.NORMAL));
         executeOnLauncher(

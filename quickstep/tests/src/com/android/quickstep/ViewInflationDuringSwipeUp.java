@@ -197,7 +197,7 @@ public class ViewInflationDuringSwipeUp extends AbstractQuickStepTest {
 
             addItemToScreen(item);
             assertTrue("Widget is not present",
-                    mLauncher.pressHome().tryGetWidget(info.label, DEFAULT_UI_TIMEOUT) != null);
+                    mLauncher.goHome().tryGetWidget(info.label, DEFAULT_UI_TIMEOUT) != null);
             int widgetId = item.appWidgetId;
 
             // Verify widget id
@@ -221,7 +221,7 @@ public class ViewInflationDuringSwipeUp extends AbstractQuickStepTest {
 
             // Widget is updated when going home
             mInitTracker.disableLog();
-            mLauncher.pressHome();
+            mLauncher.goHome();
             verifyWidget(finalWidgetText);
             assertNotEquals(1, mInitTracker.viewInitCount);
         } finally {
