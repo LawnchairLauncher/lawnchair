@@ -216,14 +216,12 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
 
             // Align vertically, using taskbar height + mDp.taskbarOffsetY() to estimate where
             // the button nav top is.
-            View startActionView = findViewById(R.id.action_screenshot);
             int marginBottom = getOverviewActionsBottomMarginPx(
                     DisplayController.getNavigationMode(getContext()), mDp);
             int actionsTop =
-                    (mDp.heightPx - marginBottom - mInsets.bottom) - startActionView.getHeight();
+                    (mDp.heightPx - marginBottom - mInsets.bottom) - mDp.overviewActionsHeight;
             int navTop = mDp.heightPx - (mDp.taskbarSize + mDp.getTaskbarOffsetY());
-            int transY = navTop - actionsTop
-                    + ((mDp.taskbarSize - startActionView.getHeight()) / 2);
+            int transY = navTop - actionsTop + ((mDp.taskbarSize - mDp.overviewActionsHeight) / 2);
             setTranslationY(transY);
         } else {
             setPadding(mInsets.left, 0, mInsets.right, 0);

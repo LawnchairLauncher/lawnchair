@@ -362,10 +362,9 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
 
     /** Gets the space that the overview actions will take, including bottom margin. */
     private int getOverviewActionsHeight(Context context, DeviceProfile dp) {
-        Resources res = context.getResources();
         return OverviewActionsView.getOverviewActionsBottomMarginPx(getNavigationMode(context), dp)
                 + OverviewActionsView.getOverviewActionsTopMarginPx(getNavigationMode(context), dp)
-                + res.getDimensionPixelSize(R.dimen.overview_actions_height);
+                + dp.overviewActionsHeight;
     }
 
     /**
