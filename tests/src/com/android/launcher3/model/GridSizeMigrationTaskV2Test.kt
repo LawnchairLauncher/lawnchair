@@ -125,7 +125,7 @@ class GridSizeMigrationTaskV2Test {
             idp.numDatabaseHotseatIcons,
             Point(idp.numColumns, idp.numRows)
         )
-        task.migrate(idp)
+        task.migrate(DeviceGridState(context), DeviceGridState(idp))
 
         // Check hotseat items
         var c = context.contentResolver.query(
@@ -205,7 +205,7 @@ class GridSizeMigrationTaskV2Test {
             idp.numDatabaseHotseatIcons,
             Point(idp.numColumns, idp.numRows)
         )
-        task.migrate(idp)
+        task.migrate(DeviceGridState(context), DeviceGridState(idp))
 
         // Check hotseat items
         val c = context.contentResolver.query(
@@ -260,7 +260,7 @@ class GridSizeMigrationTaskV2Test {
             idp.numDatabaseHotseatIcons,
             Point(idp.numColumns, idp.numRows)
         )
-        task.migrate(idp)
+        task.migrate(DeviceGridState(context), DeviceGridState(idp))
 
         // Check hotseat items
         val c = context.contentResolver.query(
@@ -325,7 +325,7 @@ class GridSizeMigrationTaskV2Test {
             idp.numDatabaseHotseatIcons,
             Point(idp.numColumns, idp.numRows)
         )
-        task.migrate(idp)
+        task.migrate(DeviceGridState(context), DeviceGridState(idp))
 
         // Get workspace items
         val c = context.contentResolver.query(
@@ -385,7 +385,7 @@ class GridSizeMigrationTaskV2Test {
             idp.numDatabaseHotseatIcons,
             Point(idp.numColumns, idp.numRows)
         )
-        task.migrate(idp)
+        task.migrate(DeviceGridState(context), DeviceGridState(idp))
 
         // Get workspace items
         val c = context.contentResolver.query(
@@ -446,7 +446,7 @@ class GridSizeMigrationTaskV2Test {
             idp.numDatabaseHotseatIcons,
             Point(idp.numColumns, idp.numRows)
         )
-        task.migrate(idp)
+        task.migrate(DeviceGridState(context), DeviceGridState(idp))
 
         // Get workspace items
         val c = context.contentResolver.query(
