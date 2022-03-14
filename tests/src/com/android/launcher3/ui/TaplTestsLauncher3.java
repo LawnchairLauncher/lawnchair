@@ -109,7 +109,7 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
                 launcher -> assertNotNull("Launcher internal state didn't switch to Showing Menu",
                         launcher.getOptionsPopup()));
         // Check that pressHome works when the menu is shown.
-        mLauncher.pressHome();
+        mLauncher.goHome();
     }
 
     @Test
@@ -121,7 +121,7 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
         } finally {
             allApps.unfreeze();
         }
-        mLauncher.pressHome();
+        mLauncher.goHome();
     }
 
     public static void runAllAppsTest(AbstractLauncherUiTest test, AllApps allApps) {
@@ -273,7 +273,7 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
         executeOnLauncher(launcher -> assertTrue("Flinging backward didn't scroll widgets",
                 getWidgetsScroll(launcher) < flingForwardY));
 
-        mLauncher.pressHome();
+        mLauncher.goHome();
         waitForLauncherCondition("Widgets were not closed",
                 launcher -> getWidgetsView(launcher) == null);
     }
