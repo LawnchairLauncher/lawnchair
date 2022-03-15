@@ -105,7 +105,7 @@
     <string name="quickstep_description">Botão Limpar Tudo, Raio dos Cantos</string>
     <string name="wallpaper_scrolling_label">Rolar Papel de Parede</string>
     <string name="show_sys_ui_scrim">Sombreado superior</string>
-    <string name="show_status_bar">Show Status Bar</string>
+    <string name="show_status_bar">Mostrar Barra de Estado</string>
     <string name="what_to_show">O que Mostrar</string>
     <string name="missing_notification_access_label">Acesso às notificações necessário</string>
     <string name="missing_notification_access_description">Acesso às notificações necessário.</string>
@@ -188,9 +188,9 @@
     <string name="icon_picker_description">Pode fazer com que o Lawnchair bloqueie.</string>
     <string name="font_picker_label">Personalização de Fonte</string>
     <string name="font_picker_description">Algum texto permanece inalterado.</string>
-    <string name="search_provider_app_search">App Search</string>
-    <string name="always_open_website_label">Always Open Website</string>
-    <string name="always_open_website_description">Open search provider’s website even if their app is installed.</string>
+    <string name="search_provider_app_search">Pesquisa de Aplicações</string>
+    <string name="always_open_website_label">Abrir Sempre Website</string>
+    <string name="always_open_website_description">Abrir o website do fornecedor de pesquisa mesmo que a aplicação esteja instalada.</string>
     <string name="search_provider">Search Provider</string>
     <string name="status_bar_label">Barra de Estado</string>
 </resources>
