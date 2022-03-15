@@ -191,6 +191,6 @@
     <string name="search_provider_app_search">Pesquisa de Aplicações</string>
     <string name="always_open_website_label">Abrir Sempre Website</string>
     <string name="always_open_website_description">Abrir o website do fornecedor de pesquisa mesmo que a aplicação esteja instalada.</string>
-    <string name="search_provider">Search Provider</string>
+    <string name="search_provider">Fornecedor de Pesquisa</string>
     <string name="status_bar_label">Barra de Estado</string>
 </resources>
