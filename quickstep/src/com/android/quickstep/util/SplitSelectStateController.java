@@ -25,6 +25,7 @@ import static com.android.launcher3.util.SplitConfigurationOptions.DEFAULT_SPLIT
 import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITION_BOTTOM_OR_RIGHT;
 import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITION_TOP_OR_LEFT;
 
+import android.annotation.NonNull;
 import android.app.ActivityOptions;
 import android.app.ActivityThread;
 import android.app.PendingIntent;
@@ -163,7 +164,8 @@ public class SplitSelectStateController {
                 : new int[]{taskId2, taskId1};
         if (TaskAnimationManager.ENABLE_SHELL_TRANSITIONS) {
             RemoteSplitLaunchTransitionRunner animationRunner =
-                    new RemoteSplitLaunchTransitionRunner(taskId1, taskPendingIntent, taskId2);
+                    new RemoteSplitLaunchTransitionRunner(taskId1, taskPendingIntent, taskId2,
+                            callback);
             mSystemUiProxy.startTasks(taskIds[0], null /* mainOptions */, taskIds[1],
                     null /* sideOptions */, STAGE_POSITION_BOTTOM_OR_RIGHT, splitRatio,
                     new RemoteTransitionCompat(animationRunner, MAIN_EXECUTOR,
@@ -210,19 +212,26 @@ public class SplitSelectStateController {
         private final int mInitialTaskId;
         private final PendingIntent mInitialTaskPendingIntent;
         private final int mSecondTaskId;
+        private final Consumer<Boolean> mSuccessCallback;
 
         RemoteSplitLaunchTransitionRunner(int initialTaskId, PendingIntent initialTaskPendingIntent,
-                int secondTaskId) {
+                int secondTaskId, Consumer<Boolean> callback) {
             mInitialTaskId = initialTaskId;
             mInitialTaskPendingIntent = initialTaskPendingIntent;
             mSecondTaskId = secondTaskId;
+            mSuccessCallback = callback;
         }
 
         @Override
-        public void startAnimation(IBinder transition, TransitionInfo info,
-                SurfaceControl.Transaction t, Runnable finishCallback) {
+        public void startAnimation(@NonNull IBinder transition, @NonNull TransitionInfo info,
+                @NonNull SurfaceControl.Transaction t, @NonNull Runnable finishCallback) {
             TaskViewUtils.composeRecentsSplitLaunchAnimator(mInitialTaskId,
-                    mInitialTaskPendingIntent, mSecondTaskId, info, t, finishCallback);
+                    mInitialTaskPendingIntent, mSecondTaskId, info, t, () -> {
+                    finishCallback.run();
+                    if (mSuccessCallback != null) {
+                        mSuccessCallback.accept(true);
+                    }
+                });
             // After successful launch, call resetState
             resetState();
         }
