@@ -877,11 +877,22 @@ public final class LauncherInstrumentation {
     }
 
     /**
+     * @deprecated use goHome().
      * Presses nav bar home button.
      *
      * @return the Workspace object.
      */
+    @Deprecated
     public Workspace pressHome() {
+        return goHome();
+    }
+
+    /**
+     * Presses nav bar home button.
+     *
+     * @return the Workspace object.
+     */
+    public Workspace goHome() {
         try (LauncherInstrumentation.Closable e = eventsCheck();
              LauncherInstrumentation.Closable c = addContextLayer("want to switch to home")) {
             waitForLauncherInitialized();
