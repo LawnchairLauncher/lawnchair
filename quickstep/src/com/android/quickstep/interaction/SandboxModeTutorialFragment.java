@@ -15,13 +15,20 @@
  */
 package com.android.quickstep.interaction;
 
+import android.content.SharedPreferences;
 import android.view.MotionEvent;
 import android.view.View;
 
+import com.android.launcher3.logging.StatsLogManager;
 import com.android.quickstep.interaction.TutorialController.TutorialType;
 
 /** Shows the general navigation gesture sandbox environment. */
 public class SandboxModeTutorialFragment extends TutorialFragment {
+
+    protected SandboxModeTutorialFragment(
+            SharedPreferences sharedPrefs, StatsLogManager statsLogManager) {
+        super(sharedPrefs, statsLogManager);
+    }
 
     @Override
     TutorialController createController(TutorialType type) {
@@ -39,5 +46,15 @@ public class SandboxModeTutorialFragment extends TutorialFragment {
             mTutorialController.setRippleHotspot(motionEvent.getX(), motionEvent.getY());
         }
         return super.onTouch(view, motionEvent);
+    }
+
+    @Override
+    void logTutorialStepShown() {
+        // No-Op: tutorial step not currently shown to users
+    }
+
+    @Override
+    void logTutorialStepCompleted() {
+        // No-Op: tutorial step not currently shown to users
     }
 }

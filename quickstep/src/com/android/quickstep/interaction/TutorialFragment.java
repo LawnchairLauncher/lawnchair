@@ -20,11 +20,13 @@ import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Insets;
 import android.graphics.drawable.Animatable2;
 import android.graphics.drawable.AnimatedVectorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.util.ArraySet;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -43,13 +45,23 @@ import androidx.fragment.app.FragmentActivity;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.R;
+import com.android.launcher3.logging.StatsLogManager;
 import com.android.quickstep.interaction.TutorialController.TutorialType;
+
+import java.util.Set;
 
 abstract class TutorialFragment extends Fragment implements OnTouchListener {
 
     private static final String LOG_TAG = "TutorialFragment";
     static final String KEY_TUTORIAL_TYPE = "tutorial_type";
     static final String KEY_GESTURE_COMPLETE = "gesture_complete";
+
+    private static final String TUTORIAL_SKIPPED_PREFERENCE_KEY = "pref_gestureTutorialSkipped";
+    private static final String COMPLETED_TUTORIAL_STEPS_PREFERENCE_KEY =
+            "pref_completedTutorialSteps";
+
+    private final SharedPreferences mSharedPrefs;
+    protected final StatsLogManager mStatsLogManager;
 
     TutorialType mTutorialType;
     boolean mGestureComplete = false;
@@ -71,10 +83,15 @@ abstract class TutorialFragment extends Fragment implements OnTouchListener {
     private boolean mIsLargeScreen;
     private boolean mIsFoldable;
 
-    public static TutorialFragment newInstance(TutorialType tutorialType, boolean gestureComplete) {
-        TutorialFragment fragment = getFragmentForTutorialType(tutorialType);
+    public static TutorialFragment newInstance(
+            TutorialType tutorialType,
+            boolean gestureComplete,
+            SharedPreferences sharedPrefs,
+            StatsLogManager statsLogManager) {
+        TutorialFragment fragment =
+                getFragmentForTutorialType(tutorialType, sharedPrefs, statsLogManager);
         if (fragment == null) {
-            fragment = new BackGestureTutorialFragment();
+            fragment = new BackGestureTutorialFragment(sharedPrefs, statsLogManager);
             tutorialType = TutorialType.BACK_NAVIGATION;
         }
 
@@ -86,26 +103,34 @@ abstract class TutorialFragment extends Fragment implements OnTouchListener {
     }
 
     @Nullable
-    private static TutorialFragment getFragmentForTutorialType(TutorialType tutorialType) {
+    private static TutorialFragment getFragmentForTutorialType(
+            TutorialType tutorialType,
+            SharedPreferences sharedPrefs,
+            StatsLogManager statsLogManager) {
         switch (tutorialType) {
             case BACK_NAVIGATION:
             case BACK_NAVIGATION_COMPLETE:
-                return new BackGestureTutorialFragment();
+                return new BackGestureTutorialFragment(sharedPrefs, statsLogManager);
             case HOME_NAVIGATION:
             case HOME_NAVIGATION_COMPLETE:
-                return new HomeGestureTutorialFragment();
+                return new HomeGestureTutorialFragment(sharedPrefs, statsLogManager);
             case OVERVIEW_NAVIGATION:
             case OVERVIEW_NAVIGATION_COMPLETE:
-                return new OverviewGestureTutorialFragment();
+                return new OverviewGestureTutorialFragment(sharedPrefs, statsLogManager);
             case ASSISTANT:
             case ASSISTANT_COMPLETE:
-                return new AssistantGestureTutorialFragment();
+                return new AssistantGestureTutorialFragment(sharedPrefs, statsLogManager);
             case SANDBOX_MODE:
-                return new SandboxModeTutorialFragment();
+                return new SandboxModeTutorialFragment(sharedPrefs, statsLogManager);
             default:
                 Log.e(LOG_TAG, "Failed to find an appropriate fragment for " + tutorialType.name());
         }
         return null;
+    }
+
+    protected TutorialFragment(SharedPreferences sharedPrefs, StatsLogManager statsLogManager) {
+        mSharedPrefs = sharedPrefs;
+        mStatsLogManager = statsLogManager;
     }
 
     @Nullable Integer getEdgeAnimationResId() {
@@ -315,6 +340,7 @@ abstract class TutorialFragment extends Fragment implements OnTouchListener {
     }
 
     void onAttachedToWindow() {
+        logTutorialStepShown();
         mEdgeBackGestureHandler.setViewGroupParent(getRootView());
     }
 
@@ -348,8 +374,16 @@ abstract class TutorialFragment extends Fragment implements OnTouchListener {
     }
 
     void continueTutorial() {
-        GestureSandboxActivity gestureSandboxActivity = getGestureSandboxActivity();
+        Set<String> updatedCompletedSteps = new ArraySet<>(mSharedPrefs.getStringSet(
+                COMPLETED_TUTORIAL_STEPS_PREFERENCE_KEY, new ArraySet<>()));
 
+        updatedCompletedSteps.add(mTutorialType.toString());
+
+        mSharedPrefs.edit().putStringSet(
+                COMPLETED_TUTORIAL_STEPS_PREFERENCE_KEY, updatedCompletedSteps).apply();
+        logTutorialStepCompleted();
+
+        GestureSandboxActivity gestureSandboxActivity = getGestureSandboxActivity();
         if (gestureSandboxActivity == null) {
             closeTutorial();
             return;
@@ -358,6 +392,15 @@ abstract class TutorialFragment extends Fragment implements OnTouchListener {
     }
 
     void closeTutorial() {
+        closeTutorial(false);
+    }
+
+    void closeTutorial(boolean tutorialSkipped) {
+        if (tutorialSkipped) {
+            mSharedPrefs.edit().putBoolean(TUTORIAL_SKIPPED_PREFERENCE_KEY, true).apply();
+            mStatsLogManager.logger().log(
+                    StatsLogManager.LauncherEvent.LAUNCHER_GESTURE_TUTORIAL_SKIPPED);
+        }
         FragmentActivity activity = getActivity();
         if (activity != null) {
             activity.setResult(Activity.RESULT_OK);
@@ -389,6 +432,10 @@ abstract class TutorialFragment extends Fragment implements OnTouchListener {
         return mGestureComplete
                 || (mTutorialController != null && mTutorialController.isGestureCompleted());
     }
+
+    abstract void logTutorialStepShown();
+
+    abstract void logTutorialStepCompleted();
 
     @Nullable
     private GestureSandboxActivity getGestureSandboxActivity() {
