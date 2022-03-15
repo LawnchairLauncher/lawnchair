@@ -488,19 +488,24 @@ public class PortraitPagedViewHandler implements PagedOrientationHandler {
     public void setSplitTaskSwipeRect(DeviceProfile dp, Rect outRect,
             StagedSplitBounds splitInfo, int desiredStagePosition) {
         boolean isLandscape = dp.isLandscape;
+        float topLeftTaskPercent = splitInfo.appsStackedVertically
+                ? splitInfo.topTaskPercent
+                : splitInfo.leftTaskPercent;
+        float dividerBarPercent = splitInfo.appsStackedVertically
+                ? splitInfo.dividerHeightPercent
+                : splitInfo.dividerWidthPercent;
+
         if (desiredStagePosition == SplitConfigurationOptions.STAGE_POSITION_TOP_OR_LEFT) {
             if (isLandscape) {
-                outRect.right = outRect.left + (int) (outRect.width() * splitInfo.leftTaskPercent);
+                outRect.right = outRect.left + (int) (outRect.width() * topLeftTaskPercent);
             } else {
-                outRect.bottom = outRect.top + (int) (outRect.height() * splitInfo.topTaskPercent);
+                outRect.bottom = outRect.top + (int) (outRect.height() * topLeftTaskPercent);
             }
         } else {
             if (isLandscape) {
-                outRect.left += (int) (outRect.width() *
-                        (splitInfo.leftTaskPercent + splitInfo.dividerWidthPercent));
+                outRect.left += (int) (outRect.width() * (topLeftTaskPercent + dividerBarPercent));
             } else {
-                outRect.top += (int) (outRect.height() *
-                        (splitInfo.topTaskPercent + splitInfo.dividerHeightPercent));
+                outRect.top += (int) (outRect.height() * (topLeftTaskPercent + dividerBarPercent));
             }
         }
     }

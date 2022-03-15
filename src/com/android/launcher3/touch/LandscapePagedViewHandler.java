@@ -414,14 +414,17 @@ public class LandscapePagedViewHandler implements PagedOrientationHandler {
     @Override
     public void setSplitTaskSwipeRect(DeviceProfile dp, Rect outRect,
             StagedSplitBounds splitInfo, int desiredStagePosition) {
-        float diff;
-        float horizontalDividerDiff = splitInfo.visualDividerBounds.width() / 2f;
+        float topLeftTaskPercent = splitInfo.appsStackedVertically
+                ? splitInfo.topTaskPercent
+                : splitInfo.leftTaskPercent;
+        float dividerBarPercent = splitInfo.appsStackedVertically
+                ? splitInfo.dividerHeightPercent
+                : splitInfo.dividerWidthPercent;
+
         if (desiredStagePosition == SplitConfigurationOptions.STAGE_POSITION_TOP_OR_LEFT) {
-            diff = outRect.height() * (1f - splitInfo.leftTaskPercent) + horizontalDividerDiff;
-            outRect.bottom -= diff;
+            outRect.bottom = outRect.top + (int) (outRect.height() * topLeftTaskPercent);
         } else {
-            diff = outRect.height() * splitInfo.leftTaskPercent + horizontalDividerDiff;
-            outRect.top += diff;
+            outRect.top += (int) (outRect.height() * (topLeftTaskPercent + dividerBarPercent));
         }
     }
 
