@@ -29,14 +29,13 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 
-import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.ExtendedEditText;
-import com.android.launcher3.Launcher;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.allapps.BaseAllAppsAdapter.AdapterItem;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.search.SearchAlgorithm;
 import com.android.launcher3.search.SearchCallback;
+import com.android.launcher3.views.ActivityContext;
 
 /**
  * An interface to a search box that AllApps can command.
@@ -45,7 +44,7 @@ public class AllAppsSearchBarController
         implements TextWatcher, OnEditorActionListener, ExtendedEditText.OnBackKeyListener,
         OnFocusChangeListener {
 
-    protected BaseDraggingActivity mLauncher;
+    protected ActivityContext mLauncher;
     protected SearchCallback<AdapterItem> mCallback;
     protected ExtendedEditText mInput;
     protected String mQuery;
@@ -62,7 +61,7 @@ public class AllAppsSearchBarController
      */
     public final void initialize(
             SearchAlgorithm<AdapterItem> searchAlgorithm, ExtendedEditText input,
-            BaseDraggingActivity launcher, SearchCallback<AdapterItem> callback) {
+            ActivityContext launcher, SearchCallback<AdapterItem> callback) {
         mCallback = callback;
         mLauncher = launcher;
 
@@ -125,7 +124,7 @@ public class AllAppsSearchBarController
             mLauncher.getStatsLogManager().logger()
                     .log(LAUNCHER_ALLAPPS_FOCUSED_ITEM_SELECTED_WITH_IME);
             // selectFocusedView should return SearchTargetEvent that is passed onto onClick
-            return Launcher.getLauncher(mLauncher).getAppsView().launchHighlightedItem();
+            return mLauncher.getAppsView().getMainAdapterProvider().launchHighlightedItem();
         }
         return false;
     }

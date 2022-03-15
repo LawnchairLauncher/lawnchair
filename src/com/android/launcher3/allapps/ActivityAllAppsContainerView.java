@@ -103,11 +103,6 @@ public class ActivityAllAppsContainerView<T extends BaseDraggingActivity> extend
         }
     }
 
-    /** Handles selection on focused view and returns {@code true} on success. */
-    public boolean launchHighlightedItem() {
-        return getMainAdapterProvider().launchHighlightedItem();
-    }
-
     @Override
     protected SearchAdapterProvider<?> createMainAdapterProvider() {
         return mActivityContext.createSearchAdapterProvider(this);
