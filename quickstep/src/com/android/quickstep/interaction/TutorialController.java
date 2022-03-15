@@ -81,7 +81,8 @@ abstract class TutorialController implements BackGestureAttemptCallback,
     TutorialType mTutorialType;
     final Context mContext;
 
-    final TextView mCloseButton;
+    final TextView mSkipButton;
+    final Button mDoneButton;
     final ViewGroup mFeedbackView;
     final TextView mFeedbackTitleView;
     final ImageView mEdgeGestureVideoView;
@@ -94,7 +95,6 @@ abstract class TutorialController implements BackGestureAttemptCallback,
     final AnimatedTaskView mFakePreviousTaskView;
     final View mRippleView;
     final RippleDrawable mRippleDrawable;
-    final Button mActionButton;
     final TutorialStepIndicator mTutorialStepView;
     final ImageView mFingerDotView;
     private final AlertDialog mSkipTutorialDialog;
@@ -115,8 +115,8 @@ abstract class TutorialController implements BackGestureAttemptCallback,
         mContext = mTutorialFragment.getContext();
 
         RootSandboxLayout rootView = tutorialFragment.getRootView();
-        mCloseButton = rootView.findViewById(R.id.gesture_tutorial_fragment_close_button);
-        mCloseButton.setOnClickListener(button -> showSkipTutorialDialog());
+        mSkipButton = rootView.findViewById(R.id.gesture_tutorial_fragment_close_button);
+        mSkipButton.setOnClickListener(button -> showSkipTutorialDialog());
         mFeedbackView = rootView.findViewById(R.id.gesture_tutorial_fragment_feedback_view);
         mFeedbackTitleView = mFeedbackView.findViewById(
                 R.id.gesture_tutorial_fragment_feedback_title);
@@ -130,7 +130,7 @@ abstract class TutorialController implements BackGestureAttemptCallback,
                 rootView.findViewById(R.id.gesture_tutorial_fake_previous_task_view);
         mRippleView = rootView.findViewById(R.id.gesture_tutorial_ripple_view);
         mRippleDrawable = (RippleDrawable) mRippleView.getBackground();
-        mActionButton = rootView.findViewById(R.id.gesture_tutorial_fragment_action_button);
+        mDoneButton = rootView.findViewById(R.id.gesture_tutorial_fragment_action_button);
         mTutorialStepView =
                 rootView.findViewById(R.id.gesture_tutorial_fragment_feedback_tutorial_step);
         mFingerDotView = rootView.findViewById(R.id.gesture_tutorial_finger_dot);
@@ -431,22 +431,22 @@ abstract class TutorialController implements BackGestureAttemptCallback,
     }
 
     void updateCloseButton() {
-        mCloseButton.setTextAppearance(Utilities.isDarkTheme(mContext)
+        mSkipButton.setTextAppearance(Utilities.isDarkTheme(mContext)
                 ? R.style.TextAppearance_GestureTutorial_Feedback_Subtext
                 : R.style.TextAppearance_GestureTutorial_Feedback_Subtext_Dark);
     }
 
     void hideActionButton() {
-        mCloseButton.setVisibility(View.VISIBLE);
+        mSkipButton.setVisibility(View.VISIBLE);
         // Invisible to maintain the layout.
-        mActionButton.setVisibility(View.INVISIBLE);
-        mActionButton.setOnClickListener(null);
+        mDoneButton.setVisibility(View.INVISIBLE);
+        mDoneButton.setOnClickListener(null);
     }
 
     void showActionButton() {
-        mCloseButton.setVisibility(GONE);
-        mActionButton.setVisibility(View.VISIBLE);
-        mActionButton.setOnClickListener(this::onActionButtonClicked);
+        mSkipButton.setVisibility(GONE);
+        mDoneButton.setVisibility(View.VISIBLE);
+        mDoneButton.setOnClickListener(this::onActionButtonClicked);
     }
 
     void hideFakeTaskbar(boolean animateToHotseat) {
@@ -609,7 +609,7 @@ abstract class TutorialController implements BackGestureAttemptCallback,
                     R.id.gesture_tutorial_dialog_confirm_button);
             if (confirmButton != null) {
                 confirmButton.setOnClickListener(v -> {
-                    sandboxActivity.closeTutorial();
+                    mTutorialFragment.closeTutorial(true);
                     tutorialDialog.dismiss();
                 });
             } else {
