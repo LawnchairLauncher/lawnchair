@@ -71,7 +71,16 @@ public class InputConsumerProxy {
 
     private boolean onInputConsumerEvent(InputEvent ev) {
         if (ev instanceof MotionEvent) {
-            onInputConsumerMotionEvent((MotionEvent) ev);
+            MotionEvent event = (MotionEvent) ev;
+            int action = event.getActionMasked();
+            boolean isHoverEvent = action == MotionEvent.ACTION_HOVER_ENTER
+                    || action == MotionEvent.ACTION_HOVER_MOVE
+                    || action == MotionEvent.ACTION_HOVER_EXIT;
+            if (isHoverEvent) {
+                onInputConsumerHoverEvent(event);
+            } else {
+                onInputConsumerMotionEvent(event);
+            }
         } else if (ev instanceof KeyEvent) {
             initInputConsumerIfNeeded();
             mInputConsumer.onKeyEvent((KeyEvent) ev);
@@ -111,6 +120,15 @@ public class InputConsumerProxy {
         }
 
         return true;
+    }
+
+    private void onInputConsumerHoverEvent(MotionEvent ev) {
+        initInputConsumerIfNeeded();
+        if (mInputConsumer != null) {
+            SimpleOrientationTouchTransformer.INSTANCE.get(mContext).transform(ev,
+                    mRotationSupplier.get());
+            mInputConsumer.onHoverEvent(ev);
+        }
     }
 
     public void destroy() {
