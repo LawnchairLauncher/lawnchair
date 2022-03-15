@@ -105,7 +105,7 @@
     <string name="quickstep_description">Botão Limpar Tudo, Tamanho do Arredondamento</string>
     <string name="wallpaper_scrolling_label">Rolar Papel de Parede</string>
     <string name="show_sys_ui_scrim">Sombra Superior</string>
-    <string name="show_status_bar">Show Status Bar</string>
+    <string name="show_status_bar">Mostrar barra de status</string>
     <string name="what_to_show">O que mostrar</string>
     <string name="missing_notification_access_label">Necessário o Acesso às Notificações</string>
     <string name="missing_notification_access_description">Necessário o acesso às notificações.</string>
