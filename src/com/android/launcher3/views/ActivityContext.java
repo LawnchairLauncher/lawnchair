@@ -26,7 +26,6 @@ import androidx.annotation.Nullable;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.allapps.ActivityAllAppsContainerView;
-import com.android.launcher3.allapps.BaseAllAppsContainerView;
 import com.android.launcher3.allapps.search.SearchAdapterProvider;
 import com.android.launcher3.dot.DotInfo;
 import com.android.launcher3.dragndrop.DragController;
@@ -101,7 +100,7 @@ public interface ActivityContext {
     /**
      * The all apps container, if it exists in this context.
      */
-    default BaseAllAppsContainerView<?> getAppsView() {
+    default ActivityAllAppsContainerView<?> getAppsView() {
         return null;
     }
 
