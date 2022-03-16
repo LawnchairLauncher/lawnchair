@@ -101,16 +101,21 @@ class GridSizeMigrationTaskV2Test {
         modelHelper.addItem(SHORTCUT, 3, HOTSEAT, 0, 0, testPackage3, 3, TMP_CONTENT_URI)
         modelHelper.addItem(APP_ICON, 4, HOTSEAT, 0, 0, testPackage4, 4, TMP_CONTENT_URI)
         // Src grid icons
-        modelHelper.addItem(APP_ICON, 0, DESKTOP, 2, 2, testPackage5, 5, TMP_CONTENT_URI)
-        modelHelper.addItem(APP_ICON, 0, DESKTOP, 2, 3, testPackage6, 6, TMP_CONTENT_URI)
-        modelHelper.addItem(APP_ICON, 0, DESKTOP, 4, 1, testPackage8, 8, TMP_CONTENT_URI)
-        modelHelper.addItem(APP_ICON, 0, DESKTOP, 4, 2, testPackage9, 9, TMP_CONTENT_URI)
-        modelHelper.addItem(APP_ICON, 0, DESKTOP, 4, 3, testPackage10, 10, TMP_CONTENT_URI)
+        // _ _ _ _ _
+        // _ _ _ _ 5
+        // _ _ 6 _ 7
+        // _ _ 8 _ 9
+        // _ _ _ _ _
+        modelHelper.addItem(APP_ICON, 0, DESKTOP, 4, 1, testPackage5, 5, TMP_CONTENT_URI)
+        modelHelper.addItem(APP_ICON, 0, DESKTOP, 2, 2, testPackage6, 6, TMP_CONTENT_URI)
+        modelHelper.addItem(APP_ICON, 0, DESKTOP, 4, 2, testPackage7, 7, TMP_CONTENT_URI)
+        modelHelper.addItem(APP_ICON, 0, DESKTOP, 2, 3, testPackage8, 8, TMP_CONTENT_URI)
+        modelHelper.addItem(APP_ICON, 0, DESKTOP, 4, 3, testPackage9, 9, TMP_CONTENT_URI)
 
         // Dest hotseat icons
         modelHelper.addItem(SHORTCUT, 1, HOTSEAT, 0, 0, testPackage2)
         // Dest grid icons
-        modelHelper.addItem(APP_ICON, 0, DESKTOP, 2, 2, testPackage7)
+        modelHelper.addItem(APP_ICON, 0, DESKTOP, 2, 2, testPackage10)
 
         idp.numDatabaseHotseatIcons = 4
         idp.numColumns = 4
@@ -174,13 +179,18 @@ class GridSizeMigrationTaskV2Test {
                 Point(c.getInt(cellXIndex), c.getInt(cellYIndex))
         }
         c.close()
+        // Expected dest grid icons
+        // _ _ _ _
+        // 5 6 7 8
+        // 9 _ 10_
+        // _ _ _ _
         assertThat(locMap.size.toLong()).isEqualTo(6)
-        assertThat(locMap[testPackage8]).isEqualTo(Point(0, 2))
-        assertThat(locMap[testPackage6]).isEqualTo(Point(0, 3))
-        assertThat(locMap[testPackage10]).isEqualTo(Point(1, 3))
-        assertThat(locMap[testPackage7]).isEqualTo(Point(2, 2))
-        assertThat(locMap[testPackage5]).isEqualTo(Point(2, 3))
-        assertThat(locMap[testPackage9]).isEqualTo(Point(3, 3))
+        assertThat(locMap[testPackage5]).isEqualTo(Point(0, 1))
+        assertThat(locMap[testPackage6]).isEqualTo(Point(1, 1))
+        assertThat(locMap[testPackage7]).isEqualTo(Point(2, 1))
+        assertThat(locMap[testPackage8]).isEqualTo(Point(3, 1))
+        assertThat(locMap[testPackage9]).isEqualTo(Point(0, 2))
+        assertThat(locMap[testPackage10]).isEqualTo(Point(2, 2))
     }
 
     @Test
