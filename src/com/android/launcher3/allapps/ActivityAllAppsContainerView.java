@@ -26,12 +26,13 @@ import android.widget.RelativeLayout;
 import androidx.core.graphics.ColorUtils;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.android.launcher3.BaseDraggingActivity;
+import com.android.launcher3.DeviceProfile.DeviceProfileListenable;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.allapps.search.SearchAdapterProvider;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.util.PackageManagerHelper;
+import com.android.launcher3.views.AppLauncher;
 
 import java.util.Objects;
 
@@ -40,8 +41,8 @@ import java.util.Objects;
  *
  * @param <T> Type of context inflating all apps.
  */
-public class ActivityAllAppsContainerView<T extends BaseDraggingActivity> extends
-        BaseAllAppsContainerView<T> {
+public class ActivityAllAppsContainerView<T extends Context & AppLauncher
+        & DeviceProfileListenable> extends BaseAllAppsContainerView<T> {
 
     protected SearchUiManager mSearchUiManager;
     /**
@@ -104,7 +105,7 @@ public class ActivityAllAppsContainerView<T extends BaseDraggingActivity> extend
     }
 
     @Override
-    protected SearchAdapterProvider<?> createMainAdapterProvider() {
+    protected final SearchAdapterProvider<?> createMainAdapterProvider() {
         return mActivityContext.createSearchAdapterProvider(this);
     }
 
