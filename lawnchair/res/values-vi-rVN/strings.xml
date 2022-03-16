@@ -183,10 +183,10 @@
     <string name="recents_clear_all">Xoá tất cả</string>
     <string name="pick_icon_from_label">Chọn biểu tượng từ</string>
     <string name="experimental_features_label">Tính năng thử nghiệm</string>
-    <string name="icon_picker_label">Per-App Icon Customization</string>
+    <string name="icon_picker_label">Tuỳ chỉnh biểu tượng từng ứng dụng</string>
     <string name="icon_picker_description">Có thể làm đóng băng Lawnchair.</string>
     <string name="font_picker_label">Tùy chỉnh font</string>
-    <string name="font_picker_description">Some text remains unchanged.</string>
+    <string name="font_picker_description">Một số văn bản vẫn không thay đổi.</string>
     <string name="search_provider_app_search">Tìm kiếm ứng dụng</string>
     <string name="always_open_website_label">Luôn mở trang web</string>
     <string name="always_open_website_description">Mở trang web của nhà cung cấp dịch vụ tìm kiếm cho dù ứng dụng của họ đã được cài đặt.</string>
