@@ -162,6 +162,7 @@ public class LauncherProvider extends ContentProvider {
     private synchronized boolean prepForMigration(String dbFile, String targetTableName,
             Supplier<DatabaseHelper> src, Supplier<DatabaseHelper> dst) {
         if (TextUtils.equals(dbFile, mOpenHelper.getDatabaseName())) {
+            Log.e("b/198965093", "prepForMigration - target db is same as current: " + dbFile);
             return false;
         }
 
@@ -439,7 +440,7 @@ public class LauncherProvider extends ContentProvider {
                 Bundle result = new Bundle();
                 result.putBoolean(LauncherSettings.Settings.EXTRA_VALUE,
                         prepForMigration(
-                                InvariantDeviceProfile.INSTANCE.get(getContext()).dbFile,
+                                arg /* dbFile */,
                                 Favorites.TMP_TABLE,
                                 () -> mOpenHelper,
                                 () -> DatabaseHelper.createDatabaseHelper(

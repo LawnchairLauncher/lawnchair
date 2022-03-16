@@ -15,6 +15,7 @@
  */
 package com.android.quickstep.interaction;
 
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.os.Bundle;
@@ -28,6 +29,8 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentActivity;
 
 import com.android.launcher3.R;
+import com.android.launcher3.Utilities;
+import com.android.launcher3.logging.StatsLogManager;
 import com.android.quickstep.interaction.TutorialController.TutorialType;
 
 import java.util.List;
@@ -46,17 +49,26 @@ public class GestureSandboxActivity extends FragmentActivity {
     private int mCurrentStep;
     private int mNumSteps;
 
+    private SharedPreferences mSharedPrefs;
+    private StatsLogManager mStatsLogManager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.gesture_tutorial_activity);
 
+        mSharedPrefs = Utilities.getPrefs(this);
+        mStatsLogManager = StatsLogManager.newInstance(getApplicationContext());
+
         Bundle args = savedInstanceState == null ? getIntent().getExtras() : savedInstanceState;
         mTutorialSteps = getTutorialSteps(args);
         mCurrentTutorialStep = mTutorialSteps[mCurrentStep - 1];
         mFragment = TutorialFragment.newInstance(
-                mCurrentTutorialStep, args.getBoolean(KEY_GESTURE_COMPLETE, false));
+                mCurrentTutorialStep,
+                args.getBoolean(KEY_GESTURE_COMPLETE, false),
+                mSharedPrefs,
+                mStatsLogManager);
         getSupportFragmentManager().beginTransaction()
                 .add(R.id.gesture_tutorial_fragment_container, mFragment)
                 .commit();
@@ -105,13 +117,6 @@ public class GestureSandboxActivity extends FragmentActivity {
     }
 
     /**
-     * Closes the tutorial and this activity.
-     */
-    public void closeTutorial() {
-        mFragment.closeTutorial();
-    }
-
-    /**
      * Replaces the current TutorialFragment, continuing to the next tutorial step if there is one.
      *
      * If there is no following step, the tutorial is closed.
@@ -122,7 +127,8 @@ public class GestureSandboxActivity extends FragmentActivity {
             return;
         }
         mCurrentTutorialStep = mTutorialSteps[mCurrentStep];
-        mFragment = TutorialFragment.newInstance(mCurrentTutorialStep, false);
+        mFragment = TutorialFragment.newInstance(
+                mCurrentTutorialStep, /* gestureComplete= */ false, mSharedPrefs, mStatsLogManager);
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.gesture_tutorial_fragment_container, mFragment)
                 .runOnCommit(() -> mFragment.onAttachedToWindow())

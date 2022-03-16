@@ -41,7 +41,7 @@ public class StartLauncherViaGestureTests extends AbstractQuickStepTest {
         super.setUp();
         TaplTestsLauncher3.initialize(this);
         // b/143488140
-        mLauncher.pressHome();
+        mLauncher.goHome();
         // Start an activity where the gestures start.
         startAppFast(resolveSystemApp(Intent.CATEGORY_APP_CALCULATOR));
     }
@@ -54,7 +54,7 @@ public class StartLauncherViaGestureTests extends AbstractQuickStepTest {
 
         // The test action.
         eventProcessor.startIteration();
-        mLauncher.pressHome();
+        mLauncher.goHome();
         eventProcessor.finishIteration();
     }
 
@@ -66,7 +66,7 @@ public class StartLauncherViaGestureTests extends AbstractQuickStepTest {
             closeLauncherActivity();
 
             // The test action.
-            mLauncher.pressHome();
+            mLauncher.goHome();
         }
     }
 
@@ -81,6 +81,6 @@ public class StartLauncherViaGestureTests extends AbstractQuickStepTest {
             mLauncher.getLaunchedAppState().switchToOverview();
         }
         closeLauncherActivity();
-        mLauncher.pressHome();
+        mLauncher.goHome();
     }
 }

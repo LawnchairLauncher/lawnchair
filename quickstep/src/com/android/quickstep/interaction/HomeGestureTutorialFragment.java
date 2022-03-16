@@ -18,18 +18,25 @@ package com.android.quickstep.interaction;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
+import android.content.SharedPreferences;
 import android.view.MotionEvent;
 import android.view.View;
 
 import androidx.annotation.Nullable;
 
 import com.android.launcher3.R;
+import com.android.launcher3.logging.StatsLogManager;
 import com.android.quickstep.interaction.TutorialController.TutorialType;
 
 import java.util.ArrayList;
 
 /** Shows the Home gesture interactive tutorial. */
 public class HomeGestureTutorialFragment extends TutorialFragment {
+
+    protected HomeGestureTutorialFragment(
+            SharedPreferences sharedPrefs, StatsLogManager statsLogManager) {
+        super(sharedPrefs, statsLogManager);
+    }
 
     @Nullable
     @Override
@@ -98,5 +105,17 @@ public class HomeGestureTutorialFragment extends TutorialFragment {
     public boolean onTouch(View view, MotionEvent motionEvent) {
         releaseFeedbackAnimation();
         return super.onTouch(view, motionEvent);
+    }
+
+    @Override
+    void logTutorialStepShown() {
+        mStatsLogManager.logger().log(
+                StatsLogManager.LauncherEvent.LAUNCHER_GESTURE_TUTORIAL_HOME_STEP_SHOWN);
+    }
+
+    @Override
+    void logTutorialStepCompleted() {
+        mStatsLogManager.logger().log(
+                StatsLogManager.LauncherEvent.LAUNCHER_GESTURE_TUTORIAL_HOME_STEP_COMPLETED);
     }
 }
