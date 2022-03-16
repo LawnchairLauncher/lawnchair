@@ -413,6 +413,14 @@ public abstract class BaseDragLayer<T extends Context & ActivityContext>
     }
 
     /**
+     * Similar to {@link #mapCoordInSelfToDescendant(View descendant, float[] coord)}
+     * but accepts a Rect instead of float[].
+     */
+    public void mapRectInSelfToDescendant(View descendant, Rect rect) {
+        Utilities.mapRectInSelfToDescendant(descendant, this, rect);
+    }
+
+    /**
      * Inverse of {@link #getDescendantCoordRelativeToSelf(View, float[])}.
      */
     public void mapCoordInSelfToDescendant(View descendant, float[] coord) {
