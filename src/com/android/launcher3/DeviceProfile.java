@@ -175,6 +175,7 @@ public class DeviceProfile {
     public Point allAppsBorderSpacePx;
     public int allAppsShiftRange;
     public int allAppsTopPadding;
+    public int bottomSheetTopPadding;
     public int allAppsCellHeightPx;
     public int allAppsCellWidthPx;
     public int allAppsIconSizePx;
@@ -294,8 +295,11 @@ public class DeviceProfile {
         desiredWorkspaceHorizontalMarginPx = getHorizontalMarginPx(inv, res);
         desiredWorkspaceHorizontalMarginOriginalPx = desiredWorkspaceHorizontalMarginPx;
 
-        allAppsTopPadding = res.getDimensionPixelSize(R.dimen.all_apps_top_padding)
-                + (isTablet ? heightPx - availableHeightPx : 0);
+        bottomSheetTopPadding = windowBounds.insets.top // statusbar height
+                + res.getDimensionPixelSize(R.dimen.bottom_sheet_extra_top_padding)
+                + (isTablet ? 0 : edgeMarginPx); // phones need edgeMarginPx additional padding
+
+        allAppsTopPadding = isTablet ? bottomSheetTopPadding : 0;
         allAppsShiftRange = isTablet
                 ? heightPx - allAppsTopPadding
                 : res.getDimensionPixelSize(R.dimen.all_apps_starting_vertical_translate);

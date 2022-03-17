@@ -94,7 +94,6 @@
 
     <!-- All Apps -->
     <dimen name="all_apps_starting_vertical_translate">320dp</dimen>
-    <dimen name="all_apps_top_padding">0dp</dimen>
     <dimen name="all_apps_search_bar_field_height">48dp</dimen>
     <!-- all_apps_search_bar_field_height / 2 -->
     <dimen name="all_apps_search_bar_content_overlap">24dp</dimen>
@@ -368,6 +367,7 @@
     <dimen name="padded_rounded_button_padding">8dp</dimen>
 
 <!-- Bottom sheet related parameters -->
+    <dimen name="bottom_sheet_extra_top_padding">0dp</dimen>
     <dimen name="bottom_sheet_handle_width">32dp</dimen>
     <dimen name="bottom_sheet_handle_height">4dp</dimen>
     <dimen name="bottom_sheet_handle_margin">16dp</dimen>

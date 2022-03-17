@@ -16,6 +16,8 @@
 
 package com.android.launcher3.notification;
 
+import static com.android.launcher3.AbstractFloatingView.TYPE_ACTION_POPUP;
+import static com.android.launcher3.AbstractFloatingView.TYPE_TASKBAR_ALL_APPS;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_NOTIFICATION_LAUNCH_TAP;
 
 import android.app.ActivityOptions;
@@ -116,7 +118,8 @@ public class NotificationInfo implements View.OnClickListener {
                 popupDataProvider.cancelNotification(notificationKey);
             }
         }
-        AbstractFloatingView.closeOpenContainer(context, AbstractFloatingView.TYPE_ACTION_POPUP);
+        AbstractFloatingView.closeOpenViews(
+                context, true, TYPE_ACTION_POPUP | TYPE_TASKBAR_ALL_APPS);
     }
 
     public Drawable getIconForBackground(Context context, int background) {

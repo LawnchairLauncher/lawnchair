@@ -16,6 +16,11 @@
 
 <resources>
 <!-- AllApps -->
-    <dimen name="all_apps_top_padding">300dp</dimen>
     <dimen name="all_apps_bottom_sheet_horizontal_padding">65dp</dimen>
+
+<!-- Widget picker-->
+    <dimen name="widget_list_horizontal_margin">30dp</dimen>
+
+<!-- Bottom sheet-->
+    <dimen name="bottom_sheet_extra_top_padding">300dp</dimen>
 </resources>

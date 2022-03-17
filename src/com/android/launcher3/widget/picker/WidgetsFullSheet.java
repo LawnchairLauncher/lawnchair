@@ -96,8 +96,6 @@ public class WidgetsFullSheet extends BaseWidgetSheet
     private static final String KEY_WIDGETS_EDUCATION_DIALOG_SEEN =
             "launcher.widgets_education_dialog_seen";
 
-    private final Rect mInsets = new Rect();
-
     private final UserManagerState mUserManagerState = new UserManagerState();
 
     private final boolean mHasWorkProfile;

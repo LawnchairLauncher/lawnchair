@@ -395,7 +395,8 @@ public class GridSizeMigrationTaskV2 {
             mTrgX = trgX;
             mTrgY = trgY;
             mNextStartX = 0;
-            mNextStartY = mTrgY - 1;
+            mNextStartY = mScreenId == 0 && FeatureFlags.QSB_ON_FIRST_SCREEN
+                    ? 1 /* smartspace */ : 0;
             List<DbEntry> existedEntries = mDestReader.mWorkspaceEntriesByScreenId.get(screenId);
             if (existedEntries != null) {
                 for (DbEntry entry : existedEntries) {
@@ -430,7 +431,7 @@ public class GridSizeMigrationTaskV2 {
          * to speed up the search.
          */
         private boolean findPlacement(DbEntry entry) {
-            for (int y = mNextStartY; y >= (mScreenId == 0 ? 1 /* smartspace */ : 0); y--) {
+            for (int y = mNextStartY; y <  mTrgY; y++) {
                 for (int x = mNextStartX; x < mTrgX; x++) {
                     boolean fits = mOccupied.isRegionVacant(x, y, entry.spanX, entry.spanY);
                     boolean minFits = mOccupied.isRegionVacant(x, y, entry.minSpanX,
@@ -753,7 +754,7 @@ public class GridSizeMigrationTaskV2 {
                 return Integer.compare(screenId, another.screenId);
             }
             if (cellY != another.cellY) {
-                return -Integer.compare(cellY, another.cellY);
+                return Integer.compare(cellY, another.cellY);
             }
             return Integer.compare(cellX, another.cellX);
         }
