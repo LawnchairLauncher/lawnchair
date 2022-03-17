@@ -110,10 +110,10 @@ public interface PagedOrientationHandler {
     int getDistanceToBottomOfRect(DeviceProfile dp, Rect rect);
     List<SplitPositionOption> getSplitPositionOptions(DeviceProfile dp);
     /**
-     * @param splitholderSize height of placeholder view in portrait, width in landscape
+     * @param placeholderHeight height of placeholder view in portrait, width in landscape
      */
-    void getInitialSplitPlaceholderBounds(int splitholderSize, DeviceProfile dp,
-            @StagePosition int stagePosition, Rect out);
+    void getInitialSplitPlaceholderBounds(int placeholderHeight, int placeholderInset,
+            DeviceProfile dp, @StagePosition int stagePosition, Rect out);
 
     /**
      * @param splitDividerSize height of split screen drag handle in portrait, width in landscape
