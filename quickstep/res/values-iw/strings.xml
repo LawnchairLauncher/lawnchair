@@ -76,6 +76,7 @@
     <string name="allset_title" msgid="5021126669778966707">"הכול מוכן!"</string>
     <string name="allset_hint" msgid="2384632994739392447">"כדי לעבור לדף הבית, מחליקים כלפי מעלה"</string>
     <string name="allset_description" msgid="6350320429953234580">"הכול מוכן ואפשר להתחיל להשתמש בטלפון"</string>
+    <string name="allset_description_tablet" msgid="7332070270570039247">"הכול מוכן ואפשר להתחיל להשתמש בטאבלט"</string>
     <string name="allset_navigation_settings" msgid="4713404605961476027"><annotation id="link">"הגדרות הניווט של המערכת"</annotation></string>
     <string name="action_share" msgid="2648470652637092375">"שיתוף"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"צילום מסך"</string>

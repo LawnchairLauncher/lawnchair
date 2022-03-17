@@ -76,6 +76,7 @@
     <string name="allset_title" msgid="5021126669778966707">"រួចហើយ!"</string>
     <string name="allset_hint" msgid="2384632994739392447">"អូសឡើងលើ ដើម្បី​ទៅកាន់​អេក្រង់ដើម"</string>
     <string name="allset_description" msgid="6350320429953234580">"អ្នក​អាច​ចាប់ផ្ដើម​ប្រើ​ទូរសព្ទ​របស់អ្នក​បានហើយ"</string>
+    <string name="allset_description_tablet" msgid="7332070270570039247">"អ្នកអាចចាប់ផ្ដើមប្រើថេប្លេតរបស់អ្នកបានហើយ"</string>
     <string name="allset_navigation_settings" msgid="4713404605961476027"><annotation id="link">"ការកំណត់​ការរុករក​ប្រព័ន្ធ"</annotation></string>
     <string name="action_share" msgid="2648470652637092375">"ចែករំលែក"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"រូបថតអេក្រង់"</string>

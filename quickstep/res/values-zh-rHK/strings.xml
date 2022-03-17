@@ -76,6 +76,7 @@
     <string name="allset_title" msgid="5021126669778966707">"設定完成！"</string>
     <string name="allset_hint" msgid="2384632994739392447">"向上滑動即可前往主畫面"</string>
     <string name="allset_description" msgid="6350320429953234580">"您可以開始使用手機了"</string>
+    <string name="allset_description_tablet" msgid="7332070270570039247">"您可以開始使用平板電腦了"</string>
     <string name="allset_navigation_settings" msgid="4713404605961476027"><annotation id="link">"系統導覽設定"</annotation></string>
     <string name="action_share" msgid="2648470652637092375">"分享"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"螢幕截圖"</string>
