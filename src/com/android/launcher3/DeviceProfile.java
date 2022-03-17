@@ -489,8 +489,10 @@ public class DeviceProfile {
     }
 
     private int calculateQsbWidth() {
-        return cellWidthPx * inv.numColumns
-                + cellLayoutBorderSpacePx.x * (inv.numColumns - 1)
+        int columns = isTwoPanels ? inv.numColumns * 2 : inv.numColumns;
+
+        return cellWidthPx * columns
+                + cellLayoutBorderSpacePx.x * (columns - 1)
                 - (cellWidthPx - iconSizePx) // left and right cell space
                 - iconSizePx * numShownHotseatIcons
                 - hotseatBorderSpace * numShownHotseatIcons;
