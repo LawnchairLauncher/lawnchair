@@ -20,6 +20,7 @@ import static com.android.launcher3.taskbar.allapps.TaskbarAllAppsSlideInView.DE
 import static com.android.launcher3.taskbar.allapps.TaskbarAllAppsSlideInView.DEFAULT_OPEN_DURATION;
 import static com.android.launcher3.util.OnboardingPrefs.ALL_APPS_VISITED_COUNT;
 
+import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.appprediction.AppsDividerView;
 import com.android.launcher3.appprediction.PredictionRowView;
 import com.android.launcher3.taskbar.TaskbarStashController;
@@ -83,6 +84,8 @@ final class TaskbarAllAppsViewController {
         mTaskbarStashController.updateStateForFlag(FLAG_STASHED_IN_APP_ALL_APPS, true);
         mTaskbarStashController.applyState(DEFAULT_OPEN_DURATION);
         mSlideInView.setOnCloseBeginListener(() -> {
+            AbstractFloatingView.closeOpenContainer(
+                    mContext, AbstractFloatingView.TYPE_ACTION_POPUP);
             mTaskbarStashController.updateStateForFlag(
                     FLAG_STASHED_IN_APP_ALL_APPS, false);
             mTaskbarStashController.applyState(DEFAULT_CLOSE_DURATION);
