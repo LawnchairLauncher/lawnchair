@@ -239,6 +239,7 @@ public class LauncherSwipeHandlerV2 extends
 
     @Override
     protected void finishRecentsControllerToHome(Runnable callback) {
+        mRecentsView.cleanupRemoteTargets();
         mRecentsAnimationController.finish(
                 true /* toRecents */, callback, true /* sendUserLeaveHint */);
     }

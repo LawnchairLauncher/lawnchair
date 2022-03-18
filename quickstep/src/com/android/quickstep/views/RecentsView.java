@@ -4283,7 +4283,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         }
         mPendingAnimation.addEndListener(isSuccess -> {
             if (isSuccess) {
-                if (tv.getTaskIds()[1] != -1) {
+                if (tv.getTaskIds()[1] != -1 && mRemoteTargetHandles != null) {
                     // TODO(b/194414938): make this part of the animations instead.
                     TaskViewUtils.createSplitAuxiliarySurfacesAnimator(
                             mRemoteTargetHandles[0].getTransformParams().getTargetSet().nonApps,
