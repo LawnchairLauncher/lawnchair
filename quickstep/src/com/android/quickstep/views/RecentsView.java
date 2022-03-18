@@ -3872,9 +3872,10 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         float taskSplitScrollOffsetPrimary = 0f;
         float clearAllSplitScrollOffsetPrimar = 0f;
         if (isSplitPlaceholderFirstInGrid()) {
-            taskSplitScrollOffsetPrimary = mSplitPlaceholderSize;
+            taskSplitScrollOffsetPrimary = mIsRtl ? mSplitPlaceholderSize : -mSplitPlaceholderSize;
         } else if (isSplitPlaceholderLastInGrid()) {
-            clearAllSplitScrollOffsetPrimar = -mSplitPlaceholderSize;
+            clearAllSplitScrollOffsetPrimar =
+                    mIsRtl ? -mSplitPlaceholderSize : mSplitPlaceholderSize;
         }
 
         for (int i = 0; i < getTaskViewCount(); i++) {
