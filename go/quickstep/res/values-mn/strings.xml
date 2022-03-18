@@ -4,7 +4,7 @@
     <string name="app_share_drop_target_label" msgid="5804774105974539508">"Аппыг хуваалцах"</string>
     <string name="action_listen" msgid="2370304050784689486">"Сонсох"</string>
     <string name="action_translate" msgid="8028378961867277746">"Орчуулах"</string>
-    <string name="action_search" msgid="6269564710943755464">"Дуран"</string>
+    <string name="action_search" msgid="6269564710943755464">"Lens"</string>
     <string name="dialog_acknowledge" msgid="2804025517675853172">"ОЙЛГОЛОО"</string>
     <string name="dialog_cancel" msgid="6464336969134856366">"ЦУЦЛАХ"</string>
     <string name="dialog_settings" msgid="6564397136021186148">"ТОХИРГОО"</string>
