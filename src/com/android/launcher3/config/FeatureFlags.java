@@ -93,13 +93,6 @@ public final class FeatureFlags {
             getDebugFlag("ENABLE_FLOATING_SEARCH_BAR", false,
                     "Keep All Apps search bar at the bottom (but above keyboard if open)");
 
-    public static final BooleanFlag INJECT_WEB_TOP = new DeviceFlag("INJECT_WEB_TOP", false,
-            "Show web suggestions on top of the search results");
-
-    public static final BooleanFlag USE_FALLBACK_APP_SEARCH = new DeviceFlag(
-            "USE_FALLBACK_APP_SEARCH", false,
-            "Use fallback launcher app search results instead of AiAi app results");
-
     public static final BooleanFlag ENABLE_QUICK_SEARCH = new DeviceFlag("ENABLE_QUICK_SEARCH",
             true, "Use quick search behavior.");
 
