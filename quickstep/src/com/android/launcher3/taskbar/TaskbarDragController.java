@@ -36,6 +36,7 @@ import android.view.MotionEvent;
 import android.view.SurfaceControl;
 import android.view.View;
 import android.view.ViewRootImpl;
+import android.window.SurfaceSyncer;
 
 import androidx.annotation.Nullable;
 
@@ -476,6 +477,7 @@ public class TaskbarDragController extends DragController<BaseTaskbarContext> im
                 tx.setScale(dragSurface, scale, scale);
                 tx.setAlpha(dragSurface, alpha);
                 tx.apply();
+                tx.close();
             }
         });
         mReturnAnimator.addListener(new AnimatorListenerAdapter() {
@@ -499,12 +501,14 @@ public class TaskbarDragController extends DragController<BaseTaskbarContext> im
                 maybeOnDragEnd();
                 // Synchronize removing the drag surface with the next draw after calling
                 // maybeOnDragEnd()
-                viewRoot.consumeNextDraw((transaction) -> {
-                    transaction.remove(dragSurface);
-                    transaction.apply();
-                    tx.close();
-                });
-                viewRoot.getView().invalidate();
+                SurfaceControl.Transaction transaction = new SurfaceControl.Transaction();
+                transaction.remove(dragSurface);
+                SurfaceSyncer syncer = new SurfaceSyncer();
+                int syncId = syncer.setupSync(transaction::close);
+                syncer.addToSync(syncId, viewRoot.getView());
+                syncer.addTransactionToSync(syncId, transaction);
+                syncer.markSyncReady(syncId);
+
                 mReturnAnimator = null;
             }
         });
