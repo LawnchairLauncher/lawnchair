@@ -345,16 +345,21 @@ public class DisplayController implements ComponentCallbacks, SafeCloseable {
          * Returns {@code true} if the bounds represent a tablet.
          */
         public boolean isTablet(WindowBounds bounds) {
-            return dpiFromPx(Math.min(bounds.bounds.width(), bounds.bounds.height()),
-                    densityDpi) >= MIN_TABLET_WIDTH;
+            return smallestSizeDp(bounds) >= MIN_TABLET_WIDTH;
         }
 
         /**
          * Returns {@code true} if the bounds represent a large tablet.
          */
         public boolean isLargeTablet(WindowBounds bounds) {
-            return dpiFromPx(Math.min(bounds.bounds.width(), bounds.bounds.height()),
-                    densityDpi) >= MIN_LARGE_TABLET_WIDTH;
+            return smallestSizeDp(bounds) >= MIN_LARGE_TABLET_WIDTH;
+        }
+
+        /**
+         * Returns smallest size in dp for given bounds.
+         */
+        public float smallestSizeDp(WindowBounds bounds) {
+            return dpiFromPx(Math.min(bounds.bounds.width(), bounds.bounds.height()), densityDpi);
         }
     }
 
