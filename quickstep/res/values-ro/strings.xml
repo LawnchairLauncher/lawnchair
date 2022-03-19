@@ -76,6 +76,7 @@
     <string name="allset_title" msgid="5021126669778966707">"Gata!"</string>
     <string name="allset_hint" msgid="2384632994739392447">"Glisați în sus pentru a accesa ecranul de pornire"</string>
     <string name="allset_description" msgid="6350320429953234580">"Sunteți gata să folosiți telefonul"</string>
+    <string name="allset_description_tablet" msgid="7332070270570039247">"Sunteți gata să folosiți tableta"</string>
     <string name="allset_navigation_settings" msgid="4713404605961476027"><annotation id="link">"Setările de navigare ale sistemului"</annotation></string>
     <string name="action_share" msgid="2648470652637092375">"Distribuiți"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"Captură de ecran"</string>

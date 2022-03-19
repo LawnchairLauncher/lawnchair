@@ -76,6 +76,7 @@
     <string name="allset_title" msgid="5021126669778966707">"설정 완료"</string>
     <string name="allset_hint" msgid="2384632994739392447">"위로 스와이프하여 홈으로 이동"</string>
     <string name="allset_description" msgid="6350320429953234580">"휴대전화를 사용할 준비가 되었습니다."</string>
+    <string name="allset_description_tablet" msgid="7332070270570039247">"태블릿을 사용할 준비가 되었습니다."</string>
     <string name="allset_navigation_settings" msgid="4713404605961476027"><annotation id="link">"시스템 탐색 설정"</annotation></string>
     <string name="action_share" msgid="2648470652637092375">"공유"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"스크린샷"</string>

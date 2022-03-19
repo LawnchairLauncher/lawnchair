@@ -76,6 +76,7 @@
     <string name="allset_title" msgid="5021126669778966707">"Tudo pronto!"</string>
     <string name="allset_hint" msgid="2384632994739392447">"Deslize rapidamente para cima para aceder ao ecrã principal"</string>
     <string name="allset_description" msgid="6350320429953234580">"Já pode começar a utilizar o seu telemóvel"</string>
+    <string name="allset_description_tablet" msgid="7332070270570039247">"Já pode começar a usar o seu tablet"</string>
     <string name="allset_navigation_settings" msgid="4713404605961476027"><annotation id="link">"Definições de navegação do sistema"</annotation></string>
     <string name="action_share" msgid="2648470652637092375">"Partilhar"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"Fazer captura de ecrã"</string>
