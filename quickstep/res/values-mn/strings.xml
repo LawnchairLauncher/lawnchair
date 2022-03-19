@@ -76,6 +76,7 @@
     <string name="allset_title" msgid="5021126669778966707">"Тохируулж дууслаа!"</string>
     <string name="allset_hint" msgid="2384632994739392447">"Нүүр хуудас руу очихын тулд дээш шударна уу"</string>
     <string name="allset_description" msgid="6350320429953234580">"Та утсаа ашиглаж эхлэхэд бэлэн боллоо"</string>
+    <string name="allset_description_tablet" msgid="7332070270570039247">"Та таблетаа ашиглаж эхлэхэд бэлэн боллоо"</string>
     <string name="allset_navigation_settings" msgid="4713404605961476027"><annotation id="link">"Системийн навигацын тохиргоо"</annotation></string>
     <string name="action_share" msgid="2648470652637092375">"Хуваалцах"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"Дэлгэцийн агшин дарах"</string>

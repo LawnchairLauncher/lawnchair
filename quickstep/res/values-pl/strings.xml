@@ -76,6 +76,7 @@
     <string name="allset_title" msgid="5021126669778966707">"Wszystko gotowe"</string>
     <string name="allset_hint" msgid="2384632994739392447">"Aby przejść na stronę główną, przesuń palcem w górę"</string>
     <string name="allset_description" msgid="6350320429953234580">"Teraz możesz zacząć używać telefonu"</string>
+    <string name="allset_description_tablet" msgid="7332070270570039247">"Teraz możesz zacząć używać tabletu"</string>
     <string name="allset_navigation_settings" msgid="4713404605961476027"><annotation id="link">"Ustawienia nawigacji w systemie"</annotation></string>
     <string name="action_share" msgid="2648470652637092375">"Udostępnij"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"Zrzut ekranu"</string>

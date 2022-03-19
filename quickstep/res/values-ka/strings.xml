@@ -76,6 +76,7 @@
     <string name="allset_title" msgid="5021126669778966707">"მზადაა!"</string>
     <string name="allset_hint" msgid="2384632994739392447">"მთავარ გვერდზე გადასასვლელად გადაფურცლეთ ზევით"</string>
     <string name="allset_description" msgid="6350320429953234580">"მზად ხართ ტელეფონის გამოსაყენებლად"</string>
+    <string name="allset_description_tablet" msgid="7332070270570039247">"მზად ხართ ტაბლეტის გამოსაყენებლად"</string>
     <string name="allset_navigation_settings" msgid="4713404605961476027"><annotation id="link">"სისტემის ნავიგაციის პარამეტრები"</annotation></string>
     <string name="action_share" msgid="2648470652637092375">"გაზიარება"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"ეკრანის ანაბეჭდი"</string>

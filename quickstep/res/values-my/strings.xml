@@ -76,6 +76,7 @@
     <string name="allset_title" msgid="5021126669778966707">"အားလုံး အဆင်သင့်ပါ။"</string>
     <string name="allset_hint" msgid="2384632994739392447">"ပင်မစာမျက်နှာသို့သွားရန် အပေါ်သို့ ပွတ်ဆွဲပါ"</string>
     <string name="allset_description" msgid="6350320429953234580">"သင့်ဖုန်းကို စတင်အသုံးပြုရန် အသင့်ဖြစ်ပါပြီ"</string>
+    <string name="allset_description_tablet" msgid="7332070270570039247">"သင့်တက်ဘလက်ကို စသုံးရန် အသင့်ဖြစ်ပါပြီ"</string>
     <string name="allset_navigation_settings" msgid="4713404605961476027"><annotation id="link">"စနစ် လမ်းညွှန် ဆက်တင်များ"</annotation></string>
     <string name="action_share" msgid="2648470652637092375">"မျှဝေရန်"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"ဖန်သားပြင်ဓာတ်ပုံ"</string>

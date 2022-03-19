@@ -76,6 +76,7 @@
     <string name="allset_title" msgid="5021126669778966707">"Allt tilbúið!"</string>
     <string name="allset_hint" msgid="2384632994739392447">"Strjúktu upp til að fara á heimaskjáinn"</string>
     <string name="allset_description" msgid="6350320429953234580">"Þú getur byrjað að nota símann"</string>
+    <string name="allset_description_tablet" msgid="7332070270570039247">"Þú getur byrjað að nota spjaldtölvuna"</string>
     <string name="allset_navigation_settings" msgid="4713404605961476027"><annotation id="link">"Stillingar kerfisstjórnunar"</annotation></string>
     <string name="action_share" msgid="2648470652637092375">"Deila"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"Skjámynd"</string>

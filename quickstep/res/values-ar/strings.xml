@@ -76,6 +76,7 @@
     <string name="allset_title" msgid="5021126669778966707">"اكتملت عملية الإعداد"</string>
     <string name="allset_hint" msgid="2384632994739392447">"مرِّر سريعًا للأعلى للانتقال إلى الشاشة الرئيسية."</string>
     <string name="allset_description" msgid="6350320429953234580">"يمكنك الآن بدء استخدام هاتفك."</string>
+    <string name="allset_description_tablet" msgid="7332070270570039247">"يمكنك الآن بدء استخدام جهازك اللوحي."</string>
     <string name="allset_navigation_settings" msgid="4713404605961476027"><annotation id="link">"إعدادات التنقّل داخل النظام"</annotation></string>
     <string name="action_share" msgid="2648470652637092375">"مشاركة"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"لقطة شاشة"</string>
