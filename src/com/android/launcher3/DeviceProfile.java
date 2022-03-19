@@ -257,7 +257,8 @@ public class DeviceProfile {
         // Some more constants.
         context = getContext(context, info, isVerticalBarLayout() || (isTablet && isLandscape)
                 ? Configuration.ORIENTATION_LANDSCAPE
-                : Configuration.ORIENTATION_PORTRAIT);
+                : Configuration.ORIENTATION_PORTRAIT,
+                windowBounds);
         final Resources res = context.getResources();
         mMetrics = res.getDisplayMetrics();
 
@@ -1231,10 +1232,11 @@ public class DeviceProfile {
         writer.println(prefix + pxToDpStr("overviewGridSideMargin", overviewGridSideMargin));
     }
 
-    private static Context getContext(Context c, Info info, int orientation) {
+    private static Context getContext(Context c, Info info, int orientation, WindowBounds bounds) {
         Configuration config = new Configuration(c.getResources().getConfiguration());
         config.orientation = orientation;
         config.densityDpi = info.densityDpi;
+        config.smallestScreenWidthDp = (int) info.smallestSizeDp(bounds);
         return c.createConfigurationContext(config);
     }
 
