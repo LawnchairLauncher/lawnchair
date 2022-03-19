@@ -16,15 +16,96 @@
 
 package com.android.launcher3.model;
 
+import android.app.admin.DevicePolicyManager;
 import android.content.Context;
 
 import com.android.launcher3.R;
+import com.android.launcher3.Utilities;
 
 /**
  *
- * Cache for some of the string used in Launcher.
+ * Cache for the device policy strings used in Launcher.
  */
 public class StringCache {
+
+    private static final String PREFIX = "Launcher.";
+
+    /**
+     * User on-boarding title for work profile apps.
+     */
+    private static final String WORK_PROFILE_EDU = PREFIX + "WORK_PROFILE_EDU";
+
+    /**
+     * Action label to finish work profile edu.
+     */
+    private static final String WORK_PROFILE_EDU_ACCEPT = PREFIX + "WORK_PROFILE_EDU_ACCEPT";
+
+    /**
+     * Title shown when user opens work apps tab while work profile is paused.
+     */
+    private static final String WORK_PROFILE_PAUSED_TITLE =
+            PREFIX + "WORK_PROFILE_PAUSED_TITLE";
+
+    /**
+     * Description shown when user opens work apps tab while work profile is paused.
+     */
+    private static final String WORK_PROFILE_PAUSED_DESCRIPTION =
+            PREFIX + "WORK_PROFILE_PAUSED_DESCRIPTION";
+
+    /**
+     * Shown on the button to pause work profile.
+     */
+    private static final String WORK_PROFILE_PAUSE_BUTTON =
+            PREFIX + "WORK_PROFILE_PAUSE_BUTTON";
+
+    /**
+     * Shown on the button to enable work profile.
+     */
+    private static final String WORK_PROFILE_ENABLE_BUTTON =
+            PREFIX + "WORK_PROFILE_ENABLE_BUTTON";
+
+    /**
+     * Label on launcher tab to indicate work apps.
+     */
+    private static final String ALL_APPS_WORK_TAB = PREFIX + "ALL_APPS_WORK_TAB";
+
+    /**
+     * Label on launcher tab to indicate personal apps.
+     */
+    private static final String ALL_APPS_PERSONAL_TAB = PREFIX + "ALL_APPS_PERSONAL_TAB";
+
+    /**
+     * Accessibility description for launcher tab to indicate work apps.
+     */
+    private static final String ALL_APPS_WORK_TAB_ACCESSIBILITY =
+            PREFIX + "ALL_APPS_WORK_TAB_ACCESSIBILITY";
+
+    /**
+     * Accessibility description for launcher tab to indicate personal apps.
+     */
+    private static final String ALL_APPS_PERSONAL_TAB_ACCESSIBILITY =
+            PREFIX + "ALL_APPS_PERSONAL_TAB_ACCESSIBILITY";
+
+    /**
+     * Work folder name.
+     */
+    private static final String WORK_FOLDER_NAME = PREFIX + "WORK_FOLDER_NAME";
+
+    /**
+     * Label on widget tab to indicate work app widgets.
+     */
+    private static final String WIDGETS_WORK_TAB = PREFIX + "WIDGETS_WORK_TAB";
+
+    /**
+     * Label on widget tab to indicate personal app widgets.
+     */
+    private static final String WIDGETS_PERSONAL_TAB = PREFIX + "WIDGETS_PERSONAL_TAB";
+
+    /**
+     * Message shown when a feature is disabled by the admin (e.g. changing wallpaper).
+     */
+    private static final String DISABLED_BY_ADMIN_MESSAGE =
+            PREFIX + "DISABLED_BY_ADMIN_MESSAGE";
 
     /**
      * User on-boarding title for work profile apps.
@@ -99,22 +180,45 @@ public class StringCache {
     /**
      * Sets the default values for the strings.
      */
-    public void loadDefaultStrings(Context context) {
-        workProfileEdu = context.getString(R.string.work_profile_edu_work_apps);
-        workProfileEduAccept = context.getString(R.string.work_profile_edu_accept);
-        workProfilePausedTitle = context.getString(R.string.work_apps_paused_title);
-        workProfilePausedDescription = context.getString(R.string.work_apps_paused_body);
-        workProfilePauseButton = context.getString(R.string.work_apps_pause_btn_text);
-        workProfileEnableButton = context.getString(R.string.work_apps_enable_btn_text);
-        allAppsWorkTab = context.getString(R.string.all_apps_work_tab);
-        allAppsPersonalTab = context.getString(R.string.all_apps_personal_tab);
-        allAppsWorkTabAccessibility = context.getString(R.string.all_apps_button_work_label);
-        allAppsPersonalTabAccessibility = context.getString(
+    public void loadStrings(Context context) {
+        workProfileEdu = getEnterpriseString(
+                context, WORK_PROFILE_EDU, R.string.work_profile_edu_work_apps);
+        workProfileEduAccept = getEnterpriseString(
+                context, WORK_PROFILE_EDU_ACCEPT, R.string.work_profile_edu_accept);
+        workProfilePausedTitle = getEnterpriseString(
+                context, WORK_PROFILE_PAUSED_TITLE, R.string.work_apps_paused_title);
+        workProfilePausedDescription = getEnterpriseString(
+                context, WORK_PROFILE_PAUSED_DESCRIPTION, R.string.work_apps_paused_body);
+        workProfilePauseButton = getEnterpriseString(
+                context, WORK_PROFILE_PAUSE_BUTTON, R.string.work_apps_pause_btn_text);
+        workProfileEnableButton = getEnterpriseString(
+                context, WORK_PROFILE_ENABLE_BUTTON, R.string.work_apps_enable_btn_text);
+        allAppsWorkTab = getEnterpriseString(
+                context, ALL_APPS_WORK_TAB, R.string.all_apps_work_tab);
+        allAppsPersonalTab = getEnterpriseString(
+                context, ALL_APPS_PERSONAL_TAB, R.string.all_apps_personal_tab);
+        allAppsWorkTabAccessibility = getEnterpriseString(
+                context, ALL_APPS_WORK_TAB_ACCESSIBILITY, R.string.all_apps_button_work_label);
+        allAppsPersonalTabAccessibility = getEnterpriseString(
+                context, ALL_APPS_PERSONAL_TAB_ACCESSIBILITY,
                 R.string.all_apps_button_personal_label);
-        workFolderName = context.getString(R.string.work_folder_name);
-        widgetsWorkTab = context.getString(R.string.widgets_full_sheet_work_tab);
-        widgetsPersonalTab = context.getString(R.string.widgets_full_sheet_personal_tab);
-        disabledByAdminMessage = context.getString(R.string.msg_disabled_by_admin);
+        workFolderName = getEnterpriseString(
+                context, WORK_FOLDER_NAME, R.string.work_folder_name);
+        widgetsWorkTab = getEnterpriseString(
+                context, WIDGETS_WORK_TAB, R.string.widgets_full_sheet_work_tab);
+        widgetsPersonalTab = getEnterpriseString(
+                context, WIDGETS_PERSONAL_TAB, R.string.widgets_full_sheet_personal_tab);
+        disabledByAdminMessage = getEnterpriseString(
+                context, DISABLED_BY_ADMIN_MESSAGE, R.string.msg_disabled_by_admin);
+    }
+
+    private String getEnterpriseString(
+            Context context, String updatableStringId, int defaultStringId) {
+        DevicePolicyManager dpm = context.getSystemService(DevicePolicyManager.class);
+        return Utilities.ATLEAST_T
+                ? dpm.getResources().getString(
+                        updatableStringId, () -> context.getString(defaultStringId))
+                : context.getString(defaultStringId);
     }
 
     @Override
