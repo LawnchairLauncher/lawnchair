@@ -76,6 +76,7 @@
     <string name="allset_title" msgid="5021126669778966707">"Đã hoàn tất!"</string>
     <string name="allset_hint" msgid="2384632994739392447">"Vuốt lên để chuyển đến Màn hình chính"</string>
     <string name="allset_description" msgid="6350320429953234580">"Vậy là bạn đã sẵn sàng sử dụng điện thoại của mình"</string>
+    <string name="allset_description_tablet" msgid="7332070270570039247">"Bạn đã sẵn sàng sử dụng máy tính bảng"</string>
     <string name="allset_navigation_settings" msgid="4713404605961476027"><annotation id="link">"Chế độ cài đặt di chuyển trên hệ thống"</annotation></string>
     <string name="action_share" msgid="2648470652637092375">"Chia sẻ"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"Chụp ảnh màn hình"</string>

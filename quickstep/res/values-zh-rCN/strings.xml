@@ -76,6 +76,7 @@
     <string name="allset_title" msgid="5021126669778966707">"大功告成！"</string>
     <string name="allset_hint" msgid="2384632994739392447">"向上滑动即可转到主屏幕"</string>
     <string name="allset_description" msgid="6350320429953234580">"您可以开始使用手机了"</string>
+    <string name="allset_description_tablet" msgid="7332070270570039247">"您可以开始使用平板电脑了"</string>
     <string name="allset_navigation_settings" msgid="4713404605961476027"><annotation id="link">"系统导航设置"</annotation></string>
     <string name="action_share" msgid="2648470652637092375">"分享"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"屏幕截图"</string>
