@@ -76,7 +76,7 @@
     </plurals>
     <string name="hotseat_qsb_label">Mostrar Barra de Búsqueda</string>
     <string name="dt2s_admin_hint_title">Permisos de administrador requeridos</string>
-    <string name="dt2s_admin_hint">Para usar el doble toque para apagar la pantalla, establece Lawnchair como una app de administrador de dispositivos. Pulsa en \"Abrir Configuración\", luego en \"Activar esta app de administrador de dispositivos.\"</string>
+    <string name="dt2s_admin_hint">Para usar el doble toque para apagar la pantalla, establece Lawnchair como una app de administrador de dispositivos. Pulsa en \"Abrir Configuración\", luego en \"Activar esta aplicación de administrador de dispositivos.\"</string>
     <string name="dt2s_admin_warning">Se desactivará el doble toque para dormir.</string>
     <string name="dt2s_a11y_hint_title">Activar el Servicio de Accesibilidad</string>
     <string name="dt2s_a11y_hint">Para usar el doble toque para apagar la pantalla, activa el servicio de accesibilidad de Lawnchair. Toca en \"Abrir Configuración\", luego selecciona \"Lawnchair\" y activa \"Usar Lawnchair\".</string>
