@@ -76,6 +76,7 @@
     <string name="allset_title" msgid="5021126669778966707">"Όλα έτοιμα!"</string>
     <string name="allset_hint" msgid="2384632994739392447">"Σύρετε προς τα πάνω για μετάβαση στην αρχική οθόνη."</string>
     <string name="allset_description" msgid="6350320429953234580">"Είστε έτοιμοι να ξεκινήσετε να χρησιμοποιείτε το τηλέφωνό σας"</string>
+    <string name="allset_description_tablet" msgid="7332070270570039247">"Είστε έτοιμοι να ξεκινήσετε να χρησιμοποιείτε το tablet."</string>
     <string name="allset_navigation_settings" msgid="4713404605961476027"><annotation id="link">"Ρυθμίσεις πλοήγησης συστήματος"</annotation></string>
     <string name="action_share" msgid="2648470652637092375">"Κοινοποίηση"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"Στιγμιότυπο οθόνης"</string>

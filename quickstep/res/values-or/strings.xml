@@ -76,6 +76,7 @@
     <string name="allset_title" msgid="5021126669778966707">"ସମ୍ପୂର୍ଣ୍ଣ ଭାବେ ପ୍ରସ୍ତୁତ!"</string>
     <string name="allset_hint" msgid="2384632994739392447">"ମୂଳପୃଷ୍ଠାକୁ ଯିବା ପାଇଁ ଉପରକୁ ସ୍ୱାଇପ୍ କରନ୍ତୁ"</string>
     <string name="allset_description" msgid="6350320429953234580">"ଆପଣ ଆପଣଙ୍କ ଫୋନ୍ ବ୍ୟବହାର କରିବା ପାଇଁ ପ୍ରସ୍ତୁତ ଅଛନ୍ତି"</string>
+    <string name="allset_description_tablet" msgid="7332070270570039247">"ଆପଣ ଆପଣଙ୍କ ଟାବଲେଟ ବ୍ୟବହାର କରିବା ଆରମ୍ଭ କରିବାକୁ ପ୍ରସ୍ତୁତ ଅଛନ୍ତି"</string>
     <string name="allset_navigation_settings" msgid="4713404605961476027"><annotation id="link">"ସିଷ୍ଟମ ନାଭିଗେସନ ସେଟିଂସ"</annotation></string>
     <string name="action_share" msgid="2648470652637092375">"ସେୟାର୍ କରନ୍ତୁ"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"ସ୍କ୍ରିନସଟ୍"</string>
