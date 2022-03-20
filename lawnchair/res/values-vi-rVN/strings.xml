@@ -178,7 +178,7 @@
     <string name="lawnicons_not_installed_description">Lawnicons chưa được cài đặt.</string>
     <string name="icon_picker_default_category">Biểu tượng</string>
     <string name="icon_picker_reset_to_default">Đặt lại về mặc định</string>
-    <string name="icon_pack_external_picker">Open External Picker</string>
+    <string name="icon_pack_external_picker">Mở bộ chọn bên ngoài</string>
     <string name="recents_actions_label">Thao tác nhanh</string>
     <string name="recents_clear_all">Xoá tất cả</string>
     <string name="pick_icon_from_label">Chọn biểu tượng từ</string>
