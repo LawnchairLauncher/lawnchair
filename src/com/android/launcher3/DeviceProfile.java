@@ -947,7 +947,7 @@ public class DeviceProfile {
                 additionalLeftSpace = qsbWidth + hotseatBorderSpace;
             }
 
-            int hotseatTopDiff = hotseatHeight - taskbarOffset;
+            int hotseatTopPadding = hotseatHeight - taskbarOffset - hotseatCellHeightPx;
 
             int endOffset = ApiWrapper.getHotseatEndOffset(context);
             int requiredWidth = iconSizePx * numShownHotseatIcons
@@ -956,7 +956,7 @@ public class DeviceProfile {
 
             int hotseatSize = Math.min(requiredWidth, availableWidthPx - endOffset);
             int sideSpacing = (availableWidthPx - hotseatSize) / 2;
-            mHotseatPadding.set(sideSpacing + additionalLeftSpace, hotseatTopDiff, sideSpacing,
+            mHotseatPadding.set(sideSpacing + additionalLeftSpace, hotseatTopPadding, sideSpacing,
                     taskbarOffset);
 
             if (endOffset > sideSpacing) {
