@@ -22,9 +22,6 @@
     <item type="id" name="drag_event_parity" />
 
     <!-- AllApps & Launcher transitions -->
-    <!-- Out of 100, the percent to shrink the workspace during spring loaded mode. -->
-    <integer name="config_workspaceSpringLoadShrinkPercentage">85</integer>
-
     <!-- The duration of the animation from search hint to text entry -->
     <integer name="config_searchHintAnimationDuration">50</integer>
 
