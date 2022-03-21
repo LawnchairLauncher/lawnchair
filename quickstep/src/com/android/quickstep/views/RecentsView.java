@@ -1078,10 +1078,15 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     private int getSnapToLastTaskScrollDiff() {
         // Snap to a position where ClearAll is just invisible.
         int screenStart = mOrientationHandler.getPrimaryScroll(this);
-        int clearAllWidth = mOrientationHandler.getPrimarySize(mClearAllButton);
         int clearAllScroll = getScrollForPage(indexOfChild(mClearAllButton));
-        int targetScroll = clearAllScroll + (mIsRtl ? clearAllWidth : -clearAllWidth);
-        return screenStart - targetScroll;
+        int clearAllWidth = mOrientationHandler.getPrimarySize(mClearAllButton);
+        int lastTaskScroll = getLastTaskScroll(clearAllScroll, clearAllWidth);
+        return screenStart - lastTaskScroll;
+    }
+
+    private int getLastTaskScroll(int clearAllScroll, int clearAllWidth) {
+        int distance = clearAllWidth + getClearAllExtraPageSpacing();
+        return clearAllScroll + (mIsRtl ? distance : -distance);
     }
 
     private int getSnapToFocusedTaskScrollDiff(boolean isClearAllHidden) {
@@ -4515,6 +4520,19 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     }
 
     @Override
+    protected int getChildGap(int fromIndex, int toIndex) {
+        int clearAllIndex = indexOfChild(mClearAllButton);
+        return fromIndex == clearAllIndex || toIndex == clearAllIndex
+                ? getClearAllExtraPageSpacing() : 0;
+    }
+
+    private int getClearAllExtraPageSpacing() {
+        return showAsGrid()
+                ? Math.max(mActivity.getDeviceProfile().overviewGridSideMargin - mPageSpacing, 0)
+                : 0;
+    }
+
+    @Override
     protected void updateMinAndMaxScrollX() {
         super.updateMinAndMaxScrollX();
         if (DEBUG) {
@@ -4596,9 +4614,10 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             TaskView taskView = requireTaskViewAt(i);
             float scrollDiff = taskView.getScrollAdjustment(showAsFullscreen, showAsGrid);
             int pageScroll = newPageScrolls[i] + (int) scrollDiff;
-            if ((mIsRtl && pageScroll < clearAllScroll + clearAllWidth)
-                    || (!mIsRtl && pageScroll > clearAllScroll - clearAllWidth)) {
-                pageScroll = clearAllScroll + (mIsRtl ? clearAllWidth : -clearAllWidth);
+            int lastTaskScroll = getLastTaskScroll(clearAllScroll, clearAllWidth);
+            if ((mIsRtl && pageScroll < lastTaskScroll)
+                    || (!mIsRtl && pageScroll > lastTaskScroll)) {
+                pageScroll = lastTaskScroll;
             }
             if (outPageScrolls[i] != pageScroll) {
                 pageScrollChanged = true;
