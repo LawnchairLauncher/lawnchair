@@ -54,6 +54,12 @@ public class OverviewCommandHelper {
     public static final int TYPE_TOGGLE = 4;
     public static final int TYPE_HOME = 5;
 
+    /**
+     * Use case for needing a queue is double tapping recents button in 3 button nav.
+     * Size of 2 should be enough. We'll toss in one more because we're kind hearted.
+     */
+    private final static int MAX_QUEUE_SIZE = 3;
+
     private static final String TRANSITION_NAME = "Transition:toOverview";
 
     private final TouchInteractionService mService;
@@ -105,10 +111,15 @@ public class OverviewCommandHelper {
     }
 
     /**
-     * Adds a command to be executed next, after all pending tasks are completed
+     * Adds a command to be executed next, after all pending tasks are completed.
+     * Max commands that can be queued is {@link #MAX_QUEUE_SIZE}.
+     * Requests after reaching that limit will be silently dropped.
      */
     @BinderThread
     public void addCommand(int type) {
+        if (mPendingCommands.size() > MAX_QUEUE_SIZE) {
+            return;
+        }
         CommandInfo cmd = new CommandInfo(type);
         MAIN_EXECUTOR.execute(() -> addCommand(cmd));
     }
