@@ -838,6 +838,8 @@ public class InvariantDeviceProfile {
             minCellSize[INDEX_TWO_PANEL_LANDSCAPE] = new PointF(x, y);
 
             float borderSpace = a.getFloat(R.styleable.ProfileDisplayOption_borderSpace, 0);
+            float borderSpaceLandscape = a.getFloat(
+                    R.styleable.ProfileDisplayOption_borderSpaceLandscape, borderSpace);
             float borderSpaceTwoPanelPortrait = a.getFloat(
                     R.styleable.ProfileDisplayOption_borderSpaceTwoPanelPortrait, borderSpace);
             float borderSpaceTwoPanelLandscape = a.getFloat(
@@ -846,6 +848,11 @@ public class InvariantDeviceProfile {
             x = a.getFloat(R.styleable.ProfileDisplayOption_borderSpaceHorizontal, borderSpace);
             y = a.getFloat(R.styleable.ProfileDisplayOption_borderSpaceVertical, borderSpace);
             borderSpaces[INDEX_DEFAULT] = new PointF(x, y);
+
+            x = a.getFloat(R.styleable.ProfileDisplayOption_borderSpaceLandscapeHorizontal,
+                    borderSpaceLandscape);
+            y = a.getFloat(R.styleable.ProfileDisplayOption_borderSpaceLandscapeVertical,
+                    borderSpaceLandscape);
             borderSpaces[INDEX_LANDSCAPE] = new PointF(x, y);
 
             x = a.getFloat(
