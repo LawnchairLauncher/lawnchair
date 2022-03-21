@@ -19,14 +19,14 @@
     <dimen name="click_shadow_elevation">4dp</dimen>
 
     <!-- Dynamic Grid -->
-    <dimen name="dynamic_grid_edge_margin">8dp</dimen>
+    <dimen name="dynamic_grid_edge_margin">10.77dp</dimen>
     <dimen name="dynamic_grid_left_right_margin">8dp</dimen>
     <dimen name="dynamic_grid_icon_drawable_padding">7dp</dimen>
     <!-- Minimum space between workspace and hotseat in spring loaded mode -->
     <dimen name="dynamic_grid_min_spring_loaded_space">8dp</dimen>
 
     <dimen name="dynamic_grid_cell_border_spacing">16dp</dimen>
-    <dimen name="dynamic_grid_cell_layout_padding">5.5dp</dimen>
+    <dimen name="cell_layout_padding">10.77dp</dimen>
     <dimen name="dynamic_grid_cell_padding_x">8dp</dimen>
 
     <!-- Hotseat -->
@@ -34,6 +34,7 @@
     <dimen name="dynamic_grid_hotseat_bottom_padding">2dp</dimen>
     <dimen name="dynamic_grid_hotseat_bottom_tall_padding">0dp</dimen>
     <dimen name="inline_qsb_bottom_margin">0dp</dimen>
+    <dimen name="spring_loaded_hotseat_top_margin">76dp</dimen>
 
     <!-- Qsb -->
     <!-- Used for adjusting the position of QSB when placed in hotseat. This is a ratio and a higher
@@ -55,8 +56,10 @@
     <dimen name="workspace_page_indicator_overlap_workspace">0dp</dimen>
 
 <!-- Drop target bar -->
-    <dimen name="dynamic_grid_drop_target_size">52dp</dimen>
+    <dimen name="dynamic_grid_drop_target_size">56dp</dimen>
     <dimen name="drop_target_vertical_gap">20dp</dimen>
+    <dimen name="drop_target_top_margin">36dp</dimen>
+    <dimen name="drop_target_bottom_margin">16dp</dimen>
 
 <!-- App Widget resize frame -->
     <dimen name="widget_handle_margin">13dp</dimen>
@@ -206,6 +209,9 @@
     <dimen name="drop_target_shadow_elevation">2dp</dimen>
     <dimen name="drop_target_bar_margin_horizontal">4dp</dimen>
     <dimen name="drop_target_button_drawable_padding">8dp</dimen>
+    <dimen name="drop_target_button_drawable_horizontal_padding">16dp</dimen>
+    <dimen name="drop_target_button_drawable_vertical_padding">8dp</dimen>
+    <dimen name="drop_target_button_gap">22dp</dimen>
 
     <!-- the distance an icon must be dragged before button drop targets accept it -->
     <dimen name="drag_distanceThreshold">30dp</dimen>
@@ -358,8 +364,9 @@
 
 
 <!-- Workspace grid visualization parameters -->
-    <dimen name="grid_visualization_rounding_radius">22dp</dimen>
-    <dimen name="grid_visualization_cell_spacing">6dp</dimen>
+    <dimen name="grid_visualization_rounding_radius">28dp</dimen>
+    <dimen name="grid_visualization_horizontal_cell_spacing">6dp</dimen>
+    <dimen name="grid_visualization_vertical_cell_spacing">6dp</dimen>
 
 <!-- Search results related parameters -->
     <dimen name="search_row_icon_size">48dp</dimen>

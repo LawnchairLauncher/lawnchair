@@ -15,9 +15,16 @@
 -->
 
 <resources>
-    <!-- Widget picker-->
+<!-- Dragging-->
+    <dimen name="drop_target_top_margin">0dp</dimen>
+    <dimen name="drop_target_bottom_margin">32dp</dimen>
+<!-- Dynamic grid -->
+    <dimen name="dynamic_grid_edge_margin">21.93dp</dimen>
+    <dimen name="cell_layout_padding">29.33dp</dimen>
+<!-- Hotseat -->
+    <dimen name="spring_loaded_hotseat_top_margin">64dp</dimen>
+<!-- Widget picker-->
     <dimen name="widget_list_horizontal_margin">49dp</dimen>
-
-    <!-- Bottom sheet-->
+<!-- Bottom sheet-->
     <dimen name="bottom_sheet_extra_top_padding">0dp</dimen>
 </resources>
