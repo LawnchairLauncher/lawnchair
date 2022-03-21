@@ -89,8 +89,13 @@ public class TaskbarManager implements DisplayController.DisplayInfoChangeListen
      */
     private final TaskbarSharedState mSharedState = new TaskbarSharedState();
 
-    private static final int CHANGE_FLAGS = CHANGE_ACTIVE_SCREEN | CHANGE_DENSITY
-            | CHANGE_SUPPORTED_BOUNDS | CHANGE_NAVIGATION_MODE;
+    /**
+     * We use WindowManager's ComponentCallbacks() for most of the config changes, however for
+     * navigation mode, that callback gets called too soon, before it's internal navigation mode
+     * reflects the current one.
+     * DisplayController's callback is delayed enough to get the correct nav mode value
+     */
+    private static final int CHANGE_FLAGS = CHANGE_NAVIGATION_MODE;
 
     private boolean mUserUnlocked = false;
 
@@ -108,19 +113,29 @@ public class TaskbarManager implements DisplayController.DisplayInfoChangeListen
 
             @Override
             public void onConfigurationChanged(Configuration newConfig) {
+                DeviceProfile dp = mUserUnlocked
+                        ? LauncherAppState.getIDP(mContext).getDeviceProfile(mContext)
+                        : null;
                 int configDiff = mOldConfig.diff(newConfig);
                 int configsRequiringRecreate = ActivityInfo.CONFIG_ASSETS_PATHS
-                        | ActivityInfo.CONFIG_LAYOUT_DIRECTION | ActivityInfo.CONFIG_UI_MODE;
+                        | ActivityInfo.CONFIG_LAYOUT_DIRECTION | ActivityInfo.CONFIG_UI_MODE
+                        | ActivityInfo.CONFIG_DENSITY | ActivityInfo.CONFIG_SCREEN_SIZE;
                 if ((configDiff & configsRequiringRecreate) != 0) {
-                    // Color has changed, recreate taskbar to reload background color & icons.
-                    recreateTaskbar();
+                    if ((configDiff & ActivityInfo.CONFIG_SCREEN_SIZE) != 0 &&
+                            mTaskbarActivityContext != null && dp != null) {
+                        DeviceProfile oldDp = mTaskbarActivityContext.getDeviceProfile();
+                        // Additional check since this callback gets fired multiple times w/o
+                        // screen size changing
+                        if (dp.widthPx != oldDp.widthPx || dp.heightPx != oldDp.heightPx) {
+                            recreateTaskbar();
+                        }
+                    } else {
+                        // Color has changed, recreate taskbar to reload background color & icons.
+                        recreateTaskbar();
+                    }
                 } else {
                     // Config change might be handled without re-creating the taskbar
                     if (mTaskbarActivityContext != null) {
-                        DeviceProfile dp = mUserUnlocked
-                                ? LauncherAppState.getIDP(mContext).getDeviceProfile(mContext)
-                                : null;
-
                         if (dp != null && dp.isTaskbarPresent) {
                             mTaskbarActivityContext.updateDeviceProfile(dp.copy(mContext));
                         }
