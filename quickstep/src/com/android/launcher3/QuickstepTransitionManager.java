@@ -28,6 +28,7 @@ import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
 import static com.android.launcher3.LauncherAnimUtils.VIEW_BACKGROUND_COLOR;
 import static com.android.launcher3.LauncherState.ALL_APPS;
 import static com.android.launcher3.LauncherState.BACKGROUND_APP;
+import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.Utilities.mapBoundToRange;
 import static com.android.launcher3.Utilities.postAsyncCallback;
@@ -1617,6 +1618,12 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
                 if (!mLauncher.isInState(LauncherState.ALL_APPS)) {
                     anim.play(new StaggeredWorkspaceAnim(mLauncher, velocity.y,
                             true /* animateOverviewScrim */, launcherView).getAnimators());
+
+                    if (!areAllTargetsTranslucent(appTargets)) {
+                        anim.play(ObjectAnimator.ofFloat(mLauncher.getDepthController(), DEPTH,
+                                BACKGROUND_APP.getDepth(mLauncher), NORMAL.getDepth(mLauncher)));
+                    }
+
                     // We play StaggeredWorkspaceAnim as a part of the closing window animation.
                     playWorkspaceReveal = false;
                 } else {
