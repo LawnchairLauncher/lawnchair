@@ -306,7 +306,7 @@ public class DisplayController implements ComponentCallbacks, SafeCloseable {
         public Info(Context context, Display display,
                 WindowManagerProxy wmProxy,
                 ArrayMap<String, Pair<CachedDisplayInfo, WindowBounds[]>> perDisplayBoundsCache) {
-            CachedDisplayInfo displayInfo = wmProxy.getDisplayInfo(display);
+            CachedDisplayInfo displayInfo = wmProxy.getDisplayInfo(context, display);
             rotation = displayInfo.rotation;
             currentSize = displayInfo.size;
             displayId = displayInfo.id;
@@ -372,7 +372,7 @@ public class DisplayController implements ComponentCallbacks, SafeCloseable {
         pw.println("  id=" + info.displayId);
         pw.println("  rotation=" + info.rotation);
         pw.println("  fontScale=" + info.fontScale);
-        pw.println("  densityDpi=" + info.displayId);
+        pw.println("  densityDpi=" + info.densityDpi);
         pw.println("  navigationMode=" + info.navigationMode.name());
         pw.println("  currentSize=" + info.currentSize);
         pw.println("  supportedBounds=" + info.supportedBounds);
