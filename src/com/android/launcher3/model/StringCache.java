@@ -18,6 +18,9 @@ package com.android.launcher3.model;
 
 import android.app.admin.DevicePolicyManager;
 import android.content.Context;
+import android.os.Build;
+
+import androidx.annotation.RequiresApi;
 
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
@@ -214,11 +217,17 @@ public class StringCache {
 
     private String getEnterpriseString(
             Context context, String updatableStringId, int defaultStringId) {
-        DevicePolicyManager dpm = context.getSystemService(DevicePolicyManager.class);
         return Utilities.ATLEAST_T
-                ? dpm.getResources().getString(
-                        updatableStringId, () -> context.getString(defaultStringId))
+                ? getUpdatableEnterpriseSting(context, updatableStringId, defaultStringId)
                 : context.getString(defaultStringId);
+    }
+
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
+    private String getUpdatableEnterpriseSting(
+            Context context, String updatableStringId, int defaultStringId) {
+        DevicePolicyManager dpm = context.getSystemService(DevicePolicyManager.class);
+        return dpm.getResources().getString(
+                updatableStringId, () -> context.getString(defaultStringId));
     }
 
     @Override

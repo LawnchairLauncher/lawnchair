@@ -215,6 +215,13 @@
         <attr name="borderSpaceHorizontal" format="float" />
         <!-- space below the cell, defaults to borderSpace if not specified -->
         <attr name="borderSpaceVertical" format="float" />
+        <!-- space to be used horizontally and vertically,
+        defaults to borderSpace if not specified -->
+        <attr name="borderSpaceLandscape" format="float" />
+        <!-- space to the right of the cell, defaults to borderSpaceLandscape if not specified -->
+        <attr name="borderSpaceLandscapeHorizontal" format="float" />
+        <!-- space below the cell, defaults to borderSpaceLandscape if not specified -->
+        <attr name="borderSpaceLandscapeVertical" format="float" />
         <!-- space to be used horizontally and vertically in two panels,
         defaults to borderSpace if not specified -->
         <attr name="borderSpaceTwoPanelPortrait" format="float" />

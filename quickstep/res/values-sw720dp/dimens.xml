@@ -15,6 +15,11 @@
 */
 -->
 <resources>
-    <dimen name="overview_grid_row_spacing">44dp</dimen>
+    <dimen name="overview_task_margin">16dp</dimen>
+    <dimen name="overview_task_margin_grid">16dp</dimen>
+    <dimen name="overview_grid_side_margin">64dp</dimen>
+    <dimen name="overview_grid_row_spacing">36dp</dimen>
     <dimen name="overview_page_spacing">44dp</dimen>
+    <dimen name="task_thumbnail_icon_drawable_size">44dp</dimen>
+    <dimen name="task_thumbnail_icon_drawable_size_grid">44dp</dimen>
 </resources>

@@ -60,9 +60,9 @@
     <string name="widget_preview_context_description"><xliff:g id="widget_name" example="Calendar month view">%1$s</xliff:g> widget</string>
     <!-- Message to tell the user to press and hold a widget/icon to add it to the home screen.
          [CHAR LIMIT=NONE]  -->
-    <string name="add_item_request_drag_hint">Touch &amp; hold the widget to move it around the Home screen</string>
+    <string name="add_item_request_drag_hint">Touch &amp; hold the widget to move it around the home screen</string>
     <!-- Button label to automatically add a widget to home screen [CHAR_LIMIT=50] -->
-    <string name="add_to_home_screen">Add to Home screen</string>
+    <string name="add_to_home_screen">Add to home screen</string>
     <!-- Accessibility spoken message announced when a widget gets added to the home screen using a
          button in a dialog. [CHAR_LIMIT=none] -->
     <string name="added_to_home_screen_accessibility_text"><xliff:g id="widget_name" example="Calendar month view">%1$s</xliff:g> widget added to home screen</string>
@@ -108,7 +108,7 @@
     <string name="widget_education_header">Useful info at your fingertips</string>
     <!-- Dialog text. This dialog lets a user know how they can use widgets on their phone.
          [CHAR_LIMIT=NONE] -->
-    <string name="widget_education_content">To get info without opening apps, you can add widgets to your Home screen</string>
+    <string name="widget_education_content">To get info without opening apps, you can add widgets to your home screen</string>
 
     <!-- Text on an educational tip on widget informing users that they can change widget settings.
          [CHAR_LIMIT=NONE] -->
@@ -147,7 +147,7 @@
 
     <skip />
     <!-- Error message when a user can't add more apps, widgets, or shortcuts to a Home screen. -->
-    <string name="out_of_space">No room on this Home screen</string>
+    <string name="out_of_space">No room on this home screen</string>
     <!-- Error message when user has filled the hotseat -->
     <string name="hotseat_out_of_space">No more room in the Favorites tray</string>
 
@@ -181,15 +181,15 @@
     <string name="permdesc_install_shortcut">Allows an app to add
         shortcuts without user intervention.</string>
     <!-- Permission short label -->
-    <string name="permlab_read_settings">read Home settings and shortcuts</string>
+    <string name="permlab_read_settings">read home settings and shortcuts</string>
     <!-- Permission description -->
     <string name="permdesc_read_settings">Allows the app to read the settings and
-        shortcuts in Home.</string>
+        shortcuts in home.</string>
     <!-- Permission short label -->
-    <string name="permlab_write_settings">write Home settings and shortcuts</string>
+    <string name="permlab_write_settings">write home settings and shortcuts</string>
     <!-- Permission description -->
     <string name="permdesc_write_settings">Allows the app to change the settings and
-        shortcuts in Home.</string>
+        shortcuts in home.</string>
 
     <!-- Toast shown on clicking a direct call shortcut. [CHAR_LIMIT=80] -->
     <string name="msg_no_phone_permission"><xliff:g id="app_name" example="Launcher3">%1$s</xliff:g> is not allowed to make phone calls</string>
@@ -259,7 +259,7 @@
 
     <!-- Strings for settings -->
     <!-- Title for Allow Rotation setting. [CHAR LIMIT=50] -->
-    <string name="allow_rotation_title">Allow Home screen rotation</string>
+    <string name="allow_rotation_title">Allow home screen rotation</string>
     <!-- Text explaining when the home screen will get rotated. [CHAR LIMIT=100] -->
     <string name="allow_rotation_desc">When phone is rotated</string>
     <!-- Title for Notification dots setting. Tapping this will link to the system Notifications settings screen where the user can turn off notification dots globally. [CHAR LIMIT=50] -->
@@ -278,7 +278,7 @@
     <string name="notification_dots_service_title">Show notification dots</string>
 
     <!-- Label for the setting that allows the automatic placement of launcher shortcuts for applications and games installed on the device [CHAR LIMIT=60] -->
-    <string name="auto_add_shortcuts_label">Add app icons to Home screen</string>
+    <string name="auto_add_shortcuts_label">Add app icons to home screen</string>
     <!-- Text description of the setting that allows the automatic placement of launcher shortcuts for applications and games installed on the device [CHAR LIMIT=NONE] -->
     <string name="auto_add_shortcuts_description">For new apps</string>
 
@@ -312,7 +312,7 @@
 
     <!-- Strings for accessibility actions -->
     <!-- Accessibility action to add an app to workspace. [CHAR_LIMIT=30] -->
-    <string name="action_add_to_workspace">Add to Home screen</string>
+    <string name="action_add_to_workspace">Add to home screen</string>
 
     <!-- Accessibility action to move item to the current location. [CHAR_LIMIT=30] -->
     <string name="action_move_here">Move item here</string>
@@ -357,7 +357,7 @@
     <string name="folder_created">Folder created</string>
 
     <!-- Accessibility action to move an item from folder to workspace. [CHAR_LIMIT=30] -->
-    <string name="action_move_to_workspace">Move to Home screen</string>
+    <string name="action_move_to_workspace">Move to home screen</string>
 
     <!-- Accessibility action to resize a widget. [CHAR_LIMIT=30] -->
     <string name="action_resize">Resize</string>
