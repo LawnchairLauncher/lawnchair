@@ -306,7 +306,7 @@ public final class DigitalWellBeingToast {
 
     private void setBanner(@Nullable View view) {
         mBanner = view;
-        if (view != null) {
+        if (view != null && mTaskView.getRecentsView() != null) {
             setupAndAddBanner();
             setBannerOutline();
         }
