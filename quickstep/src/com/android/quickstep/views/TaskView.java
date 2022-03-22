@@ -1008,8 +1008,11 @@ public class TaskView extends FrameLayout implements Reusable {
         // resetViewTransforms is called during Quickswitch scrolling.
         mDismissTranslationX = mTaskOffsetTranslationX =
                 mTaskResistanceTranslationX = mSplitSelectTranslationX = mGridEndTranslationX = 0f;
-        mDismissTranslationY = mTaskOffsetTranslationY = mTaskResistanceTranslationY =
-                mSplitSelectTranslationY = 0f;
+        mDismissTranslationY = mTaskOffsetTranslationY = mTaskResistanceTranslationY = 0f;
+        if (getRecentsView() == null || !getRecentsView().isSplitSelectionActive()) {
+            mSplitSelectTranslationY = 0f;
+        }
+
         setSnapshotScale(1f);
         applyTranslationX();
         applyTranslationY();
