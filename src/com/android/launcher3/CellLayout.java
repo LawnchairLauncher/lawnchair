@@ -93,7 +93,7 @@ public class CellLayout extends ViewGroup {
     private int mFixedCellWidth;
     private int mFixedCellHeight;
     @ViewDebug.ExportedProperty(category = "launcher")
-    private final Point mBorderSpace;
+    private Point mBorderSpace;
 
     @ViewDebug.ExportedProperty(category = "launcher")
     private int mCountX;
@@ -239,22 +239,7 @@ public class CellLayout extends ViewGroup {
         mActivity = ActivityContext.lookupContext(context);
         DeviceProfile deviceProfile = mActivity.getDeviceProfile();
 
-        switch (mContainerType) {
-            case FOLDER:
-                mBorderSpace = new Point(deviceProfile.folderCellLayoutBorderSpacePx);
-                break;
-            case HOTSEAT:
-                mBorderSpace = new Point(deviceProfile.hotseatBorderSpace,
-                        deviceProfile.hotseatBorderSpace);
-                break;
-            case WORKSPACE:
-            default:
-                mBorderSpace = new Point(deviceProfile.cellLayoutBorderSpacePx);
-                break;
-        }
-
-        mCellWidth = mCellHeight = -1;
-        mFixedCellWidth = mFixedCellHeight = -1;
+        resetCellSizeInternal(deviceProfile);
 
         mCountX = deviceProfile.inv.numColumns;
         mCountY = deviceProfile.inv.numRows;
@@ -379,11 +364,44 @@ public class CellLayout extends ViewGroup {
         return mShortcutsAndWidgets.getLayerType() == LAYER_TYPE_HARDWARE;
     }
 
+    /**
+     * Change sizes of cells
+     *
+     * @param width  the new width of the cells
+     * @param height the new height of the cells
+     */
     public void setCellDimensions(int width, int height) {
         mFixedCellWidth = mCellWidth = width;
         mFixedCellHeight = mCellHeight = height;
         mShortcutsAndWidgets.setCellDimensions(mCellWidth, mCellHeight, mCountX, mCountY,
                 mBorderSpace);
+    }
+
+    private void resetCellSizeInternal(DeviceProfile deviceProfile) {
+        switch (mContainerType) {
+            case FOLDER:
+                mBorderSpace = new Point(deviceProfile.folderCellLayoutBorderSpacePx);
+                break;
+            case HOTSEAT:
+                mBorderSpace = new Point(deviceProfile.hotseatBorderSpace,
+                        deviceProfile.hotseatBorderSpace);
+                break;
+            case WORKSPACE:
+            default:
+                mBorderSpace = new Point(deviceProfile.cellLayoutBorderSpacePx);
+                break;
+        }
+
+        mCellWidth = mCellHeight = -1;
+        mFixedCellWidth = mFixedCellHeight = -1;
+    }
+
+    /**
+     * Reset the cell sizes and border space
+     */
+    public void resetCellSize(DeviceProfile deviceProfile) {
+        resetCellSizeInternal(deviceProfile);
+        requestLayout();
     }
 
     public void setGridSize(int x, int y) {
