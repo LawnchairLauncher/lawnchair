@@ -216,6 +216,7 @@ public abstract class BaseDraggingActivity extends BaseActivity
      * Creates and returns {@link SearchAdapterProvider} for build variant specific search result
      * views
      */
+    @Override
     public SearchAdapterProvider<?> createSearchAdapterProvider(
             ActivityAllAppsContainerView<?> allApps) {
         return new DefaultSearchAdapterProvider(this);
