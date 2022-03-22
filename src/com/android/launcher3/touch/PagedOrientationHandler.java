@@ -146,7 +146,8 @@ public interface PagedOrientationHandler {
             int taskIconMargin, int taskIconHeight, int thumbnailTopMargin, boolean isRtl);
     void setSplitIconParams(View primaryIconView, View secondaryIconView,
             int taskIconHeight, int primarySnapshotWidth, int primarySnapshotHeight,
-            boolean isRtl, DeviceProfile deviceProfile, StagedSplitBounds splitConfig);
+            int groupedTaskViewHeight, int groupedTaskViewWidth, boolean isRtl,
+            DeviceProfile deviceProfile, StagedSplitBounds splitConfig);
 
     /*
      * The following two methods try to center the TaskMenuView in landscape by finding the center
