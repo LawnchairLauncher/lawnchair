@@ -442,7 +442,8 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
         mControllers.stashedHandleViewController.setIsHomeButtonDisabled(
                 mControllers.navbarButtonsViewController.isHomeDisabled());
         mControllers.taskbarKeyguardController.updateStateForSysuiFlags(systemUiStateFlags);
-        mControllers.taskbarStashController.updateStateForSysuiFlags(systemUiStateFlags, fromInit);
+        mControllers.taskbarStashController.updateStateForSysuiFlags(
+                systemUiStateFlags, fromInit || !isUserSetupComplete());
         mControllers.taskbarScrimViewController.updateStateForSysuiFlags(systemUiStateFlags,
                 fromInit);
         mControllers.navButtonController.updateSysuiFlags(systemUiStateFlags);
