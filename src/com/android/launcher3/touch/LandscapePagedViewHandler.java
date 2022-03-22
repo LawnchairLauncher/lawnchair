@@ -394,12 +394,21 @@ public class LandscapePagedViewHandler implements PagedOrientationHandler {
     }
 
     @Override
-    public void getInitialSplitPlaceholderBounds(int placeholderHeight, DeviceProfile dp,
-            @StagePosition int stagePosition, Rect out) {
+    public void getInitialSplitPlaceholderBounds(int placeholderHeight, int placeholderInset,
+            DeviceProfile dp, @StagePosition int stagePosition, Rect out) {
         // In fake land/seascape, the placeholder always needs to go to the "top" of the device,
         // which is the same bounds as 0 rotation.
         int width = dp.widthPx;
         out.set(0, 0, width, placeholderHeight);
+        out.inset(placeholderInset, 0);
+
+        // Adjust the top to account for content off screen. This will help to animate the view in
+        // with rounded corners.
+        int screenWidth = dp.widthPx;
+        int screenHeight = dp.heightPx;
+        int totalHeight = (int) (1.0f * screenHeight / 2 * (screenWidth - 2 * placeholderInset)
+                / screenWidth);
+        out.top -= (totalHeight - placeholderHeight);
     }
 
     @Override

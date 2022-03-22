@@ -42,8 +42,6 @@ public class FloatingTaskThumbnailView extends View {
     private @Nullable BitmapShader mBitmapShader;
     private @Nullable Bitmap mBitmap;
 
-    private FloatingTaskView.FullscreenDrawParams mFullscreenParams;
-
     public FloatingTaskThumbnailView(Context context) {
         this(context, null);
     }
@@ -58,7 +56,7 @@ public class FloatingTaskThumbnailView extends View {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        if (mFullscreenParams == null || mBitmap == null) {
+        if (mBitmap == null) {
             return;
         }
 
@@ -67,9 +65,8 @@ public class FloatingTaskThumbnailView extends View {
         mMatrix.postScale(scale, scale);
         mBitmapShader.setLocalMatrix(mMatrix);
 
-        canvas.drawRoundRect(0, 0, getMeasuredWidth(),  getMeasuredHeight(),
-                mFullscreenParams.mCurrentDrawnCornerRadius / mFullscreenParams.mScaleX,
-                mFullscreenParams.mCurrentDrawnCornerRadius / mFullscreenParams.mScaleY, mPaint);
+        FloatingTaskView parent = (FloatingTaskView) getParent();
+        parent.drawRoundedRect(canvas, mPaint);
     }
 
     public void setThumbnail(Bitmap bitmap) {
@@ -78,9 +75,5 @@ public class FloatingTaskThumbnailView extends View {
             mBitmapShader = new BitmapShader(bitmap, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP);
             mPaint.setShader(mBitmapShader);
         }
-    }
-
-    public void setFullscreenParams(FloatingTaskView.FullscreenDrawParams fullscreenParams) {
-        mFullscreenParams = fullscreenParams;
     }
 }
