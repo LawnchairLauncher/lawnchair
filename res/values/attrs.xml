@@ -241,8 +241,27 @@
         if not specified -->
         <attr name="borderSpaceTwoPanelLandscapeVertical" format="float" />
 
+        <!-- These min cell values are only used if GridDisplayOption#isScalable is true -->
+        <!-- defaults to minCellHeight, if not specified -->
+        <attr name="allAppsCellHeight" format="float" />
+        <!-- defaults to minCellWidth, if not specified -->
+        <attr name="allAppsCellWidth" format="float" />
+        <!-- defaults to allAppsCellHeight, if not specified -->
+        <attr name="allAppsCellHeightLandscape" format="float" />
+        <!-- defaults to allAppsCellWidth, if not specified -->
+        <attr name="allAppsCellWidthLandscape" format="float" />
+        <!-- defaults to allAppsCellHeight, if not specified -->
+        <attr name="allAppsCellHeightTwoPanelPortrait" format="float" />
+        <!-- defaults to allAppsCellWidth, if not specified -->
+        <attr name="allAppsCellWidthTwoPanelPortrait" format="float" />
+        <!-- defaults to allAppsCellHeight, if not specified -->
+        <attr name="allAppsCellHeightTwoPanelLandscape" format="float" />
+        <!-- defaults to allAppsCellWidth, if not specified -->
+        <attr name="allAppsCellWidthTwoPanelLandscape" format="float" />
         <!-- defaults to borderSpace, if not specified -->
         <attr name="allAppsBorderSpace" format="float" />
+        <!-- defaults to allAppsBorderSpace, if not specified -->
+        <attr name="allAppsBorderSpaceLandscape" format="float" />
         <!-- defaults to allAppsBorderSpace, if not specified -->
         <attr name="allAppsBorderSpaceTwoPanelPortrait" format="float" />
         <!-- defaults to allAppsBorderSpace, if not specified -->
