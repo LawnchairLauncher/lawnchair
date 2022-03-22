@@ -359,7 +359,9 @@
     <dimen name="overview_grid_side_margin">0dp</dimen>
     <dimen name="overview_grid_row_spacing">0dp</dimen>
     <dimen name="overview_page_spacing">0dp</dimen>
-    <dimen name="split_placeholder_size">110dp</dimen>
+    <dimen name="split_placeholder_size">72dp</dimen>
+    <dimen name="split_placeholder_inset">16dp</dimen>
+    <dimen name="split_placeholder_icon_size">44dp</dimen>
     <dimen name="task_menu_width_grid">200dp</dimen>
 
 
