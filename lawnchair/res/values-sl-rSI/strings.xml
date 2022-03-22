@@ -145,12 +145,12 @@
     <string name="app_title_label">Naslov</string>
     <string name="hide_from_drawer">Hide from App Drawer</string>
     <string name="action_lens">Lens</string>
-    <string name="force_rounded_widgets">Rounded Corners</string>
-    <string name="suggestion_pref_screen_title">Suggestions</string>
+    <string name="force_rounded_widgets">Zaokroženi vogali</string>
+    <string name="suggestion_pref_screen_title">Predlogi</string>
     <string name="n_percent">%1$d%%</string>
-    <string name="label">Label</string>
-    <string name="presets">Presets</string>
-    <string name="colors">Colors</string>
+    <string name="label">Oznaka</string>
+    <string name="presets">Prednastavitve</string>
+    <string name="colors">Barve</string>
     <string name="dynamic">Dynamic</string>
     <string name="all_apps_search_market_message">Search for More Apps</string>
     <string name="show_app_search_bar">Pokaži vrstico za iskanje</string>
