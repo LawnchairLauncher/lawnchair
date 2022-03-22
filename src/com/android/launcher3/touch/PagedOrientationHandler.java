@@ -116,6 +116,25 @@ public interface PagedOrientationHandler {
             DeviceProfile dp, @StagePosition int stagePosition, Rect out);
 
     /**
+     * Centers an icon in the split staging area, accounting for insets.
+     * @param out The LayoutParams of the icon that needs to be centered.
+     * @param onScreenRectCenterX The x-center of the on-screen staging area (most of the Rect is
+     *                        offscreen).
+     * @param onScreenRectCenterY The y-center of the on-screen staging area (most of the Rect is
+     *                        offscreen).
+     * @param fullscreenScaleX A x-scaling factor used to convert coordinates back into pixels.
+     * @param fullscreenScaleY A y-scaling factor used to convert coordinates back into pixels.
+     * @param drawableWidth The icon's drawable (final) width.
+     * @param drawableHeight The icon's drawable (final) height.
+     * @param dp The device profile, used to report rotation and hardware insets.
+     * @param stagePosition 0 if the staging area is pinned to top/left, 1 for bottom/right.
+     */
+    void updateStagedSplitIconParams(FrameLayout.LayoutParams out, float onScreenRectCenterX,
+            float onScreenRectCenterY, float fullscreenScaleX, float fullscreenScaleY,
+            int drawableWidth, int drawableHeight, DeviceProfile dp,
+            @StagePosition int stagePosition);
+
+    /**
      * @param splitDividerSize height of split screen drag handle in portrait, width in landscape
      * @param stagePosition the split position option (top/left, bottom/right) of the first
      *                           task selected for entering split
