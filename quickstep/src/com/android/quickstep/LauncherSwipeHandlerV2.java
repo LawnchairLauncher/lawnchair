@@ -284,10 +284,5 @@ public class LauncherSwipeHandlerV2 extends
                     getViewIgnoredInWorkspaceRevealAnimation())
                     .start();
         }
-
-        @Override
-        public boolean supportSwipePipToHome() {
-            return true;
-        }
     }
 }
