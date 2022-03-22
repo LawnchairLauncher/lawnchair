@@ -890,15 +890,7 @@ public class TaskView extends FrameLayout implements Reusable {
                 if (confirmSecondSplitSelectApp()) {
                     return;
                 }
-                if (ENABLE_QUICKSTEP_LIVE_TILE.get() && isRunningTask()) {
-                    RecentsView recentsView = getRecentsView();
-                    recentsView.switchToScreenshot(
-                            () -> recentsView.finishRecentsAnimation(true /* toRecents */,
-                                    false /* shouldPip */,
-                                    () -> showTaskMenu(iconView)));
-                } else {
-                    showTaskMenu(iconView);
-                }
+                showTaskMenu(iconView);
             });
             iconView.setOnLongClickListener(v -> {
                 requestDisallowInterceptTouchEvent(true);
