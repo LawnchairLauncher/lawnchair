@@ -890,15 +890,7 @@ public class TaskView extends FrameLayout implements Reusable {
                 if (confirmSecondSplitSelectApp()) {
                     return;
                 }
-                if (ENABLE_QUICKSTEP_LIVE_TILE.get() && isRunningTask()) {
-                    RecentsView recentsView = getRecentsView();
-                    recentsView.switchToScreenshot(
-                            () -> recentsView.finishRecentsAnimation(true /* toRecents */,
-                                    false /* shouldPip */,
-                                    () -> showTaskMenu(iconView)));
-                } else {
-                    showTaskMenu(iconView);
-                }
+                showTaskMenu(iconView);
             });
             iconView.setOnLongClickListener(v -> {
                 requestDisallowInterceptTouchEvent(true);
@@ -1008,8 +1000,11 @@ public class TaskView extends FrameLayout implements Reusable {
         // resetViewTransforms is called during Quickswitch scrolling.
         mDismissTranslationX = mTaskOffsetTranslationX =
                 mTaskResistanceTranslationX = mSplitSelectTranslationX = mGridEndTranslationX = 0f;
-        mDismissTranslationY = mTaskOffsetTranslationY = mTaskResistanceTranslationY =
-                mSplitSelectTranslationY = 0f;
+        mDismissTranslationY = mTaskOffsetTranslationY = mTaskResistanceTranslationY = 0f;
+        if (getRecentsView() == null || !getRecentsView().isSplitSelectionActive()) {
+            mSplitSelectTranslationY = 0f;
+        }
+
         setSnapshotScale(1f);
         applyTranslationX();
         applyTranslationY();

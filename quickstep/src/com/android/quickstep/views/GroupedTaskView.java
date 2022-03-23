@@ -271,7 +271,8 @@ public class GroupedTaskView extends TaskView {
 
         getPagedOrientationHandler().setSplitIconParams(mIconView, mIconView2,
                 taskIconHeight, mSnapshotView.getMeasuredWidth(), mSnapshotView.getMeasuredHeight(),
-                isRtl, deviceProfile, mSplitBoundsConfig);
+                getMeasuredHeight(), getMeasuredWidth(), isRtl, deviceProfile,
+                mSplitBoundsConfig);
     }
 
     private void updateSecondaryDwbPlacement() {

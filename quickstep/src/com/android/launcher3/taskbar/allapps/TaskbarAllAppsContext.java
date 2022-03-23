@@ -32,6 +32,9 @@ import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.allapps.ActivityAllAppsContainerView;
+import com.android.launcher3.allapps.search.DefaultSearchAdapterProvider;
+import com.android.launcher3.allapps.search.SearchAdapterProvider;
 import com.android.launcher3.dot.DotInfo;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.popup.PopupDataProvider;
@@ -153,6 +156,12 @@ class TaskbarAllAppsContext extends BaseTaskbarContext {
 
     @Override
     public void onPopupVisibilityChanged(boolean isVisible) {}
+
+    @Override
+    public SearchAdapterProvider<?> createSearchAdapterProvider(
+            ActivityAllAppsContainerView<?> appsView) {
+        return new DefaultSearchAdapterProvider(this);
+    }
 
     /** Root drag layer for this context. */
     private static class TaskbarAllAppsDragLayer extends

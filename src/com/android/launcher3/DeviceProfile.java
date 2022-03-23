@@ -624,14 +624,15 @@ public class DeviceProfile {
                 + textHeight + (topBottomPadding * 2);
     }
 
-    private void updateAllAppsWidth(Resources res) {
+    private void updateAllAppsContainerWidth(Resources res) {
         int cellLayoutHorizontalPadding =
                 (cellLayoutPaddingPx.left + cellLayoutPaddingPx.right) / 2;
         if (isTablet) {
-            allAppsLeftRightPadding = res.getDimensionPixelSize(
-                    R.dimen.all_apps_bottom_sheet_horizontal_padding) + cellLayoutHorizontalPadding;
+            allAppsLeftRightPadding =
+                    res.getDimensionPixelSize(R.dimen.all_apps_bottom_sheet_horizontal_padding);
+
             int usedWidth = (allAppsCellWidthPx * numShownAllAppsColumns)
-                    + (allAppsBorderSpacePx.x * (numShownAllAppsColumns + 1))
+                    + (allAppsBorderSpacePx.x * (numShownAllAppsColumns - 1))
                     + allAppsLeftRightPadding * 2;
             allAppsLeftRightMargin = Math.max(1, (availableWidthPx - usedWidth) / 2);
         } else {
@@ -755,24 +756,26 @@ public class DeviceProfile {
      * Updates the iconSize for allApps* variants.
      */
     public void updateAllAppsIconSize(float scale, Resources res) {
-        if (numShownAllAppsColumns != inv.numColumns) {
+        //TODO(b/218638090): remove the tablet condition once we have phone specs
+        if (isScalableGrid && isTablet) {
             allAppsIconSizePx =
                     pxFromDp(inv.allAppsIconSize[mTypeIndex], mMetrics);
             allAppsIconTextSizePx =
                     pxFromSp(inv.allAppsIconTextSize[mTypeIndex], mMetrics);
             allAppsIconDrawablePaddingPx = iconDrawablePaddingOriginalPx;
-            autoResizeAllAppsCells();
+            allAppsCellWidthPx = pxFromDp(inv.allAppsCellSize[mTypeIndex].x, mMetrics, scale);
+            allAppsCellHeightPx = pxFromDp(inv.allAppsCellSize[mTypeIndex].y, mMetrics, scale);
         } else {
             float invIconSizeDp = inv.iconSize[mTypeIndex];
             float invIconTextSizeSp = inv.iconTextSize[mTypeIndex];
             allAppsIconSizePx = Math.max(1, pxFromDp(invIconSizeDp, mMetrics, scale));
             allAppsIconTextSizePx = (int) (pxFromSp(invIconTextSizeSp, mMetrics) * scale);
             allAppsIconDrawablePaddingPx = (int) (iconDrawablePaddingOriginalPx * scale);
+            allAppsCellWidthPx = allAppsIconSizePx + (2 * allAppsIconDrawablePaddingPx);
             allAppsCellHeightPx = getCellSize().y;
         }
 
-        allAppsCellWidthPx = allAppsIconSizePx + (2 * allAppsIconDrawablePaddingPx);
-        updateAllAppsWidth(res);
+        updateAllAppsContainerWidth(res);
         if (isVerticalBarLayout()) {
             hideWorkspaceLabelsIfNotEnoughSpace();
         }
@@ -998,7 +1001,7 @@ public class DeviceProfile {
                 additionalLeftSpace = qsbWidth + hotseatBorderSpace;
             }
 
-            int hotseatTopDiff = hotseatHeight - taskbarOffset;
+            int hotseatTopPadding = hotseatHeight - taskbarOffset - hotseatCellHeightPx;
 
             int endOffset = ApiWrapper.getHotseatEndOffset(context);
             int requiredWidth = iconSizePx * numShownHotseatIcons
@@ -1007,7 +1010,7 @@ public class DeviceProfile {
 
             int hotseatSize = Math.min(requiredWidth, availableWidthPx - endOffset);
             int sideSpacing = (availableWidthPx - hotseatSize) / 2;
-            mHotseatPadding.set(sideSpacing + additionalLeftSpace, hotseatTopDiff, sideSpacing,
+            mHotseatPadding.set(sideSpacing + additionalLeftSpace, hotseatTopPadding, sideSpacing,
                     taskbarOffset);
 
             if (endOffset > sideSpacing) {
@@ -1223,6 +1226,7 @@ public class DeviceProfile {
                 allAppsIconDrawablePaddingPx));
         writer.println(prefix + pxToDpStr("allAppsCellHeightPx", allAppsCellHeightPx));
         writer.println(prefix + pxToDpStr("allAppsCellWidthPx", allAppsCellWidthPx));
+        writer.println(prefix + pxToDpStr("allAppsBorderSpacePx", allAppsBorderSpacePx.x));
         writer.println(prefix + "\tnumShownAllAppsColumns: " + numShownAllAppsColumns);
         writer.println(prefix + pxToDpStr("allAppsLeftRightPadding", allAppsLeftRightPadding));
         writer.println(prefix + pxToDpStr("allAppsLeftRightMargin", allAppsLeftRightMargin));

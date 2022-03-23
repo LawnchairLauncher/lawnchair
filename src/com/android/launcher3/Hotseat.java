@@ -84,6 +84,7 @@ public class Hotseat extends CellLayout implements Insettable {
         removeAllViewsInLayout();
         mHasVerticalHotseat = hasVerticalHotseat;
         DeviceProfile dp = mActivity.getDeviceProfile();
+        resetCellSize(dp);
         if (hasVerticalHotseat) {
             setGridSize(1, dp.numShownHotseatIcons);
         } else {
@@ -110,10 +111,9 @@ public class Hotseat extends CellLayout implements Insettable {
             mQsb.setVisibility(View.VISIBLE);
             lp.gravity = Gravity.BOTTOM;
             lp.width = ViewGroup.LayoutParams.MATCH_PARENT;
-            lp.height = (grid.isTaskbarPresent
+            lp.height = grid.isTaskbarPresent
                     ? grid.workspacePadding.bottom
-                        : grid.hotseatBarSizePx)
-                    + (grid.isTaskbarPresent ? grid.taskbarSize : insets.bottom);
+                    : grid.hotseatBarSizePx + insets.bottom;
         }
 
         Rect padding = grid.getHotseatLayoutPadding(getContext());

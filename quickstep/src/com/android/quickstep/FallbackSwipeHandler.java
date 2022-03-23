@@ -50,12 +50,14 @@ import android.view.SurfaceControl;
 import android.view.SurfaceControl.Transaction;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.anim.SpringAnimationBuilder;
+import com.android.launcher3.states.StateAnimationConfig;
 import com.android.launcher3.util.DisplayController;
 import com.android.quickstep.fallback.FallbackRecentsView;
 import com.android.quickstep.fallback.RecentsState;
@@ -92,6 +94,8 @@ public class FallbackSwipeHandler extends
 
     private final Matrix mTmpMatrix = new Matrix();
     private float mMaxLauncherScale = 1;
+
+    private boolean mAppCanEnterPip;
 
     public FallbackSwipeHandler(Context context, RecentsAnimationDeviceState deviceState,
             TaskAnimationManager taskAnimationManager, GestureState gestureState, long touchTimeMs,
@@ -135,16 +139,27 @@ public class FallbackSwipeHandler extends
     protected HomeAnimationFactory createHomeAnimationFactory(ArrayList<IBinder> launchCookies,
             long duration, boolean isTargetTranslucent, boolean appCanEnterPip,
             RemoteAnimationTargetCompat runningTaskTarget) {
+        mAppCanEnterPip = appCanEnterPip;
+        if (appCanEnterPip) {
+            return new FallbackPipToHomeAnimationFactory();
+        }
         mActiveAnimationFactory = new FallbackHomeAnimationFactory(duration);
+        startHomeIntent(mActiveAnimationFactory);
+        return mActiveAnimationFactory;
+    }
+
+    private void startHomeIntent(
+            @Nullable FallbackHomeAnimationFactory gestureContractAnimationFactory) {
         ActivityOptions options = ActivityOptions.makeCustomAnimation(mContext, 0, 0);
         Intent intent = new Intent(mGestureState.getHomeIntent());
-        mActiveAnimationFactory.addGestureContract(intent);
+        if (gestureContractAnimationFactory != null) {
+            gestureContractAnimationFactory.addGestureContract(intent);
+        }
         try {
             mContext.startActivity(intent, options.toBundle());
         } catch (NullPointerException | ActivityNotFoundException | SecurityException e) {
             mContext.startActivity(createHomeIntent());
         }
-        return mActiveAnimationFactory;
     }
 
     @Override
@@ -160,8 +175,19 @@ public class FallbackSwipeHandler extends
 
     @Override
     protected void finishRecentsControllerToHome(Runnable callback) {
+        final Runnable recentsCallback;
+        if (mAppCanEnterPip) {
+            // Make sure Launcher is resumed after auto-enter-pip transition to actually trigger
+            // the PiP task appearing.
+            recentsCallback = () -> {
+                callback.run();
+                startHomeIntent(null /* gestureContractAnimationFactory */);
+            };
+        } else {
+            recentsCallback = callback;
+        }
         mRecentsAnimationController.finish(
-                false /* toRecents */, callback, true /* sendUserLeaveHint */);
+                mAppCanEnterPip /* toRecents */, recentsCallback, true /* sendUserLeaveHint */);
     }
 
     @Override
@@ -183,6 +209,17 @@ public class FallbackSwipeHandler extends
             }
         } else {
             super.notifyGestureAnimationStartToRecents();
+        }
+    }
+
+    private class FallbackPipToHomeAnimationFactory extends HomeAnimationFactory {
+        @NonNull
+        @Override
+        public AnimatorPlaybackController createActivityAnimationToHome() {
+            // copied from {@link LauncherSwipeHandlerV2.LauncherHomeAnimationFactory}
+            long accuracy = 2 * Math.max(mDp.widthPx, mDp.heightPx);
+            return mActivity.getStateManager().createAnimationToNewWorkspace(
+                    RecentsState.HOME, accuracy, StateAnimationConfig.SKIP_ALL_ANIMATIONS);
         }
     }
 

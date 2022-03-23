@@ -258,6 +258,9 @@ public final class FeatureFlags {
             "ENABLE_NEW_MIGRATION_LOGIC", true,
             "Enable the new grid migration logic, keeping pages when src < dest");
 
+    public static final BooleanFlag ENABLE_ONE_SEARCH_MOTION = new DeviceFlag(
+            "ENABLE_ONE_SEARCH_MOTION", false, "Enables animations in OneSearch.");
+
     public static void initialize(Context context) {
         synchronized (sDebugFlags) {
             for (DebugFlag flag : sDebugFlags) {
