@@ -91,6 +91,8 @@ public class FloatingTaskView extends FrameLayout {
         // Copy bounds of exiting thumbnail into ImageView
         mThumbnailView.setThumbnail(thumbnail);
 
+        mThumbnailView.setVisibility(VISIBLE);
+
         RecentsView recentsView = launcher.getOverviewPanel();
         mOrientationHandler = recentsView.getPagedOrientationHandler();
         mSplitPlaceholderView.setIcon(icon,
