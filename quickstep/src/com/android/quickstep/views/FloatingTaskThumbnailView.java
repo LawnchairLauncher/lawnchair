@@ -62,6 +62,7 @@ public class FloatingTaskThumbnailView extends View {
 
         // Scale down the bitmap to fix x, and crop in y.
         float scale = 1.0f * getMeasuredWidth() / mBitmap.getWidth();
+        mMatrix.reset();
         mMatrix.postScale(scale, scale);
         mBitmapShader.setLocalMatrix(mMatrix);
 
