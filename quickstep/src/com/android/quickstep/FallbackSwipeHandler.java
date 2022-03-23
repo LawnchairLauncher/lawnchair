@@ -186,6 +186,7 @@ public class FallbackSwipeHandler extends
         } else {
             recentsCallback = callback;
         }
+        mRecentsView.cleanupRemoteTargets();
         mRecentsAnimationController.finish(
                 mAppCanEnterPip /* toRecents */, recentsCallback, true /* sendUserLeaveHint */);
     }
