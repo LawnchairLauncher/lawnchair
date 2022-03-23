@@ -186,7 +186,7 @@
     <string name="recents_clear_all">Vyčistiť všetky</string>
     <string name="pick_icon_from_label">Vybrať ikonu z</string>
     <string name="experimental_features_label">Experimentálne funkcie</string>
-    <string name="icon_picker_label">Per-App Icon Customization</string>
+    <string name="icon_picker_label">Nastavenie ikon pre každú aplikáciu zvlášť</string>
     <string name="icon_picker_description">Môže spôsobiť zamrznutie Lawnchair-u.</string>
     <string name="font_picker_label">Prispôsobenie písma</string>
     <string name="font_picker_description">Niektoré texty ostávajú nezmenené.</string>
