@@ -75,4 +75,15 @@ public class TaskbarUIController {
     public void hideAllApps() {
         mControllers.taskbarAllAppsController.hide();
     }
+
+    /**
+     * User expands PiP to full-screen (or split-screen) mode, try to hide the Taskbar.
+     */
+    public void onExpandPip() {
+        if (mControllers != null) {
+            final TaskbarStashController stashController = mControllers.taskbarStashController;
+            stashController.updateStateForFlag(TaskbarStashController.FLAG_IN_APP, true);
+            stashController.applyState();
+        }
+    }
 }
