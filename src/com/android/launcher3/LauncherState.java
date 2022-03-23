@@ -16,6 +16,7 @@
 package com.android.launcher3;
 
 import static com.android.launcher3.anim.Interpolators.ACCEL_2;
+import static com.android.launcher3.anim.Interpolators.DEACCEL_2;
 import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_HOME;
 import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_OVERVIEW;
 import static com.android.launcher3.testing.TestProtocol.ALL_APPS_STATE_ORDINAL;
@@ -88,6 +89,14 @@ public abstract class LauncherState implements BaseState<LauncherState> {
                 @Override
                 public float getPageAlpha(int pageIndex) {
                     return 1;
+                }
+            };
+
+    protected static final PageTranslationProvider DEFAULT_PAGE_TRANSLATION_PROVIDER =
+            new PageTranslationProvider(DEACCEL_2) {
+                @Override
+                public float getPageTranslation(int pageIndex) {
+                    return 0;
                 }
             };
 
@@ -288,6 +297,25 @@ public abstract class LauncherState implements BaseState<LauncherState> {
         };
     }
 
+    /**
+     * Gets the translation provider for workspace pages.
+     */
+    public PageTranslationProvider getWorkspacePageTranslationProvider(Launcher launcher) {
+        if (this != SPRING_LOADED || !launcher.getDeviceProfile().isTwoPanels) {
+            return DEFAULT_PAGE_TRANSLATION_PROVIDER;
+        }
+        final float quarterPageSpacing = launcher.getWorkspace().getPageSpacing() / 4f;
+        return new PageTranslationProvider(DEACCEL_2) {
+            @Override
+            public float getPageTranslation(int pageIndex) {
+                boolean isRtl = launcher.getWorkspace().mIsRtl;
+                boolean isFirstPage = pageIndex % 2 == 0;
+                return ((isFirstPage && !isRtl) || (!isFirstPage && isRtl)) ? -quarterPageSpacing
+                        : quarterPageSpacing;
+            }
+        };
+    }
+
     @Override
     public LauncherState getHistoryForState(LauncherState previousState) {
         // No history is supported
@@ -316,6 +344,23 @@ public abstract class LauncherState implements BaseState<LauncherState> {
         }
 
         public abstract float getPageAlpha(int pageIndex);
+    }
+
+    /**
+     * Provider for the translation and animation interpolation of workspace pages.
+     */
+    public abstract static class PageTranslationProvider {
+
+        public final Interpolator interpolator;
+
+        public PageTranslationProvider(Interpolator interpolator) {
+            this.interpolator = interpolator;
+        }
+
+        /**
+         * Gets the translation of the workspace page at the provided page index.
+         */
+        public abstract float getPageTranslation(int pageIndex);
     }
 
     public static class ScaleAndTranslation {

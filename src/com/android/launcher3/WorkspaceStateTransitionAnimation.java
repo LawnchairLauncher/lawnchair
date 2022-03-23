@@ -39,6 +39,7 @@ import static com.android.launcher3.states.StateAnimationConfig.ANIM_HOTSEAT_SCA
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_HOTSEAT_TRANSLATE;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_SCRIM_FADE;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_WORKSPACE_FADE;
+import static com.android.launcher3.states.StateAnimationConfig.ANIM_WORKSPACE_PAGE_TRANSLATE_X;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_WORKSPACE_SCALE;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_WORKSPACE_TRANSLATE;
 import static com.android.launcher3.states.StateAnimationConfig.SKIP_SCRIM;
@@ -49,6 +50,7 @@ import android.view.View;
 import android.view.animation.Interpolator;
 
 import com.android.launcher3.LauncherState.PageAlphaProvider;
+import com.android.launcher3.LauncherState.PageTranslationProvider;
 import com.android.launcher3.LauncherState.ScaleAndTranslation;
 import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.anim.PropertySetter;
@@ -155,6 +157,12 @@ public class WorkspaceStateTransitionAnimation {
                 scaleAndTranslation.translationX, translationInterpolator);
         propertySetter.setFloat(mWorkspace, VIEW_TRANSLATE_Y,
                 scaleAndTranslation.translationY, translationInterpolator);
+        PageTranslationProvider pageTranslationProvider = state.getWorkspacePageTranslationProvider(
+                mLauncher);
+        for (int i = 0; i < childCount; i++) {
+            applyPageTranslation((CellLayout) mWorkspace.getChildAt(i), i, pageTranslationProvider,
+                    propertySetter, config);
+        }
 
         Interpolator hotseatTranslationInterpolator = config.getInterpolator(
                 ANIM_HOTSEAT_TRANSLATE, translationInterpolator);
@@ -200,6 +208,16 @@ public class WorkspaceStateTransitionAnimation {
                 pageAlphaProvider.interpolator);
         propertySetter.setFloat(cl.getShortcutsAndWidgets(), VIEW_ALPHA,
                 pageAlpha, fadeInterpolator);
+    }
+
+    private void applyPageTranslation(CellLayout cellLayout, int childIndex,
+            PageTranslationProvider pageTranslationProvider, PropertySetter propertySetter,
+            StateAnimationConfig config) {
+        float pageTranslation = pageTranslationProvider.getPageTranslation(childIndex);
+        Interpolator translationInterpolator = config.getInterpolator(
+                ANIM_WORKSPACE_PAGE_TRANSLATE_X, pageTranslationProvider.interpolator);
+        propertySetter.setFloat(cellLayout, VIEW_TRANSLATE_X, pageTranslation,
+                translationInterpolator);
     }
 
     /**
