@@ -16,6 +16,7 @@
 
 package com.android.launcher3.icons;
 
+import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
 import static com.android.launcher3.widget.WidgetSections.NO_CATEGORY;
@@ -340,14 +341,15 @@ public class IconCache extends BaseIconCache {
         Map<Pair<UserHandle, Boolean>, List<IconRequestInfo<T>>> iconLoadSubsectionsMap =
                 iconRequestInfos.stream()
                         .filter(iconRequest -> {
-                            if (iconRequest.itemInfo.getTargetComponent() != null) {
-                                return true;
+                            if (iconRequest.itemInfo.getTargetComponent() == null) {
+                                Log.i(TAG,
+                                        "Skipping Item info with null component name: "
+                                                + iconRequest.itemInfo);
+                                iconRequest.itemInfo.bitmap = getDefaultIcon(
+                                        iconRequest.itemInfo.user);
+                                return false;
                             }
-                            Log.i(TAG,
-                                    "Skipping Item info with null component name: "
-                                            + iconRequest.itemInfo);
-                            iconRequest.itemInfo.bitmap = getDefaultIcon(iconRequest.itemInfo.user);
-                            return false;
+                            return true;
                         })
                         .collect(groupingBy(iconRequest ->
                                 Pair.create(iconRequest.itemInfo.user, iconRequest.useLowResIcon)));
@@ -356,6 +358,17 @@ public class IconCache extends BaseIconCache {
         iconLoadSubsectionsMap.forEach((sectionKey, filteredList) -> {
             Map<ComponentName, List<IconRequestInfo<T>>> duplicateIconRequestsMap =
                     filteredList.stream()
+                            .filter(iconRequest -> {
+                                // Filter out icons that should not share the same bitmap and title
+                                if (iconRequest.itemInfo.itemType == ITEM_TYPE_DEEP_SHORTCUT) {
+                                    Log.e(TAG,
+                                            "Skipping Item info for deep shortcut: "
+                                                    + iconRequest.itemInfo,
+                                            new IllegalStateException());
+                                    return false;
+                                }
+                                return true;
+                            })
                             .collect(groupingBy(iconRequest ->
                                     iconRequest.itemInfo.getTargetComponent()));
 

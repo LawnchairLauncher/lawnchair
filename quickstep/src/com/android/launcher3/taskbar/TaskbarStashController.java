@@ -54,6 +54,10 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
     public static final int FLAG_STASHED_IN_APP_IME = 1 << 5; // IME is visible
     public static final int FLAG_IN_STASHED_LAUNCHER_STATE = 1 << 6;
     public static final int FLAG_STASHED_IN_APP_ALL_APPS = 1 << 7; // All apps is visible.
+    public static final int FLAG_IN_SETUP = 1 << 8; // In the Setup Wizard
+
+    // If any of these flags are enabled, isInApp should return true.
+    private static final int FLAGS_IN_APP = FLAG_IN_APP | FLAG_IN_SETUP;
 
     // If we're in an app and any of these flags are enabled, taskbar should be stashed.
     private static final int FLAGS_STASHED_IN_APP = FLAG_STASHED_IN_APP_MANUAL
@@ -141,7 +145,7 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
     // Evaluate whether the handle should be stashed
     private final StatePropertyHolder mStatePropertyHolder = new StatePropertyHolder(
             flags -> {
-                boolean inApp = hasAnyFlag(flags, FLAG_IN_APP);
+                boolean inApp = hasAnyFlag(flags, FLAGS_IN_APP);
                 boolean stashedInApp = hasAnyFlag(flags, FLAGS_STASHED_IN_APP);
                 boolean stashedLauncherState = hasAnyFlag(flags, FLAG_IN_STASHED_LAUNCHER_STATE);
                 return (inApp && stashedInApp) || (!inApp && stashedLauncherState);
@@ -179,10 +183,7 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
         boolean isInSetup = !mActivity.isUserSetupComplete() || sharedState.setupUIVisible;
         updateStateForFlag(FLAG_STASHED_IN_APP_MANUAL, isManuallyStashedInApp);
         updateStateForFlag(FLAG_STASHED_IN_APP_SETUP, isInSetup);
-        if (isInSetup) {
-            // Update the in-app state to ensure isStashed() reflects right state during SUW
-            updateStateForFlag(FLAG_IN_APP, true);
-        }
+        updateStateForFlag(FLAG_IN_SETUP, isInSetup);
         applyState();
 
         notifyStashChange(/* visible */ false, /* stashed */ isStashedInApp());
@@ -216,9 +217,10 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
      * Sets the flag indicating setup UI is visible
      */
     protected void setSetupUIVisible(boolean isVisible) {
-        updateStateForFlag(FLAG_STASHED_IN_APP_SETUP,
-                isVisible || !mActivity.isUserSetupComplete());
-        applyState();
+        boolean hideTaskbar = isVisible || !mActivity.isUserSetupComplete();
+        updateStateForFlag(FLAG_IN_SETUP, hideTaskbar);
+        updateStateForFlag(FLAG_STASHED_IN_APP_SETUP, hideTaskbar);
+        applyState(hideTaskbar ? 0 : TASKBAR_STASH_DURATION);
     }
 
     /**
@@ -259,7 +261,7 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
     }
 
     private boolean isInApp() {
-        return hasAnyFlag(FLAG_IN_APP);
+        return hasAnyFlag(FLAGS_IN_APP);
     }
 
     /**
@@ -478,7 +480,7 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
     }
 
     public void applyState() {
-        applyState(TASKBAR_STASH_DURATION);
+        applyState(hasAnyFlag(FLAG_IN_SETUP) ? 0 : TASKBAR_STASH_DURATION);
     }
 
     public void applyState(long duration) {
@@ -568,8 +570,8 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
         if (hasAnyFlag(changedFlags, FLAGS_STASHED_IN_APP)) {
             mControllers.uiController.onStashedInAppChanged();
         }
-        if (hasAnyFlag(changedFlags, FLAGS_STASHED_IN_APP | FLAG_IN_APP)) {
-            notifyStashChange(/* visible */ hasAnyFlag(FLAG_IN_APP),
+        if (hasAnyFlag(changedFlags, FLAGS_STASHED_IN_APP | FLAGS_IN_APP)) {
+            notifyStashChange(/* visible */ hasAnyFlag(FLAGS_IN_APP),
                             /* stashed */ isStashedInApp());
         }
         if (hasAnyFlag(changedFlags, FLAG_STASHED_IN_APP_MANUAL)) {
@@ -613,6 +615,7 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
         str.add((flags & FLAG_IN_STASHED_LAUNCHER_STATE) != 0
                 ? "FLAG_IN_STASHED_LAUNCHER_STATE" : "");
         str.add((flags & FLAG_STASHED_IN_APP_ALL_APPS) != 0 ? "FLAG_STASHED_IN_APP_ALL_APPS" : "");
+        str.add((flags & FLAG_IN_SETUP) != 0 ? "FLAG_IN_SETUP" : "");
         return str.toString();
     }
 

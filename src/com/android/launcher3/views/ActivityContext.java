@@ -25,7 +25,8 @@ import android.view.View.AccessibilityDelegate;
 import androidx.annotation.Nullable;
 
 import com.android.launcher3.DeviceProfile;
-import com.android.launcher3.allapps.BaseAllAppsContainerView;
+import com.android.launcher3.allapps.ActivityAllAppsContainerView;
+import com.android.launcher3.allapps.search.SearchAdapterProvider;
 import com.android.launcher3.dot.DotInfo;
 import com.android.launcher3.dragndrop.DragController;
 import com.android.launcher3.folder.FolderIcon;
@@ -99,7 +100,7 @@ public interface ActivityContext {
     /**
      * The all apps container, if it exists in this context.
      */
-    default BaseAllAppsContainerView<?> getAppsView() {
+    default ActivityAllAppsContainerView<?> getAppsView() {
         return null;
     }
 
@@ -188,6 +189,16 @@ public interface ActivityContext {
 
     @Nullable
     default StringCache getStringCache() {
+        return null;
+    }
+
+    /**
+     * Creates and returns {@link SearchAdapterProvider} for build variant specific search result
+     * views.
+     */
+    @Nullable
+    default SearchAdapterProvider<?> createSearchAdapterProvider(
+            ActivityAllAppsContainerView<?> appsView) {
         return null;
     }
 }

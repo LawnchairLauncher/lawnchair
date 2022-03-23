@@ -229,7 +229,7 @@ public class OptionsPopupView extends ArrowPopup<Launcher>
         Launcher launcher = Launcher.getLauncher(view.getContext());
         launcher.startActivity(new Intent(Intent.ACTION_APPLICATION_PREFERENCES)
                 .setPackage(launcher.getPackageName())
-                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK));
         return true;
     }
 
