@@ -174,7 +174,7 @@ public class TouchInteractionService extends Service
                 SystemUiProxy.INSTANCE.get(TouchInteractionService.this).setProxy(proxy, pip,
                         splitscreen, onehanded, shellTransitions, startingWindow, recentTasks,
                         launcherUnlockAnimationController, backAnimation);
-                TouchInteractionService.this.initInputMonitor();
+                TouchInteractionService.this.initInputMonitor("TISBinder#onInitialize()");
                 preloadOverview(true /* fromInit */);
             });
             sIsInitialized = true;
@@ -372,7 +372,8 @@ public class TouchInteractionService extends Service
         sConnected = true;
     }
 
-    private void disposeEventHandlers() {
+    private void disposeEventHandlers(String reason) {
+        Log.d(TAG, "disposeEventHandlers: Reason: " + reason);
         if (mInputEventReceiver != null) {
             mInputEventReceiver.dispose();
             mInputEventReceiver = null;
@@ -383,8 +384,8 @@ public class TouchInteractionService extends Service
         }
     }
 
-    private void initInputMonitor() {
-        disposeEventHandlers();
+    private void initInputMonitor(String reason) {
+        disposeEventHandlers("Initializing input monitor due to: " + reason);
 
         if (mDeviceState.isButtonNavMode()) {
             return;
@@ -401,7 +402,7 @@ public class TouchInteractionService extends Service
      * Called when the navigation mode changes, guaranteed to be after the device state has updated.
      */
     private void onNavigationModeChanged() {
-        initInputMonitor();
+        initInputMonitor("onNavigationModeChanged()");
         resetHomeBounceSeenOnQuickstepEnabledFirstTime();
     }
 
@@ -520,7 +521,7 @@ public class TouchInteractionService extends Service
             mInputConsumer.unregisterInputConsumer();
             mOverviewComponentObserver.onDestroy();
         }
-        disposeEventHandlers();
+        disposeEventHandlers("TouchInteractionService onDestroy()");
         mDeviceState.destroy();
         SystemUiProxy.INSTANCE.get(this).clearProxy();
         ProtoTracer.INSTANCE.get(this).stop();
