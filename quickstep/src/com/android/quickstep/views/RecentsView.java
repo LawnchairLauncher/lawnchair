@@ -5102,6 +5102,19 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                 mRecentsView.mPipCornerRadius = cornerRadius;
             }
         }
+
+        @Override
+        public void onExpandPip() {
+            MAIN_EXECUTOR.execute(() -> {
+                if (mRecentsView == null
+                        || mRecentsView.mSizeStrategy.getTaskbarController() == null) {
+                    return;
+                }
+                // Hide the task bar when leaving PiP to prevent it from flickering once
+                // the app settles in full-screen mode.
+                mRecentsView.mSizeStrategy.getTaskbarController().onExpandPip();
+            });
+        }
     }
 
     /** Get the color used for foreground scrimming the RecentsView for sharing. */
