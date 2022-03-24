@@ -33,6 +33,7 @@ import static com.android.systemui.shared.system.ActivityManagerWrapper.CLOSE_SY
 
 import android.animation.AnimatorSet;
 import android.animation.ValueAnimator;
+import android.app.ActivityManager;
 import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
@@ -325,6 +326,7 @@ public abstract class BaseQuickstepLauncher extends Launcher {
                             config,
                             ProxyScreenStatusProvider.INSTANCE,
                             getSystemService(DeviceStateManager.class),
+                            getSystemService(ActivityManager.class),
                             getSystemService(SensorManager.class),
                             getMainThreadHandler(),
                             getMainExecutor(),
