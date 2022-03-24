@@ -982,8 +982,17 @@ public class DeviceProfile {
      */
     public Rect getHotseatLayoutPadding(Context context) {
         if (isVerticalBarLayout()) {
-            int paddingTop = Math.max(mInsets.top - cellLayoutPaddingPx.top, 0);
-            int paddingBottom = Math.max(mInsets.bottom - cellLayoutPaddingPx.bottom, 0);
+            // The hotseat icons will be placed in the middle of the hotseat cells.
+            // Changing the hotseatCellHeightPx is not affecting hotseat icon positions
+            // in vertical bar layout.
+            // Workspace icons are moved up by a small factor. The variable diffOverlapFactor
+            // is set to account for that difference.
+            float diffOverlapFactor = iconSizePx * (ICON_OVERLAP_FACTOR - 1) / 2;
+            int paddingTop = Math.max((int) (mInsets.top + cellLayoutPaddingPx.top
+                    - diffOverlapFactor), 0);
+            int paddingBottom = Math.max((int) (mInsets.bottom + cellLayoutPaddingPx.bottom
+                    + diffOverlapFactor), 0);
+
             if (isSeascape()) {
                 mHotseatPadding.set(mInsets.left + hotseatBarSidePaddingStartPx, paddingTop,
                         hotseatBarSidePaddingEndPx, paddingBottom);
