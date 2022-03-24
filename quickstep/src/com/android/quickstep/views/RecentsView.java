@@ -425,6 +425,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     private final int mScrollHapticMinGapMillis;
     private final RecentsModel mModel;
     private final int mSplitPlaceholderSize;
+    private final int mSplitPlaceholderInset;
     private final ClearAllButton mClearAllButton;
     private final Rect mClearAllButtonDeadZoneRect = new Rect();
     private final Rect mTaskViewDeadZoneRect = new Rect();
@@ -697,6 +698,8 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         setLayoutDirection(mIsRtl ? View.LAYOUT_DIRECTION_RTL : View.LAYOUT_DIRECTION_LTR);
         mSplitPlaceholderSize = getResources().getDimensionPixelSize(
                 R.dimen.split_placeholder_size);
+        mSplitPlaceholderInset = getResources().getDimensionPixelSize(
+                R.dimen.split_placeholder_inset);
         mSquaredTouchSlop = squaredTouchSlop(context);
 
         mEmptyIcon = context.getDrawable(R.drawable.ic_empty_recents);
@@ -2702,7 +2705,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
      */
     private void createInitialSplitSelectAnimation(PendingAnimation anim) {
         mOrientationHandler.getInitialSplitPlaceholderBounds(mSplitPlaceholderSize,
-                mActivity.getDeviceProfile(),
+                mSplitPlaceholderInset, mActivity.getDeviceProfile(),
                 mSplitSelectStateController.getActiveSplitStagePosition(), mTempRect);
 
         RectF startingTaskRect = new RectF();
@@ -2714,7 +2717,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                     mSplitHiddenTaskView.getIconView().getDrawable(), startingTaskRect);
             mFirstFloatingTaskView.setAlpha(1);
             mFirstFloatingTaskView.addAnimation(anim, startingTaskRect,
-                    mTempRect, true /* fadeWithThumbnail */, true /* isInitialSplit */);
+                    mTempRect, true /* fadeWithThumbnail */, true /* isStagedTask */);
         } else {
             mSplitSelectSource.view.setVisibility(INVISIBLE);
             mFirstFloatingTaskView = FloatingTaskView.getFloatingTaskView(mActivity,
@@ -2722,7 +2725,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                     mSplitSelectSource.drawable, startingTaskRect);
             mFirstFloatingTaskView.setAlpha(1);
             mFirstFloatingTaskView.addAnimation(anim, startingTaskRect,
-                    mTempRect, true /* fadeWithThumbnail */, true /* isInitialSplit */);
+                    mTempRect, true /* fadeWithThumbnail */, true /* isStagedTask */);
         }
         anim.addEndListener(success -> {
             if (success) {
@@ -4002,14 +4005,14 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         mFirstFloatingTaskView.getBoundsOnScreen(firstTaskStartingBounds);
         mFirstFloatingTaskView.addAnimation(pendingAnimation,
                 new RectF(firstTaskStartingBounds), firstTaskEndingBounds,
-                false /* fadeWithThumbnail */, false /* isInitialSplit */);
+                false /* fadeWithThumbnail */, true /* isStagedTask */);
 
         mSecondFloatingTaskView = FloatingTaskView.getFloatingTaskView(mActivity,
                 thumbnailView, thumbnailView.getThumbnail(),
                 iconView.getDrawable(), secondTaskStartingBounds);
         mSecondFloatingTaskView.setAlpha(1);
         mSecondFloatingTaskView.addAnimation(pendingAnimation, secondTaskStartingBounds,
-                secondTaskEndingBounds, true /* fadeWithThumbnail */, false /* isInitialSplit */);
+                secondTaskEndingBounds, true /* fadeWithThumbnail */, false /* isStagedTask */);
         pendingAnimation.addEndListener(aBoolean ->
                 mSplitSelectStateController.setSecondTask(
                         task, aBoolean1 -> RecentsView.this.resetFromSplitSelectionState()));
@@ -4077,10 +4080,9 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
 
     protected void onRotateInSplitSelectionState() {
         mOrientationHandler.getInitialSplitPlaceholderBounds(mSplitPlaceholderSize,
-                mActivity.getDeviceProfile(),
+                mSplitPlaceholderInset, mActivity.getDeviceProfile(),
                 mSplitSelectStateController.getActiveSplitStagePosition(), mTempRect);
         mTempRectF.set(mTempRect);
-        // TODO(194414938) set correct corner radius
         mFirstFloatingTaskView.updateOrientationHandler(mOrientationHandler);
         mFirstFloatingTaskView.update(mTempRectF, /*progress=*/1f);
 
