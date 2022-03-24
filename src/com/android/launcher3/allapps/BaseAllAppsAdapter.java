@@ -163,10 +163,10 @@ public abstract class BaseAllAppsAdapter<T extends Context & ActivityContext> ex
     protected String mEmptySearchMessage;
     protected int mAppsPerRow;
 
-    private final LayoutInflater mLayoutInflater;
-    private final OnClickListener mOnIconClickListener;
-    private OnLongClickListener mOnIconLongClickListener = INSTANCE_ALL_APPS;
-    private OnFocusChangeListener mIconFocusListener;
+    protected final LayoutInflater mLayoutInflater;
+    protected final OnClickListener mOnIconClickListener;
+    protected OnLongClickListener mOnIconLongClickListener = INSTANCE_ALL_APPS;
+    protected OnFocusChangeListener mIconFocusListener;
     // The click listener to send off to the market app, updated each time the search query changes.
     private OnClickListener mMarketSearchClickListener;
     private final int mExtraHeight;
