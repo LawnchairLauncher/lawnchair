@@ -49,7 +49,7 @@ public class TaskbarUIController {
         return true;
     }
 
-    protected boolean supportsVisualStashing() {
+    public boolean supportsVisualStashing() {
         if (mControllers == null) return false;
         return !mControllers.taskbarActivityContext.isThreeButtonNav();
     }
