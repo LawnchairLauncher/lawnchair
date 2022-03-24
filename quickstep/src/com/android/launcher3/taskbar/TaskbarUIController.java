@@ -49,6 +49,11 @@ public class TaskbarUIController {
         return true;
     }
 
+    public boolean supportsVisualStashing() {
+        if (mControllers == null) return false;
+        return !mControllers.taskbarActivityContext.isThreeButtonNav();
+    }
+
     protected void onStashedInAppChanged() { }
 
     public Stream<ItemInfoWithIcon> getAppIconsForEdu() {
