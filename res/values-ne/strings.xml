@@ -37,8 +37,10 @@
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"%1$d चौडाइ गुणा %2$d उचाइ"</string>
     <string name="widget_preview_context_description" msgid="9045841361655787574">"<xliff:g id="WIDGET_NAME">%1$s</xliff:g> विजेट"</string>
-    <string name="add_item_request_drag_hint" msgid="5653291305078645405">"यो विजेट होम स्क्रिनमा यताउता सार्न त्यसमा टच एन्ड होल्ड गर्नुहोस्"</string>
-    <string name="add_to_home_screen" msgid="8631549138215492708">"होम स्क्रिनमा हाल्नुहोस्"</string>
+    <!-- no translation found for add_item_request_drag_hint (8730547755622776606) -->
+    <skip />
+    <!-- no translation found for add_to_home_screen (9168649446635919791) -->
+    <skip />
     <string name="added_to_home_screen_accessibility_text" msgid="4451545765448884415">"होम स्क्रिनमा <xliff:g id="WIDGET_NAME">%1$s</xliff:g> विजेट हालियो"</string>
     <string name="widgets_count" msgid="6467746476364652096">"{count,plural, =1{# विजेट}other{# वटा विजेट}}"</string>
     <string name="shortcuts_count" msgid="8471715556199592381">"{count,plural, =1{# सर्टकट}other{# वटा सर्टकट}}"</string>
@@ -52,7 +54,8 @@
     <string name="widgets_full_sheet_work_tab" msgid="3767150027110633765">"कामसम्बन्धी"</string>
     <string name="widget_category_conversations" msgid="8894438636213590446">"वार्तालापहरू"</string>
     <string name="widget_education_header" msgid="4874760613775913787">"उपयोगी जानकारी सजिलै प्राप्त गर्नुहोस्"</string>
-    <string name="widget_education_content" msgid="745542879510751525">"एपहरू नखोलिकनै तिनका बारेमा जानकारी प्राप्त गर्न तपाईं आफ्नो होम स्क्रिनमा विजेटहरू हाल्न सक्नुहुन्छ"</string>
+    <!-- no translation found for widget_education_content (1731667670753497052) -->
+    <skip />
     <string name="reconfigurable_widget_education_tip" msgid="6336962690888067057">"विजेटका सेटिङ बदल्न ट्याप गर्नुहोस्"</string>
     <string name="widget_education_close_button" msgid="8676165703104836580">"बुझेँ"</string>
     <string name="widget_reconfigure_button_content_description" msgid="8811472721881205250">"विजेटका सेटिङ बदल्नुहोस्"</string>
@@ -65,7 +68,8 @@
     <string name="notifications_header" msgid="1404149926117359025">"सूचनाहरू"</string>
     <string name="long_press_shortcut_to_add" msgid="5405328730817637737">"कुनै सर्टकट सार्न डबल ट्याप गरेर छोइराख्नुहोस्।"</string>
     <string name="long_accessible_way_to_add_shortcut" msgid="2199537273817090740">"कुनै सर्टकट सार्न वा आफ्नो रोजाइका कारबाही प्रयोग गर्न डबल ट्याप गरेर छोइराख्नुहोस्।"</string>
-    <string name="out_of_space" msgid="6692471482459245734">"यो होम स्क्रिनमा ठाउँ छैन"</string>
+    <!-- no translation found for out_of_space (6455557115204099579) -->
+    <skip />
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"मन पर्ने ट्रे अब कुनै ठाँउ छैन"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"एपको सूची"</string>
     <string name="all_apps_search_results" msgid="5889367432531296759">"खोज परिणामहरू"</string>
@@ -79,10 +83,14 @@
     <string name="pin_prediction" msgid="4196423321649756498">"सिफारिस गरिएको एप पिन गर्नुहोस्"</string>
     <string name="permlab_install_shortcut" msgid="5632423390354674437">"सर्टकट स्थापना गर्नेहोस्"</string>
     <string name="permdesc_install_shortcut" msgid="923466509822011139">"प्रयोगकर्ताको हस्तक्षेप बिना एउटा एपलाई सर्टकटमा थप्नको लागि अनुमति दिनुहोस्।"</string>
-    <string name="permlab_read_settings" msgid="1941457408239617576">"गृह सेटिङहरू र सर्टकटहरू पढ्नुहोस्"</string>
-    <string name="permdesc_read_settings" msgid="5833423719057558387">"गृहमा एउटा एपलाई सेटिङहरू र सर्टकटहरू पढ्न अनुमति दिनुहोस्।"</string>
-    <string name="permlab_write_settings" msgid="3574213698004620587">"गृह सेटिङहरू र सर्टकटहरू लेख्नुहोस्"</string>
-    <string name="permdesc_write_settings" msgid="5440712911516509985">"गृहमा एउटा एपलाई सेटिङ र सर्टकट बदल्न अनुमति दिनुहोस्।"</string>
+    <!-- no translation found for permlab_read_settings (5136500343007704955) -->
+    <skip />
+    <!-- no translation found for permdesc_read_settings (4208061150510996676) -->
+    <skip />
+    <!-- no translation found for permlab_write_settings (4820028712156303762) -->
+    <skip />
+    <!-- no translation found for permdesc_write_settings (726859348127868466) -->
+    <skip />
     <string name="msg_no_phone_permission" msgid="9208659281529857371">"<xliff:g id="APP_NAME">%1$s</xliff:g> ले फोन कलहरू गर्न अनुमति छैन"</string>
     <string name="gadget_error_text" msgid="740356548025791839">"विजेट लोड गर्न सकिएन"</string>
     <string name="gadget_setup_text" msgid="8348374825537681407">"विजेटका सेटिङ"</string>
@@ -105,7 +113,8 @@
     <string name="styles_wallpaper_button_text" msgid="8216961355289236794">"वालपेपर तथा शैली"</string>
     <string name="settings_button_text" msgid="8873672322605444408">"होम पेजका सेटिङहरू"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"तपाईँको प्रशासकद्वारा असक्षम गरिएको"</string>
-    <string name="allow_rotation_title" msgid="7728578836261442095">"होम स्क्रिन रोटेट हुन दिइयोस्"</string>
+    <!-- no translation found for allow_rotation_title (7222049633713050106) -->
+    <skip />
     <string name="allow_rotation_desc" msgid="8662546029078692509">"फोनलाई घुमाइँदा"</string>
     <string name="notification_dots_title" msgid="9062440428204120317">"सूचनाको प्रतीक जनाउने थोप्लाहरू"</string>
     <string name="notification_dots_desc_on" msgid="1679848116452218908">"सक्रिय"</string>
@@ -114,7 +123,8 @@
     <string name="msg_missing_notification_access" msgid="281113995110910548">"सूचनाको प्रतीक जनाउने थोप्लाहरू देखाउन <xliff:g id="NAME">%1$s</xliff:g> को एपसम्बन्धी सूचनाहरूलाई सक्रिय गर्नुहोस्"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"सेटिङहरू बदल्नुहोस्"</string>
     <string name="notification_dots_service_title" msgid="4284221181793592871">"सूचनाको प्रतीक जनाउने थोप्लाहरू देखाउनुहोस्"</string>
-    <string name="auto_add_shortcuts_label" msgid="3698776050751790653">"होम स्क्रिनमा एपका आइकन थपियोस्"</string>
+    <!-- no translation found for auto_add_shortcuts_label (4926805029653694105) -->
+    <skip />
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"नयाँ एपका लागि"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"अज्ञात"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"हटाउनुहोस्"</string>
@@ -126,7 +136,8 @@
     <string name="app_waiting_download_title" msgid="7053938513995617849">"<xliff:g id="NAME">%1$s</xliff:g> स्थापना गर्न प्रतीक्षा गर्दै"</string>
     <string name="widgets_list" msgid="796804551140113767">"विजेटहरूको सूची"</string>
     <string name="widgets_list_closed" msgid="6141506579418771922">"विजेटहरूको सूची बन्द गरियो"</string>
-    <string name="action_add_to_workspace" msgid="8902165848117513641">"होम स्क्रिनमा हाल्नुहोस्"</string>
+    <!-- no translation found for action_add_to_workspace (215894119683164916) -->
+    <skip />
     <string name="action_move_here" msgid="2170188780612570250">"वस्तु यहाँ सार्नुहोस्"</string>
     <string name="item_added_to_workspace" msgid="4211073925752213539">"वस्तु गृह स्क्रिनमा थपियो"</string>
     <string name="item_removed" msgid="851119963877842327">"वस्तु हटाइयो"</string>
@@ -141,7 +152,8 @@
     <string name="added_to_folder" msgid="4793259502305558003">"वस्तु फोल्डरमा थपियो"</string>
     <string name="create_folder_with" msgid="4050141361160214248">"<xliff:g id="NAME">%1$s</xliff:g>: मार्फत फोल्डर सिर्जना गर्नुहोस्"</string>
     <string name="folder_created" msgid="6409794597405184510">"फोल्डर सिर्जना गरियो"</string>
-    <string name="action_move_to_workspace" msgid="1603837886334246317">"गृह स्क्रिनमा सार्नुहोस्"</string>
+    <!-- no translation found for action_move_to_workspace (39528912300293768) -->
+    <skip />
     <string name="action_resize" msgid="1802976324781771067">"पुनःआकार मिलाउनुहोस्"</string>
     <string name="action_increase_width" msgid="8773715375078513326">"चौडाइ बढाउनुहोस्"</string>
     <string name="action_increase_height" msgid="459390020612501122">"उँचाइ बढाउनुहोस्"</string>

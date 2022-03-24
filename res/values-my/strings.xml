@@ -37,8 +37,10 @@
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"အလျား %1$d နှင့် အမြင့် %2$d"</string>
     <string name="widget_preview_context_description" msgid="9045841361655787574">"<xliff:g id="WIDGET_NAME">%1$s</xliff:g> ဝိဂျက်"</string>
-    <string name="add_item_request_drag_hint" msgid="5653291305078645405">"ပင်မစာမျက်နှာအနီးတွင် ဝိဂျက်ကိုရွှေ့ရန် ၎င်းကို တို့ထိ၍ဖိထားပါ"</string>
-    <string name="add_to_home_screen" msgid="8631549138215492708">"ပင်မစာမျက်နှာသို့ ထည့်ရန်"</string>
+    <!-- no translation found for add_item_request_drag_hint (8730547755622776606) -->
+    <skip />
+    <!-- no translation found for add_to_home_screen (9168649446635919791) -->
+    <skip />
     <string name="added_to_home_screen_accessibility_text" msgid="4451545765448884415">"<xliff:g id="WIDGET_NAME">%1$s</xliff:g> ဝိဂျက်ကို ပင်မစာမျက်နှာတွင် ထည့်လိုက်ပြီ"</string>
     <string name="widgets_count" msgid="6467746476364652096">"{count,plural, =1{ဝိဂျက် # ခု}other{ဝိဂျက် # ခု}}"</string>
     <string name="shortcuts_count" msgid="8471715556199592381">"{count,plural, =1{ဖြတ်လမ်းလင့်ခ် # ခု}other{ဖြတ်လမ်းလင့်ခ် # ခု}}"</string>
@@ -52,7 +54,8 @@
     <string name="widgets_full_sheet_work_tab" msgid="3767150027110633765">"အလုပ်"</string>
     <string name="widget_category_conversations" msgid="8894438636213590446">"စကားဝိုင်းများ"</string>
     <string name="widget_education_header" msgid="4874760613775913787">"အသုံးဝင်သော အချက်အလက်များကို အလွယ်တကူ ရယူလိုက်ပါ"</string>
-    <string name="widget_education_content" msgid="745542879510751525">"အက်ပ်များကိုမဖွင့်ဘဲ အချက်အလက်များရယူရန် သင်၏ ပင်မစာမျက်နှာသို့ ဝိဂျက်များ ထည့်နိုင်သည်"</string>
+    <!-- no translation found for widget_education_content (1731667670753497052) -->
+    <skip />
     <string name="reconfigurable_widget_education_tip" msgid="6336962690888067057">"ဝိဂျက် ဆက်တင်များကို ပြောင်းရန် တို့ပါ"</string>
     <string name="widget_education_close_button" msgid="8676165703104836580">"ရပြီ"</string>
     <string name="widget_reconfigure_button_content_description" msgid="8811472721881205250">"ဝိဂျက် ဆက်တင်များကို ပြောင်းပါ"</string>
@@ -65,7 +68,8 @@
     <string name="notifications_header" msgid="1404149926117359025">"အကြောင်းကြားချက်များ"</string>
     <string name="long_press_shortcut_to_add" msgid="5405328730817637737">"ဖြတ်လမ်းလင့်ခ်ကို ရွှေ့ရန် နှစ်ချက်တို့ပြီး ဖိထားပါ။"</string>
     <string name="long_accessible_way_to_add_shortcut" msgid="2199537273817090740">"ဖြတ်လမ်းလင့်ခ်ကို ရွှေ့ရန် (သို့) စိတ်ကြိုက်လုပ်ဆောင်ချက်များကို သုံးရန် နှစ်ချက်တို့ပြီး ဖိထားပါ။"</string>
-    <string name="out_of_space" msgid="6692471482459245734">"ဤပင်မစာမျက်နှာတွင် နေရာလွတ် မရှိတော့ပါ"</string>
+    <!-- no translation found for out_of_space (6455557115204099579) -->
+    <skip />
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"အနှစ်သက်ဆုံးများ ထားရာတွင် နေရာလွတ် မကျန်တော့ပါ"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"အက်ပ်စာရင်း"</string>
     <string name="all_apps_search_results" msgid="5889367432531296759">"ရှာဖွေမှု ရလဒ်များ"</string>
@@ -79,10 +83,14 @@
     <string name="pin_prediction" msgid="4196423321649756498">"ခန့်မှန်းချက်ကို ပင်ထိုးရန်"</string>
     <string name="permlab_install_shortcut" msgid="5632423390354674437">"ဖြတ်လမ်းလင့်ခ်များ ထည့်သွင်းခြင်း"</string>
     <string name="permdesc_install_shortcut" msgid="923466509822011139">"အသုံးပြုသူ လုပ်ဆောင်မှုမရှိပဲ အပ်ပလီကေးရှင်းကို အတိုကောက်မှတ်သားမှုများ ပြုလုပ်ခွင့် ပေးခြင်း"</string>
-    <string name="permlab_read_settings" msgid="1941457408239617576">"ပင်မမျက်နှာစာ အပြင်အဆင် နှင့် အတိုကောက်မှတ်သားမှုများအား ဖတ်ခြင်း"</string>
-    <string name="permdesc_read_settings" msgid="5833423719057558387">"ပင်မမျက်နှာစာတွင်ရှိသော အပြင်အဆင်နှင့် အတိုကောက်မှတ်သားမှုများကို အပ်ပလီကေးရှင်းအား ဖတ်ခွင့်ပြုခြင်း"</string>
-    <string name="permlab_write_settings" msgid="3574213698004620587">"ပင်မမျက်နှာစာ အပြင်အဆင် နှင့် အတိုကောက်မှတ်သားမှုများအား ရေးသားခြင်း"</string>
-    <string name="permdesc_write_settings" msgid="5440712911516509985">"ပင်မမျက်နှာစာတွင် ရှိသော အပြင်အဆင် နှင့် အတိုကောက်မှတ်သားမှုများ ကို အပ်ပလီကေးရှင်းအား ပြောင်းခွင့်ပြုခြင်း"</string>
+    <!-- no translation found for permlab_read_settings (5136500343007704955) -->
+    <skip />
+    <!-- no translation found for permdesc_read_settings (4208061150510996676) -->
+    <skip />
+    <!-- no translation found for permlab_write_settings (4820028712156303762) -->
+    <skip />
+    <!-- no translation found for permdesc_write_settings (726859348127868466) -->
+    <skip />
     <string name="msg_no_phone_permission" msgid="9208659281529857371">"<xliff:g id="APP_NAME">%1$s</xliff:g>သည် ဖုန်းခေါ်ဆိုခွင့် မရှိပါ"</string>
     <string name="gadget_error_text" msgid="740356548025791839">"ဝိဂျက်ကို ဖွင့်၍မရပါ"</string>
     <string name="gadget_setup_text" msgid="8348374825537681407">"ဝိဂျက်ဆက်တင်များ"</string>
@@ -105,7 +113,8 @@
     <string name="styles_wallpaper_button_text" msgid="8216961355289236794">"နောက်ခံနှင့် ပုံစံ"</string>
     <string name="settings_button_text" msgid="8873672322605444408">"ပင်မဆက်တင်များ"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"သင့်စီမံခန့်ခွဲသူက ပိတ်လိုက်ပါသည်"</string>
-    <string name="allow_rotation_title" msgid="7728578836261442095">"ပင်မစာမျက်နှာလှည့်ခြင်းကို ခွင့်ပြုပါ"</string>
+    <!-- no translation found for allow_rotation_title (7222049633713050106) -->
+    <skip />
     <string name="allow_rotation_desc" msgid="8662546029078692509">"ဖုန်းကိုလှည့်ထားစဉ်"</string>
     <string name="notification_dots_title" msgid="9062440428204120317">"သတိပေးချက် အစက်များ"</string>
     <string name="notification_dots_desc_on" msgid="1679848116452218908">"ဖွင့်"</string>
@@ -114,7 +123,8 @@
     <string name="msg_missing_notification_access" msgid="281113995110910548">"အကြောင်းကြားချက် အစက်များကို ပြသရန် <xliff:g id="NAME">%1$s</xliff:g> အတွက် အက်ပ်အကြောင်းကြားချက်များကို ဖွင့်ပါ"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"ဆက်တင်များ ပြောင်းရန်"</string>
     <string name="notification_dots_service_title" msgid="4284221181793592871">"အကြောင်းကြားချက် အစက်များ ပြရန်"</string>
-    <string name="auto_add_shortcuts_label" msgid="3698776050751790653">"ပင်မစာမျက်နှာတွင် အက်ပ်သင်္ကေတထည့်ရန်"</string>
+    <!-- no translation found for auto_add_shortcuts_label (4926805029653694105) -->
+    <skip />
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"အက်ပ်အသစ်များအတွက်"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"မသိ"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"ဖယ်ရှားရန်"</string>
@@ -126,7 +136,8 @@
     <string name="app_waiting_download_title" msgid="7053938513995617849">"<xliff:g id="NAME">%1$s</xliff:g> ကိုထည့်သွင်းရန်စောင့်နေသည်"</string>
     <string name="widgets_list" msgid="796804551140113767">"ဝိဂျက်စာရင်း"</string>
     <string name="widgets_list_closed" msgid="6141506579418771922">"ဝိဂျက်စာရင်းကို ပိတ်ထားသည်"</string>
-    <string name="action_add_to_workspace" msgid="8902165848117513641">"ပင်မမျက်နှာစာသို့ ထည့်ပါ"</string>
+    <!-- no translation found for action_add_to_workspace (215894119683164916) -->
+    <skip />
     <string name="action_move_here" msgid="2170188780612570250">"၎င်းအား ဤသို့ ရွှေ့ပါ"</string>
     <string name="item_added_to_workspace" msgid="4211073925752213539">"ပင်မ ဖန်မျက်နှာပြင်သို့ ထည့်ပြီး၏"</string>
     <string name="item_removed" msgid="851119963877842327">"၎င်းအား ဖယ်ရှားပြီး၏"</string>
@@ -141,7 +152,8 @@
     <string name="added_to_folder" msgid="4793259502305558003">"ဖိုလ်ဒါသို့ ထည့်ပြီး"</string>
     <string name="create_folder_with" msgid="4050141361160214248">"ဖိုလ်ဒါ ပြုလုပ်ရန်- <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="folder_created" msgid="6409794597405184510">"ဖိုလ်ဒါ ပြုလုပ်ပြီး"</string>
-    <string name="action_move_to_workspace" msgid="1603837886334246317">"ပင်မမျက်နှာပြင်သို့ ရွှေ့ပါ"</string>
+    <!-- no translation found for action_move_to_workspace (39528912300293768) -->
+    <skip />
     <string name="action_resize" msgid="1802976324781771067">"အရွယ်အစားပြောင်းပါ"</string>
     <string name="action_increase_width" msgid="8773715375078513326">"အကျယ်အား တိုးပါ"</string>
     <string name="action_increase_height" msgid="459390020612501122">"အမြင့်အား တိုးပါ"</string>
