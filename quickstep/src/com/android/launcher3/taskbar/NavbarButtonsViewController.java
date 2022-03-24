@@ -194,8 +194,7 @@ public class NavbarButtonsViewController implements TaskbarControllers.LoggableT
                         && (flags & FLAG_SCREEN_PINNING_ACTIVE) == 0));
 
         mPropertyHolders.add(new StatePropertyHolder(mControllers.taskbarDragLayerController
-                .getKeyguardBgTaskbar(),
-                flags -> (flags & FLAG_KEYGUARD_VISIBLE) == 0, AnimatedFloat.VALUE, 1, 0));
+                .getKeyguardBgTaskbar(), flags -> (flags & FLAG_KEYGUARD_VISIBLE) == 0));
 
         // Force nav buttons (specifically back button) to be visible during setup wizard.
         boolean isInSetup = !mContext.isUserSetupComplete();
@@ -297,12 +296,14 @@ public class NavbarButtonsViewController implements TaskbarControllers.LoggableT
                 mNavButtonContainer.requestLayout();
             }
 
-            // Animate taskbar background when any of these flags are enabled
-            int flagsToShowBg = FLAG_ONLY_BACK_FOR_BOUNCER_VISIBLE
-                    | FLAG_NOTIFICATION_SHADE_EXPANDED;
+            // Animate taskbar background when either..
+            // notification shade expanded AND not on keyguard
+            // back is visible for bouncer
             mPropertyHolders.add(new StatePropertyHolder(
                     mControllers.taskbarDragLayerController.getNavbarBackgroundAlpha(),
-                    flags -> (flags & flagsToShowBg) != 0, AnimatedFloat.VALUE, 1, 0));
+                    flags -> ((flags & FLAG_NOTIFICATION_SHADE_EXPANDED) != 0
+                                && (flags & FLAG_KEYGUARD_VISIBLE) == 0)
+                            || (flags & FLAG_ONLY_BACK_FOR_BOUNCER_VISIBLE) != 0));
 
             // Rotation button
             RotationButton rotationButton = new RotationButtonImpl(
@@ -814,6 +815,10 @@ public class NavbarButtonsViewController implements TaskbarControllers.LoggableT
         StatePropertyHolder(MultiValueAlpha.AlphaProperty alphaProperty,
                 IntPredicate enableCondition) {
             this(alphaProperty, enableCondition, MultiValueAlpha.VALUE, 1, 0);
+        }
+
+        StatePropertyHolder(AnimatedFloat animatedFloat, IntPredicate enableCondition) {
+            this(animatedFloat, enableCondition, AnimatedFloat.VALUE, 1, 0);
         }
 
         <T> StatePropertyHolder(T target, IntPredicate enabledCondition,
