@@ -552,7 +552,34 @@ public class StatsLogManager implements ResourceBasedOverride {
 
         @UiEvent(doc = "User scrolled on one of the all apps surfaces such as A-Z list, search "
                 + "result page etc.")
-        LAUNCHER_ALLAPPS_SCROLLED(985);
+        LAUNCHER_ALLAPPS_SCROLLED(985),
+
+        @UiEvent(doc = "User tapped taskbar home button")
+        LAUNCHER_TASKBAR_HOME_BUTTON_TAP(1003),
+
+        @UiEvent(doc = "User tapped taskbar back button")
+        LAUNCHER_TASKBAR_BACK_BUTTON_TAP(1004),
+
+        @UiEvent(doc = "User tapped taskbar overview/recents button")
+        LAUNCHER_TASKBAR_OVERVIEW_BUTTON_TAP(1005),
+
+        @UiEvent(doc = "User tapped taskbar IME switcher button")
+        LAUNCHER_TASKBAR_IME_SWITCHER_BUTTON_TAP(1006),
+
+        @UiEvent(doc = "User tapped taskbar a11y button")
+        LAUNCHER_TASKBAR_A11Y_BUTTON_TAP(1007),
+
+        @UiEvent(doc = "User tapped taskbar home button")
+        LAUNCHER_TASKBAR_HOME_BUTTON_LONGPRESS(1008),
+
+        @UiEvent(doc = "User tapped taskbar back button")
+        LAUNCHER_TASKBAR_BACK_BUTTON_LONGPRESS(1009),
+
+        @UiEvent(doc = "User tapped taskbar overview/recents button")
+        LAUNCHER_TASKBAR_OVERVIEW_BUTTON_LONGPRESS(1010),
+
+        @UiEvent(doc = "User tapped taskbar a11y button")
+        LAUNCHER_TASKBAR_A11Y_BUTTON_LONGPRESS(1011);
 
         // ADD MORE
 
