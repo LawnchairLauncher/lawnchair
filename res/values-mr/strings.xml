@@ -37,8 +37,8 @@
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"%1$d रूंद बाय %2$d उंच"</string>
     <string name="widget_preview_context_description" msgid="9045841361655787574">"<xliff:g id="WIDGET_NAME">%1$s</xliff:g> विजेट"</string>
-    <string name="add_item_request_drag_hint" msgid="5653291305078645405">"होम स्क्रीनवर ते हलवण्यासाठी विजेटला स्पर्श करा आणि धरून ठेवा"</string>
-    <string name="add_to_home_screen" msgid="8631549138215492708">"होम स्‍क्रीनवर जोडा"</string>
+    <string name="add_item_request_drag_hint" msgid="8730547755622776606">"होम स्क्रीनवर ते हलवण्यासाठी विजेटला स्पर्श करा आणि धरून ठेवा"</string>
+    <string name="add_to_home_screen" msgid="9168649446635919791">"होम स्क्रीनवर जोडा"</string>
     <string name="added_to_home_screen_accessibility_text" msgid="4451545765448884415">"<xliff:g id="WIDGET_NAME">%1$s</xliff:g> हे विजेट तुमच्या होम स्क्रीनवर जोडले आहे"</string>
     <string name="widgets_count" msgid="6467746476364652096">"{count,plural, =1{# विजेट}other{# विजेट}}"</string>
     <string name="shortcuts_count" msgid="8471715556199592381">"{count,plural, =1{# शॉर्टकट}other{# शॉर्टकट}}"</string>
@@ -52,7 +52,7 @@
     <string name="widgets_full_sheet_work_tab" msgid="3767150027110633765">"ऑफिस"</string>
     <string name="widget_category_conversations" msgid="8894438636213590446">"संभाषणे"</string>
     <string name="widget_education_header" msgid="4874760613775913787">"तुमच्यासाठी सहज उपलब्ध असलेली माहिती"</string>
-    <string name="widget_education_content" msgid="745542879510751525">"ॲप्स न उघडता माहिती मिळवण्यासाठी, तुम्ही तुमच्या होम स्क्रीनवर विजेट जोडू शकता"</string>
+    <string name="widget_education_content" msgid="1731667670753497052">"ॲप्स न उघडता माहिती मिळवण्यासाठी, तुम्ही तुमच्या होम स्क्रीनवर विजेट जोडू शकता"</string>
     <string name="reconfigurable_widget_education_tip" msgid="6336962690888067057">"विजेट सेटिंग्ज बदलण्यासाठी टॅप करा"</string>
     <string name="widget_education_close_button" msgid="8676165703104836580">"समजले"</string>
     <string name="widget_reconfigure_button_content_description" msgid="8811472721881205250">"विजेट सेटिंग्ज बदला"</string>
@@ -65,7 +65,7 @@
     <string name="notifications_header" msgid="1404149926117359025">"सूचना"</string>
     <string name="long_press_shortcut_to_add" msgid="5405328730817637737">"शॉर्टकट हलवण्यासाठी स्पर्श करा आणि धरून ठेवा."</string>
     <string name="long_accessible_way_to_add_shortcut" msgid="2199537273817090740">"शॉर्टकट हलवण्यासाठी किंवा कस्टम कृती वापरण्यासाठी दोनदा टॅप करा आणि धरून ठेवा."</string>
-    <string name="out_of_space" msgid="6692471482459245734">"या होम स्क्रीनवर कोणतीही रूम नाही"</string>
+    <string name="out_of_space" msgid="6455557115204099579">"या होम स्क्रीनवर जागा नाही"</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"आवडीच्या ट्रे मध्ये आणखी जागा नाही"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"अ‍ॅप्स सूची"</string>
     <string name="all_apps_search_results" msgid="5889367432531296759">"शोध परिणाम"</string>
@@ -79,10 +79,10 @@
     <string name="pin_prediction" msgid="4196423321649756498">"पूर्वानुमान पिन करा"</string>
     <string name="permlab_install_shortcut" msgid="5632423390354674437">"शॉर्टकट इंस्टॉल करा"</string>
     <string name="permdesc_install_shortcut" msgid="923466509822011139">"वापरकर्ता हस्तक्षेपाशिवाय शॉर्टकट जोडण्यास अ‍ॅप ला अनुमती देते."</string>
-    <string name="permlab_read_settings" msgid="1941457408239617576">"होम सेटिंग्ज आणि शॉर्टकट वाचा"</string>
-    <string name="permdesc_read_settings" msgid="5833423719057558387">"मुख्यपृष्ठातील सेटिंग्ज आणि शॉर्टकट वाचण्यास अ‍ॅप ला अनुमती देते."</string>
-    <string name="permlab_write_settings" msgid="3574213698004620587">"होम सेटिंग्ज आणि शॉर्टकट लिहा"</string>
-    <string name="permdesc_write_settings" msgid="5440712911516509985">"मुख्यपृष्ठातील सेटिंग्ज आणि शॉर्टकट बदलण्यास अ‍ॅप ला अनुमती देते."</string>
+    <string name="permlab_read_settings" msgid="5136500343007704955">"होम सेटिंग्ज आणि शॉर्टकट वाचा"</string>
+    <string name="permdesc_read_settings" msgid="4208061150510996676">"अ‍ॅपला होममधील सेटिंग्ज आणि शॉर्टकट वाचण्याची अनुमती देते."</string>
+    <string name="permlab_write_settings" msgid="4820028712156303762">"होम सेटिंग्ज आणि शॉर्टकट लिहा"</string>
+    <string name="permdesc_write_settings" msgid="726859348127868466">"अ‍ॅपला होममधील सेटिंग्ज आणि शॉर्टकट बदलण्याची अनुमती देते."</string>
     <string name="msg_no_phone_permission" msgid="9208659281529857371">"<xliff:g id="APP_NAME">%1$s</xliff:g> ला फोन कॉल करण्याची अनुमती नाही"</string>
     <string name="gadget_error_text" msgid="740356548025791839">"विजेट लोड करू शकत नाही"</string>
     <string name="gadget_setup_text" msgid="8348374825537681407">"विजेटची सेटिंग्ज"</string>
@@ -105,7 +105,7 @@
     <string name="styles_wallpaper_button_text" msgid="8216961355289236794">"वॉलपेपर आणि शैली"</string>
     <string name="settings_button_text" msgid="8873672322605444408">"होम सेटिंग्‍ज"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"आपल्या प्रशासकाने अक्षम केले"</string>
-    <string name="allow_rotation_title" msgid="7728578836261442095">"मुख्य स्क्रीन फिरविण्‍यास अनुमती द्या"</string>
+    <string name="allow_rotation_title" msgid="7222049633713050106">"होम स्क्रीन फिरवण्‍याची अनुमती द्या"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"फोन फिरविला जातो तेव्हा"</string>
     <string name="notification_dots_title" msgid="9062440428204120317">"सूचना बिंदू"</string>
     <string name="notification_dots_desc_on" msgid="1679848116452218908">"सुरू"</string>
@@ -114,7 +114,7 @@
     <string name="msg_missing_notification_access" msgid="281113995110910548">"सूचना बिंदू दाखवण्यासाठी, <xliff:g id="NAME">%1$s</xliff:g> साठी अ‍ॅप सूचना सुरू करा"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"सेटिंग्ज बदला"</string>
     <string name="notification_dots_service_title" msgid="4284221181793592871">"सूचना बिंदू दाखवा"</string>
-    <string name="auto_add_shortcuts_label" msgid="3698776050751790653">"होम स्क्रीनवर ॲप आयकन जोडा"</string>
+    <string name="auto_add_shortcuts_label" msgid="4926805029653694105">"होम स्क्रीनवर ॲप आयकन जोडा"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"नवीन अ‍ॅप्ससाठी"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"अज्ञात"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"काढा"</string>
@@ -126,7 +126,7 @@
     <string name="app_waiting_download_title" msgid="7053938513995617849">"<xliff:g id="NAME">%1$s</xliff:g> इंस्टॉल करण्याची प्रतिक्षा करत आहे"</string>
     <string name="widgets_list" msgid="796804551140113767">"विजेट सूची"</string>
     <string name="widgets_list_closed" msgid="6141506579418771922">"विजेट सूची बंद केली"</string>
-    <string name="action_add_to_workspace" msgid="8902165848117513641">"होम स्क्रीनवर जोडा"</string>
+    <string name="action_add_to_workspace" msgid="215894119683164916">"होम स्क्रीनवर जोडा"</string>
     <string name="action_move_here" msgid="2170188780612570250">"आयटम येथे हलवा"</string>
     <string name="item_added_to_workspace" msgid="4211073925752213539">"आयटम मुख्य स्क्रीनवर जोडला"</string>
     <string name="item_removed" msgid="851119963877842327">"आयटम काढला"</string>
@@ -141,7 +141,7 @@
     <string name="added_to_folder" msgid="4793259502305558003">"फोल्‍डरमध्‍ये आयटम जोडले"</string>
     <string name="create_folder_with" msgid="4050141361160214248">"यासह फोल्‍डर तयार करा: <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="folder_created" msgid="6409794597405184510">"फोल्‍डर तयार केले"</string>
-    <string name="action_move_to_workspace" msgid="1603837886334246317">"मुख्य स्क्रीनवर हलवा"</string>
+    <string name="action_move_to_workspace" msgid="39528912300293768">"होम स्क्रीनवर हलवा"</string>
     <string name="action_resize" msgid="1802976324781771067">"आकार बदला"</string>
     <string name="action_increase_width" msgid="8773715375078513326">"रूंदी वाढवा"</string>
     <string name="action_increase_height" msgid="459390020612501122">"उंची वाढवा"</string>
