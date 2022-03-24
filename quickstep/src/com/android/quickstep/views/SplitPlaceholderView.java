@@ -19,11 +19,11 @@ package com.android.quickstep.views;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.util.FloatProperty;
 import android.util.TypedValue;
-import android.view.Gravity;
 import android.widget.FrameLayout;
 
 import androidx.annotation.Nullable;
@@ -31,8 +31,7 @@ import androidx.annotation.Nullable;
 public class SplitPlaceholderView extends FrameLayout {
 
     private final Paint mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-
-    private FloatingTaskView.FullscreenDrawParams mFullscreenParams;
+    private final Rect mTempRect = new Rect();
 
     public static final FloatProperty<SplitPlaceholderView> ALPHA_FLOAT =
             new FloatProperty<SplitPlaceholderView>("SplitViewAlpha") {
@@ -54,7 +53,7 @@ public class SplitPlaceholderView extends FrameLayout {
     public SplitPlaceholderView(Context context, AttributeSet attrs) {
         super(context, attrs);
 
-        mPaint.setColor(getThemePrimaryColor(context));
+        mPaint.setColor(getThemeBackgroundColor(context));
         setWillNotDraw(false);
     }
 
@@ -64,15 +63,24 @@ public class SplitPlaceholderView extends FrameLayout {
         drawBackground(canvas);
 
         super.dispatchDraw(canvas);
+
+        if (mIconView != null) {
+            // Center the icon view in the visible area.
+            getLocalVisibleRect(mTempRect);
+            FloatingTaskView parent = (FloatingTaskView) getParent();
+            FrameLayout.LayoutParams params =
+                    (FrameLayout.LayoutParams) mIconView.getLayoutParams();
+            params.leftMargin = Math.round(mTempRect.centerX() / parent.getFullscreenScaleX()
+                    - 1.0f * mIconView.getDrawableWidth() / 2);
+            params.topMargin = Math.round(mTempRect.centerY() / parent.getFullscreenScaleY()
+                    - 1.0f * mIconView.getDrawableHeight() / 2);
+            mIconView.setLayoutParams(params);
+        }
     }
 
     @Nullable
     public IconView getIconView() {
         return mIconView;
-    }
-
-    public void setFullscreenParams(FloatingTaskView.FullscreenDrawParams fullscreenParams) {
-        mFullscreenParams = fullscreenParams;
     }
 
     public void setIcon(Drawable drawable, int iconSize) {
@@ -83,23 +91,17 @@ public class SplitPlaceholderView extends FrameLayout {
         mIconView.setDrawable(drawable);
         mIconView.setDrawableSize(iconSize, iconSize);
         FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(iconSize, iconSize);
-        params.gravity = Gravity.CENTER;
         mIconView.setLayoutParams(params);
     }
 
     private void drawBackground(Canvas canvas) {
-        if (mFullscreenParams == null) {
-            return;
-        }
-
-        canvas.drawRoundRect(0, 0, getMeasuredWidth(),  getMeasuredHeight(),
-                mFullscreenParams.mCurrentDrawnCornerRadius / mFullscreenParams.mScaleX,
-                mFullscreenParams.mCurrentDrawnCornerRadius / mFullscreenParams.mScaleY, mPaint);
+        FloatingTaskView parent = (FloatingTaskView) getParent();
+        parent.drawRoundedRect(canvas, mPaint);
     }
 
-    private static int getThemePrimaryColor(Context context) {
+    private static int getThemeBackgroundColor(Context context) {
         final TypedValue value = new TypedValue();
-        context.getTheme().resolveAttribute(android.R.attr.colorPrimary, value, true);
+        context.getTheme().resolveAttribute(android.R.attr.colorBackground, value, true);
         return value.data;
     }
 }

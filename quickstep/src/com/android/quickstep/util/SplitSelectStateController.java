@@ -111,7 +111,7 @@ public class SplitSelectStateController {
         if (mInitialTaskIntent != null) {
             fillInIntent = new Intent();
             if (TextUtils.equals(mInitialTaskIntent.getComponent().getPackageName(),
-                    task.topActivity.getPackageName())) {
+                    task.getTopComponent().getPackageName())) {
                 fillInIntent.addFlags(Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
             }
         } else {

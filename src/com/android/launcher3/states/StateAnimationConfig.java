@@ -62,6 +62,7 @@ public class StateAnimationConfig {
             ANIM_OVERVIEW_MODAL,
             ANIM_DEPTH,
             ANIM_OVERVIEW_ACTIONS_FADE,
+            ANIM_WORKSPACE_PAGE_TRANSLATE_X,
     })
     @Retention(RetentionPolicy.SOURCE)
     public @interface AnimType {}
@@ -80,8 +81,9 @@ public class StateAnimationConfig {
     public static final int ANIM_OVERVIEW_MODAL = 12;
     public static final int ANIM_DEPTH = 13;
     public static final int ANIM_OVERVIEW_ACTIONS_FADE = 14;
+    public static final int ANIM_WORKSPACE_PAGE_TRANSLATE_X = 15;
 
-    private static final int ANIM_TYPES_COUNT = 15;
+    private static final int ANIM_TYPES_COUNT = 16;
 
     protected final Interpolator[] mInterpolators = new Interpolator[ANIM_TYPES_COUNT];
 
