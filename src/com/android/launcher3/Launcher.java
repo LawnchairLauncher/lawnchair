@@ -989,6 +989,9 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
 
         DiscoveryBounce.showForHomeIfNeeded(this);
         mAppWidgetHost.setActivityResumed(true);
+
+        // Temporary workaround for apps using SHOW_FORCED IME flag.
+        hideKeyboard();
     }
 
     private void logStopAndResume(boolean isResume) {
