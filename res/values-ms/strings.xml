@@ -37,8 +37,8 @@
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"Lebar %1$d kali tinggi %2$d"</string>
     <string name="widget_preview_context_description" msgid="9045841361655787574">"Widget <xliff:g id="WIDGET_NAME">%1$s</xliff:g>"</string>
-    <string name="add_item_request_drag_hint" msgid="5653291305078645405">"Sentuh &amp; tahan widget untuk menggerakkan widget di sekitar Skrin utama"</string>
-    <string name="add_to_home_screen" msgid="8631549138215492708">"Tambahkan pada Skrin utama"</string>
+    <string name="add_item_request_drag_hint" msgid="8730547755622776606">"Sentuh &amp; tahan widget untuk menggerakkan widget di sekitar skrin utama"</string>
+    <string name="add_to_home_screen" msgid="9168649446635919791">"Tambahkan pada skrin utama"</string>
     <string name="added_to_home_screen_accessibility_text" msgid="4451545765448884415">"Widget <xliff:g id="WIDGET_NAME">%1$s</xliff:g> ditambahkan pada skrin utama"</string>
     <string name="widgets_count" msgid="6467746476364652096">"{count,plural, =1{# widget}other{# widget}}"</string>
     <string name="shortcuts_count" msgid="8471715556199592381">"{count,plural, =1{# pintasan}other{# pintasan}}"</string>
@@ -52,7 +52,7 @@
     <string name="widgets_full_sheet_work_tab" msgid="3767150027110633765">"Tempat kerja"</string>
     <string name="widget_category_conversations" msgid="8894438636213590446">"Perbualan"</string>
     <string name="widget_education_header" msgid="4874760613775913787">"Maklumat berguna di hujung jari anda"</string>
-    <string name="widget_education_content" msgid="745542879510751525">"Untuk mendapatkan maklumat tanpa membuka apl, anda boleh menambahkan widget pada skrin Utama anda"</string>
+    <string name="widget_education_content" msgid="1731667670753497052">"Untuk mendapatkan maklumat tanpa membuka apl, anda boleh menambahkan widget pada skrin utama anda"</string>
     <string name="reconfigurable_widget_education_tip" msgid="6336962690888067057">"Ketik untuk menukar tetapan widget"</string>
     <string name="widget_education_close_button" msgid="8676165703104836580">"OK"</string>
     <string name="widget_reconfigure_button_content_description" msgid="8811472721881205250">"Tukar tetapan widget"</string>
@@ -65,7 +65,7 @@
     <string name="notifications_header" msgid="1404149926117359025">"Pemberitahuan"</string>
     <string name="long_press_shortcut_to_add" msgid="5405328730817637737">"Sentuh &amp; tahan untuk menggerakkan pintasan."</string>
     <string name="long_accessible_way_to_add_shortcut" msgid="2199537273817090740">"Ketik dua kali &amp; tahan untuk menggerakkan pintasan atau menggunakan tindakan tersuai."</string>
-    <string name="out_of_space" msgid="6692471482459245734">"Tiada ruang di skrin Utama ini"</string>
+    <string name="out_of_space" msgid="6455557115204099579">"Tiada ruang di skrin utama ini"</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"Tiada ruang dalam dulang Kegemaran lagi"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"Senarai apl"</string>
     <string name="all_apps_search_results" msgid="5889367432531296759">"Hasil carian"</string>
@@ -79,10 +79,10 @@
     <string name="pin_prediction" msgid="4196423321649756498">"Sematkan Ramalan"</string>
     <string name="permlab_install_shortcut" msgid="5632423390354674437">"pasang pintasan"</string>
     <string name="permdesc_install_shortcut" msgid="923466509822011139">"Membenarkan apl menambah pintasan tanpa campur tangan pengguna."</string>
-    <string name="permlab_read_settings" msgid="1941457408239617576">"baca tetapan dan pintasan Laman Utama"</string>
-    <string name="permdesc_read_settings" msgid="5833423719057558387">"Membenarkan apl membaca tetapan dan pintasan di Laman Utama."</string>
-    <string name="permlab_write_settings" msgid="3574213698004620587">"tulis tetapan dan pintasan Laman Utama"</string>
-    <string name="permdesc_write_settings" msgid="5440712911516509985">"Membenarkan apl menukar tetapan dan pintasan di Laman Utama."</string>
+    <string name="permlab_read_settings" msgid="5136500343007704955">"membaca tetapan dan pintasan skrin utama"</string>
+    <string name="permdesc_read_settings" msgid="4208061150510996676">"Membenarkan apl membaca tetapan dan pintasan di skrin utama."</string>
+    <string name="permlab_write_settings" msgid="4820028712156303762">"menulis tetapan dan pintasan skrin utama"</string>
+    <string name="permdesc_write_settings" msgid="726859348127868466">"Membenarkan apl menukar tetapan dan pintasan di skrin utama."</string>
     <string name="msg_no_phone_permission" msgid="9208659281529857371">"<xliff:g id="APP_NAME">%1$s</xliff:g> tidak dibenarkan membuat panggilan telefon"</string>
     <string name="gadget_error_text" msgid="740356548025791839">"Tidak dapat memuatkan widget"</string>
     <string name="gadget_setup_text" msgid="8348374825537681407">"Tetapan widget"</string>
@@ -105,7 +105,7 @@
     <string name="styles_wallpaper_button_text" msgid="8216961355289236794">"Kertas dinding &amp; gaya"</string>
     <string name="settings_button_text" msgid="8873672322605444408">"Tetapan laman utama"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"Dilumpuhkan oleh pentadbir anda"</string>
-    <string name="allow_rotation_title" msgid="7728578836261442095">"Benarkan putaran Skrin Utama"</string>
+    <string name="allow_rotation_title" msgid="7222049633713050106">"Benarkan putaran skrin utama"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"Apabila telefon diputar"</string>
     <string name="notification_dots_title" msgid="9062440428204120317">"Titik pemberitahuan"</string>
     <string name="notification_dots_desc_on" msgid="1679848116452218908">"Hidup"</string>
@@ -114,7 +114,7 @@
     <string name="msg_missing_notification_access" msgid="281113995110910548">"Untuk menunjukkan Titik Pemberitahuan, hidupkan pemberitahuan apl untuk <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"Tukar tetapan"</string>
     <string name="notification_dots_service_title" msgid="4284221181793592871">"Tunjukkan titik pemberitahuan"</string>
-    <string name="auto_add_shortcuts_label" msgid="3698776050751790653">"Tambahkan ikon apl pada Skrin utama"</string>
+    <string name="auto_add_shortcuts_label" msgid="4926805029653694105">"Tambahkan ikon apl pada skrin utama"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"Untuk apl baharu"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"Tidak diketahui"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"Alih keluar"</string>
@@ -126,7 +126,7 @@
     <string name="app_waiting_download_title" msgid="7053938513995617849">"<xliff:g id="NAME">%1$s</xliff:g> menunggu untuk dipasang"</string>
     <string name="widgets_list" msgid="796804551140113767">"Senarai widget"</string>
     <string name="widgets_list_closed" msgid="6141506579418771922">"Senarai widget ditutup"</string>
-    <string name="action_add_to_workspace" msgid="8902165848117513641">"Tambahkan pada Skrin Utama"</string>
+    <string name="action_add_to_workspace" msgid="215894119683164916">"Tambahkan pada skrin utama"</string>
     <string name="action_move_here" msgid="2170188780612570250">"Alihkan item ke sini"</string>
     <string name="item_added_to_workspace" msgid="4211073925752213539">"Item ditambahkan pada skrin utama"</string>
     <string name="item_removed" msgid="851119963877842327">"Item dialih keluar"</string>
@@ -141,7 +141,7 @@
     <string name="added_to_folder" msgid="4793259502305558003">"Item ditambahkan pada folder"</string>
     <string name="create_folder_with" msgid="4050141361160214248">"Buat folder dengan: <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="folder_created" msgid="6409794597405184510">"Folder dibuat"</string>
-    <string name="action_move_to_workspace" msgid="1603837886334246317">"Alihkan ke Skrin Utama"</string>
+    <string name="action_move_to_workspace" msgid="39528912300293768">"Alihkan ke skrin utama"</string>
     <string name="action_resize" msgid="1802976324781771067">"Ubah saiz"</string>
     <string name="action_increase_width" msgid="8773715375078513326">"Tambahkan kelebaran"</string>
     <string name="action_increase_height" msgid="459390020612501122">"Tambahkan ketinggian"</string>

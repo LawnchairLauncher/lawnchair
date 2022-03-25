@@ -37,8 +37,8 @@
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"%2$d উচ্চতা অনুযায়ী %1$d প্রস্থ"</string>
     <string name="widget_preview_context_description" msgid="9045841361655787574">"<xliff:g id="WIDGET_NAME">%1$s</xliff:g>টি উইজেট"</string>
-    <string name="add_item_request_drag_hint" msgid="5653291305078645405">"হোম স্ক্রিনের যেকোনও জায়গায় উইজেটটি নিয়ে যেতে, টাচ করে ধরে থাকুন"</string>
-    <string name="add_to_home_screen" msgid="8631549138215492708">"হোম স্ক্রিনে যোগ করুন"</string>
+    <string name="add_item_request_drag_hint" msgid="8730547755622776606">"হোম স্ক্রিনের যেকোনও জায়গায় নিয়ে যেতে, উইজেট টাচ করে ধরে থাকুন"</string>
+    <string name="add_to_home_screen" msgid="9168649446635919791">"হোম স্ক্রিনে যোগ করুন"</string>
     <string name="added_to_home_screen_accessibility_text" msgid="4451545765448884415">"<xliff:g id="WIDGET_NAME">%1$s</xliff:g> উইজেট হোম স্ক্রিনে যোগ করা হয়েছে"</string>
     <string name="widgets_count" msgid="6467746476364652096">"{count,plural, =1{#টি উইজেট}one{#টি উইজেট}other{#টি উইজেট}}"</string>
     <string name="shortcuts_count" msgid="8471715556199592381">"{count,plural, =1{#টি শর্টকাট}one{#টি শর্টকাট}other{#টি শর্টকাট}}"</string>
@@ -52,7 +52,7 @@
     <string name="widgets_full_sheet_work_tab" msgid="3767150027110633765">"অফিস"</string>
     <string name="widget_category_conversations" msgid="8894438636213590446">"কথোপকথন"</string>
     <string name="widget_education_header" msgid="4874760613775913787">"সহজেই দরকারি তথ্য পান"</string>
-    <string name="widget_education_content" msgid="745542879510751525">"অ্যাপ না খুলে তথ্য পাওয়ার জন্য, আপনার হোম স্ক্রিনে উইজেট যোগ করতে পারেন"</string>
+    <string name="widget_education_content" msgid="1731667670753497052">"অ্যাপ না খুলেই তথ্য পাওয়ার জন্য, হোম স্ক্রিনে উইজেট যোগ করতে পারবেন"</string>
     <string name="reconfigurable_widget_education_tip" msgid="6336962690888067057">"উইজেট সেটিংস পরিবর্তন করতে ট্যাপ করুন"</string>
     <string name="widget_education_close_button" msgid="8676165703104836580">"বুঝেছি"</string>
     <string name="widget_reconfigure_button_content_description" msgid="8811472721881205250">"উইজেট সেটিংস পরিবর্তন করুন"</string>
@@ -65,7 +65,7 @@
     <string name="notifications_header" msgid="1404149926117359025">"বিজ্ঞপ্তি"</string>
     <string name="long_press_shortcut_to_add" msgid="5405328730817637737">"একটি শর্টকাট সরাতে টাচ করে ধরে রাখুন।"</string>
     <string name="long_accessible_way_to_add_shortcut" msgid="2199537273817090740">"একটি শর্টকাট সরাতে বা কাস্টম অ্যাকশন ব্যবহার করতে ডবল ট্যাপ করে ধরে রাখুন।"</string>
-    <string name="out_of_space" msgid="6692471482459245734">"এই হোম স্ক্রিনে আর জায়গা খালি নেই"</string>
+    <string name="out_of_space" msgid="6455557115204099579">"এই হোম স্ক্রিনে জায়গা খালি নেই"</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"পছন্দসই ট্রে-তে আর কোনো জায়গা নেই"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"অ্যাপ্লিকেশানগুলির তালিকা"</string>
     <string name="all_apps_search_results" msgid="5889367432531296759">"সার্চ ফলাফল"</string>
@@ -79,10 +79,10 @@
     <string name="pin_prediction" msgid="4196423321649756498">"আপনার প্রয়োজন হতে পারে এমন অ্যাপ পিন করুন"</string>
     <string name="permlab_install_shortcut" msgid="5632423390354674437">"শর্টকাটগুলি ইনস্টল করে"</string>
     <string name="permdesc_install_shortcut" msgid="923466509822011139">"একটি অ্যাপ্লিকেশানকে ব্যবহারকারীর হস্তক্ষেপ ছাড়াই শর্টকাটগুলি যোগ করার অনুমতি দেয়৷"</string>
-    <string name="permlab_read_settings" msgid="1941457408239617576">"হোম সেটিংস এবং শর্টকাটগুলি পড়ে"</string>
-    <string name="permdesc_read_settings" msgid="5833423719057558387">"হোমে অ্যাপ্লিকেশানটিকে সেটিংস এবং শর্টকাটগুলি পড়তে দেয়৷"</string>
-    <string name="permlab_write_settings" msgid="3574213698004620587">"হোম সেটিংস এবং শর্টকাটগুলি লেখে"</string>
-    <string name="permdesc_write_settings" msgid="5440712911516509985">"হোমে অ্যাপ্লিকেশানটিকে সেটিংস এবং শর্টকাটগুলি পরিবর্তন করতে দেয়৷"</string>
+    <string name="permlab_read_settings" msgid="5136500343007704955">"হোম স্ক্রিনে সেটিংস ও শর্টকাট পড়ুন"</string>
+    <string name="permdesc_read_settings" msgid="4208061150510996676">"অ্যাপকে হোম স্ক্রিনে সেটিংস ও শর্টকাট পড়ার অনুমতি দেয়।"</string>
+    <string name="permlab_write_settings" msgid="4820028712156303762">"হোম স্ক্রিনে সেটিংস ও শর্টকাট লিখুন"</string>
+    <string name="permdesc_write_settings" msgid="726859348127868466">"অ্যাপকে হোম স্ক্রিনে সেটিংস ও শর্টকাট পরিবর্তন করার অনুমতি দেয়।"</string>
     <string name="msg_no_phone_permission" msgid="9208659281529857371">"ফোন কলগুলি করার জন্য <xliff:g id="APP_NAME">%1$s</xliff:g> এর অনুমতি নেই"</string>
     <string name="gadget_error_text" msgid="740356548025791839">"উইজেট লোড করা যাচ্ছে না"</string>
     <string name="gadget_setup_text" msgid="8348374825537681407">"উইজেট সেটিংস"</string>
@@ -105,7 +105,7 @@
     <string name="styles_wallpaper_button_text" msgid="8216961355289236794">"ওয়ালপেপার এবং স্টাইল"</string>
     <string name="settings_button_text" msgid="8873672322605444408">"হোম সেটিংস"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"আপনার প্রশাসক দ্বারা অক্ষম করা হয়েছে"</string>
-    <string name="allow_rotation_title" msgid="7728578836261442095">"হোম স্ক্রিন ঘোরানোর অনুমতি দিন"</string>
+    <string name="allow_rotation_title" msgid="7222049633713050106">"হোম স্ক্রিন রোটেট করার অনুমতি দিন"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"যখন ফোনটি ঘোরানো হয়"</string>
     <string name="notification_dots_title" msgid="9062440428204120317">"বিজ্ঞপ্তি ডট"</string>
     <string name="notification_dots_desc_on" msgid="1679848116452218908">"চালু"</string>
@@ -114,7 +114,7 @@
     <string name="msg_missing_notification_access" msgid="281113995110910548">"বিজ্ঞপ্তির ডটগুলি দেখানোর জন্য, <xliff:g id="NAME">%1$s</xliff:g> এর অ্যাপ বিজ্ঞপ্তি চালু করুন"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"সেটিংস পরিবর্তন করুন"</string>
     <string name="notification_dots_service_title" msgid="4284221181793592871">"বিজ্ঞপ্তির ডট দেখুন"</string>
-    <string name="auto_add_shortcuts_label" msgid="3698776050751790653">"হোম স্ক্রিনে অ্যাপ আইকন যোগ করুন"</string>
+    <string name="auto_add_shortcuts_label" msgid="4926805029653694105">"হোম স্ক্রিনে অ্যাপের আইকন যোগ করুন"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"নতুন অ্যাপের জন্য"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"অজানা"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"সরান"</string>
@@ -126,7 +126,7 @@
     <string name="app_waiting_download_title" msgid="7053938513995617849">"<xliff:g id="NAME">%1$s</xliff:g> ইনস্টলের অপেক্ষায় রয়েছে"</string>
     <string name="widgets_list" msgid="796804551140113767">"উইজেটের তালিকা"</string>
     <string name="widgets_list_closed" msgid="6141506579418771922">"উইজেটের তালিকা বন্ধ করা হয়েছে"</string>
-    <string name="action_add_to_workspace" msgid="8902165848117513641">"হোম স্ক্রিনে যোগ করুন"</string>
+    <string name="action_add_to_workspace" msgid="215894119683164916">"হোম স্ক্রিনে যোগ করুন"</string>
     <string name="action_move_here" msgid="2170188780612570250">"এখানে আইটেম সরান"</string>
     <string name="item_added_to_workspace" msgid="4211073925752213539">"হোম স্ক্রীনে আইটেম যোগ করা হয়েছে"</string>
     <string name="item_removed" msgid="851119963877842327">"আইটেম সরানো হয়েছে"</string>
@@ -141,7 +141,7 @@
     <string name="added_to_folder" msgid="4793259502305558003">"আইটেম ফোল্ডারে যোগ করা হয়েছে"</string>
     <string name="create_folder_with" msgid="4050141361160214248">"এর সাথে ফোল্ডার তৈরি করুন: <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="folder_created" msgid="6409794597405184510">"ফোল্ডার তৈরি করা হয়েছে"</string>
-    <string name="action_move_to_workspace" msgid="1603837886334246317">"হোম স্ক্রীনে সরান"</string>
+    <string name="action_move_to_workspace" msgid="39528912300293768">"হোম স্ক্রিনে সরান"</string>
     <string name="action_resize" msgid="1802976324781771067">"আবার আকার দিন"</string>
     <string name="action_increase_width" msgid="8773715375078513326">"প্রস্থ বাড়ান"</string>
     <string name="action_increase_height" msgid="459390020612501122">"উচ্চতা বাড়ান"</string>

@@ -651,7 +651,7 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
         mDragLayer.onOneHandedModeStateChanged(activated);
     }
 
-    private void initDeviceProfile(InvariantDeviceProfile idp) {
+    protected void initDeviceProfile(InvariantDeviceProfile idp) {
         // Load configuration-specific DeviceProfile
         mDeviceProfile = idp.getDeviceProfile(this);
         if (isInMultiWindowMode()) {

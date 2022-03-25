@@ -37,8 +37,10 @@
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"%1$d ਚੌੜਾਈ ਅਤੇ %2$d ਲੰਬਾਈ"</string>
     <string name="widget_preview_context_description" msgid="9045841361655787574">"<xliff:g id="WIDGET_NAME">%1$s</xliff:g> ਵਿਜੇਟ"</string>
-    <string name="add_item_request_drag_hint" msgid="5653291305078645405">"ਵਿਜੇਟ ਨੂੰ ਹੋਮ ਸਕ੍ਰੀਨ \'ਤੇ ਇੱਧਰ-ਉੱਧਰ ਲਿਜਾਉਣ ਲਈ ਸਪਰਸ਼ ਕਰਕੇ ਦਬਾਈ ਰੱਖੋ"</string>
-    <string name="add_to_home_screen" msgid="8631549138215492708">"ਹੋਮ ਸਕ੍ਰੀਨ \'ਤੇ ਸ਼ਾਮਲ ਕਰੋ"</string>
+    <!-- no translation found for add_item_request_drag_hint (8730547755622776606) -->
+    <skip />
+    <!-- no translation found for add_to_home_screen (9168649446635919791) -->
+    <skip />
     <string name="added_to_home_screen_accessibility_text" msgid="4451545765448884415">"<xliff:g id="WIDGET_NAME">%1$s</xliff:g> ਵਿਜੇਟ ਨੂੰ ਹੋਮ ਸਕ੍ਰੀਨ \'ਤੇ ਸ਼ਾਮਲ ਕੀਤਾ ਗਿਆ"</string>
     <string name="widgets_count" msgid="6467746476364652096">"{count,plural, =1{# ਵਿਜੇਟ}one{# ਵਿਜੇਟ}other{# ਵਿਜੇਟ}}"</string>
     <string name="shortcuts_count" msgid="8471715556199592381">"{count,plural, =1{# ਸ਼ਾਰਟਕੱਟ}one{# ਸ਼ਾਰਟਕੱਟ}other{# ਸ਼ਾਰਟਕੱਟ}}"</string>
@@ -52,7 +54,8 @@
     <string name="widgets_full_sheet_work_tab" msgid="3767150027110633765">"ਕਾਰਜ-ਸਥਾਨ"</string>
     <string name="widget_category_conversations" msgid="8894438636213590446">"ਗੱਲਾਂਬਾਤਾਂ"</string>
     <string name="widget_education_header" msgid="4874760613775913787">"ਤੁਹਾਡੀਆਂ ਉਂਗਲਾਂ \'ਤੇ ਲਾਹੇਵੰਦ ਜਾਣਕਾਰੀ"</string>
-    <string name="widget_education_content" msgid="745542879510751525">"ਐਪਾਂ ਨੂੰ ਖੋਲ੍ਹੇ ਬਿਨਾਂ ਜਾਣਕਾਰੀ ਪ੍ਰਾਪਤ ਕਰਨ ਲਈ, ਤੁਸੀਂ ਆਪਣੀ ਹੋਮ ਸਕ੍ਰੀਨ \'ਤੇ ਵਿਜੇਟ ਸ਼ਾਮਲ ਕਰ ਸਕਦੇ ਹੋ"</string>
+    <!-- no translation found for widget_education_content (1731667670753497052) -->
+    <skip />
     <string name="reconfigurable_widget_education_tip" msgid="6336962690888067057">"ਵਿਜੇਟ ਸੈਟਿੰਗਾਂ ਨੂੰ ਬਦਲਣ ਲਈ ਟੈਪ ਕਰੋ"</string>
     <string name="widget_education_close_button" msgid="8676165703104836580">"ਸਮਝ ਲਿਆ"</string>
     <string name="widget_reconfigure_button_content_description" msgid="8811472721881205250">"ਵਿਜੇਟ ਸੈਟਿੰਗਾਂ ਬਦਲੋ"</string>
@@ -65,7 +68,8 @@
     <string name="notifications_header" msgid="1404149926117359025">"ਸੂਚਨਾਵਾਂ"</string>
     <string name="long_press_shortcut_to_add" msgid="5405328730817637737">"ਕਿਸੇ ਸ਼ਾਰਟਕੱਟ ਨੂੰ ਲਿਜਾਉਣ ਲਈ ਸਪੱਰਸ਼ ਕਰਕੇ ਦਬਾਈ ਰੱਖੋ।"</string>
     <string name="long_accessible_way_to_add_shortcut" msgid="2199537273817090740">"ਕਿਸੇ ਸ਼ਾਰਟਕੱਟ ਨੂੰ ਲਿਜਾਉਣ ਲਈ ਡਬਲ ਟੈਪ ਕਰਕੇ ਦਬਾਈ ਰੱਖੋ ਜਾਂ ਵਿਉਂਤੀਆਂ ਕਾਰਵਾਈਆਂ ਵਰਤੋ।"</string>
-    <string name="out_of_space" msgid="6692471482459245734">"ਇਸ ਹੋਮ ਸਕ੍ਰੀਨ \'ਤੇ ਜਗ੍ਹਾ ਨਹੀਂ ਬਚੀ"</string>
+    <!-- no translation found for out_of_space (6455557115204099579) -->
+    <skip />
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"ਮਨਪਸੰਦ ਟ੍ਰੇ ਵਿੱਚ ਹੋਰ ਖਾਲੀ ਸਥਾਨ ਨਹੀਂ।"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"ਐਪ ਸੂਚੀ"</string>
     <string name="all_apps_search_results" msgid="5889367432531296759">"ਖੋਜ ਨਤੀਜੇ"</string>
@@ -79,10 +83,14 @@
     <string name="pin_prediction" msgid="4196423321649756498">"ਪੂਰਵ-ਅਨੁਮਾਨ ਪਿੰਨ ਕਰੋ"</string>
     <string name="permlab_install_shortcut" msgid="5632423390354674437">"ਸ਼ਾਰਟਕੱਟ ਸਥਾਪਤ ਕਰੋ"</string>
     <string name="permdesc_install_shortcut" msgid="923466509822011139">"ਇੱਕ ਐਪ ਨੂੰ ਵਰਤੋਂਕਾਰ ਦੇ ਦਖ਼ਲ ਤੋਂ ਬਿਨਾਂ ਸ਼ਾਰਟਕੱਟ ਸ਼ਾਮਲ ਕਰਨ ਦੀ ਆਗਿਆ ਦਿੰਦਾ ਹੈ।"</string>
-    <string name="permlab_read_settings" msgid="1941457408239617576">"ਹੋਮ ਸੈਟਿੰਗਾਂ ਅਤੇ ਸ਼ਾਰਟਕੱਟ ਪੜ੍ਹੋ"</string>
-    <string name="permdesc_read_settings" msgid="5833423719057558387">"ਐਪ ਨੂੰ ਹੋਮ ਵਿੱਚ ਸੈਟਿੰਗਾਂ ਅਤੇ ਸ਼ਾਰਟਕੱਟ ਪੜ੍ਹਨ ਦੀ ਆਗਿਆ ਦਿੰਦਾ ਹੈ।"</string>
-    <string name="permlab_write_settings" msgid="3574213698004620587">"ਹੋਮ ਸੈਟਿੰਗਾਂ ਅਤੇ ਸ਼ਾਰਟਕੱਟ ਲਿਖੋ"</string>
-    <string name="permdesc_write_settings" msgid="5440712911516509985">"ਐਪ ਨੂੰ ਹੋਮ ਵਿੱਚ ਸੈਟਿੰਗਾਂ ਅਤੇ ਸ਼ਾਰਟਕੱਟ ਬਦਲਣ ਦੀ ਆਗਿਆ ਦਿੰਦਾ ਹੈ।"</string>
+    <!-- no translation found for permlab_read_settings (5136500343007704955) -->
+    <skip />
+    <!-- no translation found for permdesc_read_settings (4208061150510996676) -->
+    <skip />
+    <!-- no translation found for permlab_write_settings (4820028712156303762) -->
+    <skip />
+    <!-- no translation found for permdesc_write_settings (726859348127868466) -->
+    <skip />
     <string name="msg_no_phone_permission" msgid="9208659281529857371">"<xliff:g id="APP_NAME">%1$s</xliff:g> ਨੂੰ ਫ਼ੋਨ ਕਾਲਾਂ ਕਰਨ ਦੀ ਆਗਿਆ ਨਹੀਂ ਹੈ"</string>
     <string name="gadget_error_text" msgid="740356548025791839">"ਵਿਜੇਟ ਨੂੰ ਲੋਡ ਨਹੀਂ ਕੀਤਾ ਜਾ ਸਕਦਾ"</string>
     <string name="gadget_setup_text" msgid="8348374825537681407">"ਵਿਜੇਟ ਸੈਟਿੰਗਾਂ"</string>
@@ -105,7 +113,8 @@
     <string name="styles_wallpaper_button_text" msgid="8216961355289236794">"ਵਾਲਪੇਪਰ ਅਤੇ ਸਟਾਈਲ"</string>
     <string name="settings_button_text" msgid="8873672322605444408">"ਹੋਮ ਸੈਟਿੰਗਾਂ"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"ਤੁਹਾਡੇ ਪ੍ਰਸ਼ਾਸਕ ਦੁਆਰਾ ਅਯੋਗ ਬਣਾਈ ਗਈ"</string>
-    <string name="allow_rotation_title" msgid="7728578836261442095">"ਹੋਮ ਸਕ੍ਰੀਨ ਨੂੰ ਘੁਮਾਉਣ ਦੀ ਆਗਿਆ ਦਿਓ"</string>
+    <!-- no translation found for allow_rotation_title (7222049633713050106) -->
+    <skip />
     <string name="allow_rotation_desc" msgid="8662546029078692509">"ਜਦੋਂ ਫ਼ੋਨ ਘੁਮਾਇਆ ਜਾਂਦਾ ਹੈ"</string>
     <string name="notification_dots_title" msgid="9062440428204120317">"ਸੂਚਨਾ ਬਿੰਦੂ"</string>
     <string name="notification_dots_desc_on" msgid="1679848116452218908">"ਚਾਲੂ"</string>
@@ -114,7 +123,8 @@
     <string name="msg_missing_notification_access" msgid="281113995110910548">"ਸੂਚਨਾ ਬਿੰਦੂਆਂ ਦਿਖਾਉਣ ਲਈ, <xliff:g id="NAME">%1$s</xliff:g> ਲਈ ਐਪ ਸੂਚਨਾਵਾਂ ਚਾਲੂ ਕਰੋ"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"ਸੈਟਿੰਗਾਂ ਬਦਲੋ"</string>
     <string name="notification_dots_service_title" msgid="4284221181793592871">"ਸੂਚਨਾ ਬਿੰਦੂ ਦਿਖਾਓ"</string>
-    <string name="auto_add_shortcuts_label" msgid="3698776050751790653">"ਹੋਮ ਸਕ੍ਰੀਨ \'ਤੇ ਐਪ ਪ੍ਰਤੀਕਾਂ ਨੂੰ ਸ਼ਾਮਲ ਕਰੋ"</string>
+    <!-- no translation found for auto_add_shortcuts_label (4926805029653694105) -->
+    <skip />
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"ਨਵੀਆਂ ਐਪਾਂ ਲਈ"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"ਅਗਿਆਤ"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"ਹਟਾਓ"</string>
@@ -126,7 +136,8 @@
     <string name="app_waiting_download_title" msgid="7053938513995617849">"<xliff:g id="NAME">%1$s</xliff:g> ਸਥਾਪਤ ਕਰਨ ਦੀ ਉਡੀਕ ਕਰ ਰਿਹਾ ਹੈ"</string>
     <string name="widgets_list" msgid="796804551140113767">"ਵਿਜੇਟਾਂ ਦੀ ਸੂਚੀ"</string>
     <string name="widgets_list_closed" msgid="6141506579418771922">"ਵਿਜੇਟਾਂ ਦੀ ਸੂਚੀ ਬੰਦ ਕੀਤੀ ਗਈ"</string>
-    <string name="action_add_to_workspace" msgid="8902165848117513641">"ਹੋਮ ਸਕ੍ਰੀਨ \'ਤੇ ਸ਼ਾਮਲ ਕਰੋ"</string>
+    <!-- no translation found for action_add_to_workspace (215894119683164916) -->
+    <skip />
     <string name="action_move_here" msgid="2170188780612570250">"ਆਈਟਮ ਨੂੰ ਇੱਥੇ ਮੂਵ ਕਰੋ"</string>
     <string name="item_added_to_workspace" msgid="4211073925752213539">"ਆਈਟਮ ਨੂੰ ਹੋਮ ਸਕ੍ਰੀਨ ਵਿੱਚ ਜੋੜਿਆ ਗਿਆ"</string>
     <string name="item_removed" msgid="851119963877842327">"ਆਈਟਮ ਹਟਾਈ ਗਈ"</string>
@@ -141,7 +152,8 @@
     <string name="added_to_folder" msgid="4793259502305558003">"ਆਈਟਮ ਨੂੰ ਫੋਲਡਰ ਵਿੱਚ ਜੋੜਿਆ ਗਿਆ"</string>
     <string name="create_folder_with" msgid="4050141361160214248">"ਇਸਦੇ ਨਾਲ ਫੋਲਡਰ ਬਣਾਓ: <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="folder_created" msgid="6409794597405184510">"ਫੋਲਡਰ ਬਣਾਇਆ ਗਿਆ"</string>
-    <string name="action_move_to_workspace" msgid="1603837886334246317">"ਹੋਮ ਸਕ੍ਰੀਨ ਵਿੱਚ ਮੂਵ ਕਰੋ"</string>
+    <!-- no translation found for action_move_to_workspace (39528912300293768) -->
+    <skip />
     <string name="action_resize" msgid="1802976324781771067">"ਮੁੜ ਆਕਾਰ ਦਿਓ"</string>
     <string name="action_increase_width" msgid="8773715375078513326">"ਚੌੜਾਈ ਵਧਾਓ"</string>
     <string name="action_increase_height" msgid="459390020612501122">"ਉਂਚਾਈ ਵਧਾਓ"</string>

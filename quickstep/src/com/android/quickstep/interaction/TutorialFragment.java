@@ -325,7 +325,7 @@ abstract class TutorialFragment extends Fragment implements OnTouchListener {
 
     @Override
     public boolean onTouch(View view, MotionEvent motionEvent) {
-        if (mTutorialController != null) {
+        if (mTutorialController != null && !isGestureComplete()) {
             mTutorialController.hideFeedback();
         }
         // Note: Using logical-or to ensure both functions get called.
