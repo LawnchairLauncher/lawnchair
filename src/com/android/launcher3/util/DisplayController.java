@@ -26,7 +26,6 @@ import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCH
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_NAVIGATION_MODE_GESTURE_BUTTON;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.PackageManagerHelper.getPackageFilter;
-import static com.android.launcher3.util.window.WindowManagerProxy.MIN_LARGE_TABLET_WIDTH;
 import static com.android.launcher3.util.window.WindowManagerProxy.MIN_TABLET_WIDTH;
 
 import android.annotation.SuppressLint;
@@ -346,13 +345,6 @@ public class DisplayController implements ComponentCallbacks, SafeCloseable {
          */
         public boolean isTablet(WindowBounds bounds) {
             return smallestSizeDp(bounds) >= MIN_TABLET_WIDTH;
-        }
-
-        /**
-         * Returns {@code true} if the bounds represent a large tablet.
-         */
-        public boolean isLargeTablet(WindowBounds bounds) {
-            return smallestSizeDp(bounds) >= MIN_LARGE_TABLET_WIDTH;
         }
 
         /**

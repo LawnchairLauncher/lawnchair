@@ -16,6 +16,10 @@
 
 package com.android.launcher3;
 
+import static com.android.launcher3.InvariantDeviceProfile.INDEX_DEFAULT;
+import static com.android.launcher3.InvariantDeviceProfile.INDEX_LANDSCAPE;
+import static com.android.launcher3.InvariantDeviceProfile.INDEX_TWO_PANEL_LANDSCAPE;
+import static com.android.launcher3.InvariantDeviceProfile.INDEX_TWO_PANEL_PORTRAIT;
 import static com.android.launcher3.ResourceUtils.pxFromDp;
 import static com.android.launcher3.Utilities.dpiFromPx;
 import static com.android.launcher3.Utilities.pxFromSp;
@@ -58,7 +62,6 @@ public class DeviceProfile {
 
     // Device properties
     public final boolean isTablet;
-    public final boolean isLargeTablet;
     public final boolean isPhone;
     public final boolean transposeLayoutWithOrientation;
     public final boolean isTwoPanels;
@@ -253,7 +256,6 @@ public class DeviceProfile {
         // Determine device posture.
         mInfo = info;
         isTablet = info.isTablet(windowBounds);
-        isLargeTablet = info.isLargeTablet(windowBounds);
         isPhone = !isTablet;
         isTwoPanels = isTablet && useTwoPanels;
         isTaskbarPresent = isTablet && ApiWrapper.TASKBAR_DRAWN_IN_PROCESS;
@@ -278,15 +280,15 @@ public class DeviceProfile {
 
         if (isTwoPanels) {
             if (isLandscape) {
-                mTypeIndex = InvariantDeviceProfile.INDEX_TWO_PANEL_LANDSCAPE;
+                mTypeIndex = INDEX_TWO_PANEL_LANDSCAPE;
             } else {
-                mTypeIndex = InvariantDeviceProfile.INDEX_TWO_PANEL_PORTRAIT;
+                mTypeIndex = INDEX_TWO_PANEL_PORTRAIT;
             }
         } else {
             if (isLandscape) {
-                mTypeIndex = InvariantDeviceProfile.INDEX_LANDSCAPE;
+                mTypeIndex = INDEX_LANDSCAPE;
             } else {
-                mTypeIndex = InvariantDeviceProfile.INDEX_DEFAULT;
+                mTypeIndex = INDEX_DEFAULT;
             }
         }
 
@@ -348,9 +350,12 @@ public class DeviceProfile {
         workspaceCellPaddingXPx = res.getDimensionPixelSize(R.dimen.dynamic_grid_cell_padding_x);
 
         hotseatQsbHeight = res.getDimensionPixelSize(R.dimen.qsb_widget_height);
-        // Whether QSB might be inline in appropriate orientation (landscape).
-        boolean canQsbInline = isLargeTablet && hotseatQsbHeight > 0;
-        isQsbInline = canQsbInline && isLandscape;
+        // Whether QSB might be inline in appropriate orientation (e.g. landscape).
+        boolean canQsbInline = (isTwoPanels ? inv.inlineQsb[INDEX_TWO_PANEL_PORTRAIT]
+                || inv.inlineQsb[INDEX_TWO_PANEL_LANDSCAPE]
+                : inv.inlineQsb[INDEX_DEFAULT] || inv.inlineQsb[INDEX_LANDSCAPE])
+                && hotseatQsbHeight > 0;
+        isQsbInline = inv.inlineQsb[mTypeIndex] && canQsbInline;
 
         // We shrink hotseat sizes regardless of orientation, if nav buttons are inline and QSB
         // might be inline in either orientations, to keep hotseat size consistent across rotation.
@@ -388,7 +393,7 @@ public class DeviceProfile {
                 res.getDimensionPixelSize(R.dimen.dynamic_grid_hotseat_extra_vertical_size);
         hotseatBorderSpace = pxFromDp(inv.hotseatBorderSpaces[mTypeIndex], mMetrics);
         updateHotseatIconSize(
-                pxFromDp(inv.iconSize[InvariantDeviceProfile.INDEX_DEFAULT], mMetrics));
+                pxFromDp(inv.iconSize[INDEX_DEFAULT], mMetrics));
 
         qsbBottomMarginOriginalPx = isScalableGrid
                 ? res.getDimensionPixelSize(R.dimen.scalable_grid_qsb_bottom_margin)
@@ -812,11 +817,11 @@ public class DeviceProfile {
 
     private void updateFolderCellSize(float scale, Resources res) {
         float invIconSizeDp = isVerticalBarLayout()
-                ? inv.iconSize[InvariantDeviceProfile.INDEX_LANDSCAPE]
-                : inv.iconSize[InvariantDeviceProfile.INDEX_DEFAULT];
+                ? inv.iconSize[INDEX_LANDSCAPE]
+                : inv.iconSize[INDEX_DEFAULT];
         folderChildIconSizePx = Math.max(1, pxFromDp(invIconSizeDp, mMetrics, scale));
         folderChildTextSizePx =
-                pxFromSp(inv.iconTextSize[InvariantDeviceProfile.INDEX_DEFAULT], mMetrics, scale);
+                pxFromSp(inv.iconTextSize[INDEX_DEFAULT], mMetrics, scale);
         folderLabelTextSizePx = (int) (folderChildTextSizePx * folderLabelTextScale);
 
         int textHeight = Utilities.calculateTextHeight(folderChildTextSizePx);
@@ -1167,7 +1172,6 @@ public class DeviceProfile {
         writer.println(prefix + "\t1 dp = " + mMetrics.density + " px");
 
         writer.println(prefix + "\tisTablet:" + isTablet);
-        writer.println(prefix + "\tisLargeTablet:" + isLargeTablet);
         writer.println(prefix + "\tisPhone:" + isPhone);
         writer.println(prefix + "\ttransposeLayoutWithOrientation:"
                 + transposeLayoutWithOrientation);
