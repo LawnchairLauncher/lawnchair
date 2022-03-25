@@ -22,7 +22,6 @@ import static com.android.launcher3.ResourceUtils.INVALID_RESOURCE_HANDLE;
 import static com.android.launcher3.ResourceUtils.NAVBAR_HEIGHT;
 import static com.android.launcher3.ResourceUtils.NAVBAR_HEIGHT_LANDSCAPE;
 import static com.android.launcher3.ResourceUtils.NAVBAR_LANDSCAPE_LEFT_RIGHT_SIZE;
-import static com.android.launcher3.ResourceUtils.getDimenByName;
 import static com.android.launcher3.Utilities.dpiFromPx;
 import static com.android.launcher3.util.MainThreadInitializedObject.forOverride;
 import static com.android.launcher3.util.RotationUtils.deltaRotation;
@@ -157,16 +156,16 @@ public class WindowManagerProxy implements ResourceBasedOverride {
         int bottomNav = isTablet
                 ? 0
                 : (config.screenHeightDp > config.screenWidthDp
-                        ? getDimenByName(NAVBAR_HEIGHT, systemRes, 0)
+                        ? getDimenByName(NAVBAR_HEIGHT, systemRes)
                         : (isGesture
-                                ? getDimenByName(NAVBAR_HEIGHT_LANDSCAPE, systemRes, 0)
+                                ? getDimenByName(NAVBAR_HEIGHT_LANDSCAPE, systemRes)
                                 : 0));
         Insets newNavInsets = Insets.of(navInsets.left, navInsets.top, navInsets.right, bottomNav);
         insetsBuilder.setInsets(WindowInsets.Type.navigationBars(), newNavInsets);
         insetsBuilder.setInsetsIgnoringVisibility(WindowInsets.Type.navigationBars(), newNavInsets);
 
         Insets statusBarInsets = oldInsets.getInsets(WindowInsets.Type.statusBars());
-        int statusBarHeight = getDimenByName("status_bar_height", systemRes, 0);
+        int statusBarHeight = getDimenByName("status_bar_height", systemRes);
         Insets newStatusBarInsets = Insets.of(
                 statusBarInsets.left,
                 Math.max(statusBarInsets.top, statusBarHeight),
@@ -222,23 +221,23 @@ public class WindowManagerProxy implements ResourceBasedOverride {
         boolean isTabletOrGesture = isTablet
                 || (Utilities.ATLEAST_R && isGestureNav(context));
 
-        int statusBarHeight = getDimenByName("status_bar_height", systemRes, 0);
+        int statusBarHeight = getDimenByName("status_bar_height", systemRes);
 
         int navBarHeightPortrait, navBarHeightLandscape, navbarWidthLandscape;
 
         navBarHeightPortrait = isTablet
                 ? (mTaskbarDrawnInProcess
                         ? 0 : systemRes.getDimensionPixelSize(R.dimen.taskbar_size))
-                : getDimenByName(NAVBAR_HEIGHT, systemRes, 0);
+                : getDimenByName(NAVBAR_HEIGHT, systemRes);
 
         navBarHeightLandscape = isTablet
                 ? (mTaskbarDrawnInProcess
                         ? 0 : systemRes.getDimensionPixelSize(R.dimen.taskbar_size))
                 : (isTabletOrGesture
-                        ? getDimenByName(NAVBAR_HEIGHT_LANDSCAPE, systemRes, 0) : 0);
+                        ? getDimenByName(NAVBAR_HEIGHT_LANDSCAPE, systemRes) : 0);
         navbarWidthLandscape = isTabletOrGesture
                 ? 0
-                : getDimenByName(NAVBAR_LANDSCAPE_LEFT_RIGHT_SIZE, systemRes, 0);
+                : getDimenByName(NAVBAR_LANDSCAPE_LEFT_RIGHT_SIZE, systemRes);
 
         WindowBounds[] result = new WindowBounds[4];
         Point tempSize = new Point();
@@ -272,6 +271,13 @@ public class WindowManagerProxy implements ResourceBasedOverride {
             result[i] = new WindowBounds(bounds, insets, i);
         }
         return result;
+    }
+
+    /**
+     * Wrapper around the utility method for easier emulation
+     */
+    protected int getDimenByName(String resName, Resources res) {
+        return ResourceUtils.getDimenByName(resName, res, 0);
     }
 
     protected boolean isGestureNav(Context context) {
