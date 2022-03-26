@@ -203,6 +203,24 @@ public class TaskAnimationManager implements RecentsAnimationCallbacks.RecentsAn
                     }
                 }
             }
+
+            @Override
+            public boolean onSwitchToScreenshot(Runnable onFinished) {
+                if (!ENABLE_QUICKSTEP_LIVE_TILE.get() || !activityInterface.isInLiveTileMode()
+                        || activityInterface.getCreatedActivity() == null) {
+                    // No need to switch since tile is already a screenshot.
+                    onFinished.run();
+                } else {
+                    final RecentsView recentsView =
+                            activityInterface.getCreatedActivity().getOverviewPanel();
+                    if (recentsView != null) {
+                        recentsView.switchToScreenshot(onFinished);
+                    } else {
+                        onFinished.run();
+                    }
+                }
+                return true;
+            }
         });
         final long eventTime = gestureState.getSwipeUpStartTimeMs();
         mCallbacks.addListener(gestureState);
