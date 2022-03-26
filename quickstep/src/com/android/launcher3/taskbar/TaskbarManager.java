@@ -19,10 +19,7 @@ import static android.content.pm.PackageManager.FEATURE_PC;
 import static android.view.Display.DEFAULT_DISPLAY;
 import static android.view.WindowManager.LayoutParams.TYPE_NAVIGATION_BAR_PANEL;
 
-import static com.android.launcher3.util.DisplayController.CHANGE_ACTIVE_SCREEN;
-import static com.android.launcher3.util.DisplayController.CHANGE_DENSITY;
 import static com.android.launcher3.util.DisplayController.CHANGE_NAVIGATION_MODE;
-import static com.android.launcher3.util.DisplayController.CHANGE_SUPPORTED_BOUNDS;
 
 import android.content.ComponentCallbacks;
 import android.content.Context;
@@ -120,19 +117,24 @@ public class TaskbarManager implements DisplayController.DisplayInfoChangeListen
                 int configsRequiringRecreate = ActivityInfo.CONFIG_ASSETS_PATHS
                         | ActivityInfo.CONFIG_LAYOUT_DIRECTION | ActivityInfo.CONFIG_UI_MODE
                         | ActivityInfo.CONFIG_DENSITY | ActivityInfo.CONFIG_SCREEN_SIZE;
-                if ((configDiff & configsRequiringRecreate) != 0) {
-                    if ((configDiff & ActivityInfo.CONFIG_SCREEN_SIZE) != 0 &&
-                            mTaskbarActivityContext != null && dp != null) {
-                        DeviceProfile oldDp = mTaskbarActivityContext.getDeviceProfile();
-                        // Additional check since this callback gets fired multiple times w/o
-                        // screen size changing
-                        if (dp.widthPx != oldDp.widthPx || dp.heightPx != oldDp.heightPx) {
-                            recreateTaskbar();
-                        }
-                    } else {
-                        // Color has changed, recreate taskbar to reload background color & icons.
-                        recreateTaskbar();
+                boolean requiresRecreate = (configDiff & configsRequiringRecreate) != 0;
+                if ((configDiff & ActivityInfo.CONFIG_SCREEN_SIZE) != 0
+                        && mTaskbarActivityContext != null && dp != null) {
+                    // Additional check since this callback gets fired multiple times w/o
+                    // screen size changing, or when simply rotating the device.
+                    DeviceProfile oldDp = mTaskbarActivityContext.getDeviceProfile();
+                    boolean isOrientationChange =
+                            (configDiff & ActivityInfo.CONFIG_ORIENTATION) != 0;
+                    int oldWidth = isOrientationChange ? oldDp.heightPx : oldDp.widthPx;
+                    int oldHeight = isOrientationChange ? oldDp.widthPx : oldDp.heightPx;
+                    if (dp.widthPx == oldWidth && dp.heightPx == oldHeight) {
+                        configDiff &= ~ActivityInfo.CONFIG_SCREEN_SIZE;
+                        requiresRecreate = (configDiff & configsRequiringRecreate) != 0;
                     }
+                }
+
+                if (requiresRecreate) {
+                    recreateTaskbar();
                 } else {
                     // Config change might be handled without re-creating the taskbar
                     if (mTaskbarActivityContext != null) {
