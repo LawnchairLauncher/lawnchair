@@ -68,13 +68,7 @@ public class SplitPlaceholderView extends FrameLayout {
             // Center the icon view in the visible area.
             getLocalVisibleRect(mTempRect);
             FloatingTaskView parent = (FloatingTaskView) getParent();
-            FrameLayout.LayoutParams params =
-                    (FrameLayout.LayoutParams) mIconView.getLayoutParams();
-            params.leftMargin = Math.round(mTempRect.centerX() / parent.getFullscreenScaleX()
-                    - 1.0f * mIconView.getDrawableWidth() / 2);
-            params.topMargin = Math.round(mTempRect.centerY() / parent.getFullscreenScaleY()
-                    - 1.0f * mIconView.getDrawableHeight() / 2);
-            mIconView.setLayoutParams(params);
+            parent.centerIconView(mIconView, mTempRect.centerX(), mTempRect.centerY());
         }
     }
 
