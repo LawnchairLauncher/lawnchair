@@ -25,11 +25,11 @@
     <string name="accessibility_app_usage_settings" msgid="6312864233673544149">"ऐप्लिकेशन इस्तेमाल की सेटिंग"</string>
     <string name="recents_clear_all" msgid="5328176793634888831">"सभी ऐप्लिकेशन बंद करें"</string>
     <string name="accessibility_recent_apps" msgid="4058661986695117371">"हाल ही में इस्तेमाल किए गए ऐप्लिकेशन"</string>
+    <string name="task_view_closed" msgid="9170038230110856166">"टास्क बंद किया गया"</string>
     <string name="task_contents_description_with_remaining_time" msgid="4479688746574672685">"<xliff:g id="TASK_DESCRIPTION">%1$s</xliff:g>, <xliff:g id="REMAINING_TIME">%2$s</xliff:g>"</string>
     <string name="shorter_duration_less_than_one_minute" msgid="4722015666335015336">"&lt;1 मिनट"</string>
     <string name="time_left_for_app" msgid="3111996412933644358">"आज <xliff:g id="TIME">%1$s</xliff:g> और चलेगा"</string>
     <string name="title_app_suggestions" msgid="4185902664111965088">"सुझाए गए ऐप्लिकेशन"</string>
-    <string name="all_apps_label" msgid="8542784161730910663">"सभी ऐप्लिकेशन"</string>
     <string name="all_apps_prediction_tip" msgid="2672336544844936186">"आपके काम के ऐप्लिकेशन"</string>
     <string name="hotseat_edu_title_migrate" msgid="306578144424489980">"अपने होम स्क्रीन की सबसे नीचे वाली पंक्ति में ऐप्लिकेशन के सुझाव पाएं"</string>
     <string name="hotseat_edu_title_migrate_landscape" msgid="3633942953997845243">"अपने होम स्क्रीन की सबसे नीचे वाली पंक्ति में पसंदीदा ऐप्लिकेशन के सुझाव पाएं"</string>
@@ -45,40 +45,56 @@
     <string name="hotsaet_tip_prediction_enabled" msgid="2233554377501347650">"सुझाए गए ऐप्लिकेशन की सुविधा चालू है"</string>
     <string name="hotsaet_tip_prediction_disabled" msgid="1506426298884658491">"सुझाए गए ऐप्लिकेशन की सुविधा बंद है"</string>
     <string name="hotseat_prediction_content_description" msgid="4582028296938078419">"सुझाया गया ऐप्लिकेशन: <xliff:g id="TITLE">%1$s</xliff:g>"</string>
-    <string name="back_gesture_feedback_swipe_too_far_from_left_edge" msgid="340972404868601012">"देख लें कि आप स्क्रीन की बाईं तरफ़ के बिल्कुल किनारे से स्वाइप कर रहे हों."</string>
-    <string name="back_gesture_feedback_cancelled_left_edge" msgid="6671316150388702530">"देख लें कि आप स्क्रीन के बाएं किनारे से बीचों-बीच तक स्वाइप कर रहे हों और फिर अपनी उंगली उठा लें."</string>
-    <string name="back_gesture_feedback_complete_left_edge" msgid="3220478647881674266">"हो गया! अब, दाएं किनारे से स्वाइप करने की कोशिश करें."</string>
-    <string name="back_gesture_feedback_swipe_too_far_from_right_edge" msgid="4306700023773832353">"देख लें कि आप स्क्रीन की दाईं तरफ़ के बिल्कुल किनारे से स्वाइप कर रहे हों."</string>
-    <string name="back_gesture_feedback_cancelled_right_edge" msgid="4951916546256902552">"देख लें कि आप स्क्रीन के दाएं किनारे से बीचों-बीच तक स्वाइप कर रहे हों और फिर अपनी उंगली उठा लें."</string>
-    <string name="back_gesture_feedback_complete" msgid="7261221999760772210">"आपने पीछे जाने के लिए इस्तेमाल होने वाले हाथ के जेस्चर (हाव-भाव) के बारे में जान लिया है. अब, होम स्क्रीन पर जाने का तरीका जानें."</string>
-    <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="1148198467090405643">"देखे लें कि आप स्क्रीन पर बिल्कुल नीचे तक स्वाइप न कर रहे हों."</string>
+    <string name="back_gesture_feedback_swipe_too_far_from_edge" msgid="1711645592102201538">"पक्का करें कि आप स्क्रीन की दाईं या बाईं ओर के बिल्कुल किनारे से स्वाइप कर रहे हों."</string>
+    <string name="back_gesture_feedback_cancelled" msgid="3274382913290074496">"स्क्रीन के दाएं या बाएं किनारे से स्क्रीन के बीच तक स्वाइप करें और अपनी उंगली उठा लें."</string>
+    <string name="back_gesture_feedback_complete_with_overview_follow_up" msgid="9176400654037014471">"आपने स्क्रीन के दाएं किनारे से स्वाइप करके, पिछली स्क्रीन पर वापस जाने का तरीका सीख लिया है. अब, एक ऐप से दूसरे ऐप पर जाने का तरीका सीखें."</string>
+    <string name="back_gesture_feedback_complete_without_follow_up" msgid="6405649621667113830">"आपने पेज पर पीछे ले जाने वाले हाथ के जेस्चर (हाव-भाव) के बारे में जान लिया है."</string>
+    <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="1148198467090405643">"देख लें कि आप स्क्रीन पर बिल्कुल नीचे तक स्वाइप न कर रहे हों."</string>
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"\'सेटिंग\' में जाकर, पीछे जाने के लिए इस्तेमाल होने वाले हाथ के जेस्चर (हाव-भाव) की संवेदनशीलता बदलें"</string>
     <string name="back_gesture_intro_title" msgid="19551256430224428">"पिछली स्क्रीन पर वापस जाने के लिए स्वाइप करें"</string>
     <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"पिछली स्क्रीन पर वापस जाने के लिए, स्क्रीन के बाएं या दाएं किनारे से बीचों-बीच तक स्वाइप करें."</string>
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"देख लें कि आप स्क्रीन के निचले किनारे से ऊपर की ओर स्वाइप कर रहे हों."</string>
     <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"देख लें कि आप स्क्रीन से अपनी उंगली उठाने से पहले, इसे कहीं न रोक रहे हों."</string>
     <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"देख लें कि आप ऊपर की ओर बिल्कुल सीधे स्वाइप कर रहे हों."</string>
-    <string name="home_gesture_feedback_complete" msgid="2324789183070815517">"आपने होम स्क्रीन पर जाने के लिए इस्तेमाल होने वाले हाथ के जेस्चर (हाव-भाव) के बारे में जान लिया है. अब, एक से दूसरे ऐप्लिकेशन पर जाने का तरीका जानें."</string>
+    <string name="home_gesture_feedback_complete_with_follow_up" msgid="1427872029729605034">"आपने होम स्क्रीन पर ले जाने वाले हाथ के जेस्चर के बारे में जान लिया है. अब, वापस जाने का तरीका जानें."</string>
+    <string name="home_gesture_feedback_complete_without_follow_up" msgid="8049099486868933882">"आपने होम स्क्रीन पर ले जाने वाले हाथ के जेस्चर (हाव-भाव) के बारे में जान लिया है."</string>
     <string name="home_gesture_intro_title" msgid="836590312858441830">"होम स्क्रीन पर जाने के लिए स्वाइप करें"</string>
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"स्क्रीन पर नीचे से ऊपर की ओर स्वाइप करें. हाथ का यह जेस्चर आपको हमेशा होम स्क्रीन पर ले जाता है."</string>
     <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"देख लें कि आप स्क्रीन के निचले किनारे से ऊपर की ओर स्वाइप कर रहे हों."</string>
     <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"कोशिश करें कि स्क्रीन से उंगली उठाने से पहले, इसे कुछ देर स्क्रीन पर दबाकर रखें."</string>
     <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"देख लें कि आप स्क्रीन पर ऊपर की तरफ़, बिल्कुल सीधे स्वाइप कर रहे हों और फिर रुकें."</string>
-    <string name="overview_gesture_feedback_complete" msgid="5477014491632199169">"आपने एक ऐप्लिकेशन से दूसरे पर जाने के लिए इस्तेमाल होने वाले हाथ के जेस्चर (हाव-भाव) के बारे में जान लिया है. आप अपना फ़ोन इस्तेमाल करने के लिए तैयार हैं!"</string>
+    <string name="overview_gesture_feedback_complete_with_follow_up" msgid="3544611727467765026">"आपने हाथ के जेस्चर (हाव-भाव) इस्तेमाल करने सीख लिए हैं. जेस्चर बंद करने के लिए, सेटिंग में जाएं."</string>
+    <string name="overview_gesture_feedback_complete_without_follow_up" msgid="3199486203448379152">"आपने एक ऐप्लिकेशन से दूसरे पर जाने के लिए इस्तेमाल होने वाले हाथ के जेस्चर के बारे में जान लिया है."</string>
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"एक ऐप्लिकेशन से दूसरे पर जाने के लिए स्वाइप करें"</string>
-    <string name="overview_gesture_intro_subtitle" msgid="1579517193845186042">"अपनी स्क्रीन पर नीचे से ऊपर की तरफ़ स्वाइप करें, दबाकर रखें, फिर छोड़ दें."</string>
+    <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"एक ऐप से दूसरे पर जाने के लिए, स्क्रीन पर नीचे से ऊपर की ओर स्वाइप करें, दबाकर रखें, और फिर छोड़ दें."</string>
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"आप पूरी तरह तैयार हैं"</string>
-    <string name="gesture_tutorial_action_button_label_next" msgid="2556263116424738762">"आगे बढ़ें"</string>
-    <string name="gesture_tutorial_action_button_label_done" msgid="671834508127014231">"हो गया"</string>
+    <string name="gesture_tutorial_action_button_label" msgid="6249846312991332122">"हो गया"</string>
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"सेटिंग"</string>
     <string name="gesture_tutorial_try_again" msgid="65962545858556697">"फिर से कोशिश करें"</string>
     <string name="gesture_tutorial_nice" msgid="2936275692616928280">"बहुत बढ़िया!"</string>
     <string name="gesture_tutorial_step" msgid="1279786122817620968">"ट्यूटोरियल <xliff:g id="CURRENT">%1$d</xliff:g>/<xliff:g id="TOTAL">%2$d</xliff:g>"</string>
+    <string name="allset_title" msgid="5021126669778966707">"हो गया!"</string>
+    <string name="allset_hint" msgid="2384632994739392447">"होम स्क्रीन पर जाने के लिए, ऊपर की ओर स्वाइप करें"</string>
+    <string name="allset_description" msgid="6350320429953234580">"अब आप अपना फ़ोन इस्तेमाल कर सकते हैं"</string>
+    <string name="allset_navigation_settings" msgid="4713404605961476027"><annotation id="link">"सिस्टम नेविगेशन सेटिंग"</annotation></string>
     <string name="action_share" msgid="2648470652637092375">"शेयर करें"</string>
-    <string name="action_screenshot" msgid="8171125848358142917">"स्क्रीनशॉट"</string>
+    <string name="action_screenshot" msgid="8171125848358142917">"स्क्रीनशॉट लें"</string>
+    <string name="action_split" msgid="2098009717623550676">"स्प्लिट स्क्रीन मोड"</string>
+    <string name="toast_split_select_app" msgid="5453865907322018352">"स्प्लिट स्क्रीन मोड के लिए, दूसरे ऐप पर टैप करें"</string>
+    <string name="toast_split_app_unsupported" msgid="3271526028981899666">"यह ऐप्लिकेशन, स्प्लिट स्क्रीन पर काम नहीं करता है."</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"ऐप्लिकेशन या आपका संगठन इस कार्रवाई की अनुमति नहीं देता"</string>
     <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"नेविगेशन ट्यूटोरियल छोड़ना चाहते हैं?"</string>
-    <string name="skip_tutorial_dialog_subtitle" msgid="544063326241955662">"आप बाद में, <xliff:g id="NAME">%1$s</xliff:g> ऐप्लिकेशन पर इसे देख सकते हैं"</string>
+    <string name="skip_tutorial_dialog_subtitle" msgid="544063326241955662">"आप बाद में <xliff:g id="NAME">%1$s</xliff:g> ऐप्लिकेशन पर इसे देख सकते हैं"</string>
     <string name="gesture_tutorial_action_button_label_cancel" msgid="3809842569351264108">"अभी नहीं"</string>
-    <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"छोड़ें"</string>
+    <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"अभी नहीं"</string>
+    <string name="accessibility_rotate_button" msgid="4771825231336502943">"स्क्रीन घुमाएं"</string>
+    <string name="taskbar_edu_opened" msgid="3950252793551919129">"टास्कबार ट्यूटोरियल दिखाया गया"</string>
+    <string name="taskbar_edu_closed" msgid="126643734478892862">"टास्कबार ट्यूटोरियल बंद किया गया"</string>
+    <string name="taskbar_edu_switch_apps" msgid="6942863327845784813">"ऐप्लिकेशन स्विच करने के लिए, टास्कबार का इस्तेमाल करें"</string>
+    <string name="taskbar_edu_splitscreen" msgid="2663361731630346489">"एक साथ दो ऐप्लिकेशन इस्तेमाल करने के लिए, उन्हें किनारे की ओर खींचें और छोड़ें"</string>
+    <string name="taskbar_edu_stashing" msgid="5212374387411764031">"टास्कबार को छिपाने के लिए, उसे दबाकर रखें"</string>
+    <string name="taskbar_edu_next" msgid="4007618274426775841">"आगे बढ़ें"</string>
+    <string name="taskbar_edu_previous" msgid="459202320127201702">"वापस जाएं"</string>
+    <string name="taskbar_edu_close" msgid="887022990168191073">"बंद करें"</string>
+    <string name="taskbar_edu_done" msgid="6880178093977704569">"हो गया"</string>
 </resources>
