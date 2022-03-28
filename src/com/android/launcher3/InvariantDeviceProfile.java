@@ -900,19 +900,44 @@ public class InvariantDeviceProfile {
                     allAppsCellSize[INDEX_DEFAULT].y);
             allAppsCellSize[INDEX_TWO_PANEL_LANDSCAPE] = new PointF(x, y);
 
-            x = y = a.getFloat(R.styleable.ProfileDisplayOption_allAppsBorderSpace,
-                    borderSpace);
-            allAppsBorderSpaces[INDEX_DEFAULT] = new PointF(x, y);
-            x = y = a.getFloat(R.styleable.ProfileDisplayOption_allAppsBorderSpaceLandscape,
-                    allAppsBorderSpaces[INDEX_DEFAULT].x);
-            allAppsBorderSpaces[INDEX_LANDSCAPE] = new PointF(x, y);
-            x = y = a.getFloat(
+            float allAppsBorderSpace = a.getFloat(
+                    R.styleable.ProfileDisplayOption_allAppsBorderSpace, borderSpace);
+            float allAppsBorderSpaceLandscape = a.getFloat(
+                    R.styleable.ProfileDisplayOption_allAppsBorderSpaceLandscape,
+                    allAppsBorderSpace);
+            float allAppsBorderSpaceTwoPanelPortrait = a.getFloat(
                     R.styleable.ProfileDisplayOption_allAppsBorderSpaceTwoPanelPortrait,
-                    allAppsBorderSpaces[INDEX_DEFAULT].x);
-            allAppsBorderSpaces[INDEX_TWO_PANEL_PORTRAIT] = new PointF(x, y);
-            x = y = a.getFloat(
+                    allAppsBorderSpace);
+            float allAppsBorderSpaceTwoPanelLandscape = a.getFloat(
                     R.styleable.ProfileDisplayOption_allAppsBorderSpaceTwoPanelLandscape,
-                    allAppsBorderSpaces[INDEX_DEFAULT].x);
+                    allAppsBorderSpace);
+
+            x = a.getFloat(R.styleable.ProfileDisplayOption_allAppsBorderSpaceHorizontal,
+                    allAppsBorderSpace);
+            y = a.getFloat(R.styleable.ProfileDisplayOption_allAppsBorderSpaceVertical,
+                    allAppsBorderSpace);
+            allAppsBorderSpaces[INDEX_DEFAULT] = new PointF(x, y);
+
+            x = a.getFloat(R.styleable.ProfileDisplayOption_allAppsBorderSpaceLandscapeHorizontal,
+                    allAppsBorderSpaceLandscape);
+            y = a.getFloat(R.styleable.ProfileDisplayOption_allAppsBorderSpaceLandscapeVertical,
+                    allAppsBorderSpaceLandscape);
+            allAppsBorderSpaces[INDEX_LANDSCAPE] = new PointF(x, y);
+
+            x = a.getFloat(
+                    R.styleable.ProfileDisplayOption_allAppsBorderSpaceTwoPanelPortraitHorizontal,
+                    allAppsBorderSpaceTwoPanelPortrait);
+            y = a.getFloat(
+                    R.styleable.ProfileDisplayOption_allAppsBorderSpaceTwoPanelPortraitVertical,
+                    allAppsBorderSpaceTwoPanelPortrait);
+            allAppsBorderSpaces[INDEX_TWO_PANEL_PORTRAIT] = new PointF(x, y);
+
+            x = a.getFloat(
+                    R.styleable.ProfileDisplayOption_allAppsBorderSpaceTwoPanelLandscapeHorizontal,
+                    allAppsBorderSpaceTwoPanelLandscape);
+            y = a.getFloat(
+                    R.styleable.ProfileDisplayOption_allAppsBorderSpaceTwoPanelLandscapeVertical,
+                    allAppsBorderSpaceTwoPanelLandscape);
             allAppsBorderSpaces[INDEX_TWO_PANEL_LANDSCAPE] = new PointF(x, y);
 
             iconSizes[INDEX_DEFAULT] =
