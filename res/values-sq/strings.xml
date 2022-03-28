@@ -37,10 +37,8 @@
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"%1$d i gjerë me %2$d i lartë"</string>
     <string name="widget_preview_context_description" msgid="9045841361655787574">"<xliff:g id="WIDGET_NAME">%1$s</xliff:g> miniaplikacion"</string>
-    <!-- no translation found for add_item_request_drag_hint (8730547755622776606) -->
-    <skip />
-    <!-- no translation found for add_to_home_screen (9168649446635919791) -->
-    <skip />
+    <string name="add_item_request_drag_hint" msgid="8730547755622776606">"Prek dhe mbaj të shtypur miniaplikacionin për ta lëvizur atë nëpër ekranin bazë"</string>
+    <string name="add_to_home_screen" msgid="9168649446635919791">"Shto në ekranin bazë"</string>
     <string name="added_to_home_screen_accessibility_text" msgid="4451545765448884415">"Miniaplikacioni <xliff:g id="WIDGET_NAME">%1$s</xliff:g> u shtua në ekranin bazë"</string>
     <string name="widgets_count" msgid="6467746476364652096">"{count,plural, =1{# miniaplikacion}other{# miniaplikacione}}"</string>
     <string name="shortcuts_count" msgid="8471715556199592381">"{count,plural, =1{# shkurtore}other{# shkurtore}}"</string>
@@ -54,8 +52,7 @@
     <string name="widgets_full_sheet_work_tab" msgid="3767150027110633765">"Puna"</string>
     <string name="widget_category_conversations" msgid="8894438636213590446">"Bisedat"</string>
     <string name="widget_education_header" msgid="4874760613775913787">"Informacione të dobishme në majë të gishtave të tu"</string>
-    <!-- no translation found for widget_education_content (1731667670753497052) -->
-    <skip />
+    <string name="widget_education_content" msgid="1731667670753497052">"Për të marrë informacione pa i hapur aplikacionet, mund të shtosh miniaplikacione në ekranin bazë"</string>
     <string name="reconfigurable_widget_education_tip" msgid="6336962690888067057">"Trokit për të ndryshuar cilësimet e miniaplikacionit"</string>
     <string name="widget_education_close_button" msgid="8676165703104836580">"E kuptova"</string>
     <string name="widget_reconfigure_button_content_description" msgid="8811472721881205250">"Ndrysho cilësimet e miniaplikacionit"</string>
@@ -68,8 +65,7 @@
     <string name="notifications_header" msgid="1404149926117359025">"Njoftimet"</string>
     <string name="long_press_shortcut_to_add" msgid="5405328730817637737">"Prek dhe mbaj shtypur një shkurtore për ta zhvendosur."</string>
     <string name="long_accessible_way_to_add_shortcut" msgid="2199537273817090740">"Trokit dy herë dhe mbaje shtypur një shkurtore për ta zhvendosur atë ose për të përdorur veprimet e personalizuara."</string>
-    <!-- no translation found for out_of_space (6455557115204099579) -->
-    <skip />
+    <string name="out_of_space" msgid="6455557115204099579">"Nuk ka më hapësirë në këtë ekran bazë"</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"Nuk ka më hapësirë në tabakanë \"Të preferuarat\""</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"Lista e aplikacioneve"</string>
     <string name="all_apps_search_results" msgid="5889367432531296759">"Rezultatet e kërkimit"</string>
@@ -83,14 +79,10 @@
     <string name="pin_prediction" msgid="4196423321649756498">"Gozhdo parashikimin"</string>
     <string name="permlab_install_shortcut" msgid="5632423390354674437">"instalimi i shkurtoreve"</string>
     <string name="permdesc_install_shortcut" msgid="923466509822011139">"Lejon një aplikacion të shtojë shkurtore pa ndërhyrjen e përdoruesit."</string>
-    <!-- no translation found for permlab_read_settings (5136500343007704955) -->
-    <skip />
-    <!-- no translation found for permdesc_read_settings (4208061150510996676) -->
-    <skip />
-    <!-- no translation found for permlab_write_settings (4820028712156303762) -->
-    <skip />
-    <!-- no translation found for permdesc_write_settings (726859348127868466) -->
-    <skip />
+    <string name="permlab_read_settings" msgid="5136500343007704955">"lexo cilësimet dhe shkurtoret e ekranit bazë"</string>
+    <string name="permdesc_read_settings" msgid="4208061150510996676">"Lejon aplikacionin që të lexojë cilësimet dhe shkurtoret në ekranin bazë."</string>
+    <string name="permlab_write_settings" msgid="4820028712156303762">"shkruaj cilësimet dhe shkurtoret e ekranit bazë"</string>
+    <string name="permdesc_write_settings" msgid="726859348127868466">"Lejon aplikacionin që të ndryshojë cilësimet dhe shkurtoret në ekranin bazë."</string>
     <string name="msg_no_phone_permission" msgid="9208659281529857371">"<xliff:g id="APP_NAME">%1$s</xliff:g> nuk lejohet të kryejë telefonata"</string>
     <string name="gadget_error_text" msgid="740356548025791839">"S\'mund të ngarkohet miniaplikacioni"</string>
     <string name="gadget_setup_text" msgid="8348374825537681407">"Cilësimet e miniaplikacionit"</string>
@@ -113,8 +105,7 @@
     <string name="styles_wallpaper_button_text" msgid="8216961355289236794">"Imazhi i sfondit dhe stili"</string>
     <string name="settings_button_text" msgid="8873672322605444408">"Cilësimet e ekranit bazë"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"Çaktivizuar nga administratori"</string>
-    <!-- no translation found for allow_rotation_title (7222049633713050106) -->
-    <skip />
+    <string name="allow_rotation_title" msgid="7222049633713050106">"Lejo rrotullimin e ekranit bazë"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"Kur telefoni rrotullohet"</string>
     <string name="notification_dots_title" msgid="9062440428204120317">"Pikat e njoftimeve"</string>
     <string name="notification_dots_desc_on" msgid="1679848116452218908">"Aktiv"</string>
@@ -123,8 +114,7 @@
     <string name="msg_missing_notification_access" msgid="281113995110910548">"Për të shfaqur \"Pikat e njoftimeve\", aktivizo njoftimet e aplikacionit për <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"Ndrysho cilësimet"</string>
     <string name="notification_dots_service_title" msgid="4284221181793592871">"Shfaq pikat e njoftimeve"</string>
-    <!-- no translation found for auto_add_shortcuts_label (4926805029653694105) -->
-    <skip />
+    <string name="auto_add_shortcuts_label" msgid="4926805029653694105">"Shto ikona aplikacionesh në ekranin bazë"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"Për aplikacionet e reja"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"I panjohur"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"Hiq"</string>
@@ -136,8 +126,7 @@
     <string name="app_waiting_download_title" msgid="7053938513995617849">"<xliff:g id="NAME">%1$s</xliff:g> po pret të instalohet"</string>
     <string name="widgets_list" msgid="796804551140113767">"Lista e miniaplikacioneve"</string>
     <string name="widgets_list_closed" msgid="6141506579418771922">"Lista e miniaplikacioneve u mbyll"</string>
-    <!-- no translation found for action_add_to_workspace (215894119683164916) -->
-    <skip />
+    <string name="action_add_to_workspace" msgid="215894119683164916">"Shto në ekranin bazë"</string>
     <string name="action_move_here" msgid="2170188780612570250">"Zhvendose artikullin këtu"</string>
     <string name="item_added_to_workspace" msgid="4211073925752213539">"Artikulli u shtua tek ekrani bazë"</string>
     <string name="item_removed" msgid="851119963877842327">"Artikulli u hoq"</string>
@@ -152,8 +141,7 @@
     <string name="added_to_folder" msgid="4793259502305558003">"Artikulli u shtua te dosja"</string>
     <string name="create_folder_with" msgid="4050141361160214248">"Krijo një dosje me: <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="folder_created" msgid="6409794597405184510">"Dosja u krijua"</string>
-    <!-- no translation found for action_move_to_workspace (39528912300293768) -->
-    <skip />
+    <string name="action_move_to_workspace" msgid="39528912300293768">"Kaloje në ekranin bazë"</string>
     <string name="action_resize" msgid="1802976324781771067">"Ndrysho madhësinë"</string>
     <string name="action_increase_width" msgid="8773715375078513326">"Rrit gjerësinë"</string>
     <string name="action_increase_height" msgid="459390020612501122">"Rrit lartësinë"</string>
