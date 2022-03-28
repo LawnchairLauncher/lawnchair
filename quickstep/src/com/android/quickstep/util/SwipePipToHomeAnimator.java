@@ -101,6 +101,7 @@ public class SwipePipToHomeAnimator extends RectFSpringAnim {
      * @param fromRotation From rotation if different from final rotation, ROTATION_0 otherwise
      * @param destinationBoundsTransformed Destination bounds in window space
      * @param cornerRadius Corner radius in pixel value for PiP window
+     * @param shadowRadius Shadow radius in pixel value for PiP window
      * @param view Attached view for logging purpose
      */
     private SwipePipToHomeAnimator(@NonNull Context context,
@@ -115,6 +116,7 @@ public class SwipePipToHomeAnimator extends RectFSpringAnim {
             @RecentsOrientedState.SurfaceRotation int fromRotation,
             @NonNull Rect destinationBoundsTransformed,
             int cornerRadius,
+            int shadowRadius,
             @NonNull View view) {
         super(startBounds, new RectF(destinationBoundsTransformed), context, null);
         mTaskId = taskId;
@@ -126,7 +128,7 @@ public class SwipePipToHomeAnimator extends RectFSpringAnim {
         mDestinationBounds.set(destinationBounds);
         mFromRotation = fromRotation;
         mDestinationBoundsTransformed.set(destinationBoundsTransformed);
-        mSurfaceTransactionHelper = new PipSurfaceTransactionHelper(cornerRadius);
+        mSurfaceTransactionHelper = new PipSurfaceTransactionHelper(cornerRadius, shadowRadius);
 
         if (sourceRectHint != null && (sourceRectHint.width() < destinationBounds.width()
                 || sourceRectHint.height() < destinationBounds.height())) {
@@ -324,6 +326,7 @@ public class SwipePipToHomeAnimator extends RectFSpringAnim {
         private RectF mStartBounds;
         private Rect mDestinationBounds;
         private int mCornerRadius;
+        private int mShadowRadius;
         private View mAttachedView;
         private @RecentsOrientedState.SurfaceRotation int mFromRotation = Surface.ROTATION_0;
         private final Rect mDestinationBoundsTransformed = new Rect();
@@ -378,6 +381,11 @@ public class SwipePipToHomeAnimator extends RectFSpringAnim {
             return this;
         }
 
+        public Builder setShadowRadius(int shadowRadius) {
+            mShadowRadius = shadowRadius;
+            return this;
+        }
+
         public Builder setAttachedView(View attachedView) {
             mAttachedView = attachedView;
             return this;
@@ -422,7 +430,7 @@ public class SwipePipToHomeAnimator extends RectFSpringAnim {
                     mSourceRectHint, mAppBounds,
                     mHomeToWindowPositionMap, mStartBounds, mDestinationBounds,
                     mFromRotation, mDestinationBoundsTransformed,
-                    mCornerRadius, mAttachedView);
+                    mCornerRadius, mShadowRadius, mAttachedView);
         }
     }
 
