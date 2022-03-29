@@ -37,10 +37,8 @@
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"%1$d á breidd og %2$d á hæð"</string>
     <string name="widget_preview_context_description" msgid="9045841361655787574">"Græjan <xliff:g id="WIDGET_NAME">%1$s</xliff:g>"</string>
-    <!-- no translation found for add_item_request_drag_hint (8730547755622776606) -->
-    <skip />
-    <!-- no translation found for add_to_home_screen (9168649446635919791) -->
-    <skip />
+    <string name="add_item_request_drag_hint" msgid="8730547755622776606">"Haltu fingri á græjunni til að hreyfa hana um heimaskjáinn"</string>
+    <string name="add_to_home_screen" msgid="9168649446635919791">"Bæta á heimaskjá"</string>
     <string name="added_to_home_screen_accessibility_text" msgid="4451545765448884415">"<xliff:g id="WIDGET_NAME">%1$s</xliff:g> græju bætt við heimaskjá"</string>
     <string name="widgets_count" msgid="6467746476364652096">"{count,plural, =1{# græja}one{# græja}other{# græjur}}"</string>
     <string name="shortcuts_count" msgid="8471715556199592381">"{count,plural, =1{# flýtileið}one{# flýtileið}other{# flýtileiðir}}"</string>
@@ -54,8 +52,7 @@
     <string name="widgets_full_sheet_work_tab" msgid="3767150027110633765">"Vinna"</string>
     <string name="widget_category_conversations" msgid="8894438636213590446">"Samtöl"</string>
     <string name="widget_education_header" msgid="4874760613775913787">"Gagnlegar upplýsingar innan seilingar"</string>
-    <!-- no translation found for widget_education_content (1731667670753497052) -->
-    <skip />
+    <string name="widget_education_content" msgid="1731667670753497052">"Þú getur bætt við græjum á heimaskjáinn til að fá upplýsingar án þess að opna forrit"</string>
     <string name="reconfigurable_widget_education_tip" msgid="6336962690888067057">"Ýttu til að breyta græjustillingum"</string>
     <string name="widget_education_close_button" msgid="8676165703104836580">"Ég skil"</string>
     <string name="widget_reconfigure_button_content_description" msgid="8811472721881205250">"Breyta græjustillingum"</string>
@@ -68,8 +65,7 @@
     <string name="notifications_header" msgid="1404149926117359025">"Tilkynningar"</string>
     <string name="long_press_shortcut_to_add" msgid="5405328730817637737">"Haltu fingri á flýtileið til að færa hana."</string>
     <string name="long_accessible_way_to_add_shortcut" msgid="2199537273817090740">"Ýttu tvisvar og haltu fingri á flýtileið til að færa hana eða notaðu sérsniðnar aðgerðir."</string>
-    <!-- no translation found for out_of_space (6455557115204099579) -->
-    <skip />
+    <string name="out_of_space" msgid="6455557115204099579">"Ekkert pláss á þessum heimaskjá"</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"Ekki meira pláss í bakka fyrir uppáhald"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"Forritalisti"</string>
     <string name="all_apps_search_results" msgid="5889367432531296759">"Leitarniðurstöður"</string>
@@ -83,14 +79,10 @@
     <string name="pin_prediction" msgid="4196423321649756498">"Festa tillögu"</string>
     <string name="permlab_install_shortcut" msgid="5632423390354674437">"setja upp flýtileiðir"</string>
     <string name="permdesc_install_shortcut" msgid="923466509822011139">"Leyfir forriti að bæta við flýtileiðum án íhlutunar notanda."</string>
-    <!-- no translation found for permlab_read_settings (5136500343007704955) -->
-    <skip />
-    <!-- no translation found for permdesc_read_settings (4208061150510996676) -->
-    <skip />
-    <!-- no translation found for permlab_write_settings (4820028712156303762) -->
-    <skip />
-    <!-- no translation found for permdesc_write_settings (726859348127868466) -->
-    <skip />
+    <string name="permlab_read_settings" msgid="5136500343007704955">"lesa stillingar og flýtileiðir heimaskjás"</string>
+    <string name="permdesc_read_settings" msgid="4208061150510996676">"Leyfir forriti að lesa stillingar og flýtileiðir heimaskjás."</string>
+    <string name="permlab_write_settings" msgid="4820028712156303762">"skrifa stillingar og flýtileiðir heimaskjás"</string>
+    <string name="permdesc_write_settings" msgid="726859348127868466">"Leyfir forriti að breyta stillingum og flýtileiðum heimaskjás."</string>
     <string name="msg_no_phone_permission" msgid="9208659281529857371">"<xliff:g id="APP_NAME">%1$s</xliff:g> hefur ekki leyfi til að hringja símtöl"</string>
     <string name="gadget_error_text" msgid="740356548025791839">"Ekki hægt að hlaða græju"</string>
     <string name="gadget_setup_text" msgid="8348374825537681407">"Græjustillingar"</string>
@@ -113,8 +105,7 @@
     <string name="styles_wallpaper_button_text" msgid="8216961355289236794">"Veggfóður og stíll"</string>
     <string name="settings_button_text" msgid="8873672322605444408">"Heimastillingar"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"Gert óvirkt af kerfisstjóra"</string>
-    <!-- no translation found for allow_rotation_title (7222049633713050106) -->
-    <skip />
+    <string name="allow_rotation_title" msgid="7222049633713050106">"Leyfa snúning á heimaskjá"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"Þegar símanum er snúið"</string>
     <string name="notification_dots_title" msgid="9062440428204120317">"Tilkynningapunktar"</string>
     <string name="notification_dots_desc_on" msgid="1679848116452218908">"Kveikt"</string>
@@ -123,8 +114,7 @@
     <string name="msg_missing_notification_access" msgid="281113995110910548">"Til að sýna tilkynningarpunkta skaltu kveikja á forritstilkynningum fyrir <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"Breyta stillingum"</string>
     <string name="notification_dots_service_title" msgid="4284221181793592871">"Sýna tilkynningapunkta"</string>
-    <!-- no translation found for auto_add_shortcuts_label (4926805029653694105) -->
-    <skip />
+    <string name="auto_add_shortcuts_label" msgid="4926805029653694105">"Bæta forritatáknum við heimaskjáinn"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"Fyrir ný forrit"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"Óþekkt"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"Taka niður"</string>
@@ -136,8 +126,7 @@
     <string name="app_waiting_download_title" msgid="7053938513995617849">"<xliff:g id="NAME">%1$s</xliff:g> bíður uppsetningar"</string>
     <string name="widgets_list" msgid="796804551140113767">"Græjulisti"</string>
     <string name="widgets_list_closed" msgid="6141506579418771922">"Græjulista lokað"</string>
-    <!-- no translation found for action_add_to_workspace (215894119683164916) -->
-    <skip />
+    <string name="action_add_to_workspace" msgid="215894119683164916">"Bæta á heimaskjá"</string>
     <string name="action_move_here" msgid="2170188780612570250">"Færa atriði hingað"</string>
     <string name="item_added_to_workspace" msgid="4211073925752213539">"Atriði bætt á heimaskjáinn"</string>
     <string name="item_removed" msgid="851119963877842327">"Atriði fjarlægt"</string>
@@ -152,8 +141,7 @@
     <string name="added_to_folder" msgid="4793259502305558003">"Atriði sett í möppu"</string>
     <string name="create_folder_with" msgid="4050141361160214248">"Búa til möppu með: <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="folder_created" msgid="6409794597405184510">"Mappa búin til"</string>
-    <!-- no translation found for action_move_to_workspace (39528912300293768) -->
-    <skip />
+    <string name="action_move_to_workspace" msgid="39528912300293768">"Færa á heimaskjá"</string>
     <string name="action_resize" msgid="1802976324781771067">"Breyta stærð"</string>
     <string name="action_increase_width" msgid="8773715375078513326">"Auka breidd"</string>
     <string name="action_increase_height" msgid="459390020612501122">"Auka hæð"</string>
