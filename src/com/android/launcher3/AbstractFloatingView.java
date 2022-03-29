@@ -103,7 +103,7 @@ public abstract class AbstractFloatingView extends LinearLayout implements Touch
     public static final int TYPE_REBIND_SAFE = TYPE_WIDGETS_FULL_SHEET
             | TYPE_WIDGETS_BOTTOM_SHEET | TYPE_ON_BOARD_POPUP | TYPE_DISCOVERY_BOUNCE
             | TYPE_ALL_APPS_EDU | TYPE_ICON_SURFACE | TYPE_WIDGETS_EDUCATION_DIALOG
-            | TYPE_TASKBAR_EDUCATION_DIALOG;
+            | TYPE_TASKBAR_EDUCATION_DIALOG | TYPE_TASKBAR_ALL_APPS;
 
     // Usually we show the back button when a floating view is open. Instead, hide for these types.
     public static final int TYPE_HIDE_BACK_BUTTON = TYPE_ON_BOARD_POPUP | TYPE_DISCOVERY_BOUNCE
