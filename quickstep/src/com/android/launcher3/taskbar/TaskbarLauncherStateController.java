@@ -26,6 +26,7 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.BaseQuickstepLauncher;
@@ -73,6 +74,8 @@ import java.util.function.Supplier;
     private Integer mPrevState;
     private int mState;
     private LauncherState mLauncherState = LauncherState.NORMAL;
+
+    private @Nullable TaskBarRecentsAnimationListener mTaskBarRecentsAnimationListener;
 
     private boolean mIsAnimatingToLauncherViaGesture;
     private boolean mIsAnimatingToLauncherViaResume;
@@ -163,12 +166,11 @@ import java.util.function.Supplier;
         animatorSet.play(stashController.applyStateWithoutStart(duration));
         animatorSet.play(applyState(duration, false));
 
-        TaskBarRecentsAnimationListener listener = new TaskBarRecentsAnimationListener(callbacks);
-        callbacks.addListener(listener);
+        mTaskBarRecentsAnimationListener = new TaskBarRecentsAnimationListener(callbacks);
+        callbacks.addListener(mTaskBarRecentsAnimationListener);
         RecentsView recentsView = mLauncher.getOverviewPanel();
         recentsView.setTaskLaunchListener(() -> {
-            listener.endGestureStateOverride(true);
-            callbacks.removeListener(listener);
+            mTaskBarRecentsAnimationListener.endGestureStateOverride(true);
         });
         return animatorSet;
     }
@@ -379,7 +381,7 @@ import java.util.function.Supplier;
     }
 
     private void onIconAlignmentRatioChangedForStateTransition() {
-        if (!isResumed()) {
+        if (!isResumed() && mTaskBarRecentsAnimationListener == null) {
             return;
         }
         onIconAlignmentRatioChanged(this::getCurrentIconAlignmentRatioForLauncherState);
@@ -455,6 +457,7 @@ import java.util.function.Supplier;
 
         private void endGestureStateOverride(boolean finishedToApp) {
             mCallbacks.removeListener(this);
+            mTaskBarRecentsAnimationListener = null;
 
             // Update the resumed state immediately to ensure a seamless handoff
             boolean launcherResumed = !finishedToApp;
