@@ -18,6 +18,7 @@ package com.android.launcher3.taskbar;
 
 import static com.android.internal.app.AssistUtils.INVOCATION_TYPE_HOME_BUTTON_LONG_PRESS;
 import static com.android.internal.app.AssistUtils.INVOCATION_TYPE_KEY;
+import static com.android.systemui.shared.system.ActivityManagerWrapper.CLOSE_SYSTEM_WINDOWS_REASON_RECENTS;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_SCREEN_PINNING;
 
 import android.os.Bundle;
@@ -31,6 +32,7 @@ import com.android.launcher3.testing.TestLogging;
 import com.android.launcher3.testing.TestProtocol;
 import com.android.quickstep.OverviewCommandHelper;
 import com.android.quickstep.SystemUiProxy;
+import com.android.quickstep.TaskUtils;
 import com.android.quickstep.TouchInteractionService;
 
 import java.io.PrintWriter;
@@ -217,6 +219,7 @@ public class TaskbarNavButtonController implements TaskbarControllers.LoggableTa
             return;
         }
         TestLogging.recordEvent(TestProtocol.SEQUENCE_MAIN, "onOverviewToggle");
+        TaskUtils.closeSystemWindowsAsync(CLOSE_SYSTEM_WINDOWS_REASON_RECENTS);
         mService.getOverviewCommandHelper().addCommand(OverviewCommandHelper.TYPE_TOGGLE);
     }
 
