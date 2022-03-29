@@ -170,11 +170,9 @@ public final class TaskViewUtils {
         boolean isQuickSwitch = v.isEndQuickswitchCuj();
         v.setEndQuickswitchCuj(false);
 
-        boolean inLiveTileMode =
-                ENABLE_QUICKSTEP_LIVE_TILE.get() && v.getRecentsView().getRunningTaskIndex() != -1;
         final RemoteAnimationTargets targets =
                 new RemoteAnimationTargets(appTargets, wallpaperTargets, nonAppTargets,
-                        !ENABLE_SHELL_TRANSITIONS && inLiveTileMode ? MODE_CLOSING : MODE_OPENING);
+                        MODE_OPENING);
         final RemoteAnimationTargetCompat navBarTarget = targets.getNavBarRemoteAnimationTarget();
 
         SurfaceTransactionApplier applier = new SurfaceTransactionApplier(v);
@@ -276,7 +274,7 @@ public final class TaskViewUtils {
                         }
                     }
                 });
-            } else if (inLiveTileMode) {
+            } else {
                 // There is no transition animation for app launch from recent in live tile mode so
                 // we have to trigger the navigation bar animation from system here.
                 final RecentsAnimationController controller =
