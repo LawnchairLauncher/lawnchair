@@ -1662,6 +1662,13 @@ public final class LauncherInstrumentation {
     Point getRealDisplaySize() {
         final Point size = new Point();
         getContext().getSystemService(WindowManager.class).getDefaultDisplay().getRealSize(size);
+        final Rect winMetricsHeight = getContext().getSystemService(WindowManager.class)
+                .getMaximumWindowMetrics()
+                .getBounds();
+        final Point winMetricsSize = new Point(winMetricsHeight.width(), winMetricsHeight.height());
+        if (!winMetricsSize.equals(size)) {
+            fail("Display size mismatch: " + size + " vs " + winMetricsSize);
+        }
         return size;
     }
 
