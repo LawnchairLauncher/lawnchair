@@ -43,7 +43,6 @@
             android:layout_height="match_parent"
             android:gravity="center"
             android:visibility="gone"
-            android:fontFamily="sans-serif-medium"
             android:textSize="20sp"
             android:layout_below="@id/search_and_recommendations_container"
             tools:text="No widgets available" />
