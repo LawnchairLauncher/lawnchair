@@ -55,7 +55,6 @@ import com.android.launcher3.accessibility.BaseAccessibilityDelegate;
 import com.android.launcher3.dot.DotInfo;
 import com.android.launcher3.dragndrop.DraggableView;
 import com.android.launcher3.folder.FolderIcon;
-import com.android.launcher3.graphics.IconPalette;
 import com.android.launcher3.graphics.IconShape;
 import com.android.launcher3.graphics.PreloadIconDrawable;
 import com.android.launcher3.icons.DotRenderer;
@@ -378,8 +377,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
             flags |= FLAG_NO_BADGE;
         }
         FastBitmapDrawable iconDrawable = info.newIcon(getContext(), flags);
-        mDotParams.color = IconPalette.getMutedColor(iconDrawable.getIconColor(), 0.54f);
-
+        mDotParams.color = iconDrawable.getIconColor();
         setIcon(iconDrawable);
         applyLabel(info);
     }
