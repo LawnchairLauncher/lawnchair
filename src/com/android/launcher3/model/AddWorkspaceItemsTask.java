@@ -15,22 +15,17 @@
  */
 package com.android.launcher3.model;
 
-import static com.android.launcher3.WorkspaceLayoutManager.FIRST_SCREEN_ID;
-
 import android.content.Intent;
 import android.content.pm.LauncherActivityInfo;
 import android.content.pm.LauncherApps;
 import android.content.pm.PackageInstaller.SessionInfo;
 import android.os.UserHandle;
 import android.util.Log;
-import android.util.LongSparseArray;
 import android.util.Pair;
 
-import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherModel.CallbackTask;
 import com.android.launcher3.LauncherSettings;
-import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.model.BgDataModel.Callbacks;
 import com.android.launcher3.model.data.AppInfo;
@@ -41,9 +36,7 @@ import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.pm.InstallSessionHelper;
 import com.android.launcher3.pm.PackageInstallInfo;
 import com.android.launcher3.testing.TestProtocol;
-import com.android.launcher3.util.GridOccupancy;
 import com.android.launcher3.util.IntArray;
-import com.android.launcher3.util.IntSet;
 import com.android.launcher3.util.PackageManagerHelper;
 
 import java.util.ArrayList;
@@ -58,11 +51,23 @@ public class AddWorkspaceItemsTask extends BaseModelUpdateTask {
 
     private final List<Pair<ItemInfo, Object>> mItemList;
 
+    private final WorkspaceItemSpaceFinder mItemSpaceFinder;
+
     /**
      * @param itemList items to add on the workspace
      */
     public AddWorkspaceItemsTask(List<Pair<ItemInfo, Object>> itemList) {
+        this(itemList, new WorkspaceItemSpaceFinder());
+    }
+
+    /**
+     * @param itemList items to add on the workspace
+     * @param itemSpaceFinder inject WorkspaceItemSpaceFinder dependency for testing
+     */
+    public AddWorkspaceItemsTask(List<Pair<ItemInfo, Object>> itemList,
+            WorkspaceItemSpaceFinder itemSpaceFinder) {
         mItemList = itemList;
+        mItemSpaceFinder = itemSpaceFinder;
     }
 
     @Override
@@ -74,7 +79,7 @@ public class AddWorkspaceItemsTask extends BaseModelUpdateTask {
         final ArrayList<ItemInfo> addedItemsFinal = new ArrayList<>();
         final IntArray addedWorkspaceScreensFinal = new IntArray();
 
-        synchronized(dataModel) {
+        synchronized (dataModel) {
             IntArray workspaceScreens = dataModel.collectWorkspaceScreens();
 
             List<ItemInfo> filteredItems = new ArrayList<>();
@@ -117,7 +122,7 @@ public class AddWorkspaceItemsTask extends BaseModelUpdateTask {
 
             for (ItemInfo item : filteredItems) {
                 // Find appropriate space for the item.
-                int[] coords = findSpaceForItem(app, dataModel, workspaceScreens,
+                int[] coords = mItemSpaceFinder.findSpaceForItem(app, dataModel, workspaceScreens,
                         addedWorkspaceScreensFinal, item.spanX, item.spanY);
                 int screenId = coords[0];
 
@@ -288,82 +293,4 @@ public class AddWorkspaceItemsTask extends BaseModelUpdateTask {
         }
         return false;
     }
-
-    /**
-     * Find a position on the screen for the given size or adds a new screen.
-     * @return screenId and the coordinates for the item in an int array of size 3.
-     */
-    protected int[] findSpaceForItem( LauncherAppState app, BgDataModel dataModel,
-            IntArray workspaceScreens, IntArray addedWorkspaceScreensFinal, int spanX, int spanY) {
-        LongSparseArray<ArrayList<ItemInfo>> screenItems = new LongSparseArray<>();
-
-        // Use sBgItemsIdMap as all the items are already loaded.
-        synchronized (dataModel) {
-            for (ItemInfo info : dataModel.itemsIdMap) {
-                if (info.container == LauncherSettings.Favorites.CONTAINER_DESKTOP) {
-                    ArrayList<ItemInfo> items = screenItems.get(info.screenId);
-                    if (items == null) {
-                        items = new ArrayList<>();
-                        screenItems.put(info.screenId, items);
-                    }
-                    items.add(info);
-                }
-            }
-        }
-
-        // Find appropriate space for the item.
-        int screenId = 0;
-        int[] coordinates = new int[2];
-        boolean found = false;
-
-        int screenCount = workspaceScreens.size();
-        // First check the preferred screen.
-        IntSet screensToExclude = new IntSet();
-        if (FeatureFlags.QSB_ON_FIRST_SCREEN) {
-            screensToExclude.add(FIRST_SCREEN_ID);
-        }
-
-        for (int screen = 0; screen < screenCount; screen++) {
-            screenId = workspaceScreens.get(screen);
-            if (!screensToExclude.contains(screenId) && findNextAvailableIconSpaceInScreen(
-                    app, screenItems.get(screenId), coordinates, spanX, spanY)) {
-                // We found a space for it
-                found = true;
-                break;
-            }
-        }
-
-        if (!found) {
-            // Still no position found. Add a new screen to the end.
-            screenId = LauncherSettings.Settings.call(app.getContext().getContentResolver(),
-                    LauncherSettings.Settings.METHOD_NEW_SCREEN_ID)
-                    .getInt(LauncherSettings.Settings.EXTRA_VALUE);
-
-            // Save the screen id for binding in the workspace
-            workspaceScreens.add(screenId);
-            addedWorkspaceScreensFinal.add(screenId);
-
-            // If we still can't find an empty space, then God help us all!!!
-            if (!findNextAvailableIconSpaceInScreen(
-                    app, screenItems.get(screenId), coordinates, spanX, spanY)) {
-                throw new RuntimeException("Can't find space to add the item");
-            }
-        }
-        return new int[] {screenId, coordinates[0], coordinates[1]};
-    }
-
-    private boolean findNextAvailableIconSpaceInScreen(
-            LauncherAppState app, ArrayList<ItemInfo> occupiedPos,
-            int[] xy, int spanX, int spanY) {
-        InvariantDeviceProfile profile = app.getInvariantDeviceProfile();
-
-        GridOccupancy occupied = new GridOccupancy(profile.numColumns, profile.numRows);
-        if (occupiedPos != null) {
-            for (ItemInfo r : occupiedPos) {
-                occupied.markCells(r, true);
-            }
-        }
-        return occupied.findVacantCell(xy, spanX, spanY);
-    }
-
 }
