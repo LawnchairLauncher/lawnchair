@@ -319,7 +319,7 @@ public class DeviceProfile {
                 pxFromDp(inv.allAppsBorderSpaces[mTypeIndex].x, mMetrics),
                 pxFromDp(inv.allAppsBorderSpaces[mTypeIndex].y, mMetrics));
         cellLayoutBorderSpaceOriginalPx = new Point(cellLayoutBorderSpacePx);
-        folderCellLayoutBorderSpaceOriginalPx = pxFromDp(inv.folderBorderSpace, mMetrics, 1f);
+        folderCellLayoutBorderSpaceOriginalPx = pxFromDp(inv.folderBorderSpace, mMetrics);
         folderCellLayoutBorderSpacePx = new Point(folderCellLayoutBorderSpaceOriginalPx,
                 folderCellLayoutBorderSpaceOriginalPx);
 
@@ -525,19 +525,19 @@ public class DeviceProfile {
     }
 
     private Point getCellLayoutBorderSpace(InvariantDeviceProfile idp) {
+        return getCellLayoutBorderSpace(idp, 1f);
+
+    }
+
+    private Point getCellLayoutBorderSpace(InvariantDeviceProfile idp, float scale) {
         if (!isScalableGrid) {
             return new Point(0, 0);
         }
 
-        int horizontalSpacePx = pxFromDp(idp.borderSpaces[mTypeIndex].x, mMetrics);
-        int verticalSpacePx = pxFromDp(idp.borderSpaces[mTypeIndex].y, mMetrics);
+        int horizontalSpacePx = pxFromDp(idp.borderSpaces[mTypeIndex].x, mMetrics, scale);
+        int verticalSpacePx = pxFromDp(idp.borderSpaces[mTypeIndex].y, mMetrics, scale);
 
         return new Point(horizontalSpacePx, verticalSpacePx);
-    }
-
-    private Point getCellLayoutBorderSpaceScaled(InvariantDeviceProfile idp, float scale) {
-        Point original = getCellLayoutBorderSpace(idp);
-        return new Point((int) (original.x * scale), (int) (original.y * scale));
     }
 
     public Info getDisplayInfo() {
@@ -708,7 +708,7 @@ public class DeviceProfile {
         iconTextSizePx = (int) (pxFromSp(invIconTextSizeSp, mMetrics) * iconScale);
         iconDrawablePaddingPx = (int) (iconDrawablePaddingOriginalPx * iconScale);
 
-        cellLayoutBorderSpacePx = getCellLayoutBorderSpaceScaled(inv, scale);
+        cellLayoutBorderSpacePx = getCellLayoutBorderSpace(inv, scale);
 
         if (isScalableGrid) {
             cellWidthPx = pxFromDp(inv.minCellSize[mTypeIndex].x, mMetrics, scale);
@@ -756,15 +756,22 @@ public class DeviceProfile {
      * Updates the iconSize for allApps* variants.
      */
     public void updateAllAppsIconSize(float scale, Resources res) {
-        //TODO(b/218638090): remove the tablet condition once we have phone specs
-        if (isScalableGrid && isTablet) {
+        allAppsBorderSpacePx = new Point(
+                pxFromDp(inv.allAppsBorderSpaces[mTypeIndex].x, mMetrics, scale),
+                pxFromDp(inv.allAppsBorderSpaces[mTypeIndex].y, mMetrics, scale));
+        if (isScalableGrid) {
             allAppsIconSizePx =
                     pxFromDp(inv.allAppsIconSize[mTypeIndex], mMetrics);
             allAppsIconTextSizePx =
                     pxFromSp(inv.allAppsIconTextSize[mTypeIndex], mMetrics);
             allAppsIconDrawablePaddingPx = iconDrawablePaddingOriginalPx;
+            // AllApps cells don't have real space between cells,
+            // so we add the border space to the cell height
+            allAppsCellHeightPx = pxFromDp(inv.allAppsCellSize[mTypeIndex].y, mMetrics, scale)
+                    + allAppsBorderSpacePx.y;
+            // but width is just the cell,
+            // the border is added in #updateAllAppsContainerWidth
             allAppsCellWidthPx = pxFromDp(inv.allAppsCellSize[mTypeIndex].x, mMetrics, scale);
-            allAppsCellHeightPx = pxFromDp(inv.allAppsCellSize[mTypeIndex].y, mMetrics, scale);
         } else {
             float invIconSizeDp = inv.iconSize[mTypeIndex];
             float invIconTextSizeSp = inv.iconTextSize[mTypeIndex];
