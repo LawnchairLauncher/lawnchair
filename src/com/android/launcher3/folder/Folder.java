@@ -72,7 +72,6 @@ import com.android.launcher3.ExtendedEditText;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.OnAlarmListener;
-import com.android.launcher3.PagedView;
 import com.android.launcher3.R;
 import com.android.launcher3.ShortcutAndWidgetContainer;
 import com.android.launcher3.Utilities;
@@ -145,7 +144,7 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
      * Time for which the scroll hint is shown before automatically changing page.
      */
     public static final int SCROLL_HINT_DURATION = 500;
-    public static final int RESCROLL_DELAY = PagedView.PAGE_SNAP_ANIMATION_DURATION + 150;
+    private static final int RESCROLL_EXTRA_DELAY = 150;
 
     public static final int SCROLL_NONE = -1;
     public static final int SCROLL_LEFT = 0;
@@ -1523,7 +1522,9 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
 
             // Pause drag event until the scrolling is finished
             mScrollPauseAlarm.setOnAlarmListener(new OnScrollFinishedListener(mDragObject));
-            mScrollPauseAlarm.setAlarm(RESCROLL_DELAY);
+            int rescrollDelay = getResources().getInteger(
+                    R.integer.config_pageSnapAnimationDuration) + RESCROLL_EXTRA_DELAY;
+            mScrollPauseAlarm.setAlarm(rescrollDelay);
         }
     }
 

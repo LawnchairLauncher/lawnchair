@@ -15,6 +15,9 @@
 -->
 
 <resources>
+<!-- PagedView  -->
+    <dimen name="min_page_snap_velocity">3400dp</dimen>
+
 <!-- AllApps -->
     <dimen name="all_apps_bottom_sheet_horizontal_padding">28dp</dimen>
 
