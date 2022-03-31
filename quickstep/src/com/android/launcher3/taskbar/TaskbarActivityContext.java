@@ -28,6 +28,7 @@ import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_N
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_QUICK_SETTINGS_EXPANDED;
 import static com.android.systemui.shared.system.WindowManagerWrapper.ITYPE_BOTTOM_TAPPABLE_ELEMENT;
 import static com.android.systemui.shared.system.WindowManagerWrapper.ITYPE_EXTRA_NAVIGATION_BAR;
+import static com.android.systemui.shared.system.WindowManagerWrapper.ITYPE_SIZE;
 
 import android.animation.AnimatorSet;
 import android.app.ActivityOptions;
@@ -211,8 +212,12 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
         );
         // Adjust the frame by the rounded corners (ie. leaving just the bar as the inset) when
         // the IME is showing
-        mWindowLayoutParams.providedInternalImeInsets = Insets.of(0,
+        mWindowLayoutParams.providedInternalImeInsets = new Insets[ITYPE_SIZE];
+        final Insets reducingSize = Insets.of(0,
                 getDefaultTaskbarWindowHeight() - mTaskbarHeightForIme, 0, 0);
+        mWindowLayoutParams.providedInternalImeInsets[ITYPE_EXTRA_NAVIGATION_BAR] = reducingSize;
+        mWindowLayoutParams.providedInternalImeInsets[ITYPE_BOTTOM_TAPPABLE_ELEMENT] =
+                reducingSize;
 
         mWindowLayoutParams.insetsRoundedCornerFrame = true;
 
@@ -548,8 +553,14 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
             }
         }
         mWindowLayoutParams.height = height;
-        mWindowLayoutParams.providedInternalImeInsets =
+        final Insets reducingSize =
                 Insets.of(0, height - mTaskbarHeightForIme, 0, 0);
+        if (mWindowLayoutParams.providedInternalImeInsets == null) {
+            mWindowLayoutParams.providedInternalImeInsets = new Insets[ITYPE_SIZE];
+        }
+        mWindowLayoutParams.providedInternalImeInsets[ITYPE_EXTRA_NAVIGATION_BAR] = reducingSize;
+        mWindowLayoutParams.providedInternalImeInsets[ITYPE_BOTTOM_TAPPABLE_ELEMENT] =
+                reducingSize;
         mWindowManager.updateViewLayout(mDragLayer, mWindowLayoutParams);
     }
 
