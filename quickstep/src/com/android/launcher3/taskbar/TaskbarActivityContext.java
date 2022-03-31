@@ -15,6 +15,7 @@
  */
 package com.android.launcher3.taskbar;
 
+import static android.view.InsetsState.ITYPE_BOTTOM_MANDATORY_GESTURES;
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_ALWAYS;
 import static android.view.WindowManager.LayoutParams.TYPE_NAVIGATION_BAR_PANEL;
@@ -195,7 +196,8 @@ public class TaskbarActivityContext extends ContextThemeWrapper implements Activ
         WindowManagerWrapper wmWrapper = WindowManagerWrapper.getInstance();
         wmWrapper.setProvidesInsetsTypes(
                 mWindowLayoutParams,
-                new int[] { ITYPE_EXTRA_NAVIGATION_BAR, ITYPE_BOTTOM_TAPPABLE_ELEMENT }
+                new int[] { ITYPE_EXTRA_NAVIGATION_BAR, ITYPE_BOTTOM_TAPPABLE_ELEMENT,
+                        ITYPE_BOTTOM_MANDATORY_GESTURES }
         );
         // Adjust the frame by the rounded corners (ie. leaving just the bar as the inset) when
         // the IME is showing
