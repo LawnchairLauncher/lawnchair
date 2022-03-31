@@ -454,8 +454,8 @@ public class LandscapePagedViewHandler implements PagedOrientationHandler {
 
     @Override
     public void measureGroupedTaskViewThumbnailBounds(View primarySnapshot, View secondarySnapshot,
-            int parentWidth, int parentHeight,
-            StagedSplitBounds splitBoundsConfig, DeviceProfile dp) {
+            int parentWidth, int parentHeight, StagedSplitBounds splitBoundsConfig,
+            DeviceProfile dp, boolean isRtl) {
         int spaceAboveSnapshot = dp.overviewTaskThumbnailTopMarginPx;
         int totalThumbnailHeight = parentHeight - spaceAboveSnapshot;
         int dividerBar = splitBoundsConfig.appsStackedVertically
