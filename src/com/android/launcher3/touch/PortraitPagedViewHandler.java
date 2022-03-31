@@ -571,8 +571,8 @@ public class PortraitPagedViewHandler implements PagedOrientationHandler {
 
     @Override
     public void measureGroupedTaskViewThumbnailBounds(View primarySnapshot, View secondarySnapshot,
-            int parentWidth, int parentHeight,
-            StagedSplitBounds splitBoundsConfig, DeviceProfile dp) {
+            int parentWidth, int parentHeight, StagedSplitBounds splitBoundsConfig,
+            DeviceProfile dp, boolean isRtl) {
         int spaceAboveSnapshot = dp.overviewTaskThumbnailTopMarginPx;
         int totalThumbnailHeight = parentHeight - spaceAboveSnapshot;
         int dividerBar = splitBoundsConfig.appsStackedVertically
@@ -591,7 +591,13 @@ public class PortraitPagedViewHandler implements PagedOrientationHandler {
             secondarySnapshotHeight = totalThumbnailHeight;
             secondarySnapshotWidth = parentWidth - primarySnapshotWidth - dividerBar;
             int translationX = primarySnapshotWidth + dividerBar;
-            secondarySnapshot.setTranslationX(translationX);
+            if (isRtl) {
+                primarySnapshot.setTranslationX(-translationX);
+                secondarySnapshot.setTranslationX(0);
+            } else {
+                secondarySnapshot.setTranslationX(translationX);
+                primarySnapshot.setTranslationX(0);
+            }
             secondarySnapshot.setTranslationY(spaceAboveSnapshot);
         } else {
             primarySnapshotWidth = parentWidth;
@@ -602,6 +608,7 @@ public class PortraitPagedViewHandler implements PagedOrientationHandler {
             int translationY = primarySnapshotHeight + spaceAboveSnapshot + dividerBar;
             secondarySnapshot.setTranslationY(translationY);
             secondarySnapshot.setTranslationX(0);
+            primarySnapshot.setTranslationX(0);
         }
         primarySnapshot.measure(
                 View.MeasureSpec.makeMeasureSpec(primarySnapshotWidth, View.MeasureSpec.EXACTLY),
