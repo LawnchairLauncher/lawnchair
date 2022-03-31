@@ -113,6 +113,7 @@ import com.android.launcher3.util.WallpaperOffsetInterpolator;
 import com.android.launcher3.widget.LauncherAppWidgetHost;
 import com.android.launcher3.widget.LauncherAppWidgetHost.ProviderChangedListener;
 import com.android.launcher3.widget.LauncherAppWidgetHostView;
+import com.android.launcher3.widget.NavigableAppWidgetHostView;
 import com.android.launcher3.widget.PendingAddShortcutInfo;
 import com.android.launcher3.widget.PendingAddWidgetInfo;
 import com.android.launcher3.widget.PendingAppWidgetHostView;
@@ -2831,7 +2832,8 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
     }
 
     private void getFinalPositionForDropAnimation(int[] loc, float[] scaleXY,
-            DragView dragView, CellLayout layout, ItemInfo info, int[] targetCell, boolean scale) {
+            DragView dragView, CellLayout layout, ItemInfo info, int[] targetCell, boolean scale,
+            final View finalView) {
         // Now we animate the dragView, (ie. the widget or shortcut preview) into its final
         // location and size on the home screen.
         int spanX = info.spanX;
@@ -2840,6 +2842,14 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         Rect r = estimateItemPosition(layout, targetCell[0], targetCell[1], spanX, spanY);
         if (info.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET) {
             DeviceProfile profile = mLauncher.getDeviceProfile();
+            if (profile.shouldInsetWidgets() && finalView instanceof NavigableAppWidgetHostView) {
+                Rect widgetPadding = new Rect();
+                ((NavigableAppWidgetHostView) finalView).getWidgetInset(profile, widgetPadding);
+                r.left -= widgetPadding.left;
+                r.right += widgetPadding.right;
+                r.top -= widgetPadding.top;
+                r.bottom += widgetPadding.bottom;
+            }
             Utilities.shrinkRect(r, profile.appWidgetScale.x, profile.appWidgetScale.y);
         }
 
@@ -2886,7 +2896,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         float scaleXY[] = new float[2];
         boolean scalePreview = !(info instanceof PendingAddShortcutInfo);
         getFinalPositionForDropAnimation(finalPos, scaleXY, dragView, cellLayout, info, mTargetCell,
-                scalePreview);
+                scalePreview, finalView);
 
         Resources res = mLauncher.getResources();
         final int duration = res.getInteger(R.integer.config_dropAnimMaxDuration) - 200;
