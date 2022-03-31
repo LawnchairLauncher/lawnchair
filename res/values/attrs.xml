@@ -342,6 +342,18 @@
         <attr name="horizontalMarginTwoPanelLandscape" format="float"/>
         <!-- defaults to horizontalMargin if not specified -->
         <attr name="horizontalMarginTwoPanelPortrait" format="float"/>
+
+        <!-- By default all are false -->
+        <attr name="inlineQsb" format="integer" >
+            <!-- Enable on landscape only -->
+            <flag name="portrait" value="1" />
+            <!-- Enable on portrait only -->
+            <flag name="landscape" value="2" />
+            <!-- Enable on two panel portrait only -->
+            <flag name="twoPanelPortrait" value="4" />
+            <!-- Enable on two panel landscape only -->
+            <flag name="twoPanelLandscape" value="8" />
+        </attr>
     </declare-styleable>
 
     <declare-styleable name="CellLayout">

@@ -167,6 +167,7 @@ public class InvariantDeviceProfile {
     public String dbFile;
     public int defaultLayoutId;
     int demoModeLayoutId;
+    boolean[] inlineQsb = new boolean[COUNT_SIZES];
 
     /**
      * An immutable list of supported profiles.
@@ -249,6 +250,8 @@ public class InvariantDeviceProfile {
         System.arraycopy(defaultDisplayOption.minCellSize, 0, result.minCellSize, 0,
                 COUNT_SIZES);
         System.arraycopy(defaultDisplayOption.borderSpaces, 0, result.borderSpaces, 0,
+                COUNT_SIZES);
+        System.arraycopy(defaultDisplayOption.inlineQsb, 0, result.inlineQsb, 0,
                 COUNT_SIZES);
 
         initGrid(context, myInfo, result, deviceType);
@@ -370,6 +373,8 @@ public class InvariantDeviceProfile {
         if (devicePaddingId != 0) {
             devicePaddings = new DevicePaddings(context, devicePaddingId);
         }
+
+        inlineQsb = displayOption.inlineQsb;
 
         // If the partner customization apk contains any grid overrides, apply them
         // Supported overrides: numRows, numColumns, iconSize
@@ -783,12 +788,18 @@ public class InvariantDeviceProfile {
 
     @VisibleForTesting
     static final class DisplayOption {
+        private static final int INLINE_QSB_FOR_PORTRAIT = 1 << 0;
+        private static final int INLINE_QSB_FOR_LANDSCAPE = 1 << 1;
+        private static final int INLINE_QSB_FOR_TWO_PANEL_PORTRAIT = 1 << 2;
+        private static final int INLINE_QSB_FOR_TWO_PANEL_LANDSCAPE = 1 << 3;
+        private static final int DONT_INLINE_QSB = 0;
 
         public final GridOption grid;
 
         private final float minWidthDps;
         private final float minHeightDps;
         private final boolean canBeDefault;
+        private final boolean[] inlineQsb = new boolean[COUNT_SIZES];
 
         private final PointF[] minCellSize = new PointF[COUNT_SIZES];
 
@@ -814,6 +825,19 @@ public class InvariantDeviceProfile {
             minHeightDps = a.getFloat(R.styleable.ProfileDisplayOption_minHeightDps, 0);
 
             canBeDefault = a.getBoolean(R.styleable.ProfileDisplayOption_canBeDefault, false);
+
+            int inlineForRotation = a.getInt(R.styleable.ProfileDisplayOption_inlineQsb,
+                    DONT_INLINE_QSB);
+            inlineQsb[INDEX_DEFAULT] =
+                    (inlineForRotation & INLINE_QSB_FOR_PORTRAIT) == INLINE_QSB_FOR_PORTRAIT;
+            inlineQsb[INDEX_LANDSCAPE] =
+                    (inlineForRotation & INLINE_QSB_FOR_LANDSCAPE) == INLINE_QSB_FOR_LANDSCAPE;
+            inlineQsb[INDEX_TWO_PANEL_PORTRAIT] =
+                    (inlineForRotation & INLINE_QSB_FOR_TWO_PANEL_PORTRAIT)
+                            == INLINE_QSB_FOR_TWO_PANEL_PORTRAIT;
+            inlineQsb[INDEX_TWO_PANEL_LANDSCAPE] =
+                    (inlineForRotation & INLINE_QSB_FOR_TWO_PANEL_LANDSCAPE)
+                            == INLINE_QSB_FOR_TWO_PANEL_LANDSCAPE;
 
             float x;
             float y;
@@ -1029,6 +1053,7 @@ public class InvariantDeviceProfile {
                 allAppsIconSizes[i] = 0;
                 allAppsIconTextSizes[i] = 0;
                 allAppsBorderSpaces[i] = new PointF();
+                inlineQsb[i] = false;
             }
         }
 
@@ -1071,6 +1096,7 @@ public class InvariantDeviceProfile {
                 allAppsIconTextSizes[i] += p.allAppsIconTextSizes[i];
                 allAppsBorderSpaces[i].x += p.allAppsBorderSpaces[i].x;
                 allAppsBorderSpaces[i].y += p.allAppsBorderSpaces[i].y;
+                inlineQsb[i] |= p.inlineQsb[i];
             }
 
             folderBorderSpace += p.folderBorderSpace;

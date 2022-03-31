@@ -58,7 +58,6 @@ import com.android.launcher3.util.WindowBounds;
 public class WindowManagerProxy implements ResourceBasedOverride {
 
     public static final int MIN_TABLET_WIDTH = 600;
-    public static final int MIN_LARGE_TABLET_WIDTH = 720;
 
     public static final MainThreadInitializedObject<WindowManagerProxy> INSTANCE =
             forOverride(WindowManagerProxy.class, R.string.window_manager_proxy_class);
