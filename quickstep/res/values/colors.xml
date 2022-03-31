@@ -24,7 +24,6 @@
     <color name="all_apps_prediction_row_separator_dark">#3cffffff</color>
 
     <!-- Taskbar -->
-    <color name="taskbar_background">@color/overview_scrim_dark</color>
     <color name="taskbar_nav_icon_selection_ripple">#E0E0E0</color>
     <color name="taskbar_nav_icon_light_color">#ffffff</color>
     <!-- The dark navigation button color is only used in the rare cases that taskbar isn't drawing
