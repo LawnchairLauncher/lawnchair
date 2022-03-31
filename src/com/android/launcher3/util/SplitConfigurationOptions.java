@@ -154,10 +154,12 @@ public final class SplitConfigurationOptions {
                 }
             }
 
-            leftTaskPercent = this.leftTopBounds.width() / (float) rightBottomBounds.right;
-            topTaskPercent = this.leftTopBounds.height() / (float) rightBottomBounds.bottom;
-            dividerWidthPercent = visualDividerBounds.width() / (float) rightBottomBounds.right;
-            dividerHeightPercent = visualDividerBounds.height() / (float) rightBottomBounds.bottom;
+            float totalWidth = rightBottomBounds.right - leftTopBounds.left;
+            float totalHeight = rightBottomBounds.bottom - leftTopBounds.top;
+            leftTaskPercent = leftTopBounds.width() / totalWidth;
+            topTaskPercent = leftTopBounds.height() / totalHeight;
+            dividerWidthPercent = visualDividerBounds.width() / totalWidth;
+            dividerHeightPercent = visualDividerBounds.height() / totalHeight;
         }
     }
 
