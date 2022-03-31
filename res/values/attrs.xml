@@ -258,14 +258,6 @@
         <attr name="allAppsCellHeightTwoPanelLandscape" format="float" />
         <!-- defaults to allAppsCellWidth, if not specified -->
         <attr name="allAppsCellWidthTwoPanelLandscape" format="float" />
-        <!-- defaults to borderSpace, if not specified -->
-        <attr name="allAppsBorderSpace" format="float" />
-        <!-- defaults to allAppsBorderSpace, if not specified -->
-        <attr name="allAppsBorderSpaceLandscape" format="float" />
-        <!-- defaults to allAppsBorderSpace, if not specified -->
-        <attr name="allAppsBorderSpaceTwoPanelPortrait" format="float" />
-        <!-- defaults to allAppsBorderSpace, if not specified -->
-        <attr name="allAppsBorderSpaceTwoPanelLandscape" format="float" />
         <!-- The following values are only enabled if grid is supported. -->
         <!-- defaults to iconImageSize, if not specified -->
         <attr name="allAppsIconSize" format="float" />
@@ -279,6 +271,40 @@
         <attr name="allAppsIconTextSizeTwoPanelPortrait" format="float" />
         <!-- defaults to allAppsIconTextSize, if not specified -->
         <attr name="allAppsIconTextSizeTwoPanelLandscape" format="float" />
+
+        <!-- defaults to borderSpace, if not specified -->
+        <!-- space to be used horizontally and vertically -->
+        <attr name="allAppsBorderSpace" format="float" />
+        <!-- space to the right of the cell, defaults to allAppsBorderSpace if not specified -->
+        <attr name="allAppsBorderSpaceHorizontal" format="float" />
+        <!-- space below the cell, defaults to allAppsBorderSpace if not specified -->
+        <attr name="allAppsBorderSpaceVertical" format="float" />
+        <!-- space to be used horizontally and vertically,
+        defaults to allAppsBorderSpace if not specified -->
+        <attr name="allAppsBorderSpaceLandscape" format="float" />
+        <!-- space to the right of the cell, defaults to allAppsBorderSpaceLandscape
+        if not specified -->
+        <attr name="allAppsBorderSpaceLandscapeHorizontal" format="float" />
+        <!-- space below the cell, defaults to allAppsBorderSpaceLandscape if not specified -->
+        <attr name="allAppsBorderSpaceLandscapeVertical" format="float" />
+        <!-- space to be used horizontally and vertically in two panels,
+        defaults to allAppsBorderSpace if not specified -->
+        <attr name="allAppsBorderSpaceTwoPanelPortrait" format="float" />
+        <!-- space to the right of the cell in two panels, defaults to
+        allAppsBorderSpaceTwoPanelPortrait if not specified -->
+        <attr name="allAppsBorderSpaceTwoPanelPortraitHorizontal" format="float" />
+        <!-- space below the cell in two panels, defaults to allAppsBorderSpaceTwoPanelPortrait
+        if not specified -->
+        <attr name="allAppsBorderSpaceTwoPanelPortraitVertical" format="float" />
+        <!-- space to be used horizontally and vertically in two panels,
+        defaults to allAppsBorderSpace if not specified -->
+        <attr name="allAppsBorderSpaceTwoPanelLandscape" format="float" />
+        <!-- space to the right of the cell in two panels, defaults to
+        allAppsBorderSpaceTwoPanelLandscape if not specified -->
+        <attr name="allAppsBorderSpaceTwoPanelLandscapeHorizontal" format="float" />
+        <!-- space below the cell in two panels, defaults to allAppsBorderSpaceTwoPanelLandscape
+        if not specified -->
+        <attr name="allAppsBorderSpaceTwoPanelLandscapeVertical" format="float" />
 
         <!-- defaults to borderSpaceDps, if not specified -->
         <attr name="hotseatBorderSpace" format="float" />
