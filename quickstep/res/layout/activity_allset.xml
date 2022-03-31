@@ -72,12 +72,11 @@
             <TextView
                 android:id="@+id/subtitle"
                 style="@style/TextAppearance.GestureTutorial.Feedback.Subtitle.AllSet"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/allset_subtitle_margin_top"
                 app:layout_constraintTop_toBottomOf="@id/title"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintWidth_max="@dimen/allset_subtitle_width_max"
                 android:gravity="start"/>
 
             <androidx.constraintlayout.widget.Guideline
