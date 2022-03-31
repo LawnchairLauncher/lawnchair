@@ -15,9 +15,10 @@
  */
 package com.android.quickstep.interaction;
 
-import android.content.SharedPreferences;
 import android.view.MotionEvent;
 import android.view.View;
+
+import androidx.annotation.NonNull;
 
 import com.android.launcher3.logging.StatsLogManager;
 import com.android.quickstep.interaction.TutorialController.TutorialType;
@@ -25,10 +26,7 @@ import com.android.quickstep.interaction.TutorialController.TutorialType;
 /** Shows the general navigation gesture sandbox environment. */
 public class SandboxModeTutorialFragment extends TutorialFragment {
 
-    protected SandboxModeTutorialFragment(
-            SharedPreferences sharedPrefs, StatsLogManager statsLogManager) {
-        super(sharedPrefs, statsLogManager);
-    }
+    public SandboxModeTutorialFragment() {}
 
     @Override
     TutorialController createController(TutorialType type) {
@@ -49,12 +47,12 @@ public class SandboxModeTutorialFragment extends TutorialFragment {
     }
 
     @Override
-    void logTutorialStepShown() {
+    void logTutorialStepShown(@NonNull StatsLogManager statsLogManager) {
         // No-Op: tutorial step not currently shown to users
     }
 
     @Override
-    void logTutorialStepCompleted() {
+    void logTutorialStepCompleted(@NonNull StatsLogManager statsLogManager) {
         // No-Op: tutorial step not currently shown to users
     }
 }

@@ -65,10 +65,7 @@ public class GestureSandboxActivity extends FragmentActivity {
         mTutorialSteps = getTutorialSteps(args);
         mCurrentTutorialStep = mTutorialSteps[mCurrentStep - 1];
         mFragment = TutorialFragment.newInstance(
-                mCurrentTutorialStep,
-                args.getBoolean(KEY_GESTURE_COMPLETE, false),
-                mSharedPrefs,
-                mStatsLogManager);
+                mCurrentTutorialStep, args.getBoolean(KEY_GESTURE_COMPLETE, false));
         getSupportFragmentManager().beginTransaction()
                 .add(R.id.gesture_tutorial_fragment_container, mFragment)
                 .commit();
@@ -103,6 +100,14 @@ public class GestureSandboxActivity extends FragmentActivity {
         super.onSaveInstanceState(savedInstanceState);
     }
 
+    protected SharedPreferences getSharedPrefs() {
+        return mSharedPrefs;
+    }
+
+    protected StatsLogManager getStatsLogManager() {
+        return mStatsLogManager;
+    }
+
     /** Returns true iff there aren't anymore tutorial types to display to the user. */
     public boolean isTutorialComplete() {
         return mCurrentStep >= mNumSteps;
@@ -128,7 +133,7 @@ public class GestureSandboxActivity extends FragmentActivity {
         }
         mCurrentTutorialStep = mTutorialSteps[mCurrentStep];
         mFragment = TutorialFragment.newInstance(
-                mCurrentTutorialStep, /* gestureComplete= */ false, mSharedPrefs, mStatsLogManager);
+                mCurrentTutorialStep, /* gestureComplete= */ false);
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.gesture_tutorial_fragment_container, mFragment)
                 .runOnCommit(() -> mFragment.onAttachedToWindow())
