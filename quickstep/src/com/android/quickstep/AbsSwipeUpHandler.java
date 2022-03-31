@@ -981,7 +981,6 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
                 mStateCallback.setState(STATE_SCALED_CONTROLLER_HOME | STATE_CAPTURE_SCREENSHOT);
                 // Notify swipe-to-home (recents animation) is finished
                 SystemUiProxy.INSTANCE.get(mContext).notifySwipeToHomeFinished();
-                LauncherSplitScreenListener.INSTANCE.getNoCreate().notifySwipingToHome();
                 break;
             case RECENTS:
                 mStateCallback.setState(STATE_SCALED_CONTROLLER_RECENTS | STATE_CAPTURE_SCREENSHOT
@@ -1414,6 +1413,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
                 .setStartBounds(startRect)
                 .setDestinationBounds(destinationBounds)
                 .setCornerRadius(mRecentsView.getPipCornerRadius())
+                .setShadowRadius(mRecentsView.getPipShadowRadius())
                 .setAttachedView(mRecentsView);
         // We would assume home and app window always in the same rotation While homeRotation
         // is not ROTATION_0 (which implies the rotation is turned on in launcher settings).

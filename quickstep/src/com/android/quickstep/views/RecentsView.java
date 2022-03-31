@@ -539,6 +539,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     private final PinnedStackAnimationListener mIPipAnimationListener =
             new PinnedStackAnimationListener();
     private int mPipCornerRadius;
+    private int mPipShadowRadius;
 
     // Used to keep track of the last requested task list id, so that we do not request to load the
     // tasks again if we have already requested it and the task list has not changed
@@ -5004,6 +5005,14 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         return mPipCornerRadius;
     }
 
+    /**
+     * @return Shadow radius in pixel value for PiP window, which is updated via
+     *         {@link #mIPipAnimationListener}
+     */
+    public int getPipShadowRadius() {
+        return mPipShadowRadius;
+    }
+
     @Override
     public boolean scrollLeft() {
         if (!showAsGrid()) {
@@ -5099,9 +5108,10 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         }
 
         @Override
-        public void onPipCornerRadiusChanged(int cornerRadius) {
+        public void onPipResourceDimensionsChanged(int cornerRadius, int shadowRadius) {
             if (mRecentsView != null) {
                 mRecentsView.mPipCornerRadius = cornerRadius;
+                mRecentsView.mPipShadowRadius = shadowRadius;
             }
         }
 
