@@ -17,8 +17,6 @@
 
 package com.android.quickstep;
 
-import static android.view.Display.DEFAULT_DISPLAY;
-
 import static androidx.test.core.app.ApplicationProvider.getApplicationContext;
 
 import static com.android.launcher3.util.DisplayController.NavigationMode.NO_BUTTON;
@@ -27,17 +25,16 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
-import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Point;
-import android.hardware.display.DisplayManager;
+import android.graphics.Rect;
+import android.util.ArrayMap;
 import android.util.DisplayMetrics;
+import android.util.Size;
 import android.view.Display;
 import android.view.MotionEvent;
 import android.view.Surface;
@@ -47,6 +44,10 @@ import androidx.test.filters.SmallTest;
 
 import com.android.launcher3.ResourceUtils;
 import com.android.launcher3.util.DisplayController;
+import com.android.launcher3.util.RotationUtils;
+import com.android.launcher3.util.WindowBounds;
+import com.android.launcher3.util.window.CachedDisplayInfo;
+import com.android.launcher3.util.window.WindowManagerProxy;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -56,25 +57,15 @@ import org.mockito.MockitoAnnotations;
 @SmallTest
 @RunWith(AndroidJUnit4.class)
 public class OrientationTouchTransformerTest {
-    static class ScreenSize {
-        int mHeight;
-        int mWidth;
 
-        ScreenSize(int height, int width) {
-            mHeight = height;
-            mWidth = width;
-        }
-    }
-
-    private static final ScreenSize NORMAL_SCREEN_SIZE = new ScreenSize(2280, 1080);
-    private static final ScreenSize LARGE_SCREEN_SIZE = new ScreenSize(3280, 1080);
+    private static final Size NORMAL_SCREEN_SIZE = new Size(1080, 2280);
+    private static final Size LARGE_SCREEN_SIZE = new Size(1080, 3280);
     private static final float DENSITY_DISPLAY_METRICS = 3.0f;
 
     private OrientationTouchTransformer mTouchTransformer;
 
     Resources mResources;
     private DisplayController.Info mInfo;
-
 
     @Before
     public void setup() {
@@ -296,33 +287,24 @@ public class OrientationTouchTransformerTest {
         assertTrue(mTouchTransformer.touchInValidSwipeRegions(inRegion2.getX(), inRegion2.getY()));
     }
 
-    private DisplayController.Info createDisplayInfo(ScreenSize screenSize, int rotation) {
-        Context context = getApplicationContext();
-        Display display = spy(context.getSystemService(DisplayManager.class)
-                .getDisplay(DEFAULT_DISPLAY));
-
-        Point p = new Point(screenSize.mWidth, screenSize.mHeight);
-        if (rotation == Surface.ROTATION_90 || rotation == Surface.ROTATION_270) {
-            p.set(screenSize.mHeight, screenSize.mWidth);
-        }
-
-        doReturn(rotation).when(display).getRotation();
-        doAnswer(i -> {
-            ((Point) i.getArgument(0)).set(p.x, p.y);
-            return null;
-        }).when(display).getRealSize(any(Point.class));
-        doAnswer(i -> {
-            ((Point) i.getArgument(0)).set(p.x, p.y);
-            ((Point) i.getArgument(1)).set(p.x, p.y);
-            return null;
-        }).when(display).getCurrentSizeRange(any(Point.class), any(Point.class));
-        return new DisplayController.Info(context, display);
+    private DisplayController.Info createDisplayInfo(Size screenSize, int rotation) {
+        Point displaySize = new Point(screenSize.getWidth(), screenSize.getHeight());
+        RotationUtils.rotateSize(displaySize, rotation);
+        CachedDisplayInfo cdi = new CachedDisplayInfo(displaySize, rotation);
+        WindowBounds wm = new WindowBounds(
+                new Rect(0, 0, displaySize.x, displaySize.y),
+                new Rect());
+        WindowManagerProxy wmProxy = mock(WindowManagerProxy.class);
+        doReturn(cdi).when(wmProxy).getDisplayInfo(any(), any());
+        doReturn(wm).when(wmProxy).getRealBounds(any(), any(), any());
+        return new DisplayController.Info(
+                getApplicationContext(), mock(Display.class), wmProxy, new ArrayMap<>());
     }
 
-    private float generateTouchRegionHeight(ScreenSize screenSize, int rotation) {
-        float height = screenSize.mHeight;
+    private float generateTouchRegionHeight(Size screenSize, int rotation) {
+        float height = screenSize.getHeight();
         if (rotation == Surface.ROTATION_90 || rotation == Surface.ROTATION_270) {
-            height = screenSize.mWidth;
+            height = screenSize.getWidth();
         }
         return height - ResourceUtils.DEFAULT_NAVBAR_VALUE * DENSITY_DISPLAY_METRICS;
     }
