@@ -164,7 +164,7 @@ public class TaskViewSimulatorTest {
                 }
 
                 WindowManagerProxy wmProxy = mock(WindowManagerProxy.class);
-                doReturn(cdi).when(wmProxy).getDisplayInfo(any());
+                doReturn(cdi).when(wmProxy).getDisplayInfo(any(), any());
                 doReturn(wm).when(wmProxy).getRealBounds(any(), any(), any());
 
                 ArrayMap<String, Pair<CachedDisplayInfo, WindowBounds[]>> perDisplayBoundsCache =
