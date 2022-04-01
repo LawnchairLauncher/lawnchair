@@ -148,7 +148,6 @@ public class PopupContainerWithArrow<T extends Context & ActivityContext>
     public OnClickListener getItemClickListener() {
         return (view) -> {
             mActivityContext.getItemOnClickListener().onClick(view);
-            close(true);
         };
     }
 
