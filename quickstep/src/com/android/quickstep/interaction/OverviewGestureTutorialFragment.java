@@ -18,10 +18,10 @@ package com.android.quickstep.interaction;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
-import android.content.SharedPreferences;
 import android.view.MotionEvent;
 import android.view.View;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.android.launcher3.R;
@@ -33,10 +33,7 @@ import java.util.ArrayList;
 /** Shows the Overview gesture interactive tutorial. */
 public class OverviewGestureTutorialFragment extends TutorialFragment {
 
-    protected OverviewGestureTutorialFragment(
-            SharedPreferences sharedPrefs, StatsLogManager statsLogManager) {
-        super(sharedPrefs, statsLogManager);
-    }
+    public OverviewGestureTutorialFragment() {}
 
     @Nullable
     @Override
@@ -120,14 +117,14 @@ public class OverviewGestureTutorialFragment extends TutorialFragment {
     }
 
     @Override
-    void logTutorialStepShown() {
-        mStatsLogManager.logger().log(
+    void logTutorialStepShown(@NonNull StatsLogManager statsLogManager) {
+        statsLogManager.logger().log(
                 StatsLogManager.LauncherEvent.LAUNCHER_GESTURE_TUTORIAL_OVERVIEW_STEP_SHOWN);
     }
 
     @Override
-    void logTutorialStepCompleted() {
-        mStatsLogManager.logger().log(
+    void logTutorialStepCompleted(@NonNull StatsLogManager statsLogManager) {
+        statsLogManager.logger().log(
                 StatsLogManager.LauncherEvent.LAUNCHER_GESTURE_TUTORIAL_OVERVIEW_STEP_COMPLETED);
     }
 }

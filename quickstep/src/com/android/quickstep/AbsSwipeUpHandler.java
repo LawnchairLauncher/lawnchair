@@ -1413,6 +1413,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
                 .setStartBounds(startRect)
                 .setDestinationBounds(destinationBounds)
                 .setCornerRadius(mRecentsView.getPipCornerRadius())
+                .setShadowRadius(mRecentsView.getPipShadowRadius())
                 .setAttachedView(mRecentsView);
         // We would assume home and app window always in the same rotation While homeRotation
         // is not ROTATION_0 (which implies the rotation is turned on in launcher settings).

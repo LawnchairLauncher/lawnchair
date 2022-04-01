@@ -158,7 +158,7 @@ public interface PagedOrientationHandler {
 
     void measureGroupedTaskViewThumbnailBounds(View primarySnapshot, View secondarySnapshot,
             int parentWidth, int parentHeight,
-            StagedSplitBounds splitBoundsConfig, DeviceProfile dp);
+            StagedSplitBounds splitBoundsConfig, DeviceProfile dp, boolean isRtl);
 
     // Overview TaskMenuView methods
     void setTaskIconParams(FrameLayout.LayoutParams iconParams,

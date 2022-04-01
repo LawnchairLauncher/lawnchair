@@ -19,15 +19,27 @@ package com.android.launcher3.taskbar;
 import static com.android.internal.app.AssistUtils.INVOCATION_TYPE_HOME_BUTTON_LONG_PRESS;
 import static com.android.internal.app.AssistUtils.INVOCATION_TYPE_KEY;
 import static com.android.systemui.shared.system.ActivityManagerWrapper.CLOSE_SYSTEM_WINDOWS_REASON_RECENTS;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASKBAR_A11Y_BUTTON_LONGPRESS;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASKBAR_A11Y_BUTTON_TAP;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASKBAR_BACK_BUTTON_LONGPRESS;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASKBAR_BACK_BUTTON_TAP;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASKBAR_HOME_BUTTON_LONGPRESS;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASKBAR_HOME_BUTTON_TAP;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASKBAR_IME_SWITCHER_BUTTON_TAP;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASKBAR_OVERVIEW_BUTTON_LONGPRESS;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASKBAR_OVERVIEW_BUTTON_TAP;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_SCREEN_PINNING;
 
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 
 import androidx.annotation.IntDef;
+import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 
 import com.android.launcher3.R;
+import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.testing.TestLogging;
 import com.android.launcher3.testing.TestProtocol;
 import com.android.quickstep.OverviewCommandHelper;
@@ -49,6 +61,7 @@ public class TaskbarNavButtonController implements TaskbarControllers.LoggableTa
     /** Allow some time in between the long press for back and recents. */
     static final int SCREEN_PIN_LONG_PRESS_THRESHOLD = 200;
     static final int SCREEN_PIN_LONG_PRESS_RESET = SCREEN_PIN_LONG_PRESS_THRESHOLD + 100;
+    private static final String TAG = TaskbarNavButtonController.class.getSimpleName();
 
     private long mLastScreenPinLongPress;
     private boolean mScreenPinned;
@@ -89,6 +102,7 @@ public class TaskbarNavButtonController implements TaskbarControllers.LoggableTa
     private final TouchInteractionService mService;
     private final SystemUiProxy mSystemUiProxy;
     private final Handler mHandler;
+    @Nullable private StatsLogManager mStatsLogManager;
 
     private final Runnable mResetLongPress = this::resetScreenUnpin;
 
@@ -102,18 +116,23 @@ public class TaskbarNavButtonController implements TaskbarControllers.LoggableTa
     public void onButtonClick(@TaskbarButton int buttonType) {
         switch (buttonType) {
             case BUTTON_BACK:
+                logEvent(LAUNCHER_TASKBAR_BACK_BUTTON_TAP);
                 executeBack();
                 break;
             case BUTTON_HOME:
+                logEvent(LAUNCHER_TASKBAR_HOME_BUTTON_TAP);
                 navigateHome();
                 break;
             case BUTTON_RECENTS:
+                logEvent(LAUNCHER_TASKBAR_OVERVIEW_BUTTON_TAP);
                 navigateToOverview();
                 break;
             case BUTTON_IME_SWITCH:
+                logEvent(LAUNCHER_TASKBAR_IME_SWITCHER_BUTTON_TAP);
                 showIMESwitcher();
                 break;
             case BUTTON_A11Y:
+                logEvent(LAUNCHER_TASKBAR_A11Y_BUTTON_TAP);
                 notifyA11yClick(false /* longClick */);
                 break;
             case BUTTON_QUICK_SETTINGS:
@@ -128,15 +147,19 @@ public class TaskbarNavButtonController implements TaskbarControllers.LoggableTa
     public boolean onButtonLongClick(@TaskbarButton int buttonType) {
         switch (buttonType) {
             case BUTTON_HOME:
+                logEvent(LAUNCHER_TASKBAR_HOME_BUTTON_LONGPRESS);
                 startAssistant();
                 return true;
             case BUTTON_A11Y:
+                logEvent(LAUNCHER_TASKBAR_A11Y_BUTTON_LONGPRESS);
                 notifyA11yClick(true /* longClick */);
                 return true;
             case BUTTON_BACK:
+                logEvent(LAUNCHER_TASKBAR_BACK_BUTTON_LONGPRESS);
+                return backRecentsLongpress(buttonType);
             case BUTTON_RECENTS:
-                mLongPressedButtons |= buttonType;
-                return determineScreenUnpin();
+                logEvent(LAUNCHER_TASKBAR_OVERVIEW_BUTTON_LONGPRESS);
+                return backRecentsLongpress(buttonType);
             case BUTTON_IME_SWITCH:
             default:
                 return false;
@@ -162,6 +185,11 @@ public class TaskbarNavButtonController implements TaskbarControllers.LoggableTa
             default:
                 return 0;
         }
+    }
+
+    private boolean backRecentsLongpress(@TaskbarButton int buttonType) {
+        mLongPressedButtons |= buttonType;
+        return determineScreenUnpin();
     }
 
     /**
@@ -208,6 +236,22 @@ public class TaskbarNavButtonController implements TaskbarControllers.LoggableTa
 
     public void updateSysuiFlags(int sysuiFlags) {
         mScreenPinned = (sysuiFlags & SYSUI_STATE_SCREEN_PINNING) != 0;
+    }
+
+    public void init(TaskbarControllers taskbarControllers) {
+        mStatsLogManager = taskbarControllers.getTaskbarActivityContext().getStatsLogManager();
+    }
+
+    public void onDestroy() {
+        mStatsLogManager = null;
+    }
+
+    private void logEvent(StatsLogManager.LauncherEvent event) {
+        if (mStatsLogManager == null) {
+            Log.w(TAG, "No stats log manager to log taskbar button event");
+            return;
+        }
+        mStatsLogManager.logger().log(event);
     }
 
     private void navigateHome() {

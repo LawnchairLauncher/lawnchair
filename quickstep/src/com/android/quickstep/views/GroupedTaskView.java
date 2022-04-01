@@ -237,7 +237,7 @@ public class GroupedTaskView extends TaskView {
         }
         getPagedOrientationHandler().measureGroupedTaskViewThumbnailBounds(mSnapshotView,
                 mSnapshotView2, widthSize, heightSize, mSplitBoundsConfig,
-                mActivity.getDeviceProfile());
+                mActivity.getDeviceProfile(), getLayoutDirection() == LAYOUT_DIRECTION_RTL);
         updateIconPlacement();
     }
 
