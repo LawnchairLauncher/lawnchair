@@ -99,6 +99,8 @@ public interface InputConsumer {
 
     default void onMotionEvent(MotionEvent ev) { }
 
+    default void onHoverEvent(MotionEvent ev) { }
+
     default void onKeyEvent(KeyEvent ev) { }
 
     default void onInputEvent(InputEvent ev) {

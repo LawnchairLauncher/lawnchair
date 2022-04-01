@@ -21,11 +21,13 @@ import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.LauncherState.OVERVIEW_MODAL_TASK;
 import static com.android.launcher3.LauncherState.OVERVIEW_SPLIT_SELECT;
 import static com.android.launcher3.LauncherState.SPRING_LOADED;
+import static com.android.launcher3.testing.TestProtocol.BAD_STATE;
 
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.Surface;
 
@@ -64,6 +66,7 @@ public class LauncherRecentsView extends RecentsView<BaseQuickstepLauncher, Laun
     public void init(OverviewActionsView actionsView,
             SplitSelectStateController splitPlaceholderView) {
         super.init(actionsView, splitPlaceholderView);
+        Log.d(BAD_STATE, "LauncherRecentsView init setContentAlpha=0");
         setContentAlpha(0);
     }
 
@@ -96,6 +99,7 @@ public class LauncherRecentsView extends RecentsView<BaseQuickstepLauncher, Laun
         setOverviewStateEnabled(toState.overviewUi);
         setOverviewGridEnabled(toState.displayOverviewTasksAsGrid(mActivity.getDeviceProfile()));
         setOverviewFullscreenEnabled(toState.getOverviewFullscreenProgress() == 1);
+        Log.d(BAD_STATE, "LRV onStateTransitionStart setFreezeVisibility=true, toState=" + toState);
         setFreezeViewVisibility(true);
     }
 
@@ -107,6 +111,8 @@ public class LauncherRecentsView extends RecentsView<BaseQuickstepLauncher, Laun
         }
         boolean isOverlayEnabled = finalState == OVERVIEW || finalState == OVERVIEW_MODAL_TASK;
         setOverlayEnabled(isOverlayEnabled);
+        Log.d(BAD_STATE, "LRV onStateTransitionComplete setFreezeVisibility=false, finalState="
+                + finalState);
         setFreezeViewVisibility(false);
 
         if (isOverlayEnabled) {

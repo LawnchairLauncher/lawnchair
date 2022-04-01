@@ -44,6 +44,7 @@ import static com.android.launcher3.dragndrop.DragLayer.ALPHA_INDEX_TRANSITIONS;
 import static com.android.launcher3.model.data.ItemInfo.NO_MATCHING_ID;
 import static com.android.launcher3.statehandlers.DepthController.DEPTH;
 import static com.android.launcher3.util.DisplayController.getSingleFrameMs;
+import static com.android.launcher3.testing.TestProtocol.BAD_STATE;
 import static com.android.launcher3.views.FloatingIconView.SHAPE_PROGRESS_DURATION;
 import static com.android.launcher3.views.FloatingIconView.getFloatingIconView;
 import static com.android.quickstep.TaskViewUtils.findTaskViewToLaunch;
@@ -75,6 +76,8 @@ import android.os.IBinder;
 import android.os.Looper;
 import android.os.SystemProperties;
 import android.os.UserHandle;
+import android.provider.Settings;
+import android.util.Log;
 import android.util.Pair;
 import android.util.Size;
 import android.view.SurfaceControl;
@@ -133,6 +136,7 @@ import com.android.systemui.shared.system.WindowManagerWrapper;
 import com.android.wm.shell.startingsurface.IStartingWindowListener;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -367,7 +371,7 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
         if (launcherClosing) {
             // Delay animation by a frame to avoid jank.
             Pair<AnimatorSet, Runnable> launcherContentAnimator =
-                    getLauncherContentAnimator(true /* isAppOpening */, startDelay);
+                    getLauncherContentAnimator(true /* isAppOpening */, startDelay, false);
             anim.play(launcherContentAnimator.first);
             anim.addListener(new AnimatorListenerAdapter() {
                 @Override
@@ -464,9 +468,10 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
      * @param isAppOpening True when this is called when an app is opening.
      *                     False when this is called when an app is closing.
      * @param startDelay   Start delay duration.
+     * @param skipAllAppsScale True if we want to avoid scaling All Apps
      */
     private Pair<AnimatorSet, Runnable> getLauncherContentAnimator(boolean isAppOpening,
-            int startDelay) {
+            int startDelay, boolean skipAllAppsScale) {
         AnimatorSet launcherAnimator = new AnimatorSet();
         Runnable endListener;
 
@@ -484,7 +489,6 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
             final float startAlpha = appsView.getAlpha();
             final float startScale = SCALE_PROPERTY.get(appsView);
             appsView.setAlpha(alphas[0]);
-            SCALE_PROPERTY.set(appsView, scales[0]);
 
             ObjectAnimator alpha = ObjectAnimator.ofFloat(appsView, View.ALPHA, alphas);
             alpha.setDuration(CONTENT_ALPHA_DURATION);
@@ -496,12 +500,16 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
                     appsView.setLayerType(View.LAYER_TYPE_NONE, null);
                 }
             });
-            ObjectAnimator scale = ObjectAnimator.ofFloat(appsView, SCALE_PROPERTY, scales);
-            scale.setInterpolator(AGGRESSIVE_EASE);
-            scale.setDuration(CONTENT_SCALE_DURATION);
+
+            if (!skipAllAppsScale) {
+                SCALE_PROPERTY.set(appsView, scales[0]);
+                ObjectAnimator scale = ObjectAnimator.ofFloat(appsView, SCALE_PROPERTY, scales);
+                scale.setInterpolator(AGGRESSIVE_EASE);
+                scale.setDuration(CONTENT_SCALE_DURATION);
+                launcherAnimator.play(scale);
+            }
 
             launcherAnimator.play(alpha);
-            launcherAnimator.play(scale);
 
             endListener = () -> {
                 appsView.setAlpha(startAlpha);
@@ -605,9 +613,28 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
         RecentsView overview = mLauncher.getOverviewPanel();
         ObjectAnimator alpha = ObjectAnimator.ofFloat(overview,
                 RecentsView.CONTENT_ALPHA, alphas);
+        Log.d(BAD_STATE, "QTM composeViewContentAnimator alphas=" + Arrays.toString(alphas));
+        alpha.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+                Log.d(BAD_STATE, "QTM composeViewContentAnimator onStart");
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+                float alpha = overview == null ? -1 : RecentsView.CONTENT_ALPHA.get(overview);
+                Log.d(BAD_STATE, "QTM composeViewContentAnimator onCancel, alpha=" + alpha);
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                Log.d(BAD_STATE, "QTM composeViewContentAnimator onEnd");
+            }
+        });
         alpha.setDuration(CONTENT_ALPHA_DURATION);
         alpha.setInterpolator(LINEAR);
         anim.play(alpha);
+        Log.d(BAD_STATE, "QTM composeViewContentAnimator setFreezeVisibility=true");
         overview.setFreezeViewVisibility(true);
 
         ObjectAnimator scaleAnim = ObjectAnimator.ofFloat(overview, SCALE_PROPERTY, scales);
@@ -616,6 +643,7 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
         anim.play(scaleAnim);
 
         return () -> {
+            Log.d(BAD_STATE, "QTM composeViewContentAnimator onEnd setFreezeVisibility=false");
             overview.setFreezeViewVisibility(false);
             SCALE_PROPERTY.set(overview, 1f);
             mLauncher.getStateManager().reapplyState();
@@ -1270,8 +1298,8 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
             }
         }
 
-        return mLauncher.getFirstMatchForAppClose(launchCookieItemId,
-                packageName, UserHandle.of(runningTaskTarget.taskInfo.userId));
+        return mLauncher.getFirstMatchForAppClose(launchCookieItemId, packageName,
+                UserHandle.of(runningTaskTarget.taskInfo.userId), true /* supportsAllAppsState */);
     }
 
     private @NonNull RectF getDefaultWindowTargetRect() {
@@ -1565,6 +1593,7 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
                         || mLauncher.getWorkspace().isOverlayShown();
 
                 boolean playWorkspaceReveal = true;
+                boolean skipAllAppsScale = false;
                 if (mFromUnlock) {
                     anim.play(getUnlockWindowAnimator(appTargets, wallpaperTargets));
                 } else if (ENABLE_BACK_SWIPE_HOME_ANIMATION.get()
@@ -1579,6 +1608,10 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
                                 true /* animateOverviewScrim */, launcherView).getAnimators());
                         // We play StaggeredWorkspaceAnim as a part of the closing window animation.
                         playWorkspaceReveal = false;
+                    } else {
+                        // Skip scaling all apps, otherwise FloatingIconView will get wrong
+                        // layout bounds.
+                        skipAllAppsScale = true;
                     }
                 } else {
                     anim.play(getFallbackClosingWindowAnimators(appTargets));
@@ -1600,7 +1633,8 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
 
                     if (mLauncher.isInState(LauncherState.ALL_APPS)) {
                         Pair<AnimatorSet, Runnable> contentAnimator =
-                                getLauncherContentAnimator(false, LAUNCHER_RESUME_START_DELAY);
+                                getLauncherContentAnimator(false, LAUNCHER_RESUME_START_DELAY,
+                                        skipAllAppsScale);
                         anim.play(contentAnimator.first);
                         anim.addListener(new AnimatorListenerAdapter() {
                             @Override

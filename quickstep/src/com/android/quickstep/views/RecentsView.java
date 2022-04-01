@@ -984,13 +984,17 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
      */
     public void launchSideTaskInLiveTileModeForRestartedApp(int taskId) {
         int runningTaskViewId = getTaskViewIdFromTaskId(taskId);
-        if (mRunningTaskViewId != -1 && mRunningTaskViewId == runningTaskViewId) {
-            TransformParams params = mRemoteTargetHandles[0].getTransformParams();
-            RemoteAnimationTargets targets = params.getTargetSet();
-            if (targets != null && targets.findTask(taskId) != null) {
-                launchSideTaskInLiveTileMode(taskId, targets.apps, targets.wallpapers,
-                        targets.nonApps);
-            }
+        if (mRunningTaskViewId == -1 ||
+                mRunningTaskViewId != runningTaskViewId ||
+                mRemoteTargetHandles == null) {
+            return;
+        }
+
+        TransformParams params = mRemoteTargetHandles[0].getTransformParams();
+        RemoteAnimationTargets targets = params.getTargetSet();
+        if (targets != null && targets.findTask(taskId) != null) {
+            launchSideTaskInLiveTileMode(taskId, targets.apps, targets.wallpapers,
+                    targets.nonApps);
         }
     }
 
@@ -4139,8 +4143,10 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             anim.play(ObjectAnimator.ofFloat(getPageAt(centerTaskIndex),
                     mOrientationHandler.getPrimaryViewTranslate(), primaryTranslation));
             int runningTaskIndex = recentsView.getRunningTaskIndex();
-            if (ENABLE_QUICKSTEP_LIVE_TILE.get() && runningTaskIndex != -1
-                    && runningTaskIndex != taskIndex) {
+            if (ENABLE_QUICKSTEP_LIVE_TILE.get()
+                    && runningTaskIndex != -1
+                    && runningTaskIndex != taskIndex
+                    && recentsView.getRemoteTargetHandles() != null) {
                 for (RemoteTargetHandle remoteHandle : recentsView.getRemoteTargetHandles()) {
                     anim.play(ObjectAnimator.ofFloat(
                             remoteHandle.getTaskViewSimulator().taskPrimaryTranslation,
@@ -4235,9 +4241,12 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             if (isSuccess) {
                 if (tv.getTaskIds()[1] != -1) {
                     // TODO(b/194414938): make this part of the animations instead.
-                    TaskViewUtils.setSplitAuxiliarySurfacesShown(mRemoteTargetHandles[0]
-                            .getTransformParams().getTargetSet().nonApps,
-                            true /*shown*/, false /*animate*/);
+                    TaskViewUtils.createSplitAuxiliarySurfacesAnimator(
+                            mRemoteTargetHandles[0].getTransformParams().getTargetSet().nonApps,
+                            true /*shown*/, (dividerAnimator) -> {
+                                dividerAnimator.start();
+                                dividerAnimator.end();
+                            });
                 }
                 if (ENABLE_QUICKSTEP_LIVE_TILE.get() && tv.isRunningTask()) {
                     finishRecentsAnimation(false /* toRecents */, null);
