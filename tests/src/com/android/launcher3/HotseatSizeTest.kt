@@ -43,11 +43,11 @@ class HotseatSizeTest : DeviceProfileBaseTest() {
         val dp = newDP()
 
         assertThat(dp.isQsbInline).isFalse()
-        assertThat(dp.numShownHotseatIcons).isEqualTo(5)
+        assertThat(dp.numShownHotseatIcons).isEqualTo(4)
     }
 
     @Test
-    fun hotseat_size_is_max_for_foldables() {
+    fun hotseat_size_is_max_when_large_screen() {
         initializeVarsForTablet(isLandscape = true)
         inv = newScalableInvariantDeviceProfile().apply {
             deviceType = TYPE_MULTI_DISPLAY
@@ -61,7 +61,7 @@ class HotseatSizeTest : DeviceProfileBaseTest() {
     }
 
     @Test
-    fun hotseat_size_is_shrunk_if_needed() {
+    fun hotseat_size_is_shrunk_if_needed_when_large_screen() {
         initializeVarsForTablet(isLandscape = true)
         inv = newScalableInvariantDeviceProfile().apply {
             deviceType = TYPE_MULTI_DISPLAY
@@ -79,7 +79,7 @@ class HotseatSizeTest : DeviceProfileBaseTest() {
 
         if (dp.hotseatQsbHeight > 0) {
             assertThat(dp.isQsbInline).isTrue()
-            assertThat(dp.numShownHotseatIcons).isEqualTo(4)
+            assertThat(dp.numShownHotseatIcons).isEqualTo(5)
         } else { // Launcher3 doesn't have QSB height
             assertThat(dp.isQsbInline).isFalse()
             assertThat(dp.numShownHotseatIcons).isEqualTo(6)
@@ -91,7 +91,7 @@ class HotseatSizeTest : DeviceProfileBaseTest() {
      * inline qsb
      */
     @Test
-    fun hotseat_size_is_shrunk_even_in_portrait() {
+    fun hotseat_size_is_shrunk_even_in_portrait_when_large_screen() {
         initializeVarsForTablet()
         inv = newScalableInvariantDeviceProfile().apply {
             deviceType = TYPE_MULTI_DISPLAY
@@ -109,7 +109,7 @@ class HotseatSizeTest : DeviceProfileBaseTest() {
 
         if (dp.hotseatQsbHeight > 0) {
             assertThat(dp.isQsbInline).isFalse()
-            assertThat(dp.numShownHotseatIcons).isEqualTo(4)
+            assertThat(dp.numShownHotseatIcons).isEqualTo(5)
         } else { // Launcher3 doesn't have QSB height
             assertThat(dp.isQsbInline).isFalse()
             assertThat(dp.numShownHotseatIcons).isEqualTo(6)
@@ -117,7 +117,7 @@ class HotseatSizeTest : DeviceProfileBaseTest() {
     }
 
     @Test
-    fun hotseat_size_is_default_when_folded() {
+    fun hotseat_size_is_default_when_small_screen() {
         initializeVarsForPhone()
         inv = newScalableInvariantDeviceProfile().apply {
             deviceType = TYPE_MULTI_DISPLAY
@@ -126,7 +126,33 @@ class HotseatSizeTest : DeviceProfileBaseTest() {
 
         val dp = newDP()
 
-        assertThat(dp.numShownHotseatIcons).isEqualTo(5)
+        assertThat(dp.numShownHotseatIcons).isEqualTo(4)
+    }
+
+    @Test
+    fun hotseat_size_is_not_shrunk_on_gesture_tablet() {
+        initializeVarsForTablet(isLandscape = true)
+        inv = newScalableInvariantDeviceProfile().apply {
+            deviceType = TYPE_TABLET
+            inlineQsb = booleanArrayOf(
+                    false,
+                    true, // landscape
+                    false,
+                    false
+            )
+            numShownHotseatIcons = 6
+        }
+
+        isGestureMode = true
+        val dp = newDP()
+
+        if (dp.hotseatQsbHeight > 0) {
+            assertThat(dp.isQsbInline).isTrue()
+            assertThat(dp.numShownHotseatIcons).isEqualTo(6)
+        } else { // Launcher3 doesn't have QSB height
+            assertThat(dp.isQsbInline).isFalse()
+            assertThat(dp.numShownHotseatIcons).isEqualTo(6)
+        }
     }
 
     @Test
@@ -140,6 +166,7 @@ class HotseatSizeTest : DeviceProfileBaseTest() {
                 false,
                 false
             )
+            numShownHotseatIcons = 6
         }
 
         isGestureMode = false
@@ -147,10 +174,10 @@ class HotseatSizeTest : DeviceProfileBaseTest() {
 
         if (dp.hotseatQsbHeight > 0) {
             assertThat(dp.isQsbInline).isTrue()
-            assertThat(dp.numShownHotseatIcons).isEqualTo(4)
+            assertThat(dp.numShownHotseatIcons).isEqualTo(5)
         } else { // Launcher3 doesn't have QSB height
             assertThat(dp.isQsbInline).isFalse()
-            assertThat(dp.numShownHotseatIcons).isEqualTo(5)
+            assertThat(dp.numShownHotseatIcons).isEqualTo(6)
         }
     }
 
@@ -169,6 +196,7 @@ class HotseatSizeTest : DeviceProfileBaseTest() {
                 false,
                 false
             )
+            numShownHotseatIcons = 6
         }
 
         isGestureMode = false
@@ -176,10 +204,10 @@ class HotseatSizeTest : DeviceProfileBaseTest() {
 
         if (dp.hotseatQsbHeight > 0) {
             assertThat(dp.isQsbInline).isFalse()
-            assertThat(dp.numShownHotseatIcons).isEqualTo(4)
+            assertThat(dp.numShownHotseatIcons).isEqualTo(5)
         } else { // Launcher3 doesn't have QSB height
             assertThat(dp.isQsbInline).isFalse()
-            assertThat(dp.numShownHotseatIcons).isEqualTo(5)
+            assertThat(dp.numShownHotseatIcons).isEqualTo(6)
         }
     }
 
