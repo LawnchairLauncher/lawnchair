@@ -18,6 +18,7 @@ package com.android.launcher3.states;
 import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_HOME;
 
 import android.content.Context;
+import android.graphics.Rect;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
@@ -51,15 +52,28 @@ public class SpringLoadedState extends LauncherState {
             return super.getWorkspaceScaleAndTranslation(launcher);
         }
 
-        float shrunkTop = grid.getWorkspaceSpringLoadShrunkTop();
-        float shrunkBottom = grid.getWorkspaceSpringLoadShrunkBottom();
-        float scale = (shrunkBottom - shrunkTop) / ws.getNormalChildHeight();
+        if (grid.isVerticalBarLayout()) {
+            float scale = grid.workspaceSpringLoadShrinkFactor;
+            return new ScaleAndTranslation(scale, 0, 0);
+        }
+
+        float scale = grid.workspaceSpringLoadShrinkFactor;
+        Rect insets = launcher.getDragLayer().getInsets();
+
+        float scaledHeight = scale * ws.getNormalChildHeight();
+        float shrunkTop = insets.top + grid.dropTargetBarSizePx;
+        float shrunkBottom = ws.getMeasuredHeight() - insets.bottom
+                - grid.workspacePadding.bottom
+                - grid.workspaceSpringLoadedBottomSpace;
+        float totalShrunkSpace = shrunkBottom - shrunkTop;
+
+        float desiredCellTop = shrunkTop + (totalShrunkSpace - scaledHeight) / 2;
 
         float halfHeight = ws.getHeight() / 2;
         float myCenter = ws.getTop() + halfHeight;
         float cellTopFromCenter = halfHeight - ws.getChildAt(0).getTop();
         float actualCellTop = myCenter - cellTopFromCenter * scale;
-        return new ScaleAndTranslation(scale, 0, (shrunkTop - actualCellTop) / scale);
+        return new ScaleAndTranslation(scale, 0, (desiredCellTop - actualCellTop) / scale);
     }
 
     @Override
