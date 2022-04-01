@@ -195,7 +195,7 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
      * state.
      */
     public boolean supportsVisualStashing() {
-        return !mActivity.isThreeButtonNav();
+        return mControllers.uiController.supportsVisualStashing();
     }
 
     /**

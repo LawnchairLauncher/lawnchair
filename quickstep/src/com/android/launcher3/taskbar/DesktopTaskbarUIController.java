@@ -42,4 +42,10 @@ public class DesktopTaskbarUIController extends TaskbarUIController {
         super.onDestroy();
         mLauncher.getHotseat().setIconsAlpha(1f);
     }
+
+    @Override
+    /** Disable taskbar stashing in desktop environment. */
+    protected boolean supportsVisualStashing() {
+        return false;
+    }
 }
