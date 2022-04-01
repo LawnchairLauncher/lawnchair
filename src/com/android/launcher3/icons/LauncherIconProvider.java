@@ -23,6 +23,7 @@ import android.util.ArrayMap;
 import android.util.Log;
 
 import com.android.launcher3.R;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.util.Themes;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -55,7 +56,8 @@ public class LauncherIconProvider extends IconProvider {
      */
     public void setIconThemeSupported(boolean isSupported) {
         mSupportsIconTheme = isSupported;
-        mThemedIconMap = isSupported ? null : DISABLED_MAP;
+        mThemedIconMap = isSupported && FeatureFlags.USE_LOCAL_ICON_OVERRIDES.get()
+                ? null : DISABLED_MAP;
     }
 
     @Override
