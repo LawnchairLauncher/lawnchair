@@ -22,6 +22,7 @@ import static com.android.launcher3.taskbar.TaskbarNavButtonController.BUTTON_HO
 import static com.android.launcher3.taskbar.TaskbarNavButtonController.BUTTON_IME_SWITCH;
 import static com.android.launcher3.taskbar.TaskbarNavButtonController.BUTTON_RECENTS;
 import static com.android.launcher3.taskbar.TaskbarViewController.ALPHA_INDEX_KEYGUARD;
+import static com.android.launcher3.taskbar.Utilities.appendFlag;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_A11Y_BUTTON_CLICKABLE;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_A11Y_BUTTON_LONG_CLICKABLE;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_BACK_DISABLED;
@@ -693,20 +694,20 @@ public class NavbarButtonsViewController implements TaskbarControllers.LoggableT
 
     private static String getStateString(int flags) {
         StringJoiner str = new StringJoiner("|");
-        str.add((flags & FLAG_SWITCHER_SUPPORTED) != 0 ? "FLAG_SWITCHER_SUPPORTED" : "");
-        str.add((flags & FLAG_IME_VISIBLE) != 0 ? "FLAG_IME_VISIBLE" : "");
-        str.add((flags & FLAG_ROTATION_BUTTON_VISIBLE) != 0 ? "FLAG_ROTATION_BUTTON_VISIBLE" : "");
-        str.add((flags & FLAG_A11Y_VISIBLE) != 0 ? "FLAG_A11Y_VISIBLE" : "");
-        str.add((flags & FLAG_ONLY_BACK_FOR_BOUNCER_VISIBLE) != 0
-                ? "FLAG_ONLY_BACK_FOR_BOUNCER_VISIBLE" : "");
-        str.add((flags & FLAG_KEYGUARD_VISIBLE) != 0 ? "FLAG_KEYGUARD_VISIBLE" : "");
-        str.add((flags & FLAG_KEYGUARD_OCCLUDED) != 0 ? "FLAG_KEYGUARD_OCCLUDED" : "");
-        str.add((flags & FLAG_DISABLE_HOME) != 0 ? "FLAG_DISABLE_HOME" : "");
-        str.add((flags & FLAG_DISABLE_RECENTS) != 0 ? "FLAG_DISABLE_RECENTS" : "");
-        str.add((flags & FLAG_DISABLE_BACK) != 0 ? "FLAG_DISABLE_BACK" : "");
-        str.add((flags & FLAG_NOTIFICATION_SHADE_EXPANDED) != 0
-                ? "FLAG_NOTIFICATION_SHADE_EXPANDED" : "");
-        str.add((flags & FLAG_SCREEN_PINNING_ACTIVE) != 0 ? "FLAG_SCREEN_PINNING_ACTIVE" : "");
+        appendFlag(str, flags, FLAG_SWITCHER_SUPPORTED, "FLAG_SWITCHER_SUPPORTED");
+        appendFlag(str, flags, FLAG_IME_VISIBLE, "FLAG_IME_VISIBLE");
+        appendFlag(str, flags, FLAG_ROTATION_BUTTON_VISIBLE, "FLAG_ROTATION_BUTTON_VISIBLE");
+        appendFlag(str, flags, FLAG_A11Y_VISIBLE, "FLAG_A11Y_VISIBLE");
+        appendFlag(str, flags, FLAG_ONLY_BACK_FOR_BOUNCER_VISIBLE,
+                "FLAG_ONLY_BACK_FOR_BOUNCER_VISIBLE");
+        appendFlag(str, flags, FLAG_KEYGUARD_VISIBLE, "FLAG_KEYGUARD_VISIBLE");
+        appendFlag(str, flags, FLAG_KEYGUARD_OCCLUDED, "FLAG_KEYGUARD_OCCLUDED");
+        appendFlag(str, flags, FLAG_DISABLE_HOME, "FLAG_DISABLE_HOME");
+        appendFlag(str, flags, FLAG_DISABLE_RECENTS, "FLAG_DISABLE_RECENTS");
+        appendFlag(str, flags, FLAG_DISABLE_BACK, "FLAG_DISABLE_BACK");
+        appendFlag(str, flags, FLAG_NOTIFICATION_SHADE_EXPANDED,
+                "FLAG_NOTIFICATION_SHADE_EXPANDED");
+        appendFlag(str, flags, FLAG_SCREEN_PINNING_ACTIVE, "FLAG_SCREEN_PINNING_ACTIVE");
         return str.toString();
     }
 
