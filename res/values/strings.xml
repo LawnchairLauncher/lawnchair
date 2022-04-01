@@ -217,7 +217,7 @@
     <string name="disabled_app_label">Disabled <xliff:g id="app_name" example="Messenger">%1$s</xliff:g></string>
     <!-- The format string for when an app has a notification dot (meaning it has associated notifications). [ICU_FORMAT]-->
     <string name="dotted_app_label">
-        {count, plural, offset:1
+        {count, plural,
             =1      {{app_name} has # notification}
             other   {{app_name} has # notifications}
         }
