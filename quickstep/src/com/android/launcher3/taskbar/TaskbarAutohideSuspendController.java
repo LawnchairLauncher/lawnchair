@@ -15,6 +15,8 @@
  */
 package com.android.launcher3.taskbar;
 
+import static com.android.launcher3.taskbar.Utilities.appendFlag;
+
 import androidx.annotation.IntDef;
 
 import com.android.quickstep.SystemUiProxy;
@@ -75,10 +77,9 @@ public class TaskbarAutohideSuspendController implements
 
     private static String getStateString(int flags) {
         StringJoiner str = new StringJoiner("|");
-        str.add((flags & FLAG_AUTOHIDE_SUSPEND_FULLSCREEN) != 0
-                ? "FLAG_AUTOHIDE_SUSPEND_FULLSCREEN" : "");
-        str.add((flags & FLAG_AUTOHIDE_SUSPEND_DRAGGING) != 0
-                ? "FLAG_AUTOHIDE_SUSPEND_DRAGGING" : "");
+        appendFlag(str, flags, FLAG_AUTOHIDE_SUSPEND_FULLSCREEN,
+                "FLAG_AUTOHIDE_SUSPEND_FULLSCREEN");
+        appendFlag(str, flags, FLAG_AUTOHIDE_SUSPEND_DRAGGING, "FLAG_AUTOHIDE_SUSPEND_DRAGGING");
         return str.toString();
     }
 }
