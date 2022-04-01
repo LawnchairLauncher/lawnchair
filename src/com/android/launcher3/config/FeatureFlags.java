@@ -261,6 +261,10 @@ public final class FeatureFlags {
     public static final BooleanFlag ENABLE_ONE_SEARCH_MOTION = new DeviceFlag(
             "ENABLE_ONE_SEARCH_MOTION", true, "Enables animations in OneSearch.");
 
+    public static final BooleanFlag USE_LOCAL_ICON_OVERRIDES = getDebugFlag(
+            "USE_LOCAL_ICON_OVERRIDES", true,
+            "Use inbuilt monochrome icons if app doesn't provide one");
+
     public static void initialize(Context context) {
         synchronized (sDebugFlags) {
             for (DebugFlag flag : sDebugFlags) {
