@@ -225,21 +225,21 @@ public class LauncherPreviewRenderer extends ContextWrapper
         mHotseat.resetLayout(false);
 
         CellLayout firstScreen = mRootView.findViewById(R.id.workspace);
-        firstScreen.setPadding(mDp.workspacePadding.left + mDp.cellLayoutPaddingPx.left,
-                mDp.workspacePadding.top + mDp.cellLayoutPaddingPx.top,
+        firstScreen.setPadding(mDp.workspacePadding.left + mDp.cellLayoutPaddingLeftRightPx,
+                mDp.workspacePadding.top,
                 (mDp.isTwoPanels ? mDp.cellLayoutBorderSpacePx.x / 2
-                        : mDp.workspacePadding.right) + mDp.cellLayoutPaddingPx.right,
-                mDp.workspacePadding.bottom + mDp.cellLayoutPaddingPx.bottom
+                        : mDp.workspacePadding.right) + mDp.cellLayoutPaddingLeftRightPx,
+                mDp.workspacePadding.bottom
         );
         mWorkspaceScreens.put(FIRST_SCREEN_ID, firstScreen);
 
         if (mDp.isTwoPanels) {
             CellLayout rightPanel = mRootView.findViewById(R.id.workspace_right);
             rightPanel.setPadding(
-                    mDp.cellLayoutBorderSpacePx.x / 2  + mDp.cellLayoutPaddingPx.left,
-                    mDp.workspacePadding.top + mDp.cellLayoutPaddingPx.top,
-                    mDp.workspacePadding.right + mDp.cellLayoutPaddingPx.right,
-                    mDp.workspacePadding.bottom + mDp.cellLayoutPaddingPx.bottom
+                    mDp.cellLayoutBorderSpacePx.x / 2 + mDp.cellLayoutPaddingLeftRightPx,
+                    mDp.workspacePadding.top,
+                    mDp.workspacePadding.right + mDp.cellLayoutPaddingLeftRightPx,
+                    mDp.workspacePadding.bottom
             );
             mWorkspaceScreens.put(Workspace.SECOND_SCREEN_ID, rightPanel);
         }
