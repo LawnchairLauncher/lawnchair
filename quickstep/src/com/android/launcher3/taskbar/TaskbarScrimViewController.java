@@ -49,9 +49,6 @@ public class TaskbarScrimViewController implements TaskbarControllers.LoggableTa
     public TaskbarScrimViewController(TaskbarActivityContext activity, TaskbarScrimView scrimView) {
         mActivity = activity;
         mScrimView = scrimView;
-        mScrimView.setCornerSizes(mActivity.getLeftCornerRadius(),
-                mActivity.getRightCornerRadius());
-        mScrimView.setBackgroundHeight(mActivity.getDeviceProfile().taskbarSize);
     }
 
     /**
