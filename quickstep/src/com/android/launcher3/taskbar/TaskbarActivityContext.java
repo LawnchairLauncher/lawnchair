@@ -56,6 +56,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.VisibleForTesting;
 
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.BubbleTextView;
@@ -66,6 +67,7 @@ import com.android.launcher3.dot.DotInfo;
 import com.android.launcher3.folder.Folder;
 import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.logger.LauncherAtom;
+import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.FolderInfo;
 import com.android.launcher3.model.data.ItemInfo;
@@ -242,6 +244,13 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
         float iconScale = taskbarIconSize / mDeviceProfile.iconSizePx;
         mDeviceProfile.updateIconSize(iconScale, resources);
         mDeviceProfile.updateAllAppsIconSize(1, resources); // Leave all apps unscaled.
+    }
+
+    @VisibleForTesting
+    @Override
+    public StatsLogManager getStatsLogManager() {
+        // Used to mock, can't mock a default interface method directly
+        return super.getStatsLogManager();
     }
 
     /** Creates LayoutParams for adding a view directly to WindowManager as a new window */

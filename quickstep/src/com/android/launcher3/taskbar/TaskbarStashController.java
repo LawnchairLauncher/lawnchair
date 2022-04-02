@@ -19,6 +19,7 @@ import static android.view.HapticFeedbackConstants.LONG_PRESS;
 
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASKBAR_LONGPRESS_HIDE;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASKBAR_LONGPRESS_SHOW;
+import static com.android.launcher3.taskbar.Utilities.appendFlag;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_IME_SHOWING;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_SCREEN_PINNING;
 
@@ -606,16 +607,15 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
 
     private static String getStateString(int flags) {
         StringJoiner str = new StringJoiner("|");
-        str.add((flags & FLAG_IN_APP) != 0 ? "FLAG_IN_APP" : "");
-        str.add((flags & FLAG_STASHED_IN_APP_MANUAL) != 0 ? "FLAG_STASHED_IN_APP_MANUAL" : "");
-        str.add((flags & FLAG_STASHED_IN_APP_PINNED) != 0 ? "FLAG_STASHED_IN_APP_PINNED" : "");
-        str.add((flags & FLAG_STASHED_IN_APP_EMPTY) != 0 ? "FLAG_STASHED_IN_APP_EMPTY" : "");
-        str.add((flags & FLAG_STASHED_IN_APP_SETUP) != 0 ? "FLAG_STASHED_IN_APP_SETUP" : "");
-        str.add((flags & FLAG_STASHED_IN_APP_IME) != 0 ? "FLAG_STASHED_IN_APP_IME" : "");
-        str.add((flags & FLAG_IN_STASHED_LAUNCHER_STATE) != 0
-                ? "FLAG_IN_STASHED_LAUNCHER_STATE" : "");
-        str.add((flags & FLAG_STASHED_IN_APP_ALL_APPS) != 0 ? "FLAG_STASHED_IN_APP_ALL_APPS" : "");
-        str.add((flags & FLAG_IN_SETUP) != 0 ? "FLAG_IN_SETUP" : "");
+        appendFlag(str, flags, FLAGS_IN_APP, "FLAG_IN_APP");
+        appendFlag(str, flags, FLAG_STASHED_IN_APP_MANUAL, "FLAG_STASHED_IN_APP_MANUAL");
+        appendFlag(str, flags, FLAG_STASHED_IN_APP_PINNED, "FLAG_STASHED_IN_APP_PINNED");
+        appendFlag(str, flags, FLAG_STASHED_IN_APP_EMPTY, "FLAG_STASHED_IN_APP_EMPTY");
+        appendFlag(str, flags, FLAG_STASHED_IN_APP_SETUP, "FLAG_STASHED_IN_APP_SETUP");
+        appendFlag(str, flags, FLAG_STASHED_IN_APP_IME, "FLAG_STASHED_IN_APP_IME");
+        appendFlag(str, flags, FLAG_IN_STASHED_LAUNCHER_STATE, "FLAG_IN_STASHED_LAUNCHER_STATE");
+        appendFlag(str, flags, FLAG_STASHED_IN_APP_ALL_APPS, "FLAG_STASHED_IN_APP_ALL_APPS");
+        appendFlag(str, flags, FLAG_IN_SETUP, "FLAG_IN_SETUP");
         return str.toString();
     }
 
