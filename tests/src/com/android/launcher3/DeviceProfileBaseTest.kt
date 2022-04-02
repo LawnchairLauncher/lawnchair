@@ -88,11 +88,11 @@ abstract class DeviceProfileBaseTest {
     protected fun newScalableInvariantDeviceProfile(): InvariantDeviceProfile =
         InvariantDeviceProfile().apply {
             isScalable = true
-            numColumns = 5
-            numRows = 5
-            numShownHotseatIcons = 5
+            numColumns = 4
+            numRows = 4
+            numShownHotseatIcons = 4
             numDatabaseHotseatIcons = 6
-            numShrunkenHotseatIcons = 4
+            numShrunkenHotseatIcons = 5
             horizontalMargin = FloatArray(4) { 22f }
             borderSpaces = listOf(
                 PointF(16f, 16f),
