@@ -483,6 +483,11 @@ public final class Utilities {
         return res.getConfiguration().getLayoutDirection() == View.LAYOUT_DIRECTION_RTL;
     }
 
+    /** Converts a pixel value (px) to scale pixel value (SP) for the current device. */
+    public static float pxToSp(float size) {
+        return size / Resources.getSystem().getDisplayMetrics().scaledDensity;
+    }
+
     public static float dpiFromPx(float size, int densityDpi) {
         float densityRatio = (float) densityDpi / DisplayMetrics.DENSITY_DEFAULT;
         return (size / densityRatio);
