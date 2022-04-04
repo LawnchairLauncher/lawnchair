@@ -2775,6 +2775,12 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
                         info = ((AppInfo) info).makeWorkspaceItem();
                         d.dragInfo = info;
                     }
+                    if (info instanceof WorkspaceItemInfo
+                            && info.container == LauncherSettings.Favorites.CONTAINER_PREDICTION) {
+                        // Came from all apps prediction row -- make a copy
+                        info = new WorkspaceItemInfo((WorkspaceItemInfo) info);
+                        d.dragInfo = info;
+                    }
                     if (info instanceof SearchActionItemInfo) {
                         info = ((SearchActionItemInfo) info).createWorkspaceItem(
                                 mLauncher.getModel());
