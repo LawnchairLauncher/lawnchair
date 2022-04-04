@@ -58,7 +58,6 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
             HIDDEN_NON_ZERO_ROTATION,
             HIDDEN_NO_TASKS,
             HIDDEN_NO_RECENTS,
-            HIDDEN_FOCUSED_SCROLL,
             HIDDEN_SPLIT_SCREEN})
     @Retention(RetentionPolicy.SOURCE)
     public @interface ActionsHiddenFlags { }
@@ -66,8 +65,7 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
     public static final int HIDDEN_NON_ZERO_ROTATION = 1 << 0;
     public static final int HIDDEN_NO_TASKS = 1 << 1;
     public static final int HIDDEN_NO_RECENTS = 1 << 2;
-    public static final int HIDDEN_FOCUSED_SCROLL = 1 << 3;
-    public static final int HIDDEN_SPLIT_SCREEN = 1 << 4;
+    public static final int HIDDEN_SPLIT_SCREEN = 1 << 3;
 
     @IntDef(flag = true, value = {
             DISABLED_SCROLLING,
