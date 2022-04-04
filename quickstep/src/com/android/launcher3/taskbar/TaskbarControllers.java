@@ -53,6 +53,7 @@ public class TaskbarControllers {
     public final TaskbarAllAppsController taskbarAllAppsController;
     public final TaskbarRecentAppsController taskbarRecentAppsController;
     public final TaskbarInsetsController taskbarInsetsController;
+    public final VoiceInteractionWindowController voiceInteractionWindowController;
 
     @Nullable private LoggableTaskbarController[] mControllersToLog = null;
 
@@ -82,7 +83,8 @@ public class TaskbarControllers {
             TaskbarForceVisibleImmersiveController taskbarForceVisibleImmersiveController,
             TaskbarAllAppsController taskbarAllAppsController,
             TaskbarRecentAppsController taskbarRecentAppsController,
-            TaskbarInsetsController taskbarInsetsController) {
+            TaskbarInsetsController taskbarInsetsController,
+            VoiceInteractionWindowController voiceInteractionWindowController) {
         this.taskbarActivityContext = taskbarActivityContext;
         this.taskbarDragController = taskbarDragController;
         this.navButtonController = navButtonController;
@@ -102,6 +104,7 @@ public class TaskbarControllers {
         this.taskbarAllAppsController = taskbarAllAppsController;
         this.taskbarRecentAppsController = taskbarRecentAppsController;
         this.taskbarInsetsController = taskbarInsetsController;
+        this.voiceInteractionWindowController = voiceInteractionWindowController;
     }
 
     /**
@@ -130,13 +133,15 @@ public class TaskbarControllers {
         taskbarRecentAppsController.init(this);
         navButtonController.init(this);
         taskbarInsetsController.init(this);
+        voiceInteractionWindowController.init(this);
 
         mControllersToLog = new LoggableTaskbarController[] {
                 taskbarDragController, navButtonController, navbarButtonsViewController,
                 taskbarDragLayerController, taskbarScrimViewController, taskbarViewController,
                 taskbarUnfoldAnimationController, taskbarKeyguardController,
                 stashedHandleViewController, taskbarStashController, taskbarEduController,
-                taskbarAutohideSuspendController, taskbarPopupController, taskbarInsetsController
+                taskbarAutohideSuspendController, taskbarPopupController, taskbarInsetsController,
+                voiceInteractionWindowController
         };
 
         mAreAllControllersInitialized = true;
@@ -177,6 +182,7 @@ public class TaskbarControllers {
         taskbarRecentAppsController.onDestroy();
         navButtonController.onDestroy();
         taskbarInsetsController.onDestroy();
+        voiceInteractionWindowController.onDestroy();
 
         mControllersToLog = null;
     }
