@@ -608,6 +608,10 @@ public final class Utilities {
                 LauncherFiles.DEVICE_PREFERENCES_KEY, Context.MODE_PRIVATE);
     }
 
+    public static boolean isWallpaperSupported(Context context) {
+        return context.getSystemService(WallpaperManager.class).isWallpaperSupported();
+    }
+
     public static boolean isWallpaperAllowed(Context context) {
         return context.getSystemService(WallpaperManager.class).isSetWallpaperAllowed();
     }
