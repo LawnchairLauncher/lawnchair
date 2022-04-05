@@ -62,8 +62,7 @@ public class LauncherPopupLiveUpdateHandler extends PopupLiveUpdateHandler<Launc
                                     R.layout.widget_shortcut_container,
                                     mPopupContainerWithArrow));
                 }
-                mPopupContainerWithArrow.initializeSystemShortcut(
-                        R.layout.system_shortcut,
+                mPopupContainerWithArrow.initializeWidgetShortcut(
                         mPopupContainerWithArrow.getWidgetContainer(),
                         widgetInfo);
             } else {
