@@ -57,6 +57,7 @@ import com.android.launcher3.tapl.TestHelpers;
 import com.android.launcher3.testcomponent.TestCommandReceiver;
 import com.android.launcher3.util.Wait;
 import com.android.launcher3.util.rule.FailureWatcher;
+import com.android.launcher3.util.rule.ScreenRecordRule;
 import com.android.launcher3.util.rule.ScreenRecordRule.ScreenRecord;
 import com.android.quickstep.views.RecentsView;
 
@@ -90,6 +91,9 @@ public class FallbackRecentsTest {
 
     @Rule
     public final TestRule mOrderSensitiveRules;
+
+    @Rule
+    public ScreenRecordRule mScreenRecordRule = new ScreenRecordRule();
 
     public FallbackRecentsTest() throws RemoteException {
         Instrumentation instrumentation = getInstrumentation();
