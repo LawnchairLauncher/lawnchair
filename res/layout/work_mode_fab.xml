@@ -29,4 +29,6 @@
     android:drawableStart="@drawable/ic_corp_off"
     android:layout_marginBottom="@dimen/work_fab_margin"
     android:layout_marginEnd="@dimen/work_fab_margin"
+    android:paddingLeft="@dimen/work_mode_fab_padding"
+    android:paddingRight="@dimen/work_mode_fab_padding"
     android:text="@string/work_apps_pause_btn_text" />
