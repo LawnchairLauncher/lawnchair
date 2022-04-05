@@ -91,6 +91,7 @@
     <string name="custom_activity_picker" translatable="false">
         com.android.customization.picker.CustomizationPickerActivity</string>
     <string name="local_colors_extraction_class" translatable="false"></string>
+    <string name="search_session_manager_class" translatable="false"></string>
 
     <!-- Accessibility actions -->
     <item type="id" name="action_remove" />
