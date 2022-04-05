@@ -165,6 +165,17 @@ public class WindowManagerProxy implements ResourceBasedOverride {
         insetsBuilder.setInsets(WindowInsets.Type.navigationBars(), newNavInsets);
         insetsBuilder.setInsetsIgnoringVisibility(WindowInsets.Type.navigationBars(), newNavInsets);
 
+        Insets statusBarInsets = oldInsets.getInsets(WindowInsets.Type.statusBars());
+        int statusBarHeight = getDimenByName("status_bar_height", systemRes, 0);
+        Insets newStatusBarInsets = Insets.of(
+                statusBarInsets.left,
+                Math.max(statusBarInsets.top, statusBarHeight),
+                statusBarInsets.right,
+                statusBarInsets.bottom);
+        insetsBuilder.setInsets(WindowInsets.Type.statusBars(), newStatusBarInsets);
+        insetsBuilder.setInsetsIgnoringVisibility(
+                WindowInsets.Type.statusBars(), newStatusBarInsets);
+
         // Override the tappable insets to be 0 on the bottom for gesture nav (otherwise taskbar
         // would count towards it). This is used for the bottom protection in All Apps for example.
         if (isGesture) {
