@@ -40,7 +40,7 @@
     <string name="hotseat_edu_dismiss" msgid="2781161822780201689">"Үгүй, баярлалаа"</string>
     <string name="hotseat_prediction_settings" msgid="6246554993566070818">"Тохиргоо"</string>
     <string name="hotseat_auto_enrolled" msgid="522100018967146807">"Хамгийн их ашигладаг аппуудыг энд харуулах бөгөөд хэвшлээс хамаарч өөрчилдөг"</string>
-    <string name="hotseat_tip_no_empty_slots" msgid="1325212677738179185">"Санал болгож буй аппуудыг авахын тулд доод мөрөөс аппуудыг чирж гаргаарай"</string>
+    <string name="hotseat_tip_no_empty_slots" msgid="1325212677738179185">"Санал болгож буй аппуудыг авахын тулд доод мөрөөс аппуудыг чирч гаргаарай"</string>
     <string name="hotseat_tip_gaps_filled" msgid="3035673010274223538">"Санал болгож буй аппуудыг хоосон зайд нэмсэн"</string>
     <string name="hotsaet_tip_prediction_enabled" msgid="2233554377501347650">"Санал болгож буй аппуудыг идэвхжүүлсэн"</string>
     <string name="hotsaet_tip_prediction_disabled" msgid="1506426298884658491">"Санал болгож буй аппуудыг идэвхгүй болгосон"</string>
