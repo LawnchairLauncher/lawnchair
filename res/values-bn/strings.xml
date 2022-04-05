@@ -90,7 +90,7 @@
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"এটি একটি সিস্টেম অ্যাপ্লিকেশান এবং আনইনস্টল করা যাবে না৷"</string>
     <string name="folder_hint_text" msgid="5174843001373488816">"নাম এডিট করুন"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"<xliff:g id="APP_NAME">%1$s</xliff:g> অক্ষম করা হয়েছে"</string>
-    <string name="dotted_app_label" msgid="1704091277755818896">"{count,plural,offset:1 =1{{app_name}-এর #টি বিজ্ঞপ্তি আছে}one{{app_name}-এর #টি বিজ্ঞপ্তি আছে}other{{app_name}-এর #টি বিজ্ঞপ্তি আছে}}"</string>
+    <string name="dotted_app_label" msgid="1865617679843363410">"{count,plural, =1{{app_name}-এর #টি বিজ্ঞপ্তি আছে}one{{app_name}-এর #টি বিজ্ঞপ্তি আছে}other{{app_name}-এর #টি বিজ্ঞপ্তি আছে}}"</string>
     <string name="default_scroll_format" msgid="7475544710230993317">"%2$dটির মধ্যে %1$dটি পৃষ্ঠা"</string>
     <string name="workspace_scroll_format" msgid="8458889198184077399">"%2$dটির %1$d নম্বর হোম স্ক্রিন"</string>
     <string name="workspace_new_page" msgid="257366611030256142">"নতুন হোম স্ক্রীনের পৃষ্ঠা"</string>
