@@ -403,7 +403,7 @@ public class StatsLogCompatManager extends StatsLogManager {
                             String.format("(State:%s->%s)", getStateString(srcState),
                                     getStateString(dstState)));
                 }
-                if (mItemInfo != DEFAULT_ITEM_INFO) {
+                if (atomInfo.hasContainerInfo()) {
                     logStringBuilder.append("\n").append(atomInfo);
                 }
                 Log.d(TAG, logStringBuilder.toString());
@@ -492,9 +492,7 @@ public class StatsLogCompatManager extends StatsLogManager {
                 String name = (event instanceof Enum) ? ((Enum) event).name() :
                         event.getId() + "";
                 StringBuilder logStringBuilder = new StringBuilder("\n");
-                if (mInstanceId != DEFAULT_INSTANCE_ID) {
-                    logStringBuilder.append(String.format("InstanceId:%s ", mInstanceId));
-                }
+                logStringBuilder.append(String.format("InstanceId:%s ", mInstanceId));
                 logStringBuilder.append(String.format("%s=%sms", name, mLatencyInMillis));
                 Log.d(LATENCY_TAG, logStringBuilder.toString());
             }
