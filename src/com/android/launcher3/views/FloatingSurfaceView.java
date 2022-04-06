@@ -62,7 +62,6 @@ public class FloatingSurfaceView extends AbstractFloatingView implements
 
     private final SurfaceView mSurfaceView;
 
-
     private View mIcon;
     private GestureNavContract mContract;
 
@@ -103,7 +102,13 @@ public class FloatingSurfaceView extends AbstractFloatingView implements
     private void removeViewFromParent() {
         mPicture.beginRecording(1, 1);
         mPicture.endRecording();
-        mLauncher.getDragLayer().removeView(this);
+        mLauncher.getDragLayer().removeViewInLayout(this);
+    }
+
+    private void removeViewImmediate() {
+        // Cancel any pending remove
+        Executors.MAIN_EXECUTOR.getHandler().removeCallbacks(mRemoveViewRunnable);
+        removeViewFromParent();
     }
 
     /**
@@ -115,9 +120,7 @@ public class FloatingSurfaceView extends AbstractFloatingView implements
         view.mContract = contract;
         view.mIsOpen = true;
 
-        // Cancel any pending remove
-        Executors.MAIN_EXECUTOR.getHandler().removeCallbacks(view.mRemoveViewRunnable);
-        view.removeViewFromParent();
+        view.removeViewImmediate();
         launcher.getDragLayer().addView(view);
     }
 
@@ -129,6 +132,7 @@ public class FloatingSurfaceView extends AbstractFloatingView implements
     @Override
     public boolean onControllerInterceptTouchEvent(MotionEvent ev) {
         close(false);
+        removeViewImmediate();
         return false;
     }
 
@@ -197,7 +201,7 @@ public class FloatingSurfaceView extends AbstractFloatingView implements
 
     private void sendIconInfo() {
         if (mContract != null && !mIconPosition.isEmpty()) {
-            mContract.sendEndPosition(mIconPosition, mSurfaceView.getSurfaceControl());
+            mContract.sendEndPosition(mIconPosition, mLauncher, mSurfaceView.getSurfaceControl());
         }
     }
 
