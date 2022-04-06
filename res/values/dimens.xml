@@ -34,6 +34,7 @@
     <dimen name="dynamic_grid_hotseat_bottom_padding">2dp</dimen>
     <dimen name="dynamic_grid_hotseat_bottom_tall_padding">0dp</dimen>
     <dimen name="inline_qsb_bottom_margin">0dp</dimen>
+    <dimen name="spring_loaded_hotseat_top_margin">76dp</dimen>
 
     <!-- Qsb -->
     <!-- Used for adjusting the position of QSB when placed in hotseat. This is a ratio and a higher
@@ -55,8 +56,10 @@
     <dimen name="workspace_page_indicator_overlap_workspace">0dp</dimen>
 
 <!-- Drop target bar -->
-    <dimen name="dynamic_grid_drop_target_size">52dp</dimen>
+    <dimen name="dynamic_grid_drop_target_size">56dp</dimen>
     <dimen name="drop_target_vertical_gap">20dp</dimen>
+    <dimen name="drop_target_top_margin">36dp</dimen>
+    <dimen name="drop_target_bottom_margin">16dp</dimen>
 
 <!-- App Widget resize frame -->
     <dimen name="widget_handle_margin">13dp</dimen>
@@ -207,6 +210,9 @@
     <dimen name="drop_target_shadow_elevation">2dp</dimen>
     <dimen name="drop_target_bar_margin_horizontal">4dp</dimen>
     <dimen name="drop_target_button_drawable_padding">8dp</dimen>
+    <dimen name="drop_target_button_drawable_horizontal_padding">16dp</dimen>
+    <dimen name="drop_target_button_drawable_vertical_padding">8dp</dimen>
+    <dimen name="drop_target_button_gap">22dp</dimen>
 
     <!-- the distance an icon must be dragged before button drop targets accept it -->
     <dimen name="drag_distanceThreshold">30dp</dimen>
